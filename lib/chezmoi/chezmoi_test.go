@@ -5,17 +5,17 @@ import (
 	"testing"
 )
 
-func TestParseTarget(t *testing.T) {
+func TestParseFileState(t *testing.T) {
 	for _, tc := range []struct {
 		filename string
 		contents []byte
 		data     interface{}
 		wantErr  bool
-		want     *Target
+		want     *FileState
 	}{
 		{
 			filename: "foo",
-			want: &Target{
+			want: &FileState{
 				Name: "foo",
 				Mode: 0666,
 			},
@@ -23,7 +23,7 @@ func TestParseTarget(t *testing.T) {
 		{
 			filename: "foo",
 			contents: []byte("bar"),
-			want: &Target{
+			want: &FileState{
 				Name:     "foo",
 				Mode:     0666,
 				Contents: []byte("bar"),
@@ -32,7 +32,7 @@ func TestParseTarget(t *testing.T) {
 		{
 			filename: "foo.tmpl",
 			contents: []byte("{{23 -}} < {{- 45}}"),
-			want: &Target{
+			want: &FileState{
 				Name:     "foo",
 				Mode:     0666,
 				Contents: []byte("23<45"),
@@ -42,7 +42,7 @@ func TestParseTarget(t *testing.T) {
 			filename: "foo.tmpl",
 			contents: []byte("{{.User}}"),
 			data:     map[string]string{"User": "bar"},
-			want: &Target{
+			want: &FileState{
 				Name:     "foo",
 				Mode:     0666,
 				Contents: []byte("bar"),
@@ -50,48 +50,48 @@ func TestParseTarget(t *testing.T) {
 		},
 		{
 			filename: "dot_bashrc",
-			want: &Target{
+			want: &FileState{
 				Name: ".bashrc",
 				Mode: 0666,
 			},
 		},
 		{
 			filename: "private_dot_netrc",
-			want: &Target{
+			want: &FileState{
 				Name: ".netrc",
 				Mode: 0600,
 			},
 		},
 		{
 			filename: "executable_foo",
-			want: &Target{
+			want: &FileState{
 				Name: "foo",
 				Mode: 0777,
 			},
 		},
 		{
 			filename: "foo.tmpl",
-			want: &Target{
+			want: &FileState{
 				Name: "foo",
 				Mode: 0666,
 			},
 		},
 		{
 			filename: "private_dot_bash_history.tmpl",
-			want: &Target{
+			want: &FileState{
 				Name: ".bash_history",
 				Mode: 0600,
 			},
 		},
 	} {
-		if got, gotErr := ParseTarget(tc.filename, tc.contents, tc.data); (gotErr != nil) != tc.wantErr || !reflect.DeepEqual(got, tc.want) {
+		if got, gotErr := ParseFileState(tc.filename, tc.contents, tc.data); (gotErr != nil) != tc.wantErr || !reflect.DeepEqual(got, tc.want) {
 			var wantErrStr string
 			if tc.wantErr {
 				wantErrStr = "!<nil>"
 			} else {
 				wantErrStr = "<nil>"
 			}
-			t.Errorf("ParseTarget(%q, %v, %v) == %v, %v, want %v, %v", tc.filename, tc.contents, tc.data, got, gotErr, tc.want, wantErrStr)
+			t.Errorf("ParseFileState(%q, %v, %v) == %v, %v, want %v, %v", tc.filename, tc.contents, tc.data, got, gotErr, tc.want, wantErrStr)
 		}
 	}
 }

@@ -14,16 +14,18 @@ var (
 	nameSubexpIndexes = makeSubexpIndexes(nameRegexp)
 )
 
-type Target struct {
+type FileState struct {
 	Name     string
 	Mode     os.FileMode
 	Contents []byte
 }
 
-func ParseTarget(sourceName string, contents []byte, data interface{}) (*Target, error) {
-	m := nameRegexp.FindStringSubmatch(sourceName)
+type State []*FileState
+
+func ParseFileState(filename string, contents []byte, data interface{}) (*FileState, error) {
+	m := nameRegexp.FindStringSubmatch(filename)
 	if m == nil {
-		return nil, errors.Errorf("invalid source name %q", sourceName)
+		return nil, errors.Errorf("invalid source name %q", filename)
 	}
 	name := m[nameSubexpIndexes["name"]]
 	if m[nameSubexpIndexes["dot"]] != "" {
@@ -37,22 +39,28 @@ func ParseTarget(sourceName string, contents []byte, data interface{}) (*Target,
 		mode &= 0700
 	}
 	if m[nameSubexpIndexes["template"]] != "" {
-		tmpl, err := template.New(sourceName).Parse(string(contents))
+		tmpl, err := template.New(filename).Parse(string(contents))
 		if err != nil {
-			return nil, errors.Wrap(err, sourceName)
+			return nil, errors.Wrap(err, filename)
 		}
 		output := &bytes.Buffer{}
 		if err := tmpl.Execute(output, data); err != nil {
-			return nil, errors.Wrap(err, sourceName)
+			return nil, errors.Wrap(err, filename)
 		}
 		contents = output.Bytes()
 	}
-	return &Target{
+	return &FileState{
 		Name:     name,
 		Mode:     mode,
 		Contents: contents,
 	}, nil
 }
+
+type byName State
+
+func (bn byName) Len() int           { return len(bn) }
+func (bn byName) Less(i, j int) bool { return bn[i].Name < bn[j].Name }
+func (bn byName) Swap(i, j int)      { bn[i], bn[j] = bn[j], bn[i] }
 
 func makeSubexpIndexes(re *regexp.Regexp) map[string]int {
 	result := make(map[string]int)
