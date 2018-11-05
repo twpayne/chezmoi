@@ -23,12 +23,10 @@ func TestReadSourceDirState(t *testing.T) {
 			},
 			sourceDir: "/",
 			want: &DirState{
-				Name: "",
 				Mode: os.FileMode(0),
 				Dirs: map[string]*DirState{},
 				Files: map[string]*FileState{
 					"foo": &FileState{
-						Name:     "foo",
 						Mode:     os.FileMode(0666),
 						Contents: []byte("bar"),
 					},
@@ -41,12 +39,10 @@ func TestReadSourceDirState(t *testing.T) {
 			},
 			sourceDir: "/",
 			want: &DirState{
-				Name: "",
 				Mode: os.FileMode(0),
 				Dirs: map[string]*DirState{},
 				Files: map[string]*FileState{
 					".foo": &FileState{
-						Name:     ".foo",
 						Mode:     os.FileMode(0666),
 						Contents: []byte("bar"),
 					},
@@ -59,12 +55,10 @@ func TestReadSourceDirState(t *testing.T) {
 			},
 			sourceDir: "/",
 			want: &DirState{
-				Name: "",
 				Mode: os.FileMode(0),
 				Dirs: map[string]*DirState{},
 				Files: map[string]*FileState{
 					"foo": &FileState{
-						Name:     "foo",
 						Mode:     os.FileMode(0600),
 						Contents: []byte("bar"),
 					},
@@ -77,16 +71,13 @@ func TestReadSourceDirState(t *testing.T) {
 			},
 			sourceDir: "/",
 			want: &DirState{
-				Name: "",
 				Mode: os.FileMode(0),
 				Dirs: map[string]*DirState{
 					"foo": &DirState{
-						Name: "foo",
 						Mode: os.FileMode(0777),
 						Dirs: map[string]*DirState{},
 						Files: map[string]*FileState{
 							"bar": &FileState{
-								Name:     "bar",
 								Mode:     os.FileMode(0666),
 								Contents: []byte("baz"),
 							},
@@ -102,16 +93,13 @@ func TestReadSourceDirState(t *testing.T) {
 			},
 			sourceDir: "/",
 			want: &DirState{
-				Name: "",
 				Mode: os.FileMode(0),
 				Dirs: map[string]*DirState{
 					".foo": &DirState{
-						Name: ".foo",
 						Mode: os.FileMode(0700),
 						Dirs: map[string]*DirState{},
 						Files: map[string]*FileState{
 							"bar": &FileState{
-								Name:     "bar",
 								Mode:     os.FileMode(0666),
 								Contents: []byte("baz"),
 							},
@@ -130,12 +118,10 @@ func TestReadSourceDirState(t *testing.T) {
 				"Email": "user@example.com",
 			},
 			want: &DirState{
-				Name: "",
 				Mode: os.FileMode(0),
 				Dirs: map[string]*DirState{},
 				Files: map[string]*FileState{
 					".gitconfig": &FileState{
-						Name:     ".gitconfig",
 						Mode:     os.FileMode(0666),
 						Contents: []byte("[user]\n\temail = user@example.com\n"),
 					},

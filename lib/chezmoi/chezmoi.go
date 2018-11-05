@@ -23,14 +23,12 @@ var (
 
 // A FileState represents the target state of a file.
 type FileState struct {
-	Name     string
 	Mode     os.FileMode
 	Contents []byte
 }
 
 // A DirState represents the target state of a directory.
 type DirState struct {
-	Name  string
 	Mode  os.FileMode
 	Dirs  map[string]*DirState
 	Files map[string]*FileState
@@ -112,9 +110,8 @@ func parseFilePath(path string) ([]string, string, os.FileMode, bool, error) {
 }
 
 // newDirState returns a new directory state.
-func newDirState(name string, mode os.FileMode) *DirState {
+func newDirState(mode os.FileMode) *DirState {
 	return &DirState{
-		Name:  name,
 		Mode:  mode,
 		Dirs:  make(map[string]*DirState),
 		Files: make(map[string]*FileState),
@@ -123,20 +120,17 @@ func newDirState(name string, mode os.FileMode) *DirState {
 
 // newRootDirState returns a new root directory state.
 func newRootDirState() *DirState {
-	return newDirState("", os.FileMode(0))
+	return newDirState(os.FileMode(0))
 }
 
 // isRoot returns whether ds refers to the root.
 func (ds *DirState) isRoot() bool {
-	return ds.Name == "" && ds.Mode == os.FileMode(0)
+	return ds.Mode == os.FileMode(0)
 }
 
 // Ensure ensures that targetDir in fs matches ds.
 func (ds *DirState) Ensure(fs afero.Fs, targetDir string) error {
 	if !ds.isRoot() {
-		if _, dirName := filepath.Split(targetDir); dirName != ds.Name {
-			return errors.Errorf("name mismatch: got %s, want %s", dirName, ds.Name)
-		}
 		fi, err := fs.Stat(targetDir)
 		switch {
 		case err == nil && fi.Mode().IsDir():
@@ -211,7 +205,6 @@ func ReadSourceDirState(fs afero.Fs, sourceDir string, data interface{}) (*DirSt
 				contents = output.Bytes()
 			}
 			ds.Files[fileName] = &FileState{
-				Name:     fileName,
 				Mode:     mode,
 				Contents: contents,
 			}
@@ -227,7 +220,7 @@ func ReadSourceDirState(fs afero.Fs, sourceDir string, data interface{}) (*DirSt
 			}
 			dirName := dirNames[len(dirNames)-1]
 			mode := modes[len(modes)-1]
-			ds.Dirs[dirName] = newDirState(dirName, mode)
+			ds.Dirs[dirName] = newDirState(mode)
 		default:
 			return errors.Errorf("unsupported file type: %s", path)
 		}
@@ -240,9 +233,6 @@ func ReadSourceDirState(fs afero.Fs, sourceDir string, data interface{}) (*DirSt
 
 // Ensure ensures that state of targetPath in fs matches fileState.
 func (fileState *FileState) Ensure(fs afero.Fs, targetPath string) error {
-	if _, fileName := filepath.Split(targetPath); fileName != fileState.Name {
-		return errors.Errorf("name mismatch: got %s, want %s", targetPath, fileState.Name)
-	}
 	fi, err := fs.Stat(targetPath)
 	switch {
 	case err == nil && fi.Mode().IsRegular() && fi.Mode()&os.ModePerm == fileState.Mode:
