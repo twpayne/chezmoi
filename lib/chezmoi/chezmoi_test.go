@@ -186,8 +186,8 @@ func TestEndToEnd(t *testing.T) {
 			t.Errorf("case %d: ReadSourceDirState(makeMemMapFs(%v), %q, %v) == %v, %v, want !<nil>, <nil>", i, tc.fsMap, tc.sourceDir, tc.data, ds, err)
 			continue
 		}
-		if err := ds.Apply(fs, tc.targetDir); err != nil {
-			t.Errorf("case %d: %v.Apply(makeMemMapFs(%v), %q) == %v, want <nil>", i, ds, tc.fsMap, tc.targetDir, err)
+		if err := ds.Ensure(fs, tc.targetDir); err != nil {
+			t.Errorf("case %d: %v.Ensure(makeMemMapFs(%v), %q) == %v, want <nil>", i, ds, tc.fsMap, tc.targetDir, err)
 			continue
 		}
 		gotFsMap, err := makeMapFs(fs)

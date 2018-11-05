@@ -131,8 +131,8 @@ func (ds *DirState) isRoot() bool {
 	return ds.Name == "" && ds.Mode == os.FileMode(0)
 }
 
-// Apply ensures that targetDir in fs matches ds.
-func (ds *DirState) Apply(fs afero.Fs, targetDir string) error {
+// Ensure ensures that targetDir in fs matches ds.
+func (ds *DirState) Ensure(fs afero.Fs, targetDir string) error {
 	if !ds.isRoot() {
 		if _, dirName := filepath.Split(targetDir); dirName != ds.Name {
 			return errors.Errorf("name mismatch: got %s, want %s", dirName, ds.Name)
@@ -159,12 +159,12 @@ func (ds *DirState) Apply(fs afero.Fs, targetDir string) error {
 		}
 	}
 	for fileName, fileState := range ds.Files {
-		if err := fileState.Apply(fs, filepath.Join(targetDir, fileName)); err != nil {
+		if err := fileState.Ensure(fs, filepath.Join(targetDir, fileName)); err != nil {
 			return err
 		}
 	}
 	for dirName, dirState := range ds.Dirs {
-		if err := dirState.Apply(fs, filepath.Join(targetDir, dirName)); err != nil {
+		if err := dirState.Ensure(fs, filepath.Join(targetDir, dirName)); err != nil {
 			return err
 		}
 	}
@@ -238,8 +238,8 @@ func ReadSourceDirState(fs afero.Fs, sourceDir string, data interface{}) (*DirSt
 	return rootDS, nil
 }
 
-// Apply ensures that state of targetPath in fs matches fileState.
-func (fileState *FileState) Apply(fs afero.Fs, targetPath string) error {
+// Ensure ensures that state of targetPath in fs matches fileState.
+func (fileState *FileState) Ensure(fs afero.Fs, targetPath string) error {
 	if _, fileName := filepath.Split(targetPath); fileName != fileState.Name {
 		return errors.Errorf("name mismatch: got %s, want %s", targetPath, fileState.Name)
 	}
