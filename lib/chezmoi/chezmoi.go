@@ -38,6 +38,12 @@ type DirState struct {
 	Files      map[string]*FileState
 }
 
+// A RootState represents the root target state.
+type RootState struct {
+	Dirs  map[string]*DirState
+	Files map[string]*FileState
+}
+
 // parseDirName parses a single directory name. It returns the target name,
 // mode, and any error.
 func parseDirName(dirName string) (string, os.FileMode, error) {
@@ -123,53 +129,22 @@ func newDirState(sourceName string, mode os.FileMode) *DirState {
 	}
 }
 
-// newRootDirState returns a new root directory state.
-func newRootDirState() *DirState {
-	return newDirState("", os.FileMode(0))
-}
-
-// isRoot returns whether ds refers to the root.
-func (ds *DirState) isRoot() bool {
-	return ds.SourceName == "" && ds.Mode == os.FileMode(0)
-}
-
-// sortedFileNames returns a sorted slice of all directory names in ds.
-func (ds *DirState) sortedDirNames() []string {
-	dirNames := []string{}
-	for dirName := range ds.Dirs {
-		dirNames = append(dirNames, dirName)
-	}
-	sort.Strings(dirNames)
-	return dirNames
-}
-
-// sortedFileNames returns a sorted slice of all file names in ds.
-func (ds *DirState) sortedFileNames() []string {
-	fileNames := []string{}
-	for fileName := range ds.Files {
-		fileNames = append(fileNames, fileName)
-	}
-	sort.Strings(fileNames)
-	return fileNames
-}
-
+// archive writes ds to w.
 func (ds *DirState) archive(w *tar.Writer, dirName string) error {
-	if !ds.isRoot() {
-		header := &tar.Header{
-			Typeflag: tar.TypeDir,
-			Name:     dirName,
-			Mode:     int64(ds.Mode & os.ModePerm),
-		}
-		if err := w.WriteHeader(header); err != nil {
-			return err
-		}
+	header := &tar.Header{
+		Typeflag: tar.TypeDir,
+		Name:     dirName,
+		Mode:     int64(ds.Mode & os.ModePerm),
 	}
-	for _, fileName := range ds.sortedFileNames() {
+	if err := w.WriteHeader(header); err != nil {
+		return err
+	}
+	for _, fileName := range sortedFileNames(ds.Files) {
 		if err := ds.Files[fileName].archive(w, filepath.Join(dirName, fileName)); err != nil {
 			return err
 		}
 	}
-	for _, subDirName := range ds.sortedDirNames() {
+	for _, subDirName := range sortedDirNames(ds.Dirs) {
 		if err := ds.Dirs[subDirName].archive(w, filepath.Join(dirName, subDirName)); err != nil {
 			return err
 		}
@@ -177,115 +152,39 @@ func (ds *DirState) archive(w *tar.Writer, dirName string) error {
 	return nil
 }
 
-func (ds *DirState) Archive(w *tar.Writer) error {
-	return ds.archive(w, "")
-}
-
-// Ensure ensures that targetDir in fs matches ds.
-func (ds *DirState) Ensure(fs afero.Fs, targetDir string) error {
-	if !ds.isRoot() {
-		fi, err := fs.Stat(targetDir)
-		switch {
-		case err == nil && fi.Mode().IsDir():
-			if fi.Mode()&os.ModePerm != ds.Mode {
-				if err := fs.Chmod(targetDir, ds.Mode); err != nil {
-					return err
-				}
-			}
-		case err == nil:
-			if err := fs.RemoveAll(targetDir); err != nil {
+// ensure ensures that targetDir in fs matches ds.
+func (ds *DirState) ensure(fs afero.Fs, targetDir string) error {
+	fi, err := fs.Stat(targetDir)
+	switch {
+	case err == nil && fi.Mode().IsDir():
+		if fi.Mode()&os.ModePerm != ds.Mode {
+			if err := fs.Chmod(targetDir, ds.Mode); err != nil {
 				return err
 			}
-			fallthrough
-		case os.IsNotExist(err):
-			if err := fs.Mkdir(targetDir, ds.Mode); err != nil {
-				return err
-			}
-		default:
+		}
+	case err == nil:
+		if err := fs.RemoveAll(targetDir); err != nil {
+			return err
+		}
+		fallthrough
+	case os.IsNotExist(err):
+		if err := fs.Mkdir(targetDir, ds.Mode); err != nil {
+			return err
+		}
+	default:
+		return err
+	}
+	for _, fileName := range sortedFileNames(ds.Files) {
+		if err := ds.Files[fileName].ensure(fs, filepath.Join(targetDir, fileName)); err != nil {
 			return err
 		}
 	}
-	for _, fileName := range ds.sortedFileNames() {
-		if err := ds.Files[fileName].Ensure(fs, filepath.Join(targetDir, fileName)); err != nil {
-			return err
-		}
-	}
-	for _, dirName := range ds.sortedDirNames() {
-		if err := ds.Dirs[dirName].Ensure(fs, filepath.Join(targetDir, dirName)); err != nil {
+	for _, dirName := range sortedDirNames(ds.Dirs) {
+		if err := ds.Dirs[dirName].ensure(fs, filepath.Join(targetDir, dirName)); err != nil {
 			return err
 		}
 	}
 	return nil
-}
-
-// ReadTargetDirState walks fs from sourceDir creating a target directory
-// state. Any templates found are executed with data.
-func ReadTargetDirState(fs afero.Fs, sourceDir string, data interface{}) (*DirState, error) {
-	rootDS := newRootDirState()
-	if err := afero.Walk(fs, sourceDir, func(path string, fi os.FileInfo, err error) error {
-		relPath, err := filepath.Rel(sourceDir, path)
-		if err != nil {
-			return err
-		}
-		if relPath == "." {
-			return nil
-		}
-		switch {
-		case fi.Mode().IsRegular():
-			dirNames, fileName, mode, isTemplate, err := parseFilePath(relPath)
-			if err != nil {
-				return errors.Wrap(err, path)
-			}
-			ds := rootDS
-			for _, dirName := range dirNames {
-				ds = ds.Dirs[dirName]
-			}
-			r, err := fs.Open(path)
-			if err != nil {
-				return err
-			}
-			defer r.Close()
-			contents, err := ioutil.ReadAll(r)
-			if err != nil {
-				return errors.Wrap(err, path)
-			}
-			if isTemplate {
-				tmpl, err := template.New(path).Parse(string(contents))
-				if err != nil {
-					return errors.Wrap(err, path)
-				}
-				output := &bytes.Buffer{}
-				if err := tmpl.Execute(output, data); err != nil {
-					return errors.Wrap(err, path)
-				}
-				contents = output.Bytes()
-			}
-			ds.Files[fileName] = &FileState{
-				SourceName: relPath,
-				Mode:       mode,
-				Contents:   contents,
-			}
-		case fi.Mode().IsDir():
-			components := splitPathList(relPath)
-			dirNames, modes, err := parseDirNameComponents(components)
-			if err != nil {
-				return errors.Wrap(err, path)
-			}
-			ds := rootDS
-			for i := 0; i < len(dirNames)-1; i++ {
-				ds = ds.Dirs[dirNames[i]]
-			}
-			dirName := dirNames[len(dirNames)-1]
-			mode := modes[len(modes)-1]
-			ds.Dirs[dirName] = newDirState(relPath, mode)
-		default:
-			return errors.Errorf("unsupported file type: %s", path)
-		}
-		return nil
-	}); err != nil {
-		return nil, err
-	}
-	return rootDS, nil
 }
 
 // archive writes fs to w.
@@ -303,8 +202,8 @@ func (fs *FileState) archive(w *tar.Writer, fileName string) error {
 	return err
 }
 
-// Ensure ensures that state of targetPath in fs matches fileState.
-func (fileState *FileState) Ensure(fs afero.Fs, targetPath string) error {
+// ensure ensures that state of targetPath in fs matches fileState.
+func (fileState *FileState) ensure(fs afero.Fs, targetPath string) error {
 	fi, err := fs.Stat(targetPath)
 	switch {
 	case err == nil && fi.Mode().IsRegular() && fi.Mode()&os.ModePerm == fileState.Mode:
@@ -332,12 +231,136 @@ func (fileState *FileState) Ensure(fs afero.Fs, targetPath string) error {
 	return afero.WriteFile(fs, targetPath, fileState.Contents, fileState.Mode)
 }
 
+// NewRootState creates a new RootState.
+func NewRootState() *RootState {
+	return &RootState{
+		Dirs:  make(map[string]*DirState),
+		Files: make(map[string]*FileState),
+	}
+}
+
+// Archive writes rs to w.
+func (rs *RootState) Archive(w *tar.Writer) error {
+	for _, fileName := range sortedFileNames(rs.Files) {
+		if err := rs.Files[fileName].archive(w, fileName); err != nil {
+			return err
+		}
+	}
+	for _, dirName := range sortedDirNames(rs.Dirs) {
+		if err := rs.Dirs[dirName].archive(w, dirName); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Ensure ensures that targetDir in fs matches ds.
+func (rs *RootState) Ensure(fs afero.Fs, targetDir string) error {
+	for _, fileName := range sortedFileNames(rs.Files) {
+		if err := rs.Files[fileName].ensure(fs, filepath.Join(targetDir, fileName)); err != nil {
+			return err
+		}
+	}
+	for _, dirName := range sortedDirNames(rs.Dirs) {
+		if err := rs.Dirs[dirName].ensure(fs, filepath.Join(targetDir, dirName)); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Populate walks fs from sourceDir creating a target directory state. Any
+// templates found are executed with data.
+func (rs *RootState) Populate(fs afero.Fs, sourceDir string, data interface{}) error {
+	return afero.Walk(fs, sourceDir, func(path string, fi os.FileInfo, err error) error {
+		relPath, err := filepath.Rel(sourceDir, path)
+		if err != nil {
+			return err
+		}
+		if relPath == "." {
+			return nil
+		}
+		switch {
+		case fi.Mode().IsRegular():
+			dirNames, fileName, mode, isTemplate, err := parseFilePath(relPath)
+			if err != nil {
+				return errors.Wrap(err, path)
+			}
+			dirs, files := rs.Dirs, rs.Files
+			for _, dirName := range dirNames {
+				dirs, files = dirs[dirName].Dirs, dirs[dirName].Files
+			}
+			r, err := fs.Open(path)
+			if err != nil {
+				return err
+			}
+			defer r.Close()
+			contents, err := ioutil.ReadAll(r)
+			if err != nil {
+				return errors.Wrap(err, path)
+			}
+			if isTemplate {
+				tmpl, err := template.New(path).Parse(string(contents))
+				if err != nil {
+					return errors.Wrap(err, path)
+				}
+				output := &bytes.Buffer{}
+				if err := tmpl.Execute(output, data); err != nil {
+					return errors.Wrap(err, path)
+				}
+				contents = output.Bytes()
+			}
+			files[fileName] = &FileState{
+				SourceName: relPath,
+				Mode:       mode,
+				Contents:   contents,
+			}
+		case fi.Mode().IsDir():
+			components := splitPathList(relPath)
+			dirNames, modes, err := parseDirNameComponents(components)
+			if err != nil {
+				return errors.Wrap(err, path)
+			}
+			dirs := rs.Dirs
+			for i := 0; i < len(dirNames)-1; i++ {
+				dirs = dirs[dirNames[i]].Dirs
+			}
+			dirName := dirNames[len(dirNames)-1]
+			mode := modes[len(modes)-1]
+			dirs[dirName] = newDirState(relPath, mode)
+		default:
+			return errors.Errorf("unsupported file type: %s", path)
+		}
+		return nil
+	})
+}
+
 func makeSubexpIndexes(re *regexp.Regexp) map[string]int {
 	result := make(map[string]int)
 	for index, name := range re.SubexpNames() {
 		result[name] = index
 	}
 	return result
+}
+
+// sortedDirNames returns a sorted slice of all directory names in ds.
+func sortedDirNames(dirs map[string]*DirState) []string {
+	dirNames := []string{}
+	for dirName := range dirs {
+		dirNames = append(dirNames, dirName)
+	}
+	sort.Strings(dirNames)
+	return dirNames
+}
+
+// sortedFileNames returns a sorted slice of all file names in ds.
+func sortedFileNames(files map[string]*FileState) []string {
+	fileNames := []string{}
+	for fileName := range files {
+		fileNames = append(fileNames, fileName)
+	}
+	sort.Strings(fileNames)
+	return fileNames
 }
 
 func splitPathList(path string) []string {

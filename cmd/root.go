@@ -4,8 +4,10 @@ import (
 	"log"
 	"path/filepath"
 
+	"github.com/absfs/afero"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
+	"github.com/twpayne/chezmoi/lib/chezmoi"
 )
 
 var (
@@ -40,4 +42,12 @@ func Execute() {
 
 func runRootCommand(cmd *cobra.Command, args []string) error {
 	return nil
+}
+
+func getTargetState(fs afero.Fs) (*chezmoi.RootState, error) {
+	targetState := chezmoi.NewRootState()
+	if err := targetState.Populate(fs, sourceDir, nil); err != nil {
+		return nil, err
+	}
+	return targetState, nil
 }

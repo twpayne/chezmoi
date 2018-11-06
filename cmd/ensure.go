@@ -3,7 +3,6 @@ package cmd
 import (
 	"github.com/absfs/afero"
 	"github.com/spf13/cobra"
-	"github.com/twpayne/chezmoi/lib/chezmoi"
 )
 
 var ensureCommand = &cobra.Command{
@@ -18,7 +17,7 @@ func init() {
 
 func runEnsureCommand(command *cobra.Command, args []string) error {
 	fs := afero.NewOsFs()
-	targetState, err := chezmoi.ReadTargetDirState(fs, sourceDir, nil)
+	targetState, err := getTargetState(fs)
 	if err != nil {
 		return err
 	}

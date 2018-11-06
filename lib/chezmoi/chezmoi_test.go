@@ -3,29 +3,26 @@ package chezmoi
 import (
 	"os"
 	"path/filepath"
-	"reflect"
 	"testing"
 
 	"github.com/absfs/afero"
 	"github.com/d4l3k/messagediff"
 )
 
-func TestReadTargetDirState(t *testing.T) {
+func TestRootStatePopulate(t *testing.T) {
 	for _, tc := range []struct {
 		fs        map[string]string
 		sourceDir string
 		data      interface{}
-		want      *DirState
+		want      *RootState
 	}{
 		{
 			fs: map[string]string{
 				"/foo": "bar",
 			},
 			sourceDir: "/",
-			want: &DirState{
-				SourceName: "",
-				Mode:       os.FileMode(0),
-				Dirs:       map[string]*DirState{},
+			want: &RootState{
+				Dirs: map[string]*DirState{},
 				Files: map[string]*FileState{
 					"foo": &FileState{
 						SourceName: "foo",
@@ -40,10 +37,8 @@ func TestReadTargetDirState(t *testing.T) {
 				"/dot_foo": "bar",
 			},
 			sourceDir: "/",
-			want: &DirState{
-				SourceName: "",
-				Mode:       os.FileMode(0),
-				Dirs:       map[string]*DirState{},
+			want: &RootState{
+				Dirs: map[string]*DirState{},
 				Files: map[string]*FileState{
 					".foo": &FileState{
 						SourceName: "dot_foo",
@@ -58,10 +53,8 @@ func TestReadTargetDirState(t *testing.T) {
 				"/private_foo": "bar",
 			},
 			sourceDir: "/",
-			want: &DirState{
-				SourceName: "",
-				Mode:       os.FileMode(0),
-				Dirs:       map[string]*DirState{},
+			want: &RootState{
+				Dirs: map[string]*DirState{},
 				Files: map[string]*FileState{
 					"foo": &FileState{
 						SourceName: "private_foo",
@@ -76,9 +69,7 @@ func TestReadTargetDirState(t *testing.T) {
 				"/foo/bar": "baz",
 			},
 			sourceDir: "/",
-			want: &DirState{
-				SourceName: "",
-				Mode:       os.FileMode(0),
+			want: &RootState{
 				Dirs: map[string]*DirState{
 					"foo": &DirState{
 						SourceName: "foo",
@@ -101,9 +92,7 @@ func TestReadTargetDirState(t *testing.T) {
 				"/private_dot_foo/bar": "baz",
 			},
 			sourceDir: "/",
-			want: &DirState{
-				SourceName: "",
-				Mode:       os.FileMode(0),
+			want: &RootState{
 				Dirs: map[string]*DirState{
 					".foo": &DirState{
 						SourceName: "private_dot_foo",
@@ -129,10 +118,8 @@ func TestReadTargetDirState(t *testing.T) {
 			data: map[string]string{
 				"Email": "user@example.com",
 			},
-			want: &DirState{
-				SourceName: "",
-				Mode:       os.FileMode(0),
-				Dirs:       map[string]*DirState{},
+			want: &RootState{
+				Dirs: map[string]*DirState{},
 				Files: map[string]*FileState{
 					".gitconfig": &FileState{
 						SourceName: "dot_gitconfig.tmpl",
@@ -148,9 +135,13 @@ func TestReadTargetDirState(t *testing.T) {
 			t.Errorf("makeMemMapFs(%v) == %v, %v, want !<nil>, <nil>", tc.fs, fs, err)
 			continue
 		}
-		if got, err := ReadTargetDirState(fs, tc.sourceDir, tc.data); err != nil || !reflect.DeepEqual(got, tc.want) {
-			diff, _ := messagediff.PrettyDiff(tc.want, got)
-			t.Errorf("ReadTargetDirState(makeMemMapFs(%+v), %q, %+v) == %+v, %v, want %+v, <nil>:\n%s", tc.fs, tc.sourceDir, tc.data, got, err, tc.want, diff)
+		rs := NewRootState()
+		if err := rs.Populate(fs, tc.sourceDir, tc.data); err != nil {
+			t.Errorf("rs.Populate(%+v, %q, %+v) == %v, want <nil>", fs, tc.sourceDir, tc.data, err)
+			continue
+		}
+		if diff, equal := messagediff.PrettyDiff(tc.want, rs); !equal {
+			t.Errorf("rs.Populate(%+v, %q, %+v) diff:\n%s\n", fs, tc.sourceDir, tc.data, diff)
 		}
 	}
 }
@@ -181,13 +172,13 @@ func TestEndToEnd(t *testing.T) {
 			t.Errorf("case %d: makeMemMapFs(%v) == %v, %v, want !<nil>, <nil>", i, tc.fsMap, fs, err)
 			continue
 		}
-		ds, err := ReadTargetDirState(fs, tc.sourceDir, tc.data)
-		if err != nil {
-			t.Errorf("case %d: ReadTargetDirState(makeMemMapFs(%v), %q, %v) == %v, %v, want !<nil>, <nil>", i, tc.fsMap, tc.sourceDir, tc.data, ds, err)
+		rs := NewRootState()
+		if err := rs.Populate(fs, tc.sourceDir, tc.data); err != nil {
+			t.Errorf("rs.Populate(%+v, %q, %+v) == %v, want <nil>", fs, tc.sourceDir, tc.data, err)
 			continue
 		}
-		if err := ds.Ensure(fs, tc.targetDir); err != nil {
-			t.Errorf("case %d: %v.Ensure(makeMemMapFs(%v), %q) == %v, want <nil>", i, ds, tc.fsMap, tc.targetDir, err)
+		if err := rs.Ensure(fs, tc.targetDir); err != nil {
+			t.Errorf("case %d: rs.Ensure(makeMemMapFs(%v), %q) == %v, want <nil>", i, tc.fsMap, tc.targetDir, err)
 			continue
 		}
 		gotFsMap, err := makeMapFs(fs)
