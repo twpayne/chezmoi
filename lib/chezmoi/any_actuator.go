@@ -34,7 +34,7 @@ func (a *AnyActuator) RemoveAll(name string) error {
 	return a.a.RemoveAll(name)
 }
 
-func (a *AnyActuator) WriteFile(name string, contents []byte, mode os.FileMode) error {
+func (a *AnyActuator) WriteFile(name string, contents []byte, mode os.FileMode, currentContents []byte) error {
 	a.actuated = true
-	return a.a.WriteFile(name, contents, mode)
+	return a.a.WriteFile(name, contents, mode, currentContents)
 }

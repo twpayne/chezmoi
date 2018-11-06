@@ -130,6 +130,7 @@ func (fs *FileState) archive(w *tar.Writer, fileName string, headerTemplate *tar
 // ensure ensures that state of targetPath in fs matches fileState.
 func (fileState *FileState) ensure(fs afero.Fs, targetPath string, umask os.FileMode, actuator Actuator) error {
 	fi, err := fs.Stat(targetPath)
+	var currentContents []byte
 	switch {
 	case err == nil && fi.Mode().IsRegular() && fi.Mode()&os.ModePerm == fileState.Mode&^umask:
 		f, err := fs.Open(targetPath)
@@ -137,11 +138,11 @@ func (fileState *FileState) ensure(fs afero.Fs, targetPath string, umask os.File
 			return err
 		}
 		defer f.Close()
-		contents, err := ioutil.ReadAll(f)
+		currentContents, err = ioutil.ReadAll(f)
 		if err != nil {
 			return errors.Wrap(err, targetPath)
 		}
-		if reflect.DeepEqual(contents, fileState.Contents) {
+		if reflect.DeepEqual(currentContents, fileState.Contents) {
 			return nil
 		}
 	case err == nil:
@@ -152,7 +153,7 @@ func (fileState *FileState) ensure(fs afero.Fs, targetPath string, umask os.File
 	default:
 		return err
 	}
-	return actuator.WriteFile(targetPath, fileState.Contents, fileState.Mode&^umask)
+	return actuator.WriteFile(targetPath, fileState.Contents, fileState.Mode&^umask, currentContents)
 }
 
 // NewRootState creates a new RootState.

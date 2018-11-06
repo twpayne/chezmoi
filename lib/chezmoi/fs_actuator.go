@@ -19,7 +19,7 @@ func NewFsActuator(fs afero.Fs) *FsActuator {
 }
 
 // WriteFile implements Actuator.WriteFile.
-func (a *FsActuator) WriteFile(name string, contents []byte, mode os.FileMode) error {
+func (a *FsActuator) WriteFile(name string, contents []byte, mode os.FileMode, currentContents []byte) error {
 	// FIXME use github.com/google/go-write if a.Fs is an afero.OsFs
 	return afero.WriteFile(a.Fs, name, contents, mode)
 }
