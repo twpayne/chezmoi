@@ -3,11 +3,9 @@ package cmd
 import (
 	"os"
 	"os/exec"
-	"path/filepath"
 	"syscall"
 
 	"github.com/absfs/afero"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -27,13 +25,9 @@ func runEditCommand(command *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	sourceFileNames := []string{}
-	for _, arg := range args {
-		fileState := targetState.FindSourceFile(arg)
-		if fileState == nil {
-			return errors.Errorf("%s: not found", arg)
-		}
-		sourceFileNames = append(sourceFileNames, filepath.Join(sourceDir, fileState.SourceName))
+	sourceFileNames, err := getSourceFileNames(targetState, args)
+	if err != nil {
+		return err
 	}
 	editor := os.Getenv("EDITOR")
 	if editor == "" {
