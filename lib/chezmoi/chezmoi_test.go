@@ -196,6 +196,7 @@ func TestEndToEnd(t *testing.T) {
 		sourceDir string
 		data      interface{}
 		targetDir string
+		umask     os.FileMode
 		wantFsMap map[string]string
 	}{
 		{
@@ -206,6 +207,7 @@ func TestEndToEnd(t *testing.T) {
 			},
 			sourceDir: "/home/user/.chezmoi",
 			targetDir: "/home/user",
+			umask:     os.FileMode(044),
 			wantFsMap: map[string]string{
 				"/home/user/.bashrc":             "bar",
 				"/home/user/.chezmoi/dot_bashrc": "bar",
@@ -223,8 +225,8 @@ func TestEndToEnd(t *testing.T) {
 			t.Errorf("rs.Populate(%+v, %q, %+v) == %v, want <nil>", fs, tc.sourceDir, tc.data, err)
 			continue
 		}
-		if err := rs.Ensure(fs, tc.targetDir); err != nil {
-			t.Errorf("case %d: rs.Ensure(makeMemMapFs(%v), %q) == %v, want <nil>", i, tc.fsMap, tc.targetDir, err)
+		if err := rs.Ensure(fs, tc.targetDir, tc.umask, NewFsActuator(fs)); err != nil {
+			t.Errorf("case %d: rs.Ensure(makeMemMapFs(%v), %q, %v, _) == %v, want <nil>", i, tc.fsMap, tc.targetDir, tc.umask, err)
 			continue
 		}
 		gotFsMap, err := makeMapFs(fs)

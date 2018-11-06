@@ -79,34 +79,34 @@ func (ds *DirState) archive(w *tar.Writer, dirName string, headerTemplate *tar.H
 }
 
 // ensure ensures that targetDir in fs matches ds.
-func (ds *DirState) ensure(fs afero.Fs, targetDir string) error {
+func (ds *DirState) ensure(fs afero.Fs, targetDir string, umask os.FileMode, actuator Actuator) error {
 	fi, err := fs.Stat(targetDir)
 	switch {
 	case err == nil && fi.Mode().IsDir():
-		if fi.Mode()&os.ModePerm != ds.Mode {
-			if err := fs.Chmod(targetDir, ds.Mode); err != nil {
+		if fi.Mode()&os.ModePerm != ds.Mode&^umask {
+			if err := actuator.Chmod(targetDir, ds.Mode&^umask); err != nil {
 				return err
 			}
 		}
 	case err == nil:
-		if err := fs.RemoveAll(targetDir); err != nil {
+		if err := actuator.RemoveAll(targetDir); err != nil {
 			return err
 		}
 		fallthrough
 	case os.IsNotExist(err):
-		if err := fs.Mkdir(targetDir, ds.Mode); err != nil {
+		if err := actuator.Mkdir(targetDir, ds.Mode&^umask); err != nil {
 			return err
 		}
 	default:
 		return err
 	}
 	for _, fileName := range sortedFileNames(ds.Files) {
-		if err := ds.Files[fileName].ensure(fs, filepath.Join(targetDir, fileName)); err != nil {
+		if err := ds.Files[fileName].ensure(fs, filepath.Join(targetDir, fileName), umask, actuator); err != nil {
 			return err
 		}
 	}
 	for _, dirName := range sortedDirNames(ds.Dirs) {
-		if err := ds.Dirs[dirName].ensure(fs, filepath.Join(targetDir, dirName)); err != nil {
+		if err := ds.Dirs[dirName].ensure(fs, filepath.Join(targetDir, dirName), umask, actuator); err != nil {
 			return err
 		}
 	}
@@ -128,10 +128,10 @@ func (fs *FileState) archive(w *tar.Writer, fileName string, headerTemplate *tar
 }
 
 // ensure ensures that state of targetPath in fs matches fileState.
-func (fileState *FileState) ensure(fs afero.Fs, targetPath string) error {
+func (fileState *FileState) ensure(fs afero.Fs, targetPath string, umask os.FileMode, actuator Actuator) error {
 	fi, err := fs.Stat(targetPath)
 	switch {
-	case err == nil && fi.Mode().IsRegular() && fi.Mode()&os.ModePerm == fileState.Mode:
+	case err == nil && fi.Mode().IsRegular() && fi.Mode()&os.ModePerm == fileState.Mode&^umask:
 		f, err := fs.Open(targetPath)
 		if err != nil {
 			return err
@@ -145,15 +145,14 @@ func (fileState *FileState) ensure(fs afero.Fs, targetPath string) error {
 			return nil
 		}
 	case err == nil:
-		if err := fs.RemoveAll(targetPath); err != nil {
+		if err := actuator.RemoveAll(targetPath); err != nil {
 			return err
 		}
 	case os.IsNotExist(err):
 	default:
 		return err
 	}
-	// FIXME atomically replace
-	return afero.WriteFile(fs, targetPath, fileState.Contents, fileState.Mode)
+	return actuator.WriteFile(targetPath, fileState.Contents, fileState.Mode&^umask)
 }
 
 // NewRootState creates a new RootState.
@@ -206,14 +205,14 @@ func (rs *RootState) Archive(w *tar.Writer) error {
 }
 
 // Ensure ensures that targetDir in fs matches ds.
-func (rs *RootState) Ensure(fs afero.Fs, targetDir string) error {
+func (rs *RootState) Ensure(fs afero.Fs, targetDir string, umask os.FileMode, actuator Actuator) error {
 	for _, fileName := range sortedFileNames(rs.Files) {
-		if err := rs.Files[fileName].ensure(fs, filepath.Join(targetDir, fileName)); err != nil {
+		if err := rs.Files[fileName].ensure(fs, filepath.Join(targetDir, fileName), umask, actuator); err != nil {
 			return err
 		}
 	}
 	for _, dirName := range sortedDirNames(rs.Dirs) {
-		if err := rs.Dirs[dirName].ensure(fs, filepath.Join(targetDir, dirName)); err != nil {
+		if err := rs.Dirs[dirName].ensure(fs, filepath.Join(targetDir, dirName), umask, actuator); err != nil {
 			return err
 		}
 	}
