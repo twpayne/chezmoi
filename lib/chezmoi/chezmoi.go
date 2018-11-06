@@ -246,6 +246,10 @@ func (rs *RootState) Populate(fs afero.Fs, sourceDir string, data interface{}) e
 		if relPath == "." {
 			return nil
 		}
+		// Ignore all files and directories beginning with "."
+		if _, name := filepath.Split(relPath); strings.HasPrefix(name, ".") {
+			return filepath.SkipDir
+		}
 		switch {
 		case fi.Mode().IsRegular():
 			dirNames, fileName, mode, isTemplate := parseFilePath(relPath)

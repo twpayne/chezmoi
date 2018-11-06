@@ -202,12 +202,14 @@ func TestEndToEnd(t *testing.T) {
 			fsMap: map[string]string{
 				"/home/user/.bashrc":             "foo",
 				"/home/user/.chezmoi/dot_bashrc": "bar",
+				"/home/user/.chezmoi/.git/HEAD":  "HEAD",
 			},
 			sourceDir: "/home/user/.chezmoi",
 			targetDir: "/home/user",
 			wantFsMap: map[string]string{
 				"/home/user/.bashrc":             "bar",
 				"/home/user/.chezmoi/dot_bashrc": "bar",
+				"/home/user/.chezmoi/.git/HEAD":  "HEAD",
 			},
 		},
 	} {
