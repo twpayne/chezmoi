@@ -323,6 +323,25 @@ func makeDirName(name string, mode os.FileMode) string {
 	return dirName
 }
 
+func makeFileName(name string, mode os.FileMode, isTemplate bool) string {
+	fileName := ""
+	if mode&os.FileMode(077) == os.FileMode(0) {
+		fileName = "private_"
+	}
+	if mode&os.FileMode(0111) != os.FileMode(0) {
+		fileName += "executable_"
+	}
+	if strings.HasPrefix(name, ".") {
+		fileName += "dot_" + strings.TrimPrefix(name, ".")
+	} else {
+		fileName += name
+	}
+	if isTemplate {
+		fileName += ".tmpl"
+	}
+	return fileName
+}
+
 // parseDirName parses a single directory name. It returns the target name,
 // mode, and any error.
 func parseDirName(dirName string) (string, os.FileMode, error) {

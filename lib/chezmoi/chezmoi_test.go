@@ -29,6 +29,30 @@ func TestDirName(t *testing.T) {
 	}
 }
 
+func TestFileName(t *testing.T) {
+	for _, tc := range []struct {
+		fileName   string
+		name       string
+		mode       os.FileMode
+		isTemplate bool
+	}{
+		{fileName: "foo", name: "foo", mode: os.FileMode(0666), isTemplate: false},
+		{fileName: "dot_foo", name: ".foo", mode: os.FileMode(0666), isTemplate: false},
+		{fileName: "private_foo", name: "foo", mode: os.FileMode(0600), isTemplate: false},
+		{fileName: "private_dot_foo", name: ".foo", mode: os.FileMode(0600), isTemplate: false},
+		{fileName: "executable_foo", name: "foo", mode: os.FileMode(0777), isTemplate: false},
+		{fileName: "foo.tmpl", name: "foo", mode: os.FileMode(0666), isTemplate: true},
+		{fileName: "private_executable_dot_foo.tmpl", name: ".foo", mode: os.FileMode(0700), isTemplate: true},
+	} {
+		if gotName, gotMode, gotIsTemplate, gotErr := parseFileName(tc.fileName); gotErr != nil || gotName != tc.name || gotMode != tc.mode || gotIsTemplate != tc.isTemplate {
+			t.Errorf("parseFileName(%q) == %q, %v, %v, %v, want %q, %v, %v, <nil>", tc.fileName, gotName, gotMode, gotIsTemplate, gotErr, tc.name, tc.mode, tc.isTemplate)
+		}
+		if gotFileName := makeFileName(tc.name, tc.mode, tc.isTemplate); gotFileName != tc.fileName {
+			t.Errorf("makeFileName(%q, %v, %v) == %q, want %q", tc.name, tc.mode, tc.isTemplate, gotFileName, tc.fileName)
+		}
+	}
+}
+
 func TestRootStatePopulate(t *testing.T) {
 	for _, tc := range []struct {
 		fs        map[string]string
