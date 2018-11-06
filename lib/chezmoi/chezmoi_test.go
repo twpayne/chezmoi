@@ -10,7 +10,7 @@ import (
 	"github.com/d4l3k/messagediff"
 )
 
-func TestReadSourceDirState(t *testing.T) {
+func TestReadTargetDirState(t *testing.T) {
 	for _, tc := range []struct {
 		fs        map[string]string
 		sourceDir string
@@ -148,9 +148,9 @@ func TestReadSourceDirState(t *testing.T) {
 			t.Errorf("makeMemMapFs(%v) == %v, %v, want !<nil>, <nil>", tc.fs, fs, err)
 			continue
 		}
-		if got, err := ReadSourceDirState(fs, tc.sourceDir, tc.data); err != nil || !reflect.DeepEqual(got, tc.want) {
+		if got, err := ReadTargetDirState(fs, tc.sourceDir, tc.data); err != nil || !reflect.DeepEqual(got, tc.want) {
 			diff, _ := messagediff.PrettyDiff(tc.want, got)
-			t.Errorf("ReadSourceDirState(makeMemMapFs(%+v), %q, %+v) == %+v, %v, want %+v, <nil>:\n%s", tc.fs, tc.sourceDir, tc.data, got, err, tc.want, diff)
+			t.Errorf("ReadTargetDirState(makeMemMapFs(%+v), %q, %+v) == %+v, %v, want %+v, <nil>:\n%s", tc.fs, tc.sourceDir, tc.data, got, err, tc.want, diff)
 		}
 	}
 }
@@ -181,9 +181,9 @@ func TestEndToEnd(t *testing.T) {
 			t.Errorf("case %d: makeMemMapFs(%v) == %v, %v, want !<nil>, <nil>", i, tc.fsMap, fs, err)
 			continue
 		}
-		ds, err := ReadSourceDirState(fs, tc.sourceDir, tc.data)
+		ds, err := ReadTargetDirState(fs, tc.sourceDir, tc.data)
 		if err != nil {
-			t.Errorf("case %d: ReadSourceDirState(makeMemMapFs(%v), %q, %v) == %v, %v, want !<nil>, <nil>", i, tc.fsMap, tc.sourceDir, tc.data, ds, err)
+			t.Errorf("case %d: ReadTargetDirState(makeMemMapFs(%v), %q, %v) == %v, %v, want !<nil>, <nil>", i, tc.fsMap, tc.sourceDir, tc.data, ds, err)
 			continue
 		}
 		if err := ds.Ensure(fs, tc.targetDir); err != nil {

@@ -179,9 +179,9 @@ func (ds *DirState) Ensure(fs afero.Fs, targetDir string) error {
 	return nil
 }
 
-// ReadSourceDirState walks fs from sourceDir creating a target directory
+// ReadTargetDirState walks fs from sourceDir creating a target directory
 // state. Any templates found are executed with data.
-func ReadSourceDirState(fs afero.Fs, sourceDir string, data interface{}) (*DirState, error) {
+func ReadTargetDirState(fs afero.Fs, sourceDir string, data interface{}) (*DirState, error) {
 	rootDS := newRootDirState()
 	if err := afero.Walk(fs, sourceDir, func(path string, fi os.FileInfo, err error) error {
 		relPath, err := filepath.Rel(sourceDir, path)
