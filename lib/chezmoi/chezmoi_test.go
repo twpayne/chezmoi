@@ -20,8 +20,8 @@ func TestDirName(t *testing.T) {
 		{dirName: "private_foo", name: "foo", mode: os.FileMode(0700)},
 		{dirName: "private_dot_foo", name: ".foo", mode: os.FileMode(0700)},
 	} {
-		if gotName, gotMode, gotErr := parseDirName(tc.dirName); gotErr != nil || gotName != tc.name || gotMode != tc.mode {
-			t.Errorf("parseDirName(%q) == %q, %v, %v, want %q, %v, <nil>", tc.dirName, gotName, gotMode, gotErr, tc.name, tc.mode)
+		if gotName, gotMode := parseDirName(tc.dirName); gotName != tc.name || gotMode != tc.mode {
+			t.Errorf("parseDirName(%q) == %q, %v, want %q, %v", tc.dirName, gotName, gotMode, tc.name, tc.mode)
 		}
 		if gotDirName := makeDirName(tc.name, tc.mode); gotDirName != tc.dirName {
 			t.Errorf("makeDirName(%q, %v) == %q, want %q", tc.name, tc.mode, gotDirName, tc.dirName)

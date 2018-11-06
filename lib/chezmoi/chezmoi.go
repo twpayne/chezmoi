@@ -20,10 +20,13 @@ import (
 )
 
 var (
-	dirNameRegexp         = regexp.MustCompile(`\A(?P<private>private_)?(?P<dot>dot_)?(?P<name>.*)\z`)
-	dirNameSubexpIndexes  = makeSubexpIndexes(dirNameRegexp)
 	fileNameRegexp        = regexp.MustCompile(`\A(?P<private>private_)?(?P<executable>executable_)?(?P<dot>dot_)?(?P<name>.*?)(?P<template>\.tmpl)?\z`)
 	fileNameSubexpIndexes = makeSubexpIndexes(fileNameRegexp)
+)
+
+const (
+	privatePrefix = "private_"
+	dotPrefix     = "dot_"
 )
 
 // A FileState represents the target state of a file.
@@ -284,10 +287,7 @@ func (rs *RootState) Populate(fs afero.Fs, sourceDir string, data interface{}) e
 			}
 		case fi.Mode().IsDir():
 			components := splitPathList(relPath)
-			dirNames, modes, err := parseDirNameComponents(components)
-			if err != nil {
-				return errors.Wrap(err, path)
-			}
+			dirNames, modes := parseDirNameComponents(components)
 			dirs := rs.Dirs
 			for i := 0; i < len(dirNames)-1; i++ {
 				dirs = dirs[dirNames[i]].Dirs
@@ -313,10 +313,10 @@ func makeSubexpIndexes(re *regexp.Regexp) map[string]int {
 func makeDirName(name string, mode os.FileMode) string {
 	dirName := ""
 	if mode&os.FileMode(077) == os.FileMode(0) {
-		dirName = "private_"
+		dirName = privatePrefix
 	}
 	if strings.HasPrefix(name, ".") {
-		dirName += "dot_" + strings.TrimPrefix(name, ".")
+		dirName += dotPrefix + strings.TrimPrefix(name, ".")
 	} else {
 		dirName += name
 	}
@@ -343,21 +343,18 @@ func makeFileName(name string, mode os.FileMode, isTemplate bool) string {
 }
 
 // parseDirName parses a single directory name. It returns the target name,
-// mode, and any error.
-func parseDirName(dirName string) (string, os.FileMode, error) {
-	m := dirNameRegexp.FindStringSubmatch(dirName)
-	if m == nil {
-		return "", os.FileMode(0), errors.Errorf("invalid directory name: %s", dirName)
-	}
-	name := m[dirNameSubexpIndexes["name"]]
-	if m[dirNameSubexpIndexes["dot"]] != "" {
-		name = "." + name
-	}
+// mode.
+func parseDirName(dirName string) (string, os.FileMode) {
+	name := dirName
 	mode := os.FileMode(0777)
-	if m[dirNameSubexpIndexes["private"]] != "" {
+	if strings.HasPrefix(name, privatePrefix) {
+		name = strings.TrimPrefix(name, privatePrefix)
 		mode &= 0700
 	}
-	return name, mode, nil
+	if strings.HasPrefix(name, dotPrefix) {
+		name = "." + strings.TrimPrefix(name, dotPrefix)
+	}
+	return name, mode
 }
 
 // parseFileName parses a single file name. It returns the target name, mode,
@@ -384,18 +381,15 @@ func parseFileName(fileName string) (string, os.FileMode, bool, error) {
 
 // parseDirNameComponents parses multiple directory name components. It returns
 // the target directory names, target modes, and any error.
-func parseDirNameComponents(components []string) ([]string, []os.FileMode, error) {
+func parseDirNameComponents(components []string) ([]string, []os.FileMode) {
 	dirNames := []string{}
 	modes := []os.FileMode{}
 	for _, component := range components {
-		dirName, mode, err := parseDirName(component)
-		if err != nil {
-			return nil, nil, err
-		}
+		dirName, mode := parseDirName(component)
 		dirNames = append(dirNames, dirName)
 		modes = append(modes, mode)
 	}
-	return dirNames, modes, nil
+	return dirNames, modes
 }
 
 // parseFilePath parses a single file path. It returns the target directory
@@ -406,10 +400,7 @@ func parseFilePath(path string) ([]string, string, os.FileMode, bool, error) {
 		return nil, "", os.FileMode(0), false, errors.New("empty path")
 	}
 	components := splitPathList(path)
-	dirNames, _, err := parseDirNameComponents(components[0 : len(components)-1])
-	if err != nil {
-		return nil, "", os.FileMode(0), false, err
-	}
+	dirNames, _ := parseDirNameComponents(components[0 : len(components)-1])
 	fileName, mode, isTemplate, err := parseFileName(components[len(components)-1])
 	if err != nil {
 		return nil, "", os.FileMode(0), false, err
