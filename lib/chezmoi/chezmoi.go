@@ -5,12 +5,15 @@ import (
 	"bytes"
 	"io/ioutil"
 	"os"
+	"os/user"
 	"path/filepath"
 	"reflect"
 	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 	"text/template"
+	"time"
 
 	"github.com/absfs/afero"
 	"github.com/pkg/errors"
@@ -130,22 +133,21 @@ func newDirState(sourceName string, mode os.FileMode) *DirState {
 }
 
 // archive writes ds to w.
-func (ds *DirState) archive(w *tar.Writer, dirName string) error {
-	header := &tar.Header{
-		Typeflag: tar.TypeDir,
-		Name:     dirName,
-		Mode:     int64(ds.Mode & os.ModePerm),
-	}
-	if err := w.WriteHeader(header); err != nil {
+func (ds *DirState) archive(w *tar.Writer, dirName string, headerTemplate *tar.Header) error {
+	header := *headerTemplate
+	header.Typeflag = tar.TypeDir
+	header.Name = dirName
+	header.Mode = int64(ds.Mode & os.ModePerm)
+	if err := w.WriteHeader(&header); err != nil {
 		return err
 	}
 	for _, fileName := range sortedFileNames(ds.Files) {
-		if err := ds.Files[fileName].archive(w, filepath.Join(dirName, fileName)); err != nil {
+		if err := ds.Files[fileName].archive(w, filepath.Join(dirName, fileName), headerTemplate); err != nil {
 			return err
 		}
 	}
 	for _, subDirName := range sortedDirNames(ds.Dirs) {
-		if err := ds.Dirs[subDirName].archive(w, filepath.Join(dirName, subDirName)); err != nil {
+		if err := ds.Dirs[subDirName].archive(w, filepath.Join(dirName, subDirName), headerTemplate); err != nil {
 			return err
 		}
 	}
@@ -188,14 +190,13 @@ func (ds *DirState) ensure(fs afero.Fs, targetDir string) error {
 }
 
 // archive writes fs to w.
-func (fs *FileState) archive(w *tar.Writer, fileName string) error {
-	header := &tar.Header{
-		Typeflag: tar.TypeReg,
-		Name:     fileName,
-		Size:     int64(len(fs.Contents)),
-		Mode:     int64(fs.Mode),
-	}
-	if err := w.WriteHeader(header); err != nil {
+func (fs *FileState) archive(w *tar.Writer, fileName string, headerTemplate *tar.Header) error {
+	header := *headerTemplate
+	header.Typeflag = tar.TypeReg
+	header.Name = fileName
+	header.Size = int64(len(fs.Contents))
+	header.Mode = int64(fs.Mode)
+	if err := w.WriteHeader(&header); err != nil {
 		return nil
 	}
 	_, err := w.Write(fs.Contents)
@@ -241,13 +242,39 @@ func NewRootState() *RootState {
 
 // Archive writes rs to w.
 func (rs *RootState) Archive(w *tar.Writer) error {
+	currentUser, err := user.Current()
+	if err != nil {
+		return err
+	}
+	uid, err := strconv.Atoi(currentUser.Uid)
+	if err != nil {
+		return err
+	}
+	gid, err := strconv.Atoi(currentUser.Gid)
+	if err != nil {
+		return err
+	}
+	group, err := user.LookupGroupId(currentUser.Gid)
+	if err != nil {
+		return err
+	}
+	now := time.Now()
+	headerTemplate := tar.Header{
+		Uid:        uid,
+		Gid:        gid,
+		Uname:      currentUser.Username,
+		Gname:      group.Name,
+		ModTime:    now,
+		AccessTime: now,
+		ChangeTime: now,
+	}
 	for _, fileName := range sortedFileNames(rs.Files) {
-		if err := rs.Files[fileName].archive(w, fileName); err != nil {
+		if err := rs.Files[fileName].archive(w, fileName, &headerTemplate); err != nil {
 			return err
 		}
 	}
 	for _, dirName := range sortedDirNames(rs.Dirs) {
-		if err := rs.Dirs[dirName].archive(w, dirName); err != nil {
+		if err := rs.Dirs[dirName].archive(w, dirName, &headerTemplate); err != nil {
 			return err
 		}
 	}
