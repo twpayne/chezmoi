@@ -20,9 +20,8 @@ func init() {
 	rootCommand.AddCommand(removeCommand)
 }
 
-func runRemoveCommand(command *cobra.Command, args []string) error {
+func runRemoveCommand(fs afero.Fs, command *cobra.Command, args []string) error {
 	// FIXME support directories
-	fs := afero.NewOsFs()
 	targetState, err := getTargetState(fs)
 	if err != nil {
 		return err

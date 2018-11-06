@@ -16,8 +16,7 @@ func init() {
 	rootCommand.AddCommand(diffCommand)
 }
 
-func runDiffCommand(command *cobra.Command, args []string) error {
-	fs := afero.NewOsFs()
+func runDiffCommand(fs afero.Fs, command *cobra.Command, args []string) error {
 	targetState, err := getTargetState(fs)
 	if err != nil {
 		return err

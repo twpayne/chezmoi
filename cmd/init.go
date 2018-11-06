@@ -19,8 +19,7 @@ func init() {
 	rootCommand.AddCommand(initCommand)
 }
 
-func runInitCommand(command *cobra.Command, args []string) error {
-	fs := afero.NewOsFs()
+func runInitCommand(fs afero.Fs, command *cobra.Command, args []string) error {
 	actuator := getDefaultActuator(fs)
 	fi, err := fs.Stat(sourceDir)
 	switch {

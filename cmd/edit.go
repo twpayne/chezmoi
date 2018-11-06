@@ -20,8 +20,8 @@ func init() {
 	rootCommand.AddCommand(editCommand)
 }
 
-func runEditCommand(command *cobra.Command, args []string) error {
-	targetState, err := getTargetState(afero.NewOsFs())
+func runEditCommand(fs afero.Fs, command *cobra.Command, args []string) error {
+	targetState, err := getTargetState(fs)
 	if err != nil {
 		return err
 	}

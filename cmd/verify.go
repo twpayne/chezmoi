@@ -18,8 +18,7 @@ func init() {
 	rootCommand.AddCommand(verifyCommand)
 }
 
-func runVerifyCommand(command *cobra.Command, args []string) error {
-	fs := afero.NewOsFs()
+func runVerifyCommand(fs afero.Fs, command *cobra.Command, args []string) error {
 	targetState, err := getTargetState(fs)
 	if err != nil {
 		return err

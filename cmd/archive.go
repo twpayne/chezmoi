@@ -19,8 +19,8 @@ func init() {
 	rootCommand.AddCommand(archiveCommand)
 }
 
-func runArchiveCommand(command *cobra.Command, args []string) error {
-	targetState, err := getTargetState(afero.NewOsFs())
+func runArchiveCommand(fs afero.Fs, command *cobra.Command, args []string) error {
+	targetState, err := getTargetState(fs)
 	if err != nil {
 		return err
 	}

@@ -45,9 +45,9 @@ func getTargetState(fs afero.Fs) (*chezmoi.RootState, error) {
 	return targetState, nil
 }
 
-func makeRun(runCommand func(*cobra.Command, []string) error) func(*cobra.Command, []string) {
+func makeRun(runCommand func(afero.Fs, *cobra.Command, []string) error) func(*cobra.Command, []string) {
 	return func(cmd *cobra.Command, args []string) {
-		if err := runCommand(cmd, args); err != nil {
+		if err := runCommand(afero.NewOsFs(), cmd, args); err != nil {
 			log.Fatal(err)
 		}
 	}

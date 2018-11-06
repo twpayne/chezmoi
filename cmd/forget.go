@@ -16,9 +16,8 @@ func init() {
 	rootCommand.AddCommand(forgetCommand)
 }
 
-func runForgetCommand(command *cobra.Command, args []string) error {
+func runForgetCommand(fs afero.Fs, command *cobra.Command, args []string) error {
 	// FIXME support directories
-	fs := afero.NewOsFs()
 	targetState, err := getTargetState(fs)
 	if err != nil {
 		return err

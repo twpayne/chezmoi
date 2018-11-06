@@ -15,8 +15,7 @@ func init() {
 	rootCommand.AddCommand(ensureCommand)
 }
 
-func runEnsureCommand(command *cobra.Command, args []string) error {
-	fs := afero.NewOsFs()
+func runEnsureCommand(fs afero.Fs, command *cobra.Command, args []string) error {
 	targetState, err := getTargetState(fs)
 	if err != nil {
 		return err
