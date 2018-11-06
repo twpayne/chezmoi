@@ -1,9 +1,6 @@
 package cmd
 
 import (
-	"os"
-	"syscall"
-
 	"github.com/absfs/afero"
 	"github.com/spf13/cobra"
 	"github.com/twpayne/chezmoi/lib/chezmoi"
@@ -34,8 +31,6 @@ func runEnsureCommand(command *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	umask := syscall.Umask(0)
-	syscall.Umask(umask)
 	var actuator chezmoi.Actuator
 	if ensureDryRun {
 		actuator = chezmoi.NewNullActuator()
@@ -45,5 +40,5 @@ func runEnsureCommand(command *cobra.Command, args []string) error {
 	if ensureVerbose {
 		actuator = chezmoi.NewLoggingActuator(actuator)
 	}
-	return targetState.Ensure(fs, targetDir, os.FileMode(umask), actuator)
+	return targetState.Ensure(fs, targetDir, getUmask(), actuator)
 }
