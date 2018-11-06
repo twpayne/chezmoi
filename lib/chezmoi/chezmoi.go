@@ -310,6 +310,19 @@ func makeSubexpIndexes(re *regexp.Regexp) map[string]int {
 	return result
 }
 
+func makeDirName(name string, mode os.FileMode) string {
+	dirName := ""
+	if mode&os.FileMode(077) == os.FileMode(0) {
+		dirName = "private_"
+	}
+	if strings.HasPrefix(name, ".") {
+		dirName += "dot_" + strings.TrimPrefix(name, ".")
+	} else {
+		dirName += name
+	}
+	return dirName
+}
+
 // parseDirName parses a single directory name. It returns the target name,
 // mode, and any error.
 func parseDirName(dirName string) (string, os.FileMode, error) {

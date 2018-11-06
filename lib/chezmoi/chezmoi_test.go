@@ -9,6 +9,26 @@ import (
 	"github.com/d4l3k/messagediff"
 )
 
+func TestDirName(t *testing.T) {
+	for _, tc := range []struct {
+		dirName string
+		name    string
+		mode    os.FileMode
+	}{
+		{dirName: "foo", name: "foo", mode: os.FileMode(0777)},
+		{dirName: "dot_foo", name: ".foo", mode: os.FileMode(0777)},
+		{dirName: "private_foo", name: "foo", mode: os.FileMode(0700)},
+		{dirName: "private_dot_foo", name: ".foo", mode: os.FileMode(0700)},
+	} {
+		if gotName, gotMode, gotErr := parseDirName(tc.dirName); gotErr != nil || gotName != tc.name || gotMode != tc.mode {
+			t.Errorf("parseDirName(%q) == %q, %v, %v, want %q, %v, <nil>", tc.dirName, gotName, gotMode, gotErr, tc.name, tc.mode)
+		}
+		if gotDirName := makeDirName(tc.name, tc.mode); gotDirName != tc.dirName {
+			t.Errorf("makeDirName(%q, %v) == %q, want %q", tc.name, tc.mode, gotDirName, tc.dirName)
+		}
+	}
+}
+
 func TestRootStatePopulate(t *testing.T) {
 	for _, tc := range []struct {
 		fs        map[string]string
