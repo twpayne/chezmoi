@@ -221,6 +221,21 @@ func (rs *RootState) Ensure(fs afero.Fs, targetDir string) error {
 	return nil
 }
 
+// FindSourceFile returns the source FileState for the given target file name,
+// or nil if it cannot be found.
+func (rs *RootState) FindSourceFile(fileName string) *FileState {
+	components := splitPathList(fileName)
+	dirs, files := rs.Dirs, rs.Files
+	for i := 0; i < len(components)-1; i++ {
+		dir, ok := dirs[components[i]]
+		if !ok {
+			return nil
+		}
+		dirs, files = dir.Dirs, dir.Files
+	}
+	return files[components[len(components)-1]]
+}
+
 // Populate walks fs from sourceDir creating a target directory state. Any
 // templates found are executed with data.
 func (rs *RootState) Populate(fs afero.Fs, sourceDir string, data interface{}) error {
