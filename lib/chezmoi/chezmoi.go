@@ -8,7 +8,6 @@ import (
 	"os/user"
 	"path/filepath"
 	"reflect"
-	"regexp"
 	"sort"
 	"strconv"
 	"strings"
@@ -19,14 +18,11 @@ import (
 	"github.com/pkg/errors"
 )
 
-var (
-	fileNameRegexp        = regexp.MustCompile(`\A(?P<private>private_)?(?P<executable>executable_)?(?P<dot>dot_)?(?P<name>.*?)(?P<template>\.tmpl)?\z`)
-	fileNameSubexpIndexes = makeSubexpIndexes(fileNameRegexp)
-)
-
 const (
-	privatePrefix = "private_"
-	dotPrefix     = "dot_"
+	privatePrefix    = "private_"
+	executablePrefix = "executable_"
+	dotPrefix        = "dot_"
+	templateSuffix   = ".tmpl"
 )
 
 // A FileState represents the target state of a file.
@@ -252,10 +248,7 @@ func (rs *RootState) Populate(fs afero.Fs, sourceDir string, data interface{}) e
 		}
 		switch {
 		case fi.Mode().IsRegular():
-			dirNames, fileName, mode, isTemplate, err := parseFilePath(relPath)
-			if err != nil {
-				return errors.Wrap(err, path)
-			}
+			dirNames, fileName, mode, isTemplate := parseFilePath(relPath)
 			dirs, files := rs.Dirs, rs.Files
 			for _, dirName := range dirNames {
 				dirs, files = dirs[dirName].Dirs, dirs[dirName].Files
@@ -302,14 +295,6 @@ func (rs *RootState) Populate(fs afero.Fs, sourceDir string, data interface{}) e
 	})
 }
 
-func makeSubexpIndexes(re *regexp.Regexp) map[string]int {
-	result := make(map[string]int)
-	for index, name := range re.SubexpNames() {
-		result[name] = index
-	}
-	return result
-}
-
 func makeDirName(name string, mode os.FileMode) string {
 	dirName := ""
 	if mode&os.FileMode(077) == os.FileMode(0) {
@@ -326,18 +311,18 @@ func makeDirName(name string, mode os.FileMode) string {
 func makeFileName(name string, mode os.FileMode, isTemplate bool) string {
 	fileName := ""
 	if mode&os.FileMode(077) == os.FileMode(0) {
-		fileName = "private_"
+		fileName = privatePrefix
 	}
 	if mode&os.FileMode(0111) != os.FileMode(0) {
-		fileName += "executable_"
+		fileName += executablePrefix
 	}
 	if strings.HasPrefix(name, ".") {
-		fileName += "dot_" + strings.TrimPrefix(name, ".")
+		fileName += dotPrefix + strings.TrimPrefix(name, ".")
 	} else {
 		fileName += name
 	}
 	if isTemplate {
-		fileName += ".tmpl"
+		fileName += templateSuffix
 	}
 	return fileName
 }
@@ -359,24 +344,30 @@ func parseDirName(dirName string) (string, os.FileMode) {
 
 // parseFileName parses a single file name. It returns the target name, mode,
 // whether the contents should be interpreted as a template, and any error.
-func parseFileName(fileName string) (string, os.FileMode, bool, error) {
-	m := fileNameRegexp.FindStringSubmatch(fileName)
-	if m == nil {
-		return "", os.FileMode(0), false, errors.Errorf("invalid file name: %s", fileName)
-	}
-	name := m[fileNameSubexpIndexes["name"]]
-	if m[fileNameSubexpIndexes["dot"]] != "" {
-		name = "." + name
-	}
+func parseFileName(fileName string) (string, os.FileMode, bool) {
+	name := fileName
 	mode := os.FileMode(0666)
-	if m[fileNameSubexpIndexes["executable"]] != "" {
+	isPrivate := false
+	isTemplate := false
+	if strings.HasPrefix(name, privatePrefix) {
+		name = strings.TrimPrefix(name, privatePrefix)
+		isPrivate = true
+	}
+	if strings.HasPrefix(name, executablePrefix) {
+		name = strings.TrimPrefix(name, executablePrefix)
 		mode |= 0111
 	}
-	if m[fileNameSubexpIndexes["private"]] != "" {
+	if strings.HasPrefix(name, dotPrefix) {
+		name = "." + strings.TrimPrefix(name, dotPrefix)
+	}
+	if strings.HasSuffix(name, templateSuffix) {
+		name = strings.TrimSuffix(name, templateSuffix)
+		isTemplate = true
+	}
+	if isPrivate {
 		mode &= 0700
 	}
-	isTemplate := m[fileNameSubexpIndexes["template"]] != ""
-	return name, mode, isTemplate, nil
+	return name, mode, isTemplate
 }
 
 // parseDirNameComponents parses multiple directory name components. It returns
@@ -395,17 +386,11 @@ func parseDirNameComponents(components []string) ([]string, []os.FileMode) {
 // parseFilePath parses a single file path. It returns the target directory
 // names, the target filename, the target mode, whether the contents should be
 // interpreted as a template, and any error.
-func parseFilePath(path string) ([]string, string, os.FileMode, bool, error) {
-	if path == "" {
-		return nil, "", os.FileMode(0), false, errors.New("empty path")
-	}
+func parseFilePath(path string) ([]string, string, os.FileMode, bool) {
 	components := splitPathList(path)
 	dirNames, _ := parseDirNameComponents(components[0 : len(components)-1])
-	fileName, mode, isTemplate, err := parseFileName(components[len(components)-1])
-	if err != nil {
-		return nil, "", os.FileMode(0), false, err
-	}
-	return dirNames, fileName, mode, isTemplate, nil
+	fileName, mode, isTemplate := parseFileName(components[len(components)-1])
+	return dirNames, fileName, mode, isTemplate
 }
 
 // sortedDirNames returns a sorted slice of all directory names in ds.

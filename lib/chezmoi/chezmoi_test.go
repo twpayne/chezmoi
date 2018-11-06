@@ -44,8 +44,8 @@ func TestFileName(t *testing.T) {
 		{fileName: "foo.tmpl", name: "foo", mode: os.FileMode(0666), isTemplate: true},
 		{fileName: "private_executable_dot_foo.tmpl", name: ".foo", mode: os.FileMode(0700), isTemplate: true},
 	} {
-		if gotName, gotMode, gotIsTemplate, gotErr := parseFileName(tc.fileName); gotErr != nil || gotName != tc.name || gotMode != tc.mode || gotIsTemplate != tc.isTemplate {
-			t.Errorf("parseFileName(%q) == %q, %v, %v, %v, want %q, %v, %v, <nil>", tc.fileName, gotName, gotMode, gotIsTemplate, gotErr, tc.name, tc.mode, tc.isTemplate)
+		if gotName, gotMode, gotIsTemplate := parseFileName(tc.fileName); gotName != tc.name || gotMode != tc.mode || gotIsTemplate != tc.isTemplate {
+			t.Errorf("parseFileName(%q) == %q, %v, %v, want %q, %v, %v", tc.fileName, gotName, gotMode, gotIsTemplate, tc.name, tc.mode, tc.isTemplate)
 		}
 		if gotFileName := makeFileName(tc.name, tc.mode, tc.isTemplate); gotFileName != tc.fileName {
 			t.Errorf("makeFileName(%q, %v, %v) == %q, want %q", tc.name, tc.mode, tc.isTemplate, gotFileName, tc.fileName)
