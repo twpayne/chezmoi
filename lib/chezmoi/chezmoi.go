@@ -47,81 +47,6 @@ type RootState struct {
 	Files map[string]*FileState
 }
 
-// parseDirName parses a single directory name. It returns the target name,
-// mode, and any error.
-func parseDirName(dirName string) (string, os.FileMode, error) {
-	m := dirNameRegexp.FindStringSubmatch(dirName)
-	if m == nil {
-		return "", os.FileMode(0), errors.Errorf("invalid directory name: %s", dirName)
-	}
-	name := m[dirNameSubexpIndexes["name"]]
-	if m[dirNameSubexpIndexes["dot"]] != "" {
-		name = "." + name
-	}
-	mode := os.FileMode(0777)
-	if m[dirNameSubexpIndexes["private"]] != "" {
-		mode &= 0700
-	}
-	return name, mode, nil
-}
-
-// parseFileName parses a single file name. It returns the target name, mode,
-// whether the contents should be interpreted as a template, and any error.
-func parseFileName(fileName string) (string, os.FileMode, bool, error) {
-	m := fileNameRegexp.FindStringSubmatch(fileName)
-	if m == nil {
-		return "", os.FileMode(0), false, errors.Errorf("invalid file name: %s", fileName)
-	}
-	name := m[fileNameSubexpIndexes["name"]]
-	if m[fileNameSubexpIndexes["dot"]] != "" {
-		name = "." + name
-	}
-	mode := os.FileMode(0666)
-	if m[fileNameSubexpIndexes["executable"]] != "" {
-		mode |= 0111
-	}
-	if m[fileNameSubexpIndexes["private"]] != "" {
-		mode &= 0700
-	}
-	isTemplate := m[fileNameSubexpIndexes["template"]] != ""
-	return name, mode, isTemplate, nil
-}
-
-// parseDirNameComponents parses multiple directory name components. It returns
-// the target directory names, target modes, and any error.
-func parseDirNameComponents(components []string) ([]string, []os.FileMode, error) {
-	dirNames := []string{}
-	modes := []os.FileMode{}
-	for _, component := range components {
-		dirName, mode, err := parseDirName(component)
-		if err != nil {
-			return nil, nil, err
-		}
-		dirNames = append(dirNames, dirName)
-		modes = append(modes, mode)
-	}
-	return dirNames, modes, nil
-}
-
-// parseFilePath parses a single file path. It returns the target directory
-// names, the target filename, the target mode, whether the contents should be
-// interpreted as a template, and any error.
-func parseFilePath(path string) ([]string, string, os.FileMode, bool, error) {
-	if path == "" {
-		return nil, "", os.FileMode(0), false, errors.New("empty path")
-	}
-	components := splitPathList(path)
-	dirNames, _, err := parseDirNameComponents(components[0 : len(components)-1])
-	if err != nil {
-		return nil, "", os.FileMode(0), false, err
-	}
-	fileName, mode, isTemplate, err := parseFileName(components[len(components)-1])
-	if err != nil {
-		return nil, "", os.FileMode(0), false, err
-	}
-	return dirNames, fileName, mode, isTemplate, nil
-}
-
 // newDirState returns a new directory state.
 func newDirState(sourceName string, mode os.FileMode) *DirState {
 	return &DirState{
@@ -368,6 +293,81 @@ func makeSubexpIndexes(re *regexp.Regexp) map[string]int {
 		result[name] = index
 	}
 	return result
+}
+
+// parseDirName parses a single directory name. It returns the target name,
+// mode, and any error.
+func parseDirName(dirName string) (string, os.FileMode, error) {
+	m := dirNameRegexp.FindStringSubmatch(dirName)
+	if m == nil {
+		return "", os.FileMode(0), errors.Errorf("invalid directory name: %s", dirName)
+	}
+	name := m[dirNameSubexpIndexes["name"]]
+	if m[dirNameSubexpIndexes["dot"]] != "" {
+		name = "." + name
+	}
+	mode := os.FileMode(0777)
+	if m[dirNameSubexpIndexes["private"]] != "" {
+		mode &= 0700
+	}
+	return name, mode, nil
+}
+
+// parseFileName parses a single file name. It returns the target name, mode,
+// whether the contents should be interpreted as a template, and any error.
+func parseFileName(fileName string) (string, os.FileMode, bool, error) {
+	m := fileNameRegexp.FindStringSubmatch(fileName)
+	if m == nil {
+		return "", os.FileMode(0), false, errors.Errorf("invalid file name: %s", fileName)
+	}
+	name := m[fileNameSubexpIndexes["name"]]
+	if m[fileNameSubexpIndexes["dot"]] != "" {
+		name = "." + name
+	}
+	mode := os.FileMode(0666)
+	if m[fileNameSubexpIndexes["executable"]] != "" {
+		mode |= 0111
+	}
+	if m[fileNameSubexpIndexes["private"]] != "" {
+		mode &= 0700
+	}
+	isTemplate := m[fileNameSubexpIndexes["template"]] != ""
+	return name, mode, isTemplate, nil
+}
+
+// parseDirNameComponents parses multiple directory name components. It returns
+// the target directory names, target modes, and any error.
+func parseDirNameComponents(components []string) ([]string, []os.FileMode, error) {
+	dirNames := []string{}
+	modes := []os.FileMode{}
+	for _, component := range components {
+		dirName, mode, err := parseDirName(component)
+		if err != nil {
+			return nil, nil, err
+		}
+		dirNames = append(dirNames, dirName)
+		modes = append(modes, mode)
+	}
+	return dirNames, modes, nil
+}
+
+// parseFilePath parses a single file path. It returns the target directory
+// names, the target filename, the target mode, whether the contents should be
+// interpreted as a template, and any error.
+func parseFilePath(path string) ([]string, string, os.FileMode, bool, error) {
+	if path == "" {
+		return nil, "", os.FileMode(0), false, errors.New("empty path")
+	}
+	components := splitPathList(path)
+	dirNames, _, err := parseDirNameComponents(components[0 : len(components)-1])
+	if err != nil {
+		return nil, "", os.FileMode(0), false, err
+	}
+	fileName, mode, isTemplate, err := parseFileName(components[len(components)-1])
+	if err != nil {
+		return nil, "", os.FileMode(0), false, err
+	}
+	return dirNames, fileName, mode, isTemplate, nil
 }
 
 // sortedDirNames returns a sorted slice of all directory names in ds.
