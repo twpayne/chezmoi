@@ -1,6 +1,7 @@
 package chezmoi
 
 import (
+	"archive/tar"
 	"bytes"
 	"io/ioutil"
 	"os"
@@ -132,6 +133,54 @@ func (ds *DirState) isRoot() bool {
 	return ds.SourceName == "" && ds.Mode == os.FileMode(0)
 }
 
+// sortedFileNames returns a sorted slice of all directory names in ds.
+func (ds *DirState) sortedDirNames() []string {
+	dirNames := []string{}
+	for dirName := range ds.Dirs {
+		dirNames = append(dirNames, dirName)
+	}
+	sort.Strings(dirNames)
+	return dirNames
+}
+
+// sortedFileNames returns a sorted slice of all file names in ds.
+func (ds *DirState) sortedFileNames() []string {
+	fileNames := []string{}
+	for fileName := range ds.Files {
+		fileNames = append(fileNames, fileName)
+	}
+	sort.Strings(fileNames)
+	return fileNames
+}
+
+func (ds *DirState) archive(w *tar.Writer, dirName string) error {
+	if !ds.isRoot() {
+		header := &tar.Header{
+			Typeflag: tar.TypeDir,
+			Name:     dirName,
+			Mode:     int64(ds.Mode & os.ModePerm),
+		}
+		if err := w.WriteHeader(header); err != nil {
+			return err
+		}
+	}
+	for _, fileName := range ds.sortedFileNames() {
+		if err := ds.Files[fileName].archive(w, filepath.Join(dirName, fileName)); err != nil {
+			return err
+		}
+	}
+	for _, subDirName := range ds.sortedDirNames() {
+		if err := ds.Dirs[subDirName].archive(w, filepath.Join(dirName, subDirName)); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (ds *DirState) Archive(w *tar.Writer) error {
+	return ds.archive(w, "")
+}
+
 // Ensure ensures that targetDir in fs matches ds.
 func (ds *DirState) Ensure(fs afero.Fs, targetDir string) error {
 	if !ds.isRoot() {
@@ -156,22 +205,12 @@ func (ds *DirState) Ensure(fs afero.Fs, targetDir string) error {
 			return err
 		}
 	}
-	fileNames := []string{}
-	for fileName := range ds.Files {
-		fileNames = append(fileNames, fileName)
-	}
-	sort.Strings(fileNames)
-	for _, fileName := range fileNames {
+	for _, fileName := range ds.sortedFileNames() {
 		if err := ds.Files[fileName].Ensure(fs, filepath.Join(targetDir, fileName)); err != nil {
 			return err
 		}
 	}
-	dirNames := []string{}
-	for dirName := range ds.Dirs {
-		dirNames = append(dirNames, dirName)
-	}
-	sort.Strings(dirNames)
-	for _, dirName := range dirNames {
+	for _, dirName := range ds.sortedDirNames() {
 		if err := ds.Dirs[dirName].Ensure(fs, filepath.Join(targetDir, dirName)); err != nil {
 			return err
 		}
@@ -247,6 +286,21 @@ func ReadTargetDirState(fs afero.Fs, sourceDir string, data interface{}) (*DirSt
 		return nil, err
 	}
 	return rootDS, nil
+}
+
+// archive writes fs to w.
+func (fs *FileState) archive(w *tar.Writer, fileName string) error {
+	header := &tar.Header{
+		Typeflag: tar.TypeReg,
+		Name:     fileName,
+		Size:     int64(len(fs.Contents)),
+		Mode:     int64(fs.Mode),
+	}
+	if err := w.WriteHeader(header); err != nil {
+		return nil
+	}
+	_, err := w.Write(fs.Contents)
+	return err
 }
 
 // Ensure ensures that state of targetPath in fs matches fileState.
