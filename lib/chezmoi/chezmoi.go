@@ -23,15 +23,17 @@ var (
 
 // A FileState represents the target state of a file.
 type FileState struct {
-	Mode     os.FileMode
-	Contents []byte
+	SourceName string
+	Mode       os.FileMode
+	Contents   []byte
 }
 
 // A DirState represents the target state of a directory.
 type DirState struct {
-	Mode  os.FileMode
-	Dirs  map[string]*DirState
-	Files map[string]*FileState
+	SourceName string
+	Mode       os.FileMode
+	Dirs       map[string]*DirState
+	Files      map[string]*FileState
 }
 
 // parseDirName parses a single directory name. It returns the target name,
@@ -110,22 +112,23 @@ func parseFilePath(path string) ([]string, string, os.FileMode, bool, error) {
 }
 
 // newDirState returns a new directory state.
-func newDirState(mode os.FileMode) *DirState {
+func newDirState(sourceName string, mode os.FileMode) *DirState {
 	return &DirState{
-		Mode:  mode,
-		Dirs:  make(map[string]*DirState),
-		Files: make(map[string]*FileState),
+		SourceName: sourceName,
+		Mode:       mode,
+		Dirs:       make(map[string]*DirState),
+		Files:      make(map[string]*FileState),
 	}
 }
 
 // newRootDirState returns a new root directory state.
 func newRootDirState() *DirState {
-	return newDirState(os.FileMode(0))
+	return newDirState("", os.FileMode(0))
 }
 
 // isRoot returns whether ds refers to the root.
 func (ds *DirState) isRoot() bool {
-	return ds.Mode == os.FileMode(0)
+	return ds.SourceName == "" && ds.Mode == os.FileMode(0)
 }
 
 // Ensure ensures that targetDir in fs matches ds.
@@ -170,10 +173,13 @@ func (ds *DirState) Ensure(fs afero.Fs, targetDir string) error {
 func ReadSourceDirState(fs afero.Fs, sourceDir string, data interface{}) (*DirState, error) {
 	rootDS := newRootDirState()
 	if err := afero.Walk(fs, sourceDir, func(path string, fi os.FileInfo, err error) error {
-		if path == sourceDir {
+		relPath, err := filepath.Rel(sourceDir, path)
+		if err != nil {
+			return err
+		}
+		if relPath == "." {
 			return nil
 		}
-		relPath := strings.TrimPrefix(path, sourceDir)
 		switch {
 		case fi.Mode().IsRegular():
 			dirNames, fileName, mode, isTemplate, err := parseFilePath(relPath)
@@ -205,8 +211,9 @@ func ReadSourceDirState(fs afero.Fs, sourceDir string, data interface{}) (*DirSt
 				contents = output.Bytes()
 			}
 			ds.Files[fileName] = &FileState{
-				Mode:     mode,
-				Contents: contents,
+				SourceName: relPath,
+				Mode:       mode,
+				Contents:   contents,
 			}
 		case fi.Mode().IsDir():
 			components := splitPathList(relPath)
@@ -220,7 +227,7 @@ func ReadSourceDirState(fs afero.Fs, sourceDir string, data interface{}) (*DirSt
 			}
 			dirName := dirNames[len(dirNames)-1]
 			mode := modes[len(modes)-1]
-			ds.Dirs[dirName] = newDirState(mode)
+			ds.Dirs[dirName] = newDirState(relPath, mode)
 		default:
 			return errors.Errorf("unsupported file type: %s", path)
 		}

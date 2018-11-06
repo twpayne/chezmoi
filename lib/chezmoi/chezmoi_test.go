@@ -23,12 +23,14 @@ func TestReadSourceDirState(t *testing.T) {
 			},
 			sourceDir: "/",
 			want: &DirState{
-				Mode: os.FileMode(0),
-				Dirs: map[string]*DirState{},
+				SourceName: "",
+				Mode:       os.FileMode(0),
+				Dirs:       map[string]*DirState{},
 				Files: map[string]*FileState{
 					"foo": &FileState{
-						Mode:     os.FileMode(0666),
-						Contents: []byte("bar"),
+						SourceName: "foo",
+						Mode:       os.FileMode(0666),
+						Contents:   []byte("bar"),
 					},
 				},
 			},
@@ -39,12 +41,14 @@ func TestReadSourceDirState(t *testing.T) {
 			},
 			sourceDir: "/",
 			want: &DirState{
-				Mode: os.FileMode(0),
-				Dirs: map[string]*DirState{},
+				SourceName: "",
+				Mode:       os.FileMode(0),
+				Dirs:       map[string]*DirState{},
 				Files: map[string]*FileState{
 					".foo": &FileState{
-						Mode:     os.FileMode(0666),
-						Contents: []byte("bar"),
+						SourceName: "dot_foo",
+						Mode:       os.FileMode(0666),
+						Contents:   []byte("bar"),
 					},
 				},
 			},
@@ -55,12 +59,14 @@ func TestReadSourceDirState(t *testing.T) {
 			},
 			sourceDir: "/",
 			want: &DirState{
-				Mode: os.FileMode(0),
-				Dirs: map[string]*DirState{},
+				SourceName: "",
+				Mode:       os.FileMode(0),
+				Dirs:       map[string]*DirState{},
 				Files: map[string]*FileState{
 					"foo": &FileState{
-						Mode:     os.FileMode(0600),
-						Contents: []byte("bar"),
+						SourceName: "private_foo",
+						Mode:       os.FileMode(0600),
+						Contents:   []byte("bar"),
 					},
 				},
 			},
@@ -71,15 +77,18 @@ func TestReadSourceDirState(t *testing.T) {
 			},
 			sourceDir: "/",
 			want: &DirState{
-				Mode: os.FileMode(0),
+				SourceName: "",
+				Mode:       os.FileMode(0),
 				Dirs: map[string]*DirState{
 					"foo": &DirState{
-						Mode: os.FileMode(0777),
-						Dirs: map[string]*DirState{},
+						SourceName: "foo",
+						Mode:       os.FileMode(0777),
+						Dirs:       map[string]*DirState{},
 						Files: map[string]*FileState{
 							"bar": &FileState{
-								Mode:     os.FileMode(0666),
-								Contents: []byte("baz"),
+								SourceName: "foo/bar",
+								Mode:       os.FileMode(0666),
+								Contents:   []byte("baz"),
 							},
 						},
 					},
@@ -93,15 +102,18 @@ func TestReadSourceDirState(t *testing.T) {
 			},
 			sourceDir: "/",
 			want: &DirState{
-				Mode: os.FileMode(0),
+				SourceName: "",
+				Mode:       os.FileMode(0),
 				Dirs: map[string]*DirState{
 					".foo": &DirState{
-						Mode: os.FileMode(0700),
-						Dirs: map[string]*DirState{},
+						SourceName: "private_dot_foo",
+						Mode:       os.FileMode(0700),
+						Dirs:       map[string]*DirState{},
 						Files: map[string]*FileState{
 							"bar": &FileState{
-								Mode:     os.FileMode(0666),
-								Contents: []byte("baz"),
+								SourceName: "private_dot_foo/bar",
+								Mode:       os.FileMode(0666),
+								Contents:   []byte("baz"),
 							},
 						},
 					},
@@ -118,12 +130,14 @@ func TestReadSourceDirState(t *testing.T) {
 				"Email": "user@example.com",
 			},
 			want: &DirState{
-				Mode: os.FileMode(0),
-				Dirs: map[string]*DirState{},
+				SourceName: "",
+				Mode:       os.FileMode(0),
+				Dirs:       map[string]*DirState{},
 				Files: map[string]*FileState{
 					".gitconfig": &FileState{
-						Mode:     os.FileMode(0666),
-						Contents: []byte("[user]\n\temail = user@example.com\n"),
+						SourceName: "dot_gitconfig.tmpl",
+						Mode:       os.FileMode(0666),
+						Contents:   []byte("[user]\n\temail = user@example.com\n"),
 					},
 				},
 			},
@@ -136,7 +150,7 @@ func TestReadSourceDirState(t *testing.T) {
 		}
 		if got, err := ReadSourceDirState(fs, tc.sourceDir, tc.data); err != nil || !reflect.DeepEqual(got, tc.want) {
 			diff, _ := messagediff.PrettyDiff(tc.want, got)
-			t.Errorf("ReadSourceDirState(makeMemMapFs(%v), %q, %v) == %+v, %v, want %+v, <nil>:\n%s", tc.fs, tc.sourceDir, tc.data, got, err, tc.want, diff)
+			t.Errorf("ReadSourceDirState(makeMemMapFs(%+v), %q, %+v) == %+v, %v, want %+v, <nil>:\n%s", tc.fs, tc.sourceDir, tc.data, got, err, tc.want, diff)
 		}
 	}
 }
