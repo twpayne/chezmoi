@@ -18,7 +18,6 @@ var (
 var rootCommand = &cobra.Command{
 	Use:   "chezmoi",
 	Short: "chezmoi manages your home directory",
-	Run:   makeRun(runRootCommand),
 }
 
 func init() {
@@ -38,10 +37,6 @@ func Execute() {
 	if err := rootCommand.Execute(); err != nil {
 		log.Fatal(err)
 	}
-}
-
-func runRootCommand(cmd *cobra.Command, args []string) error {
-	return nil
 }
 
 func getTargetState(fs afero.Fs) (*chezmoi.RootState, error) {
