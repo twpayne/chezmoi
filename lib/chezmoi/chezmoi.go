@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"reflect"
 	"regexp"
+	"sort"
 	"strings"
 	"text/template"
 
@@ -155,13 +156,23 @@ func (ds *DirState) Ensure(fs afero.Fs, targetDir string) error {
 			return err
 		}
 	}
-	for fileName, fileState := range ds.Files {
-		if err := fileState.Ensure(fs, filepath.Join(targetDir, fileName)); err != nil {
+	fileNames := []string{}
+	for fileName := range ds.Files {
+		fileNames = append(fileNames, fileName)
+	}
+	sort.Strings(fileNames)
+	for _, fileName := range fileNames {
+		if err := ds.Files[fileName].Ensure(fs, filepath.Join(targetDir, fileName)); err != nil {
 			return err
 		}
 	}
-	for dirName, dirState := range ds.Dirs {
-		if err := dirState.Ensure(fs, filepath.Join(targetDir, dirName)); err != nil {
+	dirNames := []string{}
+	for dirName := range ds.Dirs {
+		dirNames = append(dirNames, dirName)
+	}
+	sort.Strings(dirNames)
+	for _, dirName := range dirNames {
+		if err := ds.Dirs[dirName].Ensure(fs, filepath.Join(targetDir, dirName)); err != nil {
 			return err
 		}
 	}
