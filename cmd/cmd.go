@@ -24,7 +24,7 @@ func (c *Config) getDefaultActuator(fs afero.Fs) chezmoi.Actuator {
 	if c.DryRun {
 		actuator = chezmoi.NewNullActuator()
 	} else {
-		actuator = chezmoi.NewFsActuator(fs)
+		actuator = chezmoi.NewFsActuator(fs, c.TargetDir)
 	}
 	if c.Verbose {
 		actuator = chezmoi.NewLoggingActuator(actuator)

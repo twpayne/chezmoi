@@ -225,7 +225,7 @@ func TestEndToEnd(t *testing.T) {
 			t.Errorf("rs.Populate(%+v, %q, %+v) == %v, want <nil>", fs, tc.sourceDir, tc.data, err)
 			continue
 		}
-		if err := rs.Ensure(fs, tc.targetDir, tc.umask, NewFsActuator(fs)); err != nil {
+		if err := rs.Ensure(fs, tc.targetDir, tc.umask, NewFsActuator(fs, tc.targetDir)); err != nil {
 			t.Errorf("case %d: rs.Ensure(makeMemMapFs(%v), %q, %v, _) == %v, want <nil>", i, tc.fsMap, tc.targetDir, tc.umask, err)
 			continue
 		}

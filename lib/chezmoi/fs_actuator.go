@@ -4,22 +4,44 @@ import (
 	"os"
 
 	"github.com/absfs/afero"
+	"github.com/google/renameio"
 )
 
 // An FsActuator makes changes to an afero.Fs.
 type FsActuator struct {
 	afero.Fs
+	dir string
 }
 
 // NewFsActuator returns an actuator that acts on fs.
-func NewFsActuator(fs afero.Fs) *FsActuator {
+func NewFsActuator(fs afero.Fs, targetDir string) *FsActuator {
+	var dir string
+	// Special case: if writing to the real filesystem, use github.com/google/renameio
+	if _, ok := fs.(*afero.OsFs); ok {
+		dir = renameio.TempDir(targetDir)
+	}
 	return &FsActuator{
-		Fs: fs,
+		Fs:  fs,
+		dir: dir,
 	}
 }
 
 // WriteFile implements Actuator.WriteFile.
 func (a *FsActuator) WriteFile(name string, contents []byte, mode os.FileMode, currentContents []byte) error {
-	// FIXME use github.com/google/go-write if a.Fs is an afero.OsFs
+	// Special case: if writing to the real filesystem, use github.com/google/renameio
+	if _, ok := a.Fs.(*afero.OsFs); ok {
+		t, err := renameio.TempFile(a.dir, name)
+		if err != nil {
+			return err
+		}
+		defer t.Cleanup()
+		if err := t.Chmod(mode); err != nil {
+			return err
+		}
+		if _, err := t.Write(contents); err != nil {
+			return err
+		}
+		return t.CloseAtomicallyReplace()
+	}
 	return afero.WriteFile(a.Fs, name, contents, mode)
 }
