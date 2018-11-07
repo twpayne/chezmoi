@@ -31,10 +31,10 @@ func init() {
 	targetDir = homeDir
 
 	persistentFlags := rootCommand.PersistentFlags()
-	persistentFlags.BoolVar(&dryRun, "dry-run", dryRun, "dry run")
-	persistentFlags.StringVar(&sourceDir, "source", sourceDir, "source directory")
-	persistentFlags.StringVar(&targetDir, "target", targetDir, "target directory")
-	persistentFlags.BoolVar(&verbose, "verbose", verbose, "verbose")
+	persistentFlags.BoolVarP(&dryRun, "dry-run", "n", dryRun, "dry run")
+	persistentFlags.StringVarP(&sourceDir, "source", "s", sourceDir, "source directory")
+	persistentFlags.StringVarP(&targetDir, "target", "t", targetDir, "target directory")
+	persistentFlags.BoolVarP(&verbose, "verbose", "v", verbose, "verbose")
 }
 
 func Execute() {
