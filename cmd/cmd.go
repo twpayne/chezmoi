@@ -1,9 +1,9 @@
 package cmd
 
 import (
+	"fmt"
 	"log"
 	"os"
-	"path/filepath"
 	"syscall"
 
 	"github.com/absfs/afero"
@@ -32,29 +32,24 @@ func (c *Config) getDefaultActuator(fs afero.Fs) chezmoi.Actuator {
 	return actuator
 }
 
-func getSourceFileStates(targetState *chezmoi.RootState, targetFileNames []string) ([]*chezmoi.FileState, error) {
-	fileStates := []*chezmoi.FileState{}
-	for _, targetFileName := range targetFileNames {
-		fileState := targetState.FindSourceFile(targetFileName)
-		if fileState == nil {
-			return nil, errors.Errorf("%s: file not found", targetFileName)
+func (c *Config) getSourceNames(targetState *chezmoi.RootState, targetNames []string) ([]string, error) {
+	sourceNames := []string{}
+	allStates := targetState.AllStates()
+	for _, targetName := range targetNames {
+		state, ok := allStates[targetName]
+		if !ok {
+			return nil, errors.Errorf("%s: not found", targetName)
 		}
-		fileStates = append(fileStates, fileState)
+		switch state := state.(type) {
+		case *chezmoi.DirState:
+			sourceNames = append(sourceNames, state.SourceName)
+		case *chezmoi.FileState:
+			sourceNames = append(sourceNames, state.SourceName)
+		default:
+			panic(fmt.Sprintf("unexpected type: %T", state))
+		}
 	}
-	return fileStates, nil
-}
-
-func (c *Config) getSourceFileNames(targetState *chezmoi.RootState, targetFileNames []string) ([]string, error) {
-	fileStates, err := getSourceFileStates(targetState, targetFileNames)
-	if err != nil {
-		return nil, err
-	}
-	sourceFileNames := []string{}
-	for _, fileState := range fileStates {
-		sourceFileName := filepath.Join(c.SourceDir, fileState.SourceName)
-		sourceFileNames = append(sourceFileNames, sourceFileName)
-	}
-	return sourceFileNames, nil
+	return sourceNames, nil
 }
 
 func (c *Config) getTargetState(fs afero.Fs) (*chezmoi.RootState, error) {

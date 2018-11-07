@@ -12,7 +12,7 @@ var removeCommand = &cobra.Command{
 	Use:     "remove",
 	Aliases: []string{"rm"},
 	Args:    cobra.MinimumNArgs(1),
-	Short:   "Remove a file",
+	Short:   "Remove a file or directory",
 	Run:     makeRun(runRemoveCommand),
 }
 
@@ -21,12 +21,11 @@ func init() {
 }
 
 func runRemoveCommand(fs afero.Fs, command *cobra.Command, args []string) error {
-	// FIXME support directories
 	targetState, err := config.getTargetState(fs)
 	if err != nil {
 		return err
 	}
-	sourceFileNames, err := config.getSourceFileNames(targetState, args)
+	sourceNames, err := config.getSourceNames(targetState, args)
 	if err != nil {
 		return err
 	}
@@ -35,7 +34,7 @@ func runRemoveCommand(fs afero.Fs, command *cobra.Command, args []string) error 
 		if err := actuator.RemoveAll(filepath.Join(config.TargetDir, targetFileName)); err != nil && !os.IsNotExist(err) {
 			return err
 		}
-		if err := actuator.RemoveAll(filepath.Join(config.SourceDir, sourceFileNames[i])); err != nil && !os.IsNotExist(err) {
+		if err := actuator.RemoveAll(filepath.Join(config.SourceDir, sourceNames[i])); err != nil && !os.IsNotExist(err) {
 			return err
 		}
 	}

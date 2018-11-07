@@ -27,7 +27,7 @@ func runEditCommand(fs afero.Fs, command *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	sourceFileNames, err := config.getSourceFileNames(targetState, args)
+	sourceFileNames, err := config.getSourceNames(targetState, args)
 	if err != nil {
 		return err
 	}

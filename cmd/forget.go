@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"path/filepath"
+
 	"github.com/absfs/afero"
 	"github.com/spf13/cobra"
 )
@@ -8,7 +10,7 @@ import (
 var forgetCommand = &cobra.Command{
 	Use:   "forget",
 	Args:  cobra.MinimumNArgs(1),
-	Short: "Forget a file",
+	Short: "Forget a file or directory",
 	Run:   makeRun(runForgetCommand),
 }
 
@@ -17,17 +19,17 @@ func init() {
 }
 
 func runForgetCommand(fs afero.Fs, command *cobra.Command, args []string) error {
-	// FIXME support directories
 	targetState, err := config.getTargetState(fs)
 	if err != nil {
 		return err
 	}
-	sourceFileNames, err := config.getSourceFileNames(targetState, args)
+	sourceNames, err := config.getSourceNames(targetState, args)
 	if err != nil {
 		return err
 	}
-	for _, sourceFileName := range sourceFileNames {
-		if err := fs.Remove(sourceFileName); err != nil {
+	actuator := config.getDefaultActuator(fs)
+	for _, sourceName := range sourceNames {
+		if err := actuator.RemoveAll(filepath.Join(config.SourceDir, sourceName)); err != nil {
 			return err
 		}
 	}
