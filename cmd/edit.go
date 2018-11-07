@@ -1,8 +1,10 @@
 package cmd
 
 import (
+	"log"
 	"os"
 	"os/exec"
+	"strings"
 	"syscall"
 
 	"github.com/absfs/afero"
@@ -38,5 +40,11 @@ func runEditCommand(fs afero.Fs, command *cobra.Command, args []string) error {
 		return err
 	}
 	argv := append([]string{editor}, sourceFileNames...)
+	if config.Verbose {
+		log.Printf("exec %s", strings.Join(argv, " "))
+	}
+	if config.DryRun {
+		return nil
+	}
 	return syscall.Exec(editorPath, argv, os.Environ())
 }
