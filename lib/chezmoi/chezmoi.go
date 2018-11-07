@@ -56,6 +56,17 @@ func newDirState(sourceName string, mode os.FileMode) *DirState {
 	}
 }
 
+// allStates adds all of the states in ds to result.
+func (ds *DirState) allStates(result map[string]interface{}, dirName string) {
+	for fileName, fileState := range ds.Files {
+		result[filepath.Join(dirName, fileName)] = fileState
+	}
+	for subDirName, subDirState := range ds.Dirs {
+		result[filepath.Join(dirName, subDirName)] = subDirState
+		subDirState.allStates(result, filepath.Join(dirName, subDirName))
+	}
+}
+
 // archive writes ds to w.
 func (ds *DirState) archive(w *tar.Writer, dirName string, headerTemplate *tar.Header) error {
 	header := *headerTemplate
@@ -162,6 +173,20 @@ func NewRootState() *RootState {
 		Dirs:  make(map[string]*DirState),
 		Files: make(map[string]*FileState),
 	}
+}
+
+// AllStates returns a map from names to the *DirState or *FileState for that
+// name.
+func (rs *RootState) AllStates() map[string]interface{} {
+	result := make(map[string]interface{})
+	for fileName, fileState := range rs.Files {
+		result[fileName] = fileState
+	}
+	for dirName, dirState := range rs.Dirs {
+		result[dirName] = dirState
+		dirState.allStates(result, dirName)
+	}
+	return result
 }
 
 // Archive writes rs to w.
