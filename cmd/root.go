@@ -4,18 +4,11 @@ import (
 	"log"
 	"path/filepath"
 
-	"github.com/absfs/afero"
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
-	"github.com/twpayne/chezmoi/lib/chezmoi"
 )
 
-var (
-	sourceDir string
-	targetDir string
-	dryRun    = false
-	verbose   = false
-)
+var config Config
 
 var rootCommand = &cobra.Command{
 	Use:   "chezmoi",
@@ -27,31 +20,18 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	sourceDir = filepath.Join(homeDir, ".chezmoi")
-	targetDir = homeDir
+	config.SourceDir = filepath.Join(homeDir, ".chezmoi")
+	config.TargetDir = homeDir
 
 	persistentFlags := rootCommand.PersistentFlags()
-	persistentFlags.BoolVarP(&dryRun, "dry-run", "n", dryRun, "dry run")
-	persistentFlags.StringVarP(&sourceDir, "source", "s", sourceDir, "source directory")
-	persistentFlags.StringVarP(&targetDir, "target", "t", targetDir, "target directory")
-	persistentFlags.BoolVarP(&verbose, "verbose", "v", verbose, "verbose")
+	persistentFlags.BoolVarP(&config.DryRun, "dry-run", "n", config.DryRun, "dry run")
+	persistentFlags.StringVarP(&config.SourceDir, "source", "s", config.SourceDir, "source directory")
+	persistentFlags.StringVarP(&config.TargetDir, "target", "t", config.TargetDir, "target directory")
+	persistentFlags.BoolVarP(&config.Verbose, "verbose", "v", config.Verbose, "verbose")
 }
 
 func Execute() {
 	if err := rootCommand.Execute(); err != nil {
 		log.Fatal(err)
 	}
-}
-
-func getDefaultActuator(fs afero.Fs) chezmoi.Actuator {
-	var actuator chezmoi.Actuator
-	if dryRun {
-		actuator = chezmoi.NewNullActuator()
-	} else {
-		actuator = chezmoi.NewFsActuator(fs)
-	}
-	if verbose {
-		actuator = chezmoi.NewLoggingActuator(actuator)
-	}
-	return actuator
 }

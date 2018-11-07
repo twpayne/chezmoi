@@ -12,6 +12,26 @@ import (
 	"github.com/twpayne/chezmoi/lib/chezmoi"
 )
 
+type Config struct {
+	SourceDir string
+	TargetDir string
+	DryRun    bool
+	Verbose   bool
+}
+
+func (c *Config) getDefaultActuator(fs afero.Fs) chezmoi.Actuator {
+	var actuator chezmoi.Actuator
+	if c.DryRun {
+		actuator = chezmoi.NewNullActuator()
+	} else {
+		actuator = chezmoi.NewFsActuator(fs)
+	}
+	if c.Verbose {
+		actuator = chezmoi.NewLoggingActuator(actuator)
+	}
+	return actuator
+}
+
 func getSourceFileStates(targetState *chezmoi.RootState, targetFileNames []string) ([]*chezmoi.FileState, error) {
 	fileStates := []*chezmoi.FileState{}
 	for _, targetFileName := range targetFileNames {
@@ -24,22 +44,22 @@ func getSourceFileStates(targetState *chezmoi.RootState, targetFileNames []strin
 	return fileStates, nil
 }
 
-func getSourceFileNames(targetState *chezmoi.RootState, targetFileNames []string) ([]string, error) {
+func (c *Config) getSourceFileNames(targetState *chezmoi.RootState, targetFileNames []string) ([]string, error) {
 	fileStates, err := getSourceFileStates(targetState, targetFileNames)
 	if err != nil {
 		return nil, err
 	}
 	sourceFileNames := []string{}
 	for _, fileState := range fileStates {
-		sourceFileName := filepath.Join(sourceDir, fileState.SourceName)
+		sourceFileName := filepath.Join(c.SourceDir, fileState.SourceName)
 		sourceFileNames = append(sourceFileNames, sourceFileName)
 	}
 	return sourceFileNames, nil
 }
 
-func getTargetState(fs afero.Fs) (*chezmoi.RootState, error) {
+func (c *Config) getTargetState(fs afero.Fs) (*chezmoi.RootState, error) {
 	targetState := chezmoi.NewRootState()
-	if err := targetState.Populate(fs, sourceDir, nil); err != nil {
+	if err := targetState.Populate(fs, c.SourceDir, nil); err != nil {
 		return nil, err
 	}
 	return targetState, nil

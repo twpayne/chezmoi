@@ -21,11 +21,11 @@ func init() {
 }
 
 func runEditCommand(fs afero.Fs, command *cobra.Command, args []string) error {
-	targetState, err := getTargetState(fs)
+	targetState, err := config.getTargetState(fs)
 	if err != nil {
 		return err
 	}
-	sourceFileNames, err := getSourceFileNames(targetState, args)
+	sourceFileNames, err := config.getSourceFileNames(targetState, args)
 	if err != nil {
 		return err
 	}

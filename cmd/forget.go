@@ -18,11 +18,11 @@ func init() {
 
 func runForgetCommand(fs afero.Fs, command *cobra.Command, args []string) error {
 	// FIXME support directories
-	targetState, err := getTargetState(fs)
+	targetState, err := config.getTargetState(fs)
 	if err != nil {
 		return err
 	}
-	sourceFileNames, err := getSourceFileNames(targetState, args)
+	sourceFileNames, err := config.getSourceFileNames(targetState, args)
 	if err != nil {
 		return err
 	}

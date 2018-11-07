@@ -19,12 +19,12 @@ func init() {
 }
 
 func runVerifyCommand(fs afero.Fs, command *cobra.Command, args []string) error {
-	targetState, err := getTargetState(fs)
+	targetState, err := config.getTargetState(fs)
 	if err != nil {
 		return err
 	}
 	anyActuator := chezmoi.NewAnyActuator(chezmoi.NewNullActuator())
-	if err := targetState.Ensure(fs, targetDir, getUmask(), anyActuator); err != nil {
+	if err := targetState.Ensure(fs, config.TargetDir, getUmask(), anyActuator); err != nil {
 		return err
 	}
 	if anyActuator.Actuated() {

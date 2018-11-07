@@ -16,9 +16,9 @@ func init() {
 }
 
 func runEnsureCommand(fs afero.Fs, command *cobra.Command, args []string) error {
-	targetState, err := getTargetState(fs)
+	targetState, err := config.getTargetState(fs)
 	if err != nil {
 		return err
 	}
-	return targetState.Ensure(fs, targetDir, getUmask(), getDefaultActuator(fs))
+	return targetState.Ensure(fs, config.TargetDir, getUmask(), config.getDefaultActuator(fs))
 }

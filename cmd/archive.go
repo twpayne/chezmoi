@@ -20,7 +20,7 @@ func init() {
 }
 
 func runArchiveCommand(fs afero.Fs, command *cobra.Command, args []string) error {
-	targetState, err := getTargetState(fs)
+	targetState, err := config.getTargetState(fs)
 	if err != nil {
 		return err
 	}

@@ -22,20 +22,20 @@ func init() {
 
 func runRemoveCommand(fs afero.Fs, command *cobra.Command, args []string) error {
 	// FIXME support directories
-	targetState, err := getTargetState(fs)
+	targetState, err := config.getTargetState(fs)
 	if err != nil {
 		return err
 	}
-	sourceFileNames, err := getSourceFileNames(targetState, args)
+	sourceFileNames, err := config.getSourceFileNames(targetState, args)
 	if err != nil {
 		return err
 	}
-	actuator := getDefaultActuator(fs)
+	actuator := config.getDefaultActuator(fs)
 	for i, targetFileName := range args {
-		if err := actuator.RemoveAll(filepath.Join(targetDir, targetFileName)); err != nil && !os.IsNotExist(err) {
+		if err := actuator.RemoveAll(filepath.Join(config.TargetDir, targetFileName)); err != nil && !os.IsNotExist(err) {
 			return err
 		}
-		if err := actuator.RemoveAll(filepath.Join(sourceDir, sourceFileNames[i])); err != nil && !os.IsNotExist(err) {
+		if err := actuator.RemoveAll(filepath.Join(config.SourceDir, sourceFileNames[i])); err != nil && !os.IsNotExist(err) {
 			return err
 		}
 	}

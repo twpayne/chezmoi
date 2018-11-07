@@ -17,10 +17,10 @@ func init() {
 }
 
 func runDiffCommand(fs afero.Fs, command *cobra.Command, args []string) error {
-	targetState, err := getTargetState(fs)
+	targetState, err := config.getTargetState(fs)
 	if err != nil {
 		return err
 	}
 	actuator := chezmoi.NewLoggingActuator(chezmoi.NewNullActuator())
-	return targetState.Ensure(fs, targetDir, getUmask(), actuator)
+	return targetState.Ensure(fs, config.TargetDir, getUmask(), actuator)
 }
