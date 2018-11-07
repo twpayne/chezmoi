@@ -2,13 +2,18 @@ package cmd
 
 import (
 	"log"
+	"os"
 	"path/filepath"
 
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
-var config Config
+var (
+	configFile string
+	config     Config
+)
 
 var rootCommand = &cobra.Command{
 	Use:   "chezmoi",
@@ -20,14 +25,34 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	config.SourceDir = filepath.Join(homeDir, ".chezmoi")
-	config.TargetDir = homeDir
 
 	persistentFlags := rootCommand.PersistentFlags()
-	persistentFlags.BoolVarP(&config.DryRun, "dry-run", "n", config.DryRun, "dry run")
-	persistentFlags.StringVarP(&config.SourceDir, "source", "s", config.SourceDir, "source directory")
-	persistentFlags.StringVarP(&config.TargetDir, "target", "t", config.TargetDir, "target directory")
-	persistentFlags.BoolVarP(&config.Verbose, "verbose", "v", config.Verbose, "verbose")
+
+	persistentFlags.StringVarP(&configFile, "config", "c", filepath.Join(homeDir, ".chezmoi.yaml"), "config file")
+
+	persistentFlags.BoolVarP(&config.DryRun, "dry-run", "n", false, "dry run")
+	viper.BindPFlag("dry-run", persistentFlags.Lookup("dry-run"))
+
+	persistentFlags.StringVarP(&config.SourceDir, "source", "s", filepath.Join(homeDir, ".chezmoi"), "source directory")
+	viper.BindPFlag("source", persistentFlags.Lookup("source"))
+
+	persistentFlags.StringVarP(&config.TargetDir, "target", "t", homeDir, "target directory")
+	viper.BindPFlag("target", persistentFlags.Lookup("target"))
+
+	persistentFlags.BoolVarP(&config.Verbose, "verbose", "v", false, "verbose")
+	viper.BindPFlag("verbose", persistentFlags.Lookup("verbose"))
+
+	cobra.OnInitialize(func() {
+		if _, err := os.Stat(configFile); !os.IsNotExist(err) {
+			viper.SetConfigFile(configFile)
+			if err := viper.ReadInConfig(); err != nil {
+				log.Fatal(err)
+			}
+			if err := viper.Unmarshal(&config); err != nil {
+				log.Fatal(err)
+			}
+		}
+	})
 }
 
 func Execute() {
