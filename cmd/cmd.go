@@ -17,6 +17,7 @@ type Config struct {
 	TargetDir string
 	DryRun    bool
 	Verbose   bool
+	Data      map[string]interface{}
 }
 
 func (c *Config) getDefaultActuator(fs afero.Fs) chezmoi.Actuator {
@@ -54,7 +55,7 @@ func (c *Config) getSourceNames(targetState *chezmoi.RootState, targetNames []st
 
 func (c *Config) getTargetState(fs afero.Fs) (*chezmoi.RootState, error) {
 	targetState := chezmoi.NewRootState()
-	if err := targetState.Populate(fs, c.SourceDir, nil); err != nil {
+	if err := targetState.Populate(fs, c.SourceDir, c.Data); err != nil {
 		return nil, err
 	}
 	return targetState, nil
