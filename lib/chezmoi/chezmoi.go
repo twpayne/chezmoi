@@ -440,9 +440,8 @@ func sortedFileNames(files map[string]*FileState) []string {
 }
 
 func splitPathList(path string) []string {
-	components := strings.Split(path, string(filepath.Separator))
-	if components[0] == "" {
-		return components[1:len(components)]
+	if strings.HasPrefix(path, string(filepath.Separator)) {
+		path = strings.TrimPrefix(path, string(filepath.Separator))
 	}
-	return components
+	return strings.Split(path, string(filepath.Separator))
 }
