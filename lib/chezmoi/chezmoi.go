@@ -7,7 +7,6 @@ import (
 	"os"
 	"os/user"
 	"path/filepath"
-	"reflect"
 	"sort"
 	"strconv"
 	"strings"
@@ -161,7 +160,7 @@ func (fileState *FileState) ensure(fs afero.Fs, targetPath string, umask os.File
 		if err != nil {
 			return errors.Wrap(err, targetPath)
 		}
-		if reflect.DeepEqual(currentContents, fileState.Contents) {
+		if bytes.Equal(currentContents, fileState.Contents) {
 			return nil
 		}
 	case err == nil:
