@@ -5,7 +5,9 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/absfs/afero"
 	"github.com/mitchellh/go-homedir"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -16,8 +18,9 @@ var (
 )
 
 var rootCommand = &cobra.Command{
-	Use:   "chezmoi",
-	Short: "chezmoi manages your home directory",
+	Use:              "chezmoi",
+	Short:            "chezmoi manages your home directory",
+	PersistentPreRun: makeRun(persistentPreRunRoot),
 }
 
 func init() {
@@ -59,4 +62,18 @@ func Execute() {
 	if err := rootCommand.Execute(); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func persistentPreRunRoot(fs afero.Fs, command *cobra.Command, args []string) error {
+	fi, err := fs.Stat(config.SourceDir)
+	switch {
+	case err == nil && !fi.Mode().IsDir():
+		return errors.Errorf("%s: not a directory", config.SourceDir)
+	case err == nil && fi.Mode()&os.ModePerm != 0700:
+		log.Printf("%s: want permissions 0700, got 0%o", config.SourceDir, fi.Mode()&os.ModePerm)
+	case os.IsNotExist(err):
+	default:
+		return err
+	}
+	return nil
 }
