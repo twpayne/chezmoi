@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 	"syscall"
 
@@ -39,7 +40,11 @@ func runEditCommandE(fs afero.Fs, command *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	argv := append([]string{editor}, sourceFileNames...)
+	sourceFilePaths := []string{}
+	for _, sourceFileName := range sourceFileNames {
+		sourceFilePaths = append(sourceFilePaths, filepath.Join(config.SourceDir, sourceFileName))
+	}
+	argv := append([]string{editor}, sourceFilePaths...)
 	if config.Verbose {
 		log.Printf("exec %s", strings.Join(argv, " "))
 	}
