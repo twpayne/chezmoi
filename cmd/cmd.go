@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"log"
 	"os"
 	"syscall"
@@ -41,14 +40,7 @@ func (c *Config) getSourceNames(targetState *chezmoi.RootState, targetNames []st
 		if !ok {
 			return nil, errors.Errorf("%s: not found", targetName)
 		}
-		switch state := state.(type) {
-		case *chezmoi.DirState:
-			sourceNames = append(sourceNames, state.SourceName)
-		case *chezmoi.FileState:
-			sourceNames = append(sourceNames, state.SourceName)
-		default:
-			panic(fmt.Sprintf("unexpected type: %T", state))
-		}
+		sourceNames = append(sourceNames, state.SourceName())
 	}
 	return sourceNames, nil
 }

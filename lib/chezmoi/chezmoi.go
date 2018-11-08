@@ -25,16 +25,20 @@ const (
 	templateSuffix   = ".tmpl"
 )
 
+type State interface {
+	SourceName() string
+}
+
 // A FileState represents the target state of a file.
 type FileState struct {
-	SourceName string
+	sourceName string
 	Mode       os.FileMode
 	Contents   []byte
 }
 
 // A DirState represents the target state of a directory.
 type DirState struct {
-	SourceName string
+	sourceName string
 	Mode       os.FileMode
 	Dirs       map[string]*DirState
 	Files      map[string]*FileState
@@ -49,7 +53,7 @@ type RootState struct {
 // newDirState returns a new directory state.
 func newDirState(sourceName string, mode os.FileMode) *DirState {
 	return &DirState{
-		SourceName: sourceName,
+		sourceName: sourceName,
 		Mode:       mode,
 		Dirs:       make(map[string]*DirState),
 		Files:      make(map[string]*FileState),
@@ -57,7 +61,7 @@ func newDirState(sourceName string, mode os.FileMode) *DirState {
 }
 
 // allStates adds all of the states in ds to result.
-func (ds *DirState) allStates(result map[string]interface{}, dirName string) {
+func (ds *DirState) allStates(result map[string]State, dirName string) {
 	for fileName, fileState := range ds.Files {
 		result[filepath.Join(dirName, fileName)] = fileState
 	}
@@ -124,6 +128,10 @@ func (ds *DirState) ensure(fs afero.Fs, targetDir string, umask os.FileMode, act
 	return nil
 }
 
+func (ds *DirState) SourceName() string {
+	return ds.sourceName
+}
+
 // archive writes fs to w.
 func (fs *FileState) archive(w *tar.Writer, fileName string, headerTemplate *tar.Header) error {
 	header := *headerTemplate
@@ -167,6 +175,10 @@ func (fileState *FileState) ensure(fs afero.Fs, targetPath string, umask os.File
 	return actuator.WriteFile(targetPath, fileState.Contents, fileState.Mode&^umask, currentContents)
 }
 
+func (fs *FileState) SourceName() string {
+	return fs.sourceName
+}
+
 // NewRootState creates a new RootState.
 func NewRootState() *RootState {
 	return &RootState{
@@ -177,8 +189,8 @@ func NewRootState() *RootState {
 
 // AllStates returns a map from names to the *DirState or *FileState for that
 // name.
-func (rs *RootState) AllStates() map[string]interface{} {
-	result := make(map[string]interface{})
+func (rs *RootState) AllStates() map[string]State {
+	result := make(map[string]State)
 	for fileName, fileState := range rs.Files {
 		result[fileName] = fileState
 	}
@@ -303,7 +315,7 @@ func (rs *RootState) Populate(fs afero.Fs, sourceDir string, data interface{}) e
 				contents = output.Bytes()
 			}
 			files[fileName] = &FileState{
-				SourceName: relPath,
+				sourceName: relPath,
 				Mode:       mode,
 				Contents:   contents,
 			}
