@@ -5,7 +5,6 @@ import (
 
 	"github.com/absfs/afero"
 	"github.com/google/renameio"
-	"github.com/pkg/errors"
 )
 
 // An FsActuator makes changes to an afero.Fs.
@@ -39,12 +38,8 @@ func (a *FsActuator) WriteFile(name string, contents []byte, mode os.FileMode, c
 		if err := t.Chmod(mode); err != nil {
 			return err
 		}
-		n, err := t.Write(contents)
-		if err != nil {
+		if _, err := t.Write(contents); err != nil {
 			return err
-		}
-		if n != len(contents) {
-			return errors.Errorf("%s: wrote %d bytes, want %d", name, n, len(contents))
 		}
 		return t.CloseAtomicallyReplace()
 	}
