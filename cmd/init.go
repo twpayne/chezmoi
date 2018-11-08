@@ -12,14 +12,14 @@ var initCommand = &cobra.Command{
 	Use:   "init",
 	Args:  cobra.NoArgs,
 	Short: "Initialize chezmoi",
-	Run:   makeRun(runInitCommand),
+	RunE:  makeRunE(runInitCommandE),
 }
 
 func init() {
 	rootCommand.AddCommand(initCommand)
 }
 
-func runInitCommand(fs afero.Fs, command *cobra.Command, args []string) error {
+func runInitCommandE(fs afero.Fs, command *cobra.Command, args []string) error {
 	actuator := config.getDefaultActuator(fs)
 	fi, err := fs.Stat(config.SourceDir)
 	switch {

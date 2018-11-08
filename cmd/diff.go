@@ -9,14 +9,14 @@ import (
 var diffCommand = &cobra.Command{
 	Use:   "diff",
 	Short: "Print the diff between the actual state and the target state",
-	Run:   makeRun(runDiffCommand),
+	RunE:  makeRunE(runDiffCommandE),
 }
 
 func init() {
 	rootCommand.AddCommand(diffCommand)
 }
 
-func runDiffCommand(fs afero.Fs, command *cobra.Command, args []string) error {
+func runDiffCommandE(fs afero.Fs, command *cobra.Command, args []string) error {
 	targetState, err := config.getTargetState(fs)
 	if err != nil {
 		return err

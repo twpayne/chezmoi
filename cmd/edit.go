@@ -15,14 +15,14 @@ var editCommand = &cobra.Command{
 	Use:   "edit",
 	Args:  cobra.MinimumNArgs(1),
 	Short: "Edit a file",
-	Run:   makeRun(runEditCommand),
+	RunE:  makeRunE(runEditCommandE),
 }
 
 func init() {
 	rootCommand.AddCommand(editCommand)
 }
 
-func runEditCommand(fs afero.Fs, command *cobra.Command, args []string) error {
+func runEditCommandE(fs afero.Fs, command *cobra.Command, args []string) error {
 	targetState, err := config.getTargetState(fs)
 	if err != nil {
 		return err

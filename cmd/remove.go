@@ -13,14 +13,14 @@ var removeCommand = &cobra.Command{
 	Aliases: []string{"rm"},
 	Args:    cobra.MinimumNArgs(1),
 	Short:   "Remove a file or directory",
-	Run:     makeRun(runRemoveCommand),
+	RunE:    makeRunE(runRemoveCommandE),
 }
 
 func init() {
 	rootCommand.AddCommand(removeCommand)
 }
 
-func runRemoveCommand(fs afero.Fs, command *cobra.Command, args []string) error {
+func runRemoveCommandE(fs afero.Fs, command *cobra.Command, args []string) error {
 	targetState, err := config.getTargetState(fs)
 	if err != nil {
 		return err

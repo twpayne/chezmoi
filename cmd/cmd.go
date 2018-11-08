@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"log"
 	"os"
 	"syscall"
 
@@ -53,11 +52,9 @@ func (c *Config) getTargetState(fs afero.Fs) (*chezmoi.RootState, error) {
 	return targetState, nil
 }
 
-func makeRun(runCommand func(afero.Fs, *cobra.Command, []string) error) func(*cobra.Command, []string) {
-	return func(cmd *cobra.Command, args []string) {
-		if err := runCommand(afero.NewOsFs(), cmd, args); err != nil {
-			log.Fatal(err)
-		}
+func makeRunE(runCommand func(afero.Fs, *cobra.Command, []string) error) func(*cobra.Command, []string) error {
+	return func(cmd *cobra.Command, args []string) error {
+		return runCommand(afero.NewOsFs(), cmd, args)
 	}
 }
 

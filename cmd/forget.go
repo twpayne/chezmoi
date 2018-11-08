@@ -11,14 +11,14 @@ var forgetCommand = &cobra.Command{
 	Use:   "forget",
 	Args:  cobra.MinimumNArgs(1),
 	Short: "Forget a file or directory",
-	Run:   makeRun(runForgetCommand),
+	RunE:  makeRunE(runForgetCommandE),
 }
 
 func init() {
 	rootCommand.AddCommand(forgetCommand)
 }
 
-func runForgetCommand(fs afero.Fs, command *cobra.Command, args []string) error {
+func runForgetCommandE(fs afero.Fs, command *cobra.Command, args []string) error {
 	targetState, err := config.getTargetState(fs)
 	if err != nil {
 		return err

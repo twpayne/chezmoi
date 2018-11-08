@@ -18,9 +18,9 @@ var (
 )
 
 var rootCommand = &cobra.Command{
-	Use:              "chezmoi",
-	Short:            "chezmoi manages your home directory",
-	PersistentPreRun: makeRun(persistentPreRunRoot),
+	Use:               "chezmoi",
+	Short:             "chezmoi manages your home directory",
+	PersistentPreRunE: makeRunE(persistentPreRunRootE),
 }
 
 func init() {
@@ -64,7 +64,7 @@ func Execute() {
 	}
 }
 
-func persistentPreRunRoot(fs afero.Fs, command *cobra.Command, args []string) error {
+func persistentPreRunRootE(fs afero.Fs, command *cobra.Command, args []string) error {
 	fi, err := fs.Stat(config.SourceDir)
 	switch {
 	case err == nil && !fi.Mode().IsDir():
