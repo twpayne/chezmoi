@@ -45,8 +45,11 @@ type DirState struct {
 
 // A RootState represents the root target state.
 type RootState struct {
-	Dirs  map[string]*DirState
-	Files map[string]*FileState
+	TargetDir string
+	Umask     os.FileMode
+	SourceDir string
+	Dirs      map[string]*DirState
+	Files     map[string]*FileState
 }
 
 // newDirState returns a new directory state.
@@ -242,25 +245,25 @@ func (rs *RootState) Archive(w *tar.Writer) error {
 }
 
 // Ensure ensures that targetDir in fs matches ds.
-func (rs *RootState) Ensure(fs afero.Fs, targetDir string, umask os.FileMode, actuator Actuator) error {
+func (rs *RootState) Ensure(fs afero.Fs, actuator Actuator) error {
 	for _, fileName := range sortedFileNames(rs.Files) {
-		if err := rs.Files[fileName].ensure(fs, filepath.Join(targetDir, fileName), umask, actuator); err != nil {
+		if err := rs.Files[fileName].ensure(fs, filepath.Join(rs.TargetDir, fileName), rs.Umask, actuator); err != nil {
 			return err
 		}
 	}
 	for _, dirName := range sortedDirNames(rs.Dirs) {
-		if err := rs.Dirs[dirName].ensure(fs, filepath.Join(targetDir, dirName), umask, actuator); err != nil {
+		if err := rs.Dirs[dirName].ensure(fs, filepath.Join(rs.TargetDir, dirName), rs.Umask, actuator); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-// Populate walks fs from sourceDir creating a target directory state. Any
-// templates found are executed with data.
-func (rs *RootState) Populate(fs afero.Fs, sourceDir string, data interface{}) error {
-	return afero.Walk(fs, sourceDir, func(path string, fi os.FileInfo, err error) error {
-		relPath, err := filepath.Rel(sourceDir, path)
+// Populate walks fs from the source directory creating a target directory
+// state. Any templates found are executed with data.
+func (rs *RootState) Populate(fs afero.Fs, data interface{}) error {
+	return afero.Walk(fs, rs.SourceDir, func(path string, fi os.FileInfo, err error) error {
+		relPath, err := filepath.Rel(rs.SourceDir, path)
 		if err != nil {
 			return err
 		}

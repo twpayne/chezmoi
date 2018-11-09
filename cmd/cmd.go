@@ -45,8 +45,8 @@ func (c *Config) getSourceNames(targetState *chezmoi.RootState, targetNames []st
 }
 
 func (c *Config) getTargetState(fs afero.Fs) (*chezmoi.RootState, error) {
-	targetState := chezmoi.NewRootState()
-	if err := targetState.Populate(fs, c.SourceDir, c.Data); err != nil {
+	targetState := chezmoi.NewRootState(c.TargetDir, getUmask(), c.SourceDir)
+	if err := targetState.Populate(fs, c.Data); err != nil {
 		return nil, err
 	}
 	return targetState, nil

@@ -24,7 +24,7 @@ func runVerifyCommandE(fs afero.Fs, command *cobra.Command, args []string) error
 		return err
 	}
 	anyActuator := chezmoi.NewAnyActuator(chezmoi.NewNullActuator())
-	if err := targetState.Ensure(fs, config.TargetDir, getUmask(), anyActuator); err != nil {
+	if err := targetState.Ensure(fs, anyActuator); err != nil {
 		return err
 	}
 	if anyActuator.Actuated() {

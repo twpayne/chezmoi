@@ -22,5 +22,5 @@ func runDiffCommandE(fs afero.Fs, command *cobra.Command, args []string) error {
 		return err
 	}
 	actuator := chezmoi.NewLoggingActuator(chezmoi.NewNullActuator())
-	return targetState.Ensure(fs, config.TargetDir, getUmask(), actuator)
+	return targetState.Ensure(fs, actuator)
 }
