@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"syscall"
 
 	"github.com/absfs/afero"
 	"github.com/mitchellh/go-homedir"
@@ -42,6 +43,10 @@ func init() {
 	persistentFlags.StringVarP(&config.TargetDir, "target", "t", homeDir, "target directory")
 	viper.BindPFlag("target", persistentFlags.Lookup("target"))
 
+	// FIXME umask should be printed in octal in help
+	persistentFlags.IntVarP(&config.Umask, "umask", "u", getUmask(), "umask")
+	viper.BindPFlag("umask", persistentFlags.Lookup("umask"))
+
 	persistentFlags.BoolVarP(&config.Verbose, "verbose", "v", false, "verbose")
 	viper.BindPFlag("verbose", persistentFlags.Lookup("verbose"))
 
@@ -76,4 +81,11 @@ func persistentPreRunRootE(fs afero.Fs, command *cobra.Command, args []string) e
 		return err
 	}
 	return nil
+}
+
+func getUmask() int {
+	// FIXME should we call runtime.LockOSThread or similar?
+	umask := syscall.Umask(0)
+	syscall.Umask(umask)
+	return umask
 }

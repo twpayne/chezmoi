@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"os"
-	"syscall"
 
 	"github.com/absfs/afero"
 	"github.com/pkg/errors"
@@ -13,6 +12,7 @@ import (
 type Config struct {
 	SourceDir string
 	TargetDir string
+	Umask     int
 	DryRun    bool
 	Verbose   bool
 	Data      map[string]interface{}
@@ -45,7 +45,7 @@ func (c *Config) getSourceNames(targetState *chezmoi.RootState, targetNames []st
 }
 
 func (c *Config) getTargetState(fs afero.Fs) (*chezmoi.RootState, error) {
-	targetState := chezmoi.NewRootState(c.TargetDir, getUmask(), c.SourceDir)
+	targetState := chezmoi.NewRootState(c.TargetDir, os.FileMode(c.Umask), c.SourceDir)
 	if err := targetState.Populate(fs, c.Data); err != nil {
 		return nil, err
 	}
@@ -56,11 +56,4 @@ func makeRunE(runCommand func(afero.Fs, *cobra.Command, []string) error) func(*c
 	return func(cmd *cobra.Command, args []string) error {
 		return runCommand(afero.NewOsFs(), cmd, args)
 	}
-}
-
-func getUmask() os.FileMode {
-	// FIXME should we call runtime.LockOSThread or similar?
-	umask := syscall.Umask(0)
-	syscall.Umask(umask)
-	return os.FileMode(umask)
 }
