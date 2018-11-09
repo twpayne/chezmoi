@@ -225,7 +225,7 @@ func TestEndToEnd(t *testing.T) {
 			},
 			sourceDir: "/home/user/.chezmoi",
 			targetDir: "/home/user",
-			umask:     os.FileMode(044),
+			umask:     os.FileMode(022),
 			wantFsMap: map[string]string{
 				"/home/user/.bashrc":             "bar",
 				"/home/user/.chezmoi/dot_bashrc": "bar",
