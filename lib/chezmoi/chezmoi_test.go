@@ -181,7 +181,10 @@ func TestRootStatePopulate(t *testing.T) {
 				TargetDir: "/",
 				Umask:     os.FileMode(0),
 				SourceDir: "/",
-				Dirs:      map[string]*DirState{},
+				Data: map[string]string{
+					"Email": "user@example.com",
+				},
+				Dirs: map[string]*DirState{},
 				Files: map[string]*FileState{
 					".gitconfig": &FileState{
 						sourceName: "dot_gitconfig.tmpl",
@@ -197,13 +200,13 @@ func TestRootStatePopulate(t *testing.T) {
 			t.Errorf("makeMemMapFs(%v) == %v, %v, want !<nil>, <nil>", tc.fs, fs, err)
 			continue
 		}
-		rs := NewRootState("/", 0, tc.sourceDir)
-		if err := rs.Populate(fs, tc.data); err != nil {
-			t.Errorf("rs.Populate(%+v, %+v) == %v, want <nil>", fs, tc.data, err)
+		rs := NewRootState("/", 0, tc.sourceDir, tc.data)
+		if err := rs.Populate(fs); err != nil {
+			t.Errorf("rs.Populate(%+v) == %v, want <nil>", fs, err)
 			continue
 		}
 		if diff, equal := messagediff.PrettyDiff(tc.want, rs); !equal {
-			t.Errorf("rs.Populate(%+v, %+v) diff:\n%s\n", fs, tc.data, diff)
+			t.Errorf("rs.Populate(%+v) diff:\n%s\n", fs, diff)
 		}
 	}
 }
@@ -238,9 +241,9 @@ func TestEndToEnd(t *testing.T) {
 			t.Errorf("case %d: makeMemMapFs(%v) == %v, %v, want !<nil>, <nil>", i, tc.fsMap, fs, err)
 			continue
 		}
-		rs := NewRootState(tc.targetDir, tc.umask, tc.sourceDir)
-		if err := rs.Populate(fs, tc.data); err != nil {
-			t.Errorf("rs.Populate(%+v, %+v) == %v, want <nil>", fs, tc.data, err)
+		rs := NewRootState(tc.targetDir, tc.umask, tc.sourceDir, tc.data)
+		if err := rs.Populate(fs); err != nil {
+			t.Errorf("rs.Populate(%+v) == %v, want <nil>", fs, err)
 			continue
 		}
 		if err := rs.Ensure(fs, NewFsActuator(fs, tc.targetDir)); err != nil {

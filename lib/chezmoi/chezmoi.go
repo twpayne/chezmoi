@@ -48,6 +48,7 @@ type RootState struct {
 	TargetDir string
 	Umask     os.FileMode
 	SourceDir string
+	Data      interface{}
 	Dirs      map[string]*DirState
 	Files     map[string]*FileState
 }
@@ -188,10 +189,14 @@ func (fs *FileState) SourceName() string {
 }
 
 // NewRootState creates a new RootState.
-func NewRootState() *RootState {
+func NewRootState(targetDir string, umask os.FileMode, sourceDir string, data interface{}) *RootState {
 	return &RootState{
-		Dirs:  make(map[string]*DirState),
-		Files: make(map[string]*FileState),
+		TargetDir: targetDir,
+		Umask:     umask,
+		SourceDir: sourceDir,
+		Data:      data,
+		Dirs:      make(map[string]*DirState),
+		Files:     make(map[string]*FileState),
 	}
 }
 
@@ -266,8 +271,8 @@ func (rs *RootState) Ensure(fs afero.Fs, actuator Actuator) error {
 }
 
 // Populate walks fs from the source directory creating a target directory
-// state. Any templates found are executed with data.
-func (rs *RootState) Populate(fs afero.Fs, data interface{}) error {
+// state.
+func (rs *RootState) Populate(fs afero.Fs) error {
 	return afero.Walk(fs, rs.SourceDir, func(path string, fi os.FileInfo, err error) error {
 		relPath, err := filepath.Rel(rs.SourceDir, path)
 		if err != nil {
@@ -302,7 +307,7 @@ func (rs *RootState) Populate(fs afero.Fs, data interface{}) error {
 					return errors.Wrap(err, path)
 				}
 				output := &bytes.Buffer{}
-				if err := tmpl.Execute(output, data); err != nil {
+				if err := tmpl.Execute(output, rs.Data); err != nil {
 					return errors.Wrap(err, path)
 				}
 				contents = output.Bytes()
