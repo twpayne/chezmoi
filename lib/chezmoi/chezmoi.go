@@ -153,7 +153,7 @@ func (fileState *FileState) ensure(fs afero.Fs, targetPath string, umask os.File
 	fi, err := fs.Stat(targetPath)
 	var currentContents []byte
 	switch {
-	case err == nil && fi.Mode().IsRegular() && fi.Mode()&os.ModePerm == fileState.Mode&^umask:
+	case err == nil && fi.Mode().IsRegular():
 		f, err := fs.Open(targetPath)
 		if err != nil {
 			return err
@@ -163,9 +163,15 @@ func (fileState *FileState) ensure(fs afero.Fs, targetPath string, umask os.File
 		if err != nil {
 			return errors.Wrap(err, targetPath)
 		}
-		if bytes.Equal(currentContents, fileState.Contents) {
-			return nil
+		if !bytes.Equal(currentContents, fileState.Contents) {
+			break
 		}
+		if fi.Mode()&os.ModePerm != fileState.Mode&^umask {
+			if err := actuator.Chmod(targetPath, fileState.Mode&^umask); err != nil {
+				return err
+			}
+		}
+		return nil
 	case err == nil:
 		if err := actuator.RemoveAll(targetPath); err != nil {
 			return err
