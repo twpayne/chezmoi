@@ -12,15 +12,15 @@ var archiveCommand = &cobra.Command{
 	Use:   "archive",
 	Args:  cobra.NoArgs,
 	Short: "Write a tar archive of the target state to stdout",
-	RunE:  makeRunE(runArchiveCommandE),
+	RunE:  makeRunE(config.runArchiveCommandE),
 }
 
 func init() {
 	rootCommand.AddCommand(archiveCommand)
 }
 
-func runArchiveCommandE(fs afero.Fs, command *cobra.Command, args []string) error {
-	targetState, err := config.getTargetState(fs)
+func (c *Config) runArchiveCommandE(fs afero.Fs, command *cobra.Command, args []string) error {
+	targetState, err := c.getTargetState(fs)
 	if err != nil {
 		return err
 	}

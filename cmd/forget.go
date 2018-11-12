@@ -11,25 +11,25 @@ var forgetCommand = &cobra.Command{
 	Use:   "forget",
 	Args:  cobra.MinimumNArgs(1),
 	Short: "Forget a file or directory",
-	RunE:  makeRunE(runForgetCommandE),
+	RunE:  makeRunE(config.runForgetCommandE),
 }
 
 func init() {
 	rootCommand.AddCommand(forgetCommand)
 }
 
-func runForgetCommandE(fs afero.Fs, command *cobra.Command, args []string) error {
-	targetState, err := config.getTargetState(fs)
+func (c *Config) runForgetCommandE(fs afero.Fs, command *cobra.Command, args []string) error {
+	targetState, err := c.getTargetState(fs)
 	if err != nil {
 		return err
 	}
-	sourceNames, err := config.getSourceNames(targetState, args)
+	sourceNames, err := c.getSourceNames(targetState, args)
 	if err != nil {
 		return err
 	}
-	actuator := config.getDefaultActuator(fs)
+	actuator := c.getDefaultActuator(fs)
 	for _, sourceName := range sourceNames {
-		if err := actuator.RemoveAll(filepath.Join(config.SourceDir, sourceName)); err != nil {
+		if err := actuator.RemoveAll(filepath.Join(c.SourceDir, sourceName)); err != nil {
 			return err
 		}
 	}

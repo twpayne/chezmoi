@@ -12,7 +12,7 @@ var addCommand = &cobra.Command{
 	Use:   "add",
 	Args:  cobra.MinimumNArgs(1),
 	Short: "Add an existing file or directory",
-	RunE:  makeRunE(runAddCommandE),
+	RunE:  makeRunE(config.runAddCommandE),
 }
 
 func init() {
@@ -23,14 +23,14 @@ func init() {
 	persistentFlags.BoolVarP(&config.Add.Template, "template", "T", false, "add files as templates")
 }
 
-func runAddCommandE(fs afero.Fs, command *cobra.Command, args []string) error {
-	targetState, err := config.getTargetState(fs)
+func (c *Config) runAddCommandE(fs afero.Fs, command *cobra.Command, args []string) error {
+	targetState, err := c.getTargetState(fs)
 	if err != nil {
 		return err
 	}
-	actuator := config.getDefaultActuator(fs)
+	actuator := c.getDefaultActuator(fs)
 	for _, arg := range args {
-		if config.Add.Recursive {
+		if c.Add.Recursive {
 			if err := afero.Walk(fs, filepath.Join(targetState.TargetDir, arg), func(path string, info os.FileInfo, err error) error {
 				if err != nil {
 					return err
@@ -39,12 +39,12 @@ func runAddCommandE(fs afero.Fs, command *cobra.Command, args []string) error {
 				if err != nil {
 					return err
 				}
-				return targetState.Add(fs, targetName, info, config.Add.Template, actuator)
+				return targetState.Add(fs, targetName, info, c.Add.Template, actuator)
 			}); err != nil {
 				return err
 			}
 		} else {
-			if err := targetState.Add(fs, arg, nil, config.Add.Template, actuator); err != nil {
+			if err := targetState.Add(fs, arg, nil, c.Add.Template, actuator); err != nil {
 				return err
 			}
 		}

@@ -8,18 +8,18 @@ import (
 var ensureCommand = &cobra.Command{
 	Use:   "ensure",
 	Short: "Ensure that the actual state matches the target state",
-	RunE:  makeRunE(runEnsureCommandE),
+	RunE:  makeRunE(config.runEnsureCommandE),
 }
 
 func init() {
 	rootCommand.AddCommand(ensureCommand)
 }
 
-func runEnsureCommandE(fs afero.Fs, command *cobra.Command, args []string) error {
-	targetState, err := config.getTargetState(fs)
+func (c *Config) runEnsureCommandE(fs afero.Fs, command *cobra.Command, args []string) error {
+	targetState, err := c.getTargetState(fs)
 	if err != nil {
 		return err
 	}
-	actuator := config.getDefaultActuator(fs)
+	actuator := c.getDefaultActuator(fs)
 	return targetState.Ensure(fs, actuator)
 }

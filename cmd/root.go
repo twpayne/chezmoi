@@ -21,7 +21,7 @@ var (
 var rootCommand = &cobra.Command{
 	Use:               "chezmoi",
 	Short:             "chezmoi manages your home directory",
-	PersistentPreRunE: makeRunE(persistentPreRunRootE),
+	PersistentPreRunE: makeRunE(config.persistentPreRunRootE),
 }
 
 func init() {
@@ -69,13 +69,13 @@ func Execute() {
 	}
 }
 
-func persistentPreRunRootE(fs afero.Fs, command *cobra.Command, args []string) error {
-	fi, err := fs.Stat(config.SourceDir)
+func (c *Config) persistentPreRunRootE(fs afero.Fs, command *cobra.Command, args []string) error {
+	fi, err := fs.Stat(c.SourceDir)
 	switch {
 	case err == nil && !fi.Mode().IsDir():
-		return errors.Errorf("%s: not a directory", config.SourceDir)
+		return errors.Errorf("%s: not a directory", c.SourceDir)
 	case err == nil && fi.Mode()&os.ModePerm != 0700:
-		log.Printf("%s: want permissions 0700, got 0%o", config.SourceDir, fi.Mode()&os.ModePerm)
+		log.Printf("%s: want permissions 0700, got 0%o", c.SourceDir, fi.Mode()&os.ModePerm)
 	case os.IsNotExist(err):
 	default:
 		return err

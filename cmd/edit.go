@@ -16,19 +16,19 @@ var editCommand = &cobra.Command{
 	Use:   "edit",
 	Args:  cobra.MinimumNArgs(1),
 	Short: "Edit a file",
-	RunE:  makeRunE(runEditCommandE),
+	RunE:  makeRunE(config.runEditCommandE),
 }
 
 func init() {
 	rootCommand.AddCommand(editCommand)
 }
 
-func runEditCommandE(fs afero.Fs, command *cobra.Command, args []string) error {
-	targetState, err := config.getTargetState(fs)
+func (c *Config) runEditCommandE(fs afero.Fs, command *cobra.Command, args []string) error {
+	targetState, err := c.getTargetState(fs)
 	if err != nil {
 		return err
 	}
-	sourceFileNames, err := config.getSourceNames(targetState, args)
+	sourceFileNames, err := c.getSourceNames(targetState, args)
 	if err != nil {
 		return err
 	}
@@ -42,13 +42,13 @@ func runEditCommandE(fs afero.Fs, command *cobra.Command, args []string) error {
 	}
 	sourceFilePaths := []string{}
 	for _, sourceFileName := range sourceFileNames {
-		sourceFilePaths = append(sourceFilePaths, filepath.Join(config.SourceDir, sourceFileName))
+		sourceFilePaths = append(sourceFilePaths, filepath.Join(c.SourceDir, sourceFileName))
 	}
 	argv := append([]string{editor}, sourceFilePaths...)
-	if config.Verbose {
+	if c.Verbose {
 		log.Printf("exec %s", strings.Join(argv, " "))
 	}
-	if config.DryRun {
+	if c.DryRun {
 		return nil
 	}
 	return syscall.Exec(editorPath, argv, os.Environ())

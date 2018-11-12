@@ -11,15 +11,15 @@ import (
 var verifyCommand = &cobra.Command{
 	Use:   "verify",
 	Short: "Exit with success if the actual state matches the target state, fail otherwise",
-	RunE:  makeRunE(runVerifyCommandE),
+	RunE:  makeRunE(config.runVerifyCommandE),
 }
 
 func init() {
 	rootCommand.AddCommand(verifyCommand)
 }
 
-func runVerifyCommandE(fs afero.Fs, command *cobra.Command, args []string) error {
-	targetState, err := config.getTargetState(fs)
+func (c *Config) runVerifyCommandE(fs afero.Fs, command *cobra.Command, args []string) error {
+	targetState, err := c.getTargetState(fs)
 	if err != nil {
 		return err
 	}
