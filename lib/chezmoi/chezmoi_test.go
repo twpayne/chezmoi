@@ -246,8 +246,8 @@ func TestEndToEnd(t *testing.T) {
 			t.Errorf("rs.Populate(%+v) == %v, want <nil>", fs, err)
 			continue
 		}
-		if err := rs.Ensure(fs, NewFsActuator(fs, tc.targetDir)); err != nil {
-			t.Errorf("case %d: rs.Ensure(makeMemMapFs(%v), _) == %v, want <nil>", i, tc.fsMap, err)
+		if err := rs.Apply(fs, NewFsActuator(fs, tc.targetDir)); err != nil {
+			t.Errorf("case %d: rs.Apply(makeMemMapFs(%v), _) == %v, want <nil>", i, tc.fsMap, err)
 			continue
 		}
 		gotFsMap, err := makeMapFs(fs)

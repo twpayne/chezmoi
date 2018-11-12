@@ -24,7 +24,7 @@ func (c *Config) runVerifyCommandE(fs afero.Fs, command *cobra.Command, args []s
 		return err
 	}
 	anyActuator := chezmoi.NewAnyActuator(chezmoi.NewNullActuator())
-	if err := targetState.Ensure(fs, anyActuator); err != nil {
+	if err := targetState.Apply(fs, anyActuator); err != nil {
 		return err
 	}
 	if anyActuator.Actuated() {

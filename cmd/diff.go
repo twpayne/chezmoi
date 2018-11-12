@@ -22,5 +22,5 @@ func (c *Config) runDiffCommandE(fs afero.Fs, command *cobra.Command, args []str
 		return err
 	}
 	actuator := chezmoi.NewLoggingActuator(chezmoi.NewNullActuator())
-	return targetState.Ensure(fs, actuator)
+	return targetState.Apply(fs, actuator)
 }

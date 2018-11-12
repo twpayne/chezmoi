@@ -96,8 +96,8 @@ func (ds *DirState) archive(w *tar.Writer, dirName string, headerTemplate *tar.H
 	return nil
 }
 
-// ensure ensures that targetDir in fs matches ds.
-func (ds *DirState) ensure(fs afero.Fs, targetDir string, umask os.FileMode, actuator Actuator) error {
+// apply ensures that targetDir in fs matches ds.
+func (ds *DirState) apply(fs afero.Fs, targetDir string, umask os.FileMode, actuator Actuator) error {
 	fi, err := fs.Stat(targetDir)
 	switch {
 	case err == nil && fi.Mode().IsDir():
@@ -119,12 +119,12 @@ func (ds *DirState) ensure(fs afero.Fs, targetDir string, umask os.FileMode, act
 		return err
 	}
 	for _, fileName := range sortedFileNames(ds.Files) {
-		if err := ds.Files[fileName].ensure(fs, filepath.Join(targetDir, fileName), umask, actuator); err != nil {
+		if err := ds.Files[fileName].apply(fs, filepath.Join(targetDir, fileName), umask, actuator); err != nil {
 			return err
 		}
 	}
 	for _, dirName := range sortedDirNames(ds.Dirs) {
-		if err := ds.Dirs[dirName].ensure(fs, filepath.Join(targetDir, dirName), umask, actuator); err != nil {
+		if err := ds.Dirs[dirName].apply(fs, filepath.Join(targetDir, dirName), umask, actuator); err != nil {
 			return err
 		}
 	}
@@ -149,8 +149,8 @@ func (fs *FileState) archive(w *tar.Writer, fileName string, headerTemplate *tar
 	return err
 }
 
-// ensure ensures that state of targetPath in fs matches fileState.
-func (fileState *FileState) ensure(fs afero.Fs, targetPath string, umask os.FileMode, actuator Actuator) error {
+// apply ensures that state of targetPath in fs matches fileState.
+func (fileState *FileState) apply(fs afero.Fs, targetPath string, umask os.FileMode, actuator Actuator) error {
 	fi, err := fs.Stat(targetPath)
 	var currentContents []byte
 	switch {
@@ -330,15 +330,15 @@ func (rs *RootState) Archive(w *tar.Writer) error {
 	return nil
 }
 
-// Ensure ensures that targetDir in fs matches ds.
-func (rs *RootState) Ensure(fs afero.Fs, actuator Actuator) error {
+// Apply ensures that targetDir in fs matches ds.
+func (rs *RootState) Apply(fs afero.Fs, actuator Actuator) error {
 	for _, fileName := range sortedFileNames(rs.Files) {
-		if err := rs.Files[fileName].ensure(fs, filepath.Join(rs.TargetDir, fileName), rs.Umask, actuator); err != nil {
+		if err := rs.Files[fileName].apply(fs, filepath.Join(rs.TargetDir, fileName), rs.Umask, actuator); err != nil {
 			return err
 		}
 	}
 	for _, dirName := range sortedDirNames(rs.Dirs) {
-		if err := rs.Dirs[dirName].ensure(fs, filepath.Join(rs.TargetDir, dirName), rs.Umask, actuator); err != nil {
+		if err := rs.Dirs[dirName].apply(fs, filepath.Join(rs.TargetDir, dirName), rs.Umask, actuator); err != nil {
 			return err
 		}
 	}
