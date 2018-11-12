@@ -200,6 +200,70 @@ func NewRootState(targetDir string, umask os.FileMode, sourceDir string, data in
 	}
 }
 
+func (rs *RootState) Add(fs afero.Fs, targetName string, fi os.FileInfo, isTemplate bool, actuator Actuator) error {
+	if fi == nil {
+		var err error
+		fi, err = fs.Stat(filepath.Join(rs.TargetDir, targetName))
+		if err != nil {
+			return err
+		}
+	}
+
+	// Add the parent directory, if needed.
+	dirSourceName := ""
+	dirs, files := rs.Dirs, rs.Files
+	if parentDirName := filepath.Dir(targetName); parentDirName != "." {
+		dirState := rs.findDirState(parentDirName)
+		if dirState == nil {
+			if err := rs.Add(fs, parentDirName, nil, false, actuator); err != nil {
+				return err
+			}
+			dirState = rs.findDirState(parentDirName)
+		}
+		dirSourceName = dirState.sourceName
+		dirs, files = dirState.Dirs, dirState.Files
+	}
+
+	name := filepath.Base(targetName)
+	switch {
+	case fi.Mode().IsRegular():
+		if _, ok := dirs[name]; ok {
+			return errors.Errorf("%s: already added as a directory", targetName)
+		}
+		sourceName := makeFileName(name, fi.Mode(), isTemplate)
+		if dirSourceName != "" {
+			sourceName = filepath.Join(dirSourceName, sourceName)
+		}
+		contents, err := ioutil.ReadFile(filepath.Join(rs.TargetDir, targetName))
+		if err != nil {
+			return err
+		}
+		if err := actuator.WriteFile(filepath.Join(rs.SourceDir, sourceName), contents, 0666, nil); err != nil {
+			return err
+		}
+		files[name] = &FileState{
+			sourceName: sourceName,
+			Mode:       fi.Mode(),
+			Contents:   contents,
+		}
+	case fi.Mode().IsDir():
+		if _, ok := files[name]; ok {
+			return errors.Errorf("%s: already added as a file", targetName)
+		}
+		sourceName := makeDirName(name, fi.Mode())
+		if dirSourceName != "" {
+			sourceName = filepath.Join(dirSourceName, sourceName)
+		}
+		if err := actuator.Mkdir(filepath.Join(rs.SourceDir, sourceName), 0777); err != nil {
+			return err
+		}
+		dirs[name] = newDirState(sourceName, fi.Mode())
+	default:
+		return errors.Errorf("%s: not a regular file or directory", targetName)
+	}
+	return nil
+}
+
 // AllStates returns a map from names to the *DirState or *FileState for that
 // name.
 func (rs *RootState) AllStates() map[string]State {
@@ -332,6 +396,19 @@ func (rs *RootState) Populate(fs afero.Fs) error {
 		}
 		return nil
 	})
+}
+
+func (rs *RootState) findDirState(dirName string) *DirState {
+	dirs := rs.Dirs
+	components := splitPathList(dirName)
+	for i := 0; i < len(components)-1; i++ {
+		dirState, ok := dirs[components[i]]
+		if !ok {
+			return nil
+		}
+		dirs = dirState.Dirs
+	}
+	return dirs[components[len(components)-1]]
 }
 
 func makeDirName(name string, mode os.FileMode) string {

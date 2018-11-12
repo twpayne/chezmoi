@@ -16,6 +16,10 @@ type Config struct {
 	DryRun    bool
 	Verbose   bool
 	Data      map[string]interface{}
+	Add       struct {
+		Recursive bool
+		Template  bool
+	}
 }
 
 func (c *Config) getDefaultActuator(fs afero.Fs) chezmoi.Actuator {
