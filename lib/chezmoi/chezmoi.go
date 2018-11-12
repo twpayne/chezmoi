@@ -241,6 +241,11 @@ func (rs *RootState) Add(fs afero.Fs, targetName string, fi os.FileInfo, isTempl
 		if err != nil {
 			return err
 		}
+		if isTemplate {
+			if data, ok := rs.Data.(map[string]interface{}); ok {
+				contents = autoTemplate(contents, data)
+			}
+		}
 		if err := actuator.WriteFile(filepath.Join(rs.SourceDir, sourceName), contents, 0666, nil); err != nil {
 			return err
 		}
