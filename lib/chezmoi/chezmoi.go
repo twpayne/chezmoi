@@ -227,6 +227,9 @@ func (rs *RootState) Add(fs afero.Fs, targetName string, fi os.FileInfo, isTempl
 	name := filepath.Base(targetName)
 	switch {
 	case fi.Mode().IsRegular():
+		if _, ok := files[name]; ok {
+			return nil
+		}
 		if _, ok := dirs[name]; ok {
 			return errors.Errorf("%s: already added as a directory", targetName)
 		}
@@ -247,6 +250,9 @@ func (rs *RootState) Add(fs afero.Fs, targetName string, fi os.FileInfo, isTempl
 			Contents:   contents,
 		}
 	case fi.Mode().IsDir():
+		if _, ok := dirs[name]; ok {
+			return nil
+		}
 		if _, ok := files[name]; ok {
 			return errors.Errorf("%s: already added as a file", targetName)
 		}
