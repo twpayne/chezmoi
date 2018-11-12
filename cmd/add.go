@@ -44,11 +44,7 @@ func runAddCommandE(fs afero.Fs, command *cobra.Command, args []string) error {
 				return err
 			}
 		} else {
-			targetName, err := filepath.Rel(targetState.TargetDir, arg)
-			if err != nil {
-				return err
-			}
-			if err := targetState.Add(fs, targetName, nil, config.Add.Template, actuator); err != nil {
+			if err := targetState.Add(fs, arg, nil, config.Add.Template, actuator); err != nil {
 				return err
 			}
 		}
