@@ -10,6 +10,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"syscall"
 	"text/template"
 	"time"
 
@@ -265,6 +266,14 @@ func (rs *RootState) Add(fs afero.Fs, targetName string, fi os.FileInfo, isTempl
 		}
 		if err := actuator.Mkdir(filepath.Join(rs.SourceDir, sourceName), 0777); err != nil {
 			return err
+		}
+		// If the directory is empty, add a .keep file so the directory is
+		// managed by git. Chezmoi will ignore the .keep file as it begins with
+		// a dot.
+		if stat, ok := fi.Sys().(*syscall.Stat_t); ok && stat.Nlink == 2 {
+			if err := actuator.WriteFile(filepath.Join(rs.SourceDir, sourceName, ".keep"), nil, 0666&^rs.Umask, nil); err != nil {
+				return err
+			}
 		}
 		dirs[name] = newDirState(sourceName, fi.Mode())
 	default:
