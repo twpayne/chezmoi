@@ -48,7 +48,7 @@ type RootState struct {
 	TargetDir string
 	Umask     os.FileMode
 	SourceDir string
-	Data      interface{}
+	Data      map[string]interface{}
 	Dirs      map[string]*DirState
 	Files     map[string]*FileState
 }
@@ -189,7 +189,7 @@ func (fs *FileState) SourceName() string {
 }
 
 // NewRootState creates a new RootState.
-func NewRootState(targetDir string, umask os.FileMode, sourceDir string, data interface{}) *RootState {
+func NewRootState(targetDir string, umask os.FileMode, sourceDir string, data map[string]interface{}) *RootState {
 	return &RootState{
 		TargetDir: targetDir,
 		Umask:     umask,
@@ -242,9 +242,7 @@ func (rs *RootState) Add(fs afero.Fs, targetName string, fi os.FileInfo, isTempl
 			return err
 		}
 		if isTemplate {
-			if data, ok := rs.Data.(map[string]interface{}); ok {
-				contents = autoTemplate(contents, data)
-			}
+			contents = autoTemplate(contents, rs.Data)
 		}
 		if err := actuator.WriteFile(filepath.Join(rs.SourceDir, sourceName), contents, 0666, nil); err != nil {
 			return err

@@ -57,7 +57,7 @@ func TestRootStatePopulate(t *testing.T) {
 	for _, tc := range []struct {
 		fs        map[string]string
 		sourceDir string
-		data      interface{}
+		data      map[string]interface{}
 		want      *RootState
 	}{
 		{
@@ -174,14 +174,14 @@ func TestRootStatePopulate(t *testing.T) {
 				"/dot_gitconfig.tmpl": "[user]\n\temail = {{.Email}}\n",
 			},
 			sourceDir: "/",
-			data: map[string]string{
+			data: map[string]interface{}{
 				"Email": "user@example.com",
 			},
 			want: &RootState{
 				TargetDir: "/",
 				Umask:     os.FileMode(0),
 				SourceDir: "/",
-				Data: map[string]string{
+				Data: map[string]interface{}{
 					"Email": "user@example.com",
 				},
 				Dirs: map[string]*DirState{},
@@ -215,7 +215,7 @@ func TestEndToEnd(t *testing.T) {
 	for i, tc := range []struct {
 		fsMap     map[string]string
 		sourceDir string
-		data      interface{}
+		data      map[string]interface{}
 		targetDir string
 		umask     os.FileMode
 		wantFsMap map[string]string
