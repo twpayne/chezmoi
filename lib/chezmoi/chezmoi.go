@@ -245,7 +245,7 @@ func (rs *RootState) Add(fs afero.Fs, targetName string, fi os.FileInfo, isTempl
 		if isTemplate {
 			contents = autoTemplate(contents, rs.Data)
 		}
-		if err := actuator.WriteFile(filepath.Join(rs.SourceDir, sourceName), contents, 0666, nil); err != nil {
+		if err := actuator.WriteFile(filepath.Join(rs.SourceDir, sourceName), contents, 0666&^rs.Umask, nil); err != nil {
 			return err
 		}
 		files[name] = &FileState{
