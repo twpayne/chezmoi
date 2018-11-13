@@ -75,21 +75,21 @@ func (ds *DirState) allStates(result map[string]State, dirName string) {
 }
 
 // archive writes ds to w.
-func (ds *DirState) archive(w *tar.Writer, dirName string, headerTemplate *tar.Header) error {
+func (ds *DirState) archive(w *tar.Writer, dirName string, headerTemplate *tar.Header, umask os.FileMode) error {
 	header := *headerTemplate
 	header.Typeflag = tar.TypeDir
 	header.Name = dirName
-	header.Mode = int64(ds.Mode & os.ModePerm)
+	header.Mode = int64(ds.Mode &^ umask & os.ModePerm)
 	if err := w.WriteHeader(&header); err != nil {
 		return err
 	}
 	for _, fileName := range sortedFileNames(ds.Files) {
-		if err := ds.Files[fileName].archive(w, filepath.Join(dirName, fileName), headerTemplate); err != nil {
+		if err := ds.Files[fileName].archive(w, filepath.Join(dirName, fileName), headerTemplate, umask); err != nil {
 			return err
 		}
 	}
 	for _, subDirName := range sortedDirNames(ds.Dirs) {
-		if err := ds.Dirs[subDirName].archive(w, filepath.Join(dirName, subDirName), headerTemplate); err != nil {
+		if err := ds.Dirs[subDirName].archive(w, filepath.Join(dirName, subDirName), headerTemplate, umask); err != nil {
 			return err
 		}
 	}
@@ -136,12 +136,12 @@ func (ds *DirState) SourceName() string {
 }
 
 // archive writes fs to w.
-func (fs *FileState) archive(w *tar.Writer, fileName string, headerTemplate *tar.Header) error {
+func (fs *FileState) archive(w *tar.Writer, fileName string, headerTemplate *tar.Header, umask os.FileMode) error {
 	header := *headerTemplate
 	header.Typeflag = tar.TypeReg
 	header.Name = fileName
 	header.Size = int64(len(fs.Contents))
-	header.Mode = int64(fs.Mode)
+	header.Mode = int64(fs.Mode &^ umask)
 	if err := w.WriteHeader(&header); err != nil {
 		return nil
 	}
@@ -288,7 +288,7 @@ func (rs *RootState) AllStates() map[string]State {
 }
 
 // Archive writes rs to w.
-func (rs *RootState) Archive(w *tar.Writer) error {
+func (rs *RootState) Archive(w *tar.Writer, umask os.FileMode) error {
 	currentUser, err := user.Current()
 	if err != nil {
 		return err
@@ -316,12 +316,12 @@ func (rs *RootState) Archive(w *tar.Writer) error {
 		ChangeTime: now,
 	}
 	for _, fileName := range sortedFileNames(rs.Files) {
-		if err := rs.Files[fileName].archive(w, fileName, &headerTemplate); err != nil {
+		if err := rs.Files[fileName].archive(w, fileName, &headerTemplate, umask); err != nil {
 			return err
 		}
 	}
 	for _, dirName := range sortedDirNames(rs.Dirs) {
-		if err := rs.Dirs[dirName].archive(w, dirName, &headerTemplate); err != nil {
+		if err := rs.Dirs[dirName].archive(w, dirName, &headerTemplate, umask); err != nil {
 			return err
 		}
 	}

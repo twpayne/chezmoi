@@ -25,7 +25,7 @@ func (c *Config) runArchiveCommandE(fs afero.Fs, command *cobra.Command, args []
 		return err
 	}
 	w := tar.NewWriter(os.Stdout)
-	if err := targetState.Archive(w); err != nil {
+	if err := targetState.Archive(w, os.FileMode(c.Umask)); err != nil {
 		return err
 	}
 	return w.Close()
