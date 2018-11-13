@@ -222,17 +222,24 @@ func TestEndToEnd(t *testing.T) {
 	}{
 		{
 			fsMap: map[string]string{
-				"/home/user/.bashrc":             "foo",
-				"/home/user/.chezmoi/dot_bashrc": "bar",
-				"/home/user/.chezmoi/.git/HEAD":  "HEAD",
+				"/home/user/.bashrc":                "foo",
+				"/home/user/.chezmoi/dot_bashrc":    "bar",
+				"/home/user/.chezmoi/.git/HEAD":     "HEAD",
+				"/home/user/.chezmoi/dot_hgrc.tmpl": "[ui]\nusername = {{ .name }} <{{ .email }}>\n",
 			},
 			sourceDir: "/home/user/.chezmoi",
+			data: map[string]interface{}{
+				"name":  "John Smith",
+				"email": "hello@example.com",
+			},
 			targetDir: "/home/user",
 			umask:     os.FileMode(022),
 			wantFsMap: map[string]string{
-				"/home/user/.bashrc":             "bar",
-				"/home/user/.chezmoi/dot_bashrc": "bar",
-				"/home/user/.chezmoi/.git/HEAD":  "HEAD",
+				"/home/user/.bashrc":                "bar",
+				"/home/user/.hgrc":                  "[ui]\nusername = John Smith <hello@example.com>\n",
+				"/home/user/.chezmoi/dot_bashrc":    "bar",
+				"/home/user/.chezmoi/.git/HEAD":     "HEAD",
+				"/home/user/.chezmoi/dot_hgrc.tmpl": "[ui]\nusername = {{ .name }} <{{ .email }}>\n",
 			},
 		},
 	} {
