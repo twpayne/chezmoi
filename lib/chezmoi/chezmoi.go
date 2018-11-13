@@ -343,6 +343,27 @@ func (rs *RootState) Apply(fs afero.Fs, actuator Actuator) error {
 	return nil
 }
 
+// Get returns the state of the given target, or nil if no such target is found.
+func (rs *RootState) Get(targetName string) State {
+	components := splitPathList(targetName)
+	dirs, files := rs.Dirs, rs.Files
+	for i := 0; i < len(components)-1; i++ {
+		dirState, ok := dirs[components[i]]
+		if !ok {
+			return nil
+		}
+		dirs, files = dirState.Dirs, dirState.Files
+	}
+	name := components[len(components)-1]
+	if dirState, ok := dirs[name]; ok {
+		return dirState
+	}
+	if fileState, ok := files[name]; ok {
+		return fileState
+	}
+	return nil
+}
+
 // Populate walks fs from the source directory creating a target directory
 // state.
 func (rs *RootState) Populate(fs afero.Fs) error {
