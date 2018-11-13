@@ -7,6 +7,7 @@ import (
 
 var applyCommand = &cobra.Command{
 	Use:   "apply",
+	Args:  cobra.NoArgs,
 	Short: "Update the actual state to match the target state",
 	RunE:  makeRunE(config.runApplyCommandE),
 }

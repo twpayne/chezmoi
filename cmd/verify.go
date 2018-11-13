@@ -10,6 +10,7 @@ import (
 
 var verifyCommand = &cobra.Command{
 	Use:   "verify",
+	Args:  cobra.NoArgs, // FIXME should accept list of targets
 	Short: "Exit with success if the actual state matches the target state, fail otherwise",
 	RunE:  makeRunE(config.runVerifyCommandE),
 }

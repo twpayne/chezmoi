@@ -8,6 +8,7 @@ import (
 
 var diffCommand = &cobra.Command{
 	Use:   "diff",
+	Args:  cobra.NoArgs, // FIXME should accept list of targets
 	Short: "Print the diff between the actual state and the target state",
 	RunE:  makeRunE(config.runDiffCommandE),
 }

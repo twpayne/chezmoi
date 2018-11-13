@@ -8,6 +8,7 @@ import (
 
 var dumpCommand = &cobra.Command{
 	Use:   "dump",
+	Args:  cobra.NoArgs, // FIXME should accept list of targets
 	Short: "Dump the target state",
 	RunE:  makeRunE(config.runDumpCommandE),
 }
