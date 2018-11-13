@@ -23,6 +23,15 @@ func TestAutoTemplate(t *testing.T) {
 			},
 			wantStr: "name = {{ .name }}\nfirstName = {{ .firstName }}\n",
 		},
+		{
+			contentsStr: "email = hello@example.com\n",
+			data: map[string]interface{}{
+				"personal": map[string]interface{}{
+					"email": "hello@example.com",
+				},
+			},
+			wantStr: "email = {{ .personal.email }}\n",
+		},
 	} {
 		got := autoTemplate([]byte(tc.contentsStr), tc.data)
 		gotStr := string(got)
