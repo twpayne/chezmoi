@@ -32,6 +32,13 @@ func TestAutoTemplate(t *testing.T) {
 			},
 			wantStr: "email = {{ .personal.email }}\n",
 		},
+		{
+			contentsStr: "darwinian evolution",
+			data: map[string]interface{}{
+				"os": "darwin",
+			},
+			wantStr: "darwinian evolution", // not "{{ .os }}ian evolution"
+		},
 	} {
 		got := autoTemplate([]byte(tc.contentsStr), tc.data)
 		gotStr := string(got)

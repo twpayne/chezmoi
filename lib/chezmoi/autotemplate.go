@@ -1,13 +1,15 @@
 package chezmoi
 
 import (
+	"regexp"
 	"sort"
 	"strings"
 )
 
 type templateVariable struct {
-	name  string
-	value string
+	name        string
+	value       string
+	valueRegexp *regexp.Regexp
 }
 
 type byValueLength []templateVariable
@@ -31,8 +33,9 @@ func extractVariables(variables []templateVariable, parent []string, data map[st
 		switch value := value.(type) {
 		case string:
 			variables = append(variables, templateVariable{
-				name:  strings.Join(append(parent, name), "."),
-				value: value,
+				name:        strings.Join(append(parent, name), "."),
+				value:       value,
+				valueRegexp: regexp.MustCompile(`\b` + regexp.QuoteMeta(value) + `\b`),
 			})
 		case map[string]interface{}:
 			variables = extractVariables(variables, append(parent, name), value)
@@ -48,7 +51,7 @@ func autoTemplate(contents []byte, data map[string]interface{}) []byte {
 	sort.Sort(sort.Reverse(byValueLength(variables)))
 	contentsStr := string(contents)
 	for _, variable := range variables {
-		contentsStr = strings.Replace(contentsStr, variable.value, "{{ ."+variable.name+" }}", -1)
+		contentsStr = variable.valueRegexp.ReplaceAllString(contentsStr, "{{ ."+variable.name+" }}")
 	}
 	return []byte(contentsStr)
 }
