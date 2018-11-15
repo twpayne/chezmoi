@@ -39,6 +39,17 @@ func TestAutoTemplate(t *testing.T) {
 			},
 			wantStr: "darwinian evolution", // not "{{ .os }}ian evolution"
 		},
+		/*
+			// FIXME this test currently fails because we match on word
+			// boundaries and ^/ is not a word boundary.
+			{
+				contentsStr: "/home/user",
+				data: map[string]interface{}{
+					"homedir": "/home/user",
+				},
+				wantStr: "{{ .homedir }}",
+			},
+		*/
 	} {
 		got := autoTemplate([]byte(tc.contentsStr), tc.data)
 		gotStr := string(got)
