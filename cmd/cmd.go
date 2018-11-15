@@ -39,30 +39,36 @@ func (c *Config) getDefaultActuator(fs afero.Fs) chezmoi.Actuator {
 }
 
 func getDefaultData() (map[string]interface{}, error) {
+	data := map[string]interface{}{
+		"arch": runtime.GOARCH,
+		"os":   runtime.GOOS,
+	}
+
 	currentUser, err := user.Current()
 	if err != nil {
 		return nil, err
 	}
+	data["username"] = currentUser.Username
+
 	group, err := user.LookupGroupId(currentUser.Gid)
 	if err != nil {
 		return nil, err
 	}
+	data["group"] = group.Name
+
 	homedir, err := homedir.Dir()
 	if err != nil {
 		return nil, err
 	}
+	data["homedir"] = homedir
+
 	hostname, err := os.Hostname()
 	if err != nil {
 		return nil, err
 	}
-	return map[string]interface{}{
-		"arch":     runtime.GOARCH,
-		"group":    group.Name,
-		"homedir":  homedir,
-		"hostname": hostname,
-		"os":       runtime.GOOS,
-		"username": currentUser.Username,
-	}, nil
+	data["hostname"] = hostname
+
+	return data, nil
 }
 
 func (c *Config) getSourceNames(targetState *chezmoi.RootState, targetNames []string) ([]string, error) {
