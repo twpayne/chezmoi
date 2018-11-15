@@ -2,8 +2,11 @@ package cmd
 
 import (
 	"os"
+	"os/user"
+	"runtime"
 
 	"github.com/absfs/afero"
+	"github.com/mitchellh/go-homedir"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/twpayne/chezmoi/lib/chezmoi"
@@ -35,6 +38,33 @@ func (c *Config) getDefaultActuator(fs afero.Fs) chezmoi.Actuator {
 	return actuator
 }
 
+func getDefaultData() (map[string]interface{}, error) {
+	currentUser, err := user.Current()
+	if err != nil {
+		return nil, err
+	}
+	group, err := user.LookupGroupId(currentUser.Gid)
+	if err != nil {
+		return nil, err
+	}
+	homedir, err := homedir.Dir()
+	if err != nil {
+		return nil, err
+	}
+	hostname, err := os.Hostname()
+	if err != nil {
+		return nil, err
+	}
+	return map[string]interface{}{
+		"arch":     runtime.GOARCH,
+		"group":    group.Name,
+		"homedir":  homedir,
+		"hostname": hostname,
+		"os":       runtime.GOOS,
+		"username": currentUser.Username,
+	}, nil
+}
+
 func (c *Config) getSourceNames(targetState *chezmoi.RootState, targetNames []string) ([]string, error) {
 	sourceNames := []string{}
 	allStates := targetState.AllStates()
@@ -49,7 +79,17 @@ func (c *Config) getSourceNames(targetState *chezmoi.RootState, targetNames []st
 }
 
 func (c *Config) getTargetState(fs afero.Fs) (*chezmoi.RootState, error) {
-	targetState := chezmoi.NewRootState(c.TargetDir, os.FileMode(c.Umask), c.SourceDir, c.Data)
+	defaultData, err := getDefaultData()
+	if err != nil {
+		return nil, err
+	}
+	data := map[string]interface{}{
+		"chezmoi": defaultData,
+	}
+	for key, value := range c.Data {
+		data[key] = value
+	}
+	targetState := chezmoi.NewRootState(c.TargetDir, os.FileMode(c.Umask), c.SourceDir, data)
 	if err := targetState.Populate(fs); err != nil {
 		return nil, err
 	}
