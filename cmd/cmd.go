@@ -1,9 +1,13 @@
 package cmd
 
 import (
+	"log"
 	"os"
+	"os/exec"
 	"os/user"
 	"runtime"
+	"strings"
+	"syscall"
 
 	"github.com/absfs/afero"
 	"github.com/mitchellh/go-homedir"
@@ -23,6 +27,20 @@ type Config struct {
 		Recursive bool
 		Template  bool
 	}
+}
+
+func (c *Config) exec(argv []string) error {
+	path, err := exec.LookPath(argv[0])
+	if err != nil {
+		return err
+	}
+	if c.Verbose {
+		log.Printf("exec %s", strings.Join(argv, " "))
+	}
+	if c.DryRun {
+		return nil
+	}
+	return syscall.Exec(path, argv, os.Environ())
 }
 
 func (c *Config) getDefaultActuator(fs afero.Fs) chezmoi.Actuator {

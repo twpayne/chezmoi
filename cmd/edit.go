@@ -1,12 +1,8 @@
 package cmd
 
 import (
-	"log"
 	"os"
-	"os/exec"
 	"path/filepath"
-	"strings"
-	"syscall"
 
 	"github.com/absfs/afero"
 	"github.com/spf13/cobra"
@@ -39,20 +35,9 @@ func (c *Config) runEditCommandE(fs afero.Fs, command *cobra.Command, args []str
 	if editor == "" {
 		editor = "vi"
 	}
-	editorPath, err := exec.LookPath(editor)
-	if err != nil {
-		return err
-	}
-	sourceFilePaths := []string{}
+	argv := []string{editor}
 	for _, sourceFileName := range sourceFileNames {
-		sourceFilePaths = append(sourceFilePaths, filepath.Join(c.SourceDir, sourceFileName))
+		argv = append(argv, filepath.Join(c.SourceDir, sourceFileName))
 	}
-	argv := append([]string{editor}, sourceFilePaths...)
-	if c.Verbose {
-		log.Printf("exec %s", strings.Join(argv, " "))
-	}
-	if c.DryRun {
-		return nil
-	}
-	return syscall.Exec(editorPath, argv, os.Environ())
+	return c.exec(argv)
 }
