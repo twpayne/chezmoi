@@ -250,3 +250,20 @@ with a `.`.  The following prefixes and suffixes are special.
 | `.tmpl` suffix       | Treat the source file as a template.                                              |
 
 Order is important, the order is `private_`, `executable_`, `dot_`, `.tmpl`.
+
+
+## Using `chezmoi` outside your home directory
+
+`chezmoi` operates by default on your home directory, but this can be
+overridden with the `--target` command line flag or by specifying `targetDir`
+in your `~/.chezmoi.yaml`. In theory, you could use `chezmoi` to manage any
+aspect of your filesystem. That said, although you can do this, you probably
+shouldn't. Existing configuration management tools like
+[Puppet](https://puppet.com/), [Chef](https://www.chef.io/chef/),
+[Ansible](https://www.ansible.com/), and [Salt](https://www.saltstack.com/) are
+much better suited to whole system configuration management.
+
+`chezmoi` was inspired by Puppet, but created because Puppet is an slow
+overkill for managing your personal configuration files. The focus of `chezmoi`
+will always be personal home directory management. If your needs grow beyond
+that, switch to a whole system configuration management tool.
