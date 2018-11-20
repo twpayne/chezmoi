@@ -16,6 +16,7 @@ import (
 	"github.com/twpayne/chezmoi/lib/chezmoi"
 )
 
+// A Config represents a configuration.
 type Config struct {
 	SourceDir        string
 	TargetDir        string

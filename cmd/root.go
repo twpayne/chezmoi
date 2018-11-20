@@ -66,6 +66,7 @@ func init() {
 	})
 }
 
+// Execute executes the root command.
 func Execute() {
 	if err := rootCommand.Execute(); err != nil {
 		log.Fatal(err)
