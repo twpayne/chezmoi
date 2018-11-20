@@ -18,8 +18,8 @@ state.
 variables allow you to change behaviour depending on operating system,
 architecture, and hostname.
 
- * Robust: `chezmoi` updates all files atomically, using
-   [google/renameio](https://github.com/google/renameio) so you are never left
+ * Robust: `chezmoi` updates all files atomically (using
+   [google/renameio](https://github.com/google/renameio)) so you are never left
 with incomplete files that could lock you out, even if the update process is
 interrupted.
 
