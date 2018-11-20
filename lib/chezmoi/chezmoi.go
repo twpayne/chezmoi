@@ -153,12 +153,12 @@ func (fs *FileState) archive(w *tar.Writer, fileName string, headerTemplate *tar
 }
 
 // apply ensures that state of targetPath in fs matches fileState.
-func (fileState *FileState) apply(fs afero.Fs, targetPath string, umask os.FileMode, actuator Actuator) error {
-	fi, err := fs.Stat(targetPath)
+func (fs *FileState) apply(fileSystem afero.Fs, targetPath string, umask os.FileMode, actuator Actuator) error {
+	fi, err := fileSystem.Stat(targetPath)
 	var currentContents []byte
 	switch {
 	case err == nil && fi.Mode().IsRegular():
-		f, err := fs.Open(targetPath)
+		f, err := fileSystem.Open(targetPath)
 		if err != nil {
 			return err
 		}
@@ -167,11 +167,11 @@ func (fileState *FileState) apply(fs afero.Fs, targetPath string, umask os.FileM
 		if err != nil {
 			return errors.Wrap(err, targetPath)
 		}
-		if !bytes.Equal(currentContents, fileState.Contents) {
+		if !bytes.Equal(currentContents, fs.Contents) {
 			break
 		}
-		if fi.Mode()&os.ModePerm != fileState.Mode&^umask {
-			if err := actuator.Chmod(targetPath, fileState.Mode&^umask); err != nil {
+		if fi.Mode()&os.ModePerm != fs.Mode&^umask {
+			if err := actuator.Chmod(targetPath, fs.Mode&^umask); err != nil {
 				return err
 			}
 		}
@@ -184,7 +184,7 @@ func (fileState *FileState) apply(fs afero.Fs, targetPath string, umask os.FileM
 	default:
 		return err
 	}
-	return actuator.WriteFile(targetPath, fileState.Contents, fileState.Mode&^umask, currentContents)
+	return actuator.WriteFile(targetPath, fs.Contents, fs.Mode&^umask, currentContents)
 }
 
 // SourceName implements Stater.SourceName.
