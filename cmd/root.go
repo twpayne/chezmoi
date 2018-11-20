@@ -40,6 +40,9 @@ func init() {
 	persistentFlags.StringVarP(&config.SourceDir, "source", "s", filepath.Join(homeDir, ".chezmoi"), "source directory")
 	viper.BindPFlag("source", persistentFlags.Lookup("source"))
 
+	persistentFlags.StringVar(&config.SourceVCSCommand, "source-vcs", "git", "source version control system command")
+	viper.BindPFlag("source-vcs", persistentFlags.Lookup("source-vcs"))
+
 	persistentFlags.StringVarP(&config.TargetDir, "target", "t", homeDir, "target directory")
 	viper.BindPFlag("target", persistentFlags.Lookup("target"))
 

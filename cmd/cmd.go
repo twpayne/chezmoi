@@ -17,13 +17,14 @@ import (
 )
 
 type Config struct {
-	SourceDir string
-	TargetDir string
-	Umask     int
-	DryRun    bool
-	Verbose   bool
-	Data      map[string]interface{}
-	Add       struct {
+	SourceDir        string
+	TargetDir        string
+	Umask            int
+	DryRun           bool
+	Verbose          bool
+	SourceVCSCommand string
+	Data             map[string]interface{}
+	Add              struct {
 		Recursive bool
 		Template  bool
 	}
