@@ -29,8 +29,9 @@ systems.
  * Practical: `chezmoi` manages hidden files (dot files), directories, private,
    and executable files.
 
- * Fast and easy to use: `chezmoi` runs in fractions of a second and includes
-   commands to make most operations trivial.
+ * Fast, easy to use, and familiar: `chezmoi` runs in fractions of a second and
+   includes commands to make most operations trivial. You can use the version
+control system of your choice to manage your configuration.
 
 
 ## Quick start
