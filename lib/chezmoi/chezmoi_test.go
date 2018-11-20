@@ -71,7 +71,7 @@ func TestRootStatePopulate(t *testing.T) {
 				SourceDir: "/",
 				Dirs:      map[string]*DirState{},
 				Files: map[string]*FileState{
-					"foo": &FileState{
+					"foo": {
 						sourceName: "foo",
 						Mode:       os.FileMode(0666),
 						Contents:   []byte("bar"),
@@ -90,7 +90,7 @@ func TestRootStatePopulate(t *testing.T) {
 				SourceDir: "/",
 				Dirs:      map[string]*DirState{},
 				Files: map[string]*FileState{
-					".foo": &FileState{
+					".foo": {
 						sourceName: "dot_foo",
 						Mode:       os.FileMode(0666),
 						Contents:   []byte("bar"),
@@ -109,7 +109,7 @@ func TestRootStatePopulate(t *testing.T) {
 				SourceDir: "/",
 				Dirs:      map[string]*DirState{},
 				Files: map[string]*FileState{
-					"foo": &FileState{
+					"foo": {
 						sourceName: "private_foo",
 						Mode:       os.FileMode(0600),
 						Contents:   []byte("bar"),
@@ -127,12 +127,12 @@ func TestRootStatePopulate(t *testing.T) {
 				Umask:     os.FileMode(0),
 				SourceDir: "/",
 				Dirs: map[string]*DirState{
-					"foo": &DirState{
+					"foo": {
 						sourceName: "foo",
 						Mode:       os.FileMode(0777),
 						Dirs:       map[string]*DirState{},
 						Files: map[string]*FileState{
-							"bar": &FileState{
+							"bar": {
 								sourceName: "foo/bar",
 								Mode:       os.FileMode(0666),
 								Contents:   []byte("baz"),
@@ -153,12 +153,12 @@ func TestRootStatePopulate(t *testing.T) {
 				Umask:     os.FileMode(0),
 				SourceDir: "/",
 				Dirs: map[string]*DirState{
-					".foo": &DirState{
+					".foo": {
 						sourceName: "private_dot_foo",
 						Mode:       os.FileMode(0700),
 						Dirs:       map[string]*DirState{},
 						Files: map[string]*FileState{
-							"bar": &FileState{
+							"bar": {
 								sourceName: "private_dot_foo/bar",
 								Mode:       os.FileMode(0666),
 								Contents:   []byte("baz"),
@@ -186,7 +186,7 @@ func TestRootStatePopulate(t *testing.T) {
 				},
 				Dirs: map[string]*DirState{},
 				Files: map[string]*FileState{
-					".gitconfig": &FileState{
+					".gitconfig": {
 						sourceName: "dot_gitconfig.tmpl",
 						Mode:       os.FileMode(0666),
 						Contents:   []byte("[user]\n\temail = user@example.com\n"),
