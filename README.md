@@ -250,13 +250,3 @@ with a `.`.  The following prefixes and suffixes are special.
 | `.tmpl` suffix       | Treat the source file as a template.                                              |
 
 Order is important, the order is `private_`, `executable_`, `dot_`, `.tmpl`.
-
-
-## TODO
-
-* Improve documentation
-* Accept optional prefix on target names
-* Commands to change private and executable attributes of existing sources.
-* Extend `apply` command to take a list of targets.
-* Extend `diff` command to take a list of targets.
-* Extend `verify` command to take a list of targets.
