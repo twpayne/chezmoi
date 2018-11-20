@@ -55,13 +55,13 @@ directories beginning with a `.` in this directory.
 
 Manage an existing file with `chezmoi`:
 
-    $ chezmoi add .bashrc
+    $ chezmoi add ~/.bashrc
 
 This copies `~/.bashrc` to `~/.chezmoi/dot_bashrc`.
 
 Edit the desired state:
 
-    $ chezmoi edit .bashrc
+    $ chezmoi edit ~/.bashrc
 
 This will open `~/.chezmoi/dot_bashrc` in your `$EDITOR`. Make some changes and
 save them.
@@ -120,12 +120,12 @@ discussion on this.
 Then, add `~/.gitconfig` to `chezmoi` using the `-T` flag to automatically turn
 it in to a template:
 
-    $ chezmoi add -T .gitconfig
+    $ chezmoi add -T ~/.gitconfig
 
 You can then open the template (which will be saved in the file
 `~/.chezmoi/dot_gitconfig.tmpl`):
 
-    $ chezmoi edit .gitconfig
+    $ chezmoi edit ~/.gitconfig
 
 The file should look something like:
 

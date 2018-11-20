@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"os/user"
+	"path/filepath"
 	"runtime"
 	"strings"
 	"syscall"
@@ -91,10 +92,21 @@ func getDefaultData() (map[string]interface{}, error) {
 	return data, nil
 }
 
-func (c *Config) getSourceNames(targetState *chezmoi.RootState, targetNames []string) ([]string, error) {
+func (c *Config) getSourceNames(targetState *chezmoi.RootState, targets []string) ([]string, error) {
 	sourceNames := []string{}
 	allStates := targetState.AllStates()
-	for _, targetName := range targetNames {
+	for _, target := range targets {
+		absTarget, err := filepath.Abs(target)
+		if err != nil {
+			return nil, err
+		}
+		targetName, err := filepath.Rel(c.TargetDir, absTarget)
+		if err != nil {
+			return nil, err
+		}
+		if filepath.HasPrefix(targetName, "..") {
+			return nil, errors.Errorf("%s: not in target directory", target)
+		}
 		state, ok := allStates[targetName]
 		if !ok {
 			return nil, errors.Errorf("%s: not found", targetName)

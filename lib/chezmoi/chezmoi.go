@@ -205,10 +205,17 @@ func NewRootState(targetDir string, umask os.FileMode, sourceDir string, data ma
 }
 
 // Add adds a new target.
-func (rs *RootState) Add(fs afero.Fs, targetName string, fi os.FileInfo, isTemplate bool, actuator Actuator) error {
+func (rs *RootState) Add(fs afero.Fs, target string, fi os.FileInfo, isTemplate bool, actuator Actuator) error {
+	if !filepath.HasPrefix(target, rs.TargetDir) {
+		return errors.Errorf("%s: outside target directory", target)
+	}
+	targetName, err := filepath.Rel(rs.TargetDir, target)
+	if err != nil {
+		return err
+	}
 	if fi == nil {
 		var err error
-		fi, err = fs.Stat(filepath.Join(rs.TargetDir, targetName))
+		fi, err = fs.Stat(target)
 		if err != nil {
 			return err
 		}

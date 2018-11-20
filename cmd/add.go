@@ -35,16 +35,16 @@ func (c *Config) runAddCommandE(fs afero.Fs, command *cobra.Command, args []stri
 				if err != nil {
 					return err
 				}
-				targetName, err := filepath.Rel(targetState.TargetDir, path)
-				if err != nil {
-					return err
-				}
-				return targetState.Add(fs, targetName, info, c.Add.Template, actuator)
+				return targetState.Add(fs, path, info, c.Add.Template, actuator)
 			}); err != nil {
 				return err
 			}
 		} else {
-			if err := targetState.Add(fs, arg, nil, c.Add.Template, actuator); err != nil {
+			path, err := filepath.Abs(arg)
+			if err != nil {
+				return err
+			}
+			if err := targetState.Add(fs, path, nil, c.Add.Template, actuator); err != nil {
 				return err
 			}
 		}
