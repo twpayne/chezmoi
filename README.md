@@ -196,8 +196,8 @@ My `~/.chezmoi/private_dot_gitconfig.tmpl` then contains:
 
     {{- if .github }}
     [github]
-        token = {{ .github.token }}
         user = {{ .github.user }}
+        token = {{ .github.token }}
     {{- end }}
 
 Note that any config files containing tokens in plain text should be private
