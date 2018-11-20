@@ -32,7 +32,10 @@ func (c *Config) runEditCommandE(fs afero.Fs, command *cobra.Command, args []str
 	if err != nil {
 		return err
 	}
-	editor := os.Getenv("EDITOR")
+	editor := os.Getenv("VISUAL")
+	if editor == "" {
+		editor = os.Getenv("EDITOR")
+	}
 	if editor == "" {
 		editor = "vi"
 	}
