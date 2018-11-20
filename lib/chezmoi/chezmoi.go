@@ -25,7 +25,8 @@ const (
 	templateSuffix   = ".tmpl"
 )
 
-type State interface {
+// A Stater is either a DirState or a FileState.
+type Stater interface {
 	SourceName() string
 }
 
@@ -65,7 +66,7 @@ func newDirState(sourceName string, mode os.FileMode) *DirState {
 }
 
 // allStates adds all of the states in ds to result.
-func (ds *DirState) allStates(result map[string]State, dirName string) {
+func (ds *DirState) allStates(result map[string]Stater, dirName string) {
 	for fileName, fileState := range ds.Files {
 		result[filepath.Join(dirName, fileName)] = fileState
 	}
@@ -132,6 +133,7 @@ func (ds *DirState) apply(fs afero.Fs, targetDir string, umask os.FileMode, actu
 	return nil
 }
 
+// SourceName implements Stater.SourceName.
 func (ds *DirState) SourceName() string {
 	return ds.sourceName
 }
@@ -185,6 +187,7 @@ func (fileState *FileState) apply(fs afero.Fs, targetPath string, umask os.FileM
 	return actuator.WriteFile(targetPath, fileState.Contents, fileState.Mode&^umask, currentContents)
 }
 
+// SourceName implements Stater.SourceName.
 func (fs *FileState) SourceName() string {
 	return fs.sourceName
 }
@@ -201,6 +204,7 @@ func NewRootState(targetDir string, umask os.FileMode, sourceDir string, data ma
 	}
 }
 
+// Add adds a new target.
 func (rs *RootState) Add(fs afero.Fs, targetName string, fi os.FileInfo, isTemplate bool, actuator Actuator) error {
 	if fi == nil {
 		var err error
@@ -284,8 +288,8 @@ func (rs *RootState) Add(fs afero.Fs, targetName string, fi os.FileInfo, isTempl
 
 // AllStates returns a map from names to the *DirState or *FileState for that
 // name.
-func (rs *RootState) AllStates() map[string]State {
-	result := make(map[string]State)
+func (rs *RootState) AllStates() map[string]Stater {
+	result := make(map[string]Stater)
 	for fileName, fileState := range rs.Files {
 		result[fileName] = fileState
 	}
@@ -353,7 +357,7 @@ func (rs *RootState) Apply(fs afero.Fs, actuator Actuator) error {
 }
 
 // Get returns the state of the given target, or nil if no such target is found.
-func (rs *RootState) Get(targetName string) State {
+func (rs *RootState) Get(targetName string) Stater {
 	components := splitPathList(targetName)
 	dirs, files := rs.Dirs, rs.Files
 	for i := 0; i < len(components)-1; i++ {
