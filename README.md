@@ -168,7 +168,7 @@ adding them by inspecting their permissions. Private files and directories are
 stored in `~/.chezmoi` as regular, public files with permissions 0644 and the
 name prefix `private_`. For example:
 
-    $ chezmoi add .netrc
+    $ chezmoi add ~/.netrc
 
 will create `~/.chezmoi/private_dot_netrc`. Note that this file is still
 private because `~/.chezmoi` is not group- or world- readable or executable.
