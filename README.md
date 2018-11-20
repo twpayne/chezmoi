@@ -217,12 +217,12 @@ example, if you want to use Mercurial:
 `chezmoi source` is then a shortcut to running `sourceVCSCommand` in your
 `~/.chezmoi` directory. For example you can push the current branch with:
 
-    chezmoi source push
+    $ chezmoi source push
 
 Extra arguments are passed along unchanged, although you'll need to use `--`
 stop `chezmoi` from interpreting extra flags. For example:
 
-    chezmoi source pull -- --rebase
+    $ chezmoi source pull -- --rebase
 
 The `source` command accepts the usual `-n` and `-v` flags, so you can see
 exactly what it will run without executing it.
