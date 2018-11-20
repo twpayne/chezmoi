@@ -14,9 +14,10 @@ state.
 variables allow you to change behaviour depending on operating system,
 architecture, and hostname.
 
- * Robust: `chezmoi` updates all files atomically, so you are never left with
-   incomplete or incorrect files that could lock you out, even if the update
-process is interrupted.
+ * Robust: `chezmoi` updates all files atomically, using
+   [google/renameio](https://github.com/google/renameio) so you are never left
+with incomplete files that could lock you out, even if the update process is
+interrupted.
 
  * Portable: `chezmoi`'s configuration uses only visible, regular files and
    directories and so is portable across version control systems and operating
