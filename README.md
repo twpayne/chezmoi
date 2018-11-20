@@ -194,7 +194,8 @@ My `~/.chezmoi/private_dot_gitconfig.tmpl` then contains:
         user = {{ .github.user }}
     {{- end }}
 
-Note that any config files containing tokens in plain text should be private (mode 0600).
+Note that any config files containing tokens in plain text should be private
+(mode 0600).
 
 ### Using encrypted config files
 
