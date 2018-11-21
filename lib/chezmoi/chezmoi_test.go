@@ -253,7 +253,7 @@ func TestEndToEnd(t *testing.T) {
 			t.Errorf("rs.Populate(%+v) == %v, want <nil>", fs, err)
 			continue
 		}
-		if err := rs.Apply(fs, NewFsActuator(fs, tc.targetDir)); err != nil {
+		if err := rs.Apply(fs, NewLoggingActuator(NewFsActuator(fs, tc.targetDir))); err != nil {
 			t.Errorf("case %d: rs.Apply(makeMemMapFs(%v), _) == %v, want <nil>", i, tc.fsMap, err)
 			continue
 		}
