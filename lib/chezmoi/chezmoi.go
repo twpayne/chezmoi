@@ -238,7 +238,7 @@ func (rs *RootState) Add(fs afero.Fs, target string, fi os.FileInfo, addEmpty, a
 	if parentDirName := filepath.Dir(targetName); parentDirName != "." {
 		dirState := rs.findDirState(parentDirName)
 		if dirState == nil {
-			if err := rs.Add(fs, parentDirName, nil, false, false, actuator); err != nil {
+			if err := rs.Add(fs, filepath.Join(rs.TargetDir, parentDirName), nil, false, false, actuator); err != nil {
 				return err
 			}
 			dirState = rs.findDirState(parentDirName)
