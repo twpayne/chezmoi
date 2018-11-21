@@ -216,7 +216,7 @@ func NewRootState(targetDir string, umask os.FileMode, sourceDir string, data ma
 }
 
 // Add adds a new target.
-func (rs *RootState) Add(fs afero.Fs, target string, fi os.FileInfo, addEmpty, isTemplate bool, actuator Actuator) error {
+func (rs *RootState) Add(fs afero.Fs, target string, fi os.FileInfo, addEmpty, addTemplate bool, actuator Actuator) error {
 	if !filepath.HasPrefix(target, rs.TargetDir) {
 		return errors.Errorf("%s: outside target directory", target)
 	}
@@ -259,7 +259,7 @@ func (rs *RootState) Add(fs afero.Fs, target string, fi os.FileInfo, addEmpty, i
 		if fi.Size() == 0 && !addEmpty {
 			return nil
 		}
-		sourceName := makeFileName(name, fi.Mode(), fi.Size() == 0, isTemplate)
+		sourceName := makeFileName(name, fi.Mode(), fi.Size() == 0, addTemplate)
 		if dirSourceName != "" {
 			sourceName = filepath.Join(dirSourceName, sourceName)
 		}
@@ -267,7 +267,7 @@ func (rs *RootState) Add(fs afero.Fs, target string, fi os.FileInfo, addEmpty, i
 		if err != nil {
 			return err
 		}
-		if isTemplate {
+		if addTemplate {
 			contents = autoTemplate(contents, rs.Data)
 		}
 		if err := actuator.WriteFile(filepath.Join(rs.SourceDir, sourceName), contents, 0666&^rs.Umask, nil); err != nil {
