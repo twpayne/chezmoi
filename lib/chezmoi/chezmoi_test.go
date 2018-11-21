@@ -2,11 +2,10 @@ package chezmoi
 
 import (
 	"os"
-	"path/filepath"
 	"testing"
 
-	"github.com/absfs/afero"
 	"github.com/d4l3k/messagediff"
+	"github.com/twpayne/chezmoi/internal/absfstesting"
 )
 
 func TestDirName(t *testing.T) {
@@ -197,9 +196,9 @@ func TestRootStatePopulate(t *testing.T) {
 			},
 		},
 	} {
-		fs, err := makeMemMapFs(tc.fs)
+		fs, err := absfstesting.MakeMemMapFs(tc.fs)
 		if err != nil {
-			t.Errorf("makeMemMapFs(%v) == %v, %v, want !<nil>, <nil>", tc.fs, fs, err)
+			t.Errorf("absfstesting.MakeMemMapFs(%v) == %v, %v, want !<nil>, <nil>", tc.fs, fs, err)
 			continue
 		}
 		rs := NewRootState("/", 0, tc.sourceDir, tc.data)
@@ -250,9 +249,9 @@ func TestEndToEnd(t *testing.T) {
 			},
 		},
 	} {
-		fs, err := makeMemMapFs(tc.fsMap)
+		fs, err := absfstesting.MakeMemMapFs(tc.fsMap)
 		if err != nil {
-			t.Errorf("case %d: makeMemMapFs(%v) == %v, %v, want !<nil>, <nil>", i, tc.fsMap, fs, err)
+			t.Errorf("case %d: absfstesting.MakeMemMapFs(%v) == %v, %v, want !<nil>, <nil>", i, tc.fsMap, fs, err)
 			continue
 		}
 		rs := NewRootState(tc.targetDir, tc.umask, tc.sourceDir, tc.data)
@@ -261,51 +260,16 @@ func TestEndToEnd(t *testing.T) {
 			continue
 		}
 		if err := rs.Apply(fs, NewLoggingActuator(NewFsActuator(fs, tc.targetDir))); err != nil {
-			t.Errorf("case %d: rs.Apply(makeMemMapFs(%v), _) == %v, want <nil>", i, tc.fsMap, err)
+			t.Errorf("case %d: rs.Apply(absfstesting.MakeMemMapFs(%v), _) == %v, want <nil>", i, tc.fsMap, err)
 			continue
 		}
-		gotFsMap, err := makeMapFs(fs)
+		gotFsMap, err := absfstesting.MakeMapFs(fs)
 		if err != nil {
-			t.Errorf("case %d: makeMapFs(%v) == %v, %v, want !<nil>, <nil>", i, fs, gotFsMap, err)
+			t.Errorf("case %d: absfstesting.MakeMapFs(%v) == %v, %v, want !<nil>, <nil>", i, fs, gotFsMap, err)
 			continue
 		}
 		if diff, equal := messagediff.PrettyDiff(tc.wantFsMap, gotFsMap); !equal {
 			t.Errorf("case %d:\n%s\n", i, diff)
 		}
 	}
-}
-
-func makeMemMapFs(fsMap map[string]string) (*afero.MemMapFs, error) {
-	//fs := afero.NewMemMapFs()
-	fs := &afero.MemMapFs{}
-	for path, contents := range fsMap {
-		if err := fs.MkdirAll(filepath.Dir(path), os.FileMode(0777)); err != nil {
-			return nil, err
-		}
-		if err := afero.WriteFile(fs, path, []byte(contents), os.FileMode(0666)); err != nil {
-			return nil, err
-		}
-	}
-	return fs, nil
-}
-
-func makeMapFs(fs afero.Fs) (map[string]string, error) {
-	mapFs := make(map[string]string)
-	if err := afero.Walk(fs, "/", func(path string, fi os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-		if !fi.Mode().IsRegular() {
-			return nil
-		}
-		contents, err := afero.ReadFile(fs, path)
-		if err != nil {
-			return err
-		}
-		mapFs[path] = string(contents)
-		return nil
-	}); err != nil {
-		return nil, err
-	}
-	return mapFs, nil
 }
