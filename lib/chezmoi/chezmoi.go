@@ -3,7 +3,6 @@ package chezmoi
 import (
 	"archive/tar"
 	"bytes"
-	"io/ioutil"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -166,14 +165,9 @@ func (fs *FileState) apply(fileSystem afero.Fs, targetPath string, umask os.File
 		if len(fs.Contents) == 0 && !fs.Empty {
 			return actuator.RemoveAll(targetPath)
 		}
-		f, err := fileSystem.Open(targetPath)
+		currentContents, err := afero.ReadFile(fileSystem, targetPath)
 		if err != nil {
 			return err
-		}
-		defer f.Close()
-		currentContents, err = ioutil.ReadAll(f)
-		if err != nil {
-			return errors.Wrap(err, targetPath)
 		}
 		if !bytes.Equal(currentContents, fs.Contents) {
 			break
@@ -263,7 +257,7 @@ func (rs *RootState) Add(fs afero.Fs, target string, fi os.FileInfo, addEmpty, a
 		if dirSourceName != "" {
 			sourceName = filepath.Join(dirSourceName, sourceName)
 		}
-		contents, err := ioutil.ReadFile(filepath.Join(rs.TargetDir, targetName))
+		contents, err := afero.ReadFile(fs, filepath.Join(rs.TargetDir, targetName))
 		if err != nil {
 			return err
 		}
@@ -424,14 +418,9 @@ func (rs *RootState) Populate(fs afero.Fs) error {
 			for _, dirName := range dirNames {
 				dirs, files = dirs[dirName].Dirs, dirs[dirName].Files
 			}
-			r, err := fs.Open(path)
+			contents, err := afero.ReadFile(fs, path)
 			if err != nil {
 				return err
-			}
-			defer r.Close()
-			contents, err := ioutil.ReadAll(r)
-			if err != nil {
-				return errors.Wrap(err, path)
 			}
 			if isTemplate {
 				tmpl, err := template.New(path).Parse(string(contents))
