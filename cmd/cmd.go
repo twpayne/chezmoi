@@ -17,6 +17,13 @@ import (
 	"github.com/twpayne/chezmoi/lib/chezmoi"
 )
 
+// An AddCommandConfig is a configuration for the add command.
+type AddCommandConfig struct {
+	Empty     bool
+	Recursive bool
+	Template  bool
+}
+
 // A Config represents a configuration.
 type Config struct {
 	SourceDir        string
@@ -26,11 +33,7 @@ type Config struct {
 	Verbose          bool
 	SourceVCSCommand string
 	Data             map[string]interface{}
-	Add              struct {
-		Empty     bool
-		Recursive bool
-		Template  bool
-	}
+	Add              AddCommandConfig
 }
 
 func (c *Config) exec(argv []string) error {
