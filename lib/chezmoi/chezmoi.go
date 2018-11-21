@@ -257,7 +257,7 @@ func (rs *RootState) Add(fs afero.Fs, target string, fi os.FileInfo, addEmpty, a
 		if dirSourceName != "" {
 			sourceName = filepath.Join(dirSourceName, sourceName)
 		}
-		contents, err := afero.ReadFile(fs, filepath.Join(rs.TargetDir, targetName))
+		contents, err := afero.ReadFile(fs, target)
 		if err != nil {
 			return err
 		}
