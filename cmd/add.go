@@ -31,8 +31,12 @@ func (c *Config) runAddCommandE(fs afero.Fs, command *cobra.Command, args []stri
 	}
 	actuator := c.getDefaultActuator(fs)
 	for _, arg := range args {
+		path, err := filepath.Abs(arg)
+		if err != nil {
+			return err
+		}
 		if c.Add.Recursive {
-			if err := afero.Walk(fs, filepath.Join(targetState.TargetDir, arg), func(path string, info os.FileInfo, err error) error {
+			if err := afero.Walk(fs, path, func(path string, info os.FileInfo, err error) error {
 				if err != nil {
 					return err
 				}
@@ -41,10 +45,6 @@ func (c *Config) runAddCommandE(fs afero.Fs, command *cobra.Command, args []stri
 				return err
 			}
 		} else {
-			path, err := filepath.Abs(arg)
-			if err != nil {
-				return err
-			}
 			if err := targetState.Add(fs, path, nil, c.Add.Empty, c.Add.Template, actuator); err != nil {
 				return err
 			}
