@@ -8,8 +8,7 @@ import (
 )
 
 func MakeMemMapFs(fsMap map[string]string) (*afero.MemMapFs, error) {
-	//fs := afero.NewMemMapFs()
-	fs := &afero.MemMapFs{}
+	fs := afero.NewMemMapFs()
 	for path, contents := range fsMap {
 		if err := fs.MkdirAll(filepath.Dir(path), os.FileMode(0777)); err != nil {
 			return nil, err
