@@ -290,7 +290,7 @@ func (rs *RootState) Add(fs afero.Fs, target string, fi os.FileInfo, addEmpty, a
 		if dirSourceName != "" {
 			sourceName = filepath.Join(dirSourceName, sourceName)
 		}
-		if err := actuator.Mkdir(filepath.Join(rs.SourceDir, sourceName), 0777); err != nil {
+		if err := actuator.Mkdir(filepath.Join(rs.SourceDir, sourceName), 0777&^rs.Umask); err != nil {
 			return err
 		}
 		// If the directory is empty, add a .keep file so the directory is
