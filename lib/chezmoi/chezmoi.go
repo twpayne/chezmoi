@@ -412,7 +412,10 @@ func (rs *RootState) Populate(fs afero.Fs) error {
 		}
 		// Ignore all files and directories beginning with "."
 		if _, name := filepath.Split(relPath); strings.HasPrefix(name, ".") {
-			return filepath.SkipDir
+			if fi.IsDir() {
+				return filepath.SkipDir
+			}
+			return nil
 		}
 		switch {
 		case fi.Mode().IsRegular():
