@@ -160,6 +160,11 @@ For example, in your `~/.chezmoi/dot_bashrc.tmpl` you might have:
     # this will only be included in ~/.bashrc on work-laptop
     {{- end }}
 
+If, after executing the template, the file contents are empty, the target file
+will be removed. This can be used to ensure that files are only present on
+certain machines. If you want an empty file to be created anyway, you will need
+to give it an `empty_` prefix. See "Under the hood" below.
+
 
 ## Keeping data private
 
@@ -245,11 +250,13 @@ with a `.`.  The following prefixes and suffixes are special.
 | Prefix               | Effect                                                                            |
 | -------------------- | ----------------------------------------------------------------------------------|
 | `private_` prefix    | Remove all group and world permissions from the target file or directory.         |
+| `empty_` prefix      | Ensure the file exists, even if is empty. By default, empty files are removed.    |
 | `executable_` prefix | Add executable permissions to the target file.                                    |
 | `dot_` prefix        | Rename the file or directory to use a leading dot, e.g. `dot_foo` becomes `.foo`. |
 | `.tmpl` suffix       | Treat the source file as a template.                                              |
 
-Order is important, the order is `private_`, `executable_`, `dot_`, `.tmpl`.
+Order is important, the order is `private_`, `empty_`, `executable_`, `dot_`,
+`.tmpl`.
 
 
 ## Using `chezmoi` outside your home directory

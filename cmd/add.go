@@ -19,6 +19,7 @@ func init() {
 	rootCommand.AddCommand(addCommand)
 
 	persistentFlags := addCommand.PersistentFlags()
+	persistentFlags.BoolVarP(&config.Add.Empty, "empty", "e", false, "add empty files")
 	persistentFlags.BoolVarP(&config.Add.Recursive, "recursive", "r", false, "recurse in to subdirectories")
 	persistentFlags.BoolVarP(&config.Add.Template, "template", "T", false, "add files as templates")
 }
@@ -35,7 +36,7 @@ func (c *Config) runAddCommandE(fs afero.Fs, command *cobra.Command, args []stri
 				if err != nil {
 					return err
 				}
-				return targetState.Add(fs, path, info, c.Add.Template, actuator)
+				return targetState.Add(fs, path, info, c.Add.Empty, c.Add.Template, actuator)
 			}); err != nil {
 				return err
 			}
@@ -44,7 +45,7 @@ func (c *Config) runAddCommandE(fs afero.Fs, command *cobra.Command, args []stri
 			if err != nil {
 				return err
 			}
-			if err := targetState.Add(fs, path, nil, c.Add.Template, actuator); err != nil {
+			if err := targetState.Add(fs, path, nil, c.Add.Empty, c.Add.Template, actuator); err != nil {
 				return err
 			}
 		}

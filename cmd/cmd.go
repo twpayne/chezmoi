@@ -27,6 +27,7 @@ type Config struct {
 	SourceVCSCommand string
 	Data             map[string]interface{}
 	Add              struct {
+		Empty     bool
 		Recursive bool
 		Template  bool
 	}

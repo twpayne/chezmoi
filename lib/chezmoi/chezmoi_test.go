@@ -34,21 +34,23 @@ func TestFileName(t *testing.T) {
 		fileName   string
 		name       string
 		mode       os.FileMode
+		isEmpty    bool
 		isTemplate bool
 	}{
-		{fileName: "foo", name: "foo", mode: os.FileMode(0666), isTemplate: false},
-		{fileName: "dot_foo", name: ".foo", mode: os.FileMode(0666), isTemplate: false},
-		{fileName: "private_foo", name: "foo", mode: os.FileMode(0600), isTemplate: false},
-		{fileName: "private_dot_foo", name: ".foo", mode: os.FileMode(0600), isTemplate: false},
-		{fileName: "executable_foo", name: "foo", mode: os.FileMode(0777), isTemplate: false},
-		{fileName: "foo.tmpl", name: "foo", mode: os.FileMode(0666), isTemplate: true},
-		{fileName: "private_executable_dot_foo.tmpl", name: ".foo", mode: os.FileMode(0700), isTemplate: true},
+		{fileName: "foo", name: "foo", mode: os.FileMode(0666), isEmpty: false, isTemplate: false},
+		{fileName: "dot_foo", name: ".foo", mode: os.FileMode(0666), isEmpty: false, isTemplate: false},
+		{fileName: "private_foo", name: "foo", mode: os.FileMode(0600), isEmpty: false, isTemplate: false},
+		{fileName: "private_dot_foo", name: ".foo", mode: os.FileMode(0600), isEmpty: false, isTemplate: false},
+		{fileName: "empty_foo", name: "foo", mode: os.FileMode(0666), isEmpty: true, isTemplate: false},
+		{fileName: "executable_foo", name: "foo", mode: os.FileMode(0777), isEmpty: false, isTemplate: false},
+		{fileName: "foo.tmpl", name: "foo", mode: os.FileMode(0666), isEmpty: false, isTemplate: true},
+		{fileName: "private_executable_dot_foo.tmpl", name: ".foo", mode: os.FileMode(0700), isEmpty: false, isTemplate: true},
 	} {
-		if gotName, gotMode, gotIsTemplate := parseFileName(tc.fileName); gotName != tc.name || gotMode != tc.mode || gotIsTemplate != tc.isTemplate {
-			t.Errorf("parseFileName(%q) == %q, %v, %v, want %q, %v, %v", tc.fileName, gotName, gotMode, gotIsTemplate, tc.name, tc.mode, tc.isTemplate)
+		if gotName, gotMode, gotIsEmpty, gotIsTemplate := parseFileName(tc.fileName); gotName != tc.name || gotMode != tc.mode || gotIsEmpty != tc.isEmpty || gotIsTemplate != tc.isTemplate {
+			t.Errorf("parseFileName(%q) == %q, %v, %v, %v want %q, %v, %v, %v", tc.fileName, gotName, gotMode, gotIsEmpty, gotIsTemplate, tc.name, tc.mode, tc.isEmpty, tc.isTemplate)
 		}
-		if gotFileName := makeFileName(tc.name, tc.mode, tc.isTemplate); gotFileName != tc.fileName {
-			t.Errorf("makeFileName(%q, %v, %v) == %q, want %q", tc.name, tc.mode, tc.isTemplate, gotFileName, tc.fileName)
+		if gotFileName := makeFileName(tc.name, tc.mode, tc.isEmpty, tc.isTemplate); gotFileName != tc.fileName {
+			t.Errorf("makeFileName(%q, %v, %v, %v) == %q, want %q", tc.name, tc.mode, tc.isEmpty, tc.isTemplate, gotFileName, tc.fileName)
 		}
 	}
 }
@@ -226,6 +228,8 @@ func TestEndToEnd(t *testing.T) {
 				"/home/user/.chezmoi/dot_bashrc":    "bar",
 				"/home/user/.chezmoi/.git/HEAD":     "HEAD",
 				"/home/user/.chezmoi/dot_hgrc.tmpl": "[ui]\nusername = {{ .name }} <{{ .email }}>\n",
+				"/home/user/.chezmoi/empty.tmpl":    "{{ if false }}foo{{ end }}",
+				"/home/user/.chezmoi/empty_foo":     "",
 			},
 			sourceDir: "/home/user/.chezmoi",
 			data: map[string]interface{}{
@@ -237,9 +241,12 @@ func TestEndToEnd(t *testing.T) {
 			wantFsMap: map[string]string{
 				"/home/user/.bashrc":                "bar",
 				"/home/user/.hgrc":                  "[ui]\nusername = John Smith <hello@example.com>\n",
+				"/home/user/foo":                    "",
 				"/home/user/.chezmoi/dot_bashrc":    "bar",
 				"/home/user/.chezmoi/.git/HEAD":     "HEAD",
 				"/home/user/.chezmoi/dot_hgrc.tmpl": "[ui]\nusername = {{ .name }} <{{ .email }}>\n",
+				"/home/user/.chezmoi/empty.tmpl":    "{{ if false }}foo{{ end }}",
+				"/home/user/.chezmoi/empty_foo":     "",
 			},
 		},
 	} {

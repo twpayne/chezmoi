@@ -20,6 +20,7 @@ import (
 
 const (
 	privatePrefix    = "private_"
+	emptyPrefix      = "empty_"
 	executablePrefix = "executable_"
 	dotPrefix        = "dot_"
 	templateSuffix   = ".tmpl"
@@ -33,6 +34,7 @@ type Stater interface {
 // A FileState represents the target state of a file.
 type FileState struct {
 	sourceName string
+	Empty      bool
 	Mode       os.FileMode
 	Contents   []byte
 }
@@ -140,6 +142,9 @@ func (ds *DirState) SourceName() string {
 
 // archive writes fs to w.
 func (fs *FileState) archive(w *tar.Writer, fileName string, headerTemplate *tar.Header, umask os.FileMode) error {
+	if len(fs.Contents) == 0 && !fs.Empty {
+		return nil
+	}
 	header := *headerTemplate
 	header.Typeflag = tar.TypeReg
 	header.Name = fileName
@@ -158,6 +163,9 @@ func (fs *FileState) apply(fileSystem afero.Fs, targetPath string, umask os.File
 	var currentContents []byte
 	switch {
 	case err == nil && fi.Mode().IsRegular():
+		if len(fs.Contents) == 0 && !fs.Empty {
+			return actuator.RemoveAll(targetPath)
+		}
 		f, err := fileSystem.Open(targetPath)
 		if err != nil {
 			return err
@@ -184,6 +192,9 @@ func (fs *FileState) apply(fileSystem afero.Fs, targetPath string, umask os.File
 	default:
 		return err
 	}
+	if len(fs.Contents) == 0 && !fs.Empty {
+		return nil
+	}
 	return actuator.WriteFile(targetPath, fs.Contents, fs.Mode&^umask, currentContents)
 }
 
@@ -205,7 +216,7 @@ func NewRootState(targetDir string, umask os.FileMode, sourceDir string, data ma
 }
 
 // Add adds a new target.
-func (rs *RootState) Add(fs afero.Fs, target string, fi os.FileInfo, isTemplate bool, actuator Actuator) error {
+func (rs *RootState) Add(fs afero.Fs, target string, fi os.FileInfo, addEmpty, isTemplate bool, actuator Actuator) error {
 	if !filepath.HasPrefix(target, rs.TargetDir) {
 		return errors.Errorf("%s: outside target directory", target)
 	}
@@ -227,7 +238,7 @@ func (rs *RootState) Add(fs afero.Fs, target string, fi os.FileInfo, isTemplate 
 	if parentDirName := filepath.Dir(targetName); parentDirName != "." {
 		dirState := rs.findDirState(parentDirName)
 		if dirState == nil {
-			if err := rs.Add(fs, parentDirName, nil, false, actuator); err != nil {
+			if err := rs.Add(fs, parentDirName, nil, false, false, actuator); err != nil {
 				return err
 			}
 			dirState = rs.findDirState(parentDirName)
@@ -245,7 +256,10 @@ func (rs *RootState) Add(fs afero.Fs, target string, fi os.FileInfo, isTemplate 
 		if _, ok := dirs[name]; ok {
 			return errors.Errorf("%s: already added as a directory", targetName)
 		}
-		sourceName := makeFileName(name, fi.Mode(), isTemplate)
+		if fi.Size() == 0 && !addEmpty {
+			return nil
+		}
+		sourceName := makeFileName(name, fi.Mode(), fi.Size() == 0, isTemplate)
 		if dirSourceName != "" {
 			sourceName = filepath.Join(dirSourceName, sourceName)
 		}
@@ -261,6 +275,7 @@ func (rs *RootState) Add(fs afero.Fs, target string, fi os.FileInfo, isTemplate 
 		}
 		files[name] = &FileState{
 			sourceName: sourceName,
+			Empty:      len(contents) == 0,
 			Mode:       fi.Mode(),
 			Contents:   contents,
 		}
@@ -401,7 +416,7 @@ func (rs *RootState) Populate(fs afero.Fs) error {
 		}
 		switch {
 		case fi.Mode().IsRegular():
-			dirNames, fileName, mode, isTemplate := parseFilePath(relPath)
+			dirNames, fileName, mode, isEmpty, isTemplate := parseFilePath(relPath)
 			dirs, files := rs.Dirs, rs.Files
 			for _, dirName := range dirNames {
 				dirs, files = dirs[dirName].Dirs, dirs[dirName].Files
@@ -428,6 +443,7 @@ func (rs *RootState) Populate(fs afero.Fs) error {
 			}
 			files[fileName] = &FileState{
 				sourceName: relPath,
+				Empty:      isEmpty,
 				Mode:       mode,
 				Contents:   contents,
 			}
@@ -474,10 +490,13 @@ func makeDirName(name string, mode os.FileMode) string {
 	return dirName
 }
 
-func makeFileName(name string, mode os.FileMode, isTemplate bool) string {
+func makeFileName(name string, mode os.FileMode, isEmpty bool, isTemplate bool) string {
 	fileName := ""
 	if mode&os.FileMode(077) == os.FileMode(0) {
 		fileName = privatePrefix
+	}
+	if isEmpty {
+		fileName += emptyPrefix
 	}
 	if mode&os.FileMode(0111) != os.FileMode(0) {
 		fileName += executablePrefix
@@ -510,14 +529,19 @@ func parseDirName(dirName string) (string, os.FileMode) {
 
 // parseFileName parses a single file name. It returns the target name, mode,
 // whether the contents should be interpreted as a template, and any error.
-func parseFileName(fileName string) (string, os.FileMode, bool) {
+func parseFileName(fileName string) (string, os.FileMode, bool, bool) {
 	name := fileName
 	mode := os.FileMode(0666)
 	isPrivate := false
+	isEmpty := false
 	isTemplate := false
 	if strings.HasPrefix(name, privatePrefix) {
 		name = strings.TrimPrefix(name, privatePrefix)
 		isPrivate = true
+	}
+	if strings.HasPrefix(name, emptyPrefix) {
+		name = strings.TrimPrefix(name, emptyPrefix)
+		isEmpty = true
 	}
 	if strings.HasPrefix(name, executablePrefix) {
 		name = strings.TrimPrefix(name, executablePrefix)
@@ -533,7 +557,7 @@ func parseFileName(fileName string) (string, os.FileMode, bool) {
 	if isPrivate {
 		mode &= 0700
 	}
-	return name, mode, isTemplate
+	return name, mode, isEmpty, isTemplate
 }
 
 // parseDirNameComponents parses multiple directory name components. It returns
@@ -552,11 +576,11 @@ func parseDirNameComponents(components []string) ([]string, []os.FileMode) {
 // parseFilePath parses a single file path. It returns the target directory
 // names, the target filename, the target mode, whether the contents should be
 // interpreted as a template, and any error.
-func parseFilePath(path string) ([]string, string, os.FileMode, bool) {
+func parseFilePath(path string) ([]string, string, os.FileMode, bool, bool) {
 	components := splitPathList(path)
 	dirNames, _ := parseDirNameComponents(components[0 : len(components)-1])
-	fileName, mode, isTemplate := parseFileName(components[len(components)-1])
-	return dirNames, fileName, mode, isTemplate
+	fileName, mode, isEmpty, isTemplate := parseFileName(components[len(components)-1])
+	return dirNames, fileName, mode, isEmpty, isTemplate
 }
 
 // sortedDirNames returns a sorted slice of all directory names in ds.
