@@ -44,20 +44,18 @@ Install it:
 
     $ go get -u github.com/twpayne/chezmoi
 
-Start using it:
-
-    $ chezmoi init
-
-This creates a directory called `~/.chezmoi` with permissions 0600 where
-`chezmoi` will store its state. You should manage this directory with the
-version control system of your choice. `chezmoi` will ignore all files and
-directories beginning with a `.` in this directory.
-
 Manage an existing file with `chezmoi`:
 
     $ chezmoi add ~/.bashrc
 
-This copies `~/.bashrc` to `~/.chezmoi/dot_bashrc`.
+This will create a directory called `~/.chezmoi` with permissions 0600 where
+`chezmoi` will store its state, if it does not already exist, and copy
+`~/.bashrc` to `~/.chezmoi/dot_bashrc`.
+
+You should manage your `~/.chezmoi` directory with the version control system
+of your choice. `chezmoi` will ignore all files and directories beginning with
+a `.` in this directory, so directoties like `.git` and `.hg` will not pollute
+your home directory.
 
 Edit the desired state:
 

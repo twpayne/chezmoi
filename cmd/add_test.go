@@ -15,6 +15,17 @@ func TestAddCommand(t *testing.T) {
 		tests            interface{}
 	}{
 		{
+			name: "add_first_file",
+			args: []string{"/home/jenkins/.bashrc"},
+			root: map[string]interface{}{
+				"/home/jenkins/.bashrc": "foo",
+			},
+			tests: []aferot.Test{
+				aferot.TestPath("/home/jenkins/.chezmoi", aferot.TestIsDir, aferot.TestModePerm(0700)),
+				aferot.TestPath("/home/jenkins/.chezmoi/dot_bashrc", aferot.TestModeIsRegular, aferot.TestContentsString("foo")),
+			},
+		},
+		{
 			name: "add_template",
 			args: []string{"/home/jenkins/.gitconfig"},
 			addCommandConfig: AddCommandConfig{

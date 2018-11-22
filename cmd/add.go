@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 
 	"github.com/absfs/afero"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -30,6 +31,23 @@ func (c *Config) runAddCommandE(fs afero.Fs, command *cobra.Command, args []stri
 		return err
 	}
 	actuator := c.getDefaultActuator(fs)
+	fi, err := fs.Stat(c.SourceDir)
+	switch {
+	case err == nil && fi.Mode().IsDir():
+		if fi.Mode()&os.ModePerm != 0700 {
+			if err := actuator.Chmod(c.SourceDir, 0700); err != nil {
+				return err
+			}
+		}
+	case os.IsNotExist(err):
+		if err := actuator.Mkdir(c.SourceDir, 0700); err != nil {
+			return err
+		}
+	case err == nil:
+		return errors.Errorf("%s: is not a directory", c.SourceDir)
+	default:
+		return err
+	}
 	for _, arg := range args {
 		path, err := filepath.Abs(arg)
 		if err != nil {
