@@ -42,7 +42,7 @@ control system of your choice to manage your configuration.
 
 Install it:
 
-    $ go install github.com/twpayne/chezmoi
+    $ go get -u github.com/twpayne/chezmoi
 
 Start using it:
 
