@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/d4l3k/messagediff"
-	"github.com/twpayne/chezmoi/internal/absfstesting"
+	"github.com/twpayne/aferot"
 )
 
 func TestDirName(t *testing.T) {
@@ -61,14 +61,14 @@ func TestFileName(t *testing.T) {
 func TestRootStatePopulate(t *testing.T) {
 	for _, tc := range []struct {
 		name      string
-		fs        map[string]string
+		root      interface{}
 		sourceDir string
 		data      map[string]interface{}
 		want      *RootState
 	}{
 		{
 			name: "simple_file",
-			fs: map[string]string{
+			root: map[string]string{
 				"/foo": "bar",
 			},
 			sourceDir: "/",
@@ -88,7 +88,7 @@ func TestRootStatePopulate(t *testing.T) {
 		},
 		{
 			name: "dot_file",
-			fs: map[string]string{
+			root: map[string]string{
 				"/dot_foo": "bar",
 			},
 			sourceDir: "/",
@@ -108,7 +108,7 @@ func TestRootStatePopulate(t *testing.T) {
 		},
 		{
 			name: "private_file",
-			fs: map[string]string{
+			root: map[string]string{
 				"/private_foo": "bar",
 			},
 			sourceDir: "/",
@@ -128,7 +128,7 @@ func TestRootStatePopulate(t *testing.T) {
 		},
 		{
 			name: "file_in_subdir",
-			fs: map[string]string{
+			root: map[string]string{
 				"/foo/bar": "baz",
 			},
 			sourceDir: "/",
@@ -155,7 +155,7 @@ func TestRootStatePopulate(t *testing.T) {
 		},
 		{
 			name: "file_in_private_dot_subdir",
-			fs: map[string]string{
+			root: map[string]string{
 				"/private_dot_foo/bar": "baz",
 			},
 			sourceDir: "/",
@@ -182,7 +182,7 @@ func TestRootStatePopulate(t *testing.T) {
 		},
 		{
 			name: "template_dot_file",
-			fs: map[string]string{
+			root: map[string]string{
 				"/dot_gitconfig.tmpl": "[user]\n\temail = {{.Email}}\n",
 			},
 			sourceDir: "/",
@@ -208,9 +208,9 @@ func TestRootStatePopulate(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			fs, err := absfstesting.MakeMemMapFs(tc.fs)
+			fs, err := aferot.NewMemMapFs(tc.root)
 			if err != nil {
-				t.Fatalf("absfstesting.MakeMemMapFs(%v) == %v, %v, want !<nil>, <nil>", tc.fs, fs, err)
+				t.Fatalf("aferot.NewMemMapFs(_) == %v, want <nil>", err)
 			}
 			rs := NewRootState("/", 0, tc.sourceDir, tc.data)
 			if err := rs.Populate(fs); err != nil {
@@ -226,16 +226,16 @@ func TestRootStatePopulate(t *testing.T) {
 func TestEndToEnd(t *testing.T) {
 	for _, tc := range []struct {
 		name      string
-		fsMap     map[string]string
+		root      map[string]string
 		sourceDir string
 		data      map[string]interface{}
 		targetDir string
 		umask     os.FileMode
-		wantFsMap map[string]string
+		tests     interface{}
 	}{
 		{
 			name: "all",
-			fsMap: map[string]string{
+			root: map[string]string{
 				"/home/user/.bashrc":                "foo",
 				"/home/user/.chezmoi/dot_bashrc":    "bar",
 				"/home/user/.chezmoi/.git/HEAD":     "HEAD",
@@ -250,37 +250,26 @@ func TestEndToEnd(t *testing.T) {
 			},
 			targetDir: "/home/user",
 			umask:     os.FileMode(022),
-			wantFsMap: map[string]string{
-				"/home/user/.bashrc":                "bar",
-				"/home/user/.hgrc":                  "[ui]\nusername = John Smith <hello@example.com>\n",
-				"/home/user/foo":                    "",
-				"/home/user/.chezmoi/dot_bashrc":    "bar",
-				"/home/user/.chezmoi/.git/HEAD":     "HEAD",
-				"/home/user/.chezmoi/dot_hgrc.tmpl": "[ui]\nusername = {{ .name }} <{{ .email }}>\n",
-				"/home/user/.chezmoi/empty.tmpl":    "{{ if false }}foo{{ end }}",
-				"/home/user/.chezmoi/empty_foo":     "",
+			tests: []aferot.Test{
+				aferot.TestPath("/home/user/.bashrc", aferot.TestModeIsRegular, aferot.TestContentsString("bar")),
+				aferot.TestPath("/home/user/.hgrc", aferot.TestModeIsRegular, aferot.TestContentsString("[ui]\nusername = John Smith <hello@example.com>\n")),
+				aferot.TestPath("/home/user/foo", aferot.TestModeIsRegular, aferot.TestContents(nil)),
 			},
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			fs, err := absfstesting.MakeMemMapFs(tc.fsMap)
+			fs, err := aferot.NewMemMapFs(tc.root)
 			if err != nil {
-				t.Fatalf("absfstesting.MakeMemMapFs(%v) == %v, %v, want !<nil>, <nil>", tc.fsMap, fs, err)
+				t.Fatalf("aferot.NewMemMapFs(_) == %v, want <nil>", err)
 			}
 			rs := NewRootState(tc.targetDir, tc.umask, tc.sourceDir, tc.data)
 			if err := rs.Populate(fs); err != nil {
 				t.Fatalf("rs.Populate(%+v) == %v, want <nil>", fs, err)
 			}
 			if err := rs.Apply(fs, NewLoggingActuator(NewFsActuator(fs, tc.targetDir))); err != nil {
-				t.Fatalf("rs.Apply(absfstesting.MakeMemMapFs(%v), _) == %v, want <nil>", tc.fsMap, err)
+				t.Fatalf("rs.Apply(fs, _) == %v, want <nil>", err)
 			}
-			gotFsMap, err := absfstesting.MakeMapFs(fs)
-			if err != nil {
-				t.Fatalf("absfstesting.MakeMapFs(%v) == %v, %v, want !<nil>, <nil>", fs, gotFsMap, err)
-			}
-			if diff, equal := messagediff.PrettyDiff(tc.wantFsMap, gotFsMap); !equal {
-				t.Errorf("%s\n", diff)
-			}
+			aferot.RunTest(t, fs, "", tc.tests)
 		})
 	}
 }
