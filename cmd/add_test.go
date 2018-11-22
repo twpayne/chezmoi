@@ -3,8 +3,7 @@ package cmd
 import (
 	"testing"
 
-	"github.com/d4l3k/messagediff"
-	"github.com/twpayne/chezmoi/internal/absfstesting"
+	"github.com/twpayne/aferot"
 )
 
 func TestAddCommand(t *testing.T) {
@@ -12,8 +11,8 @@ func TestAddCommand(t *testing.T) {
 		name             string
 		args             []string
 		addCommandConfig AddCommandConfig
-		mapFs            map[string]string
-		wantMapFs        map[string]string
+		root             interface{}
+		tests            interface{}
 	}{
 		{
 			name: "add_template",
@@ -21,14 +20,12 @@ func TestAddCommand(t *testing.T) {
 			addCommandConfig: AddCommandConfig{
 				Template: true,
 			},
-			mapFs: map[string]string{
+			root: map[string]string{
 				"/home/jenkins/.chezmoi/.keep": "",
 				"/home/jenkins/.gitconfig":     "[user]\n\tname = John Smith\n\temail = john.smith@company.com\n",
 			},
-			wantMapFs: map[string]string{
-				"/home/jenkins/.chezmoi/.keep":              "",
-				"/home/jenkins/.chezmoi/dot_gitconfig.tmpl": "[user]\n\tname = {{ .name }}\n\temail = {{ .email }}\n",
-				"/home/jenkins/.gitconfig":                  "[user]\n\tname = John Smith\n\temail = john.smith@company.com\n",
+			tests: []aferot.Test{
+				aferot.TestPath("/home/jenkins/.chezmoi/dot_gitconfig.tmpl", aferot.TestModeIsRegular, aferot.TestContentsString("[user]\n\tname = {{ .name }}\n\temail = {{ .email }}\n")),
 			},
 		},
 		{
@@ -37,27 +34,23 @@ func TestAddCommand(t *testing.T) {
 			addCommandConfig: AddCommandConfig{
 				Recursive: true,
 			},
-			mapFs: map[string]string{
+			root: map[string]string{
 				"/home/jenkins/.chezmoi/.keep":              "",
 				"/home/jenkins/.config/micro/settings.json": "{}",
 			},
-			wantMapFs: map[string]string{
-				"/home/jenkins/.chezmoi/.keep":                          "",
-				"/home/jenkins/.chezmoi/dot_config/micro/settings.json": "{}",
-				"/home/jenkins/.config/micro/settings.json":             "{}",
+			tests: []aferot.Test{
+				aferot.TestPath("/home/jenkins/.chezmoi/dot_config/micro/settings.json", aferot.TestModeIsRegular, aferot.TestContentsString("{}")),
 			},
 		},
 		{
 			name: "add_nested_directory",
 			args: []string{"/home/jenkins/.config/micro/settings.json"},
-			mapFs: map[string]string{
+			root: map[string]string{
 				"/home/jenkins/.chezmoi/.keep":              "",
 				"/home/jenkins/.config/micro/settings.json": "{}",
 			},
-			wantMapFs: map[string]string{
-				"/home/jenkins/.chezmoi/.keep":                          "",
-				"/home/jenkins/.chezmoi/dot_config/micro/settings.json": "{}",
-				"/home/jenkins/.config/micro/settings.json":             "{}",
+			tests: []aferot.Test{
+				aferot.TestPath("/home/jenkins/.chezmoi/dot_config/micro/settings.json", aferot.TestModeIsRegular, aferot.TestContentsString("{}")),
 			},
 		},
 		{
@@ -66,14 +59,12 @@ func TestAddCommand(t *testing.T) {
 			addCommandConfig: AddCommandConfig{
 				Empty: true,
 			},
-			mapFs: map[string]string{
+			root: map[string]string{
 				"/home/jenkins/.chezmoi/.keep": "",
 				"/home/jenkins/empty":          "",
 			},
-			wantMapFs: map[string]string{
-				"/home/jenkins/.chezmoi/.keep":       "",
-				"/home/jenkins/.chezmoi/empty_empty": "",
-				"/home/jenkins/empty":                "",
+			tests: []aferot.Test{
+				aferot.TestPath("/home/jenkins/.chezmoi/empty_empty", aferot.TestModeIsRegular, aferot.TestContents(nil)),
 			},
 		},
 	} {
@@ -91,20 +82,14 @@ func TestAddCommand(t *testing.T) {
 				},
 				Add: tc.addCommandConfig,
 			}
-			fs, err := absfstesting.MakeMemMapFs(tc.mapFs)
+			fs, err := aferot.NewMemMapFs(tc.root)
 			if err != nil {
-				t.Fatalf("absfstesting.MakeMemMapFs(%+v) == %v, %v, want _, !<nil>", tc.mapFs, fs, err)
+				t.Fatalf("aferot.NewMemMapFs(_) == %v, want !<nil>", err)
 			}
 			if err := c.runAddCommandE(fs, nil, tc.args); err != nil {
 				t.Errorf("c.runAddCommandE(fs, nil, %+v) == %v, want <nil>", tc.args, err)
 			}
-			mapFs, err := absfstesting.MakeMapFs(fs)
-			if err != nil {
-				t.Fatalf("absfstesting.MakeMapFs(%+v) == %v, %v, want _, !<nil>", fs, mapFs, err)
-			}
-			if diff, equal := messagediff.PrettyDiff(tc.wantMapFs, mapFs); !equal {
-				t.Errorf("%s\n", diff)
-			}
+			aferot.RunTest(t, fs, "", tc.tests)
 		})
 	}
 }
