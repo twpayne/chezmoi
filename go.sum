@@ -46,6 +46,8 @@ github.com/stretchr/testify v1.2.2 h1:bSDNvY7ZPG5RlJ8otE/7V6gMiyenm9RtJ7IUVIAoJ1
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
 github.com/twpayne/aferot v0.0.0-20181122171929-2a70178ed571 h1:PJ/Z5Dvb5Dz92Ee57u8kgi029HhehzfGlOoILXprImI=
 github.com/twpayne/aferot v0.0.0-20181122171929-2a70178ed571/go.mod h1:nZ0bXVGY1EqEVchfNwrVIUn/uv/zYrzLB2/AOAyeMsw=
+github.com/twpayne/aferot v0.0.0-20181123172757-47bd5ed85872 h1:mpk7OvDYVodY3WAFylM0Q0M5ryS8at/GkZBt/TLlCLI=
+github.com/twpayne/aferot v0.0.0-20181123172757-47bd5ed85872/go.mod h1:ink3K8KSHUc7IypQv0MW2kqtopLB3NFNhRPMyGbV+sM=
 golang.org/x/sys v0.0.0-20180906133057-8cf3aee42992 h1:BH3eQWeGbwRU2+wxxuuPOdFBmaiBH81O8BugSjHeTFg=
 golang.org/x/sys v0.0.0-20180906133057-8cf3aee42992/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
 golang.org/x/text v0.3.0 h1:g61tztE5qeGQ89tm6NTjjM9VPIm088od1l6aSorWRWg=

@@ -14,5 +14,5 @@ require (
 	github.com/spf13/cobra v0.0.3
 	github.com/spf13/viper v1.2.1
 	github.com/stretchr/testify v1.2.2 // indirect
-	github.com/twpayne/aferot v0.0.0-20181122171929-2a70178ed571
+	github.com/twpayne/aferot v0.0.0-20181123172757-47bd5ed85872
 )
