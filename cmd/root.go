@@ -32,7 +32,7 @@ func init() {
 
 	persistentFlags := rootCommand.PersistentFlags()
 
-	persistentFlags.StringVarP(&configFile, "config", "c", filepath.Join(homeDir, ".chezmoi.yaml"), "config file")
+	persistentFlags.StringVarP(&configFile, "config", "c", filepath.Join(homeDir, ".chezmoi"), "config file")
 
 	persistentFlags.BoolVarP(&config.DryRun, "dry-run", "n", false, "dry run")
 	viper.BindPFlag("dry-run", persistentFlags.Lookup("dry-run"))
@@ -54,14 +54,25 @@ func init() {
 	viper.BindPFlag("verbose", persistentFlags.Lookup("verbose"))
 
 	cobra.OnInitialize(func() {
-		if _, err := os.Stat(configFile); !os.IsNotExist(err) {
-			viper.SetConfigFile(configFile)
+		// FIXME once https://github.com/spf13/viper/pull/601 is merged, we can
+		// use viper.SetConfigName instead of looping over possible config file
+		// names ourself.
+		for _, extension := range append([]string{""}, viper.SupportedExts...) {
+			configFileName := configFile
+			if extension != "" {
+				configFileName += "." + extension
+			}
+			if info, err := os.Stat(configFileName); err != nil || !info.Mode().IsRegular() {
+				continue
+			}
+			viper.SetConfigFile(configFileName)
 			if err := viper.ReadInConfig(); err != nil {
 				log.Fatal(err)
 			}
 			if err := viper.Unmarshal(&config); err != nil {
 				log.Fatal(err)
 			}
+			return
 		}
 	})
 }

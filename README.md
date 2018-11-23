@@ -35,7 +35,8 @@ systems.
 
  * Fast, easy to use, and familiar: `chezmoi` runs in fractions of a second and
    includes commands to make most operations trivial. You can use the version
-control system of your choice to manage your configuration.
+control system of your choice to manage your configuration, and many different
+formats (e.g. JSON, YAML, TOML, etc.) are supported for the configuration file.
 
 
 ## Quick start
@@ -114,6 +115,10 @@ what might change. For your home machine:
 If you intend to store private data (e.g. access tokens) in `~/.chezmoi.yaml`,
 make sure it has mode 0600. See "Keeping data private" below for more
 discussion on this.
+
+If you prefer, you can use any format supported by
+[Viper](https://github.com/spf13/viper) for your configuration file. This
+includes JSON, YAML, TOML, and more.
 
 Then, add `~/.gitconfig` to `chezmoi` using the `-T` flag to automatically turn
 it in to a template:
