@@ -55,7 +55,7 @@ This will create a directory called `~/.chezmoi` with permissions 0600 where
 
 You should manage your `~/.chezmoi` directory with the version control system
 of your choice. `chezmoi` will ignore all files and directories beginning with
-a `.` in this directory, so directoties like `.git` and `.hg` will not pollute
+a `.` in this directory, so directories like `.git` and `.hg` will not pollute
 your home directory.
 
 Edit the desired state:
