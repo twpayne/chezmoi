@@ -1,7 +1,5 @@
 github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
-github.com/absfs/afero v1.1.1 h1:6VxH5Xa7KRrs0F6RO83Lo4u0nDuPpLiqt8RXxiR86Uk=
-github.com/absfs/afero v1.1.1/go.mod h1:uu+bE/EDTkmYxQMTPjt9LqXC59ugwPQ17yIUBIr4yv4=
 github.com/absfs/afero v1.1.2-0.20181111024946-2ab2519ed197 h1:5TUFP++jTLtIVtol4MuiwJMFKZ+Mrd0JqLJHC3swA78=
 github.com/absfs/afero v1.1.2-0.20181111024946-2ab2519ed197/go.mod h1:uu+bE/EDTkmYxQMTPjt9LqXC59ugwPQ17yIUBIr4yv4=
 github.com/d4l3k/messagediff v1.2.1 h1:ZcAIMYsUg0EAp9X+tt8/enBE/Q8Yd5kzPynLyKptt9U=
@@ -16,6 +14,8 @@ github.com/google/renameio v0.0.0-20181108174601-76365acd908f h1:lhDFIjvRqIJDmEH
 github.com/google/renameio v0.0.0-20181108174601-76365acd908f/go.mod h1:KWCgfxg9yswjAJkECMjeO8J8rahYeXnNhOm40UhjYkI=
 github.com/hashicorp/hcl v1.0.0 h1:0Anlzjpi4vEasTeNFn2mLJgTSwt0+6sfsiTG8qcWGx4=
 github.com/hashicorp/hcl v1.0.0/go.mod h1:E5yfLk+7swimpb2L/Alb/PJmXilQ/rhwaUYs4T20WEQ=
+github.com/inconshreveable/mousetrap v1.0.0 h1:Z8tu5sraLXCXIcARxBp/8cbvlwVa7Z1NHg9XEKhtSvM=
+github.com/inconshreveable/mousetrap v1.0.0/go.mod h1:PxqpIevigyE2G7u3NXJIT2ANytuPF1OarO4DADm73n8=
 github.com/magiconair/properties v1.8.0 h1:LLgXmsheXeRoUOBOjtwPQCWIYqM/LU1ayDtDePerRcY=
 github.com/magiconair/properties v1.8.0/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=
 github.com/mitchellh/go-homedir v1.0.0 h1:vKb8ShqSby24Yrqr/yDYkuFz8d0WUjys40rvnGC8aR0=
@@ -42,8 +42,6 @@ github.com/spf13/viper v1.2.1 h1:bIcUwXqLseLF3BDAZduuNfekWG87ibtFxi59Bq+oI9M=
 github.com/spf13/viper v1.2.1/go.mod h1:P4AexN0a+C9tGAnUFNwDMYYZv3pjFuvmeiMyKRaNVlI=
 github.com/stretchr/testify v1.2.2 h1:bSDNvY7ZPG5RlJ8otE/7V6gMiyenm9RtJ7IUVIAoJ1w=
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
-github.com/twpayne/aferot v0.0.0-20181122171929-2a70178ed571 h1:PJ/Z5Dvb5Dz92Ee57u8kgi029HhehzfGlOoILXprImI=
-github.com/twpayne/aferot v0.0.0-20181122171929-2a70178ed571/go.mod h1:nZ0bXVGY1EqEVchfNwrVIUn/uv/zYrzLB2/AOAyeMsw=
 github.com/twpayne/aferot v0.0.0-20181123172757-47bd5ed85872 h1:mpk7OvDYVodY3WAFylM0Q0M5ryS8at/GkZBt/TLlCLI=
 github.com/twpayne/aferot v0.0.0-20181123172757-47bd5ed85872/go.mod h1:ink3K8KSHUc7IypQv0MW2kqtopLB3NFNhRPMyGbV+sM=
 golang.org/x/sys v0.0.0-20180906133057-8cf3aee42992 h1:BH3eQWeGbwRU2+wxxuuPOdFBmaiBH81O8BugSjHeTFg=

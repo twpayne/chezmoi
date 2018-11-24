@@ -7,6 +7,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1
 	github.com/fatih/structtag v1.0.0 // indirect
 	github.com/google/renameio v0.0.0-20181108174601-76365acd908f
+	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/mitchellh/go-homedir v1.0.0
 	github.com/pkg/errors v0.8.0
 	github.com/pmezard/go-difflib v1.0.0 // indirect
