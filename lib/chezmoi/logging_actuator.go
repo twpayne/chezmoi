@@ -5,8 +5,6 @@ import (
 	"io"
 	"os"
 	"strings"
-
-	"github.com/sergi/go-diff/diffmatchpatch"
 )
 
 // A LoggingActuator wraps an Actuator and logs all of the actions it executes
@@ -66,27 +64,20 @@ func (a *LoggingActuator) WriteFile(name string, contents []byte, mode os.FileMo
 	err := a.a.WriteFile(name, contents, mode, currentContents)
 	if err == nil {
 		fmt.Fprintln(a.w, action)
-		dmp := diffmatchpatch.New()
-		textA, textB, lineArray := dmp.DiffLinesToChars(string(currentContents), string(contents))
-		charDiffs := dmp.DiffMain(textA, textB, false)
-		diffs := dmp.DiffCharsToLines(charDiffs, lineArray)
-		// FIXME print standard diff
-		for _, diff := range diffs {
-			if diff.Type == diffmatchpatch.DiffEqual {
-				continue
-			}
-			lines := strings.Split(diff.Text, "\n")
-			for i := 0; i < len(lines)-1; i++ {
-				switch diff.Type {
-				case diffmatchpatch.DiffDelete:
-					fmt.Fprintf(a.w, "-%s\n", lines[i])
-				case diffmatchpatch.DiffInsert:
-					fmt.Fprintf(a.w, "+%s\n", lines[i])
-				}
+		for _, section := range diff(splitLines(currentContents), splitLines(contents)) {
+			for _, s := range section.s {
+				fmt.Fprintf(a.w, "%c%s\n", section.ctype, s)
 			}
 		}
 	} else {
 		fmt.Fprintf(a.w, "%s: %v\n", action, err)
 	}
 	return err
+}
+
+func splitLines(contents []byte) []string {
+	if len(contents) == 0 {
+		return nil
+	}
+	return strings.Split(string(contents), "\n")
 }
