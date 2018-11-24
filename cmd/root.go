@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"log"
+	"fmt"
 	"os"
 	"path/filepath"
 	"syscall"
@@ -27,7 +27,7 @@ var rootCommand = &cobra.Command{
 func init() {
 	homeDir, err := homedir.Dir()
 	if err != nil {
-		log.Fatal(err)
+		printErrorAndExit(err)
 	}
 
 	persistentFlags := rootCommand.PersistentFlags()
@@ -67,10 +67,10 @@ func init() {
 			}
 			viper.SetConfigFile(configFileName)
 			if err := viper.ReadInConfig(); err != nil {
-				log.Fatal(err)
+				printErrorAndExit(err)
 			}
 			if err := viper.Unmarshal(&config); err != nil {
-				log.Fatal(err)
+				printErrorAndExit(err)
 			}
 			return
 		}
@@ -80,7 +80,7 @@ func init() {
 // Execute executes the root command.
 func Execute() {
 	if err := rootCommand.Execute(); err != nil {
-		log.Fatal(err)
+		printErrorAndExit(err)
 	}
 }
 
@@ -90,7 +90,7 @@ func (c *Config) persistentPreRunRootE(fs afero.Fs, command *cobra.Command, args
 	case err == nil && !fi.Mode().IsDir():
 		return errors.Errorf("%s: not a directory", c.SourceDir)
 	case err == nil && fi.Mode()&os.ModePerm != 0700:
-		log.Printf("%s: want permissions 0700, got 0%o", c.SourceDir, fi.Mode()&os.ModePerm)
+		fmt.Printf("%s: want permissions 0700, got 0%o\n", c.SourceDir, fi.Mode()&os.ModePerm)
 	case os.IsNotExist(err):
 	default:
 		return err

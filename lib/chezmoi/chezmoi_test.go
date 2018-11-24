@@ -266,7 +266,7 @@ func TestEndToEnd(t *testing.T) {
 			if err := rs.Populate(fs); err != nil {
 				t.Fatalf("rs.Populate(%+v) == %v, want <nil>", fs, err)
 			}
-			if err := rs.Apply(fs, NewLoggingActuator(NewFsActuator(fs, tc.targetDir))); err != nil {
+			if err := rs.Apply(fs, NewLoggingActuator(os.Stderr, NewFsActuator(fs, tc.targetDir))); err != nil {
 				t.Fatalf("rs.Apply(fs, _) == %v, want <nil>", err)
 			}
 			aferot.RunTest(t, fs, "", tc.tests)

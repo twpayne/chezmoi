@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"log"
+	"fmt"
 	"os"
 
 	"github.com/absfs/afero"
@@ -20,7 +20,7 @@ func init() {
 
 func (c *Config) runSourceCommand(fs afero.Fs, cmd *cobra.Command, args []string) error {
 	if c.Verbose {
-		log.Printf("cd %s", c.SourceDir)
+		fmt.Printf("cd %s\n", c.SourceDir)
 	}
 	if !c.DryRun {
 		if err := os.Chdir(c.SourceDir); err != nil {

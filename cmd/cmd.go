@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"log"
+	"fmt"
 	"os"
 	"os/exec"
 	"os/user"
@@ -42,7 +42,7 @@ func (c *Config) exec(argv []string) error {
 		return err
 	}
 	if c.Verbose {
-		log.Printf("exec %s", strings.Join(argv, " "))
+		fmt.Printf("exec %s\n", strings.Join(argv, " "))
 	}
 	if c.DryRun {
 		return nil
@@ -58,7 +58,7 @@ func (c *Config) getDefaultActuator(fs afero.Fs) chezmoi.Actuator {
 		actuator = chezmoi.NewFsActuator(fs, c.TargetDir)
 	}
 	if c.Verbose {
-		actuator = chezmoi.NewLoggingActuator(actuator)
+		actuator = chezmoi.NewLoggingActuator(os.Stdout, actuator)
 	}
 	return actuator
 }
@@ -142,4 +142,9 @@ func makeRunE(runCommand func(afero.Fs, *cobra.Command, []string) error) func(*c
 	return func(cmd *cobra.Command, args []string) error {
 		return runCommand(afero.NewOsFs(), cmd, args)
 	}
+}
+
+func printErrorAndExit(err error) {
+	fmt.Println(err)
+	os.Exit(1)
 }

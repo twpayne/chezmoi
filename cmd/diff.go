@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"os"
+
 	"github.com/absfs/afero"
 	"github.com/spf13/cobra"
 	"github.com/twpayne/chezmoi/lib/chezmoi"
@@ -22,6 +24,6 @@ func (c *Config) runDiffCommandE(fs afero.Fs, command *cobra.Command, args []str
 	if err != nil {
 		return err
 	}
-	actuator := chezmoi.NewLoggingActuator(chezmoi.NewNullActuator())
+	actuator := chezmoi.NewLoggingActuator(os.Stdout, chezmoi.NewNullActuator())
 	return targetState.Apply(fs, actuator)
 }

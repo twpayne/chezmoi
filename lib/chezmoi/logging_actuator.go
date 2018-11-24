@@ -2,7 +2,7 @@ package chezmoi
 
 import (
 	"fmt"
-	"log"
+	"io"
 	"os"
 	"strings"
 
@@ -12,13 +12,15 @@ import (
 // A LoggingActuator wraps an Actuator and logs all of the actions it executes
 // and any errors.
 type LoggingActuator struct {
+	w io.Writer
 	a Actuator
 }
 
 // NewLoggingActuator returns a new LoggingActuator.
-func NewLoggingActuator(a Actuator) *LoggingActuator {
+func NewLoggingActuator(w io.Writer, a Actuator) *LoggingActuator {
 	return &LoggingActuator{
 		a: a,
+		w: w,
 	}
 }
 
@@ -27,9 +29,9 @@ func (a *LoggingActuator) Chmod(name string, mode os.FileMode) error {
 	action := fmt.Sprintf("chmod %o %s", mode, name)
 	err := a.a.Chmod(name, mode)
 	if err == nil {
-		log.Print(action)
+		fmt.Fprintln(a.w, action)
 	} else {
-		log.Printf("%s: %v", action, err)
+		fmt.Fprintf(a.w, "%s: %v\n", action, err)
 	}
 	return err
 }
@@ -39,9 +41,9 @@ func (a *LoggingActuator) Mkdir(name string, mode os.FileMode) error {
 	action := fmt.Sprintf("mkdir -m %o %s", mode, name)
 	err := a.a.Mkdir(name, mode)
 	if err == nil {
-		log.Print(action)
+		fmt.Fprintln(a.w, action)
 	} else {
-		log.Printf("%s: %v", action, err)
+		fmt.Fprintf(a.w, "%s: %v\n", action, err)
 	}
 	return err
 }
@@ -51,9 +53,9 @@ func (a *LoggingActuator) RemoveAll(name string) error {
 	action := fmt.Sprintf("rm -rf %s", name)
 	err := a.a.RemoveAll(name)
 	if err == nil {
-		log.Print(action)
+		fmt.Fprintln(a.w, action)
 	} else {
-		log.Printf("%s: %v", action, err)
+		fmt.Fprintf(a.w, "%s: %v\n", action, err)
 	}
 	return err
 }
@@ -63,7 +65,7 @@ func (a *LoggingActuator) WriteFile(name string, contents []byte, mode os.FileMo
 	action := fmt.Sprintf("install -m %o /dev/null %s", mode, name)
 	err := a.a.WriteFile(name, contents, mode, currentContents)
 	if err == nil {
-		log.Print(action)
+		fmt.Fprintln(a.w, action)
 		dmp := diffmatchpatch.New()
 		textA, textB, lineArray := dmp.DiffLinesToChars(string(currentContents), string(contents))
 		charDiffs := dmp.DiffMain(textA, textB, false)
@@ -77,14 +79,14 @@ func (a *LoggingActuator) WriteFile(name string, contents []byte, mode os.FileMo
 			for i := 0; i < len(lines)-1; i++ {
 				switch diff.Type {
 				case diffmatchpatch.DiffDelete:
-					log.Printf("-%s", lines[i])
+					fmt.Fprintf(a.w, "-%s\n", lines[i])
 				case diffmatchpatch.DiffInsert:
-					log.Printf("+%s", lines[i])
+					fmt.Fprintf(a.w, "+%s\n", lines[i])
 				}
 			}
 		}
 	} else {
-		log.Printf("%s: %v", action, err)
+		fmt.Fprintf(a.w, "%s: %v\n", action, err)
 	}
 	return err
 }
