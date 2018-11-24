@@ -165,7 +165,7 @@ func (fs *FileState) apply(fileSystem afero.Fs, targetPath string, umask os.File
 		if len(fs.Contents) == 0 && !fs.Empty {
 			return actuator.RemoveAll(targetPath)
 		}
-		currentContents, err := afero.ReadFile(fileSystem, targetPath)
+		currentContents, err = afero.ReadFile(fileSystem, targetPath)
 		if err != nil {
 			return err
 		}
