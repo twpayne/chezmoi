@@ -373,24 +373,31 @@ func (rs *RootState) Apply(fs afero.Fs, actuator Actuator) error {
 }
 
 // Get returns the state of the given target, or nil if no such target is found.
-func (rs *RootState) Get(targetName string) Stater {
+func (rs *RootState) Get(target string) (Stater, error) {
+	if !filepath.HasPrefix(target, rs.TargetDir) {
+		return nil, errors.Errorf("%s: outside target directory", target)
+	}
+	targetName, err := filepath.Rel(rs.TargetDir, target)
+	if err != nil {
+		return nil, err
+	}
 	components := splitPathList(targetName)
 	dirs, files := rs.Dirs, rs.Files
 	for i := 0; i < len(components)-1; i++ {
 		dirState, ok := dirs[components[i]]
 		if !ok {
-			return nil
+			return nil, nil
 		}
 		dirs, files = dirState.Dirs, dirState.Files
 	}
 	name := components[len(components)-1]
 	if dirState, ok := dirs[name]; ok {
-		return dirState
+		return dirState, nil
 	}
 	if fileState, ok := files[name]; ok {
-		return fileState
+		return fileState, nil
 	}
-	return nil
+	return nil, nil
 }
 
 // Populate walks fs from the source directory creating a target directory

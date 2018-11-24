@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"path/filepath"
+
 	"github.com/absfs/afero"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
@@ -26,7 +28,14 @@ func (c *Config) runDumpCommandE(fs afero.Fs, command *cobra.Command, args []str
 		spew.Dump(targetState)
 	} else {
 		for _, arg := range args {
-			state := targetState.Get(arg)
+			path, err := filepath.Abs(arg)
+			if err != nil {
+				return err
+			}
+			state, err := targetState.Get(path)
+			if err != nil {
+				return err
+			}
 			if state == nil {
 				return errors.Errorf("%s: not found", arg)
 			}

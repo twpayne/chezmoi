@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"os"
+	"path/filepath"
 
 	"github.com/absfs/afero"
 	"github.com/pkg/errors"
@@ -26,7 +27,14 @@ func (c *Config) runCatCommand(fs afero.Fs, command *cobra.Command, args []strin
 		return err
 	}
 	for _, arg := range args {
-		state := targetState.Get(arg)
+		path, err := filepath.Abs(arg)
+		if err != nil {
+			return err
+		}
+		state, err := targetState.Get(path)
+		if err != nil {
+			return err
+		}
 		if state == nil {
 			return errors.Errorf("%s: not found", arg)
 		}
