@@ -159,7 +159,7 @@ For example, in your `~/.chezmoi/dot_bashrc.tmpl` you might have:
     export EDITOR=vi
 
     # machine-specific configuration
-    {{- if .chezmoi.hostname eq "work-laptop" }}
+    {{- if eq .chezmoi.hostname "work-laptop" }}
     # this will only be included in ~/.bashrc on work-laptop
     {{- end }}
 
