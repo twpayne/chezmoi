@@ -3,7 +3,7 @@ package cmd
 import (
 	"testing"
 
-	"github.com/twpayne/aferot"
+	"github.com/twpayne/go-vfs/vfstest"
 )
 
 func TestAddCommand(t *testing.T) {
@@ -20,9 +20,9 @@ func TestAddCommand(t *testing.T) {
 			root: map[string]interface{}{
 				"/home/jenkins/.bashrc": "foo",
 			},
-			tests: []aferot.Test{
-				aferot.TestPath("/home/jenkins/.chezmoi", aferot.TestIsDir, aferot.TestModePerm(0700)),
-				aferot.TestPath("/home/jenkins/.chezmoi/dot_bashrc", aferot.TestModeIsRegular, aferot.TestContentsString("foo")),
+			tests: []vfstest.Test{
+				vfstest.TestPath("/home/jenkins/.chezmoi", vfstest.TestIsDir, vfstest.TestModePerm(0700)),
+				vfstest.TestPath("/home/jenkins/.chezmoi/dot_bashrc", vfstest.TestModeIsRegular, vfstest.TestContentsString("foo")),
 			},
 		},
 		{
@@ -32,12 +32,12 @@ func TestAddCommand(t *testing.T) {
 				Template: true,
 			},
 			root: map[string]interface{}{
-				"/home/jenkins":            &aferot.Dir{Perm: 0755},
-				"/home/jenkins/.chezmoi":   &aferot.Dir{Perm: 0700},
+				"/home/jenkins":            &vfstest.Dir{Perm: 0755},
+				"/home/jenkins/.chezmoi":   &vfstest.Dir{Perm: 0700},
 				"/home/jenkins/.gitconfig": "[user]\n\tname = John Smith\n\temail = john.smith@company.com\n",
 			},
-			tests: []aferot.Test{
-				aferot.TestPath("/home/jenkins/.chezmoi/dot_gitconfig.tmpl", aferot.TestModeIsRegular, aferot.TestContentsString("[user]\n\tname = {{ .name }}\n\temail = {{ .email }}\n")),
+			tests: []vfstest.Test{
+				vfstest.TestPath("/home/jenkins/.chezmoi/dot_gitconfig.tmpl", vfstest.TestModeIsRegular, vfstest.TestContentsString("[user]\n\tname = {{ .name }}\n\temail = {{ .email }}\n")),
 			},
 		},
 		{
@@ -47,24 +47,24 @@ func TestAddCommand(t *testing.T) {
 				Recursive: true,
 			},
 			root: map[string]interface{}{
-				"/home/jenkins":                             &aferot.Dir{Perm: 0755},
-				"/home/jenkins/.chezmoi":                    &aferot.Dir{Perm: 0700},
+				"/home/jenkins":                             &vfstest.Dir{Perm: 0755},
+				"/home/jenkins/.chezmoi":                    &vfstest.Dir{Perm: 0700},
 				"/home/jenkins/.config/micro/settings.json": "{}",
 			},
-			tests: []aferot.Test{
-				aferot.TestPath("/home/jenkins/.chezmoi/dot_config/micro/settings.json", aferot.TestModeIsRegular, aferot.TestContentsString("{}")),
+			tests: []vfstest.Test{
+				vfstest.TestPath("/home/jenkins/.chezmoi/dot_config/micro/settings.json", vfstest.TestModeIsRegular, vfstest.TestContentsString("{}")),
 			},
 		},
 		{
 			name: "add_nested_directory",
 			args: []string{"/home/jenkins/.config/micro/settings.json"},
 			root: map[string]interface{}{
-				"/home/jenkins":                             &aferot.Dir{Perm: 0755},
-				"/home/jenkins/.chezmoi":                    &aferot.Dir{Perm: 0700},
+				"/home/jenkins":                             &vfstest.Dir{Perm: 0755},
+				"/home/jenkins/.chezmoi":                    &vfstest.Dir{Perm: 0700},
 				"/home/jenkins/.config/micro/settings.json": "{}",
 			},
-			tests: []aferot.Test{
-				aferot.TestPath("/home/jenkins/.chezmoi/dot_config/micro/settings.json", aferot.TestModeIsRegular, aferot.TestContentsString("{}")),
+			tests: []vfstest.Test{
+				vfstest.TestPath("/home/jenkins/.chezmoi/dot_config/micro/settings.json", vfstest.TestModeIsRegular, vfstest.TestContentsString("{}")),
 			},
 		},
 		{
@@ -74,12 +74,12 @@ func TestAddCommand(t *testing.T) {
 				Empty: true,
 			},
 			root: map[string]interface{}{
-				"/home/jenkins":          &aferot.Dir{Perm: 0755},
-				"/home/jenkins/.chezmoi": &aferot.Dir{Perm: 0700},
+				"/home/jenkins":          &vfstest.Dir{Perm: 0755},
+				"/home/jenkins/.chezmoi": &vfstest.Dir{Perm: 0700},
 				"/home/jenkins/empty":    "",
 			},
-			tests: []aferot.Test{
-				aferot.TestPath("/home/jenkins/.chezmoi/empty_empty", aferot.TestModeIsRegular, aferot.TestContents(nil)),
+			tests: []vfstest.Test{
+				vfstest.TestPath("/home/jenkins/.chezmoi/empty_empty", vfstest.TestModeIsRegular, vfstest.TestContents(nil)),
 			},
 		},
 	} {
@@ -97,15 +97,15 @@ func TestAddCommand(t *testing.T) {
 				},
 				Add: tc.addCommandConfig,
 			}
-			fs, cleanup, err := aferot.NewTempOsFs(tc.root)
+			fs, cleanup, err := vfstest.NewTempFS(tc.root)
 			defer cleanup()
 			if err != nil {
-				t.Fatalf("aferot.NewTempOsFs(_) == _, _, %v, want _, _, <nil>", err)
+				t.Fatalf("vfstest.NewTempFS(_) == _, _, %v, want _, _, <nil>", err)
 			}
 			if err := c.runAddCommandE(fs, nil, tc.args); err != nil {
 				t.Errorf("c.runAddCommandE(fs, nil, %+v) == %v, want <nil>", tc.args, err)
 			}
-			aferot.RunTest(t, fs, "", tc.tests)
+			vfstest.RunTests(t, fs, "", tc.tests)
 		})
 	}
 }

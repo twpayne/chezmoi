@@ -15,8 +15,8 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/absfs/afero"
 	"github.com/pkg/errors"
+	"github.com/twpayne/go-vfs"
 )
 
 const (
@@ -31,7 +31,7 @@ const (
 type Entry interface {
 	SourceName() string
 	addAllEntries(map[string]Entry, string)
-	apply(afero.Fs, string, os.FileMode, Actuator) error
+	apply(vfs.FS, string, os.FileMode, Actuator) error
 	archive(*tar.Writer, string, *tar.Header, os.FileMode) error
 }
 
@@ -94,7 +94,7 @@ func (d *Dir) archive(w *tar.Writer, dirName string, headerTemplate *tar.Header,
 }
 
 // apply ensures that targetDir in fs matches d.
-func (d *Dir) apply(fs afero.Fs, targetDir string, umask os.FileMode, actuator Actuator) error {
+func (d *Dir) apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Actuator) error {
 	info, err := fs.Stat(targetDir)
 	switch {
 	case err == nil && info.Mode().IsDir():
@@ -151,15 +151,15 @@ func (f *File) archive(w *tar.Writer, fileName string, headerTemplate *tar.Heade
 }
 
 // apply ensures that state of targetPath in fs matches f.
-func (f *File) apply(fileSystem afero.Fs, targetPath string, umask os.FileMode, actuator Actuator) error {
-	info, err := fileSystem.Stat(targetPath)
+func (f *File) apply(fs vfs.FS, targetPath string, umask os.FileMode, actuator Actuator) error {
+	info, err := fs.Stat(targetPath)
 	var currentContents []byte
 	switch {
 	case err == nil && info.Mode().IsRegular():
 		if len(f.Contents) == 0 && !f.Empty {
 			return actuator.RemoveAll(targetPath)
 		}
-		currentContents, err = afero.ReadFile(fileSystem, targetPath)
+		currentContents, err = fs.ReadFile(targetPath)
 		if err != nil {
 			return err
 		}
@@ -203,7 +203,7 @@ func NewTargetState(targetDir string, umask os.FileMode, sourceDir string, data 
 }
 
 // Add adds a new target to ts.
-func (ts *TargetState) Add(fs afero.Fs, target string, info os.FileInfo, addEmpty, addTemplate bool, actuator Actuator) error {
+func (ts *TargetState) Add(fs vfs.FS, target string, info os.FileInfo, addEmpty, addTemplate bool, actuator Actuator) error {
 	if !filepath.HasPrefix(target, ts.TargetDir) {
 		return errors.Errorf("%s: outside target directory", target)
 	}
@@ -259,7 +259,7 @@ func (ts *TargetState) Add(fs afero.Fs, target string, info os.FileInfo, addEmpt
 		if dirSourceName != "" {
 			sourceName = filepath.Join(dirSourceName, sourceName)
 		}
-		contents, err := afero.ReadFile(fs, target)
+		contents, err := fs.ReadFile(target)
 		if err != nil {
 			return err
 		}
@@ -350,7 +350,7 @@ func (ts *TargetState) Archive(w *tar.Writer, umask os.FileMode) error {
 }
 
 // Apply ensures that ts.TargetDir in fs matches ts.
-func (ts *TargetState) Apply(fs afero.Fs, actuator Actuator) error {
+func (ts *TargetState) Apply(fs vfs.FS, actuator Actuator) error {
 	for _, entryName := range sortedEntryNames(ts.Entries) {
 		if err := ts.Entries[entryName].apply(fs, filepath.Join(ts.TargetDir, entryName), ts.Umask, actuator); err != nil {
 			return err
@@ -372,8 +372,8 @@ func (ts *TargetState) Get(target string) (Entry, error) {
 }
 
 // Populate walks fs from ts.SourceDir to populate ts.
-func (ts *TargetState) Populate(fs afero.Fs) error {
-	return afero.Walk(fs, ts.SourceDir, func(path string, info os.FileInfo, err error) error {
+func (ts *TargetState) Populate(fs vfs.FS) error {
+	return vfs.Walk(fs, ts.SourceDir, func(path string, info os.FileInfo, err error) error {
 		relPath, err := filepath.Rel(ts.SourceDir, path)
 		if err != nil {
 			return err
@@ -395,7 +395,7 @@ func (ts *TargetState) Populate(fs afero.Fs) error {
 			if err != nil {
 				return err
 			}
-			contents, err := afero.ReadFile(fs, path)
+			contents, err := fs.ReadFile(path)
 			if err != nil {
 				return err
 			}

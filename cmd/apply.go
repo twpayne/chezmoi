@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"github.com/absfs/afero"
 	"github.com/spf13/cobra"
+	"github.com/twpayne/go-vfs"
 )
 
 var applyCommand = &cobra.Command{
@@ -16,7 +16,7 @@ func init() {
 	rootCommand.AddCommand(applyCommand)
 }
 
-func (c *Config) runApplyCommandE(fs afero.Fs, command *cobra.Command, args []string) error {
+func (c *Config) runApplyCommandE(fs vfs.FS, command *cobra.Command, args []string) error {
 	targetState, err := c.getTargetState(fs)
 	if err != nil {
 		return err

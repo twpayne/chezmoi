@@ -4,8 +4,8 @@ import (
 	"archive/tar"
 	"os"
 
-	"github.com/absfs/afero"
 	"github.com/spf13/cobra"
+	"github.com/twpayne/go-vfs"
 )
 
 var archiveCommand = &cobra.Command{
@@ -19,7 +19,7 @@ func init() {
 	rootCommand.AddCommand(archiveCommand)
 }
 
-func (c *Config) runArchiveCommandE(fs afero.Fs, command *cobra.Command, args []string) error {
+func (c *Config) runArchiveCommandE(fs vfs.FS, command *cobra.Command, args []string) error {
 	targetState, err := c.getTargetState(fs)
 	if err != nil {
 		return err

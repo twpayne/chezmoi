@@ -3,9 +3,9 @@ package cmd
 import (
 	"os"
 
-	"github.com/absfs/afero"
 	"github.com/spf13/cobra"
 	"github.com/twpayne/chezmoi/lib/chezmoi"
+	"github.com/twpayne/go-vfs"
 )
 
 var diffCommand = &cobra.Command{
@@ -19,7 +19,7 @@ func init() {
 	rootCommand.AddCommand(diffCommand)
 }
 
-func (c *Config) runDiffCommandE(fs afero.Fs, command *cobra.Command, args []string) error {
+func (c *Config) runDiffCommandE(fs vfs.FS, command *cobra.Command, args []string) error {
 	targetState, err := c.getTargetState(fs)
 	if err != nil {
 		return err

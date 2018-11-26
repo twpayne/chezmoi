@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/absfs/afero"
 	"github.com/spf13/cobra"
+	"github.com/twpayne/go-vfs"
 )
 
 var sourceCommand = &cobra.Command{
@@ -18,7 +18,7 @@ func init() {
 	rootCommand.AddCommand(sourceCommand)
 }
 
-func (c *Config) runSourceCommand(fs afero.Fs, cmd *cobra.Command, args []string) error {
+func (c *Config) runSourceCommand(fs vfs.FS, cmd *cobra.Command, args []string) error {
 	if c.Verbose {
 		fmt.Printf("cd %s\n", c.SourceDir)
 	}

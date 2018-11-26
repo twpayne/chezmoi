@@ -4,9 +4,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/absfs/afero"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"github.com/twpayne/go-vfs"
 )
 
 var addCommand = &cobra.Command{
@@ -25,7 +25,7 @@ func init() {
 	persistentFlags.BoolVarP(&config.Add.Template, "template", "T", false, "add files as templates")
 }
 
-func (c *Config) runAddCommandE(fs afero.Fs, command *cobra.Command, args []string) error {
+func (c *Config) runAddCommandE(fs vfs.FS, command *cobra.Command, args []string) error {
 	targetState, err := c.getTargetState(fs)
 	if err != nil {
 		return err
@@ -54,7 +54,7 @@ func (c *Config) runAddCommandE(fs afero.Fs, command *cobra.Command, args []stri
 			return err
 		}
 		if c.Add.Recursive {
-			if err := afero.Walk(fs, path, func(path string, info os.FileInfo, err error) error {
+			if err := vfs.Walk(fs, path, func(path string, info os.FileInfo, err error) error {
 				if err != nil {
 					return err
 				}
