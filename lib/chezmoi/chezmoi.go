@@ -5,6 +5,7 @@ package chezmoi
 import (
 	"archive/tar"
 	"bytes"
+	"fmt"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -15,7 +16,6 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/pkg/errors"
 	"github.com/twpayne/go-vfs"
 )
 
@@ -205,7 +205,7 @@ func NewTargetState(targetDir string, umask os.FileMode, sourceDir string, data 
 // Add adds a new target to ts.
 func (ts *TargetState) Add(fs vfs.FS, target string, info os.FileInfo, addEmpty, addTemplate bool, actuator Actuator) error {
 	if !filepath.HasPrefix(target, ts.TargetDir) {
-		return errors.Errorf("%s: outside target directory", target)
+		return fmt.Errorf("%s: outside target directory", target)
 	}
 	targetName, err := filepath.Rel(ts.TargetDir, target)
 	if err != nil {
@@ -236,7 +236,7 @@ func (ts *TargetState) Add(fs vfs.FS, target string, info os.FileInfo, addEmpty,
 				return err
 			}
 		} else if _, ok := parentEntry.(*Dir); !ok {
-			return errors.Errorf("%s: not a directory", parentDirName)
+			return fmt.Errorf("%s: not a directory", parentDirName)
 		}
 		dir := parentEntry.(*Dir)
 		dirSourceName = dir.sourceName
@@ -248,7 +248,7 @@ func (ts *TargetState) Add(fs vfs.FS, target string, info os.FileInfo, addEmpty,
 	case info.Mode().IsRegular():
 		if entry, ok := entries[name]; ok {
 			if _, ok := entry.(*File); !ok {
-				return errors.Errorf("%s: already added and not a regular file", targetName)
+				return fmt.Errorf("%s: already added and not a regular file", targetName)
 			}
 			return nil // entry already exists
 		}
@@ -278,7 +278,7 @@ func (ts *TargetState) Add(fs vfs.FS, target string, info os.FileInfo, addEmpty,
 	case info.Mode().IsDir():
 		if entry, ok := entries[name]; ok {
 			if _, ok := entry.(*Dir); !ok {
-				return errors.Errorf("%s: already added and not a directory", targetName)
+				return fmt.Errorf("%s: already added and not a directory", targetName)
 			}
 			return nil // entry already exists
 		}
@@ -299,7 +299,7 @@ func (ts *TargetState) Add(fs vfs.FS, target string, info os.FileInfo, addEmpty,
 		}
 		entries[name] = newDir(sourceName, info.Mode()&os.ModePerm)
 	default:
-		return errors.Errorf("%s: not a regular file or directory", targetName)
+		return fmt.Errorf("%s: not a regular file or directory", targetName)
 	}
 	return nil
 }
@@ -362,7 +362,7 @@ func (ts *TargetState) Apply(fs vfs.FS, actuator Actuator) error {
 // Get returns the state of the given target, or nil if no such target is found.
 func (ts *TargetState) Get(target string) (Entry, error) {
 	if !filepath.HasPrefix(target, ts.TargetDir) {
-		return nil, errors.Errorf("%s: outside target directory", target)
+		return nil, fmt.Errorf("%s: outside target directory", target)
 	}
 	targetName, err := filepath.Rel(ts.TargetDir, target)
 	if err != nil {
@@ -402,11 +402,11 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 			if isTemplate {
 				tmpl, err := template.New(path).Parse(string(contents))
 				if err != nil {
-					return errors.Wrap(err, path)
+					return fmt.Errorf("%s: %v", path, err)
 				}
 				output := &bytes.Buffer{}
 				if err := tmpl.Execute(output, ts.Data); err != nil {
-					return errors.Wrap(err, path)
+					return fmt.Errorf("%s: %v", path, err)
 				}
 				contents = output.Bytes()
 			}
@@ -427,7 +427,7 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 			mode := modes[len(modes)-1]
 			entries[dirName] = newDir(relPath, mode)
 		default:
-			return errors.Errorf("unsupported file type: %s", path)
+			return fmt.Errorf("unsupported file type: %s", path)
 		}
 		return nil
 	})
@@ -441,7 +441,7 @@ func (ts *TargetState) findEntries(dirNames []string) (map[string]Entry, error) 
 		} else if dir, ok := entry.(*Dir); ok {
 			entries = dir.Entries
 		} else {
-			return nil, errors.Errorf("%s: not a directory", filepath.Join(dirNames[:i+1]...))
+			return nil, fmt.Errorf("%s: not a directory", filepath.Join(dirNames[:i+1]...))
 		}
 	}
 	return entries, nil

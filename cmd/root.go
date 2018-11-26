@@ -7,7 +7,6 @@ import (
 	"syscall"
 
 	"github.com/mitchellh/go-homedir"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/twpayne/go-vfs"
@@ -88,7 +87,7 @@ func (c *Config) persistentPreRunRootE(fs vfs.FS, command *cobra.Command, args [
 	info, err := fs.Stat(c.SourceDir)
 	switch {
 	case err == nil && !info.Mode().IsDir():
-		return errors.Errorf("%s: not a directory", c.SourceDir)
+		return fmt.Errorf("%s: not a directory", c.SourceDir)
 	case err == nil && info.Mode()&os.ModePerm != 0700:
 		fmt.Printf("%s: want permissions 0700, got 0%o\n", c.SourceDir, info.Mode()&os.ModePerm)
 	case os.IsNotExist(err):

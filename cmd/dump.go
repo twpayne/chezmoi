@@ -1,10 +1,10 @@
 package cmd
 
 import (
+	"fmt"
 	"path/filepath"
 
 	"github.com/davecgh/go-spew/spew"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/twpayne/go-vfs"
 )
@@ -37,7 +37,7 @@ func (c *Config) runDumpCommandE(fs vfs.FS, command *cobra.Command, args []strin
 				return err
 			}
 			if state == nil {
-				return errors.Errorf("%s: not found", arg)
+				return fmt.Errorf("%s: not found", arg)
 			}
 			spew.Dump(state)
 		}

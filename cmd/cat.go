@@ -1,10 +1,10 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/twpayne/chezmoi/lib/chezmoi"
 	"github.com/twpayne/go-vfs"
@@ -36,11 +36,11 @@ func (c *Config) runCatCommand(fs vfs.FS, command *cobra.Command, args []string)
 			return err
 		}
 		if entry == nil {
-			return errors.Errorf("%s: not found", arg)
+			return fmt.Errorf("%s: not found", arg)
 		}
 		f, ok := entry.(*chezmoi.File)
 		if !ok {
-			return errors.Errorf("%s: not a regular file", arg)
+			return fmt.Errorf("%s: not a regular file", arg)
 		}
 		if _, err := os.Stdout.Write(f.Contents); err != nil {
 			return err
