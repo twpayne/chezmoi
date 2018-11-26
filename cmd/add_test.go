@@ -31,9 +31,10 @@ func TestAddCommand(t *testing.T) {
 			addCommandConfig: AddCommandConfig{
 				Template: true,
 			},
-			root: map[string]string{
-				"/home/jenkins/.chezmoi/.keep": "",
-				"/home/jenkins/.gitconfig":     "[user]\n\tname = John Smith\n\temail = john.smith@company.com\n",
+			root: map[string]interface{}{
+				"/home/jenkins":            &aferot.Dir{Perm: 0755},
+				"/home/jenkins/.chezmoi":   &aferot.Dir{Perm: 0700},
+				"/home/jenkins/.gitconfig": "[user]\n\tname = John Smith\n\temail = john.smith@company.com\n",
 			},
 			tests: []aferot.Test{
 				aferot.TestPath("/home/jenkins/.chezmoi/dot_gitconfig.tmpl", aferot.TestModeIsRegular, aferot.TestContentsString("[user]\n\tname = {{ .name }}\n\temail = {{ .email }}\n")),
@@ -45,8 +46,9 @@ func TestAddCommand(t *testing.T) {
 			addCommandConfig: AddCommandConfig{
 				Recursive: true,
 			},
-			root: map[string]string{
-				"/home/jenkins/.chezmoi/.keep":              "",
+			root: map[string]interface{}{
+				"/home/jenkins":                             &aferot.Dir{Perm: 0755},
+				"/home/jenkins/.chezmoi":                    &aferot.Dir{Perm: 0700},
 				"/home/jenkins/.config/micro/settings.json": "{}",
 			},
 			tests: []aferot.Test{
@@ -56,8 +58,9 @@ func TestAddCommand(t *testing.T) {
 		{
 			name: "add_nested_directory",
 			args: []string{"/home/jenkins/.config/micro/settings.json"},
-			root: map[string]string{
-				"/home/jenkins/.chezmoi/.keep":              "",
+			root: map[string]interface{}{
+				"/home/jenkins":                             &aferot.Dir{Perm: 0755},
+				"/home/jenkins/.chezmoi":                    &aferot.Dir{Perm: 0700},
 				"/home/jenkins/.config/micro/settings.json": "{}",
 			},
 			tests: []aferot.Test{
@@ -70,9 +73,10 @@ func TestAddCommand(t *testing.T) {
 			addCommandConfig: AddCommandConfig{
 				Empty: true,
 			},
-			root: map[string]string{
-				"/home/jenkins/.chezmoi/.keep": "",
-				"/home/jenkins/empty":          "",
+			root: map[string]interface{}{
+				"/home/jenkins":          &aferot.Dir{Perm: 0755},
+				"/home/jenkins/.chezmoi": &aferot.Dir{Perm: 0700},
+				"/home/jenkins/empty":    "",
 			},
 			tests: []aferot.Test{
 				aferot.TestPath("/home/jenkins/.chezmoi/empty_empty", aferot.TestModeIsRegular, aferot.TestContents(nil)),
@@ -93,9 +97,10 @@ func TestAddCommand(t *testing.T) {
 				},
 				Add: tc.addCommandConfig,
 			}
-			fs, err := aferot.NewMemMapFs(tc.root)
+			fs, cleanup, err := aferot.NewTempOsFs(tc.root)
+			defer cleanup()
 			if err != nil {
-				t.Fatalf("aferot.NewMemMapFs(_) == %v, want !<nil>", err)
+				t.Fatalf("aferot.NewTempOsFs(_) == _, _, %v, want _, _, <nil>", err)
 			}
 			if err := c.runAddCommandE(fs, nil, tc.args); err != nil {
 				t.Errorf("c.runAddCommandE(fs, nil, %+v) == %v, want <nil>", tc.args, err)

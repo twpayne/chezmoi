@@ -1,5 +1,7 @@
 package chezmoi
 
+// FIXME add Symlink
+
 import (
 	"archive/tar"
 	"bytes"
@@ -25,87 +27,79 @@ const (
 	templateSuffix   = ".tmpl"
 )
 
-// A Stater is either a DirState or a FileState.
-type Stater interface {
+// An Entry is either a Dir or a File.
+type Entry interface {
 	SourceName() string
+	addAllEntries(map[string]Entry, string)
+	apply(afero.Fs, string, os.FileMode, Actuator) error
+	archive(*tar.Writer, string, *tar.Header, os.FileMode) error
 }
 
-// A FileState represents the target state of a file.
-type FileState struct {
+// A File represents the target state of a file.
+type File struct {
 	sourceName string
 	Empty      bool
-	Mode       os.FileMode
+	Perm       os.FileMode
 	Contents   []byte
 }
 
-// A DirState represents the target state of a directory.
-type DirState struct {
+// A Dir represents the target state of a directory.
+type Dir struct {
 	sourceName string
-	Mode       os.FileMode
-	Dirs       map[string]*DirState
-	Files      map[string]*FileState
+	Perm       os.FileMode
+	Entries    map[string]Entry
 }
 
-// A RootState represents the root target state.
-type RootState struct {
+// A TargetState represents the root target state.
+type TargetState struct {
 	TargetDir string
 	Umask     os.FileMode
 	SourceDir string
 	Data      map[string]interface{}
-	Dirs      map[string]*DirState
-	Files     map[string]*FileState
+	Entries   map[string]Entry
 }
 
-// newDirState returns a new directory state.
-func newDirState(sourceName string, mode os.FileMode) *DirState {
-	return &DirState{
+// newDir returns a new directory state.
+func newDir(sourceName string, mode os.FileMode) *Dir {
+	return &Dir{
 		sourceName: sourceName,
-		Mode:       mode,
-		Dirs:       make(map[string]*DirState),
-		Files:      make(map[string]*FileState),
+		Perm:       mode,
+		Entries:    make(map[string]Entry),
 	}
 }
 
-// allStates adds all of the states in ds to result.
-func (ds *DirState) allStates(result map[string]Stater, dirName string) {
-	for fileName, fileState := range ds.Files {
-		result[filepath.Join(dirName, fileName)] = fileState
-	}
-	for subDirName, subDirState := range ds.Dirs {
-		result[filepath.Join(dirName, subDirName)] = subDirState
-		subDirState.allStates(result, filepath.Join(dirName, subDirName))
+// addAllEntries adds d and all of the entries in d to result.
+func (d *Dir) addAllEntries(result map[string]Entry, name string) {
+	result[name] = d
+	for entryName, entry := range d.Entries {
+		entry.addAllEntries(result, filepath.Join(name, entryName))
 	}
 }
 
-// archive writes ds to w.
-func (ds *DirState) archive(w *tar.Writer, dirName string, headerTemplate *tar.Header, umask os.FileMode) error {
+// archive writes d to w.
+func (d *Dir) archive(w *tar.Writer, dirName string, headerTemplate *tar.Header, umask os.FileMode) error {
 	header := *headerTemplate
 	header.Typeflag = tar.TypeDir
 	header.Name = dirName
-	header.Mode = int64(ds.Mode &^ umask & os.ModePerm)
+	header.Mode = int64(d.Perm &^ umask & os.ModePerm)
 	if err := w.WriteHeader(&header); err != nil {
 		return err
 	}
-	for _, fileName := range sortedFileNames(ds.Files) {
-		if err := ds.Files[fileName].archive(w, filepath.Join(dirName, fileName), headerTemplate, umask); err != nil {
-			return err
-		}
-	}
-	for _, subDirName := range sortedDirNames(ds.Dirs) {
-		if err := ds.Dirs[subDirName].archive(w, filepath.Join(dirName, subDirName), headerTemplate, umask); err != nil {
+	for _, entryName := range sortedEntryNames(d.Entries) {
+		if err := d.Entries[entryName].archive(w, filepath.Join(dirName, entryName), headerTemplate, umask); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-// apply ensures that targetDir in fs matches ds.
-func (ds *DirState) apply(fs afero.Fs, targetDir string, umask os.FileMode, actuator Actuator) error {
-	fi, err := fs.Stat(targetDir)
+// apply ensures that targetDir in fs matches d.
+func (d *Dir) apply(fs afero.Fs, targetDir string, umask os.FileMode, actuator Actuator) error {
+	info, err := fs.Stat(targetDir)
 	switch {
-	case err == nil && fi.Mode().IsDir():
-		if fi.Mode()&os.ModePerm != ds.Mode&^umask {
-			if err := actuator.Chmod(targetDir, ds.Mode&^umask); err != nil {
+	case err == nil && info.Mode().IsDir():
+		if info.Mode()&os.ModePerm != d.Perm&^umask {
+			if err := actuator.Chmod(targetDir, d.Perm&^umask); err != nil {
 				return err
 			}
 		}
@@ -115,65 +109,65 @@ func (ds *DirState) apply(fs afero.Fs, targetDir string, umask os.FileMode, actu
 		}
 		fallthrough
 	case os.IsNotExist(err):
-		if err := actuator.Mkdir(targetDir, ds.Mode&^umask); err != nil {
+		if err := actuator.Mkdir(targetDir, d.Perm&^umask); err != nil {
 			return err
 		}
 	default:
 		return err
 	}
-	for _, fileName := range sortedFileNames(ds.Files) {
-		if err := ds.Files[fileName].apply(fs, filepath.Join(targetDir, fileName), umask, actuator); err != nil {
-			return err
-		}
-	}
-	for _, dirName := range sortedDirNames(ds.Dirs) {
-		if err := ds.Dirs[dirName].apply(fs, filepath.Join(targetDir, dirName), umask, actuator); err != nil {
+	for _, entryName := range sortedEntryNames(d.Entries) {
+		if err := d.Entries[entryName].apply(fs, filepath.Join(targetDir, entryName), umask, actuator); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-// SourceName implements Stater.SourceName.
-func (ds *DirState) SourceName() string {
-	return ds.sourceName
+// SourceName implements Entry.SourceName.
+func (d *Dir) SourceName() string {
+	return d.sourceName
 }
 
-// archive writes fs to w.
-func (fs *FileState) archive(w *tar.Writer, fileName string, headerTemplate *tar.Header, umask os.FileMode) error {
-	if len(fs.Contents) == 0 && !fs.Empty {
+// addAllEntries adds f to result.
+func (f *File) addAllEntries(result map[string]Entry, name string) {
+	result[name] = f
+}
+
+// archive writes f to w.
+func (f *File) archive(w *tar.Writer, fileName string, headerTemplate *tar.Header, umask os.FileMode) error {
+	if len(f.Contents) == 0 && !f.Empty {
 		return nil
 	}
 	header := *headerTemplate
 	header.Typeflag = tar.TypeReg
 	header.Name = fileName
-	header.Size = int64(len(fs.Contents))
-	header.Mode = int64(fs.Mode &^ umask)
+	header.Size = int64(len(f.Contents))
+	header.Mode = int64(f.Perm &^ umask)
 	if err := w.WriteHeader(&header); err != nil {
 		return nil
 	}
-	_, err := w.Write(fs.Contents)
+	_, err := w.Write(f.Contents)
 	return err
 }
 
-// apply ensures that state of targetPath in fs matches fileState.
-func (fs *FileState) apply(fileSystem afero.Fs, targetPath string, umask os.FileMode, actuator Actuator) error {
-	fi, err := fileSystem.Stat(targetPath)
+// apply ensures that state of targetPath in fs matches f.
+func (f *File) apply(fileSystem afero.Fs, targetPath string, umask os.FileMode, actuator Actuator) error {
+	info, err := fileSystem.Stat(targetPath)
 	var currentContents []byte
 	switch {
-	case err == nil && fi.Mode().IsRegular():
-		if len(fs.Contents) == 0 && !fs.Empty {
+	case err == nil && info.Mode().IsRegular():
+		if len(f.Contents) == 0 && !f.Empty {
 			return actuator.RemoveAll(targetPath)
 		}
 		currentContents, err = afero.ReadFile(fileSystem, targetPath)
 		if err != nil {
 			return err
 		}
-		if !bytes.Equal(currentContents, fs.Contents) {
+		if !bytes.Equal(currentContents, f.Contents) {
 			break
 		}
-		if fi.Mode()&os.ModePerm != fs.Mode&^umask {
-			if err := actuator.Chmod(targetPath, fs.Mode&^umask); err != nil {
+		if info.Mode()&os.ModePerm != f.Perm&^umask {
+			if err := actuator.Chmod(targetPath, f.Perm&^umask); err != nil {
 				return err
 			}
 		}
@@ -186,74 +180,82 @@ func (fs *FileState) apply(fileSystem afero.Fs, targetPath string, umask os.File
 	default:
 		return err
 	}
-	if len(fs.Contents) == 0 && !fs.Empty {
+	if len(f.Contents) == 0 && !f.Empty {
 		return nil
 	}
-	return actuator.WriteFile(targetPath, fs.Contents, fs.Mode&^umask, currentContents)
+	return actuator.WriteFile(targetPath, f.Contents, f.Perm&^umask, currentContents)
 }
 
-// SourceName implements Stater.SourceName.
-func (fs *FileState) SourceName() string {
-	return fs.sourceName
+// SourceName implements Entry.SourceName.
+func (f *File) SourceName() string {
+	return f.sourceName
 }
 
-// NewRootState creates a new RootState.
-func NewRootState(targetDir string, umask os.FileMode, sourceDir string, data map[string]interface{}) *RootState {
-	return &RootState{
+// NewTargetState creates a new TargetState.
+func NewTargetState(targetDir string, umask os.FileMode, sourceDir string, data map[string]interface{}) *TargetState {
+	return &TargetState{
 		TargetDir: targetDir,
 		Umask:     umask,
 		SourceDir: sourceDir,
 		Data:      data,
-		Dirs:      make(map[string]*DirState),
-		Files:     make(map[string]*FileState),
+		Entries:   make(map[string]Entry),
 	}
 }
 
-// Add adds a new target.
-func (rs *RootState) Add(fs afero.Fs, target string, fi os.FileInfo, addEmpty, addTemplate bool, actuator Actuator) error {
-	if !filepath.HasPrefix(target, rs.TargetDir) {
+// Add adds a new target to ts.
+func (ts *TargetState) Add(fs afero.Fs, target string, info os.FileInfo, addEmpty, addTemplate bool, actuator Actuator) error {
+	if !filepath.HasPrefix(target, ts.TargetDir) {
 		return errors.Errorf("%s: outside target directory", target)
 	}
-	targetName, err := filepath.Rel(rs.TargetDir, target)
+	targetName, err := filepath.Rel(ts.TargetDir, target)
 	if err != nil {
 		return err
 	}
-	if fi == nil {
+	if info == nil {
 		var err error
-		fi, err = fs.Stat(target)
+		info, err = fs.Stat(target)
 		if err != nil {
 			return err
 		}
 	}
 
-	// Add the parent directory, if needed.
+	// Add the parent directories, if needed.
 	dirSourceName := ""
-	dirs, files := rs.Dirs, rs.Files
+	entries := ts.Entries
 	if parentDirName := filepath.Dir(targetName); parentDirName != "." {
-		dirState := rs.findDirState(parentDirName)
-		if dirState == nil {
-			if err := rs.Add(fs, filepath.Join(rs.TargetDir, parentDirName), nil, false, false, actuator); err != nil {
+		parentEntry, err := ts.findEntry(parentDirName)
+		if err != nil && !os.IsNotExist(err) {
+			return err
+		}
+		if parentEntry == nil {
+			if err := ts.Add(fs, filepath.Join(ts.TargetDir, parentDirName), nil, false, false, actuator); err != nil {
 				return err
 			}
-			dirState = rs.findDirState(parentDirName)
+			parentEntry, err = ts.findEntry(parentDirName)
+			if err != nil {
+				return err
+			}
+		} else if _, ok := parentEntry.(*Dir); !ok {
+			return errors.Errorf("%s: not a directory", parentDirName)
 		}
-		dirSourceName = dirState.sourceName
-		dirs, files = dirState.Dirs, dirState.Files
+		dir := parentEntry.(*Dir)
+		dirSourceName = dir.sourceName
+		entries = dir.Entries
 	}
 
 	name := filepath.Base(targetName)
 	switch {
-	case fi.Mode().IsRegular():
-		if _, ok := files[name]; ok {
+	case info.Mode().IsRegular():
+		if entry, ok := entries[name]; ok {
+			if _, ok := entry.(*File); !ok {
+				return errors.Errorf("%s: already added and not a regular file", targetName)
+			}
+			return nil // entry already exists
+		}
+		if info.Size() == 0 && !addEmpty {
 			return nil
 		}
-		if _, ok := dirs[name]; ok {
-			return errors.Errorf("%s: already added as a directory", targetName)
-		}
-		if fi.Size() == 0 && !addEmpty {
-			return nil
-		}
-		sourceName := makeFileName(name, fi.Mode(), fi.Size() == 0, addTemplate)
+		sourceName := makeFileName(name, info.Mode(), info.Size() == 0, addTemplate)
 		if dirSourceName != "" {
 			sourceName = filepath.Join(dirSourceName, sourceName)
 		}
@@ -262,62 +264,57 @@ func (rs *RootState) Add(fs afero.Fs, target string, fi os.FileInfo, addEmpty, a
 			return err
 		}
 		if addTemplate {
-			contents = autoTemplate(contents, rs.Data)
+			contents = autoTemplate(contents, ts.Data)
 		}
-		if err := actuator.WriteFile(filepath.Join(rs.SourceDir, sourceName), contents, 0666&^rs.Umask, nil); err != nil {
+		if err := actuator.WriteFile(filepath.Join(ts.SourceDir, sourceName), contents, 0666&^ts.Umask, nil); err != nil {
 			return err
 		}
-		files[name] = &FileState{
+		entries[name] = &File{
 			sourceName: sourceName,
 			Empty:      len(contents) == 0,
-			Mode:       fi.Mode(),
+			Perm:       info.Mode() & os.ModePerm,
 			Contents:   contents,
 		}
-	case fi.Mode().IsDir():
-		if _, ok := dirs[name]; ok {
-			return nil
+	case info.Mode().IsDir():
+		if entry, ok := entries[name]; ok {
+			if _, ok := entry.(*Dir); !ok {
+				return errors.Errorf("%s: already added and not a directory", targetName)
+			}
+			return nil // entry already exists
 		}
-		if _, ok := files[name]; ok {
-			return errors.Errorf("%s: already added as a file", targetName)
-		}
-		sourceName := makeDirName(name, fi.Mode())
+		sourceName := makeDirName(name, info.Mode())
 		if dirSourceName != "" {
 			sourceName = filepath.Join(dirSourceName, sourceName)
 		}
-		if err := actuator.Mkdir(filepath.Join(rs.SourceDir, sourceName), 0777&^rs.Umask); err != nil {
+		if err := actuator.Mkdir(filepath.Join(ts.SourceDir, sourceName), 0777&^ts.Umask); err != nil {
 			return err
 		}
 		// If the directory is empty, add a .keep file so the directory is
 		// managed by git. Chezmoi will ignore the .keep file as it begins with
 		// a dot.
-		if stat, ok := fi.Sys().(*syscall.Stat_t); ok && stat.Nlink == 2 {
-			if err := actuator.WriteFile(filepath.Join(rs.SourceDir, sourceName, ".keep"), nil, 0666&^rs.Umask, nil); err != nil {
+		if stat, ok := info.Sys().(*syscall.Stat_t); ok && stat.Nlink == 2 {
+			if err := actuator.WriteFile(filepath.Join(ts.SourceDir, sourceName, ".keep"), nil, 0666&^ts.Umask, nil); err != nil {
 				return err
 			}
 		}
-		dirs[name] = newDirState(sourceName, fi.Mode())
+		entries[name] = newDir(sourceName, info.Mode()&os.ModePerm)
 	default:
 		return errors.Errorf("%s: not a regular file or directory", targetName)
 	}
 	return nil
 }
 
-// AllStates returns a map from names to the *DirState or *FileState for that
-// name.
-func (rs *RootState) AllStates() map[string]Stater {
-	result := make(map[string]Stater)
-	for fileName, fileState := range rs.Files {
-		result[fileName] = fileState
-	}
-	for dirName, dirState := range rs.Dirs {
-		result[dirName] = dirState
-		dirState.allStates(result, dirName)
+// AllEntries returns all the Entries in ts.
+func (ts *TargetState) AllEntries() map[string]Entry {
+	result := make(map[string]Entry)
+	for entryName, entry := range ts.Entries {
+		entry.addAllEntries(result, entryName)
 	}
 	return result
 }
 
-// Archive writes rs to w.
-func (rs *RootState) Archive(w *tar.Writer, umask os.FileMode) error {
+// Archive writes ts to w.
+func (ts *TargetState) Archive(w *tar.Writer, umask os.FileMode) error {
 	currentUser, err := user.Current()
 	if err != nil {
 		return err
@@ -344,28 +341,18 @@ func (rs *RootState) Archive(w *tar.Writer, umask os.FileMode) error {
 		AccessTime: now,
 		ChangeTime: now,
 	}
-	for _, fileName := range sortedFileNames(rs.Files) {
-		if err := rs.Files[fileName].archive(w, fileName, &headerTemplate, umask); err != nil {
-			return err
-		}
-	}
-	for _, dirName := range sortedDirNames(rs.Dirs) {
-		if err := rs.Dirs[dirName].archive(w, dirName, &headerTemplate, umask); err != nil {
+	for _, entryName := range sortedEntryNames(ts.Entries) {
+		if err := ts.Entries[entryName].archive(w, entryName, &headerTemplate, umask); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-// Apply ensures that targetDir in fs matches ds.
-func (rs *RootState) Apply(fs afero.Fs, actuator Actuator) error {
-	for _, fileName := range sortedFileNames(rs.Files) {
-		if err := rs.Files[fileName].apply(fs, filepath.Join(rs.TargetDir, fileName), rs.Umask, actuator); err != nil {
-			return err
-		}
-	}
-	for _, dirName := range sortedDirNames(rs.Dirs) {
-		if err := rs.Dirs[dirName].apply(fs, filepath.Join(rs.TargetDir, dirName), rs.Umask, actuator); err != nil {
+// Apply ensures that ts.TargetDir in fs matches ts.
+func (ts *TargetState) Apply(fs afero.Fs, actuator Actuator) error {
+	for _, entryName := range sortedEntryNames(ts.Entries) {
+		if err := ts.Entries[entryName].apply(fs, filepath.Join(ts.TargetDir, entryName), ts.Umask, actuator); err != nil {
 			return err
 		}
 	}
@@ -373,38 +360,21 @@ func (rs *RootState) Apply(fs afero.Fs, actuator Actuator) error {
 }
 
 // Get returns the state of the given target, or nil if no such target is found.
-func (rs *RootState) Get(target string) (Stater, error) {
-	if !filepath.HasPrefix(target, rs.TargetDir) {
+func (ts *TargetState) Get(target string) (Entry, error) {
+	if !filepath.HasPrefix(target, ts.TargetDir) {
 		return nil, errors.Errorf("%s: outside target directory", target)
 	}
-	targetName, err := filepath.Rel(rs.TargetDir, target)
+	targetName, err := filepath.Rel(ts.TargetDir, target)
 	if err != nil {
 		return nil, err
 	}
-	components := splitPathList(targetName)
-	dirs, files := rs.Dirs, rs.Files
-	for i := 0; i < len(components)-1; i++ {
-		dirState, ok := dirs[components[i]]
-		if !ok {
-			return nil, nil
-		}
-		dirs, files = dirState.Dirs, dirState.Files
-	}
-	name := components[len(components)-1]
-	if dirState, ok := dirs[name]; ok {
-		return dirState, nil
-	}
-	if fileState, ok := files[name]; ok {
-		return fileState, nil
-	}
-	return nil, nil
+	return ts.findEntry(targetName)
 }
 
-// Populate walks fs from the source directory creating a target directory
-// state.
-func (rs *RootState) Populate(fs afero.Fs) error {
-	return afero.Walk(fs, rs.SourceDir, func(path string, fi os.FileInfo, err error) error {
-		relPath, err := filepath.Rel(rs.SourceDir, path)
+// Populate walks fs from ts.SourceDir to populate ts.
+func (ts *TargetState) Populate(fs afero.Fs) error {
+	return afero.Walk(fs, ts.SourceDir, func(path string, info os.FileInfo, err error) error {
+		relPath, err := filepath.Rel(ts.SourceDir, path)
 		if err != nil {
 			return err
 		}
@@ -413,17 +383,17 @@ func (rs *RootState) Populate(fs afero.Fs) error {
 		}
 		// Ignore all files and directories beginning with "."
 		if _, name := filepath.Split(relPath); strings.HasPrefix(name, ".") {
-			if fi.IsDir() {
+			if info.IsDir() {
 				return filepath.SkipDir
 			}
 			return nil
 		}
 		switch {
-		case fi.Mode().IsRegular():
+		case info.Mode().IsRegular():
 			dirNames, fileName, mode, isEmpty, isTemplate := parseFilePath(relPath)
-			dirs, files := rs.Dirs, rs.Files
-			for _, dirName := range dirNames {
-				dirs, files = dirs[dirName].Dirs, dirs[dirName].Files
+			entries, err := ts.findEntries(dirNames)
+			if err != nil {
+				return err
 			}
 			contents, err := afero.ReadFile(fs, path)
 			if err != nil {
@@ -435,27 +405,27 @@ func (rs *RootState) Populate(fs afero.Fs) error {
 					return errors.Wrap(err, path)
 				}
 				output := &bytes.Buffer{}
-				if err := tmpl.Execute(output, rs.Data); err != nil {
+				if err := tmpl.Execute(output, ts.Data); err != nil {
 					return errors.Wrap(err, path)
 				}
 				contents = output.Bytes()
 			}
-			files[fileName] = &FileState{
+			entries[fileName] = &File{
 				sourceName: relPath,
 				Empty:      isEmpty,
-				Mode:       mode,
+				Perm:       mode,
 				Contents:   contents,
 			}
-		case fi.Mode().IsDir():
+		case info.Mode().IsDir():
 			components := splitPathList(relPath)
 			dirNames, modes := parseDirNameComponents(components)
-			dirs := rs.Dirs
-			for i := 0; i < len(dirNames)-1; i++ {
-				dirs = dirs[dirNames[i]].Dirs
+			entries, err := ts.findEntries(dirNames[:len(dirNames)-1])
+			if err != nil {
+				return err
 			}
 			dirName := dirNames[len(dirNames)-1]
 			mode := modes[len(modes)-1]
-			dirs[dirName] = newDirState(relPath, mode)
+			entries[dirName] = newDir(relPath, mode)
 		default:
 			return errors.Errorf("unsupported file type: %s", path)
 		}
@@ -463,17 +433,27 @@ func (rs *RootState) Populate(fs afero.Fs) error {
 	})
 }
 
-func (rs *RootState) findDirState(dirName string) *DirState {
-	dirs := rs.Dirs
-	components := splitPathList(dirName)
-	for i := 0; i < len(components)-1; i++ {
-		dirState, ok := dirs[components[i]]
-		if !ok {
-			return nil
+func (ts *TargetState) findEntries(dirNames []string) (map[string]Entry, error) {
+	entries := ts.Entries
+	for i, dirName := range dirNames {
+		if entry, ok := entries[dirName]; !ok {
+			return nil, os.ErrNotExist
+		} else if dir, ok := entry.(*Dir); ok {
+			entries = dir.Entries
+		} else {
+			return nil, errors.Errorf("%s: not a directory", filepath.Join(dirNames[:i+1]...))
 		}
-		dirs = dirState.Dirs
 	}
-	return dirs[components[len(components)-1]]
+	return entries, nil
+}
+
+func (ts *TargetState) findEntry(name string) (Entry, error) {
+	names := splitPathList(name)
+	entries, err := ts.findEntries(names[:len(names)-1])
+	if err != nil {
+		return nil, err
+	}
+	return entries[names[len(names)-1]], nil
 }
 
 func makeDirName(name string, mode os.FileMode) string {
@@ -582,24 +562,14 @@ func parseFilePath(path string) ([]string, string, os.FileMode, bool, bool) {
 	return dirNames, fileName, mode, isEmpty, isTemplate
 }
 
-// sortedDirNames returns a sorted slice of all directory names in ds.
-func sortedDirNames(dirs map[string]*DirState) []string {
-	dirNames := []string{}
-	for dirName := range dirs {
-		dirNames = append(dirNames, dirName)
+// sortedEntryNames returns a sorted slice of all entry names.
+func sortedEntryNames(entries map[string]Entry) []string {
+	entryNames := []string{}
+	for entryName := range entries {
+		entryNames = append(entryNames, entryName)
 	}
-	sort.Strings(dirNames)
-	return dirNames
-}
-
-// sortedFileNames returns a sorted slice of all file names in ds.
-func sortedFileNames(files map[string]*FileState) []string {
-	fileNames := []string{}
-	for fileName := range files {
-		fileNames = append(fileNames, fileName)
-	}
-	sort.Strings(fileNames)
-	return fileNames
+	sort.Strings(entryNames)
+	return entryNames
 }
 
 func splitPathList(path string) []string {

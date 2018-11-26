@@ -96,9 +96,9 @@ func getDefaultData() (map[string]interface{}, error) {
 	return data, nil
 }
 
-func (c *Config) getSourceNames(targetState *chezmoi.RootState, targets []string) ([]string, error) {
+func (c *Config) getSourceNames(targetState *chezmoi.TargetState, targets []string) ([]string, error) {
 	sourceNames := []string{}
-	allStates := targetState.AllStates()
+	allEntries := targetState.AllEntries()
 	for _, target := range targets {
 		absTarget, err := filepath.Abs(target)
 		if err != nil {
@@ -111,16 +111,16 @@ func (c *Config) getSourceNames(targetState *chezmoi.RootState, targets []string
 		if filepath.HasPrefix(targetName, "..") {
 			return nil, errors.Errorf("%s: not in target directory", target)
 		}
-		state, ok := allStates[targetName]
+		entry, ok := allEntries[targetName]
 		if !ok {
 			return nil, errors.Errorf("%s: not found", targetName)
 		}
-		sourceNames = append(sourceNames, state.SourceName())
+		sourceNames = append(sourceNames, entry.SourceName())
 	}
 	return sourceNames, nil
 }
 
-func (c *Config) getTargetState(fs afero.Fs) (*chezmoi.RootState, error) {
+func (c *Config) getTargetState(fs afero.Fs) (*chezmoi.TargetState, error) {
 	defaultData, err := getDefaultData()
 	if err != nil {
 		return nil, err
@@ -131,7 +131,7 @@ func (c *Config) getTargetState(fs afero.Fs) (*chezmoi.RootState, error) {
 	for key, value := range c.Data {
 		data[key] = value
 	}
-	targetState := chezmoi.NewRootState(c.TargetDir, os.FileMode(c.Umask), c.SourceDir, data)
+	targetState := chezmoi.NewTargetState(c.TargetDir, os.FileMode(c.Umask), c.SourceDir, data)
 	if err := targetState.Populate(fs); err != nil {
 		return nil, err
 	}
