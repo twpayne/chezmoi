@@ -77,7 +77,7 @@ func TestRootStatePopulate(t *testing.T) {
 				Umask:     os.FileMode(0),
 				SourceDir: "/",
 				Entries: map[string]Entry{
-					"foo": &FileState{
+					"foo": &File{
 						sourceName: "foo",
 						Mode:       os.FileMode(0666),
 						Contents:   []byte("bar"),
@@ -96,7 +96,7 @@ func TestRootStatePopulate(t *testing.T) {
 				Umask:     os.FileMode(0),
 				SourceDir: "/",
 				Entries: map[string]Entry{
-					".foo": &FileState{
+					".foo": &File{
 						sourceName: "dot_foo",
 						Mode:       os.FileMode(0666),
 						Contents:   []byte("bar"),
@@ -115,7 +115,7 @@ func TestRootStatePopulate(t *testing.T) {
 				Umask:     os.FileMode(0),
 				SourceDir: "/",
 				Entries: map[string]Entry{
-					"foo": &FileState{
+					"foo": &File{
 						sourceName: "private_foo",
 						Mode:       os.FileMode(0600),
 						Contents:   []byte("bar"),
@@ -138,7 +138,7 @@ func TestRootStatePopulate(t *testing.T) {
 						sourceName: "foo",
 						Mode:       os.FileMode(0777),
 						Entries: map[string]Entry{
-							"bar": &FileState{
+							"bar": &File{
 								sourceName: "foo/bar",
 								Mode:       os.FileMode(0666),
 								Contents:   []byte("baz"),
@@ -163,7 +163,7 @@ func TestRootStatePopulate(t *testing.T) {
 						sourceName: "private_dot_foo",
 						Mode:       os.FileMode(0700),
 						Entries: map[string]Entry{
-							"bar": &FileState{
+							"bar": &File{
 								sourceName: "private_dot_foo/bar",
 								Mode:       os.FileMode(0666),
 								Contents:   []byte("baz"),
@@ -190,7 +190,7 @@ func TestRootStatePopulate(t *testing.T) {
 					"Email": "user@example.com",
 				},
 				Entries: map[string]Entry{
-					".gitconfig": &FileState{
+					".gitconfig": &File{
 						sourceName: "dot_gitconfig.tmpl",
 						Mode:       os.FileMode(0666),
 						Contents:   []byte("[user]\n\temail = user@example.com\n"),

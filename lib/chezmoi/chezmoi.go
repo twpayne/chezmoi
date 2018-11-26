@@ -1,6 +1,5 @@
 package chezmoi
 
-// FIXME rename FileState to File
 // FIXME rename RootState to Root
 // FIXME add Symlink
 
@@ -29,7 +28,7 @@ const (
 	templateSuffix   = ".tmpl"
 )
 
-// An Entry is either a Dir or a FileState.
+// An Entry is either a Dir or a File.
 type Entry interface {
 	SourceName() string
 	addAllEntries(map[string]Entry, string)
@@ -37,8 +36,8 @@ type Entry interface {
 	archive(*tar.Writer, string, *tar.Header, os.FileMode) error
 }
 
-// A FileState represents the target state of a file.
-type FileState struct {
+// A File represents the target state of a file.
+type File struct {
 	sourceName string
 	Empty      bool
 	Mode       os.FileMode
@@ -130,46 +129,46 @@ func (d *Dir) SourceName() string {
 	return d.sourceName
 }
 
-// addAllEntries adds fs to result.
-func (fs *FileState) addAllEntries(result map[string]Entry, name string) {
-	result[name] = fs
+// addAllEntries adds f to result.
+func (f *File) addAllEntries(result map[string]Entry, name string) {
+	result[name] = f
 }
 
-// archive writes fs to w.
-func (fs *FileState) archive(w *tar.Writer, fileName string, headerTemplate *tar.Header, umask os.FileMode) error {
-	if len(fs.Contents) == 0 && !fs.Empty {
+// archive writes f to w.
+func (f *File) archive(w *tar.Writer, fileName string, headerTemplate *tar.Header, umask os.FileMode) error {
+	if len(f.Contents) == 0 && !f.Empty {
 		return nil
 	}
 	header := *headerTemplate
 	header.Typeflag = tar.TypeReg
 	header.Name = fileName
-	header.Size = int64(len(fs.Contents))
-	header.Mode = int64(fs.Mode &^ umask)
+	header.Size = int64(len(f.Contents))
+	header.Mode = int64(f.Mode &^ umask)
 	if err := w.WriteHeader(&header); err != nil {
 		return nil
 	}
-	_, err := w.Write(fs.Contents)
+	_, err := w.Write(f.Contents)
 	return err
 }
 
-// apply ensures that state of targetPath in fs matches fileState.
-func (fs *FileState) apply(fileSystem afero.Fs, targetPath string, umask os.FileMode, actuator Actuator) error {
+// apply ensures that state of targetPath in fs matches f.
+func (f *File) apply(fileSystem afero.Fs, targetPath string, umask os.FileMode, actuator Actuator) error {
 	fi, err := fileSystem.Stat(targetPath)
 	var currentContents []byte
 	switch {
 	case err == nil && fi.Mode().IsRegular():
-		if len(fs.Contents) == 0 && !fs.Empty {
+		if len(f.Contents) == 0 && !f.Empty {
 			return actuator.RemoveAll(targetPath)
 		}
 		currentContents, err = afero.ReadFile(fileSystem, targetPath)
 		if err != nil {
 			return err
 		}
-		if !bytes.Equal(currentContents, fs.Contents) {
+		if !bytes.Equal(currentContents, f.Contents) {
 			break
 		}
-		if fi.Mode()&os.ModePerm != fs.Mode&^umask {
-			if err := actuator.Chmod(targetPath, fs.Mode&^umask); err != nil {
+		if fi.Mode()&os.ModePerm != f.Mode&^umask {
+			if err := actuator.Chmod(targetPath, f.Mode&^umask); err != nil {
 				return err
 			}
 		}
@@ -182,15 +181,15 @@ func (fs *FileState) apply(fileSystem afero.Fs, targetPath string, umask os.File
 	default:
 		return err
 	}
-	if len(fs.Contents) == 0 && !fs.Empty {
+	if len(f.Contents) == 0 && !f.Empty {
 		return nil
 	}
-	return actuator.WriteFile(targetPath, fs.Contents, fs.Mode&^umask, currentContents)
+	return actuator.WriteFile(targetPath, f.Contents, f.Mode&^umask, currentContents)
 }
 
 // SourceName implements Entry.SourceName.
-func (fs *FileState) SourceName() string {
-	return fs.sourceName
+func (f *File) SourceName() string {
+	return f.sourceName
 }
 
 // NewRootState creates a new RootState.
@@ -249,7 +248,7 @@ func (rs *RootState) Add(fs afero.Fs, target string, fi os.FileInfo, addEmpty, a
 	switch {
 	case fi.Mode().IsRegular():
 		if entry, ok := entries[name]; ok {
-			if _, ok := entry.(*FileState); !ok {
+			if _, ok := entry.(*File); !ok {
 				return errors.Errorf("%s: already added and not a regular file", targetName)
 			}
 			return nil // entry already exists
@@ -271,7 +270,7 @@ func (rs *RootState) Add(fs afero.Fs, target string, fi os.FileInfo, addEmpty, a
 		if err := actuator.WriteFile(filepath.Join(rs.SourceDir, sourceName), contents, 0666&^rs.Umask, nil); err != nil {
 			return err
 		}
-		entries[name] = &FileState{
+		entries[name] = &File{
 			sourceName: sourceName,
 			Empty:      len(contents) == 0,
 			Mode:       fi.Mode(),
@@ -413,7 +412,7 @@ func (rs *RootState) Populate(fs afero.Fs) error {
 				}
 				contents = output.Bytes()
 			}
-			entries[fileName] = &FileState{
+			entries[fileName] = &File{
 				sourceName: relPath,
 				Empty:      isEmpty,
 				Mode:       mode,

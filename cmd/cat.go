@@ -38,11 +38,11 @@ func (c *Config) runCatCommand(fs afero.Fs, command *cobra.Command, args []strin
 		if entry == nil {
 			return errors.Errorf("%s: not found", arg)
 		}
-		fileState, ok := entry.(*chezmoi.FileState)
+		f, ok := entry.(*chezmoi.File)
 		if !ok {
 			return errors.Errorf("%s: not a regular file", arg)
 		}
-		if _, err := os.Stdout.Write(fileState.Contents); err != nil {
+		if _, err := os.Stdout.Write(f.Contents); err != nil {
 			return err
 		}
 	}
