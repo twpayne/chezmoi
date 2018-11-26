@@ -1,10 +1,10 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/twpayne/go-vfs"
 )
@@ -44,7 +44,7 @@ func (c *Config) runAddCommandE(fs vfs.FS, command *cobra.Command, args []string
 			return err
 		}
 	case err == nil:
-		return errors.Errorf("%s: is not a directory", c.SourceDir)
+		return fmt.Errorf("%s: is not a directory", c.SourceDir)
 	default:
 		return err
 	}

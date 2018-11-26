@@ -11,7 +11,6 @@ import (
 	"syscall"
 
 	"github.com/mitchellh/go-homedir"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/twpayne/chezmoi/lib/chezmoi"
 	"github.com/twpayne/go-vfs"
@@ -109,11 +108,11 @@ func (c *Config) getSourceNames(targetState *chezmoi.TargetState, targets []stri
 			return nil, err
 		}
 		if filepath.HasPrefix(targetName, "..") {
-			return nil, errors.Errorf("%s: not in target directory", target)
+			return nil, fmt.Errorf("%s: not in target directory", target)
 		}
 		entry, ok := allEntries[targetName]
 		if !ok {
-			return nil, errors.Errorf("%s: not found", targetName)
+			return nil, fmt.Errorf("%s: not found", targetName)
 		}
 		sourceNames = append(sourceNames, entry.SourceName())
 	}
