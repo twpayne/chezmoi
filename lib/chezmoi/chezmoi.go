@@ -39,14 +39,14 @@ type Entry interface {
 type File struct {
 	sourceName string
 	Empty      bool
-	Mode       os.FileMode
+	Perm       os.FileMode
 	Contents   []byte
 }
 
 // A Dir represents the target state of a directory.
 type Dir struct {
 	sourceName string
-	Mode       os.FileMode
+	Perm       os.FileMode
 	Entries    map[string]Entry
 }
 
@@ -63,7 +63,7 @@ type TargetState struct {
 func newDir(sourceName string, mode os.FileMode) *Dir {
 	return &Dir{
 		sourceName: sourceName,
-		Mode:       mode,
+		Perm:       mode,
 		Entries:    make(map[string]Entry),
 	}
 }
@@ -81,7 +81,7 @@ func (d *Dir) archive(w *tar.Writer, dirName string, headerTemplate *tar.Header,
 	header := *headerTemplate
 	header.Typeflag = tar.TypeDir
 	header.Name = dirName
-	header.Mode = int64(d.Mode &^ umask & os.ModePerm)
+	header.Mode = int64(d.Perm &^ umask & os.ModePerm)
 	if err := w.WriteHeader(&header); err != nil {
 		return err
 	}
@@ -98,8 +98,8 @@ func (d *Dir) apply(fs afero.Fs, targetDir string, umask os.FileMode, actuator A
 	fi, err := fs.Stat(targetDir)
 	switch {
 	case err == nil && fi.Mode().IsDir():
-		if fi.Mode()&os.ModePerm != d.Mode&^umask {
-			if err := actuator.Chmod(targetDir, d.Mode&^umask); err != nil {
+		if fi.Mode()&os.ModePerm != d.Perm&^umask {
+			if err := actuator.Chmod(targetDir, d.Perm&^umask); err != nil {
 				return err
 			}
 		}
@@ -109,7 +109,7 @@ func (d *Dir) apply(fs afero.Fs, targetDir string, umask os.FileMode, actuator A
 		}
 		fallthrough
 	case os.IsNotExist(err):
-		if err := actuator.Mkdir(targetDir, d.Mode&^umask); err != nil {
+		if err := actuator.Mkdir(targetDir, d.Perm&^umask); err != nil {
 			return err
 		}
 	default:
@@ -142,7 +142,7 @@ func (f *File) archive(w *tar.Writer, fileName string, headerTemplate *tar.Heade
 	header.Typeflag = tar.TypeReg
 	header.Name = fileName
 	header.Size = int64(len(f.Contents))
-	header.Mode = int64(f.Mode &^ umask)
+	header.Mode = int64(f.Perm &^ umask)
 	if err := w.WriteHeader(&header); err != nil {
 		return nil
 	}
@@ -166,8 +166,8 @@ func (f *File) apply(fileSystem afero.Fs, targetPath string, umask os.FileMode, 
 		if !bytes.Equal(currentContents, f.Contents) {
 			break
 		}
-		if fi.Mode()&os.ModePerm != f.Mode&^umask {
-			if err := actuator.Chmod(targetPath, f.Mode&^umask); err != nil {
+		if fi.Mode()&os.ModePerm != f.Perm&^umask {
+			if err := actuator.Chmod(targetPath, f.Perm&^umask); err != nil {
 				return err
 			}
 		}
@@ -183,7 +183,7 @@ func (f *File) apply(fileSystem afero.Fs, targetPath string, umask os.FileMode, 
 	if len(f.Contents) == 0 && !f.Empty {
 		return nil
 	}
-	return actuator.WriteFile(targetPath, f.Contents, f.Mode&^umask, currentContents)
+	return actuator.WriteFile(targetPath, f.Contents, f.Perm&^umask, currentContents)
 }
 
 // SourceName implements Entry.SourceName.
@@ -272,7 +272,7 @@ func (ts *TargetState) Add(fs afero.Fs, target string, fi os.FileInfo, addEmpty,
 		entries[name] = &File{
 			sourceName: sourceName,
 			Empty:      len(contents) == 0,
-			Mode:       fi.Mode(),
+			Perm:       fi.Mode() & os.ModePerm,
 			Contents:   contents,
 		}
 	case fi.Mode().IsDir():
@@ -297,7 +297,7 @@ func (ts *TargetState) Add(fs afero.Fs, target string, fi os.FileInfo, addEmpty,
 				return err
 			}
 		}
-		entries[name] = newDir(sourceName, fi.Mode())
+		entries[name] = newDir(sourceName, fi.Mode()&os.ModePerm)
 	default:
 		return errors.Errorf("%s: not a regular file or directory", targetName)
 	}
@@ -413,7 +413,7 @@ func (ts *TargetState) Populate(fs afero.Fs) error {
 			entries[fileName] = &File{
 				sourceName: relPath,
 				Empty:      isEmpty,
-				Mode:       mode,
+				Perm:       mode,
 				Contents:   contents,
 			}
 		case fi.Mode().IsDir():

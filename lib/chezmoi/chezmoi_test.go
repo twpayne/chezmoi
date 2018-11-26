@@ -79,7 +79,7 @@ func TestTargetStatePopulate(t *testing.T) {
 				Entries: map[string]Entry{
 					"foo": &File{
 						sourceName: "foo",
-						Mode:       os.FileMode(0666),
+						Perm:       os.FileMode(0666),
 						Contents:   []byte("bar"),
 					},
 				},
@@ -98,7 +98,7 @@ func TestTargetStatePopulate(t *testing.T) {
 				Entries: map[string]Entry{
 					".foo": &File{
 						sourceName: "dot_foo",
-						Mode:       os.FileMode(0666),
+						Perm:       os.FileMode(0666),
 						Contents:   []byte("bar"),
 					},
 				},
@@ -117,7 +117,7 @@ func TestTargetStatePopulate(t *testing.T) {
 				Entries: map[string]Entry{
 					"foo": &File{
 						sourceName: "private_foo",
-						Mode:       os.FileMode(0600),
+						Perm:       os.FileMode(0600),
 						Contents:   []byte("bar"),
 					},
 				},
@@ -136,11 +136,11 @@ func TestTargetStatePopulate(t *testing.T) {
 				Entries: map[string]Entry{
 					"foo": &Dir{
 						sourceName: "foo",
-						Mode:       os.FileMode(0777),
+						Perm:       os.FileMode(0777),
 						Entries: map[string]Entry{
 							"bar": &File{
 								sourceName: "foo/bar",
-								Mode:       os.FileMode(0666),
+								Perm:       os.FileMode(0666),
 								Contents:   []byte("baz"),
 							},
 						},
@@ -161,11 +161,11 @@ func TestTargetStatePopulate(t *testing.T) {
 				Entries: map[string]Entry{
 					".foo": &Dir{
 						sourceName: "private_dot_foo",
-						Mode:       os.FileMode(0700),
+						Perm:       os.FileMode(0700),
 						Entries: map[string]Entry{
 							"bar": &File{
 								sourceName: "private_dot_foo/bar",
-								Mode:       os.FileMode(0666),
+								Perm:       os.FileMode(0666),
 								Contents:   []byte("baz"),
 							},
 						},
@@ -192,7 +192,7 @@ func TestTargetStatePopulate(t *testing.T) {
 				Entries: map[string]Entry{
 					".gitconfig": &File{
 						sourceName: "dot_gitconfig.tmpl",
-						Mode:       os.FileMode(0666),
+						Perm:       os.FileMode(0666),
 						Contents:   []byte("[user]\n\temail = user@example.com\n"),
 					},
 				},
