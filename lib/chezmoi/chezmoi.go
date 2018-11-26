@@ -95,10 +95,10 @@ func (d *Dir) archive(w *tar.Writer, dirName string, headerTemplate *tar.Header,
 
 // apply ensures that targetDir in fs matches d.
 func (d *Dir) apply(fs afero.Fs, targetDir string, umask os.FileMode, actuator Actuator) error {
-	fi, err := fs.Stat(targetDir)
+	info, err := fs.Stat(targetDir)
 	switch {
-	case err == nil && fi.Mode().IsDir():
-		if fi.Mode()&os.ModePerm != d.Perm&^umask {
+	case err == nil && info.Mode().IsDir():
+		if info.Mode()&os.ModePerm != d.Perm&^umask {
 			if err := actuator.Chmod(targetDir, d.Perm&^umask); err != nil {
 				return err
 			}
@@ -152,10 +152,10 @@ func (f *File) archive(w *tar.Writer, fileName string, headerTemplate *tar.Heade
 
 // apply ensures that state of targetPath in fs matches f.
 func (f *File) apply(fileSystem afero.Fs, targetPath string, umask os.FileMode, actuator Actuator) error {
-	fi, err := fileSystem.Stat(targetPath)
+	info, err := fileSystem.Stat(targetPath)
 	var currentContents []byte
 	switch {
-	case err == nil && fi.Mode().IsRegular():
+	case err == nil && info.Mode().IsRegular():
 		if len(f.Contents) == 0 && !f.Empty {
 			return actuator.RemoveAll(targetPath)
 		}
@@ -166,7 +166,7 @@ func (f *File) apply(fileSystem afero.Fs, targetPath string, umask os.FileMode, 
 		if !bytes.Equal(currentContents, f.Contents) {
 			break
 		}
-		if fi.Mode()&os.ModePerm != f.Perm&^umask {
+		if info.Mode()&os.ModePerm != f.Perm&^umask {
 			if err := actuator.Chmod(targetPath, f.Perm&^umask); err != nil {
 				return err
 			}
@@ -203,7 +203,7 @@ func NewTargetState(targetDir string, umask os.FileMode, sourceDir string, data 
 }
 
 // Add adds a new target to ts.
-func (ts *TargetState) Add(fs afero.Fs, target string, fi os.FileInfo, addEmpty, addTemplate bool, actuator Actuator) error {
+func (ts *TargetState) Add(fs afero.Fs, target string, info os.FileInfo, addEmpty, addTemplate bool, actuator Actuator) error {
 	if !filepath.HasPrefix(target, ts.TargetDir) {
 		return errors.Errorf("%s: outside target directory", target)
 	}
@@ -211,9 +211,9 @@ func (ts *TargetState) Add(fs afero.Fs, target string, fi os.FileInfo, addEmpty,
 	if err != nil {
 		return err
 	}
-	if fi == nil {
+	if info == nil {
 		var err error
-		fi, err = fs.Stat(target)
+		info, err = fs.Stat(target)
 		if err != nil {
 			return err
 		}
@@ -245,17 +245,17 @@ func (ts *TargetState) Add(fs afero.Fs, target string, fi os.FileInfo, addEmpty,
 
 	name := filepath.Base(targetName)
 	switch {
-	case fi.Mode().IsRegular():
+	case info.Mode().IsRegular():
 		if entry, ok := entries[name]; ok {
 			if _, ok := entry.(*File); !ok {
 				return errors.Errorf("%s: already added and not a regular file", targetName)
 			}
 			return nil // entry already exists
 		}
-		if fi.Size() == 0 && !addEmpty {
+		if info.Size() == 0 && !addEmpty {
 			return nil
 		}
-		sourceName := makeFileName(name, fi.Mode(), fi.Size() == 0, addTemplate)
+		sourceName := makeFileName(name, info.Mode(), info.Size() == 0, addTemplate)
 		if dirSourceName != "" {
 			sourceName = filepath.Join(dirSourceName, sourceName)
 		}
@@ -272,17 +272,17 @@ func (ts *TargetState) Add(fs afero.Fs, target string, fi os.FileInfo, addEmpty,
 		entries[name] = &File{
 			sourceName: sourceName,
 			Empty:      len(contents) == 0,
-			Perm:       fi.Mode() & os.ModePerm,
+			Perm:       info.Mode() & os.ModePerm,
 			Contents:   contents,
 		}
-	case fi.Mode().IsDir():
+	case info.Mode().IsDir():
 		if entry, ok := entries[name]; ok {
 			if _, ok := entry.(*Dir); !ok {
 				return errors.Errorf("%s: already added and not a directory", targetName)
 			}
 			return nil // entry already exists
 		}
-		sourceName := makeDirName(name, fi.Mode())
+		sourceName := makeDirName(name, info.Mode())
 		if dirSourceName != "" {
 			sourceName = filepath.Join(dirSourceName, sourceName)
 		}
@@ -292,12 +292,12 @@ func (ts *TargetState) Add(fs afero.Fs, target string, fi os.FileInfo, addEmpty,
 		// If the directory is empty, add a .keep file so the directory is
 		// managed by git. Chezmoi will ignore the .keep file as it begins with
 		// a dot.
-		if stat, ok := fi.Sys().(*syscall.Stat_t); ok && stat.Nlink == 2 {
+		if stat, ok := info.Sys().(*syscall.Stat_t); ok && stat.Nlink == 2 {
 			if err := actuator.WriteFile(filepath.Join(ts.SourceDir, sourceName, ".keep"), nil, 0666&^ts.Umask, nil); err != nil {
 				return err
 			}
 		}
-		entries[name] = newDir(sourceName, fi.Mode()&os.ModePerm)
+		entries[name] = newDir(sourceName, info.Mode()&os.ModePerm)
 	default:
 		return errors.Errorf("%s: not a regular file or directory", targetName)
 	}
@@ -373,7 +373,7 @@ func (ts *TargetState) Get(target string) (Entry, error) {
 
 // Populate walks fs from ts.SourceDir to populate ts.
 func (ts *TargetState) Populate(fs afero.Fs) error {
-	return afero.Walk(fs, ts.SourceDir, func(path string, fi os.FileInfo, err error) error {
+	return afero.Walk(fs, ts.SourceDir, func(path string, info os.FileInfo, err error) error {
 		relPath, err := filepath.Rel(ts.SourceDir, path)
 		if err != nil {
 			return err
@@ -383,13 +383,13 @@ func (ts *TargetState) Populate(fs afero.Fs) error {
 		}
 		// Ignore all files and directories beginning with "."
 		if _, name := filepath.Split(relPath); strings.HasPrefix(name, ".") {
-			if fi.IsDir() {
+			if info.IsDir() {
 				return filepath.SkipDir
 			}
 			return nil
 		}
 		switch {
-		case fi.Mode().IsRegular():
+		case info.Mode().IsRegular():
 			dirNames, fileName, mode, isEmpty, isTemplate := parseFilePath(relPath)
 			entries, err := ts.findEntries(dirNames)
 			if err != nil {
@@ -416,7 +416,7 @@ func (ts *TargetState) Populate(fs afero.Fs) error {
 				Perm:       mode,
 				Contents:   contents,
 			}
-		case fi.Mode().IsDir():
+		case info.Mode().IsDir():
 			components := splitPathList(relPath)
 			dirNames, modes := parseDirNameComponents(components)
 			entries, err := ts.findEntries(dirNames[:len(dirNames)-1])

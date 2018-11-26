@@ -31,10 +31,10 @@ func (c *Config) runAddCommandE(fs afero.Fs, command *cobra.Command, args []stri
 		return err
 	}
 	actuator := c.getDefaultActuator(fs)
-	fi, err := fs.Stat(c.SourceDir)
+	info, err := fs.Stat(c.SourceDir)
 	switch {
-	case err == nil && fi.Mode().IsDir():
-		if fi.Mode()&os.ModePerm != 0700 {
+	case err == nil && info.Mode().IsDir():
+		if info.Mode()&os.ModePerm != 0700 {
 			if err := actuator.Chmod(c.SourceDir, 0700); err != nil {
 				return err
 			}
