@@ -208,9 +208,10 @@ func TestRootStatePopulate(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			fs, err := aferot.NewMemMapFs(tc.root)
+			fs, cleanup, err := aferot.NewTempOsFs(tc.root)
+			defer cleanup()
 			if err != nil {
-				t.Fatalf("aferot.NewMemMapFs(_) == %v, want <nil>", err)
+				t.Fatalf("aferot.NewTempOsFs(_) == _, _, %v, want _, _, <nil>", err)
 			}
 			rs := NewRootState("/", 0, tc.sourceDir, tc.data)
 			if err := rs.Populate(fs); err != nil {
@@ -258,9 +259,10 @@ func TestEndToEnd(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			fs, err := aferot.NewMemMapFs(tc.root)
+			fs, cleanup, err := aferot.NewTempOsFs(tc.root)
+			defer cleanup()
 			if err != nil {
-				t.Fatalf("aferot.NewMemMapFs(_) == %v, want <nil>", err)
+				t.Fatalf("aferot.NewTempOsFs(_) == _, _, %v, want _, _, <nil>", err)
 			}
 			rs := NewRootState(tc.targetDir, tc.umask, tc.sourceDir, tc.data)
 			if err := rs.Populate(fs); err != nil {

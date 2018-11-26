@@ -93,9 +93,10 @@ func TestAddCommand(t *testing.T) {
 				},
 				Add: tc.addCommandConfig,
 			}
-			fs, err := aferot.NewMemMapFs(tc.root)
+			fs, cleanup, err := aferot.NewTempOsFs(tc.root)
+			defer cleanup()
 			if err != nil {
-				t.Fatalf("aferot.NewMemMapFs(_) == %v, want !<nil>", err)
+				t.Fatalf("aferot.NewTempOsFs(_) == _, _, %v, want _, _, <nil>", err)
 			}
 			if err := c.runAddCommandE(fs, nil, tc.args); err != nil {
 				t.Errorf("c.runAddCommandE(fs, nil, %+v) == %v, want <nil>", tc.args, err)
