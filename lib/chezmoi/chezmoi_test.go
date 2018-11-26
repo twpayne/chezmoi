@@ -134,7 +134,7 @@ func TestRootStatePopulate(t *testing.T) {
 				Umask:     os.FileMode(0),
 				SourceDir: "/",
 				Entries: map[string]Entry{
-					"foo": &DirState{
+					"foo": &Dir{
 						sourceName: "foo",
 						Mode:       os.FileMode(0777),
 						Entries: map[string]Entry{
@@ -159,7 +159,7 @@ func TestRootStatePopulate(t *testing.T) {
 				Umask:     os.FileMode(0),
 				SourceDir: "/",
 				Entries: map[string]Entry{
-					".foo": &DirState{
+					".foo": &Dir{
 						sourceName: "private_dot_foo",
 						Mode:       os.FileMode(0700),
 						Entries: map[string]Entry{

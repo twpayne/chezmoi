@@ -1,6 +1,5 @@
 package chezmoi
 
-// FIXME rename DirState to Dir
 // FIXME rename FileState to File
 // FIXME rename RootState to Root
 // FIXME add Symlink
@@ -30,7 +29,7 @@ const (
 	templateSuffix   = ".tmpl"
 )
 
-// An Entry is either a DirState or a FileState.
+// An Entry is either a Dir or a FileState.
 type Entry interface {
 	SourceName() string
 	addAllEntries(map[string]Entry, string)
@@ -46,8 +45,8 @@ type FileState struct {
 	Contents   []byte
 }
 
-// A DirState represents the target state of a directory.
-type DirState struct {
+// A Dir represents the target state of a directory.
+type Dir struct {
 	sourceName string
 	Mode       os.FileMode
 	Entries    map[string]Entry
@@ -62,47 +61,47 @@ type RootState struct {
 	Entries   map[string]Entry
 }
 
-// newDirState returns a new directory state.
-func newDirState(sourceName string, mode os.FileMode) *DirState {
-	return &DirState{
+// newDir returns a new directory state.
+func newDir(sourceName string, mode os.FileMode) *Dir {
+	return &Dir{
 		sourceName: sourceName,
 		Mode:       mode,
 		Entries:    make(map[string]Entry),
 	}
 }
 
-// addAllEntries adds ds and all of the states in ds to result.
-func (ds *DirState) addAllEntries(result map[string]Entry, name string) {
-	result[name] = ds
-	for entryName, entry := range ds.Entries {
+// addAllEntries adds d and all of the entries in d to result.
+func (d *Dir) addAllEntries(result map[string]Entry, name string) {
+	result[name] = d
+	for entryName, entry := range d.Entries {
 		entry.addAllEntries(result, filepath.Join(name, entryName))
 	}
 }
 
-// archive writes ds to w.
-func (ds *DirState) archive(w *tar.Writer, dirName string, headerTemplate *tar.Header, umask os.FileMode) error {
+// archive writes d to w.
+func (d *Dir) archive(w *tar.Writer, dirName string, headerTemplate *tar.Header, umask os.FileMode) error {
 	header := *headerTemplate
 	header.Typeflag = tar.TypeDir
 	header.Name = dirName
-	header.Mode = int64(ds.Mode &^ umask & os.ModePerm)
+	header.Mode = int64(d.Mode &^ umask & os.ModePerm)
 	if err := w.WriteHeader(&header); err != nil {
 		return err
 	}
-	for _, entryName := range sortedEntryNames(ds.Entries) {
-		if err := ds.Entries[entryName].archive(w, filepath.Join(dirName, entryName), headerTemplate, umask); err != nil {
+	for _, entryName := range sortedEntryNames(d.Entries) {
+		if err := d.Entries[entryName].archive(w, filepath.Join(dirName, entryName), headerTemplate, umask); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-// apply ensures that targetDir in fs matches ds.
-func (ds *DirState) apply(fs afero.Fs, targetDir string, umask os.FileMode, actuator Actuator) error {
+// apply ensures that targetDir in fs matches d.
+func (d *Dir) apply(fs afero.Fs, targetDir string, umask os.FileMode, actuator Actuator) error {
 	fi, err := fs.Stat(targetDir)
 	switch {
 	case err == nil && fi.Mode().IsDir():
-		if fi.Mode()&os.ModePerm != ds.Mode&^umask {
-			if err := actuator.Chmod(targetDir, ds.Mode&^umask); err != nil {
+		if fi.Mode()&os.ModePerm != d.Mode&^umask {
+			if err := actuator.Chmod(targetDir, d.Mode&^umask); err != nil {
 				return err
 			}
 		}
@@ -112,14 +111,14 @@ func (ds *DirState) apply(fs afero.Fs, targetDir string, umask os.FileMode, actu
 		}
 		fallthrough
 	case os.IsNotExist(err):
-		if err := actuator.Mkdir(targetDir, ds.Mode&^umask); err != nil {
+		if err := actuator.Mkdir(targetDir, d.Mode&^umask); err != nil {
 			return err
 		}
 	default:
 		return err
 	}
-	for _, entryName := range sortedEntryNames(ds.Entries) {
-		if err := ds.Entries[entryName].apply(fs, filepath.Join(targetDir, entryName), umask, actuator); err != nil {
+	for _, entryName := range sortedEntryNames(d.Entries) {
+		if err := d.Entries[entryName].apply(fs, filepath.Join(targetDir, entryName), umask, actuator); err != nil {
 			return err
 		}
 	}
@@ -127,8 +126,8 @@ func (ds *DirState) apply(fs afero.Fs, targetDir string, umask os.FileMode, actu
 }
 
 // SourceName implements Entry.SourceName.
-func (ds *DirState) SourceName() string {
-	return ds.sourceName
+func (d *Dir) SourceName() string {
+	return d.sourceName
 }
 
 // addAllEntries adds fs to result.
@@ -238,12 +237,12 @@ func (rs *RootState) Add(fs afero.Fs, target string, fi os.FileInfo, addEmpty, a
 			if err != nil {
 				return err
 			}
-		} else if _, ok := parentEntry.(*DirState); !ok {
+		} else if _, ok := parentEntry.(*Dir); !ok {
 			return errors.Errorf("%s: not a directory", parentDirName)
 		}
-		dirState := parentEntry.(*DirState)
-		dirSourceName = dirState.sourceName
-		entries = dirState.Entries
+		dir := parentEntry.(*Dir)
+		dirSourceName = dir.sourceName
+		entries = dir.Entries
 	}
 
 	name := filepath.Base(targetName)
@@ -280,7 +279,7 @@ func (rs *RootState) Add(fs afero.Fs, target string, fi os.FileInfo, addEmpty, a
 		}
 	case fi.Mode().IsDir():
 		if entry, ok := entries[name]; ok {
-			if _, ok := entry.(*DirState); !ok {
+			if _, ok := entry.(*Dir); !ok {
 				return errors.Errorf("%s: already added and not a directory", targetName)
 			}
 			return nil // entry already exists
@@ -300,7 +299,7 @@ func (rs *RootState) Add(fs afero.Fs, target string, fi os.FileInfo, addEmpty, a
 				return err
 			}
 		}
-		entries[name] = newDirState(sourceName, fi.Mode())
+		entries[name] = newDir(sourceName, fi.Mode())
 	default:
 		return errors.Errorf("%s: not a regular file or directory", targetName)
 	}
@@ -352,7 +351,7 @@ func (rs *RootState) Archive(w *tar.Writer, umask os.FileMode) error {
 	return nil
 }
 
-// Apply ensures that targetDir in fs matches ds.
+// Apply ensures that targetDir in fs matches d.
 func (rs *RootState) Apply(fs afero.Fs, actuator Actuator) error {
 	for _, entryName := range sortedEntryNames(rs.Entries) {
 		if err := rs.Entries[entryName].apply(fs, filepath.Join(rs.TargetDir, entryName), rs.Umask, actuator); err != nil {
@@ -429,7 +428,7 @@ func (rs *RootState) Populate(fs afero.Fs) error {
 			}
 			dirName := dirNames[len(dirNames)-1]
 			mode := modes[len(modes)-1]
-			entries[dirName] = newDirState(relPath, mode)
+			entries[dirName] = newDir(relPath, mode)
 		default:
 			return errors.Errorf("unsupported file type: %s", path)
 		}
@@ -442,8 +441,8 @@ func (rs *RootState) findEntries(dirNames []string) (map[string]Entry, error) {
 	for i, dirName := range dirNames {
 		if entry, ok := entries[dirName]; !ok {
 			return nil, os.ErrNotExist
-		} else if dirState, ok := entry.(*DirState); ok {
-			entries = dirState.Entries
+		} else if dir, ok := entry.(*Dir); ok {
+			entries = dir.Entries
 		} else {
 			return nil, errors.Errorf("%s: not a directory", filepath.Join(dirNames[:i+1]...))
 		}
