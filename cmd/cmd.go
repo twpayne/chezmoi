@@ -98,7 +98,7 @@ func getDefaultData() (map[string]interface{}, error) {
 
 func (c *Config) getSourceNames(targetState *chezmoi.RootState, targets []string) ([]string, error) {
 	sourceNames := []string{}
-	allStates := targetState.AllStates()
+	allEntries := targetState.AllEntries()
 	for _, target := range targets {
 		absTarget, err := filepath.Abs(target)
 		if err != nil {
@@ -111,11 +111,11 @@ func (c *Config) getSourceNames(targetState *chezmoi.RootState, targets []string
 		if filepath.HasPrefix(targetName, "..") {
 			return nil, errors.Errorf("%s: not in target directory", target)
 		}
-		state, ok := allStates[targetName]
+		entry, ok := allEntries[targetName]
 		if !ok {
 			return nil, errors.Errorf("%s: not found", targetName)
 		}
-		sourceNames = append(sourceNames, state.SourceName())
+		sourceNames = append(sourceNames, entry.SourceName())
 	}
 	return sourceNames, nil
 }

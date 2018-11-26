@@ -76,9 +76,8 @@ func TestRootStatePopulate(t *testing.T) {
 				TargetDir: "/",
 				Umask:     os.FileMode(0),
 				SourceDir: "/",
-				Dirs:      map[string]*DirState{},
-				Files: map[string]*FileState{
-					"foo": {
+				Entries: map[string]Entry{
+					"foo": &FileState{
 						sourceName: "foo",
 						Mode:       os.FileMode(0666),
 						Contents:   []byte("bar"),
@@ -96,9 +95,8 @@ func TestRootStatePopulate(t *testing.T) {
 				TargetDir: "/",
 				Umask:     os.FileMode(0),
 				SourceDir: "/",
-				Dirs:      map[string]*DirState{},
-				Files: map[string]*FileState{
-					".foo": {
+				Entries: map[string]Entry{
+					".foo": &FileState{
 						sourceName: "dot_foo",
 						Mode:       os.FileMode(0666),
 						Contents:   []byte("bar"),
@@ -116,9 +114,8 @@ func TestRootStatePopulate(t *testing.T) {
 				TargetDir: "/",
 				Umask:     os.FileMode(0),
 				SourceDir: "/",
-				Dirs:      map[string]*DirState{},
-				Files: map[string]*FileState{
-					"foo": {
+				Entries: map[string]Entry{
+					"foo": &FileState{
 						sourceName: "private_foo",
 						Mode:       os.FileMode(0600),
 						Contents:   []byte("bar"),
@@ -136,13 +133,12 @@ func TestRootStatePopulate(t *testing.T) {
 				TargetDir: "/",
 				Umask:     os.FileMode(0),
 				SourceDir: "/",
-				Dirs: map[string]*DirState{
-					"foo": {
+				Entries: map[string]Entry{
+					"foo": &DirState{
 						sourceName: "foo",
 						Mode:       os.FileMode(0777),
-						Dirs:       map[string]*DirState{},
-						Files: map[string]*FileState{
-							"bar": {
+						Entries: map[string]Entry{
+							"bar": &FileState{
 								sourceName: "foo/bar",
 								Mode:       os.FileMode(0666),
 								Contents:   []byte("baz"),
@@ -150,7 +146,6 @@ func TestRootStatePopulate(t *testing.T) {
 						},
 					},
 				},
-				Files: map[string]*FileState{},
 			},
 		},
 		{
@@ -163,13 +158,12 @@ func TestRootStatePopulate(t *testing.T) {
 				TargetDir: "/",
 				Umask:     os.FileMode(0),
 				SourceDir: "/",
-				Dirs: map[string]*DirState{
-					".foo": {
+				Entries: map[string]Entry{
+					".foo": &DirState{
 						sourceName: "private_dot_foo",
 						Mode:       os.FileMode(0700),
-						Dirs:       map[string]*DirState{},
-						Files: map[string]*FileState{
-							"bar": {
+						Entries: map[string]Entry{
+							"bar": &FileState{
 								sourceName: "private_dot_foo/bar",
 								Mode:       os.FileMode(0666),
 								Contents:   []byte("baz"),
@@ -177,7 +171,6 @@ func TestRootStatePopulate(t *testing.T) {
 						},
 					},
 				},
-				Files: map[string]*FileState{},
 			},
 		},
 		{
@@ -196,9 +189,8 @@ func TestRootStatePopulate(t *testing.T) {
 				Data: map[string]interface{}{
 					"Email": "user@example.com",
 				},
-				Dirs: map[string]*DirState{},
-				Files: map[string]*FileState{
-					".gitconfig": {
+				Entries: map[string]Entry{
+					".gitconfig": &FileState{
 						sourceName: "dot_gitconfig.tmpl",
 						Mode:       os.FileMode(0666),
 						Contents:   []byte("[user]\n\temail = user@example.com\n"),

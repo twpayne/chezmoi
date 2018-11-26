@@ -31,14 +31,14 @@ func (c *Config) runCatCommand(fs afero.Fs, command *cobra.Command, args []strin
 		if err != nil {
 			return err
 		}
-		state, err := targetState.Get(path)
+		entry, err := targetState.Get(path)
 		if err != nil {
 			return err
 		}
-		if state == nil {
+		if entry == nil {
 			return errors.Errorf("%s: not found", arg)
 		}
-		fileState, ok := state.(*chezmoi.FileState)
+		fileState, ok := entry.(*chezmoi.FileState)
 		if !ok {
 			return errors.Errorf("%s: not a regular file", arg)
 		}
