@@ -58,13 +58,13 @@ func TestFileName(t *testing.T) {
 	}
 }
 
-func TestRootStatePopulate(t *testing.T) {
+func TestTargetStatePopulate(t *testing.T) {
 	for _, tc := range []struct {
 		name      string
 		root      interface{}
 		sourceDir string
 		data      map[string]interface{}
-		want      *RootState
+		want      *TargetState
 	}{
 		{
 			name: "simple_file",
@@ -72,7 +72,7 @@ func TestRootStatePopulate(t *testing.T) {
 				"/foo": "bar",
 			},
 			sourceDir: "/",
-			want: &RootState{
+			want: &TargetState{
 				TargetDir: "/",
 				Umask:     os.FileMode(0),
 				SourceDir: "/",
@@ -91,7 +91,7 @@ func TestRootStatePopulate(t *testing.T) {
 				"/dot_foo": "bar",
 			},
 			sourceDir: "/",
-			want: &RootState{
+			want: &TargetState{
 				TargetDir: "/",
 				Umask:     os.FileMode(0),
 				SourceDir: "/",
@@ -110,7 +110,7 @@ func TestRootStatePopulate(t *testing.T) {
 				"/private_foo": "bar",
 			},
 			sourceDir: "/",
-			want: &RootState{
+			want: &TargetState{
 				TargetDir: "/",
 				Umask:     os.FileMode(0),
 				SourceDir: "/",
@@ -129,7 +129,7 @@ func TestRootStatePopulate(t *testing.T) {
 				"/foo/bar": "baz",
 			},
 			sourceDir: "/",
-			want: &RootState{
+			want: &TargetState{
 				TargetDir: "/",
 				Umask:     os.FileMode(0),
 				SourceDir: "/",
@@ -154,7 +154,7 @@ func TestRootStatePopulate(t *testing.T) {
 				"/private_dot_foo/bar": "baz",
 			},
 			sourceDir: "/",
-			want: &RootState{
+			want: &TargetState{
 				TargetDir: "/",
 				Umask:     os.FileMode(0),
 				SourceDir: "/",
@@ -182,7 +182,7 @@ func TestRootStatePopulate(t *testing.T) {
 			data: map[string]interface{}{
 				"Email": "user@example.com",
 			},
-			want: &RootState{
+			want: &TargetState{
 				TargetDir: "/",
 				Umask:     os.FileMode(0),
 				SourceDir: "/",
@@ -205,12 +205,12 @@ func TestRootStatePopulate(t *testing.T) {
 			if err != nil {
 				t.Fatalf("aferot.NewTempOsFs(_) == _, _, %v, want _, _, <nil>", err)
 			}
-			rs := NewRootState("/", 0, tc.sourceDir, tc.data)
-			if err := rs.Populate(fs); err != nil {
-				t.Fatalf("rs.Populate(%+v) == %v, want <nil>", fs, err)
+			ts := NewTargetState("/", 0, tc.sourceDir, tc.data)
+			if err := ts.Populate(fs); err != nil {
+				t.Fatalf("ts.Populate(%+v) == %v, want <nil>", fs, err)
 			}
-			if diff, equal := messagediff.PrettyDiff(tc.want, rs); !equal {
-				t.Errorf("rs.Populate(%+v) diff:\n%s\n", fs, diff)
+			if diff, equal := messagediff.PrettyDiff(tc.want, ts); !equal {
+				t.Errorf("ts.Populate(%+v) diff:\n%s\n", fs, diff)
 			}
 		})
 	}
@@ -256,12 +256,12 @@ func TestEndToEnd(t *testing.T) {
 			if err != nil {
 				t.Fatalf("aferot.NewTempOsFs(_) == _, _, %v, want _, _, <nil>", err)
 			}
-			rs := NewRootState(tc.targetDir, tc.umask, tc.sourceDir, tc.data)
-			if err := rs.Populate(fs); err != nil {
-				t.Fatalf("rs.Populate(%+v) == %v, want <nil>", fs, err)
+			ts := NewTargetState(tc.targetDir, tc.umask, tc.sourceDir, tc.data)
+			if err := ts.Populate(fs); err != nil {
+				t.Fatalf("ts.Populate(%+v) == %v, want <nil>", fs, err)
 			}
-			if err := rs.Apply(fs, NewLoggingActuator(os.Stderr, NewFsActuator(fs, tc.targetDir))); err != nil {
-				t.Fatalf("rs.Apply(fs, _) == %v, want <nil>", err)
+			if err := ts.Apply(fs, NewLoggingActuator(os.Stderr, NewFsActuator(fs, tc.targetDir))); err != nil {
+				t.Fatalf("ts.Apply(fs, _) == %v, want <nil>", err)
 			}
 			aferot.RunTest(t, fs, "", tc.tests)
 		})
