@@ -14,10 +14,10 @@ func TestDirName(t *testing.T) {
 		name    string
 		mode    os.FileMode
 	}{
-		{dirName: "foo", name: "foo", mode: os.FileMode(0777)},
-		{dirName: "dot_foo", name: ".foo", mode: os.FileMode(0777)},
-		{dirName: "private_foo", name: "foo", mode: os.FileMode(0700)},
-		{dirName: "private_dot_foo", name: ".foo", mode: os.FileMode(0700)},
+		{dirName: "foo", name: "foo", mode: 0777},
+		{dirName: "dot_foo", name: ".foo", mode: 0777},
+		{dirName: "private_foo", name: "foo", mode: 0700},
+		{dirName: "private_dot_foo", name: ".foo", mode: 0700},
 	} {
 		t.Run(tc.dirName, func(t *testing.T) {
 			if gotName, gotMode := parseDirName(tc.dirName); gotName != tc.name || gotMode != tc.mode {
@@ -38,14 +38,14 @@ func TestFileName(t *testing.T) {
 		isEmpty    bool
 		isTemplate bool
 	}{
-		{fileName: "foo", name: "foo", mode: os.FileMode(0666), isEmpty: false, isTemplate: false},
-		{fileName: "dot_foo", name: ".foo", mode: os.FileMode(0666), isEmpty: false, isTemplate: false},
-		{fileName: "private_foo", name: "foo", mode: os.FileMode(0600), isEmpty: false, isTemplate: false},
-		{fileName: "private_dot_foo", name: ".foo", mode: os.FileMode(0600), isEmpty: false, isTemplate: false},
-		{fileName: "empty_foo", name: "foo", mode: os.FileMode(0666), isEmpty: true, isTemplate: false},
-		{fileName: "executable_foo", name: "foo", mode: os.FileMode(0777), isEmpty: false, isTemplate: false},
-		{fileName: "foo.tmpl", name: "foo", mode: os.FileMode(0666), isEmpty: false, isTemplate: true},
-		{fileName: "private_executable_dot_foo.tmpl", name: ".foo", mode: os.FileMode(0700), isEmpty: false, isTemplate: true},
+		{fileName: "foo", name: "foo", mode: 0666, isEmpty: false, isTemplate: false},
+		{fileName: "dot_foo", name: ".foo", mode: 0666, isEmpty: false, isTemplate: false},
+		{fileName: "private_foo", name: "foo", mode: 0600, isEmpty: false, isTemplate: false},
+		{fileName: "private_dot_foo", name: ".foo", mode: 0600, isEmpty: false, isTemplate: false},
+		{fileName: "empty_foo", name: "foo", mode: 0666, isEmpty: true, isTemplate: false},
+		{fileName: "executable_foo", name: "foo", mode: 0777, isEmpty: false, isTemplate: false},
+		{fileName: "foo.tmpl", name: "foo", mode: 0666, isEmpty: false, isTemplate: true},
+		{fileName: "private_executable_dot_foo.tmpl", name: ".foo", mode: 0700, isEmpty: false, isTemplate: true},
 	} {
 		t.Run(tc.fileName, func(t *testing.T) {
 			if gotName, gotMode, gotIsEmpty, gotIsTemplate := parseFileName(tc.fileName); gotName != tc.name || gotMode != tc.mode || gotIsEmpty != tc.isEmpty || gotIsTemplate != tc.isTemplate {
@@ -74,12 +74,12 @@ func TestTargetStatePopulate(t *testing.T) {
 			sourceDir: "/",
 			want: &TargetState{
 				TargetDir: "/",
-				Umask:     os.FileMode(0),
+				Umask:     0,
 				SourceDir: "/",
 				Entries: map[string]Entry{
 					"foo": &File{
 						sourceName: "foo",
-						Perm:       os.FileMode(0666),
+						Perm:       0666,
 						Contents:   []byte("bar"),
 					},
 				},
@@ -93,12 +93,12 @@ func TestTargetStatePopulate(t *testing.T) {
 			sourceDir: "/",
 			want: &TargetState{
 				TargetDir: "/",
-				Umask:     os.FileMode(0),
+				Umask:     0,
 				SourceDir: "/",
 				Entries: map[string]Entry{
 					".foo": &File{
 						sourceName: "dot_foo",
-						Perm:       os.FileMode(0666),
+						Perm:       0666,
 						Contents:   []byte("bar"),
 					},
 				},
@@ -112,12 +112,12 @@ func TestTargetStatePopulate(t *testing.T) {
 			sourceDir: "/",
 			want: &TargetState{
 				TargetDir: "/",
-				Umask:     os.FileMode(0),
+				Umask:     0,
 				SourceDir: "/",
 				Entries: map[string]Entry{
 					"foo": &File{
 						sourceName: "private_foo",
-						Perm:       os.FileMode(0600),
+						Perm:       0600,
 						Contents:   []byte("bar"),
 					},
 				},
@@ -131,16 +131,16 @@ func TestTargetStatePopulate(t *testing.T) {
 			sourceDir: "/",
 			want: &TargetState{
 				TargetDir: "/",
-				Umask:     os.FileMode(0),
+				Umask:     0,
 				SourceDir: "/",
 				Entries: map[string]Entry{
 					"foo": &Dir{
 						sourceName: "foo",
-						Perm:       os.FileMode(0777),
+						Perm:       0777,
 						Entries: map[string]Entry{
 							"bar": &File{
 								sourceName: "foo/bar",
-								Perm:       os.FileMode(0666),
+								Perm:       0666,
 								Contents:   []byte("baz"),
 							},
 						},
@@ -156,16 +156,16 @@ func TestTargetStatePopulate(t *testing.T) {
 			sourceDir: "/",
 			want: &TargetState{
 				TargetDir: "/",
-				Umask:     os.FileMode(0),
+				Umask:     0,
 				SourceDir: "/",
 				Entries: map[string]Entry{
 					".foo": &Dir{
 						sourceName: "private_dot_foo",
-						Perm:       os.FileMode(0700),
+						Perm:       0700,
 						Entries: map[string]Entry{
 							"bar": &File{
 								sourceName: "private_dot_foo/bar",
-								Perm:       os.FileMode(0666),
+								Perm:       0666,
 								Contents:   []byte("baz"),
 							},
 						},
@@ -184,7 +184,7 @@ func TestTargetStatePopulate(t *testing.T) {
 			},
 			want: &TargetState{
 				TargetDir: "/",
-				Umask:     os.FileMode(0),
+				Umask:     0,
 				SourceDir: "/",
 				Data: map[string]interface{}{
 					"Email": "user@example.com",
@@ -192,7 +192,7 @@ func TestTargetStatePopulate(t *testing.T) {
 				Entries: map[string]Entry{
 					".gitconfig": &File{
 						sourceName: "dot_gitconfig.tmpl",
-						Perm:       os.FileMode(0666),
+						Perm:       0666,
 						Contents:   []byte("[user]\n\temail = user@example.com\n"),
 					},
 				},
@@ -242,7 +242,7 @@ func TestEndToEnd(t *testing.T) {
 				"email": "hello@example.com",
 			},
 			targetDir: "/home/user",
-			umask:     os.FileMode(022),
+			umask:     022,
 			tests: []aferot.Test{
 				aferot.TestPath("/home/user/.bashrc", aferot.TestModeIsRegular, aferot.TestContentsString("bar")),
 				aferot.TestPath("/home/user/.hgrc", aferot.TestModeIsRegular, aferot.TestContentsString("[ui]\nusername = John Smith <hello@example.com>\n")),
