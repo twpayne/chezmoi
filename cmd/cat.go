@@ -4,10 +4,10 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/absfs/afero"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/twpayne/chezmoi/lib/chezmoi"
+	"github.com/twpayne/go-vfs"
 )
 
 var catCommand = &cobra.Command{
@@ -21,7 +21,7 @@ func init() {
 	rootCommand.AddCommand(catCommand)
 }
 
-func (c *Config) runCatCommand(fs afero.Fs, command *cobra.Command, args []string) error {
+func (c *Config) runCatCommand(fs vfs.FS, command *cobra.Command, args []string) error {
 	targetState, err := c.getTargetState(fs)
 	if err != nil {
 		return err

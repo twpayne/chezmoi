@@ -10,11 +10,11 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/absfs/afero"
 	"github.com/mitchellh/go-homedir"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/twpayne/chezmoi/lib/chezmoi"
+	"github.com/twpayne/go-vfs"
 )
 
 // An AddCommandConfig is a configuration for the add command.
@@ -50,12 +50,12 @@ func (c *Config) exec(argv []string) error {
 	return syscall.Exec(path, argv, os.Environ())
 }
 
-func (c *Config) getDefaultActuator(fs afero.Fs) chezmoi.Actuator {
+func (c *Config) getDefaultActuator(fs vfs.FS) chezmoi.Actuator {
 	var actuator chezmoi.Actuator
 	if c.DryRun {
 		actuator = chezmoi.NewNullActuator()
 	} else {
-		actuator = chezmoi.NewFsActuator(fs, c.TargetDir)
+		actuator = chezmoi.NewFSActuator(fs, c.TargetDir)
 	}
 	if c.Verbose {
 		actuator = chezmoi.NewLoggingActuator(os.Stdout, actuator)
@@ -120,7 +120,7 @@ func (c *Config) getSourceNames(targetState *chezmoi.TargetState, targets []stri
 	return sourceNames, nil
 }
 
-func (c *Config) getTargetState(fs afero.Fs) (*chezmoi.TargetState, error) {
+func (c *Config) getTargetState(fs vfs.FS) (*chezmoi.TargetState, error) {
 	defaultData, err := getDefaultData()
 	if err != nil {
 		return nil, err
@@ -138,9 +138,9 @@ func (c *Config) getTargetState(fs afero.Fs) (*chezmoi.TargetState, error) {
 	return targetState, nil
 }
 
-func makeRunE(runCommand func(afero.Fs, *cobra.Command, []string) error) func(*cobra.Command, []string) error {
+func makeRunE(runCommand func(vfs.FS, *cobra.Command, []string) error) func(*cobra.Command, []string) error {
 	return func(cmd *cobra.Command, args []string) error {
-		return runCommand(afero.NewOsFs(), cmd, args)
+		return runCommand(vfs.OSFS, cmd, args)
 	}
 }
 

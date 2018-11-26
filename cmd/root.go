@@ -6,11 +6,11 @@ import (
 	"path/filepath"
 	"syscall"
 
-	"github.com/absfs/afero"
 	"github.com/mitchellh/go-homedir"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/twpayne/go-vfs"
 )
 
 var (
@@ -84,7 +84,7 @@ func Execute() {
 	}
 }
 
-func (c *Config) persistentPreRunRootE(fs afero.Fs, command *cobra.Command, args []string) error {
+func (c *Config) persistentPreRunRootE(fs vfs.FS, command *cobra.Command, args []string) error {
 	info, err := fs.Stat(c.SourceDir)
 	switch {
 	case err == nil && !info.Mode().IsDir():

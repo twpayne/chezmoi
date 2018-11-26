@@ -3,33 +3,33 @@ package chezmoi
 import (
 	"os"
 
-	"github.com/absfs/afero"
 	"github.com/google/renameio"
+	"github.com/twpayne/go-vfs"
 )
 
-// An FsActuator makes changes to an afero.Fs.
-type FsActuator struct {
-	afero.Fs
+// An FSActuator makes changes to an vfs.FS.
+type FSActuator struct {
+	vfs.FS
 	dir string
 }
 
-// NewFsActuator returns an actuator that acts on fs.
-func NewFsActuator(fs afero.Fs, targetDir string) *FsActuator {
+// NewFSActuator returns an actuator that acts on fs.
+func NewFSActuator(fs vfs.FS, targetDir string) *FSActuator {
 	var dir string
 	// Special case: if writing to the real filesystem, use github.com/google/renameio
-	if _, ok := fs.(*afero.OsFs); ok {
+	if fs == vfs.OSFS {
 		dir = renameio.TempDir(targetDir)
 	}
-	return &FsActuator{
-		Fs:  fs,
+	return &FSActuator{
+		FS:  fs,
 		dir: dir,
 	}
 }
 
 // WriteFile implements Actuator.WriteFile.
-func (a *FsActuator) WriteFile(name string, contents []byte, mode os.FileMode, currentContents []byte) error {
+func (a *FSActuator) WriteFile(name string, contents []byte, mode os.FileMode, currentContents []byte) error {
 	// Special case: if writing to the real filesystem, use github.com/google/renameio
-	if _, ok := a.Fs.(*afero.OsFs); ok {
+	if a.FS == vfs.OSFS {
 		t, err := renameio.TempFile(a.dir, name)
 		if err != nil {
 			return err
@@ -43,5 +43,5 @@ func (a *FsActuator) WriteFile(name string, contents []byte, mode os.FileMode, c
 		}
 		return t.CloseAtomicallyReplace()
 	}
-	return afero.WriteFile(a.Fs, name, contents, mode)
+	return a.FS.WriteFile(name, contents, mode)
 }

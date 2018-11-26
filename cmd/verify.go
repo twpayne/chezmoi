@@ -3,9 +3,9 @@ package cmd
 import (
 	"os"
 
-	"github.com/absfs/afero"
 	"github.com/spf13/cobra"
 	"github.com/twpayne/chezmoi/lib/chezmoi"
+	"github.com/twpayne/go-vfs"
 )
 
 var verifyCommand = &cobra.Command{
@@ -19,7 +19,7 @@ func init() {
 	rootCommand.AddCommand(verifyCommand)
 }
 
-func (c *Config) runVerifyCommandE(fs afero.Fs, command *cobra.Command, args []string) error {
+func (c *Config) runVerifyCommandE(fs vfs.FS, command *cobra.Command, args []string) error {
 	targetState, err := c.getTargetState(fs)
 	if err != nil {
 		return err

@@ -3,10 +3,10 @@ package cmd
 import (
 	"path/filepath"
 
-	"github.com/absfs/afero"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"github.com/twpayne/go-vfs"
 )
 
 var dumpCommand = &cobra.Command{
@@ -19,7 +19,7 @@ func init() {
 	rootCommand.AddCommand(dumpCommand)
 }
 
-func (c *Config) runDumpCommandE(fs afero.Fs, command *cobra.Command, args []string) error {
+func (c *Config) runDumpCommandE(fs vfs.FS, command *cobra.Command, args []string) error {
 	targetState, err := c.getTargetState(fs)
 	if err != nil {
 		return err

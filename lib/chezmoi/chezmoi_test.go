@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/d4l3k/messagediff"
-	"github.com/twpayne/aferot"
+	"github.com/twpayne/go-vfs/vfstest"
 )
 
 func TestDirName(t *testing.T) {
@@ -200,10 +200,10 @@ func TestTargetStatePopulate(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			fs, cleanup, err := aferot.NewTempOsFs(tc.root)
+			fs, cleanup, err := vfstest.NewTempFS(tc.root)
 			defer cleanup()
 			if err != nil {
-				t.Fatalf("aferot.NewTempOsFs(_) == _, _, %v, want _, _, <nil>", err)
+				t.Fatalf("vfstest.NewTempFS(_) == _, _, %v, want _, _, <nil>", err)
 			}
 			ts := NewTargetState("/", 0, tc.sourceDir, tc.data)
 			if err := ts.Populate(fs); err != nil {
@@ -243,27 +243,27 @@ func TestEndToEnd(t *testing.T) {
 			},
 			targetDir: "/home/user",
 			umask:     022,
-			tests: []aferot.Test{
-				aferot.TestPath("/home/user/.bashrc", aferot.TestModeIsRegular, aferot.TestContentsString("bar")),
-				aferot.TestPath("/home/user/.hgrc", aferot.TestModeIsRegular, aferot.TestContentsString("[ui]\nusername = John Smith <hello@example.com>\n")),
-				aferot.TestPath("/home/user/foo", aferot.TestModeIsRegular, aferot.TestContents(nil)),
+			tests: []vfstest.Test{
+				vfstest.TestPath("/home/user/.bashrc", vfstest.TestModeIsRegular, vfstest.TestContentsString("bar")),
+				vfstest.TestPath("/home/user/.hgrc", vfstest.TestModeIsRegular, vfstest.TestContentsString("[ui]\nusername = John Smith <hello@example.com>\n")),
+				vfstest.TestPath("/home/user/foo", vfstest.TestModeIsRegular, vfstest.TestContents(nil)),
 			},
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			fs, cleanup, err := aferot.NewTempOsFs(tc.root)
+			fs, cleanup, err := vfstest.NewTempFS(tc.root)
 			defer cleanup()
 			if err != nil {
-				t.Fatalf("aferot.NewTempOsFs(_) == _, _, %v, want _, _, <nil>", err)
+				t.Fatalf("vfstest.NewTempFS(_) == _, _, %v, want _, _, <nil>", err)
 			}
 			ts := NewTargetState(tc.targetDir, tc.umask, tc.sourceDir, tc.data)
 			if err := ts.Populate(fs); err != nil {
 				t.Fatalf("ts.Populate(%+v) == %v, want <nil>", fs, err)
 			}
-			if err := ts.Apply(fs, NewLoggingActuator(os.Stderr, NewFsActuator(fs, tc.targetDir))); err != nil {
+			if err := ts.Apply(fs, NewLoggingActuator(os.Stderr, NewFSActuator(fs, tc.targetDir))); err != nil {
 				t.Fatalf("ts.Apply(fs, _) == %v, want <nil>", err)
 			}
-			aferot.RunTest(t, fs, "", tc.tests)
+			vfstest.RunTests(t, fs, "", tc.tests)
 		})
 	}
 }

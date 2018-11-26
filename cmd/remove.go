@@ -4,8 +4,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/absfs/afero"
 	"github.com/spf13/cobra"
+	"github.com/twpayne/go-vfs"
 )
 
 var removeCommand = &cobra.Command{
@@ -20,7 +20,7 @@ func init() {
 	rootCommand.AddCommand(removeCommand)
 }
 
-func runRemoveCommandE(fs afero.Fs, command *cobra.Command, args []string) error {
+func runRemoveCommandE(fs vfs.FS, command *cobra.Command, args []string) error {
 	targetState, err := config.getTargetState(fs)
 	if err != nil {
 		return err
