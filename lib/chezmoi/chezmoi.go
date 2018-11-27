@@ -443,14 +443,14 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 			}
 		case info.Mode().IsDir():
 			components := splitPathList(relPath)
-			dirNames, modes := parseDirNameComponents(components)
+			dirNames, perms := parseDirNameComponents(components)
 			entries, err := ts.findEntries(dirNames[:len(dirNames)-1])
 			if err != nil {
 				return err
 			}
 			dirName := dirNames[len(dirNames)-1]
-			mode := modes[len(modes)-1]
-			entries[dirName] = newDir(relPath, mode)
+			perm := perms[len(perms)-1]
+			entries[dirName] = newDir(relPath, perm)
 		default:
 			return fmt.Errorf("unsupported file type: %s", path)
 		}

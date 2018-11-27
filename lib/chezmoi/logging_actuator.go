@@ -35,9 +35,9 @@ func (a *LoggingActuator) Chmod(name string, mode os.FileMode) error {
 }
 
 // Mkdir implements Actuator.Mkdir.
-func (a *LoggingActuator) Mkdir(name string, mode os.FileMode) error {
-	action := fmt.Sprintf("mkdir -m %o %s", mode, name)
-	err := a.a.Mkdir(name, mode)
+func (a *LoggingActuator) Mkdir(name string, perm os.FileMode) error {
+	action := fmt.Sprintf("mkdir -m %o %s", perm, name)
+	err := a.a.Mkdir(name, perm)
 	if err == nil {
 		fmt.Fprintln(a.w, action)
 	} else {
@@ -59,9 +59,9 @@ func (a *LoggingActuator) RemoveAll(name string) error {
 }
 
 // WriteFile implements Actuator.WriteFile.
-func (a *LoggingActuator) WriteFile(name string, contents []byte, mode os.FileMode, currentContents []byte) error {
-	action := fmt.Sprintf("install -m %o /dev/null %s", mode, name)
-	err := a.a.WriteFile(name, contents, mode, currentContents)
+func (a *LoggingActuator) WriteFile(name string, contents []byte, perm os.FileMode, currentContents []byte) error {
+	action := fmt.Sprintf("install -m %o /dev/null %s", perm, name)
+	err := a.a.WriteFile(name, contents, perm, currentContents)
 	if err == nil {
 		fmt.Fprintln(a.w, action)
 		for _, section := range diff(splitLines(currentContents), splitLines(contents)) {

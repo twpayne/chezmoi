@@ -29,9 +29,9 @@ func (a *AnyActuator) Chmod(name string, mode os.FileMode) error {
 }
 
 // Mkdir implements Actuator.Mkdir.
-func (a *AnyActuator) Mkdir(name string, mode os.FileMode) error {
+func (a *AnyActuator) Mkdir(name string, perm os.FileMode) error {
 	a.actuated = true
-	return a.a.Mkdir(name, mode)
+	return a.a.Mkdir(name, perm)
 }
 
 // RemoveAll implements Actuator.RemoveAll.
@@ -41,7 +41,7 @@ func (a *AnyActuator) RemoveAll(name string) error {
 }
 
 // WriteFile implements Actuator.WriteFile.
-func (a *AnyActuator) WriteFile(name string, contents []byte, mode os.FileMode, currentContents []byte) error {
+func (a *AnyActuator) WriteFile(name string, contents []byte, perm os.FileMode, currentContents []byte) error {
 	a.actuated = true
-	return a.a.WriteFile(name, contents, mode, currentContents)
+	return a.a.WriteFile(name, contents, perm, currentContents)
 }
