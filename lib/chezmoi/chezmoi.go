@@ -20,6 +20,7 @@ import (
 )
 
 const (
+	symlinkPrefix    = "symlink_"
 	privatePrefix    = "private_"
 	emptyPrefix      = "empty_"
 	executablePrefix = "executable_"
@@ -27,7 +28,7 @@ const (
 	templateSuffix   = ".tmpl"
 )
 
-// An Entry is either a Dir or a File.
+// An Entry is either a Dir, a File, or a Symlink.
 type Entry interface {
 	SourceName() string
 	addAllEntries(map[string]Entry, string)
@@ -50,6 +51,12 @@ type Dir struct {
 	Entries    map[string]Entry
 }
 
+// A Symlink represents the target state of a symlink.
+type Symlink struct {
+	sourceName string
+	Target     string
+}
+
 // A TargetState represents the root target state.
 type TargetState struct {
 	TargetDir string
@@ -66,7 +73,7 @@ type parsedSourceDirName struct {
 
 type parsedSourceFileName struct {
 	fileName string
-	perm     os.FileMode
+	mode     os.FileMode
 	empty    bool
 	template bool
 }
@@ -112,7 +119,7 @@ func (d *Dir) archive(w *tar.Writer, dirName string, headerTemplate *tar.Header,
 
 // apply ensures that targetDir in fs matches d.
 func (d *Dir) apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Actuator) error {
-	info, err := fs.Stat(targetDir)
+	info, err := fs.Lstat(targetDir)
 	switch {
 	case err == nil && info.Mode().IsDir():
 		if info.Mode()&os.ModePerm != d.Perm&^umask {
@@ -167,20 +174,20 @@ func (f *File) archive(w *tar.Writer, fileName string, headerTemplate *tar.Heade
 	return err
 }
 
-// apply ensures that state of targetPath in fs matches f.
+// apply ensures that the state of targetPath in fs matches f.
 func (f *File) apply(fs vfs.FS, targetPath string, umask os.FileMode, actuator Actuator) error {
-	info, err := fs.Stat(targetPath)
-	var currentContents []byte
+	info, err := fs.Lstat(targetPath)
+	var currData []byte
 	switch {
 	case err == nil && info.Mode().IsRegular():
 		if len(f.Contents) == 0 && !f.Empty {
 			return actuator.RemoveAll(targetPath)
 		}
-		currentContents, err = fs.ReadFile(targetPath)
+		currData, err = fs.ReadFile(targetPath)
 		if err != nil {
 			return err
 		}
-		if !bytes.Equal(currentContents, f.Contents) {
+		if !bytes.Equal(currData, f.Contents) {
 			break
 		}
 		if info.Mode()&os.ModePerm != f.Perm&^umask {
@@ -200,12 +207,49 @@ func (f *File) apply(fs vfs.FS, targetPath string, umask os.FileMode, actuator A
 	if len(f.Contents) == 0 && !f.Empty {
 		return nil
 	}
-	return actuator.WriteFile(targetPath, f.Contents, f.Perm&^umask, currentContents)
+	return actuator.WriteFile(targetPath, f.Contents, f.Perm&^umask, currData)
 }
 
 // SourceName implements Entry.SourceName.
 func (f *File) SourceName() string {
 	return f.sourceName
+}
+
+// addAllEntries adds s to result.
+func (s *Symlink) addAllEntries(result map[string]Entry, name string) {
+	result[name] = s
+}
+
+// archive writes s to w.
+func (s *Symlink) archive(w *tar.Writer, dirName string, headerTemplate *tar.Header, umask os.FileMode) error {
+	header := *headerTemplate
+	header.Typeflag = tar.TypeSymlink
+	header.Linkname = s.Target
+	return w.WriteHeader(&header)
+}
+
+// apply ensures that the state of targetPath in fs matches s.
+func (s *Symlink) apply(fs vfs.FS, targetPath string, umask os.FileMode, actuator Actuator) error {
+	info, err := fs.Lstat(targetPath)
+	switch {
+	case err == nil && info.Mode()&os.ModeType == os.ModeSymlink:
+		currentTarget, err := fs.Readlink(targetPath)
+		if err != nil {
+			return err
+		}
+		if currentTarget == s.Target {
+			return nil
+		}
+	case err == nil:
+	case os.IsNotExist(err):
+	default:
+		return err
+	}
+	return actuator.WriteSymlink(s.Target, targetPath)
+}
+
+func (s *Symlink) SourceName() string {
+	return s.sourceName
 }
 
 // NewTargetState creates a new TargetState.
@@ -230,7 +274,7 @@ func (ts *TargetState) Add(fs vfs.FS, target string, info os.FileInfo, addEmpty,
 	}
 	if info == nil {
 		var err error
-		info, err = fs.Stat(target)
+		info, err = fs.Lstat(target)
 		if err != nil {
 			return err
 		}
@@ -274,28 +318,28 @@ func (ts *TargetState) Add(fs vfs.FS, target string, info os.FileInfo, addEmpty,
 		}
 		sourceName := parsedSourceFileName{
 			fileName: name,
-			perm:     info.Mode() & os.ModePerm,
+			mode:     info.Mode() & os.ModePerm,
 			empty:    info.Size() == 0,
 			template: addTemplate,
 		}.SourceFileName()
 		if dirSourceName != "" {
 			sourceName = filepath.Join(dirSourceName, sourceName)
 		}
-		contents, err := fs.ReadFile(target)
+		data, err := fs.ReadFile(target)
 		if err != nil {
 			return err
 		}
 		if addTemplate {
-			contents = autoTemplate(contents, ts.Data)
+			data = autoTemplate(data, ts.Data)
 		}
-		if err := actuator.WriteFile(filepath.Join(ts.SourceDir, sourceName), contents, 0666&^ts.Umask, nil); err != nil {
+		if err := actuator.WriteFile(filepath.Join(ts.SourceDir, sourceName), data, 0666&^ts.Umask, nil); err != nil {
 			return err
 		}
 		entries[name] = &File{
 			sourceName: sourceName,
-			Empty:      len(contents) == 0,
+			Empty:      len(data) == 0,
 			Perm:       info.Mode() & os.ModePerm,
-			Contents:   contents,
+			Contents:   data,
 		}
 	case info.Mode().IsDir():
 		if entry, ok := entries[name]; ok {
@@ -323,6 +367,31 @@ func (ts *TargetState) Add(fs vfs.FS, target string, info os.FileInfo, addEmpty,
 			}
 		}
 		entries[name] = newDir(sourceName, info.Mode()&os.ModePerm)
+	case info.Mode()&os.ModeType == os.ModeSymlink:
+		if entry, ok := entries[name]; ok {
+			if _, ok := entry.(*Symlink); !ok {
+				return fmt.Errorf("%s: already added and not a symlink", targetName)
+			}
+			return nil // entry already exists
+		}
+		sourceName := parsedSourceFileName{
+			fileName: name,
+			mode:     os.ModeSymlink,
+		}.SourceFileName()
+		if dirSourceName != "" {
+			sourceName = filepath.Join(dirSourceName, sourceName)
+		}
+		data, err := fs.Readlink(target)
+		if err != nil {
+			return err
+		}
+		if err := actuator.WriteFile(filepath.Join(ts.SourceDir, sourceName), []byte(data), 0666&^ts.Umask, nil); err != nil {
+			return err
+		}
+		entries[name] = &Symlink{
+			sourceName: sourceName,
+			Target:     data,
+		}
 	default:
 		return fmt.Errorf("%s: not a regular file or directory", targetName)
 	}
@@ -420,12 +489,12 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 			if err != nil {
 				return err
 			}
-			contents, err := fs.ReadFile(path)
+			data, err := fs.ReadFile(path)
 			if err != nil {
 				return err
 			}
 			if psfp.template {
-				tmpl, err := template.New(path).Parse(string(contents))
+				tmpl, err := template.New(path).Parse(string(data))
 				if err != nil {
 					return fmt.Errorf("%s: %v", path, err)
 				}
@@ -433,14 +502,26 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 				if err := tmpl.Execute(output, ts.Data); err != nil {
 					return fmt.Errorf("%s: %v", path, err)
 				}
-				contents = output.Bytes()
+				data = output.Bytes()
 			}
-			entries[psfp.fileName] = &File{
-				sourceName: relPath,
-				Empty:      psfp.empty,
-				Perm:       psfp.perm,
-				Contents:   contents,
+			var entry Entry
+			switch psfp.mode & os.ModeType {
+			case 0:
+				entry = &File{
+					sourceName: relPath,
+					Empty:      psfp.empty,
+					Perm:       psfp.mode & os.ModePerm,
+					Contents:   data,
+				}
+			case os.ModeSymlink:
+				entry = &Symlink{
+					sourceName: relPath,
+					Target:     string(data),
+				}
+			default:
+				return fmt.Errorf("%v: unsupported mode: %d", path, psfp.mode&os.ModeType)
 			}
+			entries[psfp.fileName] = entry
 		case info.Mode().IsDir():
 			components := splitPathList(relPath)
 			dirNames, perms := parseDirNameComponents(components)
@@ -513,21 +594,29 @@ func (psdn parsedSourceDirName) SourceDirName() string {
 
 // parseSourceFileName parses a source file name.
 func parseSourceFileName(fileName string) parsedSourceFileName {
-	perm := os.FileMode(0666)
-	private := false
+	mode := os.FileMode(0666)
 	empty := false
 	template := false
-	if strings.HasPrefix(fileName, privatePrefix) {
-		fileName = strings.TrimPrefix(fileName, privatePrefix)
-		private = true
-	}
-	if strings.HasPrefix(fileName, emptyPrefix) {
-		fileName = strings.TrimPrefix(fileName, emptyPrefix)
-		empty = true
-	}
-	if strings.HasPrefix(fileName, executablePrefix) {
-		fileName = strings.TrimPrefix(fileName, executablePrefix)
-		perm |= 0111
+	if strings.HasPrefix(fileName, symlinkPrefix) {
+		fileName = strings.TrimPrefix(fileName, symlinkPrefix)
+		mode |= os.ModeSymlink
+	} else {
+		private := false
+		if strings.HasPrefix(fileName, privatePrefix) {
+			fileName = strings.TrimPrefix(fileName, privatePrefix)
+			private = true
+		}
+		if strings.HasPrefix(fileName, emptyPrefix) {
+			fileName = strings.TrimPrefix(fileName, emptyPrefix)
+			empty = true
+		}
+		if strings.HasPrefix(fileName, executablePrefix) {
+			fileName = strings.TrimPrefix(fileName, executablePrefix)
+			mode |= 0111
+		}
+		if private {
+			mode &= 0700
+		}
 	}
 	if strings.HasPrefix(fileName, dotPrefix) {
 		fileName = "." + strings.TrimPrefix(fileName, dotPrefix)
@@ -536,12 +625,9 @@ func parseSourceFileName(fileName string) parsedSourceFileName {
 		fileName = strings.TrimSuffix(fileName, templateSuffix)
 		template = true
 	}
-	if private {
-		perm &= 0700
-	}
 	return parsedSourceFileName{
 		fileName: fileName,
-		perm:     perm,
+		mode:     mode,
 		empty:    empty,
 		template: template,
 	}
@@ -550,14 +636,21 @@ func parseSourceFileName(fileName string) parsedSourceFileName {
 // SourceFileName returns psfn's source file name.
 func (psfn parsedSourceFileName) SourceFileName() string {
 	fileName := ""
-	if psfn.perm&os.FileMode(077) == os.FileMode(0) {
-		fileName = privatePrefix
-	}
-	if psfn.empty {
-		fileName += emptyPrefix
-	}
-	if psfn.perm&os.FileMode(0111) != os.FileMode(0) {
-		fileName += executablePrefix
+	switch psfn.mode & os.ModeType {
+	case 0:
+		if psfn.mode&os.ModePerm&os.FileMode(077) == os.FileMode(0) {
+			fileName = privatePrefix
+		}
+		if psfn.empty {
+			fileName += emptyPrefix
+		}
+		if psfn.mode&os.ModePerm&os.FileMode(0111) != os.FileMode(0) {
+			fileName += executablePrefix
+		}
+	case os.ModeSymlink:
+		fileName = symlinkPrefix
+	default:
+		panic(fmt.Sprintf("%+v: unsupported type", psfn)) // FIXME return error instead of panicing
 	}
 	if strings.HasPrefix(psfn.fileName, ".") {
 		fileName += dotPrefix + strings.TrimPrefix(psfn.fileName, ".")

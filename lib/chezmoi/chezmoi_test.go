@@ -63,7 +63,7 @@ func TestSourceFileName(t *testing.T) {
 			sourceFileName: "foo",
 			psfn: parsedSourceFileName{
 				fileName: "foo",
-				perm:     0666,
+				mode:     0666,
 				empty:    false,
 				template: false,
 			},
@@ -72,7 +72,7 @@ func TestSourceFileName(t *testing.T) {
 			sourceFileName: "dot_foo",
 			psfn: parsedSourceFileName{
 				fileName: ".foo",
-				perm:     0666,
+				mode:     0666,
 				empty:    false,
 				template: false,
 			},
@@ -81,7 +81,7 @@ func TestSourceFileName(t *testing.T) {
 			sourceFileName: "private_foo",
 			psfn: parsedSourceFileName{
 				fileName: "foo",
-				perm:     0600,
+				mode:     0600,
 				empty:    false,
 				template: false,
 			},
@@ -90,7 +90,7 @@ func TestSourceFileName(t *testing.T) {
 			sourceFileName: "private_dot_foo",
 			psfn: parsedSourceFileName{
 				fileName: ".foo",
-				perm:     0600,
+				mode:     0600,
 				empty:    false,
 				template: false,
 			},
@@ -99,7 +99,7 @@ func TestSourceFileName(t *testing.T) {
 			sourceFileName: "empty_foo",
 			psfn: parsedSourceFileName{
 				fileName: "foo",
-				perm:     0666,
+				mode:     0666,
 				empty:    true,
 				template: false,
 			},
@@ -108,7 +108,7 @@ func TestSourceFileName(t *testing.T) {
 			sourceFileName: "executable_foo",
 			psfn: parsedSourceFileName{
 				fileName: "foo",
-				perm:     0777,
+				mode:     0777,
 				empty:    false,
 				template: false,
 			},
@@ -117,7 +117,7 @@ func TestSourceFileName(t *testing.T) {
 			sourceFileName: "foo.tmpl",
 			psfn: parsedSourceFileName{
 				fileName: "foo",
-				perm:     0666,
+				mode:     0666,
 				empty:    false,
 				template: true,
 			},
@@ -126,8 +126,30 @@ func TestSourceFileName(t *testing.T) {
 			sourceFileName: "private_executable_dot_foo.tmpl",
 			psfn: parsedSourceFileName{
 				fileName: ".foo",
-				perm:     0700,
+				mode:     0700,
 				empty:    false,
+				template: true,
+			},
+		},
+		{
+			sourceFileName: "symlink_foo",
+			psfn: parsedSourceFileName{
+				fileName: "foo",
+				mode:     os.ModeSymlink | 0666,
+			},
+		},
+		{
+			sourceFileName: "symlink_dot_foo",
+			psfn: parsedSourceFileName{
+				fileName: ".foo",
+				mode:     os.ModeSymlink | 0666,
+			},
+		},
+		{
+			sourceFileName: "symlink_foo.tmpl",
+			psfn: parsedSourceFileName{
+				fileName: "foo",
+				mode:     os.ModeSymlink | 0666,
 				template: true,
 			},
 		},
@@ -284,6 +306,66 @@ func TestTargetStatePopulate(t *testing.T) {
 				},
 			},
 		},
+		{
+			name: "symlink",
+			root: map[string]interface{}{
+				"/symlink_foo": "bar",
+			},
+			sourceDir: "/",
+			want: &TargetState{
+				TargetDir: "/",
+				Umask:     0,
+				SourceDir: "/",
+				Entries: map[string]Entry{
+					"foo": &Symlink{
+						sourceName: "symlink_foo",
+						Target:     "bar",
+					},
+				},
+			},
+		},
+		{
+			name: "symlink_dot_foo",
+			root: map[string]interface{}{
+				"/symlink_dot_foo": "bar",
+			},
+			sourceDir: "/",
+			want: &TargetState{
+				TargetDir: "/",
+				Umask:     0,
+				SourceDir: "/",
+				Entries: map[string]Entry{
+					".foo": &Symlink{
+						sourceName: "symlink_dot_foo",
+						Target:     "bar",
+					},
+				},
+			},
+		},
+		{
+			name: "symlink_template",
+			root: map[string]interface{}{
+				"/symlink_foo.tmpl": "bar-{{ .host }}",
+			},
+			sourceDir: "/",
+			data: map[string]interface{}{
+				"host": "example.com",
+			},
+			want: &TargetState{
+				TargetDir: "/",
+				Umask:     0,
+				SourceDir: "/",
+				Data: map[string]interface{}{
+					"host": "example.com",
+				},
+				Entries: map[string]Entry{
+					"foo": &Symlink{
+						sourceName: "symlink_foo.tmpl",
+						Target:     "bar-example.com",
+					},
+				},
+			},
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			fs, cleanup, err := vfstest.NewTempFS(tc.root)
@@ -305,7 +387,7 @@ func TestTargetStatePopulate(t *testing.T) {
 func TestEndToEnd(t *testing.T) {
 	for _, tc := range []struct {
 		name      string
-		root      map[string]string
+		root      interface{}
 		sourceDir string
 		data      map[string]interface{}
 		targetDir string
@@ -314,13 +396,16 @@ func TestEndToEnd(t *testing.T) {
 	}{
 		{
 			name: "all",
-			root: map[string]string{
-				"/home/user/.bashrc":                "foo",
-				"/home/user/.chezmoi/dot_bashrc":    "bar",
-				"/home/user/.chezmoi/.git/HEAD":     "HEAD",
-				"/home/user/.chezmoi/dot_hgrc.tmpl": "[ui]\nusername = {{ .name }} <{{ .email }}>\n",
-				"/home/user/.chezmoi/empty.tmpl":    "{{ if false }}foo{{ end }}",
-				"/home/user/.chezmoi/empty_foo":     "",
+			root: map[string]interface{}{
+				"/home/user/.bashrc":                          "foo",
+				"/home/user/replace_symlink":                  &vfstest.Symlink{Target: "foo"},
+				"/home/user/.chezmoi/dot_bashrc":              "bar",
+				"/home/user/.chezmoi/.git/HEAD":               "HEAD",
+				"/home/user/.chezmoi/dot_hgrc.tmpl":           "[ui]\nusername = {{ .name }} <{{ .email }}>\n",
+				"/home/user/.chezmoi/empty.tmpl":              "{{ if false }}foo{{ end }}",
+				"/home/user/.chezmoi/empty_foo":               "",
+				"/home/user/.chezmoi/symlink_bar":             "empty",
+				"/home/user/.chezmoi/symlink_replace_symlink": "bar",
 			},
 			sourceDir: "/home/user/.chezmoi",
 			data: map[string]interface{}{
@@ -333,6 +418,8 @@ func TestEndToEnd(t *testing.T) {
 				vfstest.TestPath("/home/user/.bashrc", vfstest.TestModeIsRegular, vfstest.TestContentsString("bar")),
 				vfstest.TestPath("/home/user/.hgrc", vfstest.TestModeIsRegular, vfstest.TestContentsString("[ui]\nusername = John Smith <hello@example.com>\n")),
 				vfstest.TestPath("/home/user/foo", vfstest.TestModeIsRegular, vfstest.TestContents(nil)),
+				vfstest.TestPath("/home/user/bar", vfstest.TestModeType(os.ModeSymlink), vfstest.TestSymlinkTarget("empty")),
+				vfstest.TestPath("/home/user/replace_symlink", vfstest.TestModeType(os.ModeSymlink), vfstest.TestSymlinkTarget("bar")),
 			},
 		},
 	} {

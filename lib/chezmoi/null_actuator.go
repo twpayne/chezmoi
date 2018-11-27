@@ -29,3 +29,8 @@ func (a *NullActuator) RemoveAll(string) error {
 func (a *NullActuator) WriteFile(string, []byte, os.FileMode, []byte) error {
 	return nil
 }
+
+// WriteSymlink implements Actuator.WriteSymlink.
+func (a *NullActuator) WriteSymlink(string, string) error {
+	return nil
+}

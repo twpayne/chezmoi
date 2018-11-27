@@ -59,12 +59,12 @@ func (a *LoggingActuator) RemoveAll(name string) error {
 }
 
 // WriteFile implements Actuator.WriteFile.
-func (a *LoggingActuator) WriteFile(name string, contents []byte, perm os.FileMode, currentContents []byte) error {
+func (a *LoggingActuator) WriteFile(name string, data []byte, perm os.FileMode, currData []byte) error {
 	action := fmt.Sprintf("install -m %o /dev/null %s", perm, name)
-	err := a.a.WriteFile(name, contents, perm, currentContents)
+	err := a.a.WriteFile(name, data, perm, currData)
 	if err == nil {
 		fmt.Fprintln(a.w, action)
-		for _, section := range diff(splitLines(currentContents), splitLines(contents)) {
+		for _, section := range diff(splitLines(currData), splitLines(data)) {
 			for _, s := range section.s {
 				fmt.Fprintf(a.w, "%c%s\n", section.ctype, s)
 			}
@@ -75,9 +75,21 @@ func (a *LoggingActuator) WriteFile(name string, contents []byte, perm os.FileMo
 	return err
 }
 
-func splitLines(contents []byte) []string {
-	if len(contents) == 0 {
+// WriteSymlink implements Actuator.WriteSymlink.
+func (a *LoggingActuator) WriteSymlink(oldname, newname string) error {
+	action := fmt.Sprintf("ln -sf %s %s", oldname, newname)
+	err := a.a.WriteSymlink(oldname, newname)
+	if err == nil {
+		fmt.Fprintln(a.w, action)
+	} else {
+		fmt.Fprintf(a.w, "%s: %v\n", action, err)
+	}
+	return err
+}
+
+func splitLines(data []byte) []string {
+	if len(data) == 0 {
 		return nil
 	}
-	return strings.Split(string(contents), "\n")
+	return strings.Split(string(data), "\n")
 }
