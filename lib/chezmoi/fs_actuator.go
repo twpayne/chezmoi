@@ -45,3 +45,15 @@ func (a *FSActuator) WriteFile(name string, data []byte, perm os.FileMode, currD
 	}
 	return a.FS.WriteFile(name, data, perm)
 }
+
+// Symlink implements Actuator.WriteSymlink.
+func (a *FSActuator) WriteSymlink(oldname, newname string) error {
+	// Special case: if writing to the real filesystem, use github.com/google/renameio
+	if a.FS == vfs.OSFS {
+		return renameio.Symlink(oldname, newname)
+	}
+	if err := a.FS.RemoveAll(newname); err != nil && !os.IsNotExist(err) {
+		return err
+	}
+	return a.FS.Symlink(oldname, newname)
+}

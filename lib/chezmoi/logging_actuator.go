@@ -58,18 +58,6 @@ func (a *LoggingActuator) RemoveAll(name string) error {
 	return err
 }
 
-// Symlink implements Actuator.Symlink.
-func (a *LoggingActuator) Symlink(oldname, newname string) error {
-	action := fmt.Sprintf("ln -s %s %s", oldname, newname)
-	err := a.a.Symlink(oldname, newname)
-	if err == nil {
-		fmt.Fprintln(a.w, action)
-	} else {
-		fmt.Fprintf(a.w, "%s: %v\n", action, err)
-	}
-	return err
-}
-
 // WriteFile implements Actuator.WriteFile.
 func (a *LoggingActuator) WriteFile(name string, data []byte, perm os.FileMode, currData []byte) error {
 	action := fmt.Sprintf("install -m %o /dev/null %s", perm, name)
@@ -81,6 +69,18 @@ func (a *LoggingActuator) WriteFile(name string, data []byte, perm os.FileMode, 
 				fmt.Fprintf(a.w, "%c%s\n", section.ctype, s)
 			}
 		}
+	} else {
+		fmt.Fprintf(a.w, "%s: %v\n", action, err)
+	}
+	return err
+}
+
+// WriteSymlink implements Actuator.WriteSymlink.
+func (a *LoggingActuator) WriteSymlink(oldname, newname string) error {
+	action := fmt.Sprintf("ln -sf %s %s", oldname, newname)
+	err := a.a.WriteSymlink(oldname, newname)
+	if err == nil {
+		fmt.Fprintln(a.w, action)
 	} else {
 		fmt.Fprintf(a.w, "%s: %v\n", action, err)
 	}

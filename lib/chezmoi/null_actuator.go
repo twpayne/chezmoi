@@ -25,12 +25,12 @@ func (a *NullActuator) RemoveAll(string) error {
 	return nil
 }
 
-// Symlink implements Actuator.Symlink.
-func (a *NullActuator) Symlink(string, string) error {
+// WriteFile implements Actuator.WriteFile.
+func (a *NullActuator) WriteFile(string, []byte, os.FileMode, []byte) error {
 	return nil
 }
 
-// WriteFile implements Actuator.WriteFile.
-func (a *NullActuator) WriteFile(string, []byte, os.FileMode, []byte) error {
+// WriteSymlink implements Actuator.WriteSymlink.
+func (a *NullActuator) WriteSymlink(string, string) error {
 	return nil
 }
