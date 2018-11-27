@@ -9,16 +9,16 @@
 
 ## Features
 
- * Declarative: you declare the desired state of files and directories in your
-   home directory and `chezmoi` updates your home directory to match that
-state.
+ * Declarative: you declare the desired state of files, directories, and
+   symbolic links in your home directory and `chezmoi` updates your home
+directory to match that state.
 
  * Flexible: your dotfiles can be templates (using
    [text/template](https://godoc.org/text/template) syntax). Predefined
 variables allow you to change behaviour depending on operating system,
 architecture, and hostname.
 
- * Robust: `chezmoi` updates all files atomically (using
+ * Robust: `chezmoi` updates all files and symbolic links atomically (using
    [google/renameio](https://github.com/google/renameio)) so you are never left
 with incomplete files that could lock you out, even if the update process is
 interrupted.
@@ -30,8 +30,8 @@ systems.
  * Transparent: `chezmoi` includes verbose and dry run modes so you can review
    exactly what changes it will make to your home directory before making them.
 
- * Practical: `chezmoi` manages hidden files (dot files), directories, private,
-   and executable files.
+ * Practical: `chezmoi` manages hidden files (dot files), directories, private
+   files, executable files, and symbolic links.
 
  * Fast, easy to use, and familiar: `chezmoi` runs in fractions of a second and
    includes commands to make most operations trivial. You can use the version
@@ -244,22 +244,32 @@ exactly what it will run without executing it.
 
 ## Under the hood
 
-`chezmoi` stores the desired state of files and directories in `~/.chezmoi`.
-This location can be overridden with the `-s` flag or by giving a value for
-`sourceDir` in `~/.chezmoi.yaml`. Some state is encoded in the source names.
-`chezmoi` ignores all files and directories in the source directory that begin
-with a `.`.  The following prefixes and suffixes are special.
+`chezmoi` stores the desired state of files, symbolic links, and directories in
+regular files and directories in `~/.chezmoi`. This location can be overridden
+with the `-s` flag or by giving a value for `sourceDir` in `~/.chezmoi.yaml`.
+Some state is encoded in the source names. `chezmoi` ignores all files and
+directories in the source directory that begin with a `.`. The following
+prefixes and suffixes are special.
 
 | Prefix               | Effect                                                                            |
 | -------------------- | ----------------------------------------------------------------------------------|
 | `private_` prefix    | Remove all group and world permissions from the target file or directory.         |
 | `empty_` prefix      | Ensure the file exists, even if is empty. By default, empty files are removed.    |
 | `executable_` prefix | Add executable permissions to the target file.                                    |
-| `dot_` prefix        | Rename the file or directory to use a leading dot, e.g. `dot_foo` becomes `.foo`. |
-| `.tmpl` suffix       | Treat the source file as a template.                                              |
+| `symlink_` prefix    | Create a symlink instead of a regular file.                                       |
+| `dot_` prefix        | Rename to use a leading dot, e.g. `dot_foo` becomes `.foo`.                       |
+| `.tmpl` suffix       | Treat the contents of the source file as a template.                              |
 
-Order is important, the order is `private_`, `empty_`, `executable_`, `dot_`,
-`.tmpl`.
+Order is important, the order is `private_`, `empty_`, `executable_`,
+`symlink_`, `dot_`, `.tmpl`.
+
+Different target types allow different prefixes and suffixes.
+
+| Target type   | Allowed prefixes and suffixes                        |
+| ------------- | ---------------------------------------------------- |
+| Directory     | `private_`, `dot_`                                   |
+| Regular file  | `private_`, `empty_`, `executable_`, `dot_`, `.tmpl` |
+| Symbolic link | `symlink_`, `dot_`, `.tmpl`                          |
 
 
 ## Using `chezmoi` outside your home directory

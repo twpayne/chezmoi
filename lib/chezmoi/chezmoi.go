@@ -28,7 +28,7 @@ const (
 	templateSuffix   = ".tmpl"
 )
 
-// An Entry is either a Dir or a File.
+// An Entry is either a Dir, a File, or a Symlink.
 type Entry interface {
 	SourceName() string
 	addAllEntries(map[string]Entry, string)
@@ -49,6 +49,12 @@ type Dir struct {
 	sourceName string
 	Perm       os.FileMode
 	Entries    map[string]Entry
+}
+
+// A Symlink represents the target state of a symlink.
+type Symlink struct {
+	sourceName string
+	Target     string
 }
 
 // A TargetState represents the root target state.
@@ -209,6 +215,43 @@ func (f *File) SourceName() string {
 	return f.sourceName
 }
 
+// addAllEntries adds s to result.
+func (s *Symlink) addAllEntries(result map[string]Entry, name string) {
+	result[name] = s
+}
+
+// archive writes s to w.
+func (s *Symlink) archive(w *tar.Writer, dirName string, headerTemplate *tar.Header, umask os.FileMode) error {
+	header := *headerTemplate
+	header.Typeflag = tar.TypeSymlink
+	header.Linkname = s.Target
+	return w.WriteHeader(&header)
+}
+
+// apply ensures that the state of targetPath in fs matches s.
+func (s *Symlink) apply(fs vfs.FS, targetPath string, umask os.FileMode, actuator Actuator) error {
+	info, err := fs.Lstat(targetPath)
+	switch {
+	case err == nil && info.Mode()&os.ModeType == os.ModeSymlink:
+		currentTarget, err := fs.Readlink(targetPath)
+		if err != nil {
+			return err
+		}
+		if currentTarget == s.Target {
+			return nil
+		}
+	case err == nil:
+	case os.IsNotExist(err):
+	default:
+		return err
+	}
+	return actuator.WriteSymlink(s.Target, targetPath)
+}
+
+func (s *Symlink) SourceName() string {
+	return s.sourceName
+}
+
 // NewTargetState creates a new TargetState.
 func NewTargetState(targetDir string, umask os.FileMode, sourceDir string, data map[string]interface{}) *TargetState {
 	return &TargetState{
@@ -324,6 +367,31 @@ func (ts *TargetState) Add(fs vfs.FS, target string, info os.FileInfo, addEmpty,
 			}
 		}
 		entries[name] = newDir(sourceName, info.Mode()&os.ModePerm)
+	case info.Mode()&os.ModeType == os.ModeSymlink:
+		if entry, ok := entries[name]; ok {
+			if _, ok := entry.(*Symlink); !ok {
+				return fmt.Errorf("%s: already added and not a symlink", targetName)
+			}
+			return nil // entry already exists
+		}
+		sourceName := parsedSourceFileName{
+			fileName: name,
+			mode:     os.ModeSymlink,
+		}.SourceFileName()
+		if dirSourceName != "" {
+			sourceName = filepath.Join(dirSourceName, sourceName)
+		}
+		data, err := fs.Readlink(target)
+		if err != nil {
+			return err
+		}
+		if err := actuator.WriteFile(filepath.Join(ts.SourceDir, sourceName), []byte(data), 0666&^ts.Umask, nil); err != nil {
+			return err
+		}
+		entries[name] = &Symlink{
+			sourceName: sourceName,
+			Target:     data,
+		}
 	default:
 		return fmt.Errorf("%s: not a regular file or directory", targetName)
 	}
@@ -436,12 +504,24 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 				}
 				data = output.Bytes()
 			}
-			entries[psfp.fileName] = &File{
-				sourceName: relPath,
-				Empty:      psfp.empty,
-				Perm:       psfp.mode & os.ModePerm,
-				Contents:   data,
+			var entry Entry
+			switch psfp.mode & os.ModeType {
+			case 0:
+				entry = &File{
+					sourceName: relPath,
+					Empty:      psfp.empty,
+					Perm:       psfp.mode & os.ModePerm,
+					Contents:   data,
+				}
+			case os.ModeSymlink:
+				entry = &Symlink{
+					sourceName: relPath,
+					Target:     string(data),
+				}
+			default:
+				return fmt.Errorf("%v: unsupported mode: %d", path, psfp.mode&os.ModeType)
 			}
+			entries[psfp.fileName] = entry
 		case info.Mode().IsDir():
 			components := splitPathList(relPath)
 			dirNames, perms := parseDirNameComponents(components)

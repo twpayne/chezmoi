@@ -82,6 +82,48 @@ func TestAddCommand(t *testing.T) {
 				vfstest.TestPath("/home/jenkins/.chezmoi/empty_empty", vfstest.TestModeIsRegular, vfstest.TestContents(nil)),
 			},
 		},
+		{
+			name: "add_symlink",
+			args: []string{"/home/jenkins/foo"},
+			root: map[string]interface{}{
+				"/home/jenkins":          &vfstest.Dir{Perm: 0755},
+				"/home/jenkins/.chezmoi": &vfstest.Dir{Perm: 0700},
+				"/home/jenkins/foo":      &vfstest.Symlink{Target: "bar"},
+			},
+			tests: []vfstest.Test{
+				vfstest.TestPath("/home/jenkins/.chezmoi/symlink_foo", vfstest.TestModeIsRegular, vfstest.TestContentsString("bar")),
+			},
+		},
+		{
+			name: "add_symlink_in_dir_recursive",
+			args: []string{"/home/jenkins/foo"},
+			addCommandConfig: AddCommandConfig{
+				Recursive: true,
+			},
+			root: map[string]interface{}{
+				"/home/jenkins":          &vfstest.Dir{Perm: 0755},
+				"/home/jenkins/.chezmoi": &vfstest.Dir{Perm: 0700},
+				"/home/jenkins/foo/bar":  &vfstest.Symlink{Target: "baz"},
+			},
+			tests: []vfstest.Test{
+				vfstest.TestPath("/home/jenkins/.chezmoi/foo", vfstest.TestIsDir),
+				vfstest.TestPath("/home/jenkins/.chezmoi/foo/symlink_bar", vfstest.TestModeIsRegular, vfstest.TestContentsString("baz")),
+			},
+		},
+		{
+			name: "add_symlink_with_parent_dir",
+			args: []string{"/home/jenkins/foo/bar/baz"},
+			root: map[string]interface{}{
+				"/home/jenkins":             &vfstest.Dir{Perm: 0755},
+				"/home/jenkins/.chezmoi":    &vfstest.Dir{Perm: 0700},
+				"/home/jenkins/foo/bar/baz": &vfstest.Symlink{Target: "qux"},
+			},
+			tests: []vfstest.Test{
+				vfstest.TestPath("/home/jenkins/.chezmoi/foo", vfstest.TestIsDir),
+				vfstest.TestPath("/home/jenkins/.chezmoi/foo/bar", vfstest.TestIsDir),
+				vfstest.TestPath("/home/jenkins/.chezmoi/foo/bar/symlink_baz", vfstest.TestModeIsRegular, vfstest.TestContentsString("qux")),
+			},
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			c := &Config{
