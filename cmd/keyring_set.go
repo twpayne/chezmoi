@@ -1,9 +1,13 @@
 package cmd
 
 import (
+	"fmt"
+	"syscall"
+
 	"github.com/spf13/cobra"
 	"github.com/twpayne/go-vfs"
 	"github.com/zalando/go-keyring"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 var keyringSetCommand = &cobra.Command{
@@ -18,9 +22,17 @@ func init() {
 
 	persistentFlags := keyringSetCommand.PersistentFlags()
 	persistentFlags.StringVar(&config.Keyring.Password, "password", "", "password")
-	keyringSetCommand.MarkPersistentFlagRequired("password")
 }
 
 func (c *Config) runKeyringSetCommand(fs vfs.FS, cmd *cobra.Command, args []string) error {
-	return keyring.Set(c.Keyring.Service, c.Keyring.User, c.Keyring.Password)
+	passwordString := c.Keyring.Password
+	if passwordString == "" {
+		fmt.Print("Password: ")
+		password, err := terminal.ReadPassword(syscall.Stdin)
+		if err != nil {
+			return err
+		}
+		passwordString = string(password)
+	}
+	return keyring.Set(c.Keyring.Service, c.Keyring.User, passwordString)
 }

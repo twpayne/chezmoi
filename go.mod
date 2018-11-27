@@ -16,4 +16,5 @@ require (
 	github.com/stretchr/testify v1.2.2 // indirect
 	github.com/twpayne/go-vfs v0.1.1
 	github.com/zalando/go-keyring v0.0.0-20180221093347-6d81c293b3fb
+	golang.org/x/crypto v0.0.0-20181127143415-eb0de9b17e85
 )

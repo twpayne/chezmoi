@@ -224,14 +224,16 @@ and Windows Credentials Manager (on Windows) via the
 
 Set passwords with:
 
-    $ chezmoi keyring set --service=<service> --user=<user> --password=<password>
+    $ chezmoi keyring set --service=<service> --user=<user>
+    Password: xxxxxxxx
 
 The password can then be used in templates using the `keyring` function which
 takes the service and user as arguments.
 
 For example, save a Github access token in keyring with:
 
-    $ chezmoi keyring set --service=github --user=$GITHUB_USERNAME --password=xxxxxxxx
+    $ chezmoi keyring set --service=github --user=$GITHUB_USERNAME
+    Password: xxxxxxxx
 
 and then include it in your `~/.gitconfig` file with:
 
