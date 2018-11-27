@@ -23,6 +23,11 @@ architecture, and hostname.
 with incomplete files that could lock you out, even if the update process is
 interrupted.
 
+ * Secure: `chezmoi` can store and retreive secrets in your Keychain (on
+   macOS), GNOME Keyring (on Linux), or Windows Credentials Manager (on
+Windows) using the [zalando/go-keyring](https://github.com/zalando/go-keyring)
+library.
+
  * Portable: `chezmoi`'s configuration uses only visible, regular files and
    directories and so is portable across version control systems and operating
 systems.
@@ -189,7 +194,7 @@ token](https://help.github.com/articles/creating-a-personal-access-token-for-the
 There are several ways to keep these tokens secure, and to prevent them leaving
 your machine.
 
-### Using templates
+### Using templates variables
 
 Typically, `~/.chezmoi.yaml` is not checked in to version control and has
 permissions 0600. You can store tokens as template values in the `data`
@@ -210,6 +215,34 @@ My `~/.chezmoi/private_dot_gitconfig.tmpl` then contains:
 
 Note that any config files containing tokens in plain text should be private
 (permissions 0600).
+
+### Using keyring
+
+`chezmoi` includes support for Keychain (on macOS), GNOME Keyring (on Linux),
+and Windows Credentials Manager (on Windows) via the
+[zalando/go-keyring](https://github.com/zalando/go-keyring) library.
+
+Set passwords with:
+
+    $ chezmoi keyring set --service=<service> --user=<user> --password=<password>
+
+The password can then be used in templates using the `keyring` function which
+takes the service and user as arguments.
+
+For example, save a Github access token in keyring with:
+
+    $ chezmoi keyring set --service=github --user=$GITHUB_USERNAME --password=xxxxxxxx
+
+and then include it in your `~/.gitconfig` file with:
+
+    [github]
+        user = {{ .github.user }}
+        token = {{ keyring "github" .github.user }}
+
+You can query the keyring from the command line:
+
+    $ chezmoi keyring get --service=github --user=$GITHUB_USERNAME
+
 
 ### Using encrypted config files
 

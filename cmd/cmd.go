@@ -24,6 +24,13 @@ type AddCommandConfig struct {
 	Template  bool
 }
 
+// A KeyringCommandConfig is a configuration for the keyring command.
+type KeyringCommandConfig struct {
+	Service  string
+	User     string
+	Password string
+}
+
 // A Config represents a configuration.
 type Config struct {
 	SourceDir        string
@@ -35,6 +42,7 @@ type Config struct {
 	Data             map[string]interface{}
 	Funcs            template.FuncMap
 	Add              AddCommandConfig
+	Keyring          KeyringCommandConfig
 }
 
 func (c *Config) addFunc(key string, value interface{}) {
