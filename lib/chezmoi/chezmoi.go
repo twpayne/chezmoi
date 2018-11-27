@@ -481,41 +481,6 @@ func (ts *TargetState) findEntry(name string) (Entry, error) {
 	return entries[names[len(names)-1]], nil
 }
 
-func (psdn parsedSourceDirName) SourceDirName() string {
-	sourceDirName := ""
-	if psdn.perm&os.FileMode(077) == os.FileMode(0) {
-		sourceDirName = privatePrefix
-	}
-	if strings.HasPrefix(psdn.dirName, ".") {
-		sourceDirName += dotPrefix + strings.TrimPrefix(psdn.dirName, ".")
-	} else {
-		sourceDirName += psdn.dirName
-	}
-	return sourceDirName
-}
-
-func (psfn parsedSourceFileName) SourceFileName() string {
-	fileName := ""
-	if psfn.perm&os.FileMode(077) == os.FileMode(0) {
-		fileName = privatePrefix
-	}
-	if psfn.empty {
-		fileName += emptyPrefix
-	}
-	if psfn.perm&os.FileMode(0111) != os.FileMode(0) {
-		fileName += executablePrefix
-	}
-	if strings.HasPrefix(psfn.fileName, ".") {
-		fileName += dotPrefix + strings.TrimPrefix(psfn.fileName, ".")
-	} else {
-		fileName += psfn.fileName
-	}
-	if psfn.template {
-		fileName += templateSuffix
-	}
-	return fileName
-}
-
 // parseSourceDirName parses a single directory name.
 func parseSourceDirName(dirName string) parsedSourceDirName {
 	perm := os.FileMode(0777)
@@ -530,6 +495,20 @@ func parseSourceDirName(dirName string) parsedSourceDirName {
 		dirName: dirName,
 		perm:    perm,
 	}
+}
+
+// SourceDirName returns psdn's source dir name.
+func (psdn parsedSourceDirName) SourceDirName() string {
+	sourceDirName := ""
+	if psdn.perm&os.FileMode(077) == os.FileMode(0) {
+		sourceDirName = privatePrefix
+	}
+	if strings.HasPrefix(psdn.dirName, ".") {
+		sourceDirName += dotPrefix + strings.TrimPrefix(psdn.dirName, ".")
+	} else {
+		sourceDirName += psdn.dirName
+	}
+	return sourceDirName
 }
 
 // parseSourceFileName parses a source file name.
@@ -566,6 +545,29 @@ func parseSourceFileName(fileName string) parsedSourceFileName {
 		empty:    empty,
 		template: template,
 	}
+}
+
+// SourceFileName returns psfn's source file name.
+func (psfn parsedSourceFileName) SourceFileName() string {
+	fileName := ""
+	if psfn.perm&os.FileMode(077) == os.FileMode(0) {
+		fileName = privatePrefix
+	}
+	if psfn.empty {
+		fileName += emptyPrefix
+	}
+	if psfn.perm&os.FileMode(0111) != os.FileMode(0) {
+		fileName += executablePrefix
+	}
+	if strings.HasPrefix(psfn.fileName, ".") {
+		fileName += dotPrefix + strings.TrimPrefix(psfn.fileName, ".")
+	} else {
+		fileName += psfn.fileName
+	}
+	if psfn.template {
+		fileName += templateSuffix
+	}
+	return fileName
 }
 
 // parseDirNameComponents parses multiple directory name components. It returns
