@@ -11,5 +11,5 @@ require (
 	github.com/spf13/cobra v0.0.3
 	github.com/spf13/viper v1.2.1
 	github.com/stretchr/testify v1.2.2 // indirect
-	github.com/twpayne/go-vfs v0.0.0-20181126231609-c493eb0d7c34
+	github.com/twpayne/go-vfs v0.1.1
 )
