@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/d4l3k/messagediff"
-	"github.com/twpayne/go-vfs/vfstest"
+	"github.com/twpayne/go-vfs/vfst"
 )
 
 func TestSourceDirName(t *testing.T) {
@@ -368,10 +368,10 @@ func TestTargetStatePopulate(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			fs, cleanup, err := vfstest.NewTempFS(tc.root)
+			fs, cleanup, err := vfst.NewTestFS(tc.root)
 			defer cleanup()
 			if err != nil {
-				t.Fatalf("vfstest.NewTempFS(_) == _, _, %v, want _, _, <nil>", err)
+				t.Fatalf("vfst.NewTestFS(_) == _, _, %v, want _, _, <nil>", err)
 			}
 			ts := NewTargetState("/", 0, tc.sourceDir, tc.data)
 			if err := ts.Populate(fs); err != nil {
@@ -398,7 +398,7 @@ func TestEndToEnd(t *testing.T) {
 			name: "all",
 			root: map[string]interface{}{
 				"/home/user/.bashrc":                          "foo",
-				"/home/user/replace_symlink":                  &vfstest.Symlink{Target: "foo"},
+				"/home/user/replace_symlink":                  &vfst.Symlink{Target: "foo"},
 				"/home/user/.chezmoi/dot_bashrc":              "bar",
 				"/home/user/.chezmoi/.git/HEAD":               "HEAD",
 				"/home/user/.chezmoi/dot_hgrc.tmpl":           "[ui]\nusername = {{ .name }} <{{ .email }}>\n",
@@ -414,20 +414,20 @@ func TestEndToEnd(t *testing.T) {
 			},
 			targetDir: "/home/user",
 			umask:     022,
-			tests: []vfstest.Test{
-				vfstest.TestPath("/home/user/.bashrc", vfstest.TestModeIsRegular, vfstest.TestContentsString("bar")),
-				vfstest.TestPath("/home/user/.hgrc", vfstest.TestModeIsRegular, vfstest.TestContentsString("[ui]\nusername = John Smith <hello@example.com>\n")),
-				vfstest.TestPath("/home/user/foo", vfstest.TestModeIsRegular, vfstest.TestContents(nil)),
-				vfstest.TestPath("/home/user/bar", vfstest.TestModeType(os.ModeSymlink), vfstest.TestSymlinkTarget("empty")),
-				vfstest.TestPath("/home/user/replace_symlink", vfstest.TestModeType(os.ModeSymlink), vfstest.TestSymlinkTarget("bar")),
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/.bashrc", vfst.TestModeIsRegular, vfst.TestContentsString("bar")),
+				vfst.TestPath("/home/user/.hgrc", vfst.TestModeIsRegular, vfst.TestContentsString("[ui]\nusername = John Smith <hello@example.com>\n")),
+				vfst.TestPath("/home/user/foo", vfst.TestModeIsRegular, vfst.TestContents(nil)),
+				vfst.TestPath("/home/user/bar", vfst.TestModeType(os.ModeSymlink), vfst.TestSymlinkTarget("empty")),
+				vfst.TestPath("/home/user/replace_symlink", vfst.TestModeType(os.ModeSymlink), vfst.TestSymlinkTarget("bar")),
 			},
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			fs, cleanup, err := vfstest.NewTempFS(tc.root)
+			fs, cleanup, err := vfst.NewTestFS(tc.root)
 			defer cleanup()
 			if err != nil {
-				t.Fatalf("vfstest.NewTempFS(_) == _, _, %v, want _, _, <nil>", err)
+				t.Fatalf("vfst.NewTestFS(_) == _, _, %v, want _, _, <nil>", err)
 			}
 			ts := NewTargetState(tc.targetDir, tc.umask, tc.sourceDir, tc.data)
 			if err := ts.Populate(fs); err != nil {
@@ -436,7 +436,7 @@ func TestEndToEnd(t *testing.T) {
 			if err := ts.Apply(fs, NewLoggingActuator(os.Stderr, NewFSActuator(fs, tc.targetDir))); err != nil {
 				t.Fatalf("ts.Apply(fs, _) == %v, want <nil>", err)
 			}
-			vfstest.RunTests(t, fs, "", tc.tests)
+			vfst.RunTests(t, fs, "", tc.tests)
 		})
 	}
 }
