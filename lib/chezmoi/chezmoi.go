@@ -60,10 +60,10 @@ type TargetState struct {
 }
 
 // newDir returns a new directory state.
-func newDir(sourceName string, mode os.FileMode) *Dir {
+func newDir(sourceName string, perm os.FileMode) *Dir {
 	return &Dir{
 		sourceName: sourceName,
-		Perm:       mode,
+		Perm:       perm,
 		Entries:    make(map[string]Entry),
 	}
 }
