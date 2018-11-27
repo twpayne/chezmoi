@@ -167,7 +167,7 @@ func (f *File) archive(w *tar.Writer, fileName string, headerTemplate *tar.Heade
 	return err
 }
 
-// apply ensures that state of targetPath in fs matches f.
+// apply ensures that the state of targetPath in fs matches f.
 func (f *File) apply(fs vfs.FS, targetPath string, umask os.FileMode, actuator Actuator) error {
 	info, err := fs.Stat(targetPath)
 	var currData []byte
