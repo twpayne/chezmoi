@@ -1,8 +1,27 @@
 language: go
 
+addons:
+  apt:
+    packages:
+    # needed for goreleaser/nfpm:
+    - rpm
+
+# uncomment below if docker builds are enabled in .goreleaser.yaml
+# services:
+# - docker
+
 script:
   - go test -v ./...
   - go test -cover -race ./...
   - go vet ./...
 
 sudo: false
+
+# calls goreleaser
+deploy:
+- provider: script
+  skip_cleanup: true
+  script: curl -sL https://git.io/goreleaser | bash
+  on:
+    tags: true
+    condition: $TRAVIS_OS_NAME = linux
