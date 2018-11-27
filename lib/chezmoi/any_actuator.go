@@ -41,7 +41,7 @@ func (a *AnyActuator) RemoveAll(name string) error {
 }
 
 // WriteFile implements Actuator.WriteFile.
-func (a *AnyActuator) WriteFile(name string, contents []byte, perm os.FileMode, currentContents []byte) error {
+func (a *AnyActuator) WriteFile(name string, data []byte, perm os.FileMode, currData []byte) error {
 	a.actuated = true
-	return a.a.WriteFile(name, contents, perm, currentContents)
+	return a.a.WriteFile(name, data, perm, currData)
 }
