@@ -59,6 +59,18 @@ type TargetState struct {
 	Entries   map[string]Entry
 }
 
+type parsedSourceFileName struct {
+	fileName string
+	perm     os.FileMode
+	empty    bool
+	template bool
+}
+
+type parsedSourceFilePath struct {
+	parsedSourceFileName
+	dirNames []string
+}
+
 // newDir returns a new directory state.
 func newDir(sourceName string, perm os.FileMode) *Dir {
 	return &Dir{
@@ -255,7 +267,12 @@ func (ts *TargetState) Add(fs vfs.FS, target string, info os.FileInfo, addEmpty,
 		if info.Size() == 0 && !addEmpty {
 			return nil
 		}
-		sourceName := makeFileName(name, info.Mode(), info.Size() == 0, addTemplate)
+		sourceName := parsedSourceFileName{
+			fileName: name,
+			perm:     info.Mode() & os.ModePerm,
+			empty:    info.Size() == 0,
+			template: addTemplate,
+		}.SourceFileName()
 		if dirSourceName != "" {
 			sourceName = filepath.Join(dirSourceName, sourceName)
 		}
@@ -390,8 +407,8 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 		}
 		switch {
 		case info.Mode().IsRegular():
-			dirNames, fileName, mode, isEmpty, isTemplate := parseFilePath(relPath)
-			entries, err := ts.findEntries(dirNames)
+			psfp := parseSourceFilePath(relPath)
+			entries, err := ts.findEntries(psfp.dirNames)
 			if err != nil {
 				return err
 			}
@@ -399,7 +416,7 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 			if err != nil {
 				return err
 			}
-			if isTemplate {
+			if psfp.template {
 				tmpl, err := template.New(path).Parse(string(contents))
 				if err != nil {
 					return fmt.Errorf("%s: %v", path, err)
@@ -410,10 +427,10 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 				}
 				contents = output.Bytes()
 			}
-			entries[fileName] = &File{
+			entries[psfp.fileName] = &File{
 				sourceName: relPath,
-				Empty:      isEmpty,
-				Perm:       mode,
+				Empty:      psfp.empty,
+				Perm:       psfp.perm,
 				Contents:   contents,
 			}
 		case info.Mode().IsDir():
@@ -469,23 +486,23 @@ func makeDirName(name string, mode os.FileMode) string {
 	return dirName
 }
 
-func makeFileName(name string, mode os.FileMode, isEmpty bool, isTemplate bool) string {
+func (psfn parsedSourceFileName) SourceFileName() string {
 	fileName := ""
-	if mode&os.FileMode(077) == os.FileMode(0) {
+	if psfn.perm&os.FileMode(077) == os.FileMode(0) {
 		fileName = privatePrefix
 	}
-	if isEmpty {
+	if psfn.empty {
 		fileName += emptyPrefix
 	}
-	if mode&os.FileMode(0111) != os.FileMode(0) {
+	if psfn.perm&os.FileMode(0111) != os.FileMode(0) {
 		fileName += executablePrefix
 	}
-	if strings.HasPrefix(name, ".") {
-		fileName += dotPrefix + strings.TrimPrefix(name, ".")
+	if strings.HasPrefix(psfn.fileName, ".") {
+		fileName += dotPrefix + strings.TrimPrefix(psfn.fileName, ".")
 	} else {
-		fileName += name
+		fileName += psfn.fileName
 	}
-	if isTemplate {
+	if psfn.template {
 		fileName += templateSuffix
 	}
 	return fileName
@@ -506,37 +523,40 @@ func parseDirName(dirName string) (string, os.FileMode) {
 	return name, mode
 }
 
-// parseFileName parses a single file name. It returns the target name, mode,
-// whether the contents should be interpreted as a template, and any error.
-func parseFileName(fileName string) (string, os.FileMode, bool, bool) {
-	name := fileName
-	mode := os.FileMode(0666)
-	isPrivate := false
-	isEmpty := false
-	isTemplate := false
-	if strings.HasPrefix(name, privatePrefix) {
-		name = strings.TrimPrefix(name, privatePrefix)
-		isPrivate = true
+// parseSourceFileName parses a source file name.
+func parseSourceFileName(fileName string) parsedSourceFileName {
+	perm := os.FileMode(0666)
+	private := false
+	empty := false
+	template := false
+	if strings.HasPrefix(fileName, privatePrefix) {
+		fileName = strings.TrimPrefix(fileName, privatePrefix)
+		private = true
 	}
-	if strings.HasPrefix(name, emptyPrefix) {
-		name = strings.TrimPrefix(name, emptyPrefix)
-		isEmpty = true
+	if strings.HasPrefix(fileName, emptyPrefix) {
+		fileName = strings.TrimPrefix(fileName, emptyPrefix)
+		empty = true
 	}
-	if strings.HasPrefix(name, executablePrefix) {
-		name = strings.TrimPrefix(name, executablePrefix)
-		mode |= 0111
+	if strings.HasPrefix(fileName, executablePrefix) {
+		fileName = strings.TrimPrefix(fileName, executablePrefix)
+		perm |= 0111
 	}
-	if strings.HasPrefix(name, dotPrefix) {
-		name = "." + strings.TrimPrefix(name, dotPrefix)
+	if strings.HasPrefix(fileName, dotPrefix) {
+		fileName = "." + strings.TrimPrefix(fileName, dotPrefix)
 	}
-	if strings.HasSuffix(name, templateSuffix) {
-		name = strings.TrimSuffix(name, templateSuffix)
-		isTemplate = true
+	if strings.HasSuffix(fileName, templateSuffix) {
+		fileName = strings.TrimSuffix(fileName, templateSuffix)
+		template = true
 	}
-	if isPrivate {
-		mode &= 0700
+	if private {
+		perm &= 0700
 	}
-	return name, mode, isEmpty, isTemplate
+	return parsedSourceFileName{
+		fileName: fileName,
+		perm:     perm,
+		empty:    empty,
+		template: template,
+	}
 }
 
 // parseDirNameComponents parses multiple directory name components. It returns
@@ -552,14 +572,15 @@ func parseDirNameComponents(components []string) ([]string, []os.FileMode) {
 	return dirNames, modes
 }
 
-// parseFilePath parses a single file path. It returns the target directory
-// names, the target filename, the target mode, whether the contents should be
-// interpreted as a template, and any error.
-func parseFilePath(path string) ([]string, string, os.FileMode, bool, bool) {
+// parseSourceFilePath parses a single source file path.
+func parseSourceFilePath(path string) parsedSourceFilePath {
 	components := splitPathList(path)
 	dirNames, _ := parseDirNameComponents(components[0 : len(components)-1])
-	fileName, mode, isEmpty, isTemplate := parseFileName(components[len(components)-1])
-	return dirNames, fileName, mode, isEmpty, isTemplate
+	psfn := parseSourceFileName(components[len(components)-1])
+	return parsedSourceFilePath{
+		parsedSourceFileName: psfn,
+		dirNames:             dirNames,
+	}
 }
 
 // sortedEntryNames returns a sorted slice of all entry names.

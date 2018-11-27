@@ -30,29 +30,91 @@ func TestDirName(t *testing.T) {
 	}
 }
 
-func TestFileName(t *testing.T) {
+func TestSourceFileName(t *testing.T) {
 	for _, tc := range []struct {
-		fileName   string
-		name       string
-		mode       os.FileMode
-		isEmpty    bool
-		isTemplate bool
+		sourceFileName string
+		psfn           parsedSourceFileName
 	}{
-		{fileName: "foo", name: "foo", mode: 0666, isEmpty: false, isTemplate: false},
-		{fileName: "dot_foo", name: ".foo", mode: 0666, isEmpty: false, isTemplate: false},
-		{fileName: "private_foo", name: "foo", mode: 0600, isEmpty: false, isTemplate: false},
-		{fileName: "private_dot_foo", name: ".foo", mode: 0600, isEmpty: false, isTemplate: false},
-		{fileName: "empty_foo", name: "foo", mode: 0666, isEmpty: true, isTemplate: false},
-		{fileName: "executable_foo", name: "foo", mode: 0777, isEmpty: false, isTemplate: false},
-		{fileName: "foo.tmpl", name: "foo", mode: 0666, isEmpty: false, isTemplate: true},
-		{fileName: "private_executable_dot_foo.tmpl", name: ".foo", mode: 0700, isEmpty: false, isTemplate: true},
+		{
+			sourceFileName: "foo",
+			psfn: parsedSourceFileName{
+				fileName: "foo",
+				perm:     0666,
+				empty:    false,
+				template: false,
+			},
+		},
+		{
+			sourceFileName: "dot_foo",
+			psfn: parsedSourceFileName{
+				fileName: ".foo",
+				perm:     0666,
+				empty:    false,
+				template: false,
+			},
+		},
+		{
+			sourceFileName: "private_foo",
+			psfn: parsedSourceFileName{
+				fileName: "foo",
+				perm:     0600,
+				empty:    false,
+				template: false,
+			},
+		},
+		{
+			sourceFileName: "private_dot_foo",
+			psfn: parsedSourceFileName{
+				fileName: ".foo",
+				perm:     0600,
+				empty:    false,
+				template: false,
+			},
+		},
+		{
+			sourceFileName: "empty_foo",
+			psfn: parsedSourceFileName{
+				fileName: "foo",
+				perm:     0666,
+				empty:    true,
+				template: false,
+			},
+		},
+		{
+			sourceFileName: "executable_foo",
+			psfn: parsedSourceFileName{
+				fileName: "foo",
+				perm:     0777,
+				empty:    false,
+				template: false,
+			},
+		},
+		{
+			sourceFileName: "foo.tmpl",
+			psfn: parsedSourceFileName{
+				fileName: "foo",
+				perm:     0666,
+				empty:    false,
+				template: true,
+			},
+		},
+		{
+			sourceFileName: "private_executable_dot_foo.tmpl",
+			psfn: parsedSourceFileName{
+				fileName: ".foo",
+				perm:     0700,
+				empty:    false,
+				template: true,
+			},
+		},
 	} {
-		t.Run(tc.fileName, func(t *testing.T) {
-			if gotName, gotMode, gotIsEmpty, gotIsTemplate := parseFileName(tc.fileName); gotName != tc.name || gotMode != tc.mode || gotIsEmpty != tc.isEmpty || gotIsTemplate != tc.isTemplate {
-				t.Errorf("parseFileName(%q) == %q, %v, %v, %v want %q, %v, %v, %v", tc.fileName, gotName, gotMode, gotIsEmpty, gotIsTemplate, tc.name, tc.mode, tc.isEmpty, tc.isTemplate)
+		t.Run(tc.sourceFileName, func(t *testing.T) {
+			gotPSFN := parseSourceFileName(tc.sourceFileName)
+			if diff, equal := messagediff.PrettyDiff(tc.psfn, gotPSFN); !equal {
+				t.Errorf("parseSourceFileName(%q) == %+v, want %+v, diff:\n%s", tc.sourceFileName, gotPSFN, tc.psfn, diff)
 			}
-			if gotFileName := makeFileName(tc.name, tc.mode, tc.isEmpty, tc.isTemplate); gotFileName != tc.fileName {
-				t.Errorf("makeFileName(%q, %v, %v, %v) == %q, want %q", tc.name, tc.mode, tc.isEmpty, tc.isTemplate, gotFileName, tc.fileName)
+			if gotSourceFileName := tc.psfn.SourceFileName(); gotSourceFileName != tc.sourceFileName {
+				t.Errorf("%+v.SourceFileName() == %q, want %q", tc.psfn, gotSourceFileName, tc.sourceFileName)
 			}
 		})
 	}
