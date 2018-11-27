@@ -20,6 +20,7 @@ import (
 )
 
 const (
+	symlinkPrefix    = "symlink_"
 	privatePrefix    = "private_"
 	emptyPrefix      = "empty_"
 	executablePrefix = "executable_"
@@ -66,7 +67,7 @@ type parsedSourceDirName struct {
 
 type parsedSourceFileName struct {
 	fileName string
-	perm     os.FileMode
+	mode     os.FileMode
 	empty    bool
 	template bool
 }
@@ -274,7 +275,7 @@ func (ts *TargetState) Add(fs vfs.FS, target string, info os.FileInfo, addEmpty,
 		}
 		sourceName := parsedSourceFileName{
 			fileName: name,
-			perm:     info.Mode() & os.ModePerm,
+			mode:     info.Mode() & os.ModePerm,
 			empty:    info.Size() == 0,
 			template: addTemplate,
 		}.SourceFileName()
@@ -438,7 +439,7 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 			entries[psfp.fileName] = &File{
 				sourceName: relPath,
 				Empty:      psfp.empty,
-				Perm:       psfp.perm,
+				Perm:       psfp.mode & os.ModePerm,
 				Contents:   data,
 			}
 		case info.Mode().IsDir():
@@ -513,21 +514,29 @@ func (psdn parsedSourceDirName) SourceDirName() string {
 
 // parseSourceFileName parses a source file name.
 func parseSourceFileName(fileName string) parsedSourceFileName {
-	perm := os.FileMode(0666)
-	private := false
+	mode := os.FileMode(0666)
 	empty := false
 	template := false
-	if strings.HasPrefix(fileName, privatePrefix) {
-		fileName = strings.TrimPrefix(fileName, privatePrefix)
-		private = true
-	}
-	if strings.HasPrefix(fileName, emptyPrefix) {
-		fileName = strings.TrimPrefix(fileName, emptyPrefix)
-		empty = true
-	}
-	if strings.HasPrefix(fileName, executablePrefix) {
-		fileName = strings.TrimPrefix(fileName, executablePrefix)
-		perm |= 0111
+	if strings.HasPrefix(fileName, symlinkPrefix) {
+		fileName = strings.TrimPrefix(fileName, symlinkPrefix)
+		mode |= os.ModeSymlink
+	} else {
+		private := false
+		if strings.HasPrefix(fileName, privatePrefix) {
+			fileName = strings.TrimPrefix(fileName, privatePrefix)
+			private = true
+		}
+		if strings.HasPrefix(fileName, emptyPrefix) {
+			fileName = strings.TrimPrefix(fileName, emptyPrefix)
+			empty = true
+		}
+		if strings.HasPrefix(fileName, executablePrefix) {
+			fileName = strings.TrimPrefix(fileName, executablePrefix)
+			mode |= 0111
+		}
+		if private {
+			mode &= 0700
+		}
 	}
 	if strings.HasPrefix(fileName, dotPrefix) {
 		fileName = "." + strings.TrimPrefix(fileName, dotPrefix)
@@ -536,12 +545,9 @@ func parseSourceFileName(fileName string) parsedSourceFileName {
 		fileName = strings.TrimSuffix(fileName, templateSuffix)
 		template = true
 	}
-	if private {
-		perm &= 0700
-	}
 	return parsedSourceFileName{
 		fileName: fileName,
-		perm:     perm,
+		mode:     mode,
 		empty:    empty,
 		template: template,
 	}
@@ -550,14 +556,21 @@ func parseSourceFileName(fileName string) parsedSourceFileName {
 // SourceFileName returns psfn's source file name.
 func (psfn parsedSourceFileName) SourceFileName() string {
 	fileName := ""
-	if psfn.perm&os.FileMode(077) == os.FileMode(0) {
-		fileName = privatePrefix
-	}
-	if psfn.empty {
-		fileName += emptyPrefix
-	}
-	if psfn.perm&os.FileMode(0111) != os.FileMode(0) {
-		fileName += executablePrefix
+	switch psfn.mode & os.ModeType {
+	case 0:
+		if psfn.mode&os.ModePerm&os.FileMode(077) == os.FileMode(0) {
+			fileName = privatePrefix
+		}
+		if psfn.empty {
+			fileName += emptyPrefix
+		}
+		if psfn.mode&os.ModePerm&os.FileMode(0111) != os.FileMode(0) {
+			fileName += executablePrefix
+		}
+	case os.ModeSymlink:
+		fileName = symlinkPrefix
+	default:
+		panic(fmt.Sprintf("%+v: unsupported type", psfn)) // FIXME return error instead of panicing
 	}
 	if strings.HasPrefix(psfn.fileName, ".") {
 		fileName += dotPrefix + strings.TrimPrefix(psfn.fileName, ".")

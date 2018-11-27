@@ -63,7 +63,7 @@ func TestSourceFileName(t *testing.T) {
 			sourceFileName: "foo",
 			psfn: parsedSourceFileName{
 				fileName: "foo",
-				perm:     0666,
+				mode:     0666,
 				empty:    false,
 				template: false,
 			},
@@ -72,7 +72,7 @@ func TestSourceFileName(t *testing.T) {
 			sourceFileName: "dot_foo",
 			psfn: parsedSourceFileName{
 				fileName: ".foo",
-				perm:     0666,
+				mode:     0666,
 				empty:    false,
 				template: false,
 			},
@@ -81,7 +81,7 @@ func TestSourceFileName(t *testing.T) {
 			sourceFileName: "private_foo",
 			psfn: parsedSourceFileName{
 				fileName: "foo",
-				perm:     0600,
+				mode:     0600,
 				empty:    false,
 				template: false,
 			},
@@ -90,7 +90,7 @@ func TestSourceFileName(t *testing.T) {
 			sourceFileName: "private_dot_foo",
 			psfn: parsedSourceFileName{
 				fileName: ".foo",
-				perm:     0600,
+				mode:     0600,
 				empty:    false,
 				template: false,
 			},
@@ -99,7 +99,7 @@ func TestSourceFileName(t *testing.T) {
 			sourceFileName: "empty_foo",
 			psfn: parsedSourceFileName{
 				fileName: "foo",
-				perm:     0666,
+				mode:     0666,
 				empty:    true,
 				template: false,
 			},
@@ -108,7 +108,7 @@ func TestSourceFileName(t *testing.T) {
 			sourceFileName: "executable_foo",
 			psfn: parsedSourceFileName{
 				fileName: "foo",
-				perm:     0777,
+				mode:     0777,
 				empty:    false,
 				template: false,
 			},
@@ -117,7 +117,7 @@ func TestSourceFileName(t *testing.T) {
 			sourceFileName: "foo.tmpl",
 			psfn: parsedSourceFileName{
 				fileName: "foo",
-				perm:     0666,
+				mode:     0666,
 				empty:    false,
 				template: true,
 			},
@@ -126,8 +126,30 @@ func TestSourceFileName(t *testing.T) {
 			sourceFileName: "private_executable_dot_foo.tmpl",
 			psfn: parsedSourceFileName{
 				fileName: ".foo",
-				perm:     0700,
+				mode:     0700,
 				empty:    false,
+				template: true,
+			},
+		},
+		{
+			sourceFileName: "symlink_foo",
+			psfn: parsedSourceFileName{
+				fileName: "foo",
+				mode:     os.ModeSymlink | 0666,
+			},
+		},
+		{
+			sourceFileName: "symlink_dot_foo",
+			psfn: parsedSourceFileName{
+				fileName: ".foo",
+				mode:     os.ModeSymlink | 0666,
+			},
+		},
+		{
+			sourceFileName: "symlink_foo.tmpl",
+			psfn: parsedSourceFileName{
+				fileName: "foo",
+				mode:     os.ModeSymlink | 0666,
 				template: true,
 			},
 		},
