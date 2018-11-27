@@ -3,6 +3,7 @@ package chezmoi
 import (
 	"os"
 	"testing"
+	"text/template"
 
 	"github.com/d4l3k/messagediff"
 	"github.com/twpayne/go-vfs/vfst"
@@ -172,6 +173,7 @@ func TestTargetStatePopulate(t *testing.T) {
 		root      interface{}
 		sourceDir string
 		data      map[string]interface{}
+		funcs     template.FuncMap
 		want      *TargetState
 	}{
 		{
@@ -373,7 +375,7 @@ func TestTargetStatePopulate(t *testing.T) {
 			if err != nil {
 				t.Fatalf("vfst.NewTestFS(_) == _, _, %v, want _, _, <nil>", err)
 			}
-			ts := NewTargetState("/", 0, tc.sourceDir, tc.data)
+			ts := NewTargetState("/", 0, tc.sourceDir, tc.data, tc.funcs)
 			if err := ts.Populate(fs); err != nil {
 				t.Fatalf("ts.Populate(%+v) == %v, want <nil>", fs, err)
 			}
@@ -390,6 +392,7 @@ func TestEndToEnd(t *testing.T) {
 		root      interface{}
 		sourceDir string
 		data      map[string]interface{}
+		funcs     template.FuncMap
 		targetDir string
 		umask     os.FileMode
 		tests     interface{}
@@ -429,7 +432,7 @@ func TestEndToEnd(t *testing.T) {
 			if err != nil {
 				t.Fatalf("vfst.NewTestFS(_) == _, _, %v, want _, _, <nil>", err)
 			}
-			ts := NewTargetState(tc.targetDir, tc.umask, tc.sourceDir, tc.data)
+			ts := NewTargetState(tc.targetDir, tc.umask, tc.sourceDir, tc.data, tc.funcs)
 			if err := ts.Populate(fs); err != nil {
 				t.Fatalf("ts.Populate(%+v) == %v, want <nil>", fs, err)
 			}

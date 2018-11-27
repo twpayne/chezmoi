@@ -9,6 +9,7 @@ import (
 	"runtime"
 	"strings"
 	"syscall"
+	"text/template"
 
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
@@ -32,7 +33,18 @@ type Config struct {
 	Verbose          bool
 	SourceVCSCommand string
 	Data             map[string]interface{}
+	Funcs            template.FuncMap
 	Add              AddCommandConfig
+}
+
+func (c *Config) addFunc(key string, value interface{}) {
+	if c.Funcs == nil {
+		c.Funcs = make(template.FuncMap)
+	}
+	if _, ok := c.Funcs[key]; ok {
+		panic(fmt.Sprintf("Config.addFunc: %s already defined", key))
+	}
+	c.Funcs[key] = value
 }
 
 func (c *Config) exec(argv []string) error {
@@ -130,7 +142,7 @@ func (c *Config) getTargetState(fs vfs.FS) (*chezmoi.TargetState, error) {
 	for key, value := range c.Data {
 		data[key] = value
 	}
-	targetState := chezmoi.NewTargetState(c.TargetDir, os.FileMode(c.Umask), c.SourceDir, data)
+	targetState := chezmoi.NewTargetState(c.TargetDir, os.FileMode(c.Umask), c.SourceDir, data, c.Funcs)
 	if err := targetState.Populate(fs); err != nil {
 		return nil, err
 	}
