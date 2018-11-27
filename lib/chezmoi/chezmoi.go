@@ -63,6 +63,7 @@ type TargetState struct {
 	Umask     os.FileMode
 	SourceDir string
 	Data      map[string]interface{}
+	Funcs     template.FuncMap
 	Entries   map[string]Entry
 }
 
@@ -253,12 +254,13 @@ func (s *Symlink) SourceName() string {
 }
 
 // NewTargetState creates a new TargetState.
-func NewTargetState(targetDir string, umask os.FileMode, sourceDir string, data map[string]interface{}) *TargetState {
+func NewTargetState(targetDir string, umask os.FileMode, sourceDir string, data map[string]interface{}, funcs template.FuncMap) *TargetState {
 	return &TargetState{
 		TargetDir: targetDir,
 		Umask:     umask,
 		SourceDir: sourceDir,
 		Data:      data,
+		Funcs:     funcs,
 		Entries:   make(map[string]Entry),
 	}
 }
@@ -494,7 +496,7 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 				return err
 			}
 			if psfp.template {
-				tmpl, err := template.New(path).Parse(string(data))
+				tmpl, err := template.New(path).Funcs(ts.Funcs).Parse(string(data))
 				if err != nil {
 					return fmt.Errorf("%s: %v", path, err)
 				}
