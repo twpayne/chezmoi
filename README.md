@@ -50,6 +50,9 @@ Install it:
 
     $ go get -u github.com/twpayne/chezmoi
 
+Alternatively, binaries and packages for multiple platforms are available on the
+github [releases](https://github.com/twpayne/chezmoi/releases) page.
+
 Manage an existing file with `chezmoi`:
 
     $ chezmoi add ~/.bashrc
@@ -322,6 +325,15 @@ much better suited to whole system configuration management.
 for managing your personal configuration files. The focus of `chezmoi` will
 always be personal home directory management. If your needs grow beyond that,
 switch to a whole system configuration management tool.
+
+## Release Management
+
+Releases are managed with [goreleaser](https://goreleaser.com/).
+
+To create a new release, push a tag, eg:
+
+    $ git tag -a v0.1.0 -m "First release"
+    $ git push origin v0.1.0
 
 ## License
 

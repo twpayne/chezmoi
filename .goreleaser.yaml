@@ -1,0 +1,129 @@
+# run a local "snapshot" build without publishing:
+#    TRAVIS_BUILD_NUMBER=1 goreleaser --snapshot --rm-dist --debug
+#
+project_name: chezmoi
+
+builds:
+- binary: chezmoi
+  env:
+    - CGO_ENABLED=0
+  ldflags:
+     - -s -w
+  goos:
+    - linux
+    - darwin
+    # TODO: uncomment when compatible with windows. currently fails on 'undefined: syscall.Stat_t'
+    # - windows
+    - freebsd
+    - openbsd
+    # - dragonfly
+    # - netbsd
+  goarch:
+    - 386
+    - amd64
+    - arm
+    - arm64
+  goarm:
+    - ''
+  ignore:
+    - goos: darwin
+      goarch: 386
+    - goos: windows
+      goarch: 386
+
+## generate .tar.gz and .zip archives
+archive:
+  replacements:
+    386: i386
+  format_overrides:
+  - goos: windows
+    format: zip
+
+checksum:
+  name_template: 'checksums.txt'
+
+snapshot:
+  name_template: "{{ .Tag }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'
+    - Merge pull request
+    - Merge branch
+
+## generate RPM and DEB packages
+nfpm:
+  vendor: "TODO"
+  homepage: "https://github.com/twpayne/chezmoi"
+  maintainer: Tom Payne <TODO@TODO.tld>
+  description: "chezmoi is a tool for managing your dotfiles across multiple machines."
+  license: MIT
+  formats:
+    - deb
+    - rpm
+  overrides:
+    rpm:
+      name_template: "{{ .ProjectName }}-{{ .Version }}-{{ .Env.TRAVIS_BUILD_NUMBER }}-{{ .Arch }}"
+      replacements:
+        amd64: x86_64
+        386: i686
+        arm: armhfp
+        arm64: aarch64
+    deb:
+      name_template: "{{ .ProjectName }}_{{ .Version }}-{{ .Env.TRAVIS_BUILD_NUMBER }}_{{ .Os }}_{{ .Arch }}"
+      replacements:
+        386: i386
+        arm: armel
+
+## generate a homebrew formula and push to github.com/twpayne/homebrew-taps
+# brew:
+#   github:
+#     owner: twpayne
+#     name: homebrew-taps
+#   commit_author:
+#     name: Tom Payne
+#     email: TODO@TODO.tld
+#   folder: Formula
+#   homepage: "https://github.com/twpayne/chezmoi"
+#   description: "chezmoi is a tool for managing your dotfiles across multiple machines."
+
+## generate and push docker images:
+# dockers:
+#   # primary docker image for amd64 arch
+#   -
+#     dockerfile: Dockerfile
+#     binary: chezmoi
+#     goos: linux
+#     goarch: amd64
+#     image_templates:
+#     - "twpayne/chezmoi:{{ .Tag }}"                  # v1.0.0
+#     - "twpayne/chezmoi:v{{ .Major }}"               # v1
+#     - "twpayne/chezmoi:v{{ .Major }}.{{ .Minor }}"  # v1.0
+#     - "twpayne/chezmoi:latest"
+#   # build a docker image for arm64 arch
+#   -
+#     dockerfile: Dockerfile
+#     binary: chezmoi
+#     goos: linux
+#     goarch: arm64
+#     goarm: ''
+#     tag_templates:
+#     - "twpayne/chezmoi:{{ .Tag }}-arm64"                  # v1.0.0
+#     - "twpayne/chezmoi:v{{ .Major }}-arm64"               # v1
+#     - "twpayne/chezmoi:v{{ .Major }}.{{ .Minor }}-arm64"  # v1.0
+#     - "twpayne/chezmoi:latest-arm64"
+#   # build a docker image for arm
+#   -
+#     dockerfile: Dockerfile
+#     binary: chezmoi
+#     goos: linux
+#     goarch: arm
+#     goarm: ''
+#     tag_templates:
+#     - "twpayne/chezmoi:{{ .Tag }}-arm"                  # v1.0.0
+#     - "twpayne/chezmoi:v{{ .Major }}-arm"               # v1
+#     - "twpayne/chezmoi:v{{ .Major }}.{{ .Minor }}-arm"  # v1.0
+#     - "twpayne/chezmoi:latest-arm"
