@@ -170,17 +170,17 @@ func (f *File) archive(w *tar.Writer, fileName string, headerTemplate *tar.Heade
 // apply ensures that state of targetPath in fs matches f.
 func (f *File) apply(fs vfs.FS, targetPath string, umask os.FileMode, actuator Actuator) error {
 	info, err := fs.Stat(targetPath)
-	var currentContents []byte
+	var currData []byte
 	switch {
 	case err == nil && info.Mode().IsRegular():
 		if len(f.Contents) == 0 && !f.Empty {
 			return actuator.RemoveAll(targetPath)
 		}
-		currentContents, err = fs.ReadFile(targetPath)
+		currData, err = fs.ReadFile(targetPath)
 		if err != nil {
 			return err
 		}
-		if !bytes.Equal(currentContents, f.Contents) {
+		if !bytes.Equal(currData, f.Contents) {
 			break
 		}
 		if info.Mode()&os.ModePerm != f.Perm&^umask {
@@ -200,7 +200,7 @@ func (f *File) apply(fs vfs.FS, targetPath string, umask os.FileMode, actuator A
 	if len(f.Contents) == 0 && !f.Empty {
 		return nil
 	}
-	return actuator.WriteFile(targetPath, f.Contents, f.Perm&^umask, currentContents)
+	return actuator.WriteFile(targetPath, f.Contents, f.Perm&^umask, currData)
 }
 
 // SourceName implements Entry.SourceName.
@@ -281,21 +281,21 @@ func (ts *TargetState) Add(fs vfs.FS, target string, info os.FileInfo, addEmpty,
 		if dirSourceName != "" {
 			sourceName = filepath.Join(dirSourceName, sourceName)
 		}
-		contents, err := fs.ReadFile(target)
+		data, err := fs.ReadFile(target)
 		if err != nil {
 			return err
 		}
 		if addTemplate {
-			contents = autoTemplate(contents, ts.Data)
+			data = autoTemplate(data, ts.Data)
 		}
-		if err := actuator.WriteFile(filepath.Join(ts.SourceDir, sourceName), contents, 0666&^ts.Umask, nil); err != nil {
+		if err := actuator.WriteFile(filepath.Join(ts.SourceDir, sourceName), data, 0666&^ts.Umask, nil); err != nil {
 			return err
 		}
 		entries[name] = &File{
 			sourceName: sourceName,
-			Empty:      len(contents) == 0,
+			Empty:      len(data) == 0,
 			Perm:       info.Mode() & os.ModePerm,
-			Contents:   contents,
+			Contents:   data,
 		}
 	case info.Mode().IsDir():
 		if entry, ok := entries[name]; ok {
@@ -420,12 +420,12 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 			if err != nil {
 				return err
 			}
-			contents, err := fs.ReadFile(path)
+			data, err := fs.ReadFile(path)
 			if err != nil {
 				return err
 			}
 			if psfp.template {
-				tmpl, err := template.New(path).Parse(string(contents))
+				tmpl, err := template.New(path).Parse(string(data))
 				if err != nil {
 					return fmt.Errorf("%s: %v", path, err)
 				}
@@ -433,13 +433,13 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 				if err := tmpl.Execute(output, ts.Data); err != nil {
 					return fmt.Errorf("%s: %v", path, err)
 				}
-				contents = output.Bytes()
+				data = output.Bytes()
 			}
 			entries[psfp.fileName] = &File{
 				sourceName: relPath,
 				Empty:      psfp.empty,
 				Perm:       psfp.perm,
-				Contents:   contents,
+				Contents:   data,
 			}
 		case info.Mode().IsDir():
 			components := splitPathList(relPath)
