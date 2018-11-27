@@ -4,8 +4,8 @@ import "os"
 
 // An Actuator makes changes.
 type Actuator interface {
-	Chmod(string, os.FileMode) error
-	Mkdir(string, os.FileMode) error
-	RemoveAll(string) error
-	WriteFile(string, []byte, os.FileMode, []byte) error
+	Chmod(name string, mode os.FileMode) error
+	Mkdir(name string, perm os.FileMode) error
+	RemoveAll(name string) error
+	WriteFile(filename string, data []byte, perm os.FileMode, currData []byte) error
 }
