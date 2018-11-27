@@ -59,6 +59,11 @@ type TargetState struct {
 	Entries   map[string]Entry
 }
 
+type parsedSourceDirName struct {
+	dirName string
+	perm    os.FileMode
+}
+
 type parsedSourceFileName struct {
 	fileName string
 	perm     os.FileMode
@@ -299,7 +304,10 @@ func (ts *TargetState) Add(fs vfs.FS, target string, info os.FileInfo, addEmpty,
 			}
 			return nil // entry already exists
 		}
-		sourceName := makeDirName(name, info.Mode())
+		sourceName := parsedSourceDirName{
+			dirName: name,
+			perm:    info.Mode() & os.ModePerm,
+		}.SourceDirName()
 		if dirSourceName != "" {
 			sourceName = filepath.Join(dirSourceName, sourceName)
 		}
@@ -473,17 +481,17 @@ func (ts *TargetState) findEntry(name string) (Entry, error) {
 	return entries[names[len(names)-1]], nil
 }
 
-func makeDirName(name string, mode os.FileMode) string {
-	dirName := ""
-	if mode&os.FileMode(077) == os.FileMode(0) {
-		dirName = privatePrefix
+func (psdn parsedSourceDirName) SourceDirName() string {
+	sourceDirName := ""
+	if psdn.perm&os.FileMode(077) == os.FileMode(0) {
+		sourceDirName = privatePrefix
 	}
-	if strings.HasPrefix(name, ".") {
-		dirName += dotPrefix + strings.TrimPrefix(name, ".")
+	if strings.HasPrefix(psdn.dirName, ".") {
+		sourceDirName += dotPrefix + strings.TrimPrefix(psdn.dirName, ".")
 	} else {
-		dirName += name
+		sourceDirName += psdn.dirName
 	}
-	return dirName
+	return sourceDirName
 }
 
 func (psfn parsedSourceFileName) SourceFileName() string {
@@ -508,19 +516,20 @@ func (psfn parsedSourceFileName) SourceFileName() string {
 	return fileName
 }
 
-// parseDirName parses a single directory name. It returns the target name,
-// mode.
-func parseDirName(dirName string) (string, os.FileMode) {
-	name := dirName
-	mode := os.FileMode(0777)
-	if strings.HasPrefix(name, privatePrefix) {
-		name = strings.TrimPrefix(name, privatePrefix)
-		mode &= 0700
+// parseSourceDirName parses a single directory name.
+func parseSourceDirName(dirName string) parsedSourceDirName {
+	perm := os.FileMode(0777)
+	if strings.HasPrefix(dirName, privatePrefix) {
+		dirName = strings.TrimPrefix(dirName, privatePrefix)
+		perm &= 0700
 	}
-	if strings.HasPrefix(name, dotPrefix) {
-		name = "." + strings.TrimPrefix(name, dotPrefix)
+	if strings.HasPrefix(dirName, dotPrefix) {
+		dirName = "." + strings.TrimPrefix(dirName, dotPrefix)
 	}
-	return name, mode
+	return parsedSourceDirName{
+		dirName: dirName,
+		perm:    perm,
+	}
 }
 
 // parseSourceFileName parses a source file name.
@@ -563,13 +572,13 @@ func parseSourceFileName(fileName string) parsedSourceFileName {
 // the target directory names, target modes, and any error.
 func parseDirNameComponents(components []string) ([]string, []os.FileMode) {
 	dirNames := []string{}
-	modes := []os.FileMode{}
+	perms := []os.FileMode{}
 	for _, component := range components {
-		dirName, mode := parseDirName(component)
-		dirNames = append(dirNames, dirName)
-		modes = append(modes, mode)
+		psdn := parseSourceDirName(component)
+		dirNames = append(dirNames, psdn.dirName)
+		perms = append(perms, psdn.perm)
 	}
-	return dirNames, modes
+	return dirNames, perms
 }
 
 // parseSourceFilePath parses a single source file path.

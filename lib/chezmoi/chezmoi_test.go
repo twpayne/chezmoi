@@ -8,23 +8,47 @@ import (
 	"github.com/twpayne/go-vfs/vfstest"
 )
 
-func TestDirName(t *testing.T) {
+func TestSourceDirName(t *testing.T) {
 	for _, tc := range []struct {
-		dirName string
-		name    string
-		mode    os.FileMode
+		sourceDirName string
+		psdn          parsedSourceDirName
 	}{
-		{dirName: "foo", name: "foo", mode: 0777},
-		{dirName: "dot_foo", name: ".foo", mode: 0777},
-		{dirName: "private_foo", name: "foo", mode: 0700},
-		{dirName: "private_dot_foo", name: ".foo", mode: 0700},
+		{
+			sourceDirName: "foo",
+			psdn: parsedSourceDirName{
+				dirName: "foo",
+				perm:    0777,
+			},
+		},
+		{
+			sourceDirName: "dot_foo",
+			psdn: parsedSourceDirName{
+				dirName: ".foo",
+				perm:    0777,
+			},
+		},
+		{
+			sourceDirName: "private_foo",
+			psdn: parsedSourceDirName{
+				dirName: "foo",
+				perm:    0700,
+			},
+		},
+		{
+			sourceDirName: "private_dot_foo",
+			psdn: parsedSourceDirName{
+				dirName: ".foo",
+				perm:    0700,
+			},
+		},
 	} {
-		t.Run(tc.dirName, func(t *testing.T) {
-			if gotName, gotMode := parseDirName(tc.dirName); gotName != tc.name || gotMode != tc.mode {
-				t.Errorf("parseDirName(%q) == %q, %v, want %q, %v", tc.dirName, gotName, gotMode, tc.name, tc.mode)
+		t.Run(tc.sourceDirName, func(t *testing.T) {
+			gotPSDN := parseSourceDirName(tc.sourceDirName)
+			if diff, equal := messagediff.PrettyDiff(tc.psdn, gotPSDN); !equal {
+				t.Errorf("parseSourceDirName(%q) == %+v, want %+v, diff:\n%s", tc.sourceDirName, gotPSDN, tc.psdn, diff)
 			}
-			if gotDirName := makeDirName(tc.name, tc.mode); gotDirName != tc.dirName {
-				t.Errorf("makeDirName(%q, %v) == %q, want %q", tc.name, tc.mode, gotDirName, tc.dirName)
+			if gotSourceDirName := tc.psdn.SourceDirName(); gotSourceDirName != tc.sourceDirName {
+				t.Errorf("%+v.SourceDirName() == %q, want %q", tc.psdn, gotSourceDirName, tc.sourceDirName)
 			}
 		})
 	}
