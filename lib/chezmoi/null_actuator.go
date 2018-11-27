@@ -25,6 +25,11 @@ func (a *NullActuator) RemoveAll(string) error {
 	return nil
 }
 
+// Symlink implements Actuator.Symlink.
+func (a *NullActuator) Symlink(string, string) error {
+	return nil
+}
+
 // WriteFile implements Actuator.WriteFile.
 func (a *NullActuator) WriteFile(string, []byte, os.FileMode, []byte) error {
 	return nil
