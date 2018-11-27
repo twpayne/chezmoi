@@ -571,7 +571,7 @@ func (psfn parsedSourceFileName) SourceFileName() string {
 }
 
 // parseDirNameComponents parses multiple directory name components. It returns
-// the target directory names, target modes, and any error.
+// the target directory names, target permissions, and any error.
 func parseDirNameComponents(components []string) ([]string, []os.FileMode) {
 	dirNames := []string{}
 	perms := []os.FileMode{}
