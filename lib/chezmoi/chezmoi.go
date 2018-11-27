@@ -112,7 +112,7 @@ func (d *Dir) archive(w *tar.Writer, dirName string, headerTemplate *tar.Header,
 
 // apply ensures that targetDir in fs matches d.
 func (d *Dir) apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Actuator) error {
-	info, err := fs.Stat(targetDir)
+	info, err := fs.Lstat(targetDir)
 	switch {
 	case err == nil && info.Mode().IsDir():
 		if info.Mode()&os.ModePerm != d.Perm&^umask {
@@ -169,7 +169,7 @@ func (f *File) archive(w *tar.Writer, fileName string, headerTemplate *tar.Heade
 
 // apply ensures that the state of targetPath in fs matches f.
 func (f *File) apply(fs vfs.FS, targetPath string, umask os.FileMode, actuator Actuator) error {
-	info, err := fs.Stat(targetPath)
+	info, err := fs.Lstat(targetPath)
 	var currData []byte
 	switch {
 	case err == nil && info.Mode().IsRegular():
@@ -230,7 +230,7 @@ func (ts *TargetState) Add(fs vfs.FS, target string, info os.FileInfo, addEmpty,
 	}
 	if info == nil {
 		var err error
-		info, err = fs.Stat(target)
+		info, err = fs.Lstat(target)
 		if err != nil {
 			return err
 		}
