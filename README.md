@@ -113,7 +113,7 @@ what might change. For your home machine:
       email: john@home.org
 
 If you intend to store private data (e.g. access tokens) in `~/.chezmoi.yaml`,
-make sure it has mode 0600. See "Keeping data private" below for more
+make sure it has permissions 0600. See "Keeping data private" below for more
 discussion on this.
 
 If you prefer, you can use any format supported by
@@ -209,7 +209,7 @@ My `~/.chezmoi/private_dot_gitconfig.tmpl` then contains:
     {{- end }}
 
 Note that any config files containing tokens in plain text should be private
-(mode 0600).
+(permissions 0600).
 
 ### Using encrypted config files
 

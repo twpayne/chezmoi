@@ -27,7 +27,7 @@ func NewFSActuator(fs vfs.FS, targetDir string) *FSActuator {
 }
 
 // WriteFile implements Actuator.WriteFile.
-func (a *FSActuator) WriteFile(name string, contents []byte, mode os.FileMode, currentContents []byte) error {
+func (a *FSActuator) WriteFile(name string, contents []byte, perm os.FileMode, currentContents []byte) error {
 	// Special case: if writing to the real filesystem, use github.com/google/renameio
 	if a.FS == vfs.OSFS {
 		t, err := renameio.TempFile(a.dir, name)
@@ -35,7 +35,7 @@ func (a *FSActuator) WriteFile(name string, contents []byte, mode os.FileMode, c
 			return err
 		}
 		defer t.Cleanup()
-		if err := t.Chmod(mode); err != nil {
+		if err := t.Chmod(perm); err != nil {
 			return err
 		}
 		if _, err := t.Write(contents); err != nil {
@@ -43,5 +43,5 @@ func (a *FSActuator) WriteFile(name string, contents []byte, mode os.FileMode, c
 		}
 		return t.CloseAtomicallyReplace()
 	}
-	return a.FS.WriteFile(name, contents, mode)
+	return a.FS.WriteFile(name, contents, perm)
 }
