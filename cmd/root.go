@@ -77,7 +77,8 @@ func init() {
 }
 
 // Execute executes the root command.
-func Execute() {
+func Execute(version Version) {
+	config.version = version
 	if err := rootCommand.Execute(); err != nil {
 		printErrorAndExit(err)
 	}

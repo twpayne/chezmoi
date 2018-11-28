@@ -17,6 +17,13 @@ import (
 	"github.com/twpayne/go-vfs"
 )
 
+// A Version represents a version.
+type Version struct {
+	Version string
+	Commit  string
+	Date    string
+}
+
 // An AddCommandConfig is a configuration for the add command.
 type AddCommandConfig struct {
 	Empty     bool
@@ -33,6 +40,7 @@ type KeyringCommandConfig struct {
 
 // A Config represents a configuration.
 type Config struct {
+	version          Version
 	SourceDir        string
 	TargetDir        string
 	Umask            int
