@@ -24,13 +24,6 @@ type Version struct {
 	Date    string
 }
 
-// An AddCommandConfig is a configuration for the add command.
-type AddCommandConfig struct {
-	Empty     bool
-	Recursive bool
-	Template  bool
-}
-
 // A KeyringCommandConfig is a configuration for the keyring command.
 type KeyringCommandConfig struct {
 	Service  string
@@ -49,7 +42,7 @@ type Config struct {
 	SourceVCSCommand string
 	Data             map[string]interface{}
 	Funcs            template.FuncMap
-	Add              AddCommandConfig
+	add              addCommandConfig
 	Keyring          KeyringCommandConfig
 }
 

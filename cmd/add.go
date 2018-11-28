@@ -16,13 +16,20 @@ var addCommand = &cobra.Command{
 	RunE:  makeRunE(config.runAddCommandE),
 }
 
+// An AddCommandConfig is a configuration for the add command.
+type addCommandConfig struct {
+	empty     bool
+	recursive bool
+	template  bool
+}
+
 func init() {
 	rootCommand.AddCommand(addCommand)
 
 	persistentFlags := addCommand.PersistentFlags()
-	persistentFlags.BoolVarP(&config.Add.Empty, "empty", "e", false, "add empty files")
-	persistentFlags.BoolVarP(&config.Add.Recursive, "recursive", "r", false, "recurse in to subdirectories")
-	persistentFlags.BoolVarP(&config.Add.Template, "template", "T", false, "add files as templates")
+	persistentFlags.BoolVarP(&config.add.empty, "empty", "e", false, "add empty files")
+	persistentFlags.BoolVarP(&config.add.recursive, "recursive", "r", false, "recurse in to subdirectories")
+	persistentFlags.BoolVarP(&config.add.template, "template", "T", false, "add files as templates")
 }
 
 func (c *Config) runAddCommandE(fs vfs.FS, command *cobra.Command, args []string) error {
@@ -53,17 +60,17 @@ func (c *Config) runAddCommandE(fs vfs.FS, command *cobra.Command, args []string
 		if err != nil {
 			return err
 		}
-		if c.Add.Recursive {
+		if c.add.recursive {
 			if err := vfs.Walk(fs, path, func(path string, info os.FileInfo, err error) error {
 				if err != nil {
 					return err
 				}
-				return targetState.Add(fs, path, info, c.Add.Empty, c.Add.Template, actuator)
+				return targetState.Add(fs, path, info, c.add.empty, c.add.template, actuator)
 			}); err != nil {
 				return err
 			}
 		} else {
-			if err := targetState.Add(fs, path, nil, c.Add.Empty, c.Add.Template, actuator); err != nil {
+			if err := targetState.Add(fs, path, nil, c.add.empty, c.add.template, actuator); err != nil {
 				return err
 			}
 		}
