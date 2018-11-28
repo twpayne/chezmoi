@@ -24,13 +24,6 @@ type Version struct {
 	Date    string
 }
 
-// A KeyringCommandConfig is a configuration for the keyring command.
-type KeyringCommandConfig struct {
-	Service  string
-	User     string
-	Password string
-}
-
 // A Config represents a configuration.
 type Config struct {
 	version          Version
@@ -43,7 +36,7 @@ type Config struct {
 	Data             map[string]interface{}
 	Funcs            template.FuncMap
 	add              addCommandConfig
-	Keyring          KeyringCommandConfig
+	keyring          keyringCommandConfig
 }
 
 func (c *Config) addFunc(key string, value interface{}) {

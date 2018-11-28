@@ -21,11 +21,11 @@ func init() {
 	keyringCommand.AddCommand(keyringSetCommand)
 
 	persistentFlags := keyringSetCommand.PersistentFlags()
-	persistentFlags.StringVar(&config.Keyring.Password, "password", "", "password")
+	persistentFlags.StringVar(&config.keyring.password, "password", "", "password")
 }
 
 func (c *Config) runKeyringSetCommand(fs vfs.FS, cmd *cobra.Command, args []string) error {
-	passwordString := c.Keyring.Password
+	passwordString := c.keyring.password
 	if passwordString == "" {
 		fmt.Print("Password: ")
 		password, err := terminal.ReadPassword(syscall.Stdin)
@@ -34,5 +34,5 @@ func (c *Config) runKeyringSetCommand(fs vfs.FS, cmd *cobra.Command, args []stri
 		}
 		passwordString = string(password)
 	}
-	return keyring.Set(c.Keyring.Service, c.Keyring.User, passwordString)
+	return keyring.Set(c.keyring.service, c.keyring.user, passwordString)
 }
