@@ -7,8 +7,6 @@ builds:
 - binary: chezmoi
   env:
     - CGO_ENABLED=0
-  ldflags:
-     - -s -w
   goos:
     - linux
     - darwin
