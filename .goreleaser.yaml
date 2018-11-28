@@ -76,17 +76,17 @@ nfpm:
         386: i386
         arm: armel
 
-## generate a homebrew formula and push to github.com/twpayne/homebrew-taps
-# brew:
-#   github:
-#     owner: twpayne
-#     name: homebrew-taps
-#   commit_author:
-#     name: Tom Payne
-#     email: TODO@TODO.tld
-#   folder: Formula
-#   homepage: "https://github.com/twpayne/chezmoi"
-#   description: "chezmoi is a tool for managing your dotfiles across multiple machines."
+# generate a homebrew formula and push to github.com/twpayne/homebrew-taps
+brew:
+  github:
+    owner: twpayne
+    name: homebrew-taps
+  commit_author:
+    name: Tom Payne
+    email: twpayne@gmail.com
+  folder: Formula
+  homepage: "https://github.com/twpayne/chezmoi"
+  description: "chezmoi is a tool for managing your dotfiles across multiple machines."
 
 ## generate and push docker images:
 # dockers:
