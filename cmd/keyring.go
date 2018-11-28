@@ -11,15 +11,22 @@ var keyringCommand = &cobra.Command{
 	Short: "Interact with keyring",
 }
 
+// A keyringCommandConfig is a configuration for the keyring command.
+type keyringCommandConfig struct {
+	service  string
+	user     string
+	password string
+}
+
 func init() {
 	rootCommand.AddCommand(keyringCommand)
 
 	persistentFlags := keyringCommand.PersistentFlags()
 
-	persistentFlags.StringVar(&config.Keyring.Service, "service", "", "service")
+	persistentFlags.StringVar(&config.keyring.service, "service", "", "service")
 	keyringCommand.MarkPersistentFlagRequired("service")
 
-	persistentFlags.StringVar(&config.Keyring.User, "user", "", "user")
+	persistentFlags.StringVar(&config.keyring.user, "user", "", "user")
 	keyringCommand.MarkPersistentFlagRequired("user")
 
 	config.addFunc("keyring", func(service, user string) string {

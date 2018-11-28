@@ -8,11 +8,11 @@ import (
 
 func TestAddCommand(t *testing.T) {
 	for _, tc := range []struct {
-		name             string
-		args             []string
-		addCommandConfig AddCommandConfig
-		root             interface{}
-		tests            interface{}
+		name  string
+		args  []string
+		add   addCommandConfig
+		root  interface{}
+		tests interface{}
 	}{
 		{
 			name: "add_first_file",
@@ -28,8 +28,8 @@ func TestAddCommand(t *testing.T) {
 		{
 			name: "add_template",
 			args: []string{"/home/jenkins/.gitconfig"},
-			addCommandConfig: AddCommandConfig{
-				Template: true,
+			add: addCommandConfig{
+				template: true,
 			},
 			root: map[string]interface{}{
 				"/home/jenkins":            &vfst.Dir{Perm: 0755},
@@ -43,8 +43,8 @@ func TestAddCommand(t *testing.T) {
 		{
 			name: "add_recursive",
 			args: []string{"/home/jenkins/.config"},
-			addCommandConfig: AddCommandConfig{
-				Recursive: true,
+			add: addCommandConfig{
+				recursive: true,
 			},
 			root: map[string]interface{}{
 				"/home/jenkins":                             &vfst.Dir{Perm: 0755},
@@ -70,8 +70,8 @@ func TestAddCommand(t *testing.T) {
 		{
 			name: "add_empty_file",
 			args: []string{"/home/jenkins/empty"},
-			addCommandConfig: AddCommandConfig{
-				Empty: true,
+			add: addCommandConfig{
+				empty: true,
 			},
 			root: map[string]interface{}{
 				"/home/jenkins":          &vfst.Dir{Perm: 0755},
@@ -97,8 +97,8 @@ func TestAddCommand(t *testing.T) {
 		{
 			name: "add_symlink_in_dir_recursive",
 			args: []string{"/home/jenkins/foo"},
-			addCommandConfig: AddCommandConfig{
-				Recursive: true,
+			add: addCommandConfig{
+				recursive: true,
 			},
 			root: map[string]interface{}{
 				"/home/jenkins":          &vfst.Dir{Perm: 0755},
@@ -137,7 +137,7 @@ func TestAddCommand(t *testing.T) {
 					"name":  "John Smith",
 					"email": "john.smith@company.com",
 				},
-				Add: tc.addCommandConfig,
+				add: tc.add,
 			}
 			fs, cleanup, err := vfst.NewTestFS(tc.root)
 			defer cleanup()
