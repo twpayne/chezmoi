@@ -6,6 +6,9 @@ addons:
     # needed for goreleaser/nfpm:
     - rpm
 
+go:
+  - 1.11.x
+
 # uncomment below if docker builds are enabled in .goreleaser.yaml
 # services:
 # - docker
