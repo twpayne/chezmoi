@@ -1,6 +1,3 @@
-# run a local "snapshot" build without publishing:
-#    TRAVIS_BUILD_NUMBER=1 goreleaser --snapshot --rm-dist --debug
-#
 project_name: chezmoi
 
 before:
