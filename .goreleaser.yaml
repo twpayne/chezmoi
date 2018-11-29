@@ -1,19 +1,18 @@
-# run a local "snapshot" build without publishing:
-#    TRAVIS_BUILD_NUMBER=1 goreleaser --snapshot --rm-dist --debug
-#
 project_name: chezmoi
+
+before:
+  hooks:
+  - go mod download
 
 builds:
 - binary: chezmoi
   env:
     - CGO_ENABLED=0
-  ldflags:
-     - -s -w
+    - GO111MODULE=on
   goos:
     - linux
     - darwin
-    # TODO: uncomment when compatible with windows. currently fails on 'undefined: syscall.Stat_t'
-    # - windows
+    - windows
     - freebsd
     - openbsd
     # - dragonfly
@@ -56,9 +55,9 @@ changelog:
 
 ## generate RPM and DEB packages
 nfpm:
-  vendor: "TODO"
+  vendor: "Tom Payne <twpayne@gmail.com>"
   homepage: "https://github.com/twpayne/chezmoi"
-  maintainer: Tom Payne <TODO@TODO.tld>
+  maintainer: Tom Payne <twpayne@gmail.com>
   description: "chezmoi is a tool for managing your dotfiles across multiple machines."
   license: MIT
   formats:
@@ -78,17 +77,17 @@ nfpm:
         386: i386
         arm: armel
 
-## generate a homebrew formula and push to github.com/twpayne/homebrew-taps
-# brew:
-#   github:
-#     owner: twpayne
-#     name: homebrew-taps
-#   commit_author:
-#     name: Tom Payne
-#     email: TODO@TODO.tld
-#   folder: Formula
-#   homepage: "https://github.com/twpayne/chezmoi"
-#   description: "chezmoi is a tool for managing your dotfiles across multiple machines."
+# generate a homebrew formula and push to github.com/twpayne/homebrew-taps
+brew:
+  github:
+    owner: twpayne
+    name: homebrew-taps
+  commit_author:
+    name: Tom Payne
+    email: twpayne@gmail.com
+  folder: Formula
+  homepage: "https://github.com/twpayne/chezmoi"
+  description: "chezmoi is a tool for managing your dotfiles across multiple machines."
 
 ## generate and push docker images:
 # dockers:

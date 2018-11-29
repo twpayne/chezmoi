@@ -12,7 +12,6 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-	"syscall"
 	"text/template"
 	"time"
 
@@ -363,7 +362,11 @@ func (ts *TargetState) Add(fs vfs.FS, target string, info os.FileInfo, addEmpty,
 		// If the directory is empty, add a .keep file so the directory is
 		// managed by git. Chezmoi will ignore the .keep file as it begins with
 		// a dot.
-		if stat, ok := info.Sys().(*syscall.Stat_t); ok && stat.Nlink == 2 {
+		infos, err := fs.ReadDir(target)
+		if err != nil {
+			return err
+		}
+		if len(infos) == 0 {
 			if err := actuator.WriteFile(filepath.Join(ts.SourceDir, sourceName, ".keep"), nil, 0666&^ts.Umask, nil); err != nil {
 				return err
 			}

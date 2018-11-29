@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"syscall"
 
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
@@ -96,11 +95,4 @@ func (c *Config) persistentPreRunRootE(fs vfs.FS, command *cobra.Command, args [
 		return err
 	}
 	return nil
-}
-
-func getUmask() int {
-	// FIXME should we call runtime.LockOSThread or similar?
-	umask := syscall.Umask(0)
-	syscall.Umask(umask)
-	return umask
 }

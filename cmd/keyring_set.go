@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"fmt"
-	"syscall"
+	"os"
 
 	"github.com/spf13/cobra"
 	"github.com/twpayne/go-vfs"
@@ -28,7 +28,7 @@ func (c *Config) runKeyringSetCommand(fs vfs.FS, cmd *cobra.Command, args []stri
 	passwordString := c.keyring.password
 	if passwordString == "" {
 		fmt.Print("Password: ")
-		password, err := terminal.ReadPassword(syscall.Stdin)
+		password, err := terminal.ReadPassword(int(os.Stdin.Fd()))
 		if err != nil {
 			return err
 		}

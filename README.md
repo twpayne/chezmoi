@@ -335,6 +335,10 @@ To create a new release, push a tag, eg:
     $ git tag -a v0.1.0 -m "First release"
     $ git push origin v0.1.0
 
+To run a local "snapshot" build without publishing:
+
+    $ TRAVIS_BUILD_NUMBER=1 goreleaser --snapshot --rm-dist --debug
+
 ## License
 
 The MIT License (MIT)
