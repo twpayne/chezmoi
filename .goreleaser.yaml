@@ -12,8 +12,7 @@ builds:
   goos:
     - linux
     - darwin
-    # TODO: uncomment when compatible with windows. currently fails on 'undefined: syscall.Stat_t'
-    # - windows
+    - windows
     - freebsd
     - openbsd
     # - dragonfly
