@@ -59,9 +59,9 @@ changelog:
 
 ## generate RPM and DEB packages
 nfpm:
-  vendor: "TODO"
+  vendor: "Tom Payne <twpayne@gmail.com>"
   homepage: "https://github.com/twpayne/chezmoi"
-  maintainer: Tom Payne <TODO@TODO.tld>
+  maintainer: Tom Payne <twpayne@gmail.com>
   description: "chezmoi is a tool for managing your dotfiles across multiple machines."
   license: MIT
   formats:
