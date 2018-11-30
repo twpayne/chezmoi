@@ -190,7 +190,7 @@ func TestTargetStatePopulate(t *testing.T) {
 					"foo": &File{
 						sourceName: "foo",
 						Perm:       0666,
-						Contents:   []byte("bar"),
+						contents:   []byte("bar"),
 					},
 				},
 			},
@@ -209,7 +209,7 @@ func TestTargetStatePopulate(t *testing.T) {
 					".foo": &File{
 						sourceName: "dot_foo",
 						Perm:       0666,
-						Contents:   []byte("bar"),
+						contents:   []byte("bar"),
 					},
 				},
 			},
@@ -228,7 +228,7 @@ func TestTargetStatePopulate(t *testing.T) {
 					"foo": &File{
 						sourceName: "private_foo",
 						Perm:       0600,
-						Contents:   []byte("bar"),
+						contents:   []byte("bar"),
 					},
 				},
 			},
@@ -251,7 +251,7 @@ func TestTargetStatePopulate(t *testing.T) {
 							"bar": &File{
 								sourceName: "foo/bar",
 								Perm:       0666,
-								Contents:   []byte("baz"),
+								contents:   []byte("baz"),
 							},
 						},
 					},
@@ -276,7 +276,7 @@ func TestTargetStatePopulate(t *testing.T) {
 							"bar": &File{
 								sourceName: "private_dot_foo/bar",
 								Perm:       0666,
-								Contents:   []byte("baz"),
+								contents:   []byte("baz"),
 							},
 						},
 					},
@@ -303,7 +303,7 @@ func TestTargetStatePopulate(t *testing.T) {
 					".gitconfig": &File{
 						sourceName: "dot_gitconfig.tmpl",
 						Perm:       0666,
-						Contents:   []byte("[user]\n\temail = user@example.com\n"),
+						contents:   []byte("[user]\n\temail = user@example.com\n"),
 					},
 				},
 			},
@@ -321,7 +321,7 @@ func TestTargetStatePopulate(t *testing.T) {
 				Entries: map[string]Entry{
 					"foo": &Symlink{
 						sourceName: "symlink_foo",
-						Target:     "bar",
+						target:     "bar",
 					},
 				},
 			},
@@ -339,7 +339,7 @@ func TestTargetStatePopulate(t *testing.T) {
 				Entries: map[string]Entry{
 					".foo": &Symlink{
 						sourceName: "symlink_dot_foo",
-						Target:     "bar",
+						target:     "bar",
 					},
 				},
 			},
@@ -363,7 +363,7 @@ func TestTargetStatePopulate(t *testing.T) {
 				Entries: map[string]Entry{
 					"foo": &Symlink{
 						sourceName: "symlink_foo.tmpl",
-						Target:     "bar-example.com",
+						target:     "bar-example.com",
 					},
 				},
 			},
@@ -378,6 +378,9 @@ func TestTargetStatePopulate(t *testing.T) {
 			ts := NewTargetState("/", 0, tc.sourceDir, tc.data, tc.funcs)
 			if err := ts.Populate(fs); err != nil {
 				t.Fatalf("ts.Populate(%+v) == %v, want <nil>", fs, err)
+			}
+			if err := ts.Evaluate(); err != nil {
+				t.Errorf("ts.Evaluate() == %v, want <nil>", err)
 			}
 			if diff, equal := messagediff.PrettyDiff(tc.want, ts); !equal {
 				t.Errorf("ts.Populate(%+v) diff:\n%s\n", fs, diff)

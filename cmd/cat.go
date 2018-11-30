@@ -42,7 +42,11 @@ func (c *Config) runCatCommand(fs vfs.FS, command *cobra.Command, args []string)
 		if !ok {
 			return fmt.Errorf("%s: not a regular file", arg)
 		}
-		if _, err := os.Stdout.Write(f.Contents); err != nil {
+		contents, err := f.Contents()
+		if err != nil {
+			return err
+		}
+		if _, err := os.Stdout.Write(contents); err != nil {
 			return err
 		}
 	}
