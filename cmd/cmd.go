@@ -33,6 +33,7 @@ type Config struct {
 	DryRun           bool
 	Verbose          bool
 	SourceVCSCommand string
+	LastPass         LastPassCommandConfig
 	Data             map[string]interface{}
 	funcs            template.FuncMap
 	add              addCommandConfig
