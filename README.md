@@ -18,15 +18,16 @@ directory to match that state.
 variables allow you to change behaviour depending on operating system,
 architecture, and hostname.
 
+ * Secure: `chezmoi` can retreive secrets from
+   [LastPass](https://lastpass.com/), your Keychain (on macOS), [GNOME
+Keyring](https://wiki.gnome.org/Projects/GnomeKeyring) (on Linux), or Windows
+Credential Manager (on Windows) using the
+[zalando/go-keyring](https://github.com/zalando/go-keyring) library.
+
  * Robust: `chezmoi` updates all files and symbolic links atomically (using
    [google/renameio](https://github.com/google/renameio)) so you are never left
 with incomplete files that could lock you out, even if the update process is
 interrupted.
-
- * Secure: `chezmoi` can store and retreive secrets in your Keychain (on
-   macOS), GNOME Keyring (on Linux), or Windows Credentials Manager (on
-Windows) using the [zalando/go-keyring](https://github.com/zalando/go-keyring)
-library.
 
  * Portable: `chezmoi`'s configuration uses only visible, regular files and
    directories and so is portable across version control systems and operating
@@ -227,6 +228,31 @@ My `~/.chezmoi/private_dot_gitconfig.tmpl` then contains:
 Note that any config files containing tokens in plain text should be private
 (permissions 0600).
 
+### Using Lastpass
+
+`chezmoi` includes support for [LastPass](https://lastpass.com) using the
+[LastPass CLI](https://lastpass.github.io/lastpass-cli/lpass.1.html) to expose
+data as a template function.
+
+Log in to LastPass using:
+
+    $ lpass login
+
+Check that `lpass` is working correctly by showing password data:
+
+    $ lpass show -j id
+
+where `id` is a [LastPass Entry
+Specification](https://lastpass.github.io/lastpass-cli/lpass.1.html#_entry_specification).
+
+The structured data from `lpass show -j id` is available as the `lastpass`
+template function. Note that the value will be a slice of objects. You can use
+the `index` and `.Field` syntax of the text/template language to extract the
+field you want. For example, to extract the password field from the "Github"
+entry, use:
+
+    githubPassword = {{ (index (lastpass "Github") 0).password }}
+
 ### Using keyring
 
 `chezmoi` includes support for Keychain (on macOS), GNOME Keyring (on Linux),
@@ -255,7 +281,6 @@ and then include it in your `~/.gitconfig` file with:
 You can query the keyring from the command line:
 
     $ chezmoi keyring get --service=github --user=$GITHUB_USERNAME
-
 
 ### Using encrypted config files
 

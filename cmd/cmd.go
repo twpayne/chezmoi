@@ -37,6 +37,7 @@ type Config struct {
 	funcs            template.FuncMap
 	add              addCommandConfig
 	keyring          keyringCommandConfig
+	lastpass         lastpassCommandConfig
 }
 
 func (c *Config) addFunc(key string, value interface{}) {
