@@ -623,7 +623,7 @@ func (ts *TargetState) executeTemplate(fs vfs.FS, path string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	tmpl, err := template.New(path).Funcs(ts.Funcs).Parse(string(data))
+	tmpl, err := template.New(path).Option("missingkey=error").Funcs(ts.Funcs).Parse(string(data))
 	if err != nil {
 		return nil, fmt.Errorf("%s: %v", path, err)
 	}
