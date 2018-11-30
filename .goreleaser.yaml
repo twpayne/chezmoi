@@ -2,13 +2,12 @@ project_name: chezmoi
 
 before:
   hooks:
-  - export GO111MODULE=on go mod download
+  - go mod download
 
 builds:
 - binary: chezmoi
   env:
     - CGO_ENABLED=0
-    - GO111MODULE=on
   goos:
     - linux
     - darwin
