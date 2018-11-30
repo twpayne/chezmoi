@@ -14,7 +14,7 @@
 directory to match that state.
 
  * Flexible: your dotfiles can be templates (using
-   [text/template](https://godoc.org/text/template) syntax). Predefined
+   [`text/template`](https://godoc.org/text/template) syntax). Predefined
 variables allow you to change behaviour depending on operating system,
 architecture, and hostname.
 
@@ -22,12 +22,12 @@ architecture, and hostname.
    [LastPass](https://lastpass.com/), your Keychain (on macOS), [GNOME
 Keyring](https://wiki.gnome.org/Projects/GnomeKeyring) (on Linux), or Windows
 Credential Manager (on Windows) using the
-[zalando/go-keyring](https://github.com/zalando/go-keyring) library.
+[`zalando/go-keyring`](https://github.com/zalando/go-keyring) library.
 
  * Robust: `chezmoi` updates all files and symbolic links atomically (using
-   [google/renameio](https://github.com/google/renameio)) so you are never left
-with incomplete files that could lock you out, even if the update process is
-interrupted.
+   [`google/renameio`](https://github.com/google/renameio)) so you are never
+left with incomplete files that could lock you out, even if the update process
+is interrupted.
 
  * Portable: `chezmoi`'s configuration uses only visible, regular files and
    directories and so is portable across version control systems and operating
@@ -107,7 +107,7 @@ machines, for example your personal macOS laptop, your work Ubuntu desktop, and
 your work Linux laptop. You will want to keep much configuration the same
 across these, but also need machine-specific configurations for email
 addresses, credentials, etc. `chezmoi` achieves this functionality by using
-[text/template](https://godoc.org/text/template) for the source configuration
+[`text/template`](https://godoc.org/text/template) for the source configuration
 files where needed.
 
 For example, your home `~/.gitconfig` on your personal machine might look like:
@@ -157,9 +157,9 @@ The file should look something like:
 `~/.chezmoi.yaml` file when calculating the desired state of `.gitconfig`.
 
 For more advanced usage, you can use the full power of the
-[text/template](https://godoc.org/text/template) language to include or exclude
-sections of file. `chezmoi` provides the following automatically populated
-variables:
+[`text/template`](https://godoc.org/text/template) language to include or
+exclude sections of file. `chezmoi` provides the following automatically
+populated variables:
 
 | Variable           | Value                                                                                                                  |
 | ------------------ | ---------------------------------------------------------------------------------------------------------------------- |
@@ -236,7 +236,7 @@ data as a template function.
 
 Log in to LastPass using:
 
-    $ lpass login
+    $ lpass login username
 
 Check that `lpass` is working correctly by showing password data:
 
@@ -246,10 +246,10 @@ where `id` is a [LastPass Entry
 Specification](https://lastpass.github.io/lastpass-cli/lpass.1.html#_entry_specification).
 
 The structured data from `lpass show -j id` is available as the `lastpass`
-template function. Note that the value will be a slice of objects. You can use
-the `index` and `.Field` syntax of the text/template language to extract the
-field you want. For example, to extract the password field from the "Github"
-entry, use:
+template function. Note that the value will be an array of objects. You can use
+the `index` function and `.Field` syntax of the `text/template` language to
+extract the field you want. For example, to extract the `password` field from
+the "Github" entry, use:
 
     githubPassword = {{ (index (lastpass "Github") 0).password }}
 
