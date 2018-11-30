@@ -1,0 +1,12 @@
+version: "{build}"
+clone_folder: c:\gopath\src\github.com\twpayne\chezmoi
+environment:
+  GO111MODULES: on
+  GOPATH: c:\gopath
+install:
+  - go version
+  - go mod download
+build_script:
+  - go build
+test_script:
+  - go test -v ./...
