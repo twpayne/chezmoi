@@ -1,7 +1,10 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
+	"github.com/twpayne/chezmoi/lib/chezmoi"
 	"github.com/zalando/go-keyring"
 )
 
@@ -35,7 +38,7 @@ func init() {
 func (*Config) keyringFunc(service, user string) string {
 	password, err := keyring.Get(service, user)
 	if err != nil {
-		return err.Error()
+		chezmoi.ReturnTemplateFuncError(fmt.Errorf("keyring %q %q: %v", service, user, err))
 	}
 	return password
 }
