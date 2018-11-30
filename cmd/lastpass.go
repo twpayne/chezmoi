@@ -21,6 +21,8 @@ type LastPassCommandConfig struct {
 	Lpass string
 }
 
+var lastPassCache = make(map[string]interface{})
+
 func init() {
 	rootCommand.AddCommand(lastpassCommand)
 	config.LastPass.Lpass = "lpass"
@@ -32,6 +34,9 @@ func (c *Config) runLastPassCommand(fs vfs.FS, cmd *cobra.Command, args []string
 }
 
 func (c *Config) lastpassFunc(id string) interface{} {
+	if data, ok := lastPassCache[id]; ok {
+		return data
+	}
 	name := c.LastPass.Lpass
 	args := []string{"show", "-j", id}
 	if c.Verbose {
@@ -45,5 +50,6 @@ func (c *Config) lastpassFunc(id string) interface{} {
 	if err := json.Unmarshal(output, &data); err != nil {
 		chezmoi.ReturnTemplateFuncError(fmt.Errorf("lastpass %q: %s show -j %q: %v", id, name, id, err))
 	}
+	lastPassCache[id] = data
 	return data
 }
