@@ -1,7 +1,10 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
+	"github.com/twpayne/chezmoi/lib/chezmoi"
 	"github.com/zalando/go-keyring"
 )
 
@@ -29,11 +32,13 @@ func init() {
 	persistentFlags.StringVar(&config.keyring.user, "user", "", "user")
 	keyringCommand.MarkPersistentFlagRequired("user")
 
-	config.addFunc("keyring", func(service, user string) string {
-		password, err := keyring.Get(service, user)
-		if err != nil {
-			return err.Error()
-		}
-		return password
-	})
+	config.addFunc("keyring", config.keyringFunc)
+}
+
+func (*Config) keyringFunc(service, user string) string {
+	password, err := keyring.Get(service, user)
+	if err != nil {
+		chezmoi.ReturnTemplateFuncError(fmt.Errorf("keyring %q %q: %v", service, user, err))
+	}
+	return password
 }

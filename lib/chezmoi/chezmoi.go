@@ -27,6 +27,13 @@ const (
 	templateSuffix   = ".tmpl"
 )
 
+// A templateFuncError is an error encountered while executing a template
+// function.
+type templateFuncError struct {
+	name string
+	err  error
+}
+
 // An Entry is either a Dir, a File, or a Symlink.
 type Entry interface {
 	SourceName() string
@@ -623,13 +630,26 @@ func (ts *TargetState) executeTemplate(fs vfs.FS, path string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	tmpl, err := template.New(path).Funcs(ts.Funcs).Parse(string(data))
+	return ts.executeTemplateData(path, data)
+}
+
+func (ts *TargetState) executeTemplateData(name string, data []byte) (_ []byte, err error) {
+	tmpl, err := template.New(name).Option("missingkey=error").Funcs(ts.Funcs).Parse(string(data))
 	if err != nil {
-		return nil, fmt.Errorf("%s: %v", path, err)
+		return nil, fmt.Errorf("%s: %v", name, err)
 	}
+	defer func() {
+		if r := recover(); r != nil {
+			if tfe, ok := r.(templateFuncError); ok {
+				err = tfe.err
+			} else {
+				panic(r)
+			}
+		}
+	}()
 	output := &bytes.Buffer{}
-	if err := tmpl.Execute(output, ts.Data); err != nil {
-		return nil, fmt.Errorf("%s: %v", path, err)
+	if err = tmpl.Execute(output, ts.Data); err != nil {
+		return nil, fmt.Errorf("%s: %v", name, err)
 	}
 	return output.Bytes(), nil
 }
@@ -655,6 +675,13 @@ func (ts *TargetState) findEntry(name string) (Entry, error) {
 		return nil, err
 	}
 	return entries[names[len(names)-1]], nil
+}
+
+// ReturnTemplateFuncError causes template execution to return an error.
+func ReturnTemplateFuncError(err error) {
+	panic(templateFuncError{
+		err: err,
+	})
 }
 
 // parseSourceDirName parses a single directory name.
