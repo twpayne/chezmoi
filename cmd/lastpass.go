@@ -5,20 +5,34 @@ import (
 	"fmt"
 	"os/exec"
 	"strings"
+
+	"github.com/spf13/cobra"
+	vfs "github.com/twpayne/go-vfs"
 )
 
-type lastpassCommandConfig struct {
-	lpass string
+var lastpassCommand = &cobra.Command{
+	Use:   "lastpass",
+	Short: "Execute the LastPass CLI",
+	RunE:  makeRunE(config.runLastPassCommand),
+}
+
+type LastPassCommandConfig struct {
+	Lpass string
 }
 
 func init() {
-	config.lastpass.lpass = "lpass"
+	rootCommand.AddCommand(lastpassCommand)
+	config.LastPass.Lpass = "lpass"
 	config.addFunc("lastpass", config.lastpassFunc)
+}
+
+func (c *Config) runLastPassCommand(fs vfs.FS, cmd *cobra.Command, args []string) error {
+	return c.exec(append([]string{c.LastPass.Lpass}, args...))
 }
 
 func (c *Config) lastpassFunc(id string) interface{} {
 	// FIXME is there a better way to return errors from template funcs?
-	name := c.lastpass.lpass
+	name := c.LastPass.Lpass
 	args := []string{"show", "-j", id}
 	if c.Verbose {
 		fmt.Printf("%s %s\n", name, strings.Join(args, " "))

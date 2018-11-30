@@ -33,11 +33,11 @@ type Config struct {
 	DryRun           bool
 	Verbose          bool
 	SourceVCSCommand string
+	LastPass         LastPassCommandConfig
 	Data             map[string]interface{}
 	funcs            template.FuncMap
 	add              addCommandConfig
 	keyring          keyringCommandConfig
-	lastpass         lastpassCommandConfig
 }
 
 func (c *Config) addFunc(key string, value interface{}) {
