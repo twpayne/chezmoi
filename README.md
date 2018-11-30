@@ -44,14 +44,22 @@ control system of your choice to manage your configuration, and many different
 formats (e.g. JSON, YAML, TOML, etc.) are supported for the configuration file.
 
 
-## Quick start
+## Installation
 
-Install it:
+Binaries and packages for multiple platforms, including RedHat, Debian,
+Windows, FreeBSD, and OpenBSD, are available on the [releases
+page](https://github.com/twpayne/chezmoi/releases).
+
+On macOS you can install `chezmoi` with Homebrew:
+
+    $ brew install twpayne/taps/chezmoi
+
+If you have Go installed you can install the latest version from `HEAD`:
 
     $ go get -u github.com/twpayne/chezmoi
 
-Alternatively, binaries and packages for multiple platforms are available on the
-github [releases](https://github.com/twpayne/chezmoi/releases) page.
+
+## Quick start
 
 Manage an existing file with `chezmoi`:
 
