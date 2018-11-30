@@ -21,6 +21,13 @@ type keyringCommandConfig struct {
 	password string
 }
 
+type keyringKey struct {
+	service string
+	user    string
+}
+
+var keyringCache = make(map[keyringKey]string)
+
 func init() {
 	rootCommand.AddCommand(keyringCommand)
 
@@ -36,9 +43,17 @@ func init() {
 }
 
 func (*Config) keyringFunc(service, user string) string {
+	key := keyringKey{
+		service: service,
+		user:    user,
+	}
+	if password, ok := keyringCache[key]; ok {
+		return password
+	}
 	password, err := keyring.Get(service, user)
 	if err != nil {
 		chezmoi.ReturnTemplateFuncError(fmt.Errorf("keyring %q %q: %v", service, user, err))
 	}
+	keyringCache[key] = password
 	return password
 }
