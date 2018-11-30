@@ -7,7 +7,8 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	vfs "github.com/twpayne/go-vfs"
+	"github.com/twpayne/chezmoi/lib/chezmoi"
+	"github.com/twpayne/go-vfs"
 )
 
 var lastpassCommand = &cobra.Command{
@@ -31,7 +32,6 @@ func (c *Config) runLastPassCommand(fs vfs.FS, cmd *cobra.Command, args []string
 }
 
 func (c *Config) lastpassFunc(id string) interface{} {
-	// FIXME is there a better way to return errors from template funcs?
 	name := c.LastPass.Lpass
 	args := []string{"show", "-j", id}
 	if c.Verbose {
@@ -39,11 +39,11 @@ func (c *Config) lastpassFunc(id string) interface{} {
 	}
 	output, err := exec.Command(name, args...).CombinedOutput()
 	if err != nil {
-		return err
+		chezmoi.ReturnTemplateFuncError(fmt.Errorf("lastpass %q: %s show -j %q: %v\n%s", id, name, id, err, output))
 	}
 	var data []map[string]interface{}
 	if err := json.Unmarshal(output, &data); err != nil {
-		return err
+		chezmoi.ReturnTemplateFuncError(fmt.Errorf("lastpass %q: %s show -j %q: %v", id, name, id, err))
 	}
 	return data
 }
