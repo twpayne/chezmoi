@@ -9,6 +9,9 @@ addons:
 go:
   - 1.11.x
 
+env:
+  - GO111MODULE=on
+
 # uncomment below if docker builds are enabled in .goreleaser.yaml
 # services:
 # - docker
