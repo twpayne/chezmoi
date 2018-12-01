@@ -526,6 +526,14 @@ func (ts *TargetState) Apply(fs vfs.FS, actuator Actuator) error {
 	return nil
 }
 
+// ApplyOne ensures that targetPath matches entry.
+func (ts *TargetState) ApplyOne(fs vfs.FS, targetPath string, entry Entry, actuator Actuator) error {
+	if !filepath.HasPrefix(targetPath, ts.TargetDir) {
+		return fmt.Errorf("%s: outside target directory", targetPath)
+	}
+	return entry.apply(fs, targetPath, ts.Umask, actuator)
+}
+
 // Evaluates all of the entries in ts.
 func (ts *TargetState) Evaluate() error {
 	for _, entryName := range sortedEntryNames(ts.Entries) {
