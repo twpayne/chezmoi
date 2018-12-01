@@ -1,7 +1,9 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
+	"path/filepath"
 
 	"github.com/spf13/cobra"
 	"github.com/twpayne/chezmoi/lib/chezmoi"
@@ -10,7 +12,6 @@ import (
 
 var verifyCommand = &cobra.Command{
 	Use:   "verify",
-	Args:  cobra.NoArgs, // FIXME should accept list of targets
 	Short: "Exit with success if the actual state matches the target state, fail otherwise",
 	RunE:  makeRunE(config.runVerifyCommandE),
 }
@@ -25,8 +26,27 @@ func (c *Config) runVerifyCommandE(fs vfs.FS, command *cobra.Command, args []str
 		return err
 	}
 	anyActuator := chezmoi.NewAnyActuator(chezmoi.NewNullActuator())
-	if err := targetState.Apply(fs, anyActuator); err != nil {
-		return err
+	if len(args) == 0 {
+		if err := targetState.Apply(fs, anyActuator); err != nil {
+			return err
+		}
+	} else {
+		for _, arg := range args {
+			targetPath, err := filepath.Abs(arg)
+			if err != nil {
+				return err
+			}
+			entry, err := targetState.Get(targetPath)
+			if err != nil {
+				return err
+			}
+			if entry == nil {
+				return fmt.Errorf("%s: not under management", arg)
+			}
+			if err := targetState.ApplyOne(fs, targetPath, entry, anyActuator); err != nil {
+				return err
+			}
+		}
 	}
 	if anyActuator.Actuated() {
 		os.Exit(1)
