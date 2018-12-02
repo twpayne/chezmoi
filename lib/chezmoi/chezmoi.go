@@ -78,9 +78,10 @@ type TargetState struct {
 	Entries   map[string]Entry
 }
 
-type parsedSourceDirName struct {
-	dirName string
-	perm    os.FileMode
+// ParsedSourceDirName is a parsed source dir name.
+type ParsedSourceDirName struct {
+	DirName string
+	Perm    os.FileMode
 }
 
 type parsedSourceFileName struct {
@@ -417,9 +418,9 @@ func (ts *TargetState) Add(fs vfs.FS, target string, info os.FileInfo, addEmpty,
 			}
 			return nil // entry already exists
 		}
-		sourceName := parsedSourceDirName{
-			dirName: name,
-			perm:    info.Mode() & os.ModePerm,
+		sourceName := ParsedSourceDirName{
+			DirName: name,
+			Perm:    info.Mode() & os.ModePerm,
 		}.SourceDirName()
 		if dirSourceName != "" {
 			sourceName = filepath.Join(dirSourceName, sourceName)
@@ -693,7 +694,7 @@ func ReturnTemplateFuncError(err error) {
 }
 
 // parseSourceDirName parses a single directory name.
-func parseSourceDirName(dirName string) parsedSourceDirName {
+func parseSourceDirName(dirName string) ParsedSourceDirName {
 	perm := os.FileMode(0777)
 	if strings.HasPrefix(dirName, privatePrefix) {
 		dirName = strings.TrimPrefix(dirName, privatePrefix)
@@ -702,22 +703,22 @@ func parseSourceDirName(dirName string) parsedSourceDirName {
 	if strings.HasPrefix(dirName, dotPrefix) {
 		dirName = "." + strings.TrimPrefix(dirName, dotPrefix)
 	}
-	return parsedSourceDirName{
-		dirName: dirName,
-		perm:    perm,
+	return ParsedSourceDirName{
+		DirName: dirName,
+		Perm:    perm,
 	}
 }
 
 // SourceDirName returns psdn's source dir name.
-func (psdn parsedSourceDirName) SourceDirName() string {
+func (psdn ParsedSourceDirName) SourceDirName() string {
 	sourceDirName := ""
-	if psdn.perm&os.FileMode(077) == os.FileMode(0) {
+	if psdn.Perm&os.FileMode(077) == os.FileMode(0) {
 		sourceDirName = privatePrefix
 	}
-	if strings.HasPrefix(psdn.dirName, ".") {
-		sourceDirName += dotPrefix + strings.TrimPrefix(psdn.dirName, ".")
+	if strings.HasPrefix(psdn.DirName, ".") {
+		sourceDirName += dotPrefix + strings.TrimPrefix(psdn.DirName, ".")
 	} else {
-		sourceDirName += psdn.dirName
+		sourceDirName += psdn.DirName
 	}
 	return sourceDirName
 }
@@ -800,8 +801,8 @@ func parseDirNameComponents(components []string) ([]string, []os.FileMode) {
 	perms := []os.FileMode{}
 	for _, component := range components {
 		psdn := parseSourceDirName(component)
-		dirNames = append(dirNames, psdn.dirName)
-		perms = append(perms, psdn.perm)
+		dirNames = append(dirNames, psdn.DirName)
+		perms = append(perms, psdn.Perm)
 	}
 	return dirNames, perms
 }

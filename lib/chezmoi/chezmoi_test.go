@@ -13,34 +13,34 @@ import (
 func TestSourceDirName(t *testing.T) {
 	for _, tc := range []struct {
 		sourceDirName string
-		psdn          parsedSourceDirName
+		psdn          ParsedSourceDirName
 	}{
 		{
 			sourceDirName: "foo",
-			psdn: parsedSourceDirName{
-				dirName: "foo",
-				perm:    0777,
+			psdn: ParsedSourceDirName{
+				DirName: "foo",
+				Perm:    0777,
 			},
 		},
 		{
 			sourceDirName: "dot_foo",
-			psdn: parsedSourceDirName{
-				dirName: ".foo",
-				perm:    0777,
+			psdn: ParsedSourceDirName{
+				DirName: ".foo",
+				Perm:    0777,
 			},
 		},
 		{
 			sourceDirName: "private_foo",
-			psdn: parsedSourceDirName{
-				dirName: "foo",
-				perm:    0700,
+			psdn: ParsedSourceDirName{
+				DirName: "foo",
+				Perm:    0700,
 			},
 		},
 		{
 			sourceDirName: "private_dot_foo",
-			psdn: parsedSourceDirName{
-				dirName: ".foo",
-				perm:    0700,
+			psdn: ParsedSourceDirName{
+				DirName: ".foo",
+				Perm:    0700,
 			},
 		},
 	} {
