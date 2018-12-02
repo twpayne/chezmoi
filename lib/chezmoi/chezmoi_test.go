@@ -45,9 +45,9 @@ func TestSourceDirName(t *testing.T) {
 		},
 	} {
 		t.Run(tc.sourceDirName, func(t *testing.T) {
-			gotPSDN := parseSourceDirName(tc.sourceDirName)
+			gotPSDN := ParseSourceDirName(tc.sourceDirName)
 			if diff, equal := messagediff.PrettyDiff(tc.psdn, gotPSDN); !equal {
-				t.Errorf("parseSourceDirName(%q) == %+v, want %+v, diff:\n%s", tc.sourceDirName, gotPSDN, tc.psdn, diff)
+				t.Errorf("ParseSourceDirName(%q) == %+v, want %+v, diff:\n%s", tc.sourceDirName, gotPSDN, tc.psdn, diff)
 			}
 			if gotSourceDirName := tc.psdn.SourceDirName(); gotSourceDirName != tc.sourceDirName {
 				t.Errorf("%+v.SourceDirName() == %q, want %q", tc.psdn, gotSourceDirName, tc.sourceDirName)

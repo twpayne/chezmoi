@@ -694,8 +694,8 @@ func ReturnTemplateFuncError(err error) {
 	})
 }
 
-// parseSourceDirName parses a single directory name.
-func parseSourceDirName(dirName string) ParsedSourceDirName {
+// ParseSourceDirName parses a single directory name.
+func ParseSourceDirName(dirName string) ParsedSourceDirName {
 	perm := os.FileMode(0777)
 	if strings.HasPrefix(dirName, privatePrefix) {
 		dirName = strings.TrimPrefix(dirName, privatePrefix)
@@ -801,7 +801,7 @@ func parseDirNameComponents(components []string) ([]string, []os.FileMode) {
 	dirNames := []string{}
 	perms := []os.FileMode{}
 	for _, component := range components {
-		psdn := parseSourceDirName(component)
+		psdn := ParseSourceDirName(component)
 		dirNames = append(dirNames, psdn.DirName)
 		perms = append(perms, psdn.Perm)
 	}
