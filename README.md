@@ -66,7 +66,7 @@ Manage an existing file with `chezmoi`:
 
     $ chezmoi add ~/.bashrc
 
-This will create a directory called `~/.chezmoi` with permissions 0600 where
+This will create a directory called `~/.chezmoi` with permissions `0600` where
 `chezmoi` will store its state, if it does not already exist, and copy
 `~/.bashrc` to `~/.chezmoi/dot_bashrc`.
 
@@ -130,7 +130,7 @@ what might change. For your home machine:
       email: john@home.org
 
 If you intend to store private data (e.g. access tokens) in `~/.chezmoi.yaml`,
-make sure it has permissions 0600. See "Keeping data private" below for more
+make sure it has permissions `0600`. See "Keeping data private" below for more
 discussion on this.
 
 If you prefer, you can use any format supported by
@@ -190,15 +190,16 @@ to give it an `empty_` prefix. See "Under the hood" below.
 
 `chezmoi` automatically detects when files and directories are private when
 adding them by inspecting their permissions. Private files and directories are
-stored in `~/.chezmoi` as regular, public files with permissions 0644 and the
+stored in `~/.chezmoi` as regular, public files with permissions `0644` and the
 name prefix `private_`. For example:
 
     $ chezmoi add ~/.netrc
 
-will create `~/.chezmoi/private_dot_netrc`. Note that this file is still
-private because `~/.chezmoi` is not group- or world- readable or executable.
-`chezmoi` checks that the permissions of `~/.chezmoi` are 0700 on every run and
-will print a warning if they are not.
+will create `~/.chezmoi/private_dot_netrc` (assuming `~/.netrc` is not world-
+or group- readable, as it should be). This file is still private because
+`~/.chezmoi` is not group- or world- readable or executable.  `chezmoi` checks
+that the permissions of `~/.chezmoi` are `0700` on every run and will print a
+warning if they are not.
 
 It is common that you need to store access tokens in config files, e.g. a
 [Github access
@@ -210,14 +211,14 @@ your machine.
 
 Typically, `~/.chezmoi.yaml` is not checked in to version control and has
 permissions 0600. You can store tokens as template values in the `data`
-section. For example, mine has:
+section. For example, if your `~/.chezmoi.yaml` contains:
 
     data:
       github:
-        user: twpayne
-        token: xxxxxxxx
+        user: <your-github-username>
+        token: <your-github-token>
 
-My `~/.chezmoi/private_dot_gitconfig.tmpl` then contains:
+Your `~/.chezmoi/private_dot_gitconfig.tmpl` can then contain:
 
     {{- if .github }}
     [github]
@@ -225,10 +226,10 @@ My `~/.chezmoi/private_dot_gitconfig.tmpl` then contains:
         token = {{ .github.token }}
     {{- end }}
 
-Note that any config files containing tokens in plain text should be private
-(permissions 0600).
+Any config files containing tokens in plain text should be private (permissions
+`0600`).
 
-### Using Lastpass
+### Using LastPass
 
 `chezmoi` includes support for [LastPass](https://lastpass.com) using the
 [LastPass CLI](https://lastpass.github.io/lastpass-cli/lpass.1.html) to expose
@@ -246,10 +247,10 @@ where `id` is a [LastPass Entry
 Specification](https://lastpass.github.io/lastpass-cli/lpass.1.html#_entry_specification).
 
 The structured data from `lpass show -j id` is available as the `lastpass`
-template function. Note that the value will be an array of objects. You can use
-the `index` function and `.Field` syntax of the `text/template` language to
-extract the field you want. For example, to extract the `password` field from
-the "Github" entry, use:
+template function. The value will be an array of objects. You can use the
+`index` function and `.Field` syntax of the `text/template` language to extract
+the field you want. For example, to extract the `password` field from first the
+"Github" entry, use:
 
     githubPassword = {{ (index (lastpass "Github") 0).password }}
 
