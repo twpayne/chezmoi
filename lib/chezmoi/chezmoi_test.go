@@ -157,9 +157,9 @@ func TestSourceFileName(t *testing.T) {
 		},
 	} {
 		t.Run(tc.sourceFileName, func(t *testing.T) {
-			gotPSFN := parseSourceFileName(tc.sourceFileName)
+			gotPSFN := ParseSourceFileName(tc.sourceFileName)
 			if diff, equal := messagediff.PrettyDiff(tc.psfn, gotPSFN); !equal {
-				t.Errorf("parseSourceFileName(%q) == %+v, want %+v, diff:\n%s", tc.sourceFileName, gotPSFN, tc.psfn, diff)
+				t.Errorf("ParseSourceFileName(%q) == %+v, want %+v, diff:\n%s", tc.sourceFileName, gotPSFN, tc.psfn, diff)
 			}
 			if gotSourceFileName := tc.psfn.SourceFileName(); gotSourceFileName != tc.sourceFileName {
 				t.Errorf("%+v.SourceFileName() == %q, want %q", tc.psfn, gotSourceFileName, tc.sourceFileName)

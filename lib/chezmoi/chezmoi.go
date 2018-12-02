@@ -724,8 +724,8 @@ func (psdn ParsedSourceDirName) SourceDirName() string {
 	return sourceDirName
 }
 
-// parseSourceFileName parses a source file name.
-func parseSourceFileName(fileName string) ParsedSourceFileName {
+// ParseSourceFileName parses a source file name.
+func ParseSourceFileName(fileName string) ParsedSourceFileName {
 	mode := os.FileMode(0666)
 	empty := false
 	template := false
@@ -812,7 +812,7 @@ func parseDirNameComponents(components []string) ([]string, []os.FileMode) {
 func parseSourceFilePath(path string) parsedSourceFilePath {
 	components := splitPathList(path)
 	dirNames, _ := parseDirNameComponents(components[0 : len(components)-1])
-	psfn := parseSourceFileName(components[len(components)-1])
+	psfn := ParseSourceFileName(components[len(components)-1])
 	return parsedSourceFilePath{
 		ParsedSourceFileName: psfn,
 		dirNames:             dirNames,
