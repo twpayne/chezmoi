@@ -173,6 +173,11 @@ func (d *Dir) evaluate() error {
 	return nil
 }
 
+// Private returns true if d is private.
+func (d *Dir) Private() bool {
+	return d.Perm&os.ModePerm&077 == 0
+}
+
 // SourceName implements Entry.SourceName.
 func (d *Dir) SourceName() string {
 	return d.sourceName
