@@ -211,14 +211,14 @@ your machine.
 
 Typically, `~/.chezmoi.yaml` is not checked in to version control and has
 permissions 0600. You can store tokens as template values in the `data`
-section. For example, mine has:
+section. For example, if your `~/.chezmoi.yaml` contains:
 
     data:
       github:
-        user: twpayne
-        token: xxxxxxxx
+        user: <your-github-username>
+        token: <your-github-token>
 
-My `~/.chezmoi/private_dot_gitconfig.tmpl` then contains:
+Your `~/.chezmoi/private_dot_gitconfig.tmpl` can then contain:
 
     {{- if .github }}
     [github]
