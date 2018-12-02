@@ -66,7 +66,7 @@ Manage an existing file with `chezmoi`:
 
     $ chezmoi add ~/.bashrc
 
-This will create a directory called `~/.chezmoi` with permissions 0600 where
+This will create a directory called `~/.chezmoi` with permissions `0600` where
 `chezmoi` will store its state, if it does not already exist, and copy
 `~/.bashrc` to `~/.chezmoi/dot_bashrc`.
 
@@ -130,7 +130,7 @@ what might change. For your home machine:
       email: john@home.org
 
 If you intend to store private data (e.g. access tokens) in `~/.chezmoi.yaml`,
-make sure it has permissions 0600. See "Keeping data private" below for more
+make sure it has permissions `0600`. See "Keeping data private" below for more
 discussion on this.
 
 If you prefer, you can use any format supported by
@@ -190,7 +190,7 @@ to give it an `empty_` prefix. See "Under the hood" below.
 
 `chezmoi` automatically detects when files and directories are private when
 adding them by inspecting their permissions. Private files and directories are
-stored in `~/.chezmoi` as regular, public files with permissions 0644 and the
+stored in `~/.chezmoi` as regular, public files with permissions `0644` and the
 name prefix `private_`. For example:
 
     $ chezmoi add ~/.netrc
