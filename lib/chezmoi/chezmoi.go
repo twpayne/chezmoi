@@ -264,6 +264,11 @@ func (f *File) Contents() ([]byte, error) {
 	return f.contents, f.contentsErr
 }
 
+// Executable returns true is f is executable.
+func (f *File) Executable() bool {
+	return f.Perm&0111 != 0
+}
+
 // Private returns true if f is private.
 func (f *File) Private() bool {
 	return f.Perm&os.ModePerm&077 == 0
