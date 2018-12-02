@@ -250,7 +250,7 @@ The structured data from `lpass show -j id` is available as the `lastpass`
 template function. Note that the value will be an array of objects. You can use
 the `index` function and `.Field` syntax of the `text/template` language to
 extract the field you want. For example, to extract the `password` field from
-the "Github" entry, use:
+first the "Github" entry, use:
 
     githubPassword = {{ (index (lastpass "Github") 0).password }}
 
