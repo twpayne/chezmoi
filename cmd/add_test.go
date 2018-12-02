@@ -144,8 +144,8 @@ func TestAddCommand(t *testing.T) {
 			if err != nil {
 				t.Fatalf("vfst.NewTestFS(_) == _, _, %v, want _, _, <nil>", err)
 			}
-			if err := c.runAddCommandE(fs, nil, tc.args); err != nil {
-				t.Errorf("c.runAddCommandE(fs, nil, %+v) == %v, want <nil>", tc.args, err)
+			if err := c.runAddCommand(fs, nil, tc.args); err != nil {
+				t.Errorf("c.runAddCommand(fs, nil, %+v) == %v, want <nil>", tc.args, err)
 			}
 			vfst.RunTests(t, fs, "", tc.tests)
 		})

@@ -13,7 +13,7 @@ var addCommand = &cobra.Command{
 	Use:   "add",
 	Args:  cobra.MinimumNArgs(1),
 	Short: "Add an existing file or directory",
-	RunE:  makeRunE(config.runAddCommandE),
+	RunE:  makeRunE(config.runAddCommand),
 }
 
 // An AddCommandConfig is a configuration for the add command.
@@ -32,7 +32,7 @@ func init() {
 	persistentFlags.BoolVarP(&config.add.template, "template", "T", false, "add files as templates")
 }
 
-func (c *Config) runAddCommandE(fs vfs.FS, command *cobra.Command, args []string) error {
+func (c *Config) runAddCommand(fs vfs.FS, command *cobra.Command, args []string) error {
 	targetState, err := c.getTargetState(fs)
 	if err != nil {
 		return err
