@@ -11,14 +11,14 @@ import (
 var verifyCommand = &cobra.Command{
 	Use:   "verify",
 	Short: "Exit with success if the actual state matches the target state, fail otherwise",
-	RunE:  makeRunE(config.runVerifyCommandE),
+	RunE:  makeRunE(config.runVerifyCommand),
 }
 
 func init() {
 	rootCommand.AddCommand(verifyCommand)
 }
 
-func (c *Config) runVerifyCommandE(fs vfs.FS, command *cobra.Command, args []string) error {
+func (c *Config) runVerifyCommand(fs vfs.FS, command *cobra.Command, args []string) error {
 	actuator := chezmoi.NewAnyActuator(chezmoi.NewNullActuator())
 	if err := c.applyArgs(fs, args, actuator); err != nil {
 		return err

@@ -16,7 +16,7 @@ var editCommand = &cobra.Command{
 	Use:   "edit",
 	Args:  cobra.MinimumNArgs(1),
 	Short: "Edit a file",
-	RunE:  makeRunE(config.runEditCommandE),
+	RunE:  makeRunE(config.runEditCommand),
 }
 
 type editCommandConfig struct {
@@ -34,7 +34,7 @@ func init() {
 	persistentFlags.BoolVarP(&config.edit.prompt, "prompt", "p", false, "prompt before applying (implies --diff)")
 }
 
-func (c *Config) runEditCommandE(fs vfs.FS, command *cobra.Command, args []string) error {
+func (c *Config) runEditCommand(fs vfs.FS, command *cobra.Command, args []string) error {
 	if c.edit.prompt {
 		c.edit.diff = true
 	}

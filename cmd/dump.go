@@ -12,14 +12,14 @@ import (
 var dumpCommand = &cobra.Command{
 	Use:   "dump",
 	Short: "Dump the target state",
-	RunE:  makeRunE(config.runDumpCommandE),
+	RunE:  makeRunE(config.runDumpCommand),
 }
 
 func init() {
 	rootCommand.AddCommand(dumpCommand)
 }
 
-func (c *Config) runDumpCommandE(fs vfs.FS, command *cobra.Command, args []string) error {
+func (c *Config) runDumpCommand(fs vfs.FS, command *cobra.Command, args []string) error {
 	targetState, err := c.getTargetState(fs)
 	if err != nil {
 		return err
