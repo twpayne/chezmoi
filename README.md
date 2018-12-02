@@ -36,9 +36,6 @@ systems.
  * Transparent: `chezmoi` includes verbose and dry run modes so you can review
    exactly what changes it will make to your home directory before making them.
 
- * Practical: `chezmoi` manages hidden files (dot files), directories, private
-   files, executable files, and symbolic links.
-
  * Fast, easy to use, and familiar: `chezmoi` runs in fractions of a second and
    includes commands to make most operations trivial. You can use the version
 control system of your choice to manage your configuration, and many different
@@ -241,9 +238,9 @@ Log in to LastPass using:
 
 Check that `lpass` is working correctly by showing password data:
 
-    $ lpass show -j id
+    $ lpass show -j <lastpass-entry-id>
 
-where `id` is a [LastPass Entry
+where `<lastpass-entry-id>` is a [LastPass Entry
 Specification](https://lastpass.github.io/lastpass-cli/lpass.1.html#_entry_specification).
 
 The structured data from `lpass show -j id` is available as the `lastpass`
@@ -258,7 +255,7 @@ the field you want. For example, to extract the `password` field from first the
 
 `chezmoi` includes support for Keychain (on macOS), GNOME Keyring (on Linux),
 and Windows Credentials Manager (on Windows) via the
-[zalando/go-keyring](https://github.com/zalando/go-keyring) library.
+[`zalando/go-keyring`](https://github.com/zalando/go-keyring) library.
 
 Set passwords with:
 
