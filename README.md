@@ -255,7 +255,7 @@ the field you want. For example, to extract the `password` field from first the
 
 `chezmoi` includes support for Keychain (on macOS), GNOME Keyring (on Linux),
 and Windows Credentials Manager (on Windows) via the
-[zalando/go-keyring](https://github.com/zalando/go-keyring) library.
+[`zalando/go-keyring`](https://github.com/zalando/go-keyring) library.
 
 Set passwords with:
 
