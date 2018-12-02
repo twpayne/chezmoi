@@ -238,9 +238,9 @@ Log in to LastPass using:
 
 Check that `lpass` is working correctly by showing password data:
 
-    $ lpass show -j id
+    $ lpass show -j <lastpass-entry-id>
 
-where `id` is a [LastPass Entry
+where `<lastpass-entry-id>` is a [LastPass Entry
 Specification](https://lastpass.github.io/lastpass-cli/lpass.1.html#_entry_specification).
 
 The structured data from `lpass show -j id` is available as the `lastpass`
