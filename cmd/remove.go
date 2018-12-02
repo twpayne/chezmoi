@@ -13,28 +13,28 @@ var removeCommand = &cobra.Command{
 	Aliases: []string{"rm"},
 	Args:    cobra.MinimumNArgs(1),
 	Short:   "Remove a file or directory",
-	RunE:    makeRunE(runRemoveCommandE),
+	RunE:    makeRunE(config.runRemoveCommand),
 }
 
 func init() {
 	rootCommand.AddCommand(removeCommand)
 }
 
-func runRemoveCommandE(fs vfs.FS, command *cobra.Command, args []string) error {
-	targetState, err := config.getTargetState(fs)
+func (c *Config) runRemoveCommand(fs vfs.FS, command *cobra.Command, args []string) error {
+	targetState, err := c.getTargetState(fs)
 	if err != nil {
 		return err
 	}
-	sourceNames, err := config.getSourceNames(targetState, args)
+	sourceNames, err := c.getSourceNames(targetState, args)
 	if err != nil {
 		return err
 	}
-	actuator := config.getDefaultActuator(fs)
+	actuator := c.getDefaultActuator(fs)
 	for i, targetFileName := range args {
-		if err := actuator.RemoveAll(filepath.Join(config.TargetDir, targetFileName)); err != nil && !os.IsNotExist(err) {
+		if err := actuator.RemoveAll(filepath.Join(c.TargetDir, targetFileName)); err != nil && !os.IsNotExist(err) {
 			return err
 		}
-		if err := actuator.RemoveAll(filepath.Join(config.SourceDir, sourceNames[i])); err != nil && !os.IsNotExist(err) {
+		if err := actuator.RemoveAll(filepath.Join(c.SourceDir, sourceNames[i])); err != nil && !os.IsNotExist(err) {
 			return err
 		}
 	}
