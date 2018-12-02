@@ -59,100 +59,100 @@ func TestSourceDirName(t *testing.T) {
 func TestSourceFileName(t *testing.T) {
 	for _, tc := range []struct {
 		sourceFileName string
-		psfn           parsedSourceFileName
+		psfn           ParsedSourceFileName
 	}{
 		{
 			sourceFileName: "foo",
-			psfn: parsedSourceFileName{
-				fileName: "foo",
-				mode:     0666,
-				empty:    false,
-				template: false,
+			psfn: ParsedSourceFileName{
+				FileName: "foo",
+				Mode:     0666,
+				Empty:    false,
+				Template: false,
 			},
 		},
 		{
 			sourceFileName: "dot_foo",
-			psfn: parsedSourceFileName{
-				fileName: ".foo",
-				mode:     0666,
-				empty:    false,
-				template: false,
+			psfn: ParsedSourceFileName{
+				FileName: ".foo",
+				Mode:     0666,
+				Empty:    false,
+				Template: false,
 			},
 		},
 		{
 			sourceFileName: "private_foo",
-			psfn: parsedSourceFileName{
-				fileName: "foo",
-				mode:     0600,
-				empty:    false,
-				template: false,
+			psfn: ParsedSourceFileName{
+				FileName: "foo",
+				Mode:     0600,
+				Empty:    false,
+				Template: false,
 			},
 		},
 		{
 			sourceFileName: "private_dot_foo",
-			psfn: parsedSourceFileName{
-				fileName: ".foo",
-				mode:     0600,
-				empty:    false,
-				template: false,
+			psfn: ParsedSourceFileName{
+				FileName: ".foo",
+				Mode:     0600,
+				Empty:    false,
+				Template: false,
 			},
 		},
 		{
 			sourceFileName: "empty_foo",
-			psfn: parsedSourceFileName{
-				fileName: "foo",
-				mode:     0666,
-				empty:    true,
-				template: false,
+			psfn: ParsedSourceFileName{
+				FileName: "foo",
+				Mode:     0666,
+				Empty:    true,
+				Template: false,
 			},
 		},
 		{
 			sourceFileName: "executable_foo",
-			psfn: parsedSourceFileName{
-				fileName: "foo",
-				mode:     0777,
-				empty:    false,
-				template: false,
+			psfn: ParsedSourceFileName{
+				FileName: "foo",
+				Mode:     0777,
+				Empty:    false,
+				Template: false,
 			},
 		},
 		{
 			sourceFileName: "foo.tmpl",
-			psfn: parsedSourceFileName{
-				fileName: "foo",
-				mode:     0666,
-				empty:    false,
-				template: true,
+			psfn: ParsedSourceFileName{
+				FileName: "foo",
+				Mode:     0666,
+				Empty:    false,
+				Template: true,
 			},
 		},
 		{
 			sourceFileName: "private_executable_dot_foo.tmpl",
-			psfn: parsedSourceFileName{
-				fileName: ".foo",
-				mode:     0700,
-				empty:    false,
-				template: true,
+			psfn: ParsedSourceFileName{
+				FileName: ".foo",
+				Mode:     0700,
+				Empty:    false,
+				Template: true,
 			},
 		},
 		{
 			sourceFileName: "symlink_foo",
-			psfn: parsedSourceFileName{
-				fileName: "foo",
-				mode:     os.ModeSymlink | 0666,
+			psfn: ParsedSourceFileName{
+				FileName: "foo",
+				Mode:     os.ModeSymlink | 0666,
 			},
 		},
 		{
 			sourceFileName: "symlink_dot_foo",
-			psfn: parsedSourceFileName{
-				fileName: ".foo",
-				mode:     os.ModeSymlink | 0666,
+			psfn: ParsedSourceFileName{
+				FileName: ".foo",
+				Mode:     os.ModeSymlink | 0666,
 			},
 		},
 		{
 			sourceFileName: "symlink_foo.tmpl",
-			psfn: parsedSourceFileName{
-				fileName: "foo",
-				mode:     os.ModeSymlink | 0666,
-				template: true,
+			psfn: ParsedSourceFileName{
+				FileName: "foo",
+				Mode:     os.ModeSymlink | 0666,
+				Template: true,
 			},
 		},
 	} {
