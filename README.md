@@ -36,9 +36,6 @@ systems.
  * Transparent: `chezmoi` includes verbose and dry run modes so you can review
    exactly what changes it will make to your home directory before making them.
 
- * Practical: `chezmoi` manages hidden files (dot files), directories, private
-   files, executable files, and symbolic links.
-
  * Fast, easy to use, and familiar: `chezmoi` runs in fractions of a second and
    includes commands to make most operations trivial. You can use the version
 control system of your choice to manage your configuration, and many different
