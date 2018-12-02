@@ -304,6 +304,7 @@ func TestTargetStatePopulate(t *testing.T) {
 					".gitconfig": &File{
 						sourceName: "dot_gitconfig.tmpl",
 						Perm:       0666,
+						Template:   true,
 						contents:   []byte("[user]\n\temail = user@example.com\n"),
 					},
 				},

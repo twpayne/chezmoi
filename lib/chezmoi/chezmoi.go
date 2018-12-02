@@ -48,6 +48,7 @@ type File struct {
 	sourceName       string
 	Empty            bool
 	Perm             os.FileMode
+	Template         bool
 	contents         []byte
 	contentsErr      error
 	evaluateContents func() ([]byte, error)
@@ -410,6 +411,7 @@ func (ts *TargetState) Add(fs vfs.FS, target string, info os.FileInfo, addEmpty,
 			sourceName: sourceName,
 			Empty:      len(data) == 0,
 			Perm:       info.Mode() & os.ModePerm,
+			Template:   addTemplate,
 			contents:   data,
 		}
 	case info.Mode().IsDir():
@@ -597,6 +599,7 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 					sourceName:       relPath,
 					Empty:            psfp.Empty,
 					Perm:             psfp.Mode & os.ModePerm,
+					Template:         psfp.Template,
 					evaluateContents: evaluateContents,
 				}
 			case os.ModeSymlink:
