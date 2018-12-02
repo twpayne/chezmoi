@@ -196,10 +196,10 @@ name prefix `private_`. For example:
     $ chezmoi add ~/.netrc
 
 will create `~/.chezmoi/private_dot_netrc` (assuming `~/.netrc` is not world-
-or group- readable, as it should be). Note that this file is still private
-because `~/.chezmoi` is not group- or world- readable or executable.  `chezmoi`
-checks that the permissions of `~/.chezmoi` are `0700` on every run and will
-print a warning if they are not.
+or group- readable, as it should be). This file is still private because
+`~/.chezmoi` is not group- or world- readable or executable.  `chezmoi` checks
+that the permissions of `~/.chezmoi` are `0700` on every run and will print a
+warning if they are not.
 
 It is common that you need to store access tokens in config files, e.g. a
 [Github access
@@ -226,8 +226,8 @@ Your `~/.chezmoi/private_dot_gitconfig.tmpl` can then contain:
         token = {{ .github.token }}
     {{- end }}
 
-Note that any config files containing tokens in plain text should be private
-(permissions 0600).
+Any config files containing tokens in plain text should be private (permissions
+`0600`).
 
 ### Using LastPass
 
@@ -247,10 +247,10 @@ where `id` is a [LastPass Entry
 Specification](https://lastpass.github.io/lastpass-cli/lpass.1.html#_entry_specification).
 
 The structured data from `lpass show -j id` is available as the `lastpass`
-template function. Note that the value will be an array of objects. You can use
-the `index` function and `.Field` syntax of the `text/template` language to
-extract the field you want. For example, to extract the `password` field from
-first the "Github" entry, use:
+template function. The value will be an array of objects. You can use the
+`index` function and `.Field` syntax of the `text/template` language to extract
+the field you want. For example, to extract the `password` field from first the
+"Github" entry, use:
 
     githubPassword = {{ (index (lastpass "Github") 0).password }}
 
