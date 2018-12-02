@@ -50,6 +50,33 @@ func (c *Config) addFunc(key string, value interface{}) {
 	c.funcs[key] = value
 }
 
+func (c *Config) applyArgs(fs vfs.FS, args []string, actuator chezmoi.Actuator) error {
+	targetState, err := c.getTargetState(fs)
+	if err != nil {
+		return err
+	}
+	if len(args) == 0 {
+		return targetState.Apply(fs, actuator)
+	}
+	for _, arg := range args {
+		targetPath, err := filepath.Abs(arg)
+		if err != nil {
+			return err
+		}
+		entry, err := targetState.Get(targetPath)
+		if err != nil {
+			return err
+		}
+		if entry == nil {
+			return fmt.Errorf("%s: not under management", arg)
+		}
+		if err := targetState.ApplyOne(fs, targetPath, entry, actuator); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func (c *Config) exec(argv []string) error {
 	path, err := exec.LookPath(argv[0])
 	if err != nil {
