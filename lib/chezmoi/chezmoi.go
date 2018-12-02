@@ -264,6 +264,11 @@ func (f *File) Contents() ([]byte, error) {
 	return f.contents, f.contentsErr
 }
 
+// Private returns true if f is private.
+func (f *File) Private() bool {
+	return f.Perm&os.ModePerm&077 == 0
+}
+
 // SourceName implements Entry.SourceName.
 func (f *File) SourceName() string {
 	return f.sourceName
