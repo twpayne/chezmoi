@@ -64,6 +64,7 @@ type Dir struct {
 // A Symlink represents the target state of a symlink.
 type Symlink struct {
 	sourceName     string
+	Template       bool
 	target         string
 	targetErr      error
 	evaluateTarget func() (string, error)
@@ -615,6 +616,7 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 				}
 				entry = &Symlink{
 					sourceName:     relPath,
+					Template:       psfp.Template,
 					evaluateTarget: evaluateTarget,
 				}
 			default:

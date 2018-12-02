@@ -365,6 +365,7 @@ func TestTargetStatePopulate(t *testing.T) {
 				Entries: map[string]Entry{
 					"foo": &Symlink{
 						sourceName: "symlink_foo.tmpl",
+						Template:   true,
 						target:     "bar-example.com",
 					},
 				},
