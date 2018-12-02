@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"os/exec"
@@ -188,4 +189,21 @@ func makeRunE(runCommand func(vfs.FS, *cobra.Command, []string) error) func(*cob
 func printErrorAndExit(err error) {
 	fmt.Println(err)
 	os.Exit(1)
+}
+
+func prompt(s, choices string) (byte, error) {
+	r := bufio.NewReader(os.Stdin)
+	for {
+		_, err := fmt.Printf("%s [%s]? ", s, strings.Join(strings.Split(choices, ""), ","))
+		if err != nil {
+			return 0, err
+		}
+		line, err := r.ReadString('\n')
+		if err != nil {
+			return 0, err
+		}
+		if len(line) == 2 && strings.IndexByte(choices, line[0]) != -1 {
+			return line[0], nil
+		}
+	}
 }
