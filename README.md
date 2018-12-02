@@ -229,7 +229,7 @@ Your `~/.chezmoi/private_dot_gitconfig.tmpl` can then contain:
 Note that any config files containing tokens in plain text should be private
 (permissions 0600).
 
-### Using Lastpass
+### Using LastPass
 
 `chezmoi` includes support for [LastPass](https://lastpass.com) using the
 [LastPass CLI](https://lastpass.github.io/lastpass-cli/lpass.1.html) to expose
