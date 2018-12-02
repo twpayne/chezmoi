@@ -195,10 +195,11 @@ name prefix `private_`. For example:
 
     $ chezmoi add ~/.netrc
 
-will create `~/.chezmoi/private_dot_netrc`. Note that this file is still
-private because `~/.chezmoi` is not group- or world- readable or executable.
-`chezmoi` checks that the permissions of `~/.chezmoi` are 0700 on every run and
-will print a warning if they are not.
+will create `~/.chezmoi/private_dot_netrc` (assuming `~/.netrc` is not world-
+or group- readable, as it should be). Note that this file is still private
+because `~/.chezmoi` is not group- or world- readable or executable.  `chezmoi`
+checks that the permissions of `~/.chezmoi` are `0700` on every run and will
+print a warning if they are not.
 
 It is common that you need to store access tokens in config files, e.g. a
 [Github access
