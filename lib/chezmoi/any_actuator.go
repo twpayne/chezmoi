@@ -40,6 +40,12 @@ func (a *AnyActuator) RemoveAll(name string) error {
 	return a.a.RemoveAll(name)
 }
 
+// Rename implements Actuator.Rename.
+func (a *AnyActuator) Rename(oldpath, newpath string) error {
+	a.actuated = true
+	return a.a.Rename(oldpath, newpath)
+}
+
 // WriteFile implements Actuator.WriteFile.
 func (a *AnyActuator) WriteFile(name string, data []byte, perm os.FileMode, currData []byte) error {
 	a.actuated = true

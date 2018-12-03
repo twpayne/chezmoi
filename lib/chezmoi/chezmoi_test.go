@@ -13,41 +13,41 @@ import (
 func TestSourceDirName(t *testing.T) {
 	for _, tc := range []struct {
 		sourceDirName string
-		psdn          parsedSourceDirName
+		psdn          ParsedSourceDirName
 	}{
 		{
 			sourceDirName: "foo",
-			psdn: parsedSourceDirName{
-				dirName: "foo",
-				perm:    0777,
+			psdn: ParsedSourceDirName{
+				DirName: "foo",
+				Perm:    0777,
 			},
 		},
 		{
 			sourceDirName: "dot_foo",
-			psdn: parsedSourceDirName{
-				dirName: ".foo",
-				perm:    0777,
+			psdn: ParsedSourceDirName{
+				DirName: ".foo",
+				Perm:    0777,
 			},
 		},
 		{
 			sourceDirName: "private_foo",
-			psdn: parsedSourceDirName{
-				dirName: "foo",
-				perm:    0700,
+			psdn: ParsedSourceDirName{
+				DirName: "foo",
+				Perm:    0700,
 			},
 		},
 		{
 			sourceDirName: "private_dot_foo",
-			psdn: parsedSourceDirName{
-				dirName: ".foo",
-				perm:    0700,
+			psdn: ParsedSourceDirName{
+				DirName: ".foo",
+				Perm:    0700,
 			},
 		},
 	} {
 		t.Run(tc.sourceDirName, func(t *testing.T) {
-			gotPSDN := parseSourceDirName(tc.sourceDirName)
+			gotPSDN := ParseSourceDirName(tc.sourceDirName)
 			if diff, equal := messagediff.PrettyDiff(tc.psdn, gotPSDN); !equal {
-				t.Errorf("parseSourceDirName(%q) == %+v, want %+v, diff:\n%s", tc.sourceDirName, gotPSDN, tc.psdn, diff)
+				t.Errorf("ParseSourceDirName(%q) == %+v, want %+v, diff:\n%s", tc.sourceDirName, gotPSDN, tc.psdn, diff)
 			}
 			if gotSourceDirName := tc.psdn.SourceDirName(); gotSourceDirName != tc.sourceDirName {
 				t.Errorf("%+v.SourceDirName() == %q, want %q", tc.psdn, gotSourceDirName, tc.sourceDirName)
@@ -59,107 +59,107 @@ func TestSourceDirName(t *testing.T) {
 func TestSourceFileName(t *testing.T) {
 	for _, tc := range []struct {
 		sourceFileName string
-		psfn           parsedSourceFileName
+		psfn           ParsedSourceFileName
 	}{
 		{
 			sourceFileName: "foo",
-			psfn: parsedSourceFileName{
-				fileName: "foo",
-				mode:     0666,
-				empty:    false,
-				template: false,
+			psfn: ParsedSourceFileName{
+				FileName: "foo",
+				Mode:     0666,
+				Empty:    false,
+				Template: false,
 			},
 		},
 		{
 			sourceFileName: "dot_foo",
-			psfn: parsedSourceFileName{
-				fileName: ".foo",
-				mode:     0666,
-				empty:    false,
-				template: false,
+			psfn: ParsedSourceFileName{
+				FileName: ".foo",
+				Mode:     0666,
+				Empty:    false,
+				Template: false,
 			},
 		},
 		{
 			sourceFileName: "private_foo",
-			psfn: parsedSourceFileName{
-				fileName: "foo",
-				mode:     0600,
-				empty:    false,
-				template: false,
+			psfn: ParsedSourceFileName{
+				FileName: "foo",
+				Mode:     0600,
+				Empty:    false,
+				Template: false,
 			},
 		},
 		{
 			sourceFileName: "private_dot_foo",
-			psfn: parsedSourceFileName{
-				fileName: ".foo",
-				mode:     0600,
-				empty:    false,
-				template: false,
+			psfn: ParsedSourceFileName{
+				FileName: ".foo",
+				Mode:     0600,
+				Empty:    false,
+				Template: false,
 			},
 		},
 		{
 			sourceFileName: "empty_foo",
-			psfn: parsedSourceFileName{
-				fileName: "foo",
-				mode:     0666,
-				empty:    true,
-				template: false,
+			psfn: ParsedSourceFileName{
+				FileName: "foo",
+				Mode:     0666,
+				Empty:    true,
+				Template: false,
 			},
 		},
 		{
 			sourceFileName: "executable_foo",
-			psfn: parsedSourceFileName{
-				fileName: "foo",
-				mode:     0777,
-				empty:    false,
-				template: false,
+			psfn: ParsedSourceFileName{
+				FileName: "foo",
+				Mode:     0777,
+				Empty:    false,
+				Template: false,
 			},
 		},
 		{
 			sourceFileName: "foo.tmpl",
-			psfn: parsedSourceFileName{
-				fileName: "foo",
-				mode:     0666,
-				empty:    false,
-				template: true,
+			psfn: ParsedSourceFileName{
+				FileName: "foo",
+				Mode:     0666,
+				Empty:    false,
+				Template: true,
 			},
 		},
 		{
 			sourceFileName: "private_executable_dot_foo.tmpl",
-			psfn: parsedSourceFileName{
-				fileName: ".foo",
-				mode:     0700,
-				empty:    false,
-				template: true,
+			psfn: ParsedSourceFileName{
+				FileName: ".foo",
+				Mode:     0700,
+				Empty:    false,
+				Template: true,
 			},
 		},
 		{
 			sourceFileName: "symlink_foo",
-			psfn: parsedSourceFileName{
-				fileName: "foo",
-				mode:     os.ModeSymlink | 0666,
+			psfn: ParsedSourceFileName{
+				FileName: "foo",
+				Mode:     os.ModeSymlink | 0666,
 			},
 		},
 		{
 			sourceFileName: "symlink_dot_foo",
-			psfn: parsedSourceFileName{
-				fileName: ".foo",
-				mode:     os.ModeSymlink | 0666,
+			psfn: ParsedSourceFileName{
+				FileName: ".foo",
+				Mode:     os.ModeSymlink | 0666,
 			},
 		},
 		{
 			sourceFileName: "symlink_foo.tmpl",
-			psfn: parsedSourceFileName{
-				fileName: "foo",
-				mode:     os.ModeSymlink | 0666,
-				template: true,
+			psfn: ParsedSourceFileName{
+				FileName: "foo",
+				Mode:     os.ModeSymlink | 0666,
+				Template: true,
 			},
 		},
 	} {
 		t.Run(tc.sourceFileName, func(t *testing.T) {
-			gotPSFN := parseSourceFileName(tc.sourceFileName)
+			gotPSFN := ParseSourceFileName(tc.sourceFileName)
 			if diff, equal := messagediff.PrettyDiff(tc.psfn, gotPSFN); !equal {
-				t.Errorf("parseSourceFileName(%q) == %+v, want %+v, diff:\n%s", tc.sourceFileName, gotPSFN, tc.psfn, diff)
+				t.Errorf("ParseSourceFileName(%q) == %+v, want %+v, diff:\n%s", tc.sourceFileName, gotPSFN, tc.psfn, diff)
 			}
 			if gotSourceFileName := tc.psfn.SourceFileName(); gotSourceFileName != tc.sourceFileName {
 				t.Errorf("%+v.SourceFileName() == %q, want %q", tc.psfn, gotSourceFileName, tc.sourceFileName)
@@ -304,6 +304,7 @@ func TestTargetStatePopulate(t *testing.T) {
 					".gitconfig": &File{
 						sourceName: "dot_gitconfig.tmpl",
 						Perm:       0666,
+						Template:   true,
 						contents:   []byte("[user]\n\temail = user@example.com\n"),
 					},
 				},
@@ -364,6 +365,7 @@ func TestTargetStatePopulate(t *testing.T) {
 				Entries: map[string]Entry{
 					"foo": &Symlink{
 						sourceName: "symlink_foo.tmpl",
+						Template:   true,
 						target:     "bar-example.com",
 					},
 				},

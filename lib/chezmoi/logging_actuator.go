@@ -58,6 +58,18 @@ func (a *LoggingActuator) RemoveAll(name string) error {
 	return err
 }
 
+// Rename implements Actuator.Rename.
+func (a *LoggingActuator) Rename(oldpath, newpath string) error {
+	action := fmt.Sprintf("mv %s %s", oldpath, newpath)
+	err := a.a.Rename(oldpath, newpath)
+	if err == nil {
+		fmt.Fprintln(a.w, action)
+	} else {
+		fmt.Fprintf(a.w, "%s: %v\n", action, err)
+	}
+	return err
+}
+
 // WriteFile implements Actuator.WriteFile.
 func (a *LoggingActuator) WriteFile(name string, data []byte, perm os.FileMode, currData []byte) error {
 	action := fmt.Sprintf("install -m %o /dev/null %s", perm, name)

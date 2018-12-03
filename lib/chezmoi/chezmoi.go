@@ -48,6 +48,7 @@ type File struct {
 	sourceName       string
 	Empty            bool
 	Perm             os.FileMode
+	Template         bool
 	contents         []byte
 	contentsErr      error
 	evaluateContents func() ([]byte, error)
@@ -63,6 +64,7 @@ type Dir struct {
 // A Symlink represents the target state of a symlink.
 type Symlink struct {
 	sourceName     string
+	Template       bool
 	target         string
 	targetErr      error
 	evaluateTarget func() (string, error)
@@ -78,20 +80,22 @@ type TargetState struct {
 	Entries   map[string]Entry
 }
 
-type parsedSourceDirName struct {
-	dirName string
-	perm    os.FileMode
+// ParsedSourceDirName is a parsed source dir name.
+type ParsedSourceDirName struct {
+	DirName string
+	Perm    os.FileMode
 }
 
-type parsedSourceFileName struct {
-	fileName string
-	mode     os.FileMode
-	empty    bool
-	template bool
+// A ParsedSourceFileName is a parsed source file name.
+type ParsedSourceFileName struct {
+	FileName string
+	Mode     os.FileMode
+	Empty    bool
+	Template bool
 }
 
 type parsedSourceFilePath struct {
-	parsedSourceFileName
+	ParsedSourceFileName
 	dirNames []string
 }
 
@@ -167,6 +171,11 @@ func (d *Dir) evaluate() error {
 		}
 	}
 	return nil
+}
+
+// Private returns true if d is private.
+func (d *Dir) Private() bool {
+	return d.Perm&os.ModePerm&077 == 0
 }
 
 // SourceName implements Entry.SourceName.
@@ -253,6 +262,16 @@ func (f *File) Contents() ([]byte, error) {
 		f.evaluateContents = nil
 	}
 	return f.contents, f.contentsErr
+}
+
+// Executable returns true is f is executable.
+func (f *File) Executable() bool {
+	return f.Perm&0111 != 0
+}
+
+// Private returns true if f is private.
+func (f *File) Private() bool {
+	return f.Perm&os.ModePerm&077 == 0
 }
 
 // SourceName implements Entry.SourceName.
@@ -385,11 +404,11 @@ func (ts *TargetState) Add(fs vfs.FS, target string, info os.FileInfo, addEmpty,
 		if info.Size() == 0 && !addEmpty {
 			return nil
 		}
-		sourceName := parsedSourceFileName{
-			fileName: name,
-			mode:     info.Mode() & os.ModePerm,
-			empty:    info.Size() == 0,
-			template: addTemplate,
+		sourceName := ParsedSourceFileName{
+			FileName: name,
+			Mode:     info.Mode() & os.ModePerm,
+			Empty:    info.Size() == 0,
+			Template: addTemplate,
 		}.SourceFileName()
 		if dirSourceName != "" {
 			sourceName = filepath.Join(dirSourceName, sourceName)
@@ -408,6 +427,7 @@ func (ts *TargetState) Add(fs vfs.FS, target string, info os.FileInfo, addEmpty,
 			sourceName: sourceName,
 			Empty:      len(data) == 0,
 			Perm:       info.Mode() & os.ModePerm,
+			Template:   addTemplate,
 			contents:   data,
 		}
 	case info.Mode().IsDir():
@@ -417,9 +437,9 @@ func (ts *TargetState) Add(fs vfs.FS, target string, info os.FileInfo, addEmpty,
 			}
 			return nil // entry already exists
 		}
-		sourceName := parsedSourceDirName{
-			dirName: name,
-			perm:    info.Mode() & os.ModePerm,
+		sourceName := ParsedSourceDirName{
+			DirName: name,
+			Perm:    info.Mode() & os.ModePerm,
 		}.SourceDirName()
 		if dirSourceName != "" {
 			sourceName = filepath.Join(dirSourceName, sourceName)
@@ -447,9 +467,9 @@ func (ts *TargetState) Add(fs vfs.FS, target string, info os.FileInfo, addEmpty,
 			}
 			return nil // entry already exists
 		}
-		sourceName := parsedSourceFileName{
-			fileName: name,
-			mode:     os.ModeSymlink,
+		sourceName := ParsedSourceFileName{
+			FileName: name,
+			Mode:     os.ModeSymlink,
 		}.SourceFileName()
 		if dirSourceName != "" {
 			sourceName = filepath.Join(dirSourceName, sourceName)
@@ -581,20 +601,21 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 				return err
 			}
 			var entry Entry
-			switch psfp.mode & os.ModeType {
+			switch psfp.Mode & os.ModeType {
 			case 0:
 				evaluateContents := func() ([]byte, error) {
 					return fs.ReadFile(path)
 				}
-				if psfp.template {
+				if psfp.Template {
 					evaluateContents = func() ([]byte, error) {
 						return ts.executeTemplate(fs, path)
 					}
 				}
 				entry = &File{
 					sourceName:       relPath,
-					Empty:            psfp.empty,
-					Perm:             psfp.mode & os.ModePerm,
+					Empty:            psfp.Empty,
+					Perm:             psfp.Mode & os.ModePerm,
+					Template:         psfp.Template,
 					evaluateContents: evaluateContents,
 				}
 			case os.ModeSymlink:
@@ -602,7 +623,7 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 					data, err := fs.ReadFile(path)
 					return string(data), err
 				}
-				if psfp.template {
+				if psfp.Template {
 					evaluateTarget = func() (string, error) {
 						data, err := ts.executeTemplate(fs, path)
 						return string(data), err
@@ -610,12 +631,13 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 				}
 				entry = &Symlink{
 					sourceName:     relPath,
+					Template:       psfp.Template,
 					evaluateTarget: evaluateTarget,
 				}
 			default:
-				return fmt.Errorf("%v: unsupported mode: %d", path, psfp.mode&os.ModeType)
+				return fmt.Errorf("%v: unsupported mode: %d", path, psfp.Mode&os.ModeType)
 			}
-			entries[psfp.fileName] = entry
+			entries[psfp.FileName] = entry
 		case info.Mode().IsDir():
 			components := splitPathList(relPath)
 			dirNames, perms := parseDirNameComponents(components)
@@ -692,8 +714,8 @@ func ReturnTemplateFuncError(err error) {
 	})
 }
 
-// parseSourceDirName parses a single directory name.
-func parseSourceDirName(dirName string) parsedSourceDirName {
+// ParseSourceDirName parses a single directory name.
+func ParseSourceDirName(dirName string) ParsedSourceDirName {
 	perm := os.FileMode(0777)
 	if strings.HasPrefix(dirName, privatePrefix) {
 		dirName = strings.TrimPrefix(dirName, privatePrefix)
@@ -702,28 +724,28 @@ func parseSourceDirName(dirName string) parsedSourceDirName {
 	if strings.HasPrefix(dirName, dotPrefix) {
 		dirName = "." + strings.TrimPrefix(dirName, dotPrefix)
 	}
-	return parsedSourceDirName{
-		dirName: dirName,
-		perm:    perm,
+	return ParsedSourceDirName{
+		DirName: dirName,
+		Perm:    perm,
 	}
 }
 
 // SourceDirName returns psdn's source dir name.
-func (psdn parsedSourceDirName) SourceDirName() string {
+func (psdn ParsedSourceDirName) SourceDirName() string {
 	sourceDirName := ""
-	if psdn.perm&os.FileMode(077) == os.FileMode(0) {
+	if psdn.Perm&os.FileMode(077) == os.FileMode(0) {
 		sourceDirName = privatePrefix
 	}
-	if strings.HasPrefix(psdn.dirName, ".") {
-		sourceDirName += dotPrefix + strings.TrimPrefix(psdn.dirName, ".")
+	if strings.HasPrefix(psdn.DirName, ".") {
+		sourceDirName += dotPrefix + strings.TrimPrefix(psdn.DirName, ".")
 	} else {
-		sourceDirName += psdn.dirName
+		sourceDirName += psdn.DirName
 	}
 	return sourceDirName
 }
 
-// parseSourceFileName parses a source file name.
-func parseSourceFileName(fileName string) parsedSourceFileName {
+// ParseSourceFileName parses a source file name.
+func ParseSourceFileName(fileName string) ParsedSourceFileName {
 	mode := os.FileMode(0666)
 	empty := false
 	template := false
@@ -755,26 +777,26 @@ func parseSourceFileName(fileName string) parsedSourceFileName {
 		fileName = strings.TrimSuffix(fileName, templateSuffix)
 		template = true
 	}
-	return parsedSourceFileName{
-		fileName: fileName,
-		mode:     mode,
-		empty:    empty,
-		template: template,
+	return ParsedSourceFileName{
+		FileName: fileName,
+		Mode:     mode,
+		Empty:    empty,
+		Template: template,
 	}
 }
 
 // SourceFileName returns psfn's source file name.
-func (psfn parsedSourceFileName) SourceFileName() string {
+func (psfn ParsedSourceFileName) SourceFileName() string {
 	fileName := ""
-	switch psfn.mode & os.ModeType {
+	switch psfn.Mode & os.ModeType {
 	case 0:
-		if psfn.mode&os.ModePerm&os.FileMode(077) == os.FileMode(0) {
+		if psfn.Mode&os.ModePerm&os.FileMode(077) == os.FileMode(0) {
 			fileName = privatePrefix
 		}
-		if psfn.empty {
+		if psfn.Empty {
 			fileName += emptyPrefix
 		}
-		if psfn.mode&os.ModePerm&os.FileMode(0111) != os.FileMode(0) {
+		if psfn.Mode&os.ModePerm&os.FileMode(0111) != os.FileMode(0) {
 			fileName += executablePrefix
 		}
 	case os.ModeSymlink:
@@ -782,12 +804,12 @@ func (psfn parsedSourceFileName) SourceFileName() string {
 	default:
 		panic(fmt.Sprintf("%+v: unsupported type", psfn)) // FIXME return error instead of panicing
 	}
-	if strings.HasPrefix(psfn.fileName, ".") {
-		fileName += dotPrefix + strings.TrimPrefix(psfn.fileName, ".")
+	if strings.HasPrefix(psfn.FileName, ".") {
+		fileName += dotPrefix + strings.TrimPrefix(psfn.FileName, ".")
 	} else {
-		fileName += psfn.fileName
+		fileName += psfn.FileName
 	}
-	if psfn.template {
+	if psfn.Template {
 		fileName += templateSuffix
 	}
 	return fileName
@@ -799,9 +821,9 @@ func parseDirNameComponents(components []string) ([]string, []os.FileMode) {
 	dirNames := []string{}
 	perms := []os.FileMode{}
 	for _, component := range components {
-		psdn := parseSourceDirName(component)
-		dirNames = append(dirNames, psdn.dirName)
-		perms = append(perms, psdn.perm)
+		psdn := ParseSourceDirName(component)
+		dirNames = append(dirNames, psdn.DirName)
+		perms = append(perms, psdn.Perm)
 	}
 	return dirNames, perms
 }
@@ -810,9 +832,9 @@ func parseDirNameComponents(components []string) ([]string, []os.FileMode) {
 func parseSourceFilePath(path string) parsedSourceFilePath {
 	components := splitPathList(path)
 	dirNames, _ := parseDirNameComponents(components[0 : len(components)-1])
-	psfn := parseSourceFileName(components[len(components)-1])
+	psfn := ParseSourceFileName(components[len(components)-1])
 	return parsedSourceFilePath{
-		parsedSourceFileName: psfn,
+		ParsedSourceFileName: psfn,
 		dirNames:             dirNames,
 	}
 }
