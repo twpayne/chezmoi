@@ -34,7 +34,9 @@ func (a *FSActuator) WriteFile(name string, data []byte, perm os.FileMode, currD
 		if err != nil {
 			return err
 		}
-		defer t.Cleanup()
+		defer func() {
+			_ = t.Cleanup()
+		}()
 		if err := t.Chmod(perm); err != nil {
 			return err
 		}
