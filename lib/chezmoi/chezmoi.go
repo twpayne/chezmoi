@@ -36,11 +36,11 @@ type templateFuncError struct {
 
 // An Entry is either a Dir, a File, or a Symlink.
 type Entry interface {
+	Evaluate() error
 	SourceName() string
 	addAllEntries(map[string]Entry, string)
 	apply(vfs.FS, string, os.FileMode, Actuator) error
 	archive(*tar.Writer, string, *tar.Header, os.FileMode) error
-	evaluate() error
 }
 
 // A File represents the target state of a file.
@@ -163,10 +163,10 @@ func (d *Dir) apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Act
 	return nil
 }
 
-// evaluate evaluates all entries in d.
-func (d *Dir) evaluate() error {
+// Evaluate evaluates all entries in d.
+func (d *Dir) Evaluate() error {
 	for _, entryName := range sortedEntryNames(d.Entries) {
-		if err := d.Entries[entryName].evaluate(); err != nil {
+		if err := d.Entries[entryName].Evaluate(); err != nil {
 			return err
 		}
 	}
@@ -249,8 +249,8 @@ func (f *File) apply(fs vfs.FS, targetPath string, umask os.FileMode, actuator A
 	return actuator.WriteFile(targetPath, contents, f.Perm&^umask, currData)
 }
 
-// evaluate evaluates f's contents.
-func (f *File) evaluate() error {
+// Evaluate evaluates f's contents.
+func (f *File) Evaluate() error {
 	_, err := f.Contents()
 	return err
 }
@@ -320,8 +320,8 @@ func (s *Symlink) apply(fs vfs.FS, targetPath string, umask os.FileMode, actuato
 	return actuator.WriteSymlink(target, targetPath)
 }
 
-// evaluate evaluates s's target.
-func (s *Symlink) evaluate() error {
+// Evaluate evaluates s's target.
+func (s *Symlink) Evaluate() error {
 	_, err := s.Target()
 	return err
 }
@@ -557,7 +557,7 @@ func (ts *TargetState) ApplyOne(fs vfs.FS, targetPath string, entry Entry, actua
 // Evaluates all of the entries in ts.
 func (ts *TargetState) Evaluate() error {
 	for _, entryName := range sortedEntryNames(ts.Entries) {
-		if err := ts.Entries[entryName].evaluate(); err != nil {
+		if err := ts.Entries[entryName].Evaluate(); err != nil {
 			return err
 		}
 	}
