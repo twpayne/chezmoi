@@ -19,6 +19,6 @@ func init() {
 }
 
 func (c *Config) runDiffCommand(fs vfs.FS, command *cobra.Command, args []string) error {
-	actuator := chezmoi.NewLoggingActuator(os.Stdout, chezmoi.NewNullActuator())
+	actuator := chezmoi.NewLoggingActuator(os.Stdout, chezmoi.NullActuator)
 	return c.applyArgs(fs, args, actuator)
 }

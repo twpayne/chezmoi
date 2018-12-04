@@ -89,7 +89,7 @@ func (c *Config) exec(argv []string) error {
 func (c *Config) getDefaultActuator(fs vfs.FS) chezmoi.Actuator {
 	var actuator chezmoi.Actuator
 	if c.DryRun {
-		actuator = chezmoi.NewNullActuator()
+		actuator = chezmoi.NullActuator
 	} else {
 		actuator = chezmoi.NewFSActuator(fs, c.TargetDir)
 	}

@@ -2,40 +2,37 @@ package chezmoi
 
 import "os"
 
-// A NullActuator does nothing.
-type NullActuator struct{}
+type nullActuator struct{}
 
-// NewNullActuator returns a new NullActuator.
-func NewNullActuator() *NullActuator {
-	return &NullActuator{}
-}
+// NullActuator is an Actuator that does nothing.
+var NullActuator nullActuator
 
 // Chmod implements Actuator.Chmod.
-func (a *NullActuator) Chmod(string, os.FileMode) error {
+func (nullActuator) Chmod(string, os.FileMode) error {
 	return nil
 }
 
 // Mkdir implements Actuator.Mkdir.
-func (a *NullActuator) Mkdir(string, os.FileMode) error {
+func (nullActuator) Mkdir(string, os.FileMode) error {
 	return nil
 }
 
 // RemoveAll implements Actuator.RemoveAll.
-func (a *NullActuator) RemoveAll(string) error {
+func (nullActuator) RemoveAll(string) error {
 	return nil
 }
 
 // Rename implements Actuator.Rename.
-func (a *NullActuator) Rename(string, string) error {
+func (nullActuator) Rename(string, string) error {
 	return nil
 }
 
 // WriteFile implements Actuator.WriteFile.
-func (a *NullActuator) WriteFile(string, []byte, os.FileMode, []byte) error {
+func (nullActuator) WriteFile(string, []byte, os.FileMode, []byte) error {
 	return nil
 }
 
 // WriteSymlink implements Actuator.WriteSymlink.
-func (a *NullActuator) WriteSymlink(string, string) error {
+func (nullActuator) WriteSymlink(string, string) error {
 	return nil
 }

@@ -72,7 +72,7 @@ func (c *Config) runEditCommand(fs vfs.FS, command *cobra.Command, args []string
 	}
 	applyActuator := c.getDefaultActuator(fs)
 	for i, entry := range entries {
-		anyActuator := chezmoi.NewAnyActuator(chezmoi.NewNullActuator())
+		anyActuator := chezmoi.NewAnyActuator(chezmoi.NullActuator)
 		var actuator chezmoi.Actuator = anyActuator
 		if c.edit.diff {
 			actuator = chezmoi.NewLoggingActuator(os.Stdout, actuator)
