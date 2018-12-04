@@ -11,7 +11,7 @@ import (
 var cdCommand = &cobra.Command{
 	Use:   "cd",
 	Args:  cobra.NoArgs,
-	Short: "Launch a shell in your source directory",
+	Short: "Launch a shell in the source directory",
 	RunE:  makeRunE(config.runCDCommand),
 }
 

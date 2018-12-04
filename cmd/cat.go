@@ -13,7 +13,7 @@ import (
 var catCommand = &cobra.Command{
 	Use:   "cat",
 	Args:  cobra.MinimumNArgs(1),
-	Short: "Print the contents of a file",
+	Short: "Write the contents of a file to stdout",
 	RunE:  makeRunE(config.runCatCommand),
 }
 

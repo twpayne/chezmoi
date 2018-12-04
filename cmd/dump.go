@@ -11,7 +11,7 @@ import (
 
 var dumpCommand = &cobra.Command{
 	Use:   "dump",
-	Short: "Dump the target state",
+	Short: "Write a dump of the target state to stdout",
 	RunE:  makeRunE(config.runDumpCommand),
 }
 
