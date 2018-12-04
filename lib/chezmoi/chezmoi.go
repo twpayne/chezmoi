@@ -36,10 +36,10 @@ type templateFuncError struct {
 
 // An Entry is either a Dir, a File, or a Symlink.
 type Entry interface {
+	Apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Actuator) error
 	Evaluate() error
 	SourceName() string
 	TargetName() string
-	apply(vfs.FS, string, os.FileMode, Actuator) error
 	archive(*tar.Writer, string, *tar.Header, os.FileMode) error
 }
 
@@ -129,30 +129,31 @@ func (d *Dir) archive(w *tar.Writer, dirName string, headerTemplate *tar.Header,
 	return nil
 }
 
-// apply ensures that targetDir in fs matches d.
-func (d *Dir) apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Actuator) error {
-	info, err := fs.Lstat(targetDir)
+// Apply ensures that targetDir in fs matches d.
+func (d *Dir) Apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Actuator) error {
+	targetPath := filepath.Join(targetDir, d.targetName)
+	info, err := fs.Lstat(targetPath)
 	switch {
 	case err == nil && info.Mode().IsDir():
 		if info.Mode()&os.ModePerm != d.Perm&^umask {
-			if err := actuator.Chmod(targetDir, d.Perm&^umask); err != nil {
+			if err := actuator.Chmod(targetPath, d.Perm&^umask); err != nil {
 				return err
 			}
 		}
 	case err == nil:
-		if err := actuator.RemoveAll(targetDir); err != nil {
+		if err := actuator.RemoveAll(targetPath); err != nil {
 			return err
 		}
 		fallthrough
 	case os.IsNotExist(err):
-		if err := actuator.Mkdir(targetDir, d.Perm&^umask); err != nil {
+		if err := actuator.Mkdir(targetPath, d.Perm&^umask); err != nil {
 			return err
 		}
 	default:
 		return err
 	}
 	for _, entryName := range sortedEntryNames(d.Entries) {
-		if err := d.Entries[entryName].apply(fs, filepath.Join(targetDir, entryName), umask, actuator); err != nil {
+		if err := d.Entries[entryName].Apply(fs, targetDir, umask, actuator); err != nil {
 			return err
 		}
 	}
@@ -205,12 +206,13 @@ func (f *File) archive(w *tar.Writer, fileName string, headerTemplate *tar.Heade
 	return err
 }
 
-// apply ensures that the state of targetPath in fs matches f.
-func (f *File) apply(fs vfs.FS, targetPath string, umask os.FileMode, actuator Actuator) error {
+// Apply ensures that the state of targetPath in fs matches f.
+func (f *File) Apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Actuator) error {
 	contents, err := f.Contents()
 	if err != nil {
 		return err
 	}
+	targetPath := filepath.Join(targetDir, f.targetName)
 	info, err := fs.Lstat(targetPath)
 	var currData []byte
 	switch {
@@ -292,12 +294,13 @@ func (s *Symlink) archive(w *tar.Writer, dirName string, headerTemplate *tar.Hea
 	return w.WriteHeader(&header)
 }
 
-// apply ensures that the state of targetPath in fs matches s.
-func (s *Symlink) apply(fs vfs.FS, targetPath string, umask os.FileMode, actuator Actuator) error {
+// Apply ensures that the state of s's target in fs matches s.
+func (s *Symlink) Apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Actuator) error {
 	target, err := s.Target()
 	if err != nil {
 		return err
 	}
+	targetPath := filepath.Join(targetDir, s.targetName)
 	info, err := fs.Lstat(targetPath)
 	switch {
 	case err == nil && info.Mode()&os.ModeType == os.ModeSymlink:
@@ -533,19 +536,11 @@ func (ts *TargetState) Archive(w *tar.Writer, umask os.FileMode) error {
 // Apply ensures that ts.TargetDir in fs matches ts.
 func (ts *TargetState) Apply(fs vfs.FS, actuator Actuator) error {
 	for _, entryName := range sortedEntryNames(ts.Entries) {
-		if err := ts.Entries[entryName].apply(fs, filepath.Join(ts.TargetDir, entryName), ts.Umask, actuator); err != nil {
+		if err := ts.Entries[entryName].Apply(fs, ts.TargetDir, ts.Umask, actuator); err != nil {
 			return err
 		}
 	}
 	return nil
-}
-
-// ApplyOne ensures that targetPath matches entry.
-func (ts *TargetState) ApplyOne(fs vfs.FS, targetPath string, entry Entry, actuator Actuator) error {
-	if !filepath.HasPrefix(targetPath, ts.TargetDir) {
-		return fmt.Errorf("%s: outside target directory", targetPath)
-	}
-	return entry.apply(fs, targetPath, ts.Umask, actuator)
 }
 
 // Evaluates all of the entries in ts.

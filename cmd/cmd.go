@@ -60,19 +60,12 @@ func (c *Config) applyArgs(fs vfs.FS, args []string, actuator chezmoi.Actuator) 
 	if len(args) == 0 {
 		return targetState.Apply(fs, actuator)
 	}
-	for _, arg := range args {
-		targetPath, err := filepath.Abs(arg)
-		if err != nil {
-			return err
-		}
-		entry, err := targetState.Get(targetPath)
-		if err != nil {
-			return err
-		}
-		if entry == nil {
-			return fmt.Errorf("%s: not under management", arg)
-		}
-		if err := targetState.ApplyOne(fs, targetPath, entry, actuator); err != nil {
+	entries, err := c.getEntries(targetState, args)
+	if err != nil {
+		return err
+	}
+	for _, entry := range entries {
+		if err := entry.Apply(fs, targetState.TargetDir, targetState.Umask, actuator); err != nil {
 			return err
 		}
 	}

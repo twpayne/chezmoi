@@ -71,29 +71,18 @@ func (c *Config) runEditCommand(fs vfs.FS, command *cobra.Command, args []string
 		return err
 	}
 	applyActuator := c.getDefaultActuator(fs)
-	for _, arg := range args {
-		targetPath, err := filepath.Abs(arg)
-		if err != nil {
-			return err
-		}
-		entry, err := targetState.Get(targetPath)
-		if err != nil {
-			return err
-		}
-		if entry == nil {
-			return fmt.Errorf("%s: not under management", arg)
-		}
+	for i, entry := range entries {
 		anyActuator := chezmoi.NewAnyActuator(chezmoi.NewNullActuator())
 		var actuator chezmoi.Actuator = anyActuator
 		if c.edit.diff {
 			actuator = chezmoi.NewLoggingActuator(os.Stdout, actuator)
 		}
-		if err := targetState.ApplyOne(fs, targetPath, entry, actuator); err != nil {
+		if err := entry.Apply(fs, targetState.TargetDir, targetState.Umask, actuator); err != nil {
 			return err
 		}
 		if c.edit.apply && anyActuator.Actuated() {
 			if c.edit.prompt {
-				choice, err := prompt(fmt.Sprintf("Apply %s", arg), "ynqa")
+				choice, err := prompt(fmt.Sprintf("Apply %s", args[i]), "ynqa")
 				if err != nil {
 					return err
 				}
@@ -107,7 +96,7 @@ func (c *Config) runEditCommand(fs vfs.FS, command *cobra.Command, args []string
 					c.edit.prompt = false
 				}
 			}
-			if err := targetState.ApplyOne(fs, targetPath, entry, applyActuator); err != nil {
+			if err := entry.Apply(fs, targetState.TargetDir, targetState.Umask, applyActuator); err != nil {
 				return err
 			}
 		}
