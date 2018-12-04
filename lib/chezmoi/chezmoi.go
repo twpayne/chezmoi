@@ -38,7 +38,7 @@ type Entry interface {
 	Evaluate() error
 	SourceName() string
 	TargetName() string
-	archive(*tar.Writer, string, *tar.Header, os.FileMode) error
+	archive(w *tar.Writer, headerTemplate *tar.Header, umask os.FileMode) error
 }
 
 // A File represents the target state of a file.
@@ -111,16 +111,16 @@ func newDir(sourceName string, targetName string, perm os.FileMode) *Dir {
 }
 
 // archive writes d to w.
-func (d *Dir) archive(w *tar.Writer, dirName string, headerTemplate *tar.Header, umask os.FileMode) error {
+func (d *Dir) archive(w *tar.Writer, headerTemplate *tar.Header, umask os.FileMode) error {
 	header := *headerTemplate
 	header.Typeflag = tar.TypeDir
-	header.Name = dirName
+	header.Name = d.targetName
 	header.Mode = int64(d.Perm &^ umask & os.ModePerm)
 	if err := w.WriteHeader(&header); err != nil {
 		return err
 	}
 	for _, entryName := range sortedEntryNames(d.Entries) {
-		if err := d.Entries[entryName].archive(w, filepath.Join(dirName, entryName), headerTemplate, umask); err != nil {
+		if err := d.Entries[entryName].archive(w, headerTemplate, umask); err != nil {
 			return err
 		}
 	}
@@ -184,7 +184,7 @@ func (d *Dir) TargetName() string {
 }
 
 // archive writes f to w.
-func (f *File) archive(w *tar.Writer, fileName string, headerTemplate *tar.Header, umask os.FileMode) error {
+func (f *File) archive(w *tar.Writer, headerTemplate *tar.Header, umask os.FileMode) error {
 	contents, err := f.Contents()
 	if err != nil {
 		return err
@@ -194,7 +194,7 @@ func (f *File) archive(w *tar.Writer, fileName string, headerTemplate *tar.Heade
 	}
 	header := *headerTemplate
 	header.Typeflag = tar.TypeReg
-	header.Name = fileName
+	header.Name = f.targetName
 	header.Size = int64(len(contents))
 	header.Mode = int64(f.Perm &^ umask)
 	if err := w.WriteHeader(&header); err != nil {
@@ -281,12 +281,13 @@ func (f *File) TargetName() string {
 }
 
 // archive writes s to w.
-func (s *Symlink) archive(w *tar.Writer, dirName string, headerTemplate *tar.Header, umask os.FileMode) error {
+func (s *Symlink) archive(w *tar.Writer, headerTemplate *tar.Header, umask os.FileMode) error {
 	target, err := s.Target()
 	if err != nil {
 		return err
 	}
 	header := *headerTemplate
+	header.Name = s.targetName
 	header.Typeflag = tar.TypeSymlink
 	header.Linkname = target
 	return w.WriteHeader(&header)
@@ -524,7 +525,7 @@ func (ts *TargetState) Archive(w *tar.Writer, umask os.FileMode) error {
 		ChangeTime: now,
 	}
 	for _, entryName := range sortedEntryNames(ts.Entries) {
-		if err := ts.Entries[entryName].archive(w, entryName, &headerTemplate, umask); err != nil {
+		if err := ts.Entries[entryName].archive(w, &headerTemplate, umask); err != nil {
 			return err
 		}
 	}
