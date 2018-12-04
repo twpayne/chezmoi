@@ -566,7 +566,7 @@ func (ts *TargetState) Get(target string) (Entry, error) {
 
 // Populate walks fs from ts.SourceDir to populate ts.
 func (ts *TargetState) Populate(fs vfs.FS) error {
-	return vfs.Walk(fs, ts.SourceDir, func(path string, info os.FileInfo, err error) error {
+	return vfs.Walk(fs, ts.SourceDir, func(path string, info os.FileInfo, _ error) error {
 		relPath, err := filepath.Rel(ts.SourceDir, path)
 		if err != nil {
 			return err
