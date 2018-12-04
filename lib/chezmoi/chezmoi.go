@@ -39,7 +39,6 @@ type Entry interface {
 	Evaluate() error
 	SourceName() string
 	TargetName() string
-	addAllEntries(map[string]Entry, string)
 	apply(vfs.FS, string, os.FileMode, Actuator) error
 	archive(*tar.Writer, string, *tar.Header, os.FileMode) error
 }
@@ -113,14 +112,6 @@ func newDir(sourceName string, targetName string, perm os.FileMode) *Dir {
 	}
 }
 
-// addAllEntries adds d and all of the entries in d to result.
-func (d *Dir) addAllEntries(result map[string]Entry, name string) {
-	result[name] = d
-	for entryName, entry := range d.Entries {
-		entry.addAllEntries(result, filepath.Join(name, entryName))
-	}
-}
-
 // archive writes d to w.
 func (d *Dir) archive(w *tar.Writer, dirName string, headerTemplate *tar.Header, umask os.FileMode) error {
 	header := *headerTemplate
@@ -191,11 +182,6 @@ func (d *Dir) SourceName() string {
 // TargetName implements Entry.TargetName.
 func (d *Dir) TargetName() string {
 	return d.targetName
-}
-
-// addAllEntries adds f to result.
-func (f *File) addAllEntries(result map[string]Entry, name string) {
-	result[name] = f
 }
 
 // archive writes f to w.
@@ -292,11 +278,6 @@ func (f *File) SourceName() string {
 // TargetName implements Entry.TargetName.
 func (f *File) TargetName() string {
 	return f.targetName
-}
-
-// addAllEntries adds s to result.
-func (s *Symlink) addAllEntries(result map[string]Entry, name string) {
-	result[name] = s
 }
 
 // archive writes s to w.
@@ -511,15 +492,6 @@ func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEm
 		return fmt.Errorf("%s: not a regular file or directory", targetName)
 	}
 	return nil
-}
-
-// AllEntries returns all the Entries in ts.
-func (ts *TargetState) AllEntries() map[string]Entry {
-	result := make(map[string]Entry)
-	for entryName, entry := range ts.Entries {
-		entry.addAllEntries(result, entryName)
-	}
-	return result
 }
 
 // Archive writes ts to w.
