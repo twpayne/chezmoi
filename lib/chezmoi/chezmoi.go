@@ -63,12 +63,12 @@ type Dir struct {
 
 // A Symlink represents the target state of a symlink.
 type Symlink struct {
-	sourceName     string
-	targetName     string
-	Template       bool
-	target         string
-	targetErr      error
-	evaluateTarget func() (string, error)
+	sourceName       string
+	targetName       string
+	Template         bool
+	linkName         string
+	linkNameErr      error
+	evaluateLinkName func() (string, error)
 }
 
 // A TargetState represents the root target state.
@@ -282,20 +282,20 @@ func (f *File) TargetName() string {
 
 // archive writes s to w.
 func (s *Symlink) archive(w *tar.Writer, headerTemplate *tar.Header, umask os.FileMode) error {
-	target, err := s.Target()
+	linkName, err := s.LinkName()
 	if err != nil {
 		return err
 	}
 	header := *headerTemplate
 	header.Name = s.targetName
 	header.Typeflag = tar.TypeSymlink
-	header.Linkname = target
+	header.Linkname = linkName
 	return w.WriteHeader(&header)
 }
 
 // Apply ensures that the state of s's target in fs matches s.
 func (s *Symlink) Apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Actuator) error {
-	target, err := s.Target()
+	target, err := s.LinkName()
 	if err != nil {
 		return err
 	}
@@ -320,7 +320,7 @@ func (s *Symlink) Apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator
 
 // Evaluate evaluates s's target.
 func (s *Symlink) Evaluate() error {
-	_, err := s.Target()
+	_, err := s.LinkName()
 	return err
 }
 
@@ -328,13 +328,13 @@ func (s *Symlink) SourceName() string {
 	return s.sourceName
 }
 
-// Target returns f's contents.
-func (s *Symlink) Target() (string, error) {
-	if s.evaluateTarget != nil {
-		s.target, s.targetErr = s.evaluateTarget()
-		s.evaluateTarget = nil
+// LinkName returns s's link name.
+func (s *Symlink) LinkName() (string, error) {
+	if s.evaluateLinkName != nil {
+		s.linkName, s.linkNameErr = s.evaluateLinkName()
+		s.evaluateLinkName = nil
 	}
-	return s.target, s.targetErr
+	return s.linkName, s.linkNameErr
 }
 
 // TargetName implements Entry.TargetName.
@@ -488,7 +488,7 @@ func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEm
 		entries[name] = &Symlink{
 			sourceName: sourceName,
 			targetName: targetName,
-			target:     data,
+			linkName:   data,
 		}
 	default:
 		return fmt.Errorf("%s: not a regular file or directory", targetName)
@@ -610,21 +610,21 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 					evaluateContents: evaluateContents,
 				}
 			case os.ModeSymlink:
-				evaluateTarget := func() (string, error) {
+				evaluateLinkName := func() (string, error) {
 					data, err := fs.ReadFile(path)
 					return string(data), err
 				}
 				if psfp.Template {
-					evaluateTarget = func() (string, error) {
+					evaluateLinkName = func() (string, error) {
 						data, err := ts.executeTemplate(fs, path)
 						return string(data), err
 					}
 				}
 				entry = &Symlink{
-					sourceName:     relPath,
-					targetName:     targetName,
-					Template:       psfp.Template,
-					evaluateTarget: evaluateTarget,
+					sourceName:       relPath,
+					targetName:       targetName,
+					Template:         psfp.Template,
+					evaluateLinkName: evaluateLinkName,
 				}
 			default:
 				return fmt.Errorf("%v: unsupported mode: %d", path, psfp.Mode&os.ModeType)

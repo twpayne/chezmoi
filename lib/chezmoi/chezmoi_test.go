@@ -332,7 +332,7 @@ func TestTargetStatePopulate(t *testing.T) {
 					"foo": &Symlink{
 						sourceName: "symlink_foo",
 						targetName: "foo",
-						target:     "bar",
+						linkName:   "bar",
 					},
 				},
 			},
@@ -351,7 +351,7 @@ func TestTargetStatePopulate(t *testing.T) {
 					".foo": &Symlink{
 						sourceName: "symlink_dot_foo",
 						targetName: ".foo",
-						target:     "bar",
+						linkName:   "bar",
 					},
 				},
 			},
@@ -377,7 +377,7 @@ func TestTargetStatePopulate(t *testing.T) {
 						sourceName: "symlink_foo.tmpl",
 						targetName: "foo",
 						Template:   true,
-						target:     "bar-example.com",
+						linkName:   "bar-example.com",
 					},
 				},
 			},
