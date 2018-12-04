@@ -29,6 +29,9 @@ func (c *Config) runDumpCommand(fs vfs.FS, command *cobra.Command, args []string
 			return err
 		}
 		for _, entry := range entries {
+			if err := entry.Evaluate(); err != nil {
+				return err
+			}
 			spew.Dump(entry)
 		}
 	}
