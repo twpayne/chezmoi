@@ -3,7 +3,7 @@ package cmd
 import (
 	"github.com/davecgh/go-spew/spew"
 	"github.com/spf13/cobra"
-	"github.com/twpayne/go-vfs"
+	vfs "github.com/twpayne/go-vfs"
 )
 
 var dumpCommand = &cobra.Command{

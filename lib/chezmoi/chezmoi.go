@@ -13,7 +13,7 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/twpayne/go-vfs"
+	vfs "github.com/twpayne/go-vfs"
 )
 
 const (

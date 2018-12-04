@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/google/renameio"
-	"github.com/twpayne/go-vfs"
+	vfs "github.com/twpayne/go-vfs"
 )
 
 // An FSActuator makes changes to an vfs.FS.
