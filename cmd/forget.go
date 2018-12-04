@@ -23,13 +23,13 @@ func (c *Config) runForgetCommand(fs vfs.FS, command *cobra.Command, args []stri
 	if err != nil {
 		return err
 	}
-	sourceNames, err := c.getSourceNames(targetState, args)
+	entries, err := c.getEntries(targetState, args)
 	if err != nil {
 		return err
 	}
 	actuator := c.getDefaultActuator(fs)
-	for _, sourceName := range sourceNames {
-		if err := actuator.RemoveAll(filepath.Join(c.SourceDir, sourceName)); err != nil {
+	for _, entry := range entries {
+		if err := actuator.RemoveAll(filepath.Join(c.SourceDir, entry.SourceName())); err != nil {
 			return err
 		}
 	}

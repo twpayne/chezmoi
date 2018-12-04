@@ -139,28 +139,23 @@ func getDefaultData() (map[string]interface{}, error) {
 	return data, nil
 }
 
-func (c *Config) getSourceNames(targetState *chezmoi.TargetState, targets []string) ([]string, error) {
-	sourceNames := []string{}
-	allEntries := targetState.AllEntries()
-	for _, target := range targets {
-		absTarget, err := filepath.Abs(target)
+func (c *Config) getEntries(targetState *chezmoi.TargetState, args []string) ([]chezmoi.Entry, error) {
+	entries := []chezmoi.Entry{}
+	for _, arg := range args {
+		targetPath, err := filepath.Abs(arg)
 		if err != nil {
 			return nil, err
 		}
-		targetName, err := filepath.Rel(c.TargetDir, absTarget)
+		entry, err := targetState.Get(targetPath)
 		if err != nil {
 			return nil, err
 		}
-		if filepath.HasPrefix(targetName, "..") {
-			return nil, fmt.Errorf("%s: not in target directory", target)
+		if entry == nil {
+			return nil, fmt.Errorf("%s: not under management", arg)
 		}
-		entry, ok := allEntries[targetName]
-		if !ok {
-			return nil, fmt.Errorf("%s: not found", targetName)
-		}
-		sourceNames = append(sourceNames, entry.SourceName())
+		entries = append(entries, entry)
 	}
-	return sourceNames, nil
+	return entries, nil
 }
 
 func (c *Config) getTargetState(fs vfs.FS) (*chezmoi.TargetState, error) {

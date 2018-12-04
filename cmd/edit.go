@@ -42,7 +42,7 @@ func (c *Config) runEditCommand(fs vfs.FS, command *cobra.Command, args []string
 	if err != nil {
 		return err
 	}
-	sourceFileNames, err := c.getSourceNames(targetState, args)
+	entries, err := c.getEntries(targetState, args)
 	if err != nil {
 		return err
 	}
@@ -54,8 +54,8 @@ func (c *Config) runEditCommand(fs vfs.FS, command *cobra.Command, args []string
 		editor = "vi"
 	}
 	argv := []string{}
-	for _, sourceFileName := range sourceFileNames {
-		argv = append(argv, filepath.Join(c.SourceDir, sourceFileName))
+	for _, entry := range entries {
+		argv = append(argv, filepath.Join(c.SourceDir, entry.SourceName()))
 	}
 	if !c.edit.diff && !c.edit.apply {
 		return c.exec(append([]string{editor}, argv...))
