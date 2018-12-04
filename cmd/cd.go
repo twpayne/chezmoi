@@ -4,8 +4,8 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/twpayne/go-shell"
-	"github.com/twpayne/go-vfs"
+	shell "github.com/twpayne/go-shell"
+	vfs "github.com/twpayne/go-vfs"
 )
 
 var cdCommand = &cobra.Command{

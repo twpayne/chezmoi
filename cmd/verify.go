@@ -5,7 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/twpayne/chezmoi/lib/chezmoi"
-	"github.com/twpayne/go-vfs"
+	vfs "github.com/twpayne/go-vfs"
 )
 
 var verifyCommand = &cobra.Command{
@@ -19,7 +19,7 @@ func init() {
 }
 
 func (c *Config) runVerifyCommand(fs vfs.FS, command *cobra.Command, args []string) error {
-	actuator := chezmoi.NewAnyActuator(chezmoi.NewNullActuator())
+	actuator := chezmoi.NewAnyActuator(chezmoi.NullActuator)
 	if err := c.applyArgs(fs, args, actuator); err != nil {
 		return err
 	}

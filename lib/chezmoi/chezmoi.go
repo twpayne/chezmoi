@@ -1,7 +1,5 @@
 package chezmoi
 
-// FIXME add Symlink
-
 import (
 	"archive/tar"
 	"bytes"
@@ -15,7 +13,7 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/twpayne/go-vfs"
+	vfs "github.com/twpayne/go-vfs"
 )
 
 const (
@@ -30,22 +28,22 @@ const (
 // A templateFuncError is an error encountered while executing a template
 // function.
 type templateFuncError struct {
-	name string
-	err  error
+	err error
 }
 
 // An Entry is either a Dir, a File, or a Symlink.
 type Entry interface {
+	Apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Actuator) error
+	Evaluate() error
 	SourceName() string
-	addAllEntries(map[string]Entry, string)
-	apply(vfs.FS, string, os.FileMode, Actuator) error
-	archive(*tar.Writer, string, *tar.Header, os.FileMode) error
-	evaluate() error
+	TargetName() string
+	archive(w *tar.Writer, headerTemplate *tar.Header, umask os.FileMode) error
 }
 
 // A File represents the target state of a file.
 type File struct {
 	sourceName       string
+	targetName       string
 	Empty            bool
 	Perm             os.FileMode
 	Template         bool
@@ -57,17 +55,19 @@ type File struct {
 // A Dir represents the target state of a directory.
 type Dir struct {
 	sourceName string
+	targetName string
 	Perm       os.FileMode
 	Entries    map[string]Entry
 }
 
 // A Symlink represents the target state of a symlink.
 type Symlink struct {
-	sourceName     string
-	Template       bool
-	target         string
-	targetErr      error
-	evaluateTarget func() (string, error)
+	sourceName       string
+	targetName       string
+	Template         bool
+	linkName         string
+	linkNameErr      error
+	evaluateLinkName func() (string, error)
 }
 
 // A TargetState represents the root target state.
@@ -100,73 +100,67 @@ type parsedSourceFilePath struct {
 }
 
 // newDir returns a new directory state.
-func newDir(sourceName string, perm os.FileMode) *Dir {
+func newDir(sourceName string, targetName string, perm os.FileMode) *Dir {
 	return &Dir{
 		sourceName: sourceName,
+		targetName: targetName,
 		Perm:       perm,
 		Entries:    make(map[string]Entry),
 	}
 }
 
-// addAllEntries adds d and all of the entries in d to result.
-func (d *Dir) addAllEntries(result map[string]Entry, name string) {
-	result[name] = d
-	for entryName, entry := range d.Entries {
-		entry.addAllEntries(result, filepath.Join(name, entryName))
-	}
-}
-
 // archive writes d to w.
-func (d *Dir) archive(w *tar.Writer, dirName string, headerTemplate *tar.Header, umask os.FileMode) error {
+func (d *Dir) archive(w *tar.Writer, headerTemplate *tar.Header, umask os.FileMode) error {
 	header := *headerTemplate
 	header.Typeflag = tar.TypeDir
-	header.Name = dirName
+	header.Name = d.targetName
 	header.Mode = int64(d.Perm &^ umask & os.ModePerm)
 	if err := w.WriteHeader(&header); err != nil {
 		return err
 	}
 	for _, entryName := range sortedEntryNames(d.Entries) {
-		if err := d.Entries[entryName].archive(w, filepath.Join(dirName, entryName), headerTemplate, umask); err != nil {
+		if err := d.Entries[entryName].archive(w, headerTemplate, umask); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-// apply ensures that targetDir in fs matches d.
-func (d *Dir) apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Actuator) error {
-	info, err := fs.Lstat(targetDir)
+// Apply ensures that targetDir in fs matches d.
+func (d *Dir) Apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Actuator) error {
+	targetPath := filepath.Join(targetDir, d.targetName)
+	info, err := fs.Lstat(targetPath)
 	switch {
 	case err == nil && info.Mode().IsDir():
 		if info.Mode()&os.ModePerm != d.Perm&^umask {
-			if err := actuator.Chmod(targetDir, d.Perm&^umask); err != nil {
+			if err := actuator.Chmod(targetPath, d.Perm&^umask); err != nil {
 				return err
 			}
 		}
 	case err == nil:
-		if err := actuator.RemoveAll(targetDir); err != nil {
+		if err := actuator.RemoveAll(targetPath); err != nil {
 			return err
 		}
 		fallthrough
 	case os.IsNotExist(err):
-		if err := actuator.Mkdir(targetDir, d.Perm&^umask); err != nil {
+		if err := actuator.Mkdir(targetPath, d.Perm&^umask); err != nil {
 			return err
 		}
 	default:
 		return err
 	}
 	for _, entryName := range sortedEntryNames(d.Entries) {
-		if err := d.Entries[entryName].apply(fs, filepath.Join(targetDir, entryName), umask, actuator); err != nil {
+		if err := d.Entries[entryName].Apply(fs, targetDir, umask, actuator); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-// evaluate evaluates all entries in d.
-func (d *Dir) evaluate() error {
+// Evaluate evaluates all entries in d.
+func (d *Dir) Evaluate() error {
 	for _, entryName := range sortedEntryNames(d.Entries) {
-		if err := d.Entries[entryName].evaluate(); err != nil {
+		if err := d.Entries[entryName].Evaluate(); err != nil {
 			return err
 		}
 	}
@@ -183,13 +177,13 @@ func (d *Dir) SourceName() string {
 	return d.sourceName
 }
 
-// addAllEntries adds f to result.
-func (f *File) addAllEntries(result map[string]Entry, name string) {
-	result[name] = f
+// TargetName implements Entry.TargetName.
+func (d *Dir) TargetName() string {
+	return d.targetName
 }
 
 // archive writes f to w.
-func (f *File) archive(w *tar.Writer, fileName string, headerTemplate *tar.Header, umask os.FileMode) error {
+func (f *File) archive(w *tar.Writer, headerTemplate *tar.Header, umask os.FileMode) error {
 	contents, err := f.Contents()
 	if err != nil {
 		return err
@@ -199,7 +193,7 @@ func (f *File) archive(w *tar.Writer, fileName string, headerTemplate *tar.Heade
 	}
 	header := *headerTemplate
 	header.Typeflag = tar.TypeReg
-	header.Name = fileName
+	header.Name = f.targetName
 	header.Size = int64(len(contents))
 	header.Mode = int64(f.Perm &^ umask)
 	if err := w.WriteHeader(&header); err != nil {
@@ -209,12 +203,13 @@ func (f *File) archive(w *tar.Writer, fileName string, headerTemplate *tar.Heade
 	return err
 }
 
-// apply ensures that the state of targetPath in fs matches f.
-func (f *File) apply(fs vfs.FS, targetPath string, umask os.FileMode, actuator Actuator) error {
+// Apply ensures that the state of targetPath in fs matches f.
+func (f *File) Apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Actuator) error {
 	contents, err := f.Contents()
 	if err != nil {
 		return err
 	}
+	targetPath := filepath.Join(targetDir, f.targetName)
 	info, err := fs.Lstat(targetPath)
 	var currData []byte
 	switch {
@@ -249,8 +244,8 @@ func (f *File) apply(fs vfs.FS, targetPath string, umask os.FileMode, actuator A
 	return actuator.WriteFile(targetPath, contents, f.Perm&^umask, currData)
 }
 
-// evaluate evaluates f's contents.
-func (f *File) evaluate() error {
+// Evaluate evaluates f's contents.
+func (f *File) Evaluate() error {
 	_, err := f.Contents()
 	return err
 }
@@ -279,29 +274,31 @@ func (f *File) SourceName() string {
 	return f.sourceName
 }
 
-// addAllEntries adds s to result.
-func (s *Symlink) addAllEntries(result map[string]Entry, name string) {
-	result[name] = s
+// TargetName implements Entry.TargetName.
+func (f *File) TargetName() string {
+	return f.targetName
 }
 
 // archive writes s to w.
-func (s *Symlink) archive(w *tar.Writer, dirName string, headerTemplate *tar.Header, umask os.FileMode) error {
-	target, err := s.Target()
+func (s *Symlink) archive(w *tar.Writer, headerTemplate *tar.Header, umask os.FileMode) error {
+	linkName, err := s.LinkName()
 	if err != nil {
 		return err
 	}
 	header := *headerTemplate
+	header.Name = s.targetName
 	header.Typeflag = tar.TypeSymlink
-	header.Linkname = target
+	header.Linkname = linkName
 	return w.WriteHeader(&header)
 }
 
-// apply ensures that the state of targetPath in fs matches s.
-func (s *Symlink) apply(fs vfs.FS, targetPath string, umask os.FileMode, actuator Actuator) error {
-	target, err := s.Target()
+// Apply ensures that the state of s's target in fs matches s.
+func (s *Symlink) Apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Actuator) error {
+	target, err := s.LinkName()
 	if err != nil {
 		return err
 	}
+	targetPath := filepath.Join(targetDir, s.targetName)
 	info, err := fs.Lstat(targetPath)
 	switch {
 	case err == nil && info.Mode()&os.ModeType == os.ModeSymlink:
@@ -320,23 +317,29 @@ func (s *Symlink) apply(fs vfs.FS, targetPath string, umask os.FileMode, actuato
 	return actuator.WriteSymlink(target, targetPath)
 }
 
-// evaluate evaluates s's target.
-func (s *Symlink) evaluate() error {
-	_, err := s.Target()
+// Evaluate evaluates s's target.
+func (s *Symlink) Evaluate() error {
+	_, err := s.LinkName()
 	return err
 }
 
+// SourceName implements Entry.SourceName.
 func (s *Symlink) SourceName() string {
 	return s.sourceName
 }
 
-// Target returns f's contents.
-func (s *Symlink) Target() (string, error) {
-	if s.evaluateTarget != nil {
-		s.target, s.targetErr = s.evaluateTarget()
-		s.evaluateTarget = nil
+// LinkName returns s's link name.
+func (s *Symlink) LinkName() (string, error) {
+	if s.evaluateLinkName != nil {
+		s.linkName, s.linkNameErr = s.evaluateLinkName()
+		s.evaluateLinkName = nil
 	}
-	return s.target, s.targetErr
+	return s.linkName, s.linkNameErr
+}
+
+// TargetName implements Entry.TargetName.
+func (s *Symlink) TargetName() string {
+	return s.targetName
 }
 
 // NewTargetState creates a new TargetState.
@@ -352,17 +355,17 @@ func NewTargetState(targetDir string, umask os.FileMode, sourceDir string, data 
 }
 
 // Add adds a new target to ts.
-func (ts *TargetState) Add(fs vfs.FS, target string, info os.FileInfo, addEmpty, addTemplate bool, actuator Actuator) error {
-	if !filepath.HasPrefix(target, ts.TargetDir) {
-		return fmt.Errorf("%s: outside target directory", target)
+func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEmpty, addTemplate bool, actuator Actuator) error {
+	if !filepath.HasPrefix(targetPath, ts.TargetDir) {
+		return fmt.Errorf("%s: outside target directory", targetPath)
 	}
-	targetName, err := filepath.Rel(ts.TargetDir, target)
+	targetName, err := filepath.Rel(ts.TargetDir, targetPath)
 	if err != nil {
 		return err
 	}
 	if info == nil {
 		var err error
-		info, err = fs.Lstat(target)
+		info, err = fs.Lstat(targetPath)
 		if err != nil {
 			return err
 		}
@@ -413,7 +416,7 @@ func (ts *TargetState) Add(fs vfs.FS, target string, info os.FileInfo, addEmpty,
 		if dirSourceName != "" {
 			sourceName = filepath.Join(dirSourceName, sourceName)
 		}
-		data, err := fs.ReadFile(target)
+		data, err := fs.ReadFile(targetPath)
 		if err != nil {
 			return err
 		}
@@ -425,6 +428,7 @@ func (ts *TargetState) Add(fs vfs.FS, target string, info os.FileInfo, addEmpty,
 		}
 		entries[name] = &File{
 			sourceName: sourceName,
+			targetName: targetName,
 			Empty:      len(data) == 0,
 			Perm:       info.Mode() & os.ModePerm,
 			Template:   addTemplate,
@@ -450,7 +454,7 @@ func (ts *TargetState) Add(fs vfs.FS, target string, info os.FileInfo, addEmpty,
 		// If the directory is empty, add a .keep file so the directory is
 		// managed by git. Chezmoi will ignore the .keep file as it begins with
 		// a dot.
-		infos, err := fs.ReadDir(target)
+		infos, err := fs.ReadDir(targetPath)
 		if err != nil {
 			return err
 		}
@@ -459,7 +463,7 @@ func (ts *TargetState) Add(fs vfs.FS, target string, info os.FileInfo, addEmpty,
 				return err
 			}
 		}
-		entries[name] = newDir(sourceName, info.Mode()&os.ModePerm)
+		entries[name] = newDir(sourceName, targetName, info.Mode()&os.ModePerm)
 	case info.Mode()&os.ModeType == os.ModeSymlink:
 		if entry, ok := entries[name]; ok {
 			if _, ok := entry.(*Symlink); !ok {
@@ -474,7 +478,7 @@ func (ts *TargetState) Add(fs vfs.FS, target string, info os.FileInfo, addEmpty,
 		if dirSourceName != "" {
 			sourceName = filepath.Join(dirSourceName, sourceName)
 		}
-		data, err := fs.Readlink(target)
+		data, err := fs.Readlink(targetPath)
 		if err != nil {
 			return err
 		}
@@ -483,21 +487,13 @@ func (ts *TargetState) Add(fs vfs.FS, target string, info os.FileInfo, addEmpty,
 		}
 		entries[name] = &Symlink{
 			sourceName: sourceName,
-			target:     data,
+			targetName: targetName,
+			linkName:   data,
 		}
 	default:
 		return fmt.Errorf("%s: not a regular file or directory", targetName)
 	}
 	return nil
-}
-
-// AllEntries returns all the Entries in ts.
-func (ts *TargetState) AllEntries() map[string]Entry {
-	result := make(map[string]Entry)
-	for entryName, entry := range ts.Entries {
-		entry.addAllEntries(result, entryName)
-	}
-	return result
 }
 
 // Archive writes ts to w.
@@ -529,7 +525,7 @@ func (ts *TargetState) Archive(w *tar.Writer, umask os.FileMode) error {
 		ChangeTime: now,
 	}
 	for _, entryName := range sortedEntryNames(ts.Entries) {
-		if err := ts.Entries[entryName].archive(w, entryName, &headerTemplate, umask); err != nil {
+		if err := ts.Entries[entryName].archive(w, &headerTemplate, umask); err != nil {
 			return err
 		}
 	}
@@ -539,25 +535,17 @@ func (ts *TargetState) Archive(w *tar.Writer, umask os.FileMode) error {
 // Apply ensures that ts.TargetDir in fs matches ts.
 func (ts *TargetState) Apply(fs vfs.FS, actuator Actuator) error {
 	for _, entryName := range sortedEntryNames(ts.Entries) {
-		if err := ts.Entries[entryName].apply(fs, filepath.Join(ts.TargetDir, entryName), ts.Umask, actuator); err != nil {
+		if err := ts.Entries[entryName].Apply(fs, ts.TargetDir, ts.Umask, actuator); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-// ApplyOne ensures that targetPath matches entry.
-func (ts *TargetState) ApplyOne(fs vfs.FS, targetPath string, entry Entry, actuator Actuator) error {
-	if !filepath.HasPrefix(targetPath, ts.TargetDir) {
-		return fmt.Errorf("%s: outside target directory", targetPath)
-	}
-	return entry.apply(fs, targetPath, ts.Umask, actuator)
-}
-
-// Evaluates all of the entries in ts.
+// Evaluate evaluates all of the entries in ts.
 func (ts *TargetState) Evaluate() error {
 	for _, entryName := range sortedEntryNames(ts.Entries) {
-		if err := ts.Entries[entryName].evaluate(); err != nil {
+		if err := ts.Entries[entryName].Evaluate(); err != nil {
 			return err
 		}
 	}
@@ -578,7 +566,7 @@ func (ts *TargetState) Get(target string) (Entry, error) {
 
 // Populate walks fs from ts.SourceDir to populate ts.
 func (ts *TargetState) Populate(fs vfs.FS) error {
-	return vfs.Walk(fs, ts.SourceDir, func(path string, info os.FileInfo, err error) error {
+	return vfs.Walk(fs, ts.SourceDir, func(path string, info os.FileInfo, _ error) error {
 		relPath, err := filepath.Rel(ts.SourceDir, path)
 		if err != nil {
 			return err
@@ -600,6 +588,8 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 			if err != nil {
 				return err
 			}
+
+			targetName := filepath.Join(append(psfp.dirNames, psfp.FileName)...)
 			var entry Entry
 			switch psfp.Mode & os.ModeType {
 			case 0:
@@ -613,26 +603,28 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 				}
 				entry = &File{
 					sourceName:       relPath,
+					targetName:       targetName,
 					Empty:            psfp.Empty,
 					Perm:             psfp.Mode & os.ModePerm,
 					Template:         psfp.Template,
 					evaluateContents: evaluateContents,
 				}
 			case os.ModeSymlink:
-				evaluateTarget := func() (string, error) {
+				evaluateLinkName := func() (string, error) {
 					data, err := fs.ReadFile(path)
 					return string(data), err
 				}
 				if psfp.Template {
-					evaluateTarget = func() (string, error) {
+					evaluateLinkName = func() (string, error) {
 						data, err := ts.executeTemplate(fs, path)
 						return string(data), err
 					}
 				}
 				entry = &Symlink{
-					sourceName:     relPath,
-					Template:       psfp.Template,
-					evaluateTarget: evaluateTarget,
+					sourceName:       relPath,
+					targetName:       targetName,
+					Template:         psfp.Template,
+					evaluateLinkName: evaluateLinkName,
 				}
 			default:
 				return fmt.Errorf("%v: unsupported mode: %d", path, psfp.Mode&os.ModeType)
@@ -641,13 +633,14 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 		case info.Mode().IsDir():
 			components := splitPathList(relPath)
 			dirNames, perms := parseDirNameComponents(components)
+			targetName := filepath.Join(dirNames...)
 			entries, err := ts.findEntries(dirNames[:len(dirNames)-1])
 			if err != nil {
 				return err
 			}
 			dirName := dirNames[len(dirNames)-1]
 			perm := perms[len(perms)-1]
-			entries[dirName] = newDir(relPath, perm)
+			entries[dirName] = newDir(relPath, targetName, perm)
 		default:
 			return fmt.Errorf("unsupported file type: %s", path)
 		}

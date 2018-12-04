@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/google/renameio"
-	"github.com/twpayne/go-vfs"
+	vfs "github.com/twpayne/go-vfs"
 )
 
 // An FSActuator makes changes to an vfs.FS.
@@ -34,7 +34,9 @@ func (a *FSActuator) WriteFile(name string, data []byte, perm os.FileMode, currD
 		if err != nil {
 			return err
 		}
-		defer t.Cleanup()
+		defer func() {
+			_ = t.Cleanup()
+		}()
 		if err := t.Chmod(perm); err != nil {
 			return err
 		}
@@ -46,7 +48,7 @@ func (a *FSActuator) WriteFile(name string, data []byte, perm os.FileMode, currD
 	return a.FS.WriteFile(name, data, perm)
 }
 
-// Symlink implements Actuator.WriteSymlink.
+// WriteSymlink implements Actuator.WriteSymlink.
 func (a *FSActuator) WriteSymlink(oldname, newname string) error {
 	// Special case: if writing to the real filesystem, use github.com/google/renameio
 	if a.FS == vfs.OSFS {

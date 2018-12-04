@@ -14,7 +14,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/twpayne/chezmoi/lib/chezmoi"
-	"github.com/twpayne/go-vfs"
+	vfs "github.com/twpayne/go-vfs"
 )
 
 var chattrCommand = &cobra.Command{
@@ -46,19 +46,12 @@ func (c *Config) runChattrCommand(fs vfs.FS, cmd *cobra.Command, args []string) 
 	if err != nil {
 		return err
 	}
+	entries, err := c.getEntries(targetState, args[1:])
+	if err != nil {
+		return err
+	}
 	renames := make(map[string]string)
-	for _, arg := range args[1:] {
-		targetPath, err := filepath.Abs(arg)
-		if err != nil {
-			return err
-		}
-		entry, err := targetState.Get(targetPath)
-		if err != nil {
-			return err
-		}
-		if entry == nil {
-			return fmt.Errorf("%s: not under management", arg)
-		}
+	for _, entry := range entries {
 		oldSourceName := entry.SourceName()
 		var newSourceName string
 		switch entry := entry.(type) {

@@ -1,11 +1,15 @@
 package cmd
 
+// FIXME add --force flag
+// FIXME add --recursive flag
+// FIXME add --prompt flag
+
 import (
 	"os"
 	"path/filepath"
 
 	"github.com/spf13/cobra"
-	"github.com/twpayne/go-vfs"
+	vfs "github.com/twpayne/go-vfs"
 )
 
 var removeCommand = &cobra.Command{
@@ -25,16 +29,16 @@ func (c *Config) runRemoveCommand(fs vfs.FS, command *cobra.Command, args []stri
 	if err != nil {
 		return err
 	}
-	sourceNames, err := c.getSourceNames(targetState, args)
+	entries, err := c.getEntries(targetState, args)
 	if err != nil {
-		return err
+		return nil
 	}
 	actuator := c.getDefaultActuator(fs)
-	for i, targetFileName := range args {
-		if err := actuator.RemoveAll(filepath.Join(c.TargetDir, targetFileName)); err != nil && !os.IsNotExist(err) {
+	for _, entry := range entries {
+		if err := actuator.RemoveAll(filepath.Join(c.TargetDir, entry.TargetName())); err != nil && !os.IsNotExist(err) {
 			return err
 		}
-		if err := actuator.RemoveAll(filepath.Join(c.SourceDir, sourceNames[i])); err != nil && !os.IsNotExist(err) {
+		if err := actuator.RemoveAll(filepath.Join(c.SourceDir, entry.SourceName())); err != nil && !os.IsNotExist(err) {
 			return err
 		}
 	}

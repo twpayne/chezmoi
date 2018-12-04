@@ -5,7 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/twpayne/chezmoi/lib/chezmoi"
-	"github.com/zalando/go-keyring"
+	keyring "github.com/zalando/go-keyring"
 )
 
 var keyringCommand = &cobra.Command{

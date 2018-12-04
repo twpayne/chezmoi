@@ -9,7 +9,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/twpayne/chezmoi/lib/chezmoi"
-	"github.com/twpayne/go-vfs"
+	vfs "github.com/twpayne/go-vfs"
 )
 
 var editCommand = &cobra.Command{
@@ -42,7 +42,7 @@ func (c *Config) runEditCommand(fs vfs.FS, command *cobra.Command, args []string
 	if err != nil {
 		return err
 	}
-	sourceFileNames, err := c.getSourceNames(targetState, args)
+	entries, err := c.getEntries(targetState, args)
 	if err != nil {
 		return err
 	}
@@ -54,8 +54,8 @@ func (c *Config) runEditCommand(fs vfs.FS, command *cobra.Command, args []string
 		editor = "vi"
 	}
 	argv := []string{}
-	for _, sourceFileName := range sourceFileNames {
-		argv = append(argv, filepath.Join(c.SourceDir, sourceFileName))
+	for _, entry := range entries {
+		argv = append(argv, filepath.Join(c.SourceDir, entry.SourceName()))
 	}
 	if !c.edit.diff && !c.edit.apply {
 		return c.exec(append([]string{editor}, argv...))
@@ -71,29 +71,18 @@ func (c *Config) runEditCommand(fs vfs.FS, command *cobra.Command, args []string
 		return err
 	}
 	applyActuator := c.getDefaultActuator(fs)
-	for _, arg := range args {
-		targetPath, err := filepath.Abs(arg)
-		if err != nil {
-			return err
-		}
-		entry, err := targetState.Get(targetPath)
-		if err != nil {
-			return err
-		}
-		if entry == nil {
-			return fmt.Errorf("%s: not under management", arg)
-		}
-		anyActuator := chezmoi.NewAnyActuator(chezmoi.NewNullActuator())
+	for i, entry := range entries {
+		anyActuator := chezmoi.NewAnyActuator(chezmoi.NullActuator)
 		var actuator chezmoi.Actuator = anyActuator
 		if c.edit.diff {
 			actuator = chezmoi.NewLoggingActuator(os.Stdout, actuator)
 		}
-		if err := targetState.ApplyOne(fs, targetPath, entry, actuator); err != nil {
+		if err := entry.Apply(fs, targetState.TargetDir, targetState.Umask, actuator); err != nil {
 			return err
 		}
 		if c.edit.apply && anyActuator.Actuated() {
 			if c.edit.prompt {
-				choice, err := prompt(fmt.Sprintf("Apply %s", arg), "ynqa")
+				choice, err := prompt(fmt.Sprintf("Apply %s", args[i]), "ynqa")
 				if err != nil {
 					return err
 				}
@@ -107,7 +96,7 @@ func (c *Config) runEditCommand(fs vfs.FS, command *cobra.Command, args []string
 					c.edit.prompt = false
 				}
 			}
-			if err := targetState.ApplyOne(fs, targetPath, entry, applyActuator); err != nil {
+			if err := entry.Apply(fs, targetState.TargetDir, targetState.Umask, applyActuator); err != nil {
 				return err
 			}
 		}

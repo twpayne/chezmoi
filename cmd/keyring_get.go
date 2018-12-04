@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/twpayne/go-vfs"
-	"github.com/zalando/go-keyring"
+	vfs "github.com/twpayne/go-vfs"
+	keyring "github.com/zalando/go-keyring"
 )
 
 var keyringGetCommand = &cobra.Command{

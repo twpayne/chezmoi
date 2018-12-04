@@ -12,10 +12,10 @@ import (
 	"syscall"
 	"text/template"
 
-	"github.com/mitchellh/go-homedir"
+	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/twpayne/chezmoi/lib/chezmoi"
-	"github.com/twpayne/go-vfs"
+	vfs "github.com/twpayne/go-vfs"
 )
 
 // A Version represents a version.
@@ -60,19 +60,12 @@ func (c *Config) applyArgs(fs vfs.FS, args []string, actuator chezmoi.Actuator) 
 	if len(args) == 0 {
 		return targetState.Apply(fs, actuator)
 	}
-	for _, arg := range args {
-		targetPath, err := filepath.Abs(arg)
-		if err != nil {
-			return err
-		}
-		entry, err := targetState.Get(targetPath)
-		if err != nil {
-			return err
-		}
-		if entry == nil {
-			return fmt.Errorf("%s: not under management", arg)
-		}
-		if err := targetState.ApplyOne(fs, targetPath, entry, actuator); err != nil {
+	entries, err := c.getEntries(targetState, args)
+	if err != nil {
+		return err
+	}
+	for _, entry := range entries {
+		if err := entry.Apply(fs, targetState.TargetDir, targetState.Umask, actuator); err != nil {
 			return err
 		}
 	}
@@ -96,7 +89,7 @@ func (c *Config) exec(argv []string) error {
 func (c *Config) getDefaultActuator(fs vfs.FS) chezmoi.Actuator {
 	var actuator chezmoi.Actuator
 	if c.DryRun {
-		actuator = chezmoi.NewNullActuator()
+		actuator = chezmoi.NullActuator
 	} else {
 		actuator = chezmoi.NewFSActuator(fs, c.TargetDir)
 	}
@@ -139,28 +132,23 @@ func getDefaultData() (map[string]interface{}, error) {
 	return data, nil
 }
 
-func (c *Config) getSourceNames(targetState *chezmoi.TargetState, targets []string) ([]string, error) {
-	sourceNames := []string{}
-	allEntries := targetState.AllEntries()
-	for _, target := range targets {
-		absTarget, err := filepath.Abs(target)
+func (c *Config) getEntries(targetState *chezmoi.TargetState, args []string) ([]chezmoi.Entry, error) {
+	entries := []chezmoi.Entry{}
+	for _, arg := range args {
+		targetPath, err := filepath.Abs(arg)
 		if err != nil {
 			return nil, err
 		}
-		targetName, err := filepath.Rel(c.TargetDir, absTarget)
+		entry, err := targetState.Get(targetPath)
 		if err != nil {
 			return nil, err
 		}
-		if filepath.HasPrefix(targetName, "..") {
-			return nil, fmt.Errorf("%s: not in target directory", target)
+		if entry == nil {
+			return nil, fmt.Errorf("%s: not under management", arg)
 		}
-		entry, ok := allEntries[targetName]
-		if !ok {
-			return nil, fmt.Errorf("%s: not found", targetName)
-		}
-		sourceNames = append(sourceNames, entry.SourceName())
+		entries = append(entries, entry)
 	}
-	return sourceNames, nil
+	return entries, nil
 }
 
 func (c *Config) getTargetState(fs vfs.FS) (*chezmoi.TargetState, error) {
