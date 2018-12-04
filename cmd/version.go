@@ -10,7 +10,7 @@ import (
 var versionCommand = &cobra.Command{
 	Use:   "version",
 	Args:  cobra.NoArgs,
-	Short: "Print version",
+	Short: "Write the version of chezmoi to stdout",
 	RunE:  makeRunE(config.runVersionCommand),
 }
 
