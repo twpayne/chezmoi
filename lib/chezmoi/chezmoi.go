@@ -1,7 +1,5 @@
 package chezmoi
 
-// FIXME add Symlink
-
 import (
 	"archive/tar"
 	"bytes"
