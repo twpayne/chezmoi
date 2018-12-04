@@ -5,7 +5,6 @@ package cmd
 // FIXME add --prompt flag
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 
@@ -30,20 +29,13 @@ func (c *Config) runRemoveCommand(fs vfs.FS, command *cobra.Command, args []stri
 	if err != nil {
 		return err
 	}
+	entries, err := c.getEntries(targetState, args)
+	if err != nil {
+		return nil
+	}
 	actuator := c.getDefaultActuator(fs)
-	for _, arg := range args {
-		targetPath, err := filepath.Abs(arg)
-		if err != nil {
-			return err
-		}
-		entry, err := targetState.Get(targetPath)
-		if err != nil {
-			return err
-		}
-		if entry == nil {
-			return fmt.Errorf("%s: not under management", arg)
-		}
-		if err := actuator.RemoveAll(targetPath); err != nil && !os.IsNotExist(err) {
+	for _, entry := range entries {
+		if err := actuator.RemoveAll(filepath.Join(c.TargetDir, entry.TargetName())); err != nil && !os.IsNotExist(err) {
 			return err
 		}
 		if err := actuator.RemoveAll(filepath.Join(c.SourceDir, entry.SourceName())); err != nil && !os.IsNotExist(err) {
