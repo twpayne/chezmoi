@@ -17,6 +17,7 @@ var lastpassCommand = &cobra.Command{
 	RunE:  makeRunE(config.runLastPassCommand),
 }
 
+// A LastPassCommandConfig is a configuration for the lastpass command.
 type LastPassCommandConfig struct {
 	Lpass string
 }
