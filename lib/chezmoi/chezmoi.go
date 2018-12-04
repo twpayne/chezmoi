@@ -323,6 +323,7 @@ func (s *Symlink) Evaluate() error {
 	return err
 }
 
+// SourceName implements Entry.SourceName.
 func (s *Symlink) SourceName() string {
 	return s.sourceName
 }
@@ -541,7 +542,7 @@ func (ts *TargetState) Apply(fs vfs.FS, actuator Actuator) error {
 	return nil
 }
 
-// Evaluates all of the entries in ts.
+// Evaluate evaluates all of the entries in ts.
 func (ts *TargetState) Evaluate() error {
 	for _, entryName := range sortedEntryNames(ts.Entries) {
 		if err := ts.Entries[entryName].Evaluate(); err != nil {
