@@ -1,0 +1,31 @@
+package cmd
+
+import (
+	"os"
+
+	"github.com/spf13/cobra"
+	"github.com/twpayne/go-shell"
+	"github.com/twpayne/go-vfs"
+)
+
+var cdCommand = &cobra.Command{
+	Use:   "cd",
+	Args:  cobra.NoArgs,
+	Short: "Launch a shell in your source directory",
+	RunE:  makeRunE(config.runCDCommand),
+}
+
+func init() {
+	rootCommand.AddCommand(cdCommand)
+}
+
+func (c *Config) runCDCommand(fs vfs.FS, cmd *cobra.Command, args []string) error {
+	if err := os.Chdir(c.SourceDir); err != nil {
+		return err
+	}
+	shell, err := shell.CurrentUserShell()
+	if err != nil {
+		return err
+	}
+	return c.exec([]string{shell})
+}
