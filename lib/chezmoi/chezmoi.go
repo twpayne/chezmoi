@@ -28,8 +28,7 @@ const (
 // A templateFuncError is an error encountered while executing a template
 // function.
 type templateFuncError struct {
-	name string
-	err  error
+	err error
 }
 
 // An Entry is either a Dir, a File, or a Symlink.
