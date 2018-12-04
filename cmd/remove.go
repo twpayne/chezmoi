@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -25,16 +26,23 @@ func (c *Config) runRemoveCommand(fs vfs.FS, command *cobra.Command, args []stri
 	if err != nil {
 		return err
 	}
-	sourceNames, err := c.getSourceNames(targetState, args)
-	if err != nil {
-		return err
-	}
 	actuator := c.getDefaultActuator(fs)
-	for i, targetFileName := range args {
-		if err := actuator.RemoveAll(filepath.Join(c.TargetDir, targetFileName)); err != nil && !os.IsNotExist(err) {
+	for _, arg := range args {
+		targetPath, err := filepath.Abs(arg)
+		if err != nil {
 			return err
 		}
-		if err := actuator.RemoveAll(filepath.Join(c.SourceDir, sourceNames[i])); err != nil && !os.IsNotExist(err) {
+		entry, err := targetState.Get(targetPath)
+		if err != nil {
+			return err
+		}
+		if entry == nil {
+			return fmt.Errorf("%s: not under management", arg)
+		}
+		if err := actuator.RemoveAll(targetPath); err != nil && !os.IsNotExist(err) {
+			return err
+		}
+		if err := actuator.RemoveAll(filepath.Join(c.SourceDir, entry.SourceName())); err != nil && !os.IsNotExist(err) {
 			return err
 		}
 	}
