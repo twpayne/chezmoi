@@ -163,7 +163,8 @@ func (c *Config) getTargetState(fs vfs.FS) (*chezmoi.TargetState, error) {
 		data[key] = value
 	}
 	targetState := chezmoi.NewTargetState(c.TargetDir, os.FileMode(c.Umask), c.SourceDir, data, c.funcs)
-	if err := targetState.Populate(fs); err != nil {
+	readOnlyFS := vfs.NewReadOnlyFS(fs)
+	if err := targetState.Populate(readOnlyFS); err != nil {
 		return nil, err
 	}
 	return targetState, nil

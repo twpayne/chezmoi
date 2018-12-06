@@ -70,6 +70,7 @@ func (c *Config) runEditCommand(fs vfs.FS, command *cobra.Command, args []string
 	if err := cmd.Run(); err != nil {
 		return err
 	}
+	readOnlyFS := vfs.NewReadOnlyFS(fs)
 	applyActuator := c.getDefaultActuator(fs)
 	for i, entry := range entries {
 		anyActuator := chezmoi.NewAnyActuator(chezmoi.NullActuator)
@@ -77,7 +78,7 @@ func (c *Config) runEditCommand(fs vfs.FS, command *cobra.Command, args []string
 		if c.edit.diff {
 			actuator = chezmoi.NewLoggingActuator(os.Stdout, actuator)
 		}
-		if err := entry.Apply(fs, targetState.TargetDir, targetState.Umask, actuator); err != nil {
+		if err := entry.Apply(readOnlyFS, targetState.TargetDir, targetState.Umask, actuator); err != nil {
 			return err
 		}
 		if c.edit.apply && anyActuator.Actuated() {
@@ -96,7 +97,7 @@ func (c *Config) runEditCommand(fs vfs.FS, command *cobra.Command, args []string
 					c.edit.prompt = false
 				}
 			}
-			if err := entry.Apply(fs, targetState.TargetDir, targetState.Umask, applyActuator); err != nil {
+			if err := entry.Apply(readOnlyFS, targetState.TargetDir, targetState.Umask, applyActuator); err != nil {
 				return err
 			}
 		}
