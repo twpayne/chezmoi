@@ -27,9 +27,9 @@ func (c *Config) runForgetCommand(fs vfs.FS, command *cobra.Command, args []stri
 	if err != nil {
 		return err
 	}
-	actuator := c.getDefaultActuator(fs)
+	mutator := c.getDefaultMutator(fs)
 	for _, entry := range entries {
-		if err := actuator.RemoveAll(filepath.Join(c.SourceDir, entry.SourceName())); err != nil {
+		if err := mutator.RemoveAll(filepath.Join(c.SourceDir, entry.SourceName())); err != nil {
 			return err
 		}
 	}

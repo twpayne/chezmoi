@@ -2,8 +2,8 @@ package chezmoi
 
 import "os"
 
-// An Actuator makes changes.
-type Actuator interface {
+// An Mutator makes changes.
+type Mutator interface {
 	Chmod(name string, mode os.FileMode) error
 	Mkdir(name string, perm os.FileMode) error
 	RemoveAll(name string) error

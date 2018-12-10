@@ -35,7 +35,7 @@ type templateFuncError struct {
 
 // An Entry is either a Dir, a File, or a Symlink.
 type Entry interface {
-	Apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Actuator) error
+	Apply(fs vfs.FS, targetDir string, umask os.FileMode, mutator Mutator) error
 	ConcreteValue(targetDir, sourceDir string, recursive bool) (interface{}, error)
 	Evaluate() error
 	SourceName() string
@@ -156,30 +156,30 @@ func (d *Dir) archive(w *tar.Writer, headerTemplate *tar.Header, umask os.FileMo
 }
 
 // Apply ensures that targetDir in fs matches d.
-func (d *Dir) Apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Actuator) error {
+func (d *Dir) Apply(fs vfs.FS, targetDir string, umask os.FileMode, mutator Mutator) error {
 	targetPath := filepath.Join(targetDir, d.targetName)
 	info, err := fs.Lstat(targetPath)
 	switch {
 	case err == nil && info.Mode().IsDir():
 		if info.Mode()&os.ModePerm != d.Perm&^umask {
-			if err := actuator.Chmod(targetPath, d.Perm&^umask); err != nil {
+			if err := mutator.Chmod(targetPath, d.Perm&^umask); err != nil {
 				return err
 			}
 		}
 	case err == nil:
-		if err := actuator.RemoveAll(targetPath); err != nil {
+		if err := mutator.RemoveAll(targetPath); err != nil {
 			return err
 		}
 		fallthrough
 	case os.IsNotExist(err):
-		if err := actuator.Mkdir(targetPath, d.Perm&^umask); err != nil {
+		if err := mutator.Mkdir(targetPath, d.Perm&^umask); err != nil {
 			return err
 		}
 	default:
 		return err
 	}
 	for _, entryName := range sortedEntryNames(d.Entries) {
-		if err := d.Entries[entryName].Apply(fs, targetDir, umask, actuator); err != nil {
+		if err := d.Entries[entryName].Apply(fs, targetDir, umask, mutator); err != nil {
 			return err
 		}
 	}
@@ -254,7 +254,7 @@ func (f *File) archive(w *tar.Writer, headerTemplate *tar.Header, umask os.FileM
 }
 
 // Apply ensures that the state of targetPath in fs matches f.
-func (f *File) Apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Actuator) error {
+func (f *File) Apply(fs vfs.FS, targetDir string, umask os.FileMode, mutator Mutator) error {
 	contents, err := f.Contents()
 	if err != nil {
 		return err
@@ -265,7 +265,7 @@ func (f *File) Apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Ac
 	switch {
 	case err == nil && info.Mode().IsRegular():
 		if len(contents) == 0 && !f.Empty {
-			return actuator.RemoveAll(targetPath)
+			return mutator.RemoveAll(targetPath)
 		}
 		currData, err = fs.ReadFile(targetPath)
 		if err != nil {
@@ -275,13 +275,13 @@ func (f *File) Apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Ac
 			break
 		}
 		if info.Mode()&os.ModePerm != f.Perm&^umask {
-			if err := actuator.Chmod(targetPath, f.Perm&^umask); err != nil {
+			if err := mutator.Chmod(targetPath, f.Perm&^umask); err != nil {
 				return err
 			}
 		}
 		return nil
 	case err == nil:
-		if err := actuator.RemoveAll(targetPath); err != nil {
+		if err := mutator.RemoveAll(targetPath); err != nil {
 			return err
 		}
 	case os.IsNotExist(err):
@@ -291,7 +291,7 @@ func (f *File) Apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Ac
 	if len(contents) == 0 && !f.Empty {
 		return nil
 	}
-	return actuator.WriteFile(targetPath, contents, f.Perm&^umask, currData)
+	return mutator.WriteFile(targetPath, contents, f.Perm&^umask, currData)
 }
 
 // ConcreteValue implements Entry.ConcreteValue.
@@ -360,7 +360,7 @@ func (s *Symlink) archive(w *tar.Writer, headerTemplate *tar.Header, umask os.Fi
 }
 
 // Apply ensures that the state of s's target in fs matches s.
-func (s *Symlink) Apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Actuator) error {
+func (s *Symlink) Apply(fs vfs.FS, targetDir string, umask os.FileMode, mutator Mutator) error {
 	target, err := s.LinkName()
 	if err != nil {
 		return err
@@ -381,7 +381,7 @@ func (s *Symlink) Apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator
 	default:
 		return err
 	}
-	return actuator.WriteSymlink(target, targetPath)
+	return mutator.WriteSymlink(target, targetPath)
 }
 
 // ConcreteValue implements Entry.ConcreteValue.
@@ -437,7 +437,7 @@ func NewTargetState(targetDir string, umask os.FileMode, sourceDir string, data 
 }
 
 // Add adds a new target to ts.
-func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEmpty, addTemplate bool, actuator Actuator) error {
+func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEmpty, addTemplate bool, mutator Mutator) error {
 	if !filepath.HasPrefix(targetPath, ts.TargetDir) {
 		return fmt.Errorf("%s: outside target directory", targetPath)
 	}
@@ -462,7 +462,7 @@ func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEm
 			return err
 		}
 		if parentEntry == nil {
-			if err := ts.Add(fs, filepath.Join(ts.TargetDir, parentDirName), nil, false, false, actuator); err != nil {
+			if err := ts.Add(fs, filepath.Join(ts.TargetDir, parentDirName), nil, false, false, mutator); err != nil {
 				return err
 			}
 			parentEntry, err = ts.findEntry(parentDirName)
@@ -505,7 +505,7 @@ func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEm
 		if addTemplate {
 			data = autoTemplate(data, ts.Data)
 		}
-		if err := actuator.WriteFile(filepath.Join(ts.SourceDir, sourceName), data, 0666&^ts.Umask, nil); err != nil {
+		if err := mutator.WriteFile(filepath.Join(ts.SourceDir, sourceName), data, 0666&^ts.Umask, nil); err != nil {
 			return err
 		}
 		entries[name] = &File{
@@ -530,7 +530,7 @@ func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEm
 		if dirSourceName != "" {
 			sourceName = filepath.Join(dirSourceName, sourceName)
 		}
-		if err := actuator.Mkdir(filepath.Join(ts.SourceDir, sourceName), 0777&^ts.Umask); err != nil {
+		if err := mutator.Mkdir(filepath.Join(ts.SourceDir, sourceName), 0777&^ts.Umask); err != nil {
 			return err
 		}
 		// If the directory is empty, add a .keep file so the directory is
@@ -541,7 +541,7 @@ func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEm
 			return err
 		}
 		if len(infos) == 0 {
-			if err := actuator.WriteFile(filepath.Join(ts.SourceDir, sourceName, ".keep"), nil, 0666&^ts.Umask, nil); err != nil {
+			if err := mutator.WriteFile(filepath.Join(ts.SourceDir, sourceName, ".keep"), nil, 0666&^ts.Umask, nil); err != nil {
 				return err
 			}
 		}
@@ -564,7 +564,7 @@ func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEm
 		if err != nil {
 			return err
 		}
-		if err := actuator.WriteFile(filepath.Join(ts.SourceDir, sourceName), []byte(data), 0666&^ts.Umask, nil); err != nil {
+		if err := mutator.WriteFile(filepath.Join(ts.SourceDir, sourceName), []byte(data), 0666&^ts.Umask, nil); err != nil {
 			return err
 		}
 		entries[name] = &Symlink{
@@ -615,9 +615,9 @@ func (ts *TargetState) Archive(w *tar.Writer, umask os.FileMode) error {
 }
 
 // Apply ensures that ts.TargetDir in fs matches ts.
-func (ts *TargetState) Apply(fs vfs.FS, actuator Actuator) error {
+func (ts *TargetState) Apply(fs vfs.FS, mutator Mutator) error {
 	for _, entryName := range sortedEntryNames(ts.Entries) {
-		if err := ts.Entries[entryName].Apply(fs, ts.TargetDir, ts.Umask, actuator); err != nil {
+		if err := ts.Entries[entryName].Apply(fs, ts.TargetDir, ts.Umask, mutator); err != nil {
 			return err
 		}
 	}
@@ -659,7 +659,7 @@ func (ts *TargetState) Get(target string) (Entry, error) {
 	return ts.findEntry(targetName)
 }
 
-func (ts *TargetState) AddArchive(r *tar.Reader, destinationDir string, stripComponents int, actuator Actuator) error {
+func (ts *TargetState) AddArchive(r *tar.Reader, destinationDir string, stripComponents int, mutator Mutator) error {
 	for {
 		header, err := r.Next()
 		if err == io.EOF {
@@ -669,7 +669,7 @@ func (ts *TargetState) AddArchive(r *tar.Reader, destinationDir string, stripCom
 		}
 		switch header.Typeflag {
 		case tar.TypeDir, tar.TypeReg, tar.TypeSymlink:
-			if err := ts.addArchiveHeader(r, header, destinationDir, stripComponents, actuator); err != nil {
+			if err := ts.addArchiveHeader(r, header, destinationDir, stripComponents, mutator); err != nil {
 				return err
 			}
 		case tar.TypeXGlobalHeader:
@@ -764,7 +764,7 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 	})
 }
 
-func (ts *TargetState) addArchiveHeader(r *tar.Reader, header *tar.Header, destinationDir string, stripComponents int, actuator Actuator) error {
+func (ts *TargetState) addArchiveHeader(r *tar.Reader, header *tar.Header, destinationDir string, stripComponents int, mutator Mutator) error {
 	targetPath := header.Name
 	if stripComponents > 0 {
 		targetPath = filepath.Join(strings.Split(targetPath, string(os.PathSeparator))[stripComponents:]...)
@@ -834,14 +834,14 @@ func (ts *TargetState) addArchiveHeader(r *tar.Reader, header *tar.Header, desti
 				if existingFile.sourceName == file.sourceName {
 					return nil
 				}
-				return actuator.Rename(filepath.Join(ts.SourceDir, existingFile.sourceName), filepath.Join(ts.SourceDir, file.sourceName))
+				return mutator.Rename(filepath.Join(ts.SourceDir, existingFile.sourceName), filepath.Join(ts.SourceDir, file.sourceName))
 			}
-			if err := actuator.RemoveAll(filepath.Join(ts.SourceDir, existingFile.sourceName)); err != nil {
+			if err := mutator.RemoveAll(filepath.Join(ts.SourceDir, existingFile.sourceName)); err != nil {
 				return err
 			}
 		}
 		entries[name] = file
-		return actuator.WriteFile(filepath.Join(ts.SourceDir, sourceName), contents, 0666&^ts.Umask, existingContents)
+		return mutator.WriteFile(filepath.Join(ts.SourceDir, sourceName), contents, 0666&^ts.Umask, existingContents)
 	case tar.TypeDir:
 		var existingDir *Dir
 		if entry, ok := entries[name]; ok {
@@ -863,11 +863,11 @@ func (ts *TargetState) addArchiveHeader(r *tar.Reader, header *tar.Header, desti
 			if existingDir.sourceName == dir.sourceName {
 				return nil
 			}
-			return actuator.Rename(filepath.Join(ts.SourceDir, existingDir.sourceName), filepath.Join(ts.SourceDir, dir.sourceName))
+			return mutator.Rename(filepath.Join(ts.SourceDir, existingDir.sourceName), filepath.Join(ts.SourceDir, dir.sourceName))
 		}
 		// FIXME Add a .keep file if the directory is empty
 		entries[name] = dir
-		return actuator.Mkdir(filepath.Join(ts.SourceDir, sourceName), 0777&^ts.Umask)
+		return mutator.Mkdir(filepath.Join(ts.SourceDir, sourceName), 0777&^ts.Umask)
 	case tar.TypeSymlink:
 		var existingSymlink *Symlink
 		var existingLinkName string
@@ -898,14 +898,14 @@ func (ts *TargetState) addArchiveHeader(r *tar.Reader, header *tar.Header, desti
 				if existingSymlink.sourceName == symlink.sourceName {
 					return nil
 				}
-				return actuator.Rename(filepath.Join(ts.SourceDir, existingSymlink.sourceName), filepath.Join(ts.SourceDir, symlink.sourceName))
+				return mutator.Rename(filepath.Join(ts.SourceDir, existingSymlink.sourceName), filepath.Join(ts.SourceDir, symlink.sourceName))
 			}
-			if err := actuator.RemoveAll(filepath.Join(ts.SourceDir, existingSymlink.sourceName)); err != nil {
+			if err := mutator.RemoveAll(filepath.Join(ts.SourceDir, existingSymlink.sourceName)); err != nil {
 				return err
 			}
 		}
 		entries[name] = symlink
-		return actuator.WriteFile(filepath.Join(ts.SourceDir, symlink.sourceName), []byte(symlink.linkName), 0666&^ts.Umask, []byte(existingLinkName))
+		return mutator.WriteFile(filepath.Join(ts.SourceDir, symlink.sourceName), []byte(symlink.linkName), 0666&^ts.Umask, []byte(existingLinkName))
 	default:
 		return fmt.Errorf("%s: unspported typeflag '%c'", header.Name, header.Typeflag)
 	}

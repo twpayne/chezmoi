@@ -7,27 +7,27 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-// An FSActuator makes changes to an vfs.FS.
-type FSActuator struct {
+// An FSMutator makes changes to an vfs.FS.
+type FSMutator struct {
 	vfs.FS
 	dir string
 }
 
-// NewFSActuator returns an actuator that acts on fs.
-func NewFSActuator(fs vfs.FS, targetDir string) *FSActuator {
+// NewFSMutator returns an mutator that acts on fs.
+func NewFSMutator(fs vfs.FS, targetDir string) *FSMutator {
 	var dir string
 	// Special case: if writing to the real filesystem, use github.com/google/renameio
 	if fs == vfs.OSFS {
 		dir = renameio.TempDir(targetDir)
 	}
-	return &FSActuator{
+	return &FSMutator{
 		FS:  fs,
 		dir: dir,
 	}
 }
 
-// WriteFile implements Actuator.WriteFile.
-func (a *FSActuator) WriteFile(name string, data []byte, perm os.FileMode, currData []byte) error {
+// WriteFile implements Mutator.WriteFile.
+func (a *FSMutator) WriteFile(name string, data []byte, perm os.FileMode, currData []byte) error {
 	// Special case: if writing to the real filesystem, use github.com/google/renameio
 	if a.FS == vfs.OSFS {
 		t, err := renameio.TempFile(a.dir, name)
@@ -48,8 +48,8 @@ func (a *FSActuator) WriteFile(name string, data []byte, perm os.FileMode, currD
 	return a.FS.WriteFile(name, data, perm)
 }
 
-// WriteSymlink implements Actuator.WriteSymlink.
-func (a *FSActuator) WriteSymlink(oldname, newname string) error {
+// WriteSymlink implements Mutator.WriteSymlink.
+func (a *FSMutator) WriteSymlink(oldname, newname string) error {
 	// Special case: if writing to the real filesystem, use github.com/google/renameio
 	if a.FS == vfs.OSFS {
 		return renameio.Symlink(oldname, newname)

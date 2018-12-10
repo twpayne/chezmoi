@@ -70,12 +70,12 @@ func (c *Config) runImportCommand(fs vfs.FS, cmd *cobra.Command, args []string) 
 			return fmt.Errorf("%s: unknown format", arg)
 		}
 	}
-	actuator := c.getDefaultActuator(fs)
+	mutator := c.getDefaultMutator(fs)
 	if c.importC.removeDestination {
 		entry, err := targetState.Get(c.importC.destination)
 		switch {
 		case err == nil:
-			if err := actuator.RemoveAll(filepath.Join(c.SourceDir, entry.SourceName())); err != nil {
+			if err := mutator.RemoveAll(filepath.Join(c.SourceDir, entry.SourceName())); err != nil {
 				return err
 			}
 		case os.IsNotExist(err):
@@ -83,5 +83,5 @@ func (c *Config) runImportCommand(fs vfs.FS, cmd *cobra.Command, args []string) 
 			return err
 		}
 	}
-	return targetState.AddArchive(tar.NewReader(r), c.importC.destination, c.importC.stripComponents, actuator)
+	return targetState.AddArchive(tar.NewReader(r), c.importC.destination, c.importC.stripComponents, mutator)
 }

@@ -71,17 +71,17 @@ func (c *Config) runEditCommand(fs vfs.FS, command *cobra.Command, args []string
 		return err
 	}
 	readOnlyFS := vfs.NewReadOnlyFS(fs)
-	applyActuator := c.getDefaultActuator(fs)
+	applyMutator := c.getDefaultMutator(fs)
 	for i, entry := range entries {
-		anyActuator := chezmoi.NewAnyActuator(chezmoi.NullActuator)
-		var actuator chezmoi.Actuator = anyActuator
+		anyMutator := chezmoi.NewAnyMutator(chezmoi.NullMutator)
+		var mutator chezmoi.Mutator = anyMutator
 		if c.edit.diff {
-			actuator = chezmoi.NewLoggingActuator(os.Stdout, actuator)
+			mutator = chezmoi.NewLoggingMutator(os.Stdout, mutator)
 		}
-		if err := entry.Apply(readOnlyFS, targetState.TargetDir, targetState.Umask, actuator); err != nil {
+		if err := entry.Apply(readOnlyFS, targetState.TargetDir, targetState.Umask, mutator); err != nil {
 			return err
 		}
-		if c.edit.apply && anyActuator.Actuated() {
+		if c.edit.apply && anyMutator.Mutated() {
 			if c.edit.prompt {
 				choice, err := prompt(fmt.Sprintf("Apply %s", args[i]), "ynqa")
 				if err != nil {
@@ -97,7 +97,7 @@ func (c *Config) runEditCommand(fs vfs.FS, command *cobra.Command, args []string
 					c.edit.prompt = false
 				}
 			}
-			if err := entry.Apply(readOnlyFS, targetState.TargetDir, targetState.Umask, applyActuator); err != nil {
+			if err := entry.Apply(readOnlyFS, targetState.TargetDir, targetState.Umask, applyMutator); err != nil {
 				return err
 			}
 		}

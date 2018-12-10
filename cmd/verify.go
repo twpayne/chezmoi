@@ -19,11 +19,11 @@ func init() {
 }
 
 func (c *Config) runVerifyCommand(fs vfs.FS, command *cobra.Command, args []string) error {
-	actuator := chezmoi.NewAnyActuator(chezmoi.NullActuator)
-	if err := c.applyArgs(fs, args, actuator); err != nil {
+	mutator := chezmoi.NewAnyMutator(chezmoi.NullMutator)
+	if err := c.applyArgs(fs, args, mutator); err != nil {
 		return err
 	}
-	if actuator.Actuated() {
+	if mutator.Mutated() {
 		os.Exit(1)
 	}
 	return nil

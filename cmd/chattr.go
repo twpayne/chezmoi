@@ -84,7 +84,7 @@ func (c *Config) runChattrCommand(fs vfs.FS, cmd *cobra.Command, args []string) 
 		}
 	}
 
-	actuator := c.getDefaultActuator(fs)
+	mutator := c.getDefaultMutator(fs)
 
 	// Sort oldpaths in reverse so we rename files before their parent
 	// directories.
@@ -94,7 +94,7 @@ func (c *Config) runChattrCommand(fs vfs.FS, cmd *cobra.Command, args []string) 
 	}
 	sort.Sort(sort.Reverse(sort.StringSlice(oldpaths)))
 	for _, oldpath := range oldpaths {
-		if err := actuator.Rename(oldpath, renames[oldpath]); err != nil {
+		if err := mutator.Rename(oldpath, renames[oldpath]); err != nil {
 			return err
 		}
 	}

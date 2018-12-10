@@ -475,7 +475,7 @@ func TestEndToEnd(t *testing.T) {
 			if err := ts.Populate(fs); err != nil {
 				t.Fatalf("ts.Populate(%+v) == %v, want <nil>", fs, err)
 			}
-			if err := ts.Apply(fs, NewLoggingActuator(os.Stderr, NewFSActuator(fs, tc.targetDir))); err != nil {
+			if err := ts.Apply(fs, NewLoggingMutator(os.Stderr, NewFSMutator(fs, tc.targetDir))); err != nil {
 				t.Fatalf("ts.Apply(fs, _) == %v, want <nil>", err)
 			}
 			vfst.RunTests(t, fs, "", tc.tests)

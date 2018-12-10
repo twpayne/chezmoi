@@ -54,20 +54,20 @@ func (c *Config) addFunc(key string, value interface{}) {
 	c.funcs[key] = value
 }
 
-func (c *Config) applyArgs(fs vfs.FS, args []string, actuator chezmoi.Actuator) error {
+func (c *Config) applyArgs(fs vfs.FS, args []string, mutator chezmoi.Mutator) error {
 	targetState, err := c.getTargetState(fs)
 	if err != nil {
 		return err
 	}
 	if len(args) == 0 {
-		return targetState.Apply(fs, actuator)
+		return targetState.Apply(fs, mutator)
 	}
 	entries, err := c.getEntries(targetState, args)
 	if err != nil {
 		return err
 	}
 	for _, entry := range entries {
-		if err := entry.Apply(fs, targetState.TargetDir, targetState.Umask, actuator); err != nil {
+		if err := entry.Apply(fs, targetState.TargetDir, targetState.Umask, mutator); err != nil {
 			return err
 		}
 	}
@@ -88,17 +88,17 @@ func (c *Config) exec(argv []string) error {
 	return syscall.Exec(path, argv, os.Environ())
 }
 
-func (c *Config) getDefaultActuator(fs vfs.FS) chezmoi.Actuator {
-	var actuator chezmoi.Actuator
+func (c *Config) getDefaultMutator(fs vfs.FS) chezmoi.Mutator {
+	var mutator chezmoi.Mutator
 	if c.DryRun {
-		actuator = chezmoi.NullActuator
+		mutator = chezmoi.NullMutator
 	} else {
-		actuator = chezmoi.NewFSActuator(fs, c.TargetDir)
+		mutator = chezmoi.NewFSMutator(fs, c.TargetDir)
 	}
 	if c.Verbose {
-		actuator = chezmoi.NewLoggingActuator(os.Stdout, actuator)
+		mutator = chezmoi.NewLoggingMutator(os.Stdout, mutator)
 	}
-	return actuator
+	return mutator
 }
 
 func getDefaultData() (map[string]interface{}, error) {
