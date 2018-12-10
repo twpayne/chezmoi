@@ -16,6 +16,6 @@ func init() {
 }
 
 func (c *Config) runApplyCommand(fs vfs.FS, command *cobra.Command, args []string) error {
-	actuator := c.getDefaultActuator(fs)
-	return c.applyArgs(fs, args, actuator)
+	mutator := c.getDefaultMutator(fs)
+	return c.applyArgs(fs, args, mutator)
 }

@@ -20,12 +20,12 @@ func init() {
 }
 
 func (c *Config) runArchiveCommand(fs vfs.FS, command *cobra.Command, args []string) error {
-	targetState, err := c.getTargetState(fs)
+	ts, err := c.getTargetState(fs)
 	if err != nil {
 		return err
 	}
 	w := tar.NewWriter(os.Stdout)
-	if err := targetState.Archive(w, os.FileMode(c.Umask)); err != nil {
+	if err := ts.Archive(w, os.FileMode(c.Umask)); err != nil {
 		return err
 	}
 	return w.Close()

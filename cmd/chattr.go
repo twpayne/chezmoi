@@ -42,11 +42,11 @@ func (c *Config) runChattrCommand(fs vfs.FS, cmd *cobra.Command, args []string) 
 	if err != nil {
 		return err
 	}
-	targetState, err := c.getTargetState(fs)
+	ts, err := c.getTargetState(fs)
 	if err != nil {
 		return err
 	}
-	entries, err := c.getEntries(targetState, args[1:])
+	entries, err := c.getEntries(ts, args[1:])
 	if err != nil {
 		return err
 	}
@@ -80,11 +80,11 @@ func (c *Config) runChattrCommand(fs vfs.FS, cmd *cobra.Command, args []string) 
 			newSourceName = psfn.SourceFileName()
 		}
 		if newSourceName != oldSourceName {
-			renames[filepath.Join(targetState.SourceDir, oldSourceName)] = filepath.Join(targetState.SourceDir, newSourceName)
+			renames[filepath.Join(ts.SourceDir, oldSourceName)] = filepath.Join(ts.SourceDir, newSourceName)
 		}
 	}
 
-	actuator := c.getDefaultActuator(fs)
+	mutator := c.getDefaultMutator(fs)
 
 	// Sort oldpaths in reverse so we rename files before their parent
 	// directories.
@@ -94,7 +94,7 @@ func (c *Config) runChattrCommand(fs vfs.FS, cmd *cobra.Command, args []string) 
 	}
 	sort.Sort(sort.Reverse(sort.StringSlice(oldpaths)))
 	for _, oldpath := range oldpaths {
-		if err := actuator.Rename(oldpath, renames[oldpath]); err != nil {
+		if err := mutator.Rename(oldpath, renames[oldpath]); err != nil {
 			return err
 		}
 	}

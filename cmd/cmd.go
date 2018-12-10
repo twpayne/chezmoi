@@ -54,20 +54,20 @@ func (c *Config) addFunc(key string, value interface{}) {
 	c.funcs[key] = value
 }
 
-func (c *Config) applyArgs(fs vfs.FS, args []string, actuator chezmoi.Actuator) error {
-	targetState, err := c.getTargetState(fs)
+func (c *Config) applyArgs(fs vfs.FS, args []string, mutator chezmoi.Mutator) error {
+	ts, err := c.getTargetState(fs)
 	if err != nil {
 		return err
 	}
 	if len(args) == 0 {
-		return targetState.Apply(fs, actuator)
+		return ts.Apply(fs, mutator)
 	}
-	entries, err := c.getEntries(targetState, args)
+	entries, err := c.getEntries(ts, args)
 	if err != nil {
 		return err
 	}
 	for _, entry := range entries {
-		if err := entry.Apply(fs, targetState.TargetDir, targetState.Umask, actuator); err != nil {
+		if err := entry.Apply(fs, ts.TargetDir, ts.Umask, mutator); err != nil {
 			return err
 		}
 	}
@@ -88,17 +88,17 @@ func (c *Config) exec(argv []string) error {
 	return syscall.Exec(path, argv, os.Environ())
 }
 
-func (c *Config) getDefaultActuator(fs vfs.FS) chezmoi.Actuator {
-	var actuator chezmoi.Actuator
+func (c *Config) getDefaultMutator(fs vfs.FS) chezmoi.Mutator {
+	var mutator chezmoi.Mutator
 	if c.DryRun {
-		actuator = chezmoi.NullActuator
+		mutator = chezmoi.NullMutator
 	} else {
-		actuator = chezmoi.NewFSActuator(fs, c.TargetDir)
+		mutator = chezmoi.NewFSMutator(fs, c.TargetDir)
 	}
 	if c.Verbose {
-		actuator = chezmoi.NewLoggingActuator(os.Stdout, actuator)
+		mutator = chezmoi.NewLoggingMutator(os.Stdout, mutator)
 	}
-	return actuator
+	return mutator
 }
 
 func getDefaultData() (map[string]interface{}, error) {
@@ -134,14 +134,14 @@ func getDefaultData() (map[string]interface{}, error) {
 	return data, nil
 }
 
-func (c *Config) getEntries(targetState *chezmoi.TargetState, args []string) ([]chezmoi.Entry, error) {
+func (c *Config) getEntries(ts *chezmoi.TargetState, args []string) ([]chezmoi.Entry, error) {
 	entries := []chezmoi.Entry{}
 	for _, arg := range args {
 		targetPath, err := filepath.Abs(arg)
 		if err != nil {
 			return nil, err
 		}
-		entry, err := targetState.Get(targetPath)
+		entry, err := ts.Get(targetPath)
 		if err != nil {
 			return nil, err
 		}
@@ -164,12 +164,12 @@ func (c *Config) getTargetState(fs vfs.FS) (*chezmoi.TargetState, error) {
 	for key, value := range c.Data {
 		data[key] = value
 	}
-	targetState := chezmoi.NewTargetState(c.TargetDir, os.FileMode(c.Umask), c.SourceDir, data, c.funcs)
+	ts := chezmoi.NewTargetState(c.TargetDir, os.FileMode(c.Umask), c.SourceDir, data, c.funcs)
 	readOnlyFS := vfs.NewReadOnlyFS(fs)
-	if err := targetState.Populate(readOnlyFS); err != nil {
+	if err := ts.Populate(readOnlyFS); err != nil {
 		return nil, err
 	}
-	return targetState, nil
+	return ts, nil
 }
 
 func makeRunE(runCommand func(vfs.FS, *cobra.Command, []string) error) func(*cobra.Command, []string) error {

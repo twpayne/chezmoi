@@ -25,20 +25,20 @@ func init() {
 }
 
 func (c *Config) runRemoveCommand(fs vfs.FS, command *cobra.Command, args []string) error {
-	targetState, err := c.getTargetState(fs)
+	ts, err := c.getTargetState(fs)
 	if err != nil {
 		return err
 	}
-	entries, err := c.getEntries(targetState, args)
+	entries, err := c.getEntries(ts, args)
 	if err != nil {
 		return nil
 	}
-	actuator := c.getDefaultActuator(fs)
+	mutator := c.getDefaultMutator(fs)
 	for _, entry := range entries {
-		if err := actuator.RemoveAll(filepath.Join(c.TargetDir, entry.TargetName())); err != nil && !os.IsNotExist(err) {
+		if err := mutator.RemoveAll(filepath.Join(c.TargetDir, entry.TargetName())); err != nil && !os.IsNotExist(err) {
 			return err
 		}
-		if err := actuator.RemoveAll(filepath.Join(c.SourceDir, entry.SourceName())); err != nil && !os.IsNotExist(err) {
+		if err := mutator.RemoveAll(filepath.Join(c.SourceDir, entry.SourceName())); err != nil && !os.IsNotExist(err) {
 			return err
 		}
 	}

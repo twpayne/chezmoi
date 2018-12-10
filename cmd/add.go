@@ -33,21 +33,21 @@ func init() {
 }
 
 func (c *Config) runAddCommand(fs vfs.FS, command *cobra.Command, args []string) error {
-	targetState, err := c.getTargetState(fs)
+	ts, err := c.getTargetState(fs)
 	if err != nil {
 		return err
 	}
-	actuator := c.getDefaultActuator(fs)
+	mutator := c.getDefaultMutator(fs)
 	info, err := fs.Stat(c.SourceDir)
 	switch {
 	case err == nil && info.Mode().IsDir():
 		if info.Mode()&os.ModePerm != 0700 {
-			if err := actuator.Chmod(c.SourceDir, 0700); err != nil {
+			if err := mutator.Chmod(c.SourceDir, 0700); err != nil {
 				return err
 			}
 		}
 	case os.IsNotExist(err):
-		if err := actuator.Mkdir(c.SourceDir, 0700); err != nil {
+		if err := mutator.Mkdir(c.SourceDir, 0700); err != nil {
 			return err
 		}
 	case err == nil:
@@ -65,12 +65,12 @@ func (c *Config) runAddCommand(fs vfs.FS, command *cobra.Command, args []string)
 				if err != nil {
 					return err
 				}
-				return targetState.Add(fs, path, info, c.add.empty, c.add.template, actuator)
+				return ts.Add(fs, path, info, c.add.empty, c.add.template, mutator)
 			}); err != nil {
 				return err
 			}
 		} else {
-			if err := targetState.Add(fs, path, nil, c.add.empty, c.add.template, actuator); err != nil {
+			if err := ts.Add(fs, path, nil, c.add.empty, c.add.template, mutator); err != nil {
 				return err
 			}
 		}

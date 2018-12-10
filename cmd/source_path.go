@@ -19,20 +19,20 @@ func init() {
 }
 
 func (c *Config) runSourcePathCommand(fs vfs.FS, cmd *cobra.Command, args []string) error {
-	targetState, err := c.getTargetState(fs)
+	ts, err := c.getTargetState(fs)
 	if err != nil {
 		return err
 	}
 	if len(args) == 0 {
-		_, err := fmt.Println(targetState.SourceDir)
+		_, err := fmt.Println(ts.SourceDir)
 		return err
 	}
-	entries, err := c.getEntries(targetState, args)
+	entries, err := c.getEntries(ts, args)
 	if err != nil {
 		return err
 	}
 	for _, entry := range entries {
-		if _, err := fmt.Println(filepath.Join(targetState.SourceDir, entry.SourceName())); err != nil {
+		if _, err := fmt.Println(filepath.Join(ts.SourceDir, entry.SourceName())); err != nil {
 			return err
 		}
 	}
