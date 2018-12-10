@@ -12,10 +12,6 @@ go:
 env:
   - GO111MODULE=on
 
-# uncomment below if docker builds are enabled in .goreleaser.yaml
-# services:
-# - docker
-
 script:
   - go test ./...
   - go test -cover -race ./...
