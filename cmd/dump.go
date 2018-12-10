@@ -12,7 +12,8 @@ import (
 )
 
 type dumpCommandConfig struct {
-	format string
+	format    string
+	recursive bool
 }
 
 var dumpCommand = &cobra.Command{
@@ -26,6 +27,7 @@ func init() {
 
 	persistentFlags := dumpCommand.PersistentFlags()
 	persistentFlags.StringVarP(&config.dump.format, "format", "f", "json", "format (JSON or YAML)")
+	persistentFlags.BoolVarP(&config.dump.recursive, "recursive", "r", true, "recursive")
 }
 
 func (c *Config) runDumpCommand(fs vfs.FS, command *cobra.Command, args []string) error {
@@ -35,7 +37,7 @@ func (c *Config) runDumpCommand(fs vfs.FS, command *cobra.Command, args []string
 	}
 	var concreteValue interface{}
 	if len(args) == 0 {
-		concreteValue, err = targetState.ConcreteValue()
+		concreteValue, err = targetState.ConcreteValue(c.dump.recursive)
 		if err != nil {
 			return err
 		}
@@ -46,7 +48,7 @@ func (c *Config) runDumpCommand(fs vfs.FS, command *cobra.Command, args []string
 		}
 		var concreteValues []interface{}
 		for _, entry := range entries {
-			entryConcreteValue, err := entry.ConcreteValue(targetState.TargetDir, targetState.SourceDir)
+			entryConcreteValue, err := entry.ConcreteValue(targetState.TargetDir, targetState.SourceDir, c.dump.recursive)
 			if err != nil {
 				return err
 			}
