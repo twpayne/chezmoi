@@ -54,6 +54,7 @@ type File struct {
 }
 
 type fileConcreteValue struct {
+	Type       string `json:"type" yaml:"type"`
 	SourcePath string `json:"sourcePath" yaml:"sourcePath"`
 	TargetPath string `json:"targetPath" yaml:"targetPath"`
 	Empty      bool   `json:"empty" yaml:"empty"`
@@ -71,6 +72,7 @@ type Dir struct {
 }
 
 type dirConcreteValue struct {
+	Type       string        `json:"type" yaml:"type"`
 	SourcePath string        `json:"sourcePath" yaml:"sourcePath"`
 	TargetPath string        `json:"targetPath" yaml:"targetPath"`
 	Perm       int           `json:"perm" yaml:"perm"`
@@ -88,6 +90,7 @@ type Symlink struct {
 }
 
 type symlinkConcreteValue struct {
+	Type       string `json:"type" yaml:"type"`
 	SourcePath string `json:"sourcePath" yaml:"sourcePath"`
 	TargetPath string `json:"targetPath" yaml:"targetPath"`
 	Template   bool   `json:"template" yaml:"template"`
@@ -194,6 +197,7 @@ func (d *Dir) ConcreteValue(targetDir, sourceDir string, recursive bool) (interf
 		}
 	}
 	return &dirConcreteValue{
+		Type:       "dir",
 		SourcePath: filepath.Join(sourceDir, d.SourceName()),
 		TargetPath: filepath.Join(targetDir, d.TargetName()),
 		Perm:       int(d.Perm),
@@ -295,6 +299,7 @@ func (f *File) ConcreteValue(targetDir, sourceDir string, recursive bool) (inter
 		return nil, err
 	}
 	return &fileConcreteValue{
+		Type:       "file",
 		SourcePath: filepath.Join(sourceDir, f.SourceName()),
 		TargetPath: filepath.Join(targetDir, f.TargetName()),
 		Empty:      f.Empty,
@@ -384,6 +389,7 @@ func (s *Symlink) ConcreteValue(targetDir, sourceDir string, recursive bool) (in
 		return nil, err
 	}
 	return &symlinkConcreteValue{
+		Type:       "symlink",
 		SourcePath: filepath.Join(sourceDir, s.SourceName()),
 		TargetPath: filepath.Join(targetDir, s.TargetName()),
 		Template:   s.Template,
