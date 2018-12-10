@@ -116,7 +116,7 @@ func (d *Dir) archive(w *tar.Writer, headerTemplate *tar.Header, umask os.FileMo
 	header := *headerTemplate
 	header.Typeflag = tar.TypeDir
 	header.Name = d.targetName
-	header.Mode = int64(d.Perm &^ umask & os.ModePerm)
+	header.Mode = int64(d.Perm & os.ModePerm &^ umask)
 	if err := w.WriteHeader(&header); err != nil {
 		return err
 	}
