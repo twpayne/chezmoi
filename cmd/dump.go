@@ -3,6 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"strings"
 
@@ -22,6 +23,17 @@ var dumpCommand = &cobra.Command{
 	RunE:  makeRunE(config.runDumpCommand),
 }
 
+var dumpFuncFormatMap = map[string]func(io.Writer, interface{}) error{
+	"json": func(w io.Writer, value interface{}) error {
+		e := json.NewEncoder(w)
+		e.SetIndent("", "  ")
+		return e.Encode(value)
+	},
+	"yaml": func(w io.Writer, value interface{}) error {
+		return yaml.NewEncoder(w).Encode(value)
+	},
+}
+
 func init() {
 	rootCommand.AddCommand(dumpCommand)
 
@@ -31,6 +43,10 @@ func init() {
 }
 
 func (c *Config) runDumpCommand(fs vfs.FS, command *cobra.Command, args []string) error {
+	dumpFunc, ok := dumpFuncFormatMap[strings.ToLower(c.dump.format)]
+	if !ok {
+		return fmt.Errorf("unknown format: %s", c.dump.format)
+	}
 	targetState, err := c.getTargetState(fs)
 	if err != nil {
 		return err
@@ -56,14 +72,5 @@ func (c *Config) runDumpCommand(fs vfs.FS, command *cobra.Command, args []string
 		}
 		concreteValue = concreteValues
 	}
-	switch strings.ToLower(c.dump.format) {
-	case "json":
-		e := json.NewEncoder(os.Stdout)
-		e.SetIndent("", "  ")
-		return e.Encode(concreteValue)
-	case "yaml":
-		return yaml.NewEncoder(os.Stdout).Encode(concreteValue)
-	default:
-		return fmt.Errorf("unknown format: %s", c.dump.format)
-	}
+	return dumpFunc(os.Stdout, concreteValue)
 }
