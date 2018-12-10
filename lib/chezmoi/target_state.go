@@ -262,7 +262,8 @@ func (ts *TargetState) Get(target string) (Entry, error) {
 	return ts.findEntry(targetName)
 }
 
-func (ts *TargetState) AddArchive(r *tar.Reader, destinationDir string, stripComponents int, mutator Mutator) error {
+// Import imports an archive.
+func (ts *TargetState) Import(r *tar.Reader, destinationDir string, stripComponents int, mutator Mutator) error {
 	for {
 		header, err := r.Next()
 		if err == io.EOF {
@@ -272,7 +273,7 @@ func (ts *TargetState) AddArchive(r *tar.Reader, destinationDir string, stripCom
 		}
 		switch header.Typeflag {
 		case tar.TypeDir, tar.TypeReg, tar.TypeSymlink:
-			if err := ts.addArchiveHeader(r, header, destinationDir, stripComponents, mutator); err != nil {
+			if err := ts.importHeader(r, header, destinationDir, stripComponents, mutator); err != nil {
 				return err
 			}
 		case tar.TypeXGlobalHeader:
@@ -367,7 +368,59 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 	})
 }
 
-func (ts *TargetState) addArchiveHeader(r *tar.Reader, header *tar.Header, destinationDir string, stripComponents int, mutator Mutator) error {
+func (ts *TargetState) executeTemplate(fs vfs.FS, path string) ([]byte, error) {
+	data, err := fs.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+	return ts.executeTemplateData(path, data)
+}
+
+func (ts *TargetState) executeTemplateData(name string, data []byte) (_ []byte, err error) {
+	tmpl, err := template.New(name).Option("missingkey=error").Funcs(ts.Funcs).Parse(string(data))
+	if err != nil {
+		return nil, fmt.Errorf("%s: %v", name, err)
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			if tfe, ok := r.(templateFuncError); ok {
+				err = tfe.err
+			} else {
+				panic(r)
+			}
+		}
+	}()
+	output := &bytes.Buffer{}
+	if err = tmpl.Execute(output, ts.Data); err != nil {
+		return nil, fmt.Errorf("%s: %v", name, err)
+	}
+	return output.Bytes(), nil
+}
+
+func (ts *TargetState) findEntries(dirNames []string) (map[string]Entry, error) {
+	entries := ts.Entries
+	for i, dirName := range dirNames {
+		if entry, ok := entries[dirName]; !ok {
+			return nil, os.ErrNotExist
+		} else if dir, ok := entry.(*Dir); ok {
+			entries = dir.Entries
+		} else {
+			return nil, fmt.Errorf("%s: not a directory", filepath.Join(dirNames[:i+1]...))
+		}
+	}
+	return entries, nil
+}
+
+func (ts *TargetState) findEntry(name string) (Entry, error) {
+	names := splitPathList(name)
+	entries, err := ts.findEntries(names[:len(names)-1])
+	if err != nil {
+		return nil, err
+	}
+	return entries[names[len(names)-1]], nil
+}
+
+func (ts *TargetState) importHeader(r io.Reader, header *tar.Header, destinationDir string, stripComponents int, mutator Mutator) error {
 	targetPath := header.Name
 	if stripComponents > 0 {
 		targetPath = filepath.Join(strings.Split(targetPath, string(os.PathSeparator))[stripComponents:]...)
@@ -512,56 +565,4 @@ func (ts *TargetState) addArchiveHeader(r *tar.Reader, header *tar.Header, desti
 	default:
 		return fmt.Errorf("%s: unspported typeflag '%c'", header.Name, header.Typeflag)
 	}
-}
-
-func (ts *TargetState) executeTemplate(fs vfs.FS, path string) ([]byte, error) {
-	data, err := fs.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-	return ts.executeTemplateData(path, data)
-}
-
-func (ts *TargetState) executeTemplateData(name string, data []byte) (_ []byte, err error) {
-	tmpl, err := template.New(name).Option("missingkey=error").Funcs(ts.Funcs).Parse(string(data))
-	if err != nil {
-		return nil, fmt.Errorf("%s: %v", name, err)
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			if tfe, ok := r.(templateFuncError); ok {
-				err = tfe.err
-			} else {
-				panic(r)
-			}
-		}
-	}()
-	output := &bytes.Buffer{}
-	if err = tmpl.Execute(output, ts.Data); err != nil {
-		return nil, fmt.Errorf("%s: %v", name, err)
-	}
-	return output.Bytes(), nil
-}
-
-func (ts *TargetState) findEntries(dirNames []string) (map[string]Entry, error) {
-	entries := ts.Entries
-	for i, dirName := range dirNames {
-		if entry, ok := entries[dirName]; !ok {
-			return nil, os.ErrNotExist
-		} else if dir, ok := entry.(*Dir); ok {
-			entries = dir.Entries
-		} else {
-			return nil, fmt.Errorf("%s: not a directory", filepath.Join(dirNames[:i+1]...))
-		}
-	}
-	return entries, nil
-}
-
-func (ts *TargetState) findEntry(name string) (Entry, error) {
-	names := splitPathList(name)
-	entries, err := ts.findEntries(names[:len(names)-1])
-	if err != nil {
-		return nil, err
-	}
-	return entries[names[len(names)-1]], nil
 }

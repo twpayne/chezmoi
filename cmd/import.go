@@ -83,5 +83,5 @@ func (c *Config) runImportCommand(fs vfs.FS, cmd *cobra.Command, args []string) 
 			return err
 		}
 	}
-	return ts.AddArchive(tar.NewReader(r), c.importC.destination, c.importC.stripComponents, mutator)
+	return ts.Import(tar.NewReader(r), c.importC.destination, c.importC.stripComponents, mutator)
 }
