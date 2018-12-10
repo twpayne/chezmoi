@@ -38,11 +38,11 @@ func (c *Config) runEditCommand(fs vfs.FS, command *cobra.Command, args []string
 	if c.edit.prompt {
 		c.edit.diff = true
 	}
-	targetState, err := c.getTargetState(fs)
+	ts, err := c.getTargetState(fs)
 	if err != nil {
 		return err
 	}
-	entries, err := c.getEntries(targetState, args)
+	entries, err := c.getEntries(ts, args)
 	if err != nil {
 		return err
 	}
@@ -78,7 +78,7 @@ func (c *Config) runEditCommand(fs vfs.FS, command *cobra.Command, args []string
 		if c.edit.diff {
 			mutator = chezmoi.NewLoggingMutator(os.Stdout, mutator)
 		}
-		if err := entry.Apply(readOnlyFS, targetState.TargetDir, targetState.Umask, mutator); err != nil {
+		if err := entry.Apply(readOnlyFS, ts.TargetDir, ts.Umask, mutator); err != nil {
 			return err
 		}
 		if c.edit.apply && anyMutator.Mutated() {
@@ -97,7 +97,7 @@ func (c *Config) runEditCommand(fs vfs.FS, command *cobra.Command, args []string
 					c.edit.prompt = false
 				}
 			}
-			if err := entry.Apply(readOnlyFS, targetState.TargetDir, targetState.Umask, applyMutator); err != nil {
+			if err := entry.Apply(readOnlyFS, ts.TargetDir, ts.Umask, applyMutator); err != nil {
 				return err
 			}
 		}

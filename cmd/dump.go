@@ -47,24 +47,24 @@ func (c *Config) runDumpCommand(fs vfs.FS, command *cobra.Command, args []string
 	if !ok {
 		return fmt.Errorf("unknown format: %s", c.dump.format)
 	}
-	targetState, err := c.getTargetState(fs)
+	ts, err := c.getTargetState(fs)
 	if err != nil {
 		return err
 	}
 	var concreteValue interface{}
 	if len(args) == 0 {
-		concreteValue, err = targetState.ConcreteValue(c.dump.recursive)
+		concreteValue, err = ts.ConcreteValue(c.dump.recursive)
 		if err != nil {
 			return err
 		}
 	} else {
-		entries, err := c.getEntries(targetState, args)
+		entries, err := c.getEntries(ts, args)
 		if err != nil {
 			return err
 		}
 		var concreteValues []interface{}
 		for _, entry := range entries {
-			entryConcreteValue, err := entry.ConcreteValue(targetState.TargetDir, targetState.SourceDir, c.dump.recursive)
+			entryConcreteValue, err := entry.ConcreteValue(ts.TargetDir, ts.SourceDir, c.dump.recursive)
 			if err != nil {
 				return err
 			}

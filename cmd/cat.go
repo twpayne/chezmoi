@@ -21,11 +21,11 @@ func init() {
 }
 
 func (c *Config) runCatCommand(fs vfs.FS, command *cobra.Command, args []string) error {
-	targetState, err := c.getTargetState(fs)
+	ts, err := c.getTargetState(fs)
 	if err != nil {
 		return err
 	}
-	entries, err := c.getEntries(targetState, args)
+	entries, err := c.getEntries(ts, args)
 	if err != nil {
 		return err
 	}

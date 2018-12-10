@@ -42,11 +42,11 @@ func (c *Config) runChattrCommand(fs vfs.FS, cmd *cobra.Command, args []string) 
 	if err != nil {
 		return err
 	}
-	targetState, err := c.getTargetState(fs)
+	ts, err := c.getTargetState(fs)
 	if err != nil {
 		return err
 	}
-	entries, err := c.getEntries(targetState, args[1:])
+	entries, err := c.getEntries(ts, args[1:])
 	if err != nil {
 		return err
 	}
@@ -80,7 +80,7 @@ func (c *Config) runChattrCommand(fs vfs.FS, cmd *cobra.Command, args []string) 
 			newSourceName = psfn.SourceFileName()
 		}
 		if newSourceName != oldSourceName {
-			renames[filepath.Join(targetState.SourceDir, oldSourceName)] = filepath.Join(targetState.SourceDir, newSourceName)
+			renames[filepath.Join(ts.SourceDir, oldSourceName)] = filepath.Join(ts.SourceDir, newSourceName)
 		}
 	}
 

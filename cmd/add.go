@@ -33,7 +33,7 @@ func init() {
 }
 
 func (c *Config) runAddCommand(fs vfs.FS, command *cobra.Command, args []string) error {
-	targetState, err := c.getTargetState(fs)
+	ts, err := c.getTargetState(fs)
 	if err != nil {
 		return err
 	}
@@ -65,12 +65,12 @@ func (c *Config) runAddCommand(fs vfs.FS, command *cobra.Command, args []string)
 				if err != nil {
 					return err
 				}
-				return targetState.Add(fs, path, info, c.add.empty, c.add.template, mutator)
+				return ts.Add(fs, path, info, c.add.empty, c.add.template, mutator)
 			}); err != nil {
 				return err
 			}
 		} else {
-			if err := targetState.Add(fs, path, nil, c.add.empty, c.add.template, mutator); err != nil {
+			if err := ts.Add(fs, path, nil, c.add.empty, c.add.template, mutator); err != nil {
 				return err
 			}
 		}

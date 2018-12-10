@@ -42,7 +42,7 @@ func init() {
 }
 
 func (c *Config) runImportCommand(fs vfs.FS, cmd *cobra.Command, args []string) error {
-	targetState, err := c.getTargetState(fs)
+	ts, err := c.getTargetState(fs)
 	if err != nil {
 		return err
 	}
@@ -72,7 +72,7 @@ func (c *Config) runImportCommand(fs vfs.FS, cmd *cobra.Command, args []string) 
 	}
 	mutator := c.getDefaultMutator(fs)
 	if c.importC.removeDestination {
-		entry, err := targetState.Get(c.importC.destination)
+		entry, err := ts.Get(c.importC.destination)
 		switch {
 		case err == nil:
 			if err := mutator.RemoveAll(filepath.Join(c.SourceDir, entry.SourceName())); err != nil {
@@ -83,5 +83,5 @@ func (c *Config) runImportCommand(fs vfs.FS, cmd *cobra.Command, args []string) 
 			return err
 		}
 	}
-	return targetState.AddArchive(tar.NewReader(r), c.importC.destination, c.importC.stripComponents, mutator)
+	return ts.AddArchive(tar.NewReader(r), c.importC.destination, c.importC.stripComponents, mutator)
 }
