@@ -1,10 +1,18 @@
 package cmd
 
 import (
-	"github.com/davecgh/go-spew/spew"
+	"encoding/json"
+	"fmt"
+	"os"
+	"strings"
+
 	"github.com/spf13/cobra"
 	vfs "github.com/twpayne/go-vfs"
 )
+
+type dumpCommandConfig struct {
+	format string
+}
 
 var dumpCommand = &cobra.Command{
 	Use:   "dump",
@@ -14,6 +22,9 @@ var dumpCommand = &cobra.Command{
 
 func init() {
 	rootCommand.AddCommand(dumpCommand)
+
+	persistentFlags := dumpCommand.PersistentFlags()
+	persistentFlags.StringVarP(&config.dump.format, "format", "f", "json", "format (JSON)")
 }
 
 func (c *Config) runDumpCommand(fs vfs.FS, command *cobra.Command, args []string) error {
@@ -21,19 +32,33 @@ func (c *Config) runDumpCommand(fs vfs.FS, command *cobra.Command, args []string
 	if err != nil {
 		return err
 	}
+	var concreteValue interface{}
 	if len(args) == 0 {
-		spew.Dump(targetState)
+		concreteValue, err = targetState.ConcreteValue()
+		if err != nil {
+			return err
+		}
 	} else {
 		entries, err := c.getEntries(targetState, args)
 		if err != nil {
 			return err
 		}
+		var concreteValues []interface{}
 		for _, entry := range entries {
-			if err := entry.Evaluate(); err != nil {
+			entryConcreteValue, err := entry.ConcreteValue()
+			if err != nil {
 				return err
 			}
-			spew.Dump(entry)
+			concreteValues = append(concreteValues, entryConcreteValue)
 		}
+		concreteValue = concreteValues
 	}
-	return nil
+	switch strings.ToLower(c.dump.format) {
+	case "json":
+		e := json.NewEncoder(os.Stdout)
+		e.SetIndent("", "  ")
+		return e.Encode(concreteValue)
+	default:
+		return fmt.Errorf("unknown format: %s", c.dump.format)
+	}
 }
