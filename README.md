@@ -311,6 +311,24 @@ The `source` command accepts the usual `-n` and `-v` flags, so you can see
 exactly what it will run without executing it.
 
 
+## Importing archives
+
+It is occasionally useful to import entire archives of configuration into your
+home directory. The `import` command does this. For example, to import the
+latest version
+[`github.com/robbyrussell/oh-my-zsh`](https://github.com/robbyrussell/oh-my-zsh)
+to your `~/.oh-my-zsh` directory, run:
+
+    $ curl -s -L -o oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
+    $ chezmoi import --strip-components 1 --destination ~/.oh-my-zsh oh-my-zsh-master.tar.gz
+
+Note that this only updates the source state. You will need to run
+
+    $ chezmoi apply
+
+to update your home directory.
+
+
 ## Under the hood
 
 `chezmoi` stores the desired state of files, symbolic links, and directories in
