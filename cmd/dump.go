@@ -46,7 +46,7 @@ func (c *Config) runDumpCommand(fs vfs.FS, command *cobra.Command, args []string
 		}
 		var concreteValues []interface{}
 		for _, entry := range entries {
-			entryConcreteValue, err := entry.ConcreteValue()
+			entryConcreteValue, err := entry.ConcreteValue(targetState.TargetDir, targetState.SourceDir)
 			if err != nil {
 				return err
 			}

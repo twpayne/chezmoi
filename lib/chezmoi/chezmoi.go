@@ -34,7 +34,7 @@ type templateFuncError struct {
 // An Entry is either a Dir, a File, or a Symlink.
 type Entry interface {
 	Apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Actuator) error
-	ConcreteValue() (interface{}, error)
+	ConcreteValue(targetDir, sourceDir string) (interface{}, error)
 	Evaluate() error
 	SourceName() string
 	TargetName() string
@@ -54,8 +54,8 @@ type File struct {
 }
 
 type fileConcreteValue struct {
-	SourceName string `json:"sourceName" yaml:"sourceName"`
-	TargetName string `json:"targetName" yaml:"targetName"`
+	SourcePath string `json:"sourcePath" yaml:"sourcePath"`
+	TargetPath string `json:"targetPath" yaml:"targetPath"`
 	Empty      bool   `json:"empty" yaml:"empty"`
 	Perm       int    `json:"perm" yaml:"perm"`
 	Template   bool   `json:"template" yaml:"template"`
@@ -71,8 +71,8 @@ type Dir struct {
 }
 
 type dirConcreteValue struct {
-	SourceName string        `json:"sourceName" yaml:"sourceName"`
-	TargetName string        `json:"targetName" yaml:"targetName"`
+	SourcePath string        `json:"sourcePath" yaml:"sourcePath"`
+	TargetPath string        `json:"targetPath" yaml:"targetPath"`
 	Perm       int           `json:"perm" yaml:"perm"`
 	Entries    []interface{} `json:"entries" yaml:"entries"`
 }
@@ -88,8 +88,8 @@ type Symlink struct {
 }
 
 type symlinkConcreteValue struct {
-	SourceName string `json:"sourceName" yaml:"sourceName"`
-	TargetName string `json:"targetName" yaml:"targetName"`
+	SourcePath string `json:"sourcePath" yaml:"sourcePath"`
+	TargetPath string `json:"targetPath" yaml:"targetPath"`
 	Template   bool   `json:"template" yaml:"template"`
 	LinkName   string `json:"linkName" yaml:"linkName"`
 }
@@ -182,18 +182,18 @@ func (d *Dir) Apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Act
 }
 
 // ConcreteValue implements Entry.ConcreteValue.
-func (d *Dir) ConcreteValue() (interface{}, error) {
+func (d *Dir) ConcreteValue(targetDir, sourceDir string) (interface{}, error) {
 	var entryConcreteValues []interface{}
 	for _, entryName := range sortedEntryNames(d.Entries) {
-		entryConcreteValue, err := d.Entries[entryName].ConcreteValue()
+		entryConcreteValue, err := d.Entries[entryName].ConcreteValue(targetDir, sourceDir)
 		if err != nil {
 			return nil, err
 		}
 		entryConcreteValues = append(entryConcreteValues, entryConcreteValue)
 	}
 	return &dirConcreteValue{
-		SourceName: d.SourceName(),
-		TargetName: d.TargetName(),
+		SourcePath: filepath.Join(sourceDir, d.SourceName()),
+		TargetPath: filepath.Join(targetDir, d.TargetName()),
 		Perm:       int(d.Perm),
 		Entries:    entryConcreteValues,
 	}, nil
@@ -287,14 +287,14 @@ func (f *File) Apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Ac
 }
 
 // ConcreteValue implements Entry.ConcreteValue.
-func (f *File) ConcreteValue() (interface{}, error) {
+func (f *File) ConcreteValue(targetDir, sourceDir string) (interface{}, error) {
 	contents, err := f.Contents()
 	if err != nil {
 		return nil, err
 	}
 	return &fileConcreteValue{
-		SourceName: f.SourceName(),
-		TargetName: f.TargetName(),
+		SourcePath: filepath.Join(sourceDir, f.SourceName()),
+		TargetPath: filepath.Join(targetDir, f.TargetName()),
 		Empty:      f.Empty,
 		Perm:       int(f.Perm),
 		Template:   f.Template,
@@ -376,14 +376,14 @@ func (s *Symlink) Apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator
 }
 
 // ConcreteValue implements Entry.ConcreteValue.
-func (s *Symlink) ConcreteValue() (interface{}, error) {
+func (s *Symlink) ConcreteValue(targetDir, sourceDir string) (interface{}, error) {
 	linkName, err := s.LinkName()
 	if err != nil {
 		return nil, err
 	}
 	return &symlinkConcreteValue{
-		SourceName: s.SourceName(),
-		TargetName: s.TargetName(),
+		SourcePath: filepath.Join(sourceDir, s.SourceName()),
+		TargetPath: filepath.Join(targetDir, s.TargetName()),
 		Template:   s.Template,
 		LinkName:   linkName,
 	}, nil
@@ -618,7 +618,7 @@ func (ts *TargetState) Apply(fs vfs.FS, actuator Actuator) error {
 func (ts *TargetState) ConcreteValue() (interface{}, error) {
 	var entryConcreteValues []interface{}
 	for _, entryName := range sortedEntryNames(ts.Entries) {
-		entryConcreteValue, err := ts.Entries[entryName].ConcreteValue()
+		entryConcreteValue, err := ts.Entries[entryName].ConcreteValue(ts.TargetDir, ts.SourceDir)
 		if err != nil {
 			return nil, err
 		}
