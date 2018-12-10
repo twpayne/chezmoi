@@ -82,6 +82,36 @@ func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEm
 
 	name := filepath.Base(targetName)
 	switch {
+	case info.Mode().IsDir():
+		if entry, ok := entries[name]; ok {
+			if _, ok := entry.(*Dir); !ok {
+				return fmt.Errorf("%s: already added and not a directory", targetName)
+			}
+			return nil // entry already exists
+		}
+		sourceName := ParsedSourceDirName{
+			DirName: name,
+			Perm:    info.Mode() & os.ModePerm,
+		}.SourceDirName()
+		if dirSourceName != "" {
+			sourceName = filepath.Join(dirSourceName, sourceName)
+		}
+		if err := mutator.Mkdir(filepath.Join(ts.SourceDir, sourceName), 0777&^ts.Umask); err != nil {
+			return err
+		}
+		// If the directory is empty, add a .keep file so the directory is
+		// managed by git. Chezmoi will ignore the .keep file as it begins with
+		// a dot.
+		infos, err := fs.ReadDir(targetPath)
+		if err != nil {
+			return err
+		}
+		if len(infos) == 0 {
+			if err := mutator.WriteFile(filepath.Join(ts.SourceDir, sourceName, ".keep"), nil, 0666&^ts.Umask, nil); err != nil {
+				return err
+			}
+		}
+		entries[name] = newDir(sourceName, targetName, info.Mode()&os.ModePerm)
 	case info.Mode().IsRegular():
 		if entry, ok := entries[name]; ok {
 			if _, ok := entry.(*File); !ok {
@@ -119,36 +149,6 @@ func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEm
 			Template:   addTemplate,
 			contents:   data,
 		}
-	case info.Mode().IsDir():
-		if entry, ok := entries[name]; ok {
-			if _, ok := entry.(*Dir); !ok {
-				return fmt.Errorf("%s: already added and not a directory", targetName)
-			}
-			return nil // entry already exists
-		}
-		sourceName := ParsedSourceDirName{
-			DirName: name,
-			Perm:    info.Mode() & os.ModePerm,
-		}.SourceDirName()
-		if dirSourceName != "" {
-			sourceName = filepath.Join(dirSourceName, sourceName)
-		}
-		if err := mutator.Mkdir(filepath.Join(ts.SourceDir, sourceName), 0777&^ts.Umask); err != nil {
-			return err
-		}
-		// If the directory is empty, add a .keep file so the directory is
-		// managed by git. Chezmoi will ignore the .keep file as it begins with
-		// a dot.
-		infos, err := fs.ReadDir(targetPath)
-		if err != nil {
-			return err
-		}
-		if len(infos) == 0 {
-			if err := mutator.WriteFile(filepath.Join(ts.SourceDir, sourceName, ".keep"), nil, 0666&^ts.Umask, nil); err != nil {
-				return err
-			}
-		}
-		entries[name] = newDir(sourceName, targetName, info.Mode()&os.ModePerm)
 	case info.Mode()&os.ModeType == os.ModeSymlink:
 		if entry, ok := entries[name]; ok {
 			if _, ok := entry.(*Symlink); !ok {
@@ -301,6 +301,17 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 			return nil
 		}
 		switch {
+		case info.Mode().IsDir():
+			components := splitPathList(relPath)
+			dirNames, perms := parseDirNameComponents(components)
+			targetName := filepath.Join(dirNames...)
+			entries, err := ts.findEntries(dirNames[:len(dirNames)-1])
+			if err != nil {
+				return err
+			}
+			dirName := dirNames[len(dirNames)-1]
+			perm := perms[len(perms)-1]
+			entries[dirName] = newDir(relPath, targetName, perm)
 		case info.Mode().IsRegular():
 			psfp := parseSourceFilePath(relPath)
 			entries, err := ts.findEntries(psfp.dirNames)
@@ -349,17 +360,6 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 				return fmt.Errorf("%v: unsupported mode: %d", path, psfp.Mode&os.ModeType)
 			}
 			entries[psfp.FileName] = entry
-		case info.Mode().IsDir():
-			components := splitPathList(relPath)
-			dirNames, perms := parseDirNameComponents(components)
-			targetName := filepath.Join(dirNames...)
-			entries, err := ts.findEntries(dirNames[:len(dirNames)-1])
-			if err != nil {
-				return err
-			}
-			dirName := dirNames[len(dirNames)-1]
-			perm := perms[len(perms)-1]
-			entries[dirName] = newDir(relPath, targetName, perm)
 		default:
 			return fmt.Errorf("unsupported file type: %s", path)
 		}
@@ -397,6 +397,32 @@ func (ts *TargetState) addArchiveHeader(r *tar.Reader, header *tar.Header, desti
 	}
 	name := filepath.Base(targetName)
 	switch header.Typeflag {
+	case tar.TypeDir:
+		var existingDir *Dir
+		if entry, ok := entries[name]; ok {
+			existingDir, ok = entry.(*Dir)
+			if !ok {
+				return fmt.Errorf("%s: already added and not a directory", targetName)
+			}
+		}
+		perm := os.FileMode(header.Mode) & os.ModePerm
+		sourceName := ParsedSourceDirName{
+			DirName: name,
+			Perm:    perm,
+		}.SourceDirName()
+		if parentDirSourceName != "" {
+			sourceName = filepath.Join(parentDirSourceName, sourceName)
+		}
+		dir := newDir(sourceName, targetName, perm)
+		if existingDir != nil {
+			if existingDir.sourceName == dir.sourceName {
+				return nil
+			}
+			return mutator.Rename(filepath.Join(ts.SourceDir, existingDir.sourceName), filepath.Join(ts.SourceDir, dir.sourceName))
+		}
+		// FIXME Add a .keep file if the directory is empty
+		entries[name] = dir
+		return mutator.Mkdir(filepath.Join(ts.SourceDir, sourceName), 0777&^ts.Umask)
 	case tar.TypeReg:
 		var existingFile *File
 		var existingContents []byte
@@ -445,32 +471,6 @@ func (ts *TargetState) addArchiveHeader(r *tar.Reader, header *tar.Header, desti
 		}
 		entries[name] = file
 		return mutator.WriteFile(filepath.Join(ts.SourceDir, sourceName), contents, 0666&^ts.Umask, existingContents)
-	case tar.TypeDir:
-		var existingDir *Dir
-		if entry, ok := entries[name]; ok {
-			existingDir, ok = entry.(*Dir)
-			if !ok {
-				return fmt.Errorf("%s: already added and not a directory", targetName)
-			}
-		}
-		perm := os.FileMode(header.Mode) & os.ModePerm
-		sourceName := ParsedSourceDirName{
-			DirName: name,
-			Perm:    perm,
-		}.SourceDirName()
-		if parentDirSourceName != "" {
-			sourceName = filepath.Join(parentDirSourceName, sourceName)
-		}
-		dir := newDir(sourceName, targetName, perm)
-		if existingDir != nil {
-			if existingDir.sourceName == dir.sourceName {
-				return nil
-			}
-			return mutator.Rename(filepath.Join(ts.SourceDir, existingDir.sourceName), filepath.Join(ts.SourceDir, dir.sourceName))
-		}
-		// FIXME Add a .keep file if the directory is empty
-		entries[name] = dir
-		return mutator.Mkdir(filepath.Join(ts.SourceDir, sourceName), 0777&^ts.Umask)
 	case tar.TypeSymlink:
 		var existingSymlink *Symlink
 		var existingLinkName string
