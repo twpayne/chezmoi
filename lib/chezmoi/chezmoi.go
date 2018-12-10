@@ -4,6 +4,8 @@ import (
 	"archive/tar"
 	"bytes"
 	"fmt"
+	"io"
+	"io/ioutil"
 	"os"
 	"os/user"
 	"path/filepath"
@@ -657,6 +659,27 @@ func (ts *TargetState) Get(target string) (Entry, error) {
 	return ts.findEntry(targetName)
 }
 
+func (ts *TargetState) AddArchive(r *tar.Reader, destinationDir string, stripComponents int, actuator Actuator) error {
+	for {
+		header, err := r.Next()
+		if err == io.EOF {
+			break
+		} else if err != nil {
+			return err
+		}
+		switch header.Typeflag {
+		case tar.TypeDir, tar.TypeReg, tar.TypeSymlink:
+			if err := ts.addArchiveHeader(r, header, destinationDir, stripComponents, actuator); err != nil {
+				return err
+			}
+		case tar.TypeXGlobalHeader:
+		default:
+			return fmt.Errorf("%s: unspported typeflag '%c'", header.Name, header.Typeflag)
+		}
+	}
+	return nil
+}
+
 // Populate walks fs from ts.SourceDir to populate ts.
 func (ts *TargetState) Populate(fs vfs.FS) error {
 	return vfs.Walk(fs, ts.SourceDir, func(path string, info os.FileInfo, _ error) error {
@@ -739,6 +762,153 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 		}
 		return nil
 	})
+}
+
+func (ts *TargetState) addArchiveHeader(r *tar.Reader, header *tar.Header, destinationDir string, stripComponents int, actuator Actuator) error {
+	targetPath := header.Name
+	if stripComponents > 0 {
+		targetPath = filepath.Join(strings.Split(targetPath, string(os.PathSeparator))[stripComponents:]...)
+	}
+	if destinationDir != "" {
+		targetPath = filepath.Join(destinationDir, targetPath)
+	} else {
+		targetPath = filepath.Join(ts.TargetDir, targetPath)
+	}
+	targetName, err := filepath.Rel(ts.TargetDir, targetPath)
+	if err != nil {
+		return err
+	}
+	parentDirSourceName := ""
+	entries := ts.Entries
+	if parentDirName := filepath.Dir(targetName); parentDirName != "." {
+		parentEntry, err := ts.findEntry(parentDirName)
+		if err != nil {
+			return err
+		}
+		parentDir, ok := parentEntry.(*Dir)
+		if !ok {
+			return fmt.Errorf("%s: parent is not a directory", targetName)
+		}
+		parentDirSourceName = parentDir.sourceName
+		entries = parentDir.Entries
+	}
+	name := filepath.Base(targetName)
+	switch header.Typeflag {
+	case tar.TypeReg:
+		var existingFile *File
+		var existingContents []byte
+		if entry, ok := entries[name]; ok {
+			existingFile, ok = entry.(*File)
+			if !ok {
+				return fmt.Errorf("%s: already added and not a regular file", targetName)
+			}
+			existingContents, err = existingFile.Contents()
+			if err != nil {
+				return err
+			}
+		}
+		perm := os.FileMode(header.Mode) & os.ModePerm
+		empty := header.Size == 0
+		sourceName := ParsedSourceFileName{
+			FileName: name,
+			Mode:     perm,
+			Empty:    empty,
+		}.SourceFileName()
+		if parentDirSourceName != "" {
+			sourceName = filepath.Join(parentDirSourceName, sourceName)
+		}
+		contents, err := ioutil.ReadAll(r)
+		if err != nil {
+			return err
+		}
+		file := &File{
+			sourceName: sourceName,
+			targetName: targetName,
+			Empty:      empty,
+			Perm:       perm,
+			Template:   false,
+			contents:   contents,
+		}
+		if existingFile != nil {
+			if bytes.Equal(existingFile.contents, file.contents) {
+				if existingFile.sourceName == file.sourceName {
+					return nil
+				}
+				return actuator.Rename(filepath.Join(ts.SourceDir, existingFile.sourceName), filepath.Join(ts.SourceDir, file.sourceName))
+			}
+			if err := actuator.RemoveAll(filepath.Join(ts.SourceDir, existingFile.sourceName)); err != nil {
+				return err
+			}
+		}
+		entries[name] = file
+		return actuator.WriteFile(filepath.Join(ts.SourceDir, sourceName), contents, 0666&^ts.Umask, existingContents)
+	case tar.TypeDir:
+		var existingDir *Dir
+		if entry, ok := entries[name]; ok {
+			existingDir, ok = entry.(*Dir)
+			if !ok {
+				return fmt.Errorf("%s: already added and not a directory", targetName)
+			}
+		}
+		perm := os.FileMode(header.Mode) & os.ModePerm
+		sourceName := ParsedSourceDirName{
+			DirName: name,
+			Perm:    perm,
+		}.SourceDirName()
+		if parentDirSourceName != "" {
+			sourceName = filepath.Join(parentDirSourceName, sourceName)
+		}
+		dir := newDir(sourceName, targetName, perm)
+		if existingDir != nil {
+			if existingDir.sourceName == dir.sourceName {
+				return nil
+			}
+			return actuator.Rename(filepath.Join(ts.SourceDir, existingDir.sourceName), filepath.Join(ts.SourceDir, dir.sourceName))
+		}
+		// FIXME Add a .keep file if the directory is empty
+		entries[name] = dir
+		return actuator.Mkdir(filepath.Join(ts.SourceDir, sourceName), 0777&^ts.Umask)
+	case tar.TypeSymlink:
+		var existingSymlink *Symlink
+		var existingLinkName string
+		if entry, ok := entries[name]; ok {
+			existingSymlink, ok = entry.(*Symlink)
+			if !ok {
+				return fmt.Errorf("%s: already added and not a symlink", targetName)
+			}
+			existingLinkName, err = existingSymlink.LinkName()
+			if err != nil {
+				return err
+			}
+		}
+		sourceName := ParsedSourceFileName{
+			FileName: name,
+			Mode:     os.ModeSymlink,
+		}.SourceFileName()
+		if parentDirSourceName != "" {
+			sourceName = filepath.Join(parentDirSourceName, sourceName)
+		}
+		symlink := &Symlink{
+			sourceName: sourceName,
+			targetName: targetName,
+			linkName:   header.Linkname,
+		}
+		if existingSymlink != nil {
+			if existingSymlink.linkName == symlink.linkName {
+				if existingSymlink.sourceName == symlink.sourceName {
+					return nil
+				}
+				return actuator.Rename(filepath.Join(ts.SourceDir, existingSymlink.sourceName), filepath.Join(ts.SourceDir, symlink.sourceName))
+			}
+			if err := actuator.RemoveAll(filepath.Join(ts.SourceDir, existingSymlink.sourceName)); err != nil {
+				return err
+			}
+		}
+		entries[name] = symlink
+		return actuator.WriteFile(filepath.Join(ts.SourceDir, symlink.sourceName), []byte(symlink.linkName), 0666&^ts.Umask, []byte(existingLinkName))
+	default:
+		return fmt.Errorf("%s: unspported typeflag '%c'", header.Name, header.Typeflag)
+	}
 }
 
 func (ts *TargetState) executeTemplate(fs vfs.FS, path string) ([]byte, error) {
