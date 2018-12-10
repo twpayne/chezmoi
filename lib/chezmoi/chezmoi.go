@@ -34,6 +34,7 @@ type templateFuncError struct {
 // An Entry is either a Dir, a File, or a Symlink.
 type Entry interface {
 	Apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Actuator) error
+	ConcreteValue() (interface{}, error)
 	Evaluate() error
 	SourceName() string
 	TargetName() string
@@ -52,12 +53,28 @@ type File struct {
 	evaluateContents func() ([]byte, error)
 }
 
+type fileConcreteValue struct {
+	SourceName string `json:"sourceName"`
+	TargetName string `json:"targetName"`
+	Empty      bool   `json:"empty"`
+	Perm       int    `json:"perm"`
+	Template   bool   `json:"template"`
+	Contents   string `json:"contents"`
+}
+
 // A Dir represents the target state of a directory.
 type Dir struct {
 	sourceName string
 	targetName string
 	Perm       os.FileMode
 	Entries    map[string]Entry
+}
+
+type dirConcreteValue struct {
+	SourceName string        `json:"sourceName"`
+	TargetName string        `json:"targetName"`
+	Perm       int           `json:"perm"`
+	Entries    []interface{} `json:"entries"`
 }
 
 // A Symlink represents the target state of a symlink.
@@ -68,6 +85,13 @@ type Symlink struct {
 	linkName         string
 	linkNameErr      error
 	evaluateLinkName func() (string, error)
+}
+
+type symlinkConcreteValue struct {
+	SourceName string `json:"sourceName"`
+	TargetName string `json:"targetName"`
+	Template   bool   `json:"template"`
+	LinkName   string `json:"linkName"`
 }
 
 // A TargetState represents the root target state.
@@ -157,6 +181,24 @@ func (d *Dir) Apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Act
 	return nil
 }
 
+// ConcreteValue implements Entry.ConcreteValue.
+func (d *Dir) ConcreteValue() (interface{}, error) {
+	var entryConcreteValues []interface{}
+	for _, entryName := range sortedEntryNames(d.Entries) {
+		entryConcreteValue, err := d.Entries[entryName].ConcreteValue()
+		if err != nil {
+			return nil, err
+		}
+		entryConcreteValues = append(entryConcreteValues, entryConcreteValue)
+	}
+	return &dirConcreteValue{
+		SourceName: d.SourceName(),
+		TargetName: d.TargetName(),
+		Perm:       int(d.Perm),
+		Entries:    entryConcreteValues,
+	}, nil
+}
+
 // Evaluate evaluates all entries in d.
 func (d *Dir) Evaluate() error {
 	for _, entryName := range sortedEntryNames(d.Entries) {
@@ -244,6 +286,22 @@ func (f *File) Apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Ac
 	return actuator.WriteFile(targetPath, contents, f.Perm&^umask, currData)
 }
 
+// ConcreteValue implements Entry.ConcreteValue.
+func (f *File) ConcreteValue() (interface{}, error) {
+	contents, err := f.Contents()
+	if err != nil {
+		return nil, err
+	}
+	return &fileConcreteValue{
+		SourceName: f.SourceName(),
+		TargetName: f.TargetName(),
+		Empty:      f.Empty,
+		Perm:       int(f.Perm),
+		Template:   f.Template,
+		Contents:   string(contents),
+	}, nil
+}
+
 // Evaluate evaluates f's contents.
 func (f *File) Evaluate() error {
 	_, err := f.Contents()
@@ -315,6 +373,20 @@ func (s *Symlink) Apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator
 		return err
 	}
 	return actuator.WriteSymlink(target, targetPath)
+}
+
+// ConcreteValue implements Entry.ConcreteValue.
+func (s *Symlink) ConcreteValue() (interface{}, error) {
+	linkName, err := s.LinkName()
+	if err != nil {
+		return nil, err
+	}
+	return &symlinkConcreteValue{
+		SourceName: s.SourceName(),
+		TargetName: s.TargetName(),
+		Template:   s.Template,
+		LinkName:   linkName,
+	}, nil
 }
 
 // Evaluate evaluates s's target.
@@ -540,6 +612,19 @@ func (ts *TargetState) Apply(fs vfs.FS, actuator Actuator) error {
 		}
 	}
 	return nil
+}
+
+// ConcreteValue returns a value suitable for serialization.
+func (ts *TargetState) ConcreteValue() (interface{}, error) {
+	var entryConcreteValues []interface{}
+	for _, entryName := range sortedEntryNames(ts.Entries) {
+		entryConcreteValue, err := ts.Entries[entryName].ConcreteValue()
+		if err != nil {
+			return nil, err
+		}
+		entryConcreteValues = append(entryConcreteValues, entryConcreteValue)
+	}
+	return entryConcreteValues, nil
 }
 
 // Evaluate evaluates all of the entries in ts.
