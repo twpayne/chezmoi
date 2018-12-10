@@ -34,6 +34,7 @@ type templateFuncError struct {
 // An Entry is either a Dir, a File, or a Symlink.
 type Entry interface {
 	Apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Actuator) error
+	ConcreteValue(targetDir, sourceDir string, recursive bool) (interface{}, error)
 	Evaluate() error
 	SourceName() string
 	TargetName() string
@@ -52,12 +53,30 @@ type File struct {
 	evaluateContents func() ([]byte, error)
 }
 
+type fileConcreteValue struct {
+	Type       string `json:"type" yaml:"type"`
+	SourcePath string `json:"sourcePath" yaml:"sourcePath"`
+	TargetPath string `json:"targetPath" yaml:"targetPath"`
+	Empty      bool   `json:"empty" yaml:"empty"`
+	Perm       int    `json:"perm" yaml:"perm"`
+	Template   bool   `json:"template" yaml:"template"`
+	Contents   string `json:"contents" yaml:"contents"`
+}
+
 // A Dir represents the target state of a directory.
 type Dir struct {
 	sourceName string
 	targetName string
 	Perm       os.FileMode
 	Entries    map[string]Entry
+}
+
+type dirConcreteValue struct {
+	Type       string        `json:"type" yaml:"type"`
+	SourcePath string        `json:"sourcePath" yaml:"sourcePath"`
+	TargetPath string        `json:"targetPath" yaml:"targetPath"`
+	Perm       int           `json:"perm" yaml:"perm"`
+	Entries    []interface{} `json:"entries" yaml:"entries"`
 }
 
 // A Symlink represents the target state of a symlink.
@@ -68,6 +87,14 @@ type Symlink struct {
 	linkName         string
 	linkNameErr      error
 	evaluateLinkName func() (string, error)
+}
+
+type symlinkConcreteValue struct {
+	Type       string `json:"type" yaml:"type"`
+	SourcePath string `json:"sourcePath" yaml:"sourcePath"`
+	TargetPath string `json:"targetPath" yaml:"targetPath"`
+	Template   bool   `json:"template" yaml:"template"`
+	LinkName   string `json:"linkName" yaml:"linkName"`
 }
 
 // A TargetState represents the root target state.
@@ -157,6 +184,27 @@ func (d *Dir) Apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Act
 	return nil
 }
 
+// ConcreteValue implements Entry.ConcreteValue.
+func (d *Dir) ConcreteValue(targetDir, sourceDir string, recursive bool) (interface{}, error) {
+	var entryConcreteValues []interface{}
+	if recursive {
+		for _, entryName := range sortedEntryNames(d.Entries) {
+			entryConcreteValue, err := d.Entries[entryName].ConcreteValue(targetDir, sourceDir, recursive)
+			if err != nil {
+				return nil, err
+			}
+			entryConcreteValues = append(entryConcreteValues, entryConcreteValue)
+		}
+	}
+	return &dirConcreteValue{
+		Type:       "dir",
+		SourcePath: filepath.Join(sourceDir, d.SourceName()),
+		TargetPath: filepath.Join(targetDir, d.TargetName()),
+		Perm:       int(d.Perm),
+		Entries:    entryConcreteValues,
+	}, nil
+}
+
 // Evaluate evaluates all entries in d.
 func (d *Dir) Evaluate() error {
 	for _, entryName := range sortedEntryNames(d.Entries) {
@@ -244,6 +292,23 @@ func (f *File) Apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator Ac
 	return actuator.WriteFile(targetPath, contents, f.Perm&^umask, currData)
 }
 
+// ConcreteValue implements Entry.ConcreteValue.
+func (f *File) ConcreteValue(targetDir, sourceDir string, recursive bool) (interface{}, error) {
+	contents, err := f.Contents()
+	if err != nil {
+		return nil, err
+	}
+	return &fileConcreteValue{
+		Type:       "file",
+		SourcePath: filepath.Join(sourceDir, f.SourceName()),
+		TargetPath: filepath.Join(targetDir, f.TargetName()),
+		Empty:      f.Empty,
+		Perm:       int(f.Perm),
+		Template:   f.Template,
+		Contents:   string(contents),
+	}, nil
+}
+
 // Evaluate evaluates f's contents.
 func (f *File) Evaluate() error {
 	_, err := f.Contents()
@@ -315,6 +380,21 @@ func (s *Symlink) Apply(fs vfs.FS, targetDir string, umask os.FileMode, actuator
 		return err
 	}
 	return actuator.WriteSymlink(target, targetPath)
+}
+
+// ConcreteValue implements Entry.ConcreteValue.
+func (s *Symlink) ConcreteValue(targetDir, sourceDir string, recursive bool) (interface{}, error) {
+	linkName, err := s.LinkName()
+	if err != nil {
+		return nil, err
+	}
+	return &symlinkConcreteValue{
+		Type:       "symlink",
+		SourcePath: filepath.Join(sourceDir, s.SourceName()),
+		TargetPath: filepath.Join(targetDir, s.TargetName()),
+		Template:   s.Template,
+		LinkName:   linkName,
+	}, nil
 }
 
 // Evaluate evaluates s's target.
@@ -540,6 +620,19 @@ func (ts *TargetState) Apply(fs vfs.FS, actuator Actuator) error {
 		}
 	}
 	return nil
+}
+
+// ConcreteValue returns a value suitable for serialization.
+func (ts *TargetState) ConcreteValue(recursive bool) (interface{}, error) {
+	var entryConcreteValues []interface{}
+	for _, entryName := range sortedEntryNames(ts.Entries) {
+		entryConcreteValue, err := ts.Entries[entryName].ConcreteValue(ts.TargetDir, ts.SourceDir, recursive)
+		if err != nil {
+			return nil, err
+		}
+		entryConcreteValues = append(entryConcreteValues, entryConcreteValue)
+	}
+	return entryConcreteValues, nil
 }
 
 // Evaluate evaluates all of the entries in ts.

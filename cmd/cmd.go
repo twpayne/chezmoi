@@ -38,6 +38,7 @@ type Config struct {
 	Data             map[string]interface{}
 	funcs            template.FuncMap
 	add              addCommandConfig
+	dump             dumpCommandConfig
 	edit             editCommandConfig
 	keyring          keyringCommandConfig
 }
