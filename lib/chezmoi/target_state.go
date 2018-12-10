@@ -57,7 +57,7 @@ func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEm
 	}
 
 	// Add the parent directories, if needed.
-	dirSourceName := ""
+	parentDirSourceName := ""
 	entries := ts.Entries
 	if parentDirName := filepath.Dir(targetName); parentDirName != "." {
 		parentEntry, err := ts.findEntry(parentDirName)
@@ -75,9 +75,9 @@ func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEm
 		} else if _, ok := parentEntry.(*Dir); !ok {
 			return fmt.Errorf("%s: not a directory", parentDirName)
 		}
-		dir := parentEntry.(*Dir)
-		dirSourceName = dir.sourceName
-		entries = dir.Entries
+		parentDir := parentEntry.(*Dir)
+		parentDirSourceName = parentDir.sourceName
+		entries = parentDir.Entries
 	}
 
 	name := filepath.Base(targetName)
@@ -93,8 +93,8 @@ func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEm
 			DirName: name,
 			Perm:    info.Mode() & os.ModePerm,
 		}.SourceDirName()
-		if dirSourceName != "" {
-			sourceName = filepath.Join(dirSourceName, sourceName)
+		if parentDirSourceName != "" {
+			sourceName = filepath.Join(parentDirSourceName, sourceName)
 		}
 		if err := mutator.Mkdir(filepath.Join(ts.SourceDir, sourceName), 0777&^ts.Umask); err != nil {
 			return err
@@ -128,8 +128,8 @@ func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEm
 			Empty:    info.Size() == 0,
 			Template: addTemplate,
 		}.SourceFileName()
-		if dirSourceName != "" {
-			sourceName = filepath.Join(dirSourceName, sourceName)
+		if parentDirSourceName != "" {
+			sourceName = filepath.Join(parentDirSourceName, sourceName)
 		}
 		data, err := fs.ReadFile(targetPath)
 		if err != nil {
@@ -160,8 +160,8 @@ func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEm
 			FileName: name,
 			Mode:     os.ModeSymlink,
 		}.SourceFileName()
-		if dirSourceName != "" {
-			sourceName = filepath.Join(dirSourceName, sourceName)
+		if parentDirSourceName != "" {
+			sourceName = filepath.Join(parentDirSourceName, sourceName)
 		}
 		data, err := fs.Readlink(targetPath)
 		if err != nil {
