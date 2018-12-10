@@ -54,12 +54,12 @@ type File struct {
 }
 
 type fileConcreteValue struct {
-	SourceName string `json:"sourceName"`
-	TargetName string `json:"targetName"`
-	Empty      bool   `json:"empty"`
-	Perm       int    `json:"perm"`
-	Template   bool   `json:"template"`
-	Contents   string `json:"contents"`
+	SourceName string `json:"sourceName" yaml:"sourceName"`
+	TargetName string `json:"targetName" yaml:"targetName"`
+	Empty      bool   `json:"empty" yaml:"empty"`
+	Perm       int    `json:"perm" yaml:"perm"`
+	Template   bool   `json:"template" yaml:"template"`
+	Contents   string `json:"contents" yaml:"contents"`
 }
 
 // A Dir represents the target state of a directory.
@@ -71,10 +71,10 @@ type Dir struct {
 }
 
 type dirConcreteValue struct {
-	SourceName string        `json:"sourceName"`
-	TargetName string        `json:"targetName"`
-	Perm       int           `json:"perm"`
-	Entries    []interface{} `json:"entries"`
+	SourceName string        `json:"sourceName" yaml:"sourceName"`
+	TargetName string        `json:"targetName" yaml:"targetName"`
+	Perm       int           `json:"perm" yaml:"perm"`
+	Entries    []interface{} `json:"entries" yaml:"entries"`
 }
 
 // A Symlink represents the target state of a symlink.
@@ -88,10 +88,10 @@ type Symlink struct {
 }
 
 type symlinkConcreteValue struct {
-	SourceName string `json:"sourceName"`
-	TargetName string `json:"targetName"`
-	Template   bool   `json:"template"`
-	LinkName   string `json:"linkName"`
+	SourceName string `json:"sourceName" yaml:"sourceName"`
+	TargetName string `json:"targetName" yaml:"targetName"`
+	Template   bool   `json:"template" yaml:"template"`
+	LinkName   string `json:"linkName" yaml:"linkName"`
 }
 
 // A TargetState represents the root target state.

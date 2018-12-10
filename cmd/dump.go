@@ -8,6 +8,7 @@ import (
 
 	"github.com/spf13/cobra"
 	vfs "github.com/twpayne/go-vfs"
+	yaml "gopkg.in/yaml.v2"
 )
 
 type dumpCommandConfig struct {
@@ -24,7 +25,7 @@ func init() {
 	rootCommand.AddCommand(dumpCommand)
 
 	persistentFlags := dumpCommand.PersistentFlags()
-	persistentFlags.StringVarP(&config.dump.format, "format", "f", "json", "format (JSON)")
+	persistentFlags.StringVarP(&config.dump.format, "format", "f", "json", "format (JSON or YAML)")
 }
 
 func (c *Config) runDumpCommand(fs vfs.FS, command *cobra.Command, args []string) error {
@@ -58,6 +59,8 @@ func (c *Config) runDumpCommand(fs vfs.FS, command *cobra.Command, args []string
 		e := json.NewEncoder(os.Stdout)
 		e.SetIndent("", "  ")
 		return e.Encode(concreteValue)
+	case "yaml":
+		return yaml.NewEncoder(os.Stdout).Encode(concreteValue)
 	default:
 		return fmt.Errorf("unknown format: %s", c.dump.format)
 	}
