@@ -11,7 +11,6 @@ builds:
   goos:
     - linux
     - darwin
-    - windows
     - freebsd
     - openbsd
     # - dragonfly
@@ -25,8 +24,6 @@ builds:
     - ''
   ignore:
     - goos: darwin
-      goarch: 386
-    - goos: windows
       goarch: 386
 
 ## generate .tar.gz and .zip archives
