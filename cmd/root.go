@@ -13,7 +13,9 @@ import (
 
 var (
 	configFile string
-	config     Config
+	config     = Config{
+		SourceVCSCommand: "git",
+	}
 )
 
 var rootCommand = &cobra.Command{
