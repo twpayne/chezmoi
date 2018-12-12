@@ -4,7 +4,8 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strings"
+
+	"github.com/pmezard/go-difflib/difflib"
 )
 
 // A LoggingMutator wraps an Mutator and logs all of the actions it executes
@@ -76,10 +77,16 @@ func (m *LoggingMutator) WriteFile(name string, data []byte, perm os.FileMode, c
 	err := m.m.WriteFile(name, data, perm, currData)
 	if err == nil {
 		_, _ = fmt.Fprintln(m.w, action)
-		for _, section := range diff(splitLines(currData), splitLines(data)) {
-			for _, s := range section.s {
-				_, _ = fmt.Fprintf(m.w, "%c%s\n", section.ctype, s)
-			}
+		unifiedDiff := difflib.UnifiedDiff{
+			A:        difflib.SplitLines(string(currData)),
+			B:        difflib.SplitLines(string(data)),
+			FromFile: name,
+			ToFile:   name,
+			Context:  3,
+			Eol:      "\n",
+		}
+		if err := difflib.WriteUnifiedDiff(m.w, unifiedDiff); err != nil {
+			return err
 		}
 	} else {
 		_, _ = fmt.Fprintf(m.w, "%s: %v\n", action, err)
@@ -97,11 +104,4 @@ func (m *LoggingMutator) WriteSymlink(oldname, newname string) error {
 		_, _ = fmt.Fprintf(m.w, "%s: %v\n", action, err)
 	}
 	return err
-}
-
-func splitLines(data []byte) []string {
-	if len(data) == 0 {
-		return nil
-	}
-	return strings.Split(string(data), "\n")
 }
