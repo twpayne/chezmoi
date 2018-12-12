@@ -4,7 +4,8 @@
 [![GoDoc](https://godoc.org/github.com/twpayne/chezmoi?status.svg)](https://godoc.org/github.com/twpayne/chezmoi)
 [![Report Card](https://goreportcard.com/badge/github.com/twpayne/chezmoi)](https://goreportcard.com/report/github.com/twpayne/chezmoi)
 
-`chezmoi` is a tool for managing your dotfiles across multiple machines.
+`chezmoi` is a tool for managing your dotfiles securely across multiple
+machines.
 
 
 ## Features
