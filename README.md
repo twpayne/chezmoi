@@ -4,7 +4,8 @@
 [![GoDoc](https://godoc.org/github.com/twpayne/chezmoi?status.svg)](https://godoc.org/github.com/twpayne/chezmoi)
 [![Report Card](https://goreportcard.com/badge/github.com/twpayne/chezmoi)](https://goreportcard.com/report/github.com/twpayne/chezmoi)
 
-`chezmoi` is a tool for managing your dotfiles across multiple machines.
+`chezmoi` is a tool for managing your dotfiles securely across multiple
+machines.
 
 
 ## Features
@@ -19,9 +20,8 @@ variables allow you to change behaviour depending on operating system,
 architecture, and hostname.
 
  * Secure: `chezmoi` can retreive secrets from
-   [LastPass](https://lastpass.com/), your Keychain (on macOS), [GNOME
-Keyring](https://wiki.gnome.org/Projects/GnomeKeyring) (on Linux), or Windows
-Credential Manager (on Windows) using the
+   [LastPass](https://lastpass.com/), your Keychain (on macOS), or [GNOME
+Keyring](https://wiki.gnome.org/Projects/GnomeKeyring) (on Linux)) using the
 [`zalando/go-keyring`](https://github.com/zalando/go-keyring) library.
 
  * Robust: `chezmoi` updates all files and symbolic links atomically (using
@@ -45,7 +45,7 @@ formats (e.g. JSON, YAML, TOML, etc.) are supported for the configuration file.
 ## Installation
 
 Binaries and packages for multiple platforms, including RedHat, Debian,
-Windows, FreeBSD, and OpenBSD, are available on the [releases
+FreeBSD, and OpenBSD, are available on the [releases
 page](https://github.com/twpayne/chezmoi/releases).
 
 On macOS you can install `chezmoi` with Homebrew:
