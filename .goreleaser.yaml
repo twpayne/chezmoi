@@ -26,13 +26,10 @@ builds:
     - goos: darwin
       goarch: 386
 
-## generate .tar.gz and .zip archives
+## generate .tar.gz archives
 archive:
   replacements:
     386: i386
-  format_overrides:
-  - goos: windows
-    format: zip
 
 checksum:
   name_template: 'checksums.txt'
