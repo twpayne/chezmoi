@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	vfs "github.com/twpayne/go-vfs"
+	xdg "github.com/twpayne/go-xdg"
 )
 
 var (
@@ -30,14 +31,19 @@ func init() {
 		printErrorAndExit(err)
 	}
 
+	x, err := xdg.NewXDG()
+	if err != nil {
+		printErrorAndExit(err)
+	}
+
 	persistentFlags := rootCommand.PersistentFlags()
 
-	persistentFlags.StringVarP(&configFile, "config", "c", filepath.Join(homeDir, ".chezmoi"), "config file")
+	persistentFlags.StringVarP(&configFile, "config", "c", getDefaultConfigFile(x, homeDir), "config file")
 
 	persistentFlags.BoolVarP(&config.DryRun, "dry-run", "n", false, "dry run")
 	viper.BindPFlag("dry-run", persistentFlags.Lookup("dry-run"))
 
-	persistentFlags.StringVarP(&config.SourceDir, "source", "s", filepath.Join(homeDir, ".chezmoi"), "source directory")
+	persistentFlags.StringVarP(&config.SourceDir, "source", "s", getDefaultSourceDir(x, homeDir), "source directory")
 	viper.BindPFlag("source", persistentFlags.Lookup("source"))
 
 	persistentFlags.StringVarP(&config.TargetDir, "target", "t", homeDir, "target directory")
@@ -51,25 +57,12 @@ func init() {
 	viper.BindPFlag("verbose", persistentFlags.Lookup("verbose"))
 
 	cobra.OnInitialize(func() {
-		// FIXME once https://github.com/spf13/viper/pull/601 is merged, we can
-		// use viper.SetConfigName instead of looping over possible config file
-		// names ourself.
-		for _, extension := range append([]string{""}, viper.SupportedExts...) {
-			configFileName := configFile
-			if extension != "" {
-				configFileName += "." + extension
-			}
-			if info, err := os.Stat(configFileName); err != nil || !info.Mode().IsRegular() {
-				continue
-			}
-			viper.SetConfigFile(configFileName)
-			if err := viper.ReadInConfig(); err != nil {
-				printErrorAndExit(err)
-			}
-			if err := viper.Unmarshal(&config); err != nil {
-				printErrorAndExit(err)
-			}
-			return
+		viper.SetConfigFile(configFile)
+		if err := viper.ReadInConfig(); err != nil {
+			printErrorAndExit(err)
+		}
+		if err := viper.Unmarshal(&config); err != nil {
+			printErrorAndExit(err)
 		}
 	})
 }
@@ -94,4 +87,42 @@ func (c *Config) persistentPreRunRootE(fs vfs.FS, command *cobra.Command, args [
 		return err
 	}
 	return nil
+}
+
+func getDefaultConfigFile(x *xdg.XDG, homeDir string) string {
+	// Search XDG config directories first.
+	for _, configDir := range x.ConfigDirs {
+		for _, extension := range viper.SupportedExts {
+			configFilePath := filepath.Join(configDir, "chezmoi", "chezmoi."+extension)
+			if _, err := os.Stat(configFilePath); err == nil {
+				return configFilePath
+			}
+		}
+	}
+	// Search for ~/.chezmoi.* for backwards compatibility.
+	for _, extension := range viper.SupportedExts {
+		configFilePath := filepath.Join(homeDir, ".chezmoi."+extension)
+		if _, err := os.Stat(configFilePath); err == nil {
+			return configFilePath
+		}
+	}
+	// Fallback to XDG default.
+	return filepath.Join(x.ConfigHome, "chezmoi", "chezmoi.yaml")
+}
+
+func getDefaultSourceDir(x *xdg.XDG, homeDir string) string {
+	// Check for XDG data directories first.
+	for _, dataDir := range x.DataDirs {
+		sourceDir := filepath.Join(dataDir, "chezmoi")
+		if _, err := os.Stat(sourceDir); err == nil {
+			return sourceDir
+		}
+	}
+	// Check for ~/.chezmoi for backwards compatibility.
+	sourceDir := filepath.Join(homeDir, ".chezmoi")
+	if _, err := os.Stat(sourceDir); err == nil {
+		return sourceDir
+	}
+	// Fallback to XDG default.
+	return filepath.Join(x.DataHome, "chezmoi")
 }

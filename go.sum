@@ -46,6 +46,8 @@ github.com/twpayne/go-shell v0.0.1 h1:Ako3cUeuULhWadYk37jM3FlJ8lkSSW4INBjYj9K60G
 github.com/twpayne/go-shell v0.0.1/go.mod h1:QCjEvdZndTuPObd+11NYAI1UeNLSuGZVxJ+67Wl+IU4=
 github.com/twpayne/go-vfs v0.1.5 h1:bhND91u3uNgs5cUedHfmZDVXqa+WDqpmOc5n4A8T+hI=
 github.com/twpayne/go-vfs v0.1.5/go.mod h1:OIXA6zWkcn7Jk46XT7ceYqBMeIkfzJ8WOBhGJM0W4y8=
+github.com/twpayne/go-xdg v1.0.0 h1:k+QM2LL00/zx/gvxKsCMRBJ8nxCBWDBe2LU9y3Xo7x0=
+github.com/twpayne/go-xdg v1.0.0/go.mod h1:SHOoqWXTQT0rcQM4isbONZ6bH6uwIBgXuymEVgTc+Ao=
 github.com/zalando/go-keyring v0.0.0-20180221093347-6d81c293b3fb h1:tXbazu9ZlecQbyCczvA22mWj+lw/36Bdwxapk8v7e7s=
 github.com/zalando/go-keyring v0.0.0-20180221093347-6d81c293b3fb/go.mod h1:XlXBIfkGawHNVOHlenOaBW7zlfCh8LovwjOgjamYnkQ=
 golang.org/x/crypto v0.0.0-20181127143415-eb0de9b17e85 h1:et7+NAX3lLIk5qUCTA9QelBjGE/NkhzYw/mhnr0s7nI=
