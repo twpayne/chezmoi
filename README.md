@@ -315,6 +315,13 @@ stop `chezmoi` from interpreting extra flags. For example:
 The `source` command accepts the usual `-n` and `-v` flags, so you can see
 exactly what it will run without executing it.
 
+As a shortcut,
+
+    $ chezmoi cd
+
+starts a shell in your source directory, which can be very useful when
+performing multiple VCS operations.
+
 
 ## Importing archives
 
