@@ -329,6 +329,17 @@ Note that this only updates the source state. You will need to run
 to update your home directory.
 
 
+## Exporting archives
+
+`chezmoi` can create an archive containing the target state. This can be useful
+for generating target state on a different machine or for simply inspecting the
+target state. A particularly useful command is:
+
+    $ chezmoi archive | tar tvf -
+
+which lists all the files in the target state.
+
+
 ## Under the hood
 
 `chezmoi` stores the desired state of files, symbolic links, and directories in
