@@ -63,14 +63,14 @@ Manage an existing file with `chezmoi`:
 
     $ chezmoi add ~/.bashrc
 
-This will create a directory called `~/.chezmoi` with permissions `0600` where
-`chezmoi` will store its state, if it does not already exist, and copy
-`~/.bashrc` to `~/.chezmoi/dot_bashrc`.
+This will create a directory called `~/.local/share/chezmoi` with permissions
+`0600` where `chezmoi` will store its state, if it does not already exist, and
+copy `~/.bashrc` to `~/.local/share/chezmoi/dot_bashrc`.
 
-You should manage your `~/.chezmoi` directory with the version control system
-of your choice. `chezmoi` will ignore all files and directories beginning with
-a `.` in this directory, so directories like `.git` and `.hg` will not pollute
-your home directory.
+You should manage your `~/.local/share/chezmoi` directory with the version
+control system of your choice. `chezmoi` will ignore all files and directories
+beginning with a `.` in this directory, so directories like `.git` and `.hg`
+will not pollute your home directory.
 
 Edit the desired state:
 
@@ -119,16 +119,17 @@ Whereas at work it might be:
         name = John Smith
         email = john@company.com
 
-To handle this, on each machine create a file called `~/.chezmoi.yaml` defining
-what might change. For your home machine:
+To handle this, on each machine create a file called
+`~/.config/chezmoi/chezmoi.yaml` defining what might change. For your home
+machine:
 
     data:
       name: John Smith
       email: john@home.org
 
-If you intend to store private data (e.g. access tokens) in `~/.chezmoi.yaml`,
-make sure it has permissions `0600`. See "Keeping data private" below for more
-discussion on this.
+If you intend to store private data (e.g. access tokens) in
+`~/.config/chezmoi/chezmoi.yaml`, make sure it has permissions `0600`. See
+"Keeping data private" below for more discussion on this.
 
 If you prefer, you can use any format supported by
 [Viper](https://github.com/spf13/viper) for your configuration file. This
@@ -140,7 +141,7 @@ it in to a template:
     $ chezmoi add -T ~/.gitconfig
 
 You can then open the template (which will be saved in the file
-`~/.chezmoi/dot_gitconfig.tmpl`):
+`~/.local/share/chezmoi/dot_gitconfig.tmpl`):
 
     $ chezmoi edit ~/.gitconfig
 
@@ -151,7 +152,8 @@ The file should look something like:
         email = {{ .email }}
 
 `chezmoi` will substitute the variables from the `data` section of your
-`~/.chezmoi.yaml` file when calculating the desired state of `.gitconfig`.
+`~/.config/chezmoi/chezmoi.yaml` file when calculating the desired state of
+`.gitconfig`.
 
 For more advanced usage, you can use the full power of the
 [`text/template`](https://godoc.org/text/template) language to include or
@@ -167,7 +169,7 @@ populated variables:
 | `chezmoi.os`       | Operating system, e.g. `darwin`, `linux`, etc. as returned by [runtime.GOOS](https://godoc.org/runtime#pkg-constants). |
 | `chezmoi.username` | The username of the user running `chezmoi`.                                                                            |
 
-For example, in your `~/.chezmoi/dot_bashrc.tmpl` you might have:
+For example, in your `~/.local/share/chezmoi/dot_bashrc.tmpl` you might have:
 
     # common config
     export EDITOR=vi
@@ -187,16 +189,16 @@ to give it an `empty_` prefix. See "Under the hood" below.
 
 `chezmoi` automatically detects when files and directories are private when
 adding them by inspecting their permissions. Private files and directories are
-stored in `~/.chezmoi` as regular, public files with permissions `0644` and the
-name prefix `private_`. For example:
+stored in `~/.local/share/chezmoi` as regular, public files with permissions
+`0644` and the name prefix `private_`. For example:
 
     $ chezmoi add ~/.netrc
 
-will create `~/.chezmoi/private_dot_netrc` (assuming `~/.netrc` is not world-
-or group- readable, as it should be). This file is still private because
-`~/.chezmoi` is not group- or world- readable or executable.  `chezmoi` checks
-that the permissions of `~/.chezmoi` are `0700` on every run and will print a
-warning if they are not.
+will create `~/.local/share/chezmoi/private_dot_netrc` (assuming `~/.netrc` is
+not world- or group- readable, as it should be). This file is still private
+because `~/.local/share/chezmoi` is not group- or world- readable or
+executable.  `chezmoi` checks that the permissions of `~/.local/share/chezmoi`
+are `0700` on every run and will print a warning if they are not.
 
 It is common that you need to store access tokens in config files, e.g. a
 [Github access
@@ -206,16 +208,17 @@ your machine.
 
 ### Using templates variables
 
-Typically, `~/.chezmoi.yaml` is not checked in to version control and has
-permissions 0600. You can store tokens as template values in the `data`
-section. For example, if your `~/.chezmoi.yaml` contains:
+Typically, `~/.config/chezmoi/chezmoi.yaml` is not checked in to version
+control and has permissions 0600. You can store tokens as template values in
+the `data` section. For example, if your `~/.config/chezmoi/chezmoi.yaml`
+contains:
 
     data:
       github:
         user: <your-github-username>
         token: <your-github-token>
 
-Your `~/.chezmoi/private_dot_gitconfig.tmpl` can then contain:
+Your `~/.local/share/chezmoi/private_dot_gitconfig.tmpl` can then contain:
 
     {{- if .github }}
     [github]
@@ -285,20 +288,22 @@ You can query the keyring from the command line:
 `chezmoi` takes a `-c` flag specifying the file to read its configuration from.
 You can encrypt your configuration and then only decrypt it when needed:
 
-    $ gpg -d ~/.chezmoi.yaml.gpg | chezmoi -c /dev/stdin apply
+    $ gpg -d ~/.config/chezmoi/chezmoi.yaml.gpg | chezmoi -c /dev/stdin apply
 
 
 ## Managing your `~/.chezmoi` directory with version control
 
 `chezmoi` has some helper commands to assist managing your source directory
 with version control. The default version control system is `git` but you can
-change this by setting `sourceVCSCommand` in your `.chezmoi.yaml` file, for
-example, if you want to use Mercurial:
+change this by setting `sourceVCSCommand` in your
+`~/.config/chezmoi/chezmoi.yaml` file, for example, if you want to use
+Mercurial:
 
     sourceVCSCommand: hg
 
 `chezmoi source` is then a shortcut to running `sourceVCSCommand` in your
-`~/.chezmoi` directory. For example you can push the current branch with:
+`~/.local/share/chezmoi` directory. For example you can push the current branch
+with:
 
     $ chezmoi source push
 
@@ -309,6 +314,13 @@ stop `chezmoi` from interpreting extra flags. For example:
 
 The `source` command accepts the usual `-n` and `-v` flags, so you can see
 exactly what it will run without executing it.
+
+As a shortcut,
+
+    $ chezmoi cd
+
+starts a shell in your source directory, which can be very useful when
+performing multiple VCS operations.
 
 
 ## Importing archives
@@ -343,11 +355,11 @@ which lists all the files in the target state.
 ## Under the hood
 
 `chezmoi` stores the desired state of files, symbolic links, and directories in
-regular files and directories in `~/.chezmoi`. This location can be overridden
-with the `-s` flag or by giving a value for `sourceDir` in `~/.chezmoi.yaml`.
-Some state is encoded in the source names. `chezmoi` ignores all files and
-directories in the source directory that begin with a `.`. The following
-prefixes and suffixes are special.
+regular files and directories in `~/.local/share/chezmoi`. This location can be
+overridden with the `-s` flag or by giving a value for `sourceDir` in
+`~/.config/chezmoi/chezmoi.yaml`.  Some state is encoded in the source names.
+`chezmoi` ignores all files and directories in the source directory that begin
+with a `.`. The following prefixes and suffixes are special.
 
 | Prefix               | Effect                                                                            |
 | -------------------- | ----------------------------------------------------------------------------------|
@@ -374,9 +386,9 @@ Different target types allow different prefixes and suffixes.
 
 `chezmoi`, by default, operates on your home directory, but this can be
 overridden with the `--target` command line flag or by specifying `targetDir`
-in your `~/.chezmoi.yaml`. In theory, you could use `chezmoi` to manage any
-aspect of your filesystem. That said, although you can do this, you probably
-shouldn't. Existing configuration management tools like
+in your `~/.config/chezmoi/chezmoi.yaml`. In theory, you could use `chezmoi` to
+manage any aspect of your filesystem. That said, although you can do this, you
+probably shouldn't. Existing configuration management tools like
 [Puppet](https://puppet.com/), [Chef](https://www.chef.io/chef/),
 [Ansible](https://www.ansible.com/), and [Salt](https://www.saltstack.com/) are
 much better suited to whole system configuration management.
