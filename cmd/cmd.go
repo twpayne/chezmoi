@@ -32,7 +32,7 @@ type Config struct {
 	add              addCommandConfig
 	dump             dumpCommandConfig
 	edit             editCommandConfig
-	importC          importCommandConfig
+	_import          importCommandConfig
 	keyring          keyringCommandConfig
 }
 
