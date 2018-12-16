@@ -18,16 +18,8 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-// A Version represents a version.
-type Version struct {
-	Version string
-	Commit  string
-	Date    string
-}
-
 // A Config represents a configuration.
 type Config struct {
-	version          Version
 	SourceDir        string
 	TargetDir        string
 	Umask            int
