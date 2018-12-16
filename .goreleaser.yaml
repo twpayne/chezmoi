@@ -51,7 +51,7 @@ nfpm:
   vendor: "Tom Payne <twpayne@gmail.com>"
   homepage: "https://github.com/twpayne/chezmoi"
   maintainer: Tom Payne <twpayne@gmail.com>
-  description: "chezmoi is a tool for managing your dotfiles across multiple machines."
+  description: "chezmoi is a tool for managing your dotfiles securely across multiple machines."
   license: MIT
   formats:
     - deb
@@ -80,4 +80,4 @@ brew:
     email: twpayne@gmail.com
   folder: Formula
   homepage: "https://github.com/twpayne/chezmoi"
-  description: "chezmoi is a tool for managing your dotfiles across multiple machines."
+  description: "chezmoi is a tool for managing your dotfiles securely across multiple machines."

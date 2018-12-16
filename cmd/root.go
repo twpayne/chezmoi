@@ -21,7 +21,7 @@ var (
 
 var rootCommand = &cobra.Command{
 	Use:               "chezmoi",
-	Short:             "chezmoi is a tool for managing your home directory across multiple machines",
+	Short:             "chezmoi is a tool for securely managing your dotfiles securely across multiple machines",
 	PersistentPreRunE: makeRunE(config.persistentPreRunRootE),
 }
 
