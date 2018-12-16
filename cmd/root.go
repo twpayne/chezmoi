@@ -58,7 +58,9 @@ func init() {
 
 	cobra.OnInitialize(func() {
 		viper.SetConfigFile(configFile)
-		if err := viper.ReadInConfig(); err != nil {
+		if err := viper.ReadInConfig(); os.IsNotExist(err) {
+			return
+		} else if err != nil {
 			printErrorAndExit(err)
 		}
 		if err := viper.Unmarshal(&config); err != nil {
