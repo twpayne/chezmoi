@@ -113,12 +113,11 @@ func getDefaultData() (map[string]interface{}, error) {
 	}
 	data["username"] = currentUser.Username
 
-	// user.LookupGroupId reads /etc/group, which is not populated on some
-	// systems, causing lookup to fail. Instead of returning the error, simply
-	// ignore it and only set group if lookup succeeds.
-	if group, err := user.LookupGroupId(currentUser.Gid); err == nil {
-		data["group"] = group.Name
+	group, err := user.LookupGroupId(currentUser.Gid)
+	if err != nil {
+		return nil, err
 	}
+	data["group"] = group.Name
 
 	homedir, err := homedir.Dir()
 	if err != nil {
