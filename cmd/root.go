@@ -25,6 +25,8 @@ var (
 var rootCommand = &cobra.Command{
 	Use:               "chezmoi",
 	Short:             "chezmoi is a tool for securely managing your dotfiles securely across multiple machines",
+	SilenceErrors:     true,
+	SilenceUsage:      true,
 	PersistentPreRunE: makeRunE(config.persistentPreRunRootE),
 }
 
