@@ -18,16 +18,8 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-// A Version represents a version.
-type Version struct {
-	Version string
-	Commit  string
-	Date    string
-}
-
 // A Config represents a configuration.
 type Config struct {
-	version          Version
 	SourceDir        string
 	TargetDir        string
 	Umask            int
@@ -179,7 +171,7 @@ func makeRunE(runCommand func(vfs.FS, *cobra.Command, []string) error) func(*cob
 }
 
 func printErrorAndExit(err error) {
-	fmt.Println(err)
+	fmt.Printf("chezmoi: %v\n", err)
 	os.Exit(1)
 }
 
