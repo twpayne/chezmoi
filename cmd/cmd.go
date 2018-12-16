@@ -172,7 +172,7 @@ func makeRunE(runCommand func(vfs.FS, *cobra.Command, []string) error) func(*cob
 }
 
 func printErrorAndExit(err error) {
-	fmt.Println(err)
+	fmt.Printf("chezmoi: %v\n", err)
 	os.Exit(1)
 }
 
