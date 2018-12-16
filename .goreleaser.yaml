@@ -8,6 +8,7 @@ builds:
 - binary: chezmoi
   env:
     - CGO_ENABLED=0
+  ldflags: "-s -w -X github.com/twpayne/chezmoi/cmd.version={{ .Version }} -X github.com/twpayne/chezmoi/cmd.commit={{ .Commit }} -X github.com/twpayne/chezmoi/cmd.date={{ .Date }}"
   goos:
     - linux
     - darwin

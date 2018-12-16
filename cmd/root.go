@@ -17,6 +17,9 @@ var (
 	config     = Config{
 		SourceVCSCommand: "git",
 	}
+	version = "dev"
+	commit  = "unknown"
+	date    = "unknown"
 )
 
 var rootCommand = &cobra.Command{
@@ -26,6 +29,8 @@ var rootCommand = &cobra.Command{
 }
 
 func init() {
+	rootCommand.Version = fmt.Sprintf("%s, commit %s, built at %s", version, commit, date)
+
 	homeDir, err := homedir.Dir()
 	if err != nil {
 		printErrorAndExit(err)
