@@ -215,8 +215,8 @@ contains:
 
     data:
       github:
-        user: <your-github-username>
-        token: <your-github-token>
+        user: <github-username>
+        token: <github-token>
 
 Your `~/.local/share/chezmoi/private_dot_gitconfig.tmpl` can then contain:
 
@@ -237,7 +237,7 @@ data as a template function.
 
 Log in to LastPass using:
 
-    $ lpass login username
+    $ lpass login <lastpass-username>
 
 Check that `lpass` is working correctly by showing password data:
 
