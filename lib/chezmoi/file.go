@@ -111,7 +111,7 @@ func (f *File) Executable() bool {
 
 // Private returns true if f is private.
 func (f *File) Private() bool {
-	return f.Perm&os.ModePerm&077 == 0
+	return f.Perm&077 == 0
 }
 
 // SourceName implements Entry.SourceName.
