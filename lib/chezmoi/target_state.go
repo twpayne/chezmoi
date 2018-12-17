@@ -113,42 +113,20 @@ func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEm
 		}
 		entries[name] = newDir(sourceName, targetName, info.Mode()&os.ModePerm)
 	case info.Mode().IsRegular():
-		if entry, ok := entries[name]; ok {
-			if _, ok := entry.(*File); !ok {
-				return fmt.Errorf("%s: already added and not a regular file", targetName)
-			}
-			return nil // entry already exists
-		}
-		if info.Size() == 0 && !addEmpty {
+		perm := info.Mode().Perm()
+		empty := info.Size() == 0
+		if empty && !addEmpty {
 			return nil
 		}
-		sourceName := ParsedSourceFileName{
-			FileName: name,
-			Mode:     info.Mode() & os.ModePerm,
-			Empty:    info.Size() == 0,
-			Template: addTemplate,
-		}.SourceFileName()
-		if parentDirSourceName != "" {
-			sourceName = filepath.Join(parentDirSourceName, sourceName)
-		}
-		data, err := fs.ReadFile(targetPath)
+		contents, err := fs.ReadFile(targetPath)
 		if err != nil {
 			return err
 		}
 		if addTemplate {
-			data = autoTemplate(data, ts.Data)
+			contents = autoTemplate(contents, ts.Data)
 		}
-		if err := mutator.WriteFile(filepath.Join(ts.SourceDir, sourceName), data, 0666&^ts.Umask, nil); err != nil {
-			return err
-		}
-		entries[name] = &File{
-			sourceName: sourceName,
-			targetName: targetName,
-			Empty:      len(data) == 0,
-			Perm:       info.Mode() & os.ModePerm,
-			Template:   addTemplate,
-			contents:   data,
-		}
+		// FIXME refactor to pass info instead of perm and empty
+		return ts.addFile(targetName, entries, parentDirSourceName, name, perm, empty, addTemplate, contents, mutator)
 	case info.Mode()&os.ModeType == os.ModeSymlink:
 		if entry, ok := entries[name]; ok {
 			if _, ok := entry.(*Symlink); !ok {
@@ -368,6 +346,53 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 	})
 }
 
+func (ts *TargetState) addFile(targetName string, entries map[string]Entry, parentDirSourceName, name string, perm os.FileMode, empty bool, template bool, contents []byte, mutator Mutator) error {
+	// FIXME refactor to take an os.FileMode instead of perm and empty
+	var existingFile *File
+	var existingContents []byte
+	if entry, ok := entries[name]; ok {
+		existingFile, ok = entry.(*File)
+		if !ok {
+			return fmt.Errorf("%s: already added and not a regular file", targetName)
+		}
+		var err error
+		existingContents, err = existingFile.Contents()
+		if err != nil {
+			return err
+		}
+	}
+	sourceName := ParsedSourceFileName{
+		FileName: name,
+		Mode:     perm,
+		Empty:    empty,
+		Template: template,
+	}.SourceFileName()
+	if parentDirSourceName != "" {
+		sourceName = filepath.Join(parentDirSourceName, sourceName)
+	}
+	file := &File{
+		sourceName: sourceName,
+		targetName: targetName,
+		Empty:      empty,
+		Perm:       perm,
+		Template:   template,
+		contents:   contents,
+	}
+	if existingFile != nil {
+		if bytes.Equal(existingFile.contents, file.contents) {
+			if existingFile.sourceName == file.sourceName {
+				return nil
+			}
+			return mutator.Rename(filepath.Join(ts.SourceDir, existingFile.sourceName), filepath.Join(ts.SourceDir, file.sourceName))
+		}
+		if err := mutator.RemoveAll(filepath.Join(ts.SourceDir, existingFile.sourceName)); err != nil {
+			return err
+		}
+	}
+	entries[name] = file
+	return mutator.WriteFile(filepath.Join(ts.SourceDir, sourceName), contents, 0666&^ts.Umask, existingContents)
+}
+
 func (ts *TargetState) executeTemplate(fs vfs.FS, path string) ([]byte, error) {
 	data, err := fs.ReadFile(path)
 	if err != nil {
@@ -477,53 +502,14 @@ func (ts *TargetState) importHeader(r io.Reader, header *tar.Header, destination
 		entries[name] = dir
 		return mutator.Mkdir(filepath.Join(ts.SourceDir, sourceName), 0777&^ts.Umask)
 	case tar.TypeReg:
-		var existingFile *File
-		var existingContents []byte
-		if entry, ok := entries[name]; ok {
-			existingFile, ok = entry.(*File)
-			if !ok {
-				return fmt.Errorf("%s: already added and not a regular file", targetName)
-			}
-			existingContents, err = existingFile.Contents()
-			if err != nil {
-				return err
-			}
-		}
-		perm := os.FileMode(header.Mode) & os.ModePerm
+		perm := os.FileMode(header.Mode).Perm()
 		empty := header.Size == 0
-		sourceName := ParsedSourceFileName{
-			FileName: name,
-			Mode:     perm,
-			Empty:    empty,
-		}.SourceFileName()
-		if parentDirSourceName != "" {
-			sourceName = filepath.Join(parentDirSourceName, sourceName)
-		}
 		contents, err := ioutil.ReadAll(r)
 		if err != nil {
 			return err
 		}
-		file := &File{
-			sourceName: sourceName,
-			targetName: targetName,
-			Empty:      empty,
-			Perm:       perm,
-			Template:   false,
-			contents:   contents,
-		}
-		if existingFile != nil {
-			if bytes.Equal(existingFile.contents, file.contents) {
-				if existingFile.sourceName == file.sourceName {
-					return nil
-				}
-				return mutator.Rename(filepath.Join(ts.SourceDir, existingFile.sourceName), filepath.Join(ts.SourceDir, file.sourceName))
-			}
-			if err := mutator.RemoveAll(filepath.Join(ts.SourceDir, existingFile.sourceName)); err != nil {
-				return err
-			}
-		}
-		entries[name] = file
-		return mutator.WriteFile(filepath.Join(ts.SourceDir, sourceName), contents, 0666&^ts.Umask, existingContents)
+		// FIXME refactor to use tar.Header.FileInfo
+		return ts.addFile(targetName, entries, parentDirSourceName, name, perm, empty, false, contents, mutator)
 	case tar.TypeSymlink:
 		var existingSymlink *Symlink
 		var existingLinkName string

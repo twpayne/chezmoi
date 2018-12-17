@@ -151,3 +151,44 @@ func TestAddCommand(t *testing.T) {
 		})
 	}
 }
+
+func TestAddAfterModification(t *testing.T) {
+	c := &Config{
+		SourceDir: "/home/jenkins/.chezmoi",
+		TargetDir: "/home/jenkins",
+		Umask:     022,
+		DryRun:    false,
+		Verbose:   true,
+	}
+	fs, cleanup, err := vfst.NewTestFS(map[string]interface{}{
+		"/home/jenkins":          &vfst.Dir{Perm: 0755},
+		"/home/jenkins/.chezmoi": &vfst.Dir{Perm: 0700},
+		"/home/jenkins/.bashrc":  "# contents of .bashrc\n",
+	})
+	defer cleanup()
+	if err != nil {
+		t.Fatalf("vfst.NewTestFS(_) == _, _, %v, want _, _, <nil>", err)
+	}
+	args := []string{"/home/jenkins/.bashrc"}
+	if err := c.runAddCommand(fs, nil, args); err != nil {
+		t.Errorf("c.runAddCommand(fs, nil, %+v) == %v, want <nil>", args, err)
+	}
+	vfst.RunTests(t, fs, "",
+		vfst.TestPath("/home/jenkins/.chezmoi/dot_bashrc",
+			vfst.TestModeIsRegular,
+			vfst.TestContentsString("# contents of .bashrc\n"),
+		),
+	)
+	if err := fs.WriteFile("/home/jenkins/.bashrc", []byte("# new contents of .bashrc\n"), 0644); err != nil {
+		t.Errorf("fs.WriteFile(...) == %v, want <nil>", err)
+	}
+	if err := c.runAddCommand(fs, nil, args); err != nil {
+		t.Errorf("c.runAddCommand(fs, nil, %+v) == %v, want <nil>", args, err)
+	}
+	vfst.RunTests(t, fs, "",
+		vfst.TestPath("/home/jenkins/.chezmoi/dot_bashrc",
+			vfst.TestModeIsRegular,
+			vfst.TestContentsString("# new contents of .bashrc\n"),
+		),
+	)
+}
