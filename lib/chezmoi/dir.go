@@ -40,7 +40,7 @@ func (d *Dir) Apply(fs vfs.FS, targetDir string, umask os.FileMode, mutator Muta
 	info, err := fs.Lstat(targetPath)
 	switch {
 	case err == nil && info.Mode().IsDir():
-		if info.Mode()&os.ModePerm != d.Perm&^umask {
+		if info.Mode().Perm() != d.Perm&^umask {
 			if err := mutator.Chmod(targetPath, d.Perm&^umask); err != nil {
 				return err
 			}

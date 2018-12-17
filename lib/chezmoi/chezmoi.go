@@ -138,13 +138,13 @@ func (psfn ParsedSourceFileName) SourceFileName() string {
 	fileName := ""
 	switch psfn.Mode & os.ModeType {
 	case 0:
-		if psfn.Mode&os.ModePerm&os.FileMode(077) == os.FileMode(0) {
+		if psfn.Mode.Perm()&os.FileMode(077) == os.FileMode(0) {
 			fileName = privatePrefix
 		}
 		if psfn.Empty {
 			fileName += emptyPrefix
 		}
-		if psfn.Mode&os.ModePerm&os.FileMode(0111) != os.FileMode(0) {
+		if psfn.Mode.Perm()&os.FileMode(0111) != os.FileMode(0) {
 			fileName += executablePrefix
 		}
 	case os.ModeSymlink:

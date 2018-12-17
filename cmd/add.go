@@ -41,7 +41,7 @@ func (c *Config) runAddCommand(fs vfs.FS, command *cobra.Command, args []string)
 	info, err := fs.Stat(c.SourceDir)
 	switch {
 	case err == nil && info.Mode().IsDir():
-		if info.Mode()&os.ModePerm != 0700 {
+		if info.Mode().Perm() != 0700 {
 			if err := mutator.Chmod(c.SourceDir, 0700); err != nil {
 				return err
 			}

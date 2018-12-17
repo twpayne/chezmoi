@@ -88,8 +88,8 @@ func (c *Config) persistentPreRunRootE(fs vfs.FS, command *cobra.Command, args [
 	switch {
 	case err == nil && !info.Mode().IsDir():
 		return fmt.Errorf("%s: not a directory", c.SourceDir)
-	case err == nil && info.Mode()&os.ModePerm != 0700:
-		fmt.Printf("%s: want permissions 0700, got 0%o\n", c.SourceDir, info.Mode()&os.ModePerm)
+	case err == nil && info.Mode().Perm() != 0700:
+		fmt.Printf("%s: want permissions 0700, got 0%o\n", c.SourceDir, info.Mode().Perm())
 	case os.IsNotExist(err):
 	default:
 		return err
