@@ -102,11 +102,11 @@ func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEm
 		}
 		return ts.addFile(targetName, entries, parentDirSourceName, info, addTemplate, contents, mutator)
 	case info.Mode()&os.ModeType == os.ModeSymlink:
-		linkName, err := fs.Readlink(targetPath)
+		linkname, err := fs.Readlink(targetPath)
 		if err != nil {
 			return err
 		}
-		return ts.addSymlink(targetName, entries, parentDirSourceName, linkName, mutator)
+		return ts.addSymlink(targetName, entries, parentDirSourceName, linkname, mutator)
 	default:
 		return fmt.Errorf("%s: not a regular file, directory, or symlink", targetName)
 	}
@@ -273,12 +273,12 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 					evaluateContents: evaluateContents,
 				}
 			case os.ModeSymlink:
-				evaluateLinkName := func() (string, error) {
+				evaluateLinkname := func() (string, error) {
 					data, err := fs.ReadFile(path)
 					return string(data), err
 				}
 				if psfp.Template {
-					evaluateLinkName = func() (string, error) {
+					evaluateLinkname = func() (string, error) {
 						data, err := ts.executeTemplate(fs, path)
 						return string(data), err
 					}
@@ -287,7 +287,7 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 					sourceName:       relPath,
 					targetName:       targetName,
 					Template:         psfp.Template,
-					evaluateLinkName: evaluateLinkName,
+					evaluateLinkname: evaluateLinkname,
 				}
 			default:
 				return fmt.Errorf("%v: unsupported mode: %d", path, psfp.Mode&os.ModeType)
@@ -384,17 +384,17 @@ func (ts *TargetState) addFile(targetName string, entries map[string]Entry, pare
 	return mutator.WriteFile(filepath.Join(ts.SourceDir, sourceName), contents, 0666&^ts.Umask, existingContents)
 }
 
-func (ts *TargetState) addSymlink(targetName string, entries map[string]Entry, parentDirSourceName string, linkName string, mutator Mutator) error {
+func (ts *TargetState) addSymlink(targetName string, entries map[string]Entry, parentDirSourceName string, linkname string, mutator Mutator) error {
 	name := filepath.Base(targetName)
 	var existingSymlink *Symlink
-	var existingLinkName string
+	var existingLinkname string
 	if entry, ok := entries[name]; ok {
 		existingSymlink, ok = entry.(*Symlink)
 		if !ok {
 			return fmt.Errorf("%s: already added and not a symlink", targetName)
 		}
 		var err error
-		existingLinkName, err = existingSymlink.LinkName()
+		existingLinkname, err = existingSymlink.Linkname()
 		if err != nil {
 			return err
 		}
@@ -409,10 +409,10 @@ func (ts *TargetState) addSymlink(targetName string, entries map[string]Entry, p
 	symlink := &Symlink{
 		sourceName: sourceName,
 		targetName: targetName,
-		linkName:   linkName,
+		linkname:   linkname,
 	}
 	if existingSymlink != nil {
-		if existingSymlink.linkName == symlink.linkName {
+		if existingSymlink.linkname == symlink.linkname {
 			if existingSymlink.sourceName == symlink.sourceName {
 				return nil
 			}
@@ -423,7 +423,7 @@ func (ts *TargetState) addSymlink(targetName string, entries map[string]Entry, p
 		}
 	}
 	entries[name] = symlink
-	return mutator.WriteFile(filepath.Join(ts.SourceDir, symlink.sourceName), []byte(symlink.linkName), 0666&^ts.Umask, []byte(existingLinkName))
+	return mutator.WriteFile(filepath.Join(ts.SourceDir, symlink.sourceName), []byte(symlink.linkname), 0666&^ts.Umask, []byte(existingLinkname))
 }
 
 func (ts *TargetState) executeTemplate(fs vfs.FS, path string) ([]byte, error) {
@@ -519,8 +519,8 @@ func (ts *TargetState) importHeader(r io.Reader, header *tar.Header, destination
 		}
 		return ts.addFile(targetName, entries, parentDirSourceName, info, false, contents, mutator)
 	case tar.TypeSymlink:
-		linkName := header.Linkname
-		return ts.addSymlink(targetName, entries, parentDirSourceName, linkName, mutator)
+		linkname := header.Linkname
+		return ts.addSymlink(targetName, entries, parentDirSourceName, linkname, mutator)
 	default:
 		return fmt.Errorf("%s: unspported typeflag '%c'", header.Name, header.Typeflag)
 	}
