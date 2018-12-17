@@ -56,14 +56,14 @@ func TestDirAttributes(t *testing.T) {
 	}
 }
 
-func TestSourceFileName(t *testing.T) {
+func TestFileAttributes(t *testing.T) {
 	for _, tc := range []struct {
-		sourceFileName string
-		psfn           ParsedSourceFileName
+		sourceName string
+		fa         FileAttributes
 	}{
 		{
-			sourceFileName: "foo",
-			psfn: ParsedSourceFileName{
+			sourceName: "foo",
+			fa: FileAttributes{
 				FileName: "foo",
 				Mode:     0666,
 				Empty:    false,
@@ -71,8 +71,8 @@ func TestSourceFileName(t *testing.T) {
 			},
 		},
 		{
-			sourceFileName: "dot_foo",
-			psfn: ParsedSourceFileName{
+			sourceName: "dot_foo",
+			fa: FileAttributes{
 				FileName: ".foo",
 				Mode:     0666,
 				Empty:    false,
@@ -80,8 +80,8 @@ func TestSourceFileName(t *testing.T) {
 			},
 		},
 		{
-			sourceFileName: "private_foo",
-			psfn: ParsedSourceFileName{
+			sourceName: "private_foo",
+			fa: FileAttributes{
 				FileName: "foo",
 				Mode:     0600,
 				Empty:    false,
@@ -89,8 +89,8 @@ func TestSourceFileName(t *testing.T) {
 			},
 		},
 		{
-			sourceFileName: "private_dot_foo",
-			psfn: ParsedSourceFileName{
+			sourceName: "private_dot_foo",
+			fa: FileAttributes{
 				FileName: ".foo",
 				Mode:     0600,
 				Empty:    false,
@@ -98,8 +98,8 @@ func TestSourceFileName(t *testing.T) {
 			},
 		},
 		{
-			sourceFileName: "empty_foo",
-			psfn: ParsedSourceFileName{
+			sourceName: "empty_foo",
+			fa: FileAttributes{
 				FileName: "foo",
 				Mode:     0666,
 				Empty:    true,
@@ -107,8 +107,8 @@ func TestSourceFileName(t *testing.T) {
 			},
 		},
 		{
-			sourceFileName: "executable_foo",
-			psfn: ParsedSourceFileName{
+			sourceName: "executable_foo",
+			fa: FileAttributes{
 				FileName: "foo",
 				Mode:     0777,
 				Empty:    false,
@@ -116,8 +116,8 @@ func TestSourceFileName(t *testing.T) {
 			},
 		},
 		{
-			sourceFileName: "foo.tmpl",
-			psfn: ParsedSourceFileName{
+			sourceName: "foo.tmpl",
+			fa: FileAttributes{
 				FileName: "foo",
 				Mode:     0666,
 				Empty:    false,
@@ -125,8 +125,8 @@ func TestSourceFileName(t *testing.T) {
 			},
 		},
 		{
-			sourceFileName: "private_executable_dot_foo.tmpl",
-			psfn: ParsedSourceFileName{
+			sourceName: "private_executable_dot_foo.tmpl",
+			fa: FileAttributes{
 				FileName: ".foo",
 				Mode:     0700,
 				Empty:    false,
@@ -134,35 +134,35 @@ func TestSourceFileName(t *testing.T) {
 			},
 		},
 		{
-			sourceFileName: "symlink_foo",
-			psfn: ParsedSourceFileName{
+			sourceName: "symlink_foo",
+			fa: FileAttributes{
 				FileName: "foo",
 				Mode:     os.ModeSymlink | 0666,
 			},
 		},
 		{
-			sourceFileName: "symlink_dot_foo",
-			psfn: ParsedSourceFileName{
+			sourceName: "symlink_dot_foo",
+			fa: FileAttributes{
 				FileName: ".foo",
 				Mode:     os.ModeSymlink | 0666,
 			},
 		},
 		{
-			sourceFileName: "symlink_foo.tmpl",
-			psfn: ParsedSourceFileName{
+			sourceName: "symlink_foo.tmpl",
+			fa: FileAttributes{
 				FileName: "foo",
 				Mode:     os.ModeSymlink | 0666,
 				Template: true,
 			},
 		},
 	} {
-		t.Run(tc.sourceFileName, func(t *testing.T) {
-			gotPSFN := ParseSourceFileName(tc.sourceFileName)
-			if diff, equal := messagediff.PrettyDiff(tc.psfn, gotPSFN); !equal {
-				t.Errorf("ParseSourceFileName(%q) == %+v, want %+v, diff:\n%s", tc.sourceFileName, gotPSFN, tc.psfn, diff)
+		t.Run(tc.sourceName, func(t *testing.T) {
+			gotFA := ParseFileAttributes(tc.sourceName)
+			if diff, equal := messagediff.PrettyDiff(tc.fa, gotFA); !equal {
+				t.Errorf("ParseFileAttributes(%q) == %+v, want %+v, diff:\n%s", tc.sourceName, gotFA, tc.fa, diff)
 			}
-			if gotSourceFileName := tc.psfn.SourceFileName(); gotSourceFileName != tc.sourceFileName {
-				t.Errorf("%+v.SourceFileName() == %q, want %q", tc.psfn, gotSourceFileName, tc.sourceFileName)
+			if gotSourceName := tc.fa.SourceName(); gotSourceName != tc.sourceName {
+				t.Errorf("%+v.SourceName() == %q, want %q", tc.fa, gotSourceName, tc.sourceName)
 			}
 		})
 	}

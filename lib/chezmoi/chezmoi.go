@@ -42,8 +42,8 @@ type DirAttributes struct {
 	Perm os.FileMode
 }
 
-// A ParsedSourceFileName is a parsed source file name.
-type ParsedSourceFileName struct {
+// A FileAttributes is a parsed source file name.
+type FileAttributes struct {
 	FileName string
 	Mode     os.FileMode
 	Empty    bool
@@ -51,7 +51,7 @@ type ParsedSourceFileName struct {
 }
 
 type parsedSourceFilePath struct {
-	ParsedSourceFileName
+	FileAttributes
 	dirNames []string
 }
 
@@ -93,75 +93,76 @@ func (da DirAttributes) SourceName() string {
 	return sourceName
 }
 
-// ParseSourceFileName parses a source file name.
-func ParseSourceFileName(fileName string) ParsedSourceFileName {
+// ParseFileAttributes parses a source file name.
+func ParseFileAttributes(sourceName string) FileAttributes {
+	name := sourceName
 	mode := os.FileMode(0666)
 	empty := false
 	template := false
-	if strings.HasPrefix(fileName, symlinkPrefix) {
-		fileName = strings.TrimPrefix(fileName, symlinkPrefix)
+	if strings.HasPrefix(name, symlinkPrefix) {
+		name = strings.TrimPrefix(name, symlinkPrefix)
 		mode |= os.ModeSymlink
 	} else {
 		private := false
-		if strings.HasPrefix(fileName, privatePrefix) {
-			fileName = strings.TrimPrefix(fileName, privatePrefix)
+		if strings.HasPrefix(name, privatePrefix) {
+			name = strings.TrimPrefix(name, privatePrefix)
 			private = true
 		}
-		if strings.HasPrefix(fileName, emptyPrefix) {
-			fileName = strings.TrimPrefix(fileName, emptyPrefix)
+		if strings.HasPrefix(name, emptyPrefix) {
+			name = strings.TrimPrefix(name, emptyPrefix)
 			empty = true
 		}
-		if strings.HasPrefix(fileName, executablePrefix) {
-			fileName = strings.TrimPrefix(fileName, executablePrefix)
+		if strings.HasPrefix(name, executablePrefix) {
+			name = strings.TrimPrefix(name, executablePrefix)
 			mode |= 0111
 		}
 		if private {
 			mode &= 0700
 		}
 	}
-	if strings.HasPrefix(fileName, dotPrefix) {
-		fileName = "." + strings.TrimPrefix(fileName, dotPrefix)
+	if strings.HasPrefix(name, dotPrefix) {
+		name = "." + strings.TrimPrefix(name, dotPrefix)
 	}
-	if strings.HasSuffix(fileName, templateSuffix) {
-		fileName = strings.TrimSuffix(fileName, templateSuffix)
+	if strings.HasSuffix(name, templateSuffix) {
+		name = strings.TrimSuffix(name, templateSuffix)
 		template = true
 	}
-	return ParsedSourceFileName{
-		FileName: fileName,
+	return FileAttributes{
+		FileName: name,
 		Mode:     mode,
 		Empty:    empty,
 		Template: template,
 	}
 }
 
-// SourceFileName returns psfn's source file name.
-func (psfn ParsedSourceFileName) SourceFileName() string {
-	fileName := ""
-	switch psfn.Mode & os.ModeType {
+// SourceName returns fa's source name.
+func (fa FileAttributes) SourceName() string {
+	sourceName := ""
+	switch fa.Mode & os.ModeType {
 	case 0:
-		if psfn.Mode.Perm()&os.FileMode(077) == os.FileMode(0) {
-			fileName = privatePrefix
+		if fa.Mode.Perm()&os.FileMode(077) == os.FileMode(0) {
+			sourceName = privatePrefix
 		}
-		if psfn.Empty {
-			fileName += emptyPrefix
+		if fa.Empty {
+			sourceName += emptyPrefix
 		}
-		if psfn.Mode.Perm()&os.FileMode(0111) != os.FileMode(0) {
-			fileName += executablePrefix
+		if fa.Mode.Perm()&os.FileMode(0111) != os.FileMode(0) {
+			sourceName += executablePrefix
 		}
 	case os.ModeSymlink:
-		fileName = symlinkPrefix
+		sourceName = symlinkPrefix
 	default:
-		panic(fmt.Sprintf("%+v: unsupported type", psfn)) // FIXME return error instead of panicing
+		panic(fmt.Sprintf("%+v: unsupported type", fa)) // FIXME return error instead of panicing
 	}
-	if strings.HasPrefix(psfn.FileName, ".") {
-		fileName += dotPrefix + strings.TrimPrefix(psfn.FileName, ".")
+	if strings.HasPrefix(fa.FileName, ".") {
+		sourceName += dotPrefix + strings.TrimPrefix(fa.FileName, ".")
 	} else {
-		fileName += psfn.FileName
+		sourceName += fa.FileName
 	}
-	if psfn.Template {
-		fileName += templateSuffix
+	if fa.Template {
+		sourceName += templateSuffix
 	}
-	return fileName
+	return sourceName
 }
 
 // parseDirNameComponents parses multiple directory name components. It returns
@@ -181,10 +182,10 @@ func parseDirNameComponents(components []string) ([]string, []os.FileMode) {
 func parseSourceFilePath(path string) parsedSourceFilePath {
 	components := splitPathList(path)
 	dirNames, _ := parseDirNameComponents(components[0 : len(components)-1])
-	psfn := ParseSourceFileName(components[len(components)-1])
+	fa := ParseFileAttributes(components[len(components)-1])
 	return parsedSourceFilePath{
-		ParsedSourceFileName: psfn,
-		dirNames:             dirNames,
+		FileAttributes: fa,
+		dirNames:       dirNames,
 	}
 }
 

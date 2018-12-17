@@ -351,12 +351,12 @@ func (ts *TargetState) addFile(targetName string, entries map[string]Entry, pare
 	}
 	perm := info.Mode().Perm()
 	empty := info.Size() == 0
-	sourceName := ParsedSourceFileName{
+	sourceName := FileAttributes{
 		FileName: name,
 		Mode:     perm,
 		Empty:    empty,
 		Template: template,
-	}.SourceFileName()
+	}.SourceName()
 	if parentDirSourceName != "" {
 		sourceName = filepath.Join(parentDirSourceName, sourceName)
 	}
@@ -398,10 +398,10 @@ func (ts *TargetState) addSymlink(targetName string, entries map[string]Entry, p
 			return err
 		}
 	}
-	sourceName := ParsedSourceFileName{
+	sourceName := FileAttributes{
 		FileName: name,
 		Mode:     os.ModeSymlink,
-	}.SourceFileName()
+	}.SourceName()
 	if parentDirSourceName != "" {
 		sourceName = filepath.Join(parentDirSourceName, sourceName)
 	}
