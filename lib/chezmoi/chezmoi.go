@@ -36,12 +36,6 @@ type Entry interface {
 	archive(w *tar.Writer, headerTemplate *tar.Header, umask os.FileMode) error
 }
 
-// DirAttributes is a parsed source dir name.
-type DirAttributes struct {
-	Name string
-	Perm os.FileMode
-}
-
 // A FileAttributes is a parsed source file name.
 type FileAttributes struct {
 	Name     string
@@ -60,37 +54,6 @@ func ReturnTemplateFuncError(err error) {
 	panic(templateFuncError{
 		err: err,
 	})
-}
-
-// ParseDirAttributes parses a single directory name.
-func ParseDirAttributes(sourceName string) DirAttributes {
-	name := sourceName
-	perm := os.FileMode(0777)
-	if strings.HasPrefix(name, privatePrefix) {
-		name = strings.TrimPrefix(name, privatePrefix)
-		perm &= 0700
-	}
-	if strings.HasPrefix(name, dotPrefix) {
-		name = "." + strings.TrimPrefix(name, dotPrefix)
-	}
-	return DirAttributes{
-		Name: name,
-		Perm: perm,
-	}
-}
-
-// SourceName returns da's source name.
-func (da DirAttributes) SourceName() string {
-	sourceName := ""
-	if da.Perm&os.FileMode(077) == os.FileMode(0) {
-		sourceName = privatePrefix
-	}
-	if strings.HasPrefix(da.Name, ".") {
-		sourceName += dotPrefix + strings.TrimPrefix(da.Name, ".")
-	} else {
-		sourceName += da.Name
-	}
-	return sourceName
 }
 
 // ParseFileAttributes parses a source file name.
