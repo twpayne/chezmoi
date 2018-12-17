@@ -45,9 +45,9 @@ func TestDirAttributes(t *testing.T) {
 		},
 	} {
 		t.Run(tc.sourceName, func(t *testing.T) {
-			gotPSDN := ParseDirAttributes(tc.sourceName)
-			if diff, equal := messagediff.PrettyDiff(tc.da, gotPSDN); !equal {
-				t.Errorf("ParseDirAttributes(%q) == %+v, want %+v, diff:\n%s", tc.sourceName, gotPSDN, tc.da, diff)
+			gotDA := ParseDirAttributes(tc.sourceName)
+			if diff, equal := messagediff.PrettyDiff(tc.da, gotDA); !equal {
+				t.Errorf("ParseDirAttributes(%q) == %+v, want %+v, diff:\n%s", tc.sourceName, gotDA, tc.da, diff)
 			}
 			if gotSourceName := tc.da.SourceName(); gotSourceName != tc.sourceName {
 				t.Errorf("%+v.SourceName() == %q, want %q", tc.da, gotSourceName, tc.sourceName)
