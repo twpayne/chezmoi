@@ -44,7 +44,7 @@ type DirAttributes struct {
 
 // A FileAttributes is a parsed source file name.
 type FileAttributes struct {
-	FileName string
+	Name     string
 	Mode     os.FileMode
 	Empty    bool
 	Template bool
@@ -128,7 +128,7 @@ func ParseFileAttributes(sourceName string) FileAttributes {
 		template = true
 	}
 	return FileAttributes{
-		FileName: name,
+		Name:     name,
 		Mode:     mode,
 		Empty:    empty,
 		Template: template,
@@ -154,10 +154,10 @@ func (fa FileAttributes) SourceName() string {
 	default:
 		panic(fmt.Sprintf("%+v: unsupported type", fa)) // FIXME return error instead of panicing
 	}
-	if strings.HasPrefix(fa.FileName, ".") {
-		sourceName += dotPrefix + strings.TrimPrefix(fa.FileName, ".")
+	if strings.HasPrefix(fa.Name, ".") {
+		sourceName += dotPrefix + strings.TrimPrefix(fa.Name, ".")
 	} else {
-		sourceName += fa.FileName
+		sourceName += fa.Name
 	}
 	if fa.Template {
 		sourceName += templateSuffix

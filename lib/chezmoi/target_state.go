@@ -251,7 +251,7 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 				return err
 			}
 
-			targetName := filepath.Join(append(psfp.dirNames, psfp.FileName)...)
+			targetName := filepath.Join(append(psfp.dirNames, psfp.Name)...)
 			var entry Entry
 			switch psfp.Mode & os.ModeType {
 			case 0:
@@ -291,7 +291,7 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 			default:
 				return fmt.Errorf("%v: unsupported mode: %d", path, psfp.Mode&os.ModeType)
 			}
-			entries[psfp.FileName] = entry
+			entries[psfp.Name] = entry
 		default:
 			return fmt.Errorf("unsupported file type: %s", path)
 		}
@@ -352,7 +352,7 @@ func (ts *TargetState) addFile(targetName string, entries map[string]Entry, pare
 	perm := info.Mode().Perm()
 	empty := info.Size() == 0
 	sourceName := FileAttributes{
-		FileName: name,
+		Name:     name,
 		Mode:     perm,
 		Empty:    empty,
 		Template: template,
@@ -399,8 +399,8 @@ func (ts *TargetState) addSymlink(targetName string, entries map[string]Entry, p
 		}
 	}
 	sourceName := FileAttributes{
-		FileName: name,
-		Mode:     os.ModeSymlink,
+		Name: name,
+		Mode: os.ModeSymlink,
 	}.SourceName()
 	if parentDirSourceName != "" {
 		sourceName = filepath.Join(parentDirSourceName, sourceName)
