@@ -60,7 +60,7 @@ func (c *Config) runChattrCommand(fs vfs.FS, cmd *cobra.Command, args []string) 
 			if private := ams.private.modify(entry.Private()); private {
 				da.Perm &= 0700
 			}
-			newSourceName = da.SourceDirName()
+			newSourceName = da.SourceName()
 		case *chezmoi.File:
 			psfn := chezmoi.ParseSourceFileName(oldSourceName)
 			mode := os.FileMode(0666)

@@ -309,9 +309,9 @@ func (ts *TargetState) addDir(targetName string, entries map[string]Entry, paren
 		}
 	}
 	sourceName := DirAttributes{
-		DirName: name,
-		Perm:    perm,
-	}.SourceDirName()
+		Name: name,
+		Perm: perm,
+	}.SourceName()
 	if parentDirSourceName != "" {
 		sourceName = filepath.Join(parentDirSourceName, sourceName)
 	}

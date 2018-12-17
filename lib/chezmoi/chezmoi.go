@@ -38,8 +38,8 @@ type Entry interface {
 
 // DirAttributes is a parsed source dir name.
 type DirAttributes struct {
-	DirName string
-	Perm    os.FileMode
+	Name string
+	Perm os.FileMode
 }
 
 // A ParsedSourceFileName is a parsed source file name.
@@ -63,33 +63,34 @@ func ReturnTemplateFuncError(err error) {
 }
 
 // ParseDirAttributes parses a single directory name.
-func ParseDirAttributes(dirName string) DirAttributes {
+func ParseDirAttributes(sourceName string) DirAttributes {
+	name := sourceName
 	perm := os.FileMode(0777)
-	if strings.HasPrefix(dirName, privatePrefix) {
-		dirName = strings.TrimPrefix(dirName, privatePrefix)
+	if strings.HasPrefix(name, privatePrefix) {
+		name = strings.TrimPrefix(name, privatePrefix)
 		perm &= 0700
 	}
-	if strings.HasPrefix(dirName, dotPrefix) {
-		dirName = "." + strings.TrimPrefix(dirName, dotPrefix)
+	if strings.HasPrefix(name, dotPrefix) {
+		name = "." + strings.TrimPrefix(name, dotPrefix)
 	}
 	return DirAttributes{
-		DirName: dirName,
-		Perm:    perm,
+		Name: name,
+		Perm: perm,
 	}
 }
 
-// SourceDirName returns da's source dir name.
-func (da DirAttributes) SourceDirName() string {
-	sourceDirName := ""
+// SourceName returns da's source name.
+func (da DirAttributes) SourceName() string {
+	sourceName := ""
 	if da.Perm&os.FileMode(077) == os.FileMode(0) {
-		sourceDirName = privatePrefix
+		sourceName = privatePrefix
 	}
-	if strings.HasPrefix(da.DirName, ".") {
-		sourceDirName += dotPrefix + strings.TrimPrefix(da.DirName, ".")
+	if strings.HasPrefix(da.Name, ".") {
+		sourceName += dotPrefix + strings.TrimPrefix(da.Name, ".")
 	} else {
-		sourceDirName += da.DirName
+		sourceName += da.Name
 	}
-	return sourceDirName
+	return sourceName
 }
 
 // ParseSourceFileName parses a source file name.
@@ -170,7 +171,7 @@ func parseDirNameComponents(components []string) ([]string, []os.FileMode) {
 	perms := []os.FileMode{}
 	for _, component := range components {
 		da := ParseDirAttributes(component)
-		dirNames = append(dirNames, da.DirName)
+		dirNames = append(dirNames, da.Name)
 		perms = append(perms, da.Perm)
 	}
 	return dirNames, perms
