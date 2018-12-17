@@ -112,7 +112,7 @@ func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEm
 		}
 		return ts.addSymlink(targetName, entries, parentDirSourceName, name, linkName, mutator)
 	default:
-		return fmt.Errorf("%s: not a regular file or directory", targetName)
+		return fmt.Errorf("%s: not a regular file, directory, or symlink", targetName)
 	}
 	return nil
 }
