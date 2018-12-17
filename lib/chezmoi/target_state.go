@@ -110,7 +110,6 @@ func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEm
 	default:
 		return fmt.Errorf("%s: not a regular file, directory, or symlink", targetName)
 	}
-	return nil
 }
 
 // Archive writes ts to w.
