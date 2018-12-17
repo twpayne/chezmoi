@@ -308,7 +308,7 @@ func (ts *TargetState) addDir(targetName string, entries map[string]Entry, paren
 			return fmt.Errorf("%s: already added and not a directory", targetName)
 		}
 	}
-	sourceName := ParsedSourceDirName{
+	sourceName := DirAttributes{
 		DirName: name,
 		Perm:    perm,
 	}.SourceDirName()

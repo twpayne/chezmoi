@@ -10,47 +10,47 @@ import (
 	"github.com/twpayne/go-vfs/vfst"
 )
 
-func TestSourceDirName(t *testing.T) {
+func TestDirAttributes(t *testing.T) {
 	for _, tc := range []struct {
 		sourceDirName string
-		psdn          ParsedSourceDirName
+		da          DirAttributes
 	}{
 		{
 			sourceDirName: "foo",
-			psdn: ParsedSourceDirName{
+			da: DirAttributes{
 				DirName: "foo",
 				Perm:    0777,
 			},
 		},
 		{
 			sourceDirName: "dot_foo",
-			psdn: ParsedSourceDirName{
+			da: DirAttributes{
 				DirName: ".foo",
 				Perm:    0777,
 			},
 		},
 		{
 			sourceDirName: "private_foo",
-			psdn: ParsedSourceDirName{
+			da: DirAttributes{
 				DirName: "foo",
 				Perm:    0700,
 			},
 		},
 		{
 			sourceDirName: "private_dot_foo",
-			psdn: ParsedSourceDirName{
+			da: DirAttributes{
 				DirName: ".foo",
 				Perm:    0700,
 			},
 		},
 	} {
 		t.Run(tc.sourceDirName, func(t *testing.T) {
-			gotPSDN := ParseSourceDirName(tc.sourceDirName)
-			if diff, equal := messagediff.PrettyDiff(tc.psdn, gotPSDN); !equal {
-				t.Errorf("ParseSourceDirName(%q) == %+v, want %+v, diff:\n%s", tc.sourceDirName, gotPSDN, tc.psdn, diff)
+			gotPSDN := ParseDirAttributes(tc.sourceDirName)
+			if diff, equal := messagediff.PrettyDiff(tc.da, gotPSDN); !equal {
+				t.Errorf("ParseDirAttributes(%q) == %+v, want %+v, diff:\n%s", tc.sourceDirName, gotPSDN, tc.da, diff)
 			}
-			if gotSourceDirName := tc.psdn.SourceDirName(); gotSourceDirName != tc.sourceDirName {
-				t.Errorf("%+v.SourceDirName() == %q, want %q", tc.psdn, gotSourceDirName, tc.sourceDirName)
+			if gotSourceDirName := tc.da.SourceDirName(); gotSourceDirName != tc.sourceDirName {
+				t.Errorf("%+v.SourceDirName() == %q, want %q", tc.da, gotSourceDirName, tc.sourceDirName)
 			}
 		})
 	}

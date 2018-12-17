@@ -36,8 +36,8 @@ type Entry interface {
 	archive(w *tar.Writer, headerTemplate *tar.Header, umask os.FileMode) error
 }
 
-// ParsedSourceDirName is a parsed source dir name.
-type ParsedSourceDirName struct {
+// DirAttributes is a parsed source dir name.
+type DirAttributes struct {
 	DirName string
 	Perm    os.FileMode
 }
@@ -62,8 +62,8 @@ func ReturnTemplateFuncError(err error) {
 	})
 }
 
-// ParseSourceDirName parses a single directory name.
-func ParseSourceDirName(dirName string) ParsedSourceDirName {
+// ParseDirAttributes parses a single directory name.
+func ParseDirAttributes(dirName string) DirAttributes {
 	perm := os.FileMode(0777)
 	if strings.HasPrefix(dirName, privatePrefix) {
 		dirName = strings.TrimPrefix(dirName, privatePrefix)
@@ -72,22 +72,22 @@ func ParseSourceDirName(dirName string) ParsedSourceDirName {
 	if strings.HasPrefix(dirName, dotPrefix) {
 		dirName = "." + strings.TrimPrefix(dirName, dotPrefix)
 	}
-	return ParsedSourceDirName{
+	return DirAttributes{
 		DirName: dirName,
 		Perm:    perm,
 	}
 }
 
-// SourceDirName returns psdn's source dir name.
-func (psdn ParsedSourceDirName) SourceDirName() string {
+// SourceDirName returns da's source dir name.
+func (da DirAttributes) SourceDirName() string {
 	sourceDirName := ""
-	if psdn.Perm&os.FileMode(077) == os.FileMode(0) {
+	if da.Perm&os.FileMode(077) == os.FileMode(0) {
 		sourceDirName = privatePrefix
 	}
-	if strings.HasPrefix(psdn.DirName, ".") {
-		sourceDirName += dotPrefix + strings.TrimPrefix(psdn.DirName, ".")
+	if strings.HasPrefix(da.DirName, ".") {
+		sourceDirName += dotPrefix + strings.TrimPrefix(da.DirName, ".")
 	} else {
-		sourceDirName += psdn.DirName
+		sourceDirName += da.DirName
 	}
 	return sourceDirName
 }
@@ -169,9 +169,9 @@ func parseDirNameComponents(components []string) ([]string, []os.FileMode) {
 	dirNames := []string{}
 	perms := []os.FileMode{}
 	for _, component := range components {
-		psdn := ParseSourceDirName(component)
-		dirNames = append(dirNames, psdn.DirName)
-		perms = append(perms, psdn.Perm)
+		da := ParseDirAttributes(component)
+		dirNames = append(dirNames, da.DirName)
+		perms = append(perms, da.Perm)
 	}
 	return dirNames, perms
 }
