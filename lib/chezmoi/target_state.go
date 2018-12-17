@@ -83,35 +83,13 @@ func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEm
 	name := filepath.Base(targetName)
 	switch {
 	case info.Mode().IsDir():
-		if entry, ok := entries[name]; ok {
-			if _, ok := entry.(*Dir); !ok {
-				return fmt.Errorf("%s: already added and not a directory", targetName)
-			}
-			return nil // entry already exists
-		}
-		sourceName := ParsedSourceDirName{
-			DirName: name,
-			Perm:    info.Mode() & os.ModePerm,
-		}.SourceDirName()
-		if parentDirSourceName != "" {
-			sourceName = filepath.Join(parentDirSourceName, sourceName)
-		}
-		if err := mutator.Mkdir(filepath.Join(ts.SourceDir, sourceName), 0777&^ts.Umask); err != nil {
-			return err
-		}
-		// If the directory is empty, add a .keep file so the directory is
-		// managed by git. Chezmoi will ignore the .keep file as it begins with
-		// a dot.
+		perm := info.Mode().Perm()
 		infos, err := fs.ReadDir(targetPath)
 		if err != nil {
 			return err
 		}
-		if len(infos) == 0 {
-			if err := mutator.WriteFile(filepath.Join(ts.SourceDir, sourceName, ".keep"), nil, 0666&^ts.Umask, nil); err != nil {
-				return err
-			}
-		}
-		entries[name] = newDir(sourceName, targetName, info.Mode()&os.ModePerm)
+		empty := len(infos) == 0
+		return ts.addDir(targetName, entries, parentDirSourceName, name, perm, empty, mutator)
 	case info.Mode().IsRegular():
 		perm := info.Mode().Perm()
 		empty := info.Size() == 0
@@ -326,6 +304,40 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 	})
 }
 
+func (ts *TargetState) addDir(targetName string, entries map[string]Entry, parentDirSourceName, name string, perm os.FileMode, empty bool, mutator Mutator) error {
+	var existingDir *Dir
+	if entry, ok := entries[name]; ok {
+		existingDir, ok = entry.(*Dir)
+		if !ok {
+			return fmt.Errorf("%s: already added and not a directory", targetName)
+		}
+	}
+	sourceName := ParsedSourceDirName{
+		DirName: name,
+		Perm:    perm,
+	}.SourceDirName()
+	if parentDirSourceName != "" {
+		sourceName = filepath.Join(parentDirSourceName, sourceName)
+	}
+	dir := newDir(sourceName, targetName, perm)
+	if existingDir != nil {
+		if existingDir.sourceName == dir.sourceName {
+			return nil
+		}
+		return mutator.Rename(filepath.Join(ts.SourceDir, existingDir.sourceName), filepath.Join(ts.SourceDir, dir.sourceName))
+	}
+	// If the directory is empty, add a .keep file so the directory is
+	// managed by git. Chezmoi will ignore the .keep file as it begins with
+	// a dot.
+	if empty {
+		if err := mutator.WriteFile(filepath.Join(ts.SourceDir, sourceName, ".keep"), nil, 0666&^ts.Umask, nil); err != nil {
+			return err
+		}
+	}
+	entries[name] = dir
+	return mutator.Mkdir(filepath.Join(ts.SourceDir, sourceName), 0777&^ts.Umask)
+}
+
 func (ts *TargetState) addFile(targetName string, entries map[string]Entry, parentDirSourceName, name string, perm os.FileMode, empty bool, template bool, contents []byte, mutator Mutator) error {
 	// FIXME refactor to take an os.FileMode instead of perm and empty
 	var existingFile *File
@@ -497,31 +509,9 @@ func (ts *TargetState) importHeader(r io.Reader, header *tar.Header, destination
 	name := filepath.Base(targetName)
 	switch header.Typeflag {
 	case tar.TypeDir:
-		var existingDir *Dir
-		if entry, ok := entries[name]; ok {
-			existingDir, ok = entry.(*Dir)
-			if !ok {
-				return fmt.Errorf("%s: already added and not a directory", targetName)
-			}
-		}
-		perm := os.FileMode(header.Mode) & os.ModePerm
-		sourceName := ParsedSourceDirName{
-			DirName: name,
-			Perm:    perm,
-		}.SourceDirName()
-		if parentDirSourceName != "" {
-			sourceName = filepath.Join(parentDirSourceName, sourceName)
-		}
-		dir := newDir(sourceName, targetName, perm)
-		if existingDir != nil {
-			if existingDir.sourceName == dir.sourceName {
-				return nil
-			}
-			return mutator.Rename(filepath.Join(ts.SourceDir, existingDir.sourceName), filepath.Join(ts.SourceDir, dir.sourceName))
-		}
-		// FIXME Add a .keep file if the directory is empty
-		entries[name] = dir
-		return mutator.Mkdir(filepath.Join(ts.SourceDir, sourceName), 0777&^ts.Umask)
+		perm := os.FileMode(header.Mode).Perm()
+		empty := false // FIXME don't assume directory is empty
+		return ts.addDir(targetName, entries, parentDirSourceName, name, perm, empty, mutator)
 	case tar.TypeReg:
 		perm := os.FileMode(header.Mode).Perm()
 		empty := header.Size == 0
