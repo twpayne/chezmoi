@@ -90,9 +90,7 @@ func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEm
 		empty := len(infos) == 0
 		return ts.addDir(targetName, entries, parentDirSourceName, perm, empty, mutator)
 	case info.Mode().IsRegular():
-		perm := info.Mode().Perm()
-		empty := info.Size() == 0
-		if empty && !addEmpty {
+		if info.Size() == 0 && !addEmpty {
 			return nil
 		}
 		contents, err := fs.ReadFile(targetPath)
@@ -102,8 +100,7 @@ func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEm
 		if addTemplate {
 			contents = autoTemplate(contents, ts.Data)
 		}
-		// FIXME refactor to pass info instead of perm and empty
-		return ts.addFile(targetName, entries, parentDirSourceName, perm, empty, addTemplate, contents, mutator)
+		return ts.addFile(targetName, entries, parentDirSourceName, info, addTemplate, contents, mutator)
 	case info.Mode()&os.ModeType == os.ModeSymlink:
 		linkName, err := fs.Readlink(targetPath)
 		if err != nil {
@@ -338,8 +335,7 @@ func (ts *TargetState) addDir(targetName string, entries map[string]Entry, paren
 	return mutator.Mkdir(filepath.Join(ts.SourceDir, sourceName), 0777&^ts.Umask)
 }
 
-func (ts *TargetState) addFile(targetName string, entries map[string]Entry, parentDirSourceName string, perm os.FileMode, empty bool, template bool, contents []byte, mutator Mutator) error {
-	// FIXME refactor to take an os.FileMode instead of perm and empty
+func (ts *TargetState) addFile(targetName string, entries map[string]Entry, parentDirSourceName string, info os.FileInfo, template bool, contents []byte, mutator Mutator) error {
 	name := filepath.Base(targetName)
 	var existingFile *File
 	var existingContents []byte
@@ -354,6 +350,8 @@ func (ts *TargetState) addFile(targetName string, entries map[string]Entry, pare
 			return err
 		}
 	}
+	perm := info.Mode().Perm()
+	empty := info.Size() == 0
 	sourceName := ParsedSourceFileName{
 		FileName: name,
 		Mode:     perm,
@@ -514,14 +512,12 @@ func (ts *TargetState) importHeader(r io.Reader, header *tar.Header, destination
 		empty := false // FIXME don't assume directory is empty
 		return ts.addDir(targetName, entries, parentDirSourceName, perm, empty, mutator)
 	case tar.TypeReg:
-		perm := os.FileMode(header.Mode).Perm()
-		empty := header.Size == 0
+		info := header.FileInfo()
 		contents, err := ioutil.ReadAll(r)
 		if err != nil {
 			return err
 		}
-		// FIXME refactor to use tar.Header.FileInfo
-		return ts.addFile(targetName, entries, parentDirSourceName, perm, empty, false, contents, mutator)
+		return ts.addFile(targetName, entries, parentDirSourceName, info, false, contents, mutator)
 	case tar.TypeSymlink:
 		linkName := header.Linkname
 		return ts.addSymlink(targetName, entries, parentDirSourceName, linkName, mutator)
