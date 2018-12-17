@@ -128,31 +128,11 @@ func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEm
 		// FIXME refactor to pass info instead of perm and empty
 		return ts.addFile(targetName, entries, parentDirSourceName, name, perm, empty, addTemplate, contents, mutator)
 	case info.Mode()&os.ModeType == os.ModeSymlink:
-		if entry, ok := entries[name]; ok {
-			if _, ok := entry.(*Symlink); !ok {
-				return fmt.Errorf("%s: already added and not a symlink", targetName)
-			}
-			return nil // entry already exists
-		}
-		sourceName := ParsedSourceFileName{
-			FileName: name,
-			Mode:     os.ModeSymlink,
-		}.SourceFileName()
-		if parentDirSourceName != "" {
-			sourceName = filepath.Join(parentDirSourceName, sourceName)
-		}
-		data, err := fs.Readlink(targetPath)
+		linkName, err := fs.Readlink(targetPath)
 		if err != nil {
 			return err
 		}
-		if err := mutator.WriteFile(filepath.Join(ts.SourceDir, sourceName), []byte(data), 0666&^ts.Umask, nil); err != nil {
-			return err
-		}
-		entries[name] = &Symlink{
-			sourceName: sourceName,
-			targetName: targetName,
-			linkName:   data,
-		}
+		return ts.addSymlink(targetName, entries, parentDirSourceName, name, linkName, mutator)
 	default:
 		return fmt.Errorf("%s: not a regular file or directory", targetName)
 	}
@@ -393,6 +373,47 @@ func (ts *TargetState) addFile(targetName string, entries map[string]Entry, pare
 	return mutator.WriteFile(filepath.Join(ts.SourceDir, sourceName), contents, 0666&^ts.Umask, existingContents)
 }
 
+func (ts *TargetState) addSymlink(targetName string, entries map[string]Entry, parentDirSourceName, name string, linkName string, mutator Mutator) error {
+	var existingSymlink *Symlink
+	var existingLinkName string
+	if entry, ok := entries[name]; ok {
+		existingSymlink, ok = entry.(*Symlink)
+		if !ok {
+			return fmt.Errorf("%s: already added and not a symlink", targetName)
+		}
+		var err error
+		existingLinkName, err = existingSymlink.LinkName()
+		if err != nil {
+			return err
+		}
+	}
+	sourceName := ParsedSourceFileName{
+		FileName: name,
+		Mode:     os.ModeSymlink,
+	}.SourceFileName()
+	if parentDirSourceName != "" {
+		sourceName = filepath.Join(parentDirSourceName, sourceName)
+	}
+	symlink := &Symlink{
+		sourceName: sourceName,
+		targetName: targetName,
+		linkName:   linkName,
+	}
+	if existingSymlink != nil {
+		if existingSymlink.linkName == symlink.linkName {
+			if existingSymlink.sourceName == symlink.sourceName {
+				return nil
+			}
+			return mutator.Rename(filepath.Join(ts.SourceDir, existingSymlink.sourceName), filepath.Join(ts.SourceDir, symlink.sourceName))
+		}
+		if err := mutator.RemoveAll(filepath.Join(ts.SourceDir, existingSymlink.sourceName)); err != nil {
+			return err
+		}
+	}
+	entries[name] = symlink
+	return mutator.WriteFile(filepath.Join(ts.SourceDir, symlink.sourceName), []byte(symlink.linkName), 0666&^ts.Umask, []byte(existingLinkName))
+}
+
 func (ts *TargetState) executeTemplate(fs vfs.FS, path string) ([]byte, error) {
 	data, err := fs.ReadFile(path)
 	if err != nil {
@@ -511,43 +532,8 @@ func (ts *TargetState) importHeader(r io.Reader, header *tar.Header, destination
 		// FIXME refactor to use tar.Header.FileInfo
 		return ts.addFile(targetName, entries, parentDirSourceName, name, perm, empty, false, contents, mutator)
 	case tar.TypeSymlink:
-		var existingSymlink *Symlink
-		var existingLinkName string
-		if entry, ok := entries[name]; ok {
-			existingSymlink, ok = entry.(*Symlink)
-			if !ok {
-				return fmt.Errorf("%s: already added and not a symlink", targetName)
-			}
-			existingLinkName, err = existingSymlink.LinkName()
-			if err != nil {
-				return err
-			}
-		}
-		sourceName := ParsedSourceFileName{
-			FileName: name,
-			Mode:     os.ModeSymlink,
-		}.SourceFileName()
-		if parentDirSourceName != "" {
-			sourceName = filepath.Join(parentDirSourceName, sourceName)
-		}
-		symlink := &Symlink{
-			sourceName: sourceName,
-			targetName: targetName,
-			linkName:   header.Linkname,
-		}
-		if existingSymlink != nil {
-			if existingSymlink.linkName == symlink.linkName {
-				if existingSymlink.sourceName == symlink.sourceName {
-					return nil
-				}
-				return mutator.Rename(filepath.Join(ts.SourceDir, existingSymlink.sourceName), filepath.Join(ts.SourceDir, symlink.sourceName))
-			}
-			if err := mutator.RemoveAll(filepath.Join(ts.SourceDir, existingSymlink.sourceName)); err != nil {
-				return err
-			}
-		}
-		entries[name] = symlink
-		return mutator.WriteFile(filepath.Join(ts.SourceDir, symlink.sourceName), []byte(symlink.linkName), 0666&^ts.Umask, []byte(existingLinkName))
+		linkName := header.Linkname
+		return ts.addSymlink(targetName, entries, parentDirSourceName, name, linkName, mutator)
 	default:
 		return fmt.Errorf("%s: unspported typeflag '%c'", header.Name, header.Typeflag)
 	}
