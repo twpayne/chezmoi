@@ -19,7 +19,7 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-var importCommand = &cobra.Command{
+var _importommand = &cobra.Command{
 	Use:   "import",
 	Args:  cobra.MaximumNArgs(1),
 	Short: "Import an archive",
@@ -33,12 +33,12 @@ type importCommandConfig struct {
 }
 
 func init() {
-	rootCommand.AddCommand(importCommand)
+	rootCommand.AddCommand(_importommand)
 
-	persistentFlags := importCommand.PersistentFlags()
-	persistentFlags.StringVarP(&config.importC.destination, "destination", "d", "", "destination prefix")
-	persistentFlags.IntVar(&config.importC.stripComponents, "strip-components", 0, "strip components")
-	persistentFlags.BoolVarP(&config.importC.removeDestination, "remove-destination", "r", false, "remove destination before import")
+	persistentFlags := _importommand.PersistentFlags()
+	persistentFlags.StringVarP(&config._import.destination, "destination", "d", "", "destination prefix")
+	persistentFlags.IntVar(&config._import.stripComponents, "strip-components", 0, "strip components")
+	persistentFlags.BoolVarP(&config._import.removeDestination, "remove-destination", "r", false, "remove destination before import")
 }
 
 func (c *Config) runImportCommand(fs vfs.FS, cmd *cobra.Command, args []string) error {
@@ -71,8 +71,8 @@ func (c *Config) runImportCommand(fs vfs.FS, cmd *cobra.Command, args []string) 
 		}
 	}
 	mutator := c.getDefaultMutator(fs)
-	if c.importC.removeDestination {
-		entry, err := ts.Get(c.importC.destination)
+	if c._import.removeDestination {
+		entry, err := ts.Get(c._import.destination)
 		switch {
 		case err == nil:
 			if err := mutator.RemoveAll(filepath.Join(c.SourceDir, entry.SourceName())); err != nil {
@@ -83,5 +83,5 @@ func (c *Config) runImportCommand(fs vfs.FS, cmd *cobra.Command, args []string) 
 			return err
 		}
 	}
-	return ts.Import(tar.NewReader(r), c.importC.destination, c.importC.stripComponents, mutator)
+	return ts.Import(tar.NewReader(r), c._import.destination, c._import.stripComponents, mutator)
 }

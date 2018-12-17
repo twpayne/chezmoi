@@ -80,105 +80,36 @@ func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEm
 		entries = parentDir.Entries
 	}
 
-	name := filepath.Base(targetName)
 	switch {
 	case info.Mode().IsDir():
-		if entry, ok := entries[name]; ok {
-			if _, ok := entry.(*Dir); !ok {
-				return fmt.Errorf("%s: already added and not a directory", targetName)
-			}
-			return nil // entry already exists
-		}
-		sourceName := ParsedSourceDirName{
-			DirName: name,
-			Perm:    info.Mode() & os.ModePerm,
-		}.SourceDirName()
-		if parentDirSourceName != "" {
-			sourceName = filepath.Join(parentDirSourceName, sourceName)
-		}
-		if err := mutator.Mkdir(filepath.Join(ts.SourceDir, sourceName), 0777&^ts.Umask); err != nil {
-			return err
-		}
-		// If the directory is empty, add a .keep file so the directory is
-		// managed by git. Chezmoi will ignore the .keep file as it begins with
-		// a dot.
+		perm := info.Mode().Perm()
 		infos, err := fs.ReadDir(targetPath)
 		if err != nil {
 			return err
 		}
-		if len(infos) == 0 {
-			if err := mutator.WriteFile(filepath.Join(ts.SourceDir, sourceName, ".keep"), nil, 0666&^ts.Umask, nil); err != nil {
-				return err
-			}
-		}
-		entries[name] = newDir(sourceName, targetName, info.Mode()&os.ModePerm)
+		empty := len(infos) == 0
+		return ts.addDir(targetName, entries, parentDirSourceName, perm, empty, mutator)
 	case info.Mode().IsRegular():
-		if entry, ok := entries[name]; ok {
-			if _, ok := entry.(*File); !ok {
-				return fmt.Errorf("%s: already added and not a regular file", targetName)
-			}
-			return nil // entry already exists
-		}
 		if info.Size() == 0 && !addEmpty {
 			return nil
 		}
-		sourceName := ParsedSourceFileName{
-			FileName: name,
-			Mode:     info.Mode() & os.ModePerm,
-			Empty:    info.Size() == 0,
-			Template: addTemplate,
-		}.SourceFileName()
-		if parentDirSourceName != "" {
-			sourceName = filepath.Join(parentDirSourceName, sourceName)
-		}
-		data, err := fs.ReadFile(targetPath)
+		contents, err := fs.ReadFile(targetPath)
 		if err != nil {
 			return err
 		}
 		if addTemplate {
-			data = autoTemplate(data, ts.Data)
+			contents = autoTemplate(contents, ts.Data)
 		}
-		if err := mutator.WriteFile(filepath.Join(ts.SourceDir, sourceName), data, 0666&^ts.Umask, nil); err != nil {
-			return err
-		}
-		entries[name] = &File{
-			sourceName: sourceName,
-			targetName: targetName,
-			Empty:      len(data) == 0,
-			Perm:       info.Mode() & os.ModePerm,
-			Template:   addTemplate,
-			contents:   data,
-		}
+		return ts.addFile(targetName, entries, parentDirSourceName, info, addTemplate, contents, mutator)
 	case info.Mode()&os.ModeType == os.ModeSymlink:
-		if entry, ok := entries[name]; ok {
-			if _, ok := entry.(*Symlink); !ok {
-				return fmt.Errorf("%s: already added and not a symlink", targetName)
-			}
-			return nil // entry already exists
-		}
-		sourceName := ParsedSourceFileName{
-			FileName: name,
-			Mode:     os.ModeSymlink,
-		}.SourceFileName()
-		if parentDirSourceName != "" {
-			sourceName = filepath.Join(parentDirSourceName, sourceName)
-		}
-		data, err := fs.Readlink(targetPath)
+		linkname, err := fs.Readlink(targetPath)
 		if err != nil {
 			return err
 		}
-		if err := mutator.WriteFile(filepath.Join(ts.SourceDir, sourceName), []byte(data), 0666&^ts.Umask, nil); err != nil {
-			return err
-		}
-		entries[name] = &Symlink{
-			sourceName: sourceName,
-			targetName: targetName,
-			linkName:   data,
-		}
+		return ts.addSymlink(targetName, entries, parentDirSourceName, linkname, mutator)
 	default:
-		return fmt.Errorf("%s: not a regular file or directory", targetName)
+		return fmt.Errorf("%s: not a regular file, directory, or symlink", targetName)
 	}
-	return nil
 }
 
 // Archive writes ts to w.
@@ -336,17 +267,17 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 					sourceName:       relPath,
 					targetName:       targetName,
 					Empty:            psfp.Empty,
-					Perm:             psfp.Mode & os.ModePerm,
+					Perm:             psfp.Mode.Perm(),
 					Template:         psfp.Template,
 					evaluateContents: evaluateContents,
 				}
 			case os.ModeSymlink:
-				evaluateLinkName := func() (string, error) {
+				evaluateLinkname := func() (string, error) {
 					data, err := fs.ReadFile(path)
 					return string(data), err
 				}
 				if psfp.Template {
-					evaluateLinkName = func() (string, error) {
+					evaluateLinkname = func() (string, error) {
 						data, err := ts.executeTemplate(fs, path)
 						return string(data), err
 					}
@@ -355,7 +286,7 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 					sourceName:       relPath,
 					targetName:       targetName,
 					Template:         psfp.Template,
-					evaluateLinkName: evaluateLinkName,
+					evaluateLinkname: evaluateLinkname,
 				}
 			default:
 				return fmt.Errorf("%v: unsupported mode: %d", path, psfp.Mode&os.ModeType)
@@ -366,6 +297,132 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 		}
 		return nil
 	})
+}
+
+func (ts *TargetState) addDir(targetName string, entries map[string]Entry, parentDirSourceName string, perm os.FileMode, empty bool, mutator Mutator) error {
+	name := filepath.Base(targetName)
+	var existingDir *Dir
+	if entry, ok := entries[name]; ok {
+		existingDir, ok = entry.(*Dir)
+		if !ok {
+			return fmt.Errorf("%s: already added and not a directory", targetName)
+		}
+	}
+	sourceName := ParsedSourceDirName{
+		DirName: name,
+		Perm:    perm,
+	}.SourceDirName()
+	if parentDirSourceName != "" {
+		sourceName = filepath.Join(parentDirSourceName, sourceName)
+	}
+	dir := newDir(sourceName, targetName, perm)
+	if existingDir != nil {
+		if existingDir.sourceName == dir.sourceName {
+			return nil
+		}
+		return mutator.Rename(filepath.Join(ts.SourceDir, existingDir.sourceName), filepath.Join(ts.SourceDir, dir.sourceName))
+	}
+	// If the directory is empty, add a .keep file so the directory is
+	// managed by git. Chezmoi will ignore the .keep file as it begins with
+	// a dot.
+	if empty {
+		if err := mutator.WriteFile(filepath.Join(ts.SourceDir, sourceName, ".keep"), nil, 0666&^ts.Umask, nil); err != nil {
+			return err
+		}
+	}
+	entries[name] = dir
+	return mutator.Mkdir(filepath.Join(ts.SourceDir, sourceName), 0777&^ts.Umask)
+}
+
+func (ts *TargetState) addFile(targetName string, entries map[string]Entry, parentDirSourceName string, info os.FileInfo, template bool, contents []byte, mutator Mutator) error {
+	name := filepath.Base(targetName)
+	var existingFile *File
+	var existingContents []byte
+	if entry, ok := entries[name]; ok {
+		existingFile, ok = entry.(*File)
+		if !ok {
+			return fmt.Errorf("%s: already added and not a regular file", targetName)
+		}
+		var err error
+		existingContents, err = existingFile.Contents()
+		if err != nil {
+			return err
+		}
+	}
+	perm := info.Mode().Perm()
+	empty := info.Size() == 0
+	sourceName := ParsedSourceFileName{
+		FileName: name,
+		Mode:     perm,
+		Empty:    empty,
+		Template: template,
+	}.SourceFileName()
+	if parentDirSourceName != "" {
+		sourceName = filepath.Join(parentDirSourceName, sourceName)
+	}
+	file := &File{
+		sourceName: sourceName,
+		targetName: targetName,
+		Empty:      empty,
+		Perm:       perm,
+		Template:   template,
+		contents:   contents,
+	}
+	if existingFile != nil {
+		if bytes.Equal(existingFile.contents, file.contents) {
+			if existingFile.sourceName == file.sourceName {
+				return nil
+			}
+			return mutator.Rename(filepath.Join(ts.SourceDir, existingFile.sourceName), filepath.Join(ts.SourceDir, file.sourceName))
+		}
+		if err := mutator.RemoveAll(filepath.Join(ts.SourceDir, existingFile.sourceName)); err != nil {
+			return err
+		}
+	}
+	entries[name] = file
+	return mutator.WriteFile(filepath.Join(ts.SourceDir, sourceName), contents, 0666&^ts.Umask, existingContents)
+}
+
+func (ts *TargetState) addSymlink(targetName string, entries map[string]Entry, parentDirSourceName string, linkname string, mutator Mutator) error {
+	name := filepath.Base(targetName)
+	var existingSymlink *Symlink
+	var existingLinkname string
+	if entry, ok := entries[name]; ok {
+		existingSymlink, ok = entry.(*Symlink)
+		if !ok {
+			return fmt.Errorf("%s: already added and not a symlink", targetName)
+		}
+		var err error
+		existingLinkname, err = existingSymlink.Linkname()
+		if err != nil {
+			return err
+		}
+	}
+	sourceName := ParsedSourceFileName{
+		FileName: name,
+		Mode:     os.ModeSymlink,
+	}.SourceFileName()
+	if parentDirSourceName != "" {
+		sourceName = filepath.Join(parentDirSourceName, sourceName)
+	}
+	symlink := &Symlink{
+		sourceName: sourceName,
+		targetName: targetName,
+		linkname:   linkname,
+	}
+	if existingSymlink != nil {
+		if existingSymlink.linkname == symlink.linkname {
+			if existingSymlink.sourceName == symlink.sourceName {
+				return nil
+			}
+			return mutator.Rename(filepath.Join(ts.SourceDir, existingSymlink.sourceName), filepath.Join(ts.SourceDir, symlink.sourceName))
+		}
+		if err := mutator.RemoveAll(filepath.Join(ts.SourceDir, existingSymlink.sourceName)); err != nil {
+			return err
+		}
+	}
+	entries[name] = symlink
+	return mutator.WriteFile(filepath.Join(ts.SourceDir, symlink.sourceName), []byte(symlink.linkname), 0666&^ts.Umask, []byte(existingLinkname))
 }
 
 func (ts *TargetState) executeTemplate(fs vfs.FS, path string) ([]byte, error) {
@@ -448,120 +505,21 @@ func (ts *TargetState) importHeader(r io.Reader, header *tar.Header, destination
 		parentDirSourceName = parentDir.sourceName
 		entries = parentDir.Entries
 	}
-	name := filepath.Base(targetName)
 	switch header.Typeflag {
 	case tar.TypeDir:
-		var existingDir *Dir
-		if entry, ok := entries[name]; ok {
-			existingDir, ok = entry.(*Dir)
-			if !ok {
-				return fmt.Errorf("%s: already added and not a directory", targetName)
-			}
-		}
-		perm := os.FileMode(header.Mode) & os.ModePerm
-		sourceName := ParsedSourceDirName{
-			DirName: name,
-			Perm:    perm,
-		}.SourceDirName()
-		if parentDirSourceName != "" {
-			sourceName = filepath.Join(parentDirSourceName, sourceName)
-		}
-		dir := newDir(sourceName, targetName, perm)
-		if existingDir != nil {
-			if existingDir.sourceName == dir.sourceName {
-				return nil
-			}
-			return mutator.Rename(filepath.Join(ts.SourceDir, existingDir.sourceName), filepath.Join(ts.SourceDir, dir.sourceName))
-		}
-		// FIXME Add a .keep file if the directory is empty
-		entries[name] = dir
-		return mutator.Mkdir(filepath.Join(ts.SourceDir, sourceName), 0777&^ts.Umask)
+		perm := os.FileMode(header.Mode).Perm()
+		empty := false // FIXME don't assume directory is empty
+		return ts.addDir(targetName, entries, parentDirSourceName, perm, empty, mutator)
 	case tar.TypeReg:
-		var existingFile *File
-		var existingContents []byte
-		if entry, ok := entries[name]; ok {
-			existingFile, ok = entry.(*File)
-			if !ok {
-				return fmt.Errorf("%s: already added and not a regular file", targetName)
-			}
-			existingContents, err = existingFile.Contents()
-			if err != nil {
-				return err
-			}
-		}
-		perm := os.FileMode(header.Mode) & os.ModePerm
-		empty := header.Size == 0
-		sourceName := ParsedSourceFileName{
-			FileName: name,
-			Mode:     perm,
-			Empty:    empty,
-		}.SourceFileName()
-		if parentDirSourceName != "" {
-			sourceName = filepath.Join(parentDirSourceName, sourceName)
-		}
+		info := header.FileInfo()
 		contents, err := ioutil.ReadAll(r)
 		if err != nil {
 			return err
 		}
-		file := &File{
-			sourceName: sourceName,
-			targetName: targetName,
-			Empty:      empty,
-			Perm:       perm,
-			Template:   false,
-			contents:   contents,
-		}
-		if existingFile != nil {
-			if bytes.Equal(existingFile.contents, file.contents) {
-				if existingFile.sourceName == file.sourceName {
-					return nil
-				}
-				return mutator.Rename(filepath.Join(ts.SourceDir, existingFile.sourceName), filepath.Join(ts.SourceDir, file.sourceName))
-			}
-			if err := mutator.RemoveAll(filepath.Join(ts.SourceDir, existingFile.sourceName)); err != nil {
-				return err
-			}
-		}
-		entries[name] = file
-		return mutator.WriteFile(filepath.Join(ts.SourceDir, sourceName), contents, 0666&^ts.Umask, existingContents)
+		return ts.addFile(targetName, entries, parentDirSourceName, info, false, contents, mutator)
 	case tar.TypeSymlink:
-		var existingSymlink *Symlink
-		var existingLinkName string
-		if entry, ok := entries[name]; ok {
-			existingSymlink, ok = entry.(*Symlink)
-			if !ok {
-				return fmt.Errorf("%s: already added and not a symlink", targetName)
-			}
-			existingLinkName, err = existingSymlink.LinkName()
-			if err != nil {
-				return err
-			}
-		}
-		sourceName := ParsedSourceFileName{
-			FileName: name,
-			Mode:     os.ModeSymlink,
-		}.SourceFileName()
-		if parentDirSourceName != "" {
-			sourceName = filepath.Join(parentDirSourceName, sourceName)
-		}
-		symlink := &Symlink{
-			sourceName: sourceName,
-			targetName: targetName,
-			linkName:   header.Linkname,
-		}
-		if existingSymlink != nil {
-			if existingSymlink.linkName == symlink.linkName {
-				if existingSymlink.sourceName == symlink.sourceName {
-					return nil
-				}
-				return mutator.Rename(filepath.Join(ts.SourceDir, existingSymlink.sourceName), filepath.Join(ts.SourceDir, symlink.sourceName))
-			}
-			if err := mutator.RemoveAll(filepath.Join(ts.SourceDir, existingSymlink.sourceName)); err != nil {
-				return err
-			}
-		}
-		entries[name] = symlink
-		return mutator.WriteFile(filepath.Join(ts.SourceDir, symlink.sourceName), []byte(symlink.linkName), 0666&^ts.Umask, []byte(existingLinkName))
+		linkname := header.Linkname
+		return ts.addSymlink(targetName, entries, parentDirSourceName, linkname, mutator)
 	default:
 		return fmt.Errorf("%s: unspported typeflag '%c'", header.Name, header.Typeflag)
 	}

@@ -13,9 +13,9 @@ type Symlink struct {
 	sourceName       string
 	targetName       string
 	Template         bool
-	linkName         string
-	linkNameErr      error
-	evaluateLinkName func() (string, error)
+	linkname         string
+	linknameErr      error
+	evaluateLinkname func() (string, error)
 }
 
 type symlinkConcreteValue struct {
@@ -23,12 +23,12 @@ type symlinkConcreteValue struct {
 	SourcePath string `json:"sourcePath" yaml:"sourcePath"`
 	TargetPath string `json:"targetPath" yaml:"targetPath"`
 	Template   bool   `json:"template" yaml:"template"`
-	LinkName   string `json:"linkName" yaml:"linkName"`
+	Linkname   string `json:"linkname" yaml:"linkname"`
 }
 
 // Apply ensures that the state of s's target in fs matches s.
 func (s *Symlink) Apply(fs vfs.FS, targetDir string, umask os.FileMode, mutator Mutator) error {
-	target, err := s.LinkName()
+	target, err := s.Linkname()
 	if err != nil {
 		return err
 	}
@@ -53,7 +53,7 @@ func (s *Symlink) Apply(fs vfs.FS, targetDir string, umask os.FileMode, mutator 
 
 // ConcreteValue implements Entry.ConcreteValue.
 func (s *Symlink) ConcreteValue(targetDir, sourceDir string, recursive bool) (interface{}, error) {
-	linkName, err := s.LinkName()
+	linkname, err := s.Linkname()
 	if err != nil {
 		return nil, err
 	}
@@ -62,13 +62,13 @@ func (s *Symlink) ConcreteValue(targetDir, sourceDir string, recursive bool) (in
 		SourcePath: filepath.Join(sourceDir, s.SourceName()),
 		TargetPath: filepath.Join(targetDir, s.TargetName()),
 		Template:   s.Template,
-		LinkName:   linkName,
+		Linkname:   linkname,
 	}, nil
 }
 
 // Evaluate evaluates s's target.
 func (s *Symlink) Evaluate() error {
-	_, err := s.LinkName()
+	_, err := s.Linkname()
 	return err
 }
 
@@ -77,13 +77,13 @@ func (s *Symlink) SourceName() string {
 	return s.sourceName
 }
 
-// LinkName returns s's link name.
-func (s *Symlink) LinkName() (string, error) {
-	if s.evaluateLinkName != nil {
-		s.linkName, s.linkNameErr = s.evaluateLinkName()
-		s.evaluateLinkName = nil
+// Linkname returns s's link name.
+func (s *Symlink) Linkname() (string, error) {
+	if s.evaluateLinkname != nil {
+		s.linkname, s.linknameErr = s.evaluateLinkname()
+		s.evaluateLinkname = nil
 	}
-	return s.linkName, s.linkNameErr
+	return s.linkname, s.linknameErr
 }
 
 // TargetName implements Entry.TargetName.
@@ -93,13 +93,13 @@ func (s *Symlink) TargetName() string {
 
 // archive writes s to w.
 func (s *Symlink) archive(w *tar.Writer, headerTemplate *tar.Header, umask os.FileMode) error {
-	linkName, err := s.LinkName()
+	linkname, err := s.Linkname()
 	if err != nil {
 		return err
 	}
 	header := *headerTemplate
 	header.Name = s.targetName
 	header.Typeflag = tar.TypeSymlink
-	header.Linkname = linkName
+	header.Linkname = linkname
 	return w.WriteHeader(&header)
 }

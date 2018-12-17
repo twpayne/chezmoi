@@ -52,7 +52,7 @@ func (f *File) Apply(fs vfs.FS, targetDir string, umask os.FileMode, mutator Mut
 		if !bytes.Equal(currData, contents) {
 			break
 		}
-		if info.Mode()&os.ModePerm != f.Perm&^umask {
+		if info.Mode().Perm() != f.Perm&^umask {
 			if err := mutator.Chmod(targetPath, f.Perm&^umask); err != nil {
 				return err
 			}
@@ -111,7 +111,7 @@ func (f *File) Executable() bool {
 
 // Private returns true if f is private.
 func (f *File) Private() bool {
-	return f.Perm&os.ModePerm&077 == 0
+	return f.Perm&077 == 0
 }
 
 // SourceName implements Entry.SourceName.
