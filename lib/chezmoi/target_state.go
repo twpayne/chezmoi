@@ -80,7 +80,6 @@ func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEm
 		entries = parentDir.Entries
 	}
 
-	name := filepath.Base(targetName)
 	switch {
 	case info.Mode().IsDir():
 		perm := info.Mode().Perm()
@@ -89,7 +88,7 @@ func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEm
 			return err
 		}
 		empty := len(infos) == 0
-		return ts.addDir(targetName, entries, parentDirSourceName, name, perm, empty, mutator)
+		return ts.addDir(targetName, entries, parentDirSourceName, perm, empty, mutator)
 	case info.Mode().IsRegular():
 		perm := info.Mode().Perm()
 		empty := info.Size() == 0
@@ -104,13 +103,13 @@ func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEm
 			contents = autoTemplate(contents, ts.Data)
 		}
 		// FIXME refactor to pass info instead of perm and empty
-		return ts.addFile(targetName, entries, parentDirSourceName, name, perm, empty, addTemplate, contents, mutator)
+		return ts.addFile(targetName, entries, parentDirSourceName, perm, empty, addTemplate, contents, mutator)
 	case info.Mode()&os.ModeType == os.ModeSymlink:
 		linkName, err := fs.Readlink(targetPath)
 		if err != nil {
 			return err
 		}
-		return ts.addSymlink(targetName, entries, parentDirSourceName, name, linkName, mutator)
+		return ts.addSymlink(targetName, entries, parentDirSourceName, linkName, mutator)
 	default:
 		return fmt.Errorf("%s: not a regular file, directory, or symlink", targetName)
 	}
@@ -304,7 +303,8 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 	})
 }
 
-func (ts *TargetState) addDir(targetName string, entries map[string]Entry, parentDirSourceName, name string, perm os.FileMode, empty bool, mutator Mutator) error {
+func (ts *TargetState) addDir(targetName string, entries map[string]Entry, parentDirSourceName string, perm os.FileMode, empty bool, mutator Mutator) error {
+	name := filepath.Base(targetName)
 	var existingDir *Dir
 	if entry, ok := entries[name]; ok {
 		existingDir, ok = entry.(*Dir)
@@ -338,8 +338,9 @@ func (ts *TargetState) addDir(targetName string, entries map[string]Entry, paren
 	return mutator.Mkdir(filepath.Join(ts.SourceDir, sourceName), 0777&^ts.Umask)
 }
 
-func (ts *TargetState) addFile(targetName string, entries map[string]Entry, parentDirSourceName, name string, perm os.FileMode, empty bool, template bool, contents []byte, mutator Mutator) error {
+func (ts *TargetState) addFile(targetName string, entries map[string]Entry, parentDirSourceName string, perm os.FileMode, empty bool, template bool, contents []byte, mutator Mutator) error {
 	// FIXME refactor to take an os.FileMode instead of perm and empty
+	name := filepath.Base(targetName)
 	var existingFile *File
 	var existingContents []byte
 	if entry, ok := entries[name]; ok {
@@ -385,7 +386,8 @@ func (ts *TargetState) addFile(targetName string, entries map[string]Entry, pare
 	return mutator.WriteFile(filepath.Join(ts.SourceDir, sourceName), contents, 0666&^ts.Umask, existingContents)
 }
 
-func (ts *TargetState) addSymlink(targetName string, entries map[string]Entry, parentDirSourceName, name string, linkName string, mutator Mutator) error {
+func (ts *TargetState) addSymlink(targetName string, entries map[string]Entry, parentDirSourceName string, linkName string, mutator Mutator) error {
+	name := filepath.Base(targetName)
 	var existingSymlink *Symlink
 	var existingLinkName string
 	if entry, ok := entries[name]; ok {
@@ -506,12 +508,11 @@ func (ts *TargetState) importHeader(r io.Reader, header *tar.Header, destination
 		parentDirSourceName = parentDir.sourceName
 		entries = parentDir.Entries
 	}
-	name := filepath.Base(targetName)
 	switch header.Typeflag {
 	case tar.TypeDir:
 		perm := os.FileMode(header.Mode).Perm()
 		empty := false // FIXME don't assume directory is empty
-		return ts.addDir(targetName, entries, parentDirSourceName, name, perm, empty, mutator)
+		return ts.addDir(targetName, entries, parentDirSourceName, perm, empty, mutator)
 	case tar.TypeReg:
 		perm := os.FileMode(header.Mode).Perm()
 		empty := header.Size == 0
@@ -520,10 +521,10 @@ func (ts *TargetState) importHeader(r io.Reader, header *tar.Header, destination
 			return err
 		}
 		// FIXME refactor to use tar.Header.FileInfo
-		return ts.addFile(targetName, entries, parentDirSourceName, name, perm, empty, false, contents, mutator)
+		return ts.addFile(targetName, entries, parentDirSourceName, perm, empty, false, contents, mutator)
 	case tar.TypeSymlink:
 		linkName := header.Linkname
-		return ts.addSymlink(targetName, entries, parentDirSourceName, name, linkName, mutator)
+		return ts.addSymlink(targetName, entries, parentDirSourceName, linkName, mutator)
 	default:
 		return fmt.Errorf("%s: unspported typeflag '%c'", header.Name, header.Typeflag)
 	}
