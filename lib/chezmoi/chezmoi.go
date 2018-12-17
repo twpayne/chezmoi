@@ -2,7 +2,6 @@ package chezmoi
 
 import (
 	"archive/tar"
-	"fmt"
 	"os"
 	"path/filepath"
 	"sort"
@@ -36,14 +35,6 @@ type Entry interface {
 	archive(w *tar.Writer, headerTemplate *tar.Header, umask os.FileMode) error
 }
 
-// A FileAttributes is a parsed source file name.
-type FileAttributes struct {
-	Name     string
-	Mode     os.FileMode
-	Empty    bool
-	Template bool
-}
-
 type parsedSourceFilePath struct {
 	FileAttributes
 	dirNames []string
@@ -54,78 +45,6 @@ func ReturnTemplateFuncError(err error) {
 	panic(templateFuncError{
 		err: err,
 	})
-}
-
-// ParseFileAttributes parses a source file name.
-func ParseFileAttributes(sourceName string) FileAttributes {
-	name := sourceName
-	mode := os.FileMode(0666)
-	empty := false
-	template := false
-	if strings.HasPrefix(name, symlinkPrefix) {
-		name = strings.TrimPrefix(name, symlinkPrefix)
-		mode |= os.ModeSymlink
-	} else {
-		private := false
-		if strings.HasPrefix(name, privatePrefix) {
-			name = strings.TrimPrefix(name, privatePrefix)
-			private = true
-		}
-		if strings.HasPrefix(name, emptyPrefix) {
-			name = strings.TrimPrefix(name, emptyPrefix)
-			empty = true
-		}
-		if strings.HasPrefix(name, executablePrefix) {
-			name = strings.TrimPrefix(name, executablePrefix)
-			mode |= 0111
-		}
-		if private {
-			mode &= 0700
-		}
-	}
-	if strings.HasPrefix(name, dotPrefix) {
-		name = "." + strings.TrimPrefix(name, dotPrefix)
-	}
-	if strings.HasSuffix(name, templateSuffix) {
-		name = strings.TrimSuffix(name, templateSuffix)
-		template = true
-	}
-	return FileAttributes{
-		Name:     name,
-		Mode:     mode,
-		Empty:    empty,
-		Template: template,
-	}
-}
-
-// SourceName returns fa's source name.
-func (fa FileAttributes) SourceName() string {
-	sourceName := ""
-	switch fa.Mode & os.ModeType {
-	case 0:
-		if fa.Mode.Perm()&os.FileMode(077) == os.FileMode(0) {
-			sourceName = privatePrefix
-		}
-		if fa.Empty {
-			sourceName += emptyPrefix
-		}
-		if fa.Mode.Perm()&os.FileMode(0111) != os.FileMode(0) {
-			sourceName += executablePrefix
-		}
-	case os.ModeSymlink:
-		sourceName = symlinkPrefix
-	default:
-		panic(fmt.Sprintf("%+v: unsupported type", fa)) // FIXME return error instead of panicing
-	}
-	if strings.HasPrefix(fa.Name, ".") {
-		sourceName += dotPrefix + strings.TrimPrefix(fa.Name, ".")
-	} else {
-		sourceName += fa.Name
-	}
-	if fa.Template {
-		sourceName += templateSuffix
-	}
-	return sourceName
 }
 
 // parseDirNameComponents parses multiple directory name components. It returns
