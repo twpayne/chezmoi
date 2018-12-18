@@ -254,6 +254,14 @@ the field you want. For example, to extract the `password` field from first the
 
     githubPassword = {{ (index (lastpass "Github") 0).password }}
 
+`chezmoi` automatically parses the `note` value of the Lastpass entry, so, for
+example, you can extract a private SSH key like this:
+
+    {{ (index (lastpass "SSH") 0).note.privateKey }}
+
+Keys in the `note` section written as `CamelCase Words` are converted to
+`camelCaseWords`.
+
 ### Using keyring
 
 `chezmoi` includes support for Keychain (on macOS), GNOME Keyring (on Linux),

@@ -1,10 +1,14 @@
 package cmd
 
 import (
+	"bufio"
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"os/exec"
+	"regexp"
 	"strings"
+	"unicode"
 
 	"github.com/spf13/cobra"
 	"github.com/twpayne/chezmoi/lib/chezmoi"
@@ -16,6 +20,8 @@ var lastpassCommand = &cobra.Command{
 	Short: "Execute the LastPass CLI",
 	RunE:  makeRunE(config.runLastPassCommand),
 }
+
+var lastpassParseNoteRegexp = regexp.MustCompile(`\A([ A-Za-z]*):(.*)\z`)
 
 // A LastPassCommandConfig is a configuration for the lastpass command.
 type LastPassCommandConfig struct {
@@ -51,6 +57,33 @@ func (c *Config) lastpassFunc(id string) interface{} {
 	if err := json.Unmarshal(output, &data); err != nil {
 		chezmoi.ReturnTemplateFuncError(fmt.Errorf("lastpass %q: %s show -j %q: %v", id, name, id, err))
 	}
+	for _, d := range data {
+		if note, ok := d["note"].(string); ok {
+			d["note"] = lastpassParseNote(note)
+		}
+	}
 	lastPassCache[id] = data
 	return data
+}
+
+func lastpassParseNote(note string) map[string]string {
+	result := make(map[string]string)
+	s := bufio.NewScanner(bytes.NewBufferString(note))
+	key := ""
+	for s.Scan() {
+		if m := lastpassParseNoteRegexp.FindStringSubmatch(s.Text()); m != nil {
+			keyComponents := strings.Split(m[1], " ")
+			firstComponentRunes := []rune(keyComponents[0])
+			firstComponentRunes[0] = unicode.ToLower(firstComponentRunes[0])
+			keyComponents[0] = string(firstComponentRunes)
+			key = strings.Join(keyComponents, "")
+			result[key] = m[2] + "\n"
+		} else {
+			result[key] += s.Text() + "\n"
+		}
+	}
+	if err := s.Err(); err != nil {
+		chezmoi.ReturnTemplateFuncError(fmt.Errorf("lastpassParseNote: %v", err))
+	}
+	return result
 }
