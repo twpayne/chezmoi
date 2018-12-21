@@ -2,7 +2,6 @@ package chezmoi
 
 import (
 	"archive/tar"
-	"fmt"
 	"os"
 	"path/filepath"
 	"sort"
@@ -36,22 +35,8 @@ type Entry interface {
 	archive(w *tar.Writer, headerTemplate *tar.Header, umask os.FileMode) error
 }
 
-// ParsedSourceDirName is a parsed source dir name.
-type ParsedSourceDirName struct {
-	DirName string
-	Perm    os.FileMode
-}
-
-// A ParsedSourceFileName is a parsed source file name.
-type ParsedSourceFileName struct {
-	FileName string
-	Mode     os.FileMode
-	Empty    bool
-	Template bool
-}
-
 type parsedSourceFilePath struct {
-	ParsedSourceFileName
+	FileAttributes
 	dirNames []string
 }
 
@@ -62,116 +47,15 @@ func ReturnTemplateFuncError(err error) {
 	})
 }
 
-// ParseSourceDirName parses a single directory name.
-func ParseSourceDirName(dirName string) ParsedSourceDirName {
-	perm := os.FileMode(0777)
-	if strings.HasPrefix(dirName, privatePrefix) {
-		dirName = strings.TrimPrefix(dirName, privatePrefix)
-		perm &= 0700
-	}
-	if strings.HasPrefix(dirName, dotPrefix) {
-		dirName = "." + strings.TrimPrefix(dirName, dotPrefix)
-	}
-	return ParsedSourceDirName{
-		DirName: dirName,
-		Perm:    perm,
-	}
-}
-
-// SourceDirName returns psdn's source dir name.
-func (psdn ParsedSourceDirName) SourceDirName() string {
-	sourceDirName := ""
-	if psdn.Perm&os.FileMode(077) == os.FileMode(0) {
-		sourceDirName = privatePrefix
-	}
-	if strings.HasPrefix(psdn.DirName, ".") {
-		sourceDirName += dotPrefix + strings.TrimPrefix(psdn.DirName, ".")
-	} else {
-		sourceDirName += psdn.DirName
-	}
-	return sourceDirName
-}
-
-// ParseSourceFileName parses a source file name.
-func ParseSourceFileName(fileName string) ParsedSourceFileName {
-	mode := os.FileMode(0666)
-	empty := false
-	template := false
-	if strings.HasPrefix(fileName, symlinkPrefix) {
-		fileName = strings.TrimPrefix(fileName, symlinkPrefix)
-		mode |= os.ModeSymlink
-	} else {
-		private := false
-		if strings.HasPrefix(fileName, privatePrefix) {
-			fileName = strings.TrimPrefix(fileName, privatePrefix)
-			private = true
-		}
-		if strings.HasPrefix(fileName, emptyPrefix) {
-			fileName = strings.TrimPrefix(fileName, emptyPrefix)
-			empty = true
-		}
-		if strings.HasPrefix(fileName, executablePrefix) {
-			fileName = strings.TrimPrefix(fileName, executablePrefix)
-			mode |= 0111
-		}
-		if private {
-			mode &= 0700
-		}
-	}
-	if strings.HasPrefix(fileName, dotPrefix) {
-		fileName = "." + strings.TrimPrefix(fileName, dotPrefix)
-	}
-	if strings.HasSuffix(fileName, templateSuffix) {
-		fileName = strings.TrimSuffix(fileName, templateSuffix)
-		template = true
-	}
-	return ParsedSourceFileName{
-		FileName: fileName,
-		Mode:     mode,
-		Empty:    empty,
-		Template: template,
-	}
-}
-
-// SourceFileName returns psfn's source file name.
-func (psfn ParsedSourceFileName) SourceFileName() string {
-	fileName := ""
-	switch psfn.Mode & os.ModeType {
-	case 0:
-		if psfn.Mode.Perm()&os.FileMode(077) == os.FileMode(0) {
-			fileName = privatePrefix
-		}
-		if psfn.Empty {
-			fileName += emptyPrefix
-		}
-		if psfn.Mode.Perm()&os.FileMode(0111) != os.FileMode(0) {
-			fileName += executablePrefix
-		}
-	case os.ModeSymlink:
-		fileName = symlinkPrefix
-	default:
-		panic(fmt.Sprintf("%+v: unsupported type", psfn)) // FIXME return error instead of panicing
-	}
-	if strings.HasPrefix(psfn.FileName, ".") {
-		fileName += dotPrefix + strings.TrimPrefix(psfn.FileName, ".")
-	} else {
-		fileName += psfn.FileName
-	}
-	if psfn.Template {
-		fileName += templateSuffix
-	}
-	return fileName
-}
-
 // parseDirNameComponents parses multiple directory name components. It returns
 // the target directory names, target permissions, and any error.
 func parseDirNameComponents(components []string) ([]string, []os.FileMode) {
 	dirNames := []string{}
 	perms := []os.FileMode{}
 	for _, component := range components {
-		psdn := ParseSourceDirName(component)
-		dirNames = append(dirNames, psdn.DirName)
-		perms = append(perms, psdn.Perm)
+		da := ParseDirAttributes(component)
+		dirNames = append(dirNames, da.Name)
+		perms = append(perms, da.Perm)
 	}
 	return dirNames, perms
 }
@@ -180,10 +64,10 @@ func parseDirNameComponents(components []string) ([]string, []os.FileMode) {
 func parseSourceFilePath(path string) parsedSourceFilePath {
 	components := splitPathList(path)
 	dirNames, _ := parseDirNameComponents(components[0 : len(components)-1])
-	psfn := ParseSourceFileName(components[len(components)-1])
+	fa := ParseFileAttributes(components[len(components)-1])
 	return parsedSourceFilePath{
-		ParsedSourceFileName: psfn,
-		dirNames:             dirNames,
+		FileAttributes: fa,
+		dirNames:       dirNames,
 	}
 }
 

@@ -4,9 +4,16 @@ import (
 	"archive/tar"
 	"os"
 	"path/filepath"
+	"strings"
 
 	vfs "github.com/twpayne/go-vfs"
 )
+
+// DirAttributes holds attributes parsed from a source directory name.
+type DirAttributes struct {
+	Name string
+	Perm os.FileMode
+}
 
 // A Dir represents the target state of a directory.
 type Dir struct {
@@ -22,6 +29,37 @@ type dirConcreteValue struct {
 	TargetPath string        `json:"targetPath" yaml:"targetPath"`
 	Perm       int           `json:"perm" yaml:"perm"`
 	Entries    []interface{} `json:"entries" yaml:"entries"`
+}
+
+// ParseDirAttributes parses a single directory name.
+func ParseDirAttributes(sourceName string) DirAttributes {
+	name := sourceName
+	perm := os.FileMode(0777)
+	if strings.HasPrefix(name, privatePrefix) {
+		name = strings.TrimPrefix(name, privatePrefix)
+		perm &= 0700
+	}
+	if strings.HasPrefix(name, dotPrefix) {
+		name = "." + strings.TrimPrefix(name, dotPrefix)
+	}
+	return DirAttributes{
+		Name: name,
+		Perm: perm,
+	}
+}
+
+// SourceName returns da's source name.
+func (da DirAttributes) SourceName() string {
+	sourceName := ""
+	if da.Perm&os.FileMode(077) == os.FileMode(0) {
+		sourceName = privatePrefix
+	}
+	if strings.HasPrefix(da.Name, ".") {
+		sourceName += dotPrefix + strings.TrimPrefix(da.Name, ".")
+	} else {
+		sourceName += da.Name
+	}
+	return sourceName
 }
 
 // newDir returns a new directory state.

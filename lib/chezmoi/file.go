@@ -3,11 +3,21 @@ package chezmoi
 import (
 	"archive/tar"
 	"bytes"
+	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	vfs "github.com/twpayne/go-vfs"
 )
+
+// A FileAttributes holds attributes passed from a source file name.
+type FileAttributes struct {
+	Name     string
+	Mode     os.FileMode
+	Empty    bool
+	Template bool
+}
 
 // A File represents the target state of a file.
 type File struct {
@@ -29,6 +39,78 @@ type fileConcreteValue struct {
 	Perm       int    `json:"perm" yaml:"perm"`
 	Template   bool   `json:"template" yaml:"template"`
 	Contents   string `json:"contents" yaml:"contents"`
+}
+
+// ParseFileAttributes parses a source file name.
+func ParseFileAttributes(sourceName string) FileAttributes {
+	name := sourceName
+	mode := os.FileMode(0666)
+	empty := false
+	template := false
+	if strings.HasPrefix(name, symlinkPrefix) {
+		name = strings.TrimPrefix(name, symlinkPrefix)
+		mode |= os.ModeSymlink
+	} else {
+		private := false
+		if strings.HasPrefix(name, privatePrefix) {
+			name = strings.TrimPrefix(name, privatePrefix)
+			private = true
+		}
+		if strings.HasPrefix(name, emptyPrefix) {
+			name = strings.TrimPrefix(name, emptyPrefix)
+			empty = true
+		}
+		if strings.HasPrefix(name, executablePrefix) {
+			name = strings.TrimPrefix(name, executablePrefix)
+			mode |= 0111
+		}
+		if private {
+			mode &= 0700
+		}
+	}
+	if strings.HasPrefix(name, dotPrefix) {
+		name = "." + strings.TrimPrefix(name, dotPrefix)
+	}
+	if strings.HasSuffix(name, templateSuffix) {
+		name = strings.TrimSuffix(name, templateSuffix)
+		template = true
+	}
+	return FileAttributes{
+		Name:     name,
+		Mode:     mode,
+		Empty:    empty,
+		Template: template,
+	}
+}
+
+// SourceName returns fa's source name.
+func (fa FileAttributes) SourceName() string {
+	sourceName := ""
+	switch fa.Mode & os.ModeType {
+	case 0:
+		if fa.Mode.Perm()&os.FileMode(077) == os.FileMode(0) {
+			sourceName = privatePrefix
+		}
+		if fa.Empty {
+			sourceName += emptyPrefix
+		}
+		if fa.Mode.Perm()&os.FileMode(0111) != os.FileMode(0) {
+			sourceName += executablePrefix
+		}
+	case os.ModeSymlink:
+		sourceName = symlinkPrefix
+	default:
+		panic(fmt.Sprintf("%+v: unsupported type", fa)) // FIXME return error instead of panicing
+	}
+	if strings.HasPrefix(fa.Name, ".") {
+		sourceName += dotPrefix + strings.TrimPrefix(fa.Name, ".")
+	} else {
+		sourceName += fa.Name
+	}
+	if fa.Template {
+		sourceName += templateSuffix
+	}
+	return sourceName
 }
 
 // Apply ensures that the state of targetPath in fs matches f.
