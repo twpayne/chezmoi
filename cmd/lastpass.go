@@ -51,11 +51,11 @@ func (c *Config) lastpassFunc(id string) interface{} {
 	}
 	output, err := exec.Command(name, args...).CombinedOutput()
 	if err != nil {
-		chezmoi.ReturnTemplateFuncError(fmt.Errorf("lastpass %q: %s show -j %q: %v\n%s", id, name, id, err, output))
+		chezmoi.ReturnTemplateFuncError(fmt.Errorf("lastpass: %s %s: %v\n%s", name, strings.Join(args, " "), err, output))
 	}
 	var data []map[string]interface{}
 	if err := json.Unmarshal(output, &data); err != nil {
-		chezmoi.ReturnTemplateFuncError(fmt.Errorf("lastpass %q: %s show -j %q: %v", id, name, id, err))
+		chezmoi.ReturnTemplateFuncError(fmt.Errorf("lastpass: %s %s: %v\n%s", name, strings.Join(args, " "), err, output))
 	}
 	for _, d := range data {
 		if note, ok := d["note"].(string); ok {
