@@ -76,8 +76,8 @@ Edit the desired state:
 
     $ chezmoi edit ~/.bashrc
 
-This will open `~/.chezmoi/dot_bashrc` in your `$EDITOR`. Make some changes and
-save them.
+This will open `~/.local/share/chezmoi/dot_bashrc` in your `$EDITOR`. Make some
+changes and save them.
 
 See what changes `chezmoi` would make:
 
