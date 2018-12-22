@@ -56,11 +56,11 @@ func (c *Config) bitwardenFunc(args ...string) interface{} {
 	}
 	output, err := exec.Command(name, args...).CombinedOutput()
 	if err != nil {
-		chezmoi.ReturnTemplateFuncError(fmt.Errorf("bitwarden: %s %s: %v", name, strings.Join(args, " "), err))
+		chezmoi.ReturnTemplateFuncError(fmt.Errorf("bitwarden: %s %s: %v\n%s", name, strings.Join(args, " "), err, output))
 	}
 	var data interface{}
 	if err := json.Unmarshal(output, &data); err != nil {
-		chezmoi.ReturnTemplateFuncError(fmt.Errorf("bitwarden: %s %s: %v", name, strings.Join(args, " "), err))
+		chezmoi.ReturnTemplateFuncError(fmt.Errorf("bitwarden: %s %s: %v\n%s", name, strings.Join(args, " "), err, output))
 	}
 	bitwardenCache[key] = data
 	return data
