@@ -20,7 +20,8 @@ variables allow you to change behaviour depending on operating system,
 architecture, and hostname.
 
  * Secure: `chezmoi` can retreive secrets from
-   [LastPass](https://lastpass.com/), your Keychain (on macOS), or [GNOME
+   [Bitwarden](https://bitwarden.com/), [LastPass](https://lastpass.com/), your
+Keychain (on macOS), or [GNOME
 Keyring](https://wiki.gnome.org/Projects/GnomeKeyring) (on Linux) using the
 [`zalando/go-keyring`](https://github.com/zalando/go-keyring) library.
 
@@ -228,6 +229,29 @@ Your `~/.local/share/chezmoi/private_dot_gitconfig.tmpl` can then contain:
 
 Any config files containing tokens in plain text should be private (permissions
 `0600`).
+
+### Using Bitwarden
+
+`chezmoi` includes support for [Bitwarden](https://bitwarden.com/) using the
+[Bitwarden CLI](https://github.com/bitwarden/cli) to expose data as a template
+function.
+
+Log in to Bitwarden using:
+
+    $ bw login <bitwarden-email>
+
+Unlock your Bitwarden vault:
+
+    $ bw unlock
+
+Set the `BW_SESSION` environment variable, as instructed. You can also pass the
+session directly to `chezmoi` using the `--bitwarden-session` flag.
+
+The structured data from `bw get` is available as the `bitwarden` template
+function in your config files, for example:
+
+    username = {{ (bitwarden "item" "example.com").login.username }}
+    password = {{ (bitwarden "item" "example.com").login.password }}
 
 ### Using LastPass
 
