@@ -21,9 +21,8 @@ architecture, and hostname.
 
  * Secure: `chezmoi` can retreive secrets from
    [Bitwarden](https://bitwarden.com/), [LastPass](https://lastpass.com/), your
-Keychain (on macOS), or [GNOME
-Keyring](https://wiki.gnome.org/Projects/GnomeKeyring) (on Linux) using the
-[`zalando/go-keyring`](https://github.com/zalando/go-keyring) library.
+Keychain (on macOS), and [GNOME
+Keyring](https://wiki.gnome.org/Projects/GnomeKeyring) (on Linux).
 
  * Robust: `chezmoi` updates all files and symbolic links atomically (using
    [`google/renameio`](https://github.com/google/renameio)) so you are never
