@@ -193,8 +193,8 @@ func (ts *TargetState) Get(target string) (Entry, error) {
 	return ts.findEntry(targetName)
 }
 
-// Import imports an archive.
-func (ts *TargetState) Import(r *tar.Reader, destinationDir string, stripComponents int, mutator Mutator) error {
+// ImportTAR imports a tar archive.
+func (ts *TargetState) ImportTAR(r *tar.Reader, destinationDir string, stripComponents int, mutator Mutator) error {
 	for {
 		header, err := r.Next()
 		if err == io.EOF {
