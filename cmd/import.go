@@ -19,7 +19,7 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-var _importommand = &cobra.Command{
+var _importCommand = &cobra.Command{
 	Use:   "import",
 	Args:  cobra.MaximumNArgs(1),
 	Short: "Import an archive",
@@ -33,9 +33,9 @@ type importCommandConfig struct {
 }
 
 func init() {
-	rootCommand.AddCommand(_importommand)
+	rootCommand.AddCommand(_importCommand)
 
-	persistentFlags := _importommand.PersistentFlags()
+	persistentFlags := _importCommand.PersistentFlags()
 	persistentFlags.StringVarP(&config._import.destination, "destination", "d", "", "destination prefix")
 	persistentFlags.IntVar(&config._import.stripComponents, "strip-components", 0, "strip components")
 	persistentFlags.BoolVarP(&config._import.removeDestination, "remove-destination", "r", false, "remove destination before import")
