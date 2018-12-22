@@ -26,6 +26,7 @@ type Config struct {
 	DryRun           bool
 	Verbose          bool
 	SourceVCSCommand string
+	Bitwarden        bitwardenCommandConfig
 	LastPass         LastPassCommandConfig
 	Data             map[string]interface{}
 	funcs            template.FuncMap
