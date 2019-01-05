@@ -24,6 +24,13 @@ type AddOptions struct {
 	Template bool
 }
 
+// An ImportTAROptions contains options for TargetState.ImportTAR.
+type ImportTAROptions struct {
+	DestinationDir  string
+	Exact           bool
+	StripComponents int
+}
+
 // A TargetState represents the root target state.
 type TargetState struct {
 	TargetDir string
@@ -201,7 +208,7 @@ func (ts *TargetState) Get(target string) (Entry, error) {
 }
 
 // ImportTAR imports a tar archive.
-func (ts *TargetState) ImportTAR(r *tar.Reader, destinationDir string, exact bool, stripComponents int, mutator Mutator) error {
+func (ts *TargetState) ImportTAR(r *tar.Reader, importTAROptions ImportTAROptions, mutator Mutator) error {
 	for {
 		header, err := r.Next()
 		if err == io.EOF {
@@ -211,7 +218,7 @@ func (ts *TargetState) ImportTAR(r *tar.Reader, destinationDir string, exact boo
 		}
 		switch header.Typeflag {
 		case tar.TypeDir, tar.TypeReg, tar.TypeSymlink:
-			if err := ts.importHeader(r, header, destinationDir, exact, stripComponents, mutator); err != nil {
+			if err := ts.importHeader(r, importTAROptions, header, mutator); err != nil {
 				return err
 			}
 		case tar.TypeXGlobalHeader:
@@ -489,13 +496,13 @@ func (ts *TargetState) findEntry(name string) (Entry, error) {
 	return entries[names[len(names)-1]], nil
 }
 
-func (ts *TargetState) importHeader(r io.Reader, header *tar.Header, destinationDir string, exact bool, stripComponents int, mutator Mutator) error {
+func (ts *TargetState) importHeader(r io.Reader, importTAROptions ImportTAROptions, header *tar.Header, mutator Mutator) error {
 	targetPath := header.Name
-	if stripComponents > 0 {
-		targetPath = filepath.Join(strings.Split(targetPath, string(os.PathSeparator))[stripComponents:]...)
+	if importTAROptions.StripComponents > 0 {
+		targetPath = filepath.Join(strings.Split(targetPath, string(os.PathSeparator))[importTAROptions.StripComponents:]...)
 	}
-	if destinationDir != "" {
-		targetPath = filepath.Join(destinationDir, targetPath)
+	if importTAROptions.DestinationDir != "" {
+		targetPath = filepath.Join(importTAROptions.DestinationDir, targetPath)
 	} else {
 		targetPath = filepath.Join(ts.TargetDir, targetPath)
 	}
@@ -521,7 +528,7 @@ func (ts *TargetState) importHeader(r io.Reader, header *tar.Header, destination
 	case tar.TypeDir:
 		perm := os.FileMode(header.Mode).Perm()
 		empty := false // FIXME don't assume directory is empty
-		return ts.addDir(targetName, entries, parentDirSourceName, exact, perm, empty, mutator)
+		return ts.addDir(targetName, entries, parentDirSourceName, importTAROptions.Exact, perm, empty, mutator)
 	case tar.TypeReg:
 		info := header.FileInfo()
 		contents, err := ioutil.ReadAll(r)

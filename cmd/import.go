@@ -16,6 +16,7 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/twpayne/chezmoi/lib/chezmoi"
 	vfs "github.com/twpayne/go-vfs"
 )
 
@@ -27,19 +28,17 @@ var _importCommand = &cobra.Command{
 }
 
 type importCommandConfig struct {
-	destination       string
-	exact             bool
 	removeDestination bool
-	stripComponents   int
+	importTAROptions  chezmoi.ImportTAROptions
 }
 
 func init() {
 	rootCommand.AddCommand(_importCommand)
 
 	persistentFlags := _importCommand.PersistentFlags()
-	persistentFlags.StringVarP(&config._import.destination, "destination", "d", "", "destination prefix")
-	persistentFlags.BoolVarP(&config._import.exact, "exact", "x", false, "import directories exactly")
-	persistentFlags.IntVar(&config._import.stripComponents, "strip-components", 0, "strip components")
+	persistentFlags.StringVarP(&config._import.importTAROptions.DestinationDir, "destination", "d", "", "destination prefix")
+	persistentFlags.BoolVarP(&config._import.importTAROptions.Exact, "exact", "x", false, "import directories exactly")
+	persistentFlags.IntVar(&config._import.importTAROptions.StripComponents, "strip-components", 0, "strip components")
 	persistentFlags.BoolVarP(&config._import.removeDestination, "remove-destination", "r", false, "remove destination before import")
 }
 
@@ -74,7 +73,7 @@ func (c *Config) runImportCommand(fs vfs.FS, cmd *cobra.Command, args []string) 
 	}
 	mutator := c.getDefaultMutator(fs)
 	if c._import.removeDestination {
-		entry, err := ts.Get(c._import.destination)
+		entry, err := ts.Get(c._import.importTAROptions.DestinationDir)
 		switch {
 		case err == nil:
 			if err := mutator.RemoveAll(filepath.Join(c.SourceDir, entry.SourceName())); err != nil {
@@ -85,5 +84,5 @@ func (c *Config) runImportCommand(fs vfs.FS, cmd *cobra.Command, args []string) 
 			return err
 		}
 	}
-	return ts.ImportTAR(tar.NewReader(r), c._import.destination, c._import.exact, c._import.stripComponents, mutator)
+	return ts.ImportTAR(tar.NewReader(r), c._import.importTAROptions, mutator)
 }
