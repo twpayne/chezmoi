@@ -322,6 +322,9 @@ func (ts *TargetState) addDir(targetName string, entries map[string]Entry, paren
 		}
 		return mutator.Rename(filepath.Join(ts.SourceDir, existingDir.sourceName), filepath.Join(ts.SourceDir, dir.sourceName))
 	}
+	if err := mutator.Mkdir(filepath.Join(ts.SourceDir, sourceName), 0777&^ts.Umask); err != nil {
+		return err
+	}
 	// If the directory is empty, add a .keep file so the directory is
 	// managed by git. Chezmoi will ignore the .keep file as it begins with
 	// a dot.
@@ -331,7 +334,7 @@ func (ts *TargetState) addDir(targetName string, entries map[string]Entry, paren
 		}
 	}
 	entries[name] = dir
-	return mutator.Mkdir(filepath.Join(ts.SourceDir, sourceName), 0777&^ts.Umask)
+	return nil
 }
 
 func (ts *TargetState) addFile(targetName string, entries map[string]Entry, parentDirSourceName string, info os.FileInfo, template bool, contents []byte, mutator Mutator) error {
