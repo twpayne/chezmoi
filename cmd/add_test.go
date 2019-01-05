@@ -3,6 +3,7 @@ package cmd
 import (
 	"testing"
 
+	"github.com/twpayne/chezmoi/lib/chezmoi"
 	"github.com/twpayne/go-vfs/vfst"
 )
 
@@ -35,7 +36,9 @@ func TestAddCommand(t *testing.T) {
 			name: "add_template",
 			args: []string{"/home/user/.gitconfig"},
 			add: addCommandConfig{
-				template: true,
+				options: chezmoi.AddOptions{
+					Template: true,
+				},
 			},
 			root: map[string]interface{}{
 				"/home/user":            &vfst.Dir{Perm: 0755},
@@ -86,7 +89,9 @@ func TestAddCommand(t *testing.T) {
 			name: "add_exact_dir",
 			args: []string{"/home/user/dir"},
 			add: addCommandConfig{
-				exact: true,
+				options: chezmoi.AddOptions{
+					Exact: true,
+				},
 			},
 			root: map[string]interface{}{
 				"/home/user":          &vfst.Dir{Perm: 0755},
@@ -103,8 +108,10 @@ func TestAddCommand(t *testing.T) {
 			name: "add_exact_dir_recursive",
 			args: []string{"/home/user/dir"},
 			add: addCommandConfig{
-				exact:     true,
 				recursive: true,
+				options: chezmoi.AddOptions{
+					Exact: true,
+				},
 			},
 			root: map[string]interface{}{
 				"/home/user":          &vfst.Dir{Perm: 0755},
@@ -127,7 +134,9 @@ func TestAddCommand(t *testing.T) {
 			name: "add_empty_file",
 			args: []string{"/home/user/empty"},
 			add: addCommandConfig{
-				empty: true,
+				options: chezmoi.AddOptions{
+					Empty: true,
+				},
 			},
 			root: map[string]interface{}{
 				"/home/user":          &vfst.Dir{Perm: 0755},

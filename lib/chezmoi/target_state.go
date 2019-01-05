@@ -17,6 +17,13 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
+// An AddOptions contains options for TargetState.Add.
+type AddOptions struct {
+	Empty    bool
+	Exact    bool
+	Template bool
+}
+
 // A TargetState represents the root target state.
 type TargetState struct {
 	TargetDir string
@@ -40,7 +47,7 @@ func NewTargetState(targetDir string, umask os.FileMode, sourceDir string, data 
 }
 
 // Add adds a new target to ts.
-func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, exact, addEmpty, addTemplate bool, mutator Mutator) error {
+func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, info os.FileInfo, mutator Mutator) error {
 	if !filepath.HasPrefix(targetPath, ts.TargetDir) {
 		return fmt.Errorf("%s: outside target directory", targetPath)
 	}
@@ -65,7 +72,7 @@ func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, exact
 			return err
 		}
 		if parentEntry == nil {
-			if err := ts.Add(fs, filepath.Join(ts.TargetDir, parentDirName), nil, false, false, false, mutator); err != nil {
+			if err := ts.Add(fs, addOptions, filepath.Join(ts.TargetDir, parentDirName), nil, mutator); err != nil {
 				return err
 			}
 			parentEntry, err = ts.findEntry(parentDirName)
@@ -88,19 +95,19 @@ func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, exact
 			return err
 		}
 		empty := len(infos) == 0
-		return ts.addDir(targetName, entries, parentDirSourceName, exact, perm, empty, mutator)
+		return ts.addDir(targetName, entries, parentDirSourceName, addOptions.Exact, perm, empty, mutator)
 	case info.Mode().IsRegular():
-		if info.Size() == 0 && !addEmpty {
+		if info.Size() == 0 && !addOptions.Empty {
 			return nil
 		}
 		contents, err := fs.ReadFile(targetPath)
 		if err != nil {
 			return err
 		}
-		if addTemplate {
+		if addOptions.Template {
 			contents = autoTemplate(contents, ts.Data)
 		}
-		return ts.addFile(targetName, entries, parentDirSourceName, info, addTemplate, contents, mutator)
+		return ts.addFile(targetName, entries, parentDirSourceName, info, addOptions.Template, contents, mutator)
 	case info.Mode()&os.ModeType == os.ModeSymlink:
 		linkname, err := fs.Readlink(targetPath)
 		if err != nil {
