@@ -20,7 +20,7 @@ import (
 var chattrCommand = &cobra.Command{
 	Use:   "chattr",
 	Args:  cobra.MinimumNArgs(2),
-	Short: "Change the private, empty, executable, or template attributes of a target",
+	Short: "Change the exact, private, empty, executable, or template attributes of a target",
 	RunE:  makeRunE(config.runChattrCommand),
 }
 
@@ -28,6 +28,7 @@ type boolModifier int
 
 type attributeModifiers struct {
 	empty      boolModifier
+	exact      boolModifier
 	executable boolModifier
 	private    boolModifier
 	template   boolModifier
@@ -57,6 +58,7 @@ func (c *Config) runChattrCommand(fs vfs.FS, cmd *cobra.Command, args []string) 
 		switch entry := entry.(type) {
 		case *chezmoi.Dir:
 			da := chezmoi.ParseDirAttributes(oldSourceName)
+			da.Exact = ams.exact.modify(entry.Exact)
 			if private := ams.private.modify(entry.Private()); private {
 				da.Perm &= 0700
 			}
@@ -119,6 +121,8 @@ func parseAttributeModifiers(s string) (*attributeModifiers, error) {
 		switch attribute {
 		case "empty", "e":
 			ams.empty = modifier
+		case "exact":
+			ams.exact = modifier
 		case "executable", "x":
 			ams.executable = modifier
 		case "private", "p":
