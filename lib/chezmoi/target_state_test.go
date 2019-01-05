@@ -20,7 +20,7 @@ func TestTargetStatePopulate(t *testing.T) {
 	}{
 		{
 			name: "simple_file",
-			root: map[string]string{
+			root: map[string]interface{}{
 				"/foo": "bar",
 			},
 			sourceDir: "/",
@@ -40,7 +40,7 @@ func TestTargetStatePopulate(t *testing.T) {
 		},
 		{
 			name: "dot_file",
-			root: map[string]string{
+			root: map[string]interface{}{
 				"/dot_foo": "bar",
 			},
 			sourceDir: "/",
@@ -60,7 +60,7 @@ func TestTargetStatePopulate(t *testing.T) {
 		},
 		{
 			name: "private_file",
-			root: map[string]string{
+			root: map[string]interface{}{
 				"/private_foo": "bar",
 			},
 			sourceDir: "/",
@@ -80,7 +80,7 @@ func TestTargetStatePopulate(t *testing.T) {
 		},
 		{
 			name: "file_in_subdir",
-			root: map[string]string{
+			root: map[string]interface{}{
 				"/foo/bar": "baz",
 			},
 			sourceDir: "/",
@@ -107,7 +107,7 @@ func TestTargetStatePopulate(t *testing.T) {
 		},
 		{
 			name: "file_in_private_dot_subdir",
-			root: map[string]string{
+			root: map[string]interface{}{
 				"/private_dot_foo/bar": "baz",
 			},
 			sourceDir: "/",
@@ -134,7 +134,7 @@ func TestTargetStatePopulate(t *testing.T) {
 		},
 		{
 			name: "template_dot_file",
-			root: map[string]string{
+			root: map[string]interface{}{
 				"/dot_gitconfig.tmpl": "[user]\n\temail = {{.Email}}\n",
 			},
 			sourceDir: "/",
