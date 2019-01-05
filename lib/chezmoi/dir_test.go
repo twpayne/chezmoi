@@ -14,25 +14,22 @@ func TestDirAttributes(t *testing.T) {
 		{
 			sourceName: "foo",
 			da: DirAttributes{
-				Name:  "foo",
-				Exact: false,
-				Perm:  0777,
+				Name: "foo",
+				Perm: 0777,
 			},
 		},
 		{
 			sourceName: "dot_foo",
 			da: DirAttributes{
-				Name:  ".foo",
-				Exact: false,
-				Perm:  0777,
+				Name: ".foo",
+				Perm: 0777,
 			},
 		},
 		{
 			sourceName: "private_foo",
 			da: DirAttributes{
-				Name:  "foo",
-				Exact: false,
-				Perm:  0700,
+				Name: "foo",
+				Perm: 0700,
 			},
 		},
 		{
@@ -46,9 +43,8 @@ func TestDirAttributes(t *testing.T) {
 		{
 			sourceName: "private_dot_foo",
 			da: DirAttributes{
-				Name:  ".foo",
-				Exact: false,
-				Perm:  0700,
+				Name: ".foo",
+				Perm: 0700,
 			},
 		},
 		{
