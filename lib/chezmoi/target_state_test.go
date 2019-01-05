@@ -92,6 +92,7 @@ func TestTargetStatePopulate(t *testing.T) {
 					"foo": &Dir{
 						sourceName: "foo",
 						targetName: "foo",
+						Exact:      false,
 						Perm:       0777,
 						Entries: map[string]Entry{
 							"bar": &File{
@@ -119,6 +120,7 @@ func TestTargetStatePopulate(t *testing.T) {
 					".foo": &Dir{
 						sourceName: "private_dot_foo",
 						targetName: ".foo",
+						Exact:      false,
 						Perm:       0700,
 						Entries: map[string]Entry{
 							"bar": &File{
@@ -155,6 +157,34 @@ func TestTargetStatePopulate(t *testing.T) {
 						Perm:       0666,
 						Template:   true,
 						contents:   []byte("[user]\n\temail = user@example.com\n"),
+					},
+				},
+			},
+		},
+		{
+			name: "file_in_exact_dir",
+			root: map[string]interface{}{
+				"/exact_dir/foo": "bar",
+			},
+			sourceDir: "/",
+			want: &TargetState{
+				TargetDir: "/",
+				Umask:     0,
+				SourceDir: "/",
+				Entries: map[string]Entry{
+					"dir": &Dir{
+						sourceName: "exact_dir",
+						targetName: "dir",
+						Exact:      true,
+						Perm:       0777,
+						Entries: map[string]Entry{
+							"foo": &File{
+								sourceName: "exact_dir/foo",
+								targetName: "dir/foo",
+								Perm:       0666,
+								contents:   []byte("bar"),
+							},
+						},
 					},
 				},
 			},
@@ -258,13 +288,18 @@ func TestEndToEnd(t *testing.T) {
 		{
 			name: "all",
 			root: map[string]interface{}{
-				"/home/user/.bashrc":                          "foo",
+				"/home/user/.bashrc": "foo",
+				"/home/user/dir": map[string]interface{}{
+					"foo": "foo",
+					"bar": "bar",
+				},
 				"/home/user/replace_symlink":                  &vfst.Symlink{Target: "foo"},
 				"/home/user/.chezmoi/dot_bashrc":              "bar",
 				"/home/user/.chezmoi/.git/HEAD":               "HEAD",
 				"/home/user/.chezmoi/dot_hgrc.tmpl":           "[ui]\nusername = {{ .name }} <{{ .email }}>\n",
 				"/home/user/.chezmoi/empty.tmpl":              "{{ if false }}foo{{ end }}",
 				"/home/user/.chezmoi/empty_foo":               "",
+				"/home/user/.chezmoi/exact_dir/foo":           "foo",
 				"/home/user/.chezmoi/symlink_bar":             "empty",
 				"/home/user/.chezmoi/symlink_replace_symlink": "bar",
 			},
@@ -281,6 +316,7 @@ func TestEndToEnd(t *testing.T) {
 				vfst.TestPath("/home/user/foo", vfst.TestModeIsRegular, vfst.TestContents(nil)),
 				vfst.TestPath("/home/user/bar", vfst.TestModeType(os.ModeSymlink), vfst.TestSymlinkTarget("empty")),
 				vfst.TestPath("/home/user/replace_symlink", vfst.TestModeType(os.ModeSymlink), vfst.TestSymlinkTarget("bar")),
+				vfst.TestPath("/home/user/dir/bar", vfst.TestDoesNotExist),
 			},
 		},
 	} {

@@ -28,6 +28,7 @@ var _importCommand = &cobra.Command{
 
 type importCommandConfig struct {
 	destination       string
+	exact             bool
 	removeDestination bool
 	stripComponents   int
 }
@@ -37,6 +38,7 @@ func init() {
 
 	persistentFlags := _importCommand.PersistentFlags()
 	persistentFlags.StringVarP(&config._import.destination, "destination", "d", "", "destination prefix")
+	persistentFlags.BoolVarP(&config._import.exact, "exact", "x", false, "import directories exactly")
 	persistentFlags.IntVar(&config._import.stripComponents, "strip-components", 0, "strip components")
 	persistentFlags.BoolVarP(&config._import.removeDestination, "remove-destination", "r", false, "remove destination before import")
 }
@@ -83,5 +85,5 @@ func (c *Config) runImportCommand(fs vfs.FS, cmd *cobra.Command, args []string) 
 			return err
 		}
 	}
-	return ts.ImportTAR(tar.NewReader(r), c._import.destination, c._import.stripComponents, mutator)
+	return ts.ImportTAR(tar.NewReader(r), c._import.destination, c._import.exact, c._import.stripComponents, mutator)
 }

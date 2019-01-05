@@ -11,14 +11,16 @@ import (
 
 // DirAttributes holds attributes parsed from a source directory name.
 type DirAttributes struct {
-	Name string
-	Perm os.FileMode
+	Name  string
+	Exact bool
+	Perm  os.FileMode
 }
 
 // A Dir represents the target state of a directory.
 type Dir struct {
 	sourceName string
 	targetName string
+	Exact      bool
 	Perm       os.FileMode
 	Entries    map[string]Entry
 }
@@ -27,6 +29,7 @@ type dirConcreteValue struct {
 	Type       string        `json:"type" yaml:"type"`
 	SourcePath string        `json:"sourcePath" yaml:"sourcePath"`
 	TargetPath string        `json:"targetPath" yaml:"targetPath"`
+	Exact      bool          `json:"exact" yaml:"exact"`
 	Perm       int           `json:"perm" yaml:"perm"`
 	Entries    []interface{} `json:"entries" yaml:"entries"`
 }
@@ -35,6 +38,11 @@ type dirConcreteValue struct {
 func ParseDirAttributes(sourceName string) DirAttributes {
 	name := sourceName
 	perm := os.FileMode(0777)
+	exact := false
+	if strings.HasPrefix(name, exactPrefix) {
+		name = strings.TrimPrefix(name, exactPrefix)
+		exact = true
+	}
 	if strings.HasPrefix(name, privatePrefix) {
 		name = strings.TrimPrefix(name, privatePrefix)
 		perm &= 0700
@@ -43,16 +51,20 @@ func ParseDirAttributes(sourceName string) DirAttributes {
 		name = "." + strings.TrimPrefix(name, dotPrefix)
 	}
 	return DirAttributes{
-		Name: name,
-		Perm: perm,
+		Name:  name,
+		Exact: exact,
+		Perm:  perm,
 	}
 }
 
 // SourceName returns da's source name.
 func (da DirAttributes) SourceName() string {
 	sourceName := ""
+	if da.Exact {
+		sourceName += exactPrefix
+	}
 	if da.Perm&os.FileMode(077) == os.FileMode(0) {
-		sourceName = privatePrefix
+		sourceName += privatePrefix
 	}
 	if strings.HasPrefix(da.Name, ".") {
 		sourceName += dotPrefix + strings.TrimPrefix(da.Name, ".")
@@ -63,10 +75,11 @@ func (da DirAttributes) SourceName() string {
 }
 
 // newDir returns a new directory state.
-func newDir(sourceName string, targetName string, perm os.FileMode) *Dir {
+func newDir(sourceName string, targetName string, exact bool, perm os.FileMode) *Dir {
 	return &Dir{
 		sourceName: sourceName,
 		targetName: targetName,
+		Exact:      exact,
 		Perm:       perm,
 		Entries:    make(map[string]Entry),
 	}
@@ -100,6 +113,20 @@ func (d *Dir) Apply(fs vfs.FS, targetDir string, umask os.FileMode, mutator Muta
 			return err
 		}
 	}
+	if d.Exact {
+		infos, err := fs.ReadDir(targetPath)
+		if err != nil {
+			return err
+		}
+		for _, info := range infos {
+			name := info.Name()
+			if _, ok := d.Entries[name]; !ok {
+				if err := mutator.RemoveAll(filepath.Join(targetPath, name)); err != nil {
+					return err
+				}
+			}
+		}
+	}
 	return nil
 }
 
@@ -119,6 +146,7 @@ func (d *Dir) ConcreteValue(targetDir, sourceDir string, recursive bool) (interf
 		Type:       "dir",
 		SourcePath: filepath.Join(sourceDir, d.SourceName()),
 		TargetPath: filepath.Join(targetDir, d.TargetName()),
+		Exact:      d.Exact,
 		Perm:       int(d.Perm),
 		Entries:    entryConcreteValues,
 	}, nil

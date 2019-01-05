@@ -14,6 +14,7 @@ const (
 	symlinkPrefix    = "symlink_"
 	privatePrefix    = "private_"
 	emptyPrefix      = "empty_"
+	exactPrefix      = "exact_"
 	executablePrefix = "executable_"
 	dotPrefix        = "dot_"
 	templateSuffix   = ".tmpl"
@@ -37,7 +38,7 @@ type Entry interface {
 
 type parsedSourceFilePath struct {
 	FileAttributes
-	dirNames []string
+	dirAttributes []DirAttributes
 }
 
 // ReturnTemplateFuncError causes template execution to return an error.
@@ -47,27 +48,33 @@ func ReturnTemplateFuncError(err error) {
 	})
 }
 
-// parseDirNameComponents parses multiple directory name components. It returns
-// the target directory names, target permissions, and any error.
-func parseDirNameComponents(components []string) ([]string, []os.FileMode) {
-	dirNames := []string{}
-	perms := []os.FileMode{}
+// parseDirNameComponents parses multiple directory name components.
+func parseDirNameComponents(components []string) []DirAttributes {
+	das := []DirAttributes{}
 	for _, component := range components {
 		da := ParseDirAttributes(component)
-		dirNames = append(dirNames, da.Name)
-		perms = append(perms, da.Perm)
+		das = append(das, da)
 	}
-	return dirNames, perms
+	return das
+}
+
+// dirNames returns the dir names from dirAttributes.
+func dirNames(dirAttributes []DirAttributes) []string {
+	dns := []string{}
+	for _, da := range dirAttributes {
+		dns = append(dns, da.Name)
+	}
+	return dns
 }
 
 // parseSourceFilePath parses a single source file path.
 func parseSourceFilePath(path string) parsedSourceFilePath {
 	components := splitPathList(path)
-	dirNames, _ := parseDirNameComponents(components[0 : len(components)-1])
+	das := parseDirNameComponents(components[0 : len(components)-1])
 	fa := ParseFileAttributes(components[len(components)-1])
 	return parsedSourceFilePath{
 		FileAttributes: fa,
-		dirNames:       dirNames,
+		dirAttributes:  das,
 	}
 }
 

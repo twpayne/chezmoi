@@ -19,6 +19,7 @@ var addCommand = &cobra.Command{
 // An AddCommandConfig is a configuration for the add command.
 type addCommandConfig struct {
 	empty     bool
+	exact     bool
 	recursive bool
 	template  bool
 }
@@ -28,6 +29,7 @@ func init() {
 
 	persistentFlags := addCommand.PersistentFlags()
 	persistentFlags.BoolVarP(&config.add.empty, "empty", "e", false, "add empty files")
+	persistentFlags.BoolVarP(&config.add.exact, "exact", "x", false, "add directories exactly")
 	persistentFlags.BoolVarP(&config.add.recursive, "recursive", "r", false, "recurse in to subdirectories")
 	persistentFlags.BoolVarP(&config.add.template, "template", "T", false, "add files as templates")
 }
@@ -65,12 +67,12 @@ func (c *Config) runAddCommand(fs vfs.FS, command *cobra.Command, args []string)
 				if err != nil {
 					return err
 				}
-				return ts.Add(fs, path, info, c.add.empty, c.add.template, mutator)
+				return ts.Add(fs, path, info, c.add.exact, c.add.empty, c.add.template, mutator)
 			}); err != nil {
 				return err
 			}
 		} else {
-			if err := ts.Add(fs, path, nil, c.add.empty, c.add.template, mutator); err != nil {
+			if err := ts.Add(fs, path, nil, c.add.exact, c.add.empty, c.add.template, mutator); err != nil {
 				return err
 			}
 		}

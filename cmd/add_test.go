@@ -83,6 +83,47 @@ func TestAddCommand(t *testing.T) {
 			},
 		},
 		{
+			name: "add_exact_dir",
+			args: []string{"/home/jenkins/dir"},
+			add: addCommandConfig{
+				exact: true,
+			},
+			root: map[string]interface{}{
+				"/home/jenkins":          &vfst.Dir{Perm: 0755},
+				"/home/jenkins/.chezmoi": &vfst.Dir{Perm: 0700},
+				"/home/jenkins/dir":      &vfst.Dir{Perm: 0755},
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/jenkins/.chezmoi/exact_dir",
+					vfst.TestIsDir,
+				),
+			},
+		},
+		{
+			name: "add_exact_dir_recursive",
+			args: []string{"/home/jenkins/dir"},
+			add: addCommandConfig{
+				exact:     true,
+				recursive: true,
+			},
+			root: map[string]interface{}{
+				"/home/jenkins":          &vfst.Dir{Perm: 0755},
+				"/home/jenkins/.chezmoi": &vfst.Dir{Perm: 0700},
+				"/home/jenkins/dir": map[string]interface{}{
+					"foo": "bar",
+				},
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/jenkins/.chezmoi/exact_dir",
+					vfst.TestIsDir,
+				),
+				vfst.TestPath("/home/jenkins/.chezmoi/exact_dir/foo",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("bar"),
+				),
+			},
+		},
+		{
 			name: "add_empty_file",
 			args: []string{"/home/jenkins/empty"},
 			add: addCommandConfig{
