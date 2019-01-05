@@ -20,7 +20,7 @@ func TestTargetStatePopulate(t *testing.T) {
 	}{
 		{
 			name: "simple_file",
-			root: map[string]string{
+			root: map[string]interface{}{
 				"/foo": "bar",
 			},
 			sourceDir: "/",
@@ -40,7 +40,7 @@ func TestTargetStatePopulate(t *testing.T) {
 		},
 		{
 			name: "dot_file",
-			root: map[string]string{
+			root: map[string]interface{}{
 				"/dot_foo": "bar",
 			},
 			sourceDir: "/",
@@ -60,7 +60,7 @@ func TestTargetStatePopulate(t *testing.T) {
 		},
 		{
 			name: "private_file",
-			root: map[string]string{
+			root: map[string]interface{}{
 				"/private_foo": "bar",
 			},
 			sourceDir: "/",
@@ -80,7 +80,7 @@ func TestTargetStatePopulate(t *testing.T) {
 		},
 		{
 			name: "file_in_subdir",
-			root: map[string]string{
+			root: map[string]interface{}{
 				"/foo/bar": "baz",
 			},
 			sourceDir: "/",
@@ -92,6 +92,7 @@ func TestTargetStatePopulate(t *testing.T) {
 					"foo": &Dir{
 						sourceName: "foo",
 						targetName: "foo",
+						Exact:      false,
 						Perm:       0777,
 						Entries: map[string]Entry{
 							"bar": &File{
@@ -107,7 +108,7 @@ func TestTargetStatePopulate(t *testing.T) {
 		},
 		{
 			name: "file_in_private_dot_subdir",
-			root: map[string]string{
+			root: map[string]interface{}{
 				"/private_dot_foo/bar": "baz",
 			},
 			sourceDir: "/",
@@ -119,6 +120,7 @@ func TestTargetStatePopulate(t *testing.T) {
 					".foo": &Dir{
 						sourceName: "private_dot_foo",
 						targetName: ".foo",
+						Exact:      false,
 						Perm:       0700,
 						Entries: map[string]Entry{
 							"bar": &File{
@@ -134,7 +136,7 @@ func TestTargetStatePopulate(t *testing.T) {
 		},
 		{
 			name: "template_dot_file",
-			root: map[string]string{
+			root: map[string]interface{}{
 				"/dot_gitconfig.tmpl": "[user]\n\temail = {{.Email}}\n",
 			},
 			sourceDir: "/",
@@ -155,6 +157,34 @@ func TestTargetStatePopulate(t *testing.T) {
 						Perm:       0666,
 						Template:   true,
 						contents:   []byte("[user]\n\temail = user@example.com\n"),
+					},
+				},
+			},
+		},
+		{
+			name: "file_in_exact_dir",
+			root: map[string]interface{}{
+				"/exact_dir/foo": "bar",
+			},
+			sourceDir: "/",
+			want: &TargetState{
+				TargetDir: "/",
+				Umask:     0,
+				SourceDir: "/",
+				Entries: map[string]Entry{
+					"dir": &Dir{
+						sourceName: "exact_dir",
+						targetName: "dir",
+						Exact:      true,
+						Perm:       0777,
+						Entries: map[string]Entry{
+							"foo": &File{
+								sourceName: "exact_dir/foo",
+								targetName: "dir/foo",
+								Perm:       0666,
+								contents:   []byte("bar"),
+							},
+						},
 					},
 				},
 			},
@@ -258,15 +288,24 @@ func TestEndToEnd(t *testing.T) {
 		{
 			name: "all",
 			root: map[string]interface{}{
-				"/home/user/.bashrc":                          "foo",
-				"/home/user/replace_symlink":                  &vfst.Symlink{Target: "foo"},
-				"/home/user/.chezmoi/dot_bashrc":              "bar",
-				"/home/user/.chezmoi/.git/HEAD":               "HEAD",
-				"/home/user/.chezmoi/dot_hgrc.tmpl":           "[ui]\nusername = {{ .name }} <{{ .email }}>\n",
-				"/home/user/.chezmoi/empty.tmpl":              "{{ if false }}foo{{ end }}",
-				"/home/user/.chezmoi/empty_foo":               "",
-				"/home/user/.chezmoi/symlink_bar":             "empty",
-				"/home/user/.chezmoi/symlink_replace_symlink": "bar",
+				"/home/user": map[string]interface{}{
+					".bashrc": "foo",
+					"dir": map[string]interface{}{
+						"foo": "foo",
+						"bar": "bar",
+					},
+					"replace_symlink": &vfst.Symlink{Target: "foo"},
+				},
+				"/home/user/.chezmoi": map[string]interface{}{
+					"dot_bashrc":              "bar",
+					".git/HEAD":               "HEAD",
+					"dot_hgrc.tmpl":           "[ui]\nusername = {{ .name }} <{{ .email }}>\n",
+					"empty.tmpl":              "{{ if false }}foo{{ end }}",
+					"empty_foo":               "",
+					"exact_dir/foo":           "foo",
+					"symlink_bar":             "empty",
+					"symlink_replace_symlink": "bar",
+				},
 			},
 			sourceDir: "/home/user/.chezmoi",
 			data: map[string]interface{}{
@@ -276,11 +315,29 @@ func TestEndToEnd(t *testing.T) {
 			targetDir: "/home/user",
 			umask:     022,
 			tests: []vfst.Test{
-				vfst.TestPath("/home/user/.bashrc", vfst.TestModeIsRegular, vfst.TestContentsString("bar")),
-				vfst.TestPath("/home/user/.hgrc", vfst.TestModeIsRegular, vfst.TestContentsString("[ui]\nusername = John Smith <hello@example.com>\n")),
-				vfst.TestPath("/home/user/foo", vfst.TestModeIsRegular, vfst.TestContents(nil)),
-				vfst.TestPath("/home/user/bar", vfst.TestModeType(os.ModeSymlink), vfst.TestSymlinkTarget("empty")),
-				vfst.TestPath("/home/user/replace_symlink", vfst.TestModeType(os.ModeSymlink), vfst.TestSymlinkTarget("bar")),
+				vfst.TestPath("/home/user/.bashrc",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("bar"),
+				),
+				vfst.TestPath("/home/user/.hgrc",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("[ui]\nusername = John Smith <hello@example.com>\n"),
+				),
+				vfst.TestPath("/home/user/foo",
+					vfst.TestModeIsRegular,
+					vfst.TestContents(nil),
+				),
+				vfst.TestPath("/home/user/bar",
+					vfst.TestModeType(os.ModeSymlink),
+					vfst.TestSymlinkTarget("empty"),
+				),
+				vfst.TestPath("/home/user/replace_symlink",
+					vfst.TestModeType(os.ModeSymlink),
+					vfst.TestSymlinkTarget("bar"),
+				),
+				vfst.TestPath("/home/user/dir/bar",
+					vfst.TestDoesNotExist,
+				),
 			},
 		},
 	} {

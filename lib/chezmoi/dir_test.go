@@ -33,10 +33,26 @@ func TestDirAttributes(t *testing.T) {
 			},
 		},
 		{
+			sourceName: "exact_foo",
+			da: DirAttributes{
+				Name:  "foo",
+				Exact: true,
+				Perm:  0777,
+			},
+		},
+		{
 			sourceName: "private_dot_foo",
 			da: DirAttributes{
 				Name: ".foo",
 				Perm: 0700,
+			},
+		},
+		{
+			sourceName: "exact_private_dot_foo",
+			da: DirAttributes{
+				Name:  ".foo",
+				Exact: true,
+				Perm:  0700,
 			},
 		},
 	} {

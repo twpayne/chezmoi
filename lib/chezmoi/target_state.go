@@ -17,6 +17,20 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
+// An AddOptions contains options for TargetState.Add.
+type AddOptions struct {
+	Empty    bool
+	Exact    bool
+	Template bool
+}
+
+// An ImportTAROptions contains options for TargetState.ImportTAR.
+type ImportTAROptions struct {
+	DestinationDir  string
+	Exact           bool
+	StripComponents int
+}
+
 // A TargetState represents the root target state.
 type TargetState struct {
 	TargetDir string
@@ -40,7 +54,7 @@ func NewTargetState(targetDir string, umask os.FileMode, sourceDir string, data 
 }
 
 // Add adds a new target to ts.
-func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEmpty, addTemplate bool, mutator Mutator) error {
+func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, info os.FileInfo, mutator Mutator) error {
 	if !filepath.HasPrefix(targetPath, ts.TargetDir) {
 		return fmt.Errorf("%s: outside target directory", targetPath)
 	}
@@ -65,7 +79,7 @@ func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEm
 			return err
 		}
 		if parentEntry == nil {
-			if err := ts.Add(fs, filepath.Join(ts.TargetDir, parentDirName), nil, false, false, mutator); err != nil {
+			if err := ts.Add(fs, addOptions, filepath.Join(ts.TargetDir, parentDirName), nil, mutator); err != nil {
 				return err
 			}
 			parentEntry, err = ts.findEntry(parentDirName)
@@ -88,19 +102,19 @@ func (ts *TargetState) Add(fs vfs.FS, targetPath string, info os.FileInfo, addEm
 			return err
 		}
 		empty := len(infos) == 0
-		return ts.addDir(targetName, entries, parentDirSourceName, perm, empty, mutator)
+		return ts.addDir(targetName, entries, parentDirSourceName, addOptions.Exact, perm, empty, mutator)
 	case info.Mode().IsRegular():
-		if info.Size() == 0 && !addEmpty {
+		if info.Size() == 0 && !addOptions.Empty {
 			return nil
 		}
 		contents, err := fs.ReadFile(targetPath)
 		if err != nil {
 			return err
 		}
-		if addTemplate {
+		if addOptions.Template {
 			contents = autoTemplate(contents, ts.Data)
 		}
-		return ts.addFile(targetName, entries, parentDirSourceName, info, addTemplate, contents, mutator)
+		return ts.addFile(targetName, entries, parentDirSourceName, info, addOptions.Template, contents, mutator)
 	case info.Mode()&os.ModeType == os.ModeSymlink:
 		linkname, err := fs.Readlink(targetPath)
 		if err != nil {
@@ -194,7 +208,7 @@ func (ts *TargetState) Get(target string) (Entry, error) {
 }
 
 // ImportTAR imports a tar archive.
-func (ts *TargetState) ImportTAR(r *tar.Reader, destinationDir string, stripComponents int, mutator Mutator) error {
+func (ts *TargetState) ImportTAR(r *tar.Reader, importTAROptions ImportTAROptions, mutator Mutator) error {
 	for {
 		header, err := r.Next()
 		if err == io.EOF {
@@ -204,7 +218,7 @@ func (ts *TargetState) ImportTAR(r *tar.Reader, destinationDir string, stripComp
 		}
 		switch header.Typeflag {
 		case tar.TypeDir, tar.TypeReg, tar.TypeSymlink:
-			if err := ts.importHeader(r, header, destinationDir, stripComponents, mutator); err != nil {
+			if err := ts.importHeader(r, importTAROptions, header, mutator); err != nil {
 				return err
 			}
 		case tar.TypeXGlobalHeader:
@@ -235,23 +249,24 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 		switch {
 		case info.Mode().IsDir():
 			components := splitPathList(relPath)
-			dirNames, perms := parseDirNameComponents(components)
-			targetName := filepath.Join(dirNames...)
-			entries, err := ts.findEntries(dirNames[:len(dirNames)-1])
+			das := parseDirNameComponents(components)
+			dns := dirNames(das)
+			targetName := filepath.Join(dns...)
+			entries, err := ts.findEntries(dns[:len(dns)-1])
 			if err != nil {
 				return err
 			}
-			dirName := dirNames[len(dirNames)-1]
-			perm := perms[len(perms)-1]
-			entries[dirName] = newDir(relPath, targetName, perm)
+			da := das[len(das)-1]
+			entries[da.Name] = newDir(relPath, targetName, da.Exact, da.Perm)
 		case info.Mode().IsRegular():
 			psfp := parseSourceFilePath(relPath)
-			entries, err := ts.findEntries(psfp.dirNames)
+			dns := dirNames(psfp.dirAttributes)
+			entries, err := ts.findEntries(dns)
 			if err != nil {
 				return err
 			}
 
-			targetName := filepath.Join(append(psfp.dirNames, psfp.Name)...)
+			targetName := filepath.Join(append(dns, psfp.Name)...)
 			var entry Entry
 			switch psfp.Mode & os.ModeType {
 			case 0:
@@ -299,7 +314,7 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 	})
 }
 
-func (ts *TargetState) addDir(targetName string, entries map[string]Entry, parentDirSourceName string, perm os.FileMode, empty bool, mutator Mutator) error {
+func (ts *TargetState) addDir(targetName string, entries map[string]Entry, parentDirSourceName string, exact bool, perm os.FileMode, empty bool, mutator Mutator) error {
 	name := filepath.Base(targetName)
 	var existingDir *Dir
 	if entry, ok := entries[name]; ok {
@@ -309,18 +324,22 @@ func (ts *TargetState) addDir(targetName string, entries map[string]Entry, paren
 		}
 	}
 	sourceName := DirAttributes{
-		Name: name,
-		Perm: perm,
+		Name:  name,
+		Exact: exact,
+		Perm:  perm,
 	}.SourceName()
 	if parentDirSourceName != "" {
 		sourceName = filepath.Join(parentDirSourceName, sourceName)
 	}
-	dir := newDir(sourceName, targetName, perm)
+	dir := newDir(sourceName, targetName, exact, perm)
 	if existingDir != nil {
 		if existingDir.sourceName == dir.sourceName {
 			return nil
 		}
 		return mutator.Rename(filepath.Join(ts.SourceDir, existingDir.sourceName), filepath.Join(ts.SourceDir, dir.sourceName))
+	}
+	if err := mutator.Mkdir(filepath.Join(ts.SourceDir, sourceName), 0777&^ts.Umask); err != nil {
+		return err
 	}
 	// If the directory is empty, add a .keep file so the directory is
 	// managed by git. Chezmoi will ignore the .keep file as it begins with
@@ -331,7 +350,7 @@ func (ts *TargetState) addDir(targetName string, entries map[string]Entry, paren
 		}
 	}
 	entries[name] = dir
-	return mutator.Mkdir(filepath.Join(ts.SourceDir, sourceName), 0777&^ts.Umask)
+	return nil
 }
 
 func (ts *TargetState) addFile(targetName string, entries map[string]Entry, parentDirSourceName string, info os.FileInfo, template bool, contents []byte, mutator Mutator) error {
@@ -477,13 +496,13 @@ func (ts *TargetState) findEntry(name string) (Entry, error) {
 	return entries[names[len(names)-1]], nil
 }
 
-func (ts *TargetState) importHeader(r io.Reader, header *tar.Header, destinationDir string, stripComponents int, mutator Mutator) error {
+func (ts *TargetState) importHeader(r io.Reader, importTAROptions ImportTAROptions, header *tar.Header, mutator Mutator) error {
 	targetPath := header.Name
-	if stripComponents > 0 {
-		targetPath = filepath.Join(strings.Split(targetPath, string(os.PathSeparator))[stripComponents:]...)
+	if importTAROptions.StripComponents > 0 {
+		targetPath = filepath.Join(strings.Split(targetPath, string(os.PathSeparator))[importTAROptions.StripComponents:]...)
 	}
-	if destinationDir != "" {
-		targetPath = filepath.Join(destinationDir, targetPath)
+	if importTAROptions.DestinationDir != "" {
+		targetPath = filepath.Join(importTAROptions.DestinationDir, targetPath)
 	} else {
 		targetPath = filepath.Join(ts.TargetDir, targetPath)
 	}
@@ -509,7 +528,7 @@ func (ts *TargetState) importHeader(r io.Reader, header *tar.Header, destination
 	case tar.TypeDir:
 		perm := os.FileMode(header.Mode).Perm()
 		empty := false // FIXME don't assume directory is empty
-		return ts.addDir(targetName, entries, parentDirSourceName, perm, empty, mutator)
+		return ts.addDir(targetName, entries, parentDirSourceName, importTAROptions.Exact, perm, empty, mutator)
 	case tar.TypeReg:
 		info := header.FileInfo()
 		contents, err := ioutil.ReadAll(r)

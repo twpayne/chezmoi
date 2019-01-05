@@ -395,19 +395,20 @@ with a `.`. The following prefixes and suffixes are special.
 | -------------------- | ----------------------------------------------------------------------------------|
 | `private_` prefix    | Remove all group and world permissions from the target file or directory.         |
 | `empty_` prefix      | Ensure the file exists, even if is empty. By default, empty files are removed.    |
+| `exact_` prefix      | Remove anything not managed by `chezmoi`.                                         |
 | `executable_` prefix | Add executable permissions to the target file.                                    |
 | `symlink_` prefix    | Create a symlink instead of a regular file.                                       |
 | `dot_` prefix        | Rename to use a leading dot, e.g. `dot_foo` becomes `.foo`.                       |
 | `.tmpl` suffix       | Treat the contents of the source file as a template.                              |
 
-Order is important, the order is `private_`, `empty_`, `executable_`,
+Order is important, the order is `exact_`, `private_`, `empty_`, `executable_`,
 `symlink_`, `dot_`, `.tmpl`.
 
 Different target types allow different prefixes and suffixes.
 
 | Target type   | Allowed prefixes and suffixes                        |
 | ------------- | ---------------------------------------------------- |
-| Directory     | `private_`, `dot_`                                   |
+| Directory     | `exact_, `private_`, `dot_`                          |
 | Regular file  | `private_`, `empty_`, `executable_`, `dot_`, `.tmpl` |
 | Symbolic link | `symlink_`, `dot_`, `.tmpl`                          |
 
