@@ -391,7 +391,7 @@ overridden with the `-s` flag or by giving a value for `sourceDir` in
 `chezmoi` ignores all files and directories in the source directory that begin
 with a `.`. The following prefixes and suffixes are special.
 
-| Prefix               | Effect                                                                            |
+| Prefix/suffix        | Effect                                                                            |
 | -------------------- | ----------------------------------------------------------------------------------|
 | `private_` prefix    | Remove all group and world permissions from the target file or directory.         |
 | `empty_` prefix      | Ensure the file exists, even if is empty. By default, empty files are removed.    |
@@ -404,11 +404,11 @@ with a `.`. The following prefixes and suffixes are special.
 Order is important, the order is `exact_`, `private_`, `empty_`, `executable_`,
 `symlink_`, `dot_`, `.tmpl`.
 
-Different target types allow different prefixes and suffixes.
+Different target types allow different prefixes and suffixes:
 
 | Target type   | Allowed prefixes and suffixes                        |
 | ------------- | ---------------------------------------------------- |
-| Directory     | `exact_, `private_`, `dot_`                          |
+| Directory     | `exact_`, `private_`, `dot_`                         |
 | Regular file  | `private_`, `empty_`, `executable_`, `dot_`, `.tmpl` |
 | Symbolic link | `symlink_`, `dot_`, `.tmpl`                          |
 
