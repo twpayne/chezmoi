@@ -384,6 +384,9 @@ which lists all the files in the target state.
 
 ## Under the hood
 
+For an example of how `chezmoi` stores its state, see
+[`github.com/twpayne/dotfiles`](https://github.com/twpayne/dotfiles).
+
 `chezmoi` stores the desired state of files, symbolic links, and directories in
 regular files and directories in `~/.local/share/chezmoi`. This location can be
 overridden with the `-s` flag or by giving a value for `sourceDir` in
