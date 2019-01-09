@@ -81,6 +81,10 @@ func (c *Config) exec(argv []string) error {
 	return syscall.Exec(path, argv, os.Environ())
 }
 
+func (c *Config) execEditor(argv ...string) error {
+	return c.exec(append([]string{c.getEditor()}, argv...))
+}
+
 func (c *Config) getDefaultMutator(fs vfs.FS) chezmoi.Mutator {
 	var mutator chezmoi.Mutator
 	if c.DryRun {
@@ -127,6 +131,16 @@ func getDefaultData() (map[string]interface{}, error) {
 	return data, nil
 }
 
+func (c *Config) getEditor() string {
+	if editor := os.Getenv("VISUAL"); editor != "" {
+		return editor
+	}
+	if editor := os.Getenv("EDITOR"); editor != "" {
+		return editor
+	}
+	return "vi"
+}
+
 func (c *Config) getEntries(ts *chezmoi.TargetState, args []string) ([]chezmoi.Entry, error) {
 	entries := []chezmoi.Entry{}
 	for _, arg := range args {
@@ -163,6 +177,21 @@ func (c *Config) getTargetState(fs vfs.FS) (*chezmoi.TargetState, error) {
 		return nil, err
 	}
 	return ts, nil
+}
+
+func (c *Config) runEditor(argv ...string) error {
+	editor := c.getEditor()
+	if c.Verbose {
+		fmt.Printf("%s %s\n", editor, strings.Join(argv, " "))
+	}
+	if c.DryRun {
+		return nil
+	}
+	cmd := exec.Command(editor, argv...)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	return cmd.Run()
 }
 
 func makeRunE(runCommand func(vfs.FS, *cobra.Command, []string) error) func(*cobra.Command, []string) error {
