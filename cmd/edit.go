@@ -3,9 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
-	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/twpayne/chezmoi/lib/chezmoi"
@@ -46,28 +44,14 @@ func (c *Config) runEditCommand(fs vfs.FS, command *cobra.Command, args []string
 	if err != nil {
 		return err
 	}
-	editor := os.Getenv("VISUAL")
-	if editor == "" {
-		editor = os.Getenv("EDITOR")
-	}
-	if editor == "" {
-		editor = "vi"
-	}
 	argv := []string{}
 	for _, entry := range entries {
 		argv = append(argv, filepath.Join(c.SourceDir, entry.SourceName()))
 	}
 	if !c.edit.diff && !c.edit.apply {
-		return c.exec(append([]string{editor}, argv...))
+		return c.execEditor(argv...)
 	}
-	if c.Verbose {
-		fmt.Printf("%s %s\n", editor, strings.Join(argv, " "))
-	}
-	cmd := exec.Command(editor, argv...)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	if err := cmd.Run(); err != nil {
+	if err := c.runEditor(argv...); err != nil {
 		return err
 	}
 	readOnlyFS := vfs.NewReadOnlyFS(fs)
