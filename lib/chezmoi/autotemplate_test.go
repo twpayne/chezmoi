@@ -67,10 +67,10 @@ func TestAutoTemplate(t *testing.T) {
 		*/
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			got := autoTemplate([]byte(tc.contentsStr), tc.data)
+			got, gotErr := autoTemplate([]byte(tc.contentsStr), tc.data)
 			gotStr := string(got)
-			if gotStr != tc.wantStr {
-				t.Errorf("autoTemplate([]byte(%q), %v) == %q, want %q", tc.contentsStr, tc.data, gotStr, tc.wantStr)
+			if gotErr != nil || gotStr != tc.wantStr {
+				t.Errorf("autoTemplate([]byte(%q), %v) == %q, %v, want %q, <nil>", tc.contentsStr, tc.data, gotStr, gotErr, tc.wantStr)
 			}
 		})
 	}

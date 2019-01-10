@@ -112,7 +112,10 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 			return err
 		}
 		if addOptions.Template {
-			contents = autoTemplate(contents, ts.Data)
+			contents, err = autoTemplate(contents, ts.Data)
+			if err != nil {
+				return err
+			}
 		}
 		return ts.addFile(targetName, entries, parentDirSourceName, info, addOptions.Template, contents, mutator)
 	case info.Mode()&os.ModeType == os.ModeSymlink:

@@ -7,9 +7,8 @@ import (
 )
 
 type templateVariable struct {
-	name        string
-	value       string
-	valueRegexp *regexp.Regexp
+	name  string
+	value string
 }
 
 type byValueLength []templateVariable
@@ -33,9 +32,8 @@ func extractVariables(variables []templateVariable, parent []string, data map[st
 		switch value := value.(type) {
 		case string:
 			variables = append(variables, templateVariable{
-				name:        strings.Join(append(parent, name), "."),
-				value:       value,
-				valueRegexp: regexp.MustCompile(`\b` + regexp.QuoteMeta(value) + `\b`),
+				name:  strings.Join(append(parent, name), "."),
+				value: value,
 			})
 		case map[string]interface{}:
 			variables = extractVariables(variables, append(parent, name), value)
@@ -44,14 +42,18 @@ func extractVariables(variables []templateVariable, parent []string, data map[st
 	return variables
 }
 
-func autoTemplate(contents []byte, data map[string]interface{}) []byte {
+func autoTemplate(contents []byte, data map[string]interface{}) ([]byte, error) {
 	// FIXME this naive approach will generate incorrect templates if the
 	// variable names match variable values
 	variables := extractVariables(nil, nil, data)
 	sort.Sort(sort.Reverse(byValueLength(variables)))
 	contentsStr := string(contents)
 	for _, variable := range variables {
-		contentsStr = variable.valueRegexp.ReplaceAllString(contentsStr, "{{ ."+variable.name+" }}")
+		valueRegexp, err := regexp.Compile(`\b` + regexp.QuoteMeta(variable.value) + `\b`)
+		if err != nil {
+			return nil, err
+		}
+		contentsStr = valueRegexp.ReplaceAllString(contentsStr, "{{ ."+variable.name+" }}")
 	}
-	return []byte(contentsStr)
+	return []byte(contentsStr), nil
 }
