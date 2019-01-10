@@ -57,3 +57,13 @@ func autoTemplate(contents []byte, data map[string]interface{}) ([]byte, error) 
 	}
 	return []byte(contentsStr), nil
 }
+
+// isWord returns true if b is a word byte.
+func isWord(b byte) bool {
+	return '0' <= b && b <= '9' || 'A' <= b && b <= 'Z' || 'a' <= b && b <= 'z'
+}
+
+// inWord returns true if splitting s at position i would split a word.
+func inWord(s string, i int) bool {
+	return i > 0 && i < len(s) && isWord(s[i-1]) && isWord(s[i])
+}

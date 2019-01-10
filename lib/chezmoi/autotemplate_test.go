@@ -75,3 +75,43 @@ func TestAutoTemplate(t *testing.T) {
 		})
 	}
 }
+
+func TestInWord(t *testing.T) {
+	for _, tc := range []struct {
+		s    string
+		i    int
+		want bool
+	}{
+		{s: "", i: 0, want: false},
+		{s: "a", i: 0, want: false},
+		{s: "a", i: 1, want: false},
+		{s: "ab", i: 0, want: false},
+		{s: "ab", i: 1, want: true},
+		{s: "ab", i: 2, want: false},
+		{s: "abc", i: 0, want: false},
+		{s: "abc", i: 1, want: true},
+		{s: "abc", i: 2, want: true},
+		{s: "abc", i: 3, want: false},
+		{s: " abc ", i: 0, want: false},
+		{s: " abc ", i: 1, want: false},
+		{s: " abc ", i: 2, want: true},
+		{s: " abc ", i: 3, want: true},
+		{s: " abc ", i: 4, want: false},
+		{s: " abc ", i: 5, want: false},
+		{s: "/home/user", i: 0, want: false},
+		{s: "/home/user", i: 1, want: false},
+		{s: "/home/user", i: 2, want: true},
+		{s: "/home/user", i: 3, want: true},
+		{s: "/home/user", i: 4, want: true},
+		{s: "/home/user", i: 5, want: false},
+		{s: "/home/user", i: 6, want: false},
+		{s: "/home/user", i: 7, want: true},
+		{s: "/home/user", i: 8, want: true},
+		{s: "/home/user", i: 9, want: true},
+		{s: "/home/user", i: 10, want: false},
+	} {
+		if got := inWord(tc.s, tc.i); got != tc.want {
+			t.Errorf("inWord(%q, %d) == %v, want %v", tc.s, tc.i, got, tc.want)
+		}
+	}
+}
