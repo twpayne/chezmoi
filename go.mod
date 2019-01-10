@@ -5,7 +5,7 @@ require (
 	github.com/d4l3k/messagediff v1.2.1
 	github.com/danieljoos/wincred v1.0.1 // indirect
 	github.com/godbus/dbus v4.1.0+incompatible // indirect
-	github.com/google/renameio v0.0.0-20181127164028-8bac8552c408
+	github.com/google/renameio v0.1.0
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/mitchellh/go-homedir v1.0.0
 	github.com/pmezard/go-difflib v1.0.0
