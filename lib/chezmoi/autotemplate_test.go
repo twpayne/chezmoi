@@ -27,6 +27,16 @@ func TestAutoTemplate(t *testing.T) {
 			wantStr: "name = {{ .name }}\nfirstName = {{ .firstName }}\n",
 		},
 		{
+			name:        "alphabetical_first",
+			contentsStr: "name = John Smith\n",
+			data: map[string]interface{}{
+				"alpha": "John Smith",
+				"beta":  "John Smith",
+				"gamma": "John Smith",
+			},
+			wantStr: "name = {{ .alpha }}\n",
+		},
+		{
 			name:        "nested_values",
 			contentsStr: "email = hello@example.com\n",
 			data: map[string]interface{}{
