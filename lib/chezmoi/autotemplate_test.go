@@ -54,17 +54,62 @@ func TestAutoTemplate(t *testing.T) {
 			},
 			wantStr: "darwinian evolution", // not "{{ .os }}ian evolution"
 		},
-		/*
-			// FIXME this test currently fails because we match on word
-			// boundaries and ^/ is not a word boundary.
-			{
-				contentsStr: "/home/user",
-				data: map[string]interface{}{
-					"homedir": "/home/user",
-				},
-				wantStr: "{{ .homedir }}",
+		{
+			name:        "longest_match_first",
+			contentsStr: "/home/user",
+			data: map[string]interface{}{
+				"homedir": "/home/user",
 			},
-		*/
+			wantStr: "{{ .homedir }}",
+		},
+		{
+			name:        "longest_match_first_prefix",
+			contentsStr: "HOME=/home/user",
+			data: map[string]interface{}{
+				"homedir": "/home/user",
+			},
+			wantStr: "HOME={{ .homedir }}",
+		},
+		{
+			name:        "longest_match_first_suffix",
+			contentsStr: "/home/user/something",
+			data: map[string]interface{}{
+				"homedir": "/home/user",
+			},
+			wantStr: "{{ .homedir }}/something",
+		},
+		{
+			name:        "longest_match_first_prefix_and_suffix",
+			contentsStr: "HOME=/home/user/something",
+			data: map[string]interface{}{
+				"homedir": "/home/user",
+			},
+			wantStr: "HOME={{ .homedir }}/something",
+		},
+		{
+			name:        "words_only",
+			contentsStr: "aaa aa a aa aaa aa a aa aaa",
+			data: map[string]interface{}{
+				"alpha": "a",
+			},
+			wantStr: "aaa aa {{ .alpha }} aa aaa aa {{ .alpha }} aa aaa",
+		},
+		{
+			name:        "words_only_2",
+			contentsStr: "aaa aa a aa aaa aa a aa aaa",
+			data: map[string]interface{}{
+				"alpha": "aa",
+			},
+			wantStr: "aaa {{ .alpha }} a {{ .alpha }} aaa {{ .alpha }} a {{ .alpha }} aaa",
+		},
+		{
+			name:        "words_only_3",
+			contentsStr: "aaa aa a aa aaa aa a aa aaa",
+			data: map[string]interface{}{
+				"alpha": "aaa",
+			},
+			wantStr: "{{ .alpha }} aa a aa {{ .alpha }} aa a aa {{ .alpha }}",
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			got, gotErr := autoTemplate([]byte(tc.contentsStr), tc.data)

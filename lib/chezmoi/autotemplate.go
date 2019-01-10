@@ -1,7 +1,6 @@
 package chezmoi
 
 import (
-	"regexp"
 	"sort"
 	"strings"
 )
@@ -45,15 +44,34 @@ func extractVariables(variables []templateVariable, parent []string, data map[st
 func autoTemplate(contents []byte, data map[string]interface{}) ([]byte, error) {
 	// FIXME this naive approach will generate incorrect templates if the
 	// variable names match variable values
+	// FIXME the algorithm here is probably O(N^2), we can do better
 	variables := extractVariables(nil, nil, data)
 	sort.Sort(sort.Reverse(byValueLength(variables)))
 	contentsStr := string(contents)
 	for _, variable := range variables {
-		valueRegexp, err := regexp.Compile(`\b` + regexp.QuoteMeta(variable.value) + `\b`)
-		if err != nil {
-			return nil, err
+		index := strings.Index(contentsStr, variable.value)
+		for index != -1 && index != len(contentsStr) {
+			if !inWord(contentsStr, index) && !inWord(contentsStr, index+len(variable.value)) {
+				// Replace variable.value which is on word boundaries at both
+				// ends.
+				replacement := "{{ ." + variable.name + " }}"
+				contentsStr = contentsStr[:index] + replacement + contentsStr[index+len(variable.value):]
+				index += len(replacement)
+			} else {
+				// Otherwise, keep looking. Consume at least one byte so we
+				// make progress.
+				index++
+			}
+			// Look for the next occurrence of variable.value.
+			j := strings.Index(contentsStr[index:], variable.value)
+			if j == -1 {
+				// No more occurrences found, so terminate the loop.
+				break
+			} else {
+				// Advance to the next occurrence.
+				index += j
+			}
 		}
-		contentsStr = valueRegexp.ReplaceAllString(contentsStr, "{{ ."+variable.name+" }}")
 	}
 	return []byte(contentsStr), nil
 }
