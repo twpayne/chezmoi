@@ -100,7 +100,7 @@ func (fa FileAttributes) SourceName() string {
 	case os.ModeSymlink:
 		sourceName = symlinkPrefix
 	default:
-		panic(fmt.Sprintf("%+v: unsupported type", fa)) // FIXME return error instead of panicing
+		panic(fmt.Sprintf("%+v: unsupported type", fa))
 	}
 	if strings.HasPrefix(fa.Name, ".") {
 		sourceName += dotPrefix + strings.TrimPrefix(fa.Name, ".")
