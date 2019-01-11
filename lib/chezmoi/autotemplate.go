@@ -49,6 +49,9 @@ func autoTemplate(contents []byte, data map[string]interface{}) ([]byte, error) 
 	sort.Sort(sort.Reverse(byValueLength(variables)))
 	contentsStr := string(contents)
 	for _, variable := range variables {
+		if variable.value == "" {
+			continue
+		}
 		index := strings.Index(contentsStr, variable.value)
 		for index != -1 && index != len(contentsStr) {
 			if !inWord(contentsStr, index) && !inWord(contentsStr, index+len(variable.value)) {
