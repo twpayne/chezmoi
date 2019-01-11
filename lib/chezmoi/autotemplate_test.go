@@ -110,6 +110,14 @@ func TestAutoTemplate(t *testing.T) {
 			},
 			wantStr: "{{ .alpha }} aa a aa {{ .alpha }} aa a aa {{ .alpha }}",
 		},
+		{
+			name:        "skip_empty",
+			contentsStr: "a",
+			data: map[string]interface{}{
+				"empty": "",
+			},
+			wantStr: "a",
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			got, gotErr := autoTemplate([]byte(tc.contentsStr), tc.data)
