@@ -55,7 +55,10 @@ func (s *Symlink) Apply(fs vfs.FS, targetDir string, ignore func(string) bool, u
 }
 
 // ConcreteValue implements Entry.ConcreteValue.
-func (s *Symlink) ConcreteValue(targetDir, sourceDir string, recursive bool) (interface{}, error) {
+func (s *Symlink) ConcreteValue(targetDir string, ignore func(string) bool, sourceDir string, recursive bool) (interface{}, error) {
+	if ignore(s.targetName) {
+		return nil, nil
+	}
 	linkname, err := s.Linkname()
 	if err != nil {
 		return nil, err
@@ -70,7 +73,10 @@ func (s *Symlink) ConcreteValue(targetDir, sourceDir string, recursive bool) (in
 }
 
 // Evaluate evaluates s's target.
-func (s *Symlink) Evaluate() error {
+func (s *Symlink) Evaluate(ignore func(string) bool) error {
+	if ignore(s.targetName) {
+		return nil
+	}
 	_, err := s.Linkname()
 	return err
 }
@@ -95,7 +101,10 @@ func (s *Symlink) TargetName() string {
 }
 
 // archive writes s to w.
-func (s *Symlink) archive(w *tar.Writer, headerTemplate *tar.Header, umask os.FileMode) error {
+func (s *Symlink) archive(w *tar.Writer, ignore func(string) bool, headerTemplate *tar.Header, umask os.FileMode) error {
+	if ignore(s.targetName) {
+		return nil
+	}
 	linkname, err := s.Linkname()
 	if err != nil {
 		return err

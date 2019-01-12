@@ -161,7 +161,7 @@ func (ts *TargetState) Archive(w *tar.Writer, umask os.FileMode) error {
 		ChangeTime: now,
 	}
 	for _, entryName := range sortedEntryNames(ts.Entries) {
-		if err := ts.Entries[entryName].archive(w, &headerTemplate, umask); err != nil {
+		if err := ts.Entries[entryName].archive(w, ts.TargetIgnore.Match, &headerTemplate, umask); err != nil {
 			return err
 		}
 	}
@@ -182,11 +182,13 @@ func (ts *TargetState) Apply(fs vfs.FS, mutator Mutator) error {
 func (ts *TargetState) ConcreteValue(recursive bool) (interface{}, error) {
 	var entryConcreteValues []interface{}
 	for _, entryName := range sortedEntryNames(ts.Entries) {
-		entryConcreteValue, err := ts.Entries[entryName].ConcreteValue(ts.TargetDir, ts.SourceDir, recursive)
+		entryConcreteValue, err := ts.Entries[entryName].ConcreteValue(ts.TargetDir, ts.TargetIgnore.Match, ts.SourceDir, recursive)
 		if err != nil {
 			return nil, err
 		}
-		entryConcreteValues = append(entryConcreteValues, entryConcreteValue)
+		if entryConcreteValue != nil {
+			entryConcreteValues = append(entryConcreteValues, entryConcreteValue)
+		}
 	}
 	return entryConcreteValues, nil
 }
@@ -194,7 +196,7 @@ func (ts *TargetState) ConcreteValue(recursive bool) (interface{}, error) {
 // Evaluate evaluates all of the entries in ts.
 func (ts *TargetState) Evaluate() error {
 	for _, entryName := range sortedEntryNames(ts.Entries) {
-		if err := ts.Entries[entryName].Evaluate(); err != nil {
+		if err := ts.Entries[entryName].Evaluate(ts.TargetIgnore.Match); err != nil {
 			return err
 		}
 	}

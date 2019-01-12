@@ -134,15 +134,20 @@ func (d *Dir) Apply(fs vfs.FS, targetDir string, ignore func(string) bool, umask
 }
 
 // ConcreteValue implements Entry.ConcreteValue.
-func (d *Dir) ConcreteValue(targetDir, sourceDir string, recursive bool) (interface{}, error) {
+func (d *Dir) ConcreteValue(targetDir string, ignore func(string) bool, sourceDir string, recursive bool) (interface{}, error) {
+	if ignore(d.targetName) {
+		return nil, nil
+	}
 	var entryConcreteValues []interface{}
 	if recursive {
 		for _, entryName := range sortedEntryNames(d.Entries) {
-			entryConcreteValue, err := d.Entries[entryName].ConcreteValue(targetDir, sourceDir, recursive)
+			entryConcreteValue, err := d.Entries[entryName].ConcreteValue(targetDir, ignore, sourceDir, recursive)
 			if err != nil {
 				return nil, err
 			}
-			entryConcreteValues = append(entryConcreteValues, entryConcreteValue)
+			if entryConcreteValue != nil {
+				entryConcreteValues = append(entryConcreteValues, entryConcreteValue)
+			}
 		}
 	}
 	return &dirConcreteValue{
@@ -156,9 +161,12 @@ func (d *Dir) ConcreteValue(targetDir, sourceDir string, recursive bool) (interf
 }
 
 // Evaluate evaluates all entries in d.
-func (d *Dir) Evaluate() error {
+func (d *Dir) Evaluate(ignore func(string) bool) error {
+	if ignore(d.targetName) {
+		return nil
+	}
 	for _, entryName := range sortedEntryNames(d.Entries) {
-		if err := d.Entries[entryName].Evaluate(); err != nil {
+		if err := d.Entries[entryName].Evaluate(ignore); err != nil {
 			return err
 		}
 	}
@@ -181,7 +189,10 @@ func (d *Dir) TargetName() string {
 }
 
 // archive writes d to w.
-func (d *Dir) archive(w *tar.Writer, headerTemplate *tar.Header, umask os.FileMode) error {
+func (d *Dir) archive(w *tar.Writer, ignore func(string) bool, headerTemplate *tar.Header, umask os.FileMode) error {
+	if ignore(d.targetName) {
+		return nil
+	}
 	header := *headerTemplate
 	header.Typeflag = tar.TypeDir
 	header.Name = d.targetName
@@ -190,7 +201,7 @@ func (d *Dir) archive(w *tar.Writer, headerTemplate *tar.Header, umask os.FileMo
 		return err
 	}
 	for _, entryName := range sortedEntryNames(d.Entries) {
-		if err := d.Entries[entryName].archive(w, headerTemplate, umask); err != nil {
+		if err := d.Entries[entryName].archive(w, ignore, headerTemplate, umask); err != nil {
 			return err
 		}
 	}

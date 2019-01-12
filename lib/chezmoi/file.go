@@ -158,7 +158,10 @@ func (f *File) Apply(fs vfs.FS, targetDir string, ignore func(string) bool, umas
 }
 
 // ConcreteValue implements Entry.ConcreteValue.
-func (f *File) ConcreteValue(targetDir, sourceDir string, recursive bool) (interface{}, error) {
+func (f *File) ConcreteValue(targetDir string, ignore func(string) bool, sourceDir string, recursive bool) (interface{}, error) {
+	if ignore(f.targetName) {
+		return nil, nil
+	}
 	contents, err := f.Contents()
 	if err != nil {
 		return nil, err
@@ -175,7 +178,10 @@ func (f *File) ConcreteValue(targetDir, sourceDir string, recursive bool) (inter
 }
 
 // Evaluate evaluates f's contents.
-func (f *File) Evaluate() error {
+func (f *File) Evaluate(ignore func(string) bool) error {
+	if ignore(f.targetName) {
+		return nil
+	}
 	_, err := f.Contents()
 	return err
 }
@@ -210,7 +216,10 @@ func (f *File) TargetName() string {
 }
 
 // archive writes f to w.
-func (f *File) archive(w *tar.Writer, headerTemplate *tar.Header, umask os.FileMode) error {
+func (f *File) archive(w *tar.Writer, ignore func(string) bool, headerTemplate *tar.Header, umask os.FileMode) error {
+	if ignore(f.targetName) {
+		return nil
+	}
 	contents, err := f.Contents()
 	if err != nil {
 		return err

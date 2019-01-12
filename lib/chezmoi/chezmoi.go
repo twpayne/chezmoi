@@ -29,11 +29,11 @@ type templateFuncError struct {
 // An Entry is either a Dir, a File, or a Symlink.
 type Entry interface {
 	Apply(fs vfs.FS, targetDir string, ignore func(string) bool, umask os.FileMode, mutator Mutator) error
-	ConcreteValue(targetDir, sourceDir string, recursive bool) (interface{}, error)
-	Evaluate() error
+	ConcreteValue(targetDir string, ignore func(string) bool, sourceDir string, recursive bool) (interface{}, error)
+	Evaluate(ignore func(string) bool) error
 	SourceName() string
 	TargetName() string
-	archive(w *tar.Writer, headerTemplate *tar.Header, umask os.FileMode) error
+	archive(w *tar.Writer, ignore func(string) bool, headerTemplate *tar.Header, umask os.FileMode) error
 }
 
 type parsedSourceFilePath struct {
