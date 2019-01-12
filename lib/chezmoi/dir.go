@@ -156,9 +156,12 @@ func (d *Dir) ConcreteValue(targetDir, sourceDir string, recursive bool) (interf
 }
 
 // Evaluate evaluates all entries in d.
-func (d *Dir) Evaluate() error {
+func (d *Dir) Evaluate(ignore func(string) bool) error {
+	if ignore(d.targetName) {
+		return nil
+	}
 	for _, entryName := range sortedEntryNames(d.Entries) {
-		if err := d.Entries[entryName].Evaluate(); err != nil {
+		if err := d.Entries[entryName].Evaluate(ignore); err != nil {
 			return err
 		}
 	}

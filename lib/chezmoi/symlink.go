@@ -70,7 +70,10 @@ func (s *Symlink) ConcreteValue(targetDir, sourceDir string, recursive bool) (in
 }
 
 // Evaluate evaluates s's target.
-func (s *Symlink) Evaluate() error {
+func (s *Symlink) Evaluate(ignore func(string) bool) error {
+	if ignore(s.targetName) {
+		return nil
+	}
 	_, err := s.Linkname()
 	return err
 }

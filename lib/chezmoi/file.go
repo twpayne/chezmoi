@@ -175,7 +175,10 @@ func (f *File) ConcreteValue(targetDir, sourceDir string, recursive bool) (inter
 }
 
 // Evaluate evaluates f's contents.
-func (f *File) Evaluate() error {
+func (f *File) Evaluate(ignore func(string) bool) error {
+	if ignore(f.targetName) {
+		return nil
+	}
 	_, err := f.Contents()
 	return err
 }

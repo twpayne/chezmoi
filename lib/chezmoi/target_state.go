@@ -194,7 +194,7 @@ func (ts *TargetState) ConcreteValue(recursive bool) (interface{}, error) {
 // Evaluate evaluates all of the entries in ts.
 func (ts *TargetState) Evaluate() error {
 	for _, entryName := range sortedEntryNames(ts.Entries) {
-		if err := ts.Entries[entryName].Evaluate(); err != nil {
+		if err := ts.Entries[entryName].Evaluate(ts.TargetIgnore.Match); err != nil {
 			return err
 		}
 	}
