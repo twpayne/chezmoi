@@ -443,18 +443,6 @@ for managing your personal configuration files. The focus of `chezmoi` will
 always be personal home directory management. If your needs grow beyond that,
 switch to a whole system configuration management tool.
 
-## Release Management
-
-Releases are managed with [goreleaser](https://goreleaser.com/).
-
-To create a new release, push a tag, eg:
-
-    $ git tag -a v0.1.0 -m "First release"
-    $ git push origin v0.1.0
-
-To run a local "snapshot" build without publishing:
-
-    $ TRAVIS_BUILD_NUMBER=1 goreleaser --snapshot --rm-dist --debug
 
 ## License
 
