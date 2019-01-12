@@ -64,11 +64,13 @@ func (c *Config) runDumpCommand(fs vfs.FS, command *cobra.Command, args []string
 		}
 		var concreteValues []interface{}
 		for _, entry := range entries {
-			entryConcreteValue, err := entry.ConcreteValue(ts.TargetDir, ts.SourceDir, c.dump.recursive)
+			entryConcreteValue, err := entry.ConcreteValue(ts.TargetDir, ts.TargetIgnore.Match, ts.SourceDir, c.dump.recursive)
 			if err != nil {
 				return err
 			}
-			concreteValues = append(concreteValues, entryConcreteValue)
+			if concreteValue != nil {
+				concreteValues = append(concreteValues, entryConcreteValue)
+			}
 		}
 		concreteValue = concreteValues
 	}

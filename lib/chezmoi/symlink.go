@@ -55,7 +55,10 @@ func (s *Symlink) Apply(fs vfs.FS, targetDir string, ignore func(string) bool, u
 }
 
 // ConcreteValue implements Entry.ConcreteValue.
-func (s *Symlink) ConcreteValue(targetDir, sourceDir string, recursive bool) (interface{}, error) {
+func (s *Symlink) ConcreteValue(targetDir string, ignore func(string) bool, sourceDir string, recursive bool) (interface{}, error) {
+	if ignore(s.targetName) {
+		return nil, nil
+	}
 	linkname, err := s.Linkname()
 	if err != nil {
 		return nil, err

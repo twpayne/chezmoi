@@ -158,7 +158,10 @@ func (f *File) Apply(fs vfs.FS, targetDir string, ignore func(string) bool, umas
 }
 
 // ConcreteValue implements Entry.ConcreteValue.
-func (f *File) ConcreteValue(targetDir, sourceDir string, recursive bool) (interface{}, error) {
+func (f *File) ConcreteValue(targetDir string, ignore func(string) bool, sourceDir string, recursive bool) (interface{}, error) {
+	if ignore(f.targetName) {
+		return nil, nil
+	}
 	contents, err := f.Contents()
 	if err != nil {
 		return nil, err

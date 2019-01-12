@@ -182,11 +182,13 @@ func (ts *TargetState) Apply(fs vfs.FS, mutator Mutator) error {
 func (ts *TargetState) ConcreteValue(recursive bool) (interface{}, error) {
 	var entryConcreteValues []interface{}
 	for _, entryName := range sortedEntryNames(ts.Entries) {
-		entryConcreteValue, err := ts.Entries[entryName].ConcreteValue(ts.TargetDir, ts.SourceDir, recursive)
+		entryConcreteValue, err := ts.Entries[entryName].ConcreteValue(ts.TargetDir, ts.TargetIgnore.Match, ts.SourceDir, recursive)
 		if err != nil {
 			return nil, err
 		}
-		entryConcreteValues = append(entryConcreteValues, entryConcreteValue)
+		if entryConcreteValue != nil {
+			entryConcreteValues = append(entryConcreteValues, entryConcreteValue)
+		}
 	}
 	return entryConcreteValues, nil
 }
