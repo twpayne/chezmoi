@@ -183,6 +183,17 @@ will be removed. This can be used to ensure that files are only present on
 certain machines. If you want an empty file to be created anyway, you will need
 to give it an `empty_` prefix. See "Under the hood" below.
 
+For coarser-grained control of files and entire directories are managed on
+different machines, or to exclude certain files completely, you can create
+`.chezmoiignore` files in the source directory. These specify a list of
+patterns that `chezmoi` should ignore, and are interpreted as templates. An
+example `.chezmoiignore` file might look like:
+
+    README.md
+    {{- if ne .chezmoi.hostname "work-laptop" }}
+    .work # only manage .work on work-laptop
+    {{- end }}
+
 
 ## Keeping data private
 

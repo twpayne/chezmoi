@@ -114,7 +114,10 @@ func (fa FileAttributes) SourceName() string {
 }
 
 // Apply ensures that the state of targetPath in fs matches f.
-func (f *File) Apply(fs vfs.FS, targetDir string, umask os.FileMode, mutator Mutator) error {
+func (f *File) Apply(fs vfs.FS, targetDir string, ignore func(string) bool, umask os.FileMode, mutator Mutator) error {
+	if ignore(f.targetName) {
+		return nil
+	}
 	contents, err := f.Contents()
 	if err != nil {
 		return err

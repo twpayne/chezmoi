@@ -2,6 +2,7 @@ package chezmoi
 
 import (
 	"archive/tar"
+	"bufio"
 	"bytes"
 	"fmt"
 	"io"
@@ -33,23 +34,25 @@ type ImportTAROptions struct {
 
 // A TargetState represents the root target state.
 type TargetState struct {
-	TargetDir string
-	Umask     os.FileMode
-	SourceDir string
-	Data      map[string]interface{}
-	Funcs     template.FuncMap
-	Entries   map[string]Entry
+	TargetDir    string
+	TargetIgnore PatternSet
+	Umask        os.FileMode
+	SourceDir    string
+	Data         map[string]interface{}
+	Funcs        template.FuncMap
+	Entries      map[string]Entry
 }
 
 // NewTargetState creates a new TargetState.
 func NewTargetState(targetDir string, umask os.FileMode, sourceDir string, data map[string]interface{}, funcs template.FuncMap) *TargetState {
 	return &TargetState{
-		TargetDir: targetDir,
-		Umask:     umask,
-		SourceDir: sourceDir,
-		Data:      data,
-		Funcs:     funcs,
-		Entries:   make(map[string]Entry),
+		TargetDir:    targetDir,
+		TargetIgnore: NewPatternSet(),
+		Umask:        umask,
+		SourceDir:    sourceDir,
+		Data:         data,
+		Funcs:        funcs,
+		Entries:      make(map[string]Entry),
 	}
 }
 
@@ -168,7 +171,7 @@ func (ts *TargetState) Archive(w *tar.Writer, umask os.FileMode) error {
 // Apply ensures that ts.TargetDir in fs matches ts.
 func (ts *TargetState) Apply(fs vfs.FS, mutator Mutator) error {
 	for _, entryName := range sortedEntryNames(ts.Entries) {
-		if err := ts.Entries[entryName].Apply(fs, ts.TargetDir, ts.Umask, mutator); err != nil {
+		if err := ts.Entries[entryName].Apply(fs, ts.TargetDir, ts.TargetIgnore.Match, ts.Umask, mutator); err != nil {
 			return err
 		}
 	}
@@ -242,8 +245,12 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 		if relPath == "." {
 			return nil
 		}
-		// Ignore all files and directories beginning with "."
+		// Treat all files and directories beginning with "." specially.
 		if _, name := filepath.Split(relPath); strings.HasPrefix(name, ".") {
+			if info.Name() == ".chezmoiignore" {
+				return ts.addSourceIgnore(fs, path, relPath)
+			}
+			// Ignore all other files and directories.
 			if info.IsDir() {
 				return filepath.SkipDir
 			}
@@ -545,4 +552,31 @@ func (ts *TargetState) importHeader(r io.Reader, importTAROptions ImportTAROptio
 	default:
 		return fmt.Errorf("%s: unspported typeflag '%c'", header.Name, header.Typeflag)
 	}
+}
+
+func (ts *TargetState) addSourceIgnore(fs vfs.FS, path, relPath string) error {
+	data, err := ts.executeTemplate(fs, path)
+	if err != nil {
+		return err
+	}
+	dir := filepath.Dir(relPath)
+	s := bufio.NewScanner(bytes.NewReader(data))
+	for s.Scan() {
+		text := s.Text()
+		if index := strings.IndexRune(text, '#'); index != -1 {
+			text = text[:index]
+		}
+		text = strings.TrimSpace(text)
+		if text == "" {
+			continue
+		}
+		pattern := filepath.Join(dir, text)
+		if err := ts.TargetIgnore.Add(pattern); err != nil {
+			return fmt.Errorf("%s: %v", path, err)
+		}
+	}
+	if err := s.Err(); err != nil {
+		return fmt.Errorf("%s: %v", path, err)
+	}
+	return nil
 }

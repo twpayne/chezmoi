@@ -60,7 +60,7 @@ func (c *Config) applyArgs(fs vfs.FS, args []string, mutator chezmoi.Mutator) er
 		return err
 	}
 	for _, entry := range entries {
-		if err := entry.Apply(fs, ts.TargetDir, ts.Umask, mutator); err != nil {
+		if err := entry.Apply(fs, ts.TargetDir, ts.TargetIgnore.Match, ts.Umask, mutator); err != nil {
 			return err
 		}
 	}

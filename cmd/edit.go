@@ -62,7 +62,7 @@ func (c *Config) runEditCommand(fs vfs.FS, command *cobra.Command, args []string
 		if c.edit.diff {
 			mutator = chezmoi.NewLoggingMutator(os.Stdout, mutator)
 		}
-		if err := entry.Apply(readOnlyFS, ts.TargetDir, ts.Umask, mutator); err != nil {
+		if err := entry.Apply(readOnlyFS, ts.TargetDir, ts.TargetIgnore.Match, ts.Umask, mutator); err != nil {
 			return err
 		}
 		if c.edit.apply && anyMutator.Mutated() {
@@ -81,7 +81,7 @@ func (c *Config) runEditCommand(fs vfs.FS, command *cobra.Command, args []string
 					c.edit.prompt = false
 				}
 			}
-			if err := entry.Apply(readOnlyFS, ts.TargetDir, ts.Umask, applyMutator); err != nil {
+			if err := entry.Apply(readOnlyFS, ts.TargetDir, ts.TargetIgnore.Match, ts.Umask, applyMutator); err != nil {
 				return err
 			}
 		}

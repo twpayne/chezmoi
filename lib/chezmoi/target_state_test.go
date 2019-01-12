@@ -25,9 +25,10 @@ func TestTargetStatePopulate(t *testing.T) {
 			},
 			sourceDir: "/",
 			want: &TargetState{
-				TargetDir: "/",
-				Umask:     0,
-				SourceDir: "/",
+				TargetDir:    "/",
+				TargetIgnore: NewPatternSet(),
+				Umask:        0,
+				SourceDir:    "/",
 				Entries: map[string]Entry{
 					"foo": &File{
 						sourceName: "foo",
@@ -45,9 +46,10 @@ func TestTargetStatePopulate(t *testing.T) {
 			},
 			sourceDir: "/",
 			want: &TargetState{
-				TargetDir: "/",
-				Umask:     0,
-				SourceDir: "/",
+				TargetDir:    "/",
+				TargetIgnore: NewPatternSet(),
+				Umask:        0,
+				SourceDir:    "/",
 				Entries: map[string]Entry{
 					".foo": &File{
 						sourceName: "dot_foo",
@@ -65,9 +67,10 @@ func TestTargetStatePopulate(t *testing.T) {
 			},
 			sourceDir: "/",
 			want: &TargetState{
-				TargetDir: "/",
-				Umask:     0,
-				SourceDir: "/",
+				TargetDir:    "/",
+				TargetIgnore: NewPatternSet(),
+				Umask:        0,
+				SourceDir:    "/",
 				Entries: map[string]Entry{
 					"foo": &File{
 						sourceName: "private_foo",
@@ -85,9 +88,10 @@ func TestTargetStatePopulate(t *testing.T) {
 			},
 			sourceDir: "/",
 			want: &TargetState{
-				TargetDir: "/",
-				Umask:     0,
-				SourceDir: "/",
+				TargetDir:    "/",
+				TargetIgnore: NewPatternSet(),
+				Umask:        0,
+				SourceDir:    "/",
 				Entries: map[string]Entry{
 					"foo": &Dir{
 						sourceName: "foo",
@@ -113,9 +117,10 @@ func TestTargetStatePopulate(t *testing.T) {
 			},
 			sourceDir: "/",
 			want: &TargetState{
-				TargetDir: "/",
-				Umask:     0,
-				SourceDir: "/",
+				TargetDir:    "/",
+				TargetIgnore: NewPatternSet(),
+				Umask:        0,
+				SourceDir:    "/",
 				Entries: map[string]Entry{
 					".foo": &Dir{
 						sourceName: "private_dot_foo",
@@ -144,9 +149,10 @@ func TestTargetStatePopulate(t *testing.T) {
 				"Email": "user@example.com",
 			},
 			want: &TargetState{
-				TargetDir: "/",
-				Umask:     0,
-				SourceDir: "/",
+				TargetDir:    "/",
+				TargetIgnore: NewPatternSet(),
+				Umask:        0,
+				SourceDir:    "/",
 				Data: map[string]interface{}{
 					"Email": "user@example.com",
 				},
@@ -168,9 +174,10 @@ func TestTargetStatePopulate(t *testing.T) {
 			},
 			sourceDir: "/",
 			want: &TargetState{
-				TargetDir: "/",
-				Umask:     0,
-				SourceDir: "/",
+				TargetDir:    "/",
+				TargetIgnore: NewPatternSet(),
+				Umask:        0,
+				SourceDir:    "/",
 				Entries: map[string]Entry{
 					"dir": &Dir{
 						sourceName: "exact_dir",
@@ -196,9 +203,10 @@ func TestTargetStatePopulate(t *testing.T) {
 			},
 			sourceDir: "/",
 			want: &TargetState{
-				TargetDir: "/",
-				Umask:     0,
-				SourceDir: "/",
+				TargetDir:    "/",
+				TargetIgnore: NewPatternSet(),
+				Umask:        0,
+				SourceDir:    "/",
 				Entries: map[string]Entry{
 					"foo": &Symlink{
 						sourceName: "symlink_foo",
@@ -215,9 +223,10 @@ func TestTargetStatePopulate(t *testing.T) {
 			},
 			sourceDir: "/",
 			want: &TargetState{
-				TargetDir: "/",
-				Umask:     0,
-				SourceDir: "/",
+				TargetDir:    "/",
+				TargetIgnore: NewPatternSet(),
+				Umask:        0,
+				SourceDir:    "/",
 				Entries: map[string]Entry{
 					".foo": &Symlink{
 						sourceName: "symlink_dot_foo",
@@ -237,9 +246,10 @@ func TestTargetStatePopulate(t *testing.T) {
 				"host": "example.com",
 			},
 			want: &TargetState{
-				TargetDir: "/",
-				Umask:     0,
-				SourceDir: "/",
+				TargetDir:    "/",
+				TargetIgnore: NewPatternSet(),
+				Umask:        0,
+				SourceDir:    "/",
 				Data: map[string]interface{}{
 					"host": "example.com",
 				},
@@ -249,6 +259,45 @@ func TestTargetStatePopulate(t *testing.T) {
 						targetName: "foo",
 						Template:   true,
 						linkname:   "bar-example.com",
+					},
+				},
+			},
+		},
+		{
+			name: "ignore_pattern",
+			root: map[string]interface{}{
+				"/.chezmoiignore": "f*\n",
+			},
+			sourceDir: "/",
+			want: &TargetState{
+				TargetDir: "/",
+				TargetIgnore: PatternSet(map[string]struct{}{
+					"f*": struct{}{},
+				}),
+				Umask:     0,
+				SourceDir: "/",
+				Entries:   map[string]Entry{},
+			},
+		},
+		{
+			name: "ignore_subdir",
+			root: map[string]interface{}{
+				"/dir/.chezmoiignore": "foo\n",
+			},
+			sourceDir: "/",
+			want: &TargetState{
+				TargetDir: "/",
+				TargetIgnore: PatternSet(map[string]struct{}{
+					"dir/foo": struct{}{},
+				}),
+				Umask:     0,
+				SourceDir: "/",
+				Entries: map[string]Entry{
+					"dir": &Dir{
+						sourceName: "dir",
+						targetName: "dir",
+						Perm:       0777,
+						Entries:    map[string]Entry{},
 					},
 				},
 			},
@@ -298,6 +347,8 @@ func TestEndToEnd(t *testing.T) {
 				},
 				"/home/user/.chezmoi": map[string]interface{}{
 					".git/HEAD":               "HEAD",
+					".chezmoiignore":          "{{ .ignore }} # comment\n",
+					"README.md":               "contents of README.md\n",
 					"dot_bashrc":              "bar",
 					"dot_hgrc.tmpl":           "[ui]\nusername = {{ .name }} <{{ .email }}>\n",
 					"empty.tmpl":              "{{ if false }}foo{{ end }}",
@@ -309,8 +360,9 @@ func TestEndToEnd(t *testing.T) {
 			},
 			sourceDir: "/home/user/.chezmoi",
 			data: map[string]interface{}{
-				"name":  "John Smith",
-				"email": "hello@example.com",
+				"name":   "John Smith",
+				"email":  "hello@example.com",
+				"ignore": "README.md",
 			},
 			targetDir: "/home/user",
 			umask:     022,
@@ -336,6 +388,9 @@ func TestEndToEnd(t *testing.T) {
 					vfst.TestSymlinkTarget("bar"),
 				),
 				vfst.TestPath("/home/user/dir/bar",
+					vfst.TestDoesNotExist,
+				),
+				vfst.TestPath("/home/user/README.md",
 					vfst.TestDoesNotExist,
 				),
 			},

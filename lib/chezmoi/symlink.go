@@ -27,7 +27,10 @@ type symlinkConcreteValue struct {
 }
 
 // Apply ensures that the state of s's target in fs matches s.
-func (s *Symlink) Apply(fs vfs.FS, targetDir string, umask os.FileMode, mutator Mutator) error {
+func (s *Symlink) Apply(fs vfs.FS, targetDir string, ignore func(string) bool, umask os.FileMode, mutator Mutator) error {
+	if ignore(s.targetName) {
+		return nil
+	}
 	target, err := s.Linkname()
 	if err != nil {
 		return err
