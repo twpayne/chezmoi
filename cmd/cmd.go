@@ -22,7 +22,7 @@ import (
 type Config struct {
 	SourceDir        string
 	TargetDir        string
-	Umask            int
+	Umask            octalIntValue
 	DryRun           bool
 	Verbose          bool
 	SourceVCSCommand string

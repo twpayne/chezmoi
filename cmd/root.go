@@ -15,6 +15,7 @@ import (
 var (
 	configFile string
 	config     = Config{
+		Umask:            octalIntValue(getUmask()),
 		SourceVCSCommand: "git",
 	}
 	version = "dev"
@@ -56,7 +57,7 @@ func init() {
 	persistentFlags.StringVarP(&config.TargetDir, "target", "t", homeDir, "target directory")
 	viper.BindPFlag("target", persistentFlags.Lookup("target"))
 
-	persistentFlags.IntVarP(&config.Umask, "umask", "u", getUmask(), "umask")
+	persistentFlags.VarP(&config.Umask, "umask", "u", "umask")
 	viper.BindPFlag("umask", persistentFlags.Lookup("umask"))
 
 	persistentFlags.BoolVarP(&config.Verbose, "verbose", "v", false, "verbose")
