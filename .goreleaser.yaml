@@ -29,6 +29,7 @@ builds:
     - goos: linux
       goarch: amd64
 - binary: chezmoi
+  ldflags: "-s -w -X github.com/twpayne/chezmoi/cmd.version={{ .Version }} -X github.com/twpayne/chezmoi/cmd.commit={{ .Commit }} -X github.com/twpayne/chezmoi/cmd.date={{ .Date }}"
   env:
     - CGO_ENABLED=1
   goos:
