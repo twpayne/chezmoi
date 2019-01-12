@@ -33,7 +33,7 @@ type Entry interface {
 	Evaluate(ignore func(string) bool) error
 	SourceName() string
 	TargetName() string
-	archive(w *tar.Writer, headerTemplate *tar.Header, umask os.FileMode) error
+	archive(w *tar.Writer, ignore func(string) bool, headerTemplate *tar.Header, umask os.FileMode) error
 }
 
 type parsedSourceFilePath struct {

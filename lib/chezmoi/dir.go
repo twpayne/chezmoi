@@ -189,7 +189,10 @@ func (d *Dir) TargetName() string {
 }
 
 // archive writes d to w.
-func (d *Dir) archive(w *tar.Writer, headerTemplate *tar.Header, umask os.FileMode) error {
+func (d *Dir) archive(w *tar.Writer, ignore func(string) bool, headerTemplate *tar.Header, umask os.FileMode) error {
+	if ignore(d.targetName) {
+		return nil
+	}
 	header := *headerTemplate
 	header.Typeflag = tar.TypeDir
 	header.Name = d.targetName
@@ -198,7 +201,7 @@ func (d *Dir) archive(w *tar.Writer, headerTemplate *tar.Header, umask os.FileMo
 		return err
 	}
 	for _, entryName := range sortedEntryNames(d.Entries) {
-		if err := d.Entries[entryName].archive(w, headerTemplate, umask); err != nil {
+		if err := d.Entries[entryName].archive(w, ignore, headerTemplate, umask); err != nil {
 			return err
 		}
 	}

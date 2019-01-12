@@ -216,7 +216,10 @@ func (f *File) TargetName() string {
 }
 
 // archive writes f to w.
-func (f *File) archive(w *tar.Writer, headerTemplate *tar.Header, umask os.FileMode) error {
+func (f *File) archive(w *tar.Writer, ignore func(string) bool, headerTemplate *tar.Header, umask os.FileMode) error {
+	if ignore(f.targetName) {
+		return nil
+	}
 	contents, err := f.Contents()
 	if err != nil {
 		return err

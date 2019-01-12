@@ -161,7 +161,7 @@ func (ts *TargetState) Archive(w *tar.Writer, umask os.FileMode) error {
 		ChangeTime: now,
 	}
 	for _, entryName := range sortedEntryNames(ts.Entries) {
-		if err := ts.Entries[entryName].archive(w, &headerTemplate, umask); err != nil {
+		if err := ts.Entries[entryName].archive(w, ts.TargetIgnore.Match, &headerTemplate, umask); err != nil {
 			return err
 		}
 	}

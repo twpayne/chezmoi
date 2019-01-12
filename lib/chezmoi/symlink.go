@@ -101,7 +101,10 @@ func (s *Symlink) TargetName() string {
 }
 
 // archive writes s to w.
-func (s *Symlink) archive(w *tar.Writer, headerTemplate *tar.Header, umask os.FileMode) error {
+func (s *Symlink) archive(w *tar.Writer, ignore func(string) bool, headerTemplate *tar.Header, umask os.FileMode) error {
+	if ignore(s.targetName) {
+		return nil
+	}
 	linkname, err := s.Linkname()
 	if err != nil {
 		return err
