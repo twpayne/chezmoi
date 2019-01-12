@@ -1,10 +1,5 @@
 package cmd
 
-// FIXME add --apply flag
-// FIXME add --diff flag
-// FIXME add --prompt flag
-// FIXME add --recursive flag
-
 import (
 	"fmt"
 	"os"

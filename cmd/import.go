@@ -1,10 +1,5 @@
 package cmd
 
-// FIXME add zip support
-// FIXME add --apply flag
-// FIXME add --diff flag
-// FIXME add --prompt flag
-
 import (
 	"archive/tar"
 	"compress/bzip2"
