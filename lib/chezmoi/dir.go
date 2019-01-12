@@ -86,7 +86,10 @@ func newDir(sourceName string, targetName string, exact bool, perm os.FileMode) 
 }
 
 // Apply ensures that targetDir in fs matches d.
-func (d *Dir) Apply(fs vfs.FS, targetDir string, umask os.FileMode, mutator Mutator) error {
+func (d *Dir) Apply(fs vfs.FS, targetDir string, ignore func(string) bool, umask os.FileMode, mutator Mutator) error {
+	if ignore(d.targetName) {
+		return nil
+	}
 	targetPath := filepath.Join(targetDir, d.targetName)
 	info, err := fs.Lstat(targetPath)
 	switch {
@@ -109,7 +112,7 @@ func (d *Dir) Apply(fs vfs.FS, targetDir string, umask os.FileMode, mutator Muta
 		return err
 	}
 	for _, entryName := range sortedEntryNames(d.Entries) {
-		if err := d.Entries[entryName].Apply(fs, targetDir, umask, mutator); err != nil {
+		if err := d.Entries[entryName].Apply(fs, targetDir, ignore, umask, mutator); err != nil {
 			return err
 		}
 	}
