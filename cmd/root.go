@@ -56,7 +56,6 @@ func init() {
 	persistentFlags.StringVarP(&config.TargetDir, "target", "t", homeDir, "target directory")
 	viper.BindPFlag("target", persistentFlags.Lookup("target"))
 
-	// FIXME umask should be printed in octal in help
 	persistentFlags.IntVarP(&config.Umask, "umask", "u", getUmask(), "umask")
 	viper.BindPFlag("umask", persistentFlags.Lookup("umask"))
 

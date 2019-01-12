@@ -1,9 +1,5 @@
 package cmd
 
-// FIXME add --force flag
-// FIXME add --recursive flag
-// FIXME add --prompt flag
-
 import (
 	"os"
 	"path/filepath"
