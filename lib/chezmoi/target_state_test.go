@@ -297,8 +297,8 @@ func TestEndToEnd(t *testing.T) {
 					"replace_symlink": &vfst.Symlink{Target: "foo"},
 				},
 				"/home/user/.chezmoi": map[string]interface{}{
-					"dot_bashrc":              "bar",
 					".git/HEAD":               "HEAD",
+					"dot_bashrc":              "bar",
 					"dot_hgrc.tmpl":           "[ui]\nusername = {{ .name }} <{{ .email }}>\n",
 					"empty.tmpl":              "{{ if false }}foo{{ end }}",
 					"empty_foo":               "",
