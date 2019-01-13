@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
@@ -95,42 +94,4 @@ func (c *Config) persistentPreRunRootE(fs vfs.FS, args []string) error {
 		return err
 	}
 	return nil
-}
-
-func getDefaultConfigFile(x *xdg.XDG, homeDir string) string {
-	// Search XDG config directories first.
-	for _, configDir := range x.ConfigDirs {
-		for _, extension := range viper.SupportedExts {
-			configFilePath := filepath.Join(configDir, "chezmoi", "chezmoi."+extension)
-			if _, err := os.Stat(configFilePath); err == nil {
-				return configFilePath
-			}
-		}
-	}
-	// Search for ~/.chezmoi.* for backwards compatibility.
-	for _, extension := range viper.SupportedExts {
-		configFilePath := filepath.Join(homeDir, ".chezmoi."+extension)
-		if _, err := os.Stat(configFilePath); err == nil {
-			return configFilePath
-		}
-	}
-	// Fallback to XDG default.
-	return filepath.Join(x.ConfigHome, "chezmoi", "chezmoi.yaml")
-}
-
-func getDefaultSourceDir(x *xdg.XDG, homeDir string) string {
-	// Check for XDG data directories first.
-	for _, dataDir := range x.DataDirs {
-		sourceDir := filepath.Join(dataDir, "chezmoi")
-		if _, err := os.Stat(sourceDir); err == nil {
-			return sourceDir
-		}
-	}
-	// Check for ~/.chezmoi for backwards compatibility.
-	sourceDir := filepath.Join(homeDir, ".chezmoi")
-	if _, err := os.Stat(sourceDir); err == nil {
-		return sourceDir
-	}
-	// Fallback to XDG default.
-	return filepath.Join(x.DataHome, "chezmoi")
 }
