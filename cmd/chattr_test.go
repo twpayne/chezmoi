@@ -83,7 +83,7 @@ func TestChattrCommand(t *testing.T) {
 			},
 		},
 		{
-			name: "add_empty",
+			name: "file_add_empty",
 			args: []string{"+empty", "/home/user/foo"},
 			root: map[string]interface{}{
 				"/home/user/.config/share/chezmoi": map[string]interface{}{
@@ -101,7 +101,7 @@ func TestChattrCommand(t *testing.T) {
 			},
 		},
 		{
-			name: "remove_empty",
+			name: "file_remove_empty",
 			args: []string{"-empty", "/home/user/foo"},
 			root: map[string]interface{}{
 				"/home/user/.config/share/chezmoi": map[string]interface{}{
@@ -119,7 +119,43 @@ func TestChattrCommand(t *testing.T) {
 			},
 		},
 		{
-			name: "add_private",
+			name: "file_add_executable",
+			args: []string{"+executable", "/home/user/foo"},
+			root: map[string]interface{}{
+				"/home/user/.config/share/chezmoi": map[string]interface{}{
+					"foo": "# contents of ~/foo\n",
+				},
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/.config/share/chezmoi/foo",
+					vfst.TestDoesNotExist,
+				),
+				vfst.TestPath("/home/user/.config/share/chezmoi/executable_foo",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("# contents of ~/foo\n"),
+				),
+			},
+		},
+		{
+			name: "file_remove_executable",
+			args: []string{"-executable", "/home/user/foo"},
+			root: map[string]interface{}{
+				"/home/user/.config/share/chezmoi": map[string]interface{}{
+					"executable_foo": "# contents of ~/foo\n",
+				},
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/.config/share/chezmoi/foo",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("# contents of ~/foo\n"),
+				),
+				vfst.TestPath("/home/user/.config/share/chezmoi/executable_foo",
+					vfst.TestDoesNotExist,
+				),
+			},
+		},
+		{
+			name: "file_add_private",
 			args: []string{"+private", "/home/user/foo"},
 			root: map[string]interface{}{
 				"/home/user/.config/share/chezmoi": map[string]interface{}{
@@ -137,7 +173,7 @@ func TestChattrCommand(t *testing.T) {
 			},
 		},
 		{
-			name: "remove_private",
+			name: "file_remove_private",
 			args: []string{"-private", "/home/user/foo"},
 			root: map[string]interface{}{
 				"/home/user/.config/share/chezmoi": map[string]interface{}{
@@ -155,7 +191,7 @@ func TestChattrCommand(t *testing.T) {
 			},
 		},
 		{
-			name: "add_template",
+			name: "file_add_template",
 			args: []string{"+template", "/home/user/foo"},
 			root: map[string]interface{}{
 				"/home/user/.config/share/chezmoi": map[string]interface{}{
@@ -173,7 +209,7 @@ func TestChattrCommand(t *testing.T) {
 			},
 		},
 		{
-			name: "remove_template",
+			name: "file_remove_template",
 			args: []string{"-template", "/home/user/foo"},
 			root: map[string]interface{}{
 				"/home/user/.config/share/chezmoi": map[string]interface{}{
@@ -191,7 +227,7 @@ func TestChattrCommand(t *testing.T) {
 			},
 		},
 		{
-			name: "add_template_in_private_dir",
+			name: "file_add_template_in_private_dir",
 			args: []string{"+template", "/home/user/.ssh/authorized_keys"},
 			root: map[string]interface{}{
 				"/home/user/.config/share/chezmoi": map[string]interface{}{
