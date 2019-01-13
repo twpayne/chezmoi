@@ -15,7 +15,7 @@ import (
 var chattrCommand = &cobra.Command{
 	Use:   "chattr",
 	Args:  cobra.MinimumNArgs(2),
-	Short: "Change the exact, private, empty, executable, or template attributes of a target",
+	Short: "Change the attributes of a target in the source state",
 	RunE:  makeRunE(config.runChattrCommand),
 }
 

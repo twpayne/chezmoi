@@ -10,7 +10,7 @@ import (
 
 var diffCommand = &cobra.Command{
 	Use:   "diff",
-	Short: "Write the diff between the actual state and the target state to stdout",
+	Short: "Write the diff between the target state and the destination state to stdout",
 	RunE:  makeRunE(config.runDiffCommand),
 }
 

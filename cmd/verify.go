@@ -10,7 +10,7 @@ import (
 
 var verifyCommand = &cobra.Command{
 	Use:   "verify",
-	Short: "Exit with success if the actual state matches the target state, fail otherwise",
+	Short: "Exit with success if the destination state matches the target state, fail otherwise",
 	RunE:  makeRunE(config.runVerifyCommand),
 }
 

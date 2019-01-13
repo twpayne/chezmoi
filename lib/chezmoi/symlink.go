@@ -27,7 +27,7 @@ type symlinkConcreteValue struct {
 }
 
 // Apply ensures that the state of s's target in fs matches s.
-func (s *Symlink) Apply(fs vfs.FS, targetDir string, ignore func(string) bool, umask os.FileMode, mutator Mutator) error {
+func (s *Symlink) Apply(fs vfs.FS, destDir string, ignore func(string) bool, umask os.FileMode, mutator Mutator) error {
 	if ignore(s.targetName) {
 		return nil
 	}
@@ -35,7 +35,7 @@ func (s *Symlink) Apply(fs vfs.FS, targetDir string, ignore func(string) bool, u
 	if err != nil {
 		return err
 	}
-	targetPath := filepath.Join(targetDir, s.targetName)
+	targetPath := filepath.Join(destDir, s.targetName)
 	info, err := fs.Lstat(targetPath)
 	switch {
 	case err == nil && info.Mode()&os.ModeType == os.ModeSymlink:
@@ -55,7 +55,7 @@ func (s *Symlink) Apply(fs vfs.FS, targetDir string, ignore func(string) bool, u
 }
 
 // ConcreteValue implements Entry.ConcreteValue.
-func (s *Symlink) ConcreteValue(targetDir string, ignore func(string) bool, sourceDir string, recursive bool) (interface{}, error) {
+func (s *Symlink) ConcreteValue(destDir string, ignore func(string) bool, sourceDir string, recursive bool) (interface{}, error) {
 	if ignore(s.targetName) {
 		return nil, nil
 	}
@@ -66,7 +66,7 @@ func (s *Symlink) ConcreteValue(targetDir string, ignore func(string) bool, sour
 	return &symlinkConcreteValue{
 		Type:       "symlink",
 		SourcePath: filepath.Join(sourceDir, s.SourceName()),
-		TargetPath: filepath.Join(targetDir, s.TargetName()),
+		TargetPath: filepath.Join(destDir, s.TargetName()),
 		Template:   s.Template,
 		Linkname:   linkname,
 	}, nil

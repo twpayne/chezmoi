@@ -13,7 +13,7 @@ import (
 var editCommand = &cobra.Command{
 	Use:   "edit",
 	Args:  cobra.MinimumNArgs(1),
-	Short: "Edit a file",
+	Short: "Edit the source state of a target",
 	RunE:  makeRunE(config.runEditCommand),
 }
 
@@ -62,7 +62,7 @@ func (c *Config) runEditCommand(fs vfs.FS, args []string) error {
 		if c.edit.diff {
 			mutator = chezmoi.NewLoggingMutator(os.Stdout, mutator)
 		}
-		if err := entry.Apply(readOnlyFS, ts.TargetDir, ts.TargetIgnore.Match, ts.Umask, mutator); err != nil {
+		if err := entry.Apply(readOnlyFS, ts.DestDir, ts.TargetIgnore.Match, ts.Umask, mutator); err != nil {
 			return err
 		}
 		if c.edit.apply && anyMutator.Mutated() {
@@ -81,7 +81,7 @@ func (c *Config) runEditCommand(fs vfs.FS, args []string) error {
 					c.edit.prompt = false
 				}
 			}
-			if err := entry.Apply(readOnlyFS, ts.TargetDir, ts.TargetIgnore.Match, ts.Umask, applyMutator); err != nil {
+			if err := entry.Apply(readOnlyFS, ts.DestDir, ts.TargetIgnore.Match, ts.Umask, applyMutator); err != nil {
 				return err
 			}
 		}

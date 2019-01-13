@@ -19,7 +19,7 @@ func TestExercise(t *testing.T) {
 
 	c := &Config{
 		SourceDir: "/home/user/.chezmoi",
-		TargetDir: "/home/user",
+		DestDir:   "/home/user",
 		Umask:     022,
 		Verbose:   true,
 	}

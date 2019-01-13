@@ -10,7 +10,7 @@ import (
 func TestAddAfterModification(t *testing.T) {
 	c := &Config{
 		SourceDir: "/home/user/.chezmoi",
-		TargetDir: "/home/user",
+		DestDir:   "/home/user",
 		Umask:     022,
 		DryRun:    false,
 		Verbose:   true,
@@ -252,7 +252,7 @@ func TestAddCommand(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			c := &Config{
 				SourceDir:        "/home/user/.chezmoi",
-				TargetDir:        "/home/user",
+				DestDir:          "/home/user",
 				Umask:            022,
 				DryRun:           false,
 				Verbose:          true,

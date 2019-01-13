@@ -12,7 +12,7 @@ import (
 var catCommand = &cobra.Command{
 	Use:   "cat",
 	Args:  cobra.MinimumNArgs(1),
-	Short: "Write the contents of a file to stdout",
+	Short: "Write the target state of a file or symlink to stdout",
 	RunE:  makeRunE(config.runCatCommand),
 }
 
@@ -30,16 +30,23 @@ func (c *Config) runCatCommand(fs vfs.FS, args []string) error {
 		return err
 	}
 	for i, entry := range entries {
-		f, ok := entry.(*chezmoi.File)
-		if !ok {
-			return fmt.Errorf("%s: not a regular file", args[i])
-		}
-		contents, err := f.Contents()
-		if err != nil {
-			return err
-		}
-		if _, err := os.Stdout.Write(contents); err != nil {
-			return err
+		switch entry := entry.(type) {
+		case *chezmoi.File:
+			contents, err := entry.Contents()
+			if err != nil {
+				return err
+			}
+			if _, err := os.Stdout.Write(contents); err != nil {
+				return err
+			}
+		case *chezmoi.Symlink:
+			linkname, err := entry.Linkname()
+			if err != nil {
+				return err
+			}
+			fmt.Println(linkname)
+		default:
+			return fmt.Errorf("%s: not a file or symlink", args[i])
 		}
 	}
 	return nil

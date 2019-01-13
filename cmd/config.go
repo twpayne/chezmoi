@@ -23,7 +23,7 @@ import (
 // A Config represents a configuration.
 type Config struct {
 	SourceDir        string
-	TargetDir        string
+	DestDir          string
 	Umask            octalIntValue
 	DryRun           bool
 	Verbose          bool
@@ -62,7 +62,7 @@ func (c *Config) applyArgs(fs vfs.FS, args []string, mutator chezmoi.Mutator) er
 		return err
 	}
 	for _, entry := range entries {
-		if err := entry.Apply(fs, ts.TargetDir, ts.TargetIgnore.Match, ts.Umask, mutator); err != nil {
+		if err := entry.Apply(fs, ts.DestDir, ts.TargetIgnore.Match, ts.Umask, mutator); err != nil {
 			return err
 		}
 	}
@@ -92,7 +92,7 @@ func (c *Config) getDefaultMutator(fs vfs.FS) chezmoi.Mutator {
 	if c.DryRun {
 		mutator = chezmoi.NullMutator
 	} else {
-		mutator = chezmoi.NewFSMutator(fs, c.TargetDir)
+		mutator = chezmoi.NewFSMutator(fs, c.DestDir)
 	}
 	if c.Verbose {
 		mutator = chezmoi.NewLoggingMutator(os.Stdout, mutator)
@@ -122,7 +122,7 @@ func (c *Config) getEntries(ts *chezmoi.TargetState, args []string) ([]chezmoi.E
 			return nil, err
 		}
 		if entry == nil {
-			return nil, fmt.Errorf("%s: not under management", arg)
+			return nil, fmt.Errorf("%s: not in source state", arg)
 		}
 		entries = append(entries, entry)
 	}
@@ -140,7 +140,7 @@ func (c *Config) getTargetState(fs vfs.FS) (*chezmoi.TargetState, error) {
 	for key, value := range c.Data {
 		data[key] = value
 	}
-	ts := chezmoi.NewTargetState(c.TargetDir, os.FileMode(c.Umask), c.SourceDir, data, c.funcs)
+	ts := chezmoi.NewTargetState(c.DestDir, os.FileMode(c.Umask), c.SourceDir, data, c.funcs)
 	readOnlyFS := vfs.NewReadOnlyFS(fs)
 	if err := ts.Populate(readOnlyFS); err != nil {
 		return nil, err

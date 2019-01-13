@@ -58,20 +58,42 @@ If you have Go installed you can install the latest version from `HEAD`:
 
 ## Quick start
 
+`chezmoi` evaluates the source state for the current machine and then updates
+the destination directory, where:
+
+ * The *source state* declares the desired state of your home directory,
+   including templates and machine-specific configuration.
+
+ * The *source directory* is where `chezmoi` stores the source state, by
+   default `~/.config/share/chezmoi`.
+
+ * The *target state* is the source state computed for the current machine.
+
+ * The *destination directory* is the directory that `chezmoi` manages, by
+   default `~`, your home directory.
+
+ * A *target* is a file, directory, or symlink in the destination directory.
+
+ * The *destination state* is the state of all the targets in the destination
+   directory.
+
+ * The *config file* contains machine-specific configuration, by default it is
+   `~/.config/chezmoi/chezmoi.yaml`.
+
 Manage an existing file with `chezmoi`:
 
     $ chezmoi add ~/.bashrc
 
-This will create a directory called `~/.local/share/chezmoi` with permissions
-`0600` where `chezmoi` will store its state, if it does not already exist, and
-copy `~/.bashrc` to `~/.local/share/chezmoi/dot_bashrc`.
+This will create the source directory `~/.local/share/chezmoi` with permissions
+`0600` where `chezmoi` will store the source state (if it does not already
+exist), and copy `~/.bashrc` to `~/.local/share/chezmoi/dot_bashrc`.
 
 You should manage your `~/.local/share/chezmoi` directory with the version
 control system of your choice. `chezmoi` will ignore all files and directories
-beginning with a `.` in this directory, so directories like `.git` and `.hg`
-will not pollute your home directory.
+beginning with a `.` in this directory, including directories like `.git` and
+`.hg`.
 
-Edit the desired state:
+Edit the source state:
 
     $ chezmoi edit ~/.bashrc
 
@@ -103,27 +125,24 @@ machines, for example your personal macOS laptop, your work Ubuntu desktop, and
 your work Linux laptop. You will want to keep much configuration the same
 across these, but also need machine-specific configurations for email
 addresses, credentials, etc. `chezmoi` achieves this functionality by using
-[`text/template`](https://godoc.org/text/template) for the source configuration
-files where needed.
+[`text/template`](https://godoc.org/text/template) for the source state where
+needed.
 
 For example, your home `~/.gitconfig` on your personal machine might look like:
 
     [user]
-        name = John Smith
         email = john@home.org
 
 Whereas at work it might be:
 
     [user]
-        name = John Smith
         email = john@company.com
 
-To handle this, on each machine create a file called
+To handle this, on each machine create a configuration file called
 `~/.config/chezmoi/chezmoi.yaml` defining what might change. For your home
 machine:
 
     data:
-      name: John Smith
       email: john@home.org
 
 If you intend to store private data (e.g. access tokens) in
@@ -132,7 +151,7 @@ If you intend to store private data (e.g. access tokens) in
 
 If you prefer, you can use any format supported by
 [Viper](https://github.com/spf13/viper) for your configuration file. This
-includes JSON, YAML, TOML, and more.
+includes JSON, YAML, and TOML.
 
 Then, add `~/.gitconfig` to `chezmoi` using the `-T` flag to automatically turn
 it in to a template:
@@ -147,11 +166,10 @@ You can then open the template (which will be saved in the file
 The file should look something like:
 
     [user]
-        name = {{ .name }}
         email = {{ .email }}
 
 `chezmoi` will substitute the variables from the `data` section of your
-`~/.config/chezmoi/chezmoi.yaml` file when calculating the desired state of
+`~/.config/chezmoi/chezmoi.yaml` file when calculating the target state of
 `.gitconfig`.
 
 For more advanced usage, you can use the full power of the
@@ -159,14 +177,14 @@ For more advanced usage, you can use the full power of the
 exclude sections of file. `chezmoi` provides the following automatically
 populated variables:
 
-| Variable           | Value                                                                                                                  |
-| ------------------ | ---------------------------------------------------------------------------------------------------------------------- |
-| `chezmoi.arch`     | Architecture, e.g. `amd64`, `arm`, etc. as returned by [runtime.GOARCH](https://godoc.org/runtime#pkg-constants).      |
-| `chezmoi.group`    | The group of the user running `chezmoi`.                                                                               |
-| `chezmoi.homedir`  | The home directory of the user running `chezmoi`.                                                                      |
-| `chezmoi.hostname` | The hostname of the machine `chezmoi` is running on.                                                                   |
-| `chezmoi.os`       | Operating system, e.g. `darwin`, `linux`, etc. as returned by [runtime.GOOS](https://godoc.org/runtime#pkg-constants). |
-| `chezmoi.username` | The username of the user running `chezmoi`.                                                                            |
+| Variable            | Value                                                                                                                  |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `.chezmoi.arch`     | Architecture, e.g. `amd64`, `arm`, etc. as returned by [runtime.GOARCH](https://godoc.org/runtime#pkg-constants).      |
+| `.chezmoi.group`    | The group of the user running `chezmoi`.                                                                               |
+| `.chezmoi.homedir`  | The home directory of the user running `chezmoi`.                                                                      |
+| `.chezmoi.hostname` | The hostname of the machine `chezmoi` is running on.                                                                   |
+| `.chezmoi.os`       | Operating system, e.g. `darwin`, `linux`, etc. as returned by [runtime.GOOS](https://godoc.org/runtime#pkg-constants). |
+| `.chezmoi.username` | The username of the user running `chezmoi`.                                                                            |
 
 For example, in your `~/.local/share/chezmoi/dot_bashrc.tmpl` you might have:
 
@@ -311,7 +329,7 @@ takes the service and user as arguments.
 
 For example, save a Github access token in keyring with:
 
-    $ chezmoi keyring set --service=github --user=$GITHUB_USERNAME
+    $ chezmoi keyring set --service=github --user=<github-username>
     Password: xxxxxxxx
 
 and then include it in your `~/.gitconfig` file with:
@@ -322,7 +340,7 @@ and then include it in your `~/.gitconfig` file with:
 
 You can query the keyring from the command line:
 
-    $ chezmoi keyring get --service=github --user=$GITHUB_USERNAME
+    $ chezmoi keyring get --service=github --user=<github-username>
 
 ### Using encrypted config files
 
@@ -367,10 +385,10 @@ performing multiple VCS operations.
 ## Importing archives
 
 It is occasionally useful to import entire archives of configuration into your
-home directory. The `import` command does this. For example, to import the
+source state. The `import` command does this. For example, to import the
 latest version
 [`github.com/robbyrussell/oh-my-zsh`](https://github.com/robbyrussell/oh-my-zsh)
-to your `~/.oh-my-zsh` directory, run:
+to `~/.oh-my-zsh` run:
 
     $ curl -s -L -o oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
     $ chezmoi import --strip-components 1 --destination ~/.oh-my-zsh oh-my-zsh-master.tar.gz
@@ -379,7 +397,7 @@ Note that this only updates the source state. You will need to run
 
     $ chezmoi apply
 
-to update your home directory.
+to update your destination directory.
 
 
 ## Exporting archives
@@ -390,7 +408,7 @@ target state. A particularly useful command is:
 
     $ chezmoi archive | tar tvf -
 
-which lists all the files in the target state.
+which lists all the targets in the target state.
 
 
 ## Under the hood
@@ -403,7 +421,8 @@ regular files and directories in `~/.local/share/chezmoi`. This location can be
 overridden with the `-s` flag or by giving a value for `sourceDir` in
 `~/.config/chezmoi/chezmoi.yaml`.  Some state is encoded in the source names.
 `chezmoi` ignores all files and directories in the source directory that begin
-with a `.`. The following prefixes and suffixes are special.
+with a `.`. The following prefixes and suffixes are special, and are
+collectively referred to as "attributes":
 
 | Prefix/suffix        | Effect                                                                            |
 | -------------------- | ----------------------------------------------------------------------------------|
@@ -426,12 +445,22 @@ Different target types allow different prefixes and suffixes:
 | Regular file  | `private_`, `empty_`, `executable_`, `dot_`, `.tmpl` |
 | Symbolic link | `symlink_`, `dot_`, `.tmpl`                          |
 
+You can change the attributes of a target in the source state with the `chattr`
+command. For example, to make `~/.netrc` private and a template:
+
+    chezmoi chattr private,template ~/.netrc
+
+This only updates the source state of `~/.netrc`, you will need to run `apply`
+to apply the changes to the destination state:
+
+    chezmoi apply ~/.netrc
+
 
 ## Using `chezmoi` outside your home directory
 
 `chezmoi`, by default, operates on your home directory, but this can be
-overridden with the `--target` command line flag or by specifying `targetDir`
-in your `~/.config/chezmoi/chezmoi.yaml`. In theory, you could use `chezmoi` to
+overridden with the `--dest` command line flag or by specifying `destDir` in
+your `~/.config/chezmoi/chezmoi.yaml`. In theory, you could use `chezmoi` to
 manage any aspect of your filesystem. That said, although you can do this, you
 probably shouldn't. Existing configuration management tools like
 [Puppet](https://puppet.com/), [Chef](https://www.chef.io/chef/),

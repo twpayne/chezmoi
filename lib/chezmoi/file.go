@@ -114,7 +114,7 @@ func (fa FileAttributes) SourceName() string {
 }
 
 // Apply ensures that the state of targetPath in fs matches f.
-func (f *File) Apply(fs vfs.FS, targetDir string, ignore func(string) bool, umask os.FileMode, mutator Mutator) error {
+func (f *File) Apply(fs vfs.FS, destDir string, ignore func(string) bool, umask os.FileMode, mutator Mutator) error {
 	if ignore(f.targetName) {
 		return nil
 	}
@@ -122,7 +122,7 @@ func (f *File) Apply(fs vfs.FS, targetDir string, ignore func(string) bool, umas
 	if err != nil {
 		return err
 	}
-	targetPath := filepath.Join(targetDir, f.targetName)
+	targetPath := filepath.Join(destDir, f.targetName)
 	info, err := fs.Lstat(targetPath)
 	var currData []byte
 	switch {
@@ -158,7 +158,7 @@ func (f *File) Apply(fs vfs.FS, targetDir string, ignore func(string) bool, umas
 }
 
 // ConcreteValue implements Entry.ConcreteValue.
-func (f *File) ConcreteValue(targetDir string, ignore func(string) bool, sourceDir string, recursive bool) (interface{}, error) {
+func (f *File) ConcreteValue(destDir string, ignore func(string) bool, sourceDir string, recursive bool) (interface{}, error) {
 	if ignore(f.targetName) {
 		return nil, nil
 	}
@@ -169,7 +169,7 @@ func (f *File) ConcreteValue(targetDir string, ignore func(string) bool, sourceD
 	return &fileConcreteValue{
 		Type:       "file",
 		SourcePath: filepath.Join(sourceDir, f.SourceName()),
-		TargetPath: filepath.Join(targetDir, f.TargetName()),
+		TargetPath: filepath.Join(destDir, f.TargetName()),
 		Empty:      f.Empty,
 		Perm:       int(f.Perm),
 		Template:   f.Template,

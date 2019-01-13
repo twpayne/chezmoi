@@ -12,7 +12,7 @@ var removeCommand = &cobra.Command{
 	Use:     "remove",
 	Aliases: []string{"rm"},
 	Args:    cobra.MinimumNArgs(1),
-	Short:   "Remove a file or directory",
+	Short:   "Remove a target from the source state and the destination directory",
 	RunE:    makeRunE(config.runRemoveCommand),
 }
 
@@ -31,7 +31,7 @@ func (c *Config) runRemoveCommand(fs vfs.FS, args []string) error {
 	}
 	mutator := c.getDefaultMutator(fs)
 	for _, entry := range entries {
-		if err := mutator.RemoveAll(filepath.Join(c.TargetDir, entry.TargetName())); err != nil && !os.IsNotExist(err) {
+		if err := mutator.RemoveAll(filepath.Join(c.DestDir, entry.TargetName())); err != nil && !os.IsNotExist(err) {
 			return err
 		}
 		if err := mutator.RemoveAll(filepath.Join(c.SourceDir, entry.SourceName())); err != nil && !os.IsNotExist(err) {

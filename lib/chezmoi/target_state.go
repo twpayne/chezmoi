@@ -34,7 +34,7 @@ type ImportTAROptions struct {
 
 // A TargetState represents the root target state.
 type TargetState struct {
-	TargetDir    string
+	DestDir      string
 	TargetIgnore PatternSet
 	Umask        os.FileMode
 	SourceDir    string
@@ -44,9 +44,9 @@ type TargetState struct {
 }
 
 // NewTargetState creates a new TargetState.
-func NewTargetState(targetDir string, umask os.FileMode, sourceDir string, data map[string]interface{}, funcs template.FuncMap) *TargetState {
+func NewTargetState(destDir string, umask os.FileMode, sourceDir string, data map[string]interface{}, funcs template.FuncMap) *TargetState {
 	return &TargetState{
-		TargetDir:    targetDir,
+		DestDir:      destDir,
 		TargetIgnore: NewPatternSet(),
 		Umask:        umask,
 		SourceDir:    sourceDir,
@@ -58,10 +58,10 @@ func NewTargetState(targetDir string, umask os.FileMode, sourceDir string, data 
 
 // Add adds a new target to ts.
 func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, info os.FileInfo, mutator Mutator) error {
-	if !filepath.HasPrefix(targetPath, ts.TargetDir) {
+	if !filepath.HasPrefix(targetPath, ts.DestDir) {
 		return fmt.Errorf("%s: outside target directory", targetPath)
 	}
-	targetName, err := filepath.Rel(ts.TargetDir, targetPath)
+	targetName, err := filepath.Rel(ts.DestDir, targetPath)
 	if err != nil {
 		return err
 	}
@@ -82,7 +82,7 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 			return err
 		}
 		if parentEntry == nil {
-			if err := ts.Add(fs, addOptions, filepath.Join(ts.TargetDir, parentDirName), nil, mutator); err != nil {
+			if err := ts.Add(fs, addOptions, filepath.Join(ts.DestDir, parentDirName), nil, mutator); err != nil {
 				return err
 			}
 			parentEntry, err = ts.findEntry(parentDirName)
@@ -132,10 +132,10 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 	}
 }
 
-// Apply ensures that ts.TargetDir in fs matches ts.
+// Apply ensures that ts.DestDir in fs matches ts.
 func (ts *TargetState) Apply(fs vfs.FS, mutator Mutator) error {
 	for _, entryName := range sortedEntryNames(ts.Entries) {
-		if err := ts.Entries[entryName].Apply(fs, ts.TargetDir, ts.TargetIgnore.Match, ts.Umask, mutator); err != nil {
+		if err := ts.Entries[entryName].Apply(fs, ts.DestDir, ts.TargetIgnore.Match, ts.Umask, mutator); err != nil {
 			return err
 		}
 	}
@@ -182,7 +182,7 @@ func (ts *TargetState) Archive(w *tar.Writer, umask os.FileMode) error {
 func (ts *TargetState) ConcreteValue(recursive bool) (interface{}, error) {
 	var entryConcreteValues []interface{}
 	for _, entryName := range sortedEntryNames(ts.Entries) {
-		entryConcreteValue, err := ts.Entries[entryName].ConcreteValue(ts.TargetDir, ts.TargetIgnore.Match, ts.SourceDir, recursive)
+		entryConcreteValue, err := ts.Entries[entryName].ConcreteValue(ts.DestDir, ts.TargetIgnore.Match, ts.SourceDir, recursive)
 		if err != nil {
 			return nil, err
 		}
@@ -205,10 +205,10 @@ func (ts *TargetState) Evaluate() error {
 
 // Get returns the state of the given target, or nil if no such target is found.
 func (ts *TargetState) Get(target string) (Entry, error) {
-	if !filepath.HasPrefix(target, ts.TargetDir) {
+	if !filepath.HasPrefix(target, ts.DestDir) {
 		return nil, fmt.Errorf("%s: outside target directory", target)
 	}
-	targetName, err := filepath.Rel(ts.TargetDir, target)
+	targetName, err := filepath.Rel(ts.DestDir, target)
 	if err != nil {
 		return nil, err
 	}
@@ -543,9 +543,9 @@ func (ts *TargetState) importHeader(r io.Reader, importTAROptions ImportTAROptio
 	if importTAROptions.DestinationDir != "" {
 		targetPath = filepath.Join(importTAROptions.DestinationDir, targetPath)
 	} else {
-		targetPath = filepath.Join(ts.TargetDir, targetPath)
+		targetPath = filepath.Join(ts.DestDir, targetPath)
 	}
-	targetName, err := filepath.Rel(ts.TargetDir, targetPath)
+	targetName, err := filepath.Rel(ts.DestDir, targetPath)
 	if err != nil {
 		return err
 	}
