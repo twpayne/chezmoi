@@ -33,7 +33,7 @@ func init() {
 	rootCommand.AddCommand(chattrCommand)
 }
 
-func (c *Config) runChattrCommand(fs vfs.FS, cmd *cobra.Command, args []string) error {
+func (c *Config) runChattrCommand(fs vfs.FS, args []string) error {
 	ams, err := parseAttributeModifiers(args[0])
 	if err != nil {
 		return err

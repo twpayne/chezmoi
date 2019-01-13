@@ -18,7 +18,7 @@ func init() {
 	rootCommand.AddCommand(verifyCommand)
 }
 
-func (c *Config) runVerifyCommand(fs vfs.FS, command *cobra.Command, args []string) error {
+func (c *Config) runVerifyCommand(fs vfs.FS, args []string) error {
 	mutator := chezmoi.NewAnyMutator(chezmoi.NullMutator)
 	if err := c.applyArgs(fs, args, mutator); err != nil {
 		return err

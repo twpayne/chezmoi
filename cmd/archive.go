@@ -19,7 +19,7 @@ func init() {
 	rootCommand.AddCommand(archiveCommand)
 }
 
-func (c *Config) runArchiveCommand(fs vfs.FS, command *cobra.Command, args []string) error {
+func (c *Config) runArchiveCommand(fs vfs.FS, args []string) error {
 	ts, err := c.getTargetState(fs)
 	if err != nil {
 		return err

@@ -19,7 +19,7 @@ func init() {
 	keyringCommand.AddCommand(keyringGetCommand)
 }
 
-func (c *Config) runKeyringGetCommand(fs vfs.FS, cmd *cobra.Command, args []string) error {
+func (c *Config) runKeyringGetCommand(fs vfs.FS, args []string) error {
 	password, err := keyring.Get(c.keyring.service, c.keyring.user)
 	if err != nil {
 		return err

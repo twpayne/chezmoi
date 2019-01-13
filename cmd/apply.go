@@ -15,7 +15,7 @@ func init() {
 	rootCommand.AddCommand(applyCommand)
 }
 
-func (c *Config) runApplyCommand(fs vfs.FS, command *cobra.Command, args []string) error {
+func (c *Config) runApplyCommand(fs vfs.FS, args []string) error {
 	mutator := c.getDefaultMutator(fs)
 	return c.applyArgs(fs, args, mutator)
 }

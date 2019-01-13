@@ -18,7 +18,7 @@ func init() {
 	rootCommand.AddCommand(sourceCommand)
 }
 
-func (c *Config) runSourceCommand(fs vfs.FS, cmd *cobra.Command, args []string) error {
+func (c *Config) runSourceCommand(fs vfs.FS, args []string) error {
 	if c.Verbose {
 		fmt.Printf("cd %s\n", c.SourceDir)
 	}

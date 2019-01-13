@@ -36,7 +36,7 @@ func init() {
 	config.addFunc("lastpass", config.lastpassFunc)
 }
 
-func (c *Config) runLastPassCommand(fs vfs.FS, cmd *cobra.Command, args []string) error {
+func (c *Config) runLastPassCommand(fs vfs.FS, args []string) error {
 	return c.exec(append([]string{c.LastPass.Lpass}, args...))
 }
 

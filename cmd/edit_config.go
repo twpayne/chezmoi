@@ -16,6 +16,6 @@ func init() {
 	rootCommand.AddCommand(editConfigCommand)
 }
 
-func (c *Config) runEditConfigCommand(fs vfs.FS, command *cobra.Command, args []string) error {
+func (c *Config) runEditConfigCommand(fs vfs.FS, args []string) error {
 	return c.execEditor(configFile)
 }

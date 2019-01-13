@@ -194,9 +194,9 @@ func (c *Config) runEditor(argv ...string) error {
 	return cmd.Run()
 }
 
-func makeRunE(runCommand func(vfs.FS, *cobra.Command, []string) error) func(*cobra.Command, []string) error {
+func makeRunE(runCommand func(vfs.FS, []string) error) func(*cobra.Command, []string) error {
 	return func(cmd *cobra.Command, args []string) error {
-		return runCommand(vfs.OSFS, cmd, args)
+		return runCommand(vfs.OSFS, args)
 	}
 }
 

@@ -32,7 +32,7 @@ func init() {
 	persistentFlags.BoolVarP(&config.add.options.Template, "template", "T", false, "add files as templates")
 }
 
-func (c *Config) runAddCommand(fs vfs.FS, command *cobra.Command, args []string) error {
+func (c *Config) runAddCommand(fs vfs.FS, args []string) error {
 	ts, err := c.getTargetState(fs)
 	if err != nil {
 		return err
