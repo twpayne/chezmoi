@@ -14,8 +14,10 @@ import (
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"github.com/twpayne/chezmoi/lib/chezmoi"
 	vfs "github.com/twpayne/go-vfs"
+	xdg "github.com/twpayne/go-xdg"
 )
 
 // A Config represents a configuration.
@@ -98,39 +100,6 @@ func (c *Config) getDefaultMutator(fs vfs.FS) chezmoi.Mutator {
 	return mutator
 }
 
-func getDefaultData() (map[string]interface{}, error) {
-	data := map[string]interface{}{
-		"arch": runtime.GOARCH,
-		"os":   runtime.GOOS,
-	}
-
-	currentUser, err := user.Current()
-	if err != nil {
-		return nil, err
-	}
-	data["username"] = currentUser.Username
-
-	group, err := user.LookupGroupId(currentUser.Gid)
-	if err != nil {
-		return nil, err
-	}
-	data["group"] = group.Name
-
-	homedir, err := homedir.Dir()
-	if err != nil {
-		return nil, err
-	}
-	data["homedir"] = homedir
-
-	hostname, err := os.Hostname()
-	if err != nil {
-		return nil, err
-	}
-	data["hostname"] = hostname
-
-	return data, nil
-}
-
 func (c *Config) getEditor() string {
 	if editor := os.Getenv("VISUAL"); editor != "" {
 		return editor
@@ -192,6 +161,77 @@ func (c *Config) runEditor(argv ...string) error {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
+}
+
+func getDefaultConfigFile(x *xdg.XDG, homeDir string) string {
+	// Search XDG config directories first.
+	for _, configDir := range x.ConfigDirs {
+		for _, extension := range viper.SupportedExts {
+			configFilePath := filepath.Join(configDir, "chezmoi", "chezmoi."+extension)
+			if _, err := os.Stat(configFilePath); err == nil {
+				return configFilePath
+			}
+		}
+	}
+	// Search for ~/.chezmoi.* for backwards compatibility.
+	for _, extension := range viper.SupportedExts {
+		configFilePath := filepath.Join(homeDir, ".chezmoi."+extension)
+		if _, err := os.Stat(configFilePath); err == nil {
+			return configFilePath
+		}
+	}
+	// Fallback to XDG default.
+	return filepath.Join(x.ConfigHome, "chezmoi", "chezmoi.yaml")
+}
+
+func getDefaultData() (map[string]interface{}, error) {
+	data := map[string]interface{}{
+		"arch": runtime.GOARCH,
+		"os":   runtime.GOOS,
+	}
+
+	currentUser, err := user.Current()
+	if err != nil {
+		return nil, err
+	}
+	data["username"] = currentUser.Username
+
+	group, err := user.LookupGroupId(currentUser.Gid)
+	if err != nil {
+		return nil, err
+	}
+	data["group"] = group.Name
+
+	homedir, err := homedir.Dir()
+	if err != nil {
+		return nil, err
+	}
+	data["homedir"] = homedir
+
+	hostname, err := os.Hostname()
+	if err != nil {
+		return nil, err
+	}
+	data["hostname"] = hostname
+
+	return data, nil
+}
+
+func getDefaultSourceDir(x *xdg.XDG, homeDir string) string {
+	// Check for XDG data directories first.
+	for _, dataDir := range x.DataDirs {
+		sourceDir := filepath.Join(dataDir, "chezmoi")
+		if _, err := os.Stat(sourceDir); err == nil {
+			return sourceDir
+		}
+	}
+	// Check for ~/.chezmoi for backwards compatibility.
+	sourceDir := filepath.Join(homeDir, ".chezmoi")
+	if _, err := os.Stat(sourceDir); err == nil {
+		return sourceDir
+	}
+	// Fallback to XDG default.
+	return filepath.Join(x.DataHome, "chezmoi")
 }
 
 func makeRunE(runCommand func(vfs.FS, []string) error) func(*cobra.Command, []string) error {
