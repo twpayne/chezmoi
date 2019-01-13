@@ -41,6 +41,37 @@ control system of your choice to manage your configuration, and many different
 formats (e.g. JSON, YAML, TOML, etc.) are supported for the configuration file.
 
 
+## I already have a system to manage my dotfiles, why should I use `chezmoi`?
+
+ * If your system is based on copying files with a shell script or creating
+   symlinks (e.g. using [GNU
+Stow](http://brandon.invergo.net/news/2012-05-26-using-gnu-stow-to-manage-your-dotfiles.html))
+then handling files that vary from machine to machine requires manual work. You
+might need to maintain separate config files for separate machines, or run
+different commands on different machines. `chezmoi` gives you a single command
+that works on every machine.
+
+ * If your system is based on using `git` with a different branches for
+   different machines, then you need manually merge or rebase to ensure that
+changes you make are applied to each machine. `chezmoi` makes it trivial to
+share common parts while allowing specific per-machine configuration.
+
+ * If your system stores secrets in plain text, then your dotfiles repository
+   must be private. With `chezmoi` you never need to store secrets in your
+repository, so you can make it public. You can check out your repository on
+your work machine and not fear that this will give your work IT department to
+access to your personal data.
+
+ * If your system was written by you for your personal use, then it probably
+   has the minimum functionality that you need. `chezmoi` includes a wide range
+of functionality out-of-the-box, including dry run and diff modes.
+
+ * All systems suffer from the "bootstrap" problem: you need to install your
+   system before you can install your dotfiles. `chezmoi` provides
+statically-linked binaries, packages for many Linux and BSD distributions, and
+Homebrew formulae to make overcoming the bootstrap problem as simple as possible.
+
+
 ## Installation
 
 Binaries and packages for multiple platforms, including RedHat, Debian,
