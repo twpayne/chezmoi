@@ -20,13 +20,6 @@ be optionally included in the body of the commit message.
   * The branch applies cleanly to `master`.
 
 
-## Versioning
-
-`chezmoi` is under active development and will eventually follow [semantic
-versioning](https://semver.org/). In the meantime, the PATCH version is
-incremented sporadically.
-
-
 ## Release management
 
 Releases are managed with [goreleaser](https://goreleaser.com/).
