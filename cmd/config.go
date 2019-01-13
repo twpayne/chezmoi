@@ -173,13 +173,6 @@ func getDefaultConfigFile(x *xdg.XDG, homeDir string) string {
 			}
 		}
 	}
-	// Search for ~/.chezmoi.* for backwards compatibility.
-	for _, extension := range viper.SupportedExts {
-		configFilePath := filepath.Join(homeDir, ".chezmoi."+extension)
-		if _, err := os.Stat(configFilePath); err == nil {
-			return configFilePath
-		}
-	}
 	// Fallback to XDG default.
 	return filepath.Join(x.ConfigHome, "chezmoi", "chezmoi.yaml")
 }
@@ -224,11 +217,6 @@ func getDefaultSourceDir(x *xdg.XDG, homeDir string) string {
 		if _, err := os.Stat(sourceDir); err == nil {
 			return sourceDir
 		}
-	}
-	// Check for ~/.chezmoi for backwards compatibility.
-	sourceDir := filepath.Join(homeDir, ".chezmoi")
-	if _, err := os.Stat(sourceDir); err == nil {
-		return sourceDir
 	}
 	// Fallback to XDG default.
 	return filepath.Join(x.DataHome, "chezmoi")
