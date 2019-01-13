@@ -59,7 +59,7 @@ share common parts while allowing specific per-machine configuration.
  * If your system stores secrets in plain text, then your dotfiles repository
    must be private. With `chezmoi` you never need to store secrets in your
 repository, so you can make it public. You can check out your repository on
-your work machine and not fear that this will give your work IT department to
+your work machine and not fear that this will give your work IT department
 access to your personal data.
 
  * If your system was written by you for your personal use, then it probably
