@@ -3,7 +3,145 @@ package cmd
 import (
 	"reflect"
 	"testing"
+
+	"github.com/twpayne/go-vfs/vfst"
 )
+
+func TestChattrCommand(t *testing.T) {
+	for _, tc := range []struct {
+		name  string
+		args  []string
+		root  interface{}
+		tests interface{}
+	}{
+		{
+			name: "add_empty",
+			args: []string{"+empty", "/home/user/foo"},
+			root: map[string]interface{}{
+				"/home/user/.config/share/chezmoi": map[string]interface{}{
+					"foo": "# contents of ~/foo\n",
+				},
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/.config/share/chezmoi/foo",
+					vfst.TestDoesNotExist,
+				),
+				vfst.TestPath("/home/user/.config/share/chezmoi/empty_foo",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("# contents of ~/foo\n"),
+				),
+			},
+		},
+		{
+			name: "remove_empty",
+			args: []string{"-empty", "/home/user/foo"},
+			root: map[string]interface{}{
+				"/home/user/.config/share/chezmoi": map[string]interface{}{
+					"empty_foo": "# contents of ~/foo\n",
+				},
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/.config/share/chezmoi/foo",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("# contents of ~/foo\n"),
+				),
+				vfst.TestPath("/home/user/.config/share/chezmoi/empty_foo",
+					vfst.TestDoesNotExist,
+				),
+			},
+		},
+		{
+			name: "add_private",
+			args: []string{"+private", "/home/user/foo"},
+			root: map[string]interface{}{
+				"/home/user/.config/share/chezmoi": map[string]interface{}{
+					"foo": "# contents of ~/foo\n",
+				},
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/.config/share/chezmoi/foo",
+					vfst.TestDoesNotExist,
+				),
+				vfst.TestPath("/home/user/.config/share/chezmoi/private_foo",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("# contents of ~/foo\n"),
+				),
+			},
+		},
+		{
+			name: "remove_private",
+			args: []string{"-private", "/home/user/foo"},
+			root: map[string]interface{}{
+				"/home/user/.config/share/chezmoi": map[string]interface{}{
+					"private_foo": "# contents of ~/foo\n",
+				},
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/.config/share/chezmoi/foo",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("# contents of ~/foo\n"),
+				),
+				vfst.TestPath("/home/user/.config/share/chezmoi/private_foo",
+					vfst.TestDoesNotExist,
+				),
+			},
+		},
+		{
+			name: "add_template",
+			args: []string{"+template", "/home/user/foo"},
+			root: map[string]interface{}{
+				"/home/user/.config/share/chezmoi": map[string]interface{}{
+					"foo": "# contents of ~/foo\n",
+				},
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/.config/share/chezmoi/foo",
+					vfst.TestDoesNotExist,
+				),
+				vfst.TestPath("/home/user/.config/share/chezmoi/foo.tmpl",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("# contents of ~/foo\n"),
+				),
+			},
+		},
+		{
+			name: "remove_template",
+			args: []string{"-template", "/home/user/foo"},
+			root: map[string]interface{}{
+				"/home/user/.config/share/chezmoi": map[string]interface{}{
+					"foo.tmpl": "# contents of ~/foo\n",
+				},
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/.config/share/chezmoi/foo",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("# contents of ~/foo\n"),
+				),
+				vfst.TestPath("/home/user/.config/share/chezmoi/foo.tmpl",
+					vfst.TestDoesNotExist,
+				),
+			},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			c := &Config{
+				SourceDir: "/home/user/.config/share/chezmoi",
+				TargetDir: "/home/user",
+				Umask:     022,
+				Verbose:   true,
+			}
+			fs, cleanup, err := vfst.NewTestFS(tc.root)
+			if err != nil {
+				t.Fatalf("vfst.NewTestFS(_) == _, _, %v, want _, _, <nil>", err)
+			}
+			defer cleanup()
+			if err := c.runChattrCommand(fs, nil, tc.args); err != nil {
+				t.Errorf("c.runChattrCommand(fs, nil, %+v) == %v, want <nil>", tc.args, err)
+			}
+			vfst.RunTests(t, fs, "", tc.tests)
+		})
+	}
+}
 
 func TestParseAttributeModifiers(t *testing.T) {
 	for _, tc := range []struct {
