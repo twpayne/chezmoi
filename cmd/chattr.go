@@ -107,13 +107,21 @@ func parseAttributeModifiers(s string) (*attributeModifiers, error) {
 		if attributeModifier == "" {
 			continue
 		}
-		modifier := boolModifier(1)
-		if attributeModifier[0] == '-' {
+		var modifier boolModifier
+		var attribute string
+		switch {
+		case attributeModifier[0] == '-':
 			modifier = boolModifier(-1)
-		}
-		attribute := attributeModifier
-		if attributeModifier[0] == '-' || attributeModifier[0] == '+' {
 			attribute = attributeModifier[1:]
+		case attributeModifier[0] == '+':
+			modifier = boolModifier(1)
+			attribute = attributeModifier[1:]
+		case strings.HasPrefix(attributeModifier, "no"):
+			modifier = boolModifier(-1)
+			attribute = attributeModifier[2:]
+		default:
+			modifier = boolModifier(1)
+			attribute = attributeModifier
 		}
 		switch attribute {
 		case "empty", "e":
