@@ -14,11 +14,11 @@ type FSMutator struct {
 }
 
 // NewFSMutator returns an mutator that acts on fs.
-func NewFSMutator(fs vfs.FS, targetDir string) *FSMutator {
+func NewFSMutator(fs vfs.FS, destDir string) *FSMutator {
 	var dir string
 	// Special case: if writing to the real filesystem, use github.com/google/renameio
 	if fs == vfs.OSFS {
-		dir = renameio.TempDir(targetDir)
+		dir = renameio.TempDir(destDir)
 	}
 	return &FSMutator{
 		FS:  fs,

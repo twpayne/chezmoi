@@ -50,11 +50,11 @@ func init() {
 	persistentFlags.BoolVarP(&config.DryRun, "dry-run", "n", false, "dry run")
 	viper.BindPFlag("dry-run", persistentFlags.Lookup("dry-run"))
 
-	persistentFlags.StringVarP(&config.SourceDir, "source", "s", getDefaultSourceDir(x, homeDir), "source directory")
+	persistentFlags.StringVarP(&config.SourceDir, "source", "S", getDefaultSourceDir(x, homeDir), "source directory")
 	viper.BindPFlag("source", persistentFlags.Lookup("source"))
 
-	persistentFlags.StringVarP(&config.TargetDir, "target", "t", homeDir, "target directory")
-	viper.BindPFlag("target", persistentFlags.Lookup("target"))
+	persistentFlags.StringVarP(&config.DestDir, "destination", "D", homeDir, "destination directory")
+	viper.BindPFlag("destination", persistentFlags.Lookup("destination"))
 
 	persistentFlags.VarP(&config.Umask, "umask", "u", "umask")
 	viper.BindPFlag("umask", persistentFlags.Lookup("umask"))

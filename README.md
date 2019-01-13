@@ -459,8 +459,8 @@ to apply the changes to the destination state:
 ## Using `chezmoi` outside your home directory
 
 `chezmoi`, by default, operates on your home directory, but this can be
-overridden with the `--target` command line flag or by specifying `targetDir`
-in your `~/.config/chezmoi/chezmoi.yaml`. In theory, you could use `chezmoi` to
+overridden with the `--dest` command line flag or by specifying `destDir` in
+your `~/.config/chezmoi/chezmoi.yaml`. In theory, you could use `chezmoi` to
 manage any aspect of your filesystem. That said, although you can do this, you
 probably shouldn't. Existing configuration management tools like
 [Puppet](https://puppet.com/), [Chef](https://www.chef.io/chef/),

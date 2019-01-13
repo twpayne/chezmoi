@@ -16,7 +16,7 @@ func TestEndToEnd(t *testing.T) {
 		sourceDir string
 		data      map[string]interface{}
 		funcs     template.FuncMap
-		targetDir string
+		destDir   string
 		umask     os.FileMode
 		tests     interface{}
 	}{
@@ -50,8 +50,8 @@ func TestEndToEnd(t *testing.T) {
 				"email":  "hello@example.com",
 				"ignore": "README.md",
 			},
-			targetDir: "/home/user",
-			umask:     022,
+			destDir: "/home/user",
+			umask:   022,
 			tests: []vfst.Test{
 				vfst.TestPath("/home/user/.bashrc",
 					vfst.TestModeIsRegular,
@@ -88,11 +88,11 @@ func TestEndToEnd(t *testing.T) {
 			if err != nil {
 				t.Fatalf("vfst.NewTestFS(_) == _, _, %v, want _, _, <nil>", err)
 			}
-			ts := NewTargetState(tc.targetDir, tc.umask, tc.sourceDir, tc.data, tc.funcs)
+			ts := NewTargetState(tc.destDir, tc.umask, tc.sourceDir, tc.data, tc.funcs)
 			if err := ts.Populate(fs); err != nil {
 				t.Fatalf("ts.Populate(%+v) == %v, want <nil>", fs, err)
 			}
-			if err := ts.Apply(fs, NewLoggingMutator(os.Stderr, NewFSMutator(fs, tc.targetDir))); err != nil {
+			if err := ts.Apply(fs, NewLoggingMutator(os.Stderr, NewFSMutator(fs, tc.destDir))); err != nil {
 				t.Fatalf("ts.Apply(fs, _) == %v, want <nil>", err)
 			}
 			vfst.RunTests(t, fs, "", tc.tests)
@@ -116,7 +116,7 @@ func TestTargetStatePopulate(t *testing.T) {
 			},
 			sourceDir: "/",
 			want: &TargetState{
-				TargetDir:    "/",
+				DestDir:      "/",
 				TargetIgnore: NewPatternSet(),
 				Umask:        0,
 				SourceDir:    "/",
@@ -137,7 +137,7 @@ func TestTargetStatePopulate(t *testing.T) {
 			},
 			sourceDir: "/",
 			want: &TargetState{
-				TargetDir:    "/",
+				DestDir:      "/",
 				TargetIgnore: NewPatternSet(),
 				Umask:        0,
 				SourceDir:    "/",
@@ -158,7 +158,7 @@ func TestTargetStatePopulate(t *testing.T) {
 			},
 			sourceDir: "/",
 			want: &TargetState{
-				TargetDir:    "/",
+				DestDir:      "/",
 				TargetIgnore: NewPatternSet(),
 				Umask:        0,
 				SourceDir:    "/",
@@ -179,7 +179,7 @@ func TestTargetStatePopulate(t *testing.T) {
 			},
 			sourceDir: "/",
 			want: &TargetState{
-				TargetDir:    "/",
+				DestDir:      "/",
 				TargetIgnore: NewPatternSet(),
 				Umask:        0,
 				SourceDir:    "/",
@@ -208,7 +208,7 @@ func TestTargetStatePopulate(t *testing.T) {
 			},
 			sourceDir: "/",
 			want: &TargetState{
-				TargetDir:    "/",
+				DestDir:      "/",
 				TargetIgnore: NewPatternSet(),
 				Umask:        0,
 				SourceDir:    "/",
@@ -240,7 +240,7 @@ func TestTargetStatePopulate(t *testing.T) {
 				"Email": "user@example.com",
 			},
 			want: &TargetState{
-				TargetDir:    "/",
+				DestDir:      "/",
 				TargetIgnore: NewPatternSet(),
 				Umask:        0,
 				SourceDir:    "/",
@@ -265,7 +265,7 @@ func TestTargetStatePopulate(t *testing.T) {
 			},
 			sourceDir: "/",
 			want: &TargetState{
-				TargetDir:    "/",
+				DestDir:      "/",
 				TargetIgnore: NewPatternSet(),
 				Umask:        0,
 				SourceDir:    "/",
@@ -294,7 +294,7 @@ func TestTargetStatePopulate(t *testing.T) {
 			},
 			sourceDir: "/",
 			want: &TargetState{
-				TargetDir:    "/",
+				DestDir:      "/",
 				TargetIgnore: NewPatternSet(),
 				Umask:        0,
 				SourceDir:    "/",
@@ -314,7 +314,7 @@ func TestTargetStatePopulate(t *testing.T) {
 			},
 			sourceDir: "/",
 			want: &TargetState{
-				TargetDir:    "/",
+				DestDir:      "/",
 				TargetIgnore: NewPatternSet(),
 				Umask:        0,
 				SourceDir:    "/",
@@ -337,7 +337,7 @@ func TestTargetStatePopulate(t *testing.T) {
 				"host": "example.com",
 			},
 			want: &TargetState{
-				TargetDir:    "/",
+				DestDir:      "/",
 				TargetIgnore: NewPatternSet(),
 				Umask:        0,
 				SourceDir:    "/",
@@ -361,9 +361,9 @@ func TestTargetStatePopulate(t *testing.T) {
 			},
 			sourceDir: "/",
 			want: &TargetState{
-				TargetDir: "/",
+				DestDir: "/",
 				TargetIgnore: PatternSet(map[string]struct{}{
-					"f*": struct{}{},
+					"f*": {},
 				}),
 				Umask:     0,
 				SourceDir: "/",
@@ -377,9 +377,9 @@ func TestTargetStatePopulate(t *testing.T) {
 			},
 			sourceDir: "/",
 			want: &TargetState{
-				TargetDir: "/",
+				DestDir: "/",
 				TargetIgnore: PatternSet(map[string]struct{}{
-					"dir/foo": struct{}{},
+					"dir/foo": {},
 				}),
 				Umask:     0,
 				SourceDir: "/",

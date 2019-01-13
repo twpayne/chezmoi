@@ -286,7 +286,7 @@ func TestChattrCommand(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			c := &Config{
 				SourceDir: "/home/user/.config/share/chezmoi",
-				TargetDir: "/home/user",
+				DestDir:   "/home/user",
 				Umask:     022,
 				Verbose:   true,
 			}

@@ -64,7 +64,7 @@ func (c *Config) runDumpCommand(fs vfs.FS, args []string) error {
 		}
 		var concreteValues []interface{}
 		for _, entry := range entries {
-			entryConcreteValue, err := entry.ConcreteValue(ts.TargetDir, ts.TargetIgnore.Match, ts.SourceDir, c.dump.recursive)
+			entryConcreteValue, err := entry.ConcreteValue(ts.DestDir, ts.TargetIgnore.Match, ts.SourceDir, c.dump.recursive)
 			if err != nil {
 				return err
 			}

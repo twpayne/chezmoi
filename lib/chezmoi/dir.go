@@ -85,12 +85,12 @@ func newDir(sourceName string, targetName string, exact bool, perm os.FileMode) 
 	}
 }
 
-// Apply ensures that targetDir in fs matches d.
-func (d *Dir) Apply(fs vfs.FS, targetDir string, ignore func(string) bool, umask os.FileMode, mutator Mutator) error {
+// Apply ensures that destDir in fs matches d.
+func (d *Dir) Apply(fs vfs.FS, destDir string, ignore func(string) bool, umask os.FileMode, mutator Mutator) error {
 	if ignore(d.targetName) {
 		return nil
 	}
-	targetPath := filepath.Join(targetDir, d.targetName)
+	targetPath := filepath.Join(destDir, d.targetName)
 	info, err := fs.Lstat(targetPath)
 	switch {
 	case err == nil && info.Mode().IsDir():
@@ -112,7 +112,7 @@ func (d *Dir) Apply(fs vfs.FS, targetDir string, ignore func(string) bool, umask
 		return err
 	}
 	for _, entryName := range sortedEntryNames(d.Entries) {
-		if err := d.Entries[entryName].Apply(fs, targetDir, ignore, umask, mutator); err != nil {
+		if err := d.Entries[entryName].Apply(fs, destDir, ignore, umask, mutator); err != nil {
 			return err
 		}
 	}
@@ -134,14 +134,14 @@ func (d *Dir) Apply(fs vfs.FS, targetDir string, ignore func(string) bool, umask
 }
 
 // ConcreteValue implements Entry.ConcreteValue.
-func (d *Dir) ConcreteValue(targetDir string, ignore func(string) bool, sourceDir string, recursive bool) (interface{}, error) {
+func (d *Dir) ConcreteValue(destDir string, ignore func(string) bool, sourceDir string, recursive bool) (interface{}, error) {
 	if ignore(d.targetName) {
 		return nil, nil
 	}
 	var entryConcreteValues []interface{}
 	if recursive {
 		for _, entryName := range sortedEntryNames(d.Entries) {
-			entryConcreteValue, err := d.Entries[entryName].ConcreteValue(targetDir, ignore, sourceDir, recursive)
+			entryConcreteValue, err := d.Entries[entryName].ConcreteValue(destDir, ignore, sourceDir, recursive)
 			if err != nil {
 				return nil, err
 			}
@@ -153,7 +153,7 @@ func (d *Dir) ConcreteValue(targetDir string, ignore func(string) bool, sourceDi
 	return &dirConcreteValue{
 		Type:       "dir",
 		SourcePath: filepath.Join(sourceDir, d.SourceName()),
-		TargetPath: filepath.Join(targetDir, d.TargetName()),
+		TargetPath: filepath.Join(destDir, d.TargetName()),
 		Exact:      d.Exact,
 		Perm:       int(d.Perm),
 		Entries:    entryConcreteValues,
