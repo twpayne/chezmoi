@@ -132,6 +132,16 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 	}
 }
 
+// Apply ensures that ts.TargetDir in fs matches ts.
+func (ts *TargetState) Apply(fs vfs.FS, mutator Mutator) error {
+	for _, entryName := range sortedEntryNames(ts.Entries) {
+		if err := ts.Entries[entryName].Apply(fs, ts.TargetDir, ts.TargetIgnore.Match, ts.Umask, mutator); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // Archive writes ts to w.
 func (ts *TargetState) Archive(w *tar.Writer, umask os.FileMode) error {
 	currentUser, err := user.Current()
@@ -162,16 +172,6 @@ func (ts *TargetState) Archive(w *tar.Writer, umask os.FileMode) error {
 	}
 	for _, entryName := range sortedEntryNames(ts.Entries) {
 		if err := ts.Entries[entryName].archive(w, ts.TargetIgnore.Match, &headerTemplate, umask); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-// Apply ensures that ts.TargetDir in fs matches ts.
-func (ts *TargetState) Apply(fs vfs.FS, mutator Mutator) error {
-	for _, entryName := range sortedEntryNames(ts.Entries) {
-		if err := ts.Entries[entryName].Apply(fs, ts.TargetDir, ts.TargetIgnore.Match, ts.Umask, mutator); err != nil {
 			return err
 		}
 	}
@@ -414,6 +414,33 @@ func (ts *TargetState) addFile(targetName string, entries map[string]Entry, pare
 	return mutator.WriteFile(filepath.Join(ts.SourceDir, sourceName), contents, 0666&^ts.Umask, existingContents)
 }
 
+func (ts *TargetState) addSourceIgnore(fs vfs.FS, path, relPath string) error {
+	data, err := ts.executeTemplate(fs, path)
+	if err != nil {
+		return err
+	}
+	dir := filepath.Dir(relPath)
+	s := bufio.NewScanner(bytes.NewReader(data))
+	for s.Scan() {
+		text := s.Text()
+		if index := strings.IndexRune(text, '#'); index != -1 {
+			text = text[:index]
+		}
+		text = strings.TrimSpace(text)
+		if text == "" {
+			continue
+		}
+		pattern := filepath.Join(dir, text)
+		if err := ts.TargetIgnore.Add(pattern); err != nil {
+			return fmt.Errorf("%s: %v", path, err)
+		}
+	}
+	if err := s.Err(); err != nil {
+		return fmt.Errorf("%s: %v", path, err)
+	}
+	return nil
+}
+
 func (ts *TargetState) addSymlink(targetName string, entries map[string]Entry, parentDirSourceName string, linkname string, mutator Mutator) error {
 	name := filepath.Base(targetName)
 	var existingSymlink *Symlink
@@ -554,31 +581,4 @@ func (ts *TargetState) importHeader(r io.Reader, importTAROptions ImportTAROptio
 	default:
 		return fmt.Errorf("%s: unspported typeflag '%c'", header.Name, header.Typeflag)
 	}
-}
-
-func (ts *TargetState) addSourceIgnore(fs vfs.FS, path, relPath string) error {
-	data, err := ts.executeTemplate(fs, path)
-	if err != nil {
-		return err
-	}
-	dir := filepath.Dir(relPath)
-	s := bufio.NewScanner(bytes.NewReader(data))
-	for s.Scan() {
-		text := s.Text()
-		if index := strings.IndexRune(text, '#'); index != -1 {
-			text = text[:index]
-		}
-		text = strings.TrimSpace(text)
-		if text == "" {
-			continue
-		}
-		pattern := filepath.Join(dir, text)
-		if err := ts.TargetIgnore.Add(pattern); err != nil {
-			return fmt.Errorf("%s: %v", path, err)
-		}
-	}
-	if err := s.Err(); err != nil {
-		return fmt.Errorf("%s: %v", path, err)
-	}
-	return nil
 }

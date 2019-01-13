@@ -48,6 +48,15 @@ func ReturnTemplateFuncError(err error) {
 	})
 }
 
+// dirNames returns the dir names from dirAttributes.
+func dirNames(dirAttributes []DirAttributes) []string {
+	dns := []string{}
+	for _, da := range dirAttributes {
+		dns = append(dns, da.Name)
+	}
+	return dns
+}
+
 // parseDirNameComponents parses multiple directory name components.
 func parseDirNameComponents(components []string) []DirAttributes {
 	das := []DirAttributes{}
@@ -56,15 +65,6 @@ func parseDirNameComponents(components []string) []DirAttributes {
 		das = append(das, da)
 	}
 	return das
-}
-
-// dirNames returns the dir names from dirAttributes.
-func dirNames(dirAttributes []DirAttributes) []string {
-	dns := []string{}
-	for _, da := range dirAttributes {
-		dns = append(dns, da.Name)
-	}
-	return dns
 }
 
 // parseSourceFilePath parses a single source file path.
