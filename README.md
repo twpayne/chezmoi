@@ -473,6 +473,11 @@ always be personal home directory management. If your needs grow beyond that,
 switch to a whole system configuration management tool.
 
 
+## `chezmoi` in the news
+
+ * [Linux Fu: The Kitchen Sink on hackaday.com](https://hackaday.com/2019/01/10/linux-fu-the-kitchen-sync/)
+
+
 ## License
 
 The MIT License (MIT)
