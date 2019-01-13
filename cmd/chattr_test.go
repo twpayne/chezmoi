@@ -122,6 +122,26 @@ func TestChattrCommand(t *testing.T) {
 				),
 			},
 		},
+		{
+			name: "add_template_in_private_dir",
+			args: []string{"+template", "/home/user/.ssh/authorized_keys"},
+			root: map[string]interface{}{
+				"/home/user/.config/share/chezmoi": map[string]interface{}{
+					"private_dot_ssh": map[string]interface{}{
+						"authorized_keys": "# contents of ~/.ssh/authorized_keys\n",
+					},
+				},
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/.config/share/chezmoi/private_dot_ssh/authorized_keys",
+					vfst.TestDoesNotExist,
+				),
+				vfst.TestPath("/home/user/.config/share/chezmoi/private_dot_ssh/authorized_keys.tmpl",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("# contents of ~/.ssh/authorized_keys\n"),
+				),
+			},
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			c := &Config{

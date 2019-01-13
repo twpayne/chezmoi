@@ -48,18 +48,18 @@ func (c *Config) runChattrCommand(fs vfs.FS, cmd *cobra.Command, args []string) 
 	}
 	renames := make(map[string]string)
 	for _, entry := range entries {
-		oldSourceName := entry.SourceName()
-		var newSourceName string
+		dir, oldBase := filepath.Split(entry.SourceName())
+		var newBase string
 		switch entry := entry.(type) {
 		case *chezmoi.Dir:
-			da := chezmoi.ParseDirAttributes(oldSourceName)
+			da := chezmoi.ParseDirAttributes(oldBase)
 			da.Exact = ams.exact.modify(entry.Exact)
 			if private := ams.private.modify(entry.Private()); private {
 				da.Perm &= 0700
 			}
-			newSourceName = da.SourceName()
+			newBase = da.SourceName()
 		case *chezmoi.File:
-			fa := chezmoi.ParseFileAttributes(oldSourceName)
+			fa := chezmoi.ParseFileAttributes(oldBase)
 			mode := os.FileMode(0666)
 			if executable := ams.executable.modify(entry.Executable()); executable {
 				mode |= 0111
@@ -70,14 +70,14 @@ func (c *Config) runChattrCommand(fs vfs.FS, cmd *cobra.Command, args []string) 
 			fa.Mode = mode
 			fa.Empty = ams.empty.modify(entry.Empty)
 			fa.Template = ams.template.modify(entry.Template)
-			newSourceName = fa.SourceName()
+			newBase = fa.SourceName()
 		case *chezmoi.Symlink:
-			fa := chezmoi.ParseFileAttributes(oldSourceName)
+			fa := chezmoi.ParseFileAttributes(oldBase)
 			fa.Template = ams.template.modify(entry.Template)
-			newSourceName = fa.SourceName()
+			newBase = fa.SourceName()
 		}
-		if newSourceName != oldSourceName {
-			renames[filepath.Join(ts.SourceDir, oldSourceName)] = filepath.Join(ts.SourceDir, newSourceName)
+		if newBase != oldBase {
+			renames[filepath.Join(ts.SourceDir, dir, oldBase)] = filepath.Join(ts.SourceDir, dir, newBase)
 		}
 	}
 
