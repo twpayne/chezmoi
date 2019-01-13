@@ -83,7 +83,7 @@ func Execute() {
 	}
 }
 
-func (c *Config) persistentPreRunRootE(fs vfs.FS, command *cobra.Command, args []string) error {
+func (c *Config) persistentPreRunRootE(fs vfs.FS, args []string) error {
 	info, err := fs.Stat(c.SourceDir)
 	switch {
 	case err == nil && !info.Mode().IsDir():

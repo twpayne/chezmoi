@@ -34,7 +34,7 @@ func init() {
 	config.addFunc("bitwarden", config.bitwardenFunc)
 }
 
-func (c *Config) runBitwardenCommand(fs vfs.FS, cmd *cobra.Command, args []string) error {
+func (c *Config) runBitwardenCommand(fs vfs.FS, args []string) error {
 	if c.Bitwarden.Session != "" {
 		args = append([]string{"--session", c.Bitwarden.Session}, args...)
 	}

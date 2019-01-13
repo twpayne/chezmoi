@@ -24,7 +24,7 @@ func init() {
 	persistentFlags.StringVar(&config.keyring.password, "password", "", "password")
 }
 
-func (c *Config) runKeyringSetCommand(fs vfs.FS, cmd *cobra.Command, args []string) error {
+func (c *Config) runKeyringSetCommand(fs vfs.FS, args []string) error {
 	passwordString := c.keyring.password
 	if passwordString == "" {
 		fmt.Print("Password: ")

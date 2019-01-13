@@ -37,7 +37,7 @@ func init() {
 	persistentFlags.BoolVarP(&config._import.removeDestination, "remove-destination", "r", false, "remove destination before import")
 }
 
-func (c *Config) runImportCommand(fs vfs.FS, cmd *cobra.Command, args []string) error {
+func (c *Config) runImportCommand(fs vfs.FS, args []string) error {
 	ts, err := c.getTargetState(fs)
 	if err != nil {
 		return err

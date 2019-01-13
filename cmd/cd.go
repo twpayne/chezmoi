@@ -19,7 +19,7 @@ func init() {
 	rootCommand.AddCommand(cdCommand)
 }
 
-func (c *Config) runCDCommand(fs vfs.FS, cmd *cobra.Command, args []string) error {
+func (c *Config) runCDCommand(fs vfs.FS, args []string) error {
 	if err := os.Chdir(c.SourceDir); err != nil {
 		return err
 	}

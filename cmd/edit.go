@@ -32,7 +32,7 @@ func init() {
 	persistentFlags.BoolVarP(&config.edit.prompt, "prompt", "p", false, "prompt before applying (implies --diff)")
 }
 
-func (c *Config) runEditCommand(fs vfs.FS, command *cobra.Command, args []string) error {
+func (c *Config) runEditCommand(fs vfs.FS, args []string) error {
 	if c.edit.prompt {
 		c.edit.diff = true
 	}

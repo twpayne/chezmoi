@@ -18,7 +18,7 @@ func init() {
 	rootCommand.AddCommand(diffCommand)
 }
 
-func (c *Config) runDiffCommand(fs vfs.FS, command *cobra.Command, args []string) error {
+func (c *Config) runDiffCommand(fs vfs.FS, args []string) error {
 	mutator := chezmoi.NewLoggingMutator(os.Stdout, chezmoi.NullMutator)
 	return c.applyArgs(fs, args, mutator)
 }

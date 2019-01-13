@@ -227,7 +227,7 @@ func TestAddCommand(t *testing.T) {
 			if err != nil {
 				t.Fatalf("vfst.NewTestFS(_) == _, _, %v, want _, _, <nil>", err)
 			}
-			if err := c.runAddCommand(fs, nil, tc.args); err != nil {
+			if err := c.runAddCommand(fs, tc.args); err != nil {
 				t.Errorf("c.runAddCommand(fs, nil, %+v) == %v, want <nil>", tc.args, err)
 			}
 			vfst.RunTests(t, fs, "", tc.tests)
@@ -253,7 +253,7 @@ func TestAddAfterModification(t *testing.T) {
 		t.Fatalf("vfst.NewTestFS(_) == _, _, %v, want _, _, <nil>", err)
 	}
 	args := []string{"/home/user/.bashrc"}
-	if err := c.runAddCommand(fs, nil, args); err != nil {
+	if err := c.runAddCommand(fs, args); err != nil {
 		t.Errorf("c.runAddCommand(fs, nil, %+v) == %v, want <nil>", args, err)
 	}
 	vfst.RunTests(t, fs, "",
@@ -265,7 +265,7 @@ func TestAddAfterModification(t *testing.T) {
 	if err := fs.WriteFile("/home/user/.bashrc", []byte("# new contents of .bashrc\n"), 0644); err != nil {
 		t.Errorf("fs.WriteFile(...) == %v, want <nil>", err)
 	}
-	if err := c.runAddCommand(fs, nil, args); err != nil {
+	if err := c.runAddCommand(fs, args); err != nil {
 		t.Errorf("c.runAddCommand(fs, nil, %+v) == %v, want <nil>", args, err)
 	}
 	vfst.RunTests(t, fs, "",

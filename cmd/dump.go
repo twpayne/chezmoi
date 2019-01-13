@@ -42,7 +42,7 @@ func init() {
 	persistentFlags.BoolVarP(&config.dump.recursive, "recursive", "r", true, "recursive")
 }
 
-func (c *Config) runDumpCommand(fs vfs.FS, command *cobra.Command, args []string) error {
+func (c *Config) runDumpCommand(fs vfs.FS, args []string) error {
 	dumpFunc, ok := dumpFuncFormatMap[strings.ToLower(c.dump.format)]
 	if !ok {
 		return fmt.Errorf("unknown format: %s", c.dump.format)

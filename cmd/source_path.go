@@ -18,7 +18,7 @@ func init() {
 	rootCommand.AddCommand(sourcePathCommand)
 }
 
-func (c *Config) runSourcePathCommand(fs vfs.FS, cmd *cobra.Command, args []string) error {
+func (c *Config) runSourcePathCommand(fs vfs.FS, args []string) error {
 	ts, err := c.getTargetState(fs)
 	if err != nil {
 		return err

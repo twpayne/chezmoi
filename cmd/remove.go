@@ -20,7 +20,7 @@ func init() {
 	rootCommand.AddCommand(removeCommand)
 }
 
-func (c *Config) runRemoveCommand(fs vfs.FS, command *cobra.Command, args []string) error {
+func (c *Config) runRemoveCommand(fs vfs.FS, args []string) error {
 	ts, err := c.getTargetState(fs)
 	if err != nil {
 		return err

@@ -18,7 +18,7 @@ func init() {
 	rootCommand.AddCommand(forgetCommand)
 }
 
-func (c *Config) runForgetCommand(fs vfs.FS, command *cobra.Command, args []string) error {
+func (c *Config) runForgetCommand(fs vfs.FS, args []string) error {
 	ts, err := c.getTargetState(fs)
 	if err != nil {
 		return err
