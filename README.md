@@ -449,7 +449,7 @@ For an example of how `chezmoi` stores its state, see
 
 `chezmoi` stores the desired state of files, symbolic links, and directories in
 regular files and directories in `~/.local/share/chezmoi`. This location can be
-overridden with the `-s` flag or by giving a value for `sourceDir` in
+overridden with the `-S` flag or by giving a value for `sourceDir` in
 `~/.config/chezmoi/chezmoi.yaml`.  Some state is encoded in the source names.
 `chezmoi` ignores all files and directories in the source directory that begin
 with a `.`. The following prefixes and suffixes are special, and are
