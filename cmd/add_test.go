@@ -7,6 +7,47 @@ import (
 	"github.com/twpayne/go-vfs/vfst"
 )
 
+func TestAddAfterModification(t *testing.T) {
+	c := &Config{
+		SourceDir: "/home/user/.chezmoi",
+		TargetDir: "/home/user",
+		Umask:     022,
+		DryRun:    false,
+		Verbose:   true,
+	}
+	fs, cleanup, err := vfst.NewTestFS(map[string]interface{}{
+		"/home/user":          &vfst.Dir{Perm: 0755},
+		"/home/user/.chezmoi": &vfst.Dir{Perm: 0700},
+		"/home/user/.bashrc":  "# contents of .bashrc\n",
+	})
+	defer cleanup()
+	if err != nil {
+		t.Fatalf("vfst.NewTestFS(_) == _, _, %v, want _, _, <nil>", err)
+	}
+	args := []string{"/home/user/.bashrc"}
+	if err := c.runAddCommand(fs, args); err != nil {
+		t.Errorf("c.runAddCommand(fs, nil, %+v) == %v, want <nil>", args, err)
+	}
+	vfst.RunTests(t, fs, "",
+		vfst.TestPath("/home/user/.chezmoi/dot_bashrc",
+			vfst.TestModeIsRegular,
+			vfst.TestContentsString("# contents of .bashrc\n"),
+		),
+	)
+	if err := fs.WriteFile("/home/user/.bashrc", []byte("# new contents of .bashrc\n"), 0644); err != nil {
+		t.Errorf("fs.WriteFile(...) == %v, want <nil>", err)
+	}
+	if err := c.runAddCommand(fs, args); err != nil {
+		t.Errorf("c.runAddCommand(fs, nil, %+v) == %v, want <nil>", args, err)
+	}
+	vfst.RunTests(t, fs, "",
+		vfst.TestPath("/home/user/.chezmoi/dot_bashrc",
+			vfst.TestModeIsRegular,
+			vfst.TestContentsString("# new contents of .bashrc\n"),
+		),
+	)
+}
+
 func TestAddCommand(t *testing.T) {
 	for _, tc := range []struct {
 		name  string
@@ -233,45 +274,4 @@ func TestAddCommand(t *testing.T) {
 			vfst.RunTests(t, fs, "", tc.tests)
 		})
 	}
-}
-
-func TestAddAfterModification(t *testing.T) {
-	c := &Config{
-		SourceDir: "/home/user/.chezmoi",
-		TargetDir: "/home/user",
-		Umask:     022,
-		DryRun:    false,
-		Verbose:   true,
-	}
-	fs, cleanup, err := vfst.NewTestFS(map[string]interface{}{
-		"/home/user":          &vfst.Dir{Perm: 0755},
-		"/home/user/.chezmoi": &vfst.Dir{Perm: 0700},
-		"/home/user/.bashrc":  "# contents of .bashrc\n",
-	})
-	defer cleanup()
-	if err != nil {
-		t.Fatalf("vfst.NewTestFS(_) == _, _, %v, want _, _, <nil>", err)
-	}
-	args := []string{"/home/user/.bashrc"}
-	if err := c.runAddCommand(fs, args); err != nil {
-		t.Errorf("c.runAddCommand(fs, nil, %+v) == %v, want <nil>", args, err)
-	}
-	vfst.RunTests(t, fs, "",
-		vfst.TestPath("/home/user/.chezmoi/dot_bashrc",
-			vfst.TestModeIsRegular,
-			vfst.TestContentsString("# contents of .bashrc\n"),
-		),
-	)
-	if err := fs.WriteFile("/home/user/.bashrc", []byte("# new contents of .bashrc\n"), 0644); err != nil {
-		t.Errorf("fs.WriteFile(...) == %v, want <nil>", err)
-	}
-	if err := c.runAddCommand(fs, args); err != nil {
-		t.Errorf("c.runAddCommand(fs, nil, %+v) == %v, want <nil>", args, err)
-	}
-	vfst.RunTests(t, fs, "",
-		vfst.TestPath("/home/user/.chezmoi/dot_bashrc",
-			vfst.TestModeIsRegular,
-			vfst.TestContentsString("# new contents of .bashrc\n"),
-		),
-	)
 }

@@ -177,15 +177,6 @@ func (f *File) ConcreteValue(targetDir string, ignore func(string) bool, sourceD
 	}, nil
 }
 
-// Evaluate evaluates f's contents.
-func (f *File) Evaluate(ignore func(string) bool) error {
-	if ignore(f.targetName) {
-		return nil
-	}
-	_, err := f.Contents()
-	return err
-}
-
 // Contents returns f's contents.
 func (f *File) Contents() ([]byte, error) {
 	if f.evaluateContents != nil {
@@ -193,6 +184,15 @@ func (f *File) Contents() ([]byte, error) {
 		f.evaluateContents = nil
 	}
 	return f.contents, f.contentsErr
+}
+
+// Evaluate evaluates f's contents.
+func (f *File) Evaluate(ignore func(string) bool) error {
+	if ignore(f.targetName) {
+		return nil
+	}
+	_, err := f.Contents()
+	return err
 }
 
 // Executable returns true is f is executable.

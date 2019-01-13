@@ -26,21 +26,6 @@ func (b byValueLength) Less(i, j int) bool {
 }
 func (b byValueLength) Swap(i, j int) { b[i], b[j] = b[j], b[i] }
 
-func extractVariables(variables []templateVariable, parent []string, data map[string]interface{}) []templateVariable {
-	for name, value := range data {
-		switch value := value.(type) {
-		case string:
-			variables = append(variables, templateVariable{
-				name:  strings.Join(append(parent, name), "."),
-				value: value,
-			})
-		case map[string]interface{}:
-			variables = extractVariables(variables, append(parent, name), value)
-		}
-	}
-	return variables
-}
-
 func autoTemplate(contents []byte, data map[string]interface{}) ([]byte, error) {
 	// FIXME this naive approach will generate incorrect templates if the
 	// variable names match variable values
@@ -79,12 +64,27 @@ func autoTemplate(contents []byte, data map[string]interface{}) ([]byte, error) 
 	return []byte(contentsStr), nil
 }
 
-// isWord returns true if b is a word byte.
-func isWord(b byte) bool {
-	return '0' <= b && b <= '9' || 'A' <= b && b <= 'Z' || 'a' <= b && b <= 'z'
+func extractVariables(variables []templateVariable, parent []string, data map[string]interface{}) []templateVariable {
+	for name, value := range data {
+		switch value := value.(type) {
+		case string:
+			variables = append(variables, templateVariable{
+				name:  strings.Join(append(parent, name), "."),
+				value: value,
+			})
+		case map[string]interface{}:
+			variables = extractVariables(variables, append(parent, name), value)
+		}
+	}
+	return variables
 }
 
 // inWord returns true if splitting s at position i would split a word.
 func inWord(s string, i int) bool {
 	return i > 0 && i < len(s) && isWord(s[i-1]) && isWord(s[i])
+}
+
+// isWord returns true if b is a word byte.
+func isWord(b byte) bool {
+	return '0' <= b && b <= '9' || 'A' <= b && b <= 'Z' || 'a' <= b && b <= 'z'
 }

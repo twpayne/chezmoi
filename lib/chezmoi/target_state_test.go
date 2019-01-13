@@ -9,6 +9,97 @@ import (
 	"github.com/twpayne/go-vfs/vfst"
 )
 
+func TestEndToEnd(t *testing.T) {
+	for _, tc := range []struct {
+		name      string
+		root      interface{}
+		sourceDir string
+		data      map[string]interface{}
+		funcs     template.FuncMap
+		targetDir string
+		umask     os.FileMode
+		tests     interface{}
+	}{
+		{
+			name: "all",
+			root: map[string]interface{}{
+				"/home/user": map[string]interface{}{
+					".bashrc": "foo",
+					"dir": map[string]interface{}{
+						"foo": "foo",
+						"bar": "bar",
+					},
+					"replace_symlink": &vfst.Symlink{Target: "foo"},
+				},
+				"/home/user/.chezmoi": map[string]interface{}{
+					".git/HEAD":               "HEAD",
+					".chezmoiignore":          "{{ .ignore }} # comment\n",
+					"README.md":               "contents of README.md\n",
+					"dot_bashrc":              "bar",
+					"dot_hgrc.tmpl":           "[ui]\nusername = {{ .name }} <{{ .email }}>\n",
+					"empty.tmpl":              "{{ if false }}foo{{ end }}",
+					"empty_foo":               "",
+					"exact_dir/foo":           "foo",
+					"symlink_bar":             "empty",
+					"symlink_replace_symlink": "bar",
+				},
+			},
+			sourceDir: "/home/user/.chezmoi",
+			data: map[string]interface{}{
+				"name":   "John Smith",
+				"email":  "hello@example.com",
+				"ignore": "README.md",
+			},
+			targetDir: "/home/user",
+			umask:     022,
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/.bashrc",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("bar"),
+				),
+				vfst.TestPath("/home/user/.hgrc",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("[ui]\nusername = John Smith <hello@example.com>\n"),
+				),
+				vfst.TestPath("/home/user/foo",
+					vfst.TestModeIsRegular,
+					vfst.TestContents(nil),
+				),
+				vfst.TestPath("/home/user/bar",
+					vfst.TestModeType(os.ModeSymlink),
+					vfst.TestSymlinkTarget("empty"),
+				),
+				vfst.TestPath("/home/user/replace_symlink",
+					vfst.TestModeType(os.ModeSymlink),
+					vfst.TestSymlinkTarget("bar"),
+				),
+				vfst.TestPath("/home/user/dir/bar",
+					vfst.TestDoesNotExist,
+				),
+				vfst.TestPath("/home/user/README.md",
+					vfst.TestDoesNotExist,
+				),
+			},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			fs, cleanup, err := vfst.NewTestFS(tc.root)
+			defer cleanup()
+			if err != nil {
+				t.Fatalf("vfst.NewTestFS(_) == _, _, %v, want _, _, <nil>", err)
+			}
+			ts := NewTargetState(tc.targetDir, tc.umask, tc.sourceDir, tc.data, tc.funcs)
+			if err := ts.Populate(fs); err != nil {
+				t.Fatalf("ts.Populate(%+v) == %v, want <nil>", fs, err)
+			}
+			if err := ts.Apply(fs, NewLoggingMutator(os.Stderr, NewFSMutator(fs, tc.targetDir))); err != nil {
+				t.Fatalf("ts.Apply(fs, _) == %v, want <nil>", err)
+			}
+			vfst.RunTests(t, fs, "", tc.tests)
+		})
+	}
+}
+
 func TestTargetStatePopulate(t *testing.T) {
 	for _, tc := range []struct {
 		name      string
@@ -319,97 +410,6 @@ func TestTargetStatePopulate(t *testing.T) {
 			if diff, equal := messagediff.PrettyDiff(tc.want, ts); !equal {
 				t.Errorf("ts.Populate(%+v) diff:\n%s\n", fs, diff)
 			}
-		})
-	}
-}
-
-func TestEndToEnd(t *testing.T) {
-	for _, tc := range []struct {
-		name      string
-		root      interface{}
-		sourceDir string
-		data      map[string]interface{}
-		funcs     template.FuncMap
-		targetDir string
-		umask     os.FileMode
-		tests     interface{}
-	}{
-		{
-			name: "all",
-			root: map[string]interface{}{
-				"/home/user": map[string]interface{}{
-					".bashrc": "foo",
-					"dir": map[string]interface{}{
-						"foo": "foo",
-						"bar": "bar",
-					},
-					"replace_symlink": &vfst.Symlink{Target: "foo"},
-				},
-				"/home/user/.chezmoi": map[string]interface{}{
-					".git/HEAD":               "HEAD",
-					".chezmoiignore":          "{{ .ignore }} # comment\n",
-					"README.md":               "contents of README.md\n",
-					"dot_bashrc":              "bar",
-					"dot_hgrc.tmpl":           "[ui]\nusername = {{ .name }} <{{ .email }}>\n",
-					"empty.tmpl":              "{{ if false }}foo{{ end }}",
-					"empty_foo":               "",
-					"exact_dir/foo":           "foo",
-					"symlink_bar":             "empty",
-					"symlink_replace_symlink": "bar",
-				},
-			},
-			sourceDir: "/home/user/.chezmoi",
-			data: map[string]interface{}{
-				"name":   "John Smith",
-				"email":  "hello@example.com",
-				"ignore": "README.md",
-			},
-			targetDir: "/home/user",
-			umask:     022,
-			tests: []vfst.Test{
-				vfst.TestPath("/home/user/.bashrc",
-					vfst.TestModeIsRegular,
-					vfst.TestContentsString("bar"),
-				),
-				vfst.TestPath("/home/user/.hgrc",
-					vfst.TestModeIsRegular,
-					vfst.TestContentsString("[ui]\nusername = John Smith <hello@example.com>\n"),
-				),
-				vfst.TestPath("/home/user/foo",
-					vfst.TestModeIsRegular,
-					vfst.TestContents(nil),
-				),
-				vfst.TestPath("/home/user/bar",
-					vfst.TestModeType(os.ModeSymlink),
-					vfst.TestSymlinkTarget("empty"),
-				),
-				vfst.TestPath("/home/user/replace_symlink",
-					vfst.TestModeType(os.ModeSymlink),
-					vfst.TestSymlinkTarget("bar"),
-				),
-				vfst.TestPath("/home/user/dir/bar",
-					vfst.TestDoesNotExist,
-				),
-				vfst.TestPath("/home/user/README.md",
-					vfst.TestDoesNotExist,
-				),
-			},
-		},
-	} {
-		t.Run(tc.name, func(t *testing.T) {
-			fs, cleanup, err := vfst.NewTestFS(tc.root)
-			defer cleanup()
-			if err != nil {
-				t.Fatalf("vfst.NewTestFS(_) == _, _, %v, want _, _, <nil>", err)
-			}
-			ts := NewTargetState(tc.targetDir, tc.umask, tc.sourceDir, tc.data, tc.funcs)
-			if err := ts.Populate(fs); err != nil {
-				t.Fatalf("ts.Populate(%+v) == %v, want <nil>", fs, err)
-			}
-			if err := ts.Apply(fs, NewLoggingMutator(os.Stderr, NewFSMutator(fs, tc.targetDir))); err != nil {
-				t.Fatalf("ts.Apply(fs, _) == %v, want <nil>", err)
-			}
-			vfst.RunTests(t, fs, "", tc.tests)
 		})
 	}
 }

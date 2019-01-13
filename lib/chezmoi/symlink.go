@@ -81,11 +81,6 @@ func (s *Symlink) Evaluate(ignore func(string) bool) error {
 	return err
 }
 
-// SourceName implements Entry.SourceName.
-func (s *Symlink) SourceName() string {
-	return s.sourceName
-}
-
 // Linkname returns s's link name.
 func (s *Symlink) Linkname() (string, error) {
 	if s.evaluateLinkname != nil {
@@ -93,6 +88,11 @@ func (s *Symlink) Linkname() (string, error) {
 		s.evaluateLinkname = nil
 	}
 	return s.linkname, s.linknameErr
+}
+
+// SourceName implements Entry.SourceName.
+func (s *Symlink) SourceName() string {
+	return s.sourceName
 }
 
 // TargetName implements Entry.TargetName.
