@@ -246,6 +246,42 @@ func TestChattrCommand(t *testing.T) {
 				),
 			},
 		},
+		{
+			name: "symlink_add_template",
+			args: []string{"+template", "/home/user/foo"},
+			root: map[string]interface{}{
+				"/home/user/.config/share/chezmoi": map[string]interface{}{
+					"symlink_foo": "# contents of ~/foo\n",
+				},
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/.config/share/chezmoi/symlink_foo",
+					vfst.TestDoesNotExist,
+				),
+				vfst.TestPath("/home/user/.config/share/chezmoi/symlink_foo.tmpl",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("# contents of ~/foo\n"),
+				),
+			},
+		},
+		{
+			name: "symlink_remove_template",
+			args: []string{"-template", "/home/user/foo"},
+			root: map[string]interface{}{
+				"/home/user/.config/share/chezmoi": map[string]interface{}{
+					"symlink_foo.tmpl": "# contents of ~/foo\n",
+				},
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/.config/share/chezmoi/symlink_foo",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("# contents of ~/foo\n"),
+				),
+				vfst.TestPath("/home/user/.config/share/chezmoi/symlink_foo.tmpl",
+					vfst.TestDoesNotExist,
+				),
+			},
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			c := &Config{
