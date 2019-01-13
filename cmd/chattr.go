@@ -54,9 +54,11 @@ func (c *Config) runChattrCommand(fs vfs.FS, cmd *cobra.Command, args []string) 
 		case *chezmoi.Dir:
 			da := chezmoi.ParseDirAttributes(oldBase)
 			da.Exact = ams.exact.modify(entry.Exact)
+			perm := os.FileMode(0777)
 			if private := ams.private.modify(entry.Private()); private {
-				da.Perm &= 0700
+				perm &= 0700
 			}
+			da.Perm = perm
 			newBase = da.SourceName()
 		case *chezmoi.File:
 			fa := chezmoi.ParseFileAttributes(oldBase)
