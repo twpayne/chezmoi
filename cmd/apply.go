@@ -7,7 +7,7 @@ import (
 
 var applyCommand = &cobra.Command{
 	Use:   "apply",
-	Short: "Update the actual state to match the target state",
+	Short: "Update the destination directory to match the target state",
 	RunE:  makeRunE(config.runApplyCommand),
 }
 

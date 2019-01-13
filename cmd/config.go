@@ -122,7 +122,7 @@ func (c *Config) getEntries(ts *chezmoi.TargetState, args []string) ([]chezmoi.E
 			return nil, err
 		}
 		if entry == nil {
-			return nil, fmt.Errorf("%s: not under management", arg)
+			return nil, fmt.Errorf("%s: not in source state", arg)
 		}
 		entries = append(entries, entry)
 	}

@@ -12,7 +12,7 @@ var removeCommand = &cobra.Command{
 	Use:     "remove",
 	Aliases: []string{"rm"},
 	Args:    cobra.MinimumNArgs(1),
-	Short:   "Remove a file or directory",
+	Short:   "Remove a target from the source state and the destination directory",
 	RunE:    makeRunE(config.runRemoveCommand),
 }
 

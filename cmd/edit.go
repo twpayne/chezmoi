@@ -13,7 +13,7 @@ import (
 var editCommand = &cobra.Command{
 	Use:   "edit",
 	Args:  cobra.MinimumNArgs(1),
-	Short: "Edit a file",
+	Short: "Edit the source state of a target",
 	RunE:  makeRunE(config.runEditCommand),
 }
 

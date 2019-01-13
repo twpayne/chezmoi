@@ -10,7 +10,7 @@ import (
 var forgetCommand = &cobra.Command{
 	Use:   "forget",
 	Args:  cobra.MinimumNArgs(1),
-	Short: "Forget a file or directory",
+	Short: "Remove a target from the source state",
 	RunE:  makeRunE(config.runForgetCommand),
 }
 
