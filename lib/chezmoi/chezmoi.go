@@ -50,9 +50,9 @@ func ReturnTemplateFuncError(err error) {
 
 // dirNames returns the dir names from dirAttributes.
 func dirNames(dirAttributes []DirAttributes) []string {
-	dns := []string{}
-	for _, da := range dirAttributes {
-		dns = append(dns, da.Name)
+	dns := make([]string, len(dirAttributes))
+	for i, da := range dirAttributes {
+		dns[i] = da.Name
 	}
 	return dns
 }
