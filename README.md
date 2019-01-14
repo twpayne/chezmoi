@@ -511,6 +511,11 @@ switch to a whole system configuration management tool.
  * [chezmoi on lobste.rs](https://lobste.rs/stories/uet36y/)
 
 
+## Related projects
+
+See [`dotfiles.github.io`](https://dotfiles.github.io/).
+
+
 ## License
 
 MIT
