@@ -507,7 +507,8 @@ switch to a whole system configuration management tool.
 ## `chezmoi` in the news
 
  * [Linux Fu: The Kitchen Sink on hackaday.com](https://hackaday.com/2019/01/10/linux-fu-the-kitchen-sync/)
- * [chezmoi: manage your dotfiles securely across multiple machines on reddit.com/r/linux](https://www.reddit.com/r/linux/comments/afogsb/chezmoi_manage_your_dotfiles_securely_across/)
+ * [chezmoi on reddit.com/r/linux](https://www.reddit.com/r/linux/comments/afogsb/chezmoi_manage_your_dotfiles_securely_across/)
+ * [chezmoi on lobste.rs](https://lobste.rs/stories/uet36y/)
 
 
 ## License
