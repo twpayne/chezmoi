@@ -59,7 +59,7 @@ share common parts while allowing specific per-machine configuration.
  * If your system stores secrets in plain text, then your dotfiles repository
    must be private. With `chezmoi` you never need to store secrets in your
 repository, so you can make it public. You can check out your repository on
-your work machine and not fear that this will give your work IT department to
+your work machine and not fear that this will give your work IT department
 access to your personal data.
 
  * If your system was written by you for your personal use, then it probably
@@ -449,7 +449,7 @@ For an example of how `chezmoi` stores its state, see
 
 `chezmoi` stores the desired state of files, symbolic links, and directories in
 regular files and directories in `~/.local/share/chezmoi`. This location can be
-overridden with the `-s` flag or by giving a value for `sourceDir` in
+overridden with the `-S` flag or by giving a value for `sourceDir` in
 `~/.config/chezmoi/chezmoi.yaml`.  Some state is encoded in the source names.
 `chezmoi` ignores all files and directories in the source directory that begin
 with a `.`. The following prefixes and suffixes are special, and are
@@ -507,28 +507,15 @@ switch to a whole system configuration management tool.
 ## `chezmoi` in the news
 
  * [Linux Fu: The Kitchen Sink on hackaday.com](https://hackaday.com/2019/01/10/linux-fu-the-kitchen-sync/)
+ * [chezmoi on reddit.com/r/linux](https://www.reddit.com/r/linux/comments/afogsb/chezmoi_manage_your_dotfiles_securely_across/)
+ * [chezmoi on lobste.rs](https://lobste.rs/stories/uet36y/)
+
+
+## Related projects
+
+See [`dotfiles.github.io`](https://dotfiles.github.io/).
 
 
 ## License
 
-The MIT License (MIT)
-
-Copyright (c) 2018 Tom Payne
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in
-the Software without restriction, including without limitation the rights to
-use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
-of the Software, and to permit persons to whom the Software is furnished to do
-so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+MIT
