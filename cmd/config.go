@@ -189,11 +189,20 @@ func getDefaultData() (map[string]interface{}, error) {
 	}
 	data["username"] = currentUser.Username
 
+	// user.LookupGroupId looks up a group by gid. If CGO is enabled, then this
+	// uses an underlying C library call (e.g. getgrgid_r on Linux) and is
+	// trustworthy. If CGO is disabled then the fallback implementation only
+	// searches /etc/group, which is typically empty if an external directory
+	// service is being used, and so the lookup fails. So, if
+	// user.LookupGroupId returns an error, only return an error if CGO is
+	// enabled.
 	group, err := user.LookupGroupId(currentUser.Gid)
-	if err != nil {
+	if err == nil {
+		data["group"] = group.Name
+	} else if err != nil && cgoEnabled {
+		// Only return an error if CGO is enabled.
 		return nil, err
 	}
-	data["group"] = group.Name
 
 	homedir, err := homedir.Dir()
 	if err != nil {
