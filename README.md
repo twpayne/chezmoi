@@ -227,7 +227,7 @@ populated variables:
 
 For a full list of variables, run:
 
-    chezmoi data
+    $ chezmoi data
 
 For example, in your `~/.local/share/chezmoi/dot_bashrc.tmpl` you might have:
 
