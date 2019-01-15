@@ -317,11 +317,11 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 					evaluateLinkname: evaluateLinkname,
 				}
 			default:
-				return fmt.Errorf("%v: unsupported mode: %d", path, psfp.Mode&os.ModeType)
+				return fmt.Errorf("%v: unsupported mode 0%o", path, psfp.Mode&os.ModeType)
 			}
 			entries[psfp.Name] = entry
 		default:
-			return fmt.Errorf("unsupported file type: %s", path)
+			return fmt.Errorf("%s: unsupported file type", path)
 		}
 		return nil
 	})

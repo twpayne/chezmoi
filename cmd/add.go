@@ -51,7 +51,7 @@ func (c *Config) runAddCommand(fs vfs.FS, args []string) error {
 			return err
 		}
 	case err == nil:
-		return fmt.Errorf("%s: is not a directory", c.SourceDir)
+		return fmt.Errorf("%s: not a directory", c.SourceDir)
 	default:
 		return err
 	}
