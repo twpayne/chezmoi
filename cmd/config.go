@@ -36,6 +36,7 @@ type Config struct {
 	Data             map[string]interface{}
 	funcs            template.FuncMap
 	add              addCommandConfig
+	data             dataCommandConfig
 	dump             dumpCommandConfig
 	edit             editCommandConfig
 	_import          importCommandConfig
