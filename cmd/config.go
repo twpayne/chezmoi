@@ -2,7 +2,9 @@ package cmd
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"os/user"
@@ -18,6 +20,7 @@ import (
 	"github.com/twpayne/chezmoi/lib/chezmoi"
 	vfs "github.com/twpayne/go-vfs"
 	xdg "github.com/twpayne/go-xdg"
+	yaml "gopkg.in/yaml.v2"
 )
 
 // A Config represents a configuration.
@@ -37,6 +40,17 @@ type Config struct {
 	edit             editCommandConfig
 	_import          importCommandConfig
 	keyring          keyringCommandConfig
+}
+
+var formatMap = map[string]func(io.Writer, interface{}) error{
+	"json": func(w io.Writer, value interface{}) error {
+		e := json.NewEncoder(w)
+		e.SetIndent("", "  ")
+		return e.Encode(value)
+	},
+	"yaml": func(w io.Writer, value interface{}) error {
+		return yaml.NewEncoder(w).Encode(value)
+	},
 }
 
 func (c *Config) addFunc(key string, value interface{}) {

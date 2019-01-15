@@ -1,15 +1,12 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
 	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
 	vfs "github.com/twpayne/go-vfs"
-	yaml "gopkg.in/yaml.v2"
 )
 
 type dumpCommandConfig struct {
@@ -23,17 +20,6 @@ var dumpCommand = &cobra.Command{
 	RunE:  makeRunE(config.runDumpCommand),
 }
 
-var dumpFuncFormatMap = map[string]func(io.Writer, interface{}) error{
-	"json": func(w io.Writer, value interface{}) error {
-		e := json.NewEncoder(w)
-		e.SetIndent("", "  ")
-		return e.Encode(value)
-	},
-	"yaml": func(w io.Writer, value interface{}) error {
-		return yaml.NewEncoder(w).Encode(value)
-	},
-}
-
 func init() {
 	rootCommand.AddCommand(dumpCommand)
 
@@ -43,7 +29,7 @@ func init() {
 }
 
 func (c *Config) runDumpCommand(fs vfs.FS, args []string) error {
-	dumpFunc, ok := dumpFuncFormatMap[strings.ToLower(c.dump.format)]
+	format, ok := formatMap[strings.ToLower(c.dump.format)]
 	if !ok {
 		return fmt.Errorf("unknown format: %s", c.dump.format)
 	}
@@ -74,5 +60,5 @@ func (c *Config) runDumpCommand(fs vfs.FS, args []string) error {
 		}
 		concreteValue = concreteValues
 	}
-	return dumpFunc(os.Stdout, concreteValue)
+	return format(os.Stdout, concreteValue)
 }
