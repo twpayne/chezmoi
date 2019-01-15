@@ -7,8 +7,17 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"unicode"
 
 	vfs "github.com/twpayne/go-vfs"
+)
+
+var (
+	wellKnownAbbreviations = map[string]struct{}{
+		"ANSI": struct{}{},
+		"CPE":  struct{}{},
+		"URL":  struct{}{},
+	}
 )
 
 // getOSRelease returns the operating system identification data as defined by
@@ -22,9 +31,19 @@ func getOSRelease(fs vfs.FS) (map[string]string, error) {
 			return nil, err
 		}
 		defer f.Close()
-		return parseOSRelease(f)
+		m, err := parseOSRelease(f)
+		if err != nil {
+			return nil, err
+		}
+		return upperSnakeCaseToCamelCaseMap(m), nil
 	}
 	return nil, os.ErrNotExist
+}
+
+// isWellKnownAbbreviation returns true if word is a well known abbreviation.
+func isWellKnownAbbreviation(word string) bool {
+	_, ok := wellKnownAbbreviations[word]
+	return ok
 }
 
 // maybeUnquote removes quotation marks around s.
@@ -52,4 +71,33 @@ func parseOSRelease(r io.Reader) (map[string]string, error) {
 		result[key] = value
 	}
 	return result, s.Err()
+}
+
+// titilize returns s, titilized.
+func titilize(s string) string {
+	runes := []rune(s)
+	return string(append([]rune{unicode.ToTitle(runes[0])}, runes[1:]...))
+}
+
+// upperSnakeCaseToCamelCase converts a string in UPPER_SNAKE_CASE to
+// camelCase.
+func upperSnakeCaseToCamelCase(s string) string {
+	words := strings.Split(s, "_")
+	for i, word := range words {
+		if i == 0 {
+			words[i] = strings.ToLower(word)
+		} else if !isWellKnownAbbreviation(word) {
+			words[i] = titilize(strings.ToLower(word))
+		}
+	}
+	return strings.Join(words, "")
+}
+
+// upperSnakeCaseToCamelCaseKeys returns m with all keys converted from UPPER_SNAKE_CASE to camelCase.
+func upperSnakeCaseToCamelCaseMap(m map[string]string) map[string]string {
+	result := make(map[string]string)
+	for k, v := range m {
+		result[upperSnakeCaseToCamelCase(k)] = v
+	}
+	return result
 }
