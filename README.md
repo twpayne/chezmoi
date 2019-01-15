@@ -218,6 +218,10 @@ populated variables:
 | `.chezmoi.osRelease` | The information from `/etc/os-release`, Linux only, run `chezmoi data` to see its output.                              |
 | `.chezmoi.username`  | The username of the user running `chezmoi`.                                                                            |
 
+For a full list of variables, run:
+
+    chezmoi data
+
 For example, in your `~/.local/share/chezmoi/dot_bashrc.tmpl` you might have:
 
     # common config
