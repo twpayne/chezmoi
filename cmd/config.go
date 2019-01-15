@@ -2,7 +2,9 @@ package cmd
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"os/user"
@@ -18,6 +20,7 @@ import (
 	"github.com/twpayne/chezmoi/lib/chezmoi"
 	vfs "github.com/twpayne/go-vfs"
 	xdg "github.com/twpayne/go-xdg"
+	yaml "gopkg.in/yaml.v2"
 )
 
 // A Config represents a configuration.
@@ -33,10 +36,22 @@ type Config struct {
 	Data             map[string]interface{}
 	funcs            template.FuncMap
 	add              addCommandConfig
+	data             dataCommandConfig
 	dump             dumpCommandConfig
 	edit             editCommandConfig
 	_import          importCommandConfig
 	keyring          keyringCommandConfig
+}
+
+var formatMap = map[string]func(io.Writer, interface{}) error{
+	"json": func(w io.Writer, value interface{}) error {
+		e := json.NewEncoder(w)
+		e.SetIndent("", "  ")
+		return e.Encode(value)
+	},
+	"yaml": func(w io.Writer, value interface{}) error {
+		return yaml.NewEncoder(w).Encode(value)
+	},
 }
 
 func (c *Config) addFunc(key string, value interface{}) {
@@ -130,7 +145,7 @@ func (c *Config) getEntries(ts *chezmoi.TargetState, args []string) ([]chezmoi.E
 }
 
 func (c *Config) getTargetState(fs vfs.FS) (*chezmoi.TargetState, error) {
-	defaultData, err := getDefaultData()
+	defaultData, err := getDefaultData(fs)
 	if err != nil {
 		return nil, err
 	}
@@ -177,7 +192,7 @@ func getDefaultConfigFile(x *xdg.XDG, homeDir string) string {
 	return filepath.Join(x.ConfigHome, "chezmoi", "chezmoi.yaml")
 }
 
-func getDefaultData() (map[string]interface{}, error) {
+func getDefaultData(fs vfs.FS) (map[string]interface{}, error) {
 	data := map[string]interface{}{
 		"arch": runtime.GOARCH,
 		"os":   runtime.GOOS,
@@ -215,6 +230,13 @@ func getDefaultData() (map[string]interface{}, error) {
 		return nil, err
 	}
 	data["hostname"] = hostname
+
+	osRelease, err := getOSRelease(fs)
+	if err == nil {
+		data["osRelease"] = osRelease
+	} else if err != nil && !os.IsNotExist(err) {
+		return nil, err
+	}
 
 	return data, nil
 }
