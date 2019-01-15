@@ -19,8 +19,8 @@ variables allow you to change behaviour depending on operating system,
 architecture, and hostname.
 
  * Secure: `chezmoi` can retreive secrets from
-   [Bitwarden](https://bitwarden.com/), [LastPass](https://lastpass.com/), your
-Keychain (on macOS), and [GNOME
+   [Bitwarden](https://bitwarden.com/), [LastPass](https://lastpass.com/),
+[Vault](https://www.vaultproject.io/), your Keychain (on macOS), and [GNOME
 Keyring](https://wiki.gnome.org/Projects/GnomeKeyring) (on Linux).
 
  * Robust: `chezmoi` updates all files and symbolic links atomically (using
@@ -355,6 +355,24 @@ example, you can extract a private SSH key like this:
 
 Keys in the `note` section written as `CamelCase Words` are converted to
 `camelCaseWords`.
+
+### Using Vault
+
+`chezmoi` includes support for [Vault](https://www.vaultproject.io/) using the
+[Vault CLI](https://www.vaultproject.io/docs/commands/) to expose data as a
+template function.
+
+The vault CLI needs to be correctly configured on your machine, e.g. the
+`VAULT_ADDR` and `VAULT_TOKEN` environment variables must be set correctly.
+Verify that this is the case by running:
+
+    $ vault kv get -format=json <key>
+
+The stuctured data from `vault kv get -format=json` is available as the `vault`
+template function. You can use the `.Field` syntax of the `text/template`
+language to extract the data you want. For example:
+
+    {{ (vault "<key>").data.data.password }}
 
 ### Using keyring
 
