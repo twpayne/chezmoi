@@ -135,7 +135,7 @@ func parseAttributeModifiers(s string) (*attributeModifiers, error) {
 		case "template", "t":
 			ams.template = modifier
 		default:
-			return nil, fmt.Errorf("unknown attribute: %s", attribute)
+			return nil, fmt.Errorf("%s: unknown attribute", attribute)
 		}
 	}
 	return ams, nil
