@@ -130,7 +130,7 @@ func (c *Config) getEntries(ts *chezmoi.TargetState, args []string) ([]chezmoi.E
 }
 
 func (c *Config) getTargetState(fs vfs.FS) (*chezmoi.TargetState, error) {
-	defaultData, err := getDefaultData()
+	defaultData, err := getDefaultData(fs)
 	if err != nil {
 		return nil, err
 	}
@@ -177,7 +177,7 @@ func getDefaultConfigFile(x *xdg.XDG, homeDir string) string {
 	return filepath.Join(x.ConfigHome, "chezmoi", "chezmoi.yaml")
 }
 
-func getDefaultData() (map[string]interface{}, error) {
+func getDefaultData(fs vfs.FS) (map[string]interface{}, error) {
 	data := map[string]interface{}{
 		"arch": runtime.GOARCH,
 		"os":   runtime.GOOS,
@@ -215,6 +215,13 @@ func getDefaultData() (map[string]interface{}, error) {
 		return nil, err
 	}
 	data["hostname"] = hostname
+
+	osRelease, err := getOSRelease(fs)
+	if err == nil {
+		data["osRelease"] = osRelease
+	} else if err != nil && !os.IsNotExist(err) {
+		return nil, err
+	}
 
 	return data, nil
 }
