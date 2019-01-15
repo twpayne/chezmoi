@@ -250,7 +250,8 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 		// Treat all files and directories beginning with "." specially.
 		if _, name := filepath.Split(relPath); strings.HasPrefix(name, ".") {
 			if info.Name() == ".chezmoiignore" {
-				return ts.addSourceIgnore(fs, path, relPath)
+				dns := dirNames(parseDirNameComponents(splitPathList(relPath)))
+				return ts.addSourceIgnore(fs, path, filepath.Join(dns...))
 			}
 			// Ignore all other files and directories.
 			if info.IsDir() {
