@@ -13,6 +13,7 @@ import (
 	"strings"
 	"syscall"
 	"text/template"
+	"unicode"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
@@ -43,16 +44,24 @@ type Config struct {
 	keyring          keyringCommandConfig
 }
 
-var formatMap = map[string]func(io.Writer, interface{}) error{
-	"json": func(w io.Writer, value interface{}) error {
-		e := json.NewEncoder(w)
-		e.SetIndent("", "  ")
-		return e.Encode(value)
-	},
-	"yaml": func(w io.Writer, value interface{}) error {
-		return yaml.NewEncoder(w).Encode(value)
-	},
-}
+var (
+	formatMap = map[string]func(io.Writer, interface{}) error{
+		"json": func(w io.Writer, value interface{}) error {
+			e := json.NewEncoder(w)
+			e.SetIndent("", "  ")
+			return e.Encode(value)
+		},
+		"yaml": func(w io.Writer, value interface{}) error {
+			return yaml.NewEncoder(w).Encode(value)
+		},
+	}
+
+	wellKnownAbbreviations = map[string]struct{}{
+		"ANSI": struct{}{},
+		"CPE":  struct{}{},
+		"URL":  struct{}{},
+	}
+)
 
 func (c *Config) addFunc(key string, value interface{}) {
 	if c.funcs == nil {
@@ -233,7 +242,7 @@ func getDefaultData(fs vfs.FS) (map[string]interface{}, error) {
 
 	osRelease, err := getOSRelease(fs)
 	if err == nil {
-		data["osRelease"] = osRelease
+		data["osRelease"] = upperSnakeCaseToCamelCaseMap(osRelease)
 	} else if err != nil && !os.IsNotExist(err) {
 		return nil, err
 	}
@@ -251,6 +260,12 @@ func getDefaultSourceDir(x *xdg.XDG, homeDir string) string {
 	}
 	// Fallback to XDG default.
 	return filepath.Join(x.DataHome, "chezmoi")
+}
+
+// isWellKnownAbbreviation returns true if word is a well known abbreviation.
+func isWellKnownAbbreviation(word string) bool {
+	_, ok := wellKnownAbbreviations[word]
+	return ok
 }
 
 func makeRunE(runCommand func(vfs.FS, []string) error) func(*cobra.Command, []string) error {
@@ -279,4 +294,37 @@ func prompt(s, choices string) (byte, error) {
 			return line[0], nil
 		}
 	}
+}
+
+// titilize returns s, titilized.
+func titilize(s string) string {
+	if s == "" {
+		return s
+	}
+	runes := []rune(s)
+	return string(append([]rune{unicode.ToTitle(runes[0])}, runes[1:]...))
+}
+
+// upperSnakeCaseToCamelCase converts a string in UPPER_SNAKE_CASE to
+// camelCase.
+func upperSnakeCaseToCamelCase(s string) string {
+	words := strings.Split(s, "_")
+	for i, word := range words {
+		if i == 0 {
+			words[i] = strings.ToLower(word)
+		} else if !isWellKnownAbbreviation(word) {
+			words[i] = titilize(strings.ToLower(word))
+		}
+	}
+	return strings.Join(words, "")
+}
+
+// upperSnakeCaseToCamelCaseKeys returns m with all keys converted from
+// UPPER_SNAKE_CASE to camelCase.
+func upperSnakeCaseToCamelCaseMap(m map[string]string) map[string]string {
+	result := make(map[string]string)
+	for k, v := range m {
+		result[upperSnakeCaseToCamelCase(k)] = v
+	}
+	return result
 }
