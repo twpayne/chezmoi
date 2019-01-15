@@ -75,6 +75,9 @@ func parseOSRelease(r io.Reader) (map[string]string, error) {
 
 // titilize returns s, titilized.
 func titilize(s string) string {
+	if s == "" {
+		return s
+	}
 	runes := []rune(s)
 	return string(append([]rune{unicode.ToTitle(runes[0])}, runes[1:]...))
 }
