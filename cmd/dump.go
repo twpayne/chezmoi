@@ -31,7 +31,7 @@ func init() {
 func (c *Config) runDumpCommand(fs vfs.FS, args []string) error {
 	format, ok := formatMap[strings.ToLower(c.dump.format)]
 	if !ok {
-		return fmt.Errorf("unknown format: %s", c.dump.format)
+		return fmt.Errorf("%s: unknown format", c.dump.format)
 	}
 	ts, err := c.getTargetState(fs)
 	if err != nil {

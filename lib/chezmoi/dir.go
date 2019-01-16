@@ -124,6 +124,9 @@ func (d *Dir) Apply(fs vfs.FS, destDir string, ignore func(string) bool, umask o
 		for _, info := range infos {
 			name := info.Name()
 			if _, ok := d.Entries[name]; !ok {
+				if ignore(filepath.Join(d.targetName, name)) {
+					continue
+				}
 				if err := mutator.RemoveAll(filepath.Join(targetPath, name)); err != nil {
 					return err
 				}

@@ -29,7 +29,7 @@ func init() {
 func (c *Config) runDataCommand(fs vfs.FS, args []string) error {
 	format, ok := formatMap[strings.ToLower(c.data.format)]
 	if !ok {
-		return fmt.Errorf("unknown format: %s", c.data.format)
+		return fmt.Errorf("%s: unknown format", c.data.format)
 	}
 	ts, err := c.getTargetState(fs)
 	if err != nil {

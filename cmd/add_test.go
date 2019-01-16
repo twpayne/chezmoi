@@ -248,6 +248,54 @@ func TestAddCommand(t *testing.T) {
 				),
 			},
 		},
+		{
+			name: "dont_add_ignored_file",
+			args: []string{"/home/user/foo"},
+			root: map[string]interface{}{
+				"/home/user": &vfst.Dir{Perm: 0755},
+				"/home/user/.chezmoi": &vfst.Dir{
+					Perm: 0700,
+					Entries: map[string]interface{}{
+						".chezmoiignore": "foo\n",
+					},
+				},
+				"/home/user/foo": "bar",
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/.chezmoi/foo",
+					vfst.TestDoesNotExist,
+				),
+			},
+		},
+		{
+			name: "dont_add_ignored_file_recursive",
+			args: []string{"/home/user/foo"},
+			add: addCommandConfig{
+				recursive: true,
+			},
+			root: map[string]interface{}{
+				"/home/user": &vfst.Dir{Perm: 0755},
+				"/home/user/.chezmoi": &vfst.Dir{
+					Perm: 0700,
+					Entries: map[string]interface{}{
+						"exact_foo/.chezmoiignore": "bar/qux\n",
+					},
+				},
+				"/home/user/foo/bar": map[string]interface{}{
+					"baz": "baz",
+					"qux": "quz",
+				},
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/.chezmoi/exact_foo/bar/baz",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("baz"),
+				),
+				vfst.TestPath("/home/user/.chezmoi/exact_foo/bar/qux",
+					vfst.TestDoesNotExist,
+				),
+			},
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			c := &Config{
