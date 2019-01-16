@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/twpayne/chezmoi/lib/chezmoi"
@@ -55,6 +56,7 @@ func (c *Config) runAddCommand(fs vfs.FS, args []string) error {
 	default:
 		return err
 	}
+	destDirPrefix := ts.DestDir + "/"
 	for _, arg := range args {
 		path, err := filepath.Abs(arg)
 		if err != nil {
@@ -65,11 +67,17 @@ func (c *Config) runAddCommand(fs vfs.FS, args []string) error {
 				if err != nil {
 					return err
 				}
+				if ts.TargetIgnore.Match(strings.TrimPrefix(path, destDirPrefix)) {
+					return nil
+				}
 				return ts.Add(fs, c.add.options, path, info, mutator)
 			}); err != nil {
 				return err
 			}
 		} else {
+			if ts.TargetIgnore.Match(strings.TrimPrefix(path, destDirPrefix)) {
+				continue
+			}
 			if err := ts.Add(fs, c.add.options, path, nil, mutator); err != nil {
 				return err
 			}
