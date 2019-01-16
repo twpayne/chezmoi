@@ -329,12 +329,11 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 
 func (ts *TargetState) addDir(targetName string, entries map[string]Entry, parentDirSourceName string, exact bool, perm os.FileMode, empty bool, mutator Mutator) error {
 	name := filepath.Base(targetName)
-	var existingDir *Dir
 	if entry, ok := entries[name]; ok {
-		existingDir, ok = entry.(*Dir)
-		if !ok {
+		if _, ok = entry.(*Dir); !ok {
 			return fmt.Errorf("%s: already added and not a directory", targetName)
 		}
+		return nil
 	}
 	sourceName := DirAttributes{
 		Name:  name,
@@ -345,12 +344,6 @@ func (ts *TargetState) addDir(targetName string, entries map[string]Entry, paren
 		sourceName = filepath.Join(parentDirSourceName, sourceName)
 	}
 	dir := newDir(sourceName, targetName, exact, perm)
-	if existingDir != nil {
-		if existingDir.sourceName == dir.sourceName {
-			return nil
-		}
-		return mutator.Rename(filepath.Join(ts.SourceDir, existingDir.sourceName), filepath.Join(ts.SourceDir, dir.sourceName))
-	}
 	if err := mutator.Mkdir(filepath.Join(ts.SourceDir, sourceName), 0777&^ts.Umask); err != nil {
 		return err
 	}
