@@ -13,7 +13,7 @@ import (
 
 var vaultCommand = &cobra.Command{
 	Use:   "vault",
-	Short: "Execute the Hashicorp Vault CLI",
+	Short: "Execute the Hashicorp Vault CLI (vault)",
 	RunE:  makeRunE(config.runVaultCommand),
 }
 

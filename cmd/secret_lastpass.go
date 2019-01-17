@@ -17,7 +17,7 @@ import (
 
 var lastpassCommand = &cobra.Command{
 	Use:   "lastpass",
-	Short: "Execute the LastPass CLI",
+	Short: "Execute the LastPass CLI (lpass)",
 	RunE:  makeRunE(config.runLastPassCommand),
 }
 
