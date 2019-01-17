@@ -33,6 +33,7 @@ type Config struct {
 	Verbose          bool
 	SourceVCSCommand string
 	Bitwarden        bitwardenCommandConfig
+	GenericSecret    genericSecretCommandConfig
 	LastPass         lastpassCommandConfig
 	OnePassword      onepasswordCommandConfig
 	Vault            vaultCommandConfig
