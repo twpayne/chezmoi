@@ -466,6 +466,41 @@ As a shortcut,
 starts a shell in your source directory, which can be very useful when
 performing multiple VCS operations.
 
+### Setting Up the Initial VC Repo
+
+Currently, this document only covers the GIT VC system.
+
+#### GIT
+
+If you are installing `chezmoi` for the first time, and do not yet have a git repo setup for your chezmoi controlled dotfiles, the process is outlined below.
+
+Open a shell within your chezmoi source directory.
+
+    $ chezmoi cd
+
+Initialize a git repository.
+
+    $ chezmoi source init
+
+Add any files that you have previously started managing with chezmoi.
+
+    $ git add .
+
+Commit the files into the local git repository.
+
+    $ git commit
+
+##### Optional Steps - Adding to an existing GitHub Repo
+
+Create a new GitHub repo as you normally would within the GitHub interface.
+
+Add the remote source.
+
+    $ git remote add origin <repository url>
+
+*Note* - Depending on what data you have in the remote URL, you may have to fix things up with something like `git branch --set-upstream-to=origin/master master` and then push with something like `git push --set-upstream origin master`.
+
+Exit out of the chezmoi shell with either `exit`, or `Ctrl - D`
 
 ## Importing archives
 
