@@ -30,7 +30,7 @@ func init() {
 	_, err := exec.LookPath(config.Vault.Vault)
 	if err == nil {
 		// vault is installed
-		rootCommand.AddCommand(vaultCommand)
+		secretCommand.AddCommand(vaultCommand)
 	}
 }
 
