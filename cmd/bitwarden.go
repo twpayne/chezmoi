@@ -25,13 +25,16 @@ type bitwardenCommandConfig struct {
 var bitwardenCache = make(map[string]interface{})
 
 func init() {
-	rootCommand.AddCommand(bitwardenCommand)
-
-	persistentFlags := rootCommand.PersistentFlags()
-	persistentFlags.StringVar(&config.Bitwarden.Session, "bitwarden-session", "", "bitwarden session")
-
 	config.Bitwarden.BW = "bw"
 	config.addFunc("bitwarden", config.bitwardenFunc)
+
+	_, err := exec.LookPath(config.Bitwarden.BW)
+	if err == nil {
+		// bw is installed
+		rootCommand.AddCommand(bitwardenCommand)
+		persistentFlags := rootCommand.PersistentFlags()
+		persistentFlags.StringVar(&config.Bitwarden.Session, "bitwarden-session", "", "bitwarden session")
+	}
 }
 
 func (c *Config) runBitwardenCommand(fs vfs.FS, args []string) error {

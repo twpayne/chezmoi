@@ -31,9 +31,13 @@ type LastPassCommandConfig struct {
 var lastPassCache = make(map[string]interface{})
 
 func init() {
-	rootCommand.AddCommand(lastpassCommand)
 	config.LastPass.Lpass = "lpass"
 	config.addFunc("lastpass", config.lastpassFunc)
+	_, err := exec.LookPath(config.LastPass.Lpass)
+	if err == nil {
+		// lpass is installed
+		rootCommand.AddCommand(lastpassCommand)
+	}
 }
 
 func (c *Config) runLastPassCommand(fs vfs.FS, args []string) error {
