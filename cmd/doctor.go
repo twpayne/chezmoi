@@ -62,6 +62,7 @@ func (c *Config) runDoctorCommand(fs vfs.FS, args []string) error {
 		description string
 		name        string
 	}{
+		{description: "1Password", name: config.OnePassword.Op},
 		{description: "Bitwarden", name: config.Bitwarden.BW},
 		{description: "Editor", name: config.getEditor()},
 		{description: "LastPass", name: config.LastPass.Lpass},

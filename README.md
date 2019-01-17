@@ -19,9 +19,9 @@ variables allow you to change behaviour depending on operating system,
 architecture, and hostname.
 
  * Secure: `chezmoi` can retreive secrets from
-   [Bitwarden](https://bitwarden.com/), [LastPass](https://lastpass.com/),
-[pass](https://www.passwordstore.org/), [Vault](https://www.vaultproject.io/),
-your Keychain (on macOS), and [GNOME
+   [1Password](https://1password.com/), [Bitwarden](https://bitwarden.com/),
+[LastPass](https://lastpass.com/), [pass](https://www.passwordstore.org/),
+[Vault](https://www.vaultproject.io/), your Keychain (on macOS), and [GNOME
 Keyring](https://wiki.gnome.org/Projects/GnomeKeyring) (on Linux).
 
  * Robust: `chezmoi` updates all files and symbolic links atomically (using
@@ -300,6 +300,21 @@ Your `~/.local/share/chezmoi/private_dot_gitconfig.tmpl` can then contain:
 
 Any config files containing tokens in plain text should be private (permissions
 `0600`).
+
+### Using 1Password
+
+`chezmoi` includes support for [1Password](https://1password.com/) using the
+[1Password CLI](https://support.1password.com/command-line-getting-started/) to
+expose data as a template function.
+
+Log in and get a session using:
+
+    $ eval $(op login <subdomain>.1password.com <email>)
+
+The structured data from `op get item <uuid>` is available as the `onepassword`
+template function, for example:
+
+    {{ (onepassword "<uuid>").details.password }}
 
 ### Using Bitwarden
 
