@@ -18,17 +18,17 @@ var bitwardenCommand = &cobra.Command{
 }
 
 type bitwardenCommandConfig struct {
-	BW      string
+	Bw      string
 	Session string
 }
 
 var bitwardenCache = make(map[string]interface{})
 
 func init() {
-	config.Bitwarden.BW = "bw"
+	config.Bitwarden.Bw = "bw"
 	config.addFunc("bitwarden", config.bitwardenFunc)
 
-	_, err := exec.LookPath(config.Bitwarden.BW)
+	_, err := exec.LookPath(config.Bitwarden.Bw)
 	if err == nil {
 		// bw is installed
 		secretCommand.AddCommand(bitwardenCommand)
@@ -41,7 +41,7 @@ func (c *Config) runBitwardenCommand(fs vfs.FS, args []string) error {
 	if c.Bitwarden.Session != "" {
 		args = append([]string{"--session", c.Bitwarden.Session}, args...)
 	}
-	return c.exec(append([]string{c.Bitwarden.BW}, args...))
+	return c.exec(append([]string{c.Bitwarden.Bw}, args...))
 }
 
 func (c *Config) bitwardenFunc(args ...string) interface{} {
@@ -49,7 +49,7 @@ func (c *Config) bitwardenFunc(args ...string) interface{} {
 	if data, ok := bitwardenCache[key]; ok {
 		return data
 	}
-	name := c.Bitwarden.BW
+	name := c.Bitwarden.Bw
 	if c.Bitwarden.Session != "" {
 		args = append([]string{"--session", c.Bitwarden.Session}, args...)
 	}
