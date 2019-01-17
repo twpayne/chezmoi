@@ -17,8 +17,7 @@ var passCommand = &cobra.Command{
 	RunE:  makeRunE(config.runPassCommand),
 }
 
-// A PassCommandConfig is a configuration for the pass command.
-type PassCommandConfig struct {
+type passCommandConfig struct {
 	Pass string
 }
 

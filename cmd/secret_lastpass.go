@@ -23,8 +23,7 @@ var lastpassCommand = &cobra.Command{
 
 var lastpassParseNoteRegexp = regexp.MustCompile(`\A([ A-Za-z]*):(.*)\z`)
 
-// A LastPassCommandConfig is a configuration for the lastpass command.
-type LastPassCommandConfig struct {
+type lastpassCommandConfig struct {
 	Lpass string
 }
 

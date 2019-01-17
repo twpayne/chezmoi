@@ -33,10 +33,10 @@ type Config struct {
 	Verbose          bool
 	SourceVCSCommand string
 	Bitwarden        bitwardenCommandConfig
-	LastPass         LastPassCommandConfig
+	LastPass         lastpassCommandConfig
 	OnePassword      onepasswordCommandConfig
 	Vault            vaultCommandConfig
-	Pass             PassCommandConfig
+	Pass             passCommandConfig
 	Data             map[string]interface{}
 	funcs            template.FuncMap
 	add              addCommandConfig

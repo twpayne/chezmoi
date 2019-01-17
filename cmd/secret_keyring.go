@@ -14,7 +14,6 @@ var keyringCommand = &cobra.Command{
 	Short: "Interact with keyring",
 }
 
-// A keyringCommandConfig is a configuration for the keyring command.
 type keyringCommandConfig struct {
 	service  string
 	user     string
