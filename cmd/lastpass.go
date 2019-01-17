@@ -36,7 +36,7 @@ func init() {
 	_, err := exec.LookPath(config.LastPass.Lpass)
 	if err == nil {
 		// lpass is installed
-		rootCommand.AddCommand(lastpassCommand)
+		secretCommand.AddCommand(lastpassCommand)
 	}
 }
 

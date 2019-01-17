@@ -24,7 +24,7 @@ type PassCommandConfig struct {
 var passCache = make(map[string]string)
 
 func init() {
-	rootCommand.AddCommand(passCommand)
+	secretCommand.AddCommand(passCommand)
 	config.Pass.Pass = "pass"
 	config.addFunc("pass", config.passFunc)
 }

@@ -31,7 +31,7 @@ func init() {
 	_, err := exec.LookPath(config.Bitwarden.BW)
 	if err == nil {
 		// bw is installed
-		rootCommand.AddCommand(bitwardenCommand)
+		secretCommand.AddCommand(bitwardenCommand)
 		persistentFlags := rootCommand.PersistentFlags()
 		persistentFlags.StringVar(&config.Bitwarden.Session, "bitwarden-session", "", "bitwarden session")
 	}
