@@ -29,7 +29,7 @@ type keyringKey struct {
 var keyringCache = make(map[keyringKey]string)
 
 func init() {
-	rootCommand.AddCommand(keyringCommand)
+	secretCommand.AddCommand(keyringCommand)
 
 	persistentFlags := keyringCommand.PersistentFlags()
 
