@@ -35,6 +35,7 @@ type Config struct {
 	Bitwarden        bitwardenCommandConfig
 	LastPass         LastPassCommandConfig
 	Vault            vaultCommandConfig
+	Pass             PassCommandConfig
 	Data             map[string]interface{}
 	funcs            template.FuncMap
 	add              addCommandConfig
