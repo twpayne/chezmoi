@@ -28,13 +28,9 @@ func init() {
 	config.Bitwarden.Bw = "bw"
 	config.addTemplateFunc("bitwarden", config.bitwardenFunc)
 
-	_, err := exec.LookPath(config.Bitwarden.Bw)
-	if err == nil {
-		// bw is installed
-		secretCommand.AddCommand(bitwardenCommand)
-		persistentFlags := rootCommand.PersistentFlags()
-		persistentFlags.StringVar(&config.Bitwarden.Session, "bitwarden-session", "", "bitwarden session")
-	}
+	secretCommand.AddCommand(bitwardenCommand)
+	persistentFlags := rootCommand.PersistentFlags()
+	persistentFlags.StringVar(&config.Bitwarden.Session, "bitwarden-session", "", "bitwarden session")
 }
 
 func (c *Config) runBitwardenCommand(fs vfs.FS, args []string) error {

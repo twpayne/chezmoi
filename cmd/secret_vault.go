@@ -27,11 +27,7 @@ func init() {
 	config.Vault.Vault = "vault"
 	config.addTemplateFunc("vault", config.vaultFunc)
 
-	_, err := exec.LookPath(config.Vault.Vault)
-	if err == nil {
-		// vault is installed
-		secretCommand.AddCommand(vaultCommand)
-	}
+	secretCommand.AddCommand(vaultCommand)
 }
 
 func (c *Config) runVaultCommand(fs vfs.FS, args []string) error {

@@ -25,6 +25,7 @@ var passCache = make(map[string]string)
 
 func init() {
 	secretCommand.AddCommand(passCommand)
+
 	config.Pass.Pass = "pass"
 	config.addTemplateFunc("pass", config.passFunc)
 }

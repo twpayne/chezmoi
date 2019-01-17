@@ -27,11 +27,7 @@ func init() {
 	config.OnePassword.Op = "op"
 	config.addTemplateFunc("onepassword", config.onepasswordFunc)
 
-	_, err := exec.LookPath(config.OnePassword.Op)
-	if err == nil {
-		// op is installed
-		secretCommand.AddCommand(onepasswordCommand)
-	}
+	secretCommand.AddCommand(onepasswordCommand)
 }
 
 func (c *Config) runOnePasswordCommand(fs vfs.FS, args []string) error {

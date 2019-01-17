@@ -32,11 +32,8 @@ var lastPassCache = make(map[string]interface{})
 func init() {
 	config.LastPass.Lpass = "lpass"
 	config.addTemplateFunc("lastpass", config.lastpassFunc)
-	_, err := exec.LookPath(config.LastPass.Lpass)
-	if err == nil {
-		// lpass is installed
-		secretCommand.AddCommand(lastpassCommand)
-	}
+
+	secretCommand.AddCommand(lastpassCommand)
 }
 
 func (c *Config) runLastPassCommand(fs vfs.FS, args []string) error {
