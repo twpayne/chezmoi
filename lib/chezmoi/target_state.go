@@ -34,25 +34,25 @@ type ImportTAROptions struct {
 
 // A TargetState represents the root target state.
 type TargetState struct {
-	DestDir      string
-	TargetIgnore PatternSet
-	Umask        os.FileMode
-	SourceDir    string
-	Data         map[string]interface{}
-	Funcs        template.FuncMap
-	Entries      map[string]Entry
+	DestDir       string
+	TargetIgnore  PatternSet
+	Umask         os.FileMode
+	SourceDir     string
+	Data          map[string]interface{}
+	TemplateFuncs template.FuncMap
+	Entries       map[string]Entry
 }
 
 // NewTargetState creates a new TargetState.
-func NewTargetState(destDir string, umask os.FileMode, sourceDir string, data map[string]interface{}, funcs template.FuncMap) *TargetState {
+func NewTargetState(destDir string, umask os.FileMode, sourceDir string, data map[string]interface{}, templateFuncs template.FuncMap) *TargetState {
 	return &TargetState{
-		DestDir:      destDir,
-		TargetIgnore: NewPatternSet(),
-		Umask:        umask,
-		SourceDir:    sourceDir,
-		Data:         data,
-		Funcs:        funcs,
-		Entries:      make(map[string]Entry),
+		DestDir:       destDir,
+		TargetIgnore:  NewPatternSet(),
+		Umask:         umask,
+		SourceDir:     sourceDir,
+		Data:          data,
+		TemplateFuncs: templateFuncs,
+		Entries:       make(map[string]Entry),
 	}
 }
 
@@ -486,7 +486,7 @@ func (ts *TargetState) executeTemplate(fs vfs.FS, path string) ([]byte, error) {
 }
 
 func (ts *TargetState) executeTemplateData(name string, data []byte) (_ []byte, err error) {
-	tmpl, err := template.New(name).Option("missingkey=error").Funcs(ts.Funcs).Parse(string(data))
+	tmpl, err := template.New(name).Option("missingkey=error").Funcs(ts.TemplateFuncs).Parse(string(data))
 	if err != nil {
 		return nil, err
 	}

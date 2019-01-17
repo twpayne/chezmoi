@@ -13,35 +13,25 @@ import (
 
 var bitwardenCommand = &cobra.Command{
 	Use:   "bitwarden",
-	Short: "Execute the Bitwarden CLI",
+	Short: "Execute the Bitwarden CLI (bw)",
 	RunE:  makeRunE(config.runBitwardenCommand),
 }
 
 type bitwardenCommandConfig struct {
-	BW      string
-	Session string
+	Bw string
 }
 
 var bitwardenCache = make(map[string]interface{})
 
 func init() {
-	config.Bitwarden.BW = "bw"
-	config.addFunc("bitwarden", config.bitwardenFunc)
+	config.Bitwarden.Bw = "bw"
+	config.addTemplateFunc("bitwarden", config.bitwardenFunc)
 
-	_, err := exec.LookPath(config.Bitwarden.BW)
-	if err == nil {
-		// bw is installed
-		secretCommand.AddCommand(bitwardenCommand)
-		persistentFlags := rootCommand.PersistentFlags()
-		persistentFlags.StringVar(&config.Bitwarden.Session, "bitwarden-session", "", "bitwarden session")
-	}
+	secretCommand.AddCommand(bitwardenCommand)
 }
 
 func (c *Config) runBitwardenCommand(fs vfs.FS, args []string) error {
-	if c.Bitwarden.Session != "" {
-		args = append([]string{"--session", c.Bitwarden.Session}, args...)
-	}
-	return c.exec(append([]string{c.Bitwarden.BW}, args...))
+	return c.exec(append([]string{c.Bitwarden.Bw}, args...))
 }
 
 func (c *Config) bitwardenFunc(args ...string) interface{} {
@@ -49,10 +39,7 @@ func (c *Config) bitwardenFunc(args ...string) interface{} {
 	if data, ok := bitwardenCache[key]; ok {
 		return data
 	}
-	name := c.Bitwarden.BW
-	if c.Bitwarden.Session != "" {
-		args = append([]string{"--session", c.Bitwarden.Session}, args...)
-	}
+	name := c.Bitwarden.Bw
 	args = append([]string{"get"}, args...)
 	if c.Verbose {
 		fmt.Printf("%s %s\n", name, strings.Join(args, " "))

@@ -13,7 +13,7 @@ import (
 
 var vaultCommand = &cobra.Command{
 	Use:   "vault",
-	Short: "Execute the Hashicorp Vault CLI",
+	Short: "Execute the Hashicorp Vault CLI (vault)",
 	RunE:  makeRunE(config.runVaultCommand),
 }
 
@@ -25,13 +25,9 @@ var vaultCache = make(map[string]interface{})
 
 func init() {
 	config.Vault.Vault = "vault"
-	config.addFunc("vault", config.vaultFunc)
+	config.addTemplateFunc("vault", config.vaultFunc)
 
-	_, err := exec.LookPath(config.Vault.Vault)
-	if err == nil {
-		// vault is installed
-		secretCommand.AddCommand(vaultCommand)
-	}
+	secretCommand.AddCommand(vaultCommand)
 }
 
 func (c *Config) runVaultCommand(fs vfs.FS, args []string) error {

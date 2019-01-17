@@ -11,14 +11,14 @@ import (
 
 func TestEndToEnd(t *testing.T) {
 	for _, tc := range []struct {
-		name      string
-		root      interface{}
-		sourceDir string
-		data      map[string]interface{}
-		funcs     template.FuncMap
-		destDir   string
-		umask     os.FileMode
-		tests     interface{}
+		name          string
+		root          interface{}
+		sourceDir     string
+		data          map[string]interface{}
+		templateFuncs template.FuncMap
+		destDir       string
+		umask         os.FileMode
+		tests         interface{}
 	}{
 		{
 			name: "all",
@@ -94,7 +94,7 @@ func TestEndToEnd(t *testing.T) {
 			if err != nil {
 				t.Fatalf("vfst.NewTestFS(_) == _, _, %v, want _, _, <nil>", err)
 			}
-			ts := NewTargetState(tc.destDir, tc.umask, tc.sourceDir, tc.data, tc.funcs)
+			ts := NewTargetState(tc.destDir, tc.umask, tc.sourceDir, tc.data, tc.templateFuncs)
 			if err := ts.Populate(fs); err != nil {
 				t.Fatalf("ts.Populate(%+v) == %v, want <nil>", fs, err)
 			}
@@ -108,12 +108,12 @@ func TestEndToEnd(t *testing.T) {
 
 func TestTargetStatePopulate(t *testing.T) {
 	for _, tc := range []struct {
-		name      string
-		root      interface{}
-		sourceDir string
-		data      map[string]interface{}
-		funcs     template.FuncMap
-		want      *TargetState
+		name          string
+		root          interface{}
+		sourceDir     string
+		data          map[string]interface{}
+		templateFuncs template.FuncMap
+		want          *TargetState
 	}{
 		{
 			name: "simple_file",
@@ -406,7 +406,7 @@ func TestTargetStatePopulate(t *testing.T) {
 			if err != nil {
 				t.Fatalf("vfst.NewTestFS(_) == _, _, %v, want _, _, <nil>", err)
 			}
-			ts := NewTargetState("/", 0, tc.sourceDir, tc.data, tc.funcs)
+			ts := NewTargetState("/", 0, tc.sourceDir, tc.data, tc.templateFuncs)
 			if err := ts.Populate(fs); err != nil {
 				t.Fatalf("ts.Populate(%+v) == %v, want <nil>", fs, err)
 			}

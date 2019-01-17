@@ -13,7 +13,7 @@ import (
 
 var onepasswordCommand = &cobra.Command{
 	Use:   "onepassword",
-	Short: "Execute the 1Password CLI",
+	Short: "Execute the 1Password CLI (op)",
 	RunE:  makeRunE(config.runOnePasswordCommand),
 }
 
@@ -25,13 +25,9 @@ var onepasswordCache = make(map[string]interface{})
 
 func init() {
 	config.OnePassword.Op = "op"
-	config.addFunc("onepassword", config.onepasswordFunc)
+	config.addTemplateFunc("onepassword", config.onepasswordFunc)
 
-	_, err := exec.LookPath(config.OnePassword.Op)
-	if err == nil {
-		// op is installed
-		secretCommand.AddCommand(onepasswordCommand)
-	}
+	secretCommand.AddCommand(onepasswordCommand)
 }
 
 func (c *Config) runOnePasswordCommand(fs vfs.FS, args []string) error {

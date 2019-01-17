@@ -330,8 +330,7 @@ Unlock your Bitwarden vault:
 
     $ bw unlock
 
-Set the `BW_SESSION` environment variable, as instructed. You can also pass the
-session directly to `chezmoi` using the `--bitwarden-session` flag.
+Set the `BW_SESSION` environment variable, as instructed.
 
 The structured data from `bw get` is available as the `bitwarden` template
 function in your config files, for example:

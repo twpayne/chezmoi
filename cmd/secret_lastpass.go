@@ -17,14 +17,13 @@ import (
 
 var lastpassCommand = &cobra.Command{
 	Use:   "lastpass",
-	Short: "Execute the LastPass CLI",
+	Short: "Execute the LastPass CLI (lpass)",
 	RunE:  makeRunE(config.runLastPassCommand),
 }
 
 var lastpassParseNoteRegexp = regexp.MustCompile(`\A([ A-Za-z]*):(.*)\z`)
 
-// A LastPassCommandConfig is a configuration for the lastpass command.
-type LastPassCommandConfig struct {
+type lastpassCommandConfig struct {
 	Lpass string
 }
 
@@ -32,12 +31,9 @@ var lastPassCache = make(map[string]interface{})
 
 func init() {
 	config.LastPass.Lpass = "lpass"
-	config.addFunc("lastpass", config.lastpassFunc)
-	_, err := exec.LookPath(config.LastPass.Lpass)
-	if err == nil {
-		// lpass is installed
-		secretCommand.AddCommand(lastpassCommand)
-	}
+	config.addTemplateFunc("lastpass", config.lastpassFunc)
+
+	secretCommand.AddCommand(lastpassCommand)
 }
 
 func (c *Config) runLastPassCommand(fs vfs.FS, args []string) error {
