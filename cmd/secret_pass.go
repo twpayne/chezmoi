@@ -26,7 +26,7 @@ var passCache = make(map[string]string)
 func init() {
 	secretCommand.AddCommand(passCommand)
 	config.Pass.Pass = "pass"
-	config.addFunc("pass", config.passFunc)
+	config.addTemplateFunc("pass", config.passFunc)
 }
 
 func (c *Config) runPassCommand(fs vfs.FS, args []string) error {

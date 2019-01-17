@@ -38,7 +38,7 @@ type Config struct {
 	Vault            vaultCommandConfig
 	Pass             passCommandConfig
 	Data             map[string]interface{}
-	funcs            template.FuncMap
+	templateFuncs    template.FuncMap
 	add              addCommandConfig
 	data             dataCommandConfig
 	dump             dumpCommandConfig
@@ -66,14 +66,14 @@ var (
 	}
 )
 
-func (c *Config) addFunc(key string, value interface{}) {
-	if c.funcs == nil {
-		c.funcs = make(template.FuncMap)
+func (c *Config) addTemplateFunc(key string, value interface{}) {
+	if c.templateFuncs == nil {
+		c.templateFuncs = make(template.FuncMap)
 	}
-	if _, ok := c.funcs[key]; ok {
-		panic(fmt.Sprintf("Config.addFunc: %s already defined", key))
+	if _, ok := c.templateFuncs[key]; ok {
+		panic(fmt.Sprintf("Config.addTemplateFunc: %s already defined", key))
 	}
-	c.funcs[key] = value
+	c.templateFuncs[key] = value
 }
 
 func (c *Config) applyArgs(fs vfs.FS, args []string, mutator chezmoi.Mutator) error {
@@ -167,7 +167,7 @@ func (c *Config) getTargetState(fs vfs.FS) (*chezmoi.TargetState, error) {
 	for key, value := range c.Data {
 		data[key] = value
 	}
-	ts := chezmoi.NewTargetState(c.DestDir, os.FileMode(c.Umask), c.SourceDir, data, c.funcs)
+	ts := chezmoi.NewTargetState(c.DestDir, os.FileMode(c.Umask), c.SourceDir, data, c.templateFuncs)
 	readOnlyFS := vfs.NewReadOnlyFS(fs)
 	if err := ts.Populate(readOnlyFS); err != nil {
 		return nil, err

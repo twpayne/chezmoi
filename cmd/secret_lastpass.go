@@ -31,7 +31,7 @@ var lastPassCache = make(map[string]interface{})
 
 func init() {
 	config.LastPass.Lpass = "lpass"
-	config.addFunc("lastpass", config.lastpassFunc)
+	config.addTemplateFunc("lastpass", config.lastpassFunc)
 	_, err := exec.LookPath(config.LastPass.Lpass)
 	if err == nil {
 		// lpass is installed

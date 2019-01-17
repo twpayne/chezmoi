@@ -25,7 +25,7 @@ var onepasswordCache = make(map[string]interface{})
 
 func init() {
 	config.OnePassword.Op = "op"
-	config.addFunc("onepassword", config.onepasswordFunc)
+	config.addTemplateFunc("onepassword", config.onepasswordFunc)
 
 	_, err := exec.LookPath(config.OnePassword.Op)
 	if err == nil {

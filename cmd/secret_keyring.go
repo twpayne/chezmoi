@@ -38,7 +38,7 @@ func init() {
 	persistentFlags.StringVar(&config.keyring.user, "user", "", "user")
 	keyringCommand.MarkPersistentFlagRequired("user")
 
-	config.addFunc("keyring", config.keyringFunc)
+	config.addTemplateFunc("keyring", config.keyringFunc)
 }
 
 func (*Config) keyringFunc(service, user string) string {

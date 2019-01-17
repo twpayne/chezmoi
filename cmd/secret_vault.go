@@ -25,7 +25,7 @@ var vaultCache = make(map[string]interface{})
 
 func init() {
 	config.Vault.Vault = "vault"
-	config.addFunc("vault", config.vaultFunc)
+	config.addTemplateFunc("vault", config.vaultFunc)
 
 	_, err := exec.LookPath(config.Vault.Vault)
 	if err == nil {

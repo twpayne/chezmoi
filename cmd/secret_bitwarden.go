@@ -26,7 +26,7 @@ var bitwardenCache = make(map[string]interface{})
 
 func init() {
 	config.Bitwarden.Bw = "bw"
-	config.addFunc("bitwarden", config.bitwardenFunc)
+	config.addTemplateFunc("bitwarden", config.bitwardenFunc)
 
 	_, err := exec.LookPath(config.Bitwarden.Bw)
 	if err == nil {
