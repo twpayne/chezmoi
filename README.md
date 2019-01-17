@@ -21,8 +21,9 @@ architecture, and hostname.
  * Secure: `chezmoi` can retreive secrets from
    [1Password](https://1password.com/), [Bitwarden](https://bitwarden.com/),
 [LastPass](https://lastpass.com/), [pass](https://www.passwordstore.org/),
-[Vault](https://www.vaultproject.io/), your Keychain (on macOS), and [GNOME
-Keyring](https://wiki.gnome.org/Projects/GnomeKeyring) (on Linux).
+[Vault](https://www.vaultproject.io/), your Keychain (on macOS), [GNOME
+Keyring](https://wiki.gnome.org/Projects/GnomeKeyring) (on Linux), or any
+command-line utility of your choice.
 
  * Robust: `chezmoi` updates all files and symbolic links atomically (using
    [`google/renameio`](https://github.com/google/renameio)) so you are never
@@ -426,6 +427,23 @@ and then include it in your `~/.gitconfig` file with:
 You can query the keyring from the command line:
 
     $ chezmoi keyring get --service=github --user=<github-username>
+
+### Using a generic secret manager
+
+You can use any command line tool that outputs secrets either as a string or in
+JSON format. Choose the binary by setting `genericSecret.command` in your
+configuration file. You can then invoke this command with the `secret` and
+`secretJSON` template functions which return the raw output and JSON-decoded
+output respectively. All of the above secret managers can be supported in this
+way:
+
+| Secret Manager  | `genericSecret.command` | Template skeleton                                 |
+| --------------- | ----------------------- | ------------------------------------------------- |
+| 1Password       | `op`                    | `{{ secretJSON "get" "item" <id> }}`              |
+| Bitwarden       | `bw`                    | `{{ secretJSON "get" <id> }}`                     |
+| Hashicorp Vault | `vault`                 | `{{ secretJSON "kv" "get" "-format=json" <id> }}` |
+| LastPass        | `lpass`                 | `{{ secretJSON "show" "-j" <id> }}`               |
+| pass            | `pass`                  | `{{ secret "show" <id> }}`                        |
 
 ### Using encrypted config files
 
