@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bytes"
 	"fmt"
 	"os/exec"
 	"strings"
@@ -38,7 +39,7 @@ func (c *Config) passFunc(id string) string {
 		return s
 	}
 	name := c.Pass.Pass
-	args := []string{id}
+	args := []string{"show", id}
 	if c.Verbose {
 		fmt.Printf("%s %s\n", name, strings.Join(args, " "))
 	}
@@ -46,7 +47,12 @@ func (c *Config) passFunc(id string) string {
 	if err != nil {
 		chezmoi.ReturnTemplateFuncError(fmt.Errorf("pass: %s %s: %v", name, strings.Join(args, " "), err))
 	}
-	password := strings.Split(string(output), "\n")[0]
+	var password string
+	if index := bytes.IndexByte(output, '\n'); index != -1 {
+		password = string(output[:index])
+	} else {
+		password = string(output)
+	}
 	passCache[id] = password
 	return passCache[id]
 }

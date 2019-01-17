@@ -20,7 +20,8 @@ architecture, and hostname.
 
  * Secure: `chezmoi` can retreive secrets from
    [Bitwarden](https://bitwarden.com/), [LastPass](https://lastpass.com/),
-[Vault](https://www.vaultproject.io/), your Keychain (on macOS), and [GNOME
+[pass](https://www.passwordstore.org/), [Vault](https://www.vaultproject.io/),
+your Keychain (on macOS), and [GNOME
 Keyring](https://wiki.gnome.org/Projects/GnomeKeyring) (on Linux).
 
  * Robust: `chezmoi` updates all files and symbolic links atomically (using
@@ -355,6 +356,15 @@ example, you can extract a private SSH key like this:
 
 Keys in the `note` section written as `CamelCase Words` are converted to
 `camelCaseWords`.
+
+### Using pass
+
+`chezmoi` includes support for [pass](https://www.passwordstore.org/) using the `pass` CLI.
+
+The first line of the output of `pass show <pass-name>` is available as the
+`pass` template function, for example:
+
+    {{ pass "<pass-name>" }}
 
 ### Using Vault
 
