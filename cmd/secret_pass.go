@@ -38,7 +38,7 @@ func (c *Config) passFunc(id string) string {
 		return s
 	}
 	name := c.Pass.Pass
-	args := []string{id}
+	args := []string{"show", id}
 	if c.Verbose {
 		fmt.Printf("%s %s\n", name, strings.Join(args, " "))
 	}
