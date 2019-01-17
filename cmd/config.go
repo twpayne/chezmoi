@@ -34,6 +34,7 @@ type Config struct {
 	SourceVCSCommand string
 	Bitwarden        bitwardenCommandConfig
 	LastPass         LastPassCommandConfig
+	OnePassword      onepasswordCommandConfig
 	Vault            vaultCommandConfig
 	Pass             PassCommandConfig
 	Data             map[string]interface{}
