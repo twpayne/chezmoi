@@ -63,6 +63,7 @@ var (
 	wellKnownAbbreviations = map[string]struct{}{
 		"ANSI": struct{}{},
 		"CPE":  struct{}{},
+		"ID":   struct{}{},
 		"URL":  struct{}{},
 	}
 )
