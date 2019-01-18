@@ -25,15 +25,14 @@ as you want, while still being able to control machine-specific details.
 
  * Personal: Nothing leaves your machine, unlesss you want it to. You can use
    the version control system of your choice to manage your configuration, and
-you can write the configuration file in the format of your choice.  If you
-decide not to use `chezmoi` in the future, it is easy to move your data
-elsewhere.
+you can write the configuration file in the format of your choice.
 
  * Transparent: `chezmoi` includes verbose and dry run modes so you can review
    exactly what changes it will make to your home directory before making them.
 `chezmoi`'s source format uses only regular files and directories that map
 one-to-one with the files, directories, and symlinks in your home directory
-that you choose to manage.
+that you choose to manage. If you decide not to use `chezmoi` in the future,
+it is easy to move your data elsewhere.
 
  * Robust: `chezmoi` updates all files and symbolic links atomically (using
    [`google/renameio`](https://github.com/google/renameio)). You will never be
