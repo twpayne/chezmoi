@@ -9,16 +9,6 @@ Manage your dotfiles securely across multiple machines.
 
 ## Features
 
- * Declarative: you declare the desired state of files, directories, and
-   symbolic links in your home directory and `chezmoi` updates your home
-directory to match that state. What you want is what you get.
-
- * Flexible: your dotfiles can be templates (using
-   [`text/template`](https://godoc.org/text/template) syntax). Predefined
-variables allow you to change behaviour depending on operating system,
-architecture, and hostname. You can share as much configuration across machines
-as you want, while still being able to control machine-specific details.
-
  * Secure: `chezmoi` can retreive secrets from
    [1Password](https://1password.com/), [Bitwarden](https://bitwarden.com/),
 [LastPass](https://lastpass.com/), [pass](https://www.passwordstore.org/),
@@ -27,10 +17,17 @@ Keyring](https://wiki.gnome.org/Projects/GnomeKeyring) (on Linux), or any
 command-line utility of your choice. You can checkout your dotfiles repo on as
 many machines as you want without revealing any secrets to anyone.
 
- * Robust: `chezmoi` updates all files and symbolic links atomically (using
-   [`google/renameio`](https://github.com/google/renameio)). You will never be
-left with incomplete files that could lock you out, even if the update process
-is interrupted.
+ * Flexible: your dotfiles can be templates (using
+   [`text/template`](https://godoc.org/text/template) syntax). Predefined
+variables allow you to change behaviour depending on operating system,
+architecture, and hostname. You can share as much configuration across machines
+as you want, while still being able to control machine-specific details.
+
+ * Personal: Nothing leaves your machine, unlesss you want it to. You can use
+   the version control system of your choice to manage your configuration, and
+you can write the configuration file in the format of your choice.  If you
+decide not to use `chezmoi` in the future, it is easy to move your data
+elsewhere.
 
  * Transparent: `chezmoi` includes verbose and dry run modes so you can review
    exactly what changes it will make to your home directory before making them.
@@ -38,11 +35,14 @@ is interrupted.
 one-to-one with the files, directories, and symlinks in your home directory
 that you choose to manage.
 
- * Personal: Nothing leaves your machine, unlesss you want it to. You can use
-   the version control system of your choice to manage your configuration, and
-you can write the configuration file in the format of your choice.  If you
-decide not to use `chezmoi` in the future, it is easy to move your data
-elsewhere.
+ * Robust: `chezmoi` updates all files and symbolic links atomically (using
+   [`google/renameio`](https://github.com/google/renameio)). You will never be
+left with incomplete files that could lock you out, even if the update process
+is interrupted.
+
+ * Declarative: you declare the desired state of files, directories, and
+   symbolic links in your home directory and `chezmoi` updates your home
+directory to match that state. What you want is what you get.
 
  * Fast and easy to use: `chezmoi` runs in fractions of a second and makes most
    day-to-day operations one line commands.
