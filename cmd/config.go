@@ -45,6 +45,7 @@ type Config struct {
 	data             dataCommandConfig
 	dump             dumpCommandConfig
 	edit             editCommandConfig
+	init             initCommandConfig
 	_import          importCommandConfig
 	keyring          keyringCommandConfig
 }
@@ -111,6 +112,22 @@ func (c *Config) exec(argv []string) error {
 		return nil
 	}
 	return syscall.Exec(path, argv, os.Environ())
+}
+
+// execCmd is like exec but without doing a syscall.
+func (c *Config) execCmd(name string, args ...string) error {
+	cmd := exec.Command(name, args...)
+	if c.Verbose {
+		fmt.Printf("exec %s %s\n", name, strings.Join(args, " "))
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stdout
+	}
+
+	if c.DryRun {
+		return nil
+	}
+
+	return cmd.Run()
 }
 
 func (c *Config) execEditor(argv ...string) error {
