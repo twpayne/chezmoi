@@ -297,7 +297,7 @@ contains:
 
 Your `~/.local/share/chezmoi/private_dot_gitconfig.tmpl` can then contain:
 
-    {{- if .github }}
+    {{- if (index . "github ") }}
     [github]
         user = {{ .github.user }}
         token = {{ .github.token }}
