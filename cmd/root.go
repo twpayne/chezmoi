@@ -12,8 +12,7 @@ import (
 )
 
 var (
-	configFile string
-	config     = Config{
+	config = Config{
 		Umask:            octalIntValue(getUmask()),
 		SourceVCSCommand: "git",
 	}
@@ -45,7 +44,7 @@ func init() {
 
 	persistentFlags := rootCommand.PersistentFlags()
 
-	persistentFlags.StringVarP(&configFile, "config", "c", getDefaultConfigFile(x, homeDir), "config file")
+	persistentFlags.StringVarP(&config.configFile, "config", "c", getDefaultConfigFile(x, homeDir), "config file")
 
 	persistentFlags.BoolVarP(&config.DryRun, "dry-run", "n", false, "dry run")
 	viper.BindPFlag("dry-run", persistentFlags.Lookup("dry-run"))
@@ -63,7 +62,7 @@ func init() {
 	viper.BindPFlag("verbose", persistentFlags.Lookup("verbose"))
 
 	cobra.OnInitialize(func() {
-		viper.SetConfigFile(configFile)
+		viper.SetConfigFile(config.configFile)
 		if err := viper.ReadInConfig(); os.IsNotExist(err) {
 			return
 		} else if err != nil {
