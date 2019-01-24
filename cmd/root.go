@@ -13,7 +13,7 @@ import (
 
 var (
 	config = Config{
-		Umask:            octalIntValue(getUmask()),
+		Umask:            permValue(getUmask()),
 		SourceVCSCommand: "git",
 	}
 	version = "dev"
