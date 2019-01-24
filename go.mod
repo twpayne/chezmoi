@@ -2,6 +2,7 @@ module github.com/twpayne/chezmoi
 
 require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
+	github.com/blang/semver v3.5.1+incompatible
 	github.com/d4l3k/messagediff v1.2.1
 	github.com/danieljoos/wincred v1.0.1 // indirect
 	github.com/godbus/dbus v4.1.0+incompatible // indirect
