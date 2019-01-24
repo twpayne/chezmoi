@@ -12,7 +12,7 @@ import (
 )
 
 var passCommand = &cobra.Command{
-	Use:   "pass",
+	Use:   "pass [args...]",
 	Short: "Execute the pass CLI",
 	RunE:  makeRunE(config.runPassCommand),
 }

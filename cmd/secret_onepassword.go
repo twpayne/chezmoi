@@ -12,7 +12,7 @@ import (
 )
 
 var onepasswordCommand = &cobra.Command{
-	Use:   "onepassword",
+	Use:   "onepassword [args...]",
 	Short: "Execute the 1Password CLI (op)",
 	RunE:  makeRunE(config.runOnePasswordCommand),
 }

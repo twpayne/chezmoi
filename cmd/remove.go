@@ -9,7 +9,7 @@ import (
 )
 
 var removeCommand = &cobra.Command{
-	Use:     "remove",
+	Use:     "remove targets...",
 	Aliases: []string{"rm"},
 	Args:    cobra.MinimumNArgs(1),
 	Short:   "Remove a target from the source state and the destination directory",

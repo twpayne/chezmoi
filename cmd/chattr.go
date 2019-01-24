@@ -13,7 +13,7 @@ import (
 )
 
 var chattrCommand = &cobra.Command{
-	Use:   "chattr",
+	Use:   "chattr attributes targets...",
 	Args:  cobra.MinimumNArgs(2),
 	Short: "Change the attributes of a target in the source state",
 	RunE:  makeRunE(config.runChattrCommand),
