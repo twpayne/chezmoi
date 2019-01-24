@@ -26,6 +26,7 @@ import (
 
 // A Config represents a configuration.
 type Config struct {
+	configFile       string
 	SourceDir        string
 	DestDir          string
 	Umask            octalIntValue
