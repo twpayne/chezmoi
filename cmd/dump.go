@@ -15,7 +15,7 @@ type dumpCommandConfig struct {
 }
 
 var dumpCommand = &cobra.Command{
-	Use:   "dump",
+	Use:   "dump [targets...]",
 	Short: "Write a dump of the target state to stdout",
 	RunE:  makeRunE(config.runDumpCommand),
 }

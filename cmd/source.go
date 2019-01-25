@@ -9,7 +9,7 @@ import (
 )
 
 var sourceCommand = &cobra.Command{
-	Use:   "source",
+	Use:   "source [args...]",
 	Short: "Run the source version control system command in the source directory",
 	RunE:  makeRunE(config.runSourceCommand),
 }

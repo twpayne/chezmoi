@@ -9,7 +9,7 @@ import (
 )
 
 var sourcePathCommand = &cobra.Command{
-	Use:   "source-path",
+	Use:   "source-path [targets...]",
 	Short: "Print the path of a target in the source state",
 	RunE:  makeRunE(config.runSourcePathCommand),
 }

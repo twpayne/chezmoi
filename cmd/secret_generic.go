@@ -12,7 +12,7 @@ import (
 )
 
 var genericSecretCommand = &cobra.Command{
-	Use:   "generic",
+	Use:   "generic [args...]",
 	Short: "Execute a generic secret command",
 	RunE:  makeRunE(config.runGenericSecretCommand),
 }

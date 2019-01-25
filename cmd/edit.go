@@ -11,7 +11,7 @@ import (
 )
 
 var editCommand = &cobra.Command{
-	Use:   "edit",
+	Use:   "edit targets...",
 	Args:  cobra.MinimumNArgs(1),
 	Short: "Edit the source state of a target",
 	RunE:  makeRunE(config.runEditCommand),

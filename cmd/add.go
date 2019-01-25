@@ -12,7 +12,7 @@ import (
 )
 
 var addCommand = &cobra.Command{
-	Use:   "add",
+	Use:   "add targets...",
 	Args:  cobra.MinimumNArgs(1),
 	Short: "Add an existing file, directory, or symlink to the source state",
 	RunE:  makeRunE(config.runAddCommand),

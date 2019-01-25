@@ -8,7 +8,7 @@ import (
 )
 
 var forgetCommand = &cobra.Command{
-	Use:   "forget",
+	Use:   "forget targets...",
 	Args:  cobra.MinimumNArgs(1),
 	Short: "Remove a target from the source state",
 	RunE:  makeRunE(config.runForgetCommand),

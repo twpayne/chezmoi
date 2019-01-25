@@ -12,7 +12,7 @@ import (
 )
 
 var bitwardenCommand = &cobra.Command{
-	Use:   "bitwarden",
+	Use:   "bitwarden [args...]",
 	Short: "Execute the Bitwarden CLI (bw)",
 	RunE:  makeRunE(config.runBitwardenCommand),
 }

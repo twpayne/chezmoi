@@ -10,7 +10,7 @@ import (
 )
 
 var catCommand = &cobra.Command{
-	Use:   "cat",
+	Use:   "cat targets...",
 	Args:  cobra.MinimumNArgs(1),
 	Short: "Write the target state of a file or symlink to stdout",
 	RunE:  makeRunE(config.runCatCommand),

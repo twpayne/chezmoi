@@ -29,7 +29,7 @@ type Config struct {
 	configFile       string
 	SourceDir        string
 	DestDir          string
-	Umask            octalIntValue
+	Umask            permValue
 	DryRun           bool
 	Verbose          bool
 	SourceVCSCommand string
