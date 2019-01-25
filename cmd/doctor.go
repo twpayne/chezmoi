@@ -150,6 +150,10 @@ func (c *Config) runDoctorCommandE(fs vfs.FS, args []string) error {
 			versionArgs:   []string{"version"},
 			versionRegexp: regexp.MustCompile(`^Vault\s+v(\d+\.\d+\.\d+)`),
 		},
+		&doctorBinaryCheck{
+			name:       "generic secret CLI",
+			binaryName: c.GenericSecret.Command,
+		},
 	} {
 		if !check.Enabled() {
 			continue
