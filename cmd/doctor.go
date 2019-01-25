@@ -62,6 +62,11 @@ type doctorCheck interface {
 	Result() string
 }
 
+type doctorCheckResult struct {
+	ok     bool
+	result string
+}
+
 type doctorBinaryCheck struct {
 	name          string
 	binaryName    string
@@ -157,12 +162,12 @@ func (c *Config) runDoctorCommandE(fs vfs.FS, args []string) error {
 			binaryName: c.GenericSecret.Command,
 		},
 	} {
-		ok, result := runDoctorCheck(dc)
-		if !ok {
+		dcr := runDoctorCheck(dc)
+		if !dcr.ok {
 			allOK = false
 		}
-		if result != "" {
-			fmt.Println(result)
+		if dcr.result != "" {
+			fmt.Println(dcr.result)
 		}
 	}
 	if !allOK {
@@ -171,13 +176,13 @@ func (c *Config) runDoctorCommandE(fs vfs.FS, args []string) error {
 	return nil
 }
 
-func runDoctorCheck(dc doctorCheck) (bool, string) {
+func runDoctorCheck(dc doctorCheck) doctorCheckResult {
 	if !dc.Enabled() {
-		return true, ""
+		return doctorCheckResult{ok: true}
 	}
 	ok, err := dc.Check()
 	if err != nil {
-		return false, err.Error()
+		return doctorCheckResult{result: err.Error()}
 	}
 	var prefix string
 	switch {
@@ -188,7 +193,10 @@ func runDoctorCheck(dc doctorCheck) (bool, string) {
 	default:
 		prefix = errorPrefix
 	}
-	return ok, fmt.Sprintf("%s%s", prefix, dc.Result())
+	return doctorCheckResult{
+		ok:     ok,
+		result: fmt.Sprintf("%s%s", prefix, dc.Result()),
+	}
 }
 
 func (c *doctorBinaryCheck) Check() (bool, error) {
