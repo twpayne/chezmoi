@@ -55,6 +55,18 @@ var (
 	}
 )
 
+type doctorCheck interface {
+	Check() (bool, error)
+	Enabled() bool
+	MustSucceed() bool
+	Result() string
+}
+
+type doctorCheckResult struct {
+	ok     bool
+	result string
+}
+
 type doctorBinaryCheck struct {
 	name          string
 	binaryName    string
@@ -86,12 +98,7 @@ func init() {
 
 func (c *Config) runDoctorCommandE(fs vfs.FS, args []string) error {
 	allOK := true
-	for _, check := range []interface {
-		Check() (bool, error)
-		Enabled() bool
-		MustSucceed() bool
-		Result() string
-	}{
+	for _, dc := range []doctorCheck{
 		&doctorDirectoryCheck{
 			name:         "source directory",
 			path:         c.SourceDir,
@@ -150,33 +157,46 @@ func (c *Config) runDoctorCommandE(fs vfs.FS, args []string) error {
 			versionArgs:   []string{"version"},
 			versionRegexp: regexp.MustCompile(`^Vault\s+v(\d+\.\d+\.\d+)`),
 		},
+		&doctorBinaryCheck{
+			name:       "generic secret CLI",
+			binaryName: c.GenericSecret.Command,
+		},
 	} {
-		if !check.Enabled() {
-			continue
+		dcr := runDoctorCheck(dc)
+		if !dcr.ok {
+			allOK = false
 		}
-		ok, err := check.Check()
-		var prefix string
-		switch {
-		case ok:
-			prefix = okPrefix
-		case !ok && !check.MustSucceed():
-			prefix = warningPrefix
-		default:
-			prefix = errorPrefix
-		}
-		if _, err := fmt.Printf("%s%s\n", prefix, check.Result()); err != nil {
-			return err
-		}
-		if err != nil {
-			if _, err := fmt.Println(err); err != nil {
-				return err
-			}
+		if dcr.result != "" {
+			fmt.Println(dcr.result)
 		}
 	}
 	if !allOK {
 		os.Exit(1)
 	}
 	return nil
+}
+
+func runDoctorCheck(dc doctorCheck) doctorCheckResult {
+	if !dc.Enabled() {
+		return doctorCheckResult{ok: true}
+	}
+	ok, err := dc.Check()
+	if err != nil {
+		return doctorCheckResult{result: err.Error()}
+	}
+	var prefix string
+	switch {
+	case ok:
+		prefix = okPrefix
+	case !ok && !dc.MustSucceed():
+		prefix = warningPrefix
+	default:
+		prefix = errorPrefix
+	}
+	return doctorCheckResult{
+		ok:     ok,
+		result: fmt.Sprintf("%s%s", prefix, dc.Result()),
+	}
 }
 
 func (c *doctorBinaryCheck) Check() (bool, error) {
