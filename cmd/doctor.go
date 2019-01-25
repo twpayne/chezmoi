@@ -157,32 +157,38 @@ func (c *Config) runDoctorCommandE(fs vfs.FS, args []string) error {
 			binaryName: c.GenericSecret.Command,
 		},
 	} {
-		if !dc.Enabled() {
-			continue
+		ok, result := runDoctorCheck(dc)
+		if !ok {
+			allOK = false
 		}
-		ok, err := dc.Check()
-		var prefix string
-		switch {
-		case ok:
-			prefix = okPrefix
-		case !ok && !dc.MustSucceed():
-			prefix = warningPrefix
-		default:
-			prefix = errorPrefix
-		}
-		if _, err := fmt.Printf("%s%s\n", prefix, dc.Result()); err != nil {
-			return err
-		}
-		if err != nil {
-			if _, err := fmt.Println(err); err != nil {
-				return err
-			}
+		if result != "" {
+			fmt.Println(result)
 		}
 	}
 	if !allOK {
 		os.Exit(1)
 	}
 	return nil
+}
+
+func runDoctorCheck(dc doctorCheck) (bool, string) {
+	if !dc.Enabled() {
+		return true, ""
+	}
+	ok, err := dc.Check()
+	if err != nil {
+		return false, err.Error()
+	}
+	var prefix string
+	switch {
+	case ok:
+		prefix = okPrefix
+	case !ok && !dc.MustSucceed():
+		prefix = warningPrefix
+	default:
+		prefix = errorPrefix
+	}
+	return ok, fmt.Sprintf("%s%s", prefix, dc.Result())
 }
 
 func (c *doctorBinaryCheck) Check() (bool, error) {
