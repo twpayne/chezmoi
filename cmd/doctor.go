@@ -55,6 +55,13 @@ var (
 	}
 )
 
+type doctorCheck interface {
+	Check() (bool, error)
+	Enabled() bool
+	MustSucceed() bool
+	Result() string
+}
+
 type doctorBinaryCheck struct {
 	name          string
 	binaryName    string
@@ -86,12 +93,7 @@ func init() {
 
 func (c *Config) runDoctorCommandE(fs vfs.FS, args []string) error {
 	allOK := true
-	for _, check := range []interface {
-		Check() (bool, error)
-		Enabled() bool
-		MustSucceed() bool
-		Result() string
-	}{
+	for _, dc := range []doctorCheck{
 		&doctorDirectoryCheck{
 			name:         "source directory",
 			path:         c.SourceDir,
@@ -155,20 +157,20 @@ func (c *Config) runDoctorCommandE(fs vfs.FS, args []string) error {
 			binaryName: c.GenericSecret.Command,
 		},
 	} {
-		if !check.Enabled() {
+		if !dc.Enabled() {
 			continue
 		}
-		ok, err := check.Check()
+		ok, err := dc.Check()
 		var prefix string
 		switch {
 		case ok:
 			prefix = okPrefix
-		case !ok && !check.MustSucceed():
+		case !ok && !dc.MustSucceed():
 			prefix = warningPrefix
 		default:
 			prefix = errorPrefix
 		}
-		if _, err := fmt.Printf("%s%s\n", prefix, check.Result()); err != nil {
+		if _, err := fmt.Printf("%s%s\n", prefix, dc.Result()); err != nil {
 			return err
 		}
 		if err != nil {
