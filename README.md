@@ -109,7 +109,7 @@ the destination directory, where:
    including templates and machine-specific configuration.
 
  * The *source directory* is where `chezmoi` stores the source state, by
-   default `~/.config/share/chezmoi`.
+   default `~/.local/share/chezmoi`.
 
  * The *target state* is the source state computed for the current machine.
 
@@ -457,7 +457,7 @@ You can encrypt your configuration and then only decrypt it when needed:
     $ gpg -d ~/.config/chezmoi/chezmoi.yaml.gpg | chezmoi -c /dev/stdin apply
 
 
-## Managing your `~/.chezmoi` directory with version control
+## Managing your source directory with version control
 
 `chezmoi` has some helper commands to assist managing your source directory
 with version control. The default version control system is `git` but you can
