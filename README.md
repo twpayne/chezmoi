@@ -4,10 +4,16 @@
 [![GoDoc](https://godoc.org/github.com/twpayne/chezmoi?status.svg)](https://godoc.org/github.com/twpayne/chezmoi)
 [![Report Card](https://goreportcard.com/badge/github.com/twpayne/chezmoi)](https://goreportcard.com/report/github.com/twpayne/chezmoi)
 
-Manage your dotfiles securely across multiple machines.
+Manage your dotfiles across multiple machines, securely.
 
 
 ## Features
+
+ * Flexible: your dotfiles can be templates (using
+   [`text/template`](https://godoc.org/text/template) syntax). Predefined
+variables allow you to change behaviour depending on operating system,
+architecture, and hostname. You can share as much configuration across machines
+as you want, while still being able to control machine-specific details.
 
  * Secure: `chezmoi` can retreive secrets from
    [1Password](https://1password.com/), [Bitwarden](https://bitwarden.com/),
@@ -16,12 +22,6 @@ Manage your dotfiles securely across multiple machines.
 Keyring](https://wiki.gnome.org/Projects/GnomeKeyring) (on Linux), or any
 command-line utility of your choice. You can checkout your dotfiles repo on as
 many machines as you want without revealing any secrets to anyone.
-
- * Flexible: your dotfiles can be templates (using
-   [`text/template`](https://godoc.org/text/template) syntax). Predefined
-variables allow you to change behaviour depending on operating system,
-architecture, and hostname. You can share as much configuration across machines
-as you want, while still being able to control machine-specific details.
 
  * Personal: Nothing leaves your machine, unlesss you want it to. You can use
    the version control system of your choice to manage your configuration, and

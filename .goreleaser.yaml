@@ -62,7 +62,7 @@ nfpm:
   vendor: "Tom Payne <twpayne@gmail.com>"
   homepage: "https://github.com/twpayne/chezmoi"
   maintainer: Tom Payne <twpayne@gmail.com>
-  description: "Manage your dotfiles securely across multiple machines."
+  description: "Manage your dotfiles across multiple machines, securely."
   license: MIT
   formats:
     - deb
@@ -91,4 +91,4 @@ brew:
     email: twpayne@gmail.com
   folder: Formula
   homepage: "https://github.com/twpayne/chezmoi"
-  description: "Manage your dotfiles securely across multiple machines."
+  description: "Manage your dotfiles across multiple machines, securely."
