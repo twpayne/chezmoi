@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"path/filepath"
+	"strings"
 
 	"github.com/spf13/cobra"
 	vfs "github.com/twpayne/go-vfs"
@@ -10,8 +11,8 @@ import (
 
 // initCmd represents the init command
 var initCommand = &cobra.Command{
-	Args:  cobra.ExactArgs(1),
-	Use:   "init repo",
+	Args:  cobra.MaximumNArgs(1),
+	Use:   "init [repo]",
 	Short: "Initial setup of the source directory then update the destination directory to match the target state",
 	Long: `Initial setup of the source directory then update the destination directory to match the target state.
 
@@ -49,9 +50,6 @@ func (c *Config) runInitCommand(fs vfs.FS, args []string) error {
 	if err != nil {
 		return err
 	}
-	if vcsInfo.cloneArgsFunc == nil {
-		return fmt.Errorf("%s: cloning not supported", c.SourceVCS.Command)
-	}
 
 	mutator := c.getDefaultMutator(fs)
 
@@ -59,29 +57,50 @@ func (c *Config) runInitCommand(fs vfs.FS, args []string) error {
 		return err
 	}
 
-	cloneArgs := vcsInfo.cloneArgsFunc(args[0], c.SourceDir)
-	if err := c.run("", c.SourceVCS.Command, cloneArgs...); err != nil {
-		return err
-	}
-
-	// FIXME this should be part of struct vcs
-	switch filepath.Base(c.SourceVCS.Command) {
-	case "git":
-		if _, err := fs.Stat(filepath.Join(c.SourceDir, ".gitmodules")); err == nil {
-			for _, args := range [][]string{
-				[]string{"submodule", "init"},
-				[]string{"submodule", "update"},
-			} {
-				if err := c.run(c.SourceDir, c.SourceVCS.Command, args...); err != nil {
-					return err
+	switch len(args) {
+	case 0: // init
+		var initArgs []string
+		if c.SourceVCS.Init != nil {
+			switch v := c.SourceVCS.Init.(type) {
+			case string:
+				initArgs = strings.Split(v, " ")
+			case []string:
+				initArgs = v
+			default:
+				return fmt.Errorf("sourceVCS.init: cannot parse value")
+			}
+		} else {
+			initArgs = vcsInfo.initArgs
+		}
+		if err := c.run(c.SourceDir, c.SourceVCS.Command, initArgs...); err != nil {
+			return err
+		}
+	case 1: // clone
+		if vcsInfo.cloneArgsFunc == nil {
+			return fmt.Errorf("%s: cloning not supported", c.SourceVCS.Command)
+		}
+		cloneArgs := vcsInfo.cloneArgsFunc(args[0], c.SourceDir)
+		if err := c.run("", c.SourceVCS.Command, cloneArgs...); err != nil {
+			return err
+		}
+		// FIXME this should be part of struct vcs
+		switch filepath.Base(c.SourceVCS.Command) {
+		case "git":
+			if _, err := fs.Stat(filepath.Join(c.SourceDir, ".gitmodules")); err == nil {
+				for _, args := range [][]string{
+					[]string{"submodule", "init"},
+					[]string{"submodule", "update"},
+				} {
+					if err := c.run(c.SourceDir, c.SourceVCS.Command, args...); err != nil {
+						return err
+					}
 				}
 			}
 		}
-	}
-
-	if c.init.apply {
-		if err := c.applyArgs(fs, nil, mutator); err != nil {
-			return err
+		if c.init.apply {
+			if err := c.applyArgs(fs, nil, mutator); err != nil {
+				return err
+			}
 		}
 	}
 

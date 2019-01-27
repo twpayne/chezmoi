@@ -26,6 +26,7 @@ import (
 
 type sourceVCSConfig struct {
 	Command string
+	Init    interface{}
 	Pull    interface{}
 }
 
