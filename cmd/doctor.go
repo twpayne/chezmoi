@@ -25,36 +25,6 @@ const (
 	errorPrefix   = "  ERROR: "
 )
 
-type vcsInfo struct {
-	versionArgs   []string
-	versionRegexp *regexp.Regexp
-}
-
-var (
-	vcsInfos = map[string]vcsInfo{
-		"bzr": vcsInfo{
-			versionArgs:   []string{"--version"},
-			versionRegexp: regexp.MustCompile(`^Bazaar (bzr) (\d+\.\d+\.\d+)`),
-		},
-		"cvs": vcsInfo{
-			versionArgs:   []string{"--version"},
-			versionRegexp: regexp.MustCompile(`^Concurrent Versions System \(CVS\) (\d+\.\d+\.\d+)`),
-		},
-		"git": vcsInfo{
-			versionArgs:   []string{"version"},
-			versionRegexp: regexp.MustCompile(`^git version (\d+\.\d+\.\d+)`),
-		},
-		"hg": vcsInfo{
-			versionArgs:   []string{"version"},
-			versionRegexp: regexp.MustCompile(`^Mercurial Distributed SCM \(version (\d+\.\d+\.\d+\))`),
-		},
-		"svn": vcsInfo{
-			versionArgs:   []string{"--version"},
-			versionRegexp: regexp.MustCompile(`^svn, version (\d+\.\d+\.\d+)`),
-		},
-	}
-)
-
 type doctorCheck interface {
 	Check() (bool, error)
 	Enabled() bool
