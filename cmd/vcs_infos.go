@@ -25,7 +25,7 @@ var (
 			cloneArgsFunc: func(repo, dir string) []string {
 				return []string{"clone", repo, dir}
 			},
-			pullArgs:      []string{"pull", "--rebase"},
+			pullArgs:      []string{"pull", "--rebase"}, // FIXME this should be configurable
 			versionArgs:   []string{"version"},
 			versionRegexp: regexp.MustCompile(`^git version (\d+\.\d+\.\d+)`),
 		},

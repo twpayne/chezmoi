@@ -48,6 +48,7 @@ type Config struct {
 	init             initCommandConfig
 	_import          importCommandConfig
 	keyring          keyringCommandConfig
+	update           updateCommandConfig
 }
 
 var (
