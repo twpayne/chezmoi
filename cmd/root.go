@@ -13,8 +13,10 @@ import (
 
 var (
 	config = Config{
-		Umask:            permValue(getUmask()),
-		SourceVCSCommand: "git",
+		Umask: permValue(getUmask()),
+		SourceVCS: sourceVCSConfig{
+			Command: "git",
+		},
 	}
 	version = "dev"
 	commit  = "unknown"

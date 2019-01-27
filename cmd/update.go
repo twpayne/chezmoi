@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/spf13/cobra"
 	vfs "github.com/twpayne/go-vfs"
@@ -30,11 +31,24 @@ func (c *Config) runUpdateCommand(fs vfs.FS, args []string) error {
 	if err != nil {
 		return err
 	}
-	if vcsInfo.pullArgs == nil {
-		return fmt.Errorf("%s: pull not supported", c.SourceVCSCommand)
+	var pullArgs []string
+	if c.SourceVCS.Pull != nil {
+		switch v := c.SourceVCS.Pull.(type) {
+		case string:
+			pullArgs = strings.Split(v, " ")
+		case []string:
+			pullArgs = v
+		default:
+			return fmt.Errorf("sourceVCS.pull: cannot parse value")
+		}
+	} else {
+		pullArgs = vcsInfo.pullArgs
+	}
+	if pullArgs == nil {
+		return fmt.Errorf("%s: pull not supported", c.SourceVCS.Command)
 	}
 
-	if err := c.run(c.SourceDir, c.SourceVCSCommand, vcsInfo.pullArgs...); err != nil {
+	if err := c.run(c.SourceDir, c.SourceVCS.Command, pullArgs...); err != nil {
 		return err
 	}
 

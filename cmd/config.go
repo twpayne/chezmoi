@@ -24,31 +24,36 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
+type sourceVCSConfig struct {
+	Command string
+	Pull    interface{}
+}
+
 // A Config represents a configuration.
 type Config struct {
-	configFile       string
-	SourceDir        string
-	DestDir          string
-	Umask            permValue
-	DryRun           bool
-	Verbose          bool
-	SourceVCSCommand string
-	Bitwarden        bitwardenCommandConfig
-	GenericSecret    genericSecretCommandConfig
-	LastPass         lastpassCommandConfig
-	OnePassword      onepasswordCommandConfig
-	Vault            vaultCommandConfig
-	Pass             passCommandConfig
-	Data             map[string]interface{}
-	templateFuncs    template.FuncMap
-	add              addCommandConfig
-	data             dataCommandConfig
-	dump             dumpCommandConfig
-	edit             editCommandConfig
-	init             initCommandConfig
-	_import          importCommandConfig
-	keyring          keyringCommandConfig
-	update           updateCommandConfig
+	configFile    string
+	SourceDir     string
+	DestDir       string
+	Umask         permValue
+	DryRun        bool
+	Verbose       bool
+	SourceVCS     sourceVCSConfig
+	Bitwarden     bitwardenCommandConfig
+	GenericSecret genericSecretCommandConfig
+	LastPass      lastpassCommandConfig
+	OnePassword   onepasswordCommandConfig
+	Vault         vaultCommandConfig
+	Pass          passCommandConfig
+	Data          map[string]interface{}
+	templateFuncs template.FuncMap
+	add           addCommandConfig
+	data          dataCommandConfig
+	dump          dumpCommandConfig
+	edit          editCommandConfig
+	init          initCommandConfig
+	_import       importCommandConfig
+	keyring       keyringCommandConfig
+	update        updateCommandConfig
 }
 
 var (
@@ -203,9 +208,9 @@ func (c *Config) getTargetState(fs vfs.FS) (*chezmoi.TargetState, error) {
 }
 
 func (c *Config) getVCSInfo() (*vcsInfo, error) {
-	vcsInfo, ok := vcsInfos[filepath.Base(c.SourceVCSCommand)]
+	vcsInfo, ok := vcsInfos[filepath.Base(c.SourceVCS.Command)]
 	if !ok {
-		return nil, fmt.Errorf("%s: unsupported source VCS command", c.SourceVCSCommand)
+		return nil, fmt.Errorf("%s: unsupported source VCS command", c.SourceVCS.Command)
 	}
 	return vcsInfo, nil
 }

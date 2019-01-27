@@ -50,7 +50,7 @@ func (c *Config) runInitCommand(fs vfs.FS, args []string) error {
 		return err
 	}
 	if vcsInfo.cloneArgsFunc == nil {
-		return fmt.Errorf("%s: cloning not supported", c.SourceVCSCommand)
+		return fmt.Errorf("%s: cloning not supported", c.SourceVCS.Command)
 	}
 
 	mutator := c.getDefaultMutator(fs)
@@ -60,19 +60,19 @@ func (c *Config) runInitCommand(fs vfs.FS, args []string) error {
 	}
 
 	cloneArgs := vcsInfo.cloneArgsFunc(args[0], c.SourceDir)
-	if err := c.run("", c.SourceVCSCommand, cloneArgs...); err != nil {
+	if err := c.run("", c.SourceVCS.Command, cloneArgs...); err != nil {
 		return err
 	}
 
 	// FIXME this should be part of struct vcs
-	switch filepath.Base(c.SourceVCSCommand) {
+	switch filepath.Base(c.SourceVCS.Command) {
 	case "git":
 		if _, err := fs.Stat(filepath.Join(c.SourceDir, ".gitmodules")); err == nil {
 			for _, args := range [][]string{
 				[]string{"submodule", "init"},
 				[]string{"submodule", "update"},
 			} {
-				if err := c.run(c.SourceDir, c.SourceVCSCommand, args...); err != nil {
+				if err := c.run(c.SourceDir, c.SourceVCS.Command, args...); err != nil {
 					return err
 				}
 			}

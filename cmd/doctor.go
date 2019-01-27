@@ -72,7 +72,7 @@ func (c *Config) runDoctorCommandE(fs vfs.FS, args []string) error {
 	if vcsInfo, err := c.getVCSInfo(); err == nil {
 		vcsCommandCheck = &doctorBinaryCheck{
 			name:          "source VCS command",
-			binaryName:    c.SourceVCSCommand,
+			binaryName:    c.SourceVCS.Command,
 			versionArgs:   vcsInfo.versionArgs,
 			versionRegexp: vcsInfo.versionRegexp,
 		}
@@ -80,7 +80,7 @@ func (c *Config) runDoctorCommandE(fs vfs.FS, args []string) error {
 		// FIXME print a warning that source VCS command is unsupported
 		vcsCommandCheck = &doctorBinaryCheck{
 			name:       "source VCS command",
-			binaryName: c.SourceVCSCommand,
+			binaryName: c.SourceVCS.Command,
 		}
 	}
 
