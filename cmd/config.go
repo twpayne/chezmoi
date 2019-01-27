@@ -217,6 +217,14 @@ func (c *Config) getTargetState(fs vfs.FS) (*chezmoi.TargetState, error) {
 	return ts, nil
 }
 
+func (c *Config) getVCSInfo() (*vcsInfo, error) {
+	vcsInfo, ok := vcsInfos[filepath.Base(c.SourceVCSCommand)]
+	if !ok {
+		return nil, fmt.Errorf("%s: unsupported source VCS command", c.SourceVCSCommand)
+	}
+	return vcsInfo, nil
+}
+
 func (c *Config) runEditor(argv ...string) error {
 	editor := c.getEditor()
 	if c.Verbose {

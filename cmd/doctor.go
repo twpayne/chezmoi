@@ -68,6 +68,22 @@ func init() {
 }
 
 func (c *Config) runDoctorCommandE(fs vfs.FS, args []string) error {
+	var vcsCommandCheck doctorCheck
+	if vcsInfo, err := c.getVCSInfo(); err == nil {
+		vcsCommandCheck = &doctorBinaryCheck{
+			name:          "source VCS command",
+			binaryName:    c.SourceVCSCommand,
+			versionArgs:   vcsInfo.versionArgs,
+			versionRegexp: vcsInfo.versionRegexp,
+		}
+	} else {
+		// FIXME print a warning that source VCS command is unsupported
+		vcsCommandCheck = &doctorBinaryCheck{
+			name:       "source VCS command",
+			binaryName: c.SourceVCSCommand,
+		}
+	}
+
 	allOK := true
 	for _, dc := range []doctorCheck{
 		&doctorDirectoryCheck{
@@ -88,12 +104,7 @@ func (c *Config) runDoctorCommandE(fs vfs.FS, args []string) error {
 			binaryName:  c.getEditor(),
 			mustSucceed: true,
 		},
-		&doctorBinaryCheck{
-			name:          "source VCS command",
-			binaryName:    c.SourceVCSCommand,
-			versionArgs:   vcsInfos[c.SourceVCSCommand].versionArgs,
-			versionRegexp: vcsInfos[c.SourceVCSCommand].versionRegexp,
-		},
+		vcsCommandCheck,
 		&doctorBinaryCheck{
 			name:          "1Password CLI",
 			binaryName:    c.OnePassword.Op,
