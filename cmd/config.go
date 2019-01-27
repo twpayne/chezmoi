@@ -136,22 +136,6 @@ func (c *Config) exec(argv []string) error {
 	return syscall.Exec(path, argv, os.Environ())
 }
 
-// execCmd is like exec but without doing a syscall.
-func (c *Config) execCmd(name string, args ...string) error {
-	cmd := exec.Command(name, args...)
-	if c.Verbose {
-		fmt.Printf("exec %s %s\n", name, strings.Join(args, " "))
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stdout
-	}
-
-	if c.DryRun {
-		return nil
-	}
-
-	return cmd.Run()
-}
-
 func (c *Config) execEditor(argv ...string) error {
 	return c.exec(append([]string{c.getEditor()}, argv...))
 }
@@ -225,19 +209,28 @@ func (c *Config) getVCSInfo() (*vcsInfo, error) {
 	return vcsInfo, nil
 }
 
-func (c *Config) runEditor(argv ...string) error {
-	editor := c.getEditor()
+// run runs name argv... in dir.
+func (c *Config) run(dir, name string, argv ...string) error {
 	if c.Verbose {
-		fmt.Printf("%s %s\n", editor, strings.Join(argv, " "))
+		if dir == "" {
+			fmt.Printf("%s %s\n", name, strings.Join(argv, " "))
+		} else {
+			fmt.Printf("( cd %s && %s %s )\n", dir, name, strings.Join(argv, " "))
+		}
 	}
 	if c.DryRun {
 		return nil
 	}
-	cmd := exec.Command(editor, argv...)
+	cmd := exec.Command(name, argv...)
+	cmd.Dir = dir
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	cmd.Stderr = os.Stdout
 	return cmd.Run()
+}
+
+func (c *Config) runEditor(argv ...string) error {
+	return c.run("", c.getEditor(), argv...)
 }
 
 func getDefaultConfigFile(x *xdg.XDG, homeDir string) string {
