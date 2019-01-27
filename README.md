@@ -9,7 +9,7 @@ Manage your dotfiles securely across multiple machines.
 
 ## Features
 
- * Secure: `chezmoi` can retreive secrets from
+ * Secure: `chezmoi` can retrieve secrets from
    [1Password](https://1password.com/), [Bitwarden](https://bitwarden.com/),
 [LastPass](https://lastpass.com/), [pass](https://www.passwordstore.org/),
 [Vault](https://www.vaultproject.io/), your Keychain (on macOS), [GNOME
@@ -23,7 +23,7 @@ variables allow you to change behaviour depending on operating system,
 architecture, and hostname. You can share as much configuration across machines
 as you want, while still being able to control machine-specific details.
 
- * Personal: Nothing leaves your machine, unlesss you want it to. You can use
+ * Personal: Nothing leaves your machine, unless you want it to. You can use
    the version control system of your choice to manage your configuration, and
 you can write the configuration file in the format of your choice.
 
