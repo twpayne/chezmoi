@@ -41,21 +41,7 @@ func (c *Config) runAddCommand(fs vfs.FS, args []string) (err error) {
 		return err
 	}
 	mutator := c.getDefaultMutator(fs)
-	info, err := fs.Stat(c.SourceDir)
-	switch {
-	case err == nil && info.Mode().IsDir():
-		if info.Mode().Perm() != 0700 {
-			if err := mutator.Chmod(c.SourceDir, 0700); err != nil {
-				return err
-			}
-		}
-	case os.IsNotExist(err):
-		if err := mutator.Mkdir(c.SourceDir, 0700); err != nil {
-			return err
-		}
-	case err == nil:
-		return fmt.Errorf("%s: not a directory", c.SourceDir)
-	default:
+	if err := c.ensureSourceDirectory(fs, mutator); err != nil {
 		return err
 	}
 	destDirPrefix := ts.DestDir + "/"

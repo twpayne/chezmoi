@@ -100,6 +100,28 @@ func (c *Config) applyArgs(fs vfs.FS, args []string, mutator chezmoi.Mutator) er
 	return nil
 }
 
+func (c *Config) ensureSourceDirectory(fs vfs.FS, mutator chezmoi.Mutator) error {
+	info, err := fs.Stat(c.SourceDir)
+	switch {
+	case err == nil && info.Mode().IsDir():
+		if info.Mode().Perm() != 0700 {
+			if err := mutator.Chmod(c.SourceDir, 0700); err != nil {
+				return err
+			}
+		}
+		return nil
+	case os.IsNotExist(err):
+		if err := mkdirAll(fs, mutator, filepath.Dir(c.SourceDir), 0777); err != nil {
+			return err
+		}
+		return mutator.Mkdir(c.SourceDir, 0700)
+	case err == nil:
+		return fmt.Errorf("%s: not a directory", c.SourceDir)
+	default:
+		return err
+	}
+
+}
 func (c *Config) exec(argv []string) error {
 	path, err := exec.LookPath(argv[0])
 	if err != nil {
@@ -295,6 +317,28 @@ func makeRunE(runCommand func(vfs.FS, []string) error) func(*cobra.Command, []st
 	return func(cmd *cobra.Command, args []string) error {
 		return runCommand(vfs.OSFS, args)
 	}
+}
+
+func mkdirAll(fs vfs.FS, mutator chezmoi.Mutator, path string, perm os.FileMode) error {
+	if parentDir := filepath.Dir(path); parentDir != "." {
+		info, err := fs.Stat(parentDir)
+		if err != nil && os.IsNotExist(err) {
+			if mkdirAllErr := mkdirAll(fs, mutator, parentDir, perm); mkdirAllErr != nil {
+				return mkdirAllErr
+			} else if err != nil {
+				return err
+			} else if err == nil && !info.IsDir() {
+				return fmt.Errorf("%s: not a directory", parentDir)
+			}
+		}
+	}
+	info, err := fs.Stat(path)
+	if err != nil && !os.IsNotExist(err) {
+		return err
+	} else if err == nil && info.IsDir() {
+		return nil
+	}
+	return mutator.Mkdir(path, perm)
 }
 
 func printErrorAndExit(err error) {
