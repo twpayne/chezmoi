@@ -161,6 +161,16 @@ For a full list of commands run:
 
     $ chezmoi help
 
+## Setting up from existing source
+
+If you put your source directory under version control you will eventually want
+to check it out on another host. `chezmoi` can do this for you and make sure all
+directory permissions are setup correctly:
+
+    $ chezmoi init git@github.com:example/dotfiles.git
+    
+Like all other commands, `chezmoi init` also accepts the `-v` (verbose) and `-n`
+(dry run) flag. 
 
 ## Using templates to manage files that vary from machine to machine
 
