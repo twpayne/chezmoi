@@ -81,6 +81,7 @@ type doctorBinaryCheck struct {
 type doctorDirectoryCheck struct {
 	name         string
 	path         string
+	err          error
 	dontWantPerm os.FileMode
 	info         os.FileInfo
 }
@@ -252,12 +253,11 @@ func (c *doctorBinaryCheck) Result() string {
 }
 
 func (c *doctorDirectoryCheck) Check() (bool, error) {
-	var err error
-	c.info, err = os.Stat(c.path)
-	if err != nil && os.IsNotExist(err) {
+	c.info, c.err = os.Stat(c.path)
+	if c.err != nil && os.IsNotExist(c.err) {
 		return false, nil
-	} else if err != nil {
-		return false, err
+	} else if c.err != nil {
+		return false, c.err
 	}
 	if c.info.Mode()&os.ModePerm&c.dontWantPerm != 0 {
 		return false, nil
@@ -274,7 +274,14 @@ func (c *doctorDirectoryCheck) MustSucceed() bool {
 }
 
 func (c *doctorDirectoryCheck) Result() string {
-	return fmt.Sprintf("%s (%s, perm %03o)", c.path, c.name, c.info.Mode()&os.ModePerm)
+	switch {
+	case os.IsNotExist(c.err):
+		return fmt.Sprintf("%s: (%s, not found)", c.path, c.name)
+	case c.err != nil:
+		return fmt.Sprintf("%s: (%s, %v)", c.path, c.name, c.err)
+	default:
+		return fmt.Sprintf("%s (%s, perm %03o)", c.path, c.name, c.info.Mode()&os.ModePerm)
+	}
 }
 
 func (c *doctorFileCheck) Check() (bool, error) {
