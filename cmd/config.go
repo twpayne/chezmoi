@@ -111,24 +111,24 @@ func (c *Config) ensureSourceDirectory(fs vfs.FS, mutator chezmoi.Mutator) error
 	info, err := fs.Stat(c.SourceDir)
 	switch {
 	case err == nil && info.IsDir():
-		if info.Mode().Perm() != 0700 {
-			if err := mutator.Chmod(c.SourceDir, 0700); err != nil {
+		if info.Mode().Perm()&os.FileMode(c.Umask) != 0700&^os.FileMode(c.Umask) {
+			if err := mutator.Chmod(c.SourceDir, 0700&^os.FileMode(c.Umask)); err != nil {
 				return err
 			}
 		}
 		return nil
 	case os.IsNotExist(err):
-		if err := mkdirAll(fs, mutator, filepath.Dir(c.SourceDir), 0777); err != nil {
+		if err := mkdirAll(fs, mutator, filepath.Dir(c.SourceDir), 0777&^os.FileMode(c.Umask)); err != nil {
 			return err
 		}
-		return mutator.Mkdir(c.SourceDir, 0700)
+		return mutator.Mkdir(c.SourceDir, 0700&^os.FileMode(c.Umask))
 	case err == nil:
 		return fmt.Errorf("%s: not a directory", c.SourceDir)
 	default:
 		return err
 	}
-
 }
+
 func (c *Config) exec(argv []string) error {
 	path, err := exec.LookPath(argv[0])
 	if err != nil {
