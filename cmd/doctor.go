@@ -107,7 +107,7 @@ func (c *Config) runDoctorCmd(fs vfs.FS, args []string) error {
 		vcsCommandCheck,
 		&doctorBinaryCheck{
 			name:          "1Password CLI",
-			binaryName:    c.OnePassword.Op,
+			binaryName:    c.Onepassword.Op,
 			versionArgs:   []string{"--version"},
 			versionRegexp: regexp.MustCompile(`^(\d+\.\d+\.\d+)`),
 		},

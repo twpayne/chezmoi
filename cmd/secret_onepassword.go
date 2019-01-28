@@ -24,21 +24,21 @@ type onepasswordCmdConfig struct {
 var onepasswordCache = make(map[string]interface{})
 
 func init() {
-	config.OnePassword.Op = "op"
+	config.Onepassword.Op = "op"
 	config.addTemplateFunc("onepassword", config.onepasswordFunc)
 
 	secretCmd.AddCommand(onepasswordCmd)
 }
 
 func (c *Config) runOnepasswordCmd(fs vfs.FS, args []string) error {
-	return c.exec(append([]string{c.OnePassword.Op}, args...))
+	return c.exec(append([]string{c.Onepassword.Op}, args...))
 }
 
 func (c *Config) onepasswordFunc(item string) interface{} {
 	if data, ok := onepasswordCache[item]; ok {
 		return data
 	}
-	name := c.OnePassword.Op
+	name := c.Onepassword.Op
 	args := []string{"get", "item", item}
 	if c.Verbose {
 		fmt.Printf("%s %s\n", name, strings.Join(args, " "))

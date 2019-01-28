@@ -42,7 +42,7 @@ type Config struct {
 	Bitwarden     bitwardenCmdConfig
 	GenericSecret genericSecretCmdConfig
 	Lastpass      lastpassCmdConfig
-	OnePassword   onepasswordCmdConfig
+	Onepassword   onepasswordCmdConfig
 	Vault         vaultCmdConfig
 	Pass          passCmdConfig
 	Data          map[string]interface{}
