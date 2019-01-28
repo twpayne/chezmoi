@@ -9,18 +9,18 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-var catCommand = &cobra.Command{
+var catCmd = &cobra.Command{
 	Use:   "cat targets...",
 	Args:  cobra.MinimumNArgs(1),
 	Short: "Write the target state of a file or symlink to stdout",
-	RunE:  makeRunE(config.runCatCommand),
+	RunE:  makeRunE(config.runCatCmd),
 }
 
 func init() {
-	rootCommand.AddCommand(catCommand)
+	rootCmd.AddCommand(catCmd)
 }
 
-func (c *Config) runCatCommand(fs vfs.FS, args []string) error {
+func (c *Config) runCatCmd(fs vfs.FS, args []string) error {
 	ts, err := c.getTargetState(fs)
 	if err != nil {
 		return err

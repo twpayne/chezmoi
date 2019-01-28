@@ -9,8 +9,7 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-// initCmd represents the init command
-var initCommand = &cobra.Command{
+var initCmd = &cobra.Command{
 	Args:  cobra.MaximumNArgs(1),
 	Use:   "init [repo]",
 	Short: "Initial setup of the source directory then update the destination directory to match the target state",
@@ -21,8 +20,8 @@ new host. It will clone the given repository into your source directory (see --s
 and make sure that all directory permissions are correct.
 
 After your source directory was checked out and setup (e.g. git submodules) this
-command will automatically invoke the "apply" command to update the destination
-directory. You can use the --apply=false flag to prevent this from happening.
+command will can automatically invoke the "apply" command to update the destination
+directory if you supply the flag.
 `,
 	Example: `
   # Checkout from github using the public HTTPS API
@@ -31,21 +30,21 @@ directory. You can use the --apply=false flag to prevent this from happening.
   # Checkout from github using your private key
   chezmoi init git@github.com:example/dotfiles.git
 `,
-	RunE: makeRunE(config.runInitCommand),
+	RunE: makeRunE(config.runInitCmd),
 }
 
-type initCommandConfig struct {
+type initCmdConfig struct {
 	apply bool
 }
 
 func init() {
-	rootCommand.AddCommand(initCommand)
+	rootCmd.AddCommand(initCmd)
 
-	persistentFlags := initCommand.PersistentFlags()
-	persistentFlags.BoolVar(&config.init.apply, "apply", true, "update destination directory")
+	persistentFlags := initCmd.PersistentFlags()
+	persistentFlags.BoolVar(&config.init.apply, "apply", false, "update destination directory")
 }
 
-func (c *Config) runInitCommand(fs vfs.FS, args []string) error {
+func (c *Config) runInitCmd(fs vfs.FS, args []string) error {
 	vcsInfo, err := c.getVCSInfo()
 	if err != nil {
 		return err

@@ -12,11 +12,11 @@ import (
 )
 
 // doctorCmd represents the doctor command
-var doctorCommand = &cobra.Command{
+var doctorCmd = &cobra.Command{
 	Args:  cobra.NoArgs,
 	Use:   "doctor",
 	Short: "Check your system for potential problems",
-	RunE:  makeRunE(config.runDoctorCommandE),
+	RunE:  makeRunE(config.runDoctorCmd),
 }
 
 const (
@@ -64,10 +64,10 @@ type doctorFileCheck struct {
 }
 
 func init() {
-	rootCommand.AddCommand(doctorCommand)
+	rootCmd.AddCommand(doctorCmd)
 }
 
-func (c *Config) runDoctorCommandE(fs vfs.FS, args []string) error {
+func (c *Config) runDoctorCmd(fs vfs.FS, args []string) error {
 	var vcsCommandCheck doctorCheck
 	if vcsInfo, err := c.getVCSInfo(); err == nil {
 		vcsCommandCheck = &doctorBinaryCheck{
@@ -107,7 +107,7 @@ func (c *Config) runDoctorCommandE(fs vfs.FS, args []string) error {
 		vcsCommandCheck,
 		&doctorBinaryCheck{
 			name:          "1Password CLI",
-			binaryName:    c.OnePassword.Op,
+			binaryName:    c.Onepassword.Op,
 			versionArgs:   []string{"--version"},
 			versionRegexp: regexp.MustCompile(`^(\d+\.\d+\.\d+)`),
 		},
@@ -119,7 +119,7 @@ func (c *Config) runDoctorCommandE(fs vfs.FS, args []string) error {
 		},
 		&doctorBinaryCheck{
 			name:          "LastPass CLI",
-			binaryName:    c.LastPass.Lpass,
+			binaryName:    c.Lastpass.Lpass,
 			versionArgs:   []string{"--version"},
 			versionRegexp: regexp.MustCompile(`^LastPass CLI v(\d+\.\d+\.\d+)`),
 			// chezmoi uses lpass show --json which was added in

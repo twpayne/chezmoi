@@ -8,17 +8,17 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-var diffCommand = &cobra.Command{
+var diffCmd = &cobra.Command{
 	Use:   "diff [targets...]",
 	Short: "Write the diff between the target state and the destination state to stdout",
-	RunE:  makeRunE(config.runDiffCommand),
+	RunE:  makeRunE(config.runDiffCmd),
 }
 
 func init() {
-	rootCommand.AddCommand(diffCommand)
+	rootCmd.AddCommand(diffCmd)
 }
 
-func (c *Config) runDiffCommand(fs vfs.FS, args []string) error {
+func (c *Config) runDiffCmd(fs vfs.FS, args []string) error {
 	mutator := chezmoi.NewLoggingMutator(os.Stdout, chezmoi.NullMutator)
 	return c.applyArgs(fs, args, mutator)
 }

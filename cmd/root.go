@@ -23,7 +23,7 @@ var (
 	date    = "unknown"
 )
 
-var rootCommand = &cobra.Command{
+var rootCmd = &cobra.Command{
 	Use:               "chezmoi",
 	Short:             "Manage your dotfiles across multiple machines, securely",
 	SilenceErrors:     true,
@@ -32,7 +32,7 @@ var rootCommand = &cobra.Command{
 }
 
 func init() {
-	rootCommand.Version = fmt.Sprintf("%s, commit %s, built at %s", version, commit, date)
+	rootCmd.Version = fmt.Sprintf("%s, commit %s, built at %s", version, commit, date)
 
 	homeDir, err := homedir.Dir()
 	if err != nil {
@@ -44,7 +44,7 @@ func init() {
 		printErrorAndExit(err)
 	}
 
-	persistentFlags := rootCommand.PersistentFlags()
+	persistentFlags := rootCmd.PersistentFlags()
 
 	persistentFlags.StringVarP(&config.configFile, "config", "c", getDefaultConfigFile(x, homeDir), "config file")
 
@@ -78,7 +78,7 @@ func init() {
 
 // Execute executes the root command.
 func Execute() {
-	if err := rootCommand.Execute(); err != nil {
+	if err := rootCmd.Execute(); err != nil {
 		printErrorAndExit(err)
 	}
 }

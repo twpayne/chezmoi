@@ -8,18 +8,18 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-var archiveCommand = &cobra.Command{
+var archiveCmd = &cobra.Command{
 	Use:   "archive",
 	Args:  cobra.NoArgs,
 	Short: "Write a tar archive of the target state to stdout",
-	RunE:  makeRunE(config.runArchiveCommand),
+	RunE:  makeRunE(config.runArchiveCmd),
 }
 
 func init() {
-	rootCommand.AddCommand(archiveCommand)
+	rootCmd.AddCommand(archiveCmd)
 }
 
-func (c *Config) runArchiveCommand(fs vfs.FS, args []string) error {
+func (c *Config) runArchiveCmd(fs vfs.FS, args []string) error {
 	ts, err := c.getTargetState(fs)
 	if err != nil {
 		return err

@@ -295,8 +295,8 @@ func TestChattrCommand(t *testing.T) {
 				t.Fatalf("vfst.NewTestFS(_) == _, _, %v, want _, _, <nil>", err)
 			}
 			defer cleanup()
-			if err := c.runChattrCommand(fs, tc.args); err != nil {
-				t.Errorf("c.runChattrCommand(fs, nil, %+v) == %v, want <nil>", tc.args, err)
+			if err := c.runChattrCmd(fs, tc.args); err != nil {
+				t.Errorf("c.runChattrCmd(fs, nil, %+v) == %v, want <nil>", tc.args, err)
 			}
 			vfst.RunTests(t, fs, "", tc.tests)
 		})

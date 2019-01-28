@@ -15,36 +15,36 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-var lastpassCommand = &cobra.Command{
+var lastpassCmd = &cobra.Command{
 	Use:   "lastpass [args...]",
 	Short: "Execute the LastPass CLI (lpass)",
-	RunE:  makeRunE(config.runLastPassCommand),
+	RunE:  makeRunE(config.runLastpassCmd),
 }
 
 var lastpassParseNoteRegexp = regexp.MustCompile(`\A([ A-Za-z]*):(.*)\z`)
 
-type lastpassCommandConfig struct {
+type lastpassCmdConfig struct {
 	Lpass string
 }
 
 var lastPassCache = make(map[string]interface{})
 
 func init() {
-	config.LastPass.Lpass = "lpass"
+	config.Lastpass.Lpass = "lpass"
 	config.addTemplateFunc("lastpass", config.lastpassFunc)
 
-	secretCommand.AddCommand(lastpassCommand)
+	secretCmd.AddCommand(lastpassCmd)
 }
 
-func (c *Config) runLastPassCommand(fs vfs.FS, args []string) error {
-	return c.exec(append([]string{c.LastPass.Lpass}, args...))
+func (c *Config) runLastpassCmd(fs vfs.FS, args []string) error {
+	return c.exec(append([]string{c.Lastpass.Lpass}, args...))
 }
 
 func (c *Config) lastpassFunc(id string) interface{} {
 	if data, ok := lastPassCache[id]; ok {
 		return data
 	}
-	name := c.LastPass.Lpass
+	name := c.Lastpass.Lpass
 	args := []string{"show", "-j", id}
 	if c.Verbose {
 		fmt.Printf("%s %s\n", name, strings.Join(args, " "))

@@ -8,18 +8,23 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-var cdCommand = &cobra.Command{
+var cdCmd = &cobra.Command{
 	Use:   "cd",
 	Args:  cobra.NoArgs,
 	Short: "Launch a shell in the source directory",
-	RunE:  makeRunE(config.runCDCommand),
+	RunE:  makeRunE(config.runCDCmd),
 }
 
 func init() {
-	rootCommand.AddCommand(cdCommand)
+	rootCmd.AddCommand(cdCmd)
 }
 
-func (c *Config) runCDCommand(fs vfs.FS, args []string) error {
+func (c *Config) runCDCmd(fs vfs.FS, args []string) error {
+	mutator := c.getDefaultMutator(fs)
+	if err := c.ensureSourceDirectory(fs, mutator); err != nil {
+		return err
+	}
+
 	if err := os.Chdir(c.SourceDir); err != nil {
 		return err
 	}

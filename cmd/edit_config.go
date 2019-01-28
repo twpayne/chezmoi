@@ -9,13 +9,13 @@ var editConfigCommand = &cobra.Command{
 	Use:   "edit-config",
 	Args:  cobra.NoArgs,
 	Short: "Edit the configuration file",
-	RunE:  makeRunE(config.runEditConfigCommand),
+	RunE:  makeRunE(config.runEditConfigCmd),
 }
 
 func init() {
-	rootCommand.AddCommand(editConfigCommand)
+	rootCmd.AddCommand(editConfigCommand)
 }
 
-func (c *Config) runEditConfigCommand(fs vfs.FS, args []string) error {
+func (c *Config) runEditConfigCmd(fs vfs.FS, args []string) error {
 	return c.execEditor(c.configFile)
 }

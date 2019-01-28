@@ -8,18 +8,18 @@ import (
 	keyring "github.com/zalando/go-keyring"
 )
 
-var keyringGetCommand = &cobra.Command{
+var keyringGetCmd = &cobra.Command{
 	Use:   "get",
 	Args:  cobra.NoArgs,
 	Short: "Get a password from keyring",
-	RunE:  makeRunE(config.runKeyringGetCommand),
+	RunE:  makeRunE(config.runKeyringGetCmd),
 }
 
 func init() {
-	keyringCommand.AddCommand(keyringGetCommand)
+	keyringCmd.AddCommand(keyringGetCmd)
 }
 
-func (c *Config) runKeyringGetCommand(fs vfs.FS, args []string) error {
+func (c *Config) runKeyringGetCmd(fs vfs.FS, args []string) error {
 	password, err := keyring.Get(c.keyring.service, c.keyring.user)
 	if err != nil {
 		return err

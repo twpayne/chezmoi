@@ -8,25 +8,25 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-type updateCommandConfig struct {
+type updateCmdConfig struct {
 	apply bool
 }
 
-var updateCommand = &cobra.Command{
+var updateCmd = &cobra.Command{
 	Use:   "update",
 	Args:  cobra.NoArgs,
 	Short: "Pull changes from the source VCS and apply any changes",
-	RunE:  makeRunE(config.runUpdateCommand),
+	RunE:  makeRunE(config.runUpdateCmd),
 }
 
 func init() {
-	rootCommand.AddCommand(updateCommand)
+	rootCmd.AddCommand(updateCmd)
 
-	persistentFlags := updateCommand.PersistentFlags()
+	persistentFlags := updateCmd.PersistentFlags()
 	persistentFlags.BoolVarP(&config.update.apply, "apply", "a", true, "apply after pulling")
 }
 
-func (c *Config) runUpdateCommand(fs vfs.FS, args []string) error {
+func (c *Config) runUpdateCmd(fs vfs.FS, args []string) error {
 	vcsInfo, err := c.getVCSInfo()
 	if err != nil {
 		return err

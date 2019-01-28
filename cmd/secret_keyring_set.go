@@ -10,21 +10,21 @@ import (
 	"golang.org/x/crypto/ssh/terminal"
 )
 
-var keyringSetCommand = &cobra.Command{
+var keyringSetCmd = &cobra.Command{
 	Use:   "set",
 	Args:  cobra.NoArgs,
 	Short: "Set a password in keyring",
-	RunE:  makeRunE(config.runKeyringSetCommand),
+	RunE:  makeRunE(config.runKeyringSetCmd),
 }
 
 func init() {
-	keyringCommand.AddCommand(keyringSetCommand)
+	keyringCmd.AddCommand(keyringSetCmd)
 
-	persistentFlags := keyringSetCommand.PersistentFlags()
+	persistentFlags := keyringSetCmd.PersistentFlags()
 	persistentFlags.StringVar(&config.keyring.password, "password", "", "password")
 }
 
-func (c *Config) runKeyringSetCommand(fs vfs.FS, args []string) error {
+func (c *Config) runKeyringSetCmd(fs vfs.FS, args []string) error {
 	passwordString := c.keyring.password
 	if passwordString == "" {
 		fmt.Print("Password: ")

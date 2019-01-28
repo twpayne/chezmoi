@@ -8,17 +8,17 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-var sourcePathCommand = &cobra.Command{
+var sourcePathCmd = &cobra.Command{
 	Use:   "source-path [targets...]",
 	Short: "Print the path of a target in the source state",
-	RunE:  makeRunE(config.runSourcePathCommand),
+	RunE:  makeRunE(config.runSourcePathCmd),
 }
 
 func init() {
-	rootCommand.AddCommand(sourcePathCommand)
+	rootCmd.AddCommand(sourcePathCmd)
 }
 
-func (c *Config) runSourcePathCommand(fs vfs.FS, args []string) error {
+func (c *Config) runSourcePathCmd(fs vfs.FS, args []string) error {
 	ts, err := c.getTargetState(fs)
 	if err != nil {
 		return err

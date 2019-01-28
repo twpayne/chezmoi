@@ -8,19 +8,19 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-var removeCommand = &cobra.Command{
+var removeCmd = &cobra.Command{
 	Use:     "remove targets...",
 	Aliases: []string{"rm"},
 	Args:    cobra.MinimumNArgs(1),
 	Short:   "Remove a target from the source state and the destination directory",
-	RunE:    makeRunE(config.runRemoveCommand),
+	RunE:    makeRunE(config.runRemoveCmd),
 }
 
 func init() {
-	rootCommand.AddCommand(removeCommand)
+	rootCmd.AddCommand(removeCmd)
 }
 
-func (c *Config) runRemoveCommand(fs vfs.FS, args []string) error {
+func (c *Config) runRemoveCmd(fs vfs.FS, args []string) error {
 	ts, err := c.getTargetState(fs)
 	if err != nil {
 		return err
