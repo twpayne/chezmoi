@@ -124,18 +124,23 @@ the destination directory, where:
  * The *config file* contains machine-specific configuration, by default it is
    `~/.config/chezmoi/chezmoi.yaml`.
 
+Initialize `chezmoi`:
+
+    $ chezmoi init
+
+This will create a new `git` repository in `~/.local/share/chezmoi` with
+permissions `0700` where `chezmoi` will store the source state.  `chezmoi`
+generally only modifies files in the working copy. It is your responsibility to
+commit changes.
+
+`chezmoi` works with many other version control systems too. See "Using non-git
+version control systems" below if you don't want to use `git`.
+
 Manage an existing file with `chezmoi`:
 
     $ chezmoi add ~/.bashrc
 
-This will create the source directory `~/.local/share/chezmoi` with permissions
-`0600` where `chezmoi` will store the source state (if it does not already
-exist), and copy `~/.bashrc` to `~/.local/share/chezmoi/dot_bashrc`.
-
-You should manage your `~/.local/share/chezmoi` directory with the version
-control system of your choice. `chezmoi` will ignore all files and directories
-beginning with a `.` in this directory, including directories like `.git` and
-`.hg`.
+This will copy `~/.bashrc` to `~/.local/share/chezmoi/dot_bashrc`.
 
 Edit the source state:
 
@@ -157,20 +162,56 @@ changes they will make to the file system, and the `-n` (dry run) flag to not
 make any actual changes. The combination `-n` `-v` is very useful if you want
 to see exactly what changes would be made.
 
+Finally, change to the source directory, commit your changes, and return to
+where you were:
+
+    $ chezmoi cd
+    $ git add dot_bashrc
+    $ git commit -m "Updated .bashrc"
+    $ exit
+
 For a full list of commands run:
 
     $ chezmoi help
 
-## Setting up from existing source
 
-If you put your source directory under version control you will eventually want
-to check it out on another host. `chezmoi` can do this for you and make sure all
-directory permissions are setup correctly:
+## Using a hosted repo to manage your dotfiles across multiple machines
 
-    $ chezmoi init git@github.com:example/dotfiles.git
-    
-Like all other commands, `chezmoi init` also accepts the `-v` (verbose) and `-n`
-(dry run) flag. 
+`chezmoi` relies on your version control system and hosted repo to share
+changes across multiple machines. You should create a repo on the source code
+repository of your choice (e.g. [Bitbucket](https://bitbucket.org),
+[Github](https://github.com/), or [GitLab](https://gitlab.com), many people
+call their repo `dotfiles`) and push the repo in the source directory here. For
+example:
+
+    $ chezmoi cd
+    $ git remote add origin https://github.com/username/dotfiles.git
+    $ git push -u origin master
+    $ exit
+
+On another machine you can checkout this repo:
+
+    $ chezmoi init https://github.com/username/dotfiles.git
+
+You can then see what would be changed:
+
+    $ chezmoi diff
+
+If you're happy with the changes then apply them:
+
+    $ chezmoi apply
+
+The above commands can be combined into a single init, checkout, and apply:
+
+    $ chezmoi init --apply --verbose https://github.com/username/dotfiles.git
+
+You can pull the changes from your repo and apply them in a single command:
+
+    $ chezmoi update
+
+This runs `git pull --rebase` in your source directory and then `chezmoi
+apply`.
+
 
 ## Using templates to manage files that vary from machine to machine
 
@@ -467,74 +508,6 @@ You can encrypt your configuration and then only decrypt it when needed:
     $ gpg -d ~/.config/chezmoi/chezmoi.yaml.gpg | chezmoi -c /dev/stdin apply
 
 
-## Managing your source directory with version control
-
-`chezmoi` has some helper commands to assist managing your source directory
-with version control. The default version control system is `git` but you can
-change this by setting `sourceVCS.command` in your
-`~/.config/chezmoi/chezmoi.yaml` file, for example, if you want to use
-Mercurial:
-
-    sourceVCS:
-      command: hg
-
-`chezmoi source` is then a shortcut to running `sourceVCS.command` in your
-`~/.local/share/chezmoi` directory. For example you can push the current branch
-with:
-
-    $ chezmoi source push
-
-Extra arguments are passed along unchanged, although you'll need to use `--`
-stop `chezmoi` from interpreting extra flags. For example:
-
-    $ chezmoi source pull -- --rebase
-
-The `source` command accepts the usual `-n` and `-v` flags, so you can see
-exactly what it will run without executing it.
-
-As a shortcut,
-
-    $ chezmoi cd
-
-starts a shell in your source directory, which can be very useful when
-performing multiple VCS operations.
-
-### Setting Up the Initial VC Repo
-
-Currently, this document only covers the GIT VC system.
-
-#### GIT
-
-If you are installing `chezmoi` for the first time, and do not yet have a git repo setup for your chezmoi controlled dotfiles, the process is outlined below.
-
-Open a shell within your chezmoi source directory.
-
-    $ chezmoi cd
-
-Initialize a git repository.
-
-    $ chezmoi source init
-
-Add any files that you have previously started managing with chezmoi.
-
-    $ git add .
-
-Commit the files into the local git repository.
-
-    $ git commit
-
-##### Optional Steps - Adding to an existing GitHub Repo
-
-Create a new GitHub repo as you normally would within the GitHub interface.
-
-Add the remote source.
-
-    $ git remote add origin <repository url>
-
-*Note* - Depending on what data you have in the remote URL, you may have to fix things up with something like `git branch --set-upstream-to=origin/master master` and then push with something like `git push --set-upstream origin master`.
-
-Exit out of the chezmoi shell with either `exit`, or `Ctrl - D`
-
 ## Importing archives
 
 It is occasionally useful to import entire archives of configuration into your
@@ -562,6 +535,21 @@ target state. A particularly useful command is:
     $ chezmoi archive | tar tvf -
 
 which lists all the targets in the target state.
+
+
+## Using non-`git` version control systems
+
+By default, `chezmoi` uses `git`, but you can use any version control system of
+your choice. In your config file, specify the command to use. For example, to
+use Mercurial specify:
+
+    sourceVCS:
+      command: hg
+
+The source VCS command is used in the `chezmoi` commands `init`, `source`, and
+`update`, and support for VCSes other than `git` is limited but easy to add. If
+you'd like to see your VCS better supported, please [open an issue on
+Github](https://github.com/twpayne/chezmoi/issues/new).
 
 
 ## Under the hood
