@@ -20,6 +20,11 @@ func init() {
 }
 
 func (c *Config) runCDCommand(fs vfs.FS, args []string) error {
+	mutator := c.getDefaultMutator(fs)
+	if err := c.ensureSourceDirectory(fs, mutator); err != nil {
+		return err
+	}
+
 	if err := os.Chdir(c.SourceDir); err != nil {
 		return err
 	}
