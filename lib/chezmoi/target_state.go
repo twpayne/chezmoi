@@ -98,7 +98,7 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 	}
 
 	switch {
-	case info.Mode().IsDir():
+	case info.IsDir():
 		perm := info.Mode().Perm()
 		infos, err := fs.ReadDir(targetPath)
 		if err != nil {
@@ -260,7 +260,7 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 			return nil
 		}
 		switch {
-		case info.Mode().IsDir():
+		case info.IsDir():
 			components := splitPathList(relPath)
 			das := parseDirNameComponents(components)
 			dns := dirNames(das)

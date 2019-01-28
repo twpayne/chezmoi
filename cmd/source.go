@@ -27,5 +27,5 @@ func (c *Config) runSourceCommand(fs vfs.FS, args []string) error {
 			return err
 		}
 	}
-	return c.exec(append([]string{c.SourceVCSCommand}, args...))
+	return c.exec(append([]string{c.SourceVCS.Command}, args...))
 }

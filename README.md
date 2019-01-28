@@ -471,13 +471,14 @@ You can encrypt your configuration and then only decrypt it when needed:
 
 `chezmoi` has some helper commands to assist managing your source directory
 with version control. The default version control system is `git` but you can
-change this by setting `sourceVCSCommand` in your
+change this by setting `sourceVCS.command` in your
 `~/.config/chezmoi/chezmoi.yaml` file, for example, if you want to use
 Mercurial:
 
-    sourceVCSCommand: hg
+    sourceVCS:
+      command: hg
 
-`chezmoi source` is then a shortcut to running `sourceVCSCommand` in your
+`chezmoi source` is then a shortcut to running `sourceVCS.command` in your
 `~/.local/share/chezmoi` directory. For example you can push the current branch
 with:
 

@@ -93,7 +93,7 @@ func (d *Dir) Apply(fs vfs.FS, destDir string, ignore func(string) bool, umask o
 	targetPath := filepath.Join(destDir, d.targetName)
 	info, err := fs.Lstat(targetPath)
 	switch {
-	case err == nil && info.Mode().IsDir():
+	case err == nil && info.IsDir():
 		if info.Mode().Perm() != d.Perm&^umask {
 			if err := mutator.Chmod(targetPath, d.Perm&^umask); err != nil {
 				return err

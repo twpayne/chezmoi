@@ -24,30 +24,37 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
+type sourceVCSConfig struct {
+	Command string
+	Init    interface{}
+	Pull    interface{}
+}
+
 // A Config represents a configuration.
 type Config struct {
-	configFile       string
-	SourceDir        string
-	DestDir          string
-	Umask            permValue
-	DryRun           bool
-	Verbose          bool
-	SourceVCSCommand string
-	Bitwarden        bitwardenCommandConfig
-	GenericSecret    genericSecretCommandConfig
-	LastPass         lastpassCommandConfig
-	OnePassword      onepasswordCommandConfig
-	Vault            vaultCommandConfig
-	Pass             passCommandConfig
-	Data             map[string]interface{}
-	templateFuncs    template.FuncMap
-	add              addCommandConfig
-	data             dataCommandConfig
-	dump             dumpCommandConfig
-	edit             editCommandConfig
-	init             initCommandConfig
-	_import          importCommandConfig
-	keyring          keyringCommandConfig
+	configFile    string
+	SourceDir     string
+	DestDir       string
+	Umask         permValue
+	DryRun        bool
+	Verbose       bool
+	SourceVCS     sourceVCSConfig
+	Bitwarden     bitwardenCommandConfig
+	GenericSecret genericSecretCommandConfig
+	LastPass      lastpassCommandConfig
+	OnePassword   onepasswordCommandConfig
+	Vault         vaultCommandConfig
+	Pass          passCommandConfig
+	Data          map[string]interface{}
+	templateFuncs template.FuncMap
+	add           addCommandConfig
+	data          dataCommandConfig
+	dump          dumpCommandConfig
+	edit          editCommandConfig
+	init          initCommandConfig
+	_import       importCommandConfig
+	keyring       keyringCommandConfig
+	update        updateCommandConfig
 }
 
 var (
@@ -100,6 +107,28 @@ func (c *Config) applyArgs(fs vfs.FS, args []string, mutator chezmoi.Mutator) er
 	return nil
 }
 
+func (c *Config) ensureSourceDirectory(fs vfs.FS, mutator chezmoi.Mutator) error {
+	info, err := fs.Stat(c.SourceDir)
+	switch {
+	case err == nil && info.IsDir():
+		if info.Mode().Perm()&os.FileMode(c.Umask) != 0700&^os.FileMode(c.Umask) {
+			if err := mutator.Chmod(c.SourceDir, 0700&^os.FileMode(c.Umask)); err != nil {
+				return err
+			}
+		}
+		return nil
+	case os.IsNotExist(err):
+		if err := mkdirAll(fs, mutator, filepath.Dir(c.SourceDir), 0777&^os.FileMode(c.Umask)); err != nil {
+			return err
+		}
+		return mutator.Mkdir(c.SourceDir, 0700&^os.FileMode(c.Umask))
+	case err == nil:
+		return fmt.Errorf("%s: not a directory", c.SourceDir)
+	default:
+		return err
+	}
+}
+
 func (c *Config) exec(argv []string) error {
 	path, err := exec.LookPath(argv[0])
 	if err != nil {
@@ -112,22 +141,6 @@ func (c *Config) exec(argv []string) error {
 		return nil
 	}
 	return syscall.Exec(path, argv, os.Environ())
-}
-
-// execCmd is like exec but without doing a syscall.
-func (c *Config) execCmd(name string, args ...string) error {
-	cmd := exec.Command(name, args...)
-	if c.Verbose {
-		fmt.Printf("exec %s %s\n", name, strings.Join(args, " "))
-		cmd.Stdout = os.Stdout
-		cmd.Stderr = os.Stdout
-	}
-
-	if c.DryRun {
-		return nil
-	}
-
-	return cmd.Run()
 }
 
 func (c *Config) execEditor(argv ...string) error {
@@ -195,19 +208,36 @@ func (c *Config) getTargetState(fs vfs.FS) (*chezmoi.TargetState, error) {
 	return ts, nil
 }
 
-func (c *Config) runEditor(argv ...string) error {
-	editor := c.getEditor()
+func (c *Config) getVCSInfo() (*vcsInfo, error) {
+	vcsInfo, ok := vcsInfos[filepath.Base(c.SourceVCS.Command)]
+	if !ok {
+		return nil, fmt.Errorf("%s: unsupported source VCS command", c.SourceVCS.Command)
+	}
+	return vcsInfo, nil
+}
+
+// run runs name argv... in dir.
+func (c *Config) run(dir, name string, argv ...string) error {
 	if c.Verbose {
-		fmt.Printf("%s %s\n", editor, strings.Join(argv, " "))
+		if dir == "" {
+			fmt.Printf("%s %s\n", name, strings.Join(argv, " "))
+		} else {
+			fmt.Printf("( cd %s && %s %s )\n", dir, name, strings.Join(argv, " "))
+		}
 	}
 	if c.DryRun {
 		return nil
 	}
-	cmd := exec.Command(editor, argv...)
+	cmd := exec.Command(name, argv...)
+	cmd.Dir = dir
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
+	cmd.Stderr = os.Stdout
 	return cmd.Run()
+}
+
+func (c *Config) runEditor(argv ...string) error {
+	return c.run("", c.getEditor(), argv...)
 }
 
 func getDefaultConfigFile(x *xdg.XDG, homeDir string) string {
@@ -295,6 +325,28 @@ func makeRunE(runCommand func(vfs.FS, []string) error) func(*cobra.Command, []st
 	return func(cmd *cobra.Command, args []string) error {
 		return runCommand(vfs.OSFS, args)
 	}
+}
+
+func mkdirAll(fs vfs.FS, mutator chezmoi.Mutator, path string, perm os.FileMode) error {
+	if parentDir := filepath.Dir(path); parentDir != "." {
+		info, err := fs.Stat(parentDir)
+		if err != nil && os.IsNotExist(err) {
+			if mkdirAllErr := mkdirAll(fs, mutator, parentDir, perm); mkdirAllErr != nil {
+				return mkdirAllErr
+			} else if err != nil {
+				return err
+			} else if err == nil && !info.IsDir() {
+				return fmt.Errorf("%s: not a directory", parentDir)
+			}
+		}
+	}
+	info, err := fs.Stat(path)
+	if err != nil && !os.IsNotExist(err) {
+		return err
+	} else if err == nil && info.IsDir() {
+		return nil
+	}
+	return mutator.Mkdir(path, perm)
 }
 
 func printErrorAndExit(err error) {

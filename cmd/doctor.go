@@ -25,36 +25,6 @@ const (
 	errorPrefix   = "  ERROR: "
 )
 
-type vcsInfo struct {
-	versionArgs   []string
-	versionRegexp *regexp.Regexp
-}
-
-var (
-	vcsInfos = map[string]vcsInfo{
-		"bzr": vcsInfo{
-			versionArgs:   []string{"--version"},
-			versionRegexp: regexp.MustCompile(`^Bazaar (bzr) (\d+\.\d+\.\d+)`),
-		},
-		"cvs": vcsInfo{
-			versionArgs:   []string{"--version"},
-			versionRegexp: regexp.MustCompile(`^Concurrent Versions System \(CVS\) (\d+\.\d+\.\d+)`),
-		},
-		"git": vcsInfo{
-			versionArgs:   []string{"version"},
-			versionRegexp: regexp.MustCompile(`^git version (\d+\.\d+\.\d+)`),
-		},
-		"hg": vcsInfo{
-			versionArgs:   []string{"version"},
-			versionRegexp: regexp.MustCompile(`^Mercurial Distributed SCM \(version (\d+\.\d+\.\d+\))`),
-		},
-		"svn": vcsInfo{
-			versionArgs:   []string{"--version"},
-			versionRegexp: regexp.MustCompile(`^svn, version (\d+\.\d+\.\d+)`),
-		},
-	}
-)
-
 type doctorCheck interface {
 	Check() (bool, error)
 	Enabled() bool
@@ -81,6 +51,7 @@ type doctorBinaryCheck struct {
 type doctorDirectoryCheck struct {
 	name         string
 	path         string
+	err          error
 	dontWantPerm os.FileMode
 	info         os.FileInfo
 }
@@ -97,6 +68,22 @@ func init() {
 }
 
 func (c *Config) runDoctorCommandE(fs vfs.FS, args []string) error {
+	var vcsCommandCheck doctorCheck
+	if vcsInfo, err := c.getVCSInfo(); err == nil {
+		vcsCommandCheck = &doctorBinaryCheck{
+			name:          "source VCS command",
+			binaryName:    c.SourceVCS.Command,
+			versionArgs:   vcsInfo.versionArgs,
+			versionRegexp: vcsInfo.versionRegexp,
+		}
+	} else {
+		// FIXME print a warning that source VCS command is unsupported
+		vcsCommandCheck = &doctorBinaryCheck{
+			name:       "source VCS command",
+			binaryName: c.SourceVCS.Command,
+		}
+	}
+
 	allOK := true
 	for _, dc := range []doctorCheck{
 		&doctorDirectoryCheck{
@@ -117,12 +104,7 @@ func (c *Config) runDoctorCommandE(fs vfs.FS, args []string) error {
 			binaryName:  c.getEditor(),
 			mustSucceed: true,
 		},
-		&doctorBinaryCheck{
-			name:          "source VCS command",
-			binaryName:    c.SourceVCSCommand,
-			versionArgs:   vcsInfos[c.SourceVCSCommand].versionArgs,
-			versionRegexp: vcsInfos[c.SourceVCSCommand].versionRegexp,
-		},
+		vcsCommandCheck,
 		&doctorBinaryCheck{
 			name:          "1Password CLI",
 			binaryName:    c.OnePassword.Op,
@@ -252,12 +234,11 @@ func (c *doctorBinaryCheck) Result() string {
 }
 
 func (c *doctorDirectoryCheck) Check() (bool, error) {
-	var err error
-	c.info, err = os.Stat(c.path)
-	if err != nil && os.IsNotExist(err) {
+	c.info, c.err = os.Stat(c.path)
+	if c.err != nil && os.IsNotExist(c.err) {
 		return false, nil
-	} else if err != nil {
-		return false, err
+	} else if c.err != nil {
+		return false, c.err
 	}
 	if c.info.Mode()&os.ModePerm&c.dontWantPerm != 0 {
 		return false, nil
@@ -274,7 +255,14 @@ func (c *doctorDirectoryCheck) MustSucceed() bool {
 }
 
 func (c *doctorDirectoryCheck) Result() string {
-	return fmt.Sprintf("%s (%s, perm %03o)", c.path, c.name, c.info.Mode()&os.ModePerm)
+	switch {
+	case os.IsNotExist(c.err):
+		return fmt.Sprintf("%s: (%s, not found)", c.path, c.name)
+	case c.err != nil:
+		return fmt.Sprintf("%s: (%s, %v)", c.path, c.name, c.err)
+	default:
+		return fmt.Sprintf("%s (%s, perm %03o)", c.path, c.name, c.info.Mode()&os.ModePerm)
+	}
 }
 
 func (c *doctorFileCheck) Check() (bool, error) {
