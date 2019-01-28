@@ -9,7 +9,6 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-// initCmd represents the init command
 var initCmd = &cobra.Command{
 	Args:  cobra.MaximumNArgs(1),
 	Use:   "init [repo]",
