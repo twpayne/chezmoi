@@ -12,11 +12,11 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-var chattrCommand = &cobra.Command{
+var chattrCmd = &cobra.Command{
 	Use:   "chattr attributes targets...",
 	Args:  cobra.MinimumNArgs(2),
 	Short: "Change the attributes of a target in the source state",
-	RunE:  makeRunE(config.runChattrCommand),
+	RunE:  makeRunE(config.runChattrCmd),
 }
 
 type boolModifier int
@@ -30,10 +30,10 @@ type attributeModifiers struct {
 }
 
 func init() {
-	rootCommand.AddCommand(chattrCommand)
+	rootCmd.AddCommand(chattrCmd)
 }
 
-func (c *Config) runChattrCommand(fs vfs.FS, args []string) error {
+func (c *Config) runChattrCmd(fs vfs.FS, args []string) error {
 	ams, err := parseAttributeModifiers(args[0])
 	if err != nil {
 		return err

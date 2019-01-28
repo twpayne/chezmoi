@@ -11,13 +11,13 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-var vaultCommand = &cobra.Command{
+var vaultCmd = &cobra.Command{
 	Use:   "vault [args...]",
 	Short: "Execute the Hashicorp Vault CLI (vault)",
-	RunE:  makeRunE(config.runVaultCommand),
+	RunE:  makeRunE(config.runVaultCmd),
 }
 
-type vaultCommandConfig struct {
+type vaultCmdConfig struct {
 	Vault string
 }
 
@@ -27,10 +27,10 @@ func init() {
 	config.Vault.Vault = "vault"
 	config.addTemplateFunc("vault", config.vaultFunc)
 
-	secretCommand.AddCommand(vaultCommand)
+	secretCmd.AddCommand(vaultCmd)
 }
 
-func (c *Config) runVaultCommand(fs vfs.FS, args []string) error {
+func (c *Config) runVaultCmd(fs vfs.FS, args []string) error {
 	return c.exec(append([]string{c.Vault.Vault}, args...))
 }
 

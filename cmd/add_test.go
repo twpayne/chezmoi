@@ -25,8 +25,8 @@ func TestAddAfterModification(t *testing.T) {
 		t.Fatalf("vfst.NewTestFS(_) == _, _, %v, want _, _, <nil>", err)
 	}
 	args := []string{"/home/user/.bashrc"}
-	if err := c.runAddCommand(fs, args); err != nil {
-		t.Errorf("c.runAddCommand(fs, nil, %+v) == %v, want <nil>", args, err)
+	if err := c.runAddCmd(fs, args); err != nil {
+		t.Errorf("c.runAddCmd(fs, nil, %+v) == %v, want <nil>", args, err)
 	}
 	vfst.RunTests(t, fs, "",
 		vfst.TestPath("/home/user/.chezmoi/dot_bashrc",
@@ -37,8 +37,8 @@ func TestAddAfterModification(t *testing.T) {
 	if err := fs.WriteFile("/home/user/.bashrc", []byte("# new contents of .bashrc\n"), 0644); err != nil {
 		t.Errorf("fs.WriteFile(...) == %v, want <nil>", err)
 	}
-	if err := c.runAddCommand(fs, args); err != nil {
-		t.Errorf("c.runAddCommand(fs, nil, %+v) == %v, want <nil>", args, err)
+	if err := c.runAddCmd(fs, args); err != nil {
+		t.Errorf("c.runAddCmd(fs, nil, %+v) == %v, want <nil>", args, err)
 	}
 	vfst.RunTests(t, fs, "",
 		vfst.TestPath("/home/user/.chezmoi/dot_bashrc",
@@ -52,7 +52,7 @@ func TestAddCommand(t *testing.T) {
 	for _, tc := range []struct {
 		name  string
 		args  []string
-		add   addCommandConfig
+		add   addCmdConfig
 		root  interface{}
 		tests interface{}
 	}{
@@ -76,7 +76,7 @@ func TestAddCommand(t *testing.T) {
 		{
 			name: "add_template",
 			args: []string{"/home/user/.gitconfig"},
-			add: addCommandConfig{
+			add: addCmdConfig{
 				options: chezmoi.AddOptions{
 					Template: true,
 				},
@@ -96,7 +96,7 @@ func TestAddCommand(t *testing.T) {
 		{
 			name: "add_recursive",
 			args: []string{"/home/user/.config"},
-			add: addCommandConfig{
+			add: addCmdConfig{
 				recursive: true,
 			},
 			root: map[string]interface{}{
@@ -129,7 +129,7 @@ func TestAddCommand(t *testing.T) {
 		{
 			name: "add_exact_dir",
 			args: []string{"/home/user/dir"},
-			add: addCommandConfig{
+			add: addCmdConfig{
 				options: chezmoi.AddOptions{
 					Exact: true,
 				},
@@ -148,7 +148,7 @@ func TestAddCommand(t *testing.T) {
 		{
 			name: "add_exact_dir_recursive",
 			args: []string{"/home/user/dir"},
-			add: addCommandConfig{
+			add: addCmdConfig{
 				recursive: true,
 				options: chezmoi.AddOptions{
 					Exact: true,
@@ -174,7 +174,7 @@ func TestAddCommand(t *testing.T) {
 		{
 			name: "add_empty_file",
 			args: []string{"/home/user/empty"},
-			add: addCommandConfig{
+			add: addCmdConfig{
 				options: chezmoi.AddOptions{
 					Empty: true,
 				},
@@ -209,7 +209,7 @@ func TestAddCommand(t *testing.T) {
 		{
 			name: "add_symlink_in_dir_recursive",
 			args: []string{"/home/user/foo"},
-			add: addCommandConfig{
+			add: addCmdConfig{
 				recursive: true,
 			},
 			root: map[string]interface{}{
@@ -270,7 +270,7 @@ func TestAddCommand(t *testing.T) {
 		{
 			name: "dont_add_ignored_file_recursive",
 			args: []string{"/home/user/foo"},
-			add: addCommandConfig{
+			add: addCmdConfig{
 				recursive: true,
 			},
 			root: map[string]interface{}{
@@ -318,8 +318,8 @@ func TestAddCommand(t *testing.T) {
 			if err != nil {
 				t.Fatalf("vfst.NewTestFS(_) == _, _, %v, want _, _, <nil>", err)
 			}
-			if err := c.runAddCommand(fs, tc.args); err != nil {
-				t.Errorf("c.runAddCommand(fs, nil, %+v) == %v, want <nil>", tc.args, err)
+			if err := c.runAddCmd(fs, tc.args); err != nil {
+				t.Errorf("c.runAddCmd(fs, nil, %+v) == %v, want <nil>", tc.args, err)
 			}
 			vfst.RunTests(t, fs, "", tc.tests)
 		})

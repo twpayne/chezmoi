@@ -9,24 +9,24 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-type dataCommandConfig struct {
+type dataCmdConfig struct {
 	format string
 }
 
-var dataCommand = &cobra.Command{
+var dataCmd = &cobra.Command{
 	Use:   "data",
 	Short: "Write the template data to stdout",
-	RunE:  makeRunE(config.runDataCommand),
+	RunE:  makeRunE(config.runDataCmd),
 }
 
 func init() {
-	rootCommand.AddCommand(dataCommand)
+	rootCmd.AddCommand(dataCmd)
 
-	persistentFlags := dataCommand.PersistentFlags()
+	persistentFlags := dataCmd.PersistentFlags()
 	persistentFlags.StringVarP(&config.data.format, "format", "f", "json", "format (JSON or YAML)")
 }
 
-func (c *Config) runDataCommand(fs vfs.FS, args []string) error {
+func (c *Config) runDataCmd(fs vfs.FS, args []string) error {
 	format, ok := formatMap[strings.ToLower(c.data.format)]
 	if !ok {
 		return fmt.Errorf("%s: unknown format", c.data.format)

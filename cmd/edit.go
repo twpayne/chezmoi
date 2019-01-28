@@ -10,29 +10,29 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-var editCommand = &cobra.Command{
+var editCmd = &cobra.Command{
 	Use:   "edit targets...",
 	Args:  cobra.MinimumNArgs(1),
 	Short: "Edit the source state of a target",
-	RunE:  makeRunE(config.runEditCommand),
+	RunE:  makeRunE(config.runEditCmd),
 }
 
-type editCommandConfig struct {
+type editCmdConfig struct {
 	apply  bool
 	diff   bool
 	prompt bool
 }
 
 func init() {
-	rootCommand.AddCommand(editCommand)
+	rootCmd.AddCommand(editCmd)
 
-	persistentFlags := editCommand.PersistentFlags()
+	persistentFlags := editCmd.PersistentFlags()
 	persistentFlags.BoolVarP(&config.edit.apply, "apply", "a", false, "apply edit after editing")
 	persistentFlags.BoolVarP(&config.edit.diff, "diff", "d", false, "print diff after editing")
 	persistentFlags.BoolVarP(&config.edit.prompt, "prompt", "p", false, "prompt before applying (implies --diff)")
 }
 
-func (c *Config) runEditCommand(fs vfs.FS, args []string) error {
+func (c *Config) runEditCmd(fs vfs.FS, args []string) error {
 	if c.edit.prompt {
 		c.edit.diff = true
 	}

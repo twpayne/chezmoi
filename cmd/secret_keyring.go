@@ -8,13 +8,13 @@ import (
 	keyring "github.com/zalando/go-keyring"
 )
 
-var keyringCommand = &cobra.Command{
+var keyringCmd = &cobra.Command{
 	Use:   "keyring",
 	Args:  cobra.NoArgs,
 	Short: "Interact with keyring",
 }
 
-type keyringCommandConfig struct {
+type keyringCmdConfig struct {
 	service  string
 	user     string
 	password string
@@ -28,15 +28,15 @@ type keyringKey struct {
 var keyringCache = make(map[keyringKey]string)
 
 func init() {
-	secretCommand.AddCommand(keyringCommand)
+	secretCmd.AddCommand(keyringCmd)
 
-	persistentFlags := keyringCommand.PersistentFlags()
+	persistentFlags := keyringCmd.PersistentFlags()
 
 	persistentFlags.StringVar(&config.keyring.service, "service", "", "service")
-	keyringCommand.MarkPersistentFlagRequired("service")
+	keyringCmd.MarkPersistentFlagRequired("service")
 
 	persistentFlags.StringVar(&config.keyring.user, "user", "", "user")
-	keyringCommand.MarkPersistentFlagRequired("user")
+	keyringCmd.MarkPersistentFlagRequired("user")
 
 	config.addTemplateFunc("keyring", config.keyringFunc)
 }

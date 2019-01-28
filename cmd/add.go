@@ -11,23 +11,23 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-var addCommand = &cobra.Command{
+var addCmd = &cobra.Command{
 	Use:   "add targets...",
 	Args:  cobra.MinimumNArgs(1),
 	Short: "Add an existing file, directory, or symlink to the source state",
-	RunE:  makeRunE(config.runAddCommand),
+	RunE:  makeRunE(config.runAddCmd),
 }
 
-type addCommandConfig struct {
+type addCmdConfig struct {
 	recursive bool
 	prompt    bool
 	options   chezmoi.AddOptions
 }
 
 func init() {
-	rootCommand.AddCommand(addCommand)
+	rootCmd.AddCommand(addCmd)
 
-	persistentFlags := addCommand.PersistentFlags()
+	persistentFlags := addCmd.PersistentFlags()
 	persistentFlags.BoolVarP(&config.add.options.Empty, "empty", "e", false, "add empty files")
 	persistentFlags.BoolVarP(&config.add.options.Exact, "exact", "x", false, "add directories exactly")
 	persistentFlags.BoolVarP(&config.add.prompt, "prompt", "p", false, "prompt before adding")
@@ -35,7 +35,7 @@ func init() {
 	persistentFlags.BoolVarP(&config.add.options.Template, "template", "T", false, "add files as templates")
 }
 
-func (c *Config) runAddCommand(fs vfs.FS, args []string) (err error) {
+func (c *Config) runAddCmd(fs vfs.FS, args []string) (err error) {
 	ts, err := c.getTargetState(fs)
 	if err != nil {
 		return err

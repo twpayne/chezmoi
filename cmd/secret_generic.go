@@ -11,13 +11,13 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-var genericSecretCommand = &cobra.Command{
+var genericSecretCmd = &cobra.Command{
 	Use:   "generic [args...]",
 	Short: "Execute a generic secret command",
-	RunE:  makeRunE(config.runGenericSecretCommand),
+	RunE:  makeRunE(config.runGenericSecretCmd),
 }
 
-type genericSecretCommandConfig struct {
+type genericSecretCmdConfig struct {
 	Command string
 }
 
@@ -27,10 +27,10 @@ func init() {
 	config.addTemplateFunc("secret", config.secretFunc)
 	config.addTemplateFunc("secretJSON", config.secretJSONFunc)
 
-	secretCommand.AddCommand(genericSecretCommand)
+	secretCmd.AddCommand(genericSecretCmd)
 }
 
-func (c *Config) runGenericSecretCommand(fs vfs.FS, args []string) error {
+func (c *Config) runGenericSecretCmd(fs vfs.FS, args []string) error {
 	return c.exec(append([]string{c.GenericSecret.Command}, args...))
 }
 

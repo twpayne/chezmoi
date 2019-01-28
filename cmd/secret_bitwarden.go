@@ -11,13 +11,13 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-var bitwardenCommand = &cobra.Command{
+var bitwardenCmd = &cobra.Command{
 	Use:   "bitwarden [args...]",
 	Short: "Execute the Bitwarden CLI (bw)",
-	RunE:  makeRunE(config.runBitwardenCommand),
+	RunE:  makeRunE(config.runBitwardenCmd),
 }
 
-type bitwardenCommandConfig struct {
+type bitwardenCmdConfig struct {
 	Bw string
 }
 
@@ -27,10 +27,10 @@ func init() {
 	config.Bitwarden.Bw = "bw"
 	config.addTemplateFunc("bitwarden", config.bitwardenFunc)
 
-	secretCommand.AddCommand(bitwardenCommand)
+	secretCmd.AddCommand(bitwardenCmd)
 }
 
-func (c *Config) runBitwardenCommand(fs vfs.FS, args []string) error {
+func (c *Config) runBitwardenCmd(fs vfs.FS, args []string) error {
 	return c.exec(append([]string{c.Bitwarden.Bw}, args...))
 }
 

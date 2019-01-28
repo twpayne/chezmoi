@@ -5,17 +5,17 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-var applyCommand = &cobra.Command{
+var applyCmd = &cobra.Command{
 	Use:   "apply [targets...]",
 	Short: "Update the destination directory to match the target state",
-	RunE:  makeRunE(config.runApplyCommand),
+	RunE:  makeRunE(config.runApplyCmd),
 }
 
 func init() {
-	rootCommand.AddCommand(applyCommand)
+	rootCmd.AddCommand(applyCmd)
 }
 
-func (c *Config) runApplyCommand(fs vfs.FS, args []string) error {
+func (c *Config) runApplyCmd(fs vfs.FS, args []string) error {
 	mutator := c.getDefaultMutator(fs)
 	return c.applyArgs(fs, args, mutator)
 }

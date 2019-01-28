@@ -32,8 +32,8 @@ func TestExercise(t *testing.T) {
 
 	// chezmoi add ~/.bashrc
 	t.Run("chezmoi_add_bashrc", func(t *testing.T) {
-		if err := c.runAddCommand(fs, []string{"/home/user/.bashrc"}); err != nil {
-			t.Errorf("c.runAddCommand(...) == %v, want <nil>", err)
+		if err := c.runAddCmd(fs, []string{"/home/user/.bashrc"}); err != nil {
+			t.Errorf("c.runAddCmd(...) == %v, want <nil>", err)
 		}
 		vfst.RunTests(t, fs, "",
 			vfst.TestPath("/home/user/.chezmoi",
@@ -50,8 +50,8 @@ func TestExercise(t *testing.T) {
 
 	// chezmoi forget ~/.bashrc
 	t.Run("chezmoi_forget_bashrc", func(t *testing.T) {
-		if err := c.runForgetCommand(fs, []string{"/home/user/.bashrc"}); err != nil {
-			t.Errorf("c.runForgetCommand(...) == %v, want <nil>", err)
+		if err := c.runForgetCmd(fs, []string{"/home/user/.bashrc"}); err != nil {
+			t.Errorf("c.runForgetCmd(...) == %v, want <nil>", err)
 		}
 		vfst.RunTests(t, fs, "",
 			vfst.TestPath("/home/user/.chezmoi/dot_bashrc",
@@ -63,8 +63,8 @@ func TestExercise(t *testing.T) {
 	// chezmoi add ~/.netrc
 	t.Run("chezmoi_add_netrc", func(t *testing.T) {
 		mustWriteFile("/home/user/.netrc", "# contents of .netrc\n", 0600)
-		if err := c.runAddCommand(fs, []string{"/home/user/.netrc"}); err != nil {
-			t.Errorf("c.runAddCommand(...) == %v, want <nil>", err)
+		if err := c.runAddCmd(fs, []string{"/home/user/.netrc"}); err != nil {
+			t.Errorf("c.runAddCmd(...) == %v, want <nil>", err)
 		}
 		vfst.RunTests(t, fs, "",
 			vfst.TestPath("/home/user/.chezmoi/private_dot_netrc",
@@ -77,8 +77,8 @@ func TestExercise(t *testing.T) {
 
 	// chezmoi chattr -- -private,+empty ~/.netrc
 	t.Run("chezmoi_chattr_netrc", func(t *testing.T) {
-		if err := c.runChattrCommand(fs, []string{"-private,+empty", "/home/user/.netrc"}); err != nil {
-			t.Errorf("c.runChattrCommand(...) == %v, want <nil>", err)
+		if err := c.runChattrCmd(fs, []string{"-private,+empty", "/home/user/.netrc"}); err != nil {
+			t.Errorf("c.runChattrCmd(...) == %v, want <nil>", err)
 		}
 		vfst.RunTests(t, fs, "",
 			vfst.TestPath("/home/user/.chezmoi/empty_dot_netrc",
@@ -91,8 +91,8 @@ func TestExercise(t *testing.T) {
 
 	// chezmoi apply ~/.netrc
 	t.Run("chezmoi_apply_netrc", func(t *testing.T) {
-		if err := c.runApplyCommand(fs, []string{"/home/user/.netrc"}); err != nil {
-			t.Errorf("c.runApplyCommand(...) == %v, want <nil>", err)
+		if err := c.runApplyCmd(fs, []string{"/home/user/.netrc"}); err != nil {
+			t.Errorf("c.runApplyCmd(...) == %v, want <nil>", err)
 		}
 		vfst.RunTests(t, fs, "",
 			vfst.TestPath("/home/user/.netrc",
@@ -105,8 +105,8 @@ func TestExercise(t *testing.T) {
 
 	// chezmoi remove ~/.netrc
 	t.Run("chezmoi_remove_netrc", func(t *testing.T) {
-		if err := c.runRemoveCommand(fs, []string{"/home/user/.netrc"}); err != nil {
-			t.Errorf("c.runRemoveCommand(...) == %v, want <nil>", err)
+		if err := c.runRemoveCmd(fs, []string{"/home/user/.netrc"}); err != nil {
+			t.Errorf("c.runRemoveCmd(...) == %v, want <nil>", err)
 		}
 		vfst.RunTests(t, fs, "",
 			vfst.TestPath("/home/user/.netrc",

@@ -8,17 +8,17 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-var verifyCommand = &cobra.Command{
+var verifyCmd = &cobra.Command{
 	Use:   "verify [targets...]",
 	Short: "Exit with success if the destination state matches the target state, fail otherwise",
-	RunE:  makeRunE(config.runVerifyCommand),
+	RunE:  makeRunE(config.runVerifyCmd),
 }
 
 func init() {
-	rootCommand.AddCommand(verifyCommand)
+	rootCmd.AddCommand(verifyCmd)
 }
 
-func (c *Config) runVerifyCommand(fs vfs.FS, args []string) error {
+func (c *Config) runVerifyCmd(fs vfs.FS, args []string) error {
 	mutator := chezmoi.NewAnyMutator(chezmoi.NullMutator)
 	if err := c.applyArgs(fs, args, mutator); err != nil {
 		return err

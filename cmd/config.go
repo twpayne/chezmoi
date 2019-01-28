@@ -39,22 +39,22 @@ type Config struct {
 	DryRun        bool
 	Verbose       bool
 	SourceVCS     sourceVCSConfig
-	Bitwarden     bitwardenCommandConfig
-	GenericSecret genericSecretCommandConfig
-	LastPass      lastpassCommandConfig
-	OnePassword   onepasswordCommandConfig
-	Vault         vaultCommandConfig
-	Pass          passCommandConfig
+	Bitwarden     bitwardenCmdConfig
+	GenericSecret genericSecretCmdConfig
+	Lastpass      lastpassCmdConfig
+	OnePassword   onepasswordCmdConfig
+	Vault         vaultCmdConfig
+	Pass          passCmdConfig
 	Data          map[string]interface{}
 	templateFuncs template.FuncMap
-	add           addCommandConfig
-	data          dataCommandConfig
-	dump          dumpCommandConfig
-	edit          editCommandConfig
-	init          initCommandConfig
-	_import       importCommandConfig
-	keyring       keyringCommandConfig
-	update        updateCommandConfig
+	add           addCmdConfig
+	data          dataCmdConfig
+	dump          dumpCmdConfig
+	edit          editCmdConfig
+	init          initCmdConfig
+	_import       importCmdConfig
+	keyring       keyringCmdConfig
+	update        updateCmdConfig
 }
 
 var (
@@ -321,9 +321,9 @@ func isWellKnownAbbreviation(word string) bool {
 	return ok
 }
 
-func makeRunE(runCommand func(vfs.FS, []string) error) func(*cobra.Command, []string) error {
+func makeRunE(runCmd func(vfs.FS, []string) error) func(*cobra.Command, []string) error {
 	return func(cmd *cobra.Command, args []string) error {
-		return runCommand(vfs.OSFS, args)
+		return runCmd(vfs.OSFS, args)
 	}
 }
 

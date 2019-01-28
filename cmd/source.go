@@ -8,17 +8,17 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-var sourceCommand = &cobra.Command{
+var sourceCmd = &cobra.Command{
 	Use:   "source [args...]",
 	Short: "Run the source version control system command in the source directory",
-	RunE:  makeRunE(config.runSourceCommand),
+	RunE:  makeRunE(config.runSourceCmd),
 }
 
 func init() {
-	rootCommand.AddCommand(sourceCommand)
+	rootCmd.AddCommand(sourceCmd)
 }
 
-func (c *Config) runSourceCommand(fs vfs.FS, args []string) error {
+func (c *Config) runSourceCmd(fs vfs.FS, args []string) error {
 	if c.Verbose {
 		fmt.Printf("cd %s\n", c.SourceDir)
 	}

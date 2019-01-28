@@ -15,29 +15,29 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-var _importCommand = &cobra.Command{
+var _importCmd = &cobra.Command{
 	Use:   "import [filename]",
 	Args:  cobra.MaximumNArgs(1),
 	Short: "Import a tar archive into the source state",
-	RunE:  makeRunE(config.runImportCommand),
+	RunE:  makeRunE(config.runImportCmd),
 }
 
-type importCommandConfig struct {
+type importCmdConfig struct {
 	removeDestination bool
 	importTAROptions  chezmoi.ImportTAROptions
 }
 
 func init() {
-	rootCommand.AddCommand(_importCommand)
+	rootCmd.AddCommand(_importCmd)
 
-	persistentFlags := _importCommand.PersistentFlags()
+	persistentFlags := _importCmd.PersistentFlags()
 	persistentFlags.StringVarP(&config._import.importTAROptions.DestinationDir, "destination", "d", "", "destination prefix")
 	persistentFlags.BoolVarP(&config._import.importTAROptions.Exact, "exact", "x", false, "import directories exactly")
 	persistentFlags.IntVar(&config._import.importTAROptions.StripComponents, "strip-components", 0, "strip components")
 	persistentFlags.BoolVarP(&config._import.removeDestination, "remove-destination", "r", false, "remove destination before import")
 }
 
-func (c *Config) runImportCommand(fs vfs.FS, args []string) error {
+func (c *Config) runImportCmd(fs vfs.FS, args []string) error {
 	ts, err := c.getTargetState(fs)
 	if err != nil {
 		return err

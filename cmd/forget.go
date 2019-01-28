@@ -7,18 +7,18 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-var forgetCommand = &cobra.Command{
+var forgetCmd = &cobra.Command{
 	Use:   "forget targets...",
 	Args:  cobra.MinimumNArgs(1),
 	Short: "Remove a target from the source state",
-	RunE:  makeRunE(config.runForgetCommand),
+	RunE:  makeRunE(config.runForgetCmd),
 }
 
 func init() {
-	rootCommand.AddCommand(forgetCommand)
+	rootCmd.AddCommand(forgetCmd)
 }
 
-func (c *Config) runForgetCommand(fs vfs.FS, args []string) error {
+func (c *Config) runForgetCmd(fs vfs.FS, args []string) error {
 	ts, err := c.getTargetState(fs)
 	if err != nil {
 		return err
