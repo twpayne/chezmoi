@@ -110,7 +110,7 @@ func (c *Config) applyArgs(fs vfs.FS, args []string, mutator chezmoi.Mutator) er
 func (c *Config) ensureSourceDirectory(fs vfs.FS, mutator chezmoi.Mutator) error {
 	info, err := fs.Stat(c.SourceDir)
 	switch {
-	case err == nil && info.Mode().IsDir():
+	case err == nil && info.IsDir():
 		if info.Mode().Perm() != 0700 {
 			if err := mutator.Chmod(c.SourceDir, 0700); err != nil {
 				return err

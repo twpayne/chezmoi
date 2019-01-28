@@ -86,7 +86,7 @@ func Execute() {
 func (c *Config) persistentPreRunRootE(fs vfs.FS, args []string) error {
 	info, err := fs.Stat(c.SourceDir)
 	switch {
-	case err == nil && !info.Mode().IsDir():
+	case err == nil && !info.IsDir():
 		return fmt.Errorf("%s: not a directory", c.SourceDir)
 	case err == nil && info.Mode().Perm() != 0700:
 		fmt.Printf("%s: want permissions 0700, got 0%o\n", c.SourceDir, info.Mode().Perm())
