@@ -19,21 +19,23 @@ removelink() {
             echo "Done"
         else
             echo "FAILED"
-            exit 1
+            return 1
         fi
     )
 }
 
 work_file="$(mktemp)"
+act_file="$(mktemp)"
 
-trap "rm -f $work_file" EXIT
+trap "rm -f $work_file $act_file" EXIT
 
-find "$BASEDIR" -not -path "$BASEDIR/$STOWDIR*" -type l > "$work_file"
+find "$BASEDIR" -not -path "$BASEDIR/$STOWDIR*" -type l > "$work_file" || echo "Find skipped some files"
 
 cat "$work_file" | while read -r f; do
-    target="$($READLINK -f "$f")"
+    target="$($READLINK -f "$f" || echo '')"
     if [[ "$target" == "$BASEDIR/$STOWDIR/"* ]]; then
         echo "Add $f"
+        echo "$f" >> "$act_file"
     fi
 done
 
@@ -46,10 +48,10 @@ esac
 
 mkdir -p $BASEDIR/.local/share
 
-cat "$work_file" | while read -r f; do
-    target="$($READLINK -f "$f")"
-    if [[ "$target" == "$BASEDIR/$STOWDIR/"* ]]; then
-        removelink "$f"
+cat "$act_file" | while read -r f; do
+    if removelink "$f" ; then
         chezmoi --source "$BASEDIR/.local/share/chezmoi" --destination "$BASEDIR" add "$f"
+    else
+        echo "Unable to move: $f"
     fi
 done
