@@ -127,7 +127,7 @@ func (f *File) Apply(fs vfs.FS, destDir string, ignore func(string) bool, umask 
 	var currData []byte
 	switch {
 	case err == nil && info.Mode().IsRegular():
-		if len(contents) == 0 && !f.Empty {
+		if isEmpty(contents) && !f.Empty {
 			return mutator.RemoveAll(targetPath)
 		}
 		currData, err = fs.ReadFile(targetPath)
@@ -151,7 +151,7 @@ func (f *File) Apply(fs vfs.FS, destDir string, ignore func(string) bool, umask 
 	default:
 		return err
 	}
-	if len(contents) == 0 && !f.Empty {
+	if isEmpty(contents) && !f.Empty {
 		return nil
 	}
 	return mutator.WriteFile(targetPath, contents, f.Perm&^umask, currData)
