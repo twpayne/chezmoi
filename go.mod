@@ -2,11 +2,17 @@ module github.com/twpayne/chezmoi
 
 require (
 	github.com/BurntSushi/toml v0.3.1 // indirect
+	github.com/Masterminds/semver v1.4.2 // indirect
+	github.com/Masterminds/sprig v2.17.1+incompatible
+	github.com/aokoli/goutils v1.1.0 // indirect
 	github.com/blang/semver v3.5.1+incompatible
 	github.com/d4l3k/messagediff v1.2.1
 	github.com/danieljoos/wincred v1.0.1 // indirect
 	github.com/godbus/dbus v4.1.0+incompatible // indirect
 	github.com/google/renameio v0.1.0
+	github.com/google/uuid v1.1.0 // indirect
+	github.com/huandu/xstrings v1.2.0 // indirect
+	github.com/imdario/mergo v0.3.7 // indirect
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/mitchellh/go-homedir v1.0.0
 	github.com/pmezard/go-difflib v1.0.0
