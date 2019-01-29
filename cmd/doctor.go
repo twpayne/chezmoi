@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"regexp"
 
 	"github.com/blang/semver"
@@ -90,6 +91,10 @@ func (c *Config) runDoctorCmd(fs vfs.FS, args []string) error {
 			name:         "source directory",
 			path:         c.SourceDir,
 			dontWantPerm: 077,
+		},
+		&doctorFileCheck{
+			name:         "ignore file",
+			path:         filepath.Join(c.SourceDir, ".chezmoiignore"),
 		},
 		&doctorDirectoryCheck{
 			name: "destination directory",
