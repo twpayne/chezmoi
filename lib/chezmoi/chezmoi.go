@@ -2,6 +2,7 @@ package chezmoi
 
 import (
 	"archive/tar"
+	"bytes"
 	"os"
 	"path/filepath"
 	"sort"
@@ -55,6 +56,11 @@ func dirNames(dirAttributes []DirAttributes) []string {
 		dns[i] = da.Name
 	}
 	return dns
+}
+
+// isEmpty returns true if b should be considered empty.
+func isEmpty(b []byte) bool {
+	return len(bytes.TrimSpace(b)) == 0
 }
 
 // parseDirNameComponents parses multiple directory name components.
