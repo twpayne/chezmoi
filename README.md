@@ -296,6 +296,9 @@ For example, in your `~/.local/share/chezmoi/dot_bashrc.tmpl` you might have:
     # this will only be included in ~/.bashrc on work-laptop
     {{- end }}
 
+`chezmoi` includes all of the hermetic text functions from
+[`sprig`](http://masterminds.github.io/sprig/)
+
 If, after executing the template, the file contents are empty, the target file
 will be removed. This can be used to ensure that files are only present on
 certain machines. If you want an empty file to be created anyway, you will need
