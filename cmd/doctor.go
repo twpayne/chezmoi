@@ -20,9 +20,9 @@ var doctorCmd = &cobra.Command{
 }
 
 const (
-	okPrefix      = "     ok: "
-	warningPrefix = "warning: "
-	errorPrefix   = "  ERROR: "
+	okPrefix      = "ok"
+	warningPrefix = "warning"
+	errorPrefix   = "ERROR"
 )
 
 type doctorCheck interface {
@@ -34,6 +34,7 @@ type doctorCheck interface {
 
 type doctorCheckResult struct {
 	ok     bool
+	prefix string
 	result string
 }
 
@@ -149,7 +150,7 @@ func (c *Config) runDoctorCmd(fs vfs.FS, args []string) error {
 			allOK = false
 		}
 		if dcr.result != "" {
-			fmt.Println(dcr.result)
+			fmt.Printf("%7s: %s\n", dcr.prefix, dcr.result)
 		}
 	}
 	if !allOK {
@@ -177,7 +178,8 @@ func runDoctorCheck(dc doctorCheck) doctorCheckResult {
 	}
 	return doctorCheckResult{
 		ok:     ok,
-		result: fmt.Sprintf("%s%s", prefix, dc.Result()),
+		prefix: prefix,
+		result: dc.Result(),
 	}
 }
 
