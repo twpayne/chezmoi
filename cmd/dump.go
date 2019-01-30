@@ -54,7 +54,7 @@ func (c *Config) runDumpCmd(fs vfs.FS, args []string) error {
 			if err != nil {
 				return err
 			}
-			if concreteValue != nil {
+			if entryConcreteValue != nil {
 				concreteValues = append(concreteValues, entryConcreteValue)
 			}
 		}
