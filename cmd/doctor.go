@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"regexp"
+	"strings"
 
 	"github.com/blang/semver"
 	"github.com/spf13/cobra"
@@ -20,9 +22,9 @@ var doctorCmd = &cobra.Command{
 }
 
 const (
-	okPrefix      = "     ok: "
-	warningPrefix = "warning: "
-	errorPrefix   = "  ERROR: "
+	okPrefix      = "ok"
+	warningPrefix = "warning"
+	errorPrefix   = "ERROR"
 )
 
 type doctorCheck interface {
@@ -34,6 +36,7 @@ type doctorCheck interface {
 
 type doctorCheckResult struct {
 	ok     bool
+	prefix string
 	result string
 }
 
@@ -63,6 +66,12 @@ type doctorFileCheck struct {
 	info        os.FileInfo
 }
 
+type doctorSuspiciousFilesCheck struct {
+	path      string
+	filenames map[string]bool
+	found     []string
+}
+
 func init() {
 	rootCmd.AddCommand(doctorCmd)
 }
@@ -90,6 +99,12 @@ func (c *Config) runDoctorCmd(fs vfs.FS, args []string) error {
 			name:         "source directory",
 			path:         c.SourceDir,
 			dontWantPerm: 077,
+		},
+		&doctorSuspiciousFilesCheck{
+			path: c.SourceDir,
+			filenames: map[string]bool{
+				".chezmoignore": true,
+			},
 		},
 		&doctorDirectoryCheck{
 			name: "destination directory",
@@ -149,7 +164,7 @@ func (c *Config) runDoctorCmd(fs vfs.FS, args []string) error {
 			allOK = false
 		}
 		if dcr.result != "" {
-			fmt.Println(dcr.result)
+			fmt.Printf("%7s: %s\n", dcr.prefix, dcr.result)
 		}
 	}
 	if !allOK {
@@ -177,7 +192,8 @@ func runDoctorCheck(dc doctorCheck) doctorCheckResult {
 	}
 	return doctorCheckResult{
 		ok:     ok,
-		result: fmt.Sprintf("%s%s", prefix, dc.Result()),
+		prefix: prefix,
+		result: dc.Result(),
 	}
 }
 
@@ -286,4 +302,34 @@ func (c *doctorFileCheck) MustSucceed() bool {
 
 func (c *doctorFileCheck) Result() string {
 	return fmt.Sprintf("%s (%s)", c.path, c.name)
+}
+
+func (c *doctorSuspiciousFilesCheck) Check() (bool, error) {
+	if err := filepath.Walk(c.path, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if c.filenames[info.Name()] {
+			c.found = append(c.found, path)
+		}
+		return nil
+	}); err != nil {
+		return false, err
+	}
+	return len(c.found) == 0, nil
+}
+
+func (c *doctorSuspiciousFilesCheck) Enabled() bool {
+	return len(c.filenames) > 0
+}
+
+func (c *doctorSuspiciousFilesCheck) MustSucceed() bool {
+	return false
+}
+
+func (c *doctorSuspiciousFilesCheck) Result() string {
+	if len(c.found) == 0 {
+		return ""
+	}
+	return fmt.Sprintf("%s (suspicious filenames)", strings.Join(c.found, ", "))
 }
