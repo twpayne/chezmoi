@@ -71,6 +71,11 @@ func (m *LoggingMutator) Rename(oldpath, newpath string) error {
 	return err
 }
 
+// Stat implements Mutator.Stat.
+func (m *LoggingMutator) Stat(name string) (os.FileInfo, error) {
+	return m.m.Stat(name)
+}
+
 // WriteFile implements Mutator.WriteFile.
 func (m *LoggingMutator) WriteFile(name string, data []byte, perm os.FileMode, currData []byte) error {
 	action := fmt.Sprintf("install -m %o /dev/null %s", perm, name)

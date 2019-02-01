@@ -2,8 +2,8 @@ package chezmoi
 
 import "os"
 
-// An AnyMutator wraps another Mutator and records if any of its methods are
-// called.
+// An AnyMutator wraps another Mutator and records if any of its mutating
+// methods are called.
 type AnyMutator struct {
 	m       Mutator
 	mutated bool
@@ -44,6 +44,11 @@ func (m *AnyMutator) RemoveAll(name string) error {
 func (m *AnyMutator) Rename(oldpath, newpath string) error {
 	m.mutated = true
 	return m.m.Rename(oldpath, newpath)
+}
+
+// Stat implements Mutator.Stat.
+func (m *AnyMutator) Stat(path string) (os.FileInfo, error) {
+	return m.m.Stat(path)
 }
 
 // WriteFile implements Mutator.WriteFile.
