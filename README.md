@@ -87,6 +87,7 @@ Pre-built packages and binaries:
 | Arch Linux | i686, x86_64                  | [aur package](https://aur.archlinux.org/packages/chezmoi/)           |
 | Debian     | amd64, arm64, armel, i386     | [deb package](https://github.com/twpayne/chezmoi/releases/latest)    |
 | RedHat     | aarch64, armhfp, i686, x86_64 | [rpm package](https://github.com/twpayne/chezmoi/releases/latest)    |
+| OpenSUSE   | aarch64, armhfp, i686, x86_64 | [rpm package](https://github.com/twpayne/chezmoi/releases/latest)    |
 | FreeBSD    | amd64, arm, i386              | [tar.gz package](https://github.com/twpayne/chezmoi/releases/latest) |
 | OpenBSD    | amd64, arm, i386              | [tar.gz package](https://github.com/twpayne/chezmoi/releases/latest) |
 | Linux      | amd64, arm, arm64, i386       | [tar.gz package](https://github.com/twpayne/chezmoi/releases/latest) |
