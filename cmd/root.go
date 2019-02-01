@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/Masterminds/sprig"
-	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	vfs "github.com/twpayne/go-vfs"
@@ -36,7 +35,7 @@ var rootCmd = &cobra.Command{
 func init() {
 	rootCmd.Version = fmt.Sprintf("%s, commit %s, built at %s", version, commit, date)
 
-	homeDir, err := homedir.Dir()
+	homeDir, err := userHomeDir()
 	if err != nil {
 		printErrorAndExit(err)
 	}

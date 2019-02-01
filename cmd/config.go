@@ -16,7 +16,6 @@ import (
 	"text/template"
 	"unicode"
 
-	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/twpayne/chezmoi/lib/chezmoi"
@@ -282,7 +281,7 @@ func getDefaultData(fs vfs.FS) (map[string]interface{}, error) {
 		return nil, err
 	}
 
-	homedir, err := homedir.Dir()
+	homedir, err := userHomeDir()
 	if err != nil {
 		return nil, err
 	}
