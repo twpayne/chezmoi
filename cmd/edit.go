@@ -55,9 +55,10 @@ func (c *Config) runEditCmd(fs vfs.FS, args []string) error {
 		return err
 	}
 	readOnlyFS := vfs.NewReadOnlyFS(fs)
+	readOnlyMutator := chezmoi.NewFSMutator(readOnlyFS, c.DestDir)
 	applyMutator := c.getDefaultMutator(fs)
 	for i, entry := range entries {
-		anyMutator := chezmoi.NewAnyMutator(chezmoi.NullMutator)
+		anyMutator := chezmoi.NewAnyMutator(readOnlyMutator)
 		var mutator chezmoi.Mutator = anyMutator
 		if c.edit.diff {
 			mutator = chezmoi.NewLoggingMutator(os.Stdout, mutator)
