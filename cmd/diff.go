@@ -19,6 +19,7 @@ func init() {
 }
 
 func (c *Config) runDiffCmd(fs vfs.FS, args []string) error {
-	mutator := chezmoi.NewLoggingMutator(os.Stdout, chezmoi.NullMutator)
+	fs = vfs.NewReadOnlyFS(fs)
+	mutator := chezmoi.NewLoggingMutator(os.Stdout, chezmoi.NewFSMutator(fs, c.DestDir))
 	return c.applyArgs(fs, args, mutator)
 }
