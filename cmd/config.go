@@ -283,6 +283,7 @@ func getDefaultData(fs vfs.FS) (map[string]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	data["homedir"] = homedir
 
 	hostname, err := os.Hostname()
@@ -403,7 +404,13 @@ func userHomeDir() (string, error) {
 		}
 	}
 	if v := os.Getenv(env); v != "" {
-		return v, nil
+		// let's try resolve the homedir here, as well
+		absoluteHomedir, err := filepath.EvalSymlinks(v)
+		if err != nil {
+			return v, nil
+		}
+
+		return absoluteHomedir, nil
 	}
 	return "", errors.New(enverr + " is not defined")
 }
