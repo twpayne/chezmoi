@@ -27,6 +27,11 @@ func (nullMutator) Rename(string, string) error {
 	return nil
 }
 
+// Stat implements Mutator.Stat.
+func (nullMutator) Stat(string) (os.FileInfo, error) {
+	return nil, nil
+}
+
 // WriteFile implements Mutator.WriteFile.
 func (nullMutator) WriteFile(string, []byte, os.FileMode, []byte) error {
 	return nil
