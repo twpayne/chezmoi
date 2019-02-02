@@ -72,7 +72,7 @@ func (c *Config) lastpassFunc(id string) interface{} {
 	if data, ok := lastPassCache[id]; ok {
 		return data
 	}
-	output, err := c.lastpassOutput("show", "-j", id)
+	output, err := c.lastpassOutput("show", "--json", id)
 	if err != nil {
 		chezmoi.ReturnTemplateFuncError(err)
 	}

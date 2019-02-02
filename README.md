@@ -410,12 +410,12 @@ Log in to LastPass using:
 
 Check that `lpass` is working correctly by showing password data:
 
-    $ lpass show -j <lastpass-entry-id>
+    $ lpass show --json <lastpass-entry-id>
 
 where `<lastpass-entry-id>` is a [LastPass Entry
 Specification](https://lastpass.github.io/lastpass-cli/lpass.1.html#_entry_specification).
 
-The structured data from `lpass show -j id` is available as the `lastpass`
+The structured data from `lpass show --json id` is available as the `lastpass`
 template function. The value will be an array of objects. You can use the
 `index` function and `.Field` syntax of the `text/template` language to extract
 the field you want. For example, to extract the `password` field from first the
@@ -501,7 +501,7 @@ way:
 | 1Password       | `op`                    | `{{ secretJSON "get" "item" <id> }}`              |
 | Bitwarden       | `bw`                    | `{{ secretJSON "get" <id> }}`                     |
 | Hashicorp Vault | `vault`                 | `{{ secretJSON "kv" "get" "-format=json" <id> }}` |
-| LastPass        | `lpass`                 | `{{ secretJSON "show" "-j" <id> }}`               |
+| LastPass        | `lpass`                 | `{{ secretJSON "show" "--json" <id> }}`           |
 | pass            | `pass`                  | `{{ secret "show" <id> }}`                        |
 
 ### Using encrypted config files
