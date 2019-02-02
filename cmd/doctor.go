@@ -8,7 +8,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/blang/semver"
+	"github.com/coreos/go-semver/semver"
 	"github.com/spf13/cobra"
 	vfs "github.com/twpayne/go-vfs"
 )
@@ -135,12 +135,9 @@ func (c *Config) runDoctorCmd(fs vfs.FS, args []string) error {
 		&doctorBinaryCheck{
 			name:          "LastPass CLI",
 			binaryName:    c.Lastpass.Lpass,
-			versionArgs:   []string{"--version"},
-			versionRegexp: regexp.MustCompile(`^LastPass CLI v(\d+\.\d+\.\d+)`),
-			// chezmoi uses lpass show --json which was added in
-			// https://github.com/lastpass/lastpass-cli/commit/e5a22e2eeef31ab6c54595616e0f57ca0a1c162d
-			// and the first tag containing that commit is v1.3.0~6.
-			minVersion: &semver.Version{Major: 1, Minor: 3, Patch: 0},
+			versionArgs:   lastpassVersionArgs,
+			versionRegexp: lastpassVersionRegexp,
+			minVersion:    &lastpassMinVersion,
 		},
 		&doctorBinaryCheck{
 			name:          "pass CLI",
@@ -213,12 +210,12 @@ func (c *doctorBinaryCheck) Check() (bool, error) {
 		if m == nil {
 			return false, fmt.Errorf("%s: could not extract version from %q", c.path, output)
 		}
-		version, err := semver.Parse(string(m[1]))
+		version, err := semver.NewVersion(string(m[1]))
 		if err != nil {
 			return false, err
 		}
-		c.version = &version
-		if c.minVersion != nil && c.version.LT(*c.minVersion) {
+		c.version = version
+		if c.minVersion != nil && c.version.LessThan(*c.minVersion) {
 			return false, nil
 		}
 	}
@@ -241,7 +238,7 @@ func (c *doctorBinaryCheck) Result() string {
 	s := fmt.Sprintf("%s (%s", c.path, c.name)
 	if c.version != nil {
 		s += ", version " + c.version.String()
-		if c.minVersion != nil && c.version.LT(*c.minVersion) {
+		if c.minVersion != nil && c.version.LessThan(*c.minVersion) {
 			s += ", want version >=" + c.minVersion.String()
 		}
 	}

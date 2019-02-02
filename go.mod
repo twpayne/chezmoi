@@ -5,7 +5,7 @@ require (
 	github.com/Masterminds/semver v1.4.2 // indirect
 	github.com/Masterminds/sprig v2.17.1+incompatible
 	github.com/aokoli/goutils v1.1.0 // indirect
-	github.com/blang/semver v3.5.1+incompatible
+	github.com/coreos/go-semver v0.2.0
 	github.com/d4l3k/messagediff v1.2.1
 	github.com/danieljoos/wincred v1.0.1 // indirect
 	github.com/godbus/dbus v4.1.0+incompatible // indirect
