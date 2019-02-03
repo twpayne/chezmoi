@@ -87,3 +87,11 @@ func (s *Script) Contents() ([]byte, error) {
 	}
 	return s.contents, s.contentsErr
 }
+
+// Evaluate evaluates s's script.
+func (s *Script) Evaluate() error {
+	if _, err := s.Contents(); err != nil {
+		return err
+	}
+	return s.parse()
+}

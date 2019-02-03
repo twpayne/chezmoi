@@ -444,7 +444,109 @@ func TestTargetStatePopulate(t *testing.T) {
 						contents:   []byte("bar"),
 					},
 				},
+				Scripts:    map[string]*Script{},
 				MinVersion: semver.Must(semver.NewVersion("1.2.3")),
+			},
+		},
+		{
+			name: "script",
+			root: map[string]interface{}{
+				"/.scripts/test.sh": &vfst.File{
+					Contents: []byte("#!/bin/bash\necho test"),
+					Perm:     os.FileMode(0744),
+				},
+			},
+			sourceDir: "/",
+			want: &TargetState{
+				DestDir:      "/",
+				TargetIgnore: NewPatternSet(),
+				Umask:        0,
+				SourceDir:    "/",
+				Entries:      map[string]Entry{},
+				Scripts: map[string]*Script{
+					"test.sh": &Script{
+						Name:       "test.sh",
+						sourcePath: "/.scripts/test.sh",
+						executor:   "/bin/bash",
+						once:       false,
+						contents:   []byte("#!/bin/bash\necho test"),
+					},
+				},
+			},
+		},
+		{
+			name: "script_force_executable",
+			root: map[string]interface{}{
+				"/.scripts/test.sh": &vfst.File{
+					Contents: []byte("#!/bin/bash\necho test"),
+					Perm:     os.FileMode(0644),
+				},
+			},
+			sourceDir: "/",
+			want: &TargetState{
+				DestDir:      "/",
+				TargetIgnore: NewPatternSet(),
+				Umask:        0,
+				SourceDir:    "/",
+				Entries:      map[string]Entry{},
+				Scripts:      map[string]*Script{},
+			},
+		},
+		{
+			name: "script_once",
+			root: map[string]interface{}{
+				"/.scripts/test.sh": &vfst.File{
+					Contents: []byte("#!/bin/bash\n#chezmoi: once\necho test"),
+					Perm:     os.FileMode(0744),
+				},
+			},
+			sourceDir: "/",
+			want: &TargetState{
+				DestDir:      "/",
+				TargetIgnore: NewPatternSet(),
+				Umask:        0,
+				SourceDir:    "/",
+				Entries:      map[string]Entry{},
+				Scripts: map[string]*Script{
+					"test.sh": &Script{
+						Name:       "test.sh",
+						sourcePath: "/.scripts/test.sh",
+						executor:   "/bin/bash",
+						once:       true,
+						contents:   []byte("#!/bin/bash\n#chezmoi: once\necho test"),
+					},
+				},
+			},
+		},
+		{
+			name: "script_template",
+			root: map[string]interface{}{
+				"/.scripts/test.sh.tmpl": &vfst.File{
+					Contents: []byte("#!/bin/bash\necho {{.email}}"),
+					Perm:     os.FileMode(0744),
+				},
+			},
+			data: map[string]interface{}{
+				"email": "user@example.com",
+			},
+			sourceDir: "/",
+			want: &TargetState{
+				DestDir:      "/",
+				TargetIgnore: NewPatternSet(),
+				Umask:        0,
+				SourceDir:    "/",
+				Data: map[string]interface{}{
+					"email": "user@example.com",
+				},
+				Entries: map[string]Entry{},
+				Scripts: map[string]*Script{
+					"test.sh": &Script{
+						Name:       "test.sh",
+						sourcePath: "/.scripts/test.sh.tmpl",
+						executor:   "/bin/bash",
+						contents:   []byte("#!/bin/bash\necho user@example.com"),
+					},
+				},
 			},
 		},
 	} {

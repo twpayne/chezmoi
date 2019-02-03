@@ -210,6 +210,11 @@ func (ts *TargetState) Archive(w *tar.Writer, umask os.FileMode) error {
 			return err
 		}
 	}
+	for _, scriptName := range sortedScriptNames(ts.Scripts) {
+		if err := ts.Scripts[scriptName].Evaluate(); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
