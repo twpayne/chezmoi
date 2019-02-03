@@ -76,6 +76,7 @@ func (s *Script) execute() error {
 		return err
 	}
 	c.Stdout = os.Stdout
+	c.Stderr = os.Stderr
 
 	go func() {
 		defer in.Close()
