@@ -62,6 +62,7 @@ type Config struct {
 	keyring       keyringCmdConfig
 	update        updateCmdConfig
 	upgrade       upgradeCmdConfig
+	scripts       scriptsCmdConfig
 	stdin         io.Reader
 	stdout        io.Writer
 	stderr        io.Writer

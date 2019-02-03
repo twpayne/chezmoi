@@ -112,3 +112,12 @@ func splitPathList(path string) []string {
 	}
 	return strings.Split(path, string(filepath.Separator))
 }
+
+// StripTemplateExtension removes the template extension at the end of the passed filename
+func StripTemplateExtension(name string) string {
+	i := strings.LastIndex(name, TemplateSuffix)
+	if i > 0 {
+		return name[0:i]
+	}
+	return name
+}

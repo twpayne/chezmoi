@@ -168,7 +168,7 @@ func (ts *TargetState) Apply(fs vfs.FS, mutator Mutator) error {
 }
 
 // ApplyScripts that scripts get executed as required
-func (ts *TargetState) ApplyScripts() error {
+func (ts *TargetState) ApplyScripts(fs vfs.FS, force bool) error {
 	for _, scriptName := range sortedScriptNames(ts.Scripts) {
 		if err := ts.Scripts[scriptName].Apply(); err != nil {
 			return err
@@ -437,11 +437,11 @@ func (ts *TargetState) populateScripts(fs vfs.FS) error {
 				}
 			}
 			s := &Script{
-				name:             toScriptName(f.Name()),
+				Name:             StripTemplateExtension(f.Name()),
 				sourcePath:       fp,
 				evaluateContents: evaluateContents,
 			}
-			ts.Scripts[s.name] = s
+			ts.Scripts[s.Name] = s
 		}
 	}
 	return nil

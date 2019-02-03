@@ -6,7 +6,6 @@ import (
 	"os/exec"
 	"path"
 	"regexp"
-	"strings"
 )
 
 var shebangRegex *regexp.Regexp
@@ -19,7 +18,7 @@ func init() {
 
 // Script is a script supposed to run
 type Script struct {
-	name             string
+	Name             string
 	sourcePath       string
 	executor         string
 	once             bool
@@ -27,14 +26,6 @@ type Script struct {
 	contents         []byte
 	contentsErr      error
 	evaluateContents func() ([]byte, error)
-}
-
-func toScriptName(name string) string {
-	i := strings.LastIndex(name, TemplateSuffix)
-	if i > 0 {
-		return name[0:i]
-	}
-	return name
 }
 
 // Apply executes the script if necessary to reach target state
@@ -51,7 +42,7 @@ func (s *Script) Apply() error {
 	if err := s.parse(); err != nil {
 		return err
 	}
-	fmt.Printf("chezmoi: Running script %s\n", s.name)
+	fmt.Printf("chezmoi: Running script %s\n", s.Name)
 	return s.execute()
 }
 
@@ -61,7 +52,7 @@ func (s *Script) parse() error {
 	}
 	reg := shebangRegex.FindStringSubmatch(string(s.contents))
 	if len(reg) < 2 {
-		return fmt.Errorf("Shebang missing in script \"%s\"", s.name)
+		return fmt.Errorf("Shebang missing in script \"%s\"", s.Name)
 	}
 	s.executor = string(reg[1])
 	s.once = onceRegex.Match(s.contents)
