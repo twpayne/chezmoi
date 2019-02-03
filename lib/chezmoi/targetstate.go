@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/exec"
 	"os/user"
+	"path"
 	"path/filepath"
 	"strconv"
 	"strings"
@@ -51,6 +52,7 @@ type TargetState struct {
 	GPGRecipient  string
 	Entries       map[string]Entry
 	MinVersion    *semver.Version
+	Scripts       map[string]*Script
 }
 
 // NewTargetState creates a new TargetState.
@@ -64,6 +66,7 @@ func NewTargetState(destDir string, umask os.FileMode, sourceDir string, data ma
 		TemplateFuncs: templateFuncs,
 		GPGRecipient:  gpgRecipient,
 		Entries:       make(map[string]Entry),
+		Scripts:       make(map[string]*Script),
 	}
 }
 
@@ -157,6 +160,17 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 func (ts *TargetState) Apply(fs vfs.FS, mutator Mutator) error {
 	for _, entryName := range sortedEntryNames(ts.Entries) {
 		if err := ts.Entries[entryName].Apply(fs, ts.DestDir, ts.TargetIgnore.Match, ts.Umask, mutator); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// ApplyScripts that scripts get executed as required
+func (ts *TargetState) ApplyScripts() error {
+	for _, scriptName := range sortedScriptNames(ts.Scripts) {
+		if err := ts.Scripts[scriptName].Apply(); err != nil {
 			return err
 		}
 	}
@@ -282,6 +296,9 @@ func (ts *TargetState) ImportTAR(r *tar.Reader, importTAROptions ImportTAROption
 
 // Populate walks fs from ts.SourceDir to populate ts.
 func (ts *TargetState) Populate(fs vfs.FS) error {
+	if err := ts.populateScripts(fs); err != nil {
+		return err
+	}
 	return vfs.Walk(fs, ts.SourceDir, func(path string, info os.FileInfo, _ error) error {
 		relPath, err := filepath.Rel(ts.SourceDir, path)
 		if err != nil {
@@ -399,6 +416,35 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 		}
 		return nil
 	})
+}
+
+func (ts *TargetState) populateScripts(fs vfs.FS) error {
+	scriptsDir := path.Join(ts.SourceDir, scriptsDir)
+	files, err := fs.ReadDir(scriptsDir)
+	if os.IsNotExist(err) {
+		return nil
+	}
+	for _, f := range files {
+		if !f.IsDir() && f.Mode()&0111 != 0 {
+			fp := path.Join(scriptsDir, f.Name())
+			psfp := parseSourceFilePath(fp)
+			evaluateContents := func() ([]byte, error) {
+				return fs.ReadFile(fp)
+			}
+			if psfp.Template {
+				evaluateContents = func() ([]byte, error) {
+					return ts.executeTemplate(fs, fp)
+				}
+			}
+			s := &Script{
+				name:             toScriptName(f.Name()),
+				sourcePath:       fp,
+				evaluateContents: evaluateContents,
+			}
+			ts.Scripts[s.name] = s
+		}
+	}
+	return nil
 }
 
 func (ts *TargetState) addDir(targetName string, entries map[string]Entry, parentDirSourceName string, exact bool, perm os.FileMode, empty bool, mutator Mutator) error {

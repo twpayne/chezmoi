@@ -21,6 +21,7 @@ const (
 	executablePrefix = "executable_"
 	dotPrefix        = "dot_"
 	TemplateSuffix   = ".tmpl"
+	scriptsDir       = ".scripts"
 )
 
 // A templateFuncError is an error encountered while executing a template
@@ -94,6 +95,15 @@ func sortedEntryNames(entries map[string]Entry) []string {
 	}
 	sort.Strings(entryNames)
 	return entryNames
+}
+
+func sortedScriptNames(entries map[string]*Script) []string {
+	scriptNames := []string{}
+	for scriptName := range entries {
+		scriptNames = append(scriptNames, scriptName)
+	}
+	sort.Strings(scriptNames)
+	return scriptNames
 }
 
 func splitPathList(path string) []string {
