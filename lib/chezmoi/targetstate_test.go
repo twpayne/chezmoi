@@ -133,6 +133,7 @@ func TestTargetStatePopulate(t *testing.T) {
 						contents:   []byte("bar"),
 					},
 				},
+				Scripts: map[string]*Script{},
 			},
 		},
 		{
@@ -154,6 +155,7 @@ func TestTargetStatePopulate(t *testing.T) {
 						contents:   []byte("bar"),
 					},
 				},
+				Scripts: map[string]*Script{},
 			},
 		},
 		{
@@ -175,6 +177,7 @@ func TestTargetStatePopulate(t *testing.T) {
 						contents:   []byte("bar"),
 					},
 				},
+				Scripts: map[string]*Script{},
 			},
 		},
 		{
@@ -204,6 +207,7 @@ func TestTargetStatePopulate(t *testing.T) {
 						},
 					},
 				},
+				Scripts: map[string]*Script{},
 			},
 		},
 		{
@@ -233,6 +237,7 @@ func TestTargetStatePopulate(t *testing.T) {
 						},
 					},
 				},
+				Scripts: map[string]*Script{},
 			},
 		},
 		{
@@ -261,6 +266,7 @@ func TestTargetStatePopulate(t *testing.T) {
 						contents:   []byte("[user]\n\temail = user@example.com\n"),
 					},
 				},
+				Scripts: map[string]*Script{},
 			},
 		},
 		{
@@ -290,6 +296,7 @@ func TestTargetStatePopulate(t *testing.T) {
 						},
 					},
 				},
+				Scripts: map[string]*Script{},
 			},
 		},
 		{
@@ -310,6 +317,7 @@ func TestTargetStatePopulate(t *testing.T) {
 						linkname:   "bar",
 					},
 				},
+				Scripts: map[string]*Script{},
 			},
 		},
 		{
@@ -330,6 +338,7 @@ func TestTargetStatePopulate(t *testing.T) {
 						linkname:   "bar",
 					},
 				},
+				Scripts: map[string]*Script{},
 			},
 		},
 		{
@@ -357,6 +366,7 @@ func TestTargetStatePopulate(t *testing.T) {
 						linkname:   "bar-example.com",
 					},
 				},
+				Scripts: map[string]*Script{},
 			},
 		},
 		{
@@ -380,6 +390,7 @@ func TestTargetStatePopulate(t *testing.T) {
 				Umask:     0,
 				SourceDir: "/",
 				Entries:   map[string]Entry{},
+				Scripts:   map[string]*Script{},
 			},
 		},
 		{
@@ -410,6 +421,7 @@ func TestTargetStatePopulate(t *testing.T) {
 						Entries:    map[string]Entry{},
 					},
 				},
+				Scripts: map[string]*Script{},
 			},
 		},
 		{
