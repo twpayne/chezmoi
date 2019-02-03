@@ -28,8 +28,12 @@ func (nullMutator) Rename(string, string) error {
 }
 
 // Stat implements Mutator.Stat.
-func (nullMutator) Stat(string) (os.FileInfo, error) {
-	return nil, nil
+func (nullMutator) Stat(path string) (os.FileInfo, error) {
+	return nil, &os.PathError{
+		Op:   "stat",
+		Path: path,
+		Err:  os.ErrNotExist,
+	}
 }
 
 // WriteFile implements Mutator.WriteFile.
