@@ -2,6 +2,8 @@ package chezmoi
 
 import (
 	"os"
+	"path/filepath"
+	"syscall"
 
 	"github.com/google/renameio"
 	vfs "github.com/twpayne/go-vfs"
@@ -10,19 +12,16 @@ import (
 // An FSMutator makes changes to an vfs.FS.
 type FSMutator struct {
 	vfs.FS
-	dir string
+	devCache     map[string]uint // devCache maps directories to device numbers.
+	tempDirCache map[uint]string // tempDir maps device numbers to renameio temporary directories.
 }
 
 // NewFSMutator returns an mutator that acts on fs.
 func NewFSMutator(fs vfs.FS, destDir string) *FSMutator {
-	var dir string
-	// Special case: if writing to the real filesystem, use github.com/google/renameio
-	if fs == vfs.OSFS {
-		dir = renameio.TempDir(destDir)
-	}
 	return &FSMutator{
-		FS:  fs,
-		dir: dir,
+		FS:           fs,
+		devCache:     make(map[string]uint),
+		tempDirCache: make(map[uint]string),
 	}
 }
 
@@ -30,7 +29,28 @@ func NewFSMutator(fs vfs.FS, destDir string) *FSMutator {
 func (a *FSMutator) WriteFile(name string, data []byte, perm os.FileMode, currData []byte) error {
 	// Special case: if writing to the real filesystem, use github.com/google/renameio
 	if a.FS == vfs.OSFS {
-		t, err := renameio.TempFile(a.dir, name)
+		dir := filepath.Dir(name)
+		dev, ok := a.devCache[dir]
+		if !ok {
+			info, err := a.Stat(dir)
+			if err != nil {
+				return err
+			}
+			statT, ok := info.Sys().(*syscall.Stat_t)
+			if !ok {
+				// Panicking here is OK because chezmoi currently only runs on
+				// POSIX systems, where this should never happen.
+				panic("os.FileInfo.Sys() cannot be converted to a *syscall.Stat_t")
+			}
+			dev = uint(statT.Dev)
+			a.devCache[dir] = dev
+		}
+		tempDir, ok := a.tempDirCache[dev]
+		if !ok {
+			tempDir = renameio.TempDir(dir)
+			a.tempDirCache[dev] = tempDir
+		}
+		t, err := renameio.TempFile(tempDir, name)
 		if err != nil {
 			return err
 		}
