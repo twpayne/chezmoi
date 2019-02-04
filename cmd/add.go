@@ -12,10 +12,11 @@ import (
 )
 
 var addCmd = &cobra.Command{
-	Use:   "add targets...",
-	Args:  cobra.MinimumNArgs(1),
-	Short: "Add an existing file, directory, or symlink to the source state",
-	RunE:  makeRunE(config.runAddCmd),
+	Use:     "add targets...",
+	Aliases: []string{"manage"},
+	Args:    cobra.MinimumNArgs(1),
+	Short:   "Add an existing file, directory, or symlink to the source state",
+	RunE:    makeRunE(config.runAddCmd),
 }
 
 type addCmdConfig struct {

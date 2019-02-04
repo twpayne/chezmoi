@@ -8,10 +8,11 @@ import (
 )
 
 var forgetCmd = &cobra.Command{
-	Use:   "forget targets...",
-	Args:  cobra.MinimumNArgs(1),
-	Short: "Remove a target from the source state",
-	RunE:  makeRunE(config.runForgetCmd),
+	Use:     "forget targets...",
+	Aliases: []string{"unmanage"},
+	Args:    cobra.MinimumNArgs(1),
+	Short:   "Remove a target from the source state",
+	RunE:    makeRunE(config.runForgetCmd),
 }
 
 func init() {
