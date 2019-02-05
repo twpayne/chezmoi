@@ -24,7 +24,7 @@ func init() {
 	rootCmd.AddCommand(dumpCmd)
 
 	persistentFlags := dumpCmd.PersistentFlags()
-	persistentFlags.StringVarP(&config.dump.format, "format", "f", "json", "format (JSON or YAML)")
+	persistentFlags.StringVarP(&config.dump.format, "format", "f", "json", "format (JSON, TOML, or YAML)")
 	persistentFlags.BoolVarP(&config.dump.recursive, "recursive", "r", true, "recursive")
 }
 

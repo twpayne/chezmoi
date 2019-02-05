@@ -16,6 +16,7 @@ import (
 	"text/template"
 	"unicode"
 
+	"github.com/BurntSushi/toml"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/twpayne/chezmoi/lib/chezmoi"
@@ -63,6 +64,9 @@ var (
 			e := json.NewEncoder(w)
 			e.SetIndent("", "  ")
 			return e.Encode(value)
+		},
+		"toml": func(w io.Writer, value interface{}) error {
+			return toml.NewEncoder(w).Encode(value)
 		},
 		"yaml": func(w io.Writer, value interface{}) error {
 			return yaml.NewEncoder(w).Encode(value)
