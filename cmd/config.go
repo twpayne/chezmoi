@@ -240,7 +240,7 @@ func (c *Config) runEditor(argv ...string) error {
 	return c.run("", c.getEditor(), argv...)
 }
 
-func getDefaultConfigFile(x *xdg.XDG, homeDir string) string {
+func getDefaultConfigFile(x *xdg.XDG) string {
 	// Search XDG config directories first.
 	for _, configDir := range x.ConfigDirs {
 		for _, extension := range viper.SupportedExts {
@@ -303,7 +303,7 @@ func getDefaultData(fs vfs.FS) (map[string]interface{}, error) {
 	return data, nil
 }
 
-func getDefaultSourceDir(x *xdg.XDG, homeDir string) string {
+func getDefaultSourceDir(x *xdg.XDG) string {
 	// Check for XDG data directories first.
 	for _, dataDir := range x.DataDirs {
 		sourceDir := filepath.Join(dataDir, "chezmoi")
