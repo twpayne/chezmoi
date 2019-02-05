@@ -1,8 +1,10 @@
 # `chezmoi`
 
-[![Build Status](https://travis-ci.org/twpayne/chezmoi.svg?branch=master)](https://travis-ci.org/twpayne/chezmoi)
+[![Build
+Status](https://travis-ci.org/twpayne/chezmoi.svg?branch=master)](https://travis-ci.org/twpayne/chezmoi)
 [![GoDoc](https://godoc.org/github.com/twpayne/chezmoi?status.svg)](https://godoc.org/github.com/twpayne/chezmoi)
-[![Report Card](https://goreportcard.com/badge/github.com/twpayne/chezmoi)](https://goreportcard.com/report/github.com/twpayne/chezmoi)
+[![Report
+Card](https://goreportcard.com/badge/github.com/twpayne/chezmoi)](https://goreportcard.com/report/github.com/twpayne/chezmoi)
 
 Manage your dotfiles across multiple machines, securely.
 
@@ -121,7 +123,7 @@ the destination directory, where:
   directory.
 
 * The *config file* contains machine-specific configuration, by default it is
-  `~/.config/chezmoi/chezmoi.yaml`.
+  `~/.config/chezmoi/chezmoi.toml`.
 
 Initialize `chezmoi`:
 
@@ -158,8 +160,8 @@ Apply the changes:
 
 All `chezmoi` commands accept the `-v` (verbose) flag to print out exactly what
 changes they will make to the file system, and the `-n` (dry run) flag to not
-make any actual changes. The combination `-n` `-v` is very useful if you want
-to see exactly what changes would be made.
+make any actual changes. The combination `-n` `-v` is very useful if you want to
+see exactly what changes would be made.
 
 Finally, change to the source directory, commit your changes, and return to
 where you were:
@@ -175,11 +177,11 @@ For a full list of commands run:
 
 ## Using a hosted repo to manage your dotfiles across multiple machines
 
-`chezmoi` relies on your version control system and hosted repo to share
-changes across multiple machines. You should create a repo on the source code
-repository of your choice (e.g. [Bitbucket](https://bitbucket.org),
-[Github](https://github.com/), or [GitLab](https://gitlab.com), many people
-call their repo `dotfiles`) and push the repo in the source directory here. For
+`chezmoi` relies on your version control system and hosted repo to share changes
+across multiple machines. You should create a repo on the source code repository
+of your choice (e.g. [Bitbucket](https://bitbucket.org),
+[Github](https://github.com/), or [GitLab](https://gitlab.com), many people call
+their repo `dotfiles`) and push the repo in the source directory here. For
 example:
 
     chezmoi cd
@@ -207,38 +209,37 @@ You can pull the changes from your repo and apply them in a single command:
 
     chezmoi update
 
-This runs `git pull --rebase` in your source directory and then `chezmoi
-apply`.
+This runs `git pull --rebase` in your source directory and then `chezmoi apply`.
 
 ## Using templates to manage files that vary from machine to machine
 
 The primary goal of `chezmoi` is to manage configuration files across multiple
 machines, for example your personal macOS laptop, your work Ubuntu desktop, and
-your work Linux laptop. You will want to keep much configuration the same
-across these, but also need machine-specific configurations for email
-addresses, credentials, etc. `chezmoi` achieves this functionality by using
+your work Linux laptop. You will want to keep much configuration the same across
+these, but also need machine-specific configurations for email addresses,
+credentials, etc. `chezmoi` achieves this functionality by using
 [`text/template`](https://godoc.org/text/template) for the source state where
 needed.
 
 For example, your home `~/.gitconfig` on your personal machine might look like:
 
     [user]
-        email = john@home.org
+      email = "john@home.org"
 
 Whereas at work it might be:
 
     [user]
-        email = john@company.com
+      email = "john@company.com"
 
 To handle this, on each machine create a configuration file called
-`~/.config/chezmoi/chezmoi.yaml` defining what might change. For your home
+`~/.config/chezmoi/chezmoi.toml` defining what might change. For your home
 machine:
 
-    data:
-      email: john@home.org
+    [data]
+      email = "john@home.org"
 
 If you intend to store private data (e.g. access tokens) in
-`~/.config/chezmoi/chezmoi.yaml`, make sure it has permissions `0600`. See
+`~/.config/chezmoi/chezmoi.toml`, make sure it has permissions `0600`. See
 "Keeping data private" below for more discussion on this.
 
 If you prefer, you can use any format supported by
@@ -258,10 +259,10 @@ You can then open the template (which will be saved in the file
 The file should look something like:
 
     [user]
-        email = {{ .email }}
+      email = "{{ .email }}"
 
 `chezmoi` will substitute the variables from the `data` section of your
-`~/.config/chezmoi/chezmoi.yaml` file when calculating the target state of
+`~/.config/chezmoi/chezmoi.toml` file when calculating the target state of
 `.gitconfig`.
 
 For more advanced usage, you can use the full power of the
@@ -295,7 +296,7 @@ For example, in your `~/.local/share/chezmoi/dot_bashrc.tmpl` you might have:
     {{- end }}
 
 `chezmoi` includes all of the hermetic text functions from
-[`sprig`](http://masterminds.github.io/sprig/)
+[`sprig`](http://masterminds.github.io/sprig/).
 
 If, after executing the template, the file contents are empty, the target file
 will be removed. This can be used to ensure that files are only present on
@@ -304,9 +305,9 @@ to give it an `empty_` prefix. See "Under the hood" below.
 
 For coarser-grained control of files and entire directories are managed on
 different machines, or to exclude certain files completely, you can create
-`.chezmoiignore` files in the source directory. These specify a list of
-patterns that `chezmoi` should ignore, and are interpreted as templates. An
-example `.chezmoiignore` file might look like:
+`.chezmoiignore` files in the source directory. These specify a list of patterns
+that `chezmoi` should ignore, and are interpreted as templates. An example
+`.chezmoiignore` file might look like:
 
     README.md
     {{- if ne .chezmoi.hostname "work-laptop" }}
@@ -324,9 +325,9 @@ stored in `~/.local/share/chezmoi` as regular, public files with permissions
 
 will create `~/.local/share/chezmoi/private_dot_netrc` (assuming `~/.netrc` is
 not world- or group- readable, as it should be). This file is still private
-because `~/.local/share/chezmoi` is not group- or world- readable or
-executable.  `chezmoi` checks that the permissions of `~/.local/share/chezmoi`
-are `0700` on every run and will print a warning if they are not.
+because `~/.local/share/chezmoi` is not group- or world- readable or executable.
+`chezmoi` checks that the permissions of `~/.local/share/chezmoi` are `0700` on
+every run and will print a warning if they are not.
 
 It is common that you need to store access tokens in config files, e.g. a
 [Github access
@@ -336,22 +337,21 @@ your machine.
 
 ### Using templates variables
 
-Typically, `~/.config/chezmoi/chezmoi.yaml` is not checked in to version
-control and has permissions 0600. You can store tokens as template values in
-the `data` section. For example, if your `~/.config/chezmoi/chezmoi.yaml`
-contains:
+Typically, `~/.config/chezmoi/chezmoi.toml` is not checked in to version control
+and has permissions 0600. You can store tokens as template values in the `data`
+section. For example, if your `~/.config/chezmoi/chezmoi.toml` contains:
 
-    data:
-      github:
-        user: <github-username>
-        token: <github-token>
+    [data]
+      [data.github]
+        user = "<github-username>"
+        token = "<github-token>"
 
 Your `~/.local/share/chezmoi/private_dot_gitconfig.tmpl` can then contain:
 
     {{- if (index . "github") }}
     [github]
-        user = {{ .github.user }}
-        token = {{ .github.token }}
+      user = "{{ .github.user }}"
+      token = "{{ .github.token }}"
     {{- end }}
 
 Any config files containing tokens in plain text should be private (permissions
@@ -417,7 +417,7 @@ template function. The value will be an array of objects. You can use the
 the field you want. For example, to extract the `password` field from first the
 "Github" entry, use:
 
-    githubPassword = {{ (index (lastpass "Github") 0).password }}
+    githubPassword = "{{ (index (lastpass "Github") 0).password }}"
 
 `chezmoi` automatically parses the `note` value of the Lastpass entry, so, for
 example, you can extract a private SSH key like this:
@@ -429,7 +429,8 @@ Keys in the `note` section written as `CamelCase Words` are converted to
 
 ### Using pass
 
-`chezmoi` includes support for [pass](https://www.passwordstore.org/) using the `pass` CLI.
+`chezmoi` includes support for [pass](https://www.passwordstore.org/) using the
+`pass` CLI.
 
 The first line of the output of `pass show <pass-name>` is available as the
 `pass` template function, for example:
@@ -476,8 +477,8 @@ For example, save a Github access token in keyring with:
 and then include it in your `~/.gitconfig` file with:
 
     [github]
-        user = {{ .github.user }}
-        token = {{ keyring "github" .github.user }}
+      user = "{{ .github.user }}"
+      token = "{{ keyring "github" .github.user }}"
 
 You can query the keyring from the command line:
 
@@ -505,13 +506,13 @@ way:
 `chezmoi` takes a `-c` flag specifying the file to read its configuration from.
 You can encrypt your configuration and then only decrypt it when needed:
 
-    gpg -d ~/.config/chezmoi/chezmoi.yaml.gpg | chezmoi -c /dev/stdin apply
+    gpg -d ~/.config/chezmoi/chezmoi.toml.gpg | chezmoi -c /dev/stdin apply
 
 ## Importing archives
 
 It is occasionally useful to import entire archives of configuration into your
-source state. The `import` command does this. For example, to import the
-latest version
+source state. The `import` command does this. For example, to import the latest
+version
 [`github.com/robbyrussell/oh-my-zsh`](https://github.com/robbyrussell/oh-my-zsh)
 to `~/.oh-my-zsh` run:
 
@@ -540,8 +541,8 @@ By default, `chezmoi` uses `git`, but you can use any version control system of
 your choice. In your config file, specify the command to use. For example, to
 use Mercurial specify:
 
-    sourceVCS:
-      command: hg
+    [sourceVCS]
+      command = "hg"
 
 The source VCS command is used in the `chezmoi` commands `init`, `source`, and
 `update`, and support for VCSes other than `git` is limited but easy to add. If
@@ -556,7 +557,7 @@ For an example of how `chezmoi` stores its state, see
 `chezmoi` stores the desired state of files, symbolic links, and directories in
 regular files and directories in `~/.local/share/chezmoi`. This location can be
 overridden with the `-S` flag or by giving a value for `sourceDir` in
-`~/.config/chezmoi/chezmoi.yaml`.  Some state is encoded in the source names.
+`~/.config/chezmoi/chezmoi.toml`.  Some state is encoded in the source names.
 `chezmoi` ignores all files and directories in the source directory that begin
 with a `.`. The following prefixes and suffixes are special, and are
 collectively referred to as "attributes":
@@ -596,7 +597,7 @@ to apply the changes to the destination state:
 
 `chezmoi`, by default, operates on your home directory, but this can be
 overridden with the `--dest` command line flag or by specifying `destDir` in
-your `~/.config/chezmoi/chezmoi.yaml`. In theory, you could use `chezmoi` to
+your `~/.config/chezmoi/chezmoi.toml`. In theory, you could use `chezmoi` to
 manage any aspect of your filesystem. That said, although you can do this, you
 probably shouldn't. Existing configuration management tools like
 [Puppet](https://puppet.com/), [Chef](https://www.chef.io/chef/),
