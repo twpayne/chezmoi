@@ -23,7 +23,7 @@ func init() {
 	rootCmd.AddCommand(dataCmd)
 
 	persistentFlags := dataCmd.PersistentFlags()
-	persistentFlags.StringVarP(&config.data.format, "format", "f", "json", "format (JSON or YAML)")
+	persistentFlags.StringVarP(&config.data.format, "format", "f", "json", "format (JSON, TOML, or YAML)")
 }
 
 func (c *Config) runDataCmd(fs vfs.FS, args []string) error {

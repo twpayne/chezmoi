@@ -47,12 +47,12 @@ func init() {
 
 	persistentFlags := rootCmd.PersistentFlags()
 
-	persistentFlags.StringVarP(&config.configFile, "config", "c", getDefaultConfigFile(x, homeDir), "config file")
+	persistentFlags.StringVarP(&config.configFile, "config", "c", getDefaultConfigFile(x), "config file")
 
 	persistentFlags.BoolVarP(&config.DryRun, "dry-run", "n", false, "dry run")
 	viper.BindPFlag("dry-run", persistentFlags.Lookup("dry-run"))
 
-	persistentFlags.StringVarP(&config.SourceDir, "source", "S", getDefaultSourceDir(x, homeDir), "source directory")
+	persistentFlags.StringVarP(&config.SourceDir, "source", "S", getDefaultSourceDir(x), "source directory")
 	viper.BindPFlag("source", persistentFlags.Lookup("source"))
 
 	persistentFlags.StringVarP(&config.DestDir, "destination", "D", homeDir, "destination directory")

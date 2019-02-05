@@ -1,6 +1,7 @@
 package chezmoi
 
 import (
+	"errors"
 	"os"
 	"path/filepath"
 	"syscall"
@@ -38,9 +39,7 @@ func (a *FSMutator) WriteFile(name string, data []byte, perm os.FileMode, currDa
 			}
 			statT, ok := info.Sys().(*syscall.Stat_t)
 			if !ok {
-				// Panicking here is OK because chezmoi currently only runs on
-				// POSIX systems, where this should never happen.
-				panic("os.FileInfo.Sys() cannot be converted to a *syscall.Stat_t")
+				return errors.New("os.FileInfo.Sys() cannot be converted to a *syscall.Stat_t")
 			}
 			dev = uint(statT.Dev)
 			a.devCache[dir] = dev
