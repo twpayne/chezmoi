@@ -291,7 +291,8 @@ func getDefaultData(fs vfs.FS) (map[string]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	data["hostname"] = hostname
+	data["fullHostname"] = hostname
+	data["hostname"] = strings.SplitN(hostname, ".", 2)[0]
 
 	osRelease, err := getOSRelease(fs)
 	if err == nil {
