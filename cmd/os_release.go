@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"unicode"
 
 	vfs "github.com/twpayne/go-vfs"
 )
@@ -47,9 +48,15 @@ func parseOSRelease(r io.Reader) (map[string]string, error) {
 	result := make(map[string]string)
 	s := bufio.NewScanner(r)
 	for s.Scan() {
-		fields := strings.SplitN(s.Text(), "=", 2)
+		// trim all leading whitespace, but not necessarily trailing whitespace
+		token := strings.TrimLeftFunc(s.Text(), unicode.IsSpace)
+		// if the line is empty or starts with #, skip
+		if len(token) == 0 || token[0] == '#' {
+			continue
+		}
+		fields := strings.SplitN(token, "=", 2)
 		if len(fields) != 2 {
-			return nil, fmt.Errorf("cannot parse %q", s.Text())
+			return nil, fmt.Errorf("cannot parse %q", token)
 		}
 		key := fields[0]
 		value := maybeUnquote(fields[1])
