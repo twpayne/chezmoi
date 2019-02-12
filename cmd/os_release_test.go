@@ -124,6 +124,9 @@ HOME_URL="https://www.ubuntu.com/"
 SUPPORT_URL="https://help.ubuntu.com/"
 BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
 PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+# comment
+
+  # comment
 VERSION_CODENAME=bionic
 UBUNTU_CODENAME=bionic`,
 			want: map[string]string{
