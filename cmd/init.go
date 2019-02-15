@@ -20,7 +20,7 @@ new host. It will clone the given repository into your source directory (see --s
 and make sure that all directory permissions are correct.
 
 After your source directory was checked out and setup (e.g. git submodules) this
-command will can automatically invoke the "apply" command to update the destination
+command can automatically invoke the "apply" command to update the destination
 directory if you supply the flag.
 `,
 	Example: `
