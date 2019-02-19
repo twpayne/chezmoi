@@ -42,16 +42,6 @@ func (c *Config) runScriptsCmd(fs vfs.FS, args []string) error {
 		return ts.ApplyScripts(fs, config.scripts.force)
 	}
 
-	var quit int
-	defer func() {
-		if r := recover(); r != nil {
-			if p, ok := r.(*int); ok && p == &quit {
-				err = nil
-			} else {
-				panic(r)
-			}
-		}
-	}()
 	var scripts []*chezmoi.Script
 	if len(args) == 0 {
 		for _, s := range ts.Scripts {
@@ -68,7 +58,7 @@ func (c *Config) runScriptsCmd(fs vfs.FS, args []string) error {
 					scripts = append(scripts, s)
 				case 'n':
 				case 'q':
-					panic(&quit) // abort vfs.Walk by panicking
+					return nil
 				}
 			} else {
 				scripts = append(scripts, s)
@@ -90,7 +80,7 @@ func (c *Config) runScriptsCmd(fs vfs.FS, args []string) error {
 						scripts = append(scripts, s)
 					case 'n':
 					case 'q':
-						panic(&quit) // abort vfs.Walk by panicking
+						return nil
 					case 'a':
 						c.scripts.prompt = false
 					}
