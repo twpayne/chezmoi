@@ -2,6 +2,7 @@ package chezmoi
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"path"
@@ -60,21 +61,25 @@ func (s *Script) parse() error {
 }
 
 func (s *Script) execute() error {
-	c := exec.Command(s.executor)
+	f, err := ioutil.TempFile(os.TempDir(), s.Name)
+	if err != nil {
+		return err
+	}
+	// We can ignore the error, the file is in a temporary dir anyways.
+	defer os.Remove(f.Name())
+	if _, err := f.Write(s.contents); err != nil {
+		return err
+	}
+	if err := f.Chmod(os.FileMode(0700)); err != nil {
+		return err
+	}
+	c := exec.Command(f.Name())
 	c.Dir = path.Dir(s.sourcePath)
-	in, err := c.StdinPipe()
 	if err != nil {
 		return err
 	}
 	c.Stdout = os.Stdout
 	c.Stderr = os.Stderr
-
-	go func() {
-		defer in.Close()
-		if _, err := in.Write(s.contents); err != nil {
-			panic(err)
-		}
-	}()
 
 	return c.Run()
 }
