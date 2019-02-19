@@ -9,19 +9,12 @@ import (
 	"regexp"
 )
 
-var shebangRegex *regexp.Regexp
-var onceRegex *regexp.Regexp
-
-func init() {
-	shebangRegex = regexp.MustCompile(`(?m)^#!([^;\n]+)$`)
-	onceRegex = regexp.MustCompile(`(?m)^#\s*chezmoi:\s*once$`)
-}
+var onceRegex = regexp.MustCompile(`(?m)^#\s*chezmoi:\s*once$`)
 
 // Script is a script supposed to run.
 type Script struct {
 	Name             string
 	SourcePath       string
-	executor         string
 	once             bool
 	alreadyExecuted  bool
 	contents         []byte
@@ -55,11 +48,6 @@ func (s *Script) parse() error {
 	if s.contentsErr != nil {
 		return s.contentsErr
 	}
-	reg := shebangRegex.FindStringSubmatch(string(s.contents))
-	if len(reg) < 2 {
-		return fmt.Errorf("Shebang missing in script \"%s\"", s.Name)
-	}
-	s.executor = string(reg[1])
 	s.once = onceRegex.Match(s.contents)
 	return nil
 }
