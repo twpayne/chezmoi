@@ -20,7 +20,7 @@ func init() {
 // Script is a script supposed to run.
 type Script struct {
 	Name             string
-	sourcePath       string
+	SourcePath       string
 	executor         string
 	once             bool
 	alreadyExecuted  bool
@@ -79,7 +79,7 @@ func (s *Script) execute(destDir string) error {
 	}
 	c := exec.Command(f.Name())
 	c.Dir = destDir
-	c.Env = append(os.Environ(), "CHEZMOI_SCRIPT_DIR="+path.Dir(s.sourcePath))
+	c.Env = append(os.Environ(), "CHEZMOI_SCRIPT_DIR="+path.Dir(s.SourcePath))
 	c.Stdout = os.Stdout
 	c.Stderr = os.Stderr
 	c.Stdin = os.Stdin

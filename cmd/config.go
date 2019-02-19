@@ -57,6 +57,7 @@ type Config struct {
 	data          dataCmdConfig
 	dump          dumpCmdConfig
 	edit          editCmdConfig
+	editScripts   editScriptsCmdConfig
 	init          initCmdConfig
 	_import       importCmdConfig
 	keyring       keyringCmdConfig

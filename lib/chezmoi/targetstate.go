@@ -443,7 +443,7 @@ func (ts *TargetState) populateScripts(fs vfs.FS) error {
 			}
 			s := &Script{
 				Name:             StripTemplateExtension(f.Name()),
-				sourcePath:       fp,
+				SourcePath:       fp,
 				evaluateContents: evaluateContents,
 			}
 			ts.Scripts[s.Name] = s
