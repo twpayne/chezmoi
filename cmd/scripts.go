@@ -55,7 +55,9 @@ func (c *Config) runScriptsCmd(fs vfs.FS, args []string) error {
 					c.scripts.prompt = false
 					fallthrough
 				case 'y':
-					scripts = append(scripts, s)
+					if err := s.Apply(); err != nil {
+						return err
+					}
 				case 'n':
 				case 'q':
 					return nil
@@ -77,7 +79,9 @@ func (c *Config) runScriptsCmd(fs vfs.FS, args []string) error {
 					}
 					switch choice {
 					case 'y':
-						scripts = append(scripts, s)
+						if err := s.Apply(); err != nil {
+							return err
+						}
 					case 'n':
 					case 'q':
 						return nil
