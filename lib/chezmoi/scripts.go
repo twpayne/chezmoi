@@ -79,6 +79,7 @@ func (s *Script) execute(destDir string) error {
 	}
 	c := exec.Command(f.Name())
 	c.Dir = destDir
+	c.Env = append(os.Environ(), "CHEZMOI_SCRIPT_DIR="+path.Dir(s.sourcePath))
 	c.Stdout = os.Stdout
 	c.Stderr = os.Stderr
 	c.Stdin = os.Stdin
