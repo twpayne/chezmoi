@@ -17,7 +17,7 @@ func init() {
 	onceRegex = regexp.MustCompile(`(?m)^#\s*chezmoi:\s*once$`)
 }
 
-// Script is a script supposed to run
+// Script is a script supposed to run.
 type Script struct {
 	Name             string
 	sourcePath       string
@@ -29,7 +29,7 @@ type Script struct {
 	evaluateContents func() ([]byte, error)
 }
 
-// Apply executes the script if necessary to reach target state
+// Apply executes the script if necessary to reach target state.
 func (s *Script) Apply() error {
 	if s.once && s.alreadyExecuted {
 		return nil

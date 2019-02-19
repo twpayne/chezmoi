@@ -42,7 +42,6 @@ func (c *Config) runScriptsCmd(fs vfs.FS, args []string) error {
 		return ts.ApplyScripts(fs, config.scripts.force)
 	}
 
-	scripts := make([]*chezmoi.Script, 0)
 	var quit int
 	defer func() {
 		if r := recover(); r != nil {
@@ -53,6 +52,7 @@ func (c *Config) runScriptsCmd(fs vfs.FS, args []string) error {
 			}
 		}
 	}()
+	var scripts []*chezmoi.Script
 	if len(args) == 0 {
 		for _, s := range ts.Scripts {
 			if config.scripts.prompt {
