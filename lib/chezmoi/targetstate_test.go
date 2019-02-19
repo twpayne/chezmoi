@@ -466,8 +466,7 @@ func TestTargetStatePopulate(t *testing.T) {
 				Scripts: map[string]*Script{
 					"test.sh": &Script{
 						Name:       "test.sh",
-						sourcePath: "/.scripts/test.sh",
-						executor:   "/bin/bash",
+						SourcePath: "/.scripts/test.sh",
 						once:       false,
 						contents:   []byte("#!/bin/bash\necho test"),
 					},
@@ -510,8 +509,7 @@ func TestTargetStatePopulate(t *testing.T) {
 				Scripts: map[string]*Script{
 					"test.sh": &Script{
 						Name:       "test.sh",
-						sourcePath: "/.scripts/test.sh",
-						executor:   "/bin/bash",
+						SourcePath: "/.scripts/test.sh",
 						once:       true,
 						contents:   []byte("#!/bin/bash\n#chezmoi: once\necho test"),
 					},
@@ -542,8 +540,7 @@ func TestTargetStatePopulate(t *testing.T) {
 				Scripts: map[string]*Script{
 					"test.sh": &Script{
 						Name:       "test.sh",
-						sourcePath: "/.scripts/test.sh.tmpl",
-						executor:   "/bin/bash",
+						SourcePath: "/.scripts/test.sh.tmpl",
 						contents:   []byte("#!/bin/bash\necho user@example.com"),
 					},
 				},

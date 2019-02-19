@@ -28,18 +28,13 @@ func init() {
 }
 
 func (c *Config) runScriptsCmd(fs vfs.FS, args []string) error {
-	if config.DryRun {
-		println("chezmoi: the scripts subcommand doesn't support dry-run yet")
-		return nil
-	}
-
 	ts, err := c.getTargetState(fs)
 	if err != nil {
 		return err
 	}
 
 	if len(args) == 0 && !config.scripts.prompt {
-		return ts.ApplyScripts(fs, config.scripts.force)
+		return ts.ApplyScripts(fs, config.scripts.force, c.DryRun)
 	}
 
 	var scripts []*chezmoi.Script
@@ -55,7 +50,7 @@ func (c *Config) runScriptsCmd(fs vfs.FS, args []string) error {
 					c.scripts.prompt = false
 					fallthrough
 				case 'y':
-					if err := s.Apply(); err != nil {
+					if err := s.Apply(c.DestDir, c.DryRun); err != nil {
 						return err
 					}
 				case 'n':
@@ -79,7 +74,7 @@ func (c *Config) runScriptsCmd(fs vfs.FS, args []string) error {
 					}
 					switch choice {
 					case 'y':
-						if err := s.Apply(); err != nil {
+						if err := s.Apply(c.DestDir, c.DryRun); err != nil {
 							return err
 						}
 					case 'n':
@@ -93,7 +88,7 @@ func (c *Config) runScriptsCmd(fs vfs.FS, args []string) error {
 		}
 	}
 	for _, s := range scripts {
-		if err := s.Apply(); err != nil {
+		if err := s.Apply(c.DestDir, c.DryRun); err != nil {
 			return err
 		}
 	}

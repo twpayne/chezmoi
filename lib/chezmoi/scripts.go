@@ -30,7 +30,7 @@ type Script struct {
 }
 
 // Apply executes the script if necessary to reach target state.
-func (s *Script) Apply() error {
+func (s *Script) Apply(destDir string, dryRun bool) error {
 	if s.once && s.alreadyExecuted {
 		return nil
 	}
@@ -44,7 +44,11 @@ func (s *Script) Apply() error {
 		return err
 	}
 	fmt.Printf("chezmoi: Running script %s\n", s.Name)
-	return s.execute()
+	if dryRun {
+		println(string(s.contents), "\n")
+		return nil
+	}
+	return s.execute(destDir)
 }
 
 func (s *Script) parse() error {
@@ -60,7 +64,7 @@ func (s *Script) parse() error {
 	return nil
 }
 
-func (s *Script) execute() error {
+func (s *Script) execute(destDir string) error {
 	f, err := ioutil.TempFile(os.TempDir(), s.Name)
 	if err != nil {
 		return err
@@ -74,10 +78,7 @@ func (s *Script) execute() error {
 		return err
 	}
 	c := exec.Command(f.Name())
-	c.Dir = path.Dir(s.sourcePath)
-	if err != nil {
-		return err
-	}
+	c.Dir = destDir
 	c.Stdout = os.Stdout
 	c.Stderr = os.Stderr
 	c.Stdin = os.Stdin

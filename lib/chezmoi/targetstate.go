@@ -168,9 +168,9 @@ func (ts *TargetState) Apply(fs vfs.FS, mutator Mutator) error {
 }
 
 // ApplyScripts that scripts get executed as required
-func (ts *TargetState) ApplyScripts(fs vfs.FS, force bool) error {
+func (ts *TargetState) ApplyScripts(fs vfs.FS, force bool, dryRun bool) error {
 	for _, scriptName := range sortedScriptNames(ts.Scripts) {
-		if err := ts.Scripts[scriptName].Apply(); err != nil {
+		if err := ts.Scripts[scriptName].Apply(ts.DestDir, dryRun); err != nil {
 			return err
 		}
 	}
