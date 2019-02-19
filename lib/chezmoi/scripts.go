@@ -80,6 +80,7 @@ func (s *Script) execute() error {
 	}
 	c.Stdout = os.Stdout
 	c.Stderr = os.Stderr
+	c.Stdin = os.Stdin
 
 	return c.Run()
 }
