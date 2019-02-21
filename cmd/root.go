@@ -40,19 +40,19 @@ func init() {
 		printErrorAndExit(err)
 	}
 
-	x, err := xdg.NewXDG()
+	bds, err := xdg.NewBaseDirectorySpecification()
 	if err != nil {
 		printErrorAndExit(err)
 	}
 
 	persistentFlags := rootCmd.PersistentFlags()
 
-	persistentFlags.StringVarP(&config.configFile, "config", "c", getDefaultConfigFile(x), "config file")
+	persistentFlags.StringVarP(&config.configFile, "config", "c", getDefaultConfigFile(bds), "config file")
 
 	persistentFlags.BoolVarP(&config.DryRun, "dry-run", "n", false, "dry run")
 	viper.BindPFlag("dry-run", persistentFlags.Lookup("dry-run"))
 
-	persistentFlags.StringVarP(&config.SourceDir, "source", "S", getDefaultSourceDir(x), "source directory")
+	persistentFlags.StringVarP(&config.SourceDir, "source", "S", getDefaultSourceDir(bds), "source directory")
 	viper.BindPFlag("source", persistentFlags.Lookup("source"))
 
 	persistentFlags.StringVarP(&config.DestDir, "destination", "D", homeDir, "destination directory")

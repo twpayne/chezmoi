@@ -244,9 +244,9 @@ func (c *Config) runEditor(argv ...string) error {
 	return c.run("", c.getEditor(), argv...)
 }
 
-func getDefaultConfigFile(x *xdg.XDG) string {
-	// Search XDG config directories first.
-	for _, configDir := range x.ConfigDirs {
+func getDefaultConfigFile(bds *xdg.BaseDirectorySpecification) string {
+	// Search XDG Base Directory Specification config directories first.
+	for _, configDir := range bds.ConfigDirs {
 		for _, extension := range viper.SupportedExts {
 			configFilePath := filepath.Join(configDir, "chezmoi", "chezmoi."+extension)
 			if _, err := os.Stat(configFilePath); err == nil {
@@ -254,8 +254,8 @@ func getDefaultConfigFile(x *xdg.XDG) string {
 			}
 		}
 	}
-	// Fallback to XDG default.
-	return filepath.Join(x.ConfigHome, "chezmoi", "chezmoi.yaml")
+	// Fallback to XDG Base Directory Specification default.
+	return filepath.Join(bds.ConfigHome, "chezmoi", "chezmoi.yaml")
 }
 
 func getDefaultData(fs vfs.FS) (map[string]interface{}, error) {
@@ -308,16 +308,16 @@ func getDefaultData(fs vfs.FS) (map[string]interface{}, error) {
 	return data, nil
 }
 
-func getDefaultSourceDir(x *xdg.XDG) string {
-	// Check for XDG data directories first.
-	for _, dataDir := range x.DataDirs {
+func getDefaultSourceDir(bds *xdg.BaseDirectorySpecification) string {
+	// Check for XDG Base Directory Specification data directories first.
+	for _, dataDir := range bds.DataDirs {
 		sourceDir := filepath.Join(dataDir, "chezmoi")
 		if _, err := os.Stat(sourceDir); err == nil {
 			return sourceDir
 		}
 	}
-	// Fallback to XDG default.
-	return filepath.Join(x.DataHome, "chezmoi")
+	// Fallback to XDG Base Directory Specification default.
+	return filepath.Join(bds.DataHome, "chezmoi")
 }
 
 // isWellKnownAbbreviation returns true if word is a well known abbreviation.
