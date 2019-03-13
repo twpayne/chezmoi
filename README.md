@@ -22,8 +22,9 @@ Manage your dotfiles across multiple machines, securely.
   [LastPass](https://lastpass.com/), [pass](https://www.passwordstore.org/),
   [Vault](https://www.vaultproject.io/), your Keychain (on macOS), [GNOME
   Keyring](https://wiki.gnome.org/Projects/GnomeKeyring) (on Linux), or any
-  command-line utility of your choice. You can checkout your dotfiles repo on as
-  many machines as you want without revealing any secrets to anyone.
+  command-line utility of your choice. You can encrypt individual files with
+  [`gpg`](https://www.gnupg.org). You can checkout your dotfiles repo on as many
+  machines as you want without revealing any secrets to anyone.
 
 * Personal: Nothing leaves your machine, unless you want it to. You can use the
   version control system of your choice to manage your configuration, and you
@@ -501,6 +502,31 @@ way:
 | LastPass        | `lpass`                 | `{{ secretJSON "show" "--json" <id> }}`           |
 | pass            | `pass`                  | `{{ secret "show" <id> }}`                        |
 
+### Encrypting individual files with `gpg` (beta)
+
+`chezmoi` supports encrypting individual files with
+[`gpg`](https://www.gnupg.org/). Specify the encryption key to use in your
+configuration file (`chezmoi.toml`) with the `gpgReceipient` key:
+
+    gpgRecipient = "..."
+
+Add files to be encrypted with the `--encrypt` flag, for example:
+
+    chezmoi add --encrypt ~/.ssh/id_rsa
+
+`chezmoi` will encrypt the file with
+
+    gpg --armor --encrypt --recipient $gpgRecipient
+
+and store the encrypted file in the source state. The file will automatically be
+decrypted when generating the target state.
+
+This feature is still in beta and has a couple of rough edges:
+
+* Editing an encrypted file will edit the cyphertext, not the plaintext.
+* Diff'ing an encrypted file will show the difference between the old plaintext
+  and the new cyphertext.
+
 ### Using encrypted config files
 
 `chezmoi` takes a `-c` flag specifying the file to read its configuration from.
@@ -564,6 +590,7 @@ collectively referred to as "attributes":
 
 | Prefix/suffix        | Effect                                                                            |
 | -------------------- | ----------------------------------------------------------------------------------|
+| `encrypted_` prefix  | Encrypt the file in the source state.                                             |
 | `private_` prefix    | Remove all group and world permissions from the target file or directory.         |
 | `empty_` prefix      | Ensure the file exists, even if is empty. By default, empty files are removed.    |
 | `exact_` prefix      | Remove anything not managed by `chezmoi`.                                         |
@@ -577,11 +604,11 @@ Order is important, the order is `exact_`, `private_`, `empty_`, `executable_`,
 
 Different target types allow different prefixes and suffixes:
 
-| Target type   | Allowed prefixes and suffixes                        |
-| ------------- | ---------------------------------------------------- |
-| Directory     | `exact_`, `private_`, `dot_`                         |
-| Regular file  | `private_`, `empty_`, `executable_`, `dot_`, `.tmpl` |
-| Symbolic link | `symlink_`, `dot_`, `.tmpl`                          |
+| Target type   | Allowed prefixes and suffixes                                      |
+| ------------- | ------------------------------------------------------------------ |
+| Directory     | `exact_`, `private_`, `dot_`                                       |
+| Regular file  | `encrypted_`, `private_`, `empty_`, `executable_`, `dot_`, `.tmpl` |
+| Symbolic link | `symlink_`, `dot_`, `.tmpl`                                        |
 
 You can change the attributes of a target in the source state with the `chattr`
 command. For example, to make `~/.netrc` private and a template:

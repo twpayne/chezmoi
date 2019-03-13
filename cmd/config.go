@@ -39,6 +39,7 @@ type Config struct {
 	Umask         permValue
 	DryRun        bool
 	Verbose       bool
+	GPGRecipient  string
 	SourceVCS     sourceVCSConfig
 	Bitwarden     bitwardenCmdConfig
 	GenericSecret genericSecretCmdConfig
@@ -204,7 +205,7 @@ func (c *Config) getTargetState(fs vfs.FS) (*chezmoi.TargetState, error) {
 	for key, value := range c.Data {
 		data[key] = value
 	}
-	ts := chezmoi.NewTargetState(c.DestDir, os.FileMode(c.Umask), c.SourceDir, data, c.templateFuncs)
+	ts := chezmoi.NewTargetState(c.DestDir, os.FileMode(c.Umask), c.SourceDir, data, c.templateFuncs, c.GPGRecipient)
 	readOnlyFS := vfs.NewReadOnlyFS(fs)
 	if err := ts.Populate(readOnlyFS); err != nil {
 		return nil, err

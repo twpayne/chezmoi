@@ -8,6 +8,7 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
+	"os/exec"
 	"os/user"
 	"path/filepath"
 	"strconv"
@@ -21,6 +22,7 @@ import (
 // An AddOptions contains options for TargetState.Add.
 type AddOptions struct {
 	Empty    bool
+	Encrypt  bool
 	Exact    bool
 	Template bool
 }
@@ -40,11 +42,12 @@ type TargetState struct {
 	SourceDir     string
 	Data          map[string]interface{}
 	TemplateFuncs template.FuncMap
+	GPGRecipient  string
 	Entries       map[string]Entry
 }
 
 // NewTargetState creates a new TargetState.
-func NewTargetState(destDir string, umask os.FileMode, sourceDir string, data map[string]interface{}, templateFuncs template.FuncMap) *TargetState {
+func NewTargetState(destDir string, umask os.FileMode, sourceDir string, data map[string]interface{}, templateFuncs template.FuncMap, gpgRecipient string) *TargetState {
 	return &TargetState{
 		DestDir:       destDir,
 		TargetIgnore:  NewPatternSet(),
@@ -52,6 +55,7 @@ func NewTargetState(destDir string, umask os.FileMode, sourceDir string, data ma
 		SourceDir:     sourceDir,
 		Data:          data,
 		TemplateFuncs: templateFuncs,
+		GPGRecipient:  gpgRecipient,
 		Entries:       make(map[string]Entry),
 	}
 }
@@ -120,7 +124,19 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 				return err
 			}
 		}
-		return ts.addFile(targetName, entries, parentDirSourceName, info, addOptions.Template, contents, mutator)
+		if addOptions.Encrypt {
+			args := []string{"--armor", "--encrypt"}
+			if ts.GPGRecipient != "" {
+				args = append(args, "--recipient", ts.GPGRecipient)
+			}
+			cmd := exec.Command("gpg", args...)
+			cmd.Stdin = bytes.NewReader(contents)
+			contents, err = cmd.Output()
+			if err != nil {
+				return err
+			}
+		}
+		return ts.addFile(targetName, entries, parentDirSourceName, info, addOptions.Encrypt, addOptions.Template, contents, mutator)
 	case info.Mode()&os.ModeType == os.ModeSymlink:
 		linkname, err := fs.Readlink(targetPath)
 		if err != nil {
@@ -283,12 +299,30 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 			var entry Entry
 			switch psfp.Mode & os.ModeType {
 			case 0:
-				evaluateContents := func() ([]byte, error) {
+				readFile := func() ([]byte, error) {
 					return fs.ReadFile(path)
 				}
-				if psfp.Template {
+				evaluateContents := readFile
+				if psfp.Encrypted {
+					prevEvaluateContents := evaluateContents
 					evaluateContents = func() ([]byte, error) {
-						return ts.executeTemplate(fs, path)
+						encryptedData, err := prevEvaluateContents()
+						if err != nil {
+							return nil, err
+						}
+						cmd := exec.Command("gpg", "--decrypt")
+						cmd.Stdin = bytes.NewReader(encryptedData)
+						return cmd.Output()
+					}
+				}
+				if psfp.Template {
+					prevEvaluateContents := evaluateContents
+					evaluateContents = func() ([]byte, error) {
+						data, err := prevEvaluateContents()
+						if err != nil {
+							return nil, err
+						}
+						return ts.executeTemplateData(path, data)
 					}
 				}
 				entry = &File{
@@ -359,7 +393,7 @@ func (ts *TargetState) addDir(targetName string, entries map[string]Entry, paren
 	return nil
 }
 
-func (ts *TargetState) addFile(targetName string, entries map[string]Entry, parentDirSourceName string, info os.FileInfo, template bool, contents []byte, mutator Mutator) error {
+func (ts *TargetState) addFile(targetName string, entries map[string]Entry, parentDirSourceName string, info os.FileInfo, encrypted, template bool, contents []byte, mutator Mutator) error {
 	name := filepath.Base(targetName)
 	var existingFile *File
 	var existingContents []byte
@@ -377,10 +411,11 @@ func (ts *TargetState) addFile(targetName string, entries map[string]Entry, pare
 	perm := info.Mode().Perm()
 	empty := info.Size() == 0
 	sourceName := FileAttributes{
-		Name:     name,
-		Mode:     perm,
-		Empty:    empty,
-		Template: template,
+		Name:      name,
+		Mode:      perm,
+		Empty:     empty,
+		Encrypted: encrypted,
+		Template:  template,
 	}.SourceName()
 	if parentDirSourceName != "" {
 		sourceName = filepath.Join(parentDirSourceName, sourceName)
@@ -389,6 +424,7 @@ func (ts *TargetState) addFile(targetName string, entries map[string]Entry, pare
 		sourceName: sourceName,
 		targetName: targetName,
 		Empty:      empty,
+		Encrypted:  encrypted,
 		Perm:       perm,
 		Template:   template,
 		contents:   contents,
@@ -568,7 +604,7 @@ func (ts *TargetState) importHeader(r io.Reader, importTAROptions ImportTAROptio
 		if err != nil {
 			return err
 		}
-		return ts.addFile(targetName, entries, parentDirSourceName, info, false, contents, mutator)
+		return ts.addFile(targetName, entries, parentDirSourceName, info, false, false, contents, mutator)
 	case tar.TypeSymlink:
 		linkname := header.Linkname
 		return ts.addSymlink(targetName, entries, parentDirSourceName, linkname, mutator)
