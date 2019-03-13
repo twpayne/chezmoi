@@ -106,6 +106,14 @@ func TestFileAttributes(t *testing.T) {
 				Template: true,
 			},
 		},
+		{
+			sourceName: "encrypted_private_dot_secret_file",
+			fa: FileAttributes{
+				Name:      ".secret_file",
+				Mode:      0600,
+				Encrypted: true,
+			},
+		},
 	} {
 		t.Run(tc.sourceName, func(t *testing.T) {
 			gotFA := ParseFileAttributes(tc.sourceName)

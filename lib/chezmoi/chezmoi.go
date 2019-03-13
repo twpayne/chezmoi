@@ -15,6 +15,7 @@ const (
 	symlinkPrefix    = "symlink_"
 	privatePrefix    = "private_"
 	emptyPrefix      = "empty_"
+	encryptedPrefix  = "encrypted_"
 	exactPrefix      = "exact_"
 	executablePrefix = "executable_"
 	dotPrefix        = "dot_"

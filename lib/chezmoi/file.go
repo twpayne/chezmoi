@@ -13,10 +13,11 @@ import (
 
 // A FileAttributes holds attributes passed from a source file name.
 type FileAttributes struct {
-	Name     string
-	Mode     os.FileMode
-	Empty    bool
-	Template bool
+	Name      string
+	Mode      os.FileMode
+	Empty     bool
+	Encrypted bool
+	Template  bool
 }
 
 // A File represents the target state of a file.
@@ -24,6 +25,7 @@ type File struct {
 	sourceName       string
 	targetName       string
 	Empty            bool
+	Encrypted        bool
 	Perm             os.FileMode
 	Template         bool
 	contents         []byte
@@ -36,6 +38,7 @@ type fileConcreteValue struct {
 	SourcePath string `json:"sourcePath" yaml:"sourcePath"`
 	TargetPath string `json:"targetPath" yaml:"targetPath"`
 	Empty      bool   `json:"empty" yaml:"empty"`
+	Encrypted  bool   `json:"encrypted" yaml:"encrypted"`
 	Perm       int    `json:"perm" yaml:"perm"`
 	Template   bool   `json:"template" yaml:"template"`
 	Contents   string `json:"contents" yaml:"contents"`
@@ -46,12 +49,17 @@ func ParseFileAttributes(sourceName string) FileAttributes {
 	name := sourceName
 	mode := os.FileMode(0666)
 	empty := false
+	encrypted := false
 	template := false
 	if strings.HasPrefix(name, symlinkPrefix) {
 		name = strings.TrimPrefix(name, symlinkPrefix)
 		mode |= os.ModeSymlink
 	} else {
 		private := false
+		if strings.HasPrefix(name, encryptedPrefix) {
+			name = strings.TrimPrefix(name, encryptedPrefix)
+			encrypted = true
+		}
 		if strings.HasPrefix(name, privatePrefix) {
 			name = strings.TrimPrefix(name, privatePrefix)
 			private = true
@@ -76,10 +84,11 @@ func ParseFileAttributes(sourceName string) FileAttributes {
 		template = true
 	}
 	return FileAttributes{
-		Name:     name,
-		Mode:     mode,
-		Empty:    empty,
-		Template: template,
+		Name:      name,
+		Mode:      mode,
+		Empty:     empty,
+		Encrypted: encrypted,
+		Template:  template,
 	}
 }
 
@@ -88,8 +97,11 @@ func (fa FileAttributes) SourceName() string {
 	sourceName := ""
 	switch fa.Mode & os.ModeType {
 	case 0:
+		if fa.Encrypted {
+			sourceName += encryptedPrefix
+		}
 		if fa.Mode.Perm()&os.FileMode(077) == os.FileMode(0) {
-			sourceName = privatePrefix
+			sourceName += privatePrefix
 		}
 		if fa.Empty {
 			sourceName += emptyPrefix
@@ -171,6 +183,7 @@ func (f *File) ConcreteValue(destDir string, ignore func(string) bool, sourceDir
 		SourcePath: filepath.Join(sourceDir, f.SourceName()),
 		TargetPath: filepath.Join(destDir, f.TargetName()),
 		Empty:      f.Empty,
+		Encrypted:  f.Encrypted,
 		Perm:       int(f.Perm),
 		Template:   f.Template,
 		Contents:   string(contents),
