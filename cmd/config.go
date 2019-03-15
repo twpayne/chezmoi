@@ -3,7 +3,6 @@ package cmd
 import (
 	"bufio"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -286,7 +285,7 @@ func getDefaultData(fs vfs.FS) (map[string]interface{}, error) {
 		return nil, err
 	}
 
-	homedir, err := userHomeDir()
+	homedir, err := os.UserHomeDir()
 	if err != nil {
 		return nil, err
 	}
@@ -386,32 +385,4 @@ func upperSnakeCaseToCamelCaseMap(m map[string]string) map[string]string {
 		result[upperSnakeCaseToCamelCase(k)] = v
 	}
 	return result
-}
-
-// userHomeDir returns the current user's home directory.
-//
-// On Unix, including macOS, it returns the $HOME environment variable.
-// On Windows, it returns %USERPROFILE%.
-// On Plan 9, it returns the $home environment variable.
-//
-// FIXME this is copied from https://tip.golang.org/src/os/file.go?s=11606:11640#L379.
-// Replace it with os.UserHomeDir when Go 1.12 is released.
-func userHomeDir() (string, error) {
-	env, enverr := "HOME", "$HOME"
-	switch runtime.GOOS {
-	case "windows":
-		env, enverr = "USERPROFILE", "%userprofile%"
-	case "plan9":
-		env, enverr = "home", "$home"
-	case "nacl", "android":
-		return "/", nil
-	case "darwin":
-		if runtime.GOARCH == "arm" || runtime.GOARCH == "arm64" {
-			return "/", nil
-		}
-	}
-	if v := os.Getenv(env); v != "" {
-		return v, nil
-	}
-	return "", errors.New(enverr + " is not defined")
 }

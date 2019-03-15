@@ -35,7 +35,7 @@ var rootCmd = &cobra.Command{
 func init() {
 	rootCmd.Version = fmt.Sprintf("%s, commit %s, built at %s", version, commit, date)
 
-	homeDir, err := userHomeDir()
+	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		printErrorAndExit(err)
 	}
