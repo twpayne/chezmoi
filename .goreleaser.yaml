@@ -21,6 +21,8 @@ builds:
     - amd64
     - arm
     - arm64
+    - ppc64
+    - ppc64le
   goarm:
     - ''
   ignore:
@@ -67,6 +69,8 @@ nfpm:
   formats:
     - deb
     - rpm
+  dependencies:
+    - git
   overrides:
     rpm:
       name_template: "{{ .ProjectName }}-{{ .Version }}-{{ .Env.TRAVIS_BUILD_NUMBER }}-{{ .Arch }}"

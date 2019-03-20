@@ -1,7 +1,7 @@
 # Contributing
 
 `chezmoi` development happens on Github. When contributing, please first [open
-an issue](https://github.com/twpayne/dotfiles/issues/new) to discuss the change
+an issue](https://github.com/twpayne/chezmoi/issues/new) to discuss the change
 that you want to make. Bug reports and documentation improvements are
 particularly welcome.
 
