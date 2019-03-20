@@ -69,6 +69,8 @@ nfpm:
   formats:
     - deb
     - rpm
+  dependencies:
+    - git
   overrides:
     rpm:
       name_template: "{{ .ProjectName }}-{{ .Version }}-{{ .Env.TRAVIS_BUILD_NUMBER }}-{{ .Arch }}"
