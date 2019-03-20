@@ -20,7 +20,7 @@ require (
 	github.com/stretchr/objx v0.1.1 // indirect
 	github.com/twpayne/go-shell v0.0.1
 	github.com/twpayne/go-vfs v1.0.5
-	github.com/twpayne/go-xdg v0.0.0-20190220233246-4973c34fec2f
+	github.com/twpayne/go-xdg/v2 v2.0.0
 	github.com/zalando/go-keyring v0.0.0-20180221093347-6d81c293b3fb
 	golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2
 	golang.org/x/sys v0.0.0-20190310054646-10058d7d4faa // indirect

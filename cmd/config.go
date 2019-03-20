@@ -20,7 +20,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/twpayne/chezmoi/lib/chezmoi"
 	vfs "github.com/twpayne/go-vfs"
-	xdg "github.com/twpayne/go-xdg"
+	xdg "github.com/twpayne/go-xdg/v2"
 	yaml "gopkg.in/yaml.v2"
 )
 
