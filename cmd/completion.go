@@ -29,6 +29,4 @@ func (c *Config) runCompletion(fs vfs.FS, args []string) error {
 	default:
 		return errors.New("unsupported shell")
 	}
-
-	return nil
 }
