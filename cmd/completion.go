@@ -1,32 +1,34 @@
 package cmd
 
 import (
-	"github.com/spf13/cobra"
-
 	"errors"
 	"os"
+
+	"github.com/spf13/cobra"
+	vfs "github.com/twpayne/go-vfs"
 )
 
-// bashCompletionCmd represents the completion command
 var completionCmd = &cobra.Command{
-	Use:       "completion [shell]",
+	Use:       "completion shell",
 	Short:     "Output shell completion code for the specified shell (bash or zsh)",
-	Long:      "Output shell completion code for the specified shell (bash or zsh)",
-	ValidArgs: []string{"bash"},
-	RunE: func(cmd *cobra.Command, args []string) error {
-		if len(args) != 1 {
-			return cmd.Usage()
-		}
-		switch args[0] {
-		case "bash":
-			return rootCmd.GenBashCompletion(os.Stdout)
-		case "zsh":
-			return rootCmd.GenZshCompletion(os.Stdout)
-		}
-		return errors.New("Unsupported shell")
-	},
+	ValidArgs: []string{"bash", "zsh"},
+	Args:      cobra.ExactArgs(1),
+	RunE:      makeRunE(config.runCompletion),
 }
 
 func init() {
 	rootCmd.AddCommand(completionCmd)
+}
+
+func (c *Config) runCompletion(fs vfs.FS, args []string) error {
+	switch args[0] {
+	case "bash":
+		return rootCmd.GenBashCompletion(os.Stdout)
+	case "zsh":
+		return rootCmd.GenZshCompletion(os.Stdout)
+	default:
+		return errors.New("unsupported shell")
+	}
+
+	return nil
 }
