@@ -99,7 +99,7 @@ func (c *Config) applyArgs(fs vfs.FS, args []string, mutator chezmoi.Mutator) er
 	if len(args) == 0 {
 		return ts.Apply(fs, mutator)
 	}
-	entries, err := c.getEntries(ts, args)
+	entries, err := c.getEntries(fs, ts, args)
 	if err != nil {
 		return err
 	}
@@ -174,14 +174,14 @@ func (c *Config) getEditor() string {
 	return "vi"
 }
 
-func (c *Config) getEntries(ts *chezmoi.TargetState, args []string) ([]chezmoi.Entry, error) {
+func (c *Config) getEntries(fs vfs.FS, ts *chezmoi.TargetState, args []string) ([]chezmoi.Entry, error) {
 	entries := []chezmoi.Entry{}
 	for _, arg := range args {
 		targetPath, err := filepath.Abs(arg)
 		if err != nil {
 			return nil, err
 		}
-		entry, err := ts.Get(targetPath)
+		entry, err := ts.Get(fs, targetPath)
 		if err != nil {
 			return nil, err
 		}

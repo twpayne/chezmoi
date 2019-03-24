@@ -62,7 +62,11 @@ func NewTargetState(destDir string, umask os.FileMode, sourceDir string, data ma
 
 // Add adds a new target to ts.
 func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, info os.FileInfo, mutator Mutator) error {
-	if !filepath.HasPrefix(targetPath, ts.DestDir) {
+	contains, err := vfs.Contains(fs, targetPath, ts.DestDir)
+	if err != nil {
+		return err
+	}
+	if !contains {
 		return fmt.Errorf("%s: outside target directory", targetPath)
 	}
 	targetName, err := filepath.Rel(ts.DestDir, targetPath)
@@ -220,8 +224,12 @@ func (ts *TargetState) Evaluate() error {
 }
 
 // Get returns the state of the given target, or nil if no such target is found.
-func (ts *TargetState) Get(target string) (Entry, error) {
-	if !filepath.HasPrefix(target, ts.DestDir) {
+func (ts *TargetState) Get(fs vfs.FS, target string) (Entry, error) {
+	contains, err := vfs.Contains(fs, target, ts.DestDir)
+	if err != nil {
+		return nil, err
+	}
+	if !contains {
 		return nil, fmt.Errorf("%s: outside target directory", target)
 	}
 	targetName, err := filepath.Rel(ts.DestDir, target)

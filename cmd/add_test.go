@@ -290,6 +290,31 @@ func TestAddCommand(t *testing.T) {
 				),
 			},
 		},
+		{
+			name: "dest_dir_is_symlink",
+			args: []string{"/home/user/foo"},
+			root: map[string]interface{}{
+				"/home/user":                &vfst.Symlink{Target: "../local/home/user"},
+				"/local/home/user/.chezmoi": &vfst.Dir{Perm: 0700},
+				"/local/home/user/foo":      "bar",
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/.chezmoi",
+					vfst.TestIsDir,
+				),
+				vfst.TestPath("/home/user/.chezmoi/foo",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("bar"),
+				),
+				vfst.TestPath("/local/home/user/.chezmoi",
+					vfst.TestIsDir,
+				),
+				vfst.TestPath("/local/home/user/.chezmoi/foo",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("bar"),
+				),
+			},
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			c := &Config{

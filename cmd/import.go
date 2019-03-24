@@ -68,7 +68,7 @@ func (c *Config) runImportCmd(fs vfs.FS, args []string) error {
 	}
 	mutator := c.getDefaultMutator(fs)
 	if c._import.removeDestination {
-		entry, err := ts.Get(c._import.importTAROptions.DestinationDir)
+		entry, err := ts.Get(fs, c._import.importTAROptions.DestinationDir)
 		switch {
 		case err == nil:
 			if err := mutator.RemoveAll(filepath.Join(c.SourceDir, entry.SourceName())); err != nil {
