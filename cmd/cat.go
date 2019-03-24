@@ -25,7 +25,7 @@ func (c *Config) runCatCmd(fs vfs.FS, args []string) error {
 	if err != nil {
 		return err
 	}
-	entries, err := c.getEntries(ts, args)
+	entries, err := c.getEntries(fs, ts, args)
 	if err != nil {
 		return err
 	}

@@ -42,7 +42,7 @@ func (c *Config) runChattrCmd(fs vfs.FS, args []string) error {
 	if err != nil {
 		return err
 	}
-	entries, err := c.getEntries(ts, args[1:])
+	entries, err := c.getEntries(fs, ts, args[1:])
 	if err != nil {
 		return err
 	}

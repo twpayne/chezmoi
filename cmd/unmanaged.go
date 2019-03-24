@@ -33,7 +33,7 @@ func (c *Config) runUnmanagedCmd(fs vfs.FS, args []string) error {
 		if path == c.DestDir {
 			return nil
 		}
-		entry, _ := ts.Get(path)
+		entry, _ := ts.Get(fs, path)
 		managed := entry != nil
 		ignored := ts.TargetIgnore.Match(strings.TrimPrefix(path, c.DestDir+"/"))
 		if !managed && !ignored {

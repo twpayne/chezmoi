@@ -44,7 +44,7 @@ func (c *Config) runDumpCmd(fs vfs.FS, args []string) error {
 			return err
 		}
 	} else {
-		entries, err := c.getEntries(ts, args)
+		entries, err := c.getEntries(fs, ts, args)
 		if err != nil {
 			return err
 		}

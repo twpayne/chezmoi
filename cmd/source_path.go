@@ -27,7 +27,7 @@ func (c *Config) runSourcePathCmd(fs vfs.FS, args []string) error {
 		_, err := fmt.Println(ts.SourceDir)
 		return err
 	}
-	entries, err := c.getEntries(ts, args)
+	entries, err := c.getEntries(fs, ts, args)
 	if err != nil {
 		return err
 	}
