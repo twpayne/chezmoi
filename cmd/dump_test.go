@@ -38,7 +38,7 @@ func TestDumpCmd(t *testing.T) {
 			"sourcePath": "/home/user/.local/share/chezmoi/dir",
 			"targetPath": "dir",
 			"exact":      false,
-			"perm":       float64(0777),
+			"perm":       float64(0755),
 			"entries": []interface{}{
 				map[string]interface{}{
 					"type":       "file",
@@ -46,7 +46,7 @@ func TestDumpCmd(t *testing.T) {
 					"targetPath": "dir/file",
 					"empty":      false,
 					"encrypted":  false,
-					"perm":       float64(0666),
+					"perm":       float64(0644),
 					"template":   false,
 					"contents":   "contents",
 				},

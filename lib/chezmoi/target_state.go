@@ -202,7 +202,7 @@ func (ts *TargetState) Archive(w *tar.Writer, umask os.FileMode) error {
 func (ts *TargetState) ConcreteValue(recursive bool) (interface{}, error) {
 	var entryConcreteValues []interface{}
 	for _, entryName := range sortedEntryNames(ts.Entries) {
-		entryConcreteValue, err := ts.Entries[entryName].ConcreteValue(ts.DestDir, ts.TargetIgnore.Match, ts.SourceDir, recursive)
+		entryConcreteValue, err := ts.Entries[entryName].ConcreteValue(ts.DestDir, ts.TargetIgnore.Match, ts.SourceDir, ts.Umask, recursive)
 		if err != nil {
 			return nil, err
 		}

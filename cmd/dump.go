@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -49,7 +50,7 @@ func (c *Config) runDumpCmd(fs vfs.FS, args []string) error {
 		}
 		var concreteValues []interface{}
 		for _, entry := range entries {
-			entryConcreteValue, err := entry.ConcreteValue(ts.DestDir, ts.TargetIgnore.Match, ts.SourceDir, c.dump.recursive)
+			entryConcreteValue, err := entry.ConcreteValue(ts.DestDir, ts.TargetIgnore.Match, ts.SourceDir, os.FileMode(c.Umask), c.dump.recursive)
 			if err != nil {
 				return err
 			}

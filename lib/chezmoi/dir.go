@@ -137,14 +137,14 @@ func (d *Dir) Apply(fs vfs.FS, destDir string, ignore func(string) bool, umask o
 }
 
 // ConcreteValue implements Entry.ConcreteValue.
-func (d *Dir) ConcreteValue(destDir string, ignore func(string) bool, sourceDir string, recursive bool) (interface{}, error) {
+func (d *Dir) ConcreteValue(destDir string, ignore func(string) bool, sourceDir string, umask os.FileMode, recursive bool) (interface{}, error) {
 	if ignore(d.targetName) {
 		return nil, nil
 	}
 	var entryConcreteValues []interface{}
 	if recursive {
 		for _, entryName := range sortedEntryNames(d.Entries) {
-			entryConcreteValue, err := d.Entries[entryName].ConcreteValue(destDir, ignore, sourceDir, recursive)
+			entryConcreteValue, err := d.Entries[entryName].ConcreteValue(destDir, ignore, sourceDir, umask, recursive)
 			if err != nil {
 				return nil, err
 			}
@@ -158,7 +158,7 @@ func (d *Dir) ConcreteValue(destDir string, ignore func(string) bool, sourceDir 
 		SourcePath: filepath.Join(sourceDir, d.SourceName()),
 		TargetPath: filepath.Join(destDir, d.TargetName()),
 		Exact:      d.Exact,
-		Perm:       int(d.Perm),
+		Perm:       int(d.Perm &^ umask),
 		Entries:    entryConcreteValues,
 	}, nil
 }
