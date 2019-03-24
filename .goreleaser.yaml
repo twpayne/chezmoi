@@ -24,7 +24,7 @@ builds:
     - ppc64
     - ppc64le
   goarm:
-    - ''
+    - ""
   ignore:
     - goos: darwin
       goarch: 386
@@ -45,7 +45,7 @@ archive:
     386: i386
 
 checksum:
-  name_template: 'checksums.txt'
+  name_template: "checksums.txt"
 
 snapshot:
   name_template: "{{ .Tag }}-next"
@@ -54,16 +54,16 @@ changelog:
   sort: asc
   filters:
     exclude:
-    - '^docs:'
-    - '^test:'
-    - Merge pull request
-    - Merge branch
+    - "^docs:"
+    - "^test:"
+    - "Merge pull request"
+    - "Merge branch"
 
-## generate RPM and DEB packages
+# generate RPM and DEB packages
 nfpm:
   vendor: "Tom Payne <twpayne@gmail.com>"
   homepage: "https://github.com/twpayne/chezmoi"
-  maintainer: Tom Payne <twpayne@gmail.com>
+  maintainer: "Tom Payne <twpayne@gmail.com>"
   description: "Manage your dotfiles across multiple machines, securely."
   license: MIT
   formats:
