@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/d4l3k/messagediff"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestFileAttributes(t *testing.T) {
@@ -116,13 +116,8 @@ func TestFileAttributes(t *testing.T) {
 		},
 	} {
 		t.Run(tc.sourceName, func(t *testing.T) {
-			gotFA := ParseFileAttributes(tc.sourceName)
-			if diff, equal := messagediff.PrettyDiff(tc.fa, gotFA); !equal {
-				t.Errorf("ParseFileAttributes(%q) == %+v, want %+v, diff:\n%s", tc.sourceName, gotFA, tc.fa, diff)
-			}
-			if gotSourceName := tc.fa.SourceName(); gotSourceName != tc.sourceName {
-				t.Errorf("%+v.SourceName() == %q, want %q", tc.fa, gotSourceName, tc.sourceName)
-			}
+			assert.Equal(t, tc.fa, ParseFileAttributes(tc.sourceName))
+			assert.Equal(t, tc.sourceName, tc.fa.SourceName())
 		})
 	}
 }
