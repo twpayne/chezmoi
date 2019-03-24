@@ -56,6 +56,9 @@ type Config struct {
 	_import       importCmdConfig
 	keyring       keyringCmdConfig
 	update        updateCmdConfig
+	stdin         io.Reader
+	stdout        io.Writer
+	stderr        io.Writer
 }
 
 var (
@@ -80,6 +83,30 @@ var (
 		"URL":  struct{}{},
 	}
 )
+
+// Stderr returns c's stderr.
+func (c *Config) Stderr() io.Writer {
+	if c.stderr != nil {
+		return c.stderr
+	}
+	return os.Stderr
+}
+
+// Stdin returns c's stdin.
+func (c *Config) Stdin() io.Reader {
+	if c.stdin != nil {
+		return c.stdin
+	}
+	return os.Stdin
+}
+
+// Stdout returns c's stdout.
+func (c *Config) Stdout() io.Writer {
+	if c.stdout != nil {
+		return c.stdout
+	}
+	return os.Stdout
+}
 
 func (c *Config) addTemplateFunc(key string, value interface{}) {
 	if c.templateFuncs == nil {
@@ -159,7 +186,7 @@ func (c *Config) getDefaultMutator(fs vfs.FS) chezmoi.Mutator {
 		mutator = chezmoi.NewFSMutator(fs, c.DestDir)
 	}
 	if c.Verbose {
-		mutator = chezmoi.NewLoggingMutator(os.Stdout, mutator)
+		mutator = chezmoi.NewLoggingMutator(c.Stdout(), mutator)
 	}
 	return mutator
 }
@@ -220,6 +247,23 @@ func (c *Config) getVCSInfo() (*vcsInfo, error) {
 	return vcsInfo, nil
 }
 
+func (c *Config) prompt(s, choices string) (byte, error) {
+	r := bufio.NewReader(c.Stdin())
+	for {
+		_, err := fmt.Printf("%s [%s]? ", s, strings.Join(strings.Split(choices, ""), ","))
+		if err != nil {
+			return 0, err
+		}
+		line, err := r.ReadString('\n')
+		if err != nil {
+			return 0, err
+		}
+		if len(line) == 2 && strings.IndexByte(choices, line[0]) != -1 {
+			return line[0], nil
+		}
+	}
+}
+
 // run runs name argv... in dir.
 func (c *Config) run(dir, name string, argv ...string) error {
 	if c.Verbose {
@@ -234,9 +278,9 @@ func (c *Config) run(dir, name string, argv ...string) error {
 	}
 	cmd := exec.Command(name, argv...)
 	cmd.Dir = dir
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stdout
+	cmd.Stdin = c.Stdin()
+	cmd.Stdout = c.Stdout()
+	cmd.Stderr = c.Stdout()
 	return cmd.Run()
 }
 
@@ -335,23 +379,6 @@ func makeRunE(runCmd func(vfs.FS, []string) error) func(*cobra.Command, []string
 func printErrorAndExit(err error) {
 	fmt.Printf("chezmoi: %v\n", err)
 	os.Exit(1)
-}
-
-func prompt(s, choices string) (byte, error) {
-	r := bufio.NewReader(os.Stdin)
-	for {
-		_, err := fmt.Printf("%s [%s]? ", s, strings.Join(strings.Split(choices, ""), ","))
-		if err != nil {
-			return 0, err
-		}
-		line, err := r.ReadString('\n')
-		if err != nil {
-			return 0, err
-		}
-		if len(line) == 2 && strings.IndexByte(choices, line[0]) != -1 {
-			return line[0], nil
-		}
-	}
 }
 
 // titilize returns s, titilized.

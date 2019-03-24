@@ -24,7 +24,7 @@ func (c *Config) runArchiveCmd(fs vfs.FS, args []string) error {
 	if err != nil {
 		return err
 	}
-	w := tar.NewWriter(os.Stdout)
+	w := tar.NewWriter(c.Stdout())
 	if err := ts.Archive(w, os.FileMode(c.Umask)); err != nil {
 		return err
 	}

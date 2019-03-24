@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/spf13/cobra"
 	"github.com/twpayne/chezmoi/lib/chezmoi"
@@ -36,7 +35,7 @@ func (c *Config) runCatCmd(fs vfs.FS, args []string) error {
 			if err != nil {
 				return err
 			}
-			if _, err := os.Stdout.Write(contents); err != nil {
+			if _, err := c.Stdout().Write(contents); err != nil {
 				return err
 			}
 		case *chezmoi.Symlink:

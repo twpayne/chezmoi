@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -60,5 +59,5 @@ func (c *Config) runDumpCmd(fs vfs.FS, args []string) error {
 		}
 		concreteValue = concreteValues
 	}
-	return format(os.Stdout, concreteValue)
+	return format(c.Stdout(), concreteValue)
 }
