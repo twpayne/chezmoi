@@ -12,10 +12,17 @@ go:
 env:
   - GO111MODULE=on
 
+install:
+  - go get golang.org/x/lint/golint
+  - go get golang.org/x/tools/cmd/cover
+  - go get github.com/mattn/goveralls
+
 script:
-  - go test ./...
-  - go test -cover -race ./...
+  - go test -race ./...
   - go vet ./...
+  - golint ./...
+  - go test -covermode=count -coverprofile=coverage.out ./...
+  - goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
 
 sudo: false
 
