@@ -12,10 +12,14 @@ go:
 env:
   - GO111MODULE=on
 
+install:
+  - go get golang.org/x/lint/golint
+
 script:
   - go test ./...
   - go test -cover -race ./...
   - go vet ./...
+  - golint ./...
 
 sudo: false
 
