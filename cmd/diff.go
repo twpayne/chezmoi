@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"os"
-
 	"github.com/spf13/cobra"
 	"github.com/twpayne/chezmoi/lib/chezmoi"
 	vfs "github.com/twpayne/go-vfs"
@@ -19,6 +17,6 @@ func init() {
 }
 
 func (c *Config) runDiffCmd(fs vfs.FS, args []string) error {
-	mutator := chezmoi.NewLoggingMutator(os.Stdout, chezmoi.NullMutator)
+	mutator := chezmoi.NewLoggingMutator(c.Stdout(), chezmoi.NullMutator)
 	return c.applyArgs(fs, args, mutator)
 }

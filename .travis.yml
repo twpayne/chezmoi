@@ -22,9 +22,7 @@ script:
   - go test -race ./...
   - go vet ./...
   - golint ./...
-  - go test -cover -covermode=count -coverprofile=cmd-coverage.out -coverpkg=github.com/twpayne/chezmoi/cmd,github.com/twpayne/chezmoi/lib/chezmoi ./cmd
-  - go test -cover -covermode=count -coverprofile=lib-chezmoi-coverage.out ./lib/chezmoi
-  - gocovmerge cmd-coverage.out lib-chezmoi-coverage.out > coverage.out
+  - make coverage.out
   - goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN
 
 sudo: false

@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -35,5 +34,5 @@ func (c *Config) runDataCmd(fs vfs.FS, args []string) error {
 	if err != nil {
 		return err
 	}
-	return format(os.Stdout, ts.Data)
+	return format(c.Stdout(), ts.Data)
 }

@@ -71,7 +71,7 @@ func (c *Config) runAddCmd(fs vfs.FS, args []string) (err error) {
 					return nil
 				}
 				if c.add.prompt {
-					choice, err := prompt(fmt.Sprintf("Add %s", path), "ynqa")
+					choice, err := c.prompt(fmt.Sprintf("Add %s", path), "ynqa")
 					if err != nil {
 						return err
 					}
@@ -94,7 +94,7 @@ func (c *Config) runAddCmd(fs vfs.FS, args []string) (err error) {
 				continue
 			}
 			if c.add.prompt {
-				choice, err := prompt(fmt.Sprintf("Add %s", path), "ynqa")
+				choice, err := c.prompt(fmt.Sprintf("Add %s", path), "ynqa")
 				if err != nil {
 					return err
 				}

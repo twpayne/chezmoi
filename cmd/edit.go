@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 	"path/filepath"
 
 	"github.com/spf13/cobra"
@@ -60,14 +59,14 @@ func (c *Config) runEditCmd(fs vfs.FS, args []string) error {
 		anyMutator := chezmoi.NewAnyMutator(chezmoi.NullMutator)
 		var mutator chezmoi.Mutator = anyMutator
 		if c.edit.diff {
-			mutator = chezmoi.NewLoggingMutator(os.Stdout, mutator)
+			mutator = chezmoi.NewLoggingMutator(c.Stdout(), mutator)
 		}
 		if err := entry.Apply(readOnlyFS, ts.DestDir, ts.TargetIgnore.Match, ts.Umask, mutator); err != nil {
 			return err
 		}
 		if c.edit.apply && anyMutator.Mutated() {
 			if c.edit.prompt {
-				choice, err := prompt(fmt.Sprintf("Apply %s", args[i]), "ynqa")
+				choice, err := c.prompt(fmt.Sprintf("Apply %s", args[i]), "ynqa")
 				if err != nil {
 					return err
 				}

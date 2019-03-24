@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"errors"
-	"os"
 
 	"github.com/spf13/cobra"
 	vfs "github.com/twpayne/go-vfs"
@@ -23,9 +22,9 @@ func init() {
 func (c *Config) runCompletion(fs vfs.FS, args []string) error {
 	switch args[0] {
 	case "bash":
-		return rootCmd.GenBashCompletion(os.Stdout)
+		return rootCmd.GenBashCompletion(c.Stdout())
 	case "zsh":
-		return rootCmd.GenZshCompletion(os.Stdout)
+		return rootCmd.GenZshCompletion(c.Stdout())
 	default:
 		return errors.New("unsupported shell")
 	}

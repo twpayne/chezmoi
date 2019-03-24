@@ -31,7 +31,7 @@ type templateFuncError struct {
 // An Entry is either a Dir, a File, or a Symlink.
 type Entry interface {
 	Apply(fs vfs.FS, destDir string, ignore func(string) bool, umask os.FileMode, mutator Mutator) error
-	ConcreteValue(destDir string, ignore func(string) bool, sourceDir string, recursive bool) (interface{}, error)
+	ConcreteValue(destDir string, ignore func(string) bool, sourceDir string, umask os.FileMode, recursive bool) (interface{}, error)
 	Evaluate(ignore func(string) bool) error
 	SourceName() string
 	TargetName() string
