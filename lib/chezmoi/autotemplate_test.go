@@ -1,6 +1,10 @@
 package chezmoi
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func TestAutoTemplate(t *testing.T) {
 	for _, tc := range []struct {
@@ -121,10 +125,8 @@ func TestAutoTemplate(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			got, gotErr := autoTemplate([]byte(tc.contentsStr), tc.data)
-			gotStr := string(got)
-			if gotErr != nil || gotStr != tc.wantStr {
-				t.Errorf("autoTemplate([]byte(%q), %v) == %q, %v, want %q, <nil>", tc.contentsStr, tc.data, gotStr, gotErr, tc.wantStr)
-			}
+			assert.NoError(t, gotErr)
+			assert.Equal(t, tc.wantStr, string(got))
 		})
 	}
 }
@@ -163,8 +165,6 @@ func TestInWord(t *testing.T) {
 		{s: "/home/user", i: 9, want: true},
 		{s: "/home/user", i: 10, want: false},
 	} {
-		if got := inWord(tc.s, tc.i); got != tc.want {
-			t.Errorf("inWord(%q, %d) == %v, want %v", tc.s, tc.i, got, tc.want)
-		}
+		assert.Equal(t, tc.want, inWord(tc.s, tc.i))
 	}
 }

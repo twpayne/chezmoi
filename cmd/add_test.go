@@ -3,6 +3,8 @@ package cmd
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"github.com/twpayne/chezmoi/lib/chezmoi"
 	"github.com/twpayne/go-vfs/vfst"
 )
@@ -20,26 +22,18 @@ func TestAddAfterModification(t *testing.T) {
 		"/home/user/.chezmoi": &vfst.Dir{Perm: 0700},
 		"/home/user/.bashrc":  "# contents of .bashrc\n",
 	})
+	require.NoError(t, err)
 	defer cleanup()
-	if err != nil {
-		t.Fatalf("vfst.NewTestFS(_) == _, _, %v, want _, _, <nil>", err)
-	}
 	args := []string{"/home/user/.bashrc"}
-	if err := c.runAddCmd(fs, args); err != nil {
-		t.Errorf("c.runAddCmd(fs, nil, %+v) == %v, want <nil>", args, err)
-	}
+	assert.NoError(t, c.runAddCmd(fs, args))
 	vfst.RunTests(t, fs, "",
 		vfst.TestPath("/home/user/.chezmoi/dot_bashrc",
 			vfst.TestModeIsRegular,
 			vfst.TestContentsString("# contents of .bashrc\n"),
 		),
 	)
-	if err := fs.WriteFile("/home/user/.bashrc", []byte("# new contents of .bashrc\n"), 0644); err != nil {
-		t.Errorf("fs.WriteFile(...) == %v, want <nil>", err)
-	}
-	if err := c.runAddCmd(fs, args); err != nil {
-		t.Errorf("c.runAddCmd(fs, nil, %+v) == %v, want <nil>", args, err)
-	}
+	assert.NoError(t, fs.WriteFile("/home/user/.bashrc", []byte("# new contents of .bashrc\n"), 0644))
+	assert.NoError(t, c.runAddCmd(fs, args))
 	vfst.RunTests(t, fs, "",
 		vfst.TestPath("/home/user/.chezmoi/dot_bashrc",
 			vfst.TestModeIsRegular,
@@ -314,13 +308,9 @@ func TestAddCommand(t *testing.T) {
 				add: tc.add,
 			}
 			fs, cleanup, err := vfst.NewTestFS(tc.root)
+			require.NoError(t, err)
 			defer cleanup()
-			if err != nil {
-				t.Fatalf("vfst.NewTestFS(_) == _, _, %v, want _, _, <nil>", err)
-			}
-			if err := c.runAddCmd(fs, tc.args); err != nil {
-				t.Errorf("c.runAddCmd(fs, nil, %+v) == %v, want <nil>", tc.args, err)
-			}
+			assert.NoError(t, c.runAddCmd(fs, tc.args))
 			vfst.RunTests(t, fs, "", tc.tests)
 		})
 	}

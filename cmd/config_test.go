@@ -1,6 +1,10 @@
 package cmd
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func TestUpperSnakeCaseToCamelCase(t *testing.T) {
 	for s, want := range map[string]string{
@@ -11,8 +15,6 @@ func TestUpperSnakeCaseToCamelCase(t *testing.T) {
 		"VERSION_CODENAME": "versionCodename",
 		"VERSION_ID":       "versionID",
 	} {
-		if got := upperSnakeCaseToCamelCase(s); got != want {
-			t.Errorf("upperSnakeCaseToCamelCase(%q) == %q, want %q", s, got, want)
-		}
+		assert.Equal(t, want, upperSnakeCaseToCamelCase(s))
 	}
 }

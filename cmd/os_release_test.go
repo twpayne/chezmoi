@@ -4,7 +4,8 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/d4l3k/messagediff"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"github.com/twpayne/go-vfs/vfst"
 )
 
@@ -73,15 +74,11 @@ UBUNTU_CODENAME=bionic`,
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			fs, cleanup, err := vfst.NewTestFS(tc.root)
-			if err != nil {
-				t.Fatalf("vfst.NewTestFS(_) == _, _, %v, want _, _, <nil>", err)
-			}
+			require.NoError(t, err)
 			defer cleanup()
 			got, gotErr := getOSRelease(fs)
-			diff, equal := messagediff.PrettyDiff(tc.want, got)
-			if gotErr != nil || !equal {
-				t.Errorf("getOSRelease(fs) == %v, %v, want %v, <nil>\n%s", got, gotErr, tc.want, diff)
-			}
+			assert.NoError(t, gotErr)
+			assert.Equal(t, tc.want, got)
 		})
 	}
 }
@@ -146,27 +143,7 @@ UBUNTU_CODENAME=bionic`,
 		},
 	} {
 		got, gotErr := parseOSRelease(bytes.NewBufferString(tc.s))
-		diff, equal := messagediff.PrettyDiff(tc.want, got)
-		if gotErr != nil || !equal {
-			t.Errorf("parseOSRelease(bytes.NewBufferString(%q)) == %+v, %v, want %+v, <nil>\n%s", tc.s, got, gotErr, tc.want, diff)
-		}
-	}
-}
-
-func TestUppercaseSnakeToCamelCase(t *testing.T) {
-	for _, tc := range []struct {
-		s    string
-		want string
-	}{
-		{s: "ID", want: "id"},
-		{s: "NAME", want: "name"},
-		{s: "ID_LIKE", want: "idLike"},
-		{s: "PRETTY_NAME", want: "prettyName"},
-		{s: "ANSI_COLOR", want: "ansiColor"},
-		{s: "BUG_REPORT_URL", want: "bugReportURL"},
-	} {
-		if got := upperSnakeCaseToCamelCase(tc.s); got != tc.want {
-			t.Errorf("uppercaseSnakeToCamelCase(%q) == %q, want %q", tc.s, got, tc.want)
-		}
+		assert.NoError(t, gotErr)
+		assert.Equal(t, tc.want, got)
 	}
 }

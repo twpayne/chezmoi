@@ -5,7 +5,8 @@ import (
 	"testing"
 	"text/template"
 
-	"github.com/d4l3k/messagediff"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"github.com/twpayne/go-vfs/vfst"
 )
 
@@ -93,17 +94,11 @@ func TestEndToEnd(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			fs, cleanup, err := vfst.NewTestFS(tc.root)
+			require.NoError(t, err)
 			defer cleanup()
-			if err != nil {
-				t.Fatalf("vfst.NewTestFS(_) == _, _, %v, want _, _, <nil>", err)
-			}
 			ts := NewTargetState(tc.destDir, tc.umask, tc.sourceDir, tc.data, tc.templateFuncs, "")
-			if err := ts.Populate(fs); err != nil {
-				t.Fatalf("ts.Populate(%+v) == %v, want <nil>", fs, err)
-			}
-			if err := ts.Apply(fs, NewLoggingMutator(os.Stderr, NewFSMutator(fs, tc.destDir))); err != nil {
-				t.Fatalf("ts.Apply(fs, _) == %v, want <nil>", err)
-			}
+			assert.NoError(t, ts.Populate(fs))
+			assert.NoError(t, ts.Apply(fs, NewLoggingMutator(os.Stderr, NewFSMutator(fs, tc.destDir))))
 			vfst.RunTests(t, fs, "", tc.tests)
 		})
 	}
@@ -405,20 +400,12 @@ func TestTargetStatePopulate(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			fs, cleanup, err := vfst.NewTestFS(tc.root)
+			require.NoError(t, err)
 			defer cleanup()
-			if err != nil {
-				t.Fatalf("vfst.NewTestFS(_) == _, _, %v, want _, _, <nil>", err)
-			}
 			ts := NewTargetState("/", 0, tc.sourceDir, tc.data, tc.templateFuncs, "")
-			if err := ts.Populate(fs); err != nil {
-				t.Fatalf("ts.Populate(%+v) == %v, want <nil>", fs, err)
-			}
-			if err := ts.Evaluate(); err != nil {
-				t.Errorf("ts.Evaluate() == %v, want <nil>", err)
-			}
-			if diff, equal := messagediff.PrettyDiff(tc.want, ts); !equal {
-				t.Errorf("ts.Populate(%+v) diff:\n%s\n", fs, diff)
-			}
+			assert.NoError(t, ts.Populate(fs))
+			assert.NoError(t, ts.Evaluate())
+			assert.Equal(t, tc.want, ts)
 		})
 	}
 }

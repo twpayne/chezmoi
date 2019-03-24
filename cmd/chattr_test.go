@@ -1,9 +1,10 @@
 package cmd
 
 import (
-	"reflect"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"github.com/twpayne/go-vfs/vfst"
 )
 
@@ -291,13 +292,9 @@ func TestChattrCommand(t *testing.T) {
 				Verbose:   true,
 			}
 			fs, cleanup, err := vfst.NewTestFS(tc.root)
-			if err != nil {
-				t.Fatalf("vfst.NewTestFS(_) == _, _, %v, want _, _, <nil>", err)
-			}
+			require.NoError(t, err)
 			defer cleanup()
-			if err := c.runChattrCmd(fs, tc.args); err != nil {
-				t.Errorf("c.runChattrCmd(fs, nil, %+v) == %v, want <nil>", tc.args, err)
-			}
+			assert.NoError(t, c.runChattrCmd(fs, tc.args))
 			vfst.RunTests(t, fs, "", tc.tests)
 		})
 	}
@@ -350,12 +347,12 @@ func TestParseAttributeModifiers(t *testing.T) {
 		{s: " empty , -private, notemplate ", want: &attributeModifiers{empty: 1, private: -1, template: -1}},
 		{s: "empty,,-private", want: &attributeModifiers{empty: 1, private: -1}},
 	} {
-		if got, gotErr := parseAttributeModifiers(tc.s); (gotErr != nil && !tc.wantErr) || (gotErr == nil && tc.wantErr) || !reflect.DeepEqual(got, tc.want) {
-			wantErrStr := "<nil>"
-			if tc.wantErr {
-				wantErrStr = "!" + wantErrStr
-			}
-			t.Errorf("parseAttributeModifiers(%q) == %+v, %v, want %+v, %s", tc.s, got, gotErr, tc.want, wantErrStr)
+		got, gotErr := parseAttributeModifiers(tc.s)
+		if tc.wantErr {
+			assert.Error(t, gotErr)
+		} else {
+			assert.NoError(t, gotErr)
+			assert.Equal(t, tc.want, got)
 		}
 	}
 }

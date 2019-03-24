@@ -3,7 +3,7 @@ package cmd
 import (
 	"testing"
 
-	"github.com/d4l3k/messagediff"
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_lastpassParseNote(t *testing.T) {
@@ -39,9 +39,6 @@ func Test_lastpassParseNote(t *testing.T) {
 			},
 		},
 	} {
-		got := lastpassParseNote(tc.note)
-		if diff, equal := messagediff.PrettyDiff(tc.want, got); !equal {
-			t.Errorf("lastpassParseNote(%q) == %+v, want %+v\n%s", tc.note, got, tc.want, diff)
-		}
+		assert.Equal(t, tc.want, lastpassParseNote(tc.note))
 	}
 }

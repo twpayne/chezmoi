@@ -3,7 +3,7 @@ package chezmoi
 import (
 	"testing"
 
-	"github.com/d4l3k/messagediff"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestDirAttributes(t *testing.T) {
@@ -57,13 +57,8 @@ func TestDirAttributes(t *testing.T) {
 		},
 	} {
 		t.Run(tc.sourceName, func(t *testing.T) {
-			gotDA := ParseDirAttributes(tc.sourceName)
-			if diff, equal := messagediff.PrettyDiff(tc.da, gotDA); !equal {
-				t.Errorf("ParseDirAttributes(%q) == %+v, want %+v, diff:\n%s", tc.sourceName, gotDA, tc.da, diff)
-			}
-			if gotSourceName := tc.da.SourceName(); gotSourceName != tc.sourceName {
-				t.Errorf("%+v.SourceName() == %q, want %q", tc.da, gotSourceName, tc.sourceName)
-			}
+			assert.Equal(t, tc.da, ParseDirAttributes(tc.sourceName))
+			assert.Equal(t, tc.sourceName, tc.da.SourceName())
 		})
 	}
 }

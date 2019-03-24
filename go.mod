@@ -8,7 +8,6 @@ require (
 	github.com/Masterminds/sprig v2.17.1+incompatible
 	github.com/aokoli/goutils v1.1.0 // indirect
 	github.com/coreos/go-semver v0.2.0
-	github.com/d4l3k/messagediff v1.2.1
 	github.com/danieljoos/wincred v1.0.1 // indirect
 	github.com/godbus/dbus v4.1.0+incompatible // indirect
 	github.com/google/renameio v0.1.0
@@ -20,6 +19,7 @@ require (
 	github.com/spf13/cobra v0.0.3
 	github.com/spf13/viper v1.3.1
 	github.com/stretchr/objx v0.1.1 // indirect
+	github.com/stretchr/testify v1.3.0
 	github.com/twpayne/go-shell v0.0.1
 	github.com/twpayne/go-vfs v1.0.5
 	github.com/twpayne/go-xdg/v2 v2.0.0
