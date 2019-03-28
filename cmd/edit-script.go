@@ -33,14 +33,13 @@ func (c *Config) runEditScriptCmd(fs vfs.FS, args []string) error {
 	if err != nil {
 		return err
 	}
-	//entries, err := c.getEntries(ts, args)
 	var scripts []*chezmoi.Script
 	for _, arg := range args {
 		if s, ok := ts.Scripts[chezmoi.StripTemplateExtension(arg)]; ok {
 			scripts = append(scripts, s)
 		}
 	}
-	println(scripts)
+
 	argv := []string{}
 	for _, s := range scripts {
 		argv = append(argv, s.SourcePath)

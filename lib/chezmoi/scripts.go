@@ -38,7 +38,7 @@ func (s *Script) Apply(destDir string, dryRun bool) error {
 	}
 	fmt.Printf("chezmoi: Running script %s\n", s.Name)
 	if dryRun {
-		println(string(s.contents), "\n")
+		fmt.Print(string(s.contents), "\n\n")
 		return nil
 	}
 	return s.execute(destDir)
