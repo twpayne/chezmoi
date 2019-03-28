@@ -258,6 +258,11 @@ func (ts *TargetState) Evaluate() error {
 			return err
 		}
 	}
+	for _, scriptName := range sortedScriptNames(ts.Scripts) {
+		if err := ts.Scripts[scriptName].Evaluate(); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
