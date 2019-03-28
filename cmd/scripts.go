@@ -38,59 +38,45 @@ func (c *Config) runScriptsCmd(fs vfs.FS, args []string) error {
 	}
 
 	var scripts []*chezmoi.Script
-	if len(args) == 0 {
-		for _, s := range ts.Scripts {
-			if config.scripts.prompt {
-				choice, err := c.prompt(fmt.Sprintf("Run %s", s.Name), "ynqa")
-				if err != nil {
-					return err
-				}
-				switch choice {
-				case 'a':
-					c.scripts.prompt = false
-					fallthrough
-				case 'y':
-					if err := s.Apply(c.DestDir, c.DryRun); err != nil {
-						return err
-					}
-				case 'n':
-				case 'q':
-					return nil
-				}
-			} else {
-				scripts = append(scripts, s)
-			}
-		}
-	} else {
+	if len(args) > 0 {
 		for _, arg := range args {
 			s, ok := ts.Scripts[chezmoi.StripTemplateExtension(arg)]
 			if ok {
-				if !config.scripts.prompt {
-					scripts = append(scripts, s)
-				} else {
-					choice, err := c.prompt(fmt.Sprintf("Run %s", s.Name), "ynqa")
-					if err != nil {
-						return err
-					}
-					switch choice {
-					case 'y':
-						if err := s.Apply(c.DestDir, c.DryRun); err != nil {
-							return err
-						}
-					case 'n':
-					case 'q':
-						return nil
-					case 'a':
-						c.scripts.prompt = false
-					}
+				scripts = append(scripts, s)
+			} else {
+				fmt.Printf("Script %s not found\n", arg)
+			}
+		}
+	} else {
+		for _, s := range ts.Scripts {
+			scripts = append(scripts, s)
+		}
+	}
+
+	for _, s := range scripts {
+		if config.scripts.prompt {
+			choice, err := c.prompt(fmt.Sprintf("Run %s", s.Name), "ynqa")
+			if err != nil {
+				return err
+			}
+			switch choice {
+			case 'a':
+				c.scripts.prompt = false
+				fallthrough
+			case 'y':
+				if err := s.Apply(c.DestDir, c.DryRun); err != nil {
+					return err
 				}
+			case 'n':
+			case 'q':
+				return nil
+			}
+		} else {
+			if err := s.Apply(c.DestDir, c.DryRun); err != nil {
+				return err
 			}
 		}
 	}
-	for _, s := range scripts {
-		if err := s.Apply(c.DestDir, c.DryRun); err != nil {
-			return err
-		}
-	}
+
 	return nil
 }

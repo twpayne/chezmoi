@@ -53,7 +53,7 @@ func (c *Config) runEditScriptCmd(fs vfs.FS, args []string) error {
 
 	for _, s := range scripts {
 		if c.editScripts.prompt {
-			choice, err := prompt(fmt.Sprintf("Apply %s", s.Name), "ynqa")
+			choice, err := c.prompt(fmt.Sprintf("Apply %s", s.Name), "ynqa")
 			if err != nil {
 				return err
 			}
