@@ -23,7 +23,7 @@ script:
   - go vet ./...
   - golint ./...
   - make coverage.out
-  - if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN ; fi
+  - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN; fi
 
 sudo: false
 
