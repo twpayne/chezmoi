@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	vfs "github.com/twpayne/go-vfs"
-	xdg "github.com/twpayne/go-xdg/v2"
+	xdg "github.com/twpayne/go-xdg/v3"
 )
 
 var (
