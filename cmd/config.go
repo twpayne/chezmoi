@@ -59,6 +59,7 @@ type Config struct {
 	stdin         io.Reader
 	stdout        io.Writer
 	stderr        io.Writer
+	bds           *xdg.BaseDirectorySpecification
 }
 
 var (
