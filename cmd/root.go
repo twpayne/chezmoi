@@ -40,19 +40,19 @@ func init() {
 		printErrorAndExit(err)
 	}
 
-	bds, err := xdg.NewBaseDirectorySpecification()
+	config.bds, err = xdg.NewBaseDirectorySpecification()
 	if err != nil {
 		printErrorAndExit(err)
 	}
 
 	persistentFlags := rootCmd.PersistentFlags()
 
-	persistentFlags.StringVarP(&config.configFile, "config", "c", getDefaultConfigFile(bds), "config file")
+	persistentFlags.StringVarP(&config.configFile, "config", "c", getDefaultConfigFile(config.bds), "config file")
 
 	persistentFlags.BoolVarP(&config.DryRun, "dry-run", "n", false, "dry run")
 	viper.BindPFlag("dry-run", persistentFlags.Lookup("dry-run"))
 
-	persistentFlags.StringVarP(&config.SourceDir, "source", "S", getDefaultSourceDir(bds), "source directory")
+	persistentFlags.StringVarP(&config.SourceDir, "source", "S", getDefaultSourceDir(config.bds), "source directory")
 	viper.BindPFlag("source", persistentFlags.Lookup("source"))
 
 	persistentFlags.StringVarP(&config.DestDir, "destination", "D", homeDir, "destination directory")
@@ -65,16 +65,24 @@ func init() {
 	viper.BindPFlag("verbose", persistentFlags.Lookup("verbose"))
 
 	cobra.OnInitialize(func() {
-		viper.SetConfigFile(config.configFile)
-		if err := viper.ReadInConfig(); os.IsNotExist(err) {
-			return
-		} else if err != nil {
-			printErrorAndExit(err)
-		}
-		if err := viper.Unmarshal(&config); err != nil {
+		err := loadConfigFile(config.configFile, &config)
+		if err != nil {
 			printErrorAndExit(err)
 		}
 	})
+}
+
+func loadConfigFile(path string, conf *Config) error {
+	viper.SetConfigFile(path)
+	err := viper.ReadInConfig()
+	switch {
+	case os.IsNotExist(err):
+		return nil
+	case err != nil:
+		return err
+	default:
+		return viper.Unmarshal(&conf)
+	}
 }
 
 // Execute executes the root command.
