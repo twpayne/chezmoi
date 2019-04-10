@@ -300,7 +300,7 @@ func getDefaultConfigFile(bds *xdg.BaseDirectorySpecification) string {
 		}
 	}
 	// Fallback to XDG Base Directory Specification default.
-	return filepath.Join(bds.ConfigHome, "chezmoi", "chezmoi.yaml")
+	return filepath.Join(bds.ConfigHome, "chezmoi", "chezmoi.toml")
 }
 
 func getDefaultData(fs vfs.FS) (map[string]interface{}, error) {
