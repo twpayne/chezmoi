@@ -95,8 +95,8 @@ func (c *Config) runInitCmd(fs vfs.FS, args []string) error {
 		case "git":
 			if _, err := fs.Stat(filepath.Join(c.SourceDir, ".gitmodules")); err == nil {
 				for _, args := range [][]string{
-					[]string{"submodule", "init"},
-					[]string{"submodule", "update"},
+					{"submodule", "init"},
+					{"submodule", "update"},
 				} {
 					if err := c.run(c.SourceDir, c.SourceVCS.Command, args...); err != nil {
 						return err
