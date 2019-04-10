@@ -103,5 +103,4 @@ func TestExercise(t *testing.T) {
 			),
 		)
 	})
-
 }

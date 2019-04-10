@@ -1,8 +1,6 @@
 package cmd
 
-import (
-	"regexp"
-)
+import "regexp"
 
 type vcsInfo struct {
 	cloneArgsFunc func(string, string) []string
@@ -12,36 +10,34 @@ type vcsInfo struct {
 	versionRegexp *regexp.Regexp
 }
 
-var (
-	vcsInfos = map[string]*vcsInfo{
-		"bzr": &vcsInfo{
-			versionArgs:   []string{"--version"},
-			versionRegexp: regexp.MustCompile(`^Bazaar (bzr) (\d+\.\d+\.\d+)`),
+var vcsInfos = map[string]*vcsInfo{
+	"bzr": {
+		versionArgs:   []string{"--version"},
+		versionRegexp: regexp.MustCompile(`^Bazaar (bzr) (\d+\.\d+\.\d+)`),
+	},
+	"cvs": {
+		versionArgs:   []string{"--version"},
+		versionRegexp: regexp.MustCompile(`^Concurrent Versions System \(CVS\) (\d+\.\d+\.\d+)`),
+	},
+	"git": {
+		cloneArgsFunc: func(repo, dir string) []string {
+			return []string{"clone", repo, dir}
 		},
-		"cvs": &vcsInfo{
-			versionArgs:   []string{"--version"},
-			versionRegexp: regexp.MustCompile(`^Concurrent Versions System \(CVS\) (\d+\.\d+\.\d+)`),
+		initArgs:      []string{"init"},
+		pullArgs:      []string{"pull", "--rebase"},
+		versionArgs:   []string{"version"},
+		versionRegexp: regexp.MustCompile(`^git version (\d+\.\d+\.\d+)`),
+	},
+	"hg": {
+		cloneArgsFunc: func(repo, dir string) []string {
+			return []string{"clone", repo, dir}
 		},
-		"git": &vcsInfo{
-			cloneArgsFunc: func(repo, dir string) []string {
-				return []string{"clone", repo, dir}
-			},
-			initArgs:      []string{"init"},
-			pullArgs:      []string{"pull", "--rebase"},
-			versionArgs:   []string{"version"},
-			versionRegexp: regexp.MustCompile(`^git version (\d+\.\d+\.\d+)`),
-		},
-		"hg": &vcsInfo{
-			cloneArgsFunc: func(repo, dir string) []string {
-				return []string{"clone", repo, dir}
-			},
-			initArgs:      []string{"init"},
-			versionArgs:   []string{"version"},
-			versionRegexp: regexp.MustCompile(`^Mercurial Distributed SCM \(version (\d+\.\d+\.\d+\))`),
-		},
-		"svn": &vcsInfo{
-			versionArgs:   []string{"--version"},
-			versionRegexp: regexp.MustCompile(`^svn, version (\d+\.\d+\.\d+)`),
-		},
-	}
-)
+		initArgs:      []string{"init"},
+		versionArgs:   []string{"version"},
+		versionRegexp: regexp.MustCompile(`^Mercurial Distributed SCM \(version (\d+\.\d+\.\d+\))`),
+	},
+	"svn": {
+		versionArgs:   []string{"--version"},
+		versionRegexp: regexp.MustCompile(`^svn, version (\d+\.\d+\.\d+)`),
+	},
+}
