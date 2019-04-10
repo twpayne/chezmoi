@@ -79,8 +79,8 @@ func ParseFileAttributes(sourceName string) FileAttributes {
 	if strings.HasPrefix(name, dotPrefix) {
 		name = "." + strings.TrimPrefix(name, dotPrefix)
 	}
-	if strings.HasSuffix(name, templateSuffix) {
-		name = strings.TrimSuffix(name, templateSuffix)
+	if strings.HasSuffix(name, TemplateSuffix) {
+		name = strings.TrimSuffix(name, TemplateSuffix)
 		template = true
 	}
 	return FileAttributes{
@@ -120,7 +120,7 @@ func (fa FileAttributes) SourceName() string {
 		sourceName += fa.Name
 	}
 	if fa.Template {
-		sourceName += templateSuffix
+		sourceName += TemplateSuffix
 	}
 	return sourceName
 }

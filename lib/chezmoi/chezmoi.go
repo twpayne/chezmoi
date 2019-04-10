@@ -11,6 +11,7 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
+// Suffixes and prefixes.
 const (
 	symlinkPrefix    = "symlink_"
 	privatePrefix    = "private_"
@@ -19,7 +20,7 @@ const (
 	exactPrefix      = "exact_"
 	executablePrefix = "executable_"
 	dotPrefix        = "dot_"
-	templateSuffix   = ".tmpl"
+	TemplateSuffix   = ".tmpl"
 )
 
 // A templateFuncError is an error encountered while executing a template

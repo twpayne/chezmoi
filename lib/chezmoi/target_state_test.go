@@ -98,7 +98,7 @@ func TestEndToEnd(t *testing.T) {
 			defer cleanup()
 			ts := NewTargetState(tc.destDir, tc.umask, tc.sourceDir, tc.data, tc.templateFuncs, "")
 			assert.NoError(t, ts.Populate(fs))
-			assert.NoError(t, ts.Apply(fs, NewLoggingMutator(os.Stderr, NewFSMutator(fs, tc.destDir))))
+			assert.NoError(t, ts.Apply(fs, NewLoggingMutator(os.Stderr, NewFSMutator(fs))))
 			vfst.RunTests(t, fs, "", tc.tests)
 		})
 	}
