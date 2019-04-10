@@ -4,17 +4,15 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"io"
 	"os"
 	"path/filepath"
-	"regexp"
 	"strings"
 	"text/template"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/twpayne/chezmoi/lib/chezmoi"
 	vfs "github.com/twpayne/go-vfs"
-	"github.com/twpayne/go-vfs/vfst"
 )
 
 var initCmd = &cobra.Command{
@@ -106,7 +104,7 @@ func (c *Config) runInitCmd(fs vfs.FS, args []string) error {
 		}
 	}
 
-	if err := c.createConfigFile(fs); err != nil {
+	if err := c.createConfigFile(fs, mutator); err != nil {
 		return err
 	}
 
@@ -119,133 +117,65 @@ func (c *Config) runInitCmd(fs vfs.FS, args []string) error {
 	return nil
 }
 
-func (c *Config) createConfigFile(fs vfs.FS) error {
-	templatePath, extension, err := c.findConfigTemplate(fs)
+func (c *Config) createConfigFile(fs vfs.FS, mutator chezmoi.Mutator) error {
+	filename, ext, data, err := c.findConfigTemplate(fs)
 	if err != nil {
-		return fmt.Errorf("failed to lookup config template: %v", err)
+		return err
 	}
 
-	if templatePath == "" {
+	if filename == "" {
 		// no config template file exists
 		return nil
 	}
 
-	fmt.Fprintf(c.Stdout(), "Creating new configuration file from template %q\n", templatePath)
-	configDir := c.bds.ConfigHome
-	if _, err := fs.Stat(configDir); os.IsNotExist(err) {
-		err = fs.Mkdir(configDir, 0775)
-		if err != nil {
-			return fmt.Errorf("failed to create config directory %q: %v", configDir, err)
-		}
-	}
-
-	configDir = filepath.Join(configDir, "chezmoi")
-	if _, err := fs.Stat(configDir); os.IsNotExist(err) {
-		err = fs.Mkdir(configDir, 0775)
-		if err != nil {
-			return fmt.Errorf("failed to create chezmoi config directory %q: %v", configDir, err)
-		}
-	}
-
-	data, err := fs.ReadFile(templatePath)
+	t, err := template.New(filename).Funcs(template.FuncMap{
+		"promptString": c.promptString,
+	}).Parse(data)
 	if err != nil {
-		return fmt.Errorf("failed to read config template: %v", err)
+		return err
 	}
 
-	t := template.New(templatePath)
-	funcs := c.templateFuncs
-	if funcs == nil {
-		funcs = template.FuncMap{}
+	contents := &bytes.Buffer{}
+	if err = t.Execute(contents, nil); err != nil {
+		return err
 	}
 
-	funcs["promptString"] = c.promptString
-	t.Funcs(funcs)
-
-	t, err = t.Parse(string(data))
-	if err != nil {
-		return fmt.Errorf("failed to parse config template: %v", err)
+	configDir := filepath.Join(c.bds.ConfigHome, "chezmoi")
+	if err := vfs.MkdirAll(mutator, configDir, 0777&^os.FileMode(c.Umask)); err != nil {
+		return err
 	}
 
-	contents := new(bytes.Buffer)
-	err = t.Execute(contents, nil)
-	if err != nil {
-		return fmt.Errorf("failed to execute config template: %v", err)
+	configPath := filepath.Join(configDir, filename)
+	if err := mutator.WriteFile(configPath, contents.Bytes(), 0600&^os.FileMode(c.Umask), nil); err != nil {
+		return err
 	}
 
-	configFile := filepath.Join(configDir, "chezmoi."+extension)
-
-	if c.DryRun {
-		fmt.Fprintf(c.Stdout(), "Would have written the following configuration file to %q\n", configFile)
-		fmt.Fprint(c.Stdout(), contents.String())
-		return nil
-	} else {
-		fmt.Fprintf(c.Stdout(), "Writing configuration file to %q\n", configFile)
-		err = fs.WriteFile(configFile, contents.Bytes(), 0644)
-		if err != nil {
-			return fmt.Errorf("failed to write config file: %v", err)
-		}
+	viper.SetConfigType(ext)
+	if err := viper.ReadConfig(contents); err != nil {
+		return err
 	}
-
-	// The last step is to reload the configuration so it can be used directly
-	// if we want to apply the dotfiles. In unit tests the fs is typically a
-	// *vfst.TestFS that actually operates in a temporary directory. Thus we
-	// have to find the full absolute path to the configuration file now so
-	// viper can load the correct configuration.
-	if tfs, ok := fs.(*vfst.TestFS); ok {
-		configFile = filepath.Join(tfs.TempDir(), configFile)
-	}
-
-	err = loadConfigFile(configFile, c)
-	if err != nil {
-		return fmt.Errorf("failed to reload config file: %v", err)
-	}
-
-	return nil
+	return viper.Unmarshal(c)
 }
 
-func (c *Config) findConfigTemplate(fs vfs.FS) (path, extension string, err error) {
-	files, err := fs.ReadDir(c.SourceDir)
-	if err != nil {
-		return "", "", fmt.Errorf("failed to open directory %q: %v", c.SourceDir, err)
-	}
-
-	extensions := viper.SupportedExts
-	for i, ext := range extensions {
-		extensions[i] = regexp.QuoteMeta(ext)
-	}
-
-	re := regexp.MustCompile(fmt.Sprintf(`^\.chezmoi\.(%s)\.tmpl$`,
-		strings.Join(extensions, "|"),
-	))
-
-	for _, f := range files {
-		name := f.Name()
-		matches := re.FindStringSubmatch(name)
-		if matches == nil {
+func (c *Config) findConfigTemplate(fs vfs.FS) (string, string, string, error) {
+	for _, ext := range viper.SupportedExts {
+		contents, err := fs.ReadFile(filepath.Join(c.SourceDir, ".chezmoi."+ext+chezmoi.TemplateSuffix))
+		switch {
+		case os.IsNotExist(err):
 			continue
+		case err != nil:
+			return "", "", "", err
 		}
-
-		ext := matches[1]
-		return filepath.Join(c.SourceDir, name), ext, nil
+		return "chezmoi." + ext, ext, string(contents), nil
 	}
-
-	return "", "", nil
+	return "", "", "", nil
 }
 
 func (c *Config) promptString(field string) string {
-	reader := bufio.NewReader(c.Stdin())
-	for {
-		fmt.Fprintf(c.Stdout(), "Enter value for field %q: ", field)
-		val, err := reader.ReadString('\n')
-		if err == io.EOF {
-			fmt.Fprintf(c.Stdout(), "ERROR: failed to read input from stdin: EOF\n")
-			os.Exit(1) // TODO?
-		}
-		if err != nil {
-			fmt.Fprintf(c.Stdout(), "ERROR: %v: \n", err)
-			continue
-		}
-
-		return val[:len(val)-1] // strip trailing newline
+	fmt.Fprintf(c.Stdout(), "%s? ", field)
+	value, err := bufio.NewReader(c.Stdin()).ReadString('\n')
+	if err != nil {
+		chezmoi.ReturnTemplateFuncError(err)
 	}
+	return strings.TrimSuffix(value, "\n")
 }

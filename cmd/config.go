@@ -184,7 +184,7 @@ func (c *Config) getDefaultMutator(fs vfs.FS) chezmoi.Mutator {
 	if c.DryRun {
 		mutator = chezmoi.NullMutator
 	} else {
-		mutator = chezmoi.NewFSMutator(fs, c.DestDir)
+		mutator = chezmoi.NewFSMutator(fs)
 	}
 	if c.Verbose {
 		mutator = chezmoi.NewLoggingMutator(c.Stdout(), mutator)

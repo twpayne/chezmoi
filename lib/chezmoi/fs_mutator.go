@@ -18,7 +18,7 @@ type FSMutator struct {
 }
 
 // NewFSMutator returns an mutator that acts on fs.
-func NewFSMutator(fs vfs.FS, destDir string) *FSMutator {
+func NewFSMutator(fs vfs.FS) *FSMutator {
 	return &FSMutator{
 		FS:           fs,
 		devCache:     make(map[string]uint),

@@ -65,24 +65,17 @@ func init() {
 	viper.BindPFlag("verbose", persistentFlags.Lookup("verbose"))
 
 	cobra.OnInitialize(func() {
-		err := loadConfigFile(config.configFile, &config)
-		if err != nil {
+		if _, err := os.Stat(config.configFile); os.IsNotExist(err) {
+			return
+		}
+		viper.SetConfigFile(config.configFile)
+		if err := viper.ReadInConfig(); err != nil {
+			printErrorAndExit(err)
+		}
+		if err := viper.Unmarshal(&config); err != nil {
 			printErrorAndExit(err)
 		}
 	})
-}
-
-func loadConfigFile(path string, conf *Config) error {
-	viper.SetConfigFile(path)
-	err := viper.ReadInConfig()
-	switch {
-	case os.IsNotExist(err):
-		return nil
-	case err != nil:
-		return err
-	default:
-		return viper.Unmarshal(&conf)
-	}
 }
 
 // Execute executes the root command.
