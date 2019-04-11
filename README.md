@@ -78,9 +78,9 @@ your pets, not your cattle.
 
 * All systems suffer from the "bootstrap" problem: you need to install your
   system before you can install your dotfiles. `chezmoi` provides
-  statically-linked binaries, packages for many Linux and BSD distributions, and
-  Homebrew formulae to make overcoming the bootstrap problem as simple as
-  possible.
+  statically-linked binaries, packages for many Linux and BSD distributions,
+  Homebrew formulae, and a initial config file generation mechanism to make
+  overcoming the bootstrap problem as painless as possible.
 
 ## Installation
 
