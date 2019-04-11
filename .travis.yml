@@ -3,35 +3,41 @@ language: go
 addons:
   apt:
     packages:
-    # needed for goreleaser/nfpm:
     - rpm
+    - snapd
 
 go:
-  - 1.12.x
+- 1.12.x
 
 env:
-  - GO111MODULE=on
+- GO111MODULE=on PATH=/snap/bin:$PATH
+
+before_install:
+- openssl aes-256-cbc -K $encrypted_b4d86685c6fa_key -iv $encrypted_b4d86685c6fa_iv -in snap.login.enc -out snap.login -d
 
 install:
-  - go get golang.org/x/lint/golint
-  - go get golang.org/x/tools/cmd/cover
-  - go get github.com/mattn/goveralls
-  - go get github.com/wadey/gocovmerge
+- go get golang.org/x/lint/golint
+- go get golang.org/x/tools/cmd/cover
+- go get github.com/mattn/goveralls
+- go get github.com/wadey/gocovmerge
+- sudo snap install snapcraft --classic
 
 script:
-  - go test -race ./...
-  - go vet ./...
-  - golint ./...
-  - make coverage.out
-  - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN; fi
+- go test -race ./...
+- go vet ./...
+- golint ./...
+- make coverage.out
+- if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN; fi
 
 sudo: false
 
-# calls goreleaser
+after_success:
+- test -n "$TRAVIS_TAG" && snapcraft login --with snap.login
+
 deploy:
 - provider: script
   skip_cleanup: true
   script: curl -sL https://git.io/goreleaser | bash
   on:
     tags: true
-    condition: $TRAVIS_OS_NAME = linux
+    condition: "$TRAVIS_OS_NAME = linux"

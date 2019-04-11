@@ -7,37 +7,38 @@ before:
 builds:
 - binary: chezmoi
   env:
-    - CGO_ENABLED=0
+  - CGO_ENABLED=0
   ldflags: "-s -w -X github.com/twpayne/chezmoi/cmd.version={{ .Version }} -X github.com/twpayne/chezmoi/cmd.commit={{ .Commit }} -X github.com/twpayne/chezmoi/cmd.date={{ .Date }}"
   goos:
-    - linux
-    - darwin
-    - freebsd
-    - openbsd
-    # - dragonfly
-    # - netbsd
+  - linux
+  - darwin
+  - freebsd
+  - openbsd
+  # - dragonfly
+  # - netbsd
   goarch:
-    - 386
-    - amd64
-    - arm
-    - arm64
-    - ppc64
-    - ppc64le
+  - 386
+  - amd64
+  - arm
+  - arm64
+  - ppc64
+  - ppc64le
   goarm:
-    - ""
+  - ""
   ignore:
-    - goos: darwin
-      goarch: 386
-    - goos: linux
-      goarch: amd64
+  - goos: darwin
+    goarch: 386
+  - goos: linux
+    goarch: amd64
+
 - binary: chezmoi
   ldflags: "-s -w -X github.com/twpayne/chezmoi/cmd.version={{ .Version }} -X github.com/twpayne/chezmoi/cmd.commit={{ .Commit }} -X github.com/twpayne/chezmoi/cmd.date={{ .Date }}"
   env:
-    - CGO_ENABLED=1
+  - CGO_ENABLED=1
   goos:
-    - linux
+  - linux
   goarch:
-    - amd64
+  - amd64
 
 ## generate .tar.gz archives
 archive:
@@ -67,10 +68,10 @@ nfpm:
   description: "Manage your dotfiles across multiple machines, securely."
   license: MIT
   formats:
-    - deb
-    - rpm
+  - deb
+  - rpm
   dependencies:
-    - git
+  - git
   overrides:
     rpm:
       name_template: "{{ .ProjectName }}-{{ .Version }}-{{ .Env.TRAVIS_BUILD_NUMBER }}-{{ .Arch }}"
@@ -96,3 +97,10 @@ brew:
   folder: Formula
   homepage: "https://github.com/twpayne/chezmoi"
   description: "Manage your dotfiles across multiple machines, securely."
+
+snapcraft:
+  summary: "Manage your dotfiles across multiple machines, securely."
+  description: "Manage your dotfiles across multiple machines, securely."
+  publish: true
+  grade: devel
+  confinement: classic
