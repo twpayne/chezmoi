@@ -7,7 +7,8 @@ Status](https://travis-ci.org/twpayne/chezmoi.svg?branch=master)](https://travis
 Card](https://goreportcard.com/badge/github.com/twpayne/chezmoi)](https://goreportcard.com/report/github.com/twpayne/chezmoi)
 [![Coverage Status](https://coveralls.io/repos/github/twpayne/chezmoi/badge.svg)](https://coveralls.io/github/twpayne/chezmoi)
 
-Manage your dotfiles across multiple machines, securely.
+Manage your dotfiles across multiple machines, securely. `chezmoi` looks after
+your pets, not your cattle.
 
 ## Features
 
