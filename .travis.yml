@@ -16,7 +16,7 @@ before_install:
 - openssl aes-256-cbc -K $encrypted_b4d86685c6fa_key -iv $encrypted_b4d86685c6fa_iv -in snap.login.enc -out snap.login -d
 
 install:
-- go get golang.org/x/lint/golint
+- curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh
 - go get golang.org/x/tools/cmd/cover
 - go get github.com/mattn/goveralls
 - go get github.com/wadey/gocovmerge
