@@ -1,4 +1,4 @@
-# `chezmoi`
+# chezmoi
 
 [![Build
 Status](https://travis-ci.org/twpayne/chezmoi.svg?branch=master)](https://travis-ci.org/twpayne/chezmoi)
@@ -7,7 +7,8 @@ Status](https://travis-ci.org/twpayne/chezmoi.svg?branch=master)](https://travis
 Card](https://goreportcard.com/badge/github.com/twpayne/chezmoi)](https://goreportcard.com/report/github.com/twpayne/chezmoi)
 [![Coverage Status](https://coveralls.io/repos/github/twpayne/chezmoi/badge.svg)](https://coveralls.io/github/twpayne/chezmoi)
 
-Manage your dotfiles across multiple machines, securely.
+Manage your dotfiles across multiple machines, securely. `chezmoi` looks after
+your pets, not your cattle.
 
 ## Features
 
@@ -77,9 +78,9 @@ Manage your dotfiles across multiple machines, securely.
 
 * All systems suffer from the "bootstrap" problem: you need to install your
   system before you can install your dotfiles. `chezmoi` provides
-  statically-linked binaries, packages for many Linux and BSD distributions, and
-  Homebrew formulae to make overcoming the bootstrap problem as simple as
-  possible.
+  statically-linked binaries, packages for many Linux and BSD distributions,
+  Homebrew formulae, and a initial config file generation mechanism to make
+  overcoming the bootstrap problem as painless as possible.
 
 ## Installation
 
