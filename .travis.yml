@@ -16,9 +16,9 @@ before_install:
 - openssl aes-256-cbc -K $encrypted_b4d86685c6fa_key -iv $encrypted_b4d86685c6fa_iv -in snap.login.enc -out snap.login -d
 
 install:
-- go get golang.org/x/tools/cmd/cover
-- go get github.com/mattn/goveralls
-- go get github.com/wadey/gocovmerge
+- GO111MODULE=off go get golang.org/x/tools/cmd/cover
+- GO111MODULE=off go get github.com/mattn/goveralls
+- GO111MODULE=off go get github.com/wadey/gocovmerge
 - sudo snap install snapcraft --classic
 
 script:
