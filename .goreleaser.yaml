@@ -19,10 +19,10 @@ builds:
   goarch:
   - 386
   - amd64
-  - arm
+  # - arm
   - arm64
-  - ppc64
-  - ppc64le
+  # - ppc64
+  # - ppc64le
   goarm:
   - ""
   ignore:
@@ -103,4 +103,5 @@ snapcraft:
   description: "Manage your dotfiles across multiple machines, securely."
   publish: true
   grade: devel
-  confinement: classic
+  confinement: devmode
+  # confinement: classic # https://forum.snapcraft.io/t/request-classic-confinement-for-chezmoi/10903
