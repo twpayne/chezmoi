@@ -40,6 +40,7 @@ type Config struct {
 	Verbose       bool
 	GPGRecipient  string
 	SourceVCS     sourceVCSConfig
+	Merge         mergeConfig
 	Bitwarden     bitwardenCmdConfig
 	GenericSecret genericSecretCmdConfig
 	Lastpass      lastpassCmdConfig
@@ -287,6 +288,10 @@ func (c *Config) run(dir, name string, argv ...string) error {
 
 func (c *Config) runEditor(argv ...string) error {
 	return c.run("", c.getEditor(), argv...)
+}
+
+func (c *Config) warn(s string) {
+	fmt.Fprintf(c.Stderr(), "warning: %s\n", s)
 }
 
 func getDefaultConfigFile(bds *xdg.BaseDirectorySpecification) string {
