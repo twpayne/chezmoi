@@ -86,7 +86,7 @@ func (c *Config) runDoctorCmd(fs vfs.FS, args []string) error {
 			versionRegexp: vcsInfo.versionRegexp,
 		}
 	} else {
-		// FIXME print a warning that source VCS command is unsupported
+		c.warn(fmt.Sprintf("%s: unsupported VCS command", c.SourceVCS.Command))
 		vcsCommandCheck = &doctorBinaryCheck{
 			name:       "source VCS command",
 			binaryName: c.SourceVCS.Command,
