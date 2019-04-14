@@ -119,6 +119,10 @@ func (c *Config) runDoctorCmd(fs vfs.FS, args []string) error {
 			binaryName:  c.getEditor(),
 			mustSucceed: true,
 		},
+		&doctorBinaryCheck{
+			name:       "merge command",
+			binaryName: c.Merge.Command,
+		},
 		vcsCommandCheck,
 		&doctorBinaryCheck{
 			name:          "1Password CLI",
