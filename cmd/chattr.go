@@ -39,15 +39,20 @@ func (c *Config) runChattrCmd(fs vfs.FS, args []string) error {
 	if err != nil {
 		return err
 	}
+
 	ts, err := c.getTargetState(fs)
 	if err != nil {
 		return err
 	}
+
 	entries, err := c.getEntries(fs, ts, args[1:])
 	if err != nil {
 		return err
 	}
-	renames := make(map[string]string)
+
+	mutator := c.getDefaultMutator(fs)
+
+	updates := make(map[string]func() error)
 	for _, entry := range entries {
 		dir, oldBase := filepath.Split(entry.SourceName())
 		var newBase string
@@ -80,21 +85,25 @@ func (c *Config) runChattrCmd(fs vfs.FS, args []string) error {
 			newBase = fa.SourceName()
 		}
 		if newBase != oldBase {
-			renames[filepath.Join(ts.SourceDir, dir, oldBase)] = filepath.Join(ts.SourceDir, dir, newBase)
+			oldpath := filepath.Join(ts.SourceDir, dir, oldBase)
+			newpath := filepath.Join(ts.SourceDir, dir, newBase)
+			updates[oldpath] = func() error {
+				return mutator.Rename(oldpath, newpath)
+			}
 		}
 	}
 
-	mutator := c.getDefaultMutator(fs)
-
-	// Sort oldpaths in reverse so we rename files before their parent
+	// Sort oldpaths in reverse so we update files before their parent
 	// directories.
 	var oldpaths []string
-	for oldpath := range renames {
+	for oldpath := range updates {
 		oldpaths = append(oldpaths, oldpath)
 	}
 	sort.Sort(sort.Reverse(sort.StringSlice(oldpaths)))
+
+	// Apply all updates.
 	for _, oldpath := range oldpaths {
-		if err := mutator.Rename(oldpath, renames[oldpath]); err != nil {
+		if err := updates[oldpath](); err != nil {
 			return err
 		}
 	}
