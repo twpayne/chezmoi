@@ -90,8 +90,7 @@ func (c *Config) runInitCmd(fs vfs.FS, args []string) error {
 			return err
 		}
 		// FIXME this should be part of struct vcs
-		switch filepath.Base(c.SourceVCS.Command) {
-		case "git":
+		if filepath.Base(c.SourceVCS.Command) == "git" {
 			if _, err := fs.Stat(filepath.Join(c.SourceDir, ".gitmodules")); err == nil {
 				for _, args := range [][]string{
 					{"submodule", "init"},
