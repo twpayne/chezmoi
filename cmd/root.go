@@ -17,6 +17,9 @@ var (
 		SourceVCS: sourceVCSConfig{
 			Command: "git",
 		},
+		Merge: mergeConfig{
+			Command: "vimdiff",
+		},
 		templateFuncs: sprig.HermeticTxtFuncMap(),
 	}
 	version = "dev"
