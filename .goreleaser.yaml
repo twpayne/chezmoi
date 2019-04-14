@@ -19,10 +19,10 @@ builds:
   goarch:
   - 386
   - amd64
-  # - arm
+  - arm
   - arm64
-  # - ppc64
-  # - ppc64le
+  - ppc64
+  - ppc64le
   goarm:
   - ""
   ignore:
@@ -98,10 +98,13 @@ brew:
   homepage: "https://github.com/twpayne/chezmoi"
   description: "Manage your dotfiles across multiple machines, securely."
 
-snapcraft:
-  summary: "Manage your dotfiles across multiple machines, securely."
-  description: "Manage your dotfiles across multiple machines, securely."
-  publish: true
-  grade: devel
-  confinement: devmode
-  # confinement: classic # https://forum.snapcraft.io/t/request-classic-confinement-for-chezmoi/10903
+# snapcraft disabled pending:
+# https://forum.snapcraft.io/t/request-classic-confinement-for-chezmoi/10903
+# https://forum.snapcraft.io/t/invalid-architecture-specified-in-the-manifest-ppc64/10904
+# https://github.com/goreleaser/goreleaser/issues/1006
+# snapcraft:
+#   summary: "Manage your dotfiles across multiple machines, securely."
+#   description: "Manage your dotfiles across multiple machines, securely."
+#   publish: true
+#   grade: devel
+#   confinement: classic
