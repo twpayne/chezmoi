@@ -342,6 +342,7 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 					sourceName:       relPath,
 					targetName:       targetName,
 					Empty:            psfp.Empty,
+					Encrypted:        psfp.Encrypted,
 					Perm:             psfp.Mode.Perm(),
 					Template:         psfp.Template,
 					evaluateContents: evaluateContents,
