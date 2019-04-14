@@ -24,6 +24,7 @@ type boolModifier int
 
 type attributeModifiers struct {
 	empty      boolModifier
+	encrypt    boolModifier
 	exact      boolModifier
 	executable boolModifier
 	private    boolModifier
@@ -39,18 +40,23 @@ func (c *Config) runChattrCmd(fs vfs.FS, args []string) error {
 	if err != nil {
 		return err
 	}
+
 	ts, err := c.getTargetState(fs)
 	if err != nil {
 		return err
 	}
+
 	entries, err := c.getEntries(fs, ts, args[1:])
 	if err != nil {
 		return err
 	}
-	renames := make(map[string]string)
+
+	mutator := c.getDefaultMutator(fs)
+
+	updates := make(map[string]func() error)
 	for _, entry := range entries {
 		dir, oldBase := filepath.Split(entry.SourceName())
-		var newBase string
+		oldpath := filepath.Join(ts.SourceDir, dir, oldBase)
 		switch entry := entry.(type) {
 		case *chezmoi.Dir:
 			da := chezmoi.ParseDirAttributes(oldBase)
@@ -60,7 +66,13 @@ func (c *Config) runChattrCmd(fs vfs.FS, args []string) error {
 				perm &= 0700
 			}
 			da.Perm = perm
-			newBase = da.SourceName()
+			newBase := da.SourceName()
+			if newBase != oldBase {
+				newpath := filepath.Join(ts.SourceDir, dir, newBase)
+				updates[oldpath] = func() error {
+					return mutator.Rename(oldpath, newpath)
+				}
+			}
 		case *chezmoi.File:
 			fa := chezmoi.ParseFileAttributes(oldBase)
 			mode := os.FileMode(0666)
@@ -71,30 +83,61 @@ func (c *Config) runChattrCmd(fs vfs.FS, args []string) error {
 				mode &= 0700
 			}
 			fa.Mode = mode
+			fa.Encrypted = ams.encrypt.modify(entry.Encrypted)
 			fa.Empty = ams.empty.modify(entry.Empty)
 			fa.Template = ams.template.modify(entry.Template)
-			newBase = fa.SourceName()
+			newpath := filepath.Join(ts.SourceDir, dir, fa.SourceName())
+			if fa.Encrypted != entry.Encrypted {
+				oldContents, err := fs.ReadFile(filepath.Join(c.SourceDir, entry.SourceName()))
+				if err != nil {
+					return err
+				}
+				var newContents []byte
+				if fa.Encrypted {
+					newContents, err = ts.Encrypt(oldContents)
+				} else {
+					newContents, err = ts.Decrypt(oldContents)
+				}
+				if err != nil {
+					return err
+				}
+				updates[oldpath] = func() error {
+					// FIXME replace file and contents atomically, see
+					// https://github.com/google/renameio/issues/16.
+					if err := mutator.WriteFile(newpath, newContents, 0644, oldContents); err != nil {
+						return err
+					}
+					return mutator.RemoveAll(oldpath)
+				}
+			} else if newpath != oldpath {
+				updates[oldpath] = func() error {
+					return mutator.Rename(oldpath, newpath)
+				}
+			}
 		case *chezmoi.Symlink:
 			fa := chezmoi.ParseFileAttributes(oldBase)
 			fa.Template = ams.template.modify(entry.Template)
-			newBase = fa.SourceName()
-		}
-		if newBase != oldBase {
-			renames[filepath.Join(ts.SourceDir, dir, oldBase)] = filepath.Join(ts.SourceDir, dir, newBase)
+			newBase := fa.SourceName()
+			if newBase != oldBase {
+				newpath := filepath.Join(ts.SourceDir, dir, newBase)
+				updates[oldpath] = func() error {
+					return mutator.Rename(oldpath, newpath)
+				}
+			}
 		}
 	}
 
-	mutator := c.getDefaultMutator(fs)
-
-	// Sort oldpaths in reverse so we rename files before their parent
+	// Sort oldpaths in reverse so we update files before their parent
 	// directories.
 	var oldpaths []string
-	for oldpath := range renames {
+	for oldpath := range updates {
 		oldpaths = append(oldpaths, oldpath)
 	}
 	sort.Sort(sort.Reverse(sort.StringSlice(oldpaths)))
+
+	// Apply all updates.
 	for _, oldpath := range oldpaths {
-		if err := mutator.Rename(oldpath, renames[oldpath]); err != nil {
+		if err := updates[oldpath](); err != nil {
 			return err
 		}
 	}
@@ -127,6 +170,8 @@ func parseAttributeModifiers(s string) (*attributeModifiers, error) {
 		switch attribute {
 		case "empty", "e":
 			ams.empty = modifier
+		case "encrypt":
+			ams.encrypt = modifier
 		case "exact":
 			ams.exact = modifier
 		case "executable", "x":

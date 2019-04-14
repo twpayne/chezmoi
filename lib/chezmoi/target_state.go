@@ -129,13 +129,7 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 			}
 		}
 		if addOptions.Encrypt {
-			args := []string{"--armor", "--encrypt"}
-			if ts.GPGRecipient != "" {
-				args = append(args, "--recipient", ts.GPGRecipient)
-			}
-			cmd := exec.Command("gpg", args...)
-			cmd.Stdin = bytes.NewReader(contents)
-			contents, err = cmd.Output()
+			contents, err = ts.Encrypt(contents)
 			if err != nil {
 				return err
 			}
@@ -211,6 +205,24 @@ func (ts *TargetState) ConcreteValue(recursive bool) (interface{}, error) {
 		}
 	}
 	return entryConcreteValues, nil
+}
+
+// Decrypt decrypts ciphertext.
+func (ts *TargetState) Decrypt(ciphertext []byte) ([]byte, error) {
+	cmd := exec.Command("gpg", "--decrypt")
+	cmd.Stdin = bytes.NewReader(ciphertext)
+	return cmd.Output()
+}
+
+// Encrypt encrypts plaintext for ts's recipient.
+func (ts *TargetState) Encrypt(plaintext []byte) ([]byte, error) {
+	args := []string{"--armor", "--encrypt"}
+	if ts.GPGRecipient != "" {
+		args = append(args, "--recipient", ts.GPGRecipient)
+	}
+	cmd := exec.Command("gpg", args...)
+	cmd.Stdin = bytes.NewReader(plaintext)
+	return cmd.Output()
 }
 
 // Evaluate evaluates all of the entries in ts.
@@ -314,13 +326,11 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 				if psfp.Encrypted {
 					prevEvaluateContents := evaluateContents
 					evaluateContents = func() ([]byte, error) {
-						encryptedData, err := prevEvaluateContents()
+						ciphertext, err := prevEvaluateContents()
 						if err != nil {
 							return nil, err
 						}
-						cmd := exec.Command("gpg", "--decrypt")
-						cmd.Stdin = bytes.NewReader(encryptedData)
-						return cmd.Output()
+						return ts.Decrypt(ciphertext)
 					}
 				}
 				if psfp.Template {
@@ -337,6 +347,7 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 					sourceName:       relPath,
 					targetName:       targetName,
 					Empty:            psfp.Empty,
+					Encrypted:        psfp.Encrypted,
 					Perm:             psfp.Mode.Perm(),
 					Template:         psfp.Template,
 					evaluateContents: evaluateContents,
