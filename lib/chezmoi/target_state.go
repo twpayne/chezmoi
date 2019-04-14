@@ -207,6 +207,13 @@ func (ts *TargetState) ConcreteValue(recursive bool) (interface{}, error) {
 	return entryConcreteValues, nil
 }
 
+// Decrypt decrypts ciphertext.
+func (ts *TargetState) Decrypt(ciphertext []byte) ([]byte, error) {
+	cmd := exec.Command("gpg", "--decrypt")
+	cmd.Stdin = bytes.NewReader(ciphertext)
+	return cmd.Output()
+}
+
 // Encrypt encrypts plaintext for ts's recipient.
 func (ts *TargetState) Encrypt(plaintext []byte) ([]byte, error) {
 	args := []string{"--armor", "--encrypt"}
@@ -319,13 +326,11 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 				if psfp.Encrypted {
 					prevEvaluateContents := evaluateContents
 					evaluateContents = func() ([]byte, error) {
-						encryptedData, err := prevEvaluateContents()
+						ciphertext, err := prevEvaluateContents()
 						if err != nil {
 							return nil, err
 						}
-						cmd := exec.Command("gpg", "--decrypt")
-						cmd.Stdin = bytes.NewReader(encryptedData)
-						return cmd.Output()
+						return ts.Decrypt(ciphertext)
 					}
 				}
 				if psfp.Template {
