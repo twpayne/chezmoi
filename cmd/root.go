@@ -61,9 +61,6 @@ func init() {
 	persistentFlags.StringVarP(&config.DestDir, "destination", "D", homeDir, "destination directory")
 	viper.BindPFlag("destination", persistentFlags.Lookup("destination"))
 
-	persistentFlags.VarP(&config.Umask, "umask", "u", "umask")
-	viper.BindPFlag("umask", persistentFlags.Lookup("umask"))
-
 	persistentFlags.BoolVarP(&config.Verbose, "verbose", "v", false, "verbose")
 	viper.BindPFlag("verbose", persistentFlags.Lookup("verbose"))
 
