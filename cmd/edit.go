@@ -114,7 +114,7 @@ func (c *Config) runEditCmd(fs vfs.FS, args []string) error {
 		return err
 	}
 
-	// Re-encrypt any encypted files.
+	// Re-encrypt any encrypted files.
 	for _, ef := range encryptedFiles {
 		plaintext, err := ioutil.ReadFile(ef.plaintextPath)
 		if err != nil {
