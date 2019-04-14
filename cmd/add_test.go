@@ -340,3 +340,32 @@ func TestAddCommand(t *testing.T) {
 		})
 	}
 }
+
+func TestIssue192(t *testing.T) {
+	root := map[string]interface{}{
+		"/local/home/offbyone": &vfst.Dir{
+			Perm: 0750,
+			Entries: map[string]interface{}{
+				".local/share/chezmoi": &vfst.Dir{Perm: 0700},
+				"snoop/.list":          "# contents of .list\n",
+			},
+		},
+		"/home/offbyone": &vfst.Symlink{Target: "/local/home/offbyone/"},
+	}
+	c := &Config{
+		SourceDir: "/home/offbyone/.local/share/chezmoi",
+		DestDir:   "/home/offbyone",
+		Umask:     022,
+		Verbose:   true,
+	}
+	fs, cleanup, err := vfst.NewTestFS(root)
+	require.NoError(t, err)
+	defer cleanup()
+	assert.NoError(t, c.runAddCmd(fs, []string{"/home/offbyone/snoop/.list"}))
+	vfst.RunTests(t, fs, "",
+		vfst.TestPath("/local/home/offbyone/.local/share/chezmoi/snoop/dot_list",
+			vfst.TestModeIsRegular,
+			vfst.TestContentsString("# contents of .list\n"),
+		),
+	)
+}
