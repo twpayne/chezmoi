@@ -13,9 +13,10 @@ type dataCmdConfig struct {
 }
 
 var dataCmd = &cobra.Command{
-	Use:   "data",
-	Short: "Write the template data to stdout",
-	RunE:  makeRunE(config.runDataCmd),
+	Use:     "data",
+	Short:   "Write the template data to stdout",
+	PreRunE: config.ensureNoError,
+	RunE:    makeRunE(config.runDataCmd),
 }
 
 func init() {

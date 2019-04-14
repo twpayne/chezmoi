@@ -6,9 +6,10 @@ import (
 )
 
 var applyCmd = &cobra.Command{
-	Use:   "apply [targets...]",
-	Short: "Update the destination directory to match the target state",
-	RunE:  makeRunE(config.runApplyCmd),
+	Use:     "apply [targets...]",
+	Short:   "Update the destination directory to match the target state",
+	PreRunE: config.ensureNoError,
+	RunE:    makeRunE(config.runApplyCmd),
 }
 
 func init() {

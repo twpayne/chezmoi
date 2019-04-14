@@ -42,6 +42,8 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/spf13/afero v1.1.2 h1:m8/z1t7/fwjysjQRYbP0RD+bUIF/8tJwPdEZsI83ACI=
 github.com/spf13/afero v1.1.2/go.mod h1:j4pytiNVoe2o6bmDsKpLACNPDBIoEAkihy7loJ1B0CQ=
+github.com/spf13/afero v1.2.2 h1:5jhuqJyZCZf2JRofRvN/nIFgIWNzPa3/Vz8mYylgbWc=
+github.com/spf13/afero v1.2.2/go.mod h1:9ZxEEn6pIJ8Rxe320qSDBk6AsU0r9pR7Q4OcevTdifk=
 github.com/spf13/cast v1.3.0 h1:oget//CVOEoFewqQxwr0Ej5yjygnqGkvggSE/gB35Q8=
 github.com/spf13/cast v1.3.0/go.mod h1:Qx5cxh0v+4UWYiBimWS+eyWzqEqokIECu5etghLkUJE=
 github.com/spf13/cobra v0.0.3 h1:ZlrZ4XsMRm04Fr5pSFxBgfND2EBVa1nLpiy1stUsX/8=
@@ -61,10 +63,13 @@ github.com/stretchr/testify v1.3.0 h1:TivCn/peBQ7UY8ooIcPgZFpTNSz0Q2U6UrFlUfqbe0
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
 github.com/twpayne/go-shell v0.0.1 h1:Ako3cUeuULhWadYk37jM3FlJ8lkSSW4INBjYj9K60Gw=
 github.com/twpayne/go-shell v0.0.1/go.mod h1:QCjEvdZndTuPObd+11NYAI1UeNLSuGZVxJ+67Wl+IU4=
+github.com/twpayne/go-vfs v1.0.1/go.mod h1:OIXA6zWkcn7Jk46XT7ceYqBMeIkfzJ8WOBhGJM0W4y8=
 github.com/twpayne/go-vfs v1.0.5 h1:i45a6Ykg/asDB94fHH5OmScCQHFx/P9A//9M5dfXwQk=
 github.com/twpayne/go-vfs v1.0.5/go.mod h1:OIXA6zWkcn7Jk46XT7ceYqBMeIkfzJ8WOBhGJM0W4y8=
 github.com/twpayne/go-vfs v1.0.6 h1:simuCsNdFE5juFWp2saFB03uUHdwpjX24gtusrl1CK8=
 github.com/twpayne/go-vfs v1.0.6/go.mod h1:A7YkNSb8q0vkRm4fPKNntU6tKePPh96OOwxHYxhZzOU=
+github.com/twpayne/go-vfsafero v1.0.0 h1:ZlH32HF4OoVX/aRqc5bZa+2+M+/ezmJ4XYpT0ShtZNc=
+github.com/twpayne/go-vfsafero v1.0.0/go.mod h1:rs2H15b2z0euJzwyoBS63eUHZgBhNXVQfIFfRp8DKEk=
 github.com/twpayne/go-xdg/v3 v3.1.0 h1:AxX5ZLJIzqYHJh+4uGxWT97ySh1ND1bJLjqMxdYF+xs=
 github.com/twpayne/go-xdg/v3 v3.1.0/go.mod h1:z6/LkoG2gtuzrsxEqPRoEjccS5Q35GK+lguVP0K3L9o=
 github.com/ugorji/go/codec v0.0.0-20181204163529-d75b2dcb6bc8/go.mod h1:VFNgLljTbGfSG7qAOspJ7OScBnGdDN/yBr0sguwnwf0=

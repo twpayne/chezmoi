@@ -16,6 +16,7 @@ var addCmd = &cobra.Command{
 	Aliases: []string{"manage"},
 	Args:    cobra.MinimumNArgs(1),
 	Short:   "Add an existing file, directory, or symlink to the source state",
+	PreRunE: config.ensureNoError,
 	RunE:    makeRunE(config.runAddCmd),
 }
 

@@ -9,9 +9,10 @@ import (
 )
 
 var sourcePathCmd = &cobra.Command{
-	Use:   "source-path [targets...]",
-	Short: "Print the path of a target in the source state",
-	RunE:  makeRunE(config.runSourcePathCmd),
+	Use:     "source-path [targets...]",
+	Short:   "Print the path of a target in the source state",
+	PreRunE: config.ensureNoError,
+	RunE:    makeRunE(config.runSourcePathCmd),
 }
 
 func init() {

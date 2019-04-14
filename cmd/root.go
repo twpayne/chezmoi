@@ -61,9 +61,6 @@ func init() {
 	persistentFlags.StringVarP(&config.DestDir, "destination", "D", homeDir, "destination directory")
 	viper.BindPFlag("destination", persistentFlags.Lookup("destination"))
 
-	persistentFlags.VarP(&config.Umask, "umask", "u", "umask")
-	viper.BindPFlag("umask", persistentFlags.Lookup("umask"))
-
 	persistentFlags.BoolVarP(&config.Verbose, "verbose", "v", false, "verbose")
 	viper.BindPFlag("verbose", persistentFlags.Lookup("verbose"))
 
@@ -72,11 +69,12 @@ func init() {
 			return
 		}
 		viper.SetConfigFile(config.configFile)
-		if err := viper.ReadInConfig(); err != nil {
-			printErrorAndExit(err)
+		config.err = viper.ReadInConfig()
+		if config.err == nil {
+			config.err = viper.Unmarshal(&config)
 		}
-		if err := viper.Unmarshal(&config); err != nil {
-			printErrorAndExit(err)
+		if config.err != nil {
+			config.warn(fmt.Sprintf("%s: %v", config.configFile, config.err))
 		}
 	})
 }

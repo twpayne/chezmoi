@@ -16,10 +16,11 @@ import (
 )
 
 var _importCmd = &cobra.Command{
-	Use:   "import [filename]",
-	Args:  cobra.MaximumNArgs(1),
-	Short: "Import a tar archive into the source state",
-	RunE:  makeRunE(config.runImportCmd),
+	Use:     "import [filename]",
+	Args:    cobra.MaximumNArgs(1),
+	Short:   "Import a tar archive into the source state",
+	PreRunE: config.ensureNoError,
+	RunE:    makeRunE(config.runImportCmd),
 }
 
 type importCmdConfig struct {

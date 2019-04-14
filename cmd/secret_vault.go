@@ -12,9 +12,10 @@ import (
 )
 
 var vaultCmd = &cobra.Command{
-	Use:   "vault [args...]",
-	Short: "Execute the Hashicorp Vault CLI (vault)",
-	RunE:  makeRunE(config.runVaultCmd),
+	Use:     "vault [args...]",
+	Short:   "Execute the Hashicorp Vault CLI (vault)",
+	PreRunE: config.ensureNoError,
+	RunE:    makeRunE(config.runVaultCmd),
 }
 
 type vaultCmdConfig struct {

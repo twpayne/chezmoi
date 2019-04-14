@@ -15,9 +15,10 @@ type dumpCmdConfig struct {
 }
 
 var dumpCmd = &cobra.Command{
-	Use:   "dump [targets...]",
-	Short: "Write a dump of the target state to stdout",
-	RunE:  makeRunE(config.runDumpCmd),
+	Use:     "dump [targets...]",
+	Short:   "Write a dump of the target state to stdout",
+	PreRunE: config.ensureNoError,
+	RunE:    makeRunE(config.runDumpCmd),
 }
 
 func init() {

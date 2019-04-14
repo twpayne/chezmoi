@@ -11,10 +11,11 @@ import (
 )
 
 var unmanagedCmd = &cobra.Command{
-	Use:   "unmanaged",
-	Args:  cobra.NoArgs,
-	Short: "List the unmanaged files in the destination directory",
-	RunE:  makeRunE(config.runUnmanagedCmd),
+	Use:     "unmanaged",
+	Args:    cobra.NoArgs,
+	Short:   "List the unmanaged files in the destination directory",
+	PreRunE: config.ensureNoError,
+	RunE:    makeRunE(config.runUnmanagedCmd),
 }
 
 func init() {

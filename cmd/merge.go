@@ -12,10 +12,11 @@ import (
 )
 
 var mergeCmd = &cobra.Command{
-	Use:   "merge targets...",
-	Args:  cobra.MinimumNArgs(1),
-	Short: "Perform a three-way merge between the destination state, the source state, and the target state",
-	RunE:  makeRunE(config.runMergeCmd),
+	Use:     "merge targets...",
+	Args:    cobra.MinimumNArgs(1),
+	Short:   "Perform a three-way merge between the destination state, the source state, and the target state",
+	PreRunE: config.ensureNoError,
+	RunE:    makeRunE(config.runMergeCmd),
 }
 
 type mergeConfig struct {

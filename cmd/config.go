@@ -3,6 +3,7 @@ package cmd
 import (
 	"bufio"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -33,6 +34,7 @@ type sourceVCSConfig struct {
 // A Config represents a configuration.
 type Config struct {
 	configFile    string
+	err           error
 	SourceDir     string
 	DestDir       string
 	Umask         permValue
@@ -136,6 +138,14 @@ func (c *Config) applyArgs(fs vfs.FS, args []string, mutator chezmoi.Mutator) er
 		if err := entry.Apply(fs, ts.DestDir, ts.TargetIgnore.Match, ts.Umask, mutator); err != nil {
 			return err
 		}
+	}
+	return nil
+}
+
+// ensureNoError ensures that no error was encountered when loading c.
+func (c *Config) ensureNoError(cmd *cobra.Command, args []string) error {
+	if c.err != nil {
+		return errors.New("config contains errors, aborting")
 	}
 	return nil
 }

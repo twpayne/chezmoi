@@ -9,10 +9,11 @@ import (
 )
 
 var catCmd = &cobra.Command{
-	Use:   "cat targets...",
-	Args:  cobra.MinimumNArgs(1),
-	Short: "Write the target state of a file or symlink to stdout",
-	RunE:  makeRunE(config.runCatCmd),
+	Use:     "cat targets...",
+	Args:    cobra.MinimumNArgs(1),
+	Short:   "Write the target state of a file or symlink to stdout",
+	PreRunE: config.ensureNoError,
+	RunE:    makeRunE(config.runCatCmd),
 }
 
 func init() {

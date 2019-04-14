@@ -36,7 +36,8 @@ directory if you supply the flag.
   # Checkout from github using your private key
   chezmoi init git@github.com:example/dotfiles.git
 `,
-	RunE: makeRunE(config.runInitCmd),
+	PreRunE: config.ensureNoError,
+	RunE:    makeRunE(config.runInitCmd),
 }
 
 type initCmdConfig struct {
@@ -89,8 +90,7 @@ func (c *Config) runInitCmd(fs vfs.FS, args []string) error {
 			return err
 		}
 		// FIXME this should be part of struct vcs
-		switch filepath.Base(c.SourceVCS.Command) {
-		case "git":
+		if filepath.Base(c.SourceVCS.Command) == "git" {
 			if _, err := fs.Stat(filepath.Join(c.SourceDir, ".gitmodules")); err == nil {
 				for _, args := range [][]string{
 					{"submodule", "init"},

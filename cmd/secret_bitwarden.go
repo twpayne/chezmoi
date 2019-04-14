@@ -12,9 +12,10 @@ import (
 )
 
 var bitwardenCmd = &cobra.Command{
-	Use:   "bitwarden [args...]",
-	Short: "Execute the Bitwarden CLI (bw)",
-	RunE:  makeRunE(config.runBitwardenCmd),
+	Use:     "bitwarden [args...]",
+	Short:   "Execute the Bitwarden CLI (bw)",
+	PreRunE: config.ensureNoError,
+	RunE:    makeRunE(config.runBitwardenCmd),
 }
 
 type bitwardenCmdConfig struct {
