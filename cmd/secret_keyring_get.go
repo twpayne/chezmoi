@@ -9,10 +9,11 @@ import (
 )
 
 var keyringGetCmd = &cobra.Command{
-	Use:   "get",
-	Args:  cobra.NoArgs,
-	Short: "Get a password from keyring",
-	RunE:  makeRunE(config.runKeyringGetCmd),
+	Use:     "get",
+	Args:    cobra.NoArgs,
+	Short:   "Get a password from keyring",
+	PreRunE: config.ensureNoError,
+	RunE:    makeRunE(config.runKeyringGetCmd),
 }
 
 func init() {

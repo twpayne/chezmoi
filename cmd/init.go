@@ -36,7 +36,8 @@ directory if you supply the flag.
   # Checkout from github using your private key
   chezmoi init git@github.com:example/dotfiles.git
 `,
-	RunE: makeRunE(config.runInitCmd),
+	PreRunE: config.ensureNoError,
+	RunE:    makeRunE(config.runInitCmd),
 }
 
 type initCmdConfig struct {

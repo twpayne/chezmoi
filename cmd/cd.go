@@ -9,10 +9,11 @@ import (
 )
 
 var cdCmd = &cobra.Command{
-	Use:   "cd",
-	Args:  cobra.NoArgs,
-	Short: "Launch a shell in the source directory",
-	RunE:  makeRunE(config.runCDCmd),
+	Use:     "cd",
+	Args:    cobra.NoArgs,
+	Short:   "Launch a shell in the source directory",
+	PreRunE: config.ensureNoError,
+	RunE:    makeRunE(config.runCDCmd),
 }
 
 func init() {

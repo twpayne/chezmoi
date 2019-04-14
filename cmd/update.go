@@ -13,10 +13,11 @@ type updateCmdConfig struct {
 }
 
 var updateCmd = &cobra.Command{
-	Use:   "update",
-	Args:  cobra.NoArgs,
-	Short: "Pull changes from the source VCS and apply any changes",
-	RunE:  makeRunE(config.runUpdateCmd),
+	Use:     "update",
+	Args:    cobra.NoArgs,
+	Short:   "Pull changes from the source VCS and apply any changes",
+	PreRunE: config.ensureNoError,
+	RunE:    makeRunE(config.runUpdateCmd),
 }
 
 func init() {

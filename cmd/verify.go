@@ -9,9 +9,10 @@ import (
 )
 
 var verifyCmd = &cobra.Command{
-	Use:   "verify [targets...]",
-	Short: "Exit with success if the destination state matches the target state, fail otherwise",
-	RunE:  makeRunE(config.runVerifyCmd),
+	Use:     "verify [targets...]",
+	Short:   "Exit with success if the destination state matches the target state, fail otherwise",
+	PreRunE: config.ensureNoError,
+	RunE:    makeRunE(config.runVerifyCmd),
 }
 
 func init() {

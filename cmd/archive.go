@@ -9,10 +9,11 @@ import (
 )
 
 var archiveCmd = &cobra.Command{
-	Use:   "archive",
-	Args:  cobra.NoArgs,
-	Short: "Write a tar archive of the target state to stdout",
-	RunE:  makeRunE(config.runArchiveCmd),
+	Use:     "archive",
+	Args:    cobra.NoArgs,
+	Short:   "Write a tar archive of the target state to stdout",
+	PreRunE: config.ensureNoError,
+	RunE:    makeRunE(config.runArchiveCmd),
 }
 
 func init() {

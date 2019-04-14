@@ -10,10 +10,11 @@ import (
 )
 
 var editCmd = &cobra.Command{
-	Use:   "edit targets...",
-	Args:  cobra.MinimumNArgs(1),
-	Short: "Edit the source state of a target",
-	RunE:  makeRunE(config.runEditCmd),
+	Use:     "edit targets...",
+	Args:    cobra.MinimumNArgs(1),
+	Short:   "Edit the source state of a target",
+	PreRunE: config.ensureNoError,
+	RunE:    makeRunE(config.runEditCmd),
 }
 
 type editCmdConfig struct {

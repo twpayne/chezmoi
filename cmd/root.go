@@ -69,11 +69,12 @@ func init() {
 			return
 		}
 		viper.SetConfigFile(config.configFile)
-		if err := viper.ReadInConfig(); err != nil {
-			printErrorAndExit(err)
+		config.err = viper.ReadInConfig()
+		if config.err == nil {
+			config.err = viper.Unmarshal(&config)
 		}
-		if err := viper.Unmarshal(&config); err != nil {
-			printErrorAndExit(err)
+		if config.err != nil {
+			config.warn(fmt.Sprintf("%s: %v", config.configFile, config.err))
 		}
 	})
 }
