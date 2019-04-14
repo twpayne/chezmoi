@@ -157,7 +157,7 @@ func (c *Config) ensureSourceDirectory(fs vfs.FS, mutator chezmoi.Mutator) error
 	info, err := fs.Stat(c.SourceDir)
 	switch {
 	case err == nil && info.IsDir():
-		if info.Mode().Perm()&os.FileMode(c.Umask) != 0700&^os.FileMode(c.Umask) {
+		if info.Mode().Perm()&^os.FileMode(c.Umask) != 0700&^os.FileMode(c.Umask) {
 			if err := mutator.Chmod(c.SourceDir, 0700&^os.FileMode(c.Umask)); err != nil {
 				return err
 			}
