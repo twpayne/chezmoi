@@ -342,6 +342,7 @@ print the source directory.
 
 #### `source-path` examples
 
+    chezmoi source-path
     chezmoi source-path ~/.bashrc
 
 ### `unmanaged`
