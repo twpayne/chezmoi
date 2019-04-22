@@ -44,6 +44,6 @@ func TestArchiveCmd(t *testing.T) {
 	assert.Equal(t, "symlink", h.Name)
 	assert.Equal(t, "target", h.Linkname)
 
-	h, err = r.Next()
+	_, err = r.Next()
 	assert.Equal(t, err, io.EOF)
 }

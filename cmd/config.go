@@ -340,7 +340,7 @@ func getDefaultData(fs vfs.FS) (map[string]interface{}, error) {
 	group, err := user.LookupGroupId(currentUser.Gid)
 	if err == nil {
 		data["group"] = group.Name
-	} else if err != nil && cgoEnabled {
+	} else if cgoEnabled {
 		// Only return an error if CGO is enabled.
 		return nil, err
 	}
@@ -361,7 +361,7 @@ func getDefaultData(fs vfs.FS) (map[string]interface{}, error) {
 	osRelease, err := getOSRelease(fs)
 	if err == nil {
 		data["osRelease"] = upperSnakeCaseToCamelCaseMap(osRelease)
-	} else if err != nil && !os.IsNotExist(err) {
+	} else if !os.IsNotExist(err) {
 		return nil, err
 	}
 

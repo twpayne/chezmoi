@@ -33,10 +33,10 @@ func init() {
 	persistentFlags := keyringCmd.PersistentFlags()
 
 	persistentFlags.StringVar(&config.keyring.service, "service", "", "service")
-	keyringCmd.MarkPersistentFlagRequired("service")
+	_ = keyringCmd.MarkPersistentFlagRequired("service")
 
 	persistentFlags.StringVar(&config.keyring.user, "user", "", "user")
-	keyringCmd.MarkPersistentFlagRequired("user")
+	_ = keyringCmd.MarkPersistentFlagRequired("user")
 
 	config.addTemplateFunc("keyring", config.keyringFunc)
 }
