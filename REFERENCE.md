@@ -384,6 +384,8 @@ FIXME document
 
 ## Templates
 
+### Variables
+
 `chezmoi` provides the following automatically populated variables:
 
 | Variable                | Value                                                                                                                  |
@@ -397,34 +399,18 @@ FIXME document
 | `.chezmoi.osRelease`    | The information from `/etc/os-release`, Linux only, run `chezmoi data` to see its output.                              |
 | `.chezmoi.username`     | The username of the user running `chezmoi`.                                                                            |
 
-## Secret managers
+### Functions
 
-FIXME document
+All standard [`text/template`](https://godoc.org/text/template) and [hermetic
+text template functions from `sprig`](http://masterminds.github.io/sprig/) are
+included.
 
-### Bitwarden
+When generating the initial config file, the function `promptString` is also
+available. The single argument is a string prompted to the user, and the return
+value is the user's response to that prompt.
 
-FIXME document
+`.chezmoi.yaml.tmpl` example:
 
-### Keyring
-
-FIXME document
-
-### LastPass
-
-FIXME document
-
-### 1Password
-
-FIXME document
-
-### pass
-
-FIXME document
-
-### Vault
-
-FIXME document
-
-### Generic
-
-vim: spell spelllang=en
+    {{ $email := promptString "email" -}}
+    data:
+        email: "{{ $email }}
