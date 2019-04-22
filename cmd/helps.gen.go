@@ -38,8 +38,9 @@ var helps = map[string]help{
 			"shorter ones.\n",
 		example: "" +
 			"  chezmoi add ~/.bashrc\n" +
-			"  chezmoi add --template ~/.gitconfig\n" +
-			"  chezmoi add --recursive ~/.vim",
+			"  chezmoi add ~/.gitconfig --template\n" +
+			"  chezmoi add ~/.vim --recursive\n" +
+			"  chezmoi add ~/.oh-my-zsh --exact --recursive",
 	},
 	"apply": {
 		long: "" +
@@ -161,7 +162,7 @@ var helps = map[string]help{
 			"Prompt before applying each target.\n",
 		example: "" +
 			"  chezmoi edit ~/.bashrc\n" +
-			"  chezmoi edit --apply --prompt ~/.bashrc",
+			"  chezmoi edit ~/.bashrc --apply --prompt",
 	},
 	"edit-config": {
 		long: "" +
@@ -199,7 +200,8 @@ var helps = map[string]help{
 			"created using that file as a template. Finally, if the \"--apply\" flag is passed,\n" +
 			"\"chezmoi apply\" is run.\n",
 		example: "" +
-			"  chezmoi init https://github.com/user/dotfiles.git",
+			"  chezmoi init https://github.com/user/dotfiles.git\n" +
+			"  chezmoi init https://github.com/user/dotfiles.git --apply",
 	},
 	"merge": {
 		long: "" +

@@ -108,8 +108,9 @@ subsitutions occur before shorter ones.
 #### `add` examples
 
     chezmoi add ~/.bashrc
-    chezmoi add --template ~/.gitconfig
-    chezmoi add --recursive ~/.vim
+    chezmoi add ~/.gitconfig --template
+    chezmoi add ~/.vim --recursive
+    chezmoi add ~/.oh-my-zsh --exact --recursive
 
 ### `apply` [*targets*]
 
@@ -254,7 +255,7 @@ Prompt before applying each target.
 #### `edit` examples
 
     chezmoi edit ~/.bashrc
-    chezmoi edit --apply --prompt ~/.bashrc
+    chezmoi edit ~/.bashrc --apply --prompt
 
 ### `edit-config`
 
@@ -289,6 +290,7 @@ passed, `chezmoi apply` is run.
 #### `init` examples
 
     chezmoi init https://github.com/user/dotfiles.git
+    chezmoi init https://github.com/user/dotfiles.git --apply
 
 ### `import` *filename*
 
