@@ -99,3 +99,11 @@ func (c *Config) persistentPreRunRootE(fs vfs.FS, args []string) error {
 	}
 	return nil
 }
+
+func mustGetLongHelp(command string) string {
+	longHelp, ok := longHelps[command]
+	if !ok {
+		panic(fmt.Sprintf("no long help for %s", command))
+	}
+	return longHelp
+}

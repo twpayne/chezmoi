@@ -25,12 +25,15 @@ install:
 - sudo snap install snapcraft --classic
 
 script:
+- go generate ./...
+- git diff --exit-code
 - go test -race ./...
 - go vet ./...
 - golangci-lint run
 - find . -name \*.go | xargs gofumpt -d
 - find . -name \*.go | xargs gofumports -d
 - make coverage.out
+- go run . --version
 - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN; fi
 
 sudo: false
