@@ -165,7 +165,7 @@ your machine.
 
 ### Use Bitwarden to keep your secrets
 
-chezmoi` includes support for [Bitwarden](https://bitwarden.com/) using the
+`chezmoi` includes support for [Bitwarden](https://bitwarden.com/) using the
 [Bitwarden CLI](https://github.com/bitwarden/cli) to expose data as a template
 function.
 
