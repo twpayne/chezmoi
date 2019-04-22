@@ -16,26 +16,10 @@ import (
 )
 
 var initCmd = &cobra.Command{
-	Args:  cobra.MaximumNArgs(1),
-	Use:   "init [repo]",
-	Short: "Initial setup of the source directory then update the destination directory to match the target state",
-	Long: `Initial setup of the source directory then update the destination directory to match the target state.
-
-This command is supposed to run once when you want to setup your dotfiles on a
-new host. It will clone the given repository into your source directory (see --source flag)
-and make sure that all directory permissions are correct.
-
-After your source directory was checked out and setup (e.g. git submodules) this
-command can automatically invoke the "apply" command to update the destination
-directory if you supply the flag.
-`,
-	Example: `
-  # Checkout from github using the public HTTPS API
-  chezmoi init https://github.com/example/dotfiles.git
-
-  # Checkout from github using your private key
-  chezmoi init git@github.com:example/dotfiles.git
-`,
+	Args:    cobra.MaximumNArgs(1),
+	Use:     "init [repo]",
+	Short:   "Setup the source directory and update the destination directory to match the target state",
+	Long:    mustGetLongHelp("init"),
 	PreRunE: config.ensureNoError,
 	RunE:    makeRunE(config.runInitCmd),
 }

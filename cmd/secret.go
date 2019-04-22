@@ -6,6 +6,7 @@ var secretCmd = &cobra.Command{
 	Use:   "secret",
 	Args:  cobra.NoArgs,
 	Short: "Interact with a secret manager",
+	Long:  mustGetLongHelp("secret"),
 }
 
 func init() {

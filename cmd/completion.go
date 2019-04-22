@@ -9,9 +9,10 @@ import (
 
 var completionCmd = &cobra.Command{
 	Use:       "completion shell",
-	Short:     "Output shell completion code for the specified shell (bash or zsh)",
-	ValidArgs: []string{"bash", "zsh"},
 	Args:      cobra.ExactArgs(1),
+	Short:     "Output shell completion code for the specified shell (bash or zsh)",
+	Long:      mustGetLongHelp("completion"),
+	ValidArgs: []string{"bash", "zsh"},
 	RunE:      makeRunE(config.runCompletion),
 }
 

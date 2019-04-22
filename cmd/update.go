@@ -16,6 +16,7 @@ var updateCmd = &cobra.Command{
 	Use:     "update",
 	Args:    cobra.NoArgs,
 	Short:   "Pull changes from the source VCS and apply any changes",
+	Long:    mustGetLongHelp("update"),
 	PreRunE: config.ensureNoError,
 	RunE:    makeRunE(config.runUpdateCmd),
 }

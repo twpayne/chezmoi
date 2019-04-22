@@ -13,11 +13,11 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-// doctorCmd represents the doctor command
 var doctorCmd = &cobra.Command{
 	Args:  cobra.NoArgs,
 	Use:   "doctor",
 	Short: "Check your system for potential problems",
+	Long:  mustGetLongHelp("doctor"),
 	RunE:  makeRunE(config.runDoctorCmd),
 }
 

@@ -12,6 +12,7 @@ var cdCmd = &cobra.Command{
 	Use:     "cd",
 	Args:    cobra.NoArgs,
 	Short:   "Launch a shell in the source directory",
+	Long:    mustGetLongHelp("cd"),
 	PreRunE: config.ensureNoError,
 	RunE:    makeRunE(config.runCDCmd),
 }

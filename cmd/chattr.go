@@ -16,6 +16,7 @@ var chattrCmd = &cobra.Command{
 	Use:     "chattr attributes targets...",
 	Args:    cobra.MinimumNArgs(2),
 	Short:   "Change the attributes of a target in the source state",
+	Long:    mustGetLongHelp("chattr"),
 	PreRunE: config.ensureNoError,
 	RunE:    makeRunE(config.runChattrCmd),
 }
