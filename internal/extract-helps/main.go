@@ -23,7 +23,11 @@ var (
 	outputFile = flag.String("o", "", "output file")
 	width      = flag.Int("width", 80, "width")
 
-	outputTemplate = template.Must(template.New("output").Parse(`//go:generate go run github.com/twpayne/chezmoi/internal/extract-helps -i {{ .InputFile }} -o {{ .OutputFile }}
+	funcs = template.FuncMap{
+		"printMultiLineString": printMultiLineString,
+	}
+
+	outputTemplate = template.Must(template.New("output").Funcs(funcs).Parse(`//go:generate go run github.com/twpayne/chezmoi/internal/extract-helps -i {{ .InputFile }} -o {{ .OutputFile }}
 
 package cmd
 
@@ -36,10 +40,10 @@ var helps = map[string]help{
 {{- range $command, $help := .Helps }}
 	"{{ $command }}": help{
 {{- if $help.Example }}
-		long:    {{ printf "%q" $help.Long }},
-		example: {{ printf "%q" $help.Example }},
+		long:    {{ printMultiLineString $help.Long "\t\t\t" }},
+		example: {{ printMultiLineString $help.Example "\t\t\t" }},
 {{- else }}
-		long: {{ printf "%q" $help.Long }},
+		long: {{ printMultiLineString $help.Long "\t\t\t" }},
 {{- end }}
 	},
 {{- end }}
@@ -82,6 +86,24 @@ type errUnsupportedNodeType blackfriday.NodeType
 
 func (e errUnsupportedNodeType) Error() string {
 	return fmt.Sprintf("unsupported node type: %s", e)
+}
+
+func printMultiLineString(s, indent string) string {
+	if len(s) == 0 {
+		return `""`
+	}
+	b := &strings.Builder{}
+	b.WriteString("\"\" +\n" + indent)
+	for i, line := range strings.SplitAfter(s, "\n") {
+		if line == "" {
+			continue
+		}
+		if i != 0 {
+			b.WriteString(" +\n" + indent)
+		}
+		fmt.Fprintf(b, "%q", line)
+	}
+	return b.String()
 }
 
 func literalText(node *blackfriday.Node) ([]byte, error) {
@@ -146,6 +168,10 @@ func renderIndented(w io.Writer, b []byte) error {
 		}
 	}
 	return nil
+}
+
+func renderLong(start, end *blackfriday.Node) (string, error) {
+	return render(start, end)
 }
 
 func renderParagraph(w io.Writer, paragraph *blackfriday.Node) error {
@@ -271,7 +297,7 @@ func extractHelps(r io.Reader) (map[string]*help, error) {
 			node.FirstChild.Next.Type == blackfriday.Code:
 			switch state {
 			case 1:
-				if h.Long, err = render(start, node); err != nil {
+				if h.Long, err = renderLong(start, node); err != nil {
 					return nil, err
 				}
 			case 2:
@@ -299,7 +325,7 @@ func extractHelps(r io.Reader) (map[string]*help, error) {
 			bytes.Equal(node.FirstChild.Next.Next.Literal, []byte(" examples")):
 			switch state {
 			case 1:
-				if h.Long, err = render(start, node); err != nil {
+				if h.Long, err = renderLong(start, node); err != nil {
 					return nil, err
 				}
 			case 2:
@@ -320,11 +346,11 @@ func extractHelps(r io.Reader) (map[string]*help, error) {
 	}
 	switch state {
 	case 1:
-		if h.Long, err = render(start, nil); err != nil {
+		if h.Long, err = renderLong(start, endCommandsNode); err != nil {
 			return nil, err
 		}
 	case 2:
-		if h.Example, err = renderExample(start, nil); err != nil {
+		if h.Example, err = renderExample(start, endCommandsNode); err != nil {
 			return nil, err
 		}
 	}
@@ -381,6 +407,7 @@ func run() error {
 	if err := outputTemplate.ExecuteTemplate(buf, "output", data); err != nil {
 		return err
 	}
+
 	cmd := exec.Command("gofmt", "-s")
 	cmd.Stdin = buf
 	cmd.Stdout = w
