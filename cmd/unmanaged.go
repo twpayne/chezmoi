@@ -14,6 +14,8 @@ var unmanagedCmd = &cobra.Command{
 	Use:     "unmanaged",
 	Args:    cobra.NoArgs,
 	Short:   "List the unmanaged files in the destination directory",
+	Long:    mustGetLongHelp("unmanaged"),
+	Example: getExample("unmanaged"),
 	PreRunE: config.ensureNoError,
 	RunE:    makeRunE(config.runUnmanagedCmd),
 }

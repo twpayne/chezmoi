@@ -11,6 +11,8 @@ import (
 var verifyCmd = &cobra.Command{
 	Use:     "verify [targets...]",
 	Short:   "Exit with success if the destination state matches the target state, fail otherwise",
+	Long:    mustGetLongHelp("verify"),
+	Example: getExample("verify"),
 	PreRunE: config.ensureNoError,
 	RunE:    makeRunE(config.runVerifyCmd),
 }

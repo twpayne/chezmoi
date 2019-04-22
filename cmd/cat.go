@@ -12,6 +12,8 @@ var catCmd = &cobra.Command{
 	Use:     "cat targets...",
 	Args:    cobra.MinimumNArgs(1),
 	Short:   "Write the target state of a file or symlink to stdout",
+	Long:    mustGetLongHelp("cat"),
+	Example: getExample("cat"),
 	PreRunE: config.ensureNoError,
 	RunE:    makeRunE(config.runCatCmd),
 }

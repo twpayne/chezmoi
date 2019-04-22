@@ -16,6 +16,8 @@ var editCmd = &cobra.Command{
 	Use:     "edit targets...",
 	Args:    cobra.MinimumNArgs(1),
 	Short:   "Edit the source state of a target",
+	Long:    mustGetLongHelp("edit"),
+	Example: getExample("edit"),
 	PreRunE: config.ensureNoError,
 	RunE:    makeRunE(config.runEditCmd),
 }

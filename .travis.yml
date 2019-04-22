@@ -16,6 +16,7 @@ before_install:
 - openssl aes-256-cbc -K $encrypted_b4d86685c6fa_key -iv $encrypted_b4d86685c6fa_iv -in snap.login.enc -out snap.login -d
 
 install:
+- go mod download
 - GO111MODULE=off go get golang.org/x/tools/cmd/cover
 - GO111MODULE=off go get github.com/golangci/golangci-lint/cmd/golangci-lint
 - GO111MODULE=off go get github.com/mattn/goveralls
@@ -25,12 +26,15 @@ install:
 - sudo snap install snapcraft --classic
 
 script:
+- go generate ./...
+- find . -name \*.go | xargs gofumpt -w
+- find . -name \*.go | xargs gofumports -w
+- git diff --exit-code
 - go test -race ./...
 - go vet ./...
 - golangci-lint run
-- find . -name \*.go | xargs gofumpt -d
-- find . -name \*.go | xargs gofumports -d
 - make coverage.out
+- go run . --version
 - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN; fi
 
 sudo: false

@@ -12,6 +12,8 @@ var archiveCmd = &cobra.Command{
 	Use:     "archive",
 	Args:    cobra.NoArgs,
 	Short:   "Write a tar archive of the target state to stdout",
+	Long:    mustGetLongHelp("archive"),
+	Example: getExample("archive"),
 	PreRunE: config.ensureNoError,
 	RunE:    makeRunE(config.runArchiveCmd),
 }

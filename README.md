@@ -7,8 +7,7 @@ Status](https://travis-ci.org/twpayne/chezmoi.svg?branch=master)](https://travis
 Card](https://goreportcard.com/badge/github.com/twpayne/chezmoi)](https://goreportcard.com/report/github.com/twpayne/chezmoi)
 [![Coverage Status](https://coveralls.io/repos/github/twpayne/chezmoi/badge.svg)](https://coveralls.io/github/twpayne/chezmoi)
 
-Manage your dotfiles across multiple machines, securely. `chezmoi` looks after
-your pets, not your cattle.
+Manage your dotfiles across multiple machines, securely.
 
 ## Features
 
@@ -270,21 +269,7 @@ The file should look something like:
 
 For more advanced usage, you can use the full power of the
 [`text/template`](https://godoc.org/text/template) language to include or
-exclude sections of file. `chezmoi` provides the following automatically
-populated variables:
-
-| Variable                | Value                                                                                                                  |
-| ----------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| `.chezmoi.arch`         | Architecture, e.g. `amd64`, `arm`, etc. as returned by [runtime.GOARCH](https://godoc.org/runtime#pkg-constants).      |
-| `.chezmoi.fullHostname` | The full hostname of the machine `chezmoi` is running on.                                                              |
-| `.chezmoi.group`        | The group of the user running `chezmoi`.                                                                               |
-| `.chezmoi.homedir`      | The home directory of the user running `chezmoi`.                                                                      |
-| `.chezmoi.hostname`     | The hostname of the machine `chezmoi` is running on, up to the first `.`.                                              |
-| `.chezmoi.os`           | Operating system, e.g. `darwin`, `linux`, etc. as returned by [runtime.GOOS](https://godoc.org/runtime#pkg-constants). |
-| `.chezmoi.osRelease`    | The information from `/etc/os-release`, Linux only, run `chezmoi data` to see its output.                              |
-| `.chezmoi.username`     | The username of the user running `chezmoi`.                                                                            |
-
-For a full list of variables, run:
+exclude sections of file. For a full list of variables, run:
 
     chezmoi data
 

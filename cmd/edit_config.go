@@ -12,10 +12,12 @@ import (
 )
 
 var editConfigCommand = &cobra.Command{
-	Use:   "edit-config",
-	Args:  cobra.NoArgs,
-	Short: "Edit the configuration file",
-	RunE:  makeRunE(config.runEditConfigCmd),
+	Use:     "edit-config",
+	Args:    cobra.NoArgs,
+	Short:   "Edit the configuration file",
+	Long:    mustGetLongHelp("edit-config"),
+	Example: getExample("edit-config"),
+	RunE:    makeRunE(config.runEditConfigCmd),
 }
 
 func init() {
