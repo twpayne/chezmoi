@@ -237,6 +237,7 @@ var helps = map[string]help{
 			"Print the path to each target's source state. If no targets are specified then\n" +
 			"print the source directory.\n",
 		example: "" +
+			"  chezmoi source-path\n" +
 			"  chezmoi source-path ~/.bashrc",
 	},
 	"unmanaged": {
@@ -247,7 +248,7 @@ var helps = map[string]help{
 	},
 	"update": {
 		long: "" +
-			"Pull changes from the source VCS abd apply any changes.\n",
+			"Pull changes from the source VCS and apply any changes.\n",
 		example: "" +
 			"  chezmoi update",
 	},
