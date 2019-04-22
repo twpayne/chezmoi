@@ -355,7 +355,7 @@ List all unmanaged files in the destination directory.
 
 ### `update`
 
-Pull changes from the source VCS abd apply any changes.
+Pull changes from the source VCS and apply any changes.
 
 #### `update` examples
 
