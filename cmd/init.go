@@ -20,6 +20,7 @@ var initCmd = &cobra.Command{
 	Use:     "init [repo]",
 	Short:   "Setup the source directory and update the destination directory to match the target state",
 	Long:    mustGetLongHelp("init"),
+	Example: getExample("init"),
 	PreRunE: config.ensureNoError,
 	RunE:    makeRunE(config.runInitCmd),
 }

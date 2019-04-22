@@ -12,6 +12,7 @@ var sourceCmd = &cobra.Command{
 	Use:     "source [args...]",
 	Short:   "Run the source version control system command in the source directory",
 	Long:    mustGetLongHelp("source"),
+	Example: getExample("source"),
 	PreRunE: config.ensureNoError,
 	RunE:    makeRunE(config.runSourceCmd),
 }

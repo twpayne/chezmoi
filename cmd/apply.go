@@ -9,6 +9,7 @@ var applyCmd = &cobra.Command{
 	Use:     "apply [targets...]",
 	Short:   "Update the destination directory to match the target state",
 	Long:    mustGetLongHelp("apply"),
+	Example: getExample("apply"),
 	PreRunE: config.ensureNoError,
 	RunE:    makeRunE(config.runApplyCmd),
 }

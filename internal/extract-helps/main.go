@@ -2,12 +2,14 @@ package main
 
 import (
 	"bytes"
+	"errors"
 	"flag"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"strings"
 	"text/tabwriter"
 	"text/template"
 
@@ -21,20 +23,38 @@ var (
 	outputFile = flag.String("o", "", "output file")
 	width      = flag.Int("width", 80, "width")
 
-	outputTemplate = template.Must(template.New("output").Parse(`//go:generate go run github.com/twpayne/chezmoi/internal/extract-long-help -i ../REFERENCE.md -o longhelp.go
+	outputTemplate = template.Must(template.New("output").Parse(`//go:generate go run github.com/twpayne/chezmoi/internal/extract-helps -i {{ .InputFile }} -o {{ .OutputFile }}
+
 package cmd
 
-var longHelps = map[string]string{
-{{- range $command, $longHelp := . }}
-	"{{ $command }}": {{ printf "%q" $longHelp }},
+type help struct {
+	long    string
+	example string
+}
+
+var helps = map[string]help{
+{{- range $command, $help := .Helps }}
+	"{{ $command }}": help{
+{{- if $help.Example }}
+		long:    {{ printf "%q" $help.Long }},
+		example: {{ printf "%q" $help.Example }},
+{{- else }}
+		long: {{ printf "%q" $help.Long }},
+{{- end }}
+	},
 {{- end }}
 }
 `))
 	debugTemplate = template.Must(template.New("debug").Parse(`
-{{- range $command, $longHelp := . -}}
-# {{ $command }}
+InputFile: {{ .InputFile }}
+OuputFile: {{ .OutputFile }}
 
-{{  $longHelp }}
+{{- range $command, $help := .Helps -}}
+# {{ $command }}
+{{ $help.Long }}
+
+Examples:
+{{ $help.Example }}
 
 {{ end -}}
 `))
@@ -52,6 +72,11 @@ var longHelps = map[string]string{
 		blackfriday.Table:     renderTable,
 	}
 )
+
+type help struct {
+	Long    string
+	Example string
+}
 
 type errUnsupportedNodeType blackfriday.NodeType
 
@@ -89,6 +114,11 @@ func renderCodeBlock(w io.Writer, codeBlock *blackfriday.Node) error {
 		return errUnsupportedNodeType(codeBlock.Type)
 	}
 	return renderIndented(w, codeBlock.Literal)
+}
+
+func renderExample(start, end *blackfriday.Node) (string, error) {
+	s, err := render(start, end)
+	return strings.TrimSuffix(s, "\n"+string(indent)), err
 }
 
 func renderHeading(w io.Writer, heading *blackfriday.Node) error {
@@ -173,9 +203,9 @@ func renderTable(w io.Writer, table *blackfriday.Node) error {
 	return renderIndented(w, b.Bytes())
 }
 
-func renderLongHelp(start, end *blackfriday.Node) (string, error) {
+func render(start, end *blackfriday.Node) (string, error) {
 	b := &bytes.Buffer{}
-	for node := start; node != end; node = node.Next {
+	for node := start; node != nil && node != end; node = node.Next {
 		if node != start {
 			if _, err := b.Write(newline); err != nil {
 				return "", err
@@ -192,58 +222,113 @@ func renderLongHelp(start, end *blackfriday.Node) (string, error) {
 	return b.String(), nil
 }
 
-func extractLongHelps(r io.Reader) (map[string]string, error) {
+func extractHelps(r io.Reader) (map[string]*help, error) {
 	data, err := ioutil.ReadAll(r)
 	if err != nil {
 		return nil, err
 	}
-	longHelps := make(map[string]string)
+
+	root := blackfriday.New(blackfriday.WithExtensions(blackfriday.Tables)).Parse(data)
+	var commandsNode *blackfriday.Node
+	for node := root.FirstChild; node != nil; node = node.Next {
+		if node.Type == blackfriday.Heading &&
+			node.HeadingData.Level == 2 &&
+			node.FirstChild != nil &&
+			node.FirstChild.Type == blackfriday.Text &&
+			bytes.Equal(node.FirstChild.Literal, []byte("Commands")) {
+			commandsNode = node
+			break
+		}
+	}
+	if commandsNode == nil {
+		return nil, errors.New("cannot find \"Commands\" node")
+	}
+	var endCommandsNode *blackfriday.Node
+	for node := commandsNode.Next; node != nil; node = node.Next {
+		if node.Type == blackfriday.Heading && node.HeadingData.Level <= 2 {
+			endCommandsNode = node
+			break
+		}
+	}
+	if endCommandsNode == nil {
+		return nil, errors.New("cannot find end \"Commands\" node")
+	}
+
+	helps := make(map[string]*help)
 	state := 0
-	var command string
+	var h *help
 	var start *blackfriday.Node
-	b := blackfriday.New(blackfriday.WithExtensions(blackfriday.Tables))
-	b.Parse(data).Walk(func(node *blackfriday.Node, entering bool) blackfriday.WalkStatus {
-		if !entering {
-			return blackfriday.GoToNext
+	for node := commandsNode.Next; node != endCommandsNode; node = node.Next {
+		switch {
+		case node.Type == blackfriday.Heading &&
+			node.HeadingData.Level < 3:
+			break
+		case node.Type == blackfriday.Heading &&
+			node.HeadingData.Level == 3 &&
+			node.FirstChild != nil &&
+			node.FirstChild.Type == blackfriday.Text &&
+			node.FirstChild.Next != nil &&
+			node.FirstChild.Next.Type == blackfriday.Code:
+			switch state {
+			case 1:
+				if h.Long, err = render(start, node); err != nil {
+					return nil, err
+				}
+			case 2:
+				if h.Example, err = renderExample(start, node); err != nil {
+					return nil, err
+				}
+			}
+			command := string(node.FirstChild.Next.Literal)
+			var ok bool
+			h, ok = helps[command]
+			if !ok {
+				h = &help{}
+				helps[command] = h
+			}
+			start = node.Next
+			state = 1
+		case node.Type == blackfriday.Heading &&
+			node.HeadingData.Level == 4 &&
+			node.FirstChild != nil &&
+			node.FirstChild.Type == blackfriday.Text &&
+			node.FirstChild.Next != nil &&
+			node.FirstChild.Next.Type == blackfriday.Code &&
+			node.FirstChild.Next.Next != nil &&
+			node.FirstChild.Next.Next.Type == blackfriday.Text &&
+			bytes.Equal(node.FirstChild.Next.Next.Literal, []byte(" examples")):
+			switch state {
+			case 1:
+				if h.Long, err = render(start, node); err != nil {
+					return nil, err
+				}
+			case 2:
+				if h.Example, err = renderExample(start, node); err != nil {
+					return nil, err
+				}
+			}
+			command := string(node.FirstChild.Next.Literal)
+			var ok bool
+			h, ok = helps[command]
+			if !ok {
+				h = &help{}
+				helps[command] = h
+			}
+			start = node.Next
+			state = 2
 		}
-		switch state {
-		case 0:
-			if node.Type == blackfriday.Text && string(node.Literal) == "Commands" && node.Parent != nil && node.Parent.Type == blackfriday.Heading && node.Parent.HeadingData.Level == 2 {
-				state = 1
-			}
-		case 1:
-			if node.Type == blackfriday.Code && node.Parent != nil && node.Parent.Type == blackfriday.Heading && node.Parent.HeadingData.Level == 3 {
-				if start != nil {
-					var longHelp string
-					longHelp, err = renderLongHelp(start, node)
-					if err != nil {
-						return blackfriday.Terminate
-					}
-					longHelps[command] = longHelp
-				}
-				command, start = string(node.Literal), node.Parent.Next
-				state = 2
-			}
-		case 2:
-			if node.Type == blackfriday.Heading {
-				if node.HeadingData.Level <= 3 {
-					var longHelp string
-					longHelp, err = renderLongHelp(start, node)
-					if err != nil {
-						return blackfriday.Terminate
-					}
-					longHelps[command] = longHelp
-					command, start = "", nil
-					state = 1
-				}
-				if node.HeadingData.Level <= 2 {
-					return blackfriday.Terminate
-				}
-			}
+	}
+	switch state {
+	case 1:
+		if h.Long, err = render(start, nil); err != nil {
+			return nil, err
 		}
-		return blackfriday.GoToNext
-	})
-	return longHelps, err
+	case 2:
+		if h.Example, err = renderExample(start, nil); err != nil {
+			return nil, err
+		}
+	}
+	return helps, err
 }
 
 func run() error {
@@ -261,7 +346,7 @@ func run() error {
 		r = fr
 	}
 
-	longHelps, err := extractLongHelps(r)
+	helps, err := extractHelps(r)
 	if err != nil {
 		return err
 	}
@@ -278,12 +363,22 @@ func run() error {
 		w = fw
 	}
 
+	data := struct {
+		Helps      map[string]*help
+		InputFile  string
+		OutputFile string
+	}{
+		Helps:      helps,
+		InputFile:  *inputFile,
+		OutputFile: *outputFile,
+	}
+
 	if *debug {
-		return debugTemplate.ExecuteTemplate(w, "debug", longHelps)
+		return debugTemplate.ExecuteTemplate(w, "debug", data)
 	}
 
 	buf := &bytes.Buffer{}
-	if err := outputTemplate.ExecuteTemplate(buf, "output", longHelps); err != nil {
+	if err := outputTemplate.ExecuteTemplate(buf, "output", data); err != nil {
 		return err
 	}
 	cmd := exec.Command("gofmt", "-s")

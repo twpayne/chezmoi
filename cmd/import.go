@@ -20,6 +20,7 @@ var _importCmd = &cobra.Command{
 	Args:    cobra.MaximumNArgs(1),
 	Short:   "Import a tar archive into the source state",
 	Long:    mustGetLongHelp("import"),
+	Example: getExample("import"),
 	PreRunE: config.ensureNoError,
 	RunE:    makeRunE(config.runImportCmd),
 }

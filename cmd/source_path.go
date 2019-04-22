@@ -12,6 +12,7 @@ var sourcePathCmd = &cobra.Command{
 	Use:     "source-path [targets...]",
 	Short:   "Print the path of a target in the source state",
 	Long:    mustGetLongHelp("source-path"),
+	Example: getExample("source-path"),
 	PreRunE: config.ensureNoError,
 	RunE:    makeRunE(config.runSourcePathCmd),
 }

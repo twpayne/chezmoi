@@ -14,11 +14,12 @@ import (
 )
 
 var doctorCmd = &cobra.Command{
-	Args:  cobra.NoArgs,
-	Use:   "doctor",
-	Short: "Check your system for potential problems",
-	Long:  mustGetLongHelp("doctor"),
-	RunE:  makeRunE(config.runDoctorCmd),
+	Args:    cobra.NoArgs,
+	Use:     "doctor",
+	Short:   "Check your system for potential problems",
+	Example: getExample("doctor"),
+	Long:    mustGetLongHelp("doctor"),
+	RunE:    makeRunE(config.runDoctorCmd),
 }
 
 const (

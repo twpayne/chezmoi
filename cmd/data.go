@@ -17,6 +17,7 @@ var dataCmd = &cobra.Command{
 	Args:    cobra.NoArgs,
 	Short:   "Write the template data to stdout",
 	Long:    mustGetLongHelp("data"),
+	Example: getExample("data"),
 	PreRunE: config.ensureNoError,
 	RunE:    makeRunE(config.runDataCmd),
 }

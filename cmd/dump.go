@@ -18,6 +18,7 @@ var dumpCmd = &cobra.Command{
 	Use:     "dump [targets...]",
 	Short:   "Write a dump of the target state to stdout",
 	Long:    mustGetLongHelp("dump"),
+	Example: getExample("dump"),
 	PreRunE: config.ensureNoError,
 	RunE:    makeRunE(config.runDumpCmd),
 }

@@ -16,6 +16,7 @@ var mergeCmd = &cobra.Command{
 	Args:    cobra.MinimumNArgs(1),
 	Short:   "Perform a three-way merge between the destination state, the source state, and the target state",
 	Long:    mustGetLongHelp("merge"),
+	Example: getExample("merge"),
 	PreRunE: config.ensureNoError,
 	RunE:    makeRunE(config.runMergeCmd),
 }

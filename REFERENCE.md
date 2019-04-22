@@ -105,15 +105,29 @@ Set the `template` attribute on added files and symlinks. In addition,
 template data values with the equivalent template data keys. Longer
 subsitutions occur before shorter ones.
 
+#### `add` examples
+
+    chezmoi add ~/.bashrc
+    chezmoi add --template ~/.gitconfig
+    chezmoi add --recursive ~/.vim
+
 ### `apply` [*targets*]
 
 Ensure that *targets* are in the target state, updating them if necessary. If no
 targets are specified, the state of all targets are ensured.
 
+#### `apply` examples
+
+    chezmoi apply
+    chezmoi apply --dry-run --verbose
+    chezmoi apply ~/.bashrc
+
 ### `archive`
 
 Write a tar archive of the target state to stdout. This can be piped into `tar`
-to inspect the target state, for example:
+to inspect the target state.
+
+#### `archive` examples
 
     chezmoi archive | tar tvf -
 
@@ -123,9 +137,17 @@ Write the target state of *targets*  to stdout. *targets* must be files or
 symlinks. For files, the target file contents are written. For symlinks, the
 target target is written.
 
+#### `cat` examples
+
+    chezmoi cat ~/.bashrc
+
 ### `cd`
 
 Launch a shell in the source directory.
+
+#### `cd` examples
+
+    chezmoi cd
 
 ### `chattr` attributes *targets*
 
@@ -147,7 +169,7 @@ attributes and their abbreviations are:
 Multiple attributes modifications may be specified by separating them with a
 comma (`,`).
 
-Examples:
+#### `chattr` examples
 
     chezmoi chattr template ~/.bashrc
     chezmoi chattr noempty ~/.profile
@@ -155,6 +177,11 @@ Examples:
 ### `completion` *shell*
 
 Output shell completion code for the specified shell (`bash` or `zsh`).
+
+#### `completion` examples
+
+    chezmoi completion bash
+    chezmoi completion zsh
 
 ### `data`
 
@@ -166,6 +193,11 @@ accepts additional flags:
 Print the computed template data in the given format. The accepted formats are
 `json` (JSON), `toml` (TOML), and `yaml` (YAML).
 
+#### `data` examples
+
+    chezmoi data
+    chezmoi data --format=yaml
+
 ### `diff` *targets*
 
 Print the approximate shell commands required to ensure that *targets* in the
@@ -173,9 +205,18 @@ destination directory match the target state. If no targets are specifed, print
 the commands required for all targets. It is equivalent to `chezmoi apply
 --dry-run --verbose`.
 
+#### `diff` examples
+
+    chezmoi diff
+    chezmoi diff ~/.bashrc
+
 ### `doctor`
 
 Check for potential problems.
+
+#### `doctor` examples
+
+    chezmoi doctor
 
 ### `dump` *targets*
 
@@ -186,6 +227,11 @@ entire target state. The `dump` command accepts additional arguments:
 
 Print the target state in the given format. The accepted formats are `json`
 (JSON) and `yaml` (YAML).
+
+#### `dump` examples
+
+    chezmoi dump ~/.bashrc
+    chezmoi dump --format=yaml
 
 ### `edit` *targets*
 
@@ -205,13 +251,26 @@ editing.
 
 Prompt before applying each target.
 
+#### `edit` examples
+
+    chezmoi edit ~/.bashrc
+    chezmoi edit --apply --prompt ~/.bashrc
+
 ### `edit-config`
 
 Edit the configuration file.
 
+#### `edit-config` examples
+
+    chezmoi edit-config
+
 ### `forget` *targets*
 
 Remove *targets* from the source state, i.e. stop managing them.
+
+#### `forget` examples
+
+    chezmoi forget ~/.bashrc
 
 ### `help` *command*
 
@@ -227,9 +286,9 @@ supported file formats (e.g. `json`, `toml`, or `yaml`) then a new configuration
 file is created using that file as a template. Finally, if the `--apply` flag is
 passed, `chezmoi apply` is run.
 
-Example:
+#### `init` examples
 
-    chezmoi init https://github.com/example/dotfiles.git
+    chezmoi init https://github.com/user/dotfiles.git
 
 ### `import` *filename*
 
@@ -250,6 +309,10 @@ tool is invoked for each target. If the target state cannot be computed (for
 example if source is a template containing errors or an encrypted file that
 cannot be decrypted) a two-way merge is performed instead.
 
+#### `merge` examples
+
+    chezmoi merge ~/.bashrc
+
 ### `remove`, `rm` *targets*
 
 Remove *targets* from both the source state and the destination directory.
@@ -264,7 +327,7 @@ Execute the source version control system in the source directory with *args*.
 Note that any flags for the source version control system must be sepeated with
 a `--` to stop `chezmoi` from reading them.
 
-Examples:
+#### `source` examples
 
     chezmoi source init
     chezmoi source add .
@@ -275,19 +338,36 @@ Examples:
 Print the path to each target's source state. If no targets are specified then
 print the source directory.
 
+#### `source-path` examples
+
+    chezmoi source-path ~/.bashrc
+
 ### `unmanaged`
 
 List all unmanaged files in the destination directory.
 
+#### `unmanaged` examples
+
+    chezmoi unmanaged
+
 ### `update`
 
 Pull changes from the source VCS abd apply any changes.
+
+#### `update` examples
+
+    chezmoi update
 
 ### `verify` [*targets*]
 
 Verify that all *targets* match their target state. `chezmoi` exits with code 0
 (success) if all targets match their target state, or 1 (failure) otherwise. If
 no targets are specified then all targets are checked.
+
+#### `verify` examples
+
+    chezmoi verify
+    chezmoi verify ~/.bashrc
 
 ## Editor configuration
 

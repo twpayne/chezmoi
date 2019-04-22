@@ -14,6 +14,7 @@ var removeCmd = &cobra.Command{
 	Args:    cobra.MinimumNArgs(1),
 	Short:   "Remove a target from the source state and the destination directory",
 	Long:    mustGetLongHelp("remove"),
+	Example: getExample("remove"),
 	PreRunE: config.ensureNoError,
 	RunE:    makeRunE(config.runRemoveCmd),
 }
