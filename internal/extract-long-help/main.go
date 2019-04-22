@@ -40,7 +40,7 @@ var longHelps = map[string]string{
 `))
 
 	doubleQuote = []byte("\"")
-	indent      = []byte("    ")
+	indent      = []byte("  ")
 	newline     = []byte("\n")
 	space       = []byte(" ")
 	tab         = []byte("\t")
