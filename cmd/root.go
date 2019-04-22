@@ -53,16 +53,16 @@ func init() {
 	persistentFlags.StringVarP(&config.configFile, "config", "c", getDefaultConfigFile(config.bds), "config file")
 
 	persistentFlags.BoolVarP(&config.DryRun, "dry-run", "n", false, "dry run")
-	viper.BindPFlag("dry-run", persistentFlags.Lookup("dry-run"))
+	_ = viper.BindPFlag("dry-run", persistentFlags.Lookup("dry-run"))
 
 	persistentFlags.StringVarP(&config.SourceDir, "source", "S", getDefaultSourceDir(config.bds), "source directory")
-	viper.BindPFlag("source", persistentFlags.Lookup("source"))
+	_ = viper.BindPFlag("source", persistentFlags.Lookup("source"))
 
 	persistentFlags.StringVarP(&config.DestDir, "destination", "D", homeDir, "destination directory")
-	viper.BindPFlag("destination", persistentFlags.Lookup("destination"))
+	_ = viper.BindPFlag("destination", persistentFlags.Lookup("destination"))
 
 	persistentFlags.BoolVarP(&config.Verbose, "verbose", "v", false, "verbose")
-	viper.BindPFlag("verbose", persistentFlags.Lookup("verbose"))
+	_ = viper.BindPFlag("verbose", persistentFlags.Lookup("verbose"))
 
 	cobra.OnInitialize(func() {
 		if _, err := os.Stat(config.configFile); os.IsNotExist(err) {
