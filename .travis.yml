@@ -17,6 +17,7 @@ before_install:
 
 install:
 - GO111MODULE=off go get golang.org/x/tools/cmd/cover
+- GO111MODULE=off go get github.com/golangci/golangci-lint/cmd/golangci-lint
 - GO111MODULE=off go get github.com/mattn/goveralls
 - GO111MODULE=off go get github.com/wadey/gocovmerge
 - sudo snap install snapcraft --classic
@@ -24,6 +25,7 @@ install:
 script:
 - go test -race ./...
 - go vet ./...
+- golangci-lint run
 - make coverage.out
 - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN; fi
 
