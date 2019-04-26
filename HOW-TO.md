@@ -125,6 +125,13 @@ that `chezmoi` should ignore, and are interpreted as templates. An example
     .work # only manage .work on work-laptop
     {{- end }}
 
+Patterns can be excluded by prefixing them with a `!`, for example:
+
+    f*
+    !foo
+
+will ignore all files beginning with an `f` except `foo`.
+
 ## Create a config file on a new machine automatically
 
 `chezmoi init` can also create a config file automatically, if one does not

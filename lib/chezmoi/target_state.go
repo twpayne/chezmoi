@@ -37,7 +37,7 @@ type ImportTAROptions struct {
 // A TargetState represents the root target state.
 type TargetState struct {
 	DestDir       string
-	TargetIgnore  PatternSet
+	TargetIgnore  *PatternSet
 	Umask         os.FileMode
 	SourceDir     string
 	Data          map[string]interface{}
@@ -479,8 +479,13 @@ func (ts *TargetState) addSourceIgnore(fs vfs.FS, path, relPath string) error {
 		if text == "" {
 			continue
 		}
+		include := true
+		if strings.HasPrefix(text, "!") {
+			include = false
+			text = strings.TrimPrefix(text, "!")
+		}
 		pattern := filepath.Join(dir, text)
-		if err := ts.TargetIgnore.Add(pattern); err != nil {
+		if err := ts.TargetIgnore.Add(pattern, include); err != nil {
 			return fmt.Errorf("%s: %v", path, err)
 		}
 	}

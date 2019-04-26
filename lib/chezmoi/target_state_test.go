@@ -361,14 +361,21 @@ func TestTargetStatePopulate(t *testing.T) {
 		{
 			name: "ignore_pattern",
 			root: map[string]interface{}{
-				"/.chezmoiignore": "f*\n",
+				"/.chezmoiignore": "" +
+					"f*\n" +
+					"!g\n",
 			},
 			sourceDir: "/",
 			want: &TargetState{
 				DestDir: "/",
-				TargetIgnore: PatternSet(map[string]struct{}{
-					"f*": {},
-				}),
+				TargetIgnore: &PatternSet{
+					includes: map[string]struct{}{
+						"f*": {},
+					},
+					excludes: map[string]struct{}{
+						"g": {},
+					},
+				},
 				Umask:     0,
 				SourceDir: "/",
 				Entries:   map[string]Entry{},
@@ -377,14 +384,21 @@ func TestTargetStatePopulate(t *testing.T) {
 		{
 			name: "ignore_subdir",
 			root: map[string]interface{}{
-				"/dir/.chezmoiignore": "foo\n",
+				"/dir/.chezmoiignore": "" +
+					"foo\n" +
+					"!bar\n",
 			},
 			sourceDir: "/",
 			want: &TargetState{
 				DestDir: "/",
-				TargetIgnore: PatternSet(map[string]struct{}{
-					"dir/foo": {},
-				}),
+				TargetIgnore: &PatternSet{
+					includes: map[string]struct{}{
+						"dir/foo": {},
+					},
+					excludes: map[string]struct{}{
+						"dir/bar": {},
+					},
+				},
 				Umask:     0,
 				SourceDir: "/",
 				Entries: map[string]Entry{
