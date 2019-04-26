@@ -419,4 +419,4 @@ value is the user's response to that prompt.
 
     {{ $email := promptString "email" -}}
     data:
-        email: "{{ $email }}
+        email: "{{ $email }}"
