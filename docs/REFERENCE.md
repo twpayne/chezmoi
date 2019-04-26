@@ -62,12 +62,12 @@ The following configuration variables are available:
 | ------------------ | ------- | ------------------------- | ----------------------------- |
 | `color`            | string  | `auto`                    | Colorize diffs                |
 | `data`             | any     | none                      | Template data                 |
+| `dryRun`           | boolean | `false`                   | Dry run mode                  |
 | `sourceDir`        | string  | `~/.config/share/chezmoi` | Source directory              |
+| `sourceVCSCommand` | string  | `git`                     | Source version control system |
 | `targetDir`        | string  | `~`                       | Target directory              |
 | `umask`            | integer | from system               | Umask                         |
-| `dryRun`           | boolean | `false`                   | Dry run mode                  |
 | `verbose`          | boolean | `false`                   | Verbose mode                  |
-| `sourceVCSCommand` | string  | `git`                     | Source version control system |
 
 In addition, a number of secret manager integrations add configuration
 variables. These are documented in the secret manager section.
