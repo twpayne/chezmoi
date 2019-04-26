@@ -15,7 +15,9 @@ that:
 
 * Commits are logically separate, with no merge or "fixup" commits.
 
-* All tests pass.
+* All tests pass. `chezmoi`'s continuous integration tests include strict checks
+  using [`github.com/golangci/golangci-lint`](github.com/golangci/golangci-lint)
+  and [`mvdan.cc/gofumpt`](mvdan.cc/gofumpt).
 
 * The branch applies cleanly to `master`.
 
