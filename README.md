@@ -85,7 +85,7 @@ Manage your dotfiles across multiple machines, securely.
 `chezmoi` includes five types of documentation:
 
 * A [tutorial guide](TUTORIAL.md) for getting started with `chezmoi`.
-* A [how-to guide](HOW-TO.md) for achieving specific tasks with `chezmoi`.
+* A [how-to guide](HOWTO.md) for achieving specific tasks with `chezmoi`.
 * An [FAQ](FAQ.md) for questions that aren't obvious.
 * An [explanation](EXPLANATION.md) for understanding how `chezmoi` works.
 * A [reference](REFERENCE.md) for a complete description of `chezmoi`.
