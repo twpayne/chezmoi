@@ -1,4 +1,4 @@
-//go:generate go run github.com/twpayne/chezmoi/internal/extract-helps -i ../REFERENCE.md -o helps.gen.go
+//go:generate go run github.com/twpayne/chezmoi/internal/extract-helps -i ../docs/REFERENCE.md -o helps.gen.go
 
 package cmd
 
