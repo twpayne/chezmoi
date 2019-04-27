@@ -92,7 +92,8 @@ var helps = map[string]help{
 			"comma (\",\").\n",
 		example: "" +
 			"  chezmoi chattr template ~/.bashrc\n" +
-			"  chezmoi chattr noempty ~/.profile",
+			"  chezmoi chattr noempty ~/.profile\n" +
+			"  chezmoi chattr private,template ~/.netrc",
 	},
 	"completion": {
 		long: "" +
@@ -182,13 +183,31 @@ var helps = map[string]help{
 	},
 	"import": {
 		long: "" +
-			"FIXME document\n" +
+			"Import the source state from an archive file in to a directory in the source\n" +
+			"state. This is primarily used to make subdirectories of your home directory\n" +
+			"exactly match the contents of a downloaded archive. You will generally always\n" +
+			"want to set the \"--destination\", \"--exact\", and \"--remove-destination\" flags.\n" +
+			"\n" +
+			"The only supported archive format is \".tar.gz\".\n" +
+			"\n" +
+			"\"--destination\" directory\n" +
+			"\n" +
+			"Set the destination (in the source state) where the archive will be imported.\n" +
 			"\n" +
 			"\"-x\" / \"--exact\"\n" +
 			"\n" +
+			"Set the \"exact\" attribute on all imported directories.\n" +
+			"\n" +
 			"\"-r\", \"--remove-destination\"\n" +
 			"\n" +
-			"\"--strip-components\"\n",
+			"Remove destination (in the source state) before importing.\n" +
+			"\n" +
+			"\"--strip-components\" n\n" +
+			"\n" +
+			"Strip n leading components from paths.\n",
+		example: "" +
+			"  curl -s -L -o oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz\n" +
+			"  chezmoi import --strip-components 1 --destination ~/.oh-my-zsh oh-my-zsh-master.tar.gz",
 	},
 	"init": {
 		long: "" +
