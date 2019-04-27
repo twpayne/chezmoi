@@ -26,13 +26,11 @@ install:
 - sudo snap install snapcraft --classic
 
 script:
-- go generate ./...
-- find . -name \*.go | xargs gofumpt -w
-- find . -name \*.go | xargs gofumports -w
+- make generate
+- make format
 - git diff --exit-code
-- go test -race ./...
-- go vet ./...
-- golangci-lint run
+- make test
+- make lint
 - make coverage.out
 - go run . --version
 - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN; fi
