@@ -30,7 +30,7 @@ Manage your dotfiles securely across multiple machines.
     * [`cat` examples](#cat-examples)
   * [`cd`](#cd)
     * [`cd` examples](#cd-examples)
-  * [`chattr` attributes *targets*](#chattr-attributes-targets)
+  * [`chattr` *attributes* *targets*](#chattr-attributes-targets)
     * [`chattr` examples](#chattr-examples)
   * [`completion` *shell*](#completion-shell)
     * [`completion` examples](#completion-examples)
@@ -238,7 +238,7 @@ Launch a shell in the source directory.
 
     chezmoi cd
 
-### `chattr` attributes *targets*
+### `chattr` *attributes* *targets*
 
 Change the attributes of *targets*. *attributes* specifies which attributes to
 modify. Add attributes by specifying them or their abbreviations directly,
