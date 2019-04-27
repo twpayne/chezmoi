@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/Masterminds/sprig"
+	"github.com/mattn/go-isatty"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	vfs "github.com/twpayne/go-vfs"
@@ -14,6 +15,7 @@ import (
 var (
 	config = Config{
 		Umask: permValue(getUmask()),
+		Color: "auto",
 		SourceVCS: sourceVCSConfig{
 			Command: "git",
 		},
@@ -64,6 +66,9 @@ func init() {
 	persistentFlags.BoolVarP(&config.Verbose, "verbose", "v", false, "verbose")
 	_ = viper.BindPFlag("verbose", persistentFlags.Lookup("verbose"))
 
+	persistentFlags.StringVar(&config.Color, "color", "auto", "colorize diffs")
+	_ = viper.BindPFlag("color", persistentFlags.Lookup("color"))
+
 	cobra.OnInitialize(func() {
 		if _, err := os.Stat(config.configFile); os.IsNotExist(err) {
 			return
@@ -87,6 +92,21 @@ func Execute() {
 }
 
 func (c *Config) persistentPreRunRootE(fs vfs.FS, args []string) error {
+	switch c.Color {
+	case "on":
+		c.colored = true
+	case "off":
+		c.colored = false
+	case "auto":
+		if stdout, ok := c.Stdout().(*os.File); ok {
+			c.colored = isatty.IsTerminal(stdout.Fd())
+		} else {
+			c.colored = false
+		}
+	default:
+		return fmt.Errorf("invalid --color value: %s", c.Color)
+	}
+
 	info, err := fs.Stat(c.SourceDir)
 	switch {
 	case err == nil && !info.IsDir():

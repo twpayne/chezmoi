@@ -137,7 +137,7 @@ func (c *Config) runEditCmd(fs vfs.FS, args []string) error {
 		anyMutator := chezmoi.NewAnyMutator(chezmoi.NullMutator)
 		var mutator chezmoi.Mutator = anyMutator
 		if c.edit.diff {
-			mutator = chezmoi.NewLoggingMutator(c.Stdout(), mutator)
+			mutator = chezmoi.NewLoggingMutator(c.Stdout(), mutator, c.colored)
 		}
 		if err := entry.Apply(readOnlyFS, ts.DestDir, ts.TargetIgnore.Match, ts.Umask, mutator); err != nil {
 			return err

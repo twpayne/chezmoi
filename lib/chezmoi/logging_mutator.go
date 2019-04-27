@@ -13,15 +13,17 @@ import (
 // A LoggingMutator wraps an Mutator and logs all of the actions it executes
 // and any errors.
 type LoggingMutator struct {
-	m Mutator
-	w io.Writer
+	m       Mutator
+	w       io.Writer
+	colored bool
 }
 
 // NewLoggingMutator returns a new LoggingMutator.
-func NewLoggingMutator(w io.Writer, m Mutator) *LoggingMutator {
+func NewLoggingMutator(w io.Writer, m Mutator, colored bool) *LoggingMutator {
 	return &LoggingMutator{
-		m: m,
-		w: w,
+		m:       m,
+		w:       w,
+		colored: colored,
 	}
 }
 
@@ -92,6 +94,7 @@ func (m *LoggingMutator) WriteFile(name string, data []byte, perm os.FileMode, c
 				ToFile:   name,
 				Context:  3,
 				Eol:      "\n",
+				Colored:  m.colored,
 			}
 			if err := difflib.WriteUnifiedDiff(m.w, unifiedDiff); err != nil {
 				return err

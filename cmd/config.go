@@ -40,6 +40,7 @@ type Config struct {
 	Umask         permValue
 	DryRun        bool
 	Verbose       bool
+	Color         string
 	GPGRecipient  string
 	SourceVCS     sourceVCSConfig
 	Merge         mergeConfig
@@ -50,6 +51,7 @@ type Config struct {
 	Vault         vaultCmdConfig
 	Pass          passCmdConfig
 	Data          map[string]interface{}
+	colored       bool
 	templateFuncs template.FuncMap
 	add           addCmdConfig
 	data          dataCmdConfig
@@ -198,7 +200,7 @@ func (c *Config) getDefaultMutator(fs vfs.FS) chezmoi.Mutator {
 		mutator = chezmoi.NewFSMutator(fs)
 	}
 	if c.Verbose {
-		mutator = chezmoi.NewLoggingMutator(c.Stdout(), mutator)
+		mutator = chezmoi.NewLoggingMutator(c.Stdout(), mutator, c.colored)
 	}
 	return mutator
 }
