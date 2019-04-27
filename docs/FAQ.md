@@ -22,3 +22,34 @@ destination directory when you run `chezmoi apply` add them to a
 Yes. Run `chezmoi add` will update the source state with the target. To see
 diffs of what would change, without actually changing anything, use `chezmoi
 diff`.
+
+## I've made changes to both the destination state and the source state that I want to keep. How can I keep them both?
+
+`chezmoi merge` will open a merge tool to resolve differences between the source
+state, target state, and destination state. Copy the changes you want to keep in
+to the source state.
+
+## How do I tell chezmoi to always delete a file?
+
+chezmoi will delete files if their target state is empty, unless they have the
+`empty` attribute set. Therefore an empty file in the source state without the
+`empty` attribute will always be deleted.
+
+Say you want chezmoi to always delete `~/.foo`, you can use the following
+sequence of commands:
+
+    rm -f ~/.foo
+    touch ~/.foo
+    chezmoi add --empty ~/.foo
+    chezmoi chattr noempty ~/.foo
+
+When you next run `chezmoi apply`, `~/.foo` will be deleted.
+
+## What other questions have been asked about chezmoi?
+
+See the [issues on
+Github](https://github.com/twpayne/chezmoi/issues?utf8=%E2%9C%93&q=is%3Aissue+sort%3Aupdated-desc+label%3Asupport).
+
+## Where do I ask a question that isn't answered here?
+
+Please [open an issue on Github](https://github.com/twpayne/chezmoi/issues/new).
