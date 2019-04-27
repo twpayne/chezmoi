@@ -58,16 +58,18 @@ YAML, macOS property file format, and HCL. The basename of the config file is
 
 The following configuration variables are available:
 
-| Variable           | Type    | Default value             | Description                   |
-| ------------------ | ------- | ------------------------- | ----------------------------- |
-| `color`            | string  | `auto`                    | Colorize diffs                |
-| `data`             | any     | none                      | Template data                 |
-| `sourceDir`        | string  | `~/.config/share/chezmoi` | Source directory              |
-| `targetDir`        | string  | `~`                       | Target directory              |
-| `umask`            | integer | from system               | Umask                         |
-| `dryRun`           | boolean | `false`                   | Dry run mode                  |
-| `verbose`          | boolean | `false`                   | Verbose mode                  |
-| `sourceVCSCommand` | string  | `git`                     | Source version control system |
+| Variable           | Type     | Default value             | Description                       |
+| ------------------ | -------- | ------------------------- | --------------------------------- |
+| `color`            | string   | `auto`                    | Colorize diffs                    |
+| `data`             | any      | none                      | Template data                     |
+| `dryRun`           | boolean  | `false`                   | Dry run mode                      |
+| `merge.command`    | string   | `vimdiff`                 | 3-way merge command               |
+| `merge.args`       | []string | none                      | Extra args to 3-way merge command |
+| `sourceDir`        | string   | `~/.config/share/chezmoi` | Source directory                  |
+| `sourceVCSCommand` | string   | `git`                     | Source version control system     |
+| `targetDir`        | string   | `~`                       | Target directory                  |
+| `umask`            | integer  | from system               | Umask                             |
+| `verbose`          | boolean  | `false`                   | Verbose mode                      |
 
 In addition, a number of secret manager integrations add configuration
 variables. These are documented in the secret manager section.
@@ -419,4 +421,4 @@ value is the user's response to that prompt.
 
     {{ $email := promptString "email" -}}
     data:
-        email: "{{ $email }}
+        email: "{{ $email }}"
