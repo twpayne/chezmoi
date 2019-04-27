@@ -6,6 +6,7 @@
 * [If the target already exists, but is "behind" the source, can chezmoi be configured to preserve the target version before replacing it with one derived from the source?](#if-the-target-already-exists-but-is-behind-the-source-can-chezmoi-be-configured-to-preserve-the-target-version-before-replacing-it-with-one-derived-from-the-source)
 * [I've made changes to both the destination state and the source state that I want to keep. How can I keep them both?](#ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both)
 * [How do I tell chezmoi to always delete a file?](#how-do-i-tell-chezmoi-to-always-delete-a-file)
+* [Where does the name "chezmoi" come from?](#where-does-the-name-chezmoi-come-from)
 * [What other questions have been asked about chezmoi?](#what-other-questions-have-been-asked-about-chezmoi)
 * [Where do I ask a question that isn't answered here?](#where-do-i-ask-a-question-that-isnt-answered-here)
 
@@ -53,6 +54,12 @@ sequence of commands:
     chezmoi chattr noempty ~/.foo
 
 When you next run `chezmoi apply`, `~/.foo` will be deleted.
+
+## Where does the name "chezmoi" come from?
+
+"chezmoi" splits to "chez moi" and pronouced /ʃeɪ mwa/ (shay-moi) meaning "at my
+house" in French. It's seven letters long, which is an appropriate length for a
+command that is only run occasionally.
 
 ## What other questions have been asked about chezmoi?
 
