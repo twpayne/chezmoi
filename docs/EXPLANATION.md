@@ -1,15 +1,15 @@
 # Explanation
 
-## How `chezmoi` stores its state
+## How chezmoi stores its state
 
-For an example of how `chezmoi` stores its state, see
+For an example of how chezmoi stores its state, see
 [`github.com/twpayne/dotfiles`](https://github.com/twpayne/dotfiles).
 
-`chezmoi` stores the desired state of files, symbolic links, and directories in
+chezmoi stores the desired state of files, symbolic links, and directories in
 regular files and directories in `~/.local/share/chezmoi`. This location can be
 overridden with the `-S` flag or by giving a value for `sourceDir` in
 `~/.config/chezmoi/chezmoi.toml`.  Some state is encoded in the source names.
-`chezmoi` ignores all files and directories in the source directory that begin
+chezmoi ignores all files and directories in the source directory that begin
 with a `.`. The following prefixes and suffixes are special, and are
 collectively referred to as "attributes":
 
@@ -18,7 +18,7 @@ collectively referred to as "attributes":
 | `encrypted_` prefix  | Encrypt the file in the source state.                                             |
 | `private_` prefix    | Remove all group and world permissions from the target file or directory.         |
 | `empty_` prefix      | Ensure the file exists, even if is empty. By default, empty files are removed.    |
-| `exact_` prefix      | Remove anything not managed by `chezmoi`.                                         |
+| `exact_` prefix      | Remove anything not managed by chezmoi.                                           |
 | `executable_` prefix | Add executable permissions to the target file.                                    |
 | `symlink_` prefix    | Create a symlink instead of a regular file.                                       |
 | `dot_` prefix        | Rename to use a leading dot, e.g. `dot_foo` becomes `.foo`.                       |

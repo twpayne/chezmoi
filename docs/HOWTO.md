@@ -2,7 +2,7 @@
 
 ## Use a hosted repo to manage your dotfiles across multiple machines
 
-`chezmoi` relies on your version control system and hosted repo to share changes
+chezmoi relies on your version control system and hosted repo to share changes
 across multiple machines. You should create a repo on the source code repository
 of your choice (e.g. [Bitbucket](https://bitbucket.org),
 [Github](https://github.com/), or [GitLab](https://gitlab.com), many people call
@@ -38,11 +38,11 @@ This runs `git pull --rebase` in your source directory and then `chezmoi apply`.
 
 ## Use templates to manage files that vary from machine to machine
 
-The primary goal of `chezmoi` is to manage configuration files across multiple
+The primary goal of chezmoi is to manage configuration files across multiple
 machines, for example your personal macOS laptop, your work Ubuntu desktop, and
 your work Linux laptop. You will want to keep much configuration the same across
 these, but also need machine-specific configurations for email addresses,
-credentials, etc. `chezmoi` achieves this functionality by using
+credentials, etc. chezmoi achieves this functionality by using
 [`text/template`](https://godoc.org/text/template) for the source state where
 needed.
 
@@ -71,7 +71,7 @@ If you prefer, you can use any format supported by
 [Viper](https://github.com/spf13/viper) for your configuration file. This
 includes JSON, YAML, and TOML.
 
-Then, add `~/.gitconfig` to `chezmoi` using the `-T` flag to automatically turn
+Then, add `~/.gitconfig` to chezmoi using the `-T` flag to automatically turn
 it in to a template:
 
     chezmoi add -T ~/.gitconfig
@@ -86,7 +86,7 @@ The file should look something like:
     [user]
       email = "{{ .email }}"
 
-`chezmoi` will substitute the variables from the `data` section of your
+chezmoi will substitute the variables from the `data` section of your
 `~/.config/chezmoi/chezmoi.toml` file when calculating the target state of
 `.gitconfig`.
 
@@ -106,7 +106,7 @@ For example, in your `~/.local/share/chezmoi/dot_bashrc.tmpl` you might have:
     # this will only be included in ~/.bashrc on work-laptop
     {{- end }}
 
-`chezmoi` includes all of the hermetic text functions from
+chezmoi includes all of the hermetic text functions from
 [`sprig`](http://masterminds.github.io/sprig/).
 
 If, after executing the template, the file contents are empty, the target file
@@ -117,7 +117,7 @@ to give it an `empty_` prefix. See "Under the hood" below.
 For coarser-grained control of files and entire directories are managed on
 different machines, or to exclude certain files completely, you can create
 `.chezmoiignore` files in the source directory. These specify a list of patterns
-that `chezmoi` should ignore, and are interpreted as templates. An example
+that chezmoi should ignore, and are interpreted as templates. An example
 `.chezmoiignore` file might look like:
 
     README.md
@@ -151,17 +151,17 @@ Then `chezmoi init` will create an initial `chezmoi.toml` using this template.
 
 ## Keep data private
 
-`chezmoi` automatically detects when files and directories are private when
-adding them by inspecting their permissions. Private files and directories are
-stored in `~/.local/share/chezmoi` as regular, public files with permissions
-`0644` and the name prefix `private_`. For example:
+chezmoi automatically detects when files and directories are private when adding
+them by inspecting their permissions. Private files and directories are stored
+in `~/.local/share/chezmoi` as regular, public files with permissions `0644` and
+the name prefix `private_`. For example:
 
     chezmoi add ~/.netrc
 
 will create `~/.local/share/chezmoi/private_dot_netrc` (assuming `~/.netrc` is
 not world- or group- readable, as it should be). This file is still private
 because `~/.local/share/chezmoi` is not group- or world- readable or executable.
-`chezmoi` checks that the permissions of `~/.local/share/chezmoi` are `0700` on
+chezmoi checks that the permissions of `~/.local/share/chezmoi` are `0700` on
 every run and will print a warning if they are not.
 
 It is common that you need to store access tokens in config files, e.g. a
@@ -172,7 +172,7 @@ your machine.
 
 ### Use Bitwarden to keep your secrets
 
-`chezmoi` includes support for [Bitwarden](https://bitwarden.com/) using the
+chezmoi includes support for [Bitwarden](https://bitwarden.com/) using the
 [Bitwarden CLI](https://github.com/bitwarden/cli) to expose data as a template
 function.
 
@@ -194,7 +194,7 @@ function in your config files, for example:
 
 ### Use `gpg` to keep your secrets
 
-`chezmoi` supports encrypting individual files with
+chezmoi supports encrypting individual files with
 [`gpg`](https://www.gnupg.org/). Specify the encryption key to use in your
 configuration file (`chezmoi.toml`) with the `gpgReceipient` key:
 
@@ -204,7 +204,7 @@ Add files to be encrypted with the `--encrypt` flag, for example:
 
     chezmoi add --encrypt ~/.ssh/id_rsa
 
-`chezmoi` will encrypt the file with
+chezmoi will encrypt the file with
 
     gpg --armor --encrypt --recipient $gpgRecipient
 
@@ -213,8 +213,8 @@ decrypted when generating the target state.
 
 ### Use a keyring to keep your secrets
 
-`chezmoi` includes support for Keychain (on macOS), GNOME Keyring (on Linux),
-and Windows Credentials Manager (on Windows) via the
+chezmoi includes support for Keychain (on macOS), GNOME Keyring (on Linux), and
+Windows Credentials Manager (on Windows) via the
 [`zalando/go-keyring`](https://github.com/zalando/go-keyring) library.
 
 Set passwords with:
@@ -242,7 +242,7 @@ You can query the keyring from the command line:
 
 ### Use LastPass to keep your secrets
 
-`chezmoi` includes support for [LastPass](https://lastpass.com) using the
+chezmoi includes support for [LastPass](https://lastpass.com) using the
 [LastPass CLI](https://lastpass.github.io/lastpass-cli/lpass.1.html) to expose
 data as a template function.
 
@@ -265,7 +265,7 @@ the field you want. For example, to extract the `password` field from first the
 
     githubPassword = "{{ (index (lastpass "Github") 0).password }}"
 
-`chezmoi` automatically parses the `note` value of the Lastpass entry, so, for
+chezmoi automatically parses the `note` value of the Lastpass entry, so, for
 example, you can extract a private SSH key like this:
 
     {{ (index (lastpass "SSH") 0).note.privateKey }}
@@ -275,7 +275,7 @@ Keys in the `note` section written as `CamelCase Words` are converted to
 
 ### Use 1Password to keep your secrets
 
-`chezmoi` includes support for [1Password](https://1password.com/) using the
+chezmoi includes support for [1Password](https://1password.com/) using the
 [1Password CLI](https://support.1password.com/command-line-getting-started/) to
 expose data as a template function.
 
@@ -290,7 +290,7 @@ template function, for example:
 
 ### Use `pass` to keep your secrets
 
-`chezmoi` includes support for [pass](https://www.passwordstore.org/) using the
+chezmoi includes support for [pass](https://www.passwordstore.org/) using the
 `pass` CLI.
 
 The first line of the output of `pass show <pass-name>` is available as the
@@ -300,7 +300,7 @@ The first line of the output of `pass show <pass-name>` is available as the
 
 ### Use Vault to keep your secrets
 
-`chezmoi` includes support for [Vault](https://www.vaultproject.io/) using the
+chezmoi includes support for [Vault](https://www.vaultproject.io/) using the
 [Vault CLI](https://www.vaultproject.io/docs/commands/) to expose data as a
 template function.
 
@@ -374,7 +374,7 @@ to update your destination directory.
 
 ## Export archives
 
-`chezmoi` can create an archive containing the target state. This can be useful
+chezmoi can create an archive containing the target state. This can be useful
 for generating target state on a different machine or for simply inspecting the
 target state. A particularly useful command is:
 
@@ -382,32 +382,32 @@ target state. A particularly useful command is:
 
 which lists all the targets in the target state.
 
-## Use non-`git` version control systems
+## Use non-git version control systems
 
-By default, `chezmoi` uses `git`, but you can use any version control system of
-your choice. In your config file, specify the command to use. For example, to
-use Mercurial specify:
+By default, chezmoi uses git, but you can use any version control system of your
+choice. In your config file, specify the command to use. For example, to use
+Mercurial specify:
 
     [sourceVCS]
       command = "hg"
 
-The source VCS command is used in the `chezmoi` commands `init`, `source`, and
-`update`, and support for VCSes other than `git` is limited but easy to add. If
+The source VCS command is used in the chezmoi commands `init`, `source`, and
+`update`, and support for VCSes other than git is limited but easy to add. If
 you'd like to see your VCS better supported, please [open an issue on
 Github](https://github.com/twpayne/chezmoi/issues/new).
 
-## Use `chezmoi` outside your home directory
+## Use chezmoi outside your home directory
 
-`chezmoi`, by default, operates on your home directory, but this can be
-overridden with the `--dest` command line flag or by specifying `destDir` in
-your config file. In theory, you could use `chezmoi` to manage any aspect of
-your filesystem. That said, although you can do this, you probably shouldn't.
-Existing configuration management tools like [Puppet](https://puppet.com/),
+chezmoi, by default, operates on your home directory, but this can be overridden
+with the `--dest` command line flag or by specifying `destDir` in your config
+file. In theory, you could use chezmoi to manage any aspect of your filesystem.
+That said, although you can do this, you probably shouldn't. Existing
+configuration management tools like [Puppet](https://puppet.com/),
 [Chef](https://www.chef.io/chef/), [Ansible](https://www.ansible.com/), and
 [Salt](https://www.saltstack.com/) are much better suited to whole system
 configuration management.
 
-`chezmoi` was inspired by Puppet, but created because Puppet is a slow overkill
-for managing your personal configuration files. The focus of `chezmoi` will
-always be personal home directory management. If your needs grow beyond that,
-switch to a whole system configuration management tool.
+chezmoi was inspired by Puppet, but created because Puppet is a slow overkill
+for managing your personal configuration files. The focus of chezmoi will always
+be personal home directory management. If your needs grow beyond that, switch to
+a whole system configuration management tool.
