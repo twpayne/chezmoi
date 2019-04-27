@@ -1,4 +1,4 @@
-# `chezmoi` Reference Manual
+# chezmoi Reference Manual
 
 Manage your dotfiles securely across multiple machines.
 
@@ -22,8 +22,8 @@ Use *directory* as the destination directory.
 ### `-n`, `--dry-run`
 
 Set dry run mode. In dry run mode, the destination directory is never modified.
-This is most useful in combination with the `-v` (verbose) flag to print
-changes that would be made without making them.
+This is most useful in combination with the `-v` (verbose) flag to print changes
+that would be made without making them.
 
 ### `-h`, `--help`
 
@@ -35,24 +35,23 @@ Use *directory* as the source directory.
 
 ### `-v`, `--verbose`
 
-Set verbose mode. In verbose mode, `chezmoi` prints the changes that it is
-making as approximate shell commands, and any differences in files between the
-target state and the destination set are printed as unified diffs.
+Set verbose mode. In verbose mode, chezmoi prints the changes that it is making
+as approximate shell commands, and any differences in files between the target
+state and the destination set are printed as unified diffs.
 
 ### `--version`
 
-Print the version of `chezmoi`, the commit at which it was built, and the build
+Print the version of chezmoi, the commit at which it was built, and the build
 timestamp.
 
 ## Configuration file
 
-`chezmoi` searches for its configuration file according to the [XDG Base
-Directory
+chezmoi searches for its configuration file according to the [XDG Base Directory
 Specification](https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html)
 and supports all formats supported by
 [`github.com/spf13/viper`](https://github.com/spf13/viper), namely JSON, TOML,
 YAML, macOS property file format, and HCL. The basename of the config file is
-`chezmoi`, and the first config file found is used.
+chezmoi, and the first config file found is used.
 
 ### Configuration variables
 
@@ -86,9 +85,9 @@ move from "under the hood" section
 
 ### `add` *targets*
 
-Add *targets* to the source state. If any target is already in the source
-state, then its source state is replaced with its current state in the
-destination directory. The `add` command accepts additional flags:
+Add *targets* to the source state. If any target is already in the source state,
+then its source state is replaced with its current state in the destination
+directory. The `add` command accepts additional flags:
 
 #### `-e`, `--empty`
 
@@ -108,10 +107,10 @@ Recursively add all files, directories, and symlinks.
 
 #### `-T`, `--template`
 
-Set the `template` attribute on added files and symlinks. In addition,
-`chezmoi` attempts to automatically generate the template by replacing any
-template data values with the equivalent template data keys. Longer
-subsitutions occur before shorter ones.
+Set the `template` attribute on added files and symlinks. In addition, chezmoi
+attempts to automatically generate the template by replacing any template data
+values with the equivalent template data keys. Longer subsitutions occur before
+shorter ones.
 
 #### `add` examples
 
@@ -335,7 +334,7 @@ Interact with a secret manager. See the "Secret managers" section for details.
 
 Execute the source version control system in the source directory with *args*.
 Note that any flags for the source version control system must be sepeated with
-a `--` to stop `chezmoi` from reading them.
+a `--` to stop chezmoi from reading them.
 
 #### `source` examples
 
@@ -371,15 +370,15 @@ Pull changes from the source VCS and apply any changes.
 
 ### `upgrade`
 
-Upgrade `chezmoi` by downloading and installing a new version. This will call
-the Github API to determine if there is a new version of `chezmoi` available,
-and if so, download and attempt to install it in the same way as chezmoi was
-previously installed.
+Upgrade chezmoi by downloading and installing a new version. This will call the
+Github API to determine if there is a new version of chezmoi available, and if
+so, download and attempt to install it in the same way as chezmoi was previously
+installed.
 
-If `chezmoi` was installed with a package manager (`dpkg` or `rpm`) then
-`upgrade` will download a new package and install it, using `sudo` if it is
-installed. Otherwise, `chezmoi` will download the latest executable and replace
-the existing exectuable with the new version.
+If chezmoi was installed with a package manager (`dpkg` or `rpm`) then `upgrade`
+will download a new package and install it, using `sudo` if it is installed.
+Otherwise, chezmoi will download the latest executable and replace the existing
+exectuable with the new version.
 
 If the `CHEZMOI_GITHUB_API_TOKEN` environment variable is set, then its value
 will be used to authenticate requests to the Github API, otherwise
@@ -393,7 +392,7 @@ requests should be sufficient for most cases.
 
 ### `verify` [*targets*]
 
-Verify that all *targets* match their target state. `chezmoi` exits with code 0
+Verify that all *targets* match their target state. chezmoi exits with code 0
 (success) if all targets match their target state, or 1 (failure) otherwise. If
 no targets are specified then all targets are checked.
 
@@ -416,18 +415,18 @@ FIXME document
 
 ### Variables
 
-`chezmoi` provides the following automatically populated variables:
+chezmoi provides the following automatically populated variables:
 
 | Variable                | Value                                                                                                                  |
 | ----------------------- | ---------------------------------------------------------------------------------------------------------------------- |
 | `.chezmoi.arch`         | Architecture, e.g. `amd64`, `arm`, etc. as returned by [runtime.GOARCH](https://godoc.org/runtime#pkg-constants).      |
-| `.chezmoi.fullHostname` | The full hostname of the machine `chezmoi` is running on.                                                              |
-| `.chezmoi.group`        | The group of the user running `chezmoi`.                                                                               |
-| `.chezmoi.homedir`      | The home directory of the user running `chezmoi`.                                                                      |
-| `.chezmoi.hostname`     | The hostname of the machine `chezmoi` is running on, up to the first `.`.                                              |
+| `.chezmoi.fullHostname` | The full hostname of the machine chezmoi is running on.                                                                |
+| `.chezmoi.group`        | The group of the user running chezmoi.                                                                                 |
+| `.chezmoi.homedir`      | The home directory of the user running chezmoi.                                                                        |
+| `.chezmoi.hostname`     | The hostname of the machine chezmoi is running on, up to the first `.`.                                                |
 | `.chezmoi.os`           | Operating system, e.g. `darwin`, `linux`, etc. as returned by [runtime.GOOS](https://godoc.org/runtime#pkg-constants). |
 | `.chezmoi.osRelease`    | The information from `/etc/os-release`, Linux only, run `chezmoi data` to see its output.                              |
-| `.chezmoi.username`     | The username of the user running `chezmoi`.                                                                            |
+| `.chezmoi.username`     | The username of the user running chezmoi.                                                                              |
 
 ### Functions
 

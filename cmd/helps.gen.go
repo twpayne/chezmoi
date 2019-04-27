@@ -32,7 +32,7 @@ var helps = map[string]help{
 			"\n" +
 			"\"-T\", \"--template\"\n" +
 			"\n" +
-			"Set the \"template\" attribute on added files and symlinks. In addition, \"chezmoi\"\n" +
+			"Set the \"template\" attribute on added files and symlinks. In addition, chezmoi\n" +
 			"attempts to automatically generate the template by replacing any template data\n" +
 			"values with the equivalent template data keys. Longer subsitutions occur before\n" +
 			"shorter ones.\n",
@@ -226,7 +226,7 @@ var helps = map[string]help{
 		long: "" +
 			"Execute the source version control system in the source directory with args.\n" +
 			"Note that any flags for the source version control system must be sepeated with\n" +
-			"a \"--\" to stop \"chezmoi\" from reading them.\n",
+			"a \"--\" to stop chezmoi from reading them.\n",
 		example: "" +
 			"  chezmoi source init\n" +
 			"  chezmoi source add .\n" +
@@ -254,15 +254,15 @@ var helps = map[string]help{
 	},
 	"upgrade": {
 		long: "" +
-			"Upgrade \"chezmoi\" by downloading and installing a new version. This will call\n" +
-			"the Github API to determine if there is a new version of \"chezmoi\" available,\n" +
-			"and if so, download and attempt to install it in the same way as chezmoi was\n" +
-			"previously installed.\n" +
+			"Upgrade chezmoi by downloading and installing a new version. This will call the\n" +
+			"Github API to determine if there is a new version of chezmoi available, and if\n" +
+			"so, download and attempt to install it in the same way as chezmoi was previously\n" +
+			"installed.\n" +
 			"\n" +
-			"If \"chezmoi\" was installed with a package manager (\"dpkg\" or \"rpm\") then\n" +
-			"\"upgrade\" will download a new package and install it, using \"sudo\" if it is\n" +
-			"installed. Otherwise, \"chezmoi\" will download the latest executable and replace\n" +
-			"the existing exectuable with the new version.\n" +
+			"If chezmoi was installed with a package manager (\"dpkg\" or \"rpm\") then \"upgrade\"\n" +
+			"will download a new package and install it, using \"sudo\" if it is installed.\n" +
+			"Otherwise, chezmoi will download the latest executable and replace the existing\n" +
+			"exectuable with the new version.\n" +
 			"\n" +
 			"If the \"CHEZMOI_GITHUB_API_TOKEN\" environment variable is set, then its\n" +
 			"value will be used to authenticate requests to the Github API, otherwise\n" +
@@ -273,7 +273,7 @@ var helps = map[string]help{
 	},
 	"verify": {
 		long: "" +
-			"Verify that all targets match their target state. \"chezmoi\" exits with code 0\n" +
+			"Verify that all targets match their target state. chezmoi exits with code 0\n" +
 			"(success) if all targets match their target state, or 1 (failure) otherwise. If\n" +
 			"no targets are specified then all targets are checked.\n",
 		example: "" +

@@ -1,21 +1,21 @@
 # Contributing
 
-`chezmoi` development happens on Github. When contributing, please first [open
-an issue](https://github.com/twpayne/chezmoi/issues/new) to discuss the change
-that you want to make. Bug reports and documentation improvements are
-particularly welcome.
+chezmoi development happens on Github. When contributing, please first [open an
+issue](https://github.com/twpayne/chezmoi/issues/new) to discuss the change that
+you want to make. Bug reports and documentation improvements are particularly
+welcome.
 
 All changes are made via pull requests. In your pull request, please make sure
 that:
 
-* The commit messages match `chezmoi`'s convention, specifically that they being
+* The commit messages match chezmoi's convention, specifically that they being
   with a capitalized verb in the imperative and give a short description of what
   the commit does. Detailed information or justification can be optionally
   included in the body of the commit message.
 
 * Commits are logically separate, with no merge or "fixup" commits.
 
-* All tests pass. `chezmoi`'s continuous integration tests include strict checks
+* All tests pass. chezmoi's continuous integration tests include strict checks
   using [`github.com/golangci/golangci-lint`](github.com/golangci/golangci-lint)
   and [`mvdan.cc/gofumpt`](mvdan.cc/gofumpt).
 
