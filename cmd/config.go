@@ -61,6 +61,7 @@ type Config struct {
 	_import       importCmdConfig
 	keyring       keyringCmdConfig
 	update        updateCmdConfig
+	upgrade       upgradeCmdConfig
 	stdin         io.Reader
 	stdout        io.Writer
 	stderr        io.Writer
