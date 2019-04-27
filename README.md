@@ -90,7 +90,7 @@ Manage your dotfiles across multiple machines, securely.
 chezmoi includes five types of documentation:
 
 * An [installation guide](docs/INSTALL.md).
-* A [quick start guide](docs/TUTORIAL.md).
+* A [quick start guide](docs/QUICKSTART.md).
 * A [how-to guide](docs/HOWTO.md) for achieving specific tasks with chezmoi.
 * An [FAQ](docs/FAQ.md) for questions that aren't obvious.
 * A [reference](docs/REFERENCE.md) for a complete description of chezmoi.
