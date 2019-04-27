@@ -2,7 +2,7 @@ package chezmoi
 
 import "os"
 
-// An Mutator makes changes.
+// A Mutator makes changes.
 type Mutator interface {
 	Chmod(name string, mode os.FileMode) error
 	Mkdir(name string, perm os.FileMode) error
