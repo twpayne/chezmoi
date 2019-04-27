@@ -62,6 +62,7 @@ The following configuration variables are available:
 | `color`            | string   | `auto`                    | Colorize diffs                    |
 | `data`             | any      | none                      | Template data                     |
 | `dryRun`           | boolean  | `false`                   | Dry run mode                      |
+| `gpgRecipient`     | string   | none                      | GPG recipient                     |
 | `merge.command`    | string   | `vimdiff`                 | 3-way merge command               |
 | `merge.args`       | []string | none                      | Extra args to 3-way merge command |
 | `sourceDir`        | string   | `~/.config/share/chezmoi` | Source directory                  |
