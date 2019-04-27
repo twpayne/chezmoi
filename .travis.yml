@@ -4,16 +4,12 @@ addons:
   apt:
     packages:
     - rpm
-    - snapd
 
 go:
 - 1.12.x
 
 env:
-- GO111MODULE=on PATH=/snap/bin:$PATH
-
-before_install:
-- openssl aes-256-cbc -K $encrypted_b4d86685c6fa_key -iv $encrypted_b4d86685c6fa_iv -in snap.login.enc -out snap.login -d
+- GO111MODULE=on
 
 install:
 - go mod download
@@ -23,7 +19,6 @@ install:
 - GO111MODULE=off go get github.com/wadey/gocovmerge
 - GO111MODULE=off go get mvdan.cc/gofumpt
 - GO111MODULE=off go get mvdan.cc/gofumpt/gofumports
-- sudo snap install snapcraft --classic
 
 script:
 - make generate
@@ -36,9 +31,6 @@ script:
 - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN; fi
 
 sudo: false
-
-after_success:
-- test -n "$TRAVIS_TAG" && snapcraft login --with snap.login
 
 deploy:
 - provider: script

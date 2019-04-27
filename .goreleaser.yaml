@@ -93,14 +93,3 @@ brew:
   folder: Formula
   homepage: "https://github.com/twpayne/chezmoi"
   description: "Manage your dotfiles across multiple machines, securely."
-
-# snapcraft disabled pending:
-# https://forum.snapcraft.io/t/request-classic-confinement-for-chezmoi/10903
-# https://forum.snapcraft.io/t/invalid-architecture-specified-in-the-manifest-ppc64/10904
-# https://github.com/goreleaser/goreleaser/issues/1006
-# snapcraft:
-#   summary: "Manage your dotfiles across multiple machines, securely."
-#   description: "Manage your dotfiles across multiple machines, securely."
-#   publish: true
-#   grade: devel
-#   confinement: classic
