@@ -8,6 +8,12 @@ Card](https://goreportcard.com/badge/github.com/twpayne/chezmoi)](https://gorepo
 
 Manage your dotfiles across multiple machines, securely.
 
+* [Features](#features)
+* [I already have a system to manage my dotfiles, why should I use chezmoi?](#i-already-have-a-system-to-manage-my-dotfiles-why-should-i-use-chezmoi)
+* [Documentation](#documentation)
+* [Related projects](#related-projects)
+* [License](#license)
+
 ## Features
 
 * Flexible: You can share as much configuration across machines as you want,
