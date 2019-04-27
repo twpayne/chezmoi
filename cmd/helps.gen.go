@@ -252,6 +252,25 @@ var helps = map[string]help{
 		example: "" +
 			"  chezmoi update",
 	},
+	"upgrade": {
+		long: "" +
+			"Upgrade \"chezmoi\" by downloading and installing a new version. This will call\n" +
+			"the Github API to determine if there is a new version of \"chezmoi\" available,\n" +
+			"and if so, download and attempt to install it in the same way as chezmoi was\n" +
+			"previously installed.\n" +
+			"\n" +
+			"If \"chezmoi\" was installed with a package manager (\"dpkg\" or \"rpm\") then\n" +
+			"\"upgrade\" will download a new package and install it, using \"sudo\" if it is\n" +
+			"installed. Otherwise, \"chezmoi\" will download the latest executable and replace\n" +
+			"the existing exectuable with the new version.\n" +
+			"\n" +
+			"If the \"CHEZMOI_GITHUB_API_TOKEN\" environment variable is set, then its\n" +
+			"value will be used to authenticate requests to the Github API, otherwise\n" +
+			"unauthenticated requests are used which are subject to stricter rate limiting.\n" +
+			"Unauthenticated requests should be sufficient for most cases.\n",
+		example: "" +
+			"  chezmoi upgrade",
+	},
 	"verify": {
 		long: "" +
 			"Verify that all targets match their target state. \"chezmoi\" exits with code 0\n" +
