@@ -6,6 +6,11 @@ Manage your dotfiles securely across multiple machines.
 
 Command line flags override any values set in the configuration file.
 
+### `--color` *value*
+
+Colorize diffs, *value* can be `on`, `off`, or `auto`. The default value is
+`auto` which will colorize diffs only if the output is a terminal.
+
 ### `-c`, `--config` *filename*
 
 Read the configuration from *filename*.
@@ -55,6 +60,7 @@ The following configuration variables are available:
 
 | Variable           | Type    | Default value             | Description                   |
 | ------------------ | ------- | ------------------------- | ----------------------------- |
+| `color`            | string  | `auto`                    | Colorize diffs                |
 | `data`             | any     | none                      | Template data                 |
 | `sourceDir`        | string  | `~/.config/share/chezmoi` | Source directory              |
 | `targetDir`        | string  | `~`                       | Target directory              |
