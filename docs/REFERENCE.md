@@ -2,6 +2,113 @@
 
 Manage your dotfiles securely across multiple machines.
 
+* [Concepts](#concepts)
+* [Global command line flags](#global-command-line-flags)
+  * [`--color` *value*](#--color-value)
+  * [`-c`, `--config` *filename*](#-c---config-filename)
+  * [`-D`, `--destination` *directory*](#-d---destination-directory)
+  * [`-n`, `--dry-run`](#-n---dry-run)
+  * [`-h`, `--help`](#-h---help)
+  * [`-S`, `--source` *directory*](#-s---source-directory)
+  * [`-v`, `--verbose`](#-v---verbose)
+  * [`--version`](#--version)
+* [Configuration file](#configuration-file)
+  * [Configuration variables](#configuration-variables)
+* [Attributes](#attributes)
+* [Commands](#commands)
+  * [`add` *targets*](#add-targets)
+    * [`-e`, `--empty`](#-e---empty)
+    * [`-x`, `--exact`](#-x---exact)
+    * [`-p`, `--prompt`](#-p---prompt)
+    * [`-r`, `--recursive`](#-r---recursive)
+    * [`-T`, `--template`](#-t---template)
+    * [`add` examples](#add-examples)
+  * [`apply` [*targets*]](#apply-targets)
+    * [`apply` examples](#apply-examples)
+  * [`archive`](#archive)
+    * [`archive` examples](#archive-examples)
+  * [`cat` [targets]](#cat-targets)
+    * [`cat` examples](#cat-examples)
+  * [`cd`](#cd)
+    * [`cd` examples](#cd-examples)
+  * [`chattr` *attributes* *targets*](#chattr-attributes-targets)
+    * [`chattr` examples](#chattr-examples)
+  * [`completion` *shell*](#completion-shell)
+    * [`completion` examples](#completion-examples)
+  * [`data`](#data)
+    * [`-f`, `--format` *format*](#-f---format-format)
+    * [`data` examples](#data-examples)
+  * [`diff` *targets*](#diff-targets)
+    * [`diff` examples](#diff-examples)
+  * [`doctor`](#doctor)
+    * [`doctor` examples](#doctor-examples)
+  * [`dump` *targets*](#dump-targets)
+    * [`-f` / `--format` *format*](#-f----format-format)
+    * [`dump` examples](#dump-examples)
+  * [`edit` *targets*](#edit-targets)
+    * [`-a`, `--apply`](#-a---apply)
+    * [`-d`, `--diff`](#-d---diff)
+    * [`-p` / `--prompt`](#-p----prompt)
+    * [`edit` examples](#edit-examples)
+  * [`edit-config`](#edit-config)
+    * [`edit-config` examples](#edit-config-examples)
+  * [`forget` *targets*](#forget-targets)
+    * [`forget` examples](#forget-examples)
+  * [`help` *command*](#help-command)
+  * [`init` [*repo*]](#init-repo)
+    * [`init` examples](#init-examples)
+  * [`import` *filename*](#import-filename)
+    * [`--destination` *directory*](#--destination-directory)
+    * [`-x` / `--exact`](#-x----exact)
+    * [`-r`, `--remove-destination`](#-r---remove-destination)
+    * [`--strip-components` *n*](#--strip-components-n)
+    * [`import` examples](#import-examples)
+  * [`merge` *targets*](#merge-targets)
+    * [`merge` examples](#merge-examples)
+  * [`remove`, `rm` *targets*](#remove-rm-targets)
+  * [`secret`](#secret)
+  * [`source` [*args*]](#source-args)
+    * [`source` examples](#source-examples)
+  * [`source-path` [*targets*]](#source-path-targets)
+    * [`source-path` examples](#source-path-examples)
+  * [`unmanaged`](#unmanaged)
+    * [`unmanaged` examples](#unmanaged-examples)
+  * [`update`](#update)
+    * [`update` examples](#update-examples)
+  * [`upgrade`](#upgrade)
+    * [`upgrade` examples](#upgrade-examples)
+  * [`verify` [*targets*]](#verify-targets)
+    * [`verify` examples](#verify-examples)
+* [Editor configuration](#editor-configuration)
+* [Umask configuration](#umask-configuration)
+* [Templates](#templates)
+  * [Variables](#variables)
+  * [Functions](#functions)
+
+## Concepts
+
+chezmoi evaluates the source state for the current machine and then updates the
+destination directory, where:
+
+* The *source state* declares the desired state of your home directory,
+  including templates and machine-specific configuration.
+
+* The *source directory* is where chezmoi stores the source state, by default
+  `~/.local/share/chezmoi`.
+
+* The *target state* is the source state computed for the current machine.
+
+* The *destination directory* is the directory that chezmoi manages, by default
+  `~`, your home directory.
+
+* A *target* is a file, directory, or symlink in the destination directory.
+
+* The *destination state* is the state of all the targets in the destination
+  directory.
+
+* The *config file* contains machine-specific configuration, by default it is
+  `~/.config/chezmoi/chezmoi.toml`.
+
 ## Global command line flags
 
 Command line flags override any values set in the configuration file.
@@ -74,13 +181,37 @@ The following configuration variables are available:
 In addition, a number of secret manager integrations add configuration
 variables. These are documented in the secret manager section.
 
-## Targets
+## Attributes
 
-FIXME document
-absolute paths
-files, directories, and symlinks
-attributes
-move from "under the hood" section
+chezmoi stores the source state of files, symbolic links, and directories in
+regular files and directories in the source directory (`~/.local/share/chezmoi`
+by default). This location can be overridden with the `-S` flag or by giving a
+value for `sourceDir` in `~/.config/chezmoi/chezmoi.toml`.  Some state is
+encoded in the source names. chezmoi ignores all files and directories in the
+source directory that begin with a `.`. The following prefixes and suffixes are
+special, and are collectively referred to as "attributes":
+
+| Prefix/suffix        | Effect                                                                            |
+| -------------------- | ----------------------------------------------------------------------------------|
+| `encrypted_` prefix  | Encrypt the file in the source state.                                             |
+| `private_` prefix    | Remove all group and world permissions from the target file or directory.         |
+| `empty_` prefix      | Ensure the file exists, even if is empty. By default, empty files are removed.    |
+| `exact_` prefix      | Remove anything not managed by chezmoi.                                           |
+| `executable_` prefix | Add executable permissions to the target file.                                    |
+| `symlink_` prefix    | Create a symlink instead of a regular file.                                       |
+| `dot_` prefix        | Rename to use a leading dot, e.g. `dot_foo` becomes `.foo`.                       |
+| `.tmpl` suffix       | Treat the contents of the source file as a template.                              |
+
+Order is important, the order is `exact_`, `private_`, `empty_`, `executable_`,
+`symlink_`, `dot_`, `.tmpl`.
+
+Different target types allow different prefixes and suffixes:
+
+| Target type   | Allowed prefixes and suffixes                                      |
+| ------------- | ------------------------------------------------------------------ |
+| Directory     | `exact_`, `private_`, `dot_`                                       |
+| Regular file  | `encrypted_`, `private_`, `empty_`, `executable_`, `dot_`, `.tmpl` |
+| Symbolic link | `symlink_`, `dot_`, `.tmpl`                                        |
 
 ## Commands
 
@@ -158,7 +289,7 @@ Launch a shell in the source directory.
 
     chezmoi cd
 
-### `chattr` attributes *targets*
+### `chattr` *attributes* *targets*
 
 Change the attributes of *targets*. *attributes* specifies which attributes to
 modify. Add attributes by specifying them or their abbreviations directly,
@@ -182,6 +313,7 @@ comma (`,`).
 
     chezmoi chattr template ~/.bashrc
     chezmoi chattr noempty ~/.profile
+    chezmoi chattr private,template ~/.netrc
 
 ### `completion` *shell*
 
@@ -302,13 +434,33 @@ passed, `chezmoi apply` is run.
 
 ### `import` *filename*
 
-FIXME document
+Import the source state from an archive file in to a directory in the source
+state. This is primarily used to make subdirectories of your home directory
+exactly match the contents of a downloaded archive. You will generally always
+want to set the `--destination`, `--exact`, and `--remove-destination` flags.
+
+The only supported archive format is `.tar.gz`.
+
+#### `--destination` *directory*
+
+Set the destination (in the source state) where the archive will be imported.
 
 #### `-x` / `--exact`
 
+Set the `exact` attribute on all imported directories.
+
 #### `-r`, `--remove-destination`
 
-#### `--strip-components`
+Remove destination (in the source state) before importing.
+
+#### `--strip-components` *n*
+
+Strip *n* leading components from paths.
+
+#### `import` examples
+
+    curl -s -L -o oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
+    chezmoi import --strip-components 1 --destination ~/.oh-my-zsh oh-my-zsh-master.tar.gz
 
 ### `merge` *targets*
 
@@ -408,9 +560,15 @@ The `edit` and `edit-config` commands use the editor specified by the `VISUAL`
 environment variable, the `EDITOR` environment variable, or `vi`, whichever is
 specified first.
 
-## Umask
+## Umask configuration
 
-FIXME document
+By default, chezmoi uses your current umask as set by your operating system and
+shell. chezmoi only stores crude permissions in its source state, namely in the
+`executable`  and `private` attributes, corresponding to the umasks of `0111`
+and `0077` respectively.
+
+For machine-specifc control of umask, set the `umask` configuration variable in
+chezmoi's configuration file.
 
 ## Templates
 

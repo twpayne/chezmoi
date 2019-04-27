@@ -1,5 +1,23 @@
 # HOWTO
 
+* [Use a hosted repo to manage your dotfiles across multiple machines](#use-a-hosted-repo-to-manage-your-dotfiles-across-multiple-machines)
+* [Use templates to manage files that vary from machine to machine](#use-templates-to-manage-files-that-vary-from-machine-to-machine)
+* [Create a config file on a new machine automatically](#create-a-config-file-on-a-new-machine-automatically)
+* [Keep data private](#keep-data-private)
+  * [Use Bitwarden to keep your secrets](#use-bitwarden-to-keep-your-secrets)
+  * [Use gpg to keep your secrets](#use-gpg-to-keep-your-secrets)
+  * [Use a keyring to keep your secrets](#use-a-keyring-to-keep-your-secrets)
+  * [Use LastPass to keep your secrets](#use-lastpass-to-keep-your-secrets)
+  * [Use 1Password to keep your secrets](#use-1password-to-keep-your-secrets)
+  * [Use pass to keep your secrets](#use-pass-to-keep-your-secrets)
+  * [Use Vault to keep your secrets](#use-vault-to-keep-your-secrets)
+  * [Use a generic tool to keep your secrets](#use-a-generic-tool-to-keep-your-secrets)
+  * [Use templates variables to keep your secrets](#use-templates-variables-to-keep-your-secrets)
+* [Import archives](#import-archives)
+* [Export archives](#export-archives)
+* [Use non-git version control systems](#use-non-git-version-control-systems)
+* [Use chezmoi outside your home directory](#use-chezmoi-outside-your-home-directory)
+
 ## Use a hosted repo to manage your dotfiles across multiple machines
 
 chezmoi relies on your version control system and hosted repo to share changes
@@ -107,7 +125,7 @@ For example, in your `~/.local/share/chezmoi/dot_bashrc.tmpl` you might have:
     {{- end }}
 
 chezmoi includes all of the hermetic text functions from
-[`sprig`](http://masterminds.github.io/sprig/).
+[sprig](http://masterminds.github.io/sprig/).
 
 If, after executing the template, the file contents are empty, the target file
 will be removed. This can be used to ensure that files are only present on
@@ -192,11 +210,11 @@ function in your config files, for example:
     username = {{ (bitwarden "item" "example.com").login.username }}
     password = {{ (bitwarden "item" "example.com").login.password }}
 
-### Use `gpg` to keep your secrets
+### Use gpg to keep your secrets
 
-chezmoi supports encrypting individual files with
-[`gpg`](https://www.gnupg.org/). Specify the encryption key to use in your
-configuration file (`chezmoi.toml`) with the `gpgReceipient` key:
+chezmoi supports encrypting individual files with [gpg](https://www.gnupg.org/).
+Specify the encryption key to use in your configuration file (`chezmoi.toml`)
+with the `gpgRecipient` key:
 
     gpgRecipient = "..."
 
@@ -288,10 +306,10 @@ template function, for example:
 
     {{ (onepassword "<uuid>").details.password }}
 
-### Use `pass` to keep your secrets
+### Use pass to keep your secrets
 
 chezmoi includes support for [pass](https://www.passwordstore.org/) using the
-`pass` CLI.
+pass CLI.
 
 The first line of the output of `pass show <pass-name>` is available as the
 `pass` template function, for example:

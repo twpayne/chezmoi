@@ -8,6 +8,12 @@ Card](https://goreportcard.com/badge/github.com/twpayne/chezmoi)](https://gorepo
 
 Manage your dotfiles across multiple machines, securely.
 
+* [Features](#features)
+* [I already have a system to manage my dotfiles, why should I use chezmoi?](#i-already-have-a-system-to-manage-my-dotfiles-why-should-i-use-chezmoi)
+* [Documentation](#documentation)
+* [Related projects](#related-projects)
+* [License](#license)
+
 ## Features
 
 * Flexible: You can share as much configuration across machines as you want,
@@ -26,7 +32,7 @@ Manage your dotfiles across multiple machines, securely.
   your Keychain (on macOS), [GNOME
   Keyring](https://wiki.gnome.org/Projects/GnomeKeyring) (on Linux), or any
   command-line utility of your choice. You can encrypt individual files with
-  [`gpg`](https://www.gnupg.org). You can checkout your dotfiles repo on as many
+  [gpg](https://www.gnupg.org). You can checkout your dotfiles repo on as many
   machines as you want without revealing any secrets to anyone.
 
 * Transparent: chezmoi includes verbose and dry run modes so you can review
@@ -83,10 +89,10 @@ Manage your dotfiles across multiple machines, securely.
 
 chezmoi includes five types of documentation:
 
-* A [tutorial guide](docs/TUTORIAL.md) for getting started with chezmoi.
+* An [installation guide](docs/INSTALL.md).
+* A [quick start guide](docs/TUTORIAL.md).
 * A [how-to guide](docs/HOWTO.md) for achieving specific tasks with chezmoi.
 * An [FAQ](docs/FAQ.md) for questions that aren't obvious.
-* An [explanation](docs/EXPLANATION.md) for understanding how chezmoi works.
 * A [reference](docs/REFERENCE.md) for a complete description of chezmoi.
 
 ## Related projects
