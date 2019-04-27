@@ -32,7 +32,7 @@ Manage your dotfiles across multiple machines, securely.
   your Keychain (on macOS), [GNOME
   Keyring](https://wiki.gnome.org/Projects/GnomeKeyring) (on Linux), or any
   command-line utility of your choice. You can encrypt individual files with
-  [`gpg`](https://www.gnupg.org). You can checkout your dotfiles repo on as many
+  [gpg](https://www.gnupg.org). You can checkout your dotfiles repo on as many
   machines as you want without revealing any secrets to anyone.
 
 * Transparent: chezmoi includes verbose and dry run modes so you can review
