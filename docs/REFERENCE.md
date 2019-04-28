@@ -17,73 +17,44 @@ Manage your dotfiles securely across multiple machines.
 * [Attributes](#attributes)
 * [Commands](#commands)
   * [`add` *targets*](#add-targets)
-    * [`-e`, `--empty`](#-e---empty)
-    * [`-x`, `--exact`](#-x---exact)
-    * [`-p`, `--prompt`](#-p---prompt)
-    * [`-r`, `--recursive`](#-r---recursive)
-    * [`-T`, `--template`](#-t---template)
-    * [`add` examples](#add-examples)
   * [`apply` [*targets*]](#apply-targets)
-    * [`apply` examples](#apply-examples)
   * [`archive`](#archive)
-    * [`archive` examples](#archive-examples)
-  * [`cat` [targets]](#cat-targets)
-    * [`cat` examples](#cat-examples)
+  * [`cat` targets](#cat-targets)
   * [`cd`](#cd)
-    * [`cd` examples](#cd-examples)
   * [`chattr` *attributes* *targets*](#chattr-attributes-targets)
-    * [`chattr` examples](#chattr-examples)
   * [`completion` *shell*](#completion-shell)
-    * [`completion` examples](#completion-examples)
   * [`data`](#data)
-    * [`-f`, `--format` *format*](#-f---format-format)
-    * [`data` examples](#data-examples)
-  * [`diff` *targets*](#diff-targets)
-    * [`diff` examples](#diff-examples)
+  * [`diff` [*targets*]](#diff-targets)
   * [`doctor`](#doctor)
-    * [`doctor` examples](#doctor-examples)
-  * [`dump` *targets*](#dump-targets)
-    * [`-f` / `--format` *format*](#-f----format-format)
-    * [`dump` examples](#dump-examples)
+  * [`dump` [*targets*]](#dump-targets)
   * [`edit` *targets*](#edit-targets)
-    * [`-a`, `--apply`](#-a---apply)
-    * [`-d`, `--diff`](#-d---diff)
-    * [`-p` / `--prompt`](#-p----prompt)
-    * [`edit` examples](#edit-examples)
   * [`edit-config`](#edit-config)
-    * [`edit-config` examples](#edit-config-examples)
   * [`forget` *targets*](#forget-targets)
-    * [`forget` examples](#forget-examples)
   * [`help` *command*](#help-command)
   * [`init` [*repo*]](#init-repo)
-    * [`init` examples](#init-examples)
   * [`import` *filename*](#import-filename)
-    * [`--destination` *directory*](#--destination-directory)
-    * [`-x` / `--exact`](#-x----exact)
-    * [`-r`, `--remove-destination`](#-r---remove-destination)
-    * [`--strip-components` *n*](#--strip-components-n)
-    * [`import` examples](#import-examples)
   * [`merge` *targets*](#merge-targets)
-    * [`merge` examples](#merge-examples)
-  * [`remove`, `rm` *targets*](#remove-rm-targets)
+  * [`remove` *targets*](#remove-targets)
   * [`secret`](#secret)
   * [`source` [*args*]](#source-args)
-    * [`source` examples](#source-examples)
   * [`source-path` [*targets*]](#source-path-targets)
-    * [`source-path` examples](#source-path-examples)
   * [`unmanaged`](#unmanaged)
-    * [`unmanaged` examples](#unmanaged-examples)
   * [`update`](#update)
-    * [`update` examples](#update-examples)
   * [`upgrade`](#upgrade)
-    * [`upgrade` examples](#upgrade-examples)
   * [`verify` [*targets*]](#verify-targets)
-    * [`verify` examples](#verify-examples)
 * [Editor configuration](#editor-configuration)
 * [Umask configuration](#umask-configuration)
-* [Templates](#templates)
-  * [Variables](#variables)
-  * [Functions](#functions)
+* [Templates variables](#templates-variables)
+* [Template functions](#template-functions)
+  * [`bitwarden` [*args*]](#bitwarden-args)
+  * [`keyring` *service* *user*](#keyring-service-user)
+  * [`lastpass` *id*](#lastpass-id)
+  * [`onepassword` *uuid*](#onepassword-uuid)
+  * [`pass` *pass-name*](#pass-pass-name)
+  * [`promptString` *prompt*](#promptstring-prompt)
+  * [`secret` [*args*]](#secret-args)
+  * [`secretJSON` [*args*]](#secretjson-args)
+  * [`vault` *key*](#vault-key)
 
 ## Concepts
 
@@ -164,19 +135,25 @@ chezmoi, and the first config file found is used.
 
 The following configuration variables are available:
 
-| Variable           | Type     | Default value             | Description                       |
-| ------------------ | -------- | ------------------------- | --------------------------------- |
-| `color`            | string   | `auto`                    | Colorize diffs                    |
-| `data`             | any      | none                      | Template data                     |
-| `dryRun`           | boolean  | `false`                   | Dry run mode                      |
-| `gpgRecipient`     | string   | none                      | GPG recipient                     |
-| `merge.command`    | string   | `vimdiff`                 | 3-way merge command               |
-| `merge.args`       | []string | none                      | Extra args to 3-way merge command |
-| `sourceDir`        | string   | `~/.config/share/chezmoi` | Source directory                  |
-| `sourceVCSCommand` | string   | `git`                     | Source version control system     |
-| `targetDir`        | string   | `~`                       | Target directory                  |
-| `umask`            | integer  | from system               | Umask                             |
-| `verbose`          | boolean  | `false`                   | Verbose mode                      |
+| Variable                | Type     | Default value             | Description                       |
+| ----------------------- | -------- | ------------------------- | --------------------------------- |
+| `bitwarden.command`     | string   | `bw`                      | Bitwarden CLI command             |
+| `color`                 | string   | `auto`                    | Colorize diffs                    |
+| `data`                  | any      | none                      | Template data                     |
+| `destDir`               | string   | `~`                       | Destination directory             |
+| `dryRun`                | boolean  | `false`                   | Dry run mode                      |
+| `genericSecret.command` | string   | none                      | Generic secret command            |
+| `gpgRecipient`          | string   | none                      | GPG recipient                     |
+| `lastpass.command`      | string   | `lpass`                   | Lastpass CLI command              |
+| `merge.args`            | []string | none                      | Extra args to 3-way merge command |
+| `merge.command`         | string   | `vimdiff`                 | 3-way merge command               |
+| `onepassword.command`   | string   | `op`                      | 1Password CLI command             |
+| `pass.command`          | string   | `pass`                    | Pass CLI command                  |
+| `sourceDir`             | string   | `~/.config/share/chezmoi` | Source directory                  |
+| `sourceVCS.command`     | string   | `git`                     | Source version control system     |
+| `umask`                 | integer  | from system               | Umask                             |
+| `vault.command`         | string   | `vault`                   | Vault CLI command                 |
+| `verbose`               | boolean  | `false`                   | Verbose mode                      |
 
 In addition, a number of secret manager integrations add configuration
 variables. These are documented in the secret manager section.
@@ -271,7 +248,7 @@ to inspect the target state.
 
     chezmoi archive | tar tvf -
 
-### `cat` [targets]
+### `cat` targets
 
 Write the target state of *targets*  to stdout. *targets* must be files or
 symlinks. For files, the target file contents are written. For symlinks, the
@@ -339,7 +316,7 @@ Print the computed template data in the given format. The accepted formats are
     chezmoi data
     chezmoi data --format=yaml
 
-### `diff` *targets*
+### `diff` [*targets*]
 
 Print the approximate shell commands required to ensure that *targets* in the
 destination directory match the target state. If no targets are specifed, print
@@ -359,12 +336,12 @@ Check for potential problems.
 
     chezmoi doctor
 
-### `dump` *targets*
+### `dump` [*targets*]
 
 Dump the target state in JSON format. If no targets are specified, then the
 entire target state. The `dump` command accepts additional arguments:
 
-#### `-f` / `--format` *format*
+#### `-f`, `--format` *format*
 
 Print the target state in the given format. The accepted formats are `json`
 (JSON) and `yaml` (YAML).
@@ -388,7 +365,7 @@ Apply target immediately after editing.
 Print the difference between the target state and the actual state after
 editing.
 
-#### `-p` / `--prompt`
+#### `-p`, `--prompt`
 
 Prompt before applying each target.
 
@@ -445,7 +422,7 @@ The only supported archive format is `.tar.gz`.
 
 Set the destination (in the source state) where the archive will be imported.
 
-#### `-x` / `--exact`
+#### `-x`, `--exact`
 
 Set the `exact` attribute on all imported directories.
 
@@ -475,13 +452,33 @@ cannot be decrypted) a two-way merge is performed instead.
 
     chezmoi merge ~/.bashrc
 
-### `remove`, `rm` *targets*
+### `remove` *targets*
 
 Remove *targets* from both the source state and the destination directory.
 
 ### `secret`
 
-Interact with a secret manager. See the "Secret managers" section for details.
+Run a secret manager's CLI, passing any extra arguments to the secret manager's
+CLI. This is primarily for verifying chezmoi's integration with your secret
+manager. Normally you would use template functions to retrieve secrets. Note
+that if you want to pass flags to the secret manager's CLU you will need to
+separate them with `--` to prevent chezmoi from interpreting them.
+
+To get a full list of available commands run:
+
+    chezmoi secret help
+
+#### `secret` examples
+
+    chezmoi secret bitwarden list items
+    chezmoi secret keyring set --service service --user user
+    chezmoi secret keyring get --service service --user user
+    chezmoi secret lastpass ls
+    chezmoi secret lastpass -- show --format=json id
+    chezmoi secret onepassword list items
+    chezmoi secret onepassword get item id
+    chezmoi secret pass show id
+    chezmoi secret vault -- kv get -format=json id
 
 ### `source` [*args*]
 
@@ -570,9 +567,7 @@ and `0077` respectively.
 For machine-specifc control of umask, set the `umask` configuration variable in
 chezmoi's configuration file.
 
-## Templates
-
-### Variables
+## Templates variables
 
 chezmoi provides the following automatically populated variables:
 
@@ -587,18 +582,119 @@ chezmoi provides the following automatically populated variables:
 | `.chezmoi.osRelease`    | The information from `/etc/os-release`, Linux only, run `chezmoi data` to see its output.                              |
 | `.chezmoi.username`     | The username of the user running chezmoi.                                                                              |
 
-### Functions
+Additional variables can be defined in the config file in the `data` section.
+
+## Template functions
 
 All standard [`text/template`](https://godoc.org/text/template) and [hermetic
 text template functions from `sprig`](http://masterminds.github.io/sprig/) are
-included.
+included. chezmoi provides some additional functions.
 
-When generating the initial config file, the function `promptString` is also
-available. The single argument is a string prompted to the user, and the return
-value is the user's response to that prompt.
+### `bitwarden` [*args*]
 
-`.chezmoi.yaml.tmpl` example:
+`bitwarden` returns structured data retrieved from
+[Bitwarden](https://bitwarden.com) using the [Bitwarden
+CLI](https://github.com/bitwarden/cli) (`bw`). *args* are passed to `bw`
+unchanged and the output from `bw` is parsed as JSON. The output from `bw` is
+cached so calling `bitwarden` multitple times with the same arguments will only
+invoke `bw` once.
+
+#### `biwarden` examples
+
+    username = {{ (bitwarden "item" "example.com").login.username }}
+    password = {{ (bitwarden "item" "example.com").login.password }}
+
+### `keyring` *service* *user*
+
+`keyring` retrieves the password associated with *service* and *user* from the
+user's keyring.
+
+| OS    | Keyring       |
+| ----- | ------------- |
+| macOS | Keychain      |
+| Linux | GNOME Keyring |
+
+#### `keyring` examples
+
+    [github]
+      user = "{{ .github.user }}"
+      token = "{{ keyring "github" .github.user }}"
+
+### `lastpass` *id*
+
+`lastpass` returns structured data from [LastPass](https://lastpass.com) using
+the [LastPass CLI](https://lastpass.github.io/lastpass-cli/lpass.1.html)
+(`lpass`). *id* is passed to `lpass show --json <id>` and the output from
+`lpass` is parsed as JSON. In addition, the `note` field, if present, is further
+parsed as JSON. The structured data is an array so typically the `index`
+function is used to extract the first item. The output from `lpass` is cached so
+calling `lastpass` multiple times with the same *id* will only invoke `lpass`
+once.
+
+#### `lastpass` examples
+
+    githubPassword = "{{ (index (lastpass "Github") 0).password }}"
+    {{ (index (lastpass "SSH") 0).note.privateKey }}
+
+### `onepassword` *uuid*
+
+`onepassword` returns structured data from [1Password](https://1password.com/)
+using the [1Password
+CLI](https://support.1password.com/command-line-getting-started/) (`op`). *uuid*
+is passed to `op get item <uuid>` and the output from `op` is parsed as JSON.
+The output from `op` is cached so calling `onepassword` multiple times with the
+same *uuid* will only invoke `op` once.
+
+#### `onepassword` examples
+
+    {{ (onepassword "<uuid>").details.password }}
+
+### `pass` *pass-name*
+
+`pass` returns passwords stored in [pass](https://www.passwordstore.org/) using
+the pass CLI (`pass`). *pass-name* is passed to `pass show <pass-name>` and
+first line of the output of `pass` is returned with the trailing newline
+stripped. The output from `pass` is cached so calling `pass` multiple times with
+the same *pass-name* will only invoke `pass` once.
+
+#### `pass` examples
+
+    {{ pass "<pass-name>" }}
+
+### `promptString` *prompt*
+
+`promptString` takes a single argument is a string prompted to the user, and the
+return value is the user's response to that prompt. It is only available when
+generating the initial conifig file.
+
+#### `promptString` examples
 
     {{ $email := promptString "email" -}}
     data:
         email: "{{ $email }}"
+
+### `secret` [*args*]
+
+`secret` returns the output of the generic secret command defined by the
+`genericSecret.command` configuration variable with *args* with leading and
+trailing whitespace removed. The output is cached so multitple calls to `secret`
+with the same *args* will only invoke the generic secret command once.
+
+### `secretJSON` [*args*]
+
+`secretJSON` returns structured data from the generic secret command defined by
+the `genericSecret.command` configuration variable with *args*. The output is
+parsed as JSON. The output is cached so multitple calls to `secret` with the
+same *args* will only invoke the generic secret command once.
+
+### `vault` *key*
+
+`vault` returns structured data from [Vault](https://www.vaultproject.io/) using
+the [Vault CLI](https://www.vaultproject.io/docs/commands/) (`vault`). *key* is
+passed to `vault kv get -format=json <key>` and the output from `vault` is
+parsed as JSON. The output from `vault` is cached so calling `vault` multiple
+times with the same *key* will only invoke `vault` once.
+
+#### `vault` examples
+
+    {{ (vault "<key>").data.data.password }}

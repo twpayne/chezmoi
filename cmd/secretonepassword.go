@@ -19,27 +19,27 @@ var onepasswordCmd = &cobra.Command{
 }
 
 type onepasswordCmdConfig struct {
-	Op string
+	Command string
 }
 
 var onepasswordCache = make(map[string]interface{})
 
 func init() {
-	config.Onepassword.Op = "op"
+	config.Onepassword.Command = "op"
 	config.addTemplateFunc("onepassword", config.onepasswordFunc)
 
 	secretCmd.AddCommand(onepasswordCmd)
 }
 
 func (c *Config) runOnepasswordCmd(fs vfs.FS, args []string) error {
-	return c.exec(append([]string{c.Onepassword.Op}, args...))
+	return c.exec(append([]string{c.Onepassword.Command}, args...))
 }
 
 func (c *Config) onepasswordFunc(item string) interface{} {
 	if data, ok := onepasswordCache[item]; ok {
 		return data
 	}
-	name := c.Onepassword.Op
+	name := c.Onepassword.Command
 	args := []string{"get", "item", item}
 	if c.Verbose {
 		fmt.Printf("%s %s\n", name, strings.Join(args, " "))

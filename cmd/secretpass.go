@@ -19,7 +19,7 @@ var passCmd = &cobra.Command{
 }
 
 type passCmdConfig struct {
-	Pass string
+	Command string
 }
 
 var passCache = make(map[string]string)
@@ -27,19 +27,19 @@ var passCache = make(map[string]string)
 func init() {
 	secretCmd.AddCommand(passCmd)
 
-	config.Pass.Pass = "pass"
+	config.Pass.Command = "pass"
 	config.addTemplateFunc("pass", config.passFunc)
 }
 
 func (c *Config) runSecretPassCmd(fs vfs.FS, args []string) error {
-	return c.exec(append([]string{c.Pass.Pass}, args...))
+	return c.exec(append([]string{c.Pass.Command}, args...))
 }
 
 func (c *Config) passFunc(id string) string {
 	if s, ok := passCache[id]; ok {
 		return s
 	}
-	name := c.Pass.Pass
+	name := c.Pass.Command
 	args := []string{"show", id}
 	if c.Verbose {
 		fmt.Printf("%s %s\n", name, strings.Join(args, " "))

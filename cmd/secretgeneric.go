@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"os/exec"
@@ -22,7 +23,10 @@ type genericSecretCmdConfig struct {
 	Command string
 }
 
-var genericSecretCache = make(map[string][]byte)
+var (
+	secretCache     = make(map[string][]byte)
+	secretJSONCache = make(map[string]interface{})
+)
 
 func init() {
 	config.addTemplateFunc("secret", config.secretFunc)
@@ -36,10 +40,9 @@ func (c *Config) runGenericSecretCmd(fs vfs.FS, args []string) error {
 }
 
 func (c *Config) secretFunc(args ...string) interface{} {
-	// FIXME factor out common functionality with secretJSONFunc
 	key := strings.Join(args, "\x00")
-	if output, ok := genericSecretCache[key]; ok {
-		return output
+	if value, ok := secretCache[key]; ok {
+		return value
 	}
 	name := c.GenericSecret.Command
 	if c.Verbose {
@@ -49,15 +52,15 @@ func (c *Config) secretFunc(args ...string) interface{} {
 	if err != nil {
 		chezmoi.ReturnTemplateFuncError(fmt.Errorf("secret: %s %s: %v\n%s", name, strings.Join(args, " "), err, output))
 	}
-	genericSecretCache[key] = output
-	return strings.TrimSpace(string(output))
+	value := bytes.TrimSpace(output)
+	secretCache[key] = value
+	return value
 }
 
 func (c *Config) secretJSONFunc(args ...string) interface{} {
-	// FIXME factor out common functionality with secretFunc
 	key := strings.Join(args, "\x00")
-	if output, ok := genericSecretCache[key]; ok {
-		return output
+	if value, ok := secretJSONCache[key]; ok {
+		return value
 	}
 	name := c.GenericSecret.Command
 	if c.Verbose {
@@ -67,10 +70,10 @@ func (c *Config) secretJSONFunc(args ...string) interface{} {
 	if err != nil {
 		chezmoi.ReturnTemplateFuncError(fmt.Errorf("secretJSON: %s %s: %v\n%s", name, strings.Join(args, " "), err, output))
 	}
-	var data interface{}
-	if err := json.Unmarshal(output, &data); err != nil {
+	var value interface{}
+	if err := json.Unmarshal(output, &value); err != nil {
 		chezmoi.ReturnTemplateFuncError(fmt.Errorf("secretJSON: %s %s: %v\n%s", name, strings.Join(args, " "), err, output))
 	}
-	genericSecretCache[key] = output
-	return data
+	secretJSONCache[key] = value
+	return value
 }

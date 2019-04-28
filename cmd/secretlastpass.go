@@ -35,25 +35,25 @@ var (
 )
 
 type lastpassCmdConfig struct {
-	Lpass            string
+	Command          string
 	versionCheckOnce sync.Once
 }
 
 var lastPassCache = make(map[string]interface{})
 
 func init() {
-	config.Lastpass.Lpass = "lpass"
+	config.Lastpass.Command = "lpass"
 	config.addTemplateFunc("lastpass", config.lastpassFunc)
 
 	secretCmd.AddCommand(lastpassCmd)
 }
 
 func (c *Config) runLastpassCmd(fs vfs.FS, args []string) error {
-	return c.exec(append([]string{c.Lastpass.Lpass}, args...))
+	return c.exec(append([]string{c.Lastpass.Command}, args...))
 }
 
 func (c *Config) lastpassOutput(args ...string) ([]byte, error) {
-	name := c.Lastpass.Lpass
+	name := c.Lastpass.Command
 	if c.Verbose {
 		fmt.Printf("%s %s\n", name, strings.Join(args, " "))
 	}

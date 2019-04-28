@@ -19,27 +19,27 @@ var vaultCmd = &cobra.Command{
 }
 
 type vaultCmdConfig struct {
-	Vault string
+	Command string
 }
 
 var vaultCache = make(map[string]interface{})
 
 func init() {
-	config.Vault.Vault = "vault"
+	config.Vault.Command = "vault"
 	config.addTemplateFunc("vault", config.vaultFunc)
 
 	secretCmd.AddCommand(vaultCmd)
 }
 
 func (c *Config) runVaultCmd(fs vfs.FS, args []string) error {
-	return c.exec(append([]string{c.Vault.Vault}, args...))
+	return c.exec(append([]string{c.Vault.Command}, args...))
 }
 
 func (c *Config) vaultFunc(key string) interface{} {
 	if data, ok := vaultCache[key]; ok {
 		return data
 	}
-	name := c.Vault.Vault
+	name := c.Vault.Command
 	args := []string{"kv", "get", "-format=json", key}
 	if c.Verbose {
 		fmt.Printf("%s %s\n", name, strings.Join(args, " "))
