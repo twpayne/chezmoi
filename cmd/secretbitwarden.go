@@ -19,20 +19,20 @@ var bitwardenCmd = &cobra.Command{
 }
 
 type bitwardenCmdConfig struct {
-	Bw string
+	Command string
 }
 
 var bitwardenCache = make(map[string]interface{})
 
 func init() {
-	config.Bitwarden.Bw = "bw"
+	config.Bitwarden.Command = "bw"
 	config.addTemplateFunc("bitwarden", config.bitwardenFunc)
 
 	secretCmd.AddCommand(bitwardenCmd)
 }
 
 func (c *Config) runBitwardenCmd(fs vfs.FS, args []string) error {
-	return c.exec(append([]string{c.Bitwarden.Bw}, args...))
+	return c.exec(append([]string{c.Bitwarden.Command}, args...))
 }
 
 func (c *Config) bitwardenFunc(args ...string) interface{} {
@@ -40,7 +40,7 @@ func (c *Config) bitwardenFunc(args ...string) interface{} {
 	if data, ok := bitwardenCache[key]; ok {
 		return data
 	}
-	name := c.Bitwarden.Bw
+	name := c.Bitwarden.Command
 	args = append([]string{"get"}, args...)
 	if c.Verbose {
 		fmt.Printf("%s %s\n", name, strings.Join(args, " "))
