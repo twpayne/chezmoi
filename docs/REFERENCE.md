@@ -15,6 +15,10 @@ Manage your dotfiles securely across multiple machines.
 * [Configuration file](#configuration-file)
   * [Configuration variables](#configuration-variables)
 * [Attributes](#attributes)
+* [Special files](#special-files)
+  * [`.chezmoi.<format>.tmpl`](#chezmoiformattmpl)
+  * [`.chezmoiignore`](#chezmoiignore)
+  * [`.chezmoiversion`](#chezmoiversion)
 * [Commands](#commands)
   * [`add` *targets*](#add-targets)
   * [`apply` [*targets*]](#apply-targets)
@@ -189,6 +193,58 @@ Different target types allow different prefixes and suffixes:
 | Directory     | `exact_`, `private_`, `dot_`                                       |
 | Regular file  | `encrypted_`, `private_`, `empty_`, `executable_`, `dot_`, `.tmpl` |
 | Symbolic link | `symlink_`, `dot_`, `.tmpl`                                        |
+
+## Special files
+
+All files and directories in the source state whose name begins with `.` are
+ignored by default, unless they are one of the special files listed here.
+
+### `.chezmoi.<format>.tmpl`
+
+If a file called `.chezmoi.<format>.tmpl` exists then `chezmoi init` will use it
+to create an initial config file. *format* must be one of the the supported
+config file formats.
+
+#### `.chezmoi.<format>.tmpl` examples
+
+    {{ $email := promptString "email" -}}
+    data:
+        email: "{{ $email }}"
+
+### `.chezmoiignore`
+
+If a file called `.chezmoiignore` exists in the source state then it is
+interpreted as a list of globs to ignore. Notably, `.chezmoiignore` is
+interpreted as a template. Patterns can be excluded by prefixing them with a
+`!`. All excludes (don't ignore) take priority over all includes (ignore).
+`.chezmoiignore` files in subdirectories apply only to that subdirectory.
+
+`.chezmoiignore` is inspired by git's `.gitignore` files, but is a separate
+implementation and corner case behaviour may differ.
+
+#### `.chezmoiignore` examples
+
+    README.md
+    {{- if ne .email "john.smith@company.com" }}
+    .company-directory
+    {{- end }}
+    {{- if ne .email "john@home.org }}
+    .personal-file
+    {{- end }}
+
+### `.chezmoiversion`
+
+If a file called `.chezmoiversion` exists, then its contents are interpreted as
+a semantic version defining the minimum version of chezmoi required to interpret
+the source state correctly. chezmoi will refuse to interpret the source state if
+the current version is too old.
+
+**Warning** support for `.chezmoiversion` will be introduced in a future version
+(likely 1.5.0). Earlier versions of chezmoi will ignore this file.
+
+#### `.chezmoiversion` examples
+
+    1.5.0
 
 ## Commands
 
