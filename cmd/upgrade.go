@@ -110,13 +110,9 @@ func (c *Config) runUpgradeCmd(fs vfs.FS, args []string) error {
 
 	// If the upgrade is not forced and we're not a dev version, stop if we're
 	// already the latest version.
-	if !c.upgrade.force && version != "dev" {
-		currentVersion, err := semver.NewVersion(version)
-		if err != nil {
-			return err
-		}
-		if !currentVersion.LessThan(*releaseVersion) {
-			fmt.Fprintf(c.Stdout(), "already at the latest version (%s)", currentVersion)
+	if !c.upgrade.force && VersionStr != devVersionStr {
+		if !Version.LessThan(*releaseVersion) {
+			fmt.Fprintf(c.Stdout(), "chezmoi: already at the latest version (%s)", Version)
 			return nil
 		}
 	}

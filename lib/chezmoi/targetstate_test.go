@@ -5,6 +5,7 @@ import (
 	"testing"
 	"text/template"
 
+	"github.com/coreos/go-semver/semver"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/twpayne/go-vfs/vfst"
@@ -409,6 +410,29 @@ func TestTargetStatePopulate(t *testing.T) {
 						Entries:    map[string]Entry{},
 					},
 				},
+			},
+		},
+		{
+			name: "min_version",
+			root: map[string]interface{}{
+				"/.chezmoiversion": "1.2.3\n",
+				"/foo":             "bar",
+			},
+			sourceDir: "/",
+			want: &TargetState{
+				DestDir:      "/",
+				TargetIgnore: NewPatternSet(),
+				Umask:        0,
+				SourceDir:    "/",
+				Entries: map[string]Entry{
+					"foo": &File{
+						sourceName: "foo",
+						targetName: "foo",
+						Perm:       0666,
+						contents:   []byte("bar"),
+					},
+				},
+				MinVersion: semver.Must(semver.NewVersion("1.2.3")),
 			},
 		},
 	} {

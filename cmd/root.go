@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/Masterminds/sprig"
+	"github.com/coreos/go-semver/semver"
 	"github.com/mattn/go-isatty"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -12,21 +13,25 @@ import (
 	xdg "github.com/twpayne/go-xdg/v3"
 )
 
+var config = Config{
+	Umask: permValue(getUmask()),
+	Color: "auto",
+	SourceVCS: sourceVCSConfig{
+		Command: "git",
+	},
+	Merge: mergeConfig{
+		Command: "vimdiff",
+	},
+	templateFuncs: sprig.HermeticTxtFuncMap(),
+}
+
+// Version information.
 var (
-	config = Config{
-		Umask: permValue(getUmask()),
-		Color: "auto",
-		SourceVCS: sourceVCSConfig{
-			Command: "git",
-		},
-		Merge: mergeConfig{
-			Command: "vimdiff",
-		},
-		templateFuncs: sprig.HermeticTxtFuncMap(),
-	}
-	version = "dev"
-	commit  = "unknown"
-	date    = "unknown"
+	devVersionStr = "dev"
+	VersionStr    = devVersionStr
+	Commit        = "unknown"
+	Date          = "unknown"
+	Version       *semver.Version
 )
 
 var rootCmd = &cobra.Command{
@@ -38,7 +43,15 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.Version = fmt.Sprintf("%s, commit %s, built at %s", version, commit, date)
+	if VersionStr != devVersionStr {
+		var err error
+		Version, err = semver.NewVersion(VersionStr)
+		if err != nil {
+			printErrorAndExit(err)
+		}
+	}
+
+	rootCmd.Version = fmt.Sprintf("%s, commit %s, built at %s", VersionStr, Commit, Date)
 
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
