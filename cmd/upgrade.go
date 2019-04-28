@@ -322,19 +322,18 @@ func getMethod(fs vfs.FS, executableFilename string) (string, error) {
 				return methodReplaceExecutable, nil
 			}
 			return methodUpgradePackage, nil
-		} else {
-			switch int(executableStat.Uid) {
-			case 0:
-				method := methodUpgradePackage
-				if _, err := exec.LookPath("sudo"); err == nil {
-					method = methodSudoPrefix + method
-				}
-				return method, nil
-			case uid:
-				return methodReplaceExecutable, nil
-			default:
-				return "", fmt.Errorf("%s: cannot upgrade executable owned by non-current non-root user", executableFilename)
+		}
+		switch int(executableStat.Uid) {
+		case 0:
+			method := methodUpgradePackage
+			if _, err := exec.LookPath("sudo"); err == nil {
+				method = methodSudoPrefix + method
 			}
+			return method, nil
+		case uid:
+			return methodReplaceExecutable, nil
+		default:
+			return "", fmt.Errorf("%s: cannot upgrade executable owned by non-current non-root user", executableFilename)
 		}
 	case "openbsd":
 		return methodReplaceExecutable, nil
