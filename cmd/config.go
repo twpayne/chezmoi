@@ -251,6 +251,9 @@ func (c *Config) getTargetState(fs vfs.FS) (*chezmoi.TargetState, error) {
 	if err := ts.Populate(readOnlyFS); err != nil {
 		return nil, err
 	}
+	if Version != nil && ts.MinVersion != nil && Version.LessThan(*ts.MinVersion) {
+		return nil, fmt.Errorf("chezmoi version %s too old, source state requires at least %s", Version, ts.MinVersion)
+	}
 	return ts, nil
 }
 
