@@ -136,7 +136,7 @@ var helps = map[string]help{
 			"Dump the target state in JSON format. If no targets are specified, then the\n" +
 			"entire target state. The \"dump\" command accepts additional arguments:\n" +
 			"\n" +
-			"\"-f\" / \"--format\" format\n" +
+			"\"-f\", \"--format\" format\n" +
 			"\n" +
 			"Print the target state in the given format. The accepted formats are \"json\"\n" +
 			"(JSON) and \"yaml\" (YAML).\n",
@@ -158,7 +158,7 @@ var helps = map[string]help{
 			"Print the difference between the target state and the actual state after\n" +
 			"editing.\n" +
 			"\n" +
-			"\"-p\" / \"--prompt\"\n" +
+			"\"-p\", \"--prompt\"\n" +
 			"\n" +
 			"Prompt before applying each target.\n",
 		example: "" +
@@ -194,7 +194,7 @@ var helps = map[string]help{
 			"\n" +
 			"Set the destination (in the source state) where the archive will be imported.\n" +
 			"\n" +
-			"\"-x\" / \"--exact\"\n" +
+			"\"-x\", \"--exact\"\n" +
 			"\n" +
 			"Set the \"exact\" attribute on all imported directories.\n" +
 			"\n" +
@@ -239,7 +239,26 @@ var helps = map[string]help{
 	},
 	"secret": {
 		long: "" +
-			"Interact with a secret manager. See the \"Secret managers\" section for details.\n",
+			"Run a secret manager's CLI, passing any extra arguments to the secret manager's\n" +
+			"CLI. This is primarily for verifying chezmoi's integration with your secret\n" +
+			"manager. Normally you would use template functions to retrieve secrets. Note\n" +
+			"that if you want to pass flags to the secret manager's CLU you will need to\n" +
+			"separate them with \"--\" to prevent chezmoi from interpreting them.\n" +
+			"\n" +
+			"To get a full list of available commands run:\n" +
+			"\n" +
+			"  chezmoi secret help\n" +
+			"  ",
+		example: "" +
+			"  chezmoi secret bitwarden list items\n" +
+			"  chezmoi secret keyring set --service service --user user\n" +
+			"  chezmoi secret keyring get --service service --user user\n" +
+			"  chezmoi secret lastpass ls\n" +
+			"  chezmoi secret lastpass -- show --format=json id\n" +
+			"  chezmoi secret onepassword list items\n" +
+			"  chezmoi secret onepassword get item id\n" +
+			"  chezmoi secret pass show id\n" +
+			"  chezmoi secret vault -- kv get -format=json id",
 	},
 	"source": {
 		long: "" +
