@@ -417,7 +417,7 @@ Github](https://github.com/twpayne/chezmoi/issues/new).
 ## Use chezmoi outside your home directory
 
 chezmoi, by default, operates on your home directory, but this can be overridden
-with the `--dest` command line flag or by specifying `destDir` in your config
+with the `--destination` command line flag or by specifying `destDir` in your config
 file. In theory, you could use chezmoi to manage any aspect of your filesystem.
 That said, although you can do this, you probably shouldn't. Existing
 configuration management tools like [Puppet](https://puppet.com/),
