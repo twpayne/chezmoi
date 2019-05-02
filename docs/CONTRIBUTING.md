@@ -33,3 +33,14 @@ To create a new release, push a tag, eg:
 To run a local "snapshot" build without publishing:
 
     TRAVIS_BUILD_NUMBER=1 goreleaser --snapshot --rm-dist --debug --skip-publish
+
+## Packaging
+
+If you plan to package chezmoi for your distibution, then note:
+
+* Please enable CGO, if possible. chezmoi can be built and run without CGO, but
+  the `.chezmoi.group` template variable may not be set on some systems.
+
+* chezmoi includes an `upgrade` command which attempts to self-upgrade. You can
+  remove this command completely by building chezmoi with the `noupgrade` build
+  tag.
