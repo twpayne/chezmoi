@@ -1,3 +1,5 @@
+//+build !noupgrade
+
 package cmd
 
 import (
