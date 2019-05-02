@@ -5,7 +5,8 @@ before:
   - go mod download
 
 builds:
-- binary: chezmoi
+- id: chezmoi-nocgo
+  binary: chezmoi
   env:
   - CGO_ENABLED=0
   ldflags: "-s -w -X github.com/twpayne/chezmoi/cmd.VersionStr={{ .Version }} -X github.com/twpayne/chezmoi/cmd.Commit={{ .Commit }} -X github.com/twpayne/chezmoi/cmd.Date={{ .Date }}"
@@ -30,7 +31,8 @@ builds:
     goarch: 386
   - goos: linux
     goarch: amd64
-- binary: chezmoi
+- id: chezmoi-cgo
+  binary: chezmoi
   ldflags: "-s -w -X github.com/twpayne/chezmoi/cmd.VersionStr={{ .Version }} -X github.com/twpayne/chezmoi/cmd.Commit={{ .Commit }} -X github.com/twpayne/chezmoi/cmd.Date={{ .Date }}"
   env:
   - CGO_ENABLED=1
