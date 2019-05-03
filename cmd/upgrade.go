@@ -340,7 +340,7 @@ func (c *Config) verifyChecksum(rr *github.RepositoryRelease, name string, data 
 	return nil
 }
 
-func getMethod(fs vfs.FS, executableFilename string) (string, error) {
+func getMethod(fs vfs.Stater, executableFilename string) (string, error) {
 	info, err := fs.Stat(executableFilename)
 	if err != nil {
 		return "", err
