@@ -21,11 +21,11 @@ chezmoi helps you manage your personal configuration files (dotfiles) across
 multiple machines. It is particularly helpful if you have spent time customizing
 the tools you use (e.g. shells, editors, and version control systems) and want
 to keep machines running different accounts (e.g. home and work) and/or
-different operating systems (e.g. Linux and macOS) in sync, while still be able
-to easily cope with differences from machine to machine.
+different operating systems (e.g. Linux and macOS) in sync, while still being
+able to easily cope with differences from machine to machine.
 
-chezmoi has particularly strong support for security features, allowing you to
-manage secrets (e.g. passwords, access tokens, and private keys) securely and
+chezmoi has particularly strong support for security, allowing you to manage
+secrets (e.g. passwords, access tokens, and private keys) securely and
 seamlessly using either gpg encryption or a password manager of your choice.
 
 If you do not personalize your configuration or only ever use a single operating
