@@ -130,10 +130,7 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 			return err
 		}
 		if addOptions.Template {
-			contents, err = autoTemplate(contents, ts.Data)
-			if err != nil {
-				return err
-			}
+			contents = autoTemplate(contents, ts.Data)
 		}
 		if addOptions.Encrypt {
 			contents, err = ts.Encrypt(contents)

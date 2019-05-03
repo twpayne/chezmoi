@@ -124,9 +124,7 @@ func TestAutoTemplate(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			got, gotErr := autoTemplate([]byte(tc.contentsStr), tc.data)
-			assert.NoError(t, gotErr)
-			assert.Equal(t, tc.wantStr, string(got))
+			assert.Equal(t, tc.wantStr, string(autoTemplate([]byte(tc.contentsStr), tc.data)))
 		})
 	}
 }
