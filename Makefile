@@ -24,6 +24,13 @@ lint:
 	go vet ./...
 	golangci-lint run
 
+.PHONY: pre-release-checks
+pre-release-checks: strict-lint
+
+.PHONY: strict-lint
+strict-lint:
+	golangci-lint run --enable-all ./...
+
 .PHONY: test
 test:
 	go test -race ./...
