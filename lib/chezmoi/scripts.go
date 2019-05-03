@@ -28,8 +28,7 @@ func (s *Script) Apply(destDir string, dryRun bool) error {
 		return nil
 	}
 
-	s.Contents()
-	if s.contentsErr != nil {
+	if _, err := s.Contents(); err != nil {
 		return s.contentsErr
 	}
 
