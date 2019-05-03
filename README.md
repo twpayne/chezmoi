@@ -8,11 +8,28 @@ Card](https://goreportcard.com/badge/github.com/twpayne/chezmoi)](https://gorepo
 
 Manage your dotfiles across multiple machines, securely.
 
+* [What does chezmoi do and why should I use it?](#what-does-chezmoi-do-and-why-should-i-use-it)
 * [Features](#features)
 * [I already have a system to manage my dotfiles, why should I use chezmoi?](#i-already-have-a-system-to-manage-my-dotfiles-why-should-i-use-chezmoi)
 * [Documentation](#documentation)
 * [Related projects](#related-projects)
 * [License](#license)
+
+## What does chezmoi do and why should I use it?
+
+chezmoi helps you manage your personal configuration files (dotfiles) across
+multiple machines. It is particularly helpful if you have spent time customizing
+the tools you use (e.g. shells, editors, and version control systems) and want
+to keep machines running different accounts (e.g. home and work) and/or
+different operating systems (e.g. Linux and macOS) in sync, while still be able
+to easily cope with differences from machine to machine.
+
+chezmoi has particularly strong support for security features, allowing you to
+manage secrets (e.g. passwords, access tokens, and private keys) securely and
+seamlessly using either gpg encryption or a password manager of your choice.
+
+If you do not personalize your configuration or only ever use a single operating
+system with a single account then you don't need chezmoi. Otherwise, read on...
 
 ## Features
 
@@ -66,8 +83,9 @@ Manage your dotfiles across multiple machines, securely.
 
 * If your system is based on using git with a different branches for different
   machines, then you need manually merge or rebase to ensure that changes you
-  make are applied to each machine. chezmoi makes it trivial to share common
-  parts while allowing specific per-machine configuration.
+  make are applied to each machine. chezmoi uses a single branch and makes it
+  trivial to share common parts while allowing specific per-machine
+  configuration.
 
 * If your system stores secrets in plain text, then your dotfiles repository
   must be private. With chezmoi you never need to store secrets in your
@@ -80,10 +98,10 @@ Manage your dotfiles across multiple machines, securely.
   functionality out-of-the-box, including dry run and diff modes.
 
 * All systems suffer from the "bootstrap" problem: you need to install your
-  system before you can install your dotfiles. chezmoi provides
-  statically-linked binaries, packages for many Linux and BSD distributions,
-  Homebrew formulae, and a initial config file generation mechanism to make
-  overcoming the bootstrap problem as painless as possible.
+  system before you can install your dotfiles. chezmoi provides one-line
+  installs, statically-linked binaries, packages for many Linux and BSD
+  distributions, Homebrew formulae, and a initial config file generation
+  mechanism to make overcoming the bootstrap problem as painless as possible.
 
 ## Documentation
 
@@ -91,8 +109,8 @@ chezmoi includes five types of documentation:
 
 * An [installation guide](docs/INSTALL.md).
 * A [quick start guide](docs/QUICKSTART.md).
-* A [how-to guide](docs/HOWTO.md) for achieving specific tasks with chezmoi.
-* An [FAQ](docs/FAQ.md) for questions that aren't obvious.
+* A [how-to guide](docs/HOWTO.md) for achieving specific tasks.
+* An [FAQ](docs/FAQ.md) for questions that aren't answered elsewhere.
 * A [reference](docs/REFERENCE.md) for a complete description of chezmoi.
 
 ## Related projects
