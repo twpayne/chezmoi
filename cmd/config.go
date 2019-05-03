@@ -153,7 +153,7 @@ func (c *Config) ensureNoError(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func (c *Config) ensureSourceDirectory(fs vfs.FS, mutator chezmoi.Mutator) error {
+func (c *Config) ensureSourceDirectory(fs vfs.Stater, mutator chezmoi.Mutator) error {
 	if err := vfs.MkdirAll(mutator, filepath.Dir(c.SourceDir), 0777&^os.FileMode(c.Umask)); err != nil {
 		return err
 	}

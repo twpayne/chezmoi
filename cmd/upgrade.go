@@ -121,7 +121,7 @@ func (c *Config) runUpgradeCmd(fs vfs.FS, args []string) error {
 	// already the latest version.
 	if !c.upgrade.force && VersionStr != devVersionStr {
 		if !Version.LessThan(*releaseVersion) {
-			fmt.Fprintf(c.Stdout(), "chezmoi: already at the latest version (%s)", Version)
+			fmt.Fprintf(c.Stdout(), "chezmoi: already at the latest version (%s)\n", Version)
 			return nil
 		}
 	}
@@ -340,7 +340,7 @@ func (c *Config) verifyChecksum(rr *github.RepositoryRelease, name string, data 
 	return nil
 }
 
-func getMethod(fs vfs.FS, executableFilename string) (string, error) {
+func getMethod(fs vfs.Stater, executableFilename string) (string, error) {
 	info, err := fs.Stat(executableFilename)
 	if err != nil {
 		return "", err

@@ -131,7 +131,7 @@ func (c *Config) runChattrCmd(fs vfs.FS, args []string) error {
 
 	// Sort oldpaths in reverse so we update files before their parent
 	// directories.
-	var oldpaths []string
+	oldpaths := make([]string, 0, len(updates))
 	for oldpath := range updates {
 		oldpaths = append(oldpaths, oldpath)
 	}
