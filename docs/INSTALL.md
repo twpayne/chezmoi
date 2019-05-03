@@ -1,5 +1,9 @@
 # Installation
 
+One line install:
+
+    curl -sfL https://install.goreleaser.com/github.com/twpayne/chezmoi.sh | sh
+
 Pre-built packages and binaries:
 
 | OS         | Architectures                                 | Package location                                                     |
