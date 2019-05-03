@@ -4,8 +4,12 @@ package cmd
 
 import (
 	"archive/tar"
+	"bufio"
+	"bytes"
 	"compress/gzip"
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -13,6 +17,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"runtime"
 	"strings"
 	"syscall"
@@ -59,6 +64,8 @@ var (
 			"arm64": "aarch64",
 		},
 	}
+
+	checksumRegexp = regexp.MustCompile(`\A([0-9a-f]{64})\s+(\S+)\z`)
 )
 
 var upgradeCmd = &cobra.Command{
@@ -155,44 +162,81 @@ func (c *Config) runUpgradeCmd(fs vfs.FS, args []string) error {
 	return syscall.Exec(executableFilename, []string{executableFilename, "--version"}, os.Environ())
 }
 
-func (c *Config) replaceExecutable(mutator chezmoi.Mutator, executableFilename string, releaseVersion *semver.Version, rr *github.RepositoryRelease) error {
-	// Find the corresponding release asset.
-	releaseAssetName := fmt.Sprintf("%s_%s_%s_%s.tar.gz", c.upgrade.repo, releaseVersion, runtime.GOOS, runtime.GOARCH)
-	var releaseAsset *github.ReleaseAsset
-	for _, ra := range rr.Assets {
-		if ra.GetName() == releaseAssetName {
-			releaseAsset = &ra
-			break
-		}
-	}
+func (c *Config) getChecksums(rr *github.RepositoryRelease) (map[string][]byte, error) {
+	name := "checksums.txt"
+	releaseAsset := getReleaseAssetByName(rr, name)
 	if releaseAsset == nil {
-		return fmt.Errorf("%s: cannot find release asset", releaseAssetName)
+		return nil, fmt.Errorf("%s: cannot find release asset", name)
 	}
 
-	// Download the asset.
-	resp, err := http.Get(releaseAsset.GetBrowserDownloadURL())
+	data, err := c.downloadURL(releaseAsset.GetBrowserDownloadURL())
+	if err != nil {
+		return nil, err
+	}
+
+	checksums := make(map[string][]byte)
+	s := bufio.NewScanner(bytes.NewReader(data))
+	for s.Scan() {
+		m := checksumRegexp.FindStringSubmatch(s.Text())
+		if m == nil {
+			return nil, fmt.Errorf("%q: cannot parse checksum", s.Text())
+		}
+		checksums[m[2]], _ = hex.DecodeString(m[1])
+	}
+	return checksums, s.Err()
+}
+
+func (c *Config) downloadURL(url string) ([]byte, error) {
+	if c.Verbose {
+		fmt.Fprintf(c.Stdout(), "curl -s -L %s\n", url)
+	}
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode != http.StatusOK {
+		_ = resp.Body.Close()
+		return nil, fmt.Errorf("%s: got a non-200 OK response: %d %s", url, resp.StatusCode, resp.Status)
+	}
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	if err := resp.Body.Close(); err != nil {
+		return nil, err
+	}
+	return data, nil
+}
+
+func (c *Config) replaceExecutable(mutator chezmoi.Mutator, executableFilename string, releaseVersion *semver.Version, rr *github.RepositoryRelease) error {
+	name := fmt.Sprintf("%s_%s_%s_%s.tar.gz", c.upgrade.repo, releaseVersion, runtime.GOOS, runtime.GOARCH)
+	releaseAsset := getReleaseAssetByName(rr, name)
+	if releaseAsset == nil {
+		return fmt.Errorf("%s: cannot find release asset", name)
+	}
+
+	data, err := c.downloadURL(releaseAsset.GetBrowserDownloadURL())
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return fmt.Errorf("%s: got a non-200 OK response: %d %s", releaseAsset.GetBrowserDownloadURL(), resp.StatusCode, resp.Status)
+	if err := c.verifyChecksum(rr, releaseAsset.GetName(), data); err != nil {
+		return err
 	}
 
 	// Extract the executable from the archive.
-	gzipr, err := gzip.NewReader(resp.Body)
+	gzipr, err := gzip.NewReader(bytes.NewReader(data))
 	if err != nil {
 		return err
 	}
 	defer gzipr.Close()
 	tr := tar.NewReader(gzipr)
-	var data []byte
+	var executableData []byte
 FOR:
 	for {
 		h, err := tr.Next()
 		switch {
 		case err == nil && h.Name == c.upgrade.repo:
-			data, err = ioutil.ReadAll(tr)
+			executableData, err = ioutil.ReadAll(tr)
 			if err != nil {
 				return err
 			}
@@ -202,8 +246,7 @@ FOR:
 		}
 	}
 
-	// Replace the executable.
-	return mutator.WriteFile(executableFilename, data, 0755, nil)
+	return mutator.WriteFile(executableFilename, executableData, 0755, nil)
 }
 
 func (c *Config) upgradePackage(fs vfs.FS, mutator chezmoi.Mutator, rr *github.RepositoryRelease, useSudo bool) error {
@@ -251,28 +294,20 @@ func (c *Config) upgradePackage(fs vfs.FS, mutator chezmoi.Mutator, rr *github.R
 			}()
 		}
 
-		// Download the package.
+		data, err := c.downloadURL(releaseAsset.GetBrowserDownloadURL())
+		if err != nil {
+			return err
+		}
+		if err := c.verifyChecksum(rr, releaseAsset.GetName(), data); err != nil {
+			return err
+		}
+
 		packageFilename := filepath.Join(tempDir, releaseAsset.GetName())
-		if c.Verbose {
-			fmt.Fprintf(c.Stdout(), "curl -o %s -s -L %s\n", packageFilename, releaseAsset.GetBrowserDownloadURL())
-		}
-		resp, err := http.Get(releaseAsset.GetBrowserDownloadURL())
-		if err != nil {
-			return err
-		}
-		defer resp.Body.Close()
-		if resp.StatusCode != http.StatusOK {
-			return fmt.Errorf("%s: got a non-200 OK response: %d %s", releaseAsset.GetBrowserDownloadURL(), resp.StatusCode, resp.Status)
-		}
-		data, err := ioutil.ReadAll(resp.Body)
-		if err != nil {
-			return err
-		}
 		if err := mutator.WriteFile(packageFilename, data, 0644, nil); err != nil {
 			return err
 		}
 
-		// Install the package.
+		// Install the package from disk.
 		var args []string
 		if useSudo {
 			args = append(args, "sudo")
@@ -289,6 +324,22 @@ func (c *Config) upgradePackage(fs vfs.FS, mutator chezmoi.Mutator, rr *github.R
 	}
 }
 
+func (c *Config) verifyChecksum(rr *github.RepositoryRelease, name string, data []byte) error {
+	checksums, err := c.getChecksums(rr)
+	if err != nil {
+		return err
+	}
+	expectedChecksum, ok := checksums[name]
+	if !ok {
+		return fmt.Errorf("%s: checksum not found", name)
+	}
+	checksum := sha256.Sum256(data)
+	if !bytes.Equal(checksum[:], expectedChecksum) {
+		return fmt.Errorf("%s: checksum failed (want %s, got %s)", name, hex.EncodeToString(expectedChecksum), hex.EncodeToString(checksum[:]))
+	}
+	return nil
+}
+
 func getMethod(fs vfs.FS, executableFilename string) (string, error) {
 	info, err := fs.Stat(executableFilename)
 	if err != nil {
@@ -302,6 +353,10 @@ func getMethod(fs vfs.FS, executableFilename string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	executableIsInTempDir, err := vfs.Contains(fs, executableFilename, os.TempDir())
+	if err != nil {
+		return "", err
+	}
 	executableStat := info.Sys().(*syscall.Stat_t)
 	uid := os.Getuid()
 	switch runtime.GOOS {
@@ -309,7 +364,7 @@ func getMethod(fs vfs.FS, executableFilename string) (string, error) {
 		if int(executableStat.Uid) != uid {
 			return "", fmt.Errorf("%s: cannot upgrade executable owned by non-current user", executableFilename)
 		}
-		if executableInUserHomeDir {
+		if executableInUserHomeDir || executableIsInTempDir {
 			return methodReplaceExecutable, nil
 		}
 		return methodUpgradePackage, nil
@@ -320,7 +375,7 @@ func getMethod(fs vfs.FS, executableFilename string) (string, error) {
 			if executableStat.Uid != 0 {
 				return "", fmt.Errorf("%s: cannot upgrade executable owned by non-root user when running as root", executableFilename)
 			}
-			if executableInUserHomeDir {
+			if executableInUserHomeDir || executableIsInTempDir {
 				return methodReplaceExecutable, nil
 			}
 			return methodUpgradePackage, nil
@@ -362,4 +417,13 @@ func getPackageType(fs vfs.FS) (string, error) {
 		}
 	}
 	return packageTypeNone, fmt.Errorf("could not determine package type (ID=%q, ID_LIKE=%q)", osRelease["ID"], osRelease["ID_LIKE"])
+}
+
+func getReleaseAssetByName(rr *github.RepositoryRelease, name string) *github.ReleaseAsset {
+	for _, ra := range rr.Assets {
+		if ra.GetName() == name {
+			return &ra
+		}
+	}
+	return nil
 }

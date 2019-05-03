@@ -1,5 +1,9 @@
 # Installation
 
+One line install:
+
+    curl -sfL https://install.goreleaser.com/github.com/twpayne/chezmoi.sh | sh
+
 Pre-built packages and binaries:
 
 | OS         | Architectures                                 | Package location                                                     |
@@ -19,3 +23,7 @@ On macOS you can install chezmoi with Homebrew:
 If you have Go installed you can install the latest version from `HEAD`:
 
     go get -u github.com/twpayne/chezmoi
+
+Once chezmoi is installed, you can upgrade it to the latest release with:
+
+    chezmoi upgrade
