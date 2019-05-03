@@ -9,7 +9,6 @@ coverage.out:
 
 .PHONY: format
 format:
-	find . -name \*.go | xargs gofumpt -w
 	find . -name \*.go | xargs gofumports -w
 
 .PHONY: generate
