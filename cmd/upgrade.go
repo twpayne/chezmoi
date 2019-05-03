@@ -353,6 +353,10 @@ func getMethod(fs vfs.FS, executableFilename string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	executableIsInTempDir, err := vfs.Contains(fs, executableFilename, os.TempDir())
+	if err != nil {
+		return "", err
+	}
 	executableStat := info.Sys().(*syscall.Stat_t)
 	uid := os.Getuid()
 	switch runtime.GOOS {
@@ -360,7 +364,7 @@ func getMethod(fs vfs.FS, executableFilename string) (string, error) {
 		if int(executableStat.Uid) != uid {
 			return "", fmt.Errorf("%s: cannot upgrade executable owned by non-current user", executableFilename)
 		}
-		if executableInUserHomeDir {
+		if executableInUserHomeDir || executableIsInTempDir {
 			return methodReplaceExecutable, nil
 		}
 		return methodUpgradePackage, nil
@@ -371,7 +375,7 @@ func getMethod(fs vfs.FS, executableFilename string) (string, error) {
 			if executableStat.Uid != 0 {
 				return "", fmt.Errorf("%s: cannot upgrade executable owned by non-root user when running as root", executableFilename)
 			}
-			if executableInUserHomeDir {
+			if executableInUserHomeDir || executableIsInTempDir {
 				return methodReplaceExecutable, nil
 			}
 			return methodUpgradePackage, nil
