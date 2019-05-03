@@ -209,14 +209,12 @@ func (c *Config) downloadURL(url string) ([]byte, error) {
 }
 
 func (c *Config) replaceExecutable(mutator chezmoi.Mutator, executableFilename string, releaseVersion *semver.Version, rr *github.RepositoryRelease) error {
-	// Find the corresponding release asset.
 	name := fmt.Sprintf("%s_%s_%s_%s.tar.gz", c.upgrade.repo, releaseVersion, runtime.GOOS, runtime.GOARCH)
 	releaseAsset := getReleaseAssetByName(rr, name)
 	if releaseAsset == nil {
 		return fmt.Errorf("%s: cannot find release asset", name)
 	}
 
-	// Download the asset.
 	data, err := c.downloadURL(releaseAsset.GetBrowserDownloadURL())
 	if err != nil {
 		return err
@@ -248,7 +246,6 @@ FOR:
 		}
 	}
 
-	// Replace the executable.
 	return mutator.WriteFile(executableFilename, executableData, 0755, nil)
 }
 
@@ -297,18 +294,14 @@ func (c *Config) upgradePackage(fs vfs.FS, mutator chezmoi.Mutator, rr *github.R
 			}()
 		}
 
-		// Download the package.
 		data, err := c.downloadURL(releaseAsset.GetBrowserDownloadURL())
 		if err != nil {
 			return err
 		}
-
-		// Verify the checksum.
 		if err := c.verifyChecksum(rr, releaseAsset.GetName(), data); err != nil {
 			return err
 		}
 
-		// Write the package to disk.
 		packageFilename := filepath.Join(tempDir, releaseAsset.GetName())
 		if err := mutator.WriteFile(packageFilename, data, 0644, nil); err != nil {
 			return err
