@@ -9,7 +9,6 @@ coverage.out:
 
 .PHONY: format
 format:
-	find . -name \*.go | xargs gofumpt -w
 	find . -name \*.go | xargs gofumports -w
 
 .PHONY: generate
@@ -24,6 +23,13 @@ html-coverage:
 lint:
 	go vet ./...
 	golangci-lint run
+
+.PHONY: pre-release-checks
+pre-release-checks: strict-lint
+
+.PHONY: strict-lint
+strict-lint:
+	golangci-lint run --enable-all ./...
 
 .PHONY: test
 test:
