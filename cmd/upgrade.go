@@ -121,7 +121,7 @@ func (c *Config) runUpgradeCmd(fs vfs.FS, args []string) error {
 	// already the latest version.
 	if !c.upgrade.force && VersionStr != devVersionStr {
 		if !Version.LessThan(*releaseVersion) {
-			fmt.Fprintf(c.Stdout(), "chezmoi: already at the latest version (%s)", Version)
+			fmt.Fprintf(c.Stdout(), "chezmoi: already at the latest version (%s)\n", Version)
 			return nil
 		}
 	}
