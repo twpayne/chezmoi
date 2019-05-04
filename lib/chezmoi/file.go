@@ -11,7 +11,7 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-// A FileAttributes holds attributes passed from a source file name.
+// A FileAttributes holds attributes parsed from a source file name.
 type FileAttributes struct {
 	Name      string
 	Mode      os.FileMode
