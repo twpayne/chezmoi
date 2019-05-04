@@ -33,8 +33,9 @@ var vcsInfos = map[string]*vcsInfo{
 			return []string{"clone", repo, dir}
 		},
 		initArgs:      []string{"init"},
+		pullArgs:      []string{"pull", "--rebase", "--update"},
 		versionArgs:   []string{"version"},
-		versionRegexp: regexp.MustCompile(`^Mercurial Distributed SCM \(version (\d+\.\d+\.\d+\))`),
+		versionRegexp: regexp.MustCompile(`^Mercurial Distributed SCM \(version (\d+\.\d+(\.\d+)?\))`),
 	},
 	"svn": {
 		versionArgs:   []string{"--version"},
