@@ -29,9 +29,16 @@ type templateFuncError struct {
 	err error
 }
 
+// An ApplyOptions is a big ball of mud for things that affect Entry.Apply.
+type ApplyOptions struct {
+	DestDir string
+	Ignore  func(string) bool
+	Umask   os.FileMode
+}
+
 // An Entry is either a Dir, a File, or a Symlink.
 type Entry interface {
-	Apply(fs vfs.FS, destDir string, ignore func(string) bool, umask os.FileMode, mutator Mutator) error
+	Apply(fs vfs.FS, mutator Mutator, applyOptions *ApplyOptions) error
 	ConcreteValue(destDir string, ignore func(string) bool, sourceDir string, umask os.FileMode, recursive bool) (interface{}, error)
 	Evaluate(ignore func(string) bool) error
 	SourceName() string

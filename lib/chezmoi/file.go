@@ -126,15 +126,15 @@ func (fa FileAttributes) SourceName() string {
 }
 
 // Apply ensures that the state of targetPath in fs matches f.
-func (f *File) Apply(fs vfs.FS, destDir string, ignore func(string) bool, umask os.FileMode, mutator Mutator) error {
-	if ignore(f.targetName) {
+func (f *File) Apply(fs vfs.FS, mutator Mutator, applyOptions *ApplyOptions) error {
+	if applyOptions.Ignore(f.targetName) {
 		return nil
 	}
 	contents, err := f.Contents()
 	if err != nil {
 		return err
 	}
-	targetPath := filepath.Join(destDir, f.targetName)
+	targetPath := filepath.Join(applyOptions.DestDir, f.targetName)
 	info, err := fs.Lstat(targetPath)
 	var currData []byte
 	switch {
@@ -149,8 +149,8 @@ func (f *File) Apply(fs vfs.FS, destDir string, ignore func(string) bool, umask 
 		if !bytes.Equal(currData, contents) {
 			break
 		}
-		if info.Mode().Perm() != f.Perm&^umask {
-			if err := mutator.Chmod(targetPath, f.Perm&^umask); err != nil {
+		if info.Mode().Perm() != f.Perm&^applyOptions.Umask {
+			if err := mutator.Chmod(targetPath, f.Perm&^applyOptions.Umask); err != nil {
 				return err
 			}
 		}
@@ -166,7 +166,7 @@ func (f *File) Apply(fs vfs.FS, destDir string, ignore func(string) bool, umask 
 	if isEmpty(contents) && !f.Empty {
 		return nil
 	}
-	return mutator.WriteFile(targetPath, contents, f.Perm&^umask, currData)
+	return mutator.WriteFile(targetPath, contents, f.Perm&^applyOptions.Umask, currData)
 }
 
 // ConcreteValue implements Entry.ConcreteValue.

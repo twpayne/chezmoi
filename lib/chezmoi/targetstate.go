@@ -152,8 +152,13 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 
 // Apply ensures that ts.DestDir in fs matches ts.
 func (ts *TargetState) Apply(fs vfs.FS, mutator Mutator) error {
+	applyOptions := ApplyOptions{
+		DestDir: ts.DestDir,
+		Ignore:  ts.TargetIgnore.Match,
+		Umask:   ts.Umask,
+	}
 	for _, entryName := range sortedEntryNames(ts.Entries) {
-		if err := ts.Entries[entryName].Apply(fs, ts.DestDir, ts.TargetIgnore.Match, ts.Umask, mutator); err != nil {
+		if err := ts.Entries[entryName].Apply(fs, mutator, &applyOptions); err != nil {
 			return err
 		}
 	}
