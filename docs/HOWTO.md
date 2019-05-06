@@ -299,7 +299,7 @@ expose data as a template function.
 
 Log in and get a session using:
 
-    eval $(op login <subdomain>.1password.com <email>)
+    eval $(op signin <subdomain>.1password.com <email>)
 
 The structured data from `op get item <uuid>` is available as the `onepassword`
 template function, for example:
