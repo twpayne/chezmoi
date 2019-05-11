@@ -29,11 +29,21 @@ type templateFuncError struct {
 	err error
 }
 
+// A PersistentState is an interface to a persistent state.
+type PersistentState interface {
+	Delete(bucket, key []byte) error
+	Get(bucket, key []byte) ([]byte, error)
+	Set(bucket, key, value []byte) error
+}
+
 // An ApplyOptions is a big ball of mud for things that affect Entry.Apply.
 type ApplyOptions struct {
-	DestDir string
-	Ignore  func(string) bool
-	Umask   os.FileMode
+	DestDir         string
+	DryRun          bool
+	Ignore          func(string) bool
+	PersistentState PersistentState
+	Umask           os.FileMode
+	Verbose         bool
 }
 
 // An Entry is either a Dir, a File, or a Symlink.
