@@ -4,14 +4,14 @@ Manage your dotfiles securely across multiple machines.
 
 * [Concepts](#concepts)
 * [Global command line flags](#global-command-line-flags)
-  * [`--color` *value*](#--color-value)
-  * [`-c`, `--config` *filename*](#-c---config-filename)
-  * [`-D`, `--destination` *directory*](#-d---destination-directory)
-  * [`-n`, `--dry-run`](#-n---dry-run)
-  * [`-h`, `--help`](#-h---help)
-  * [`-S`, `--source` *directory*](#-s---source-directory)
-  * [`-v`, `--verbose`](#-v---verbose)
-  * [`--version`](#--version)
+  * [`--color` *value*](#color-value)
+  * [`-c`, `--config` *filename*](#c---config-filename)
+  * [`-D`, `--destination` *directory*](#d---destination-directory)
+  * [`-n`, `--dry-run`](#n---dry-run)
+  * [`-h`, `--help`](#h---help)
+  * [`-S`, `--source` *directory*](#s---source-directory)
+  * [`-v`, `--verbose`](#v---verbose)
+  * [`--version`](#version)
 * [Configuration file](#configuration-file)
   * [Configuration variables](#configuration-variables)
 * [Attributes](#attributes)
@@ -48,7 +48,7 @@ Manage your dotfiles securely across multiple machines.
   * [`verify` [*targets*]](#verify-targets)
 * [Editor configuration](#editor-configuration)
 * [Umask configuration](#umask-configuration)
-* [Templates variables](#templates-variables)
+* [Template variables](#template-variables)
 * [Template functions](#template-functions)
   * [`bitwarden` [*args*]](#bitwarden-args)
   * [`keyring` *service* *user*](#keyring-service-user)
@@ -623,7 +623,7 @@ and `0077` respectively.
 For machine-specifc control of umask, set the `umask` configuration variable in
 chezmoi's configuration file.
 
-## Templates variables
+## Template variables
 
 chezmoi provides the following automatically populated variables:
 
