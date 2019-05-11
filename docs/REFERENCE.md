@@ -48,7 +48,7 @@ Manage your dotfiles securely across multiple machines.
   * [`verify` [*targets*]](#verify-targets)
 * [Editor configuration](#editor-configuration)
 * [Umask configuration](#umask-configuration)
-* [Templates variables](#templates-variables)
+* [Template variables](#template-variables)
 * [Template functions](#template-functions)
   * [`bitwarden` [*args*]](#bitwarden-args)
   * [`keyring` *service* *user*](#keyring-service-user)
@@ -623,7 +623,7 @@ and `0077` respectively.
 For machine-specifc control of umask, set the `umask` configuration variable in
 chezmoi's configuration file.
 
-## Templates variables
+## Template variables
 
 chezmoi provides the following automatically populated variables:
 
