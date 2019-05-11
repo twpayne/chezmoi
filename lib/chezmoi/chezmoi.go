@@ -81,8 +81,8 @@ func parseSourceFilePath(path string) parsedSourceFilePath {
 	das := parseDirNameComponents(components[0 : len(components)-1])
 	fa := ParseFileAttributes(components[len(components)-1])
 	return parsedSourceFilePath{
-		FileAttributes: fa,
 		dirAttributes:  das,
+		fileAttributes: &fa,
 	}
 }
 
