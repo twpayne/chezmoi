@@ -133,13 +133,21 @@ func (c *Config) runEditCmd(fs vfs.FS, args []string) error {
 
 	readOnlyFS := vfs.NewReadOnlyFS(fs)
 	applyMutator := c.getDefaultMutator(fs)
+	applyOptions := chezmoi.ApplyOptions{
+		DestDir: ts.DestDir,
+		DryRun:  c.DryRun,
+		Ignore:  ts.TargetIgnore.Match,
+		Stdout:  c.Stdout(),
+		Umask:   ts.Umask,
+		Verbose: c.Verbose,
+	}
 	for i, entry := range entries {
 		anyMutator := chezmoi.NewAnyMutator(chezmoi.NullMutator)
 		var mutator chezmoi.Mutator = anyMutator
 		if c.edit.diff {
 			mutator = chezmoi.NewLoggingMutator(c.Stdout(), mutator, c.colored)
 		}
-		if err := entry.Apply(readOnlyFS, ts.DestDir, ts.TargetIgnore.Match, ts.Umask, mutator); err != nil {
+		if err := entry.Apply(readOnlyFS, mutator, &applyOptions); err != nil {
 			return err
 		}
 		if c.edit.apply && anyMutator.Mutated() {
@@ -158,7 +166,7 @@ func (c *Config) runEditCmd(fs vfs.FS, args []string) error {
 					c.edit.prompt = false
 				}
 			}
-			if err := entry.Apply(readOnlyFS, ts.DestDir, ts.TargetIgnore.Match, ts.Umask, applyMutator); err != nil {
+			if err := entry.Apply(readOnlyFS, applyMutator, &applyOptions); err != nil {
 				return err
 			}
 		}

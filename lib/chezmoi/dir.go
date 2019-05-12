@@ -86,16 +86,16 @@ func newDir(sourceName string, targetName string, exact bool, perm os.FileMode) 
 }
 
 // Apply ensures that destDir in fs matches d.
-func (d *Dir) Apply(fs vfs.FS, destDir string, ignore func(string) bool, umask os.FileMode, mutator Mutator) error {
-	if ignore(d.targetName) {
+func (d *Dir) Apply(fs vfs.FS, mutator Mutator, applyOptions *ApplyOptions) error {
+	if applyOptions.Ignore(d.targetName) {
 		return nil
 	}
-	targetPath := filepath.Join(destDir, d.targetName)
+	targetPath := filepath.Join(applyOptions.DestDir, d.targetName)
 	info, err := fs.Lstat(targetPath)
 	switch {
 	case err == nil && info.IsDir():
-		if info.Mode().Perm() != d.Perm&^umask {
-			if err := mutator.Chmod(targetPath, d.Perm&^umask); err != nil {
+		if info.Mode().Perm() != d.Perm&^applyOptions.Umask {
+			if err := mutator.Chmod(targetPath, d.Perm&^applyOptions.Umask); err != nil {
 				return err
 			}
 		}
@@ -105,14 +105,14 @@ func (d *Dir) Apply(fs vfs.FS, destDir string, ignore func(string) bool, umask o
 		}
 		fallthrough
 	case os.IsNotExist(err):
-		if err := mutator.Mkdir(targetPath, d.Perm&^umask); err != nil {
+		if err := mutator.Mkdir(targetPath, d.Perm&^applyOptions.Umask); err != nil {
 			return err
 		}
 	default:
 		return err
 	}
 	for _, entryName := range sortedEntryNames(d.Entries) {
-		if err := d.Entries[entryName].Apply(fs, destDir, ignore, umask, mutator); err != nil {
+		if err := d.Entries[entryName].Apply(fs, mutator, applyOptions); err != nil {
 			return err
 		}
 	}
@@ -124,7 +124,7 @@ func (d *Dir) Apply(fs vfs.FS, destDir string, ignore func(string) bool, umask o
 		for _, info := range infos {
 			name := info.Name()
 			if _, ok := d.Entries[name]; !ok {
-				if ignore(filepath.Join(d.targetName, name)) {
+				if applyOptions.Ignore(filepath.Join(d.targetName, name)) {
 					continue
 				}
 				if err := mutator.RemoveAll(filepath.Join(targetPath, name)); err != nil {

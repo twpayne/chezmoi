@@ -13,6 +13,7 @@
   * [Use Vault to keep your secrets](#use-vault-to-keep-your-secrets)
   * [Use a generic tool to keep your secrets](#use-a-generic-tool-to-keep-your-secrets)
   * [Use templates variables to keep your secrets](#use-templates-variables-to-keep-your-secrets)
+* [Run extra commands during chezmoi apply](#run-extra-commands-during-chezmoi-apply)
 * [Import archives](#import-archives)
 * [Export archives](#export-archives)
 * [Use non-git version control systems](#use-non-git-version-control-systems)
@@ -372,6 +373,35 @@ Your `~/.local/share/chezmoi/private_dot_gitconfig.tmpl` can then contain:
 
 Any config files containing tokens in plain text should be private (permissions
 `0600`).
+
+## Run extra commands during chezmoi apply
+
+chezmoi includes support for scripts which are run each time `chezmoi apply` is
+run. These can be useful for installing packages or performing other
+machine-specific configuration. Scripts are run in the destination directory and
+should be idempotent.
+
+Scripts must be created manually in the source directory and have the
+prefix `run_`. For example:
+
+    $ chezmoi cd
+    $ cat > run_echo_hello
+    #!/bin/sh
+    echo hello
+    <Ctrl-D>
+    $ chezmoi apply
+    hello
+
+If a script has the suffix `.tmpl` then it is expanded as a template before
+being executed.
+
+In verbose mode, the script's contents will be printed before executing it. In
+dry-run mode, the script is not executed.
+
+If you want a script to only run once, then give it the prefix `run_once_`.
+chezmoi will remember when it has executed a script and will only run it again
+if its name (excluding any `run_once_` prefix and `.tmpl` suffix) changes, or if
+its contents change.
 
 ## Import archives
 

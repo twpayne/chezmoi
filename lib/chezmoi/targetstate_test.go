@@ -99,7 +99,13 @@ func TestEndToEnd(t *testing.T) {
 			defer cleanup()
 			ts := NewTargetState(tc.destDir, tc.umask, tc.sourceDir, tc.data, tc.templateFuncs, "")
 			assert.NoError(t, ts.Populate(fs))
-			assert.NoError(t, ts.Apply(fs, NewLoggingMutator(os.Stderr, NewFSMutator(fs), false)))
+			applyOptions := &ApplyOptions{
+				DestDir: ts.DestDir,
+				Ignore:  ts.TargetIgnore.Match,
+				Stdout:  os.Stdout,
+				Umask:   022,
+			}
+			assert.NoError(t, ts.Apply(fs, NewLoggingMutator(os.Stderr, NewFSMutator(fs), false), applyOptions))
 			vfst.RunTests(t, fs, "", tc.tests)
 		})
 	}
