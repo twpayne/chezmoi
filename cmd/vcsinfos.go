@@ -15,10 +15,6 @@ var vcsInfos = map[string]*vcsInfo{
 		versionArgs:   []string{"--version"},
 		versionRegexp: regexp.MustCompile(`^Bazaar (bzr) (\d+\.\d+\.\d+)`),
 	},
-	"cvs": {
-		versionArgs:   []string{"--version"},
-		versionRegexp: regexp.MustCompile(`^Concurrent Versions System \(CVS\) (\d+\.\d+\.\d+)`),
-	},
 	"git": {
 		cloneArgsFunc: func(repo, dir string) []string {
 			return []string{"clone", repo, dir}
@@ -36,9 +32,5 @@ var vcsInfos = map[string]*vcsInfo{
 		pullArgs:      []string{"pull", "--rebase", "--update"},
 		versionArgs:   []string{"version"},
 		versionRegexp: regexp.MustCompile(`^Mercurial Distributed SCM \(version (\d+\.\d+(\.\d+)?\))`),
-	},
-	"svn": {
-		versionArgs:   []string{"--version"},
-		versionRegexp: regexp.MustCompile(`^svn, version (\d+\.\d+\.\d+)`),
 	},
 }
