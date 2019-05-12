@@ -151,14 +151,9 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 }
 
 // Apply ensures that ts.DestDir in fs matches ts.
-func (ts *TargetState) Apply(fs vfs.FS, mutator Mutator) error {
-	applyOptions := ApplyOptions{
-		DestDir: ts.DestDir,
-		Ignore:  ts.TargetIgnore.Match,
-		Umask:   ts.Umask,
-	}
+func (ts *TargetState) Apply(fs vfs.FS, mutator Mutator, applyOptions *ApplyOptions) error {
 	for _, entryName := range sortedEntryNames(ts.Entries) {
-		if err := ts.Entries[entryName].Apply(fs, mutator, &applyOptions); err != nil {
+		if err := ts.Entries[entryName].Apply(fs, mutator, applyOptions); err != nil {
 			return err
 		}
 	}
@@ -337,16 +332,13 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 			if err != nil {
 				return err
 			}
-
-			targetName := filepath.Join(append(dns, psfp.Name)...)
-			var entry Entry
-			switch psfp.Mode & os.ModeType {
-			case 0:
+			switch {
+			case psfp.fileAttributes != nil && psfp.fileAttributes.Mode&os.ModeType == 0 || psfp.scriptAttributes != nil:
 				readFile := func() ([]byte, error) {
 					return fs.ReadFile(path)
 				}
 				evaluateContents := readFile
-				if psfp.Encrypted {
+				if psfp.fileAttributes != nil && psfp.fileAttributes.Encrypted {
 					prevEvaluateContents := evaluateContents
 					evaluateContents = func() ([]byte, error) {
 						ciphertext, err := prevEvaluateContents()
@@ -356,7 +348,7 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 						return ts.Decrypt(ciphertext)
 					}
 				}
-				if psfp.Template {
+				if psfp.fileAttributes != nil && psfp.fileAttributes.Template || psfp.scriptAttributes != nil && psfp.scriptAttributes.Template {
 					prevEvaluateContents := evaluateContents
 					evaluateContents = func() ([]byte, error) {
 						data, err := prevEvaluateContents()
@@ -366,36 +358,49 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 						return ts.executeTemplateData(path, data)
 					}
 				}
-				entry = &File{
-					sourceName:       relPath,
-					targetName:       targetName,
-					Empty:            psfp.Empty,
-					Encrypted:        psfp.Encrypted,
-					Perm:             psfp.Mode.Perm(),
-					Template:         psfp.Template,
-					evaluateContents: evaluateContents,
+				switch {
+				case psfp.fileAttributes != nil:
+					entry := &File{
+						sourceName:       relPath,
+						targetName:       filepath.Join(append(dns, psfp.fileAttributes.Name)...),
+						Empty:            psfp.fileAttributes.Empty,
+						Encrypted:        psfp.fileAttributes.Encrypted,
+						Perm:             psfp.fileAttributes.Mode.Perm(),
+						Template:         psfp.fileAttributes.Template,
+						evaluateContents: evaluateContents,
+					}
+					entries[psfp.fileAttributes.Name] = entry
+				case psfp.scriptAttributes != nil:
+					entry := &Script{
+						sourceName:       relPath,
+						targetName:       filepath.Join(append(dns, psfp.scriptAttributes.Name)...),
+						Once:             psfp.scriptAttributes.Once,
+						Template:         psfp.scriptAttributes.Template,
+						evaluateContents: evaluateContents,
+					}
+					entries[psfp.scriptAttributes.Name] = entry
 				}
-			case os.ModeSymlink:
+			case psfp.fileAttributes != nil && psfp.fileAttributes.Mode&os.ModeType == os.ModeSymlink:
 				evaluateLinkname := func() (string, error) {
 					data, err := fs.ReadFile(path)
 					return string(data), err
 				}
-				if psfp.Template {
+				if psfp.fileAttributes.Template {
 					evaluateLinkname = func() (string, error) {
 						data, err := ts.executeTemplate(fs, path)
 						return string(data), err
 					}
 				}
-				entry = &Symlink{
+				entry := &Symlink{
 					sourceName:       relPath,
-					targetName:       targetName,
-					Template:         psfp.Template,
+					targetName:       filepath.Join(append(dns, psfp.fileAttributes.Name)...),
+					Template:         psfp.fileAttributes.Template,
 					evaluateLinkname: evaluateLinkname,
 				}
+				entries[psfp.fileAttributes.Name] = entry
 			default:
-				return fmt.Errorf("%v: unsupported mode 0%o", path, psfp.Mode&os.ModeType)
+				return fmt.Errorf("%s: unsupported file type", path)
 			}
-			entries[psfp.Name] = entry
 		default:
 			return fmt.Errorf("%s: unsupported file type", path)
 		}

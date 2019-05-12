@@ -9,6 +9,7 @@ import (
 	"github.com/mattn/go-isatty"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/twpayne/chezmoi/lib/chezmoi"
 	vfs "github.com/twpayne/go-vfs"
 	xdg "github.com/twpayne/go-xdg/v3"
 )
@@ -94,6 +95,12 @@ func init() {
 		if config.err != nil {
 			config.warn(fmt.Sprintf("%s: %v", config.configFile, config.err))
 		}
+		persistentStateFile := getPersistentStateFile(config.bds, config.configFile)
+		persistentState, err := chezmoi.NewBoltPersistentState(vfs.OSFS, persistentStateFile)
+		if err != nil {
+			printErrorAndExit(err)
+		}
+		config.persistentState = persistentState
 	})
 }
 

@@ -137,6 +137,7 @@ func (c *Config) runEditCmd(fs vfs.FS, args []string) error {
 		DestDir: ts.DestDir,
 		DryRun:  c.DryRun,
 		Ignore:  ts.TargetIgnore.Match,
+		Stdout:  c.Stdout(),
 		Umask:   ts.Umask,
 		Verbose: c.Verbose,
 	}

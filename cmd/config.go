@@ -33,39 +33,40 @@ type sourceVCSConfig struct {
 
 // A Config represents a configuration.
 type Config struct {
-	configFile    string
-	err           error
-	SourceDir     string
-	DestDir       string
-	Umask         permValue
-	DryRun        bool
-	Verbose       bool
-	Color         string
-	GPGRecipient  string
-	SourceVCS     sourceVCSConfig
-	Merge         mergeConfig
-	Bitwarden     bitwardenCmdConfig
-	GenericSecret genericSecretCmdConfig
-	Lastpass      lastpassCmdConfig
-	Onepassword   onepasswordCmdConfig
-	Vault         vaultCmdConfig
-	Pass          passCmdConfig
-	Data          map[string]interface{}
-	colored       bool
-	templateFuncs template.FuncMap
-	add           addCmdConfig
-	data          dataCmdConfig
-	dump          dumpCmdConfig
-	edit          editCmdConfig
-	init          initCmdConfig
-	_import       importCmdConfig
-	keyring       keyringCmdConfig
-	update        updateCmdConfig
-	upgrade       upgradeCmdConfig
-	stdin         io.Reader
-	stdout        io.Writer
-	stderr        io.Writer
-	bds           *xdg.BaseDirectorySpecification
+	configFile      string
+	err             error
+	SourceDir       string
+	DestDir         string
+	Umask           permValue
+	DryRun          bool
+	Verbose         bool
+	Color           string
+	GPGRecipient    string
+	SourceVCS       sourceVCSConfig
+	Merge           mergeConfig
+	Bitwarden       bitwardenCmdConfig
+	GenericSecret   genericSecretCmdConfig
+	Lastpass        lastpassCmdConfig
+	Onepassword     onepasswordCmdConfig
+	Vault           vaultCmdConfig
+	Pass            passCmdConfig
+	Data            map[string]interface{}
+	colored         bool
+	persistentState chezmoi.PersistentState
+	templateFuncs   template.FuncMap
+	add             addCmdConfig
+	data            dataCmdConfig
+	dump            dumpCmdConfig
+	edit            editCmdConfig
+	init            initCmdConfig
+	_import         importCmdConfig
+	keyring         keyringCmdConfig
+	update          updateCmdConfig
+	upgrade         upgradeCmdConfig
+	stdin           io.Reader
+	stdout          io.Writer
+	stderr          io.Writer
+	bds             *xdg.BaseDirectorySpecification
 }
 
 var (
@@ -130,20 +131,24 @@ func (c *Config) applyArgs(fs vfs.FS, args []string, mutator chezmoi.Mutator) er
 	if err != nil {
 		return err
 	}
+	applyOptions := &chezmoi.ApplyOptions{
+		DestDir:         ts.DestDir,
+		DryRun:          c.DryRun,
+		Ignore:          ts.TargetIgnore.Match,
+		PersistentState: c.persistentState,
+		Stdout:          c.Stdout(),
+		Umask:           ts.Umask,
+		Verbose:         c.Verbose,
+	}
 	if len(args) == 0 {
-		return ts.Apply(fs, mutator)
+		return ts.Apply(fs, mutator, applyOptions)
 	}
 	entries, err := c.getEntries(fs, ts, args)
 	if err != nil {
 		return err
 	}
-	applyOptions := chezmoi.ApplyOptions{
-		DestDir: ts.DestDir,
-		Ignore:  ts.TargetIgnore.Match,
-		Umask:   ts.Umask,
-	}
 	for _, entry := range entries {
-		if err := entry.Apply(fs, mutator, &applyOptions); err != nil {
+		if err := entry.Apply(fs, mutator, applyOptions); err != nil {
 			return err
 		}
 	}
@@ -389,6 +394,16 @@ func getDefaultSourceDir(bds *xdg.BaseDirectorySpecification) string {
 	}
 	// Fallback to XDG Base Directory Specification default.
 	return filepath.Join(bds.DataHome, "chezmoi")
+}
+
+func getPersistentStateFile(bds *xdg.BaseDirectorySpecification, configFile string) string {
+	for _, configDir := range bds.ConfigDirs {
+		persistentStateFile := filepath.Join(configDir, "chezmoi", "chezmoistate.boltdb")
+		if _, err := os.Stat(persistentStateFile); err == nil {
+			return persistentStateFile
+		}
+	}
+	return filepath.Join(filepath.Dir(configFile), "chezmoistate.boltdb")
 }
 
 // isWellKnownAbbreviation returns true if word is a well known abbreviation.
