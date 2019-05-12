@@ -33,8 +33,4 @@ var vcsInfos = map[string]*vcsInfo{
 		versionArgs:   []string{"version"},
 		versionRegexp: regexp.MustCompile(`^Mercurial Distributed SCM \(version (\d+\.\d+(\.\d+)?\))`),
 	},
-	"svn": {
-		versionArgs:   []string{"--version"},
-		versionRegexp: regexp.MustCompile(`^svn, version (\d+\.\d+\.\d+)`),
-	},
 }
