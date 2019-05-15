@@ -23,6 +23,7 @@ install:
 script:
 - make generate
 - make format
+- go mod tidy
 - git diff --exit-code
 - make test
 - make lint
