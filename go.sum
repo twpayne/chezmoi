@@ -74,8 +74,6 @@ github.com/stretchr/testify v1.2.2 h1:bSDNvY7ZPG5RlJ8otE/7V6gMiyenm9RtJ7IUVIAoJ1
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
 github.com/stretchr/testify v1.3.0 h1:TivCn/peBQ7UY8ooIcPgZFpTNSz0Q2U6UrFlUfqbe0Q=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
-github.com/twpayne/bbolt v1.3.3 h1:JC5FqHl8KI7HttyR7gjlvFubsc4O154EDtn6DqbhXMk=
-github.com/twpayne/bbolt v1.3.3/go.mod h1:LFKuADr6ZLKUTotDQbCSVz/Pl3TFiiQHsFt4Ni86lnw=
 github.com/twpayne/go-difflib v1.2.1 h1:ypoyI4LwrjSBRzuvBph0Iu8Z8tPG4G+D706ym4RXp8w=
 github.com/twpayne/go-difflib v1.2.1/go.mod h1:yDLRCpF455E1uC+kFIFhA4qoJuKg9K2uyEx1/OBNnnw=
 github.com/twpayne/go-shell v0.0.1 h1:Ako3cUeuULhWadYk37jM3FlJ8lkSSW4INBjYj9K60Gw=
@@ -93,6 +91,8 @@ github.com/ugorji/go/codec v0.0.0-20181204163529-d75b2dcb6bc8/go.mod h1:VFNgLljT
 github.com/xordataexchange/crypt v0.0.3-0.20170626215501-b2862e3d0a77/go.mod h1:aYKd//L2LvnjZzWKhF00oedf4jCCReLcmhLdhm1A27Q=
 github.com/zalando/go-keyring v0.0.0-20180221093347-6d81c293b3fb h1:tXbazu9ZlecQbyCczvA22mWj+lw/36Bdwxapk8v7e7s=
 github.com/zalando/go-keyring v0.0.0-20180221093347-6d81c293b3fb/go.mod h1:XlXBIfkGawHNVOHlenOaBW7zlfCh8LovwjOgjamYnkQ=
+go.etcd.io/bbolt v1.3.3-0.20190510211640-4af6cfab7010 h1:XWsASCLIxZzlppASNxGVCVRoGd8z1e7Kr5EXUAMPsjE=
+go.etcd.io/bbolt v1.3.3-0.20190510211640-4af6cfab7010/go.mod h1:IbVyRI1SCnLcuJnV2u8VeU0CEYM7e686BmAb1XKL+uU=
 golang.org/x/crypto v0.0.0-20181203042331-505ab145d0a9 h1:mKdxBk7AujPs8kU4m80U72y/zjbZ3UcXC7dClwKbUI0=
 golang.org/x/crypto v0.0.0-20181203042331-505ab145d0a9/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2 h1:VklqNMn3ovrHsnt90PveolxSbWFaJdECFbxSq0Mqo2M=
