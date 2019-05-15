@@ -49,6 +49,8 @@ github.com/mitchellh/mapstructure v1.1.2 h1:fmNYVwqnSfB9mZU6OS2O6GsXM+wcskZDuKQz
 github.com/mitchellh/mapstructure v1.1.2/go.mod h1:FVVH3fgwuzCH5S8UJGiWEs2h04kUh9fWfEaFds41c1Y=
 github.com/pelletier/go-toml v1.2.0 h1:T5zMGML61Wp+FlcbWjRDT7yAxhJNAiPPLOFECq181zc=
 github.com/pelletier/go-toml v1.2.0/go.mod h1:5z9KED0ma1S8pY6P1sdut58dfprrGBbd/94hg7ilaic=
+github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
+github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/russross/blackfriday/v2 v2.0.1 h1:lPqVAte+HuHNfhJ/0LC98ESWRz8afy9tM/0RK8m9o+Q=
 github.com/russross/blackfriday/v2 v2.0.1/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
 github.com/shurcooL/sanitized_anchor_name v1.0.0 h1:PdmoCO6wvbs+7yrJyMORt4/BmY5IYyJwS/kOiWx8mHo=
@@ -74,8 +76,8 @@ github.com/stretchr/testify v1.2.2 h1:bSDNvY7ZPG5RlJ8otE/7V6gMiyenm9RtJ7IUVIAoJ1
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
 github.com/stretchr/testify v1.3.0 h1:TivCn/peBQ7UY8ooIcPgZFpTNSz0Q2U6UrFlUfqbe0Q=
 github.com/stretchr/testify v1.3.0/go.mod h1:M5WIy9Dh21IEIfnGCwXGc5bZfKNJtfHm1UVUgZn+9EI=
-github.com/twpayne/go-difflib v1.2.1 h1:ypoyI4LwrjSBRzuvBph0Iu8Z8tPG4G+D706ym4RXp8w=
-github.com/twpayne/go-difflib v1.2.1/go.mod h1:yDLRCpF455E1uC+kFIFhA4qoJuKg9K2uyEx1/OBNnnw=
+github.com/twpayne/go-difflib v1.3.0 h1:diKcqcs0d4zkEPe8EQcsc5WTwgYoiEEFRJ7JhfjHtbA=
+github.com/twpayne/go-difflib v1.3.0/go.mod h1:3pM7Os07f1tPwfKPDOsPJ/Cr6lDh7ztw2t75/SFtQUM=
 github.com/twpayne/go-shell v0.0.1 h1:Ako3cUeuULhWadYk37jM3FlJ8lkSSW4INBjYj9K60Gw=
 github.com/twpayne/go-shell v0.0.1/go.mod h1:QCjEvdZndTuPObd+11NYAI1UeNLSuGZVxJ+67Wl+IU4=
 github.com/twpayne/go-vfs v1.0.1/go.mod h1:OIXA6zWkcn7Jk46XT7ceYqBMeIkfzJ8WOBhGJM0W4y8=

@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/pmezard/go-difflib/difflib"
+	"github.com/twpayne/go-difflib/difflib"
 )
 
 // A LoggingMutator wraps an Mutator and logs all of the actions it executes
