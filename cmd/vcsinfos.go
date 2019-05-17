@@ -11,10 +11,6 @@ type vcsInfo struct {
 }
 
 var vcsInfos = map[string]*vcsInfo{
-	"bzr": {
-		versionArgs:   []string{"--version"},
-		versionRegexp: regexp.MustCompile(`^Bazaar (bzr) (\d+\.\d+\.\d+)`),
-	},
 	"git": {
 		cloneArgsFunc: func(repo, dir string) []string {
 			return []string{"clone", repo, dir}
