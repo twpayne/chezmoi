@@ -7,6 +7,8 @@ before:
 builds:
 - id: chezmoi-cgo-snap
   binary: chezmoi
+  flags:
+  - -tags=snap
   ldflags: "-s -w -X github.com/twpayne/chezmoi/cmd.VersionStr={{ .Version }} -X github.com/twpayne/chezmoi/cmd.Commit={{ .Commit }} -X github.com/twpayne/chezmoi/cmd.Date={{ .Date }}"
   env:
   - CGO_ENABLED=1
@@ -16,6 +18,8 @@ builds:
   - amd64
 - id: chezmoi-nocgo-snap
   binary: chezmoi
+  flags:
+  - -tags=snap
   ldflags: "-s -w -X github.com/twpayne/chezmoi/cmd.VersionStr={{ .Version }} -X github.com/twpayne/chezmoi/cmd.Commit={{ .Commit }} -X github.com/twpayne/chezmoi/cmd.Date={{ .Date }}"
   env:
   - CGO_ENABLED=0

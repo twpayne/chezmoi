@@ -134,11 +134,12 @@ func (c *Config) persistentPreRunRootE(fs vfs.FS, args []string) error {
 		return fmt.Errorf("%s: not a directory", c.SourceDir)
 	case err == nil && info.Mode().Perm() != 0700:
 		fmt.Printf("%s: want permissions 0700, got 0%o\n", c.SourceDir, info.Mode().Perm())
-	case os.IsNotExist(err):
-	default:
+	case err != nil && !os.IsNotExist(err):
 		return err
 	}
-	return nil
+
+	// Apply any fixes for snap, if needed.
+	return c.snapFix()
 }
 
 func getExample(command string) string {
