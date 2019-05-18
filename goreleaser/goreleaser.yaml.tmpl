@@ -41,7 +41,11 @@ builds:
   goarch:
   - {{ .HostArch }}
 
-archive:
+archives:
+- files:
+  - LICENSE
+  - README.md
+  - docs/*
   replacements:
     386: i386
 
