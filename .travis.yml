@@ -14,12 +14,7 @@ env:
 
 install:
 - go mod download
-- GO111MODULE=off go get golang.org/x/tools/cmd/cover
-- GO111MODULE=off go get github.com/golangci/golangci-lint/cmd/golangci-lint
-- GO111MODULE=off go get github.com/mattn/goveralls
-- GO111MODULE=off go get github.com/wadey/gocovmerge
-- GO111MODULE=off go get mvdan.cc/gofumpt
-- GO111MODULE=off go get mvdan.cc/gofumpt/gofumports
+- make install-tools
 
 script:
 - make all

@@ -14,7 +14,10 @@ checked out chezmoi locally.
 
 ## Developing locally
 
-chezmoi is a standard Go project, using standard Go tooling.
+chezmoi is a standard Go project, using standard Go tooling, with a few extra
+tools. Install these extra tools with:
+
+    make install-tools
 
 Build chezmoi:
 

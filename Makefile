@@ -33,6 +33,16 @@ goreleaser/goreleaser.host.yaml: goreleaser/goreleaser.yaml.tmpl internal/genera
 html-coverage:
 	go tool cover -html=coverage.out
 
+.PHONY: install-tools
+install-tools:
+	GO111MODULE=off go get -u \
+		golang.org/x/tools/cmd/cover \
+		github.com/golangci/golangci-lint/cmd/golangci-lint \
+		github.com/mattn/goveralls \
+		github.com/wadey/gocovmerge \
+		mvdan.cc/gofumpt \
+		mvdan.cc/gofumpt/gofumports
+
 .PHONY: lint
 lint:
 	go vet ./...
