@@ -32,6 +32,7 @@ import (
 
 const (
 	methodReplaceExecutable = "replace-executable"
+	methodSnapRefresh       = "snap-refresh"
 	methodUpgradePackage    = "upgrade-package"
 	methodSudoPrefix        = "sudo-"
 
@@ -146,6 +147,10 @@ func (c *Config) runUpgradeCmd(fs vfs.FS, args []string) error {
 		if err := c.replaceExecutable(mutator, executableFilename, releaseVersion, rr); err != nil {
 			return err
 		}
+	case methodSnapRefresh:
+		if err := c.snapRefresh(); err != nil {
+			return err
+		}
 	case methodUpgradePackage:
 		if err := c.upgradePackage(fs, mutator, rr, false); err != nil {
 			return err
@@ -249,6 +254,10 @@ FOR:
 	return mutator.WriteFile(executableFilename, executableData, 0755, nil)
 }
 
+func (c *Config) snapRefresh() error {
+	return c.run("", "snap", "refresh", c.upgrade.repo)
+}
+
 func (c *Config) upgradePackage(fs vfs.FS, mutator chezmoi.Mutator, rr *github.RepositoryRelease, useSudo bool) error {
 	switch runtime.GOOS {
 	case "darwin":
@@ -341,6 +350,9 @@ func (c *Config) verifyChecksum(rr *github.RepositoryRelease, name string, data 
 }
 
 func getMethod(fs vfs.Stater, executableFilename string) (string, error) {
+	if ok, _ := vfs.Contains(fs, executableFilename, "/snap"); ok {
+		return methodSnapRefresh, nil
+	}
 	info, err := fs.Stat(executableFilename)
 	if err != nil {
 		return "", err
