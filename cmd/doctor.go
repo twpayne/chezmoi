@@ -126,6 +126,12 @@ func (c *Config) runDoctorCmd(fs vfs.FS, args []string) error {
 		},
 		vcsCommandCheck,
 		&doctorBinaryCheck{
+			name:          "GnuPG",
+			binaryName:    "gpg",
+			versionArgs:   []string{"--version"},
+			versionRegexp: regexp.MustCompile(`^gpg \(GnuPG\) (\d+\.\d+\.\d+)`),
+		},
+		&doctorBinaryCheck{
 			name:          "1Password CLI",
 			binaryName:    c.Onepassword.Command,
 			versionArgs:   []string{"--version"},
