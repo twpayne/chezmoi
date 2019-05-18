@@ -6,6 +6,7 @@
 * [Keep data private](#keep-data-private)
   * [Use Bitwarden to keep your secrets](#use-bitwarden-to-keep-your-secrets)
   * [Use gpg to keep your secrets](#use-gpg-to-keep-your-secrets)
+  * [Use KeePassXC to keep your secrets](#use-keepassxc-to-keep-your-secrets)
   * [Use a keyring to keep your secrets](#use-a-keyring-to-keep-your-secrets)
   * [Use LastPass to keep your secrets](#use-lastpass-to-keep-your-secrets)
   * [Use 1Password to keep your secrets](#use-1password-to-keep-your-secrets)
@@ -229,6 +230,22 @@ chezmoi will encrypt the file with
 
 and store the encrypted file in the source state. The file will automatically be
 decrypted when generating the target state.
+
+### Use KeePassXC to keep your secrets
+
+chezmoi includes support for [KeePassXC](https://keepassxc.org) using the
+KeePassXC CLI (`keepassxc-cli`) to expose data as a template function.
+
+Provide the path to your KeePassXC database in your configuration file:
+
+    [keepassxc]
+      database = "/home/user/Passwords.kdbx"
+
+The structured data from `keepassxc-cli show $database` is available as the
+`keepassxc` template function in your config files, for example:
+
+    username = {{ (keepassxc "example.com").UserName }}
+    password = {{ (keepassxc "example.com").Password }}
 
 ### Use a keyring to keep your secrets
 

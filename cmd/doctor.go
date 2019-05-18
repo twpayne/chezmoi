@@ -33,6 +33,7 @@ type doctorCheck interface {
 	Enabled() bool
 	MustSucceed() bool
 	Result() string
+	Skip() bool
 }
 
 type doctorCheckResult struct {
@@ -63,6 +64,7 @@ type doctorDirectoryCheck struct {
 type doctorFileCheck struct {
 	name        string
 	path        string
+	canSkip     bool
 	mustSucceed bool
 	info        os.FileInfo
 }
@@ -115,6 +117,11 @@ func (c *Config) runDoctorCmd(fs vfs.FS, args []string) error {
 			name: "configuration file",
 			path: c.configFile,
 		},
+		&doctorFileCheck{
+			name:    "KeePassXC database",
+			path:    c.KeePassXC.Database,
+			canSkip: true,
+		},
 		&doctorBinaryCheck{
 			name:        "editor",
 			binaryName:  c.getEditor(),
@@ -134,6 +141,12 @@ func (c *Config) runDoctorCmd(fs vfs.FS, args []string) error {
 		&doctorBinaryCheck{
 			name:          "Bitwarden CLI",
 			binaryName:    c.Bitwarden.Command,
+			versionArgs:   []string{"--version"},
+			versionRegexp: regexp.MustCompile(`^(\d+\.\d+\.\d+)`),
+		},
+		&doctorBinaryCheck{
+			name:          "KeePassXC CLI",
+			binaryName:    c.KeePassXC.Command,
 			versionArgs:   []string{"--version"},
 			versionRegexp: regexp.MustCompile(`^(\d+\.\d+\.\d+)`),
 		},
@@ -161,6 +174,9 @@ func (c *Config) runDoctorCmd(fs vfs.FS, args []string) error {
 			binaryName: c.GenericSecret.Command,
 		},
 	} {
+		if dc.Skip() {
+			continue
+		}
 		dcr := runDoctorCheck(dc)
 		if !dcr.ok {
 			allOK = false
@@ -251,6 +267,10 @@ func (c *doctorBinaryCheck) Result() string {
 	return s
 }
 
+func (c *doctorBinaryCheck) Skip() bool {
+	return false
+}
+
 func (c *doctorDirectoryCheck) Check() (bool, error) {
 	c.info, c.err = os.Stat(c.path)
 	if c.err != nil && os.IsNotExist(c.err) {
@@ -283,7 +303,14 @@ func (c *doctorDirectoryCheck) Result() string {
 	}
 }
 
+func (c *doctorDirectoryCheck) Skip() bool {
+	return false
+}
+
 func (c *doctorFileCheck) Check() (bool, error) {
+	if c.path == "" {
+		return false, nil
+	}
 	var err error
 	c.info, err = os.Stat(c.path)
 	if err != nil && os.IsNotExist(err) {
@@ -303,7 +330,14 @@ func (c *doctorFileCheck) MustSucceed() bool {
 }
 
 func (c *doctorFileCheck) Result() string {
+	if c.path == "" {
+		return fmt.Sprintf("not set (%s)", c.name)
+	}
 	return fmt.Sprintf("%s (%s)", c.path, c.name)
+}
+
+func (c *doctorFileCheck) Skip() bool {
+	return c.canSkip && c.path == ""
 }
 
 func (c *doctorSuspiciousFilesCheck) Check() (bool, error) {
@@ -334,4 +368,8 @@ func (c *doctorSuspiciousFilesCheck) Result() string {
 		return ""
 	}
 	return fmt.Sprintf("%s (suspicious filenames)", strings.Join(c.found, ", "))
+}
+
+func (c *doctorSuspiciousFilesCheck) Skip() bool {
+	return false
 }

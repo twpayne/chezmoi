@@ -51,6 +51,7 @@ Manage your dotfiles securely across multiple machines.
 * [Template variables](#template-variables)
 * [Template functions](#template-functions)
   * [`bitwarden` [*args*]](#bitwarden-args)
+  * [`keepassxc` *entry*](#keepassxc-entry)
   * [`keyring` *service* *user*](#keyring-service-user)
   * [`lastpass` *id*](#lastpass-id)
   * [`onepassword` *uuid*](#onepassword-uuid)
@@ -139,25 +140,28 @@ chezmoi, and the first config file found is used.
 
 The following configuration variables are available:
 
-| Variable                | Type     | Default value             | Description                       |
-| ----------------------- | -------- | ------------------------- | --------------------------------- |
-| `bitwarden.command`     | string   | `bw`                      | Bitwarden CLI command             |
-| `color`                 | string   | `auto`                    | Colorize diffs                    |
-| `data`                  | any      | none                      | Template data                     |
-| `destDir`               | string   | `~`                       | Destination directory             |
-| `dryRun`                | boolean  | `false`                   | Dry run mode                      |
-| `genericSecret.command` | string   | none                      | Generic secret command            |
-| `gpgRecipient`          | string   | none                      | GPG recipient                     |
-| `lastpass.command`      | string   | `lpass`                   | Lastpass CLI command              |
-| `merge.args`            | []string | none                      | Extra args to 3-way merge command |
-| `merge.command`         | string   | `vimdiff`                 | 3-way merge command               |
-| `onepassword.command`   | string   | `op`                      | 1Password CLI command             |
-| `pass.command`          | string   | `pass`                    | Pass CLI command                  |
-| `sourceDir`             | string   | `~/.config/share/chezmoi` | Source directory                  |
-| `sourceVCS.command`     | string   | `git`                     | Source version control system     |
-| `umask`                 | integer  | from system               | Umask                             |
-| `vault.command`         | string   | `vault`                   | Vault CLI command                 |
-| `verbose`               | boolean  | `false`                   | Verbose mode                      |
+| Variable                | Type     | Default value             | Description                         |
+| ----------------------- | -------- | ------------------------- | ----------------------------------- |
+| `bitwarden.command`     | string   | `bw`                      | Bitwarden CLI command               |
+| `color`                 | string   | `auto`                    | Colorize diffs                      |
+| `data`                  | any      | none                      | Template data                       |
+| `destDir`               | string   | `~`                       | Destination directory               |
+| `dryRun`                | boolean  | `false`                   | Dry run mode                        |
+| `genericSecret.command` | string   | none                      | Generic secret command              |
+| `gpgRecipient`          | string   | none                      | GPG recipient                       |
+| `keepassxc.args`        | []string | none                      | Extra args to KeePassXC CLI command |
+| `keepassxc.command`     | string   | `keepassxc-cli`           | KeePassXC CLI command               |
+| `keepassxc.database`    | string   | none                      | KeePassXC database                  |
+| `lastpass.command`      | string   | `lpass`                   | Lastpass CLI command                |
+| `merge.args`            | []string | none                      | Extra args to 3-way merge command   |
+| `merge.command`         | string   | `vimdiff`                 | 3-way merge command                 |
+| `onepassword.command`   | string   | `op`                      | 1Password CLI command               |
+| `pass.command`          | string   | `pass`                    | Pass CLI command                    |
+| `sourceDir`             | string   | `~/.config/share/chezmoi` | Source directory                    |
+| `sourceVCS.command`     | string   | `git`                     | Source version control system       |
+| `umask`                 | integer  | from system               | Umask                               |
+| `vault.command`         | string   | `vault`                   | Vault CLI command                   |
+| `verbose`               | boolean  | `false`                   | Verbose mode                        |
 
 In addition, a number of secret manager integrations add configuration
 variables. These are documented in the secret manager section.
@@ -658,10 +662,28 @@ unchanged and the output from `bw` is parsed as JSON. The output from `bw` is
 cached so calling `bitwarden` multitple times with the same arguments will only
 invoke `bw` once.
 
-#### `biwarden` examples
+#### `bitwarden` examples
 
     username = {{ (bitwarden "item" "example.com").login.username }}
     password = {{ (bitwarden "item" "example.com").login.password }}
+
+### `keepassxc` *entry*
+
+`keepassxc` returns structured data retrieved from a
+[KeePassXC](https://keepassxc.org/) database using the KeePassXC CLI
+(`keepassxc-cli`). The database is configured by setting `keepassxc.database` in
+the configuration file. *database* and *entry* are passed to `keepassxc-cli
+show`. You will be prompted for the database password the first time
+`keepassxc-cli` is run, and the password is cached, in plain text, in memory
+until chezmoi terminates. The output from `keepassxc-cli` is parsed into
+key-value pairs. The output from `keepassxc-cli` is cached so calling
+`keepassxc` multiple times with the same *entry* will only invoke
+`keepassxc-cli` once.
+
+#### `keepassxc` examples
+
+    username = {{ (keepassxc "example.com").UserName }}
+    password = {{ (keepassxc "example.com").Password }}
 
 ### `keyring` *service* *user*
 

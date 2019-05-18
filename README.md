@@ -44,9 +44,9 @@ system with a single account then you don't need chezmoi. Otherwise, read on...
   can use the version control system of your choice to manage your
   configuration, and you can write the configuration file in the format of your
   choice. chezmoi can retrieve secrets from [1Password](https://1password.com/),
-  [Bitwarden](https://bitwarden.com/), [LastPass](https://lastpass.com/),
-  [pass](https://www.passwordstore.org/), [Vault](https://www.vaultproject.io/),
-  your Keychain (on macOS), [GNOME
+  [Bitwarden](https://bitwarden.com/), [KeePassXC](https://keepassxc.org/),
+  [LastPass](https://lastpass.com/), [pass](https://www.passwordstore.org/),
+  [Vault](https://www.vaultproject.io/), your Keychain (on macOS), [GNOME
   Keyring](https://wiki.gnome.org/Projects/GnomeKeyring) (on Linux), or any
   command-line utility of your choice. You can encrypt individual files with
   [gpg](https://www.gnupg.org). You can checkout your dotfiles repo on as many
