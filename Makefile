@@ -95,3 +95,7 @@ strict-lint:
 .PHONY: test
 test:
 	go test -race ./...
+
+.PHONY: update-install.sh
+update-install.sh:
+	curl -sfL -o scripts/install.sh https://install.goreleaser.com/github.com/twpayne/chezmoi.sh
