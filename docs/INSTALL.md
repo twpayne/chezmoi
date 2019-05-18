@@ -1,7 +1,6 @@
 # Installation
 
 * [macOS with Homebrew](#macos-with-homebrew)
-* [Linux with Snap](#linux-with-snap)
 * [One-line binary install](#one-line-binary-install)
 * [Pre-built packages and binaries](#pre-built-packages-and-binaries)
 * [From source](#from-source)
@@ -10,10 +9,6 @@
 ## macOS with Homebrew
 
     brew install twpayne/taps/chezmoi
-
-## Linux with Snap
-
-    snap install chezmoi --classic
 
 ## One-line binary install
 
