@@ -2,7 +2,7 @@
 
 One line install:
 
-    curl -sfL https://install.goreleaser.com/github.com/twpayne/chezmoi.sh | sh
+    curl -sfL https://git.io/chezmoi | sh
 
 On macOS you can install chezmoi with [Homebrew](https://brew.sh):
 
