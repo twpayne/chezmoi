@@ -117,6 +117,11 @@ func (c *Config) runDoctorCmd(fs vfs.FS, args []string) error {
 			name: "configuration file",
 			path: c.configFile,
 		},
+		&doctorFileCheck{
+			name:    "KeePassXC database",
+			path:    c.KeePassXC.Database,
+			canSkip: true,
+		},
 		&doctorBinaryCheck{
 			name:        "editor",
 			binaryName:  c.getEditor(),
@@ -136,6 +141,12 @@ func (c *Config) runDoctorCmd(fs vfs.FS, args []string) error {
 		&doctorBinaryCheck{
 			name:          "Bitwarden CLI",
 			binaryName:    c.Bitwarden.Command,
+			versionArgs:   []string{"--version"},
+			versionRegexp: regexp.MustCompile(`^(\d+\.\d+\.\d+)`),
+		},
+		&doctorBinaryCheck{
+			name:          "KeePassXC CLI",
+			binaryName:    c.KeePassXC.Command,
 			versionArgs:   []string{"--version"},
 			versionRegexp: regexp.MustCompile(`^(\d+\.\d+\.\d+)`),
 		},

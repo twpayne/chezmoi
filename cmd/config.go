@@ -46,6 +46,7 @@ type Config struct {
 	Merge           mergeConfig
 	Bitwarden       bitwardenCmdConfig
 	GenericSecret   genericSecretCmdConfig
+	KeePassXC       keePassXCCmdConfig
 	Lastpass        lastpassCmdConfig
 	Onepassword     onepasswordCmdConfig
 	Vault           vaultCmdConfig
