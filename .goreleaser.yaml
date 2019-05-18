@@ -28,7 +28,7 @@ builds:
   - ""
   ignore:
   - goos: darwin
-    goarch: 386
+    goarch: "386"
   - goos: linux
     goarch: amd64
 - id: chezmoi-cgo
