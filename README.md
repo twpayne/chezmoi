@@ -8,12 +8,20 @@ Card](https://goreportcard.com/badge/github.com/twpayne/chezmoi)](https://gorepo
 
 Manage your dotfiles across multiple machines, securely.
 
+* [Documentation](#documentation)
 * [What does chezmoi do and why should I use it?](#what-does-chezmoi-do-and-why-should-i-use-it)
 * [Features](#features)
 * [I already have a system to manage my dotfiles, why should I use chezmoi?](#i-already-have-a-system-to-manage-my-dotfiles-why-should-i-use-chezmoi)
-* [Documentation](#documentation)
 * [Related projects](#related-projects)
 * [License](#license)
+
+## Documentation
+
+* [Installation guide](docs/INSTALL.md).
+* [Quick start guide](docs/QUICKSTART.md).
+* [How-to guide](docs/HOWTO.md) for achieving specific tasks.
+* [FAQ](docs/FAQ.md) for questions that aren't answered elsewhere.
+* [Reference](docs/REFERENCE.md) for a complete description of chezmoi.
 
 ## What does chezmoi do and why should I use it?
 
@@ -69,7 +77,8 @@ system with a single account then you don't need chezmoi. Otherwise, read on...
   that state. What you want is what you get.
 
 * Fast and easy to use: chezmoi runs in fractions of a second and makes most
-  day-to-day operations one line commands.
+  day-to-day operations one line commands, including installation,
+  initialization, and keeping your machines up-to-date.
 
 ## I already have a system to manage my dotfiles, why should I use chezmoi?
 
@@ -88,30 +97,21 @@ system with a single account then you don't need chezmoi. Otherwise, read on...
   configuration.
 
 * If your system stores secrets in plain text, then your dotfiles repository
-  must be private. With chezmoi you never need to store secrets in your
-  repository, so you can make it public. You can check out your repository on
-  your work machine and not fear that this will give your work IT department
-  access to your personal data.
+  must be private. With chezmoi you can store secrets in your password manager,
+  so you can make your dotfiles public. You can share your repository between
+  your personal and work machines, without your work machine and not fear that
+  this will give your work IT department access to your personal secrets.
 
 * If your system was written by you for your personal use, then it probably has
   the minimum functionality that you need. chezmoi includes a wide range of
-  functionality out-of-the-box, including dry run and diff modes.
+  functionality out-of-the-box, including dry run and diff modes, conflict
+  resolution, and running scripts.
 
 * All systems suffer from the "bootstrap" problem: you need to install your
   system before you can install your dotfiles. chezmoi provides one-line
   installs, statically-linked binaries, packages for many Linux and BSD
   distributions, Homebrew formulae, and a initial config file generation
   mechanism to make overcoming the bootstrap problem as painless as possible.
-
-## Documentation
-
-chezmoi includes five types of documentation:
-
-* An [installation guide](docs/INSTALL.md).
-* A [quick start guide](docs/QUICKSTART.md).
-* A [how-to guide](docs/HOWTO.md) for achieving specific tasks.
-* An [FAQ](docs/FAQ.md) for questions that aren't answered elsewhere.
-* A [reference](docs/REFERENCE.md) for a complete description of chezmoi.
 
 ## Related projects
 
