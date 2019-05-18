@@ -4,12 +4,13 @@ addons:
   apt:
     packages:
     - rpm
+    - snapd
 
 go:
 - 1.12.x
 
 env:
-- GO111MODULE=on
+- GO111MODULE=on PATH=/snap/bin:$PATH
 
 install:
 - go mod download
@@ -21,6 +22,8 @@ install:
 - GO111MODULE=off go get mvdan.cc/gofumpt/gofumports
 
 script:
+- make all
+- git diff --exit-code
 - make generate
 - make format
 - go mod tidy
@@ -36,7 +39,7 @@ sudo: false
 deploy:
 - provider: script
   skip_cleanup: true
-  script: curl -sL https://git.io/goreleaser | bash
+  script: make release-setup-travis release release-snap
   on:
     tags: true
     condition: "$TRAVIS_OS_NAME = linux"

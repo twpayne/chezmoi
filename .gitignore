@@ -1,2 +1,4 @@
 /*coverage.out
 /dist
+/goreleaser/goreleaser.host.yaml
+/goreleaser/snap.login
