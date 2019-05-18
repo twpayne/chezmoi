@@ -1,12 +1,56 @@
 # Contributing
 
-chezmoi development happens on Github. When contributing, please first [open an
+* [Getting started](#getting-started)
+* [Developing locally](#developing-locally)
+* [Contributing changes](#contributing-changes)
+* [Managing releases](#managing-releases)
+* [Packaging](#packaging)
+
+## Getting started
+
+chezmoi is written in [Go](https://golang.org) and development happens on
+[GitHub](https://github.com). The rest of this document assumes that you've
+checked out chezmoi locally.
+
+## Developing locally
+
+chezmoi is a standard Go project, using standard Go tooling.
+
+Build chezmoi:
+
+    go build github.com/twpayne/chezmoi
+
+Run all tests:
+
+    go test github.com/twpayne/chezmoi/...
+
+Run chezmoi:
+
+    go run github.com/twpayne/chezmoi
+
+## Contributing changes
+
+Bug reports, bug fixes, and documentation improvements are always welcome.
+Please [open an issue](https://github.com/twpayne/chezmoi/issues/new) or [create
+a pull request](https://help.github.com/en/articles/creating-a-pull-request)
+with your report, fix, or improvement.
+
+If you want to make a more significant change, please first [open an
 issue](https://github.com/twpayne/chezmoi/issues/new) to discuss the change that
-you want to make. Bug reports and documentation improvements are particularly
-welcome.
+you want to make. Dave Cheney gives a [good
+rationale](https://dave.cheney.net/2019/02/18/talk-then-code) as to why this is
+important.
 
 All changes are made via pull requests. In your pull request, please make sure
 that:
+
+* Your code is correctly formatted, according to
+  [gofumports](https://mvdan.cc/gofumpt/gofumports). You can ensure this by
+  running `make format`.
+
+* Your code passes [`go vet`](https://golang.org/cmd/vet/) and
+  [`golangci-lint`](https://github.com/golangci/golangci-lint). You can ensure
+  this by running `make lint`.
 
 * The commit messages match chezmoi's convention, specifically that they being
   with a capitalized verb in the imperative and give a short description of what
@@ -21,7 +65,7 @@ that:
 
 * The branch applies cleanly to `master`.
 
-## Release management
+## Managing releases
 
 Releases are managed with [goreleaser](https://goreleaser.com/).
 
