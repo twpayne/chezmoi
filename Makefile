@@ -1,7 +1,7 @@
 .PHONY: nothing
 nothing:
 
-all: goreleaser/goreleaser.yaml
+all: .goreleaser.yaml
 
 .PHONY: coverage.out
 coverage.out:
@@ -17,7 +17,7 @@ format:
 generate:
 	go generate ./...
 
-goreleaser/goreleaser.yaml: goreleaser/goreleaser.yaml.tmpl internal/generate-goreleaser-yaml/main.go
+.goreleaser.yaml: goreleaser/goreleaser.yaml.tmpl internal/generate-goreleaser-yaml/main.go
 	go run ./internal/generate-goreleaser-yaml \
 		-host-arch amd64 \
 		-host-os linux \
@@ -44,7 +44,6 @@ pre-release-checks: strict-lint
 .PHONY: release
 release:
 	goreleaser release \
-		--config=goreleaser/goreleaser.yaml \
 		${GORELEASER_FLAGS}
 
 .PHONY: release-snap
