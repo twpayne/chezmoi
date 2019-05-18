@@ -39,7 +39,7 @@ To create a new release, push a tag, eg:
 
 To run a local "snapshot" build without publishing:
 
-    TRAVIS_BUILD_NUMBER=1 goreleaser --snapshot --rm-dist --debug --skip-publish
+    make test-release
 
 ## Packaging
 

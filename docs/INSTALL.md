@@ -4,6 +4,15 @@ One line install:
 
     curl -sfL https://install.goreleaser.com/github.com/twpayne/chezmoi.sh | sh
 
+On macOS you can install chezmoi with [Homebrew](https://brew.sh):
+
+    brew install twpayne/taps/chezmoi
+
+On Linux distributions with [snap](https://snapcraft.io), you can install
+chezmoi with:
+
+    snap install chezmoi --classic
+
 Pre-built packages and binaries:
 
 | OS         | Architectures                                 | Package location                                                     |
@@ -15,10 +24,6 @@ Pre-built packages and binaries:
 | FreeBSD    | amd64, arm, i386                              | [tar.gz package](https://github.com/twpayne/chezmoi/releases/latest) |
 | OpenBSD    | amd64, arm, i386                              | [tar.gz package](https://github.com/twpayne/chezmoi/releases/latest) |
 | Linux      | amd64, arm, arm64, i386, ppc64, ppc64le       | [tar.gz package](https://github.com/twpayne/chezmoi/releases/latest) |
-
-On macOS you can install chezmoi with Homebrew:
-
-    brew install twpayne/taps/chezmoi
 
 If you have Go installed you can install the latest version from `HEAD`:
 
