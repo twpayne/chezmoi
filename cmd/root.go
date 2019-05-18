@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/Masterminds/sprig"
 	"github.com/coreos/go-semver/semver"
@@ -46,7 +47,7 @@ var rootCmd = &cobra.Command{
 func init() {
 	if VersionStr != devVersionStr {
 		var err error
-		Version, err = semver.NewVersion(VersionStr)
+		Version, err = semver.NewVersion(strings.TrimPrefix(VersionStr, "v"))
 		if err != nil {
 			printErrorAndExit(err)
 		}
