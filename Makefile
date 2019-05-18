@@ -44,12 +44,14 @@ pre-release-checks: strict-lint
 .PHONY: release
 release:
 	goreleaser release \
+		--rm-dist \
 		${GORELEASER_FLAGS}
 
 .PHONY: release-snap
 release-snap:
 	goreleaser release \
 		--config=goreleaser/goreleaser.snap.yaml \
+		--rm-dist \
 		--skip-publish \
 		${GORELEASER_FLAGS}
 	for snap in dist/*.snap ; do \
