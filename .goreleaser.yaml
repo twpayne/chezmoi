@@ -18,7 +18,7 @@ builds:
   # - dragonfly
   # - netbsd
   goarch:
-  - 386
+  - "386"
   - amd64
   - arm
   - arm64
@@ -41,7 +41,11 @@ builds:
   goarch:
   - amd64
 
-archive:
+archives:
+- files:
+  - LICENSE
+  - README.md
+  - docs/*
   replacements:
     386: i386
 
