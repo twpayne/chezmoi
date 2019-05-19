@@ -195,6 +195,7 @@ func (c *Config) downloadURL(url string) ([]byte, error) {
 	if c.Verbose {
 		fmt.Fprintf(c.Stdout(), "curl -s -L %s\n", url)
 	}
+	//nolint:gosec
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
