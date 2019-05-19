@@ -24,7 +24,8 @@ var config = Config{
 	Merge: mergeConfig{
 		Command: "vimdiff",
 	},
-	templateFuncs: sprig.HermeticTxtFuncMap(),
+	templateFuncs:     sprig.HermeticTxtFuncMap(),
+	scriptStateBucket: []byte("script"),
 }
 
 // Version information.
@@ -112,6 +113,7 @@ func Execute() {
 	}
 }
 
+//nolint:interfacer
 func (c *Config) persistentPreRunRootE(fs vfs.FS, args []string) error {
 	switch c.Color {
 	case "on":

@@ -22,7 +22,7 @@ func init() {
 }
 
 func (c *Config) runVerifyCmd(fs vfs.FS, args []string) error {
-	mutator := chezmoi.NewAnyMutator(chezmoi.NullMutator)
+	mutator := chezmoi.NewAnyMutator(chezmoi.NullMutator{})
 	if err := c.applyArgs(fs, args, mutator); err != nil {
 		return err
 	}

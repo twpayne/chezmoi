@@ -41,13 +41,14 @@ type PersistentState interface {
 
 // An ApplyOptions is a big ball of mud for things that affect Entry.Apply.
 type ApplyOptions struct {
-	DestDir         string
-	DryRun          bool
-	Ignore          func(string) bool
-	PersistentState PersistentState
-	Stdout          io.Writer
-	Umask           os.FileMode
-	Verbose         bool
+	DestDir           string
+	DryRun            bool
+	Ignore            func(string) bool
+	PersistentState   PersistentState
+	ScriptStateBucket []byte
+	Stdout            io.Writer
+	Umask             os.FileMode
+	Verbose           bool
 }
 
 // An Entry is either a Dir, a File, or a Symlink.

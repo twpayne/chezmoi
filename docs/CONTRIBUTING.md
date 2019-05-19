@@ -21,15 +21,15 @@ tools. Install these extra tools with:
 
 Build chezmoi:
 
-    go build github.com/twpayne/chezmoi
+    go build .
 
 Run all tests:
 
-    go test github.com/twpayne/chezmoi/...
+    go test ./...
 
 Run chezmoi:
 
-    go run github.com/twpayne/chezmoi
+    go run .
 
 ## Contributing changes
 
@@ -71,13 +71,6 @@ that:
 ## Managing releases
 
 Releases are managed with [goreleaser](https://goreleaser.com/).
-
-Before creating a release, please run:
-
-    make pre-release-checks
-
-This will run a variety of strict checks. Many can be ignored, but please
-manually check each of them before tagging a release.
 
 To create a new release, push a tag, eg:
 

@@ -195,6 +195,7 @@ func (c *Config) downloadURL(url string) ([]byte, error) {
 	if c.Verbose {
 		fmt.Fprintf(c.Stdout(), "curl -s -L %s\n", url)
 	}
+	//nolint:gosec
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
@@ -276,9 +277,9 @@ func (c *Config) upgradePackage(fs vfs.FS, mutator chezmoi.Mutator, rr *github.R
 		// Find the corresponding release asset.
 		var releaseAsset *github.ReleaseAsset
 		suffix := arch + "." + packageType
-		for _, ra := range rr.Assets {
+		for i, ra := range rr.Assets {
 			if strings.HasSuffix(ra.GetName(), suffix) {
-				releaseAsset = &ra
+				releaseAsset = &rr.Assets[i]
 				break
 			}
 		}
@@ -432,9 +433,9 @@ func getPackageType(fs vfs.FS) (string, error) {
 }
 
 func getReleaseAssetByName(rr *github.RepositoryRelease, name string) *github.ReleaseAsset {
-	for _, ra := range rr.Assets {
+	for i, ra := range rr.Assets {
 		if ra.GetName() == name {
-			return &ra
+			return &rr.Assets[i]
 		}
 	}
 	return nil
