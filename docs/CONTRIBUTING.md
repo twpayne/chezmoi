@@ -21,15 +21,15 @@ tools. Install these extra tools with:
 
 Build chezmoi:
 
-    go build github.com/twpayne/chezmoi
+    go build .
 
 Run all tests:
 
-    go test github.com/twpayne/chezmoi/...
+    go test ./...
 
 Run chezmoi:
 
-    go run github.com/twpayne/chezmoi
+    go run .
 
 ## Contributing changes
 
