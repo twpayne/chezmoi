@@ -134,12 +134,13 @@ func (c *Config) runEditCmd(fs vfs.FS, args []string) error {
 	readOnlyFS := vfs.NewReadOnlyFS(fs)
 	applyMutator := c.getDefaultMutator(fs)
 	applyOptions := chezmoi.ApplyOptions{
-		DestDir: ts.DestDir,
-		DryRun:  c.DryRun,
-		Ignore:  ts.TargetIgnore.Match,
-		Stdout:  c.Stdout(),
-		Umask:   ts.Umask,
-		Verbose: c.Verbose,
+		DestDir:           ts.DestDir,
+		DryRun:            c.DryRun,
+		Ignore:            ts.TargetIgnore.Match,
+		ScriptStateBucket: c.scriptStateBucket,
+		Stdout:            c.Stdout(),
+		Umask:             ts.Umask,
+		Verbose:           c.Verbose,
 	}
 	for i, entry := range entries {
 		anyMutator := chezmoi.NewAnyMutator(chezmoi.NullMutator)

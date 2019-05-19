@@ -154,11 +154,12 @@ func TestApplyScript(t *testing.T) {
 			persistentState, err := chezmoi.NewBoltPersistentState(fs, "/home/user/.config/chezmoi/chezmoistate.boltdb")
 			require.NoError(t, err)
 			c := &Config{
-				SourceDir:       "/home/user/.local/share/chezmoi",
-				DestDir:         "/",
-				Umask:           022,
-				Data:            tc.data,
-				persistentState: persistentState,
+				SourceDir:         "/home/user/.local/share/chezmoi",
+				DestDir:           "/",
+				Umask:             022,
+				Data:              tc.data,
+				persistentState:   persistentState,
+				scriptStateBucket: []byte("script"),
 			}
 			assert.NoError(t, c.runApplyCmd(fs, nil))
 			evidencePath := filepath.Join(tempDir, tc.evidence)
@@ -196,7 +197,8 @@ func TestApplyRunOnce(t *testing.T) {
 		Data: map[string]interface{}{
 			"TempFile": tempFile,
 		},
-		persistentState: persistentState,
+		persistentState:   persistentState,
+		scriptStateBucket: []byte("script"),
 	}
 
 	require.NoError(t, c.runApplyCmd(fs, nil))

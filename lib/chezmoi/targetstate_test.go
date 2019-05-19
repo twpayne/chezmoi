@@ -100,10 +100,11 @@ func TestEndToEnd(t *testing.T) {
 			ts := NewTargetState(tc.destDir, tc.umask, tc.sourceDir, tc.data, tc.templateFuncs, "")
 			assert.NoError(t, ts.Populate(fs))
 			applyOptions := &ApplyOptions{
-				DestDir: ts.DestDir,
-				Ignore:  ts.TargetIgnore.Match,
-				Stdout:  os.Stdout,
-				Umask:   022,
+				DestDir:           ts.DestDir,
+				Ignore:            ts.TargetIgnore.Match,
+				ScriptStateBucket: []byte("script"),
+				Stdout:            os.Stdout,
+				Umask:             022,
 			}
 			assert.NoError(t, ts.Apply(fs, NewLoggingMutator(os.Stderr, NewFSMutator(fs), false), applyOptions))
 			vfst.RunTests(t, fs, "", tc.tests)

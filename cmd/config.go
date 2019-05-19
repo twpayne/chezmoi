@@ -33,41 +33,42 @@ type sourceVCSConfig struct {
 
 // A Config represents a configuration.
 type Config struct {
-	configFile      string
-	err             error
-	SourceDir       string
-	DestDir         string
-	Umask           permValue
-	DryRun          bool
-	Verbose         bool
-	Color           string
-	GPGRecipient    string
-	SourceVCS       sourceVCSConfig
-	Merge           mergeConfig
-	Bitwarden       bitwardenCmdConfig
-	GenericSecret   genericSecretCmdConfig
-	KeePassXC       keePassXCCmdConfig
-	Lastpass        lastpassCmdConfig
-	Onepassword     onepasswordCmdConfig
-	Vault           vaultCmdConfig
-	Pass            passCmdConfig
-	Data            map[string]interface{}
-	colored         bool
-	persistentState chezmoi.PersistentState
-	templateFuncs   template.FuncMap
-	add             addCmdConfig
-	data            dataCmdConfig
-	dump            dumpCmdConfig
-	edit            editCmdConfig
-	init            initCmdConfig
-	_import         importCmdConfig
-	keyring         keyringCmdConfig
-	update          updateCmdConfig
-	upgrade         upgradeCmdConfig
-	stdin           io.Reader
-	stdout          io.Writer
-	stderr          io.Writer
-	bds             *xdg.BaseDirectorySpecification
+	configFile        string
+	err               error
+	SourceDir         string
+	DestDir           string
+	Umask             permValue
+	DryRun            bool
+	Verbose           bool
+	Color             string
+	GPGRecipient      string
+	SourceVCS         sourceVCSConfig
+	Merge             mergeConfig
+	Bitwarden         bitwardenCmdConfig
+	GenericSecret     genericSecretCmdConfig
+	KeePassXC         keePassXCCmdConfig
+	Lastpass          lastpassCmdConfig
+	Onepassword       onepasswordCmdConfig
+	Vault             vaultCmdConfig
+	Pass              passCmdConfig
+	Data              map[string]interface{}
+	colored           bool
+	persistentState   chezmoi.PersistentState
+	templateFuncs     template.FuncMap
+	add               addCmdConfig
+	data              dataCmdConfig
+	dump              dumpCmdConfig
+	edit              editCmdConfig
+	init              initCmdConfig
+	_import           importCmdConfig
+	keyring           keyringCmdConfig
+	update            updateCmdConfig
+	upgrade           upgradeCmdConfig
+	stdin             io.Reader
+	stdout            io.Writer
+	stderr            io.Writer
+	bds               *xdg.BaseDirectorySpecification
+	scriptStateBucket []byte
 }
 
 var (
@@ -133,13 +134,14 @@ func (c *Config) applyArgs(fs vfs.FS, args []string, mutator chezmoi.Mutator) er
 		return err
 	}
 	applyOptions := &chezmoi.ApplyOptions{
-		DestDir:         ts.DestDir,
-		DryRun:          c.DryRun,
-		Ignore:          ts.TargetIgnore.Match,
-		PersistentState: c.persistentState,
-		Stdout:          c.Stdout(),
-		Umask:           ts.Umask,
-		Verbose:         c.Verbose,
+		DestDir:           ts.DestDir,
+		DryRun:            c.DryRun,
+		Ignore:            ts.TargetIgnore.Match,
+		PersistentState:   c.persistentState,
+		ScriptStateBucket: c.scriptStateBucket,
+		Stdout:            c.Stdout(),
+		Umask:             ts.Umask,
+		Verbose:           c.Verbose,
 	}
 	if len(args) == 0 {
 		return ts.Apply(fs, mutator, applyOptions)

@@ -24,7 +24,8 @@ var config = Config{
 	Merge: mergeConfig{
 		Command: "vimdiff",
 	},
-	templateFuncs: sprig.HermeticTxtFuncMap(),
+	templateFuncs:     sprig.HermeticTxtFuncMap(),
+	scriptStateBucket: []byte("script"),
 }
 
 // Version information.

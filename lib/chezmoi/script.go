@@ -16,8 +16,6 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-var scriptStateBucket = []byte("script")
-
 // FIXME allow encrypted scripts
 // FIXME add pre- and post- attributes
 
@@ -104,7 +102,7 @@ func (s *Script) Apply(fs vfs.FS, mutator Mutator, applyOptions *ApplyOptions) e
 	if s.Once {
 		contentsKeyArr := sha256.Sum256(contents)
 		key = []byte(s.targetName + ":" + hex.EncodeToString(contentsKeyArr[:]))
-		scriptStateData, err := applyOptions.PersistentState.Get(scriptStateBucket, key)
+		scriptStateData, err := applyOptions.PersistentState.Get(applyOptions.ScriptStateBucket, key)
 		if err != nil {
 			return err
 		}
@@ -159,7 +157,7 @@ func (s *Script) Apply(fs vfs.FS, mutator Mutator, applyOptions *ApplyOptions) e
 		if err != nil {
 			return err
 		}
-		if err := applyOptions.PersistentState.Set(scriptStateBucket, key, scriptStateData); err != nil {
+		if err := applyOptions.PersistentState.Set(applyOptions.ScriptStateBucket, key, scriptStateData); err != nil {
 			return err
 		}
 	}
