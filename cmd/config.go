@@ -209,7 +209,7 @@ func (c *Config) execEditor(argv ...string) error {
 func (c *Config) getDefaultMutator(fs vfs.FS) chezmoi.Mutator {
 	var mutator chezmoi.Mutator
 	if c.DryRun {
-		mutator = chezmoi.NullMutator
+		mutator = chezmoi.NullMutator{}
 	} else {
 		mutator = chezmoi.NewFSMutator(fs)
 	}

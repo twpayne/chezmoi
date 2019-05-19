@@ -143,7 +143,7 @@ func (c *Config) runEditCmd(fs vfs.FS, args []string) error {
 		Verbose:           c.Verbose,
 	}
 	for i, entry := range entries {
-		anyMutator := chezmoi.NewAnyMutator(chezmoi.NullMutator)
+		anyMutator := chezmoi.NewAnyMutator(chezmoi.NullMutator{})
 		var mutator chezmoi.Mutator = anyMutator
 		if c.edit.diff {
 			mutator = chezmoi.NewLoggingMutator(c.Stdout(), mutator, c.colored)
