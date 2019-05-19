@@ -72,13 +72,6 @@ that:
 
 Releases are managed with [goreleaser](https://goreleaser.com/).
 
-Before creating a release, please run:
-
-    make pre-release-checks
-
-This will run a variety of strict checks. Many can be ignored, but please
-manually check each of them before tagging a release.
-
 To create a new release, push a tag, eg:
 
     git tag -a v0.1.0 -m "First release"

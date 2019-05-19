@@ -48,9 +48,6 @@ lint:
 	go vet ./...
 	golangci-lint run
 
-.PHONY: pre-release-checks
-pre-release-checks: strict-lint
-
 .PHONY: release
 release:
 	goreleaser release \
@@ -98,10 +95,6 @@ test-release-snap:
 		--skip-publish \
 		--snapshot \
 		${GORELEASER_FLAGS}
-
-.PHONY: strict-lint
-strict-lint:
-	golangci-lint run --enable-all ./...
 
 .PHONY: test
 test:
