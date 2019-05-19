@@ -113,6 +113,7 @@ func Execute() {
 	}
 }
 
+//nolint:interfacer
 func (c *Config) persistentPreRunRootE(fs vfs.FS, args []string) error {
 	switch c.Color {
 	case "on":

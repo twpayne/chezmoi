@@ -229,7 +229,7 @@ func (c *Config) getEditor() string {
 	return "vi"
 }
 
-func (c *Config) getEntries(fs vfs.FS, ts *chezmoi.TargetState, args []string) ([]chezmoi.Entry, error) {
+func (c *Config) getEntries(fs vfs.Stater, ts *chezmoi.TargetState, args []string) ([]chezmoi.Entry, error) {
 	entries := []chezmoi.Entry{}
 	for _, arg := range args {
 		targetPath, err := filepath.Abs(arg)

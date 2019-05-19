@@ -240,7 +240,7 @@ func (ts *TargetState) Evaluate() error {
 }
 
 // Get returns the state of the given target, or nil if no such target is found.
-func (ts *TargetState) Get(fs vfs.FS, target string) (Entry, error) {
+func (ts *TargetState) Get(fs vfs.Stater, target string) (Entry, error) {
 	contains, err := vfs.Contains(fs, target, ts.DestDir)
 	if err != nil {
 		return nil, err
