@@ -62,7 +62,7 @@ release-snap:
 		--skip-publish \
 		${GORELEASER_FLAGS}
 	for snap in dist/*.snap ; do \
-		snapcraft push --release=beta $${snap} ; \
+		snapcraft push --release=stable $${snap} ; \
 	done
 
 .PHONY: release-setup-travis
