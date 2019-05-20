@@ -31,9 +31,10 @@ var config = Config{
 // Version information.
 var (
 	devVersionStr = "dev"
+	unknownStr    = "unknown"
 	VersionStr    = devVersionStr
-	Commit        = "unknown"
-	Date          = "unknown"
+	Commit        = unknownStr
+	Date          = unknownStr
 	Version       *semver.Version
 )
 
