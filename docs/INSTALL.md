@@ -1,15 +1,19 @@
 # Installation
 
 * [macOS with Homebrew](#macos-with-homebrew)
+* [Linux with Snap](#linux-with-snap)
 * [One-line binary install](#one-line-binary-install)
 * [Pre-built packages and binaries](#pre-built-packages-and-binaries)
 * [From source](#from-source)
-* [Linux with Snap (beta)](#linux-with-snap-beta)
 * [Upgrading](#upgrading)
 
 ## macOS with Homebrew
 
     brew install twpayne/taps/chezmoi
+
+## Linux with Snap
+
+    snap install chezmoi --classic
 
 ## One-line binary install
 
@@ -30,10 +34,6 @@
 ## From source
 
     cd $(mktemp -d) && go get -u github.com/twpayne/chezmoi
-
-## Linux with Snap (beta)
-
-    snap install chezmoi --channel=beta --classic
 
 ## Upgrading
 
