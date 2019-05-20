@@ -75,6 +75,8 @@ type doctorSuspiciousFilesCheck struct {
 	found     []string
 }
 
+type doctorVersionCheck struct{}
+
 func init() {
 	rootCmd.AddCommand(doctorCmd)
 }
@@ -98,6 +100,7 @@ func (c *Config) runDoctorCmd(fs vfs.FS, args []string) error {
 
 	allOK := true
 	for _, dc := range []doctorCheck{
+		&doctorVersionCheck{},
 		&doctorDirectoryCheck{
 			name:         "source directory",
 			path:         c.SourceDir,
@@ -377,5 +380,28 @@ func (c *doctorSuspiciousFilesCheck) Result() string {
 }
 
 func (c *doctorSuspiciousFilesCheck) Skip() bool {
+	return false
+}
+
+func (doctorVersionCheck) Check() (bool, error) {
+	if VersionStr == devVersionStr || Commit == unknownStr || Date == unknownStr {
+		return false, nil
+	}
+	return true, nil
+}
+
+func (doctorVersionCheck) Enabled() bool {
+	return true
+}
+
+func (doctorVersionCheck) MustSucceed() bool {
+	return false
+}
+
+func (doctorVersionCheck) Result() string {
+	return "version " + rootCmd.Version
+}
+
+func (doctorVersionCheck) Skip() bool {
 	return false
 }
