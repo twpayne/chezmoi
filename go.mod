@@ -27,7 +27,7 @@ require (
 	github.com/stretchr/testify v1.3.0
 	github.com/twpayne/go-difflib v1.3.0
 	github.com/twpayne/go-shell v0.0.1
-	github.com/twpayne/go-vfs v1.0.6
+	github.com/twpayne/go-vfs v1.1.0
 	github.com/twpayne/go-vfsafero v1.0.0
 	github.com/twpayne/go-xdg/v3 v3.1.0
 	github.com/zalando/go-keyring v0.0.0-20180221093347-6d81c293b3fb
