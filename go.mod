@@ -37,6 +37,5 @@ require (
 	gopkg.in/yaml.v2 v2.2.2
 )
 
-// https://github.com/0robustus1/cobra/tree/350-add_fish_completion_support
-// https://github.com/spf13/cobra/pull/754
-replace github.com/spf13/cobra => ../cobra
+// Temporary while waiting for https://github.com/spf13/cobra/pull/754 to be merged
+replace github.com/spf13/cobra => github.com/0robustus1/cobra v0.0.4-0.20190522074606-64400adf086c

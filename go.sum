@@ -1,3 +1,5 @@
+github.com/0robustus1/cobra v0.0.4-0.20190522074606-64400adf086c h1:6xFfLcJWseCeshhkzG6DwUenwjNK//TPQdDGUjUMdI0=
+github.com/0robustus1/cobra v0.0.4-0.20190522074606-64400adf086c/go.mod h1:3K3wKZymM7VvHMDS9+Akkh4K60UwM26emMESw8tLCHU=
 github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/Masterminds/semver v1.4.2 h1:WBLTQ37jOCzSLtXNdoo8bNM8876KhNqOKvrlGITgsTc=
