@@ -1,4 +1,4 @@
-# Contributing
+# chezmoi Contributing Guide
 
 * [Getting started](#getting-started)
 * [Developing locally](#developing-locally)

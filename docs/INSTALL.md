@@ -1,4 +1,4 @@
-# Installation
+# chezmoi Install Guide
 
 * [macOS with Homebrew](#macos-with-homebrew)
 * [Linux with Snap](#linux-with-snap)

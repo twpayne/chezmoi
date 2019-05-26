@@ -1,4 +1,4 @@
-# HOWTO
+# chezmoi How-To Guide
 
 * [Use a hosted repo to manage your dotfiles across multiple machines](#use-a-hosted-repo-to-manage-your-dotfiles-across-multiple-machines)
 * [Use templates to manage files that vary from machine to machine](#use-templates-to-manage-files-that-vary-from-machine-to-machine)
@@ -14,11 +14,12 @@
   * [Use Vault to keep your secrets](#use-vault-to-keep-your-secrets)
   * [Use a generic tool to keep your secrets](#use-a-generic-tool-to-keep-your-secrets)
   * [Use templates variables to keep your secrets](#use-templates-variables-to-keep-your-secrets)
-* [Run extra commands during chezmoi apply](#run-extra-commands-during-chezmoi-apply)
+* [Use scripts to perform actions](#use-scripts-to-perform-actions)
+  * [Understand how scripts work](#understand-how-scripts-work)
+  * [Install packages with scripts](#install-packages-with-scripts)
 * [Import archives](#import-archives)
 * [Export archives](#export-archives)
-* [Use non-git version control systems](#use-non-git-version-control-systems)
-* [Use chezmoi outside your home directory](#use-chezmoi-outside-your-home-directory)
+* [Use a non-git version control system](#use-a-non-git-version-control-system)
 
 ## Use a hosted repo to manage your dotfiles across multiple machines
 
@@ -367,6 +368,7 @@ way:
 | Bitwarden       | `bw`                    | `{{ secretJSON "get" <id> }}`                     |
 | Hashicorp Vault | `vault`                 | `{{ secretJSON "kv" "get" "-format=json" <id> }}` |
 | LastPass        | `lpass`                 | `{{ secretJSON "show" "--json" <id> }}`           |
+| KeePassXC       | `keepassxc-cli`         | Not possible (interactive command only)           |
 | pass            | `pass`                  | `{{ secret "show" <id> }}`                        |
 
 ### Use templates variables to keep your secrets
@@ -391,34 +393,61 @@ Your `~/.local/share/chezmoi/private_dot_gitconfig.tmpl` can then contain:
 Any config files containing tokens in plain text should be private (permissions
 `0600`).
 
-## Run extra commands during chezmoi apply
+## Use scripts to perform actions
 
-chezmoi includes support for scripts which are run each time `chezmoi apply` is
-run. These can be useful for installing packages or performing other
-machine-specific configuration. Scripts are run in the destination directory and
-should be idempotent.
+### Understand how scripts work
 
-Scripts must be created manually in the source directory and have the
-prefix `run_`. For example:
-
-    $ chezmoi cd
-    $ cat > run_echo_hello
-    #!/bin/sh
-    echo hello
-    <Ctrl-D>
-    $ chezmoi apply
-    hello
-
-If a script has the suffix `.tmpl` then it is expanded as a template before
-being executed.
+chezmoi supports scripts, which are executed when you run `chezmoi apply`. The
+scripts can either run every time you run `chezmoi apply`, or only when their
+contents have changed.
 
 In verbose mode, the script's contents will be printed before executing it. In
 dry-run mode, the script is not executed.
 
-If you want a script to only run once, then give it the prefix `run_once_`.
-chezmoi will remember when it has executed a script and will only run it again
-if its name (excluding any `run_once_` prefix and `.tmpl` suffix) changes, or if
-its contents change.
+Scripts are any file in the source directory with the prefix `run_`, and are
+executed in alphabetical order. Scripts that should only be run when their
+contents change have the prefix `run_once_`.
+
+Scripts break chezmoi's declarative approach, and as such should be used
+sparingly. Any script should be idempotent, even `run_once_` scripts.
+
+Scripts must be created manually in the source directory, typically by running
+`chezmoi cd` and then creating a file with a `run_` prefix.
+
+Scripts with the suffix `.tmpl` are treated as templates, with the usual
+template variables available. If, after executing the template, the result is
+only whitespace or an empty string, then the script is not executed. This is
+useful for disabling scripts.
+
+### Install packages with scripts
+
+Change to the source directory and create a file called
+`run_once_install-packages.sh`:
+
+    chezmoi cd
+    $EDITOR run_once_install-packages.sh
+
+In this file create your package installation script, e.g.
+
+    #!/bin/sh
+    sudo apt install ripgrep
+
+The next time you run `chezmoi apply` or `chezmoi update` this script will be
+run. As it has the `run_once_` prefix, it will not be run again unless its
+contents change, for example if you add more packages to be installed.
+
+This script can also be a template. For example, if you create
+`run_once_install-packages.sh.tmpl` with the contents:
+
+    {{ if eq .chezmoi.os "linux" -}}
+    #!/bin/sh
+    sudo apt install ripgrep
+    {{ else if eq .chezmoi.os "darwin" -}}
+    #!/bin/sh
+    brew install ripgrep
+    {{ end -}}
+
+This will install `ripgrep` on both Debian/Ubuntu Linux systems and macOS.
 
 ## Import archives
 
@@ -447,7 +476,7 @@ target state. A particularly useful command is:
 
 which lists all the targets in the target state.
 
-## Use non-git version control systems
+## Use a non-git version control system
 
 By default, chezmoi uses git, but you can use any version control system of your
 choice. In your config file, specify the command to use. For example, to use
@@ -460,19 +489,3 @@ The source VCS command is used in the chezmoi commands `init`, `source`, and
 `update`, and support for VCSes other than git is limited but easy to add. If
 you'd like to see your VCS better supported, please [open an issue on
 Github](https://github.com/twpayne/chezmoi/issues/new).
-
-## Use chezmoi outside your home directory
-
-chezmoi, by default, operates on your home directory, but this can be overridden
-with the `--destination` command line flag or by specifying `destDir` in your config
-file. In theory, you could use chezmoi to manage any aspect of your filesystem.
-That said, although you can do this, you probably shouldn't. Existing
-configuration management tools like [Puppet](https://puppet.com/),
-[Chef](https://www.chef.io/chef/), [Ansible](https://www.ansible.com/), and
-[Salt](https://www.saltstack.com/) are much better suited to whole system
-configuration management.
-
-chezmoi was inspired by Puppet, but created because Puppet is a slow overkill
-for managing your personal configuration files. The focus of chezmoi will always
-be personal home directory management. If your needs grow beyond that, switch to
-a whole system configuration management tool.
