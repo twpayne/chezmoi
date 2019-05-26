@@ -1,16 +1,29 @@
-# Frequently asked questions
+# chezmoi Frequently Asked Questions
 
+* [How can I quickly check for problems with chezmoi on my machine?](#how-can-i-quickly-check-for-problems-with-chezmoi-on-my-machine)
 * [What are the consequences of "bare" modifications to the target files? If my `.zshrc` is managed by chezmoi and I edit `~/.zshrc` without using `chezmoi edit`, what happens?](#what-are-the-consequences-of-bare-modifications-to-the-target-files-if-my-zshrc-is-managed-by-chezmoi-and-i-edit-zshrc-without-using-chezmoi-edit-what-happens)
 * [How can I tell what dotfiles in my home directory aren't managed by chezmoi? Is there an easy way to have chezmoi manage a subset of them?](#how-can-i-tell-what-dotfiles-in-my-home-directory-arent-managed-by-chezmoi-is-there-an-easy-way-to-have-chezmoi-manage-a-subset-of-them)
 * [If there's a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?](#if-theres-a-mechanism-in-place-for-the-above-is-there-also-a-way-to-tell-chezmoi-to-ignore-specific-files-or-groups-of-files-eg-by-directory-name-or-by-glob)
 * [If the target already exists, but is "behind" the source, can chezmoi be configured to preserve the target version before replacing it with one derived from the source?](#if-the-target-already-exists-but-is-behind-the-source-can-chezmoi-be-configured-to-preserve-the-target-version-before-replacing-it-with-one-derived-from-the-source)
 * [I've made changes to both the destination state and the source state that I want to keep. How can I keep them both?](#ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both)
 * [How do I tell chezmoi to always delete a file?](#how-do-i-tell-chezmoi-to-always-delete-a-file)
+* [gpg encryption fails. What could be wrong?](#gpg-encryption-fails-what-could-be-wrong)
+* [What inspired chezmoi?](#what-inspired-chezmoi)
+* [Can I use chezmoi outside my home directory?](#can-i-use-chezmoi-outside-my-home-directory)
 * [Where does the name "chezmoi" come from?](#where-does-the-name-chezmoi-come-from)
 * [What other questions have been asked about chezmoi?](#what-other-questions-have-been-asked-about-chezmoi)
 * [Where do I ask a question that isn't answered here?](#where-do-i-ask-a-question-that-isnt-answered-here)
 
-## What are the consequences of "bare" modifications to the target files?  If my `.zshrc` is managed by chezmoi and I edit `~/.zshrc` without using `chezmoi edit`, what happens?
+## How can I quickly check for problems with chezmoi on my machine?
+
+Run:
+
+    chezmoi doctor
+
+Anything `ok` is fine, anything `warning` is only a problem if you want to use
+the related feature, and anything `error` indicates a definite problem.
+
+## What are the consequences of "bare" modifications to the target files? If my `.zshrc` is managed by chezmoi and I edit `~/.zshrc` without using `chezmoi edit`, what happens?
 
 chezmoi will overwrite the file the next time you run `chezmoi apply`. Until you
 run `chezmoi apply` your modified `~/.zshrc` will remain in place.
@@ -54,6 +67,39 @@ sequence of commands:
     chezmoi chattr noempty ~/.foo
 
 When you next run `chezmoi apply`, `~/.foo` will be deleted.
+
+## gpg encryption fails. What could be wrong?
+
+The `gpgRecipient` key should be ultimately trusted, otherwise encryption will
+fail because gpg will prompt for input, which chezmoi does not handle. You can
+check the trust level by running:
+
+    gpg --export-ownertrust
+
+The trust level for the recipient's key should be `6`. If it is not, you can
+change the trust level by running:
+
+    gpg --edit-key $gpgRecipient
+
+Enter `trust` at the prompt and chose `5 = I trust ultimately`.
+
+## What inspired chezmoi?
+
+chezmoi was inspired by [Puppet](https://puppet.com/), but created because
+Puppet is a slow overkill for managing your personal configuration files. The
+focus of chezmoi will always be personal home directory management. If your
+needs grow beyond that, switch to a whole system configuration management tool.
+
+## Can I use chezmoi outside my home directory?
+
+chezmoi, by default, operates on your home directory, but this can be overridden
+with the `--destination` command line flag or by specifying `destDir` in your config
+file. In theory, you could use chezmoi to manage any aspect of your filesystem.
+That said, although you can do this, you probably shouldn't. Existing
+configuration management tools like [Puppet](https://puppet.com/),
+[Chef](https://www.chef.io/chef/), [Ansible](https://www.ansible.com/), and
+[Salt](https://www.saltstack.com/) are much better suited to whole system
+configuration management.
 
 ## Where does the name "chezmoi" come from?
 

@@ -9,15 +9,15 @@ Manage your dotfiles across multiple machines, securely.
 
 * [Documentation](#documentation)
 * [What does chezmoi do and why should I use it?](#what-does-chezmoi-do-and-why-should-i-use-it)
-* [Features](#features)
+* [What are chezmoi's key features?](#what-are-chezmois-key-features)
 * [I already have a system to manage my dotfiles, why should I use chezmoi?](#i-already-have-a-system-to-manage-my-dotfiles-why-should-i-use-chezmoi)
-* [Related projects](#related-projects)
 * [License](#license)
 
 ## Documentation
 
-* [Installation guide](docs/INSTALL.md).
-* [Quick start guide](docs/QUICKSTART.md).
+* [Install guide](docs/INSTALL.md) to get chezmoi installed on your machine with
+  one or two commands.
+* [Quick start guide](docs/QUICKSTART.md) for your first steps.
 * [How-to guide](docs/HOWTO.md) for achieving specific tasks.
 * [FAQ](docs/FAQ.md) for questions that aren't answered elsewhere.
 * [Reference](docs/REFERENCE.md) for a complete description of chezmoi.
@@ -35,10 +35,15 @@ chezmoi has particularly strong support for security, allowing you to manage
 secrets (e.g. passwords, access tokens, and private keys) securely and
 seamlessly using either gpg encryption or a password manager of your choice.
 
-If you do not personalize your configuration or only ever use a single operating
-system with a single account then you don't need chezmoi. Otherwise, read on...
+In all cases you only need to maintain a single source of truth: a single branch
+in a version control system (e.g. git) for everything public and a single
+password manager for all your secrets, with seamless integration between them.
 
-## Features
+If you do not personalize your configuration or only ever use a single operating
+system with a single account and none of your dotfiles contain secrets then you
+don't need chezmoi. Otherwise, read on...
+
+## What are chezmoi's key features?
 
 * Flexible: You can share as much configuration across machines as you want,
   while still being able to control machine-specific details. You only need to
@@ -111,10 +116,6 @@ system with a single account then you don't need chezmoi. Otherwise, read on...
   installs, statically-linked binaries, packages for many Linux and BSD
   distributions, Homebrew formulae, and a initial config file generation
   mechanism to make overcoming the bootstrap problem as painless as possible.
-
-## Related projects
-
-See [`dotfiles.github.io`](https://dotfiles.github.io/).
 
 ## License
 

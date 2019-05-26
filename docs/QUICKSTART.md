@@ -1,4 +1,4 @@
-# Quick start
+# chezmoi Quick Start Guide
 
 chezmoi evaluates the source state for the current machine and then updates the
 destination directory, where:
@@ -27,12 +27,8 @@ Initialize chezmoi:
     chezmoi init
 
 This will create a new git repository in `~/.local/share/chezmoi` with
-permissions `0700` where chezmoi will store the source state.  chezmoi generally
-only modifies files in the working copy. It is your responsibility to commit
-changes.
-
-chezmoi works with many other version control systems too. See "Using non-git
-version control systems" below if you don't want to use git.
+permissions `0700` where chezmoi will store the source state.  chezmoi only
+modifies files in the working copy. It is your responsibility to commit changes.
 
 Manage an existing file with chezmoi:
 
@@ -71,3 +67,6 @@ where you were:
 For a full list of commands run:
 
     chezmoi help
+
+chezmoi has much more functionality. Read the [how-to guide](HOWTO.md) to
+explore.
