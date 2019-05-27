@@ -336,11 +336,15 @@ func TestAddCommand(t *testing.T) {
 		{
 			name: "dest_dir_is_symlink",
 			args: []string{"/home/user/foo"},
-			root: map[string]interface{}{
-				"/home/user":                &vfst.Symlink{Target: "../local/home/user"},
-				"/local/home/user/.chezmoi": &vfst.Dir{Perm: 0700},
-				"/local/home/user/foo":      "bar",
-			},
+			root: []interface{}{
+                map[string]interface{}{
+                    "/local/home/user/.chezmoi": &vfst.Dir{Perm: 0700},
+                    "/local/home/user/foo":      "bar",
+                },
+                map[string]interface{}{
+                    "/home/user":                &vfst.Symlink{Target: "../local/home/user"},
+                },
+            },
 			tests: []vfst.Test{
 				vfst.TestPath("/home/user/.chezmoi",
 					vfst.TestIsDir,
@@ -385,16 +389,20 @@ func TestAddCommand(t *testing.T) {
 }
 
 func TestIssue192(t *testing.T) {
-	root := map[string]interface{}{
-		"/local/home/offbyone": &vfst.Dir{
-			Perm: 0750,
-			Entries: map[string]interface{}{
-				".local/share/chezmoi": &vfst.Dir{Perm: 0700},
-				"snoop/.list":          "# contents of .list\n",
-			},
-		},
-		"/home/offbyone": &vfst.Symlink{Target: "/local/home/offbyone/"},
-	}
+	root := []interface{}{
+	    map[string]interface{}{
+            "/local/home/offbyone": &vfst.Dir{
+                Perm: 0750,
+                Entries: map[string]interface{}{
+                    ".local/share/chezmoi": &vfst.Dir{Perm: 0700},
+                    "snoop/.list":          "# contents of .list\n",
+                },
+            },
+        },
+	    map[string]interface{}{
+            "/home/offbyone": &vfst.Symlink{Target: "/local/home/offbyone/"},
+        },
+    }
 	c := &Config{
 		SourceDir: "/home/offbyone/.local/share/chezmoi",
 		DestDir:   "/home/offbyone",

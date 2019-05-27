@@ -7,11 +7,27 @@ import (
     "syscall"
     "os"
 
+    "github.com/hectane/go-acl"
     "github.com/google/renameio"
     "golang.org/x/sys/windows"
 
     vfs "github.com/twpayne/go-vfs"
 )
+
+// TODO: this should probably just erase Everyone's permissions
+func (a *FSMutator) MakePrivate(file string, umask os.FileMode) error {
+    return a.Chmod(file, 0700&^umask)
+}
+
+func (a *FSMutator) IsPrivate(fi os.FileInfo, umask os.FileMode) bool {
+    mode, err := acl.GetFileMode(fi.Name())
+    if err != nil {
+        return false
+    }
+
+    // on windows, a file is private if "Everyone" has no permissions on it.
+    return (mode & 0007) == 0
+}
 
 // WriteFile implements Mutator.WriteFile.
 func (a *FSMutator) WriteFile(name string, data []byte, perm os.FileMode, currData []byte) error {

@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+	"runtime"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -245,76 +246,7 @@ func TestApplyScript(t *testing.T) {
 	defer func() {
 		require.NoError(t, os.RemoveAll(tempDir))
 	}()
-	for _, tc := range []struct {
-		name  string
-		root  interface{}
-		data  map[string]interface{}
-		tests []vfst.Test
-	}{
-		{
-			name: "simple",
-			root: map[string]interface{}{
-				"/home/user/.local/share/chezmoi/run_true": "#!/bin/sh\necho foo >>" + filepath.Join(tempDir, "evidence") + "\n",
-			},
-			tests: []vfst.Test{
-				vfst.TestPath(filepath.Join(tempDir, "evidence"),
-					vfst.TestModeIsRegular,
-					vfst.TestContentsString("foo\nfoo\nfoo\n"),
-				),
-			},
-		},
-		{
-			name: "simple_once",
-			root: map[string]interface{}{
-				"/home/user/.local/share/chezmoi/run_once_true": "#!/bin/sh\necho foo >>" + filepath.Join(tempDir, "evidence") + "\n",
-			},
-			tests: []vfst.Test{
-				vfst.TestPath(filepath.Join(tempDir, "evidence"),
-					vfst.TestModeIsRegular,
-					vfst.TestContentsString("foo\n"),
-				),
-			},
-		},
-		{
-			name: "template",
-			root: map[string]interface{}{
-				"/home/user/.local/share/chezmoi/run_true.tmpl": "#!/bin/sh\necho {{ .Foo }} >>" + filepath.Join(tempDir, "evidence") + "\n",
-			},
-			data: map[string]interface{}{
-				"Foo": "foo",
-			},
-			tests: []vfst.Test{
-				vfst.TestPath(filepath.Join(tempDir, "evidence"),
-					vfst.TestModeIsRegular,
-					vfst.TestContentsString("foo\nfoo\nfoo\n"),
-				),
-			},
-		},
-		{
-			name: "issue_353",
-			root: map[string]interface{}{
-				"/home/user/.local/share/chezmoi": map[string]interface{}{
-					"run_050_giraffe":       "#!/usr/bin/env bash\necho giraffe >>" + filepath.Join(tempDir, "evidence") + "\n",
-					"run_150_elephant":      "#!/usr/bin/env bash\necho elephant >>" + filepath.Join(tempDir, "evidence") + "\n",
-					"run_once_100_miauw.sh": "#!/usr/bin/env bash\necho miauw >>" + filepath.Join(tempDir, "evidence") + "\n",
-				},
-			},
-			tests: []vfst.Test{
-				vfst.TestPath(filepath.Join(tempDir, "evidence"),
-					vfst.TestModeIsRegular,
-					vfst.TestContentsString(strings.Join([]string{
-						"giraffe\n",
-						"miauw\n",
-						"elephant\n",
-						"giraffe\n",
-						"elephant\n",
-						"giraffe\n",
-						"elephant\n",
-					}, "")),
-				),
-			},
-		},
-	} {
+	for _, tc := range getApplyScriptTestCases(tempDir) {
 		t.Run(tc.name, func(t *testing.T) {
 			fs := vfs.NewPathFS(vfs.OSFS, tempDir)
 			defer func() {
@@ -352,10 +284,14 @@ func TestApplyRunOnce(t *testing.T) {
 	}()
 	tempFile := filepath.Join(tempDir, "foo")
 
-	fs, cleanup, err := vfst.NewTestFS(map[string]interface{}{
-		filepath.Dir(statePath):                             &vfst.Dir{Perm: 0755},
-		"/home/user/.local/share/chezmoi/run_once_foo.tmpl": "#!/bin/sh\necho bar >> {{ .TempFile }}\n",
-	})
+	fs, cleanup, err := vfst.NewTestFS(
+	    []interface{}{
+	        map[string]interface{}{
+                filepath.Dir(statePath): &vfst.Dir{Perm: 0755},
+            },
+            getRunOnceFiles(),
+        },
+    )
 	require.NoError(t, err)
 	defer cleanup()
 
@@ -379,12 +315,20 @@ func TestApplyRunOnce(t *testing.T) {
 			vfst.TestModeIsRegular,
 		),
 	)
+
+	var lineBreak string
+	if runtime.GOOS != "windows" {
+	    lineBreak = "\n"
+    } else {
+	    lineBreak = "\r\n"
+    }
+
 	actualData, err := ioutil.ReadFile(tempFile)
 	require.NoError(t, err)
-	assert.Equal(t, []byte("bar\n"), actualData)
+	assert.Equal(t, []byte("bar" + lineBreak), actualData)
 
 	require.NoError(t, c.runApplyCmd(fs, nil))
 	actualData, err = ioutil.ReadFile(tempFile)
 	require.NoError(t, err)
-	assert.Equal(t, []byte("bar\n"), actualData)
+	assert.Equal(t, []byte("bar" + lineBreak), actualData)
 }

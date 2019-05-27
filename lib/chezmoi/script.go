@@ -121,10 +121,14 @@ func (s *Script) Apply(fs vfs.FS, mutator Mutator, applyOptions *ApplyOptions) e
 	}
 
 	// Write the temporary script file.
-	f, err := ioutil.TempFile("", filepath.Base(s.targetName))
+    pathBase := filepath.Base(s.targetName)
+    pathBase = strings.Replace(pathBase, "#", "*", 1)
+
+	f, err := ioutil.TempFile("", pathBase)
 	if err != nil {
 		return err
 	}
+
 	defer func() {
 		_ = os.RemoveAll(f.Name())
 	}()

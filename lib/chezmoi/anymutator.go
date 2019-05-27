@@ -17,6 +17,17 @@ func NewAnyMutator(m Mutator) *AnyMutator {
 	}
 }
 
+// IsPrivate implements Mutator.IsPrivate.
+func (m *AnyMutator) IsPrivate(file os.FileInfo, umask os.FileMode) bool {
+    return m.m.IsPrivate(file, umask)
+}
+
+// MakePrivate implements Mutator.MakePrivate.
+func (m *AnyMutator) MakePrivate(name string, umask os.FileMode) error {
+    m.mutated = true
+    return m.m.MakePrivate(name, umask)
+}
+
 // Chmod implements Mutator.Chmod.
 func (m *AnyMutator) Chmod(name string, mode os.FileMode) error {
 	m.mutated = true

@@ -50,7 +50,7 @@ func (c *Config) runAddCmd(fs vfs.FS, args []string) (err error) {
 	if err := c.ensureSourceDirectory(fs, mutator); err != nil {
 		return err
 	}
-	destDirPrefix := ts.DestDir + "/"
+	destDirPrefix := filepath.FromSlash(ts.DestDir + "/")
 	var quit int // quit is an int with a unique address
 	defer func() {
 		if r := recover(); r != nil {

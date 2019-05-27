@@ -177,8 +177,8 @@ func (c *Config) ensureSourceDirectory(fs vfs.Stater, mutator chezmoi.Mutator) e
 	info, err := fs.Stat(c.SourceDir)
 	switch {
 	case err == nil && info.IsDir():
-		if info.Mode().Perm()&^os.FileMode(c.Umask) != 0700&^os.FileMode(c.Umask) {
-			if err := mutator.Chmod(c.SourceDir, 0700&^os.FileMode(c.Umask)); err != nil {
+		if !mutator.IsPrivate(info, os.FileMode(c.Umask)) {
+			if err := mutator.MakePrivate(c.SourceDir, os.FileMode(c.Umask)); err != nil {
 				return err
 			}
 		}
@@ -250,12 +250,15 @@ func (c *Config) getTargetState(fs vfs.FS, populateOptions *chezmoi.PopulateOpti
 	for key, value := range c.Data {
 		data[key] = value
 	}
-	// For backwards compatibility, prioritize gpgRecipient over gpg.recipient.
-	if c.GPGRecipient != "" {
-		c.GPG.Recipient = c.GPGRecipient
-	}
-	ts := chezmoi.NewTargetState(c.DestDir, os.FileMode(c.Umask), c.SourceDir, data, c.templateFuncs, &c.GPG)
-	if err := ts.Populate(fs, populateOptions); err != nil {
+
+    destDir, err := filepath.Abs(c.DestDir)
+    if err != nil {
+        return nil, err
+    }
+
+	ts := chezmoi.NewTargetState(destDir, os.FileMode(c.Umask), c.SourceDir, data, c.templateFuncs, c.GPGRecipient)
+	readOnlyFS := vfs.NewReadOnlyFS(fs)
+	if err := ts.Populate(readOnlyFS); err != nil {
 		return nil, err
 	}
 	if Version != nil && ts.MinVersion != nil && Version.LessThan(*ts.MinVersion) {
@@ -354,9 +357,10 @@ func getDefaultData(fs vfs.FS) (map[string]interface{}, error) {
 	group, err := user.LookupGroupId(currentUser.Gid)
 	if err == nil {
 		data["group"] = group.Name
-	} else if cgoEnabled {
-		// Only return an error if CGO is enabled.
-		// return nil, err
+	} else if cgoEnabled && runtime.GOOS != "windows" {
+        // Only return an error if CGO is enabled and the platform is
+        // non-Windows (groups don't really mean much on Windows).
+		return nil, err
 	}
 
 	homedir, err := os.UserHomeDir()
