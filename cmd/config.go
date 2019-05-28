@@ -251,9 +251,12 @@ func (c *Config) getTargetState(fs vfs.FS, populateOptions *chezmoi.PopulateOpti
 		data[key] = value
 	}
 
-    destDir, err := filepath.Abs(c.DestDir)
-    if err != nil {
-        return nil, err
+    destDir := c.DestDir
+    if destDir != "" {
+        destDir, err = filepath.Abs(c.DestDir)
+        if err != nil {
+            return nil, err
+        }
     }
 
 	ts := chezmoi.NewTargetState(destDir, os.FileMode(c.Umask), c.SourceDir, data, c.templateFuncs, c.GPGRecipient)
