@@ -10,10 +10,10 @@ import (
 var completionCmd = &cobra.Command{
 	Use:       "completion shell",
 	Args:      cobra.ExactArgs(1),
-	Short:     "Output shell completion code for the specified shell (bash or zsh)",
+	Short:     "Output shell completion code for the specified shell (bash, fish or zsh)",
 	Long:      mustGetLongHelp("completion"),
 	Example:   getExample("completion"),
-	ValidArgs: []string{"bash", "zsh"},
+	ValidArgs: []string{"bash", "fish", "zsh"},
 	RunE:      makeRunE(config.runCompletion),
 }
 
@@ -27,6 +27,8 @@ func (c *Config) runCompletion(fs vfs.FS, args []string) error {
 		return rootCmd.GenBashCompletion(c.Stdout())
 	case "zsh":
 		return rootCmd.GenZshCompletion(c.Stdout())
+	case "fish":
+		return rootCmd.GenFishCompletion(c.Stdout())
 	default:
 		return errors.New("unsupported shell")
 	}

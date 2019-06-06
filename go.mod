@@ -15,14 +15,13 @@ require (
 	github.com/google/uuid v1.1.0 // indirect
 	github.com/huandu/xstrings v1.2.0 // indirect
 	github.com/imdario/mergo v0.3.7 // indirect
-	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/kr/text v0.1.0
 	github.com/mattn/go-isatty v0.0.7
 	github.com/russross/blackfriday/v2 v2.0.1
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
 	github.com/spf13/afero v1.2.2 // indirect
-	github.com/spf13/cobra v0.0.3
-	github.com/spf13/viper v1.3.1
+	github.com/spf13/cobra v0.0.4
+	github.com/spf13/viper v1.3.2
 	github.com/stretchr/objx v0.2.0 // indirect
 	github.com/stretchr/testify v1.3.0
 	github.com/twpayne/go-difflib v1.3.0
@@ -37,3 +36,6 @@ require (
 	golang.org/x/sys v0.0.0-20190310054646-10058d7d4faa // indirect
 	gopkg.in/yaml.v2 v2.2.2
 )
+
+// Temporary while waiting for https://github.com/spf13/cobra/pull/754 to be merged
+replace github.com/spf13/cobra => github.com/0robustus1/cobra v0.0.4-0.20190522074606-64400adf086c
