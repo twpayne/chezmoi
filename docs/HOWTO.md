@@ -20,6 +20,7 @@
 * [Import archives](#import-archives)
 * [Export archives](#export-archives)
 * [Use a non-git version control system](#use-a-non-git-version-control-system)
+* [Use a merge tool other than vimdiff](#use-a-merge-tool-other-than-vimdiff)
 
 ## Use a hosted repo to manage your dotfiles across multiple machines
 
@@ -489,3 +490,13 @@ The source VCS command is used in the chezmoi commands `init`, `source`, and
 `update`, and support for VCSes other than git is limited but easy to add. If
 you'd like to see your VCS better supported, please [open an issue on
 Github](https://github.com/twpayne/chezmoi/issues/new).
+
+## Use a merge tool other than vimdiff
+
+By default, chezmoi uses vimdiff, but you can use any merge tool of your choice.
+In your config file, specify the command and args to use.  For example, to use
+neovim's diff mode specify:
+
+    [merge]
+      command = "nvim"
+      args = "-d"
