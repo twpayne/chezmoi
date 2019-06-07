@@ -120,8 +120,15 @@ func (c *Config) createConfigFile(fs vfs.FS, mutator chezmoi.Mutator) error {
 		return err
 	}
 
+	defaultData, err := getDefaultData(fs)
+	if err != nil {
+		return err
+	}
+
 	contents := &bytes.Buffer{}
-	if err = t.Execute(contents, nil); err != nil {
+	if err = t.Execute(contents, map[string]interface{}{
+		"chezmoi": defaultData,
+	}); err != nil {
 		return err
 	}
 
