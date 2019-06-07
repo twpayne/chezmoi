@@ -15,9 +15,10 @@ Manage your dotfiles securely across multiple machines.
 * [Configuration file](#configuration-file)
   * [Configuration variables](#configuration-variables)
 * [Attributes](#attributes)
-* [Special files](#special-files)
+* [Special files and directories](#special-files-and-directories)
   * [`.chezmoi.<format>.tmpl`](#chezmoiformattmpl)
   * [`.chezmoiignore`](#chezmoiignore)
+  * [`.chezmoitemplates`](#chezmoitemplates)
   * [`.chezmoiversion`](#chezmoiversion)
 * [Commands](#commands)
   * [`add` *targets*](#add-targets)
@@ -201,7 +202,7 @@ Different target types allow different prefixes and suffixes:
 | Script        | `run_`, `once_`, `.tmpl`                                           |
 | Symbolic link | `symlink_`, `dot_`, `.tmpl`                                        |
 
-## Special files
+## Special files and directories
 
 All files and directories in the source state whose name begins with `.` are
 ignored by default, unless they are one of the special files listed here.
@@ -238,6 +239,25 @@ implementation and corner case behaviour may differ.
     {{- if ne .email "john@home.org }}
     .personal-file
     {{- end }}
+
+### `.chezmoitemplates`
+
+If a directory called `.chezmoitemplates` exists, then all files in this
+directory are parsed as templates are available as templates with a name equal
+to the base name of the file. If more than one file has the same basename then
+the last one wins.
+
+#### `.chezmoitemplates` examples
+
+Given:
+
+    .chezmoitemplates/foo
+    {{ if true }}bar{{ end }}
+
+    dot_config.tmpl
+    {{ template "foo" }}
+
+The target state of `.config` will be `bar`.
 
 ### `.chezmoiversion`
 

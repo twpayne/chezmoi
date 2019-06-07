@@ -78,6 +78,15 @@ func TestApplyCommand(t *testing.T) {
 				"/home/user/symlink": &vfst.Symlink{Target: "file"},
 			},
 		},
+		{
+			name: "templates_dir",
+			root: map[string]interface{}{
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
+					"dir/file.tmpl":         `{{ template "foo" }}`,
+					".chezmoitemplates/foo": "{{ if true }}contents{{ end }}",
+				},
+			},
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			tc.root["/home/user/.local/share/chezmoi/dir/file"] = "contents"

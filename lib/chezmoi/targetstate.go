@@ -21,8 +21,9 @@ import (
 )
 
 const (
-	ignoreName  = ".chezmoiignore"
-	versionName = ".chezmoiversion"
+	ignoreName       = ".chezmoiignore"
+	templatesDirName = ".chezmoitemplates"
+	versionName      = ".chezmoiversion"
 )
 
 // An AddOptions contains options for TargetState.Add.
@@ -48,6 +49,7 @@ type TargetState struct {
 	SourceDir     string
 	Data          map[string]interface{}
 	TemplateFuncs template.FuncMap
+	Templates     map[string]*template.Template
 	GPGRecipient  string
 	Entries       map[string]Entry
 	MinVersion    *semver.Version
@@ -293,6 +295,11 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 			case info.Name() == ignoreName:
 				dns := dirNames(parseDirNameComponents(splitPathList(relPath)))
 				return ts.addSourceIgnore(fs, path, filepath.Join(dns...))
+			case info.Name() == templatesDirName:
+				if err := ts.addTemplatesDir(fs, path); err != nil {
+					return err
+				}
+				return filepath.SkipDir
 			case info.Name() == versionName:
 				data, err := fs.ReadFile(path)
 				if err != nil {
@@ -565,6 +572,35 @@ func (ts *TargetState) addSymlink(targetName string, entries map[string]Entry, p
 	return mutator.WriteFile(filepath.Join(ts.SourceDir, symlink.sourceName), []byte(symlink.linkname), 0666&^ts.Umask, []byte(existingLinkname))
 }
 
+func (ts *TargetState) addTemplatesDir(fs vfs.FS, path string) error {
+	return vfs.Walk(fs, path, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		switch {
+		case info.Mode().IsRegular():
+			contents, err := fs.ReadFile(path)
+			if err != nil {
+				return err
+			}
+			name := filepath.Base(path)
+			tmpl, err := template.New(name).Parse(string(contents))
+			if err != nil {
+				return err
+			}
+			if ts.Templates == nil {
+				ts.Templates = make(map[string]*template.Template)
+			}
+			ts.Templates[name] = tmpl
+			return nil
+		case info.IsDir():
+			return nil
+		default:
+			return fmt.Errorf("unsupported file in %s: %s", templatesDirName, path)
+		}
+	})
+}
+
 func (ts *TargetState) executeTemplate(fs vfs.FS, path string) ([]byte, error) {
 	data, err := fs.ReadFile(path)
 	if err != nil {
@@ -577,6 +613,12 @@ func (ts *TargetState) executeTemplateData(name string, data []byte) (_ []byte, 
 	tmpl, err := template.New(name).Option("missingkey=error").Funcs(ts.TemplateFuncs).Parse(string(data))
 	if err != nil {
 		return nil, err
+	}
+	for name, t := range ts.Templates {
+		tmpl, err = tmpl.AddParseTree(name, t.Tree)
+		if err != nil {
+			return nil, err
+		}
 	}
 	defer func() {
 		if r := recover(); r != nil {
