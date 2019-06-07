@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bytes"
+	"runtime"
 	"strings"
 	"testing"
 
@@ -19,6 +20,7 @@ func TestCreateConfigFile(t *testing.T) {
 			`data:`,
 			`    email: "{{ $email }}"`,
 			`    mailtoURL: "mailto:{{ $email }}"`,
+			`    os: "{{ .chezmoi.os }}"`,
 		}, "\n"),
 	})
 	require.NoError(t, err)
@@ -41,6 +43,7 @@ func TestCreateConfigFile(t *testing.T) {
 				`data:`,
 				`    email: "grace.hopper@example.com"`,
 				`    mailtoURL: "mailto:grace.hopper@example.com"`,
+				`    os: "` + runtime.GOOS + `"`,
 			}, "\n")),
 		),
 	)
@@ -48,5 +51,6 @@ func TestCreateConfigFile(t *testing.T) {
 	assert.Equal(t, map[string]interface{}{
 		"email":     "grace.hopper@example.com",
 		"mailtourl": "mailto:grace.hopper@example.com",
+		"os":        runtime.GOOS,
 	}, conf.Data)
 }
