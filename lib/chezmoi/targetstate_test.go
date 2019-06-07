@@ -442,6 +442,37 @@ func TestTargetStatePopulate(t *testing.T) {
 				MinVersion: semver.Must(semver.NewVersion("1.2.3")),
 			},
 		},
+		{
+			name: "empty_template_dir",
+			root: map[string]interface{}{
+				"/.chezmoitemplates": &vfst.Dir{Perm: 0755},
+			},
+			sourceDir: "/",
+			want: &TargetState{
+				DestDir:      "/",
+				TargetIgnore: NewPatternSet(),
+				Umask:        0,
+				SourceDir:    "/",
+				Entries:      map[string]Entry{},
+			},
+		},
+		{
+			name: "template_dir",
+			root: map[string]interface{}{
+				"/.chezmoitemplates/foo": "bar",
+			},
+			sourceDir: "/",
+			want: &TargetState{
+				DestDir:      "/",
+				TargetIgnore: NewPatternSet(),
+				Umask:        0,
+				SourceDir:    "/",
+				Entries:      map[string]Entry{},
+				Templates: map[string]*template.Template{
+					"foo": template.Must(template.New("foo").Parse("bar")),
+				},
+			},
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			fs, cleanup, err := vfst.NewTestFS(tc.root)
