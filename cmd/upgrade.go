@@ -435,7 +435,7 @@ func getMethod(fs vfs.Stater, executableFilename string) (string, error) {
 		}
 	case "openbsd":
 		return methodReplaceExecutable, nil
-    // TODO: do something reasonable on windows
+		// TODO: do something reasonable on windows
 	default:
 		return "", fmt.Errorf("%s: unsupported GOOS", runtime.GOOS)
 	}

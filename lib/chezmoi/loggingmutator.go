@@ -31,7 +31,7 @@ func NewLoggingMutator(w io.Writer, m Mutator, colored bool) *LoggingMutator {
 func (m *LoggingMutator) IsPrivate(file string, umask os.FileMode) bool {
 	action := fmt.Sprintf("IsPrivate %o %s", umask, file)
 	result := m.m.IsPrivate(file, umask)
-    _, _ = fmt.Fprintf(m.w, "%s: %v\n", action, result)
+	_, _ = fmt.Fprintf(m.w, "%s: %v\n", action, result)
 	return result
 }
 

@@ -208,8 +208,8 @@ func TestTargetStatePopulate(t *testing.T) {
 						Perm:       0777,
 						Entries: map[string]Entry{
 							"bar": &File{
-								sourceName: filepath.Join("foo","bar"),
-								targetName: filepath.Join("foo","bar"),
+								sourceName: filepath.Join("foo", "bar"),
+								targetName: filepath.Join("foo", "bar"),
 								Perm:       0666,
 								contents:   []byte("baz"),
 							},
@@ -238,8 +238,8 @@ func TestTargetStatePopulate(t *testing.T) {
 						Perm:       0700,
 						Entries: map[string]Entry{
 							"bar": &File{
-								sourceName: filepath.Join("private_dot_foo","bar"),
-								targetName: filepath.Join(".foo","bar"),
+								sourceName: filepath.Join("private_dot_foo", "bar"),
+								targetName: filepath.Join(".foo", "bar"),
 								Perm:       0666,
 								contents:   []byte("baz"),
 							},
@@ -297,8 +297,8 @@ func TestTargetStatePopulate(t *testing.T) {
 						Perm:       0777,
 						Entries: map[string]Entry{
 							"foo": &File{
-								sourceName: filepath.Join("exact_dir","foo"),
-								targetName: filepath.Join("dir","foo"),
+								sourceName: filepath.Join("exact_dir", "foo"),
+								targetName: filepath.Join("dir", "foo"),
 								Perm:       0666,
 								contents:   []byte("bar"),
 							},

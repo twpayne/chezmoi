@@ -178,7 +178,7 @@ func (c *Config) ensureSourceDirectory(fs vfs.Stater, mutator chezmoi.Mutator) e
 	switch {
 	case err == nil && info.IsDir():
 		if !mutator.IsPrivate(c.SourceDir, os.FileMode(c.Umask)) {
-            if err := mutator.Chmod(c.SourceDir, 0700&^os.FileMode(c.Umask)); err != nil {
+			if err := mutator.Chmod(c.SourceDir, 0700&^os.FileMode(c.Umask)); err != nil {
 				return err
 			}
 		}
@@ -251,13 +251,13 @@ func (c *Config) getTargetState(fs vfs.FS, populateOptions *chezmoi.PopulateOpti
 		data[key] = value
 	}
 
-    destDir := c.DestDir
-    if destDir != "" {
-        destDir, err = filepath.Abs(c.DestDir)
-        if err != nil {
-            return nil, err
-        }
-    }
+	destDir := c.DestDir
+	if destDir != "" {
+		destDir, err = filepath.Abs(c.DestDir)
+		if err != nil {
+			return nil, err
+		}
+	}
 
 	ts := chezmoi.NewTargetState(destDir, os.FileMode(c.Umask), c.SourceDir, data, c.templateFuncs, c.GPGRecipient)
 	readOnlyFS := vfs.NewReadOnlyFS(fs)
@@ -361,8 +361,8 @@ func getDefaultData(fs vfs.FS) (map[string]interface{}, error) {
 	if err == nil {
 		data["group"] = group.Name
 	} else if cgoEnabled && runtime.GOOS != "windows" {
-        // Only return an error if CGO is enabled and the platform is
-        // non-Windows (groups don't really mean much on Windows).
+		// Only return an error if CGO is enabled and the platform is
+		// non-Windows (groups don't really mean much on Windows).
 		return nil, err
 	}
 

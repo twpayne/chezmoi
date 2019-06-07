@@ -4,16 +4,16 @@ package chezmoi
 
 import (
 	"errors"
+	"os"
 	"path/filepath"
 	"syscall"
-	"os"
 
 	"github.com/google/renameio"
 	vfs "github.com/twpayne/go-vfs"
 )
 
 func (a *FSMutator) IsPrivate(file string, umask os.FileMode) bool {
-    return a.Stat().Mode().Perm() &^ umask != 0700 &^ umask
+	return a.Stat().Mode().Perm()&^umask != 0700&^umask
 }
 
 // WriteFile implements Mutator.WriteFile.

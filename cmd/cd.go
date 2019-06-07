@@ -29,19 +29,18 @@ func (c *Config) runCDCmd(fs vfs.FS, args []string) error {
 		return err
 	}
 
-    shell, err := shell.CurrentUserShell()
-    if err != nil {
-        return err
-    }
+	shell, err := shell.CurrentUserShell()
+	if err != nil {
+		return err
+	}
 
-    if (runtime.GOOS != "windows") {
-        if err := os.Chdir(c.SourceDir); err != nil {
-            return err
-        }
+	if runtime.GOOS != "windows" {
+		if err := os.Chdir(c.SourceDir); err != nil {
+			return err
+		}
 
-        return c.exec([]string{shell})
-    }
+		return c.exec([]string{shell})
+	}
 
-    return c.run(c.SourceDir, shell)
-
+	return c.run(c.SourceDir, shell)
 }

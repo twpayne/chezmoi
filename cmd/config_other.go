@@ -3,9 +3,11 @@
 package cmd
 
 import (
-    "fmt"
-    "syscall"
-    "os/exec"
+	"fmt"
+	"os"
+	"os/exec"
+	"strings"
+	"syscall"
 )
 
 func (c *Config) exec(argv []string) error {
@@ -22,4 +24,3 @@ func (c *Config) exec(argv []string) error {
 
 	return syscall.Exec(path, argv, os.Environ())
 }
-

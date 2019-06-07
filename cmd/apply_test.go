@@ -4,9 +4,8 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"strings"
-	"testing"
 	"runtime"
+	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -285,13 +284,13 @@ func TestApplyRunOnce(t *testing.T) {
 	tempFile := filepath.Join(tempDir, "foo")
 
 	fs, cleanup, err := vfst.NewTestFS(
-	    []interface{}{
-	        map[string]interface{}{
-                filepath.Dir(statePath): &vfst.Dir{Perm: 0755},
-            },
-            getRunOnceFiles(),
-        },
-    )
+		[]interface{}{
+			map[string]interface{}{
+				filepath.Dir(statePath): &vfst.Dir{Perm: 0755},
+			},
+			getRunOnceFiles(),
+		},
+	)
 	require.NoError(t, err)
 	defer cleanup()
 
@@ -318,17 +317,17 @@ func TestApplyRunOnce(t *testing.T) {
 
 	var lineBreak string
 	if runtime.GOOS != "windows" {
-	    lineBreak = "\n"
-    } else {
-	    lineBreak = "\r\n"
-    }
+		lineBreak = "\n"
+	} else {
+		lineBreak = "\r\n"
+	}
 
 	actualData, err := ioutil.ReadFile(tempFile)
 	require.NoError(t, err)
-	assert.Equal(t, []byte("bar" + lineBreak), actualData)
+	assert.Equal(t, []byte("bar"+lineBreak), actualData)
 
 	require.NoError(t, c.runApplyCmd(fs, nil))
 	actualData, err = ioutil.ReadFile(tempFile)
 	require.NoError(t, err)
-	assert.Equal(t, []byte("bar" + lineBreak), actualData)
+	assert.Equal(t, []byte("bar"+lineBreak), actualData)
 }

@@ -1,7 +1,7 @@
 package cmd
 
 import (
-    "runtime"
+	"runtime"
 	"testing"
 	"time"
 
@@ -31,22 +31,22 @@ func TestSecretJSONFunc(t *testing.T) {
 	var args []string
 
 	if runtime.GOOS != "windows" {
-        c = &Config{
-            GenericSecret: genericSecretCmdConfig{
-                Command: "date",
-            },
-        }
-        args = []string{`+{"date":"%Y-%M-%DT%H:%M:%SZ"}`}
-    } else {
-        // Windows doesn't (usually) have "date", but powershell is included with
-        // all versions of Windows v7 or newer.
-        c = &Config{
-            GenericSecret: genericSecretCmdConfig{
-                Command: "powershell.exe",
-            },
-        }
-        args = []string{"-Command", "Get-Date | ConvertTo-Json"}
-    }
+		c = &Config{
+			GenericSecret: genericSecretCmdConfig{
+				Command: "date",
+			},
+		}
+		args = []string{`+{"date":"%Y-%M-%DT%H:%M:%SZ"}`}
+	} else {
+		// Windows doesn't (usually) have "date", but powershell is included with
+		// all versions of Windows v7 or newer.
+		c = &Config{
+			GenericSecret: genericSecretCmdConfig{
+				Command: "powershell.exe",
+			},
+		}
+		args = []string{"-Command", "Get-Date | ConvertTo-Json"}
+	}
 
 	var value interface{}
 	assert.NotPanics(t, func() {

@@ -6,7 +6,7 @@ import "os"
 type NullMutator struct{}
 
 func (NullMutator) IsPrivate(fi string, umask os.FileMode) bool {
-    return false
+	return false
 }
 
 // Chmod implements Mutator.Chmod.

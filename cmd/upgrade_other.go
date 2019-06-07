@@ -3,7 +3,8 @@
 package cmd
 
 import (
-    "os"
+	"os"
+	"syscall"
 )
 
 func getOwner(info os.FileInfo) int {

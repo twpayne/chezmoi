@@ -10,8 +10,8 @@ import (
 	"os"
 	"os/user"
 	"path/filepath"
-	"sort"
 	"runtime"
+	"sort"
 	"strconv"
 	"strings"
 	"text/template"
@@ -234,37 +234,37 @@ func (ts *TargetState) Archive(w *tar.Writer, umask os.FileMode) error {
 	now := time.Now()
 
 	var headerTemplate tar.Header
-        if runtime.GOOS != "windows" {
-        uid, err := strconv.Atoi(currentUser.Uid)
-        if err != nil {
-            return err
-        }
-        gid, err := strconv.Atoi(currentUser.Gid)
-        if err != nil {
-            return err
-        }
-        group, err := user.LookupGroupId(currentUser.Gid)
-        if err != nil {
-            return err
-        }
+	if runtime.GOOS != "windows" {
+		uid, err := strconv.Atoi(currentUser.Uid)
+		if err != nil {
+			return err
+		}
+		gid, err := strconv.Atoi(currentUser.Gid)
+		if err != nil {
+			return err
+		}
+		group, err := user.LookupGroupId(currentUser.Gid)
+		if err != nil {
+			return err
+		}
 
-        headerTemplate = tar.Header{
-            Uid:        uid,
-            Gid:        gid,
-            Uname:      currentUser.Username,
-            Gname:      group.Name,
-            ModTime:    now,
-            AccessTime: now,
-            ChangeTime: now,
-        }
-    } else {
-        headerTemplate = tar.Header{
-            Uname:      currentUser.Username,
-            ModTime:    now,
-            AccessTime: now,
-            ChangeTime: now,
-        }
-    }
+		headerTemplate = tar.Header{
+			Uid:        uid,
+			Gid:        gid,
+			Uname:      currentUser.Username,
+			Gname:      group.Name,
+			ModTime:    now,
+			AccessTime: now,
+			ChangeTime: now,
+		}
+	} else {
+		headerTemplate = tar.Header{
+			Uname:      currentUser.Username,
+			ModTime:    now,
+			AccessTime: now,
+			ChangeTime: now,
+		}
+	}
 
 	for _, entryName := range sortedEntryNames(ts.Entries) {
 		if err := ts.Entries[entryName].archive(w, ts.TargetIgnore.Match, &headerTemplate, umask); err != nil {
@@ -526,16 +526,16 @@ func (ts *TargetState) addFile(targetName string, entries map[string]Entry, pare
 		}
 	}
 
-    perm := info.Mode().Perm()
-    destFile := filepath.Join(ts.DestDir, name)
+	perm := info.Mode().Perm()
+	destFile := filepath.Join(ts.DestDir, name)
 	if mutator.IsPrivate(destFile, ts.Umask) {
-	    // since Windows doesn't really have the concept of "groups", the
-	    // group permission bits might be set even on a file that should
-	    // be considered private.  This will clear them.  Posix-style platforms
-	    // remain unaffected because IsPrivate will only return true if those
-	    // bits weren't set in the first place
-	    perm &^= 0077
-    }
+		// since Windows doesn't really have the concept of "groups", the
+		// group permission bits might be set even on a file that should
+		// be considered private.  This will clear them.  Posix-style platforms
+		// remain unaffected because IsPrivate will only return true if those
+		// bits weren't set in the first place
+		perm &^= 0077
+	}
 
 	empty := info.Size() == 0
 	sourceName := FileAttributes{
