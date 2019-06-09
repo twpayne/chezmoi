@@ -216,22 +216,45 @@ function in your config files, for example:
 
 ### Use gpg to keep your secrets
 
-chezmoi supports encrypting individual files with [gpg](https://www.gnupg.org/).
-Specify the encryption key to use in your configuration file (`chezmoi.toml`)
-with the `gpgRecipient` key:
+chezmoi supports encrypting files with [gpg](https://www.gnupg.org/). Encrypted
+files are stored in the source state and automatically be decrypted when
+generating the target state or printing a file's contents with `chezmoi cat`.
+`chezmoi edit` will transparently decrypt the file before editing and re-encrypt
+it afterwards.
 
-    gpgRecipient = "..."
+#### Asymmetric (private/public-key) encryption
+
+Specify the encryption key to use in your configuration file (`chezmoi.toml`)
+with the `gpg.recipient` key:
+
+    [gpg]
+      recipient = "..."
 
 Add files to be encrypted with the `--encrypt` flag, for example:
 
     chezmoi add --encrypt ~/.ssh/id_rsa
 
-chezmoi will encrypt the file with
+chezmoi will encrypt the file with:
 
-    gpg --armor --encrypt --recipient $gpgRecipient
+    gpg --armor --recipient ${gpg.recipient} --encrypt
 
 and store the encrypted file in the source state. The file will automatically be
 decrypted when generating the target state.
+
+#### Symmetric encryption
+
+Specify symmetric encryption in your configuration file:
+
+    [gpg]
+      symmetric = true
+
+Add files to be encrypted with the `--encrypt` flag, for example:
+
+    chezmoi add --encrypt ~/.ssh/id_rsa
+
+chezmoi will encrypt the file with:
+
+    gpg --armor --symmetric
 
 ### Use KeePassXC to keep your secrets
 

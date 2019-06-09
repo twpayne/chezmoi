@@ -41,6 +41,7 @@ type Config struct {
 	DryRun            bool
 	Verbose           bool
 	Color             string
+	GPG               chezmoi.GPG
 	GPGRecipient      string
 	SourceVCS         sourceVCSConfig
 	Merge             mergeConfig
@@ -259,7 +260,11 @@ func (c *Config) getTargetState(fs vfs.FS) (*chezmoi.TargetState, error) {
 	for key, value := range c.Data {
 		data[key] = value
 	}
-	ts := chezmoi.NewTargetState(c.DestDir, os.FileMode(c.Umask), c.SourceDir, data, c.templateFuncs, c.GPGRecipient)
+	// For backwards compatibility, prioritize gpgRecipient over gpg.recipient.
+	if c.GPGRecipient != "" {
+		c.GPG.Recipient = c.GPGRecipient
+	}
+	ts := chezmoi.NewTargetState(c.DestDir, os.FileMode(c.Umask), c.SourceDir, data, c.templateFuncs, &c.GPG)
 	readOnlyFS := vfs.NewReadOnlyFS(fs)
 	if err := ts.Populate(readOnlyFS); err != nil {
 		return nil, err
