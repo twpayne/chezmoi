@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"os"
 	"os/exec"
 	"regexp"
 	"strings"
@@ -57,9 +58,12 @@ func (c *Config) lastpassOutput(args ...string) ([]byte, error) {
 	if c.Verbose {
 		fmt.Printf("%s %s\n", name, strings.Join(args, " "))
 	}
-	output, err := exec.Command(name, args...).CombinedOutput()
+	cmd := exec.Command(name, args...)
+	cmd.Stdin = os.Stdin
+	cmd.Stderr = os.Stderr
+	output, err := cmd.Output()
 	if err != nil {
-		return nil, fmt.Errorf("lastpass: %s %s: %v\n%s", name, strings.Join(args, " "), err, output)
+		return nil, err
 	}
 	return output, nil
 }
