@@ -98,7 +98,7 @@ func init() {
 func (c *Config) runUpgradeCmd(fs vfs.FS, args []string) error {
 	ctx := context.Background()
 
-	// Use a Github API token, if set.
+	// Use a GitHub API token, if set.
 	var httpClient *http.Client
 	if accessToken, ok := os.LookupEnv(strings.ToUpper(c.upgrade.repo) + "_GITHUB_API_TOKEN"); ok {
 		httpClient = oauth2.NewClient(ctx, oauth2.StaticTokenSource(&oauth2.Token{

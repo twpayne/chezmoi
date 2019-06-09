@@ -293,7 +293,7 @@ var helps = map[string]help{
 	"upgrade": {
 		long: "" +
 			"Upgrade chezmoi by downloading and installing a new version. This will call the\n" +
-			"Github API to determine if there is a new version of chezmoi available, and if\n" +
+			"GitHub API to determine if there is a new version of chezmoi available, and if\n" +
 			"so, download and attempt to install it in the same way as chezmoi was previously\n" +
 			"installed.\n" +
 			"\n" +
@@ -303,7 +303,7 @@ var helps = map[string]help{
 			"exectuable with the new version.\n" +
 			"\n" +
 			"If the \"CHEZMOI_GITHUB_API_TOKEN\" environment variable is set, then its\n" +
-			"value will be used to authenticate requests to the Github API, otherwise\n" +
+			"value will be used to authenticate requests to the GitHub API, otherwise\n" +
 			"unauthenticated requests are used which are subject to stricter rate limiting.\n" +
 			"Unauthenticated requests should be sufficient for most cases.\n",
 		example: "" +

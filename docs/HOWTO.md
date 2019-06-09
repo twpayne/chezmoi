@@ -27,7 +27,7 @@
 chezmoi relies on your version control system and hosted repo to share changes
 across multiple machines. You should create a repo on the source code repository
 of your choice (e.g. [Bitbucket](https://bitbucket.org),
-[Github](https://github.com/), or [GitLab](https://gitlab.com), many people call
+[GitHub](https://github.com/), or [GitLab](https://gitlab.com), many people call
 their repo `dotfiles`) and push the repo in the source directory here. For
 example:
 
@@ -187,7 +187,7 @@ chezmoi checks that the permissions of `~/.local/share/chezmoi` are `0700` on
 every run and will print a warning if they are not.
 
 It is common that you need to store access tokens in config files, e.g. a
-[Github access
+[GitHub access
 token](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/).
 There are several ways to keep these tokens secure, and to prevent them leaving
 your machine.
@@ -286,7 +286,7 @@ Set passwords with:
 The password can then be used in templates using the `keyring` function which
 takes the service and user as arguments.
 
-For example, save a Github access token in keyring with:
+For example, save a GitHub access token in keyring with:
 
     $ chezmoi keyring set --service=github --user=<github-username>
     Password: xxxxxxxx
@@ -322,9 +322,9 @@ The structured data from `lpass show --json id` is available as the `lastpass`
 template function. The value will be an array of objects. You can use the
 `index` function and `.Field` syntax of the `text/template` language to extract
 the field you want. For example, to extract the `password` field from first the
-"Github" entry, use:
+"GitHub" entry, use:
 
-    githubPassword = "{{ (index (lastpass "Github") 0).password }}"
+    githubPassword = "{{ (index (lastpass "GitHub") 0).password }}"
 
 chezmoi automatically parses the `note` value of the Lastpass entry, so, for
 example, you can extract a private SSH key like this:
@@ -512,7 +512,7 @@ Mercurial specify:
 The source VCS command is used in the chezmoi commands `init`, `source`, and
 `update`, and support for VCSes other than git is limited but easy to add. If
 you'd like to see your VCS better supported, please [open an issue on
-Github](https://github.com/twpayne/chezmoi/issues/new).
+GitHub](https://github.com/twpayne/chezmoi/issues/new).
 
 ## Use a merge tool other than vimdiff
 
