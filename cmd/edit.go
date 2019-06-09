@@ -122,7 +122,7 @@ func (c *Config) runEditCmd(fs vfs.FS, args []string) error {
 		if err != nil {
 			return err
 		}
-		ciphertext, err := ts.Encrypt(plaintext)
+		ciphertext, err := ts.Encrypt(ef.plaintextPath, plaintext)
 		if err != nil {
 			return err
 		}

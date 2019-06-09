@@ -135,7 +135,7 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 			contents = autoTemplate(contents, ts.Data)
 		}
 		if addOptions.Encrypt {
-			contents, err = ts.Encrypt(contents)
+			contents, err = ts.Encrypt(targetPath, contents)
 			if err != nil {
 				return err
 			}
@@ -214,21 +214,68 @@ func (ts *TargetState) ConcreteValue(recursive bool) (interface{}, error) {
 }
 
 // Decrypt decrypts ciphertext.
-func (ts *TargetState) Decrypt(ciphertext []byte) ([]byte, error) {
-	cmd := exec.Command("gpg", "--decrypt")
-	cmd.Stdin = bytes.NewReader(ciphertext)
-	return cmd.Output()
+func (ts *TargetState) Decrypt(filename string, ciphertext []byte) ([]byte, error) {
+	tempDir, err := ioutil.TempDir("", "chezmoi-decrypt")
+	if err != nil {
+		return nil, err
+	}
+	defer os.RemoveAll(tempDir)
+
+	outputFilename := filepath.Join(tempDir, filepath.Base(filename))
+	inputFilename := outputFilename + ".gpg"
+	if err := ioutil.WriteFile(inputFilename, ciphertext, 0600); err != nil {
+		return nil, err
+	}
+
+	cmd := exec.Command(
+		"gpg",
+		"--output", outputFilename,
+		"--quiet",
+		"--decrypt", inputFilename,
+	)
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		return nil, err
+	}
+
+	return ioutil.ReadFile(outputFilename)
 }
 
-// Encrypt encrypts plaintext for ts's recipient.
-func (ts *TargetState) Encrypt(plaintext []byte) ([]byte, error) {
-	args := []string{"--armor", "--encrypt"}
+// Encrypt encrypts plaintext for ts's recipient. filename is used as a hint for
+// naming temporary files.
+func (ts *TargetState) Encrypt(filename string, plaintext []byte) ([]byte, error) {
+	tempDir, err := ioutil.TempDir("", "chezmoi-encrypt")
+	if err != nil {
+		return nil, err
+	}
+	defer os.RemoveAll(tempDir)
+
+	inputFilename := filepath.Join(tempDir, filepath.Base(filename))
+	if err := ioutil.WriteFile(inputFilename, plaintext, 0600); err != nil {
+		return nil, err
+	}
+	outputFilename := inputFilename + ".gpg"
+
+	args := []string{
+		"--armor",
+		"--output", outputFilename,
+		"--quiet",
+	}
 	if ts.GPGRecipient != "" {
 		args = append(args, "--recipient", ts.GPGRecipient)
 	}
+	args = append(args, "--encrypt", filename)
 	cmd := exec.Command("gpg", args...)
-	cmd.Stdin = bytes.NewReader(plaintext)
-	return cmd.Output()
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		return nil, err
+	}
+
+	return ioutil.ReadFile(outputFilename)
 }
 
 // Evaluate evaluates all of the entries in ts.
@@ -352,7 +399,7 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 						if err != nil {
 							return nil, err
 						}
-						return ts.Decrypt(ciphertext)
+						return ts.Decrypt(path, ciphertext)
 					}
 				}
 				if psfp.fileAttributes != nil && psfp.fileAttributes.Template || psfp.scriptAttributes != nil && psfp.scriptAttributes.Template {

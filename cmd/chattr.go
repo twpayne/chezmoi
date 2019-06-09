@@ -96,9 +96,9 @@ func (c *Config) runChattrCmd(fs vfs.FS, args []string) error {
 				}
 				var newContents []byte
 				if fa.Encrypted {
-					newContents, err = ts.Encrypt(oldContents)
+					newContents, err = ts.Encrypt(entry.TargetName(), oldContents)
 				} else {
-					newContents, err = ts.Decrypt(oldContents)
+					newContents, err = ts.Decrypt(entry.TargetName(), oldContents)
 				}
 				if err != nil {
 					return err
