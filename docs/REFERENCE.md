@@ -409,7 +409,7 @@ Print the computed template data in the given format. The accepted formats are
 ### `diff` [*targets*]
 
 Print the approximate shell commands required to ensure that *targets* in the
-destination directory match the target state. If no targets are specifed, print
+destination directory match the target state. If no targets are specified, print
 the commands required for all targets. It is equivalent to `chezmoi apply
 --dry-run --verbose`.
 
@@ -618,7 +618,7 @@ installed.
 If chezmoi was installed with a package manager (`dpkg` or `rpm`) then `upgrade`
 will download a new package and install it, using `sudo` if it is installed.
 Otherwise, chezmoi will download the latest executable and replace the existing
-exectuable with the new version.
+executable with the new version.
 
 If the `CHEZMOI_GITHUB_API_TOKEN` environment variable is set, then its value
 will be used to authenticate requests to the GitHub API, otherwise

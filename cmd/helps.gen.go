@@ -124,7 +124,7 @@ var helps = map[string]help{
 	"diff": {
 		long: "" +
 			"Print the approximate shell commands required to ensure that targets in the\n" +
-			"destination directory match the target state. If no targets are specifed,\n" +
+			"destination directory match the target state. If no targets are specified,\n" +
 			"print the commands required for all targets. It is equivalent to \"chezmoi apply\n" +
 			"--dry-run --verbose\".\n",
 		example: "" +
@@ -306,7 +306,7 @@ var helps = map[string]help{
 			"If chezmoi was installed with a package manager (\"dpkg\" or \"rpm\") then \"upgrade\"\n" +
 			"will download a new package and install it, using \"sudo\" if it is installed.\n" +
 			"Otherwise, chezmoi will download the latest executable and replace the existing\n" +
-			"exectuable with the new version.\n" +
+			"executable with the new version.\n" +
 			"\n" +
 			"If the \"CHEZMOI_GITHUB_API_TOKEN\" environment variable is set, then its\n" +
 			"value will be used to authenticate requests to the GitHub API, otherwise\n" +
