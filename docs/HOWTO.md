@@ -228,7 +228,7 @@ Add files to be encrypted with the `--encrypt` flag, for example:
 
 chezmoi will encrypt the file with
 
-    gpg --armor --encrypt --recipient $gpgRecipient
+    gpg --armor --recipient $gpgRecipient --encrypt
 
 and store the encrypted file in the source state. The file will automatically be
 decrypted when generating the target state.
