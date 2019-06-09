@@ -10,6 +10,7 @@ import (
 // GPG interfaces with gpg.
 type GPG struct {
 	Recipient string
+	Symmetric bool
 }
 
 // Decrypt decrypts ciphertext. filename is used as a hint for naming temporary
@@ -63,10 +64,15 @@ func (g *GPG) Encrypt(filename string, plaintext []byte) ([]byte, error) {
 		"--output", outputFilename,
 		"--quiet",
 	}
-	if g.Recipient != "" {
-		args = append(args, "--recipient", g.Recipient)
+	if g.Symmetric {
+		args = append(args, "--symmetric")
+	} else {
+		if g.Recipient != "" {
+			args = append(args, "--recipient", g.Recipient)
+		}
+		args = append(args, "--encrypt")
 	}
-	args = append(args, "--encrypt", filename)
+	args = append(args, filename)
 	cmd := exec.Command("gpg", args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout

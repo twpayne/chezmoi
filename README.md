@@ -20,6 +20,7 @@ Manage your dotfiles across multiple machines, securely.
 * [Quick start guide](docs/QUICKSTART.md) for your first steps.
 * [How-to guide](docs/HOWTO.md) for achieving specific tasks.
 * [FAQ](docs/FAQ.md) for questions that aren't answered elsewhere.
+* [Changes](docs/CHANGES.md) for non-backwards compatible changes.
 * [Reference](docs/REFERENCE.md) for a complete description of chezmoi.
 
 ## What does chezmoi do and why should I use it?

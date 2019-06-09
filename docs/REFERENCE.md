@@ -149,7 +149,8 @@ The following configuration variables are available:
 | `destDir`               | string   | `~`                       | Destination directory               |
 | `dryRun`                | boolean  | `false`                   | Dry run mode                        |
 | `genericSecret.command` | string   | none                      | Generic secret command              |
-| `gpgRecipient`          | string   | none                      | GPG recipient                       |
+| `gpg.recipient`         | string   | none                      | GPG recipient                       |
+| `gpg.symmetric`         | bool     | false                     | Use symmetric GPG encryption        |
 | `keepassxc.args`        | []string | none                      | Extra args to KeePassXC CLI command |
 | `keepassxc.command`     | string   | `keepassxc-cli`           | KeePassXC CLI command               |
 | `keepassxc.database`    | string   | none                      | KeePassXC database                  |
