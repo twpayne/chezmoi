@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"os"
 	"os/exec"
 	"strings"
 
@@ -48,7 +49,10 @@ func (c *Config) secretFunc(args ...string) interface{} {
 	if c.Verbose {
 		fmt.Printf("%s %s\n", name, strings.Join(args, " "))
 	}
-	output, err := exec.Command(name, args...).CombinedOutput()
+	cmd := exec.Command(name, args...)
+	cmd.Stdin = os.Stdin
+	cmd.Stderr = os.Stderr
+	output, err := cmd.Output()
 	if err != nil {
 		chezmoi.ReturnTemplateFuncError(fmt.Errorf("secret: %s %s: %v\n%s", name, strings.Join(args, " "), err, output))
 	}
@@ -66,7 +70,10 @@ func (c *Config) secretJSONFunc(args ...string) interface{} {
 	if c.Verbose {
 		fmt.Printf("%s %s\n", name, strings.Join(args, " "))
 	}
-	output, err := exec.Command(name, args...).CombinedOutput()
+	cmd := exec.Command(name, args...)
+	cmd.Stdin = os.Stdin
+	cmd.Stderr = os.Stderr
+	output, err := cmd.Output()
 	if err != nil {
 		chezmoi.ReturnTemplateFuncError(fmt.Errorf("secretJSON: %s %s: %v\n%s", name, strings.Join(args, " "), err, output))
 	}

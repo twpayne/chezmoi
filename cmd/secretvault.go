@@ -3,6 +3,7 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"os/exec"
 	"strings"
 
@@ -44,7 +45,10 @@ func (c *Config) vaultFunc(key string) interface{} {
 	if c.Verbose {
 		fmt.Printf("%s %s\n", name, strings.Join(args, " "))
 	}
-	output, err := exec.Command(name, args...).CombinedOutput()
+	cmd := exec.Command(name, args...)
+	cmd.Stdin = os.Stdin
+	cmd.Stderr = os.Stderr
+	output, err := cmd.Output()
 	if err != nil {
 		chezmoi.ReturnTemplateFuncError(fmt.Errorf("vault: %s %s: %v\n%s", name, strings.Join(args, " "), err, output))
 	}
