@@ -163,8 +163,21 @@ func (c *Config) runUpgradeCmd(fs vfs.FS, args []string) error {
 		return fmt.Errorf("invalid --method value: %s", method)
 	}
 
+	// Find the executable. If we replaced the executable directly, then use
+	// that, otherwise look in $PATH.
+	path := executableFilename
+	if method != methodReplaceExecutable {
+		path, err = exec.LookPath(c.upgrade.repo)
+		if err != nil {
+			return err
+		}
+	}
+
 	// Execute the new version.
-	return syscall.Exec(executableFilename, []string{executableFilename, "--version"}, os.Environ())
+	if c.Verbose {
+		fmt.Printf("exec %s --version\n", path)
+	}
+	return syscall.Exec(path, []string{path, "--version"}, os.Environ())
 }
 
 func (c *Config) getChecksums(rr *github.RepositoryRelease) (map[string][]byte, error) {
