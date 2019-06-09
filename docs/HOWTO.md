@@ -518,13 +518,12 @@ GitHub](https://github.com/twpayne/chezmoi/issues/new).
 ## Use a merge tool other than vimdiff
 
 By default, chezmoi uses vimdiff, but you can use any merge tool of your choice.
-In your config file, specify the command and args to use.  For example, to use
+In your config file, specify the command and args to use. For example, to use
 neovim's diff mode specify:
 
     [merge]
       command = "nvim"
       args = "-d"
-
 
 ## Migrate from a dotfile manager that uses symlinks
 
