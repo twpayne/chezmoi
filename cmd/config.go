@@ -259,7 +259,10 @@ func (c *Config) getTargetState(fs vfs.FS) (*chezmoi.TargetState, error) {
 	for key, value := range c.Data {
 		data[key] = value
 	}
-	ts := chezmoi.NewTargetState(c.DestDir, os.FileMode(c.Umask), c.SourceDir, data, c.templateFuncs, c.GPGRecipient)
+	gpg := &chezmoi.GPG{
+		Recipient: c.GPGRecipient,
+	}
+	ts := chezmoi.NewTargetState(c.DestDir, os.FileMode(c.Umask), c.SourceDir, data, c.templateFuncs, gpg)
 	readOnlyFS := vfs.NewReadOnlyFS(fs)
 	if err := ts.Populate(readOnlyFS); err != nil {
 		return nil, err

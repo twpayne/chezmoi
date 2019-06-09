@@ -8,7 +8,6 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
-	"os/exec"
 	"os/user"
 	"path/filepath"
 	"strconv"
@@ -50,13 +49,13 @@ type TargetState struct {
 	Data          map[string]interface{}
 	TemplateFuncs template.FuncMap
 	Templates     map[string]*template.Template
-	GPGRecipient  string
+	GPG           *GPG
 	Entries       map[string]Entry
 	MinVersion    *semver.Version
 }
 
 // NewTargetState creates a new TargetState.
-func NewTargetState(destDir string, umask os.FileMode, sourceDir string, data map[string]interface{}, templateFuncs template.FuncMap, gpgRecipient string) *TargetState {
+func NewTargetState(destDir string, umask os.FileMode, sourceDir string, data map[string]interface{}, templateFuncs template.FuncMap, gpg *GPG) *TargetState {
 	return &TargetState{
 		DestDir:       destDir,
 		TargetIgnore:  NewPatternSet(),
@@ -64,7 +63,7 @@ func NewTargetState(destDir string, umask os.FileMode, sourceDir string, data ma
 		SourceDir:     sourceDir,
 		Data:          data,
 		TemplateFuncs: templateFuncs,
-		GPGRecipient:  gpgRecipient,
+		GPG:           gpg,
 		Entries:       make(map[string]Entry),
 	}
 }
@@ -135,7 +134,7 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 			contents = autoTemplate(contents, ts.Data)
 		}
 		if addOptions.Encrypt {
-			contents, err = ts.Encrypt(targetPath, contents)
+			contents, err = ts.GPG.Encrypt(targetPath, contents)
 			if err != nil {
 				return err
 			}
@@ -211,71 +210,6 @@ func (ts *TargetState) ConcreteValue(recursive bool) (interface{}, error) {
 		}
 	}
 	return entryConcreteValues, nil
-}
-
-// Decrypt decrypts ciphertext.
-func (ts *TargetState) Decrypt(filename string, ciphertext []byte) ([]byte, error) {
-	tempDir, err := ioutil.TempDir("", "chezmoi-decrypt")
-	if err != nil {
-		return nil, err
-	}
-	defer os.RemoveAll(tempDir)
-
-	outputFilename := filepath.Join(tempDir, filepath.Base(filename))
-	inputFilename := outputFilename + ".gpg"
-	if err := ioutil.WriteFile(inputFilename, ciphertext, 0600); err != nil {
-		return nil, err
-	}
-
-	cmd := exec.Command(
-		"gpg",
-		"--output", outputFilename,
-		"--quiet",
-		"--decrypt", inputFilename,
-	)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	if err := cmd.Run(); err != nil {
-		return nil, err
-	}
-
-	return ioutil.ReadFile(outputFilename)
-}
-
-// Encrypt encrypts plaintext for ts's recipient. filename is used as a hint for
-// naming temporary files.
-func (ts *TargetState) Encrypt(filename string, plaintext []byte) ([]byte, error) {
-	tempDir, err := ioutil.TempDir("", "chezmoi-encrypt")
-	if err != nil {
-		return nil, err
-	}
-	defer os.RemoveAll(tempDir)
-
-	inputFilename := filepath.Join(tempDir, filepath.Base(filename))
-	if err := ioutil.WriteFile(inputFilename, plaintext, 0600); err != nil {
-		return nil, err
-	}
-	outputFilename := inputFilename + ".gpg"
-
-	args := []string{
-		"--armor",
-		"--output", outputFilename,
-		"--quiet",
-	}
-	if ts.GPGRecipient != "" {
-		args = append(args, "--recipient", ts.GPGRecipient)
-	}
-	args = append(args, "--encrypt", filename)
-	cmd := exec.Command("gpg", args...)
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	if err := cmd.Run(); err != nil {
-		return nil, err
-	}
-
-	return ioutil.ReadFile(outputFilename)
 }
 
 // Evaluate evaluates all of the entries in ts.
@@ -399,7 +333,7 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 						if err != nil {
 							return nil, err
 						}
-						return ts.Decrypt(path, ciphertext)
+						return ts.GPG.Decrypt(path, ciphertext)
 					}
 				}
 				if psfp.fileAttributes != nil && psfp.fileAttributes.Template || psfp.scriptAttributes != nil && psfp.scriptAttributes.Template {
