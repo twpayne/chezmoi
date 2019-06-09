@@ -290,6 +290,12 @@ Set the `empty` attribute on added files.
 
 Set the `exact` attribute on added directories.
 
+#### `-f`, `--follow`
+
+If the target is a symlink, add what it points to, rather than the symlink
+itself. This is useful when migrating your dotfiles from a system that uses
+symlinks.
+
 #### `-p`, `--prompt`
 
 Interactively prompt before adding each file.
