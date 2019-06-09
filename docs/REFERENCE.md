@@ -605,7 +605,7 @@ Pull changes from the source VCS and apply any changes.
 ### `upgrade`
 
 Upgrade chezmoi by downloading and installing a new version. This will call the
-Github API to determine if there is a new version of chezmoi available, and if
+GitHub API to determine if there is a new version of chezmoi available, and if
 so, download and attempt to install it in the same way as chezmoi was previously
 installed.
 
@@ -615,7 +615,7 @@ Otherwise, chezmoi will download the latest executable and replace the existing
 exectuable with the new version.
 
 If the `CHEZMOI_GITHUB_API_TOKEN` environment variable is set, then its value
-will be used to authenticate requests to the Github API, otherwise
+will be used to authenticate requests to the GitHub API, otherwise
 unauthenticated requests are used which are subject to stricter [rate
 limiting](https://developer.github.com/v3/#rate-limiting). Unauthenticated
 requests should be sufficient for most cases.
@@ -735,7 +735,7 @@ once.
 
 #### `lastpass` examples
 
-    githubPassword = "{{ (index (lastpass "Github") 0).password }}"
+    githubPassword = "{{ (index (lastpass "GitHub") 0).password }}"
     {{ (index (lastpass "SSH") 0).note.privateKey }}
 
 ### `onepassword` *uuid*

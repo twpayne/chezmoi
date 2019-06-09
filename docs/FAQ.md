@@ -110,8 +110,8 @@ command that is only run occasionally.
 ## What other questions have been asked about chezmoi?
 
 See the [issues on
-Github](https://github.com/twpayne/chezmoi/issues?utf8=%E2%9C%93&q=is%3Aissue+sort%3Aupdated-desc+label%3Asupport).
+GitHub](https://github.com/twpayne/chezmoi/issues?utf8=%E2%9C%93&q=is%3Aissue+sort%3Aupdated-desc+label%3Asupport).
 
 ## Where do I ask a question that isn't answered here?
 
-Please [open an issue on Github](https://github.com/twpayne/chezmoi/issues/new).
+Please [open an issue on GitHub](https://github.com/twpayne/chezmoi/issues/new).
