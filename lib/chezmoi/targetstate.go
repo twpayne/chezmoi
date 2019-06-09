@@ -30,6 +30,7 @@ type AddOptions struct {
 	Empty    bool
 	Encrypt  bool
 	Exact    bool
+	Follow   bool
 	Template bool
 }
 
@@ -83,7 +84,16 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 	}
 	if info == nil {
 		var err error
-		info, err = fs.Lstat(targetPath)
+		if addOptions.Follow {
+			info, err = fs.Stat(targetPath)
+		} else {
+			info, err = fs.Lstat(targetPath)
+		}
+		if err != nil {
+			return err
+		}
+	} else if addOptions.Follow && info.Mode()&os.ModeType == os.ModeSymlink {
+		info, err = fs.Stat(targetPath)
 		if err != nil {
 			return err
 		}

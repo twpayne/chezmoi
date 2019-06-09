@@ -22,6 +22,12 @@ var helps = map[string]help{
 			"\n" +
 			"Set the \"exact\" attribute on added directories.\n" +
 			"\n" +
+			"\"-f\", \"--follow\"\n" +
+			"\n" +
+			"If the target is a symlink, add what it points to, rather than the symlink\n" +
+			"itself. This is useful when migrating your dotfiles from a system that uses\n" +
+			"symlinks.\n" +
+			"\n" +
 			"\"-p\", \"--prompt\"\n" +
 			"\n" +
 			"Interactively prompt before adding each file.\n" +

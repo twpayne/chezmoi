@@ -201,6 +201,49 @@ func TestAddCommand(t *testing.T) {
 			},
 		},
 		{
+			name: "add_symlink_follow",
+			args: []string{"/home/user/foo"},
+			add: addCmdConfig{
+				options: chezmoi.AddOptions{
+					Follow: true,
+				},
+			},
+			root: map[string]interface{}{
+				"/home/user":               &vfst.Dir{Perm: 0755},
+				"/home/user/.chezmoi":      &vfst.Dir{Perm: 0700},
+				"/home/user/.dotfiles/foo": "bar",
+				"/home/user/foo":           &vfst.Symlink{Target: ".dotfiles/foo"},
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/.chezmoi/foo",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("bar"),
+				),
+			},
+		},
+		{
+			name: "add_symlink_follow_double",
+			args: []string{"/home/user/foo"},
+			add: addCmdConfig{
+				options: chezmoi.AddOptions{
+					Follow: true,
+				},
+			},
+			root: map[string]interface{}{
+				"/home/user":               &vfst.Dir{Perm: 0755},
+				"/home/user/.chezmoi":      &vfst.Dir{Perm: 0700},
+				"/home/user/.dotfiles/baz": "qux",
+				"/home/user/foo":           &vfst.Symlink{Target: "bar"},
+				"/home/user/bar":           &vfst.Symlink{Target: ".dotfiles/baz"},
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/.chezmoi/foo",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("qux"),
+				),
+			},
+		},
+		{
 			name: "add_symlink_in_dir_recursive",
 			args: []string{"/home/user/foo"},
 			add: addCmdConfig{

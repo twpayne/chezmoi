@@ -21,6 +21,7 @@
 * [Export archives](#export-archives)
 * [Use a non-git version control system](#use-a-non-git-version-control-system)
 * [Use a merge tool other than vimdiff](#use-a-merge-tool-other-than-vimdiff)
+* [Migrate from a dotfile manager that uses symlinks](#migrate-from-a-dotfile-manager-that-uses-symlinks)
 
 ## Use a hosted repo to manage your dotfiles across multiple machines
 
@@ -517,9 +518,23 @@ GitHub](https://github.com/twpayne/chezmoi/issues/new).
 ## Use a merge tool other than vimdiff
 
 By default, chezmoi uses vimdiff, but you can use any merge tool of your choice.
-In your config file, specify the command and args to use.  For example, to use
+In your config file, specify the command and args to use. For example, to use
 neovim's diff mode specify:
 
     [merge]
       command = "nvim"
       args = "-d"
+
+## Migrate from a dotfile manager that uses symlinks
+
+Many dotfile managers replace dotfiles with symbolic links to files in a common
+directory. If you `chezmoi add` such a symlink, chezmoi will add the symlink,
+not the file. To assist with migrating from symlink-based systems, use the
+`--follow` / `-f` option to `chezmoi add`, for example:
+
+    chezmoi add --follow ~/.bashrc
+
+This will tell `chezmoi add` that the target state of `~/.bashrc` is the target
+of the `~/.bashrc` symlink, rather than the symlink itself. When you run
+`chezmoi apply`, chezmoi will replace the `~/.bashrc` symlink with the file
+contents.
