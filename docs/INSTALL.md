@@ -23,7 +23,7 @@
 
 | OS         | Architectures                                 | Package                                                        |
 | ---------- | --------------------------------------------- | -------------------------------------------------------------- |
-| Arch Linux | i686, x86_64                                  | [`aur`](https://aur.archlinux.org/packages/chezmoi)            |
+| Arch Linux | i686, x86_64                                  | [`chezmoi`](https://www.archlinux.org/packages/community/x86_64/chezmoi/)            |
 | Debian     | amd64, arm64, armel, i386, ppc64, ppc64le     | [`deb`](https://github.com/twpayne/chezmoi/releases/latest)    |
 | RedHat     | aarch64, armhfp, i686, ppc64, ppc64le, x86_64 | [`rpm`](https://github.com/twpayne/chezmoi/releases/latest)    |
 | OpenSUSE   | aarch64, armhfp, i686, ppc64, ppc64le, x86_64 | [`rpm`](https://github.com/twpayne/chezmoi/releases/latest)    |
