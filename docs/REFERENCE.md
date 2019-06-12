@@ -384,11 +384,12 @@ comma (`,`).
 
 ### `completion` *shell*
 
-Output shell completion code for the specified shell (`bash` or `zsh`).
+Output shell completion code for the specified shell (`bash`, `fish` or `zsh`).
 
 #### `completion` examples
 
     chezmoi completion bash
+    chezmoi completion fish >~/.config/fish/completions/chezmoi 
     chezmoi completion zsh
 
 ### `data`
