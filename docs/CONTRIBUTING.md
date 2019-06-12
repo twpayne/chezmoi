@@ -91,3 +91,7 @@ If you plan to package chezmoi for your distibution, then note:
 * chezmoi includes an `upgrade` command which attempts to self-upgrade. You can
   remove this command completely by building chezmoi with the `noupgrade` build
   tag.
+
+* chezmoi includes shell completions in the `completions` directory. Please
+  include these in the package and install them in the shell-appropriate
+  directory, if possible.

@@ -64,8 +64,8 @@ changelog:
     - "Merge pull request"
     - "Merge branch"
 
-nfpm:
-  vendor: "Tom Payne <twpayne@gmail.com>"
+nfpms:
+- vendor: "Tom Payne <twpayne@gmail.com>"
   homepage: "https://github.com/twpayne/chezmoi"
   maintainer: "Tom Payne <twpayne@gmail.com>"
   description: "Manage your dotfiles across multiple machines, securely."
@@ -75,6 +75,9 @@ nfpm:
   - rpm
   dependencies:
   - git
+  files:
+    "completions/bash/chezmoi": "/usr/share/bash-completion/completions/chezmoi"
+    "completions/fish/chezmoi.fish": "/usr/share/fish/completions/chezmoi.fish"
   overrides:
     rpm:
       name_template: "{{ .ProjectName }}-{{ .Version }}-{{ .Env.TRAVIS_BUILD_NUMBER }}-{{ .Arch }}"
