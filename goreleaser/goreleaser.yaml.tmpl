@@ -75,6 +75,9 @@ nfpms:
   - rpm
   dependencies:
   - git
+  files:
+    "completions/bash/chezmoi": "/usr/share/bash-completion/completions/chezmoi"
+    "completions/fish/chezmoi.fish": "/usr/share/fish/completions/chezmoi.fish"
   overrides:
     rpm:
       name_template: "{{ .ProjectName }}-{{ .Version }}-{{ .Env.TRAVIS_BUILD_NUMBER }}-{{ .Arch }}"
