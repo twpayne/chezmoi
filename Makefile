@@ -1,7 +1,25 @@
 .PHONY: nothing
 nothing:
 
-all: .goreleaser.yaml
+all: .goreleaser.yaml completions
+
+.PHONY: completions
+completions: \
+	completions/bash/chezmoi \
+	completions/fish/chezmoi.fish \
+	completions/zsh/_chezmoi
+
+.PHONY: completions/bash/chezmoi
+completions/bash/chezmoi:
+	mkdir -p $$(dirname $@) && go run . completion bash > $@ || ( rm -f $@ ; false )
+
+.PHONY: completions/fish/chezmoi.fish
+completions/fish/chezmoi.fish:
+	mkdir -p $$(dirname $@) && go run . completion fish > $@ || ( rm -f $@ ; false )
+
+.PHONY: completions/zsh/_chezmoi
+completions/zsh/_chezmoi:
+	mkdir -p $$(dirname $@) && go run . completion zsh > $@ || ( rm -f $@ ; false )
 
 .PHONY: coverage.out
 coverage.out:
