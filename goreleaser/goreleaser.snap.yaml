@@ -32,8 +32,8 @@ builds:
 snapshot:
   name_template: "{{ .Tag }}-next"
 
-snapcraft:
-  summary: "Manage your dotfiles across multiple machines, securely."
+snapcrafts:
+- summary: "Manage your dotfiles across multiple machines, securely."
   description: "Manage your dotfiles across multiple machines, securely."
   publish: true
   grade: stable
