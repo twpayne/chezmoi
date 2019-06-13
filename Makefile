@@ -120,5 +120,4 @@ test:
 
 .PHONY: update-install.sh
 update-install.sh:
-	# FIXME re-enable this when https://github.com/goreleaser/godownloader/pull/114 is merged
-	#curl -sfL -o scripts/install.sh https://install.goreleaser.com/github.com/twpayne/chezmoi.sh
+	curl -sfL -o scripts/install.sh https://install.goreleaser.com/github.com/twpayne/chezmoi.sh
