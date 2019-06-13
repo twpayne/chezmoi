@@ -58,7 +58,6 @@ install-tools:
 		golang.org/x/tools/cmd/cover \
 		github.com/mattn/goveralls \
 		github.com/wadey/gocovmerge \
-		mvdan.cc/gofumpt \
 		mvdan.cc/gofumpt/gofumports
 
 .PHONY: lint
