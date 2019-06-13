@@ -37,6 +37,7 @@ const (
 	methodSudoPrefix        = "sudo-"
 
 	packageTypeNone = ""
+	packageTypeAUR  = "aur"
 	packageTypeDEB  = "deb"
 	packageTypeRPM  = "rpm"
 )
@@ -44,6 +45,7 @@ const (
 var (
 	packageTypeByID = map[string]string{
 		"amzn":     packageTypeRPM,
+		"arch":     packageTypeAUR,
 		"centos":   packageTypeRPM,
 		"fedora":   packageTypeRPM,
 		"opensuse": packageTypeRPM,
@@ -285,6 +287,17 @@ func (c *Config) upgradePackage(fs vfs.FS, mutator chezmoi.Mutator, rr *github.R
 		arch := runtime.GOARCH
 		if archReplacement, ok := archReplacements[packageType]; ok {
 			arch = archReplacement[arch]
+		}
+
+		// chezmoi does not build and distribute AUR packages, so instead rely
+		// on pacman and the communnity package.
+		if packageType == packageTypeAUR {
+			var args []string
+			if useSudo {
+				args = append(args, "sudo")
+			}
+			args = append(args, "pacman", "-S", c.upgrade.repo)
+			return c.run("", args[0], args[1:]...)
 		}
 
 		// Find the corresponding release asset.
