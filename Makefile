@@ -53,18 +53,17 @@ html-coverage:
 
 .PHONY: install-tools
 install-tools:
+	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh
 	GO111MODULE=off go get -u \
 		golang.org/x/tools/cmd/cover \
-		github.com/golangci/golangci-lint/cmd/golangci-lint \
 		github.com/mattn/goveralls \
 		github.com/wadey/gocovmerge \
-		mvdan.cc/gofumpt \
 		mvdan.cc/gofumpt/gofumports
 
 .PHONY: lint
 lint:
 	go vet ./...
-	golangci-lint run
+	./bin/golangci-lint run
 
 .PHONY: release
 release:
@@ -120,5 +119,4 @@ test:
 
 .PHONY: update-install.sh
 update-install.sh:
-	# FIXME re-enable this when https://github.com/goreleaser/godownloader/pull/114 is merged
-	#curl -sfL -o scripts/install.sh https://install.goreleaser.com/github.com/twpayne/chezmoi.sh
+	curl -sfL -o scripts/install.sh https://install.goreleaser.com/github.com/twpayne/chezmoi.sh
