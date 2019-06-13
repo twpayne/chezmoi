@@ -93,8 +93,8 @@ nfpms:
         386: i386
         arm: armel
 
-brew:
-  github:
+brews:
+- github:
     owner: twpayne
     name: homebrew-taps
   commit_author:
