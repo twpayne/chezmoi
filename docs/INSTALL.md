@@ -38,8 +38,8 @@ with your package manager.
 
 ## Pre-built binaries
 
-Download a tarball for your operating system containing a pre-built binary and
-documentation.
+Download a tarball for your operating system containing a pre-built binary,
+documentation, and shell completions.
 
 | OS         | Architectures                                 | Tarball                                                        |
 | ---------- | --------------------------------------------- | -------------------------------------------------------------- |
