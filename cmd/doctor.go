@@ -77,6 +77,13 @@ type doctorSuspiciousFilesCheck struct {
 
 type doctorVersionCheck struct{}
 
+var gpgBinaryCheck = &doctorBinaryCheck{
+	name:          "GnuPG",
+	binaryName:    "gpg",
+	versionArgs:   []string{"--version"},
+	versionRegexp: regexp.MustCompile(`^gpg \(GnuPG\) (\d+\.\d+\.\d+)`),
+}
+
 func init() {
 	rootCmd.AddCommand(doctorCmd)
 }
@@ -135,12 +142,7 @@ func (c *Config) runDoctorCmd(fs vfs.FS, args []string) error {
 			binaryName: c.Merge.Command,
 		},
 		vcsCommandCheck,
-		&doctorBinaryCheck{
-			name:          "GnuPG",
-			binaryName:    "gpg",
-			versionArgs:   []string{"--version"},
-			versionRegexp: regexp.MustCompile(`^gpg \(GnuPG\) (\d+\.\d+\.\d+)`),
-		},
+		gpgBinaryCheck,
 		&doctorBinaryCheck{
 			name:          "1Password CLI",
 			binaryName:    c.Onepassword.Command,
