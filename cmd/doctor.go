@@ -238,13 +238,9 @@ func (c *doctorBinaryCheck) Check() (bool, error) {
 		if err != nil {
 			return false, err
 		}
-		m := c.versionRegexp.FindSubmatch(output)
-		if m == nil {
-			return false, fmt.Errorf("%s: could not extract version from %q", c.path, output)
-		}
-		version, err := semver.NewVersion(string(m[1]))
+		version, err := c.getVersionFromOutput(output)
 		if err != nil {
-			return false, err
+			return false, nil
 		}
 		c.version = version
 		if c.minVersion != nil && c.version.LessThan(*c.minVersion) {
@@ -280,6 +276,14 @@ func (c *doctorBinaryCheck) Result() string {
 
 func (c *doctorBinaryCheck) Skip() bool {
 	return false
+}
+
+func (c *doctorBinaryCheck) getVersionFromOutput(output []byte) (*semver.Version, error) {
+	m := c.versionRegexp.FindSubmatch(output)
+	if m == nil {
+		return nil, fmt.Errorf("%s: could not extract version from %q", c.path, output)
+	}
+	return semver.NewVersion(string(m[1]))
 }
 
 func (c *doctorDirectoryCheck) Check() (bool, error) {
