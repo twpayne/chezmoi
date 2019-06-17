@@ -155,6 +155,21 @@ func TestApplyScript(t *testing.T) {
 			},
 			evidence: "template",
 		},
+		{
+			name: "issue_353",
+			root: map[string]interface{}{
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
+					"run_050_giraffe":       "#!/usr/bin/env bash\necho 'giraffe'\n",
+					"run_150_elephant":      "#!/usr/bin/env bash\necho 'elephant'\n",
+					"run_once_100_miauw.sh": "#!/usr/bin/env bash\necho 'miauw'\n",
+					"run_true.tmpl":         "#!/bin/sh\ntouch {{ .Evidence }}\n",
+				},
+			},
+			data: map[string]interface{}{
+				"Evidence": filepath.Join(tempDir, "template"),
+			},
+			evidence: "template",
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			fs, cleanup, err := vfst.NewTestFS(tc.root)
