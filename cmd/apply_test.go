@@ -185,11 +185,17 @@ func TestApplyScript(t *testing.T) {
 				persistentState:   persistentState,
 				scriptStateBucket: []byte("script"),
 			}
-			assert.NoError(t, c.runApplyCmd(fs, nil))
-			evidencePath := filepath.Join(tempDir, tc.evidence)
-			_, err = os.Stat(evidencePath)
-			assert.NoError(t, err)
-			assert.NoError(t, os.Remove(evidencePath))
+			// Run apply three times. As chezmoi should be idempotent, the
+			// result should be the same each time.
+			for i := 0; i < 3; i++ {
+				assert.NoError(t, c.runApplyCmd(fs, nil))
+				if tc.evidence != "" {
+					evidencePath := filepath.Join(tempDir, tc.evidence)
+					_, err = os.Stat(evidencePath)
+					assert.NoError(t, err)
+					assert.NoError(t, os.Remove(evidencePath))
+				}
+			}
 		})
 	}
 }
