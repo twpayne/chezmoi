@@ -81,7 +81,7 @@ var gpgBinaryCheck = &doctorBinaryCheck{
 	name:          "GnuPG",
 	binaryName:    "gpg",
 	versionArgs:   []string{"--version"},
-	versionRegexp: regexp.MustCompile(`^gpg \(GnuPG\) (\d+\.\d+\.\d+)`),
+	versionRegexp: regexp.MustCompile(`^gpg \(.*?\) (\d+\.\d+\.\d+)`),
 }
 
 func init() {
