@@ -10,7 +10,7 @@ require (
 	github.com/coreos/go-semver v0.2.0
 	github.com/danieljoos/wincred v1.0.1 // indirect
 	github.com/godbus/dbus v4.1.0+incompatible // indirect
-	github.com/google/go-github/v25 v25.0.1
+	github.com/google/go-github/v26 v26.0.4
 	github.com/google/renameio v0.1.0
 	github.com/google/uuid v1.1.0 // indirect
 	github.com/huandu/xstrings v1.2.0 // indirect
