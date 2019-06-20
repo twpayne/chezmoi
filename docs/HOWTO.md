@@ -87,8 +87,7 @@ machine:
       email = "john@home.org"
 
 If you intend to store private data (e.g. access tokens) in
-`~/.config/chezmoi/chezmoi.toml`, make sure it has permissions `0600`. See
-"Keeping data private" below for more discussion on this.
+`~/.config/chezmoi/chezmoi.toml`, make sure it has permissions `0600`.
 
 If you prefer, you can use any format supported by
 [Viper](https://github.com/spf13/viper) for your configuration file. This
