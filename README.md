@@ -104,8 +104,8 @@ don't need chezmoi. Otherwise, read on...
 * If your system stores secrets in plain text, then your dotfiles repository
   must be private. With chezmoi you can store secrets in your password manager,
   so you can make your dotfiles public. You can share your repository between
-  your personal and work machines, without your work machine and not fear that
-  this will give your work IT department access to your personal secrets.
+  your personal and work machines, without leaving personal secrets on your work
+  machine or work secrets on your personal machine.
 
 * If your system was written by you for your personal use, then it probably has
   the minimum functionality that you need. chezmoi includes a wide range of
