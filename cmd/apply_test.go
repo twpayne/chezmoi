@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -168,6 +169,30 @@ func TestApplyScript(t *testing.T) {
 				vfst.TestPath(filepath.Join(tempDir, "evidence"),
 					vfst.TestModeIsRegular,
 					vfst.TestContentsString("foo\nfoo\nfoo\n"),
+				),
+			},
+		},
+		{
+			name: "issue_353",
+			root: map[string]interface{}{
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
+					"run_050_giraffe":       "#!/usr/bin/env bash\necho giraffe >>" + filepath.Join(tempDir, "evidence") + "\n",
+					"run_150_elephant":      "#!/usr/bin/env bash\necho elephant >>" + filepath.Join(tempDir, "evidence") + "\n",
+					"run_once_100_miauw.sh": "#!/usr/bin/env bash\necho miauw >>" + filepath.Join(tempDir, "evidence") + "\n",
+				},
+			},
+			tests: []vfst.Test{
+				vfst.TestPath(filepath.Join(tempDir, "evidence"),
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString(strings.Join([]string{
+						"giraffe\n",
+						"miauw\n",
+						"elephant\n",
+						"giraffe\n",
+						"elephant\n",
+						"giraffe\n",
+						"elephant\n",
+					}, "")),
 				),
 			},
 		},
