@@ -1,11 +1,11 @@
 # chezmoi Install Guide
 
-* [One-line binary install](#one-line-binary-install)
-* [One-line package install](#one-line-package-install)
-* [Pre-built Linux packages](#pre-built-linux-packages)
-* [Pre-built binaries](#pre-built-binaries)
-* [From source](#from-source)
-* [Upgrading](#upgrading)
+* [One-line binary install](#One-line-binary-install)
+* [One-line package install](#One-line-package-install)
+* [Pre-built Linux packages](#Pre-built-Linux-packages)
+* [Pre-built binaries](#Pre-built-binaries)
+* [From source](#From-source)
+* [Upgrading](#Upgrading)
 
 ## One-line binary install
 

@@ -1,10 +1,10 @@
 # chezmoi Contributing Guide
 
-* [Getting started](#getting-started)
-* [Developing locally](#developing-locally)
-* [Contributing changes](#contributing-changes)
-* [Managing releases](#managing-releases)
-* [Packaging](#packaging)
+* [Getting started](#Getting-started)
+* [Developing locally](#Developing-locally)
+* [Contributing changes](#Contributing-changes)
+* [Managing releases](#Managing-releases)
+* [Packaging](#Packaging)
 
 ## Getting started
 
