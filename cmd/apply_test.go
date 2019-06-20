@@ -4,11 +4,13 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/twpayne/chezmoi/lib/chezmoi"
+	vfs "github.com/twpayne/go-vfs"
 	"github.com/twpayne/go-vfs/vfst"
 )
 
@@ -126,40 +128,82 @@ func TestApplyScript(t *testing.T) {
 		require.NoError(t, os.RemoveAll(tempDir))
 	}()
 	for _, tc := range []struct {
-		name     string
-		root     interface{}
-		data     map[string]interface{}
-		evidence string
+		name  string
+		root  interface{}
+		data  map[string]interface{}
+		tests []vfst.Test
 	}{
 		{
 			name: "simple",
 			root: map[string]interface{}{
-				"/home/user/.local/share/chezmoi/run_true": "#!/bin/sh\ntouch " + filepath.Join(tempDir, "simple") + "\n",
+				"/home/user/.local/share/chezmoi/run_true": "#!/bin/sh\necho foo >>" + filepath.Join(tempDir, "evidence") + "\n",
 			},
-			evidence: "simple",
+			tests: []vfst.Test{
+				vfst.TestPath(filepath.Join(tempDir, "evidence"),
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("foo\nfoo\nfoo\n"),
+				),
+			},
 		},
 		{
 			name: "simple_once",
 			root: map[string]interface{}{
-				"/home/user/.local/share/chezmoi/run_once_true": "#!/bin/sh\ntouch " + filepath.Join(tempDir, "simple_once") + "\n",
+				"/home/user/.local/share/chezmoi/run_once_true": "#!/bin/sh\necho foo >>" + filepath.Join(tempDir, "evidence") + "\n",
 			},
-			evidence: "simple_once",
+			tests: []vfst.Test{
+				vfst.TestPath(filepath.Join(tempDir, "evidence"),
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("foo\n"),
+				),
+			},
 		},
 		{
 			name: "template",
 			root: map[string]interface{}{
-				"/home/user/.local/share/chezmoi/run_true.tmpl": "#!/bin/sh\ntouch {{ .Evidence }}\n",
+				"/home/user/.local/share/chezmoi/run_true.tmpl": "#!/bin/sh\necho {{ .Foo }} >>" + filepath.Join(tempDir, "evidence") + "\n",
 			},
 			data: map[string]interface{}{
-				"Evidence": filepath.Join(tempDir, "template"),
+				"Foo": "foo",
 			},
-			evidence: "template",
+			tests: []vfst.Test{
+				vfst.TestPath(filepath.Join(tempDir, "evidence"),
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("foo\nfoo\nfoo\n"),
+				),
+			},
+		},
+		{
+			name: "issue_353",
+			root: map[string]interface{}{
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
+					"run_050_giraffe":       "#!/usr/bin/env bash\necho giraffe >>" + filepath.Join(tempDir, "evidence") + "\n",
+					"run_150_elephant":      "#!/usr/bin/env bash\necho elephant >>" + filepath.Join(tempDir, "evidence") + "\n",
+					"run_once_100_miauw.sh": "#!/usr/bin/env bash\necho miauw >>" + filepath.Join(tempDir, "evidence") + "\n",
+				},
+			},
+			tests: []vfst.Test{
+				vfst.TestPath(filepath.Join(tempDir, "evidence"),
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString(strings.Join([]string{
+						"giraffe\n",
+						"miauw\n",
+						"elephant\n",
+						"giraffe\n",
+						"elephant\n",
+						"giraffe\n",
+						"elephant\n",
+					}, "")),
+				),
+			},
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			fs, cleanup, err := vfst.NewTestFS(tc.root)
-			require.NoError(t, err)
-			defer cleanup()
+			fs := vfs.NewPathFS(vfs.OSFS, tempDir)
+			defer func() {
+				require.NoError(t, os.RemoveAll(tempDir))
+				require.NoError(t, os.Mkdir(tempDir, 0700))
+			}()
+			require.NoError(t, vfst.NewBuilder().Build(fs, tc.root))
 			persistentState, err := chezmoi.NewBoltPersistentState(fs, "/home/user/.config/chezmoi/chezmoistate.boltdb")
 			require.NoError(t, err)
 			c := &Config{
@@ -170,11 +214,12 @@ func TestApplyScript(t *testing.T) {
 				persistentState:   persistentState,
 				scriptStateBucket: []byte("script"),
 			}
-			assert.NoError(t, c.runApplyCmd(fs, nil))
-			evidencePath := filepath.Join(tempDir, tc.evidence)
-			_, err = os.Stat(evidencePath)
-			assert.NoError(t, err)
-			assert.NoError(t, os.Remove(evidencePath))
+			// Run apply three times. As chezmoi should be idempotent, the
+			// result should be the same each time.
+			for i := 0; i < 3; i++ {
+				assert.NoError(t, c.runApplyCmd(fs, nil))
+			}
+			vfst.RunTests(t, vfs.OSFS, "", tc.tests)
 		})
 	}
 }
