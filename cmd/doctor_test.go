@@ -40,7 +40,8 @@ func TestDoctorBinaryCheck(t *testing.T) {
 		{
 			name:  "issue_335",
 			check: gpgBinaryCheck,
-			output: strings.Join([]string{"gpg (GnuPG/MacGPG2) 2.2.10",
+			output: strings.Join([]string{
+				"gpg (GnuPG/MacGPG2) 2.2.10",
 				"libgcrypt 1.8.3",
 				"Copyright (C) 2018 Free Software Foundation, Inc.",
 				"License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>",
@@ -53,7 +54,8 @@ func TestDoctorBinaryCheck(t *testing.T) {
 				"Cipher: IDEA, 3DES, CAST5, BLOWFISH, AES, AES192, AES256, TWOFISH,",
 				"        CAMELLIA128, CAMELLIA192, CAMELLIA256",
 				"Hash: SHA1, RIPEMD160, SHA256, SHA384, SHA512, SHA224",
-				"Compression: Uncompressed, ZIP, ZLIB, BZIP2"}, "\n"),
+				"Compression: Uncompressed, ZIP, ZLIB, BZIP2",
+			}, "\n"),
 			expected: semver.New("2.2.10"),
 		},
 	} {
