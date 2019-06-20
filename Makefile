@@ -5,20 +5,20 @@ all: .goreleaser.yaml completions
 
 .PHONY: completions
 completions: \
-	completions/bash/chezmoi \
-	completions/fish/chezmoi.fish \
-	completions/zsh/_chezmoi
+	completions/chezmoi-completion.bash \
+	completions/chezmoi.fish \
+	completions/chezmoi.zsh
 
-.PHONY: completions/bash/chezmoi
-completions/bash/chezmoi:
+.PHONY: completions/chezmoi-completion.bash
+completions/chezmoi-completion.bash:
 	mkdir -p $$(dirname $@) && go run . completion bash > $@ || ( rm -f $@ ; false )
 
-.PHONY: completions/fish/chezmoi.fish
-completions/fish/chezmoi.fish:
+.PHONY: completions/chezmoi.fish
+completions/chezmoi.fish:
 	mkdir -p $$(dirname $@) && go run . completion fish > $@ || ( rm -f $@ ; false )
 
-.PHONY: completions/zsh/_chezmoi
-completions/zsh/_chezmoi:
+.PHONY: completions/chezmoi.zsh
+completions/chezmoi.zsh:
 	mkdir -p $$(dirname $@) && go run . completion zsh > $@ || ( rm -f $@ ; false )
 
 .PHONY: coverage.out
