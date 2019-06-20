@@ -1,10 +1,10 @@
 # chezmoi Contributing Guide
 
-* [Getting started](#getting-started)
-* [Developing locally](#developing-locally)
-* [Contributing changes](#contributing-changes)
-* [Managing releases](#managing-releases)
-* [Packaging](#packaging)
+* [Getting started](#Getting-started)
+* [Developing locally](#Developing-locally)
+* [Contributing changes](#Contributing-changes)
+* [Managing releases](#Managing-releases)
+* [Packaging](#Packaging)
 
 ## Getting started
 
@@ -84,6 +84,14 @@ To run a local "snapshot" build without publishing:
 ## Packaging
 
 If you plan to package chezmoi for your distibution, then note:
+
+* Please set the version number, git commit, and build time in the binary. This is done by passing the linker flags:
+
+  ```
+  -X github.com/twpayne/chezmoi/cmd.VersionStr={{ .Version }}
+  -X github.com/twpayne/chezmoi/cmd.Commit={{ .Commit }}
+  -X github.com/twpayne/chezmoi/cmd.Date={{ .Date }}
+  ```
 
 * Please enable CGO, if possible. chezmoi can be built and run without CGO, but
   the `.chezmoi.group` template variable may not be set on some systems.

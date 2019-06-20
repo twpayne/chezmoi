@@ -7,11 +7,11 @@ Status](https://travis-ci.org/twpayne/chezmoi.svg?branch=master)](https://travis
 
 Manage your dotfiles across multiple machines, securely.
 
-* [Documentation](#documentation)
-* [What does chezmoi do and why should I use it?](#what-does-chezmoi-do-and-why-should-i-use-it)
-* [What are chezmoi's key features?](#what-are-chezmois-key-features)
-* [I already have a system to manage my dotfiles, why should I use chezmoi?](#i-already-have-a-system-to-manage-my-dotfiles-why-should-i-use-chezmoi)
-* [License](#license)
+* [Documentation](#Documentation)
+* [What does chezmoi do and why should I use it?](#What-does-chezmoi-do-and-why-should-I-use-it)
+* [What are chezmoi's key features?](#What-are-chezmois-key-features)
+* [I already have a system to manage my dotfiles, why should I use chezmoi?](#I-already-have-a-system-to-manage-my-dotfiles-why-should-I-use-chezmoi)
+* [License](#License)
 
 ## Documentation
 
@@ -104,8 +104,8 @@ don't need chezmoi. Otherwise, read on...
 * If your system stores secrets in plain text, then your dotfiles repository
   must be private. With chezmoi you can store secrets in your password manager,
   so you can make your dotfiles public. You can share your repository between
-  your personal and work machines, without your work machine and not fear that
-  this will give your work IT department access to your personal secrets.
+  your personal and work machines, without leaving personal secrets on your work
+  machine or work secrets on your personal machine.
 
 * If your system was written by you for your personal use, then it probably has
   the minimum functionality that you need. chezmoi includes a wide range of
