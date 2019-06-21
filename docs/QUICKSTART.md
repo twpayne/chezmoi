@@ -1,26 +1,18 @@
 # chezmoi Quick Start Guide
 
-chezmoi evaluates the source state for the current machine and then updates the
-destination directory, where:
+* [Concepts](#Concepts)
+* [Start using chezmoi on your current machine](#Start-using-chezmoi-on-your-current-machine)
+* [Using chezmoi across multiple machines](#Using-chezmoi-across-multiple-machines)
+* [Next steps](#Next-steps)
 
-* The *source state* declares the desired state of your home directory,
-  including templates and machine-specific configuration.
+## Concepts
 
-* The *source directory* is where chezmoi stores the source state, by default
-  `~/.local/share/chezmoi`.
+chezmoi stores the desired state of your dotfiles in the directory
+`~/.local/share/chezmoi`. When you run `chezmoi apply`, chezmoi calculates the
+desired contents and permissions for each dotfile and then makes any changes
+necessary so that your dotfiles match that state.
 
-* The *target state* is the source state computed for the current machine.
-
-* The *destination directory* is the directory that chezmoi manages, by default
-  `~`, your home directory.
-
-* A *target* is a file, directory, or symlink in the destination directory.
-
-* The *destination state* is the state of all the targets in the destination
-  directory.
-
-* The *config file* contains machine-specific configuration, by default it is
-  `~/.config/chezmoi/chezmoi.toml`.
+## Start using chezmoi on your current machine
 
 Initialize chezmoi:
 
@@ -56,13 +48,34 @@ changes they will make to the file system, and the `-n` (dry run) flag to not
 make any actual changes. The combination `-n` `-v` is very useful if you want to
 see exactly what changes would be made.
 
-Finally, change to the source directory, commit your changes, and return to
-where you were:
+Finally, open a shell in the source directory, commit your changes, and return
+to where you were:
 
     chezmoi cd
     git add dot_bashrc
-    git commit -m "Updated .bashrc"
+    git commit -m "Add .bashrc"
     exit
+
+## Using chezmoi across multiple machines
+
+Clone the git repo in `~/.local/share/chezmoi` to a hosted Git service, e.g.
+[GitHub](https://github.com), [GitLab](https://gitlab.com), or
+[BitBucket](https://bitbucket.org). Many people call their dotfiles repo
+`dotfiles`. You can then set up chezmoi on a second machine:
+
+    chezmoi init https://github.com/username/dotfiles.git
+
+This will check out the repo and any submodules and optionally create a chezmoi
+config file for you. It won't make any changes to your home directory until you
+run:
+
+    chezmoi apply
+
+On any machine, you can pull and apply the latest changes from your repo with:
+
+    chezmoi update
+
+## Next steps
 
 For a full list of commands run:
 
