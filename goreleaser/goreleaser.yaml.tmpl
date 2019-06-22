@@ -76,6 +76,7 @@ nfpms:
   - rpm
   dependencies:
   - git
+  bindir: "/usr/bin"
   files:
     "completions/chezmoi-completion.bash": "/usr/share/bash-completion/completions/chezmoi"
     "completions/chezmoi.fish": "/usr/share/fish/completions/chezmoi.fish"
@@ -87,11 +88,15 @@ nfpms:
         386: i686
         arm: armhfp
         arm64: aarch64
+      files:
+        "completions/chezmoi.zsh": "/usr/share/zsh/functions/_chezmoi"
     deb:
       name_template: "{{ .ProjectName }}_{{ .Version }}-{{ .Env.TRAVIS_BUILD_NUMBER }}_{{ .Os }}_{{ .Arch }}"
       replacements:
         386: i386
         arm: armel
+      files:
+        "completions/chezmoi.zsh": "/usr/share/zsh/vendor-completions/_chezmoi"
 
 brews:
 - github:
