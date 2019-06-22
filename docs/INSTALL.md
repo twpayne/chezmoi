@@ -18,11 +18,12 @@ single command.
 
 Install chezmoi with a single command.
 
-| OS    | Distribution | Method   | Command                             |
-| ----- | ------------ | ---------| ----------------------------------- |
-| Linux | -            | snap     | `snap install chezmoi --classic`    |
-| Linux | Arch         | pacman   | `pacman -S chezmoi`                |
-| macOS | -            | Homebrew | `brew install twpayne/taps/chezmoi` |
+| OS    | Distribution | Method    | Command                             |
+| ----- | ------------ | ----------| ----------------------------------- |
+| Linux | -            | snap      | `snap install chezmoi --classic`    |
+| Linux | Arch         | pacman    | `pacman -S chezmoi`                 |
+| Linux | -            | Linuxbrew | `brew install twpayne/taps/chezmoi` |
+| macOS | -            | Homebrew  | `brew install twpayne/taps/chezmoi` |
 
 ## Pre-built Linux packages
 
