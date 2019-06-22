@@ -111,5 +111,5 @@ brews:
     bin.install "chezmoi"
     bash_completion.install "completions/chezmoi-completion.bash"
     zsh_completion.install "completions/chezmoi.zsh" => "_chezmoi"
-    fish_completion.install "completions/chezmoi.fish
+    fish_completion.install "completions/chezmoi.fish"
   description: "Manage your dotfiles across multiple machines, securely."
