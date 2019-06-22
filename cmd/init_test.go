@@ -28,7 +28,7 @@ func TestCreateConfigFile(t *testing.T) {
 
 	conf := &Config{
 		SourceDir: "/home/user/.local/share/chezmoi",
-		stdin:     bytes.NewBufferString("grace.hopper@example.com\n"),
+		stdin:     bytes.NewBufferString("john.smith@company.com\n"),
 		stdout:    &bytes.Buffer{},
 		bds:       xdg.NewTestBaseDirectorySpecification("/home/user", nil),
 	}
@@ -41,16 +41,16 @@ func TestCreateConfigFile(t *testing.T) {
 			vfst.TestModePerm(0600),
 			vfst.TestContentsString(strings.Join([]string{
 				`data:`,
-				`    email: "grace.hopper@example.com"`,
-				`    mailtoURL: "mailto:grace.hopper@example.com"`,
+				`    email: "john.smith@company.com"`,
+				`    mailtoURL: "mailto:john.smith@company.com"`,
 				`    os: "` + runtime.GOOS + `"`,
 			}, "\n")),
 		),
 	)
 
 	assert.Equal(t, map[string]interface{}{
-		"email":     "grace.hopper@example.com",
-		"mailtourl": "mailto:grace.hopper@example.com",
+		"email":     "john.smith@company.com",
+		"mailtourl": "mailto:john.smith@company.com",
 		"os":        runtime.GOOS,
 	}, conf.Data)
 }

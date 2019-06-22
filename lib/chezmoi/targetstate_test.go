@@ -52,7 +52,7 @@ func TestEndToEnd(t *testing.T) {
 			sourceDir: "/home/user/.chezmoi",
 			data: map[string]interface{}{
 				"name":   "John Smith",
-				"email":  "hello@example.com",
+				"email":  "john.smith@company.com",
 				"ignore": "README.md",
 			},
 			destDir: "/home/user",
@@ -64,7 +64,7 @@ func TestEndToEnd(t *testing.T) {
 				),
 				vfst.TestPath("/home/user/.hgrc",
 					vfst.TestModeIsRegular,
-					vfst.TestContentsString("[ui]\nusername = John Smith <hello@example.com>\n"),
+					vfst.TestContentsString("[ui]\nusername = John Smith <john.smith@company.com>\n"),
 				),
 				vfst.TestPath("/home/user/foo",
 					vfst.TestModeIsRegular,
@@ -249,7 +249,7 @@ func TestTargetStatePopulate(t *testing.T) {
 			},
 			sourceDir: "/",
 			data: map[string]interface{}{
-				"Email": "user@example.com",
+				"Email": "john.smith@company.com",
 			},
 			want: &TargetState{
 				DestDir:      "/",
@@ -257,7 +257,7 @@ func TestTargetStatePopulate(t *testing.T) {
 				Umask:        0,
 				SourceDir:    "/",
 				Data: map[string]interface{}{
-					"Email": "user@example.com",
+					"Email": "john.smith@company.com",
 				},
 				Entries: map[string]Entry{
 					".gitconfig": &File{
@@ -265,7 +265,7 @@ func TestTargetStatePopulate(t *testing.T) {
 						targetName: ".gitconfig",
 						Perm:       0666,
 						Template:   true,
-						contents:   []byte("[user]\n\temail = user@example.com\n"),
+						contents:   []byte("[user]\n\temail = john.smith@company.com\n"),
 					},
 				},
 			},

@@ -15,9 +15,9 @@ func TestAutoTemplate(t *testing.T) {
 	}{
 		{
 			name:        "simple",
-			contentsStr: "email = hello@example.com\n",
+			contentsStr: "email = john.smith@company.com\n",
 			data: map[string]interface{}{
-				"email": "hello@example.com",
+				"email": "john.smith@company.com",
 			},
 			wantStr: "email = {{ .email }}\n",
 		},
@@ -42,10 +42,10 @@ func TestAutoTemplate(t *testing.T) {
 		},
 		{
 			name:        "nested_values",
-			contentsStr: "email = hello@example.com\n",
+			contentsStr: "email = john.smith@company.com\n",
 			data: map[string]interface{}{
 				"personal": map[string]interface{}{
-					"email": "hello@example.com",
+					"email": "john.smith@company.com",
 				},
 			},
 			wantStr: "email = {{ .personal.email }}\n",

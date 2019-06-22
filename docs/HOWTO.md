@@ -77,7 +77,7 @@ For example, your home `~/.gitconfig` on your personal machine might look like:
 Whereas at work it might be:
 
     [user]
-      email = "john@company.com"
+      email = "john.smith@company.com"
 
 To handle this, on each machine create a configuration file called
 `~/.config/chezmoi/chezmoi.toml` defining what might change. For your home
