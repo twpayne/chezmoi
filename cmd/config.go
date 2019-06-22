@@ -130,6 +130,7 @@ func (c *Config) addTemplateFunc(key string, value interface{}) {
 }
 
 func (c *Config) applyArgs(fs vfs.FS, args []string, mutator chezmoi.Mutator) error {
+	fs = vfs.NewReadOnlyFS(fs)
 	ts, err := c.getTargetState(fs)
 	if err != nil {
 		return err
@@ -250,6 +251,7 @@ func (c *Config) getEntries(fs vfs.Stater, ts *chezmoi.TargetState, args []strin
 }
 
 func (c *Config) getTargetState(fs vfs.FS) (*chezmoi.TargetState, error) {
+	fs = vfs.NewReadOnlyFS(fs)
 	defaultData, err := getDefaultData(fs)
 	if err != nil {
 		return nil, err
@@ -265,8 +267,7 @@ func (c *Config) getTargetState(fs vfs.FS) (*chezmoi.TargetState, error) {
 		c.GPG.Recipient = c.GPGRecipient
 	}
 	ts := chezmoi.NewTargetState(c.DestDir, os.FileMode(c.Umask), c.SourceDir, data, c.templateFuncs, &c.GPG)
-	readOnlyFS := vfs.NewReadOnlyFS(fs)
-	if err := ts.Populate(readOnlyFS); err != nil {
+	if err := ts.Populate(fs); err != nil {
 		return nil, err
 	}
 	if Version != nil && ts.MinVersion != nil && Version.LessThan(*ts.MinVersion) {
