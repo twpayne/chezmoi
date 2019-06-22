@@ -39,6 +39,7 @@ type Config struct {
 	DestDir           string
 	Umask             permValue
 	DryRun            bool
+	Remove            bool
 	Verbose           bool
 	Color             string
 	GPG               chezmoi.GPG
@@ -140,6 +141,7 @@ func (c *Config) applyArgs(fs vfs.FS, args []string, mutator chezmoi.Mutator) er
 		DryRun:            c.DryRun,
 		Ignore:            ts.TargetIgnore.Match,
 		PersistentState:   c.persistentState,
+		Remove:            c.Remove,
 		ScriptStateBucket: c.scriptStateBucket,
 		Stdout:            c.Stdout(),
 		Umask:             ts.Umask,

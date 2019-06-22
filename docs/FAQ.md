@@ -6,7 +6,6 @@
 * [If there's a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?](#If-theres-a-mechanism-in-place-for-the-above-is-there-also-a-way-to-tell-chezmoi-to-ignore-specific-files-or-groups-of-files-eg-by-directory-name-or-by-glob)
 * [If the target already exists, but is "behind" the source, can chezmoi be configured to preserve the target version before replacing it with one derived from the source?](#If-the-target-already-exists-but-is-behind-the-source-can-chezmoi-be-configured-to-preserve-the-target-version-before-replacing-it-with-one-derived-from-the-source)
 * [I've made changes to both the destination state and the source state that I want to keep. How can I keep them both?](#Ive-made-changes-to-both-the-destination-state-and-the-source-state-that-I-want-to-keep-How-can-I-keep-them-both)
-* [How do I tell chezmoi to always delete a file?](#How-do-I-tell-chezmoi-to-always-delete-a-file)
 * [gpg encryption fails. What could be wrong?](#gpg-encryption-fails-What-could-be-wrong)
 * [What inspired chezmoi?](#What-inspired-chezmoi)
 * [Can I use chezmoi outside my home directory?](#Can-I-use-chezmoi-outside-my-home-directory)
@@ -51,22 +50,6 @@ diff`.
 `chezmoi merge` will open a merge tool to resolve differences between the source
 state, target state, and destination state. Copy the changes you want to keep in
 to the source state.
-
-## How do I tell chezmoi to always delete a file?
-
-chezmoi will delete files if their target state is empty, unless they have the
-`empty` attribute set. Therefore an empty file in the source state without the
-`empty` attribute will always be deleted.
-
-Say you want chezmoi to always delete `~/.foo`, you can use the following
-sequence of commands:
-
-    rm -f ~/.foo
-    touch ~/.foo
-    chezmoi add --empty ~/.foo
-    chezmoi chattr noempty ~/.foo
-
-When you next run `chezmoi apply`, `~/.foo` will be deleted.
 
 ## gpg encryption fails. What could be wrong?
 
