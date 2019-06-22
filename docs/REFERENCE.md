@@ -14,7 +14,7 @@ Manage your dotfiles securely across multiple machines.
   * [`--version`](#--version)
 * [Configuration file](#Configuration-file)
   * [Configuration variables](#Configuration-variables)
-* [Attributes](#Attributes)
+* [Source state attributes](#Source-state-attributes)
 * [Special files and directories](#Special-files-and-directories)
   * [`.chezmoi.<format>.tmpl`](#chezmoiformattmpl)
   * [`.chezmoiignore`](#chezmoiignore)
@@ -174,7 +174,7 @@ The following configuration variables are available:
 In addition, a number of secret manager integrations add configuration
 variables. These are documented in the secret manager section.
 
-## Attributes
+## Source state attributes
 
 chezmoi stores the source state of files, symbolic links, and directories in
 regular files and directories in the source directory (`~/.local/share/chezmoi`
