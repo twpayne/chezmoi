@@ -17,7 +17,7 @@ func TestBoltPersistentState(t *testing.T) {
 	require.NoError(t, err)
 	defer cleanup()
 
-	path := "/home/user/.config/chezmoi/state.boltdb"
+	path := "/home/user/.config/chezmoi/chezmoistate.boltdb"
 	b, err := NewBoltPersistentState(fs, path)
 	require.NoError(t, err)
 	vfst.RunTests(t, fs, "",
