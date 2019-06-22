@@ -130,6 +130,7 @@ func TestTargetStatePopulate(t *testing.T) {
 			want: &TargetState{
 				DestDir:      "/",
 				TargetIgnore: NewPatternSet(),
+				TargetRemove: NewPatternSet(),
 				Umask:        0,
 				SourceDir:    "/",
 				Entries: map[string]Entry{
@@ -151,6 +152,7 @@ func TestTargetStatePopulate(t *testing.T) {
 			want: &TargetState{
 				DestDir:      "/",
 				TargetIgnore: NewPatternSet(),
+				TargetRemove: NewPatternSet(),
 				Umask:        0,
 				SourceDir:    "/",
 				Entries: map[string]Entry{
@@ -172,6 +174,7 @@ func TestTargetStatePopulate(t *testing.T) {
 			want: &TargetState{
 				DestDir:      "/",
 				TargetIgnore: NewPatternSet(),
+				TargetRemove: NewPatternSet(),
 				Umask:        0,
 				SourceDir:    "/",
 				Entries: map[string]Entry{
@@ -193,6 +196,7 @@ func TestTargetStatePopulate(t *testing.T) {
 			want: &TargetState{
 				DestDir:      "/",
 				TargetIgnore: NewPatternSet(),
+				TargetRemove: NewPatternSet(),
 				Umask:        0,
 				SourceDir:    "/",
 				Entries: map[string]Entry{
@@ -222,6 +226,7 @@ func TestTargetStatePopulate(t *testing.T) {
 			want: &TargetState{
 				DestDir:      "/",
 				TargetIgnore: NewPatternSet(),
+				TargetRemove: NewPatternSet(),
 				Umask:        0,
 				SourceDir:    "/",
 				Entries: map[string]Entry{
@@ -254,6 +259,7 @@ func TestTargetStatePopulate(t *testing.T) {
 			want: &TargetState{
 				DestDir:      "/",
 				TargetIgnore: NewPatternSet(),
+				TargetRemove: NewPatternSet(),
 				Umask:        0,
 				SourceDir:    "/",
 				Data: map[string]interface{}{
@@ -279,6 +285,7 @@ func TestTargetStatePopulate(t *testing.T) {
 			want: &TargetState{
 				DestDir:      "/",
 				TargetIgnore: NewPatternSet(),
+				TargetRemove: NewPatternSet(),
 				Umask:        0,
 				SourceDir:    "/",
 				Entries: map[string]Entry{
@@ -308,6 +315,7 @@ func TestTargetStatePopulate(t *testing.T) {
 			want: &TargetState{
 				DestDir:      "/",
 				TargetIgnore: NewPatternSet(),
+				TargetRemove: NewPatternSet(),
 				Umask:        0,
 				SourceDir:    "/",
 				Entries: map[string]Entry{
@@ -328,6 +336,7 @@ func TestTargetStatePopulate(t *testing.T) {
 			want: &TargetState{
 				DestDir:      "/",
 				TargetIgnore: NewPatternSet(),
+				TargetRemove: NewPatternSet(),
 				Umask:        0,
 				SourceDir:    "/",
 				Entries: map[string]Entry{
@@ -351,6 +360,7 @@ func TestTargetStatePopulate(t *testing.T) {
 			want: &TargetState{
 				DestDir:      "/",
 				TargetIgnore: NewPatternSet(),
+				TargetRemove: NewPatternSet(),
 				Umask:        0,
 				SourceDir:    "/",
 				Data: map[string]interface{}{
@@ -384,6 +394,31 @@ func TestTargetStatePopulate(t *testing.T) {
 						"g": {},
 					},
 				},
+				TargetRemove: NewPatternSet(),
+				Umask:        0,
+				SourceDir:    "/",
+				Entries:      map[string]Entry{},
+			},
+		},
+		{
+			name: "remove_pattern",
+			root: map[string]interface{}{
+				"/.chezmoiremove": "" +
+					"f*\n" +
+					"!g\n",
+			},
+			sourceDir: "/",
+			want: &TargetState{
+				DestDir:      "/",
+				TargetIgnore: NewPatternSet(),
+				TargetRemove: &PatternSet{
+					includes: map[string]struct{}{
+						"f*": {},
+					},
+					excludes: map[string]struct{}{
+						"g": {},
+					},
+				},
 				Umask:     0,
 				SourceDir: "/",
 				Entries:   map[string]Entry{},
@@ -407,8 +442,9 @@ func TestTargetStatePopulate(t *testing.T) {
 						"dir/bar": {},
 					},
 				},
-				Umask:     0,
-				SourceDir: "/",
+				TargetRemove: NewPatternSet(),
+				Umask:        0,
+				SourceDir:    "/",
 				Entries: map[string]Entry{
 					"dir": &Dir{
 						sourceName: "dir",
@@ -428,6 +464,7 @@ func TestTargetStatePopulate(t *testing.T) {
 			sourceDir: "/",
 			want: &TargetState{
 				DestDir:      "/",
+				TargetRemove: NewPatternSet(),
 				TargetIgnore: NewPatternSet(),
 				Umask:        0,
 				SourceDir:    "/",
@@ -450,6 +487,7 @@ func TestTargetStatePopulate(t *testing.T) {
 			sourceDir: "/",
 			want: &TargetState{
 				DestDir:      "/",
+				TargetRemove: NewPatternSet(),
 				TargetIgnore: NewPatternSet(),
 				Umask:        0,
 				SourceDir:    "/",
@@ -465,6 +503,7 @@ func TestTargetStatePopulate(t *testing.T) {
 			want: &TargetState{
 				DestDir:      "/",
 				TargetIgnore: NewPatternSet(),
+				TargetRemove: NewPatternSet(),
 				Umask:        0,
 				SourceDir:    "/",
 				Entries:      map[string]Entry{},

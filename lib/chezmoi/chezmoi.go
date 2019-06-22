@@ -45,6 +45,7 @@ type ApplyOptions struct {
 	DryRun            bool
 	Ignore            func(string) bool
 	PersistentState   PersistentState
+	Remove            bool
 	ScriptStateBucket []byte
 	Stdout            io.Writer
 	Umask             os.FileMode

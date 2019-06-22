@@ -4,20 +4,22 @@ Manage your dotfiles securely across multiple machines.
 
 * [Concepts](#Concepts)
 * [Global command line flags](#Global-command-line-flags)
-  * [`--color` *value*](#--color-value)
-  * [`-c`, `--config` *filename*](#-c---config-filename)
-  * [`-D`, `--destination` *directory*](#-D---destination-directory)
-  * [`-n`, `--dry-run`](#-n---dry-run)
-  * [`-h`, `--help`](#-h---help)
-  * [`-S`, `--source` *directory*](#-S---source-directory)
-  * [`-v`, `--verbose`](#-v---verbose)
-  * [`--version`](#--version)
+  * [`--color` *value*](#color-value)
+  * [`-c`, `--config` *filename*](#c---config-filename)
+  * [`-D`, `--destination` *directory*](#D---destination-directory)
+  * [`-n`, `--dry-run`](#n---dry-run)
+  * [`-h`, `--help`](#h---help)
+  * [`-r`. `--remove`](#r---remove)
+  * [`-S`, `--source` *directory*](#S---source-directory)
+  * [`-v`, `--verbose`](#v---verbose)
+  * [`--version`](#version)
 * [Configuration file](#Configuration-file)
   * [Configuration variables](#Configuration-variables)
-* [Attributes](#Attributes)
+* [Source state attributes](#Source-state-attributes)
 * [Special files and directories](#Special-files-and-directories)
   * [`.chezmoi.<format>.tmpl`](#chezmoiformattmpl)
   * [`.chezmoiignore`](#chezmoiignore)
+  * [`.chezmoiremove`](#chezmoiremove)
   * [`.chezmoitemplates`](#chezmoitemplates)
   * [`.chezmoiversion`](#chezmoiversion)
 * [Commands](#Commands)
@@ -113,6 +115,10 @@ that would be made without making them.
 
 Print help.
 
+### `-r`. `--remove`
+
+Also remove targets according to `.chezmoiremove`.
+
 ### `-S`, `--source` *directory*
 
 Use *directory* as the source directory.
@@ -159,6 +165,7 @@ The following configuration variables are available:
 | `merge.command`         | string   | `vimdiff`                 | 3-way merge command                 |
 | `onepassword.command`   | string   | `op`                      | 1Password CLI command               |
 | `pass.command`          | string   | `pass`                    | Pass CLI command                    |
+| `remove`                | boolean  | `false`                   | Remove targets                      |
 | `sourceDir`             | string   | `~/.config/share/chezmoi` | Source directory                    |
 | `sourceVCS.command`     | string   | `git`                     | Source version control system       |
 | `umask`                 | integer  | from system               | Umask                               |
@@ -168,7 +175,7 @@ The following configuration variables are available:
 In addition, a number of secret manager integrations add configuration
 variables. These are documented in the secret manager section.
 
-## Attributes
+## Source state attributes
 
 chezmoi stores the source state of files, symbolic links, and directories in
 regular files and directories in the source directory (`~/.local/share/chezmoi`
@@ -240,6 +247,12 @@ implementation and corner case behaviour may differ.
     {{- if ne .email "john@home.org }}
     .personal-file
     {{- end }}
+
+### `.chezmoiremove`
+
+If a file called `.chezmoiremove` exists in the source state then it is
+interpreted as a list of targets to remove. `.chezmoiremove` is interpreted as a
+template.
 
 ### `.chezmoitemplates`
 

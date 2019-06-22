@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/user"
 	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 	"text/template"
@@ -21,6 +22,7 @@ import (
 
 const (
 	ignoreName       = ".chezmoiignore"
+	removeName       = ".chezmoiremove"
 	templatesDirName = ".chezmoitemplates"
 	versionName      = ".chezmoiversion"
 )
@@ -45,6 +47,7 @@ type ImportTAROptions struct {
 type TargetState struct {
 	DestDir       string
 	TargetIgnore  *PatternSet
+	TargetRemove  *PatternSet
 	Umask         os.FileMode
 	SourceDir     string
 	Data          map[string]interface{}
@@ -60,6 +63,7 @@ func NewTargetState(destDir string, umask os.FileMode, sourceDir string, data ma
 	return &TargetState{
 		DestDir:       destDir,
 		TargetIgnore:  NewPatternSet(),
+		TargetRemove:  NewPatternSet(),
 		Umask:         umask,
 		SourceDir:     sourceDir,
 		Data:          data,
@@ -163,6 +167,49 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 
 // Apply ensures that ts.DestDir in fs matches ts.
 func (ts *TargetState) Apply(fs vfs.FS, mutator Mutator, applyOptions *ApplyOptions) error {
+	if applyOptions.Remove {
+		// Build a set of targets to remove.
+		targetsToRemove := make(map[string]struct{})
+		includes := make([]string, 0, len(ts.TargetRemove.includes))
+		for include := range ts.TargetRemove.includes {
+			includes = append(includes, include)
+		}
+		for _, include := range includes {
+			matches, err := fs.Glob(filepath.Join(ts.DestDir, include))
+			if err != nil {
+				return err
+			}
+			for _, match := range matches {
+				relPath := strings.TrimPrefix(match, ts.DestDir+"/")
+				// Don't remove targets that are ignored.
+				if ts.TargetIgnore.Match(relPath) {
+					continue
+				}
+				// Don't remove targets that are excluded from remove.
+				if !ts.TargetRemove.Match(relPath) {
+					continue
+				}
+				targetsToRemove[match] = struct{}{}
+			}
+		}
+
+		// FIXME check that the set of targets to remove does not intersect wth
+		// the list of all entries.
+
+		// Remove targets in reverse order so we remove children before their
+		// parents.
+		sortedTargetsToRemove := make([]string, 0, len(targetsToRemove))
+		for target := range targetsToRemove {
+			sortedTargetsToRemove = append(sortedTargetsToRemove, target)
+		}
+		sort.Sort(sort.Reverse(sort.StringSlice(sortedTargetsToRemove)))
+		for _, target := range sortedTargetsToRemove {
+			if err := mutator.RemoveAll(target); err != nil {
+				return err
+			}
+		}
+	}
+
 	for _, entryName := range sortedEntryNames(ts.Entries) {
 		if err := ts.Entries[entryName].Apply(fs, mutator, applyOptions); err != nil {
 			return err
@@ -285,7 +332,10 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 			switch {
 			case info.Name() == ignoreName:
 				dns := dirNames(parseDirNameComponents(splitPathList(relPath)))
-				return ts.addSourceIgnore(fs, path, filepath.Join(dns...))
+				return ts.addPatterns(fs, ts.TargetIgnore, path, filepath.Join(dns...))
+			case info.Name() == removeName:
+				dns := dirNames(parseDirNameComponents(splitPathList(relPath)))
+				return ts.addPatterns(fs, ts.TargetRemove, path, filepath.Join(dns...))
 			case info.Name() == templatesDirName:
 				if err := ts.addTemplatesDir(fs, path); err != nil {
 					return err
@@ -489,7 +539,7 @@ func (ts *TargetState) addFile(targetName string, entries map[string]Entry, pare
 	return mutator.WriteFile(filepath.Join(ts.SourceDir, sourceName), contents, 0666&^ts.Umask, existingContents)
 }
 
-func (ts *TargetState) addSourceIgnore(fs vfs.FS, path, relPath string) error {
+func (ts *TargetState) addPatterns(fs vfs.FS, ps *PatternSet, path, relPath string) error {
 	data, err := ts.executeTemplate(fs, path)
 	if err != nil {
 		return err
@@ -511,7 +561,7 @@ func (ts *TargetState) addSourceIgnore(fs vfs.FS, path, relPath string) error {
 			text = strings.TrimPrefix(text, "!")
 		}
 		pattern := filepath.Join(dir, text)
-		if err := ts.TargetIgnore.Add(pattern, include); err != nil {
+		if err := ps.Add(pattern, include); err != nil {
 			return fmt.Errorf("%s: %v", path, err)
 		}
 	}

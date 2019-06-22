@@ -74,6 +74,9 @@ func init() {
 	persistentFlags.BoolVarP(&config.DryRun, "dry-run", "n", false, "dry run")
 	_ = viper.BindPFlag("dry-run", persistentFlags.Lookup("dry-run"))
 
+	persistentFlags.BoolVar(&config.Remove, "remove", false, "remove targets")
+	_ = viper.BindPFlag("remove", persistentFlags.Lookup("remove"))
+
 	persistentFlags.StringVarP(&config.SourceDir, "source", "S", getDefaultSourceDir(config.bds), "source directory")
 	_ = viper.BindPFlag("source", persistentFlags.Lookup("source"))
 

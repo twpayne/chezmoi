@@ -3,6 +3,7 @@
 * [Use a hosted repo to manage your dotfiles across multiple machines](#Use-a-hosted-repo-to-manage-your-dotfiles-across-multiple-machines)
 * [Use templates to manage files that vary from machine to machine](#Use-templates-to-manage-files-that-vary-from-machine-to-machine)
 * [Create a config file on a new machine automatically](#Create-a-config-file-on-a-new-machine-automatically)
+* [Ensure that a target is removed](#Ensure-that-a-target-is-removed)
 * [Keep data private](#Keep-data-private)
   * [Use Bitwarden to keep your secrets](#Use-Bitwarden-to-keep-your-secrets)
   * [Use gpg to keep your secrets](#Use-gpg-to-keep-your-secrets)
@@ -170,6 +171,23 @@ Specifically, if you have `.chezmoi.toml.tmpl` that looks like this:
 
 Then `chezmoi init` will create an initial `chezmoi.toml` using this template.
 `promptString` is a special function that prompts the user (you) for a value.
+
+## Ensure that a target is removed
+
+Create a file called `.chezmoiremove` in the source directory containing a list
+of patterns of files to remove. When you run
+
+    chezmoi apply --remove
+
+chezmoi will remove anything in the target directory that matches the pattern.
+As this command is potentially dangerous, you should run chezmoi in verbose,
+dry-run mode beforehand to see what would be deleted:
+
+    chezmoi apply --remove --dry-run --verbose
+
+`.chezmoiremove` is interpreted as a template, so you can remove different files
+on different machines. Negative matches (patterns prefixed with a `!`) or
+targets listed in `.chezmoiignore` will never be removed.
 
 ## Keep data private
 

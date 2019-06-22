@@ -121,6 +121,124 @@ func TestApplyCommand(t *testing.T) {
 	}
 }
 
+func TestApplyRemove(t *testing.T) {
+	for _, tc := range []struct {
+		name     string
+		noRemove bool
+		root     interface{}
+		data     map[string]interface{}
+		tests    []vfst.Test
+	}{
+		{
+			name: "simple",
+			root: map[string]interface{}{
+				"/home/user/.local/share/chezmoi/.chezmoiremove": "foo",
+				"/home/user/foo": "# contents of foo\n",
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/foo",
+					vfst.TestDoesNotExist,
+				),
+			},
+		},
+		{
+			name:     "no_remove",
+			noRemove: true,
+			root: map[string]interface{}{
+				"/home/user/.local/share/chezmoi/.chezmoiremove": "foo",
+				"/home/user/foo": "# contents of foo\n",
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/foo",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("# contents of foo\n"),
+				),
+			},
+		},
+		{
+			name: "pattern",
+			root: map[string]interface{}{
+				"/home/user/.local/share/chezmoi/.chezmoiremove": "f*",
+				"/home/user/foo": "# contents of foo\n",
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/foo",
+					vfst.TestDoesNotExist,
+				),
+			},
+		},
+		{
+			name: "template",
+			root: map[string]interface{}{
+				"/home/user/.local/share/chezmoi/.chezmoiremove": "{{ .bar }}",
+				"/home/user/foo": "# contents of foo\n",
+			},
+			data: map[string]interface{}{
+				"bar": "foo",
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/foo",
+					vfst.TestDoesNotExist,
+				),
+			},
+		},
+		{
+			name: "dont_remove_negative_pattern",
+			root: map[string]interface{}{
+				"/home/user/.local/share/chezmoi/.chezmoiremove": "f*\n!foo\n",
+				"/home/user/foo": "# contents of foo\n",
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/foo",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("# contents of foo\n"),
+				),
+			},
+		},
+		{
+			name: "dont_remove_ignored",
+			root: map[string]interface{}{
+				"/home/user/.local/share/chezmoi/.chezmoiignore": "foo",
+				"/home/user/.local/share/chezmoi/.chezmoiremove": "f*",
+				"/home/user/foo": "# contents of foo\n",
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/foo",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("# contents of foo\n"),
+				),
+			},
+		},
+		{
+			name: "remove_subdirectory_first",
+			root: map[string]interface{}{
+				"/home/user/.local/share/chezmoi/.chezmoiremove": "foo\nfoo/bar\n",
+				"/home/user/foo/bar":                             "# contents of bar\n",
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/foo",
+					vfst.TestDoesNotExist,
+				),
+			},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			fs, cleanup, err := vfst.NewTestFS(tc.root)
+			require.NoError(t, err)
+			defer cleanup()
+			c := &Config{
+				SourceDir: "/home/user/.local/share/chezmoi",
+				DestDir:   "/home/user",
+				Data:      tc.data,
+				Remove:    !tc.noRemove,
+				Umask:     022,
+			}
+			assert.NoError(t, c.runApplyCmd(fs, nil))
+			vfst.RunTests(t, fs, "", tc.tests)
+		})
+	}
+}
+
 func TestApplyScript(t *testing.T) {
 	tempDir, err := ioutil.TempDir("", "chezmoi")
 	require.NoError(t, err)
