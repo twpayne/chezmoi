@@ -90,16 +90,20 @@ func init() {
 	_ = viper.BindPFlag("color", persistentFlags.Lookup("color"))
 
 	cobra.OnInitialize(func() {
-		if _, err := os.Stat(config.configFile); os.IsNotExist(err) {
-			return
-		}
-		viper.SetConfigFile(config.configFile)
-		config.err = viper.ReadInConfig()
-		if config.err == nil {
-			config.err = viper.Unmarshal(&config)
-		}
-		if config.err != nil {
-			config.warn(fmt.Sprintf("%s: %v", config.configFile, config.err))
+		_, err := os.Stat(config.configFile)
+		switch {
+		case err == nil:
+			viper.SetConfigFile(config.configFile)
+			config.err = viper.ReadInConfig()
+			if config.err == nil {
+				config.err = viper.Unmarshal(&config)
+			}
+			if config.err != nil {
+				config.warn(fmt.Sprintf("%s: %v", config.configFile, config.err))
+			}
+		case os.IsNotExist(err):
+		default:
+			printErrorAndExit(err)
 		}
 		persistentStateFile := getPersistentStateFile(config.bds, config.configFile)
 		persistentState, err := chezmoi.NewBoltPersistentState(vfs.OSFS, persistentStateFile)
