@@ -454,7 +454,9 @@ Scripts break chezmoi's declarative approach, and as such should be used
 sparingly. Any script should be idempotent, even `run_once_` scripts.
 
 Scripts must be created manually in the source directory, typically by running
-`chezmoi cd` and then creating a file with a `run_` prefix.
+`chezmoi cd` and then creating a file with a `run_` prefix. Scripts are executed
+directly using `exec` and must include a shebang line or be executable binaries.
+There is no need to set the executable bit on the script.
 
 Scripts with the suffix `.tmpl` are treated as templates, with the usual
 template variables available. If, after executing the template, the result is
