@@ -34,7 +34,7 @@ Manage your dotfiles securely across multiple machines.
   * [`diff` [*targets*]](#diff-targets)
   * [`doctor`](#doctor)
   * [`dump` [*targets*]](#dump-targets)
-  * [`edit` *targets*](#edit-targets)
+  * [`edit` [*targets*]](#edit-targets)
   * [`edit-config`](#edit-config)
   * [`forget` *targets*](#forget-targets)
   * [`help` *command*](#help-command)
@@ -455,28 +455,30 @@ Print the target state in the given format. The accepted formats are `json`
     chezmoi dump ~/.bashrc
     chezmoi dump --format=yaml
 
-### `edit` *targets*
+### `edit` [*targets*]
 
-Edit the source state of *targets*, which must be files or symlinks. The `edit`
-command accepts additional arguments:
+Edit the source state of *targets*, which must be files or symlinks. If no
+targets are given the the source directory itself is opened with `$EDITOR`. The
+`edit` command accepts additional arguments:
 
 #### `-a`, `--apply`
 
-Apply target immediately after editing.
+Apply target immediately after editing. Ignored if there are no targets.
 
 #### `-d`, `--diff`
 
 Print the difference between the target state and the actual state after
-editing.
+editing.. Ignored if there are no targets.
 
 #### `-p`, `--prompt`
 
-Prompt before applying each target.
+Prompt before applying each target.. Ignored if there are no targets.
 
 #### `edit` examples
 
     chezmoi edit ~/.bashrc
     chezmoi edit ~/.bashrc --apply --prompt
+    chezmoi edit
 
 ### `edit-config`
 

@@ -9,8 +9,8 @@
 
 ## One-line binary install
 
-Install the correct binary for your operating system and architecture with a
-single command.
+Install the correct binary for your operating system and architecture in `./bin`
+with a single command.
 
     curl -sfL https://git.io/chezmoi | sh
 

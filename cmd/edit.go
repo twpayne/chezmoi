@@ -14,7 +14,6 @@ import (
 
 var editCmd = &cobra.Command{
 	Use:     "edit targets...",
-	Args:    cobra.MinimumNArgs(1),
 	Short:   "Edit the source state of a target",
 	Long:    mustGetLongHelp("edit"),
 	Example: getExample("edit"),
@@ -45,6 +44,19 @@ type encryptedFile struct {
 }
 
 func (c *Config) runEditCmd(fs vfs.FS, args []string) error {
+	if len(args) == 0 {
+		if c.edit.apply {
+			c.warn("--apply is currently ignored when edit is run with no arguments")
+		}
+		if c.edit.diff {
+			c.warn("--diff is currently ignored when edit is run with no arguments")
+		}
+		if c.edit.prompt {
+			c.warn("--prompt is currently ignored when edit is run with no arguments")
+		}
+		return c.execEditor(c.SourceDir)
+	}
+
 	if c.edit.prompt {
 		c.edit.diff = true
 	}
