@@ -153,24 +153,26 @@ var helps = map[string]help{
 	},
 	"edit": {
 		long: "" +
-			"Edit the source state of targets, which must be files or symlinks. The \"edit\"\n" +
+			"Edit the source state of targets, which must be files or symlinks. If no targets\n" +
+			"are given the the source directory itself is opened with \"$EDITOR\". The \"edit\"\n" +
 			"command accepts additional arguments:\n" +
 			"\n" +
 			"\"-a\", \"--apply\"\n" +
 			"\n" +
-			"Apply target immediately after editing.\n" +
+			"Apply target immediately after editing. Ignored if there are no targets.\n" +
 			"\n" +
 			"\"-d\", \"--diff\"\n" +
 			"\n" +
 			"Print the difference between the target state and the actual state after\n" +
-			"editing.\n" +
+			"editing.. Ignored if there are no targets.\n" +
 			"\n" +
 			"\"-p\", \"--prompt\"\n" +
 			"\n" +
-			"Prompt before applying each target.\n",
+			"Prompt before applying each target.. Ignored if there are no targets.\n",
 		example: "" +
 			"  chezmoi edit ~/.bashrc\n" +
-			"  chezmoi edit ~/.bashrc --apply --prompt",
+			"  chezmoi edit ~/.bashrc --apply --prompt\n" +
+			"  chezmoi edit",
 	},
 	"edit-config": {
 		long: "" +
