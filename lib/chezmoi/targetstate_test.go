@@ -98,7 +98,7 @@ func TestEndToEnd(t *testing.T) {
 			require.NoError(t, err)
 			defer cleanup()
 			ts := NewTargetState(tc.destDir, tc.umask, tc.sourceDir, tc.data, tc.templateFuncs, nil)
-			assert.NoError(t, ts.Populate(fs))
+			assert.NoError(t, ts.Populate(fs, nil))
 			applyOptions := &ApplyOptions{
 				DestDir:           ts.DestDir,
 				Ignore:            ts.TargetIgnore.Match,
@@ -518,7 +518,7 @@ func TestTargetStatePopulate(t *testing.T) {
 			require.NoError(t, err)
 			defer cleanup()
 			ts := NewTargetState("/", 0, tc.sourceDir, tc.data, tc.templateFuncs, nil)
-			assert.NoError(t, ts.Populate(fs))
+			assert.NoError(t, ts.Populate(fs, nil))
 			assert.NoError(t, ts.Evaluate())
 			assert.Equal(t, tc.want, ts)
 		})

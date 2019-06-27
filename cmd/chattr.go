@@ -43,7 +43,7 @@ func (c *Config) runChattrCmd(fs vfs.FS, args []string) error {
 		return err
 	}
 
-	ts, err := c.getTargetState(fs)
+	ts, err := c.getTargetState(fs, nil)
 	if err != nil {
 		return err
 	}
