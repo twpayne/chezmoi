@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
-	"github.com/twpayne/chezmoi/lib/chezmoi"
 	keyring "github.com/zalando/go-keyring"
 )
 
@@ -51,7 +50,7 @@ func (*Config) keyringFunc(service, user string) string {
 	}
 	password, err := keyring.Get(service, user)
 	if err != nil {
-		chezmoi.ReturnTemplateFuncError(fmt.Errorf("keyring %q %q: %v", service, user, err))
+		panic(fmt.Errorf("keyring %q %q: %v", service, user, err))
 	}
 	keyringCache[key] = password
 	return password

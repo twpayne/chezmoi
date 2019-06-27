@@ -26,12 +26,6 @@ const (
 	TemplateSuffix   = ".tmpl"
 )
 
-// A templateFuncError is an error encountered while executing a template
-// function.
-type templateFuncError struct {
-	err error
-}
-
 // A PersistentState is an interface to a persistent state.
 type PersistentState interface {
 	Delete(bucket, key []byte) error
@@ -66,13 +60,6 @@ type parsedSourceFilePath struct {
 	dirAttributes    []DirAttributes
 	fileAttributes   *FileAttributes
 	scriptAttributes *ScriptAttributes
-}
-
-// ReturnTemplateFuncError causes template execution to return an error.
-func ReturnTemplateFuncError(err error) {
-	panic(templateFuncError{
-		err: err,
-	})
 }
 
 // dirNames returns the dir names from dirAttributes.

@@ -11,7 +11,6 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/twpayne/chezmoi/lib/chezmoi"
 	vfs "github.com/twpayne/go-vfs"
 	"golang.org/x/crypto/ssh/terminal"
 )
@@ -51,7 +50,7 @@ func (c *Config) keePassXCFunc(entry string) interface{} {
 		return data
 	}
 	if c.KeePassXC.Database == "" {
-		chezmoi.ReturnTemplateFuncError(errors.New("keepassxc: keepassxc.database not set"))
+		panic(errors.New("keepassxc: keepassxc.database not set"))
 	}
 	name := c.KeePassXC.Command
 	args := []string{"show"}
@@ -62,7 +61,7 @@ func (c *Config) keePassXCFunc(entry string) interface{} {
 	}
 	data, err := c.runKeePassXCCLICommand(name, args)
 	if err != nil {
-		chezmoi.ReturnTemplateFuncError(fmt.Errorf("keepassxc: %s %s: %s", name, strings.Join(args, " "), err))
+		panic(fmt.Errorf("keepassxc: %s %s: %s", name, strings.Join(args, " "), err))
 	}
 	keePassXCCache[entry] = data
 	return data

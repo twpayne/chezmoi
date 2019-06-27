@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/twpayne/chezmoi/lib/chezmoi"
 	vfs "github.com/twpayne/go-vfs"
 )
 
@@ -51,11 +50,11 @@ func (c *Config) bitwardenFunc(args ...string) interface{} {
 	cmd.Stderr = os.Stderr
 	output, err := cmd.Output()
 	if err != nil {
-		chezmoi.ReturnTemplateFuncError(fmt.Errorf("bitwarden: %s %s: %v\n%s", name, strings.Join(args, " "), err, output))
+		panic(fmt.Errorf("bitwarden: %s %s: %v\n%s", name, strings.Join(args, " "), err, output))
 	}
 	var data interface{}
 	if err := json.Unmarshal(output, &data); err != nil {
-		chezmoi.ReturnTemplateFuncError(fmt.Errorf("bitwarden: %s %s: %v\n%s", name, strings.Join(args, " "), err, output))
+		panic(fmt.Errorf("bitwarden: %s %s: %v\n%s", name, strings.Join(args, " "), err, output))
 	}
 	bitwardenCache[key] = data
 	return data
