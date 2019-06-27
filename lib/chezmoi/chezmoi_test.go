@@ -10,8 +10,7 @@ import (
 func TestReturnTemplateError(t *testing.T) {
 	funcs := map[string]interface{}{
 		"returnTemplateError": func() string {
-			ReturnTemplateFuncError(errors.New("error"))
-			return "foo"
+			panic(errors.New("error"))
 		},
 	}
 	for name, dataString := range map[string]string{

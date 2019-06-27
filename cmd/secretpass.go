@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/twpayne/chezmoi/lib/chezmoi"
 	vfs "github.com/twpayne/go-vfs"
 )
 
@@ -46,7 +45,7 @@ func (c *Config) passFunc(id string) string {
 	}
 	output, err := exec.Command(name, args...).Output()
 	if err != nil {
-		chezmoi.ReturnTemplateFuncError(fmt.Errorf("pass: %s %s: %v", name, strings.Join(args, " "), err))
+		panic(fmt.Errorf("pass: %s %s: %v", name, strings.Join(args, " "), err))
 	}
 	var password string
 	if index := bytes.IndexByte(output, '\n'); index != -1 {

@@ -167,7 +167,7 @@ func (c *Config) promptString(field string) string {
 	fmt.Fprintf(c.Stdout(), "%s? ", field)
 	value, err := bufio.NewReader(c.Stdin()).ReadString('\n')
 	if err != nil {
-		chezmoi.ReturnTemplateFuncError(err)
+		panic(err)
 	}
 	return strings.TrimSuffix(value, "\n")
 }

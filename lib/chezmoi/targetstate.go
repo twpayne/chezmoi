@@ -657,7 +657,7 @@ func (ts *TargetState) executeTemplate(fs vfs.FS, path string) ([]byte, error) {
 	return ts.executeTemplateData(path, data)
 }
 
-func (ts *TargetState) executeTemplateData(name string, data []byte) (_ []byte, err error) {
+func (ts *TargetState) executeTemplateData(name string, data []byte) ([]byte, error) {
 	tmpl, err := template.New(name).Option("missingkey=error").Funcs(ts.TemplateFuncs).Parse(string(data))
 	if err != nil {
 		return nil, err
@@ -668,15 +668,6 @@ func (ts *TargetState) executeTemplateData(name string, data []byte) (_ []byte, 
 			return nil, err
 		}
 	}
-	defer func() {
-		if r := recover(); r != nil {
-			if tfe, ok := r.(templateFuncError); ok {
-				err = tfe.err
-			} else {
-				panic(r)
-			}
-		}
-	}()
 	output := &bytes.Buffer{}
 	if err = tmpl.Execute(output, ts.Data); err != nil {
 		return nil, err

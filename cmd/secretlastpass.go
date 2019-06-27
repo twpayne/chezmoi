@@ -14,7 +14,6 @@ import (
 
 	"github.com/coreos/go-semver/semver"
 	"github.com/spf13/cobra"
-	"github.com/twpayne/chezmoi/lib/chezmoi"
 	vfs "github.com/twpayne/go-vfs"
 )
 
@@ -71,7 +70,7 @@ func (c *Config) lastpassOutput(args ...string) ([]byte, error) {
 func (c *Config) lastpassFunc(id string) interface{} {
 	c.Lastpass.versionCheckOnce.Do(func() {
 		if err := c.lastpassVersionCheck(); err != nil {
-			chezmoi.ReturnTemplateFuncError(err)
+			panic(err)
 		}
 	})
 	if data, ok := lastPassCache[id]; ok {
@@ -79,11 +78,11 @@ func (c *Config) lastpassFunc(id string) interface{} {
 	}
 	output, err := c.lastpassOutput("show", "--json", id)
 	if err != nil {
-		chezmoi.ReturnTemplateFuncError(err)
+		panic(err)
 	}
 	var data []map[string]interface{}
 	if err := json.Unmarshal(output, &data); err != nil {
-		chezmoi.ReturnTemplateFuncError(fmt.Errorf("lastpass: parse error: %v\n%q", err, output))
+		panic(fmt.Errorf("lastpass: parse error: %v\n%q", err, output))
 	}
 	for _, d := range data {
 		if note, ok := d["note"].(string); ok {
@@ -130,7 +129,7 @@ func lastpassParseNote(note string) map[string]string {
 		}
 	}
 	if err := s.Err(); err != nil {
-		chezmoi.ReturnTemplateFuncError(fmt.Errorf("lastpassParseNote: %v", err))
+		panic(fmt.Errorf("lastpassParseNote: %v", err))
 	}
 	return result
 }
