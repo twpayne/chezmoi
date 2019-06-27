@@ -9,7 +9,7 @@ case $state in
   level1)
     case $words[1] in
       chezmoi)
-        _arguments '1: :(add apply archive cat cd chattr completion data diff doctor dump edit edit-config forget help import init merge remove secret source source-path unmanaged update upgrade verify)'
+        _arguments '1: :(add apply archive cat cd chattr completion data diff docs doctor dump edit edit-config forget help import init merge remove secret source source-path unmanaged update upgrade verify)'
       ;;
       *)
         _arguments '*: :_files'
