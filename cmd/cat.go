@@ -23,7 +23,7 @@ func init() {
 }
 
 func (c *Config) runCatCmd(fs vfs.FS, args []string) error {
-	ts, err := c.getTargetState(fs)
+	ts, err := c.getTargetState(fs, nil)
 	if err != nil {
 		return err
 	}

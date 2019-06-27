@@ -61,7 +61,9 @@ func (c *Config) runEditCmd(fs vfs.FS, args []string) error {
 		c.edit.diff = true
 	}
 
-	ts, err := c.getTargetState(fs)
+	ts, err := c.getTargetState(fs, &chezmoi.PopulateOptions{
+		ExecuteTemplates: false,
+	})
 	if err != nil {
 		return err
 	}

@@ -34,7 +34,7 @@ func (c *Config) runDataCmd(fs vfs.FS, args []string) error {
 	if !ok {
 		return fmt.Errorf("%s: unknown format", c.data.format)
 	}
-	ts, err := c.getTargetState(fs)
+	ts, err := c.getTargetState(fs, nil)
 	if err != nil {
 		return err
 	}

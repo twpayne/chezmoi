@@ -43,6 +43,11 @@ type ImportTAROptions struct {
 	StripComponents int
 }
 
+// A PopulateOptions contains options for TargetState.Populate.
+type PopulateOptions struct {
+	ExecuteTemplates bool
+}
+
 // A TargetState represents the root target state.
 type TargetState struct {
 	DestDir       string
@@ -318,7 +323,7 @@ func (ts *TargetState) ImportTAR(r *tar.Reader, importTAROptions ImportTAROption
 }
 
 // Populate walks fs from ts.SourceDir to populate ts.
-func (ts *TargetState) Populate(fs vfs.FS) error {
+func (ts *TargetState) Populate(fs vfs.FS, options *PopulateOptions) error {
 	return vfs.Walk(fs, ts.SourceDir, func(path string, info os.FileInfo, _ error) error {
 		relPath, err := filepath.Rel(ts.SourceDir, path)
 		if err != nil {
@@ -397,13 +402,15 @@ func (ts *TargetState) Populate(fs vfs.FS) error {
 					}
 				}
 				if psfp.fileAttributes != nil && psfp.fileAttributes.Template || psfp.scriptAttributes != nil && psfp.scriptAttributes.Template {
-					prevEvaluateContents := evaluateContents
-					evaluateContents = func() ([]byte, error) {
-						data, err := prevEvaluateContents()
-						if err != nil {
-							return nil, err
+					if options == nil || options.ExecuteTemplates {
+						prevEvaluateContents := evaluateContents
+						evaluateContents = func() ([]byte, error) {
+							data, err := prevEvaluateContents()
+							if err != nil {
+								return nil, err
+							}
+							return ts.executeTemplateData(path, data)
 						}
-						return ts.executeTemplateData(path, data)
 					}
 				}
 				switch {
