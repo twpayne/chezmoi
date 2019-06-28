@@ -1,7 +1,7 @@
 
 function __fish_chezmoi_no_subcommand --description 'Test if chezmoi has yet to be given the subcommand'
 	for i in (commandline -opc)
-		if contains -- $i add apply archive cat cd chattr completion data diff doctor dump edit edit-config forget import init merge remove secret source source-path unmanaged update upgrade verify
+		if contains -- $i add apply archive cat cd chattr completion data diff docs doctor dump edit edit-config forget import init merge remove secret source source-path unmanaged update upgrade verify
 			return 1
 		end
 	end
@@ -44,6 +44,7 @@ complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a chattr -d 'Change th
 complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a completion -d 'Output shell completion code for the specified shell (bash, fish or zsh)'
 complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a data -d 'Write the template data to stdout'
 complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a diff -d 'Write the diff between the target state and the destination state to stdout'
+complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a docs -d 'Print documentation'
 complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a doctor -d 'Check your system for potential problems'
 complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a dump -d 'Write a dump of the target state to stdout'
 complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a edit -d 'Edit the source state of a target'
@@ -142,6 +143,13 @@ complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path diff'  -s n -l dr
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path diff'   -l remove -d 'remove targets'
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path diff' -r -s S -l source -d 'source directory'
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path diff'  -s v -l verbose -d 'verbose'
+complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path docs' -r  -l color -d 'colorize diffs'
+complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path docs' -r -s c -l config -d 'config file'
+complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path docs' -r -s D -l destination -d 'destination directory'
+complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path docs'  -s n -l dry-run -d 'dry run'
+complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path docs'   -l remove -d 'remove targets'
+complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path docs' -r -s S -l source -d 'source directory'
+complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path docs'  -s v -l verbose -d 'verbose'
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path doctor' -r  -l color -d 'colorize diffs'
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path doctor' -r -s c -l config -d 'config file'
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path doctor' -r -s D -l destination -d 'destination directory'

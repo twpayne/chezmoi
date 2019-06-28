@@ -132,6 +132,15 @@ var helps = map[string]help{
 			"  chezmoi diff\n" +
 			"  chezmoi diff ~/.bashrc",
 	},
+	"docs": {
+		long: "" +
+			"Print the documentation page matching the regular expression regexp. Matching is\n" +
+			"case insensitive. If no pattern is given, print \"REFERENCE.md\".\n",
+		example: "" +
+			"  chezmoi docs\n" +
+			"  chezmoi docs faq\n" +
+			"  chezmoi docs howto",
+	},
 	"doctor": {
 		long: "" +
 			"Check for potential problems.\n",

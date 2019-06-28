@@ -1,6 +1,8 @@
 /*coverage.out
 /bin
 /chezmoi
+/cmd/cmd-packr.go
 /dist
 /goreleaser/goreleaser.host.yaml
 /goreleaser/snap.login
+/packrd

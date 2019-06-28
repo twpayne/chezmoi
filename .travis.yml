@@ -19,9 +19,7 @@ install:
 script:
 - make all
 - git diff --exit-code
-- make generate
 - make format
-- go mod tidy
 - git diff --exit-code
 - make test
 - make lint

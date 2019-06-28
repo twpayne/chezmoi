@@ -1,7 +1,7 @@
 .PHONY: nothing
 nothing:
 
-all: .goreleaser.yaml completions
+all: .goreleaser.yaml completions generate
 
 .PHONY: completions
 completions: \
@@ -34,6 +34,7 @@ format:
 .PHONY: generate
 generate:
 	go generate ./...
+	packr2
 
 .goreleaser.yaml: goreleaser/goreleaser.yaml.tmpl internal/generate-goreleaser-yaml/main.go
 	go run ./internal/generate-goreleaser-yaml \
@@ -56,6 +57,7 @@ install-tools:
 	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh
 	GO111MODULE=off go get -u \
 		golang.org/x/tools/cmd/cover \
+		github.com/gobuffalo/packr/v2/packr2 \
 		github.com/mattn/goveralls \
 		github.com/wadey/gocovmerge \
 		mvdan.cc/gofumpt/gofumports

@@ -32,6 +32,7 @@ Manage your dotfiles securely across multiple machines.
   * [`completion` *shell*](#completion-shell)
   * [`data`](#data)
   * [`diff` [*targets*]](#diff-targets)
+  * [`docs` [*regexp*]](#docs-regexp)
   * [`doctor`](#doctor)
   * [`dump` [*targets*]](#dump-targets)
   * [`edit` [*targets*]](#edit-targets)
@@ -431,6 +432,17 @@ the commands required for all targets. It is equivalent to `chezmoi apply
 
     chezmoi diff
     chezmoi diff ~/.bashrc
+
+### `docs` [*regexp*]
+
+Print the documentation page matching the regular expression *regexp*. Matching
+is case insensitive. If no pattern is given, print `REFERENCE.md`.
+
+#### `docs` examples
+
+    chezmoi docs
+    chezmoi docs faq
+    chezmoi docs howto
 
 ### `doctor`
 
