@@ -20,7 +20,6 @@ script:
 - make all
 - git diff --exit-code
 - make format
-- go mod tidy
 - git diff --exit-code
 - make test
 - make lint
