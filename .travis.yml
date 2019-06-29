@@ -32,7 +32,7 @@ sudo: false
 deploy:
 - provider: script
   skip_cleanup: true
-  script: make release-setup-travis release release-snap
+  script: make release-setup-travis release
   on:
     tags: true
     condition: "$TRAVIS_OS_NAME = linux"
