@@ -1,7 +1,7 @@
 .PHONY: nothing
 nothing:
 
-all: .goreleaser.yaml completions generate
+all: completions generate
 
 .PHONY: completions
 completions: \
@@ -36,18 +36,6 @@ generate:
 	go generate ./...
 	packr2
 
-.goreleaser.yaml: goreleaser/goreleaser.yaml.tmpl internal/generate-goreleaser-yaml/main.go
-	go run ./internal/generate-goreleaser-yaml \
-		-host-arch amd64 \
-		-host-os linux \
-		$< > $@ \
-		|| ( rm -f $@ ; false )
-
-goreleaser/goreleaser.host.yaml: goreleaser/goreleaser.yaml.tmpl internal/generate-goreleaser-yaml/main.go
-	go run ./internal/generate-goreleaser-yaml \
-		$< > $@ \
-		|| ( rm -f $@ ; false )
-
 .PHONY: html-coverage
 html-coverage:
 	go tool cover -html=coverage.out
@@ -73,17 +61,6 @@ release:
 		--rm-dist \
 		${GORELEASER_FLAGS}
 
-.PHONY: release-snap
-release-snap:
-	goreleaser release \
-		--config=goreleaser/goreleaser.snap.yaml \
-		--rm-dist \
-		--skip-publish \
-		${GORELEASER_FLAGS}
-	for snap in dist/*.snap ; do \
-		snapcraft push --release=stable $${snap} ; \
-	done
-
 .PHONY: release-setup-travis
 release-setup-travis:
 	sudo snap install goreleaser --classic
@@ -98,18 +75,8 @@ release-setup-travis:
 		--with goreleaser/snap.login
 
 .PHONY: test-release
-test-release: goreleaser/goreleaser.host.yaml
+test-release:
 	TRAVIS_BUILD_NUMBER=1 goreleaser release \
-		--config goreleaser/goreleaser.host.yaml \
-		--rm-dist \
-		--skip-publish \
-		--snapshot \
-		${GORELEASER_FLAGS}
-
-.PHONY: test-release-snap
-test-release-snap:
-	TRAVIS_BUILD_NUMBER=1 goreleaser release \
-		--config goreleaser/goreleaser.snap.yaml \
 		--rm-dist \
 		--skip-publish \
 		--snapshot \

@@ -5,6 +5,15 @@ before:
   - go mod download
 
 builds:
+- id: chezmoi-cgo
+  binary: chezmoi
+  ldflags: "-s -w -X github.com/twpayne/chezmoi/cmd.VersionStr={{ .Version }} -X github.com/twpayne/chezmoi/cmd.Commit={{ .Commit }} -X github.com/twpayne/chezmoi/cmd.Date={{ .Date }}"
+  env:
+  - CGO_ENABLED=1
+  goos:
+  - linux
+  goarch:
+  - amd64
 - id: chezmoi-nocgo
   binary: chezmoi
   env:
@@ -15,8 +24,6 @@ builds:
   - darwin
   - freebsd
   - openbsd
-  # - dragonfly
-  # - netbsd
   goarch:
   - "386"
   - amd64
@@ -31,8 +38,10 @@ builds:
     goarch: "386"
   - goos: linux
     goarch: amd64
-- id: chezmoi-cgo
+- id: chezmoi-cgo-snap
   binary: chezmoi
+  flags:
+  - -tags=snap
   ldflags: "-s -w -X github.com/twpayne/chezmoi/cmd.VersionStr={{ .Version }} -X github.com/twpayne/chezmoi/cmd.Commit={{ .Commit }} -X github.com/twpayne/chezmoi/cmd.Date={{ .Date }}"
   env:
   - CGO_ENABLED=1
@@ -40,9 +49,24 @@ builds:
   - linux
   goarch:
   - amd64
+- id: chezmoi-nocgo-snap
+  binary: chezmoi
+  flags:
+  - -tags=snap
+  ldflags: "-s -w -X github.com/twpayne/chezmoi/cmd.VersionStr={{ .Version }} -X github.com/twpayne/chezmoi/cmd.Commit={{ .Commit }} -X github.com/twpayne/chezmoi/cmd.Date={{ .Date }}"
+  env:
+  - CGO_ENABLED=0
+  goos:
+  - linux
+  goarch:
+  - "386"
+  - arm64
 
 archives:
-- files:
+- builds:
+  - chezmoi-cgo
+  - chezmoi-nocgo
+  files:
   - LICENSE
   - README.md
   - completions/*
@@ -66,7 +90,10 @@ changelog:
     - "Merge branch"
 
 nfpms:
-- vendor: "Tom Payne <twpayne@gmail.com>"
+- builds:
+  - chezmoi-cgo
+  - chezmoi-nocgo
+  vendor: "Tom Payne <twpayne@gmail.com>"
   homepage: "https://github.com/twpayne/chezmoi"
   maintainer: "Tom Payne <twpayne@gmail.com>"
   description: "Manage your dotfiles across multiple machines, securely."
@@ -113,3 +140,13 @@ brews:
     zsh_completion.install "completions/chezmoi.zsh" => "_chezmoi"
     fish_completion.install "completions/chezmoi.fish"
   description: "Manage your dotfiles across multiple machines, securely."
+
+snapcrafts:
+- builds:
+  - chezmoi-cgo-snap
+  - chezmoi-nocgo-snap
+  summary: "Manage your dotfiles across multiple machines, securely."
+  description: "Manage your dotfiles across multiple machines, securely."
+  publish: true
+  grade: stable
+  confinement: classic
