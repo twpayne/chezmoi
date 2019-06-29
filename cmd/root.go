@@ -144,7 +144,7 @@ func (c *Config) persistentPreRunRootE(fs vfs.FS, args []string) error {
 	switch {
 	case err == nil && !info.IsDir():
 		return fmt.Errorf("%s: not a directory", c.SourceDir)
-	case err == nil && mutator.IsPrivate(c.SourceDir, os.FileMode(c.Umask)):
+	case err == nil && !mutator.IsPrivate(c.SourceDir, os.FileMode(c.Umask)):
 		fmt.Fprintf(os.Stderr, "%s: not private, but should be\n", c.SourceDir)
 	case err != nil && !os.IsNotExist(err):
 		return err
