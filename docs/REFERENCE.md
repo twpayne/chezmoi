@@ -574,6 +574,10 @@ cannot be decrypted) a two-way merge is performed instead.
 
 Remove *targets* from both the source state and the destination directory.
 
+#### `-f`, `--force`
+
+Remove without prompting.
+
 ### `secret`
 
 Run a secret manager's CLI, passing any extra arguments to the secret manager's

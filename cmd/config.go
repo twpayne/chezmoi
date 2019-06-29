@@ -64,6 +64,7 @@ type Config struct {
 	init              initCmdConfig
 	_import           importCmdConfig
 	keyring           keyringCmdConfig
+	remove            removeCmdConfig
 	update            updateCmdConfig
 	upgrade           upgradeCmdConfig
 	stdin             io.Reader
@@ -286,6 +287,7 @@ func (c *Config) getVCSInfo() (*vcsInfo, error) {
 	return vcsInfo, nil
 }
 
+//nolint:unparam
 func (c *Config) prompt(s, choices string) (byte, error) {
 	r := bufio.NewReader(c.Stdin())
 	for {

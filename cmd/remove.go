@@ -1,12 +1,17 @@
 package cmd
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 
 	"github.com/spf13/cobra"
 	vfs "github.com/twpayne/go-vfs"
 )
+
+type removeCmdConfig struct {
+	force bool
+}
 
 var removeCmd = &cobra.Command{
 	Use:     "remove targets...",
@@ -21,6 +26,9 @@ var removeCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(removeCmd)
+
+	persistentFlags := removeCmd.PersistentFlags()
+	persistentFlags.BoolVarP(&config.remove.force, "force", "f", false, "remove without prompting")
 }
 
 func (c *Config) runRemoveCmd(fs vfs.FS, args []string) error {
@@ -34,10 +42,27 @@ func (c *Config) runRemoveCmd(fs vfs.FS, args []string) error {
 	}
 	mutator := c.getDefaultMutator(fs)
 	for _, entry := range entries {
-		if err := mutator.RemoveAll(filepath.Join(c.DestDir, entry.TargetName())); err != nil && !os.IsNotExist(err) {
+		destDirPath := filepath.Join(c.DestDir, entry.TargetName())
+		sourceDirPath := filepath.Join(c.SourceDir, entry.SourceName())
+		if !c.remove.force {
+			choice, err := c.prompt(fmt.Sprintf("Remove %s and %s", destDirPath, sourceDirPath), "ynqa")
+			if err != nil {
+				return err
+			}
+			switch choice {
+			case 'y':
+			case 'n':
+				continue
+			case 'q':
+				return nil
+			case 'a':
+				c.remove.force = true
+			}
+		}
+		if err := mutator.RemoveAll(destDirPath); err != nil && !os.IsNotExist(err) {
 			return err
 		}
-		if err := mutator.RemoveAll(filepath.Join(c.SourceDir, entry.SourceName())); err != nil && !os.IsNotExist(err) {
+		if err := mutator.RemoveAll(sourceDirPath); err != nil && !os.IsNotExist(err) {
 			return err
 		}
 	}
