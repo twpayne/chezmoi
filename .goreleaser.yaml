@@ -150,3 +150,6 @@ snapcrafts:
   publish: true
   grade: stable
   confinement: classic
+  apps:
+    chezmoi:
+      completer: completions/chezmoi-completion.bash
