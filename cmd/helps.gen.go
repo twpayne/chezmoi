@@ -253,7 +253,11 @@ var helps = map[string]help{
 	},
 	"remove": {
 		long: "" +
-			"Remove targets from both the source state and the destination directory.\n",
+			"Remove targets from both the source state and the destination directory.\n" +
+			"\n" +
+			"\"-f\", \"--force\"\n" +
+			"\n" +
+			"Remove without prompting.\n",
 	},
 	"secret": {
 		long: "" +

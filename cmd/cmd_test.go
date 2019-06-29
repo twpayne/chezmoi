@@ -22,6 +22,9 @@ func TestExercise(t *testing.T) {
 		DestDir:   "/home/user",
 		Umask:     022,
 		Verbose:   true,
+		remove: removeCmdConfig{
+			force: true,
+		},
 	}
 
 	mustWriteFile := func(name, contents string, mode os.FileMode) {

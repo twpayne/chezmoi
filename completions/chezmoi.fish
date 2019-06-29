@@ -215,6 +215,7 @@ complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path merge'  -s n -l d
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path merge'   -l remove -d 'remove targets'
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path merge' -r -s S -l source -d 'source directory'
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path merge'  -s v -l verbose -d 'verbose'
+complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path remove'  -s f -l force -d 'remove without prompting'
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path remove' -r  -l color -d 'colorize diffs'
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path remove' -r -s c -l config -d 'config file'
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path remove' -r -s D -l destination -d 'destination directory'

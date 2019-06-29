@@ -952,6 +952,8 @@ _chezmoi_remove()
     flags_with_completion=()
     flags_completion=()
 
+    flags+=("--force")
+    flags+=("-f")
     flags+=("--color=")
     two_word_flags+=("--color")
     flags+=("--config=")
