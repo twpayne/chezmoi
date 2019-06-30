@@ -9,5 +9,5 @@ import (
 
 func getOwner(info os.FileInfo) int {
 	executableStat := info.Sys().(*syscall.Stat_t)
-	return executableStat.Uid
+	return int(executableStat.Uid)
 }

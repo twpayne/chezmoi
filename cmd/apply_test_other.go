@@ -45,7 +45,7 @@ func getApplyScriptTestCases(tempDir string) []scriptTestCase {
 		{
 			name: "template",
 			root: map[string]interface{}{
-				"/home/user/.local/share/chezmoi/run_true.tmpl": "#!/bin/sh\ntouch {{ .Evidence }}\n",
+				"/home/user/.local/share/chezmoi/run_true.tmpl": "#!/bin/sh\necho {{ .Foo }} >>" + filepath.Join(tempDir, "evidence") + "\n",
 			},
 			data: map[string]interface{}{
 				"Foo": "foo",

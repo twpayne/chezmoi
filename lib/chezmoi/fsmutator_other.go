@@ -13,7 +13,12 @@ import (
 )
 
 func (a *FSMutator) IsPrivate(file string, umask os.FileMode) bool {
-	return a.Stat().Mode().Perm()&^umask != 0700&^umask
+	info, err := a.Stat(file)
+	if err != nil {
+		return false
+	}
+
+	return info.Mode().Perm()&^umask == 0700&^umask
 }
 
 // WriteFile implements Mutator.WriteFile.
