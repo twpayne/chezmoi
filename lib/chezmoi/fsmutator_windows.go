@@ -41,10 +41,39 @@ func (a *FSMutator) getCorrectedPath(file string) string {
 	return file
 }
 
+// Use the same default value as Linux (as of kernel 4.19)
+const MAXSYMLINKS = 40
+
 func (a *FSMutator) IsPrivate(file string, umask os.FileMode) bool {
 	file = a.getCorrectedPath(file)
 
-	mode, err := acl.GetEffectiveAccessMode(file)
+	// if file is a symlink, get the path it links to.  this emulates
+	// unix-style behavior, where symlinks can't have their own independent
+	// permissions.
+
+	resolved := file
+	for i := 0; i < MAXSYMLINKS; i++ {
+		fi, err := os.Lstat(resolved)
+		if err != nil {
+			return false
+		}
+
+		if fi.Mode()&os.ModeSymlink == 0 {
+			// not a link, all done
+			break
+		}
+
+		next, err := os.Readlink(resolved)
+		if err != nil {
+			return false
+		}
+
+		if next != "" && !filepath.IsAbs(next) {
+			resolved = filepath.Join(filepath.Dir(resolved), next)
+		}
+	}
+
+	mode, err := acl.GetEffectiveAccessMode(resolved)
 	if err != nil {
 		return false
 	}

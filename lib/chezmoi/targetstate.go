@@ -186,7 +186,7 @@ func (ts *TargetState) Apply(fs vfs.FS, mutator Mutator, applyOptions *ApplyOpti
 				return err
 			}
 			for _, match := range matches {
-				relPath := strings.TrimPrefix(match, ts.DestDir+"/")
+				relPath := strings.TrimPrefix(match, ts.DestDir+string(filepath.Separator))
 				// Don't remove targets that are ignored.
 				if ts.TargetIgnore.Match(relPath) {
 					continue

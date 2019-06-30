@@ -259,9 +259,13 @@ func (c *Config) getTargetState(fs vfs.FS, populateOptions *chezmoi.PopulateOpti
 		}
 	}
 
-	ts := chezmoi.NewTargetState(destDir, os.FileMode(c.Umask), c.SourceDir, data, c.templateFuncs, c.GPGRecipient)
-	readOnlyFS := vfs.NewReadOnlyFS(fs)
-	if err := ts.Populate(readOnlyFS); err != nil {
+	// For backwards compatibility, prioritize gpgRecipient over gpg.recipient.
+	if c.GPGRecipient != "" {
+		c.GPG.Recipient = c.GPGRecipient
+	}
+
+	ts := chezmoi.NewTargetState(destDir, os.FileMode(c.Umask), c.SourceDir, data, c.templateFuncs, &c.GPG)
+	if err := ts.Populate(fs, populateOptions); err != nil {
 		return nil, err
 	}
 	if Version != nil && ts.MinVersion != nil && Version.LessThan(*ts.MinVersion) {
