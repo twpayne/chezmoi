@@ -1,4 +1,4 @@
-//+build !noupgrade
+// +build !noupgrade
 
 package cmd
 
