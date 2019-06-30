@@ -28,14 +28,14 @@ require (
 	github.com/stretchr/testify v1.3.0
 	github.com/twpayne/go-difflib v1.3.1
 	github.com/twpayne/go-shell v0.0.1
-	github.com/twpayne/go-vfs v1.3.0
+	github.com/twpayne/go-vfs v1.3.1
 	github.com/twpayne/go-vfsafero v1.0.0
 	github.com/twpayne/go-xdg/v3 v3.1.0
 	github.com/zalando/go-keyring v0.0.0-20180221093347-6d81c293b3fb
 	go.etcd.io/bbolt v1.3.3
 	golang.org/x/crypto v0.0.0-20190621222207-cc06ce4a13d4
 	golang.org/x/oauth2 v0.0.0-20180821212333-d2e6202438be
-	golang.org/x/sys v0.0.0-20190621203818-d432491b9138 // indirect
+	golang.org/x/sys v0.0.0-20190626221950-04f50cda93cb // indirect
 	gopkg.in/yaml.v2 v2.2.2
 )
 
