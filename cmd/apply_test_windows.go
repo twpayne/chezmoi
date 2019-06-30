@@ -61,9 +61,9 @@ func getApplyScriptTestCases(tempDir string) []scriptTestCase {
 			name: "issue_353",
 			root: map[string]interface{}{
 				"/home/user/.local/share/chezmoi": map[string]interface{}{
-					"run_050_giraffe":       "@echo giraffe>>" + filepath.Join(tempDir, "evidence") + "\n",
-					"run_150_elephant":      "@echo elephant>>" + filepath.Join(tempDir, "evidence") + "\n",
-					"run_once_100_miauw.sh": "@echo miauw>>" + filepath.Join(tempDir, "evidence") + "\n",
+					"run_050_giraffe.#.bat":    "@echo giraffe>>" + filepath.Join(tempDir, "evidence") + "\n",
+					"run_150_elephant.#.bat":   "@echo elephant>>" + filepath.Join(tempDir, "evidence") + "\n",
+					"run_once_100_miauw.#.bat": "@echo miauw>>" + filepath.Join(tempDir, "evidence") + "\n",
 				},
 			},
 			tests: []vfst.Test{

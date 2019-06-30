@@ -248,13 +248,14 @@ func TestApplyScript(t *testing.T) {
 	for _, tc := range getApplyScriptTestCases(tempDir) {
 		t.Run(tc.name, func(t *testing.T) {
 			fs := vfs.NewPathFS(vfs.OSFS, tempDir)
-			defer func() {
-				require.NoError(t, os.RemoveAll(tempDir))
-				require.NoError(t, os.Mkdir(tempDir, 0700))
-			}()
 			require.NoError(t, vfst.NewBuilder().Build(fs, tc.root))
 			persistentState, err := chezmoi.NewBoltPersistentState(fs, "/home/user/.config/chezmoi/chezmoistate.boltdb")
 			require.NoError(t, err)
+			defer func() {
+				require.NoError(t, persistentState.Close())
+				require.NoError(t, os.RemoveAll(tempDir))
+				require.NoError(t, os.Mkdir(tempDir, 0700))
+			}()
 			c := &Config{
 				SourceDir:         "/home/user/.local/share/chezmoi",
 				DestDir:           "/",
