@@ -1,5 +1,9 @@
 language: go
 
+os:
+- linux
+- osx
+
 addons:
   apt:
     packages:
