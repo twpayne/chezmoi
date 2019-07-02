@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"testing"
+	"path/filepath"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -35,15 +36,15 @@ func TestDumpCmd(t *testing.T) {
 	expected := []interface{}{
 		map[string]interface{}{
 			"type":       "dir",
-			"sourcePath": "/home/user/.local/share/chezmoi/dir",
+			"sourcePath": filepath.Join("/home","user",".local","share","chezmoi","dir"),
 			"targetPath": "dir",
 			"exact":      false,
 			"perm":       float64(0755),
 			"entries": []interface{}{
 				map[string]interface{}{
 					"type":       "file",
-					"sourcePath": "/home/user/.local/share/chezmoi/dir/file",
-					"targetPath": "dir/file",
+					"sourcePath": filepath.Join("/home","user",".local","share","chezmoi","dir","file"),
+					"targetPath": filepath.Join("dir","file"),
 					"empty":      false,
 					"encrypted":  false,
 					"perm":       float64(0644),
@@ -54,7 +55,7 @@ func TestDumpCmd(t *testing.T) {
 		},
 		map[string]interface{}{
 			"type":       "symlink",
-			"sourcePath": "/home/user/.local/share/chezmoi/symlink_symlink",
+			"sourcePath": filepath.Join("/home","user",".local","share","chezmoi","symlink_symlink"),
 			"targetPath": "symlink",
 			"template":   false,
 			"linkname":   "target",
