@@ -34,6 +34,7 @@ func (c *Config) runCDCmd(fs vfs.FS, args []string) error {
 		return err
 	}
 
+	//nolint:goconst
 	if runtime.GOOS != "windows" {
 		if err := os.Chdir(c.SourceDir); err != nil {
 			return err
