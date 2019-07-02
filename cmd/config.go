@@ -12,7 +12,6 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
-	"syscall"
 	"text/template"
 	"unicode"
 
@@ -193,20 +192,6 @@ func (c *Config) ensureSourceDirectory(fs vfs.Stater, mutator chezmoi.Mutator) e
 	}
 }
 
-func (c *Config) exec(argv []string) error {
-	path, err := exec.LookPath(argv[0])
-	if err != nil {
-		return err
-	}
-	if c.Verbose {
-		fmt.Printf("exec %s\n", strings.Join(argv, " "))
-	}
-	if c.DryRun {
-		return nil
-	}
-	return syscall.Exec(path, argv, os.Environ())
-}
-
 func (c *Config) execEditor(argv ...string) error {
 	return c.exec(append([]string{c.getEditor()}, argv...))
 }
@@ -371,7 +356,7 @@ func getDefaultData(fs vfs.FS) (map[string]interface{}, error) {
 		data["group"] = group.Name
 	} else if cgoEnabled {
 		// Only return an error if CGO is enabled.
-		return nil, err
+		// return nil, err
 	}
 
 	homedir, err := os.UserHomeDir()

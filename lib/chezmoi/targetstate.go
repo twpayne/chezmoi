@@ -11,6 +11,7 @@ import (
 	"os/user"
 	"path/filepath"
 	"sort"
+	"runtime"
 	"strconv"
 	"strings"
 	"text/template"
@@ -229,28 +230,42 @@ func (ts *TargetState) Archive(w *tar.Writer, umask os.FileMode) error {
 	if err != nil {
 		return err
 	}
-	uid, err := strconv.Atoi(currentUser.Uid)
-	if err != nil {
-		return err
-	}
-	gid, err := strconv.Atoi(currentUser.Gid)
-	if err != nil {
-		return err
-	}
-	group, err := user.LookupGroupId(currentUser.Gid)
-	if err != nil {
-		return err
-	}
+
 	now := time.Now()
-	headerTemplate := tar.Header{
-		Uid:        uid,
-		Gid:        gid,
-		Uname:      currentUser.Username,
-		Gname:      group.Name,
-		ModTime:    now,
-		AccessTime: now,
-		ChangeTime: now,
-	}
+
+	var headerTemplate tar.Header
+        if runtime.GOOS != "windows" {
+        uid, err := strconv.Atoi(currentUser.Uid)
+        if err != nil {
+            return err
+        }
+        gid, err := strconv.Atoi(currentUser.Gid)
+        if err != nil {
+            return err
+        }
+        group, err := user.LookupGroupId(currentUser.Gid)
+        if err != nil {
+            return err
+        }
+
+        headerTemplate = tar.Header{
+            Uid:        uid,
+            Gid:        gid,
+            Uname:      currentUser.Username,
+            Gname:      group.Name,
+            ModTime:    now,
+            AccessTime: now,
+            ChangeTime: now,
+        }
+    } else {
+        headerTemplate = tar.Header{
+            Uname:      currentUser.Username,
+            ModTime:    now,
+            AccessTime: now,
+            ChangeTime: now,
+        }
+    }
+
 	for _, entryName := range sortedEntryNames(ts.Entries) {
 		if err := ts.Entries[entryName].archive(w, ts.TargetIgnore.Match, &headerTemplate, umask); err != nil {
 			return err

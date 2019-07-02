@@ -397,11 +397,12 @@ func getMethod(fs vfs.Stater, executableFilename string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	executableStat := info.Sys().(*syscall.Stat_t)
+
+	executableOwner := getOwner(info)
 	uid := os.Getuid()
 	switch runtime.GOOS {
 	case "darwin":
-		if int(executableStat.Uid) != uid {
+		if int(executableOwner) != uid {
 			return "", fmt.Errorf("%s: cannot upgrade executable owned by non-current user", executableFilename)
 		}
 		if executableInUserHomeDir || executableIsInTempDir {
@@ -412,7 +413,7 @@ func getMethod(fs vfs.Stater, executableFilename string) (string, error) {
 		return methodReplaceExecutable, nil
 	case "linux":
 		if uid == 0 {
-			if executableStat.Uid != 0 {
+			if executableOwner != 0 {
 				return "", fmt.Errorf("%s: cannot upgrade executable owned by non-root user when running as root", executableFilename)
 			}
 			if executableInUserHomeDir || executableIsInTempDir {
@@ -420,7 +421,7 @@ func getMethod(fs vfs.Stater, executableFilename string) (string, error) {
 			}
 			return methodUpgradePackage, nil
 		}
-		switch int(executableStat.Uid) {
+		switch int(executableOwner) {
 		case 0:
 			method := methodUpgradePackage
 			if _, err := exec.LookPath("sudo"); err == nil {
@@ -434,6 +435,7 @@ func getMethod(fs vfs.Stater, executableFilename string) (string, error) {
 		}
 	case "openbsd":
 		return methodReplaceExecutable, nil
+    // TODO: do something reasonable on windows
 	default:
 		return "", fmt.Errorf("%s: unsupported GOOS", runtime.GOOS)
 	}
