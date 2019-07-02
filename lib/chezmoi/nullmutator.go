@@ -5,11 +5,7 @@ import "os"
 // NullMutator is an Mutator that does nothing.
 type NullMutator struct{}
 
-func (NullMutator) MakePrivate(file string, umask os.FileMode) error {
-    return nil
-}
-
-func (NullMutator) IsPrivate(fi os.FileInfo, umask os.FileMode) bool {
+func (NullMutator) IsPrivate(fi string, umask os.FileMode) bool {
     return false
 }
 

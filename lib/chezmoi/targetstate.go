@@ -525,7 +525,18 @@ func (ts *TargetState) addFile(targetName string, entries map[string]Entry, pare
 			return err
 		}
 	}
-	perm := info.Mode().Perm()
+
+    perm := info.Mode().Perm()
+    destFile := filepath.Join(ts.DestDir, name)
+	if mutator.IsPrivate(destFile, ts.Umask) {
+	    // since Windows doesn't really have the concept of "groups", the
+	    // group permission bits might be set even on a file that should
+	    // be considered private.  This will clear them.  Posix-style platforms
+	    // remain unaffected because IsPrivate will only return true if those
+	    // bits weren't set in the first place
+	    perm &^= 0077
+    }
+
 	empty := info.Size() == 0
 	sourceName := FileAttributes{
 		Name:      name,

@@ -12,12 +12,8 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-func (a *FSMutator) MakePrivate(file string, umask os.FileMode) error {
-    return a.Chmod(file, 0700&^umask)
-}
-
-func (a *FSMutator) IsPrivate(fi os.FileInfo, umask os.FileMode) bool {
-    return fi.Mode().Perm() &^ umask != 0700 &^ umask
+func (a *FSMutator) IsPrivate(file string, umask os.FileMode) bool {
+    return a.Stat().Mode().Perm() &^ umask != 0700 &^ umask
 }
 
 // WriteFile implements Mutator.WriteFile.

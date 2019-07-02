@@ -82,7 +82,7 @@ func getApplyScriptTestCases(tempDir string) []scriptTestCase {
 }
 
 func getRunOnceFiles() map[string]interface{} {
-    return runOnceFiles{
+    return map[string]interface{}{
         "/home/user/.local/share/chezmoi/run_once_foo.tmpl":
             "#!/bin/sh\necho bar >> {{ .TempFile }}\n",
     }

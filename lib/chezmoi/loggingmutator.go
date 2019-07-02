@@ -28,23 +28,11 @@ func NewLoggingMutator(w io.Writer, m Mutator, colored bool) *LoggingMutator {
 }
 
 // IsPrivate implements Mutator.IsPrivate.
-func (m *LoggingMutator) IsPrivate(file os.FileInfo, umask os.FileMode) bool {
+func (m *LoggingMutator) IsPrivate(file string, umask os.FileMode) bool {
 	action := fmt.Sprintf("IsPrivate %o %s", umask, file)
 	result := m.m.IsPrivate(file, umask)
     _, _ = fmt.Fprintf(m.w, "%s: %v\n", action, result)
 	return result
-}
-
-// MakePrivate implements Mutator.MakePrivate.
-func (m *LoggingMutator) MakePrivate(name string, umask os.FileMode) error {
-	action := fmt.Sprintf("MakePrivate %o %s", umask, name)
-	err := m.m.MakePrivate(name, umask)
-	if err == nil {
-		_, _ = fmt.Fprintln(m.w, action)
-	} else {
-		_, _ = fmt.Fprintf(m.w, "%s: %v\n", action, err)
-	}
-	return err
 }
 
 // Chmod implements Mutator.Chmod.
