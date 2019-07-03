@@ -4,7 +4,6 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
-	"runtime"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -316,19 +315,12 @@ func TestApplyRunOnce(t *testing.T) {
 		),
 	)
 
-	var lineBreak string
-	if runtime.GOOS != "windows" {
-		lineBreak = "\n"
-	} else {
-		lineBreak = "\r\n"
-	}
-
 	actualData, err := ioutil.ReadFile(tempFile)
 	require.NoError(t, err)
-	assert.Equal(t, []byte("bar"+lineBreak), actualData)
+	assert.Equal(t, []byte("bar\n"), actualData)
 
 	require.NoError(t, c.runApplyCmd(fs, nil))
 	actualData, err = ioutil.ReadFile(tempFile)
 	require.NoError(t, err)
-	assert.Equal(t, []byte("bar"+lineBreak), actualData)
+	assert.Equal(t, []byte("bar\n"), actualData)
 }

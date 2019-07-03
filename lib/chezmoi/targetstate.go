@@ -8,14 +8,10 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
-	"os/user"
 	"path/filepath"
-	"runtime"
 	"sort"
-	"strconv"
 	"strings"
 	"text/template"
-	"time"
 
 	"github.com/coreos/go-semver/semver"
 	vfs "github.com/twpayne/go-vfs"
@@ -226,48 +222,13 @@ func (ts *TargetState) Apply(fs vfs.FS, mutator Mutator, applyOptions *ApplyOpti
 
 // Archive writes ts to w.
 func (ts *TargetState) Archive(w *tar.Writer, umask os.FileMode) error {
-	currentUser, err := user.Current()
+	headerTemplate, err := ts.getTarHeaderTemplate()
 	if err != nil {
 		return err
 	}
 
-	now := time.Now()
-
-	var headerTemplate tar.Header
-	if runtime.GOOS != "windows" {
-		uid, err := strconv.Atoi(currentUser.Uid)
-		if err != nil {
-			return err
-		}
-		gid, err := strconv.Atoi(currentUser.Gid)
-		if err != nil {
-			return err
-		}
-		group, err := user.LookupGroupId(currentUser.Gid)
-		if err != nil {
-			return err
-		}
-
-		headerTemplate = tar.Header{
-			Uid:        uid,
-			Gid:        gid,
-			Uname:      currentUser.Username,
-			Gname:      group.Name,
-			ModTime:    now,
-			AccessTime: now,
-			ChangeTime: now,
-		}
-	} else {
-		headerTemplate = tar.Header{
-			Uname:      currentUser.Username,
-			ModTime:    now,
-			AccessTime: now,
-			ChangeTime: now,
-		}
-	}
-
 	for _, entryName := range sortedEntryNames(ts.Entries) {
-		if err := ts.Entries[entryName].archive(w, ts.TargetIgnore.Match, &headerTemplate, umask); err != nil {
+		if err := ts.Entries[entryName].archive(w, ts.TargetIgnore.Match, headerTemplate, umask); err != nil {
 			return err
 		}
 	}
