@@ -30,7 +30,7 @@ func (ts *TargetState) getTarHeaderTemplate() (*tar.Header, error) {
 		return nil, err
 	}
 
-	return tar.Header{
+	return &tar.Header{
 		Uid:        uid,
 		Gid:        gid,
 		Uname:      currentUser.Username,
