@@ -10,7 +10,7 @@ func getSecretTestConfig() (*Config, []string) {
 				Command: "powershell.exe",
 			},
 		},
-		[]string{"-Command", "Get-Date"}
+		[]string{"-NoProfile", "-NonInteractive", "-Command", "Get-Date"}
 }
 
 func getSecretJSONTestConfig() (*Config, []string) {
@@ -19,5 +19,5 @@ func getSecretJSONTestConfig() (*Config, []string) {
 				Command: "powershell.exe",
 			},
 		},
-		[]string{"-Command", "Get-Date | ConvertTo-Json"}
+		[]string{"-NoProfile", "-NonInteractive", "-Command", "Get-Date | ConvertTo-Json"}
 }

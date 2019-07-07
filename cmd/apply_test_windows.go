@@ -21,7 +21,7 @@ func getApplyScriptTestCases(tempDir string) []scriptTestCase {
 		{
 			name: "simple",
 			root: map[string]interface{}{
-				"/home/user/.local/share/chezmoi/run_true.#.bat": "@echo foo>>" + filepath.Join(tempDir, "evidence") + "\n",
+				"/home/user/.local/share/chezmoi/run_true.bat": "@echo foo>>" + filepath.Join(tempDir, "evidence") + "\n",
 			},
 			tests: []vfst.Test{
 				vfst.TestPath(filepath.Join(tempDir, "evidence"),
@@ -33,7 +33,7 @@ func getApplyScriptTestCases(tempDir string) []scriptTestCase {
 		{
 			name: "simple_once",
 			root: map[string]interface{}{
-				"/home/user/.local/share/chezmoi/run_once_true.#.bat": "@echo foo>>" + filepath.Join(tempDir, "evidence") + "\n",
+				"/home/user/.local/share/chezmoi/run_once_true.bat": "@echo foo>>" + filepath.Join(tempDir, "evidence") + "\n",
 			},
 			tests: []vfst.Test{
 				vfst.TestPath(filepath.Join(tempDir, "evidence"),
@@ -45,7 +45,7 @@ func getApplyScriptTestCases(tempDir string) []scriptTestCase {
 		{
 			name: "template",
 			root: map[string]interface{}{
-				"/home/user/.local/share/chezmoi/run_true.#.bat.tmpl": "@echo {{ .Foo }}>>" + filepath.Join(tempDir, "evidence") + "\n",
+				"/home/user/.local/share/chezmoi/run_true.bat.tmpl": "@echo {{ .Foo }}>>" + filepath.Join(tempDir, "evidence") + "\n",
 			},
 			data: map[string]interface{}{
 				"Foo": "foo",
@@ -61,9 +61,9 @@ func getApplyScriptTestCases(tempDir string) []scriptTestCase {
 			name: "issue_353",
 			root: map[string]interface{}{
 				"/home/user/.local/share/chezmoi": map[string]interface{}{
-					"run_050_giraffe.#.bat":    "@echo giraffe>>" + filepath.Join(tempDir, "evidence") + "\n",
-					"run_150_elephant.#.bat":   "@echo elephant>>" + filepath.Join(tempDir, "evidence") + "\n",
-					"run_once_100_miauw.#.bat": "@echo miauw>>" + filepath.Join(tempDir, "evidence") + "\n",
+					"run_050_giraffe.bat":    "@echo giraffe>>" + filepath.Join(tempDir, "evidence") + "\n",
+					"run_150_elephant.bat":   "@echo elephant>>" + filepath.Join(tempDir, "evidence") + "\n",
+					"run_once_100_miauw.bat": "@echo miauw>>" + filepath.Join(tempDir, "evidence") + "\n",
 				},
 			},
 			tests: []vfst.Test{
@@ -90,6 +90,6 @@ func getRunOnceFiles() map[string]interface{} {
 		// and no carriage return (0x0D), but it can be done with Powershell.  The default action for Powershell script
 		// files on Windows is to open them in the default text editor rather than to execute them (for security
 		// reasons).  The easiest solution is to make a batch file that calls Powershell.
-		"/home/user/.local/share/chezmoi/run_once_foo.#.bat.tmpl": "@powershell.exe -c \"Write-Host -NoNewLine ('bar{0}' -f (0x0A -as [char]))\">> {{ .TempFile }}\n",
+		"/home/user/.local/share/chezmoi/run_once_foo.bat.tmpl": "@powershell.exe -NoProfile -NonInteractive -c \"Write-Host -NoNewLine ('bar{0}' -f (0x0A -as [char]))\">> {{ .TempFile }}\n",
 	}
 }
