@@ -1,5 +1,4 @@
-// +build noupgrade
-// +build windows
+// +build noupgrade windows
 
 package cmd
 

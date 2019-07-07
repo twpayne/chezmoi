@@ -2,6 +2,7 @@ package chezmoi
 
 import (
 	"os"
+	"path/filepath"
 	"testing"
 	"text/template"
 
@@ -207,8 +208,8 @@ func TestTargetStatePopulate(t *testing.T) {
 						Perm:       0777,
 						Entries: map[string]Entry{
 							"bar": &File{
-								sourceName: "foo/bar",
-								targetName: "foo/bar",
+								sourceName: filepath.Join("foo", "bar"),
+								targetName: filepath.Join("foo", "bar"),
 								Perm:       0666,
 								contents:   []byte("baz"),
 							},
@@ -237,8 +238,8 @@ func TestTargetStatePopulate(t *testing.T) {
 						Perm:       0700,
 						Entries: map[string]Entry{
 							"bar": &File{
-								sourceName: "private_dot_foo/bar",
-								targetName: ".foo/bar",
+								sourceName: filepath.Join("private_dot_foo", "bar"),
+								targetName: filepath.Join(".foo", "bar"),
 								Perm:       0666,
 								contents:   []byte("baz"),
 							},
@@ -296,8 +297,8 @@ func TestTargetStatePopulate(t *testing.T) {
 						Perm:       0777,
 						Entries: map[string]Entry{
 							"foo": &File{
-								sourceName: "exact_dir/foo",
-								targetName: "dir/foo",
+								sourceName: filepath.Join("exact_dir", "foo"),
+								targetName: filepath.Join("dir", "foo"),
 								Perm:       0666,
 								contents:   []byte("bar"),
 							},
@@ -436,10 +437,10 @@ func TestTargetStatePopulate(t *testing.T) {
 				DestDir: "/",
 				TargetIgnore: &PatternSet{
 					includes: map[string]struct{}{
-						"dir/foo": {},
+						filepath.Join("dir", "foo"): {},
 					},
 					excludes: map[string]struct{}{
-						"dir/bar": {},
+						filepath.Join("dir", "bar"): {},
 					},
 				},
 				TargetRemove: NewPatternSet(),

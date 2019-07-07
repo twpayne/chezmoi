@@ -9,12 +9,9 @@ import (
 
 func TestSecretFunc(t *testing.T) {
 	t.Parallel()
-	c := &Config{
-		GenericSecret: genericSecretCmdConfig{
-			Command: "date",
-		},
-	}
-	args := []string{"+%Y-%M-%DT%H:%M:%SZ"}
+
+	c, args := getSecretTestConfig()
+
 	var value interface{}
 	assert.NotPanics(t, func() {
 		value = c.secretFunc(args...)
@@ -25,12 +22,9 @@ func TestSecretFunc(t *testing.T) {
 
 func TestSecretJSONFunc(t *testing.T) {
 	t.Parallel()
-	c := &Config{
-		GenericSecret: genericSecretCmdConfig{
-			Command: "date",
-		},
-	}
-	args := []string{`+{"date":"%Y-%M-%DT%H:%M:%SZ"}`}
+
+	c, args := getSecretJSONTestConfig()
+
 	var value interface{}
 	assert.NotPanics(t, func() {
 		value = c.secretJSONFunc(args...)

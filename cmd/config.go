@@ -12,7 +12,6 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
-	"syscall"
 	"text/template"
 	"unicode"
 
@@ -171,14 +170,14 @@ func (c *Config) ensureNoError(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func (c *Config) ensureSourceDirectory(fs vfs.Stater, mutator chezmoi.Mutator) error {
+func (c *Config) ensureSourceDirectory(fs chezmoi.PrivacyStater, mutator chezmoi.Mutator) error {
 	if err := vfs.MkdirAll(mutator, filepath.Dir(c.SourceDir), 0777&^os.FileMode(c.Umask)); err != nil {
 		return err
 	}
 	info, err := fs.Stat(c.SourceDir)
 	switch {
 	case err == nil && info.IsDir():
-		if info.Mode().Perm()&^os.FileMode(c.Umask) != 0700&^os.FileMode(c.Umask) {
+		if !chezmoi.IsPrivate(fs, c.SourceDir, os.FileMode(c.Umask)) {
 			if err := mutator.Chmod(c.SourceDir, 0700&^os.FileMode(c.Umask)); err != nil {
 				return err
 			}
@@ -191,20 +190,6 @@ func (c *Config) ensureSourceDirectory(fs vfs.Stater, mutator chezmoi.Mutator) e
 	default:
 		return err
 	}
-}
-
-func (c *Config) exec(argv []string) error {
-	path, err := exec.LookPath(argv[0])
-	if err != nil {
-		return err
-	}
-	if c.Verbose {
-		fmt.Printf("exec %s\n", strings.Join(argv, " "))
-	}
-	if c.DryRun {
-		return nil
-	}
-	return syscall.Exec(path, argv, os.Environ())
 }
 
 func (c *Config) execEditor(argv ...string) error {
@@ -265,11 +250,21 @@ func (c *Config) getTargetState(fs vfs.FS, populateOptions *chezmoi.PopulateOpti
 	for key, value := range c.Data {
 		data[key] = value
 	}
+
+	destDir := c.DestDir
+	if destDir != "" {
+		destDir, err = filepath.Abs(c.DestDir)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	// For backwards compatibility, prioritize gpgRecipient over gpg.recipient.
 	if c.GPGRecipient != "" {
 		c.GPG.Recipient = c.GPGRecipient
 	}
-	ts := chezmoi.NewTargetState(c.DestDir, os.FileMode(c.Umask), c.SourceDir, data, c.templateFuncs, &c.GPG)
+
+	ts := chezmoi.NewTargetState(destDir, os.FileMode(c.Umask), c.SourceDir, data, c.templateFuncs, &c.GPG)
 	if err := ts.Populate(fs, populateOptions); err != nil {
 		return nil, err
 	}
@@ -299,7 +294,8 @@ func (c *Config) prompt(s, choices string) (byte, error) {
 		if err != nil {
 			return 0, err
 		}
-		if len(line) == 2 && strings.IndexByte(choices, line[0]) != -1 {
+		line = strings.TrimRight(line, "\r\n")
+		if len(line) == 1 && strings.IndexByte(choices, line[0]) != -1 {
 			return line[0], nil
 		}
 	}
@@ -369,8 +365,9 @@ func getDefaultData(fs vfs.FS) (map[string]interface{}, error) {
 	group, err := user.LookupGroupId(currentUser.Gid)
 	if err == nil {
 		data["group"] = group.Name
-	} else if cgoEnabled {
-		// Only return an error if CGO is enabled.
+	} else if cgoEnabled && runtime.GOOS != "windows" {
+		// Only return an error if CGO is enabled and the platform is
+		// non-Windows (groups don't really mean much on Windows).
 		return nil, err
 	}
 

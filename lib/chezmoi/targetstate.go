@@ -8,13 +8,10 @@ import (
 	"io"
 	"io/ioutil"
 	"os"
-	"os/user"
 	"path/filepath"
 	"sort"
-	"strconv"
 	"strings"
 	"text/template"
-	"time"
 
 	"github.com/coreos/go-semver/semver"
 	vfs "github.com/twpayne/go-vfs"
@@ -158,7 +155,7 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 				return err
 			}
 		}
-		return ts.addFile(targetName, entries, parentDirSourceName, info, addOptions.Encrypt, addOptions.Template, contents, mutator)
+		return ts.addFile(targetName, entries, parentDirSourceName, info, addOptions.Encrypt, addOptions.Template, contents, mutator, fs)
 	case info.Mode()&os.ModeType == os.ModeSymlink:
 		linkname, err := fs.Readlink(targetPath)
 		if err != nil {
@@ -185,7 +182,7 @@ func (ts *TargetState) Apply(fs vfs.FS, mutator Mutator, applyOptions *ApplyOpti
 				return err
 			}
 			for _, match := range matches {
-				relPath := strings.TrimPrefix(match, ts.DestDir+"/")
+				relPath := strings.TrimPrefix(match, ts.DestDir+string(filepath.Separator))
 				// Don't remove targets that are ignored.
 				if ts.TargetIgnore.Match(relPath) {
 					continue
@@ -225,34 +222,13 @@ func (ts *TargetState) Apply(fs vfs.FS, mutator Mutator, applyOptions *ApplyOpti
 
 // Archive writes ts to w.
 func (ts *TargetState) Archive(w *tar.Writer, umask os.FileMode) error {
-	currentUser, err := user.Current()
+	headerTemplate, err := ts.getTarHeaderTemplate()
 	if err != nil {
 		return err
 	}
-	uid, err := strconv.Atoi(currentUser.Uid)
-	if err != nil {
-		return err
-	}
-	gid, err := strconv.Atoi(currentUser.Gid)
-	if err != nil {
-		return err
-	}
-	group, err := user.LookupGroupId(currentUser.Gid)
-	if err != nil {
-		return err
-	}
-	now := time.Now()
-	headerTemplate := tar.Header{
-		Uid:        uid,
-		Gid:        gid,
-		Uname:      currentUser.Username,
-		Gname:      group.Name,
-		ModTime:    now,
-		AccessTime: now,
-		ChangeTime: now,
-	}
+
 	for _, entryName := range sortedEntryNames(ts.Entries) {
-		if err := ts.Entries[entryName].archive(w, ts.TargetIgnore.Match, &headerTemplate, umask); err != nil {
+		if err := ts.Entries[entryName].archive(w, ts.TargetIgnore.Match, headerTemplate, umask); err != nil {
 			return err
 		}
 	}
@@ -301,7 +277,7 @@ func (ts *TargetState) Get(fs vfs.Stater, target string) (Entry, error) {
 }
 
 // ImportTAR imports a tar archive.
-func (ts *TargetState) ImportTAR(r *tar.Reader, importTAROptions ImportTAROptions, mutator Mutator) error {
+func (ts *TargetState) ImportTAR(r *tar.Reader, importTAROptions ImportTAROptions, mutator Mutator, fs PrivacyStater) error {
 	for {
 		header, err := r.Next()
 		if err == io.EOF {
@@ -311,7 +287,7 @@ func (ts *TargetState) ImportTAR(r *tar.Reader, importTAROptions ImportTAROption
 		}
 		switch header.Typeflag {
 		case tar.TypeDir, tar.TypeReg, tar.TypeSymlink:
-			if err := ts.importHeader(r, importTAROptions, header, mutator); err != nil {
+			if err := ts.importHeader(r, importTAROptions, header, mutator, fs); err != nil {
 				return err
 			}
 		case tar.TypeXGlobalHeader:
@@ -495,7 +471,7 @@ func (ts *TargetState) addDir(targetName string, entries map[string]Entry, paren
 	return nil
 }
 
-func (ts *TargetState) addFile(targetName string, entries map[string]Entry, parentDirSourceName string, info os.FileInfo, encrypted, template bool, contents []byte, mutator Mutator) error {
+func (ts *TargetState) addFile(targetName string, entries map[string]Entry, parentDirSourceName string, info os.FileInfo, encrypted, template bool, contents []byte, mutator Mutator, fs PrivacyStater) error {
 	name := filepath.Base(targetName)
 	var existingFile *File
 	var existingContents []byte
@@ -510,7 +486,18 @@ func (ts *TargetState) addFile(targetName string, entries map[string]Entry, pare
 			return err
 		}
 	}
+
 	perm := info.Mode().Perm()
+	destFile := filepath.Join(ts.DestDir, name)
+	if IsPrivate(fs, destFile, ts.Umask) {
+		// since Windows doesn't really have the concept of "groups", the
+		// group permission bits might be set even on a file that should
+		// be considered private.  This will clear them.  Posix-style platforms
+		// remain unaffected because IsPrivate will only return true if those
+		// bits weren't set in the first place
+		perm &^= 0077
+	}
+
 	empty := info.Size() == 0
 	sourceName := FileAttributes{
 		Name:      name,
@@ -698,7 +685,7 @@ func (ts *TargetState) findEntry(name string) (Entry, error) {
 	return entries[names[len(names)-1]], nil
 }
 
-func (ts *TargetState) importHeader(r io.Reader, importTAROptions ImportTAROptions, header *tar.Header, mutator Mutator) error {
+func (ts *TargetState) importHeader(r io.Reader, importTAROptions ImportTAROptions, header *tar.Header, mutator Mutator, fs PrivacyStater) error {
 	targetPath := header.Name
 	if importTAROptions.StripComponents > 0 {
 		targetPath = filepath.Join(strings.Split(targetPath, string(os.PathSeparator))[importTAROptions.StripComponents:]...)
@@ -737,7 +724,7 @@ func (ts *TargetState) importHeader(r io.Reader, importTAROptions ImportTAROptio
 		if err != nil {
 			return err
 		}
-		return ts.addFile(targetName, entries, parentDirSourceName, info, false, false, contents, mutator)
+		return ts.addFile(targetName, entries, parentDirSourceName, info, false, false, contents, mutator, fs)
 	case tar.TypeSymlink:
 		linkname := header.Linkname
 		return ts.addSymlink(targetName, entries, parentDirSourceName, linkname, mutator)

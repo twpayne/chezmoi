@@ -397,6 +397,7 @@ func getMethod(fs vfs.Stater, executableFilename string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	executableStat := info.Sys().(*syscall.Stat_t)
 	uid := os.Getuid()
 	switch runtime.GOOS {

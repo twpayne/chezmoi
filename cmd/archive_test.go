@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"io"
 	"io/ioutil"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -34,7 +35,7 @@ func TestArchiveCmd(t *testing.T) {
 
 	h, err = r.Next()
 	assert.NoError(t, err)
-	assert.Equal(t, "dir/file", h.Name)
+	assert.Equal(t, filepath.Join("dir", "file"), h.Name)
 	data, err := ioutil.ReadAll(r)
 	assert.NoError(t, err)
 	assert.Equal(t, []byte("contents"), data)
