@@ -42,6 +42,9 @@ func resolveSymlink(file string) (string, error) {
 	return resolved, nil
 }
 
+// IsPrivate returns whether path is private. A path is considered private when
+// its mode has been explicitly set to some value (ie, it's non-zero) and that
+// value disallows access to the special "Everyone" user
 func IsPrivate(fs PrivacyStater, path string) (bool, error) {
 	rawPath, err := fs.RawPath(path)
 	if err != nil {
@@ -53,10 +56,10 @@ func IsPrivate(fs PrivacyStater, path string) (bool, error) {
 		return false, err
 	}
 
-	mode, err := acl.GetEffectiveAccessMode(resolvedPath)
+	mode, err := acl.GetExplicitAccessMode(resolvedPath)
 	if err != nil {
 		return false, err
 	}
 
-	return mode&07 == 0, nil
+	return (mode != 0) && (mode&07) == 0, nil
 }

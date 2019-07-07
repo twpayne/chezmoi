@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"runtime"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -45,12 +44,11 @@ func TestAddAfterModification(t *testing.T) {
 
 func TestAddCommand(t *testing.T) {
 	for _, tc := range []struct {
-		name          string
-		skipOnWindows bool
-		args          []string
-		add           addCmdConfig
-		root          interface{}
-		tests         interface{}
+		name  string
+		args  []string
+		add   addCmdConfig
+		root  interface{}
+		tests interface{}
 	}{
 		{
 			name: "add_first_file",
@@ -90,9 +88,8 @@ func TestAddCommand(t *testing.T) {
 			},
 		},
 		{
-			name:          "add_recursive",
-			skipOnWindows: true,
-			args:          []string{"/home/user/.config"},
+			name: "add_recursive",
+			args: []string{"/home/user/.config"},
 			add: addCmdConfig{
 				recursive: true,
 			},
@@ -109,9 +106,8 @@ func TestAddCommand(t *testing.T) {
 			},
 		},
 		{
-			name:          "add_nested_directory",
-			skipOnWindows: true,
-			args:          []string{"/home/user/.config/micro/settings.json"},
+			name: "add_nested_directory",
+			args: []string{"/home/user/.config/micro/settings.json"},
 			root: map[string]interface{}{
 				"/home/user":                             &vfst.Dir{Perm: 0755},
 				"/home/user/.chezmoi":                    &vfst.Dir{Perm: 0700},
@@ -125,9 +121,8 @@ func TestAddCommand(t *testing.T) {
 			},
 		},
 		{
-			name:          "add_exact_dir",
-			skipOnWindows: true,
-			args:          []string{"/home/user/dir"},
+			name: "add_exact_dir",
+			args: []string{"/home/user/dir"},
 			add: addCmdConfig{
 				options: chezmoi.AddOptions{
 					Exact: true,
@@ -145,9 +140,8 @@ func TestAddCommand(t *testing.T) {
 			},
 		},
 		{
-			name:          "add_exact_dir_recursive",
-			skipOnWindows: true,
-			args:          []string{"/home/user/dir"},
+			name: "add_exact_dir_recursive",
+			args: []string{"/home/user/dir"},
 			add: addCmdConfig{
 				recursive: true,
 				options: chezmoi.AddOptions{
@@ -250,9 +244,8 @@ func TestAddCommand(t *testing.T) {
 			},
 		},
 		{
-			name:          "add_symlink_in_dir_recursive",
-			skipOnWindows: true,
-			args:          []string{"/home/user/foo"},
+			name: "add_symlink_in_dir_recursive",
+			args: []string{"/home/user/foo"},
 			add: addCmdConfig{
 				recursive: true,
 			},
@@ -272,9 +265,8 @@ func TestAddCommand(t *testing.T) {
 			},
 		},
 		{
-			name:          "add_symlink_with_parent_dir",
-			skipOnWindows: true,
-			args:          []string{"/home/user/foo/bar/baz"},
+			name: "add_symlink_with_parent_dir",
+			args: []string{"/home/user/foo/bar/baz"},
 			root: map[string]interface{}{
 				"/home/user":             &vfst.Dir{Perm: 0755},
 				"/home/user/.chezmoi":    &vfst.Dir{Perm: 0700},
@@ -313,9 +305,8 @@ func TestAddCommand(t *testing.T) {
 			},
 		},
 		{
-			name:          "dont_add_ignored_file_recursive",
-			skipOnWindows: true,
-			args:          []string{"/home/user/foo"},
+			name: "dont_add_ignored_file_recursive",
+			args: []string{"/home/user/foo"},
 			add: addCmdConfig{
 				recursive: true,
 			},
@@ -373,9 +364,6 @@ func TestAddCommand(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			if runtime.GOOS == "windows" && tc.skipOnWindows {
-				t.Skip("add --recursive is broken on windows")
-			}
 			c := &Config{
 				SourceDir: "/home/user/.chezmoi",
 				DestDir:   "/home/user",
@@ -401,9 +389,6 @@ func TestAddCommand(t *testing.T) {
 }
 
 func TestIssue192(t *testing.T) {
-	if runtime.GOOS == "windows" {
-		t.Skip("add --recursive is broken on windows")
-	}
 	root := []interface{}{
 		map[string]interface{}{
 			"/local/home/offbyone": &vfst.Dir{
