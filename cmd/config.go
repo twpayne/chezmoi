@@ -294,7 +294,8 @@ func (c *Config) prompt(s, choices string) (byte, error) {
 		if err != nil {
 			return 0, err
 		}
-		if len(line) == 2 && strings.IndexByte(choices, line[0]) != -1 {
+		line = strings.TrimRight(line, "\r\n")
+		if len(line) == 1 && strings.IndexByte(choices, line[0]) != -1 {
 			return line[0], nil
 		}
 	}
