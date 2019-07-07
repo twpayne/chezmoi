@@ -12,15 +12,6 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
-func (a *FSMutator) IsPrivate(file string, umask os.FileMode) bool {
-	info, err := a.Stat(file)
-	if err != nil {
-		return false
-	}
-
-	return info.Mode().Perm()&^umask == 0700&^umask
-}
-
 // WriteFile implements Mutator.WriteFile.
 func (a *FSMutator) WriteFile(name string, data []byte, perm os.FileMode, currData []byte) error {
 	// Special case: if writing to the real filesystem, use github.com/google/renameio

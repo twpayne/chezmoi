@@ -5,10 +5,6 @@ import "os"
 // NullMutator is an Mutator that does nothing.
 type NullMutator struct{}
 
-func (NullMutator) IsPrivate(fi string, umask os.FileMode) bool {
-	return false
-}
-
 // Chmod implements Mutator.Chmod.
 func (NullMutator) Chmod(string, os.FileMode) error {
 	return nil

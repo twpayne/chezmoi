@@ -170,14 +170,14 @@ func (c *Config) ensureNoError(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func (c *Config) ensureSourceDirectory(fs vfs.Stater, mutator chezmoi.Mutator) error {
+func (c *Config) ensureSourceDirectory(fs chezmoi.PrivacyStater, mutator chezmoi.Mutator) error {
 	if err := vfs.MkdirAll(mutator, filepath.Dir(c.SourceDir), 0777&^os.FileMode(c.Umask)); err != nil {
 		return err
 	}
 	info, err := fs.Stat(c.SourceDir)
 	switch {
 	case err == nil && info.IsDir():
-		if !mutator.IsPrivate(c.SourceDir, os.FileMode(c.Umask)) {
+		if !chezmoi.IsPrivate(fs, c.SourceDir, os.FileMode(c.Umask)) {
 			if err := mutator.Chmod(c.SourceDir, 0700&^os.FileMode(c.Umask)); err != nil {
 				return err
 			}

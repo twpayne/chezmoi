@@ -27,14 +27,6 @@ func NewLoggingMutator(w io.Writer, m Mutator, colored bool) *LoggingMutator {
 	}
 }
 
-// IsPrivate implements Mutator.IsPrivate.
-func (m *LoggingMutator) IsPrivate(file string, umask os.FileMode) bool {
-	action := fmt.Sprintf("IsPrivate %o %s", umask, file)
-	result := m.m.IsPrivate(file, umask)
-	_, _ = fmt.Fprintf(m.w, "%s: %v\n", action, result)
-	return result
-}
-
 // Chmod implements Mutator.Chmod.
 func (m *LoggingMutator) Chmod(name string, mode os.FileMode) error {
 	action := fmt.Sprintf("chmod %o %s", mode, name)
