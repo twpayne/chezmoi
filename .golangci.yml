@@ -1,6 +1,7 @@
 linters:
   enable-all: true
   disable:
+    - goconst
     - gocyclo
     - lll
     - maligned
