@@ -9,23 +9,23 @@ import (
 	"github.com/hectane/go-acl"
 )
 
-// Use the same default value as Linux (as of kernel 4.19)
-const MaxSymlinks = 40
+// maxSymLinks is the maximum number of symlinks to follow. Use the same default
+// value as Linux (as of kernel 4.19).
+const maxSymLinks = 40
 
 func resolveSymlink(file string) (string, error) {
-	// if file is a symlink, get the path it links to.  this emulates
-	// unix-style behavior, where symlinks can't have their own independent
-	// permissions.
+	// If file is a symlink, get the path it links to. This emulates unix-style
+	// behavior, where symlinks can't have their own independent permissions.
 
 	resolved := file
-	for i := 0; i < MaxSymlinks; i++ {
+	for i := 0; i < maxSymLinks; i++ {
 		fi, err := os.Lstat(resolved)
 		if err != nil {
 			return "", err
 		}
 
 		if fi.Mode()&os.ModeSymlink == 0 {
-			// not a link, all done
+			// Not a link, all done.
 			break
 		}
 

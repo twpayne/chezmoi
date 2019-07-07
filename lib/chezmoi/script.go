@@ -120,8 +120,8 @@ func (s *Script) Apply(fs vfs.FS, mutator Mutator, applyOptions *ApplyOptions) e
 		return nil
 	}
 
-	// Write the temporary script file.  Put the randomness on the front of the filename to preserve any file extension
-	// for Windows scripts.
+	// Write the temporary script file. Put the randomness on the front of the
+	// filename to preserve any file extension for Windows scripts.
 	f, err := ioutil.TempFile("", "*."+filepath.Base(s.targetName))
 	if err != nil {
 		return err
