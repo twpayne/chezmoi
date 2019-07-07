@@ -82,5 +82,5 @@ func (c *Config) runImportCmd(fs vfs.FS, args []string) error {
 			return err
 		}
 	}
-	return ts.ImportTAR(tar.NewReader(r), c._import.importTAROptions, mutator, fs)
+	return ts.ImportTAR(tar.NewReader(r), c._import.importTAROptions, mutator)
 }

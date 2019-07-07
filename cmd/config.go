@@ -177,7 +177,11 @@ func (c *Config) ensureSourceDirectory(fs chezmoi.PrivacyStater, mutator chezmoi
 	info, err := fs.Stat(c.SourceDir)
 	switch {
 	case err == nil && info.IsDir():
-		if !chezmoi.IsPrivate(fs, c.SourceDir, os.FileMode(c.Umask)) {
+		private, err := chezmoi.IsPrivate(fs, c.SourceDir)
+		if err != nil {
+			return err
+		}
+		if !private {
 			if err := mutator.Chmod(c.SourceDir, 0700&^os.FileMode(c.Umask)); err != nil {
 				return err
 			}

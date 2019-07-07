@@ -42,21 +42,21 @@ func resolveSymlink(file string) (string, error) {
 	return resolved, nil
 }
 
-func IsPrivate(fs PrivacyStater, file string, umask os.FileMode) bool {
-	file, err := fs.RawPath(file)
+func IsPrivate(fs PrivacyStater, path string) (bool, error) {
+	rawPath, err := fs.RawPath(path)
 	if err != nil {
-		return false
+		return false, err
 	}
 
-	file, err = resolveSymlink(file)
+	resolvedPath, err := resolveSymlink(rawPath)
 	if err != nil {
-		return false
+		return false, err
 	}
 
-	mode, err := acl.GetEffectiveAccessMode(file)
+	mode, err := acl.GetEffectiveAccessMode(resolvedPath)
 	if err != nil {
-		return false
+		return false, err
 	}
 
-	return (uint32(mode) & 0007) == 0
+	return mode&07 == 0, nil
 }

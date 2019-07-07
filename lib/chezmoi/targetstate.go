@@ -137,6 +137,13 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 			return err
 		}
 		empty := len(infos) == 0
+		private, err := IsPrivate(fs, targetPath)
+		if err != nil {
+			return err
+		}
+		if private {
+			perm &^= 077
+		}
 		return ts.addDir(targetName, entries, parentDirSourceName, addOptions.Exact, perm, empty, mutator)
 	case info.Mode().IsRegular():
 		if info.Size() == 0 && !addOptions.Empty {
@@ -155,7 +162,15 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 				return err
 			}
 		}
-		return ts.addFile(targetName, entries, parentDirSourceName, info, addOptions.Encrypt, addOptions.Template, contents, mutator, fs)
+		perm := info.Mode().Perm()
+		private, err := IsPrivate(fs, targetPath)
+		if err != nil {
+			return err
+		}
+		if private {
+			perm &^= 077
+		}
+		return ts.addFile(targetName, entries, parentDirSourceName, info, perm, addOptions.Encrypt, addOptions.Template, contents, mutator)
 	case info.Mode()&os.ModeType == os.ModeSymlink:
 		linkname, err := fs.Readlink(targetPath)
 		if err != nil {
@@ -277,7 +292,7 @@ func (ts *TargetState) Get(fs vfs.Stater, target string) (Entry, error) {
 }
 
 // ImportTAR imports a tar archive.
-func (ts *TargetState) ImportTAR(r *tar.Reader, importTAROptions ImportTAROptions, mutator Mutator, fs PrivacyStater) error {
+func (ts *TargetState) ImportTAR(r *tar.Reader, importTAROptions ImportTAROptions, mutator Mutator) error {
 	for {
 		header, err := r.Next()
 		if err == io.EOF {
@@ -287,7 +302,7 @@ func (ts *TargetState) ImportTAR(r *tar.Reader, importTAROptions ImportTAROption
 		}
 		switch header.Typeflag {
 		case tar.TypeDir, tar.TypeReg, tar.TypeSymlink:
-			if err := ts.importHeader(r, importTAROptions, header, mutator, fs); err != nil {
+			if err := ts.importHeader(r, importTAROptions, header, mutator); err != nil {
 				return err
 			}
 		case tar.TypeXGlobalHeader:
@@ -471,7 +486,7 @@ func (ts *TargetState) addDir(targetName string, entries map[string]Entry, paren
 	return nil
 }
 
-func (ts *TargetState) addFile(targetName string, entries map[string]Entry, parentDirSourceName string, info os.FileInfo, encrypted, template bool, contents []byte, mutator Mutator, fs PrivacyStater) error {
+func (ts *TargetState) addFile(targetName string, entries map[string]Entry, parentDirSourceName string, info os.FileInfo, perm os.FileMode, encrypted, template bool, contents []byte, mutator Mutator) error {
 	name := filepath.Base(targetName)
 	var existingFile *File
 	var existingContents []byte
@@ -485,17 +500,6 @@ func (ts *TargetState) addFile(targetName string, entries map[string]Entry, pare
 		if err != nil {
 			return err
 		}
-	}
-
-	perm := info.Mode().Perm()
-	destFile := filepath.Join(ts.DestDir, name)
-	if IsPrivate(fs, destFile, ts.Umask) {
-		// since Windows doesn't really have the concept of "groups", the
-		// group permission bits might be set even on a file that should
-		// be considered private.  This will clear them.  Posix-style platforms
-		// remain unaffected because IsPrivate will only return true if those
-		// bits weren't set in the first place
-		perm &^= 0077
 	}
 
 	empty := info.Size() == 0
@@ -685,7 +689,7 @@ func (ts *TargetState) findEntry(name string) (Entry, error) {
 	return entries[names[len(names)-1]], nil
 }
 
-func (ts *TargetState) importHeader(r io.Reader, importTAROptions ImportTAROptions, header *tar.Header, mutator Mutator, fs PrivacyStater) error {
+func (ts *TargetState) importHeader(r io.Reader, importTAROptions ImportTAROptions, header *tar.Header, mutator Mutator) error {
 	targetPath := header.Name
 	if importTAROptions.StripComponents > 0 {
 		targetPath = filepath.Join(strings.Split(targetPath, string(os.PathSeparator))[importTAROptions.StripComponents:]...)
@@ -724,7 +728,7 @@ func (ts *TargetState) importHeader(r io.Reader, importTAROptions ImportTAROptio
 		if err != nil {
 			return err
 		}
-		return ts.addFile(targetName, entries, parentDirSourceName, info, false, false, contents, mutator, fs)
+		return ts.addFile(targetName, entries, parentDirSourceName, info, info.Mode().Perm(), false, false, contents, mutator)
 	case tar.TypeSymlink:
 		linkname := header.Linkname
 		return ts.addSymlink(targetName, entries, parentDirSourceName, linkname, mutator)
