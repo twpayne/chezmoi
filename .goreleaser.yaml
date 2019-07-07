@@ -24,6 +24,7 @@ builds:
   - darwin
   - freebsd
   - openbsd
+  - windows
   goarch:
   - "386"
   - amd64
