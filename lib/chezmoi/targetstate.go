@@ -660,7 +660,7 @@ func (ts *TargetState) executeTemplateData(name string, data []byte) ([]byte, er
 		}
 	}
 	output := &bytes.Buffer{}
-	if err = tmpl.Execute(output, ts.Data); err != nil {
+	if err = tmpl.ExecuteTemplate(output, name, ts.Data); err != nil {
 		return nil, err
 	}
 	return output.Bytes(), nil

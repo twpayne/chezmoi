@@ -88,9 +88,47 @@ func TestApplyCommand(t *testing.T) {
 				},
 			},
 		},
+		{
+			name: "define_template",
+			root: map[string]interface{}{
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
+					"dir/file.tmpl": `{{ define "foo" }}cont{{end}}{{ template "foo" }}ents`,
+				},
+			},
+		},
+		{
+			name: "partial_template",
+			root: map[string]interface{}{
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
+					"dir/file.tmpl":         `{{ template "foo" }}ents`,
+					".chezmoitemplates/foo": "{{ if true }}cont{{ end }}",
+				},
+			},
+		},
+		{
+			name: "multiple_templates",
+			root: map[string]interface{}{
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
+					"dir/file.tmpl":         `{{ template "foo" }}`,
+					"dir/other.tmpl":        `{{ if true }}other stuff{{ end }}`,
+					".chezmoitemplates/foo": "{{ if true }}contents{{ end }}",
+				},
+			},
+		},
+		{
+			name: "multiple_associated",
+			root: map[string]interface{}{
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
+					"dir/file.tmpl":         `{{ template "foo" }}{{ template "bar" }}`,
+					".chezmoitemplates/foo": "{{ if true }}cont{{ end }}",
+					".chezmoitemplates/bar": "{{ if true }}ents{{ end }}",
+				},
+			},
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			tc.root["/home/user/.local/share/chezmoi/dir/file"] = "contents"
+			tc.root["/home/user/.local/share/chezmoi/dir/other"] = "other stuff"
 			tc.root["/home/user/.local/share/chezmoi/symlink_symlink"] = "target"
 			fs, cleanup, err := vfst.NewTestFS(tc.root)
 			require.NoError(t, err)
@@ -110,6 +148,11 @@ func TestApplyCommand(t *testing.T) {
 					vfst.TestModeIsRegular,
 					vfst.TestModePerm(0644),
 					vfst.TestContentsString("contents"),
+				),
+				vfst.TestPath("/home/user/dir/other",
+					vfst.TestModeIsRegular,
+					vfst.TestModePerm(0644),
+					vfst.TestContentsString("other stuff"),
 				),
 				vfst.TestPath("/home/user/symlink",
 					vfst.TestModeType(os.ModeSymlink),
