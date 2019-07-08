@@ -1,15 +1,15 @@
 # chezmoi Frequently Asked Questions
 
 * [How can I quickly check for problems with chezmoi on my machine?](#How-can-I-quickly-check-for-problems-with-chezmoi-on-my-machine)
-* [What are the consequences of "bare" modifications to the target files? If my `.zshrc` is managed by chezmoi and I edit `~/.zshrc` without using `chezmoi edit`, what happens?](#What-are-the-consequences-of-%22bare%22-modifications-to-the-target-files-If-my-zshrc-is-managed-by-chezmoi-and-I-edit-zshrc-without-using-chezmoi-edit-what-happens)
+* [What are the consequences of "bare" modifications to the target files? If my `.zshrc` is managed by chezmoi and I edit `~/.zshrc` without using `chezmoi edit`, what happens?](#What-are-the-consequences-of-bare-modifications-to-the-target-files-If-my-zshrc-is-managed-by-chezmoi-and-I-edit-zshrc-without-using-chezmoi-edit-what-happens)
 * [How can I tell what dotfiles in my home directory aren't managed by chezmoi? Is there an easy way to have chezmoi manage a subset of them?](#How-can-I-tell-what-dotfiles-in-my-home-directory-arent-managed-by-chezmoi-Is-there-an-easy-way-to-have-chezmoi-manage-a-subset-of-them)
 * [If there's a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?](#If-theres-a-mechanism-in-place-for-the-above-is-there-also-a-way-to-tell-chezmoi-to-ignore-specific-files-or-groups-of-files-eg-by-directory-name-or-by-glob)
-* [If the target already exists, but is "behind" the source, can chezmoi be configured to preserve the target version before replacing it with one derived from the source?](#If-the-target-already-exists-but-is-%22behind%22-the-source-can-chezmoi-be-configured-to-preserve-the-target-version-before-replacing-it-with-one-derived-from-the-source)
+* [If the target already exists, but is "behind" the source, can chezmoi be configured to preserve the target version before replacing it with one derived from the source?](#If-the-target-already-exists-but-is-behind-the-source-can-chezmoi-be-configured-to-preserve-the-target-version-before-replacing-it-with-one-derived-from-the-source)
 * [I've made changes to both the destination state and the source state that I want to keep. How can I keep them both?](#Ive-made-changes-to-both-the-destination-state-and-the-source-state-that-I-want-to-keep-How-can-I-keep-them-both)
 * [gpg encryption fails. What could be wrong?](#gpg-encryption-fails-What-could-be-wrong)
 * [What inspired chezmoi?](#What-inspired-chezmoi)
 * [Can I use chezmoi outside my home directory?](#Can-I-use-chezmoi-outside-my-home-directory)
-* [Where does the name "chezmoi" come from?](#Where-does-the-name-%22chezmoi%22-come-from)
+* [Where does the name "chezmoi" come from?](#Where-does-the-name-chezmoi-come-from)
 * [What other questions have been asked about chezmoi?](#What-other-questions-have-been-asked-about-chezmoi)
 * [Where do I ask a question that isn't answered here?](#Where-do-I-ask-a-question-that-isnt-answered-here)
 
