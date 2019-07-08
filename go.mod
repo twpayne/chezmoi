@@ -15,7 +15,7 @@ require (
 	github.com/google/go-github/v26 v26.0.10
 	github.com/google/renameio v0.1.0
 	github.com/google/uuid v1.1.1 // indirect
-	github.com/hectane/go-acl v0.0.0-20190604041725-da78bae5fc95 // indirect
+	github.com/hectane/go-acl v0.0.0-20190604041725-da78bae5fc95
 	github.com/huandu/xstrings v1.2.0 // indirect
 	github.com/imdario/mergo v0.3.7 // indirect
 	github.com/kr/text v0.1.0
