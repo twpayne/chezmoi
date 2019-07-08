@@ -1,6 +1,8 @@
 # chezmoi How-To Guide
 
 * [Use a hosted repo to manage your dotfiles across multiple machines](#Use-a-hosted-repo-to-manage-your-dotfiles-across-multiple-machines)
+* [Pull the latest changes from your repo and apply them](#Pull-the-latest-changes-from-your-repo-and-apply-them)
+* [Pull the latest changes from your repo and see what would change, without actually applying the changes](#Pull-the-latest-changes-from-your-repo-and-see-what-would-change-without-actually-applying-the-changes)
 * [Use templates to manage files that vary from machine to machine](#Use-templates-to-manage-files-that-vary-from-machine-to-machine)
 * [Create a config file on a new machine automatically](#Create-a-config-file-on-a-new-machine-automatically)
 * [Ensure that a target is removed](#Ensure-that-a-target-is-removed)
@@ -54,11 +56,29 @@ The above commands can be combined into a single init, checkout, and apply:
 
     chezmoi init --apply --verbose https://github.com/username/dotfiles.git
 
+## Pull the latest changes from your repo and apply them
+
 You can pull the changes from your repo and apply them in a single command:
 
     chezmoi update
 
 This runs `git pull --rebase` in your source directory and then `chezmoi apply`.
+
+## Pull the latest changes from your repo and see what would change, without actually applying the changes
+
+Run:
+
+    chezmoi source pull -- --rebase && chezmoi diff
+
+This runs `git pull --rebase` in your source directory and `chezmoi
+diff` then shows the difference between the target state computed from your
+source directory and the actual state.
+
+If you're happy with the changes, then you can run
+
+    chezmoi apply
+
+to apply them.
 
 ## Use templates to manage files that vary from machine to machine
 
