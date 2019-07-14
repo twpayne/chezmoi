@@ -39,6 +39,7 @@ func init() {
 	persistentFlags.BoolVarP(&config.add.prompt, "prompt", "p", false, "prompt before adding")
 	persistentFlags.BoolVarP(&config.add.recursive, "recursive", "r", false, "recurse in to subdirectories")
 	persistentFlags.BoolVarP(&config.add.options.Template, "template", "T", false, "add files as templates")
+	persistentFlags.BoolVarP(&config.add.options.TemplateAutoGenerate, "template-auto-generate", "", false, "auto generate the template when adding files as templates")
 }
 
 func (c *Config) runAddCmd(fs vfs.FS, args []string) (err error) {
