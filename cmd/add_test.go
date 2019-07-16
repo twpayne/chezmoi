@@ -72,7 +72,8 @@ func TestAddCommand(t *testing.T) {
 			args: []string{"/home/user/.gitconfig"},
 			add: addCmdConfig{
 				options: chezmoi.AddOptions{
-					Template: true,
+					Template:     true,
+					AutoTemplate: true,
 				},
 			},
 			root: map[string]interface{}{
@@ -84,6 +85,28 @@ func TestAddCommand(t *testing.T) {
 				vfst.TestPath("/home/user/.chezmoi/dot_gitconfig.tmpl",
 					vfst.TestModeIsRegular,
 					vfst.TestContentsString("[user]\n\tname = {{ .name }}\n\temail = {{ .email }}\n"),
+				),
+			},
+		},
+		{
+			// Test for PR #393
+			// Ensure that auto template generating is disabled by default
+			name: "add_autotemplate_off_by_default",
+			args: []string{"/home/user/.gitconfig"},
+			add: addCmdConfig{
+				options: chezmoi.AddOptions{
+					Template: true,
+				},
+			},
+			root: map[string]interface{}{
+				"/home/user":            &vfst.Dir{Perm: 0755},
+				"/home/user/.chezmoi":   &vfst.Dir{Perm: 0700},
+				"/home/user/.gitconfig": "[user]\n\tname = John Smith\n\temail = john.smith@company.com\n",
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/.chezmoi/dot_gitconfig.tmpl",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("[user]\n\tname = John Smith\n\temail = john.smith@company.com\n"),
 				),
 			},
 		},
