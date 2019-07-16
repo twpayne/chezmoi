@@ -264,6 +264,8 @@ _chezmoi_add()
     flags_with_completion=()
     flags_completion=()
 
+    flags+=("--autotemplate")
+    flags+=("-a")
     flags+=("--empty")
     flags+=("-e")
     flags+=("--encrypt")
