@@ -85,6 +85,7 @@ get_binaries() {
     openbsd/arm64) BINARIES="chezmoi" ;;
     openbsd/ppc64) BINARIES="chezmoi" ;;
     openbsd/ppc64le) BINARIES="chezmoi" ;;
+    windows/amd64) BINARIES="chezmoi" ;;
     *)
       log_crit "platform $PLATFORM is not supported.  Make sure this script is up-to-date and file request at https://github.com/${PREFIX}/issues/new"
       exit 1
@@ -185,7 +186,8 @@ log_crit() {
 uname_os() {
   os=$(uname -s | tr '[:upper:]' '[:lower:]')
   case "$os" in
-    msys_nt) os="windows" ;;
+    msys_nt*) os="windows" ;;
+    mingw*) os="windows" ;;
   esac
   echo "$os"
 }
