@@ -320,9 +320,10 @@ Recursively add all files, directories, and symlinks.
 
 #### `-T`, `--template`
 
-Set the `template` attribute on added files and symlinks. In addition, chezmoi
-attempts to automatically generate the template by replacing any template data
-values with the equivalent template data keys. Longer subsitutions occur before
+Set the `template` attribute on added files and symlinks. In addition, "if the
+`--template-auto-generate` flag is set, chezmoi attempts to automatically
+generate the template by replacing any template data values with the equivalent
+template data keys. Longer subsitutions occur before
 shorter ones.
 
 #### `add` examples
