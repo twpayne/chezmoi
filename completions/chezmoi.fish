@@ -68,6 +68,7 @@ complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand'  -s n -l dry-run -d 'dr
 complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand'   -l remove -d 'remove targets'
 complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -r -s S -l source -d 'source directory'
 complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand'  -s v -l verbose -d 'verbose'
+complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path add'  -s a -l autotemplate -d 'auto generate the template when adding files as templates'
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path add'  -s e -l empty -d 'add empty files'
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path add'   -l encrypt -d 'encrypt files'
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path add'  -s x -l exact -d 'add directories exactly'

@@ -26,11 +26,12 @@ const (
 
 // An AddOptions contains options for TargetState.Add.
 type AddOptions struct {
-	Empty    bool
-	Encrypt  bool
-	Exact    bool
-	Follow   bool
-	Template bool
+	Empty        bool
+	Encrypt      bool
+	Exact        bool
+	Follow       bool
+	Template     bool
+	AutoTemplate bool
 }
 
 // An ImportTAROptions contains options for TargetState.ImportTAR.
@@ -153,7 +154,7 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 		if err != nil {
 			return err
 		}
-		if addOptions.Template {
+		if addOptions.Template && addOptions.AutoTemplate {
 			contents = autoTemplate(contents, ts.Data)
 		}
 		if addOptions.Encrypt {
