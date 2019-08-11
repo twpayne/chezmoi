@@ -9,13 +9,6 @@ import (
 	"github.com/twpayne/go-vfs/vfst"
 )
 
-type scriptTestCase struct {
-	name  string
-	root  interface{}
-	data  map[string]interface{}
-	tests []vfst.Test
-}
-
 func getApplyScriptTestCases(tempDir string) []scriptTestCase {
 	return []scriptTestCase{
 		{
