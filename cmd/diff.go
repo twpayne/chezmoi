@@ -20,6 +20,7 @@ func init() {
 }
 
 func (c *Config) runDiffCmd(fs vfs.FS, args []string) error {
+	c.DryRun = true
 	mutator := chezmoi.NewLoggingMutator(c.Stdout(), chezmoi.NullMutator{}, c.colored)
 	return c.applyArgs(fs, args, mutator)
 }
