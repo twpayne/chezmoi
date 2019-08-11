@@ -13,6 +13,13 @@ import (
 	"github.com/twpayne/go-vfs/vfst"
 )
 
+type scriptTestCase struct {
+	name  string
+	root  interface{}
+	data  map[string]interface{}
+	tests []vfst.Test
+}
+
 func TestApplyCommand(t *testing.T) {
 	for _, tc := range []struct {
 		name string
