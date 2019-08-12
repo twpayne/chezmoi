@@ -4,6 +4,7 @@
 [![Build
 Status](https://travis-ci.org/twpayne/chezmoi.svg?branch=master)](https://travis-ci.org/twpayne/chezmoi)
 [![Coverage Status](https://coveralls.io/repos/github/twpayne/chezmoi/badge.svg)](https://coveralls.io/github/twpayne/chezmoi)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Ftwpayne%2Fchezmoi.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Ftwpayne%2Fchezmoi?ref=badge_shield)
 
 Manage your dotfiles across multiple machines, securely.
 
@@ -121,3 +122,6 @@ don't need chezmoi. Otherwise, read on...
 ## License
 
 MIT
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Ftwpayne%2Fchezmoi.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Ftwpayne%2Fchezmoi?ref=badge_large)
