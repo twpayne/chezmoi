@@ -11,6 +11,7 @@ Manage your dotfiles across multiple machines, securely.
 * [What does chezmoi do and why should I use it?](#what-does-chezmoi-do-and-why-should-i-use-it)
 * [What are chezmoi's key features?](#what-are-chezmois-key-features)
 * [I already have a system to manage my dotfiles, why should I use chezmoi?](#i-already-have-a-system-to-manage-my-dotfiles-why-should-i-use-chezmoi)
+* [How do I start with chezmoi?](#how-do-i-start-with-chezmoi)
 * [License](#license)
 
 ## Documentation
@@ -93,7 +94,7 @@ don't need chezmoi. Otherwise, read on...
   then handling files that vary from machine to machine requires manual work.
   You might need to maintain separate config files for separate machines, or run
   different commands on different machines. chezmoi gives you a single command
-  that works on every machine.
+  (`chezmoi update`)  that works on every machine.
 
 * If your system is based on using git with a different branches for different
   machines, then you need manually merge or rebase to ensure that changes you
@@ -112,11 +113,20 @@ don't need chezmoi. Otherwise, read on...
   functionality out-of-the-box, including dry run and diff modes, conflict
   resolution, and running scripts.
 
-* All systems suffer from the "bootstrap" problem: you need to install your
-  system before you can install your dotfiles. chezmoi provides one-line
-  installs, statically-linked binaries, packages for many Linux and BSD
-  distributions, Homebrew formulae, and a initial config file generation
-  mechanism to make overcoming the bootstrap problem as painless as possible.
+* All systems suffer from the bootstrap problem: you need to install your system
+  before you can install your dotfiles. chezmoi provides one-line installs,
+  statically-linked binaries, packages for many Linux and BSD distributions,
+  Homebrew formulae, and a initial config file generation mechanism to make
+  overcoming the bootstrap problem as painless as possible.
+
+## How do I start with chezmoi?
+
+[Install chezmoi](docs/INSTALL.md) then read the [quick start
+guide](docs/QUICKSTART.md). The [how-to guide](docs/HOWTO.md) covers most common
+tasks, and there's the [frequently asked questions](docs/FAQ.md) for specific
+questions. For a full description of chezmoi, consult the
+[reference](docs/REFERENCE.md). If all else fails, [open an
+issue](https://github.com/twpayne/chezmoi/issues/new).
 
 ## License
 
