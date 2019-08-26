@@ -1,0 +1,46 @@
+name: Go
+on: [push]
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Setup Go
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.12
+      id: go
+
+    - name: Check out
+      uses: actions/checkout@v1
+
+    - name: Install dependencies
+      run: |
+        go mod download
+        make install-tools
+        set
+        find / -name packr2
+
+    - name: Build
+      run: |
+        make all
+        git diff --exit-code
+
+    - name: Test
+      run: make test
+
+    - name: Check formatting
+      run: |
+        make format
+        git diff --exit-code
+
+    - name: Lint
+      run: make lint
+
+    - name: Generate coverage
+      run: make coverage.out
+
+    - name: Print version
+      run: go run . --version
