@@ -42,10 +42,10 @@ html-coverage:
 
 .PHONY: install-tools
 install-tools:
-	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh
 	GO111MODULE=off go get -u \
 		golang.org/x/tools/cmd/cover \
 		github.com/gobuffalo/packr/v2/packr2 \
+		github.com/golangci/golangci-lint/cmd/golangci-lint \
 		github.com/mattn/goveralls \
 		github.com/wadey/gocovmerge \
 		mvdan.cc/gofumpt/gofumports
@@ -53,7 +53,7 @@ install-tools:
 .PHONY: lint
 lint:
 	go vet ./...
-	./bin/golangci-lint run
+	golangci-lint run
 
 .PHONY: release
 release:
