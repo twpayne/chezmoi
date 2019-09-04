@@ -1,9 +1,9 @@
 # chezmoi Quick Start Guide
 
-* [Concepts](#Concepts)
-* [Start using chezmoi on your current machine](#Start-using-chezmoi-on-your-current-machine)
-* [Using chezmoi across multiple machines](#Using-chezmoi-across-multiple-machines)
-* [Next steps](#Next-steps)
+* [Concepts](#concepts)
+* [Start using chezmoi on your current machine](#start-using-chezmoi-on-your-current-machine)
+* [Using chezmoi across multiple machines](#using-chezmoi-across-multiple-machines)
+* [Next steps](#next-steps)
 
 ## Concepts
 
