@@ -1,7 +1,7 @@
 # chezmoi Changes
 
-* [Upcoming](#Upcoming)
-  * [`gpgRecipient` config variable changing to `gpg.recipient`](#gpgRecipient-config-variable-changing-to-gpgrecipient)
+* [Upcoming](#upcoming)
+  * [`gpgRecipient` config variable changing to `gpg.recipient`](#gpgrecipient-config-variable-changing-to-gpgrecipient)
 
 ## Upcoming
 

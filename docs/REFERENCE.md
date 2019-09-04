@@ -2,27 +2,27 @@
 
 Manage your dotfiles securely across multiple machines.
 
-* [Concepts](#Concepts)
-* [Global command line flags](#Global-command-line-flags)
+* [Concepts](#concepts)
+* [Global command line flags](#global-command-line-flags)
   * [`--color` *value*](#--color-value)
   * [`-c`, `--config` *filename*](#-c---config-filename)
-  * [`-D`, `--destination` *directory*](#-D---destination-directory)
+  * [`-D`, `--destination` *directory*](#-d---destination-directory)
   * [`-n`, `--dry-run`](#-n---dry-run)
   * [`-h`, `--help`](#-h---help)
   * [`-r`. `--remove`](#-r---remove)
-  * [`-S`, `--source` *directory*](#-S---source-directory)
+  * [`-S`, `--source` *directory*](#-s---source-directory)
   * [`-v`, `--verbose`](#-v---verbose)
   * [`--version`](#--version)
-* [Configuration file](#Configuration-file)
-  * [Configuration variables](#Configuration-variables)
-* [Source state attributes](#Source-state-attributes)
-* [Special files and directories](#Special-files-and-directories)
+* [Configuration file](#configuration-file)
+  * [Configuration variables](#configuration-variables)
+* [Source state attributes](#source-state-attributes)
+* [Special files and directories](#special-files-and-directories)
   * [`.chezmoi.<format>.tmpl`](#chezmoiformattmpl)
   * [`.chezmoiignore`](#chezmoiignore)
   * [`.chezmoiremove`](#chezmoiremove)
   * [`.chezmoitemplates`](#chezmoitemplates)
   * [`.chezmoiversion`](#chezmoiversion)
-* [Commands](#Commands)
+* [Commands](#commands)
   * [`add` *targets*](#add-targets)
   * [`apply` [*targets*]](#apply-targets)
   * [`archive`](#archive)
@@ -50,19 +50,19 @@ Manage your dotfiles securely across multiple machines.
   * [`update`](#update)
   * [`upgrade`](#upgrade)
   * [`verify` [*targets*]](#verify-targets)
-* [Editor configuration](#Editor-configuration)
-* [Umask configuration](#Umask-configuration)
-* [Template variables](#Template-variables)
-* [Template functions](#Template-functions)
+* [Editor configuration](#editor-configuration)
+* [Umask configuration](#umask-configuration)
+* [Template variables](#template-variables)
+* [Template functions](#template-functions)
   * [`bitwarden` [*args*]](#bitwarden-args)
   * [`keepassxc` *entry*](#keepassxc-entry)
   * [`keyring` *service* *user*](#keyring-service-user)
   * [`lastpass` *id*](#lastpass-id)
   * [`onepassword` *uuid*](#onepassword-uuid)
   * [`pass` *pass-name*](#pass-pass-name)
-  * [`promptString` *prompt*](#promptString-prompt)
+  * [`promptString` *prompt*](#promptstring-prompt)
   * [`secret` [*args*]](#secret-args)
-  * [`secretJSON` [*args*]](#secretJSON-args)
+  * [`secretJSON` [*args*]](#secretjson-args)
   * [`vault` *key*](#vault-key)
 
 ## Concepts
@@ -152,26 +152,26 @@ The following configuration variables are available:
 | ----------------------- | -------- | ------------------------- | ----------------------------------- |
 | `bitwarden.command`     | string   | `bw`                      | Bitwarden CLI command               |
 | `color`                 | string   | `auto`                    | Colorize diffs                      |
-| `data`                  | any      | none                      | Template data                       |
+| `data`                  | any      | *none*                    | Template data                       |
 | `destDir`               | string   | `~`                       | Destination directory               |
-| `dryRun`                | boolean  | `false`                   | Dry run mode                        |
-| `genericSecret.command` | string   | none                      | Generic secret command              |
-| `gpg.recipient`         | string   | none                      | GPG recipient                       |
-| `gpg.symmetric`         | bool     | false                     | Use symmetric GPG encryption        |
-| `keepassxc.args`        | []string | none                      | Extra args to KeePassXC CLI command |
+| `dryRun`                | bool     | `false`                   | Dry run mode                        |
+| `genericSecret.command` | string   | *none*                    | Generic secret command              |
+| `gpg.recipient`         | string   | *none*                    | GPG recipient                       |
+| `gpg.symmetric`         | bool     | `false`                   | Use symmetric GPG encryption        |
+| `keepassxc.args`        | []string | *none*                    | Extra args to KeePassXC CLI command |
 | `keepassxc.command`     | string   | `keepassxc-cli`           | KeePassXC CLI command               |
-| `keepassxc.database`    | string   | none                      | KeePassXC database                  |
+| `keepassxc.database`    | string   | *none*                    | KeePassXC database                  |
 | `lastpass.command`      | string   | `lpass`                   | Lastpass CLI command                |
-| `merge.args`            | []string | none                      | Extra args to 3-way merge command   |
+| `merge.args`            | []string | *none*                    | Extra args to 3-way merge command   |
 | `merge.command`         | string   | `vimdiff`                 | 3-way merge command                 |
 | `onepassword.command`   | string   | `op`                      | 1Password CLI command               |
 | `pass.command`          | string   | `pass`                    | Pass CLI command                    |
-| `remove`                | boolean  | `false`                   | Remove targets                      |
+| `remove`                | bool     | `false`                   | Remove targets                      |
 | `sourceDir`             | string   | `~/.config/share/chezmoi` | Source directory                    |
 | `sourceVCS.command`     | string   | `git`                     | Source version control system       |
-| `umask`                 | integer  | from system               | Umask                               |
+| `umask`                 | int      | *from system*             | Umask                               |
 | `vault.command`         | string   | `vault`                   | Vault CLI command                   |
-| `verbose`               | boolean  | `false`                   | Verbose mode                        |
+| `verbose`               | bool     | `false`                   | Verbose mode                        |
 
 In addition, a number of secret manager integrations add configuration
 variables. These are documented in the secret manager section.
@@ -186,30 +186,33 @@ encoded in the source names. chezmoi ignores all files and directories in the
 source directory that begin with a `.`. The following prefixes and suffixes are
 special, and are collectively referred to as "attributes":
 
-| Prefix/suffix        | Effect                                                                            |
-| -------------------- | ----------------------------------------------------------------------------------|
-| `encrypted_` prefix  | Encrypt the file in the source state.                                             |
-| `once_` prefix       | Only run script once.                                                             |
-| `private_` prefix    | Remove all group and world permissions from the target file or directory.         |
-| `empty_` prefix      | Ensure the file exists, even if is empty. By default, empty files are removed.    |
-| `exact_` prefix      | Remove anything not managed by chezmoi.                                           |
-| `executable_` prefix | Add executable permissions to the target file.                                    |
-| `run_` prefix        | Treat the contents as a script to run.                                            |
-| `symlink_` prefix    | Create a symlink instead of a regular file.                                       |
-| `dot_` prefix        | Rename to use a leading dot, e.g. `dot_foo` becomes `.foo`.                       |
-| `.tmpl` suffix       | Treat the contents of the source file as a template.                              |
+| Prefix       | Effect                                                                         |
+| ------------ | ------------------------------------------------------------------------------ |
+| `encrypted_` | Encrypt the file in the source state.                                          |
+| `once_`      | Only run script once.                                                          |
+| `private_`   | Remove all group and world permissions from the target file or directory.      |
+| `empty_`     | Ensure the file exists, even if is empty. By default, empty files are removed. |
+| `exact_`     | Remove anything not managed by chezmoi.                                        |
+| `executable_`| Add executable permissions to the target file.                                 |
+| `run_`       | Treat the contents as a script to run.                                         |
+| `symlink_`   | Create a symlink instead of a regular file.                                    |
+| `dot_`       | Rename to use a leading dot, e.g. `dot_foo` becomes `.foo`.                    |
 
-Order is important, the order is `run_`, `exact_`, `private_`, `empty_`,
-`executable_`, `symlink_`, `once_`, `dot_`, `.tmpl`.
+| Suffix  | Effect                                               |
+| ------- | ---------------------------------------------------- |
+| `.tmpl` | Treat the contents of the source file as a template. |
+
+Order of prefixes is important, the order is `run_`, `exact_`, `private_`,
+`empty_`, `executable_`, `symlink_`, `once_`, `dot_`.
 
 Different target types allow different prefixes and suffixes:
 
-| Target type   | Allowed prefixes and suffixes                                      |
-| ------------- | ------------------------------------------------------------------ |
-| Directory     | `exact_`, `private_`, `dot_`                                       |
-| Regular file  | `encrypted_`, `private_`, `empty_`, `executable_`, `dot_`, `.tmpl` |
-| Script        | `run_`, `once_`, `.tmpl`                                           |
-| Symbolic link | `symlink_`, `dot_`, `.tmpl`                                        |
+| Target type   | Allowed prefixes                                          | Allowed suffixes |
+| ------------- | --------------------------------------------------------- | ---------------- |
+| Directory     | `exact_`, `private_`, `dot_`                              | *none*           |
+| Regular file  | `encrypted_`, `private_`, `empty_`, `executable_`, `dot_` | `.tmpl`          |
+| Script        | `run_`, `once_`                                           | `.tmpl`          |
+| Symbolic link | `symlink_`, `dot_`,                                       | `.tmpl`          |
 
 ## Special files and directories
 
@@ -382,8 +385,8 @@ attributes and their abbreviations are:
 | Attribute    | Abbreviation |
 | ------------ | ------------ |
 | `empty`      | `e`          |
-| `encrypted`  | none         |
-| `exact`      | none         |
+| `encrypted`  | *none*       |
+| `exact`      | *none*       |
 | `executable` | `x`          |
 | `private`    | `p`          |
 | `template`   | `t`          |
