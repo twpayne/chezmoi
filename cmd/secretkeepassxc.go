@@ -45,8 +45,9 @@ func (c *Config) runKeePassXCCmd(fs vfs.FS, args []string) error {
 	return c.exec(append([]string{c.KeePassXC.Command}, args...))
 }
 
-func (c *Config) keePassXCFunc(entry string) interface{} {
-	if data, ok := keePassXCCache[entry]; ok {
+func (c *Config) keePassXCFunc(entry string, extraArgs ...string) interface{} {
+	key := strings.Join(append([]string{entry}, extraArgs...), "\x00")
+	if data, ok := keePassXCCache[key]; ok {
 		return data
 	}
 	if c.KeePassXC.Database == "" {
@@ -55,6 +56,7 @@ func (c *Config) keePassXCFunc(entry string) interface{} {
 	name := c.KeePassXC.Command
 	args := []string{"show"}
 	args = append(args, c.KeePassXC.Args...)
+	args = append(args, extraArgs...)
 	args = append(args, c.KeePassXC.Database, entry)
 	if c.Verbose {
 		fmt.Printf("%s %s\n", name, strings.Join(args, " "))
@@ -63,7 +65,7 @@ func (c *Config) keePassXCFunc(entry string) interface{} {
 	if err != nil {
 		panic(fmt.Errorf("keepassxc: %s %s: %s", name, strings.Join(args, " "), err))
 	}
-	keePassXCCache[entry] = data
+	keePassXCCache[key] = data
 	return data
 }
 

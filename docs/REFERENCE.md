@@ -55,7 +55,7 @@ Manage your dotfiles securely across multiple machines.
 * [Template variables](#template-variables)
 * [Template functions](#template-functions)
   * [`bitwarden` [*args*]](#bitwarden-args)
-  * [`keepassxc` *entry*](#keepassxc-entry)
+  * [`keepassxc` *entry* [*args*...]](#keepassxc-entry-args)
   * [`keyring` *service* *user*](#keyring-service-user)
   * [`lastpass` *id*](#lastpass-id)
   * [`onepassword` *uuid*](#onepassword-uuid)
@@ -730,15 +730,15 @@ invoke `bw` once.
     username = {{ (bitwarden "item" "example.com").login.username }}
     password = {{ (bitwarden "item" "example.com").login.password }}
 
-### `keepassxc` *entry*
+### `keepassxc` *entry* [*args*...]
 
 `keepassxc` returns structured data retrieved from a
 [KeePassXC](https://keepassxc.org/) database using the KeePassXC CLI
 (`keepassxc-cli`). The database is configured by setting `keepassxc.database` in
-the configuration file. *database* and *entry* are passed to `keepassxc-cli
-show`. You will be prompted for the database password the first time
-`keepassxc-cli` is run, and the password is cached, in plain text, in memory
-until chezmoi terminates. The output from `keepassxc-cli` is parsed into
+the configuration file. *database*, *args*, and *entry* are passed to
+`keepassxc-cli show`. You will be prompted for the database password the first
+time `keepassxc-cli` is run, and the password is cached, in plain text, in
+memory until chezmoi terminates. The output from `keepassxc-cli` is parsed into
 key-value pairs. The output from `keepassxc-cli` is cached so calling
 `keepassxc` multiple times with the same *entry* will only invoke
 `keepassxc-cli` once.
@@ -747,6 +747,8 @@ key-value pairs. The output from `keepassxc-cli` is cached so calling
 
     username = {{ (keepassxc "example.com").UserName }}
     password = {{ (keepassxc "example.com").Password }}
+
+    privateKey = {{ keepassxc "SSH Key" "--attributes=private-key" }}
 
 ### `keyring` *service* *user*
 
