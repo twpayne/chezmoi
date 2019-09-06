@@ -196,8 +196,8 @@ func (c *Config) ensureSourceDirectory(fs chezmoi.PrivacyStater, mutator chezmoi
 	}
 }
 
-func (c *Config) execEditor(argv ...string) error {
-	return c.exec(append([]string{c.getEditor()}, argv...))
+func (c *Config) execEditor(fs vfs.FS, argv ...string) error {
+	return c.exec(fs, append([]string{c.getEditor()}, argv...))
 }
 
 func (c *Config) getDefaultMutator(fs vfs.FS) chezmoi.Mutator {
@@ -306,7 +306,7 @@ func (c *Config) prompt(s, choices string) (byte, error) {
 }
 
 // run runs name argv... in dir.
-func (c *Config) run(dir, name string, argv ...string) error {
+func (c *Config) run(fs vfs.FS, dir, name string, argv ...string) error {
 	if c.Verbose {
 		if dir == "" {
 			fmt.Printf("%s %s\n", name, strings.Join(argv, " "))
@@ -318,15 +318,21 @@ func (c *Config) run(dir, name string, argv ...string) error {
 		return nil
 	}
 	cmd := exec.Command(name, argv...)
-	cmd.Dir = dir
+	if dir != "" {
+		var err error
+		cmd.Dir, err = fs.RawPath(dir)
+		if err != nil {
+			return err
+		}
+	}
 	cmd.Stdin = c.Stdin()
 	cmd.Stdout = c.Stdout()
 	cmd.Stderr = c.Stdout()
 	return cmd.Run()
 }
 
-func (c *Config) runEditor(argv ...string) error {
-	return c.run("", c.getEditor(), argv...)
+func (c *Config) runEditor(fs vfs.FS, argv ...string) error {
+	return c.run(fs, "", c.getEditor(), argv...)
 }
 
 func (c *Config) warn(s string) {

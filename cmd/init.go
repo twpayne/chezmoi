@@ -63,7 +63,7 @@ func (c *Config) runInitCmd(fs vfs.FS, args []string) error {
 		} else {
 			initArgs = vcsInfo.initArgs
 		}
-		if err := c.run(c.SourceDir, c.SourceVCS.Command, initArgs...); err != nil {
+		if err := c.run(fs, c.SourceDir, c.SourceVCS.Command, initArgs...); err != nil {
 			return err
 		}
 	case 1: // clone
@@ -71,7 +71,7 @@ func (c *Config) runInitCmd(fs vfs.FS, args []string) error {
 			return fmt.Errorf("%s: cloning not supported", c.SourceVCS.Command)
 		}
 		cloneArgs := vcsInfo.cloneArgsFunc(args[0], c.SourceDir)
-		if err := c.run("", c.SourceVCS.Command, cloneArgs...); err != nil {
+		if err := c.run(fs, "", c.SourceVCS.Command, cloneArgs...); err != nil {
 			return err
 		}
 		// FIXME this should be part of struct vcs
@@ -81,7 +81,7 @@ func (c *Config) runInitCmd(fs vfs.FS, args []string) error {
 					{"submodule", "init"},
 					{"submodule", "update"},
 				} {
-					if err := c.run(c.SourceDir, c.SourceVCS.Command, args...); err != nil {
+					if err := c.run(fs, c.SourceDir, c.SourceVCS.Command, args...); err != nil {
 						return err
 					}
 				}

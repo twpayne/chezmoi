@@ -33,7 +33,7 @@ func (c *Config) runEditConfigCmd(fs vfs.FS, args []string) error {
 		}
 	}
 
-	if err := c.runEditor(c.configFile); err != nil {
+	if err := c.runEditor(fs, c.configFile); err != nil {
 		return err
 	}
 

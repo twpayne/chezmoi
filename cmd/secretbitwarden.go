@@ -32,7 +32,7 @@ func init() {
 }
 
 func (c *Config) runBitwardenCmd(fs vfs.FS, args []string) error {
-	return c.exec(append([]string{c.Bitwarden.Command}, args...))
+	return c.exec(fs, append([]string{c.Bitwarden.Command}, args...))
 }
 
 func (c *Config) bitwardenFunc(args ...string) interface{} {

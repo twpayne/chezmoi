@@ -8,9 +8,11 @@ import (
 	"os/exec"
 	"strings"
 	"syscall"
+
+	vfs "github.com/twpayne/go-vfs"
 )
 
-func (c *Config) exec(argv []string) error {
+func (c *Config) exec(fs vfs.FS, argv []string) error {
 	path, err := exec.LookPath(argv[0])
 	if err != nil {
 		return err

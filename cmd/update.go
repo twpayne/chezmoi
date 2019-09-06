@@ -51,7 +51,7 @@ func (c *Config) runUpdateCmd(fs vfs.FS, args []string) error {
 		return fmt.Errorf("%s: pull not supported", c.SourceVCS.Command)
 	}
 
-	if err := c.run(c.SourceDir, c.SourceVCS.Command, pullArgs...); err != nil {
+	if err := c.run(fs, c.SourceDir, c.SourceVCS.Command, pullArgs...); err != nil {
 		return err
 	}
 

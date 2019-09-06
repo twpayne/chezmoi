@@ -32,7 +32,7 @@ func init() {
 }
 
 func (c *Config) runVaultCmd(fs vfs.FS, args []string) error {
-	return c.exec(append([]string{c.Vault.Command}, args...))
+	return c.exec(fs, append([]string{c.Vault.Command}, args...))
 }
 
 func (c *Config) vaultFunc(key string) interface{} {
