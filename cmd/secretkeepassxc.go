@@ -28,15 +28,22 @@ type keePassXCCmdConfig struct {
 	Args     []string
 }
 
+type keePassXCAttributeCacheKey struct {
+	entry     string
+	attribute string
+}
+
 var (
-	keePassXCCache      = make(map[string]map[string]string)
-	keePassXCPairRegexp = regexp.MustCompile(`^([^:]+): (.*)$`)
-	keePassXCPassword   string
+	keePassXCCache          = make(map[string]map[string]string)
+	keePassXCAttributeCache = make(map[keePassXCAttributeCacheKey]string)
+	keePassXCPairRegexp     = regexp.MustCompile(`^([^:]+): (.*)$`)
+	keePassXCPassword       string
 )
 
 func init() {
 	config.KeePassXC.Command = "keepassxc-cli"
 	config.addTemplateFunc("keepassxc", config.keePassXCFunc)
+	config.addTemplateFunc("keepassxcAttribute", config.keePassXCAttributeFunc)
 
 	secretCmd.AddCommand(keePassXCCmd)
 }
@@ -45,7 +52,7 @@ func (c *Config) runKeePassXCCmd(fs vfs.FS, args []string) error {
 	return c.exec(append([]string{c.KeePassXC.Command}, args...))
 }
 
-func (c *Config) keePassXCFunc(entry string) interface{} {
+func (c *Config) keePassXCFunc(entry string) map[string]string {
 	if data, ok := keePassXCCache[entry]; ok {
 		return data
 	}
@@ -59,7 +66,11 @@ func (c *Config) keePassXCFunc(entry string) interface{} {
 	if c.Verbose {
 		fmt.Printf("%s %s\n", name, strings.Join(args, " "))
 	}
-	data, err := c.runKeePassXCCLICommand(name, args)
+	output, err := c.runKeePassXCCLICommand(name, args)
+	if err != nil {
+		panic(fmt.Errorf("keepassxc: %s %s: %s", name, strings.Join(args, " "), err))
+	}
+	data, err := parseKeyPassXCOutput(output)
 	if err != nil {
 		panic(fmt.Errorf("keepassxc: %s %s: %s", name, strings.Join(args, " "), err))
 	}
@@ -67,7 +78,34 @@ func (c *Config) keePassXCFunc(entry string) interface{} {
 	return data
 }
 
-func (c *Config) runKeePassXCCLICommand(name string, args []string) (map[string]string, error) {
+func (c *Config) keePassXCAttributeFunc(entry, attribute string) string {
+	key := keePassXCAttributeCacheKey{
+		entry:     entry,
+		attribute: attribute,
+	}
+	if data, ok := keePassXCAttributeCache[key]; ok {
+		return data
+	}
+	if c.KeePassXC.Database == "" {
+		panic(errors.New("keepassxc: keepassxc.database not set"))
+	}
+	name := c.KeePassXC.Command
+	args := []string{"show", "--attributes", attribute, "--quiet"}
+	args = append(args, c.KeePassXC.Args...)
+	args = append(args, c.KeePassXC.Database, entry)
+	if c.Verbose {
+		fmt.Printf("%s %s\n", name, strings.Join(args, " "))
+	}
+	output, err := c.runKeePassXCCLICommand(name, args)
+	if err != nil {
+		panic(fmt.Errorf("keepassxc: %s %s: %s", name, strings.Join(args, " "), err))
+	}
+	outputStr := strings.TrimSpace(string(output))
+	keePassXCAttributeCache[key] = outputStr
+	return outputStr
+}
+
+func (c *Config) runKeePassXCCLICommand(name string, args []string) ([]byte, error) {
 	if keePassXCPassword == "" {
 		fmt.Printf("Insert password to unlock %s: ", c.KeePassXC.Database)
 		password, err := terminal.ReadPassword(int(os.Stdout.Fd()))
@@ -80,10 +118,10 @@ func (c *Config) runKeePassXCCLICommand(name string, args []string) (map[string]
 	cmd := exec.Command(name, args...)
 	cmd.Stdin = bytes.NewBufferString(keePassXCPassword + "\n")
 	cmd.Stderr = c.Stderr()
-	output, err := cmd.Output()
-	if err != nil {
-		return nil, err
-	}
+	return cmd.Output()
+}
+
+func parseKeyPassXCOutput(output []byte) (map[string]string, error) {
 	data := make(map[string]string)
 	s := bufio.NewScanner(bytes.NewReader(output))
 	for i := 0; s.Scan(); i++ {

@@ -310,6 +310,12 @@ The structured data from `keepassxc-cli show $database` is available as the
     username = {{ (keepassxc "example.com").UserName }}
     password = {{ (keepassxc "example.com").Password }}
 
+Additional attributes are available through the `keepassxcAttribute` function.
+For example, if you have an entry called `SSH Key` with an additional attribute
+called `private-key`, its value is available as:
+
+    {{ keepassxcAttribute "SSH Key" "private-key" }}
+
 ### Use a keyring to keep your secrets
 
 chezmoi includes support for Keychain (on macOS), GNOME Keyring (on Linux), and
