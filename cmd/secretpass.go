@@ -31,7 +31,7 @@ func init() {
 }
 
 func (c *Config) runSecretPassCmd(fs vfs.FS, args []string) error {
-	return c.exec(append([]string{c.Pass.Command}, args...))
+	return c.exec(fs, append([]string{c.Pass.Command}, args...))
 }
 
 func (c *Config) passFunc(id string) string {

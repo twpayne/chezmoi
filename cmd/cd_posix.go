@@ -24,5 +24,5 @@ func (c *Config) runCDCmd(fs vfs.FS, args []string) error {
 		return err
 	}
 
-	return c.exec([]string{shell})
+	return c.exec(fs, []string{shell})
 }

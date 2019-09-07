@@ -32,7 +32,7 @@ func init() {
 }
 
 func (c *Config) runOnepasswordCmd(fs vfs.FS, args []string) error {
-	return c.exec(append([]string{c.Onepassword.Command}, args...))
+	return c.exec(fs, append([]string{c.Onepassword.Command}, args...))
 }
 
 func (c *Config) onepasswordFunc(item string) interface{} {

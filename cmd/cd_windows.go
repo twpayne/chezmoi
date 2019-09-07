@@ -18,5 +18,5 @@ func (c *Config) runCDCmd(fs vfs.FS, args []string) error {
 		return err
 	}
 
-	return c.run(c.SourceDir, shell)
+	return c.run(fs, c.SourceDir, shell)
 }

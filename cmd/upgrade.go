@@ -151,7 +151,7 @@ func (c *Config) runUpgradeCmd(fs vfs.FS, args []string) error {
 			return err
 		}
 	case methodSnapRefresh:
-		if err := c.snapRefresh(); err != nil {
+		if err := c.snapRefresh(fs); err != nil {
 			return err
 		}
 	case methodUpgradePackage:
@@ -271,14 +271,14 @@ FOR:
 	return mutator.WriteFile(executableFilename, executableData, 0755, nil)
 }
 
-func (c *Config) snapRefresh() error {
-	return c.run("", "snap", "refresh", c.upgrade.repo)
+func (c *Config) snapRefresh(fs vfs.FS) error {
+	return c.run(fs, "", "snap", "refresh", c.upgrade.repo)
 }
 
 func (c *Config) upgradePackage(fs vfs.FS, mutator chezmoi.Mutator, rr *github.RepositoryRelease, useSudo bool) error {
 	switch runtime.GOOS {
 	case "darwin":
-		return c.run("", "brew", "upgrade", c.upgrade.repo)
+		return c.run(fs, "", "brew", "upgrade", c.upgrade.repo)
 	case "linux":
 		// Determine the package type and architecture.
 		packageType, err := getPackageType(fs)
@@ -298,7 +298,7 @@ func (c *Config) upgradePackage(fs vfs.FS, mutator chezmoi.Mutator, rr *github.R
 				args = append(args, "sudo")
 			}
 			args = append(args, "pacman", "-S", c.upgrade.repo)
-			return c.run("", args[0], args[1:]...)
+			return c.run(fs, "", args[0], args[1:]...)
 		}
 
 		// Find the corresponding release asset.
@@ -355,7 +355,7 @@ func (c *Config) upgradePackage(fs vfs.FS, mutator chezmoi.Mutator, rr *github.R
 		case packageTypeRPM:
 			args = append(args, "rpm", "-U", packageFilename)
 		}
-		return c.run("", args[0], args[1:]...)
+		return c.run(fs, "", args[0], args[1:]...)
 	default:
 		return fmt.Errorf("%s: unsupported GOOS", runtime.GOOS)
 	}

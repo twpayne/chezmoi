@@ -29,6 +29,7 @@ script:
 - make lint
 - make coverage.out
 - go run . --version
+- GOOS=windows go build .
 - if [ "$TRAVIS_PULL_REQUEST" = "false" ]; then goveralls -coverprofile=coverage.out -service=travis-ci -repotoken $COVERALLS_TOKEN; fi
 
 sudo: false

@@ -54,7 +54,7 @@ func (c *Config) runEditCmd(fs vfs.FS, args []string) error {
 		if c.edit.prompt {
 			c.warn("--prompt is currently ignored when edit is run with no arguments")
 		}
-		return c.execEditor(c.SourceDir)
+		return c.execEditor(fs, c.SourceDir)
 	}
 
 	if c.edit.prompt {
@@ -97,7 +97,7 @@ func (c *Config) runEditCmd(fs vfs.FS, args []string) error {
 	// Short path: if no post-edit actions are required then exec the editor
 	// directly.
 	if !c.edit.diff && !c.edit.apply && len(encryptedFiles) == 0 {
-		return c.execEditor(argv...)
+		return c.execEditor(fs, argv...)
 	}
 
 	// If any of the files are encrypted, create a temporary directory to store
@@ -126,7 +126,7 @@ func (c *Config) runEditCmd(fs vfs.FS, args []string) error {
 		}
 	}
 
-	if err := c.runEditor(argv...); err != nil {
+	if err := c.runEditor(fs, argv...); err != nil {
 		return err
 	}
 
