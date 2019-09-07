@@ -30,7 +30,7 @@ func init() {
 }
 
 func (c *Config) runUpdateCmd(fs vfs.FS, args []string) error {
-	vcsInfo, err := c.getVCSInfo()
+	vcs, err := c.getVCS()
 	if err != nil {
 		return err
 	}
@@ -45,7 +45,7 @@ func (c *Config) runUpdateCmd(fs vfs.FS, args []string) error {
 			return fmt.Errorf("sourceVCS.pull: cannot parse value")
 		}
 	} else {
-		pullArgs = vcsInfo.pullArgs
+		pullArgs = vcs.PullArgs()
 	}
 	if pullArgs == nil {
 		return fmt.Errorf("%s: pull not supported", c.SourceVCS.Command)

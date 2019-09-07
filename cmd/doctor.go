@@ -90,12 +90,12 @@ func init() {
 
 func (c *Config) runDoctorCmd(fs vfs.FS, args []string) error {
 	var vcsCommandCheck doctorCheck
-	if vcsInfo, err := c.getVCSInfo(); err == nil {
+	if vcs, err := c.getVCS(); err == nil {
 		vcsCommandCheck = &doctorBinaryCheck{
 			name:          "source VCS command",
 			binaryName:    c.SourceVCS.Command,
-			versionArgs:   vcsInfo.versionArgs,
-			versionRegexp: vcsInfo.versionRegexp,
+			versionArgs:   vcs.VersionArgs(),
+			versionRegexp: vcs.VersionRegexp(),
 		}
 	} else {
 		c.warn(fmt.Sprintf("%s: unsupported VCS command", c.SourceVCS.Command))

@@ -278,12 +278,12 @@ func (c *Config) getTargetState(fs vfs.FS, populateOptions *chezmoi.PopulateOpti
 	return ts, nil
 }
 
-func (c *Config) getVCSInfo() (*vcsInfo, error) {
-	vcsInfo, ok := vcsInfos[filepath.Base(c.SourceVCS.Command)]
+func (c *Config) getVCS() (VCS, error) {
+	vcs, ok := vcses[filepath.Base(c.SourceVCS.Command)]
 	if !ok {
 		return nil, fmt.Errorf("%s: unsupported source VCS command", c.SourceVCS.Command)
 	}
-	return vcsInfo, nil
+	return vcs, nil
 }
 
 //nolint:unparam
