@@ -56,6 +56,7 @@ Manage your dotfiles securely across multiple machines.
 * [Template functions](#template-functions)
   * [`bitwarden` [*args*]](#bitwarden-args)
   * [`keepassxc` *entry*](#keepassxc-entry)
+  * [`keepassxcAttribute` *entry* *attribute*](#keepassxcattribute-entry-attribute)
   * [`keyring` *service* *user*](#keyring-service-user)
   * [`lastpass` *id*](#lastpass-id)
   * [`onepassword` *uuid*](#onepassword-uuid)
@@ -739,14 +740,24 @@ the configuration file. *database* and *entry* are passed to `keepassxc-cli
 show`. You will be prompted for the database password the first time
 `keepassxc-cli` is run, and the password is cached, in plain text, in memory
 until chezmoi terminates. The output from `keepassxc-cli` is parsed into
-key-value pairs. The output from `keepassxc-cli` is cached so calling
-`keepassxc` multiple times with the same *entry* will only invoke
-`keepassxc-cli` once.
+key-value pairs and cached so calling `keepassxc` multiple times with the same
+*entry* will only invoke `keepassxc-cli` once.
 
 #### `keepassxc` examples
 
     username = {{ (keepassxc "example.com").UserName }}
     password = {{ (keepassxc "example.com").Password }}
+
+### `keepassxcAttribute` *entry* *attribute*
+
+`keepassxcAttribute` returns the attribute *attribute* of *entry* using
+`keepassxc-cli`, with any leading or trailing whitespace removed. It behaves
+identically to the `keepassxc` function in terms of configuration, password
+prompting, password storage, and result caching.
+
+#### `keepassxcAttribute` examples
+
+    {{ keepassxcAttribute "SSH Key" "private-key" }}
 
 ### `keyring` *service* *user*
 
