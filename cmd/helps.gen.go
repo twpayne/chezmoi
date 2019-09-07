@@ -38,7 +38,7 @@ var helps = map[string]help{
 			"\n" +
 			"\"-T\", \"--template\"\n" +
 			"\n" +
-			"Set the \"template\" attribute on added files and symlinks. In addition, \"if\n" +
+			"Set the \"template\" attribute on added files and symlinks. In addition, if\n" +
 			"the \"--template-auto-generate\" flag is set, chezmoi attempts to automatically\n" +
 			"generate the template by replacing any template data values with the equivalent\n" +
 			"template data keys. Longer subsitutions occur before shorter ones.\n",
