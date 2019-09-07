@@ -48,6 +48,11 @@ func (c *Config) runInitCmd(fs vfs.FS, args []string) error {
 		return err
 	}
 
+	rawSourceDir, err := fs.RawPath(c.SourceDir)
+	if err != nil {
+		return err
+	}
+
 	switch len(args) {
 	case 0: // init
 		var initArgs []string
@@ -70,7 +75,7 @@ func (c *Config) runInitCmd(fs vfs.FS, args []string) error {
 		if vcsInfo.cloneArgsFunc == nil {
 			return fmt.Errorf("%s: cloning not supported", c.SourceVCS.Command)
 		}
-		cloneArgs := vcsInfo.cloneArgsFunc(args[0], c.SourceDir)
+		cloneArgs := vcsInfo.cloneArgsFunc(args[0], rawSourceDir)
 		if err := c.run(fs, "", c.SourceVCS.Command, cloneArgs...); err != nil {
 			return err
 		}
