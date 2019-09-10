@@ -1,6 +1,7 @@
 linters:
   enable-all: true
   disable:
+    - funlen
     - gocyclo
     - lll
     - maligned
