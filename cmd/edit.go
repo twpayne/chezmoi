@@ -145,6 +145,17 @@ func (c *Config) runEditCmd(fs vfs.FS, args []string) error {
 		}
 	}
 
+	// Recompute the target state and entries after editing.
+	ts, err = c.getTargetState(fs, nil)
+	if err != nil {
+		return err
+	}
+
+	entries, err = c.getEntries(fs, ts, args)
+	if err != nil {
+		return err
+	}
+
 	readOnlyFS := vfs.NewReadOnlyFS(fs)
 	applyMutator := c.getDefaultMutator(fs)
 	applyOptions := chezmoi.ApplyOptions{
