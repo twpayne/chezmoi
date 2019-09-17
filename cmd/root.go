@@ -74,6 +74,9 @@ func init() {
 	persistentFlags.BoolVarP(&config.DryRun, "dry-run", "n", false, "dry run")
 	_ = viper.BindPFlag("dry-run", persistentFlags.Lookup("dry-run"))
 
+	persistentFlags.BoolVar(&config.Follow, "follow", false, "follow symlinks")
+	_ = viper.BindPFlag("follow", persistentFlags.Lookup("follow"))
+
 	persistentFlags.BoolVar(&config.Remove, "remove", false, "remove targets")
 	_ = viper.BindPFlag("remove", persistentFlags.Lookup("remove"))
 

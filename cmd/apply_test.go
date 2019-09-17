@@ -170,6 +170,75 @@ func TestApplyCommand(t *testing.T) {
 	}
 }
 
+func TestApplyFollow(t *testing.T) {
+	for _, tc := range []struct {
+		name   string
+		follow bool
+		root   interface{}
+		tests  []vfst.Test
+	}{
+		{
+			name:   "follow",
+			follow: true,
+			root: map[string]interface{}{
+				"/home/user": map[string]interface{}{
+					"bar": "baz",
+					"foo": &vfst.Symlink{Target: "bar"},
+				},
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
+					"foo": "qux",
+				},
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/bar",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("qux"),
+				),
+				vfst.TestPath("/home/user/foo",
+					vfst.TestModeType(os.ModeSymlink),
+					vfst.TestSymlinkTarget("bar"),
+				),
+			},
+		},
+		{
+			name:   "nofollow",
+			follow: false,
+			root: map[string]interface{}{
+				"/home/user": map[string]interface{}{
+					"bar": "baz",
+					"foo": &vfst.Symlink{Target: "bar"},
+				},
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
+					"foo": "qux",
+				},
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/bar",
+					vfst.TestContentsString("baz"),
+				),
+				vfst.TestPath("/home/user/foo",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("qux"),
+				),
+			},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			fs, cleanup, err := vfst.NewTestFS(tc.root)
+			require.NoError(t, err)
+			defer cleanup()
+			c := &Config{
+				SourceDir: "/home/user/.local/share/chezmoi",
+				DestDir:   "/home/user",
+				Follow:    tc.follow,
+				Umask:     022,
+			}
+			assert.NoError(t, c.runApplyCmd(fs, nil))
+			vfst.RunTests(t, fs, "", tc.tests)
+		})
+	}
+}
+
 func TestApplyRemove(t *testing.T) {
 	for _, tc := range []struct {
 		name     string

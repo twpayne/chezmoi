@@ -38,6 +38,7 @@ type Config struct {
 	DestDir           string
 	Umask             permValue
 	DryRun            bool
+	Follow            bool
 	Remove            bool
 	Verbose           bool
 	Color             string
@@ -148,14 +149,14 @@ func (c *Config) applyArgs(fs vfs.FS, args []string, mutator chezmoi.Mutator) er
 		Verbose:           c.Verbose,
 	}
 	if len(args) == 0 {
-		return ts.Apply(fs, mutator, applyOptions)
+		return ts.Apply(fs, mutator, c.Follow, applyOptions)
 	}
 	entries, err := c.getEntries(fs, ts, args)
 	if err != nil {
 		return err
 	}
 	for _, entry := range entries {
-		if err := entry.Apply(fs, mutator, applyOptions); err != nil {
+		if err := entry.Apply(fs, mutator, c.Follow, applyOptions); err != nil {
 			return err
 		}
 	}

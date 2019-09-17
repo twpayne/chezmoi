@@ -86,12 +86,18 @@ func newDir(sourceName string, targetName string, exact bool, perm os.FileMode) 
 }
 
 // Apply ensures that destDir in fs matches d.
-func (d *Dir) Apply(fs vfs.FS, mutator Mutator, applyOptions *ApplyOptions) error {
+func (d *Dir) Apply(fs vfs.FS, mutator Mutator, follow bool, applyOptions *ApplyOptions) error {
 	if applyOptions.Ignore(d.targetName) {
 		return nil
 	}
 	targetPath := filepath.Join(applyOptions.DestDir, d.targetName)
-	info, err := fs.Lstat(targetPath)
+	var info os.FileInfo
+	var err error
+	if follow {
+		info, err = fs.Stat(targetPath)
+	} else {
+		info, err = fs.Lstat(targetPath)
+	}
 	switch {
 	case err == nil && info.IsDir():
 		if info.Mode().Perm() != d.Perm&^applyOptions.Umask {
@@ -112,7 +118,7 @@ func (d *Dir) Apply(fs vfs.FS, mutator Mutator, applyOptions *ApplyOptions) erro
 		return err
 	}
 	for _, entryName := range sortedEntryNames(d.Entries) {
-		if err := d.Entries[entryName].Apply(fs, mutator, applyOptions); err != nil {
+		if err := d.Entries[entryName].Apply(fs, mutator, follow, applyOptions); err != nil {
 			return err
 		}
 	}
