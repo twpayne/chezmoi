@@ -142,6 +142,17 @@ brews:
     fish_completion.install "completions/chezmoi.fish"
   description: "Manage your dotfiles across multiple machines, securely."
 
+scoop:
+  bucket:
+    owner: twpayne
+    name: scoop-bucket
+  commit_author:
+    name: Tom Payne
+    email: twpayne@gmail.com
+  homepage: "https://github.com/twpayne/chezmoi"
+  description: "Manage your dotfiles across multiple machines, securely."
+  license: MIT
+
 snapcrafts:
 - builds:
   - chezmoi-cgo-snap
