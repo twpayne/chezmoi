@@ -27,7 +27,7 @@ type symlinkConcreteValue struct {
 }
 
 // Apply ensures that the state of s's target in fs matches s.
-func (s *Symlink) Apply(fs vfs.FS, mutator Mutator, applyOptions *ApplyOptions) error {
+func (s *Symlink) Apply(fs vfs.FS, mutator Mutator, follow bool, applyOptions *ApplyOptions) error {
 	if applyOptions.Ignore(s.targetName) {
 		return nil
 	}
@@ -36,7 +36,12 @@ func (s *Symlink) Apply(fs vfs.FS, mutator Mutator, applyOptions *ApplyOptions) 
 		return err
 	}
 	targetPath := filepath.Join(applyOptions.DestDir, s.targetName)
-	info, err := fs.Lstat(targetPath)
+	var info os.FileInfo
+	if follow {
+		info, err = fs.Stat(targetPath)
+	} else {
+		info, err = fs.Lstat(targetPath)
+	}
 	switch {
 	case err == nil && info.Mode()&os.ModeType == os.ModeSymlink:
 		currentTarget, err := fs.Readlink(targetPath)

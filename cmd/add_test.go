@@ -44,11 +44,12 @@ func TestAddAfterModification(t *testing.T) {
 
 func TestAddCommand(t *testing.T) {
 	for _, tc := range []struct {
-		name  string
-		args  []string
-		add   addCmdConfig
-		root  interface{}
-		tests interface{}
+		name   string
+		args   []string
+		add    addCmdConfig
+		follow bool
+		root   interface{}
+		tests  interface{}
 	}{
 		{
 			name: "add_first_file",
@@ -224,13 +225,26 @@ func TestAddCommand(t *testing.T) {
 			},
 		},
 		{
-			name: "add_symlink_follow",
-			args: []string{"/home/user/foo"},
-			add: addCmdConfig{
-				options: chezmoi.AddOptions{
-					Follow: true,
-				},
+			name:   "add_followed_symlink",
+			args:   []string{"/home/user/foo"},
+			follow: true,
+			root: map[string]interface{}{
+				"/home/user":          &vfst.Dir{Perm: 0755},
+				"/home/user/.chezmoi": &vfst.Dir{Perm: 0700},
+				"/home/user/foo":      &vfst.Symlink{Target: "bar"},
+				"/home/user/bar":      "bux",
 			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/.chezmoi/foo",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString("bux"),
+				),
+			},
+		},
+		{
+			name:   "add_symlink_follow",
+			args:   []string{"/home/user/foo"},
+			follow: true,
 			root: map[string]interface{}{
 				"/home/user":               &vfst.Dir{Perm: 0755},
 				"/home/user/.chezmoi":      &vfst.Dir{Perm: 0700},
@@ -245,13 +259,25 @@ func TestAddCommand(t *testing.T) {
 			},
 		},
 		{
-			name: "add_symlink_follow_double",
+			name: "add_symlink_no_follow",
 			args: []string{"/home/user/foo"},
-			add: addCmdConfig{
-				options: chezmoi.AddOptions{
-					Follow: true,
-				},
+			root: map[string]interface{}{
+				"/home/user":               &vfst.Dir{Perm: 0755},
+				"/home/user/.chezmoi":      &vfst.Dir{Perm: 0700},
+				"/home/user/.dotfiles/foo": "bar",
+				"/home/user/foo":           &vfst.Symlink{Target: ".dotfiles/foo"},
 			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/.chezmoi/symlink_foo",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString(".dotfiles/foo"),
+				),
+			},
+		},
+		{
+			name:   "add_symlink_follow_double",
+			args:   []string{"/home/user/foo"},
+			follow: true,
 			root: map[string]interface{}{
 				"/home/user":               &vfst.Dir{Perm: 0755},
 				"/home/user/.chezmoi":      &vfst.Dir{Perm: 0700},
@@ -390,6 +416,7 @@ func TestAddCommand(t *testing.T) {
 			c := &Config{
 				SourceDir: "/home/user/.chezmoi",
 				DestDir:   "/home/user",
+				Follow:    tc.follow,
 				Umask:     022,
 				DryRun:    false,
 				Verbose:   true,

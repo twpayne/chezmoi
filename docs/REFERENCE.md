@@ -7,6 +7,7 @@ Manage your dotfiles securely across multiple machines.
   * [`--color` *value*](#--color-value)
   * [`-c`, `--config` *filename*](#-c---config-filename)
   * [`-D`, `--destination` *directory*](#-d---destination-directory)
+  * [`-f`, `--follow`](#-f---follow)
   * [`-n`, `--dry-run`](#-n---dry-run)
   * [`-h`, `--help`](#-h---help)
   * [`-r`. `--remove`](#-r---remove)
@@ -107,6 +108,11 @@ Read the configuration from *filename*.
 
 Use *directory* as the destination directory.
 
+### `-f`, `--follow`
+
+If the last part of a target is a symlink, deal with what the symlink
+references, rather than the symlink itself.
+
 ### `-n`, `--dry-run`
 
 Set dry run mode. In dry run mode, the destination directory is never modified.
@@ -156,6 +162,7 @@ The following configuration variables are available:
 | `data`                  | any      | *none*                    | Template data                       |
 | `destDir`               | string   | `~`                       | Destination directory               |
 | `dryRun`                | bool     | `false`                   | Dry run mode                        |
+| `follow`                | bool     | `false`                   | Follow symlinks                     |
 | `genericSecret.command` | string   | *none*                    | Generic secret command              |
 | `gpg.recipient`         | string   | *none*                    | GPG recipient                       |
 | `gpg.symmetric`         | bool     | `false`                   | Use symmetric GPG encryption        |
@@ -307,12 +314,6 @@ Set the `empty` attribute on added files.
 #### `-x`, `--exact`
 
 Set the `exact` attribute on added directories.
-
-#### `-f`, `--follow`
-
-If the target is a symlink, add what it points to, rather than the symlink
-itself. This is useful when migrating your dotfiles from a system that uses
-symlinks.
 
 #### `-p`, `--prompt`
 

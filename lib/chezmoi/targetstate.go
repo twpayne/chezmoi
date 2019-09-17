@@ -29,7 +29,6 @@ type AddOptions struct {
 	Empty        bool
 	Encrypt      bool
 	Exact        bool
-	Follow       bool
 	Template     bool
 	AutoTemplate bool
 }
@@ -77,7 +76,7 @@ func NewTargetState(destDir string, umask os.FileMode, sourceDir string, data ma
 }
 
 // Add adds a new target to ts.
-func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, info os.FileInfo, mutator Mutator) error {
+func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, info os.FileInfo, follow bool, mutator Mutator) error {
 	contains, err := vfs.Contains(fs, targetPath, ts.DestDir)
 	if err != nil {
 		return err
@@ -91,7 +90,7 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 	}
 	if info == nil {
 		var err error
-		if addOptions.Follow {
+		if follow {
 			info, err = fs.Stat(targetPath)
 		} else {
 			info, err = fs.Lstat(targetPath)
@@ -99,7 +98,7 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 		if err != nil {
 			return err
 		}
-	} else if addOptions.Follow && info.Mode()&os.ModeType == os.ModeSymlink {
+	} else if follow && info.Mode()&os.ModeType == os.ModeSymlink {
 		info, err = fs.Stat(targetPath)
 		if err != nil {
 			return err
@@ -115,7 +114,7 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 			return err
 		}
 		if parentEntry == nil {
-			if err := ts.Add(fs, addOptions, filepath.Join(ts.DestDir, parentDirName), nil, mutator); err != nil {
+			if err := ts.Add(fs, addOptions, filepath.Join(ts.DestDir, parentDirName), nil, follow, mutator); err != nil {
 				return err
 			}
 			parentEntry, err = ts.findEntry(parentDirName)
@@ -184,7 +183,7 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 }
 
 // Apply ensures that ts.DestDir in fs matches ts.
-func (ts *TargetState) Apply(fs vfs.FS, mutator Mutator, applyOptions *ApplyOptions) error {
+func (ts *TargetState) Apply(fs vfs.FS, mutator Mutator, follow bool, applyOptions *ApplyOptions) error {
 	if applyOptions.Remove {
 		// Build a set of targets to remove.
 		targetsToRemove := make(map[string]struct{})
@@ -229,7 +228,7 @@ func (ts *TargetState) Apply(fs vfs.FS, mutator Mutator, applyOptions *ApplyOpti
 	}
 
 	for _, entryName := range sortedEntryNames(ts.Entries) {
-		if err := ts.Entries[entryName].Apply(fs, mutator, applyOptions); err != nil {
+		if err := ts.Entries[entryName].Apply(fs, mutator, follow, applyOptions); err != nil {
 			return err
 		}
 	}

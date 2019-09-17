@@ -86,7 +86,7 @@ func (sa ScriptAttributes) SourceName() string {
 }
 
 // Apply runs s.
-func (s *Script) Apply(fs vfs.FS, mutator Mutator, applyOptions *ApplyOptions) error {
+func (s *Script) Apply(fs vfs.FS, mutator Mutator, follow bool, applyOptions *ApplyOptions) error {
 	if applyOptions.Ignore(s.targetName) {
 		return nil
 	}

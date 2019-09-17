@@ -35,7 +35,6 @@ func init() {
 	persistentFlags.BoolVarP(&config.add.options.Empty, "empty", "e", false, "add empty files")
 	persistentFlags.BoolVar(&config.add.options.Encrypt, "encrypt", false, "encrypt files")
 	persistentFlags.BoolVarP(&config.add.options.Exact, "exact", "x", false, "add directories exactly")
-	persistentFlags.BoolVarP(&config.add.options.Follow, "follow", "f", false, "follow last symlink")
 	persistentFlags.BoolVarP(&config.add.prompt, "prompt", "p", false, "prompt before adding")
 	persistentFlags.BoolVarP(&config.add.recursive, "recursive", "r", false, "recurse in to subdirectories")
 	persistentFlags.BoolVarP(&config.add.options.Template, "template", "T", false, "add files as templates")
@@ -90,7 +89,7 @@ func (c *Config) runAddCmd(fs vfs.FS, args []string) (err error) {
 						c.add.prompt = false
 					}
 				}
-				return ts.Add(fs, c.add.options, path, info, mutator)
+				return ts.Add(fs, c.add.options, path, info, c.Follow, mutator)
 			}); err != nil {
 				return err
 			}
@@ -113,7 +112,7 @@ func (c *Config) runAddCmd(fs vfs.FS, args []string) (err error) {
 					c.add.prompt = false
 				}
 			}
-			if err := ts.Add(fs, c.add.options, path, nil, mutator); err != nil {
+			if err := ts.Add(fs, c.add.options, path, nil, c.Follow, mutator); err != nil {
 				return err
 			}
 		}

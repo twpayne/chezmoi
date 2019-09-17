@@ -173,7 +173,7 @@ func (c *Config) runEditCmd(fs vfs.FS, args []string) error {
 		if c.edit.diff {
 			mutator = chezmoi.NewLoggingMutator(c.Stdout(), mutator, c.colored)
 		}
-		if err := entry.Apply(readOnlyFS, mutator, &applyOptions); err != nil {
+		if err := entry.Apply(readOnlyFS, mutator, c.Follow, &applyOptions); err != nil {
 			return err
 		}
 		if c.edit.apply && anyMutator.Mutated() {
@@ -192,7 +192,7 @@ func (c *Config) runEditCmd(fs vfs.FS, args []string) error {
 					c.edit.prompt = false
 				}
 			}
-			if err := entry.Apply(readOnlyFS, applyMutator, &applyOptions); err != nil {
+			if err := entry.Apply(readOnlyFS, applyMutator, c.Follow, &applyOptions); err != nil {
 				return err
 			}
 		}

@@ -126,7 +126,7 @@ func (fa FileAttributes) SourceName() string {
 }
 
 // Apply ensures that the state of targetPath in fs matches f.
-func (f *File) Apply(fs vfs.FS, mutator Mutator, applyOptions *ApplyOptions) error {
+func (f *File) Apply(fs vfs.FS, mutator Mutator, follow bool, applyOptions *ApplyOptions) error {
 	if applyOptions.Ignore(f.targetName) {
 		return nil
 	}
@@ -135,7 +135,12 @@ func (f *File) Apply(fs vfs.FS, mutator Mutator, applyOptions *ApplyOptions) err
 		return err
 	}
 	targetPath := filepath.Join(applyOptions.DestDir, f.targetName)
-	info, err := fs.Lstat(targetPath)
+	var info os.FileInfo
+	if follow {
+		info, err = fs.Stat(targetPath)
+	} else {
+		info, err = fs.Lstat(targetPath)
+	}
 	var currData []byte
 	switch {
 	case err == nil && info.Mode().IsRegular():

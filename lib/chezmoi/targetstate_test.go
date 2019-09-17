@@ -17,6 +17,7 @@ func TestEndToEnd(t *testing.T) {
 		name          string
 		root          interface{}
 		sourceDir     string
+		follow        bool
 		data          map[string]interface{}
 		templateFuncs template.FuncMap
 		destDir       string
@@ -107,7 +108,7 @@ func TestEndToEnd(t *testing.T) {
 				Stdout:            os.Stdout,
 				Umask:             022,
 			}
-			assert.NoError(t, ts.Apply(fs, NewLoggingMutator(os.Stderr, NewFSMutator(fs), false), applyOptions))
+			assert.NoError(t, ts.Apply(fs, NewLoggingMutator(os.Stderr, NewFSMutator(fs), false), tc.follow, applyOptions))
 			vfst.RunTests(t, fs, "", tc.tests)
 		})
 	}
