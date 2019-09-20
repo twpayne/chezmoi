@@ -96,6 +96,17 @@ If you plan to package chezmoi for your distibution, then note:
 * Please enable CGO, if possible. chezmoi can be built and run without CGO, but
   the `.chezmoi.group` template variable may not be set on some systems.
 
+* chezmoi includes a `docs` command which prints its documentation. By default,
+  the docs are embedded in the binary. You can disable this behaviour, and have
+  chezmoi read its docs from the filesystem by building with the `noembeddocs`
+  build tag and setting the directory where chezmoi can find them with the `-X
+  github.com/twpayne/chezmoi/cmd.DocDir={{ .PathToDocs }}` linker flag. For
+  example:
+
+  ```
+  go build -tags noembeddocs -ldflags "-X github.com/twpayne/chezmoi/cmd.DocsDir=/usr/share/doc/chezmoi" .
+  ```
+
 * chezmoi includes an `upgrade` command which attempts to self-upgrade. You can
   remove this command completely by building chezmoi with the `noupgrade` build
   tag.

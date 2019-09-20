@@ -5,7 +5,6 @@ import (
 	"regexp"
 	"strings"
 
-	packr "github.com/gobuffalo/packr/v2"
 	"github.com/spf13/cobra"
 	vfs "github.com/twpayne/go-vfs"
 )
@@ -24,7 +23,6 @@ func init() {
 }
 
 func (c *Config) runDocsCmd(fs vfs.FS, args []string) error {
-	box := packr.New("docs", "../docs")
 	filename := "REFERENCE.md"
 	if len(args) > 0 {
 		pattern := args[0]
@@ -32,8 +30,12 @@ func (c *Config) runDocsCmd(fs vfs.FS, args []string) error {
 		if err != nil {
 			return err
 		}
+		docsFilenames, err := getDocsFilenames()
+		if err != nil {
+			return err
+		}
 		var filenames []string
-		for _, fn := range box.List() {
+		for _, fn := range docsFilenames {
 			if re.FindStringIndex(strings.ToLower(fn)) != nil {
 				filenames = append(filenames, fn)
 			}
@@ -47,7 +49,7 @@ func (c *Config) runDocsCmd(fs vfs.FS, args []string) error {
 			return fmt.Errorf("%s: ambiguous pattern, matches %s", pattern, strings.Join(filenames, ", "))
 		}
 	}
-	data, err := box.Find(filename)
+	data, err := getDoc(filename)
 	if err != nil {
 		return err
 	}
