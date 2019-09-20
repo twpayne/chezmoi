@@ -1,3 +1,4 @@
+// +build !nodocs
 // +build noembeddocs
 
 package cmd

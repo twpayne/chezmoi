@@ -1,3 +1,5 @@
+// +build !nodocs
+
 package cmd
 
 import (

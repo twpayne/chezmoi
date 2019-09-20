@@ -107,6 +107,8 @@ If you plan to package chezmoi for your distibution, then note:
   go build -tags noembeddocs -ldflags "-X github.com/twpayne/chezmoi/cmd.DocsDir=/usr/share/doc/chezmoi" .
   ```
 
+  To disable the `docs` command completely, use the `nodocs` build tag.
+
 * chezmoi includes an `upgrade` command which attempts to self-upgrade. You can
   remove this command completely by building chezmoi with the `noupgrade` build
   tag.
