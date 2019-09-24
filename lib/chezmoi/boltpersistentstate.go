@@ -16,7 +16,7 @@ type BoltPersistentState struct {
 	db   *bolt.DB
 }
 
-// NewBoltPersistentState returns a new BoltPersistentState.
+// NewBoltPersistentState returns a new, unopened BoltPersistentState.
 func NewBoltPersistentState(fs vfs.FS, path string) (*BoltPersistentState, error) {
 	b := &BoltPersistentState{
 		fs:   fs,
@@ -24,19 +24,18 @@ func NewBoltPersistentState(fs vfs.FS, path string) (*BoltPersistentState, error
 		perm: 0600,
 	}
 	_, err := fs.Stat(b.path)
-	switch {
-	case err == nil:
-		if err := b.openDB(); err != nil {
-			return nil, err
-		}
-	case os.IsNotExist(err):
-	default:
+	if err != nil && !os.IsNotExist(err) {
 		return nil, err
 	}
 	return b, nil
 }
 
-// Close closes b.
+// Open the connection to b.
+func (b *BoltPersistentState) Open(write bool) error {
+	return b.openDB(write)
+}
+
+// Close the connection to b.
 func (b *BoltPersistentState) Close() error {
 	if b.db == nil {
 		return nil
@@ -87,9 +86,10 @@ func (b *BoltPersistentState) Get(bucket, key []byte) ([]byte, error) {
 // it does not already exist.
 func (b *BoltPersistentState) Set(bucket, key, value []byte) error {
 	if b.db == nil {
-		if err := b.openDB(); err != nil {
+		if err := b.openDB(true); err != nil {
 			return err
 		}
+		defer b.Close()
 	}
 	return b.db.Update(func(tx *bolt.Tx) error {
 		b, err := tx.CreateBucketIfNotExists(bucket)
@@ -100,7 +100,7 @@ func (b *BoltPersistentState) Set(bucket, key, value []byte) error {
 	})
 }
 
-func (b *BoltPersistentState) openDB() error {
+func (b *BoltPersistentState) openDB(write bool) error {
 	parentDir := filepath.Dir(b.path)
 	if _, err := b.fs.Stat(parentDir); os.IsNotExist(err) {
 		if err := vfs.MkdirAll(b.fs, parentDir, 0755); err != nil {
@@ -109,6 +109,7 @@ func (b *BoltPersistentState) openDB() error {
 	}
 	options := &bolt.Options{
 		OpenFile: b.fs.OpenFile,
+		ReadOnly: !write,
 	}
 	db, err := bolt.Open(b.path, b.perm, options)
 	if err != nil {

@@ -184,6 +184,9 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 
 // Apply ensures that ts.DestDir in fs matches ts.
 func (ts *TargetState) Apply(fs vfs.FS, mutator Mutator, follow bool, applyOptions *ApplyOptions) error {
+	applyOptions.PersistentState.Open(!applyOptions.DryRun)
+	defer applyOptions.PersistentState.Close()
+
 	if applyOptions.Remove {
 		// Build a set of targets to remove.
 		targetsToRemove := make(map[string]struct{})
