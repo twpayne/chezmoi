@@ -22,6 +22,7 @@ require (
 	github.com/magiconair/properties v1.8.1 // indirect
 	github.com/mattn/go-isatty v0.0.8
 	github.com/pelletier/go-toml v1.4.0 // indirect
+	github.com/pkg/diff v0.0.0-20190925211723-2e1364d5b2b3
 	github.com/russross/blackfriday/v2 v2.0.1
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
 	github.com/spf13/afero v1.2.2 // indirect
@@ -30,7 +31,6 @@ require (
 	github.com/spf13/viper v1.4.0
 	github.com/stretchr/objx v0.2.0 // indirect
 	github.com/stretchr/testify v1.3.0
-	github.com/twpayne/go-difflib v1.3.1
 	github.com/twpayne/go-shell v0.0.2
 	github.com/twpayne/go-vfs v1.3.4
 	github.com/twpayne/go-vfsafero v1.0.0
