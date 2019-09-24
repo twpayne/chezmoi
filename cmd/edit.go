@@ -13,12 +13,13 @@ import (
 )
 
 var editCmd = &cobra.Command{
-	Use:     "edit targets...",
-	Short:   "Edit the source state of a target",
-	Long:    mustGetLongHelp("edit"),
-	Example: getExample("edit"),
-	PreRunE: config.ensureNoError,
-	RunE:    makeRunE(config.runEditCmd),
+	Use:      "edit targets...",
+	Short:    "Edit the source state of a target",
+	Long:     mustGetLongHelp("edit"),
+	Example:  getExample("edit"),
+	PreRunE:  config.ensureNoError,
+	RunE:     makeRunE(config.runEditCmd),
+	PostRunE: makeRunE(config.autoCommitAndAutoPush),
 }
 
 type editCmdConfig struct {
@@ -92,12 +93,6 @@ func (c *Config) runEditCmd(fs vfs.FS, args []string) error {
 		} else if _, ok := entry.(*chezmoi.Symlink); !ok {
 			return fmt.Errorf("%s: not a file or symlink", args[i])
 		}
-	}
-
-	// Short path: if no post-edit actions are required then exec the editor
-	// directly.
-	if !c.edit.diff && !c.edit.apply && len(encryptedFiles) == 0 {
-		return c.execEditor(fs, argv...)
 	}
 
 	// If any of the files are encrypted, create a temporary directory to store

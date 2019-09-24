@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bufio"
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -16,6 +17,7 @@ import (
 	"unicode"
 
 	"github.com/BurntSushi/toml"
+	packr "github.com/gobuffalo/packr/v2"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/twpayne/chezmoi/internal/chezmoi"
@@ -26,9 +28,11 @@ import (
 )
 
 type sourceVCSConfig struct {
-	Command string
-	Init    interface{}
-	Pull    interface{}
+	Command    string
+	AutoCommit bool
+	AutoPush   bool
+	Init       interface{}
+	Pull       interface{}
 }
 
 // A Config represents a configuration.
@@ -96,6 +100,8 @@ var (
 		"ID":   {},
 		"URL":  {},
 	}
+
+	templatesBox = packr.New("templates", "../templates")
 )
 
 // Stderr returns c's stderr.
@@ -162,6 +168,67 @@ func (c *Config) applyArgs(fs vfs.FS, args []string, mutator chezmoi.Mutator, pe
 		}
 	}
 	return nil
+}
+
+func (c *Config) autoCommit(fs vfs.FS, vcs VCS) error {
+	addArgs := vcs.AddArgs(".")
+	if addArgs == nil {
+		return fmt.Errorf("%s: autocommit not supported", c.SourceVCS.Command)
+	}
+	if err := c.run(fs, c.SourceDir, c.SourceVCS.Command, addArgs...); err != nil {
+		return err
+	}
+	output, err := c.output(fs, c.SourceDir, c.SourceVCS.Command, vcs.StatusArgs()...)
+	if err != nil {
+		return err
+	}
+	status, err := vcs.ParseStatusOutput(output)
+	if err != nil {
+		return err
+	}
+	commitMessageText, err := templatesBox.Find("COMMIT_MESSAGE.tmpl")
+	if err != nil {
+		return err
+	}
+	commitMessageTmpl, err := template.New("commit_message").Funcs(c.templateFuncs).Parse(string(commitMessageText))
+	if err != nil {
+		return err
+	}
+	b := &bytes.Buffer{}
+	if err := commitMessageTmpl.Execute(b, status); err != nil {
+		return err
+	}
+	commitArgs := vcs.CommitArgs(b.String())
+	return c.run(fs, c.SourceDir, c.SourceVCS.Command, commitArgs...)
+}
+
+func (c *Config) autoCommitAndAutoPush(fs vfs.FS, args []string) error {
+	vcs, err := c.getVCS()
+	if err != nil {
+		return err
+	}
+	if c.DryRun {
+		return nil
+	}
+	if c.SourceVCS.AutoCommit || c.SourceVCS.AutoPush {
+		if err := c.autoCommit(fs, vcs); err != nil {
+			return err
+		}
+	}
+	if c.SourceVCS.AutoPush {
+		if err := c.autoPush(fs, vcs); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (c *Config) autoPush(fs vfs.FS, vcs VCS) error {
+	pushArgs := vcs.PushArgs()
+	if pushArgs == nil {
+		return fmt.Errorf("%s: autopush not supported", c.SourceVCS.Command)
+	}
+	return c.run(fs, c.SourceDir, c.SourceVCS.Command, pushArgs...)
 }
 
 // ensureNoError ensures that no error was encountered when loading c.
@@ -310,6 +377,28 @@ func (c *Config) getVCS() (VCS, error) {
 		return nil, fmt.Errorf("%s: unsupported source VCS command", c.SourceVCS.Command)
 	}
 	return vcs, nil
+}
+
+func (c *Config) output(fs vfs.FS, dir, name string, argv ...string) ([]byte, error) {
+	if c.Verbose {
+		if dir == "" {
+			fmt.Printf("%s %s\n", name, strings.Join(argv, " "))
+		} else {
+			fmt.Printf("( cd %s && %s %s )\n", dir, name, strings.Join(argv, " "))
+		}
+	}
+	if c.DryRun {
+		return nil, nil
+	}
+	cmd := exec.Command(name, argv...)
+	if dir != "" {
+		var err error
+		cmd.Dir, err = fs.RawPath(dir)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return cmd.Output()
 }
 
 //nolint:unparam

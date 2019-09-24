@@ -33,7 +33,7 @@ func TestParseStatusPorcelainV2(t *testing.T) {
 			},
 		},
 		{
-			name:      "deleted",
+			name:      "removed",
 			outputStr: "1 D. N... 100644 000000 000000 cea5c3500651a923bacd80f960dd20f04f71d509 0000000000000000000000000000000000000000 main.go\n",
 			expectedStatus: &Status{
 				Ordinary: []OrdinaryStatus{
@@ -52,7 +52,7 @@ func TestParseStatusPorcelainV2(t *testing.T) {
 			},
 		},
 		{
-			name:      "modified",
+			name:      "update",
 			outputStr: "1 .M N... 100644 100644 100644 353dbbb3c29a80fb44d4e26dac111739d25294db 353dbbb3c29a80fb44d4e26dac111739d25294db cmd/gitvcs.go\n",
 			expectedStatus: &Status{
 				Ordinary: []OrdinaryStatus{
@@ -88,6 +88,25 @@ func TestParseStatusPorcelainV2(t *testing.T) {
 						Score:    100,
 						Path:     "chezmoi_rename.go",
 						OrigPath: "chezmoi.go",
+					},
+				},
+			},
+		},
+		{
+			name:      "modified_2",
+			outputStr: "1 .M N... 100644 100644 100644 5716ca5987cbf97d6bb54920bea6adde242d87e6 5716ca5987cbf97d6bb54920bea6adde242d87e6 foo\n",
+			expectedStatus: &Status{
+				Ordinary: []OrdinaryStatus{
+					{
+						X:    '.',
+						Y:    'M',
+						Sub:  "N...",
+						MH:   0100644,
+						MI:   0100644,
+						MW:   0100644,
+						HH:   "5716ca5987cbf97d6bb54920bea6adde242d87e6",
+						HI:   "5716ca5987cbf97d6bb54920bea6adde242d87e6",
+						Path: "foo",
 					},
 				},
 			},
