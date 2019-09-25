@@ -1,13 +1,17 @@
 package chezmoi
 
 import (
+	"bufio"
+	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 
-	"github.com/twpayne/go-difflib/difflib"
+	"github.com/pkg/diff"
 )
 
 // A LoggingMutator wraps an Mutator and logs all of the actions it executes
@@ -87,16 +91,26 @@ func (m *LoggingMutator) WriteFile(name string, data []byte, perm os.FileMode, c
 	if err == nil {
 		_, _ = fmt.Fprintln(m.w, action)
 		if !isBinary(currData) && !isBinary(data) {
-			unifiedDiff := difflib.UnifiedDiff{
-				A:        difflib.SplitLines(string(currData)),
-				B:        difflib.SplitLines(string(data)),
-				FromFile: name,
-				ToFile:   name,
-				Context:  3,
-				Eol:      "\n",
-				Colored:  m.colored,
+			aLines, err := splitLines(currData)
+			if err != nil {
+				return err
 			}
-			if err := difflib.WriteUnifiedDiff(m.w, unifiedDiff); err != nil {
+			bLines, err := splitLines(data)
+			if err != nil {
+				return err
+			}
+			ab := diff.Strings(aLines, bLines)
+			e := diff.Myers(context.Background(), ab).WithContextSize(3)
+			opts := []diff.WriteOpt{
+				diff.Names(
+					filepath.Join("a", name),
+					filepath.Join("b", name),
+				),
+			}
+			if m.colored {
+				opts = append(opts, diff.TerminalColor())
+			}
+			if _, err := e.WriteUnified(m.w, ab, opts...); err != nil {
 				return err
 			}
 		}
@@ -120,4 +134,13 @@ func (m *LoggingMutator) WriteSymlink(oldname, newname string) error {
 
 func isBinary(data []byte) bool {
 	return len(data) != 0 && !strings.HasPrefix(http.DetectContentType(data), "text/")
+}
+
+func splitLines(data []byte) ([]string, error) {
+	var lines []string
+	s := bufio.NewScanner(bytes.NewReader(data))
+	for s.Scan() {
+		lines = append(lines, s.Text())
+	}
+	return lines, s.Err()
 }
