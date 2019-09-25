@@ -5,8 +5,8 @@ go 1.13
 require (
 	github.com/BurntSushi/toml v0.3.1
 	github.com/Masterminds/goutils v1.1.0 // indirect
-	github.com/Masterminds/semver v1.4.2 // indirect
-	github.com/Masterminds/sprig v2.20.0+incompatible
+	github.com/Masterminds/semver v1.5.0 // indirect
+	github.com/Masterminds/sprig v2.21.0+incompatible
 	github.com/coreos/go-semver v0.3.0
 	github.com/danieljoos/wincred v1.0.2 // indirect
 	github.com/gobuffalo/logger v1.0.1 // indirect
@@ -37,10 +37,9 @@ require (
 	github.com/twpayne/go-xdg/v3 v3.1.0
 	github.com/zalando/go-keyring v0.0.0-20190603084339-02404fc6afd1
 	go.etcd.io/bbolt v1.3.3
-	golang.org/x/crypto v0.0.0-20190701094942-4def268fd1a4
+	golang.org/x/crypto v0.0.0-20190923035154-9ee001bba392
 	golang.org/x/net v0.0.0-20190628185345-da137c7871d7 // indirect
 	golang.org/x/oauth2 v0.0.0-20190604053449-0f29369cfe45
-	golang.org/x/sys v0.0.0-20190626221950-04f50cda93cb // indirect
 	google.golang.org/appengine v1.6.1 // indirect
 	gopkg.in/yaml.v2 v2.2.2
 )
