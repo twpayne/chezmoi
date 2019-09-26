@@ -367,7 +367,7 @@ func TestApplyScript(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			fs := vfs.NewPathFS(vfs.OSFS, tempDir)
 			require.NoError(t, vfst.NewBuilder().Build(fs, tc.root))
-			persistentState, err := chezmoi.NewBoltPersistentState(fs, "/home/user/.config/chezmoi/chezmoistate.boltdb")
+			persistentState, err := chezmoi.NewBoltPersistentState(fs, "/home/user/.config/chezmoi/chezmoistate.boltdb", nil)
 			require.NoError(t, err)
 			defer func() {
 				require.NoError(t, persistentState.Close())
@@ -413,7 +413,7 @@ func TestApplyRunOnce(t *testing.T) {
 	require.NoError(t, err)
 	defer cleanup()
 
-	persistentState, err := chezmoi.NewBoltPersistentState(fs, statePath)
+	persistentState, err := chezmoi.NewBoltPersistentState(fs, statePath, nil)
 	require.NoError(t, err)
 
 	c := &Config{

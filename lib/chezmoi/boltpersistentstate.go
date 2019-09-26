@@ -10,18 +10,20 @@ import (
 
 // A BoltPersistentState is a state persisted with bolt.
 type BoltPersistentState struct {
-	fs   vfs.FS
-	path string
-	perm os.FileMode
-	db   *bolt.DB
+	fs      vfs.FS
+	path    string
+	perm    os.FileMode
+	options *bolt.Options
+	db      *bolt.DB
 }
 
 // NewBoltPersistentState returns a new BoltPersistentState.
-func NewBoltPersistentState(fs vfs.FS, path string) (*BoltPersistentState, error) {
+func NewBoltPersistentState(fs vfs.FS, path string, options *bolt.Options) (*BoltPersistentState, error) {
 	b := &BoltPersistentState{
-		fs:   fs,
-		path: path,
-		perm: 0600,
+		fs:      fs,
+		path:    path,
+		perm:    0600,
+		options: options,
 	}
 	_, err := fs.Stat(b.path)
 	switch {
@@ -65,7 +67,7 @@ func (b *BoltPersistentState) Delete(bucket, key []byte) error {
 
 // Get returns the value associated with key in bucket.
 func (b *BoltPersistentState) Get(bucket, key []byte) ([]byte, error) {
-	value := []byte(nil)
+	var value []byte
 	if b.db == nil {
 		return value, nil
 	}
@@ -107,10 +109,12 @@ func (b *BoltPersistentState) openDB() error {
 			return err
 		}
 	}
-	options := &bolt.Options{
-		OpenFile: b.fs.OpenFile,
+	var options bolt.Options
+	if b.options != nil {
+		options = *b.options
 	}
-	db, err := bolt.Open(b.path, b.perm, options)
+	options.OpenFile = b.fs.OpenFile
+	db, err := bolt.Open(b.path, b.perm, &options)
 	if err != nil {
 		return err
 	}

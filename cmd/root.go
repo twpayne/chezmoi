@@ -109,7 +109,7 @@ func init() {
 			printErrorAndExit(err)
 		}
 		persistentStateFile := getPersistentStateFile(config.bds, config.configFile)
-		persistentState, err := chezmoi.NewBoltPersistentState(vfs.OSFS, persistentStateFile)
+		persistentState, err := chezmoi.NewBoltPersistentState(vfs.OSFS, persistentStateFile, nil)
 		if err != nil {
 			printErrorAndExit(err)
 		}
