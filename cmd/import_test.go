@@ -37,7 +37,6 @@ func TestImportCmd(t *testing.T) {
 		"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0700},
 	})
 	require.NoError(t, err)
-	fs.Keep()
 	defer cleanup()
 
 	c := &Config{
