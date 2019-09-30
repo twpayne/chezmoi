@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/twpayne/chezmoi/lib/chezmoi"
 	vfs "github.com/twpayne/go-vfs"
+	bolt "go.etcd.io/bbolt"
 )
 
 var verifyCmd = &cobra.Command{
@@ -23,7 +24,16 @@ func init() {
 
 func (c *Config) runVerifyCmd(fs vfs.FS, args []string) error {
 	mutator := chezmoi.NewAnyMutator(chezmoi.NullMutator{})
-	if err := c.applyArgs(fs, args, mutator); err != nil {
+
+	persistentState, err := c.getPersistentState(fs, &bolt.Options{
+		ReadOnly: true,
+	})
+	if err != nil {
+		return err
+	}
+	defer persistentState.Close()
+
+	if err := c.applyArgs(fs, args, mutator, persistentState); err != nil {
 		return err
 	}
 	if mutator.Mutated() {

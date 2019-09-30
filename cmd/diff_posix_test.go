@@ -31,6 +31,7 @@ func TestDiffDoesNotRunScript(t *testing.T) {
 		SourceDir: "/home/user/.local/share/chezmoi",
 		DestDir:   "/",
 		Umask:     022,
+		bds:       newTestBaseDirectorySpecification("/home/user"),
 	}
 	assert.NoError(t, c.runDiffCmd(fs, nil))
 	vfst.RunTests(t, vfs.OSFS, "",

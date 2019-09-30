@@ -22,6 +22,7 @@ func TestExercise(t *testing.T) {
 		DestDir:   "/home/user",
 		Umask:     022,
 		Verbose:   true,
+		bds:       newTestBaseDirectorySpecification("/home/user"),
 		remove: removeCmdConfig{
 			force: true,
 		},

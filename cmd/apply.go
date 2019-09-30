@@ -20,5 +20,12 @@ func init() {
 
 func (c *Config) runApplyCmd(fs vfs.FS, args []string) error {
 	mutator := c.getDefaultMutator(fs)
-	return c.applyArgs(fs, args, mutator)
+
+	persistentState, err := c.getPersistentState(fs, nil)
+	if err != nil {
+		return err
+	}
+	defer persistentState.Close()
+
+	return c.applyArgs(fs, args, mutator, persistentState)
 }

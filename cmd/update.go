@@ -57,7 +57,12 @@ func (c *Config) runUpdateCmd(fs vfs.FS, args []string) error {
 
 	if c.update.apply {
 		mutator := c.getDefaultMutator(fs)
-		if err := c.applyArgs(fs, nil, mutator); err != nil {
+		persistentState, err := c.getPersistentState(fs, nil)
+		if err != nil {
+			return err
+		}
+		defer persistentState.Close()
+		if err := c.applyArgs(fs, nil, mutator, persistentState); err != nil {
 			return err
 		}
 	}

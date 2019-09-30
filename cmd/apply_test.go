@@ -8,7 +8,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/twpayne/chezmoi/lib/chezmoi"
 	vfs "github.com/twpayne/go-vfs"
 	"github.com/twpayne/go-vfs/vfst"
 )
@@ -144,6 +143,7 @@ func TestApplyCommand(t *testing.T) {
 				SourceDir: "/home/user/.local/share/chezmoi",
 				DestDir:   "/home/user",
 				Umask:     022,
+				bds:       newTestBaseDirectorySpecification("/home/user"),
 			}
 			assert.NoError(t, c.runApplyCmd(fs, nil))
 			vfst.RunTests(t, fs, "",
@@ -232,6 +232,7 @@ func TestApplyFollow(t *testing.T) {
 				DestDir:   "/home/user",
 				Follow:    tc.follow,
 				Umask:     022,
+				bds:       newTestBaseDirectorySpecification("/home/user"),
 			}
 			assert.NoError(t, c.runApplyCmd(fs, nil))
 			vfst.RunTests(t, fs, "", tc.tests)
@@ -350,6 +351,7 @@ func TestApplyRemove(t *testing.T) {
 				Data:      tc.data,
 				Remove:    !tc.noRemove,
 				Umask:     022,
+				bds:       newTestBaseDirectorySpecification("/home/user"),
 			}
 			assert.NoError(t, c.runApplyCmd(fs, nil))
 			vfst.RunTests(t, fs, "", tc.tests)
@@ -367,25 +369,25 @@ func TestApplyScript(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			fs := vfs.NewPathFS(vfs.OSFS, tempDir)
 			require.NoError(t, vfst.NewBuilder().Build(fs, tc.root))
-			persistentState, err := chezmoi.NewBoltPersistentState(fs, "/home/user/.config/chezmoi/chezmoistate.boltdb", nil)
-			require.NoError(t, err)
 			defer func() {
-				require.NoError(t, persistentState.Close())
 				require.NoError(t, os.RemoveAll(tempDir))
 				require.NoError(t, os.Mkdir(tempDir, 0700))
 			}()
-			c := &Config{
-				SourceDir:         "/home/user/.local/share/chezmoi",
-				DestDir:           "/",
-				Umask:             022,
-				Data:              tc.data,
-				persistentState:   persistentState,
-				scriptStateBucket: []byte("script"),
+			apply := func() {
+				c := &Config{
+					SourceDir:         "/home/user/.local/share/chezmoi",
+					DestDir:           "/",
+					Umask:             022,
+					Data:              tc.data,
+					bds:               newTestBaseDirectorySpecification("/home/user"),
+					scriptStateBucket: []byte("script"),
+				}
+				require.NoError(t, c.runApplyCmd(fs, nil))
 			}
 			// Run apply three times. As chezmoi should be idempotent, the
 			// result should be the same each time.
 			for i := 0; i < 3; i++ {
-				assert.NoError(t, c.runApplyCmd(fs, nil))
+				apply()
 			}
 			vfst.RunTests(t, vfs.OSFS, "", tc.tests)
 		})
@@ -393,8 +395,6 @@ func TestApplyScript(t *testing.T) {
 }
 
 func TestApplyRunOnce(t *testing.T) {
-	statePath := "/home/user/.config/chezmoi/chezmoistate.boltdb"
-
 	tempDir, err := ioutil.TempDir("", "chezmoi")
 	require.NoError(t, err)
 	defer func() {
@@ -404,17 +404,11 @@ func TestApplyRunOnce(t *testing.T) {
 
 	fs, cleanup, err := vfst.NewTestFS(
 		[]interface{}{
-			map[string]interface{}{
-				filepath.Dir(statePath): &vfst.Dir{Perm: 0755},
-			},
 			getRunOnceFiles(),
 		},
 	)
 	require.NoError(t, err)
 	defer cleanup()
-
-	persistentState, err := chezmoi.NewBoltPersistentState(fs, statePath, nil)
-	require.NoError(t, err)
 
 	c := &Config{
 		SourceDir: "/home/user/.local/share/chezmoi",
@@ -423,13 +417,13 @@ func TestApplyRunOnce(t *testing.T) {
 		Data: map[string]interface{}{
 			"TempFile": tempFile,
 		},
-		persistentState:   persistentState,
+		bds:               newTestBaseDirectorySpecification("/home/user"),
 		scriptStateBucket: []byte("script"),
 	}
 
 	require.NoError(t, c.runApplyCmd(fs, nil))
 	vfst.RunTests(t, fs, "",
-		vfst.TestPath(statePath,
+		vfst.TestPath("/home/user/.config/chezmoi/chezmoistate.boltdb",
 			vfst.TestModeIsRegular,
 		),
 	)

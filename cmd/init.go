@@ -99,7 +99,11 @@ func (c *Config) runInitCmd(fs vfs.FS, args []string) error {
 	}
 
 	if c.init.apply {
-		if err := c.applyArgs(fs, nil, mutator); err != nil {
+		persistentState, err := c.getPersistentState(fs, nil)
+		if err != nil {
+			return err
+		}
+		if err := c.applyArgs(fs, nil, mutator, persistentState); err != nil {
 			return err
 		}
 	}

@@ -21,6 +21,7 @@ import (
 	"github.com/twpayne/chezmoi/lib/chezmoi"
 	vfs "github.com/twpayne/go-vfs"
 	xdg "github.com/twpayne/go-xdg/v3"
+	bolt "go.etcd.io/bbolt"
 	yaml "gopkg.in/yaml.v2"
 )
 
@@ -55,7 +56,6 @@ type Config struct {
 	Pass              passCmdConfig
 	Data              map[string]interface{}
 	colored           bool
-	persistentState   chezmoi.PersistentState
 	templateFuncs     template.FuncMap
 	add               addCmdConfig
 	data              dataCmdConfig
@@ -131,7 +131,7 @@ func (c *Config) addTemplateFunc(key string, value interface{}) {
 	c.templateFuncs[key] = value
 }
 
-func (c *Config) applyArgs(fs vfs.FS, args []string, mutator chezmoi.Mutator) error {
+func (c *Config) applyArgs(fs vfs.FS, args []string, mutator chezmoi.Mutator, persistentState chezmoi.PersistentState) error {
 	fs = vfs.NewReadOnlyFS(fs)
 	ts, err := c.getTargetState(fs, nil)
 	if err != nil {
@@ -141,7 +141,7 @@ func (c *Config) applyArgs(fs vfs.FS, args []string, mutator chezmoi.Mutator) er
 		DestDir:           ts.DestDir,
 		DryRun:            c.DryRun,
 		Ignore:            ts.TargetIgnore.Match,
-		PersistentState:   c.persistentState,
+		PersistentState:   persistentState,
 		Remove:            c.Remove,
 		ScriptStateBucket: c.scriptStateBucket,
 		Stdout:            c.Stdout(),
@@ -241,6 +241,30 @@ func (c *Config) getEntries(fs vfs.Stater, ts *chezmoi.TargetState, args []strin
 		entries = append(entries, entry)
 	}
 	return entries, nil
+}
+
+func (c *Config) getPersistentState(fs vfs.FS, options *bolt.Options) (chezmoi.PersistentState, error) {
+	persistentStateFile := c.getPersistentStateFile()
+	if c.DryRun {
+		if options == nil {
+			options = &bolt.Options{}
+		}
+		options.ReadOnly = true
+	}
+	return chezmoi.NewBoltPersistentState(fs, persistentStateFile, options)
+}
+
+func (c *Config) getPersistentStateFile() string {
+	if c.configFile != "" {
+		return filepath.Join(filepath.Dir(c.configFile), "chezmoistate.boltdb")
+	}
+	for _, configDir := range c.bds.ConfigDirs {
+		persistentStateFile := filepath.Join(configDir, "chezmoi", "chezmoistate.boltdb")
+		if _, err := os.Stat(persistentStateFile); err == nil {
+			return persistentStateFile
+		}
+	}
+	return filepath.Join(filepath.Dir(getDefaultConfigFile(c.bds)), "chezmoistate.boltdb")
 }
 
 func (c *Config) getTargetState(fs vfs.FS, populateOptions *chezmoi.PopulateOptions) (*chezmoi.TargetState, error) {
@@ -415,16 +439,6 @@ func getDefaultSourceDir(bds *xdg.BaseDirectorySpecification) string {
 	}
 	// Fallback to XDG Base Directory Specification default.
 	return filepath.Join(bds.DataHome, "chezmoi")
-}
-
-func getPersistentStateFile(bds *xdg.BaseDirectorySpecification, configFile string) string {
-	for _, configDir := range bds.ConfigDirs {
-		persistentStateFile := filepath.Join(configDir, "chezmoi", "chezmoistate.boltdb")
-		if _, err := os.Stat(persistentStateFile); err == nil {
-			return persistentStateFile
-		}
-	}
-	return filepath.Join(filepath.Dir(configFile), "chezmoistate.boltdb")
 }
 
 // isWellKnownAbbreviation returns true if word is a well known abbreviation.
