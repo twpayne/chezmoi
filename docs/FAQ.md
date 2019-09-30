@@ -53,7 +53,7 @@ to the source state.
 
 ## gpg encryption fails. What could be wrong?
 
-The `gpgRecipient` key should be ultimately trusted, otherwise encryption will
+The `gpg.recipient` key should be ultimately trusted, otherwise encryption will
 fail because gpg will prompt for input, which chezmoi does not handle. You can
 check the trust level by running:
 
@@ -62,7 +62,7 @@ check the trust level by running:
 The trust level for the recipient's key should be `6`. If it is not, you can
 change the trust level by running:
 
-    gpg --edit-key $gpgRecipient
+    gpg --edit-key $recipient
 
 Enter `trust` at the prompt and chose `5 = I trust ultimately`.
 
