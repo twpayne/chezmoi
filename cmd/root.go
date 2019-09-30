@@ -108,12 +108,6 @@ func init() {
 		default:
 			printErrorAndExit(err)
 		}
-		persistentStateFile := getPersistentStateFile(config.bds, config.configFile)
-		persistentState, err := chezmoi.NewBoltPersistentState(vfs.OSFS, persistentStateFile)
-		if err != nil {
-			printErrorAndExit(err)
-		}
-		config.persistentState = persistentState
 	})
 }
 
