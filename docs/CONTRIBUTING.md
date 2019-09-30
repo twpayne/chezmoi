@@ -47,11 +47,19 @@ important.
 All changes are made via pull requests. In your pull request, please make sure
 that:
 
-* Your code is correctly formatted, according to
+* All existing tests pass.
+
+* There are appropriate additional tests that demonstrate that your PR works as
+  intended.
+
+* The documentation is updated, if necessary. For new features you should add an
+  entry in `docs/HOWTO.md` and a complete description in `docs/REFERENCE.md`.
+
+* The code is correctly formatted, according to
   [gofumports](https://mvdan.cc/gofumpt/gofumports). You can ensure this by
   running `make format`.
 
-* Your code passes [`go vet`](https://golang.org/cmd/vet/) and
+* The code passes [`go vet`](https://golang.org/cmd/vet/) and
   [`golangci-lint`](https://github.com/golangci/golangci-lint). You can ensure
   this by running `make lint`.
 
@@ -61,10 +69,6 @@ that:
   included in the body of the commit message.
 
 * Commits are logically separate, with no merge or "fixup" commits.
-
-* All tests pass. chezmoi's continuous integration tests include strict checks
-  using [`github.com/golangci/golangci-lint`](github.com/golangci/golangci-lint)
-  and [`mvdan.cc/gofumpt`](mvdan.cc/gofumpt).
 
 * The branch applies cleanly to `master`.
 

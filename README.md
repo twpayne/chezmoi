@@ -23,6 +23,8 @@ Manage your dotfiles across multiple machines, securely.
 * [FAQ](docs/FAQ.md) for questions that aren't answered elsewhere.
 * [Changes](docs/CHANGES.md) for non-backwards compatible changes.
 * [Reference](docs/REFERENCE.md) for a complete description of chezmoi.
+* [Contributing](docs/CONTRIBUTING.md) for people looking to contribute to or
+  package chezmoi.
 
 ## What does chezmoi do and why should I use it?
 
