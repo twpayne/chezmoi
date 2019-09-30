@@ -6,6 +6,7 @@
 * [If there's a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?](#if-theres-a-mechanism-in-place-for-the-above-is-there-also-a-way-to-tell-chezmoi-to-ignore-specific-files-or-groups-of-files-eg-by-directory-name-or-by-glob)
 * [If the target already exists, but is "behind" the source, can chezmoi be configured to preserve the target version before replacing it with one derived from the source?](#if-the-target-already-exists-but-is-behind-the-source-can-chezmoi-be-configured-to-preserve-the-target-version-before-replacing-it-with-one-derived-from-the-source)
 * [I've made changes to both the destination state and the source state that I want to keep. How can I keep them both?](#ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both)
+* [chezmoi's source file naming system cannot handle all possible filenames](#chezmois-source-file-naming-system-cannot-handle-all-possible-filenames)
 * [gpg encryption fails. What could be wrong?](#gpg-encryption-fails-what-could-be-wrong)
 * [What inspired chezmoi?](#what-inspired-chezmoi)
 * [Can I use chezmoi outside my home directory?](#can-i-use-chezmoi-outside-my-home-directory)
@@ -51,9 +52,27 @@ diff`.
 state, target state, and destination state. Copy the changes you want to keep in
 to the source state.
 
+## chezmoi's source file naming system cannot handle all possible filenames
+
+This is correct. Certain target filenames, for example `~/dot_example`, are
+incompatible with chezmoi's
+[attributes](https://github.com/twpayne/chezmoi/blob/master/docs/REFERENCE.md#source-state-attributes)
+used in the source state.
+
+This is a deliberate, practical compromise. Target state metadata (private,
+encrypted, etc.) need to be stored for each file. Using the source state
+filename for this means that the contents of the file are untouched, there is no
+need to maintain the metadata in a separate file, is independent of the
+underlying filesystem and version control system, and unambiguously associates
+the metadata with a single file.
+
+In practice, dotfile filenames are unlikely to conflict with chezmoi's
+attributes. If this does cause a genuine problem for you, please [open an
+issue on GitHub](https://github.com/twpayne/chezmoi/issues/new).
+
 ## gpg encryption fails. What could be wrong?
 
-The `gpgRecipient` key should be ultimately trusted, otherwise encryption will
+The `gpg.recipient` key should be ultimately trusted, otherwise encryption will
 fail because gpg will prompt for input, which chezmoi does not handle. You can
 check the trust level by running:
 
@@ -62,7 +81,7 @@ check the trust level by running:
 The trust level for the recipient's key should be `6`. If it is not, you can
 change the trust level by running:
 
-    gpg --edit-key $gpgRecipient
+    gpg --edit-key $recipient
 
 Enter `trust` at the prompt and chose `5 = I trust ultimately`.
 
