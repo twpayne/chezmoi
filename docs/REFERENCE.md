@@ -165,6 +165,7 @@ The following configuration variables are available:
 | `dryRun`                | bool     | `false`                   | Dry run mode                        |
 | `follow`                | bool     | `false`                   | Follow symlinks                     |
 | `genericSecret.command` | string   | *none*                    | Generic secret command              |
+| `gopass.command`        | string   | `gopass`                  | gopass CLI command                  |
 | `gpg.recipient`         | string   | *none*                    | GPG recipient                       |
 | `gpg.symmetric`         | bool     | `false`                   | Use symmetric GPG encryption        |
 | `keepassxc.args`        | []string | *none*                    | Extra args to KeePassXC CLI command |
