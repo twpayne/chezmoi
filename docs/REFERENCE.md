@@ -4,16 +4,16 @@ Manage your dotfiles securely across multiple machines.
 
 * [Concepts](#concepts)
 * [Global command line flags](#global-command-line-flags)
-  * [`--color` *value*](#--color-value)
-  * [`-c`, `--config` *filename*](#-c---config-filename)
-  * [`-D`, `--destination` *directory*](#-d---destination-directory)
-  * [`-f`, `--follow`](#-f---follow)
-  * [`-n`, `--dry-run`](#-n---dry-run)
-  * [`-h`, `--help`](#-h---help)
-  * [`-r`. `--remove`](#-r---remove)
-  * [`-S`, `--source` *directory*](#-s---source-directory)
-  * [`-v`, `--verbose`](#-v---verbose)
-  * [`--version`](#--version)
+  * [`--color` *value*](#color-value)
+  * [`-c`, `--config` *filename*](#c---config-filename)
+  * [`-D`, `--destination` *directory*](#d---destination-directory)
+  * [`-f`, `--follow`](#f---follow)
+  * [`-n`, `--dry-run`](#n---dry-run)
+  * [`-h`, `--help`](#h---help)
+  * [`-r`. `--remove`](#r---remove)
+  * [`-S`, `--source` *directory*](#s---source-directory)
+  * [`-v`, `--verbose`](#v---verbose)
+  * [`--version`](#version)
 * [Configuration file](#configuration-file)
   * [Configuration variables](#configuration-variables)
 * [Source state attributes](#source-state-attributes)
@@ -56,6 +56,7 @@ Manage your dotfiles securely across multiple machines.
 * [Template variables](#template-variables)
 * [Template functions](#template-functions)
   * [`bitwarden` [*args*]](#bitwarden-args)
+  * [`gopass` *gopass-name*](#gopass-gopass-name)
   * [`keepassxc` *entry*](#keepassxc-entry)
   * [`keepassxcAttribute` *entry* *attribute*](#keepassxcattribute-entry-attribute)
   * [`keyring` *service* *user*](#keyring-service-user)
@@ -730,6 +731,18 @@ invoke `bw` once.
 
     username = {{ (bitwarden "item" "example.com").login.username }}
     password = {{ (bitwarden "item" "example.com").login.password }}
+
+### `gopass` *gopass-name*
+
+`gopass` returns passwords stored in [gopass](https://www.gopass.pw/) using the
+gopass CLI (`gopass`). *gopass-name* is passed to `gopass show <gopass-name>`
+and first line of the output of `gopass` is returned with the trailing newline
+stripped. The output from `gopass` is cached so calling `gopass` multiple times
+with the same *gopass-name* will only invoke `gopass` once.
+
+#### `gopass` examples
+
+    {{ gopass "<pass-name>" }}
 
 ### `keepassxc` *entry*
 
