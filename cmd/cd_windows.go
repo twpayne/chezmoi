@@ -13,10 +13,6 @@ func (c *Config) runCDCmd(fs vfs.FS, args []string) error {
 		return err
 	}
 
-	shell, err := shell.CurrentUserShell()
-	if err != nil {
-		return err
-	}
-
+	shell, _ := shell.CurrentUserShell()
 	return c.run(fs, c.SourceDir, shell)
 }
