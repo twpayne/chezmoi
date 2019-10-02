@@ -42,7 +42,7 @@ html-coverage:
 
 .PHONY: install-tools
 install-tools:
-	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- v1.18.0
+	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- v1.19.1
 	GO111MODULE=off go get -u \
 		golang.org/x/tools/cmd/cover \
 		github.com/gobuffalo/packr/v2/packr2 \

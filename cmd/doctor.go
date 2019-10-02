@@ -156,6 +156,12 @@ func (c *Config) runDoctorCmd(fs vfs.FS, args []string) error {
 			versionRegexp: regexp.MustCompile(`^(\d+\.\d+\.\d+)`),
 		},
 		&doctorBinaryCheck{
+			name:          "gopass CLI",
+			binaryName:    c.Gopass.Command,
+			versionArgs:   []string{"version"},
+			versionRegexp: regexp.MustCompile(`(?m)=\s*v(\d+\.\d+\.\d+)`),
+		},
+		&doctorBinaryCheck{
 			name:          "KeePassXC CLI",
 			binaryName:    c.KeePassXC.Command,
 			versionArgs:   []string{"--version"},

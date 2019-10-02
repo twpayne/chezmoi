@@ -8,6 +8,7 @@
 * [Ensure that a target is removed](#ensure-that-a-target-is-removed)
 * [Keep data private](#keep-data-private)
   * [Use Bitwarden to keep your secrets](#use-bitwarden-to-keep-your-secrets)
+  * [Use gopass to keep your secrets](#use-gopass-to-keep-your-secrets)
   * [Use gpg to keep your secrets](#use-gpg-to-keep-your-secrets)
   * [Use KeePassXC to keep your secrets](#use-keepassxc-to-keep-your-secrets)
   * [Use a keyring to keep your secrets](#use-a-keyring-to-keep-your-secrets)
@@ -251,6 +252,15 @@ function in your config files, for example:
 
     username = {{ (bitwarden "item" "example.com").login.username }}
     password = {{ (bitwarden "item" "example.com").login.password }}
+
+### Use gopass to keep your secrets
+
+chezmoi includes support for [gopass](https://gopass.pw/) using the gopass CLI.
+
+The first line of the output of `gopass show <pass-name>` is available as the
+`gopass` template function, for example:
+
+    {{ gopass "<pass-name>" }}
 
 ### Use gpg to keep your secrets
 

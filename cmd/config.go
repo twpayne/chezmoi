@@ -53,6 +53,7 @@ type Config struct {
 	Lastpass          lastpassCmdConfig
 	Onepassword       onepasswordCmdConfig
 	Vault             vaultCmdConfig
+	Gopass            gopassCmdConfig
 	Pass              passCmdConfig
 	Data              map[string]interface{}
 	colored           bool

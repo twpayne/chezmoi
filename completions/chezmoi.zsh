@@ -19,7 +19,7 @@ case $state in
   level2)
     case $words[2] in
       secret)
-        _arguments '2: :(bitwarden generic keepassxc keyring lastpass onepassword pass vault)'
+        _arguments '2: :(bitwarden generic gopass keepassxc keyring lastpass onepassword pass vault)'
       ;;
       *)
         _arguments '*: :_files'

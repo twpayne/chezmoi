@@ -1,8 +1,10 @@
 linters:
   enable-all: true
   disable:
+    - dupl
     - funlen
     - gocyclo
+    - godox
     - lll
     - maligned
 
