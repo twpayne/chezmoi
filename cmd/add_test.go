@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -270,7 +271,7 @@ func TestAddCommand(t *testing.T) {
 			tests: []vfst.Test{
 				vfst.TestPath("/home/user/.chezmoi/symlink_foo",
 					vfst.TestModeIsRegular,
-					vfst.TestContentsString(".dotfiles/foo"),
+					vfst.TestContentsString(filepath.FromSlash(".dotfiles/foo")),
 				),
 			},
 		},

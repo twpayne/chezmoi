@@ -116,11 +116,11 @@ func TestInitRepo(t *testing.T) {
 		),
 		vfst.TestPath("/home/user/.local/share/chezmoi/dot_bashrc",
 			vfst.TestModeIsRegular,
-			vfst.TestContentsString("# contents of .bashrc\n"),
+			vfst.TestContentsStringLines("# contents of .bashrc\n"),
 		),
 		vfst.TestPath("/home/user/.config/chezmoi/chezmoi.toml",
 			vfst.TestModeIsRegular,
-			vfst.TestContentsString("# contents of chezmoi.toml\n"),
+			vfst.TestContentsStringLines("# contents of chezmoi.toml\n"),
 		),
 	)
 }
