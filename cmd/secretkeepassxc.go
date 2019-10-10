@@ -68,11 +68,11 @@ func (c *Config) keePassXCFunc(entry string) map[string]string {
 	}
 	output, err := c.runKeePassXCCLICommand(name, args)
 	if err != nil {
-		panic(fmt.Errorf("keepassxc: %s %s: %s", name, strings.Join(args, " "), err))
+		panic(fmt.Errorf("keepassxc: %s %s: %w", name, strings.Join(args, " "), err))
 	}
 	data, err := parseKeyPassXCOutput(output)
 	if err != nil {
-		panic(fmt.Errorf("keepassxc: %s %s: %s", name, strings.Join(args, " "), err))
+		panic(fmt.Errorf("keepassxc: %s %s: %w", name, strings.Join(args, " "), err))
 	}
 	keePassXCCache[entry] = data
 	return data
@@ -98,7 +98,7 @@ func (c *Config) keePassXCAttributeFunc(entry, attribute string) string {
 	}
 	output, err := c.runKeePassXCCLICommand(name, args)
 	if err != nil {
-		panic(fmt.Errorf("keepassxc: %s %s: %s", name, strings.Join(args, " "), err))
+		panic(fmt.Errorf("keepassxc: %s %s: %w", name, strings.Join(args, " "), err))
 	}
 	outputStr := strings.TrimSpace(string(output))
 	keePassXCAttributeCache[key] = outputStr

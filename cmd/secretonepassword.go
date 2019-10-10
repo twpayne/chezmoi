@@ -49,11 +49,11 @@ func (c *Config) onepasswordFunc(item string) interface{} {
 	cmd.Stderr = os.Stderr
 	output, err := cmd.Output()
 	if err != nil {
-		panic(fmt.Errorf("onepassword: %s %s: %v\n%s", name, strings.Join(args, " "), err, output))
+		panic(fmt.Errorf("onepassword: %s %s: %w\n%s", name, strings.Join(args, " "), err, output))
 	}
 	var data interface{}
 	if err := json.Unmarshal(output, &data); err != nil {
-		panic(fmt.Errorf("onepassword: %s %s: %v\n%s", name, strings.Join(args, " "), err, output))
+		panic(fmt.Errorf("onepassword: %s %s: %w\n%s", name, strings.Join(args, " "), err, output))
 	}
 	onepasswordCache[item] = data
 	return data

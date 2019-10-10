@@ -88,7 +88,7 @@ func (c *Config) runMergeCommand(fs vfs.FS, arg string, entry chezmoi.Entry, tem
 	}
 
 	if err := c.run(fs, "", c.Merge.Command, args...); err != nil {
-		return fmt.Errorf("%s: %v", arg, err)
+		return fmt.Errorf("%s: %w", arg, err)
 	}
 
 	return nil

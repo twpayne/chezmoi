@@ -50,7 +50,7 @@ func (*Config) keyringFunc(service, user string) string {
 	}
 	password, err := keyring.Get(service, user)
 	if err != nil {
-		panic(fmt.Errorf("keyring %q %q: %v", service, user, err))
+		panic(fmt.Errorf("keyring %q %q: %w", service, user, err))
 	}
 	keyringCache[key] = password
 	return password
