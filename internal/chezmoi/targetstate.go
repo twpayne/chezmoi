@@ -560,11 +560,11 @@ func (ts *TargetState) addPatterns(fs vfs.FS, ps *PatternSet, path, relPath stri
 		}
 		pattern := filepath.Join(dir, text)
 		if err := ps.Add(pattern, include); err != nil {
-			return fmt.Errorf("%s: %v", path, err)
+			return fmt.Errorf("%s: %w", path, err)
 		}
 	}
 	if err := s.Err(); err != nil {
-		return fmt.Errorf("%s: %v", path, err)
+		return fmt.Errorf("%s: %w", path, err)
 	}
 	return nil
 }

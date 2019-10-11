@@ -82,7 +82,7 @@ func (c *Config) lastpassFunc(id string) interface{} {
 	}
 	var data []map[string]interface{}
 	if err := json.Unmarshal(output, &data); err != nil {
-		panic(fmt.Errorf("lastpass: parse error: %v\n%q", err, output))
+		panic(fmt.Errorf("lastpass: parse error: %w\n%q", err, output))
 	}
 	for _, d := range data {
 		if note, ok := d["note"].(string); ok {
@@ -129,7 +129,7 @@ func lastpassParseNote(note string) map[string]string {
 		}
 	}
 	if err := s.Err(); err != nil {
-		panic(fmt.Errorf("lastpassParseNote: %v", err))
+		panic(fmt.Errorf("lastpassParseNote: %w", err))
 	}
 	return result
 }

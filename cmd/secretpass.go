@@ -45,7 +45,7 @@ func (c *Config) passFunc(id string) string {
 	}
 	output, err := exec.Command(name, args...).Output()
 	if err != nil {
-		panic(fmt.Errorf("pass: %s %s: %v", name, strings.Join(args, " "), err))
+		panic(fmt.Errorf("pass: %s %s: %w", name, strings.Join(args, " "), err))
 	}
 	var password string
 	if index := bytes.IndexByte(output, '\n'); index != -1 {
