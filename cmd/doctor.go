@@ -248,6 +248,7 @@ func (c *doctorBinaryCheck) Check() (bool, error) {
 	}
 
 	if c.versionRegexp != nil {
+		//nolint:gosec
 		output, err := exec.Command(c.path, c.versionArgs...).CombinedOutput()
 		if err != nil {
 			return false, err
