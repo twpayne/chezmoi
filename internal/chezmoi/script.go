@@ -141,6 +141,7 @@ func (s *Script) Apply(fs vfs.FS, mutator Mutator, follow bool, applyOptions *Ap
 	}
 
 	// Run the temporary script file.
+	//nolint:gosec
 	c := exec.Command(f.Name())
 	c.Dir = filepath.Join(applyOptions.DestDir, filepath.Dir(s.targetName))
 	c.Stdout = os.Stdout

@@ -3,10 +3,12 @@ linters:
   disable:
     - dupl
     - funlen
+    - gocognit
     - gocyclo
     - godox
     - lll
     - maligned
+    - wsl
 
 issues:
   exclude-rules:
