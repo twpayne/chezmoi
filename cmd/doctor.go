@@ -10,6 +10,7 @@ import (
 
 	"github.com/coreos/go-semver/semver"
 	"github.com/spf13/cobra"
+	shell "github.com/twpayne/go-shell"
 	vfs "github.com/twpayne/go-vfs"
 )
 
@@ -89,6 +90,8 @@ func init() {
 }
 
 func (c *Config) runDoctorCmd(fs vfs.FS, args []string) error {
+	shell, _ := shell.CurrentUserShell()
+
 	var vcsCommandCheck doctorCheck
 	if vcs, err := c.getVCS(); err == nil {
 		vcsCommandCheck = &doctorBinaryCheck{
@@ -126,6 +129,11 @@ func (c *Config) runDoctorCmd(fs vfs.FS, args []string) error {
 		&doctorFileCheck{
 			name: "configuration file",
 			path: c.configFile,
+		},
+		&doctorBinaryCheck{
+			name:        "shell",
+			binaryName:  shell,
+			mustSucceed: true,
 		},
 		&doctorFileCheck{
 			name:    "KeePassXC database",
