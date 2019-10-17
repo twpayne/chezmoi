@@ -92,22 +92,6 @@ func init() {
 func (c *Config) runDoctorCmd(fs vfs.FS, args []string) error {
 	shell, _ := shell.CurrentUserShell()
 
-	var vcsCommandCheck doctorCheck
-	if vcs, err := c.getVCS(); err == nil {
-		vcsCommandCheck = &doctorBinaryCheck{
-			name:          "source VCS command",
-			binaryName:    c.SourceVCS.Command,
-			versionArgs:   vcs.VersionArgs(),
-			versionRegexp: vcs.VersionRegexp(),
-		}
-	} else {
-		c.warn(fmt.Sprintf("%s: unsupported VCS command", c.SourceVCS.Command))
-		vcsCommandCheck = &doctorBinaryCheck{
-			name:       "source VCS command",
-			binaryName: c.SourceVCS.Command,
-		}
-	}
-
 	allOK := true
 	for _, dc := range []doctorCheck{
 		&doctorVersionCheck{},
@@ -149,7 +133,12 @@ func (c *Config) runDoctorCmd(fs vfs.FS, args []string) error {
 			name:       "merge command",
 			binaryName: c.Merge.Command,
 		},
-		vcsCommandCheck,
+		&doctorBinaryCheck{
+			name:          "git",
+			binaryName:    c.SourceVCS.Command,
+			versionArgs:   []string{"version"},
+			versionRegexp: regexp.MustCompile(`^git version (\d+\.\d+\.\d+)`),
+		},
 		gpgBinaryCheck,
 		&doctorBinaryCheck{
 			name:          "1Password CLI",

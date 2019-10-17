@@ -23,7 +23,6 @@
   * [Install packages with scripts](#install-packages-with-scripts)
 * [Import archives](#import-archives)
 * [Export archives](#export-archives)
-* [Use a non-git version control system](#use-a-non-git-version-control-system)
 * [Use a merge tool other than vimdiff](#use-a-merge-tool-other-than-vimdiff)
 * [Migrate from a dotfile manager that uses symlinks](#migrate-from-a-dotfile-manager-that-uses-symlinks)
 * [Automatically commit and push changes to your repo](#automatically-commit-and-push-changes-to-your-repo)
@@ -556,20 +555,6 @@ target state. A particularly useful command is:
     chezmoi archive | tar tvf -
 
 which lists all the targets in the target state.
-
-## Use a non-git version control system
-
-By default, chezmoi uses git, but you can use any version control system of your
-choice. In your config file, specify the command to use. For example, to use
-Mercurial specify:
-
-    [sourceVCS]
-      command = "hg"
-
-The source VCS command is used in the chezmoi commands `init`, `source`, and
-`update`, and support for VCSes other than git is limited but easy to add. If
-you'd like to see your VCS better supported, please [open an issue on
-GitHub](https://github.com/twpayne/chezmoi/issues/new).
 
 ## Use a merge tool other than vimdiff
 

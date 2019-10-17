@@ -53,7 +53,7 @@ func TestParseStatusPorcelainV2(t *testing.T) {
 		},
 		{
 			name:      "update",
-			outputStr: "1 .M N... 100644 100644 100644 353dbbb3c29a80fb44d4e26dac111739d25294db 353dbbb3c29a80fb44d4e26dac111739d25294db cmd/gitvcs.go\n",
+			outputStr: "1 .M N... 100644 100644 100644 353dbbb3c29a80fb44d4e26dac111739d25294db 353dbbb3c29a80fb44d4e26dac111739d25294db internal/git/status.go\n",
 			expectedStatus: &Status{
 				Ordinary: []OrdinaryStatus{
 					{
@@ -65,7 +65,7 @@ func TestParseStatusPorcelainV2(t *testing.T) {
 						MW:   0100644,
 						HH:   "353dbbb3c29a80fb44d4e26dac111739d25294db",
 						HI:   "353dbbb3c29a80fb44d4e26dac111739d25294db",
-						Path: "cmd/gitvcs.go",
+						Path: "internal/git/status.go",
 					},
 				},
 			},

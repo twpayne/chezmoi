@@ -37,11 +37,6 @@ func init() {
 }
 
 func (c *Config) runInitCmd(fs vfs.FS, args []string) error {
-	vcs, err := c.getVCS()
-	if err != nil {
-		return err
-	}
-
 	mutator := c.getDefaultMutator(fs)
 
 	if err := c.ensureSourceDirectory(fs, mutator); err != nil {
@@ -66,29 +61,22 @@ func (c *Config) runInitCmd(fs vfs.FS, args []string) error {
 				return fmt.Errorf("sourceVCS.init: cannot parse value")
 			}
 		} else {
-			initArgs = vcs.InitArgs()
+			initArgs = []string{"init"}
 		}
 		if err := c.run(fs, c.SourceDir, c.SourceVCS.Command, initArgs...); err != nil {
 			return err
 		}
 	case 1: // clone
-		cloneArgs := vcs.CloneArgs(args[0], rawSourceDir)
-		if cloneArgs == nil {
-			return fmt.Errorf("%s: cloning not supported", c.SourceVCS.Command)
-		}
-		if err := c.run(fs, "", c.SourceVCS.Command, cloneArgs...); err != nil {
+		if err := c.run(fs, "", c.SourceVCS.Command, "clone", args[0], rawSourceDir); err != nil {
 			return err
 		}
-		// FIXME this should be part of VCS
-		if filepath.Base(c.SourceVCS.Command) == "git" {
-			if _, err := fs.Stat(filepath.Join(c.SourceDir, ".gitmodules")); err == nil {
-				for _, args := range [][]string{
-					{"submodule", "init"},
-					{"submodule", "update"},
-				} {
-					if err := c.run(fs, c.SourceDir, c.SourceVCS.Command, args...); err != nil {
-						return err
-					}
+		if _, err := fs.Stat(filepath.Join(c.SourceDir, ".gitmodules")); err == nil {
+			for _, args := range [][]string{
+				{"submodule", "init"},
+				{"submodule", "update"},
+			} {
+				if err := c.run(fs, c.SourceDir, c.SourceVCS.Command, args...); err != nil {
+					return err
 				}
 			}
 		}

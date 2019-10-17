@@ -30,10 +30,6 @@ func init() {
 }
 
 func (c *Config) runUpdateCmd(fs vfs.FS, args []string) error {
-	vcs, err := c.getVCS()
-	if err != nil {
-		return err
-	}
 	var pullArgs []string
 	if c.SourceVCS.Pull != nil {
 		switch v := c.SourceVCS.Pull.(type) {
@@ -45,10 +41,7 @@ func (c *Config) runUpdateCmd(fs vfs.FS, args []string) error {
 			return fmt.Errorf("sourceVCS.pull: cannot parse value")
 		}
 	} else {
-		pullArgs = vcs.PullArgs()
-	}
-	if pullArgs == nil {
-		return fmt.Errorf("%s: pull not supported", c.SourceVCS.Command)
+		pullArgs = []string{"pull", "--rebase"}
 	}
 
 	if err := c.run(fs, c.SourceDir, c.SourceVCS.Command, pullArgs...); err != nil {

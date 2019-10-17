@@ -21,6 +21,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/twpayne/chezmoi/internal/chezmoi"
+	"github.com/twpayne/chezmoi/internal/git"
 	vfs "github.com/twpayne/go-vfs"
 	xdg "github.com/twpayne/go-xdg/v3"
 	bolt "go.etcd.io/bbolt"
@@ -170,19 +171,15 @@ func (c *Config) applyArgs(fs vfs.FS, args []string, mutator chezmoi.Mutator, pe
 	return nil
 }
 
-func (c *Config) autoCommit(fs vfs.FS, vcs VCS) error {
-	addArgs := vcs.AddArgs(".")
-	if addArgs == nil {
-		return fmt.Errorf("%s: autocommit not supported", c.SourceVCS.Command)
-	}
-	if err := c.run(fs, c.SourceDir, c.SourceVCS.Command, addArgs...); err != nil {
+func (c *Config) autoCommit(fs vfs.FS) error {
+	if err := c.run(fs, c.SourceDir, c.SourceVCS.Command, "add", "."); err != nil {
 		return err
 	}
-	output, err := c.output(fs, c.SourceDir, c.SourceVCS.Command, vcs.StatusArgs()...)
+	output, err := c.output(fs, c.SourceDir, c.SourceVCS.Command, "status", "--porcelain=v2")
 	if err != nil {
 		return err
 	}
-	status, err := vcs.ParseStatusOutput(output)
+	status, err := git.ParseStatusPorcelainV2(output)
 	if err != nil {
 		return err
 	}
@@ -198,37 +195,28 @@ func (c *Config) autoCommit(fs vfs.FS, vcs VCS) error {
 	if err := commitMessageTmpl.Execute(b, status); err != nil {
 		return err
 	}
-	commitArgs := vcs.CommitArgs(b.String())
-	return c.run(fs, c.SourceDir, c.SourceVCS.Command, commitArgs...)
+	return c.run(fs, c.SourceDir, c.SourceVCS.Command, "commit", "--message", b.String())
 }
 
 func (c *Config) autoCommitAndAutoPush(fs vfs.FS, args []string) error {
-	vcs, err := c.getVCS()
-	if err != nil {
-		return err
-	}
 	if c.DryRun {
 		return nil
 	}
 	if c.SourceVCS.AutoCommit || c.SourceVCS.AutoPush {
-		if err := c.autoCommit(fs, vcs); err != nil {
+		if err := c.autoCommit(fs); err != nil {
 			return err
 		}
 	}
 	if c.SourceVCS.AutoPush {
-		if err := c.autoPush(fs, vcs); err != nil {
+		if err := c.autoPush(fs); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (c *Config) autoPush(fs vfs.FS, vcs VCS) error {
-	pushArgs := vcs.PushArgs()
-	if pushArgs == nil {
-		return fmt.Errorf("%s: autopush not supported", c.SourceVCS.Command)
-	}
-	return c.run(fs, c.SourceDir, c.SourceVCS.Command, pushArgs...)
+func (c *Config) autoPush(fs vfs.FS) error {
+	return c.run(fs, c.SourceDir, c.SourceVCS.Command, "push")
 }
 
 // ensureNoError ensures that no error was encountered when loading c.
@@ -369,14 +357,6 @@ func (c *Config) getTargetState(fs vfs.FS, populateOptions *chezmoi.PopulateOpti
 		return nil, fmt.Errorf("chezmoi version %s too old, source state requires at least %s", Version, ts.MinVersion)
 	}
 	return ts, nil
-}
-
-func (c *Config) getVCS() (VCS, error) {
-	vcs, ok := vcses[filepath.Base(c.SourceVCS.Command)]
-	if !ok {
-		return nil, fmt.Errorf("%s: unsupported source VCS command", c.SourceVCS.Command)
-	}
-	return vcs, nil
 }
 
 func (c *Config) output(fs vfs.FS, dir, name string, argv ...string) ([]byte, error) {

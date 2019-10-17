@@ -40,8 +40,8 @@ secrets (e.g. passwords, access tokens, and private keys) securely and
 seamlessly using either gpg encryption or a password manager of your choice.
 
 In all cases you only need to maintain a single source of truth: a single branch
-in a version control system (e.g. git) for everything public and a single
-password manager for all your secrets, with seamless integration between them.
+in git for everything public and a single password manager for all your secrets,
+with seamless integration between them.
 
 If you do not personalize your configuration or only ever use a single operating
 system with a single account and none of your dotfiles contain secrets then you

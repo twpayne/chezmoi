@@ -9,6 +9,7 @@ import (
 	"github.com/Masterminds/sprig"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/twpayne/chezmoi/internal/git"
 	xdg "github.com/twpayne/go-xdg/v3"
 )
 
@@ -50,7 +51,7 @@ func TestAutoCommitCommitMessage(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			status, err := gitVCS{}.ParseStatusOutput([]byte(tc.statusStr))
+			status, err := git.ParseStatusPorcelainV2([]byte(tc.statusStr))
 			require.NoError(t, err)
 			b := &bytes.Buffer{}
 			err = commitMessageTmpl.Execute(b, status)
