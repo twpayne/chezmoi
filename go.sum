@@ -194,8 +194,8 @@ github.com/twpayne/go-shell v0.1.0 h1:1rb6SwXRU7hWBBZVJgH/Mv+81hkaeYgVOR7JIJcvm/
 github.com/twpayne/go-shell v0.1.0/go.mod h1:H/gzux0DOH5jsjQSHXs6rs2Onxy+V4j6ycZTOulC0l8=
 github.com/twpayne/go-vfs v1.0.1/go.mod h1:OIXA6zWkcn7Jk46XT7ceYqBMeIkfzJ8WOBhGJM0W4y8=
 github.com/twpayne/go-vfs v1.0.5/go.mod h1:OIXA6zWkcn7Jk46XT7ceYqBMeIkfzJ8WOBhGJM0W4y8=
-github.com/twpayne/go-vfs v1.3.5 h1:VMwA5IJF0zGGAMqofyFb7+nv324ilFHR9JPZC5m9c74=
-github.com/twpayne/go-vfs v1.3.5/go.mod h1:BH2oQurpkb3roQDR7hZH+9DITZidl6JHOEfHlCModXY=
+github.com/twpayne/go-vfs v1.3.6 h1:dKR5suwT6WnNweNNQjts3Wih/sBTHLt4XbbEbapnWEE=
+github.com/twpayne/go-vfs v1.3.6/go.mod h1:BH2oQurpkb3roQDR7hZH+9DITZidl6JHOEfHlCModXY=
 github.com/twpayne/go-vfsafero v1.0.0 h1:ZlH32HF4OoVX/aRqc5bZa+2+M+/ezmJ4XYpT0ShtZNc=
 github.com/twpayne/go-vfsafero v1.0.0/go.mod h1:rs2H15b2z0euJzwyoBS63eUHZgBhNXVQfIFfRp8DKEk=
 github.com/twpayne/go-xdg/v3 v3.1.0 h1:AxX5ZLJIzqYHJh+4uGxWT97ySh1ND1bJLjqMxdYF+xs=

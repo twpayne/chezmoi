@@ -26,6 +26,7 @@
 * [Use a non-git version control system](#use-a-non-git-version-control-system)
 * [Use a merge tool other than vimdiff](#use-a-merge-tool-other-than-vimdiff)
 * [Migrate from a dotfile manager that uses symlinks](#migrate-from-a-dotfile-manager-that-uses-symlinks)
+* [Automatically commit and push changes to your repo](#automatically-commit-and-push-changes-to-your-repo)
 
 ## Use a hosted repo to manage your dotfiles across multiple machines
 
@@ -202,7 +203,7 @@ of patterns of files to remove. When you run
 
 chezmoi will remove anything in the target directory that matches the pattern.
 As this command is potentially dangerous, you should run chezmoi in verbose,
-dry-run mode beforehand to see what would be deleted:
+dry-run mode beforehand to see what would be removed:
 
     chezmoi apply --remove --dry-run --verbose
 
@@ -593,3 +594,27 @@ This will tell `chezmoi add` that the target state of `~/.bashrc` is the target
 of the `~/.bashrc` symlink, rather than the symlink itself. When you run
 `chezmoi apply`, chezmoi will replace the `~/.bashrc` symlink with the file
 contents.
+
+# Explore experimental features
+
+## Automatically commit and push changes to your repo
+
+chezmoi includes an experimental feature to automatically commit and push
+changes to your source directory to your repo. This feature is disabled by
+default. To enable it, add the following to your config file:
+
+    [sourceVCS]
+        autoCommit = true
+        autoPush = true
+
+Whenever a change is made to your source directory, chezmoi will commit the
+changes with an automatically-generated commit message (if `autoCommit` is true)
+and push them to your repo (if `autoPush` is true). `autoPush` implies
+`autoCommit`, i.e. if `autoPush` is true then chezmoi will auto-commit your
+changes. If you only set `autoCommit` to true then changes will be commited but
+not pushed.
+
+`autoCommit` and `autoPush` are experimental features, likely to contain bugs
+(especially in corner cases) and will change in the future. If you encounter a
+problem or strange behavior, please [open an
+issue](https://github.com/twpayne/chezmoi/issues/new).

@@ -156,32 +156,34 @@ chezmoi, and the first config file found is used.
 
 The following configuration variables are available:
 
-| Variable                | Type     | Default value             | Description                         |
-| ----------------------- | -------- | ------------------------- | ----------------------------------- |
-| `bitwarden.command`     | string   | `bw`                      | Bitwarden CLI command               |
-| `color`                 | string   | `auto`                    | Colorize diffs                      |
-| `data`                  | any      | *none*                    | Template data                       |
-| `destDir`               | string   | `~`                       | Destination directory               |
-| `dryRun`                | bool     | `false`                   | Dry run mode                        |
-| `follow`                | bool     | `false`                   | Follow symlinks                     |
-| `genericSecret.command` | string   | *none*                    | Generic secret command              |
-| `gopass.command`        | string   | `gopass`                  | gopass CLI command                  |
-| `gpg.recipient`         | string   | *none*                    | GPG recipient                       |
-| `gpg.symmetric`         | bool     | `false`                   | Use symmetric GPG encryption        |
-| `keepassxc.args`        | []string | *none*                    | Extra args to KeePassXC CLI command |
-| `keepassxc.command`     | string   | `keepassxc-cli`           | KeePassXC CLI command               |
-| `keepassxc.database`    | string   | *none*                    | KeePassXC database                  |
-| `lastpass.command`      | string   | `lpass`                   | Lastpass CLI command                |
-| `merge.args`            | []string | *none*                    | Extra args to 3-way merge command   |
-| `merge.command`         | string   | `vimdiff`                 | 3-way merge command                 |
-| `onepassword.command`   | string   | `op`                      | 1Password CLI command               |
-| `pass.command`          | string   | `pass`                    | Pass CLI command                    |
-| `remove`                | bool     | `false`                   | Remove targets                      |
-| `sourceDir`             | string   | `~/.config/share/chezmoi` | Source directory                    |
-| `sourceVCS.command`     | string   | `git`                     | Source version control system       |
-| `umask`                 | int      | *from system*             | Umask                               |
-| `vault.command`         | string   | `vault`                   | Vault CLI command                   |
-| `verbose`               | bool     | `false`                   | Verbose mode                        |
+| Variable                | Type     | Default value             | Description                                         |
+| ----------------------- | -------- | ------------------------- | --------------------------------------------------- |
+| `bitwarden.command`     | string   | `bw`                      | Bitwarden CLI command                               |
+| `color`                 | string   | `auto`                    | Colorize diffs                                      |
+| `data`                  | any      | *none*                    | Template data                                       |
+| `destDir`               | string   | `~`                       | Destination directory                               |
+| `dryRun`                | bool     | `false`                   | Dry run mode                                        |
+| `follow`                | bool     | `false`                   | Follow symlinks                                     |
+| `genericSecret.command` | string   | *none*                    | Generic secret command                              |
+| `gopass.command`        | string   | `gopass`                  | gopass CLI command                                  |
+| `gpg.recipient`         | string   | *none*                    | GPG recipient                                       |
+| `gpg.symmetric`         | bool     | `false`                   | Use symmetric GPG encryption                        |
+| `keepassxc.args`        | []string | *none*                    | Extra args to KeePassXC CLI command                 |
+| `keepassxc.command`     | string   | `keepassxc-cli`           | KeePassXC CLI command                               |
+| `keepassxc.database`    | string   | *none*                    | KeePassXC database                                  |
+| `lastpass.command`      | string   | `lpass`                   | Lastpass CLI command                                |
+| `merge.args`            | []string | *none*                    | Extra args to 3-way merge command                   |
+| `merge.command`         | string   | `vimdiff`                 | 3-way merge command                                 |
+| `onepassword.command`   | string   | `op`                      | 1Password CLI command                               |
+| `pass.command`          | string   | `pass`                    | Pass CLI command                                    |
+| `remove`                | bool     | `false`                   | Remove targets                                      |
+| `sourceDir`             | string   | `~/.config/share/chezmoi` | Source directory                                    |
+| `sourceVCS.autoCommit`  | bool     | `false`                   | Commit changes to the source state after any change |
+| `sourceVCS.autoPush`    | bool     | `false`                   | Push changes to the source state after any change   |
+| `sourceVCS.command`     | string   | `git`                     | Source version control system                       |
+| `umask`                 | int      | *from system*             | Umask                                               |
+| `vault.command`         | string   | `vault`                   | Vault CLI command                                   |
+| `verbose`               | bool     | `false`                   | Verbose mode                                        |
 
 In addition, a number of secret manager integrations add configuration
 variables. These are documented in the secret manager section.

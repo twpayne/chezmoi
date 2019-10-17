@@ -1,0 +1,24 @@
+{{- /* FIXME replace 46 with '.' when https://github.com/golang/go/issues/34483 is fixed */ -}}
+{{- /* FIXME generate commit summary */ -}}
+
+{{- range .Ordinary -}}
+{{ if and (eq .X 'A') (eq .Y 46) -}}Add {{ .Path }}
+{{ else if and (eq .X 'D') (eq .Y 46) -}}Remove {{ .Path }}
+{{ else if and (eq .X 'M') (eq .Y 46) -}}Update {{ .Path }}
+{{ else }}{{with (printf "unsupported XY: %q" (printf "%c%c" .X .Y)) }}{{ fail . }}{{ end }}
+{{ end }}
+{{- end -}}
+
+{{- range .RenamedOrCopied -}}
+{{ if and (eq .X 'R') (eq .Y 46) }}Rename {{ .OrigPath }} to {{ .Path }}
+{{ else }}{{with (printf "unsupported XY: %q" (printf "%c%c" .X .Y)) }}{{ fail . }}{{ end }}
+{{ end }}
+{{- end -}}
+
+{{- range .Unmerged -}}
+{{ fail "unmerged files" }}
+{{- end -}}
+
+{{- range .Untracked -}}
+{{ fail "untracked files" }}
+{{- end -}}
