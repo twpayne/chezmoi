@@ -5,6 +5,7 @@
 * [Contributing changes](#contributing-changes)
 * [Managing releases](#managing-releases)
 * [Packaging](#packaging)
+* [Profiling](#profiling)
 
 ## Getting started
 
@@ -120,3 +121,25 @@ If you plan to package chezmoi for your distibution, then note:
 * chezmoi includes shell completions in the `completions` directory. Please
   include these in the package and install them in the shell-appropriate
   directory, if possible.
+
+## Profiling
+
+chezmoi can be built with [Go's CPU
+profiling](https://blog.golang.org/profiling-go-programs) enabled to debug
+performance problems. Profiling is controlled with the `profile` build flag.
+Here's how to use it.
+
+1. Build chezmoi with the `profile` build flag:
+
+        go build -tags=profile github.com/twpayne/chezmoi
+
+2. Run the built binary with the problematic command, for example:
+
+        ./chezmoi apply -n -v
+
+3. chezmoi will write a file called `chezmoi.prof` with a Go CPU profile.
+   Analyze this with, for example:
+
+        go tool pprof chezmoi chezmoi.prof
+
+See the [Profiling Go Programs](https://blog.golang.org/profiling-go-programs) blog post for more information.

@@ -1,3 +1,5 @@
+//+build !profile
+
 package main
 
 import "github.com/twpayne/chezmoi/cmd"
