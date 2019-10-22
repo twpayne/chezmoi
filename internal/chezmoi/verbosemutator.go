@@ -14,17 +14,17 @@ import (
 	"github.com/pkg/diff"
 )
 
-// A LoggingMutator wraps an Mutator and logs all of the actions it executes
-// and any errors.
-type LoggingMutator struct {
+// A VerboseMutator wraps an Mutator and logs all of the actions it executes and
+// any errors as pseudo shell commands.
+type VerboseMutator struct {
 	m       Mutator
 	w       io.Writer
 	colored bool
 }
 
-// NewLoggingMutator returns a new LoggingMutator.
-func NewLoggingMutator(w io.Writer, m Mutator, colored bool) *LoggingMutator {
-	return &LoggingMutator{
+// NewVerboseMutator returns a new VerboseMutator.
+func NewVerboseMutator(w io.Writer, m Mutator, colored bool) *VerboseMutator {
+	return &VerboseMutator{
 		m:       m,
 		w:       w,
 		colored: colored,
@@ -32,7 +32,7 @@ func NewLoggingMutator(w io.Writer, m Mutator, colored bool) *LoggingMutator {
 }
 
 // Chmod implements Mutator.Chmod.
-func (m *LoggingMutator) Chmod(name string, mode os.FileMode) error {
+func (m *VerboseMutator) Chmod(name string, mode os.FileMode) error {
 	action := fmt.Sprintf("chmod %o %s", mode, name)
 	err := m.m.Chmod(name, mode)
 	if err == nil {
@@ -44,7 +44,7 @@ func (m *LoggingMutator) Chmod(name string, mode os.FileMode) error {
 }
 
 // Mkdir implements Mutator.Mkdir.
-func (m *LoggingMutator) Mkdir(name string, perm os.FileMode) error {
+func (m *VerboseMutator) Mkdir(name string, perm os.FileMode) error {
 	action := fmt.Sprintf("mkdir -m %o %s", perm, name)
 	err := m.m.Mkdir(name, perm)
 	if err == nil {
@@ -56,7 +56,7 @@ func (m *LoggingMutator) Mkdir(name string, perm os.FileMode) error {
 }
 
 // RemoveAll implements Mutator.RemoveAll.
-func (m *LoggingMutator) RemoveAll(name string) error {
+func (m *VerboseMutator) RemoveAll(name string) error {
 	action := fmt.Sprintf("rm -rf %s", name)
 	err := m.m.RemoveAll(name)
 	if err == nil {
@@ -68,7 +68,7 @@ func (m *LoggingMutator) RemoveAll(name string) error {
 }
 
 // Rename implements Mutator.Rename.
-func (m *LoggingMutator) Rename(oldpath, newpath string) error {
+func (m *VerboseMutator) Rename(oldpath, newpath string) error {
 	action := fmt.Sprintf("mv %s %s", oldpath, newpath)
 	err := m.m.Rename(oldpath, newpath)
 	if err == nil {
@@ -80,12 +80,12 @@ func (m *LoggingMutator) Rename(oldpath, newpath string) error {
 }
 
 // Stat implements Mutator.Stat.
-func (m *LoggingMutator) Stat(name string) (os.FileInfo, error) {
+func (m *VerboseMutator) Stat(name string) (os.FileInfo, error) {
 	return m.m.Stat(name)
 }
 
 // WriteFile implements Mutator.WriteFile.
-func (m *LoggingMutator) WriteFile(name string, data []byte, perm os.FileMode, currData []byte) error {
+func (m *VerboseMutator) WriteFile(name string, data []byte, perm os.FileMode, currData []byte) error {
 	action := fmt.Sprintf("install -m %o /dev/null %s", perm, name)
 	err := m.m.WriteFile(name, data, perm, currData)
 	if err == nil {
@@ -121,7 +121,7 @@ func (m *LoggingMutator) WriteFile(name string, data []byte, perm os.FileMode, c
 }
 
 // WriteSymlink implements Mutator.WriteSymlink.
-func (m *LoggingMutator) WriteSymlink(oldname, newname string) error {
+func (m *VerboseMutator) WriteSymlink(oldname, newname string) error {
 	action := fmt.Sprintf("ln -sf %s %s", oldname, newname)
 	err := m.m.WriteSymlink(oldname, newname)
 	if err == nil {

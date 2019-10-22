@@ -108,7 +108,7 @@ func TestEndToEnd(t *testing.T) {
 				Stdout:            os.Stdout,
 				Umask:             022,
 			}
-			assert.NoError(t, ts.Apply(fs, NewLoggingMutator(os.Stderr, NewFSMutator(fs), false), tc.follow, applyOptions))
+			assert.NoError(t, ts.Apply(fs, NewVerboseMutator(os.Stderr, NewFSMutator(fs), false), tc.follow, applyOptions))
 			vfst.RunTests(t, fs, "", tc.tests)
 		})
 	}

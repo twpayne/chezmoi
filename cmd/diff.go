@@ -22,7 +22,7 @@ func init() {
 
 func (c *Config) runDiffCmd(fs vfs.FS, args []string) error {
 	c.DryRun = true
-	mutator := chezmoi.NewLoggingMutator(c.Stdout(), chezmoi.NullMutator{}, c.colored)
+	mutator := chezmoi.NewVerboseMutator(c.Stdout(), chezmoi.NullMutator{}, c.colored)
 
 	persistentState, err := c.getPersistentState(fs, &bolt.Options{
 		ReadOnly: true,

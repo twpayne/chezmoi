@@ -277,7 +277,7 @@ func (c *Config) getDefaultMutator(fs vfs.FS) chezmoi.Mutator {
 		mutator = chezmoi.NewFSMutator(fs)
 	}
 	if c.Verbose {
-		mutator = chezmoi.NewLoggingMutator(c.Stdout(), mutator, c.colored)
+		mutator = chezmoi.NewVerboseMutator(c.Stdout(), mutator, c.colored)
 	}
 	return mutator
 }
