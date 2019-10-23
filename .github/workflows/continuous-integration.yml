@@ -1,0 +1,71 @@
+on:
+- push
+name: continuous-integration
+jobs:
+  Ubuntu:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup Go
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.13.x
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Download Go modules
+      run: go mod download
+    - name: Build
+      run: go build ./...
+    - name: Run
+      run: go run . --version
+    - name: Test
+      run: go test -cover -covermode=atomic -coverprofile=coverage.out -race ./...
+    - name: Install tools
+      run: make install-tools
+    - name: Lint
+      run: make lint
+    - name: Check formatting
+      run: |
+        make format
+        git diff --exit-code
+    - name: Check generate
+      run: |
+        make generate
+        git diff --exit-code
+    - name: Check completions
+      run: |
+        make completions
+        git diff --exit-code
+  macOS:
+    runs-on: macos-latest
+    steps:
+    - name: Setup Go
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.13.x
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Download Go modules
+      run: go mod download
+    - name: Build
+      run: go build ./...
+    - name: Run
+      run: go run . --version
+    - name: Test
+      run: go test -race ./...
+  Windows:
+    runs-on: windows-latest
+    steps:
+    - name: Setup Go
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.13.x
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Download Go modules
+      run: go mod download
+    - name: Build
+      run: go build ./...
+    - name: Run
+      run: go run . --version
+    - name: Test
+      run: go test -race ./...

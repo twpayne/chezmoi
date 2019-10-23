@@ -25,16 +25,16 @@ completions/chezmoi.zsh:
 coverage.out:
 	go test -cover -covermode=count -coverprofile=cmd-coverage.out -coverpkg=github.com/twpayne/chezmoi/cmd,github.com/twpayne/chezmoi/internal/chezmoi ./cmd
 	go test -cover -covermode=count -coverprofile=internal-chezmoi-coverage.out ./internal/chezmoi
-	gocovmerge cmd-coverage.out internal-chezmoi-coverage.out > $@ || ( rm -f $@ ; false )
+	$$(go env GOPATH)/bin/gocovmerge cmd-coverage.out internal-chezmoi-coverage.out > $@ || ( rm -f $@ ; false )
 
 .PHONY: format
 format:
-	find . -name \*.go | xargs gofumports -w
+	find . -name \*.go | xargs $$(go env GOPATH)/bin/gofumports -w
 
 .PHONY: generate
 generate:
 	go generate ./...
-	packr2
+	$$(go env GOPATH)/bin/packr2
 
 .PHONY: html-coverage
 html-coverage:
