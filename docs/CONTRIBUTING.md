@@ -63,7 +63,7 @@ that:
   [`golangci-lint`](https://github.com/golangci/golangci-lint). You can ensure
   this by running `make lint`.
 
-* The commit messages match chezmoi's convention, specifically that they being
+* The commit messages match chezmoi's convention, specifically that they begin
   with a capitalized verb in the imperative and give a short description of what
   the commit does. Detailed information or justification can be optionally
   included in the body of the commit message.
