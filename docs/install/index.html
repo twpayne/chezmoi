@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"><meta property="og:title" content="Install" />
+<meta property="og:description" content="Install Guide  One-line binary install One-line package install Pre-built Linux packages Pre-built binaries From source Upgrading  One-line binary install Install the correct binary for your operating system and architecture in ./bin with a single command.
+curl -sfL https://git.io/chezmoi | sh  One-line package install Install chezmoi with a single command.
+   OS Distribution Method Command     Linux - snap snap install chezmoi --classic   Linux Arch pacman pacman -S chezmoi   Linux - Linuxbrew brew install twpayne/taps/chezmoi   macOS - Homebrew brew install twpayne/taps/chezmoi   Windows - Scoop scoop bucket add twpayne https://github." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://chezmoi.io/docs/install/" />
+
+<title>Install | chezmoi.io</title>
+<link rel="icon" href="/favicon.png" type="image/x-icon">
+
+
+<link rel="stylesheet" href="/book.min.dcb5f88ae9cbea1ffe9da7a510c09e799304f04d2a33302b20bf31dedb3b7778.css" integrity="sha256-3LX4iunL6h/&#43;naelEMCeeZME8E0qMzArIL8x3ts7d3g=">
+
+
+<script defer src="/search.min.07541be0eae40e5c7f0103f40e15657dc7738bcca3475efd7e6ecc3584555e1a.js" integrity="sha256-B1Qb4OrkDlx/AQP0DhVlfcdzi8yjR179fm7MNYRVXho="></script>
+
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+  
+</head>
+
+<body>
+  <input type="checkbox" class="hidden" id="menu-control" />
+  <main class="flex container">
+
+    <aside class="book-menu fixed">
+      <nav>
+<h2 class="book-brand">
+  <a href="http://chezmoi.io/"><img src="/logo-144px.svg" alt="Logo" /><span>chezmoi.io</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" placeholder="Search" id="book-search-input" maxlength="64" />
+  <div class="book-search-spinner spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+    <ul>
+<li><a href="/docs/install/"class=active>Install</a></li>
+<li><a href="/docs/quick-start/">Quick Start</a></li>
+<li><a href="/docs/how-to/">How-To</a></li>
+<li><a href="/docs/faq/">FAQ</a></li>
+<li><a href="/docs/changes/">Changes</a></li>
+<li><a href="/docs/reference/">Reference</a></li>
+<li><a href="/docs/contributing/">Contributing</a></li>
+<li><a href="https://github.com/twpayne/chezmoi">GitHub</a></li>
+</ul>
+
+
+
+
+
+</nav>
+
+
+<script>
+(function() {
+  var menu = document.querySelector("aside.book-menu nav");
+  addEventListener("beforeunload", function(event) {
+    localStorage.setItem("menu.scrollTop", menu.scrollTop);
+  });
+  menu.scrollTop = localStorage.getItem("menu.scrollTop");
+})();
+</script>
+
+    </aside>
+
+    <div class="book-page">
+      <header class="flex align-center justify-between book-header">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" alt="Menu" />
+  </label>
+  <strong>Install</strong>
+</header>
+
+      
+<article class="markdown">
+
+<h1 id="install-guide">Install Guide</h1>
+
+<ul>
+<li><a href="#one-line-binary-install">One-line binary install</a></li>
+<li><a href="#one-line-package-install">One-line package install</a></li>
+<li><a href="#pre-built-linux-packages">Pre-built Linux packages</a></li>
+<li><a href="#pre-built-binaries">Pre-built binaries</a></li>
+<li><a href="#from-source">From source</a></li>
+<li><a href="#upgrading">Upgrading</a></li>
+</ul>
+
+<h2 id="one-line-binary-install">One-line binary install</h2>
+
+<p>Install the correct binary for your operating system and architecture in <code>./bin</code>
+with a single command.</p>
+
+<pre><code>curl -sfL https://git.io/chezmoi | sh
+</code></pre>
+
+<h2 id="one-line-package-install">One-line package install</h2>
+
+<p>Install chezmoi with a single command.</p>
+
+<table>
+<thead>
+<tr>
+<th>OS</th>
+<th>Distribution</th>
+<th>Method</th>
+<th>Command</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Linux</td>
+<td>-</td>
+<td>snap</td>
+<td><code>snap install chezmoi --classic</code></td>
+</tr>
+
+<tr>
+<td>Linux</td>
+<td>Arch</td>
+<td>pacman</td>
+<td><code>pacman -S chezmoi</code></td>
+</tr>
+
+<tr>
+<td>Linux</td>
+<td>-</td>
+<td>Linuxbrew</td>
+<td><code>brew install twpayne/taps/chezmoi</code></td>
+</tr>
+
+<tr>
+<td>macOS</td>
+<td>-</td>
+<td>Homebrew</td>
+<td><code>brew install twpayne/taps/chezmoi</code></td>
+</tr>
+
+<tr>
+<td>Windows</td>
+<td>-</td>
+<td>Scoop</td>
+<td><code>scoop bucket add twpayne https://github.com/twpayne/scoop-bucket &amp;&amp; scoop install chezmoi</code></td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="pre-built-linux-packages">Pre-built Linux packages</h2>
+
+<p>Download a package for your operating system and architecture and install it
+with your package manager.</p>
+
+<table>
+<thead>
+<tr>
+<th>OS</th>
+<th>Architectures</th>
+<th>Package</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Debian</td>
+<td>amd64, arm64, armel, i386, ppc64, ppc64le</td>
+<td><a href="https://github.com/twpayne/chezmoi/releases/latest"><code>deb</code></a></td>
+</tr>
+
+<tr>
+<td>RedHat</td>
+<td>aarch64, armhfp, i686, ppc64, ppc64le, x86_64</td>
+<td><a href="https://github.com/twpayne/chezmoi/releases/latest"><code>rpm</code></a></td>
+</tr>
+
+<tr>
+<td>OpenSUSE</td>
+<td>aarch64, armhfp, i686, ppc64, ppc64le, x86_64</td>
+<td><a href="https://github.com/twpayne/chezmoi/releases/latest"><code>rpm</code></a></td>
+</tr>
+
+<tr>
+<td>Ubuntu</td>
+<td>amd64, arm64, armel, i386, ppc64, ppc64le</td>
+<td><a href="https://github.com/twpayne/chezmoi/releases/latest"><code>deb</code></a></td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="pre-built-binaries">Pre-built binaries</h2>
+
+<p>Download a tarball for your operating system containing a pre-built binary,
+documentation, and shell completions.</p>
+
+<table>
+<thead>
+<tr>
+<th>OS</th>
+<th>Architectures</th>
+<th>Tarball</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>FreeBSD</td>
+<td>amd64, arm, i386</td>
+<td><a href="https://github.com/twpayne/chezmoi/releases/latest"><code>tar.gz</code></a></td>
+</tr>
+
+<tr>
+<td>Linux</td>
+<td>amd64, arm, arm64, i386, ppc64, ppc64le</td>
+<td><a href="https://github.com/twpayne/chezmoi/releases/latest"><code>tar.gz</code></a></td>
+</tr>
+
+<tr>
+<td>macOS</td>
+<td>amd64</td>
+<td><a href="https://github.com/twpayne/chezmoi/releases/latest"><code>tar.gz</code></a></td>
+</tr>
+
+<tr>
+<td>OpenBSD</td>
+<td>amd64, arm, i386</td>
+<td><a href="https://github.com/twpayne/chezmoi/releases/latest"><code>tar.gz</code></a></td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="from-source">From source</h2>
+
+<p>Download, build, and install chezmoi for your system:</p>
+
+<pre><code>cd $(mktemp -d) &amp;&amp; go get -u github.com/twpayne/chezmoi
+</code></pre>
+
+<h2 id="upgrading">Upgrading</h2>
+
+<p>Once chezmoi is installed, you can upgrade it to the latest release with:</p>
+
+<pre><code>chezmoi upgrade
+</code></pre>
+
+<p>This will re-use whichever mechanism you used to install chezmoi to install the
+latest release.</p>
+</article>
+
+      
+
+      
+    </div>
+
+    
+  
+
+  <aside class="book-toc levels-3 fixed">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#install-guide">Install Guide</a>
+<ul>
+<li><a href="#one-line-binary-install">One-line binary install</a></li>
+<li><a href="#one-line-package-install">One-line package install</a></li>
+<li><a href="#pre-built-linux-packages">Pre-built Linux packages</a></li>
+<li><a href="#pre-built-binaries">Pre-built binaries</a></li>
+<li><a href="#from-source">From source</a></li>
+<li><a href="#upgrading">Upgrading</a></li>
+</ul></li>
+</ul>
+</nav>
+  </aside>
+
+
+
+  </main>
+
+  
+</body>
+
+</html>

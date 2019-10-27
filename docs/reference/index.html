@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"><meta property="og:title" content="Reference" />
+<meta property="og:description" content="Reference Manual Manage your dotfiles securely across multiple machines.
+ Concepts Global command line flags  --color value -c, --config filename -D, --destination directory -f, --follow -n, --dry-run -h, --help -r. --remove -S, --source directory -v, --verbose --version  Configuration file  Configuration variables  Source state attributes Special files and directories  .chezmoi.&lt;format&gt;.tmpl .chezmoiignore .chezmoiremove .chezmoitemplates .chezmoiversion  Commands  add targets apply [targets] archive cat targets cd chattr attributes targets completion shell data diff [targets] docs [regexp] doctor dump [targets] edit [targets] edit-config forget targets help command init [repo] import filename merge targets remove targets secret source [args] source-path [targets] unmanaged update upgrade verify [targets]  Editor configuration Umask configuration Template variables Template functions  bitwarden [args] gopass gopass-name keepassxc entry keepassxcAttribute entry attribute keyring service user lastpass id onepassword uuid pass pass-name promptString prompt secret [args] secretJSON [args] vault key   Concepts chezmoi evaluates the source state for the current machine and then updates the destination directory, where:" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://chezmoi.io/docs/reference/" />
+
+<title>Reference | chezmoi.io</title>
+<link rel="icon" href="/favicon.png" type="image/x-icon">
+
+
+<link rel="stylesheet" href="/book.min.dcb5f88ae9cbea1ffe9da7a510c09e799304f04d2a33302b20bf31dedb3b7778.css" integrity="sha256-3LX4iunL6h/&#43;naelEMCeeZME8E0qMzArIL8x3ts7d3g=">
+
+
+<script defer src="/search.min.07541be0eae40e5c7f0103f40e15657dc7738bcca3475efd7e6ecc3584555e1a.js" integrity="sha256-B1Qb4OrkDlx/AQP0DhVlfcdzi8yjR179fm7MNYRVXho="></script>
+
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+  
+</head>
+
+<body>
+  <input type="checkbox" class="hidden" id="menu-control" />
+  <main class="flex container">
+
+    <aside class="book-menu fixed">
+      <nav>
+<h2 class="book-brand">
+  <a href="http://chezmoi.io/"><img src="/logo-144px.svg" alt="Logo" /><span>chezmoi.io</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" placeholder="Search" id="book-search-input" maxlength="64" />
+  <div class="book-search-spinner spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+    <ul>
+<li><a href="/docs/install/">Install</a></li>
+<li><a href="/docs/quick-start/">Quick Start</a></li>
+<li><a href="/docs/how-to/">How-To</a></li>
+<li><a href="/docs/faq/">FAQ</a></li>
+<li><a href="/docs/changes/">Changes</a></li>
+<li><a href="/docs/reference/"class=active>Reference</a></li>
+<li><a href="/docs/contributing/">Contributing</a></li>
+<li><a href="https://github.com/twpayne/chezmoi">GitHub</a></li>
+</ul>
+
+
+
+
+
+</nav>
+
+
+<script>
+(function() {
+  var menu = document.querySelector("aside.book-menu nav");
+  addEventListener("beforeunload", function(event) {
+    localStorage.setItem("menu.scrollTop", menu.scrollTop);
+  });
+  menu.scrollTop = localStorage.getItem("menu.scrollTop");
+})();
+</script>
+
+    </aside>
+
+    <div class="book-page">
+      <header class="flex align-center justify-between book-header">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" alt="Menu" />
+  </label>
+  <strong>Reference</strong>
+</header>
+
+      
+<article class="markdown">
+
+<h1 id="reference-manual">Reference Manual</h1>
+
+<p>Manage your dotfiles securely across multiple machines.</p>
+
+<ul>
+<li><a href="#concepts">Concepts</a></li>
+<li><a href="#global-command-line-flags">Global command line flags</a>
+
+<ul>
+<li><a href="#--color-value"><code>--color</code> <em>value</em></a></li>
+<li><a href="#-c---config-filename"><code>-c</code>, <code>--config</code> <em>filename</em></a></li>
+<li><a href="#-d---destination-directory"><code>-D</code>, <code>--destination</code> <em>directory</em></a></li>
+<li><a href="#-f---follow"><code>-f</code>, <code>--follow</code></a></li>
+<li><a href="#-n---dry-run"><code>-n</code>, <code>--dry-run</code></a></li>
+<li><a href="#-h---help"><code>-h</code>, <code>--help</code></a></li>
+<li><a href="#-r---remove"><code>-r</code>. <code>--remove</code></a></li>
+<li><a href="#-s---source-directory"><code>-S</code>, <code>--source</code> <em>directory</em></a></li>
+<li><a href="#-v---verbose"><code>-v</code>, <code>--verbose</code></a></li>
+<li><a href="#--version"><code>--version</code></a></li>
+</ul></li>
+<li><a href="#configuration-file">Configuration file</a>
+
+<ul>
+<li><a href="#configuration-variables">Configuration variables</a></li>
+</ul></li>
+<li><a href="#source-state-attributes">Source state attributes</a></li>
+<li><a href="#special-files-and-directories">Special files and directories</a>
+
+<ul>
+<li><a href="#chezmoiformattmpl"><code>.chezmoi.&lt;format&gt;.tmpl</code></a></li>
+<li><a href="#chezmoiignore"><code>.chezmoiignore</code></a></li>
+<li><a href="#chezmoiremove"><code>.chezmoiremove</code></a></li>
+<li><a href="#chezmoitemplates"><code>.chezmoitemplates</code></a></li>
+<li><a href="#chezmoiversion"><code>.chezmoiversion</code></a></li>
+</ul></li>
+<li><a href="#commands">Commands</a>
+
+<ul>
+<li><a href="#add-targets"><code>add</code> <em>targets</em></a></li>
+<li><a href="#apply-targets"><code>apply</code> [<em>targets</em>]</a></li>
+<li><a href="#archive"><code>archive</code></a></li>
+<li><a href="#cat-targets"><code>cat</code> targets</a></li>
+<li><a href="#cd"><code>cd</code></a></li>
+<li><a href="#chattr-attributes-targets"><code>chattr</code> <em>attributes</em> <em>targets</em></a></li>
+<li><a href="#completion-shell"><code>completion</code> <em>shell</em></a></li>
+<li><a href="#data"><code>data</code></a></li>
+<li><a href="#diff-targets"><code>diff</code> [<em>targets</em>]</a></li>
+<li><a href="#docs-regexp"><code>docs</code> [<em>regexp</em>]</a></li>
+<li><a href="#doctor"><code>doctor</code></a></li>
+<li><a href="#dump-targets"><code>dump</code> [<em>targets</em>]</a></li>
+<li><a href="#edit-targets"><code>edit</code> [<em>targets</em>]</a></li>
+<li><a href="#edit-config"><code>edit-config</code></a></li>
+<li><a href="#forget-targets"><code>forget</code> <em>targets</em></a></li>
+<li><a href="#help-command"><code>help</code> <em>command</em></a></li>
+<li><a href="#init-repo"><code>init</code> [<em>repo</em>]</a></li>
+<li><a href="#import-filename"><code>import</code> <em>filename</em></a></li>
+<li><a href="#merge-targets"><code>merge</code> <em>targets</em></a></li>
+<li><a href="#remove-targets"><code>remove</code> <em>targets</em></a></li>
+<li><a href="#secret"><code>secret</code></a></li>
+<li><a href="#source-args"><code>source</code> [<em>args</em>]</a></li>
+<li><a href="#source-path-targets"><code>source-path</code> [<em>targets</em>]</a></li>
+<li><a href="#unmanaged"><code>unmanaged</code></a></li>
+<li><a href="#update"><code>update</code></a></li>
+<li><a href="#upgrade"><code>upgrade</code></a></li>
+<li><a href="#verify-targets"><code>verify</code> [<em>targets</em>]</a></li>
+</ul></li>
+<li><a href="#editor-configuration">Editor configuration</a></li>
+<li><a href="#umask-configuration">Umask configuration</a></li>
+<li><a href="#template-variables">Template variables</a></li>
+<li><a href="#template-functions">Template functions</a>
+
+<ul>
+<li><a href="#bitwarden-args"><code>bitwarden</code> [<em>args</em>]</a></li>
+<li><a href="#gopass-gopass-name"><code>gopass</code> <em>gopass-name</em></a></li>
+<li><a href="#keepassxc-entry"><code>keepassxc</code> <em>entry</em></a></li>
+<li><a href="#keepassxcattribute-entry-attribute"><code>keepassxcAttribute</code> <em>entry</em> <em>attribute</em></a></li>
+<li><a href="#keyring-service-user"><code>keyring</code> <em>service</em> <em>user</em></a></li>
+<li><a href="#lastpass-id"><code>lastpass</code> <em>id</em></a></li>
+<li><a href="#onepassword-uuid"><code>onepassword</code> <em>uuid</em></a></li>
+<li><a href="#pass-pass-name"><code>pass</code> <em>pass-name</em></a></li>
+<li><a href="#promptstring-prompt"><code>promptString</code> <em>prompt</em></a></li>
+<li><a href="#secret-args"><code>secret</code> [<em>args</em>]</a></li>
+<li><a href="#secretjson-args"><code>secretJSON</code> [<em>args</em>]</a></li>
+<li><a href="#vault-key"><code>vault</code> <em>key</em></a></li>
+</ul></li>
+</ul>
+
+<h2 id="concepts">Concepts</h2>
+
+<p>chezmoi evaluates the source state for the current machine and then updates the
+destination directory, where:</p>
+
+<ul>
+<li><p>The <em>source state</em> declares the desired state of your home directory,
+including templates and machine-specific configuration.</p></li>
+
+<li><p>The <em>source directory</em> is where chezmoi stores the source state, by default
+<code>~/.local/share/chezmoi</code>.</p></li>
+
+<li><p>The <em>target state</em> is the source state computed for the current machine.</p></li>
+
+<li><p>The <em>destination directory</em> is the directory that chezmoi manages, by default
+<code>~</code>, your home directory.</p></li>
+
+<li><p>A <em>target</em> is a file, directory, or symlink in the destination directory.</p></li>
+
+<li><p>The <em>destination state</em> is the state of all the targets in the destination
+directory.</p></li>
+
+<li><p>The <em>config file</em> contains machine-specific configuration, by default it is
+<code>~/.config/chezmoi/chezmoi.toml</code>.</p></li>
+</ul>
+
+<h2 id="global-command-line-flags">Global command line flags</h2>
+
+<p>Command line flags override any values set in the configuration file.</p>
+
+<h3 id="color-value"><code>--color</code> <em>value</em></h3>
+
+<p>Colorize diffs, <em>value</em> can be <code>on</code>, <code>off</code>, or <code>auto</code>. The default value is
+<code>auto</code> which will colorize diffs only if the output is a terminal.</p>
+
+<h3 id="c-config-filename"><code>-c</code>, <code>--config</code> <em>filename</em></h3>
+
+<p>Read the configuration from <em>filename</em>.</p>
+
+<h3 id="d-destination-directory"><code>-D</code>, <code>--destination</code> <em>directory</em></h3>
+
+<p>Use <em>directory</em> as the destination directory.</p>
+
+<h3 id="f-follow"><code>-f</code>, <code>--follow</code></h3>
+
+<p>If the last part of a target is a symlink, deal with what the symlink
+references, rather than the symlink itself.</p>
+
+<h3 id="n-dry-run"><code>-n</code>, <code>--dry-run</code></h3>
+
+<p>Set dry run mode. In dry run mode, the destination directory is never modified.
+This is most useful in combination with the <code>-v</code> (verbose) flag to print changes
+that would be made without making them.</p>
+
+<h3 id="h-help"><code>-h</code>, <code>--help</code></h3>
+
+<p>Print help.</p>
+
+<h3 id="r-remove"><code>-r</code>. <code>--remove</code></h3>
+
+<p>Also remove targets according to <code>.chezmoiremove</code>.</p>
+
+<h3 id="s-source-directory"><code>-S</code>, <code>--source</code> <em>directory</em></h3>
+
+<p>Use <em>directory</em> as the source directory.</p>
+
+<h3 id="v-verbose"><code>-v</code>, <code>--verbose</code></h3>
+
+<p>Set verbose mode. In verbose mode, chezmoi prints the changes that it is making
+as approximate shell commands, and any differences in files between the target
+state and the destination set are printed as unified diffs.</p>
+
+<h3 id="version"><code>--version</code></h3>
+
+<p>Print the version of chezmoi, the commit at which it was built, and the build
+timestamp.</p>
+
+<h2 id="configuration-file">Configuration file</h2>
+
+<p>chezmoi searches for its configuration file according to the <a href="https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html">XDG Base Directory
+Specification</a>
+and supports all formats supported by
+<a href="https://github.com/spf13/viper"><code>github.com/spf13/viper</code></a>, namely JSON, TOML,
+YAML, macOS property file format, and HCL. The basename of the config file is
+chezmoi, and the first config file found is used.</p>
+
+<h3 id="configuration-variables">Configuration variables</h3>
+
+<p>The following configuration variables are available:</p>
+
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Type</th>
+<th>Default value</th>
+<th>Description</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><code>bitwarden.command</code></td>
+<td>string</td>
+<td><code>bw</code></td>
+<td>Bitwarden CLI command</td>
+</tr>
+
+<tr>
+<td><code>color</code></td>
+<td>string</td>
+<td><code>auto</code></td>
+<td>Colorize diffs</td>
+</tr>
+
+<tr>
+<td><code>data</code></td>
+<td>any</td>
+<td><em>none</em></td>
+<td>Template data</td>
+</tr>
+
+<tr>
+<td><code>destDir</code></td>
+<td>string</td>
+<td><code>~</code></td>
+<td>Destination directory</td>
+</tr>
+
+<tr>
+<td><code>dryRun</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Dry run mode</td>
+</tr>
+
+<tr>
+<td><code>follow</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Follow symlinks</td>
+</tr>
+
+<tr>
+<td><code>genericSecret.command</code></td>
+<td>string</td>
+<td><em>none</em></td>
+<td>Generic secret command</td>
+</tr>
+
+<tr>
+<td><code>gopass.command</code></td>
+<td>string</td>
+<td><code>gopass</code></td>
+<td>gopass CLI command</td>
+</tr>
+
+<tr>
+<td><code>gpg.recipient</code></td>
+<td>string</td>
+<td><em>none</em></td>
+<td>GPG recipient</td>
+</tr>
+
+<tr>
+<td><code>gpg.symmetric</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Use symmetric GPG encryption</td>
+</tr>
+
+<tr>
+<td><code>keepassxc.args</code></td>
+<td>[]string</td>
+<td><em>none</em></td>
+<td>Extra args to KeePassXC CLI command</td>
+</tr>
+
+<tr>
+<td><code>keepassxc.command</code></td>
+<td>string</td>
+<td><code>keepassxc-cli</code></td>
+<td>KeePassXC CLI command</td>
+</tr>
+
+<tr>
+<td><code>keepassxc.database</code></td>
+<td>string</td>
+<td><em>none</em></td>
+<td>KeePassXC database</td>
+</tr>
+
+<tr>
+<td><code>lastpass.command</code></td>
+<td>string</td>
+<td><code>lpass</code></td>
+<td>Lastpass CLI command</td>
+</tr>
+
+<tr>
+<td><code>merge.args</code></td>
+<td>[]string</td>
+<td><em>none</em></td>
+<td>Extra args to 3-way merge command</td>
+</tr>
+
+<tr>
+<td><code>merge.command</code></td>
+<td>string</td>
+<td><code>vimdiff</code></td>
+<td>3-way merge command</td>
+</tr>
+
+<tr>
+<td><code>onepassword.command</code></td>
+<td>string</td>
+<td><code>op</code></td>
+<td>1Password CLI command</td>
+</tr>
+
+<tr>
+<td><code>pass.command</code></td>
+<td>string</td>
+<td><code>pass</code></td>
+<td>Pass CLI command</td>
+</tr>
+
+<tr>
+<td><code>remove</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Remove targets</td>
+</tr>
+
+<tr>
+<td><code>sourceDir</code></td>
+<td>string</td>
+<td><code>~/.config/share/chezmoi</code></td>
+<td>Source directory</td>
+</tr>
+
+<tr>
+<td><code>sourceVCS.autoCommit</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Commit changes to the source state after any change</td>
+</tr>
+
+<tr>
+<td><code>sourceVCS.autoPush</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Push changes to the source state after any change</td>
+</tr>
+
+<tr>
+<td><code>sourceVCS.command</code></td>
+<td>string</td>
+<td><code>git</code></td>
+<td>Source version control system</td>
+</tr>
+
+<tr>
+<td><code>umask</code></td>
+<td>int</td>
+<td><em>from system</em></td>
+<td>Umask</td>
+</tr>
+
+<tr>
+<td><code>vault.command</code></td>
+<td>string</td>
+<td><code>vault</code></td>
+<td>Vault CLI command</td>
+</tr>
+
+<tr>
+<td><code>verbose</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Verbose mode</td>
+</tr>
+</tbody>
+</table>
+
+<p>In addition, a number of secret manager integrations add configuration
+variables. These are documented in the secret manager section.</p>
+
+<h2 id="source-state-attributes">Source state attributes</h2>
+
+<p>chezmoi stores the source state of files, symbolic links, and directories in
+regular files and directories in the source directory (<code>~/.local/share/chezmoi</code>
+by default). This location can be overridden with the <code>-S</code> flag or by giving a
+value for <code>sourceDir</code> in <code>~/.config/chezmoi/chezmoi.toml</code>.  Some state is
+encoded in the source names. chezmoi ignores all files and directories in the
+source directory that begin with a <code>.</code>. The following prefixes and suffixes are
+special, and are collectively referred to as &ldquo;attributes&rdquo;:</p>
+
+<table>
+<thead>
+<tr>
+<th>Prefix</th>
+<th>Effect</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><code>encrypted_</code></td>
+<td>Encrypt the file in the source state.</td>
+</tr>
+
+<tr>
+<td><code>once_</code></td>
+<td>Only run script once.</td>
+</tr>
+
+<tr>
+<td><code>private_</code></td>
+<td>Remove all group and world permissions from the target file or directory.</td>
+</tr>
+
+<tr>
+<td><code>empty_</code></td>
+<td>Ensure the file exists, even if is empty. By default, empty files are removed.</td>
+</tr>
+
+<tr>
+<td><code>exact_</code></td>
+<td>Remove anything not managed by chezmoi.</td>
+</tr>
+
+<tr>
+<td><code>executable_</code></td>
+<td>Add executable permissions to the target file.</td>
+</tr>
+
+<tr>
+<td><code>run_</code></td>
+<td>Treat the contents as a script to run.</td>
+</tr>
+
+<tr>
+<td><code>symlink_</code></td>
+<td>Create a symlink instead of a regular file.</td>
+</tr>
+
+<tr>
+<td><code>dot_</code></td>
+<td>Rename to use a leading dot, e.g. <code>dot_foo</code> becomes <code>.foo</code>.</td>
+</tr>
+</tbody>
+</table>
+
+<table>
+<thead>
+<tr>
+<th>Suffix</th>
+<th>Effect</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><code>.tmpl</code></td>
+<td>Treat the contents of the source file as a template.</td>
+</tr>
+</tbody>
+</table>
+
+<p>Order of prefixes is important, the order is <code>run_</code>, <code>exact_</code>, <code>private_</code>,
+<code>empty_</code>, <code>executable_</code>, <code>symlink_</code>, <code>once_</code>, <code>dot_</code>.</p>
+
+<p>Different target types allow different prefixes and suffixes:</p>
+
+<table>
+<thead>
+<tr>
+<th>Target type</th>
+<th>Allowed prefixes</th>
+<th>Allowed suffixes</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>Directory</td>
+<td><code>exact_</code>, <code>private_</code>, <code>dot_</code></td>
+<td><em>none</em></td>
+</tr>
+
+<tr>
+<td>Regular file</td>
+<td><code>encrypted_</code>, <code>private_</code>, <code>empty_</code>, <code>executable_</code>, <code>dot_</code></td>
+<td><code>.tmpl</code></td>
+</tr>
+
+<tr>
+<td>Script</td>
+<td><code>run_</code>, <code>once_</code></td>
+<td><code>.tmpl</code></td>
+</tr>
+
+<tr>
+<td>Symbolic link</td>
+<td><code>symlink_</code>, <code>dot_</code>,</td>
+<td><code>.tmpl</code></td>
+</tr>
+</tbody>
+</table>
+
+<h2 id="special-files-and-directories">Special files and directories</h2>
+
+<p>All files and directories in the source state whose name begins with <code>.</code> are
+ignored by default, unless they are one of the special files listed here.</p>
+
+<h3 id="chezmoi-format-tmpl"><code>.chezmoi.&lt;format&gt;.tmpl</code></h3>
+
+<p>If a file called <code>.chezmoi.&lt;format&gt;.tmpl</code> exists then <code>chezmoi init</code> will use it
+to create an initial config file. <em>format</em> must be one of the the supported
+config file formats.</p>
+
+<h4 id="chezmoi-format-tmpl-examples"><code>.chezmoi.&lt;format&gt;.tmpl</code> examples</h4>
+
+<pre><code>{{ $email := promptString &quot;email&quot; -}}
+data:
+    email: &quot;{{ $email }}&quot;
+</code></pre>
+
+<h3 id="chezmoiignore"><code>.chezmoiignore</code></h3>
+
+<p>If a file called <code>.chezmoiignore</code> exists in the source state then it is
+interpreted as a list of globs to ignore. Notably, <code>.chezmoiignore</code> is
+interpreted as a template. Patterns can be excluded by prefixing them with a
+<code>!</code>. All excludes (don&rsquo;t ignore) take priority over all includes (ignore).
+<code>.chezmoiignore</code> files in subdirectories apply only to that subdirectory.</p>
+
+<p><code>.chezmoiignore</code> is inspired by git&rsquo;s <code>.gitignore</code> files, but is a separate
+implementation and corner case behaviour may differ.</p>
+
+<h4 id="chezmoiignore-examples"><code>.chezmoiignore</code> examples</h4>
+
+<pre><code>README.md
+{{- if ne .email &quot;john.smith@company.com&quot; }}
+.company-directory
+{{- end }}
+{{- if ne .email &quot;john@home.org }}
+.personal-file
+{{- end }}
+</code></pre>
+
+<h3 id="chezmoiremove"><code>.chezmoiremove</code></h3>
+
+<p>If a file called <code>.chezmoiremove</code> exists in the source state then it is
+interpreted as a list of targets to remove. <code>.chezmoiremove</code> is interpreted as a
+template.</p>
+
+<h3 id="chezmoitemplates"><code>.chezmoitemplates</code></h3>
+
+<p>If a directory called <code>.chezmoitemplates</code> exists, then all files in this
+directory are parsed as templates are available as templates with a name equal
+to the base name of the file. If more than one file has the same basename then
+the last one wins.</p>
+
+<h4 id="chezmoitemplates-examples"><code>.chezmoitemplates</code> examples</h4>
+
+<p>Given:</p>
+
+<pre><code>.chezmoitemplates/foo
+{{ if true }}bar{{ end }}
+
+dot_config.tmpl
+{{ template &quot;foo&quot; }}
+</code></pre>
+
+<p>The target state of <code>.config</code> will be <code>bar</code>.</p>
+
+<h3 id="chezmoiversion"><code>.chezmoiversion</code></h3>
+
+<p>If a file called <code>.chezmoiversion</code> exists, then its contents are interpreted as
+a semantic version defining the minimum version of chezmoi required to interpret
+the source state correctly. chezmoi will refuse to interpret the source state if
+the current version is too old.</p>
+
+<p><strong>Warning</strong> support for <code>.chezmoiversion</code> will be introduced in a future version
+(likely 1.5.0). Earlier versions of chezmoi will ignore this file.</p>
+
+<h4 id="chezmoiversion-examples"><code>.chezmoiversion</code> examples</h4>
+
+<pre><code>1.5.0
+</code></pre>
+
+<h2 id="commands">Commands</h2>
+
+<h3 id="add-targets"><code>add</code> <em>targets</em></h3>
+
+<p>Add <em>targets</em> to the source state. If any target is already in the source state,
+then its source state is replaced with its current state in the destination
+directory. The <code>add</code> command accepts additional flags:</p>
+
+<h4 id="e-empty"><code>-e</code>, <code>--empty</code></h4>
+
+<p>Set the <code>empty</code> attribute on added files.</p>
+
+<h4 id="x-exact"><code>-x</code>, <code>--exact</code></h4>
+
+<p>Set the <code>exact</code> attribute on added directories.</p>
+
+<h4 id="p-prompt"><code>-p</code>, <code>--prompt</code></h4>
+
+<p>Interactively prompt before adding each file.</p>
+
+<h4 id="r-recursive"><code>-r</code>, <code>--recursive</code></h4>
+
+<p>Recursively add all files, directories, and symlinks.</p>
+
+<h4 id="t-template"><code>-T</code>, <code>--template</code></h4>
+
+<p>Set the <code>template</code> attribute on added files and symlinks. In addition, if the
+<code>--template-auto-generate</code> flag is set, chezmoi attempts to automatically
+generate the template by replacing any template data values with the equivalent
+template data keys. Longer subsitutions occur before shorter ones.</p>
+
+<h4 id="add-examples"><code>add</code> examples</h4>
+
+<pre><code>chezmoi add ~/.bashrc
+chezmoi add ~/.gitconfig --template
+chezmoi add ~/.vim --recursive
+chezmoi add ~/.oh-my-zsh --exact --recursive
+</code></pre>
+
+<h3 id="apply-targets"><code>apply</code> [<em>targets</em>]</h3>
+
+<p>Ensure that <em>targets</em> are in the target state, updating them if necessary. If no
+targets are specified, the state of all targets are ensured.</p>
+
+<h4 id="apply-examples"><code>apply</code> examples</h4>
+
+<pre><code>chezmoi apply
+chezmoi apply --dry-run --verbose
+chezmoi apply ~/.bashrc
+</code></pre>
+
+<h3 id="archive"><code>archive</code></h3>
+
+<p>Write a tar archive of the target state to stdout. This can be piped into <code>tar</code>
+to inspect the target state.</p>
+
+<h4 id="archive-examples"><code>archive</code> examples</h4>
+
+<pre><code>chezmoi archive | tar tvf -
+</code></pre>
+
+<h3 id="cat-targets"><code>cat</code> targets</h3>
+
+<p>Write the target state of <em>targets</em>  to stdout. <em>targets</em> must be files or
+symlinks. For files, the target file contents are written. For symlinks, the
+target target is written.</p>
+
+<h4 id="cat-examples"><code>cat</code> examples</h4>
+
+<pre><code>chezmoi cat ~/.bashrc
+</code></pre>
+
+<h3 id="cd"><code>cd</code></h3>
+
+<p>Launch a shell in the source directory.</p>
+
+<h4 id="cd-examples"><code>cd</code> examples</h4>
+
+<pre><code>chezmoi cd
+</code></pre>
+
+<h3 id="chattr-attributes-targets"><code>chattr</code> <em>attributes</em> <em>targets</em></h3>
+
+<p>Change the attributes of <em>targets</em>. <em>attributes</em> specifies which attributes to
+modify. Add attributes by specifying them or their abbreviations directly,
+optionally prefixed with a plus sign (<code>+</code>). Remove attributes by prefixing them
+or their attributes with the string <code>no</code> or a minus sign (<code>-</code>). The available
+attributes and their abbreviations are:</p>
+
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Abbreviation</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><code>empty</code></td>
+<td><code>e</code></td>
+</tr>
+
+<tr>
+<td><code>encrypted</code></td>
+<td><em>none</em></td>
+</tr>
+
+<tr>
+<td><code>exact</code></td>
+<td><em>none</em></td>
+</tr>
+
+<tr>
+<td><code>executable</code></td>
+<td><code>x</code></td>
+</tr>
+
+<tr>
+<td><code>private</code></td>
+<td><code>p</code></td>
+</tr>
+
+<tr>
+<td><code>template</code></td>
+<td><code>t</code></td>
+</tr>
+</tbody>
+</table>
+
+<p>Multiple attributes modifications may be specified by separating them with a
+comma (<code>,</code>).</p>
+
+<h4 id="chattr-examples"><code>chattr</code> examples</h4>
+
+<pre><code>chezmoi chattr template ~/.bashrc
+chezmoi chattr noempty ~/.profile
+chezmoi chattr private,template ~/.netrc
+</code></pre>
+
+<h3 id="completion-shell"><code>completion</code> <em>shell</em></h3>
+
+<p>Output shell completion code for the specified shell (<code>bash</code>, <code>fish</code>, or <code>zsh</code>).</p>
+
+<h4 id="completion-examples"><code>completion</code> examples</h4>
+
+<pre><code>chezmoi completion bash
+chezmoi completion fish &gt; ~/.config/fish/completions/chezmoi
+chezmoi completion zsh
+</code></pre>
+
+<h3 id="data"><code>data</code></h3>
+
+<p>Write the computed template data in JSON format to stdout. The <code>data</code> command
+accepts additional flags:</p>
+
+<h4 id="f-format-format"><code>-f</code>, <code>--format</code> <em>format</em></h4>
+
+<p>Print the computed template data in the given format. The accepted formats are
+<code>json</code> (JSON), <code>toml</code> (TOML), and <code>yaml</code> (YAML).</p>
+
+<h4 id="data-examples"><code>data</code> examples</h4>
+
+<pre><code>chezmoi data
+chezmoi data --format=yaml
+</code></pre>
+
+<h3 id="diff-targets"><code>diff</code> [<em>targets</em>]</h3>
+
+<p>Print the approximate shell commands required to ensure that <em>targets</em> in the
+destination directory match the target state. If no targets are specified, print
+the commands required for all targets. It is equivalent to <code>chezmoi apply
+--dry-run --verbose</code>.</p>
+
+<h4 id="diff-examples"><code>diff</code> examples</h4>
+
+<pre><code>chezmoi diff
+chezmoi diff ~/.bashrc
+</code></pre>
+
+<h3 id="docs-regexp"><code>docs</code> [<em>regexp</em>]</h3>
+
+<p>Print the documentation page matching the regular expression <em>regexp</em>. Matching
+is case insensitive. If no pattern is given, print <code>REFERENCE.md</code>.</p>
+
+<h4 id="docs-examples"><code>docs</code> examples</h4>
+
+<pre><code>chezmoi docs
+chezmoi docs faq
+chezmoi docs howto
+</code></pre>
+
+<h3 id="doctor"><code>doctor</code></h3>
+
+<p>Check for potential problems.</p>
+
+<h4 id="doctor-examples"><code>doctor</code> examples</h4>
+
+<pre><code>chezmoi doctor
+</code></pre>
+
+<h3 id="dump-targets"><code>dump</code> [<em>targets</em>]</h3>
+
+<p>Dump the target state in JSON format. If no targets are specified, then the
+entire target state. The <code>dump</code> command accepts additional arguments:</p>
+
+<h4 id="f-format-format-1"><code>-f</code>, <code>--format</code> <em>format</em></h4>
+
+<p>Print the target state in the given format. The accepted formats are <code>json</code>
+(JSON) and <code>yaml</code> (YAML).</p>
+
+<h4 id="dump-examples"><code>dump</code> examples</h4>
+
+<pre><code>chezmoi dump ~/.bashrc
+chezmoi dump --format=yaml
+</code></pre>
+
+<h3 id="edit-targets"><code>edit</code> [<em>targets</em>]</h3>
+
+<p>Edit the source state of <em>targets</em>, which must be files or symlinks. If no
+targets are given the the source directory itself is opened with <code>$EDITOR</code>. The
+<code>edit</code> command accepts additional arguments:</p>
+
+<h4 id="a-apply"><code>-a</code>, <code>--apply</code></h4>
+
+<p>Apply target immediately after editing. Ignored if there are no targets.</p>
+
+<h4 id="d-diff"><code>-d</code>, <code>--diff</code></h4>
+
+<p>Print the difference between the target state and the actual state after
+editing.. Ignored if there are no targets.</p>
+
+<h4 id="p-prompt-1"><code>-p</code>, <code>--prompt</code></h4>
+
+<p>Prompt before applying each target.. Ignored if there are no targets.</p>
+
+<h4 id="edit-examples"><code>edit</code> examples</h4>
+
+<pre><code>chezmoi edit ~/.bashrc
+chezmoi edit ~/.bashrc --apply --prompt
+chezmoi edit
+</code></pre>
+
+<h3 id="edit-config"><code>edit-config</code></h3>
+
+<p>Edit the configuration file.</p>
+
+<h4 id="edit-config-examples"><code>edit-config</code> examples</h4>
+
+<pre><code>chezmoi edit-config
+</code></pre>
+
+<h3 id="forget-targets"><code>forget</code> <em>targets</em></h3>
+
+<p>Remove <em>targets</em> from the source state, i.e. stop managing them.</p>
+
+<h4 id="forget-examples"><code>forget</code> examples</h4>
+
+<pre><code>chezmoi forget ~/.bashrc
+</code></pre>
+
+<h3 id="help-command"><code>help</code> <em>command</em></h3>
+
+<p>Print the help associated with <em>command</em>.</p>
+
+<h3 id="init-repo"><code>init</code> [<em>repo</em>]</h3>
+
+<p>Setup the source directory and update the destination directory to match the
+target state. If <em>repo</em> is given then it is checked out into the source
+directory, otherwise a new repository is initialized in the source directory. If
+a file called <code>.chezmoi.format.tmpl</code> exists, where <code>format</code> is one of the
+supported file formats (e.g. <code>json</code>, <code>toml</code>, or <code>yaml</code>) then a new configuration
+file is created using that file as a template. Finally, if the <code>--apply</code> flag is
+passed, <code>chezmoi apply</code> is run.</p>
+
+<h4 id="init-examples"><code>init</code> examples</h4>
+
+<pre><code>chezmoi init https://github.com/user/dotfiles.git
+chezmoi init https://github.com/user/dotfiles.git --apply
+</code></pre>
+
+<h3 id="import-filename"><code>import</code> <em>filename</em></h3>
+
+<p>Import the source state from an archive file in to a directory in the source
+state. This is primarily used to make subdirectories of your home directory
+exactly match the contents of a downloaded archive. You will generally always
+want to set the <code>--destination</code>, <code>--exact</code>, and <code>--remove-destination</code> flags.</p>
+
+<p>The only supported archive format is <code>.tar.gz</code>.</p>
+
+<h4 id="destination-directory"><code>--destination</code> <em>directory</em></h4>
+
+<p>Set the destination (in the source state) where the archive will be imported.</p>
+
+<h4 id="x-exact-1"><code>-x</code>, <code>--exact</code></h4>
+
+<p>Set the <code>exact</code> attribute on all imported directories.</p>
+
+<h4 id="r-remove-destination"><code>-r</code>, <code>--remove-destination</code></h4>
+
+<p>Remove destination (in the source state) before importing.</p>
+
+<h4 id="strip-components-n"><code>--strip-components</code> <em>n</em></h4>
+
+<p>Strip <em>n</em> leading components from paths.</p>
+
+<h4 id="import-examples"><code>import</code> examples</h4>
+
+<pre><code>curl -s -L -o oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
+chezmoi import --strip-components 1 --destination ~/.oh-my-zsh oh-my-zsh-master.tar.gz
+</code></pre>
+
+<h3 id="merge-targets"><code>merge</code> <em>targets</em></h3>
+
+<p>Perform a three-way merge between the destination state, the source state, and
+the target state. The merge tool is defined by the <code>merge.command</code> configuration
+variable, and defaults to <code>vimdiff</code>. If multiple targets are specified the merge
+tool is invoked for each target. If the target state cannot be computed (for
+example if source is a template containing errors or an encrypted file that
+cannot be decrypted) a two-way merge is performed instead.</p>
+
+<h4 id="merge-examples"><code>merge</code> examples</h4>
+
+<pre><code>chezmoi merge ~/.bashrc
+</code></pre>
+
+<h3 id="remove-targets"><code>remove</code> <em>targets</em></h3>
+
+<p>Remove <em>targets</em> from both the source state and the destination directory.</p>
+
+<h4 id="f-force"><code>-f</code>, <code>--force</code></h4>
+
+<p>Remove without prompting.</p>
+
+<h3 id="secret"><code>secret</code></h3>
+
+<p>Run a secret manager&rsquo;s CLI, passing any extra arguments to the secret manager&rsquo;s
+CLI. This is primarily for verifying chezmoi&rsquo;s integration with your secret
+manager. Normally you would use template functions to retrieve secrets. Note
+that if you want to pass flags to the secret manager&rsquo;s CLU you will need to
+separate them with <code>--</code> to prevent chezmoi from interpreting them.</p>
+
+<p>To get a full list of available commands run:</p>
+
+<pre><code>chezmoi secret help
+</code></pre>
+
+<h4 id="secret-examples"><code>secret</code> examples</h4>
+
+<pre><code>chezmoi secret bitwarden list items
+chezmoi secret keyring set --service service --user user
+chezmoi secret keyring get --service service --user user
+chezmoi secret lastpass ls
+chezmoi secret lastpass -- show --format=json id
+chezmoi secret onepassword list items
+chezmoi secret onepassword get item id
+chezmoi secret pass show id
+chezmoi secret vault -- kv get -format=json id
+</code></pre>
+
+<h3 id="source-args"><code>source</code> [<em>args</em>]</h3>
+
+<p>Execute the source version control system in the source directory with <em>args</em>.
+Note that any flags for the source version control system must be sepeated with
+a <code>--</code> to stop chezmoi from reading them.</p>
+
+<h4 id="source-examples"><code>source</code> examples</h4>
+
+<pre><code>chezmoi source init
+chezmoi source add .
+chezmoi source commit -- -m &quot;Initial commit&quot;
+</code></pre>
+
+<h3 id="source-path-targets"><code>source-path</code> [<em>targets</em>]</h3>
+
+<p>Print the path to each target&rsquo;s source state. If no targets are specified then
+print the source directory.</p>
+
+<h4 id="source-path-examples"><code>source-path</code> examples</h4>
+
+<pre><code>chezmoi source-path
+chezmoi source-path ~/.bashrc
+</code></pre>
+
+<h3 id="unmanaged"><code>unmanaged</code></h3>
+
+<p>List all unmanaged files in the destination directory.</p>
+
+<h4 id="unmanaged-examples"><code>unmanaged</code> examples</h4>
+
+<pre><code>chezmoi unmanaged
+</code></pre>
+
+<h3 id="update"><code>update</code></h3>
+
+<p>Pull changes from the source VCS and apply any changes.</p>
+
+<h4 id="update-examples"><code>update</code> examples</h4>
+
+<pre><code>chezmoi update
+</code></pre>
+
+<h3 id="upgrade"><code>upgrade</code></h3>
+
+<p>Upgrade chezmoi by downloading and installing a new version. This will call the
+GitHub API to determine if there is a new version of chezmoi available, and if
+so, download and attempt to install it in the same way as chezmoi was previously
+installed.</p>
+
+<p>If chezmoi was installed with a package manager (<code>dpkg</code> or <code>rpm</code>) then <code>upgrade</code>
+will download a new package and install it, using <code>sudo</code> if it is installed.
+Otherwise, chezmoi will download the latest executable and replace the existing
+executable with the new version.</p>
+
+<p>If the <code>CHEZMOI_GITHUB_API_TOKEN</code> environment variable is set, then its value
+will be used to authenticate requests to the GitHub API, otherwise
+unauthenticated requests are used which are subject to stricter <a href="https://developer.github.com/v3/#rate-limiting">rate
+limiting</a>. Unauthenticated
+requests should be sufficient for most cases.</p>
+
+<h4 id="upgrade-examples"><code>upgrade</code> examples</h4>
+
+<pre><code>chezmoi upgrade
+</code></pre>
+
+<h3 id="verify-targets"><code>verify</code> [<em>targets</em>]</h3>
+
+<p>Verify that all <em>targets</em> match their target state. chezmoi exits with code 0
+(success) if all targets match their target state, or 1 (failure) otherwise. If
+no targets are specified then all targets are checked.</p>
+
+<h4 id="verify-examples"><code>verify</code> examples</h4>
+
+<pre><code>chezmoi verify
+chezmoi verify ~/.bashrc
+</code></pre>
+
+<h2 id="editor-configuration">Editor configuration</h2>
+
+<p>The <code>edit</code> and <code>edit-config</code> commands use the editor specified by the <code>VISUAL</code>
+environment variable, the <code>EDITOR</code> environment variable, or <code>vi</code>, whichever is
+specified first.</p>
+
+<h2 id="umask-configuration">Umask configuration</h2>
+
+<p>By default, chezmoi uses your current umask as set by your operating system and
+shell. chezmoi only stores crude permissions in its source state, namely in the
+<code>executable</code>  and <code>private</code> attributes, corresponding to the umasks of <code>0111</code>
+and <code>0077</code> respectively.</p>
+
+<p>For machine-specifc control of umask, set the <code>umask</code> configuration variable in
+chezmoi&rsquo;s configuration file.</p>
+
+<h2 id="template-variables">Template variables</h2>
+
+<p>chezmoi provides the following automatically populated variables:</p>
+
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Value</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td><code>.chezmoi.arch</code></td>
+<td>Architecture, e.g. <code>amd64</code>, <code>arm</code>, etc. as returned by <a href="https://godoc.org/runtime#pkg-constants">runtime.GOARCH</a>.</td>
+</tr>
+
+<tr>
+<td><code>.chezmoi.fullHostname</code></td>
+<td>The full hostname of the machine chezmoi is running on.</td>
+</tr>
+
+<tr>
+<td><code>.chezmoi.group</code></td>
+<td>The group of the user running chezmoi.</td>
+</tr>
+
+<tr>
+<td><code>.chezmoi.homedir</code></td>
+<td>The home directory of the user running chezmoi.</td>
+</tr>
+
+<tr>
+<td><code>.chezmoi.hostname</code></td>
+<td>The hostname of the machine chezmoi is running on, up to the first <code>.</code>.</td>
+</tr>
+
+<tr>
+<td><code>.chezmoi.os</code></td>
+<td>Operating system, e.g. <code>darwin</code>, <code>linux</code>, etc. as returned by <a href="https://godoc.org/runtime#pkg-constants">runtime.GOOS</a>.</td>
+</tr>
+
+<tr>
+<td><code>.chezmoi.osRelease</code></td>
+<td>The information from <code>/etc/os-release</code>, Linux only, run <code>chezmoi data</code> to see its output.</td>
+</tr>
+
+<tr>
+<td><code>.chezmoi.username</code></td>
+<td>The username of the user running chezmoi.</td>
+</tr>
+</tbody>
+</table>
+
+<p>Additional variables can be defined in the config file in the <code>data</code> section.</p>
+
+<h2 id="template-functions">Template functions</h2>
+
+<p>All standard <a href="https://godoc.org/text/template"><code>text/template</code></a> and <a href="http://masterminds.github.io/sprig/">hermetic
+text template functions from <code>sprig</code></a> are
+included. chezmoi provides some additional functions.</p>
+
+<h3 id="bitwarden-args"><code>bitwarden</code> [<em>args</em>]</h3>
+
+<p><code>bitwarden</code> returns structured data retrieved from
+<a href="https://bitwarden.com">Bitwarden</a> using the <a href="https://github.com/bitwarden/cli">Bitwarden
+CLI</a> (<code>bw</code>). <em>args</em> are passed to <code>bw</code>
+unchanged and the output from <code>bw</code> is parsed as JSON. The output from <code>bw</code> is
+cached so calling <code>bitwarden</code> multitple times with the same arguments will only
+invoke <code>bw</code> once.</p>
+
+<h4 id="bitwarden-examples"><code>bitwarden</code> examples</h4>
+
+<pre><code>username = {{ (bitwarden &quot;item&quot; &quot;example.com&quot;).login.username }}
+password = {{ (bitwarden &quot;item&quot; &quot;example.com&quot;).login.password }}
+</code></pre>
+
+<h3 id="gopass-gopass-name"><code>gopass</code> <em>gopass-name</em></h3>
+
+<p><code>gopass</code> returns passwords stored in <a href="https://www.gopass.pw/">gopass</a> using the
+gopass CLI (<code>gopass</code>). <em>gopass-name</em> is passed to <code>gopass show &lt;gopass-name&gt;</code>
+and first line of the output of <code>gopass</code> is returned with the trailing newline
+stripped. The output from <code>gopass</code> is cached so calling <code>gopass</code> multiple times
+with the same <em>gopass-name</em> will only invoke <code>gopass</code> once.</p>
+
+<h4 id="gopass-examples"><code>gopass</code> examples</h4>
+
+<pre><code>{{ gopass &quot;&lt;pass-name&gt;&quot; }}
+</code></pre>
+
+<h3 id="keepassxc-entry"><code>keepassxc</code> <em>entry</em></h3>
+
+<p><code>keepassxc</code> returns structured data retrieved from a
+<a href="https://keepassxc.org/">KeePassXC</a> database using the KeePassXC CLI
+(<code>keepassxc-cli</code>). The database is configured by setting <code>keepassxc.database</code> in
+the configuration file. <em>database</em> and <em>entry</em> are passed to <code>keepassxc-cli
+show</code>. You will be prompted for the database password the first time
+<code>keepassxc-cli</code> is run, and the password is cached, in plain text, in memory
+until chezmoi terminates. The output from <code>keepassxc-cli</code> is parsed into
+key-value pairs and cached so calling <code>keepassxc</code> multiple times with the same
+<em>entry</em> will only invoke <code>keepassxc-cli</code> once.</p>
+
+<h4 id="keepassxc-examples"><code>keepassxc</code> examples</h4>
+
+<pre><code>username = {{ (keepassxc &quot;example.com&quot;).UserName }}
+password = {{ (keepassxc &quot;example.com&quot;).Password }}
+</code></pre>
+
+<h3 id="keepassxcattribute-entry-attribute"><code>keepassxcAttribute</code> <em>entry</em> <em>attribute</em></h3>
+
+<p><code>keepassxcAttribute</code> returns the attribute <em>attribute</em> of <em>entry</em> using
+<code>keepassxc-cli</code>, with any leading or trailing whitespace removed. It behaves
+identically to the <code>keepassxc</code> function in terms of configuration, password
+prompting, password storage, and result caching.</p>
+
+<h4 id="keepassxcattribute-examples"><code>keepassxcAttribute</code> examples</h4>
+
+<pre><code>{{ keepassxcAttribute &quot;SSH Key&quot; &quot;private-key&quot; }}
+</code></pre>
+
+<h3 id="keyring-service-user"><code>keyring</code> <em>service</em> <em>user</em></h3>
+
+<p><code>keyring</code> retrieves the password associated with <em>service</em> and <em>user</em> from the
+user&rsquo;s keyring.</p>
+
+<table>
+<thead>
+<tr>
+<th>OS</th>
+<th>Keyring</th>
+</tr>
+</thead>
+
+<tbody>
+<tr>
+<td>macOS</td>
+<td>Keychain</td>
+</tr>
+
+<tr>
+<td>Linux</td>
+<td>GNOME Keyring</td>
+</tr>
+</tbody>
+</table>
+
+<h4 id="keyring-examples"><code>keyring</code> examples</h4>
+
+<pre><code>[github]
+  user = &quot;{{ .github.user }}&quot;
+  token = &quot;{{ keyring &quot;github&quot; .github.user }}&quot;
+</code></pre>
+
+<h3 id="lastpass-id"><code>lastpass</code> <em>id</em></h3>
+
+<p><code>lastpass</code> returns structured data from <a href="https://lastpass.com">LastPass</a> using
+the <a href="https://lastpass.github.io/lastpass-cli/lpass.1.html">LastPass CLI</a>
+(<code>lpass</code>). <em>id</em> is passed to <code>lpass show --json &lt;id&gt;</code> and the output from
+<code>lpass</code> is parsed as JSON. In addition, the <code>note</code> field, if present, is further
+parsed as JSON. The structured data is an array so typically the <code>index</code>
+function is used to extract the first item. The output from <code>lpass</code> is cached so
+calling <code>lastpass</code> multiple times with the same <em>id</em> will only invoke <code>lpass</code>
+once.</p>
+
+<h4 id="lastpass-examples"><code>lastpass</code> examples</h4>
+
+<pre><code>githubPassword = &quot;{{ (index (lastpass &quot;GitHub&quot;) 0).password }}&quot;
+{{ (index (lastpass &quot;SSH&quot;) 0).note.privateKey }}
+</code></pre>
+
+<h3 id="onepassword-uuid"><code>onepassword</code> <em>uuid</em></h3>
+
+<p><code>onepassword</code> returns structured data from <a href="https://1password.com/">1Password</a>
+using the <a href="https://support.1password.com/command-line-getting-started/">1Password
+CLI</a> (<code>op</code>). <em>uuid</em>
+is passed to <code>op get item &lt;uuid&gt;</code> and the output from <code>op</code> is parsed as JSON.
+The output from <code>op</code> is cached so calling <code>onepassword</code> multiple times with the
+same <em>uuid</em> will only invoke <code>op</code> once.</p>
+
+<h4 id="onepassword-examples"><code>onepassword</code> examples</h4>
+
+<pre><code>{{ (onepassword &quot;&lt;uuid&gt;&quot;).details.password }}
+</code></pre>
+
+<h3 id="pass-pass-name"><code>pass</code> <em>pass-name</em></h3>
+
+<p><code>pass</code> returns passwords stored in <a href="https://www.passwordstore.org/">pass</a> using
+the pass CLI (<code>pass</code>). <em>pass-name</em> is passed to <code>pass show &lt;pass-name&gt;</code> and
+first line of the output of <code>pass</code> is returned with the trailing newline
+stripped. The output from <code>pass</code> is cached so calling <code>pass</code> multiple times with
+the same <em>pass-name</em> will only invoke <code>pass</code> once.</p>
+
+<h4 id="pass-examples"><code>pass</code> examples</h4>
+
+<pre><code>{{ pass &quot;&lt;pass-name&gt;&quot; }}
+</code></pre>
+
+<h3 id="promptstring-prompt"><code>promptString</code> <em>prompt</em></h3>
+
+<p><code>promptString</code> takes a single argument is a string prompted to the user, and the
+return value is the user&rsquo;s response to that prompt. It is only available when
+generating the initial conifig file.</p>
+
+<h4 id="promptstring-examples"><code>promptString</code> examples</h4>
+
+<pre><code>{{ $email := promptString &quot;email&quot; -}}
+data:
+    email: &quot;{{ $email }}&quot;
+</code></pre>
+
+<h3 id="secret-args"><code>secret</code> [<em>args</em>]</h3>
+
+<p><code>secret</code> returns the output of the generic secret command defined by the
+<code>genericSecret.command</code> configuration variable with <em>args</em> with leading and
+trailing whitespace removed. The output is cached so multitple calls to <code>secret</code>
+with the same <em>args</em> will only invoke the generic secret command once.</p>
+
+<h3 id="secretjson-args"><code>secretJSON</code> [<em>args</em>]</h3>
+
+<p><code>secretJSON</code> returns structured data from the generic secret command defined by
+the <code>genericSecret.command</code> configuration variable with <em>args</em>. The output is
+parsed as JSON. The output is cached so multitple calls to <code>secret</code> with the
+same <em>args</em> will only invoke the generic secret command once.</p>
+
+<h3 id="vault-key"><code>vault</code> <em>key</em></h3>
+
+<p><code>vault</code> returns structured data from <a href="https://www.vaultproject.io/">Vault</a> using
+the <a href="https://www.vaultproject.io/docs/commands/">Vault CLI</a> (<code>vault</code>). <em>key</em> is
+passed to <code>vault kv get -format=json &lt;key&gt;</code> and the output from <code>vault</code> is
+parsed as JSON. The output from <code>vault</code> is cached so calling <code>vault</code> multiple
+times with the same <em>key</em> will only invoke <code>vault</code> once.</p>
+
+<h4 id="vault-examples"><code>vault</code> examples</h4>
+
+<pre><code>{{ (vault &quot;&lt;key&gt;&quot;).data.data.password }}
+</code></pre>
+</article>
+
+      
+
+      
+    </div>
+
+    
+  
+
+  <aside class="book-toc levels-3 fixed">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#reference-manual">Reference Manual</a>
+<ul>
+<li><a href="#concepts">Concepts</a></li>
+<li><a href="#global-command-line-flags">Global command line flags</a>
+<ul>
+<li><a href="#color-value"><code>--color</code> <em>value</em></a></li>
+<li><a href="#c-config-filename"><code>-c</code>, <code>--config</code> <em>filename</em></a></li>
+<li><a href="#d-destination-directory"><code>-D</code>, <code>--destination</code> <em>directory</em></a></li>
+<li><a href="#f-follow"><code>-f</code>, <code>--follow</code></a></li>
+<li><a href="#n-dry-run"><code>-n</code>, <code>--dry-run</code></a></li>
+<li><a href="#h-help"><code>-h</code>, <code>--help</code></a></li>
+<li><a href="#r-remove"><code>-r</code>. <code>--remove</code></a></li>
+<li><a href="#s-source-directory"><code>-S</code>, <code>--source</code> <em>directory</em></a></li>
+<li><a href="#v-verbose"><code>-v</code>, <code>--verbose</code></a></li>
+<li><a href="#version"><code>--version</code></a></li>
+</ul></li>
+<li><a href="#configuration-file">Configuration file</a>
+<ul>
+<li><a href="#configuration-variables">Configuration variables</a></li>
+</ul></li>
+<li><a href="#source-state-attributes">Source state attributes</a></li>
+<li><a href="#special-files-and-directories">Special files and directories</a>
+<ul>
+<li><a href="#chezmoi-format-tmpl"><code>.chezmoi.&lt;format&gt;.tmpl</code></a>
+<ul>
+<li><a href="#chezmoi-format-tmpl-examples"><code>.chezmoi.&lt;format&gt;.tmpl</code> examples</a></li>
+</ul></li>
+<li><a href="#chezmoiignore"><code>.chezmoiignore</code></a>
+<ul>
+<li><a href="#chezmoiignore-examples"><code>.chezmoiignore</code> examples</a></li>
+</ul></li>
+<li><a href="#chezmoiremove"><code>.chezmoiremove</code></a></li>
+<li><a href="#chezmoitemplates"><code>.chezmoitemplates</code></a>
+<ul>
+<li><a href="#chezmoitemplates-examples"><code>.chezmoitemplates</code> examples</a></li>
+</ul></li>
+<li><a href="#chezmoiversion"><code>.chezmoiversion</code></a>
+<ul>
+<li><a href="#chezmoiversion-examples"><code>.chezmoiversion</code> examples</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#commands">Commands</a>
+<ul>
+<li><a href="#add-targets"><code>add</code> <em>targets</em></a>
+<ul>
+<li><a href="#e-empty"><code>-e</code>, <code>--empty</code></a></li>
+<li><a href="#x-exact"><code>-x</code>, <code>--exact</code></a></li>
+<li><a href="#p-prompt"><code>-p</code>, <code>--prompt</code></a></li>
+<li><a href="#r-recursive"><code>-r</code>, <code>--recursive</code></a></li>
+<li><a href="#t-template"><code>-T</code>, <code>--template</code></a></li>
+<li><a href="#add-examples"><code>add</code> examples</a></li>
+</ul></li>
+<li><a href="#apply-targets"><code>apply</code> [<em>targets</em>]</a>
+<ul>
+<li><a href="#apply-examples"><code>apply</code> examples</a></li>
+</ul></li>
+<li><a href="#archive"><code>archive</code></a>
+<ul>
+<li><a href="#archive-examples"><code>archive</code> examples</a></li>
+</ul></li>
+<li><a href="#cat-targets"><code>cat</code> targets</a>
+<ul>
+<li><a href="#cat-examples"><code>cat</code> examples</a></li>
+</ul></li>
+<li><a href="#cd"><code>cd</code></a>
+<ul>
+<li><a href="#cd-examples"><code>cd</code> examples</a></li>
+</ul></li>
+<li><a href="#chattr-attributes-targets"><code>chattr</code> <em>attributes</em> <em>targets</em></a>
+<ul>
+<li><a href="#chattr-examples"><code>chattr</code> examples</a></li>
+</ul></li>
+<li><a href="#completion-shell"><code>completion</code> <em>shell</em></a>
+<ul>
+<li><a href="#completion-examples"><code>completion</code> examples</a></li>
+</ul></li>
+<li><a href="#data"><code>data</code></a>
+<ul>
+<li><a href="#f-format-format"><code>-f</code>, <code>--format</code> <em>format</em></a></li>
+<li><a href="#data-examples"><code>data</code> examples</a></li>
+</ul></li>
+<li><a href="#diff-targets"><code>diff</code> [<em>targets</em>]</a>
+<ul>
+<li><a href="#diff-examples"><code>diff</code> examples</a></li>
+</ul></li>
+<li><a href="#docs-regexp"><code>docs</code> [<em>regexp</em>]</a>
+<ul>
+<li><a href="#docs-examples"><code>docs</code> examples</a></li>
+</ul></li>
+<li><a href="#doctor"><code>doctor</code></a>
+<ul>
+<li><a href="#doctor-examples"><code>doctor</code> examples</a></li>
+</ul></li>
+<li><a href="#dump-targets"><code>dump</code> [<em>targets</em>]</a>
+<ul>
+<li><a href="#f-format-format-1"><code>-f</code>, <code>--format</code> <em>format</em></a></li>
+<li><a href="#dump-examples"><code>dump</code> examples</a></li>
+</ul></li>
+<li><a href="#edit-targets"><code>edit</code> [<em>targets</em>]</a>
+<ul>
+<li><a href="#a-apply"><code>-a</code>, <code>--apply</code></a></li>
+<li><a href="#d-diff"><code>-d</code>, <code>--diff</code></a></li>
+<li><a href="#p-prompt-1"><code>-p</code>, <code>--prompt</code></a></li>
+<li><a href="#edit-examples"><code>edit</code> examples</a></li>
+</ul></li>
+<li><a href="#edit-config"><code>edit-config</code></a>
+<ul>
+<li><a href="#edit-config-examples"><code>edit-config</code> examples</a></li>
+</ul></li>
+<li><a href="#forget-targets"><code>forget</code> <em>targets</em></a>
+<ul>
+<li><a href="#forget-examples"><code>forget</code> examples</a></li>
+</ul></li>
+<li><a href="#help-command"><code>help</code> <em>command</em></a></li>
+<li><a href="#init-repo"><code>init</code> [<em>repo</em>]</a>
+<ul>
+<li><a href="#init-examples"><code>init</code> examples</a></li>
+</ul></li>
+<li><a href="#import-filename"><code>import</code> <em>filename</em></a>
+<ul>
+<li><a href="#destination-directory"><code>--destination</code> <em>directory</em></a></li>
+<li><a href="#x-exact-1"><code>-x</code>, <code>--exact</code></a></li>
+<li><a href="#r-remove-destination"><code>-r</code>, <code>--remove-destination</code></a></li>
+<li><a href="#strip-components-n"><code>--strip-components</code> <em>n</em></a></li>
+<li><a href="#import-examples"><code>import</code> examples</a></li>
+</ul></li>
+<li><a href="#merge-targets"><code>merge</code> <em>targets</em></a>
+<ul>
+<li><a href="#merge-examples"><code>merge</code> examples</a></li>
+</ul></li>
+<li><a href="#remove-targets"><code>remove</code> <em>targets</em></a>
+<ul>
+<li><a href="#f-force"><code>-f</code>, <code>--force</code></a></li>
+</ul></li>
+<li><a href="#secret"><code>secret</code></a>
+<ul>
+<li><a href="#secret-examples"><code>secret</code> examples</a></li>
+</ul></li>
+<li><a href="#source-args"><code>source</code> [<em>args</em>]</a>
+<ul>
+<li><a href="#source-examples"><code>source</code> examples</a></li>
+</ul></li>
+<li><a href="#source-path-targets"><code>source-path</code> [<em>targets</em>]</a>
+<ul>
+<li><a href="#source-path-examples"><code>source-path</code> examples</a></li>
+</ul></li>
+<li><a href="#unmanaged"><code>unmanaged</code></a>
+<ul>
+<li><a href="#unmanaged-examples"><code>unmanaged</code> examples</a></li>
+</ul></li>
+<li><a href="#update"><code>update</code></a>
+<ul>
+<li><a href="#update-examples"><code>update</code> examples</a></li>
+</ul></li>
+<li><a href="#upgrade"><code>upgrade</code></a>
+<ul>
+<li><a href="#upgrade-examples"><code>upgrade</code> examples</a></li>
+</ul></li>
+<li><a href="#verify-targets"><code>verify</code> [<em>targets</em>]</a>
+<ul>
+<li><a href="#verify-examples"><code>verify</code> examples</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#editor-configuration">Editor configuration</a></li>
+<li><a href="#umask-configuration">Umask configuration</a></li>
+<li><a href="#template-variables">Template variables</a></li>
+<li><a href="#template-functions">Template functions</a>
+<ul>
+<li><a href="#bitwarden-args"><code>bitwarden</code> [<em>args</em>]</a>
+<ul>
+<li><a href="#bitwarden-examples"><code>bitwarden</code> examples</a></li>
+</ul></li>
+<li><a href="#gopass-gopass-name"><code>gopass</code> <em>gopass-name</em></a>
+<ul>
+<li><a href="#gopass-examples"><code>gopass</code> examples</a></li>
+</ul></li>
+<li><a href="#keepassxc-entry"><code>keepassxc</code> <em>entry</em></a>
+<ul>
+<li><a href="#keepassxc-examples"><code>keepassxc</code> examples</a></li>
+</ul></li>
+<li><a href="#keepassxcattribute-entry-attribute"><code>keepassxcAttribute</code> <em>entry</em> <em>attribute</em></a>
+<ul>
+<li><a href="#keepassxcattribute-examples"><code>keepassxcAttribute</code> examples</a></li>
+</ul></li>
+<li><a href="#keyring-service-user"><code>keyring</code> <em>service</em> <em>user</em></a>
+<ul>
+<li><a href="#keyring-examples"><code>keyring</code> examples</a></li>
+</ul></li>
+<li><a href="#lastpass-id"><code>lastpass</code> <em>id</em></a>
+<ul>
+<li><a href="#lastpass-examples"><code>lastpass</code> examples</a></li>
+</ul></li>
+<li><a href="#onepassword-uuid"><code>onepassword</code> <em>uuid</em></a>
+<ul>
+<li><a href="#onepassword-examples"><code>onepassword</code> examples</a></li>
+</ul></li>
+<li><a href="#pass-pass-name"><code>pass</code> <em>pass-name</em></a>
+<ul>
+<li><a href="#pass-examples"><code>pass</code> examples</a></li>
+</ul></li>
+<li><a href="#promptstring-prompt"><code>promptString</code> <em>prompt</em></a>
+<ul>
+<li><a href="#promptstring-examples"><code>promptString</code> examples</a></li>
+</ul></li>
+<li><a href="#secret-args"><code>secret</code> [<em>args</em>]</a></li>
+<li><a href="#secretjson-args"><code>secretJSON</code> [<em>args</em>]</a></li>
+<li><a href="#vault-key"><code>vault</code> <em>key</em></a>
+<ul>
+<li><a href="#vault-examples"><code>vault</code> examples</a></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+  </aside>
+
+
+
+  </main>
+
+  
+</body>
+
+</html>

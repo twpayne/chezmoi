@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Home on chezmoi.io</title>
+    <link>http://chezmoi.io/</link>
+    <description>Recent content in Home on chezmoi.io</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	<atom:link href="http://chezmoi.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Changes</title>
+      <link>http://chezmoi.io/docs/changes/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://chezmoi.io/docs/changes/</guid>
+      <description>Changes  Upcoming  gpgRecipient config variable changing to gpg.recipient   Upcoming gpgRecipient config variable changing to gpg.recipient The gpgRecipient config varaible is changing to gpg.recipient. To update, change your config from:
+gpgRecipient = &amp;quot;...&amp;quot;  to:
+[gpg] recipient = &amp;quot;...&amp;quot;  Support for the gpgRecipient config variable will be removed in version 2.0.0.</description>
+    </item>
+    
+    <item>
+      <title>Contributing</title>
+      <link>http://chezmoi.io/docs/contributing/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://chezmoi.io/docs/contributing/</guid>
+      <description>Contributing Guide  Getting started Developing locally Contributing changes Managing releases Packaging  Getting started chezmoi is written in Go and development happens on GitHub. The rest of this document assumes that you&amp;rsquo;ve checked out chezmoi locally.
+Developing locally chezmoi is a standard Go project, using standard Go tooling, with a few extra tools. Install these extra tools with:
+make install-tools  Build chezmoi:
+go build .  Run all tests:</description>
+    </item>
+    
+    <item>
+      <title>Frequently Asked Questions</title>
+      <link>http://chezmoi.io/docs/faq/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://chezmoi.io/docs/faq/</guid>
+      <description>Frequently Asked Questions  How can I quickly check for problems with chezmoi on my machine? What are the consequences of &amp;ldquo;bare&amp;rdquo; modifications to the target files? If my .zshrc is managed by chezmoi and I edit ~/.zshrc without using chezmoi edit, what happens? How can I tell what dotfiles in my home directory aren&amp;rsquo;t managed by chezmoi? Is there an easy way to have chezmoi manage a subset of them?</description>
+    </item>
+    
+    <item>
+      <title>How-To</title>
+      <link>http://chezmoi.io/docs/how-to/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://chezmoi.io/docs/how-to/</guid>
+      <description>How-To Guide  Use a hosted repo to manage your dotfiles across multiple machines Pull the latest changes from your repo and apply them Pull the latest changes from your repo and see what would change, without actually applying the changes Use templates to manage files that vary from machine to machine Create a config file on a new machine automatically Ensure that a target is removed Keep data private  Use Bitwarden to keep your secrets Use gopass to keep your secrets Use gpg to keep your secrets Use KeePassXC to keep your secrets Use a keyring to keep your secrets Use LastPass to keep your secrets Use 1Password to keep your secrets Use pass to keep your secrets Use Vault to keep your secrets Use a generic tool to keep your secrets Use templates variables to keep your secrets  Use scripts to perform actions  Understand how scripts work Install packages with scripts  Import archives Export archives Use a non-git version control system Use a merge tool other than vimdiff Migrate from a dotfile manager that uses symlinks Automatically commit and push changes to your repo  Use a hosted repo to manage your dotfiles across multiple machines chezmoi relies on your version control system and hosted repo to share changes across multiple machines.</description>
+    </item>
+    
+    <item>
+      <title>Install</title>
+      <link>http://chezmoi.io/docs/install/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://chezmoi.io/docs/install/</guid>
+      <description>Install Guide  One-line binary install One-line package install Pre-built Linux packages Pre-built binaries From source Upgrading  One-line binary install Install the correct binary for your operating system and architecture in ./bin with a single command.
+curl -sfL https://git.io/chezmoi | sh  One-line package install Install chezmoi with a single command.
+   OS Distribution Method Command     Linux - snap snap install chezmoi --classic   Linux Arch pacman pacman -S chezmoi   Linux - Linuxbrew brew install twpayne/taps/chezmoi   macOS - Homebrew brew install twpayne/taps/chezmoi   Windows - Scoop scoop bucket add twpayne https://github.</description>
+    </item>
+    
+    <item>
+      <title>Quick Start</title>
+      <link>http://chezmoi.io/docs/quick-start/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://chezmoi.io/docs/quick-start/</guid>
+      <description>Quick Start Guide  Concepts Start using chezmoi on your current machine Using chezmoi across multiple machines Next steps  Concepts chezmoi stores the desired state of your dotfiles in the directory ~/.local/share/chezmoi. When you run chezmoi apply, chezmoi calculates the desired contents and permissions for each dotfile and then makes any changes necessary so that your dotfiles match that state.
+Start using chezmoi on your current machine Initialize chezmoi:</description>
+    </item>
+    
+    <item>
+      <title>Reference</title>
+      <link>http://chezmoi.io/docs/reference/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://chezmoi.io/docs/reference/</guid>
+      <description>Reference Manual Manage your dotfiles securely across multiple machines.
+ Concepts Global command line flags  --color value -c, --config filename -D, --destination directory -f, --follow -n, --dry-run -h, --help -r. --remove -S, --source directory -v, --verbose --version  Configuration file  Configuration variables  Source state attributes Special files and directories  .chezmoi.&amp;lt;format&amp;gt;.tmpl .chezmoiignore .chezmoiremove .chezmoitemplates .chezmoiversion  Commands  add targets apply [targets] archive cat targets cd chattr attributes targets completion shell data diff [targets] docs [regexp] doctor dump [targets] edit [targets] edit-config forget targets help command init [repo] import filename merge targets remove targets secret source [args] source-path [targets] unmanaged update upgrade verify [targets]  Editor configuration Umask configuration Template variables Template functions  bitwarden [args] gopass gopass-name keepassxc entry keepassxcAttribute entry attribute keyring service user lastpass id onepassword uuid pass pass-name promptString prompt secret [args] secretJSON [args] vault key   Concepts chezmoi evaluates the source state for the current machine and then updates the destination directory, where:</description>
+    </item>
+    
+  </channel>
+</rss>

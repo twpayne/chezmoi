@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"><meta property="og:title" content="Changes" />
+<meta property="og:description" content="Changes  Upcoming  gpgRecipient config variable changing to gpg.recipient   Upcoming gpgRecipient config variable changing to gpg.recipient The gpgRecipient config varaible is changing to gpg.recipient. To update, change your config from:
+gpgRecipient = &quot;...&quot;  to:
+[gpg] recipient = &quot;...&quot;  Support for the gpgRecipient config variable will be removed in version 2.0.0." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://chezmoi.io/docs/changes/" />
+
+<title>Changes | chezmoi.io</title>
+<link rel="icon" href="/favicon.png" type="image/x-icon">
+
+
+<link rel="stylesheet" href="/book.min.dcb5f88ae9cbea1ffe9da7a510c09e799304f04d2a33302b20bf31dedb3b7778.css" integrity="sha256-3LX4iunL6h/&#43;naelEMCeeZME8E0qMzArIL8x3ts7d3g=">
+
+
+<script defer src="/search.min.07541be0eae40e5c7f0103f40e15657dc7738bcca3475efd7e6ecc3584555e1a.js" integrity="sha256-B1Qb4OrkDlx/AQP0DhVlfcdzi8yjR179fm7MNYRVXho="></script>
+
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+  
+</head>
+
+<body>
+  <input type="checkbox" class="hidden" id="menu-control" />
+  <main class="flex container">
+
+    <aside class="book-menu fixed">
+      <nav>
+<h2 class="book-brand">
+  <a href="http://chezmoi.io/"><img src="/logo-144px.svg" alt="Logo" /><span>chezmoi.io</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" placeholder="Search" id="book-search-input" maxlength="64" />
+  <div class="book-search-spinner spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+    <ul>
+<li><a href="/docs/install/">Install</a></li>
+<li><a href="/docs/quick-start/">Quick Start</a></li>
+<li><a href="/docs/how-to/">How-To</a></li>
+<li><a href="/docs/faq/">FAQ</a></li>
+<li><a href="/docs/changes/"class=active>Changes</a></li>
+<li><a href="/docs/reference/">Reference</a></li>
+<li><a href="/docs/contributing/">Contributing</a></li>
+<li><a href="https://github.com/twpayne/chezmoi">GitHub</a></li>
+</ul>
+
+
+
+
+
+</nav>
+
+
+<script>
+(function() {
+  var menu = document.querySelector("aside.book-menu nav");
+  addEventListener("beforeunload", function(event) {
+    localStorage.setItem("menu.scrollTop", menu.scrollTop);
+  });
+  menu.scrollTop = localStorage.getItem("menu.scrollTop");
+})();
+</script>
+
+    </aside>
+
+    <div class="book-page">
+      <header class="flex align-center justify-between book-header">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" alt="Menu" />
+  </label>
+  <strong>Changes</strong>
+</header>
+
+      
+<article class="markdown">
+
+<h1 id="changes">Changes</h1>
+
+<ul>
+<li><a href="#upcoming">Upcoming</a>
+
+<ul>
+<li><a href="#gpgrecipient-config-variable-changing-to-gpgrecipient"><code>gpgRecipient</code> config variable changing to <code>gpg.recipient</code></a></li>
+</ul></li>
+</ul>
+
+<h2 id="upcoming">Upcoming</h2>
+
+<h3 id="gpgrecipient-config-variable-changing-to-gpg-recipient"><code>gpgRecipient</code> config variable changing to <code>gpg.recipient</code></h3>
+
+<p>The <code>gpgRecipient</code> config varaible is changing to <code>gpg.recipient</code>. To update,
+change your config from:</p>
+
+<pre><code>gpgRecipient = &quot;...&quot;
+</code></pre>
+
+<p>to:</p>
+
+<pre><code>[gpg]
+  recipient = &quot;...&quot;
+</code></pre>
+
+<p>Support for the <code>gpgRecipient</code> config variable will be removed in version 2.0.0.</p>
+</article>
+
+      
+
+      
+    </div>
+
+    
+  
+
+  <aside class="book-toc levels-3 fixed">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#changes">Changes</a>
+<ul>
+<li><a href="#upcoming">Upcoming</a>
+<ul>
+<li><a href="#gpgrecipient-config-variable-changing-to-gpg-recipient"><code>gpgRecipient</code> config variable changing to <code>gpg.recipient</code></a></li>
+</ul></li>
+</ul></li>
+</ul>
+</nav>
+  </aside>
+
+
+
+  </main>
+
+  
+</body>
+
+</html>

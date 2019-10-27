@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"><meta property="og:title" content="Quick Start" />
+<meta property="og:description" content="Quick Start Guide  Concepts Start using chezmoi on your current machine Using chezmoi across multiple machines Next steps  Concepts chezmoi stores the desired state of your dotfiles in the directory ~/.local/share/chezmoi. When you run chezmoi apply, chezmoi calculates the desired contents and permissions for each dotfile and then makes any changes necessary so that your dotfiles match that state.
+Start using chezmoi on your current machine Initialize chezmoi:" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="http://chezmoi.io/docs/quick-start/" />
+
+<title>Quick Start | chezmoi.io</title>
+<link rel="icon" href="/favicon.png" type="image/x-icon">
+
+
+<link rel="stylesheet" href="/book.min.dcb5f88ae9cbea1ffe9da7a510c09e799304f04d2a33302b20bf31dedb3b7778.css" integrity="sha256-3LX4iunL6h/&#43;naelEMCeeZME8E0qMzArIL8x3ts7d3g=">
+
+
+<script defer src="/search.min.07541be0eae40e5c7f0103f40e15657dc7738bcca3475efd7e6ecc3584555e1a.js" integrity="sha256-B1Qb4OrkDlx/AQP0DhVlfcdzi8yjR179fm7MNYRVXho="></script>
+
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+  
+</head>
+
+<body>
+  <input type="checkbox" class="hidden" id="menu-control" />
+  <main class="flex container">
+
+    <aside class="book-menu fixed">
+      <nav>
+<h2 class="book-brand">
+  <a href="http://chezmoi.io/"><img src="/logo-144px.svg" alt="Logo" /><span>chezmoi.io</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" placeholder="Search" id="book-search-input" maxlength="64" />
+  <div class="book-search-spinner spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+    <ul>
+<li><a href="/docs/install/">Install</a></li>
+<li><a href="/docs/quick-start/"class=active>Quick Start</a></li>
+<li><a href="/docs/how-to/">How-To</a></li>
+<li><a href="/docs/faq/">FAQ</a></li>
+<li><a href="/docs/changes/">Changes</a></li>
+<li><a href="/docs/reference/">Reference</a></li>
+<li><a href="/docs/contributing/">Contributing</a></li>
+<li><a href="https://github.com/twpayne/chezmoi">GitHub</a></li>
+</ul>
+
+
+
+
+
+</nav>
+
+
+<script>
+(function() {
+  var menu = document.querySelector("aside.book-menu nav");
+  addEventListener("beforeunload", function(event) {
+    localStorage.setItem("menu.scrollTop", menu.scrollTop);
+  });
+  menu.scrollTop = localStorage.getItem("menu.scrollTop");
+})();
+</script>
+
+    </aside>
+
+    <div class="book-page">
+      <header class="flex align-center justify-between book-header">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" alt="Menu" />
+  </label>
+  <strong>Quick Start</strong>
+</header>
+
+      
+<article class="markdown">
+
+<h1 id="quick-start-guide">Quick Start Guide</h1>
+
+<ul>
+<li><a href="#concepts">Concepts</a></li>
+<li><a href="#start-using-chezmoi-on-your-current-machine">Start using chezmoi on your current machine</a></li>
+<li><a href="#using-chezmoi-across-multiple-machines">Using chezmoi across multiple machines</a></li>
+<li><a href="#next-steps">Next steps</a></li>
+</ul>
+
+<h2 id="concepts">Concepts</h2>
+
+<p>chezmoi stores the desired state of your dotfiles in the directory
+<code>~/.local/share/chezmoi</code>. When you run <code>chezmoi apply</code>, chezmoi calculates the
+desired contents and permissions for each dotfile and then makes any changes
+necessary so that your dotfiles match that state.</p>
+
+<h2 id="start-using-chezmoi-on-your-current-machine">Start using chezmoi on your current machine</h2>
+
+<p>Initialize chezmoi:</p>
+
+<pre><code>chezmoi init
+</code></pre>
+
+<p>This will create a new git repository in <code>~/.local/share/chezmoi</code> with
+permissions <code>0700</code> where chezmoi will store the source state.  chezmoi only
+modifies files in the working copy. It is your responsibility to commit changes.</p>
+
+<p>Manage an existing file with chezmoi:</p>
+
+<pre><code>chezmoi add ~/.bashrc
+</code></pre>
+
+<p>This will copy <code>~/.bashrc</code> to <code>~/.local/share/chezmoi/dot_bashrc</code>.</p>
+
+<p>Edit the source state:</p>
+
+<pre><code>chezmoi edit ~/.bashrc
+</code></pre>
+
+<p>This will open <code>~/.local/share/chezmoi/dot_bashrc</code> in your <code>$EDITOR</code>. Make some
+changes and save them.</p>
+
+<p>See what changes chezmoi would make:</p>
+
+<pre><code>chezmoi diff
+</code></pre>
+
+<p>Apply the changes:</p>
+
+<pre><code>chezmoi -v apply
+</code></pre>
+
+<p>All chezmoi commands accept the <code>-v</code> (verbose) flag to print out exactly what
+changes they will make to the file system, and the <code>-n</code> (dry run) flag to not
+make any actual changes. The combination <code>-n</code> <code>-v</code> is very useful if you want to
+see exactly what changes would be made.</p>
+
+<p>Finally, open a shell in the source directory, commit your changes, and return
+to where you were:</p>
+
+<pre><code>chezmoi cd
+git add dot_bashrc
+git commit -m &quot;Add .bashrc&quot;
+exit
+</code></pre>
+
+<h2 id="using-chezmoi-across-multiple-machines">Using chezmoi across multiple machines</h2>
+
+<p>Clone the git repo in <code>~/.local/share/chezmoi</code> to a hosted Git service, e.g.
+<a href="https://github.com">GitHub</a>, <a href="https://gitlab.com">GitLab</a>, or
+<a href="https://bitbucket.org">BitBucket</a>. Many people call their dotfiles repo
+<code>dotfiles</code>. You can then set up chezmoi on a second machine:</p>
+
+<pre><code>chezmoi init https://github.com/username/dotfiles.git
+</code></pre>
+
+<p>This will check out the repo and any submodules and optionally create a chezmoi
+config file for you. It won&rsquo;t make any changes to your home directory until you
+run:</p>
+
+<pre><code>chezmoi apply
+</code></pre>
+
+<p>On any machine, you can pull and apply the latest changes from your repo with:</p>
+
+<pre><code>chezmoi update
+</code></pre>
+
+<h2 id="next-steps">Next steps</h2>
+
+<p>For a full list of commands run:</p>
+
+<pre><code>chezmoi help
+</code></pre>
+
+<p>chezmoi has much more functionality. Read the <a href="HOWTO.md">how-to guide</a> to
+explore.</p>
+</article>
+
+      
+
+      
+    </div>
+
+    
+  
+
+  <aside class="book-toc levels-3 fixed">
+    <nav id="TableOfContents">
+<ul>
+<li><a href="#quick-start-guide">Quick Start Guide</a>
+<ul>
+<li><a href="#concepts">Concepts</a></li>
+<li><a href="#start-using-chezmoi-on-your-current-machine">Start using chezmoi on your current machine</a></li>
+<li><a href="#using-chezmoi-across-multiple-machines">Using chezmoi across multiple machines</a></li>
+<li><a href="#next-steps">Next steps</a></li>
+</ul></li>
+</ul>
+</nav>
+  </aside>
+
+
+
+  </main>
+
+  
+</body>
+
+</html>
