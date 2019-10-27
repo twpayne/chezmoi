@@ -1,0 +1,3 @@
+[submodule "chezmoi.io/themes/book"]
+	path = chezmoi.io/themes/book
+	url = https://github.com/alex-shpak/hugo-book
