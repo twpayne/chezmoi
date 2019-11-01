@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 
@@ -43,6 +44,18 @@ func (m *VerboseMutator) Chmod(name string, mode os.FileMode) error {
 	return err
 }
 
+// IdempotentCmdOutput implements Mutator.IdempotentCmdOutput.
+func (m *VerboseMutator) IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error) {
+	action := fmt.Sprintf("run %s", cmd.String())
+	output, err := m.m.IdempotentCmdOutput(cmd)
+	if err == nil {
+		_, _ = fmt.Fprintln(m.w, action)
+	} else {
+		_, _ = fmt.Fprintf(m.w, "%s: %v\n", action, err)
+	}
+	return output, err
+}
+
 // Mkdir implements Mutator.Mkdir.
 func (m *VerboseMutator) Mkdir(name string, perm os.FileMode) error {
 	action := fmt.Sprintf("mkdir -m %o %s", perm, name)
@@ -71,6 +84,18 @@ func (m *VerboseMutator) RemoveAll(name string) error {
 func (m *VerboseMutator) Rename(oldpath, newpath string) error {
 	action := fmt.Sprintf("mv %s %s", oldpath, newpath)
 	err := m.m.Rename(oldpath, newpath)
+	if err == nil {
+		_, _ = fmt.Fprintln(m.w, action)
+	} else {
+		_, _ = fmt.Fprintf(m.w, "%s: %v\n", action, err)
+	}
+	return err
+}
+
+// RunCmd implements Mutator.RunCmd.
+func (m *VerboseMutator) RunCmd(cmd *exec.Cmd) error {
+	action := fmt.Sprintf("run %s", cmd.String())
+	err := m.m.RunCmd(cmd)
 	if err == nil {
 		_, _ = fmt.Fprintln(m.w, action)
 	} else {

@@ -1,6 +1,9 @@
 package chezmoi
 
-import "os"
+import (
+	"os"
+	"os/exec"
+)
 
 // NullMutator is an Mutator that does nothing.
 type NullMutator struct{}
@@ -8,6 +11,11 @@ type NullMutator struct{}
 // Chmod implements Mutator.Chmod.
 func (NullMutator) Chmod(string, os.FileMode) error {
 	return nil
+}
+
+// IdempotentCmdOutput implements Mutator.IdempotentCmdOutput.
+func (NullMutator) IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error) {
+	return cmd.Output()
 }
 
 // Mkdir implements Mutator.Mkdir.
@@ -22,6 +30,11 @@ func (NullMutator) RemoveAll(string) error {
 
 // Rename implements Mutator.Rename.
 func (NullMutator) Rename(string, string) error {
+	return nil
+}
+
+// RunCmd implements Mutator.RunCmd.
+func (NullMutator) RunCmd(cmd *exec.Cmd) error {
 	return nil
 }
 

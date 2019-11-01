@@ -2,6 +2,7 @@ package chezmoi
 
 import (
 	"os"
+	"os/exec"
 
 	"github.com/google/renameio"
 	vfs "github.com/twpayne/go-vfs"
@@ -21,6 +22,16 @@ func NewFSMutator(fs vfs.FS) *FSMutator {
 		devCache:     make(map[string]uint),
 		tempDirCache: make(map[uint]string),
 	}
+}
+
+// IdempotentCmdOutput implements Mutator.IdempotentCmdOutput.
+func (m *FSMutator) IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error) {
+	return cmd.Output()
+}
+
+// RunCmd implements Mutator.RunCmd.
+func (m *FSMutator) RunCmd(cmd *exec.Cmd) error {
+	return cmd.Run()
 }
 
 // WriteSymlink implements Mutator.WriteSymlink.
