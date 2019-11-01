@@ -31,7 +31,7 @@ func init() {
 }
 
 func (c *Config) runSecretGopassCmd(fs vfs.FS, args []string) error {
-	return c.exec(fs, append([]string{c.Pass.Command}, args...))
+	return c.run(fs, "", c.Pass.Command, args...)
 }
 
 func (c *Config) gopassFunc(id string) string {

@@ -49,7 +49,7 @@ func init() {
 }
 
 func (c *Config) runLastpassCmd(fs vfs.FS, args []string) error {
-	return c.exec(fs, append([]string{c.Lastpass.Command}, args...))
+	return c.run(fs, "", c.Lastpass.Command, args...)
 }
 
 func (c *Config) lastpassOutput(args ...string) ([]byte, error) {

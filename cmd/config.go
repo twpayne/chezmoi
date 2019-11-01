@@ -265,10 +265,6 @@ func (c *Config) ensureSourceDirectory(fs chezmoi.PrivacyStater, mutator chezmoi
 	}
 }
 
-func (c *Config) execEditor(fs vfs.FS, argv ...string) error {
-	return c.exec(fs, append([]string{c.getEditor()}, argv...))
-}
-
 func (c *Config) getDefaultMutator(fs vfs.FS) chezmoi.Mutator {
 	var mutator chezmoi.Mutator
 	if c.DryRun {

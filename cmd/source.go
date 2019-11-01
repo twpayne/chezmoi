@@ -1,9 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/spf13/cobra"
 	vfs "github.com/twpayne/go-vfs"
 )
@@ -22,13 +19,5 @@ func init() {
 }
 
 func (c *Config) runSourceCmd(fs vfs.FS, args []string) error {
-	if c.Verbose {
-		fmt.Printf("cd %s\n", c.SourceDir)
-	}
-	if !c.DryRun {
-		if err := os.Chdir(c.SourceDir); err != nil {
-			return err
-		}
-	}
-	return c.exec(fs, append([]string{c.SourceVCS.Command}, args...))
+	return c.run(fs, c.SourceDir, c.SourceVCS.Command, args...)
 }

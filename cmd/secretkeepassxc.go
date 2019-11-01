@@ -49,7 +49,7 @@ func init() {
 }
 
 func (c *Config) runKeePassXCCmd(fs vfs.FS, args []string) error {
-	return c.exec(fs, append([]string{c.KeePassXC.Command}, args...))
+	return c.run(fs, "", c.KeePassXC.Command, args...)
 }
 
 func (c *Config) keePassXCFunc(entry string) map[string]string {

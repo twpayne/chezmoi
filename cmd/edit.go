@@ -55,7 +55,7 @@ func (c *Config) runEditCmd(fs vfs.FS, args []string) error {
 		if c.edit.prompt {
 			c.warn("--prompt is currently ignored when edit is run with no arguments")
 		}
-		return c.execEditor(fs, c.SourceDir)
+		return c.run(fs, "", c.getEditor(), c.SourceDir)
 	}
 
 	if c.edit.prompt {

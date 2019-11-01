@@ -36,7 +36,7 @@ func init() {
 }
 
 func (c *Config) runGenericSecretCmd(fs vfs.FS, args []string) error {
-	return c.exec(fs, append([]string{c.GenericSecret.Command}, args...))
+	return c.run(fs, "", c.GenericSecret.Command, args...)
 }
 
 func (c *Config) secretFunc(args ...string) interface{} {
