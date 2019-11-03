@@ -8,7 +8,7 @@ type: docs
 Manage your dotfiles across multiple machines, securely.
 
 * [What does chezmoi do and why should I use it?](#what-does-chezmoi-do-and-why-should-i-use-it)
-* [What are chezmoi's key features?](#what-are-chezmois-key-features)
+* [What are chezmoi's key features?](#what-are-chezmoi-s-key-features)
 * [I already have a system to manage my dotfiles, why should I use chezmoi?](#i-already-have-a-system-to-manage-my-dotfiles-why-should-i-use-chezmoi)
 * [How do I start with chezmoi?](#how-do-i-start-with-chezmoi)
 * [License](#license)
