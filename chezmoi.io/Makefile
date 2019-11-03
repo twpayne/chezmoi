@@ -1,3 +1,7 @@
+.PHONY: website
+website: content-docs
+	./make-gh-pages.sh
+
 .PHONY: content-docs
 content-docs: \
 	content/docs/changes.md \
