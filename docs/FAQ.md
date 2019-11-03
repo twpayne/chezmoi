@@ -5,6 +5,7 @@
 * [How can I tell what dotfiles in my home directory aren't managed by chezmoi? Is there an easy way to have chezmoi manage a subset of them?](#how-can-i-tell-what-dotfiles-in-my-home-directory-arent-managed-by-chezmoi-is-there-an-easy-way-to-have-chezmoi-manage-a-subset-of-them)
 * [If there's a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?](#if-theres-a-mechanism-in-place-for-the-above-is-there-also-a-way-to-tell-chezmoi-to-ignore-specific-files-or-groups-of-files-eg-by-directory-name-or-by-glob)
 * [If the target already exists, but is "behind" the source, can chezmoi be configured to preserve the target version before replacing it with one derived from the source?](#if-the-target-already-exists-but-is-behind-the-source-can-chezmoi-be-configured-to-preserve-the-target-version-before-replacing-it-with-one-derived-from-the-source)
+* [How do I only run a script when a file has changed?](#how-do-i-only-run-a-script-when-a-file-has-changed)
 * [I've made changes to both the destination state and the source state that I want to keep. How can I keep them both?](#ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both)
 * [chezmoi's source file naming system cannot handle all possible filenames](#chezmois-source-file-naming-system-cannot-handle-all-possible-filenames)
 * [gpg encryption fails. What could be wrong?](#gpg-encryption-fails-what-could-be-wrong)
@@ -45,6 +46,51 @@ destination directory when you run `chezmoi apply` add them to a
 Yes. Run `chezmoi add` will update the source state with the target. To see
 diffs of what would change, without actually changing anything, use `chezmoi
 diff`.
+
+## How do I only run a script when a file has changed?
+
+A common example of this is that you're using [Homebrew](https://brew.sh/) and
+have `.Brewfile` listing all the packages that you want installed and only want
+to run `brew bundle --global` when the contents of `.Brewfile` changes.
+
+chezmoi has two types of scripts: scripts that run every time, and scripts that
+only one when their contents change. chezmoi does not have a mechanism to run a
+script when an arbitrary file has changed, but there are some ways to achieve
+the desired behavior:
+
+1. Have the script create `.Brewfile` instead of chezmoi, e.g. in your
+   `run_once_install-packages`:
+
+   ```sh
+   #!/bin/sh
+
+   cat > $HOME/.Brewfile <<EOF
+   brew "imagemagick"
+   brew "openssl"
+   EOF
+
+   brew bundle --global
+   ```
+
+2. Don't use `.Brewfile`, and instead install the packages explicitly in
+   `run_once_install-packages`:
+
+   ```sh
+   #!/bin/sh
+
+   brew install imagemagick || true
+   brew install openssl || true
+   ```
+
+   The `|| true` is necessary because `brew install` exits with failure if the
+   package is already installed.
+
+3. Use a script that runs every time (not just once) and rely on `brew bundle
+   --global` being idempotent.
+
+4. Use a script that runs every time, records a checksum of `.Brewfile` in
+   another file, and only runs `brew bundle --global` if the checksum has
+   changed, and updates the recorded checksum after.
 
 ## I've made changes to both the destination state and the source state that I want to keep. How can I keep them both?
 
