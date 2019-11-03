@@ -1,4 +1,4 @@
-baseURL = "http://www.chezmoi.io/"
+baseURL = "https://chezmoi.io/"
 languageCode = "en-us"
 theme = "book"
 title = "chezmoi.io"
