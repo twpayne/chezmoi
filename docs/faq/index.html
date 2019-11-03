@@ -3,19 +3,19 @@
 
 <head>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0"><meta property="og:title" content="Frequently Asked Questions" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"><meta property="og:title" content="FAQ" />
 <meta property="og:description" content="Frequently Asked Questions  How can I quickly check for problems with chezmoi on my machine? What are the consequences of &ldquo;bare&rdquo; modifications to the target files? If my .zshrc is managed by chezmoi and I edit ~/.zshrc without using chezmoi edit, what happens? How can I tell what dotfiles in my home directory aren&rsquo;t managed by chezmoi? Is there an easy way to have chezmoi manage a subset of them?" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="http://chezmoi.io/docs/faq/" />
 
-<title>Frequently Asked Questions | chezmoi.io</title>
+<title>FAQ | chezmoi.io</title>
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 
 
 <link rel="stylesheet" href="/book.min.dcb5f88ae9cbea1ffe9da7a510c09e799304f04d2a33302b20bf31dedb3b7778.css" integrity="sha256-3LX4iunL6h/&#43;naelEMCeeZME8E0qMzArIL8x3ts7d3g=">
 
 
-<script defer src="/search.min.07541be0eae40e5c7f0103f40e15657dc7738bcca3475efd7e6ecc3584555e1a.js" integrity="sha256-B1Qb4OrkDlx/AQP0DhVlfcdzi8yjR179fm7MNYRVXho="></script>
+<script defer src="/search.min.b11d29ed77393b529840ba10df814608a6e11287f6646e3f54af7135bcbc3a83.js" integrity="sha256-sR0p7Xc5O1KYQLoQ34FGCKbhEof2ZG4/VK9xNby8OoM="></script>
 
 <!--
 Made with Book Theme
@@ -82,7 +82,7 @@ https://github.com/alex-shpak/hugo-book
   <label for="menu-control">
     <img src="/svg/menu.svg" alt="Menu" />
   </label>
-  <strong>Frequently Asked Questions</strong>
+  <strong>FAQ</strong>
 </header>
 
       
@@ -96,6 +96,7 @@ https://github.com/alex-shpak/hugo-book
 <li><a href="#how-can-i-tell-what-dotfiles-in-my-home-directory-arent-managed-by-chezmoi-is-there-an-easy-way-to-have-chezmoi-manage-a-subset-of-them">How can I tell what dotfiles in my home directory aren&rsquo;t managed by chezmoi? Is there an easy way to have chezmoi manage a subset of them?</a></li>
 <li><a href="#if-theres-a-mechanism-in-place-for-the-above-is-there-also-a-way-to-tell-chezmoi-to-ignore-specific-files-or-groups-of-files-eg-by-directory-name-or-by-glob">If there&rsquo;s a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?</a></li>
 <li><a href="#if-the-target-already-exists-but-is-behind-the-source-can-chezmoi-be-configured-to-preserve-the-target-version-before-replacing-it-with-one-derived-from-the-source">If the target already exists, but is &ldquo;behind&rdquo; the source, can chezmoi be configured to preserve the target version before replacing it with one derived from the source?</a></li>
+<li><a href="#how-do-i-only-run-a-script-when-a-file-has-changed">How do I only run a script when a file has changed?</a></li>
 <li><a href="#ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both">I&rsquo;ve made changes to both the destination state and the source state that I want to keep. How can I keep them both?</a></li>
 <li><a href="#chezmois-source-file-naming-system-cannot-handle-all-possible-filenames">chezmoi&rsquo;s source file naming system cannot handle all possible filenames</a></li>
 <li><a href="#gpg-encryption-fails-what-could-be-wrong">gpg encryption fails. What could be wrong?</a></li>
@@ -138,6 +139,53 @@ destination directory when you run <code>chezmoi apply</code> add them to a
 <p>Yes. Run <code>chezmoi add</code> will update the source state with the target. To see
 diffs of what would change, without actually changing anything, use <code>chezmoi
 diff</code>.</p>
+
+<h2 id="how-do-i-only-run-a-script-when-a-file-has-changed">How do I only run a script when a file has changed?</h2>
+
+<p>A common example of this is that you&rsquo;re using <a href="https://brew.sh/">Homebrew</a> and
+have <code>.Brewfile</code> listing all the packages that you want installed and only want
+to run <code>brew bundle --global</code> when the contents of <code>.Brewfile</code> changes.</p>
+
+<p>chezmoi has two types of scripts: scripts that run every time, and scripts that
+only one when their contents change. chezmoi does not have a mechanism to run a
+script when an arbitrary file has changed, but there are some ways to achieve
+the desired behavior:</p>
+
+<ol>
+<li><p>Have the script create <code>.Brewfile</code> instead of chezmoi, e.g. in your
+<code>run_once_install-packages</code>:</p>
+
+<pre><code class="language-sh">#!/bin/sh
+
+cat &gt; $HOME/.Brewfile &lt;&lt;EOF
+brew &quot;imagemagick&quot;
+brew &quot;openssl&quot;
+EOF
+
+brew bundle --global
+</code></pre></li>
+
+<li><p>Don&rsquo;t use <code>.Brewfile</code>, and instead install the packages explicitly in
+<code>run_once_install-packages</code>:</p>
+
+<pre><code class="language-sh">#!/bin/sh
+
+brew install imagemagick || true
+brew install openssl || true
+</code></pre></li>
+</ol>
+
+<p>The <code>|| true</code> is necessary because <code>brew install</code> exits with failure if the
+   package is already installed.</p>
+
+<ol>
+<li><p>Use a script that runs every time (not just once) and rely on <code>brew bundle
+--global</code> being idempotent.</p></li>
+
+<li><p>Use a script that runs every time, records a checksum of <code>.Brewfile</code> in
+another file, and only runs <code>brew bundle --global</code> if the checksum has
+changed, and updates the recorded checksum after.</p></li>
+</ol>
 
 <h2 id="i-ve-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both">I&rsquo;ve made changes to both the destination state and the source state that I want to keep. How can I keep them both?</h2>
 
@@ -232,6 +280,7 @@ GitHub</a>.</p>
 <li><a href="#how-can-i-tell-what-dotfiles-in-my-home-directory-aren-t-managed-by-chezmoi-is-there-an-easy-way-to-have-chezmoi-manage-a-subset-of-them">How can I tell what dotfiles in my home directory aren&rsquo;t managed by chezmoi? Is there an easy way to have chezmoi manage a subset of them?</a></li>
 <li><a href="#if-there-s-a-mechanism-in-place-for-the-above-is-there-also-a-way-to-tell-chezmoi-to-ignore-specific-files-or-groups-of-files-e-g-by-directory-name-or-by-glob">If there&rsquo;s a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?</a></li>
 <li><a href="#if-the-target-already-exists-but-is-behind-the-source-can-chezmoi-be-configured-to-preserve-the-target-version-before-replacing-it-with-one-derived-from-the-source">If the target already exists, but is &ldquo;behind&rdquo; the source, can chezmoi be configured to preserve the target version before replacing it with one derived from the source?</a></li>
+<li><a href="#how-do-i-only-run-a-script-when-a-file-has-changed">How do I only run a script when a file has changed?</a></li>
 <li><a href="#i-ve-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both">I&rsquo;ve made changes to both the destination state and the source state that I want to keep. How can I keep them both?</a></li>
 <li><a href="#chezmoi-s-source-file-naming-system-cannot-handle-all-possible-filenames">chezmoi&rsquo;s source file naming system cannot handle all possible filenames</a></li>
 <li><a href="#gpg-encryption-fails-what-could-be-wrong">gpg encryption fails. What could be wrong?</a></li>

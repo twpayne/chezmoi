@@ -43,7 +43,7 @@ go build .  Run all tests:</description>
     </item>
     
     <item>
-      <title>Frequently Asked Questions</title>
+      <title>FAQ</title>
       <link>http://chezmoi.io/docs/faq/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
