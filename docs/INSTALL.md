@@ -18,37 +18,37 @@ with a single command.
 
 Install chezmoi with a single command.
 
-| OS    | Distribution  | Method    | Command                                                                                     |
-| ----- | ------------- | ----------| ------------------------------------------------------------------------------------------- |
-| Linux | -             | snap      | `snap install chezmoi --classic`                                                            |
-| Linux | Arch          | pacman    | `pacman -S chezmoi`                                                                         |
-| Linux | -             | Linuxbrew | `brew install twpayne/taps/chezmoi`                                                         |
-| macOS | -             | Homebrew  | `brew install twpayne/taps/chezmoi`                                                         |
-| Windows | -           | Scoop     | `scoop bucket add twpayne https://github.com/twpayne/scoop-bucket && scoop install chezmoi` |
+| OS      | Method     | Distribution | Command                                                                                     |
+| ------- | ---------- | ------------ | ------------------------------------------------------------------------------------------- |
+| Linux   | snap       |              | `snap install chezmoi --classic`                                                            |
+| Linux   | Linuxbrew  |              | `brew install twpayne/taps/chezmoi`                                                         |
+| Linux   | pacman     | Arch         | `pacman -S chezmoi`                                                                         |
+| macOS   | Homebrew   |              | `brew install twpayne/taps/chezmoi`                                                         |
+| Windows | Scoop      |              | `scoop bucket add twpayne https://github.com/twpayne/scoop-bucket && scoop install chezmoi` |
 
 ## Pre-built Linux packages
 
 Download a package for your operating system and architecture and install it
 with your package manager.
 
-| OS         | Architectures                                 | Package                                                                   |
-| ---------- | --------------------------------------------- | ------------------------------------------------------------------------- |
-| Debian     | amd64, arm64, armel, i386, ppc64, ppc64le     | [`deb`](https://github.com/twpayne/chezmoi/releases/latest)               |
-| RedHat     | aarch64, armhfp, i686, ppc64, ppc64le, x86_64 | [`rpm`](https://github.com/twpayne/chezmoi/releases/latest)               |
-| OpenSUSE   | aarch64, armhfp, i686, ppc64, ppc64le, x86_64 | [`rpm`](https://github.com/twpayne/chezmoi/releases/latest)               |
-| Ubuntu     | amd64, arm64, armel, i386, ppc64, ppc64le     | [`deb`](https://github.com/twpayne/chezmoi/releases/latest)               |
+| Distribution | Architectures                                             | Package                                                                   |
+| ------------ | --------------------------------------------------------- | ------------------------------------------------------------------------- |
+| Debian       | `amd64`, `arm64`, `armel`, `i386`, `ppc64`, `ppc64le`     | [`deb`](https://github.com/twpayne/chezmoi/releases/latest)               |
+| RedHat       | `aarch64`, `armhfp`, `i686`, `ppc64`, `ppc64le`, `x86_64` | [`rpm`](https://github.com/twpayne/chezmoi/releases/latest)               |
+| OpenSUSE     | `aarch64`, `armhfp`, `i686`, `ppc64`, `ppc64le`, `x86_64` | [`rpm`](https://github.com/twpayne/chezmoi/releases/latest)               |
+| Ubuntu       | `amd64`, `arm64`, `armel`, `i386`, `ppc64`, `ppc64le`     | [`deb`](https://github.com/twpayne/chezmoi/releases/latest)               |
 
 ## Pre-built binaries
 
 Download a tarball for your operating system containing a pre-built binary,
 documentation, and shell completions.
 
-| OS         | Architectures                                 | Tarball                                                        |
-| ---------- | --------------------------------------------- | -------------------------------------------------------------- |
-| FreeBSD    | amd64, arm, i386                              | [`tar.gz`](https://github.com/twpayne/chezmoi/releases/latest) |
-| Linux      | amd64, arm, arm64, i386, ppc64, ppc64le       | [`tar.gz`](https://github.com/twpayne/chezmoi/releases/latest) |
-| macOS      | amd64                                         | [`tar.gz`](https://github.com/twpayne/chezmoi/releases/latest) |
-| OpenBSD    | amd64, arm, i386                              | [`tar.gz`](https://github.com/twpayne/chezmoi/releases/latest) |
+| OS         | Architectures                                       | Tarball                                                        |
+| ---------- | --------------------------------------------------- | -------------------------------------------------------------- |
+| FreeBSD    | `amd64`, `arm`, `i386`                              | [`tar.gz`](https://github.com/twpayne/chezmoi/releases/latest) |
+| Linux      | `amd64`, `arm`, `arm64`, `i386`, `ppc64`, `ppc64le` | [`tar.gz`](https://github.com/twpayne/chezmoi/releases/latest) |
+| macOS      | `amd64`                                             | [`tar.gz`](https://github.com/twpayne/chezmoi/releases/latest) |
+| OpenBSD    | `amd64`, `arm`, `i386`                              | [`tar.gz`](https://github.com/twpayne/chezmoi/releases/latest) |
 
 ## From source
 
