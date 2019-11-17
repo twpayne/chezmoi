@@ -399,8 +399,18 @@ Log in and get a session using:
 
     eval $(op signin <subdomain>.1password.com <email>)
 
-The structured data from `op get item <uuid>` is available as the `onepassword`
-template function, for example:
+The output of `op get item <uuid>` is available as the `onepassword` template
+function. chezmoi parses the JSON output and returns it as structured data. For
+example, if the output of `op get item "<uuid>"` is:
+
+    {
+        "uuid": "<uuid>",
+        "details": {
+            "password": "xxx"
+        }
+    }
+
+Then you can access `details.password` with the syntax:
 
     {{ (onepassword "<uuid>").details.password }}
 
