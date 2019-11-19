@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"><meta property="og:title" content="Install" />
 <meta property="og:description" content="Install Guide  One-line binary install One-line package install Pre-built Linux packages Pre-built binaries From source Upgrading  One-line binary install Install the correct binary for your operating system and architecture in ./bin with a single command.
 curl -sfL https://git.io/chezmoi | sh  One-line package install Install chezmoi with a single command.
-   OS Distribution Method Command     Linux - snap snap install chezmoi --classic   Linux Arch pacman pacman -S chezmoi   Linux - Linuxbrew brew install twpayne/taps/chezmoi   macOS - Homebrew brew install twpayne/taps/chezmoi   Windows - Scoop scoop bucket add twpayne https://github." />
+   OS Method Distribution Command     Linux snap  snap install chezmoi --classic   Linux Linuxbrew  brew install twpayne/taps/chezmoi   Linux pacman Arch pacman -S chezmoi   macOS Homebrew  brew install twpayne/taps/chezmoi   Windows Scoop  scoop bucket add twpayne https://github." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chezmoi.io/docs/install/" />
 
@@ -17,7 +17,7 @@ curl -sfL https://git.io/chezmoi | sh  One-line package install Install chezmoi 
 <link rel="stylesheet" href="/book.min.dcb5f88ae9cbea1ffe9da7a510c09e799304f04d2a33302b20bf31dedb3b7778.css" integrity="sha256-3LX4iunL6h/&#43;naelEMCeeZME8E0qMzArIL8x3ts7d3g=">
 
 
-<script defer src="/search.min.b11d29ed77393b529840ba10df814608a6e11287f6646e3f54af7135bcbc3a83.js" integrity="sha256-sR0p7Xc5O1KYQLoQ34FGCKbhEof2ZG4/VK9xNby8OoM="></script>
+<script defer src="/search.min.f20cb0017d6841322b696c83bff0a9687fa06e680e46a995e3e0c476bb7a386d.js" integrity="sha256-8gywAX1oQTIraWyDv/CpaH&#43;gbmgORqmV4&#43;DEdrt6OG0="></script>
 
 <!--
 Made with Book Theme
@@ -117,8 +117,8 @@ with a single command.</p>
 <thead>
 <tr>
 <th>OS</th>
-<th>Distribution</th>
 <th>Method</th>
+<th>Distribution</th>
 <th>Command</th>
 </tr>
 </thead>
@@ -126,36 +126,36 @@ with a single command.</p>
 <tbody>
 <tr>
 <td>Linux</td>
-<td>-</td>
 <td>snap</td>
+<td></td>
 <td><code>snap install chezmoi --classic</code></td>
 </tr>
 
 <tr>
 <td>Linux</td>
-<td>Arch</td>
-<td>pacman</td>
-<td><code>pacman -S chezmoi</code></td>
-</tr>
-
-<tr>
-<td>Linux</td>
-<td>-</td>
 <td>Linuxbrew</td>
+<td></td>
 <td><code>brew install twpayne/taps/chezmoi</code></td>
 </tr>
 
 <tr>
+<td>Linux</td>
+<td>pacman</td>
+<td>Arch</td>
+<td><code>pacman -S chezmoi</code></td>
+</tr>
+
+<tr>
 <td>macOS</td>
-<td>-</td>
 <td>Homebrew</td>
+<td></td>
 <td><code>brew install twpayne/taps/chezmoi</code></td>
 </tr>
 
 <tr>
 <td>Windows</td>
-<td>-</td>
 <td>Scoop</td>
+<td></td>
 <td><code>scoop bucket add twpayne https://github.com/twpayne/scoop-bucket &amp;&amp; scoop install chezmoi</code></td>
 </tr>
 </tbody>
@@ -169,7 +169,7 @@ with your package manager.</p>
 <table>
 <thead>
 <tr>
-<th>OS</th>
+<th>Distribution</th>
 <th>Architectures</th>
 <th>Package</th>
 </tr>
@@ -178,25 +178,25 @@ with your package manager.</p>
 <tbody>
 <tr>
 <td>Debian</td>
-<td>amd64, arm64, armel, i386, ppc64, ppc64le</td>
+<td><code>amd64</code>, <code>arm64</code>, <code>armel</code>, <code>i386</code>, <code>ppc64</code>, <code>ppc64le</code></td>
 <td><a href="https://github.com/twpayne/chezmoi/releases/latest"><code>deb</code></a></td>
 </tr>
 
 <tr>
 <td>RedHat</td>
-<td>aarch64, armhfp, i686, ppc64, ppc64le, x86_64</td>
+<td><code>aarch64</code>, <code>armhfp</code>, <code>i686</code>, <code>ppc64</code>, <code>ppc64le</code>, <code>x86_64</code></td>
 <td><a href="https://github.com/twpayne/chezmoi/releases/latest"><code>rpm</code></a></td>
 </tr>
 
 <tr>
 <td>OpenSUSE</td>
-<td>aarch64, armhfp, i686, ppc64, ppc64le, x86_64</td>
+<td><code>aarch64</code>, <code>armhfp</code>, <code>i686</code>, <code>ppc64</code>, <code>ppc64le</code>, <code>x86_64</code></td>
 <td><a href="https://github.com/twpayne/chezmoi/releases/latest"><code>rpm</code></a></td>
 </tr>
 
 <tr>
 <td>Ubuntu</td>
-<td>amd64, arm64, armel, i386, ppc64, ppc64le</td>
+<td><code>amd64</code>, <code>arm64</code>, <code>armel</code>, <code>i386</code>, <code>ppc64</code>, <code>ppc64le</code></td>
 <td><a href="https://github.com/twpayne/chezmoi/releases/latest"><code>deb</code></a></td>
 </tr>
 </tbody>
@@ -219,25 +219,25 @@ documentation, and shell completions.</p>
 <tbody>
 <tr>
 <td>FreeBSD</td>
-<td>amd64, arm, i386</td>
+<td><code>amd64</code>, <code>arm</code>, <code>i386</code></td>
 <td><a href="https://github.com/twpayne/chezmoi/releases/latest"><code>tar.gz</code></a></td>
 </tr>
 
 <tr>
 <td>Linux</td>
-<td>amd64, arm, arm64, i386, ppc64, ppc64le</td>
+<td><code>amd64</code>, <code>arm</code>, <code>arm64</code>, <code>i386</code>, <code>ppc64</code>, <code>ppc64le</code></td>
 <td><a href="https://github.com/twpayne/chezmoi/releases/latest"><code>tar.gz</code></a></td>
 </tr>
 
 <tr>
 <td>macOS</td>
-<td>amd64</td>
+<td><code>amd64</code></td>
 <td><a href="https://github.com/twpayne/chezmoi/releases/latest"><code>tar.gz</code></a></td>
 </tr>
 
 <tr>
 <td>OpenBSD</td>
-<td>amd64, arm, i386</td>
+<td><code>amd64</code>, <code>arm</code>, <code>i386</code></td>
 <td><a href="https://github.com/twpayne/chezmoi/releases/latest"><code>tar.gz</code></a></td>
 </tr>
 </tbody>
