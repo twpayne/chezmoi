@@ -42,7 +42,8 @@ func (c *Config) passFunc(id string) string {
 	if c.Verbose {
 		fmt.Printf("%s %s\n", name, strings.Join(args, " "))
 	}
-	output, err := exec.Command(name, args...).Output()
+	cmd := exec.Command(name, args...)
+	output, err := c.mutator.IdempotentCmdOutput(cmd)
 	if err != nil {
 		panic(fmt.Errorf("pass: %s %s: %w", name, strings.Join(args, " "), err))
 	}

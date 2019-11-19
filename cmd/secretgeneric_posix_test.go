@@ -2,8 +2,11 @@
 
 package cmd
 
+import "github.com/twpayne/chezmoi/internal/chezmoi"
+
 func getSecretTestConfig() (*Config, []string) {
 	return &Config{
+			mutator: chezmoi.NullMutator{},
 			GenericSecret: genericSecretCmdConfig{
 				Command: "date",
 			},
@@ -13,6 +16,7 @@ func getSecretTestConfig() (*Config, []string) {
 
 func getSecretJSONTestConfig() (*Config, []string) {
 	return &Config{
+			mutator: chezmoi.NullMutator{},
 			GenericSecret: genericSecretCmdConfig{
 				Command: "date",
 			},

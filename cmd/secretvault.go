@@ -46,7 +46,7 @@ func (c *Config) vaultFunc(key string) interface{} {
 	cmd := exec.Command(name, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
-	output, err := cmd.Output()
+	output, err := c.mutator.IdempotentCmdOutput(cmd)
 	if err != nil {
 		panic(fmt.Errorf("vault: %s %s: %w\n%s", name, strings.Join(args, " "), err, output))
 	}

@@ -372,9 +372,6 @@ func (c *Config) output(dir, name string, argv ...string) ([]byte, error) {
 			fmt.Printf("( cd %s && %s %s )\n", dir, name, strings.Join(argv, " "))
 		}
 	}
-	if c.DryRun {
-		return nil, nil
-	}
 	cmd := exec.Command(name, argv...)
 	if dir != "" {
 		var err error
@@ -383,7 +380,7 @@ func (c *Config) output(dir, name string, argv ...string) ([]byte, error) {
 			return nil, err
 		}
 	}
-	return cmd.Output()
+	return c.mutator.IdempotentCmdOutput(cmd)
 }
 
 //nolint:unparam
