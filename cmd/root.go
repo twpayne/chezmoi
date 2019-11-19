@@ -93,6 +93,9 @@ func init() {
 	persistentFlags.StringVar(&config.Color, "color", "auto", "colorize diffs")
 	_ = viper.BindPFlag("color", persistentFlags.Lookup("color"))
 
+	persistentFlags.BoolVar(&config.Debug, "debug", false, "write debug logs")
+	_ = viper.BindPFlag("debug", persistentFlags.Lookup("debug"))
+
 	cobra.OnInitialize(func() {
 		_, err := os.Stat(config.configFile)
 		switch {
@@ -137,10 +140,12 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	}
 
 	c.fs = vfs.OSFS
+	c.mutator = chezmoi.NewFSMutator(config.fs)
 	if config.DryRun {
 		c.mutator = chezmoi.NullMutator{}
-	} else {
-		c.mutator = chezmoi.NewFSMutator(config.fs)
+	}
+	if config.Debug {
+		c.mutator = chezmoi.NewDebugMutator(c.mutator)
 	}
 	if config.Verbose {
 		c.mutator = chezmoi.NewVerboseMutator(c.Stdout(), c.mutator, c.colored)

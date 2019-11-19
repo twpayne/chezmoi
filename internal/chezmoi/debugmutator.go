@@ -68,8 +68,8 @@ func (m *DebugMutator) RunCmd(cmd *exec.Cmd) error {
 // Stat implements Mutator.Stat.
 func (m *DebugMutator) Stat(name string) (os.FileInfo, error) {
 	var fi os.FileInfo
-	var err error
-	Debugf("Stat(%q)", []interface{}{name}, func() error {
+	err := Debugf("Stat(%q)", []interface{}{name}, func() error {
+		var err error
 		fi, err = m.m.Stat(name)
 		return err
 	})

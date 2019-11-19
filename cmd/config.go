@@ -49,6 +49,7 @@ type Config struct {
 	Remove            bool
 	Verbose           bool
 	Color             string
+	Debug             bool
 	GPG               chezmoi.GPG
 	GPGRecipient      string
 	SourceVCS         sourceVCSConfig
@@ -425,6 +426,9 @@ func (c *Config) run(dir, name string, argv ...string) error {
 	cmd.Stdin = c.Stdin()
 	cmd.Stdout = c.Stdout()
 	cmd.Stderr = c.Stdout()
+	if c.Debug {
+		return chezmoi.Debugf("run %s", []interface{}{cmd}, cmd.Run)
+	}
 	return cmd.Run()
 }
 
