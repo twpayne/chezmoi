@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"github.com/spf13/cobra"
-	vfs "github.com/twpayne/go-vfs"
 )
 
 var sourceCmd = &cobra.Command{
@@ -11,13 +10,13 @@ var sourceCmd = &cobra.Command{
 	Long:    mustGetLongHelp("source"),
 	Example: getExample("source"),
 	PreRunE: config.ensureNoError,
-	RunE:    makeRunE(config.runSourceCmd),
+	RunE:    config.runSourceCmd,
 }
 
 func init() {
 	rootCmd.AddCommand(sourceCmd)
 }
 
-func (c *Config) runSourceCmd(fs vfs.FS, args []string) error {
-	return c.run(fs, c.SourceDir, c.SourceVCS.Command, args...)
+func (c *Config) runSourceCmd(cmd *cobra.Command, args []string) error {
+	return c.run(c.SourceDir, c.SourceVCS.Command, args...)
 }

@@ -5,7 +5,6 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/twpayne/chezmoi/internal/chezmoi"
-	vfs "github.com/twpayne/go-vfs"
 	bolt "go.etcd.io/bbolt"
 )
 
@@ -15,17 +14,18 @@ var verifyCmd = &cobra.Command{
 	Long:    mustGetLongHelp("verify"),
 	Example: getExample("verify"),
 	PreRunE: config.ensureNoError,
-	RunE:    makeRunE(config.runVerifyCmd),
+	RunE:    config.runVerifyCmd,
 }
 
 func init() {
 	rootCmd.AddCommand(verifyCmd)
 }
 
-func (c *Config) runVerifyCmd(fs vfs.FS, args []string) error {
+func (c *Config) runVerifyCmd(cmd *cobra.Command, args []string) error {
 	mutator := chezmoi.NewAnyMutator(chezmoi.NullMutator{})
+	c.mutator = mutator
 
-	persistentState, err := c.getPersistentState(fs, &bolt.Options{
+	persistentState, err := c.getPersistentState(&bolt.Options{
 		ReadOnly: true,
 	})
 	if err != nil {
@@ -33,7 +33,7 @@ func (c *Config) runVerifyCmd(fs vfs.FS, args []string) error {
 	}
 	defer persistentState.Close()
 
-	if err := c.applyArgs(fs, args, mutator, persistentState); err != nil {
+	if err := c.applyArgs(args, persistentState); err != nil {
 		return err
 	}
 	if mutator.Mutated() {

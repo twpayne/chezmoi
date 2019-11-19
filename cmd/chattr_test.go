@@ -1,10 +1,12 @@
 package cmd
 
 import (
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/twpayne/chezmoi/internal/chezmoi"
 	"github.com/twpayne/go-vfs/vfst"
 )
 
@@ -285,16 +287,17 @@ func TestChattrCommand(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			c := &Config{
-				SourceDir: "/home/user/.config/share/chezmoi",
-				DestDir:   "/home/user",
-				Umask:     022,
-				Verbose:   true,
-			}
 			fs, cleanup, err := vfst.NewTestFS(tc.root)
 			require.NoError(t, err)
 			defer cleanup()
-			assert.NoError(t, c.runChattrCmd(fs, tc.args))
+			c := &Config{
+				fs:        fs,
+				mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false),
+				SourceDir: "/home/user/.config/share/chezmoi",
+				DestDir:   "/home/user",
+				Umask:     022,
+			}
+			assert.NoError(t, c.runChattrCmd(nil, tc.args))
 			vfst.RunTests(t, fs, "", tc.tests)
 		})
 	}

@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	vfs "github.com/twpayne/go-vfs"
 )
 
 var docsCmd = &cobra.Command{
@@ -17,14 +16,14 @@ var docsCmd = &cobra.Command{
 	Short:   "Print documentation",
 	Long:    mustGetLongHelp("docs"),
 	Example: getExample("docs"),
-	RunE:    makeRunE(config.runDocsCmd),
+	RunE:    config.runDocsCmd,
 }
 
 func init() {
 	rootCmd.AddCommand(docsCmd)
 }
 
-func (c *Config) runDocsCmd(fs vfs.FS, args []string) error {
+func (c *Config) runDocsCmd(cmd *cobra.Command, args []string) error {
 	filename := "REFERENCE.md"
 	if len(args) > 0 {
 		pattern := args[0]

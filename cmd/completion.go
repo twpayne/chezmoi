@@ -4,7 +4,6 @@ import (
 	"errors"
 
 	"github.com/spf13/cobra"
-	vfs "github.com/twpayne/go-vfs"
 )
 
 var completionCmd = &cobra.Command{
@@ -14,14 +13,14 @@ var completionCmd = &cobra.Command{
 	Long:      mustGetLongHelp("completion"),
 	Example:   getExample("completion"),
 	ValidArgs: []string{"bash", "fish", "zsh"},
-	RunE:      makeRunE(config.runCompletion),
+	RunE:      config.runCompletion,
 }
 
 func init() {
 	rootCmd.AddCommand(completionCmd)
 }
 
-func (c *Config) runCompletion(fs vfs.FS, args []string) error {
+func (c *Config) runCompletion(cmd *cobra.Command, args []string) error {
 	switch args[0] {
 	case "bash":
 		return rootCmd.GenBashCompletion(c.Stdout())

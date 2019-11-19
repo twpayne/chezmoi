@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"os"
 	"path/filepath"
 	"testing"
 
@@ -11,13 +12,6 @@ import (
 )
 
 func TestAddAfterModification(t *testing.T) {
-	c := &Config{
-		SourceDir: "/home/user/.chezmoi",
-		DestDir:   "/home/user",
-		Umask:     022,
-		DryRun:    false,
-		Verbose:   true,
-	}
 	fs, cleanup, err := vfst.NewTestFS(map[string]interface{}{
 		"/home/user":          &vfst.Dir{Perm: 0755},
 		"/home/user/.chezmoi": &vfst.Dir{Perm: 0700},
@@ -25,8 +19,15 @@ func TestAddAfterModification(t *testing.T) {
 	})
 	require.NoError(t, err)
 	defer cleanup()
+	c := &Config{
+		fs:        fs,
+		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false),
+		SourceDir: "/home/user/.chezmoi",
+		DestDir:   "/home/user",
+		Umask:     022,
+	}
 	args := []string{"/home/user/.bashrc"}
-	assert.NoError(t, c.runAddCmd(fs, args))
+	assert.NoError(t, c.runAddCmd(nil, args))
 	vfst.RunTests(t, fs, "",
 		vfst.TestPath("/home/user/.chezmoi/dot_bashrc",
 			vfst.TestModeIsRegular,
@@ -34,7 +35,7 @@ func TestAddAfterModification(t *testing.T) {
 		),
 	)
 	assert.NoError(t, fs.WriteFile("/home/user/.bashrc", []byte("# new contents of .bashrc\n"), 0644))
-	assert.NoError(t, c.runAddCmd(fs, args))
+	assert.NoError(t, c.runAddCmd(nil, args))
 	vfst.RunTests(t, fs, "",
 		vfst.TestPath("/home/user/.chezmoi/dot_bashrc",
 			vfst.TestModeIsRegular,
@@ -414,13 +415,16 @@ func TestAddCommand(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
+			fs, cleanup, err := vfst.NewTestFS(tc.root)
+			require.NoError(t, err)
+			defer cleanup()
 			c := &Config{
+				fs:        fs,
+				mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false),
 				SourceDir: "/home/user/.chezmoi",
 				DestDir:   "/home/user",
 				Follow:    tc.follow,
 				Umask:     022,
-				DryRun:    false,
-				Verbose:   true,
 				SourceVCS: sourceVCSConfig{
 					Command: "git",
 				},
@@ -430,10 +434,7 @@ func TestAddCommand(t *testing.T) {
 				},
 				add: tc.add,
 			}
-			fs, cleanup, err := vfst.NewTestFS(tc.root)
-			require.NoError(t, err)
-			defer cleanup()
-			assert.NoError(t, c.runAddCmd(fs, tc.args))
+			assert.NoError(t, c.runAddCmd(nil, tc.args))
 			vfst.RunTests(t, fs, "", tc.tests)
 		})
 	}
@@ -454,16 +455,17 @@ func TestIssue192(t *testing.T) {
 			"/home/offbyone": &vfst.Symlink{Target: "/local/home/offbyone/"},
 		},
 	}
-	c := &Config{
-		SourceDir: "/home/offbyone/.local/share/chezmoi",
-		DestDir:   "/home/offbyone",
-		Umask:     022,
-		Verbose:   true,
-	}
 	fs, cleanup, err := vfst.NewTestFS(root)
 	require.NoError(t, err)
 	defer cleanup()
-	assert.NoError(t, c.runAddCmd(fs, []string{"/home/offbyone/snoop/.list"}))
+	c := &Config{
+		fs:        fs,
+		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false),
+		SourceDir: "/home/offbyone/.local/share/chezmoi",
+		DestDir:   "/home/offbyone",
+		Umask:     022,
+	}
+	assert.NoError(t, c.runAddCmd(nil, []string{"/home/offbyone/snoop/.list"}))
 	vfst.RunTests(t, fs, "",
 		vfst.TestPath("/local/home/offbyone/.local/share/chezmoi/snoop/dot_list",
 			vfst.TestModeIsRegular,

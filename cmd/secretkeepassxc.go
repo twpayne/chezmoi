@@ -11,7 +11,6 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	vfs "github.com/twpayne/go-vfs"
 	"golang.org/x/crypto/ssh/terminal"
 )
 
@@ -19,7 +18,7 @@ var keePassXCCmd = &cobra.Command{
 	Use:     "keepassxc [args...]",
 	Short:   "Execute the KeePassXC CLI (keepassxc-cli)",
 	PreRunE: config.ensureNoError,
-	RunE:    makeRunE(config.runKeePassXCCmd),
+	RunE:    config.runKeePassXCCmd,
 }
 
 type keePassXCCmdConfig struct {
@@ -48,8 +47,8 @@ func init() {
 	secretCmd.AddCommand(keePassXCCmd)
 }
 
-func (c *Config) runKeePassXCCmd(fs vfs.FS, args []string) error {
-	return c.run(fs, "", c.KeePassXC.Command, args...)
+func (c *Config) runKeePassXCCmd(cmd *cobra.Command, args []string) error {
+	return c.run("", c.KeePassXC.Command, args...)
 }
 
 func (c *Config) keePassXCFunc(entry string) map[string]string {

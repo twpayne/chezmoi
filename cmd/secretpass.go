@@ -7,14 +7,13 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	vfs "github.com/twpayne/go-vfs"
 )
 
 var passCmd = &cobra.Command{
 	Use:     "pass [args...]",
 	Short:   "Execute the pass CLI",
 	PreRunE: config.ensureNoError,
-	RunE:    makeRunE(config.runSecretPassCmd),
+	RunE:    config.runSecretPassCmd,
 }
 
 type passCmdConfig struct {
@@ -30,8 +29,8 @@ func init() {
 	config.addTemplateFunc("pass", config.passFunc)
 }
 
-func (c *Config) runSecretPassCmd(fs vfs.FS, args []string) error {
-	return c.run(fs, "", c.Pass.Command, args...)
+func (c *Config) runSecretPassCmd(cmd *cobra.Command, args []string) error {
+	return c.run("", c.Pass.Command, args...)
 }
 
 func (c *Config) passFunc(id string) string {

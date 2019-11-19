@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	vfs "github.com/twpayne/go-vfs"
 	keyring "github.com/zalando/go-keyring"
 	"golang.org/x/crypto/ssh/terminal"
 )
@@ -15,7 +14,7 @@ var keyringSetCmd = &cobra.Command{
 	Args:    cobra.NoArgs,
 	Short:   "Set a password in keyring",
 	PreRunE: config.ensureNoError,
-	RunE:    makeRunE(config.runKeyringSetCmd),
+	RunE:    config.runKeyringSetCmd,
 }
 
 func init() {
@@ -25,7 +24,7 @@ func init() {
 	persistentFlags.StringVar(&config.keyring.password, "password", "", "password")
 }
 
-func (c *Config) runKeyringSetCmd(fs vfs.FS, args []string) error {
+func (c *Config) runKeyringSetCmd(cmd *cobra.Command, args []string) error {
 	passwordString := c.keyring.password
 	if passwordString == "" {
 		fmt.Print("Password: ")

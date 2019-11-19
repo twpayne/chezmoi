@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	vfs "github.com/twpayne/go-vfs"
 )
 
 var archiveCmd = &cobra.Command{
@@ -15,15 +14,15 @@ var archiveCmd = &cobra.Command{
 	Long:    mustGetLongHelp("archive"),
 	Example: getExample("archive"),
 	PreRunE: config.ensureNoError,
-	RunE:    makeRunE(config.runArchiveCmd),
+	RunE:    config.runArchiveCmd,
 }
 
 func init() {
 	rootCmd.AddCommand(archiveCmd)
 }
 
-func (c *Config) runArchiveCmd(fs vfs.FS, args []string) error {
-	ts, err := c.getTargetState(fs, nil)
+func (c *Config) runArchiveCmd(cmd *cobra.Command, args []string) error {
+	ts, err := c.getTargetState(nil)
 	if err != nil {
 		return err
 	}

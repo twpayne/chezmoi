@@ -5,7 +5,6 @@ import (
 	"path/filepath"
 
 	"github.com/spf13/cobra"
-	vfs "github.com/twpayne/go-vfs"
 )
 
 var sourcePathCmd = &cobra.Command{
@@ -14,15 +13,15 @@ var sourcePathCmd = &cobra.Command{
 	Long:    mustGetLongHelp("source-path"),
 	Example: getExample("source-path"),
 	PreRunE: config.ensureNoError,
-	RunE:    makeRunE(config.runSourcePathCmd),
+	RunE:    config.runSourcePathCmd,
 }
 
 func init() {
 	rootCmd.AddCommand(sourcePathCmd)
 }
 
-func (c *Config) runSourcePathCmd(fs vfs.FS, args []string) error {
-	ts, err := c.getTargetState(fs, nil)
+func (c *Config) runSourcePathCmd(cmd *cobra.Command, args []string) error {
+	ts, err := c.getTargetState(nil)
 	if err != nil {
 		return err
 	}
@@ -30,7 +29,7 @@ func (c *Config) runSourcePathCmd(fs vfs.FS, args []string) error {
 		_, err := fmt.Println(ts.SourceDir)
 		return err
 	}
-	entries, err := c.getEntries(fs, ts, args)
+	entries, err := c.getEntries(ts, args)
 	if err != nil {
 		return err
 	}

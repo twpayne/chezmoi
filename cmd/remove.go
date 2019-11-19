@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 
 	"github.com/spf13/cobra"
-	vfs "github.com/twpayne/go-vfs"
 )
 
 type removeCmdConfig struct {
@@ -21,8 +20,8 @@ var removeCmd = &cobra.Command{
 	Long:     mustGetLongHelp("remove"),
 	Example:  getExample("remove"),
 	PreRunE:  config.ensureNoError,
-	RunE:     makeRunE(config.runRemoveCmd),
-	PostRunE: makeRunE(config.autoCommitAndAutoPush),
+	RunE:     config.runRemoveCmd,
+	PostRunE: config.autoCommitAndAutoPush,
 }
 
 func init() {
@@ -32,16 +31,15 @@ func init() {
 	persistentFlags.BoolVarP(&config.remove.force, "force", "f", false, "remove without prompting")
 }
 
-func (c *Config) runRemoveCmd(fs vfs.FS, args []string) error {
-	ts, err := c.getTargetState(fs, nil)
+func (c *Config) runRemoveCmd(cmd *cobra.Command, args []string) error {
+	ts, err := c.getTargetState(nil)
 	if err != nil {
 		return err
 	}
-	entries, err := c.getEntries(fs, ts, args)
+	entries, err := c.getEntries(ts, args)
 	if err != nil {
 		return nil
 	}
-	mutator := c.getDefaultMutator(fs)
 	for _, entry := range entries {
 		destDirPath := filepath.Join(c.DestDir, entry.TargetName())
 		sourceDirPath := filepath.Join(c.SourceDir, entry.SourceName())
@@ -60,10 +58,10 @@ func (c *Config) runRemoveCmd(fs vfs.FS, args []string) error {
 				c.remove.force = true
 			}
 		}
-		if err := mutator.RemoveAll(destDirPath); err != nil && !os.IsNotExist(err) {
+		if err := c.mutator.RemoveAll(destDirPath); err != nil && !os.IsNotExist(err) {
 			return err
 		}
-		if err := mutator.RemoveAll(sourceDirPath); err != nil && !os.IsNotExist(err) {
+		if err := c.mutator.RemoveAll(sourceDirPath); err != nil && !os.IsNotExist(err) {
 			return err
 		}
 	}

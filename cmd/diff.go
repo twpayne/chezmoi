@@ -3,7 +3,6 @@ package cmd
 import (
 	"github.com/spf13/cobra"
 	"github.com/twpayne/chezmoi/internal/chezmoi"
-	vfs "github.com/twpayne/go-vfs"
 	bolt "go.etcd.io/bbolt"
 )
 
@@ -13,18 +12,18 @@ var diffCmd = &cobra.Command{
 	Long:    mustGetLongHelp("diff"),
 	Example: getExample("diff"),
 	PreRunE: config.ensureNoError,
-	RunE:    makeRunE(config.runDiffCmd),
+	RunE:    config.runDiffCmd,
 }
 
 func init() {
 	rootCmd.AddCommand(diffCmd)
 }
 
-func (c *Config) runDiffCmd(fs vfs.FS, args []string) error {
+func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) error {
 	c.DryRun = true
-	mutator := chezmoi.NewVerboseMutator(c.Stdout(), chezmoi.NullMutator{}, c.colored)
+	c.mutator = chezmoi.NewVerboseMutator(c.Stdout(), chezmoi.NullMutator{}, c.colored)
 
-	persistentState, err := c.getPersistentState(fs, &bolt.Options{
+	persistentState, err := c.getPersistentState(&bolt.Options{
 		ReadOnly: true,
 	})
 	if err != nil {
@@ -32,5 +31,5 @@ func (c *Config) runDiffCmd(fs vfs.FS, args []string) error {
 	}
 	defer persistentState.Close()
 
-	return c.applyArgs(fs, args, mutator, persistentState)
+	return c.applyArgs(args, persistentState)
 }

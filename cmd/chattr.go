@@ -9,7 +9,6 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/twpayne/chezmoi/internal/chezmoi"
-	vfs "github.com/twpayne/go-vfs"
 )
 
 var chattrCmd = &cobra.Command{
@@ -19,7 +18,7 @@ var chattrCmd = &cobra.Command{
 	Long:    mustGetLongHelp("chattr"),
 	Example: getExample("chattr"),
 	PreRunE: config.ensureNoError,
-	RunE:    makeRunE(config.runChattrCmd),
+	RunE:    config.runChattrCmd,
 }
 
 type boolModifier int
@@ -37,23 +36,21 @@ func init() {
 	rootCmd.AddCommand(chattrCmd)
 }
 
-func (c *Config) runChattrCmd(fs vfs.FS, args []string) error {
+func (c *Config) runChattrCmd(cmd *cobra.Command, args []string) error {
 	ams, err := parseAttributeModifiers(args[0])
 	if err != nil {
 		return err
 	}
 
-	ts, err := c.getTargetState(fs, nil)
+	ts, err := c.getTargetState(nil)
 	if err != nil {
 		return err
 	}
 
-	entries, err := c.getEntries(fs, ts, args[1:])
+	entries, err := c.getEntries(ts, args[1:])
 	if err != nil {
 		return err
 	}
-
-	mutator := c.getDefaultMutator(fs)
 
 	updates := make(map[string]func() error)
 	for _, entry := range entries {
@@ -72,7 +69,7 @@ func (c *Config) runChattrCmd(fs vfs.FS, args []string) error {
 			if newBase != oldBase {
 				newpath := filepath.Join(ts.SourceDir, dir, newBase)
 				updates[oldpath] = func() error {
-					return mutator.Rename(oldpath, newpath)
+					return c.mutator.Rename(oldpath, newpath)
 				}
 			}
 		case *chezmoi.File:
@@ -90,7 +87,7 @@ func (c *Config) runChattrCmd(fs vfs.FS, args []string) error {
 			fa.Template = ams.template.modify(entry.Template)
 			newpath := filepath.Join(ts.SourceDir, dir, fa.SourceName())
 			if fa.Encrypted != entry.Encrypted {
-				oldContents, err := fs.ReadFile(filepath.Join(c.SourceDir, entry.SourceName()))
+				oldContents, err := c.fs.ReadFile(filepath.Join(c.SourceDir, entry.SourceName()))
 				if err != nil {
 					return err
 				}
@@ -106,14 +103,14 @@ func (c *Config) runChattrCmd(fs vfs.FS, args []string) error {
 				updates[oldpath] = func() error {
 					// FIXME replace file and contents atomically, see
 					// https://github.com/google/renameio/issues/16.
-					if err := mutator.WriteFile(newpath, newContents, 0644, oldContents); err != nil {
+					if err := c.mutator.WriteFile(newpath, newContents, 0644, oldContents); err != nil {
 						return err
 					}
-					return mutator.RemoveAll(oldpath)
+					return c.mutator.RemoveAll(oldpath)
 				}
 			} else if newpath != oldpath {
 				updates[oldpath] = func() error {
-					return mutator.Rename(oldpath, newpath)
+					return c.mutator.Rename(oldpath, newpath)
 				}
 			}
 		case *chezmoi.Symlink:
@@ -123,7 +120,7 @@ func (c *Config) runChattrCmd(fs vfs.FS, args []string) error {
 			if newBase != oldBase {
 				newpath := filepath.Join(ts.SourceDir, dir, newBase)
 				updates[oldpath] = func() error {
-					return mutator.Rename(oldpath, newpath)
+					return c.mutator.Rename(oldpath, newpath)
 				}
 			}
 		}

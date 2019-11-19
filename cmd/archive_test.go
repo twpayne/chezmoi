@@ -5,11 +5,13 @@ import (
 	"bytes"
 	"io"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/twpayne/chezmoi/internal/chezmoi"
 	"github.com/twpayne/go-vfs/vfst"
 )
 
@@ -22,11 +24,13 @@ func TestArchiveCmd(t *testing.T) {
 	defer cleanup()
 	stdout := &bytes.Buffer{}
 	c := &Config{
+		fs:        fs,
+		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false),
 		SourceDir: "/home/user/.local/share/chezmoi",
 		Umask:     022,
 		stdout:    stdout,
 	}
-	assert.NoError(t, c.runArchiveCmd(fs, nil))
+	assert.NoError(t, c.runArchiveCmd(nil, nil))
 	r := tar.NewReader(stdout)
 
 	h, err := r.Next()

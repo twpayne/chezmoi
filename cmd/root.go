@@ -44,7 +44,7 @@ var rootCmd = &cobra.Command{
 	Short:             "Manage your dotfiles across multiple machines, securely",
 	SilenceErrors:     true,
 	SilenceUsage:      true,
-	PersistentPreRunE: makeRunE(config.persistentPreRunRootE),
+	PersistentPreRunE: config.persistentPreRunRootE,
 }
 
 func init() {
@@ -120,7 +120,7 @@ func Execute() {
 }
 
 //nolint:interfacer
-func (c *Config) persistentPreRunRootE(fs vfs.FS, args []string) error {
+func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error {
 	switch c.Color {
 	case "on":
 		c.colored = true
@@ -136,14 +136,24 @@ func (c *Config) persistentPreRunRootE(fs vfs.FS, args []string) error {
 		return fmt.Errorf("invalid --color value: %s", c.Color)
 	}
 
-	info, err := fs.Stat(c.SourceDir)
+	c.fs = vfs.OSFS
+	if config.DryRun {
+		c.mutator = chezmoi.NullMutator{}
+	} else {
+		c.mutator = chezmoi.NewFSMutator(config.fs)
+	}
+	if config.Verbose {
+		c.mutator = chezmoi.NewVerboseMutator(c.Stdout(), c.mutator, c.colored)
+	}
+
+	info, err := c.fs.Stat(c.SourceDir)
 	switch {
 	case err == nil && !info.IsDir():
 		return fmt.Errorf("%s: not a directory", c.SourceDir)
 	case err == nil:
 		// FIXME renable private check on Windows
 		if runtime.GOOS != "windows" {
-			private, err := chezmoi.IsPrivate(fs, c.SourceDir)
+			private, err := chezmoi.IsPrivate(c.fs, c.SourceDir)
 			if err != nil {
 				return err
 			}

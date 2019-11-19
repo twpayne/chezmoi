@@ -8,14 +8,13 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	vfs "github.com/twpayne/go-vfs"
 )
 
 var onepasswordCmd = &cobra.Command{
 	Use:     "onepassword [args...]",
 	Short:   "Execute the 1Password CLI (op)",
 	PreRunE: config.ensureNoError,
-	RunE:    makeRunE(config.runOnepasswordCmd),
+	RunE:    config.runOnepasswordCmd,
 }
 
 type onepasswordCmdConfig struct {
@@ -31,8 +30,8 @@ func init() {
 	secretCmd.AddCommand(onepasswordCmd)
 }
 
-func (c *Config) runOnepasswordCmd(fs vfs.FS, args []string) error {
-	return c.run(fs, "", c.Onepassword.Command, args...)
+func (c *Config) runOnepasswordCmd(cmd *cobra.Command, args []string) error {
+	return c.run("", c.Onepassword.Command, args...)
 }
 
 func (c *Config) onepasswordFunc(item string) interface{} {

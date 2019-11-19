@@ -29,13 +29,15 @@ func TestCreateConfigFile(t *testing.T) {
 	defer cleanup()
 
 	conf := &Config{
+		fs:        fs,
+		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false),
 		SourceDir: "/home/user/.local/share/chezmoi",
 		stdin:     bytes.NewBufferString("john.smith@company.com\n"),
 		stdout:    &bytes.Buffer{},
 		bds:       xdg.NewTestBaseDirectorySpecification("/home/user", nil),
 	}
 
-	require.NoError(t, conf.createConfigFile(fs, chezmoi.NewFSMutator(fs)))
+	require.NoError(t, conf.createConfigFile())
 
 	vfst.RunTests(t, fs, "",
 		vfst.TestPath("/home/user/.config/chezmoi/chezmoi.yaml",
@@ -65,6 +67,8 @@ func TestInit(t *testing.T) {
 	defer cleanup()
 
 	c := &Config{
+		fs:        fs,
+		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false),
 		SourceDir: "/home/user/.local/share/chezmoi",
 		SourceVCS: sourceVCSConfig{
 			Command: "git",
@@ -72,7 +76,7 @@ func TestInit(t *testing.T) {
 		bds: xdg.NewTestBaseDirectorySpecification("/home/user", func(string) string { return "" }),
 	}
 
-	require.NoError(t, c.runInitCmd(fs, nil))
+	require.NoError(t, c.runInitCmd(nil, nil))
 	vfst.RunTests(t, fs, "",
 		vfst.TestPath("/home/user/.local/share/chezmoi",
 			vfst.TestIsDir,
@@ -94,6 +98,8 @@ func TestInitRepo(t *testing.T) {
 	defer cleanup()
 
 	c := &Config{
+		fs:        fs,
+		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false),
 		SourceDir: "/home/user/.local/share/chezmoi",
 		SourceVCS: sourceVCSConfig{
 			Command: "git",
@@ -103,7 +109,7 @@ func TestInitRepo(t *testing.T) {
 
 	wd, err := os.Getwd()
 	require.NoError(t, err)
-	require.NoError(t, c.runInitCmd(fs, []string{filepath.Join(wd, "testdata/gitrepo")}))
+	require.NoError(t, c.runInitCmd(nil, []string{filepath.Join(wd, "testdata/gitrepo")}))
 	vfst.RunTests(t, fs, "",
 		vfst.TestPath("/home/user/.local/share/chezmoi",
 			vfst.TestIsDir,

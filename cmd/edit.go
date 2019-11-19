@@ -18,8 +18,8 @@ var editCmd = &cobra.Command{
 	Long:     mustGetLongHelp("edit"),
 	Example:  getExample("edit"),
 	PreRunE:  config.ensureNoError,
-	RunE:     makeRunE(config.runEditCmd),
-	PostRunE: makeRunE(config.autoCommitAndAutoPush),
+	RunE:     config.runEditCmd,
+	PostRunE: config.autoCommitAndAutoPush,
 }
 
 type editCmdConfig struct {
@@ -44,7 +44,7 @@ type encryptedFile struct {
 	plaintextPath  string
 }
 
-func (c *Config) runEditCmd(fs vfs.FS, args []string) error {
+func (c *Config) runEditCmd(cmd *cobra.Command, args []string) error {
 	if len(args) == 0 {
 		if c.edit.apply {
 			c.warn("--apply is currently ignored when edit is run with no arguments")
@@ -55,21 +55,21 @@ func (c *Config) runEditCmd(fs vfs.FS, args []string) error {
 		if c.edit.prompt {
 			c.warn("--prompt is currently ignored when edit is run with no arguments")
 		}
-		return c.run(fs, "", c.getEditor(), c.SourceDir)
+		return c.run("", c.getEditor(), c.SourceDir)
 	}
 
 	if c.edit.prompt {
 		c.edit.diff = true
 	}
 
-	ts, err := c.getTargetState(fs, &chezmoi.PopulateOptions{
+	ts, err := c.getTargetState(&chezmoi.PopulateOptions{
 		ExecuteTemplates: false,
 	})
 	if err != nil {
 		return err
 	}
 
-	entries, err := c.getEntries(fs, ts, args)
+	entries, err := c.getEntries(ts, args)
 	if err != nil {
 		return err
 	}
@@ -121,7 +121,7 @@ func (c *Config) runEditCmd(fs vfs.FS, args []string) error {
 		}
 	}
 
-	if err := c.runEditor(fs, argv...); err != nil {
+	if err := c.runEditor(argv...); err != nil {
 		return err
 	}
 
@@ -141,18 +141,17 @@ func (c *Config) runEditCmd(fs vfs.FS, args []string) error {
 	}
 
 	// Recompute the target state and entries after editing.
-	ts, err = c.getTargetState(fs, nil)
+	ts, err = c.getTargetState(nil)
 	if err != nil {
 		return err
 	}
 
-	entries, err = c.getEntries(fs, ts, args)
+	entries, err = c.getEntries(ts, args)
 	if err != nil {
 		return err
 	}
 
-	readOnlyFS := vfs.NewReadOnlyFS(fs)
-	applyMutator := c.getDefaultMutator(fs)
+	readOnlyFS := vfs.NewReadOnlyFS(c.fs)
 	applyOptions := chezmoi.ApplyOptions{
 		DestDir:           ts.DestDir,
 		DryRun:            c.DryRun,
@@ -187,7 +186,7 @@ func (c *Config) runEditCmd(fs vfs.FS, args []string) error {
 					c.edit.prompt = false
 				}
 			}
-			if err := entry.Apply(readOnlyFS, applyMutator, c.Follow, &applyOptions); err != nil {
+			if err := entry.Apply(readOnlyFS, c.mutator, c.Follow, &applyOptions); err != nil {
 				return err
 			}
 		}

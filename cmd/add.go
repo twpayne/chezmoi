@@ -19,8 +19,8 @@ var addCmd = &cobra.Command{
 	Long:     mustGetLongHelp("add"),
 	Example:  getExample("add"),
 	PreRunE:  config.ensureNoError,
-	RunE:     makeRunE(config.runAddCmd),
-	PostRunE: makeRunE(config.autoCommitAndAutoPush),
+	RunE:     config.runAddCmd,
+	PostRunE: config.autoCommitAndAutoPush,
 }
 
 type addCmdConfig struct {
@@ -42,13 +42,12 @@ func init() {
 	persistentFlags.BoolVarP(&config.add.options.AutoTemplate, "autotemplate", "a", false, "auto generate the template when adding files as templates")
 }
 
-func (c *Config) runAddCmd(fs vfs.FS, args []string) (err error) {
-	ts, err := c.getTargetState(fs, nil)
+func (c *Config) runAddCmd(cmd *cobra.Command, args []string) (err error) {
+	ts, err := c.getTargetState(nil)
 	if err != nil {
 		return err
 	}
-	mutator := c.getDefaultMutator(fs)
-	if err := c.ensureSourceDirectory(fs, mutator); err != nil {
+	if err := c.ensureSourceDirectory(); err != nil {
 		return err
 	}
 	destDirPrefix := filepath.FromSlash(ts.DestDir + "/")
@@ -68,7 +67,7 @@ func (c *Config) runAddCmd(fs vfs.FS, args []string) (err error) {
 			return err
 		}
 		if c.add.recursive {
-			if err := vfs.Walk(fs, path, func(path string, info os.FileInfo, err error) error {
+			if err := vfs.Walk(c.fs, path, func(path string, info os.FileInfo, err error) error {
 				if err != nil {
 					return err
 				}
@@ -90,7 +89,7 @@ func (c *Config) runAddCmd(fs vfs.FS, args []string) (err error) {
 						c.add.prompt = false
 					}
 				}
-				return ts.Add(fs, c.add.options, path, info, c.Follow, mutator)
+				return ts.Add(c.fs, c.add.options, path, info, c.Follow, c.mutator)
 			}); err != nil {
 				return err
 			}
@@ -113,7 +112,7 @@ func (c *Config) runAddCmd(fs vfs.FS, args []string) (err error) {
 					c.add.prompt = false
 				}
 			}
-			if err := ts.Add(fs, c.add.options, path, nil, c.Follow, mutator); err != nil {
+			if err := ts.Add(c.fs, c.add.options, path, nil, c.Follow, c.mutator); err != nil {
 				return err
 			}
 		}
