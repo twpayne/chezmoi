@@ -7,6 +7,6 @@ import (
 )
 
 // WriteFile implements Mutator.WriteFile.
-func (a *FSMutator) WriteFile(name string, data []byte, perm os.FileMode, currData []byte) error {
-	return a.FS.WriteFile(name, data, perm)
+func (m *FSMutator) WriteFile(name string, data []byte, perm os.FileMode, currData []byte) error {
+	return m.FS.WriteFile(name, data, perm)
 }
