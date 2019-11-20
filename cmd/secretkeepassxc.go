@@ -62,9 +62,6 @@ func (c *Config) keePassXCFunc(entry string) map[string]string {
 	args := []string{"show"}
 	args = append(args, c.KeePassXC.Args...)
 	args = append(args, c.KeePassXC.Database, entry)
-	if c.Verbose {
-		fmt.Printf("%s %s\n", name, strings.Join(args, " "))
-	}
 	output, err := c.runKeePassXCCLICommand(name, args)
 	if err != nil {
 		panic(fmt.Errorf("keepassxc: %s %s: %w", name, strings.Join(args, " "), err))
@@ -92,9 +89,6 @@ func (c *Config) keePassXCAttributeFunc(entry, attribute string) string {
 	args := []string{"show", "--attributes", attribute, "--quiet"}
 	args = append(args, c.KeePassXC.Args...)
 	args = append(args, c.KeePassXC.Database, entry)
-	if c.Verbose {
-		fmt.Printf("%s %s\n", name, strings.Join(args, " "))
-	}
 	output, err := c.runKeePassXCCLICommand(name, args)
 	if err != nil {
 		panic(fmt.Errorf("keepassxc: %s %s: %w", name, strings.Join(args, " "), err))

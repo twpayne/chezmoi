@@ -44,9 +44,6 @@ func (c *Config) secretFunc(args ...string) interface{} {
 		return value
 	}
 	name := c.GenericSecret.Command
-	if c.Verbose {
-		fmt.Printf("%s %s\n", name, strings.Join(args, " "))
-	}
 	cmd := exec.Command(name, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
@@ -65,9 +62,6 @@ func (c *Config) secretJSONFunc(args ...string) interface{} {
 		return value
 	}
 	name := c.GenericSecret.Command
-	if c.Verbose {
-		fmt.Printf("%s %s\n", name, strings.Join(args, " "))
-	}
 	cmd := exec.Command(name, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr

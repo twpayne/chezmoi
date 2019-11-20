@@ -40,9 +40,6 @@ func (c *Config) onepasswordFunc(item string) interface{} {
 	}
 	name := c.Onepassword.Command
 	args := []string{"get", "item", item}
-	if c.Verbose {
-		fmt.Printf("%s %s\n", name, strings.Join(args, " "))
-	}
 	cmd := exec.Command(name, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr

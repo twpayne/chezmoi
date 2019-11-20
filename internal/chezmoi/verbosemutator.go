@@ -46,7 +46,12 @@ func (m *VerboseMutator) Chmod(name string, mode os.FileMode) error {
 
 // IdempotentCmdOutput implements Mutator.IdempotentCmdOutput.
 func (m *VerboseMutator) IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error) {
-	action := fmt.Sprintf("run %s", cmd.String())
+	var action string
+	if cmd.Dir == "" {
+		action = cmd.String()
+	} else {
+		action = fmt.Sprintf("( cd %s && %s )", cmd.Dir, cmd.String())
+	}
 	output, err := m.m.IdempotentCmdOutput(cmd)
 	if err == nil {
 		_, _ = fmt.Fprintln(m.w, action)
@@ -94,7 +99,12 @@ func (m *VerboseMutator) Rename(oldpath, newpath string) error {
 
 // RunCmd implements Mutator.RunCmd.
 func (m *VerboseMutator) RunCmd(cmd *exec.Cmd) error {
-	action := fmt.Sprintf("run %s", cmd.String())
+	var action string
+	if cmd.Dir == "" {
+		action = cmd.String()
+	} else {
+		action = fmt.Sprintf("( cd %s && %s )", cmd.Dir, cmd.String())
+	}
 	err := m.m.RunCmd(cmd)
 	if err == nil {
 		_, _ = fmt.Fprintln(m.w, action)

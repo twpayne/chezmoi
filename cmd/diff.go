@@ -21,7 +21,11 @@ func init() {
 
 func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) error {
 	c.DryRun = true
-	c.mutator = chezmoi.NewVerboseMutator(c.Stdout(), chezmoi.NullMutator{}, c.colored)
+	c.mutator = chezmoi.NullMutator{}
+	if c.Debug {
+		c.mutator = chezmoi.NewDebugMutator(c.mutator)
+	}
+	c.mutator = chezmoi.NewVerboseMutator(c.Stdout(), c.mutator, c.colored)
 
 	persistentState, err := c.getPersistentState(&bolt.Options{
 		ReadOnly: true,
