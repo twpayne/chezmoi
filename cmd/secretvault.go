@@ -40,9 +40,6 @@ func (c *Config) vaultFunc(key string) interface{} {
 	}
 	name := c.Vault.Command
 	args := []string{"kv", "get", "-format=json", key}
-	if c.Verbose {
-		fmt.Printf("%s %s\n", name, strings.Join(args, " "))
-	}
 	cmd := exec.Command(name, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr

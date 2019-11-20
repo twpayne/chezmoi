@@ -39,9 +39,6 @@ func (c *Config) passFunc(id string) string {
 	}
 	name := c.Pass.Command
 	args := []string{"show", id}
-	if c.Verbose {
-		fmt.Printf("%s %s\n", name, strings.Join(args, " "))
-	}
 	cmd := exec.Command(name, args...)
 	output, err := c.mutator.IdempotentCmdOutput(cmd)
 	if err != nil {

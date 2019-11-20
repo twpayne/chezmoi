@@ -41,9 +41,6 @@ func (c *Config) bitwardenFunc(args ...string) interface{} {
 	}
 	name := c.Bitwarden.Command
 	args = append([]string{"get"}, args...)
-	if c.Verbose {
-		fmt.Printf("%s %s\n", name, strings.Join(args, " "))
-	}
 	cmd := exec.Command(name, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr

@@ -366,13 +366,6 @@ func (c *Config) getVCS() (VCS, error) {
 }
 
 func (c *Config) output(dir, name string, argv ...string) ([]byte, error) {
-	if c.Verbose {
-		if dir == "" {
-			fmt.Printf("%s %s\n", name, strings.Join(argv, " "))
-		} else {
-			fmt.Printf("( cd %s && %s %s )\n", dir, name, strings.Join(argv, " "))
-		}
-	}
 	cmd := exec.Command(name, argv...)
 	if dir != "" {
 		var err error
@@ -405,16 +398,6 @@ func (c *Config) prompt(s, choices string) (byte, error) {
 
 // run runs name argv... in dir.
 func (c *Config) run(dir, name string, argv ...string) error {
-	if c.Verbose {
-		if dir == "" {
-			fmt.Printf("%s %s\n", name, strings.Join(argv, " "))
-		} else {
-			fmt.Printf("( cd %s && %s %s )\n", dir, name, strings.Join(argv, " "))
-		}
-	}
-	if c.DryRun {
-		return nil
-	}
 	cmd := exec.Command(name, argv...)
 	if dir != "" {
 		var err error
@@ -426,10 +409,7 @@ func (c *Config) run(dir, name string, argv ...string) error {
 	cmd.Stdin = c.Stdin()
 	cmd.Stdout = c.Stdout()
 	cmd.Stderr = c.Stdout()
-	if c.Debug {
-		return chezmoi.Debugf("run %s", []interface{}{cmd}, cmd.Run)
-	}
-	return cmd.Run()
+	return c.mutator.RunCmd(cmd)
 }
 
 func (c *Config) runEditor(argv ...string) error {

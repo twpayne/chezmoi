@@ -53,9 +53,6 @@ func (c *Config) runLastpassCmd(cmd *cobra.Command, args []string) error {
 
 func (c *Config) lastpassOutput(args ...string) ([]byte, error) {
 	name := c.Lastpass.Command
-	if c.Verbose {
-		fmt.Printf("%s %s\n", name, strings.Join(args, " "))
-	}
 	cmd := exec.Command(name, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
