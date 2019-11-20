@@ -4,16 +4,17 @@ Manage your dotfiles securely across multiple machines.
 
 * [Concepts](#concepts)
 * [Global command line flags](#global-command-line-flags)
-  * [`--color` *value*](#--color-value)
-  * [`-c`, `--config` *filename*](#-c---config-filename)
-  * [`-D`, `--destination` *directory*](#-d---destination-directory)
-  * [`-f`, `--follow`](#-f---follow)
-  * [`-n`, `--dry-run`](#-n---dry-run)
-  * [`-h`, `--help`](#-h---help)
-  * [`-r`. `--remove`](#-r---remove)
-  * [`-S`, `--source` *directory*](#-s---source-directory)
-  * [`-v`, `--verbose`](#-v---verbose)
-  * [`--version`](#--version)
+  * [`--color` *value*](#color-value)
+  * [`-c`, `--config` *filename*](#c---config-filename)
+  * [`--debug`](#debug)
+  * [`-D`, `--destination` *directory*](#d---destination-directory)
+  * [`-f`, `--follow`](#f---follow)
+  * [`-n`, `--dry-run`](#n---dry-run)
+  * [`-h`, `--help`](#h---help)
+  * [`-r`. `--remove`](#r---remove)
+  * [`-S`, `--source` *directory*](#s---source-directory)
+  * [`-v`, `--verbose`](#v---verbose)
+  * [`--version`](#version)
 * [Configuration file](#configuration-file)
   * [Configuration variables](#configuration-variables)
 * [Source state attributes](#source-state-attributes)
@@ -104,6 +105,10 @@ Colorize diffs, *value* can be `on`, `off`, or `auto`. The default value is
 ### `-c`, `--config` *filename*
 
 Read the configuration from *filename*.
+
+### `--debug`
+
+Log information helpful for debugging.
 
 ### `-D`, `--destination` *directory*
 
