@@ -102,7 +102,7 @@ func Debugf(format string, args []interface{}, f func() error) error {
 		if err == nil {
 			log.Printf(format+" (%s)", append(args, time.Since(start))...)
 		} else {
-			log.Printf(format+" == %v (%s)", append(args, err, time.Since(start)))
+			log.Printf(format+" == %v (%s)", append(args, err, time.Since(start))...)
 		}
 		return err
 	case <-time.After(1 * time.Second):
@@ -111,7 +111,7 @@ func Debugf(format string, args []interface{}, f func() error) error {
 		if err == nil {
 			log.Printf(format+" (%s)", append(args, time.Since(start))...)
 		} else {
-			log.Printf(format+" == %v (%s)", append(args, err, time.Since(start)))
+			log.Printf(format+" == %v (%s)", append(args, err, time.Since(start))...)
 		}
 		return err
 	}
