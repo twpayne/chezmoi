@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	vfs "github.com/twpayne/go-vfs"
 )
 
 type dataCmdConfig struct {
@@ -19,7 +18,7 @@ var dataCmd = &cobra.Command{
 	Long:    mustGetLongHelp("data"),
 	Example: getExample("data"),
 	PreRunE: config.ensureNoError,
-	RunE:    makeRunE(config.runDataCmd),
+	RunE:    config.runDataCmd,
 }
 
 func init() {
@@ -29,12 +28,12 @@ func init() {
 	persistentFlags.StringVarP(&config.data.format, "format", "f", "json", "format (JSON, TOML, or YAML)")
 }
 
-func (c *Config) runDataCmd(fs vfs.FS, args []string) error {
+func (c *Config) runDataCmd(cmd *cobra.Command, args []string) error {
 	format, ok := formatMap[strings.ToLower(c.data.format)]
 	if !ok {
 		return fmt.Errorf("%s: unknown format", c.data.format)
 	}
-	ts, err := c.getTargetState(fs, nil)
+	ts, err := c.getTargetState(nil)
 	if err != nil {
 		return err
 	}

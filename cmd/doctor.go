@@ -11,7 +11,6 @@ import (
 	"github.com/coreos/go-semver/semver"
 	"github.com/spf13/cobra"
 	shell "github.com/twpayne/go-shell"
-	vfs "github.com/twpayne/go-vfs"
 )
 
 var doctorCmd = &cobra.Command{
@@ -20,7 +19,7 @@ var doctorCmd = &cobra.Command{
 	Short:   "Check your system for potential problems",
 	Example: getExample("doctor"),
 	Long:    mustGetLongHelp("doctor"),
-	RunE:    makeRunE(config.runDoctorCmd),
+	RunE:    config.runDoctorCmd,
 }
 
 const (
@@ -89,7 +88,7 @@ func init() {
 	rootCmd.AddCommand(doctorCmd)
 }
 
-func (c *Config) runDoctorCmd(fs vfs.FS, args []string) error {
+func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 	shell, _ := shell.CurrentUserShell()
 
 	var vcsCommandCheck doctorCheck

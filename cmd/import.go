@@ -12,7 +12,6 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/twpayne/chezmoi/internal/chezmoi"
-	vfs "github.com/twpayne/go-vfs"
 )
 
 var _importCmd = &cobra.Command{
@@ -22,7 +21,7 @@ var _importCmd = &cobra.Command{
 	Long:    mustGetLongHelp("import"),
 	Example: getExample("import"),
 	PreRunE: config.ensureNoError,
-	RunE:    makeRunE(config.runImportCmd),
+	RunE:    config.runImportCmd,
 }
 
 type importCmdConfig struct {
@@ -40,8 +39,8 @@ func init() {
 	persistentFlags.BoolVarP(&config._import.removeDestination, "remove-destination", "r", false, "remove destination before import")
 }
 
-func (c *Config) runImportCmd(fs vfs.FS, args []string) error {
-	ts, err := c.getTargetState(fs, nil)
+func (c *Config) runImportCmd(cmd *cobra.Command, args []string) error {
+	ts, err := c.getTargetState(nil)
 	if err != nil {
 		return err
 	}
@@ -50,7 +49,7 @@ func (c *Config) runImportCmd(fs vfs.FS, args []string) error {
 		r = c.Stdin()
 	} else {
 		arg := args[0]
-		f, err := fs.Open(arg)
+		f, err := c.fs.Open(arg)
 		if err != nil {
 			return err
 		}
@@ -69,12 +68,11 @@ func (c *Config) runImportCmd(fs vfs.FS, args []string) error {
 			return fmt.Errorf("%s: unknown format", arg)
 		}
 	}
-	mutator := c.getDefaultMutator(fs)
 	if c._import.removeDestination {
-		entry, err := ts.Get(fs, c._import.importTAROptions.DestinationDir)
+		entry, err := ts.Get(c.fs, c._import.importTAROptions.DestinationDir)
 		switch {
 		case err == nil:
-			if err := mutator.RemoveAll(filepath.Join(c.SourceDir, entry.SourceName())); err != nil {
+			if err := c.mutator.RemoveAll(filepath.Join(c.SourceDir, entry.SourceName())); err != nil {
 				return err
 			}
 		case os.IsNotExist(err):
@@ -82,5 +80,5 @@ func (c *Config) runImportCmd(fs vfs.FS, args []string) error {
 			return err
 		}
 	}
-	return ts.ImportTAR(tar.NewReader(r), c._import.importTAROptions, mutator)
+	return ts.ImportTAR(tar.NewReader(r), c._import.importTAROptions, c.mutator)
 }

@@ -4,11 +4,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"os"
 	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/twpayne/chezmoi/internal/chezmoi"
 	"github.com/twpayne/go-vfs/vfst"
 )
 
@@ -21,6 +23,8 @@ func TestDumpCmd(t *testing.T) {
 	defer cleanup()
 	stdout := &bytes.Buffer{}
 	c := &Config{
+		fs:        fs,
+		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false),
 		SourceDir: "/home/user/.local/share/chezmoi",
 		Umask:     022,
 		dump: dumpCmdConfig{
@@ -29,7 +33,7 @@ func TestDumpCmd(t *testing.T) {
 		},
 		stdout: stdout,
 	}
-	assert.NoError(t, c.runDumpCmd(fs, nil))
+	assert.NoError(t, c.runDumpCmd(nil, nil))
 	fmt.Println(stdout.String())
 	var actual interface{}
 	assert.NoError(t, json.NewDecoder(stdout).Decode(&actual))

@@ -8,6 +8,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/twpayne/chezmoi/internal/chezmoi"
 	vfs "github.com/twpayne/go-vfs"
 	"github.com/twpayne/go-vfs/vfst"
 )
@@ -140,12 +141,14 @@ func TestApplyCommand(t *testing.T) {
 			require.NoError(t, err)
 			defer cleanup()
 			c := &Config{
+				fs:        fs,
+				mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false),
 				SourceDir: "/home/user/.local/share/chezmoi",
 				DestDir:   "/home/user",
 				Umask:     022,
 				bds:       newTestBaseDirectorySpecification("/home/user"),
 			}
-			assert.NoError(t, c.runApplyCmd(fs, nil))
+			assert.NoError(t, c.runApplyCmd(nil, nil))
 			vfst.RunTests(t, fs, "",
 				vfst.TestPath("/home/user/dir",
 					vfst.TestIsDir,
@@ -228,13 +231,15 @@ func TestApplyFollow(t *testing.T) {
 			require.NoError(t, err)
 			defer cleanup()
 			c := &Config{
+				fs:        fs,
+				mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false),
 				SourceDir: "/home/user/.local/share/chezmoi",
 				DestDir:   "/home/user",
 				Follow:    tc.follow,
 				Umask:     022,
 				bds:       newTestBaseDirectorySpecification("/home/user"),
 			}
-			assert.NoError(t, c.runApplyCmd(fs, nil))
+			assert.NoError(t, c.runApplyCmd(nil, nil))
 			vfst.RunTests(t, fs, "", tc.tests)
 		})
 	}
@@ -346,6 +351,8 @@ func TestApplyRemove(t *testing.T) {
 			require.NoError(t, err)
 			defer cleanup()
 			c := &Config{
+				fs:        fs,
+				mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false),
 				SourceDir: "/home/user/.local/share/chezmoi",
 				DestDir:   "/home/user",
 				Data:      tc.data,
@@ -353,7 +360,7 @@ func TestApplyRemove(t *testing.T) {
 				Umask:     022,
 				bds:       newTestBaseDirectorySpecification("/home/user"),
 			}
-			assert.NoError(t, c.runApplyCmd(fs, nil))
+			assert.NoError(t, c.runApplyCmd(nil, nil))
 			vfst.RunTests(t, fs, "", tc.tests)
 		})
 	}
@@ -375,6 +382,8 @@ func TestApplyScript(t *testing.T) {
 			}()
 			apply := func() {
 				c := &Config{
+					fs:                fs,
+					mutator:           chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false),
 					SourceDir:         "/home/user/.local/share/chezmoi",
 					DestDir:           "/",
 					Umask:             022,
@@ -382,7 +391,7 @@ func TestApplyScript(t *testing.T) {
 					bds:               newTestBaseDirectorySpecification("/home/user"),
 					scriptStateBucket: []byte("script"),
 				}
-				require.NoError(t, c.runApplyCmd(fs, nil))
+				require.NoError(t, c.runApplyCmd(nil, nil))
 			}
 			// Run apply three times. As chezmoi should be idempotent, the
 			// result should be the same each time.
@@ -411,6 +420,8 @@ func TestApplyRunOnce(t *testing.T) {
 	defer cleanup()
 
 	c := &Config{
+		fs:        fs,
+		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false),
 		SourceDir: "/home/user/.local/share/chezmoi",
 		DestDir:   "/",
 		Umask:     022,
@@ -421,7 +432,7 @@ func TestApplyRunOnce(t *testing.T) {
 		scriptStateBucket: []byte("script"),
 	}
 
-	require.NoError(t, c.runApplyCmd(fs, nil))
+	require.NoError(t, c.runApplyCmd(nil, nil))
 	vfst.RunTests(t, fs, "",
 		vfst.TestPath("/home/user/.config/chezmoi/chezmoistate.boltdb",
 			vfst.TestModeIsRegular,
@@ -432,7 +443,7 @@ func TestApplyRunOnce(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, []byte("bar\n"), actualData)
 
-	require.NoError(t, c.runApplyCmd(fs, nil))
+	require.NoError(t, c.runApplyCmd(nil, nil))
 	actualData, err = ioutil.ReadFile(tempFile)
 	require.NoError(t, err)
 	assert.Equal(t, []byte("bar\n"), actualData)

@@ -8,14 +8,13 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	vfs "github.com/twpayne/go-vfs"
 )
 
 var bitwardenCmd = &cobra.Command{
 	Use:     "bitwarden [args...]",
 	Short:   "Execute the Bitwarden CLI (bw)",
 	PreRunE: config.ensureNoError,
-	RunE:    makeRunE(config.runBitwardenCmd),
+	RunE:    config.runBitwardenCmd,
 }
 
 type bitwardenCmdConfig struct {
@@ -31,8 +30,8 @@ func init() {
 	secretCmd.AddCommand(bitwardenCmd)
 }
 
-func (c *Config) runBitwardenCmd(fs vfs.FS, args []string) error {
-	return c.exec(fs, append([]string{c.Bitwarden.Command}, args...))
+func (c *Config) runBitwardenCmd(cmd *cobra.Command, args []string) error {
+	return c.run("", c.Bitwarden.Command, args...)
 }
 
 func (c *Config) bitwardenFunc(args ...string) interface{} {
@@ -48,7 +47,7 @@ func (c *Config) bitwardenFunc(args ...string) interface{} {
 	cmd := exec.Command(name, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
-	output, err := cmd.Output()
+	output, err := c.mutator.IdempotentCmdOutput(cmd)
 	if err != nil {
 		panic(fmt.Errorf("bitwarden: %s %s: %w\n%s", name, strings.Join(args, " "), err, output))
 	}

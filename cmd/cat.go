@@ -5,7 +5,6 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/twpayne/chezmoi/internal/chezmoi"
-	vfs "github.com/twpayne/go-vfs"
 )
 
 var catCmd = &cobra.Command{
@@ -15,19 +14,19 @@ var catCmd = &cobra.Command{
 	Long:    mustGetLongHelp("cat"),
 	Example: getExample("cat"),
 	PreRunE: config.ensureNoError,
-	RunE:    makeRunE(config.runCatCmd),
+	RunE:    config.runCatCmd,
 }
 
 func init() {
 	rootCmd.AddCommand(catCmd)
 }
 
-func (c *Config) runCatCmd(fs vfs.FS, args []string) error {
-	ts, err := c.getTargetState(fs, nil)
+func (c *Config) runCatCmd(cmd *cobra.Command, args []string) error {
+	ts, err := c.getTargetState(nil)
 	if err != nil {
 		return err
 	}
-	entries, err := c.getEntries(fs, ts, args)
+	entries, err := c.getEntries(ts, args)
 	if err != nil {
 		return err
 	}

@@ -4,7 +4,6 @@ import (
 	"path/filepath"
 
 	"github.com/spf13/cobra"
-	vfs "github.com/twpayne/go-vfs"
 )
 
 var forgetCmd = &cobra.Command{
@@ -15,26 +14,25 @@ var forgetCmd = &cobra.Command{
 	Long:     mustGetLongHelp("forget"),
 	Example:  getExample("forget"),
 	PreRunE:  config.ensureNoError,
-	RunE:     makeRunE(config.runForgetCmd),
-	PostRunE: makeRunE(config.autoCommitAndAutoPush),
+	RunE:     config.runForgetCmd,
+	PostRunE: config.autoCommitAndAutoPush,
 }
 
 func init() {
 	rootCmd.AddCommand(forgetCmd)
 }
 
-func (c *Config) runForgetCmd(fs vfs.FS, args []string) error {
-	ts, err := c.getTargetState(fs, nil)
+func (c *Config) runForgetCmd(cmd *cobra.Command, args []string) error {
+	ts, err := c.getTargetState(nil)
 	if err != nil {
 		return err
 	}
-	entries, err := c.getEntries(fs, ts, args)
+	entries, err := c.getEntries(ts, args)
 	if err != nil {
 		return err
 	}
-	mutator := c.getDefaultMutator(fs)
 	for _, entry := range entries {
-		if err := mutator.RemoveAll(filepath.Join(c.SourceDir, entry.SourceName())); err != nil {
+		if err := c.mutator.RemoveAll(filepath.Join(c.SourceDir, entry.SourceName())); err != nil {
 			return err
 		}
 	}

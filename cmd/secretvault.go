@@ -8,14 +8,13 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	vfs "github.com/twpayne/go-vfs"
 )
 
 var vaultCmd = &cobra.Command{
 	Use:     "vault [args...]",
 	Short:   "Execute the Hashicorp Vault CLI (vault)",
 	PreRunE: config.ensureNoError,
-	RunE:    makeRunE(config.runVaultCmd),
+	RunE:    config.runVaultCmd,
 }
 
 type vaultCmdConfig struct {
@@ -31,8 +30,8 @@ func init() {
 	secretCmd.AddCommand(vaultCmd)
 }
 
-func (c *Config) runVaultCmd(fs vfs.FS, args []string) error {
-	return c.exec(fs, append([]string{c.Vault.Command}, args...))
+func (c *Config) runVaultCmd(cmd *cobra.Command, args []string) error {
+	return c.run("", c.Vault.Command, args...)
 }
 
 func (c *Config) vaultFunc(key string) interface{} {
@@ -47,7 +46,7 @@ func (c *Config) vaultFunc(key string) interface{} {
 	cmd := exec.Command(name, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
-	output, err := cmd.Output()
+	output, err := c.mutator.IdempotentCmdOutput(cmd)
 	if err != nil {
 		panic(fmt.Errorf("vault: %s %s: %w\n%s", name, strings.Join(args, " "), err, output))
 	}

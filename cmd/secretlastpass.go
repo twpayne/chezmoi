@@ -14,14 +14,13 @@ import (
 
 	"github.com/coreos/go-semver/semver"
 	"github.com/spf13/cobra"
-	vfs "github.com/twpayne/go-vfs"
 )
 
 var lastpassCmd = &cobra.Command{
 	Use:     "lastpass [args...]",
 	Short:   "Execute the LastPass CLI (lpass)",
 	PreRunE: config.ensureNoError,
-	RunE:    makeRunE(config.runLastpassCmd),
+	RunE:    config.runLastpassCmd,
 }
 
 var (
@@ -48,8 +47,8 @@ func init() {
 	secretCmd.AddCommand(lastpassCmd)
 }
 
-func (c *Config) runLastpassCmd(fs vfs.FS, args []string) error {
-	return c.exec(fs, append([]string{c.Lastpass.Command}, args...))
+func (c *Config) runLastpassCmd(cmd *cobra.Command, args []string) error {
+	return c.run("", c.Lastpass.Command, args...)
 }
 
 func (c *Config) lastpassOutput(args ...string) ([]byte, error) {
@@ -60,7 +59,7 @@ func (c *Config) lastpassOutput(args ...string) ([]byte, error) {
 	cmd := exec.Command(name, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
-	output, err := cmd.Output()
+	output, err := c.mutator.IdempotentCmdOutput(cmd)
 	if err != nil {
 		return nil, err
 	}

@@ -8,7 +8,6 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/twpayne/chezmoi/internal/chezmoi"
-	vfs "github.com/twpayne/go-vfs"
 )
 
 var mergeCmd = &cobra.Command{
@@ -18,7 +17,7 @@ var mergeCmd = &cobra.Command{
 	Long:    mustGetLongHelp("merge"),
 	Example: getExample("merge"),
 	PreRunE: config.ensureNoError,
-	RunE:    makeRunE(config.runMergeCmd),
+	RunE:    config.runMergeCmd,
 }
 
 type mergeConfig struct {
@@ -30,13 +29,13 @@ func init() {
 	rootCmd.AddCommand(mergeCmd)
 }
 
-func (c *Config) runMergeCmd(fs vfs.FS, args []string) error {
-	ts, err := c.getTargetState(fs, nil)
+func (c *Config) runMergeCmd(cmd *cobra.Command, args []string) error {
+	ts, err := c.getTargetState(nil)
 	if err != nil {
 		return err
 	}
 
-	entries, err := c.getEntries(fs, ts, args)
+	entries, err := c.getEntries(ts, args)
 	if err != nil {
 		return err
 	}
@@ -51,7 +50,7 @@ func (c *Config) runMergeCmd(fs vfs.FS, args []string) error {
 	defer os.RemoveAll(tempDir)
 
 	for i, entry := range entries {
-		if err := c.runMergeCommand(fs, args[i], entry, tempDir); err != nil {
+		if err := c.runMergeCommand(args[i], entry, tempDir); err != nil {
 			return err
 		}
 	}
@@ -59,7 +58,7 @@ func (c *Config) runMergeCmd(fs vfs.FS, args []string) error {
 	return nil
 }
 
-func (c *Config) runMergeCommand(fs vfs.FS, arg string, entry chezmoi.Entry, tempDir string) error {
+func (c *Config) runMergeCommand(arg string, entry chezmoi.Entry, tempDir string) error {
 	file, ok := entry.(*chezmoi.File)
 	if !ok {
 		return fmt.Errorf("%s: not a file", arg)
@@ -87,7 +86,7 @@ func (c *Config) runMergeCommand(fs vfs.FS, arg string, entry chezmoi.Entry, tem
 		args = append(args, targetStatePath)
 	}
 
-	if err := c.run(fs, "", c.Merge.Command, args...); err != nil {
+	if err := c.run("", c.Merge.Command, args...); err != nil {
 		return fmt.Errorf("%s: %w", arg, err)
 	}
 

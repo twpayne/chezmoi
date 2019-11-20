@@ -7,14 +7,13 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	vfs "github.com/twpayne/go-vfs"
 )
 
 var gopassCmd = &cobra.Command{
 	Use:     "gopass [args...]",
 	Short:   "Execute the gopass CLI",
 	PreRunE: config.ensureNoError,
-	RunE:    makeRunE(config.runSecretGopassCmd),
+	RunE:    config.runSecretGopassCmd,
 }
 
 type gopassCmdConfig struct {
@@ -30,8 +29,8 @@ func init() {
 	config.addTemplateFunc("gopass", config.gopassFunc)
 }
 
-func (c *Config) runSecretGopassCmd(fs vfs.FS, args []string) error {
-	return c.exec(fs, append([]string{c.Pass.Command}, args...))
+func (c *Config) runSecretGopassCmd(cmd *cobra.Command, args []string) error {
+	return c.run("", c.Pass.Command, args...)
 }
 
 func (c *Config) gopassFunc(id string) string {
@@ -43,7 +42,8 @@ func (c *Config) gopassFunc(id string) string {
 	if c.Verbose {
 		fmt.Printf("%s %s\n", name, strings.Join(args, " "))
 	}
-	output, err := exec.Command(name, args...).Output()
+	cmd := exec.Command(name, args...)
+	output, err := c.mutator.IdempotentCmdOutput(cmd)
 	if err != nil {
 		panic(fmt.Errorf("gopass: %s %s: %w", name, strings.Join(args, " "), err))
 	}

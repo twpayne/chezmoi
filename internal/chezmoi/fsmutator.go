@@ -2,12 +2,13 @@ package chezmoi
 
 import (
 	"os"
+	"os/exec"
 
 	"github.com/google/renameio"
 	vfs "github.com/twpayne/go-vfs"
 )
 
-// An FSMutator makes changes to an vfs.FS.
+// An FSMutator makes changes to a vfs.FS.
 type FSMutator struct {
 	vfs.FS
 	devCache     map[string]uint // devCache maps directories to device numbers.
@@ -23,14 +24,24 @@ func NewFSMutator(fs vfs.FS) *FSMutator {
 	}
 }
 
+// IdempotentCmdOutput implements Mutator.IdempotentCmdOutput.
+func (m *FSMutator) IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error) {
+	return cmd.Output()
+}
+
+// RunCmd implements Mutator.RunCmd.
+func (m *FSMutator) RunCmd(cmd *exec.Cmd) error {
+	return cmd.Run()
+}
+
 // WriteSymlink implements Mutator.WriteSymlink.
-func (a *FSMutator) WriteSymlink(oldname, newname string) error {
+func (m *FSMutator) WriteSymlink(oldname, newname string) error {
 	// Special case: if writing to the real filesystem, use github.com/google/renameio
-	if a.FS == vfs.OSFS {
+	if m.FS == vfs.OSFS {
 		return renameio.Symlink(oldname, newname)
 	}
-	if err := a.FS.RemoveAll(newname); err != nil && !os.IsNotExist(err) {
+	if err := m.FS.RemoveAll(newname); err != nil && !os.IsNotExist(err) {
 		return err
 	}
-	return a.FS.Symlink(oldname, newname)
+	return m.FS.Symlink(oldname, newname)
 }

@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	vfs "github.com/twpayne/go-vfs"
 )
 
 type dumpCmdConfig struct {
@@ -20,7 +19,7 @@ var dumpCmd = &cobra.Command{
 	Long:    mustGetLongHelp("dump"),
 	Example: getExample("dump"),
 	PreRunE: config.ensureNoError,
-	RunE:    makeRunE(config.runDumpCmd),
+	RunE:    config.runDumpCmd,
 }
 
 func init() {
@@ -31,12 +30,12 @@ func init() {
 	persistentFlags.BoolVarP(&config.dump.recursive, "recursive", "r", true, "recursive")
 }
 
-func (c *Config) runDumpCmd(fs vfs.FS, args []string) error {
+func (c *Config) runDumpCmd(cmd *cobra.Command, args []string) error {
 	format, ok := formatMap[strings.ToLower(c.dump.format)]
 	if !ok {
 		return fmt.Errorf("%s: unknown format", c.dump.format)
 	}
-	ts, err := c.getTargetState(fs, nil)
+	ts, err := c.getTargetState(nil)
 	if err != nil {
 		return err
 	}
@@ -47,7 +46,7 @@ func (c *Config) runDumpCmd(fs vfs.FS, args []string) error {
 			return err
 		}
 	} else {
-		entries, err := c.getEntries(fs, ts, args)
+		entries, err := c.getEntries(ts, args)
 		if err != nil {
 			return err
 		}

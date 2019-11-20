@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	vfs "github.com/twpayne/go-vfs"
 )
 
 type updateCmdConfig struct {
@@ -19,7 +18,7 @@ var updateCmd = &cobra.Command{
 	Long:    mustGetLongHelp("update"),
 	Example: getExample("update"),
 	PreRunE: config.ensureNoError,
-	RunE:    makeRunE(config.runUpdateCmd),
+	RunE:    config.runUpdateCmd,
 }
 
 func init() {
@@ -29,7 +28,7 @@ func init() {
 	persistentFlags.BoolVarP(&config.update.apply, "apply", "a", true, "apply after pulling")
 }
 
-func (c *Config) runUpdateCmd(fs vfs.FS, args []string) error {
+func (c *Config) runUpdateCmd(cmd *cobra.Command, args []string) error {
 	vcs, err := c.getVCS()
 	if err != nil {
 		return err
@@ -51,18 +50,17 @@ func (c *Config) runUpdateCmd(fs vfs.FS, args []string) error {
 		return fmt.Errorf("%s: pull not supported", c.SourceVCS.Command)
 	}
 
-	if err := c.run(fs, c.SourceDir, c.SourceVCS.Command, pullArgs...); err != nil {
+	if err := c.run(c.SourceDir, c.SourceVCS.Command, pullArgs...); err != nil {
 		return err
 	}
 
 	if c.update.apply {
-		mutator := c.getDefaultMutator(fs)
-		persistentState, err := c.getPersistentState(fs, nil)
+		persistentState, err := c.getPersistentState(nil)
 		if err != nil {
 			return err
 		}
 		defer persistentState.Close()
-		if err := c.applyArgs(fs, nil, mutator, persistentState); err != nil {
+		if err := c.applyArgs(nil, persistentState); err != nil {
 			return err
 		}
 	}

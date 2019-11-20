@@ -9,14 +9,13 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	vfs "github.com/twpayne/go-vfs"
 )
 
 var genericSecretCmd = &cobra.Command{
 	Use:     "generic [args...]",
 	Short:   "Execute a generic secret command",
 	PreRunE: config.ensureNoError,
-	RunE:    makeRunE(config.runGenericSecretCmd),
+	RunE:    config.runGenericSecretCmd,
 }
 
 type genericSecretCmdConfig struct {
@@ -35,8 +34,8 @@ func init() {
 	secretCmd.AddCommand(genericSecretCmd)
 }
 
-func (c *Config) runGenericSecretCmd(fs vfs.FS, args []string) error {
-	return c.exec(fs, append([]string{c.GenericSecret.Command}, args...))
+func (c *Config) runGenericSecretCmd(cmd *cobra.Command, args []string) error {
+	return c.run("", c.GenericSecret.Command, args...)
 }
 
 func (c *Config) secretFunc(args ...string) interface{} {
@@ -51,7 +50,7 @@ func (c *Config) secretFunc(args ...string) interface{} {
 	cmd := exec.Command(name, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
-	output, err := cmd.Output()
+	output, err := c.mutator.IdempotentCmdOutput(cmd)
 	if err != nil {
 		panic(fmt.Errorf("secret: %s %s: %w\n%s", name, strings.Join(args, " "), err, output))
 	}
@@ -72,7 +71,7 @@ func (c *Config) secretJSONFunc(args ...string) interface{} {
 	cmd := exec.Command(name, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
-	output, err := cmd.Output()
+	output, err := c.mutator.IdempotentCmdOutput(cmd)
 	if err != nil {
 		panic(fmt.Errorf("secretJSON: %s %s: %w\n%s", name, strings.Join(args, " "), err, output))
 	}

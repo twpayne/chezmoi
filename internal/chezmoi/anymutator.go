@@ -1,6 +1,9 @@
 package chezmoi
 
-import "os"
+import (
+	"os"
+	"os/exec"
+)
 
 // An AnyMutator wraps another Mutator and records if any of its mutating
 // methods are called.
@@ -21,6 +24,11 @@ func NewAnyMutator(m Mutator) *AnyMutator {
 func (m *AnyMutator) Chmod(name string, mode os.FileMode) error {
 	m.mutated = true
 	return m.m.Chmod(name, mode)
+}
+
+// IdempotentCmdOutput implements Mutator.IdempotentCmdOutput.
+func (m *AnyMutator) IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error) {
+	return m.m.IdempotentCmdOutput(cmd)
 }
 
 // Mkdir implements Mutator.Mkdir.
@@ -44,6 +52,12 @@ func (m *AnyMutator) RemoveAll(name string) error {
 func (m *AnyMutator) Rename(oldpath, newpath string) error {
 	m.mutated = true
 	return m.m.Rename(oldpath, newpath)
+}
+
+// RunCmd implements Mutator.RunCmd.
+func (m *AnyMutator) RunCmd(cmd *exec.Cmd) error {
+	m.mutated = true
+	return m.m.RunCmd(cmd)
 }
 
 // Stat implements Mutator.Stat.

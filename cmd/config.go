@@ -39,6 +39,8 @@ type sourceVCSConfig struct {
 type Config struct {
 	configFile        string
 	err               error
+	fs                vfs.FS
+	mutator           chezmoi.Mutator
 	SourceDir         string
 	DestDir           string
 	Umask             permValue
@@ -47,17 +49,18 @@ type Config struct {
 	Remove            bool
 	Verbose           bool
 	Color             string
+	Debug             bool
 	GPG               chezmoi.GPG
 	GPGRecipient      string
 	SourceVCS         sourceVCSConfig
 	Merge             mergeConfig
 	Bitwarden         bitwardenCmdConfig
 	GenericSecret     genericSecretCmdConfig
+	Gopass            gopassCmdConfig
 	KeePassXC         keePassXCCmdConfig
 	Lastpass          lastpassCmdConfig
 	Onepassword       onepasswordCmdConfig
 	Vault             vaultCmdConfig
-	Gopass            gopassCmdConfig
 	Pass              passCmdConfig
 	Data              map[string]interface{}
 	colored           bool
@@ -66,8 +69,8 @@ type Config struct {
 	data              dataCmdConfig
 	dump              dumpCmdConfig
 	edit              editCmdConfig
-	init              initCmdConfig
 	_import           importCmdConfig
+	init              initCmdConfig
 	keyring           keyringCmdConfig
 	remove            removeCmdConfig
 	update            updateCmdConfig
@@ -138,9 +141,9 @@ func (c *Config) addTemplateFunc(key string, value interface{}) {
 	c.templateFuncs[key] = value
 }
 
-func (c *Config) applyArgs(fs vfs.FS, args []string, mutator chezmoi.Mutator, persistentState chezmoi.PersistentState) error {
-	fs = vfs.NewReadOnlyFS(fs)
-	ts, err := c.getTargetState(fs, nil)
+func (c *Config) applyArgs(args []string, persistentState chezmoi.PersistentState) error {
+	fs := vfs.NewReadOnlyFS(c.fs)
+	ts, err := c.getTargetState(nil)
 	if err != nil {
 		return err
 	}
@@ -156,29 +159,29 @@ func (c *Config) applyArgs(fs vfs.FS, args []string, mutator chezmoi.Mutator, pe
 		Verbose:           c.Verbose,
 	}
 	if len(args) == 0 {
-		return ts.Apply(fs, mutator, c.Follow, applyOptions)
+		return ts.Apply(fs, c.mutator, c.Follow, applyOptions)
 	}
-	entries, err := c.getEntries(fs, ts, args)
+	entries, err := c.getEntries(ts, args)
 	if err != nil {
 		return err
 	}
 	for _, entry := range entries {
-		if err := entry.Apply(fs, mutator, c.Follow, applyOptions); err != nil {
+		if err := entry.Apply(fs, c.mutator, c.Follow, applyOptions); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (c *Config) autoCommit(fs vfs.FS, vcs VCS) error {
+func (c *Config) autoCommit(vcs VCS) error {
 	addArgs := vcs.AddArgs(".")
 	if addArgs == nil {
 		return fmt.Errorf("%s: autocommit not supported", c.SourceVCS.Command)
 	}
-	if err := c.run(fs, c.SourceDir, c.SourceVCS.Command, addArgs...); err != nil {
+	if err := c.run(c.SourceDir, c.SourceVCS.Command, addArgs...); err != nil {
 		return err
 	}
-	output, err := c.output(fs, c.SourceDir, c.SourceVCS.Command, vcs.StatusArgs()...)
+	output, err := c.output(c.SourceDir, c.SourceVCS.Command, vcs.StatusArgs()...)
 	if err != nil {
 		return err
 	}
@@ -199,10 +202,10 @@ func (c *Config) autoCommit(fs vfs.FS, vcs VCS) error {
 		return err
 	}
 	commitArgs := vcs.CommitArgs(b.String())
-	return c.run(fs, c.SourceDir, c.SourceVCS.Command, commitArgs...)
+	return c.run(c.SourceDir, c.SourceVCS.Command, commitArgs...)
 }
 
-func (c *Config) autoCommitAndAutoPush(fs vfs.FS, args []string) error {
+func (c *Config) autoCommitAndAutoPush(cmd *cobra.Command, args []string) error {
 	vcs, err := c.getVCS()
 	if err != nil {
 		return err
@@ -211,24 +214,24 @@ func (c *Config) autoCommitAndAutoPush(fs vfs.FS, args []string) error {
 		return nil
 	}
 	if c.SourceVCS.AutoCommit || c.SourceVCS.AutoPush {
-		if err := c.autoCommit(fs, vcs); err != nil {
+		if err := c.autoCommit(vcs); err != nil {
 			return err
 		}
 	}
 	if c.SourceVCS.AutoPush {
-		if err := c.autoPush(fs, vcs); err != nil {
+		if err := c.autoPush(vcs); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (c *Config) autoPush(fs vfs.FS, vcs VCS) error {
+func (c *Config) autoPush(vcs VCS) error {
 	pushArgs := vcs.PushArgs()
 	if pushArgs == nil {
 		return fmt.Errorf("%s: autopush not supported", c.SourceVCS.Command)
 	}
-	return c.run(fs, c.SourceDir, c.SourceVCS.Command, pushArgs...)
+	return c.run(c.SourceDir, c.SourceVCS.Command, pushArgs...)
 }
 
 // ensureNoError ensures that no error was encountered when loading c.
@@ -239,47 +242,30 @@ func (c *Config) ensureNoError(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func (c *Config) ensureSourceDirectory(fs chezmoi.PrivacyStater, mutator chezmoi.Mutator) error {
-	if err := vfs.MkdirAll(mutator, filepath.Dir(c.SourceDir), 0777&^os.FileMode(c.Umask)); err != nil {
+func (c *Config) ensureSourceDirectory() error {
+	if err := vfs.MkdirAll(c.mutator, filepath.Dir(c.SourceDir), 0777&^os.FileMode(c.Umask)); err != nil {
 		return err
 	}
-	info, err := fs.Stat(c.SourceDir)
+	info, err := c.fs.Stat(c.SourceDir)
 	switch {
 	case err == nil && info.IsDir():
-		private, err := chezmoi.IsPrivate(fs, c.SourceDir)
+		private, err := chezmoi.IsPrivate(c.fs, c.SourceDir)
 		if err != nil {
 			return err
 		}
 		if !private {
-			if err := mutator.Chmod(c.SourceDir, 0700&^os.FileMode(c.Umask)); err != nil {
+			if err := c.mutator.Chmod(c.SourceDir, 0700&^os.FileMode(c.Umask)); err != nil {
 				return err
 			}
 		}
 		return nil
 	case os.IsNotExist(err):
-		return mutator.Mkdir(c.SourceDir, 0700&^os.FileMode(c.Umask))
+		return c.mutator.Mkdir(c.SourceDir, 0700&^os.FileMode(c.Umask))
 	case err == nil:
 		return fmt.Errorf("%s: not a directory", c.SourceDir)
 	default:
 		return err
 	}
-}
-
-func (c *Config) execEditor(fs vfs.FS, argv ...string) error {
-	return c.exec(fs, append([]string{c.getEditor()}, argv...))
-}
-
-func (c *Config) getDefaultMutator(fs vfs.FS) chezmoi.Mutator {
-	var mutator chezmoi.Mutator
-	if c.DryRun {
-		mutator = chezmoi.NullMutator{}
-	} else {
-		mutator = chezmoi.NewFSMutator(fs)
-	}
-	if c.Verbose {
-		mutator = chezmoi.NewLoggingMutator(c.Stdout(), mutator, c.colored)
-	}
-	return mutator
 }
 
 func (c *Config) getEditor() string {
@@ -292,14 +278,14 @@ func (c *Config) getEditor() string {
 	return "vi"
 }
 
-func (c *Config) getEntries(fs vfs.Stater, ts *chezmoi.TargetState, args []string) ([]chezmoi.Entry, error) {
+func (c *Config) getEntries(ts *chezmoi.TargetState, args []string) ([]chezmoi.Entry, error) {
 	entries := []chezmoi.Entry{}
 	for _, arg := range args {
 		targetPath, err := filepath.Abs(arg)
 		if err != nil {
 			return nil, err
 		}
-		entry, err := ts.Get(fs, targetPath)
+		entry, err := ts.Get(c.fs, targetPath)
 		if err != nil {
 			return nil, err
 		}
@@ -311,7 +297,7 @@ func (c *Config) getEntries(fs vfs.Stater, ts *chezmoi.TargetState, args []strin
 	return entries, nil
 }
 
-func (c *Config) getPersistentState(fs vfs.FS, options *bolt.Options) (chezmoi.PersistentState, error) {
+func (c *Config) getPersistentState(options *bolt.Options) (chezmoi.PersistentState, error) {
 	persistentStateFile := c.getPersistentStateFile()
 	if c.DryRun {
 		if options == nil {
@@ -319,7 +305,7 @@ func (c *Config) getPersistentState(fs vfs.FS, options *bolt.Options) (chezmoi.P
 		}
 		options.ReadOnly = true
 	}
-	return chezmoi.NewBoltPersistentState(fs, persistentStateFile, options)
+	return chezmoi.NewBoltPersistentState(c.fs, persistentStateFile, options)
 }
 
 func (c *Config) getPersistentStateFile() string {
@@ -335,9 +321,9 @@ func (c *Config) getPersistentStateFile() string {
 	return filepath.Join(filepath.Dir(getDefaultConfigFile(c.bds)), "chezmoistate.boltdb")
 }
 
-func (c *Config) getTargetState(fs vfs.FS, populateOptions *chezmoi.PopulateOptions) (*chezmoi.TargetState, error) {
-	fs = vfs.NewReadOnlyFS(fs)
-	defaultData, err := getDefaultData(fs)
+func (c *Config) getTargetState(populateOptions *chezmoi.PopulateOptions) (*chezmoi.TargetState, error) {
+	fs := vfs.NewReadOnlyFS(c.fs)
+	defaultData, err := getDefaultData(c.fs)
 	if err != nil {
 		return nil, err
 	}
@@ -379,7 +365,7 @@ func (c *Config) getVCS() (VCS, error) {
 	return vcs, nil
 }
 
-func (c *Config) output(fs vfs.FS, dir, name string, argv ...string) ([]byte, error) {
+func (c *Config) output(dir, name string, argv ...string) ([]byte, error) {
 	if c.Verbose {
 		if dir == "" {
 			fmt.Printf("%s %s\n", name, strings.Join(argv, " "))
@@ -387,18 +373,15 @@ func (c *Config) output(fs vfs.FS, dir, name string, argv ...string) ([]byte, er
 			fmt.Printf("( cd %s && %s %s )\n", dir, name, strings.Join(argv, " "))
 		}
 	}
-	if c.DryRun {
-		return nil, nil
-	}
 	cmd := exec.Command(name, argv...)
 	if dir != "" {
 		var err error
-		cmd.Dir, err = fs.RawPath(dir)
+		cmd.Dir, err = c.fs.RawPath(dir)
 		if err != nil {
 			return nil, err
 		}
 	}
-	return cmd.Output()
+	return c.mutator.IdempotentCmdOutput(cmd)
 }
 
 //nolint:unparam
@@ -421,7 +404,7 @@ func (c *Config) prompt(s, choices string) (byte, error) {
 }
 
 // run runs name argv... in dir.
-func (c *Config) run(fs vfs.FS, dir, name string, argv ...string) error {
+func (c *Config) run(dir, name string, argv ...string) error {
 	if c.Verbose {
 		if dir == "" {
 			fmt.Printf("%s %s\n", name, strings.Join(argv, " "))
@@ -435,7 +418,7 @@ func (c *Config) run(fs vfs.FS, dir, name string, argv ...string) error {
 	cmd := exec.Command(name, argv...)
 	if dir != "" {
 		var err error
-		cmd.Dir, err = fs.RawPath(dir)
+		cmd.Dir, err = c.fs.RawPath(dir)
 		if err != nil {
 			return err
 		}
@@ -443,11 +426,14 @@ func (c *Config) run(fs vfs.FS, dir, name string, argv ...string) error {
 	cmd.Stdin = c.Stdin()
 	cmd.Stdout = c.Stdout()
 	cmd.Stderr = c.Stdout()
+	if c.Debug {
+		return chezmoi.Debugf("run %s", []interface{}{cmd}, cmd.Run)
+	}
 	return cmd.Run()
 }
 
-func (c *Config) runEditor(fs vfs.FS, argv ...string) error {
-	return c.run(fs, "", c.getEditor(), argv...)
+func (c *Config) runEditor(argv ...string) error {
+	return c.run("", c.getEditor(), argv...)
 }
 
 func (c *Config) warn(s string) {
@@ -535,12 +521,6 @@ func getDefaultSourceDir(bds *xdg.BaseDirectorySpecification) string {
 func isWellKnownAbbreviation(word string) bool {
 	_, ok := wellKnownAbbreviations[word]
 	return ok
-}
-
-func makeRunE(runCmd func(vfs.FS, []string) error) func(*cobra.Command, []string) error {
-	return func(cmd *cobra.Command, args []string) error {
-		return runCmd(vfs.OSFS, args)
-	}
 }
 
 func printErrorAndExit(err error) {

@@ -44,7 +44,7 @@ var rootCmd = &cobra.Command{
 	Short:             "Manage your dotfiles across multiple machines, securely",
 	SilenceErrors:     true,
 	SilenceUsage:      true,
-	PersistentPreRunE: makeRunE(config.persistentPreRunRootE),
+	PersistentPreRunE: config.persistentPreRunRootE,
 }
 
 func init() {
@@ -93,6 +93,9 @@ func init() {
 	persistentFlags.StringVar(&config.Color, "color", "auto", "colorize diffs")
 	_ = viper.BindPFlag("color", persistentFlags.Lookup("color"))
 
+	persistentFlags.BoolVar(&config.Debug, "debug", false, "write debug logs")
+	_ = viper.BindPFlag("debug", persistentFlags.Lookup("debug"))
+
 	cobra.OnInitialize(func() {
 		_, err := os.Stat(config.configFile)
 		switch {
@@ -120,7 +123,7 @@ func Execute() {
 }
 
 //nolint:interfacer
-func (c *Config) persistentPreRunRootE(fs vfs.FS, args []string) error {
+func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error {
 	switch c.Color {
 	case "on":
 		c.colored = true
@@ -136,14 +139,26 @@ func (c *Config) persistentPreRunRootE(fs vfs.FS, args []string) error {
 		return fmt.Errorf("invalid --color value: %s", c.Color)
 	}
 
-	info, err := fs.Stat(c.SourceDir)
+	c.fs = vfs.OSFS
+	c.mutator = chezmoi.NewFSMutator(config.fs)
+	if config.DryRun {
+		c.mutator = chezmoi.NullMutator{}
+	}
+	if config.Debug {
+		c.mutator = chezmoi.NewDebugMutator(c.mutator)
+	}
+	if config.Verbose {
+		c.mutator = chezmoi.NewVerboseMutator(c.Stdout(), c.mutator, c.colored)
+	}
+
+	info, err := c.fs.Stat(c.SourceDir)
 	switch {
 	case err == nil && !info.IsDir():
 		return fmt.Errorf("%s: not a directory", c.SourceDir)
 	case err == nil:
 		// FIXME renable private check on Windows
 		if runtime.GOOS != "windows" {
-			private, err := chezmoi.IsPrivate(fs, c.SourceDir)
+			private, err := chezmoi.IsPrivate(c.fs, c.SourceDir)
 			if err != nil {
 				return err
 			}

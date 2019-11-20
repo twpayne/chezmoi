@@ -22,7 +22,7 @@ var initCmd = &cobra.Command{
 	Long:    mustGetLongHelp("init"),
 	Example: getExample("init"),
 	PreRunE: config.ensureNoError,
-	RunE:    makeRunE(config.runInitCmd),
+	RunE:    config.runInitCmd,
 }
 
 type initCmdConfig struct {
@@ -36,19 +36,17 @@ func init() {
 	persistentFlags.BoolVar(&config.init.apply, "apply", false, "update destination directory")
 }
 
-func (c *Config) runInitCmd(fs vfs.FS, args []string) error {
+func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 	vcs, err := c.getVCS()
 	if err != nil {
 		return err
 	}
 
-	mutator := c.getDefaultMutator(fs)
-
-	if err := c.ensureSourceDirectory(fs, mutator); err != nil {
+	if err := c.ensureSourceDirectory(); err != nil {
 		return err
 	}
 
-	rawSourceDir, err := fs.RawPath(c.SourceDir)
+	rawSourceDir, err := c.fs.RawPath(c.SourceDir)
 	if err != nil {
 		return err
 	}
@@ -68,7 +66,7 @@ func (c *Config) runInitCmd(fs vfs.FS, args []string) error {
 		} else {
 			initArgs = vcs.InitArgs()
 		}
-		if err := c.run(fs, c.SourceDir, c.SourceVCS.Command, initArgs...); err != nil {
+		if err := c.run(c.SourceDir, c.SourceVCS.Command, initArgs...); err != nil {
 			return err
 		}
 	case 1: // clone
@@ -76,17 +74,17 @@ func (c *Config) runInitCmd(fs vfs.FS, args []string) error {
 		if cloneArgs == nil {
 			return fmt.Errorf("%s: cloning not supported", c.SourceVCS.Command)
 		}
-		if err := c.run(fs, "", c.SourceVCS.Command, cloneArgs...); err != nil {
+		if err := c.run("", c.SourceVCS.Command, cloneArgs...); err != nil {
 			return err
 		}
 		// FIXME this should be part of VCS
 		if filepath.Base(c.SourceVCS.Command) == "git" {
-			if _, err := fs.Stat(filepath.Join(c.SourceDir, ".gitmodules")); err == nil {
+			if _, err := c.fs.Stat(filepath.Join(c.SourceDir, ".gitmodules")); err == nil {
 				for _, args := range [][]string{
 					{"submodule", "init"},
 					{"submodule", "update"},
 				} {
-					if err := c.run(fs, c.SourceDir, c.SourceVCS.Command, args...); err != nil {
+					if err := c.run(c.SourceDir, c.SourceVCS.Command, args...); err != nil {
 						return err
 					}
 				}
@@ -94,16 +92,16 @@ func (c *Config) runInitCmd(fs vfs.FS, args []string) error {
 		}
 	}
 
-	if err := c.createConfigFile(fs, mutator); err != nil {
+	if err := c.createConfigFile(); err != nil {
 		return err
 	}
 
 	if c.init.apply {
-		persistentState, err := c.getPersistentState(fs, nil)
+		persistentState, err := c.getPersistentState(nil)
 		if err != nil {
 			return err
 		}
-		if err := c.applyArgs(fs, nil, mutator, persistentState); err != nil {
+		if err := c.applyArgs(nil, persistentState); err != nil {
 			return err
 		}
 	}
@@ -111,8 +109,8 @@ func (c *Config) runInitCmd(fs vfs.FS, args []string) error {
 	return nil
 }
 
-func (c *Config) createConfigFile(fs vfs.FS, mutator chezmoi.Mutator) error {
-	filename, ext, data, err := c.findConfigTemplate(fs)
+func (c *Config) createConfigFile() error {
+	filename, ext, data, err := c.findConfigTemplate()
 	if err != nil {
 		return err
 	}
@@ -129,7 +127,7 @@ func (c *Config) createConfigFile(fs vfs.FS, mutator chezmoi.Mutator) error {
 		return err
 	}
 
-	defaultData, err := getDefaultData(fs)
+	defaultData, err := getDefaultData(c.fs)
 	if err != nil {
 		return err
 	}
@@ -142,12 +140,12 @@ func (c *Config) createConfigFile(fs vfs.FS, mutator chezmoi.Mutator) error {
 	}
 
 	configDir := filepath.Join(c.bds.ConfigHome, "chezmoi")
-	if err := vfs.MkdirAll(mutator, configDir, 0777&^os.FileMode(c.Umask)); err != nil {
+	if err := vfs.MkdirAll(c.mutator, configDir, 0777&^os.FileMode(c.Umask)); err != nil {
 		return err
 	}
 
 	configPath := filepath.Join(configDir, filename)
-	if err := mutator.WriteFile(configPath, contents.Bytes(), 0600&^os.FileMode(c.Umask), nil); err != nil {
+	if err := c.mutator.WriteFile(configPath, contents.Bytes(), 0600&^os.FileMode(c.Umask), nil); err != nil {
 		return err
 	}
 
@@ -158,9 +156,9 @@ func (c *Config) createConfigFile(fs vfs.FS, mutator chezmoi.Mutator) error {
 	return viper.Unmarshal(c)
 }
 
-func (c *Config) findConfigTemplate(fs vfs.FS) (string, string, string, error) {
+func (c *Config) findConfigTemplate() (string, string, string, error) {
 	for _, ext := range viper.SupportedExts {
-		contents, err := fs.ReadFile(filepath.Join(c.SourceDir, ".chezmoi."+ext+chezmoi.TemplateSuffix))
+		contents, err := c.fs.ReadFile(filepath.Join(c.SourceDir, ".chezmoi."+ext+chezmoi.TemplateSuffix))
 		switch {
 		case os.IsNotExist(err):
 			continue

@@ -26,7 +26,6 @@ import (
 	"github.com/coreos/go-semver/semver"
 	"github.com/google/go-github/v26/github"
 	"github.com/spf13/cobra"
-	"github.com/twpayne/chezmoi/internal/chezmoi"
 	vfs "github.com/twpayne/go-vfs"
 	"golang.org/x/oauth2"
 )
@@ -78,7 +77,7 @@ var upgradeCmd = &cobra.Command{
 	Short:   "Upgrade chezmoi",
 	Long:    mustGetLongHelp("upgrade"),
 	Example: getExample("upgrade"),
-	RunE:    makeRunE(config.runUpgradeCmd),
+	RunE:    config.runUpgradeCmd,
 }
 
 type upgradeCmdConfig struct {
@@ -98,7 +97,7 @@ func init() {
 	persistentFlags.StringVarP(&config.upgrade.repo, "repo", "r", "chezmoi", "set repo")
 }
 
-func (c *Config) runUpgradeCmd(fs vfs.FS, args []string) error {
+func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 	ctx := context.Background()
 
 	// Use a GitHub API token, if set.
@@ -137,29 +136,28 @@ func (c *Config) runUpgradeCmd(fs vfs.FS, args []string) error {
 	}
 	method := c.upgrade.method
 	if method == "" {
-		method, err = getMethod(fs, executableFilename)
+		method, err = getMethod(c.fs, executableFilename)
 		if err != nil {
 			return err
 		}
 	}
 
 	// Replace the executable with the updated version.
-	mutator := c.getDefaultMutator(fs)
 	switch method {
 	case methodReplaceExecutable:
-		if err := c.replaceExecutable(mutator, executableFilename, releaseVersion, rr); err != nil {
+		if err := c.replaceExecutable(executableFilename, releaseVersion, rr); err != nil {
 			return err
 		}
 	case methodSnapRefresh:
-		if err := c.snapRefresh(fs); err != nil {
+		if err := c.snapRefresh(); err != nil {
 			return err
 		}
 	case methodUpgradePackage:
-		if err := c.upgradePackage(fs, mutator, rr, false); err != nil {
+		if err := c.upgradePackage(rr, false); err != nil {
 			return err
 		}
 	case methodSudoPrefix + methodUpgradePackage:
-		if err := c.upgradePackage(fs, mutator, rr, true); err != nil {
+		if err := c.upgradePackage(rr, true); err != nil {
 			return err
 		}
 	default:
@@ -230,7 +228,7 @@ func (c *Config) downloadURL(url string) ([]byte, error) {
 	return data, nil
 }
 
-func (c *Config) replaceExecutable(mutator chezmoi.Mutator, executableFilename string, releaseVersion *semver.Version, rr *github.RepositoryRelease) error {
+func (c *Config) replaceExecutable(executableFilename string, releaseVersion *semver.Version, rr *github.RepositoryRelease) error {
 	name := fmt.Sprintf("%s_%s_%s_%s.tar.gz", c.upgrade.repo, releaseVersion, runtime.GOOS, runtime.GOARCH)
 	releaseAsset := getReleaseAssetByName(rr, name)
 	if releaseAsset == nil {
@@ -268,20 +266,20 @@ FOR:
 		}
 	}
 
-	return mutator.WriteFile(executableFilename, executableData, 0755, nil)
+	return c.mutator.WriteFile(executableFilename, executableData, 0755, nil)
 }
 
-func (c *Config) snapRefresh(fs vfs.FS) error {
-	return c.run(fs, "", "snap", "refresh", c.upgrade.repo)
+func (c *Config) snapRefresh() error {
+	return c.run("", "snap", "refresh", c.upgrade.repo)
 }
 
-func (c *Config) upgradePackage(fs vfs.FS, mutator chezmoi.Mutator, rr *github.RepositoryRelease, useSudo bool) error {
+func (c *Config) upgradePackage(rr *github.RepositoryRelease, useSudo bool) error {
 	switch runtime.GOOS {
 	case "darwin":
-		return c.run(fs, "", "brew", "upgrade", c.upgrade.repo)
+		return c.run("", "brew", "upgrade", c.upgrade.repo)
 	case "linux":
 		// Determine the package type and architecture.
-		packageType, err := getPackageType(fs)
+		packageType, err := getPackageType(c.fs)
 		if err != nil {
 			return err
 		}
@@ -298,7 +296,7 @@ func (c *Config) upgradePackage(fs vfs.FS, mutator chezmoi.Mutator, rr *github.R
 				args = append(args, "sudo")
 			}
 			args = append(args, "pacman", "-S", c.upgrade.repo)
-			return c.run(fs, "", args[0], args[1:]...)
+			return c.run("", args[0], args[1:]...)
 		}
 
 		// Find the corresponding release asset.
@@ -327,7 +325,7 @@ func (c *Config) upgradePackage(fs vfs.FS, mutator chezmoi.Mutator, rr *github.R
 				return err
 			}
 			defer func() {
-				_ = mutator.RemoveAll(tempDir)
+				_ = c.mutator.RemoveAll(tempDir)
 			}()
 		}
 
@@ -340,7 +338,7 @@ func (c *Config) upgradePackage(fs vfs.FS, mutator chezmoi.Mutator, rr *github.R
 		}
 
 		packageFilename := filepath.Join(tempDir, releaseAsset.GetName())
-		if err := mutator.WriteFile(packageFilename, data, 0644, nil); err != nil {
+		if err := c.mutator.WriteFile(packageFilename, data, 0644, nil); err != nil {
 			return err
 		}
 
@@ -355,7 +353,7 @@ func (c *Config) upgradePackage(fs vfs.FS, mutator chezmoi.Mutator, rr *github.R
 		case packageTypeRPM:
 			args = append(args, "rpm", "-U", packageFilename)
 		}
-		return c.run(fs, "", args[0], args[1:]...)
+		return c.run("", args[0], args[1:]...)
 	default:
 		return fmt.Errorf("%s: unsupported GOOS", runtime.GOOS)
 	}

@@ -13,13 +13,13 @@ import (
 )
 
 // WriteFile implements Mutator.WriteFile.
-func (a *FSMutator) WriteFile(name string, data []byte, perm os.FileMode, currData []byte) error {
+func (m *FSMutator) WriteFile(name string, data []byte, perm os.FileMode, currData []byte) error {
 	// Special case: if writing to the real filesystem, use github.com/google/renameio
-	if a.FS == vfs.OSFS {
+	if m.FS == vfs.OSFS {
 		dir := filepath.Dir(name)
-		dev, ok := a.devCache[dir]
+		dev, ok := m.devCache[dir]
 		if !ok {
-			info, err := a.Stat(dir)
+			info, err := m.Stat(dir)
 			if err != nil {
 				return err
 			}
@@ -28,12 +28,12 @@ func (a *FSMutator) WriteFile(name string, data []byte, perm os.FileMode, currDa
 				return errors.New("os.FileInfo.Sys() cannot be converted to a *syscall.Stat_t")
 			}
 			dev = uint(statT.Dev)
-			a.devCache[dir] = dev
+			m.devCache[dir] = dev
 		}
-		tempDir, ok := a.tempDirCache[dev]
+		tempDir, ok := m.tempDirCache[dev]
 		if !ok {
 			tempDir = renameio.TempDir(dir)
-			a.tempDirCache[dev] = tempDir
+			m.tempDirCache[dev] = tempDir
 		}
 		t, err := renameio.TempFile(tempDir, name)
 		if err != nil {
@@ -50,5 +50,5 @@ func (a *FSMutator) WriteFile(name string, data []byte, perm os.FileMode, currDa
 		}
 		return t.CloseAtomicallyReplace()
 	}
-	return a.FS.WriteFile(name, data, perm)
+	return m.FS.WriteFile(name, data, perm)
 }
