@@ -6,6 +6,7 @@
 * [Use templates to manage files that vary from machine to machine](#use-templates-to-manage-files-that-vary-from-machine-to-machine)
 * [Create a config file on a new machine automatically](#create-a-config-file-on-a-new-machine-automatically)
 * [Ensure that a target is removed](#ensure-that-a-target-is-removed)
+* [Include a subdirectory from another repository, like Oh My Zsh](#include-a-subdirectory-from-another-repository-like-oh-my-zsh)
 * [Keep data private](#keep-data-private)
   * [Use Bitwarden to keep your secrets](#use-bitwarden-to-keep-your-secrets)
   * [Use gopass to keep your secrets](#use-gopass-to-keep-your-secrets)
@@ -210,6 +211,25 @@ dry-run mode beforehand to see what would be removed:
 `.chezmoiremove` is interpreted as a template, so you can remove different files
 on different machines. Negative matches (patterns prefixed with a `!`) or
 targets listed in `.chezmoiignore` will never be removed.
+
+## Include a subdirectory from another repository, like Oh My Zsh
+
+To include a subdirectory from another repository, e.g. [Oh My
+Zsh](https://github.com/robbyrussell/oh-my-zsh), you cannot use git submodules
+because chezmoi uses its own format for the source state and Oh My Zsh is not
+distributed in this format. Instead, you can use the `import` command to import
+a snapshot from a tarball:
+
+    curl -s -L -o oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
+    chezmoi import --strip-components 1 --destination ${HOME}/.oh-my-zsh oh-my-zsh-master.tar.gz
+
+Add `oh-my-zsh-master.tar.gz` to `.chezmoiignore` if you run these commands in
+your source directory so that chezmoi doesn't try to copy the tarball anywhere.
+
+Disable Oh My Zsh auto-updates by setting `DISABLE_AUTO_UPDATE="true"` in
+`~/.zshrc`. Auto updates will cause the `~/.oh-my-zsh` directory to drift out of
+sync with chezmoi's source state. To update Oh My Zsh, re-run the `curl` and
+`chezmoi import` commands above.
 
 ## Keep data private
 
