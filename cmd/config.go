@@ -243,9 +243,6 @@ func (c *Config) ensureNoError(cmd *cobra.Command, args []string) error {
 }
 
 func (c *Config) ensureSourceDirectory() error {
-	if err := vfs.MkdirAll(c.mutator, filepath.Dir(c.SourceDir), 0777&^os.FileMode(c.Umask)); err != nil {
-		return err
-	}
 	info, err := c.fs.Stat(c.SourceDir)
 	switch {
 	case err == nil && info.IsDir():
@@ -260,6 +257,12 @@ func (c *Config) ensureSourceDirectory() error {
 		}
 		return nil
 	case os.IsNotExist(err):
+		sourceParentDir := filepath.Dir(c.SourceDir)
+		if _, err := c.fs.Stat(sourceParentDir); os.IsNotExist(err) {
+			if err := vfs.MkdirAll(c.mutator, sourceParentDir, 0777&^os.FileMode(c.Umask)); err != nil {
+				return err
+			}
+		}
 		return c.mutator.Mkdir(c.SourceDir, 0700&^os.FileMode(c.Umask))
 	case err == nil:
 		return fmt.Errorf("%s: not a directory", c.SourceDir)
