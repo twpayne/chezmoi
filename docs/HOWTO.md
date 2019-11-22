@@ -7,6 +7,7 @@
 * [Create a config file on a new machine automatically](#create-a-config-file-on-a-new-machine-automatically)
 * [Ensure that a target is removed](#ensure-that-a-target-is-removed)
 * [Include a subdirectory from another repository, like Oh My Zsh](#include-a-subdirectory-from-another-repository-like-oh-my-zsh)
+* [Handle configuration files which are externally modified](#handle-configuration-files-which-are-externally-modified)
 * [Keep data private](#keep-data-private)
   * [Use Bitwarden to keep your secrets](#use-bitwarden-to-keep-your-secrets)
   * [Use gopass to keep your secrets](#use-gopass-to-keep-your-secrets)
@@ -230,6 +231,36 @@ Disable Oh My Zsh auto-updates by setting `DISABLE_AUTO_UPDATE="true"` in
 `~/.zshrc`. Auto updates will cause the `~/.oh-my-zsh` directory to drift out of
 sync with chezmoi's source state. To update Oh My Zsh, re-run the `curl` and
 `chezmoi import` commands above.
+
+## Handle configuration files which are externally modified
+
+Some programs modify their configuration files. When you next run `chezmoi
+apply`, any modifications made by the program will be lost.
+
+You can track changes to these files by replacing with a symlink back to a file
+in your source directory, which is under version control. Here is a worked
+example for VSCode's `settings.json` on Linux:
+
+Copy the configuration file to your source directory:
+
+    cp ~/.config/Code/User/settings.json $(chezmoi source-path)
+
+Tell chezmoi to ignore this file:
+
+    echo settings.json >> $(chezmoi source-path)/.chezmoiignore
+
+Tell chezmoi that `~/.config/Code/User/settings.json` should be a symlink to the
+file in your source directory:
+
+    mkdir -p $(chezmoi source-path)/.config/Code/User
+    echo -n "{{ .chezmoi.sourceDir }}/settings.json" > $(chezmoi source-path)/.config/Code/User/symlink_settings.json.tmpl
+
+Apply the changes:
+
+    chezmoi apply -v
+
+Now, when the program modifies its configuration file it will modify the file in
+the source state instead.
 
 ## Keep data private
 
