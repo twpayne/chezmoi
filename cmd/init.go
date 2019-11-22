@@ -127,7 +127,7 @@ func (c *Config) createConfigFile() error {
 		return err
 	}
 
-	defaultData, err := getDefaultData(c.fs)
+	defaultData, err := c.getDefaultData()
 	if err != nil {
 		return err
 	}

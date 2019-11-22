@@ -271,6 +271,58 @@ func (c *Config) ensureSourceDirectory() error {
 	}
 }
 
+func (c *Config) getDefaultData() (map[string]interface{}, error) {
+	data := map[string]interface{}{
+		"arch":      runtime.GOARCH,
+		"os":        runtime.GOOS,
+		"sourceDir": c.SourceDir,
+	}
+
+	currentUser, err := user.Current()
+	if err != nil {
+		return nil, err
+	}
+	data["username"] = currentUser.Username
+
+	// user.LookupGroupId looks up a group by gid. If CGO is enabled, then this
+	// uses an underlying C library call (e.g. getgrgid_r on Linux) and is
+	// trustworthy. If CGO is disabled then the fallback implementation only
+	// searches /etc/group, which is typically empty if an external directory
+	// service is being used, and so the lookup fails. So, if
+	// user.LookupGroupId returns an error, only return an error if CGO is
+	// enabled.
+	group, err := user.LookupGroupId(currentUser.Gid)
+	if err == nil {
+		data["group"] = group.Name
+	} else if cgoEnabled && runtime.GOOS != "windows" {
+		// Only return an error if CGO is enabled and the platform is
+		// non-Windows (groups don't really mean much on Windows).
+		return nil, err
+	}
+
+	homedir, err := os.UserHomeDir()
+	if err != nil {
+		return nil, err
+	}
+	data["homedir"] = homedir
+
+	hostname, err := os.Hostname()
+	if err != nil {
+		return nil, err
+	}
+	data["fullHostname"] = hostname
+	data["hostname"] = strings.SplitN(hostname, ".", 2)[0]
+
+	osRelease, err := getOSRelease(c.fs)
+	if err == nil {
+		data["osRelease"] = upperSnakeCaseToCamelCaseMap(osRelease)
+	} else if !os.IsNotExist(err) {
+		return nil, err
+	}
+
+	return data, nil
+}
+
 func (c *Config) getEditor() string {
 	if editor := os.Getenv("VISUAL"); editor != "" {
 		return editor
@@ -326,7 +378,7 @@ func (c *Config) getPersistentStateFile() string {
 
 func (c *Config) getTargetState(populateOptions *chezmoi.PopulateOptions) (*chezmoi.TargetState, error) {
 	fs := vfs.NewReadOnlyFS(c.fs)
-	defaultData, err := getDefaultData(c.fs)
+	defaultData, err := c.getDefaultData()
 	if err != nil {
 		return nil, err
 	}
@@ -435,57 +487,6 @@ func getDefaultConfigFile(bds *xdg.BaseDirectorySpecification) string {
 	}
 	// Fallback to XDG Base Directory Specification default.
 	return filepath.Join(bds.ConfigHome, "chezmoi", "chezmoi.toml")
-}
-
-func getDefaultData(fs vfs.FS) (map[string]interface{}, error) {
-	data := map[string]interface{}{
-		"arch": runtime.GOARCH,
-		"os":   runtime.GOOS,
-	}
-
-	currentUser, err := user.Current()
-	if err != nil {
-		return nil, err
-	}
-	data["username"] = currentUser.Username
-
-	// user.LookupGroupId looks up a group by gid. If CGO is enabled, then this
-	// uses an underlying C library call (e.g. getgrgid_r on Linux) and is
-	// trustworthy. If CGO is disabled then the fallback implementation only
-	// searches /etc/group, which is typically empty if an external directory
-	// service is being used, and so the lookup fails. So, if
-	// user.LookupGroupId returns an error, only return an error if CGO is
-	// enabled.
-	group, err := user.LookupGroupId(currentUser.Gid)
-	if err == nil {
-		data["group"] = group.Name
-	} else if cgoEnabled && runtime.GOOS != "windows" {
-		// Only return an error if CGO is enabled and the platform is
-		// non-Windows (groups don't really mean much on Windows).
-		return nil, err
-	}
-
-	homedir, err := os.UserHomeDir()
-	if err != nil {
-		return nil, err
-	}
-	data["homedir"] = homedir
-
-	hostname, err := os.Hostname()
-	if err != nil {
-		return nil, err
-	}
-	data["fullHostname"] = hostname
-	data["hostname"] = strings.SplitN(hostname, ".", 2)[0]
-
-	osRelease, err := getOSRelease(fs)
-	if err == nil {
-		data["osRelease"] = upperSnakeCaseToCamelCaseMap(osRelease)
-	} else if !os.IsNotExist(err) {
-		return nil, err
-	}
-
-	return data, nil
 }
 
 func getDefaultSourceDir(bds *xdg.BaseDirectorySpecification) string {

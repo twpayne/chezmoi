@@ -716,6 +716,7 @@ chezmoi provides the following automatically populated variables:
 | `.chezmoi.hostname`     | The hostname of the machine chezmoi is running on, up to the first `.`.                                                |
 | `.chezmoi.os`           | Operating system, e.g. `darwin`, `linux`, etc. as returned by [runtime.GOOS](https://godoc.org/runtime#pkg-constants). |
 | `.chezmoi.osRelease`    | The information from `/etc/os-release`, Linux only, run `chezmoi data` to see its output.                              |
+| `.chezmoi.sourceDir`    | The source directory.                                                                                                  |
 | `.chezmoi.username`     | The username of the user running chezmoi.                                                                              |
 
 Additional variables can be defined in the config file in the `data` section.
