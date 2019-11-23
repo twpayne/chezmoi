@@ -55,7 +55,6 @@ install-tools:
 
 .PHONY: lint
 lint:
-	go vet ./...
 	./bin/golangci-lint run
 
 .PHONY: release
