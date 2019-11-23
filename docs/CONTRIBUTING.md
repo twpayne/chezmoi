@@ -1,5 +1,6 @@
 # chezmoi Contributing Guide
 
+<!--- toc --->
 * [Getting started](#getting-started)
 * [Developing locally](#developing-locally)
 * [Contributing changes](#contributing-changes)

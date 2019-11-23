@@ -1,14 +1,15 @@
 package main
 
 import (
-	"bytes"
+	"bufio"
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"log"
 	"os"
 )
 
 var (
+	debug      = flag.Bool("debug", false, "debug")
 	shortTitle = flag.String("shorttitle", "", "short title")
 	longTitle  = flag.String("longtitle", "", "long title")
 )
@@ -16,26 +17,37 @@ var (
 func run() error {
 	flag.Parse()
 
-	data, err := ioutil.ReadAll(os.Stdin)
-	if err != nil {
-		return err
-	}
-
-	fmt.Printf(
-		"+++\n"+
-			"title = %q\n"+
-			"+++\n"+
-			"\n"+
-			"# %s\n",
+	fmt.Printf(""+
+		"---\n"+
+		"title: %q\n"+
+		"---\n"+
+		"\n",
 		*shortTitle,
-		*longTitle,
 	)
 
-	if index := bytes.IndexByte(data, '\n'); index != -1 {
-		os.Stdout.Write(data[index+1:])
+	s := bufio.NewScanner(os.Stdin)
+	state := "replace-title"
+	for s.Scan() {
+		if *debug {
+			log.Printf("%s: %q", state, s.Text())
+		}
+		switch state {
+		case "replace-title":
+			fmt.Printf("# %s\n\n", *longTitle)
+			state = "find-toc"
+		case "find-toc":
+			if s.Text() == "<!--- toc --->" {
+				state = "skip-toc"
+			}
+		case "skip-toc":
+			if s.Text() == "" {
+				state = "copy-content"
+			}
+		case "copy-content":
+			fmt.Println(s.Text())
+		}
 	}
-
-	return nil
+	return s.Err()
 }
 
 func main() {

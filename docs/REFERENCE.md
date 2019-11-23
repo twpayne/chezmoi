@@ -2,6 +2,7 @@
 
 Manage your dotfiles securely across multiple machines.
 
+<!--- toc --->
 * [Concepts](#concepts)
 * [Global command line flags](#global-command-line-flags)
   * [`--color` *value*](#color-value)
