@@ -4,6 +4,7 @@ linters:
     - dupl
     - funlen
     - gocognit
+    - goconst
     - gocyclo
     - godox
     - lll
