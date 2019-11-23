@@ -14,6 +14,9 @@ checked out chezmoi locally.
 
 ## Developing locally
 
+chezmoi requires Go 1.13 or later and Go modules enabled. Enable Go modules by
+setting the environment variable `GO111MODULE=on`.
+
 chezmoi is a standard Go project, using standard Go tooling, with a few extra
 tools. Install these extra tools with:
 
