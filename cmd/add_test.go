@@ -13,14 +13,6 @@ import (
 )
 
 func TestAddAfterModification(t *testing.T) {
-	// FIXME this test is flaky on Windows. The call to fs.WriteFile sometimes
-	// writes a public file and sometimes writes a private file. When the file
-	// is re-added, whether the file is public or private changes the filename
-	// in the source state, consequently breaking the test.
-	if runtime.GOOS == "windows" {
-		t.Skip("flaky test on Windows")
-	}
-
 	fs, cleanup, err := vfst.NewTestFS(map[string]interface{}{
 		"/home/user":          &vfst.Dir{Perm: 0755},
 		"/home/user/.chezmoi": &vfst.Dir{Perm: 0700},
