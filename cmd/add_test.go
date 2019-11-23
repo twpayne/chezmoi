@@ -15,7 +15,10 @@ func TestAddAfterModification(t *testing.T) {
 	fs, cleanup, err := vfst.NewTestFS(map[string]interface{}{
 		"/home/user":          &vfst.Dir{Perm: 0755},
 		"/home/user/.chezmoi": &vfst.Dir{Perm: 0700},
-		"/home/user/.bashrc":  "# contents of .bashrc\n",
+		"/home/user/.bashrc": &vfst.File{
+			Contents: []byte("# contents of .bashrc\n"),
+			Perm:     0600,
+		},
 	})
 	require.NoError(t, err)
 	defer cleanup()
@@ -29,15 +32,15 @@ func TestAddAfterModification(t *testing.T) {
 	args := []string{"/home/user/.bashrc"}
 	assert.NoError(t, c.runAddCmd(nil, args))
 	vfst.RunTests(t, fs, "",
-		vfst.TestPath("/home/user/.chezmoi/dot_bashrc",
+		vfst.TestPath("/home/user/.chezmoi/private_dot_bashrc",
 			vfst.TestModeIsRegular,
 			vfst.TestContentsString("# contents of .bashrc\n"),
 		),
 	)
-	assert.NoError(t, fs.WriteFile("/home/user/.bashrc", []byte("# new contents of .bashrc\n"), 0644))
+	assert.NoError(t, fs.WriteFile("/home/user/.bashrc", []byte("# new contents of .bashrc\n"), 0600))
 	assert.NoError(t, c.runAddCmd(nil, args))
 	vfst.RunTests(t, fs, "",
-		vfst.TestPath("/home/user/.chezmoi/dot_bashrc",
+		vfst.TestPath("/home/user/.chezmoi/private_dot_bashrc",
 			vfst.TestModeIsRegular,
 			vfst.TestContentsString("# new contents of .bashrc\n"),
 		),
