@@ -1,5 +1,6 @@
 # chezmoi Install Guide
 
+<!--- toc --->
 * [One-line binary install](#one-line-binary-install)
 * [One-line package install](#one-line-package-install)
 * [Pre-built Linux packages](#pre-built-linux-packages)

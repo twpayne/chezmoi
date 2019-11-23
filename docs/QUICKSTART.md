@@ -1,5 +1,6 @@
 # chezmoi Quick Start Guide
 
+<!--- toc --->
 * [Concepts](#concepts)
 * [Start using chezmoi on your current machine](#start-using-chezmoi-on-your-current-machine)
 * [Using chezmoi across multiple machines](#using-chezmoi-across-multiple-machines)

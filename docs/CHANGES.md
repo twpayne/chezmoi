@@ -1,5 +1,6 @@
 # chezmoi Changes
 
+<!--- toc --->
 * [Upcoming](#upcoming)
   * [`gpgRecipient` config variable changing to `gpg.recipient`](#gpgrecipient-config-variable-changing-to-gpgrecipient)
 
