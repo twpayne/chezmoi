@@ -9,6 +9,7 @@
 * [I've made changes to both the destination state and the source state that I want to keep. How can I keep them both?](#ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both)
 * [chezmoi's source file naming system cannot handle all possible filenames](#chezmois-source-file-naming-system-cannot-handle-all-possible-filenames)
 * [gpg encryption fails. What could be wrong?](#gpg-encryption-fails-what-could-be-wrong)
+* [I'm getting errors trying to build chezmoi from source](#im-getting-errors-trying-to-build-chezmoi-from-source)
 * [What inspired chezmoi?](#what-inspired-chezmoi)
 * [Can I use chezmoi outside my home directory?](#can-i-use-chezmoi-outside-my-home-directory)
 * [Where does the name "chezmoi" come from?](#where-does-the-name-chezmoi-come-from)
@@ -130,6 +131,20 @@ change the trust level by running:
     gpg --edit-key $recipient
 
 Enter `trust` at the prompt and chose `5 = I trust ultimately`.
+
+## I'm getting errors trying to build chezmoi from source
+
+chezmoi requires Go version 1.13 or later and Go modules enabled. You can check
+the version of Go with:
+
+    go version
+
+Enable Go modules by setting `GO111MODULE=on` when running `go get`:
+
+    GO111MODULE=on go get -u github.com/twpayne/chezmoi
+
+For more details on building chezmoi, see the [Contributing
+Guide](CONTRIBUTING.md).
 
 ## What inspired chezmoi?
 
