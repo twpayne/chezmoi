@@ -1,5 +1,8 @@
-.PHONY: nothing
-nothing:
+.PHONY: smoketest
+smoketest:
+	go run . --version
+	go test ./...
+	./bin/golangci-lint run
 
 all: completions generate
 
