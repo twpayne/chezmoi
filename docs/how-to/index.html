@@ -4,7 +4,8 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0"><meta property="og:title" content="How-To" />
-<meta property="og:description" content="How-To Guide  Use a hosted repo to manage your dotfiles across multiple machines Pull the latest changes from your repo and apply them Pull the latest changes from your repo and see what would change, without actually applying the changes Use templates to manage files that vary from machine to machine Create a config file on a new machine automatically Ensure that a target is removed Keep data private  Use Bitwarden to keep your secrets Use gopass to keep your secrets Use gpg to keep your secrets Use KeePassXC to keep your secrets Use a keyring to keep your secrets Use LastPass to keep your secrets Use 1Password to keep your secrets Use pass to keep your secrets Use Vault to keep your secrets Use a generic tool to keep your secrets Use templates variables to keep your secrets  Use scripts to perform actions  Understand how scripts work Install packages with scripts  Import archives Export archives Use a non-git version control system Use a merge tool other than vimdiff Migrate from a dotfile manager that uses symlinks Automatically commit and push changes to your repo  Use a hosted repo to manage your dotfiles across multiple machines chezmoi relies on your version control system and hosted repo to share changes across multiple machines." />
+<meta property="og:description" content="How-To Guide Use a hosted repo to manage your dotfiles across multiple machines chezmoi relies on your version control system and hosted repo to share changes across multiple machines. You should create a repo on the source code repository of your choice (e.g. Bitbucket, GitHub, or GitLab, many people call their repo dotfiles) and push the repo in the source directory here. For example:
+chezmoi cd git remote add origin https://github." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chezmoi.io/docs/how-to/" />
 
@@ -15,7 +16,7 @@
 <link rel="stylesheet" href="/book.min.dcb5f88ae9cbea1ffe9da7a510c09e799304f04d2a33302b20bf31dedb3b7778.css" integrity="sha256-3LX4iunL6h/&#43;naelEMCeeZME8E0qMzArIL8x3ts7d3g=">
 
 
-<script defer src="/search.min.f20cb0017d6841322b696c83bff0a9687fa06e680e46a995e3e0c476bb7a386d.js" integrity="sha256-8gywAX1oQTIraWyDv/CpaH&#43;gbmgORqmV4&#43;DEdrt6OG0="></script>
+<script defer src="/search.min.8bd18e2b914f06713e7945b82c7794f9d9cdaf9f12a57e13674a0cec1787a55e.js" integrity="sha256-i9GOK5FPBnE&#43;eUW4LHeU&#43;dnNr58SpX4TZ0oM7BeHpV4="></script>
 
 <!--
 Made with Book Theme
@@ -89,42 +90,6 @@ https://github.com/alex-shpak/hugo-book
 <article class="markdown">
 
 <h1 id="how-to-guide">How-To Guide</h1>
-
-<ul>
-<li><a href="#use-a-hosted-repo-to-manage-your-dotfiles-across-multiple-machines">Use a hosted repo to manage your dotfiles across multiple machines</a></li>
-<li><a href="#pull-the-latest-changes-from-your-repo-and-apply-them">Pull the latest changes from your repo and apply them</a></li>
-<li><a href="#pull-the-latest-changes-from-your-repo-and-see-what-would-change-without-actually-applying-the-changes">Pull the latest changes from your repo and see what would change, without actually applying the changes</a></li>
-<li><a href="#use-templates-to-manage-files-that-vary-from-machine-to-machine">Use templates to manage files that vary from machine to machine</a></li>
-<li><a href="#create-a-config-file-on-a-new-machine-automatically">Create a config file on a new machine automatically</a></li>
-<li><a href="#ensure-that-a-target-is-removed">Ensure that a target is removed</a></li>
-<li><a href="#keep-data-private">Keep data private</a>
-
-<ul>
-<li><a href="#use-bitwarden-to-keep-your-secrets">Use Bitwarden to keep your secrets</a></li>
-<li><a href="#use-gopass-to-keep-your-secrets">Use gopass to keep your secrets</a></li>
-<li><a href="#use-gpg-to-keep-your-secrets">Use gpg to keep your secrets</a></li>
-<li><a href="#use-keepassxc-to-keep-your-secrets">Use KeePassXC to keep your secrets</a></li>
-<li><a href="#use-a-keyring-to-keep-your-secrets">Use a keyring to keep your secrets</a></li>
-<li><a href="#use-lastpass-to-keep-your-secrets">Use LastPass to keep your secrets</a></li>
-<li><a href="#use-1password-to-keep-your-secrets">Use 1Password to keep your secrets</a></li>
-<li><a href="#use-pass-to-keep-your-secrets">Use pass to keep your secrets</a></li>
-<li><a href="#use-vault-to-keep-your-secrets">Use Vault to keep your secrets</a></li>
-<li><a href="#use-a-generic-tool-to-keep-your-secrets">Use a generic tool to keep your secrets</a></li>
-<li><a href="#use-templates-variables-to-keep-your-secrets">Use templates variables to keep your secrets</a></li>
-</ul></li>
-<li><a href="#use-scripts-to-perform-actions">Use scripts to perform actions</a>
-
-<ul>
-<li><a href="#understand-how-scripts-work">Understand how scripts work</a></li>
-<li><a href="#install-packages-with-scripts">Install packages with scripts</a></li>
-</ul></li>
-<li><a href="#import-archives">Import archives</a></li>
-<li><a href="#export-archives">Export archives</a></li>
-<li><a href="#use-a-non-git-version-control-system">Use a non-git version control system</a></li>
-<li><a href="#use-a-merge-tool-other-than-vimdiff">Use a merge tool other than vimdiff</a></li>
-<li><a href="#migrate-from-a-dotfile-manager-that-uses-symlinks">Migrate from a dotfile manager that uses symlinks</a></li>
-<li><a href="#automatically-commit-and-push-changes-to-your-repo">Automatically commit and push changes to your repo</a></li>
-</ul>
 
 <h2 id="use-a-hosted-repo-to-manage-your-dotfiles-across-multiple-machines">Use a hosted repo to manage your dotfiles across multiple machines</h2>
 
@@ -329,6 +294,60 @@ dry-run mode beforehand to see what would be removed:</p>
 <p><code>.chezmoiremove</code> is interpreted as a template, so you can remove different files
 on different machines. Negative matches (patterns prefixed with a <code>!</code>) or
 targets listed in <code>.chezmoiignore</code> will never be removed.</p>
+
+<h2 id="include-a-subdirectory-from-another-repository-like-oh-my-zsh">Include a subdirectory from another repository, like Oh My Zsh</h2>
+
+<p>To include a subdirectory from another repository, e.g. <a href="https://github.com/robbyrussell/oh-my-zsh">Oh My
+Zsh</a>, you cannot use git submodules
+because chezmoi uses its own format for the source state and Oh My Zsh is not
+distributed in this format. Instead, you can use the <code>import</code> command to import
+a snapshot from a tarball:</p>
+
+<pre><code>curl -s -L -o oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
+chezmoi import --strip-components 1 --destination ${HOME}/.oh-my-zsh oh-my-zsh-master.tar.gz
+</code></pre>
+
+<p>Add <code>oh-my-zsh-master.tar.gz</code> to <code>.chezmoiignore</code> if you run these commands in
+your source directory so that chezmoi doesn&rsquo;t try to copy the tarball anywhere.</p>
+
+<p>Disable Oh My Zsh auto-updates by setting <code>DISABLE_AUTO_UPDATE=&quot;true&quot;</code> in
+<code>~/.zshrc</code>. Auto updates will cause the <code>~/.oh-my-zsh</code> directory to drift out of
+sync with chezmoi&rsquo;s source state. To update Oh My Zsh, re-run the <code>curl</code> and
+<code>chezmoi import</code> commands above.</p>
+
+<h2 id="handle-configuration-files-which-are-externally-modified">Handle configuration files which are externally modified</h2>
+
+<p>Some programs modify their configuration files. When you next run <code>chezmoi
+apply</code>, any modifications made by the program will be lost.</p>
+
+<p>You can track changes to these files by replacing with a symlink back to a file
+in your source directory, which is under version control. Here is a worked
+example for VSCode&rsquo;s <code>settings.json</code> on Linux:</p>
+
+<p>Copy the configuration file to your source directory:</p>
+
+<pre><code>cp ~/.config/Code/User/settings.json $(chezmoi source-path)
+</code></pre>
+
+<p>Tell chezmoi to ignore this file:</p>
+
+<pre><code>echo settings.json &gt;&gt; $(chezmoi source-path)/.chezmoiignore
+</code></pre>
+
+<p>Tell chezmoi that <code>~/.config/Code/User/settings.json</code> should be a symlink to the
+file in your source directory:</p>
+
+<pre><code>mkdir -p $(chezmoi source-path)/.config/Code/User
+echo -n &quot;{{ .chezmoi.sourceDir }}/settings.json&quot; &gt; $(chezmoi source-path)/.config/Code/User/symlink_settings.json.tmpl
+</code></pre>
+
+<p>Apply the changes:</p>
+
+<pre><code>chezmoi apply -v
+</code></pre>
+
+<p>Now, when the program modifies its configuration file it will modify the file in
+the source state instead.</p>
 
 <h2 id="keep-data-private">Keep data private</h2>
 
@@ -847,6 +866,8 @@ issue</a>.</p>
 <li><a href="#use-templates-to-manage-files-that-vary-from-machine-to-machine">Use templates to manage files that vary from machine to machine</a></li>
 <li><a href="#create-a-config-file-on-a-new-machine-automatically">Create a config file on a new machine automatically</a></li>
 <li><a href="#ensure-that-a-target-is-removed">Ensure that a target is removed</a></li>
+<li><a href="#include-a-subdirectory-from-another-repository-like-oh-my-zsh">Include a subdirectory from another repository, like Oh My Zsh</a></li>
+<li><a href="#handle-configuration-files-which-are-externally-modified">Handle configuration files which are externally modified</a></li>
 <li><a href="#keep-data-private">Keep data private</a>
 <ul>
 <li><a href="#use-bitwarden-to-keep-your-secrets">Use Bitwarden to keep your secrets</a></li>

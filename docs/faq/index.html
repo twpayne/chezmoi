@@ -4,7 +4,9 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0"><meta property="og:title" content="FAQ" />
-<meta property="og:description" content="Frequently Asked Questions  How can I quickly check for problems with chezmoi on my machine? What are the consequences of &ldquo;bare&rdquo; modifications to the target files? If my .zshrc is managed by chezmoi and I edit ~/.zshrc without using chezmoi edit, what happens? How can I tell what dotfiles in my home directory aren&rsquo;t managed by chezmoi? Is there an easy way to have chezmoi manage a subset of them?" />
+<meta property="og:description" content="Frequently Asked Questions How can I quickly check for problems with chezmoi on my machine? Run:
+chezmoi doctor  Anything ok is fine, anything warning is only a problem if you want to use the related feature, and anything error indicates a definite problem.
+What are the consequences of &ldquo;bare&rdquo; modifications to the target files? If my .zshrc is managed by chezmoi and I edit ~/.zshrc without using chezmoi edit, what happens?" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chezmoi.io/docs/faq/" />
 
@@ -15,7 +17,7 @@
 <link rel="stylesheet" href="/book.min.dcb5f88ae9cbea1ffe9da7a510c09e799304f04d2a33302b20bf31dedb3b7778.css" integrity="sha256-3LX4iunL6h/&#43;naelEMCeeZME8E0qMzArIL8x3ts7d3g=">
 
 
-<script defer src="/search.min.f20cb0017d6841322b696c83bff0a9687fa06e680e46a995e3e0c476bb7a386d.js" integrity="sha256-8gywAX1oQTIraWyDv/CpaH&#43;gbmgORqmV4&#43;DEdrt6OG0="></script>
+<script defer src="/search.min.8bd18e2b914f06713e7945b82c7794f9d9cdaf9f12a57e13674a0cec1787a55e.js" integrity="sha256-i9GOK5FPBnE&#43;eUW4LHeU&#43;dnNr58SpX4TZ0oM7BeHpV4="></script>
 
 <!--
 Made with Book Theme
@@ -89,23 +91,6 @@ https://github.com/alex-shpak/hugo-book
 <article class="markdown">
 
 <h1 id="frequently-asked-questions">Frequently Asked Questions</h1>
-
-<ul>
-<li><a href="#how-can-i-quickly-check-for-problems-with-chezmoi-on-my-machine">How can I quickly check for problems with chezmoi on my machine?</a></li>
-<li><a href="#what-are-the-consequences-of-bare-modifications-to-the-target-files-if-my-zshrc-is-managed-by-chezmoi-and-i-edit-zshrc-without-using-chezmoi-edit-what-happens">What are the consequences of &ldquo;bare&rdquo; modifications to the target files? If my <code>.zshrc</code> is managed by chezmoi and I edit <code>~/.zshrc</code> without using <code>chezmoi edit</code>, what happens?</a></li>
-<li><a href="#how-can-i-tell-what-dotfiles-in-my-home-directory-arent-managed-by-chezmoi-is-there-an-easy-way-to-have-chezmoi-manage-a-subset-of-them">How can I tell what dotfiles in my home directory aren&rsquo;t managed by chezmoi? Is there an easy way to have chezmoi manage a subset of them?</a></li>
-<li><a href="#if-theres-a-mechanism-in-place-for-the-above-is-there-also-a-way-to-tell-chezmoi-to-ignore-specific-files-or-groups-of-files-eg-by-directory-name-or-by-glob">If there&rsquo;s a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?</a></li>
-<li><a href="#if-the-target-already-exists-but-is-behind-the-source-can-chezmoi-be-configured-to-preserve-the-target-version-before-replacing-it-with-one-derived-from-the-source">If the target already exists, but is &ldquo;behind&rdquo; the source, can chezmoi be configured to preserve the target version before replacing it with one derived from the source?</a></li>
-<li><a href="#how-do-i-only-run-a-script-when-a-file-has-changed">How do I only run a script when a file has changed?</a></li>
-<li><a href="#ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both">I&rsquo;ve made changes to both the destination state and the source state that I want to keep. How can I keep them both?</a></li>
-<li><a href="#chezmois-source-file-naming-system-cannot-handle-all-possible-filenames">chezmoi&rsquo;s source file naming system cannot handle all possible filenames</a></li>
-<li><a href="#gpg-encryption-fails-what-could-be-wrong">gpg encryption fails. What could be wrong?</a></li>
-<li><a href="#what-inspired-chezmoi">What inspired chezmoi?</a></li>
-<li><a href="#can-i-use-chezmoi-outside-my-home-directory">Can I use chezmoi outside my home directory?</a></li>
-<li><a href="#where-does-the-name-chezmoi-come-from">Where does the name &ldquo;chezmoi&rdquo; come from?</a></li>
-<li><a href="#what-other-questions-have-been-asked-about-chezmoi">What other questions have been asked about chezmoi?</a></li>
-<li><a href="#where-do-i-ask-a-question-that-isnt-answered-here">Where do I ask a question that isn&rsquo;t answered here?</a></li>
-</ul>
 
 <h2 id="how-can-i-quickly-check-for-problems-with-chezmoi-on-my-machine">How can I quickly check for problems with chezmoi on my machine?</h2>
 
@@ -228,6 +213,22 @@ change the trust level by running:</p>
 
 <p>Enter <code>trust</code> at the prompt and chose <code>5 = I trust ultimately</code>.</p>
 
+<h2 id="i-m-getting-errors-trying-to-build-chezmoi-from-source">I&rsquo;m getting errors trying to build chezmoi from source</h2>
+
+<p>chezmoi requires Go version 1.13 or later and Go modules enabled. You can check
+the version of Go with:</p>
+
+<pre><code>go version
+</code></pre>
+
+<p>Enable Go modules by setting <code>GO111MODULE=on</code> when running <code>go get</code>:</p>
+
+<pre><code>GO111MODULE=on go get -u github.com/twpayne/chezmoi
+</code></pre>
+
+<p>For more details on building chezmoi, see the <a href="CONTRIBUTING.md">Contributing
+Guide</a>.</p>
+
 <h2 id="what-inspired-chezmoi">What inspired chezmoi?</h2>
 
 <p>chezmoi was inspired by <a href="https://puppet.com/">Puppet</a>, but created because
@@ -284,6 +285,7 @@ GitHub</a>.</p>
 <li><a href="#i-ve-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both">I&rsquo;ve made changes to both the destination state and the source state that I want to keep. How can I keep them both?</a></li>
 <li><a href="#chezmoi-s-source-file-naming-system-cannot-handle-all-possible-filenames">chezmoi&rsquo;s source file naming system cannot handle all possible filenames</a></li>
 <li><a href="#gpg-encryption-fails-what-could-be-wrong">gpg encryption fails. What could be wrong?</a></li>
+<li><a href="#i-m-getting-errors-trying-to-build-chezmoi-from-source">I&rsquo;m getting errors trying to build chezmoi from source</a></li>
 <li><a href="#what-inspired-chezmoi">What inspired chezmoi?</a></li>
 <li><a href="#can-i-use-chezmoi-outside-my-home-directory">Can I use chezmoi outside my home directory?</a></li>
 <li><a href="#where-does-the-name-chezmoi-come-from">Where does the name &ldquo;chezmoi&rdquo; come from?</a></li>

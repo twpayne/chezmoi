@@ -4,10 +4,10 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0"><meta property="og:title" content="Contributing" />
-<meta property="og:description" content="Contributing Guide  Getting started Developing locally Contributing changes Managing releases Packaging  Getting started chezmoi is written in Go and development happens on GitHub. The rest of this document assumes that you&rsquo;ve checked out chezmoi locally.
-Developing locally chezmoi is a standard Go project, using standard Go tooling, with a few extra tools. Install these extra tools with:
-make install-tools  Build chezmoi:
-go build .  Run all tests:" />
+<meta property="og:description" content="Contributing Guide Getting started chezmoi is written in Go and development happens on GitHub. The rest of this document assumes that you&rsquo;ve checked out chezmoi locally.
+Developing locally chezmoi requires Go 1.13 or later and Go modules enabled. Enable Go modules by setting the environment variable GO111MODULE=on.
+chezmoi is a standard Go project, using standard Go tooling, with a few extra tools. Install these extra tools with:
+make install-tools  Build chezmoi:" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chezmoi.io/docs/contributing/" />
 
@@ -18,7 +18,7 @@ go build .  Run all tests:" />
 <link rel="stylesheet" href="/book.min.dcb5f88ae9cbea1ffe9da7a510c09e799304f04d2a33302b20bf31dedb3b7778.css" integrity="sha256-3LX4iunL6h/&#43;naelEMCeeZME8E0qMzArIL8x3ts7d3g=">
 
 
-<script defer src="/search.min.f20cb0017d6841322b696c83bff0a9687fa06e680e46a995e3e0c476bb7a386d.js" integrity="sha256-8gywAX1oQTIraWyDv/CpaH&#43;gbmgORqmV4&#43;DEdrt6OG0="></script>
+<script defer src="/search.min.8bd18e2b914f06713e7945b82c7794f9d9cdaf9f12a57e13674a0cec1787a55e.js" integrity="sha256-i9GOK5FPBnE&#43;eUW4LHeU&#43;dnNr58SpX4TZ0oM7BeHpV4="></script>
 
 <!--
 Made with Book Theme
@@ -93,14 +93,6 @@ https://github.com/alex-shpak/hugo-book
 
 <h1 id="contributing-guide">Contributing Guide</h1>
 
-<ul>
-<li><a href="#getting-started">Getting started</a></li>
-<li><a href="#developing-locally">Developing locally</a></li>
-<li><a href="#contributing-changes">Contributing changes</a></li>
-<li><a href="#managing-releases">Managing releases</a></li>
-<li><a href="#packaging">Packaging</a></li>
-</ul>
-
 <h2 id="getting-started">Getting started</h2>
 
 <p>chezmoi is written in <a href="https://golang.org">Go</a> and development happens on
@@ -108,6 +100,9 @@ https://github.com/alex-shpak/hugo-book
 checked out chezmoi locally.</p>
 
 <h2 id="developing-locally">Developing locally</h2>
+
+<p>chezmoi requires Go 1.13 or later and Go modules enabled. Enable Go modules by
+setting the environment variable <code>GO111MODULE=on</code>.</p>
 
 <p>chezmoi is a standard Go project, using standard Go tooling, with a few extra
 tools. Install these extra tools with:</p>

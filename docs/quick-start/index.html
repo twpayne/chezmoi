@@ -4,8 +4,9 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0"><meta property="og:title" content="Quick Start" />
-<meta property="og:description" content="Quick Start Guide  Concepts Start using chezmoi on your current machine Using chezmoi across multiple machines Next steps  Concepts chezmoi stores the desired state of your dotfiles in the directory ~/.local/share/chezmoi. When you run chezmoi apply, chezmoi calculates the desired contents and permissions for each dotfile and then makes any changes necessary so that your dotfiles match that state.
-Start using chezmoi on your current machine Initialize chezmoi:" />
+<meta property="og:description" content="Quick Start Guide Concepts chezmoi stores the desired state of your dotfiles in the directory ~/.local/share/chezmoi. When you run chezmoi apply, chezmoi calculates the desired contents and permissions for each dotfile and then makes any changes necessary so that your dotfiles match that state.
+Start using chezmoi on your current machine Initialize chezmoi:
+chezmoi init  This will create a new git repository in ~/.local/share/chezmoi with permissions 0700 where chezmoi will store the source state." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chezmoi.io/docs/quick-start/" />
 
@@ -16,7 +17,7 @@ Start using chezmoi on your current machine Initialize chezmoi:" />
 <link rel="stylesheet" href="/book.min.dcb5f88ae9cbea1ffe9da7a510c09e799304f04d2a33302b20bf31dedb3b7778.css" integrity="sha256-3LX4iunL6h/&#43;naelEMCeeZME8E0qMzArIL8x3ts7d3g=">
 
 
-<script defer src="/search.min.f20cb0017d6841322b696c83bff0a9687fa06e680e46a995e3e0c476bb7a386d.js" integrity="sha256-8gywAX1oQTIraWyDv/CpaH&#43;gbmgORqmV4&#43;DEdrt6OG0="></script>
+<script defer src="/search.min.8bd18e2b914f06713e7945b82c7794f9d9cdaf9f12a57e13674a0cec1787a55e.js" integrity="sha256-i9GOK5FPBnE&#43;eUW4LHeU&#43;dnNr58SpX4TZ0oM7BeHpV4="></script>
 
 <!--
 Made with Book Theme
@@ -90,13 +91,6 @@ https://github.com/alex-shpak/hugo-book
 <article class="markdown">
 
 <h1 id="quick-start-guide">Quick Start Guide</h1>
-
-<ul>
-<li><a href="#concepts">Concepts</a></li>
-<li><a href="#start-using-chezmoi-on-your-current-machine">Start using chezmoi on your current machine</a></li>
-<li><a href="#using-chezmoi-across-multiple-machines">Using chezmoi across multiple machines</a></li>
-<li><a href="#next-steps">Next steps</a></li>
-</ul>
 
 <h2 id="concepts">Concepts</h2>
 

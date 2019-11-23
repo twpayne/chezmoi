@@ -4,8 +4,11 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0"><meta property="og:title" content="Reference" />
-<meta property="og:description" content="Reference Manual Manage your dotfiles securely across multiple machines.
- Concepts Global command line flags  --color value -c, --config filename -D, --destination directory -f, --follow -n, --dry-run -h, --help -r. --remove -S, --source directory -v, --verbose --version  Configuration file  Configuration variables  Source state attributes Special files and directories  .chezmoi.&lt;format&gt;.tmpl .chezmoiignore .chezmoiremove .chezmoitemplates .chezmoiversion  Commands  add targets apply [targets] archive cat targets cd chattr attributes targets completion shell data diff [targets] docs [regexp] doctor dump [targets] edit [targets] edit-config forget targets help command init [repo] import filename merge targets remove targets secret source [args] source-path [targets] unmanaged update upgrade verify [targets]  Editor configuration Umask configuration Template variables Template functions  bitwarden [args] gopass gopass-name keepassxc entry keepassxcAttribute entry attribute keyring service user lastpass id onepassword uuid pass pass-name promptString prompt secret [args] secretJSON [args] vault key   Concepts chezmoi evaluates the source state for the current machine and then updates the destination directory, where:" />
+<meta property="og:description" content="Reference Manual Concepts chezmoi evaluates the source state for the current machine and then updates the destination directory, where:
+ The source state declares the desired state of your home directory, including templates and machine-specific configuration.
+ The source directory is where chezmoi stores the source state, by default ~/.local/share/chezmoi.
+ The target state is the source state computed for the current machine.
+ The destination directory is the directory that chezmoi manages, by default ~, your home directory." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chezmoi.io/docs/reference/" />
 
@@ -16,7 +19,7 @@
 <link rel="stylesheet" href="/book.min.dcb5f88ae9cbea1ffe9da7a510c09e799304f04d2a33302b20bf31dedb3b7778.css" integrity="sha256-3LX4iunL6h/&#43;naelEMCeeZME8E0qMzArIL8x3ts7d3g=">
 
 
-<script defer src="/search.min.f20cb0017d6841322b696c83bff0a9687fa06e680e46a995e3e0c476bb7a386d.js" integrity="sha256-8gywAX1oQTIraWyDv/CpaH&#43;gbmgORqmV4&#43;DEdrt6OG0="></script>
+<script defer src="/search.min.8bd18e2b914f06713e7945b82c7794f9d9cdaf9f12a57e13674a0cec1787a55e.js" integrity="sha256-i9GOK5FPBnE&#43;eUW4LHeU&#43;dnNr58SpX4TZ0oM7BeHpV4="></script>
 
 <!--
 Made with Book Theme
@@ -91,91 +94,6 @@ https://github.com/alex-shpak/hugo-book
 
 <h1 id="reference-manual">Reference Manual</h1>
 
-<p>Manage your dotfiles securely across multiple machines.</p>
-
-<ul>
-<li><a href="#concepts">Concepts</a></li>
-<li><a href="#global-command-line-flags">Global command line flags</a>
-
-<ul>
-<li><a href="#--color-value"><code>--color</code> <em>value</em></a></li>
-<li><a href="#-c---config-filename"><code>-c</code>, <code>--config</code> <em>filename</em></a></li>
-<li><a href="#-d---destination-directory"><code>-D</code>, <code>--destination</code> <em>directory</em></a></li>
-<li><a href="#-f---follow"><code>-f</code>, <code>--follow</code></a></li>
-<li><a href="#-n---dry-run"><code>-n</code>, <code>--dry-run</code></a></li>
-<li><a href="#-h---help"><code>-h</code>, <code>--help</code></a></li>
-<li><a href="#-r---remove"><code>-r</code>. <code>--remove</code></a></li>
-<li><a href="#-s---source-directory"><code>-S</code>, <code>--source</code> <em>directory</em></a></li>
-<li><a href="#-v---verbose"><code>-v</code>, <code>--verbose</code></a></li>
-<li><a href="#--version"><code>--version</code></a></li>
-</ul></li>
-<li><a href="#configuration-file">Configuration file</a>
-
-<ul>
-<li><a href="#configuration-variables">Configuration variables</a></li>
-</ul></li>
-<li><a href="#source-state-attributes">Source state attributes</a></li>
-<li><a href="#special-files-and-directories">Special files and directories</a>
-
-<ul>
-<li><a href="#chezmoiformattmpl"><code>.chezmoi.&lt;format&gt;.tmpl</code></a></li>
-<li><a href="#chezmoiignore"><code>.chezmoiignore</code></a></li>
-<li><a href="#chezmoiremove"><code>.chezmoiremove</code></a></li>
-<li><a href="#chezmoitemplates"><code>.chezmoitemplates</code></a></li>
-<li><a href="#chezmoiversion"><code>.chezmoiversion</code></a></li>
-</ul></li>
-<li><a href="#commands">Commands</a>
-
-<ul>
-<li><a href="#add-targets"><code>add</code> <em>targets</em></a></li>
-<li><a href="#apply-targets"><code>apply</code> [<em>targets</em>]</a></li>
-<li><a href="#archive"><code>archive</code></a></li>
-<li><a href="#cat-targets"><code>cat</code> targets</a></li>
-<li><a href="#cd"><code>cd</code></a></li>
-<li><a href="#chattr-attributes-targets"><code>chattr</code> <em>attributes</em> <em>targets</em></a></li>
-<li><a href="#completion-shell"><code>completion</code> <em>shell</em></a></li>
-<li><a href="#data"><code>data</code></a></li>
-<li><a href="#diff-targets"><code>diff</code> [<em>targets</em>]</a></li>
-<li><a href="#docs-regexp"><code>docs</code> [<em>regexp</em>]</a></li>
-<li><a href="#doctor"><code>doctor</code></a></li>
-<li><a href="#dump-targets"><code>dump</code> [<em>targets</em>]</a></li>
-<li><a href="#edit-targets"><code>edit</code> [<em>targets</em>]</a></li>
-<li><a href="#edit-config"><code>edit-config</code></a></li>
-<li><a href="#forget-targets"><code>forget</code> <em>targets</em></a></li>
-<li><a href="#help-command"><code>help</code> <em>command</em></a></li>
-<li><a href="#init-repo"><code>init</code> [<em>repo</em>]</a></li>
-<li><a href="#import-filename"><code>import</code> <em>filename</em></a></li>
-<li><a href="#merge-targets"><code>merge</code> <em>targets</em></a></li>
-<li><a href="#remove-targets"><code>remove</code> <em>targets</em></a></li>
-<li><a href="#secret"><code>secret</code></a></li>
-<li><a href="#source-args"><code>source</code> [<em>args</em>]</a></li>
-<li><a href="#source-path-targets"><code>source-path</code> [<em>targets</em>]</a></li>
-<li><a href="#unmanaged"><code>unmanaged</code></a></li>
-<li><a href="#update"><code>update</code></a></li>
-<li><a href="#upgrade"><code>upgrade</code></a></li>
-<li><a href="#verify-targets"><code>verify</code> [<em>targets</em>]</a></li>
-</ul></li>
-<li><a href="#editor-configuration">Editor configuration</a></li>
-<li><a href="#umask-configuration">Umask configuration</a></li>
-<li><a href="#template-variables">Template variables</a></li>
-<li><a href="#template-functions">Template functions</a>
-
-<ul>
-<li><a href="#bitwarden-args"><code>bitwarden</code> [<em>args</em>]</a></li>
-<li><a href="#gopass-gopass-name"><code>gopass</code> <em>gopass-name</em></a></li>
-<li><a href="#keepassxc-entry"><code>keepassxc</code> <em>entry</em></a></li>
-<li><a href="#keepassxcattribute-entry-attribute"><code>keepassxcAttribute</code> <em>entry</em> <em>attribute</em></a></li>
-<li><a href="#keyring-service-user"><code>keyring</code> <em>service</em> <em>user</em></a></li>
-<li><a href="#lastpass-id"><code>lastpass</code> <em>id</em></a></li>
-<li><a href="#onepassword-uuid"><code>onepassword</code> <em>uuid</em></a></li>
-<li><a href="#pass-pass-name"><code>pass</code> <em>pass-name</em></a></li>
-<li><a href="#promptstring-prompt"><code>promptString</code> <em>prompt</em></a></li>
-<li><a href="#secret-args"><code>secret</code> [<em>args</em>]</a></li>
-<li><a href="#secretjson-args"><code>secretJSON</code> [<em>args</em>]</a></li>
-<li><a href="#vault-key"><code>vault</code> <em>key</em></a></li>
-</ul></li>
-</ul>
-
 <h2 id="concepts">Concepts</h2>
 
 <p>chezmoi evaluates the source state for the current machine and then updates the
@@ -214,6 +132,10 @@ directory.</p></li>
 <h3 id="c-config-filename"><code>-c</code>, <code>--config</code> <em>filename</em></h3>
 
 <p>Read the configuration from <em>filename</em>.</p>
+
+<h3 id="debug"><code>--debug</code></h3>
+
+<p>Log information helpful for debugging.</p>
 
 <h3 id="d-destination-directory"><code>-D</code>, <code>--destination</code> <em>directory</em></h3>
 
@@ -1170,6 +1092,11 @@ chezmoi&rsquo;s configuration file.</p>
 </tr>
 
 <tr>
+<td><code>.chezmoi.sourceDir</code></td>
+<td>The source directory.</td>
+</tr>
+
+<tr>
 <td><code>.chezmoi.username</code></td>
 <td>The username of the user running chezmoi.</td>
 </tr>
@@ -1378,6 +1305,7 @@ times with the same <em>key</em> will only invoke <code>vault</code> once.</p>
 <ul>
 <li><a href="#color-value"><code>--color</code> <em>value</em></a></li>
 <li><a href="#c-config-filename"><code>-c</code>, <code>--config</code> <em>filename</em></a></li>
+<li><a href="#debug"><code>--debug</code></a></li>
 <li><a href="#d-destination-directory"><code>-D</code>, <code>--destination</code> <em>directory</em></a></li>
 <li><a href="#f-follow"><code>-f</code>, <code>--follow</code></a></li>
 <li><a href="#n-dry-run"><code>-n</code>, <code>--dry-run</code></a></li>

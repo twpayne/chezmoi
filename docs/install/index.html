@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0"><meta property="og:title" content="Install" />
-<meta property="og:description" content="Install Guide  One-line binary install One-line package install Pre-built Linux packages Pre-built binaries From source Upgrading  One-line binary install Install the correct binary for your operating system and architecture in ./bin with a single command.
+<meta property="og:description" content="Install Guide One-line binary install Install the correct binary for your operating system and architecture in ./bin with a single command.
 curl -sfL https://git.io/chezmoi | sh  One-line package install Install chezmoi with a single command.
    OS Method Distribution Command     Linux snap  snap install chezmoi --classic   Linux Linuxbrew  brew install twpayne/taps/chezmoi   Linux pacman Arch pacman -S chezmoi   macOS Homebrew  brew install twpayne/taps/chezmoi   Windows Scoop  scoop bucket add twpayne https://github." />
 <meta property="og:type" content="article" />
@@ -17,7 +17,7 @@ curl -sfL https://git.io/chezmoi | sh  One-line package install Install chezmoi 
 <link rel="stylesheet" href="/book.min.dcb5f88ae9cbea1ffe9da7a510c09e799304f04d2a33302b20bf31dedb3b7778.css" integrity="sha256-3LX4iunL6h/&#43;naelEMCeeZME8E0qMzArIL8x3ts7d3g=">
 
 
-<script defer src="/search.min.f20cb0017d6841322b696c83bff0a9687fa06e680e46a995e3e0c476bb7a386d.js" integrity="sha256-8gywAX1oQTIraWyDv/CpaH&#43;gbmgORqmV4&#43;DEdrt6OG0="></script>
+<script defer src="/search.min.8bd18e2b914f06713e7945b82c7794f9d9cdaf9f12a57e13674a0cec1787a55e.js" integrity="sha256-i9GOK5FPBnE&#43;eUW4LHeU&#43;dnNr58SpX4TZ0oM7BeHpV4="></script>
 
 <!--
 Made with Book Theme
@@ -91,15 +91,6 @@ https://github.com/alex-shpak/hugo-book
 <article class="markdown">
 
 <h1 id="install-guide">Install Guide</h1>
-
-<ul>
-<li><a href="#one-line-binary-install">One-line binary install</a></li>
-<li><a href="#one-line-package-install">One-line package install</a></li>
-<li><a href="#pre-built-linux-packages">Pre-built Linux packages</a></li>
-<li><a href="#pre-built-binaries">Pre-built binaries</a></li>
-<li><a href="#from-source">From source</a></li>
-<li><a href="#upgrading">Upgrading</a></li>
-</ul>
 
 <h2 id="one-line-binary-install">One-line binary install</h2>
 
@@ -247,12 +238,15 @@ documentation, and shell completions.</p>
 
 <p>Download, build, and install chezmoi for your system:</p>
 
-<pre><code>cd $(mktemp -d) &amp;&amp; go get -u github.com/twpayne/chezmoi
+<pre><code>cd $(mktemp -d) &amp;&amp; GO111MODULE=on go get -u github.com/twpayne/chezmoi
 </code></pre>
+
+<p>Building chezmoi requires Go 1.13 or later and Go modules enabled.</p>
 
 <h2 id="upgrading">Upgrading</h2>
 
-<p>Once chezmoi is installed, you can upgrade it to the latest release with:</p>
+<p>If you have installed a pre-built binary of chezmoi, you can upgrade it to the
+latest release with:</p>
 
 <pre><code>chezmoi upgrade
 </code></pre>
