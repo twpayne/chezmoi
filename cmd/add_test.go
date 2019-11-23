@@ -29,6 +29,9 @@ func TestAddAfterModification(t *testing.T) {
 	}
 	args := []string{"/home/user/.bashrc"}
 	assert.NoError(t, c.runAddCmd(nil, args))
+	isPrivate, err := chezmoi.IsPrivate(fs, "/home/user/.bashrc")
+	require.NoError(t, err)
+	require.False(t, isPrivate, "/home/user/.bashrc should be public, but is private")
 	vfst.RunTests(t, fs, "",
 		vfst.TestPath("/home/user/.chezmoi/dot_bashrc",
 			vfst.TestModeIsRegular,
@@ -36,6 +39,9 @@ func TestAddAfterModification(t *testing.T) {
 		),
 	)
 	assert.NoError(t, fs.WriteFile("/home/user/.bashrc", []byte("# new contents of .bashrc\n"), 0644))
+	isPrivate, err = chezmoi.IsPrivate(fs, "/home/user/.bashrc")
+	require.NoError(t, err)
+	require.False(t, isPrivate, "/home/user/.bashrc should be public, but is private")
 	assert.NoError(t, c.runAddCmd(nil, args))
 	vfst.RunTests(t, fs, "",
 		vfst.TestPath("/home/user/.chezmoi/dot_bashrc",
