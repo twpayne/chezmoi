@@ -24,12 +24,6 @@ completions/chezmoi.fish:
 completions/chezmoi.zsh:
 	mkdir -p $$(dirname $@) && go run . completion zsh > $@ || ( rm -f $@ ; false )
 
-.PHONY: coverage.out
-coverage.out:
-	go test -cover -covermode=count -coverprofile=cmd-coverage.out -coverpkg=github.com/twpayne/chezmoi/cmd,github.com/twpayne/chezmoi/internal/chezmoi ./cmd
-	go test -cover -covermode=count -coverprofile=internal-chezmoi-coverage.out ./internal/chezmoi
-	$$(go env GOPATH)/bin/gocovmerge cmd-coverage.out internal-chezmoi-coverage.out > $@ || ( rm -f $@ ; false )
-
 .PHONY: format
 format:
 	find . -name \*.go | xargs $$(go env GOPATH)/bin/gofumports -w
@@ -39,18 +33,11 @@ generate:
 	go generate ./...
 	$$(go env GOPATH)/bin/packr2
 
-.PHONY: html-coverage
-html-coverage:
-	go tool cover -html=coverage.out
-
 .PHONY: install-tools
 install-tools:
 	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- v1.21.0
 	GO111MODULE=off go get -u \
-		golang.org/x/tools/cmd/cover \
 		github.com/gobuffalo/packr/v2/packr2 \
-		github.com/mattn/goveralls \
-		github.com/wadey/gocovmerge \
 		mvdan.cc/gofumpt/gofumports
 
 .PHONY: lint

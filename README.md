@@ -3,7 +3,6 @@
 [![GitHub Release](https://img.shields.io/github/release/twpayne/chezmoi.svg)](https://github.com/twpayne/chezmoi/releases)
 [![Build
 Status](https://travis-ci.org/twpayne/chezmoi.svg?branch=master)](https://travis-ci.org/twpayne/chezmoi)
-[![Coverage Status](https://coveralls.io/repos/github/twpayne/chezmoi/badge.svg)](https://coveralls.io/github/twpayne/chezmoi)
 
 Manage your dotfiles across multiple machines, securely.
 
