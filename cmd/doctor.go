@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"strings"
 
 	"github.com/coreos/go-semver/semver"
@@ -69,6 +70,8 @@ type doctorFileCheck struct {
 	info        os.FileInfo
 }
 
+type doctorRuntimeCheck struct{}
+
 type doctorSuspiciousFilesCheck struct {
 	path      string
 	filenames map[string]bool
@@ -110,6 +113,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 	allOK := true
 	for _, dc := range []doctorCheck{
 		&doctorVersionCheck{},
+		&doctorRuntimeCheck{},
 		&doctorDirectoryCheck{
 			name:         "source directory",
 			path:         c.SourceDir,
@@ -367,6 +371,26 @@ func (c *doctorFileCheck) Result() string {
 
 func (c *doctorFileCheck) Skip() bool {
 	return c.canSkip && c.path == ""
+}
+
+func (doctorRuntimeCheck) Check() (bool, error) {
+	return true, nil
+}
+
+func (doctorRuntimeCheck) Enabled() bool {
+	return true
+}
+
+func (doctorRuntimeCheck) MustSucceed() bool {
+	return true
+}
+
+func (doctorRuntimeCheck) Result() string {
+	return fmt.Sprintf("runtime.GOOS %s, runtime.GOARCH %s", runtime.GOOS, runtime.GOARCH)
+}
+
+func (doctorRuntimeCheck) Skip() bool {
+	return false
 }
 
 func (c *doctorSuspiciousFilesCheck) Check() (bool, error) {
