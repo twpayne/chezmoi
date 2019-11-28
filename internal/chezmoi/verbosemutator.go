@@ -160,7 +160,7 @@ func (m *VerboseMutator) WriteSymlink(oldname, newname string) error {
 
 // cmdString returns a string representation of cmd.
 func cmdString(cmd *exec.Cmd) string {
-	components := append([]string{cmd.Path}, cmd.Args...)
+	components := append([]string{cmd.Path}, cmd.Args[1:]...)
 	for i, component := range components {
 		components[i] = shellescape.Quote(component)
 	}
