@@ -21,11 +21,15 @@ type onepasswordCmdConfig struct {
 	Command string
 }
 
-var onepasswordCache = make(map[string]interface{})
+var (
+	onepasswordCache         = make(map[string]interface{})
+	onepasswordDocumentCache = make(map[string]string)
+)
 
 func init() {
 	config.Onepassword.Command = "op"
 	config.addTemplateFunc("onepassword", config.onepasswordFunc)
+	config.addTemplateFunc("onepasswordDocument", config.onepasswordDocumentFunc)
 
 	secretCmd.AddCommand(onepasswordCmd)
 }
@@ -53,4 +57,21 @@ func (c *Config) onepasswordFunc(item string) interface{} {
 	}
 	onepasswordCache[item] = data
 	return data
+}
+
+func (c *Config) onepasswordDocumentFunc(item string) interface{} {
+	if output, ok := onepasswordDocumentCache[item]; ok {
+		return output
+	}
+	name := c.Onepassword.Command
+	args := []string{"get", "document", item}
+	cmd := exec.Command(name, args...)
+	cmd.Stdin = os.Stdin
+	cmd.Stderr = os.Stderr
+	output, err := c.mutator.IdempotentCmdOutput(cmd)
+	if err != nil {
+		panic(fmt.Errorf("onepassword: %s %s: %w\n%s", name, strings.Join(args, " "), err, output))
+	}
+	onepasswordDocumentCache[item] = string(output)
+	return string(output)
 }

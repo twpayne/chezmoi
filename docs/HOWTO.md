@@ -466,6 +466,15 @@ Then you can access `details.password` with the syntax:
 
     {{ (onepassword "<uuid>").details.password }}
 
+Documents can be retreived with:
+
+    {{- onepasswordDocument "uuid" -}}
+
+Note the extra `-` after the opening `{{` and before the closing `}}`. This
+instructs the templating language to remove and whitespace before and after the
+substitution. This removes any trailing newline added by your editor when saving
+the template.
+
 ### Use pass to keep your secrets
 
 chezmoi includes support for [pass](https://www.passwordstore.org/) using the

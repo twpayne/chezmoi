@@ -64,6 +64,7 @@ Manage your dotfiles securely across multiple machines.
   * [`keyring` *service* *user*](#keyring-service-user)
   * [`lastpass` *id*](#lastpass-id)
   * [`onepassword` *uuid*](#onepassword-uuid)
+  * [`onepasswordDocument` *uuid*](#onepassworddocument-uuid)
   * [`pass` *pass-name*](#pass-pass-name)
   * [`promptString` *prompt*](#promptstring-prompt)
   * [`secret` [*args*]](#secret-args)
@@ -826,6 +827,19 @@ same *uuid* will only invoke `op` once.
 #### `onepassword` examples
 
     {{ (onepassword "<uuid>").details.password }}
+
+### `onepasswordDocument` *uuid*
+
+`onepassword` returns a document from [1Password](https://1password.com/)
+using the [1Password
+CLI](https://support.1password.com/command-line-getting-started/) (`op`). *uuid*
+is passed to `op get document <uuid>` and the output from `op` is returned.
+The output from `op` is cached so calling `onepasswordDocument` multiple times with the
+same *uuid* will only invoke `op` once.
+
+#### `onepasswordDocument` examples
+
+    {{- onepasswordDocument "<uuid>" -}}
 
 ### `pass` *pass-name*
 
