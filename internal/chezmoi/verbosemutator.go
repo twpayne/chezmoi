@@ -12,7 +12,6 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/alessio/shellescape"
 	"github.com/pkg/diff"
 )
 
@@ -35,7 +34,7 @@ func NewVerboseMutator(w io.Writer, m Mutator, colored bool) *VerboseMutator {
 
 // Chmod implements Mutator.Chmod.
 func (m *VerboseMutator) Chmod(name string, mode os.FileMode) error {
-	action := fmt.Sprintf("chmod %o %s", mode, shellescape.Quote(name))
+	action := fmt.Sprintf("chmod %o %s", mode, maybeShellQuote(name))
 	err := m.m.Chmod(name, mode)
 	if err == nil {
 		_, _ = fmt.Fprintln(m.w, action)
@@ -59,7 +58,7 @@ func (m *VerboseMutator) IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error) {
 
 // Mkdir implements Mutator.Mkdir.
 func (m *VerboseMutator) Mkdir(name string, perm os.FileMode) error {
-	action := fmt.Sprintf("mkdir -m %o %s", perm, shellescape.Quote(name))
+	action := fmt.Sprintf("mkdir -m %o %s", perm, maybeShellQuote(name))
 	err := m.m.Mkdir(name, perm)
 	if err == nil {
 		_, _ = fmt.Fprintln(m.w, action)
@@ -71,7 +70,7 @@ func (m *VerboseMutator) Mkdir(name string, perm os.FileMode) error {
 
 // RemoveAll implements Mutator.RemoveAll.
 func (m *VerboseMutator) RemoveAll(name string) error {
-	action := fmt.Sprintf("rm -rf %s", shellescape.Quote(name))
+	action := fmt.Sprintf("rm -rf %s", maybeShellQuote(name))
 	err := m.m.RemoveAll(name)
 	if err == nil {
 		_, _ = fmt.Fprintln(m.w, action)
@@ -83,7 +82,7 @@ func (m *VerboseMutator) RemoveAll(name string) error {
 
 // Rename implements Mutator.Rename.
 func (m *VerboseMutator) Rename(oldpath, newpath string) error {
-	action := fmt.Sprintf("mv %s %s", shellescape.Quote(oldpath), shellescape.Quote(newpath))
+	action := fmt.Sprintf("mv %s %s", maybeShellQuote(oldpath), maybeShellQuote(newpath))
 	err := m.m.Rename(oldpath, newpath)
 	if err == nil {
 		_, _ = fmt.Fprintln(m.w, action)
@@ -112,7 +111,7 @@ func (m *VerboseMutator) Stat(name string) (os.FileInfo, error) {
 
 // WriteFile implements Mutator.WriteFile.
 func (m *VerboseMutator) WriteFile(name string, data []byte, perm os.FileMode, currData []byte) error {
-	action := fmt.Sprintf("install -m %o /dev/null %s", perm, shellescape.Quote(name))
+	action := fmt.Sprintf("install -m %o /dev/null %s", perm, maybeShellQuote(name))
 	err := m.m.WriteFile(name, data, perm, currData)
 	if err == nil {
 		_, _ = fmt.Fprintln(m.w, action)
@@ -148,7 +147,7 @@ func (m *VerboseMutator) WriteFile(name string, data []byte, perm os.FileMode, c
 
 // WriteSymlink implements Mutator.WriteSymlink.
 func (m *VerboseMutator) WriteSymlink(oldname, newname string) error {
-	action := fmt.Sprintf("ln -sf %s %s", shellescape.Quote(oldname), shellescape.Quote(newname))
+	action := fmt.Sprintf("ln -sf %s %s", maybeShellQuote(oldname), maybeShellQuote(newname))
 	err := m.m.WriteSymlink(oldname, newname)
 	if err == nil {
 		_, _ = fmt.Fprintln(m.w, action)
@@ -162,13 +161,13 @@ func (m *VerboseMutator) WriteSymlink(oldname, newname string) error {
 func cmdString(cmd *exec.Cmd) string {
 	components := append([]string{cmd.Path}, cmd.Args[1:]...)
 	for i, component := range components {
-		components[i] = shellescape.Quote(component)
+		components[i] = maybeShellQuote(component)
 	}
 	s := strings.Join(components, " ")
 	if cmd.Dir == "" {
 		return s
 	}
-	return fmt.Sprintf("( cd %s && %s )", shellescape.Quote(cmd.Dir), s)
+	return fmt.Sprintf("( cd %s && %s )", maybeShellQuote(cmd.Dir), s)
 }
 
 func isBinary(data []byte) bool {
