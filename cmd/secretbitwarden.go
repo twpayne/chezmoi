@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/twpayne/chezmoi/internal/chezmoi"
 )
 
 var bitwardenCmd = &cobra.Command{
@@ -46,11 +47,11 @@ func (c *Config) bitwardenFunc(args ...string) interface{} {
 	cmd.Stderr = os.Stderr
 	output, err := c.mutator.IdempotentCmdOutput(cmd)
 	if err != nil {
-		panic(fmt.Errorf("bitwarden: %s %s: %w\n%s", name, strings.Join(args, " "), err, output))
+		panic(fmt.Errorf("bitwarden: %s %s: %w\n%s", name, chezmoi.ShellQuoteArgs(args), err, output))
 	}
 	var data interface{}
 	if err := json.Unmarshal(output, &data); err != nil {
-		panic(fmt.Errorf("bitwarden: %s %s: %w\n%s", name, strings.Join(args, " "), err, output))
+		panic(fmt.Errorf("bitwarden: %s %s: %w\n%s", name, chezmoi.ShellQuoteArgs(args), err, output))
 	}
 	bitwardenCache[key] = data
 	return data

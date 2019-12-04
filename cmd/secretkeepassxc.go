@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/twpayne/chezmoi/internal/chezmoi"
 	"golang.org/x/crypto/ssh/terminal"
 )
 
@@ -64,11 +65,11 @@ func (c *Config) keePassXCFunc(entry string) map[string]string {
 	args = append(args, c.KeePassXC.Database, entry)
 	output, err := c.runKeePassXCCLICommand(name, args)
 	if err != nil {
-		panic(fmt.Errorf("keepassxc: %s %s: %w", name, strings.Join(args, " "), err))
+		panic(fmt.Errorf("keepassxc: %s %s: %w", name, chezmoi.ShellQuoteArgs(args), err))
 	}
 	data, err := parseKeyPassXCOutput(output)
 	if err != nil {
-		panic(fmt.Errorf("keepassxc: %s %s: %w", name, strings.Join(args, " "), err))
+		panic(fmt.Errorf("keepassxc: %s %s: %w", name, chezmoi.ShellQuoteArgs(args), err))
 	}
 	keePassXCCache[entry] = data
 	return data
@@ -91,7 +92,7 @@ func (c *Config) keePassXCAttributeFunc(entry, attribute string) string {
 	args = append(args, c.KeePassXC.Database, entry)
 	output, err := c.runKeePassXCCLICommand(name, args)
 	if err != nil {
-		panic(fmt.Errorf("keepassxc: %s %s: %w", name, strings.Join(args, " "), err))
+		panic(fmt.Errorf("keepassxc: %s %s: %w", name, chezmoi.ShellQuoteArgs(args), err))
 	}
 	outputStr := strings.TrimSpace(string(output))
 	keePassXCAttributeCache[key] = outputStr
