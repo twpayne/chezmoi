@@ -27,7 +27,7 @@ gpgRecipient = &amp;quot;...&amp;quot;  to:
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/contributing/</guid>
-      <description>Contributing Guide Getting started chezmoi is written in Go and development happens on GitHub. The rest of this document assumes that you&amp;rsquo;ve checked out chezmoi locally.
+      <description>Contributing Guide Getting started chezmoi is written in Go and development happens on GitHub. The rest of this document assumes that you&#39;ve checked out chezmoi locally.
 Developing locally chezmoi requires Go 1.13 or later and Go modules enabled. Enable Go modules by setting the environment variable GO111MODULE=on.
 chezmoi is a standard Go project, using standard Go tooling, with a few extra tools. Install these extra tools with:
 make install-tools  Build chezmoi:</description>
@@ -62,7 +62,7 @@ chezmoi cd git remote add origin https://github.</description>
       <guid>https://chezmoi.io/docs/install/</guid>
       <description>Install Guide One-line binary install Install the correct binary for your operating system and architecture in ./bin with a single command.
 curl -sfL https://git.io/chezmoi | sh  One-line package install Install chezmoi with a single command.
-   OS Method Distribution Command     Linux snap  snap install chezmoi --classic   Linux Linuxbrew  brew install twpayne/taps/chezmoi   Linux pacman Arch pacman -S chezmoi   macOS Homebrew  brew install twpayne/taps/chezmoi   Windows Scoop  scoop bucket add twpayne https://github.</description>
+   OS Method Command     Linux snap snap install chezmoi --classic   Linux Linuxbrew brew install twpayne/taps/chezmoi   Alpine Linux apk apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/ chezmoi   Arch Linux pacman pacman -S chezmoi   macOS Homebrew brew install twpayne/taps/chezmoi   Windows Scoop scoop bucket add twpayne https://github.</description>
     </item>
     
     <item>
@@ -83,10 +83,10 @@ chezmoi init  This will create a new git repository in ~/.local/share/chezmoi wi
       
       <guid>https://chezmoi.io/docs/reference/</guid>
       <description>Reference Manual Concepts chezmoi evaluates the source state for the current machine and then updates the destination directory, where:
- The source state declares the desired state of your home directory, including templates and machine-specific configuration.
- The source directory is where chezmoi stores the source state, by default ~/.local/share/chezmoi.
- The target state is the source state computed for the current machine.
- The destination directory is the directory that chezmoi manages, by default ~, your home directory.</description>
+  The source state declares the desired state of your home directory, including templates and machine-specific configuration.
+  The source directory is where chezmoi stores the source state, by default ~/.local/share/chezmoi.
+  The target state is the source state computed for the current machine.
+  The destination directory is the directory that chezmoi manages, by default ~, your home directory.</description>
     </item>
     
   </channel>
