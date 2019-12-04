@@ -11,8 +11,8 @@ const (
 	singleQuote = '\''
 )
 
-// maybeShellQuote returns s quoted as a shell argument, if necessary.
-func maybeShellQuote(s string) string {
+// MaybeShellQuote returns s quoted as a shell argument, if necessary.
+func MaybeShellQuote(s string) string {
 	switch {
 	case s == "":
 		return "''"

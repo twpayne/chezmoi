@@ -19,6 +19,6 @@ func TestMaybeShellQuote(t *testing.T) {
 		`a/b`: `a/b`,
 		`a b`: `'a b'`,
 	} {
-		assert.Equal(t, expected, maybeShellQuote(s), "quoting %q", s)
+		assert.Equal(t, expected, MaybeShellQuote(s), "quoting %q", s)
 	}
 }
