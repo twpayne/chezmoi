@@ -19,14 +19,14 @@ with a single command.
 
 Install chezmoi with a single command.
 
-| OS      | Method     | Distribution | Command                                                                                     |
-| ------- | ---------- | ------------ | ------------------------------------------------------------------------------------------- |
-| Linux   | snap       |              | `snap install chezmoi --classic`                                                            |
-| Linux   | Linuxbrew  |              | `brew install twpayne/taps/chezmoi`                                                         |
-| Linux   | apk        | Alpine       | `apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/ chezmoi`           |
-| Linux   | pacman     | Arch         | `pacman -S chezmoi`                                                                         |
-| macOS   | Homebrew   |              | `brew install twpayne/taps/chezmoi`                                                         |
-| Windows | Scoop      |              | `scoop bucket add twpayne https://github.com/twpayne/scoop-bucket && scoop install chezmoi` |
+| OS           | Method     | Command                                                                                     |
+| ------------ | ---------- | ------------------------------------------------------------------------------------------- |
+| Linux        | snap       | `snap install chezmoi --classic`                                                            |
+| Linux        | Linuxbrew  | `brew install twpayne/taps/chezmoi`                                                         |
+| Alpine Linux | apk        | `apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing/ chezmoi`           |
+| Arch Linux   | pacman     | `pacman -S chezmoi`                                                                         |
+| macOS        | Homebrew   | `brew install twpayne/taps/chezmoi`                                                         |
+| Windows      | Scoop      | `scoop bucket add twpayne https://github.com/twpayne/scoop-bucket && scoop install chezmoi` |
 
 ## Pre-built Linux packages
 
