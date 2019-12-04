@@ -1,7 +1,6 @@
 linters:
   enable-all: true
   disable:
-    - dupl
     - funlen
     - gocognit
     - goconst
@@ -13,6 +12,12 @@ linters:
 
 issues:
   exclude-rules:
+    - linters:
+        - dupl
+      path: "secretgopass.go"
+    - linters:
+        - dupl
+      path: "secretpass.go"
     - linters:
         - gochecknoglobals
         - gochecknoinits
