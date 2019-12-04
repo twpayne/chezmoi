@@ -159,11 +159,7 @@ func (m *VerboseMutator) WriteSymlink(oldname, newname string) error {
 
 // cmdString returns a string representation of cmd.
 func cmdString(cmd *exec.Cmd) string {
-	components := append([]string{cmd.Path}, cmd.Args[1:]...)
-	for i, component := range components {
-		components[i] = MaybeShellQuote(component)
-	}
-	s := strings.Join(components, " ")
+	s := ShellQuoteArgs(append([]string{cmd.Path}, cmd.Args[1:]...))
 	if cmd.Dir == "" {
 		return s
 	}

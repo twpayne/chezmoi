@@ -2,6 +2,7 @@ package chezmoi
 
 import (
 	"regexp"
+	"strings"
 )
 
 var needShellQuoteRegexp = regexp.MustCompile(`[^+\-./0-9A-Z_a-z]`)
@@ -48,4 +49,13 @@ func MaybeShellQuote(s string) string {
 	default:
 		return s
 	}
+}
+
+// ShellQuoteArgs returs args shell quoted and joined into a single string.
+func ShellQuoteArgs(args []string) string {
+	shellQuotedArgs := make([]string, 0, len(args))
+	for _, arg := range args {
+		shellQuotedArgs = append(shellQuotedArgs, MaybeShellQuote(arg))
+	}
+	return strings.Join(shellQuotedArgs, " ")
 }
