@@ -1,25 +1,30 @@
 linters:
   enable-all: true
   disable:
-    - dupl
-    - funlen
-    - gocognit
-    - goconst
-    - gocyclo
-    - godox
-    - lll
-    - maligned
-    - wsl
+  - funlen
+  - gocognit
+  - goconst
+  - gocyclo
+  - godox
+  - lll
+  - maligned
+  - wsl
 
 issues:
   exclude-rules:
-    - linters:
-        - gochecknoglobals
-        - gochecknoinits
-      path: cmd/
-    - linters:
-        - gochecknoglobals
-      path: internal/
-    - linters:
-        - scopelint
-      path: "_test\\.go"
+  - linters:
+    - dupl
+    path: "secretgopass.go"
+  - linters:
+    - dupl
+    path: "secretpass.go"
+  - linters:
+    - gochecknoglobals
+    - gochecknoinits
+    path: cmd/
+  - linters:
+    - gochecknoglobals
+    path: internal/
+  - linters:
+    - scopelint
+    path: "_test\\.go"

@@ -56,7 +56,14 @@ func init() {
 		}
 	}
 
-	rootCmd.Version = fmt.Sprintf("%s, commit %s, built at %s", VersionStr, Commit, Date)
+	versionComponents := []string{VersionStr}
+	if Commit != unknownStr {
+		versionComponents = append(versionComponents, "commit "+Commit)
+	}
+	if Date != unknownStr {
+		versionComponents = append(versionComponents, "built at "+Date)
+	}
+	rootCmd.Version = strings.Join(versionComponents, ", ")
 
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
