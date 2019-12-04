@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/twpayne/chezmoi/internal/chezmoi"
 )
 
 var genericSecretCmd = &cobra.Command{
@@ -49,7 +50,7 @@ func (c *Config) secretFunc(args ...string) interface{} {
 	cmd.Stderr = os.Stderr
 	output, err := c.mutator.IdempotentCmdOutput(cmd)
 	if err != nil {
-		panic(fmt.Errorf("secret: %s %s: %w\n%s", name, strings.Join(args, " "), err, output))
+		panic(fmt.Errorf("secret: %s %s: %w\n%s", name, chezmoi.ShellQuoteArgs(args), err, output))
 	}
 	value := bytes.TrimSpace(output)
 	secretCache[key] = value
@@ -67,11 +68,11 @@ func (c *Config) secretJSONFunc(args ...string) interface{} {
 	cmd.Stderr = os.Stderr
 	output, err := c.mutator.IdempotentCmdOutput(cmd)
 	if err != nil {
-		panic(fmt.Errorf("secretJSON: %s %s: %w\n%s", name, strings.Join(args, " "), err, output))
+		panic(fmt.Errorf("secretJSON: %s %s: %w\n%s", name, chezmoi.ShellQuoteArgs(args), err, output))
 	}
 	var value interface{}
 	if err := json.Unmarshal(output, &value); err != nil {
-		panic(fmt.Errorf("secretJSON: %s %s: %w\n%s", name, strings.Join(args, " "), err, output))
+		panic(fmt.Errorf("secretJSON: %s %s: %w\n%s", name, chezmoi.ShellQuoteArgs(args), err, output))
 	}
 	secretJSONCache[key] = value
 	return value

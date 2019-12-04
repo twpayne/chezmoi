@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/twpayne/chezmoi/internal/chezmoi"
 )
 
 var vaultCmd = &cobra.Command{
@@ -45,11 +45,11 @@ func (c *Config) vaultFunc(key string) interface{} {
 	cmd.Stderr = os.Stderr
 	output, err := c.mutator.IdempotentCmdOutput(cmd)
 	if err != nil {
-		panic(fmt.Errorf("vault: %s %s: %w\n%s", name, strings.Join(args, " "), err, output))
+		panic(fmt.Errorf("vault: %s %s: %w\n%s", name, chezmoi.ShellQuoteArgs(args), err, output))
 	}
 	var data interface{}
 	if err := json.Unmarshal(output, &data); err != nil {
-		panic(fmt.Errorf("vault: %s %s: %w\n%s", name, strings.Join(args, " "), err, output))
+		panic(fmt.Errorf("vault: %s %s: %w\n%s", name, chezmoi.ShellQuoteArgs(args), err, output))
 	}
 	vaultCache[key] = data
 	return data

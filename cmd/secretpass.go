@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"fmt"
 	"os/exec"
-	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/twpayne/chezmoi/internal/chezmoi"
 )
 
 var passCmd = &cobra.Command{
@@ -42,7 +42,7 @@ func (c *Config) passFunc(id string) string {
 	cmd := exec.Command(name, args...)
 	output, err := c.mutator.IdempotentCmdOutput(cmd)
 	if err != nil {
-		panic(fmt.Errorf("pass: %s %s: %w", name, strings.Join(args, " "), err))
+		panic(fmt.Errorf("pass: %s %s: %w", name, chezmoi.ShellQuoteArgs(args), err))
 	}
 	var password string
 	if index := bytes.IndexByte(output, '\n'); index != -1 {
