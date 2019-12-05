@@ -74,6 +74,9 @@ archives:
   - docs/*
   replacements:
     386: i386
+  format_overrides:
+  - goos: windows
+    format: zip
 
 checksum:
   name_template: "checksums.txt"
