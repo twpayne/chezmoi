@@ -72,6 +72,7 @@ func (c *Config) runAddCmd(cmd *cobra.Command, args []string) (err error) {
 					return err
 				}
 				if ts.TargetIgnore.Match(strings.TrimPrefix(path, destDirPrefix)) {
+					fmt.Fprintf(c.Stderr(), "warning: skipping file ignored by .chezmoiignore: %s\n", path)
 					return nil
 				}
 				if c.add.prompt {
@@ -95,6 +96,7 @@ func (c *Config) runAddCmd(cmd *cobra.Command, args []string) (err error) {
 			}
 		} else {
 			if ts.TargetIgnore.Match(strings.TrimPrefix(path, destDirPrefix)) {
+				fmt.Fprintf(c.Stderr(), "warning: skipping file ignored by .chezmoiignore: %s\n", path)
 				continue
 			}
 			if c.add.prompt {
