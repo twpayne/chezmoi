@@ -98,7 +98,7 @@ nfpms:
   - chezmoi-cgo
   - chezmoi-nocgo
   vendor: "Tom Payne <twpayne@gmail.com>"
-  homepage: "https://github.com/twpayne/chezmoi"
+  homepage: "https://chezmoi.io/"
   maintainer: "Tom Payne <twpayne@gmail.com>"
   description: "Manage your dotfiles across multiple machines, securely."
   license: MIT
@@ -107,13 +107,20 @@ nfpms:
   - rpm
   dependencies:
   - git
-  bindir: "/usr/bin"
+  bindir: /usr/bin
   files:
     "completions/chezmoi-completion.bash": "/usr/share/bash-completion/completions/chezmoi"
     "completions/chezmoi.fish": "/usr/share/fish/completions/chezmoi.fish"
   overrides:
+    deb:
+      file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+      replacements:
+        386: i386
+        arm: armel
+      files:
+        "completions/chezmoi.zsh": "/usr/share/zsh/vendor-completions/_chezmoi"
     rpm:
-      name_template: "{{ .ProjectName }}-{{ .Version }}-{{ .Env.TRAVIS_BUILD_NUMBER }}-{{ .Arch }}"
+      file_name_template: "{{ .ProjectName }}-{{ .Version }}-{{ .Arch }}"
       replacements:
         amd64: x86_64
         386: i686
@@ -121,13 +128,6 @@ nfpms:
         arm64: aarch64
       files:
         "completions/chezmoi.zsh": "/usr/share/zsh/functions/_chezmoi"
-    deb:
-      name_template: "{{ .ProjectName }}_{{ .Version }}-{{ .Env.TRAVIS_BUILD_NUMBER }}_{{ .Os }}_{{ .Arch }}"
-      replacements:
-        386: i386
-        arm: armel
-      files:
-        "completions/chezmoi.zsh": "/usr/share/zsh/vendor-completions/_chezmoi"
 
 brews:
 - github:
