@@ -7,6 +7,7 @@
 * [Contributing changes](#contributing-changes)
 * [Managing releases](#managing-releases)
 * [Packaging](#packaging)
+* [Updating the website](#updating-the-website)
 
 ## Getting started
 
@@ -137,3 +138,35 @@ If you plan to package chezmoi for your distibution, then note:
 * chezmoi includes shell completions in the `completions` directory. Please
   include these in the package and install them in the shell-appropriate
   directory, if possible.
+
+## Updating the website
+
+The website, https://chezmoi.io, is generated with [Hugo](https://gohugo.io/)
+and served with [GitHub pages](https://pages.github.com/) from the [`gh-pages`
+branch](https://github.com/twpayne/chezmoi/tree/gh-pages) to GitHub.
+
+Before building the website, you must download the [Hugo Book
+Theme](https://github.com/alex-shpak/hugo-book) by running:
+
+    git submodule update --init
+
+Test the website locally by running:
+
+    ( cd chezmoi.io && hugo serve )
+
+and visit http://localhost:1313/.
+
+To build the website in a temporary directory, run:
+
+    ( cd chezmoi.io && make )
+
+From here you can run
+
+    git show
+
+to show changes and
+
+    git push
+
+to push them. You can only push changes if you have write permissions to the
+chezmoi GitHub repo.
