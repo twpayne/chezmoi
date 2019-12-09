@@ -13,6 +13,7 @@ cleanup() {
     rm -rf ${tmpdir}
 }
 trap cleanup EXIT
+git branch -f gh-pages origin/gh-pages
 git clone --branch=gh-pages --local .. ${tmpdir}
 
 # copy the new website to the temporary directory
