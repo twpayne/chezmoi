@@ -50,22 +50,9 @@ release:
 		--rm-dist \
 		${GORELEASER_FLAGS}
 
-.PHONY: release-setup-travis
-release-setup-travis:
-	sudo snap install goreleaser --classic
-	sudo snap install snapcraft --classic
-	openssl aes-256-cbc \
-		-K $${encrypted_b4d86685c6fa_key} \
-		-iv $${encrypted_b4d86685c6fa_iv} \
-		-in goreleaser/snap.login.enc \
-		-out goreleaser/snap.login \
-		-d
-	snapcraft login \
-		--with goreleaser/snap.login
-
 .PHONY: test-release
 test-release:
-	TRAVIS_BUILD_NUMBER=1 goreleaser release \
+	goreleaser release \
 		--rm-dist \
 		--skip-publish \
 		--snapshot \

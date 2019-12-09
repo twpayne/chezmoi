@@ -1,8 +1,6 @@
 # ![chezmoi logo](logo-144px.svg) chezmoi
 
 [![GitHub Release](https://img.shields.io/github/release/twpayne/chezmoi.svg)](https://github.com/twpayne/chezmoi/releases)
-[![Build
-Status](https://travis-ci.org/twpayne/chezmoi.svg?branch=master)](https://travis-ci.org/twpayne/chezmoi)
 
 Manage your dotfiles across multiple machines, securely.
 

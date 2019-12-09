@@ -62,7 +62,7 @@ to where you were:
 Clone the git repo in `~/.local/share/chezmoi` to a hosted Git service, e.g.
 [GitHub](https://github.com), [GitLab](https://gitlab.com), or
 [BitBucket](https://bitbucket.org). Many people call their dotfiles repo
-`dotfiles`. You can then set up chezmoi on a second machine:
+`dotfiles`. You can then setup chezmoi on a second machine:
 
     chezmoi init https://github.com/username/dotfiles.git
 
