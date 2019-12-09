@@ -100,7 +100,7 @@ var helps = map[string]help{
 			"Output shell completion code for the specified shell (\"bash\", \"fish\", or \"zsh\").\n",
 		example: "" +
 			"  chezmoi completion bash\n" +
-			"  chezmoi completion fish > ~/.config/fish/completions/chezmoi\n" +
+			"  chezmoi completion fish > ~/.config/fish/completions/chezmoi.fish\n" +
 			"  chezmoi completion zsh",
 	},
 	"data": {
