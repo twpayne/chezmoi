@@ -11,7 +11,7 @@ import (
 )
 
 var docsCmd = &cobra.Command{
-	Use:     "docs [pattern]",
+	Use:     "docs [regexp]",
 	Args:    cobra.MaximumNArgs(1),
 	Short:   "Print documentation",
 	Long:    mustGetLongHelp("docs"),
