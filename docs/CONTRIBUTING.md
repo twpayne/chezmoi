@@ -3,6 +3,7 @@
 <!--- toc --->
 * [Getting started](#getting-started)
 * [Developing locally](#developing-locally)
+* [Documentation changes](#documentation-changes)
 * [Contributing changes](#contributing-changes)
 * [Managing releases](#managing-releases)
 * [Packaging](#packaging)
@@ -34,6 +35,18 @@ Run all tests:
 Run chezmoi:
 
     go run .
+
+## Documentation changes
+
+The canonical documentation for chezmoi is in the `docs` directory. The help
+text (the output of `chezmoi command --help`) and the website
+(https://chezmoi.io/) are generated from this.
+
+If you update `docs/REFERENCE.md` you must also run
+
+    make generate
+
+to extract and generate the help text. This will update `cmd/helps.gen.go`.
 
 ## Contributing changes
 
