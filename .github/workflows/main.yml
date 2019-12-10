@@ -94,6 +94,8 @@ jobs:
         sudo chown root:root /
         echo ${SNAPCRAFT_LOGIN} | snapcraft login --with -
     - name: Release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         sudo snap install goreleaser --classic
         goreleaser release
