@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-var needShellQuoteRegexp = regexp.MustCompile(`[^+\-./0-9A-Z_a-z]`)
+var needShellQuoteRegexp = regexp.MustCompile(`[^+\-./0-9=A-Z_a-z]`)
 
 const (
 	backslash   = '\\'
