@@ -105,31 +105,42 @@ To run a local "snapshot" build without publishing:
 
 ## Packaging
 
-If you plan to package chezmoi for your distibution, then note:
+If you're packaging chezmoi for an operating system or distribution:
 
-* Please set the version number, git commit, and build time in the binary. This is done by passing the linker flags:
+* Please set the version number, git commit, and build time in the binary. This
+  greatly assists debugging when end users report problems or ask for help. You
+  can do this by passing the following flags to the Go linker:
 
   ```
-  -X github.com/twpayne/chezmoi/cmd.VersionStr={{ .Version }}
-  -X github.com/twpayne/chezmoi/cmd.Commit={{ .Commit }}
-  -X github.com/twpayne/chezmoi/cmd.Date={{ .Date }}
+  -X github.com/twpayne/chezmoi/cmd.VersionStr=$VERSION
+  -X github.com/twpayne/chezmoi/cmd.Commit=$COMMIT
+  -X github.com/twpayne/chezmoi/cmd.Date=$DATE
   ```
+
+  `$VERSION` should be the chezmoi version, e.g. `1.7.3`. Any `v` prefix is
+  optional and will be stripped, so you can pass the git tag in directly.
+
+  `$COMMIT` should be the full git commit hash at which chezmoi is built, e.g.
+  `4d678ce6850c9d81c7ab2fe0d8f20c1547688b91`.
+
+  `$DATE` should be the date of the build in RFC3339 format, e.g.
+  `2019-11-23T18:29:25Z`.
 
 * Please enable CGO, if possible. chezmoi can be built and run without CGO, but
-  the `.chezmoi.group` template variable may not be set on some systems.
+  the `.chezmoi.username` and `.chezmoi.group` template variables may not be set
+  correctly on some systems.
 
 * chezmoi includes a `docs` command which prints its documentation. By default,
   the docs are embedded in the binary. You can disable this behaviour, and have
   chezmoi read its docs from the filesystem by building with the `noembeddocs`
   build tag and setting the directory where chezmoi can find them with the `-X
-  github.com/twpayne/chezmoi/cmd.DocDir={{ .PathToDocs }}` linker flag. For
-  example:
+  github.com/twpayne/chezmoi/cmd.DocDir=$DOCDIR` linker flag. For example:
 
   ```
   go build -tags noembeddocs -ldflags "-X github.com/twpayne/chezmoi/cmd.DocsDir=/usr/share/doc/chezmoi" .
   ```
 
-  To disable the `docs` command completely, use the `nodocs` build tag.
+  To remove the `docs` command completely, use the `nodocs` build tag.
 
 * chezmoi includes an `upgrade` command which attempts to self-upgrade. You can
   remove this command completely by building chezmoi with the `noupgrade` build
