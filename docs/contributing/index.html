@@ -18,7 +18,7 @@ make install-tools  Build chezmoi:" />
 <link rel="stylesheet" href="/book.min.a8b61185b89b0e211122339c7efd1c8edaa4ad4c0ae65f0074e99a4b31c1e393.css" integrity="sha256-qLYRhbibDiERIjOcfv0cjtqkrUwK5l8AdOmaSzHB45M=">
 
 
-<script defer src="/search.min.6d34a1bb2b9512ff61d0500c1afe8975feacb5c59c9d7028213e2f723a02552b.js" integrity="sha256-bTShuyuVEv9h0FAMGv6Jdf6stcWcnXAoIT4vcjoCVSs="></script>
+<script defer src="/search.min.d0b7ba5fb3f0132af94f1dfea6c0f81f9a700afda979076006e58aea61498ca3.js" integrity="sha256-0Le6X7PwEyr5Tx3&#43;psD4H5pwCv2peQdgBuWK6mFJjKM="></script>
 
 <!--
 Made with Book Theme
@@ -175,26 +175,34 @@ git push origin v0.1.0
 <pre><code>make test-release
 </code></pre>
 <h2 id="packaging">Packaging</h2>
-<p>If you plan to package chezmoi for your distibution, then note:</p>
+<p>If you're packaging chezmoi for an operating system or distribution:</p>
 <ul>
 <li>
-<p>Please set the version number, git commit, and build time in the binary. This is done by passing the linker flags:</p>
-<pre><code>-X github.com/twpayne/chezmoi/cmd.VersionStr={{ .Version }}
--X github.com/twpayne/chezmoi/cmd.Commit={{ .Commit }}
--X github.com/twpayne/chezmoi/cmd.Date={{ .Date }}
-</code></pre></li>
+<p>Please set the version number, git commit, and build time in the binary. This
+greatly assists debugging when end users report problems or ask for help. You
+can do this by passing the following flags to the Go linker:</p>
+<pre><code>-X github.com/twpayne/chezmoi/cmd.VersionStr=$VERSION
+-X github.com/twpayne/chezmoi/cmd.Commit=$COMMIT
+-X github.com/twpayne/chezmoi/cmd.Date=$DATE
+</code></pre><p><code>$VERSION</code> should be the chezmoi version, e.g. <code>1.7.3</code>. Any <code>v</code> prefix is
+optional and will be stripped, so you can pass the git tag in directly.</p>
+<p><code>$COMMIT</code> should be the full git commit hash at which chezmoi is built, e.g.
+<code>4d678ce6850c9d81c7ab2fe0d8f20c1547688b91</code>.</p>
+<p><code>$DATE</code> should be the date of the build in RFC3339 format, e.g.
+<code>2019-11-23T18:29:25Z</code>.</p>
+</li>
 <li>
 <p>Please enable CGO, if possible. chezmoi can be built and run without CGO, but
-the <code>.chezmoi.group</code> template variable may not be set on some systems.</p>
+the <code>.chezmoi.username</code> and <code>.chezmoi.group</code> template variables may not be set
+correctly on some systems.</p>
 </li>
 <li>
 <p>chezmoi includes a <code>docs</code> command which prints its documentation. By default,
 the docs are embedded in the binary. You can disable this behaviour, and have
 chezmoi read its docs from the filesystem by building with the <code>noembeddocs</code>
-build tag and setting the directory where chezmoi can find them with the <code>-X github.com/twpayne/chezmoi/cmd.DocDir={{ .PathToDocs }}</code> linker flag. For
-example:</p>
+build tag and setting the directory where chezmoi can find them with the <code>-X github.com/twpayne/chezmoi/cmd.DocDir=$DOCDIR</code> linker flag. For example:</p>
 <pre><code>go build -tags noembeddocs -ldflags &quot;-X github.com/twpayne/chezmoi/cmd.DocsDir=/usr/share/doc/chezmoi&quot; .
-</code></pre><p>To disable the <code>docs</code> command completely, use the <code>nodocs</code> build tag.</p>
+</code></pre><p>To remove the <code>docs</code> command completely, use the <code>nodocs</code> build tag.</p>
 </li>
 <li>
 <p>chezmoi includes an <code>upgrade</code> command which attempts to self-upgrade. You can
