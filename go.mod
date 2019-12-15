@@ -13,7 +13,7 @@ require (
 	github.com/google/go-github/v26 v26.1.3
 	github.com/google/renameio v0.1.0
 	github.com/google/uuid v1.1.1 // indirect
-	github.com/hectane/go-acl v0.0.0-20190604041725-da78bae5fc95
+	github.com/hectane/go-acl v0.0.0-20190604041725-da78bae5fc95 // indirect
 	github.com/huandu/xstrings v1.2.0 // indirect
 	github.com/imdario/mergo v0.3.8 // indirect
 	github.com/kr/text v0.1.0
@@ -48,6 +48,3 @@ require (
 
 // Temporary while waiting for https://github.com/spf13/cobra/pull/754 to be merged
 replace github.com/spf13/cobra => github.com/0robustus1/cobra v0.0.4-0.20190522074606-64400adf086c
-
-// Temporary while waiting for https://github.com/hectane/go-acl/pull/14 to be merged
-replace github.com/hectane/go-acl => github.com/twpayne/go-acl v0.0.2

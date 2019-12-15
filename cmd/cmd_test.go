@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"os"
+	"runtime"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -65,8 +66,13 @@ func TestExercise(t *testing.T) {
 	t.Run("chezmoi_add_netrc", func(t *testing.T) {
 		mustWriteFile("/home/user/.netrc", "# contents of .netrc\n", 0600)
 		assert.NoError(t, c.runAddCmd(nil, []string{"/home/user/.netrc"}))
+		path := "/home/user/.chezmoi/private_dot_netrc"
+		// Private files are not supported on Windows.
+		if runtime.GOOS == "windows" {
+			path = "/home/user/.chezmoi/dot_netrc"
+		}
 		vfst.RunTests(t, fs, "",
-			vfst.TestPath("/home/user/.chezmoi/private_dot_netrc",
+			vfst.TestPath(path,
 				vfst.TestModeIsRegular,
 				vfst.TestModePerm(0644),
 				vfst.TestContentsString("# contents of .netrc\n"),
