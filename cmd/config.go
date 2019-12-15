@@ -246,7 +246,7 @@ func (c *Config) ensureSourceDirectory() error {
 	info, err := c.fs.Stat(c.SourceDir)
 	switch {
 	case err == nil && info.IsDir():
-		private, err := chezmoi.IsPrivate(c.fs, c.SourceDir)
+		private, err := chezmoi.IsPrivate(c.fs, c.SourceDir, true)
 		if err != nil {
 			return err
 		}

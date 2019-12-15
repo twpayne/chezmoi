@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"runtime"
 	"strings"
 
 	"github.com/Masterminds/sprig"
@@ -163,15 +162,12 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	case err == nil && !info.IsDir():
 		return fmt.Errorf("%s: not a directory", c.SourceDir)
 	case err == nil:
-		// FIXME renable private check on Windows
-		if runtime.GOOS != "windows" {
-			private, err := chezmoi.IsPrivate(c.fs, c.SourceDir)
-			if err != nil {
-				return err
-			}
-			if !private {
-				fmt.Fprintf(os.Stderr, "%s: not private, but should be\n", c.SourceDir)
-			}
+		private, err := chezmoi.IsPrivate(c.fs, c.SourceDir, true)
+		if err != nil {
+			return err
+		}
+		if !private {
+			fmt.Fprintf(os.Stderr, "%s: not private, but should be\n", c.SourceDir)
 		}
 	case !os.IsNotExist(err):
 		return err

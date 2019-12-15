@@ -137,7 +137,7 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 			return err
 		}
 		empty := len(infos) == 0
-		private, err := IsPrivate(fs, targetPath)
+		private, err := IsPrivate(fs, targetPath, perm&077 == 0)
 		if err != nil {
 			return err
 		}
@@ -163,7 +163,7 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 			}
 		}
 		perm := info.Mode().Perm()
-		private, err := IsPrivate(fs, targetPath)
+		private, err := IsPrivate(fs, targetPath, perm&077 == 0)
 		if err != nil {
 			return err
 		}

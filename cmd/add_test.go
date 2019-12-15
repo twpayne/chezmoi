@@ -3,7 +3,6 @@ package cmd
 import (
 	"os"
 	"path/filepath"
-	"runtime"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -13,14 +12,6 @@ import (
 )
 
 func TestAddAfterModification(t *testing.T) {
-	// FIXME this test is flaky on Windows. The call to fs.WriteFile sometimes
-	// writes a public file and sometimes writes a private file. When the file
-	// is re-added, whether the file is public or private changes the filename
-	// in the source state, consequently breaking the test.
-	if runtime.GOOS == "windows" {
-		t.Skip("flaky test on Windows")
-	}
-
 	fs, cleanup, err := vfst.NewTestFS(map[string]interface{}{
 		"/home/user":          &vfst.Dir{Perm: 0755},
 		"/home/user/.chezmoi": &vfst.Dir{Perm: 0700},
@@ -54,12 +45,6 @@ func TestAddAfterModification(t *testing.T) {
 }
 
 func TestAddCommand(t *testing.T) {
-	// FIXME this test is flaky on Windows for the ame reasons as
-	// TestAddAfterModification above.
-	if runtime.GOOS == "windows" {
-		t.Skip("flaky test on Windows")
-	}
-
 	for _, tc := range []struct {
 		name   string
 		args   []string
@@ -456,12 +441,6 @@ func TestAddCommand(t *testing.T) {
 }
 
 func TestIssue192(t *testing.T) {
-	// FIXME this test is flaky on Windows for the ame reasons as
-	// TestAddAfterModification above.
-	if runtime.GOOS == "windows" {
-		t.Skip("flaky test on Windows")
-	}
-
 	root := []interface{}{
 		map[string]interface{}{
 			"/local/home/offbyone": &vfst.Dir{

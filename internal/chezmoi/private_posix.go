@@ -2,9 +2,12 @@
 
 package chezmoi
 
+import (
+	vfs "github.com/twpayne/go-vfs"
+)
+
 // IsPrivate returns whether path should be considered private.
-// nolint:interfacer
-func IsPrivate(fs PrivacyStater, path string) (bool, error) {
+func IsPrivate(fs vfs.Stater, path string, want bool) (bool, error) {
 	info, err := fs.Stat(path)
 	if err != nil {
 		return false, err
