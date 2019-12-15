@@ -1,6 +1,9 @@
 ---
 name: Bug Reporting
 about: Report a Bug/Issue with Chezmoi
+title: 
+labels: 
+assignees: 
 
 ---
 
@@ -42,4 +45,3 @@ Failure to follow the troubleshooting steps (and to report information requested
 ```
 {{replace this}}
 ```
-
