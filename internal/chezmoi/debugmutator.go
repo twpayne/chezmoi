@@ -29,7 +29,8 @@ func (m *DebugMutator) Chmod(name string, mode os.FileMode) error {
 // IdempotentCmdOutput implements Mutator.IdempotentCmdOutput.
 func (m *DebugMutator) IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error) {
 	var output []byte
-	err := Debugf("IdempotentCmdOutput(%q)", []interface{}{cmd}, func() error {
+	cmdStr := ShellQuoteArgs(append([]string{cmd.Path}, cmd.Args[1:]...))
+	err := Debugf("IdempotentCmdOutput(%q)", []interface{}{cmdStr}, func() error {
 		var err error
 		output, err = m.m.IdempotentCmdOutput(cmd)
 		return err
@@ -60,7 +61,8 @@ func (m *DebugMutator) Rename(oldpath, newpath string) error {
 
 // RunCmd implements Mutator.RunCmd.
 func (m *DebugMutator) RunCmd(cmd *exec.Cmd) error {
-	return Debugf("Run(%q)", []interface{}{cmd}, func() error {
+	cmdStr := ShellQuoteArgs(append([]string{cmd.Path}, cmd.Args[1:]...))
+	return Debugf("Run(%q)", []interface{}{cmdStr}, func() error {
 		return m.m.RunCmd(cmd)
 	})
 }
