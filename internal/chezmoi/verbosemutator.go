@@ -48,9 +48,7 @@ func (m *VerboseMutator) Chmod(name string, mode os.FileMode) error {
 func (m *VerboseMutator) IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error) {
 	action := cmdString(cmd)
 	output, err := m.m.IdempotentCmdOutput(cmd)
-	if err == nil {
-		_, _ = fmt.Fprintln(m.w, action)
-	} else {
+	if err != nil {
 		_, _ = fmt.Fprintf(m.w, "%s: %v\n", action, err)
 	}
 	return output, err
