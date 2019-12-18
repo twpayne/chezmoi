@@ -38,12 +38,10 @@ type help struct {
 
 var helps = map[string]help{
 {{- range $command, $help := .Helps }}
-	"{{ $command }}": help{
-{{- if $help.Example }}
-		long:    {{ printMultiLineString $help.Long "\t\t\t" }},
-		example: {{ printMultiLineString $help.Example "\t\t\t" }},
-{{- else }}
+	"{{ $command }}": {
 		long: {{ printMultiLineString $help.Long "\t\t\t" }},
+{{- if $help.Example }}
+		example: {{ printMultiLineString $help.Example "\t\t\t" }},
 {{- end }}
 	},
 {{- end }}
