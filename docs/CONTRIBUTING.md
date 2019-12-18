@@ -45,7 +45,7 @@ text (the output of `chezmoi command --help`) and the website
 
 If you update `docs/REFERENCE.md` you must also run
 
-    make generate
+    go generate ./...
 
 to extract and generate the help text. This will update `cmd/helps.gen.go`.
 
