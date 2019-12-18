@@ -12,10 +12,17 @@ jobs:
       uses: actions/checkout@v1
     - name: Download Go modules
       run: go mod download
+    - name: Install tools
+      run: |
+        curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(go env GOPATH)/bin v1.21.0
+        cd $(mktemp -d)
+        go mod init tmp
+        go get github.com/gobuffalo/packr/v2/packr2
+        go get mvdan.cc/gofumpt/gofumports
     - name: Generate
       run: |
-        GO111MODULE=off go get -u github.com/gobuffalo/packr/v2/packr2
-        make generate
+        $(go env GOPATH)/bin/packr2
+        go generate ./...
         git diff --exit-code
     - name: Build
       run: go build ./...
@@ -24,17 +31,16 @@ jobs:
     - name: Test
       run: go test -race ./...
     - name: Lint
-      run: |
-        curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- v1.21.0
-        make lint
+      run: $(go env GOPATH)/bin/golangci-lint run
     - name: Check formatting
       run: |
-        GO111MODULE=off go get -u mvdan.cc/gofumpt/gofumports
-        make format
+        find . -name \*.go | xargs $(go env GOPATH)/bin/gofumports -w
         git diff --exit-code
     - name: Check completions
       run: |
-        make completions
+        go run . completion bash > completions/chezmoi-completion.bash
+        go run . completion fish > completions/chezmoi.fish
+        go run . completion zsh > completions/chezmoi.zsh
         git diff --exit-code
   macos-ci:
     runs-on: macos-latest
@@ -47,11 +53,6 @@ jobs:
       uses: actions/checkout@v1
     - name: Download Go modules
       run: go mod download
-    - name: Generate
-      run: |
-        GO111MODULE=off go get -u github.com/gobuffalo/packr/v2/packr2
-        make generate
-        git diff --exit-code
     - name: Build
       run: go build ./...
     - name: Run
@@ -91,10 +92,19 @@ jobs:
       uses: actions/checkout@v1
     - name: Download Go modules
       run: go mod download
+    - name: Install tools
+      run: |
+        curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- v1.21.0
+        cd $(mktemp -d)
+        go mod init tmp
+        go get github.com/gobuffalo/packr/v2/packr2
     - name: Generate
       run: |
-        GO111MODULE=off go get -u github.com/gobuffalo/packr/v2/packr2
-        make generate
+        $(go env GOPATH)/bin/packr2
+        go generate ./...
+        go run . completion bash > completions/chezmoi-completion.bash
+        go run . completion fish > completions/chezmoi.fish
+        go run . completion zsh > completions/chezmoi.zsh
         git diff --exit-code
     - name: Set up Snapcraft
       env:
