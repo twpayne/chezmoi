@@ -5,10 +5,10 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	"go/format"
 	"io"
 	"io/ioutil"
 	"os"
-	"os/exec"
 	"strings"
 	"text/tabwriter"
 	"text/template"
@@ -408,10 +408,13 @@ func run() error {
 		return err
 	}
 
-	cmd := exec.Command("gofmt", "-s")
-	cmd.Stdin = buf
-	cmd.Stdout = w
-	return cmd.Run()
+	output, err := format.Source(buf.Bytes())
+	if err != nil {
+		return err
+	}
+
+	_, err = w.Write(output)
+	return err
 }
 
 func main() {
