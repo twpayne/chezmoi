@@ -2,7 +2,7 @@
 
 <!--- toc --->
 * [Upcoming](#upcoming)
-  * [`gpgRecipient` config variable changing to `gpg.recipient`](#gpgrecipient-config-variable-changing-to-gpgrecipient)
+  * [gpgRecipient config variable changing to gpg.recipient](#gpgrecipient-config-variable-changing-to-gpgrecipient)
 
 ## Upcoming
 
