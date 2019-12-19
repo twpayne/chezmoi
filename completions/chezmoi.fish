@@ -74,6 +74,7 @@ complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path add'  -s a -l aut
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path add'  -s e -l empty -d 'add empty files'
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path add'   -l encrypt -d 'encrypt files'
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path add'  -s x -l exact -d 'add directories exactly'
+complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path add'  -s f -l force -d 'overwrite source state, even if template would be lost'
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path add'  -s p -l prompt -d 'prompt before adding'
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path add'  -s r -l recursive -d 'recurse in to subdirectories'
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path add'  -s T -l template -d 'add files as templates'

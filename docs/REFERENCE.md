@@ -322,6 +322,10 @@ directory. The `add` command accepts additional flags:
 
 Set the `empty` attribute on added files.
 
+#### `-f`, `--force`
+
+Add *targets*, even if doing so would cause a source template to be overwritten.
+
 #### `-x`, `--exact`
 
 Set the `exact` attribute on added directories.

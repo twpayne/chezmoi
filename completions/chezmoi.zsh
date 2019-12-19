@@ -143,6 +143,7 @@ function _chezmoi_add {
     '(-e --empty)'{-e,--empty}'[add empty files]' \
     '--encrypt[encrypt files]' \
     '(-x --exact)'{-x,--exact}'[add directories exactly]' \
+    '(-f --force)'{-f,--force}'[overwrite source state, even if template would be lost]' \
     '(-p --prompt)'{-p,--prompt}'[prompt before adding]' \
     '(-r --recursive)'{-r,--recursive}'[recurse in to subdirectories]' \
     '(-T --template)'{-T,--template}'[add files as templates]' \
