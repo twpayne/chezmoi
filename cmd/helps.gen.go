@@ -18,6 +18,10 @@ var helps = map[string]help{
 			"\n" +
 			"Set the \"empty\" attribute on added files.\n" +
 			"\n" +
+			"\"-f\", \"--force\"\n" +
+			"\n" +
+			"Add targets, even if doing so would cause a source template to be overwritten.\n" +
+			"\n" +
 			"\"-x\", \"--exact\"\n" +
 			"\n" +
 			"Set the \"exact\" attribute on added directories.\n" +
