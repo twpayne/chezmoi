@@ -137,7 +137,7 @@ brews:
     name: Tom Payne
     email: twpayne@gmail.com
   folder: Formula
-  homepage: "https://github.com/twpayne/chezmoi"
+  homepage: "https://chezmoi.io"
   install: |
     bin.install "chezmoi"
     bash_completion.install "completions/chezmoi-completion.bash"
@@ -152,7 +152,7 @@ scoop:
   commit_author:
     name: Tom Payne
     email: twpayne@gmail.com
-  homepage: "https://github.com/twpayne/chezmoi"
+  homepage: "https://chezmoi.io"
   description: "Manage your dotfiles across multiple machines, securely."
   license: MIT
 
