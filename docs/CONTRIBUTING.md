@@ -152,7 +152,7 @@ If you're packaging chezmoi for an operating system or distribution:
 
 ## Updating the website
 
-The website, https://chezmoi.io, is generated with [Hugo](https://gohugo.io/)
+[The website](https://chezmoi.io), is generated with [Hugo](https://gohugo.io/)
 and served with [GitHub pages](https://pages.github.com/) from the [`gh-pages`
 branch](https://github.com/twpayne/chezmoi/tree/gh-pages) to GitHub.
 
