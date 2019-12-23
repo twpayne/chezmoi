@@ -315,7 +315,9 @@ func (c *Config) getDefaultData() (map[string]interface{}, error) {
 
 	osRelease, err := getOSRelease(c.fs)
 	if err == nil {
-		data["osRelease"] = upperSnakeCaseToCamelCaseMap(osRelease)
+		if osRelease != nil {
+			data["osRelease"] = upperSnakeCaseToCamelCaseMap(osRelease)
+		}
 	} else if !os.IsNotExist(err) {
 		return nil, err
 	}
