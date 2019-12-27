@@ -56,7 +56,7 @@ have `.Brewfile` listing all the packages that you want installed and only want
 to run `brew bundle --global` when the contents of `.Brewfile` changes.
 
 chezmoi has two types of scripts: scripts that run every time, and scripts that
-only one when their contents change. chezmoi does not have a mechanism to run a
+only run when their contents change. chezmoi does not have a mechanism to run a
 script when an arbitrary file has changed, but there are some ways to achieve
 the desired behavior:
 
