@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strings"
 
+	markdown "github.com/MichaelMure/go-term-markdown"
 	"github.com/spf13/cobra"
 )
 
@@ -54,6 +55,6 @@ func (c *Config) runDocsCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	_, err = c.Stdout().Write(data)
+	_, err = c.Stdout().Write(markdown.Render(string(data), 80, 0))
 	return err
 }
