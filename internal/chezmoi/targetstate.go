@@ -147,6 +147,13 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 		return ts.addDir(targetName, entries, parentDirSourceName, addOptions.Exact, perm, empty, mutator)
 	case info.Mode().IsRegular():
 		if info.Size() == 0 && !addOptions.Empty {
+			entry, err := ts.Get(fs, targetPath)
+			if err != nil {
+				return err
+			}
+			if entry != nil {
+				return mutator.RemoveAll(filepath.Join(ts.SourceDir, entry.SourceName()))
+			}
 			return nil
 		}
 		contents, err := fs.ReadFile(targetPath)

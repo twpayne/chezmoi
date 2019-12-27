@@ -385,6 +385,43 @@ func TestAddCommand(t *testing.T) {
 			},
 		},
 		{
+			name: "remove_existing_source_without_empty",
+			args: []string{"/home/user/foo"},
+			add: addCmdConfig{
+				options: chezmoi.AddOptions{
+					Empty: false,
+				},
+			},
+			root: map[string]interface{}{
+				"/home/user/foo":                      "",
+				"/home/user/.local/share/chezmoi/foo": "bar",
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/.local/share/chezmoi/foo",
+					vfst.TestDoesNotExist,
+				),
+			},
+		},
+		{
+			name: "replace_existing_source_with_empty",
+			args: []string{"/home/user/foo"},
+			add: addCmdConfig{
+				options: chezmoi.AddOptions{
+					Empty: true,
+				},
+			},
+			root: map[string]interface{}{
+				"/home/user/foo":                      "",
+				"/home/user/.local/share/chezmoi/foo": "bar",
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/.local/share/chezmoi/empty_foo",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString(""),
+				),
+			},
+		},
+		{
 			name: "dest_dir_is_symlink",
 			args: []string{"/home/user/foo"},
 			root: []interface{}{
