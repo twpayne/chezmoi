@@ -4,10 +4,15 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"regexp"
 	"strings"
 
+	"github.com/charmbracelet/glamour"
+	"github.com/mattn/go-isatty"
 	"github.com/spf13/cobra"
+	"github.com/twpayne/chezmoi/internal/chezmoi"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 var docsCmd = &cobra.Command{
@@ -50,10 +55,33 @@ func (c *Config) runDocsCmd(cmd *cobra.Command, args []string) error {
 			return fmt.Errorf("%s: ambiguous pattern, matches %s", pattern, strings.Join(filenames, ", "))
 		}
 	}
+
 	data, err := getDoc(filename)
 	if err != nil {
 		return err
 	}
-	_, err = c.Stdout().Write(data)
+
+	width := 80
+	if stdout, ok := c.Stdout().(*os.File); ok && isatty.IsTerminal(stdout.Fd()) {
+		width, _, err = terminal.GetSize(int(stdout.Fd()))
+		if err != nil {
+			return err
+		}
+	}
+
+	tr, err := glamour.NewTermRenderer(
+		glamour.WithStyles(chezmoi.ANSIStyleConfig),
+		glamour.WithWordWrap(width),
+	)
+	if err != nil {
+		return err
+	}
+
+	out, err := tr.RenderBytes(data)
+	if err != nil {
+		return err
+	}
+
+	_, err = c.Stdout().Write(out)
 	return err
 }

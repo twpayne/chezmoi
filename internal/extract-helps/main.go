@@ -1,27 +1,30 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
-	"errors"
 	"flag"
 	"fmt"
 	"go/format"
 	"io"
-	"io/ioutil"
 	"os"
+	"regexp"
 	"strings"
-	"text/tabwriter"
 	"text/template"
 
-	"github.com/kr/text"
-	"github.com/russross/blackfriday/v2"
+	"github.com/charmbracelet/glamour"
+	"github.com/twpayne/chezmoi/internal/chezmoi"
 )
 
 var (
-	debug      = flag.Bool("debug", false, "debug")
 	inputFile  = flag.String("i", "", "input file")
 	outputFile = flag.String("o", "", "output file")
-	width      = flag.Int("width", 80, "width")
+
+	commandsRegexp      = regexp.MustCompile(`^## Commands`)
+	commandRegexp       = regexp.MustCompile("^### `(\\S+)`")
+	exampleRegexp       = regexp.MustCompile("^#### `\\w+` examples")
+	endOfCommandsRegexp = regexp.MustCompile(`^## `)
+	trailingSpaceRegexp = regexp.MustCompile(` +\n`)
 
 	funcs = template.FuncMap{
 		"printMultiLineString": printMultiLineString,
@@ -47,43 +50,11 @@ var helps = map[string]help{
 {{- end }}
 }
 `))
-	debugTemplate = template.Must(template.New("debug").Parse(`
-InputFile: {{ .InputFile }}
-OuputFile: {{ .OutputFile }}
-
-{{- range $command, $help := .Helps -}}
-# {{ $command }}
-{{ $help.Long }}
-
-Examples:
-{{ $help.Example }}
-
-{{ end -}}
-`))
-
-	doubleQuote = []byte("\"")
-	indent      = []byte("  ")
-	newline     = []byte("\n")
-	space       = []byte(" ")
-	tab         = []byte("\t")
-
-	renderers = map[blackfriday.NodeType]func(io.Writer, *blackfriday.Node) error{
-		blackfriday.Heading:   renderHeading,
-		blackfriday.CodeBlock: renderCodeBlock,
-		blackfriday.Paragraph: renderParagraph,
-		blackfriday.Table:     renderTable,
-	}
 )
 
 type help struct {
 	Long    string
 	Example string
-}
-
-type errUnsupportedNodeType blackfriday.NodeType
-
-func (e errUnsupportedNodeType) Error() string {
-	return fmt.Sprintf("unsupported node type: %s", e)
 }
 
 func printMultiLineString(s, indent string) string {
@@ -104,255 +75,111 @@ func printMultiLineString(s, indent string) string {
 	return b.String()
 }
 
-func literalText(node *blackfriday.Node) ([]byte, error) {
-	b := &bytes.Buffer{}
-	var err error
-	node.Walk(func(node *blackfriday.Node, entering bool) blackfriday.WalkStatus {
-		switch node.Type {
-		case blackfriday.Code:
-			if _, err = b.Write(doubleQuote); err != nil {
-				return blackfriday.Terminate
-			}
-			if _, err = b.Write(bytes.ReplaceAll(node.Literal, newline, space)); err != nil {
-				return blackfriday.Terminate
-			}
-			if _, err = b.Write(doubleQuote); err != nil {
-				return blackfriday.Terminate
-			}
-		case blackfriday.Text:
-			if _, err = b.Write(bytes.ReplaceAll(node.Literal, newline, space)); err != nil {
-				return blackfriday.Terminate
-			}
-		}
-		return blackfriday.GoToNext
-	})
-	return b.Bytes(), err
-}
-
-func renderCodeBlock(w io.Writer, codeBlock *blackfriday.Node) error {
-	if codeBlock.Type != blackfriday.CodeBlock {
-		return errUnsupportedNodeType(codeBlock.Type)
-	}
-	return renderIndented(w, codeBlock.Literal)
-}
-
-func renderExample(start, end *blackfriday.Node) (string, error) {
-	s, err := render(start, end)
-	return strings.TrimSuffix(s, "\n"+string(indent)), err
-}
-
-func renderHeading(w io.Writer, heading *blackfriday.Node) error {
-	if heading.Type != blackfriday.Heading {
-		return errUnsupportedNodeType(heading.Type)
-	}
-	t, err := literalText(heading)
-	if err != nil {
-		return err
-	}
-	if _, err := w.Write(t); err != nil {
-		return err
-	}
-	_, err = w.Write(newline)
-	return err
-}
-
-func renderIndented(w io.Writer, b []byte) error {
-	for _, line := range bytes.SplitAfter(b, newline) {
-		if _, err := w.Write(indent); err != nil {
-			return err
-		}
-		if _, err := w.Write(line); err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func renderLong(start, end *blackfriday.Node) (string, error) {
-	return render(start, end)
-}
-
-func renderParagraph(w io.Writer, paragraph *blackfriday.Node) error {
-	if paragraph.Type != blackfriday.Paragraph {
-		return errUnsupportedNodeType(paragraph.Type)
-	}
-	t, err := literalText(paragraph)
-	if err != nil {
-		return err
-	}
-	if _, err := w.Write(text.WrapBytes(t, *width)); err != nil {
-		return err
-	}
-	_, err = w.Write(newline)
-	return err
-}
-
-func renderTable(w io.Writer, table *blackfriday.Node) error {
-	if table.Type != blackfriday.Table {
-		return errUnsupportedNodeType(table.Type)
-	}
-	b := &bytes.Buffer{}
-	tw := tabwriter.NewWriter(b, 0, 8, 1, ' ', 0)
-	for rowGroup := table.FirstChild; rowGroup != nil; rowGroup = rowGroup.Next {
-		if rowGroup.Type != blackfriday.TableHead && rowGroup.Type != blackfriday.TableBody {
-			return errUnsupportedNodeType(rowGroup.Type)
-		}
-		for row := rowGroup.FirstChild; row != nil; row = row.Next {
-			if row.Type != blackfriday.TableRow {
-				return errUnsupportedNodeType(row.Type)
-			}
-			for cell := row.FirstChild; cell != nil; cell = cell.Next {
-				if cell.Type != blackfriday.TableCell {
-					return errUnsupportedNodeType(cell.Type)
-				}
-				t, err := literalText(cell)
-				if err != nil {
-					return err
-				}
-				if _, err := tw.Write(t); err != nil {
-					return err
-				}
-				if _, err := tw.Write(tab); err != nil {
-					return err
-				}
-			}
-			if _, err := tw.Write(newline); err != nil {
-				return err
-			}
-		}
-	}
-	if err := tw.Flush(); err != nil {
-		return err
-	}
-	return renderIndented(w, b.Bytes())
-}
-
-func render(start, end *blackfriday.Node) (string, error) {
-	b := &bytes.Buffer{}
-	for node := start; node != nil && node != end; node = node.Next {
-		if node != start {
-			if _, err := b.Write(newline); err != nil {
-				return "", err
-			}
-		}
-		renderer, ok := renderers[node.Type]
-		if !ok {
-			return "", errUnsupportedNodeType(node.Type)
-		}
-		if err := renderer(b, node); err != nil {
-			return "", err
-		}
-	}
-	return b.String(), nil
-}
-
 func extractHelps(r io.Reader) (map[string]*help, error) {
-	data, err := ioutil.ReadAll(r)
+	longStyleConfig := chezmoi.ANSIStyleConfig
+	longStyleConfig.H4.Prefix = ""
+	longTermRenderer, err := glamour.NewTermRenderer(
+		glamour.WithStyles(longStyleConfig),
+		glamour.WithWordWrap(80),
+	)
 	if err != nil {
 		return nil, err
 	}
 
-	root := blackfriday.New(blackfriday.WithExtensions(blackfriday.Tables)).Parse(data)
-	var commandsNode *blackfriday.Node
-	for node := root.FirstChild; node != nil; node = node.Next {
-		if node.Type == blackfriday.Heading &&
-			node.HeadingData.Level == 2 &&
-			node.FirstChild != nil &&
-			node.FirstChild.Type == blackfriday.Text &&
-			bytes.Equal(node.FirstChild.Literal, []byte("Commands")) {
-			commandsNode = node
-			break
+	examplesStyleConfig := chezmoi.ANSIStyleConfig
+	examplesStyleConfig.Document.Indent = nil
+	examplesTermRenderer, err := glamour.NewTermRenderer(
+		glamour.WithStyles(examplesStyleConfig),
+		glamour.WithWordWrap(80),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	var (
+		state = "find-commands"
+		sb    = &strings.Builder{}
+		h     *help
+	)
+
+	saveAndReset := func() error {
+		var tr *glamour.TermRenderer
+		switch state {
+		case "in-command":
+			tr = longTermRenderer
+		case "in-example":
+			tr = examplesTermRenderer
+		default:
+			panic(fmt.Sprintf("%s: invalid state", state))
 		}
-	}
-	if commandsNode == nil {
-		return nil, errors.New("cannot find \"Commands\" node")
-	}
-	var endCommandsNode *blackfriday.Node
-	for node := commandsNode.Next; node != nil; node = node.Next {
-		if node.Type == blackfriday.Heading && node.HeadingData.Level <= 2 {
-			endCommandsNode = node
-			break
+		s, err := tr.Render(sb.String())
+		if err != nil {
+			return err
 		}
-	}
-	if endCommandsNode == nil {
-		return nil, errors.New("cannot find end \"Commands\" node")
+		s = trailingSpaceRegexp.ReplaceAllString(s, "\n")
+		s = strings.Trim(s, "\n")
+		switch state {
+		case "in-command":
+			h.Long = "Description:\n" + s
+		case "in-example":
+			h.Example = s
+		default:
+			panic(fmt.Sprintf("%s: invalid state", state))
+		}
+		sb.Reset()
+		return nil
 	}
 
 	helps := make(map[string]*help)
-	state := 0
-	var h *help
-	var start *blackfriday.Node
-	for node := commandsNode.Next; node != endCommandsNode; node = node.Next {
-		switch {
-		case node.Type == blackfriday.Heading &&
-			node.HeadingData.Level < 3:
-			break
-		case node.Type == blackfriday.Heading &&
-			node.HeadingData.Level == 3 &&
-			node.FirstChild != nil &&
-			node.FirstChild.Type == blackfriday.Text &&
-			node.FirstChild.Next != nil &&
-			node.FirstChild.Next.Type == blackfriday.Code:
-			switch state {
-			case 1:
-				if h.Long, err = renderLong(start, node); err != nil {
-					return nil, err
-				}
-			case 2:
-				if h.Example, err = renderExample(start, node); err != nil {
-					return nil, err
-				}
+	s := bufio.NewScanner(r)
+FOR:
+	for s.Scan() {
+		// fmt.Printf("%s: %q\n", state, s.Text())
+		switch state {
+		case "find-commands":
+			if commandsRegexp.MatchString(s.Text()) {
+				state = "find-first-command"
 			}
-			command := string(node.FirstChild.Next.Literal)
-			var ok bool
-			h, ok = helps[command]
-			if !ok {
+		case "find-first-command":
+			if m := commandRegexp.FindStringSubmatch(s.Text()); m != nil {
 				h = &help{}
-				helps[command] = h
+				helps[m[1]] = h
+				state = "in-command"
 			}
-			start = node.Next
-			state = 1
-		case node.Type == blackfriday.Heading &&
-			node.HeadingData.Level == 4 &&
-			node.FirstChild != nil &&
-			node.FirstChild.Type == blackfriday.Text &&
-			node.FirstChild.Next != nil &&
-			node.FirstChild.Next.Type == blackfriday.Code &&
-			node.FirstChild.Next.Next != nil &&
-			node.FirstChild.Next.Next.Type == blackfriday.Text &&
-			bytes.Equal(node.FirstChild.Next.Next.Literal, []byte(" examples")):
-			switch state {
-			case 1:
-				if h.Long, err = renderLong(start, node); err != nil {
+		case "in-command", "in-example":
+			m := commandRegexp.FindStringSubmatch(s.Text())
+			switch {
+			case m != nil:
+				if err := saveAndReset(); err != nil {
 					return nil, err
 				}
-			case 2:
-				if h.Example, err = renderExample(start, node); err != nil {
-					return nil, err
-				}
-			}
-			command := string(node.FirstChild.Next.Literal)
-			var ok bool
-			h, ok = helps[command]
-			if !ok {
 				h = &help{}
-				helps[command] = h
+				helps[m[1]] = h
+				state = "in-command"
+			case exampleRegexp.MatchString(s.Text()):
+				if err := saveAndReset(); err != nil {
+					return nil, err
+				}
+				state = "in-example"
+			case endOfCommandsRegexp.MatchString(s.Text()):
+				if err := saveAndReset(); err != nil {
+					return nil, err
+				}
+				break FOR
+			default:
+				if _, err := sb.WriteString(s.Text()); err != nil {
+					return nil, err
+				}
+				if err := sb.WriteByte('\n'); err != nil {
+					return nil, err
+				}
 			}
-			start = node.Next
-			state = 2
 		}
 	}
-	switch state {
-	case 1:
-		if h.Long, err = renderLong(start, endCommandsNode); err != nil {
-			return nil, err
-		}
-	case 2:
-		if h.Example, err = renderExample(start, endCommandsNode); err != nil {
-			return nil, err
-		}
+	if err := s.Err(); err != nil {
+		return nil, err
 	}
-	return helps, err
+	return helps, nil
 }
 
 func run() error {
@@ -375,6 +202,20 @@ func run() error {
 		return err
 	}
 
+	data := struct {
+		Helps      map[string]*help
+		InputFile  string
+		OutputFile string
+	}{
+		Helps:      helps,
+		InputFile:  *inputFile,
+		OutputFile: *outputFile,
+	}
+	buf := &bytes.Buffer{}
+	if err := outputTemplate.ExecuteTemplate(buf, "output", data); err != nil {
+		return err
+	}
+
 	var w io.Writer
 	if *outputFile == "" {
 		w = os.Stdout
@@ -385,25 +226,6 @@ func run() error {
 		}
 		defer fw.Close()
 		w = fw
-	}
-
-	data := struct {
-		Helps      map[string]*help
-		InputFile  string
-		OutputFile string
-	}{
-		Helps:      helps,
-		InputFile:  *inputFile,
-		OutputFile: *outputFile,
-	}
-
-	if *debug {
-		return debugTemplate.ExecuteTemplate(w, "debug", data)
-	}
-
-	buf := &bytes.Buffer{}
-	if err := outputTemplate.ExecuteTemplate(buf, "output", data); err != nil {
-		return err
 	}
 
 	output, err := format.Source(buf.Bytes())
