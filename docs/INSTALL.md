@@ -63,9 +63,12 @@ page](https://github.com/twpayne/chezmoi/releases/latest).
 
 Download, build, and install chezmoi for your system:
 
-    cd $(mktemp -d) && GO111MODULE=on go get -u github.com/twpayne/chezmoi
+    cd $(mktemp -d)
+    git clone --depth=1 https://github.com/twpayne/chezmoi.git
+    cd chezmoi
+    go install
 
-Building chezmoi requires Go 1.13 or later and Go modules enabled.
+Building chezmoi requires Go 1.13 or later.
 
 ## Upgrading
 
