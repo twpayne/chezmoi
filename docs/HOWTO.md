@@ -122,7 +122,7 @@ includes JSON, YAML, and TOML.
 Then, add `~/.gitconfig` to chezmoi using the `-T` flag to automatically turn
 it in to a template:
 
-    chezmoi add -T ~/.gitconfig
+    chezmoi add -T --autotemplate ~/.gitconfig
 
 You can then open the template (which will be saved in the file
 `~/.local/share/chezmoi/dot_gitconfig.tmpl`):
