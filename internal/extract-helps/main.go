@@ -13,7 +13,6 @@ import (
 	"text/template"
 
 	"github.com/charmbracelet/glamour"
-	"github.com/twpayne/chezmoi/internal/chezmoi"
 )
 
 var (
@@ -76,7 +75,7 @@ func printMultiLineString(s, indent string) string {
 }
 
 func extractHelps(r io.Reader) (map[string]*help, error) {
-	longStyleConfig := chezmoi.ANSIStyleConfig
+	longStyleConfig := glamour.ASCIIStyleConfig
 	longStyleConfig.H4.Prefix = ""
 	longTermRenderer, err := glamour.NewTermRenderer(
 		glamour.WithStyles(longStyleConfig),
@@ -86,7 +85,7 @@ func extractHelps(r io.Reader) (map[string]*help, error) {
 		return nil, err
 	}
 
-	examplesStyleConfig := chezmoi.ANSIStyleConfig
+	examplesStyleConfig := glamour.ASCIIStyleConfig
 	examplesStyleConfig.Document.Indent = nil
 	examplesTermRenderer, err := glamour.NewTermRenderer(
 		glamour.WithStyles(examplesStyleConfig),
@@ -134,7 +133,6 @@ func extractHelps(r io.Reader) (map[string]*help, error) {
 	s := bufio.NewScanner(r)
 FOR:
 	for s.Scan() {
-		// fmt.Printf("%s: %q\n", state, s.Text())
 		switch state {
 		case "find-commands":
 			if commandsRegexp.MatchString(s.Text()) {
