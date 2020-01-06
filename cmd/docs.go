@@ -11,7 +11,6 @@ import (
 	"github.com/charmbracelet/glamour"
 	"github.com/mattn/go-isatty"
 	"github.com/spf13/cobra"
-	"github.com/twpayne/chezmoi/internal/chezmoi"
 	"golang.org/x/crypto/ssh/terminal"
 )
 
@@ -70,7 +69,7 @@ func (c *Config) runDocsCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	tr, err := glamour.NewTermRenderer(
-		glamour.WithStyles(chezmoi.ANSIStyleConfig),
+		glamour.WithStyles(glamour.ASCIIStyleConfig),
 		glamour.WithWordWrap(width),
 	)
 	if err != nil {
