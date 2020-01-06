@@ -26,19 +26,23 @@ builds:
   - openbsd
   - windows
   goarch:
-  - "386"
+  - 386
   - amd64
   - arm
   - arm64
   - ppc64
   - ppc64le
   goarm:
-  - ""
+  - 6
+  - 7
   ignore:
   - goos: darwin
-    goarch: "386"
+    goarch: 386
   - goos: linux
     goarch: amd64
+  - goos: linux
+    goarch: arm
+    goarm: 7
 - id: chezmoi-cgo-snap
   binary: chezmoi
   flags:
@@ -60,7 +64,7 @@ builds:
   goos:
   - linux
   goarch:
-  - "386"
+  - 386
   - arm64
 
 archives:
@@ -77,21 +81,6 @@ archives:
   format_overrides:
   - goos: windows
     format: zip
-
-checksum:
-  name_template: "checksums.txt"
-
-snapshot:
-  name_template: "{{ .Tag }}-next"
-
-changelog:
-  sort: asc
-  filters:
-    exclude:
-    - "^docs:"
-    - "^test:"
-    - "Merge pull request"
-    - "Merge branch"
 
 nfpms:
 - builds:

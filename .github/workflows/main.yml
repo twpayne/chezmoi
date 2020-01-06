@@ -2,25 +2,35 @@ on:
   pull_request:
   push:
 jobs:
-  ubuntu-ci:
-    runs-on: ubuntu-latest
+  test:
+    strategy:
+      matrix:
+        go-version:
+        - 1.13.x
+        os:
+        - macos-latest
+        - ubuntu-latest
+        - windows-latest
+    runs-on: ${{ matrix.os }}
     steps:
     - name: Set up Go
       uses: actions/setup-go@v1
       with:
-        go-version: 1.13.x
+        go-version: ${{ matrix.go-version }}
     - name: Checkout
       uses: actions/checkout@v1
     - name: Download Go modules
       run: go mod download
     - name: Install tools
+      if: matrix.os == 'ubuntu-latest'
       run: |
-        curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(go env GOPATH)/bin v1.21.0
+        curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(go env GOPATH)/bin v1.22.2
         cd $(mktemp -d)
         go mod init tmp
         go get github.com/gobuffalo/packr/v2/packr2
         go get mvdan.cc/gofumpt/gofumports
     - name: Generate
+      if: matrix.os == 'ubuntu-latest'
       run: |
         $(go env GOPATH)/bin/packr2
         go generate ./...
@@ -32,57 +42,31 @@ jobs:
     - name: Test
       run: go test -race ./...
     - name: Lint
+      if: matrix.os == 'ubuntu-latest'
       run: $(go env GOPATH)/bin/golangci-lint run
     - name: Check formatting
+      if: matrix.os == 'ubuntu-latest'
       run: |
         find . -name \*.go | xargs $(go env GOPATH)/bin/gofumports -w
         git diff --exit-code
     - name: Check completions
+      if: matrix.os == 'ubuntu-latest'
       run: |
         go run . completion bash > completions/chezmoi-completion.bash
         go run . completion fish > completions/chezmoi.fish
         go run . completion zsh > completions/chezmoi.zsh
         git diff --exit-code
-  macos-ci:
-    runs-on: macos-latest
-    steps:
-    - name: Set up Go
-      uses: actions/setup-go@v1
-      with:
-        go-version: 1.13.x
-    - name: Checkout
-      uses: actions/checkout@v1
-    - name: Download Go modules
-      run: go mod download
-    - name: Build
-      run: go build ./...
-    - name: Run
-      run: go run . --version
-    - name: Test
-      run: go test -race ./...
-  windows-ci:
-    runs-on: windows-latest
-    steps:
-    - name: Set up Go
-      uses: actions/setup-go@v1
-      with:
-        go-version: 1.13.x
-    - name: Checkout
-      uses: actions/checkout@v1
-    - name: Download Go modules
-      run: go mod download
-    - name: Build
-      run: go build ./...
-    - name: Run
-      run: go run . --version
-    - name: Test
-      run: go test -race ./...
+    - name: Test release
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo chown root:root /
+        sudo snap install goreleaser --classic
+        sudo snap install snapcraft --classic
+        goreleaser release --skip-publish --snapshot
   release:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     needs:
-    - ubuntu-ci
-    - macos-ci
-    - windows-ci
+    - test
     runs-on: ubuntu-latest
     steps:
     - name: Set up Go
@@ -95,7 +79,7 @@ jobs:
       run: go mod download
     - name: Install tools
       run: |
-        curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- v1.21.0
+        curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- v1.22.2
         cd $(mktemp -d)
         go mod init tmp
         go get github.com/gobuffalo/packr/v2/packr2
