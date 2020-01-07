@@ -77,6 +77,58 @@ func TestUpperSnakeCaseToCamelCase(t *testing.T) {
 	}
 }
 
+func TestValidateKeys(t *testing.T) {
+	for _, tc := range []struct {
+		data    interface{}
+		wantErr bool
+	}{
+		{
+			data:    nil,
+			wantErr: false,
+		},
+		{
+			data: map[string]interface{}{
+				"foo":                    "bar",
+				"a":                      0,
+				"_x9":                    false,
+				"ThisVariableIsExported": nil,
+				"αβ":                     "",
+			},
+			wantErr: false,
+		},
+		{
+			data: map[string]interface{}{
+				"foo-foo": "bar",
+			},
+			wantErr: true,
+		},
+		{
+			data: map[string]interface{}{
+				"foo": map[string]interface{}{
+					"bar-bar": "baz",
+				},
+			},
+			wantErr: true,
+		},
+		{
+			data: map[string]interface{}{
+				"foo": []interface{}{
+					map[string]interface{}{
+						"bar-bar": "baz",
+					},
+				},
+			},
+			wantErr: true,
+		},
+	} {
+		if tc.wantErr {
+			assert.Error(t, validateKeys(tc.data, identifierRegexp))
+		} else {
+			assert.NoError(t, validateKeys(tc.data, identifierRegexp))
+		}
+	}
+}
+
 //nolint:unparam
 func newTestBaseDirectorySpecification(homeDir string) *xdg.BaseDirectorySpecification {
 	return &xdg.BaseDirectorySpecification{

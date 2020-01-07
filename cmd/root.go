@@ -111,6 +111,9 @@ func init() {
 			if config.err == nil {
 				config.err = viper.Unmarshal(&config)
 			}
+			if config.err == nil {
+				config.err = config.validateData()
+			}
 			if config.err != nil {
 				config.warn(fmt.Sprintf("%s: %v", config.configFile, config.err))
 			}

@@ -727,6 +727,8 @@ chezmoi provides the following automatically populated variables:
 | `.chezmoi.username`     | The username of the user running chezmoi.                                                                                      |
 
 Additional variables can be defined in the config file in the `data` section.
+Variable names must consist of a letter and be followed by zero or more letters
+and/or digits.
 
 ## Template functions
 

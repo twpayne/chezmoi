@@ -106,8 +106,8 @@ Whereas at work it might be:
       email = "john.smith@company.com"
 
 To handle this, on each machine create a configuration file called
-`~/.config/chezmoi/chezmoi.toml` defining what might change. For your home
-machine:
+`~/.config/chezmoi/chezmoi.toml` defining variables that might vary from machine
+to machine. For example, for your home machine:
 
     [data]
       email = "john@home.org"
@@ -117,7 +117,8 @@ If you intend to store private data (e.g. access tokens) in
 
 If you prefer, you can use any format supported by
 [Viper](https://github.com/spf13/viper) for your configuration file. This
-includes JSON, YAML, and TOML.
+includes JSON, YAML, and TOML. Variable names must start with a letter and be
+followed by zero or more letters or digits.
 
 Then, add `~/.gitconfig` to chezmoi using the `-T` flag to automatically turn
 it in to a template:
@@ -160,7 +161,7 @@ chezmoi includes all of the hermetic text functions from
 If, after executing the template, the file contents are empty, the target file
 will be removed. This can be used to ensure that files are only present on
 certain machines. If you want an empty file to be created anyway, you will need
-to give it an `empty_` prefix. See "Under the hood" below.
+to give it an `empty_` prefix.
 
 For coarser-grained control of files and entire directories are managed on
 different machines, or to exclude certain files completely, you can create

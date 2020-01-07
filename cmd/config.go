@@ -11,6 +11,7 @@ import (
 	"os/exec"
 	"os/user"
 	"path/filepath"
+	"regexp"
 	"runtime"
 	"strings"
 	"text/template"
@@ -105,6 +106,8 @@ var (
 	}
 
 	templatesBox = packr.New("templates", "../templates")
+
+	identifierRegexp = regexp.MustCompile(`\A[\pL_][\pL\p{Nd}_]*\z`)
 )
 
 // Stderr returns c's stderr.
@@ -479,6 +482,10 @@ func (c *Config) runEditor(argv ...string) error {
 	return c.run("", c.getEditor(), argv...)
 }
 
+func (c *Config) validateData() error {
+	return validateKeys(config.Data, identifierRegexp)
+}
+
 func (c *Config) warn(s string) {
 	fmt.Fprintf(c.Stderr(), "warning: %s\n", s)
 }
@@ -551,4 +558,26 @@ func upperSnakeCaseToCamelCaseMap(m map[string]string) map[string]string {
 		result[upperSnakeCaseToCamelCase(k)] = v
 	}
 	return result
+}
+
+// validateKeys ensures that all keys in data match re.
+func validateKeys(data interface{}, re *regexp.Regexp) error {
+	switch data := data.(type) {
+	case map[string]interface{}:
+		for key, value := range data {
+			if !re.MatchString(key) {
+				return fmt.Errorf("invalid key: %q", key)
+			}
+			if err := validateKeys(value, re); err != nil {
+				return err
+			}
+		}
+	case []interface{}:
+		for _, value := range data {
+			if err := validateKeys(value, re); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
