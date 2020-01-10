@@ -4,14 +4,11 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 	"regexp"
 	"strings"
 
 	"github.com/charmbracelet/glamour"
-	"github.com/mattn/go-isatty"
 	"github.com/spf13/cobra"
-	"golang.org/x/crypto/ssh/terminal"
 )
 
 var docsCmd = &cobra.Command{
@@ -60,17 +57,9 @@ func (c *Config) runDocsCmd(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	width := 80
-	if stdout, ok := c.Stdout().(*os.File); ok && isatty.IsTerminal(stdout.Fd()) {
-		width, _, err = terminal.GetSize(int(stdout.Fd()))
-		if err != nil {
-			return err
-		}
-	}
-
 	tr, err := glamour.NewTermRenderer(
 		glamour.WithStyles(glamour.ASCIIStyleConfig),
-		glamour.WithWordWrap(width),
+		glamour.WithWordWrap(getWriterWidth(c.Stdout())),
 	)
 	if err != nil {
 		return err

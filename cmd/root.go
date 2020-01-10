@@ -7,7 +7,6 @@ import (
 
 	"github.com/Masterminds/sprig"
 	"github.com/coreos/go-semver/semver"
-	"github.com/mattn/go-isatty"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/twpayne/chezmoi/internal/chezmoi"
@@ -139,11 +138,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	case "off":
 		c.colored = false
 	case "auto":
-		if stdout, ok := c.Stdout().(*os.File); ok {
-			c.colored = isatty.IsTerminal(stdout.Fd())
-		} else {
-			c.colored = false
-		}
+		c.colored = getWriterSupportsColor(c.Stdout())
 	default:
 		return fmt.Errorf("invalid --color value: %s", c.Color)
 	}
