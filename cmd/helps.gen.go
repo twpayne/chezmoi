@@ -262,6 +262,11 @@ var helps = map[string]help{
 			"  chezmoi init https://github.com/user/dotfiles.git\n" +
 			"  chezmoi init https://github.com/user/dotfiles.git --apply",
 	},
+	"manage": {
+		long: "" +
+			"Description:\n" +
+			"  `manage` is an alias for `add` for symmetry with `unmanage`.",
+	},
 	"merge": {
 		long: "" +
 			"Description:\n" +
@@ -283,6 +288,11 @@ var helps = map[string]help{
 			"  `-f`, `--force`\n" +
 			"\n" +
 			"  Remove without prompting.",
+	},
+	"rm": {
+		long: "" +
+			"Description:\n" +
+			"  `rm` is an alias for `remove`.",
 	},
 	"secret": {
 		long: "" +
@@ -328,6 +338,11 @@ var helps = map[string]help{
 			"\n" +
 			"    chezmoi source-path\n" +
 			"    chezmoi source-path ~/.bashrc",
+	},
+	"unmanage": {
+		long: "" +
+			"Description:\n" +
+			"  `unmanage` is an alias for `forget` for symmetry with `manage`.",
 	},
 	"unmanaged": {
 		long: "" +
