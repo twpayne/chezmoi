@@ -148,6 +148,12 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		return fmt.Errorf("invalid --color value: %s", c.Color)
 	}
 
+	if c.colored {
+		if err := enableVirtualTerminalProcessingOnWindows(c.Stdout()); err != nil {
+			return err
+		}
+	}
+
 	c.fs = vfs.OSFS
 	c.mutator = chezmoi.NewFSMutator(config.fs)
 	if config.DryRun {
