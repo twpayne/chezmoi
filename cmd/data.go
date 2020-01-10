@@ -33,9 +33,9 @@ func (c *Config) runDataCmd(cmd *cobra.Command, args []string) error {
 	if !ok {
 		return fmt.Errorf("%s: unknown format", c.data.format)
 	}
-	ts, err := c.getTargetState(nil)
+	data, err := c.getData()
 	if err != nil {
 		return err
 	}
-	return format(c.Stdout(), ts.Data)
+	return format(c.Stdout(), data)
 }

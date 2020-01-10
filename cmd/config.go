@@ -274,6 +274,20 @@ func (c *Config) ensureSourceDirectory() error {
 	}
 }
 
+func (c *Config) getData() (map[string]interface{}, error) {
+	defaultData, err := c.getDefaultData()
+	if err != nil {
+		return nil, err
+	}
+	data := map[string]interface{}{
+		"chezmoi": defaultData,
+	}
+	for key, value := range c.Data {
+		data[key] = value
+	}
+	return data, nil
+}
+
 func (c *Config) getDefaultData() (map[string]interface{}, error) {
 	data := map[string]interface{}{
 		"arch":      runtime.GOARCH,
@@ -389,15 +403,10 @@ func (c *Config) getPersistentStateFile() string {
 
 func (c *Config) getTargetState(populateOptions *chezmoi.PopulateOptions) (*chezmoi.TargetState, error) {
 	fs := vfs.NewReadOnlyFS(c.fs)
-	defaultData, err := c.getDefaultData()
+
+	data, err := c.getData()
 	if err != nil {
 		return nil, err
-	}
-	data := map[string]interface{}{
-		"chezmoi": defaultData,
-	}
-	for key, value := range c.Data {
-		data[key] = value
 	}
 
 	destDir := c.DestDir
