@@ -7,12 +7,12 @@ import (
 
 	"github.com/Masterminds/sprig"
 	"github.com/coreos/go-semver/semver"
-	"github.com/mattn/go-isatty"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/twpayne/chezmoi/internal/chezmoi"
 	vfs "github.com/twpayne/go-vfs"
 	xdg "github.com/twpayne/go-xdg/v3"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 var config = Config{
@@ -140,7 +140,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		c.colored = false
 	case "auto":
 		if stdout, ok := c.Stdout().(*os.File); ok {
-			c.colored = isatty.IsTerminal(stdout.Fd())
+			c.colored = terminal.IsTerminal(int(stdout.Fd()))
 		} else {
 			c.colored = false
 		}
