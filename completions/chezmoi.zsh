@@ -26,7 +26,7 @@ function _chezmoi {
       "cat:Write the target state of a file or symlink to stdout"
       "cd:Launch a shell in the source directory"
       "chattr:Change the attributes of a target in the source state"
-      "completion:Output shell completion code for the specified shell (bash, fish or zsh)"
+      "completion:Output shell completion code for the specified shell (bash, fish, or zsh)"
       "data:Write the template data to stdout"
       "diff:Write the diff between the target state and the destination state to stdout"
       "docs:Print documentation"

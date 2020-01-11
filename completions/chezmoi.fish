@@ -41,7 +41,7 @@ complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a archive -d 'Write a 
 complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a cat -d 'Write the target state of a file or symlink to stdout'
 complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a cd -d 'Launch a shell in the source directory'
 complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a chattr -d 'Change the attributes of a target in the source state'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a completion -d 'Output shell completion code for the specified shell (bash, fish or zsh)'
+complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a completion -d 'Output shell completion code for the specified shell (bash, fish, or zsh)'
 complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a data -d 'Write the template data to stdout'
 complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a diff -d 'Write the diff between the target state and the destination state to stdout'
 complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a docs -d 'Print documentation'

@@ -9,7 +9,7 @@ import (
 var completionCmd = &cobra.Command{
 	Use:       "completion shell",
 	Args:      cobra.ExactArgs(1),
-	Short:     "Output shell completion code for the specified shell (bash, fish or zsh)",
+	Short:     "Output shell completion code for the specified shell (bash, fish, or zsh)",
 	Long:      mustGetLongHelp("completion"),
 	Example:   getExample("completion"),
 	ValidArgs: []string{"bash", "fish", "zsh"},
