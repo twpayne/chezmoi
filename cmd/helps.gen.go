@@ -228,6 +228,14 @@ var helps = map[string]help{
 			"Description:\n" +
 			"  Print the help associated with *command*.",
 	},
+	"hg": {
+		long: "" +
+			"Description:\n" +
+			"  Run `hg` *arguments* in the source directory. Note that flags in *arguments*\n" +
+			"  must occur after `--` to prevent chezmoi from interpreting them.",
+		example: "" +
+			"  chezmoi hg -- pull --rebase --update",
+	},
 	"import": {
 		long: "" +
 			"Description:\n" +

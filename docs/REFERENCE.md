@@ -43,6 +43,7 @@ Manage your dotfiles securely across multiple machines.
   * [forget targets](#forget-targets)
   * [git [arguments]](#git-arguments)
   * [help command](#help-command)
+  * [hg [*arguments]](#hg-arguments)
   * [init [repo]](#init-repo)
   * [import filename](#import-filename)
   * [manage targets](#manage-targets)
@@ -546,6 +547,15 @@ must occur after `--` to prevent chezmoi from interpreting them.
 ### `help` *command*
 
 Print the help associated with *command*.
+
+### `hg` [*arguments]
+
+Run `hg` *arguments* in the source directory. Note that flags in *arguments*
+must occur after `--` to prevent chezmoi from interpreting them.
+
+#### `hg` examples
+
+    chezmoi hg -- pull --rebase --update
 
 ### `init` [*repo*]
 

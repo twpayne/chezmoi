@@ -37,6 +37,7 @@ function _chezmoi {
       "forget:Remove a target from the source state"
       "git:Run git in the source directory"
       "help:Help about any command"
+      "hg:Run mercurial in the source directory"
       "import:Import a tar archive into the source state"
       "init:Setup the source directory and update the destination directory to match the target state"
       "merge:Perform a three-way merge between the destination state, the source state, and the target state"
@@ -104,6 +105,9 @@ function _chezmoi {
     ;;
   help)
     _chezmoi_help
+    ;;
+  hg)
+    _chezmoi_hg
     ;;
   import)
     _chezmoi_import
@@ -431,6 +435,19 @@ function _chezmoi_git {
 }
 
 function _chezmoi_help {
+  _arguments \
+    '--color[colorize diffs]:' \
+    '(-c --config)'{-c,--config}'[config file]:' \
+    '--debug[write debug logs]' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
+    '--follow[follow symlinks]' \
+    '--remove[remove targets]' \
+    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-v --verbose)'{-v,--verbose}'[verbose]'
+}
+
+function _chezmoi_hg {
   _arguments \
     '--color[colorize diffs]:' \
     '(-c --config)'{-c,--config}'[config file]:' \
