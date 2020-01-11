@@ -34,6 +34,23 @@ type attributeModifiers struct {
 
 func init() {
 	rootCmd.AddCommand(chattrCmd)
+
+	attributes := []string{
+		"empty", "e",
+		"encrypt",
+		"exact",
+		"executable", "x",
+		"private", "p",
+		"template", "t",
+	}
+	words := make([]string, 0, 4*len(attributes))
+	for _, attribute := range attributes {
+		words = append(words, attribute, "-"+attribute, "+"+attribute, "no"+attribute)
+	}
+	if err := chattrCmd.MarkZshCompPositionalArgumentWords(1, words...); err != nil {
+		panic(err)
+	}
+	markRemainingZshCompPositionalArgumentsAsFiles(chattrCmd, 2)
 }
 
 func (c *Config) runChattrCmd(cmd *cobra.Command, args []string) error {

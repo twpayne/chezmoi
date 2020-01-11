@@ -29,6 +29,8 @@ func init() {
 
 	persistentFlags := removeCmd.PersistentFlags()
 	persistentFlags.BoolVarP(&config.remove.force, "force", "f", false, "remove without prompting")
+
+	markRemainingZshCompPositionalArgumentsAsFiles(removeCmd, 1)
 }
 
 func (c *Config) runRemoveCmd(cmd *cobra.Command, args []string) error {

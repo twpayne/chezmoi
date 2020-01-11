@@ -19,6 +19,8 @@ var catCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(catCmd)
+
+	markRemainingZshCompPositionalArgumentsAsFiles(catCmd, 1)
 }
 
 func (c *Config) runCatCmd(cmd *cobra.Command, args []string) error {

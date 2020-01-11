@@ -17,6 +17,8 @@ var diffCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(diffCmd)
+
+	markRemainingZshCompPositionalArgumentsAsFiles(diffCmd, 1)
 }
 
 func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) error {

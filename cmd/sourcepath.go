@@ -18,6 +18,8 @@ var sourcePathCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(sourcePathCmd)
+
+	markRemainingZshCompPositionalArgumentsAsFiles(sourcePathCmd, 1)
 }
 
 func (c *Config) runSourcePathCmd(cmd *cobra.Command, args []string) error {

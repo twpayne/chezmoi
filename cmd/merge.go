@@ -27,6 +27,8 @@ type mergeConfig struct {
 
 func init() {
 	rootCmd.AddCommand(mergeCmd)
+
+	markRemainingZshCompPositionalArgumentsAsFiles(mergeCmd, 1)
 }
 
 func (c *Config) runMergeCmd(cmd *cobra.Command, args []string) error {
