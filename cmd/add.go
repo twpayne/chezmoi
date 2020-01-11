@@ -42,6 +42,8 @@ func init() {
 	persistentFlags.BoolVarP(&config.add.recursive, "recursive", "r", false, "recurse in to subdirectories")
 	persistentFlags.BoolVarP(&config.add.options.Template, "template", "T", false, "add files as templates")
 	persistentFlags.BoolVarP(&config.add.options.AutoTemplate, "autotemplate", "a", false, "auto generate the template when adding files as templates")
+
+	markRemainingZshCompPositionalArgumentsAsFiles(addCmd, 1)
 }
 
 func (c *Config) runAddCmd(cmd *cobra.Command, args []string) (err error) {

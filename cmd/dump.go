@@ -28,6 +28,8 @@ func init() {
 	persistentFlags := dumpCmd.PersistentFlags()
 	persistentFlags.StringVarP(&config.dump.format, "format", "f", "json", "format (JSON, TOML, or YAML)")
 	persistentFlags.BoolVarP(&config.dump.recursive, "recursive", "r", true, "recursive")
+
+	markRemainingZshCompPositionalArgumentsAsFiles(dumpCmd, 1)
 }
 
 func (c *Config) runDumpCmd(cmd *cobra.Command, args []string) error {

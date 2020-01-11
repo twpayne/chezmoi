@@ -35,6 +35,8 @@ func init() {
 	persistentFlags.BoolVarP(&config.edit.apply, "apply", "a", false, "apply edit after editing")
 	persistentFlags.BoolVarP(&config.edit.diff, "diff", "d", false, "print diff after editing")
 	persistentFlags.BoolVarP(&config.edit.prompt, "prompt", "p", false, "prompt before applying (implies --diff)")
+
+	markRemainingZshCompPositionalArgumentsAsFiles(editCmd, 1)
 }
 
 type encryptedFile struct {

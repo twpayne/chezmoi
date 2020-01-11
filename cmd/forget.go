@@ -20,6 +20,8 @@ var forgetCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(forgetCmd)
+
+	markRemainingZshCompPositionalArgumentsAsFiles(forgetCmd, 1)
 }
 
 func (c *Config) runForgetCmd(cmd *cobra.Command, args []string) error {

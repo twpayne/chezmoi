@@ -26,7 +26,7 @@ function _chezmoi {
       "cat:Write the target state of a file or symlink to stdout"
       "cd:Launch a shell in the source directory"
       "chattr:Change the attributes of a target in the source state"
-      "completion:Output shell completion code for the specified shell (bash, fish or zsh)"
+      "completion:Output shell completion code for the specified shell (bash, fish, or zsh)"
       "data:Write the template data to stdout"
       "diff:Write the diff between the target state and the destination state to stdout"
       "docs:Print documentation"
@@ -155,7 +155,15 @@ function _chezmoi_add {
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
     '(-S --source)'{-S,--source}'[source directory]:' \
-    '(-v --verbose)'{-v,--verbose}'[verbose]'
+    '(-v --verbose)'{-v,--verbose}'[verbose]' \
+    '1: :_files ' \
+    '2: :_files ' \
+    '3: :_files ' \
+    '4: :_files ' \
+    '5: :_files ' \
+    '6: :_files ' \
+    '7: :_files ' \
+    '8: :_files '
 }
 
 function _chezmoi_apply {
@@ -168,7 +176,15 @@ function _chezmoi_apply {
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
     '(-S --source)'{-S,--source}'[source directory]:' \
-    '(-v --verbose)'{-v,--verbose}'[verbose]'
+    '(-v --verbose)'{-v,--verbose}'[verbose]' \
+    '1: :_files ' \
+    '2: :_files ' \
+    '3: :_files ' \
+    '4: :_files ' \
+    '5: :_files ' \
+    '6: :_files ' \
+    '7: :_files ' \
+    '8: :_files '
 }
 
 function _chezmoi_archive {
@@ -194,7 +210,15 @@ function _chezmoi_cat {
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
     '(-S --source)'{-S,--source}'[source directory]:' \
-    '(-v --verbose)'{-v,--verbose}'[verbose]'
+    '(-v --verbose)'{-v,--verbose}'[verbose]' \
+    '1: :_files ' \
+    '2: :_files ' \
+    '3: :_files ' \
+    '4: :_files ' \
+    '5: :_files ' \
+    '6: :_files ' \
+    '7: :_files ' \
+    '8: :_files '
 }
 
 function _chezmoi_cd {
@@ -220,7 +244,16 @@ function _chezmoi_chattr {
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
     '(-S --source)'{-S,--source}'[source directory]:' \
-    '(-v --verbose)'{-v,--verbose}'[verbose]'
+    '(-v --verbose)'{-v,--verbose}'[verbose]' \
+    '1: :("empty" "-empty" "+empty" "noempty" "e" "-e" "+e" "noe" "encrypt" "-encrypt" "+encrypt" "noencrypt" "exact" "-exact" "+exact" "noexact" "executable" "-executable" "+executable" "noexecutable" "x" "-x" "+x" "nox" "private" "-private" "+private" "noprivate" "p" "-p" "+p" "nop" "template" "-template" "+template" "notemplate" "t" "-t" "+t" "not")' \
+    '2: :_files ' \
+    '3: :_files ' \
+    '4: :_files ' \
+    '5: :_files ' \
+    '6: :_files ' \
+    '7: :_files ' \
+    '8: :_files ' \
+    '9: :_files '
 }
 
 function _chezmoi_completion {
@@ -262,7 +295,15 @@ function _chezmoi_diff {
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
     '(-S --source)'{-S,--source}'[source directory]:' \
-    '(-v --verbose)'{-v,--verbose}'[verbose]'
+    '(-v --verbose)'{-v,--verbose}'[verbose]' \
+    '1: :_files ' \
+    '2: :_files ' \
+    '3: :_files ' \
+    '4: :_files ' \
+    '5: :_files ' \
+    '6: :_files ' \
+    '7: :_files ' \
+    '8: :_files '
 }
 
 function _chezmoi_docs {
@@ -303,7 +344,15 @@ function _chezmoi_dump {
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
     '(-S --source)'{-S,--source}'[source directory]:' \
-    '(-v --verbose)'{-v,--verbose}'[verbose]'
+    '(-v --verbose)'{-v,--verbose}'[verbose]' \
+    '1: :_files ' \
+    '2: :_files ' \
+    '3: :_files ' \
+    '4: :_files ' \
+    '5: :_files ' \
+    '6: :_files ' \
+    '7: :_files ' \
+    '8: :_files '
 }
 
 function _chezmoi_edit {
@@ -319,7 +368,15 @@ function _chezmoi_edit {
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
     '(-S --source)'{-S,--source}'[source directory]:' \
-    '(-v --verbose)'{-v,--verbose}'[verbose]'
+    '(-v --verbose)'{-v,--verbose}'[verbose]' \
+    '1: :_files ' \
+    '2: :_files ' \
+    '3: :_files ' \
+    '4: :_files ' \
+    '5: :_files ' \
+    '6: :_files ' \
+    '7: :_files ' \
+    '8: :_files '
 }
 
 function _chezmoi_edit-config {
@@ -345,7 +402,15 @@ function _chezmoi_forget {
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
     '(-S --source)'{-S,--source}'[source directory]:' \
-    '(-v --verbose)'{-v,--verbose}'[verbose]'
+    '(-v --verbose)'{-v,--verbose}'[verbose]' \
+    '1: :_files ' \
+    '2: :_files ' \
+    '3: :_files ' \
+    '4: :_files ' \
+    '5: :_files ' \
+    '6: :_files ' \
+    '7: :_files ' \
+    '8: :_files '
 }
 
 function _chezmoi_help {
@@ -374,7 +439,8 @@ function _chezmoi_import {
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
     '(-S --source)'{-S,--source}'[source directory]:' \
-    '(-v --verbose)'{-v,--verbose}'[verbose]'
+    '(-v --verbose)'{-v,--verbose}'[verbose]' \
+    '1: :_files -g "*.tar" -g "*.tar.bz2" -g "*.tar.gz" -g "*.tgz"'
 }
 
 function _chezmoi_init {
@@ -401,7 +467,15 @@ function _chezmoi_merge {
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
     '(-S --source)'{-S,--source}'[source directory]:' \
-    '(-v --verbose)'{-v,--verbose}'[verbose]'
+    '(-v --verbose)'{-v,--verbose}'[verbose]' \
+    '1: :_files ' \
+    '2: :_files ' \
+    '3: :_files ' \
+    '4: :_files ' \
+    '5: :_files ' \
+    '6: :_files ' \
+    '7: :_files ' \
+    '8: :_files '
 }
 
 function _chezmoi_remove {
@@ -415,7 +489,15 @@ function _chezmoi_remove {
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
     '(-S --source)'{-S,--source}'[source directory]:' \
-    '(-v --verbose)'{-v,--verbose}'[verbose]'
+    '(-v --verbose)'{-v,--verbose}'[verbose]' \
+    '1: :_files ' \
+    '2: :_files ' \
+    '3: :_files ' \
+    '4: :_files ' \
+    '5: :_files ' \
+    '6: :_files ' \
+    '7: :_files ' \
+    '8: :_files '
 }
 
 
@@ -680,7 +762,15 @@ function _chezmoi_source-path {
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
     '(-S --source)'{-S,--source}'[source directory]:' \
-    '(-v --verbose)'{-v,--verbose}'[verbose]'
+    '(-v --verbose)'{-v,--verbose}'[verbose]' \
+    '1: :_files ' \
+    '2: :_files ' \
+    '3: :_files ' \
+    '4: :_files ' \
+    '5: :_files ' \
+    '6: :_files ' \
+    '7: :_files ' \
+    '8: :_files '
 }
 
 function _chezmoi_unmanaged {
@@ -737,6 +827,14 @@ function _chezmoi_verify {
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
     '(-S --source)'{-S,--source}'[source directory]:' \
-    '(-v --verbose)'{-v,--verbose}'[verbose]'
+    '(-v --verbose)'{-v,--verbose}'[verbose]' \
+    '1: :_files ' \
+    '2: :_files ' \
+    '3: :_files ' \
+    '4: :_files ' \
+    '5: :_files ' \
+    '6: :_files ' \
+    '7: :_files ' \
+    '8: :_files '
 }
 

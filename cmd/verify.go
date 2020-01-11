@@ -19,6 +19,8 @@ var verifyCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(verifyCmd)
+
+	markRemainingZshCompPositionalArgumentsAsFiles(verifyCmd, 1)
 }
 
 func (c *Config) runVerifyCmd(cmd *cobra.Command, args []string) error {
