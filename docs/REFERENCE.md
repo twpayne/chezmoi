@@ -41,6 +41,7 @@ Manage your dotfiles securely across multiple machines.
   * [edit [targets]](#edit-targets)
   * [edit-config](#edit-config)
   * [forget targets](#forget-targets)
+  * [git [arguments]](#git-arguments)
   * [help command](#help-command)
   * [init [repo]](#init-repo)
   * [import filename](#import-filename)
@@ -530,6 +531,17 @@ Remove *targets* from the source state, i.e. stop managing them.
 #### `forget` examples
 
     chezmoi forget ~/.bashrc
+
+### `git` [*arguments*]
+
+Run `git` *arguments* in the source directory. Note that flags in *arguments*
+must occur after `--` to prevent chezmoi from interpreting them.
+
+#### `git` examples
+
+    chezmoi git add .
+    chezmoi git add dot_gitconfig
+    chezmoi git -- commit -m "Add .gitconfig"
 
 ### `help` *command*
 

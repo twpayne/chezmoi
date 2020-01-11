@@ -213,6 +213,16 @@ var helps = map[string]help{
 		example: "" +
 			"  chezmoi forget ~/.bashrc",
 	},
+	"git": {
+		long: "" +
+			"Description:\n" +
+			"  Run `git` *arguments* in the source directory. Note that flags in *arguments*\n" +
+			"  must occur after `--` to prevent chezmoi from interpreting them.",
+		example: "" +
+			"  chezmoi git add .\n" +
+			"  chezmoi git add dot_gitconfig\n" +
+			"  chezmoi git -- commit -m \"Add .gitconfig\"",
+	},
 	"help": {
 		long: "" +
 			"Description:\n" +

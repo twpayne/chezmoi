@@ -35,6 +35,7 @@ function _chezmoi {
       "edit:Edit the source state of a target"
       "edit-config:Edit the configuration file"
       "forget:Remove a target from the source state"
+      "git:Run git in the source directory"
       "help:Help about any command"
       "import:Import a tar archive into the source state"
       "init:Setup the source directory and update the destination directory to match the target state"
@@ -97,6 +98,9 @@ function _chezmoi {
     ;;
   forget)
     _chezmoi_forget
+    ;;
+  git)
+    _chezmoi_git
     ;;
   help)
     _chezmoi_help
@@ -411,6 +415,19 @@ function _chezmoi_forget {
     '6: :_files ' \
     '7: :_files ' \
     '8: :_files '
+}
+
+function _chezmoi_git {
+  _arguments \
+    '--color[colorize diffs]:' \
+    '(-c --config)'{-c,--config}'[config file]:' \
+    '--debug[write debug logs]' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
+    '--follow[follow symlinks]' \
+    '--remove[remove targets]' \
+    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-v --verbose)'{-v,--verbose}'[verbose]'
 }
 
 function _chezmoi_help {
