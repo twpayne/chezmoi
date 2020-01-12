@@ -6,6 +6,7 @@
 * [How can I tell what dotfiles in my home directory aren't managed by chezmoi? Is there an easy way to have chezmoi manage a subset of them?](#how-can-i-tell-what-dotfiles-in-my-home-directory-arent-managed-by-chezmoi-is-there-an-easy-way-to-have-chezmoi-manage-a-subset-of-them)
 * [If there's a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?](#if-theres-a-mechanism-in-place-for-the-above-is-there-also-a-way-to-tell-chezmoi-to-ignore-specific-files-or-groups-of-files-eg-by-directory-name-or-by-glob)
 * [If the target already exists, but is "behind" the source, can chezmoi be configured to preserve the target version before replacing it with one derived from the source?](#if-the-target-already-exists-but-is-behind-the-source-can-chezmoi-be-configured-to-preserve-the-target-version-before-replacing-it-with-one-derived-from-the-source)
+* [Once I've made a change to the source directory, how do I commit it?](#once-ive-made-a-change-to-the-source-directory-how-do-i-commit-it)
 * [How do I only run a script when a file has changed?](#how-do-i-only-run-a-script-when-a-file-has-changed)
 * [I've made changes to both the destination state and the source state that I want to keep. How can I keep them both?](#ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both)
 * [chezmoi's source file naming system cannot handle all possible filenames](#chezmois-source-file-naming-system-cannot-handle-all-possible-filenames)
@@ -48,6 +49,27 @@ destination directory when you run `chezmoi apply` add them to a
 Yes. Run `chezmoi add` will update the source state with the target. To see
 diffs of what would change, without actually changing anything, use `chezmoi
 diff`.
+
+## Once I've made a change to the source directory, how do I commit it?
+
+You have several options:
+
+* `chezmoi cd` opens a shell in the source directory, where you can run your
+  usual version control commands, like `git add` and `git commit`.
+
+* `chezmoi git` *arguments* and `chezmoi hg` *arguments* run `git` and `hg`
+  respectively in the source directory with *arguments*, for example `chezmoi
+  git add .`. If you're passing any flags, you'll need to use `--` to prevent
+  chezmoi from consuming them, for example `chezmoi git -- commit -m "Update
+  dotfiles"`.
+
+* `chezmoi source` *arguments* runs your configured version control system in
+  your source directory. It works in the same was as the `chezmoi git` and
+  `chezmoi hg` commands.
+
+* chezmoi has experimental support for automatically committing and pushing
+  changes to your git repo whenever you run a commmand. See the "Explore
+  experimental features" section in the how-to for more information.
 
 ## How do I only run a script when a file has changed?
 
