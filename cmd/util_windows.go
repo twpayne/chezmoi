@@ -3,6 +3,7 @@ package cmd
 import (
 	"io"
 	"os"
+	"strings"
 
 	"golang.org/x/sys/windows"
 )
@@ -24,4 +25,8 @@ func enableVirtualTerminalProcessingOnWindows(w io.Writer) error {
 
 func getUmask() int {
 	return 0
+}
+
+func trimExecutableSuffix(s string) string {
+	return strings.TrimSuffix(s, ".exe")
 }

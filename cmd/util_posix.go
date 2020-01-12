@@ -17,3 +17,7 @@ func getUmask() int {
 	syscall.Umask(umask)
 	return umask
 }
+
+func trimExecutableSuffix(s string) string {
+	return s
+}

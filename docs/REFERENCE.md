@@ -41,14 +41,19 @@ Manage your dotfiles securely across multiple machines.
   * [edit [targets]](#edit-targets)
   * [edit-config](#edit-config)
   * [forget targets](#forget-targets)
+  * [git [arguments]](#git-arguments)
   * [help command](#help-command)
+  * [hg [*arguments]](#hg-arguments)
   * [init [repo]](#init-repo)
   * [import filename](#import-filename)
+  * [manage targets](#manage-targets)
   * [merge targets](#merge-targets)
   * [remove targets](#remove-targets)
+  * [rm targets](#rm-targets)
   * [secret](#secret)
   * [source [args]](#source-args)
   * [source-path [targets]](#source-path-targets)
+  * [unmanage targets](#unmanage-targets)
   * [unmanaged](#unmanaged)
   * [update](#update)
   * [upgrade](#upgrade)
@@ -528,9 +533,29 @@ Remove *targets* from the source state, i.e. stop managing them.
 
     chezmoi forget ~/.bashrc
 
+### `git` [*arguments*]
+
+Run `git` *arguments* in the source directory. Note that flags in *arguments*
+must occur after `--` to prevent chezmoi from interpreting them.
+
+#### `git` examples
+
+    chezmoi git add .
+    chezmoi git add dot_gitconfig
+    chezmoi git -- commit -m "Add .gitconfig"
+
 ### `help` *command*
 
 Print the help associated with *command*.
+
+### `hg` [*arguments]
+
+Run `hg` *arguments* in the source directory. Note that flags in *arguments*
+must occur after `--` to prevent chezmoi from interpreting them.
+
+#### `hg` examples
+
+    chezmoi hg -- pull --rebase --update
 
 ### `init` [*repo*]
 
@@ -577,6 +602,10 @@ Strip *n* leading components from paths.
     curl -s -L -o oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
     chezmoi import --strip-components 1 --destination ~/.oh-my-zsh oh-my-zsh-master.tar.gz
 
+### `manage` *targets*
+
+`manage` is an alias for `add` for symmetry with `unmanage`.
+
 ### `merge` *targets*
 
 Perform a three-way merge between the destination state, the source state, and
@@ -597,6 +626,10 @@ Remove *targets* from both the source state and the destination directory.
 #### `-f`, `--force`
 
 Remove without prompting.
+
+### `rm` *targets*
+
+`rm` is an alias for `remove`.
 
 ### `secret`
 
@@ -643,6 +676,10 @@ print the source directory.
 
     chezmoi source-path
     chezmoi source-path ~/.bashrc
+
+### `unmanage` *targets*
+
+`unmanage` is an alias for `forget` for symmetry with `manage`.
 
 ### `unmanaged`
 

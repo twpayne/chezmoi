@@ -213,10 +213,28 @@ var helps = map[string]help{
 		example: "" +
 			"  chezmoi forget ~/.bashrc",
 	},
+	"git": {
+		long: "" +
+			"Description:\n" +
+			"  Run `git` *arguments* in the source directory. Note that flags in *arguments*\n" +
+			"  must occur after `--` to prevent chezmoi from interpreting them.",
+		example: "" +
+			"  chezmoi git add .\n" +
+			"  chezmoi git add dot_gitconfig\n" +
+			"  chezmoi git -- commit -m \"Add .gitconfig\"",
+	},
 	"help": {
 		long: "" +
 			"Description:\n" +
 			"  Print the help associated with *command*.",
+	},
+	"hg": {
+		long: "" +
+			"Description:\n" +
+			"  Run `hg` *arguments* in the source directory. Note that flags in *arguments*\n" +
+			"  must occur after `--` to prevent chezmoi from interpreting them.",
+		example: "" +
+			"  chezmoi hg -- pull --rebase --update",
 	},
 	"import": {
 		long: "" +
@@ -262,6 +280,11 @@ var helps = map[string]help{
 			"  chezmoi init https://github.com/user/dotfiles.git\n" +
 			"  chezmoi init https://github.com/user/dotfiles.git --apply",
 	},
+	"manage": {
+		long: "" +
+			"Description:\n" +
+			"  `manage` is an alias for `add` for symmetry with `unmanage`.",
+	},
 	"merge": {
 		long: "" +
 			"Description:\n" +
@@ -283,6 +306,11 @@ var helps = map[string]help{
 			"  `-f`, `--force`\n" +
 			"\n" +
 			"  Remove without prompting.",
+	},
+	"rm": {
+		long: "" +
+			"Description:\n" +
+			"  `rm` is an alias for `remove`.",
 	},
 	"secret": {
 		long: "" +
@@ -328,6 +356,11 @@ var helps = map[string]help{
 			"\n" +
 			"    chezmoi source-path\n" +
 			"    chezmoi source-path ~/.bashrc",
+	},
+	"unmanage": {
+		long: "" +
+			"Description:\n" +
+			"  `unmanage` is an alias for `forget` for symmetry with `manage`.",
 	},
 	"unmanaged": {
 		long: "" +

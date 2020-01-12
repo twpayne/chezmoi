@@ -861,6 +861,82 @@ _chezmoi_forget()
     noun_aliases=()
 }
 
+_chezmoi_git()
+{
+    last_command="chezmoi_git"
+
+    command_aliases=()
+
+    commands=()
+
+    flags=()
+    two_word_flags=()
+    local_nonpersistent_flags=()
+    flags_with_completion=()
+    flags_completion=()
+
+    flags+=("--color=")
+    two_word_flags+=("--color")
+    flags+=("--config=")
+    two_word_flags+=("--config")
+    two_word_flags+=("-c")
+    flags+=("--debug")
+    flags+=("--destination=")
+    two_word_flags+=("--destination")
+    two_word_flags+=("-D")
+    flags+=("--dry-run")
+    flags+=("-n")
+    flags+=("--follow")
+    flags+=("--remove")
+    flags+=("--source=")
+    two_word_flags+=("--source")
+    two_word_flags+=("-S")
+    flags+=("--verbose")
+    flags+=("-v")
+
+    must_have_one_flag=()
+    must_have_one_noun=()
+    noun_aliases=()
+}
+
+_chezmoi_hg()
+{
+    last_command="chezmoi_hg"
+
+    command_aliases=()
+
+    commands=()
+
+    flags=()
+    two_word_flags=()
+    local_nonpersistent_flags=()
+    flags_with_completion=()
+    flags_completion=()
+
+    flags+=("--color=")
+    two_word_flags+=("--color")
+    flags+=("--config=")
+    two_word_flags+=("--config")
+    two_word_flags+=("-c")
+    flags+=("--debug")
+    flags+=("--destination=")
+    two_word_flags+=("--destination")
+    two_word_flags+=("-D")
+    flags+=("--dry-run")
+    flags+=("-n")
+    flags+=("--follow")
+    flags+=("--remove")
+    flags+=("--source=")
+    two_word_flags+=("--source")
+    two_word_flags+=("-S")
+    flags+=("--verbose")
+    flags+=("-v")
+
+    must_have_one_flag=()
+    must_have_one_noun=()
+    noun_aliases=()
+}
+
 _chezmoi_import()
 {
     last_command="chezmoi_import"
@@ -1776,6 +1852,8 @@ _chezmoi_root_command()
         command_aliases+=("unmanage")
         aliashash["unmanage"]="forget"
     fi
+    commands+=("git")
+    commands+=("hg")
     commands+=("import")
     commands+=("init")
     commands+=("merge")
