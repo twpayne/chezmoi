@@ -33,16 +33,12 @@ builds:
   - ppc64
   - ppc64le
   goarm:
-  - 6
-  - 7
+  - ""
   ignore:
   - goos: darwin
     goarch: 386
   - goos: linux
     goarch: amd64
-  - goos: linux
-    goarch: arm
-    goarm: 7
 - id: chezmoi-cgo-snap
   binary: chezmoi
   flags:
