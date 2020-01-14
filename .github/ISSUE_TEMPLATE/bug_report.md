@@ -6,24 +6,30 @@ assignees: ''
 
 ---
 
-**Describe the bug**
+## Describe the bug
+
 A clear and concise description of what the bug is.
 
-**To reproduce**
+## To reproduce
+
 Steps to reproduce the behavior.
 
-**Expected behavior**
+## Expected behavior
+
 A clear and concise description of what you expected to happen.
 
-**Output of command with `--verbose`**
+## Output of command with `--verbose`
+
 ```
 $ chezmoi command --verbose
 ```
 
-**Output of `chezmoi doctor`**
+## Output of `chezmoi doctor`
+
 ```
 $ chezmoi doctor
 ```
 
-**Additional context**
+## Additional context
+
 Add any other context about the problem here.
