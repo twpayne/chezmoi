@@ -150,6 +150,10 @@ If you're packaging chezmoi for an operating system or distribution:
   include these in the package and install them in the shell-appropriate
   directory, if possible.
 
+* If the instructions for installing chezmoi in chezmoi's [install
+  guide](https://github.com/twpayne/chezmoi/blob/master/docs/INSTALL.md) are
+  absent or incorrect, please open an issue or submit a PR to correct them.
+
 ## Updating the website
 
 [The website](https://chezmoi.io), is generated with [Hugo](https://gohugo.io/)
