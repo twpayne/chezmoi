@@ -24,8 +24,9 @@ Install chezmoi with a single command.
 | ------------ | ---------- | ------------------------------------------------------------------------------------------- |
 | Linux        | snap       | `snap install chezmoi --classic`                                                            |
 | Linux        | Linuxbrew  | `brew install twpayne/taps/chezmoi`                                                         |
-| Alpine Linux | apk        | `apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/ chezmoi`         |
+| Alpine Linux | apk        | `apk add chezmoi`                                                                           |
 | Arch Linux   | pacman     | `pacman -S chezmoi`                                                                         |
+| NixOS Linux  | nix-env    | `nix-env -i chezmoi`                                                                        |
 | macOS        | Homebrew   | `brew install twpayne/taps/chezmoi`                                                         |
 | Windows      | Scoop      | `scoop bucket add twpayne https://github.com/twpayne/scoop-bucket && scoop install chezmoi` |
 
