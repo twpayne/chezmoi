@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"os/user"
@@ -18,7 +19,7 @@ import (
 	"unicode"
 
 	"github.com/BurntSushi/toml"
-	packr "github.com/gobuffalo/packr/v2"
+	"github.com/markbates/pkger"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/twpayne/chezmoi/internal/chezmoi"
@@ -105,10 +106,12 @@ var (
 		"URL":  {},
 	}
 
-	templatesBox = packr.New("templates", "../templates")
-
 	identifierRegexp = regexp.MustCompile(`\A[\pL_][\pL\p{Nd}_]*\z`)
 )
+
+func init() {
+	pkger.Include("/templates/COMMIT_MESSAGE.tmpl")
+}
 
 // Stderr returns c's stderr.
 func (c *Config) Stderr() io.Writer {
@@ -192,7 +195,7 @@ func (c *Config) autoCommit(vcs VCS) error {
 	if err != nil {
 		return err
 	}
-	commitMessageText, err := templatesBox.Find("COMMIT_MESSAGE.tmpl")
+	commitMessageText, err := pkgerReadFile("/templates/COMMIT_MESSAGE.tmpl")
 	if err != nil {
 		return err
 	}
@@ -529,6 +532,15 @@ func getDefaultSourceDir(bds *xdg.BaseDirectorySpecification) string {
 func isWellKnownAbbreviation(word string) bool {
 	_, ok := wellKnownAbbreviations[word]
 	return ok
+}
+
+func pkgerReadFile(filename string) ([]byte, error) {
+	f, err := pkger.Open(filename)
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	return ioutil.ReadAll(f)
 }
 
 func printErrorAndExit(err error) {

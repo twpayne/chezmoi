@@ -3,17 +3,37 @@
 
 package cmd
 
-import packr "github.com/gobuffalo/packr/v2"
+import (
+	"os"
+	"path"
+	"strings"
+
+	"github.com/markbates/pkger"
+)
 
 // DocsDir is unused when chezmoi is built with embedded docs.
 var DocsDir = ""
 
-var docsBox = packr.New("docs", "../docs")
+func init() {
+	pkger.Include("/docs")
+}
 
 func getDocsFilenames() ([]string, error) {
-	return docsBox.List(), nil
+	var docFilenames []string
+	if err := pkger.Walk("/docs", func(filename string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if info.Mode().IsRegular() {
+			docFilenames = append(docFilenames, strings.TrimPrefix(filename, "github.com/twpayne/chezmoi:/docs/"))
+		}
+		return nil
+	}); err != nil {
+		return nil, err
+	}
+	return docFilenames, nil
 }
 
 func getDoc(filename string) ([]byte, error) {
-	return docsBox.Find(filename)
+	return pkgerReadFile(path.Join("/docs", filename))
 }

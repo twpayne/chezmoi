@@ -27,12 +27,11 @@ jobs:
         curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(go env GOPATH)/bin v1.22.2
         cd $(mktemp -d)
         go mod init tmp
-        go get github.com/gobuffalo/packr/v2/packr2
+        go get github.com/markbates/pkger
         go get mvdan.cc/gofumpt/gofumports
     - name: Generate
       if: matrix.os == 'ubuntu-latest'
       run: |
-        $(go env GOPATH)/bin/packr2
         go generate ./...
         git diff --exit-code
     - name: Build
