@@ -3,7 +3,7 @@
 <!--- toc --->
 * [Getting started](#getting-started)
 * [Developing locally](#developing-locally)
-* [Documentation changes](#documentation-changes)
+* [Documentation and template changes](#documentation-and-template-changes)
 * [Contributing changes](#contributing-changes)
 * [Managing releases](#managing-releases)
 * [Packaging](#packaging)
@@ -37,17 +37,20 @@ Run chezmoi:
 
     go run .
 
-## Documentation changes
+## Documentation and template changes
 
 The canonical documentation for chezmoi is in the `docs` directory. The help
 text (the output of `chezmoi command --help`) and the website
 (https://chezmoi.io/) are generated from this.
 
-If you update `docs/REFERENCE.md` you must also run
+If you update any documentation or `templates/COMMIT_MESSAGE.tmpl`, you must
+also run
 
     go generate ./...
 
-to extract and generate the help text. This will update `cmd/helps.gen.go`.
+to extract and generate the help text and bundle various files into the binary
+(using [`packr2`](https://github.com/gobuffalo/packr/tree/master/v2)). This will
+update `cmd/cmd-packr.go`, `cmd/helps.gen.go`, and `packrd/packed-packr.go`.
 
 ## Contributing changes
 

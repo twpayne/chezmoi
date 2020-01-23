@@ -32,8 +32,7 @@ jobs:
     - name: Generate
       if: matrix.os == 'ubuntu-latest'
       run: |
-        $(go env GOPATH)/bin/packr2
-        go generate ./...
+        PATH=$PATH:$(go env GOPATH)/bin go generate ./...
         git diff --exit-code
     - name: Build
       run: go build ./...
