@@ -20,7 +20,7 @@ var (
 // +build {{ .Tags }}
 {{- end }}
 
-package {{ .Package }}
+package cmd
 
 func init() {
 {{- range $key, $value := .GzipedAssets }}
@@ -28,9 +28,8 @@ func init() {
 {{- end }}
 }`))
 
-	output   = flag.String("o", "/dev/stdout", "output")
-	_package = flag.String("package", "main", "package")
-	tags     = flag.String("tags", "", "tags")
+	output = flag.String("o", "/dev/stdout", "output")
+	tags   = flag.String("tags", "", "tags")
 )
 
 func printByteSlice(bs []byte) string {
@@ -77,11 +76,9 @@ func run() error {
 	source := &bytes.Buffer{}
 	if err := outputTemplate.Execute(source, struct {
 		Tags         string
-		Package      string
 		GzipedAssets map[string][]byte
 	}{
 		Tags:         *tags,
-		Package:      *_package,
 		GzipedAssets: gzipedAssets,
 	}); err != nil {
 		return err
