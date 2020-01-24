@@ -4,7 +4,6 @@
 package cmd
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -20,7 +19,6 @@ func getDocsFilenames() ([]string, error) {
 			docsFilenames = append(docsFilenames, strings.TrimPrefix(name, docsPrefix))
 		}
 	}
-	fmt.Printf("docsFilenames=%+v\n", docsFilenames)
 	return docsFilenames, nil
 }
 
