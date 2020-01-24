@@ -35,8 +35,7 @@ generate:
 .PHONY: install-tools
 install-tools:
 	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- v1.22.2
-	GO111MODULE=off go get -u \
-		mvdan.cc/gofumpt/gofumports
+	( cd $$(mktemp -d) && go mod init tmp && go get mvdan.cc/gofumpt/gofumports )
 
 .PHONY: lint
 lint:
