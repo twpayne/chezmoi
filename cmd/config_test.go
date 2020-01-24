@@ -13,7 +13,7 @@ import (
 )
 
 func TestAutoCommitCommitMessage(t *testing.T) {
-	commitMessageText, err := templatesBox.Find("COMMIT_MESSAGE.tmpl")
+	commitMessageText, err := getAsset("templates/COMMIT_MESSAGE.tmpl")
 	require.NoError(t, err)
 	commitMessageTmpl, err := template.New("commit_message").Funcs(sprig.HermeticTxtFuncMap()).Parse(string(commitMessageText))
 	require.NoError(t, err)
@@ -58,7 +58,7 @@ func TestAutoCommitCommitMessage(t *testing.T) {
 				require.Error(t, err)
 			} else {
 				require.NoError(t, err)
-				assert.Equal(t, lines(tc.expectedMessage), b.String())
+				assert.Equal(t, tc.expectedMessage, b.String())
 			}
 		})
 	}

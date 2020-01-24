@@ -3,17 +3,27 @@
 
 package cmd
 
-import packr "github.com/gobuffalo/packr/v2"
+import (
+	"fmt"
+	"strings"
+)
 
 // DocsDir is unused when chezmoi is built with embedded docs.
 var DocsDir = ""
 
-var docsBox = packr.New("docs", "../docs")
+var docsPrefix = "docs/"
 
 func getDocsFilenames() ([]string, error) {
-	return docsBox.List(), nil
+	var docsFilenames []string
+	for name := range gzipedAssets {
+		if strings.HasPrefix(name, docsPrefix) {
+			docsFilenames = append(docsFilenames, strings.TrimPrefix(name, docsPrefix))
+		}
+	}
+	fmt.Printf("docsFilenames=%+v\n", docsFilenames)
+	return docsFilenames, nil
 }
 
 func getDoc(filename string) ([]byte, error) {
-	return docsBox.Find(filename)
+	return getAsset(docsPrefix + filename)
 }

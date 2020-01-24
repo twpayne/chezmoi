@@ -3,10 +3,12 @@ package cmd
 import (
 	"bufio"
 	"bytes"
+	"compress/gzip"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"os/user"
@@ -18,7 +20,6 @@ import (
 	"unicode"
 
 	"github.com/BurntSushi/toml"
-	packr "github.com/gobuffalo/packr/v2"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/twpayne/chezmoi/internal/chezmoi"
@@ -105,9 +106,9 @@ var (
 		"URL":  {},
 	}
 
-	templatesBox = packr.New("templates", "../templates")
-
 	identifierRegexp = regexp.MustCompile(`\A[\pL_][\pL\p{Nd}_]*\z`)
+
+	gzipedAssets = make(map[string][]byte)
 )
 
 // Stderr returns c's stderr.
@@ -192,7 +193,7 @@ func (c *Config) autoCommit(vcs VCS) error {
 	if err != nil {
 		return err
 	}
-	commitMessageText, err := templatesBox.Find("COMMIT_MESSAGE.tmpl")
+	commitMessageText, err := getAsset("templates/COMMIT_MESSAGE.tmpl")
 	if err != nil {
 		return err
 	}
@@ -497,6 +498,18 @@ func (c *Config) validateData() error {
 
 func (c *Config) warn(s string) {
 	fmt.Fprintf(c.Stderr(), "warning: %s\n", s)
+}
+
+func getAsset(name string) ([]byte, error) {
+	gzipedAsset, ok := gzipedAssets[name]
+	if !ok {
+		return nil, fmt.Errorf("%s: not found", name)
+	}
+	r, err := gzip.NewReader(bytes.NewBuffer(gzipedAsset))
+	if err != nil {
+		return nil, err
+	}
+	return ioutil.ReadAll(r)
 }
 
 func getDefaultConfigFile(bds *xdg.BaseDirectorySpecification) string {
