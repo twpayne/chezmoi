@@ -182,7 +182,7 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 }
 
 func (c *Config) getChecksums(rr *github.RepositoryRelease) (map[string][]byte, error) {
-	name := "checksums.txt"
+	name := fmt.Sprintf("%s_%s_checksums.txt", c.upgrade.repo, strings.TrimPrefix(rr.GetTagName(), "v"))
 	releaseAsset := getReleaseAssetByName(rr, name)
 	if releaseAsset == nil {
 		return nil, fmt.Errorf("%s: cannot find release asset", name)
