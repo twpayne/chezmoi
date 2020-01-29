@@ -151,10 +151,7 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 			if err != nil {
 				return err
 			}
-			if entry != nil {
-				return mutator.RemoveAll(filepath.Join(ts.SourceDir, entry.SourceName()))
-			}
-			return nil
+			return mutator.RemoveAll(filepath.Join(ts.SourceDir, entry.SourceName()))
 		}
 		contents, err := fs.ReadFile(targetPath)
 		if err != nil {
@@ -693,7 +690,11 @@ func (ts *TargetState) findEntry(name string) (Entry, error) {
 	if err != nil {
 		return nil, err
 	}
-	return entries[names[len(names)-1]], nil
+	entry, ok := entries[names[len(names)-1]]
+	if !ok {
+		return nil, os.ErrNotExist
+	}
+	return entry, nil
 }
 
 func (ts *TargetState) importHeader(r io.Reader, importTAROptions ImportTAROptions, header *tar.Header, mutator Mutator) error {
