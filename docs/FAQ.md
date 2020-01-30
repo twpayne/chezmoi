@@ -138,7 +138,7 @@ the metadata with a single file.
 
 In practice, dotfile filenames are unlikely to conflict with chezmoi's
 attributes. If this does cause a genuine problem for you, please [open an
-issue on GitHub](https://github.com/twpayne/chezmoi/issues/new).
+issue on GitHub](https://github.com/twpayne/chezmoi/issues/new/choose).
 
 ## gpg encryption fails. What could be wrong?
 
@@ -200,4 +200,4 @@ GitHub](https://github.com/twpayne/chezmoi/issues?utf8=%E2%9C%93&q=is%3Aissue+so
 
 ## Where do I ask a question that isn't answered here?
 
-Please [open an issue on GitHub](https://github.com/twpayne/chezmoi/issues/new).
+Please [open an issue on GitHub](https://github.com/twpayne/chezmoi/issues/new/choose).

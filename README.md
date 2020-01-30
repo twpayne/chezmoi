@@ -126,7 +126,7 @@ guide](docs/QUICKSTART.md). The [how-to guide](docs/HOWTO.md) covers most common
 tasks, and there's the [frequently asked questions](docs/FAQ.md) for specific
 questions. For a full description of chezmoi, consult the
 [reference](docs/REFERENCE.md). If all else fails, [open an
-issue](https://github.com/twpayne/chezmoi/issues/new).
+issue](https://github.com/twpayne/chezmoi/issues/new/choose).
 
 ## License
 

@@ -52,13 +52,14 @@ If you update any file in the `docs/` or `templates/` directories, you must also
 ## Contributing changes
 
 Bug reports, bug fixes, and documentation improvements are always welcome.
-Please [open an issue](https://github.com/twpayne/chezmoi/issues/new) or [create
-a pull request](https://help.github.com/en/articles/creating-a-pull-request)
-with your report, fix, or improvement.
+Please [open an issue](https://github.com/twpayne/chezmoi/issues/new/choose) or
+[create a pull
+request](https://help.github.com/en/articles/creating-a-pull-request) with your
+report, fix, or improvement.
 
 If you want to make a more significant change, please first [open an
-issue](https://github.com/twpayne/chezmoi/issues/new) to discuss the change that
-you want to make. Dave Cheney gives a [good
+issue](https://github.com/twpayne/chezmoi/issues/new/choose) to discuss the
+change that you want to make. Dave Cheney gives a [good
 rationale](https://dave.cheney.net/2019/02/18/talk-then-code) as to why this is
 important.
 

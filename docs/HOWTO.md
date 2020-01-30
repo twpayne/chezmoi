@@ -641,7 +641,7 @@ Mercurial specify:
 The source VCS command is used in the chezmoi commands `init`, `source`, and
 `update`, and support for VCSes other than git is limited but easy to add. If
 you'd like to see your VCS better supported, please [open an issue on
-GitHub](https://github.com/twpayne/chezmoi/issues/new).
+GitHub](https://github.com/twpayne/chezmoi/issues/new/choose).
 
 ## Use a merge tool other than vimdiff
 
@@ -689,4 +689,4 @@ not pushed.
 `autoCommit` and `autoPush` are experimental features, likely to contain bugs
 (especially in corner cases) and will change in the future. If you encounter a
 problem or strange behavior, please [open an
-issue](https://github.com/twpayne/chezmoi/issues/new).
+issue](https://github.com/twpayne/chezmoi/issues/new/choose).
