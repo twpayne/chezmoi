@@ -16,7 +16,7 @@ chezmoi cd git remote add origin https://github." />
 <link rel="stylesheet" href="/book.min.a8b61185b89b0e211122339c7efd1c8edaa4ad4c0ae65f0074e99a4b31c1e393.css" integrity="sha256-qLYRhbibDiERIjOcfv0cjtqkrUwK5l8AdOmaSzHB45M=">
 
 
-<script defer src="/search.min.5e3747d60bc760c14e3599dfd2560bdc226a9bc45125bc87556035b967aec02f.js" integrity="sha256-XjdH1gvHYMFONZnf0lYL3CJqm8RRJbyHVWA1uWeuwC8="></script>
+<script defer src="/search.min.7074e1fd98eb9996b48a81078854f3d044de617175d531c57f758c7132074ade.js" integrity="sha256-cHTh/ZjrmZa0ioEHiFTz0ETeYXF11THFf3WMcTIHSt4="></script>
 
 <!--
 Made with Book Theme
@@ -106,7 +106,7 @@ exit
 <p>You can then see what would be changed:</p>
 <pre><code>chezmoi diff
 </code></pre>
-<p>If you're happy with the changes then apply them:</p>
+<p>If you&rsquo;re happy with the changes then apply them:</p>
 <pre><code>chezmoi apply
 </code></pre>
 <p>The above commands can be combined into a single init, checkout, and apply:</p>
@@ -123,7 +123,7 @@ exit
 </code></pre>
 <p>This runs <code>git pull --rebase</code> in your source directory and <code>chezmoi diff</code> then shows the difference between the target state computed from your
 source directory and the actual state.</p>
-<p>If you're happy with the changes, then you can run</p>
+<p>If you&rsquo;re happy with the changes, then you can run</p>
 <pre><code>chezmoi apply
 </code></pre>
 <p>to apply them.</p>
@@ -241,16 +241,16 @@ a snapshot from a tarball:</p>
 chezmoi import --strip-components 1 --destination ${HOME}/.oh-my-zsh oh-my-zsh-master.tar.gz
 </code></pre>
 <p>Add <code>oh-my-zsh-master.tar.gz</code> to <code>.chezmoiignore</code> if you run these commands in
-your source directory so that chezmoi doesn't try to copy the tarball anywhere.</p>
+your source directory so that chezmoi doesn&rsquo;t try to copy the tarball anywhere.</p>
 <p>Disable Oh My Zsh auto-updates by setting <code>DISABLE_AUTO_UPDATE=&quot;true&quot;</code> in
 <code>~/.zshrc</code>. Auto updates will cause the <code>~/.oh-my-zsh</code> directory to drift out of
-sync with chezmoi's source state. To update Oh My Zsh, re-run the <code>curl</code> and
+sync with chezmoi&rsquo;s source state. To update Oh My Zsh, re-run the <code>curl</code> and
 <code>chezmoi import</code> commands above.</p>
 <h2 id="handle-configuration-files-which-are-externally-modified">Handle configuration files which are externally modified</h2>
 <p>Some programs modify their configuration files. When you next run <code>chezmoi apply</code>, any modifications made by the program will be lost.</p>
 <p>You can track changes to these files by replacing with a symlink back to a file
 in your source directory, which is under version control. Here is a worked
-example for VSCode's <code>settings.json</code> on Linux:</p>
+example for VSCode&rsquo;s <code>settings.json</code> on Linux:</p>
 <p>Copy the configuration file to your source directory:</p>
 <pre><code>cp ~/.config/Code/User/settings.json $(chezmoi source-path)
 </code></pre>
@@ -309,7 +309,7 @@ password = {{ (bitwarden &quot;item&quot; &quot;example.com&quot;).login.passwor
 <h3 id="use-gpg-to-keep-your-secrets">Use gpg to keep your secrets</h3>
 <p>chezmoi supports encrypting files with <a href="https://www.gnupg.org/">gpg</a>. Encrypted
 files are stored in the source state and automatically be decrypted when
-generating the target state or printing a file's contents with <code>chezmoi cat</code>.
+generating the target state or printing a file&rsquo;s contents with <code>chezmoi cat</code>.
 <code>chezmoi edit</code> will transparently decrypt the file before editing and re-encrypt
 it afterwards.</p>
 <h4 id="asymmetric-privatepublic-key-encryption">Asymmetric (private/public-key) encryption</h4>
@@ -520,12 +520,12 @@ section. For example, if your <code>~/.config/chezmoi/chezmoi.toml</code> contai
 <p>chezmoi supports scripts, which are executed when you run <code>chezmoi apply</code>. The
 scripts can either run every time you run <code>chezmoi apply</code>, or only when their
 contents have changed.</p>
-<p>In verbose mode, the script's contents will be printed before executing it. In
+<p>In verbose mode, the script&rsquo;s contents will be printed before executing it. In
 dry-run mode, the script is not executed.</p>
 <p>Scripts are any file in the source directory with the prefix <code>run_</code>, and are
 executed in alphabetical order. Scripts that should only be run when their
 contents change have the prefix <code>run_once_</code>.</p>
-<p>Scripts break chezmoi's declarative approach, and as such should be used
+<p>Scripts break chezmoi&rsquo;s declarative approach, and as such should be used
 sparingly. Any script should be idempotent, even <code>run_once_</code> scripts.</p>
 <p>Scripts must be created manually in the source directory, typically by running
 <code>chezmoi cd</code> and then creating a file with a <code>run_</code> prefix. Scripts are executed
@@ -588,12 +588,12 @@ Mercurial specify:</p>
 </code></pre>
 <p>The source VCS command is used in the chezmoi commands <code>init</code>, <code>source</code>, and
 <code>update</code>, and support for VCSes other than git is limited but easy to add. If
-you'd like to see your VCS better supported, please <a href="https://github.com/twpayne/chezmoi/issues/new">open an issue on
+you&rsquo;d like to see your VCS better supported, please <a href="https://github.com/twpayne/chezmoi/issues/new/choose">open an issue on
 GitHub</a>.</p>
 <h2 id="use-a-merge-tool-other-than-vimdiff">Use a merge tool other than vimdiff</h2>
 <p>By default, chezmoi uses vimdiff, but you can use any merge tool of your choice.
 In your config file, specify the command and args to use. For example, to use
-neovim's diff mode specify:</p>
+neovim&rsquo;s diff mode specify:</p>
 <pre><code>[merge]
   command = &quot;nvim&quot;
   args = &quot;-d&quot;
@@ -626,7 +626,7 @@ changes. If you only set <code>autoCommit</code> to true then changes will be co
 not pushed.</p>
 <p><code>autoCommit</code> and <code>autoPush</code> are experimental features, likely to contain bugs
 (especially in corner cases) and will change in the future. If you encounter a
-problem or strange behavior, please <a href="https://github.com/twpayne/chezmoi/issues/new">open an
+problem or strange behavior, please <a href="https://github.com/twpayne/chezmoi/issues/new/choose">open an
 issue</a>.</p>
 </article>
 
