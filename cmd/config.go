@@ -66,6 +66,7 @@ type Config struct {
 	Pass              passCmdConfig
 	Data              map[string]interface{}
 	colored           bool
+	maxDiffDataSize   int
 	templateFuncs     template.FuncMap
 	add               addCmdConfig
 	data              dataCmdConfig

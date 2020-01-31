@@ -142,7 +142,7 @@ func TestApplyCommand(t *testing.T) {
 			defer cleanup()
 			c := &Config{
 				fs:        fs,
-				mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false),
+				mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
 				SourceDir: "/home/user/.local/share/chezmoi",
 				DestDir:   "/home/user",
 				Umask:     022,
@@ -232,7 +232,7 @@ func TestApplyFollow(t *testing.T) {
 			defer cleanup()
 			c := &Config{
 				fs:        fs,
-				mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false),
+				mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
 				SourceDir: "/home/user/.local/share/chezmoi",
 				DestDir:   "/home/user",
 				Follow:    tc.follow,
@@ -352,7 +352,7 @@ func TestApplyRemove(t *testing.T) {
 			defer cleanup()
 			c := &Config{
 				fs:        fs,
-				mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false),
+				mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
 				SourceDir: "/home/user/.local/share/chezmoi",
 				DestDir:   "/home/user",
 				Data:      tc.data,
@@ -383,7 +383,7 @@ func TestApplyScript(t *testing.T) {
 			apply := func() {
 				c := &Config{
 					fs:                fs,
-					mutator:           chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false),
+					mutator:           chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
 					SourceDir:         "/home/user/.local/share/chezmoi",
 					DestDir:           "/",
 					Umask:             022,
@@ -421,7 +421,7 @@ func TestApplyRunOnce(t *testing.T) {
 
 	c := &Config{
 		fs:        fs,
-		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false),
+		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
 		SourceDir: "/home/user/.local/share/chezmoi",
 		DestDir:   "/",
 		Umask:     022,

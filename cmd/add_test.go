@@ -21,7 +21,7 @@ func TestAddAfterModification(t *testing.T) {
 	defer cleanup()
 	c := &Config{
 		fs:        fs,
-		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false),
+		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
 		SourceDir: "/home/user/.local/share/chezmoi",
 		DestDir:   "/home/user",
 		Umask:     022,
@@ -457,7 +457,7 @@ func TestAddCommand(t *testing.T) {
 			defer cleanup()
 			c := &Config{
 				fs:        fs,
-				mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false),
+				mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
 				SourceDir: "/home/user/.local/share/chezmoi",
 				DestDir:   "/home/user",
 				Follow:    tc.follow,
@@ -497,7 +497,7 @@ func TestIssue192(t *testing.T) {
 	defer cleanup()
 	c := &Config{
 		fs:        fs,
-		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false),
+		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
 		SourceDir: "/home/offbyone/.local/share/chezmoi",
 		DestDir:   "/home/offbyone",
 		Umask:     022,

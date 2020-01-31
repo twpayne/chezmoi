@@ -18,17 +18,19 @@ import (
 // A VerboseMutator wraps an Mutator and logs all of the actions it executes and
 // any errors as pseudo shell commands.
 type VerboseMutator struct {
-	m       Mutator
-	w       io.Writer
-	colored bool
+	m               Mutator
+	w               io.Writer
+	colored         bool
+	maxDiffDataSize int
 }
 
 // NewVerboseMutator returns a new VerboseMutator.
-func NewVerboseMutator(w io.Writer, m Mutator, colored bool) *VerboseMutator {
+func NewVerboseMutator(w io.Writer, m Mutator, colored bool, maxDiffDataSize int) *VerboseMutator {
 	return &VerboseMutator{
-		m:       m,
-		w:       w,
-		colored: colored,
+		m:               m,
+		w:               w,
+		colored:         colored,
+		maxDiffDataSize: maxDiffDataSize,
 	}
 }
 
@@ -113,29 +115,37 @@ func (m *VerboseMutator) WriteFile(name string, data []byte, perm os.FileMode, c
 	err := m.m.WriteFile(name, data, perm, currData)
 	if err == nil {
 		_, _ = fmt.Fprintln(m.w, action)
-		if !isBinary(currData) && !isBinary(data) {
-			aLines, err := splitLines(currData)
-			if err != nil {
-				return err
+		// Don't print diffs if either file is binary.
+		if isBinary(currData) || isBinary(data) {
+			return nil
+		}
+		// Don't print diffs if either file is too large.
+		if m.maxDiffDataSize != 0 {
+			if len(currData) > m.maxDiffDataSize || len(data) > m.maxDiffDataSize {
+				return nil
 			}
-			bLines, err := splitLines(data)
-			if err != nil {
-				return err
-			}
-			ab := diff.Strings(aLines, bLines)
-			e := diff.Myers(context.Background(), ab).WithContextSize(3)
-			opts := []diff.WriteOpt{
-				diff.Names(
-					filepath.Join("a", name),
-					filepath.Join("b", name),
-				),
-			}
-			if m.colored {
-				opts = append(opts, diff.TerminalColor())
-			}
-			if _, err := e.WriteUnified(m.w, ab, opts...); err != nil {
-				return err
-			}
+		}
+		aLines, err := splitLines(currData)
+		if err != nil {
+			return err
+		}
+		bLines, err := splitLines(data)
+		if err != nil {
+			return err
+		}
+		ab := diff.Strings(aLines, bLines)
+		e := diff.Myers(context.Background(), ab).WithContextSize(3)
+		opts := []diff.WriteOpt{
+			diff.Names(
+				filepath.Join("a", name),
+				filepath.Join("b", name),
+			),
+		}
+		if m.colored {
+			opts = append(opts, diff.TerminalColor())
+		}
+		if _, err := e.WriteUnified(m.w, ab, opts...); err != nil {
+			return err
 		}
 	} else {
 		_, _ = fmt.Fprintf(m.w, "%s: %v\n", action, err)

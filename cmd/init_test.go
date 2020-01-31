@@ -30,7 +30,7 @@ func TestCreateConfigFile(t *testing.T) {
 
 	conf := &Config{
 		fs:        fs,
-		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false),
+		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
 		SourceDir: "/home/user/.local/share/chezmoi",
 		stdin:     bytes.NewBufferString("john.smith@company.com\n"),
 		stdout:    &bytes.Buffer{},
@@ -68,7 +68,7 @@ func TestInit(t *testing.T) {
 
 	c := &Config{
 		fs:        fs,
-		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false),
+		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
 		SourceDir: "/home/user/.local/share/chezmoi",
 		SourceVCS: sourceVCSConfig{
 			Command: "git",
@@ -99,7 +99,7 @@ func TestInitRepo(t *testing.T) {
 
 	c := &Config{
 		fs:        fs,
-		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false),
+		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
 		SourceDir: "/home/user/.local/share/chezmoi",
 		SourceVCS: sourceVCSConfig{
 			Command: "git",
