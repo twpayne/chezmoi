@@ -24,6 +24,7 @@ var config = Config{
 	Merge: mergeConfig{
 		Command: "vimdiff",
 	},
+	maxDiffDataSize:   1 * 1024 * 1024, // 1MB
 	templateFuncs:     sprig.HermeticTxtFuncMap(),
 	scriptStateBucket: []byte("script"),
 }
@@ -163,7 +164,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		c.mutator = chezmoi.NewDebugMutator(c.mutator)
 	}
 	if config.Verbose {
-		c.mutator = chezmoi.NewVerboseMutator(c.Stdout(), c.mutator, c.colored)
+		c.mutator = chezmoi.NewVerboseMutator(c.Stdout(), c.mutator, c.colored, c.maxDiffDataSize)
 	}
 
 	info, err := c.fs.Stat(c.SourceDir)

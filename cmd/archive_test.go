@@ -25,7 +25,7 @@ func TestArchiveCmd(t *testing.T) {
 	stdout := &bytes.Buffer{}
 	c := &Config{
 		fs:        fs,
-		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false),
+		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
 		SourceDir: "/home/user/.local/share/chezmoi",
 		Umask:     022,
 		stdout:    stdout,

@@ -43,7 +43,7 @@ func TestImportCmd(t *testing.T) {
 
 	c := &Config{
 		fs:        fs,
-		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false),
+		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
 		SourceDir: "/home/user/.local/share/chezmoi",
 		stdin:     b,
 	}

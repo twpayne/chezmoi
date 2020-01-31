@@ -292,7 +292,7 @@ func TestChattrCommand(t *testing.T) {
 			defer cleanup()
 			c := &Config{
 				fs:        fs,
-				mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false),
+				mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
 				SourceDir: "/home/user/.config/share/chezmoi",
 				DestDir:   "/home/user",
 				Umask:     022,

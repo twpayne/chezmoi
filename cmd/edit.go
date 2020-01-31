@@ -167,7 +167,7 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string) error {
 		anyMutator := chezmoi.NewAnyMutator(chezmoi.NullMutator{})
 		var mutator chezmoi.Mutator = anyMutator
 		if c.edit.diff {
-			mutator = chezmoi.NewVerboseMutator(c.Stdout(), mutator, c.colored)
+			mutator = chezmoi.NewVerboseMutator(c.Stdout(), mutator, c.colored, c.maxDiffDataSize)
 		}
 		if err := entry.Apply(readOnlyFS, mutator, c.Follow, &applyOptions); err != nil {
 			return err
