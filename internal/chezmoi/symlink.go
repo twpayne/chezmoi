@@ -43,6 +43,10 @@ func (s *Symlink) Apply(fs vfs.FS, mutator Mutator, follow bool, applyOptions *A
 		info, err = fs.Lstat(targetPath)
 	}
 	switch {
+	case err == nil && target == "":
+		return mutator.RemoveAll(targetPath)
+	case os.IsNotExist(err) && target == "":
+		return nil
 	case err == nil && info.Mode()&os.ModeType == os.ModeSymlink:
 		currentTarget, err := fs.Readlink(targetPath)
 		if err != nil {
