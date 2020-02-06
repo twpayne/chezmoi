@@ -75,7 +75,7 @@ that:
   entry in `docs/HOWTO.md` and a complete description in `docs/REFERENCE.md`.
 
 * The code is correctly formatted, according to
-  [gofumports](https://mvdan.cc/gofumpt/gofumports). You can ensure this by
+  [`gofumports`](https://mvdan.cc/gofumpt/gofumports). You can ensure this by
   running `make format`.
 
 * The code passes [`go vet`](https://golang.org/cmd/vet/) and
@@ -93,14 +93,14 @@ that:
 
 ## Managing releases
 
-Releases are managed with [goreleaser](https://goreleaser.com/).
+Releases are managed with [`goreleaser`](https://goreleaser.com/).
 
 To create a new release, push a tag, eg:
 
     git tag -a v0.1.0 -m "First release"
     git push origin v0.1.0
 
-To run a local "snapshot" build without publishing:
+To build a test release, without publishing, run:
 
     make test-release
 
@@ -127,7 +127,7 @@ If you're packaging chezmoi for an operating system or distribution:
   `$DATE` should be the date of the build in RFC3339 format, e.g.
   `2019-11-23T18:29:25Z`.
 
-* Please enable CGO, if possible. chezmoi can be built and run without CGO, but
+* Please enable cgo, if possible. chezmoi can be built and run without cgo, but
   the `.chezmoi.username` and `.chezmoi.group` template variables may not be set
   correctly on some systems.
 
@@ -157,7 +157,7 @@ If you're packaging chezmoi for an operating system or distribution:
 
 ## Updating the website
 
-[The website](https://chezmoi.io), is generated with [Hugo](https://gohugo.io/)
+[The website](https://chezmoi.io) is generated with [Hugo](https://gohugo.io/)
 and served with [GitHub pages](https://pages.github.com/) from the [`gh-pages`
 branch](https://github.com/twpayne/chezmoi/tree/gh-pages) to GitHub.
 
