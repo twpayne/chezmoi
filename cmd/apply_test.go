@@ -448,3 +448,57 @@ func TestApplyRunOnce(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, []byte("bar\n"), actualData)
 }
+
+func TestApplyRemoveEmptySymlink(t *testing.T) {
+	for _, tc := range []struct {
+		name  string
+		root  interface{}
+		tests []vfst.Test
+	}{
+		{
+			name: "empty_symlink_remove_existing_symlink",
+			root: map[string]interface{}{
+				"/home/user/foo": &vfst.Symlink{Target: "bar"},
+				"/home/user/.local/share/chezmoi/symlink_foo": "",
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/foo", vfst.TestDoesNotExist),
+			},
+		},
+		{
+			name: "empty_symlink_remove_existing_dir",
+			root: map[string]interface{}{
+				"/home/user/foo/bar":                          "baz",
+				"/home/user/.local/share/chezmoi/symlink_foo": "",
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/foo", vfst.TestDoesNotExist),
+			},
+		},
+		{
+			name: "empty_symlink_no_target",
+			root: map[string]interface{}{
+				"/home/user/.local/share/chezmoi/symlink_foo": "",
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/foo", vfst.TestDoesNotExist),
+			},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			fs, cleanup, err := vfst.NewTestFS(tc.root)
+			require.NoError(t, err)
+			defer cleanup()
+			c := &Config{
+				fs:        fs,
+				mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
+				SourceDir: "/home/user/.local/share/chezmoi",
+				DestDir:   "/home/user",
+				Umask:     022,
+				bds:       newTestBaseDirectorySpecification("/home/user"),
+			}
+			assert.NoError(t, c.runApplyCmd(nil, nil))
+			vfst.RunTests(t, fs, "", tc.tests)
+		})
+	}
+}
