@@ -34,16 +34,24 @@ func init() {
 
 func printByteSlice(bs []byte) string {
 	sb := &strings.Builder{}
-	if _, err := sb.WriteString("[]byte{"); err != nil {
+	if _, err := sb.WriteString("[]byte{\n"); err != nil {
 		panic(err)
 	}
-	for i, b := range bs {
-		if i != 0 {
-			if _, err := sb.WriteString(", "); err != nil {
+	const bytesPerLine = 12
+	for i := 0; i < len(bs); i += bytesPerLine {
+		if _, err := sb.WriteString(fmt.Sprintf("\t\t0x%02X,", bs[i])); err != nil {
+			panic(err)
+		}
+		end := i + bytesPerLine
+		if end > len(bs) {
+			end = len(bs)
+		}
+		for _, b := range bs[i+1 : end] {
+			if _, err := sb.WriteString(fmt.Sprintf(" 0x%02X,", b)); err != nil {
 				panic(err)
 			}
 		}
-		if _, err := sb.WriteString(fmt.Sprintf("0x%02x", b)); err != nil {
+		if err := sb.WriteByte('\n'); err != nil {
 			panic(err)
 		}
 	}
