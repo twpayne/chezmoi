@@ -71,7 +71,10 @@ func run() error {
 			return err
 		}
 		gzipedAsset := &bytes.Buffer{}
-		w := gzip.NewWriter(gzipedAsset)
+		w, err := gzip.NewWriterLevel(gzipedAsset, gzip.BestCompression)
+		if err != nil {
+			return err
+		}
 		if _, err := w.Write(asset); err != nil {
 			return err
 		}
