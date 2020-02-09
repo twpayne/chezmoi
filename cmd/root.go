@@ -177,7 +177,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 			return err
 		}
 		if !private {
-			fmt.Fprintf(os.Stderr, "%s: not private, but should be\n", c.SourceDir)
+			c.warn(fmt.Sprintf("%s: not private, but should be", c.SourceDir))
 		}
 	case !os.IsNotExist(err):
 		return err
