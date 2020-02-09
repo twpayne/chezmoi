@@ -10,8 +10,8 @@ import (
 	"text/template"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"github.com/twpayne/chezmoi/internal/chezmoi"
+	"github.com/twpayne/chezmoi/internal/configparser"
 	vfs "github.com/twpayne/go-vfs"
 )
 
@@ -110,7 +110,7 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 }
 
 func (c *Config) createConfigFile() error {
-	filename, ext, data, err := c.findConfigTemplate()
+	filename, data, err := c.findConfigTemplate()
 	if err != nil {
 		return err
 	}
@@ -152,25 +152,26 @@ func (c *Config) createConfigFile() error {
 		return err
 	}
 
-	viper.SetConfigType(ext)
-	if err := viper.ReadConfig(contents); err != nil {
+	configFile, err := os.Open(configPath)
+	if err != nil {
 		return err
 	}
-	return viper.Unmarshal(c)
+	defer configFile.Close()
+	return configparser.ParseConfig(configFile, c)
 }
 
-func (c *Config) findConfigTemplate() (string, string, string, error) {
-	for _, ext := range viper.SupportedExts {
-		contents, err := c.fs.ReadFile(filepath.Join(c.SourceDir, ".chezmoi."+ext+chezmoi.TemplateSuffix))
+func (c *Config) findConfigTemplate() (string, string, error) {
+	for _, ext := range configparser.Extensions() {
+		contents, err := c.fs.ReadFile(filepath.Join(c.SourceDir, ".chezmoi"+ext+chezmoi.TemplateSuffix))
 		switch {
 		case os.IsNotExist(err):
 			continue
 		case err != nil:
-			return "", "", "", err
+			return "", "", err
 		}
-		return "chezmoi." + ext, ext, string(contents), nil
+		return "chezmoi" + ext, string(contents), nil
 	}
-	return "", "", "", nil
+	return "", "", nil
 }
 
 func (c *Config) promptString(field string) string {

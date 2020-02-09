@@ -20,7 +20,7 @@ var genericSecretCmd = &cobra.Command{
 }
 
 type genericSecretCmdConfig struct {
-	Command string
+	Command string `json:"command" toml:"command" yaml:"command"`
 }
 
 var (

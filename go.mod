@@ -24,17 +24,13 @@ require (
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
 	github.com/pelletier/go-toml v1.6.0
 	github.com/pkg/diff v0.0.0-20190930165518-531926345625
-	github.com/spf13/afero v1.2.2 // indirect
-	github.com/spf13/cast v1.3.1 // indirect
 	github.com/spf13/cobra v0.0.5
-	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/spf13/viper v1.6.2
+	github.com/spf13/viper v1.4.0
 	github.com/stretchr/objx v0.2.0 // indirect
 	github.com/stretchr/testify v1.4.0
 	github.com/twpayne/go-shell v0.1.1
 	github.com/twpayne/go-vfs v1.3.6
-	github.com/twpayne/go-vfsafero v1.0.0
 	github.com/twpayne/go-xdg/v3 v3.1.0
 	github.com/yuin/goldmark v1.1.21 // indirect
 	github.com/zalando/go-keyring v0.0.0-20200121091418-667557018717
@@ -44,8 +40,8 @@ require (
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
 	golang.org/x/sys v0.0.0-20200122134326-e047566fdf82
 	google.golang.org/appengine v1.6.5 // indirect
-	gopkg.in/ini.v1 v1.51.1 // indirect
 	gopkg.in/yaml.v2 v2.2.7
+	gopkg.in/yaml.v3 v3.0.0-20200121175148-a6ecf24a6d71
 )
 
 // Temporary while waiting for https://github.com/spf13/cobra/pull/754 to be merged

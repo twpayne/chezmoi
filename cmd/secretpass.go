@@ -17,7 +17,7 @@ var passCmd = &cobra.Command{
 }
 
 type passCmdConfig struct {
-	Command string
+	Command string `json:"command" toml:"command" yaml:"command"`
 }
 
 var passCache = make(map[string]string)

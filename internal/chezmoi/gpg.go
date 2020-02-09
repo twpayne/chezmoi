@@ -9,8 +9,8 @@ import (
 
 // GPG interfaces with gpg.
 type GPG struct {
-	Recipient string
-	Symmetric bool
+	Recipient string `json:"recipient" toml:"recipient" yaml:"recipient"`
+	Symmetric bool   `json:"symmetric" toml:"symmetric" yaml:"symmetric"`
 }
 
 // Decrypt decrypts ciphertext. filename is used as a hint for naming temporary

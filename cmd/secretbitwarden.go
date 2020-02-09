@@ -19,7 +19,7 @@ var bitwardenCmd = &cobra.Command{
 }
 
 type bitwardenCmdConfig struct {
-	Command string
+	Command string `json:"command" toml:"command" yaml:"command"`
 }
 
 var bitwardenCache = make(map[string]interface{})

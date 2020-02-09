@@ -159,10 +159,8 @@ timestamp.
 
 chezmoi searches for its configuration file according to the [XDG Base Directory
 Specification](https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html)
-and supports all formats supported by
-[`github.com/spf13/viper`](https://github.com/spf13/viper), namely JSON, TOML,
-YAML, macOS property file format, and HCL. The basename of the config file is
-chezmoi, and the first config file found is used.
+and supports JSON, TOML, YAML. The basename of the config file is chezmoi, and
+the first config file found is used.
 
 ### Configuration variables
 

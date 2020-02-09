@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/twpayne/chezmoi/internal/chezmoi"
+	"github.com/twpayne/chezmoi/internal/configparser"
 	vfs "github.com/twpayne/go-vfs"
 	xdg "github.com/twpayne/go-xdg/v3"
 	"golang.org/x/crypto/ssh/terminal"
@@ -64,7 +65,7 @@ func init() {
 
 	persistentFlags := rootCmd.PersistentFlags()
 
-	persistentFlags.StringVarP(&config.configFile, "config", "c", getDefaultConfigFile(config.bds), "config file")
+	persistentFlags.StringVarP(&config.configFileName, "config", "c", config.getDefaultConfigFileName(config.bds), "config file")
 
 	persistentFlags.BoolVarP(&config.DryRun, "dry-run", "n", false, "dry run")
 	panicOnError(viper.BindPFlag("dry-run", persistentFlags.Lookup("dry-run")))
@@ -91,19 +92,15 @@ func init() {
 	panicOnError(viper.BindPFlag("debug", persistentFlags.Lookup("debug")))
 
 	cobra.OnInitialize(func() {
-		_, err := os.Stat(config.configFile)
+		config.configFile, config.err = config.fs.Open(config.configFileName)
 		switch {
-		case err == nil:
-			viper.SetConfigFile(config.configFile)
-			config.err = viper.ReadInConfig()
-			if config.err == nil {
-				config.err = viper.Unmarshal(&config)
-			}
+		case config.err == nil:
+			config.err = configparser.ParseConfig(config.configFile, &config)
 			if config.err == nil {
 				config.err = config.validateData()
 			}
 			if config.err != nil {
-				config.warn(fmt.Sprintf("%s: %v", config.configFile, config.err))
+				config.warn(fmt.Sprintf("%s: %v", config.configFileName, config.err))
 			}
 		case os.IsNotExist(err):
 		default:

@@ -24,9 +24,9 @@ var keePassXCCmd = &cobra.Command{
 }
 
 type keePassXCCmdConfig struct {
-	Command  string
-	Database string
-	Args     []string
+	Command  string   `json:"command" toml:"command" yaml:"command"`
+	Database string   `json:"database" toml:"database" yaml:"database"`
+	Args     []string `json:"args" toml:"args" yaml:"args"`
 }
 
 type keePassXCAttributeCacheKey struct {

@@ -22,8 +22,8 @@ import (
 	"github.com/Masterminds/sprig"
 	"github.com/pelletier/go-toml"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"github.com/twpayne/chezmoi/internal/chezmoi"
+	"github.com/twpayne/chezmoi/internal/configparser"
 	vfs "github.com/twpayne/go-vfs"
 	xdg "github.com/twpayne/go-xdg/v3"
 	bolt "go.etcd.io/bbolt"
@@ -31,41 +31,42 @@ import (
 )
 
 type sourceVCSConfig struct {
-	Command    string
-	AutoCommit bool
-	AutoPush   bool
-	Init       interface{}
-	Pull       interface{}
+	Command    string      `json:"command" toml:"command" yaml:"command"`
+	AutoCommit bool        `json:"autoCommit" toml:"autoCommit" yaml:"autoCommit"`
+	AutoPush   bool        `json:"autoPush" toml:"autoPush" yaml:"autoPush"`
+	Init       interface{} `json:"init" toml:"init" yaml:"init"`
+	Pull       interface{} `json:"pull" toml:"pull" yaml:"pull"`
 }
 
 // A Config represents a configuration.
 type Config struct {
-	configFile        string
+	configFileName    string
+	configFile        *os.File
 	err               error
 	fs                vfs.FS
 	mutator           chezmoi.Mutator
-	SourceDir         string
-	DestDir           string
-	Umask             permValue
-	DryRun            bool
-	Follow            bool
-	Remove            bool
-	Verbose           bool
-	Color             string
-	Debug             bool
-	GPG               chezmoi.GPG
-	GPGRecipient      string
-	SourceVCS         sourceVCSConfig
-	Merge             mergeConfig
-	Bitwarden         bitwardenCmdConfig
-	GenericSecret     genericSecretCmdConfig
-	Gopass            gopassCmdConfig
-	KeePassXC         keePassXCCmdConfig
-	Lastpass          lastpassCmdConfig
-	Onepassword       onepasswordCmdConfig
-	Vault             vaultCmdConfig
-	Pass              passCmdConfig
-	Data              map[string]interface{}
+	SourceDir         string                 `json:"sourceDir" toml:"sourceDir" yaml:"sourceDir"`
+	DestDir           string                 `json:"destDir" toml:"destDir" yaml:"destDir"`
+	Umask             permValue              `json:"umask" toml:"umask" yaml:"umask"`
+	DryRun            bool                   `json:"dryRun" toml:"dryRun" yaml:"dryRun"`
+	Follow            bool                   `json:"follow" toml:"follow" yaml:"follow"`
+	Remove            bool                   `json:"remove" toml:"remove" yaml:"remove"`
+	Verbose           bool                   `json:"verbose" toml:"verbose" yaml:"verbose"`
+	Color             string                 `json:"color" toml:"color" yaml:"color"`
+	Debug             bool                   `json:"debug" toml:"debug" yaml:"debug"`
+	GPG               chezmoi.GPG            `json:"gpg" toml:"gpg" yaml:"gpg"`
+	GPGRecipient      string                 `json:"gpgRecipient" toml:"gpgRecipient" yaml:"gpgRecipient"`
+	SourceVCS         sourceVCSConfig        `json:"sourceVCS" toml:"sourceVCS" yaml:"sourceVCS"`
+	Merge             mergeConfig            `json:"merge" toml:"merge" yaml:"merge"`
+	Bitwarden         bitwardenCmdConfig     `json:"bitwarden" toml:"bitwarden" yaml:"bitwarden"`
+	GenericSecret     genericSecretCmdConfig `json:"genericSecret" toml:"genericSecret" yaml:"genericSecret"`
+	Gopass            gopassCmdConfig        `json:"gopass" toml:"gopass" yaml:"gopass"`
+	KeePassXC         keePassXCCmdConfig     `json:"keePassXC" toml:"keePassXC" yaml:"keePassXC"`
+	Lastpass          lastpassCmdConfig      `json:"lastpass" toml:"lastpass" yaml:"lastpass"`
+	Onepassword       onepasswordCmdConfig   `json:"onepassword" toml:"onepassword" yaml:"onepassword"`
+	Vault             vaultCmdConfig         `json:"vault" toml:"vault" yaml:"vault"`
+	Pass              passCmdConfig          `json:"pass" toml:"pass" yaml:"pass"`
+	Data              map[string]interface{} `json:"data" toml:"data" yaml:"data"`
 	colored           bool
 	maxDiffDataSize   int
 	templateFuncs     template.FuncMap
@@ -277,6 +278,13 @@ func (c *Config) ensureSourceDirectory() error {
 	}
 }
 
+func (c *Config) getConfigFileName() string {
+	if c.configFile != nil {
+		return c.configFile.Name()
+	}
+	return c.getDefaultConfigFileName(c.bds)
+}
+
 func (c *Config) getData() (map[string]interface{}, error) {
 	defaultData, err := c.getDefaultData()
 	if err != nil {
@@ -289,6 +297,17 @@ func (c *Config) getData() (map[string]interface{}, error) {
 		data[key] = value
 	}
 	return data, nil
+}
+
+func (c *Config) getDefaultConfigFileName(bds *xdg.BaseDirectorySpecification) string {
+	for _, configDir := range bds.ConfigDirs {
+		configFileName, _ := configparser.FindConfig(c.fs, filepath.Join(configDir, "chezmoi", "chezmoi"))
+		if configFileName != "" {
+			return configFileName
+		}
+	}
+	// Fallback to XDG Base Directory Specification default.
+	return filepath.Join(bds.ConfigHome, "chezmoi", "chezmoi.toml")
 }
 
 func (c *Config) getDefaultData() (map[string]interface{}, error) {
@@ -381,7 +400,7 @@ func (c *Config) getEntries(ts *chezmoi.TargetState, args []string) ([]chezmoi.E
 }
 
 func (c *Config) getPersistentState(options *bolt.Options) (chezmoi.PersistentState, error) {
-	persistentStateFile := c.getPersistentStateFile()
+	persistentStateFile := c.getPersistentStateFileName()
 	if c.DryRun {
 		if options == nil {
 			options = &bolt.Options{}
@@ -391,17 +410,8 @@ func (c *Config) getPersistentState(options *bolt.Options) (chezmoi.PersistentSt
 	return chezmoi.NewBoltPersistentState(c.fs, persistentStateFile, options)
 }
 
-func (c *Config) getPersistentStateFile() string {
-	if c.configFile != "" {
-		return filepath.Join(filepath.Dir(c.configFile), "chezmoistate.boltdb")
-	}
-	for _, configDir := range c.bds.ConfigDirs {
-		persistentStateFile := filepath.Join(configDir, "chezmoi", "chezmoistate.boltdb")
-		if _, err := os.Stat(persistentStateFile); err == nil {
-			return persistentStateFile
-		}
-	}
-	return filepath.Join(filepath.Dir(getDefaultConfigFile(c.bds)), "chezmoistate.boltdb")
+func (c *Config) getPersistentStateFileName() string {
+	return filepath.Join(filepath.Dir(c.getConfigFileName()), "chezmoistate.boltdb")
 }
 
 func (c *Config) getTargetState(populateOptions *chezmoi.PopulateOptions) (*chezmoi.TargetState, error) {
@@ -512,20 +522,6 @@ func getAsset(name string) ([]byte, error) {
 		return nil, err
 	}
 	return ioutil.ReadAll(r)
-}
-
-func getDefaultConfigFile(bds *xdg.BaseDirectorySpecification) string {
-	// Search XDG Base Directory Specification config directories first.
-	for _, configDir := range bds.ConfigDirs {
-		for _, extension := range viper.SupportedExts {
-			configFilePath := filepath.Join(configDir, "chezmoi", "chezmoi."+extension)
-			if _, err := os.Stat(configFilePath); err == nil {
-				return configFilePath
-			}
-		}
-	}
-	// Fallback to XDG Base Directory Specification default.
-	return filepath.Join(bds.ConfigHome, "chezmoi", "chezmoi.toml")
 }
 
 func getDefaultSourceDir(bds *xdg.BaseDirectorySpecification) string {

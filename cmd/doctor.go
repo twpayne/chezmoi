@@ -131,7 +131,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		&doctorFileCheck{
 			name: "configuration file",
-			path: c.configFile,
+			path: c.getConfigFileName(),
 		},
 		&doctorBinaryCheck{
 			name:        "shell",

@@ -115,10 +115,8 @@ to machine. For example, for your home machine:
 If you intend to store private data (e.g. access tokens) in
 `~/.config/chezmoi/chezmoi.toml`, make sure it has permissions `0600`.
 
-If you prefer, you can use any format supported by
-[Viper](https://github.com/spf13/viper) for your configuration file. This
-includes JSON, YAML, and TOML. Variable names must start with a letter and be
-followed by zero or more letters or digits.
+You can use JSON, YAML, or TOML for your configuration file. Variable names must
+start with a letter and be followed by zero or more letters or digits.
 
 Then, add `~/.gitconfig` to chezmoi using the `-T` flag to automatically turn
 it in to a template:

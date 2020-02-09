@@ -21,8 +21,8 @@ var mergeCmd = &cobra.Command{
 }
 
 type mergeConfig struct {
-	Command string
-	Args    []string
+	Command string   `json:"command" toml:"command" yaml:"command"`
+	Args    []string `json:"args" toml:"args" yaml:"args"`
 }
 
 func init() {

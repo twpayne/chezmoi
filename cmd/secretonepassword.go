@@ -18,7 +18,7 @@ var onepasswordCmd = &cobra.Command{
 }
 
 type onepasswordCmdConfig struct {
-	Command string
+	Command string `json:"command" toml:"command" yaml:"command"`
 }
 
 var (

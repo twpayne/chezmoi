@@ -34,7 +34,7 @@ var (
 )
 
 type lastpassCmdConfig struct {
-	Command          string
+	Command          string `json:"command" toml:"command" yaml:"command"`
 	versionCheckOnce sync.Once
 }
 
