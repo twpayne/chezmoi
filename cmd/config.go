@@ -262,11 +262,8 @@ func (c *Config) ensureSourceDirectory() error {
 		}
 		return nil
 	case os.IsNotExist(err):
-		sourceParentDir := filepath.Dir(c.SourceDir)
-		if _, err := c.fs.Stat(sourceParentDir); os.IsNotExist(err) {
-			if err := vfs.MkdirAll(c.mutator, sourceParentDir, 0777&^os.FileMode(c.Umask)); err != nil {
-				return err
-			}
+		if err := vfs.MkdirAll(c.mutator, filepath.Dir(c.SourceDir), 0777&^os.FileMode(c.Umask)); err != nil {
+			return err
 		}
 		return c.mutator.Mkdir(c.SourceDir, 0700&^os.FileMode(c.Umask))
 	case err == nil:
