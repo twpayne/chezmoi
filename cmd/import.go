@@ -38,9 +38,7 @@ func init() {
 	persistentFlags.IntVar(&config._import.importTAROptions.StripComponents, "strip-components", 0, "strip components")
 	persistentFlags.BoolVarP(&config._import.removeDestination, "remove-destination", "r", false, "remove destination before import")
 
-	if err := _importCmd.MarkZshCompPositionalArgumentFile(1, "*.tar", "*.tar.bz2", "*.tar.gz", "*.tgz"); err != nil {
-		panic(err)
-	}
+	panicOnError(_importCmd.MarkZshCompPositionalArgumentFile(1, "*.tar", "*.tar.bz2", "*.tar.gz", "*.tgz"))
 }
 
 func (c *Config) runImportCmd(cmd *cobra.Command, args []string) error {

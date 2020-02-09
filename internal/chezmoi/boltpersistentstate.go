@@ -103,11 +103,8 @@ func (b *BoltPersistentState) Set(bucket, key, value []byte) error {
 }
 
 func (b *BoltPersistentState) openDB() error {
-	parentDir := filepath.Dir(b.path)
-	if _, err := b.fs.Stat(parentDir); os.IsNotExist(err) {
-		if err := vfs.MkdirAll(b.fs, parentDir, 0755); err != nil {
-			return err
-		}
+	if err := vfs.MkdirAll(b.fs, filepath.Dir(b.path), 0755); err != nil {
+		return err
 	}
 	var options bolt.Options
 	if b.options != nil {

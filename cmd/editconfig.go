@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 	"path/filepath"
 
 	"github.com/spf13/cobra"
@@ -25,11 +24,8 @@ func init() {
 }
 
 func (c *Config) runEditConfigCmd(cmd *cobra.Command, args []string) error {
-	dir := filepath.Dir(c.configFile)
-	if _, err := c.fs.Stat(dir); os.IsNotExist(err) {
-		if err := vfs.MkdirAll(c.mutator, dir, 0777); err != nil {
-			return err
-		}
+	if err := vfs.MkdirAll(c.mutator, filepath.Dir(c.configFile), 0777); err != nil {
+		return err
 	}
 
 	if err := c.runEditor(c.configFile); err != nil {

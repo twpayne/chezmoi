@@ -47,9 +47,7 @@ func init() {
 	for _, attribute := range attributes {
 		words = append(words, attribute, "-"+attribute, "+"+attribute, "no"+attribute)
 	}
-	if err := chattrCmd.MarkZshCompPositionalArgumentWords(1, words...); err != nil {
-		panic(err)
-	}
+	panicOnError(chattrCmd.MarkZshCompPositionalArgumentWords(1, words...))
 	markRemainingZshCompPositionalArgumentsAsFiles(chattrCmd, 2)
 }
 

@@ -65,17 +65,13 @@ func (c *Config) lastpassOutput(args ...string) ([]byte, error) {
 
 func (c *Config) lastpassFunc(id string) interface{} {
 	c.Lastpass.versionCheckOnce.Do(func() {
-		if err := c.lastpassVersionCheck(); err != nil {
-			panic(err)
-		}
+		panicOnError(c.lastpassVersionCheck())
 	})
 	if data, ok := lastPassCache[id]; ok {
 		return data
 	}
 	output, err := c.lastpassOutput("show", "--json", id)
-	if err != nil {
-		panic(err)
-	}
+	panicOnError(err)
 	var data []map[string]interface{}
 	if err := json.Unmarshal(output, &data); err != nil {
 		panic(fmt.Errorf("lastpass: parse error: %w\n%q", err, output))
