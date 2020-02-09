@@ -19,8 +19,8 @@ import (
 	"text/template"
 	"unicode"
 
-	"github.com/BurntSushi/toml"
 	"github.com/Masterminds/sprig"
+	"github.com/pelletier/go-toml"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/twpayne/chezmoi/internal/chezmoi"

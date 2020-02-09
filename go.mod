@@ -3,7 +3,6 @@ module github.com/twpayne/chezmoi
 go 1.13
 
 require (
-	github.com/BurntSushi/toml v0.3.1
 	github.com/Masterminds/goutils v1.1.0 // indirect
 	github.com/Masterminds/semver v1.5.0 // indirect
 	github.com/Masterminds/sprig v2.22.0+incompatible
@@ -23,7 +22,7 @@ require (
 	github.com/mattn/go-runewidth v0.0.8 // indirect
 	github.com/mitchellh/copystructure v1.0.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
-	github.com/pelletier/go-toml v1.6.0 // indirect
+	github.com/pelletier/go-toml v1.6.0
 	github.com/pkg/diff v0.0.0-20190930165518-531926345625
 	github.com/spf13/afero v1.2.2 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
