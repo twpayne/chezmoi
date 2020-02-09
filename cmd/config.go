@@ -542,6 +542,12 @@ func isWellKnownAbbreviation(word string) bool {
 	return ok
 }
 
+func panicOnError(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
 func printErrorAndExit(err error) {
 	fmt.Printf("chezmoi: %v\n", err)
 	os.Exit(1)

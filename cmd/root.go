@@ -80,28 +80,28 @@ func init() {
 	persistentFlags.StringVarP(&config.configFile, "config", "c", getDefaultConfigFile(config.bds), "config file")
 
 	persistentFlags.BoolVarP(&config.DryRun, "dry-run", "n", false, "dry run")
-	_ = viper.BindPFlag("dry-run", persistentFlags.Lookup("dry-run"))
+	panicOnError(viper.BindPFlag("dry-run", persistentFlags.Lookup("dry-run")))
 
 	persistentFlags.BoolVar(&config.Follow, "follow", false, "follow symlinks")
-	_ = viper.BindPFlag("follow", persistentFlags.Lookup("follow"))
+	panicOnError(viper.BindPFlag("follow", persistentFlags.Lookup("follow")))
 
 	persistentFlags.BoolVar(&config.Remove, "remove", false, "remove targets")
-	_ = viper.BindPFlag("remove", persistentFlags.Lookup("remove"))
+	panicOnError(viper.BindPFlag("remove", persistentFlags.Lookup("remove")))
 
 	persistentFlags.StringVarP(&config.SourceDir, "source", "S", getDefaultSourceDir(config.bds), "source directory")
-	_ = viper.BindPFlag("source", persistentFlags.Lookup("source"))
+	panicOnError(viper.BindPFlag("source", persistentFlags.Lookup("source")))
 
 	persistentFlags.StringVarP(&config.DestDir, "destination", "D", homeDir, "destination directory")
-	_ = viper.BindPFlag("destination", persistentFlags.Lookup("destination"))
+	panicOnError(viper.BindPFlag("destination", persistentFlags.Lookup("destination")))
 
 	persistentFlags.BoolVarP(&config.Verbose, "verbose", "v", false, "verbose")
-	_ = viper.BindPFlag("verbose", persistentFlags.Lookup("verbose"))
+	panicOnError(viper.BindPFlag("verbose", persistentFlags.Lookup("verbose")))
 
 	persistentFlags.StringVar(&config.Color, "color", "auto", "colorize diffs")
-	_ = viper.BindPFlag("color", persistentFlags.Lookup("color"))
+	panicOnError(viper.BindPFlag("color", persistentFlags.Lookup("color")))
 
 	persistentFlags.BoolVar(&config.Debug, "debug", false, "write debug logs")
-	_ = viper.BindPFlag("debug", persistentFlags.Lookup("debug"))
+	panicOnError(viper.BindPFlag("debug", persistentFlags.Lookup("debug")))
 
 	cobra.OnInitialize(func() {
 		_, err := os.Stat(config.configFile)
@@ -197,9 +197,7 @@ func markRemainingZshCompPositionalArgumentsAsFiles(cmd *cobra.Command, from int
 	// should be enough for everybody.
 	// FIXME mark all remaining positional arguments as files
 	for i := 0; i < 8; i++ {
-		if err := cmd.MarkZshCompPositionalArgumentFile(from + i); err != nil {
-			panic(err)
-		}
+		panicOnError(cmd.MarkZshCompPositionalArgumentFile(from + i))
 	}
 }
 
