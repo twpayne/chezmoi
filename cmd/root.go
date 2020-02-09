@@ -157,13 +157,13 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 
 	c.fs = vfs.OSFS
 	c.mutator = chezmoi.NewFSMutator(config.fs)
-	if config.DryRun {
+	if c.DryRun {
 		c.mutator = chezmoi.NullMutator{}
 	}
-	if config.Debug {
+	if c.Debug {
 		c.mutator = chezmoi.NewDebugMutator(c.mutator)
 	}
-	if config.Verbose {
+	if c.Verbose {
 		c.mutator = chezmoi.NewVerboseMutator(c.Stdout(), c.mutator, c.colored, c.maxDiffDataSize)
 	}
 
