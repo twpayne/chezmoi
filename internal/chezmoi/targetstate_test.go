@@ -36,7 +36,7 @@ func TestEndToEnd(t *testing.T) {
 					},
 					"replace_symlink": &vfst.Symlink{Target: "foo"},
 				},
-				"/home/user/.chezmoi": map[string]interface{}{
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
 					".git/HEAD":                "HEAD",
 					".chezmoiignore":           "{{ .ignore }} # comment\n",
 					"README.md":                "contents of README.md\n",
@@ -51,7 +51,7 @@ func TestEndToEnd(t *testing.T) {
 					"symlink_replace_symlink":  "bar",
 				},
 			},
-			sourceDir: "/home/user/.chezmoi",
+			sourceDir: "/home/user/.local/share/chezmoi",
 			data: map[string]interface{}{
 				"name":   "John Smith",
 				"email":  "john.smith@company.com",
