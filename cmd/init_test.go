@@ -8,6 +8,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/Masterminds/sprig"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/twpayne/chezmoi/internal/chezmoi"
@@ -18,7 +19,7 @@ import (
 func TestCreateConfigFile(t *testing.T) {
 	fs, cleanup, err := vfst.NewTestFS(map[string]interface{}{
 		"/home/user/.local/share/chezmoi/.chezmoi.yaml.tmpl": strings.Join([]string{
-			`{{ $email := promptString "email" -}}`,
+			`{{ $email := promptString "email" | trim -}}`,
 			`data:`,
 			`    email: "{{ $email }}"`,
 			`    mailtoURL: "mailto:{{ $email }}"`,
@@ -29,12 +30,13 @@ func TestCreateConfigFile(t *testing.T) {
 	defer cleanup()
 
 	conf := &Config{
-		fs:        fs,
-		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
-		SourceDir: "/home/user/.local/share/chezmoi",
-		stdin:     bytes.NewBufferString("john.smith@company.com\n"),
-		stdout:    &bytes.Buffer{},
-		bds:       xdg.NewTestBaseDirectorySpecification("/home/user", nil),
+		fs:            fs,
+		mutator:       chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
+		SourceDir:     "/home/user/.local/share/chezmoi",
+		templateFuncs: sprig.HermeticTxtFuncMap(),
+		stdin:         bytes.NewBufferString("john.smith@company.com \n"),
+		stdout:        &bytes.Buffer{},
+		bds:           xdg.NewTestBaseDirectorySpecification("/home/user", nil),
 	}
 
 	require.NoError(t, conf.createConfigFile())
