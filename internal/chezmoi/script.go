@@ -169,7 +169,7 @@ func (s *Script) Apply(fs vfs.FS, mutator Mutator, follow bool, applyOptions *Ap
 }
 
 // ConcreteValue implements Entry.ConcreteValue.
-func (s *Script) ConcreteValue(destDir string, ignore func(string) bool, sourceDir string, umask os.FileMode, recursive bool) (interface{}, error) {
+func (s *Script) ConcreteValue(ignore func(string) bool, sourceDir string, umask os.FileMode, recursive bool) (interface{}, error) {
 	if ignore(s.targetName) {
 		return nil, nil
 	}
@@ -180,7 +180,7 @@ func (s *Script) ConcreteValue(destDir string, ignore func(string) bool, sourceD
 	return &scriptConcreteValue{
 		Type:       "script",
 		SourcePath: filepath.Join(sourceDir, s.SourceName()),
-		TargetPath: filepath.Join(destDir, s.TargetName()),
+		TargetPath: s.TargetName(),
 		Once:       s.Once,
 		Template:   s.Template,
 		Contents:   string(contents),
