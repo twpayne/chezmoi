@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"bytes"
+	"io"
+	"os"
 	"path/filepath"
 	"testing"
 	"text/template"
@@ -9,6 +11,8 @@ import (
 	"github.com/Masterminds/sprig"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"github.com/twpayne/chezmoi/internal/chezmoi"
+	vfs "github.com/twpayne/go-vfs"
 	xdg "github.com/twpayne/go-xdg/v3"
 )
 
@@ -129,12 +133,96 @@ func TestValidateKeys(t *testing.T) {
 	}
 }
 
-//nolint:unparam
-func newTestBaseDirectorySpecification(homeDir string) *xdg.BaseDirectorySpecification {
-	return &xdg.BaseDirectorySpecification{
-		ConfigHome: filepath.Join(homeDir, ".config"),
-		DataHome:   filepath.Join(homeDir, ".local"),
-		CacheHome:  filepath.Join(homeDir, ".cache"),
-		RuntimeDir: filepath.Join(homeDir, ".run"),
+func withAddCmdConfig(add addCmdConfig) configOption {
+	return func(c *Config) {
+		c.add = add
+	}
+}
+
+func withData(data map[string]interface{}) configOption {
+	return func(c *Config) {
+		c.Data = data
+	}
+}
+
+func withDestDir(destDir string) configOption {
+	return func(c *Config) {
+		c.DestDir = destDir
+	}
+}
+
+func withDumpCmdConfig(dumpCmdConfig dumpCmdConfig) configOption {
+	return func(c *Config) {
+		c.dump = dumpCmdConfig
+	}
+}
+
+func withFollow(follow bool) configOption {
+	return func(c *Config) {
+		c.Follow = follow
+	}
+}
+
+func withGenericSecretCmdConfig(genericSecretCmdConfig genericSecretCmdConfig) configOption {
+	return func(c *Config) {
+		c.GenericSecret = genericSecretCmdConfig
+	}
+}
+
+func withMutator(mutator chezmoi.Mutator) configOption {
+	return func(c *Config) {
+		c.mutator = mutator
+	}
+}
+
+func withRemove(remove bool) configOption {
+	return func(c *Config) {
+		c.Remove = remove
+	}
+}
+
+func withRemoveCmdConfig(remove removeCmdConfig) configOption {
+	return func(c *Config) {
+		c.remove = remove
+	}
+}
+
+func withStdin(stdin io.Reader) configOption {
+	return func(c *Config) {
+		c.stdin = stdin
+	}
+}
+
+func withStdout(stdout io.Writer) configOption {
+	return func(c *Config) {
+		c.stdout = stdout
+	}
+}
+
+func withTestFS(fs vfs.FS) configOption {
+	return func(c *Config) {
+		c.fs = fs
+		c.mutator = chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0)
+	}
+}
+
+func withVerbose(verbose bool) configOption {
+	return func(c *Config) {
+		c.Verbose = verbose
+	}
+}
+
+func withTestUser(username string) configOption {
+	return func(c *Config) {
+		homeDir := filepath.Join("/", "home", username)
+		c.SourceDir = filepath.Join(homeDir, ".local", "share", "chezmoi")
+		c.DestDir = homeDir
+		c.Umask = 022
+		c.bds = &xdg.BaseDirectorySpecification{
+			ConfigHome: filepath.Join(homeDir, ".config"),
+			DataHome:   filepath.Join(homeDir, ".local"),
+			CacheHome:  filepath.Join(homeDir, ".cache"),
+			RuntimeDir: filepath.Join(homeDir, ".run"),
+		}
 	}
 }

@@ -1,12 +1,10 @@
 package cmd
 
 import (
-	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/twpayne/chezmoi/internal/chezmoi"
 	"github.com/twpayne/go-vfs/vfst"
 )
 
@@ -21,15 +19,15 @@ func TestChattrCommand(t *testing.T) {
 			name: "dir_add_exact",
 			args: []string{"+exact", "/home/user/dir"},
 			root: map[string]interface{}{
-				"/home/user/.config/share/chezmoi": map[string]interface{}{
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
 					"dir": &vfst.Dir{Perm: 0755},
 				},
 			},
 			tests: []vfst.Test{
-				vfst.TestPath("/home/user/.config/share/chezmoi/dir",
+				vfst.TestPath("/home/user/.local/share/chezmoi/dir",
 					vfst.TestDoesNotExist,
 				),
-				vfst.TestPath("/home/user/.config/share/chezmoi/exact_dir",
+				vfst.TestPath("/home/user/.local/share/chezmoi/exact_dir",
 					vfst.TestIsDir,
 				),
 			},
@@ -38,15 +36,15 @@ func TestChattrCommand(t *testing.T) {
 			name: "dir_remove_exact",
 			args: []string{"-exact", "/home/user/dir"},
 			root: map[string]interface{}{
-				"/home/user/.config/share/chezmoi": map[string]interface{}{
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
 					"exact_dir": &vfst.Dir{Perm: 0755},
 				},
 			},
 			tests: []vfst.Test{
-				vfst.TestPath("/home/user/.config/share/chezmoi/exact_dir",
+				vfst.TestPath("/home/user/.local/share/chezmoi/exact_dir",
 					vfst.TestDoesNotExist,
 				),
-				vfst.TestPath("/home/user/.config/share/chezmoi/dir",
+				vfst.TestPath("/home/user/.local/share/chezmoi/dir",
 					vfst.TestIsDir,
 				),
 			},
@@ -55,15 +53,15 @@ func TestChattrCommand(t *testing.T) {
 			name: "dir_add_private",
 			args: []string{"+private", "/home/user/dir"},
 			root: map[string]interface{}{
-				"/home/user/.config/share/chezmoi": map[string]interface{}{
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
 					"dir": &vfst.Dir{Perm: 0755},
 				},
 			},
 			tests: []vfst.Test{
-				vfst.TestPath("/home/user/.config/share/chezmoi/dir",
+				vfst.TestPath("/home/user/.local/share/chezmoi/dir",
 					vfst.TestDoesNotExist,
 				),
-				vfst.TestPath("/home/user/.config/share/chezmoi/private_dir",
+				vfst.TestPath("/home/user/.local/share/chezmoi/private_dir",
 					vfst.TestIsDir,
 				),
 			},
@@ -72,15 +70,15 @@ func TestChattrCommand(t *testing.T) {
 			name: "dir_remove_private",
 			args: []string{"-private", "/home/user/dir"},
 			root: map[string]interface{}{
-				"/home/user/.config/share/chezmoi": map[string]interface{}{
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
 					"private_dir": &vfst.Dir{Perm: 0755},
 				},
 			},
 			tests: []vfst.Test{
-				vfst.TestPath("/home/user/.config/share/chezmoi/private_dir",
+				vfst.TestPath("/home/user/.local/share/chezmoi/private_dir",
 					vfst.TestDoesNotExist,
 				),
-				vfst.TestPath("/home/user/.config/share/chezmoi/dir",
+				vfst.TestPath("/home/user/.local/share/chezmoi/dir",
 					vfst.TestIsDir,
 				),
 			},
@@ -89,15 +87,15 @@ func TestChattrCommand(t *testing.T) {
 			name: "file_add_empty",
 			args: []string{"+empty", "/home/user/foo"},
 			root: map[string]interface{}{
-				"/home/user/.config/share/chezmoi": map[string]interface{}{
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
 					"foo": "# contents of ~/foo\n",
 				},
 			},
 			tests: []vfst.Test{
-				vfst.TestPath("/home/user/.config/share/chezmoi/foo",
+				vfst.TestPath("/home/user/.local/share/chezmoi/foo",
 					vfst.TestDoesNotExist,
 				),
-				vfst.TestPath("/home/user/.config/share/chezmoi/empty_foo",
+				vfst.TestPath("/home/user/.local/share/chezmoi/empty_foo",
 					vfst.TestModeIsRegular,
 					vfst.TestContentsString("# contents of ~/foo\n"),
 				),
@@ -107,16 +105,16 @@ func TestChattrCommand(t *testing.T) {
 			name: "file_remove_empty",
 			args: []string{"-empty", "/home/user/foo"},
 			root: map[string]interface{}{
-				"/home/user/.config/share/chezmoi": map[string]interface{}{
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
 					"empty_foo": "# contents of ~/foo\n",
 				},
 			},
 			tests: []vfst.Test{
-				vfst.TestPath("/home/user/.config/share/chezmoi/foo",
+				vfst.TestPath("/home/user/.local/share/chezmoi/foo",
 					vfst.TestModeIsRegular,
 					vfst.TestContentsString("# contents of ~/foo\n"),
 				),
-				vfst.TestPath("/home/user/.config/share/chezmoi/empty_foo",
+				vfst.TestPath("/home/user/.local/share/chezmoi/empty_foo",
 					vfst.TestDoesNotExist,
 				),
 			},
@@ -125,15 +123,15 @@ func TestChattrCommand(t *testing.T) {
 			name: "file_add_executable",
 			args: []string{"+executable", "/home/user/foo"},
 			root: map[string]interface{}{
-				"/home/user/.config/share/chezmoi": map[string]interface{}{
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
 					"foo": "# contents of ~/foo\n",
 				},
 			},
 			tests: []vfst.Test{
-				vfst.TestPath("/home/user/.config/share/chezmoi/foo",
+				vfst.TestPath("/home/user/.local/share/chezmoi/foo",
 					vfst.TestDoesNotExist,
 				),
-				vfst.TestPath("/home/user/.config/share/chezmoi/executable_foo",
+				vfst.TestPath("/home/user/.local/share/chezmoi/executable_foo",
 					vfst.TestModeIsRegular,
 					vfst.TestContentsString("# contents of ~/foo\n"),
 				),
@@ -143,16 +141,16 @@ func TestChattrCommand(t *testing.T) {
 			name: "file_remove_executable",
 			args: []string{"-executable", "/home/user/foo"},
 			root: map[string]interface{}{
-				"/home/user/.config/share/chezmoi": map[string]interface{}{
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
 					"executable_foo": "# contents of ~/foo\n",
 				},
 			},
 			tests: []vfst.Test{
-				vfst.TestPath("/home/user/.config/share/chezmoi/foo",
+				vfst.TestPath("/home/user/.local/share/chezmoi/foo",
 					vfst.TestModeIsRegular,
 					vfst.TestContentsString("# contents of ~/foo\n"),
 				),
-				vfst.TestPath("/home/user/.config/share/chezmoi/executable_foo",
+				vfst.TestPath("/home/user/.local/share/chezmoi/executable_foo",
 					vfst.TestDoesNotExist,
 				),
 			},
@@ -161,15 +159,15 @@ func TestChattrCommand(t *testing.T) {
 			name: "file_add_private",
 			args: []string{"+private", "/home/user/foo"},
 			root: map[string]interface{}{
-				"/home/user/.config/share/chezmoi": map[string]interface{}{
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
 					"foo": "# contents of ~/foo\n",
 				},
 			},
 			tests: []vfst.Test{
-				vfst.TestPath("/home/user/.config/share/chezmoi/foo",
+				vfst.TestPath("/home/user/.local/share/chezmoi/foo",
 					vfst.TestDoesNotExist,
 				),
-				vfst.TestPath("/home/user/.config/share/chezmoi/private_foo",
+				vfst.TestPath("/home/user/.local/share/chezmoi/private_foo",
 					vfst.TestModeIsRegular,
 					vfst.TestContentsString("# contents of ~/foo\n"),
 				),
@@ -179,16 +177,16 @@ func TestChattrCommand(t *testing.T) {
 			name: "file_remove_private",
 			args: []string{"-private", "/home/user/foo"},
 			root: map[string]interface{}{
-				"/home/user/.config/share/chezmoi": map[string]interface{}{
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
 					"private_foo": "# contents of ~/foo\n",
 				},
 			},
 			tests: []vfst.Test{
-				vfst.TestPath("/home/user/.config/share/chezmoi/foo",
+				vfst.TestPath("/home/user/.local/share/chezmoi/foo",
 					vfst.TestModeIsRegular,
 					vfst.TestContentsString("# contents of ~/foo\n"),
 				),
-				vfst.TestPath("/home/user/.config/share/chezmoi/private_foo",
+				vfst.TestPath("/home/user/.local/share/chezmoi/private_foo",
 					vfst.TestDoesNotExist,
 				),
 			},
@@ -197,15 +195,15 @@ func TestChattrCommand(t *testing.T) {
 			name: "file_add_template",
 			args: []string{"+template", "/home/user/foo"},
 			root: map[string]interface{}{
-				"/home/user/.config/share/chezmoi": map[string]interface{}{
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
 					"foo": "# contents of ~/foo\n",
 				},
 			},
 			tests: []vfst.Test{
-				vfst.TestPath("/home/user/.config/share/chezmoi/foo",
+				vfst.TestPath("/home/user/.local/share/chezmoi/foo",
 					vfst.TestDoesNotExist,
 				),
-				vfst.TestPath("/home/user/.config/share/chezmoi/foo.tmpl",
+				vfst.TestPath("/home/user/.local/share/chezmoi/foo.tmpl",
 					vfst.TestModeIsRegular,
 					vfst.TestContentsString("# contents of ~/foo\n"),
 				),
@@ -215,16 +213,16 @@ func TestChattrCommand(t *testing.T) {
 			name: "file_remove_template",
 			args: []string{"-template", "/home/user/foo"},
 			root: map[string]interface{}{
-				"/home/user/.config/share/chezmoi": map[string]interface{}{
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
 					"foo.tmpl": "# contents of ~/foo\n",
 				},
 			},
 			tests: []vfst.Test{
-				vfst.TestPath("/home/user/.config/share/chezmoi/foo",
+				vfst.TestPath("/home/user/.local/share/chezmoi/foo",
 					vfst.TestModeIsRegular,
 					vfst.TestContentsString("# contents of ~/foo\n"),
 				),
-				vfst.TestPath("/home/user/.config/share/chezmoi/foo.tmpl",
+				vfst.TestPath("/home/user/.local/share/chezmoi/foo.tmpl",
 					vfst.TestDoesNotExist,
 				),
 			},
@@ -233,17 +231,17 @@ func TestChattrCommand(t *testing.T) {
 			name: "file_add_template_in_private_dir",
 			args: []string{"+template", "/home/user/.ssh/authorized_keys"},
 			root: map[string]interface{}{
-				"/home/user/.config/share/chezmoi": map[string]interface{}{
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
 					"private_dot_ssh": map[string]interface{}{
 						"authorized_keys": "# contents of ~/.ssh/authorized_keys\n",
 					},
 				},
 			},
 			tests: []vfst.Test{
-				vfst.TestPath("/home/user/.config/share/chezmoi/private_dot_ssh/authorized_keys",
+				vfst.TestPath("/home/user/.local/share/chezmoi/private_dot_ssh/authorized_keys",
 					vfst.TestDoesNotExist,
 				),
-				vfst.TestPath("/home/user/.config/share/chezmoi/private_dot_ssh/authorized_keys.tmpl",
+				vfst.TestPath("/home/user/.local/share/chezmoi/private_dot_ssh/authorized_keys.tmpl",
 					vfst.TestModeIsRegular,
 					vfst.TestContentsString("# contents of ~/.ssh/authorized_keys\n"),
 				),
@@ -253,15 +251,15 @@ func TestChattrCommand(t *testing.T) {
 			name: "symlink_add_template",
 			args: []string{"+template", "/home/user/foo"},
 			root: map[string]interface{}{
-				"/home/user/.config/share/chezmoi": map[string]interface{}{
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
 					"symlink_foo": "# contents of ~/foo\n",
 				},
 			},
 			tests: []vfst.Test{
-				vfst.TestPath("/home/user/.config/share/chezmoi/symlink_foo",
+				vfst.TestPath("/home/user/.local/share/chezmoi/symlink_foo",
 					vfst.TestDoesNotExist,
 				),
-				vfst.TestPath("/home/user/.config/share/chezmoi/symlink_foo.tmpl",
+				vfst.TestPath("/home/user/.local/share/chezmoi/symlink_foo.tmpl",
 					vfst.TestModeIsRegular,
 					vfst.TestContentsString("# contents of ~/foo\n"),
 				),
@@ -271,16 +269,16 @@ func TestChattrCommand(t *testing.T) {
 			name: "symlink_remove_template",
 			args: []string{"-template", "/home/user/foo"},
 			root: map[string]interface{}{
-				"/home/user/.config/share/chezmoi": map[string]interface{}{
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
 					"symlink_foo.tmpl": "# contents of ~/foo\n",
 				},
 			},
 			tests: []vfst.Test{
-				vfst.TestPath("/home/user/.config/share/chezmoi/symlink_foo",
+				vfst.TestPath("/home/user/.local/share/chezmoi/symlink_foo",
 					vfst.TestModeIsRegular,
 					vfst.TestContentsString("# contents of ~/foo\n"),
 				),
-				vfst.TestPath("/home/user/.config/share/chezmoi/symlink_foo.tmpl",
+				vfst.TestPath("/home/user/.local/share/chezmoi/symlink_foo.tmpl",
 					vfst.TestDoesNotExist,
 				),
 			},
@@ -290,13 +288,10 @@ func TestChattrCommand(t *testing.T) {
 			fs, cleanup, err := vfst.NewTestFS(tc.root)
 			require.NoError(t, err)
 			defer cleanup()
-			c := &Config{
-				fs:        fs,
-				mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
-				SourceDir: "/home/user/.config/share/chezmoi",
-				DestDir:   "/home/user",
-				Umask:     022,
-			}
+			c := newConfig(
+				withTestFS(fs),
+				withTestUser("user"),
+			)
 			assert.NoError(t, c.runChattrCmd(nil, tc.args))
 			vfst.RunTests(t, fs, "", tc.tests)
 		})

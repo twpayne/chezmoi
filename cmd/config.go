@@ -20,6 +20,7 @@ import (
 	"unicode"
 
 	"github.com/BurntSushi/toml"
+	"github.com/Masterminds/sprig"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/twpayne/chezmoi/internal/chezmoi"
@@ -85,6 +86,9 @@ type Config struct {
 	scriptStateBucket []byte
 }
 
+// A configOption sets an option on a Config.
+type configOption func(*Config)
+
 var (
 	formatMap = map[string]func(io.Writer, interface{}) error{
 		"json": func(w io.Writer, value interface{}) error {
@@ -111,6 +115,30 @@ var (
 
 	gzipedAssets = make(map[string][]byte)
 )
+
+// newConfig creates a new Config with the given options.
+func newConfig(options ...configOption) *Config {
+	c := &Config{
+		Umask: permValue(getUmask()),
+		Color: "auto",
+		SourceVCS: sourceVCSConfig{
+			Command: "git",
+		},
+		Merge: mergeConfig{
+			Command: "vimdiff",
+		},
+		maxDiffDataSize:   1 * 1024 * 1024, // 1MB
+		templateFuncs:     sprig.HermeticTxtFuncMap(),
+		scriptStateBucket: []byte("script"),
+		stdin:             os.Stdin,
+		stdout:            os.Stdout,
+		stderr:            os.Stderr,
+	}
+	for _, option := range options {
+		option(c)
+	}
+	return c
+}
 
 // Stderr returns c's stderr.
 func (c *Config) Stderr() io.Writer {

@@ -4,13 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"os"
 	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/twpayne/chezmoi/internal/chezmoi"
 	"github.com/twpayne/go-vfs/vfst"
 )
 
@@ -22,17 +20,15 @@ func TestDumpCmd(t *testing.T) {
 	require.NoError(t, err)
 	defer cleanup()
 	stdout := &bytes.Buffer{}
-	c := &Config{
-		fs:        fs,
-		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
-		SourceDir: "/home/user/.local/share/chezmoi",
-		Umask:     022,
-		dump: dumpCmdConfig{
+	c := newConfig(
+		withTestFS(fs),
+		withTestUser("user"),
+		withDumpCmdConfig(dumpCmdConfig{
 			format:    "json",
 			recursive: true,
-		},
-		stdout: stdout,
-	}
+		}),
+		withStdout(stdout),
+	)
 	assert.NoError(t, c.runDumpCmd(nil, nil))
 	fmt.Println(stdout.String())
 	var actual interface{}
@@ -40,14 +36,14 @@ func TestDumpCmd(t *testing.T) {
 	expected := []interface{}{
 		map[string]interface{}{
 			"type":       "dir",
-			"sourcePath": filepath.Join("/home", "user", ".local", "share", "chezmoi", "dir"),
+			"sourcePath": filepath.Join("/", "home", "user", ".local", "share", "chezmoi", "dir"),
 			"targetPath": "dir",
 			"exact":      false,
 			"perm":       float64(0755),
 			"entries": []interface{}{
 				map[string]interface{}{
 					"type":       "file",
-					"sourcePath": filepath.Join("/home", "user", ".local", "share", "chezmoi", "dir", "file"),
+					"sourcePath": filepath.Join("/", "home", "user", ".local", "share", "chezmoi", "dir", "file"),
 					"targetPath": filepath.Join("dir", "file"),
 					"empty":      false,
 					"encrypted":  false,
@@ -59,7 +55,7 @@ func TestDumpCmd(t *testing.T) {
 		},
 		map[string]interface{}{
 			"type":       "symlink",
-			"sourcePath": filepath.Join("/home", "user", ".local", "share", "chezmoi", "symlink_symlink"),
+			"sourcePath": filepath.Join("/", "home", "user", ".local", "share", "chezmoi", "symlink_symlink"),
 			"targetPath": "symlink",
 			"template":   false,
 			"linkname":   "target",

@@ -8,12 +8,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/Masterminds/sprig"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/twpayne/chezmoi/internal/chezmoi"
 	"github.com/twpayne/go-vfs/vfst"
-	xdg "github.com/twpayne/go-xdg/v3"
 )
 
 func TestCreateConfigFile(t *testing.T) {
@@ -29,17 +26,13 @@ func TestCreateConfigFile(t *testing.T) {
 	require.NoError(t, err)
 	defer cleanup()
 
-	conf := &Config{
-		fs:            fs,
-		mutator:       chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
-		SourceDir:     "/home/user/.local/share/chezmoi",
-		templateFuncs: sprig.HermeticTxtFuncMap(),
-		stdin:         bytes.NewBufferString("john.smith@company.com \n"),
-		stdout:        &bytes.Buffer{},
-		bds:           xdg.NewTestBaseDirectorySpecification("/home/user", nil),
-	}
+	c := newConfig(
+		withTestFS(fs),
+		withTestUser("user"),
+		withStdin(bytes.NewBufferString("john.smith@company.com \n")),
+	)
 
-	require.NoError(t, conf.createConfigFile())
+	require.NoError(t, c.createConfigFile())
 
 	vfst.RunTests(t, fs, "",
 		vfst.TestPath("/home/user/.config/chezmoi/chezmoi.yaml",
@@ -58,7 +51,7 @@ func TestCreateConfigFile(t *testing.T) {
 		"email":     "john.smith@company.com",
 		"mailtourl": "mailto:john.smith@company.com",
 		"os":        runtime.GOOS,
-	}, conf.Data)
+	}, c.Data)
 }
 
 func TestInit(t *testing.T) {
@@ -68,15 +61,10 @@ func TestInit(t *testing.T) {
 	require.NoError(t, err)
 	defer cleanup()
 
-	c := &Config{
-		fs:        fs,
-		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
-		SourceDir: "/home/user/.local/share/chezmoi",
-		SourceVCS: sourceVCSConfig{
-			Command: "git",
-		},
-		bds: xdg.NewTestBaseDirectorySpecification("/home/user", func(string) string { return "" }),
-	}
+	c := newConfig(
+		withTestFS(fs),
+		withTestUser("user"),
+	)
 
 	require.NoError(t, c.runInitCmd(nil, nil))
 	vfst.RunTests(t, fs, "",
@@ -99,15 +87,10 @@ func TestInitRepo(t *testing.T) {
 	require.NoError(t, err)
 	defer cleanup()
 
-	c := &Config{
-		fs:        fs,
-		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
-		SourceDir: "/home/user/.local/share/chezmoi",
-		SourceVCS: sourceVCSConfig{
-			Command: "git",
-		},
-		bds: xdg.NewTestBaseDirectorySpecification("/home/user", func(string) string { return "" }),
-	}
+	c := newConfig(
+		withTestFS(fs),
+		withTestUser("user"),
+	)
 
 	wd, err := os.Getwd()
 	require.NoError(t, err)

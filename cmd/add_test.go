@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"os"
 	"path/filepath"
 	"testing"
 
@@ -19,13 +18,10 @@ func TestAddAfterModification(t *testing.T) {
 	})
 	require.NoError(t, err)
 	defer cleanup()
-	c := &Config{
-		fs:        fs,
-		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
-		SourceDir: "/home/user/.local/share/chezmoi",
-		DestDir:   "/home/user",
-		Umask:     022,
-	}
+	c := newConfig(
+		withTestFS(fs),
+		withTestUser("user"),
+	)
 	args := []string{"/home/user/.bashrc"}
 	assert.NoError(t, c.runAddCmd(nil, args))
 	vfst.RunTests(t, fs, "",
@@ -455,22 +451,16 @@ func TestAddCommand(t *testing.T) {
 			fs, cleanup, err := vfst.NewTestFS(tc.root)
 			require.NoError(t, err)
 			defer cleanup()
-			c := &Config{
-				fs:        fs,
-				mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
-				SourceDir: "/home/user/.local/share/chezmoi",
-				DestDir:   "/home/user",
-				Follow:    tc.follow,
-				Umask:     022,
-				SourceVCS: sourceVCSConfig{
-					Command: "git",
-				},
-				Data: map[string]interface{}{
+			c := newConfig(
+				withTestFS(fs),
+				withTestUser("user"),
+				withFollow(tc.follow),
+				withData(map[string]interface{}{
 					"name":  "John Smith",
 					"email": "john.smith@company.com",
-				},
-				add: tc.add,
-			}
+				}),
+				withAddCmdConfig(tc.add),
+			)
 			assert.NoError(t, c.runAddCmd(nil, tc.args))
 			vfst.RunTests(t, fs, "", tc.tests)
 		})
@@ -495,13 +485,10 @@ func TestIssue192(t *testing.T) {
 	fs, cleanup, err := vfst.NewTestFS(root)
 	require.NoError(t, err)
 	defer cleanup()
-	c := &Config{
-		fs:        fs,
-		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
-		SourceDir: "/home/offbyone/.local/share/chezmoi",
-		DestDir:   "/home/offbyone",
-		Umask:     022,
-	}
+	c := newConfig(
+		withTestFS(fs),
+		withTestUser("offbyone"),
+	)
 	assert.NoError(t, c.runAddCmd(nil, []string{"/home/offbyone/snoop/.list"}))
 	vfst.RunTests(t, fs, "",
 		vfst.TestPath("/local/home/offbyone/.local/share/chezmoi/snoop/dot_list",

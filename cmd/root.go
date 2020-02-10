@@ -5,7 +5,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/Masterminds/sprig"
 	"github.com/coreos/go-semver/semver"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -15,19 +14,7 @@ import (
 	"golang.org/x/crypto/ssh/terminal"
 )
 
-var config = Config{
-	Umask: permValue(getUmask()),
-	Color: "auto",
-	SourceVCS: sourceVCSConfig{
-		Command: "git",
-	},
-	Merge: mergeConfig{
-		Command: "vimdiff",
-	},
-	maxDiffDataSize:   1 * 1024 * 1024, // 1MB
-	templateFuncs:     sprig.HermeticTxtFuncMap(),
-	scriptStateBucket: []byte("script"),
-}
+var config = newConfig()
 
 // Version information.
 var (

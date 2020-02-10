@@ -10,7 +10,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/twpayne/chezmoi/internal/chezmoi"
 	vfs "github.com/twpayne/go-vfs"
 	"github.com/twpayne/go-vfs/vfst"
 )
@@ -28,14 +27,10 @@ func TestDiffDoesNotRunScript(t *testing.T) {
 			"/home/user/.local/share/chezmoi/run_true": "#!/bin/sh\necho foo >>" + filepath.Join(tempDir, "evidence") + "\n",
 		},
 	))
-	c := &Config{
-		fs:        fs,
-		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
-		SourceDir: "/home/user/.local/share/chezmoi",
-		DestDir:   "/",
-		Umask:     022,
-		bds:       newTestBaseDirectorySpecification("/home/user"),
-	}
+	c := newConfig(
+		withTestFS(fs),
+		withTestUser("user"),
+	)
 	assert.NoError(t, c.runDiffCmd(nil, nil))
 	vfst.RunTests(t, vfs.OSFS, "",
 		vfst.TestPath(filepath.Join(tempDir, "evidence"),

@@ -3,12 +3,10 @@ package cmd
 import (
 	"archive/tar"
 	"bytes"
-	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/twpayne/chezmoi/internal/chezmoi"
 	"github.com/twpayne/go-vfs/vfst"
 )
 
@@ -41,12 +39,11 @@ func TestImportCmd(t *testing.T) {
 	require.NoError(t, err)
 	defer cleanup()
 
-	c := &Config{
-		fs:        fs,
-		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
-		SourceDir: "/home/user/.local/share/chezmoi",
-		stdin:     b,
-	}
+	c := newConfig(
+		withTestFS(fs),
+		withTestUser("user"),
+		withStdin(b),
+	)
 	assert.NoError(t, c.runImportCmd(nil, nil))
 
 	vfst.RunTests(t, fs, "test",
