@@ -39,7 +39,7 @@ func (c *Config) runCatCmd(cmd *cobra.Command, args []string) error {
 			if err != nil {
 				return err
 			}
-			if _, err := c.Stdout().Write(contents); err != nil {
+			if _, err := c.Stdout.Write(contents); err != nil {
 				return err
 			}
 		case *chezmoi.Symlink:

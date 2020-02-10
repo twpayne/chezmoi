@@ -48,7 +48,7 @@ func (c *Config) runImportCmd(cmd *cobra.Command, args []string) error {
 	}
 	var r io.Reader
 	if len(args) == 0 {
-		r = c.Stdin()
+		r = c.Stdin
 	} else {
 		arg := args[0]
 		f, err := c.fs.Open(arg)

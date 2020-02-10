@@ -26,7 +26,7 @@ func (c *Config) runArchiveCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	w := tar.NewWriter(c.Stdout())
+	w := tar.NewWriter(c.Stdout)
 	if err := ts.Archive(w, os.FileMode(c.Umask)); err != nil {
 		return err
 	}

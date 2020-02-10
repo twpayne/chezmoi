@@ -174,8 +174,8 @@ func (c *Config) findConfigTemplate() (string, string, string, error) {
 }
 
 func (c *Config) promptString(field string) string {
-	fmt.Fprintf(c.Stdout(), "%s? ", field)
-	value, err := bufio.NewReader(c.Stdin()).ReadString('\n')
+	fmt.Fprintf(c.Stdout, "%s? ", field)
+	value, err := bufio.NewReader(c.Stdin).ReadString('\n')
 	panicOnError(err)
 	return strings.TrimSuffix(value, "\n")
 }

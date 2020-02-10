@@ -199,13 +199,13 @@ func withRemoveCmdConfig(remove removeCmdConfig) configOption {
 
 func withStdin(stdin io.Reader) configOption {
 	return func(c *Config) {
-		c.stdin = stdin
+		c.Stdin = stdin
 	}
 }
 
 func withStdout(stdout io.Writer) configOption {
 	return func(c *Config) {
-		c.stdout = stdout
+		c.Stdout = stdout
 	}
 }
 

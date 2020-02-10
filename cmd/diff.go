@@ -27,7 +27,7 @@ func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) error {
 	if c.Debug {
 		c.mutator = chezmoi.NewDebugMutator(c.mutator)
 	}
-	c.mutator = chezmoi.NewVerboseMutator(c.Stdout(), c.mutator, c.colored, c.maxDiffDataSize)
+	c.mutator = chezmoi.NewVerboseMutator(c.Stdout, c.mutator, c.colored, c.maxDiffDataSize)
 
 	persistentState, err := c.getPersistentState(&bolt.Options{
 		ReadOnly: true,

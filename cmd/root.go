@@ -127,7 +127,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	case "off":
 		c.colored = false
 	case "auto":
-		if stdout, ok := c.Stdout().(*os.File); ok {
+		if stdout, ok := c.Stdout.(*os.File); ok {
 			c.colored = terminal.IsTerminal(int(stdout.Fd()))
 		} else {
 			c.colored = false
@@ -137,7 +137,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	}
 
 	if c.colored {
-		if err := enableVirtualTerminalProcessingOnWindows(c.Stdout()); err != nil {
+		if err := enableVirtualTerminalProcessingOnWindows(c.Stdout); err != nil {
 			return err
 		}
 	}
@@ -151,7 +151,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		c.mutator = chezmoi.NewDebugMutator(c.mutator)
 	}
 	if c.Verbose {
-		c.mutator = chezmoi.NewVerboseMutator(c.Stdout(), c.mutator, c.colored, c.maxDiffDataSize)
+		c.mutator = chezmoi.NewVerboseMutator(c.Stdout, c.mutator, c.colored, c.maxDiffDataSize)
 	}
 
 	info, err := c.fs.Stat(c.SourceDir)

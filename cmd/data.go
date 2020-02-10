@@ -37,5 +37,5 @@ func (c *Config) runDataCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	return format(c.Stdout(), data)
+	return format(c.Stdout, data)
 }

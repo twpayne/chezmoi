@@ -64,5 +64,5 @@ func (c *Config) runDumpCmd(cmd *cobra.Command, args []string) error {
 		}
 		concreteValue = concreteValues
 	}
-	return format(c.Stdout(), concreteValue)
+	return format(c.Stdout, concreteValue)
 }
