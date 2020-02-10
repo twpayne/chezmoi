@@ -139,10 +139,7 @@ func TestApplyCommand(t *testing.T) {
 			fs, cleanup, err := vfst.NewTestFS(tc.root)
 			require.NoError(t, err)
 			defer cleanup()
-			c := newConfig(
-				withTestFS(fs),
-				withTestUser("user"),
-			)
+			c := newTestConfig(fs)
 			assert.NoError(t, c.runApplyCmd(nil, nil))
 			vfst.RunTests(t, fs, "",
 				vfst.TestPath("/home/user/dir",
@@ -225,9 +222,8 @@ func TestApplyFollow(t *testing.T) {
 			fs, cleanup, err := vfst.NewTestFS(tc.root)
 			require.NoError(t, err)
 			defer cleanup()
-			c := newConfig(
-				withTestFS(fs),
-				withTestUser("user"),
+			c := newTestConfig(
+				fs,
 				withFollow(tc.follow),
 			)
 			assert.NoError(t, c.runApplyCmd(nil, nil))
@@ -341,9 +337,8 @@ func TestApplyRemove(t *testing.T) {
 			fs, cleanup, err := vfst.NewTestFS(tc.root)
 			require.NoError(t, err)
 			defer cleanup()
-			c := newConfig(
-				withTestFS(fs),
-				withTestUser("user"),
+			c := newTestConfig(
+				fs,
 				withData(tc.data),
 				withRemove(!tc.noRemove),
 			)
@@ -368,9 +363,8 @@ func TestApplyScript(t *testing.T) {
 				require.NoError(t, os.Mkdir(tempDir, 0700))
 			}()
 			apply := func() {
-				c := newConfig(
-					withTestFS(fs),
-					withTestUser("user"),
+				c := newTestConfig(
+					fs,
 					withDestDir("/"),
 					withData(tc.data),
 				)
@@ -402,9 +396,8 @@ func TestApplyRunOnce(t *testing.T) {
 	require.NoError(t, err)
 	defer cleanup()
 
-	c := newConfig(
-		withTestFS(fs),
-		withTestUser("user"),
+	c := newTestConfig(
+		fs,
 		withDestDir("/"),
 		withData(map[string]interface{}{
 			"TempFile": tempFile,
@@ -468,10 +461,7 @@ func TestApplyRemoveEmptySymlink(t *testing.T) {
 			fs, cleanup, err := vfst.NewTestFS(tc.root)
 			require.NoError(t, err)
 			defer cleanup()
-			c := newConfig(
-				withTestFS(fs),
-				withTestUser("user"),
-			)
+			c := newTestConfig(fs)
 			assert.NoError(t, c.runApplyCmd(nil, nil))
 			vfst.RunTests(t, fs, "", tc.tests)
 		})

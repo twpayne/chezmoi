@@ -27,10 +27,7 @@ func TestDiffDoesNotRunScript(t *testing.T) {
 			"/home/user/.local/share/chezmoi/run_true": "#!/bin/sh\necho foo >>" + filepath.Join(tempDir, "evidence") + "\n",
 		},
 	))
-	c := newConfig(
-		withTestFS(fs),
-		withTestUser("user"),
-	)
+	c := newTestConfig(fs)
 	assert.NoError(t, c.runDiffCmd(nil, nil))
 	vfst.RunTests(t, vfs.OSFS, "",
 		vfst.TestPath(filepath.Join(tempDir, "evidence"),

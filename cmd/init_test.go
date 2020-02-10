@@ -26,9 +26,8 @@ func TestCreateConfigFile(t *testing.T) {
 	require.NoError(t, err)
 	defer cleanup()
 
-	c := newConfig(
-		withTestFS(fs),
-		withTestUser("user"),
+	c := newTestConfig(
+		fs,
 		withStdin(bytes.NewBufferString("john.smith@company.com \n")),
 	)
 
@@ -61,11 +60,7 @@ func TestInit(t *testing.T) {
 	require.NoError(t, err)
 	defer cleanup()
 
-	c := newConfig(
-		withTestFS(fs),
-		withTestUser("user"),
-	)
-
+	c := newTestConfig(fs)
 	require.NoError(t, c.runInitCmd(nil, nil))
 	vfst.RunTests(t, fs, "",
 		vfst.TestPath("/home/user/.local/share/chezmoi",
@@ -87,11 +82,7 @@ func TestInitRepo(t *testing.T) {
 	require.NoError(t, err)
 	defer cleanup()
 
-	c := newConfig(
-		withTestFS(fs),
-		withTestUser("user"),
-	)
-
+	c := newTestConfig(fs)
 	wd, err := os.Getwd()
 	require.NoError(t, err)
 	require.NoError(t, c.runInitCmd(nil, []string{filepath.Join(wd, "testdata/gitrepo")}))

@@ -39,9 +39,8 @@ func TestImportCmd(t *testing.T) {
 	require.NoError(t, err)
 	defer cleanup()
 
-	c := newConfig(
-		withTestFS(fs),
-		withTestUser("user"),
+	c := newTestConfig(
+		fs,
 		withStdin(b),
 	)
 	assert.NoError(t, c.runImportCmd(nil, nil))

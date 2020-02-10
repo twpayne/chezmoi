@@ -21,9 +21,8 @@ func TestArchiveCmd(t *testing.T) {
 	require.NoError(t, err)
 	defer cleanup()
 	stdout := &bytes.Buffer{}
-	c := newConfig(
-		withTestFS(fs),
-		withTestUser("user"),
+	c := newTestConfig(
+		fs,
 		withStdout(stdout),
 	)
 	assert.NoError(t, c.runArchiveCmd(nil, nil))

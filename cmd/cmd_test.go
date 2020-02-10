@@ -18,9 +18,8 @@ func TestExercise(t *testing.T) {
 	require.NoError(t, err)
 	defer cleanup()
 
-	c := newConfig(
-		withTestFS(fs),
-		withTestUser("user"),
+	c := newTestConfig(
+		fs,
 		withVerbose(true),
 		withRemoveCmdConfig(removeCmdConfig{
 			force: true,

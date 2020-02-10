@@ -288,10 +288,7 @@ func TestChattrCommand(t *testing.T) {
 			fs, cleanup, err := vfst.NewTestFS(tc.root)
 			require.NoError(t, err)
 			defer cleanup()
-			c := newConfig(
-				withTestFS(fs),
-				withTestUser("user"),
-			)
+			c := newTestConfig(fs)
 			assert.NoError(t, c.runChattrCmd(nil, tc.args))
 			vfst.RunTests(t, fs, "", tc.tests)
 		})

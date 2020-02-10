@@ -18,10 +18,7 @@ func TestAddAfterModification(t *testing.T) {
 	})
 	require.NoError(t, err)
 	defer cleanup()
-	c := newConfig(
-		withTestFS(fs),
-		withTestUser("user"),
-	)
+	c := newTestConfig(fs)
 	args := []string{"/home/user/.bashrc"}
 	assert.NoError(t, c.runAddCmd(nil, args))
 	vfst.RunTests(t, fs, "",
@@ -451,9 +448,8 @@ func TestAddCommand(t *testing.T) {
 			fs, cleanup, err := vfst.NewTestFS(tc.root)
 			require.NoError(t, err)
 			defer cleanup()
-			c := newConfig(
-				withTestFS(fs),
-				withTestUser("user"),
+			c := newTestConfig(
+				fs,
 				withFollow(tc.follow),
 				withData(map[string]interface{}{
 					"name":  "John Smith",
@@ -470,7 +466,7 @@ func TestAddCommand(t *testing.T) {
 func TestIssue192(t *testing.T) {
 	root := []interface{}{
 		map[string]interface{}{
-			"/local/home/offbyone": &vfst.Dir{
+			"/local/home/user": &vfst.Dir{
 				Perm: 0750,
 				Entries: map[string]interface{}{
 					".local/share/chezmoi": &vfst.Dir{Perm: 0700},
@@ -479,19 +475,16 @@ func TestIssue192(t *testing.T) {
 			},
 		},
 		map[string]interface{}{
-			"/home/offbyone": &vfst.Symlink{Target: "/local/home/offbyone/"},
+			"/home/user": &vfst.Symlink{Target: "/local/home/user/"},
 		},
 	}
 	fs, cleanup, err := vfst.NewTestFS(root)
 	require.NoError(t, err)
 	defer cleanup()
-	c := newConfig(
-		withTestFS(fs),
-		withTestUser("offbyone"),
-	)
-	assert.NoError(t, c.runAddCmd(nil, []string{"/home/offbyone/snoop/.list"}))
+	c := newTestConfig(fs)
+	assert.NoError(t, c.runAddCmd(nil, []string{"/home/user/snoop/.list"}))
 	vfst.RunTests(t, fs, "",
-		vfst.TestPath("/local/home/offbyone/.local/share/chezmoi/snoop/dot_list",
+		vfst.TestPath("/local/home/user/.local/share/chezmoi/snoop/dot_list",
 			vfst.TestModeIsRegular,
 			vfst.TestContentsString("# contents of .list\n"),
 		),
