@@ -213,12 +213,7 @@ func withTestFS(fs vfs.FS) configOption {
 	return func(c *Config) {
 		c.fs = fs
 		c.mutator = chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0)
-	}
-}
-
-func withVerbose(verbose bool) configOption {
-	return func(c *Config) {
-		c.Verbose = verbose
+		c.Verbose = true
 	}
 }
 

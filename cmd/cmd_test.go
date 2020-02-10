@@ -20,7 +20,6 @@ func TestExercise(t *testing.T) {
 
 	c := newTestConfig(
 		fs,
-		withVerbose(true),
 		withRemoveCmdConfig(removeCmdConfig{
 			force: true,
 		}),
