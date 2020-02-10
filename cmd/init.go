@@ -120,9 +120,12 @@ func (c *Config) createConfigFile() error {
 		return nil
 	}
 
-	t, err := template.New(filename).Funcs(template.FuncMap{
-		"promptString": c.promptString,
-	}).Parse(data)
+	funcMap := make(template.FuncMap)
+	for key, value := range c.templateFuncs {
+		funcMap[key] = value
+	}
+	funcMap["promptString"] = c.promptString
+	t, err := template.New(filename).Funcs(funcMap).Parse(data)
 	if err != nil {
 		return err
 	}
