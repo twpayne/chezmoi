@@ -64,7 +64,7 @@ func (s *Symlink) Apply(fs vfs.FS, mutator Mutator, follow bool, applyOptions *A
 }
 
 // ConcreteValue implements Entry.ConcreteValue.
-func (s *Symlink) ConcreteValue(destDir string, ignore func(string) bool, sourceDir string, umask os.FileMode, recursive bool) (interface{}, error) {
+func (s *Symlink) ConcreteValue(ignore func(string) bool, sourceDir string, umask os.FileMode, recursive bool) (interface{}, error) {
 	if ignore(s.targetName) {
 		return nil, nil
 	}
@@ -75,7 +75,7 @@ func (s *Symlink) ConcreteValue(destDir string, ignore func(string) bool, source
 	return &symlinkConcreteValue{
 		Type:       "symlink",
 		SourcePath: filepath.Join(sourceDir, s.SourceName()),
-		TargetPath: filepath.Join(destDir, s.TargetName()),
+		TargetPath: s.TargetName(),
 		Template:   s.Template,
 		Linkname:   linkname,
 	}, nil

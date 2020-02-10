@@ -159,7 +159,7 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string) error {
 		DryRun:            c.DryRun,
 		Ignore:            ts.TargetIgnore.Match,
 		ScriptStateBucket: c.scriptStateBucket,
-		Stdout:            c.Stdout(),
+		Stdout:            c.Stdout,
 		Umask:             ts.Umask,
 		Verbose:           c.Verbose,
 	}
@@ -167,7 +167,7 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string) error {
 		anyMutator := chezmoi.NewAnyMutator(chezmoi.NullMutator{})
 		var mutator chezmoi.Mutator = anyMutator
 		if c.edit.diff {
-			mutator = chezmoi.NewVerboseMutator(c.Stdout(), mutator, c.colored, c.maxDiffDataSize)
+			mutator = chezmoi.NewVerboseMutator(c.Stdout, mutator, c.colored, c.maxDiffDataSize)
 		}
 		if err := entry.Apply(readOnlyFS, mutator, c.Follow, &applyOptions); err != nil {
 			return err

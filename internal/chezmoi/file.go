@@ -175,7 +175,7 @@ func (f *File) Apply(fs vfs.FS, mutator Mutator, follow bool, applyOptions *Appl
 }
 
 // ConcreteValue implements Entry.ConcreteValue.
-func (f *File) ConcreteValue(destDir string, ignore func(string) bool, sourceDir string, umask os.FileMode, recursive bool) (interface{}, error) {
+func (f *File) ConcreteValue(ignore func(string) bool, sourceDir string, umask os.FileMode, recursive bool) (interface{}, error) {
 	if ignore(f.targetName) {
 		return nil, nil
 	}
@@ -186,7 +186,7 @@ func (f *File) ConcreteValue(destDir string, ignore func(string) bool, sourceDir
 	return &fileConcreteValue{
 		Type:       "file",
 		SourcePath: filepath.Join(sourceDir, f.SourceName()),
-		TargetPath: filepath.Join(destDir, f.TargetName()),
+		TargetPath: f.TargetName(),
 		Empty:      f.Empty,
 		Encrypted:  f.Encrypted,
 		Perm:       int(f.Perm &^ umask),

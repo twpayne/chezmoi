@@ -23,11 +23,11 @@ func init() {
 func (c *Config) runCompletion(cmd *cobra.Command, args []string) error {
 	switch args[0] {
 	case "bash":
-		return rootCmd.GenBashCompletion(c.Stdout())
+		return rootCmd.GenBashCompletion(c.Stdout)
 	case "zsh":
-		return rootCmd.GenZshCompletion(c.Stdout())
+		return rootCmd.GenZshCompletion(c.Stdout)
 	case "fish":
-		return rootCmd.GenFishCompletion(c.Stdout())
+		return rootCmd.GenFishCompletion(c.Stdout)
 	default:
 		return errors.New("unsupported shell")
 	}

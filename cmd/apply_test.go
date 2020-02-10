@@ -8,7 +8,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/twpayne/chezmoi/internal/chezmoi"
 	vfs "github.com/twpayne/go-vfs"
 	"github.com/twpayne/go-vfs/vfst"
 )
@@ -140,14 +139,7 @@ func TestApplyCommand(t *testing.T) {
 			fs, cleanup, err := vfst.NewTestFS(tc.root)
 			require.NoError(t, err)
 			defer cleanup()
-			c := &Config{
-				fs:        fs,
-				mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
-				SourceDir: "/home/user/.local/share/chezmoi",
-				DestDir:   "/home/user",
-				Umask:     022,
-				bds:       newTestBaseDirectorySpecification("/home/user"),
-			}
+			c := newTestConfig(fs)
 			assert.NoError(t, c.runApplyCmd(nil, nil))
 			vfst.RunTests(t, fs, "",
 				vfst.TestPath("/home/user/dir",
@@ -230,15 +222,10 @@ func TestApplyFollow(t *testing.T) {
 			fs, cleanup, err := vfst.NewTestFS(tc.root)
 			require.NoError(t, err)
 			defer cleanup()
-			c := &Config{
-				fs:        fs,
-				mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
-				SourceDir: "/home/user/.local/share/chezmoi",
-				DestDir:   "/home/user",
-				Follow:    tc.follow,
-				Umask:     022,
-				bds:       newTestBaseDirectorySpecification("/home/user"),
-			}
+			c := newTestConfig(
+				fs,
+				withFollow(tc.follow),
+			)
 			assert.NoError(t, c.runApplyCmd(nil, nil))
 			vfst.RunTests(t, fs, "", tc.tests)
 		})
@@ -350,16 +337,11 @@ func TestApplyRemove(t *testing.T) {
 			fs, cleanup, err := vfst.NewTestFS(tc.root)
 			require.NoError(t, err)
 			defer cleanup()
-			c := &Config{
-				fs:        fs,
-				mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
-				SourceDir: "/home/user/.local/share/chezmoi",
-				DestDir:   "/home/user",
-				Data:      tc.data,
-				Remove:    !tc.noRemove,
-				Umask:     022,
-				bds:       newTestBaseDirectorySpecification("/home/user"),
-			}
+			c := newTestConfig(
+				fs,
+				withData(tc.data),
+				withRemove(!tc.noRemove),
+			)
 			assert.NoError(t, c.runApplyCmd(nil, nil))
 			vfst.RunTests(t, fs, "", tc.tests)
 		})
@@ -381,16 +363,11 @@ func TestApplyScript(t *testing.T) {
 				require.NoError(t, os.Mkdir(tempDir, 0700))
 			}()
 			apply := func() {
-				c := &Config{
-					fs:                fs,
-					mutator:           chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
-					SourceDir:         "/home/user/.local/share/chezmoi",
-					DestDir:           "/",
-					Umask:             022,
-					Data:              tc.data,
-					bds:               newTestBaseDirectorySpecification("/home/user"),
-					scriptStateBucket: []byte("script"),
-				}
+				c := newTestConfig(
+					fs,
+					withDestDir("/"),
+					withData(tc.data),
+				)
 				require.NoError(t, c.runApplyCmd(nil, nil))
 			}
 			// Run apply three times. As chezmoi should be idempotent, the
@@ -419,18 +396,13 @@ func TestApplyRunOnce(t *testing.T) {
 	require.NoError(t, err)
 	defer cleanup()
 
-	c := &Config{
-		fs:        fs,
-		mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
-		SourceDir: "/home/user/.local/share/chezmoi",
-		DestDir:   "/",
-		Umask:     022,
-		Data: map[string]interface{}{
+	c := newTestConfig(
+		fs,
+		withDestDir("/"),
+		withData(map[string]interface{}{
 			"TempFile": tempFile,
-		},
-		bds:               newTestBaseDirectorySpecification("/home/user"),
-		scriptStateBucket: []byte("script"),
-	}
+		}),
+	)
 
 	require.NoError(t, c.runApplyCmd(nil, nil))
 	vfst.RunTests(t, fs, "",
@@ -489,14 +461,7 @@ func TestApplyRemoveEmptySymlink(t *testing.T) {
 			fs, cleanup, err := vfst.NewTestFS(tc.root)
 			require.NoError(t, err)
 			defer cleanup()
-			c := &Config{
-				fs:        fs,
-				mutator:   chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0),
-				SourceDir: "/home/user/.local/share/chezmoi",
-				DestDir:   "/home/user",
-				Umask:     022,
-				bds:       newTestBaseDirectorySpecification("/home/user"),
-			}
+			c := newTestConfig(fs)
 			assert.NoError(t, c.runApplyCmd(nil, nil))
 			vfst.RunTests(t, fs, "", tc.tests)
 		})

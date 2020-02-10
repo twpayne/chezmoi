@@ -20,6 +20,7 @@ import (
 	"unicode"
 
 	"github.com/BurntSushi/toml"
+	"github.com/Masterminds/sprig"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/twpayne/chezmoi/internal/chezmoi"
@@ -78,12 +79,15 @@ type Config struct {
 	remove            removeCmdConfig
 	update            updateCmdConfig
 	upgrade           upgradeCmdConfig
-	stdin             io.Reader
-	stdout            io.Writer
-	stderr            io.Writer
+	Stdin             io.Reader
+	Stdout            io.Writer
+	Stderr            io.Writer
 	bds               *xdg.BaseDirectorySpecification
 	scriptStateBucket []byte
 }
+
+// A configOption sets an option on a Config.
+type configOption func(*Config)
 
 var (
 	formatMap = map[string]func(io.Writer, interface{}) error{
@@ -112,28 +116,28 @@ var (
 	gzipedAssets = make(map[string][]byte)
 )
 
-// Stderr returns c's stderr.
-func (c *Config) Stderr() io.Writer {
-	if c.stderr != nil {
-		return c.stderr
+// newConfig creates a new Config with the given options.
+func newConfig(options ...configOption) *Config {
+	c := &Config{
+		Umask: permValue(getUmask()),
+		Color: "auto",
+		SourceVCS: sourceVCSConfig{
+			Command: "git",
+		},
+		Merge: mergeConfig{
+			Command: "vimdiff",
+		},
+		maxDiffDataSize:   1 * 1024 * 1024, // 1MB
+		templateFuncs:     sprig.HermeticTxtFuncMap(),
+		scriptStateBucket: []byte("script"),
+		Stdin:             os.Stdin,
+		Stdout:            os.Stdout,
+		Stderr:            os.Stderr,
 	}
-	return os.Stderr
-}
-
-// Stdin returns c's stdin.
-func (c *Config) Stdin() io.Reader {
-	if c.stdin != nil {
-		return c.stdin
+	for _, option := range options {
+		option(c)
 	}
-	return os.Stdin
-}
-
-// Stdout returns c's stdout.
-func (c *Config) Stdout() io.Writer {
-	if c.stdout != nil {
-		return c.stdout
-	}
-	return os.Stdout
+	return c
 }
 
 func (c *Config) addTemplateFunc(key string, value interface{}) {
@@ -159,7 +163,7 @@ func (c *Config) applyArgs(args []string, persistentState chezmoi.PersistentStat
 		PersistentState:   persistentState,
 		Remove:            c.Remove,
 		ScriptStateBucket: c.scriptStateBucket,
-		Stdout:            c.Stdout(),
+		Stdout:            c.Stdout,
 		Umask:             ts.Umask,
 		Verbose:           c.Verbose,
 	}
@@ -453,7 +457,7 @@ func (c *Config) output(dir, name string, argv ...string) ([]byte, error) {
 
 //nolint:unparam
 func (c *Config) prompt(s, choices string) (byte, error) {
-	r := bufio.NewReader(c.Stdin())
+	r := bufio.NewReader(c.Stdin)
 	for {
 		_, err := fmt.Printf("%s [%s]? ", s, strings.Join(strings.Split(choices, ""), ","))
 		if err != nil {
@@ -480,9 +484,9 @@ func (c *Config) run(dir, name string, argv ...string) error {
 			return err
 		}
 	}
-	cmd.Stdin = c.Stdin()
-	cmd.Stdout = c.Stdout()
-	cmd.Stderr = c.Stdout()
+	cmd.Stdin = c.Stdin
+	cmd.Stdout = c.Stdout
+	cmd.Stderr = c.Stdout
 	return c.mutator.RunCmd(cmd)
 }
 
@@ -495,7 +499,7 @@ func (c *Config) validateData() error {
 }
 
 func (c *Config) warn(s string) {
-	fmt.Fprintf(c.Stderr(), "warning: %s\n", s)
+	fmt.Fprintf(c.Stderr, "warning: %s\n", s)
 }
 
 func getAsset(name string) ([]byte, error) {

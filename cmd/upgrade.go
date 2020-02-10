@@ -124,7 +124,7 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 	// already the latest version.
 	if !c.upgrade.force && VersionStr != devVersionStr {
 		if !Version.LessThan(*releaseVersion) {
-			fmt.Fprintf(c.Stdout(), "chezmoi: already at the latest version (%s)\n", Version)
+			fmt.Fprintf(c.Stdout, "chezmoi: already at the latest version (%s)\n", Version)
 			return nil
 		}
 	}
@@ -207,7 +207,7 @@ func (c *Config) getChecksums(rr *github.RepositoryRelease) (map[string][]byte, 
 
 func (c *Config) downloadURL(url string) ([]byte, error) {
 	if c.Verbose {
-		fmt.Fprintf(c.Stdout(), "curl -s -L %s\n", url)
+		fmt.Fprintf(c.Stdout, "curl -s -L %s\n", url)
 	}
 	//nolint:gosec
 	resp, err := http.Get(url)
@@ -319,7 +319,7 @@ func (c *Config) upgradePackage(rr *github.RepositoryRelease, useSudo bool) erro
 		} else {
 			tempDir, err = ioutil.TempDir("", "chezmoi")
 			if c.Verbose {
-				fmt.Fprintf(c.Stdout(), "mkdir -p %s\n", tempDir)
+				fmt.Fprintf(c.Stdout, "mkdir -p %s\n", tempDir)
 			}
 			if err != nil {
 				return err
