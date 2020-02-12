@@ -616,6 +616,7 @@ func (ts *TargetState) addSymlink(targetName string, entries map[string]Entry, p
 }
 
 func (ts *TargetState) addTemplatesDir(fs vfs.FS, path string) error {
+	prefix := filepath.ToSlash(path) + "/"
 	return vfs.Walk(fs, path, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -626,7 +627,7 @@ func (ts *TargetState) addTemplatesDir(fs vfs.FS, path string) error {
 			if err != nil {
 				return err
 			}
-			name := filepath.Base(path)
+			name := strings.TrimPrefix(filepath.ToSlash(path), prefix)
 			tmpl, err := template.New(name).Parse(string(contents))
 			if err != nil {
 				return err
