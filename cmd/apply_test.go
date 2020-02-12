@@ -112,6 +112,16 @@ func TestApplyCommand(t *testing.T) {
 			},
 		},
 		{
+			name: "partial_template_in_subdir",
+			root: map[string]interface{}{
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
+					"dir/file.tmpl":             `{{ template "foo" }}{{ template "bar/foo" }}`,
+					".chezmoitemplates/foo":     "{{ if true }}cont{{ end }}",
+					".chezmoitemplates/bar/foo": "{{ if true }}ents{{ end }}",
+				},
+			},
+		},
+		{
 			name: "multiple_templates",
 			root: map[string]interface{}{
 				"/home/user/.local/share/chezmoi": map[string]interface{}{

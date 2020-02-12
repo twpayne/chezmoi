@@ -286,8 +286,7 @@ template.
 
 If a directory called `.chezmoitemplates` exists, then all files in this
 directory are parsed as templates are available as templates with a name equal
-to the base name of the file. If more than one file has the same basename then
-the last one wins.
+to the relative path of the file.
 
 #### `.chezmoitemplates` examples
 
