@@ -1,6 +1,6 @@
 ---
 name: Support request
-about: Ask for help with using chezmoi
+about: Get help with using chezmoi
 title: ''
 labels: support
 assignees: ''
