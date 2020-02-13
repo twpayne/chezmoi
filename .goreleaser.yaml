@@ -150,6 +150,13 @@ snapcrafts:
   publish: true
   grade: stable
   confinement: classic
-  apps:
-    chezmoi:
-      completer: completions/chezmoi-completion.bash
+  # FIXME on 2020-02-06 the snapcraft store was automatically rejecting
+  # generated snaps with the message:
+  #   chezmoi-completion.bash does not exist lint-snap-v2_completer (chezmoi)
+  # See, for example:
+  # https://dashboard.snapcraft.io/snaps/chezmoi/revisions/123/
+  # This might be related to the completer script being in a subdirectory.
+  # For now, disable bash completion.
+  # apps:
+  #   chezmoi:
+  #     completer: completions/chezmoi-completion.bash
