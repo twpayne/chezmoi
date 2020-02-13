@@ -171,6 +171,7 @@ The following configuration variables are available:
 | Variable                | Type     | Default value             | Description                                         |
 | ----------------------- | -------- | ------------------------- | --------------------------------------------------- |
 | `bitwarden.command`     | string   | `bw`                      | Bitwarden CLI command                               |
+| `cd.command`            | string   | *none*                    | Shell to run in `cd` command                        |
 | `color`                 | string   | `auto`                    | Colorize diffs                                      |
 | `data`                  | any      | *none*                    | Template data                                       |
 | `destDir`               | string   | `~`                       | Destination directory                               |
@@ -388,7 +389,9 @@ target target is written.
 
 ### `cd`
 
-Launch a shell in the source directory.
+Launch a shell in the source directory. chezmoi will launch the command set by
+the `cd.command` confiuration varaible. If this is not set, chezmoi will attempt
+to detect your shell and will finally fall back to an OS-specific default.
 
 #### `cd` examples
 

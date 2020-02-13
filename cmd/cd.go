@@ -15,6 +15,10 @@ var cdCmd = &cobra.Command{
 	RunE:    config.runCDCmd,
 }
 
+type cdCmdConfig struct {
+	Command string
+}
+
 func init() {
 	rootCmd.AddCommand(cdCmd)
 }
@@ -24,6 +28,9 @@ func (c *Config) runCDCmd(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	shell, _ := shell.CurrentUserShell()
-	return c.run(c.SourceDir, shell)
+	shellCommand := c.CD.Command
+	if shellCommand == "" {
+		shellCommand, _ = shell.CurrentUserShell()
+	}
+	return c.run(c.SourceDir, shellCommand)
 }

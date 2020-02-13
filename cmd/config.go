@@ -58,6 +58,7 @@ type Config struct {
 	SourceVCS         sourceVCSConfig
 	Merge             mergeConfig
 	Bitwarden         bitwardenCmdConfig
+	CD                cdCmdConfig
 	GenericSecret     genericSecretCmdConfig
 	Gopass            gopassCmdConfig
 	KeePassXC         keePassXCCmdConfig
