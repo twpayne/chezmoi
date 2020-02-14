@@ -49,7 +49,7 @@ don't need chezmoi. Otherwise, read on...
 * Flexible: You can share as much configuration across machines as you want,
   while still being able to control machine-specific details. You only need to
   maintain a single branch. Your dotfiles can be templates (using
-  [`text/template`](https://godoc.org/text/template) syntax). Predefined
+  [`text/template`](https://pkg.go.dev/text/template) syntax). Predefined
   variables allow you to change behaviour depending on operating system,
   architecture, and hostname.
 

@@ -92,7 +92,7 @@ machines, for example your personal macOS laptop, your work Ubuntu desktop, and
 your work Linux laptop. You will want to keep much configuration the same across
 these, but also need machine-specific configurations for email addresses,
 credentials, etc. chezmoi achieves this functionality by using
-[`text/template`](https://godoc.org/text/template) for the source state where
+[`text/template`](https://pkg.go.dev/text/template) for the source state where
 needed.
 
 For example, your home `~/.gitconfig` on your personal machine might look like:
@@ -140,7 +140,7 @@ chezmoi will substitute the variables from the `data` section of your
 `.gitconfig`.
 
 For more advanced usage, you can use the full power of the
-[`text/template`](https://godoc.org/text/template) language to include or
+[`text/template`](https://pkg.go.dev/text/template) language to include or
 exclude sections of file. For a full list of variables, run:
 
     chezmoi data

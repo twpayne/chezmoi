@@ -752,18 +752,18 @@ chezmoi's configuration file.
 
 chezmoi provides the following automatically populated variables:
 
-| Variable                | Value                                                                                                                          |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| `.chezmoi.arch`         | Architecture, e.g. `amd64`, `arm`, etc. as returned by [runtime.GOARCH](https://godoc.org/runtime#pkg-constants).              |
-| `.chezmoi.fullHostname` | The full hostname of the machine chezmoi is running on.                                                                        |
-| `.chezmoi.group`        | The group of the user running chezmoi.                                                                                         |
-| `.chezmoi.homedir`      | The home directory of the user running chezmoi.                                                                                |
-| `.chezmoi.hostname`     | The hostname of the machine chezmoi is running on, up to the first `.`.                                                        |
-| `.chezmoi.kernel`       | Contains information from `/proc/sys/kernel`. Linux only, useful for detecting specific kernels (i.e. Microsoft's WSL kernel). |
-| `.chezmoi.os`           | Operating system, e.g. `darwin`, `linux`, etc. as returned by [runtime.GOOS](https://godoc.org/runtime#pkg-constants).         |
-| `.chezmoi.osRelease`    | The information from `/etc/os-release`, Linux only, run `chezmoi data` to see its output.                                      |
-| `.chezmoi.sourceDir`    | The source directory.                                                                                                          |
-| `.chezmoi.username`     | The username of the user running chezmoi.                                                                                      |
+| Variable                | Value                                                                                                                           |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `.chezmoi.arch`         | Architecture, e.g. `amd64`, `arm`, etc. as returned by [runtime.GOARCH](https://pkg.go.dev/runtime?tab=doc#pkg-constants).      |
+| `.chezmoi.fullHostname` | The full hostname of the machine chezmoi is running on.                                                                         |
+| `.chezmoi.group`        | The group of the user running chezmoi.                                                                                          |
+| `.chezmoi.homedir`      | The home directory of the user running chezmoi.                                                                                 |
+| `.chezmoi.hostname`     | The hostname of the machine chezmoi is running on, up to the first `.`.                                                         |
+| `.chezmoi.kernel`       | Contains information from `/proc/sys/kernel`. Linux only, useful for detecting specific kernels (i.e. Microsoft's WSL kernel).  |
+| `.chezmoi.os`           | Operating system, e.g. `darwin`, `linux`, etc. as returned by [runtime.GOOS](https://pkg.go.dev/runtime?tab=doc#pkg-constants). |
+| `.chezmoi.osRelease`    | The information from `/etc/os-release`, Linux only, run `chezmoi data` to see its output.                                       |
+| `.chezmoi.sourceDir`    | The source directory.                                                                                                           |
+| `.chezmoi.username`     | The username of the user running chezmoi.                                                                                       |
 
 Additional variables can be defined in the config file in the `data` section.
 Variable names must consist of a letter and be followed by zero or more letters
@@ -771,7 +771,7 @@ and/or digits.
 
 ## Template functions
 
-All standard [`text/template`](https://godoc.org/text/template) and [hermetic
+All standard [`text/template`](https://pkg.go.dev/text/template) and [hermetic
 text template functions from `sprig`](http://masterminds.github.io/sprig/) are
 included. chezmoi provides some additional functions.
 
