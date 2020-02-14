@@ -8,7 +8,7 @@ import (
 
 var diffCmd = &cobra.Command{
 	Use:     "diff [targets...]",
-	Short:   "Write the diff between the target state and the destination state to stdout",
+	Short:   "Print the diff between the target state and the destination state",
 	Long:    mustGetLongHelp("diff"),
 	Example: getExample("diff"),
 	PreRunE: config.ensureNoError,

@@ -10,7 +10,7 @@ import (
 var catCmd = &cobra.Command{
 	Use:     "cat targets...",
 	Args:    cobra.MinimumNArgs(1),
-	Short:   "Write the target state of a file or symlink to stdout",
+	Short:   "Print the target contents of a file or symlink",
 	Long:    mustGetLongHelp("cat"),
 	Example: getExample("cat"),
 	PreRunE: config.ensureNoError,

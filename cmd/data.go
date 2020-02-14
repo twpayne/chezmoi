@@ -14,7 +14,7 @@ type dataCmdConfig struct {
 var dataCmd = &cobra.Command{
 	Use:     "data",
 	Args:    cobra.NoArgs,
-	Short:   "Write the template data to stdout",
+	Short:   "Print the template data",
 	Long:    mustGetLongHelp("data"),
 	Example: getExample("data"),
 	PreRunE: config.ensureNoError,
