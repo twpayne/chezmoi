@@ -745,7 +745,7 @@ shell. chezmoi only stores crude permissions in its source state, namely in the
 `executable`  and `private` attributes, corresponding to the umasks of `0111`
 and `0077` respectively.
 
-For machine-specifc control of umask, set the `umask` configuration variable in
+For machine-specific control of umask, set the `umask` configuration variable in
 chezmoi's configuration file.
 
 ## Template variables
@@ -781,7 +781,7 @@ included. chezmoi provides some additional functions.
 [Bitwarden](https://bitwarden.com) using the [Bitwarden
 CLI](https://github.com/bitwarden/cli) (`bw`). *args* are passed to `bw`
 unchanged and the output from `bw` is parsed as JSON. The output from `bw` is
-cached so calling `bitwarden` multitple times with the same arguments will only
+cached so calling `bitwarden` multiple times with the same arguments will only
 invoke `bw` once.
 
 #### `bitwarden` examples
@@ -903,7 +903,7 @@ the same *pass-name* will only invoke `pass` once.
 
 `promptString` takes a single argument is a string prompted to the user, and the
 return value is the user's response to that prompt. It is only available when
-generating the initial conifig file.
+generating the initial config file.
 
 #### `promptString` examples
 
@@ -915,15 +915,15 @@ generating the initial conifig file.
 
 `secret` returns the output of the generic secret command defined by the
 `genericSecret.command` configuration variable with *args* with leading and
-trailing whitespace removed. The output is cached so multitple calls to `secret`
+trailing whitespace removed. The output is cached so multiple calls to `secret`
 with the same *args* will only invoke the generic secret command once.
 
 ### `secretJSON` [*args*]
 
 `secretJSON` returns structured data from the generic secret command defined by
 the `genericSecret.command` configuration variable with *args*. The output is
-parsed as JSON. The output is cached so multitple calls to `secret` with the
-same *args* will only invoke the generic secret command once.
+parsed as JSON. The output is cached so multiple calls to `secret` with the same
+*args* will only invoke the generic secret command once.
 
 ### `vault` *key*
 

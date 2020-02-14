@@ -68,7 +68,7 @@ You have several options:
   `chezmoi hg` commands.
 
 * chezmoi has experimental support for automatically committing and pushing
-  changes to your git repo whenever you run a commmand. See the "Explore
+  changes to your git repo whenever you run a command. See the "Explore
   experimental features" section in the how-to for more information.
 
 ## How do I only run a script when a file has changed?
@@ -189,9 +189,9 @@ configuration management.
 
 ## Where does the name "chezmoi" come from?
 
-"chezmoi" splits to "chez moi" and pronouced /ʃeɪ mwa/ (shay-moi) meaning "at my
-house" in French. It's seven letters long, which is an appropriate length for a
-command that is only run occasionally.
+"chezmoi" splits to "chez moi" and pronounced /ʃeɪ mwa/ (shay-moi) meaning "at
+my house" in French. It's seven letters long, which is an appropriate length for
+a command that is only run occasionally.
 
 ## What other questions have been asked about chezmoi?
 

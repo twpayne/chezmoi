@@ -467,7 +467,7 @@ Then you can access `details.password` with the syntax:
 
     {{ (onepassword "<uuid>").details.password }}
 
-Documents can be retreived with:
+Documents can be retrieved with:
 
     {{- onepasswordDocument "uuid" -}}
 
@@ -498,7 +498,7 @@ Verify that this is the case by running:
 
     vault kv get -format=json <key>
 
-The stuctured data from `vault kv get -format=json` is available as the `vault`
+The structured data from `vault kv get -format=json` is available as the `vault`
 template function. You can use the `.Field` syntax of the `text/template`
 language to extract the data you want. For example:
 
@@ -683,7 +683,7 @@ Whenever a change is made to your source directory, chezmoi will commit the
 changes with an automatically-generated commit message (if `autoCommit` is true)
 and push them to your repo (if `autoPush` is true). `autoPush` implies
 `autoCommit`, i.e. if `autoPush` is true then chezmoi will auto-commit your
-changes. If you only set `autoCommit` to true then changes will be commited but
+changes. If you only set `autoCommit` to true then changes will be committed but
 not pushed.
 
 `autoCommit` and `autoPush` are experimental features, likely to contain bugs
