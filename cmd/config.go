@@ -499,10 +499,6 @@ func (c *Config) validateData() error {
 	return validateKeys(config.Data, identifierRegexp)
 }
 
-func (c *Config) warn(s string) {
-	fmt.Fprintf(c.Stderr, "warning: %s\n", s)
-}
-
 func getAsset(name string) ([]byte, error) {
 	gzipedAsset, ok := gzipedAssets[name]
 	if !ok {

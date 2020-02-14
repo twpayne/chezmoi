@@ -103,7 +103,6 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			versionRegexp: vcs.VersionRegexp(),
 		}
 	} else {
-		c.warn(fmt.Sprintf("%s: unsupported VCS command", c.SourceVCS.Command))
 		vcsCommandCheck = &doctorBinaryCheck{
 			name:       "source VCS command",
 			binaryName: c.SourceVCS.Command,

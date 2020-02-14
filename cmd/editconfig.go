@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"path/filepath"
 
 	"github.com/spf13/cobra"
@@ -41,7 +40,7 @@ func (c *Config) runEditConfigCmd(cmd *cobra.Command, args []string) error {
 		err = v.Unmarshal(&Config{})
 	}
 	if err != nil {
-		c.warn(fmt.Sprintf("%s: %v", c.configFile, err))
+		cmd.Printf("warning: %s: %v\n", c.configFile, err)
 	}
 
 	return nil

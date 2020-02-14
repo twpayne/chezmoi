@@ -103,7 +103,7 @@ func init() {
 				config.err = config.validateData()
 			}
 			if config.err != nil {
-				config.warn(fmt.Sprintf("%s: %v", config.configFile, config.err))
+				rootCmd.Printf("warning: %s: %v\n", config.configFile, config.err)
 			}
 		case os.IsNotExist(err):
 		default:
@@ -164,7 +164,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 			return err
 		}
 		if !private {
-			c.warn(fmt.Sprintf("%s: not private, but should be", c.SourceDir))
+			cmd.Printf("%s: not private, but should be\n", c.SourceDir)
 		}
 	case !os.IsNotExist(err):
 		return err
