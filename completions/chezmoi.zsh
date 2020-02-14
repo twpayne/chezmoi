@@ -36,7 +36,7 @@ function _chezmoi {
       "edit-config:Edit the configuration file"
       "forget:Remove a target from the source state"
       "git:Run git in the source directory"
-      "help:Help about any command"
+      "help:Print help about a command"
       "hg:Run mercurial in the source directory"
       "import:Import a tar archive into the source state"
       "init:Setup the source directory and update the destination directory to match the target state"
