@@ -52,7 +52,7 @@ func (c *Config) runMergeCmd(cmd *cobra.Command, args []string) error {
 	defer os.RemoveAll(tempDir)
 
 	for i, entry := range entries {
-		if err := c.runMergeCommand(args[i], entry, tempDir); err != nil {
+		if err := c.runMergeCommand(cmd, args[i], entry, tempDir); err != nil {
 			return err
 		}
 	}
@@ -60,7 +60,7 @@ func (c *Config) runMergeCmd(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func (c *Config) runMergeCommand(arg string, entry chezmoi.Entry, tempDir string) error {
+func (c *Config) runMergeCommand(cmd *cobra.Command, arg string, entry chezmoi.Entry, tempDir string) error {
 	file, ok := entry.(*chezmoi.File)
 	if !ok {
 		return fmt.Errorf("%s: not a file", arg)
@@ -79,7 +79,7 @@ func (c *Config) runMergeCommand(arg string, entry chezmoi.Entry, tempDir string
 	// state. Target state evaluation might fail if the source state contains
 	// template errors or cannot be decrypted.
 	if contents, err := file.Contents(); err != nil {
-		c.warn(fmt.Sprintf("%s: cannot evaluate target state: %v", arg, err))
+		cmd.Printf("warning: %s: cannot evaluate target state: %v\n", arg, err)
 	} else {
 		targetStatePath := filepath.Join(tempDir, filepath.Base(file.TargetName()))
 		if err := ioutil.WriteFile(targetStatePath, contents, 0600); err != nil {

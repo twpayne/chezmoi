@@ -49,13 +49,13 @@ type encryptedFile struct {
 func (c *Config) runEditCmd(cmd *cobra.Command, args []string) error {
 	if len(args) == 0 {
 		if c.edit.apply {
-			c.warn("--apply is currently ignored when edit is run with no arguments")
+			cmd.Printf("warning: --apply is currently ignored when edit is run with no arguments\n")
 		}
 		if c.edit.diff {
-			c.warn("--diff is currently ignored when edit is run with no arguments")
+			cmd.Printf("warning: --diff is currently ignored when edit is run with no arguments\n")
 		}
 		if c.edit.prompt {
-			c.warn("--prompt is currently ignored when edit is run with no arguments")
+			cmd.Printf("warning: --prompt is currently ignored when edit is run with no arguments\n")
 		}
 		return c.run("", c.getEditor(), c.SourceDir)
 	}

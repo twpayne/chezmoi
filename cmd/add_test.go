@@ -4,6 +4,7 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/twpayne/chezmoi/internal/chezmoi"
@@ -457,7 +458,7 @@ func TestAddCommand(t *testing.T) {
 				}),
 				withAddCmdConfig(tc.add),
 			)
-			assert.NoError(t, c.runAddCmd(nil, tc.args))
+			assert.NoError(t, c.runAddCmd(&cobra.Command{}, tc.args))
 			vfst.RunTests(t, fs, "", tc.tests)
 		})
 	}

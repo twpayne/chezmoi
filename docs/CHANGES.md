@@ -8,7 +8,7 @@
 
 ### `gpgRecipient` config variable changing to `gpg.recipient`
 
-The `gpgRecipient` config varaible is changing to `gpg.recipient`. To update,
+The `gpgRecipient` config variable is changing to `gpg.recipient`. To update,
 change your config from:
 
     gpgRecipient = "..."
