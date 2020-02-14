@@ -189,7 +189,7 @@ The following configuration variables are available:
 | `onepassword.command`   | string   | `op`                      | 1Password CLI command                               |
 | `pass.command`          | string   | `pass`                    | Pass CLI command                                    |
 | `remove`                | bool     | `false`                   | Remove targets                                      |
-| `sourceDir`             | string   | `~/.config/share/chezmoi` | Source directory                                    |
+| `sourceDir`             | string   | `~/.local/share/chezmoi`  | Source directory                                    |
 | `sourceVCS.autoCommit`  | bool     | `false`                   | Commit changes to the source state after any change |
 | `sourceVCS.autoPush`    | bool     | `false`                   | Push changes to the source state after any change   |
 | `sourceVCS.command`     | string   | `git`                     | Source version control system                       |
