@@ -78,7 +78,10 @@ var helps = map[string]help{
 	"cd": {
 		long: "" +
 			"Description:\n" +
-			"  Launch a shell in the source directory.",
+			"  Launch a shell in the source directory. chezmoi will launch the command set by\n" +
+			"  the `cd.command` confiuration varaible. If this is not set, chezmoi will\n" +
+			"  attempt to detect your shell and will finally fall back to an OS-specific\n" +
+			"  default.",
 		example: "" +
 			"  chezmoi cd",
 	},
