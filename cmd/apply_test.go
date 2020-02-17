@@ -86,6 +86,14 @@ func TestApplyCommand(t *testing.T) {
 			},
 		},
 		{
+			name: "strip_symlink_newline",
+			root: map[string]interface{}{
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
+					"symlink_symlink.tmpl": "{{ if true }}tar{{ end }}get\n",
+				},
+			},
+		},
+		{
 			name: "templates_dir",
 			root: map[string]interface{}{
 				"/home/user/.local/share/chezmoi": map[string]interface{}{

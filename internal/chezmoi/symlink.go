@@ -4,6 +4,7 @@ import (
 	"archive/tar"
 	"os"
 	"path/filepath"
+	"strings"
 
 	vfs "github.com/twpayne/go-vfs"
 )
@@ -96,7 +97,7 @@ func (s *Symlink) Linkname() (string, error) {
 		s.linkname, s.linknameErr = s.evaluateLinkname()
 		s.evaluateLinkname = nil
 	}
-	return s.linkname, s.linknameErr
+	return strings.TrimSpace(s.linkname), s.linknameErr
 }
 
 // SourceName implements Entry.SourceName.
