@@ -39,7 +39,7 @@ var helps = map[string]help{
 			"  `-T`, `--template`\n" +
 			"\n" +
 			"  Set the `template` attribute on added files and symlinks. In addition, if the\n" +
-			"  `--autotemplate` flag is set, chezmoi attempts to automatically generates the\n" +
+			"  `--autotemplate` flag is set, chezmoi attempts to automatically generate the\n" +
 			"  template by replacing any template data values with the equivalent template\n" +
 			"  data keys. Longer subsitutions occur before shorter ones.",
 		example: "" +
