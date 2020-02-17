@@ -33,7 +33,7 @@ don't need chezmoi. Otherwise, read on...
 * Flexible: You can share as much configuration across machines as you want,
   while still being able to control machine-specific details. You only need to
   maintain a single branch. Your dotfiles can be templates (using
-  [`text/template`](https://godoc.org/text/template) syntax). Predefined
+  [`text/template`](https://pkg.go.dev/text/template) syntax). Predefined
   variables allow you to change behaviour depending on operating system,
   architecture, and hostname.
 
@@ -72,45 +72,65 @@ don't need chezmoi. Otherwise, read on...
 
 ## I already have a system to manage my dotfiles, why should I use chezmoi?
 
-* If your system is based on copying files with a shell script or creating
-  symlinks (e.g. using [GNU
-  Stow](http://brandon.invergo.net/news/2012-05-26-using-gnu-stow-to-manage-your-dotfiles.html))
-  then handling files that vary from machine to machine requires manual work.
-  You might need to maintain separate config files for separate machines, or run
-  different commands on different machines. chezmoi gives you a single command
-  (`chezmoi update`)  that works on every machine.
+If you're using any of the following methods:
 
-* If your system is based on using git with a different branches for different
-  machines, then you need manually merge or rebase to ensure that changes you
-  make are applied to each machine. chezmoi uses a single branch and makes it
-  trivial to share common parts while allowing specific per-machine
-  configuration.
+* A custom shell script to install your dotfiles.
+* [GNU Stow](http://brandon.invergo.net/news/2012-05-26-using-gnu-stow-to-manage-your-dotfiles.html).
+* [`yadm`](https://yadm.io/)
+* A [bare git repo](https://www.atlassian.com/git/tutorials/dotfiles).
 
-* If your system stores secrets in plain text, then your dotfiles repository
-  must be private. With chezmoi you can store secrets in your password manager,
-  so you can make your dotfiles public. You can share your repository between
-  your personal and work machines, without leaving personal secrets on your work
-  machine or work secrets on your personal machine.
+Then you've probably run into at least one of the following problems:
+
+* If you want to synchronize your dotfiles across multiple operating systems or
+  distributions, then you need to manually perform extra steps to cope with
+  differences from machine to machine. You might need to run different commands
+  on different machines, maintain separate per-machine branches or files (with
+  the associated hassle of merging, rebasing, or copying each change), or hope
+  that your custom logic handles the differences correctly. chezmoi uses a
+  single source of truth (a single branch) and a single command that works on
+  every machine. Individual files can be templates to handle machine to machine
+  differences, if needed.
+
+* If your system stores secrets in plain text, then you must be very careful
+  about where you clone it. If you clone it on your work machine then anyone
+  with access to your work machine (e.g. your IT department) will have access to
+  your home secrets. If you clone it on your home machine then you risk leaking
+  work secrets. With chezmoi you can store secrets in your password manager or
+  encrypt them, and even use different password managers or encryption keys for
+  your work and home machines. You can share your repository between your
+  personal and work machines, and even make your dotfiles repo public, without
+  leaving personal secrets on your work machine or work secrets on your personal
+  machine.
 
 * If your system was written by you for your personal use, then it probably has
-  the minimum functionality that you need. chezmoi includes a wide range of
-  functionality out-of-the-box, including dry run and diff modes, conflict
-  resolution, and running scripts.
+  the minimum functionality that you need. You might need special logic to
+  handle dotfiles that need to be private or run configuration scripts
+  occasionally. chezmoi includes a huge range of battle-tested functionality
+  out-of-the-box, including dry-run and diff modes, conflict resolution, Windows
+  support, and much, much more. chezmoi is [used by thousands of
+  people](https://github.com/twpayne/chezmoi/stargazers), so it is likely that
+  when you hit the limits of your existing dotfile management system, chezmoi
+  already has a tried-and-tested solution.
 
 * All systems suffer from the bootstrap problem: you need to install your system
   before you can install your dotfiles. chezmoi provides one-line installs,
-  statically-linked binaries, packages for many Linux and BSD distributions,
-  Homebrew formulae, and a initial config file generation mechanism to make
-  overcoming the bootstrap problem as painless as possible.
+  statically-linked binaries, packages for Linux and BSD distributions, Homebrew
+  formulae, Scoop support on Windows, and a initial config file generation
+  mechanism to make overcoming the bootstrap problem as painless as possible.
+
+## What does a chezmoi dotfile repo look like?
+
+Have a look at [repos tagged with `chezmoi` on GitHub](https://github.com/topics/chezmoi).
 
 ## How do I start with chezmoi?
 
-[Install chezmoi](/docs/install/) then read the [quick start
-guide](/docs/quick-start/). The [how-to guide](/docs/how-to/) covers most common
-tasks, and there's the [frequently asked questions](docs/faq/) for specific
-questions. For a full description of chezmoi, consult the
-[reference](/docs/reference/). If all else fails, [open an
-issue](https://github.com/twpayne/chezmoi/issues/new).
+[Install chezmoi](docs/INSTALL.md) then read the [quick start
+guide](docs/QUICKSTART.md). The [how-to guide](docs/HOWTO.md) covers most common
+tasks, and there's the [frequently asked questions](docs/FAQ.md) for specific
+questions. You can browse other people's [dotfiles that use
+chezmoi](https://github.com/topics/chezmoi). For a full description of chezmoi,
+consult the [reference](docs/REFERENCE.md). If all else fails, [open an
+issue](https://github.com/twpayne/chezmoi/issues/new/choose).
 
 ## License
 
