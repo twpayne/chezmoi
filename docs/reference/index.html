@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="/book.min.a8b61185b89b0e211122339c7efd1c8edaa4ad4c0ae65f0074e99a4b31c1e393.css" integrity="sha256-qLYRhbibDiERIjOcfv0cjtqkrUwK5l8AdOmaSzHB45M=">
 
 
-<script defer src="/search.min.c5a9d14c6116256c888eb77419569a1f6f3cc7a80f473b5ac2ae1b8740b6115d.js" integrity="sha256-xanRTGEWJWyIjrd0GVaaH288x6gPRztawq4bh0C2EV0="></script>
+<script defer src="/search.min.531313da07d366520275a39c59274152db3f6196e8ed8385ac193ae90565e3f2.js" integrity="sha256-UxMT2gfTZlICdaOcWSdBUts/YZbo7YOFrBk66QVl4/I="></script>
 
 <!--
 Made with Book Theme
@@ -513,7 +513,7 @@ directory. The <code>add</code> command accepts additional flags:</p>
 <p>Recursively add all files, directories, and symlinks.</p>
 <h4 id="-t---template"><code>-T</code>, <code>--template</code></h4>
 <p>Set the <code>template</code> attribute on added files and symlinks. In addition, if the
-<code>--autotemplate</code> flag is set, chezmoi attempts to automatically generates the
+<code>--autotemplate</code> flag is set, chezmoi attempts to automatically generate the
 template by replacing any template data values with the equivalent template data
 keys. Longer subsitutions occur before shorter ones.</p>
 <h4 id="add-examples"><code>add</code> examples</h4>
@@ -819,6 +819,21 @@ shell. chezmoi only stores crude permissions in its source state, namely in the
 and <code>0077</code> respectively.</p>
 <p>For machine-specific control of umask, set the <code>umask</code> configuration variable in
 chezmoi&rsquo;s configuration file.</p>
+<h2 id="template-evaluation">Template evaluation</h2>
+<p>chezmoi evaluates templates using
+<a href="https://pkg.go.dev/text/template"><code>text/template</code></a>. The result is treated
+differently depending on whether the target is a file or a symlink.</p>
+<p>If target is a file, then:</p>
+<ul>
+<li>If the result is an empty string, then the file is removed.</li>
+<li>Otherwise, the target file contents are result.</li>
+</ul>
+<p>If the target is a symlink, then:</p>
+<ul>
+<li>Leading and trailing whitespace are stripped from the result.</li>
+<li>If the result is an empty string, then the symlink is removed.</li>
+<li>Otherwise, the target symlink target is the result.</li>
+</ul>
 <h2 id="template-variables">Template variables</h2>
 <p>chezmoi provides the following automatically populated variables:</p>
 <table>
@@ -831,7 +846,7 @@ chezmoi&rsquo;s configuration file.</p>
 <tbody>
 <tr>
 <td><code>.chezmoi.arch</code></td>
-<td>Architecture, e.g. <code>amd64</code>, <code>arm</code>, etc. as returned by <a href="https://godoc.org/runtime#pkg-constants">runtime.GOARCH</a>.</td>
+<td>Architecture, e.g. <code>amd64</code>, <code>arm</code>, etc. as returned by <a href="https://pkg.go.dev/runtime?tab=doc#pkg-constants">runtime.GOARCH</a>.</td>
 </tr>
 <tr>
 <td><code>.chezmoi.fullHostname</code></td>
@@ -855,7 +870,7 @@ chezmoi&rsquo;s configuration file.</p>
 </tr>
 <tr>
 <td><code>.chezmoi.os</code></td>
-<td>Operating system, e.g. <code>darwin</code>, <code>linux</code>, etc. as returned by <a href="https://godoc.org/runtime#pkg-constants">runtime.GOOS</a>.</td>
+<td>Operating system, e.g. <code>darwin</code>, <code>linux</code>, etc. as returned by <a href="https://pkg.go.dev/runtime?tab=doc#pkg-constants">runtime.GOOS</a>.</td>
 </tr>
 <tr>
 <td><code>.chezmoi.osRelease</code></td>
@@ -875,7 +890,7 @@ chezmoi&rsquo;s configuration file.</p>
 Variable names must consist of a letter and be followed by zero or more letters
 and/or digits.</p>
 <h2 id="template-functions">Template functions</h2>
-<p>All standard <a href="https://godoc.org/text/template"><code>text/template</code></a> and <a href="http://masterminds.github.io/sprig/">hermetic
+<p>All standard <a href="https://pkg.go.dev/text/template"><code>text/template</code></a> and <a href="http://masterminds.github.io/sprig/">hermetic
 text template functions from <code>sprig</code></a> are
 included. chezmoi provides some additional functions.</p>
 <h3 id="bitwarden-args"><code>bitwarden</code> [<em>args</em>]</h3>
@@ -1097,6 +1112,7 @@ times with the same <em>key</em> will only invoke <code>vault</code> once.</p>
     </li>
     <li><a href="#editor-configuration">Editor configuration</a></li>
     <li><a href="#umask-configuration">Umask configuration</a></li>
+    <li><a href="#template-evaluation">Template evaluation</a></li>
     <li><a href="#template-variables">Template variables</a></li>
     <li><a href="#template-functions">Template functions</a>
       <ul>
