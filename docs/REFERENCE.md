@@ -60,6 +60,7 @@ Manage your dotfiles securely across multiple machines.
   * [`verify` [*targets*]](#verify-targets)
 * [Editor configuration](#editor-configuration)
 * [Umask configuration](#umask-configuration)
+* [Template evaluation](#template-evaluation)
 * [Template variables](#template-variables)
 * [Template functions](#template-functions)
   * [`bitwarden` [*args*]](#bitwarden-args)
@@ -346,7 +347,7 @@ Recursively add all files, directories, and symlinks.
 #### `-T`, `--template`
 
 Set the `template` attribute on added files and symlinks. In addition, if the
-`--autotemplate` flag is set, chezmoi attempts to automatically generates the
+`--autotemplate` flag is set, chezmoi attempts to automatically generate the
 template by replacing any template data values with the equivalent template data
 keys. Longer subsitutions occur before shorter ones.
 
@@ -747,6 +748,23 @@ and `0077` respectively.
 
 For machine-specific control of umask, set the `umask` configuration variable in
 chezmoi's configuration file.
+
+## Template evaluation
+
+chezmoi evaluates templates using
+[`text/template`](https://pkg.go.dev/text/template). The result is treated
+differently depending on whether the target is a file or a symlink.
+
+If target is a file, then:
+
+* If the result is an empty string, then the file is removed.
+* Otherwise, the target file contents are result.
+
+If the target is a symlink, then:
+
+* Leading and trailing whitespace are stripped from the result.
+* If the result is an empty string, then the symlink is removed.
+* Otherwise, the target symlink target is the result.
 
 ## Template variables
 
