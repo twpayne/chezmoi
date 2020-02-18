@@ -434,13 +434,19 @@ the field you want. For example, to extract the `password` field from first the
 
     githubPassword = "{{ (index (lastpass "GitHub") 0).password }}"
 
-chezmoi automatically parses the `note` value of the Lastpass entry, so, for
-example, you can extract a private SSH key like this:
+chezmoi automatically parses the `note` value of the Lastpass entry as
+colon-separated key-value pairs, so, for example, you can extract a private SSH
+key like this:
 
     {{ (index (lastpass "SSH") 0).note.privateKey }}
 
 Keys in the `note` section written as `CamelCase Words` are converted to
 `camelCaseWords`.
+
+If the `note` value does not contain colon-separated key-value pairs, then you
+can use `lastpassRaw` to get its raw value, for example:
+
+    {{ (index (lastpassRaw "SSH Private Key") 0).note }}
 
 ### Use 1Password to keep your secrets
 

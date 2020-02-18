@@ -38,11 +38,12 @@ type lastpassCmdConfig struct {
 	versionCheckOnce sync.Once
 }
 
-var lastPassCache = make(map[string]interface{})
+var lastPassCache = make(map[string][]map[string]interface{})
 
 func init() {
 	config.Lastpass.Command = "lpass"
 	config.addTemplateFunc("lastpass", config.lastpassFunc)
+	config.addTemplateFunc("lastpassRaw", config.lastpassRawFunc)
 
 	secretCmd.AddCommand(lastpassCmd)
 }
@@ -63,7 +64,7 @@ func (c *Config) lastpassOutput(args ...string) ([]byte, error) {
 	return output, nil
 }
 
-func (c *Config) lastpassFunc(id string) interface{} {
+func (c *Config) lastpassRawFunc(id string) []map[string]interface{} {
 	c.Lastpass.versionCheckOnce.Do(func() {
 		panicOnError(c.lastpassVersionCheck())
 	})
@@ -76,12 +77,17 @@ func (c *Config) lastpassFunc(id string) interface{} {
 	if err := json.Unmarshal(output, &data); err != nil {
 		panic(fmt.Errorf("lastpass: parse error: %w\n%q", err, output))
 	}
+	lastPassCache[id] = data
+	return data
+}
+
+func (c *Config) lastpassFunc(id string) interface{} {
+	data := c.lastpassRawFunc(id)
 	for _, d := range data {
 		if note, ok := d["note"].(string); ok {
 			d["note"] = lastpassParseNote(note)
 		}
 	}
-	lastPassCache[id] = data
 	return data
 }
 
