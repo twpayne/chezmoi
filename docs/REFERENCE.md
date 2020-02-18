@@ -869,10 +869,10 @@ user's keyring.
 the [LastPass CLI](https://lastpass.github.io/lastpass-cli/lpass.1.html)
 (`lpass`). *id* is passed to `lpass show --json <id>` and the output from
 `lpass` is parsed as JSON. In addition, the `note` field, if present, is further
-parsed as JSON. The structured data is an array so typically the `index`
-function is used to extract the first item. The output from `lpass` is cached so
-calling `lastpass` multiple times with the same *id* will only invoke `lpass`
-once.
+parsed as colon-separated key-value pairs. The structured data is an array so
+typically the `index` function is used to extract the first item. The output
+from `lastpass` is cached so calling `lastpass` multiple times with the same
+*id* will only invoke `lpass` once.
 
 #### `lastpass` examples
 
