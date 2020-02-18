@@ -443,6 +443,11 @@ key like this:
 Keys in the `note` section written as `CamelCase Words` are converted to
 `camelCaseWords`.
 
+If the `note` value does not contain colon-separated key-value pairs, then you
+can use `lastpassRaw` to get its raw value, for example:
+
+    {{ (index (lastpassRaw "SSH Private Key") 0).note }}
+
 ### Use 1Password to keep your secrets
 
 chezmoi includes support for [1Password](https://1password.com/) using the

@@ -69,6 +69,7 @@ Manage your dotfiles securely across multiple machines.
   * [`keepassxcAttribute` *entry* *attribute*](#keepassxcattribute-entry-attribute)
   * [`keyring` *service* *user*](#keyring-service-user)
   * [`lastpass` *id*](#lastpass-id)
+  * [`lastpassRaw` *id*](#lastpassraw-id)
   * [`onepassword` *uuid*](#onepassword-uuid)
   * [`onepasswordDocument` *uuid*](#onepassworddocument-uuid)
   * [`pass` *pass-name*](#pass-pass-name)
@@ -878,6 +879,17 @@ from `lastpass` is cached so calling `lastpass` multiple times with the same
 
     githubPassword = "{{ (index (lastpass "GitHub") 0).password }}"
     {{ (index (lastpass "SSH") 0).note.privateKey }}
+
+### `lastpassRaw` *id*
+
+`lastpassRaw` returns structured data from [LastPass](https://lastpass.com)
+using the [LastPass CLI](https://lastpass.github.io/lastpass-cli/lpass.1.html)
+(`lpass`). It behaves identically to the `lastpass` function, except that no
+further parsing is done on the `note` field.
+
+#### `lastpassRaw` examples
+
+    {{ (index (lastpassRaw "SSH Private Key") 0).note }}
 
 ### `onepassword` *uuid*
 
