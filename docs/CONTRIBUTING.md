@@ -45,7 +45,8 @@ text (the output of `chezmoi command --help`) and the website
 
 chezmoi embeds documentation and templates in its binary.
 
-If you update any file in the `docs/` or `templates/` directories, you must also run
+If you update any file in the `docs/` or `assets/templates/` directories, you
+must also run
 
     go generate
 
