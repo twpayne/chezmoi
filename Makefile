@@ -8,20 +8,20 @@ all: completions generate
 
 .PHONY: completions
 completions: \
-	completions/chezmoi-completion.bash \
-	completions/chezmoi.fish \
-	completions/chezmoi.zsh
+	assets/completions/chezmoi-completion.bash \
+	assets/completions/chezmoi.fish \
+	assets/completions/chezmoi.zsh
 
-.PHONY: completions/chezmoi-completion.bash
-completions/chezmoi-completion.bash:
+.PHONY: assets/completions/chezmoi-completion.bash
+assets/completions/chezmoi-completion.bash:
 	mkdir -p $$(dirname $@) && go run . completion bash > $@ || ( rm -f $@ ; false )
 
-.PHONY: completions/chezmoi.fish
-completions/chezmoi.fish:
+.PHONY: assets/completions/chezmoi.fish
+assets/completions/chezmoi.fish:
 	mkdir -p $$(dirname $@) && go run . completion fish > $@ || ( rm -f $@ ; false )
 
-.PHONY: completions/chezmoi.zsh
-completions/chezmoi.zsh:
+.PHONY: assets/completions/chezmoi.zsh
+assets/completions/chezmoi.zsh:
 	mkdir -p $$(dirname $@) && go run . completion zsh > $@ || ( rm -f $@ ; false )
 
 .PHONY: format
