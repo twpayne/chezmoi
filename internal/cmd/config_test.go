@@ -17,7 +17,7 @@ import (
 )
 
 func TestAutoCommitCommitMessage(t *testing.T) {
-	commitMessageText, err := getAsset("templates/COMMIT_MESSAGE.tmpl")
+	commitMessageText, err := getAsset("assets/templates/COMMIT_MESSAGE.tmpl")
 	require.NoError(t, err)
 	commitMessageTmpl, err := template.New("commit_message").Funcs(sprig.HermeticTxtFuncMap()).Parse(string(commitMessageText))
 	require.NoError(t, err)

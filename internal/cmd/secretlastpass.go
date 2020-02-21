@@ -81,7 +81,7 @@ func (c *Config) lastpassRawFunc(id string) []map[string]interface{} {
 	return data
 }
 
-func (c *Config) lastpassFunc(id string) interface{} {
+func (c *Config) lastpassFunc(id string) []map[string]interface{} {
 	data := c.lastpassRawFunc(id)
 	for _, d := range data {
 		if note, ok := d["note"].(string); ok {
