@@ -114,9 +114,9 @@ If you're packaging chezmoi for an operating system or distribution:
   can do this by passing the following flags to the Go linker:
 
   ```
-  -X github.com/twpayne/chezmoi/internal/cmd.VersionStr=$VERSION
-  -X github.com/twpayne/chezmoi/internal/cmd.Commit=$COMMIT
-  -X github.com/twpayne/chezmoi/internal/cmd.Date=$DATE
+  -X github.com/twpayne/chezmoi/cmd.VersionStr=$VERSION
+  -X github.com/twpayne/chezmoi/cmd.Commit=$COMMIT
+  -X github.com/twpayne/chezmoi/cmd.Date=$DATE
   ```
 
   `$VERSION` should be the chezmoi version, e.g. `1.7.3`. Any `v` prefix is
@@ -136,11 +136,10 @@ If you're packaging chezmoi for an operating system or distribution:
   the docs are embedded in the binary. You can disable this behaviour, and have
   chezmoi read its docs from the filesystem by building with the `noembeddocs`
   build tag and setting the directory where chezmoi can find them with the `-X
-  github.com/twpayne/chezmoi/internal/cmd.DocDir=$DOCDIR` linker flag. For
-  example:
+  github.com/twpayne/chezmoi/cmd.DocDir=$DOCDIR` linker flag. For example:
 
   ```
-  go build -tags noembeddocs -ldflags "-X github.com/twpayne/chezmoi/internal/cmd.DocsDir=/usr/share/doc/chezmoi" .
+  go build -tags noembeddocs -ldflags "-X github.com/twpayne/chezmoi/cmd.DocsDir=/usr/share/doc/chezmoi" .
   ```
 
   To remove the `docs` command completely, use the `nodocs` build tag.
