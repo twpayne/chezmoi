@@ -10,7 +10,7 @@ require (
 	github.com/charmbracelet/glamour v0.1.0
 	github.com/coreos/go-semver v0.3.0
 	github.com/dlclark/regexp2 v1.2.0 // indirect
-	github.com/golang/protobuf v1.3.2 // indirect
+	github.com/golang/protobuf v1.3.3 // indirect
 	github.com/google/go-github/v26 v26.1.3
 	github.com/google/renameio v0.1.0
 	github.com/google/uuid v1.1.1 // indirect
@@ -26,7 +26,7 @@ require (
 	github.com/pkg/diff v0.0.0-20190930165518-531926345625
 	github.com/spf13/afero v1.2.2 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
-	github.com/spf13/cobra v0.0.5
+	github.com/spf13/cobra v0.0.6
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.6.2
@@ -36,16 +36,16 @@ require (
 	github.com/twpayne/go-vfs v1.3.6
 	github.com/twpayne/go-vfsafero v1.0.0
 	github.com/twpayne/go-xdg/v3 v3.1.0
-	github.com/yuin/goldmark v1.1.21 // indirect
+	github.com/yuin/goldmark v1.1.23 // indirect
 	github.com/zalando/go-keyring v0.0.0-20200121091418-667557018717
 	go.etcd.io/bbolt v1.3.3
-	golang.org/x/crypto v0.0.0-20200117160349-530e935923ad
-	golang.org/x/net v0.0.0-20200114155413-6afb5195e5aa // indirect
+	golang.org/x/crypto v0.0.0-20200221231518-2aa609cf4a9d
+	golang.org/x/net v0.0.0-20200222125558-5a598a2470a0 // indirect
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
-	golang.org/x/sys v0.0.0-20200122134326-e047566fdf82
+	golang.org/x/sys v0.0.0-20200223170610-d5e6a3e2c0ae
 	google.golang.org/appengine v1.6.5 // indirect
-	gopkg.in/ini.v1 v1.51.1 // indirect
-	gopkg.in/yaml.v2 v2.2.7
+	gopkg.in/ini.v1 v1.52.0 // indirect
+	gopkg.in/yaml.v2 v2.2.8
 )
 
 // Temporary while waiting for https://github.com/spf13/cobra/pull/754 to be merged
