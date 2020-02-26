@@ -94,8 +94,8 @@ nfpms:
   - git
   bindir: /usr/bin
   files:
-    "assets/completions/chezmoi-completion.bash": "/usr/share/bash-completion/completions/chezmoi"
-    "assets/completions/chezmoi.fish": "/usr/share/fish/completions/chezmoi.fish"
+    "completions/chezmoi-completion.bash": "/usr/share/bash-completion/completions/chezmoi"
+    "completions/chezmoi.fish": "/usr/share/fish/completions/chezmoi.fish"
   overrides:
     deb:
       file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
@@ -103,7 +103,7 @@ nfpms:
         386: i386
         arm: armel
       files:
-        "assets/completions/chezmoi.zsh": "/usr/share/zsh/vendor-completions/_chezmoi"
+        "completions/chezmoi.zsh": "/usr/share/zsh/vendor-completions/_chezmoi"
     rpm:
       file_name_template: "{{ .ProjectName }}-{{ .Version }}-{{ .Arch }}"
       replacements:
@@ -112,7 +112,7 @@ nfpms:
         arm: armhfp
         arm64: aarch64
       files:
-        "assets/completions/chezmoi.zsh": "/usr/share/zsh/functions/_chezmoi"
+        "completions/chezmoi.zsh": "/usr/share/zsh/functions/_chezmoi"
 
 brews:
 - github:
@@ -125,9 +125,9 @@ brews:
   homepage: "https://chezmoi.io"
   install: |
     bin.install "chezmoi"
-    bash_completion.install "assets/completions/chezmoi-completion.bash"
-    zsh_completion.install "assets/completions/chezmoi.zsh" => "_chezmoi"
-    fish_completion.install "assets/completions/chezmoi.fish"
+    bash_completion.install "completions/chezmoi-completion.bash"
+    zsh_completion.install "completions/chezmoi.zsh" => "_chezmoi"
+    fish_completion.install "completions/chezmoi.fish"
   description: "Manage your dotfiles across multiple machines, securely."
 
 scoop:
@@ -152,4 +152,4 @@ snapcrafts:
   confinement: classic
   apps:
     chezmoi:
-      completer: assets/completions/chezmoi-completion.bash
+      completer: completions/chezmoi-completion.bash

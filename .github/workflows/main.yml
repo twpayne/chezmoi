@@ -50,9 +50,9 @@ jobs:
     - name: Check completions
       if: matrix.os == 'ubuntu-latest'
       run: |
-        go run . completion bash > assets/completions/chezmoi-completion.bash
-        go run . completion fish > assets/completions/chezmoi.fish
-        go run . completion zsh > assets/completions/chezmoi.zsh
+        go run . completion bash > completions/chezmoi-completion.bash
+        go run . completion fish > completions/chezmoi.fish
+        go run . completion zsh > completions/chezmoi.zsh
         git diff --exit-code
     - name: Test release
       if: matrix.os == 'ubuntu-latest'
