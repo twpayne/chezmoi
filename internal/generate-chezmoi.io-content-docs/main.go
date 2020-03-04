@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path"
 	"regexp"
+	"strings"
 )
 
 var (
@@ -14,14 +16,10 @@ var (
 	shortTitle = flag.String("shorttitle", "", "short title")
 	longTitle  = flag.String("longtitle", "", "long title")
 
-	replaceURLRegexps = map[string]*regexp.Regexp{
-		"/docs/changes/":      regexp.MustCompile(`https://github.com/twpayne/chezmoi/blob/master/docs/CHANGES.md`),
-		"/docs/contributing/": regexp.MustCompile(`https://github.com/twpayne/chezmoi/blob/master/docs/CONTRIBUTING.md`),
-		"/docs/faq/":          regexp.MustCompile(`https://github.com/twpayne/chezmoi/blob/master/docs/FAQ.md`),
-		"/docs/how-to/":       regexp.MustCompile(`https://github.com/twpayne/chezmoi/blob/master/docs/HOWTO.md`),
-		"/docs/install/":      regexp.MustCompile(`https://github.com/twpayne/chezmoi/blob/master/docs/INSTALL.md`),
-		"/docs/quick-start/":  regexp.MustCompile(`https://github.com/twpayne/chezmoi/blob/master/docs/QUICKSTART.md`),
-		"/docs/reference/":    regexp.MustCompile(`https://github.com/twpayne/chezmoi/blob/master/docs/REFERENCE.md`),
+	replaceURLRegexp       = regexp.MustCompile(`https://github.com/twpayne/chezmoi/blob/master/docs/[A-Z]+.md`)
+	nonStandardPageRenames = map[string]string{
+		"HOWTO":      "how-to",
+		"QUICKSTART": "quick-start",
 	}
 )
 
@@ -56,9 +54,16 @@ func run() error {
 			}
 		case "copy-content":
 			text := s.Text()
-			for docsURL, re := range replaceURLRegexps {
-				text = re.ReplaceAllString(text, docsURL)
-			}
+			text = replaceURLRegexp.ReplaceAllStringFunc(text, func(s string) string {
+				name := path.Base(s)
+				name = strings.TrimSuffix(name, path.Ext(name))
+				var ok bool
+				newName, ok := nonStandardPageRenames[name]
+				if !ok {
+					newName = strings.ToLower(name)
+				}
+				return "/docs/" + newName + "/"
+			})
 			fmt.Println(text)
 		}
 	}
