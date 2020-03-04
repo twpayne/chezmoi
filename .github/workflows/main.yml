@@ -6,7 +6,7 @@ jobs:
     strategy:
       matrix:
         go-version:
-        - 1.13.x
+        - 1.14.x
         os:
         - macos-latest
         - ubuntu-latest
@@ -38,7 +38,7 @@ jobs:
     - name: Run
       run: go run . --version
     - name: Test
-      run: go test -race ./...
+      run: go test ./... # FIXME add -race when https://github.com/etcd-io/bbolt/issues/187 is fixed
     - name: Lint
       if: matrix.os == 'ubuntu-latest'
       run: $(go env GOPATH)/bin/golangci-lint run
@@ -70,7 +70,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v1
       with:
-        go-version: 1.13.x
+        go-version: 1.14.x
     - name: Checkout
       uses: actions/checkout@v1
     - name: Download Go modules
