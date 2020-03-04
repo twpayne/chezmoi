@@ -30,6 +30,8 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
+const commitMessageTemplateAsset = "assets/templates/COMMIT_MESSAGE.tmpl"
+
 type sourceVCSConfig struct {
 	Command    string
 	AutoCommit bool
@@ -199,7 +201,7 @@ func (c *Config) autoCommit(vcs VCS) error {
 	if err != nil {
 		return err
 	}
-	commitMessageText, err := getAsset("templates/COMMIT_MESSAGE.tmpl")
+	commitMessageText, err := getAsset(commitMessageTemplateAsset)
 	if err != nil {
 		return err
 	}
