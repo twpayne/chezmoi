@@ -124,12 +124,12 @@ Have a look at [repos tagged with `chezmoi` on GitHub](https://github.com/topics
 
 ## How do I start with chezmoi?
 
-[Install chezmoi](docs/INSTALL.md) then read the [quick start
-guide](docs/QUICKSTART.md). The [how-to guide](docs/HOWTO.md) covers most common
-tasks, and there's the [frequently asked questions](docs/FAQ.md) for specific
-questions. You can browse other people's [dotfiles that use
+[Install chezmoi](/docs/install/) then read the [quick start
+guide](/docs/quick-start/). The [how-to guide](/docs/how-to/) covers most
+common tasks, and there's the [frequently asked questions](/docs/faq/) for
+specific questions. You can browse other people's [dotfiles that use
 chezmoi](https://github.com/topics/chezmoi). For a full description of chezmoi,
-consult the [reference](docs/REFERENCE.md). If all else fails, [open an
+consult the [reference](/docs/reference/). If all else fails, [open an
 issue](https://github.com/twpayne/chezmoi/issues/new/choose).
 
 ## License

@@ -6,12 +6,23 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"regexp"
 )
 
 var (
 	debug      = flag.Bool("debug", false, "debug")
 	shortTitle = flag.String("shorttitle", "", "short title")
 	longTitle  = flag.String("longtitle", "", "long title")
+
+	replaceURLRegexps = map[string]*regexp.Regexp{
+		"/docs/changes/":      regexp.MustCompile(`https://github.com/twpayne/chezmoi/blob/master/docs/CHANGES.md`),
+		"/docs/contributing/": regexp.MustCompile(`https://github.com/twpayne/chezmoi/blob/master/docs/CONTRIBUTING.md`),
+		"/docs/faq/":          regexp.MustCompile(`https://github.com/twpayne/chezmoi/blob/master/docs/FAQ.md`),
+		"/docs/how-to/":       regexp.MustCompile(`https://github.com/twpayne/chezmoi/blob/master/docs/HOWTO.md`),
+		"/docs/install/":      regexp.MustCompile(`https://github.com/twpayne/chezmoi/blob/master/docs/INSTALL.md`),
+		"/docs/quick-start/":  regexp.MustCompile(`https://github.com/twpayne/chezmoi/blob/master/docs/QUICKSTART.md`),
+		"/docs/reference/":    regexp.MustCompile(`https://github.com/twpayne/chezmoi/blob/master/docs/REFERENCE.md`),
+	}
 )
 
 func run() error {
@@ -44,7 +55,11 @@ func run() error {
 				state = "copy-content"
 			}
 		case "copy-content":
-			fmt.Println(s.Text())
+			text := s.Text()
+			for docsURL, re := range replaceURLRegexps {
+				text = re.ReplaceAllString(text, docsURL)
+			}
+			fmt.Println(text)
 		}
 	}
 	return s.Err()
