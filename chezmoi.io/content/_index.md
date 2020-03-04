@@ -76,7 +76,7 @@ If you're using any of the following methods:
 
 * A custom shell script to install your dotfiles.
 * [GNU Stow](http://brandon.invergo.net/news/2012-05-26-using-gnu-stow-to-manage-your-dotfiles.html).
-* [`yadm`](https://yadm.io/)
+* [`yadm`](https://yadm.io/).
 * A [bare git repo](https://www.atlassian.com/git/tutorials/dotfiles).
 
 Then you've probably run into at least one of the following problems:
