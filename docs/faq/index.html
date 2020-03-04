@@ -178,7 +178,7 @@ to the source state.</p>
 <h2 id="chezmois-source-file-naming-system-cannot-handle-all-possible-filenames">chezmoi&rsquo;s source file naming system cannot handle all possible filenames</h2>
 <p>This is correct. Certain target filenames, for example <code>~/dot_example</code>, are
 incompatible with chezmoi&rsquo;s
-<a href="https://github.com/twpayne/chezmoi/blob/master/docs/REFERENCE.md#source-state-attributes">attributes</a>
+<a href="/docs/reference.md#source-state-attributes">attributes</a>
 used in the source state.</p>
 <p>This is a deliberate, practical compromise. Target state metadata (private,
 encrypted, etc.) need to be stored for each file. Using the source state
@@ -247,7 +247,7 @@ GitHub</a>.</p>
     <nav id="TableOfContents">
   <ul>
     <li><a href="#how-can-i-quickly-check-for-problems-with-chezmoi-on-my-machine">How can I quickly check for problems with chezmoi on my machine?</a></li>
-    <li><a href="#what-are-the-consequences-of-bare-modifications-to-the-target-files-if-my-zshrc-is-managed-by-chezmoi-and-i-edit-zshrc-without-using-chezmoi-edit-what-happens">What are the consequences of &ldquo;bare&rdquo; modifications to the target files? If my .zshrc is managed by chezmoi and I edit ~/.zshrc without using chezmoi edit, what happens?</a></li>
+    <li><a href="#what-are-the-consequences-of-bare-modifications-to-the-target-files-if-my-zshrc-is-managed-by-chezmoi-and-i-edit-zshrc-without-using-chezmoi-edit-what-happens">What are the consequences of &ldquo;bare&rdquo; modifications to the target files? If my <code>.zshrc</code> is managed by chezmoi and I edit <code>~/.zshrc</code> without using <code>chezmoi edit</code>, what happens?</a></li>
     <li><a href="#how-can-i-tell-what-dotfiles-in-my-home-directory-arent-managed-by-chezmoi-is-there-an-easy-way-to-have-chezmoi-manage-a-subset-of-them">How can I tell what dotfiles in my home directory aren&rsquo;t managed by chezmoi? Is there an easy way to have chezmoi manage a subset of them?</a></li>
     <li><a href="#if-theres-a-mechanism-in-place-for-the-above-is-there-also-a-way-to-tell-chezmoi-to-ignore-specific-files-or-groups-of-files-eg-by-directory-name-or-by-glob">If there&rsquo;s a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?</a></li>
     <li><a href="#if-the-target-already-exists-but-is-behind-the-source-can-chezmoi-be-configured-to-preserve-the-target-version-before-replacing-it-with-one-derived-from-the-source">If the target already exists, but is &ldquo;behind&rdquo; the source, can chezmoi be configured to preserve the target version before replacing it with one derived from the source?</a></li>
