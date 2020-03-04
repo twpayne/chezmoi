@@ -34,7 +34,7 @@ generate:
 
 .PHONY: install-tools
 install-tools:
-	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- v1.23.3
+	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- v1.23.8
 	( cd $$(mktemp -d) && go mod init tmp && go get mvdan.cc/gofumpt/gofumports )
 
 .PHONY: lint
