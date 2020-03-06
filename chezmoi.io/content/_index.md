@@ -9,20 +9,22 @@ Manage your dotfiles across multiple machines, securely.
 
 ## What does chezmoi do and why should I use it?
 
-chezmoi helps you manage your personal configuration files (dotfiles) across
-multiple machines. It is particularly helpful if you have spent time customizing
-the tools you use (e.g. shells, editors, and version control systems) and want
-to keep machines running different accounts (e.g. home and work) and/or
-different operating systems (e.g. Linux and macOS) in sync, while still being
-able to easily cope with differences from machine to machine.
+chezmoi helps you manage your personal configuration files (dotfiles, like
+`~/.bashrc`) across multiple machines.
 
-chezmoi has particularly strong support for security, allowing you to manage
-secrets (e.g. passwords, access tokens, and private keys) securely and
-seamlessly using either gpg encryption or a password manager of your choice.
+chezmoi is helpful if you have spent time customizing the tools you use (e.g.
+shells, editors, and version control systems) and want to keep machines running
+different accounts (e.g. home and work) and/or different operating systems (e.g.
+Linux and macOS) in sync, while still being able to easily cope with differences
+from machine to machine.
+
+chezmoi has strong support for security, allowing you to manage secrets (e.g.
+passwords, access tokens, and private keys) securely and seamlessly using a
+password manager of your choice or gpg encryption.
 
 In all cases you only need to maintain a single source of truth: a single branch
 in a version control system (e.g. git) for everything public and a single
-password manager for all your secrets, with seamless integration between them.
+password manager for all your secrets.
 
 If you do not personalize your configuration or only ever use a single operating
 system with a single account and none of your dotfiles contain secrets then you
@@ -44,8 +46,7 @@ don't need chezmoi. Otherwise, read on...
   [Bitwarden](https://bitwarden.com/), [gopass](https://www.gopass.pw/),
   [KeePassXC](https://keepassxc.org/), [LastPass](https://lastpass.com/),
   [pass](https://www.passwordstore.org/), [Vault](https://www.vaultproject.io/),
-  your Keychain (on macOS), [GNOME
-  Keyring](https://wiki.gnome.org/Projects/GnomeKeyring) (on Linux), or any
+  Keychain, [Keyring](https://wiki.gnome.org/Projects/GnomeKeyring), or any
   command-line utility of your choice. You can encrypt individual files with
   [gpg](https://www.gnupg.org). You can checkout your dotfiles repo on as many
   machines as you want without revealing any secrets to anyone.
