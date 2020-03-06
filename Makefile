@@ -34,7 +34,7 @@ generate:
 
 .PHONY: install-tools
 install-tools:
-	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- v1.23.3
+	curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- v1.23.8
 	( cd $$(mktemp -d) && go mod init tmp && go get mvdan.cc/gofumpt/gofumports )
 
 .PHONY: lint
@@ -57,7 +57,8 @@ test-release:
 
 .PHONY: test
 test:
-	go test -race ./...
+	# FIXME add -race when https://github.com/etcd-io/bbolt/issues/187 is fixed
+	go test ./...
 
 .PHONY: update-install.sh
 update-install.sh:
