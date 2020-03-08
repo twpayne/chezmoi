@@ -40,9 +40,13 @@ entire directories with `chezmoi add -r`.
 ## If there's a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?
 
 By default, chezmoi ignores everything that you haven't explicitly `chezmoi
-add`ed. If have files in your source directory that you don't want added to your
-destination directory when you run `chezmoi apply` add them to a
-`.chezmoiignore` file (which supports globs and is also a template).
+add`'ed. If have files in your source directory that you don't want added to
+your destination directory when you run `chezmoi apply` add their names to a
+file called `.chezmoiignore` in the source state.
+
+Patterns are supported, and the you can change what's ignored from machine to
+machine. The full usage and syntax is described in the [reference
+manual](https://github.com/twpayne/chezmoi/blob/master/docs/REFERENCE.md#chezmoiignore).
 
 ## If the target already exists, but is "behind" the source, can chezmoi be configured to preserve the target version before replacing it with one derived from the source?
 

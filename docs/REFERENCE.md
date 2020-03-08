@@ -261,20 +261,34 @@ config file formats.
 ### `.chezmoiignore`
 
 If a file called `.chezmoiignore` exists in the source state then it is
-interpreted as a list of globs to ignore. Notably, `.chezmoiignore` is
-interpreted as a template. Patterns can be excluded by prefixing them with a
-`!`. All excludes (don't ignore) take priority over all includes (ignore).
-`.chezmoiignore` files in subdirectories apply only to that subdirectory.
+interpreted as a set of patterns to ignore. Patterns are matched using the Go
+standard libary's [`filepath.Match` pattern
+syntax](https://pkg.go.dev/path/filepath?tab=doc#Match) and match against the
+target path, not the source path.
 
-`.chezmoiignore` is inspired by git's `.gitignore` files, but is a separate
-implementation and corner case behaviour may differ.
+Patterns can be excluded by prefixing them with a `!` character. All excludes
+take priority over all includes.
+
+Comments are introduced with the `#` character and run until the end of the
+line.
+
+`.chezmoiignore` is interpreted as a template. This allows different files to be
+ignored on different machines.
+
+`.chezmoiignore` files in subdirectories apply only to that subdirectory.
 
 #### `.chezmoiignore` examples
 
     README.md
+
+    *.txt   # ignore *.txt in the target directory
+    */*.txt # ignore *.txt in subdirectories of the target directory
+
     {{- if ne .email "john.smith@company.com" }}
-    .company-directory
+    # Ignore .company-directory unless configured with a company email
+    .company-directory # note that the pattern is not dot_company-directory
     {{- end }}
+
     {{- if ne .email "john@home.org }}
     .personal-file
     {{- end }}
