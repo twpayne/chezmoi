@@ -4,6 +4,7 @@
 * [Use a hosted repo to manage your dotfiles across multiple machines](#use-a-hosted-repo-to-manage-your-dotfiles-across-multiple-machines)
 * [Pull the latest changes from your repo and apply them](#pull-the-latest-changes-from-your-repo-and-apply-them)
 * [Pull the latest changes from your repo and see what would change, without actually applying the changes](#pull-the-latest-changes-from-your-repo-and-see-what-would-change-without-actually-applying-the-changes)
+* [Automatically commit and push changes to your repo](#automatically-commit-and-push-changes-to-your-repo)
 * [Use templates to manage files that vary from machine to machine](#use-templates-to-manage-files-that-vary-from-machine-to-machine)
 * [Create a config file on a new machine automatically](#create-a-config-file-on-a-new-machine-automatically)
 * [Ensure that a target is removed](#ensure-that-a-target-is-removed)
@@ -29,7 +30,6 @@
 * [Use a non-git version control system](#use-a-non-git-version-control-system)
 * [Use a merge tool other than vimdiff](#use-a-merge-tool-other-than-vimdiff)
 * [Migrate from a dotfile manager that uses symlinks](#migrate-from-a-dotfile-manager-that-uses-symlinks)
-* [Automatically commit and push changes to your repo](#automatically-commit-and-push-changes-to-your-repo)
 
 ## Use a hosted repo to manage your dotfiles across multiple machines
 
@@ -84,6 +84,27 @@ If you're happy with the changes, then you can run
     chezmoi apply
 
 to apply them.
+
+## Automatically commit and push changes to your repo
+
+chezmoi can automatically commit and push changes to your source directory to
+your repo. This feature is disabled by default. To enable it, add the following
+to your config file:
+
+    [sourceVCS]
+        autoCommit = true
+        autoPush = true
+
+Whenever a change is made to your source directory, chezmoi will commit the
+changes with an automatically-generated commit message (if `autoCommit` is true)
+and push them to your repo (if `autoPush` is true). `autoPush` implies
+`autoCommit`, i.e. if `autoPush` is true then chezmoi will auto-commit your
+changes. If you only set `autoCommit` to true then changes will be committed but
+not pushed.
+
+Be careful when using `autoPush`. If your dotfiles repo is public and you
+accidentally add a secret in plain text, that secret will be pushed to your
+public repo.
 
 ## Use templates to manage files that vary from machine to machine
 
@@ -672,27 +693,3 @@ This will tell `chezmoi add` that the target state of `~/.bashrc` is the target
 of the `~/.bashrc` symlink, rather than the symlink itself. When you run
 `chezmoi apply`, chezmoi will replace the `~/.bashrc` symlink with the file
 contents.
-
-# Explore experimental features
-
-## Automatically commit and push changes to your repo
-
-chezmoi includes an experimental feature to automatically commit and push
-changes to your source directory to your repo. This feature is disabled by
-default. To enable it, add the following to your config file:
-
-    [sourceVCS]
-        autoCommit = true
-        autoPush = true
-
-Whenever a change is made to your source directory, chezmoi will commit the
-changes with an automatically-generated commit message (if `autoCommit` is true)
-and push them to your repo (if `autoPush` is true). `autoPush` implies
-`autoCommit`, i.e. if `autoPush` is true then chezmoi will auto-commit your
-changes. If you only set `autoCommit` to true then changes will be committed but
-not pushed.
-
-`autoCommit` and `autoPush` are experimental features, likely to contain bugs
-(especially in corner cases) and will change in the future. If you encounter a
-problem or strange behavior, please [open an
-issue](https://github.com/twpayne/chezmoi/issues/new/choose).

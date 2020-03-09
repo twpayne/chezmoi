@@ -86,7 +86,9 @@ don't need chezmoi. Otherwise, read on...
 
 * Fast and easy to use: chezmoi runs in fractions of a second and makes most
   day-to-day operations one line commands, including installation,
-  initialization, and keeping your machines up-to-date.
+  initialization, and keeping your machines up-to-date. chezmoi can pull and
+  apply changes from your dotfiles repo in a single command, and automatically
+  commit and push changes.
 
 ## I already have a system to manage my dotfiles, why should I use chezmoi?
 
