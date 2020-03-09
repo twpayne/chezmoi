@@ -17,6 +17,7 @@
 * [Where does the name "chezmoi" come from?](#where-does-the-name-chezmoi-come-from)
 * [What other questions have been asked about chezmoi?](#what-other-questions-have-been-asked-about-chezmoi)
 * [Where do I ask a question that isn't answered here?](#where-do-i-ask-a-question-that-isnt-answered-here)
+* [I like chezmoi. How do I say thanks?](#i-like-chezmoi-how-do-i-say-thanks)
 
 ## How can I quickly check for problems with chezmoi on my machine?
 
@@ -205,3 +206,15 @@ GitHub](https://github.com/twpayne/chezmoi/issues?utf8=%E2%9C%93&q=is%3Aissue+so
 ## Where do I ask a question that isn't answered here?
 
 Please [open an issue on GitHub](https://github.com/twpayne/chezmoi/issues/new/choose).
+
+## I like chezmoi. How do I say thanks?
+
+Thank you! chezmoi was written to scratch a personal itch, and I'm very happy
+that it's useful to you. Please give [chezmoi a star on
+GitHub](https://github.com/twpayne/chezmoi/stargazers), and if you're happy to
+share your public dotfile repo then [tag it with
+`chezmoi`](https://github.com/topics/chezmoi). [Contributions are very
+welcome](https://github.com/twpayne/chezmoi/blob/master/docs/CONTRIBUTING.md)
+and every [bug report, support request, and feature
+request](https://github.com/twpayne/chezmoi/issues/new/choose) helps make
+chezmoi better. Thank you :)
