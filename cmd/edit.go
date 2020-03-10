@@ -57,7 +57,7 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string) error {
 		if c.edit.prompt {
 			cmd.Printf("warning: --prompt is currently ignored when edit is run with no arguments\n")
 		}
-		return c.run("", c.getEditor(), c.SourceDir)
+		return c.runEditor(c.SourceDir)
 	}
 
 	if c.edit.prompt {
