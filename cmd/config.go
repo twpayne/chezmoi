@@ -32,6 +32,8 @@ import (
 
 const commitMessageTemplateAsset = "assets/templates/COMMIT_MESSAGE.tmpl"
 
+var whitespaceRegexp = regexp.MustCompile(`\s+`)
+
 type sourceVCSConfig struct {
 	Command    string
 	AutoCommit bool
@@ -354,14 +356,16 @@ func (c *Config) getDefaultData() (map[string]interface{}, error) {
 	return data, nil
 }
 
-func (c *Config) getEditor() string {
-	if editor := os.Getenv("VISUAL"); editor != "" {
-		return editor
+func (c *Config) getEditor() (string, []string) {
+	editor := os.Getenv("VISUAL")
+	if editor == "" {
+		editor = os.Getenv("EDITOR")
 	}
-	if editor := os.Getenv("EDITOR"); editor != "" {
-		return editor
+	if editor == "" {
+		editor = "vi"
 	}
-	return "vi"
+	components := whitespaceRegexp.Split(editor, -1)
+	return components[0], components[1:]
 }
 
 func (c *Config) getEntries(ts *chezmoi.TargetState, args []string) ([]chezmoi.Entry, error) {
@@ -494,7 +498,8 @@ func (c *Config) run(dir, name string, argv ...string) error {
 }
 
 func (c *Config) runEditor(argv ...string) error {
-	return c.run("", c.getEditor(), argv...)
+	editorName, editorArgs := c.getEditor()
+	return c.run("", editorName, append(editorArgs, argv...)...)
 }
 
 func (c *Config) validateData() error {

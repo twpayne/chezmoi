@@ -109,6 +109,13 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		}
 	}
 
+	editorName, _ := c.getEditor()
+	editorCheck := &doctorBinaryCheck{
+		name:        "editor",
+		binaryName:  editorName,
+		mustSucceed: true,
+	}
+
 	allOK := true
 	for _, dc := range []doctorCheck{
 		&doctorVersionCheck{},
@@ -142,11 +149,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			path:    c.KeePassXC.Database,
 			canSkip: true,
 		},
-		&doctorBinaryCheck{
-			name:        "editor",
-			binaryName:  c.getEditor(),
-			mustSucceed: true,
-		},
+		editorCheck,
 		&doctorBinaryCheck{
 			name:       "merge command",
 			binaryName: c.Merge.Command,
