@@ -823,6 +823,44 @@ _chezmoi_edit-config()
     noun_aliases=()
 }
 
+_chezmoi_execute-template()
+{
+    last_command="chezmoi_execute-template"
+
+    command_aliases=()
+
+    commands=()
+
+    flags=()
+    two_word_flags=()
+    local_nonpersistent_flags=()
+    flags_with_completion=()
+    flags_completion=()
+
+    flags+=("--color=")
+    two_word_flags+=("--color")
+    flags+=("--config=")
+    two_word_flags+=("--config")
+    two_word_flags+=("-c")
+    flags+=("--debug")
+    flags+=("--destination=")
+    two_word_flags+=("--destination")
+    two_word_flags+=("-D")
+    flags+=("--dry-run")
+    flags+=("-n")
+    flags+=("--follow")
+    flags+=("--remove")
+    flags+=("--source=")
+    two_word_flags+=("--source")
+    two_word_flags+=("-S")
+    flags+=("--verbose")
+    flags+=("-v")
+
+    must_have_one_flag=()
+    must_have_one_noun=()
+    noun_aliases=()
+}
+
 _chezmoi_forget()
 {
     last_command="chezmoi_forget"
@@ -1847,6 +1885,7 @@ _chezmoi_root_command()
     commands+=("dump")
     commands+=("edit")
     commands+=("edit-config")
+    commands+=("execute-template")
     commands+=("forget")
     if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
         command_aliases+=("unmanage")

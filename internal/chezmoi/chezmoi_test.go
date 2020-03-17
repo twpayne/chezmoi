@@ -21,7 +21,7 @@ func TestReturnTemplateError(t *testing.T) {
 	} {
 		t.Run(name, func(t *testing.T) {
 			ts := NewTargetState("/home/user", 0, "/home/user/.chezmoi", nil, funcs, nil)
-			_, err := ts.executeTemplateData(name, []byte(dataString))
+			_, err := ts.ExecuteTemplateData(name, []byte(dataString))
 			assert.Error(t, err)
 		})
 	}

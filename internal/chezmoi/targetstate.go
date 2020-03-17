@@ -279,6 +279,25 @@ func (ts *TargetState) Evaluate() error {
 	return nil
 }
 
+// ExecuteTemplateData returns the result of executing template data.
+func (ts *TargetState) ExecuteTemplateData(name string, data []byte) ([]byte, error) {
+	tmpl, err := template.New(name).Option("missingkey=error").Funcs(ts.TemplateFuncs).Parse(string(data))
+	if err != nil {
+		return nil, err
+	}
+	for name, t := range ts.Templates {
+		tmpl, err = tmpl.AddParseTree(name, t.Tree)
+		if err != nil {
+			return nil, err
+		}
+	}
+	output := &bytes.Buffer{}
+	if err = tmpl.ExecuteTemplate(output, name, ts.Data); err != nil {
+		return nil, err
+	}
+	return output.Bytes(), nil
+}
+
 // Get returns the state of the given target, or nil if no such target is found.
 func (ts *TargetState) Get(fs vfs.Stater, target string) (Entry, error) {
 	contains, err := vfs.Contains(fs, target, ts.DestDir)
@@ -404,7 +423,7 @@ func (ts *TargetState) Populate(fs vfs.FS, options *PopulateOptions) error {
 							if err != nil {
 								return nil, err
 							}
-							return ts.executeTemplateData(path, data)
+							return ts.ExecuteTemplateData(path, data)
 						}
 					}
 				}
@@ -650,25 +669,7 @@ func (ts *TargetState) executeTemplate(fs vfs.FS, path string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	return ts.executeTemplateData(path, data)
-}
-
-func (ts *TargetState) executeTemplateData(name string, data []byte) ([]byte, error) {
-	tmpl, err := template.New(name).Option("missingkey=error").Funcs(ts.TemplateFuncs).Parse(string(data))
-	if err != nil {
-		return nil, err
-	}
-	for name, t := range ts.Templates {
-		tmpl, err = tmpl.AddParseTree(name, t.Tree)
-		if err != nil {
-			return nil, err
-		}
-	}
-	output := &bytes.Buffer{}
-	if err = tmpl.ExecuteTemplate(output, name, ts.Data); err != nil {
-		return nil, err
-	}
-	return output.Bytes(), nil
+	return ts.ExecuteTemplateData(path, data)
 }
 
 func (ts *TargetState) findEntries(dirNames []string) (map[string]Entry, error) {
