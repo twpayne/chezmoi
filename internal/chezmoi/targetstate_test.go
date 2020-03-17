@@ -99,7 +99,13 @@ func TestEndToEnd(t *testing.T) {
 			fs, cleanup, err := vfst.NewTestFS(tc.root)
 			require.NoError(t, err)
 			defer cleanup()
-			ts := NewTargetState(tc.destDir, tc.umask, tc.sourceDir, tc.data, tc.templateFuncs, nil)
+			ts := NewTargetState(
+				WithDestDir(tc.destDir),
+				WithSourceDir(tc.sourceDir),
+				WithTemplateData(tc.data),
+				WithTemplateFuncs(tc.templateFuncs),
+				WithUmask(tc.umask),
+			)
 			assert.NoError(t, ts.Populate(fs, nil))
 			applyOptions := &ApplyOptions{
 				DestDir:           ts.DestDir,
@@ -129,21 +135,18 @@ func TestTargetStatePopulate(t *testing.T) {
 				"/foo": "bar",
 			},
 			sourceDir: "/",
-			want: &TargetState{
-				DestDir:      "/",
-				TargetIgnore: NewPatternSet(),
-				TargetRemove: NewPatternSet(),
-				Umask:        0,
-				SourceDir:    "/",
-				Entries: map[string]Entry{
+			want: NewTargetState(
+				WithDestDir("/"),
+				WithSourceDir("/"),
+				WithEntries(map[string]Entry{
 					"foo": &File{
 						sourceName: "foo",
 						targetName: "foo",
 						Perm:       0666,
 						contents:   []byte("bar"),
 					},
-				},
-			},
+				}),
+			),
 		},
 		{
 			name: "dot_file",
@@ -151,21 +154,18 @@ func TestTargetStatePopulate(t *testing.T) {
 				"/dot_foo": "bar",
 			},
 			sourceDir: "/",
-			want: &TargetState{
-				DestDir:      "/",
-				TargetIgnore: NewPatternSet(),
-				TargetRemove: NewPatternSet(),
-				Umask:        0,
-				SourceDir:    "/",
-				Entries: map[string]Entry{
+			want: NewTargetState(
+				WithDestDir("/"),
+				WithEntries(map[string]Entry{
 					".foo": &File{
 						sourceName: "dot_foo",
 						targetName: ".foo",
 						Perm:       0666,
 						contents:   []byte("bar"),
 					},
-				},
-			},
+				}),
+				WithSourceDir("/"),
+			),
 		},
 		{
 			name: "private_file",
@@ -173,21 +173,18 @@ func TestTargetStatePopulate(t *testing.T) {
 				"/private_foo": "bar",
 			},
 			sourceDir: "/",
-			want: &TargetState{
-				DestDir:      "/",
-				TargetIgnore: NewPatternSet(),
-				TargetRemove: NewPatternSet(),
-				Umask:        0,
-				SourceDir:    "/",
-				Entries: map[string]Entry{
+			want: NewTargetState(
+				WithDestDir("/"),
+				WithEntries(map[string]Entry{
 					"foo": &File{
 						sourceName: "private_foo",
 						targetName: "foo",
 						Perm:       0600,
 						contents:   []byte("bar"),
 					},
-				},
-			},
+				}),
+				WithSourceDir("/"),
+			),
 		},
 		{
 			name: "file_in_subdir",
@@ -195,13 +192,9 @@ func TestTargetStatePopulate(t *testing.T) {
 				"/foo/bar": "baz",
 			},
 			sourceDir: "/",
-			want: &TargetState{
-				DestDir:      "/",
-				TargetIgnore: NewPatternSet(),
-				TargetRemove: NewPatternSet(),
-				Umask:        0,
-				SourceDir:    "/",
-				Entries: map[string]Entry{
+			want: NewTargetState(
+				WithDestDir("/"),
+				WithEntries(map[string]Entry{
 					"foo": &Dir{
 						sourceName: "foo",
 						targetName: "foo",
@@ -216,8 +209,9 @@ func TestTargetStatePopulate(t *testing.T) {
 							},
 						},
 					},
-				},
-			},
+				}),
+				WithSourceDir("/"),
+			),
 		},
 		{
 			name: "file_in_private_dot_subdir",
@@ -225,13 +219,9 @@ func TestTargetStatePopulate(t *testing.T) {
 				"/private_dot_foo/bar": "baz",
 			},
 			sourceDir: "/",
-			want: &TargetState{
-				DestDir:      "/",
-				TargetIgnore: NewPatternSet(),
-				TargetRemove: NewPatternSet(),
-				Umask:        0,
-				SourceDir:    "/",
-				Entries: map[string]Entry{
+			want: NewTargetState(
+				WithDestDir("/"),
+				WithEntries(map[string]Entry{
 					".foo": &Dir{
 						sourceName: "private_dot_foo",
 						targetName: ".foo",
@@ -246,8 +236,9 @@ func TestTargetStatePopulate(t *testing.T) {
 							},
 						},
 					},
-				},
-			},
+				}),
+				WithSourceDir("/"),
+			),
 		},
 		{
 			name: "template_dot_file",
@@ -258,16 +249,9 @@ func TestTargetStatePopulate(t *testing.T) {
 			data: map[string]interface{}{
 				"Email": "john.smith@company.com",
 			},
-			want: &TargetState{
-				DestDir:      "/",
-				TargetIgnore: NewPatternSet(),
-				TargetRemove: NewPatternSet(),
-				Umask:        0,
-				SourceDir:    "/",
-				Data: map[string]interface{}{
-					"Email": "john.smith@company.com",
-				},
-				Entries: map[string]Entry{
+			want: NewTargetState(
+				WithDestDir("/"),
+				WithEntries(map[string]Entry{
 					".gitconfig": &File{
 						sourceName: "dot_gitconfig.tmpl",
 						targetName: ".gitconfig",
@@ -275,8 +259,12 @@ func TestTargetStatePopulate(t *testing.T) {
 						Template:   true,
 						contents:   []byte("[user]\n\temail = john.smith@company.com\n"),
 					},
-				},
-			},
+				}),
+				WithSourceDir("/"),
+				WithTemplateData(map[string]interface{}{
+					"Email": "john.smith@company.com",
+				}),
+			),
 		},
 		{
 			name: "file_in_exact_dir",
@@ -284,13 +272,9 @@ func TestTargetStatePopulate(t *testing.T) {
 				"/exact_dir/foo": "bar",
 			},
 			sourceDir: "/",
-			want: &TargetState{
-				DestDir:      "/",
-				TargetIgnore: NewPatternSet(),
-				TargetRemove: NewPatternSet(),
-				Umask:        0,
-				SourceDir:    "/",
-				Entries: map[string]Entry{
+			want: NewTargetState(
+				WithDestDir("/"),
+				WithEntries(map[string]Entry{
 					"dir": &Dir{
 						sourceName: "exact_dir",
 						targetName: "dir",
@@ -305,8 +289,9 @@ func TestTargetStatePopulate(t *testing.T) {
 							},
 						},
 					},
-				},
-			},
+				}),
+				WithSourceDir("/"),
+			),
 		},
 		{
 			name: "symlink",
@@ -314,20 +299,17 @@ func TestTargetStatePopulate(t *testing.T) {
 				"/symlink_foo": "bar",
 			},
 			sourceDir: "/",
-			want: &TargetState{
-				DestDir:      "/",
-				TargetIgnore: NewPatternSet(),
-				TargetRemove: NewPatternSet(),
-				Umask:        0,
-				SourceDir:    "/",
-				Entries: map[string]Entry{
+			want: NewTargetState(
+				WithDestDir("/"),
+				WithEntries(map[string]Entry{
 					"foo": &Symlink{
 						sourceName: "symlink_foo",
 						targetName: "foo",
 						linkname:   "bar",
 					},
-				},
-			},
+				}),
+				WithSourceDir("/"),
+			),
 		},
 		{
 			name: "symlink_dot_foo",
@@ -335,20 +317,17 @@ func TestTargetStatePopulate(t *testing.T) {
 				"/symlink_dot_foo": "bar",
 			},
 			sourceDir: "/",
-			want: &TargetState{
-				DestDir:      "/",
-				TargetIgnore: NewPatternSet(),
-				TargetRemove: NewPatternSet(),
-				Umask:        0,
-				SourceDir:    "/",
-				Entries: map[string]Entry{
+			want: NewTargetState(
+				WithDestDir("/"),
+				WithEntries(map[string]Entry{
 					".foo": &Symlink{
 						sourceName: "symlink_dot_foo",
 						targetName: ".foo",
 						linkname:   "bar",
 					},
-				},
-			},
+				}),
+				WithSourceDir("/"),
+			),
 		},
 		{
 			name: "symlink_template",
@@ -359,24 +338,21 @@ func TestTargetStatePopulate(t *testing.T) {
 			data: map[string]interface{}{
 				"host": "example.com",
 			},
-			want: &TargetState{
-				DestDir:      "/",
-				TargetIgnore: NewPatternSet(),
-				TargetRemove: NewPatternSet(),
-				Umask:        0,
-				SourceDir:    "/",
-				Data: map[string]interface{}{
-					"host": "example.com",
-				},
-				Entries: map[string]Entry{
+			want: NewTargetState(
+				WithDestDir("/"),
+				WithEntries(map[string]Entry{
 					"foo": &Symlink{
 						sourceName: "symlink_foo.tmpl",
 						targetName: "foo",
 						Template:   true,
 						linkname:   "bar-example.com",
 					},
-				},
-			},
+				}),
+				WithSourceDir("/"),
+				WithTemplateData(map[string]interface{}{
+					"host": "example.com",
+				}),
+			),
 		},
 		{
 			name: "ignore_pattern",
@@ -386,21 +362,18 @@ func TestTargetStatePopulate(t *testing.T) {
 					"!g\n",
 			},
 			sourceDir: "/",
-			want: &TargetState{
-				DestDir: "/",
-				TargetIgnore: &PatternSet{
+			want: NewTargetState(
+				WithDestDir("/"),
+				WithSourceDir("/"),
+				WithTargetIgnore(&PatternSet{
 					includes: map[string]struct{}{
 						"f*": {},
 					},
 					excludes: map[string]struct{}{
 						"g": {},
 					},
-				},
-				TargetRemove: NewPatternSet(),
-				Umask:        0,
-				SourceDir:    "/",
-				Entries:      map[string]Entry{},
-			},
+				}),
+			),
 		},
 		{
 			name: "remove_pattern",
@@ -410,21 +383,18 @@ func TestTargetStatePopulate(t *testing.T) {
 					"!g\n",
 			},
 			sourceDir: "/",
-			want: &TargetState{
-				DestDir:      "/",
-				TargetIgnore: NewPatternSet(),
-				TargetRemove: &PatternSet{
+			want: NewTargetState(
+				WithDestDir("/"),
+				WithSourceDir("/"),
+				WithTargetRemove(&PatternSet{
 					includes: map[string]struct{}{
 						"f*": {},
 					},
 					excludes: map[string]struct{}{
 						"g": {},
 					},
-				},
-				Umask:     0,
-				SourceDir: "/",
-				Entries:   map[string]Entry{},
-			},
+				}),
+			),
 		},
 		{
 			name: "ignore_subdir",
@@ -434,28 +404,26 @@ func TestTargetStatePopulate(t *testing.T) {
 					"!bar\n",
 			},
 			sourceDir: "/",
-			want: &TargetState{
-				DestDir: "/",
-				TargetIgnore: &PatternSet{
-					includes: map[string]struct{}{
-						filepath.Join("dir", "foo"): {},
-					},
-					excludes: map[string]struct{}{
-						filepath.Join("dir", "bar"): {},
-					},
-				},
-				TargetRemove: NewPatternSet(),
-				Umask:        0,
-				SourceDir:    "/",
-				Entries: map[string]Entry{
+			want: NewTargetState(
+				WithDestDir("/"),
+				WithEntries(map[string]Entry{
 					"dir": &Dir{
 						sourceName: "dir",
 						targetName: "dir",
 						Perm:       0777,
 						Entries:    map[string]Entry{},
 					},
-				},
-			},
+				}),
+				WithSourceDir("/"),
+				WithTargetIgnore(&PatternSet{
+					includes: map[string]struct{}{
+						filepath.Join("dir", "foo"): {},
+					},
+					excludes: map[string]struct{}{
+						filepath.Join("dir", "bar"): {},
+					},
+				}),
+			),
 		},
 		{
 			name: "min_version",
@@ -464,22 +432,19 @@ func TestTargetStatePopulate(t *testing.T) {
 				"/foo":             "bar",
 			},
 			sourceDir: "/",
-			want: &TargetState{
-				DestDir:      "/",
-				TargetRemove: NewPatternSet(),
-				TargetIgnore: NewPatternSet(),
-				Umask:        0,
-				SourceDir:    "/",
-				Entries: map[string]Entry{
+			want: NewTargetState(
+				WithDestDir("/"),
+				WithEntries(map[string]Entry{
 					"foo": &File{
 						sourceName: "foo",
 						targetName: "foo",
 						Perm:       0666,
 						contents:   []byte("bar"),
 					},
-				},
-				MinVersion: semver.Must(semver.NewVersion("1.2.3")),
-			},
+				}),
+				WithMinVersion(semver.Must(semver.NewVersion("1.2.3"))),
+				WithSourceDir("/"),
+			),
 		},
 		{
 			name: "empty_template_dir",
@@ -487,14 +452,10 @@ func TestTargetStatePopulate(t *testing.T) {
 				"/.chezmoitemplates": &vfst.Dir{Perm: 0755},
 			},
 			sourceDir: "/",
-			want: &TargetState{
-				DestDir:      "/",
-				TargetRemove: NewPatternSet(),
-				TargetIgnore: NewPatternSet(),
-				Umask:        0,
-				SourceDir:    "/",
-				Entries:      map[string]Entry{},
-			},
+			want: NewTargetState(
+				WithDestDir("/"),
+				WithSourceDir("/"),
+			),
 		},
 		{
 			name: "template_dir",
@@ -502,24 +463,25 @@ func TestTargetStatePopulate(t *testing.T) {
 				"/.chezmoitemplates/foo": "bar",
 			},
 			sourceDir: "/",
-			want: &TargetState{
-				DestDir:      "/",
-				TargetIgnore: NewPatternSet(),
-				TargetRemove: NewPatternSet(),
-				Umask:        0,
-				SourceDir:    "/",
-				Entries:      map[string]Entry{},
-				Templates: map[string]*template.Template{
+			want: NewTargetState(
+				WithDestDir("/"),
+				WithSourceDir("/"),
+				WithTemplates(map[string]*template.Template{
 					"foo": template.Must(template.New("foo").Parse("bar")),
-				},
-			},
+				}),
+			),
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			fs, cleanup, err := vfst.NewTestFS(tc.root)
 			require.NoError(t, err)
 			defer cleanup()
-			ts := NewTargetState("/", 0, tc.sourceDir, tc.data, tc.templateFuncs, nil)
+			ts := NewTargetState(
+				WithDestDir("/"),
+				WithSourceDir(tc.sourceDir),
+				WithTemplateData(tc.data),
+				WithTemplateFuncs(tc.templateFuncs),
+			)
 			assert.NoError(t, ts.Populate(fs, nil))
 			assert.NoError(t, ts.Evaluate())
 			assert.Equal(t, tc.want, ts)

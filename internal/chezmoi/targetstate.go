@@ -48,31 +48,109 @@ type PopulateOptions struct {
 // A TargetState represents the root target state.
 type TargetState struct {
 	DestDir       string
+	Entries       map[string]Entry
+	GPG           *GPG
+	MinVersion    *semver.Version
+	SourceDir     string
 	TargetIgnore  *PatternSet
 	TargetRemove  *PatternSet
-	Umask         os.FileMode
-	SourceDir     string
-	Data          map[string]interface{}
+	TemplateData  map[string]interface{}
 	TemplateFuncs template.FuncMap
 	Templates     map[string]*template.Template
-	GPG           *GPG
-	Entries       map[string]Entry
-	MinVersion    *semver.Version
+	Umask         os.FileMode
 }
 
-// NewTargetState creates a new TargetState.
-func NewTargetState(destDir string, umask os.FileMode, sourceDir string, data map[string]interface{}, templateFuncs template.FuncMap, gpg *GPG) *TargetState {
-	return &TargetState{
-		DestDir:       destDir,
-		TargetIgnore:  NewPatternSet(),
-		TargetRemove:  NewPatternSet(),
-		Umask:         umask,
-		SourceDir:     sourceDir,
-		Data:          data,
-		TemplateFuncs: templateFuncs,
-		GPG:           gpg,
-		Entries:       make(map[string]Entry),
+// A TargetStateOption sets an option on a TargeState.
+type TargetStateOption func(*TargetState)
+
+// WithDestDir sets DestDir.
+func WithDestDir(destDir string) TargetStateOption {
+	return func(ts *TargetState) {
+		ts.DestDir = destDir
 	}
+}
+
+// WithEntries sets the entries.
+func WithEntries(entries map[string]Entry) TargetStateOption {
+	return func(ts *TargetState) {
+		ts.Entries = entries
+	}
+}
+
+// WithGPG sets the GPG options.
+func WithGPG(gpg *GPG) TargetStateOption {
+	return func(ts *TargetState) {
+		ts.GPG = gpg
+	}
+}
+
+// WithMinVersion sets the minimum version.
+func WithMinVersion(minVersion *semver.Version) TargetStateOption {
+	return func(ts *TargetState) {
+		ts.MinVersion = minVersion
+	}
+}
+
+// WithSourceDir sets the source directory.
+func WithSourceDir(sourceDir string) TargetStateOption {
+	return func(ts *TargetState) {
+		ts.SourceDir = sourceDir
+	}
+}
+
+// WithTargetIgnore sets the target patterns to ignore.
+func WithTargetIgnore(targetIgnore *PatternSet) TargetStateOption {
+	return func(ts *TargetState) {
+		ts.TargetIgnore = targetIgnore
+	}
+}
+
+// WithTargetRemove sets the target patterns to remove.
+func WithTargetRemove(targetRemove *PatternSet) TargetStateOption {
+	return func(ts *TargetState) {
+		ts.TargetRemove = targetRemove
+	}
+}
+
+// WithTemplateData sets the template data.
+func WithTemplateData(templateData map[string]interface{}) TargetStateOption {
+	return func(ts *TargetState) {
+		ts.TemplateData = templateData
+	}
+}
+
+// WithTemplateFuncs sets the template functions.
+func WithTemplateFuncs(templateFuncs template.FuncMap) TargetStateOption {
+	return func(ts *TargetState) {
+		ts.TemplateFuncs = templateFuncs
+	}
+}
+
+// WithTemplates sets the templates.
+func WithTemplates(templates map[string]*template.Template) TargetStateOption {
+	return func(ts *TargetState) {
+		ts.Templates = templates
+	}
+}
+
+// WithUmask sets the umask.
+func WithUmask(umask os.FileMode) TargetStateOption {
+	return func(ts *TargetState) {
+		ts.Umask = umask
+	}
+}
+
+// NewTargetState creates a new TargetState with the given options.
+func NewTargetState(options ...TargetStateOption) *TargetState {
+	ts := &TargetState{
+		Entries:      make(map[string]Entry),
+		TargetIgnore: NewPatternSet(),
+		TargetRemove: NewPatternSet(),
+	}
+	for _, o := range options {
+		o(ts)
+	}
+	return ts
 }
 
 // Add adds a new target to ts.
@@ -158,7 +236,7 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 			return err
 		}
 		if addOptions.Template && addOptions.AutoTemplate {
-			contents = autoTemplate(contents, ts.Data)
+			contents = autoTemplate(contents, ts.TemplateData)
 		}
 		if addOptions.Encrypt {
 			contents, err = ts.GPG.Encrypt(targetPath, contents)
@@ -292,7 +370,7 @@ func (ts *TargetState) ExecuteTemplateData(name string, data []byte) ([]byte, er
 		}
 	}
 	output := &bytes.Buffer{}
-	if err = tmpl.ExecuteTemplate(output, name, ts.Data); err != nil {
+	if err = tmpl.ExecuteTemplate(output, name, ts.TemplateData); err != nil {
 		return nil, err
 	}
 	return output.Bytes(), nil

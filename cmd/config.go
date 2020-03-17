@@ -432,7 +432,14 @@ func (c *Config) getTargetState(populateOptions *chezmoi.PopulateOptions) (*chez
 		c.GPG.Recipient = c.GPGRecipient
 	}
 
-	ts := chezmoi.NewTargetState(destDir, os.FileMode(c.Umask), c.SourceDir, data, c.templateFuncs, &c.GPG)
+	ts := chezmoi.NewTargetState(
+		chezmoi.WithDestDir(destDir),
+		chezmoi.WithGPG(&c.GPG),
+		chezmoi.WithSourceDir(c.SourceDir),
+		chezmoi.WithTemplateData(data),
+		chezmoi.WithTemplateFuncs(c.templateFuncs),
+		chezmoi.WithUmask(os.FileMode(c.Umask)),
+	)
 	if err := ts.Populate(fs, populateOptions); err != nil {
 		return nil, err
 	}
