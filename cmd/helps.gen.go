@@ -209,6 +209,21 @@ var helps = map[string]help{
 			"\n" +
 			"    chezmoi edit-config",
 	},
+	"execute-template": {
+		long: "" +
+			"Description:\n" +
+			"  Write the result of evaluating *templates* to stdout. This is useful for\n" +
+			"  testing templates or for calling chezmoi from other scripts. *templates* are\n" +
+			"  interpeted as literal template data, with no whitespace added to the output\n" +
+			"  between arguments. If no templates are specified, the template data are read\n" +
+			"  from stdin.\n" +
+			"\n" +
+			"  `execute-template` examples\n" +
+			"\n" +
+			"    chezmoi execute-template '{{ .chezmoi.sourceDir }}'\n" +
+			"    chezmoi execute-template '{{ .chezmoi.os }}' / '{{ .chezmoi.arch }}'\n" +
+			"    echo '{{ .chezmoi | toJson }}' | chezmoi execute-template",
+	},
 	"forget": {
 		long: "" +
 			"Description:\n" +

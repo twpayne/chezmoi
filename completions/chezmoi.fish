@@ -1,7 +1,7 @@
 
 function __fish_chezmoi_no_subcommand --description 'Test if chezmoi has yet to be given the subcommand'
 	for i in (commandline -opc)
-		if contains -- $i add apply archive cat cd chattr completion data diff docs doctor dump edit edit-config forget git hg import init merge remove secret source source-path unmanaged update upgrade verify
+		if contains -- $i add apply archive cat cd chattr completion data diff docs doctor dump edit edit-config execute-template forget git hg import init merge remove secret source source-path unmanaged update upgrade verify
 			return 1
 		end
 	end
@@ -49,6 +49,7 @@ complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a doctor -d 'Check you
 complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a dump -d 'Write a dump of the target state to stdout'
 complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a edit -d 'Edit the source state of a target'
 complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a edit-config -d 'Edit the configuration file'
+complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a execute-template -d 'Write the result of executing the given template(s) to stdout'
 complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a forget -d 'Remove a target from the source state'
 complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a git -d 'Run git in the source directory'
 complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a hg -d 'Run mercurial in the source directory'
@@ -216,6 +217,15 @@ complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path edit-config'   -l
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path edit-config'   -l remove -d 'remove targets'
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path edit-config' -r -s S -l source -d 'source directory'
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path edit-config'  -s v -l verbose -d 'verbose'
+complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path execute-template' -r  -l color -d 'colorize diffs'
+complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path execute-template' -r -s c -l config -d 'config file'
+complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path execute-template'   -l debug -d 'write debug logs'
+complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path execute-template' -r -s D -l destination -d 'destination directory'
+complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path execute-template'  -s n -l dry-run -d 'dry run'
+complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path execute-template'   -l follow -d 'follow symlinks'
+complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path execute-template'   -l remove -d 'remove targets'
+complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path execute-template' -r -s S -l source -d 'source directory'
+complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path execute-template'  -s v -l verbose -d 'verbose'
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path forget' -r  -l color -d 'colorize diffs'
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path forget' -r -s c -l config -d 'config file'
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path forget'   -l debug -d 'write debug logs'

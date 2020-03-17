@@ -40,6 +40,7 @@ Manage your dotfiles securely across multiple machines.
   * [`dump` [*targets*]](#dump-targets)
   * [`edit` [*targets*]](#edit-targets)
   * [`edit-config`](#edit-config)
+  * [`execute-template` [*templates*]](#execute-template-templates)
   * [`forget` *targets*](#forget-targets)
   * [`git` [*arguments*]](#git-arguments)
   * [`help` *command*](#help-command)
@@ -542,6 +543,19 @@ Edit the configuration file.
 #### `edit-config` examples
 
     chezmoi edit-config
+
+### `execute-template` [*templates*]
+
+Write the result of evaluating *templates* to stdout. This is useful for testing
+templates or for calling chezmoi from other scripts. *templates* are interpeted
+as literal template data, with no whitespace added to the output between
+arguments. If no templates are specified, the template data are read from stdin.
+
+#### `execute-template` examples
+
+    chezmoi execute-template '{{ .chezmoi.sourceDir }}'
+    chezmoi execute-template '{{ .chezmoi.os }}' / '{{ .chezmoi.arch }}'
+    echo '{{ .chezmoi | toJson }}' | chezmoi execute-template
 
 ### `forget` *targets*
 

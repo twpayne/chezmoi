@@ -34,6 +34,7 @@ function _chezmoi {
       "dump:Write a dump of the target state to stdout"
       "edit:Edit the source state of a target"
       "edit-config:Edit the configuration file"
+      "execute-template:Write the result of executing the given template(s) to stdout"
       "forget:Remove a target from the source state"
       "git:Run git in the source directory"
       "help:Print help about a command"
@@ -96,6 +97,9 @@ function _chezmoi {
     ;;
   edit-config)
     _chezmoi_edit-config
+    ;;
+  execute-template)
+    _chezmoi_execute-template
     ;;
   forget)
     _chezmoi_forget
@@ -388,6 +392,19 @@ function _chezmoi_edit {
 }
 
 function _chezmoi_edit-config {
+  _arguments \
+    '--color[colorize diffs]:' \
+    '(-c --config)'{-c,--config}'[config file]:' \
+    '--debug[write debug logs]' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
+    '--follow[follow symlinks]' \
+    '--remove[remove targets]' \
+    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-v --verbose)'{-v,--verbose}'[verbose]'
+}
+
+function _chezmoi_execute-template {
   _arguments \
     '--color[colorize diffs]:' \
     '(-c --config)'{-c,--config}'[config file]:' \
