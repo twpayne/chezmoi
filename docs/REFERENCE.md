@@ -61,7 +61,7 @@ Manage your dotfiles securely across multiple machines.
   * [`verify` [*targets*]](#verify-targets)
 * [Editor configuration](#editor-configuration)
 * [Umask configuration](#umask-configuration)
-* [Template evaluation](#template-evaluation)
+* [Template execution](#template-execution)
 * [Template variables](#template-variables)
 * [Template functions](#template-functions)
   * [`bitwarden` [*args*]](#bitwarden-args)
@@ -197,6 +197,7 @@ The following configuration variables are available:
 | `sourceVCS.autoCommit`  | bool     | `false`                   | Commit changes to the source state after any change |
 | `sourceVCS.autoPush`    | bool     | `false`                   | Push changes to the source state after any change   |
 | `sourceVCS.command`     | string   | `git`                     | Source version control system                       |
+| `template.options`      | []string | `["missingkey=error"]`    | Template options                                    |
 | `umask`                 | int      | *from system*             | Umask                                               |
 | `vault.command`         | string   | `vault`                   | Vault CLI command                                   |
 | `verbose`               | bool     | `false`                   | Verbose mode                                        |
@@ -778,9 +779,9 @@ and `0077` respectively.
 For machine-specific control of umask, set the `umask` configuration variable in
 chezmoi's configuration file.
 
-## Template evaluation
+## Template execution
 
-chezmoi evaluates templates using
+chezmoi executes templates using
 [`text/template`](https://pkg.go.dev/text/template). The result is treated
 differently depending on whether the target is a file or a symlink.
 
@@ -794,6 +795,16 @@ If the target is a symlink, then:
 * Leading and trailing whitespace are stripped from the result.
 * If the result is an empty string, then the symlink is removed.
 * Otherwise, the target symlink target is the result.
+
+chezmoi executes templates using `text/template`'s `missingkey=error` option,
+which means that misspelled or missing keys will raise an error. This can be
+overridden by setting a list of options in the configuration file, for example:
+
+    [template]
+      options = ["missingkey=zero"]
+
+For a full list of options, see
+[`Template.Option`](https://pkg.go.dev/text/template?tab=doc#Template.Option).
 
 ## Template variables
 

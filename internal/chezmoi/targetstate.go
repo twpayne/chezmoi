@@ -17,6 +17,9 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 )
 
+// DefaultTemplateOptions are the default template options.
+var DefaultTemplateOptions = []string{"missingkey=error"}
+
 const (
 	ignoreName       = ".chezmoiignore"
 	removeName       = ".chezmoiremove"
@@ -47,17 +50,18 @@ type PopulateOptions struct {
 
 // A TargetState represents the root target state.
 type TargetState struct {
-	DestDir       string
-	Entries       map[string]Entry
-	GPG           *GPG
-	MinVersion    *semver.Version
-	SourceDir     string
-	TargetIgnore  *PatternSet
-	TargetRemove  *PatternSet
-	TemplateData  map[string]interface{}
-	TemplateFuncs template.FuncMap
-	Templates     map[string]*template.Template
-	Umask         os.FileMode
+	DestDir         string
+	Entries         map[string]Entry
+	GPG             *GPG
+	MinVersion      *semver.Version
+	SourceDir       string
+	TargetIgnore    *PatternSet
+	TargetRemove    *PatternSet
+	TemplateData    map[string]interface{}
+	TemplateFuncs   template.FuncMap
+	TemplateOptions []string
+	Templates       map[string]*template.Template
+	Umask           os.FileMode
 }
 
 // A TargetStateOption sets an option on a TargeState.
@@ -126,6 +130,13 @@ func WithTemplateFuncs(templateFuncs template.FuncMap) TargetStateOption {
 	}
 }
 
+// WithTemplateOptions sets the template functions.
+func WithTemplateOptions(templateOptions []string) TargetStateOption {
+	return func(ts *TargetState) {
+		ts.TemplateOptions = templateOptions
+	}
+}
+
 // WithTemplates sets the templates.
 func WithTemplates(templates map[string]*template.Template) TargetStateOption {
 	return func(ts *TargetState) {
@@ -143,9 +154,10 @@ func WithUmask(umask os.FileMode) TargetStateOption {
 // NewTargetState creates a new TargetState with the given options.
 func NewTargetState(options ...TargetStateOption) *TargetState {
 	ts := &TargetState{
-		Entries:      make(map[string]Entry),
-		TargetIgnore: NewPatternSet(),
-		TargetRemove: NewPatternSet(),
+		Entries:         make(map[string]Entry),
+		TargetIgnore:    NewPatternSet(),
+		TargetRemove:    NewPatternSet(),
+		TemplateOptions: DefaultTemplateOptions,
 	}
 	for _, o := range options {
 		o(ts)
@@ -359,7 +371,7 @@ func (ts *TargetState) Evaluate() error {
 
 // ExecuteTemplateData returns the result of executing template data.
 func (ts *TargetState) ExecuteTemplateData(name string, data []byte) ([]byte, error) {
-	tmpl, err := template.New(name).Option("missingkey=error").Funcs(ts.TemplateFuncs).Parse(string(data))
+	tmpl, err := template.New(name).Option(ts.TemplateOptions...).Funcs(ts.TemplateFuncs).Parse(string(data))
 	if err != nil {
 		return nil, err
 	}
