@@ -20,7 +20,11 @@ func TestReturnTemplateError(t *testing.T) {
 		"func_returning_error": "{{ returnTemplateError }}",
 	} {
 		t.Run(name, func(t *testing.T) {
-			ts := NewTargetState("/home/user", 0, "/home/user/.chezmoi", nil, funcs, nil)
+			ts := NewTargetState(
+				WithDestDir("/home/user"),
+				WithSourceDir("/home/user/.chezmoi"),
+				WithTemplateFuncs(funcs),
+			)
 			_, err := ts.ExecuteTemplateData(name, []byte(dataString))
 			assert.Error(t, err)
 		})

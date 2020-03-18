@@ -42,6 +42,10 @@ type sourceVCSConfig struct {
 	Pull       interface{}
 }
 
+type templateConfig struct {
+	Options []string
+}
+
 // A Config represents a configuration.
 type Config struct {
 	configFile        string
@@ -60,6 +64,7 @@ type Config struct {
 	GPG               chezmoi.GPG
 	GPGRecipient      string
 	SourceVCS         sourceVCSConfig
+	Template          templateConfig
 	Merge             mergeConfig
 	Bitwarden         bitwardenCmdConfig
 	CD                cdCmdConfig
@@ -128,6 +133,9 @@ func newConfig(options ...configOption) *Config {
 		Color: "auto",
 		SourceVCS: sourceVCSConfig{
 			Command: "git",
+		},
+		Template: templateConfig{
+			Options: chezmoi.DefaultTemplateOptions,
 		},
 		Merge: mergeConfig{
 			Command: "vimdiff",
@@ -432,7 +440,15 @@ func (c *Config) getTargetState(populateOptions *chezmoi.PopulateOptions) (*chez
 		c.GPG.Recipient = c.GPGRecipient
 	}
 
-	ts := chezmoi.NewTargetState(destDir, os.FileMode(c.Umask), c.SourceDir, data, c.templateFuncs, &c.GPG)
+	ts := chezmoi.NewTargetState(
+		chezmoi.WithDestDir(destDir),
+		chezmoi.WithGPG(&c.GPG),
+		chezmoi.WithSourceDir(c.SourceDir),
+		chezmoi.WithTemplateData(data),
+		chezmoi.WithTemplateFuncs(c.templateFuncs),
+		chezmoi.WithTemplateOptions(c.Template.Options),
+		chezmoi.WithUmask(os.FileMode(c.Umask)),
+	)
 	if err := ts.Populate(fs, populateOptions); err != nil {
 		return nil, err
 	}
