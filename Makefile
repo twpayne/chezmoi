@@ -57,8 +57,7 @@ test-release:
 
 .PHONY: test
 test:
-	# FIXME add -race when https://github.com/etcd-io/bbolt/issues/187 is fixed
-	go test ./...
+	go test -race ./...
 
 .PHONY: update-install.sh
 update-install.sh:

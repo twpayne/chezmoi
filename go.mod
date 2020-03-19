@@ -10,7 +10,8 @@ require (
 	github.com/charmbracelet/glamour v0.1.0
 	github.com/coreos/go-semver v0.3.0
 	github.com/dlclark/regexp2 v1.2.0 // indirect
-	github.com/golang/protobuf v1.3.3 // indirect
+	github.com/fsnotify/fsnotify v1.4.9 // indirect
+	github.com/golang/protobuf v1.3.5 // indirect
 	github.com/google/go-github/v26 v26.1.3
 	github.com/google/renameio v0.1.0
 	github.com/google/uuid v1.1.1 // indirect
@@ -21,6 +22,7 @@ require (
 	github.com/mattn/go-isatty v0.0.11 // indirect
 	github.com/mattn/go-runewidth v0.0.8 // indirect
 	github.com/mitchellh/copystructure v1.0.0 // indirect
+	github.com/mitchellh/mapstructure v1.2.1 // indirect
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
 	github.com/pelletier/go-toml v1.6.0
 	github.com/pkg/diff v0.0.0-20190930165518-531926345625
@@ -36,15 +38,15 @@ require (
 	github.com/twpayne/go-vfs v1.3.6
 	github.com/twpayne/go-vfsafero v1.0.0
 	github.com/twpayne/go-xdg/v3 v3.1.0
-	github.com/yuin/goldmark v1.1.23 // indirect
+	github.com/yuin/goldmark v1.1.25 // indirect
 	github.com/zalando/go-keyring v0.0.0-20200121091418-667557018717
-	go.etcd.io/bbolt v1.3.3
-	golang.org/x/crypto v0.0.0-20200221231518-2aa609cf4a9d
-	golang.org/x/net v0.0.0-20200222125558-5a598a2470a0 // indirect
+	go.etcd.io/bbolt v1.3.4
+	golang.org/x/crypto v0.0.0-20200317142112-1b76d66859c6
+	golang.org/x/net v0.0.0-20200301022130-244492dfa37a // indirect
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
-	golang.org/x/sys v0.0.0-20200223170610-d5e6a3e2c0ae
+	golang.org/x/sys v0.0.0-20200317113312-5766fd39f98d
 	google.golang.org/appengine v1.6.5 // indirect
-	gopkg.in/ini.v1 v1.52.0 // indirect
+	gopkg.in/ini.v1 v1.55.0 // indirect
 	gopkg.in/yaml.v2 v2.2.8
 )
 
