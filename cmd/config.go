@@ -317,20 +317,20 @@ func (c *Config) getDefaultData() (map[string]interface{}, error) {
 	}
 	data["username"] = currentUser.Username
 
-	// user.LookupGroupId looks up a group by gid. If CGO is enabled, then this
-	// uses an underlying C library call (e.g. getgrgid_r on Linux) and is
-	// trustworthy. If CGO is disabled then the fallback implementation only
-	// searches /etc/group, which is typically empty if an external directory
-	// service is being used, and so the lookup fails. So, if
-	// user.LookupGroupId returns an error, only return an error if CGO is
-	// enabled.
+	// user.LookupGroupId is generally unreliable:
+	//
+	// If CGO is enabled, then this uses an underlying C library call (e.g.
+	// getgrgid_r on Linux) and is trustworthy, except on recent versions of Go
+	// on Android, where LookupGroupId is not implemented.
+	//
+	// If CGO is disabled then the fallback implementation only searches
+	// /etc/group, which is typically empty if an external directory service is
+	// being used, and so the lookup fails.
+	//
+	// So, only set group if user.LookupGroupId does not return an error.
 	group, err := user.LookupGroupId(currentUser.Gid)
 	if err == nil {
 		data["group"] = group.Name
-	} else if cgoEnabled && runtime.GOOS != "windows" {
-		// Only return an error if CGO is enabled and the platform is
-		// non-Windows (groups don't really mean much on Windows).
-		return nil, err
 	}
 
 	homedir, err := os.UserHomeDir()
