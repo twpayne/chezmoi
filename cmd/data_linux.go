@@ -2,9 +2,9 @@ package cmd
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -15,35 +15,36 @@ import (
 )
 
 func getKernelInfo(fs vfs.FS) (map[string]string, error) {
-	const procKernel = "/proc/sys/kernel"
-	files := []string{"version", "ostype", "osrelease"}
+	const procSysKernel = "/proc/sys/kernel"
 
-	stat, err := fs.Stat(procKernel)
-	if err != nil {
-		return nil, err
-	}
-	if !stat.IsDir() {
-		return nil, fmt.Errorf("expected %q to be a directory", procKernel)
+	info, err := fs.Stat(procSysKernel)
+	switch {
+	case os.IsNotExist(err):
+		return nil, nil
+	case os.IsPermission(err):
+		return nil, nil
+	case !info.Mode().IsDir():
+		return nil, nil
 	}
 
-	res := map[string]string{}
-	for _, file := range files {
-		p := filepath.Join(procKernel, file)
-		f, err := fs.Open(p)
-		if os.IsNotExist(err) {
+	kernelInfo := make(map[string]string)
+	for _, filename := range []string{
+		"osrelease",
+		"ostype",
+		"version",
+	} {
+		data, err := fs.ReadFile(filepath.Join(procSysKernel, filename))
+		switch {
+		case os.IsNotExist(err):
 			continue
-		} else if err != nil {
+		case os.IsPermission(err):
+			continue
+		case err != nil:
 			return nil, err
 		}
-		defer f.Close()
-		data, err := ioutil.ReadAll(f)
-		if err != nil {
-			return nil, err
-		}
-		res[file] = strings.TrimSpace(string(data))
+		kernelInfo[filename] = string(bytes.TrimSpace(data))
 	}
-
-	return res, nil
+	return kernelInfo, nil
 }
 
 // getOSRelease returns the operating system identification data as defined by

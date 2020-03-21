@@ -358,9 +358,10 @@ func (c *Config) getDefaultData() (map[string]interface{}, error) {
 	kernelInfo, err := getKernelInfo(c.fs)
 	if err == nil && kernelInfo != nil {
 		data["kernel"] = kernelInfo
-	} else if err != nil && !os.IsNotExist(err) {
+	} else if err != nil {
 		return nil, err
 	}
+
 	return data, nil
 }
 

@@ -10,21 +10,54 @@ import (
 )
 
 func TestGetKernelInfo(t *testing.T) {
-	root := map[string]interface{}{
-		"/proc/sys/kernel/version":   "#1 SMP Fri Nov 1 14:28:19 UTC 2019",
-		"/proc/sys/kernel/ostype":    "Linux",
-		"/proc/sys/kernel/osrelease": "4.19.81-microsoft-standard",
+	for _, tc := range []struct {
+		name               string
+		root               interface{}
+		expectedKernelInfo map[string]string
+	}{
+		{
+			name: "windows_services_for_linux",
+			root: map[string]interface{}{
+				"/proc/sys/kernel": map[string]interface{}{
+					"osrelease": "4.19.81-microsoft-standard\n",
+					"ostype":    "Linux\n",
+					"version":   "#1 SMP Debian 5.2.9-2 (2019-08-21)\n",
+				},
+			},
+			expectedKernelInfo: map[string]string{
+				"osrelease": "4.19.81-microsoft-standard",
+				"ostype":    "Linux",
+				"version":   "#1 SMP Debian 5.2.9-2 (2019-08-21)",
+			},
+		},
+		{
+			name: "debian_version_only",
+			root: map[string]interface{}{
+				"/proc/sys/kernel": map[string]interface{}{
+					"version": "#1 SMP Debian 5.2.9-2 (2019-08-21)\n",
+				},
+			},
+			expectedKernelInfo: map[string]string{
+				"version": "#1 SMP Debian 5.2.9-2 (2019-08-21)",
+			},
+		},
+		{
+			name: "proc_sys_kernel_missing",
+			root: map[string]interface{}{
+				"/proc/sys": &vfst.Dir{Perm: 0755},
+			},
+			expectedKernelInfo: nil,
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			fs, cleanup, err := vfst.NewTestFS(tc.root)
+			require.NoError(t, err)
+			defer cleanup()
+			kernelInfo, err := getKernelInfo(fs)
+			assert.NoError(t, err)
+			assert.Equal(t, tc.expectedKernelInfo, kernelInfo)
+		})
 	}
-	fs, cleanup, err := vfst.NewTestFS(root)
-	require.NoError(t, err)
-	defer cleanup()
-	info, err := getKernelInfo(fs)
-	assert.NoError(t, err)
-	assert.Equal(t, map[string]string{
-		"version":   "#1 SMP Fri Nov 1 14:28:19 UTC 2019",
-		"ostype":    "Linux",
-		"osrelease": "4.19.81-microsoft-standard",
-	}, info)
 }
 
 func TestGetOSRelease(t *testing.T) {
