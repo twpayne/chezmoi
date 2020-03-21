@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="/book.min.a8b61185b89b0e211122339c7efd1c8edaa4ad4c0ae65f0074e99a4b31c1e393.css" integrity="sha256-qLYRhbibDiERIjOcfv0cjtqkrUwK5l8AdOmaSzHB45M=">
 
 
-<script defer src="/search.min.6811aa84a7ba656db18f382078021631cee0e9d22d6c20fc01fe9311eaa01b11.js" integrity="sha256-aBGqhKe6ZW2xjzggeAIWMc7g6dItbCD8Af6TEeqgGxE="></script>
+<script defer src="/search.min.ca6e5216089e7cd148aaa8588ef9922c5232452328b23612b5ad5bc60e40b768.js" integrity="sha256-ym5SFgiefNFIqqhYjvmSLFIyRSMosjYSta1bxg5At2g="></script>
 
 <!--
 Made with Book Theme
@@ -315,6 +315,12 @@ chezmoi, and the first config file found is used.</p>
 <td>string</td>
 <td><code>git</code></td>
 <td>Source version control system</td>
+</tr>
+<tr>
+<td><code>template.options</code></td>
+<td>[]string</td>
+<td><code>[&quot;missingkey=error&quot;]</code></td>
+<td>Template options</td>
 </tr>
 <tr>
 <td><code>umask</code></td>
@@ -677,6 +683,16 @@ chezmoi edit
 <h4 id="edit-config-examples"><code>edit-config</code> examples</h4>
 <pre><code>chezmoi edit-config
 </code></pre>
+<h3 id="execute-template-templates"><code>execute-template</code> [<em>templates</em>]</h3>
+<p>Write the result of evaluating <em>templates</em> to stdout. This is useful for testing
+templates or for calling chezmoi from other scripts. <em>templates</em> are interpeted
+as literal template data, with no whitespace added to the output between
+arguments. If no templates are specified, the template data are read from stdin.</p>
+<h4 id="execute-template-examples"><code>execute-template</code> examples</h4>
+<pre><code>chezmoi execute-template '{{ .chezmoi.sourceDir }}'
+chezmoi execute-template '{{ .chezmoi.os }}' / '{{ .chezmoi.arch }}'
+echo '{{ .chezmoi | toJson }}' | chezmoi execute-template
+</code></pre>
 <h3 id="forget-targets"><code>forget</code> <em>targets</em></h3>
 <p>Remove <em>targets</em> from the source state, i.e. stop managing them.</p>
 <h4 id="forget-examples"><code>forget</code> examples</h4>
@@ -830,8 +846,8 @@ shell. chezmoi only stores crude permissions in its source state, namely in the
 and <code>0077</code> respectively.</p>
 <p>For machine-specific control of umask, set the <code>umask</code> configuration variable in
 chezmoi&rsquo;s configuration file.</p>
-<h2 id="template-evaluation">Template evaluation</h2>
-<p>chezmoi evaluates templates using
+<h2 id="template-execution">Template execution</h2>
+<p>chezmoi executes templates using
 <a href="https://pkg.go.dev/text/template"><code>text/template</code></a>. The result is treated
 differently depending on whether the target is a file or a symlink.</p>
 <p>If target is a file, then:</p>
@@ -845,6 +861,14 @@ differently depending on whether the target is a file or a symlink.</p>
 <li>If the result is an empty string, then the symlink is removed.</li>
 <li>Otherwise, the target symlink target is the result.</li>
 </ul>
+<p>chezmoi executes templates using <code>text/template</code>'s <code>missingkey=error</code> option,
+which means that misspelled or missing keys will raise an error. This can be
+overridden by setting a list of options in the configuration file, for example:</p>
+<pre><code>[template]
+  options = [&quot;missingkey=zero&quot;]
+</code></pre>
+<p>For a full list of options, see
+<a href="https://pkg.go.dev/text/template?tab=doc#Template.Option"><code>Template.Option</code></a>.</p>
 <h2 id="template-variables">Template variables</h2>
 <p>chezmoi provides the following automatically populated variables:</p>
 <table>
@@ -1109,6 +1133,7 @@ times with the same <em>key</em> will only invoke <code>vault</code> once.</p>
         <li><a href="#dump-targets"><code>dump</code> [<em>targets</em>]</a></li>
         <li><a href="#edit-targets"><code>edit</code> [<em>targets</em>]</a></li>
         <li><a href="#edit-config"><code>edit-config</code></a></li>
+        <li><a href="#execute-template-templates"><code>execute-template</code> [<em>templates</em>]</a></li>
         <li><a href="#forget-targets"><code>forget</code> <em>targets</em></a></li>
         <li><a href="#git-arguments"><code>git</code> [<em>arguments</em>]</a></li>
         <li><a href="#help-command"><code>help</code> <em>command</em></a></li>
@@ -1131,7 +1156,7 @@ times with the same <em>key</em> will only invoke <code>vault</code> once.</p>
     </li>
     <li><a href="#editor-configuration">Editor configuration</a></li>
     <li><a href="#umask-configuration">Umask configuration</a></li>
-    <li><a href="#template-evaluation">Template evaluation</a></li>
+    <li><a href="#template-execution">Template execution</a></li>
     <li><a href="#template-variables">Template variables</a></li>
     <li><a href="#template-functions">Template functions</a>
       <ul>
