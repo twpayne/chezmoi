@@ -275,8 +275,8 @@ Tell chezmoi to ignore this file:
 Tell chezmoi that `~/.config/Code/User/settings.json` should be a symlink to the
 file in your source directory:
 
-    mkdir -p $(chezmoi source-path)/.config/Code/User
-    echo -n "{{ .chezmoi.sourceDir }}/settings.json" > $(chezmoi source-path)/.config/Code/User/symlink_settings.json.tmpl
+    mkdir -p $(chezmoi source-path)/dot_config/Code/User
+    echo -n "{{ .chezmoi.sourceDir }}/settings.json" > $(chezmoi source-path)/dot_config/Code/User/symlink_settings.json.tmpl
 
 Apply the changes:
 
