@@ -491,7 +491,7 @@ func (c *Config) prompt(s, choices string) (byte, error) {
 		if err != nil {
 			return 0, err
 		}
-		line = strings.TrimRight(line, "\r\n")
+		line = strings.TrimSpace(line)
 		if len(line) == 1 && strings.IndexByte(choices, line[0]) != -1 {
 			return line[0], nil
 		}

@@ -971,8 +971,8 @@ the same *pass-name* will only invoke `pass` once.
 ### `promptString` *prompt*
 
 `promptString` takes a single argument is a string prompted to the user, and the
-return value is the user's response to that prompt. It is only available when
-generating the initial config file.
+return value is the user's response to that prompt with all leading and trailing
+space stripped. It is only available when generating the initial config file.
 
 #### `promptString` examples
 

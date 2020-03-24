@@ -177,5 +177,5 @@ func (c *Config) promptString(field string) string {
 	fmt.Fprintf(c.Stdout, "%s? ", field)
 	value, err := bufio.NewReader(c.Stdin).ReadString('\n')
 	panicOnError(err)
-	return strings.TrimRight(value, "\r\n")
+	return strings.TrimSpace(value)
 }
