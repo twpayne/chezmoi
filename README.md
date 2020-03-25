@@ -81,7 +81,7 @@ don't need chezmoi. Otherwise, read on...
   is interrupted.
 
 * Declarative: you declare the desired state of files, directories, and symbolic
-  links in your home directory and chezmoi updates your home directory to match
+  links in your source of truth and chezmoi updates your home directory to match
   that state. What you want is what you get.
 
 * Fast and easy to use: chezmoi runs in fractions of a second and makes most
