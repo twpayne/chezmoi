@@ -50,5 +50,5 @@ require (
 	gopkg.in/yaml.v2 v2.2.8
 )
 
-// Temporary while waiting for https://github.com/spf13/cobra/pull/754 to be merged
-replace github.com/spf13/cobra => github.com/twpayne/cobra v0.0.6
+// Temporary while waiting for https://github.com/spf13/cobra/pull/1048 to be merged
+replace github.com/spf13/cobra => github.com/twpayne/cobra v0.0.8

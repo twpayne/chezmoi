@@ -1,481 +1,137 @@
+# fish completion for chezmoi                              -*- shell-script -*-
 
-function __fish_chezmoi_no_subcommand --description 'Test if chezmoi has yet to be given the subcommand'
-	for i in (commandline -opc)
-		if contains -- $i add apply archive cat cd chattr completion data diff docs doctor dump edit edit-config execute-template forget git hg import init merge remove secret source source-path unmanaged update upgrade verify
-			return 1
-		end
-	end
-	return 0
+function __chezmoi_debug
+    set file "$BASH_COMP_DEBUG_FILE"
+    if test -n "$file"
+        echo "$argv" >> $file
+    end
 end
-function __fish_chezmoi_seen_subcommand_path --description 'Test whether the full path of subcommands is the current path'
-	  set -l cmd (commandline -opc)
-	  set -e cmd[1]
-    set -l pattern (string replace -a " " ".+" "$argv")
-    string match -r "$pattern" (string trim -- "$cmd")
+
+function __chezmoi_perform_completion
+    __chezmoi_debug "Starting __chezmoi_perform_completion with: $argv"
+
+    set args (string split -- " " "$argv")
+    set lastArg "$args[-1]"
+
+    __chezmoi_debug "args: $args"
+    __chezmoi_debug "last arg: $lastArg"
+
+    set emptyArg ""
+    if test -z "$lastArg"
+        __chezmoi_debug "Setting emptyArg"
+        set emptyArg \"\"
+    end
+    __chezmoi_debug "emptyArg: $emptyArg"
+
+    set requestComp "$args[1] __completeD $args[2..-1] $emptyArg"
+    __chezmoi_debug "Calling $requestComp"
+
+    set results (eval $requestComp 2> /dev/null)
+    set comps $results[1..-2]
+    set directiveLine $results[-1]
+
+    # For Fish, when completing a flag with an = (e.g., <program> -n=<TAB>)
+    # completions must be prefixed with the flag
+    set flagPrefix (string match -r -- '-.*=' "$lastArg")
+
+    __chezmoi_debug "Comps: $comps"
+    __chezmoi_debug "DirectiveLine: $directiveLine"
+    __chezmoi_debug "flagPrefix: $flagPrefix"
+
+    for comp in $comps
+        printf "%s%s\n" "$flagPrefix" "$comp"
+    end
+
+    printf "%s\n" "$directiveLine"
 end
-# borrowed from current fish-shell master, since it is not in current 2.7.1 release
-function __fish_seen_argument
-	argparse 's/short=+' 'l/long=+' -- $argv
 
-	set cmd (commandline -co)
-	set -e cmd[1]
-	for t in $cmd
-		for s in $_flag_s
-			if string match -qr "^-[A-z0-9]*"$s"[A-z0-9]*\$" -- $t
-				return 0
-			end
-		end
+# This function does three things:
+# 1- Obtain the completions and store them in the global __chezmoi_comp_results
+# 2- Set the __chezmoi_comp_do_file_comp flag if file completion should be performed
+#    and unset it otherwise
+# 3- Return true if the completion results are not empty
+function __chezmoi_prepare_completions
+    # Start fresh
+    set --erase __chezmoi_comp_do_file_comp
+    set --erase __chezmoi_comp_results
 
-		for l in $_flag_l
-			if string match -q -- "--$l" $t
-				return 0
-			end
-		end
-	end
+    # Check if the command-line is already provided.  This is useful for testing.
+    if not set --query __chezmoi_comp_commandLine
+        set __chezmoi_comp_commandLine (commandline)
+    end
+    __chezmoi_debug "commandLine is: $__chezmoi_comp_commandLine"
 
-	return 1
+    set results (__chezmoi_perform_completion "$__chezmoi_comp_commandLine")
+    set --erase __chezmoi_comp_commandLine
+    __chezmoi_debug "Completion results: $results"
+
+    if test -z "$results"
+        __chezmoi_debug "No completion, probably due to a failure"
+        # Might as well do file completion, in case it helps
+        set --global __chezmoi_comp_do_file_comp 1
+        return 0
+    end
+
+    set directive (string sub --start 2 $results[-1])
+    set --global __chezmoi_comp_results $results[1..-2]
+
+    __chezmoi_debug "Completions are: $__chezmoi_comp_results"
+    __chezmoi_debug "Directive is: $directive"
+
+    if test -z "$directive"
+        set directive 0
+    end
+
+    set compErr (math (math --scale 0 $directive / 1) % 2)
+    if test $compErr -eq 1
+        __chezmoi_debug "Received error directive: aborting."
+        # Might as well do file completion, in case it helps
+        set --global __chezmoi_comp_do_file_comp 1
+        return 0
+    end
+
+    set nospace (math (math --scale 0 $directive / 2) % 2)
+    set nofiles (math (math --scale 0 $directive / 4) % 2)
+
+    __chezmoi_debug "nospace: $nospace, nofiles: $nofiles"
+
+    # Important not to quote the variable for count to work
+    set numComps (count $__chezmoi_comp_results)
+    __chezmoi_debug "numComps: $numComps"
+
+    if test $numComps -eq 1; and test $nospace -ne 0
+        # To support the "nospace" directive we trick the shell
+        # by outputting an extra, longer completion.
+        __chezmoi_debug "Adding second completion to perform nospace directive"
+        set --append __chezmoi_comp_results $__chezmoi_comp_results[1].
+    end
+
+    if test $numComps -eq 0; and test $nofiles -eq 0
+        __chezmoi_debug "Requesting file completion"
+        set --global __chezmoi_comp_do_file_comp 1
+    end
+
+    # If we don't want file completion, we must return true even if there
+    # are no completions found.  This is because fish will perform the last
+    # completion command, even if its condition is false, if no other
+    # completion command was triggered
+    return (not set --query __chezmoi_comp_do_file_comp)
 end
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a add -d 'Add an existing file, directory, or symlink to the source state'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a apply -d 'Update the destination directory to match the target state'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a archive -d 'Write a tar archive of the target state to stdout'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a cat -d 'Print the target contents of a file or symlink'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a cd -d 'Launch a shell in the source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a chattr -d 'Change the attributes of a target in the source state'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a completion -d 'Write shell completion code for the specified shell (bash, fish, or zsh) to stdout'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a data -d 'Print the template data'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a diff -d 'Print the diff between the target state and the destination state'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a docs -d 'Print documentation'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a doctor -d 'Check your system for potential problems'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a dump -d 'Write a dump of the target state to stdout'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a edit -d 'Edit the source state of a target'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a edit-config -d 'Edit the configuration file'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a execute-template -d 'Write the result of executing the given template(s) to stdout'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a forget -d 'Remove a target from the source state'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a git -d 'Run git in the source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a hg -d 'Run mercurial in the source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a import -d 'Import a tar archive into the source state'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a init -d 'Setup the source directory and update the destination directory to match the target state'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a merge -d 'Perform a three-way merge between the destination state, the source state, and the target state'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a remove -d 'Remove a target from the source state and the destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a secret -d 'Interact with a secret manager'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a source -d 'Run the source version control system command in the source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a source-path -d 'Print the path of a target in the source state'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a unmanaged -d 'List the unmanaged files in the destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a update -d 'Pull changes from the source VCS and apply any changes'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a upgrade -d 'Upgrade chezmoi'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a verify -d 'Exit with success if the destination state matches the target state, fail otherwise'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path add'  -s a -l autotemplate -d 'auto generate the template when adding files as templates'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path add'  -s e -l empty -d 'add empty files'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path add'   -l encrypt -d 'encrypt files'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path add'  -s x -l exact -d 'add directories exactly'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path add'  -s f -l force -d 'overwrite source state, even if template would be lost'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path add'  -s p -l prompt -d 'prompt before adding'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path add'  -s r -l recursive -d 'recurse in to subdirectories'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path add'  -s T -l template -d 'add files as templates'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path add' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path add' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path add'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path add' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path add'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path add'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path add'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path add' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path add'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path apply' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path apply' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path apply'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path apply' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path apply'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path apply'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path apply'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path apply' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path apply'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path archive' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path archive' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path archive'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path archive' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path archive'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path archive'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path archive'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path archive' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path archive'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path cat' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path cat' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path cat'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path cat' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path cat'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path cat'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path cat'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path cat' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path cat'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path cd' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path cd' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path cd'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path cd' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path cd'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path cd'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path cd'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path cd' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path cd'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path chattr' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path chattr' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path chattr'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path chattr' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path chattr'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path chattr'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path chattr'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path chattr' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path chattr'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path completion; and not __fish_seen_argument -s h -l help' -a bash -d 'Positional Argument to completion'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path completion; and not __fish_seen_argument -s h -l help' -a fish -d 'Positional Argument to completion'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path completion; and not __fish_seen_argument -s h -l help' -a zsh -d 'Positional Argument to completion'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path completion'  -s h -l help -d 'help for completion'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path completion' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path completion' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path completion'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path completion' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path completion'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path completion'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path completion'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path completion' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path completion'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path data' -r -s f -l format -d 'format (JSON, TOML, or YAML)'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path data' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path data' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path data'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path data' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path data'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path data'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path data'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path data' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path data'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path diff' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path diff' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path diff'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path diff' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path diff'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path diff'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path diff'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path diff' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path diff'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path docs' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path docs' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path docs'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path docs' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path docs'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path docs'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path docs'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path docs' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path docs'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path doctor' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path doctor' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path doctor'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path doctor' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path doctor'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path doctor'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path doctor'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path doctor' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path doctor'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path dump' -r -s f -l format -d 'format (JSON, TOML, or YAML)'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path dump'  -s r -l recursive -d 'recursive'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path dump' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path dump' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path dump'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path dump' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path dump'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path dump'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path dump'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path dump' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path dump'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path edit'  -s a -l apply -d 'apply edit after editing'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path edit'  -s d -l diff -d 'print diff after editing'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path edit'  -s p -l prompt -d 'prompt before applying (implies --diff)'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path edit' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path edit' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path edit'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path edit' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path edit'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path edit'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path edit'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path edit' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path edit'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path edit-config' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path edit-config' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path edit-config'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path edit-config' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path edit-config'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path edit-config'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path edit-config'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path edit-config' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path edit-config'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path execute-template' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path execute-template' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path execute-template'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path execute-template' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path execute-template'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path execute-template'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path execute-template'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path execute-template' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path execute-template'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path forget' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path forget' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path forget'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path forget' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path forget'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path forget'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path forget'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path forget' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path forget'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path git' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path git' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path git'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path git' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path git'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path git'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path git'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path git' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path git'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path hg' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path hg' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path hg'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path hg' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path hg'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path hg'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path hg'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path hg' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path hg'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path import'  -s x -l exact -d 'import directories exactly'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path import'  -s r -l remove-destination -d 'remove destination before import'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path import' -r  -l strip-components -d 'strip components'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path import' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path import' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path import'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path import' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path import'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path import'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path import'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path import' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path import'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path init'   -l apply -d 'update destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path init' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path init' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path init'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path init' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path init'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path init'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path init'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path init' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path init'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path merge' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path merge' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path merge'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path merge' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path merge'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path merge'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path merge'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path merge' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path merge'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path remove'  -s f -l force -d 'remove without prompting'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path remove' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path remove' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path remove'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path remove' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path remove'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path remove'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path remove'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path remove' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path remove'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret' -a bitwarden -d 'Execute the Bitwarden CLI (bw)'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret' -a generic -d 'Execute a generic secret command'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret' -a gopass -d 'Execute the gopass CLI'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret' -a keepassxc -d 'Execute the KeePassXC CLI (keepassxc-cli)'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret' -a keyring -d 'Interact with keyring'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret' -a lastpass -d 'Execute the LastPass CLI (lpass)'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret' -a onepassword -d 'Execute the 1Password CLI (op)'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret' -a pass -d 'Execute the pass CLI'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret' -a vault -d 'Execute the Hashicorp Vault CLI (vault)'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret bitwarden' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret bitwarden' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret bitwarden'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret bitwarden' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret bitwarden'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret bitwarden'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret bitwarden'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret bitwarden' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret bitwarden'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret generic' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret generic' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret generic'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret generic' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret generic'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret generic'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret generic'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret generic' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret generic'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret gopass' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret gopass' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret gopass'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret gopass' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret gopass'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret gopass'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret gopass'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret gopass' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret gopass'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keepassxc' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keepassxc' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keepassxc'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keepassxc' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keepassxc'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keepassxc'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keepassxc'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keepassxc' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keepassxc'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring' -a get -d 'Get a password from keyring'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring' -a set -d 'Set a password in keyring'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring' -r  -l service -d 'service'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring' -r  -l user -d 'user'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring get' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring get' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring get'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring get' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring get'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring get'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring get'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring get' -r  -l service -d 'service'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring get' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring get' -r  -l user -d 'user'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring get'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring set' -r  -l password -d 'password'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring set' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring set' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring set'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring set' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring set'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring set'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring set'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring set' -r  -l service -d 'service'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring set' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring set' -r  -l user -d 'user'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret keyring set'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret lastpass' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret lastpass' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret lastpass'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret lastpass' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret lastpass'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret lastpass'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret lastpass'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret lastpass' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret lastpass'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret onepassword' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret onepassword' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret onepassword'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret onepassword' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret onepassword'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret onepassword'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret onepassword'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret onepassword' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret onepassword'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret pass' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret pass' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret pass'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret pass' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret pass'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret pass'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret pass'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret pass' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret pass'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret vault' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret vault' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret vault'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret vault' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret vault'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret vault'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret vault'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret vault' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path secret vault'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path source' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path source' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path source'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path source' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path source'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path source'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path source'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path source' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path source'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path source-path' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path source-path' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path source-path'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path source-path' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path source-path'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path source-path'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path source-path'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path source-path' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path source-path'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path unmanaged' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path unmanaged' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path unmanaged'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path unmanaged' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path unmanaged'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path unmanaged'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path unmanaged'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path unmanaged' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path unmanaged'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path update'  -s a -l apply -d 'apply after pulling'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path update' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path update' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path update'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path update' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path update'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path update'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path update'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path update' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path update'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path upgrade'  -s f -l force -d 'force upgrade'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path upgrade' -r -s m -l method -d 'set method'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path upgrade' -r -s o -l owner -d 'set owner'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path upgrade' -r -s r -l repo -d 'set repo'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path upgrade' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path upgrade' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path upgrade'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path upgrade' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path upgrade'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path upgrade'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path upgrade'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path upgrade' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path upgrade'  -s v -l verbose -d 'verbose'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path verify' -r  -l color -d 'colorize diffs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path verify' -r -s c -l config -d 'config file'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path verify'   -l debug -d 'write debug logs'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path verify' -r -s D -l destination -d 'destination directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path verify'  -s n -l dry-run -d 'dry run'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path verify'   -l follow -d 'follow symlinks'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path verify'   -l remove -d 'remove targets'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path verify' -r -s S -l source -d 'source directory'
-complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path verify'  -s v -l verbose -d 'verbose'
+
+# Remove any pre-existing completions for the program since we will be handling all of them
+# TODO this cleanup is not sufficient.  Fish completions are only loaded once the user triggers
+# them, so the below deletion will not work as it is run too early.  What else can we do?
+complete -c chezmoi -e
+
+# The order in which the below two lines are defined is very important so that __chezmoi_prepare_completions
+# is called first.  It is __chezmoi_prepare_completions that sets up the __chezmoi_comp_do_file_comp variable.
+#
+# This completion will be run second as complete commands are added FILO.
+# It triggers file completion choices when __chezmoi_comp_do_file_comp is set.
+complete -c chezmoi -n 'set --query __chezmoi_comp_do_file_comp'
+
+# This completion will be run first as complete commands are added FILO.
+# The call to __chezmoi_prepare_completions will setup both __chezmoi_comp_results abd __chezmoi_comp_do_file_comp.
+# It provides the program's completion choices.
+complete -c chezmoi -n '__chezmoi_prepare_completions' -f -a '$__chezmoi_comp_results'
+
