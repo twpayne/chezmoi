@@ -114,9 +114,10 @@ If you're packaging chezmoi for an operating system or distribution:
   can do this by passing the following flags to the Go linker:
 
   ```
-  -X github.com/twpayne/chezmoi/cmd.VersionStr=$VERSION
-  -X github.com/twpayne/chezmoi/cmd.Commit=$COMMIT
-  -X github.com/twpayne/chezmoi/cmd.Date=$DATE
+  -X main.version=$VERSION
+  -X main.commit=$COMMIT
+  -X main.date=$DATE
+  -X main.builtBy=$BUILT_BY
   ```
 
   `$VERSION` should be the chezmoi version, e.g. `1.7.3`. Any `v` prefix is
@@ -127,6 +128,9 @@ If you're packaging chezmoi for an operating system or distribution:
 
   `$DATE` should be the date of the build in RFC3339 format, e.g.
   `2019-11-23T18:29:25Z`.
+
+  `$BULIT_BY` should be a string indicating what mechanism was used to build the
+  binary, e.g. `goreleaser`.
 
 * Please enable cgo, if possible. chezmoi can be built and run without cgo, but
   the `.chezmoi.username` and `.chezmoi.group` template variables may not be set
