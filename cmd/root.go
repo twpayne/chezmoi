@@ -18,12 +18,11 @@ var config = newConfig()
 
 // Version information.
 var (
-	devVersionStr = "dev"
-	unknownStr    = "unknown"
-	VersionStr    = devVersionStr
-	Commit        = unknownStr
-	Date          = unknownStr
-	Version       *semver.Version
+	VersionStr string
+	Commit     string
+	Date       string
+	BuiltBy    string
+	Version    *semver.Version
 )
 
 var rootCmd = &cobra.Command{
@@ -35,23 +34,6 @@ var rootCmd = &cobra.Command{
 }
 
 func init() {
-	if VersionStr != devVersionStr {
-		var err error
-		Version, err = semver.NewVersion(strings.TrimPrefix(VersionStr, "v"))
-		if err != nil {
-			printErrorAndExit(err)
-		}
-	}
-
-	versionComponents := []string{VersionStr}
-	if Commit != unknownStr {
-		versionComponents = append(versionComponents, "commit "+Commit)
-	}
-	if Date != unknownStr {
-		versionComponents = append(versionComponents, "built at "+Date)
-	}
-	rootCmd.Version = strings.Join(versionComponents, ", ")
-
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		printErrorAndExit(err)
@@ -114,6 +96,28 @@ func init() {
 
 // Execute executes the root command.
 func Execute() {
+	var versionComponents []string
+	if VersionStr != "" {
+		var err error
+		Version, err = semver.NewVersion(strings.TrimPrefix(VersionStr, "v"))
+		if err != nil {
+			printErrorAndExit(err)
+		}
+		versionComponents = append(versionComponents, VersionStr)
+	} else {
+		versionComponents = append(versionComponents, "dev")
+	}
+	if Commit != "" {
+		versionComponents = append(versionComponents, "commit "+Commit)
+	}
+	if Date != "" {
+		versionComponents = append(versionComponents, "built at "+Date)
+	}
+	if BuiltBy != "" {
+		versionComponents = append(versionComponents, "built by "+BuiltBy)
+	}
+	rootCmd.Version = strings.Join(versionComponents, ", ")
+
 	if err := rootCmd.Execute(); err != nil {
 		printErrorAndExit(err)
 	}

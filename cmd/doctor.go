@@ -430,7 +430,7 @@ func (c *doctorSuspiciousFilesCheck) Skip() bool {
 }
 
 func (doctorVersionCheck) Check() (bool, error) {
-	if VersionStr == devVersionStr || Commit == unknownStr || Date == unknownStr {
+	if VersionStr == "" || Commit == "" || Date == "" {
 		return false, nil
 	}
 	return true, nil

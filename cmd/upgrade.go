@@ -122,7 +122,7 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 
 	// If the upgrade is not forced and we're not a dev version, stop if we're
 	// already the latest version.
-	if !c.upgrade.force && VersionStr != devVersionStr {
+	if !c.upgrade.force && VersionStr != "" {
 		if !Version.LessThan(*releaseVersion) {
 			fmt.Fprintf(c.Stdout, "chezmoi: already at the latest version (%s)\n", Version)
 			return nil
