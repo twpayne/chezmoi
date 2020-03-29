@@ -6,6 +6,17 @@ package main
 
 import "github.com/twpayne/chezmoi/cmd"
 
+var (
+	version = ""
+	commit  = ""
+	date    = ""
+	builtBy = ""
+)
+
 func main() {
+	cmd.VersionStr = version
+	cmd.Commit = commit
+	cmd.Date = date
+	cmd.BuiltBy = builtBy
 	cmd.Execute()
 }

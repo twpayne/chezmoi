@@ -7,7 +7,6 @@ before:
 builds:
 - id: chezmoi-cgo
   binary: chezmoi
-  ldflags: "-s -w -X github.com/twpayne/chezmoi/cmd.VersionStr={{ .Version }} -X github.com/twpayne/chezmoi/cmd.Commit={{ .Commit }} -X github.com/twpayne/chezmoi/cmd.Date={{ .Date }}"
   env:
   - CGO_ENABLED=1
   goos:
@@ -18,7 +17,6 @@ builds:
   binary: chezmoi
   env:
   - CGO_ENABLED=0
-  ldflags: "-s -w -X github.com/twpayne/chezmoi/cmd.VersionStr={{ .Version }} -X github.com/twpayne/chezmoi/cmd.Commit={{ .Commit }} -X github.com/twpayne/chezmoi/cmd.Date={{ .Date }}"
   goos:
   - linux
   - darwin
@@ -43,7 +41,6 @@ builds:
   binary: chezmoi
   flags:
   - -tags=snap
-  ldflags: "-s -w -X github.com/twpayne/chezmoi/cmd.VersionStr={{ .Version }} -X github.com/twpayne/chezmoi/cmd.Commit={{ .Commit }} -X github.com/twpayne/chezmoi/cmd.Date={{ .Date }}"
   env:
   - CGO_ENABLED=1
   goos:
@@ -54,7 +51,6 @@ builds:
   binary: chezmoi
   flags:
   - -tags=snap
-  ldflags: "-s -w -X github.com/twpayne/chezmoi/cmd.VersionStr={{ .Version }} -X github.com/twpayne/chezmoi/cmd.Commit={{ .Commit }} -X github.com/twpayne/chezmoi/cmd.Date={{ .Date }}"
   env:
   - CGO_ENABLED=0
   goos:
