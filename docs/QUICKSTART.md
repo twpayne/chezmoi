@@ -82,5 +82,5 @@ For a full list of commands run:
 
     chezmoi help
 
-chezmoi has much more functionality. Read the [how-to guide](HOWTO.md) to
-explore.
+chezmoi has much more functionality. Read the [how-to
+guide](https://github.com/twpayne/chezmoi/blob/master/docs/HOWTO.md) to explore.
