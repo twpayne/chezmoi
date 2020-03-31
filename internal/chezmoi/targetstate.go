@@ -238,10 +238,14 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 	case info.Mode().IsRegular():
 		if info.Size() == 0 && !addOptions.Empty {
 			entry, err := ts.Get(fs, targetPath)
-			if err != nil {
+			switch {
+			case os.IsNotExist(err):
+				return nil
+			case err == nil:
+				return mutator.RemoveAll(filepath.Join(ts.SourceDir, entry.SourceName()))
+			default:
 				return err
 			}
-			return mutator.RemoveAll(filepath.Join(ts.SourceDir, entry.SourceName()))
 		}
 		contents, err := fs.ReadFile(targetPath)
 		if err != nil {
