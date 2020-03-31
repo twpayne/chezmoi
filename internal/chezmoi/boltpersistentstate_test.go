@@ -20,7 +20,7 @@ func TestBoltPersistentState(t *testing.T) {
 	defer cleanup()
 
 	path := "/home/user/.config/chezmoi/chezmoistate.boltdb"
-	b, err := NewBoltPersistentState(fs, path, nil)
+	b, err := NewBoltPersistentState(fs, path, vfst.DefaultUmask, nil)
 	require.NoError(t, err)
 	vfst.RunTests(t, fs, "",
 		vfst.TestPath(path,
@@ -63,7 +63,7 @@ func TestBoltPersistentState(t *testing.T) {
 
 	require.NoError(t, b.Close())
 
-	b, err = NewBoltPersistentState(fs, path, nil)
+	b, err = NewBoltPersistentState(fs, path, vfst.DefaultUmask, nil)
 	require.NoError(t, err)
 
 	require.NoError(t, b.Delete(bucket, key))
@@ -85,19 +85,19 @@ func TestBoltPersistentStateReadOnly(t *testing.T) {
 	key := []byte("key")
 	value := []byte("value")
 
-	a, err := NewBoltPersistentState(fs, path, nil)
+	a, err := NewBoltPersistentState(fs, path, vfst.DefaultUmask, nil)
 	require.NoError(t, err)
 	require.NoError(t, a.Set(bucket, key, value))
 	require.NoError(t, a.Close())
 
-	b, err := NewBoltPersistentState(fs, path, &bolt.Options{
+	b, err := NewBoltPersistentState(fs, path, vfst.DefaultUmask, &bolt.Options{
 		ReadOnly: true,
 		Timeout:  1 * time.Second,
 	})
 	require.NoError(t, err)
 	defer b.Close()
 
-	c, err := NewBoltPersistentState(fs, path, &bolt.Options{
+	c, err := NewBoltPersistentState(fs, path, vfst.DefaultUmask, &bolt.Options{
 		ReadOnly: true,
 		Timeout:  1 * time.Second,
 	})

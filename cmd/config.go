@@ -404,7 +404,7 @@ func (c *Config) getPersistentState(options *bolt.Options) (chezmoi.PersistentSt
 		}
 		options.ReadOnly = true
 	}
-	return chezmoi.NewBoltPersistentState(c.fs, persistentStateFile, options)
+	return chezmoi.NewBoltPersistentState(c.fs, persistentStateFile, os.FileMode(c.Umask), options)
 }
 
 func (c *Config) getPersistentStateFile() string {
