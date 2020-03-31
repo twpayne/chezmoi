@@ -206,6 +206,20 @@ func TestAddCommand(t *testing.T) {
 			},
 		},
 		{
+			name: "add_empty_file_in_subdir",
+			args: []string{"/home/user/subdir/empty"},
+			root: map[string]interface{}{
+				"/home/user":                      &vfst.Dir{Perm: 0755},
+				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0700},
+				"/home/user/subdir/empty":         "",
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/.local/share/chezmoi/subdir",
+					vfst.TestIsDir,
+				),
+			},
+		},
+		{
 			name: "add_symlink",
 			args: []string{"/home/user/foo"},
 			root: map[string]interface{}{
