@@ -113,10 +113,10 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string) error {
 				return err
 			}
 			ef.plaintextPath = filepath.Join(tempDir, ef.file.SourceName())
-			if err := os.MkdirAll(filepath.Dir(ef.plaintextPath), 0700); err != nil {
+			if err := os.MkdirAll(filepath.Dir(ef.plaintextPath), 0700&^os.FileMode(c.Umask)); err != nil {
 				return err
 			}
-			if err := renameio.WriteFile(ef.plaintextPath, plaintext, 0600); err != nil {
+			if err := renameio.WriteFile(ef.plaintextPath, plaintext, 0600&^os.FileMode(c.Umask)); err != nil {
 				return err
 			}
 			argv[ef.index] = ef.plaintextPath
