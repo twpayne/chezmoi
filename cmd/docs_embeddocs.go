@@ -14,7 +14,7 @@ var docsPrefix = "docs/"
 
 func getDocsFilenames() ([]string, error) {
 	var docsFilenames []string
-	for name := range gzipedAssets {
+	for name := range assets {
 		if strings.HasPrefix(name, docsPrefix) {
 			docsFilenames = append(docsFilenames, strings.TrimPrefix(name, docsPrefix))
 		}
