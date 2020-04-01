@@ -3,12 +3,10 @@ package cmd
 import (
 	"bufio"
 	"bytes"
-	"compress/gzip"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"os/user"
@@ -123,7 +121,7 @@ var (
 
 	identifierRegexp = regexp.MustCompile(`\A[\pL_][\pL\p{Nd}_]*\z`)
 
-	gzipedAssets = make(map[string][]byte)
+	assets = make(map[string][]byte)
 )
 
 // newConfig creates a new Config with the given options.
@@ -524,15 +522,11 @@ func (c *Config) validateData() error {
 }
 
 func getAsset(name string) ([]byte, error) {
-	gzipedAsset, ok := gzipedAssets[name]
+	asset, ok := assets[name]
 	if !ok {
 		return nil, fmt.Errorf("%s: not found", name)
 	}
-	r, err := gzip.NewReader(bytes.NewBuffer(gzipedAsset))
-	if err != nil {
-		return nil, err
-	}
-	return ioutil.ReadAll(r)
+	return asset, nil
 }
 
 func getDefaultConfigFile(bds *xdg.BaseDirectorySpecification) string {
