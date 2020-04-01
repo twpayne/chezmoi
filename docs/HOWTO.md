@@ -141,10 +141,10 @@ If you prefer, you can use any format supported by
 includes JSON, YAML, and TOML. Variable names must start with a letter and be
 followed by zero or more letters or digits.
 
-Then, add `~/.gitconfig` to chezmoi using the `-T` flag to automatically turn
-it in to a template:
+Then, add `~/.gitconfig` to chezmoi using the `--template` flag to automatically
+turn it in to a template:
 
-    chezmoi add -T --autotemplate ~/.gitconfig
+    chezmoi add --template --autotemplate ~/.gitconfig
 
 You can then open the template (which will be saved in the file
 `~/.local/share/chezmoi/dot_gitconfig.tmpl`):
@@ -156,17 +156,12 @@ The file should look something like:
     [user]
       email = "{{ .email }}"
 
-chezmoi will substitute the variables from the `data` section of your
-`~/.config/chezmoi/chezmoi.toml` file when calculating the target state of
-`.gitconfig`.
+The `--autotemplate` flag to `chezmoi add` above instructs chezmoi to generate a
+template by substituting variables from the `data` section of your
+`~/.config/chezmoi/chezmoi.toml` file.
 
-For more advanced usage, you can use the full power of the
-[`text/template`](https://pkg.go.dev/text/template) language to include or
-exclude sections of file. For a full list of variables, run:
-
-    chezmoi data
-
-For example, in your `~/.local/share/chezmoi/dot_bashrc.tmpl` you might have:
+Templates are often used to capture machine-specifc differences. For example, in
+your `~/.local/share/chezmoi/dot_bashrc.tmpl` you might have:
 
     # common config
     export EDITOR=vi
@@ -176,8 +171,33 @@ For example, in your `~/.local/share/chezmoi/dot_bashrc.tmpl` you might have:
     # this will only be included in ~/.bashrc on work-laptop
     {{- end }}
 
-chezmoi includes all of the hermetic text functions from
-[sprig](http://masterminds.github.io/sprig/).
+For a full list of variables, run:
+
+    chezmoi data
+
+For more advanced usage, you can use the full power of the
+[`text/template`](https://pkg.go.dev/text/template) language. chezmoi includes
+all of the hermetic text functions from
+[sprig](http://masterminds.github.io/sprig/) and its own [functions for
+interacting with password
+managers](https://github.com/twpayne/chezmoi/blob/master/docs/REFERENCE.md#template-functions).
+
+Templates can be executed directly from the command line, without the need to
+create a file on disk, with the `execute-template` command, for example:
+
+    chezmoi execute-template '{{ .chezmoi.os }}/{{ .chezmoi.arch }}'
+
+This is useful when developing or debugging templates.
+
+Some password managers allow you to store complete files. The files can be
+retrieved with chezmoi's template functions. For example, if you have a file
+stored in 1Password with the UUID `uuid` then you can retrieve it with the
+template:
+
+    {{- onepasswordDocument "uuid" -}}
+
+The `-`s inside the brackets remove any whitespace before or after the template
+expression, which is useful if your editor has added any newlines.
 
 If, after executing the template, the file contents are empty, the target file
 will be removed. This can be used to ensure that files are only present on
