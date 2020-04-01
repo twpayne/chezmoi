@@ -977,8 +977,8 @@ space stripped. It is only available when generating the initial config file.
 #### `promptString` examples
 
     {{ $email := promptString "email" -}}
-    data:
-        email: "{{ $email }}"
+    [data]
+        email = "{{ $email }}"
 
 ### `secret` [*args*]
 
