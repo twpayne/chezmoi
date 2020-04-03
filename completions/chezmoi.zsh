@@ -42,6 +42,7 @@ function _chezmoi {
       "import:Import a tar archive into the source state"
       "init:Setup the source directory and update the destination directory to match the target state"
       "merge:Perform a three-way merge between the destination state, the source state, and the target state"
+      "purge:Purge all of chezmoi's configuration and data"
       "remove:Remove a target from the source state and the destination directory"
       "secret:Interact with a secret manager"
       "source:Run the source version control system command in the source directory"
@@ -121,6 +122,9 @@ function _chezmoi {
     ;;
   merge)
     _chezmoi_merge
+    ;;
+  purge)
+    _chezmoi_purge
     ;;
   remove)
     _chezmoi_remove
@@ -527,6 +531,20 @@ function _chezmoi_merge {
     '6: :_files ' \
     '7: :_files ' \
     '8: :_files '
+}
+
+function _chezmoi_purge {
+  _arguments \
+    '(-f --force)'{-f,--force}'[remove without prompting]' \
+    '--color[colorize diffs]:' \
+    '(-c --config)'{-c,--config}'[config file]:' \
+    '--debug[write debug logs]' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
+    '--follow[follow symlinks]' \
+    '--remove[remove targets]' \
+    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-v --verbose)'{-v,--verbose}'[verbose]'
 }
 
 function _chezmoi_remove {

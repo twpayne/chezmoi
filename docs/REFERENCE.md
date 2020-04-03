@@ -49,6 +49,7 @@ Manage your dotfiles securely across multiple machines.
   * [`import` *filename*](#import-filename)
   * [`manage` *targets*](#manage-targets)
   * [`merge` *targets*](#merge-targets)
+  * [`purge`](#purge)
   * [`remove` *targets*](#remove-targets)
   * [`rm` *targets*](#rm-targets)
   * [`secret`](#secret)
@@ -651,6 +652,20 @@ cannot be decrypted) a two-way merge is performed instead.
 #### `merge` examples
 
     chezmoi merge ~/.bashrc
+
+### `purge`
+
+Remove chezmoi's configuration, state, and source directory, but leave the
+target state intact.
+
+#### `-f`, `--force`
+
+Remove without prompting.
+
+#### `purge` examples
+
+    chezmoi purge
+    chezmoi purge --force
 
 ### `remove` *targets*
 

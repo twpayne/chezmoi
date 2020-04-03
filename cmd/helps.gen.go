@@ -316,6 +316,19 @@ var helps = map[string]help{
 		example: "" +
 			"  chezmoi merge ~/.bashrc",
 	},
+	"purge": {
+		long: "" +
+			"Description:\n" +
+			"  Remove chezmoi's configuration, state, and source directory, but leave the\n" +
+			"  target state intact.\n" +
+			"\n" +
+			"  `-f`, `--force`\n" +
+			"\n" +
+			"  Remove without prompting.",
+		example: "" +
+			"  chezmoi purge\n" +
+			"  chezmoi purge --force",
+	},
 	"remove": {
 		long: "" +
 			"Description:\n" +
