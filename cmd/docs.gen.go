@@ -1383,6 +1383,7 @@ func init() {
 		"  * [`import` *filename*](#import-filename)\n" +
 		"  * [`manage` *targets*](#manage-targets)\n" +
 		"  * [`merge` *targets*](#merge-targets)\n" +
+		"  * [`purge`](#purge)\n" +
 		"  * [`remove` *targets*](#remove-targets)\n" +
 		"  * [`rm` *targets*](#rm-targets)\n" +
 		"  * [`secret`](#secret)\n" +
@@ -1985,6 +1986,20 @@ func init() {
 		"#### `merge` examples\n" +
 		"\n" +
 		"    chezmoi merge ~/.bashrc\n" +
+		"\n" +
+		"### `purge`\n" +
+		"\n" +
+		"Remove chezmoi's configuration, state, and source directory, but leave the\n" +
+		"target state intact.\n" +
+		"\n" +
+		"#### `-f`, `--force`\n" +
+		"\n" +
+		"Remove without prompting.\n" +
+		"\n" +
+		"#### `purge` examples\n" +
+		"\n" +
+		"    chezmoi purge\n" +
+		"    chezmoi purge --force\n" +
 		"\n" +
 		"### `remove` *targets*\n" +
 		"\n" +
