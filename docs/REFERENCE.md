@@ -844,8 +844,8 @@ and/or digits.
 
 ## Template functions
 
-All standard [`text/template`](https://pkg.go.dev/text/template) and [hermetic
-text template functions from `sprig`](http://masterminds.github.io/sprig/) are
+All standard [`text/template`](https://pkg.go.dev/text/template) and [text
+template functions from `sprig`](http://masterminds.github.io/sprig/) are
 included. chezmoi provides some additional functions.
 
 ### `bitwarden` [*args*]

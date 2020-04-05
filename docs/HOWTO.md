@@ -177,9 +177,8 @@ For a full list of variables, run:
 
 For more advanced usage, you can use the full power of the
 [`text/template`](https://pkg.go.dev/text/template) language. chezmoi includes
-all of the hermetic text functions from
-[sprig](http://masterminds.github.io/sprig/) and its own [functions for
-interacting with password
+all of the text functions from [sprig](http://masterminds.github.io/sprig/) and
+its own [functions for interacting with password
 managers](https://github.com/twpayne/chezmoi/blob/master/docs/REFERENCE.md#template-functions).
 
 Templates can be executed directly from the command line, without the need to

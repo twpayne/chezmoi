@@ -140,7 +140,7 @@ func newConfig(options ...configOption) *Config {
 			Command: "vimdiff",
 		},
 		maxDiffDataSize:   1 * 1024 * 1024, // 1MB
-		templateFuncs:     sprig.HermeticTxtFuncMap(),
+		templateFuncs:     sprig.TxtFuncMap(),
 		scriptStateBucket: []byte("script"),
 		Stdin:             os.Stdin,
 		Stdout:            os.Stdout,
