@@ -16,7 +16,7 @@
 <link rel="stylesheet" href="/book.min.a8b61185b89b0e211122339c7efd1c8edaa4ad4c0ae65f0074e99a4b31c1e393.css" integrity="sha256-qLYRhbibDiERIjOcfv0cjtqkrUwK5l8AdOmaSzHB45M=">
 
 
-<script defer src="/search.min.b156d94ffe330aa16acfb6a437ccbe9168663f94c0fa199941af08f283cf4cc2.js" integrity="sha256-sVbZT/4zCqFqz7akN8y&#43;kWhmP5TA&#43;hmZQa8I8oPPTMI="></script>
+<script defer src="/search.min.df0546614696aaa56f51975466a8b2c43c42fe2e63fd0d1c863bcc38268e6d9a.js" integrity="sha256-3wVGYUaWqqVvUZdUZqiyxDxC/i5j/Q0chjvMOCaObZo="></script>
 
 <link rel="alternate" type="application/rss+xml" href="https://chezmoi.io/index.xml" title="chezmoi.io" />
 <!--
@@ -160,16 +160,19 @@ commit and push changes.</p>
 <h2 id="i-already-have-a-system-to-manage-my-dotfiles-why-should-i-use-chezmoi">I already have a system to manage my dotfiles, why should I use chezmoi?</h2>
 <p>If you&rsquo;re using any of the following methods:</p>
 <ul>
-<li>A custom shell script to install your dotfiles.</li>
-<li><a href="http://brandon.invergo.net/news/2012-05-26-using-gnu-stow-to-manage-your-dotfiles.html">GNU Stow</a>.</li>
-<li><a href="https://yadm.io/"><code>yadm</code></a>.</li>
+<li>A custom shell script.</li>
+<li>An existing dotfile manager like
+<a href="https://github.com/andsens/homeshick">homeshick</a>,
+<a href="https://github.com/technicalpickles/homesick">homesick</a>,
+<a href="https://github.com/thoughtbot/rcm">rcm</a>, <a href="https://www.gnu.org/software/stow/">GNU
+Stow</a>, or <a href="https://yadm.io/">yadm</a>.</li>
 <li>A <a href="https://www.atlassian.com/git/tutorials/dotfiles">bare git repo</a>.</li>
 </ul>
 <p>Then you&rsquo;ve probably run into at least one of the following problems:</p>
 <ul>
 <li>
 <p>If you want to synchronize your dotfiles across multiple operating systems or
-distributions, then you need to manually perform extra steps to cope with
+distributions, then you may need to manually perform extra steps to cope with
 differences from machine to machine. You might need to run different commands
 on different machines, maintain separate per-machine branches or files (with
 the associated hassle of merging, rebasing, or copying each change), or hope
@@ -185,28 +188,30 @@ with access to your work machine (e.g. your IT department) will have access to
 your home secrets. If you clone it on your home machine then you risk leaking
 work secrets. With chezmoi you can store secrets in your password manager or
 encrypt them, and even use different password managers or encryption keys for
-your work and home machines. You can share your repository between your
-personal and work machines, and even make your dotfiles repo public, without
-leaving personal secrets on your work machine or work secrets on your personal
-machine.</p>
+your work and home machines. You can clone your repository on every machine,
+and even make your dotfiles repo public, without leaving personal secrets on
+your work machine or work secrets on your personal machine.</p>
 </li>
 <li>
 <p>If your system was written by you for your personal use, then it probably has
 the minimum functionality that you need. You might need special logic to
 handle dotfiles that need to be private or run configuration scripts
 occasionally. chezmoi includes a huge range of battle-tested functionality
-out-of-the-box, including dry-run and diff modes, conflict resolution, Windows
-support, and much, much more. chezmoi is <a href="https://github.com/twpayne/chezmoi/stargazers">used by thousands of
-people</a>, so it is likely that
-when you hit the limits of your existing dotfile management system, chezmoi
-already has a tried-and-tested solution.</p>
+out-of-the-box, including dry-run and diff modes, script execution, conflict
+resolution, Windows support, and much, much more. chezmoi is <a href="https://github.com/twpayne/chezmoi/stargazers">used by
+thousands of people</a>, so it is
+likely that when you hit the limits of your existing dotfile management
+system, chezmoi already has a tried-and-tested solution ready to use.</p>
 </li>
 <li>
-<p>All systems suffer from the bootstrap problem: you need to install your system
-before you can install your dotfiles. chezmoi provides one-line installs,
-statically-linked binaries, packages for Linux and BSD distributions, Homebrew
-formulae, Scoop support on Windows, and a initial config file generation
-mechanism to make overcoming the bootstrap problem as painless as possible.</p>
+<p>If your system is written in a scripting language like Python, Perl, or Ruby,
+then you also need ensure that that language&rsquo;s runtime is installed. chezmoi
+is distributed as a single stand-alone statically-linked binary with no
+dependencies that you can simply copy onto your machine and run. chezmoi
+provides one-line installs, pre-built binaries, packages for Linux and BSD
+distributions, Homebrew formulae, Scoop support on Windows, and a initial
+config file generation mechanism to make installing your dotfiles on a new
+machine as painless as possible.</p>
 </li>
 </ul>
 <h2 id="what-does-a-chezmoi-dotfile-repo-look-like">What does a chezmoi dotfile repo look like?</h2>
