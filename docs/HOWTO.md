@@ -6,6 +6,7 @@
 * [Pull the latest changes from your repo and see what would change, without actually applying the changes](#pull-the-latest-changes-from-your-repo-and-see-what-would-change-without-actually-applying-the-changes)
 * [Automatically commit and push changes to your repo](#automatically-commit-and-push-changes-to-your-repo)
 * [Use templates to manage files that vary from machine to machine](#use-templates-to-manage-files-that-vary-from-machine-to-machine)
+* [Use completely separate config files on different machines](#use-completely-separate-config-files-on-different-machines)
 * [Create a config file on a new machine automatically](#create-a-config-file-on-a-new-machine-automatically)
 * [Ensure that a target is removed](#ensure-that-a-target-is-removed)
 * [Include a subdirectory from another repository, like Oh My Zsh](#include-a-subdirectory-from-another-repository-like-oh-my-zsh)
@@ -220,6 +221,58 @@ Patterns can be excluded by prefixing them with a `!`, for example:
     !foo
 
 will ignore all files beginning with an `f` except `foo`.
+
+## Use completely separate config files on different machines
+
+chezmoi's templating functionality allows you to change a file's contents based
+on any variable. For example, if you want `~/.bashrc` to be different on Linux
+and macOS you would create a file in the source state called `dot_bashrc.tmpl`
+containing:
+
+```
+{{ if eq .chezmoi.os "darwin" -}}
+# macOS .bashrc contents
+{{ else if eq .chezmoi.os "linux" -}}
+# Linux .bashrc contents
+{{ end -}}
+```
+
+However, if the differences between the two versions are so large that you'd
+prefer to use completely separate files in the source state, you can achieve
+this using a templated symbolic link. Create the following files:
+
+`symlink_dot_bashrc.tmpl`:
+
+```
+.bashrc_{{ .chezmoi.os }}
+```
+
+`dot_bashrc_darwin`:
+
+```
+# macOS .bashrc contents
+```
+
+`dot_bashrc_linux`:
+
+```
+# Linux .bashrc contents
+```
+
+`.chezmoiignore`
+
+```
+{{ if ne .chezmoi.os "darwin" }}
+.bashrc_darwin
+{{ end }}
+{{ if ne .chezmoi.os "linux" }}
+.bashrc_linux
+{{ end }}
+```
+
+This will make `~/.bashrc` will be a symlink to `.bashrc_darwin` on `darwin` and
+to `.bashrc_linux`. The `.chezmoiignore` configuration ensures that only the
+OS-specific `.bashrc_os` file will be installed on each OS.
 
 ## Create a config file on a new machine automatically
 
