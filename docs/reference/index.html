@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="/book.min.a8b61185b89b0e211122339c7efd1c8edaa4ad4c0ae65f0074e99a4b31c1e393.css" integrity="sha256-qLYRhbibDiERIjOcfv0cjtqkrUwK5l8AdOmaSzHB45M=">
 
 
-<script defer src="/search.min.b6f54037a251dfc9d42f82f1c18efdf0589d959aa34caf00787064da9777c888.js" integrity="sha256-tvVAN6JR38nUL4LxwY798FidlZqjTK8AeHBk2pd3yIg="></script>
+<script defer src="/search.min.b156d94ffe330aa16acfb6a437ccbe9168663f94c0fa199941af08f283cf4cc2.js" integrity="sha256-sVbZT/4zCqFqz7akN8y&#43;kWhmP5TA&#43;hmZQa8I8oPPTMI="></script>
 
 <!--
 Made with Book Theme
@@ -756,9 +756,18 @@ cannot be decrypted) a two-way merge is performed instead.</p>
 <h4 id="merge-examples"><code>merge</code> examples</h4>
 <pre><code>chezmoi merge ~/.bashrc
 </code></pre>
+<h3 id="purge"><code>purge</code></h3>
+<p>Remove chezmoi&rsquo;s configuration, state, and source directory, but leave the
+target state intact.</p>
+<h4 id="-f---force-1"><code>-f</code>, <code>--force</code></h4>
+<p>Remove without prompting.</p>
+<h4 id="purge-examples"><code>purge</code> examples</h4>
+<pre><code>chezmoi purge
+chezmoi purge --force
+</code></pre>
 <h3 id="remove-targets"><code>remove</code> <em>targets</em></h3>
 <p>Remove <em>targets</em> from both the source state and the destination directory.</p>
-<h4 id="-f---force-1"><code>-f</code>, <code>--force</code></h4>
+<h4 id="-f---force-2"><code>-f</code>, <code>--force</code></h4>
 <p>Remove without prompting.</p>
 <h3 id="rm-targets"><code>rm</code> <em>targets</em></h3>
 <p><code>rm</code> is an alias for <code>remove</code>.</p>
@@ -925,8 +934,8 @@ overridden by setting a list of options in the configuration file, for example:<
 Variable names must consist of a letter and be followed by zero or more letters
 and/or digits.</p>
 <h2 id="template-functions">Template functions</h2>
-<p>All standard <a href="https://pkg.go.dev/text/template"><code>text/template</code></a> and <a href="http://masterminds.github.io/sprig/">hermetic
-text template functions from <code>sprig</code></a> are
+<p>All standard <a href="https://pkg.go.dev/text/template"><code>text/template</code></a> and <a href="http://masterminds.github.io/sprig/">text
+template functions from <code>sprig</code></a> are
 included. chezmoi provides some additional functions.</p>
 <h3 id="bitwarden-args"><code>bitwarden</code> [<em>args</em>]</h3>
 <p><code>bitwarden</code> returns structured data retrieved from
@@ -1051,8 +1060,8 @@ return value is the user&rsquo;s response to that prompt with all leading and tr
 space stripped. It is only available when generating the initial config file.</p>
 <h4 id="promptstring-examples"><code>promptString</code> examples</h4>
 <pre><code>{{ $email := promptString &quot;email&quot; -}}
-data:
-    email: &quot;{{ $email }}&quot;
+[data]
+    email = &quot;{{ $email }}&quot;
 </code></pre>
 <h3 id="secret-args"><code>secret</code> [<em>args</em>]</h3>
 <p><code>secret</code> returns the output of the generic secret command defined by the
@@ -1142,6 +1151,7 @@ times with the same <em>key</em> will only invoke <code>vault</code> once.</p>
         <li><a href="#import-filename"><code>import</code> <em>filename</em></a></li>
         <li><a href="#manage-targets"><code>manage</code> <em>targets</em></a></li>
         <li><a href="#merge-targets"><code>merge</code> <em>targets</em></a></li>
+        <li><a href="#purge"><code>purge</code></a></li>
         <li><a href="#remove-targets"><code>remove</code> <em>targets</em></a></li>
         <li><a href="#rm-targets"><code>rm</code> <em>targets</em></a></li>
         <li><a href="#secret"><code>secret</code></a></li>
