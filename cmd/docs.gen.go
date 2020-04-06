@@ -622,9 +622,8 @@ func init() {
 		"\n" +
 		"For more advanced usage, you can use the full power of the\n" +
 		"[`text/template`](https://pkg.go.dev/text/template) language. chezmoi includes\n" +
-		"all of the hermetic text functions from\n" +
-		"[sprig](http://masterminds.github.io/sprig/) and its own [functions for\n" +
-		"interacting with password\n" +
+		"all of the text functions from [sprig](http://masterminds.github.io/sprig/) and\n" +
+		"its own [functions for interacting with password\n" +
 		"managers](https://github.com/twpayne/chezmoi/blob/master/docs/REFERENCE.md#template-functions).\n" +
 		"\n" +
 		"Templates can be executed directly from the command line, without the need to\n" +
@@ -2178,8 +2177,8 @@ func init() {
 		"\n" +
 		"## Template functions\n" +
 		"\n" +
-		"All standard [`text/template`](https://pkg.go.dev/text/template) and [hermetic\n" +
-		"text template functions from `sprig`](http://masterminds.github.io/sprig/) are\n" +
+		"All standard [`text/template`](https://pkg.go.dev/text/template) and [text\n" +
+		"template functions from `sprig`](http://masterminds.github.io/sprig/) are\n" +
 		"included. chezmoi provides some additional functions.\n" +
 		"\n" +
 		"### `bitwarden` [*args*]\n" +
