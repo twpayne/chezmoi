@@ -77,15 +77,18 @@ don't need chezmoi. Otherwise, read on...
 
 If you're using any of the following methods:
 
-* A custom shell script to install your dotfiles.
-* [GNU Stow](http://brandon.invergo.net/news/2012-05-26-using-gnu-stow-to-manage-your-dotfiles.html).
-* [`yadm`](https://yadm.io/).
+* A custom shell script.
+* An existing dotfile manager like
+  [homeshick](https://github.com/andsens/homeshick),
+  [homesick](https://github.com/technicalpickles/homesick),
+  [rcm](https://github.com/thoughtbot/rcm), [GNU
+  Stow](https://www.gnu.org/software/stow/), or [yadm](https://yadm.io/).
 * A [bare git repo](https://www.atlassian.com/git/tutorials/dotfiles).
 
 Then you've probably run into at least one of the following problems:
 
 * If you want to synchronize your dotfiles across multiple operating systems or
-  distributions, then you need to manually perform extra steps to cope with
+  distributions, then you may need to manually perform extra steps to cope with
   differences from machine to machine. You might need to run different commands
   on different machines, maintain separate per-machine branches or files (with
   the associated hassle of merging, rebasing, or copying each change), or hope
@@ -100,26 +103,28 @@ Then you've probably run into at least one of the following problems:
   your home secrets. If you clone it on your home machine then you risk leaking
   work secrets. With chezmoi you can store secrets in your password manager or
   encrypt them, and even use different password managers or encryption keys for
-  your work and home machines. You can share your repository between your
-  personal and work machines, and even make your dotfiles repo public, without
-  leaving personal secrets on your work machine or work secrets on your personal
-  machine.
+  your work and home machines. You can clone your repository on every machine,
+  and even make your dotfiles repo public, without leaving personal secrets on
+  your work machine or work secrets on your personal machine.
 
 * If your system was written by you for your personal use, then it probably has
   the minimum functionality that you need. You might need special logic to
   handle dotfiles that need to be private or run configuration scripts
   occasionally. chezmoi includes a huge range of battle-tested functionality
-  out-of-the-box, including dry-run and diff modes, conflict resolution, Windows
-  support, and much, much more. chezmoi is [used by thousands of
-  people](https://github.com/twpayne/chezmoi/stargazers), so it is likely that
-  when you hit the limits of your existing dotfile management system, chezmoi
-  already has a tried-and-tested solution.
+  out-of-the-box, including dry-run and diff modes, script execution, conflict
+  resolution, Windows support, and much, much more. chezmoi is [used by
+  thousands of people](https://github.com/twpayne/chezmoi/stargazers), so it is
+  likely that when you hit the limits of your existing dotfile management
+  system, chezmoi already has a tried-and-tested solution ready to use.
 
-* All systems suffer from the bootstrap problem: you need to install your system
-  before you can install your dotfiles. chezmoi provides one-line installs,
-  statically-linked binaries, packages for Linux and BSD distributions, Homebrew
-  formulae, Scoop support on Windows, and a initial config file generation
-  mechanism to make overcoming the bootstrap problem as painless as possible.
+* If your system is written in a scripting language like Python, Perl, or Ruby,
+  then you also need ensure that that language's runtime is installed. chezmoi
+  is distributed as a single stand-alone statically-linked binary with no
+  dependencies that you can simply copy onto your machine and run. chezmoi
+  provides one-line installs, pre-built binaries, packages for Linux and BSD
+  distributions, Homebrew formulae, Scoop support on Windows, and a initial
+  config file generation mechanism to make installing your dotfiles on a new
+  machine as painless as possible.
 
 ## What does a chezmoi dotfile repo look like?
 
