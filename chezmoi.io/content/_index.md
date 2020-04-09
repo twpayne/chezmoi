@@ -128,7 +128,8 @@ Then you've probably run into at least one of the following problems:
 
 ## What does a chezmoi dotfile repo look like?
 
-Have a look at [repos tagged with `chezmoi` on GitHub](https://github.com/topics/chezmoi).
+Have a look at [repos tagged with `chezmoi` on
+GitHub](https://github.com/topics/chezmoi?o=desc&s=updated).
 
 ## How do I start with chezmoi?
 
