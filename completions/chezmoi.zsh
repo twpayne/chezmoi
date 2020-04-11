@@ -41,6 +41,7 @@ function _chezmoi {
       "hg:Run mercurial in the source directory"
       "import:Import a tar archive into the source state"
       "init:Setup the source directory and update the destination directory to match the target state"
+      "managed:List the managed files in the destination directory"
       "merge:Perform a three-way merge between the destination state, the source state, and the target state"
       "purge:Purge all of chezmoi's configuration and data"
       "remove:Remove a target from the source state and the destination directory"
@@ -119,6 +120,9 @@ function _chezmoi {
     ;;
   init)
     _chezmoi_init
+    ;;
+  managed)
+    _chezmoi_managed
     ;;
   merge)
     _chezmoi_merge
@@ -501,6 +505,19 @@ function _chezmoi_import {
 function _chezmoi_init {
   _arguments \
     '--apply[update destination directory]' \
+    '--color[colorize diffs]:' \
+    '(-c --config)'{-c,--config}'[config file]:' \
+    '--debug[write debug logs]' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
+    '--follow[follow symlinks]' \
+    '--remove[remove targets]' \
+    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-v --verbose)'{-v,--verbose}'[verbose]'
+}
+
+function _chezmoi_managed {
+  _arguments \
     '--color[colorize diffs]:' \
     '(-c --config)'{-c,--config}'[config file]:' \
     '--debug[write debug logs]' \

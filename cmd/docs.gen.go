@@ -261,6 +261,10 @@ func init() {
 		"`chezmoi unmanaged` will list everything not managed by chezmoi. You can add\n" +
 		"entire directories with `chezmoi add -r`.\n" +
 		"\n" +
+		"## How can I tell what dotfiles in my home directory are currently managed by chezmoi?\n" +
+		"\n" +
+		"`chezmoi managed` will list everything managed by chezmoi.\n" +
+		"\n" +
 		"## If there's a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?\n" +
 		"\n" +
 		"By default, chezmoi ignores everything that you haven't explicitly `chezmoi\n" +
@@ -1434,6 +1438,7 @@ func init() {
 		"  * [`init` [*repo*]](#init-repo)\n" +
 		"  * [`import` *filename*](#import-filename)\n" +
 		"  * [`manage` *targets*](#manage-targets)\n" +
+		"  * [`managed`](#managed)\n" +
 		"  * [`merge` *targets*](#merge-targets)\n" +
 		"  * [`purge`](#purge)\n" +
 		"  * [`remove` *targets*](#remove-targets)\n" +
@@ -2026,6 +2031,14 @@ func init() {
 		"### `manage` *targets*\n" +
 		"\n" +
 		"`manage` is an alias for `add` for symmetry with `unmanage`.\n" +
+		"\n" +
+		"### `managed`\n" +
+		"\n" +
+		"List all managed files in the destination directory.\n" +
+		"\n" +
+		"#### `managed` examples\n" +
+		"\n" +
+		"    chezmoi managed\n" +
 		"\n" +
 		"### `merge` *targets*\n" +
 		"\n" +

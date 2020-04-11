@@ -38,6 +38,10 @@ run `chezmoi apply` your modified `~/.zshrc` will remain in place.
 `chezmoi unmanaged` will list everything not managed by chezmoi. You can add
 entire directories with `chezmoi add -r`.
 
+## How can I tell what dotfiles in my home directory are currently managed by chezmoi?
+
+`chezmoi managed` will list everything managed by chezmoi.
+
 ## If there's a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?
 
 By default, chezmoi ignores everything that you haven't explicitly `chezmoi
