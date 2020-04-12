@@ -3,7 +3,6 @@ package cmd
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"path/filepath"
 	"testing"
 
@@ -29,7 +28,6 @@ func TestDumpCmd(t *testing.T) {
 		withStdout(stdout),
 	)
 	assert.NoError(t, c.runDumpCmd(nil, nil))
-	fmt.Println(stdout.String())
 	var actual interface{}
 	assert.NoError(t, json.NewDecoder(stdout).Decode(&actual))
 	expected := []interface{}{
