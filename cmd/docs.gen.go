@@ -1569,6 +1569,7 @@ func init() {
 		"| `follow`                | bool     | `false`                   | Follow symlinks                                     |\n" +
 		"| `genericSecret.command` | string   | *none*                    | Generic secret command                              |\n" +
 		"| `gopass.command`        | string   | `gopass`                  | gopass CLI command                                  |\n" +
+		"| `gpg.command`           | string   | `gpg`                     | GPG CLI command                                     |\n" +
 		"| `gpg.recipient`         | string   | *none*                    | GPG recipient                                       |\n" +
 		"| `gpg.symmetric`         | bool     | `false`                   | Use symmetric GPG encryption                        |\n" +
 		"| `keepassxc.args`        | []string | *none*                    | Extra args to KeePassXC CLI command                 |\n" +

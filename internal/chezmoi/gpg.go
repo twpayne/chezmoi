@@ -9,6 +9,7 @@ import (
 
 // GPG interfaces with gpg.
 type GPG struct {
+	Command   string
 	Recipient string
 	Symmetric bool
 }
@@ -28,8 +29,9 @@ func (g *GPG) Decrypt(filename string, ciphertext []byte) ([]byte, error) {
 		return nil, err
 	}
 
+	//nolint:gosec
 	cmd := exec.Command(
-		"gpg",
+		g.Command,
 		"--output", outputFilename,
 		"--quiet",
 		"--decrypt", inputFilename,
@@ -73,7 +75,9 @@ func (g *GPG) Encrypt(filename string, plaintext []byte) ([]byte, error) {
 		args = append(args, "--encrypt")
 	}
 	args = append(args, filename)
-	cmd := exec.Command("gpg", args...)
+
+	//nolint:gosec
+	cmd := exec.Command(g.Command, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
