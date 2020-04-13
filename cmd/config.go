@@ -139,6 +139,9 @@ func newConfig(options ...configOption) *Config {
 		Merge: mergeConfig{
 			Command: "vimdiff",
 		},
+		GPG: chezmoi.GPG{
+			Command: "gpg",
+		},
 		maxDiffDataSize:   1 * 1024 * 1024, // 1MB
 		templateFuncs:     sprig.TxtFuncMap(),
 		scriptStateBucket: []byte("script"),
