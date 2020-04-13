@@ -303,6 +303,13 @@ var helps = map[string]help{
 			"Description:\n" +
 			"  `manage` is an alias for `add` for symmetry with `unmanage`.",
 	},
+	"managed": {
+		long: "" +
+			"Description:\n" +
+			"  List all managed files in the destination directory.",
+		example: "" +
+			"  chezmoi managed",
+	},
 	"merge": {
 		long: "" +
 			"Description:\n" +

@@ -48,6 +48,7 @@ Manage your dotfiles securely across multiple machines.
   * [`init` [*repo*]](#init-repo)
   * [`import` *filename*](#import-filename)
   * [`manage` *targets*](#manage-targets)
+  * [`managed`](#managed)
   * [`merge` *targets*](#merge-targets)
   * [`purge`](#purge)
   * [`remove` *targets*](#remove-targets)
@@ -640,6 +641,14 @@ Strip *n* leading components from paths.
 ### `manage` *targets*
 
 `manage` is an alias for `add` for symmetry with `unmanage`.
+
+### `managed`
+
+List all managed files in the destination directory.
+
+#### `managed` examples
+
+    chezmoi managed
 
 ### `merge` *targets*
 

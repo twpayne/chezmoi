@@ -1058,6 +1058,44 @@ _chezmoi_init()
     noun_aliases=()
 }
 
+_chezmoi_managed()
+{
+    last_command="chezmoi_managed"
+
+    command_aliases=()
+
+    commands=()
+
+    flags=()
+    two_word_flags=()
+    local_nonpersistent_flags=()
+    flags_with_completion=()
+    flags_completion=()
+
+    flags+=("--color=")
+    two_word_flags+=("--color")
+    flags+=("--config=")
+    two_word_flags+=("--config")
+    two_word_flags+=("-c")
+    flags+=("--debug")
+    flags+=("--destination=")
+    two_word_flags+=("--destination")
+    two_word_flags+=("-D")
+    flags+=("--dry-run")
+    flags+=("-n")
+    flags+=("--follow")
+    flags+=("--remove")
+    flags+=("--source=")
+    two_word_flags+=("--source")
+    two_word_flags+=("-S")
+    flags+=("--verbose")
+    flags+=("-v")
+
+    must_have_one_flag=()
+    must_have_one_noun=()
+    noun_aliases=()
+}
+
 _chezmoi_merge()
 {
     last_command="chezmoi_merge"
@@ -1935,6 +1973,7 @@ _chezmoi_root_command()
     commands+=("hg")
     commands+=("import")
     commands+=("init")
+    commands+=("managed")
     commands+=("merge")
     commands+=("purge")
     commands+=("remove")

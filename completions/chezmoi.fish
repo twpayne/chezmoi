@@ -1,7 +1,7 @@
 
 function __fish_chezmoi_no_subcommand --description 'Test if chezmoi has yet to be given the subcommand'
 	for i in (commandline -opc)
-		if contains -- $i add apply archive cat cd chattr completion data diff docs doctor dump edit edit-config execute-template forget git hg import init merge purge remove secret source source-path unmanaged update upgrade verify
+		if contains -- $i add apply archive cat cd chattr completion data diff docs doctor dump edit edit-config execute-template forget git hg import init managed merge purge remove secret source source-path unmanaged update upgrade verify
 			return 1
 		end
 	end
@@ -55,6 +55,7 @@ complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a git -d 'Run git in t
 complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a hg -d 'Run mercurial in the source directory'
 complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a import -d 'Import a tar archive into the source state'
 complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a init -d 'Setup the source directory and update the destination directory to match the target state'
+complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a managed -d 'List the managed files in the destination directory'
 complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a merge -d 'Perform a three-way merge between the destination state, the source state, and the target state'
 complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a purge -d 'Purge all of chezmoi\'s configuration and data'
 complete -c chezmoi -f -n '__fish_chezmoi_no_subcommand' -a remove -d 'Remove a target from the source state and the destination directory'
@@ -276,6 +277,15 @@ complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path init'   -l follow
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path init'   -l remove -d 'remove targets'
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path init' -r -s S -l source -d 'source directory'
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path init'  -s v -l verbose -d 'verbose'
+complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path managed' -r  -l color -d 'colorize diffs'
+complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path managed' -r -s c -l config -d 'config file'
+complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path managed'   -l debug -d 'write debug logs'
+complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path managed' -r -s D -l destination -d 'destination directory'
+complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path managed'  -s n -l dry-run -d 'dry run'
+complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path managed'   -l follow -d 'follow symlinks'
+complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path managed'   -l remove -d 'remove targets'
+complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path managed' -r -s S -l source -d 'source directory'
+complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path managed'  -s v -l verbose -d 'verbose'
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path merge' -r  -l color -d 'colorize diffs'
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path merge' -r -s c -l config -d 'config file'
 complete -c chezmoi -f -n '__fish_chezmoi_seen_subcommand_path merge'   -l debug -d 'write debug logs'
