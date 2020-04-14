@@ -27,7 +27,7 @@ func (c *Config) runCompletion(cmd *cobra.Command, args []string) error {
 	case "zsh":
 		return rootCmd.GenZshCompletion(c.Stdout)
 	case "fish":
-		return rootCmd.GenFishCompletion(c.Stdout)
+		return rootCmd.GenFishCompletion(c.Stdout, true)
 	default:
 		return errors.New("unsupported shell")
 	}
