@@ -48,6 +48,32 @@ func TestAddCommand(t *testing.T) {
 		tests  interface{}
 	}{
 		{
+			name: "add_dir",
+			args: []string{"/home/user/.config/htop"},
+			root: map[string]interface{}{
+				"/home/user/.config/htop": &vfst.Dir{Perm: 0755},
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/.local/share/chezmoi",
+					vfst.TestIsDir,
+					vfst.TestModePerm(0700),
+				),
+				vfst.TestPath("/home/user/.local/share/chezmoi/dot_config",
+					vfst.TestIsDir,
+					vfst.TestModePerm(0755),
+				),
+				vfst.TestPath("/home/user/.local/share/chezmoi/dot_config/htop",
+					vfst.TestIsDir,
+					vfst.TestModePerm(0755),
+				),
+				vfst.TestPath("/home/user/.local/share/chezmoi/dot_config/htop/.keep",
+					vfst.TestModeIsRegular,
+					vfst.TestModePerm(0644),
+					vfst.TestContents(nil),
+				),
+			},
+		},
+		{
 			name: "add_first_file",
 			args: []string{"/home/user/.bashrc"},
 			root: map[string]interface{}{
