@@ -644,11 +644,22 @@ Strip *n* leading components from paths.
 
 ### `managed`
 
-List all managed files in the destination directory.
+List all managed entries in the destination directory in alphabetical order.
+
+#### `-i`, `--include` *types*
+
+Only list entries of type *types*. *types* is a comma-separated list of types of
+entry to include. Valid types are `dirs`, `files`, and `symlinks` which can be
+abbreviated to `d`, `f`, and `s` respectively. By default, `manage` will list
+entries of all types.
 
 #### `managed` examples
 
     chezmoi managed
+    chezmoi managed --include=files
+    chezmoi managed --include=files,symlinks
+    chezmoi managed -i d
+    chezmoi managed -i d,f
 
 ### `merge` *targets*
 

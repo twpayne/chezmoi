@@ -280,6 +280,15 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 	}
 }
 
+// AllEntries returns all Entrys in ts.
+func (ts *TargetState) AllEntries() []Entry {
+	var allEntries []Entry
+	for _, entry := range ts.Entries {
+		allEntries = entry.AppendAllEntries(allEntries)
+	}
+	return allEntries
+}
+
 // Apply ensures that ts.DestDir in fs matches ts.
 func (ts *TargetState) Apply(fs vfs.FS, mutator Mutator, follow bool, applyOptions *ApplyOptions) error {
 	if applyOptions.Remove {

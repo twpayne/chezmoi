@@ -125,6 +125,11 @@ func (fa FileAttributes) SourceName() string {
 	return sourceName
 }
 
+// AppendAllEntries appends all f to allEntries.
+func (f *File) AppendAllEntries(allEntries []Entry) []Entry {
+	return append(allEntries, f)
+}
+
 // Apply ensures that the state of targetPath in fs matches f.
 func (f *File) Apply(fs vfs.FS, mutator Mutator, follow bool, applyOptions *ApplyOptions) error {
 	if applyOptions.Ignore(f.targetName) {

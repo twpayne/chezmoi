@@ -518,6 +518,7 @@ function _chezmoi_init {
 
 function _chezmoi_managed {
   _arguments \
+    '(*-i *--include)'{\*-i,\*--include}'[include]:' \
     '--color[colorize diffs]:' \
     '(-c --config)'{-c,--config}'[config file]:' \
     '--debug[write debug logs]' \

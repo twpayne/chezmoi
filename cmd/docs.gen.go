@@ -2046,11 +2046,22 @@ func init() {
 		"\n" +
 		"### `managed`\n" +
 		"\n" +
-		"List all managed files in the destination directory.\n" +
+		"List all managed entries in the destination directory in alphabetical order.\n" +
+		"\n" +
+		"#### `-i`, `--include` *types*\n" +
+		"\n" +
+		"Only list entries of type *types*. *types* is a comma-separated list of types of\n" +
+		"entry to include. Valid types are `dirs`, `files`, and `symlinks` which can be\n" +
+		"abbreviated to `d`, `f`, and `s` respectively. By default, `manage` will list\n" +
+		"entries of all types.\n" +
 		"\n" +
 		"#### `managed` examples\n" +
 		"\n" +
 		"    chezmoi managed\n" +
+		"    chezmoi managed --include=files\n" +
+		"    chezmoi managed --include=files,symlinks\n" +
+		"    chezmoi managed -i d\n" +
+		"    chezmoi managed -i d,f\n" +
 		"\n" +
 		"### `merge` *targets*\n" +
 		"\n" +

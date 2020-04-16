@@ -85,6 +85,11 @@ func (sa ScriptAttributes) SourceName() string {
 	return sourceName
 }
 
+// AppendAllEntries returns allEntries unchanged.
+func (s *Script) AppendAllEntries(allEntries []Entry) []Entry {
+	return allEntries
+}
+
 // Apply runs s.
 func (s *Script) Apply(fs vfs.FS, mutator Mutator, follow bool, applyOptions *ApplyOptions) error {
 	if applyOptions.Ignore(s.targetName) {
