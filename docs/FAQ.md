@@ -4,11 +4,13 @@
 * [How can I quickly check for problems with chezmoi on my machine?](#how-can-i-quickly-check-for-problems-with-chezmoi-on-my-machine)
 * [What are the consequences of "bare" modifications to the target files? If my `.zshrc` is managed by chezmoi and I edit `~/.zshrc` without using `chezmoi edit`, what happens?](#what-are-the-consequences-of-bare-modifications-to-the-target-files-if-my-zshrc-is-managed-by-chezmoi-and-i-edit-zshrc-without-using-chezmoi-edit-what-happens)
 * [How can I tell what dotfiles in my home directory aren't managed by chezmoi? Is there an easy way to have chezmoi manage a subset of them?](#how-can-i-tell-what-dotfiles-in-my-home-directory-arent-managed-by-chezmoi-is-there-an-easy-way-to-have-chezmoi-manage-a-subset-of-them)
+* [How can I tell what dotfiles in my home directory are currently managed by chezmoi?](#how-can-i-tell-what-dotfiles-in-my-home-directory-are-currently-managed-by-chezmoi)
 * [If there's a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?](#if-theres-a-mechanism-in-place-for-the-above-is-there-also-a-way-to-tell-chezmoi-to-ignore-specific-files-or-groups-of-files-eg-by-directory-name-or-by-glob)
 * [If the target already exists, but is "behind" the source, can chezmoi be configured to preserve the target version before replacing it with one derived from the source?](#if-the-target-already-exists-but-is-behind-the-source-can-chezmoi-be-configured-to-preserve-the-target-version-before-replacing-it-with-one-derived-from-the-source)
 * [Once I've made a change to the source directory, how do I commit it?](#once-ive-made-a-change-to-the-source-directory-how-do-i-commit-it)
 * [How do I only run a script when a file has changed?](#how-do-i-only-run-a-script-when-a-file-has-changed)
 * [I've made changes to both the destination state and the source state that I want to keep. How can I keep them both?](#ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both)
+* [Why does chezmoi convert all my template variables to lowercase?](#why-does-chezmoi-convert-all-my-template-variables-to-lowercase)
 * [chezmoi's source file naming system cannot handle all possible filenames](#chezmois-source-file-naming-system-cannot-handle-all-possible-filenames)
 * [gpg encryption fails. What could be wrong?](#gpg-encryption-fails-what-could-be-wrong)
 * [I'm getting errors trying to build chezmoi from source](#im-getting-errors-trying-to-build-chezmoi-from-source)
@@ -130,6 +132,13 @@ the desired behavior:
 `chezmoi merge` will open a merge tool to resolve differences between the source
 state, target state, and destination state. Copy the changes you want to keep in
 to the source state.
+
+## Why does chezmoi convert all my template variables to lowercase?
+
+This is due to a feature in
+[`github.com/spf13/viper`](https://github.com/spf13/viper), the library that
+chezmoi uses to read its configuration file. For more information see [this
+GitHub issue issue](https://github.com/twpayne/chezmoi/issues/463).
 
 ## chezmoi's source file naming system cannot handle all possible filenames
 

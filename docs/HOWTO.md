@@ -134,6 +134,9 @@ to machine. For example, for your home machine:
     [data]
       email = "john@home.org"
 
+Note that all variable names will be converted to lowercase. This is due to a
+feature of a library used by chezmoi.
+
 If you intend to store private data (e.g. access tokens) in
 `~/.config/chezmoi/chezmoi.toml`, make sure it has permissions `0600`.
 

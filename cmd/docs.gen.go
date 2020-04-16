@@ -227,11 +227,13 @@ func init() {
 		"* [How can I quickly check for problems with chezmoi on my machine?](#how-can-i-quickly-check-for-problems-with-chezmoi-on-my-machine)\n" +
 		"* [What are the consequences of \"bare\" modifications to the target files? If my `.zshrc` is managed by chezmoi and I edit `~/.zshrc` without using `chezmoi edit`, what happens?](#what-are-the-consequences-of-bare-modifications-to-the-target-files-if-my-zshrc-is-managed-by-chezmoi-and-i-edit-zshrc-without-using-chezmoi-edit-what-happens)\n" +
 		"* [How can I tell what dotfiles in my home directory aren't managed by chezmoi? Is there an easy way to have chezmoi manage a subset of them?](#how-can-i-tell-what-dotfiles-in-my-home-directory-arent-managed-by-chezmoi-is-there-an-easy-way-to-have-chezmoi-manage-a-subset-of-them)\n" +
+		"* [How can I tell what dotfiles in my home directory are currently managed by chezmoi?](#how-can-i-tell-what-dotfiles-in-my-home-directory-are-currently-managed-by-chezmoi)\n" +
 		"* [If there's a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?](#if-theres-a-mechanism-in-place-for-the-above-is-there-also-a-way-to-tell-chezmoi-to-ignore-specific-files-or-groups-of-files-eg-by-directory-name-or-by-glob)\n" +
 		"* [If the target already exists, but is \"behind\" the source, can chezmoi be configured to preserve the target version before replacing it with one derived from the source?](#if-the-target-already-exists-but-is-behind-the-source-can-chezmoi-be-configured-to-preserve-the-target-version-before-replacing-it-with-one-derived-from-the-source)\n" +
 		"* [Once I've made a change to the source directory, how do I commit it?](#once-ive-made-a-change-to-the-source-directory-how-do-i-commit-it)\n" +
 		"* [How do I only run a script when a file has changed?](#how-do-i-only-run-a-script-when-a-file-has-changed)\n" +
 		"* [I've made changes to both the destination state and the source state that I want to keep. How can I keep them both?](#ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both)\n" +
+		"* [Why does chezmoi convert all my template variables to lowercase?](#why-does-chezmoi-convert-all-my-template-variables-to-lowercase)\n" +
 		"* [chezmoi's source file naming system cannot handle all possible filenames](#chezmois-source-file-naming-system-cannot-handle-all-possible-filenames)\n" +
 		"* [gpg encryption fails. What could be wrong?](#gpg-encryption-fails-what-could-be-wrong)\n" +
 		"* [I'm getting errors trying to build chezmoi from source](#im-getting-errors-trying-to-build-chezmoi-from-source)\n" +
@@ -353,6 +355,13 @@ func init() {
 		"`chezmoi merge` will open a merge tool to resolve differences between the source\n" +
 		"state, target state, and destination state. Copy the changes you want to keep in\n" +
 		"to the source state.\n" +
+		"\n" +
+		"## Why does chezmoi convert all my template variables to lowercase?\n" +
+		"\n" +
+		"This is due to a feature in\n" +
+		"[`github.com/spf13/viper`](https://github.com/spf13/viper), the library that\n" +
+		"chezmoi uses to read its configuration file. For more information see [this\n" +
+		"GitHub issue issue](https://github.com/twpayne/chezmoi/issues/463).\n" +
 		"\n" +
 		"## chezmoi's source file naming system cannot handle all possible filenames\n" +
 		"\n" +
@@ -582,6 +591,9 @@ func init() {
 		"\n" +
 		"    [data]\n" +
 		"      email = \"john@home.org\"\n" +
+		"\n" +
+		"Note that all variable names will be converted to lowercase. This is due to a\n" +
+		"feature of a library used by chezmoi.\n" +
 		"\n" +
 		"If you intend to store private data (e.g. access tokens) in\n" +
 		"`~/.config/chezmoi/chezmoi.toml`, make sure it has permissions `0600`.\n" +
