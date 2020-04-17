@@ -85,6 +85,15 @@ func newDir(sourceName string, targetName string, exact bool, perm os.FileMode) 
 	}
 }
 
+// AppendAllEntries appends all Entries in d to allEntries.
+func (d *Dir) AppendAllEntries(allEntries []Entry) []Entry {
+	allEntries = append(allEntries, d)
+	for _, entry := range d.Entries {
+		allEntries = entry.AppendAllEntries(allEntries)
+	}
+	return allEntries
+}
+
 // Apply ensures that destDir in fs matches d.
 func (d *Dir) Apply(fs vfs.FS, mutator Mutator, follow bool, applyOptions *ApplyOptions) error {
 	if applyOptions.Ignore(d.targetName) {

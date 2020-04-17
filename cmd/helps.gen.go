@@ -306,9 +306,20 @@ var helps = map[string]help{
 	"managed": {
 		long: "" +
 			"Description:\n" +
-			"  List all managed files in the destination directory.",
+			"  List all managed entries in the destination directory in alphabetical order.\n" +
+			"\n" +
+			"  `-i`, `--include` *types*\n" +
+			"\n" +
+			"  Only list entries of type *types*. *types* is a comma-separated list of types\n" +
+			"  of entry to include. Valid types are `dirs`, `files`, and `symlinks` which can\n" +
+			"  be abbreviated to `d`, `f`, and `s` respectively. By default, `manage` will\n" +
+			"  list entries of all types.",
 		example: "" +
-			"  chezmoi managed",
+			"  chezmoi managed\n" +
+			"  chezmoi managed --include=files\n" +
+			"  chezmoi managed --include=files,symlinks\n" +
+			"  chezmoi managed -i d\n" +
+			"  chezmoi managed -i d,f",
 	},
 	"merge": {
 		long: "" +

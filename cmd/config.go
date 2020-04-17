@@ -84,6 +84,7 @@ type Config struct {
 	_import           importCmdConfig
 	init              initCmdConfig
 	keyring           keyringCmdConfig
+	managed           managedCmdConfig
 	purge             purgeCmdConfig
 	remove            removeCmdConfig
 	update            updateCmdConfig

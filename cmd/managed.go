@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"path/filepath"
+	"sort"
 
 	"github.com/spf13/cobra"
 	"github.com/twpayne/chezmoi/internal/chezmoi"
@@ -18,26 +19,15 @@ var managedCmd = &cobra.Command{
 	RunE:    config.runManagedCmd,
 }
 
-func init() {
-	rootCmd.AddCommand(managedCmd)
+type managedCmdConfig struct {
+	include []string
 }
 
-func recurseEntries(in []chezmoi.Entry) []string {
-	out := make([]string, 0, len(in))
-	for _, entry := range in {
-		switch v := entry.(type) {
-		case *chezmoi.Dir:
-			entries := make([]chezmoi.Entry, 0, len(v.Entries))
-			for _, entry := range v.Entries {
-				entries = append(entries, entry)
-			}
-			results := recurseEntries(entries)
-			out = append(out, results...)
-		case *chezmoi.File, *chezmoi.Symlink:
-			out = append(out, v.TargetName())
-		}
-	}
-	return out
+func init() {
+	rootCmd.AddCommand(managedCmd)
+
+	persistentFlags := managedCmd.PersistentFlags()
+	persistentFlags.StringSliceVarP(&config.managed.include, "include", "i", []string{"dirs", "files", "symlinks"}, "include")
 }
 
 func (c *Config) runManagedCmd(cmd *cobra.Command, args []string) error {
@@ -45,22 +35,48 @@ func (c *Config) runManagedCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	entries := make([]chezmoi.Entry, 0, len(ts.Entries))
-	for _, entry := range ts.Entries {
-		entries = append(entries, entry)
-	}
-	allManaged := recurseEntries(entries)
-	for _, tn := range allManaged {
-		path := filepath.Join(ts.DestDir, tn)
-		entry, err := ts.Get(c.fs, path)
-		if err != nil {
-			return err
+
+	var (
+		includeDirs     = false
+		includeFiles    = false
+		includeSymlinks = false
+	)
+	for _, what := range c.managed.include {
+		switch what {
+		case "dirs", "d":
+			includeDirs = true
+		case "files", "f":
+			includeFiles = true
+		case "symlinks", "s":
+			includeSymlinks = true
+		default:
+			return fmt.Errorf("unrecognized include: %q", what)
 		}
-		managed := entry != nil
-		ignored := ts.TargetIgnore.Match(tn)
-		if !ignored && managed {
-			fmt.Fprintln(c.Stdout, path)
-		}
 	}
+
+	allEntries := ts.AllEntries()
+
+	targetNames := make([]string, 0, len(allEntries))
+	for _, entry := range allEntries {
+		if _, ok := entry.(*chezmoi.Dir); ok && !includeDirs {
+			continue
+		}
+		if _, ok := entry.(*chezmoi.File); ok && !includeFiles {
+			continue
+		}
+		if _, ok := entry.(*chezmoi.Symlink); ok && !includeSymlinks {
+			continue
+		}
+		targetNames = append(targetNames, entry.TargetName())
+	}
+
+	sort.Strings(targetNames)
+	for _, targetName := range targetNames {
+		if ts.TargetIgnore.Match(targetName) {
+			continue
+		}
+		fmt.Fprintln(c.Stdout, filepath.Join(ts.DestDir, targetName))
+	}
+
 	return nil
 }

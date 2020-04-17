@@ -27,6 +27,11 @@ type symlinkConcreteValue struct {
 	Linkname   string `json:"linkname" yaml:"linkname"`
 }
 
+// AppendAllEntries appends all f to allEntries.
+func (s *Symlink) AppendAllEntries(allEntries []Entry) []Entry {
+	return append(allEntries, s)
+}
+
 // Apply ensures that the state of s's target in fs matches s.
 func (s *Symlink) Apply(fs vfs.FS, mutator Mutator, follow bool, applyOptions *ApplyOptions) error {
 	if applyOptions.Ignore(s.targetName) {

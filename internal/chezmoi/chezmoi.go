@@ -49,6 +49,7 @@ type ApplyOptions struct {
 
 // An Entry is either a Dir, a File, or a Symlink.
 type Entry interface {
+	AppendAllEntries(allEntries []Entry) []Entry
 	Apply(fs vfs.FS, mutator Mutator, follow bool, applyOptions *ApplyOptions) error
 	ConcreteValue(ignore func(string) bool, sourceDir string, umask os.FileMode, recursive bool) (interface{}, error)
 	Evaluate(ignore func(string) bool) error
