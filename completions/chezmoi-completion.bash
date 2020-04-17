@@ -664,6 +664,7 @@ _chezmoi_diff()
     flags_with_completion=()
     flags_completion=()
 
+    flags+=("--no-pager")
     flags+=("--color=")
     two_word_flags+=("--color")
     flags+=("--config=")

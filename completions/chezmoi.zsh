@@ -307,6 +307,7 @@ function _chezmoi_data {
 
 function _chezmoi_diff {
   _arguments \
+    '--no-pager[disable pager]' \
     '--color[colorize diffs]:' \
     '(-c --config)'{-c,--config}'[config file]:' \
     '--debug[write debug logs]' \

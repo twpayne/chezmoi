@@ -487,6 +487,7 @@ func init() {
 		"* [Import archives](#import-archives)\n" +
 		"* [Export archives](#export-archives)\n" +
 		"* [Use a non-git version control system](#use-a-non-git-version-control-system)\n" +
+		"* [Use a custom pager for the `diff` command](#use-a-custom-pager-for-the-diff-command)\n" +
 		"* [Use a merge tool other than vimdiff](#use-a-merge-tool-other-than-vimdiff)\n" +
 		"* [Migrate from a dotfile manager that uses symlinks](#migrate-from-a-dotfile-manager-that-uses-symlinks)\n" +
 		"\n" +
@@ -1203,6 +1204,16 @@ func init() {
 		"you'd like to see your VCS better supported, please [open an issue on\n" +
 		"GitHub](https://github.com/twpayne/chezmoi/issues/new/choose).\n" +
 		"\n" +
+		"## Use a custom pager for the `diff` command\n" +
+		"\n" +
+		"By default, chezmoi uses a built-in diff command. You can pipe the output into a\n" +
+		"pager of your choice. In your config file, specify the pager to use. For\n" +
+		"example, to use [`diff-so-fancy`](https://github.com/so-fancy/diff-so-fancy)\n" +
+		"specify:\n" +
+		"\n" +
+		"    [diff]\n" +
+		"        pager = \"diff-so-fancy\"\n" +
+		"\n" +
 		"## Use a merge tool other than vimdiff\n" +
 		"\n" +
 		"By default, chezmoi uses vimdiff, but you can use any merge tool of your choice.\n" +
@@ -1582,6 +1593,7 @@ func init() {
 		"| `color`                 | string   | `auto`                    | Colorize diffs                                      |\n" +
 		"| `data`                  | any      | *none*                    | Template data                                       |\n" +
 		"| `destDir`               | string   | `~`                       | Destination directory                               |\n" +
+		"| `diff.pager`            | string   | *none*                    | Pager                                               |\n" +
 		"| `dryRun`                | bool     | `false`                   | Dry run mode                                        |\n" +
 		"| `follow`                | bool     | `false`                   | Follow symlinks                                     |\n" +
 		"| `genericSecret.command` | string   | *none*                    | Generic secret command                              |\n" +
@@ -1877,6 +1889,13 @@ func init() {
 		"destination directory match the target state. If no targets are specified, print\n" +
 		"the commands required for all targets. It is equivalent to `chezmoi apply\n" +
 		"--dry-run --verbose`.\n" +
+		"\n" +
+		"If `diff.pager` is set in the configuration file then the output will be piped\n" +
+		"into this command.\n" +
+		"\n" +
+		"#### `--no-pager`\n" +
+		"\n" +
+		"Do not use the pager.\n" +
 		"\n" +
 		"#### `diff` examples\n" +
 		"\n" +
