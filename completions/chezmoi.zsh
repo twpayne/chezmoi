@@ -307,6 +307,7 @@ function _chezmoi_data {
 
 function _chezmoi_diff {
   _arguments \
+    '(-f --format)'{-f,--format}'[format, "chezmoi" or "git"]:' \
     '--no-pager[disable pager]' \
     '--color[colorize diffs]:' \
     '(-c --config)'{-c,--config}'[config file]:' \

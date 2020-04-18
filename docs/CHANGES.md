@@ -2,9 +2,16 @@
 
 <!--- toc --->
 * [Upcoming](#upcoming)
+  * [Default diff format changing from `chezmoi` to `git`.](#default-diff-format-changing-from-chezmoi-to-git)
   * [`gpgRecipient` config variable changing to `gpg.recipient`](#gpgrecipient-config-variable-changing-to-gpgrecipient)
 
 ## Upcoming
+
+### Default diff format changing from `chezmoi` to `git`.
+
+Currently chezmoi outputs diffs in its own format, containing a mix of unified
+diffs and shell commands. This will be replaced with a [git format
+diff](https://git-scm.com/docs/diff-format) in version 2.0.0.
 
 ### `gpgRecipient` config variable changing to `gpg.recipient`
 
