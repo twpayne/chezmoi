@@ -60,6 +60,7 @@ jobs:
         sudo chown root:root /
         sudo snap install goreleaser --classic
         sudo snap install snapcraft --classic
+        export PATH=$PATH:/snap/bin
         goreleaser release --skip-publish --snapshot
         # verify that version information is embedded correctly
         ./dist/chezmoi-cgo_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v"
