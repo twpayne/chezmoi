@@ -32,6 +32,7 @@ type AddOptions struct {
 	Empty        bool
 	Encrypt      bool
 	Exact        bool
+	Recursive    bool
 	Template     bool
 	AutoTemplate bool
 }
@@ -226,7 +227,6 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 		if err != nil {
 			return err
 		}
-		empty := len(infos) == 0
 		private, err := IsPrivate(fs, targetPath, perm&077 == 0)
 		if err != nil {
 			return err
@@ -234,7 +234,11 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 		if private {
 			perm &^= 077
 		}
-		return ts.addDir(targetName, entries, parentDirSourceName, addOptions.Exact, perm, empty, mutator)
+		// If the directory is empty, or the directory was not added
+		// recursively, add a .keep file so the directory is managed by git.
+		// chezmoi will ignore the .keep file as it begins with a dot.
+		createKeepFile := len(infos) == 0 || !addOptions.Recursive
+		return ts.addDir(targetName, entries, parentDirSourceName, addOptions.Exact, perm, createKeepFile, mutator)
 	case info.Mode().IsRegular():
 		if info.Size() == 0 && !addOptions.Empty {
 			entry, err := ts.Get(fs, targetPath)
@@ -580,7 +584,7 @@ func (ts *TargetState) Populate(fs vfs.FS, options *PopulateOptions) error {
 	})
 }
 
-func (ts *TargetState) addDir(targetName string, entries map[string]Entry, parentDirSourceName string, exact bool, perm os.FileMode, empty bool, mutator Mutator) error {
+func (ts *TargetState) addDir(targetName string, entries map[string]Entry, parentDirSourceName string, exact bool, perm os.FileMode, createKeepFile bool, mutator Mutator) error {
 	name := filepath.Base(targetName)
 	if entry, ok := entries[name]; ok {
 		if _, ok = entry.(*Dir); !ok {
@@ -600,10 +604,7 @@ func (ts *TargetState) addDir(targetName string, entries map[string]Entry, paren
 	if err := mutator.Mkdir(filepath.Join(ts.SourceDir, sourceName), 0777&^ts.Umask); err != nil {
 		return err
 	}
-	// If the directory is empty, add a .keep file so the directory is
-	// managed by git. Chezmoi will ignore the .keep file as it begins with
-	// a dot.
-	if empty {
+	if createKeepFile {
 		if err := mutator.WriteFile(filepath.Join(ts.SourceDir, sourceName, ".keep"), nil, 0666&^ts.Umask, nil); err != nil {
 			return err
 		}
@@ -833,8 +834,8 @@ func (ts *TargetState) importHeader(r io.Reader, importTAROptions ImportTAROptio
 	switch header.Typeflag {
 	case tar.TypeDir:
 		perm := os.FileMode(header.Mode).Perm()
-		empty := false // FIXME don't assume directory is empty
-		return ts.addDir(targetName, entries, parentDirSourceName, importTAROptions.Exact, perm, empty, mutator)
+		createKeepFile := false // FIXME don't assume that we don't need a keep file
+		return ts.addDir(targetName, entries, parentDirSourceName, importTAROptions.Exact, perm, createKeepFile, mutator)
 	case tar.TypeReg:
 		info := header.FileInfo()
 		contents, err := ioutil.ReadAll(r)
