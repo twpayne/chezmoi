@@ -143,7 +143,14 @@ var helps = map[string]help{
 			"  Print the approximate shell commands required to ensure that *targets* in the\n" +
 			"  destination directory match the target state. If no targets are specified,\n" +
 			"  print the commands required for all targets. It is equivalent to `chezmoi\n" +
-			"  apply --dry-run --verbose`.",
+			"  apply --dry-run --verbose`.\n" +
+			"\n" +
+			"  If `diff.pager` is set in the configuration file then the output will be piped\n" +
+			"  into this command.\n" +
+			"\n" +
+			"  `--no-pager`\n" +
+			"\n" +
+			"  Do not use the pager.",
 		example: "" +
 			"  chezmoi diff\n" +
 			"  chezmoi diff ~/.bashrc",

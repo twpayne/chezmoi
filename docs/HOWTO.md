@@ -29,6 +29,7 @@
 * [Import archives](#import-archives)
 * [Export archives](#export-archives)
 * [Use a non-git version control system](#use-a-non-git-version-control-system)
+* [Use a custom pager for the `diff` command](#use-a-custom-pager-for-the-diff-command)
 * [Use a merge tool other than vimdiff](#use-a-merge-tool-other-than-vimdiff)
 * [Migrate from a dotfile manager that uses symlinks](#migrate-from-a-dotfile-manager-that-uses-symlinks)
 
@@ -744,6 +745,16 @@ The source VCS command is used in the chezmoi commands `init`, `source`, and
 `update`, and support for VCSes other than git is limited but easy to add. If
 you'd like to see your VCS better supported, please [open an issue on
 GitHub](https://github.com/twpayne/chezmoi/issues/new/choose).
+
+## Use a custom pager for the `diff` command
+
+By default, chezmoi uses a built-in diff command. You can pipe the output into a
+pager of your choice. In your config file, specify the pager to use. For
+example, to use [`diff-so-fancy`](https://github.com/so-fancy/diff-so-fancy)
+specify:
+
+    [diff]
+        pager = "diff-so-fancy"
 
 ## Use a merge tool other than vimdiff
 

@@ -1,10 +1,21 @@
 package cmd
 
 import (
+	"io"
+	"os/exec"
+	"strings"
+	"unicode"
+
 	"github.com/spf13/cobra"
 	"github.com/twpayne/chezmoi/internal/chezmoi"
+	"github.com/twpayne/go-shell"
 	bolt "go.etcd.io/bbolt"
 )
+
+type diffCmdConfig struct {
+	NoPager bool
+	Pager   string
+}
 
 var diffCmd = &cobra.Command{
 	Use:     "diff [targets...]",
@@ -18,6 +29,9 @@ var diffCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(diffCmd)
 
+	persistentFlags := diffCmd.PersistentFlags()
+	persistentFlags.BoolVar(&config.Diff.NoPager, "no-pager", false, "disable pager")
+
 	markRemainingZshCompPositionalArgumentsAsFiles(diffCmd, 1)
 }
 
@@ -27,7 +41,6 @@ func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) error {
 	if c.Debug {
 		c.mutator = chezmoi.NewDebugMutator(c.mutator)
 	}
-	c.mutator = chezmoi.NewVerboseMutator(c.Stdout, c.mutator, c.colored, c.maxDiffDataSize)
 
 	persistentState, err := c.getPersistentState(&bolt.Options{
 		ReadOnly: true,
@@ -37,5 +50,42 @@ func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) error {
 	}
 	defer persistentState.Close()
 
-	return c.applyArgs(args, persistentState)
+	if c.Diff.NoPager || c.Diff.Pager == "" {
+		c.mutator = chezmoi.NewVerboseMutator(c.Stdout, c.mutator, c.colored, c.maxDiffDataSize)
+		return c.applyArgs(args, persistentState)
+	}
+
+	var pagerCmd *exec.Cmd
+	var pagerStdinPipe io.WriteCloser
+
+	// If the pager command contains any spaces, assume that it is a full
+	// shell command to be executed via the user's shell. Otherwise, execute
+	// it directly.
+	if strings.IndexFunc(c.Diff.Pager, unicode.IsSpace) != -1 {
+		shell, _ := shell.CurrentUserShell()
+		//nolint:gosec
+		pagerCmd = exec.Command(shell, "-c", c.Diff.Pager)
+	} else {
+		//nolint:gosec
+		pagerCmd = exec.Command(c.Diff.Pager)
+	}
+	pagerStdinPipe, err = pagerCmd.StdinPipe()
+	if err != nil {
+		return err
+	}
+	pagerCmd.Stdout = c.Stdout
+	pagerCmd.Stderr = c.Stderr
+	if err := pagerCmd.Start(); err != nil {
+		return err
+	}
+
+	c.mutator = chezmoi.NewVerboseMutator(pagerStdinPipe, c.mutator, c.colored, c.maxDiffDataSize)
+	if err := c.applyArgs(args, persistentState); err != nil {
+		return err
+	}
+	if err := pagerStdinPipe.Close(); err != nil {
+		return err
+	}
+
+	return pagerCmd.Wait()
 }

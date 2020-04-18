@@ -180,6 +180,7 @@ The following configuration variables are available:
 | `color`                 | string   | `auto`                    | Colorize diffs                                      |
 | `data`                  | any      | *none*                    | Template data                                       |
 | `destDir`               | string   | `~`                       | Destination directory                               |
+| `diff.pager`            | string   | *none*                    | Pager                                               |
 | `dryRun`                | bool     | `false`                   | Dry run mode                                        |
 | `follow`                | bool     | `false`                   | Follow symlinks                                     |
 | `genericSecret.command` | string   | *none*                    | Generic secret command                              |
@@ -478,6 +479,13 @@ Print the approximate shell commands required to ensure that *targets* in the
 destination directory match the target state. If no targets are specified, print
 the commands required for all targets. It is equivalent to `chezmoi apply
 --dry-run --verbose`.
+
+If `diff.pager` is set in the configuration file then the output will be piped
+into this command.
+
+#### `--no-pager`
+
+Do not use the pager.
 
 #### `diff` examples
 
