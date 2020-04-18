@@ -87,6 +87,12 @@ func init() {
 			if config.err != nil {
 				rootCmd.Printf("warning: %s: %v\n", config.configFile, config.err)
 			}
+			if config.GPGRecipient != "" {
+				rootCmd.Printf("" +
+					"warning: your config file uses gpgRecipient which will be deprecated in v2\n" +
+					"warning: to disable this warning, set gpg.recipient in your config file instead\n",
+				)
+			}
 		case os.IsNotExist(err):
 		default:
 			printErrorAndExit(err)
