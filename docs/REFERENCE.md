@@ -344,6 +344,12 @@ Add *targets* to the source state. If any target is already in the source state,
 then its source state is replaced with its current state in the destination
 directory. The `add` command accepts additional flags:
 
+#### `--autotemplate`
+
+Automatically generate a template by replacing strings with variable names from
+the `data` section of the config file. Longer subsitutions occur before shorter
+ones. This implies the `--template` option.
+
 #### `-e`, `--empty`
 
 Set the `empty` attribute on added files.
@@ -366,10 +372,7 @@ Recursively add all files, directories, and symlinks.
 
 #### `-T`, `--template`
 
-Set the `template` attribute on added files and symlinks. In addition, if the
-`--autotemplate` flag is set, chezmoi attempts to automatically generate the
-template by replacing any template data values with the equivalent template data
-keys. Longer subsitutions occur before shorter ones.
+Set the `template` attribute on added files and symlinks.
 
 #### `add` examples
 

@@ -603,10 +603,11 @@ func init() {
 		"includes JSON, YAML, and TOML. Variable names must start with a letter and be\n" +
 		"followed by zero or more letters or digits.\n" +
 		"\n" +
-		"Then, add `~/.gitconfig` to chezmoi using the `--template` flag to automatically\n" +
-		"turn it in to a template:\n" +
+		"Then, add `~/.gitconfig` to chezmoi using the `--autotemplate` flag to turn it\n" +
+		"into a template and automatically detect variables from the `data` section\n" +
+		"of your `~/.config/chezmoi/chezmoi.toml` file:\n" +
 		"\n" +
-		"    chezmoi add --template --autotemplate ~/.gitconfig\n" +
+		"    chezmoi add --autotemplate ~/.gitconfig\n" +
 		"\n" +
 		"You can then open the template (which will be saved in the file\n" +
 		"`~/.local/share/chezmoi/dot_gitconfig.tmpl`):\n" +
@@ -618,9 +619,8 @@ func init() {
 		"    [user]\n" +
 		"      email = \"{{ .email }}\"\n" +
 		"\n" +
-		"The `--autotemplate` flag to `chezmoi add` above instructs chezmoi to generate a\n" +
-		"template by substituting variables from the `data` section of your\n" +
-		"`~/.config/chezmoi/chezmoi.toml` file.\n" +
+		"To disable automatic variable detection, use the `--template` or `-T` option to\n" +
+		"`chezmoi add` instead of `--autotemplate`.\n" +
 		"\n" +
 		"Templates are often used to capture machine-specifc differences. For example, in\n" +
 		"your `~/.local/share/chezmoi/dot_bashrc.tmpl` you might have:\n" +
@@ -1746,6 +1746,12 @@ func init() {
 		"then its source state is replaced with its current state in the destination\n" +
 		"directory. The `add` command accepts additional flags:\n" +
 		"\n" +
+		"#### `--autotemplate`\n" +
+		"\n" +
+		"Automatically generate a template by replacing strings with variable names from\n" +
+		"the `data` section of the config file. Longer subsitutions occur before shorter\n" +
+		"ones. This implies the `--template` option.\n" +
+		"\n" +
 		"#### `-e`, `--empty`\n" +
 		"\n" +
 		"Set the `empty` attribute on added files.\n" +
@@ -1768,10 +1774,7 @@ func init() {
 		"\n" +
 		"#### `-T`, `--template`\n" +
 		"\n" +
-		"Set the `template` attribute on added files and symlinks. In addition, if the\n" +
-		"`--autotemplate` flag is set, chezmoi attempts to automatically generate the\n" +
-		"template by replacing any template data values with the equivalent template data\n" +
-		"keys. Longer subsitutions occur before shorter ones.\n" +
+		"Set the `template` attribute on added files and symlinks.\n" +
 		"\n" +
 		"#### `add` examples\n" +
 		"\n" +

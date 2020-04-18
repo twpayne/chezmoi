@@ -91,11 +91,10 @@ func TestAddCommand(t *testing.T) {
 			},
 		},
 		{
-			name: "add_template",
+			name: "add_autotemplate",
 			args: []string{"/home/user/.gitconfig"},
 			add: addCmdConfig{
 				options: chezmoi.AddOptions{
-					Template:     true,
 					AutoTemplate: true,
 				},
 			},

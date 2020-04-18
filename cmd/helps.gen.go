@@ -15,6 +15,12 @@ var helps = map[string]help{
 			"  state, then its source state is replaced with its current state in the\n" +
 			"  destination directory. The `add` command accepts additional flags:\n" +
 			"\n" +
+			"  `--autotemplate`\n" +
+			"\n" +
+			"  Automatically generate a template by replacing strings with variable names\n" +
+			"  from the `data` section of the config file. Longer subsitutions occur before\n" +
+			"  shorter ones. This implies the `--template` option.\n" +
+			"\n" +
 			"  `-e`, `--empty`\n" +
 			"\n" +
 			"  Set the `empty` attribute on added files.\n" +
@@ -38,10 +44,7 @@ var helps = map[string]help{
 			"\n" +
 			"  `-T`, `--template`\n" +
 			"\n" +
-			"  Set the `template` attribute on added files and symlinks. In addition, if the\n" +
-			"  `--autotemplate` flag is set, chezmoi attempts to automatically generate the\n" +
-			"  template by replacing any template data values with the equivalent template\n" +
-			"  data keys. Longer subsitutions occur before shorter ones.",
+			"  Set the `template` attribute on added files and symlinks.",
 		example: "" +
 			"  chezmoi add ~/.bashrc\n" +
 			"  chezmoi add ~/.gitconfig --template\n" +

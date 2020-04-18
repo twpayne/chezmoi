@@ -145,10 +145,11 @@ If you prefer, you can use any format supported by
 includes JSON, YAML, and TOML. Variable names must start with a letter and be
 followed by zero or more letters or digits.
 
-Then, add `~/.gitconfig` to chezmoi using the `--template` flag to automatically
-turn it in to a template:
+Then, add `~/.gitconfig` to chezmoi using the `--autotemplate` flag to turn it
+into a template and automatically detect variables from the `data` section
+of your `~/.config/chezmoi/chezmoi.toml` file:
 
-    chezmoi add --template --autotemplate ~/.gitconfig
+    chezmoi add --autotemplate ~/.gitconfig
 
 You can then open the template (which will be saved in the file
 `~/.local/share/chezmoi/dot_gitconfig.tmpl`):
@@ -160,9 +161,8 @@ The file should look something like:
     [user]
       email = "{{ .email }}"
 
-The `--autotemplate` flag to `chezmoi add` above instructs chezmoi to generate a
-template by substituting variables from the `data` section of your
-`~/.config/chezmoi/chezmoi.toml` file.
+To disable automatic variable detection, use the `--template` or `-T` option to
+`chezmoi add` instead of `--autotemplate`.
 
 Templates are often used to capture machine-specifc differences. For example, in
 your `~/.local/share/chezmoi/dot_bashrc.tmpl` you might have:

@@ -47,6 +47,11 @@ func init() {
 }
 
 func (c *Config) runAddCmd(cmd *cobra.Command, args []string) (err error) {
+	// Make --autotemplate imply --template.
+	if c.add.options.AutoTemplate {
+		c.add.options.Template = true
+	}
+
 	ts, err := c.getTargetState(nil)
 	if err != nil {
 		return err
