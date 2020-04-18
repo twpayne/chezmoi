@@ -37,6 +37,7 @@ type sourceVCSConfig struct {
 	AutoCommit bool
 	AutoPush   bool
 	Init       interface{}
+	NotGit     bool
 	Pull       interface{}
 }
 
