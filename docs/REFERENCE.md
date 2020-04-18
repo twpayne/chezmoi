@@ -180,6 +180,7 @@ The following configuration variables are available:
 | `color`                 | string   | `auto`                    | Colorize diffs                                      |
 | `data`                  | any      | *none*                    | Template data                                       |
 | `destDir`               | string   | `~`                       | Destination directory                               |
+| `diff.format`           | string   | `chezmoi`                 | Diff format, either `chezmoi` or `git`              |
 | `diff.pager`            | string   | *none*                    | Pager                                               |
 | `dryRun`                | bool     | `false`                   | Dry run mode                                        |
 | `follow`                | bool     | `false`                   | Follow symlinks                                     |
@@ -475,13 +476,28 @@ Print the computed template data in the given format. The accepted formats are
 
 ### `diff` [*targets*]
 
-Print the approximate shell commands required to ensure that *targets* in the
-destination directory match the target state. If no targets are specified, print
-the commands required for all targets. It is equivalent to `chezmoi apply
---dry-run --verbose`.
+Print the difference between the target state and the destination state for
+*targets*. If no targets are specified, print the differences for all targets.
 
-If `diff.pager` is set in the configuration file then the output will be piped
-into this command.
+If a `diff.pager` command is set in the configuration file then the output will
+be piped into it.
+
+#### `-f`, `--format` *format*
+
+Print the diff in *format*. The format can be set with the `diff.format`
+variable in the configuration file. Valid formats are:
+
+##### `chezmoi`
+
+A mix of unified diffs and pseudo shell commands, equivalent to `chezmoi apply
+--dry-run --verbose`. They can be colorized and include scripts.
+
+##### `git`
+
+A [git format diff](https://git-scm.com/docs/diff-format), without color and not
+including scripts. In version 2.0.0 of chezmoi, `git` format diffs will become
+the default and support color and scripts and the `chezmoi` format will be
+removed.
 
 #### `--no-pager`
 
@@ -491,6 +507,7 @@ Do not use the pager.
 
     chezmoi diff
     chezmoi diff ~/.bashrc
+    chezmoi diff --format=git
 
 ### `docs` [*regexp*]
 

@@ -140,20 +140,36 @@ var helps = map[string]help{
 	"diff": {
 		long: "" +
 			"Description:\n" +
-			"  Print the approximate shell commands required to ensure that *targets* in the\n" +
-			"  destination directory match the target state. If no targets are specified,\n" +
-			"  print the commands required for all targets. It is equivalent to `chezmoi\n" +
-			"  apply --dry-run --verbose`.\n" +
+			"  Print the difference between the target state and the destination state for\n" +
+			"  *targets*. If no targets are specified, print the differences for all targets.\n" +
 			"\n" +
-			"  If `diff.pager` is set in the configuration file then the output will be piped\n" +
-			"  into this command.\n" +
+			"  If a `diff.pager` command is set in the configuration file then the output\n" +
+			"  will be piped into it.\n" +
+			"\n" +
+			"  `-f`, `--format` *format*\n" +
+			"\n" +
+			"  Print the diff in *format*. The format can be set with the `diff.format`\n" +
+			"  variable in the configuration file. Valid formats are:\n" +
+			"\n" +
+			"  ##### `chezmoi`\n" +
+			"\n" +
+			"  A mix of unified diffs and pseudo shell commands, equivalent to `chezmoi apply --\n" +
+			"  dry-run --verbose`. They can be colorized and include scripts.\n" +
+			"\n" +
+			"  ##### `git`\n" +
+			"\n" +
+			"  A git format diff https://git-scm.com/docs/diff-format, without color and not\n" +
+			"  including scripts. In version 2.0.0 of chezmoi, `git` format diffs will become\n" +
+			"  the default and support color and scripts and the `chezmoi` format will be\n" +
+			"  removed.\n" +
 			"\n" +
 			"  `--no-pager`\n" +
 			"\n" +
 			"  Do not use the pager.",
 		example: "" +
 			"  chezmoi diff\n" +
-			"  chezmoi diff ~/.bashrc",
+			"  chezmoi diff ~/.bashrc\n" +
+			"  chezmoi diff --format=git",
 	},
 	"docs": {
 		long: "" +

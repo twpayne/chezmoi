@@ -9,9 +9,16 @@ func init() {
 		"\n" +
 		"<!--- toc --->\n" +
 		"* [Upcoming](#upcoming)\n" +
+		"  * [Default diff format changing from `chezmoi` to `git`.](#default-diff-format-changing-from-chezmoi-to-git)\n" +
 		"  * [`gpgRecipient` config variable changing to `gpg.recipient`](#gpgrecipient-config-variable-changing-to-gpgrecipient)\n" +
 		"\n" +
 		"## Upcoming\n" +
+		"\n" +
+		"### Default diff format changing from `chezmoi` to `git`.\n" +
+		"\n" +
+		"Currently chezmoi outputs diffs in its own format, containing a mix of unified\n" +
+		"diffs and shell commands. This will be replaced with a [git format\n" +
+		"diff](https://git-scm.com/docs/diff-format) in version 2.0.0.\n" +
 		"\n" +
 		"### `gpgRecipient` config variable changing to `gpg.recipient`\n" +
 		"\n" +
@@ -487,7 +494,7 @@ func init() {
 		"* [Import archives](#import-archives)\n" +
 		"* [Export archives](#export-archives)\n" +
 		"* [Use a non-git version control system](#use-a-non-git-version-control-system)\n" +
-		"* [Use a custom pager for the `diff` command](#use-a-custom-pager-for-the-diff-command)\n" +
+		"* [Customize the `diff` command](#customize-the-diff-command)\n" +
 		"* [Use a merge tool other than vimdiff](#use-a-merge-tool-other-than-vimdiff)\n" +
 		"* [Migrate from a dotfile manager that uses symlinks](#migrate-from-a-dotfile-manager-that-uses-symlinks)\n" +
 		"\n" +
@@ -1204,15 +1211,18 @@ func init() {
 		"you'd like to see your VCS better supported, please [open an issue on\n" +
 		"GitHub](https://github.com/twpayne/chezmoi/issues/new/choose).\n" +
 		"\n" +
-		"## Use a custom pager for the `diff` command\n" +
+		"## Customize the `diff` command\n" +
 		"\n" +
-		"By default, chezmoi uses a built-in diff command. You can pipe the output into a\n" +
-		"pager of your choice. In your config file, specify the pager to use. For\n" +
-		"example, to use [`diff-so-fancy`](https://github.com/so-fancy/diff-so-fancy)\n" +
-		"specify:\n" +
+		"By default, chezmoi uses a built-in diff. You can change the format, and/or pipe\n" +
+		"the output into a pager of your choice. For example, to use\n" +
+		"[`diff-so-fancy`](https://github.com/so-fancy/diff-so-fancy) specify:\n" +
 		"\n" +
 		"    [diff]\n" +
+		"        format = \"git\"\n" +
 		"        pager = \"diff-so-fancy\"\n" +
+		"\n" +
+		"The format can also be set with the `--format` option to the `diff` command, and\n" +
+		"the pager can be disabled using `--no-pager`.\n" +
 		"\n" +
 		"## Use a merge tool other than vimdiff\n" +
 		"\n" +
@@ -1593,6 +1603,7 @@ func init() {
 		"| `color`                 | string   | `auto`                    | Colorize diffs                                      |\n" +
 		"| `data`                  | any      | *none*                    | Template data                                       |\n" +
 		"| `destDir`               | string   | `~`                       | Destination directory                               |\n" +
+		"| `diff.format`           | string   | `chezmoi`                 | Diff format, either `chezmoi` or `git`              |\n" +
 		"| `diff.pager`            | string   | *none*                    | Pager                                               |\n" +
 		"| `dryRun`                | bool     | `false`                   | Dry run mode                                        |\n" +
 		"| `follow`                | bool     | `false`                   | Follow symlinks                                     |\n" +
@@ -1888,13 +1899,28 @@ func init() {
 		"\n" +
 		"### `diff` [*targets*]\n" +
 		"\n" +
-		"Print the approximate shell commands required to ensure that *targets* in the\n" +
-		"destination directory match the target state. If no targets are specified, print\n" +
-		"the commands required for all targets. It is equivalent to `chezmoi apply\n" +
-		"--dry-run --verbose`.\n" +
+		"Print the difference between the target state and the destination state for\n" +
+		"*targets*. If no targets are specified, print the differences for all targets.\n" +
 		"\n" +
-		"If `diff.pager` is set in the configuration file then the output will be piped\n" +
-		"into this command.\n" +
+		"If a `diff.pager` command is set in the configuration file then the output will\n" +
+		"be piped into it.\n" +
+		"\n" +
+		"#### `-f`, `--format` *format*\n" +
+		"\n" +
+		"Print the diff in *format*. The format can be set with the `diff.format`\n" +
+		"variable in the configuration file. Valid formats are:\n" +
+		"\n" +
+		"##### `chezmoi`\n" +
+		"\n" +
+		"A mix of unified diffs and pseudo shell commands, equivalent to `chezmoi apply\n" +
+		"--dry-run --verbose`. They can be colorized and include scripts.\n" +
+		"\n" +
+		"##### `git`\n" +
+		"\n" +
+		"A [git format diff](https://git-scm.com/docs/diff-format), without color and not\n" +
+		"including scripts. In version 2.0.0 of chezmoi, `git` format diffs will become\n" +
+		"the default and support color and scripts and the `chezmoi` format will be\n" +
+		"removed.\n" +
 		"\n" +
 		"#### `--no-pager`\n" +
 		"\n" +
@@ -1904,6 +1930,7 @@ func init() {
 		"\n" +
 		"    chezmoi diff\n" +
 		"    chezmoi diff ~/.bashrc\n" +
+		"    chezmoi diff --format=git\n" +
 		"\n" +
 		"### `docs` [*regexp*]\n" +
 		"\n" +

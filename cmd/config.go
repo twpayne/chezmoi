@@ -138,6 +138,9 @@ func newConfig(options ...configOption) *Config {
 		Template: templateConfig{
 			Options: chezmoi.DefaultTemplateOptions,
 		},
+		Diff: diffCmdConfig{
+			Format: "chezmoi",
+		},
 		Merge: mergeConfig{
 			Command: "vimdiff",
 		},
