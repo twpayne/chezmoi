@@ -24,10 +24,9 @@ var addCmd = &cobra.Command{
 }
 
 type addCmdConfig struct {
-	force     bool
-	recursive bool
-	prompt    bool
-	options   chezmoi.AddOptions
+	force   bool
+	prompt  bool
+	options chezmoi.AddOptions
 }
 
 func init() {
@@ -39,7 +38,7 @@ func init() {
 	persistentFlags.BoolVarP(&config.add.force, "force", "f", false, "overwrite source state, even if template would be lost")
 	persistentFlags.BoolVarP(&config.add.options.Exact, "exact", "x", false, "add directories exactly")
 	persistentFlags.BoolVarP(&config.add.prompt, "prompt", "p", false, "prompt before adding")
-	persistentFlags.BoolVarP(&config.add.recursive, "recursive", "r", false, "recurse in to subdirectories")
+	persistentFlags.BoolVarP(&config.add.options.Recursive, "recursive", "r", false, "recurse in to subdirectories")
 	persistentFlags.BoolVarP(&config.add.options.Template, "template", "T", false, "add files as templates")
 	persistentFlags.BoolVarP(&config.add.options.AutoTemplate, "autotemplate", "a", false, "auto generate the template when adding files as templates")
 
@@ -75,7 +74,7 @@ func (c *Config) runAddCmd(cmd *cobra.Command, args []string) (err error) {
 		if err != nil {
 			return err
 		}
-		if c.add.recursive {
+		if c.add.options.Recursive {
 			if err := vfs.Walk(c.fs, path, func(path string, info os.FileInfo, err error) error {
 				if err != nil {
 					return err

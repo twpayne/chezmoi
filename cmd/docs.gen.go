@@ -473,6 +473,7 @@ func init() {
 		"* [Use templates to manage files that vary from machine to machine](#use-templates-to-manage-files-that-vary-from-machine-to-machine)\n" +
 		"* [Use completely separate config files on different machines](#use-completely-separate-config-files-on-different-machines)\n" +
 		"* [Create a config file on a new machine automatically](#create-a-config-file-on-a-new-machine-automatically)\n" +
+		"* [Have chezmoi create a directory, but ignore its contents](#have-chezmoi-create-a-directory-but-ignore-its-contents)\n" +
 		"* [Ensure that a target is removed](#ensure-that-a-target-is-removed)\n" +
 		"* [Include a subdirectory from another repository, like Oh My Zsh](#include-a-subdirectory-from-another-repository-like-oh-my-zsh)\n" +
 		"* [Handle configuration files which are externally modified](#handle-configuration-files-which-are-externally-modified)\n" +
@@ -759,6 +760,26 @@ func init() {
 		"\n" +
 		"Then `chezmoi init` will create an initial `chezmoi.toml` using this template.\n" +
 		"`promptString` is a special function that prompts the user (you) for a value.\n" +
+		"\n" +
+		"## Have chezmoi create a directory, but ignore its contents\n" +
+		"\n" +
+		"If you want chezmoi to create a directory, but ignore its contents, say `~/src`,\n" +
+		"first run:\n" +
+		"\n" +
+		"    mkdir -p $(chezmoi source-path)/src\n" +
+		"\n" +
+		"This creates the directory in the source state, which means that chezmoi will\n" +
+		"create it (if it does not already exist) when you run `chezmoi apply`.\n" +
+		"\n" +
+		"However, as this is an empty directory it will be ignored by git. So, create a\n" +
+		"file in the directory in the source state that will be seen by git (so git does\n" +
+		"not ignore the directory) but ignored by chezmoi (so chezmoi does not include it\n" +
+		"in the target state):\n" +
+		"\n" +
+		"    touch $(chezmoi source-path)/src/.keep\n" +
+		"\n" +
+		"chezmoi automatically creates `.keep` files when you add an empty directory with\n" +
+		"`chezmoi add`.\n" +
 		"\n" +
 		"## Ensure that a target is removed\n" +
 		"\n" +

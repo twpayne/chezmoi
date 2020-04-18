@@ -8,6 +8,7 @@
 * [Use templates to manage files that vary from machine to machine](#use-templates-to-manage-files-that-vary-from-machine-to-machine)
 * [Use completely separate config files on different machines](#use-completely-separate-config-files-on-different-machines)
 * [Create a config file on a new machine automatically](#create-a-config-file-on-a-new-machine-automatically)
+* [Have chezmoi create a directory, but ignore its contents](#have-chezmoi-create-a-directory-but-ignore-its-contents)
 * [Ensure that a target is removed](#ensure-that-a-target-is-removed)
 * [Include a subdirectory from another repository, like Oh My Zsh](#include-a-subdirectory-from-another-repository-like-oh-my-zsh)
 * [Handle configuration files which are externally modified](#handle-configuration-files-which-are-externally-modified)
@@ -294,6 +295,26 @@ Specifically, if you have `.chezmoi.toml.tmpl` that looks like this:
 
 Then `chezmoi init` will create an initial `chezmoi.toml` using this template.
 `promptString` is a special function that prompts the user (you) for a value.
+
+## Have chezmoi create a directory, but ignore its contents
+
+If you want chezmoi to create a directory, but ignore its contents, say `~/src`,
+first run:
+
+    mkdir -p $(chezmoi source-path)/src
+
+This creates the directory in the source state, which means that chezmoi will
+create it (if it does not already exist) when you run `chezmoi apply`.
+
+However, as this is an empty directory it will be ignored by git. So, create a
+file in the directory in the source state that will be seen by git (so git does
+not ignore the directory) but ignored by chezmoi (so chezmoi does not include it
+in the target state):
+
+    touch $(chezmoi source-path)/src/.keep
+
+chezmoi automatically creates `.keep` files when you add an empty directory with
+`chezmoi add`.
 
 ## Ensure that a target is removed
 

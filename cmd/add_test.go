@@ -74,6 +74,37 @@ func TestAddCommand(t *testing.T) {
 			},
 		},
 		{
+			name: "add_non_empty_dir",
+			args: []string{"/home/user/.config/htop"},
+			root: map[string]interface{}{
+				"/home/user/.config/htop": map[string]interface{}{
+					"foo": "bar",
+				},
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/.local/share/chezmoi",
+					vfst.TestIsDir,
+					vfst.TestModePerm(0700),
+				),
+				vfst.TestPath("/home/user/.local/share/chezmoi/dot_config",
+					vfst.TestIsDir,
+					vfst.TestModePerm(0755),
+				),
+				vfst.TestPath("/home/user/.local/share/chezmoi/dot_config/htop",
+					vfst.TestIsDir,
+					vfst.TestModePerm(0755),
+				),
+				vfst.TestPath("/home/user/.local/share/chezmoi/dot_config/htop/.keep",
+					vfst.TestModeIsRegular,
+					vfst.TestModePerm(0644),
+					vfst.TestContents(nil),
+				),
+				vfst.TestPath("/home/user/.local/share/chezmoi/dot_config/htop/foo",
+					vfst.TestDoesNotExist,
+				),
+			},
+		},
+		{
 			name: "add_first_file",
 			args: []string{"/home/user/.bashrc"},
 			root: map[string]interface{}{
@@ -136,7 +167,9 @@ func TestAddCommand(t *testing.T) {
 			name: "add_recursive",
 			args: []string{"/home/user/.config"},
 			add: addCmdConfig{
-				recursive: true,
+				options: chezmoi.AddOptions{
+					Recursive: true,
+				},
 			},
 			root: map[string]interface{}{
 				"/home/user":                             &vfst.Dir{Perm: 0755},
@@ -188,9 +221,9 @@ func TestAddCommand(t *testing.T) {
 			name: "add_exact_dir_recursive",
 			args: []string{"/home/user/dir"},
 			add: addCmdConfig{
-				recursive: true,
 				options: chezmoi.AddOptions{
-					Exact: true,
+					Exact:     true,
+					Recursive: true,
 				},
 			},
 			root: map[string]interface{}{
@@ -331,7 +364,9 @@ func TestAddCommand(t *testing.T) {
 			name: "add_symlink_in_dir_recursive",
 			args: []string{"/home/user/foo"},
 			add: addCmdConfig{
-				recursive: true,
+				options: chezmoi.AddOptions{
+					Recursive: true,
+				},
 			},
 			root: map[string]interface{}{
 				"/home/user":                      &vfst.Dir{Perm: 0755},
@@ -392,7 +427,9 @@ func TestAddCommand(t *testing.T) {
 			name: "dont_add_ignored_file_recursive",
 			args: []string{"/home/user/foo"},
 			add: addCmdConfig{
-				recursive: true,
+				options: chezmoi.AddOptions{
+					Recursive: true,
+				},
 			},
 			root: map[string]interface{}{
 				"/home/user": &vfst.Dir{Perm: 0755},
