@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/coreos/go-semver/semver"
@@ -86,6 +87,19 @@ func init() {
 			}
 			if config.err != nil {
 				rootCmd.Printf("warning: %s: %v\n", config.configFile, config.err)
+			}
+			if config.GPGRecipient != "" {
+				rootCmd.Printf("" +
+					"warning: your config file uses gpgRecipient which will be deprecated in v2\n" +
+					"warning: to disable this warning, set gpg.recipient in your config file instead\n",
+				)
+			}
+			if config.SourceVCS.Command != "" && !config.SourceVCS.NotGit && !strings.Contains(filepath.Base(config.SourceVCS.Command), "git") {
+				rootCmd.Printf("" +
+					"warning: it looks like you are using a version control system that is not git which will be deprecated in v2\n" +
+					"warning: please report this at https://github.com/twpayne/chezmoi/issues/459\n" +
+					"warning: to disable this warning, set sourceVCS.notGit = true in your config file\n",
+				)
 			}
 		case os.IsNotExist(err):
 		default:
