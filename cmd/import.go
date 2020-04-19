@@ -55,6 +55,7 @@ func (c *Config) runImportCmd(cmd *cobra.Command, args []string) error {
 		if err != nil {
 			return err
 		}
+		//nolint:gosec
 		defer f.Close()
 		switch {
 		case strings.HasSuffix(arg, ".tar.gz") || strings.HasSuffix(arg, ".tgz"):

@@ -10,6 +10,8 @@ linters:
   - gomnd
   - lll
   - maligned
+  - nestif
+  - testpackage
   - wsl
 
 issues:
@@ -23,6 +25,12 @@ issues:
   - linters:
     - gochecknoinits
     path: cmd/
+  - linters:
+    - gosec
+    path: internal/generate-assets/
+  - linters:
+    - gosec
+    path: internal/generate-helps/
   - linters:
     - scopelint
     path: "_test\\.go"
