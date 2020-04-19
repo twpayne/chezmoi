@@ -9,6 +9,7 @@ content-docs: \
 	content/docs/faq.md \
 	content/docs/how-to.md \
 	content/docs/install.md \
+	content/docs/media.md \
 	content/docs/quick-start.md \
 	content/docs/reference.md
 
@@ -26,6 +27,9 @@ content/docs/how-to.md: ../docs/HOWTO.md ../internal/generate-chezmoi.io-content
 
 content/docs/install.md: ../docs/INSTALL.md ../internal/generate-chezmoi.io-content-docs/main.go Makefile
 	go run ../internal/generate-chezmoi.io-content-docs -shorttitle="Install" -longtitle="Install Guide" < $< > $@ || ( rm -f $@ ; false )
+
+content/docs/media.md: ../docs/MEDIA.md ../internal/generate-chezmoi.io-content-docs/main.go Makefile
+	go run ../internal/generate-chezmoi.io-content-docs -shorttitle="Media" -longtitle="Media" < $< > $@ || ( rm -f $@ ; false )
 
 content/docs/quick-start.md: ../docs/QUICKSTART.md ../internal/generate-chezmoi.io-content-docs/main.go Makefile
 	go run ../internal/generate-chezmoi.io-content-docs -shorttitle="Quick Start" -longtitle="Quick Start Guide" < $< > $@ || ( rm -f $@ ; false )
