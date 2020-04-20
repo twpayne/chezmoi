@@ -7,6 +7,7 @@ require (
 	github.com/Masterminds/semver v1.5.0 // indirect
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/alecthomas/chroma v0.7.1 // indirect
+	github.com/bmatcuk/doublestar v1.2.4
 	github.com/charmbracelet/glamour v0.1.0
 	github.com/coreos/go-semver v0.3.0
 	github.com/dlclark/regexp2 v1.2.0 // indirect
