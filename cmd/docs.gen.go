@@ -1729,10 +1729,9 @@ func init() {
 		"### `.chezmoiignore`\n" +
 		"\n" +
 		"If a file called `.chezmoiignore` exists in the source state then it is\n" +
-		"interpreted as a set of patterns to ignore. Patterns are matched using the Go\n" +
-		"standard libary's [`filepath.Match` pattern\n" +
-		"syntax](https://pkg.go.dev/path/filepath?tab=doc#Match) and match against the\n" +
-		"target path, not the source path.\n" +
+		"interpreted as a set of patterns to ignore. Patterns are matched using\n" +
+		"[`doublestar.PathMatch`](https://pkg.go.dev/github.com/bmatcuk/doublestar?tab=doc#PathMatch)\n" +
+		"and match against the target path, not the source path.\n" +
 		"\n" +
 		"Patterns can be excluded by prefixing them with a `!` character. All excludes\n" +
 		"take priority over all includes.\n" +

@@ -268,10 +268,9 @@ config file formats.
 ### `.chezmoiignore`
 
 If a file called `.chezmoiignore` exists in the source state then it is
-interpreted as a set of patterns to ignore. Patterns are matched using the Go
-standard libary's [`filepath.Match` pattern
-syntax](https://pkg.go.dev/path/filepath?tab=doc#Match) and match against the
-target path, not the source path.
+interpreted as a set of patterns to ignore. Patterns are matched using
+[`doublestar.PathMatch`](https://pkg.go.dev/github.com/bmatcuk/doublestar?tab=doc#PathMatch)
+and match against the target path, not the source path.
 
 Patterns can be excluded by prefixing them with a `!` character. All excludes
 take priority over all includes.

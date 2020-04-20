@@ -1,6 +1,8 @@
 package chezmoi
 
-import "path/filepath"
+import (
+	"github.com/bmatcuk/doublestar"
+)
 
 // An PatternSet is a set of patterns.
 type PatternSet struct {
@@ -18,7 +20,7 @@ func NewPatternSet() *PatternSet {
 
 // Add adds a pattern to ps.
 func (ps *PatternSet) Add(pattern string, include bool) error {
-	if _, err := filepath.Match(pattern, ""); err != nil {
+	if _, err := doublestar.PathMatch(pattern, ""); err != nil {
 		return nil
 	}
 	if include {
@@ -32,12 +34,12 @@ func (ps *PatternSet) Add(pattern string, include bool) error {
 // Match returns if name matches any pattern in ps.
 func (ps *PatternSet) Match(name string) bool {
 	for pattern := range ps.excludes {
-		if ok, _ := filepath.Match(pattern, name); ok {
+		if ok, _ := doublestar.PathMatch(pattern, name); ok {
 			return false
 		}
 	}
 	for pattern := range ps.includes {
-		if ok, _ := filepath.Match(pattern, name); ok {
+		if ok, _ := doublestar.PathMatch(pattern, name); ok {
 			return true
 		}
 	}

@@ -1,6 +1,7 @@
 package chezmoi
 
 import (
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -51,6 +52,17 @@ func TestPatternSet(t *testing.T) {
 				"foo": false,
 				"bar": true,
 				"baz": false,
+			},
+		},
+		{
+			name: "doublestar",
+			ps: mustNewPatternSet(t, map[string]bool{
+				"**/foo": true,
+			}),
+			expectMatches: map[string]bool{
+				"foo":                              true,
+				filepath.Join("bar", "foo"):        true,
+				filepath.Join("baz", "bar", "foo"): true,
 			},
 		},
 	} {
