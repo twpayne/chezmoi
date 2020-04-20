@@ -21,8 +21,6 @@ jobs:
         go-version: ${{ matrix.go-version }}
     - name: Checkout
       uses: actions/checkout@v1
-    - name: Download Go modules
-      run: go mod download
     - name: Install tools
       if: matrix.os == 'ubuntu-latest'
       run: |
@@ -56,14 +54,21 @@ jobs:
         go run . completion fish > completions/chezmoi.fish
         go run . completion zsh > completions/chezmoi.zsh
         git diff --exit-code
+    - name: Install snapcraft
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        echo "::add-path::/snap/bin"
+        sudo chown root:root /
+        sudo snap install snapcraft --classic
+    - name: Release
+      if: matrix.os == 'ubuntu-latest'
+      uses: goreleaser/goreleaser-action@v1
+      with:
+        version: latest
+        args: release --skip-publish --snapshot
     - name: Test release
       if: matrix.os == 'ubuntu-latest'
       run: |
-        export PATH=$PATH:/snap/bin
-        sudo chown root:root /
-        sudo snap install goreleaser --classic
-        sudo snap install snapcraft --classic
-        goreleaser release --skip-publish --snapshot
         # verify that version information is embedded correctly
         ./dist/chezmoi-cgo_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v"
         ./dist/chezmoi-cgo_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v"
@@ -82,20 +87,18 @@ jobs:
         go-version: 1.14.x
     - name: Checkout
       uses: actions/checkout@v1
-    - name: Download Go modules
-      run: go mod download
     - name: Set up Snapcraft
       env:
         SNAPCRAFT_LOGIN: ${{ secrets.SNAPCRAFT_LOGIN }}
       run: |
-        export PATH=$PATH:/snap/bin
+        echo "::add-path::/snap/bin"
         sudo snap install snapcraft --classic
         sudo chown root:root /
         echo ${SNAPCRAFT_LOGIN} | snapcraft login --with -
     - name: Release
+      uses: goreleaser/goreleaser-action@v1
+      with:
+        version: latest
+        args: release
       env:
         GITHUB_TOKEN: ${{ secrets.GORELEASER_GITHUB_TOKEN }}
-      run: |
-        export PATH=$PATH:/snap/bin
-        sudo snap install goreleaser --classic
-        goreleaser release
