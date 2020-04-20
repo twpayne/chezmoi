@@ -16,7 +16,7 @@ chezmoi cd git remote add origin https://github." />
 <link rel="stylesheet" href="/book.min.a8b61185b89b0e211122339c7efd1c8edaa4ad4c0ae65f0074e99a4b31c1e393.css" integrity="sha256-qLYRhbibDiERIjOcfv0cjtqkrUwK5l8AdOmaSzHB45M=">
 
 
-<script defer src="/search.min.df0546614696aaa56f51975466a8b2c43c42fe2e63fd0d1c863bcc38268e6d9a.js" integrity="sha256-3wVGYUaWqqVvUZdUZqiyxDxC/i5j/Q0chjvMOCaObZo="></script>
+<script defer src="/search.min.c3cfd3e99fcba30d84511c457b5c269040971b77c7bdf56b71082f21205a04a7.js" integrity="sha256-w8/T6Z/Low2EURxFe1wmkECXG3fHvfVrcQgvISBaBKc="></script>
 
 <!--
 Made with Book Theme
@@ -166,15 +166,18 @@ to machine. For example, for your home machine:</p>
 <pre><code>[data]
   email = &quot;john@home.org&quot;
 </code></pre>
+<p>Note that all variable names will be converted to lowercase. This is due to a
+feature of a library used by chezmoi.</p>
 <p>If you intend to store private data (e.g. access tokens) in
 <code>~/.config/chezmoi/chezmoi.toml</code>, make sure it has permissions <code>0600</code>.</p>
 <p>If you prefer, you can use any format supported by
 <a href="https://github.com/spf13/viper">Viper</a> for your configuration file. This
 includes JSON, YAML, and TOML. Variable names must start with a letter and be
 followed by zero or more letters or digits.</p>
-<p>Then, add <code>~/.gitconfig</code> to chezmoi using the <code>--template</code> flag to automatically
-turn it in to a template:</p>
-<pre><code>chezmoi add --template --autotemplate ~/.gitconfig
+<p>Then, add <code>~/.gitconfig</code> to chezmoi using the <code>--autotemplate</code> flag to turn it
+into a template and automatically detect variables from the <code>data</code> section
+of your <code>~/.config/chezmoi/chezmoi.toml</code> file:</p>
+<pre><code>chezmoi add --autotemplate ~/.gitconfig
 </code></pre>
 <p>You can then open the template (which will be saved in the file
 <code>~/.local/share/chezmoi/dot_gitconfig.tmpl</code>):</p>
@@ -184,9 +187,8 @@ turn it in to a template:</p>
 <pre><code>[user]
   email = &quot;{{ .email }}&quot;
 </code></pre>
-<p>The <code>--autotemplate</code> flag to <code>chezmoi add</code> above instructs chezmoi to generate a
-template by substituting variables from the <code>data</code> section of your
-<code>~/.config/chezmoi/chezmoi.toml</code> file.</p>
+<p>To disable automatic variable detection, use the <code>--template</code> or <code>-T</code> option to
+<code>chezmoi add</code> instead of <code>--autotemplate</code>.</p>
 <p>Templates are often used to capture machine-specifc differences. For example, in
 your <code>~/.local/share/chezmoi/dot_bashrc.tmpl</code> you might have:</p>
 <pre><code># common config
@@ -279,6 +281,21 @@ initial config file.</p>
 </code></pre>
 <p>Then <code>chezmoi init</code> will create an initial <code>chezmoi.toml</code> using this template.
 <code>promptString</code> is a special function that prompts the user (you) for a value.</p>
+<h2 id="have-chezmoi-create-a-directory-but-ignore-its-contents">Have chezmoi create a directory, but ignore its contents</h2>
+<p>If you want chezmoi to create a directory, but ignore its contents, say <code>~/src</code>,
+first run:</p>
+<pre><code>mkdir -p $(chezmoi source-path)/src
+</code></pre>
+<p>This creates the directory in the source state, which means that chezmoi will
+create it (if it does not already exist) when you run <code>chezmoi apply</code>.</p>
+<p>However, as this is an empty directory it will be ignored by git. So, create a
+file in the directory in the source state that will be seen by git (so git does
+not ignore the directory) but ignored by chezmoi (so chezmoi does not include it
+in the target state):</p>
+<pre><code>touch $(chezmoi source-path)/src/.keep
+</code></pre>
+<p>chezmoi automatically creates <code>.keep</code> files when you add an empty directory with
+<code>chezmoi add</code>.</p>
 <h2 id="ensure-that-a-target-is-removed">Ensure that a target is removed</h2>
 <p>Create a file called <code>.chezmoiremove</code> in the source directory containing a list
 of patterns of files to remove. When you run</p>
@@ -656,6 +673,16 @@ Mercurial specify:</p>
 <code>update</code>, and support for VCSes other than git is limited but easy to add. If
 you&rsquo;d like to see your VCS better supported, please <a href="https://github.com/twpayne/chezmoi/issues/new/choose">open an issue on
 GitHub</a>.</p>
+<h2 id="customize-the-diff-command">Customize the <code>diff</code> command</h2>
+<p>By default, chezmoi uses a built-in diff. You can change the format, and/or pipe
+the output into a pager of your choice. For example, to use
+<a href="https://github.com/so-fancy/diff-so-fancy"><code>diff-so-fancy</code></a> specify:</p>
+<pre><code>[diff]
+    format = &quot;git&quot;
+    pager = &quot;diff-so-fancy&quot;
+</code></pre>
+<p>The format can also be set with the <code>--format</code> option to the <code>diff</code> command, and
+the pager can be disabled using <code>--no-pager</code>.</p>
 <h2 id="use-a-merge-tool-other-than-vimdiff">Use a merge tool other than vimdiff</h2>
 <p>By default, chezmoi uses vimdiff, but you can use any merge tool of your choice.
 In your config file, specify the command and args to use. For example, to use
@@ -695,6 +722,7 @@ contents.</p>
     <li><a href="#use-templates-to-manage-files-that-vary-from-machine-to-machine">Use templates to manage files that vary from machine to machine</a></li>
     <li><a href="#use-completely-separate-config-files-on-different-machines">Use completely separate config files on different machines</a></li>
     <li><a href="#create-a-config-file-on-a-new-machine-automatically">Create a config file on a new machine automatically</a></li>
+    <li><a href="#have-chezmoi-create-a-directory-but-ignore-its-contents">Have chezmoi create a directory, but ignore its contents</a></li>
     <li><a href="#ensure-that-a-target-is-removed">Ensure that a target is removed</a></li>
     <li><a href="#include-a-subdirectory-from-another-repository-like-oh-my-zsh">Include a subdirectory from another repository, like Oh My Zsh</a></li>
     <li><a href="#handle-configuration-files-which-are-externally-modified">Handle configuration files which are externally modified</a></li>
@@ -722,6 +750,7 @@ contents.</p>
     <li><a href="#import-archives">Import archives</a></li>
     <li><a href="#export-archives">Export archives</a></li>
     <li><a href="#use-a-non-git-version-control-system">Use a non-git version control system</a></li>
+    <li><a href="#customize-the-diff-command">Customize the <code>diff</code> command</a></li>
     <li><a href="#use-a-merge-tool-other-than-vimdiff">Use a merge tool other than vimdiff</a></li>
     <li><a href="#migrate-from-a-dotfile-manager-that-uses-symlinks">Migrate from a dotfile manager that uses symlinks</a></li>
   </ul>

@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="/book.min.a8b61185b89b0e211122339c7efd1c8edaa4ad4c0ae65f0074e99a4b31c1e393.css" integrity="sha256-qLYRhbibDiERIjOcfv0cjtqkrUwK5l8AdOmaSzHB45M=">
 
 
-<script defer src="/search.min.df0546614696aaa56f51975466a8b2c43c42fe2e63fd0d1c863bcc38268e6d9a.js" integrity="sha256-3wVGYUaWqqVvUZdUZqiyxDxC/i5j/Q0chjvMOCaObZo="></script>
+<script defer src="/search.min.c3cfd3e99fcba30d84511c457b5c269040971b77c7bdf56b71082f21205a04a7.js" integrity="sha256-w8/T6Z/Low2EURxFe1wmkECXG3fHvfVrcQgvISBaBKc="></script>
 
 <!--
 Made with Book Theme
@@ -203,6 +203,18 @@ chezmoi, and the first config file found is used.</p>
 <td>Destination directory</td>
 </tr>
 <tr>
+<td><code>diff.format</code></td>
+<td>string</td>
+<td><code>chezmoi</code></td>
+<td>Diff format, either <code>chezmoi</code> or <code>git</code></td>
+</tr>
+<tr>
+<td><code>diff.pager</code></td>
+<td>string</td>
+<td><em>none</em></td>
+<td>Pager</td>
+</tr>
+<tr>
 <td><code>dryRun</code></td>
 <td>bool</td>
 <td><code>false</code></td>
@@ -225,6 +237,12 @@ chezmoi, and the first config file found is used.</p>
 <td>string</td>
 <td><code>gopass</code></td>
 <td>gopass CLI command</td>
+</tr>
+<tr>
+<td><code>gpg.command</code></td>
+<td>string</td>
+<td><code>gpg</code></td>
+<td>GPG CLI command</td>
 </tr>
 <tr>
 <td><code>gpg.recipient</code></td>
@@ -518,6 +536,10 @@ the current version is too old.</p>
 <p>Add <em>targets</em> to the source state. If any target is already in the source state,
 then its source state is replaced with its current state in the destination
 directory. The <code>add</code> command accepts additional flags:</p>
+<h4 id="--autotemplate"><code>--autotemplate</code></h4>
+<p>Automatically generate a template by replacing strings with variable names from
+the <code>data</code> section of the config file. Longer subsitutions occur before shorter
+ones. This implies the <code>--template</code> option.</p>
 <h4 id="-e---empty"><code>-e</code>, <code>--empty</code></h4>
 <p>Set the <code>empty</code> attribute on added files.</p>
 <h4 id="-f---force"><code>-f</code>, <code>--force</code></h4>
@@ -529,10 +551,7 @@ directory. The <code>add</code> command accepts additional flags:</p>
 <h4 id="-r---recursive"><code>-r</code>, <code>--recursive</code></h4>
 <p>Recursively add all files, directories, and symlinks.</p>
 <h4 id="-t---template"><code>-T</code>, <code>--template</code></h4>
-<p>Set the <code>template</code> attribute on added files and symlinks. In addition, if the
-<code>--autotemplate</code> flag is set, chezmoi attempts to automatically generate the
-template by replacing any template data values with the equivalent template data
-keys. Longer subsitutions occur before shorter ones.</p>
+<p>Set the <code>template</code> attribute on added files and symlinks.</p>
 <h4 id="add-examples"><code>add</code> examples</h4>
 <pre><code>chezmoi add ~/.bashrc
 chezmoi add ~/.gitconfig --template
@@ -632,12 +651,26 @@ accepts additional flags:</p>
 chezmoi data --format=yaml
 </code></pre>
 <h3 id="diff-targets"><code>diff</code> [<em>targets</em>]</h3>
-<p>Print the approximate shell commands required to ensure that <em>targets</em> in the
-destination directory match the target state. If no targets are specified, print
-the commands required for all targets. It is equivalent to <code>chezmoi apply --dry-run --verbose</code>.</p>
+<p>Print the difference between the target state and the destination state for
+<em>targets</em>. If no targets are specified, print the differences for all targets.</p>
+<p>If a <code>diff.pager</code> command is set in the configuration file then the output will
+be piped into it.</p>
+<h4 id="-f---format-format-1"><code>-f</code>, <code>--format</code> <em>format</em></h4>
+<p>Print the diff in <em>format</em>. The format can be set with the <code>diff.format</code>
+variable in the configuration file. Valid formats are:</p>
+<h5 id="chezmoi"><code>chezmoi</code></h5>
+<p>A mix of unified diffs and pseudo shell commands, equivalent to <code>chezmoi apply --dry-run --verbose</code>. They can be colorized and include scripts.</p>
+<h5 id="git"><code>git</code></h5>
+<p>A <a href="https://git-scm.com/docs/diff-format">git format diff</a>, without color and not
+including scripts. In version 2.0.0 of chezmoi, <code>git</code> format diffs will become
+the default and support color and scripts and the <code>chezmoi</code> format will be
+removed.</p>
+<h4 id="--no-pager"><code>--no-pager</code></h4>
+<p>Do not use the pager.</p>
 <h4 id="diff-examples"><code>diff</code> examples</h4>
 <pre><code>chezmoi diff
 chezmoi diff ~/.bashrc
+chezmoi diff --format=git
 </code></pre>
 <h3 id="docs-regexp"><code>docs</code> [<em>regexp</em>]</h3>
 <p>Print the documentation page matching the regular expression <em>regexp</em>. Matching
@@ -655,7 +688,7 @@ chezmoi docs howto
 <h3 id="dump-targets"><code>dump</code> [<em>targets</em>]</h3>
 <p>Dump the target state in JSON format. If no targets are specified, then the
 entire target state. The <code>dump</code> command accepts additional arguments:</p>
-<h4 id="-f---format-format-1"><code>-f</code>, <code>--format</code> <em>format</em></h4>
+<h4 id="-f---format-format-2"><code>-f</code>, <code>--format</code> <em>format</em></h4>
 <p>Print the target state in the given format. The accepted formats are <code>json</code>
 (JSON) and <code>yaml</code> (YAML).</p>
 <h4 id="dump-examples"><code>dump</code> examples</h4>
@@ -746,6 +779,20 @@ chezmoi import --strip-components 1 --destination ~/.oh-my-zsh oh-my-zsh-master.
 </code></pre>
 <h3 id="manage-targets"><code>manage</code> <em>targets</em></h3>
 <p><code>manage</code> is an alias for <code>add</code> for symmetry with <code>unmanage</code>.</p>
+<h3 id="managed"><code>managed</code></h3>
+<p>List all managed entries in the destination directory in alphabetical order.</p>
+<h4 id="-i---include-types"><code>-i</code>, <code>--include</code> <em>types</em></h4>
+<p>Only list entries of type <em>types</em>. <em>types</em> is a comma-separated list of types of
+entry to include. Valid types are <code>dirs</code>, <code>files</code>, and <code>symlinks</code> which can be
+abbreviated to <code>d</code>, <code>f</code>, and <code>s</code> respectively. By default, <code>manage</code> will list
+entries of all types.</p>
+<h4 id="managed-examples"><code>managed</code> examples</h4>
+<pre><code>chezmoi managed
+chezmoi managed --include=files
+chezmoi managed --include=files,symlinks
+chezmoi managed -i d
+chezmoi managed -i d,f
+</code></pre>
 <h3 id="merge-targets"><code>merge</code> <em>targets</em></h3>
 <p>Perform a three-way merge between the destination state, the source state, and
 the target state. The merge tool is defined by the <code>merge.command</code> configuration
@@ -1150,6 +1197,7 @@ times with the same <em>key</em> will only invoke <code>vault</code> once.</p>
         <li><a href="#init-repo"><code>init</code> [<em>repo</em>]</a></li>
         <li><a href="#import-filename"><code>import</code> <em>filename</em></a></li>
         <li><a href="#manage-targets"><code>manage</code> <em>targets</em></a></li>
+        <li><a href="#managed"><code>managed</code></a></li>
         <li><a href="#merge-targets"><code>merge</code> <em>targets</em></a></li>
         <li><a href="#purge"><code>purge</code></a></li>
         <li><a href="#remove-targets"><code>remove</code> <em>targets</em></a></li>

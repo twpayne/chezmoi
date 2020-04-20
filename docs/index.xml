@@ -16,9 +16,10 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/changes/</guid>
-      <description>Changes Upcoming gpgRecipient config variable changing to gpg.recipient The gpgRecipient config variable is changing to gpg.recipient. To update, change your config from:
+      <description>Changes Upcoming Default diff format changing from chezmoi to git. Currently chezmoi outputs diffs in its own format, containing a mix of unified diffs and shell commands. This will be replaced with a git format diff in version 2.0.0.
+gpgRecipient config variable changing to gpg.recipient The gpgRecipient config variable is changing to gpg.recipient. To update, change your config from:
 gpgRecipient = &amp;quot;...&amp;quot;  to:
-[gpg] recipient = &amp;quot;...&amp;quot;  Support for the gpgRecipient config variable will be removed in version 2.0.0.</description>
+[gpg] recipient = &amp;quot;...&amp;quot;  Support for the gpgRecipient config variable will be removed in version 2.</description>
     </item>
     
     <item>
@@ -63,6 +64,15 @@ chezmoi cd git remote add origin https://github.</description>
       <description>Install Guide One-line binary install Install the correct binary for your operating system and architecture in ./bin with a single command.
 curl -sfL https://git.io/chezmoi | sh  One-line package install Install chezmoi with a single command.
    OS Method Command     Linux snap snap install chezmoi --classic   Linux Linuxbrew brew install twpayne/taps/chezmoi   Alpine Linux apk apk add chezmoi   Arch Linux pacman pacman -S chezmoi   NixOS Linux nix-env nix-env -i chezmoi   macOS Homebrew brew install twpayne/taps/chezmoi   Windows Scoop scoop bucket add twpayne https://github.</description>
+    </item>
+    
+    <item>
+      <title>Media</title>
+      <link>https://chezmoi.io/docs/media/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chezmoi.io/docs/media/</guid>
+      <description>Media </description>
     </item>
     
     <item>
