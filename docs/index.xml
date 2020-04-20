@@ -72,7 +72,7 @@ curl -sfL https://git.io/chezmoi | sh  One-line package install Install chezmoi 
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/media/</guid>
-      <description>Media </description>
+      <description>Media    Date Version Format Link     2020-04-16 1.17.19 Text (FR) Chezmoi, visite guidée   2020-04-03 1.7.17 Text Fedora Magazine: Take back your dotfiles with Chezmoi   2020-03-12 1.7.16 Video Manging Dotfiles with ChezMoi   2019-11-20 1.7.2 Audio/video FLOSS weekly episode 556: chezmoi   2019-01-10 0.0.11 Text Linux Fu: The kitchen sync    To add your article to this page please either open an issue or submit a pull request that modifies this file (docs/MEDIA.</description>
     </item>
     
     <item>
