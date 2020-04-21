@@ -11,6 +11,7 @@
 * [How do I only run a script when a file has changed?](#how-do-i-only-run-a-script-when-a-file-has-changed)
 * [I've made changes to both the destination state and the source state that I want to keep. How can I keep them both?](#ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both)
 * [Why does chezmoi convert all my template variables to lowercase?](#why-does-chezmoi-convert-all-my-template-variables-to-lowercase)
+* [chezmoi makes `~/.ssh/config` group writeable. How do I stop this?](#chezmoi-makes-sshconfig-group-writeable-how-do-i-stop-this)
 * [chezmoi's source file naming system cannot handle all possible filenames](#chezmois-source-file-naming-system-cannot-handle-all-possible-filenames)
 * [gpg encryption fails. What could be wrong?](#gpg-encryption-fails-what-could-be-wrong)
 * [I'm getting errors trying to build chezmoi from source](#im-getting-errors-trying-to-build-chezmoi-from-source)
@@ -139,6 +140,24 @@ This is due to a feature in
 [`github.com/spf13/viper`](https://github.com/spf13/viper), the library that
 chezmoi uses to read its configuration file. For more information see [this
 GitHub issue issue](https://github.com/twpayne/chezmoi/issues/463).
+
+## chezmoi makes `~/.ssh/config` group writeable. How do I stop this?
+
+By default, chezmoi uses your system's umask when creating files. On most
+systems the default umask is `0o22` but some systems use `0o02`, which means
+that files and directories are group writeable by default.
+
+You can override this for chezmoi by setting the `umask` configuration variable
+in your configuration file, for example:
+
+    umask = 0o22
+
+Note that this will apply to all files and directories that chezmoi manages and
+will ensure that none of them are group writeable. It is not currently possible
+to control group writability for individual files or directories. Please [open
+an issue on
+GitHub](https://github.com/twpayne/chezmoi/issues/new?assignees=&labels=enhancement&template=02_feature_request.md&title=)
+if you need this.
 
 ## chezmoi's source file naming system cannot handle all possible filenames
 
