@@ -165,9 +165,11 @@ timestamp.
 chezmoi searches for its configuration file according to the [XDG Base Directory
 Specification](https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html)
 and supports all formats supported by
-[`github.com/spf13/viper`](https://github.com/spf13/viper), namely JSON, TOML,
-YAML, macOS property file format, and HCL. The basename of the config file is
-chezmoi, and the first config file found is used.
+[`github.com/spf13/viper`](https://github.com/spf13/viper), namely
+[JSON](https://www.json.org/json-en.html),
+[TOML](https://github.com/toml-lang/toml), [YAML](https://yaml.org/), macOS
+property file format, and [HCL](https://github.com/hashicorp/hcl). The basename
+of the config file is `chezmoi`, and the first config file found is used.
 
 ### Configuration variables
 
@@ -206,9 +208,6 @@ The following configuration variables are available:
 | `umask`                 | int      | *from system*             | Umask                                               |
 | `vault.command`         | string   | `vault`                   | Vault CLI command                                   |
 | `verbose`               | bool     | `false`                   | Verbose mode                                        |
-
-In addition, a number of secret manager integrations add configuration
-variables. These are documented in the secret manager section.
 
 ## Source state attributes
 

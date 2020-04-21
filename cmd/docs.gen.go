@@ -1645,9 +1645,11 @@ func init() {
 		"chezmoi searches for its configuration file according to the [XDG Base Directory\n" +
 		"Specification](https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html)\n" +
 		"and supports all formats supported by\n" +
-		"[`github.com/spf13/viper`](https://github.com/spf13/viper), namely JSON, TOML,\n" +
-		"YAML, macOS property file format, and HCL. The basename of the config file is\n" +
-		"chezmoi, and the first config file found is used.\n" +
+		"[`github.com/spf13/viper`](https://github.com/spf13/viper), namely\n" +
+		"[JSON](https://www.json.org/json-en.html),\n" +
+		"[TOML](https://github.com/toml-lang/toml), [YAML](https://yaml.org/), macOS\n" +
+		"property file format, and [HCL](https://github.com/hashicorp/hcl). The basename\n" +
+		"of the config file is `chezmoi`, and the first config file found is used.\n" +
 		"\n" +
 		"### Configuration variables\n" +
 		"\n" +
@@ -1686,9 +1688,6 @@ func init() {
 		"| `umask`                 | int      | *from system*             | Umask                                               |\n" +
 		"| `vault.command`         | string   | `vault`                   | Vault CLI command                                   |\n" +
 		"| `verbose`               | bool     | `false`                   | Verbose mode                                        |\n" +
-		"\n" +
-		"In addition, a number of secret manager integrations add configuration\n" +
-		"variables. These are documented in the secret manager section.\n" +
 		"\n" +
 		"## Source state attributes\n" +
 		"\n" +
