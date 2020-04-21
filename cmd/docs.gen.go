@@ -241,6 +241,7 @@ func init() {
 		"* [How do I only run a script when a file has changed?](#how-do-i-only-run-a-script-when-a-file-has-changed)\n" +
 		"* [I've made changes to both the destination state and the source state that I want to keep. How can I keep them both?](#ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both)\n" +
 		"* [Why does chezmoi convert all my template variables to lowercase?](#why-does-chezmoi-convert-all-my-template-variables-to-lowercase)\n" +
+		"* [chezmoi makes `~/.ssh/config` group writeable. How do I stop this?](#chezmoi-makes-sshconfig-group-writeable-how-do-i-stop-this)\n" +
 		"* [chezmoi's source file naming system cannot handle all possible filenames](#chezmois-source-file-naming-system-cannot-handle-all-possible-filenames)\n" +
 		"* [gpg encryption fails. What could be wrong?](#gpg-encryption-fails-what-could-be-wrong)\n" +
 		"* [I'm getting errors trying to build chezmoi from source](#im-getting-errors-trying-to-build-chezmoi-from-source)\n" +
@@ -369,6 +370,24 @@ func init() {
 		"[`github.com/spf13/viper`](https://github.com/spf13/viper), the library that\n" +
 		"chezmoi uses to read its configuration file. For more information see [this\n" +
 		"GitHub issue issue](https://github.com/twpayne/chezmoi/issues/463).\n" +
+		"\n" +
+		"## chezmoi makes `~/.ssh/config` group writeable. How do I stop this?\n" +
+		"\n" +
+		"By default, chezmoi uses your system's umask when creating files. On most\n" +
+		"systems the default umask is `0o22` but some systems use `0o02`, which means\n" +
+		"that files and directories are group writeable by default.\n" +
+		"\n" +
+		"You can override this for chezmoi by setting the `umask` configuration variable\n" +
+		"in your configuration file, for example:\n" +
+		"\n" +
+		"    umask = 0o22\n" +
+		"\n" +
+		"Note that this will apply to all files and directories that chezmoi manages and\n" +
+		"will ensure that none of them are group writeable. It is not currently possible\n" +
+		"to control group writability for individual files or directories. Please [open\n" +
+		"an issue on\n" +
+		"GitHub](https://github.com/twpayne/chezmoi/issues/new?assignees=&labels=enhancement&template=02_feature_request.md&title=)\n" +
+		"if you need this.\n" +
 		"\n" +
 		"## chezmoi's source file naming system cannot handle all possible filenames\n" +
 		"\n" +
@@ -1626,9 +1645,11 @@ func init() {
 		"chezmoi searches for its configuration file according to the [XDG Base Directory\n" +
 		"Specification](https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html)\n" +
 		"and supports all formats supported by\n" +
-		"[`github.com/spf13/viper`](https://github.com/spf13/viper), namely JSON, TOML,\n" +
-		"YAML, macOS property file format, and HCL. The basename of the config file is\n" +
-		"chezmoi, and the first config file found is used.\n" +
+		"[`github.com/spf13/viper`](https://github.com/spf13/viper), namely\n" +
+		"[JSON](https://www.json.org/json-en.html),\n" +
+		"[TOML](https://github.com/toml-lang/toml), [YAML](https://yaml.org/), macOS\n" +
+		"property file format, and [HCL](https://github.com/hashicorp/hcl). The basename\n" +
+		"of the config file is `chezmoi`, and the first config file found is used.\n" +
 		"\n" +
 		"### Configuration variables\n" +
 		"\n" +
@@ -1667,9 +1688,6 @@ func init() {
 		"| `umask`                 | int      | *from system*             | Umask                                               |\n" +
 		"| `vault.command`         | string   | `vault`                   | Vault CLI command                                   |\n" +
 		"| `verbose`               | bool     | `false`                   | Verbose mode                                        |\n" +
-		"\n" +
-		"In addition, a number of secret manager integrations add configuration\n" +
-		"variables. These are documented in the secret manager section.\n" +
 		"\n" +
 		"## Source state attributes\n" +
 		"\n" +
@@ -2297,11 +2315,13 @@ func init() {
 		"\n" +
 		"By default, chezmoi uses your current umask as set by your operating system and\n" +
 		"shell. chezmoi only stores crude permissions in its source state, namely in the\n" +
-		"`executable`  and `private` attributes, corresponding to the umasks of `0111`\n" +
-		"and `0077` respectively.\n" +
+		"`executable`  and `private` attributes, corresponding to the umasks of `0o111`\n" +
+		"and `0o077` respectively.\n" +
 		"\n" +
 		"For machine-specific control of umask, set the `umask` configuration variable in\n" +
-		"chezmoi's configuration file.\n" +
+		"chezmoi's configuration file, for example:\n" +
+		"\n" +
+		"    umask = 0o22\n" +
 		"\n" +
 		"## Template execution\n" +
 		"\n" +
