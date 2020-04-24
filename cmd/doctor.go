@@ -171,8 +171,8 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		&doctorBinaryCheck{
 			name:          "gopass CLI",
 			binaryName:    c.Gopass.Command,
-			versionArgs:   []string{"version"},
-			versionRegexp: regexp.MustCompile(`(?m)=\s*v(\d+\.\d+\.\d+)`),
+			versionArgs:   []string{"--version"},
+			versionRegexp: regexp.MustCompile(`gopass\s+(\d+\.\d+\.\d+)`),
 		},
 		&doctorBinaryCheck{
 			name:          "KeePassXC CLI",
