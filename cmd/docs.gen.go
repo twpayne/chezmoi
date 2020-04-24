@@ -1318,7 +1318,7 @@ func init() {
 		"| Alpine Linux | apk        | `apk add chezmoi`                                                                           |\n" +
 		"| Arch Linux   | pacman     | `pacman -S chezmoi`                                                                         |\n" +
 		"| NixOS Linux  | nix-env    | `nix-env -i chezmoi`                                                                        |\n" +
-		"| macOS        | Homebrew   | `brew install twpayne/taps/chezmoi`                                                         |\n" +
+		"| macOS        | Homebrew   | `brew install chezmoi`                                                                      |\n" +
 		"| Windows      | Scoop      | `scoop bucket add twpayne https://github.com/twpayne/scoop-bucket && scoop install chezmoi` |\n" +
 		"\n" +
 		"## Pre-built Linux packages\n" +
