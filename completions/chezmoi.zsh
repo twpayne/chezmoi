@@ -416,6 +416,8 @@ function _chezmoi_edit-config {
 
 function _chezmoi_execute-template {
   _arguments \
+    '(-i --init)'{-i,--init}'[simulate chezmoi init]' \
+    '(-p --promptString)'{-p,--promptString}'[simulate promptString]:' \
     '--color[colorize diffs]:' \
     '(-c --config)'{-c,--config}'[config file]:' \
     '--debug[write debug logs]' \

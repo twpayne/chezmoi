@@ -780,6 +780,11 @@ func init() {
 		"Then `chezmoi init` will create an initial `chezmoi.toml` using this template.\n" +
 		"`promptString` is a special function that prompts the user (you) for a value.\n" +
 		"\n" +
+		"To test this template, use `chezmoi execute-template` with the `--init` and\n" +
+		"`--promptString` flags, for example:\n" +
+		"\n" +
+		"    chezmoi execute-template --init --promptString email=john@home.org < ~/.local/share/chezmoi/.chezmoi.toml.tmpl\n" +
+		"\n" +
 		"## Have chezmoi create a directory, but ignore its contents\n" +
 		"\n" +
 		"If you want chezmoi to create a directory, but ignore its contents, say `~/src`,\n" +
@@ -2061,11 +2066,23 @@ func init() {
 		"as literal template data, with no whitespace added to the output between\n" +
 		"arguments. If no templates are specified, the template data are read from stdin.\n" +
 		"\n" +
+		"#### `--init`, `-i`\n" +
+		"\n" +
+		"Include simulated functions only available during `chezmoi init`.\n" +
+		"\n" +
+		"#### `--promptString`, `-p` *pairs*\n" +
+		"\n" +
+		"Simulate the `promptString` function with a function that returns values from\n" +
+		"*pairs*. *pairs* is a comma-separated list of *prompt*`=`*value* pairs. If\n" +
+		"`promptString` is called with a *prompt* that does not match any of *pairs*,\n" +
+		"then it returns *prompt* unchanged.\n" +
+		"\n" +
 		"#### `execute-template` examples\n" +
 		"\n" +
 		"    chezmoi execute-template '{{ .chezmoi.sourceDir }}'\n" +
 		"    chezmoi execute-template '{{ .chezmoi.os }}' / '{{ .chezmoi.arch }}'\n" +
 		"    echo '{{ .chezmoi | toJson }}' | chezmoi execute-template\n" +
+		"    chezmoi execute-template --init --promptString email=john@home.org < ~/.local/share/chezmoi/.chezmoi.toml.tmpl\n" +
 		"\n" +
 		"### `forget` *targets*\n" +
 		"\n" +

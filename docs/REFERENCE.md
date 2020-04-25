@@ -581,11 +581,23 @@ templates or for calling chezmoi from other scripts. *templates* are interpeted
 as literal template data, with no whitespace added to the output between
 arguments. If no templates are specified, the template data are read from stdin.
 
+#### `--init`, `-i`
+
+Include simulated functions only available during `chezmoi init`.
+
+#### `--promptString`, `-p` *pairs*
+
+Simulate the `promptString` function with a function that returns values from
+*pairs*. *pairs* is a comma-separated list of *prompt*`=`*value* pairs. If
+`promptString` is called with a *prompt* that does not match any of *pairs*,
+then it returns *prompt* unchanged.
+
 #### `execute-template` examples
 
     chezmoi execute-template '{{ .chezmoi.sourceDir }}'
     chezmoi execute-template '{{ .chezmoi.os }}' / '{{ .chezmoi.arch }}'
     echo '{{ .chezmoi | toJson }}' | chezmoi execute-template
+    chezmoi execute-template --init --promptString email=john@home.org < ~/.local/share/chezmoi/.chezmoi.toml.tmpl
 
 ### `forget` *targets*
 

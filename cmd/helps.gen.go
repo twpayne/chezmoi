@@ -244,11 +244,24 @@ var helps = map[string]help{
 			"  between arguments. If no templates are specified, the template data are read\n" +
 			"  from stdin.\n" +
 			"\n" +
+			"  `--init`, `-i`\n" +
+			"\n" +
+			"  Include simulated functions only available during `chezmoi init`.\n" +
+			"\n" +
+			"  `--promptString`, `-p` *pairs*\n" +
+			"\n" +
+			"  Simulate the `promptString` function with a function that returns values from\n" +
+			"  *pairs*. *pairs* is a comma-separated list of *prompt*`=`*value* pairs. If\n" +
+			"  `promptString` is called with a *prompt* that does not match any of *pairs*,\n" +
+			"  then it returns *prompt* unchanged.\n" +
+			"\n" +
 			"  `execute-template` examples\n" +
 			"\n" +
 			"    chezmoi execute-template '{{ .chezmoi.sourceDir }}'\n" +
 			"    chezmoi execute-template '{{ .chezmoi.os }}' / '{{ .chezmoi.arch }}'\n" +
-			"    echo '{{ .chezmoi | toJson }}' | chezmoi execute-template",
+			"    echo '{{ .chezmoi | toJson }}' | chezmoi execute-template\n" +
+			"    chezmoi execute-template --init --promptString email=john@home.org <\n" +
+			"  ~/.local/share/chezmoi/.chezmoi.toml.tmpl",
 	},
 	"forget": {
 		long: "" +

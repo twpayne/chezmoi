@@ -7,6 +7,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
+type executeTemplateCmdConfig struct {
+	init         bool
+	promptString map[string]string
+}
+
 var executeTemplateCmd = &cobra.Command{
 	Use:     "execute-template [templates...]",
 	Short:   "Write the result of executing the given template(s) to stdout",
@@ -18,9 +23,22 @@ var executeTemplateCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(executeTemplateCmd)
+
+	persistentFlags := executeTemplateCmd.PersistentFlags()
+	persistentFlags.BoolVarP(&config.executeTemplate.init, "init", "i", false, "simulate chezmoi init")
+	persistentFlags.StringToStringVarP(&config.executeTemplate.promptString, "promptString", "p", nil, "simulate promptString")
 }
 
 func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error {
+	if c.executeTemplate.init {
+		c.templateFuncs["promptString"] = func(prompt string) string {
+			if value, ok := c.executeTemplate.promptString[prompt]; ok {
+				return value
+			}
+			return prompt
+		}
+	}
+
 	ts, err := c.getTargetState(nil)
 	if err != nil {
 		return err
