@@ -47,13 +47,6 @@ jobs:
       run: |
         find . -name \*.go | xargs $(go env GOPATH)/bin/gofumports -w
         git diff --exit-code
-    - name: Check completions
-      if: matrix.os == 'ubuntu-latest'
-      run: |
-        go run . completion bash > completions/chezmoi-completion.bash
-        go run . completion fish > completions/chezmoi.fish
-        go run . completion zsh > completions/chezmoi.zsh
-        git diff --exit-code
     - name: Install snapcraft
       if: matrix.os == 'ubuntu-latest'
       run: |

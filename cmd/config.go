@@ -80,6 +80,7 @@ type Config struct {
 	maxDiffDataSize   int
 	templateFuncs     template.FuncMap
 	add               addCmdConfig
+	completion        completionCmdConfig
 	data              dataCmdConfig
 	dump              dumpCmdConfig
 	edit              editCmdConfig

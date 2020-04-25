@@ -39,7 +39,7 @@ func init() {
 		"<!--- toc --->\n" +
 		"* [Getting started](#getting-started)\n" +
 		"* [Developing locally](#developing-locally)\n" +
-		"* [Documentation and templates changes](#documentation-and-templates-changes)\n" +
+		"* [Generated code](#generated-code)\n" +
 		"* [Contributing changes](#contributing-changes)\n" +
 		"* [Managing releases](#managing-releases)\n" +
 		"* [Packaging](#packaging)\n" +
@@ -73,18 +73,23 @@ func init() {
 		"\n" +
 		"    go run .\n" +
 		"\n" +
-		"## Documentation and templates changes\n" +
+		"## Generated code\n" +
 		"\n" +
-		"The canonical documentation for chezmoi is in the `docs` directory. The help\n" +
-		"text (the output of `chezmoi command --help`) and the website\n" +
-		"(https://chezmoi.io/) are generated from this.\n" +
-		"\n" +
-		"chezmoi embeds documentation and templates in its binary.\n" +
-		"\n" +
-		"If you update any file in the `docs/` or `assets/templates/` directories, you\n" +
-		"must also run\n" +
+		"chezmoi generates help text, shell completions, embedded files, and the website\n" +
+		"from a single source of truth. You must run\n" +
 		"\n" +
 		"    go generate\n" +
+		"\n" +
+		"if you change includes any of the following:\n" +
+		"\n" +
+		"* Modify any documentation in the `docs/` directory.\n" +
+		"* Modify any files in the `assets/templates/` directory.\n" +
+		"* Add or modify a command.\n" +
+		"* Add or modify a command's flags.\n" +
+		"\n" +
+		"chezmoi's continuous integration verifies that all generated files are up to\n" +
+		"date. Changes to generated files should be included in the commit that modifies\n" +
+		"the source of truth.\n" +
 		"\n" +
 		"## Contributing changes\n" +
 		"\n" +
@@ -110,6 +115,9 @@ func init() {
 		"\n" +
 		"* The documentation is updated, if necessary. For new features you should add an\n" +
 		"  entry in `docs/HOWTO.md` and a complete description in `docs/REFERENCE.md`.\n" +
+		"\n" +
+		"* All generated files are up to date. You can ensure this by running `go\n" +
+		"  generate` and including any modified files in your commit.\n" +
 		"\n" +
 		"* The code is correctly formatted, according to\n" +
 		"  [`gofumports`](https://mvdan.cc/gofumpt/gofumports). You can ensure this by\n" +
@@ -1934,13 +1942,17 @@ func init() {
 		"\n" +
 		"### `completion` *shell*\n" +
 		"\n" +
-		"Output shell completion code for the specified shell (`bash`, `fish`, or `zsh`).\n" +
+		"Generate shell completion code for the specified shell (`bash`, `fish`, or\n" +
+		"`zsh`).\n" +
+		"\n" +
+		"#### `--output`, `-o` *filename*\n" +
+		"\n" +
+		"Write the shell completion code to *filename* instead of stdout.\n" +
 		"\n" +
 		"#### `completion` examples\n" +
 		"\n" +
 		"    chezmoi completion bash\n" +
-		"    chezmoi completion fish > ~/.config/fish/completions/chezmoi.fish\n" +
-		"    chezmoi completion zsh\n" +
+		"    chezmoi completion fish --output ~/.config/fish/completions/chezmoi.fish\n" +
 		"\n" +
 		"### `data`\n" +
 		"\n" +

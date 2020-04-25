@@ -3,7 +3,7 @@
 <!--- toc --->
 * [Getting started](#getting-started)
 * [Developing locally](#developing-locally)
-* [Documentation and templates changes](#documentation-and-templates-changes)
+* [Generated code](#generated-code)
 * [Contributing changes](#contributing-changes)
 * [Managing releases](#managing-releases)
 * [Packaging](#packaging)
@@ -37,18 +37,23 @@ Run chezmoi:
 
     go run .
 
-## Documentation and templates changes
+## Generated code
 
-The canonical documentation for chezmoi is in the `docs` directory. The help
-text (the output of `chezmoi command --help`) and the website
-(https://chezmoi.io/) are generated from this.
-
-chezmoi embeds documentation and templates in its binary.
-
-If you update any file in the `docs/` or `assets/templates/` directories, you
-must also run
+chezmoi generates help text, shell completions, embedded files, and the website
+from a single source of truth. You must run
 
     go generate
+
+if you change includes any of the following:
+
+* Modify any documentation in the `docs/` directory.
+* Modify any files in the `assets/templates/` directory.
+* Add or modify a command.
+* Add or modify a command's flags.
+
+chezmoi's continuous integration verifies that all generated files are up to
+date. Changes to generated files should be included in the commit that modifies
+the source of truth.
 
 ## Contributing changes
 
@@ -74,6 +79,9 @@ that:
 
 * The documentation is updated, if necessary. For new features you should add an
   entry in `docs/HOWTO.md` and a complete description in `docs/REFERENCE.md`.
+
+* All generated files are up to date. You can ensure this by running `go
+  generate` and including any modified files in your commit.
 
 * The code is correctly formatted, according to
   [`gofumports`](https://mvdan.cc/gofumpt/gofumports). You can ensure this by
