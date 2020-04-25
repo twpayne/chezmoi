@@ -7,7 +7,7 @@ require (
 	github.com/Masterminds/semver v1.5.0 // indirect
 	github.com/Masterminds/sprig v2.22.0+incompatible
 	github.com/alecthomas/chroma v0.7.1 // indirect
-	github.com/bmatcuk/doublestar v1.2.4
+	github.com/bmatcuk/doublestar v1.3.0
 	github.com/charmbracelet/glamour v0.1.0
 	github.com/coreos/go-semver v0.3.0
 	github.com/dlclark/regexp2 v1.2.0 // indirect
@@ -38,7 +38,7 @@ require (
 	github.com/stretchr/objx v0.2.0 // indirect
 	github.com/stretchr/testify v1.4.0
 	github.com/twpayne/go-shell v0.1.1
-	github.com/twpayne/go-vfs v1.3.6
+	github.com/twpayne/go-vfs v1.4.0
 	github.com/twpayne/go-vfsafero v1.0.0
 	github.com/twpayne/go-xdg/v3 v3.1.0
 	github.com/yuin/goldmark v1.1.28 // indirect
@@ -47,7 +47,7 @@ require (
 	golang.org/x/crypto v0.0.0-20200406173513-056763e48d71
 	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e // indirect
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
-	golang.org/x/sys v0.0.0-20200413165638-669c56c373c4
+	golang.org/x/sys v0.0.0-20200420163511-1957bb5e6d1f
 	google.golang.org/appengine v1.6.5 // indirect
 	gopkg.in/ini.v1 v1.55.0 // indirect
 	gopkg.in/yaml.v2 v2.2.8

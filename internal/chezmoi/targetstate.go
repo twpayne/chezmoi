@@ -13,6 +13,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/bmatcuk/doublestar"
 	"github.com/coreos/go-semver/semver"
 	vfs "github.com/twpayne/go-vfs"
 )
@@ -303,7 +304,7 @@ func (ts *TargetState) Apply(fs vfs.FS, mutator Mutator, follow bool, applyOptio
 			includes = append(includes, include)
 		}
 		for _, include := range includes {
-			matches, err := fs.Glob(filepath.Join(ts.DestDir, include))
+			matches, err := doublestar.GlobOS(fs, filepath.Join(ts.DestDir, include))
 			if err != nil {
 				return err
 			}

@@ -33,8 +33,8 @@ github.com/armon/consul-api v0.0.0-20180202201655-eb2c6b5be1b6/go.mod h1:grANhF5
 github.com/armon/go-socks5 v0.0.0-20160902184237-e75332964ef5/go.mod h1:wHh0iHkYZB8zMSxRWpUBQtwG5a7fFgvEO+odwuTv2gs=
 github.com/beorn7/perks v0.0.0-20180321164747-3a771d992973/go.mod h1:Dwedo/Wpr24TaqPxmxbtue+5NUziq4I4S80YR8gNf3Q=
 github.com/beorn7/perks v1.0.0/go.mod h1:KWe93zE9D1o94FZ5RNwFwVgaQK1VOXiVxmqh+CedLV8=
-github.com/bmatcuk/doublestar v1.2.4 h1:CXTEjc5/WPKLJEqrS9D0IQAUhpjAIJuUQ4XtXG+zmEU=
-github.com/bmatcuk/doublestar v1.2.4/go.mod h1:wiQtGV+rzVYxB7WIlirSN++5HPtPlXEo9MEoZQC/PmE=
+github.com/bmatcuk/doublestar v1.3.0 h1:1jLE2y0VpSrOn/QR9G4f2RmrCtkM3AuATcWradjHUvM=
+github.com/bmatcuk/doublestar v1.3.0/go.mod h1:wiQtGV+rzVYxB7WIlirSN++5HPtPlXEo9MEoZQC/PmE=
 github.com/cespare/xxhash v1.1.0/go.mod h1:XrSqR1VqqWfGrhpAt58auRo0WTKS1nRRg3ghfAqPWnc=
 github.com/charmbracelet/glamour v0.1.0 h1:BHCtc+YJjoBjNUnFKBtXyyM4Bp9u7L2kf49qV+/AGYw=
 github.com/charmbracelet/glamour v0.1.0/go.mod h1:Z1C2JkVGBom/RYfoKcPBZ81lHMR3xp3W6OCLNWWEIMc=
@@ -269,8 +269,8 @@ github.com/twpayne/go-shell v0.1.1 h1:Kr1hSEFrPBTRmhOW8woaj7ZxV3/OH7Qefg86OFJ5DF
 github.com/twpayne/go-shell v0.1.1/go.mod h1:H/gzux0DOH5jsjQSHXs6rs2Onxy+V4j6ycZTOulC0l8=
 github.com/twpayne/go-vfs v1.0.1/go.mod h1:OIXA6zWkcn7Jk46XT7ceYqBMeIkfzJ8WOBhGJM0W4y8=
 github.com/twpayne/go-vfs v1.0.5/go.mod h1:OIXA6zWkcn7Jk46XT7ceYqBMeIkfzJ8WOBhGJM0W4y8=
-github.com/twpayne/go-vfs v1.3.6 h1:dKR5suwT6WnNweNNQjts3Wih/sBTHLt4XbbEbapnWEE=
-github.com/twpayne/go-vfs v1.3.6/go.mod h1:BH2oQurpkb3roQDR7hZH+9DITZidl6JHOEfHlCModXY=
+github.com/twpayne/go-vfs v1.4.0 h1:oiiMliJyKXj4qujubNoc9Owh07yfP6WESxOMIfq7KmQ=
+github.com/twpayne/go-vfs v1.4.0/go.mod h1:EDwCEqgWLi6nehByJQGUBtoDTBWVX/Bn6blPQ1Yo9qw=
 github.com/twpayne/go-vfsafero v1.0.0 h1:ZlH32HF4OoVX/aRqc5bZa+2+M+/ezmJ4XYpT0ShtZNc=
 github.com/twpayne/go-vfsafero v1.0.0/go.mod h1:rs2H15b2z0euJzwyoBS63eUHZgBhNXVQfIFfRp8DKEk=
 github.com/twpayne/go-xdg/v3 v3.1.0 h1:AxX5ZLJIzqYHJh+4uGxWT97ySh1ND1bJLjqMxdYF+xs=
@@ -341,8 +341,8 @@ golang.org/x/sys v0.0.0-20191026070338-33540a1f6037/go.mod h1:h1NjWce9XRLGQEsW7w
 golang.org/x/sys v0.0.0-20200202164722-d101bd2416d5/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20200302150141-5c8b2ff67527/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20200323222414-85ca7c5b95cd/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
-golang.org/x/sys v0.0.0-20200413165638-669c56c373c4 h1:opSr2sbRXk5X5/givKrrKj9HXxFpW2sdCiP8MJSKLQY=
-golang.org/x/sys v0.0.0-20200413165638-669c56c373c4/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+golang.org/x/sys v0.0.0-20200420163511-1957bb5e6d1f h1:gWF768j/LaZugp8dyS4UwsslYCYz9XgFxvlgsn0n9H8=
+golang.org/x/sys v0.0.0-20200420163511-1957bb5e6d1f/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/text v0.3.0 h1:g61tztE5qeGQ89tm6NTjjM9VPIm088od1l6aSorWRWg=
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 golang.org/x/text v0.3.2 h1:tW2bmiBqwgJj/UpqtC8EpXEZVYOwU0yG4iWbprSVAcs=
