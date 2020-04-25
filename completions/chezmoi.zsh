@@ -26,7 +26,7 @@ function _chezmoi {
       "cat:Print the target contents of a file or symlink"
       "cd:Launch a shell in the source directory"
       "chattr:Change the attributes of a target in the source state"
-      "completion:Write shell completion code for the specified shell (bash, fish, or zsh) to stdout"
+      "completion:Generate shell completion code for the specified shell (bash, fish, or zsh)"
       "data:Print the template data"
       "diff:Print the diff between the target state and the destination state"
       "docs:Print documentation"
@@ -279,6 +279,7 @@ function _chezmoi_chattr {
 function _chezmoi_completion {
   _arguments \
     '(-h --help)'{-h,--help}'[help for completion]' \
+    '(-o --output)'{-o,--output}'[output filename]:filename:_files' \
     '--color[colorize diffs]:' \
     '(-c --config)'{-c,--config}'[config file]:' \
     '--debug[write debug logs]' \

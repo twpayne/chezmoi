@@ -116,12 +116,15 @@ var helps = map[string]help{
 	"completion": {
 		long: "" +
 			"Description:\n" +
-			"  Output shell completion code for the specified shell (`bash`, `fish`, or\n" +
-			"  `zsh`).",
+			"  Generate shell completion code for the specified shell (`bash`, `fish`, or\n" +
+			"  `zsh`).\n" +
+			"\n" +
+			"  `--output`, `-o` *filename*\n" +
+			"\n" +
+			"  Write the shell completion code to *filename* instead of stdout.",
 		example: "" +
 			"  chezmoi completion bash\n" +
-			"  chezmoi completion fish > ~/.config/fish/completions/chezmoi.fish\n" +
-			"  chezmoi completion zsh",
+			"  chezmoi completion fish --output ~/.config/fish/completions/chezmoi.fish",
 	},
 	"data": {
 		long: "" +

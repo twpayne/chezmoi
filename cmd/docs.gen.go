@@ -1934,13 +1934,17 @@ func init() {
 		"\n" +
 		"### `completion` *shell*\n" +
 		"\n" +
-		"Output shell completion code for the specified shell (`bash`, `fish`, or `zsh`).\n" +
+		"Generate shell completion code for the specified shell (`bash`, `fish`, or\n" +
+		"`zsh`).\n" +
+		"\n" +
+		"#### `--output`, `-o` *filename*\n" +
+		"\n" +
+		"Write the shell completion code to *filename* instead of stdout.\n" +
 		"\n" +
 		"#### `completion` examples\n" +
 		"\n" +
 		"    chezmoi completion bash\n" +
-		"    chezmoi completion fish > ~/.config/fish/completions/chezmoi.fish\n" +
-		"    chezmoi completion zsh\n" +
+		"    chezmoi completion fish --output ~/.config/fish/completions/chezmoi.fish\n" +
 		"\n" +
 		"### `data`\n" +
 		"\n" +

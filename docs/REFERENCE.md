@@ -449,13 +449,17 @@ comma (`,`).
 
 ### `completion` *shell*
 
-Output shell completion code for the specified shell (`bash`, `fish`, or `zsh`).
+Generate shell completion code for the specified shell (`bash`, `fish`, or
+`zsh`).
+
+#### `--output`, `-o` *filename*
+
+Write the shell completion code to *filename* instead of stdout.
 
 #### `completion` examples
 
     chezmoi completion bash
-    chezmoi completion fish > ~/.config/fish/completions/chezmoi.fish
-    chezmoi completion zsh
+    chezmoi completion fish --output ~/.config/fish/completions/chezmoi.fish
 
 ### `data`
 
