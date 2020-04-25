@@ -296,6 +296,11 @@ Specifically, if you have `.chezmoi.toml.tmpl` that looks like this:
 Then `chezmoi init` will create an initial `chezmoi.toml` using this template.
 `promptString` is a special function that prompts the user (you) for a value.
 
+To test this template, use `chezmoi execute-template` with the `--init` and
+`--promptString` flags, for example:
+
+    chezmoi execute-template --init --promptString email=john@home.org < ~/.local/share/chezmoi/.chezmoi.toml.tmpl
+
 ## Have chezmoi create a directory, but ignore its contents
 
 If you want chezmoi to create a directory, but ignore its contents, say `~/src`,
