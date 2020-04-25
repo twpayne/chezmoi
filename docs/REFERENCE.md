@@ -111,8 +111,10 @@ Command line flags override any values set in the configuration file.
 
 ### `--color` *value*
 
-Colorize diffs, *value* can be `on`, `off`, or `auto`. The default value is
-`auto` which will colorize diffs only if the output is a terminal.
+Colorize diffs, *value* can be `on`, `off`, `auto`, or any boolean-like value
+recognized by
+[`strconv.ParseBool`](https://pkg.go.dev/strconv?tab=doc#ParseBool). The default
+value is `auto` which will colorize diffs only if the output is a terminal.
 
 ### `-c`, `--config` *filename*
 

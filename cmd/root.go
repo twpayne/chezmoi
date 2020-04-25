@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/coreos/go-semver/semver"
@@ -139,19 +140,23 @@ func Execute() {
 
 //nolint:interfacer
 func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error {
-	switch c.Color {
-	case "on":
-		c.colored = true
-	case "off":
-		c.colored = false
-	case "auto":
-		if stdout, ok := c.Stdout.(*os.File); ok {
-			c.colored = terminal.IsTerminal(int(stdout.Fd()))
-		} else {
+	if colored, err := strconv.ParseBool(c.Color); err == nil {
+		c.colored = colored
+	} else {
+		switch c.Color {
+		case "on":
+			c.colored = true
+		case "off":
 			c.colored = false
+		case "auto":
+			if stdout, ok := c.Stdout.(*os.File); ok {
+				c.colored = terminal.IsTerminal(int(stdout.Fd()))
+			} else {
+				c.colored = false
+			}
+		default:
+			return fmt.Errorf("invalid --color value: %s", c.Color)
 		}
-	default:
-		return fmt.Errorf("invalid --color value: %s", c.Color)
 	}
 
 	if c.colored {
