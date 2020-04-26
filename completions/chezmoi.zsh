@@ -50,7 +50,7 @@ function _chezmoi {
       "source-path:Print the path of a target in the source state"
       "unmanaged:List the unmanaged files in the destination directory"
       "update:Pull changes from the source VCS and apply any changes"
-      "upgrade:Upgrade chezmoi"
+      "upgrade:Upgrade chezmoi to the latest released version"
       "verify:Exit with success if the destination state matches the target state, fail otherwise"
     )
     _describe "command" commands

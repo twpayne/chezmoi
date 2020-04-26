@@ -470,10 +470,10 @@ var helps = map[string]help{
 	"upgrade": {
 		long: "" +
 			"Description:\n" +
-			"  Upgrade chezmoi by downloading and installing a new version. This will call\n" +
-			"  the GitHub API to determine if there is a new version of chezmoi available,\n" +
-			"  and if so, download and attempt to install it in the same way as chezmoi was\n" +
-			"  previously installed.\n" +
+			"  Upgrade chezmoi by downloading and installing the latest released version.\n" +
+			"  This will call the GitHub API to determine if there is a new version of\n" +
+			"  chezmoi available, and if so, download and attempt to install it in the same\n" +
+			"  way as chezmoi was previously installed.\n" +
 			"\n" +
 			"  If chezmoi was installed with a package manager (`dpkg` or `rpm`) then\n" +
 			"  `upgrade` will download a new package and install it, using `sudo` if it is\n" +

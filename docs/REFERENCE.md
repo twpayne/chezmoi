@@ -810,10 +810,10 @@ Pull changes from the source VCS and apply any changes.
 
 ### `upgrade`
 
-Upgrade chezmoi by downloading and installing a new version. This will call the
-GitHub API to determine if there is a new version of chezmoi available, and if
-so, download and attempt to install it in the same way as chezmoi was previously
-installed.
+Upgrade chezmoi by downloading and installing the latest released version. This
+will call the GitHub API to determine if there is a new version of chezmoi
+available, and if so, download and attempt to install it in the same way as
+chezmoi was previously installed.
 
 If chezmoi was installed with a package manager (`dpkg` or `rpm`) then `upgrade`
 will download a new package and install it, using `sudo` if it is installed.
