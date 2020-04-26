@@ -2303,10 +2303,10 @@ func init() {
 		"\n" +
 		"### `upgrade`\n" +
 		"\n" +
-		"Upgrade chezmoi by downloading and installing a new version. This will call the\n" +
-		"GitHub API to determine if there is a new version of chezmoi available, and if\n" +
-		"so, download and attempt to install it in the same way as chezmoi was previously\n" +
-		"installed.\n" +
+		"Upgrade chezmoi by downloading and installing the latest released version. This\n" +
+		"will call the GitHub API to determine if there is a new version of chezmoi\n" +
+		"available, and if so, download and attempt to install it in the same way as\n" +
+		"chezmoi was previously installed.\n" +
 		"\n" +
 		"If chezmoi was installed with a package manager (`dpkg` or `rpm`) then `upgrade`\n" +
 		"will download a new package and install it, using `sudo` if it is installed.\n" +

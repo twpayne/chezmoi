@@ -11,6 +11,7 @@ import (
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -74,7 +75,7 @@ var (
 var upgradeCmd = &cobra.Command{
 	Use:     "upgrade",
 	Args:    cobra.NoArgs,
-	Short:   "Upgrade chezmoi",
+	Short:   "Upgrade chezmoi to the latest released version",
 	Long:    mustGetLongHelp("upgrade"),
 	Example: getExample("upgrade"),
 	RunE:    config.runUpgradeCmd,
@@ -100,6 +101,10 @@ func init() {
 func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 	ctx := context.Background()
 
+	if VersionStr == "" && !config.upgrade.force {
+		return errors.New("cannot upgrade dev version to latest released version unless --force is set")
+	}
+
 	// Use a GitHub API token, if set.
 	var httpClient *http.Client
 	if accessToken, ok := os.LookupEnv(strings.ToUpper(c.upgrade.repo) + "_GITHUB_API_TOKEN"); ok {
@@ -120,13 +125,11 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	// If the upgrade is not forced and we're not a dev version, stop if we're
-	// already the latest version.
-	if !c.upgrade.force && VersionStr != "" {
-		if !Version.LessThan(*releaseVersion) {
-			fmt.Fprintf(c.Stdout, "chezmoi: already at the latest version (%s)\n", Version)
-			return nil
-		}
+	// If the upgrade is not forced, stop if we're already the latest version.
+	// Print a message and return no error so the command exits with success.
+	if !c.upgrade.force && !Version.LessThan(*releaseVersion) {
+		fmt.Fprintf(c.Stdout, "chezmoi: already at the latest version (%s)\n", Version)
+		return nil
 	}
 
 	// Determine the upgrade method to use.
