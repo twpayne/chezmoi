@@ -75,7 +75,7 @@ func (da DirAttributes) SourceName() string {
 }
 
 // newDir returns a new directory state.
-func newDir(sourceName string, targetName string, exact bool, perm os.FileMode) *Dir {
+func newDir(sourceName, targetName string, exact bool, perm os.FileMode) *Dir {
 	return &Dir{
 		sourceName: sourceName,
 		targetName: targetName,
