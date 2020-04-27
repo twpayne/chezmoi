@@ -697,7 +697,7 @@ func (ts *TargetState) addPatterns(fs vfs.FS, ps *PatternSet, path, relPath stri
 	return nil
 }
 
-func (ts *TargetState) addSymlink(targetName string, entries map[string]Entry, parentDirSourceName string, linkname string, mutator Mutator) error {
+func (ts *TargetState) addSymlink(targetName string, entries map[string]Entry, parentDirSourceName, linkname string, mutator Mutator) error {
 	name := filepath.Base(targetName)
 	var existingSymlink *Symlink
 	var existingLinkname string
