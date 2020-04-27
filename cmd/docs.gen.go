@@ -1604,8 +1604,10 @@ func init() {
 		"\n" +
 		"### `--color` *value*\n" +
 		"\n" +
-		"Colorize diffs, *value* can be `on`, `off`, or `auto`. The default value is\n" +
-		"`auto` which will colorize diffs only if the output is a terminal.\n" +
+		"Colorize diffs, *value* can be `on`, `off`, `auto`, or any boolean-like value\n" +
+		"recognized by\n" +
+		"[`strconv.ParseBool`](https://pkg.go.dev/strconv?tab=doc#ParseBool). The default\n" +
+		"value is `auto` which will colorize diffs only if the output is a terminal.\n" +
 		"\n" +
 		"### `-c`, `--config` *filename*\n" +
 		"\n" +
@@ -1984,15 +1986,14 @@ func init() {
 		"\n" +
 		"##### `chezmoi`\n" +
 		"\n" +
-		"A mix of unified diffs and pseudo shell commands, equivalent to `chezmoi apply\n" +
-		"--dry-run --verbose`. They can be colorized and include scripts.\n" +
+		"A mix of unified diffs and pseudo shell commands, including scripts, equivalent\n" +
+		"to `chezmoi apply --dry-run --verbose`.\n" +
 		"\n" +
 		"##### `git`\n" +
 		"\n" +
-		"A [git format diff](https://git-scm.com/docs/diff-format), without color and not\n" +
-		"including scripts. In version 2.0.0 of chezmoi, `git` format diffs will become\n" +
-		"the default and support color and scripts and the `chezmoi` format will be\n" +
-		"removed.\n" +
+		"A [git format diff](https://git-scm.com/docs/diff-format), excluding scripts. In\n" +
+		"version 2.0.0 of chezmoi, `git` format diffs will become the default and include\n" +
+		"scripts and the `chezmoi` format will be removed.\n" +
 		"\n" +
 		"#### `--no-pager`\n" +
 		"\n" +
