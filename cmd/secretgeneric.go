@@ -24,7 +24,7 @@ type genericSecretCmdConfig struct {
 }
 
 var (
-	secretCache     = make(map[string][]byte)
+	secretCache     = make(map[string]string)
 	secretJSONCache = make(map[string]interface{})
 )
 
@@ -39,7 +39,7 @@ func (c *Config) runGenericSecretCmd(cmd *cobra.Command, args []string) error {
 	return c.run("", c.GenericSecret.Command, args...)
 }
 
-func (c *Config) secretFunc(args ...string) interface{} {
+func (c *Config) secretFunc(args ...string) string {
 	key := strings.Join(args, "\x00")
 	if value, ok := secretCache[key]; ok {
 		return value
@@ -52,7 +52,7 @@ func (c *Config) secretFunc(args ...string) interface{} {
 	if err != nil {
 		panic(fmt.Errorf("secret: %s %s: %w\n%s", name, chezmoi.ShellQuoteArgs(args), err, output))
 	}
-	value := bytes.TrimSpace(output)
+	value := string(bytes.TrimSpace(output))
 	secretCache[key] = value
 	return value
 }
