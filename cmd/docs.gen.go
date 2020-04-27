@@ -1986,15 +1986,14 @@ func init() {
 		"\n" +
 		"##### `chezmoi`\n" +
 		"\n" +
-		"A mix of unified diffs and pseudo shell commands, equivalent to `chezmoi apply\n" +
-		"--dry-run --verbose`. They can be colorized and include scripts.\n" +
+		"A mix of unified diffs and pseudo shell commands, including scripts, equivalent\n" +
+		"to `chezmoi apply --dry-run --verbose`.\n" +
 		"\n" +
 		"##### `git`\n" +
 		"\n" +
-		"A [git format diff](https://git-scm.com/docs/diff-format), without color and not\n" +
-		"including scripts. In version 2.0.0 of chezmoi, `git` format diffs will become\n" +
-		"the default and support color and scripts and the `chezmoi` format will be\n" +
-		"removed.\n" +
+		"A [git format diff](https://git-scm.com/docs/diff-format), excluding scripts. In\n" +
+		"version 2.0.0 of chezmoi, `git` format diffs will become the default and include\n" +
+		"scripts and the `chezmoi` format will be removed.\n" +
 		"\n" +
 		"#### `--no-pager`\n" +
 		"\n" +

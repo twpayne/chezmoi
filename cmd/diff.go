@@ -70,6 +70,9 @@ func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) error {
 			c.mutator = chezmoi.NewVerboseMutator(c.Stdout, c.mutator, c.colored, c.maxDiffDataSize)
 		case "git":
 			unifiedEncoder := diff.NewUnifiedEncoder(c.Stdout, diff.DefaultContextLines)
+			if c.colored {
+				unifiedEncoder.SetColor(diff.NewColorConfig())
+			}
 			c.mutator = chezmoi.NewGitDiffMutator(unifiedEncoder, c.mutator, c.DestDir+string(filepath.Separator))
 		}
 		return c.applyArgs(args, persistentState)
@@ -104,6 +107,9 @@ func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) error {
 		c.mutator = chezmoi.NewVerboseMutator(pagerStdinPipe, c.mutator, c.colored, c.maxDiffDataSize)
 	case "git":
 		unifiedEncoder := diff.NewUnifiedEncoder(pagerStdinPipe, diff.DefaultContextLines)
+		if c.colored {
+			unifiedEncoder.SetColor(diff.NewColorConfig())
+		}
 		c.mutator = chezmoi.NewGitDiffMutator(unifiedEncoder, c.mutator, c.DestDir+string(filepath.Separator))
 	}
 

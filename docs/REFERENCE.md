@@ -493,15 +493,14 @@ variable in the configuration file. Valid formats are:
 
 ##### `chezmoi`
 
-A mix of unified diffs and pseudo shell commands, equivalent to `chezmoi apply
---dry-run --verbose`. They can be colorized and include scripts.
+A mix of unified diffs and pseudo shell commands, including scripts, equivalent
+to `chezmoi apply --dry-run --verbose`.
 
 ##### `git`
 
-A [git format diff](https://git-scm.com/docs/diff-format), without color and not
-including scripts. In version 2.0.0 of chezmoi, `git` format diffs will become
-the default and support color and scripts and the `chezmoi` format will be
-removed.
+A [git format diff](https://git-scm.com/docs/diff-format), excluding scripts. In
+version 2.0.0 of chezmoi, `git` format diffs will become the default and include
+scripts and the `chezmoi` format will be removed.
 
 #### `--no-pager`
 
