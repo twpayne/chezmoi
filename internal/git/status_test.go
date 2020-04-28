@@ -72,7 +72,7 @@ func TestParseStatusPorcelainV2(t *testing.T) {
 		},
 		{
 			name:      "renamed",
-			outputStr: "2 R. N... 100644 100644 100644 9d06c86ecba40e1c695e69b55a40843df6a79cef 9d06c86ecba40e1c695e69b55a40843df6a79cef R100 chezmoi_rename.go chezmoi.go\n",
+			outputStr: "2 R. N... 100644 100644 100644 9d06c86ecba40e1c695e69b55a40843df6a79cef 9d06c86ecba40e1c695e69b55a40843df6a79cef R100 chezmoi_rename.go\tchezmoi.go\n",
 			expectedStatus: &Status{
 				RenamedOrCopied: []RenamedOrCopiedStatus{
 					{
@@ -88,6 +88,28 @@ func TestParseStatusPorcelainV2(t *testing.T) {
 						Score:    100,
 						Path:     "chezmoi_rename.go",
 						OrigPath: "chezmoi.go",
+					},
+				},
+			},
+		},
+		{
+			name:      "renamed_2",
+			outputStr: "2 R. N... 100644 100644 100644 ddbd961d7e4db2bb6615a9e8ce86364fa65e732d ddbd961d7e4db2bb6615a9e8ce86364fa65e732d R100 dot_config/chezmoi/private_chezmoi.toml\tdot_config/chezmoi/chezmoi.toml",
+			expectedStatus: &Status{
+				RenamedOrCopied: []RenamedOrCopiedStatus{
+					{
+						X:        82,
+						Y:        46,
+						Sub:      "N...",
+						MH:       0o100644,
+						MI:       0o100644,
+						MW:       0o100644,
+						HH:       "ddbd961d7e4db2bb6615a9e8ce86364fa65e732d",
+						HI:       "ddbd961d7e4db2bb6615a9e8ce86364fa65e732d",
+						RC:       'R',
+						Score:    100,
+						Path:     "dot_config/chezmoi/private_chezmoi.toml",
+						OrigPath: "dot_config/chezmoi/chezmoi.toml",
 					},
 				},
 			},

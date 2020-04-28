@@ -44,7 +44,7 @@ func TestAutoCommitCommitMessage(t *testing.T) {
 		},
 		{
 			name:            "rename",
-			statusStr:       "2 R. N... 100644 100644 100644 9d06c86ecba40e1c695e69b55a40843df6a79cef 9d06c86ecba40e1c695e69b55a40843df6a79cef R100 chezmoi_rename.go chezmoi.go\n",
+			statusStr:       "2 R. N... 100644 100644 100644 9d06c86ecba40e1c695e69b55a40843df6a79cef 9d06c86ecba40e1c695e69b55a40843df6a79cef R100 chezmoi_rename.go\tchezmoi.go\n",
 			expectedMessage: "Rename chezmoi.go to chezmoi_rename.go\n",
 		},
 		{

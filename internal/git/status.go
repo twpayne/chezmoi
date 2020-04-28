@@ -98,7 +98,7 @@ var (
 		`([0-9a-f]+) ` +
 		`([0-9a-f]+) ` +
 		`([CR])([0-9]+) ` +
-		`(.*?) (.*)` +
+		`(.*?)\t(.*)` +
 		`$`,
 	)
 	statusPorcelainV2ZUnmergedRegexp = regexp.MustCompile(`` +
