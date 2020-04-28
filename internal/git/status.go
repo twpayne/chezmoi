@@ -74,7 +74,6 @@ type Status struct {
 	Ignored         []IgnoredStatus
 }
 
-//nolint:gochecknoglobals
 var (
 	statusPorcelainV2ZOrdinaryRegexp = regexp.MustCompile(`` +
 		`^1 ` +
