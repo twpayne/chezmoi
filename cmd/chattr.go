@@ -12,13 +12,14 @@ import (
 )
 
 var chattrCmd = &cobra.Command{
-	Use:     "chattr attributes targets...",
-	Args:    cobra.MinimumNArgs(2),
-	Short:   "Change the attributes of a target in the source state",
-	Long:    mustGetLongHelp("chattr"),
-	Example: getExample("chattr"),
-	PreRunE: config.ensureNoError,
-	RunE:    config.runChattrCmd,
+	Use:      "chattr attributes targets...",
+	Args:     cobra.MinimumNArgs(2),
+	Short:    "Change the attributes of a target in the source state",
+	Long:     mustGetLongHelp("chattr"),
+	Example:  getExample("chattr"),
+	PreRunE:  config.ensureNoError,
+	RunE:     config.runChattrCmd,
+	PostRunE: config.autoCommitAndAutoPush,
 }
 
 type boolModifier int
