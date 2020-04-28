@@ -57,9 +57,9 @@ func init() {
 		"setting the environment variable `GO111MODULE=on`.\n" +
 		"\n" +
 		"chezmoi is a standard Go project, using standard Go tooling, with a few extra\n" +
-		"tools. Install these extra tools with:\n" +
+		"tools. Ensure that these extra tools are installed with:\n" +
 		"\n" +
-		"    make install-tools\n" +
+		"    make ensure-tools\n" +
 		"\n" +
 		"Build chezmoi:\n" +
 		"\n" +
@@ -123,9 +123,8 @@ func init() {
 		"  [`gofumports`](https://mvdan.cc/gofumpt/gofumports). You can ensure this by\n" +
 		"  running `make format`.\n" +
 		"\n" +
-		"* The code passes [`go vet`](https://golang.org/cmd/vet/) and\n" +
-		"  [`golangci-lint`](https://github.com/golangci/golangci-lint). You can ensure\n" +
-		"  this by running `make lint`.\n" +
+		"* The code passes [`golangci-lint`](https://github.com/golangci/golangci-lint).\n" +
+		"  You can ensure this by running `make lint`.\n" +
 		"\n" +
 		"* The commit messages match chezmoi's convention, specifically that they begin\n" +
 		"  with a capitalized verb in the imperative and give a short description of what\n" +
