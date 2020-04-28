@@ -1606,7 +1606,8 @@ func init() {
 		"Colorize diffs, *value* can be `on`, `off`, `auto`, or any boolean-like value\n" +
 		"recognized by\n" +
 		"[`strconv.ParseBool`](https://pkg.go.dev/strconv?tab=doc#ParseBool). The default\n" +
-		"value is `auto` which will colorize diffs only if the output is a terminal.\n" +
+		"value is `auto` which will colorize diffs only if the the environment variable\n" +
+		"`NO_COLOR` is not set and stdout is a terminal.\n" +
 		"\n" +
 		"### `-c`, `--config` *filename*\n" +
 		"\n" +

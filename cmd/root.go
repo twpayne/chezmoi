@@ -148,7 +148,9 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		case "off":
 			c.colored = false
 		case "auto":
-			if stdout, ok := c.Stdout.(*os.File); ok {
+			if _, ok := os.LookupEnv("NO_COLOR"); ok {
+				c.colored = false
+			} else if stdout, ok := c.Stdout.(*os.File); ok {
 				c.colored = terminal.IsTerminal(int(stdout.Fd()))
 			} else {
 				c.colored = false
