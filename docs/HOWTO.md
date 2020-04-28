@@ -363,7 +363,7 @@ Some programs modify their configuration files. When you next run `chezmoi
 apply`, any modifications made by the program will be lost.
 
 You can track changes to these files by replacing with a symlink back to a file
-in your source directory, which is under version control. Here is a worked
+in your source directory, which is under version control. Here is a working
 example for VSCode's `settings.json` on Linux:
 
 Copy the configuration file to your source directory:
@@ -377,8 +377,10 @@ Tell chezmoi to ignore this file:
 Tell chezmoi that `~/.config/Code/User/settings.json` should be a symlink to the
 file in your source directory:
 
-    mkdir -p $(chezmoi source-path)/dot_config/Code/User
-    echo -n "{{ .chezmoi.sourceDir }}/settings.json" > $(chezmoi source-path)/dot_config/Code/User/symlink_settings.json.tmpl
+    mkdir -p $(chezmoi source-path)/private_dot_config/private_Code/User
+    echo -n "{{ .chezmoi.sourceDir }}/settings.json" > $(chezmoi source-path)/private_dot_config/private_Code/User/symlink_settings.json
+
+Note the use of prefix 'private_' here. The '.config' and 'Code' folders have private permissons by default (see https://github.com/twpayne/chezmoi/blob/master/docs/REFERENCE.md#source-state-attributes)
 
 Apply the changes:
 
