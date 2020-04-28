@@ -378,7 +378,7 @@ Tell chezmoi that `~/.config/Code/User/settings.json` should be a symlink to the
 file in your source directory:
 
     mkdir -p $(chezmoi source-path)/private_dot_config/private_Code/User
-    echo -n "{{ .chezmoi.sourceDir }}/settings.json" > $(chezmoi source-path)/private_dot_config/private_Code/User/symlink_settings.json
+    echo -n "{{ .chezmoi.sourceDir }}/settings.json" > $(chezmoi source-path)/private_dot_config/private_Code/User/symlink_settings.json.tmpl
 
 Note the use of prefix 'private_' here. The '.config' and 'Code' folders have private permissons by default (see https://github.com/twpayne/chezmoi/blob/master/docs/REFERENCE.md#source-state-attributes)
 
