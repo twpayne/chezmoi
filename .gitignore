@@ -1,5 +1,5 @@
-/*coverage.out
-/bin
+/bin/gofumports
+/bin/golangci-lint
 /chezmoi
 /chezmoi.exe
 /dist

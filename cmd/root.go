@@ -138,7 +138,6 @@ func Execute() {
 	}
 }
 
-//nolint:interfacer
 func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error {
 	if colored, err := strconv.ParseBool(c.Color); err == nil {
 		c.colored = colored

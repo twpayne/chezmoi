@@ -21,9 +21,9 @@ chezmoi requires Go 1.13 or later and Go modules enabled. Enable Go modules by
 setting the environment variable `GO111MODULE=on`.
 
 chezmoi is a standard Go project, using standard Go tooling, with a few extra
-tools. Install these extra tools with:
+tools. Ensure that these extra tools are installed with:
 
-    make install-tools
+    make ensure-tools
 
 Build chezmoi:
 
@@ -87,9 +87,8 @@ that:
   [`gofumports`](https://mvdan.cc/gofumpt/gofumports). You can ensure this by
   running `make format`.
 
-* The code passes [`go vet`](https://golang.org/cmd/vet/) and
-  [`golangci-lint`](https://github.com/golangci/golangci-lint). You can ensure
-  this by running `make lint`.
+* The code passes [`golangci-lint`](https://github.com/golangci/golangci-lint).
+  You can ensure this by running `make lint`.
 
 * The commit messages match chezmoi's convention, specifically that they begin
   with a capitalized verb in the imperative and give a short description of what
