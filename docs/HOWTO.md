@@ -377,8 +377,11 @@ Tell chezmoi to ignore this file:
 Tell chezmoi that `~/.config/Code/User/settings.json` should be a symlink to the
 file in your source directory:
 
-    mkdir -p $(chezmoi source-path)/dot_config/Code/User
-    echo -n "{{ .chezmoi.sourceDir }}/settings.json" > $(chezmoi source-path)/dot_config/Code/User/symlink_settings.json.tmpl
+    mkdir -p $(chezmoi source-path)/private_dot_config/private_Code/User
+    echo -n "{{ .chezmoi.sourceDir }}/settings.json" > $(chezmoi source-path)/private_dot_config/private_Code/User/symlink_settings.json.tmpl
+
+The prefix `private_` is used because the `~/.config` and `~/.config/Code`
+directories are private by default.
 
 Apply the changes:
 
