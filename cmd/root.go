@@ -10,10 +10,11 @@ import (
 	"github.com/coreos/go-semver/semver"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/twpayne/chezmoi/internal/chezmoi"
 	vfs "github.com/twpayne/go-vfs"
 	xdg "github.com/twpayne/go-xdg/v3"
 	"golang.org/x/crypto/ssh/terminal"
+
+	"github.com/twpayne/chezmoi/internal/chezmoi"
 )
 
 var config = newConfig()

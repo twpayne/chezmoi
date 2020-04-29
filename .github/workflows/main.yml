@@ -45,7 +45,7 @@ jobs:
     - name: Check formatting
       if: matrix.os == 'ubuntu-latest'
       run: |
-        find . -name \*.go | xargs $(go env GOPATH)/bin/gofumports -w
+        find . -name \*.go | xargs $(go env GOPATH)/bin/gofumports -local github.com/twpayne/chezmoi -w
         git diff --exit-code
     - name: Install snapcraft
       if: matrix.os == 'ubuntu-latest'

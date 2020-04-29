@@ -10,10 +10,11 @@ import (
 
 	"github.com/go-git/go-git/v5/plumbing/format/diff"
 	"github.com/spf13/cobra"
-	"github.com/twpayne/chezmoi/internal/chezmoi"
 	"github.com/twpayne/go-shell"
 	"github.com/twpayne/go-vfs"
 	bolt "go.etcd.io/bbolt"
+
+	"github.com/twpayne/chezmoi/internal/chezmoi"
 )
 
 type diffCmdConfig struct {

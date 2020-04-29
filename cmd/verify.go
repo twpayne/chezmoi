@@ -4,8 +4,9 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/twpayne/chezmoi/internal/chezmoi"
 	bolt "go.etcd.io/bbolt"
+
+	"github.com/twpayne/chezmoi/internal/chezmoi"
 )
 
 var verifyCmd = &cobra.Command{

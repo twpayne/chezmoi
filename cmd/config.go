@@ -21,11 +21,12 @@ import (
 	"github.com/pelletier/go-toml"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/twpayne/chezmoi/internal/chezmoi"
 	vfs "github.com/twpayne/go-vfs"
 	xdg "github.com/twpayne/go-xdg/v3"
 	bolt "go.etcd.io/bbolt"
 	yaml "gopkg.in/yaml.v2"
+
+	"github.com/twpayne/chezmoi/internal/chezmoi"
 )
 
 const commitMessageTemplateAsset = "assets/templates/COMMIT_MESSAGE.tmpl"

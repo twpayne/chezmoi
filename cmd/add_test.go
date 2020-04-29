@@ -7,8 +7,9 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/twpayne/chezmoi/internal/chezmoi"
 	"github.com/twpayne/go-vfs/vfst"
+
+	"github.com/twpayne/chezmoi/internal/chezmoi"
 )
 
 func TestAddAfterModification(t *testing.T) {

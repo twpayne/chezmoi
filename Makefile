@@ -21,7 +21,7 @@ lint: ensure-golangci-lint
 
 .PHONY: format
 format: ensure-gofumports
-	find . -name \*.go | xargs ./bin/gofumports -w
+	find . -name \*.go | xargs ./bin/gofumports -local github.com/twpayne/chezmoi -w
 
 .PHONY: ensure-tools
 ensure-tools: ensure-gofumports ensure-golangci-lint
