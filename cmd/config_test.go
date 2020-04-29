@@ -11,9 +11,10 @@ import (
 	"github.com/Masterminds/sprig"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/twpayne/chezmoi/internal/chezmoi"
 	vfs "github.com/twpayne/go-vfs"
 	xdg "github.com/twpayne/go-xdg/v3"
+
+	"github.com/twpayne/chezmoi/internal/chezmoi"
 )
 
 func TestAutoCommitCommitMessage(t *testing.T) {

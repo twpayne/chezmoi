@@ -12,8 +12,9 @@ import (
 
 	"github.com/coreos/go-semver/semver"
 	"github.com/spf13/cobra"
-	"github.com/twpayne/chezmoi/internal/chezmoi"
 	"golang.org/x/crypto/ssh/terminal"
+
+	"github.com/twpayne/chezmoi/internal/chezmoi"
 )
 
 var keePassXCCmd = &cobra.Command{

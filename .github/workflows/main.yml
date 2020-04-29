@@ -21,13 +21,6 @@ jobs:
         go-version: ${{ matrix.go-version }}
     - name: Checkout
       uses: actions/checkout@v1
-    - name: Install tools
-      if: matrix.os == 'ubuntu-latest'
-      run: |
-        curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- -b $(go env GOPATH)/bin v1.25.0
-        cd $(mktemp -d)
-        go mod init tmp
-        go get mvdan.cc/gofumpt/gofumports
     - name: Generate
       if: matrix.os == 'ubuntu-latest'
       run: |
@@ -41,11 +34,11 @@ jobs:
       run: go test -race ./...
     - name: Lint
       if: matrix.os == 'ubuntu-latest'
-      run: $(go env GOPATH)/bin/golangci-lint run
+      run: make lint
     - name: Check formatting
       if: matrix.os == 'ubuntu-latest'
       run: |
-        find . -name \*.go | xargs $(go env GOPATH)/bin/gofumports -w
+        make format
         git diff --exit-code
     - name: Install snapcraft
       if: matrix.os == 'ubuntu-latest'

@@ -6,6 +6,7 @@ import (
 	"sort"
 
 	"github.com/spf13/cobra"
+
 	"github.com/twpayne/chezmoi/internal/chezmoi"
 )
 

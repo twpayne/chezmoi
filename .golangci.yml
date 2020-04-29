@@ -46,6 +46,10 @@ linters:
   - testpackage
   - wsl
 
+linters-settings:
+  goimports:
+    local-prefixes: github.com/twpayne/chezmoi
+
 issues:
   exclude-rules:
   - linters:
