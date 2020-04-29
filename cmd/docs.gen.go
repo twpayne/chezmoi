@@ -868,8 +868,11 @@ func init() {
 		"Tell chezmoi that `~/.config/Code/User/settings.json` should be a symlink to the\n" +
 		"file in your source directory:\n" +
 		"\n" +
-		"    mkdir -p $(chezmoi source-path)/dot_config/Code/User\n" +
-		"    echo -n \"{{ .chezmoi.sourceDir }}/settings.json\" > $(chezmoi source-path)/dot_config/Code/User/symlink_settings.json.tmpl\n" +
+		"    mkdir -p $(chezmoi source-path)/private_dot_config/private_Code/User\n" +
+		"    echo -n \"{{ .chezmoi.sourceDir }}/settings.json\" > $(chezmoi source-path)/private_dot_config/private_Code/User/symlink_settings.json.tmpl\n" +
+		"\n" +
+		"The prefix `private_` is used because the `~/.config` and `~/.config/Code`\n" +
+		"directories are private by default.\n" +
 		"\n" +
 		"Apply the changes:\n" +
 		"\n" +
