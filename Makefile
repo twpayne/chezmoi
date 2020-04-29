@@ -28,14 +28,14 @@ ensure-tools: ensure-gofumports ensure-golangci-lint
 
 .PHONY: ensure-gofumports
 ensure-gofumports:
-	if [[ ! -x bin/gofumports ]] ; then \
+	if [ ! -x bin/gofumports ] ; then \
 		mkdir -p bin ; \
 		( cd $$(mktemp -d) && go mod init tmp && GOBIN=${PWD}/bin go get mvdan.cc/gofumpt/gofumports ) ; \
 	fi
 
 .PHONY: ensure-golangci-lint
 ensure-golangci-lint:
-	if [[ ! -x bin/golangci-lint ]] || ( ./bin/golangci-lint --version | grep -Fqv "version ${GOLANGCI_LINT_VERSION}" ) ; then \
+	if [ ! -x bin/golangci-lint ] || ( ./bin/golangci-lint --version | grep -Fqv "version ${GOLANGCI_LINT_VERSION}" ) ; then \
 		curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- v${GOLANGCI_LINT_VERSION} ; \
 	fi
 
