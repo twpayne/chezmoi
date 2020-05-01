@@ -12,7 +12,7 @@ require (
 	github.com/coreos/go-semver v0.3.0
 	github.com/dlclark/regexp2 v1.2.0 // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
-	github.com/go-git/go-git/v5 v5.0.1-0.20200427102907-dcaccf7ad7fd
+	github.com/go-git/go-git/v5 v5.0.1-0.20200501143051-8543c83ab70a
 	github.com/golang/protobuf v1.4.0 // indirect
 	github.com/google/go-github/v26 v26.1.3
 	github.com/google/renameio v0.1.0
