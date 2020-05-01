@@ -37,7 +37,7 @@ type dirConcreteValue struct {
 // ParseDirAttributes parses a single directory name.
 func ParseDirAttributes(sourceName string) DirAttributes {
 	name := sourceName
-	perm := os.FileMode(0777)
+	perm := os.FileMode(0o777)
 	exact := false
 	if strings.HasPrefix(name, exactPrefix) {
 		name = strings.TrimPrefix(name, exactPrefix)
@@ -45,7 +45,7 @@ func ParseDirAttributes(sourceName string) DirAttributes {
 	}
 	if strings.HasPrefix(name, privatePrefix) {
 		name = strings.TrimPrefix(name, privatePrefix)
-		perm &= 0700
+		perm &= 0o700
 	}
 	if strings.HasPrefix(name, dotPrefix) {
 		name = "." + strings.TrimPrefix(name, dotPrefix)
@@ -63,7 +63,7 @@ func (da DirAttributes) SourceName() string {
 	if da.Exact {
 		sourceName += exactPrefix
 	}
-	if da.Perm&os.FileMode(077) == os.FileMode(0) {
+	if da.Perm&os.FileMode(0o77) == os.FileMode(0) {
 		sourceName += privatePrefix
 	}
 	if strings.HasPrefix(da.Name, ".") {
@@ -193,7 +193,7 @@ func (d *Dir) Evaluate(ignore func(string) bool) error {
 
 // Private returns true if d is private.
 func (d *Dir) Private() bool {
-	return d.Perm&077 == 0
+	return d.Perm&0o77 == 0
 }
 
 // SourceName implements Entry.SourceName.

@@ -16,7 +16,7 @@ func TestFileAttributes(t *testing.T) {
 			sourceName: "foo",
 			fa: FileAttributes{
 				Name:     "foo",
-				Mode:     0666,
+				Mode:     0o666,
 				Empty:    false,
 				Template: false,
 			},
@@ -25,7 +25,7 @@ func TestFileAttributes(t *testing.T) {
 			sourceName: "dot_foo",
 			fa: FileAttributes{
 				Name:     ".foo",
-				Mode:     0666,
+				Mode:     0o666,
 				Empty:    false,
 				Template: false,
 			},
@@ -34,7 +34,7 @@ func TestFileAttributes(t *testing.T) {
 			sourceName: "private_foo",
 			fa: FileAttributes{
 				Name:     "foo",
-				Mode:     0600,
+				Mode:     0o600,
 				Empty:    false,
 				Template: false,
 			},
@@ -43,7 +43,7 @@ func TestFileAttributes(t *testing.T) {
 			sourceName: "private_dot_foo",
 			fa: FileAttributes{
 				Name:     ".foo",
-				Mode:     0600,
+				Mode:     0o600,
 				Empty:    false,
 				Template: false,
 			},
@@ -52,7 +52,7 @@ func TestFileAttributes(t *testing.T) {
 			sourceName: "empty_foo",
 			fa: FileAttributes{
 				Name:     "foo",
-				Mode:     0666,
+				Mode:     0o666,
 				Empty:    true,
 				Template: false,
 			},
@@ -61,7 +61,7 @@ func TestFileAttributes(t *testing.T) {
 			sourceName: "executable_foo",
 			fa: FileAttributes{
 				Name:     "foo",
-				Mode:     0777,
+				Mode:     0o777,
 				Empty:    false,
 				Template: false,
 			},
@@ -70,7 +70,7 @@ func TestFileAttributes(t *testing.T) {
 			sourceName: "foo.tmpl",
 			fa: FileAttributes{
 				Name:     "foo",
-				Mode:     0666,
+				Mode:     0o666,
 				Empty:    false,
 				Template: true,
 			},
@@ -79,7 +79,7 @@ func TestFileAttributes(t *testing.T) {
 			sourceName: "private_executable_dot_foo.tmpl",
 			fa: FileAttributes{
 				Name:     ".foo",
-				Mode:     0700,
+				Mode:     0o700,
 				Empty:    false,
 				Template: true,
 			},
@@ -88,21 +88,21 @@ func TestFileAttributes(t *testing.T) {
 			sourceName: "symlink_foo",
 			fa: FileAttributes{
 				Name: "foo",
-				Mode: os.ModeSymlink | 0666,
+				Mode: os.ModeSymlink | 0o666,
 			},
 		},
 		{
 			sourceName: "symlink_dot_foo",
 			fa: FileAttributes{
 				Name: ".foo",
-				Mode: os.ModeSymlink | 0666,
+				Mode: os.ModeSymlink | 0o666,
 			},
 		},
 		{
 			sourceName: "symlink_foo.tmpl",
 			fa: FileAttributes{
 				Name:     "foo",
-				Mode:     os.ModeSymlink | 0666,
+				Mode:     os.ModeSymlink | 0o666,
 				Template: true,
 			},
 		},
@@ -110,7 +110,7 @@ func TestFileAttributes(t *testing.T) {
 			sourceName: "encrypted_private_dot_secret_file",
 			fa: FileAttributes{
 				Name:      ".secret_file",
-				Mode:      0600,
+				Mode:      0o600,
 				Encrypted: true,
 			},
 		},

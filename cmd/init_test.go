@@ -34,7 +34,7 @@ func TestPromptStringIgnoreWindowsNewline(t *testing.T) {
 	vfst.RunTests(t, fs, "",
 		vfst.TestPath("/home/user/.config/chezmoi/chezmoi.toml",
 			vfst.TestModeIsRegular,
-			vfst.TestModePerm(0600),
+			vfst.TestModePerm(0o600),
 			vfst.TestContentsString(
 				strings.Join([]string{
 					`[data]`,
@@ -72,7 +72,7 @@ func TestCreateConfigFile(t *testing.T) {
 	vfst.RunTests(t, fs, "",
 		vfst.TestPath("/home/user/.config/chezmoi/chezmoi.yaml",
 			vfst.TestModeIsRegular,
-			vfst.TestModePerm(0600),
+			vfst.TestModePerm(0o600),
 			vfst.TestContentsString(strings.Join([]string{
 				`data:`,
 				`    email: "john.smith@company.com"`,
@@ -91,7 +91,7 @@ func TestCreateConfigFile(t *testing.T) {
 
 func TestInit(t *testing.T) {
 	fs, cleanup, err := vfst.NewTestFS(map[string]interface{}{
-		"/home/user": &vfst.Dir{Perm: 0755},
+		"/home/user": &vfst.Dir{Perm: 0o755},
 	})
 	require.NoError(t, err)
 	defer cleanup()
@@ -113,7 +113,7 @@ func TestInit(t *testing.T) {
 
 func TestInitRepo(t *testing.T) {
 	fs, cleanup, err := vfst.NewTestFS(map[string]interface{}{
-		"/home/user": &vfst.Dir{Perm: 0755},
+		"/home/user": &vfst.Dir{Perm: 0o755},
 	})
 	require.NoError(t, err)
 	defer cleanup()

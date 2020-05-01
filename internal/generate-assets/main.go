@@ -70,7 +70,7 @@ func run() error {
 		return err
 	}
 
-	return ioutil.WriteFile(*output, formattedSource, 0666)
+	return ioutil.WriteFile(*output, formattedSource, 0o666)
 }
 
 func main() {

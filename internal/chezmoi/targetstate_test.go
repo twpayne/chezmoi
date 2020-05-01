@@ -58,7 +58,7 @@ func TestEndToEnd(t *testing.T) {
 				"ignore": "README.md",
 			},
 			destDir: "/home/user",
-			umask:   022,
+			umask:   0o22,
 			tests: []vfst.Test{
 				vfst.TestPath("/home/user/.bashrc",
 					vfst.TestModeIsRegular,
@@ -112,7 +112,7 @@ func TestEndToEnd(t *testing.T) {
 				Ignore:            ts.TargetIgnore.Match,
 				ScriptStateBucket: []byte("script"),
 				Stdout:            os.Stdout,
-				Umask:             022,
+				Umask:             0o22,
 			}
 			assert.NoError(t, ts.Apply(fs, NewVerboseMutator(os.Stderr, NewFSMutator(fs), false, 0), tc.follow, applyOptions))
 			vfst.RunTests(t, fs, "", tc.tests)
@@ -142,7 +142,7 @@ func TestTargetStatePopulate(t *testing.T) {
 					"foo": &File{
 						sourceName: "foo",
 						targetName: "foo",
-						Perm:       0666,
+						Perm:       0o666,
 						contents:   []byte("bar"),
 					},
 				}),
@@ -160,7 +160,7 @@ func TestTargetStatePopulate(t *testing.T) {
 					".foo": &File{
 						sourceName: "dot_foo",
 						targetName: ".foo",
-						Perm:       0666,
+						Perm:       0o666,
 						contents:   []byte("bar"),
 					},
 				}),
@@ -179,7 +179,7 @@ func TestTargetStatePopulate(t *testing.T) {
 					"foo": &File{
 						sourceName: "private_foo",
 						targetName: "foo",
-						Perm:       0600,
+						Perm:       0o600,
 						contents:   []byte("bar"),
 					},
 				}),
@@ -199,12 +199,12 @@ func TestTargetStatePopulate(t *testing.T) {
 						sourceName: "foo",
 						targetName: "foo",
 						Exact:      false,
-						Perm:       0777,
+						Perm:       0o777,
 						Entries: map[string]Entry{
 							"bar": &File{
 								sourceName: filepath.Join("foo", "bar"),
 								targetName: filepath.Join("foo", "bar"),
-								Perm:       0666,
+								Perm:       0o666,
 								contents:   []byte("baz"),
 							},
 						},
@@ -226,12 +226,12 @@ func TestTargetStatePopulate(t *testing.T) {
 						sourceName: "private_dot_foo",
 						targetName: ".foo",
 						Exact:      false,
-						Perm:       0700,
+						Perm:       0o700,
 						Entries: map[string]Entry{
 							"bar": &File{
 								sourceName: filepath.Join("private_dot_foo", "bar"),
 								targetName: filepath.Join(".foo", "bar"),
-								Perm:       0666,
+								Perm:       0o666,
 								contents:   []byte("baz"),
 							},
 						},
@@ -255,7 +255,7 @@ func TestTargetStatePopulate(t *testing.T) {
 					".gitconfig": &File{
 						sourceName: "dot_gitconfig.tmpl",
 						targetName: ".gitconfig",
-						Perm:       0666,
+						Perm:       0o666,
 						Template:   true,
 						contents:   []byte("[user]\n\temail = john.smith@company.com\n"),
 					},
@@ -279,12 +279,12 @@ func TestTargetStatePopulate(t *testing.T) {
 						sourceName: "exact_dir",
 						targetName: "dir",
 						Exact:      true,
-						Perm:       0777,
+						Perm:       0o777,
 						Entries: map[string]Entry{
 							"foo": &File{
 								sourceName: filepath.Join("exact_dir", "foo"),
 								targetName: filepath.Join("dir", "foo"),
-								Perm:       0666,
+								Perm:       0o666,
 								contents:   []byte("bar"),
 							},
 						},
@@ -410,7 +410,7 @@ func TestTargetStatePopulate(t *testing.T) {
 					"dir": &Dir{
 						sourceName: "dir",
 						targetName: "dir",
-						Perm:       0777,
+						Perm:       0o777,
 						Entries:    map[string]Entry{},
 					},
 				}),
@@ -438,7 +438,7 @@ func TestTargetStatePopulate(t *testing.T) {
 					"foo": &File{
 						sourceName: "foo",
 						targetName: "foo",
-						Perm:       0666,
+						Perm:       0o666,
 						contents:   []byte("bar"),
 					},
 				}),
@@ -449,7 +449,7 @@ func TestTargetStatePopulate(t *testing.T) {
 		{
 			name: "empty_template_dir",
 			root: map[string]interface{}{
-				"/.chezmoitemplates": &vfst.Dir{Perm: 0755},
+				"/.chezmoitemplates": &vfst.Dir{Perm: 0o755},
 			},
 			sourceDir: "/",
 			want: NewTargetState(

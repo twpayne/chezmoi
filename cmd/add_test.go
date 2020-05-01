@@ -14,8 +14,8 @@ import (
 
 func TestAddAfterModification(t *testing.T) {
 	fs, cleanup, err := vfst.NewTestFS(map[string]interface{}{
-		"/home/user":                      &vfst.Dir{Perm: 0755},
-		"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0700},
+		"/home/user":                      &vfst.Dir{Perm: 0o755},
+		"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0o700},
 		"/home/user/.bashrc":              "# contents of .bashrc\n",
 	})
 	require.NoError(t, err)
@@ -29,7 +29,7 @@ func TestAddAfterModification(t *testing.T) {
 			vfst.TestContentsString("# contents of .bashrc\n"),
 		),
 	)
-	assert.NoError(t, fs.WriteFile("/home/user/.bashrc", []byte("# new contents of .bashrc\n"), 0644))
+	assert.NoError(t, fs.WriteFile("/home/user/.bashrc", []byte("# new contents of .bashrc\n"), 0o644))
 	assert.NoError(t, c.runAddCmd(nil, args))
 	vfst.RunTests(t, fs, "",
 		vfst.TestPath("/home/user/.local/share/chezmoi/dot_bashrc",
@@ -52,24 +52,24 @@ func TestAddCommand(t *testing.T) {
 			name: "add_dir",
 			args: []string{"/home/user/.config/htop"},
 			root: map[string]interface{}{
-				"/home/user/.config/htop": &vfst.Dir{Perm: 0755},
+				"/home/user/.config/htop": &vfst.Dir{Perm: 0o755},
 			},
 			tests: []vfst.Test{
 				vfst.TestPath("/home/user/.local/share/chezmoi",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0700),
+					vfst.TestModePerm(0o700),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_config",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0755),
+					vfst.TestModePerm(0o755),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_config/htop",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0755),
+					vfst.TestModePerm(0o755),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_config/htop/.keep",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0644),
+					vfst.TestModePerm(0o644),
 					vfst.TestContents(nil),
 				),
 			},
@@ -85,19 +85,19 @@ func TestAddCommand(t *testing.T) {
 			tests: []vfst.Test{
 				vfst.TestPath("/home/user/.local/share/chezmoi",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0700),
+					vfst.TestModePerm(0o700),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_config",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0755),
+					vfst.TestModePerm(0o755),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_config/htop",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0755),
+					vfst.TestModePerm(0o755),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_config/htop/.keep",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0644),
+					vfst.TestModePerm(0o644),
 					vfst.TestContents(nil),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_config/htop/foo",
@@ -114,7 +114,7 @@ func TestAddCommand(t *testing.T) {
 			tests: []vfst.Test{
 				vfst.TestPath("/home/user/.local/share/chezmoi",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0700),
+					vfst.TestModePerm(0o700),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_bashrc",
 					vfst.TestModeIsRegular,
@@ -131,8 +131,8 @@ func TestAddCommand(t *testing.T) {
 				},
 			},
 			root: map[string]interface{}{
-				"/home/user":                      &vfst.Dir{Perm: 0755},
-				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0700},
+				"/home/user":                      &vfst.Dir{Perm: 0o755},
+				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0o700},
 				"/home/user/.gitconfig":           "[user]\n\tname = John Smith\n\temail = john.smith@company.com\n",
 			},
 			tests: []vfst.Test{
@@ -152,7 +152,7 @@ func TestAddCommand(t *testing.T) {
 			},
 			root: map[string]interface{}{
 				"/home/user": map[string]interface{}{
-					".local/share/chezmoi": &vfst.Dir{Perm: 0700},
+					".local/share/chezmoi": &vfst.Dir{Perm: 0o700},
 					".vimrc":               "vim: set foldmethod=marker foldmarker={{,}}",
 				},
 			},
@@ -174,8 +174,8 @@ func TestAddCommand(t *testing.T) {
 				},
 			},
 			root: map[string]interface{}{
-				"/home/user":                      &vfst.Dir{Perm: 0755},
-				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0700},
+				"/home/user":                      &vfst.Dir{Perm: 0o755},
+				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0o700},
 				"/home/user/.gitconfig":           "[user]\n\tname = John Smith\n\temail = john.smith@company.com\n",
 			},
 			tests: []vfst.Test{
@@ -194,8 +194,8 @@ func TestAddCommand(t *testing.T) {
 				},
 			},
 			root: map[string]interface{}{
-				"/home/user":                             &vfst.Dir{Perm: 0755},
-				"/home/user/.local/share/chezmoi":        &vfst.Dir{Perm: 0700},
+				"/home/user":                             &vfst.Dir{Perm: 0o755},
+				"/home/user/.local/share/chezmoi":        &vfst.Dir{Perm: 0o700},
 				"/home/user/.config/micro/settings.json": "{}",
 			},
 			tests: []vfst.Test{
@@ -209,8 +209,8 @@ func TestAddCommand(t *testing.T) {
 			name: "add_nested_directory",
 			args: []string{"/home/user/.config/micro/settings.json"},
 			root: map[string]interface{}{
-				"/home/user":                             &vfst.Dir{Perm: 0755},
-				"/home/user/.local/share/chezmoi":        &vfst.Dir{Perm: 0700},
+				"/home/user":                             &vfst.Dir{Perm: 0o755},
+				"/home/user/.local/share/chezmoi":        &vfst.Dir{Perm: 0o700},
 				"/home/user/.config/micro/settings.json": "{}",
 			},
 			tests: []vfst.Test{
@@ -229,9 +229,9 @@ func TestAddCommand(t *testing.T) {
 				},
 			},
 			root: map[string]interface{}{
-				"/home/user":                      &vfst.Dir{Perm: 0755},
-				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0700},
-				"/home/user/dir":                  &vfst.Dir{Perm: 0755},
+				"/home/user":                      &vfst.Dir{Perm: 0o755},
+				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0o700},
+				"/home/user/dir":                  &vfst.Dir{Perm: 0o755},
 			},
 			tests: []vfst.Test{
 				vfst.TestPath("/home/user/.local/share/chezmoi/exact_dir",
@@ -249,8 +249,8 @@ func TestAddCommand(t *testing.T) {
 				},
 			},
 			root: map[string]interface{}{
-				"/home/user":                      &vfst.Dir{Perm: 0755},
-				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0700},
+				"/home/user":                      &vfst.Dir{Perm: 0o755},
+				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0o700},
 				"/home/user/dir": map[string]interface{}{
 					"foo": "bar",
 				},
@@ -274,8 +274,8 @@ func TestAddCommand(t *testing.T) {
 				},
 			},
 			root: map[string]interface{}{
-				"/home/user":                      &vfst.Dir{Perm: 0755},
-				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0700},
+				"/home/user":                      &vfst.Dir{Perm: 0o755},
+				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0o700},
 				"/home/user/empty":                "",
 			},
 			tests: []vfst.Test{
@@ -289,8 +289,8 @@ func TestAddCommand(t *testing.T) {
 			name: "add_empty_file_in_subdir",
 			args: []string{"/home/user/subdir/empty"},
 			root: map[string]interface{}{
-				"/home/user":                      &vfst.Dir{Perm: 0755},
-				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0700},
+				"/home/user":                      &vfst.Dir{Perm: 0o755},
+				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0o700},
 				"/home/user/subdir/empty":         "",
 			},
 			tests: []vfst.Test{
@@ -303,8 +303,8 @@ func TestAddCommand(t *testing.T) {
 			name: "add_symlink",
 			args: []string{"/home/user/foo"},
 			root: map[string]interface{}{
-				"/home/user":                      &vfst.Dir{Perm: 0755},
-				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0700},
+				"/home/user":                      &vfst.Dir{Perm: 0o755},
+				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0o700},
 				"/home/user/foo":                  &vfst.Symlink{Target: "bar"},
 			},
 			tests: []vfst.Test{
@@ -319,8 +319,8 @@ func TestAddCommand(t *testing.T) {
 			args:   []string{"/home/user/foo"},
 			follow: true,
 			root: map[string]interface{}{
-				"/home/user":                      &vfst.Dir{Perm: 0755},
-				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0700},
+				"/home/user":                      &vfst.Dir{Perm: 0o755},
+				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0o700},
 				"/home/user/foo":                  &vfst.Symlink{Target: "bar"},
 				"/home/user/bar":                  "bux",
 			},
@@ -336,8 +336,8 @@ func TestAddCommand(t *testing.T) {
 			args:   []string{"/home/user/foo"},
 			follow: true,
 			root: map[string]interface{}{
-				"/home/user":                      &vfst.Dir{Perm: 0755},
-				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0700},
+				"/home/user":                      &vfst.Dir{Perm: 0o755},
+				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0o700},
 				"/home/user/.dotfiles/foo":        "bar",
 				"/home/user/foo":                  &vfst.Symlink{Target: ".dotfiles/foo"},
 			},
@@ -352,8 +352,8 @@ func TestAddCommand(t *testing.T) {
 			name: "add_symlink_no_follow",
 			args: []string{"/home/user/foo"},
 			root: map[string]interface{}{
-				"/home/user":                      &vfst.Dir{Perm: 0755},
-				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0700},
+				"/home/user":                      &vfst.Dir{Perm: 0o755},
+				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0o700},
 				"/home/user/.dotfiles/foo":        "bar",
 				"/home/user/foo":                  &vfst.Symlink{Target: ".dotfiles/foo"},
 			},
@@ -369,8 +369,8 @@ func TestAddCommand(t *testing.T) {
 			args:   []string{"/home/user/foo"},
 			follow: true,
 			root: map[string]interface{}{
-				"/home/user":                      &vfst.Dir{Perm: 0755},
-				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0700},
+				"/home/user":                      &vfst.Dir{Perm: 0o755},
+				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0o700},
 				"/home/user/.dotfiles/baz":        "qux",
 				"/home/user/foo":                  &vfst.Symlink{Target: "bar"},
 				"/home/user/bar":                  &vfst.Symlink{Target: ".dotfiles/baz"},
@@ -391,8 +391,8 @@ func TestAddCommand(t *testing.T) {
 				},
 			},
 			root: map[string]interface{}{
-				"/home/user":                      &vfst.Dir{Perm: 0755},
-				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0700},
+				"/home/user":                      &vfst.Dir{Perm: 0o755},
+				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0o700},
 				"/home/user/foo/bar":              &vfst.Symlink{Target: "baz"},
 			},
 			tests: []vfst.Test{
@@ -409,8 +409,8 @@ func TestAddCommand(t *testing.T) {
 			name: "add_symlink_with_parent_dir",
 			args: []string{"/home/user/foo/bar/baz"},
 			root: map[string]interface{}{
-				"/home/user":                      &vfst.Dir{Perm: 0755},
-				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0700},
+				"/home/user":                      &vfst.Dir{Perm: 0o755},
+				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0o700},
 				"/home/user/foo/bar/baz":          &vfst.Symlink{Target: "qux"},
 			},
 			tests: []vfst.Test{
@@ -430,9 +430,9 @@ func TestAddCommand(t *testing.T) {
 			name: "dont_add_ignored_file",
 			args: []string{"/home/user/foo"},
 			root: map[string]interface{}{
-				"/home/user": &vfst.Dir{Perm: 0755},
+				"/home/user": &vfst.Dir{Perm: 0o755},
 				"/home/user/.local/share/chezmoi": &vfst.Dir{
-					Perm: 0700,
+					Perm: 0o700,
 					Entries: map[string]interface{}{
 						".chezmoiignore": "foo\n",
 					},
@@ -454,9 +454,9 @@ func TestAddCommand(t *testing.T) {
 				},
 			},
 			root: map[string]interface{}{
-				"/home/user": &vfst.Dir{Perm: 0755},
+				"/home/user": &vfst.Dir{Perm: 0o755},
 				"/home/user/.local/share/chezmoi": &vfst.Dir{
-					Perm: 0700,
+					Perm: 0o700,
 					Entries: map[string]interface{}{
 						"exact_foo/.chezmoiignore": "bar/qux\n",
 					},
@@ -518,7 +518,7 @@ func TestAddCommand(t *testing.T) {
 			args: []string{"/home/user/foo"},
 			root: []interface{}{
 				map[string]interface{}{
-					"/local/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0700},
+					"/local/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0o700},
 					"/local/home/user/foo":                  "bar",
 				},
 				map[string]interface{}{
@@ -566,9 +566,9 @@ func TestIssue192(t *testing.T) {
 	root := []interface{}{
 		map[string]interface{}{
 			"/local/home/user": &vfst.Dir{
-				Perm: 0750,
+				Perm: 0o750,
 				Entries: map[string]interface{}{
-					".local/share/chezmoi": &vfst.Dir{Perm: 0700},
+					".local/share/chezmoi": &vfst.Dir{Perm: 0o700},
 					"snoop/.list":          "# contents of .list\n",
 				},
 			},

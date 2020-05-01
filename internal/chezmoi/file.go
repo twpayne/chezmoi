@@ -47,7 +47,7 @@ type fileConcreteValue struct {
 // ParseFileAttributes parses a source file name.
 func ParseFileAttributes(sourceName string) FileAttributes {
 	name := sourceName
-	mode := os.FileMode(0666)
+	mode := os.FileMode(0o666)
 	empty := false
 	encrypted := false
 	template := false
@@ -70,10 +70,10 @@ func ParseFileAttributes(sourceName string) FileAttributes {
 		}
 		if strings.HasPrefix(name, executablePrefix) {
 			name = strings.TrimPrefix(name, executablePrefix)
-			mode |= 0111
+			mode |= 0o111
 		}
 		if private {
-			mode &= 0700
+			mode &= 0o700
 		}
 	}
 	if strings.HasPrefix(name, dotPrefix) {
@@ -100,13 +100,13 @@ func (fa FileAttributes) SourceName() string {
 		if fa.Encrypted {
 			sourceName += encryptedPrefix
 		}
-		if fa.Mode.Perm()&os.FileMode(077) == os.FileMode(0) {
+		if fa.Mode.Perm()&os.FileMode(0o77) == os.FileMode(0) {
 			sourceName += privatePrefix
 		}
 		if fa.Empty {
 			sourceName += emptyPrefix
 		}
-		if fa.Mode.Perm()&os.FileMode(0111) != os.FileMode(0) {
+		if fa.Mode.Perm()&os.FileMode(0o111) != os.FileMode(0) {
 			sourceName += executablePrefix
 		}
 	case os.ModeSymlink:
@@ -220,12 +220,12 @@ func (f *File) Evaluate(ignore func(string) bool) error {
 
 // Executable returns true is f is executable.
 func (f *File) Executable() bool {
-	return f.Perm&0111 != 0
+	return f.Perm&0o111 != 0
 }
 
 // Private returns true if f is private.
 func (f *File) Private() bool {
-	return f.Perm&077 == 0
+	return f.Perm&0o77 == 0
 }
 
 // SourceName implements Entry.SourceName.

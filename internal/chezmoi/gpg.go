@@ -25,7 +25,7 @@ func (g *GPG) Decrypt(filename string, ciphertext []byte) ([]byte, error) {
 
 	outputFilename := filepath.Join(tempDir, filepath.Base(filename))
 	inputFilename := outputFilename + ".gpg"
-	if err := ioutil.WriteFile(inputFilename, ciphertext, 0600); err != nil {
+	if err := ioutil.WriteFile(inputFilename, ciphertext, 0o600); err != nil {
 		return nil, err
 	}
 
@@ -56,7 +56,7 @@ func (g *GPG) Encrypt(filename string, plaintext []byte) ([]byte, error) {
 	defer os.RemoveAll(tempDir)
 
 	inputFilename := filepath.Join(tempDir, filepath.Base(filename))
-	if err := ioutil.WriteFile(inputFilename, plaintext, 0600); err != nil {
+	if err := ioutil.WriteFile(inputFilename, plaintext, 0o600); err != nil {
 		return nil, err
 	}
 	outputFilename := inputFilename + ".gpg"

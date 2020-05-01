@@ -269,7 +269,7 @@ FOR:
 		}
 	}
 
-	return c.mutator.WriteFile(executableFilename, executableData, 0755, nil)
+	return c.mutator.WriteFile(executableFilename, executableData, 0o755, nil)
 }
 
 func (c *Config) snapRefresh() error {
@@ -341,7 +341,7 @@ func (c *Config) upgradePackage(rr *github.RepositoryRelease, useSudo bool) erro
 		}
 
 		packageFilename := filepath.Join(tempDir, releaseAsset.GetName())
-		if err := c.mutator.WriteFile(packageFilename, data, 0644, nil); err != nil {
+		if err := c.mutator.WriteFile(packageFilename, data, 0o644, nil); err != nil {
 			return err
 		}
 

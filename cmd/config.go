@@ -284,16 +284,16 @@ func (c *Config) ensureSourceDirectory() error {
 			return err
 		}
 		if !private {
-			if err := c.mutator.Chmod(c.SourceDir, 0700&^os.FileMode(c.Umask)); err != nil {
+			if err := c.mutator.Chmod(c.SourceDir, 0o700&^os.FileMode(c.Umask)); err != nil {
 				return err
 			}
 		}
 		return nil
 	case os.IsNotExist(err):
-		if err := vfs.MkdirAll(c.mutator, filepath.Dir(c.SourceDir), 0777&^os.FileMode(c.Umask)); err != nil {
+		if err := vfs.MkdirAll(c.mutator, filepath.Dir(c.SourceDir), 0o777&^os.FileMode(c.Umask)); err != nil {
 			return err
 		}
-		return c.mutator.Mkdir(c.SourceDir, 0700&^os.FileMode(c.Umask))
+		return c.mutator.Mkdir(c.SourceDir, 0o700&^os.FileMode(c.Umask))
 	case err == nil:
 		return fmt.Errorf("%s: not a directory", c.SourceDir)
 	default:

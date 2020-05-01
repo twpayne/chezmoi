@@ -135,7 +135,7 @@ func (s *Script) Apply(fs vfs.FS, mutator Mutator, follow bool, applyOptions *Ap
 	defer func() {
 		_ = os.RemoveAll(f.Name())
 	}()
-	if err := os.Chmod(f.Name(), 0700); err != nil {
+	if err := os.Chmod(f.Name(), 0o700); err != nil {
 		return err
 	}
 	if _, err := f.Write(contents); err != nil {
@@ -233,7 +233,7 @@ func (s *Script) archive(w *tar.Writer, ignore func(string) bool, headerTemplate
 	header.Typeflag = tar.TypeReg
 	header.Name = s.targetName
 	header.Size = int64(len(contents))
-	header.Mode = int64(0777 &^ umask)
+	header.Mode = int64(0o777 &^ umask)
 	if err := w.WriteHeader(&header); err != nil {
 		return nil
 	}

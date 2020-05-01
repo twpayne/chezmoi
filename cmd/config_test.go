@@ -223,7 +223,7 @@ func withTestUser(username string) configOption {
 		homeDir := filepath.Join("/", "home", username)
 		c.SourceDir = filepath.Join(homeDir, ".local", "share", "chezmoi")
 		c.DestDir = homeDir
-		c.Umask = 022
+		c.Umask = 0o22
 		c.bds = &xdg.BaseDirectorySpecification{
 			ConfigHome: filepath.Join(homeDir, ".config"),
 			DataHome:   filepath.Join(homeDir, ".local"),
