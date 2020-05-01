@@ -12,5 +12,5 @@ func IsPrivate(fs vfs.Stater, path string, want bool) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	return info.Mode().Perm()&077 == 0, nil
+	return info.Mode().Perm()&0o77 == 0, nil
 }

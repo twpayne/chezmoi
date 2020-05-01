@@ -16,13 +16,13 @@ func TestImportCmd(t *testing.T) {
 	assert.NoError(t, w.WriteHeader(&tar.Header{
 		Typeflag: tar.TypeDir,
 		Name:     "dir",
-		Mode:     0755,
+		Mode:     0o755,
 	}))
 	assert.NoError(t, w.WriteHeader(&tar.Header{
 		Typeflag: tar.TypeReg,
 		Name:     "dir/file",
 		Size:     int64(len("contents")),
-		Mode:     0644,
+		Mode:     0o644,
 	}))
 	_, err := w.Write([]byte("contents"))
 	assert.NoError(t, err)
@@ -34,7 +34,7 @@ func TestImportCmd(t *testing.T) {
 	assert.NoError(t, w.Close())
 
 	fs, cleanup, err := vfst.NewTestFS(map[string]interface{}{
-		"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0700},
+		"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0o700},
 	})
 	require.NoError(t, err)
 	defer cleanup()

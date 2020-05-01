@@ -44,7 +44,7 @@ func TestGetKernelInfo(t *testing.T) {
 		{
 			name: "proc_sys_kernel_missing",
 			root: map[string]interface{}{
-				"/proc/sys": &vfst.Dir{Perm: 0755},
+				"/proc/sys": &vfst.Dir{Perm: 0o755},
 			},
 			expectedKernelInfo: nil,
 		},

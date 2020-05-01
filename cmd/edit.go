@@ -114,10 +114,10 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string) error {
 				return err
 			}
 			ef.plaintextPath = filepath.Join(tempDir, ef.file.SourceName())
-			if err := os.MkdirAll(filepath.Dir(ef.plaintextPath), 0700&^os.FileMode(c.Umask)); err != nil {
+			if err := os.MkdirAll(filepath.Dir(ef.plaintextPath), 0o700&^os.FileMode(c.Umask)); err != nil {
 				return err
 			}
-			if err := renameio.WriteFile(ef.plaintextPath, plaintext, 0600&^os.FileMode(c.Umask)); err != nil {
+			if err := renameio.WriteFile(ef.plaintextPath, plaintext, 0o600&^os.FileMode(c.Umask)); err != nil {
 				return err
 			}
 			argv[ef.index] = ef.plaintextPath
@@ -138,7 +138,7 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string) error {
 		if err != nil {
 			return err
 		}
-		if err := renameio.WriteFile(ef.ciphertextPath, ciphertext, 0644); err != nil {
+		if err := renameio.WriteFile(ef.ciphertextPath, ciphertext, 0o644); err != nil {
 			return err
 		}
 	}

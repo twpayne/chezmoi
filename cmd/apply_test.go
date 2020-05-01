@@ -31,7 +31,7 @@ func TestApplyCommand(t *testing.T) {
 		{
 			name: "change_dir_permissions",
 			root: map[string]interface{}{
-				"/home/user/dir": &vfst.Dir{Perm: 0700},
+				"/home/user/dir": &vfst.Dir{Perm: 0o700},
 			},
 		},
 		{
@@ -50,7 +50,7 @@ func TestApplyCommand(t *testing.T) {
 			name: "change_file_permissions",
 			root: map[string]interface{}{
 				"/home/user/dir/file": &vfst.File{
-					Perm:     0755,
+					Perm:     0o755,
 					Contents: []byte("contents"),
 				},
 			},
@@ -58,7 +58,7 @@ func TestApplyCommand(t *testing.T) {
 		{
 			name: "replace_dir_with_file",
 			root: map[string]interface{}{
-				"/home/user/dir/file": &vfst.Dir{Perm: 0755},
+				"/home/user/dir/file": &vfst.Dir{Perm: 0o755},
 			},
 		},
 		{
@@ -70,7 +70,7 @@ func TestApplyCommand(t *testing.T) {
 		{
 			name: "replace_dir_with_symlink",
 			root: map[string]interface{}{
-				"/home/user/symlink": &vfst.Dir{Perm: 0755},
+				"/home/user/symlink": &vfst.Dir{Perm: 0o755},
 			},
 		},
 		{
@@ -162,16 +162,16 @@ func TestApplyCommand(t *testing.T) {
 			vfst.RunTests(t, fs, "",
 				vfst.TestPath("/home/user/dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0755),
+					vfst.TestModePerm(0o755),
 				),
 				vfst.TestPath("/home/user/dir/file",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0644),
+					vfst.TestModePerm(0o644),
 					vfst.TestContentsString("contents"),
 				),
 				vfst.TestPath("/home/user/dir/other",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0644),
+					vfst.TestModePerm(0o644),
 					vfst.TestContentsString("other stuff"),
 				),
 				vfst.TestPath("/home/user/symlink",
@@ -378,7 +378,7 @@ func TestApplyScript(t *testing.T) {
 			require.NoError(t, vfst.NewBuilder().Build(fs, tc.root))
 			defer func() {
 				require.NoError(t, os.RemoveAll(tempDir))
-				require.NoError(t, os.Mkdir(tempDir, 0700))
+				require.NoError(t, os.Mkdir(tempDir, 0o700))
 			}()
 			apply := func() {
 				c := newTestConfig(

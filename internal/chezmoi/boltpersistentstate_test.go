@@ -14,7 +14,7 @@ var _ PersistentState = &BoltPersistentState{}
 
 func TestBoltPersistentState(t *testing.T) {
 	fs, cleanup, err := vfst.NewTestFS(map[string]interface{}{
-		"/home/user/.config/chezmoi": &vfst.Dir{Perm: 0755},
+		"/home/user/.config/chezmoi": &vfst.Dir{Perm: 0o755},
 	})
 	require.NoError(t, err)
 	defer cleanup()
@@ -75,7 +75,7 @@ func TestBoltPersistentState(t *testing.T) {
 
 func TestBoltPersistentStateReadOnly(t *testing.T) {
 	fs, cleanup, err := vfst.NewTestFS(map[string]interface{}{
-		"/home/user/.config/chezmoi": &vfst.Dir{Perm: 0755},
+		"/home/user/.config/chezmoi": &vfst.Dir{Perm: 0o755},
 	})
 	require.NoError(t, err)
 	defer cleanup()

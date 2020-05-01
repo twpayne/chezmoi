@@ -228,12 +228,12 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 		if err != nil {
 			return err
 		}
-		private, err := IsPrivate(fs, targetPath, perm&077 == 0)
+		private, err := IsPrivate(fs, targetPath, perm&0o77 == 0)
 		if err != nil {
 			return err
 		}
 		if private {
-			perm &^= 077
+			perm &^= 0o77
 		}
 		// If the directory is empty, or the directory was not added
 		// recursively, add a .keep file so the directory is managed by git.
@@ -266,12 +266,12 @@ func (ts *TargetState) Add(fs vfs.FS, addOptions AddOptions, targetPath string, 
 			}
 		}
 		perm := info.Mode().Perm()
-		private, err := IsPrivate(fs, targetPath, perm&077 == 0)
+		private, err := IsPrivate(fs, targetPath, perm&0o77 == 0)
 		if err != nil {
 			return err
 		}
 		if private {
-			perm &^= 077
+			perm &^= 0o77
 		}
 		return ts.addFile(targetName, entries, parentDirSourceName, info, perm, addOptions.Encrypt, addOptions.Template, contents, mutator)
 	case info.Mode()&os.ModeType == os.ModeSymlink:
@@ -602,11 +602,11 @@ func (ts *TargetState) addDir(targetName string, entries map[string]Entry, paren
 		sourceName = filepath.Join(parentDirSourceName, sourceName)
 	}
 	dir := newDir(sourceName, targetName, exact, perm)
-	if err := mutator.Mkdir(filepath.Join(ts.SourceDir, sourceName), 0777&^ts.Umask); err != nil {
+	if err := mutator.Mkdir(filepath.Join(ts.SourceDir, sourceName), 0o777&^ts.Umask); err != nil {
 		return err
 	}
 	if createKeepFile {
-		if err := mutator.WriteFile(filepath.Join(ts.SourceDir, sourceName, ".keep"), nil, 0666&^ts.Umask, nil); err != nil {
+		if err := mutator.WriteFile(filepath.Join(ts.SourceDir, sourceName, ".keep"), nil, 0o666&^ts.Umask, nil); err != nil {
 			return err
 		}
 	}
@@ -662,7 +662,7 @@ func (ts *TargetState) addFile(targetName string, entries map[string]Entry, pare
 		}
 	}
 	entries[name] = file
-	return mutator.WriteFile(filepath.Join(ts.SourceDir, sourceName), contents, 0666&^ts.Umask, existingContents)
+	return mutator.WriteFile(filepath.Join(ts.SourceDir, sourceName), contents, 0o666&^ts.Umask, existingContents)
 }
 
 func (ts *TargetState) addPatterns(fs vfs.FS, ps *PatternSet, path, relPath string) error {
@@ -736,7 +736,7 @@ func (ts *TargetState) addSymlink(targetName string, entries map[string]Entry, p
 		}
 	}
 	entries[name] = symlink
-	return mutator.WriteFile(filepath.Join(ts.SourceDir, symlink.sourceName), []byte(symlink.linkname), 0666&^ts.Umask, []byte(existingLinkname))
+	return mutator.WriteFile(filepath.Join(ts.SourceDir, symlink.sourceName), []byte(symlink.linkname), 0o666&^ts.Umask, []byte(existingLinkname))
 }
 
 func (ts *TargetState) addTemplatesDir(fs vfs.FS, path string) error {

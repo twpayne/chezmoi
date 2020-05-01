@@ -23,7 +23,7 @@ func NewBoltPersistentState(fs vfs.FS, path string, umask os.FileMode, options *
 	b := &BoltPersistentState{
 		fs:      fs,
 		path:    path,
-		perm:    0600,
+		perm:    0o600,
 		umask:   umask,
 		options: options,
 	}
@@ -105,7 +105,7 @@ func (b *BoltPersistentState) Set(bucket, key, value []byte) error {
 }
 
 func (b *BoltPersistentState) openDB() error {
-	if err := vfs.MkdirAll(b.fs, filepath.Dir(b.path), 0777&^b.umask); err != nil {
+	if err := vfs.MkdirAll(b.fs, filepath.Dir(b.path), 0o777&^b.umask); err != nil {
 		return err
 	}
 	var options bolt.Options

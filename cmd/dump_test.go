@@ -36,7 +36,7 @@ func TestDumpCmd(t *testing.T) {
 			"sourcePath": filepath.Join("/", "home", "user", ".local", "share", "chezmoi", "dir"),
 			"targetPath": "dir",
 			"exact":      false,
-			"perm":       float64(0755),
+			"perm":       float64(0o755),
 			"entries": []interface{}{
 				map[string]interface{}{
 					"type":       "file",
@@ -44,7 +44,7 @@ func TestDumpCmd(t *testing.T) {
 					"targetPath": filepath.Join("dir", "file"),
 					"empty":      false,
 					"encrypted":  false,
-					"perm":       float64(0644),
+					"perm":       float64(0o644),
 					"template":   false,
 					"contents":   "contents",
 				},

@@ -77,9 +77,9 @@ func (c *Config) runChattrCmd(cmd *cobra.Command, args []string) error {
 		case *chezmoi.Dir:
 			da := chezmoi.ParseDirAttributes(oldBase)
 			da.Exact = ams.exact.modify(entry.Exact)
-			perm := os.FileMode(0777)
+			perm := os.FileMode(0o777)
 			if private := ams.private.modify(entry.Private()); private {
-				perm &= 0700
+				perm &= 0o700
 			}
 			da.Perm = perm
 			newBase := da.SourceName()
@@ -91,12 +91,12 @@ func (c *Config) runChattrCmd(cmd *cobra.Command, args []string) error {
 			}
 		case *chezmoi.File:
 			fa := chezmoi.ParseFileAttributes(oldBase)
-			mode := os.FileMode(0666)
+			mode := os.FileMode(0o666)
 			if executable := ams.executable.modify(entry.Executable()); executable {
-				mode |= 0111
+				mode |= 0o111
 			}
 			if private := ams.private.modify(entry.Private()); private {
-				mode &= 0700
+				mode &= 0o700
 			}
 			fa.Mode = mode
 			fa.Encrypted = ams.encrypt.modify(entry.Encrypted)
@@ -120,7 +120,7 @@ func (c *Config) runChattrCmd(cmd *cobra.Command, args []string) error {
 				updates[oldpath] = func() error {
 					// FIXME replace file and contents atomically, see
 					// https://github.com/google/renameio/issues/16.
-					if err := c.mutator.WriteFile(newpath, newContents, 0644, oldContents); err != nil {
+					if err := c.mutator.WriteFile(newpath, newContents, 0o644, oldContents); err != nil {
 						return err
 					}
 					return c.mutator.RemoveAll(oldpath)

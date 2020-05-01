@@ -20,7 +20,7 @@ func TestChattrCommand(t *testing.T) {
 			args: []string{"+exact", "/home/user/dir"},
 			root: map[string]interface{}{
 				"/home/user/.local/share/chezmoi": map[string]interface{}{
-					"dir": &vfst.Dir{Perm: 0755},
+					"dir": &vfst.Dir{Perm: 0o755},
 				},
 			},
 			tests: []vfst.Test{
@@ -37,7 +37,7 @@ func TestChattrCommand(t *testing.T) {
 			args: []string{"-exact", "/home/user/dir"},
 			root: map[string]interface{}{
 				"/home/user/.local/share/chezmoi": map[string]interface{}{
-					"exact_dir": &vfst.Dir{Perm: 0755},
+					"exact_dir": &vfst.Dir{Perm: 0o755},
 				},
 			},
 			tests: []vfst.Test{
@@ -54,7 +54,7 @@ func TestChattrCommand(t *testing.T) {
 			args: []string{"+private", "/home/user/dir"},
 			root: map[string]interface{}{
 				"/home/user/.local/share/chezmoi": map[string]interface{}{
-					"dir": &vfst.Dir{Perm: 0755},
+					"dir": &vfst.Dir{Perm: 0o755},
 				},
 			},
 			tests: []vfst.Test{
@@ -71,7 +71,7 @@ func TestChattrCommand(t *testing.T) {
 			args: []string{"-private", "/home/user/dir"},
 			root: map[string]interface{}{
 				"/home/user/.local/share/chezmoi": map[string]interface{}{
-					"private_dir": &vfst.Dir{Perm: 0755},
+					"private_dir": &vfst.Dir{Perm: 0o755},
 				},
 			},
 			tests: []vfst.Test{

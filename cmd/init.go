@@ -144,12 +144,12 @@ func (c *Config) createConfigFile() error {
 	}
 
 	configDir := filepath.Join(c.bds.ConfigHome, "chezmoi")
-	if err := vfs.MkdirAll(c.mutator, configDir, 0777&^os.FileMode(c.Umask)); err != nil {
+	if err := vfs.MkdirAll(c.mutator, configDir, 0o777&^os.FileMode(c.Umask)); err != nil {
 		return err
 	}
 
 	configPath := filepath.Join(configDir, filename)
-	if err := c.mutator.WriteFile(configPath, contents.Bytes(), 0600&^os.FileMode(c.Umask), nil); err != nil {
+	if err := c.mutator.WriteFile(configPath, contents.Bytes(), 0o600&^os.FileMode(c.Umask), nil); err != nil {
 		return err
 	}
 

@@ -123,7 +123,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		&doctorDirectoryCheck{
 			name:         "source directory",
 			path:         c.SourceDir,
-			dontWantPerm: 077,
+			dontWantPerm: 0o77,
 		},
 		&doctorSuspiciousFilesCheck{
 			path: c.SourceDir,

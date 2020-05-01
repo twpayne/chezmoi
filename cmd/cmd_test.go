@@ -35,11 +35,11 @@ func TestExercise(t *testing.T) {
 		vfst.RunTests(t, fs, "",
 			vfst.TestPath("/home/user/.local/share/chezmoi",
 				vfst.TestIsDir,
-				vfst.TestModePerm(0700),
+				vfst.TestModePerm(0o700),
 			),
 			vfst.TestPath("/home/user/.local/share/chezmoi/dot_bashrc",
 				vfst.TestModeIsRegular,
-				vfst.TestModePerm(0644),
+				vfst.TestModePerm(0o644),
 				vfst.TestContentsString("# contents of .bashrc\n"),
 			),
 		)
@@ -57,7 +57,7 @@ func TestExercise(t *testing.T) {
 
 	// chezmoi add ~/.netrc
 	t.Run("chezmoi_add_netrc", func(t *testing.T) {
-		mustWriteFile("/home/user/.netrc", "# contents of .netrc\n", 0600)
+		mustWriteFile("/home/user/.netrc", "# contents of .netrc\n", 0o600)
 		assert.NoError(t, c.runAddCmd(nil, []string{"/home/user/.netrc"}))
 		path := "/home/user/.local/share/chezmoi/private_dot_netrc"
 		// Private files are not supported on Windows.
@@ -67,7 +67,7 @@ func TestExercise(t *testing.T) {
 		vfst.RunTests(t, fs, "",
 			vfst.TestPath(path,
 				vfst.TestModeIsRegular,
-				vfst.TestModePerm(0644),
+				vfst.TestModePerm(0o644),
 				vfst.TestContentsString("# contents of .netrc\n"),
 			),
 		)
@@ -79,7 +79,7 @@ func TestExercise(t *testing.T) {
 		vfst.RunTests(t, fs, "",
 			vfst.TestPath("/home/user/.local/share/chezmoi/empty_dot_netrc",
 				vfst.TestModeIsRegular,
-				vfst.TestModePerm(0644),
+				vfst.TestModePerm(0o644),
 				vfst.TestContentsString("# contents of .netrc\n"),
 			),
 		)
@@ -91,7 +91,7 @@ func TestExercise(t *testing.T) {
 		vfst.RunTests(t, fs, "",
 			vfst.TestPath("/home/user/.netrc",
 				vfst.TestModeIsRegular,
-				vfst.TestModePerm(0644),
+				vfst.TestModePerm(0o644),
 				vfst.TestContentsString("# contents of .netrc\n"),
 			),
 		)

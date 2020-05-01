@@ -83,7 +83,7 @@ func (c *Config) runMergeCommand(cmd *cobra.Command, arg string, entry chezmoi.E
 		cmd.Printf("warning: %s: cannot evaluate target state: %v\n", arg, err)
 	} else {
 		targetStatePath := filepath.Join(tempDir, filepath.Base(file.TargetName()))
-		if err := ioutil.WriteFile(targetStatePath, contents, 0600); err != nil {
+		if err := ioutil.WriteFile(targetStatePath, contents, 0o600); err != nil {
 			return err
 		}
 		args = append(args, targetStatePath)
