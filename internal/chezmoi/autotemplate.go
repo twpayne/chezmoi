@@ -1,9 +1,12 @@
 package chezmoi
 
 import (
+	"regexp"
 	"sort"
 	"strings"
 )
+
+var delimiterRegexp = regexp.MustCompile(`\{\{+|\}\}+`)
 
 type templateVariable struct {
 	name  string
@@ -32,7 +35,7 @@ func autoTemplate(contents []byte, data map[string]interface{}) []byte {
 	// FIXME the algorithm here is probably O(N^2), we can do better
 	variables := extractVariables(nil, nil, data)
 	sort.Sort(sort.Reverse(byValueLength(variables)))
-	contentsStr := string(contents)
+	contentsStr := string(templateEscape(contents))
 	for _, variable := range variables {
 		if variable.value == "" {
 			continue
@@ -87,4 +90,15 @@ func inWord(s string, i int) bool {
 // isWord returns true if b is a word byte.
 func isWord(b byte) bool {
 	return '0' <= b && b <= '9' || 'A' <= b && b <= 'Z' || 'a' <= b && b <= 'z'
+}
+
+// templateEscape escapes any template delimiters in data.
+func templateEscape(data []byte) []byte {
+	return delimiterRegexp.ReplaceAllFunc(data, func(match []byte) []byte {
+		result := make([]byte, 0, len(match)+8)
+		result = append(result, '{', '{', ' ', '"')
+		result = append(result, match...)
+		result = append(result, '"', ' ', '}', '}')
+		return result
+	})
 }

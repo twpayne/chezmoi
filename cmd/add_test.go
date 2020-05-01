@@ -143,6 +143,27 @@ func TestAddCommand(t *testing.T) {
 			},
 		},
 		{
+			name: "add_autotemplate_escape",
+			args: []string{"/home/user/.vimrc"},
+			add: addCmdConfig{
+				options: chezmoi.AddOptions{
+					AutoTemplate: true,
+				},
+			},
+			root: map[string]interface{}{
+				"/home/user": map[string]interface{}{
+					".local/share/chezmoi": &vfst.Dir{Perm: 0700},
+					".vimrc":               "vim: set foldmethod=marker foldmarker={{,}}",
+				},
+			},
+			tests: []vfst.Test{
+				vfst.TestPath("/home/user/.local/share/chezmoi/dot_vimrc.tmpl",
+					vfst.TestModeIsRegular,
+					vfst.TestContentsString(`vim: set foldmethod=marker foldmarker={{ "{{" }},{{ "}}" }}`),
+				),
+			},
+		},
+		{
 			// Test for PR #393
 			// Ensure that auto template generating is disabled by default
 			name: "add_autotemplate_off_by_default",

@@ -166,3 +166,45 @@ func TestInWord(t *testing.T) {
 		assert.Equal(t, tc.want, inWord(tc.s, tc.i))
 	}
 }
+
+func TestTemplateEscape(t *testing.T) {
+	for _, tc := range []struct {
+		inputStr    string
+		expectedStr string
+	}{
+		{
+			inputStr:    "{",
+			expectedStr: "{",
+		},
+		{
+			inputStr:    "{{",
+			expectedStr: `{{ "{{" }}`,
+		},
+		{
+			inputStr:    "{{{",
+			expectedStr: `{{ "{{{" }}`,
+		},
+		{
+			inputStr:    "}",
+			expectedStr: "}",
+		},
+		{
+			inputStr:    "}}",
+			expectedStr: `{{ "}}" }}`,
+		},
+		{
+			inputStr:    "}}}",
+			expectedStr: `{{ "}}}" }}`,
+		},
+		{
+			inputStr:    "}}}",
+			expectedStr: `{{ "}}}" }}`,
+		},
+		{
+			inputStr:    `" vim: set foldmethod=marker foldmarker={{,}}`,
+			expectedStr: `" vim: set foldmethod=marker foldmarker={{ "{{" }},{{ "}}" }}`,
+		},
+	} {
+		assert.Equal(t, tc.expectedStr, string(templateEscape([]byte(tc.inputStr))))
+	}
+}
