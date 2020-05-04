@@ -579,11 +579,6 @@ func panicOnError(err error) {
 	}
 }
 
-func printErrorAndExit(err error) {
-	fmt.Printf("chezmoi: %v\n", err)
-	os.Exit(1)
-}
-
 // titilize returns s, titilized.
 func titilize(s string) string {
 	if s == "" {

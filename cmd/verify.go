@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"os"
-
 	"github.com/spf13/cobra"
 	bolt "go.etcd.io/bbolt"
 
@@ -40,7 +38,7 @@ func (c *Config) runVerifyCmd(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	if mutator.Mutated() {
-		os.Exit(1)
+		return errExitFailure
 	}
 	return nil
 }

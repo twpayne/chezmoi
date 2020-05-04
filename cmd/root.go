@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -36,15 +37,22 @@ var rootCmd = &cobra.Command{
 	PersistentPreRunE: config.persistentPreRunRootE,
 }
 
+var (
+	errExitFailure = errors.New("")
+	initErr        error
+)
+
 func init() {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
-		printErrorAndExit(err)
+		initErr = err
+		return
 	}
 
 	config.bds, err = xdg.NewBaseDirectorySpecification()
 	if err != nil {
-		printErrorAndExit(err)
+		initErr = err
+		return
 	}
 
 	persistentFlags := rootCmd.PersistentFlags()
@@ -105,19 +113,23 @@ func init() {
 			}
 		case os.IsNotExist(err):
 		default:
-			printErrorAndExit(err)
+			initErr = err
 		}
 	})
 }
 
 // Execute executes the root command.
-func Execute() {
+func Execute() error {
+	if initErr != nil {
+		return initErr
+	}
+
 	var versionComponents []string
 	if VersionStr != "" {
 		var err error
 		Version, err = semver.NewVersion(strings.TrimPrefix(VersionStr, "v"))
 		if err != nil {
-			printErrorAndExit(err)
+			return err
 		}
 		versionComponents = append(versionComponents, VersionStr)
 	} else {
@@ -134,9 +146,7 @@ func Execute() {
 	}
 	rootCmd.Version = strings.Join(versionComponents, ", ")
 
-	if err := rootCmd.Execute(); err != nil {
-		printErrorAndExit(err)
-	}
+	return rootCmd.Execute()
 }
 
 func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error {
