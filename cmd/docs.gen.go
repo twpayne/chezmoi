@@ -2077,14 +2077,18 @@ func init() {
 		"\n" +
 		"### `execute-template` [*templates*]\n" +
 		"\n" +
-		"Write the result of evaluating *templates* to stdout. This is useful for testing\n" +
-		"templates or for calling chezmoi from other scripts. *templates* are interpeted\n" +
-		"as literal template data, with no whitespace added to the output between\n" +
-		"arguments. If no templates are specified, the template data are read from stdin.\n" +
+		"Execute *templates*. This is useful for testing templates or for calling chezmoi\n" +
+		"from other scripts. *templates* are interpeted as literal templates, with no\n" +
+		"whitespace added to the output between arguments. If no templates are specified,\n" +
+		"the template is read from stdin.\n" +
 		"\n" +
 		"#### `--init`, `-i`\n" +
 		"\n" +
 		"Include simulated functions only available during `chezmoi init`.\n" +
+		"\n" +
+		"#### '--output', '-o' *filename*\n" +
+		"\n" +
+		"Write the output to *filename* instead of stdout.\n" +
 		"\n" +
 		"#### `--promptString`, `-p` *pairs*\n" +
 		"\n" +
