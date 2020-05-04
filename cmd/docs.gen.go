@@ -253,7 +253,7 @@ func init() {
 		"* [gpg encryption fails. What could be wrong?](#gpg-encryption-fails-what-could-be-wrong)\n" +
 		"* [I'm getting errors trying to build chezmoi from source](#im-getting-errors-trying-to-build-chezmoi-from-source)\n" +
 		"* [What inspired chezmoi?](#what-inspired-chezmoi)\n" +
-		"* [Can I use chezmoi outside my home directory?](#can-i-use-chezmoi-outside-my-home-directory)\n" +
+		"* [Can I use chezmoi to manage files outside my home directory?](#can-i-use-chezmoi-to-manage-files-outside-my-home-directory)\n" +
 		"* [Where does the name \"chezmoi\" come from?](#where-does-the-name-chezmoi-come-from)\n" +
 		"* [What other questions have been asked about chezmoi?](#what-other-questions-have-been-asked-about-chezmoi)\n" +
 		"* [Where do I ask a question that isn't answered here?](#where-do-i-ask-a-question-that-isnt-answered-here)\n" +
@@ -450,16 +450,42 @@ func init() {
 		"focus of chezmoi will always be personal home directory management. If your\n" +
 		"needs grow beyond that, switch to a whole system configuration management tool.\n" +
 		"\n" +
-		"## Can I use chezmoi outside my home directory?\n" +
+		"## Can I use chezmoi to manage files outside my home directory?\n" +
 		"\n" +
-		"chezmoi, by default, operates on your home directory, but this can be overridden\n" +
-		"with the `--destination` command line flag or by specifying `destDir` in your config\n" +
-		"file. In theory, you could use chezmoi to manage any aspect of your filesystem.\n" +
-		"That said, although you can do this, you probably shouldn't. Existing\n" +
-		"configuration management tools like [Puppet](https://puppet.com/),\n" +
-		"[Chef](https://www.chef.io/chef/), [Ansible](https://www.ansible.com/), and\n" +
-		"[Salt](https://www.saltstack.com/) are much better suited to whole system\n" +
-		"configuration management.\n" +
+		"In practice, yes, you can, but this is strongly discouraged beyond using your\n" +
+		"system's package manager to install the packages you need.\n" +
+		"\n" +
+		"chezmoi is designed to operate on your home directory, and is explicitly not a\n" +
+		"full system configuration management tool. That said, there are some ways to\n" +
+		"have chezmoi manage a few files outside your home directory.\n" +
+		"\n" +
+		"chezmoi's scripts can execute arbitrary commands, so you can use a `run_` script\n" +
+		"that is run every time you run `chezmoi apply`, to, for example:\n" +
+		"\n" +
+		"* Make the target file outside your home directory a symlink to a file managed\n" +
+		"  by chezmoi in your home directory.\n" +
+		"* Copy a file managed by chezmoi inside your home directory to the target file.\n" +
+		"* Execute a template with `chezmoi execute-template --output=filename template`\n" +
+		"  where `filename` is outside the target directory.\n" +
+		"\n" +
+		"chezmoi executes all scripts as the user executing chezmoi, so you may need to\n" +
+		"add extra privilege elevation commands like `sudo` or `PowerShell start -verb\n" +
+		"runas -wait` to your script.\n" +
+		"\n" +
+		"chezmoi, by default, operates on your home directory but this can be overridden\n" +
+		"with the `--destination` command line flag or by specifying `destDir` in your\n" +
+		"config file, and could even be the root directory (`/` or `C:\\`). This allows\n" +
+		"you, in theory, to use chezmoi to manage any file in your filesystem, but this\n" +
+		"usage is extremely strongly discouraged.\n" +
+		"\n" +
+		"If your needs extend beyond modifying a handful of files outside your target\n" +
+		"system, then existing configuration management tools like\n" +
+		"[Puppet](https://puppet.com/), [Chef](https://www.chef.io/chef/),\n" +
+		"[Ansible](https://www.ansible.com/), and [Salt](https://www.saltstack.com/) are\n" +
+		"much better suited - and of couse can be called from a chezmoi `run_` script.\n" +
+		"Put your Puppet Manifests, Chef Recipes, Ansible Modules, and Salt Modules in a\n" +
+		"directory ignored by `.chezmoiignore` so they do not pollute your home\n" +
+		"directory. \n" +
 		"\n" +
 		"## Where does the name \"chezmoi\" come from?\n" +
 		"\n" +
