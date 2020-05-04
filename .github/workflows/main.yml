@@ -24,7 +24,7 @@ jobs:
     - name: Generate
       if: matrix.os == 'ubuntu-latest'
       run: |
-        go generate ./...
+        go generate
         git diff --exit-code
     - name: Build
       run: go build ./...
