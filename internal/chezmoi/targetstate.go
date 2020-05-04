@@ -399,11 +399,11 @@ func (ts *TargetState) ExecuteTemplateData(name string, data []byte) ([]byte, er
 			return nil, err
 		}
 	}
-	output := &bytes.Buffer{}
-	if err = tmpl.ExecuteTemplate(output, name, ts.TemplateData); err != nil {
+	sb := &strings.Builder{}
+	if err = tmpl.ExecuteTemplate(sb, name, ts.TemplateData); err != nil {
 		return nil, err
 	}
-	return output.Bytes(), nil
+	return []byte(sb.String()), nil
 }
 
 // Get returns the state of the given target, or nil if no such target is found.

@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"bufio"
-	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -230,11 +229,11 @@ func (c *Config) autoCommit(vcs VCS) error {
 	if err != nil {
 		return err
 	}
-	b := &bytes.Buffer{}
-	if err := commitMessageTmpl.Execute(b, status); err != nil {
+	sb := &strings.Builder{}
+	if err := commitMessageTmpl.Execute(sb, status); err != nil {
 		return err
 	}
-	commitArgs := vcs.CommitArgs(b.String())
+	commitArgs := vcs.CommitArgs(sb.String())
 	return c.run(c.SourceDir, c.SourceVCS.Command, commitArgs...)
 }
 

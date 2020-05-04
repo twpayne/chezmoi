@@ -1,9 +1,9 @@
 package cmd
 
 import (
-	"bytes"
 	"io/ioutil"
 	"strconv"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -46,7 +46,7 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 	if err != nil {
 		return err
 	}
-	output := &bytes.Buffer{}
+	output := &strings.Builder{}
 	switch len(args) {
 	case 0:
 		data, err := ioutil.ReadAll(c.Stdin)
@@ -73,8 +73,8 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 	}
 
 	if c.executeTemplate.output == "" {
-		_, err = c.Stdout.Write(output.Bytes())
+		_, err = c.Stdout.Write([]byte(output.String()))
 		return err
 	}
-	return c.fs.WriteFile(c.executeTemplate.output, output.Bytes(), 0o666)
+	return c.fs.WriteFile(c.executeTemplate.output, []byte(output.String()), 0o666)
 }
