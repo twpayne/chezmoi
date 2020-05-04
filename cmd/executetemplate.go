@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bytes"
 	"io/ioutil"
 	"strconv"
 
@@ -9,6 +10,7 @@ import (
 
 type executeTemplateCmdConfig struct {
 	init         bool
+	output       string
 	promptString map[string]string
 }
 
@@ -26,6 +28,7 @@ func init() {
 
 	persistentFlags := executeTemplateCmd.PersistentFlags()
 	persistentFlags.BoolVarP(&config.executeTemplate.init, "init", "i", false, "simulate chezmoi init")
+	persistentFlags.StringVarP(&config.executeTemplate.output, "output", "o", "", "output filename")
 	persistentFlags.StringToStringVarP(&config.executeTemplate.promptString, "promptString", "p", nil, "simulate promptString")
 }
 
@@ -43,6 +46,7 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 	if err != nil {
 		return err
 	}
+	output := &bytes.Buffer{}
 	switch len(args) {
 	case 0:
 		data, err := ioutil.ReadAll(c.Stdin)
@@ -53,18 +57,24 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 		if err != nil {
 			return err
 		}
-		_, err = c.Stdout.Write(result)
-		return err
+		if _, err = output.Write(result); err != nil {
+			return err
+		}
 	default:
 		for i, arg := range args {
 			result, err := ts.ExecuteTemplateData("arg"+strconv.Itoa(i+1), []byte(arg))
 			if err != nil {
 				return err
 			}
-			if _, err := c.Stdout.Write(result); err != nil {
+			if _, err := output.Write(result); err != nil {
 				return err
 			}
 		}
-		return nil
 	}
+
+	if c.executeTemplate.output == "" {
+		_, err = c.Stdout.Write(output.Bytes())
+		return err
+	}
+	return c.fs.WriteFile(c.executeTemplate.output, output.Bytes(), 0o666)
 }

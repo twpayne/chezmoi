@@ -240,15 +240,18 @@ var helps = map[string]help{
 	"execute-template": {
 		long: "" +
 			"Description:\n" +
-			"  Write the result of evaluating *templates* to stdout. This is useful for\n" +
-			"  testing templates or for calling chezmoi from other scripts. *templates* are\n" +
-			"  interpeted as literal template data, with no whitespace added to the output\n" +
-			"  between arguments. If no templates are specified, the template data are read\n" +
-			"  from stdin.\n" +
+			"  Execute *templates*. This is useful for testing templates or for calling\n" +
+			"  chezmoi from other scripts. *templates* are interpeted as literal templates,\n" +
+			"  with no whitespace added to the output between arguments. If no templates are\n" +
+			"  specified, the template is read from stdin.\n" +
 			"\n" +
 			"  `--init`, `-i`\n" +
 			"\n" +
 			"  Include simulated functions only available during `chezmoi init`.\n" +
+			"\n" +
+			"  '--output', '-o' *filename*\n" +
+			"\n" +
+			"  Write the output to *filename* instead of stdout.\n" +
 			"\n" +
 			"  `--promptString`, `-p` *pairs*\n" +
 			"\n" +

@@ -16,7 +16,7 @@
 * [gpg encryption fails. What could be wrong?](#gpg-encryption-fails-what-could-be-wrong)
 * [I'm getting errors trying to build chezmoi from source](#im-getting-errors-trying-to-build-chezmoi-from-source)
 * [What inspired chezmoi?](#what-inspired-chezmoi)
-* [Can I use chezmoi outside my home directory?](#can-i-use-chezmoi-outside-my-home-directory)
+* [Can I use chezmoi to manage files outside my home directory?](#can-i-use-chezmoi-to-manage-files-outside-my-home-directory)
 * [Where does the name "chezmoi" come from?](#where-does-the-name-chezmoi-come-from)
 * [What other questions have been asked about chezmoi?](#what-other-questions-have-been-asked-about-chezmoi)
 * [Where do I ask a question that isn't answered here?](#where-do-i-ask-a-question-that-isnt-answered-here)
@@ -213,16 +213,42 @@ Puppet is a slow overkill for managing your personal configuration files. The
 focus of chezmoi will always be personal home directory management. If your
 needs grow beyond that, switch to a whole system configuration management tool.
 
-## Can I use chezmoi outside my home directory?
+## Can I use chezmoi to manage files outside my home directory?
 
-chezmoi, by default, operates on your home directory, but this can be overridden
-with the `--destination` command line flag or by specifying `destDir` in your config
-file. In theory, you could use chezmoi to manage any aspect of your filesystem.
-That said, although you can do this, you probably shouldn't. Existing
-configuration management tools like [Puppet](https://puppet.com/),
-[Chef](https://www.chef.io/chef/), [Ansible](https://www.ansible.com/), and
-[Salt](https://www.saltstack.com/) are much better suited to whole system
-configuration management.
+In practice, yes, you can, but this is strongly discouraged beyond using your
+system's package manager to install the packages you need.
+
+chezmoi is designed to operate on your home directory, and is explicitly not a
+full system configuration management tool. That said, there are some ways to
+have chezmoi manage a few files outside your home directory.
+
+chezmoi's scripts can execute arbitrary commands, so you can use a `run_` script
+that is run every time you run `chezmoi apply`, to, for example:
+
+* Make the target file outside your home directory a symlink to a file managed
+  by chezmoi in your home directory.
+* Copy a file managed by chezmoi inside your home directory to the target file.
+* Execute a template with `chezmoi execute-template --output=filename template`
+  where `filename` is outside the target directory.
+
+chezmoi executes all scripts as the user executing chezmoi, so you may need to
+add extra privilege elevation commands like `sudo` or `PowerShell start -verb
+runas -wait` to your script.
+
+chezmoi, by default, operates on your home directory but this can be overridden
+with the `--destination` command line flag or by specifying `destDir` in your
+config file, and could even be the root directory (`/` or `C:\`). This allows
+you, in theory, to use chezmoi to manage any file in your filesystem, but this
+usage is extremely strongly discouraged.
+
+If your needs extend beyond modifying a handful of files outside your target
+system, then existing configuration management tools like
+[Puppet](https://puppet.com/), [Chef](https://www.chef.io/chef/),
+[Ansible](https://www.ansible.com/), and [Salt](https://www.saltstack.com/) are
+much better suited - and of couse can be called from a chezmoi `run_` script.
+Put your Puppet Manifests, Chef Recipes, Ansible Modules, and Salt Modules in a
+directory ignored by `.chezmoiignore` so they do not pollute your home
+directory. 
 
 ## Where does the name "chezmoi" come from?
 

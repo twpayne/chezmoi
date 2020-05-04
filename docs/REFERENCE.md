@@ -582,14 +582,18 @@ Edit the configuration file.
 
 ### `execute-template` [*templates*]
 
-Write the result of evaluating *templates* to stdout. This is useful for testing
-templates or for calling chezmoi from other scripts. *templates* are interpeted
-as literal template data, with no whitespace added to the output between
-arguments. If no templates are specified, the template data are read from stdin.
+Execute *templates*. This is useful for testing templates or for calling chezmoi
+from other scripts. *templates* are interpeted as literal templates, with no
+whitespace added to the output between arguments. If no templates are specified,
+the template is read from stdin.
 
 #### `--init`, `-i`
 
 Include simulated functions only available during `chezmoi init`.
+
+#### '--output', '-o' *filename*
+
+Write the output to *filename* instead of stdout.
 
 #### `--promptString`, `-p` *pairs*
 
