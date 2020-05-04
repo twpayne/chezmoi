@@ -1,8 +1,8 @@
 package cmd
 
 import (
-	"bytes"
 	"errors"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -30,7 +30,7 @@ func init() {
 }
 
 func (c *Config) runCompletion(cmd *cobra.Command, args []string) error {
-	output := &bytes.Buffer{}
+	output := &strings.Builder{}
 	switch args[0] {
 	case "bash":
 		if err := rootCmd.GenBashCompletion(output); err != nil {
@@ -49,8 +49,8 @@ func (c *Config) runCompletion(cmd *cobra.Command, args []string) error {
 	}
 
 	if c.completion.output == "" {
-		_, err := c.Stdout.Write(output.Bytes())
+		_, err := c.Stdout.Write([]byte(output.String()))
 		return err
 	}
-	return c.fs.WriteFile(c.completion.output, output.Bytes(), 0o666)
+	return c.fs.WriteFile(c.completion.output, []byte(output.String()), 0o666)
 }

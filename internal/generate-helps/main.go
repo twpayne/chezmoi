@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"bytes"
 	"flag"
 	"fmt"
 	"go/format"
@@ -209,8 +208,8 @@ func run() error {
 		InputFile:  *inputFile,
 		OutputFile: *outputFile,
 	}
-	buf := &bytes.Buffer{}
-	if err := outputTemplate.ExecuteTemplate(buf, "output", data); err != nil {
+	sb := &strings.Builder{}
+	if err := outputTemplate.ExecuteTemplate(sb, "output", data); err != nil {
 		return err
 	}
 
@@ -226,7 +225,7 @@ func run() error {
 		w = fw
 	}
 
-	output, err := format.Source(buf.Bytes())
+	output, err := format.Source([]byte(sb.String()))
 	if err != nil {
 		return err
 	}

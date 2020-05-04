@@ -7,6 +7,7 @@ import (
 	"go/format"
 	"io/ioutil"
 	"os"
+	"strings"
 	"text/template"
 )
 
@@ -32,14 +33,14 @@ func init() {
 )
 
 func printMultiLineString(s []byte) string {
-	b := &bytes.Buffer{}
+	sb := &strings.Builder{}
 	for i, line := range bytes.Split(s, []byte{'\n'}) {
 		if i != 0 {
-			b.WriteString(" +\n")
+			sb.WriteString(" +\n")
 		}
-		b.WriteString(fmt.Sprintf("%q", append(line, '\n')))
+		sb.WriteString(fmt.Sprintf("%q", append(line, '\n')))
 	}
-	return b.String()
+	return sb.String()
 }
 
 func run() error {
@@ -54,8 +55,8 @@ func run() error {
 		}
 	}
 
-	source := &bytes.Buffer{}
-	if err := outputTemplate.Execute(source, struct {
+	sb := &strings.Builder{}
+	if err := outputTemplate.Execute(sb, struct {
 		Tags   string
 		Assets map[string][]byte
 	}{
@@ -65,7 +66,7 @@ func run() error {
 		return err
 	}
 
-	formattedSource, err := format.Source(source.Bytes())
+	formattedSource, err := format.Source([]byte(sb.String()))
 	if err != nil {
 		return err
 	}
