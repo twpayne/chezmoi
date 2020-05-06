@@ -1558,7 +1558,7 @@ func init() {
 		"  * [`forget` *targets*](#forget-targets)\n" +
 		"  * [`git` [*arguments*]](#git-arguments)\n" +
 		"  * [`help` *command*](#help-command)\n" +
-		"  * [`hg` [*arguments]](#hg-arguments)\n" +
+		"  * [`hg` [*arguments*]](#hg-arguments)\n" +
 		"  * [`init` [*repo*]](#init-repo)\n" +
 		"  * [`import` *filename*](#import-filename)\n" +
 		"  * [`manage` *targets*](#manage-targets)\n" +
@@ -2146,7 +2146,7 @@ func init() {
 		"\n" +
 		"Print the help associated with *command*.\n" +
 		"\n" +
-		"### `hg` [*arguments]\n" +
+		"### `hg` [*arguments*]\n" +
 		"\n" +
 		"Run `hg` *arguments* in the source directory. Note that flags in *arguments*\n" +
 		"must occur after `--` to prevent chezmoi from interpreting them.\n" +
