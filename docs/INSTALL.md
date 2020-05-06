@@ -23,7 +23,7 @@ Install chezmoi with a single command.
 | OS           | Method     | Command                                                                                     |
 | ------------ | ---------- | ------------------------------------------------------------------------------------------- |
 | Linux        | snap       | `snap install chezmoi --classic`                                                            |
-| Linux        | Linuxbrew  | `brew install twpayne/taps/chezmoi`                                                         |
+| Linux        | Linuxbrew  | `brew install chezmoi`                                                                      |
 | Alpine Linux | apk        | `apk add chezmoi`                                                                           |
 | Arch Linux   | pacman     | `pacman -S chezmoi`                                                                         |
 | NixOS Linux  | nix-env    | `nix-env -i chezmoi`                                                                        |

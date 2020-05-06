@@ -1348,7 +1348,7 @@ func init() {
 		"| OS           | Method     | Command                                                                                     |\n" +
 		"| ------------ | ---------- | ------------------------------------------------------------------------------------------- |\n" +
 		"| Linux        | snap       | `snap install chezmoi --classic`                                                            |\n" +
-		"| Linux        | Linuxbrew  | `brew install twpayne/taps/chezmoi`                                                         |\n" +
+		"| Linux        | Linuxbrew  | `brew install chezmoi`                                                                      |\n" +
 		"| Alpine Linux | apk        | `apk add chezmoi`                                                                           |\n" +
 		"| Arch Linux   | pacman     | `pacman -S chezmoi`                                                                         |\n" +
 		"| NixOS Linux  | nix-env    | `nix-env -i chezmoi`                                                                        |\n" +
