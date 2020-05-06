@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="/book.min.a8b61185b89b0e211122339c7efd1c8edaa4ad4c0ae65f0074e99a4b31c1e393.css" integrity="sha256-qLYRhbibDiERIjOcfv0cjtqkrUwK5l8AdOmaSzHB45M=">
 
 
-<script defer src="/search.min.b32e4cf39b2a471a4dc51cf4627b0b745278a3b9449957e7a1b8db515a6a7d51.js" integrity="sha256-sy5M85sqRxpNxRz0YnsLdFJ4o7lEmVfnobjbUVpqfVE="></script>
+<script defer src="/search.min.7af7782d66ab1b956ca9df3cc416f8639fb501c3bb72f87ebb956c9db0610460.js" integrity="sha256-evd4LWarG5Vsqd88xBb4Y5&#43;1AcO7cvh&#43;u5VsnbBhBGA="></script>
 
 <!--
 Made with Book Theme
@@ -126,8 +126,11 @@ directory.</p>
 <h2 id="global-command-line-flags">Global command line flags</h2>
 <p>Command line flags override any values set in the configuration file.</p>
 <h3 id="--color-value"><code>--color</code> <em>value</em></h3>
-<p>Colorize diffs, <em>value</em> can be <code>on</code>, <code>off</code>, or <code>auto</code>. The default value is
-<code>auto</code> which will colorize diffs only if the output is a terminal.</p>
+<p>Colorize diffs, <em>value</em> can be <code>on</code>, <code>off</code>, <code>auto</code>, or any boolean-like value
+recognized by
+<a href="https://pkg.go.dev/strconv?tab=doc#ParseBool"><code>strconv.ParseBool</code></a>. The default
+value is <code>auto</code> which will colorize diffs only if the the environment variable
+<code>NO_COLOR</code> is not set and stdout is a terminal.</p>
 <h3 id="-c---config-filename"><code>-c</code>, <code>--config</code> <em>filename</em></h3>
 <p>Read the configuration from <em>filename</em>.</p>
 <h3 id="--debug"><code>--debug</code></h3>
@@ -158,9 +161,11 @@ timestamp.</p>
 <p>chezmoi searches for its configuration file according to the <a href="https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html">XDG Base Directory
 Specification</a>
 and supports all formats supported by
-<a href="https://github.com/spf13/viper"><code>github.com/spf13/viper</code></a>, namely JSON, TOML,
-YAML, macOS property file format, and HCL. The basename of the config file is
-chezmoi, and the first config file found is used.</p>
+<a href="https://github.com/spf13/viper"><code>github.com/spf13/viper</code></a>, namely
+<a href="https://www.json.org/json-en.html">JSON</a>,
+<a href="https://github.com/toml-lang/toml">TOML</a>, <a href="https://yaml.org/">YAML</a>, macOS
+property file format, and <a href="https://github.com/hashicorp/hcl">HCL</a>. The basename
+of the config file is <code>chezmoi</code>, and the first config file found is used.</p>
 <h3 id="configuration-variables">Configuration variables</h3>
 <p>The following configuration variables are available:</p>
 <table>
@@ -361,8 +366,6 @@ chezmoi, and the first config file found is used.</p>
 </tr>
 </tbody>
 </table>
-<p>In addition, a number of secret manager integrations add configuration
-variables. These are documented in the secret manager section.</p>
 <h2 id="source-state-attributes">Source state attributes</h2>
 <p>chezmoi stores the source state of files, symbolic links, and directories in
 regular files and directories in the source directory (<code>~/.local/share/chezmoi</code>
@@ -479,10 +482,9 @@ data:
 </code></pre>
 <h3 id="chezmoiignore"><code>.chezmoiignore</code></h3>
 <p>If a file called <code>.chezmoiignore</code> exists in the source state then it is
-interpreted as a set of patterns to ignore. Patterns are matched using the Go
-standard libary&rsquo;s <a href="https://pkg.go.dev/path/filepath?tab=doc#Match"><code>filepath.Match</code> pattern
-syntax</a> and match against the
-target path, not the source path.</p>
+interpreted as a set of patterns to ignore. Patterns are matched using
+<a href="https://pkg.go.dev/github.com/bmatcuk/doublestar?tab=doc#PathMatch"><code>doublestar.PathMatch</code></a>
+and match against the target path, not the source path.</p>
 <p>Patterns can be excluded by prefixing them with a <code>!</code> character. All excludes
 take priority over all includes.</p>
 <p>Comments are introduced with the <code>#</code> character and run until the end of the
@@ -635,11 +637,13 @@ chezmoi chattr noempty ~/.profile
 chezmoi chattr private,template ~/.netrc
 </code></pre>
 <h3 id="completion-shell"><code>completion</code> <em>shell</em></h3>
-<p>Output shell completion code for the specified shell (<code>bash</code>, <code>fish</code>, or <code>zsh</code>).</p>
+<p>Generate shell completion code for the specified shell (<code>bash</code>, <code>fish</code>, or
+<code>zsh</code>).</p>
+<h4 id="--output--o-filename"><code>--output</code>, <code>-o</code> <em>filename</em></h4>
+<p>Write the shell completion code to <em>filename</em> instead of stdout.</p>
 <h4 id="completion-examples"><code>completion</code> examples</h4>
 <pre><code>chezmoi completion bash
-chezmoi completion fish &gt; ~/.config/fish/completions/chezmoi.fish
-chezmoi completion zsh
+chezmoi completion fish --output ~/.config/fish/completions/chezmoi.fish
 </code></pre>
 <h3 id="data"><code>data</code></h3>
 <p>Write the computed template data in JSON format to stdout. The <code>data</code> command
@@ -660,12 +664,12 @@ be piped into it.</p>
 <p>Print the diff in <em>format</em>. The format can be set with the <code>diff.format</code>
 variable in the configuration file. Valid formats are:</p>
 <h5 id="chezmoi"><code>chezmoi</code></h5>
-<p>A mix of unified diffs and pseudo shell commands, equivalent to <code>chezmoi apply --dry-run --verbose</code>. They can be colorized and include scripts.</p>
+<p>A mix of unified diffs and pseudo shell commands, including scripts, equivalent
+to <code>chezmoi apply --dry-run --verbose</code>.</p>
 <h5 id="git"><code>git</code></h5>
-<p>A <a href="https://git-scm.com/docs/diff-format">git format diff</a>, without color and not
-including scripts. In version 2.0.0 of chezmoi, <code>git</code> format diffs will become
-the default and support color and scripts and the <code>chezmoi</code> format will be
-removed.</p>
+<p>A <a href="https://git-scm.com/docs/diff-format">git format diff</a>, excluding scripts. In
+version 2.0.0 of chezmoi, <code>git</code> format diffs will become the default and include
+scripts and the <code>chezmoi</code> format will be removed.</p>
 <h4 id="--no-pager"><code>--no-pager</code></h4>
 <p>Do not use the pager.</p>
 <h4 id="diff-examples"><code>diff</code> examples</h4>
@@ -718,14 +722,24 @@ chezmoi edit
 <pre><code>chezmoi edit-config
 </code></pre>
 <h3 id="execute-template-templates"><code>execute-template</code> [<em>templates</em>]</h3>
-<p>Write the result of evaluating <em>templates</em> to stdout. This is useful for testing
-templates or for calling chezmoi from other scripts. <em>templates</em> are interpeted
-as literal template data, with no whitespace added to the output between
-arguments. If no templates are specified, the template data are read from stdin.</p>
+<p>Execute <em>templates</em>. This is useful for testing templates or for calling chezmoi
+from other scripts. <em>templates</em> are interpeted as literal templates, with no
+whitespace added to the output between arguments. If no templates are specified,
+the template is read from stdin.</p>
+<h4 id="--init--i"><code>--init</code>, <code>-i</code></h4>
+<p>Include simulated functions only available during <code>chezmoi init</code>.</p>
+<h4 id="--output--o-filename-1">&lsquo;&ndash;output&rsquo;, &lsquo;-o&rsquo; <em>filename</em></h4>
+<p>Write the output to <em>filename</em> instead of stdout.</p>
+<h4 id="--promptstring--p-pairs"><code>--promptString</code>, <code>-p</code> <em>pairs</em></h4>
+<p>Simulate the <code>promptString</code> function with a function that returns values from
+<em>pairs</em>. <em>pairs</em> is a comma-separated list of <em>prompt</em><code>=</code><em>value</em> pairs. If
+<code>promptString</code> is called with a <em>prompt</em> that does not match any of <em>pairs</em>,
+then it returns <em>prompt</em> unchanged.</p>
 <h4 id="execute-template-examples"><code>execute-template</code> examples</h4>
 <pre><code>chezmoi execute-template '{{ .chezmoi.sourceDir }}'
 chezmoi execute-template '{{ .chezmoi.os }}' / '{{ .chezmoi.arch }}'
 echo '{{ .chezmoi | toJson }}' | chezmoi execute-template
+chezmoi execute-template --init --promptString email=john@home.org &lt; ~/.local/share/chezmoi/.chezmoi.toml.tmpl
 </code></pre>
 <h3 id="forget-targets"><code>forget</code> <em>targets</em></h3>
 <p>Remove <em>targets</em> from the source state, i.e. stop managing them.</p>
@@ -742,7 +756,7 @@ chezmoi git -- commit -m &quot;Add .gitconfig&quot;
 </code></pre>
 <h3 id="help-command"><code>help</code> <em>command</em></h3>
 <p>Print the help associated with <em>command</em>.</p>
-<h3 id="hg-arguments"><code>hg</code> [*arguments]</h3>
+<h3 id="hg-arguments"><code>hg</code> [<em>arguments</em>]</h3>
 <p>Run <code>hg</code> <em>arguments</em> in the source directory. Note that flags in <em>arguments</em>
 must occur after <code>--</code> to prevent chezmoi from interpreting them.</p>
 <h4 id="hg-examples"><code>hg</code> examples</h4>
@@ -868,10 +882,10 @@ chezmoi source-path ~/.bashrc
 <pre><code>chezmoi update
 </code></pre>
 <h3 id="upgrade"><code>upgrade</code></h3>
-<p>Upgrade chezmoi by downloading and installing a new version. This will call the
-GitHub API to determine if there is a new version of chezmoi available, and if
-so, download and attempt to install it in the same way as chezmoi was previously
-installed.</p>
+<p>Upgrade chezmoi by downloading and installing the latest released version. This
+will call the GitHub API to determine if there is a new version of chezmoi
+available, and if so, download and attempt to install it in the same way as
+chezmoi was previously installed.</p>
 <p>If chezmoi was installed with a package manager (<code>dpkg</code> or <code>rpm</code>) then <code>upgrade</code>
 will download a new package and install it, using <code>sudo</code> if it is installed.
 Otherwise, chezmoi will download the latest executable and replace the existing
@@ -899,10 +913,12 @@ specified first.</p>
 <h2 id="umask-configuration">Umask configuration</h2>
 <p>By default, chezmoi uses your current umask as set by your operating system and
 shell. chezmoi only stores crude permissions in its source state, namely in the
-<code>executable</code>  and <code>private</code> attributes, corresponding to the umasks of <code>0111</code>
-and <code>0077</code> respectively.</p>
+<code>executable</code>  and <code>private</code> attributes, corresponding to the umasks of <code>0o111</code>
+and <code>0o077</code> respectively.</p>
 <p>For machine-specific control of umask, set the <code>umask</code> configuration variable in
-chezmoi&rsquo;s configuration file.</p>
+chezmoi&rsquo;s configuration file, for example:</p>
+<pre><code>umask = 0o22
+</code></pre>
 <h2 id="template-execution">Template execution</h2>
 <p>chezmoi executes templates using
 <a href="https://pkg.go.dev/text/template"><code>text/template</code></a>. The result is treated
@@ -1194,7 +1210,7 @@ times with the same <em>key</em> will only invoke <code>vault</code> once.</p>
         <li><a href="#forget-targets"><code>forget</code> <em>targets</em></a></li>
         <li><a href="#git-arguments"><code>git</code> [<em>arguments</em>]</a></li>
         <li><a href="#help-command"><code>help</code> <em>command</em></a></li>
-        <li><a href="#hg-arguments"><code>hg</code> [*arguments]</a></li>
+        <li><a href="#hg-arguments"><code>hg</code> [<em>arguments</em>]</a></li>
         <li><a href="#init-repo"><code>init</code> [<em>repo</em>]</a></li>
         <li><a href="#import-filename"><code>import</code> <em>filename</em></a></li>
         <li><a href="#manage-targets"><code>manage</code> <em>targets</em></a></li>
