@@ -209,6 +209,7 @@ function _chezmoi_apply {
 
 function _chezmoi_archive {
   _arguments \
+    '(-o --output)'{-o,--output}'[output filename]:filename:_files' \
     '--color[colorize diffs]:' \
     '(-c --config)'{-c,--config}'[config file]:' \
     '--debug[write debug logs]' \
