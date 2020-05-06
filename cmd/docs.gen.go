@@ -305,26 +305,19 @@ func init() {
 		"\n" +
 		"* `chezmoi cd` opens a shell in the source directory, where you can run your\n" +
 		"  usual version control commands, like `git add` and `git commit`.\n" +
-		"\n" +
-		"* `chezmoi git` *arguments* and `chezmoi hg` *arguments* run `git` and `hg`\n" +
-		"  respectively in the source directory with *arguments*, for example `chezmoi\n" +
-		"  git add .`. If you're passing any flags, you'll need to use `--` to prevent\n" +
-		"  chezmoi from consuming them, for example `chezmoi git -- commit -m \"Update\n" +
-		"  dotfiles\"`.\n" +
-		"\n" +
-		"* `chezmoi source` *arguments* runs your configured version control system in\n" +
-		"  your source directory. It works in the same was as the `chezmoi git` and\n" +
-		"  `chezmoi hg` commands.\n" +
-		"\n" +
-		"* chezmoi has experimental support for automatically committing and pushing\n" +
-		"  changes to your git repo whenever you run a command. See the \"Explore\n" +
-		"  experimental features\" section in the how-to for more information.\n" +
+		"* `chezmoi git` and `chezmoi hg` run `git` and `hg` respectively in the source\n" +
+		"  directory and pass extra arguments to the command. If you're passing any\n" +
+		"  flags, you'll need to use `--` to prevent chezmoi from consuming them, for\n" +
+		"  example `chezmoi git -- commit -m \"Update dotfiles\"`.\n" +
+		"* `chezmoi source` runs your configured version control system in your source\n" +
+		"  directory. It works in the same way as the `chezmoi git` and `chezmoi hg`\n" +
+		"  commands, but uses `sourceVCS.command`.\n" +
 		"\n" +
 		"## How do I only run a script when a file has changed?\n" +
 		"\n" +
 		"A common example of this is that you're using [Homebrew](https://brew.sh/) and\n" +
 		"have `.Brewfile` listing all the packages that you want installed and only want\n" +
-		"to run `brew bundle --global` when the contents of `.Brewfile` changes.\n" +
+		"to run `brew bundle --global` when the contents of `.Brewfile` have changed.\n" +
 		"\n" +
 		"chezmoi has two types of scripts: scripts that run every time, and scripts that\n" +
 		"only run when their contents change. chezmoi does not have a mechanism to run a\n" +

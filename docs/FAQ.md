@@ -68,26 +68,19 @@ You have several options:
 
 * `chezmoi cd` opens a shell in the source directory, where you can run your
   usual version control commands, like `git add` and `git commit`.
-
-* `chezmoi git` *arguments* and `chezmoi hg` *arguments* run `git` and `hg`
-  respectively in the source directory with *arguments*, for example `chezmoi
-  git add .`. If you're passing any flags, you'll need to use `--` to prevent
-  chezmoi from consuming them, for example `chezmoi git -- commit -m "Update
-  dotfiles"`.
-
-* `chezmoi source` *arguments* runs your configured version control system in
-  your source directory. It works in the same was as the `chezmoi git` and
-  `chezmoi hg` commands.
-
-* chezmoi has experimental support for automatically committing and pushing
-  changes to your git repo whenever you run a command. See the "Explore
-  experimental features" section in the how-to for more information.
+* `chezmoi git` and `chezmoi hg` run `git` and `hg` respectively in the source
+  directory and pass extra arguments to the command. If you're passing any
+  flags, you'll need to use `--` to prevent chezmoi from consuming them, for
+  example `chezmoi git -- commit -m "Update dotfiles"`.
+* `chezmoi source` runs your configured version control system in your source
+  directory. It works in the same way as the `chezmoi git` and `chezmoi hg`
+  commands, but uses `sourceVCS.command`.
 
 ## How do I only run a script when a file has changed?
 
 A common example of this is that you're using [Homebrew](https://brew.sh/) and
 have `.Brewfile` listing all the packages that you want installed and only want
-to run `brew bundle --global` when the contents of `.Brewfile` changes.
+to run `brew bundle --global` when the contents of `.Brewfile` have changed.
 
 chezmoi has two types of scripts: scripts that run every time, and scripts that
 only run when their contents change. chezmoi does not have a mechanism to run a
