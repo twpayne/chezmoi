@@ -64,10 +64,15 @@ var helps = map[string]help{
 	"archive": {
 		long: "" +
 			"Description:\n" +
-			"  Write a tar archive of the target state to stdout. This can be piped into\n" +
-			"  `tar` to inspect the target state.",
+			"  Generate a tar archive of the target state. This can be piped into `tar` to\n" +
+			"  inspect the target state.\n" +
+			"\n" +
+			"  `--output`, `-o` *filename*\n" +
+			"\n" +
+			"  Write the output to *filename* instead of stdout.",
 		example: "" +
-			"  chezmoi archive | tar tvf -",
+			"  chezmoi archive | tar tvf -\n" +
+			"  chezmoi archive --output=dotfiles.tar",
 	},
 	"cat": {
 		long: "" +

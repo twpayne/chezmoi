@@ -1911,12 +1911,17 @@ func init() {
 		"\n" +
 		"### `archive`\n" +
 		"\n" +
-		"Write a tar archive of the target state to stdout. This can be piped into `tar`\n" +
-		"to inspect the target state.\n" +
+		"Generate a tar archive of the target state. This can be piped into `tar` to\n" +
+		"inspect the target state.\n" +
+		"\n" +
+		"#### `--output`, `-o` *filename*\n" +
+		"\n" +
+		"Write the output to *filename* instead of stdout.\n" +
 		"\n" +
 		"#### `archive` examples\n" +
 		"\n" +
 		"    chezmoi archive | tar tvf -\n" +
+		"    chezmoi archive --output=dotfiles.tar\n" +
 		"\n" +
 		"### `cat` targets\n" +
 		"\n" +

@@ -216,7 +216,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		}
 	}
 	if !allOK {
-		os.Exit(1)
+		return errExitFailure
 	}
 	return nil
 }

@@ -80,6 +80,7 @@ type Config struct {
 	maxDiffDataSize   int
 	templateFuncs     template.FuncMap
 	add               addCmdConfig
+	archive           archiveCmdConfig
 	completion        completionCmdConfig
 	data              dataCmdConfig
 	dump              dumpCmdConfig
@@ -577,11 +578,6 @@ func panicOnError(err error) {
 	if err != nil {
 		panic(err)
 	}
-}
-
-func printErrorAndExit(err error) {
-	fmt.Printf("chezmoi: %v\n", err)
-	os.Exit(1)
 }
 
 // titilize returns s, titilized.

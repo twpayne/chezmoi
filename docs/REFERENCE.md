@@ -397,12 +397,17 @@ targets are specified, the state of all targets are ensured.
 
 ### `archive`
 
-Write a tar archive of the target state to stdout. This can be piped into `tar`
-to inspect the target state.
+Generate a tar archive of the target state. This can be piped into `tar` to
+inspect the target state.
+
+#### `--output`, `-o` *filename*
+
+Write the output to *filename* instead of stdout.
 
 #### `archive` examples
 
     chezmoi archive | tar tvf -
+    chezmoi archive --output=dotfiles.tar
 
 ### `cat` targets
 

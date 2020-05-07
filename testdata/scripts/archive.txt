@@ -1,0 +1,11 @@
+[windows] stop # FIXME
+[!exec:tar] stop
+
+cp golden/.bashrc $HOME/.bashrc
+chezmoi add $HOME/.bashrc
+chezmoi archive --output=user.tar
+exec tar -tf user.tar
+stdout ^\.bashrc$
+
+-- golden/.bashrc --
+# contents of .bashrc

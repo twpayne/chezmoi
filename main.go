@@ -7,7 +7,12 @@
 
 package main
 
-import "github.com/twpayne/chezmoi/cmd"
+import (
+	"fmt"
+	"os"
+
+	"github.com/twpayne/chezmoi/cmd"
+)
 
 var (
 	version = ""
@@ -16,10 +21,19 @@ var (
 	builtBy = ""
 )
 
-func main() {
+func run() error {
 	cmd.VersionStr = version
 	cmd.Commit = commit
 	cmd.Date = date
 	cmd.BuiltBy = builtBy
-	cmd.Execute()
+	return cmd.Execute()
+}
+
+func main() {
+	if err := run(); err != nil {
+		if s := err.Error(); s != "" {
+			fmt.Printf("chezmoi: %s\n", s)
+		}
+		os.Exit(1)
+	}
 }

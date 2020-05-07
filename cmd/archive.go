@@ -1,11 +1,19 @@
 package cmd
 
+// FIXME add -j option to bzip2 compress output
+// FIXME add -z option to gzip compress output
+
 import (
 	"archive/tar"
 	"os"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
+
+type archiveCmdConfig struct {
+	output string
+}
 
 var archiveCmd = &cobra.Command{
 	Use:     "archive",
@@ -19,6 +27,10 @@ var archiveCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(archiveCmd)
+
+	persistentFlags := archiveCmd.PersistentFlags()
+	persistentFlags.StringVarP(&config.archive.output, "output", "o", "", "output filename")
+	panicOnError(archiveCmd.MarkPersistentFlagFilename("output"))
 }
 
 func (c *Config) runArchiveCmd(cmd *cobra.Command, args []string) error {
@@ -26,9 +38,19 @@ func (c *Config) runArchiveCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	w := tar.NewWriter(c.Stdout)
+
+	output := &strings.Builder{}
+	w := tar.NewWriter(output)
 	if err := ts.Archive(w, os.FileMode(c.Umask)); err != nil {
 		return err
 	}
-	return w.Close()
+	if err := w.Close(); err != nil {
+		return err
+	}
+
+	if c.archive.output == "" {
+		_, err := c.Stdout.Write([]byte(output.String()))
+		return err
+	}
+	return c.fs.WriteFile(c.archive.output, []byte(output.String()), 0o666)
 }
