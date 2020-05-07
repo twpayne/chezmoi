@@ -1,5 +1,17 @@
 [windows] stop # FIXME
 
+# test chezmoi cd
 chezmoi cd
 exists $HOME/.local/share/chezmoi
 grep -count=1 $HOME/.local/share/chezmoi shell.log
+
+# test chezmoi cd with command with args
+[!exec:bash] stop
+env HOME=$WORK/home2/user
+chezmoi cd
+stdout version
+
+-- home2/user/.config/chezmoi/chezmoi.toml --
+[cd]
+    command = "bash"
+    args = ["--version"]

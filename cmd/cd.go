@@ -17,6 +17,7 @@ var cdCmd = &cobra.Command{
 
 type cdCmdConfig struct {
 	Command string
+	Args    []string
 }
 
 func init() {
@@ -32,5 +33,5 @@ func (c *Config) runCDCmd(cmd *cobra.Command, args []string) error {
 	if shellCommand == "" {
 		shellCommand, _ = shell.CurrentUserShell()
 	}
-	return c.run(c.SourceDir, shellCommand)
+	return c.run(c.SourceDir, shellCommand, c.CD.Args...)
 }

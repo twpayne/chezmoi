@@ -1695,6 +1695,7 @@ func init() {
 		"| Variable                | Type     | Default value             | Description                                         |\n" +
 		"| ----------------------- | -------- | ------------------------- | --------------------------------------------------- |\n" +
 		"| `bitwarden.command`     | string   | `bw`                      | Bitwarden CLI command                               |\n" +
+		"| `cd.args`               | []string | *none*                    | Extra args to shell in `cd` command                 |\n" +
 		"| `cd.command`            | string   | *none*                    | Shell to run in `cd` command                        |\n" +
 		"| `color`                 | string   | `auto`                    | Colorize diffs                                      |\n" +
 		"| `data`                  | any      | *none*                    | Template data                                       |\n" +
@@ -1936,8 +1937,9 @@ func init() {
 		"### `cd`\n" +
 		"\n" +
 		"Launch a shell in the source directory. chezmoi will launch the command set by\n" +
-		"the `cd.command` confiuration varaible. If this is not set, chezmoi will attempt\n" +
-		"to detect your shell and will finally fall back to an OS-specific default.\n" +
+		"the `cd.command` configuration variable with any extra arguments specified by\n" +
+		"`cd.args`. If this is not set, chezmoi will attempt to detect your shell and\n" +
+		"will finally fall back to an OS-specific default.\n" +
 		"\n" +
 		"#### `cd` examples\n" +
 		"\n" +
