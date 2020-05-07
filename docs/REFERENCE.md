@@ -351,7 +351,7 @@ directory. The `add` command accepts additional flags:
 #### `--autotemplate`
 
 Automatically generate a template by replacing strings with variable names from
-the `data` section of the config file. Longer subsitutions occur before shorter
+the `data` section of the config file. Longer substitutions occur before shorter
 ones. This implies the `--template` option.
 
 #### `-e`, `--empty`
@@ -590,7 +590,7 @@ Edit the configuration file.
 ### `execute-template` [*templates*]
 
 Execute *templates*. This is useful for testing templates or for calling chezmoi
-from other scripts. *templates* are interpeted as literal templates, with no
+from other scripts. *templates* are interpreted as literal templates, with no
 whitespace added to the output between arguments. If no templates are specified,
 the template is read from stdin.
 
@@ -782,7 +782,7 @@ To get a full list of available commands run:
 ### `source` [*args*]
 
 Execute the source version control system in the source directory with *args*.
-Note that any flags for the source version control system must be sepeated with
+Note that any flags for the source version control system must be separated with
 a `--` to stop chezmoi from reading them.
 
 #### `source` examples

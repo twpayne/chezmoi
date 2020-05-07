@@ -166,8 +166,8 @@ The file should look something like:
 To disable automatic variable detection, use the `--template` or `-T` option to
 `chezmoi add` instead of `--autotemplate`.
 
-Templates are often used to capture machine-specifc differences. For example, in
-your `~/.local/share/chezmoi/dot_bashrc.tmpl` you might have:
+Templates are often used to capture machine-specific differences. For example,
+in your `~/.local/share/chezmoi/dot_bashrc.tmpl` you might have:
 
     # common config
     export EDITOR=vi
@@ -229,9 +229,9 @@ will ignore all files beginning with an `f` except `foo`.
 
 ## Use completely separate config files on different machines
 
-chezmoi's templating functionality allows you to change a file's contents based
-on any variable. For example, if you want `~/.bashrc` to be different on Linux
-and macOS you would create a file in the source state called `dot_bashrc.tmpl`
+chezmoi's template functionality allows you to change a file's contents based on
+any variable. For example, if you want `~/.bashrc` to be different on Linux and
+macOS you would create a file in the source state called `dot_bashrc.tmpl`
 containing:
 
 ```
@@ -244,7 +244,7 @@ containing:
 
 However, if the differences between the two versions are so large that you'd
 prefer to use completely separate files in the source state, you can achieve
-this using a templated symbolic link. Create the following files:
+this using a symbolic link template. Create the following files:
 
 `symlink_dot_bashrc.tmpl`:
 
@@ -604,7 +604,7 @@ Documents can be retrieved with:
     {{- onepasswordDocument "uuid" -}}
 
 Note the extra `-` after the opening `{{` and before the closing `}}`. This
-instructs the templating language to remove and whitespace before and after the
+instructs the template language to remove and whitespace before and after the
 substitution. This removes any trailing newline added by your editor when saving
 the template.
 
