@@ -147,8 +147,8 @@ in your configuration file, for example:
 
 Note that this will apply to all files and directories that chezmoi manages and
 will ensure that none of them are group writeable. It is not currently possible
-to control group writability for individual files or directories. Please [open
-an issue on
+to control group write permissions for individual files or directories. Please
+[open an issue on
 GitHub](https://github.com/twpayne/chezmoi/issues/new?assignees=&labels=enhancement&template=02_feature_request.md&title=)
 if you need this.
 
@@ -238,7 +238,7 @@ If your needs extend beyond modifying a handful of files outside your target
 system, then existing configuration management tools like
 [Puppet](https://puppet.com/), [Chef](https://www.chef.io/chef/),
 [Ansible](https://www.ansible.com/), and [Salt](https://www.saltstack.com/) are
-much better suited - and of couse can be called from a chezmoi `run_` script.
+much better suited - and of course can be called from a chezmoi `run_` script.
 Put your Puppet Manifests, Chef Recipes, Ansible Modules, and Salt Modules in a
 directory ignored by `.chezmoiignore` so they do not pollute your home
 directory. 

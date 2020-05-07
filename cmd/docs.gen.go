@@ -172,7 +172,7 @@ func init() {
 		"  `$DATE` should be the date of the build in RFC3339 format, e.g.\n" +
 		"  `2019-11-23T18:29:25Z`.\n" +
 		"\n" +
-		"  `$BULIT_BY` should be a string indicating what mechanism was used to build the\n" +
+		"  `$BUILT_BY` should be a string indicating what mechanism was used to build the\n" +
 		"  binary, e.g. `goreleaser`.\n" +
 		"\n" +
 		"* Please enable cgo, if possible. chezmoi can be built and run without cgo, but\n" +
@@ -180,7 +180,7 @@ func init() {
 		"  correctly on some systems.\n" +
 		"\n" +
 		"* chezmoi includes a `docs` command which prints its documentation. By default,\n" +
-		"  the docs are embedded in the binary. You can disable this behaviour, and have\n" +
+		"  the docs are embedded in the binary. You can disable this behavior, and have\n" +
 		"  chezmoi read its docs from the filesystem by building with the `noembeddocs`\n" +
 		"  build tag and setting the directory where chezmoi can find them with the `-X\n" +
 		"  github.com/twpayne/chezmoi/cmd.DocDir=$DOCDIR` linker flag. For example:\n" +
@@ -384,8 +384,8 @@ func init() {
 		"\n" +
 		"Note that this will apply to all files and directories that chezmoi manages and\n" +
 		"will ensure that none of them are group writeable. It is not currently possible\n" +
-		"to control group writability for individual files or directories. Please [open\n" +
-		"an issue on\n" +
+		"to control group write permissions for individual files or directories. Please\n" +
+		"[open an issue on\n" +
 		"GitHub](https://github.com/twpayne/chezmoi/issues/new?assignees=&labels=enhancement&template=02_feature_request.md&title=)\n" +
 		"if you need this.\n" +
 		"\n" +
@@ -475,7 +475,7 @@ func init() {
 		"system, then existing configuration management tools like\n" +
 		"[Puppet](https://puppet.com/), [Chef](https://www.chef.io/chef/),\n" +
 		"[Ansible](https://www.ansible.com/), and [Salt](https://www.saltstack.com/) are\n" +
-		"much better suited - and of couse can be called from a chezmoi `run_` script.\n" +
+		"much better suited - and of course can be called from a chezmoi `run_` script.\n" +
 		"Put your Puppet Manifests, Chef Recipes, Ansible Modules, and Salt Modules in a\n" +
 		"directory ignored by `.chezmoiignore` so they do not pollute your home\n" +
 		"directory. \n" +
@@ -676,8 +676,8 @@ func init() {
 		"To disable automatic variable detection, use the `--template` or `-T` option to\n" +
 		"`chezmoi add` instead of `--autotemplate`.\n" +
 		"\n" +
-		"Templates are often used to capture machine-specifc differences. For example, in\n" +
-		"your `~/.local/share/chezmoi/dot_bashrc.tmpl` you might have:\n" +
+		"Templates are often used to capture machine-specific differences. For example,\n" +
+		"in your `~/.local/share/chezmoi/dot_bashrc.tmpl` you might have:\n" +
 		"\n" +
 		"    # common config\n" +
 		"    export EDITOR=vi\n" +
@@ -739,9 +739,9 @@ func init() {
 		"\n" +
 		"## Use completely separate config files on different machines\n" +
 		"\n" +
-		"chezmoi's templating functionality allows you to change a file's contents based\n" +
-		"on any variable. For example, if you want `~/.bashrc` to be different on Linux\n" +
-		"and macOS you would create a file in the source state called `dot_bashrc.tmpl`\n" +
+		"chezmoi's template functionality allows you to change a file's contents based on\n" +
+		"any variable. For example, if you want `~/.bashrc` to be different on Linux and\n" +
+		"macOS you would create a file in the source state called `dot_bashrc.tmpl`\n" +
 		"containing:\n" +
 		"\n" +
 		"```\n" +
@@ -754,7 +754,7 @@ func init() {
 		"\n" +
 		"However, if the differences between the two versions are so large that you'd\n" +
 		"prefer to use completely separate files in the source state, you can achieve\n" +
-		"this using a templated symbolic link. Create the following files:\n" +
+		"this using a symbolic link template. Create the following files:\n" +
 		"\n" +
 		"`symlink_dot_bashrc.tmpl`:\n" +
 		"\n" +
@@ -1114,7 +1114,7 @@ func init() {
 		"    {{- onepasswordDocument \"uuid\" -}}\n" +
 		"\n" +
 		"Note the extra `-` after the opening `{{` and before the closing `}}`. This\n" +
-		"instructs the templating language to remove and whitespace before and after the\n" +
+		"instructs the template language to remove and whitespace before and after the\n" +
 		"substitution. This removes any trailing newline added by your editor when saving\n" +
 		"the template.\n" +
 		"\n" +
@@ -1415,7 +1415,7 @@ func init() {
 		"| ---------- | ------- | ------------ | ------------------------------------------------------------------------------------------------------------------------- |\n" +
 		"| 2020-04-16 | 1.17.19 | Text (FR)    | [Chezmoi, visite guidée](https://blog.wescale.fr/2020/04/16/chezmoi-visite-guidee/)                                       |\n" +
 		"| 2020-04-03 | 1.7.17  | Text         | [Fedora Magazine: Take back your dotfiles with Chezmoi](https://fedoramagazine.org/take-back-your-dotfiles-with-chezmoi/) |\n" +
-		"| 2020-03-12 | 1.7.16  | Video        | [Manging Dotfiles with ChezMoi](https://www.youtube.com/watch?v=HXx6ugA98Qo)                                              |\n" +
+		"| 2020-03-12 | 1.7.16  | Video        | [Managing Dotfiles with ChezMoi](https://www.youtube.com/watch?v=HXx6ugA98Qo)                                             |\n" +
 		"| 2019-11-20 | 1.7.2   | Audio/video  | [FLOSS weekly episode 556: chezmoi](https://twit.tv/shows/floss-weekly/episodes/556)                                      |\n" +
 		"| 2019-01-10 | 0.0.11  | Text         | [Linux Fu: The kitchen sync](https://hackaday.com/2019/01/10/linux-fu-the-kitchen-sync/)                                  |\n" +
 		"\n" +
@@ -1865,7 +1865,7 @@ func init() {
 		"#### `--autotemplate`\n" +
 		"\n" +
 		"Automatically generate a template by replacing strings with variable names from\n" +
-		"the `data` section of the config file. Longer subsitutions occur before shorter\n" +
+		"the `data` section of the config file. Longer substitutions occur before shorter\n" +
 		"ones. This implies the `--template` option.\n" +
 		"\n" +
 		"#### `-e`, `--empty`\n" +
@@ -2104,7 +2104,7 @@ func init() {
 		"### `execute-template` [*templates*]\n" +
 		"\n" +
 		"Execute *templates*. This is useful for testing templates or for calling chezmoi\n" +
-		"from other scripts. *templates* are interpeted as literal templates, with no\n" +
+		"from other scripts. *templates* are interpreted as literal templates, with no\n" +
 		"whitespace added to the output between arguments. If no templates are specified,\n" +
 		"the template is read from stdin.\n" +
 		"\n" +
@@ -2296,7 +2296,7 @@ func init() {
 		"### `source` [*args*]\n" +
 		"\n" +
 		"Execute the source version control system in the source directory with *args*.\n" +
-		"Note that any flags for the source version control system must be sepeated with\n" +
+		"Note that any flags for the source version control system must be separated with\n" +
 		"a `--` to stop chezmoi from reading them.\n" +
 		"\n" +
 		"#### `source` examples\n" +

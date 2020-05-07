@@ -53,7 +53,7 @@ don't need chezmoi. Otherwise, read on...
   while still being able to control machine-specific details. You only need to
   maintain a single branch. Your dotfiles can be templates (using
   [`text/template`](https://pkg.go.dev/text/template) syntax). Predefined
-  variables allow you to change behaviour depending on operating system,
+  variables allow you to change behavior depending on operating system,
   architecture, and hostname.
 
 * Personal and secure: Nothing leaves your machine, unless you want it to. You

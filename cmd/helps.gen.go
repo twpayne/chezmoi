@@ -18,7 +18,7 @@ var helps = map[string]help{
 			"  `--autotemplate`\n" +
 			"\n" +
 			"  Automatically generate a template by replacing strings with variable names\n" +
-			"  from the `data` section of the config file. Longer subsitutions occur before\n" +
+			"  from the `data` section of the config file. Longer substitutions occur before\n" +
 			"  shorter ones. This implies the `--template` option.\n" +
 			"\n" +
 			"  `-e`, `--empty`\n" +
@@ -246,7 +246,7 @@ var helps = map[string]help{
 		long: "" +
 			"Description:\n" +
 			"  Execute *templates*. This is useful for testing templates or for calling\n" +
-			"  chezmoi from other scripts. *templates* are interpeted as literal templates,\n" +
+			"  chezmoi from other scripts. *templates* are interpreted as literal templates,\n" +
 			"  with no whitespace added to the output between arguments. If no templates are\n" +
 			"  specified, the template is read from stdin.\n" +
 			"\n" +
@@ -437,7 +437,7 @@ var helps = map[string]help{
 		long: "" +
 			"Description:\n" +
 			"  Execute the source version control system in the source directory with *args*.\n" +
-			"  Note that any flags for the source version control system must be sepeated\n" +
+			"  Note that any flags for the source version control system must be separated\n" +
 			"  with a `--` to stop chezmoi from reading them.",
 		example: "" +
 			"  chezmoi source init\n" +

@@ -136,7 +136,7 @@ If you're packaging chezmoi for an operating system or distribution:
   `$DATE` should be the date of the build in RFC3339 format, e.g.
   `2019-11-23T18:29:25Z`.
 
-  `$BULIT_BY` should be a string indicating what mechanism was used to build the
+  `$BUILT_BY` should be a string indicating what mechanism was used to build the
   binary, e.g. `goreleaser`.
 
 * Please enable cgo, if possible. chezmoi can be built and run without cgo, but
@@ -144,7 +144,7 @@ If you're packaging chezmoi for an operating system or distribution:
   correctly on some systems.
 
 * chezmoi includes a `docs` command which prints its documentation. By default,
-  the docs are embedded in the binary. You can disable this behaviour, and have
+  the docs are embedded in the binary. You can disable this behavior, and have
   chezmoi read its docs from the filesystem by building with the `noembeddocs`
   build tag and setting the directory where chezmoi can find them with the `-X
   github.com/twpayne/chezmoi/cmd.DocDir=$DOCDIR` linker flag. For example:
