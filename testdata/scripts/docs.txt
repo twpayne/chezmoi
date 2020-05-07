@@ -1,0 +1,8 @@
+chezmoi docs
+stdout 'chezmoi Reference Manual'
+
+chezmoi docs faq
+stdout 'chezmoi Frequently Asked Questions'
+
+chezmoi docs quickstart
+stdout 'chezmoi Quick Start Guide'

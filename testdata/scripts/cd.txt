@@ -1,0 +1,5 @@
+[windows] stop # FIXME
+
+chezmoi cd
+exists $HOME/.local/share/chezmoi
+grep -count=1 $HOME/.local/share/chezmoi shell.log
