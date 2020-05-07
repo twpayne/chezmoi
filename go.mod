@@ -28,6 +28,7 @@ require (
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
 	github.com/pelletier/go-toml v1.7.0
 	github.com/pkg/diff v0.0.0-20190930165518-531926345625
+	github.com/rogpeppe/go-internal v1.6.0
 	github.com/sergi/go-diff v1.1.0
 	github.com/spf13/afero v1.2.2 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
@@ -37,7 +38,7 @@ require (
 	github.com/spf13/viper v1.6.3
 	github.com/stretchr/objx v0.2.0 // indirect
 	github.com/stretchr/testify v1.4.0
-	github.com/twpayne/go-shell v0.1.1
+	github.com/twpayne/go-shell v0.2.0
 	github.com/twpayne/go-vfs v1.4.0
 	github.com/twpayne/go-vfsafero v1.0.0
 	github.com/twpayne/go-xdg/v3 v3.1.0
