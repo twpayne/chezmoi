@@ -1,13 +1,15 @@
-[windows] stop # FIXME
+# There is currently not a way to override the shell for testing on Windows
+[windows] skip
 
 # test chezmoi cd
 chezmoi cd
-exists $HOME/.local/share/chezmoi
-grep -count=1 $HOME/.local/share/chezmoi shell.log
+env CHEZMOI_HOME=$HOME${/}.local${/}share${/}chezmoi
+exists $CHEZMOI_HOME
+grep -count=1 ${CHEZMOI_HOME@R} shell.log
 
 # test chezmoi cd with command with args
 [!exec:bash] stop
-env HOME=$WORK/home2/user
+env HOME=$WORK${/}home2${/}user
 chezmoi cd
 stdout version
 

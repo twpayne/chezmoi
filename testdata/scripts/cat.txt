@@ -1,6 +1,4 @@
-[windows] stop # FIXME
-
-chezmoi cat $HOME/.bashrc
+chezmoi cat $HOME${/}.bashrc
 stdout '# contents of .bashrc'
 
 -- home/user/.local/share/chezmoi/dot_bashrc --

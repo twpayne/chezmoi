@@ -1,18 +1,16 @@
-[windows] stop # FIXME
-
 # test that verify returns success on an empty directory
 chezmoi verify
 
 # test that verify returns failure if the destination directory does not match
 # the target state
-mkdir $HOME/.local/share/chezmoi
-cp golden/empty_dot_hushlogin $HOME/.local/share/chezmoi/empty_dot_hushlogin
+mkdir $HOME${/}.local${/}share${/}chezmoi
+cp golden${/}empty_dot_hushlogin $HOME${/}.local${/}share${/}chezmoi${/}empty_dot_hushlogin
 ! chezmoi verify
 
 # test that verify returns success after the chezmoi apply
-! exists $HOME/.hushlogin
+! exists $HOME${/}.hushlogin
 chezmoi apply
-exists $HOME/.hushlogin
+exists $HOME${/}.hushlogin
 chezmoi verify
 
 -- golden/empty_dot_hushlogin --
