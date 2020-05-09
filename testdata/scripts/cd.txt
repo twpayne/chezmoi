@@ -9,7 +9,7 @@ grep -count=1 ${CHEZMOI_HOME@R} shell.log
 
 # test chezmoi cd with command with args
 [!exec:bash] stop
-env HOME=$WORK${/}home2${/}user
+chhome $WORK${/}home2${/}user
 chezmoi cd
 stdout version
 

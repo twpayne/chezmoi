@@ -26,6 +26,9 @@ func TestChezmoi(t *testing.T) {
 	}
 	testscript.Run(t, testscript.Params{
 		Dir: filepath.Join("testdata", "scripts"),
+		Cmds: map[string]func(*testscript.TestScript, bool, []string){
+			"chhome": chHome,
+		},
 		Condition: func(cond string) (bool, error) {
 			switch cond {
 			case "windows":
@@ -53,6 +56,27 @@ func testRun() int {
 		return 1
 	}
 	return 0
+}
+
+// chHome changes the home directory to its argument, creating the directory if
+// it does not already exists. It updates the HOME environment variable, and, if
+// running on Windows, USERPROFILE too.
+func chHome(ts *testscript.TestScript, neg bool, args []string) {
+	if neg {
+		ts.Fatalf("unsupported ! chhome")
+	}
+	if len(args) != 1 {
+		ts.Fatalf("usage: chhome dir")
+	}
+	homeDir := args[0]
+	if !filepath.IsAbs(homeDir) {
+		homeDir = filepath.Join(ts.Getenv("WORK"), homeDir)
+	}
+	ts.Check(os.MkdirAll(homeDir, 0o777))
+	ts.Setenv("HOME", homeDir)
+	if runtime.GOOS == "windows" {
+		ts.Setenv("USERPROFILE", homeDir)
+	}
 }
 
 func setupPOSIXEnv(env *testscript.Env) error {
