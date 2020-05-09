@@ -11,13 +11,13 @@ chezmoi git add dot_bashrc
 chezmoi git commit -- --message 'Add dot_bashrc'
 
 # test that chezmoi init fetches git repo but does not apply
-chhome $WORK${/}home2${/}user
+chhome home2${/}user
 chezmoi init file://$WORK/home/user/.local/share/chezmoi
 exists $HOME${/}.local${/}share${/}chezmoi${/}.git
 ! exists $HOME${/}.bashrc
 
 # test that chezmoi init --apply fetches a git repo and runs chezmoi apply
-chhome $WORK${/}home3${/}user
+chhome home3${/}user
 chezmoi init --apply file://$WORK/home/user/.local/share/chezmoi
 exists $HOME${/}.local${/}share${/}chezmoi${/}.git
 grep '# contents of .bashrc' $HOME${/}.bashrc

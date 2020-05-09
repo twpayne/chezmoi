@@ -7,12 +7,12 @@ chezmoi edit-config
 grep -count=2 '# edited' $HOME${/}.config${/}chezmoi${/}chezmoi.toml
 
 # test that edit-config edits an existing YAML config file
-chhome $WORK${/}home2${/}user
+chhome home2${/}user
 chezmoi edit-config
 grep -count=1 '# edited' $HOME${/}.config${/}chezmoi${/}chezmoi.yaml
 
 # test that edit-config reports a warning if the config is no longer valid
-chhome $WORK${/}home3${/}user
+chhome home3${/}user
 chezmoi verify
 ! stderr warning
 chezmoi edit-config

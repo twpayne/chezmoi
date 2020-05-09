@@ -16,19 +16,19 @@ chezmoi hg -- commit -m 'Add dot_bashrc'
 [windows] stop 'Backslash characters in file:// URLs confuse hg on Windows'
 
 # test that chezmoi init clones a mercurial repo
-chhome $WORK${/}home2${/}user
+chhome home2${/}user
 chezmoi init --apply file://$WORK/home/user/.local/share/chezmoi
 exists $HOME${/}.local${/}share${/}chezmoi${/}.hg
 cmp $HOME${/}.bashrc $WORK${/}home${/}user${/}.bashrc
 
 # create another commit
-chhome $WORK${/}home${/}user
+chhome home${/}user
 chezmoi edit $HOME${/}.bashrc
 chezmoi hg -- add dot_bashrc
 chezmoi hg -- commit -m 'Update dot_bashrc'
 
 # test that chezmoi update pulls from a mercurial repo
-chhome $WORK${/}home2${/}user
+chhome home2${/}user
 chezmoi update
 grep '# edited' $HOME${/}.bashrc
 

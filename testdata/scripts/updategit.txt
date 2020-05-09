@@ -7,18 +7,18 @@ chezmoi git -- add dot_bashrc
 chezmoi git -- commit -m 'Add dot_bashrc'
 
 # test chezmoi init --apply
-chhome $WORK${/}home2${/}user
+chhome home2${/}user
 chezmoi init --apply file://$WORK/home/user/.local/share/chezmoi
 cmp $HOME${/}.bashrc $WORK${/}home${/}user${/}.bashrc
 
 # create a new commit
-chhome $WORK${/}home${/}user
+chhome home${/}user
 chezmoi edit $HOME${/}.bashrc
 chezmoi git -- add dot_bashrc
 chezmoi git -- commit -m 'Update dot_bashrc'
 
 # test chezmoi update
-chhome $WORK${/}home2${/}user
+chhome home2${/}user
 chezmoi update
 grep '# edited' $HOME${/}.bashrc
 
