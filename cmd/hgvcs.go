@@ -27,7 +27,7 @@ func (hgVCS) ParseStatusOutput(output []byte) (interface{}, error) {
 }
 
 func (hgVCS) PullArgs() []string {
-	return []string{"pull", "--rebase", "--update"}
+	return []string{"pull", "--update"}
 }
 
 func (hgVCS) PushArgs() []string {
