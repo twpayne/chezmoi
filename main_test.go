@@ -99,9 +99,9 @@ func setupPOSIXEnv(env *testscript.Env) error {
 	})
 }
 
-// Set up the testing environment for Windows.  Works the same as on POSIX with
-// the exception that there isn't currently a convenient way to override the
-// shell, so that feature is skipped.
+// setupWindowsEnv sets up the testing environment for Windows.  Works the same
+// as on POSIX with the exception that there isn't currently a convenient way
+// to override the shell, so that feature is skipped.
 func setupWindowsEnv(env *testscript.Env) error {
 	binDir := filepath.Join(env.WorkDir, "bin")
 	env.Setenv("EDITOR", filepath.Join(binDir, "editor.cmd"))
