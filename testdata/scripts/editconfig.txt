@@ -1,25 +1,25 @@
-[windows] stop # FIXME
-
 # test that edit-config creates a config file if needed
 chezmoi edit-config
-grep -count=1 '# edited' $HOME/.config/chezmoi/chezmoi.toml
+grep -count=1 '# edited' $HOME${/}.config${/}chezmoi${/}chezmoi.toml
 
 # test that edit-config edits an existing config file
 chezmoi edit-config
-grep -count=2 '# edited' $HOME/.config/chezmoi/chezmoi.toml
+grep -count=2 '# edited' $HOME${/}.config${/}chezmoi${/}chezmoi.toml
 
 # test that edit-config edits an existing YAML config file
-env HOME=$WORK/home2/user
+env HOME=$WORK${/}home2${/}user
+[windows] env USERPROFILE=$HOME
 chezmoi edit-config
-grep -count=1 '# edited' $HOME/.config/chezmoi/chezmoi.yaml
+grep -count=1 '# edited' $HOME${/}.config${/}chezmoi${/}chezmoi.yaml
 
 # test that edit-config reports a warning if the config is no longer valid
-env HOME=$WORK/home3/user
+env HOME=$WORK${/}home3${/}user
+[windows] env USERPROFILE=$HOME
 chezmoi verify
 ! stderr warning
 chezmoi edit-config
 stderr warning
-grep -count=1 '# edited' $HOME/.config/chezmoi/chezmoi.json
+grep -count=1 '# edited' $HOME${/}.config${/}chezmoi${/}chezmoi.json
 
 -- home2/user/.config/chezmoi/chezmoi.yaml --
 data:

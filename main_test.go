@@ -99,9 +99,33 @@ func setupPOSIXEnv(env *testscript.Env) error {
 	})
 }
 
+// setupWindowsEnv sets up the testing environment for Windows.  Works the same
+// as on POSIX with the exception that there isn't currently a convenient way
+// to override the shell, so that feature is skipped.
 func setupWindowsEnv(env *testscript.Env) error {
-	// FIXME
-	return nil
+	binDir := filepath.Join(env.WorkDir, "bin")
+	env.Setenv("EDITOR", filepath.Join(binDir, "editor.cmd"))
+	env.Setenv("HOME", filepath.Join(env.WorkDir, "home", "user"))
+	env.Setenv("USERPROFILE", env.Getenv("HOME"))
+	env.Setenv("PATH", prependDirToPath(binDir, env.Getenv("PATH")))
+
+	return vfst.NewBuilder().Build(vfs.NewPathFS(vfs.HostOSFS, env.WorkDir), map[string]interface{}{
+		"/bin": map[string]interface{}{
+			"editor.cmd": &vfst.File{
+				Perm:     0o755,
+				Contents: []byte(`@for %%x in (%*) do echo # edited>>%%x`),
+			},
+		},
+		"/home/user": map[string]interface{}{
+			// .gitconfig is populated with a user and email to avoid warnings
+			// from git.
+			".gitconfig": strings.Join([]string{
+				`[user]`,
+				`    name = Username`,
+				`    email = user@home.org`,
+			}, "\n"),
+		},
+	})
 }
 
 func prependDirToPath(dir, path string) string {

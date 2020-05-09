@@ -1,0 +1,13 @@
+[!windows] stop
+
+# test chezmoi cd with command with args (Windows variant)
+env HOME=$WORK${/}home3${/}user
+env USERPROFILE=$WORK${/}home3${/}user
+chezmoi cd
+! stdout PowerShell
+stdout works
+
+-- home3/user/.config/chezmoi/chezmoi.toml --
+[cd]
+    command = "powershell"
+    args = ["-nologo", "-command", "Write-Host 'works'"]

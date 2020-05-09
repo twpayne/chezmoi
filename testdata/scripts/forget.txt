@@ -1,22 +1,20 @@
-[windows] stop # FIME
+chezmoi add $HOME${/}.bashrc
+cmp $HOME${/}.local${/}share${/}chezmoi${/}dot_bashrc $HOME${/}.bashrc
 
-chezmoi add $HOME/.bashrc
-cmp $HOME/.local/share/chezmoi/dot_bashrc $HOME/.bashrc
-
-chezmoi edit $HOME/.bashrc
-grep -count=1 '# edited' $HOME/.local/share/chezmoi/dot_bashrc
+chezmoi edit $HOME${/}.bashrc
+grep -count=1 '# edited' $HOME${/}.local${/}share${/}chezmoi${/}dot_bashrc
 
 chezmoi apply
-grep -count=1 '# edited' $HOME/.bashrc
+grep -count=1 '# edited' $HOME${/}.bashrc
 
-chezmoi edit $HOME/.bashrc
-grep -count=2 '# edited' $HOME/.local/share/chezmoi/dot_bashrc
+chezmoi edit $HOME${/}.bashrc
+grep -count=2 '# edited' $HOME${/}.local${/}share${/}chezmoi${/}dot_bashrc
 
-chezmoi forget $HOME/.bashrc
-! exists $HOME/.local/share/chezmoi/dot_bashrc
+chezmoi forget $HOME${/}.bashrc
+! exists $HOME${/}.local${/}share${/}chezmoi${/}dot_bashrc
 
 chezmoi apply
-grep -count=1 '# edited' $HOME/.bashrc
+grep -count=1 '# edited' $HOME${/}.bashrc
 
 -- home/user/.bashrc --
 # contents of .bashrc
