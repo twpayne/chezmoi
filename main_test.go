@@ -84,6 +84,8 @@ func setup(env *testscript.Env) error {
 	case "windows":
 		env.Setenv("EDITOR", filepath.Join(binDir, "editor.cmd"))
 		env.Setenv("USERPROFILE", homeDir)
+		// There is not currently a convenient way to override the shell on
+		// Windows.
 	default:
 		env.Setenv("EDITOR", filepath.Join(binDir, "editor"))
 		env.Setenv("SHELL", filepath.Join(binDir, "shell"))
@@ -104,14 +106,12 @@ func setup(env *testscript.Env) error {
 	switch runtime.GOOS {
 	case "windows":
 		root["/bin"] = map[string]interface{}{
-			// editor a non-interactive script that appends "# edited\n" to the
-			// end of each file.
+			// editor.cmd a non-interactive script that appends "# edited\n" to
+			// the end of each file.
 			"editor.cmd": &vfst.File{
 				Perm:     0o755,
 				Contents: []byte(`@for %%x in (%*) do echo # edited>>%%x`),
 			},
-			// The is not currently a convenient way to override the shell on
-			// Windows.
 		}
 	default:
 		root["/bin"] = map[string]interface{}{
