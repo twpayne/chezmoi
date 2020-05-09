@@ -1,0 +1,44 @@
+[!exec:hg] stop
+
+# test that chezmoi init creates a mercurial repo
+chezmoi init
+exists $HOME${/}.local${/}share${/}chezmoi${/}.hg
+
+# test that source runs hg
+chezmoi source -- --version
+stdout 'Mercurial Distributed SCM'
+
+# create a commit
+chezmoi add $HOME${/}.bashrc
+chezmoi hg -- add dot_bashrc
+chezmoi hg -- commit -m 'Add dot_bashrc'
+
+[windows] stop 'Backslash characters in file:// URLs confuse hg on Windows'
+
+# test that chezmoi init clones a mercurial repo
+chhome $WORK${/}home2${/}user
+chezmoi init --apply file://$WORK/home/user/.local/share/chezmoi
+exists $HOME${/}.local${/}share${/}chezmoi${/}.hg
+cmp $HOME${/}.bashrc $WORK${/}home${/}user${/}.bashrc
+
+# create another commit
+chhome $WORK${/}home${/}user
+chezmoi edit $HOME${/}.bashrc
+chezmoi hg -- add dot_bashrc
+chezmoi hg -- commit -m 'Update dot_bashrc'
+
+# test that chezmoi update pulls from a mercurial repo
+chhome $WORK${/}home2${/}user
+chezmoi update
+grep '# edited' $HOME${/}.bashrc
+
+-- home/user/.bashrc --
+# contents of .bashrc
+-- home/user/.config/chezmoi/chezmoi.toml --
+[sourceVCS]
+    command = "hg"
+    notGit = true
+-- home2/user/.config/chezmoi/chezmoi.toml --
+[sourceVCS]
+    command = "hg"
+    notGit = true

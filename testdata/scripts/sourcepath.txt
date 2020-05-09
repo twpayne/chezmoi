@@ -1,0 +1,12 @@
+chmod 700 $HOME${/}.local${/}share${/}chezmoi
+
+chezmoi source-path
+env WANT=$HOME${/}.local${/}share${/}chezmoi
+stdout ${WANT@R}
+
+chezmoi source-path $HOME${/}.bashrc
+env WANT=$HOME${/}.local${/}share${/}chezmoi${/}dot_bashrc
+stdout ${WANT@R}
+
+-- home/user/.local/share/chezmoi/dot_bashrc --
+# contents of .bashrc

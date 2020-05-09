@@ -1,0 +1,14 @@
+chmod 700 $HOME${/}.local${/}share${/}chezmoi
+
+exists $HOME${/}.bashrc
+exists $HOME${/}.inputrc
+chezmoi apply --remove
+! exists $HOME${/}.bashrc
+exists $HOME${/}.inputrc
+
+-- home/user/.bashrc --
+# contents of .bashrc
+-- home/user/.inputrc --
+# contents of .inputrc
+-- home/user/.local/share/chezmoi/.chezmoiremove --
+.bashrc

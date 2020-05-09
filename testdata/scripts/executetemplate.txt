@@ -1,0 +1,10 @@
+chmod 700 $HOME${/}.local${/}share${/}chezmoi
+
+chezmoi execute-template '{{ "output" }}'
+stdout output
+
+chezmoi execute-template '{{ template "partial" }}'
+stdout partial-output
+
+-- home/user/.local/share/chezmoi/.chezmoitemplates/partial --
+partial-output

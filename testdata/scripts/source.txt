@@ -1,0 +1,6 @@
+[!exec:git] stop
+
+chezmoi init
+
+chezmoi source -- --version
+stdout 'git version'
