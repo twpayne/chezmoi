@@ -1,0 +1,12 @@
+chezmoi add $HOME${/}.bashrc
+exists $HOME${/}.local${/}share${/}chezmoi${/}dot_bashrc
+
+chezmoi purge --force
+! exists $HOME${/}.config${/}share${/}chezmoi
+! exists $HOME${/}.local${/}share${/}chezmoi
+
+-- home/user/.bashrc --
+# contents of .bashrc
+-- home/user/.config/chezmoi/chezmoi.toml --
+[data]
+    email = "user@home.org"

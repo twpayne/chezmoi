@@ -1,0 +1,23 @@
+chezmoi add $HOME${/}.bashrc
+exists $HOME${/}.local${/}share${/}chezmoi${/}dot_bashrc
+
+chezmoi chattr +empty $HOME${/}.bashrc
+exists $HOME${/}.local${/}share${/}chezmoi${/}empty_dot_bashrc
+
+chezmoi chattr +template $HOME${/}.bashrc
+exists $HOME${/}.local${/}share${/}chezmoi${/}empty_dot_bashrc.tmpl
+
+chezmoi chattr +private $HOME${/}.bashrc
+exists $HOME${/}.local${/}share${/}chezmoi${/}private_empty_dot_bashrc.tmpl
+
+chezmoi chattr noempty $HOME${/}.bashrc
+exists $HOME${/}.local${/}share${/}chezmoi${/}private_dot_bashrc.tmpl
+
+chezmoi chattr -- -template $HOME${/}.bashrc
+exists $HOME${/}.local${/}share${/}chezmoi${/}private_dot_bashrc
+
+chezmoi chattr nop $HOME${/}.bashrc
+exists $HOME${/}.local${/}share${/}chezmoi${/}dot_bashrc
+
+-- home/user/.bashrc --
+# contents of .bashrc

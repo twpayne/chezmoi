@@ -10,19 +10,14 @@ cmp $HOME${/}.local${/}share${/}chezmoi${/}dot_bashrc $HOME${/}.bashrc
 chezmoi git add dot_bashrc
 chezmoi git commit -- --message 'Add dot_bashrc'
 
-
 # test that chezmoi init fetches git repo but does not apply
-env HOME=$WORK${/}home2${/}user
-[windows] env USERPROFILE=$HOME
-mkdir $HOME
+chhome home2${/}user
 chezmoi init file://$WORK/home/user/.local/share/chezmoi
 exists $HOME${/}.local${/}share${/}chezmoi${/}.git
 ! exists $HOME${/}.bashrc
 
 # test that chezmoi init --apply fetches a git repo and runs chezmoi apply
-env HOME=$WORK${/}home3${/}user
-[windows] env USERPROFILE=$HOME
-mkdir $HOME
+chhome home3${/}user
 chezmoi init --apply file://$WORK/home/user/.local/share/chezmoi
 exists $HOME${/}.local${/}share${/}chezmoi${/}.git
 grep '# contents of .bashrc' $HOME${/}.bashrc

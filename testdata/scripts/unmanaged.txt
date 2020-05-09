@@ -1,0 +1,27 @@
+chezmoi unmanaged
+stdout .bashrc
+stdout .inputrc
+
+chezmoi add $HOME${/}.bashrc
+chezmoi unmanaged
+! stdout .bashrc
+stdout .inputrc
+
+chezmoi add $HOME${/}.inputrc
+chezmoi unmanaged
+! stdout .bashrc
+! stdout .inputrc
+
+chezmoi forget $HOME${/}.bashrc
+chezmoi unmanaged
+stdout .bashrc
+! stdout .inputrc
+
+chezmoi forget $HOME${/}.inputrc
+! stdout .bashrc
+! stdout .inputrc
+
+-- home/user/.bashrc --
+# contents of .bashrc
+-- home/user/.inputrc --
+# contents of .inputrc

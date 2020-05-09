@@ -1,0 +1,6 @@
+chezmoi add $HOME${/}.bashrc
+chezmoi managed
+stdout '.bashrc'
+
+-- home/user/.bashrc --
+# contents of .bashrc

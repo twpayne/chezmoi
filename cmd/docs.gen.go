@@ -2274,7 +2274,7 @@ func init() {
 		"Run a secret manager's CLI, passing any extra arguments to the secret manager's\n" +
 		"CLI. This is primarily for verifying chezmoi's integration with your secret\n" +
 		"manager. Normally you would use template functions to retrieve secrets. Note\n" +
-		"that if you want to pass flags to the secret manager's CLU you will need to\n" +
+		"that if you want to pass flags to the secret manager's CLI you will need to\n" +
 		"separate them with `--` to prevent chezmoi from interpreting them.\n" +
 		"\n" +
 		"To get a full list of available commands run:\n" +
