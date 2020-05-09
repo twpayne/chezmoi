@@ -416,7 +416,7 @@ var helps = map[string]help{
 			"  Run a secret manager's CLI, passing any extra arguments to the secret\n" +
 			"  manager's CLI. This is primarily for verifying chezmoi's integration with your\n" +
 			"  secret manager. Normally you would use template functions to retrieve secrets.\n" +
-			"  Note that if you want to pass flags to the secret manager's CLU you will need\n" +
+			"  Note that if you want to pass flags to the secret manager's CLI you will need\n" +
 			"  to separate them with `--` to prevent chezmoi from interpreting them.\n" +
 			"\n" +
 			"  To get a full list of available commands run:\n" +
