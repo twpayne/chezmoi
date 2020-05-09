@@ -31,7 +31,7 @@ func init() {
 }
 
 func (c *Config) runSecretGopassCmd(cmd *cobra.Command, args []string) error {
-	return c.run("", c.Pass.Command, args...)
+	return c.run("", c.Gopass.Command, args...)
 }
 
 func (c *Config) gopassFunc(id string) string {
