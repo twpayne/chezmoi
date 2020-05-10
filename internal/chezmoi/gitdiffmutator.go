@@ -192,7 +192,9 @@ func (m *GitDiffMutator) WriteSymlink(oldname, newname string) error {
 
 func (m *GitDiffMutator) getFileMode(name string) (filemode.FileMode, os.FileInfo, error) {
 	info, err := m.m.Stat(name)
-	if err != nil {
+	if os.IsNotExist(err) {
+		return filemode.Empty, nil, nil
+	} else if err != nil {
 		return filemode.Empty, nil, err
 	}
 	fileMode, err := filemode.NewFromOSFileMode(info.Mode())

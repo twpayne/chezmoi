@@ -49,7 +49,7 @@ func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) error {
 	case "chezmoi":
 		c.mutator = chezmoi.NullMutator{}
 	case "git":
-		c.mutator = chezmoi.NewFSMutator(vfs.NewReadOnlyFS(config.fs))
+		c.mutator = chezmoi.NewFSMutator(vfs.NewReadOnlyFS(c.fs))
 	default:
 		return fmt.Errorf("unknown diff format: %q", c.Diff.Format)
 	}
