@@ -1,4 +1,4 @@
-chmod 700 $HOME${/}.local${/}share${/}chezmoi
+chmod 700 ${CHEZMOISOURCEDIR}
 
 exists $HOME${/}.bashrc
 exists $HOME${/}.inputrc

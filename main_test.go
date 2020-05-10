@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -28,6 +29,7 @@ func TestChezmoi(t *testing.T) {
 		Dir: filepath.Join("testdata", "scripts"),
 		Cmds: map[string]func(*testscript.TestScript, bool, []string){
 			"chhome": chHome,
+			"edit":   edit,
 		},
 		Condition: func(cond string) (bool, error) {
 			switch cond {
@@ -72,14 +74,36 @@ func chHome(ts *testscript.TestScript, neg bool, args []string) {
 	}
 }
 
+// edit edits all of its arguments by appending "# edited\n" to them.
+func edit(ts *testscript.TestScript, neg bool, args []string) {
+	if neg {
+		ts.Fatalf("unsupported ! edit")
+	}
+	for _, arg := range args {
+		filename := ts.MkAbs(arg)
+		data, err := ioutil.ReadFile(filename)
+		if err != nil {
+			ts.Fatalf("edit: %v", err)
+		}
+		data = append(data, []byte("# edited\n")...)
+		if err := ioutil.WriteFile(filename, data, 0o666); err != nil {
+			ts.Fatalf("edit: %v", err)
+		}
+	}
+}
+
 func setup(env *testscript.Env) error {
 	var (
-		binDir  = filepath.Join(env.WorkDir, "bin")
-		homeDir = filepath.Join(env.WorkDir, "home", "user")
+		binDir           = filepath.Join(env.WorkDir, "bin")
+		homeDir          = filepath.Join(env.WorkDir, "home", "user")
+		chezmoiConfigDir = filepath.Join(homeDir, ".config", "chezmoi")
+		chezmoiSourceDir = filepath.Join(homeDir, ".local", "share", "chezmoi")
 	)
 
 	env.Setenv("HOME", homeDir)
 	env.Setenv("PATH", prependDirToPath(binDir, env.Getenv("PATH")))
+	env.Setenv("CHEZMOICONFIGDIR", chezmoiConfigDir)
+	env.Setenv("CHEZMOISOURCEDIR", chezmoiSourceDir)
 	switch runtime.GOOS {
 	case "windows":
 		env.Setenv("EDITOR", filepath.Join(binDir, "editor.cmd"))
