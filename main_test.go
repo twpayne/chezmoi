@@ -118,6 +118,16 @@ func setup(env *testscript.Env) error {
 	// Fix permissions on the source directory, if it exists.
 	_ = os.Chmod(chezmoiSourceDir, 0o700)
 
+	// Fix permissions on any files in the bin directory.
+	infos, err := ioutil.ReadDir(binDir)
+	if err == nil {
+		for _, info := range infos {
+			if err := os.Chmod(filepath.Join(binDir, info.Name()), 0o755); err != nil {
+				return err
+			}
+		}
+	}
+
 	root := map[string]interface{}{
 		"/home/user": map[string]interface{}{
 			// .gitconfig is populated with a user and email to avoid warnings
