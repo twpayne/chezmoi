@@ -3,8 +3,8 @@ chezmoi verify
 
 # test that verify returns failure if the destination directory does not match
 # the target state
-mkdir $HOME${/}.local${/}share${/}chezmoi
-cp golden${/}empty_dot_hushlogin $HOME${/}.local${/}share${/}chezmoi${/}empty_dot_hushlogin
+mkdir ${CHEZMOISOURCEDIR}
+cp golden${/}empty_dot_hushlogin ${CHEZMOISOURCEDIR}${/}empty_dot_hushlogin
 ! chezmoi verify
 
 # test that verify returns success after the chezmoi apply

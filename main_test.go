@@ -86,8 +86,7 @@ func edit(ts *testscript.TestScript, neg bool, args []string) {
 			ts.Fatalf("edit: %v", err)
 		}
 		data = append(data, []byte("# edited\n")...)
-		// FIXME preserve permissions
-		if err := ioutil.WriteFile(filename, data, 0o644); err != nil {
+		if err := ioutil.WriteFile(filename, data, 0o666); err != nil {
 			ts.Fatalf("edit: %v", err)
 		}
 	}
@@ -95,12 +94,16 @@ func edit(ts *testscript.TestScript, neg bool, args []string) {
 
 func setup(env *testscript.Env) error {
 	var (
-		binDir  = filepath.Join(env.WorkDir, "bin")
-		homeDir = filepath.Join(env.WorkDir, "home", "user")
+		binDir           = filepath.Join(env.WorkDir, "bin")
+		homeDir          = filepath.Join(env.WorkDir, "home", "user")
+		chezmoiConfigDir = filepath.Join(homeDir, ".config", "chezmoi")
+		chezmoiSourceDir = filepath.Join(homeDir, ".local", "share", "chezmoi")
 	)
 
 	env.Setenv("HOME", homeDir)
 	env.Setenv("PATH", prependDirToPath(binDir, env.Getenv("PATH")))
+	env.Setenv("CHEZMOICONFIGDIR", chezmoiConfigDir)
+	env.Setenv("CHEZMOISOURCEDIR", chezmoiSourceDir)
 	switch runtime.GOOS {
 	case "windows":
 		env.Setenv("EDITOR", filepath.Join(binDir, "editor.cmd"))

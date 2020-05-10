@@ -1,10 +1,9 @@
 [!exec:tar] stop
 
-cp golden${/}.bashrc $HOME${/}.bashrc
 chezmoi add $HOME${/}.bashrc
 chezmoi archive --output=user.tar
 exec tar -tf user.tar
 stdout ^\.bashrc\s*$
 
--- golden/.bashrc --
+-- home/user/.bashrc --
 # contents of .bashrc

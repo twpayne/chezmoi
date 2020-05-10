@@ -1,17 +1,17 @@
 chezmoi add $HOME${/}.bashrc
-cmp $HOME${/}.local${/}share${/}chezmoi${/}dot_bashrc $HOME${/}.bashrc
+cmp ${CHEZMOISOURCEDIR}${/}dot_bashrc $HOME${/}.bashrc
 
-edit $HOME${/}.local${/}share${/}chezmoi${/}dot_bashrc
-grep -count=1 '# edited' $HOME${/}.local${/}share${/}chezmoi${/}dot_bashrc
+edit ${CHEZMOISOURCEDIR}/dot_bashrc
+grep -count=1 '# edited' ${CHEZMOISOURCEDIR}${/}dot_bashrc
 
 chezmoi apply
 grep -count=1 '# edited' $HOME${/}.bashrc
 
-edit $HOME${/}.local${/}share${/}chezmoi${/}dot_bashrc
-grep -count=2 '# edited' $HOME${/}.local${/}share${/}chezmoi${/}dot_bashrc
+edit ${CHEZMOISOURCEDIR}${/}dot_bashrc
+grep -count=2 '# edited' ${CHEZMOISOURCEDIR}${/}dot_bashrc
 
 chezmoi forget $HOME${/}.bashrc
-! exists $HOME${/}.local${/}share${/}chezmoi${/}dot_bashrc
+! exists ${CHEZMOISOURCEDIR}${/}dot_bashrc
 
 chezmoi apply
 grep -count=1 '# edited' $HOME${/}.bashrc

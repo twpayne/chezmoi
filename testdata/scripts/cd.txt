@@ -3,9 +3,7 @@
 
 # test chezmoi cd
 chezmoi cd
-env CHEZMOI_HOME=$HOME${/}.local${/}share${/}chezmoi
-exists $CHEZMOI_HOME
-grep -count=1 ${CHEZMOI_HOME@R} shell.log
+grep -count=1 ${CHEZMOISOURCEDIR@R} shell.log
 
 # test chezmoi cd with command with args
 [!exec:bash] stop

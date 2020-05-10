@@ -1,9 +1,9 @@
 chezmoi add $HOME${/}.bashrc
-exists $HOME${/}.local${/}share${/}chezmoi${/}dot_bashrc
+exists ${CHEZMOISOURCEDIR}${/}dot_bashrc
 
 chezmoi purge --force
-! exists $HOME${/}.config${/}share${/}chezmoi
-! exists $HOME${/}.local${/}share${/}chezmoi
+! exists ${CHEZMOICONFIGDIR}
+! exists ${CHEZMOISOURCEDIR}
 
 -- home/user/.bashrc --
 # contents of .bashrc

@@ -1,10 +1,10 @@
 # test that edit-config creates a config file if needed
 chezmoi edit-config
-grep -count=1 '# edited' $HOME${/}.config${/}chezmoi${/}chezmoi.toml
+grep -count=1 '# edited' ${CHEZMOICONFIGDIR}${/}chezmoi.toml
 
 # test that edit-config edits an existing config file
 chezmoi edit-config
-grep -count=2 '# edited' $HOME${/}.config${/}chezmoi${/}chezmoi.toml
+grep -count=2 '# edited' ${CHEZMOICONFIGDIR}${/}chezmoi.toml
 
 # test that edit-config edits an existing YAML config file
 chhome home2${/}user

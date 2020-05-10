@@ -2,7 +2,7 @@
 
 # test that chezmoi init creates a mercurial repo
 chezmoi init
-exists $HOME${/}.local${/}share${/}chezmoi${/}.hg
+exists ${CHEZMOISOURCEDIR}${/}.hg
 
 # test that source runs hg
 chezmoi source -- --version
@@ -18,12 +18,12 @@ chezmoi hg -- commit -m 'Add dot_bashrc'
 # test that chezmoi init clones a mercurial repo
 chhome home2${/}user
 chezmoi init --apply file://$WORK/home/user/.local/share/chezmoi
-exists $HOME${/}.local${/}share${/}chezmoi${/}.hg
+exists ${CHEZMOISOURCEDIR}${/}.hg
 cmp $HOME${/}.bashrc $WORK${/}home${/}user${/}.bashrc
 
 # create another commit
 chhome home${/}user
-edit $HOME${/}.local${/}share${/}chezmoi${/}dot_bashrc
+edit ${CHEZMOISOURCEDIR}${/}dot_bashrc
 chezmoi hg -- add dot_bashrc
 chezmoi hg -- commit -m 'Update dot_bashrc'
 
