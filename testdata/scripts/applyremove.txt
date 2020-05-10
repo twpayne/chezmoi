@@ -1,5 +1,3 @@
-chmod 700 ${CHEZMOISOURCEDIR}
-
 exists $HOME${/}.bashrc
 exists $HOME${/}.inputrc
 chezmoi apply --remove

@@ -1,5 +1,3 @@
-chmod 700 ${CHEZMOISOURCEDIR}
-
 chezmoi execute-template '{{ "output" }}'
 stdout output
 

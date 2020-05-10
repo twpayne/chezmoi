@@ -115,6 +115,9 @@ func setup(env *testscript.Env) error {
 		env.Setenv("SHELL", filepath.Join(binDir, "shell"))
 	}
 
+	// Fix permissions on the source directory, if it exists.
+	_ = os.Chmod(chezmoiSourceDir, 0o700)
+
 	root := map[string]interface{}{
 		"/home/user": map[string]interface{}{
 			// .gitconfig is populated with a user and email to avoid warnings
