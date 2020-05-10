@@ -23,7 +23,7 @@ cmp $HOME${/}.bashrc $WORK${/}home${/}user${/}.bashrc
 
 # create another commit
 chhome home${/}user
-chezmoi edit $HOME${/}.bashrc
+edit $HOME${/}.local${/}share${/}chezmoi${/}dot_bashrc
 chezmoi hg -- add dot_bashrc
 chezmoi hg -- commit -m 'Update dot_bashrc'
 

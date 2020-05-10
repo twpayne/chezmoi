@@ -1,0 +1,5 @@
+chezmoi edit $HOME/.bashrc
+grep -count=1 '# edited' $HOME/.local/share/chezmoi/dot_bashrc
+
+-- home/user/.local/share/chezmoi/dot_bashrc --
+# contents of .bashrc

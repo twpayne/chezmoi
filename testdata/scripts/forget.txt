@@ -1,13 +1,13 @@
 chezmoi add $HOME${/}.bashrc
 cmp $HOME${/}.local${/}share${/}chezmoi${/}dot_bashrc $HOME${/}.bashrc
 
-chezmoi edit $HOME${/}.bashrc
+edit $HOME${/}.local${/}share${/}chezmoi${/}dot_bashrc
 grep -count=1 '# edited' $HOME${/}.local${/}share${/}chezmoi${/}dot_bashrc
 
 chezmoi apply
 grep -count=1 '# edited' $HOME${/}.bashrc
 
-chezmoi edit $HOME${/}.bashrc
+edit $HOME${/}.local${/}share${/}chezmoi${/}dot_bashrc
 grep -count=2 '# edited' $HOME${/}.local${/}share${/}chezmoi${/}dot_bashrc
 
 chezmoi forget $HOME${/}.bashrc

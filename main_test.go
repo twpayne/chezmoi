@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -28,6 +29,7 @@ func TestChezmoi(t *testing.T) {
 		Dir: filepath.Join("testdata", "scripts"),
 		Cmds: map[string]func(*testscript.TestScript, bool, []string){
 			"chhome": chHome,
+			"edit":   edit,
 		},
 		Condition: func(cond string) (bool, error) {
 			switch cond {
@@ -69,6 +71,25 @@ func chHome(ts *testscript.TestScript, neg bool, args []string) {
 	ts.Setenv("HOME", homeDir)
 	if runtime.GOOS == "windows" {
 		ts.Setenv("USERPROFILE", homeDir)
+	}
+}
+
+// edit edits all of its arguments by appending "# edited\n" to them.
+func edit(ts *testscript.TestScript, neg bool, args []string) {
+	if neg {
+		ts.Fatalf("unsupported ! edit")
+	}
+	for _, arg := range args {
+		filename := ts.MkAbs(arg)
+		data, err := ioutil.ReadFile(filename)
+		if err != nil {
+			ts.Fatalf("edit: %v", err)
+		}
+		data = append(data, []byte("# edited\n")...)
+		// FIXME preserve permissions
+		if err := ioutil.WriteFile(filename, data, 0o644); err != nil {
+			ts.Fatalf("edit: %v", err)
+		}
 	}
 }
 
