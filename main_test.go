@@ -86,6 +86,7 @@ func edit(ts *testscript.TestScript, neg bool, args []string) {
 			ts.Fatalf("edit: %v", err)
 		}
 		data = append(data, []byte("# edited\n")...)
+		//nolint:gosec
 		if err := ioutil.WriteFile(filename, data, 0o666); err != nil {
 			ts.Fatalf("edit: %v", err)
 		}
