@@ -1,6 +1,24 @@
-chezmoi add $HOME${/}.bashrc
-chezmoi managed
-stdout '.bashrc'
+[windows] stop 'https://github.com/twpayne/chezmoi/issues/745'
 
--- home/user/.bashrc --
+chezmoi managed
+cmpenv stdout golden/managed
+
+chezmoi --include=dirs managed
+cmpenv stdout golden/managed-dirs
+
+chezmoi --include=files managed
+cmpenv stdout golden/managed-files
+
+-- golden/managed --
+$HOME/.bashrc
+$HOME/.ssh
+$HOME/.ssh/config
+-- golden/managed-dirs --
+$HOME/.ssh
+-- golden/managed-files --
+$HOME/.bashrc
+$HOME/.ssh/config
+-- home/user/.local/share/chezmoi/dot_bashrc --
 # contents of .bashrc
+-- home/user/.local/share/chezmoi/dot_ssh/config --
+# contents of .ssh/config

@@ -1,5 +1,3 @@
-chezmoi init
-
 chezmoi source-path
 stdout ${CHEZMOISOURCEDIR@R}
 

@@ -1,12 +1,9 @@
-chezmoi add $HOME${/}.bashrc
-exists ${CHEZMOISOURCEDIR}${/}dot_bashrc
-
 chezmoi purge --force
 ! exists ${CHEZMOICONFIGDIR}
 ! exists ${CHEZMOISOURCEDIR}
 
--- home/user/.bashrc --
-# contents of .bashrc
 -- home/user/.config/chezmoi/chezmoi.toml --
 [data]
     email = "user@home.org"
+-- home/user/.local/share/chezmoi/dot_bashrc --
+# contents of .bashrc

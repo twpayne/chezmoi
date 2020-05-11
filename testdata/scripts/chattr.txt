@@ -1,6 +1,3 @@
-chezmoi add $HOME${/}.bashrc
-exists ${CHEZMOISOURCEDIR}${/}dot_bashrc
-
 chezmoi chattr +empty $HOME${/}.bashrc
 exists ${CHEZMOISOURCEDIR}${/}empty_dot_bashrc
 
@@ -19,5 +16,5 @@ exists ${CHEZMOISOURCEDIR}${/}private_dot_bashrc
 chezmoi chattr nop $HOME${/}.bashrc
 exists ${CHEZMOISOURCEDIR}${/}dot_bashrc
 
--- home/user/.bashrc --
+-- home/user/.local/share/chezmoi/dot_bashrc --
 # contents of .bashrc
