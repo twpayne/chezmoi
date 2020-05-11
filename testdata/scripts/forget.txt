@@ -1,6 +1,3 @@
-chezmoi add $HOME${/}.bashrc
-cmp ${CHEZMOISOURCEDIR}${/}dot_bashrc $HOME${/}.bashrc
-
 edit ${CHEZMOISOURCEDIR}/dot_bashrc
 grep -count=1 '# edited' ${CHEZMOISOURCEDIR}${/}dot_bashrc
 
@@ -16,5 +13,5 @@ chezmoi forget $HOME${/}.bashrc
 chezmoi apply
 grep -count=1 '# edited' $HOME${/}.bashrc
 
--- home/user/.bashrc --
+-- home/user/.local/share/chezmoi/dot_bashrc --
 # contents of .bashrc

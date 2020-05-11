@@ -1,9 +1,15 @@
+[windows] stop 'https://github.com/twpayne/chezmoi/issues/745'
 [!exec:tar] stop
 
-chezmoi add $HOME${/}.bashrc
 chezmoi archive --output=user.tar
 exec tar -tf user.tar
-stdout ^\.bashrc\s*$
+cmp stdout golden/archive
 
--- home/user/.bashrc --
+-- golden/archive --
+.bashrc
+.ssh
+.ssh/config
+-- home/user/.local/share/chezmoi/dot_bashrc --
 # contents of .bashrc
+-- home/user/.local/share/chezmoi/private_dot_ssh/config --
+# contents .ssh/config
