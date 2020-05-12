@@ -39,7 +39,8 @@ func TestChezmoi(t *testing.T) {
 				return false, fmt.Errorf("unknown condition: %s", cond)
 			}
 		},
-		Setup: setup,
+		Setup:         setup,
+		UpdateScripts: os.Getenv("CHEZMOIUPDATESCRIPTS") != "",
 	})
 }
 
@@ -69,6 +70,7 @@ func chHome(ts *testscript.TestScript, neg bool, args []string) {
 	}
 	ts.Check(os.MkdirAll(homeDir, 0o777))
 	ts.Setenv("HOME", homeDir)
+	ts.Setenv("HOMESLASH", filepath.ToSlash(homeDir))
 	if runtime.GOOS == "windows" {
 		ts.Setenv("USERPROFILE", homeDir)
 	}
@@ -102,6 +104,7 @@ func setup(env *testscript.Env) error {
 	)
 
 	env.Setenv("HOME", homeDir)
+	env.Setenv("HOMESLASH", filepath.ToSlash(homeDir))
 	env.Setenv("PATH", prependDirToPath(binDir, env.Getenv("PATH")))
 	env.Setenv("CHEZMOICONFIGDIR", chezmoiConfigDir)
 	env.Setenv("CHEZMOISOURCEDIR", chezmoiSourceDir)
@@ -109,11 +112,13 @@ func setup(env *testscript.Env) error {
 	case "windows":
 		env.Setenv("EDITOR", filepath.Join(binDir, "editor.cmd"))
 		env.Setenv("USERPROFILE", homeDir)
+		env.Setenv("WORKSLASH", filepath.ToSlash(env.WorkDir))
 		// There is not currently a convenient way to override the shell on
 		// Windows.
 	default:
 		env.Setenv("EDITOR", filepath.Join(binDir, "editor"))
 		env.Setenv("SHELL", filepath.Join(binDir, "shell"))
+		env.Setenv("WORKSLASH", env.WorkDir)
 	}
 
 	// Fix permissions on the source directory, if it exists.
