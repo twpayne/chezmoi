@@ -1,0 +1,125 @@
+chezmoi --format=json dump
+cmpenv stdout golden/dump.json
+
+chezmoi --format=json dump $HOME${/}.bashrc
+cmpenv stdout golden/dump-bashrc.json
+
+chezmoi --format=json dump $HOME${/}.ssh
+cmpenv stdout golden/dump-ssh.json
+
+chezmoi --format=json --recursive=false dump $HOME${/}.ssh
+cmpenv stdout golden/dump-ssh-non-recursive.json
+
+chezmoi --format=yaml dump
+cmpenv stdout golden/dump.yaml
+
+! chezmoi dump $HOME${/}.inputrc
+stdout 'file does not exist'
+
+-- golden/dump.json --
+[
+  {
+    "type": "file",
+    "sourcePath": "$WORK/home/user/.local/share/chezmoi/dot_bashrc",
+    "targetPath": ".bashrc",
+    "empty": false,
+    "encrypted": false,
+    "perm": 420,
+    "template": false,
+    "contents": "# contents of .bashrc\n"
+  },
+  {
+    "type": "dir",
+    "sourcePath": "$WORK/home/user/.local/share/chezmoi/private_dot_ssh",
+    "targetPath": ".ssh",
+    "exact": false,
+    "perm": 448,
+    "entries": [
+      {
+        "type": "file",
+        "sourcePath": "$WORK/home/user/.local/share/chezmoi/private_dot_ssh/config",
+        "targetPath": ".ssh/config",
+        "empty": false,
+        "encrypted": false,
+        "perm": 420,
+        "template": false,
+        "contents": "# contents of .ssh/config\n"
+      }
+    ]
+  }
+]
+-- golden/dump-bashrc.json --
+[
+  {
+    "type": "file",
+    "sourcePath": "$WORK/home/user/.local/share/chezmoi/dot_bashrc",
+    "targetPath": ".bashrc",
+    "empty": false,
+    "encrypted": false,
+    "perm": 420,
+    "template": false,
+    "contents": "# contents of .bashrc\n"
+  }
+]
+-- golden/dump-ssh.json --
+[
+  {
+    "type": "dir",
+    "sourcePath": "$WORK/home/user/.local/share/chezmoi/private_dot_ssh",
+    "targetPath": ".ssh",
+    "exact": false,
+    "perm": 448,
+    "entries": [
+      {
+        "type": "file",
+        "sourcePath": "$WORK/home/user/.local/share/chezmoi/private_dot_ssh/config",
+        "targetPath": ".ssh/config",
+        "empty": false,
+        "encrypted": false,
+        "perm": 420,
+        "template": false,
+        "contents": "# contents of .ssh/config\n"
+      }
+    ]
+  }
+]
+-- golden/dump-ssh-non-recursive.json --
+[
+  {
+    "type": "dir",
+    "sourcePath": "$WORK/home/user/.local/share/chezmoi/private_dot_ssh",
+    "targetPath": ".ssh",
+    "exact": false,
+    "perm": 448,
+    "entries": null
+  }
+]
+-- golden/dump.yaml --
+- type: file
+  sourcePath: $WORK/home/user/.local/share/chezmoi/dot_bashrc
+  targetPath: .bashrc
+  empty: false
+  encrypted: false
+  perm: 420
+  template: false
+  contents: |
+    # contents of .bashrc
+- type: dir
+  sourcePath: $WORK/home/user/.local/share/chezmoi/private_dot_ssh
+  targetPath: .ssh
+  exact: false
+  perm: 448
+  entries:
+  - type: file
+    sourcePath: $WORK/home/user/.local/share/chezmoi/private_dot_ssh/config
+    targetPath: .ssh/config
+    empty: false
+    encrypted: false
+    perm: 420
+    template: false
+    contents: |
+      # contents of .ssh/config
+-- home/user/.local/share/chezmoi/dot_bashrc --
+# contents of .bashrc
+-- home/user/.local/share/chezmoi/private_dot_ssh/config --
+# contents of .ssh/config

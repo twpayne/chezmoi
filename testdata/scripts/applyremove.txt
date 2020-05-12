@@ -1,8 +1,8 @@
-exists $HOME${/}.bashrc
-exists $HOME${/}.inputrc
+exists $HOME/.bashrc
+exists $HOME/.inputrc
 chezmoi apply --remove
-! exists $HOME${/}.bashrc
-exists $HOME${/}.inputrc
+! exists $HOME/.bashrc
+exists $HOME/.inputrc
 
 -- home/user/.bashrc --
 # contents of .bashrc

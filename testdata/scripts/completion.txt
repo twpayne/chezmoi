@@ -1,0 +1,11 @@
+chezmoi completion bash
+stdout '# bash completion for chezmoi'
+
+chezmoi completion fish
+stdout '# fish completion for chezmoi'
+
+chezmoi completion zsh
+stdout '#compdef _chezmoi chezmoi'
+
+! chezmoi completion ksh
+stdout 'unsupported shell'

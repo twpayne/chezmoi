@@ -2,7 +2,7 @@
 
 # test that chezmoi init creates a mercurial repo
 chezmoi init
-exists ${CHEZMOISOURCEDIR}${/}.hg
+exists ${CHEZMOISOURCEDIR}/.hg
 
 # test that source runs hg
 chezmoi source -- --version
@@ -16,21 +16,21 @@ chezmoi hg -- commit -m 'Add dot_bashrc'
 [windows] stop 'Backslash characters in file:// URLs confuse hg on Windows'
 
 # test that chezmoi init clones a mercurial repo
-chhome home2${/}user
+chhome home2/user
 chezmoi init --apply file://$WORK/home/user/.local/share/chezmoi
-exists ${CHEZMOISOURCEDIR}${/}.hg
-cmp $HOME${/}.bashrc $WORK${/}home${/}user${/}.bashrc
+exists ${CHEZMOISOURCEDIR}/.hg
+cmp $HOME/.bashrc $WORK/home/user/.bashrc
 
 # create another commit
-chhome home${/}user
-edit ${CHEZMOISOURCEDIR}${/}dot_bashrc
+chhome home/user
+edit ${CHEZMOISOURCEDIR}/dot_bashrc
 chezmoi hg -- add dot_bashrc
 chezmoi hg -- commit -m 'Update dot_bashrc'
 
 # test that chezmoi update pulls from a mercurial repo
-chhome home2${/}user
+chhome home2/user
 chezmoi update
-grep '# edited' $HOME${/}.bashrc
+grep '# edited' $HOME/.bashrc
 
 -- home/user/.bashrc --
 # contents of .bashrc

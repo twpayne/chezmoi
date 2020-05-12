@@ -2,25 +2,25 @@
 
 # test that chezmoi init creates a git repo
 chezmoi init
-exists ${CHEZMOISOURCEDIR}${/}.git
+exists ${CHEZMOISOURCEDIR}/.git
 
 # create a commit
 chezmoi add $HOME${/}.bashrc
-cmp ${CHEZMOISOURCEDIR}${/}dot_bashrc $HOME${/}.bashrc
+cmp ${CHEZMOISOURCEDIR}/dot_bashrc $HOME/.bashrc
 chezmoi git add dot_bashrc
 chezmoi git commit -- --message 'Add dot_bashrc'
 
 # test that chezmoi init fetches git repo but does not apply
-chhome home2${/}user
+chhome home2/user
 chezmoi init file://$WORK/home/user/.local/share/chezmoi
-exists ${CHEZMOISOURCEDIR}${/}.git
-! exists $HOME${/}.bashrc
+exists ${CHEZMOISOURCEDIR}/.git
+! exists $HOME/.bashrc
 
 # test that chezmoi init --apply fetches a git repo and runs chezmoi apply
-chhome home3${/}user
+chhome home3/user
 chezmoi init --apply file://$WORK/home/user/.local/share/chezmoi
-exists ${CHEZMOISOURCEDIR}${/}.git
-grep '# contents of .bashrc' $HOME${/}.bashrc
+exists ${CHEZMOISOURCEDIR}/.git
+grep '# contents of .bashrc' $HOME/.bashrc
 
 -- home/user/.bashrc --
 # contents of .bashrc

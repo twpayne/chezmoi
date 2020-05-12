@@ -1,0 +1,11 @@
+chezmoi data
+stdout '"chezmoi":'
+
+chezmoi data --format=json
+stdout '"chezmoi":'
+
+chezmoi data --format=toml
+stdout '[chezmoi]'
+
+chezmoi data --format=yaml
+stdout 'chezmoi:'

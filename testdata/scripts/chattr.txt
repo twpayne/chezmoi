@@ -1,20 +1,20 @@
 chezmoi chattr +empty $HOME${/}.bashrc
-exists ${CHEZMOISOURCEDIR}${/}empty_dot_bashrc
+exists ${CHEZMOISOURCEDIR}/empty_dot_bashrc
 
 chezmoi chattr +template $HOME${/}.bashrc
-exists ${CHEZMOISOURCEDIR}${/}empty_dot_bashrc.tmpl
+exists ${CHEZMOISOURCEDIR}/empty_dot_bashrc.tmpl
 
 chezmoi chattr +private $HOME${/}.bashrc
-exists ${CHEZMOISOURCEDIR}${/}private_empty_dot_bashrc.tmpl
+exists ${CHEZMOISOURCEDIR}/private_empty_dot_bashrc.tmpl
 
 chezmoi chattr noempty $HOME${/}.bashrc
-exists ${CHEZMOISOURCEDIR}${/}private_dot_bashrc.tmpl
+exists ${CHEZMOISOURCEDIR}/private_dot_bashrc.tmpl
 
 chezmoi chattr -- -template $HOME${/}.bashrc
-exists ${CHEZMOISOURCEDIR}${/}private_dot_bashrc
+exists ${CHEZMOISOURCEDIR}/private_dot_bashrc
 
 chezmoi chattr nop $HOME${/}.bashrc
-exists ${CHEZMOISOURCEDIR}${/}dot_bashrc
+exists ${CHEZMOISOURCEDIR}/dot_bashrc
 
 -- home/user/.local/share/chezmoi/dot_bashrc --
 # contents of .bashrc

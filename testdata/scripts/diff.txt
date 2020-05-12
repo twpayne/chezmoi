@@ -1,0 +1,85 @@
+chmod 700 $HOME/.ssh
+
+# test that chezmoi diff generates no output when the source and destination states are equal
+chezmoi diff
+! stdout .
+
+# test that chezmoi diff generates a diff when a file is added to the source state
+cp golden/dot_inputrc ${CHEZMOISOURCEDIR}/dot_inputrc
+chezmoi diff
+cmpenv stdout golden/add-file-diff
+rm ${CHEZMOISOURCEDIR}/dot_inputrc
+
+# test that chezmoi diff generates a diff when a file is edited
+edit $HOME/.bashrc
+chezmoi diff
+cmpenv stdout golden/modify-file-diff
+chezmoi apply
+
+# test that chezmoi diff generates a diff when a file is removed from the destination directory
+rm $HOME/.bashrc
+chezmoi diff
+cmpenv stdout golden/remove-file-diff
+chezmoi apply
+
+# test that chezmoi diff generates a diff when a directory is removed from the destination directory
+rm $HOME/.ssh
+chezmoi diff
+cmpenv stdout golden/remove-dir-diff
+chezmoi apply
+
+[windows] stop 'remaining tests use POSIX file modes'
+
+# test that chezmoi diff generates a diff when a file's permissions are changed
+chmod 755 $HOME/.bashrc
+chezmoi diff
+cmpenv stdout golden/chmod-file-diff
+chezmoi apply
+
+# test that chezmoi diff generates a diff when a dir's permissions are changed
+# FIXME show changes to permissions in diff
+chmod 755 $HOME/.ssh
+chezmoi diff
+cmpenv stdout golden/chmod-dir-diff
+chezmoi apply
+
+-- golden/add-file-diff --
+install -m 644 /dev/null $WORK/home/user/.inputrc
+--- a$WORK/home/user/.inputrc
++++ b$WORK/home/user/.inputrc
+@@ -0,0 +1,1 @@
++# contents of .inputrc
+-- golden/modify-file-diff --
+install -m 644 /dev/null $WORK/home/user/.bashrc
+--- a$WORK/home/user/.bashrc
++++ b$WORK/home/user/.bashrc
+@@ -1,2 +1,1 @@
+ # contents of .bashrc
+-# edited
+-- golden/remove-file-diff --
+install -m 644 /dev/null $WORK/home/user/.bashrc
+--- a$WORK/home/user/.bashrc
++++ b$WORK/home/user/.bashrc
+@@ -0,0 +1,1 @@
++# contents of .bashrc
+-- golden/remove-dir-diff --
+mkdir -m 700 $WORK/home/user/.ssh
+install -m 644 /dev/null $WORK/home/user/.ssh/config
+--- a$WORK/home/user/.ssh/config
++++ b$WORK/home/user/.ssh/config
+@@ -0,0 +1,1 @@
++# contents of .ssh/config
+-- golden/chmod-file-diff --
+chmod 644 $WORK/home/user/.bashrc
+-- golden/chmod-dir-diff --
+chmod 700 $WORK/home/user/.ssh
+-- golden/dot_inputrc --
+# contents of .inputrc
+-- home/user/.bashrc --
+# contents of .bashrc
+-- home/user/.ssh/config --
+# contents of .ssh/config
+-- home/user/.local/share/chezmoi/dot_bashrc --
+# contents of .bashrc
+-- home/user/.local/share/chezmoi/private_dot_ssh/config --
+# contents of .ssh/config

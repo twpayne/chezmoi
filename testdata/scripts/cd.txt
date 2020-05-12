@@ -7,7 +7,7 @@ grep -count=1 ${CHEZMOISOURCEDIR@R} shell.log
 
 # test chezmoi cd with command with args
 [!exec:bash] stop
-chhome home2${/}user
+chhome home2/user
 chezmoi cd
 stdout version
 

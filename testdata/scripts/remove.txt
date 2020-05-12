@@ -1,0 +1,27 @@
+stop 'failing test' # FIXME
+
+chezmoi --force remove $HOME${/}.bashrc
+! exists $HOME/.bashrc
+exists $HOME/.inputrc
+exists $HOME/.ssh/config
+
+chezmoi --force remove $HOME${/}.ssh
+exists $HOME/.inputrc
+! exists $HOME/.ssh/config
+
+! chezmoi --force remove $HOME${/}.bashrc $HOME${/}.inputrc
+stdout 'not in source state'
+exists $HOME/.inputrc
+
+-- home/user/.bashrc --
+# contents of .bashrc
+-- home/user/.inputrc --
+# contents of .inputrc
+-- home/user/.ssh/config --
+# contents of .ssh/config
+-- home/user/.local/share/chezmoi/dot_bashrc --
+# contents of .bashrc
+-- home/user/.local/share/chezmoi/dot_inputrc --
+# contents of .inputrc
+-- home/user/.local/share/chezmoi/private_dot_ssh/config --
+# contents of .ssh/config
