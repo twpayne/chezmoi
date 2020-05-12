@@ -76,7 +76,7 @@ func (c *Config) runManagedCmd(cmd *cobra.Command, args []string) error {
 		if ts.TargetIgnore.Match(targetName) {
 			continue
 		}
-		fmt.Fprintln(c.Stdout, filepath.Join(ts.DestDir, targetName))
+		fmt.Fprintln(c.Stdout, filepath.FromSlash(filepath.Join(ts.DestDir, targetName)))
 	}
 
 	return nil

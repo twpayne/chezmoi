@@ -85,31 +85,24 @@ func TestManagedCmd(t *testing.T) {
 				}),
 			)
 			assert.NoError(t, c.runManagedCmd(nil, nil))
-			posixTargetNames, err := extractPOSIXTargetNames(stdout.Bytes())
 			require.NoError(t, err)
-			assert.Equal(t, tc.expectedTargetNames, posixTargetNames)
+			actualTargetNames, err := extractTargetNames(stdout.Bytes())
+			require.NoError(t, err)
+			assert.Equal(t, tc.expectedTargetNames, actualTargetNames)
 		})
 	}
 }
 
-// extractPOSIXTargetNames extracts all target names from b and coverts them to
-// POSIX-like names.
-func extractPOSIXTargetNames(b []byte) ([]string, error) {
+func extractTargetNames(b []byte) ([]string, error) {
 	var targetNames []string
 	s := bufio.NewScanner(bytes.NewBuffer(b))
 	for s.Scan() {
-		targetNames = append(targetNames, posixify(s.Text()))
+		targetNames = append(targetNames, filepath.ToSlash(s.Text()))
 	}
 	if err := s.Err(); err != nil {
 		return nil, err
 	}
 	return targetNames, nil
-}
-
-// posixify returns a POSIX-like path based on path, stripping any volume name
-// and converting backward slashes.
-func posixify(path string) string {
-	return filepath.ToSlash(strings.TrimPrefix(path, filepath.VolumeName(path)))
 }
 
 func withManaged(managed managedCmdConfig) configOption {
