@@ -1,10 +1,13 @@
-name: Test and release
+name: chezmoi
 on:
   pull_request:
   push:
+    branches:
+    - master
+    tags:
+    - 'v*'
 jobs:
   test:
-    name: Test
     strategy:
       matrix:
         go-version:
@@ -19,8 +22,15 @@ jobs:
       uses: actions/setup-go@v1
       with:
         go-version: ${{ matrix.go-version }}
+    - name: Cache Go modules
+      uses: actions/cache@v1
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
     - name: Checkout
-      uses: actions/checkout@v1
+      uses: actions/checkout@v2
     - name: Generate
       if: matrix.os == 'ubuntu-latest'
       run: |
@@ -43,9 +53,7 @@ jobs:
     - name: Install snapcraft
       if: matrix.os == 'ubuntu-latest'
       run: |
-        echo "::add-path::/snap/bin"
-        sudo chown root:root /
-        sudo snap install snapcraft --classic
+        sudo apt-get -yq --no-install-suggests --no-install-recommends install snapcraft
     - name: Release
       if: matrix.os == 'ubuntu-latest'
       uses: goreleaser/goreleaser-action@v1
@@ -71,16 +79,25 @@ jobs:
       uses: actions/setup-go@v1
       with:
         go-version: 1.14.x
+    - name: Cache Go modules
+      uses: actions/cache@v1
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
     - name: Checkout
-      uses: actions/checkout@v1
-    - name: Set up Snapcraft
+      uses: actions/checkout@v2
+    - name: Install snapcraft
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get -yq --no-install-suggests --no-install-recommends install snapcraft
+    - name: Snapcraft Login
+      if: success() && startsWith(github.ref, 'refs/tags/v')
       env:
         SNAPCRAFT_LOGIN: ${{ secrets.SNAPCRAFT_LOGIN }}
       run: |
-        echo "::add-path::/snap/bin"
-        sudo snap install snapcraft --classic
-        sudo chown root:root /
-        echo ${SNAPCRAFT_LOGIN} | snapcraft login --with -
+        snapcraft login --with <(echo "$SNAPCRAFT_LOGIN")
     - name: Release
       uses: goreleaser/goreleaser-action@v1
       with:
