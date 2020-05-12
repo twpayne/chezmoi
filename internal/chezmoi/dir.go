@@ -213,7 +213,7 @@ func (d *Dir) archive(w *tar.Writer, ignore func(string) bool, headerTemplate *t
 	}
 	header := *headerTemplate
 	header.Typeflag = tar.TypeDir
-	header.Name = d.targetName
+	header.Name = d.targetName + "/"
 	header.Mode = int64(d.Perm &^ umask)
 	if err := w.WriteHeader(&header); err != nil {
 		return err
