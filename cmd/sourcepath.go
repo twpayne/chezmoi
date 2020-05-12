@@ -36,7 +36,7 @@ func (c *Config) runSourcePathCmd(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	for _, entry := range entries {
-		if _, err := fmt.Println(filepath.Join(ts.SourceDir, entry.SourceName())); err != nil {
+		if _, err := fmt.Println(filepath.FromSlash(filepath.Join(ts.SourceDir, entry.SourceName()))); err != nil {
 			return err
 		}
 	}
