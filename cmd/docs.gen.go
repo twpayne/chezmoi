@@ -945,7 +945,7 @@ func init() {
 		"\n" +
 		"### Use gopass to keep your secrets\n" +
 		"\n" +
-		"chezmoi includes support for [gopass](https://gopass.pw/) using the gopass CLI.\n" +
+		"chezmoi includes support for [gopass](https://www.gopass.pw/) using the gopass CLI.\n" +
 		"\n" +
 		"The first line of the output of `gopass show <pass-name>` is available as the\n" +
 		"`gopass` template function, for example:\n" +
