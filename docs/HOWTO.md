@@ -216,7 +216,7 @@ that chezmoi should ignore, and are interpreted as templates. An example
 `.chezmoiignore` file might look like:
 
     README.md
-    {{- if ne .chezmoi.hostname "work-laptop" }}
+    {{- if eq .chezmoi.hostname "work-laptop" }}
     .work # only manage .work on work-laptop
     {{- end }}
 
