@@ -13,10 +13,10 @@ Manage your dotfiles across multiple machines, securely.
   * [Declarative and robust](#declarative-and-robust)
   * [Fast and easy to use](#fast-and-easy-to-use)
 * [I already have a system to manage my dotfiles, why should I use chezmoi?](#i-already-have-a-system-to-manage-my-dotfiles-why-should-i-use-chezmoi)
-  * [...if coping with differences from machine to machine requires extra work](#if-coping-with-differences-from-machine-to-machine-requires-extra-work)
-  * [...if cloning your dotfiles requires careful thought](#if-cloning-your-dotfiles-requires-careful-thought)
-  * [...if adding new functionality requires effort](#if-adding-new-functionality-requires-effort)
-  * [...if installation requires effort](#if-installation-requires-effort)
+  * [...if coping with differences between machines requires special care](#if-coping-with-differences-between-machines-requires-special-care)
+  * [...if you need to think for a moment before giving anyone access to your dotfiles](#if-you-need-to-think-for-a-moment-before-giving-anyone-access-to-your-dotfiles)
+  * [...if your needs are outgrowing your current tool](#if-your-needs-are-outgrowing-your-current-tool)
+  * [...if setting up your dotfiles requires more than two short commands](#if-setting-up-your-dotfiles-requires-more-than-two-short-commands)
 * [How do people use chezmoi?](#how-do-people-use-chezmoi)
   * [Dotfile repos using chezmoi](#dotfile-repos-using-chezmoi)
   * [People talking about chezmoi](#people-talking-about-chezmoi)
@@ -120,7 +120,7 @@ If you're using any of the following methods:
 
 Then you've probably run into at least one of the following problems.
 
-### ...if coping with differences from machine to machine requires extra work
+### ...if coping with differences between machines requires special care
 
 If you want to synchronize your dotfiles across multiple operating systems or
 distributions, then you may need to manually perform extra steps to cope with
@@ -133,7 +133,7 @@ chezmoi uses a single source of truth (a single branch) and a single command
 that works on every machine. Individual files can be templates to handle machine
 to machine differences, if needed.
 
-### ...if cloning your dotfiles requires careful thought
+### ...if you need to think for a moment before giving anyone access to your dotfiles
 
 If your system stores secrets in plain text, then you must be very careful about
 where you clone your dotfiles. If you clone them on your work machine then
@@ -147,7 +147,7 @@ dotfiles repository anywhere, and even make your dotfiles repo public, without
 leaving personal secrets on your work machine or work secrets on your personal
 machine.
 
-### ...if adding new functionality requires effort
+### ...if your needs are outgrowing your current tool
 
 If your system was written by you for your personal use, then it probably has
 the minimum functionality that you needed when you wrote it. If you need more
@@ -160,7 +160,7 @@ people](https://github.com/twpayne/chezmoi/stargazers), so it is likely that
 when you hit the limits of your existing dotfile management system, chezmoi
 already has a tried-and-tested solution ready for you to use.
 
-### ...if installation requires effort
+### ...if setting up your dotfiles requires more than two short commands
 
 If your system is written in a scripting language like Python, Perl, or Ruby,
 then you also need to install a compatible version of that language's runtime

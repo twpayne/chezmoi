@@ -104,7 +104,7 @@ If you're using any of the following methods:
 
 Then you've probably run into at least one of the following problems.
 
-### ...if coping with differences from machine to machine requires extra work
+### ...if coping with differences between machines requires special care
 
 If you want to synchronize your dotfiles across multiple operating systems or
 distributions, then you may need to manually perform extra steps to cope with
@@ -117,7 +117,7 @@ chezmoi uses a single source of truth (a single branch) and a single command
 that works on every machine. Individual files can be templates to handle machine
 to machine differences, if needed.
 
-### ...if cloning your dotfiles requires careful thought
+### ...if you need to think for a moment before giving anyone access to your dotfiles
 
 If your system stores secrets in plain text, then you must be very careful about
 where you clone your dotfiles. If you clone them on your work machine then
@@ -131,7 +131,7 @@ dotfiles repository anywhere, and even make your dotfiles repo public, without
 leaving personal secrets on your work machine or work secrets on your personal
 machine.
 
-### ...if adding new functionality requires effort
+### ...if your needs are outgrowing your current tool
 
 If your system was written by you for your personal use, then it probably has
 the minimum functionality that you needed when you wrote it. If you need more
@@ -144,7 +144,7 @@ people](https://github.com/twpayne/chezmoi/stargazers), so it is likely that
 when you hit the limits of your existing dotfile management system, chezmoi
 already has a tried-and-tested solution ready for you to use.
 
-### ...if installation requires effort
+### ...if setting up your dotfiles requires more than two short commands
 
 If your system is written in a scripting language like Python, Perl, or Ruby,
 then you also need to install a compatible version of that language's runtime
