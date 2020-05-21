@@ -1,0 +1,42 @@
+name: Code quality
+on:
+  pull_request:
+  push:
+    branches:
+    - master
+    tags:
+    - v*
+jobs:
+  formatting:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v1
+      with:
+        go-version: ${{ matrix.go-version }}
+    - name: Cache Go modules
+      uses: actions/cache@v1
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Generate
+      run: |
+        go generate
+        git diff --exit-code
+    - name: Check formatting
+      run: |
+        make format
+        git diff --exit-code
+  golangci-lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v1
+        with:
+          version: v1.27

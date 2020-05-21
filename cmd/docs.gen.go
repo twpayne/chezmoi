@@ -501,7 +501,8 @@ func init() {
 		"that it's useful to you. Please give [chezmoi a star on\n" +
 		"GitHub](https://github.com/twpayne/chezmoi/stargazers), and if you're happy to\n" +
 		"share your public dotfile repo then [tag it with\n" +
-		"`chezmoi`](https://github.com/topics/chezmoi). [Contributions are very\n" +
+		"`chezmoi`](https://github.com/topics/chezmoi?o=desc&s=updated). [Contributions\n" +
+		"are very\n" +
 		"welcome](https://github.com/twpayne/chezmoi/blob/master/docs/CONTRIBUTING.md)\n" +
 		"and every [bug report, support request, and feature\n" +
 		"request](https://github.com/twpayne/chezmoi/issues/new/choose) helps make\n" +

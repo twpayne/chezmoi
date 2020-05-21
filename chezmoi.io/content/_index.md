@@ -13,8 +13,8 @@ Manage your dotfiles across multiple machines, securely.
 guide](docs/QUICKSTART.md). The [how-to guide](docs/HOWTO.md) covers most common
 tasks, and there's the [frequently asked questions](docs/FAQ.md) for specific
 questions. You can browse other people's [dotfiles that use
-chezmoi](https://github.com/topics/chezmoi). For a full description of chezmoi,
-consult the [reference](docs/REFERENCE.md).
+chezmoi](https://github.com/topics/chezmoi?o=desc&s=updated). For a full
+description of chezmoi, consult the [reference](docs/REFERENCE.md).
 
 ## What does chezmoi do and why should I use it?
 
