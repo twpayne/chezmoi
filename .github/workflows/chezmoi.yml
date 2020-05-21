@@ -42,9 +42,6 @@ jobs:
       run: go run . --version
     - name: Test
       run: go test -race ./...
-    - name: Lint
-      if: matrix.os == 'ubuntu-latest'
-      run: make lint
     - name: Check formatting
       if: matrix.os == 'ubuntu-latest'
       run: |
