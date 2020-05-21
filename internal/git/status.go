@@ -232,5 +232,21 @@ func ParseStatusPorcelainV2(output []byte) (*Status, error) {
 			return nil, ParseError(text)
 		}
 	}
-	return status, s.Err()
+	if err := s.Err(); err != nil {
+		return nil, err
+	}
+	if status.Empty() {
+		return nil, nil
+	}
+	return status, nil
+}
+
+// Empty returns true if s is empty.
+func (s *Status) Empty() bool {
+	return s == nil || true &&
+		len(s.Ignored) == 0 &&
+		len(s.Ordinary) == 0 &&
+		len(s.RenamedOrCopied) == 0 &&
+		len(s.Unmerged) == 0 &&
+		len(s.Untracked) == 0
 }

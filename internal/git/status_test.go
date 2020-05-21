@@ -11,8 +11,14 @@ func TestParseStatusPorcelainV2(t *testing.T) {
 	for _, tc := range []struct {
 		name           string
 		outputStr      string
+		expectedEmpty  bool
 		expectedStatus *Status
 	}{
+		{
+			name:          "empty",
+			outputStr:     "",
+			expectedEmpty: true,
+		},
 		{
 			name:      "added",
 			outputStr: "1 A. N... 000000 100644 100644 0000000000000000000000000000000000000000 cea5c3500651a923bacd80f960dd20f04f71d509 main.go\n",
@@ -53,7 +59,7 @@ func TestParseStatusPorcelainV2(t *testing.T) {
 		},
 		{
 			name:      "update",
-			outputStr: "1 .M N... 100644 100644 100644 353dbbb3c29a80fb44d4e26dac111739d25294db 353dbbb3c29a80fb44d4e26dac111739d25294db cmd/gitvcs.go\n",
+			outputStr: "1 .M N... 100644 100644 100644 353dbbb3c29a80fb44d4e26dac111739d25294db 353dbbb3c29a80fb44d4e26dac111739d25294db cmd/git.go\n",
 			expectedStatus: &Status{
 				Ordinary: []OrdinaryStatus{
 					{
@@ -65,7 +71,7 @@ func TestParseStatusPorcelainV2(t *testing.T) {
 						MW:   0o100644,
 						HH:   "353dbbb3c29a80fb44d4e26dac111739d25294db",
 						HI:   "353dbbb3c29a80fb44d4e26dac111739d25294db",
-						Path: "cmd/gitvcs.go",
+						Path: "cmd/git.go",
 					},
 				},
 			},
@@ -159,6 +165,7 @@ func TestParseStatusPorcelainV2(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			actualStatus, err := ParseStatusPorcelainV2([]byte(tc.outputStr))
 			require.NoError(t, err)
+			assert.Equal(t, tc.expectedEmpty, actualStatus.Empty())
 			assert.Equal(t, tc.expectedStatus, actualStatus)
 		})
 	}
