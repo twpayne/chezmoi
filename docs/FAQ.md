@@ -264,7 +264,8 @@ Thank you! chezmoi was written to scratch a personal itch, and I'm very happy
 that it's useful to you. Please give [chezmoi a star on
 GitHub](https://github.com/twpayne/chezmoi/stargazers), and if you're happy to
 share your public dotfile repo then [tag it with
-`chezmoi`](https://github.com/topics/chezmoi). [Contributions are very
+`chezmoi`](https://github.com/topics/chezmoi?o=desc&s=updated). [Contributions
+are very
 welcome](https://github.com/twpayne/chezmoi/blob/master/docs/CONTRIBUTING.md)
 and every [bug report, support request, and feature
 request](https://github.com/twpayne/chezmoi/issues/new/choose) helps make
