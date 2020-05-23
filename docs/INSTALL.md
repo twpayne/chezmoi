@@ -29,6 +29,7 @@ Install chezmoi with a single command.
 | NixOS Linux  | nix-env    | `nix-env -i chezmoi`                                                                        |
 | macOS        | Homebrew   | `brew install chezmoi`                                                                      |
 | Windows      | Scoop      | `scoop bucket add twpayne https://github.com/twpayne/scoop-bucket && scoop install chezmoi` |
+| Windows      | Chocolatey | `choco install chezmoi`                                                                     |
 
 ## Pre-built Linux packages
 
