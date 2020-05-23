@@ -1589,8 +1589,8 @@ func init() {
 		"  * [`keyring` *service* *user*](#keyring-service-user)\n" +
 		"  * [`lastpass` *id*](#lastpass-id)\n" +
 		"  * [`lastpassRaw` *id*](#lastpassraw-id)\n" +
-		"  * [`onepassword` *uuid*](#onepassword-uuid)\n" +
-		"  * [`onepasswordDocument` *uuid*](#onepassworddocument-uuid)\n" +
+		"  * [`onepassword` *uuid* [*vault-uuid*]](#onepassword-uuid-vault-uuid)\n" +
+		"  * [`onepasswordDocument` *uuid* [*vault-uuid*]](#onepassworddocument-uuid-vault-uuid)\n" +
 		"  * [`pass` *pass-name*](#pass-pass-name)\n" +
 		"  * [`promptString` *prompt*](#promptstring-prompt)\n" +
 		"  * [`secret` [*args*]](#secret-args)\n" +
@@ -2539,31 +2539,37 @@ func init() {
 		"\n" +
 		"    {{ (index (lastpassRaw \"SSH Private Key\") 0).note }}\n" +
 		"\n" +
-		"### `onepassword` *uuid*\n" +
+		"### `onepassword` *uuid* [*vault-uuid*]\n" +
 		"\n" +
 		"`onepassword` returns structured data from [1Password](https://1password.com/)\n" +
 		"using the [1Password\n" +
 		"CLI](https://support.1password.com/command-line-getting-started/) (`op`). *uuid*\n" +
 		"is passed to `op get item <uuid>` and the output from `op` is parsed as JSON.\n" +
 		"The output from `op` is cached so calling `onepassword` multiple times with the\n" +
-		"same *uuid* will only invoke `op` once.\n" +
+		"same *uuid* will only invoke `op` once.  If the optional *vault-uuid* is supplied,\n" +
+		"it will be passed along to the `op get` call, which can significantly improve\n" +
+		"performance.\n" +
 		"\n" +
 		"#### `onepassword` examples\n" +
 		"\n" +
 		"    {{ (onepassword \"<uuid>\").details.password }}\n" +
+		"    {{ (onepassword \"<uuid>\" \"<vault-uuid>\").details.password }}\n" +
 		"\n" +
-		"### `onepasswordDocument` *uuid*\n" +
+		"### `onepasswordDocument` *uuid* [*vault-uuid*]\n" +
 		"\n" +
 		"`onepassword` returns a document from [1Password](https://1password.com/)\n" +
 		"using the [1Password\n" +
 		"CLI](https://support.1password.com/command-line-getting-started/) (`op`). *uuid*\n" +
 		"is passed to `op get document <uuid>` and the output from `op` is returned.\n" +
 		"The output from `op` is cached so calling `onepasswordDocument` multiple times with the\n" +
-		"same *uuid* will only invoke `op` once.\n" +
+		"same *uuid* will only invoke `op` once.  If the optional *vault-uuid* is supplied,\n" +
+		"it will be passed along to the `op get` call, which can significantly improve\n" +
+		"performance.\n" +
 		"\n" +
 		"#### `onepasswordDocument` examples\n" +
 		"\n" +
 		"    {{- onepasswordDocument \"<uuid>\" -}}\n" +
+		"    {{- onepasswordDocument \"<uuid>\" \"<vault-uuid>\" -}}\n" +
 		"\n" +
 		"### `pass` *pass-name*\n" +
 		"\n" +
@@ -2613,5 +2619,6 @@ func init() {
 		"\n" +
 		"#### `vault` examples\n" +
 		"\n" +
-		"    {{ (vault \"<key>\").data.data.password }}\n")
+		"    {{ (vault \"<key>\").data.data.password }}\n" +
+		"\n")
 }
