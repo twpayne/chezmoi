@@ -254,7 +254,7 @@ var helps = map[string]help{
 			"\n" +
 			"  Include simulated functions only available during `chezmoi init`.\n" +
 			"\n" +
-			"  '--output', '-o' *filename*\n" +
+			"  `--output`, `-o` *filename*\n" +
 			"\n" +
 			"  Write the output to *filename* instead of stdout.\n" +
 			"\n" +
