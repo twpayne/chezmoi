@@ -598,7 +598,7 @@ the template is read from stdin.
 
 Include simulated functions only available during `chezmoi init`.
 
-#### '--output', '-o' *filename*
+#### `--output`, `-o` *filename*
 
 Write the output to *filename* instead of stdout.
 
