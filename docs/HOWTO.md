@@ -209,8 +209,8 @@ will be removed. This can be used to ensure that files are only present on
 certain machines. If you want an empty file to be created anyway, you will need
 to give it an `empty_` prefix.
 
-For coarser-grained control of files and entire directories are managed on
-different machines, or to exclude certain files completely, you can create
+For coarser-grained control of files and entire directories managed on different
+machines, or to exclude certain files completely, you can create
 `.chezmoiignore` files in the source directory. These specify a list of patterns
 that chezmoi should ignore, and are interpreted as templates. An example
 `.chezmoiignore` file might look like:
@@ -219,6 +219,11 @@ that chezmoi should ignore, and are interpreted as templates. An example
     {{- if ne .chezmoi.hostname "work-laptop" }}
     .work # only manage .work on work-laptop
     {{- end }}
+
+The use of `ne` (not equal) is deliberate. What we want to achieve is "only
+install .work if hostname is work-laptop" but chezmoi installs everything by
+default, so we have to turn the logic around to be "ignore .work unless the
+hostname is work-laptop".
 
 Patterns can be excluded by prefixing them with a `!`, for example:
 
