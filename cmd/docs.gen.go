@@ -720,8 +720,8 @@ func init() {
 		"certain machines. If you want an empty file to be created anyway, you will need\n" +
 		"to give it an `empty_` prefix.\n" +
 		"\n" +
-		"For coarser-grained control of files and entire directories are managed on\n" +
-		"different machines, or to exclude certain files completely, you can create\n" +
+		"For coarser-grained control of files and entire directories managed on different\n" +
+		"machines, or to exclude certain files completely, you can create\n" +
 		"`.chezmoiignore` files in the source directory. These specify a list of patterns\n" +
 		"that chezmoi should ignore, and are interpreted as templates. An example\n" +
 		"`.chezmoiignore` file might look like:\n" +
@@ -730,6 +730,11 @@ func init() {
 		"    {{- if ne .chezmoi.hostname \"work-laptop\" }}\n" +
 		"    .work # only manage .work on work-laptop\n" +
 		"    {{- end }}\n" +
+		"\n" +
+		"The use of `ne` (not equal) is deliberate. What we want to achieve is \"only\n" +
+		"install .work if hostname is work-laptop\" but chezmoi installs everything by\n" +
+		"default, so we have to turn the logic around to be \"ignore .work unless the\n" +
+		"hostname is work-laptop\".\n" +
 		"\n" +
 		"Patterns can be excluded by prefixing them with a `!`, for example:\n" +
 		"\n" +
