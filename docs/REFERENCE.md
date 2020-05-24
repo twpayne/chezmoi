@@ -73,8 +73,8 @@ Manage your dotfiles securely across multiple machines.
   * [`keyring` *service* *user*](#keyring-service-user)
   * [`lastpass` *id*](#lastpass-id)
   * [`lastpassRaw` *id*](#lastpassraw-id)
-  * [`onepassword` *uuid*](#onepassword-uuid)
-  * [`onepasswordDocument` *uuid*](#onepassworddocument-uuid)
+  * [`onepassword` *uuid* [*vault-uuid*]](#onepassword-uuid-vault-uuid)
+  * [`onepasswordDocument` *uuid* [*vault-uuid*]](#onepassworddocument-uuid-vault-uuid)
   * [`pass` *pass-name*](#pass-pass-name)
   * [`promptString` *prompt*](#promptstring-prompt)
   * [`secret` [*args*]](#secret-args)
@@ -1023,31 +1023,37 @@ further parsing is done on the `note` field.
 
     {{ (index (lastpassRaw "SSH Private Key") 0).note }}
 
-### `onepassword` *uuid*
+### `onepassword` *uuid* [*vault-uuid*]
 
 `onepassword` returns structured data from [1Password](https://1password.com/)
 using the [1Password
 CLI](https://support.1password.com/command-line-getting-started/) (`op`). *uuid*
 is passed to `op get item <uuid>` and the output from `op` is parsed as JSON.
 The output from `op` is cached so calling `onepassword` multiple times with the
-same *uuid* will only invoke `op` once.
+same *uuid* will only invoke `op` once.  If the optional *vault-uuid* is supplied,
+it will be passed along to the `op get` call, which can significantly improve
+performance.
 
 #### `onepassword` examples
 
     {{ (onepassword "<uuid>").details.password }}
+    {{ (onepassword "<uuid>" "<vault-uuid>").details.password }}
 
-### `onepasswordDocument` *uuid*
+### `onepasswordDocument` *uuid* [*vault-uuid*]
 
 `onepassword` returns a document from [1Password](https://1password.com/)
 using the [1Password
 CLI](https://support.1password.com/command-line-getting-started/) (`op`). *uuid*
 is passed to `op get document <uuid>` and the output from `op` is returned.
 The output from `op` is cached so calling `onepasswordDocument` multiple times with the
-same *uuid* will only invoke `op` once.
+same *uuid* will only invoke `op` once.  If the optional *vault-uuid* is supplied,
+it will be passed along to the `op get` call, which can significantly improve
+performance.
 
 #### `onepasswordDocument` examples
 
     {{- onepasswordDocument "<uuid>" -}}
+    {{- onepasswordDocument "<uuid>" "<vault-uuid>" -}}
 
 ### `pass` *pass-name*
 

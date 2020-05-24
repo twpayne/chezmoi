@@ -39,12 +39,27 @@ func (c *Config) runOnepasswordCmd(cmd *cobra.Command, args []string) error {
 	return c.run("", c.Onepassword.Command, args...)
 }
 
-func (c *Config) onepasswordFunc(item string) interface{} {
-	if data, ok := onepasswordCache[item]; ok {
+func (c *Config) onepasswordFunc(args ...string) interface{} {
+	if len(args) < 1 || len(args) > 2 {
+		panic(fmt.Sprintf("onepassword: expected 1 or 2 arguments, got %d", len(args)))
+	}
+
+	item := args[0]
+	vault := ""
+	key := item
+	if len(args) == 2 {
+		vault = args[1]
+		key += "\x00" + vault
+	}
+
+	if data, ok := onepasswordCache[key]; ok {
 		return data
 	}
 	name := c.Onepassword.Command
-	args := []string{"get", "item", item}
+	args = []string{"get", "item", item}
+	if vault != "" {
+		args = append(args, "--vault", vault)
+	}
 	cmd := exec.Command(name, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
@@ -56,16 +71,31 @@ func (c *Config) onepasswordFunc(item string) interface{} {
 	if err := json.Unmarshal(output, &data); err != nil {
 		panic(fmt.Errorf("onepassword: %s %s: %w\n%s", name, chezmoi.ShellQuoteArgs(args), err, output))
 	}
-	onepasswordCache[item] = data
+	onepasswordCache[key] = data
 	return data
 }
 
-func (c *Config) onepasswordDocumentFunc(item string) interface{} {
-	if output, ok := onepasswordDocumentCache[item]; ok {
+func (c *Config) onepasswordDocumentFunc(args ...string) interface{} {
+	if len(args) < 1 || len(args) > 2 {
+		panic(fmt.Sprintf("onepassword: expected 1 or 2 arguments, got %d", len(args)))
+	}
+
+	item := args[0]
+	vault := ""
+	key := item
+	if len(args) == 2 {
+		vault = args[1]
+		key += "\x00" + vault
+	}
+
+	if output, ok := onepasswordDocumentCache[key]; ok {
 		return output
 	}
 	name := c.Onepassword.Command
-	args := []string{"get", "document", item}
+	args = []string{"get", "document", item}
+	if vault != "" {
+		args = append(args, "--vault", vault)
+	}
 	cmd := exec.Command(name, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
