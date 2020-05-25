@@ -732,9 +732,9 @@ func init() {
 		"    {{- end }}\n" +
 		"\n" +
 		"The use of `ne` (not equal) is deliberate. What we want to achieve is \"only\n" +
-		"install .work if hostname is work-laptop\" but chezmoi installs everything by\n" +
-		"default, so we have to turn the logic around to be \"ignore .work unless the\n" +
-		"hostname is work-laptop\".\n" +
+		"install `.work` if hostname is `work-laptop`\" but chezmoi installs everything by\n" +
+		"default, so we have to turn the logic around and instead write \"ignore `.work`\n" +
+		"unless the hostname is `work-laptop`\".\n" +
 		"\n" +
 		"Patterns can be excluded by prefixing them with a `!`, for example:\n" +
 		"\n" +

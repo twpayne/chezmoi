@@ -221,9 +221,9 @@ that chezmoi should ignore, and are interpreted as templates. An example
     {{- end }}
 
 The use of `ne` (not equal) is deliberate. What we want to achieve is "only
-install .work if hostname is work-laptop" but chezmoi installs everything by
-default, so we have to turn the logic around to be "ignore .work unless the
-hostname is work-laptop".
+install `.work` if hostname is `work-laptop`" but chezmoi installs everything by
+default, so we have to turn the logic around and instead write "ignore `.work`
+unless the hostname is `work-laptop`".
 
 Patterns can be excluded by prefixing them with a `!`, for example:
 
