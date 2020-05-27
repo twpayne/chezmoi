@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"io"
 	"os"
 	"os/exec"
 	"regexp"
@@ -127,10 +128,43 @@ func (c *Config) keePassXCAttributeFunc(entry, attribute string) string {
 	return outputStr
 }
 
+func readPassword(prompt string) (pw []byte, err error) {
+	fd := int(os.Stdin.Fd())
+	if terminal.IsTerminal(fd) {
+		fmt.Print(prompt)
+		pw, err = terminal.ReadPassword(fd)
+		fmt.Println()
+		return
+	}
+
+	var b [1]byte
+	for {
+		n, err := os.Stdin.Read(b[:])
+		// terminal.ReadPassword discards any '\r', so do the same
+		if n > 0 && b[0] != '\r' {
+			if b[0] == '\n' {
+				return pw, nil
+			}
+			pw = append(pw, b[0])
+			// limit size, so that a wrong input won't fill up the memory
+			if len(pw) > 1024 {
+				err = errors.New("password too long")
+			}
+		}
+		if err != nil {
+			// terminal.ReadPassword accepts EOF-terminated passwords
+			// if non-empty, so do the same
+			if err == io.EOF && len(pw) > 0 {
+				err = nil
+			}
+			return pw, err
+		}
+	}
+}
+
 func (c *Config) runKeePassXCCLICommand(name string, args []string) ([]byte, error) {
 	if keePassXCPassword == "" {
-		fmt.Printf("Insert password to unlock %s: ", c.KeePassXC.Database)
-		password, err := terminal.ReadPassword(int(os.Stdout.Fd()))
+		password, err := readPassword(fmt.Sprintf("Insert password to unlock %s: ", c.KeePassXC.Database))
 		fmt.Println()
 		if err != nil {
 			return nil, err
