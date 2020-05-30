@@ -249,7 +249,7 @@ func init() {
 		"* [I've made changes to both the destination state and the source state that I want to keep. How can I keep them both?](#ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both)\n" +
 		"* [Why does chezmoi convert all my template variables to lowercase?](#why-does-chezmoi-convert-all-my-template-variables-to-lowercase)\n" +
 		"* [chezmoi makes `~/.ssh/config` group writeable. How do I stop this?](#chezmoi-makes-sshconfig-group-writeable-how-do-i-stop-this)\n" +
-		"* [chezmoi's source file naming system cannot handle all possible filenames](#chezmois-source-file-naming-system-cannot-handle-all-possible-filenames)\n" +
+		"* [Can I change how chezmoi's source state is represented on disk?](#can-i-change-how-chezmois-source-state-is-represented-on-disk)\n" +
 		"* [gpg encryption fails. What could be wrong?](#gpg-encryption-fails-what-could-be-wrong)\n" +
 		"* [I'm getting errors trying to build chezmoi from source](#im-getting-errors-trying-to-build-chezmoi-from-source)\n" +
 		"* [What inspired chezmoi?](#what-inspired-chezmoi)\n" +
@@ -389,23 +389,85 @@ func init() {
 		"GitHub](https://github.com/twpayne/chezmoi/issues/new?assignees=&labels=enhancement&template=02_feature_request.md&title=)\n" +
 		"if you need this.\n" +
 		"\n" +
-		"## chezmoi's source file naming system cannot handle all possible filenames\n" +
+		"## Can I change how chezmoi's source state is represented on disk?\n" +
 		"\n" +
-		"This is correct. Certain target filenames, for example `~/dot_example`, are\n" +
-		"incompatible with chezmoi's\n" +
+		"There are a number of criticisms of how chezmoi's source state is represented on\n" +
+		"disk:\n" +
+		"\n" +
+		"1. The source file naming system cannot handle all possible filenames.\n" +
+		"2. The long source file names are verbose.\n" +
+		"3. Everything is in a single directory, which can end up containing many entries.\n" +
+		"\n" +
+		"chezmoi's source state representation is a deliberate, practical compromise.\n" +
+		"\n" +
+		"Certain target filenames, for example `~/dot_example`, are incompatible with\n" +
+		"chezmoi's\n" +
 		"[attributes](https://github.com/twpayne/chezmoi/blob/master/docs/REFERENCE.md#source-state-attributes)\n" +
-		"used in the source state.\n" +
+		"used in the source state. In practice, dotfile filenames are unlikely to\n" +
+		"conflict with chezmoi's attributes. If this does cause a genuine problem for\n" +
+		"you, please [open an issue on\n" +
+		"GitHub](https://github.com/twpayne/chezmoi/issues/new/choose).\n" +
 		"\n" +
-		"This is a deliberate, practical compromise. Target state metadata (private,\n" +
-		"encrypted, etc.) need to be stored for each file. Using the source state\n" +
-		"filename for this means that the contents of the file are untouched, there is no\n" +
-		"need to maintain the metadata in a separate file, is independent of the\n" +
-		"underlying filesystem and version control system, and unambiguously associates\n" +
-		"the metadata with a single file.\n" +
+		"The `dot_` attribute makes it transparent which dotfiles are managed by chezmoi\n" +
+		"and which files are ignored by chezmoi. chezmoi ignores all files and\n" +
+		"directories that start with `.` so no special whitelists are needed for version\n" +
+		"control systems and their control files (e.g. `.git` and `.gitignore`).\n" +
 		"\n" +
-		"In practice, dotfile filenames are unlikely to conflict with chezmoi's\n" +
-		"attributes. If this does cause a genuine problem for you, please [open an\n" +
-		"issue on GitHub](https://github.com/twpayne/chezmoi/issues/new/choose).\n" +
+		"chezmoi needs per-file metadata to know how to interpret the source file's\n" +
+		"contents, for example to know when the source file is a template or if the\n" +
+		"file's contents are encrypted. By storing this metadata in the filename, the\n" +
+		"metadata is unambiguously associated with a single file and adding, updating, or\n" +
+		"removing a single file touches only a single file in the source state. Changes\n" +
+		"to the metadata (e.g. `chezmoi chattr +template *target*`) are simple file\n" +
+		"renames and isolated to the affected file.\n" +
+		"\n" +
+		"If chezmoi were to, say, use a common configuration file listing which files\n" +
+		"were templates and/or encrypted, then changes to any file would require updates\n" +
+		"to the common configuration file. Automating updates to configuration files\n" +
+		"requires a round trip (read config file, update config, write config) and it is\n" +
+		"not always possible preserve comments and formatting.\n" +
+		"\n" +
+		"File permissions and modes like `executable_`, `private_`, and `symlink_` could\n" +
+		"also be stored in the filesystem, rather than in the filename. However, this\n" +
+		"requires the permissions to be preserved and handled by the underlying version\n" +
+		"control system and filesystem. chezmoi provides first-class support for Windows,\n" +
+		"where the `executable_` and `private_` attributes have no direct equivalents and\n" +
+		"symbolic links are not always permitted. Some version control systems do not\n" +
+		"preserve file permissions or handle symbolic links. By using regular files and\n" +
+		"directories, chezmoi avoids variations in the operating system, version control\n" +
+		"system, and filesystem making it both more robust and more portable.\n" +
+		"\n" +
+		"chezmoi uses a 1:1 mapping between entries in the source state and entries in\n" +
+		"the target state. This mapping is bi-directional and unambiguous.\n" +
+		"\n" +
+		"However, this also means that dotfiles that in the same directory in the target\n" +
+		"state must be in the same directory in the source state. In particular, every\n" +
+		"entry managed by chezmoi in the root of your home directory has a corresponding\n" +
+		"entry in the root of your source directory, which can mean that you end up with\n" +
+		"a lot of entries in the root of your source directory.\n" +
+		"\n" +
+		"If chezmoi were to permit, say, multiple separate source directories (so you\n" +
+		"could, say, put `dot_bashrc` in a `bash/` subdirectory, and `dot_vimrc` in a\n" +
+		"`vim/` subdirectory, but have `chezmoi apply` map these to `~/.bashrc` and\n" +
+		"`~/.vimrc` in the root of your home directory) then the mapping between source\n" +
+		"and target states is no longer bidirectional nor unambiguous, which\n" +
+		"significantly increases complexity and requires more user interaction. For\n" +
+		"example, if both `bash/dot_bashrc` and `vim/dot_bashrc` exist, what should be\n" +
+		"the contents of `~/.bashrc`? If you run `chezmoi add ~/.zshrc`, should\n" +
+		"`dot_zshrc` be stored in the source `bash/` directory, the source `vim/`\n" +
+		"directory, or somewhere else? How does the user communicate their preferences?\n" +
+		"\n" +
+		"chezmoi has many users and any changes to the source state representation must\n" +
+		"be backwards-compatible.\n" +
+		"\n" +
+		"In summary, chezmoi's source state representation is a compromise with both\n" +
+		"advantages and disadvantages. Changes to the representation will be considered,\n" +
+		"but must meet the following criteria:\n" +
+		"\n" +
+		"* Fully backwards-compatible for existing users.\n" +
+		"* Independent of the underlying operating system, version control system, and\n" +
+		"  filesystem.\n" +
+		"* Not add significant extra complexity to the user interface or underlying implementation.\n" +
 		"\n" +
 		"## gpg encryption fails. What could be wrong?\n" +
 		"\n" +
