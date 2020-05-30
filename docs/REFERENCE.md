@@ -99,8 +99,8 @@ destination directory, where:
 
 * A *target* is a file, directory, or symlink in the destination directory.
 
-* The *destination state* is the state of all the targets in the destination
-  directory.
+* The *destination state* is the current state of all the targets in the
+  destination directory.
 
 * The *config file* contains machine-specific configuration, by default it is
   `~/.config/chezmoi/chezmoi.toml`.

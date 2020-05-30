@@ -1692,8 +1692,8 @@ func init() {
 		"\n" +
 		"* A *target* is a file, directory, or symlink in the destination directory.\n" +
 		"\n" +
-		"* The *destination state* is the state of all the targets in the destination\n" +
-		"  directory.\n" +
+		"* The *destination state* is the current state of all the targets in the\n" +
+		"  destination directory.\n" +
 		"\n" +
 		"* The *config file* contains machine-specific configuration, by default it is\n" +
 		"  `~/.config/chezmoi/chezmoi.toml`.\n" +
