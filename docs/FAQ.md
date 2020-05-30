@@ -12,7 +12,7 @@
 * [I've made changes to both the destination state and the source state that I want to keep. How can I keep them both?](#ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both)
 * [Why does chezmoi convert all my template variables to lowercase?](#why-does-chezmoi-convert-all-my-template-variables-to-lowercase)
 * [chezmoi makes `~/.ssh/config` group writeable. How do I stop this?](#chezmoi-makes-sshconfig-group-writeable-how-do-i-stop-this)
-* [chezmoi's source file naming system cannot handle all possible filenames](#chezmois-source-file-naming-system-cannot-handle-all-possible-filenames)
+* [Can I change how chezmoi's source state is represented on disk?](#can-i-change-how-chezmois-source-state-is-represented-on-disk)
 * [gpg encryption fails. What could be wrong?](#gpg-encryption-fails-what-could-be-wrong)
 * [I'm getting errors trying to build chezmoi from source](#im-getting-errors-trying-to-build-chezmoi-from-source)
 * [What inspired chezmoi?](#what-inspired-chezmoi)
@@ -152,23 +152,85 @@ to control group write permissions for individual files or directories. Please
 GitHub](https://github.com/twpayne/chezmoi/issues/new?assignees=&labels=enhancement&template=02_feature_request.md&title=)
 if you need this.
 
-## chezmoi's source file naming system cannot handle all possible filenames
+## Can I change how chezmoi's source state is represented on disk?
 
-This is correct. Certain target filenames, for example `~/dot_example`, are
-incompatible with chezmoi's
+There are a number of criticisms of how chezmoi's source state is represented on
+disk:
+
+1. The source file naming system cannot handle all possible filenames.
+2. The long source file names are verbose.
+3. Everything is in a single directory, which can end up containing many entries.
+
+chezmoi's source state representation is a deliberate, practical compromise.
+
+Certain target filenames, for example `~/dot_example`, are incompatible with
+chezmoi's
 [attributes](https://github.com/twpayne/chezmoi/blob/master/docs/REFERENCE.md#source-state-attributes)
-used in the source state.
+used in the source state. In practice, dotfile filenames are unlikely to
+conflict with chezmoi's attributes. If this does cause a genuine problem for
+you, please [open an issue on
+GitHub](https://github.com/twpayne/chezmoi/issues/new/choose).
 
-This is a deliberate, practical compromise. Target state metadata (private,
-encrypted, etc.) need to be stored for each file. Using the source state
-filename for this means that the contents of the file are untouched, there is no
-need to maintain the metadata in a separate file, is independent of the
-underlying filesystem and version control system, and unambiguously associates
-the metadata with a single file.
+The `dot_` attribute makes it transparent which dotfiles are managed by chezmoi
+and which files are ignored by chezmoi. chezmoi ignores all files and
+directories that start with `.` so no special whitelists are needed for version
+control systems and their control files (e.g. `.git` and `.gitignore`).
 
-In practice, dotfile filenames are unlikely to conflict with chezmoi's
-attributes. If this does cause a genuine problem for you, please [open an
-issue on GitHub](https://github.com/twpayne/chezmoi/issues/new/choose).
+chezmoi needs per-file metadata to know how to interpret the source file's
+contents, for example to know when the source file is a template or if the
+file's contents are encrypted. By storing this metadata in the filename, the
+metadata is unambiguously associated with a single file and adding, updating, or
+removing a single file touches only a single file in the source state. Changes
+to the metadata (e.g. `chezmoi chattr +template *target*`) are simple file
+renames and isolated to the affected file.
+
+If chezmoi were to, say, use a common configuration file listing which files
+were templates and/or encrypted, then changes to any file would require updates
+to the common configuration file. Automating updates to configuration files
+requires a round trip (read config file, update config, write config) and it is
+not always possible preserve comments and formatting.
+
+File permissions and modes like `executable_`, `private_`, and `symlink_` could
+also be stored in the filesystem, rather than in the filename. However, this
+requires the permissions to be preserved and handled by the underlying version
+control system and filesystem. chezmoi provides first-class support for Windows,
+where the `executable_` and `private_` attributes have no direct equivalents and
+symbolic links are not always permitted. Some version control systems do not
+preserve file permissions or handle symbolic links. By using regular files and
+directories, chezmoi avoids variations in the operating system, version control
+system, and filesystem making it both more robust and more portable.
+
+chezmoi uses a 1:1 mapping between entries in the source state and entries in
+the target state. This mapping is bi-directional and unambiguous.
+
+However, this also means that dotfiles that in the same directory in the target
+state must be in the same directory in the source state. In particular, every
+entry managed by chezmoi in the root of your home directory has a corresponding
+entry in the root of your source directory, which can mean that you end up with
+a lot of entries in the root of your source directory.
+
+If chezmoi were to permit, say, multiple separate source directories (so you
+could, say, put `dot_bashrc` in a `bash/` subdirectory, and `dot_vimrc` in a
+`vim/` subdirectory, but have `chezmoi apply` map these to `~/.bashrc` and
+`~/.vimrc` in the root of your home directory) then the mapping between source
+and target states is no longer bidirectional nor unambiguous, which
+significantly increases complexity and requires more user interaction. For
+example, if both `bash/dot_bashrc` and `vim/dot_bashrc` exist, what should be
+the contents of `~/.bashrc`? If you run `chezmoi add ~/.zshrc`, should
+`dot_zshrc` be stored in the source `bash/` directory, the source `vim/`
+directory, or somewhere else? How does the user communicate their preferences?
+
+chezmoi has many users and any changes to the source state representation must
+be backwards-compatible.
+
+In summary, chezmoi's source state representation is a compromise with both
+advantages and disadvantages. Changes to the representation will be considered,
+but must meet the following criteria:
+
+* Fully backwards-compatible for existing users.
+* Independent of the underlying operating system, version control system, and
+  filesystem.
+* Not add significant extra complexity to the user interface or underlying implementation.
 
 ## gpg encryption fails. What could be wrong?
 
