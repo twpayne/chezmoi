@@ -395,8 +395,9 @@ func init() {
 		"disk:\n" +
 		"\n" +
 		"1. The source file naming system cannot handle all possible filenames.\n" +
-		"2. The long source file names are verbose.\n" +
-		"3. Everything is in a single directory, which can end up containing many entries.\n" +
+		"2. Not all possible file permissions can be represented.\n" +
+		"3. The long source file names are verbose.\n" +
+		"4. Everything is in a single directory, which can end up containing many entries.\n" +
 		"\n" +
 		"chezmoi's source state representation is a deliberate, practical compromise.\n" +
 		"\n" +
@@ -426,6 +427,13 @@ func init() {
 		"to the common configuration file. Automating updates to configuration files\n" +
 		"requires a round trip (read config file, update config, write config) and it is\n" +
 		"not always possible preserve comments and formatting.\n" +
+		"\n" +
+		"chezmoi's attributes of `executable_` and `private_` only allow a the file\n" +
+		"permissions `0o644`, `0o755`, `0o600`, and `0o700` to be represented.\n" +
+		"Directories can only have permissions `0o755` or `0o700`. In practice, these\n" +
+		"cover all permissions typically used for dotfiles. If this does cause a genuine\n" +
+		"problem for you, please [open an issue on\n" +
+		"GitHub](https://github.com/twpayne/chezmoi/issues/new/choose).\n" +
 		"\n" +
 		"File permissions and modes like `executable_`, `private_`, and `symlink_` could\n" +
 		"also be stored in the filesystem, rather than in the filename. However, this\n" +
@@ -462,12 +470,14 @@ func init() {
 		"\n" +
 		"In summary, chezmoi's source state representation is a compromise with both\n" +
 		"advantages and disadvantages. Changes to the representation will be considered,\n" +
-		"but must meet the following criteria:\n" +
+		"but must meet the following criteria, in order of importance:\n" +
 		"\n" +
-		"* Fully backwards-compatible for existing users.\n" +
-		"* Independent of the underlying operating system, version control system, and\n" +
+		"1. Be fully backwards-compatible for existing users.\n" +
+		"2. Fix a genuine problem encountered in practice.\n" +
+		"3. Be independent of the underlying operating system, version control system, and\n" +
 		"  filesystem.\n" +
-		"* Not add significant extra complexity to the user interface or underlying implementation.\n" +
+		"4. Not add significant extra complexity to the user interface or underlying\n" +
+		"   implementation.\n" +
 		"\n" +
 		"## gpg encryption fails. What could be wrong?\n" +
 		"\n" +
