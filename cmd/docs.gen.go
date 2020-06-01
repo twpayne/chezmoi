@@ -285,11 +285,11 @@ func init() {
 		"## If there's a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?\n" +
 		"\n" +
 		"By default, chezmoi ignores everything that you haven't explicitly `chezmoi\n" +
-		"add`'ed. If have files in your source directory that you don't want added to\n" +
+		"add`'ed. If you have files in your source directory that you don't want added to\n" +
 		"your destination directory when you run `chezmoi apply` add their names to a\n" +
 		"file called `.chezmoiignore` in the source state.\n" +
 		"\n" +
-		"Patterns are supported, and the you can change what's ignored from machine to\n" +
+		"Patterns are supported, and you can change what's ignored from machine to\n" +
 		"machine. The full usage and syntax is described in the [reference\n" +
 		"manual](https://github.com/twpayne/chezmoi/blob/master/docs/REFERENCE.md#chezmoiignore).\n" +
 		"\n" +
@@ -369,18 +369,18 @@ func init() {
 		"This is due to a feature in\n" +
 		"[`github.com/spf13/viper`](https://github.com/spf13/viper), the library that\n" +
 		"chezmoi uses to read its configuration file. For more information see [this\n" +
-		"GitHub issue issue](https://github.com/twpayne/chezmoi/issues/463).\n" +
+		"GitHub issue](https://github.com/twpayne/chezmoi/issues/463).\n" +
 		"\n" +
 		"## chezmoi makes `~/.ssh/config` group writeable. How do I stop this?\n" +
 		"\n" +
 		"By default, chezmoi uses your system's umask when creating files. On most\n" +
-		"systems the default umask is `0o22` but some systems use `0o02`, which means\n" +
+		"systems the default umask is `0022` but some systems use `0002`, which means\n" +
 		"that files and directories are group writeable by default.\n" +
 		"\n" +
 		"You can override this for chezmoi by setting the `umask` configuration variable\n" +
 		"in your configuration file, for example:\n" +
 		"\n" +
-		"    umask = 0o22\n" +
+		"    umask = 0022\n" +
 		"\n" +
 		"Note that this will apply to all files and directories that chezmoi manages and\n" +
 		"will ensure that none of them are group writeable. It is not currently possible\n" +

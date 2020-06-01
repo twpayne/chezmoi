@@ -48,11 +48,11 @@ entire directories with `chezmoi add -r`.
 ## If there's a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?
 
 By default, chezmoi ignores everything that you haven't explicitly `chezmoi
-add`'ed. If have files in your source directory that you don't want added to
+add`'ed. If you have files in your source directory that you don't want added to
 your destination directory when you run `chezmoi apply` add their names to a
 file called `.chezmoiignore` in the source state.
 
-Patterns are supported, and the you can change what's ignored from machine to
+Patterns are supported, and you can change what's ignored from machine to
 machine. The full usage and syntax is described in the [reference
 manual](https://github.com/twpayne/chezmoi/blob/master/docs/REFERENCE.md#chezmoiignore).
 
@@ -132,18 +132,18 @@ to the source state.
 This is due to a feature in
 [`github.com/spf13/viper`](https://github.com/spf13/viper), the library that
 chezmoi uses to read its configuration file. For more information see [this
-GitHub issue issue](https://github.com/twpayne/chezmoi/issues/463).
+GitHub issue](https://github.com/twpayne/chezmoi/issues/463).
 
 ## chezmoi makes `~/.ssh/config` group writeable. How do I stop this?
 
 By default, chezmoi uses your system's umask when creating files. On most
-systems the default umask is `0o22` but some systems use `0o02`, which means
+systems the default umask is `0022` but some systems use `0002`, which means
 that files and directories are group writeable by default.
 
 You can override this for chezmoi by setting the `umask` configuration variable
 in your configuration file, for example:
 
-    umask = 0o22
+    umask = 0022
 
 Note that this will apply to all files and directories that chezmoi manages and
 will ensure that none of them are group writeable. It is not currently possible
