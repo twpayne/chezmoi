@@ -808,7 +808,7 @@ neovim's diff mode specify:
 Many dotfile managers replace dotfiles with symbolic links to files in a common
 directory. If you `chezmoi add` such a symlink, chezmoi will add the symlink,
 not the file. To assist with migrating from symlink-based systems, use the
-`--follow` / `-f` option to `chezmoi add`, for example:
+`--follow` option to `chezmoi add`, for example:
 
     chezmoi add --follow ~/.bashrc
 

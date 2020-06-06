@@ -9,7 +9,7 @@ Manage your dotfiles securely across multiple machines.
   * [`-c`, `--config` *filename*](#-c---config-filename)
   * [`--debug`](#--debug)
   * [`-D`, `--destination` *directory*](#-d---destination-directory)
-  * [`-f`, `--follow`](#-f---follow)
+  * [`--follow`](#--follow)
   * [`-n`, `--dry-run`](#-n---dry-run)
   * [`-h`, `--help`](#-h---help)
   * [`-r`. `--remove`](#-r---remove)
@@ -129,7 +129,7 @@ Log information helpful for debugging.
 
 Use *directory* as the destination directory.
 
-### `-f`, `--follow`
+### `--follow`
 
 If the last part of a target is a symlink, deal with what the symlink
 references, rather than the symlink itself.

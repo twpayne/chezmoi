@@ -1391,7 +1391,7 @@ func init() {
 		"Many dotfile managers replace dotfiles with symbolic links to files in a common\n" +
 		"directory. If you `chezmoi add` such a symlink, chezmoi will add the symlink,\n" +
 		"not the file. To assist with migrating from symlink-based systems, use the\n" +
-		"`--follow` / `-f` option to `chezmoi add`, for example:\n" +
+		"`--follow` option to `chezmoi add`, for example:\n" +
 		"\n" +
 		"    chezmoi add --follow ~/.bashrc\n" +
 		"\n" +
@@ -1602,7 +1602,7 @@ func init() {
 		"  * [`-c`, `--config` *filename*](#-c---config-filename)\n" +
 		"  * [`--debug`](#--debug)\n" +
 		"  * [`-D`, `--destination` *directory*](#-d---destination-directory)\n" +
-		"  * [`-f`, `--follow`](#-f---follow)\n" +
+		"  * [`--follow`](#--follow)\n" +
 		"  * [`-n`, `--dry-run`](#-n---dry-run)\n" +
 		"  * [`-h`, `--help`](#-h---help)\n" +
 		"  * [`-r`. `--remove`](#-r---remove)\n" +
@@ -1722,7 +1722,7 @@ func init() {
 		"\n" +
 		"Use *directory* as the destination directory.\n" +
 		"\n" +
-		"### `-f`, `--follow`\n" +
+		"### `--follow`\n" +
 		"\n" +
 		"If the last part of a target is a symlink, deal with what the symlink\n" +
 		"references, rather than the symlink itself.\n" +
