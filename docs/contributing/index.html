@@ -17,7 +17,7 @@ chezmoi is a standard Go project, using standard Go tooling, with a few extra to
 <link rel="stylesheet" href="/book.min.a8b61185b89b0e211122339c7efd1c8edaa4ad4c0ae65f0074e99a4b31c1e393.css" integrity="sha256-qLYRhbibDiERIjOcfv0cjtqkrUwK5l8AdOmaSzHB45M=">
 
 
-<script defer src="/search.min.5d93315bfcf088c006bcdd8be56453caf3201f1793dd065486dfb5db6c837649.js" integrity="sha256-XZMxW/zwiMAGvN2L5WRTyvMgHxeT3QZUht&#43;122yDdkk="></script>
+<script defer src="/search.min.80a899bdab621acbe10b9332aaa7b1279dbc5a4edc72f7b7bc8764cdff5dadcc.js" integrity="sha256-gKiZvatiGsvhC5MyqqexJ528Wk7ccve3vIdkzf9drcw="></script>
 
 <!--
 Made with Book Theme
@@ -201,7 +201,7 @@ optional and will be stripped, so you can pass the git tag in directly.</p>
 <code>4d678ce6850c9d81c7ab2fe0d8f20c1547688b91</code>.</p>
 <p><code>$DATE</code> should be the date of the build in RFC3339 format, e.g.
 <code>2019-11-23T18:29:25Z</code>.</p>
-<p><code>$BULIT_BY</code> should be a string indicating what mechanism was used to build the
+<p><code>$BUILT_BY</code> should be a string indicating what mechanism was used to build the
 binary, e.g. <code>goreleaser</code>.</p>
 </li>
 <li>
@@ -211,7 +211,7 @@ correctly on some systems.</p>
 </li>
 <li>
 <p>chezmoi includes a <code>docs</code> command which prints its documentation. By default,
-the docs are embedded in the binary. You can disable this behaviour, and have
+the docs are embedded in the binary. You can disable this behavior, and have
 chezmoi read its docs from the filesystem by building with the <code>noembeddocs</code>
 build tag and setting the directory where chezmoi can find them with the <code>-X github.com/twpayne/chezmoi/cmd.DocDir=$DOCDIR</code> linker flag. For example:</p>
 <pre><code>go build -tags noembeddocs -ldflags &quot;-X github.com/twpayne/chezmoi/cmd.DocsDir=/usr/share/doc/chezmoi&quot; .

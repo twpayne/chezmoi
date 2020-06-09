@@ -16,7 +16,7 @@ chezmoi cd git remote add origin https://github." />
 <link rel="stylesheet" href="/book.min.a8b61185b89b0e211122339c7efd1c8edaa4ad4c0ae65f0074e99a4b31c1e393.css" integrity="sha256-qLYRhbibDiERIjOcfv0cjtqkrUwK5l8AdOmaSzHB45M=">
 
 
-<script defer src="/search.min.5d93315bfcf088c006bcdd8be56453caf3201f1793dd065486dfb5db6c837649.js" integrity="sha256-XZMxW/zwiMAGvN2L5WRTyvMgHxeT3QZUht&#43;122yDdkk="></script>
+<script defer src="/search.min.80a899bdab621acbe10b9332aaa7b1279dbc5a4edc72f7b7bc8764cdff5dadcc.js" integrity="sha256-gKiZvatiGsvhC5MyqqexJ528Wk7ccve3vIdkzf9drcw="></script>
 
 <!--
 Made with Book Theme
@@ -190,8 +190,8 @@ of your <code>~/.config/chezmoi/chezmoi.toml</code> file:</p>
 </code></pre>
 <p>To disable automatic variable detection, use the <code>--template</code> or <code>-T</code> option to
 <code>chezmoi add</code> instead of <code>--autotemplate</code>.</p>
-<p>Templates are often used to capture machine-specifc differences. For example, in
-your <code>~/.local/share/chezmoi/dot_bashrc.tmpl</code> you might have:</p>
+<p>Templates are often used to capture machine-specific differences. For example,
+in your <code>~/.local/share/chezmoi/dot_bashrc.tmpl</code> you might have:</p>
 <pre><code># common config
 export EDITOR=vi
 
@@ -225,8 +225,8 @@ expression, which is useful if your editor has added any newlines.</p>
 will be removed. This can be used to ensure that files are only present on
 certain machines. If you want an empty file to be created anyway, you will need
 to give it an <code>empty_</code> prefix.</p>
-<p>For coarser-grained control of files and entire directories are managed on
-different machines, or to exclude certain files completely, you can create
+<p>For coarser-grained control of files and entire directories managed on different
+machines, or to exclude certain files completely, you can create
 <code>.chezmoiignore</code> files in the source directory. These specify a list of patterns
 that chezmoi should ignore, and are interpreted as templates. An example
 <code>.chezmoiignore</code> file might look like:</p>
@@ -235,15 +235,19 @@ that chezmoi should ignore, and are interpreted as templates. An example
 .work # only manage .work on work-laptop
 {{- end }}
 </code></pre>
+<p>The use of <code>ne</code> (not equal) is deliberate. What we want to achieve is &ldquo;only
+install <code>.work</code> if hostname is <code>work-laptop</code>&rdquo; but chezmoi installs everything by
+default, so we have to turn the logic around and instead write &ldquo;ignore <code>.work</code>
+unless the hostname is <code>work-laptop</code>&rdquo;.</p>
 <p>Patterns can be excluded by prefixing them with a <code>!</code>, for example:</p>
 <pre><code>f*
 !foo
 </code></pre>
 <p>will ignore all files beginning with an <code>f</code> except <code>foo</code>.</p>
 <h2 id="use-completely-separate-config-files-on-different-machines">Use completely separate config files on different machines</h2>
-<p>chezmoi&rsquo;s templating functionality allows you to change a file&rsquo;s contents based
-on any variable. For example, if you want <code>~/.bashrc</code> to be different on Linux
-and macOS you would create a file in the source state called <code>dot_bashrc.tmpl</code>
+<p>chezmoi&rsquo;s template functionality allows you to change a file&rsquo;s contents based on
+any variable. For example, if you want <code>~/.bashrc</code> to be different on Linux and
+macOS you would create a file in the source state called <code>dot_bashrc.tmpl</code>
 containing:</p>
 <pre><code>{{ if eq .chezmoi.os &quot;darwin&quot; -}}
 # macOS .bashrc contents
@@ -252,7 +256,7 @@ containing:</p>
 {{ end -}}
 </code></pre><p>However, if the differences between the two versions are so large that you&rsquo;d
 prefer to use completely separate files in the source state, you can achieve
-this using a templated symbolic link. Create the following files:</p>
+this using a symbolic link template. Create the following files:</p>
 <p><code>symlink_dot_bashrc.tmpl</code>:</p>
 <pre><code>.bashrc_{{ .chezmoi.os }}
 </code></pre><p><code>dot_bashrc_darwin</code>:</p>
@@ -386,7 +390,7 @@ function in your config files, for example:</p>
 password = {{ (bitwarden &quot;item&quot; &quot;example.com&quot;).login.password }}
 </code></pre>
 <h3 id="use-gopass-to-keep-your-secrets">Use gopass to keep your secrets</h3>
-<p>chezmoi includes support for <a href="https://gopass.pw/">gopass</a> using the gopass CLI.</p>
+<p>chezmoi includes support for <a href="https://www.gopass.pw/">gopass</a> using the gopass CLI.</p>
 <p>The first line of the output of <code>gopass show &lt;pass-name&gt;</code> is available as the
 <code>gopass</code> template function, for example:</p>
 <pre><code>{{ gopass &quot;&lt;pass-name&gt;&quot; }}
@@ -515,7 +519,7 @@ example, if the output of <code>op get item &quot;&lt;uuid&gt;&quot;</code> is:<
 <pre><code>{{- onepasswordDocument &quot;uuid&quot; -}}
 </code></pre>
 <p>Note the extra <code>-</code> after the opening <code>{{</code> and before the closing <code>}}</code>. This
-instructs the templating language to remove and whitespace before and after the
+instructs the template language to remove and whitespace before and after the
 substitution. This removes any trailing newline added by your editor when saving
 the template.</p>
 <h3 id="use-pass-to-keep-your-secrets">Use pass to keep your secrets</h3>
@@ -702,7 +706,7 @@ neovim&rsquo;s diff mode specify:</p>
 <p>Many dotfile managers replace dotfiles with symbolic links to files in a common
 directory. If you <code>chezmoi add</code> such a symlink, chezmoi will add the symlink,
 not the file. To assist with migrating from symlink-based systems, use the
-<code>--follow</code> / <code>-f</code> option to <code>chezmoi add</code>, for example:</p>
+<code>--follow</code> option to <code>chezmoi add</code>, for example:</p>
 <pre><code>chezmoi add --follow ~/.bashrc
 </code></pre>
 <p>This will tell <code>chezmoi add</code> that the target state of <code>~/.bashrc</code> is the target

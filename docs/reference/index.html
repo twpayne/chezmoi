@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="/book.min.a8b61185b89b0e211122339c7efd1c8edaa4ad4c0ae65f0074e99a4b31c1e393.css" integrity="sha256-qLYRhbibDiERIjOcfv0cjtqkrUwK5l8AdOmaSzHB45M=">
 
 
-<script defer src="/search.min.5d93315bfcf088c006bcdd8be56453caf3201f1793dd065486dfb5db6c837649.js" integrity="sha256-XZMxW/zwiMAGvN2L5WRTyvMgHxeT3QZUht&#43;122yDdkk="></script>
+<script defer src="/search.min.80a899bdab621acbe10b9332aaa7b1279dbc5a4edc72f7b7bc8764cdff5dadcc.js" integrity="sha256-gKiZvatiGsvhC5MyqqexJ528Wk7ccve3vIdkzf9drcw="></script>
 
 <!--
 Made with Book Theme
@@ -115,8 +115,8 @@ including templates and machine-specific configuration.</p>
 <p>A <em>target</em> is a file, directory, or symlink in the destination directory.</p>
 </li>
 <li>
-<p>The <em>destination state</em> is the state of all the targets in the destination
-directory.</p>
+<p>The <em>destination state</em> is the current state of all the targets in the
+destination directory.</p>
 </li>
 <li>
 <p>The <em>config file</em> contains machine-specific configuration, by default it is
@@ -137,7 +137,7 @@ value is <code>auto</code> which will colorize diffs only if the the environment
 <p>Log information helpful for debugging.</p>
 <h3 id="-d---destination-directory"><code>-D</code>, <code>--destination</code> <em>directory</em></h3>
 <p>Use <em>directory</em> as the destination directory.</p>
-<h3 id="-f---follow"><code>-f</code>, <code>--follow</code></h3>
+<h3 id="--follow"><code>--follow</code></h3>
 <p>If the last part of a target is a symlink, deal with what the symlink
 references, rather than the symlink itself.</p>
 <h3 id="-n---dry-run"><code>-n</code>, <code>--dry-run</code></h3>
@@ -183,6 +183,12 @@ of the config file is <code>chezmoi</code>, and the first config file found is u
 <td>string</td>
 <td><code>bw</code></td>
 <td>Bitwarden CLI command</td>
+</tr>
+<tr>
+<td><code>cd.args</code></td>
+<td>[]string</td>
+<td><em>none</em></td>
+<td>Extra args to shell in <code>cd</code> command</td>
 </tr>
 <tr>
 <td><code>cd.command</code></td>
@@ -541,7 +547,7 @@ then its source state is replaced with its current state in the destination
 directory. The <code>add</code> command accepts additional flags:</p>
 <h4 id="--autotemplate"><code>--autotemplate</code></h4>
 <p>Automatically generate a template by replacing strings with variable names from
-the <code>data</code> section of the config file. Longer subsitutions occur before shorter
+the <code>data</code> section of the config file. Longer substitutions occur before shorter
 ones. This implies the <code>--template</code> option.</p>
 <h4 id="-e---empty"><code>-e</code>, <code>--empty</code></h4>
 <p>Set the <code>empty</code> attribute on added files.</p>
@@ -570,10 +576,13 @@ chezmoi apply --dry-run --verbose
 chezmoi apply ~/.bashrc
 </code></pre>
 <h3 id="archive"><code>archive</code></h3>
-<p>Write a tar archive of the target state to stdout. This can be piped into <code>tar</code>
-to inspect the target state.</p>
+<p>Generate a tar archive of the target state. This can be piped into <code>tar</code> to
+inspect the target state.</p>
+<h4 id="--output--o-filename"><code>--output</code>, <code>-o</code> <em>filename</em></h4>
+<p>Write the output to <em>filename</em> instead of stdout.</p>
 <h4 id="archive-examples"><code>archive</code> examples</h4>
 <pre><code>chezmoi archive | tar tvf -
+chezmoi archive --output=dotfiles.tar
 </code></pre>
 <h3 id="cat-targets"><code>cat</code> targets</h3>
 <p>Write the target state of <em>targets</em>  to stdout. <em>targets</em> must be files or
@@ -584,8 +593,9 @@ target target is written.</p>
 </code></pre>
 <h3 id="cd"><code>cd</code></h3>
 <p>Launch a shell in the source directory. chezmoi will launch the command set by
-the <code>cd.command</code> confiuration varaible. If this is not set, chezmoi will attempt
-to detect your shell and will finally fall back to an OS-specific default.</p>
+the <code>cd.command</code> configuration variable with any extra arguments specified by
+<code>cd.args</code>. If this is not set, chezmoi will attempt to detect your shell and
+will finally fall back to an OS-specific default.</p>
 <h4 id="cd-examples"><code>cd</code> examples</h4>
 <pre><code>chezmoi cd
 </code></pre>
@@ -639,7 +649,7 @@ chezmoi chattr private,template ~/.netrc
 <h3 id="completion-shell"><code>completion</code> <em>shell</em></h3>
 <p>Generate shell completion code for the specified shell (<code>bash</code>, <code>fish</code>, or
 <code>zsh</code>).</p>
-<h4 id="--output--o-filename"><code>--output</code>, <code>-o</code> <em>filename</em></h4>
+<h4 id="--output--o-filename-1"><code>--output</code>, <code>-o</code> <em>filename</em></h4>
 <p>Write the shell completion code to <em>filename</em> instead of stdout.</p>
 <h4 id="completion-examples"><code>completion</code> examples</h4>
 <pre><code>chezmoi completion bash
@@ -723,12 +733,12 @@ chezmoi edit
 </code></pre>
 <h3 id="execute-template-templates"><code>execute-template</code> [<em>templates</em>]</h3>
 <p>Execute <em>templates</em>. This is useful for testing templates or for calling chezmoi
-from other scripts. <em>templates</em> are interpeted as literal templates, with no
+from other scripts. <em>templates</em> are interpreted as literal templates, with no
 whitespace added to the output between arguments. If no templates are specified,
 the template is read from stdin.</p>
 <h4 id="--init--i"><code>--init</code>, <code>-i</code></h4>
 <p>Include simulated functions only available during <code>chezmoi init</code>.</p>
-<h4 id="--output--o-filename-1">&lsquo;&ndash;output&rsquo;, &lsquo;-o&rsquo; <em>filename</em></h4>
+<h4 id="--output--o-filename-2"><code>--output</code>, <code>-o</code> <em>filename</em></h4>
 <p>Write the output to <em>filename</em> instead of stdout.</p>
 <h4 id="--promptstring--p-pairs"><code>--promptString</code>, <code>-p</code> <em>pairs</em></h4>
 <p>Simulate the <code>promptString</code> function with a function that returns values from
@@ -837,7 +847,7 @@ chezmoi purge --force
 <p>Run a secret manager&rsquo;s CLI, passing any extra arguments to the secret manager&rsquo;s
 CLI. This is primarily for verifying chezmoi&rsquo;s integration with your secret
 manager. Normally you would use template functions to retrieve secrets. Note
-that if you want to pass flags to the secret manager&rsquo;s CLU you will need to
+that if you want to pass flags to the secret manager&rsquo;s CLI you will need to
 separate them with <code>--</code> to prevent chezmoi from interpreting them.</p>
 <p>To get a full list of available commands run:</p>
 <pre><code>chezmoi secret help
@@ -855,7 +865,7 @@ chezmoi secret vault -- kv get -format=json id
 </code></pre>
 <h3 id="source-args"><code>source</code> [<em>args</em>]</h3>
 <p>Execute the source version control system in the source directory with <em>args</em>.
-Note that any flags for the source version control system must be sepeated with
+Note that any flags for the source version control system must be separated with
 a <code>--</code> to stop chezmoi from reading them.</p>
 <h4 id="source-examples"><code>source</code> examples</h4>
 <pre><code>chezmoi source init
@@ -1089,25 +1099,31 @@ further parsing is done on the <code>note</code> field.</p>
 <h4 id="lastpassraw-examples"><code>lastpassRaw</code> examples</h4>
 <pre><code>{{ (index (lastpassRaw &quot;SSH Private Key&quot;) 0).note }}
 </code></pre>
-<h3 id="onepassword-uuid"><code>onepassword</code> <em>uuid</em></h3>
+<h3 id="onepassword-uuid-vault-uuid"><code>onepassword</code> <em>uuid</em> [<em>vault-uuid</em>]</h3>
 <p><code>onepassword</code> returns structured data from <a href="https://1password.com/">1Password</a>
 using the <a href="https://support.1password.com/command-line-getting-started/">1Password
 CLI</a> (<code>op</code>). <em>uuid</em>
 is passed to <code>op get item &lt;uuid&gt;</code> and the output from <code>op</code> is parsed as JSON.
 The output from <code>op</code> is cached so calling <code>onepassword</code> multiple times with the
-same <em>uuid</em> will only invoke <code>op</code> once.</p>
+same <em>uuid</em> will only invoke <code>op</code> once.  If the optional <em>vault-uuid</em> is supplied,
+it will be passed along to the <code>op get</code> call, which can significantly improve
+performance.</p>
 <h4 id="onepassword-examples"><code>onepassword</code> examples</h4>
 <pre><code>{{ (onepassword &quot;&lt;uuid&gt;&quot;).details.password }}
+{{ (onepassword &quot;&lt;uuid&gt;&quot; &quot;&lt;vault-uuid&gt;&quot;).details.password }}
 </code></pre>
-<h3 id="onepassworddocument-uuid"><code>onepasswordDocument</code> <em>uuid</em></h3>
+<h3 id="onepassworddocument-uuid-vault-uuid"><code>onepasswordDocument</code> <em>uuid</em> [<em>vault-uuid</em>]</h3>
 <p><code>onepassword</code> returns a document from <a href="https://1password.com/">1Password</a>
 using the <a href="https://support.1password.com/command-line-getting-started/">1Password
 CLI</a> (<code>op</code>). <em>uuid</em>
 is passed to <code>op get document &lt;uuid&gt;</code> and the output from <code>op</code> is returned.
 The output from <code>op</code> is cached so calling <code>onepasswordDocument</code> multiple times with the
-same <em>uuid</em> will only invoke <code>op</code> once.</p>
+same <em>uuid</em> will only invoke <code>op</code> once.  If the optional <em>vault-uuid</em> is supplied,
+it will be passed along to the <code>op get</code> call, which can significantly improve
+performance.</p>
 <h4 id="onepassworddocument-examples"><code>onepasswordDocument</code> examples</h4>
 <pre><code>{{- onepasswordDocument &quot;&lt;uuid&gt;&quot; -}}
+{{- onepasswordDocument &quot;&lt;uuid&gt;&quot; &quot;&lt;vault-uuid&gt;&quot; -}}
 </code></pre>
 <h3 id="pass-pass-name"><code>pass</code> <em>pass-name</em></h3>
 <p><code>pass</code> returns passwords stored in <a href="https://www.passwordstore.org/">pass</a> using
@@ -1166,7 +1182,7 @@ times with the same <em>key</em> will only invoke <code>vault</code> once.</p>
         <li><a href="#-c---config-filename"><code>-c</code>, <code>--config</code> <em>filename</em></a></li>
         <li><a href="#--debug"><code>--debug</code></a></li>
         <li><a href="#-d---destination-directory"><code>-D</code>, <code>--destination</code> <em>directory</em></a></li>
-        <li><a href="#-f---follow"><code>-f</code>, <code>--follow</code></a></li>
+        <li><a href="#--follow"><code>--follow</code></a></li>
         <li><a href="#-n---dry-run"><code>-n</code>, <code>--dry-run</code></a></li>
         <li><a href="#-h---help"><code>-h</code>, <code>--help</code></a></li>
         <li><a href="#-r---remove"><code>-r</code>. <code>--remove</code></a></li>
@@ -1242,8 +1258,8 @@ times with the same <em>key</em> will only invoke <code>vault</code> once.</p>
         <li><a href="#keyring-service-user"><code>keyring</code> <em>service</em> <em>user</em></a></li>
         <li><a href="#lastpass-id"><code>lastpass</code> <em>id</em></a></li>
         <li><a href="#lastpassraw-id"><code>lastpassRaw</code> <em>id</em></a></li>
-        <li><a href="#onepassword-uuid"><code>onepassword</code> <em>uuid</em></a></li>
-        <li><a href="#onepassworddocument-uuid"><code>onepasswordDocument</code> <em>uuid</em></a></li>
+        <li><a href="#onepassword-uuid-vault-uuid"><code>onepassword</code> <em>uuid</em> [<em>vault-uuid</em>]</a></li>
+        <li><a href="#onepassworddocument-uuid-vault-uuid"><code>onepasswordDocument</code> <em>uuid</em> [<em>vault-uuid</em>]</a></li>
         <li><a href="#pass-pass-name"><code>pass</code> <em>pass-name</em></a></li>
         <li><a href="#promptstring-prompt"><code>promptString</code> <em>prompt</em></a></li>
         <li><a href="#secret-args"><code>secret</code> [<em>args</em>]</a></li>
