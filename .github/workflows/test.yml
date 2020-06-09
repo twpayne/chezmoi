@@ -75,7 +75,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Install snapcraft
-      if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get -yq --no-install-suggests --no-install-recommends install snapcraft
     - name: Snapcraft Login
