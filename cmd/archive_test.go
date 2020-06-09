@@ -30,7 +30,7 @@ func TestArchiveCmd(t *testing.T) {
 
 	h, err := r.Next()
 	assert.NoError(t, err)
-	assert.Equal(t, "dir", h.Name)
+	assert.Equal(t, "dir/", h.Name)
 
 	h, err = r.Next()
 	assert.NoError(t, err)
