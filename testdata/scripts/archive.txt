@@ -7,7 +7,7 @@ cmp stdout golden/archive
 
 -- golden/archive --
 .bashrc
-.ssh
+.ssh/
 .ssh/config
 -- home/user/.local/share/chezmoi/dot_bashrc --
 # contents of .bashrc
