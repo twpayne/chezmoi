@@ -46,11 +46,11 @@ func (c *Config) vaultFunc(key string) interface{} {
 	cmd.Stderr = os.Stderr
 	output, err := c.mutator.IdempotentCmdOutput(cmd)
 	if err != nil {
-		panic(fmt.Errorf("vault: %s %s: %w\n%s", name, chezmoi.ShellQuoteArgs(args), err, output))
+		panic(fmt.Errorf("%s %s: %w\n%s", name, chezmoi.ShellQuoteArgs(args), err, output))
 	}
 	var data interface{}
 	if err := json.Unmarshal(output, &data); err != nil {
-		panic(fmt.Errorf("vault: %s %s: %w\n%s", name, chezmoi.ShellQuoteArgs(args), err, output))
+		panic(fmt.Errorf("%s %s: %w\n%s", name, chezmoi.ShellQuoteArgs(args), err, output))
 	}
 	vaultCache[key] = data
 	return data

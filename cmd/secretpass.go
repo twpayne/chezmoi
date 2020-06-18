@@ -47,7 +47,7 @@ func (c *Config) passFunc(id string) string {
 		cmd.Stdout = c.Stdout
 		cmd.Stderr = c.Stderr
 		if err := cmd.Run(); err != nil {
-			panic(fmt.Errorf("pass: %s %s: %w", name, chezmoi.ShellQuoteArgs(args), err))
+			panic(fmt.Errorf("%s %s: %w", name, chezmoi.ShellQuoteArgs(args), err))
 		}
 		c.Pass.unlocked = true
 	}
@@ -55,7 +55,7 @@ func (c *Config) passFunc(id string) string {
 	cmd := exec.Command(name, args...)
 	output, err := c.mutator.IdempotentCmdOutput(cmd)
 	if err != nil {
-		panic(fmt.Errorf("pass: %s %s: %w", name, chezmoi.ShellQuoteArgs(args), err))
+		panic(fmt.Errorf("%s %s: %w", name, chezmoi.ShellQuoteArgs(args), err))
 	}
 	var password string
 	if index := bytes.IndexByte(output, '\n'); index != -1 {

@@ -43,7 +43,7 @@ func (c *Config) gopassFunc(id string) string {
 	cmd := exec.Command(name, args...)
 	output, err := c.mutator.IdempotentCmdOutput(cmd)
 	if err != nil {
-		panic(fmt.Errorf("gopass: %s %s: %w", name, chezmoi.ShellQuoteArgs(args), err))
+		panic(fmt.Errorf("%s %s: %w", name, chezmoi.ShellQuoteArgs(args), err))
 	}
 	var password string
 	if index := bytes.IndexByte(output, '\n'); index != -1 {

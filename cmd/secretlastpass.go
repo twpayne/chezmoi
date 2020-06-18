@@ -75,7 +75,7 @@ func (c *Config) lastpassRawFunc(id string) []map[string]interface{} {
 	panicOnError(err)
 	var data []map[string]interface{}
 	if err := json.Unmarshal(output, &data); err != nil {
-		panic(fmt.Errorf("lastpass: parse error: %w\n%q", err, output))
+		panic(fmt.Errorf("parse error: %w\n%q", err, output))
 	}
 	lastPassCache[id] = data
 	return data
@@ -98,14 +98,14 @@ func (c *Config) lastpassVersionCheck() error {
 	}
 	m := lastpassVersionRegexp.FindSubmatch(output)
 	if m == nil {
-		return fmt.Errorf("lastpass: could not extract version from %q", output)
+		return fmt.Errorf("could not extract version from %q", output)
 	}
 	version, err := semver.NewVersion(string(m[1]))
 	if err != nil {
 		return err
 	}
 	if version.LessThan(lastpassMinVersion) {
-		return fmt.Errorf("lastpass: version %s found, need version %s or later", version, lastpassMinVersion)
+		return fmt.Errorf("version %s found, need version %s or later", version, lastpassMinVersion)
 	}
 	return nil
 }
