@@ -26,6 +26,7 @@ import (
 	yaml "gopkg.in/yaml.v2"
 
 	"github.com/twpayne/chezmoi/internal/chezmoi"
+	"github.com/twpayne/chezmoi/internal/git"
 )
 
 const commitMessageTemplateAsset = "assets/templates/COMMIT_MESSAGE.tmpl"
@@ -221,6 +222,9 @@ func (c *Config) autoCommit(vcs VCS) error {
 	status, err := vcs.ParseStatusOutput(output)
 	if err != nil {
 		return err
+	}
+	if gitStatus, ok := status.(*git.Status); ok && gitStatus.Empty() {
+		return nil
 	}
 	commitMessageText, err := getAsset(commitMessageTemplateAsset)
 	if err != nil {
