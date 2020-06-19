@@ -66,11 +66,11 @@ func (c *Config) getKeePassXCVersion() *semver.Version {
 	cmd := exec.Command(name, args...)
 	output, err := c.mutator.IdempotentCmdOutput(cmd)
 	if err != nil {
-		panic(fmt.Errorf("keepassxc: %s %s: %w", name, chezmoi.ShellQuoteArgs(args), err))
+		panic(fmt.Errorf("%s %s: %w", name, chezmoi.ShellQuoteArgs(args), err))
 	}
 	keePassXCVersion, err = semver.NewVersion(string(bytes.TrimSpace(output)))
 	if err != nil {
-		panic(fmt.Errorf("keepassxc: cannot parse version %q: %w", output, err))
+		panic(fmt.Errorf("cannot parse version %q: %w", output, err))
 	}
 	return keePassXCVersion
 }
@@ -80,7 +80,7 @@ func (c *Config) keePassXCFunc(entry string) map[string]string {
 		return data
 	}
 	if c.KeePassXC.Database == "" {
-		panic(errors.New("keepassxc: keepassxc.database not set"))
+		panic(errors.New("keepassxc.database not set"))
 	}
 	name := c.KeePassXC.Command
 	args := []string{"show"}
@@ -91,11 +91,11 @@ func (c *Config) keePassXCFunc(entry string) map[string]string {
 	args = append(args, c.KeePassXC.Database, entry)
 	output, err := c.runKeePassXCCLICommand(name, args)
 	if err != nil {
-		panic(fmt.Errorf("keepassxc: %s %s: %w", name, chezmoi.ShellQuoteArgs(args), err))
+		panic(fmt.Errorf("%s %s: %w", name, chezmoi.ShellQuoteArgs(args), err))
 	}
 	data, err := parseKeyPassXCOutput(output)
 	if err != nil {
-		panic(fmt.Errorf("keepassxc: %s %s: %w", name, chezmoi.ShellQuoteArgs(args), err))
+		panic(fmt.Errorf("%s %s: %w", name, chezmoi.ShellQuoteArgs(args), err))
 	}
 	keePassXCCache[entry] = data
 	return data
@@ -110,7 +110,7 @@ func (c *Config) keePassXCAttributeFunc(entry, attribute string) string {
 		return data
 	}
 	if c.KeePassXC.Database == "" {
-		panic(errors.New("keepassxc: keepassxc.database not set"))
+		panic(errors.New("keepassxc.database not set"))
 	}
 	name := c.KeePassXC.Command
 	args := []string{"show", "--attributes", attribute, "--quiet"}
@@ -121,7 +121,7 @@ func (c *Config) keePassXCAttributeFunc(entry, attribute string) string {
 	args = append(args, c.KeePassXC.Database, entry)
 	output, err := c.runKeePassXCCLICommand(name, args)
 	if err != nil {
-		panic(fmt.Errorf("keepassxc: %s %s: %w", name, chezmoi.ShellQuoteArgs(args), err))
+		panic(fmt.Errorf("%s %s: %w", name, chezmoi.ShellQuoteArgs(args), err))
 	}
 	outputStr := strings.TrimSpace(string(output))
 	keePassXCAttributeCache[key] = outputStr
