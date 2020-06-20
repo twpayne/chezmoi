@@ -68,6 +68,7 @@ Manage your dotfiles securely across multiple machines.
 * [Template functions](#template-functions)
   * [`bitwarden` [*args*]](#bitwarden-args)
   * [`gopass` *gopass-name*](#gopass-gopass-name)
+  * [`include` *filename*](#include-filename)
   * [`keepassxc` *entry*](#keepassxc-entry)
   * [`keepassxcAttribute` *entry* *attribute*](#keepassxcattribute-entry-attribute)
   * [`keyring` *service* *user*](#keyring-service-user)
@@ -951,6 +952,11 @@ with the same *gopass-name* will only invoke `gopass` once.
 #### `gopass` examples
 
     {{ gopass "<pass-name>" }}
+
+### `include` *filename*
+
+`include` returns the literal contents of the file named `*filename*`, relative
+to the source directory.
 
 ### `keepassxc` *entry*
 
