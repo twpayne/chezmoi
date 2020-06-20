@@ -1661,6 +1661,7 @@ func init() {
 		"* [Template functions](#template-functions)\n" +
 		"  * [`bitwarden` [*args*]](#bitwarden-args)\n" +
 		"  * [`gopass` *gopass-name*](#gopass-gopass-name)\n" +
+		"  * [`include` *filename*](#include-filename)\n" +
 		"  * [`keepassxc` *entry*](#keepassxc-entry)\n" +
 		"  * [`keepassxcAttribute` *entry* *attribute*](#keepassxcattribute-entry-attribute)\n" +
 		"  * [`keyring` *service* *user*](#keyring-service-user)\n" +
@@ -2544,6 +2545,11 @@ func init() {
 		"#### `gopass` examples\n" +
 		"\n" +
 		"    {{ gopass \"<pass-name>\" }}\n" +
+		"\n" +
+		"### `include` *filename*\n" +
+		"\n" +
+		"`include` returns the literal contents of the file named `*filename*`, relative\n" +
+		"to the source directory.\n" +
 		"\n" +
 		"### `keepassxc` *entry*\n" +
 		"\n" +
