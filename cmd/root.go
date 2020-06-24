@@ -58,6 +58,7 @@ func init() {
 	persistentFlags := rootCmd.PersistentFlags()
 
 	persistentFlags.StringVarP(&config.configFile, "config", "c", getDefaultConfigFile(config.bds), "config file")
+	panicOnError(rootCmd.MarkPersistentFlagFilename("config"))
 
 	persistentFlags.BoolVarP(&config.DryRun, "dry-run", "n", false, "dry run")
 	panicOnError(viper.BindPFlag("dry-run", persistentFlags.Lookup("dry-run")))
@@ -70,9 +71,11 @@ func init() {
 
 	persistentFlags.StringVarP(&config.SourceDir, "source", "S", getDefaultSourceDir(config.bds), "source directory")
 	panicOnError(viper.BindPFlag("source", persistentFlags.Lookup("source")))
+	panicOnError(rootCmd.MarkPersistentFlagDirname("source"))
 
 	persistentFlags.StringVarP(&config.DestDir, "destination", "D", homeDir, "destination directory")
 	panicOnError(viper.BindPFlag("destination", persistentFlags.Lookup("destination")))
+	panicOnError(rootCmd.MarkPersistentFlagDirname("destination"))
 
 	persistentFlags.BoolVarP(&config.Verbose, "verbose", "v", false, "verbose")
 	panicOnError(viper.BindPFlag("verbose", persistentFlags.Lookup("verbose")))
