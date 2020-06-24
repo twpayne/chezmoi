@@ -69,6 +69,7 @@ Manage your dotfiles securely across multiple machines.
   * [`bitwarden` [*args*]](#bitwarden-args)
   * [`gopass` *gopass-name*](#gopass-gopass-name)
   * [`include` *filename*](#include-filename)
+  * [`joinPath` *elements*](#joinpath-elements)
   * [`keepassxc` *entry*](#keepassxc-entry)
   * [`keepassxcAttribute` *entry* *attribute*](#keepassxcattribute-entry-attribute)
   * [`keyring` *service* *user*](#keyring-service-user)
@@ -960,6 +961,18 @@ with the same *gopass-name* will only invoke `gopass` once.
 `include` returns the literal contents of the file named `*filename*`, relative
 to the source directory.
 
+### `joinPath` *elements*
+
+`joinPath` joins any number of path elements into a single path, separating them
+with the OS-specific path separator. Empty elements are ignored. The result is
+cleaned. If the argument list is empty or all its elements are empty, `joinPath`
+returns an empty string. On Windows, the result will only be a UNC path if the
+first non-empty element is a UNC path.
+
+#### `joinPath` examples
+
+    {{ joinPath .chezmoi.homedir ".zshrc" }}
+
 ### `keepassxc` *entry*
 
 `keepassxc` returns structured data retrieved from a
@@ -1133,7 +1146,7 @@ templates.
 
 #### `stat` examples
 
-    {{ if stat (printf "%s/.pyenv" .chezmoi.homedir) }}
+    {{ if stat (joinPath .chezmoi.homedir ".pyenv") }}
     # ~/.pyenv exists
     {{ end }}
 

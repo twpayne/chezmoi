@@ -1662,6 +1662,7 @@ func init() {
 		"  * [`bitwarden` [*args*]](#bitwarden-args)\n" +
 		"  * [`gopass` *gopass-name*](#gopass-gopass-name)\n" +
 		"  * [`include` *filename*](#include-filename)\n" +
+		"  * [`joinPath` *elements*](#joinpath-elements)\n" +
 		"  * [`keepassxc` *entry*](#keepassxc-entry)\n" +
 		"  * [`keepassxcAttribute` *entry* *attribute*](#keepassxcattribute-entry-attribute)\n" +
 		"  * [`keyring` *service* *user*](#keyring-service-user)\n" +
@@ -2553,6 +2554,18 @@ func init() {
 		"`include` returns the literal contents of the file named `*filename*`, relative\n" +
 		"to the source directory.\n" +
 		"\n" +
+		"### `joinPath` *elements*\n" +
+		"\n" +
+		"`joinPath` joins any number of path elements into a single path, separating them\n" +
+		"with the OS-specific path separator. Empty elements are ignored. The result is\n" +
+		"cleaned. If the argument list is empty or all its elements are empty, `joinPath`\n" +
+		"returns an empty string. On Windows, the result will only be a UNC path if the\n" +
+		"first non-empty element is a UNC path.\n" +
+		"\n" +
+		"#### `joinPath` examples\n" +
+		"\n" +
+		"    {{ joinPath .chezmoi.homedir \".zshrc\" }}\n" +
+		"\n" +
 		"### `keepassxc` *entry*\n" +
 		"\n" +
 		"`keepassxc` returns structured data retrieved from a\n" +
@@ -2726,7 +2739,7 @@ func init() {
 		"\n" +
 		"#### `stat` examples\n" +
 		"\n" +
-		"    {{ if stat (printf \"%s/.pyenv\" .chezmoi.homedir) }}\n" +
+		"    {{ if stat (joinPath .chezmoi.homedir \".pyenv\") }}\n" +
 		"    # ~/.pyenv exists\n" +
 		"    {{ end }}\n" +
 		"\n" +

@@ -9,6 +9,7 @@ import (
 
 func init() {
 	config.addTemplateFunc("include", config.includeFunc)
+	config.addTemplateFunc("joinPath", config.joinPathFunc)
 	config.addTemplateFunc("lookPath", config.lookPathFunc)
 	config.addTemplateFunc("stat", config.statFunc)
 }
@@ -19,6 +20,10 @@ func (c *Config) includeFunc(filename string) string {
 		panic(err)
 	}
 	return string(contents)
+}
+
+func (c *Config) joinPathFunc(elem ...string) string {
+	return filepath.Join(elem...)
 }
 
 func (c *Config) lookPathFunc(file string) string {
