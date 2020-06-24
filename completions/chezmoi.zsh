@@ -6,13 +6,13 @@ function _chezmoi {
 
   _arguments -C \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]' \
     "1: :->cmnds" \
     "*::arg:->args"
@@ -168,13 +168,13 @@ function _chezmoi_add {
     '(-r --recursive)'{-r,--recursive}'[recurse in to subdirectories]' \
     '(-T --template)'{-T,--template}'[add files as templates]' \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]' \
     '1: :_files ' \
     '2: :_files ' \
@@ -189,13 +189,13 @@ function _chezmoi_add {
 function _chezmoi_apply {
   _arguments \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]' \
     '1: :_files ' \
     '2: :_files ' \
@@ -211,26 +211,26 @@ function _chezmoi_archive {
   _arguments \
     '(-o --output)'{-o,--output}'[output filename]:filename:_files' \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]'
 }
 
 function _chezmoi_cat {
   _arguments \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]' \
     '1: :_files ' \
     '2: :_files ' \
@@ -245,26 +245,26 @@ function _chezmoi_cat {
 function _chezmoi_cd {
   _arguments \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]'
 }
 
 function _chezmoi_chattr {
   _arguments \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]' \
     '1: :("empty" "-empty" "+empty" "noempty" "e" "-e" "+e" "noe" "encrypt" "-encrypt" "+encrypt" "noencrypt" "exact" "-exact" "+exact" "noexact" "executable" "-executable" "+executable" "noexecutable" "x" "-x" "+x" "nox" "private" "-private" "+private" "noprivate" "p" "-p" "+p" "nop" "template" "-template" "+template" "notemplate" "t" "-t" "+t" "not")' \
     '2: :_files ' \
@@ -282,13 +282,13 @@ function _chezmoi_completion {
     '(-h --help)'{-h,--help}'[help for completion]' \
     '(-o --output)'{-o,--output}'[output filename]:filename:_files' \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]' \
     '1: :("bash" "fish" "zsh")'
 }
@@ -297,13 +297,13 @@ function _chezmoi_data {
   _arguments \
     '(-f --format)'{-f,--format}'[format (JSON, TOML, or YAML)]:' \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]'
 }
 
@@ -312,13 +312,13 @@ function _chezmoi_diff {
     '(-f --format)'{-f,--format}'[format, "chezmoi" or "git"]:' \
     '--no-pager[disable pager]' \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]' \
     '1: :_files ' \
     '2: :_files ' \
@@ -333,26 +333,26 @@ function _chezmoi_diff {
 function _chezmoi_docs {
   _arguments \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]'
 }
 
 function _chezmoi_doctor {
   _arguments \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]'
 }
 
@@ -361,13 +361,13 @@ function _chezmoi_dump {
     '(-f --format)'{-f,--format}'[format (JSON, TOML, or YAML)]:' \
     '(-r --recursive)'{-r,--recursive}'[recursive]' \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]' \
     '1: :_files ' \
     '2: :_files ' \
@@ -385,13 +385,13 @@ function _chezmoi_edit {
     '(-d --diff)'{-d,--diff}'[print diff after editing]' \
     '(-p --prompt)'{-p,--prompt}'[prompt before applying (implies --diff)]' \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]' \
     '1: :_files ' \
     '2: :_files ' \
@@ -406,13 +406,13 @@ function _chezmoi_edit {
 function _chezmoi_edit-config {
   _arguments \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]'
 }
 
@@ -422,26 +422,26 @@ function _chezmoi_execute-template {
     '(-o --output)'{-o,--output}'[output filename]:' \
     '(-p --promptString)'{-p,--promptString}'[simulate promptString]:' \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]'
 }
 
 function _chezmoi_forget {
   _arguments \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]' \
     '1: :_files ' \
     '2: :_files ' \
@@ -456,39 +456,39 @@ function _chezmoi_forget {
 function _chezmoi_git {
   _arguments \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]'
 }
 
 function _chezmoi_help {
   _arguments \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]'
 }
 
 function _chezmoi_hg {
   _arguments \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]'
 }
 
@@ -498,13 +498,13 @@ function _chezmoi_import {
     '(-r --remove-destination)'{-r,--remove-destination}'[remove destination before import]' \
     '--strip-components[strip components]:' \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]' \
     '1: :_files -g "*.tar" -g "*.tar.bz2" -g "*.tar.gz" -g "*.tgz"'
 }
@@ -513,13 +513,13 @@ function _chezmoi_init {
   _arguments \
     '--apply[update destination directory]' \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]'
 }
 
@@ -527,26 +527,26 @@ function _chezmoi_managed {
   _arguments \
     '(*-i *--include)'{\*-i,\*--include}'[include]:' \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]'
 }
 
 function _chezmoi_merge {
   _arguments \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]' \
     '1: :_files ' \
     '2: :_files ' \
@@ -562,13 +562,13 @@ function _chezmoi_purge {
   _arguments \
     '(-f --force)'{-f,--force}'[remove without prompting]' \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]'
 }
 
@@ -576,13 +576,13 @@ function _chezmoi_remove {
   _arguments \
     '(-f --force)'{-f,--force}'[remove without prompting]' \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]' \
     '1: :_files ' \
     '2: :_files ' \
@@ -600,13 +600,13 @@ function _chezmoi_secret {
 
   _arguments -C \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]' \
     "1: :->cmnds" \
     "*::arg:->args"
@@ -662,52 +662,52 @@ function _chezmoi_secret {
 function _chezmoi_secret_bitwarden {
   _arguments \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]'
 }
 
 function _chezmoi_secret_generic {
   _arguments \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]'
 }
 
 function _chezmoi_secret_gopass {
   _arguments \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]'
 }
 
 function _chezmoi_secret_keepassxc {
   _arguments \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]'
 }
 
@@ -719,13 +719,13 @@ function _chezmoi_secret_keyring {
     '--service[service]:' \
     '--user[user]:' \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]' \
     "1: :->cmnds" \
     "*::arg:->args"
@@ -753,14 +753,14 @@ function _chezmoi_secret_keyring {
 function _chezmoi_secret_keyring_get {
   _arguments \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
     '--service[service]:' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '--user[user]:' \
     '(-v --verbose)'{-v,--verbose}'[verbose]'
 }
@@ -769,14 +769,14 @@ function _chezmoi_secret_keyring_set {
   _arguments \
     '--password[password]:' \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
     '--service[service]:' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '--user[user]:' \
     '(-v --verbose)'{-v,--verbose}'[verbose]'
 }
@@ -784,78 +784,78 @@ function _chezmoi_secret_keyring_set {
 function _chezmoi_secret_lastpass {
   _arguments \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]'
 }
 
 function _chezmoi_secret_onepassword {
   _arguments \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]'
 }
 
 function _chezmoi_secret_pass {
   _arguments \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]'
 }
 
 function _chezmoi_secret_vault {
   _arguments \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]'
 }
 
 function _chezmoi_source {
   _arguments \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]'
 }
 
 function _chezmoi_source-path {
   _arguments \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]' \
     '1: :_files ' \
     '2: :_files ' \
@@ -870,13 +870,13 @@ function _chezmoi_source-path {
 function _chezmoi_unmanaged {
   _arguments \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]'
 }
 
@@ -884,13 +884,13 @@ function _chezmoi_update {
   _arguments \
     '(-a --apply)'{-a,--apply}'[apply after pulling]' \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]'
 }
 
@@ -901,26 +901,26 @@ function _chezmoi_upgrade {
     '(-o --owner)'{-o,--owner}'[set owner]:' \
     '(-r --repo)'{-r,--repo}'[set repo]:' \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]'
 }
 
 function _chezmoi_verify {
   _arguments \
     '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:' \
+    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:' \
+    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
     '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:' \
+    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]' \
     '1: :_files ' \
     '2: :_files ' \
