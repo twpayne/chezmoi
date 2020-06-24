@@ -1667,6 +1667,7 @@ func init() {
 		"  * [`keyring` *service* *user*](#keyring-service-user)\n" +
 		"  * [`lastpass` *id*](#lastpass-id)\n" +
 		"  * [`lastpassRaw` *id*](#lastpassraw-id)\n" +
+		"  * [`lookPath` *file*](#lookpath-file)\n" +
 		"  * [`onepassword` *uuid* [*vault-uuid*]](#onepassword-uuid-vault-uuid)\n" +
 		"  * [`onepasswordDocument` *uuid* [*vault-uuid*]](#onepassworddocument-uuid-vault-uuid)\n" +
 		"  * [`pass` *pass-name*](#pass-pass-name)\n" +
@@ -2622,6 +2623,24 @@ func init() {
 		"#### `lastpassRaw` examples\n" +
 		"\n" +
 		"    {{ (index (lastpassRaw \"SSH Private Key\") 0).note }}\n" +
+		"\n" +
+		"### `lookPath` *file*\n" +
+		"\n" +
+		"`lookPath` searches for an executable named *file* in the directories named by\n" +
+		"the `PATH` environment variable. If file contains a slash, it is tried directly\n" +
+		"and the `PATH `is not consulted. The result may be an absolute path or a path\n" +
+		"relative to the current directory. If *file* is not found, `lookPath` returns an\n" +
+		"empty string.\n" +
+		"\n" +
+		"`lookPath` is not hermetic: its return value depends on the state of the\n" +
+		"environment and the filesystem at the moment the template is executed. Exercise\n" +
+		"caution when using it in your templates.\n" +
+		"\n" +
+		"#### `lookPath` examples\n" +
+		"\n" +
+		"    {{ if lookPath \"diff-so-fancy\" }}\n" +
+		"    # diff-so-fancy is in $PATH\n" +
+		"    {{ end }}\n" +
 		"\n" +
 		"### `onepassword` *uuid* [*vault-uuid*]\n" +
 		"\n" +

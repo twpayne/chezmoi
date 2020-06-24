@@ -74,6 +74,7 @@ Manage your dotfiles securely across multiple machines.
   * [`keyring` *service* *user*](#keyring-service-user)
   * [`lastpass` *id*](#lastpass-id)
   * [`lastpassRaw` *id*](#lastpassraw-id)
+  * [`lookPath` *file*](#lookpath-file)
   * [`onepassword` *uuid* [*vault-uuid*]](#onepassword-uuid-vault-uuid)
   * [`onepasswordDocument` *uuid* [*vault-uuid*]](#onepassworddocument-uuid-vault-uuid)
   * [`pass` *pass-name*](#pass-pass-name)
@@ -1029,6 +1030,24 @@ further parsing is done on the `note` field.
 #### `lastpassRaw` examples
 
     {{ (index (lastpassRaw "SSH Private Key") 0).note }}
+
+### `lookPath` *file*
+
+`lookPath` searches for an executable named *file* in the directories named by
+the `PATH` environment variable. If file contains a slash, it is tried directly
+and the `PATH `is not consulted. The result may be an absolute path or a path
+relative to the current directory. If *file* is not found, `lookPath` returns an
+empty string.
+
+`lookPath` is not hermetic: its return value depends on the state of the
+environment and the filesystem at the moment the template is executed. Exercise
+caution when using it in your templates.
+
+#### `lookPath` examples
+
+    {{ if lookPath "diff-so-fancy" }}
+    # diff-so-fancy is in $PATH
+    {{ end }}
 
 ### `onepassword` *uuid* [*vault-uuid*]
 

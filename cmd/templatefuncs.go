@@ -1,12 +1,15 @@
 package cmd
 
 import (
+	"errors"
 	"os"
+	"os/exec"
 	"path/filepath"
 )
 
 func init() {
 	config.addTemplateFunc("include", config.includeFunc)
+	config.addTemplateFunc("lookPath", config.lookPathFunc)
 	config.addTemplateFunc("stat", config.statFunc)
 }
 
@@ -16,6 +19,18 @@ func (c *Config) includeFunc(filename string) string {
 		panic(err)
 	}
 	return string(contents)
+}
+
+func (c *Config) lookPathFunc(file string) string {
+	path, err := exec.LookPath(file)
+	switch {
+	case err == nil:
+		return path
+	case errors.Is(err, exec.ErrNotFound):
+		return ""
+	default:
+		panic(err)
+	}
 }
 
 func (c *Config) statFunc(name string) interface{} {
