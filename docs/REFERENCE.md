@@ -80,6 +80,7 @@ Manage your dotfiles securely across multiple machines.
   * [`promptString` *prompt*](#promptstring-prompt)
   * [`secret` [*args*]](#secret-args)
   * [`secretJSON` [*args*]](#secretjson-args)
+  * [`stat` *name*](#stat-name)
   * [`vault` *key*](#vault-key)
 
 ## Concepts
@@ -1098,6 +1099,24 @@ with the same *args* will only invoke the generic secret command once.
 the `genericSecret.command` configuration variable with *args*. The output is
 parsed as JSON. The output is cached so multiple calls to `secret` with the same
 *args* will only invoke the generic secret command once.
+
+### `stat` *name*
+
+`stat` runs `stat(2)` on *name*. If *name* exists it returns structured data. If
+*name* does not exist then it returns a falsey value. If `stat(2)` returns any
+other error then it raises an error. The structured value returned if *name*
+exists contains the fields `name`, `size`, `mode`, `perm`, `modTime`, and
+`isDir`.
+
+`stat` is not hermetic: its return value depends on the state of the filesystem
+at the moment the template is executed. Exercise caution when using it in your
+templates.
+
+#### `stat` examples
+
+    {{ if stat (printf "%s/.pyenv" .chezmoi.homedir) }}
+    # ~/.pyenv exists
+    {{ end }}
 
 ### `vault` *key*
 

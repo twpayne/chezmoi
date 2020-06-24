@@ -1673,6 +1673,7 @@ func init() {
 		"  * [`promptString` *prompt*](#promptstring-prompt)\n" +
 		"  * [`secret` [*args*]](#secret-args)\n" +
 		"  * [`secretJSON` [*args*]](#secretjson-args)\n" +
+		"  * [`stat` *name*](#stat-name)\n" +
 		"  * [`vault` *key*](#vault-key)\n" +
 		"\n" +
 		"## Concepts\n" +
@@ -2691,6 +2692,24 @@ func init() {
 		"the `genericSecret.command` configuration variable with *args*. The output is\n" +
 		"parsed as JSON. The output is cached so multiple calls to `secret` with the same\n" +
 		"*args* will only invoke the generic secret command once.\n" +
+		"\n" +
+		"### `stat` *name*\n" +
+		"\n" +
+		"`stat` runs `stat(2)` on *name*. If *name* exists it returns structured data. If\n" +
+		"*name* does not exist then it returns a falsey value. If `stat(2)` returns any\n" +
+		"other error then it raises an error. The structured value returned if *name*\n" +
+		"exists contains the fields `name`, `size`, `mode`, `perm`, `modTime`, and\n" +
+		"`isDir`.\n" +
+		"\n" +
+		"`stat` is not hermetic: its return value depends on the state of the filesystem\n" +
+		"at the moment the template is executed. Exercise caution when using it in your\n" +
+		"templates.\n" +
+		"\n" +
+		"#### `stat` examples\n" +
+		"\n" +
+		"    {{ if stat (printf \"%s/.pyenv\" .chezmoi.homedir) }}\n" +
+		"    # ~/.pyenv exists\n" +
+		"    {{ end }}\n" +
 		"\n" +
 		"### `vault` *key*\n" +
 		"\n" +
