@@ -69,17 +69,20 @@ Manage your dotfiles securely across multiple machines.
   * [`bitwarden` [*args*]](#bitwarden-args)
   * [`gopass` *gopass-name*](#gopass-gopass-name)
   * [`include` *filename*](#include-filename)
+  * [`joinPath` *elements*](#joinpath-elements)
   * [`keepassxc` *entry*](#keepassxc-entry)
   * [`keepassxcAttribute` *entry* *attribute*](#keepassxcattribute-entry-attribute)
   * [`keyring` *service* *user*](#keyring-service-user)
   * [`lastpass` *id*](#lastpass-id)
   * [`lastpassRaw` *id*](#lastpassraw-id)
+  * [`lookPath` *file*](#lookpath-file)
   * [`onepassword` *uuid* [*vault-uuid*]](#onepassword-uuid-vault-uuid)
   * [`onepasswordDocument` *uuid* [*vault-uuid*]](#onepassworddocument-uuid-vault-uuid)
   * [`pass` *pass-name*](#pass-pass-name)
   * [`promptString` *prompt*](#promptstring-prompt)
   * [`secret` [*args*]](#secret-args)
   * [`secretJSON` [*args*]](#secretjson-args)
+  * [`stat` *name*](#stat-name)
   * [`vault` *key*](#vault-key)
 
 ## Concepts
@@ -958,6 +961,18 @@ with the same *gopass-name* will only invoke `gopass` once.
 `include` returns the literal contents of the file named `*filename*`, relative
 to the source directory.
 
+### `joinPath` *elements*
+
+`joinPath` joins any number of path elements into a single path, separating them
+with the OS-specific path separator. Empty elements are ignored. The result is
+cleaned. If the argument list is empty or all its elements are empty, `joinPath`
+returns an empty string. On Windows, the result will only be a UNC path if the
+first non-empty element is a UNC path.
+
+#### `joinPath` examples
+
+    {{ joinPath .chezmoi.homedir ".zshrc" }}
+
 ### `keepassxc` *entry*
 
 `keepassxc` returns structured data retrieved from a
@@ -1029,6 +1044,24 @@ further parsing is done on the `note` field.
 
     {{ (index (lastpassRaw "SSH Private Key") 0).note }}
 
+### `lookPath` *file*
+
+`lookPath` searches for an executable named *file* in the directories named by
+the `PATH` environment variable. If file contains a slash, it is tried directly
+and the `PATH `is not consulted. The result may be an absolute path or a path
+relative to the current directory. If *file* is not found, `lookPath` returns an
+empty string.
+
+`lookPath` is not hermetic: its return value depends on the state of the
+environment and the filesystem at the moment the template is executed. Exercise
+caution when using it in your templates.
+
+#### `lookPath` examples
+
+    {{ if lookPath "diff-so-fancy" }}
+    # diff-so-fancy is in $PATH
+    {{ end }}
+
 ### `onepassword` *uuid* [*vault-uuid*]
 
 `onepassword` returns structured data from [1Password](https://1password.com/)
@@ -1098,6 +1131,24 @@ with the same *args* will only invoke the generic secret command once.
 the `genericSecret.command` configuration variable with *args*. The output is
 parsed as JSON. The output is cached so multiple calls to `secret` with the same
 *args* will only invoke the generic secret command once.
+
+### `stat` *name*
+
+`stat` runs `stat(2)` on *name*. If *name* exists it returns structured data. If
+*name* does not exist then it returns a falsey value. If `stat(2)` returns any
+other error then it raises an error. The structured value returned if *name*
+exists contains the fields `name`, `size`, `mode`, `perm`, `modTime`, and
+`isDir`.
+
+`stat` is not hermetic: its return value depends on the state of the filesystem
+at the moment the template is executed. Exercise caution when using it in your
+templates.
+
+#### `stat` examples
+
+    {{ if stat (joinPath .chezmoi.homedir ".pyenv") }}
+    # ~/.pyenv exists
+    {{ end }}
 
 ### `vault` *key*
 

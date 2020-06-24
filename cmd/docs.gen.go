@@ -1662,17 +1662,20 @@ func init() {
 		"  * [`bitwarden` [*args*]](#bitwarden-args)\n" +
 		"  * [`gopass` *gopass-name*](#gopass-gopass-name)\n" +
 		"  * [`include` *filename*](#include-filename)\n" +
+		"  * [`joinPath` *elements*](#joinpath-elements)\n" +
 		"  * [`keepassxc` *entry*](#keepassxc-entry)\n" +
 		"  * [`keepassxcAttribute` *entry* *attribute*](#keepassxcattribute-entry-attribute)\n" +
 		"  * [`keyring` *service* *user*](#keyring-service-user)\n" +
 		"  * [`lastpass` *id*](#lastpass-id)\n" +
 		"  * [`lastpassRaw` *id*](#lastpassraw-id)\n" +
+		"  * [`lookPath` *file*](#lookpath-file)\n" +
 		"  * [`onepassword` *uuid* [*vault-uuid*]](#onepassword-uuid-vault-uuid)\n" +
 		"  * [`onepasswordDocument` *uuid* [*vault-uuid*]](#onepassworddocument-uuid-vault-uuid)\n" +
 		"  * [`pass` *pass-name*](#pass-pass-name)\n" +
 		"  * [`promptString` *prompt*](#promptstring-prompt)\n" +
 		"  * [`secret` [*args*]](#secret-args)\n" +
 		"  * [`secretJSON` [*args*]](#secretjson-args)\n" +
+		"  * [`stat` *name*](#stat-name)\n" +
 		"  * [`vault` *key*](#vault-key)\n" +
 		"\n" +
 		"## Concepts\n" +
@@ -2551,6 +2554,18 @@ func init() {
 		"`include` returns the literal contents of the file named `*filename*`, relative\n" +
 		"to the source directory.\n" +
 		"\n" +
+		"### `joinPath` *elements*\n" +
+		"\n" +
+		"`joinPath` joins any number of path elements into a single path, separating them\n" +
+		"with the OS-specific path separator. Empty elements are ignored. The result is\n" +
+		"cleaned. If the argument list is empty or all its elements are empty, `joinPath`\n" +
+		"returns an empty string. On Windows, the result will only be a UNC path if the\n" +
+		"first non-empty element is a UNC path.\n" +
+		"\n" +
+		"#### `joinPath` examples\n" +
+		"\n" +
+		"    {{ joinPath .chezmoi.homedir \".zshrc\" }}\n" +
+		"\n" +
 		"### `keepassxc` *entry*\n" +
 		"\n" +
 		"`keepassxc` returns structured data retrieved from a\n" +
@@ -2622,6 +2637,24 @@ func init() {
 		"\n" +
 		"    {{ (index (lastpassRaw \"SSH Private Key\") 0).note }}\n" +
 		"\n" +
+		"### `lookPath` *file*\n" +
+		"\n" +
+		"`lookPath` searches for an executable named *file* in the directories named by\n" +
+		"the `PATH` environment variable. If file contains a slash, it is tried directly\n" +
+		"and the `PATH `is not consulted. The result may be an absolute path or a path\n" +
+		"relative to the current directory. If *file* is not found, `lookPath` returns an\n" +
+		"empty string.\n" +
+		"\n" +
+		"`lookPath` is not hermetic: its return value depends on the state of the\n" +
+		"environment and the filesystem at the moment the template is executed. Exercise\n" +
+		"caution when using it in your templates.\n" +
+		"\n" +
+		"#### `lookPath` examples\n" +
+		"\n" +
+		"    {{ if lookPath \"diff-so-fancy\" }}\n" +
+		"    # diff-so-fancy is in $PATH\n" +
+		"    {{ end }}\n" +
+		"\n" +
 		"### `onepassword` *uuid* [*vault-uuid*]\n" +
 		"\n" +
 		"`onepassword` returns structured data from [1Password](https://1password.com/)\n" +
@@ -2691,6 +2724,24 @@ func init() {
 		"the `genericSecret.command` configuration variable with *args*. The output is\n" +
 		"parsed as JSON. The output is cached so multiple calls to `secret` with the same\n" +
 		"*args* will only invoke the generic secret command once.\n" +
+		"\n" +
+		"### `stat` *name*\n" +
+		"\n" +
+		"`stat` runs `stat(2)` on *name*. If *name* exists it returns structured data. If\n" +
+		"*name* does not exist then it returns a falsey value. If `stat(2)` returns any\n" +
+		"other error then it raises an error. The structured value returned if *name*\n" +
+		"exists contains the fields `name`, `size`, `mode`, `perm`, `modTime`, and\n" +
+		"`isDir`.\n" +
+		"\n" +
+		"`stat` is not hermetic: its return value depends on the state of the filesystem\n" +
+		"at the moment the template is executed. Exercise caution when using it in your\n" +
+		"templates.\n" +
+		"\n" +
+		"#### `stat` examples\n" +
+		"\n" +
+		"    {{ if stat (joinPath .chezmoi.homedir \".pyenv\") }}\n" +
+		"    # ~/.pyenv exists\n" +
+		"    {{ end }}\n" +
 		"\n" +
 		"### `vault` *key*\n" +
 		"\n" +
