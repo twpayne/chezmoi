@@ -467,7 +467,7 @@ func TestTargetStatePopulate(t *testing.T) {
 				WithDestDir("/"),
 				WithSourceDir("/"),
 				WithTemplates(map[string]*template.Template{
-					"foo": template.Must(template.New("foo").Parse("bar")),
+					"foo": template.Must(template.New("foo").Option("missingkey=error").Parse("bar")),
 				}),
 			),
 		},

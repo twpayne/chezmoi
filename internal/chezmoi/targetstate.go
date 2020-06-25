@@ -752,7 +752,7 @@ func (ts *TargetState) addTemplatesDir(fs vfs.FS, path string) error {
 				return err
 			}
 			name := strings.TrimPrefix(filepath.ToSlash(path), prefix)
-			tmpl, err := template.New(name).Parse(string(contents))
+			tmpl, err := template.New(name).Option(ts.TemplateOptions...).Funcs(ts.TemplateFuncs).Parse(string(contents))
 			if err != nil {
 				return err
 			}

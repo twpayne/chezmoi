@@ -2,7 +2,7 @@ chezmoi execute-template '{{ "output" }}'
 stdout output
 
 chezmoi execute-template '{{ template "partial" }}'
-stdout partial-output
+stdout 'hello world'
 
 -- home/user/.local/share/chezmoi/.chezmoitemplates/partial --
-partial-output
+{{ cat "hello" "world" }}
