@@ -37,27 +37,6 @@ builds:
     goarch: 386
   - goos: linux
     goarch: amd64
-- id: chezmoi-cgo-snap
-  binary: chezmoi
-  flags:
-  - -tags=snap
-  env:
-  - CGO_ENABLED=1
-  goos:
-  - linux
-  goarch:
-  - amd64
-- id: chezmoi-nocgo-snap
-  binary: chezmoi
-  flags:
-  - -tags=snap
-  env:
-  - CGO_ENABLED=0
-  goos:
-  - linux
-  goarch:
-  - 386
-  - arm64
 
 archives:
 - builds:
@@ -110,22 +89,6 @@ nfpms:
       files:
         "completions/chezmoi.zsh": "/usr/share/zsh/functions/_chezmoi"
 
-brews:
-- github:
-    owner: twpayne
-    name: homebrew-taps
-  commit_author:
-    name: Tom Payne
-    email: twpayne@gmail.com
-  folder: Formula
-  homepage: "https://chezmoi.io"
-  install: |
-    bin.install "chezmoi"
-    bash_completion.install "completions/chezmoi-completion.bash"
-    zsh_completion.install "completions/chezmoi.zsh" => "_chezmoi"
-    fish_completion.install "completions/chezmoi.fish"
-  description: "Manage your dotfiles across multiple machines, securely."
-
 scoop:
   bucket:
     owner: twpayne
@@ -139,8 +102,8 @@ scoop:
 
 snapcrafts:
 - builds:
-  - chezmoi-cgo-snap
-  - chezmoi-nocgo-snap
+  - chezmoi-cgo
+  - chezmoi-nocgo
   summary: "Manage your dotfiles across multiple machines, securely."
   description: "Manage your dotfiles across multiple machines, securely."
   publish: true
