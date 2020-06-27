@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="/book.min.a8b61185b89b0e211122339c7efd1c8edaa4ad4c0ae65f0074e99a4b31c1e393.css" integrity="sha256-qLYRhbibDiERIjOcfv0cjtqkrUwK5l8AdOmaSzHB45M=">
 
 
-<script defer src="/search.min.80a899bdab621acbe10b9332aaa7b1279dbc5a4edc72f7b7bc8764cdff5dadcc.js" integrity="sha256-gKiZvatiGsvhC5MyqqexJ528Wk7ccve3vIdkzf9drcw="></script>
+<script defer src="/search.min.39ea615bd1e16fa6f28157b6a04e664d93abe5b3b5f88812992a3391a9458091.js" integrity="sha256-OephW9Hhb6bygVe2oE5mTZOr5bO1&#43;IgSmSozkalFgJE="></script>
 
 <!--
 Made with Book Theme
@@ -1031,6 +1031,18 @@ with the same <em>gopass-name</em> will only invoke <code>gopass</code> once.</p
 <h4 id="gopass-examples"><code>gopass</code> examples</h4>
 <pre><code>{{ gopass &quot;&lt;pass-name&gt;&quot; }}
 </code></pre>
+<h3 id="include-filename"><code>include</code> <em>filename</em></h3>
+<p><code>include</code> returns the literal contents of the file named <code>*filename*</code>, relative
+to the source directory.</p>
+<h3 id="joinpath-elements"><code>joinPath</code> <em>elements</em></h3>
+<p><code>joinPath</code> joins any number of path elements into a single path, separating them
+with the OS-specific path separator. Empty elements are ignored. The result is
+cleaned. If the argument list is empty or all its elements are empty, <code>joinPath</code>
+returns an empty string. On Windows, the result will only be a UNC path if the
+first non-empty element is a UNC path.</p>
+<h4 id="joinpath-examples"><code>joinPath</code> examples</h4>
+<pre><code>{{ joinPath .chezmoi.homedir &quot;.zshrc&quot; }}
+</code></pre>
 <h3 id="keepassxc-entry"><code>keepassxc</code> <em>entry</em></h3>
 <p><code>keepassxc</code> returns structured data retrieved from a
 <a href="https://keepassxc.org/">KeePassXC</a> database using the KeePassXC CLI
@@ -1099,6 +1111,20 @@ further parsing is done on the <code>note</code> field.</p>
 <h4 id="lastpassraw-examples"><code>lastpassRaw</code> examples</h4>
 <pre><code>{{ (index (lastpassRaw &quot;SSH Private Key&quot;) 0).note }}
 </code></pre>
+<h3 id="lookpath-file"><code>lookPath</code> <em>file</em></h3>
+<p><code>lookPath</code> searches for an executable named <em>file</em> in the directories named by
+the <code>PATH</code> environment variable. If file contains a slash, it is tried directly
+and the <code>PATH </code>is not consulted. The result may be an absolute path or a path
+relative to the current directory. If <em>file</em> is not found, <code>lookPath</code> returns an
+empty string.</p>
+<p><code>lookPath</code> is not hermetic: its return value depends on the state of the
+environment and the filesystem at the moment the template is executed. Exercise
+caution when using it in your templates.</p>
+<h4 id="lookpath-examples"><code>lookPath</code> examples</h4>
+<pre><code>{{ if lookPath &quot;diff-so-fancy&quot; }}
+# diff-so-fancy is in $PATH
+{{ end }}
+</code></pre>
 <h3 id="onepassword-uuid-vault-uuid"><code>onepassword</code> <em>uuid</em> [<em>vault-uuid</em>]</h3>
 <p><code>onepassword</code> returns structured data from <a href="https://1password.com/">1Password</a>
 using the <a href="https://support.1password.com/command-line-getting-started/">1Password
@@ -1153,6 +1179,20 @@ with the same <em>args</em> will only invoke the generic secret command once.</p
 the <code>genericSecret.command</code> configuration variable with <em>args</em>. The output is
 parsed as JSON. The output is cached so multiple calls to <code>secret</code> with the same
 <em>args</em> will only invoke the generic secret command once.</p>
+<h3 id="stat-name"><code>stat</code> <em>name</em></h3>
+<p><code>stat</code> runs <code>stat(2)</code> on <em>name</em>. If <em>name</em> exists it returns structured data. If
+<em>name</em> does not exist then it returns a falsey value. If <code>stat(2)</code> returns any
+other error then it raises an error. The structured value returned if <em>name</em>
+exists contains the fields <code>name</code>, <code>size</code>, <code>mode</code>, <code>perm</code>, <code>modTime</code>, and
+<code>isDir</code>.</p>
+<p><code>stat</code> is not hermetic: its return value depends on the state of the filesystem
+at the moment the template is executed. Exercise caution when using it in your
+templates.</p>
+<h4 id="stat-examples"><code>stat</code> examples</h4>
+<pre><code>{{ if stat (joinPath .chezmoi.homedir &quot;.pyenv&quot;) }}
+# ~/.pyenv exists
+{{ end }}
+</code></pre>
 <h3 id="vault-key"><code>vault</code> <em>key</em></h3>
 <p><code>vault</code> returns structured data from <a href="https://www.vaultproject.io/">Vault</a> using
 the <a href="https://www.vaultproject.io/docs/commands/">Vault CLI</a> (<code>vault</code>). <em>key</em> is
@@ -1253,17 +1293,21 @@ times with the same <em>key</em> will only invoke <code>vault</code> once.</p>
       <ul>
         <li><a href="#bitwarden-args"><code>bitwarden</code> [<em>args</em>]</a></li>
         <li><a href="#gopass-gopass-name"><code>gopass</code> <em>gopass-name</em></a></li>
+        <li><a href="#include-filename"><code>include</code> <em>filename</em></a></li>
+        <li><a href="#joinpath-elements"><code>joinPath</code> <em>elements</em></a></li>
         <li><a href="#keepassxc-entry"><code>keepassxc</code> <em>entry</em></a></li>
         <li><a href="#keepassxcattribute-entry-attribute"><code>keepassxcAttribute</code> <em>entry</em> <em>attribute</em></a></li>
         <li><a href="#keyring-service-user"><code>keyring</code> <em>service</em> <em>user</em></a></li>
         <li><a href="#lastpass-id"><code>lastpass</code> <em>id</em></a></li>
         <li><a href="#lastpassraw-id"><code>lastpassRaw</code> <em>id</em></a></li>
+        <li><a href="#lookpath-file"><code>lookPath</code> <em>file</em></a></li>
         <li><a href="#onepassword-uuid-vault-uuid"><code>onepassword</code> <em>uuid</em> [<em>vault-uuid</em>]</a></li>
         <li><a href="#onepassworddocument-uuid-vault-uuid"><code>onepasswordDocument</code> <em>uuid</em> [<em>vault-uuid</em>]</a></li>
         <li><a href="#pass-pass-name"><code>pass</code> <em>pass-name</em></a></li>
         <li><a href="#promptstring-prompt"><code>promptString</code> <em>prompt</em></a></li>
         <li><a href="#secret-args"><code>secret</code> [<em>args</em>]</a></li>
         <li><a href="#secretjson-args"><code>secretJSON</code> [<em>args</em>]</a></li>
+        <li><a href="#stat-name"><code>stat</code> <em>name</em></a></li>
         <li><a href="#vault-key"><code>vault</code> <em>key</em></a></li>
       </ul>
     </li>
