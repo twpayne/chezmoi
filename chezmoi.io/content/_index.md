@@ -9,12 +9,12 @@ Manage your dotfiles across multiple machines, securely.
 
 ## How do I start with chezmoi now?
 
-[Install chezmoi](docs/INSTALL.md) then read the [quick start
-guide](docs/QUICKSTART.md). The [how-to guide](docs/HOWTO.md) covers most common
-tasks, and there's the [frequently asked questions](docs/FAQ.md) for specific
+[Install chezmoi](/docs/install/) then read the [quick start
+guide](/docs/quick-start/). The [how-to guide](/docs/how-to/) covers most common
+tasks, and there's the [frequently asked questions](/docs/faq/) for specific
 questions. You can browse other people's [dotfiles that use
 chezmoi](https://github.com/topics/chezmoi?o=desc&s=updated). For a full
-description of chezmoi, consult the [reference](docs/REFERENCE.md).
+description of chezmoi, consult the [reference](/docs/reference/).
 
 ## What does chezmoi do and why should I use it?
 
