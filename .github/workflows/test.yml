@@ -54,7 +54,6 @@ jobs:
         ./dist/chezmoi-cgo_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v"
         ./dist/chezmoi-cgo_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v"
         ./dist/chezmoi-nocgo_linux_386/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v"
-        ./dist/chezmoi-nocgo-snap_linux_386/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v"
   release:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     needs:

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strconv"
 	"strings"
 
@@ -208,8 +209,19 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		return err
 	}
 
-	// Apply any fixes for snap, if needed.
-	return c.snapFix()
+	if runtime.GOOS == "linux" && c.bds.RuntimeDir != "" {
+		// Snap sets the $XDG_RUNTIME_DIR environment variable to
+		// /run/user/$uid/snap.$snap_name, but does not create this directory.
+		// Consequently, any spawned processes that need $XDG_DATA_DIR will
+		// fail. As a work-around, create the directory if it does not exist.
+		// See
+		// https://forum.snapcraft.io/t/wayland-dconf-and-xdg-runtime-dir/186/13.
+		if err := os.MkdirAll(c.bds.RuntimeDir, 0o700); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 func getExample(command string) string {

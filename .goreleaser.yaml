@@ -37,27 +37,6 @@ builds:
     goarch: 386
   - goos: linux
     goarch: amd64
-- id: chezmoi-cgo-snap
-  binary: chezmoi
-  flags:
-  - -tags=snap
-  env:
-  - CGO_ENABLED=1
-  goos:
-  - linux
-  goarch:
-  - amd64
-- id: chezmoi-nocgo-snap
-  binary: chezmoi
-  flags:
-  - -tags=snap
-  env:
-  - CGO_ENABLED=0
-  goos:
-  - linux
-  goarch:
-  - 386
-  - arm64
 
 archives:
 - builds:
@@ -123,8 +102,8 @@ scoop:
 
 snapcrafts:
 - builds:
-  - chezmoi-cgo-snap
-  - chezmoi-nocgo-snap
+  - chezmoi-cgo
+  - chezmoi-nocgo
   summary: "Manage your dotfiles across multiple machines, securely."
   description: "Manage your dotfiles across multiple machines, securely."
   publish: true
