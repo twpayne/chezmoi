@@ -95,6 +95,7 @@ func ParseFileAttributes(sourceName string) FileAttributes {
 // SourceName returns fa's source name.
 func (fa FileAttributes) SourceName() string {
 	sourceName := ""
+	//nolint:exhaustive
 	switch fa.Mode & os.ModeType {
 	case 0:
 		if fa.Encrypted {

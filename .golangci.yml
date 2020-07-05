@@ -1,14 +1,18 @@
 linters:
   enable:
+  - asciicheck
   - bodyclose
   - deadcode
   - depguard
   - dogsled
   - dupl
   - errcheck
+  - exhaustive
+  - exportloopref
   - gocritic
   - godot
   - gofmt
+  - gofumpt
   - goimports
   - golint
   - gomodguard
@@ -23,6 +27,7 @@ linters:
   - prealloc
   - rowserrcheck
   - scopelint
+  - sqlclosecheck
   - staticcheck
   - structcheck
   - stylecheck
@@ -39,10 +44,13 @@ linters:
   - goconst
   - gocyclo
   - godox
+  - goerr113
   - gomnd
   - lll
   - maligned
   - nestif
+  - noctx
+  - nolintlint
   - testpackage
   - wsl
 
