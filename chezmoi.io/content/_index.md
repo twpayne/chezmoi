@@ -170,14 +170,14 @@ Read what [people have said about chezmoi](docs/MEDIA.md).
 
 ## What documentation is available?
 
-* [Install guide](docs/INSTALL.md) to get chezmoi installed on your machine with
+* [Install guide](/docs/install/) to get chezmoi installed on your machine with
   one or two commands.
-* [Quick start guide](docs/QUICKSTART.md) for your first steps.
-* [How-to guide](docs/HOWTO.md) for achieving specific tasks.
-* [FAQ](docs/FAQ.md) for questions that aren't answered elsewhere.
-* [Changes](docs/CHANGES.md) for non-backwards compatible changes.
-* [Reference](docs/REFERENCE.md) for a complete description of chezmoi.
-* [Contributing](docs/CONTRIBUTING.md) for people looking to contribute to or
+* [Quick start guide](/docs/quick-start/) for your first steps.
+* [How-to guide](/docs/how-to/) for achieving specific tasks.
+* [FAQ](/docs/faq/) for questions that aren't answered elsewhere.
+* [Changes](/docs/changes/) for non-backwards compatible changes.
+* [Reference](/docs/reference/) for a complete description of chezmoi.
+* [Contributing](/docs/contributing/) for people looking to contribute to or
   package chezmoi.
 
 ## License
