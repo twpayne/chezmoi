@@ -28,8 +28,9 @@ func init() {
 {{- end }}
 }`))
 
-	output = flag.String("o", "/dev/stdout", "output")
-	tags   = flag.String("tags", "", "tags")
+	output     = flag.String("o", "/dev/stdout", "output")
+	trimPrefix = flag.String("trimprefix", "", "trim prefix")
+	tags       = flag.String("tags", "", "tags")
 )
 
 func printMultiLineString(s []byte) string {
@@ -49,7 +50,7 @@ func run() error {
 	assets := make(map[string][]byte)
 	for _, arg := range flag.Args() {
 		var err error
-		assets[arg], err = ioutil.ReadFile(arg)
+		assets[strings.TrimPrefix(arg, *trimPrefix)], err = ioutil.ReadFile(arg)
 		if err != nil {
 			return err
 		}
