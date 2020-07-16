@@ -18,7 +18,6 @@ require (
 	github.com/google/go-github/v26 v26.1.3
 	github.com/google/renameio v0.1.0
 	github.com/google/uuid v1.1.1 // indirect
-	github.com/hectane/go-acl v0.0.0-20190604041725-da78bae5fc95 // indirect
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/logrusorgru/aurora v0.0.0-20200102142835-e9ef32dff381 // indirect
 	github.com/mattn/go-isatty v0.0.12 // indirect
@@ -40,7 +39,7 @@ require (
 	github.com/stretchr/objx v0.2.0 // indirect
 	github.com/stretchr/testify v1.6.1
 	github.com/twpayne/go-shell v0.2.0
-	github.com/twpayne/go-vfs v1.4.2
+	github.com/twpayne/go-vfs v1.5.0
 	github.com/twpayne/go-vfsafero v1.0.0
 	github.com/twpayne/go-xdg/v3 v3.1.0
 	github.com/yuin/goldmark v1.1.32 // indirect
