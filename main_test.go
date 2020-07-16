@@ -178,7 +178,7 @@ func setup(env *testscript.Env) error {
 		}
 	}
 
-	return vfst.NewBuilder().Build(vfs.NewPathFS(vfs.HostOSFS, env.WorkDir), root)
+	return vfst.NewBuilder().Build(vfs.NewPathFS(vfs.OSFS, env.WorkDir), root)
 }
 
 func prependDirToPath(dir, path string) string {
