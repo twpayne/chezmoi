@@ -415,9 +415,10 @@ func (c *Config) getEntries(ts *chezmoi.TargetState, args []string) ([]chezmoi.E
 func (c *Config) getPersistentState(options *bolt.Options) (chezmoi.PersistentState, error) {
 	persistentStateFile := c.getPersistentStateFile()
 	if options == nil {
-		options = &bolt.Options{
-			Timeout: 2 * time.Second,
-		}
+		options = &bolt.Options{}
+	}
+	if options.Timeout == 0 {
+		options.Timeout = 2 * time.Second
 	}
 	if c.DryRun {
 		options.ReadOnly = true
