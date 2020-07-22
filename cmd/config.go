@@ -415,16 +415,17 @@ func (c *Config) getEntries(ts *chezmoi.TargetState, args []string) ([]chezmoi.E
 func (c *Config) getPersistentState(options *bolt.Options) (chezmoi.PersistentState, error) {
 	persistentStateFile := c.getPersistentStateFile()
 	if options == nil {
-		options = &bolt.Options{
-			Timeout: 2 * time.Second,
-		}
+		options = &bolt.Options{}
+	}
+	if options.Timeout == 0 {
+		options.Timeout = 2 * time.Second
 	}
 	if c.DryRun {
 		options.ReadOnly = true
 	}
 	state, err := chezmoi.NewBoltPersistentState(c.fs, persistentStateFile, os.FileMode(c.Umask), options)
-	if errors.Is(bolt.ErrTimeout, err) {
-		return state, fmt.Errorf("failed to lock database: %w", err)
+	if errors.Is(err, bolt.ErrTimeout) {
+		return nil, fmt.Errorf("failed to lock database: %w", err)
 	}
 	return state, err
 }
