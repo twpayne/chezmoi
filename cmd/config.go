@@ -14,6 +14,7 @@ import (
 	"runtime"
 	"strings"
 	"text/template"
+	"time"
 	"unicode"
 
 	"github.com/Masterminds/sprig"
@@ -413,13 +414,19 @@ func (c *Config) getEntries(ts *chezmoi.TargetState, args []string) ([]chezmoi.E
 
 func (c *Config) getPersistentState(options *bolt.Options) (chezmoi.PersistentState, error) {
 	persistentStateFile := c.getPersistentStateFile()
-	if c.DryRun {
-		if options == nil {
-			options = &bolt.Options{}
+	if options == nil {
+		options = &bolt.Options{
+			Timeout: 2 * time.Second,
 		}
+	}
+	if c.DryRun {
 		options.ReadOnly = true
 	}
-	return chezmoi.NewBoltPersistentState(c.fs, persistentStateFile, os.FileMode(c.Umask), options)
+	state, err := chezmoi.NewBoltPersistentState(c.fs, persistentStateFile, os.FileMode(c.Umask), options)
+	if errors.Is(bolt.ErrTimeout, err) {
+		return state, fmt.Errorf("failed to lock database: %w", err)
+	}
+	return state, err
 }
 
 func (c *Config) getPersistentStateFile() string {
