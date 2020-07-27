@@ -1890,6 +1890,7 @@ func init() {
 		"\n" +
 		"    *.txt   # ignore *.txt in the target directory\n" +
 		"    */*.txt # ignore *.txt in subdirectories of the target directory\n" +
+		"    backups/** # ignore backups folder in chezmoi directory and all its contents\n" +
 		"\n" +
 		"    {{- if ne .email \"john.smith@company.com\" }}\n" +
 		"    # Ignore .company-directory unless configured with a company email\n" +
