@@ -17,8 +17,8 @@ Manage your dotfiles securely across multiple machines.
   * [`-v`, `--verbose`](#-v---verbose)
   * [`--version`](#--version)
 * [Configuration file](#configuration-file)
-  * [Configuration variables](#configuration-variables)
-  * [Configuration file examples](#configuration-file-examples)
+  * [Variables](#variables)
+  * [Examples](#examples)
 * [Source state attributes](#source-state-attributes)
 * [Special files and directories](#special-files-and-directories)
   * [`.chezmoi.<format>.tmpl`](#chezmoiformattmpl)
@@ -30,7 +30,7 @@ Manage your dotfiles securely across multiple machines.
   * [`add` *targets*](#add-targets)
   * [`apply` [*targets*]](#apply-targets)
   * [`archive`](#archive)
-  * [`cat` targets](#cat-targets)
+  * [`cat` *targets*](#cat-targets)
   * [`cd`](#cd)
   * [`chattr` *attributes* *targets*](#chattr-attributes-targets)
   * [`completion` *shell*](#completion-shell)
@@ -179,7 +179,7 @@ and supports all formats supported by
 property file format, and [HCL](https://github.com/hashicorp/hcl). The basename
 of the config file is `chezmoi`, and the first config file found is used.
 
-### Configuration variables
+### Variables
 
 The following configuration variables are available:
 
@@ -218,7 +218,7 @@ The following configuration variables are available:
 | `template`      | `options`    | []string | `["missingkey=error"]`    | Template options                                    |
 | `vault`         | `command`    | string   | `vault`                   | Vault CLI command                                   |
 
-### Configuration file examples
+### Examples
 
 #### JSON
 
@@ -445,7 +445,7 @@ Write the output to *filename* instead of stdout.
     chezmoi archive | tar tvf -
     chezmoi archive --output=dotfiles.tar
 
-### `cat` targets
+### `cat` *targets*
 
 Write the target state of *targets*  to stdout. *targets* must be files or
 symlinks. For files, the target file contents are written. For symlinks, the

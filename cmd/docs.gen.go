@@ -1611,8 +1611,8 @@ func init() {
 		"  * [`-v`, `--verbose`](#-v---verbose)\n" +
 		"  * [`--version`](#--version)\n" +
 		"* [Configuration file](#configuration-file)\n" +
-		"  * [Configuration variables](#configuration-variables)\n" +
-		"  * [Configuration file examples](#configuration-file-examples)\n" +
+		"  * [Variables](#variables)\n" +
+		"  * [Examples](#examples)\n" +
 		"* [Source state attributes](#source-state-attributes)\n" +
 		"* [Special files and directories](#special-files-and-directories)\n" +
 		"  * [`.chezmoi.<format>.tmpl`](#chezmoiformattmpl)\n" +
@@ -1624,7 +1624,7 @@ func init() {
 		"  * [`add` *targets*](#add-targets)\n" +
 		"  * [`apply` [*targets*]](#apply-targets)\n" +
 		"  * [`archive`](#archive)\n" +
-		"  * [`cat` targets](#cat-targets)\n" +
+		"  * [`cat` *targets*](#cat-targets)\n" +
 		"  * [`cd`](#cd)\n" +
 		"  * [`chattr` *attributes* *targets*](#chattr-attributes-targets)\n" +
 		"  * [`completion` *shell*](#completion-shell)\n" +
@@ -1773,7 +1773,7 @@ func init() {
 		"property file format, and [HCL](https://github.com/hashicorp/hcl). The basename\n" +
 		"of the config file is `chezmoi`, and the first config file found is used.\n" +
 		"\n" +
-		"### Configuration variables\n" +
+		"### Variables\n" +
 		"\n" +
 		"The following configuration variables are available:\n" +
 		"\n" +
@@ -1812,7 +1812,7 @@ func init() {
 		"| `template`      | `options`    | []string | `[\"missingkey=error\"]`    | Template options                                    |\n" +
 		"| `vault`         | `command`    | string   | `vault`                   | Vault CLI command                                   |\n" +
 		"\n" +
-		"### Configuration file examples\n" +
+		"### Examples\n" +
 		"\n" +
 		"#### JSON\n" +
 		"\n" +
@@ -2039,7 +2039,7 @@ func init() {
 		"    chezmoi archive | tar tvf -\n" +
 		"    chezmoi archive --output=dotfiles.tar\n" +
 		"\n" +
-		"### `cat` targets\n" +
+		"### `cat` *targets*\n" +
 		"\n" +
 		"Write the target state of *targets*  to stdout. *targets* must be files or\n" +
 		"symlinks. For files, the target file contents are written. For symlinks, the\n" +
