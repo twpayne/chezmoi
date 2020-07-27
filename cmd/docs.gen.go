@@ -1612,6 +1612,7 @@ func init() {
 		"  * [`--version`](#--version)\n" +
 		"* [Configuration file](#configuration-file)\n" +
 		"  * [Configuration variables](#configuration-variables)\n" +
+		"  * [Configuration file examples](#configuration-file-examples)\n" +
 		"* [Source state attributes](#source-state-attributes)\n" +
 		"* [Special files and directories](#special-files-and-directories)\n" +
 		"  * [`.chezmoi.<format>.tmpl`](#chezmoiformattmpl)\n" +
@@ -1776,40 +1777,69 @@ func init() {
 		"\n" +
 		"The following configuration variables are available:\n" +
 		"\n" +
-		"| Variable                | Type     | Default value             | Description                                         |\n" +
-		"| ----------------------- | -------- | ------------------------- | --------------------------------------------------- |\n" +
-		"| `bitwarden.command`     | string   | `bw`                      | Bitwarden CLI command                               |\n" +
-		"| `cd.args`               | []string | *none*                    | Extra args to shell in `cd` command                 |\n" +
-		"| `cd.command`            | string   | *none*                    | Shell to run in `cd` command                        |\n" +
-		"| `color`                 | string   | `auto`                    | Colorize diffs                                      |\n" +
-		"| `data`                  | any      | *none*                    | Template data                                       |\n" +
-		"| `destDir`               | string   | `~`                       | Destination directory                               |\n" +
-		"| `diff.format`           | string   | `chezmoi`                 | Diff format, either `chezmoi` or `git`              |\n" +
-		"| `diff.pager`            | string   | *none*                    | Pager                                               |\n" +
-		"| `dryRun`                | bool     | `false`                   | Dry run mode                                        |\n" +
-		"| `follow`                | bool     | `false`                   | Follow symlinks                                     |\n" +
-		"| `genericSecret.command` | string   | *none*                    | Generic secret command                              |\n" +
-		"| `gopass.command`        | string   | `gopass`                  | gopass CLI command                                  |\n" +
-		"| `gpg.command`           | string   | `gpg`                     | GPG CLI command                                     |\n" +
-		"| `gpg.recipient`         | string   | *none*                    | GPG recipient                                       |\n" +
-		"| `gpg.symmetric`         | bool     | `false`                   | Use symmetric GPG encryption                        |\n" +
-		"| `keepassxc.args`        | []string | *none*                    | Extra args to KeePassXC CLI command                 |\n" +
-		"| `keepassxc.command`     | string   | `keepassxc-cli`           | KeePassXC CLI command                               |\n" +
-		"| `keepassxc.database`    | string   | *none*                    | KeePassXC database                                  |\n" +
-		"| `lastpass.command`      | string   | `lpass`                   | Lastpass CLI command                                |\n" +
-		"| `merge.args`            | []string | *none*                    | Extra args to 3-way merge command                   |\n" +
-		"| `merge.command`         | string   | `vimdiff`                 | 3-way merge command                                 |\n" +
-		"| `onepassword.command`   | string   | `op`                      | 1Password CLI command                               |\n" +
-		"| `pass.command`          | string   | `pass`                    | Pass CLI command                                    |\n" +
-		"| `remove`                | bool     | `false`                   | Remove targets                                      |\n" +
-		"| `sourceDir`             | string   | `~/.local/share/chezmoi`  | Source directory                                    |\n" +
-		"| `sourceVCS.autoCommit`  | bool     | `false`                   | Commit changes to the source state after any change |\n" +
-		"| `sourceVCS.autoPush`    | bool     | `false`                   | Push changes to the source state after any change   |\n" +
-		"| `sourceVCS.command`     | string   | `git`                     | Source version control system                       |\n" +
-		"| `template.options`      | []string | `[\"missingkey=error\"]`    | Template options                                    |\n" +
-		"| `umask`                 | int      | *from system*             | Umask                                               |\n" +
-		"| `vault.command`         | string   | `vault`                   | Vault CLI command                                   |\n" +
-		"| `verbose`               | bool     | `false`                   | Verbose mode                                        |\n" +
+		"| Section         | Variable     | Type     | Default value             | Description                                         |\n" +
+		"| --------------- | ------------ | -------- | ------------------------- | --------------------------------------------------- |\n" +
+		"| Top level       | `color`      | string   | `auto`                    | Colorize diffs                                      |\n" +
+		"|                 | `data`       | any      | *none*                    | Template data                                       |\n" +
+		"|                 | `destDir`    | string   | `~`                       | Destination directory                               |\n" +
+		"|                 | `dryRun`     | bool     | `false`                   | Dry run mode                                        |\n" +
+		"|                 | `follow`     | bool     | `false`                   | Follow symlinks                                     |\n" +
+		"|                 | `remove`     | bool     | `false`                   | Remove targets                                      |\n" +
+		"|                 | `sourceDir`  | string   | `~/.local/share/chezmoi`  | Source directory                                    |\n" +
+		"|                 | `umask`      | int      | *from system*             | Umask                                               |\n" +
+		"|                 | `verbose`    | bool     | `false`                   | Verbose mode                                        |\n" +
+		"| `bitwarden`     | `command`    | string   | `bw`                      | Bitwarden CLI command                               |\n" +
+		"| `cd`            | `args`       | []string | *none*                    | Extra args to shell in `cd` command                 |\n" +
+		"|                 | `command`    | string   | *none*                    | Shell to run in `cd` command                        |\n" +
+		"| `diff`          | `format`     | string   | `chezmoi`                 | Diff format, either `chezmoi` or `git`              |\n" +
+		"|                 | `pager`      | string   | *none*                    | Pager                                               |\n" +
+		"| `genericSecret` | `command`    | string   | *none*                    | Generic secret command                              |\n" +
+		"| `gopass`        | `command`    | string   | `gopass`                  | gopass CLI command                                  |\n" +
+		"| `gpg`           | `command`    | string   | `gpg`                     | GPG CLI command                                     |\n" +
+		"|                 | `recipient`  | string   | *none*                    | GPG recipient                                       |\n" +
+		"|                 | `symmetric`  | bool     | `false`                   | Use symmetric GPG encryption                        |\n" +
+		"| `keepassxc`     | `args`       | []string | *none*                    | Extra args to KeePassXC CLI command                 |\n" +
+		"|                 | `command`    | string   | `keepassxc-cli`           | KeePassXC CLI command                               |\n" +
+		"|                 | `database`   | string   | *none*                    | KeePassXC database                                  |\n" +
+		"| `lastpass`      | `command`    | string   | `lpass`                   | Lastpass CLI command                                |\n" +
+		"| `merge`         | `args`       | []string | *none*                    | Extra args to 3-way merge command                   |\n" +
+		"|                 | `command`    | string   | `vimdiff`                 | 3-way merge command                                 |\n" +
+		"| `onepassword`   | `command`    | string   | `op`                      | 1Password CLI command                               |\n" +
+		"| `pass`          | `command`    | string   | `pass`                    | Pass CLI command                                    |\n" +
+		"| `sourceVCS`     | `autoCommit` | bool     | `false`                   | Commit changes to the source state after any change |\n" +
+		"|                 | `autoPush`   | bool     | `false`                   | Push changes to the source state after any change   |\n" +
+		"|                 | `command`    | string   | `git`                     | Source version control system                       |\n" +
+		"| `template`      | `options`    | []string | `[\"missingkey=error\"]`    | Template options                                    |\n" +
+		"| `vault`         | `command`    | string   | `vault`                   | Vault CLI command                                   |\n" +
+		"\n" +
+		"### Configuration file examples\n" +
+		"\n" +
+		"#### JSON\n" +
+		"\n" +
+		"```json\n" +
+		"{\n" +
+		"    \"sourceDir\": \"/home/user/.dotfiles\",\n" +
+		"    \"diff\": {\n" +
+		"        \"format\": \"git\"\n" +
+		"    }\n" +
+		"}\n" +
+		"```\n" +
+		"\n" +
+		"#### TOML\n" +
+		"\n" +
+		"```toml\n" +
+		"sourceDir = \"/home/user/.dotfiles\"\n" +
+		"[diff]\n" +
+		"    format = \"git\"\n" +
+		"```\n" +
+		"\n" +
+		"#### YAML\n" +
+		"\n" +
+		"```yaml\n" +
+		"sourceDir: /home/user/.dotfiles\n" +
+		"diff:\n" +
+		"    format: git\n" +
+		"```\n" +
 		"\n" +
 		"## Source state attributes\n" +
 		"\n" +
