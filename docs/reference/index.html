@@ -19,7 +19,7 @@
 <link rel="stylesheet" href="/book.min.a8b61185b89b0e211122339c7efd1c8edaa4ad4c0ae65f0074e99a4b31c1e393.css" integrity="sha256-qLYRhbibDiERIjOcfv0cjtqkrUwK5l8AdOmaSzHB45M=">
 
 
-<script defer src="/search.min.2f20ec933851fc809271e2eb12ca0eb21370044c5182d961c73bb79d4114db40.js" integrity="sha256-LyDskzhR/ICSceLrEsoOshNwBExRgtlhxzu3nUEU20A="></script>
+<script defer src="/search.min.9cfc2678b2ecb7020878d20f504713e1a58d3de092293a2e03b993ef920cc55e.js" integrity="sha256-nPwmeLLstwIIeNIPUEcT4aWNPeCSKTouA7mT75IMxV4="></script>
 
 <!--
 Made with Book Theme
@@ -171,6 +171,7 @@ of the config file is <code>chezmoi</code>, and the first config file found is u
 <table>
 <thead>
 <tr>
+<th>Section</th>
 <th>Variable</th>
 <th>Type</th>
 <th>Default value</th>
@@ -179,200 +180,248 @@ of the config file is <code>chezmoi</code>, and the first config file found is u
 </thead>
 <tbody>
 <tr>
-<td><code>bitwarden.command</code></td>
-<td>string</td>
-<td><code>bw</code></td>
-<td>Bitwarden CLI command</td>
-</tr>
-<tr>
-<td><code>cd.args</code></td>
-<td>[]string</td>
-<td><em>none</em></td>
-<td>Extra args to shell in <code>cd</code> command</td>
-</tr>
-<tr>
-<td><code>cd.command</code></td>
-<td>string</td>
-<td><em>none</em></td>
-<td>Shell to run in <code>cd</code> command</td>
-</tr>
-<tr>
+<td>Top level</td>
 <td><code>color</code></td>
 <td>string</td>
 <td><code>auto</code></td>
 <td>Colorize diffs</td>
 </tr>
 <tr>
+<td></td>
 <td><code>data</code></td>
 <td>any</td>
 <td><em>none</em></td>
 <td>Template data</td>
 </tr>
 <tr>
+<td></td>
 <td><code>destDir</code></td>
 <td>string</td>
 <td><code>~</code></td>
 <td>Destination directory</td>
 </tr>
 <tr>
-<td><code>diff.format</code></td>
-<td>string</td>
-<td><code>chezmoi</code></td>
-<td>Diff format, either <code>chezmoi</code> or <code>git</code></td>
-</tr>
-<tr>
-<td><code>diff.pager</code></td>
-<td>string</td>
-<td><em>none</em></td>
-<td>Pager</td>
-</tr>
-<tr>
+<td></td>
 <td><code>dryRun</code></td>
 <td>bool</td>
 <td><code>false</code></td>
 <td>Dry run mode</td>
 </tr>
 <tr>
+<td></td>
 <td><code>follow</code></td>
 <td>bool</td>
 <td><code>false</code></td>
 <td>Follow symlinks</td>
 </tr>
 <tr>
-<td><code>genericSecret.command</code></td>
-<td>string</td>
-<td><em>none</em></td>
-<td>Generic secret command</td>
-</tr>
-<tr>
-<td><code>gopass.command</code></td>
-<td>string</td>
-<td><code>gopass</code></td>
-<td>gopass CLI command</td>
-</tr>
-<tr>
-<td><code>gpg.command</code></td>
-<td>string</td>
-<td><code>gpg</code></td>
-<td>GPG CLI command</td>
-</tr>
-<tr>
-<td><code>gpg.recipient</code></td>
-<td>string</td>
-<td><em>none</em></td>
-<td>GPG recipient</td>
-</tr>
-<tr>
-<td><code>gpg.symmetric</code></td>
-<td>bool</td>
-<td><code>false</code></td>
-<td>Use symmetric GPG encryption</td>
-</tr>
-<tr>
-<td><code>keepassxc.args</code></td>
-<td>[]string</td>
-<td><em>none</em></td>
-<td>Extra args to KeePassXC CLI command</td>
-</tr>
-<tr>
-<td><code>keepassxc.command</code></td>
-<td>string</td>
-<td><code>keepassxc-cli</code></td>
-<td>KeePassXC CLI command</td>
-</tr>
-<tr>
-<td><code>keepassxc.database</code></td>
-<td>string</td>
-<td><em>none</em></td>
-<td>KeePassXC database</td>
-</tr>
-<tr>
-<td><code>lastpass.command</code></td>
-<td>string</td>
-<td><code>lpass</code></td>
-<td>Lastpass CLI command</td>
-</tr>
-<tr>
-<td><code>merge.args</code></td>
-<td>[]string</td>
-<td><em>none</em></td>
-<td>Extra args to 3-way merge command</td>
-</tr>
-<tr>
-<td><code>merge.command</code></td>
-<td>string</td>
-<td><code>vimdiff</code></td>
-<td>3-way merge command</td>
-</tr>
-<tr>
-<td><code>onepassword.command</code></td>
-<td>string</td>
-<td><code>op</code></td>
-<td>1Password CLI command</td>
-</tr>
-<tr>
-<td><code>pass.command</code></td>
-<td>string</td>
-<td><code>pass</code></td>
-<td>Pass CLI command</td>
-</tr>
-<tr>
+<td></td>
 <td><code>remove</code></td>
 <td>bool</td>
 <td><code>false</code></td>
 <td>Remove targets</td>
 </tr>
 <tr>
+<td></td>
 <td><code>sourceDir</code></td>
 <td>string</td>
 <td><code>~/.local/share/chezmoi</code></td>
 <td>Source directory</td>
 </tr>
 <tr>
-<td><code>sourceVCS.autoCommit</code></td>
-<td>bool</td>
-<td><code>false</code></td>
-<td>Commit changes to the source state after any change</td>
-</tr>
-<tr>
-<td><code>sourceVCS.autoPush</code></td>
-<td>bool</td>
-<td><code>false</code></td>
-<td>Push changes to the source state after any change</td>
-</tr>
-<tr>
-<td><code>sourceVCS.command</code></td>
-<td>string</td>
-<td><code>git</code></td>
-<td>Source version control system</td>
-</tr>
-<tr>
-<td><code>template.options</code></td>
-<td>[]string</td>
-<td><code>[&quot;missingkey=error&quot;]</code></td>
-<td>Template options</td>
-</tr>
-<tr>
+<td></td>
 <td><code>umask</code></td>
 <td>int</td>
 <td><em>from system</em></td>
 <td>Umask</td>
 </tr>
 <tr>
-<td><code>vault.command</code></td>
-<td>string</td>
-<td><code>vault</code></td>
-<td>Vault CLI command</td>
-</tr>
-<tr>
+<td></td>
 <td><code>verbose</code></td>
 <td>bool</td>
 <td><code>false</code></td>
 <td>Verbose mode</td>
 </tr>
+<tr>
+<td><code>bitwarden</code></td>
+<td><code>command</code></td>
+<td>string</td>
+<td><code>bw</code></td>
+<td>Bitwarden CLI command</td>
+</tr>
+<tr>
+<td><code>cd</code></td>
+<td><code>args</code></td>
+<td>[]string</td>
+<td><em>none</em></td>
+<td>Extra args to shell in <code>cd</code> command</td>
+</tr>
+<tr>
+<td></td>
+<td><code>command</code></td>
+<td>string</td>
+<td><em>none</em></td>
+<td>Shell to run in <code>cd</code> command</td>
+</tr>
+<tr>
+<td><code>diff</code></td>
+<td><code>format</code></td>
+<td>string</td>
+<td><code>chezmoi</code></td>
+<td>Diff format, either <code>chezmoi</code> or <code>git</code></td>
+</tr>
+<tr>
+<td></td>
+<td><code>pager</code></td>
+<td>string</td>
+<td><em>none</em></td>
+<td>Pager</td>
+</tr>
+<tr>
+<td><code>genericSecret</code></td>
+<td><code>command</code></td>
+<td>string</td>
+<td><em>none</em></td>
+<td>Generic secret command</td>
+</tr>
+<tr>
+<td><code>gopass</code></td>
+<td><code>command</code></td>
+<td>string</td>
+<td><code>gopass</code></td>
+<td>gopass CLI command</td>
+</tr>
+<tr>
+<td><code>gpg</code></td>
+<td><code>command</code></td>
+<td>string</td>
+<td><code>gpg</code></td>
+<td>GPG CLI command</td>
+</tr>
+<tr>
+<td></td>
+<td><code>recipient</code></td>
+<td>string</td>
+<td><em>none</em></td>
+<td>GPG recipient</td>
+</tr>
+<tr>
+<td></td>
+<td><code>symmetric</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Use symmetric GPG encryption</td>
+</tr>
+<tr>
+<td><code>keepassxc</code></td>
+<td><code>args</code></td>
+<td>[]string</td>
+<td><em>none</em></td>
+<td>Extra args to KeePassXC CLI command</td>
+</tr>
+<tr>
+<td></td>
+<td><code>command</code></td>
+<td>string</td>
+<td><code>keepassxc-cli</code></td>
+<td>KeePassXC CLI command</td>
+</tr>
+<tr>
+<td></td>
+<td><code>database</code></td>
+<td>string</td>
+<td><em>none</em></td>
+<td>KeePassXC database</td>
+</tr>
+<tr>
+<td><code>lastpass</code></td>
+<td><code>command</code></td>
+<td>string</td>
+<td><code>lpass</code></td>
+<td>Lastpass CLI command</td>
+</tr>
+<tr>
+<td><code>merge</code></td>
+<td><code>args</code></td>
+<td>[]string</td>
+<td><em>none</em></td>
+<td>Extra args to 3-way merge command</td>
+</tr>
+<tr>
+<td></td>
+<td><code>command</code></td>
+<td>string</td>
+<td><code>vimdiff</code></td>
+<td>3-way merge command</td>
+</tr>
+<tr>
+<td><code>onepassword</code></td>
+<td><code>command</code></td>
+<td>string</td>
+<td><code>op</code></td>
+<td>1Password CLI command</td>
+</tr>
+<tr>
+<td><code>pass</code></td>
+<td><code>command</code></td>
+<td>string</td>
+<td><code>pass</code></td>
+<td>Pass CLI command</td>
+</tr>
+<tr>
+<td><code>sourceVCS</code></td>
+<td><code>autoCommit</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Commit changes to the source state after any change</td>
+</tr>
+<tr>
+<td></td>
+<td><code>autoPush</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Push changes to the source state after any change</td>
+</tr>
+<tr>
+<td></td>
+<td><code>command</code></td>
+<td>string</td>
+<td><code>git</code></td>
+<td>Source version control system</td>
+</tr>
+<tr>
+<td><code>template</code></td>
+<td><code>options</code></td>
+<td>[]string</td>
+<td><code>[&quot;missingkey=error&quot;]</code></td>
+<td>Template options</td>
+</tr>
+<tr>
+<td><code>vault</code></td>
+<td><code>command</code></td>
+<td>string</td>
+<td><code>vault</code></td>
+<td>Vault CLI command</td>
+</tr>
 </tbody>
 </table>
-<h2 id="source-state-attributes">Source state attributes</h2>
+<h3 id="configuration-file-examples">Configuration file examples</h3>
+<h4 id="json">JSON</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+    <span style="color:#f92672">&#34;sourceDir&#34;</span>: <span style="color:#e6db74">&#34;/home/user/.dotfiles&#34;</span>,
+    <span style="color:#f92672">&#34;diff&#34;</span>: {
+        <span style="color:#f92672">&#34;format&#34;</span>: <span style="color:#e6db74">&#34;git&#34;</span>
+    }
+}
+</code></pre></div><h4 id="toml">TOML</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml"><span style="color:#a6e22e">sourceDir</span> = <span style="color:#e6db74">&#34;/home/user/.dotfiles&#34;</span>
+[<span style="color:#a6e22e">diff</span>]
+    <span style="color:#a6e22e">format</span> = <span style="color:#e6db74">&#34;git&#34;</span>
+</code></pre></div><h4 id="yaml">YAML</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">sourceDir</span>: /home/user/.dotfiles
+<span style="color:#66d9ef">diff</span>:
+    <span style="color:#66d9ef">format</span>: git
+</code></pre></div><h2 id="source-state-attributes">Source state attributes</h2>
 <p>chezmoi stores the source state of files, symbolic links, and directories in
 regular files and directories in the source directory (<code>~/.local/share/chezmoi</code>
 by default). This location can be overridden with the <code>-S</code> flag or by giving a
@@ -1235,6 +1284,7 @@ times with the same <em>key</em> will only invoke <code>vault</code> once.</p>
     <li><a href="#configuration-file">Configuration file</a>
       <ul>
         <li><a href="#configuration-variables">Configuration variables</a></li>
+        <li><a href="#configuration-file-examples">Configuration file examples</a></li>
       </ul>
     </li>
     <li><a href="#source-state-attributes">Source state attributes</a></li>
