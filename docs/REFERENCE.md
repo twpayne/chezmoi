@@ -296,6 +296,7 @@ ignored on different machines.
 
     *.txt   # ignore *.txt in the target directory
     */*.txt # ignore *.txt in subdirectories of the target directory
+    backups/** # ignore backups folder in chezmoi directory and all its contents
 
     {{- if ne .email "john.smith@company.com" }}
     # Ignore .company-directory unless configured with a company email
