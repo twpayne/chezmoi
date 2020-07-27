@@ -127,7 +127,7 @@ var (
 )
 
 func (e ParseError) Error() string {
-	return fmt.Sprintf("cannot parse %q", string(e))
+	return fmt.Sprintf("%s: parse error", string(e))
 }
 
 // ParseStatusPorcelainV2 parses the output of
