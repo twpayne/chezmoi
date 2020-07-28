@@ -79,6 +79,7 @@ Manage your dotfiles securely across multiple machines.
   * [`lookPath` *file*](#lookpath-file)
   * [`onepassword` *uuid* [*vault-uuid*]](#onepassword-uuid-vault-uuid)
   * [`onepasswordDocument` *uuid* [*vault-uuid*]](#onepassworddocument-uuid-vault-uuid)
+  * [`onepasswordDetailsFields` *uuid* [*vault-uuid*]](#onepassworddetailsfields-uuid-vault-uuid)
   * [`pass` *pass-name*](#pass-pass-name)
   * [`promptString` *prompt*](#promptstring-prompt)
   * [`secret` [*args*]](#secret-args)
@@ -1124,6 +1125,65 @@ performance.
 
     {{- onepasswordDocument "<uuid>" -}}
     {{- onepasswordDocument "<uuid>" "<vault-uuid>" -}}
+
+### `onepasswordDetailsFields` *uuid* [*vault-uuid*]
+
+`onepasswordDetailsFields` returns structured data from
+[1Password](https://1password.com/) using the [1Password
+CLI](https://support.1password.com/command-line-getting-started/) (`op`). *uuid*
+is passed to `op get item <uuid>`, the output from `op` is parsed as JSON, and
+elements of `details.fields` are returned as a map indexed by each field's
+`designation`. For example, give the output from `op`:
+
+```json
+{
+  "uuid": "<uuid>",
+  "details": {
+    "fields": [
+      {
+        "designation": "username",
+        "name": "username",
+        "type": "T",
+        "value": "exampleuser"
+      },
+      {
+        "designation": "password",
+        "name": "password",
+        "type": "P",
+        "value": "examplepassword"
+      }
+    ],
+  }
+}
+```
+
+the return value will be the map:
+
+```json
+{
+  "username": {
+    "designation": "username",
+    "name": "username",
+    "type": "T",
+    "value": "exampleuser"
+  },
+  "password": {
+    "designation": "password",
+    "name": "password",
+    "type": "P",
+    "value": "examplepassword"
+  }
+}
+```
+
+The output from `op` is cached so calling `onepassword` multiple times with the
+same *uuid* will only invoke `op` once.  If the optional *vault-uuid* is supplied,
+it will be passed along to the `op get` call, which can significantly improve
+performance.
+
+#### `onepasswordDetailsFields` examples
+
+    {{ (onepasswordDetailsFields "<uuid>").password.value }}
 
 ### `pass` *pass-name*
 
