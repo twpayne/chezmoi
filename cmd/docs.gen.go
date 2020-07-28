@@ -1187,6 +1187,11 @@ func init() {
 		"\n" +
 		"    {{ (onepassword \"<uuid>\").details.password }}\n" +
 		"\n" +
+		"Login details fields can be retrieved with the `onepasswordDetailsFields`\n" +
+		"function, for example:\n" +
+		"\n" +
+		"    {{- (onepasswordDetailsField \"uuid\").password.value }}\n" +
+		"\n" +
 		"Documents can be retrieved with:\n" +
 		"\n" +
 		"    {{- onepasswordDocument \"uuid\" -}}\n" +
@@ -1673,6 +1678,7 @@ func init() {
 		"  * [`lookPath` *file*](#lookpath-file)\n" +
 		"  * [`onepassword` *uuid* [*vault-uuid*]](#onepassword-uuid-vault-uuid)\n" +
 		"  * [`onepasswordDocument` *uuid* [*vault-uuid*]](#onepassworddocument-uuid-vault-uuid)\n" +
+		"  * [`onepasswordDetailsFields` *uuid* [*vault-uuid*]](#onepassworddetailsfields-uuid-vault-uuid)\n" +
 		"  * [`pass` *pass-name*](#pass-pass-name)\n" +
 		"  * [`promptString` *prompt*](#promptstring-prompt)\n" +
 		"  * [`secret` [*args*]](#secret-args)\n" +
@@ -2718,6 +2724,65 @@ func init() {
 		"\n" +
 		"    {{- onepasswordDocument \"<uuid>\" -}}\n" +
 		"    {{- onepasswordDocument \"<uuid>\" \"<vault-uuid>\" -}}\n" +
+		"\n" +
+		"### `onepasswordDetailsFields` *uuid* [*vault-uuid*]\n" +
+		"\n" +
+		"`onepasswordDetailsFields` returns structured data from\n" +
+		"[1Password](https://1password.com/) using the [1Password\n" +
+		"CLI](https://support.1password.com/command-line-getting-started/) (`op`). *uuid*\n" +
+		"is passed to `op get item <uuid>`, the output from `op` is parsed as JSON, and\n" +
+		"elements of `details.fields` are returned as a map indexed by each field's\n" +
+		"`designation`. For example, give the output from `op`:\n" +
+		"\n" +
+		"```json\n" +
+		"{\n" +
+		"  \"uuid\": \"<uuid>\",\n" +
+		"  \"details\": {\n" +
+		"    \"fields\": [\n" +
+		"      {\n" +
+		"        \"designation\": \"username\",\n" +
+		"        \"name\": \"username\",\n" +
+		"        \"type\": \"T\",\n" +
+		"        \"value\": \"exampleuser\"\n" +
+		"      },\n" +
+		"      {\n" +
+		"        \"designation\": \"password\",\n" +
+		"        \"name\": \"password\",\n" +
+		"        \"type\": \"P\",\n" +
+		"        \"value\": \"examplepassword\"\n" +
+		"      }\n" +
+		"    ],\n" +
+		"  }\n" +
+		"}\n" +
+		"```\n" +
+		"\n" +
+		"the return value will be the map:\n" +
+		"\n" +
+		"```json\n" +
+		"{\n" +
+		"  \"username\": {\n" +
+		"    \"designation\": \"username\",\n" +
+		"    \"name\": \"username\",\n" +
+		"    \"type\": \"T\",\n" +
+		"    \"value\": \"exampleuser\"\n" +
+		"  },\n" +
+		"  \"password\": {\n" +
+		"    \"designation\": \"password\",\n" +
+		"    \"name\": \"password\",\n" +
+		"    \"type\": \"P\",\n" +
+		"    \"value\": \"examplepassword\"\n" +
+		"  }\n" +
+		"}\n" +
+		"```\n" +
+		"\n" +
+		"The output from `op` is cached so calling `onepassword` multiple times with the\n" +
+		"same *uuid* will only invoke `op` once.  If the optional *vault-uuid* is supplied,\n" +
+		"it will be passed along to the `op get` call, which can significantly improve\n" +
+		"performance.\n" +
+		"\n" +
+		"#### `onepasswordDetailsFields` examples\n" +
+		"\n" +
+		"    {{ (onepasswordDetailsFields \"<uuid>\").password.value }}\n" +
 		"\n" +
 		"### `pass` *pass-name*\n" +
 		"\n" +
