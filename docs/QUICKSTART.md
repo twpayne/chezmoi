@@ -27,7 +27,8 @@ Manage an existing file with chezmoi:
 
     chezmoi add ~/.bashrc
 
-This will copy `~/.bashrc` to `~/.local/share/chezmoi/dot_bashrc`.
+This will copy `~/.bashrc` to `~/.local/share/chezmoi/dot_bashrc`. If you want
+to add a whole folder to chezmoi, you have to add the `-r` argument after `add`.
 
 Edit the source state:
 
