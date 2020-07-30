@@ -13,7 +13,7 @@ run:
 
 .PHONY: test
 test:
-	go test -race ./...
+	go test ./...
 
 .PHONY: lint
 lint: ensure-golangci-lint
