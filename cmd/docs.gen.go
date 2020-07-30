@@ -1538,7 +1538,8 @@ func init() {
 		"\n" +
 		"    chezmoi add ~/.bashrc\n" +
 		"\n" +
-		"This will copy `~/.bashrc` to `~/.local/share/chezmoi/dot_bashrc`.\n" +
+		"This will copy `~/.bashrc` to `~/.local/share/chezmoi/dot_bashrc`. If you want\n" +
+		"to add a whole folder to chezmoi, you have to add the `-r` argument after `add`.\n" +
 		"\n" +
 		"Edit the source state:\n" +
 		"\n" +
