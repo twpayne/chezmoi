@@ -87,7 +87,6 @@ func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) error {
 	// it directly.
 	if strings.IndexFunc(c.Diff.Pager, unicode.IsSpace) != -1 {
 		shell, _ := shell.CurrentUserShell()
-		//nolint:gosec
 		pagerCmd = exec.Command(shell, "-c", c.Diff.Pager)
 	} else {
 		//nolint:gosec

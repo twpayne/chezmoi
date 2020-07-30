@@ -24,6 +24,7 @@ linters:
   - interfacer
   - misspell
   - nakedret
+  - nolintlint
   - prealloc
   - rowserrcheck
   - scopelint
@@ -50,11 +51,12 @@ linters:
   - maligned
   - nestif
   - noctx
-  - nolintlint
   - testpackage
   - wsl
 
 linters-settings:
+  gofumpt:
+    extra-rules: true
   goimports:
     local-prefixes: github.com/twpayne/chezmoi
 
