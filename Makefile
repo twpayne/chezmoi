@@ -1,4 +1,4 @@
-GOLANGCI_LINT_VERSION=1.28.0
+GOLANGCI_LINT_VERSION=1.29.0
 
 .PHONY: default
 default: generate run test lint format
@@ -13,7 +13,7 @@ run:
 
 .PHONY: test
 test:
-	go test -race ./...
+	go test ./...
 
 .PHONY: lint
 lint: ensure-golangci-lint
