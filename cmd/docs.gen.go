@@ -1498,8 +1498,10 @@ func init() {
 		"| Date       | Version | Format       | Link                                                                                                                      |\n" +
 		"| ---------- | ------- | ------------ | ------------------------------------------------------------------------------------------------------------------------- |\n" +
 		"| 2020-07-06 | 1.8.3   | Video        | [chezmoi: Manage your dotfiles across multiple machines, securely](https://www.youtube.com/watch?v=JrCMCdvoMAw).          |\n" +
+		"| 2020-07-03 | 1.8.3   | Text         | [Feeling at home in a LXD container](https://ubuntu.com/blog/feeling-at-home-in-a-lxd-container)                          |\n" +
 		"| 2020-04-16 | 1.17.19 | Text (FR)    | [Chezmoi, visite guidée](https://blog.wescale.fr/2020/04/16/chezmoi-visite-guidee/)                                       |\n" +
 		"| 2020-04-03 | 1.7.17  | Text         | [Fedora Magazine: Take back your dotfiles with Chezmoi](https://fedoramagazine.org/take-back-your-dotfiles-with-chezmoi/) |\n" +
+		"| 2020-04-01 | 1.7.17  | Text         | [Managing dotfiles and secret with chezmoi](https://blog.arkey.fr/2020/04/01/manage_dotfiles_with_chezmoi/)               |\n" +
 		"| 2020-03-12 | 1.7.16  | Video        | [Managing Dotfiles with ChezMoi](https://www.youtube.com/watch?v=HXx6ugA98Qo)                                             |\n" +
 		"| 2019-11-20 | 1.7.2   | Audio/video  | [FLOSS weekly episode 556: chezmoi](https://twit.tv/shows/floss-weekly/episodes/556)                                      |\n" +
 		"| 2019-01-10 | 0.0.11  | Text         | [Linux Fu: The kitchen sync](https://hackaday.com/2019/01/10/linux-fu-the-kitchen-sync/)                                  |\n" +
@@ -1507,7 +1509,8 @@ func init() {
 		"To add your article to this page please either [open an\n" +
 		"issue](https://github.com/twpayne/chezmoi/issues/new/choose) or submit a pull\n" +
 		"request that modifies this file\n" +
-		"([`docs/MEDIA.md`](https://github.com/twpayne/chezmoi/blob/master/docs/MEDIA.md)).\n")
+		"([`docs/MEDIA.md`](https://github.com/twpayne/chezmoi/blob/master/docs/MEDIA.md)).\n" +
+		"\n")
 	assets["docs/QUICKSTART.md"] = []byte("" +
 		"# chezmoi Quick Start Guide\n" +
 		"\n" +
