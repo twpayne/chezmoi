@@ -266,7 +266,7 @@ function _chezmoi_chattr {
     '--remove[remove targets]' \
     '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
     '(-v --verbose)'{-v,--verbose}'[verbose]' \
-    '1: :("empty" "-empty" "+empty" "noempty" "e" "-e" "+e" "noe" "encrypt" "-encrypt" "+encrypt" "noencrypt" "exact" "-exact" "+exact" "noexact" "executable" "-executable" "+executable" "noexecutable" "x" "-x" "+x" "nox" "private" "-private" "+private" "noprivate" "p" "-p" "+p" "nop" "template" "-template" "+template" "notemplate" "t" "-t" "+t" "not")' \
+    '1: :("empty" "-empty" "+empty" "noempty" "e" "-e" "+e" "noe" "encrypted" "-encrypted" "+encrypted" "noencrypted" "exact" "-exact" "+exact" "noexact" "executable" "-executable" "+executable" "noexecutable" "x" "-x" "+x" "nox" "private" "-private" "+private" "noprivate" "p" "-p" "+p" "nop" "template" "-template" "+template" "notemplate" "t" "-t" "+t" "not")' \
     '2: :_files ' \
     '3: :_files ' \
     '4: :_files ' \
