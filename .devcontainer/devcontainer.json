@@ -17,7 +17,7 @@
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
 		"golang.Go"
-	]
+	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
@@ -26,5 +26,5 @@
 	// "postCreateCommand": "go version",
 
 	// Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
-	// "remoteUser": "vscode"
+	"remoteUser": "vscode"
 }

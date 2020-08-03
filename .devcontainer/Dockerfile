@@ -58,7 +58,7 @@ RUN mkdir -p /tmp/gotools \
 ENV GO111MODULE=auto
 
 # [Optional] Uncomment the next line to use go get to install anything else you need
-# RUN go get -x <your-dependency-or-tool>
+RUN go get -x mvdan.cc/gofumpt/gofumports
 
 # [Optional] Uncomment this section to install additional OS packages.
 # RUN apt-get update \
