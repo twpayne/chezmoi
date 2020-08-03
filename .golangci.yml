@@ -9,6 +9,7 @@ linters:
   - errcheck
   - exhaustive
   - exportloopref
+  - gci
   - gocritic
   - godot
   - gofmt
@@ -50,6 +51,7 @@ linters:
   - lll
   - maligned
   - nestif
+  - nlreturn
   - noctx
   - testpackage
   - wsl
