@@ -27,7 +27,7 @@ type boolModifier int
 
 type attributeModifiers struct {
 	empty      boolModifier
-	encrypt    boolModifier
+	encrypted  boolModifier
 	exact      boolModifier
 	executable boolModifier
 	private    boolModifier
@@ -39,7 +39,7 @@ func init() {
 
 	attributes := []string{
 		"empty", "e",
-		"encrypt",
+		"encrypted",
 		"exact",
 		"executable", "x",
 		"private", "p",
@@ -99,7 +99,7 @@ func (c *Config) runChattrCmd(cmd *cobra.Command, args []string) error {
 				mode &= 0o700
 			}
 			fa.Mode = mode
-			fa.Encrypted = ams.encrypt.modify(entry.Encrypted)
+			fa.Encrypted = ams.encrypted.modify(entry.Encrypted)
 			fa.Empty = ams.empty.modify(entry.Empty)
 			fa.Template = ams.template.modify(entry.Template)
 			newpath := filepath.Join(ts.SourceDir, dir, fa.SourceName())
@@ -186,8 +186,8 @@ func parseAttributeModifiers(s string) (*attributeModifiers, error) {
 		switch attribute {
 		case "empty", "e":
 			ams.empty = modifier
-		case "encrypt":
-			ams.encrypt = modifier
+		case "encrypted":
+			ams.encrypted = modifier
 		case "exact":
 			ams.exact = modifier
 		case "executable", "x":
