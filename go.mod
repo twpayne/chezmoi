@@ -6,12 +6,10 @@ require (
 	github.com/Masterminds/goutils v1.1.0 // indirect
 	github.com/Masterminds/semver v1.5.0 // indirect
 	github.com/Masterminds/sprig v2.22.0+incompatible
-	github.com/alecthomas/chroma v0.7.1 // indirect
 	github.com/bmatcuk/doublestar v1.3.1
-	github.com/charmbracelet/glamour v0.1.0
+	github.com/charmbracelet/glamour v0.2.0
 	github.com/coreos/go-semver v0.3.0
 	github.com/danieljoos/wincred v1.1.0 // indirect
-	github.com/dlclark/regexp2 v1.2.0 // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/go-git/go-git/v5 v5.1.0
 	github.com/golang/protobuf v1.4.2 // indirect
@@ -20,8 +18,6 @@ require (
 	github.com/google/uuid v1.1.1 // indirect
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/logrusorgru/aurora v0.0.0-20200102142835-e9ef32dff381 // indirect
-	github.com/mattn/go-isatty v0.0.12 // indirect
-	github.com/mattn/go-runewidth v0.0.9 // indirect
 	github.com/microcosm-cc/bluemonday v1.0.3 // indirect
 	github.com/mitchellh/copystructure v1.0.0 // indirect
 	github.com/mitchellh/mapstructure v1.3.2 // indirect
@@ -42,7 +38,6 @@ require (
 	github.com/twpayne/go-vfs v1.5.0
 	github.com/twpayne/go-vfsafero v1.0.0
 	github.com/twpayne/go-xdg/v3 v3.1.0
-	github.com/yuin/goldmark v1.1.32 // indirect
 	github.com/zalando/go-keyring v0.0.0-20200121091418-667557018717
 	go.etcd.io/bbolt v1.3.5
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
