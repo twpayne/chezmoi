@@ -1,6 +1,6 @@
 version: 2
 updates:
-  - package-ecosystem: go
+  - package-ecosystem: gomod
     directory: /
     schedule:
       interval: monthly
