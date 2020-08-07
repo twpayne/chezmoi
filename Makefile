@@ -30,7 +30,7 @@ ensure-tools: ensure-gofumports ensure-golangci-lint
 ensure-gofumports:
 	if [ ! -x bin/gofumports ] ; then \
 		mkdir -p bin ; \
-		( cd $$(mktemp -d) && go mod init tmp && GOBIN=${PWD}/bin go get mvdan.cc/gofumpt/gofumports ) ; \
+		( cd $$(mktemp -d) && go mod init tmp && GOBIN=$(shell pwd)/bin go get mvdan.cc/gofumpt/gofumports ) ; \
 	fi
 
 .PHONY: ensure-golangci-lint
