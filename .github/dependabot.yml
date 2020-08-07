@@ -1,0 +1,14 @@
+version: 2
+updates:
+  - package-ecosystem: go
+    directory: /
+    schedule:
+      interval: monthly
+    labels:
+    - enhancement
+  - package-ecosystem: gitsubmodule
+    directory: /
+    schedule:
+      interval: monthly
+    labels:
+    - enhancement
