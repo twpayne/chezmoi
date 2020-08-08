@@ -41,7 +41,7 @@ func (c *Config) passFunc(id string) string {
 	}
 	name := c.Pass.Command
 	if !c.Pass.unlocked {
-		args := []string{"grep", "^$"}
+		args := []string{"grep", "$^"}
 		cmd := exec.Command(name, args...)
 		cmd.Stdin = c.Stdin
 		cmd.Stdout = c.Stdout
