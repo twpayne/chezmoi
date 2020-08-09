@@ -26,6 +26,7 @@ Install chezmoi with a single command.
 | Linux        | Linuxbrew  | `brew install chezmoi`                                                                      |
 | Alpine Linux | apk        | `apk add chezmoi`                                                                           |
 | Arch Linux   | pacman     | `pacman -S chezmoi`                                                                         |
+| Guix Linux   | guix       | `guix install chezmoi`                                                                      |
 | NixOS Linux  | nix-env    | `nix-env -i chezmoi`                                                                        |
 | macOS        | Homebrew   | `brew install chezmoi`                                                                      |
 | macOS        | MacPorts   | `sudo port install chezmoi`                                                                 |
