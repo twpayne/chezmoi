@@ -694,6 +694,16 @@ supported file formats (e.g. `json`, `toml`, or `yaml`) then a new configuration
 file is created using that file as a template. Finally, if the `--apply` flag is
 passed, `chezmoi apply` is run.
 
+#### `--apply`
+
+Run `chezmoi apply` after checking out the repo and creating the config file.
+This is `false` by default.
+
+#### `--clone`
+
+Create or clone the repo. This is the default. Specify `--clone=false` to skip,
+for example if the source directory is already checked out.
+
 #### `init` examples
 
     chezmoi init https://github.com/user/dotfiles.git

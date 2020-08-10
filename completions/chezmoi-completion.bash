@@ -1202,6 +1202,7 @@ _chezmoi_init()
     flags_completion=()
 
     flags+=("--apply")
+    flags+=("--clone")
     flags+=("--color=")
     two_word_flags+=("--color")
     flags+=("--config=")

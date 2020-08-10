@@ -2299,6 +2299,16 @@ func init() {
 		"file is created using that file as a template. Finally, if the `--apply` flag is\n" +
 		"passed, `chezmoi apply` is run.\n" +
 		"\n" +
+		"#### `--apply`\n" +
+		"\n" +
+		"Run `chezmoi apply` after checking out the repo and creating the config file.\n" +
+		"This is `false` by default.\n" +
+		"\n" +
+		"#### `--clone`\n" +
+		"\n" +
+		"Create or clone the repo. This is the default. Specify `--clone=false` to skip,\n" +
+		"for example if the source directory is already checked out.\n" +
+		"\n" +
 		"#### `init` examples\n" +
 		"\n" +
 		"    chezmoi init https://github.com/user/dotfiles.git\n" +

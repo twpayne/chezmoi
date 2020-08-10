@@ -72,6 +72,8 @@ func chHome(ts *testscript.TestScript, neg bool, args []string) {
 	if runtime.GOOS == "windows" {
 		ts.Setenv("USERPROFILE", homeDir)
 	}
+	ts.Setenv("CHEZMOICONFIGDIR", filepath.Join(homeDir, ".config", "chezmoi"))
+	ts.Setenv("CHEZMOISOURCEDIR", filepath.Join(homeDir, ".local", "share", "chezmoi"))
 }
 
 // edit edits all of its arguments by appending "# edited\n" to them.

@@ -512,6 +512,7 @@ function _chezmoi_import {
 function _chezmoi_init {
   _arguments \
     '--apply[update destination directory]' \
+    '--clone[clone repo]' \
     '--color[colorize diffs]:' \
     '(-c --config)'{-c,--config}'[config file]:filename:_files' \
     '--debug[write debug logs]' \

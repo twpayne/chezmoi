@@ -137,6 +137,9 @@ func TestValidateKeys(t *testing.T) {
 func newTestConfig(fs vfs.FS, options ...configOption) *Config {
 	return newConfig(append(
 		[]configOption{
+			withInitCmdConfig(initCmdConfig{
+				clone: true,
+			}),
 			withTestFS(fs),
 			withTestUser("user"),
 		},
@@ -177,6 +180,12 @@ func withFollow(follow bool) configOption {
 func withGenericSecretCmdConfig(genericSecretCmdConfig genericSecretCmdConfig) configOption {
 	return func(c *Config) {
 		c.GenericSecret = genericSecretCmdConfig
+	}
+}
+
+func withInitCmdConfig(initCmdConfig initCmdConfig) configOption {
+	return func(c *Config) {
+		c.init = initCmdConfig
 	}
 }
 
