@@ -1434,6 +1434,7 @@ func init() {
 		"| Linux        | Linuxbrew  | `brew install chezmoi`                                                                      |\n" +
 		"| Alpine Linux | apk        | `apk add chezmoi`                                                                           |\n" +
 		"| Arch Linux   | pacman     | `pacman -S chezmoi`                                                                         |\n" +
+		"| Guix Linux   | guix       | `guix install chezmoi`                                                                      |\n" +
 		"| NixOS Linux  | nix-env    | `nix-env -i chezmoi`                                                                        |\n" +
 		"| macOS        | Homebrew   | `brew install chezmoi`                                                                      |\n" +
 		"| macOS        | MacPorts   | `sudo port install chezmoi`                                                                 |\n" +
