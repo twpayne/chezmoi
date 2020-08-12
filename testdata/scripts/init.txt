@@ -22,5 +22,14 @@ chezmoi init --apply file://$WORK/home/user/.local/share/chezmoi
 exists ${CHEZMOISOURCEDIR}${/}.git
 grep '# contents of .bashrc' $HOME${/}.bashrc
 
+# test that chezmoi init --clone=false does not clone the repo but does create the config file
+chhome home4${/}user
+chezmoi init --clone=false --source=${HOME}/dotfiles --verbose
+! exists ${CHEZMOISOURCEDIR}${/}.git
+exists ${CHEZMOICONFIGDIR}/chezmoi.toml
+
 -- home/user/.bashrc --
 # contents of .bashrc
+-- home4/user/dotfiles/.chezmoi.toml.tmpl --
+[data]
+  email = "user@home.org"

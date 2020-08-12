@@ -342,7 +342,17 @@ var helps = map[string]help{
 			"  If a file called `.chezmoi.format.tmpl` exists, where `format` is one of the\n" +
 			"  supported file formats (e.g. `json`, `toml`, or `yaml`) then a new\n" +
 			"  configuration file is created using that file as a template. Finally, if the `--\n" +
-			"  apply` flag is passed, `chezmoi apply` is run.",
+			"  apply` flag is passed, `chezmoi apply` is run.\n" +
+			"\n" +
+			"  `--apply`\n" +
+			"\n" +
+			"  Run `chezmoi apply` after checking out the repo and creating the config file.\n" +
+			"  This is `false` by default.\n" +
+			"\n" +
+			"  `--clone`\n" +
+			"\n" +
+			"  Create or clone the repo. This is the default. Specify `--clone=false` to skip,\n" +
+			"  for example if the source directory is already checked out.",
 		example: "" +
 			"  chezmoi init https://github.com/user/dotfiles.git\n" +
 			"  chezmoi init https://github.com/user/dotfiles.git --apply",
