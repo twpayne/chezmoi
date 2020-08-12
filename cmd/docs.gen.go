@@ -610,6 +610,7 @@ func init() {
 		"* [Use scripts to perform actions](#use-scripts-to-perform-actions)\n" +
 		"  * [Understand how scripts work](#understand-how-scripts-work)\n" +
 		"  * [Install packages with scripts](#install-packages-with-scripts)\n" +
+		"* [Use chezmoi with GitHub Codespaces, Visual Studio Codespaces, Visual Studio Code Remote - Containers](#use-chezmoi-with-github-codespaces-visual-studio-codespaces-visual-studio-code-remote---containers)\n" +
 		"* [Import archives](#import-archives)\n" +
 		"* [Export archives](#export-archives)\n" +
 		"* [Use a non-git version control system](#use-a-non-git-version-control-system)\n" +
@@ -1326,6 +1327,76 @@ func init() {
 		"    {{ end -}}\n" +
 		"\n" +
 		"This will install `ripgrep` on both Debian/Ubuntu Linux systems and macOS.\n" +
+		"\n" +
+		"## Use chezmoi with GitHub Codespaces, Visual Studio Codespaces, Visual Studio Code Remote - Containers\n" +
+		"\n" +
+		"The following assumes you are using chezmoi 1.8.4 or later. It does not work\n" +
+		"with earlier versions of chezmoi.\n" +
+		"\n" +
+		"You can use chezmoi to manage your dotfiles in [GitHub Codespaces](https://docs.microsoft.com/en/visualstudio/codespaces/reference/personalizing), [Visual Studio Codespaces](https://docs.microsoft.com/en/visualstudio/codespaces/reference/personalizing), and [Visual Studio Code Remote - Containers](https://code.visualstudio.com/docs/remote/containers#_personalizing-with-dotfile-repositories).\n" +
+		"\n" +
+		"The workflow is different to using chezmoi on a new machine, notably:\n" +
+		"* These systems will automatically clone your `dotfiles` repo to `~/dotfiles`,\n" +
+		"  so there is no need to clone your repo yourself.\n" +
+		"* The installation script must be non-interactive.\n" +
+		"* When running in a Codespace, the environment variable `CODESPACES` will be set\n" +
+		"  to `true`. You can read its value with the [`env` template\n" +
+		"  function](http://masterminds.github.io/sprig/os.html).\n" +
+		"\n" +
+		"First, if you are using a chezmoi configuration file template, ensure that it is\n" +
+		"non-interactive when running in codespaces, for example, `.chezmoi.toml.tmpl`\n" +
+		"might contain:\n" +
+		"\n" +
+		"```\n" +
+		"{{- if (env \"CODESPACES\") -}}\n" +
+		"[data]\n" +
+		"  codespaces = true\n" +
+		"  email = \"user@company.com\"\n" +
+		"{{- else -}}\n" +
+		"{{- $email := promptString \"email\" -}}\n" +
+		"[data]\n" +
+		"  codespaces = false\n" +
+		"  email = {{ $email }}\n" +
+		"{{- end }}\n" +
+		"```\n" +
+		"\n" +
+		"This also sets the `codespaces` template variable, so you don't have to repeat\n" +
+		"`(env \"CODESPACES\")` in your templates.\n" +
+		"\n" +
+		"Second, create an `install.sh` script that installs chezmoi and your dotfiles:\n" +
+		"\n" +
+		"```sh\n" +
+		"#!/bin/sh\n" +
+		"\n" +
+		"if [ \"$CODESPACES\" == \"true\" ] ; then\n" +
+		"        curl -sfL https://git.io/chezmoi | sh\n" +
+		"        ./bin/chezmoi init --apply --clone=false --source=$HOME/dotfiles\n" +
+		"fi\n" +
+		"```\n" +
+		"\n" +
+		"Ensure that this file is executable (`chmod a+x install.sh`), and add\n" +
+		"`install.sh` to your `.chezmoiignore` file.\n" +
+		"\n" +
+		"Inside the `if` statement, `curl ... | sh` installs the latest version of\n" +
+		"chezmoi in `./bin` and then `./bin/chezmoi init ...` invokes chezmoi to create\n" +
+		"its configuration file and initialize your dotfiles. `--apply` tells chezmoi to\n" +
+		"apply the changes immediately, `--clone=false` tells chezmoi not to clone your\n" +
+		"dotfiles repo (because this has already been done), and `--source=...` tells\n" +
+		"chezmoi where to find the cloned `dotfiles` repo.\n" +
+		"\n" +
+		"If you do not use a chezmoi configuration file template you can use `chezmoi\n" +
+		"apply --source=$HOME/dotfiles` instead of `chezmoi init ...` in `install.sh`.\n" +
+		"\n" +
+		"Finally, modify any of your templates to use the `codespaces` variable if\n" +
+		"needed. For example, to install `vim-gtk` on Linux but not in Codespaces, your\n" +
+		"`run_once_install-packages.sh.tmpl` might contain:\n" +
+		"\n" +
+		"```\n" +
+		"{{- if (and (eq .chezmoi.os \"linux\")) (not .codespaces))) -}}\n" +
+		"#!/bin/sh\n" +
+		"sudo apt install -y vim-gtk\n" +
+		"{{- end -}}\n" +
+		"```\n" +
 		"\n" +
 		"## Import archives\n" +
 		"\n" +

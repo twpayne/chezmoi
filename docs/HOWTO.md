@@ -27,6 +27,7 @@
 * [Use scripts to perform actions](#use-scripts-to-perform-actions)
   * [Understand how scripts work](#understand-how-scripts-work)
   * [Install packages with scripts](#install-packages-with-scripts)
+* [Use chezmoi with GitHub Codespaces, Visual Studio Codespaces, Visual Studio Code Remote - Containers](#use-chezmoi-with-github-codespaces-visual-studio-codespaces-visual-studio-code-remote---containers)
 * [Import archives](#import-archives)
 * [Export archives](#export-archives)
 * [Use a non-git version control system](#use-a-non-git-version-control-system)
@@ -743,6 +744,76 @@ This script can also be a template. For example, if you create
     {{ end -}}
 
 This will install `ripgrep` on both Debian/Ubuntu Linux systems and macOS.
+
+## Use chezmoi with GitHub Codespaces, Visual Studio Codespaces, Visual Studio Code Remote - Containers
+
+The following assumes you are using chezmoi 1.8.4 or later. It does not work
+with earlier versions of chezmoi.
+
+You can use chezmoi to manage your dotfiles in [GitHub Codespaces](https://docs.microsoft.com/en/visualstudio/codespaces/reference/personalizing), [Visual Studio Codespaces](https://docs.microsoft.com/en/visualstudio/codespaces/reference/personalizing), and [Visual Studio Code Remote - Containers](https://code.visualstudio.com/docs/remote/containers#_personalizing-with-dotfile-repositories).
+
+The workflow is different to using chezmoi on a new machine, notably:
+* These systems will automatically clone your `dotfiles` repo to `~/dotfiles`,
+  so there is no need to clone your repo yourself.
+* The installation script must be non-interactive.
+* When running in a Codespace, the environment variable `CODESPACES` will be set
+  to `true`. You can read its value with the [`env` template
+  function](http://masterminds.github.io/sprig/os.html).
+
+First, if you are using a chezmoi configuration file template, ensure that it is
+non-interactive when running in codespaces, for example, `.chezmoi.toml.tmpl`
+might contain:
+
+```
+{{- if (env "CODESPACES") -}}
+[data]
+  codespaces = true
+  email = "user@company.com"
+{{- else -}}
+{{- $email := promptString "email" -}}
+[data]
+  codespaces = false
+  email = {{ $email }}
+{{- end }}
+```
+
+This also sets the `codespaces` template variable, so you don't have to repeat
+`(env "CODESPACES")` in your templates.
+
+Second, create an `install.sh` script that installs chezmoi and your dotfiles:
+
+```sh
+#!/bin/sh
+
+if [ "$CODESPACES" == "true" ] ; then
+        curl -sfL https://git.io/chezmoi | sh
+        ./bin/chezmoi init --apply --clone=false --source=$HOME/dotfiles
+fi
+```
+
+Ensure that this file is executable (`chmod a+x install.sh`), and add
+`install.sh` to your `.chezmoiignore` file.
+
+Inside the `if` statement, `curl ... | sh` installs the latest version of
+chezmoi in `./bin` and then `./bin/chezmoi init ...` invokes chezmoi to create
+its configuration file and initialize your dotfiles. `--apply` tells chezmoi to
+apply the changes immediately, `--clone=false` tells chezmoi not to clone your
+dotfiles repo (because this has already been done), and `--source=...` tells
+chezmoi where to find the cloned `dotfiles` repo.
+
+If you do not use a chezmoi configuration file template you can use `chezmoi
+apply --source=$HOME/dotfiles` instead of `chezmoi init ...` in `install.sh`.
+
+Finally, modify any of your templates to use the `codespaces` variable if
+needed. For example, to install `vim-gtk` on Linux but not in Codespaces, your
+`run_once_install-packages.sh.tmpl` might contain:
+
+```
+{{- if (and (eq .chezmoi.os "linux")) (not .codespaces))) -}}
+#!/bin/sh
+sudo apt install -y vim-gtk
+{{- end -}}
+```
 
 ## Import archives
 
