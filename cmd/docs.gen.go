@@ -1333,7 +1333,7 @@ func init() {
 		"The following assumes you are using chezmoi 1.8.4 or later. It does not work\n" +
 		"with earlier versions of chezmoi.\n" +
 		"\n" +
-		"You can use chezmoi to manage your dotfiles in [GitHub Codespaces](https://docs.microsoft.com/en/visualstudio/codespaces/reference/personalizing), [Visual Studio Codespaces](https://docs.microsoft.com/en/visualstudio/codespaces/reference/personalizing), and [Visual Studio Code Remote - Containers](https://code.visualstudio.com/docs/remote/containers#_personalizing-with-dotfile-repositories).\n" +
+		"You can use chezmoi to manage your dotfiles in [GitHub Codespaces](https://docs.github.com/en/github/developing-online-with-codespaces/personalizing-codespaces-for-your-account), [Visual Studio Codespaces](https://docs.microsoft.com/en/visualstudio/codespaces/reference/personalizing), and [Visual Studio Code Remote - Containers](https://code.visualstudio.com/docs/remote/containers#_personalizing-with-dotfile-repositories).\n" +
 		"\n" +
 		"The workflow is different to using chezmoi on a new machine, notably:\n" +
 		"* These systems will automatically clone your `dotfiles` repo to `~/dotfiles`,\n" +
@@ -1348,6 +1348,7 @@ func init() {
 		"might contain:\n" +
 		"\n" +
 		"```\n" +
+		"sourceDir = \"{{ .chezmoi.sourceDir }}\"\n" +
 		"{{- if (env \"CODESPACES\") -}}\n" +
 		"[data]\n" +
 		"  codespaces = true\n" +
@@ -1360,29 +1361,48 @@ func init() {
 		"{{- end }}\n" +
 		"```\n" +
 		"\n" +
-		"This also sets the `codespaces` template variable, so you don't have to repeat\n" +
-		"`(env \"CODESPACES\")` in your templates.\n" +
+		"This sets the `sourceDir` configuration to the `--source` argument passed\n" +
+		"in `chezmoi init`. Also sets the `codespaces` template variable, so you don't \n" +
+		"have to repeat `(env \"CODESPACES\")` in your templates.\n" +
 		"\n" +
 		"Second, create an `install.sh` script that installs chezmoi and your dotfiles:\n" +
 		"\n" +
 		"```sh\n" +
 		"#!/bin/sh\n" +
 		"\n" +
-		"if [ \"$CODESPACES\" == \"true\" ] ; then\n" +
-		"        curl -sfL https://git.io/chezmoi | sh\n" +
-		"        ./bin/chezmoi init --apply --clone=false --source=$HOME/dotfiles\n" +
+		"set -e # -e: exit on error\n" +
+		"\n" +
+		"if [ ! \"$(command -v chezmoi)\" ]; then\n" +
+		"  bin_dir=\"$HOME/.local/bin\"\n" +
+		"  chezmoi=\"$bin_dir/chezmoi\"\n" +
+		"  if [ \"$(command -v curl)\" ]; then\n" +
+		"    sh -c \"$(curl -fsSL https://git.io/chezmoi)\" -- -b \"$bin_dir\"\n" +
+		"  elif [ \"$(command -v wget)\" ]; then\n" +
+		"    sh -c \"$(wget -qO- https://git.io/chezmoi)\" -- -b \"$bin_dir\"\n" +
+		"  else\n" +
+		"    echo \"To install chezmoi, you must have curl or wget installed.\" >&2\n" +
+		"    exit 1\n" +
+		"  fi\n" +
+		"else\n" +
+		"  chezmoi=chezmoi\n" +
 		"fi\n" +
+		"\n" +
+		"# POSIX way to get script's dir: https://stackoverflow.com/a/29834779/12156188\n" +
+		"script_dir=\"$(cd -P -- \"$(dirname -- \"$(command -v -- \"$0\")\")\" && pwd -P)\"\n" +
+		"# exec: replace current process with chezmoi init\n" +
+		"exec $chezmoi init --apply --clone=false --source $script_dir \n" +
 		"```\n" +
 		"\n" +
 		"Ensure that this file is executable (`chmod a+x install.sh`), and add\n" +
 		"`install.sh` to your `.chezmoiignore` file.\n" +
 		"\n" +
-		"Inside the `if` statement, `curl ... | sh` installs the latest version of\n" +
-		"chezmoi in `./bin` and then `./bin/chezmoi init ...` invokes chezmoi to create\n" +
-		"its configuration file and initialize your dotfiles. `--apply` tells chezmoi to\n" +
-		"apply the changes immediately, `--clone=false` tells chezmoi not to clone your\n" +
-		"dotfiles repo (because this has already been done), and `--source=...` tells\n" +
-		"chezmoi where to find the cloned `dotfiles` repo.\n" +
+		"It installs the latest version of chezmoi in `~/.local/bin` if needed, and then\n" +
+		"`chezmoi init ...` invokes chezmoi to create its configuration file and \n" +
+		"initialize your dotfiles. `--apply` tells chezmoi to apply the changes \n" +
+		"immediately, `--clone=false` tells chezmoi not to clone your dotfiles repo\n" +
+		"(because this has already been done), and `--source=...` tells\n" +
+		"chezmoi where to find the cloned `dotfiles` repo, which in this case is the same\n" +
+		"folder in which the script is running from.\n" +
 		"\n" +
 		"If you do not use a chezmoi configuration file template you can use `chezmoi\n" +
 		"apply --source=$HOME/dotfiles` instead of `chezmoi init ...` in `install.sh`.\n" +
