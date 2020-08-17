@@ -750,7 +750,7 @@ This will install `ripgrep` on both Debian/Ubuntu Linux systems and macOS.
 The following assumes you are using chezmoi 1.8.4 or later. It does not work
 with earlier versions of chezmoi.
 
-You can use chezmoi to manage your dotfiles in [GitHub Codespaces](https://docs.microsoft.com/en/visualstudio/codespaces/reference/personalizing), [Visual Studio Codespaces](https://docs.microsoft.com/en/visualstudio/codespaces/reference/personalizing), and [Visual Studio Code Remote - Containers](https://code.visualstudio.com/docs/remote/containers#_personalizing-with-dotfile-repositories).
+You can use chezmoi to manage your dotfiles in [GitHub Codespaces](https://docs.github.com/en/github/developing-online-with-codespaces/personalizing-codespaces-for-your-account), [Visual Studio Codespaces](https://docs.microsoft.com/en/visualstudio/codespaces/reference/personalizing), and [Visual Studio Code Remote - Containers](https://code.visualstudio.com/docs/remote/containers#_personalizing-with-dotfile-repositories).
 
 The workflow is different to using chezmoi on a new machine, notably:
 * These systems will automatically clone your `dotfiles` repo to `~/dotfiles`,
@@ -765,6 +765,7 @@ non-interactive when running in codespaces, for example, `.chezmoi.toml.tmpl`
 might contain:
 
 ```
+sourceDir = "{{ .chezmoi.sourceDir }}"
 {{- if (env "CODESPACES") -}}
 [data]
   codespaces = true
@@ -777,29 +778,48 @@ might contain:
 {{- end }}
 ```
 
-This also sets the `codespaces` template variable, so you don't have to repeat
-`(env "CODESPACES")` in your templates.
+This sets the `sourceDir` configuration to the `--source` argument passed
+in `chezmoi init`. Also sets the `codespaces` template variable, so you don't 
+have to repeat `(env "CODESPACES")` in your templates.
 
 Second, create an `install.sh` script that installs chezmoi and your dotfiles:
 
 ```sh
 #!/bin/sh
 
-if [ "$CODESPACES" == "true" ] ; then
-        curl -sfL https://git.io/chezmoi | sh
-        ./bin/chezmoi init --apply --clone=false --source=$HOME/dotfiles
+set -e # -e: exit on error
+
+if [ ! "$(command -v chezmoi)" ]; then
+  bin_dir="$HOME/.local/bin"
+  chezmoi="$bin_dir/chezmoi"
+  if [ "$(command -v curl)" ]; then
+    sh -c "$(curl -fsSL https://git.io/chezmoi)" -- -b "$bin_dir"
+  elif [ "$(command -v wget)" ]; then
+    sh -c "$(wget -qO- https://git.io/chezmoi)" -- -b "$bin_dir"
+  else
+    echo "To install chezmoi, you must have curl or wget installed." >&2
+    exit 1
+  fi
+else
+  chezmoi=chezmoi
 fi
+
+# POSIX way to get script's dir: https://stackoverflow.com/a/29834779/12156188
+script_dir="$(cd -P -- "$(dirname -- "$(command -v -- "$0")")" && pwd -P)"
+# exec: replace current process with chezmoi init
+exec $chezmoi init --apply --clone=false --source $script_dir 
 ```
 
 Ensure that this file is executable (`chmod a+x install.sh`), and add
 `install.sh` to your `.chezmoiignore` file.
 
-Inside the `if` statement, `curl ... | sh` installs the latest version of
-chezmoi in `./bin` and then `./bin/chezmoi init ...` invokes chezmoi to create
-its configuration file and initialize your dotfiles. `--apply` tells chezmoi to
-apply the changes immediately, `--clone=false` tells chezmoi not to clone your
-dotfiles repo (because this has already been done), and `--source=...` tells
-chezmoi where to find the cloned `dotfiles` repo.
+It installs the latest version of chezmoi in `~/.local/bin` if needed, and then
+`chezmoi init ...` invokes chezmoi to create its configuration file and 
+initialize your dotfiles. `--apply` tells chezmoi to apply the changes 
+immediately, `--clone=false` tells chezmoi not to clone your dotfiles repo
+(because this has already been done), and `--source=...` tells
+chezmoi where to find the cloned `dotfiles` repo, which in this case is the same
+folder in which the script is running from.
 
 If you do not use a chezmoi configuration file template you can use `chezmoi
 apply --source=$HOME/dotfiles` instead of `chezmoi init ...` in `install.sh`.
