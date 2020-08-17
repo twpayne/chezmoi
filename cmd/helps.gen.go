@@ -18,8 +18,8 @@ var helps = map[string]help{
 			"  `--autotemplate`\n" +
 			"\n" +
 			"  Automatically generate a template by replacing strings with variable names\n" +
-			"  from the `data` section of the config file. Longer substitutions occur before\n" +
-			"  shorter ones. This implies the `--template` option.\n" +
+			"  from the `data` section of the config file. Longer substitutions occur\n" +
+			"  before shorter ones. This implies the `--template` option.\n" +
 			"\n" +
 			"  `-e`, `--empty`\n" +
 			"\n" +
@@ -46,20 +46,20 @@ var helps = map[string]help{
 			"\n" +
 			"  Set the `template` attribute on added files and symlinks.",
 		example: "" +
-			"  chezmoi add ~/.bashrc\n" +
-			"  chezmoi add ~/.gitconfig --template\n" +
-			"  chezmoi add ~/.vim --recursive\n" +
-			"  chezmoi add ~/.oh-my-zsh --exact --recursive",
+			"    chezmoi add ~/.bashrc\n" +
+			"    chezmoi add ~/.gitconfig --template\n" +
+			"    chezmoi add ~/.vim --recursive\n" +
+			"    chezmoi add ~/.oh-my-zsh --exact --recursive",
 	},
 	"apply": {
 		long: "" +
 			"Description:\n" +
-			"  Ensure that *targets* are in the target state, updating them if necessary. If\n" +
-			"  no targets are specified, the state of all targets are ensured.",
+			"  Ensure that *targets* are in the target state, updating them if necessary.\n" +
+			"  If no targets are specified, the state of all targets are ensured.",
 		example: "" +
-			"  chezmoi apply\n" +
-			"  chezmoi apply --dry-run --verbose\n" +
-			"  chezmoi apply ~/.bashrc",
+			"    chezmoi apply\n" +
+			"    chezmoi apply --dry-run --verbose\n" +
+			"    chezmoi apply ~/.bashrc",
 	},
 	"archive": {
 		long: "" +
@@ -71,8 +71,8 @@ var helps = map[string]help{
 			"\n" +
 			"  Write the output to *filename* instead of stdout.",
 		example: "" +
-			"  chezmoi archive | tar tvf -\n" +
-			"  chezmoi archive --output=dotfiles.tar",
+			"    chezmoi archive | tar tvf -\n" +
+			"    chezmoi archive --output=dotfiles.tar",
 	},
 	"cat": {
 		long: "" +
@@ -81,26 +81,26 @@ var helps = map[string]help{
 			"  symlinks. For files, the target file contents are written. For symlinks, the\n" +
 			"  target target is written.",
 		example: "" +
-			"  chezmoi cat ~/.bashrc",
+			"    chezmoi cat ~/.bashrc",
 	},
 	"cd": {
 		long: "" +
 			"Description:\n" +
-			"  Launch a shell in the source directory. chezmoi will launch the command set by\n" +
-			"  the `cd.command` configuration variable with any extra arguments specified by\n" +
-			"  `cd.args`. If this is not set, chezmoi will attempt to detect your shell and\n" +
-			"  will finally fall back to an OS-specific default.",
+			"  Launch a shell in the source directory. chezmoi will launch the command set\n" +
+			"  by the `cd.command` configuration variable with any extra arguments\n" +
+			"  specified by `cd.args`. If this is not set, chezmoi will attempt to detect\n" +
+			"  your shell and will finally fall back to an OS-specific default.",
 		example: "" +
-			"  chezmoi cd",
+			"    chezmoi cd",
 	},
 	"chattr": {
 		long: "" +
 			"Description:\n" +
-			"  Change the attributes of *targets*. *attributes* specifies which attributes to\n" +
-			"  modify. Add attributes by specifying them or their abbreviations directly,\n" +
-			"  optionally prefixed with a plus sign (`+`). Remove attributes by prefixing\n" +
-			"  them or their attributes with the string `no` or a minus sign (`-`). The\n" +
-			"  available attributes and their abbreviations are:\n" +
+			"  Change the attributes of *targets*. *attributes* specifies which attributes\n" +
+			"  to modify. Add attributes by specifying them or their abbreviations\n" +
+			"  directly, optionally prefixed with a plus sign (`+`). Remove attributes by\n" +
+			"  prefixing them or their attributes with the string `no` or a minus sign (`-\n" +
+			"  `). The available attributes and their abbreviations are:\n" +
 			"\n" +
 			"    ATTRIBUTE  | ABBREVIATION\n" +
 			"  -------------+---------------\n" +
@@ -114,9 +114,9 @@ var helps = map[string]help{
 			"  Multiple attributes modifications may be specified by separating them with a\n" +
 			"  comma (`,`).",
 		example: "" +
-			"  chezmoi chattr template ~/.bashrc\n" +
-			"  chezmoi chattr noempty ~/.profile\n" +
-			"  chezmoi chattr private,template ~/.netrc",
+			"    chezmoi chattr template ~/.bashrc\n" +
+			"    chezmoi chattr noempty ~/.profile\n" +
+			"    chezmoi chattr private,template ~/.netrc",
 	},
 	"completion": {
 		long: "" +
@@ -128,28 +128,29 @@ var helps = map[string]help{
 			"\n" +
 			"  Write the shell completion code to *filename* instead of stdout.",
 		example: "" +
-			"  chezmoi completion bash\n" +
-			"  chezmoi completion fish --output ~/.config/fish/completions/chezmoi.fish",
+			"    chezmoi completion bash\n" +
+			"    chezmoi completion fish --output ~/.config/fish/completions/chezmoi.fish",
 	},
 	"data": {
 		long: "" +
 			"Description:\n" +
-			"  Write the computed template data in JSON format to stdout. The `data` command\n" +
-			"  accepts additional flags:\n" +
+			"  Write the computed template data in JSON format to stdout. The `data`\n" +
+			"  command accepts additional flags:\n" +
 			"\n" +
 			"  `-f`, `--format` *format*\n" +
 			"\n" +
-			"  Print the computed template data in the given format. The accepted formats are\n" +
-			"  `json` (JSON), `toml` (TOML), and `yaml` (YAML).",
+			"  Print the computed template data in the given format. The accepted formats\n" +
+			"  are `json` (JSON), `toml` (TOML), and `yaml` (YAML).",
 		example: "" +
-			"  chezmoi data\n" +
-			"  chezmoi data --format=yaml",
+			"    chezmoi data\n" +
+			"    chezmoi data --format=yaml",
 	},
 	"diff": {
 		long: "" +
 			"Description:\n" +
 			"  Print the difference between the target state and the destination state for\n" +
-			"  *targets*. If no targets are specified, print the differences for all targets.\n" +
+			"  *targets*. If no targets are specified, print the differences for all\n" +
+			"  targets.\n" +
 			"\n" +
 			"  If a `diff.pager` command is set in the configuration file then the output\n" +
 			"  will be piped into it.\n" +
@@ -174,9 +175,9 @@ var helps = map[string]help{
 			"\n" +
 			"  Do not use the pager.",
 		example: "" +
-			"  chezmoi diff\n" +
-			"  chezmoi diff ~/.bashrc\n" +
-			"  chezmoi diff --format=git",
+			"    chezmoi diff\n" +
+			"    chezmoi diff ~/.bashrc\n" +
+			"    chezmoi diff --format=git",
 	},
 	"docs": {
 		long: "" +
@@ -184,16 +185,16 @@ var helps = map[string]help{
 			"  Print the documentation page matching the regular expression *regexp*.\n" +
 			"  Matching is case insensitive. If no pattern is given, print `REFERENCE.md`.",
 		example: "" +
-			"  chezmoi docs\n" +
-			"  chezmoi docs faq\n" +
-			"  chezmoi docs howto",
+			"    chezmoi docs\n" +
+			"    chezmoi docs faq\n" +
+			"    chezmoi docs howto",
 	},
 	"doctor": {
 		long: "" +
 			"Description:\n" +
 			"  Check for potential problems.",
 		example: "" +
-			"  chezmoi doctor",
+			"    chezmoi doctor",
 	},
 	"dump": {
 		long: "" +
@@ -206,8 +207,8 @@ var helps = map[string]help{
 			"  Print the target state in the given format. The accepted formats are `json`\n" +
 			"  (JSON) and `yaml` (YAML).",
 		example: "" +
-			"  chezmoi dump ~/.bashrc\n" +
-			"  chezmoi dump --format=yaml",
+			"    chezmoi dump ~/.bashrc\n" +
+			"    chezmoi dump --format=yaml",
 	},
 	"edit": {
 		long: "" +
@@ -229,9 +230,9 @@ var helps = map[string]help{
 			"\n" +
 			"  Prompt before applying each target.. Ignored if there are no targets.",
 		example: "" +
-			"  chezmoi edit ~/.bashrc\n" +
-			"  chezmoi edit ~/.bashrc --apply --prompt\n" +
-			"  chezmoi edit",
+			"    chezmoi edit ~/.bashrc\n" +
+			"    chezmoi edit ~/.bashrc --apply --prompt\n" +
+			"    chezmoi edit",
 	},
 	"edit-config": {
 		long: "" +
@@ -246,9 +247,9 @@ var helps = map[string]help{
 		long: "" +
 			"Description:\n" +
 			"  Execute *templates*. This is useful for testing templates or for calling\n" +
-			"  chezmoi from other scripts. *templates* are interpreted as literal templates,\n" +
-			"  with no whitespace added to the output between arguments. If no templates are\n" +
-			"  specified, the template is read from stdin.\n" +
+			"  chezmoi from other scripts. *templates* are interpreted as literal\n" +
+			"  templates, with no whitespace added to the output between arguments. If no\n" +
+			"  templates are specified, the template is read from stdin.\n" +
 			"\n" +
 			"  `--init`, `-i`\n" +
 			"\n" +
@@ -260,10 +261,10 @@ var helps = map[string]help{
 			"\n" +
 			"  `--promptString`, `-p` *pairs*\n" +
 			"\n" +
-			"  Simulate the `promptString` function with a function that returns values from\n" +
-			"  *pairs*. *pairs* is a comma-separated list of *prompt*`=`*value* pairs. If\n" +
-			"  `promptString` is called with a *prompt* that does not match any of *pairs*,\n" +
-			"  then it returns *prompt* unchanged.\n" +
+			"  Simulate the `promptString` function with a function that returns values\n" +
+			"  from *pairs*. *pairs* is a comma-separated list of *prompt*`=`*value* pairs.\n" +
+			"  If `promptString` is called with a *prompt* that does not match any of\n" +
+			"  *pairs*, then it returns *prompt* unchanged.\n" +
 			"\n" +
 			"  `execute-template` examples\n" +
 			"\n" +
@@ -278,17 +279,17 @@ var helps = map[string]help{
 			"Description:\n" +
 			"  Remove *targets* from the source state, i.e. stop managing them.",
 		example: "" +
-			"  chezmoi forget ~/.bashrc",
+			"    chezmoi forget ~/.bashrc",
 	},
 	"git": {
 		long: "" +
 			"Description:\n" +
-			"  Run `git` *arguments* in the source directory. Note that flags in *arguments*\n" +
-			"  must occur after `--` to prevent chezmoi from interpreting them.",
+			"  Run `git` *arguments* in the source directory. Note that flags in\n" +
+			"  *arguments* must occur after `--` to prevent chezmoi from interpreting them.",
 		example: "" +
-			"  chezmoi git add .\n" +
-			"  chezmoi git add dot_gitconfig\n" +
-			"  chezmoi git -- commit -m \"Add .gitconfig\"",
+			"    chezmoi git add .\n" +
+			"    chezmoi git add dot_gitconfig\n" +
+			"    chezmoi git -- commit -m \"Add .gitconfig\"",
 	},
 	"help": {
 		long: "" +
@@ -301,21 +302,23 @@ var helps = map[string]help{
 			"  Run `hg` *arguments* in the source directory. Note that flags in *arguments*\n" +
 			"  must occur after `--` to prevent chezmoi from interpreting them.",
 		example: "" +
-			"  chezmoi hg -- pull --rebase --update",
+			"    chezmoi hg -- pull --rebase --update",
 	},
 	"import": {
 		long: "" +
 			"Description:\n" +
 			"  Import the source state from an archive file in to a directory in the source\n" +
 			"  state. This is primarily used to make subdirectories of your home directory\n" +
-			"  exactly match the contents of a downloaded archive. You will generally always\n" +
-			"  want to set the `--destination`, `--exact`, and `--remove-destination` flags.\n" +
+			"  exactly match the contents of a downloaded archive. You will generally\n" +
+			"  always want to set the `--destination`, `--exact`, and `--remove-destination`\n" +
+			"  flags.\n" +
 			"\n" +
 			"  The only supported archive format is `.tar.gz`.\n" +
 			"\n" +
 			"  `--destination` *directory*\n" +
 			"\n" +
-			"  Set the destination (in the source state) where the archive will be imported.\n" +
+			"  Set the destination (in the source state) where the archive will be\n" +
+			"  imported.\n" +
 			"\n" +
 			"  `-x`, `--exact`\n" +
 			"\n" +
@@ -329,33 +332,34 @@ var helps = map[string]help{
 			"\n" +
 			"  Strip *n* leading components from paths.",
 		example: "" +
-			"  curl -s -L -o oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-\n" +
-			"zsh/archive/master.tar.gz\n" +
-			"  chezmoi import --strip-components 1 --destination ~/.oh-my-zsh oh-my-zsh-master.tar.gz",
+			"    curl -s -L -o oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-\n" +
+			"  zsh/archive/master.tar.gz\n" +
+			"    chezmoi import --strip-components 1 --destination ~/.oh-my-zsh oh-my-zsh-\n" +
+			"  master.tar.gz",
 	},
 	"init": {
 		long: "" +
 			"Description:\n" +
 			"  Setup the source directory and update the destination directory to match the\n" +
 			"  target state. If *repo* is given then it is checked out into the source\n" +
-			"  directory, otherwise a new repository is initialized in the source directory.\n" +
-			"  If a file called `.chezmoi.format.tmpl` exists, where `format` is one of the\n" +
-			"  supported file formats (e.g. `json`, `toml`, or `yaml`) then a new\n" +
-			"  configuration file is created using that file as a template. Finally, if the `--\n" +
-			"  apply` flag is passed, `chezmoi apply` is run.\n" +
+			"  directory, otherwise a new repository is initialized in the source\n" +
+			"  directory. If a file called `.chezmoi.format.tmpl` exists, where `format` is\n" +
+			"  one of the supported file formats (e.g. `json`, `toml`, or `yaml`) then a\n" +
+			"  new configuration file is created using that file as a template. Finally, if\n" +
+			"  the `--apply` flag is passed, `chezmoi apply` is run.\n" +
 			"\n" +
 			"  `--apply`\n" +
 			"\n" +
-			"  Run `chezmoi apply` after checking out the repo and creating the config file.\n" +
-			"  This is `false` by default.\n" +
+			"  Run `chezmoi apply` after checking out the repo and creating the config\n" +
+			"  file. This is `false` by default.\n" +
 			"\n" +
 			"  `--clone`\n" +
 			"\n" +
-			"  Create or clone the repo. This is the default. Specify `--clone=false` to skip,\n" +
-			"  for example if the source directory is already checked out.",
+			"  Create or clone the repo. This is the default. Specify `--clone=false` to\n" +
+			"  skip, for example if the source directory is already checked out.",
 		example: "" +
-			"  chezmoi init https://github.com/user/dotfiles.git\n" +
-			"  chezmoi init https://github.com/user/dotfiles.git --apply",
+			"    chezmoi init https://github.com/user/dotfiles.git\n" +
+			"    chezmoi init https://github.com/user/dotfiles.git --apply",
 	},
 	"manage": {
 		long: "" +
@@ -370,28 +374,28 @@ var helps = map[string]help{
 			"  `-i`, `--include` *types*\n" +
 			"\n" +
 			"  Only list entries of type *types*. *types* is a comma-separated list of types\n" +
-			"  of entry to include. Valid types are `dirs`, `files`, and `symlinks` which can\n" +
-			"  be abbreviated to `d`, `f`, and `s` respectively. By default, `manage` will\n" +
-			"  list entries of all types.",
+			"  of entry to include. Valid types are `dirs`, `files`, and `symlinks` which\n" +
+			"  can be abbreviated to `d`, `f`, and `s` respectively. By default, `manage`\n" +
+			"  will list entries of all types.",
 		example: "" +
-			"  chezmoi managed\n" +
-			"  chezmoi managed --include=files\n" +
-			"  chezmoi managed --include=files,symlinks\n" +
-			"  chezmoi managed -i d\n" +
-			"  chezmoi managed -i d,f",
+			"    chezmoi managed\n" +
+			"    chezmoi managed --include=files\n" +
+			"    chezmoi managed --include=files,symlinks\n" +
+			"    chezmoi managed -i d\n" +
+			"    chezmoi managed -i d,f",
 	},
 	"merge": {
 		long: "" +
 			"Description:\n" +
-			"  Perform a three-way merge between the destination state, the source state, and\n" +
-			"  the target state. The merge tool is defined by the `merge.command`\n" +
+			"  Perform a three-way merge between the destination state, the source state,\n" +
+			"  and the target state. The merge tool is defined by the `merge.command`\n" +
 			"  configuration variable, and defaults to `vimdiff`. If multiple targets are\n" +
 			"  specified the merge tool is invoked for each target. If the target state\n" +
 			"  cannot be computed (for example if source is a template containing errors or\n" +
 			"  an encrypted file that cannot be decrypted) a two-way merge is performed\n" +
 			"  instead.",
 		example: "" +
-			"  chezmoi merge ~/.bashrc",
+			"    chezmoi merge ~/.bashrc",
 	},
 	"purge": {
 		long: "" +
@@ -403,8 +407,8 @@ var helps = map[string]help{
 			"\n" +
 			"  Remove without prompting.",
 		example: "" +
-			"  chezmoi purge\n" +
-			"  chezmoi purge --force",
+			"    chezmoi purge\n" +
+			"    chezmoi purge --force",
 	},
 	"remove": {
 		long: "" +
@@ -424,41 +428,42 @@ var helps = map[string]help{
 		long: "" +
 			"Description:\n" +
 			"  Run a secret manager's CLI, passing any extra arguments to the secret\n" +
-			"  manager's CLI. This is primarily for verifying chezmoi's integration with your\n" +
-			"  secret manager. Normally you would use template functions to retrieve secrets.\n" +
-			"  Note that if you want to pass flags to the secret manager's CLI you will need\n" +
-			"  to separate them with `--` to prevent chezmoi from interpreting them.\n" +
+			"  manager's CLI. This is primarily for verifying chezmoi's integration with\n" +
+			"  your secret manager. Normally you would use template functions to retrieve\n" +
+			"  secrets. Note that if you want to pass flags to the secret manager's CLI you\n" +
+			"  will need to separate them with `--` to prevent chezmoi from interpreting\n" +
+			"  them.\n" +
 			"\n" +
 			"  To get a full list of available commands run:\n" +
 			"\n" +
 			"    chezmoi secret help",
 		example: "" +
-			"  chezmoi secret bitwarden list items\n" +
-			"  chezmoi secret keyring set --service service --user user\n" +
-			"  chezmoi secret keyring get --service service --user user\n" +
-			"  chezmoi secret lastpass ls\n" +
-			"  chezmoi secret lastpass -- show --format=json id\n" +
-			"  chezmoi secret onepassword list items\n" +
-			"  chezmoi secret onepassword get item id\n" +
-			"  chezmoi secret pass show id\n" +
-			"  chezmoi secret vault -- kv get -format=json id",
+			"    chezmoi secret bitwarden list items\n" +
+			"    chezmoi secret keyring set --service service --user user\n" +
+			"    chezmoi secret keyring get --service service --user user\n" +
+			"    chezmoi secret lastpass ls\n" +
+			"    chezmoi secret lastpass -- show --format=json id\n" +
+			"    chezmoi secret onepassword list items\n" +
+			"    chezmoi secret onepassword get item id\n" +
+			"    chezmoi secret pass show id\n" +
+			"    chezmoi secret vault -- kv get -format=json id",
 	},
 	"source": {
 		long: "" +
 			"Description:\n" +
-			"  Execute the source version control system in the source directory with *args*.\n" +
-			"  Note that any flags for the source version control system must be separated\n" +
-			"  with a `--` to stop chezmoi from reading them.",
+			"  Execute the source version control system in the source directory with\n" +
+			"  *args*. Note that any flags for the source version control system must be\n" +
+			"  separated with a `--` to stop chezmoi from reading them.",
 		example: "" +
-			"  chezmoi source init\n" +
-			"  chezmoi source add .\n" +
-			"  chezmoi source commit -- -m \"Initial commit\"",
+			"    chezmoi source init\n" +
+			"    chezmoi source add .\n" +
+			"    chezmoi source commit -- -m \"Initial commit\"",
 	},
 	"source-path": {
 		long: "" +
 			"Description:\n" +
-			"  Print the path to each target's source state. If no targets are specified then\n" +
-			"  print the source directory.\n" +
+			"  Print the path to each target's source state. If no targets are specified\n" +
+			"  then print the source directory.\n" +
 			"\n" +
 			"  `source-path` examples\n" +
 			"\n" +
@@ -475,14 +480,14 @@ var helps = map[string]help{
 			"Description:\n" +
 			"  List all unmanaged files in the destination directory.",
 		example: "" +
-			"  chezmoi unmanaged",
+			"    chezmoi unmanaged",
 	},
 	"update": {
 		long: "" +
 			"Description:\n" +
 			"  Pull changes from the source VCS and apply any changes.",
 		example: "" +
-			"  chezmoi update",
+			"    chezmoi update",
 	},
 	"upgrade": {
 		long: "" +
@@ -494,25 +499,25 @@ var helps = map[string]help{
 			"\n" +
 			"  If chezmoi was installed with a package manager (`dpkg` or `rpm`) then\n" +
 			"  `upgrade` will download a new package and install it, using `sudo` if it is\n" +
-			"  installed. Otherwise, chezmoi will download the latest executable and replace\n" +
-			"  the existing executable with the new version.\n" +
+			"  installed. Otherwise, chezmoi will download the latest executable and\n" +
+			"  replace the existing executable with the new version.\n" +
 			"\n" +
-			"  If the `CHEZMOI_GITHUB_API_TOKEN` environment variable is set, then its value\n" +
-			"  will be used to authenticate requests to the GitHub API, otherwise\n" +
-			"  unauthenticated requests are used which are subject to stricter rate limiting\n" +
-			"  https://developer.github.com/v3/#rate-limiting. Unauthenticated requests should\n" +
-			"  be sufficient for most cases.",
+			"  If the `CHEZMOI_GITHUB_API_TOKEN` environment variable is set, then its\n" +
+			"  value will be used to authenticate requests to the GitHub API, otherwise\n" +
+			"  unauthenticated requests are used which are subject to stricter rate\n" +
+			"  limiting https://developer.github.com/v3/#rate-limiting. Unauthenticated\n" +
+			"  requests should be sufficient for most cases.",
 		example: "" +
-			"  chezmoi upgrade",
+			"    chezmoi upgrade",
 	},
 	"verify": {
 		long: "" +
 			"Description:\n" +
-			"  Verify that all *targets* match their target state. chezmoi exits with code 0\n" +
-			"  (success) if all targets match their target state, or 1 (failure) otherwise.\n" +
-			"  If no targets are specified then all targets are checked.",
+			"  Verify that all *targets* match their target state. chezmoi exits with code\n" +
+			"  0 (success) if all targets match their target state, or 1 (failure)\n" +
+			"  otherwise. If no targets are specified then all targets are checked.",
 		example: "" +
-			"  chezmoi verify\n" +
-			"  chezmoi verify ~/.bashrc",
+			"    chezmoi verify\n" +
+			"    chezmoi verify ~/.bashrc",
 	},
 }
