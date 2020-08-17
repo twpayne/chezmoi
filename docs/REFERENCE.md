@@ -687,22 +687,22 @@ must occur after `--` to prevent chezmoi from interpreting them.
 ### `init` [*repo*]
 
 Setup the source directory and update the destination directory to match the
-target state. If *repo* is given then it is checked out into the source
-directory, otherwise a new repository is initialized in the source directory. If
-a file called `.chezmoi.format.tmpl` exists, where `format` is one of the
-supported file formats (e.g. `json`, `toml`, or `yaml`) then a new configuration
-file is created using that file as a template. Finally, if the `--apply` flag is
-passed, `chezmoi apply` is run.
+target state.
+
+First, if the source directory is not already contain a repository, then if
+*repo* is given it is checked out into the source directory, otherwise a new
+repository is initialized in the source directory.
+
+Second, if a file called `.chezmoi.format.tmpl` exists, where `format` is one of
+the supported file formats (e.g. `json`, `toml`, or `yaml`) then a new
+configuration file is created using that file as a template.
+
+Finally, if the `--apply` flag is passed, `chezmoi apply` is run.
 
 #### `--apply`
 
 Run `chezmoi apply` after checking out the repo and creating the config file.
 This is `false` by default.
-
-#### `--clone`
-
-Create or clone the repo. This is the default. Specify `--clone=false` to skip,
-for example if the source directory is already checked out.
 
 #### `init` examples
 

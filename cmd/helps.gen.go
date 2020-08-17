@@ -341,22 +341,22 @@ var helps = map[string]help{
 		long: "" +
 			"Description:\n" +
 			"  Setup the source directory and update the destination directory to match the\n" +
-			"  target state. If *repo* is given then it is checked out into the source\n" +
-			"  directory, otherwise a new repository is initialized in the source\n" +
-			"  directory. If a file called `.chezmoi.format.tmpl` exists, where `format` is\n" +
+			"  target state.\n" +
+			"\n" +
+			"  First, if the source directory is not already contain a repository, then if\n" +
+			"  *repo* is given it is checked out into the source directory, otherwise a new\n" +
+			"  repository is initialized in the source directory.\n" +
+			"\n" +
+			"  Second, if a file called `.chezmoi.format.tmpl` exists, where `format` is\n" +
 			"  one of the supported file formats (e.g. `json`, `toml`, or `yaml`) then a\n" +
-			"  new configuration file is created using that file as a template. Finally, if\n" +
-			"  the `--apply` flag is passed, `chezmoi apply` is run.\n" +
+			"  new configuration file is created using that file as a template.\n" +
+			"\n" +
+			"  Finally, if the `--apply` flag is passed, `chezmoi apply` is run.\n" +
 			"\n" +
 			"  `--apply`\n" +
 			"\n" +
 			"  Run `chezmoi apply` after checking out the repo and creating the config\n" +
-			"  file. This is `false` by default.\n" +
-			"\n" +
-			"  `--clone`\n" +
-			"\n" +
-			"  Create or clone the repo. This is the default. Specify `--clone=false` to\n" +
-			"  skip, for example if the source directory is already checked out.",
+			"  file. This is `false` by default.",
 		example: "" +
 			"    chezmoi init https://github.com/user/dotfiles.git\n" +
 			"    chezmoi init https://github.com/user/dotfiles.git --apply",

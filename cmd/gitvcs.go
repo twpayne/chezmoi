@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"os"
+	"path/filepath"
 	"regexp"
 
 	"github.com/twpayne/chezmoi/internal/git"
@@ -24,6 +26,18 @@ func (gitVCS) CommitArgs(message string) []string {
 
 func (gitVCS) InitArgs() []string {
 	return []string{"init"}
+}
+
+func (gitVCS) Initialized(dir string) (bool, error) {
+	info, err := os.Stat(filepath.Join(dir, ".git"))
+	switch {
+	case err == nil:
+		return info.IsDir(), nil
+	case os.IsNotExist(err):
+		return false, nil
+	default:
+		return false, err
+	}
 }
 
 func (gitVCS) ParseStatusOutput(output []byte) (interface{}, error) {
