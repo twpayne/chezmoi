@@ -28,7 +28,6 @@ var initCmd = &cobra.Command{
 
 type initCmdConfig struct {
 	apply bool
-	clone bool
 }
 
 func init() {
@@ -36,7 +35,6 @@ func init() {
 
 	persistentFlags := initCmd.PersistentFlags()
 	persistentFlags.BoolVar(&config.init.apply, "apply", false, "update destination directory")
-	persistentFlags.BoolVar(&config.init.clone, "clone", true, "clone repo")
 }
 
 func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
@@ -54,7 +52,11 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	if c.init.clone {
+	initialized, err := vcs.Initialized(c.SourceDir)
+	if err != nil {
+		return err
+	}
+	if !initialized {
 		switch len(args) {
 		case 0: // init
 			var initArgs []string

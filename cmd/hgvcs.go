@@ -1,6 +1,10 @@
 package cmd
 
-import "regexp"
+import (
+	"os"
+	"path/filepath"
+	"regexp"
+)
 
 var hgVersionRegexp = regexp.MustCompile(`^Mercurial Distributed SCM \(version (\d+\.\d+(\.\d+)?\))`)
 
@@ -20,6 +24,18 @@ func (hgVCS) CommitArgs(message string) []string {
 
 func (hgVCS) InitArgs() []string {
 	return []string{"init"}
+}
+
+func (hgVCS) Initialized(dir string) (bool, error) {
+	info, err := os.Stat(filepath.Join(dir, ".hg"))
+	switch {
+	case err == nil:
+		return info.IsDir(), nil
+	case os.IsNotExist(err):
+		return false, nil
+	default:
+		return false, err
+	}
 }
 
 func (hgVCS) ParseStatusOutput(output []byte) (interface{}, error) {

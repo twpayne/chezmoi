@@ -807,19 +807,18 @@ fi
 # POSIX way to get script's dir: https://stackoverflow.com/a/29834779/12156188
 script_dir="$(cd -P -- "$(dirname -- "$(command -v -- "$0")")" && pwd -P)"
 # exec: replace current process with chezmoi init
-exec $chezmoi init --apply --clone=false --source $script_dir 
+exec "$chezmoi" init --apply "--source=$script_dir"
 ```
 
 Ensure that this file is executable (`chmod a+x install.sh`), and add
 `install.sh` to your `.chezmoiignore` file.
 
 It installs the latest version of chezmoi in `~/.local/bin` if needed, and then
-`chezmoi init ...` invokes chezmoi to create its configuration file and 
-initialize your dotfiles. `--apply` tells chezmoi to apply the changes 
-immediately, `--clone=false` tells chezmoi not to clone your dotfiles repo
-(because this has already been done), and `--source=...` tells
-chezmoi where to find the cloned `dotfiles` repo, which in this case is the same
-folder in which the script is running from.
+`chezmoi init ...` invokes chezmoi to create its configuration file and
+initialize your dotfiles. `--apply` tells chezmoi to apply the changes
+immediately, and `--source=...` tells chezmoi where to find the cloned
+`dotfiles` repo, which in this case is the same folder in which the script is
+running from.
 
 If you do not use a chezmoi configuration file template you can use `chezmoi
 apply --source=$HOME/dotfiles` instead of `chezmoi init ...` in `install.sh`.

@@ -8,6 +8,7 @@ type VCS interface {
 	CloneArgs(string, string) []string
 	CommitArgs(string) []string
 	InitArgs() []string
+	Initialized(string) (bool, error)
 	ParseStatusOutput([]byte) (interface{}, error)
 	PullArgs() []string
 	PushArgs() []string

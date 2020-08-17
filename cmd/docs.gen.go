@@ -1390,19 +1390,18 @@ func init() {
 		"# POSIX way to get script's dir: https://stackoverflow.com/a/29834779/12156188\n" +
 		"script_dir=\"$(cd -P -- \"$(dirname -- \"$(command -v -- \"$0\")\")\" && pwd -P)\"\n" +
 		"# exec: replace current process with chezmoi init\n" +
-		"exec $chezmoi init --apply --clone=false --source $script_dir \n" +
+		"exec \"$chezmoi\" init --apply \"--source=$script_dir\"\n" +
 		"```\n" +
 		"\n" +
 		"Ensure that this file is executable (`chmod a+x install.sh`), and add\n" +
 		"`install.sh` to your `.chezmoiignore` file.\n" +
 		"\n" +
 		"It installs the latest version of chezmoi in `~/.local/bin` if needed, and then\n" +
-		"`chezmoi init ...` invokes chezmoi to create its configuration file and \n" +
-		"initialize your dotfiles. `--apply` tells chezmoi to apply the changes \n" +
-		"immediately, `--clone=false` tells chezmoi not to clone your dotfiles repo\n" +
-		"(because this has already been done), and `--source=...` tells\n" +
-		"chezmoi where to find the cloned `dotfiles` repo, which in this case is the same\n" +
-		"folder in which the script is running from.\n" +
+		"`chezmoi init ...` invokes chezmoi to create its configuration file and\n" +
+		"initialize your dotfiles. `--apply` tells chezmoi to apply the changes\n" +
+		"immediately, and `--source=...` tells chezmoi where to find the cloned\n" +
+		"`dotfiles` repo, which in this case is the same folder in which the script is\n" +
+		"running from.\n" +
 		"\n" +
 		"If you do not use a chezmoi configuration file template you can use `chezmoi\n" +
 		"apply --source=$HOME/dotfiles` instead of `chezmoi init ...` in `install.sh`.\n" +
@@ -2383,22 +2382,22 @@ func init() {
 		"### `init` [*repo*]\n" +
 		"\n" +
 		"Setup the source directory and update the destination directory to match the\n" +
-		"target state. If *repo* is given then it is checked out into the source\n" +
-		"directory, otherwise a new repository is initialized in the source directory. If\n" +
-		"a file called `.chezmoi.format.tmpl` exists, where `format` is one of the\n" +
-		"supported file formats (e.g. `json`, `toml`, or `yaml`) then a new configuration\n" +
-		"file is created using that file as a template. Finally, if the `--apply` flag is\n" +
-		"passed, `chezmoi apply` is run.\n" +
+		"target state.\n" +
+		"\n" +
+		"First, if the source directory is not already contain a repository, then if\n" +
+		"*repo* is given it is checked out into the source directory, otherwise a new\n" +
+		"repository is initialized in the source directory.\n" +
+		"\n" +
+		"Second, if a file called `.chezmoi.format.tmpl` exists, where `format` is one of\n" +
+		"the supported file formats (e.g. `json`, `toml`, or `yaml`) then a new\n" +
+		"configuration file is created using that file as a template.\n" +
+		"\n" +
+		"Finally, if the `--apply` flag is passed, `chezmoi apply` is run.\n" +
 		"\n" +
 		"#### `--apply`\n" +
 		"\n" +
 		"Run `chezmoi apply` after checking out the repo and creating the config file.\n" +
 		"This is `false` by default.\n" +
-		"\n" +
-		"#### `--clone`\n" +
-		"\n" +
-		"Create or clone the repo. This is the default. Specify `--clone=false` to skip,\n" +
-		"for example if the source directory is already checked out.\n" +
 		"\n" +
 		"#### `init` examples\n" +
 		"\n" +
