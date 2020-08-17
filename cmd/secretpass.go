@@ -3,6 +3,7 @@ package cmd
 import (
 	"bytes"
 	"fmt"
+	"os"
 	"os/exec"
 
 	"github.com/spf13/cobra"
@@ -18,8 +19,7 @@ var passCmd = &cobra.Command{
 }
 
 type passCmdConfig struct {
-	Command  string
-	unlocked bool
+	Command string
 }
 
 var passCache = make(map[string]string)
@@ -40,19 +40,10 @@ func (c *Config) passFunc(id string) string {
 		return s
 	}
 	name := c.Pass.Command
-	if !c.Pass.unlocked {
-		args := []string{"grep", "$^"}
-		cmd := exec.Command(name, args...)
-		cmd.Stdin = c.Stdin
-		cmd.Stdout = c.Stdout
-		cmd.Stderr = c.Stderr
-		if err := cmd.Run(); err != nil {
-			panic(fmt.Errorf("%s %s: %w", name, chezmoi.ShellQuoteArgs(args), err))
-		}
-		c.Pass.unlocked = true
-	}
 	args := []string{"show", id}
 	cmd := exec.Command(name, args...)
+	cmd.Stdin = os.Stdin
+	cmd.Stderr = os.Stderr
 	output, err := c.mutator.IdempotentCmdOutput(cmd)
 	if err != nil {
 		panic(fmt.Errorf("%s %s: %w", name, chezmoi.ShellQuoteArgs(args), err))
