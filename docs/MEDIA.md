@@ -6,6 +6,7 @@
 | ---------- | ------- | ------------ | ------------------------------------------------------------------------------------------------------------------------- |
 | 2020-07-06 | 1.8.3   | Video        | [chezmoi: Manage your dotfiles across multiple machines, securely](https://www.youtube.com/watch?v=JrCMCdvoMAw).          |
 | 2020-07-03 | 1.8.3   | Text         | [Feeling at home in a LXD container](https://ubuntu.com/blog/feeling-at-home-in-a-lxd-container)                          |
+| 2020-04-27 | 1.8.0   | Text         | [Managing my dotfiles with chezmoi](http://blog.emilieschario.com/post/managing-my-dotfiles-with-chezmoi/)                |
 | 2020-04-16 | 1.17.19 | Text (FR)    | [Chezmoi, visite guidée](https://blog.wescale.fr/2020/04/16/chezmoi-visite-guidee/)                                       |
 | 2020-04-03 | 1.7.17  | Text         | [Fedora Magazine: Take back your dotfiles with Chezmoi](https://fedoramagazine.org/take-back-your-dotfiles-with-chezmoi/) |
 | 2020-04-01 | 1.7.17  | Text         | [Managing dotfiles and secret with chezmoi](https://blog.arkey.fr/2020/04/01/manage_dotfiles_with_chezmoi/)               |
