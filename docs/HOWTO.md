@@ -28,6 +28,8 @@
   * [Understand how scripts work](#understand-how-scripts-work)
   * [Install packages with scripts](#install-packages-with-scripts)
 * [Use chezmoi with GitHub Codespaces, Visual Studio Codespaces, Visual Studio Code Remote - Containers](#use-chezmoi-with-github-codespaces-visual-studio-codespaces-visual-studio-code-remote---containers)
+* [Detect Windows Services for Linux (WSL)](#detect-windows-services-for-linux-wsl)
+* [Run a PowerShell script as admin on Windows](#run-a-powershell-script-as-admin-on-windows)
 * [Import archives](#import-archives)
 * [Export archives](#export-archives)
 * [Use a non-git version control system](#use-a-non-git-version-control-system)
@@ -832,6 +834,33 @@ needed. For example, to install `vim-gtk` on Linux but not in Codespaces, your
 #!/bin/sh
 sudo apt install -y vim-gtk
 {{- end -}}
+```
+
+## Detect Windows Services for Linux (WSL)
+
+WSL can be detected by looking for the string `Microsoft` in
+`/proc/kernel/osrelease`, which is available in the template variable
+`.chezmoi.kernel.osrelease`, for example:
+
+```
+{{ if (contains "Microsoft" .chezmoi.kernel.osrelease) }}
+# WSL-specific code
+{{ end }}
+```
+
+## Run a PowerShell script as admin on Windows
+
+Put the following at the top of your script:
+
+```powershell
+# Self-elevate the script if required
+if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] 'Administrator')) {
+  if ([int](Get-CimInstance -Class Win32_OperatingSystem | Select-Object -ExpandProperty BuildNumber) -ge 6000) {
+    $CommandLine = "-NoExit -File `"" + $MyInvocation.MyCommand.Path + "`" " + $MyInvocation.UnboundArguments
+    Start-Process -FilePath PowerShell.exe -Verb Runas -ArgumentList $CommandLine
+    Exit
+  }
+}
 ```
 
 ## Import archives
