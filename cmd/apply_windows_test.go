@@ -79,10 +79,12 @@ func getApplyScriptTestCases(tempDir string) []scriptTestCase {
 
 func getRunOnceFiles() map[string]interface{} {
 	return map[string]interface{}{
-		// Windows batch script does not include any way to print a string to the console with only a linefeed (0x0A)
-		// and no carriage return (0x0D), but it can be done with Powershell.  The default action for Powershell script
-		// files on Windows is to open them in the default text editor rather than to execute them (for security
-		// reasons).  The easiest solution is to make a batch file that calls Powershell.
+		// Windows batch script does not include any way to print a string to
+		// the console with only a linefeed (0x0A) and no carriage return
+		// (0x0D), but it can be done with PowerShell.  The default action for
+		// PowerShell script files on Windows is to open them in the default
+		// text editor rather than to execute them (for security reasons).  The
+		// easiest solution is to make a batch file that calls PowerShell.
 		"/home/user/.local/share/chezmoi/run_once_foo.bat.tmpl": "@powershell.exe -NoProfile -NonInteractive -c \"Write-Host -NoNewLine ('bar{0}' -f (0x0A -as [char]))\">> {{ .TempFile }}\n",
 	}
 }
