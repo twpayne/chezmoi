@@ -193,22 +193,6 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		c.mutator = chezmoi.NewVerboseMutator(c.Stdout, c.mutator, c.colored, c.maxDiffDataSize)
 	}
 
-	info, err := c.fs.Stat(c.SourceDir)
-	switch {
-	case err == nil && !info.IsDir():
-		return fmt.Errorf("%s: not a directory", c.SourceDir)
-	case err == nil:
-		private, err := chezmoi.IsPrivate(c.fs, c.SourceDir, true)
-		if err != nil {
-			return err
-		}
-		if !private {
-			cmd.Printf("%s: not private, but should be\n", c.SourceDir)
-		}
-	case !os.IsNotExist(err):
-		return err
-	}
-
 	if runtime.GOOS == "linux" && c.bds.RuntimeDir != "" {
 		// Snap sets the $XDG_RUNTIME_DIR environment variable to
 		// /run/user/$uid/snap.$snap_name, but does not create this directory.
