@@ -1425,8 +1425,23 @@ func init() {
 		"`/proc/kernel/osrelease`, which is available in the template variable\n" +
 		"`.chezmoi.kernel.osrelease`, for example:\n" +
 		"\n" +
+		"WSL 1:\n" +
 		"```\n" +
 		"{{ if (contains \"Microsoft\" .chezmoi.kernel.osrelease) }}\n" +
+		"# WSL-specific code\n" +
+		"{{ end }}\n" +
+		"```\n" +
+		"\n" +
+		"WSL 2:\n" +
+		"```\n" +
+		"{{ if (contains \"microsoft\" .chezmoi.kernel.osrelease) }}\n" +
+		"# WSL-specific code\n" +
+		"{{ end }}\n" +
+		"```\n" +
+		"\n" +
+		"WSL 2 since version 4.19.112:\n" +
+		"```\n" +
+		"{{ if (contains \"microsoft-WSL2\" .chezmoi.kernel.osrelease) }}\n" +
 		"# WSL-specific code\n" +
 		"{{ end }}\n" +
 		"```\n" +
