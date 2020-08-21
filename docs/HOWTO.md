@@ -842,8 +842,23 @@ WSL can be detected by looking for the string `Microsoft` in
 `/proc/kernel/osrelease`, which is available in the template variable
 `.chezmoi.kernel.osrelease`, for example:
 
+WSL 1:
 ```
 {{ if (contains "Microsoft" .chezmoi.kernel.osrelease) }}
+# WSL-specific code
+{{ end }}
+```
+
+WSL 2:
+```
+{{ if (contains "microsoft" .chezmoi.kernel.osrelease) }}
+# WSL-specific code
+{{ end }}
+```
+
+WSL 2 since version 4.19.112:
+```
+{{ if (contains "microsoft-WSL2" .chezmoi.kernel.osrelease) }}
 # WSL-specific code
 {{ end }}
 ```
