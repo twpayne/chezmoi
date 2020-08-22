@@ -23,7 +23,7 @@ require (
 	github.com/mitchellh/copystructure v1.0.0 // indirect
 	github.com/mitchellh/mapstructure v1.3.3 // indirect
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
-	github.com/muesli/termenv v0.7.1 // indirect
+	github.com/muesli/termenv v0.7.2 // indirect
 	github.com/pelletier/go-toml v1.8.0
 	github.com/pkg/diff v0.0.0-20190930165518-531926345625
 	github.com/rogpeppe/go-internal v1.6.1
@@ -43,10 +43,10 @@ require (
 	github.com/yuin/goldmark v1.2.1 // indirect
 	github.com/zalando/go-keyring v0.1.0
 	go.etcd.io/bbolt v1.3.5
-	golang.org/x/crypto v0.0.0-20200728195943-123391ffb6de
-	golang.org/x/net v0.0.0-20200813134508-3edf25e44fcc // indirect
+	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
+	golang.org/x/net v0.0.0-20200822124328-c89045814202 // indirect
 	golang.org/x/oauth2 v0.0.0-20200107190931-bf48bf16ab8d
-	golang.org/x/sys v0.0.0-20200817085935-3ff754bf58a9
+	golang.org/x/sys v0.0.0-20200821140526-fda516888d29
 	google.golang.org/appengine v1.6.6 // indirect
 	google.golang.org/protobuf v1.25.0 // indirect
 	gopkg.in/ini.v1 v1.60.0 // indirect
