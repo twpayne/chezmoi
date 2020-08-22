@@ -1,15 +1,17 @@
 [windows] stop 'https://github.com/twpayne/chezmoi/issues/745'
 [!exec:tar] stop
 
+mksourcedir
+
 chezmoi archive --output=user.tar
 exec tar -tf user.tar
 cmp stdout golden/archive
 
 -- golden/archive --
 .bashrc
+.binary
+.gitconfig
+.hushlogin
 .ssh/
 .ssh/config
--- home/user/.local/share/chezmoi/dot_bashrc --
-# contents of .bashrc
--- home/user/.local/share/chezmoi/private_dot_ssh/config --
-# contents .ssh/config
+.symlink

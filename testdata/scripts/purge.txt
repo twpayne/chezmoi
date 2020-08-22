@@ -1,3 +1,5 @@
+mksourcedir
+
 chezmoi purge --force
 ! exists ${CHEZMOICONFIGDIR}
 ! exists ${CHEZMOISOURCEDIR}
@@ -5,5 +7,3 @@ chezmoi purge --force
 -- home/user/.config/chezmoi/chezmoi.toml --
 [data]
     email = "user@home.org"
--- home/user/.local/share/chezmoi/dot_bashrc --
-# contents of .bashrc

@@ -1,5 +1,7 @@
 [windows] stop 'https://github.com/twpayne/chezmoi/issues/745'
 
+mksourcedir
+
 chezmoi managed
 cmpenv stdout golden/managed
 
@@ -9,16 +11,26 @@ cmpenv stdout golden/managed-dirs
 chezmoi --include=files managed
 cmpenv stdout golden/managed-files
 
+chezmoi --include=symlinks managed
+cmpenv stdout golden/managed-symlinks
+
 -- golden/managed --
+$HOME/.absent
 $HOME/.bashrc
+$HOME/.binary
+$HOME/.gitconfig
+$HOME/.hushlogin
 $HOME/.ssh
 $HOME/.ssh/config
+$HOME/.symlink
 -- golden/managed-dirs --
 $HOME/.ssh
 -- golden/managed-files --
+$HOME/.absent
 $HOME/.bashrc
+$HOME/.binary
+$HOME/.gitconfig
+$HOME/.hushlogin
 $HOME/.ssh/config
--- home/user/.local/share/chezmoi/dot_bashrc --
-# contents of .bashrc
--- home/user/.local/share/chezmoi/dot_ssh/config --
-# contents of .ssh/config
+-- golden/managed-symlinks --
+$HOME/.symlink
