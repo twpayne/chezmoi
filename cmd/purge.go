@@ -39,7 +39,11 @@ func (c *Config) runPurgeCmd(cmd *cobra.Command, args []string) error {
 			paths = append(paths, filepath.Join(dir, "chezmoi"))
 		}
 	}
-	paths = append(paths, c.configFile, c.getPersistentStateFile())
+	paths = append(paths,
+		c.configFile,
+		c.getPersistentStateFile(),
+		c.SourceDir,
+	)
 
 	// Remove all paths that exist.
 PATH:
