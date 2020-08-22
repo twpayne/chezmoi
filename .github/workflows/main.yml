@@ -1,4 +1,4 @@
-name: Test
+name: main
 on:
   pull_request:
   push:
@@ -8,11 +8,8 @@ on:
     - v*
 jobs:
   test:
-    name: Test
     strategy:
       matrix:
-        go-version:
-        - 1.14.x
         os:
         - macos-latest
         - ubuntu-latest
@@ -20,11 +17,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - name: Set up Go
-      uses: actions/setup-go@v1
+      uses: actions/setup-go@v2
       with:
-        go-version: ${{ matrix.go-version }}
+        go-version: 1.15.x
     - name: Cache Go modules
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
@@ -44,7 +41,7 @@ jobs:
         sudo apt-get -yq --no-install-suggests --no-install-recommends install snapcraft
     - name: Build release
       if: matrix.os == 'ubuntu-latest'
-      uses: goreleaser/goreleaser-action@v1
+      uses: goreleaser/goreleaser-action@v2
       with:
         version: latest
         args: release --skip-publish --snapshot
@@ -55,19 +52,49 @@ jobs:
         ./dist/chezmoi-cgo_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v"
         ./dist/chezmoi-cgo_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v"
         ./dist/chezmoi-nocgo_linux_386/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v"
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.15.x
+    - name: Cache Go modules
+      uses: actions/cache@v2
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Generate
+      run: |
+        go generate
+        git diff --exit-code
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: v1.30
   release:
-    name: Release
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     needs:
+    - generate
+    - lint
     - test
     runs-on: ubuntu-latest
     steps:
     - name: Set up Go
-      uses: actions/setup-go@v1
+      uses: actions/setup-go@v2
       with:
-        go-version: 1.14.x
+        go-version: 1.15.x
     - name: Cache Go modules
-      uses: actions/cache@v1
+      uses: actions/cache@v2
       with:
         path: ~/go/pkg/mod
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
@@ -85,7 +112,7 @@ jobs:
       run: |
         snapcraft login --with <(echo "$SNAPCRAFT_LOGIN")
     - name: Release
-      uses: goreleaser/goreleaser-action@v1
+      uses: goreleaser/goreleaser-action@v2
       with:
         version: latest
         args: release
