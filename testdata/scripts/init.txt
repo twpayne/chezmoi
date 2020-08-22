@@ -1,5 +1,7 @@
 [!exec:git] stop
 
+mkhomedir
+
 # test that chezmoi init creates a git repo
 chezmoi init
 exists ${CHEZMOISOURCEDIR}${/}.git
@@ -27,8 +29,6 @@ chhome home4${/}user
 chezmoi init --source=${HOME}/dotfiles --verbose file://$WORK/nonexistentrepo
 exists ${CHEZMOICONFIGDIR}/chezmoi.toml
 
--- home/user/.bashrc --
-# contents of .bashrc
 -- home4/user/dotfiles/.git/.keep --
 -- home4/user/dotfiles/.chezmoi.toml.tmpl --
 [data]

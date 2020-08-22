@@ -1,9 +1,8 @@
+mksourcedir
+
 chezmoi source-path
 stdout ${CHEZMOISOURCEDIR@R}
 
 chezmoi source-path $HOME${/}.bashrc
 env WANT=${CHEZMOISOURCEDIR}${/}dot_bashrc
 stdout ${WANT@R}
-
--- home/user/.local/share/chezmoi/dot_bashrc --
-# contents of .bashrc

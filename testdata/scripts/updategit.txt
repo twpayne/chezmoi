@@ -1,5 +1,7 @@
 [!exec:git] stop
 
+mkhomedir
+
 # create a repo
 chezmoi init
 chezmoi add $HOME${/}.bashrc
@@ -9,7 +11,7 @@ chezmoi git -- commit -m 'Add dot_bashrc'
 # test chezmoi init --apply
 chhome home2${/}user
 chezmoi init --apply file://$WORK/home/user/.local/share/chezmoi
-cmp $HOME${/}.bashrc $WORK${/}home${/}user${/}.bashrc
+cmp -text $HOME${/}.bashrc $WORK${/}home${/}user${/}.bashrc
 
 # create a new commit
 chhome home${/}user

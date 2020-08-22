@@ -1,12 +1,7 @@
-exists $HOME${/}.bashrc
-exists $HOME${/}.inputrc
+exists $HOME/.hushlogin
 chezmoi apply --remove
-! exists $HOME${/}.bashrc
-exists $HOME${/}.inputrc
+! exists $HOME/.hushlogin
 
--- home/user/.bashrc --
-# contents of .bashrc
--- home/user/.inputrc --
-# contents of .inputrc
+-- home/user/.hushlogin --
 -- home/user/.local/share/chezmoi/.chezmoiremove --
-.bashrc
+.hushlogin
