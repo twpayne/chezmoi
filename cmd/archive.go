@@ -1,8 +1,5 @@
 package cmd
 
-// FIXME add -j option to bzip2 compress output
-// FIXME add -z option to gzip compress output
-
 import (
 	"archive/tar"
 	"os"

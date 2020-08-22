@@ -4,19 +4,18 @@ package cmd
 
 func init() {
 	assets["assets/templates/COMMIT_MESSAGE.tmpl"] = []byte("" +
-		"{{- /* FIXME replace 46 with '.' when https://github.com/golang/go/issues/34483 is fixed */ -}}\n" +
 		"{{- /* FIXME generate commit summary */ -}}\n" +
 		"\n" +
 		"{{- range .Ordinary -}}\n" +
-		"{{ if and (eq .X 'A') (eq .Y 46) -}}Add {{ .Path }}\n" +
-		"{{ else if and (eq .X 'D') (eq .Y 46) -}}Remove {{ .Path }}\n" +
-		"{{ else if and (eq .X 'M') (eq .Y 46) -}}Update {{ .Path }}\n" +
+		"{{ if and (eq .X 'A') (eq .Y '.') -}}Add {{ .Path }}\n" +
+		"{{ else if and (eq .X 'D') (eq .Y '.') -}}Remove {{ .Path }}\n" +
+		"{{ else if and (eq .X 'M') (eq .Y '.') -}}Update {{ .Path }}\n" +
 		"{{ else }}{{with (printf \"unsupported XY: %q\" (printf \"%c%c\" .X .Y)) }}{{ fail . }}{{ end }}\n" +
 		"{{ end }}\n" +
 		"{{- end -}}\n" +
 		"\n" +
 		"{{- range .RenamedOrCopied -}}\n" +
-		"{{ if and (eq .X 'R') (eq .Y 46) }}Rename {{ .OrigPath }} to {{ .Path }}\n" +
+		"{{ if and (eq .X 'R') (eq .Y '.') }}Rename {{ .OrigPath }} to {{ .Path }}\n" +
 		"{{ else }}{{with (printf \"unsupported XY: %q\" (printf \"%c%c\" .X .Y)) }}{{ fail . }}{{ end }}\n" +
 		"{{ end }}\n" +
 		"{{- end -}}\n" +

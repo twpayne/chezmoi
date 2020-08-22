@@ -91,6 +91,8 @@ nfpms:
       files:
         "completions/chezmoi.zsh": "/usr/share/zsh/functions/_chezmoi"
 
+release:
+
 scoop:
   bucket:
     owner: twpayne
