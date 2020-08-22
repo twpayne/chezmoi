@@ -16,10 +16,9 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/changes/</guid>
-      <description>Changes Upcoming Default diff format changing from chezmoi to git. Currently chezmoi outputs diffs in its own format, containing a mix of unified diffs and shell commands. This will be replaced with a git format diff in version 2.0.0.
-gpgRecipient config variable changing to gpg.recipient The gpgRecipient config variable is changing to gpg.recipient. To update, change your config from:
-gpgRecipient = &amp;quot;...&amp;quot;  to:
-[gpg] recipient = &amp;quot;...&amp;quot;  Support for the gpgRecipient config variable will be removed in version 2.</description>
+      <description>Changes #  Upcoming #  Default diff format changing from chezmoi to git. #  Currently chezmoi outputs diffs in its own format, containing a mix of unified diffs and shell commands. This will be replaced with a git format diff in version 2.0.0.
+gpgRecipient config variable changing to gpg.recipient #  The gpgRecipient config variable is changing to gpg.recipient. To update, change your config from:
+gpgRecipient = &amp;quot;...&amp;quot;  to:</description>
     </item>
     
     <item>
@@ -28,8 +27,8 @@ gpgRecipient = &amp;quot;...&amp;quot;  to:
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/contributing/</guid>
-      <description>Contributing Guide Getting started chezmoi is written in Go and development happens on GitHub. The rest of this document assumes that you&amp;rsquo;ve checked out chezmoi locally.
-Developing locally chezmoi requires Go 1.13 or later and Go modules enabled. Enable Go modules by setting the environment variable GO111MODULE=on.
+      <description>Contributing Guide #  Getting started #  chezmoi is written in Go and development happens on GitHub. The rest of this document assumes that you&amp;rsquo;ve checked out chezmoi locally.
+Developing locally #  chezmoi requires Go 1.13 or later and Go modules enabled. Enable Go modules by setting the environment variable GO111MODULE=on.
 chezmoi is a standard Go project, using standard Go tooling, with a few extra tools. Ensure that these extra tools are installed with:</description>
     </item>
     
@@ -39,7 +38,7 @@ chezmoi is a standard Go project, using standard Go tooling, with a few extra to
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/faq/</guid>
-      <description>Frequently Asked Questions How can I quickly check for problems with chezmoi on my machine? Run:
+      <description>Frequently Asked Questions #  How can I quickly check for problems with chezmoi on my machine? #  Run:
 chezmoi doctor  Anything ok is fine, anything warning is only a problem if you want to use the related feature, and anything error indicates a definite problem.
 What are the consequences of &amp;ldquo;bare&amp;rdquo; modifications to the target files? If my .zshrc is managed by chezmoi and I edit ~/.zshrc without using chezmoi edit, what happens?</description>
     </item>
@@ -50,7 +49,7 @@ What are the consequences of &amp;ldquo;bare&amp;rdquo; modifications to the tar
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/how-to/</guid>
-      <description>How-To Guide Use a hosted repo to manage your dotfiles across multiple machines chezmoi relies on your version control system and hosted repo to share changes across multiple machines. You should create a repo on the source code repository of your choice (e.g. Bitbucket, GitHub, or GitLab, many people call their repo dotfiles) and push the repo in the source directory here. For example:
+      <description>How-To Guide #  Use a hosted repo to manage your dotfiles across multiple machines #  chezmoi relies on your version control system and hosted repo to share changes across multiple machines. You should create a repo on the source code repository of your choice (e.g. Bitbucket, GitHub, or GitLab, many people call their repo dotfiles) and push the repo in the source directory here. For example:
 chezmoi cd git remote add origin https://github.</description>
     </item>
     
@@ -60,9 +59,9 @@ chezmoi cd git remote add origin https://github.</description>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/install/</guid>
-      <description>Install Guide One-line binary install Install the correct binary for your operating system and architecture in ./bin with a single command.
-curl -sfL https://git.io/chezmoi | sh  One-line package install Install chezmoi with a single command.
-   OS Method Command     Linux snap snap install chezmoi --classic   Linux Linuxbrew brew install chezmoi   Alpine Linux apk apk add chezmoi   Arch Linux pacman pacman -S chezmoi   NixOS Linux nix-env nix-env -i chezmoi   macOS Homebrew brew install chezmoi   Windows Scoop scoop bucket add twpayne https://github.</description>
+      <description>Install Guide #  One-line binary install #  Install the correct binary for your operating system and architecture in ./bin with a single command.
+curl -sfL https://git.io/chezmoi | sh  One-line package install #  Install chezmoi with a single command.
+   OS Method Command     Linux snap snap install chezmoi --classic   Linux Linuxbrew brew install chezmoi   Alpine Linux apk apk add chezmoi   Arch Linux pacman pacman -S chezmoi   Guix Linux guix guix install chezmoi   NixOS Linux nix-env nix-env -i chezmoi   macOS Homebrew brew install chezmoi   macOS MacPorts sudo port install chezmoi   Windows Scoop scoop bucket add twpayne https://github.</description>
     </item>
     
     <item>
@@ -71,7 +70,7 @@ curl -sfL https://git.io/chezmoi | sh  One-line package install Install chezmoi 
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/media/</guid>
-      <description>Media    Date Version Format Link     2020-07-06 1.8.3 Video chezmoi: Manage your dotfiles across multiple machines, securely.   2020-04-16 1.17.19 Text (FR) Chezmoi, visite guidée   2020-04-03 1.7.17 Text Fedora Magazine: Take back your dotfiles with Chezmoi   2020-03-12 1.7.16 Video Managing Dotfiles with ChezMoi   2019-11-20 1.7.2 Audio/video FLOSS weekly episode 556: chezmoi   2019-01-10 0.0.11 Text Linux Fu: The kitchen sync    To add your article to this page please either open an issue or submit a pull request that modifies this file (docs/MEDIA.</description>
+      <description>Media #     Date Version Format Link     2020-07-06 1.8.3 Video chezmoi: Manage your dotfiles across multiple machines, securely.   2020-07-03 1.8.3 Text Feeling at home in a LXD container   2020-04-27 1.8.0 Text Managing my dotfiles with chezmoi   2020-04-16 1.17.19 Text (FR) Chezmoi, visite guidée   2020-04-03 1.7.17 Text Fedora Magazine: Take back your dotfiles with Chezmoi   2020-04-01 1.</description>
     </item>
     
     <item>
@@ -80,9 +79,9 @@ curl -sfL https://git.io/chezmoi | sh  One-line package install Install chezmoi 
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/quick-start/</guid>
-      <description>Quick Start Guide Concepts chezmoi stores the desired state of your dotfiles in the directory ~/.local/share/chezmoi. When you run chezmoi apply, chezmoi calculates the desired contents and permissions for each dotfile and then makes any changes necessary so that your dotfiles match that state.
-Start using chezmoi on your current machine Initialize chezmoi:
-chezmoi init  This will create a new git repository in ~/.local/share/chezmoi with permissions 0700 where chezmoi will store the source state.</description>
+      <description>Quick Start Guide #  Concepts #  chezmoi stores the desired state of your dotfiles in the directory ~/.local/share/chezmoi. When you run chezmoi apply, chezmoi calculates the desired contents and permissions for each dotfile and then makes any changes necessary so that your dotfiles match that state.
+Start using chezmoi on your current machine #  Initialize chezmoi:
+chezmoi init  This will create a new git repository in ~/.</description>
     </item>
     
     <item>
@@ -91,11 +90,10 @@ chezmoi init  This will create a new git repository in ~/.local/share/chezmoi wi
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/reference/</guid>
-      <description>Reference Manual Concepts chezmoi evaluates the source state for the current machine and then updates the destination directory, where:
+      <description>Reference Manual #  Concepts #  chezmoi evaluates the source state for the current machine and then updates the destination directory, where:
   The source state declares the desired state of your home directory, including templates and machine-specific configuration.
   The source directory is where chezmoi stores the source state, by default ~/.local/share/chezmoi.
-  The target state is the source state computed for the current machine.
-  The destination directory is the directory that chezmoi manages, by default ~, your home directory.</description>
+  The target state is the source state computed for the current machine.</description>
     </item>
     
   </channel>

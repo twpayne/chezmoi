@@ -1,24 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir=>
 
 <head>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0"><meta property="og:title" content="Contributing" />
-<meta property="og:description" content="Contributing Guide Getting started chezmoi is written in Go and development happens on GitHub. The rest of this document assumes that you&rsquo;ve checked out chezmoi locally.
-Developing locally chezmoi requires Go 1.13 or later and Go modules enabled. Enable Go modules by setting the environment variable GO111MODULE=on.
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Contributing Guide #  Getting started #  chezmoi is written in Go and development happens on GitHub. The rest of this document assumes that you&rsquo;ve checked out chezmoi locally.
+Developing locally #  chezmoi requires Go 1.13 or later and Go modules enabled. Enable Go modules by setting the environment variable GO111MODULE=on.
+chezmoi is a standard Go project, using standard Go tooling, with a few extra tools. Ensure that these extra tools are installed with:">
+<meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Contributing" />
+<meta property="og:description" content="Contributing Guide #  Getting started #  chezmoi is written in Go and development happens on GitHub. The rest of this document assumes that you&rsquo;ve checked out chezmoi locally.
+Developing locally #  chezmoi requires Go 1.13 or later and Go modules enabled. Enable Go modules by setting the environment variable GO111MODULE=on.
 chezmoi is a standard Go project, using standard Go tooling, with a few extra tools. Ensure that these extra tools are installed with:" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chezmoi.io/docs/contributing/" />
 
 <title>Contributing | chezmoi.io</title>
+<link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
-
-
-<link rel="stylesheet" href="/book.min.a8b61185b89b0e211122339c7efd1c8edaa4ad4c0ae65f0074e99a4b31c1e393.css" integrity="sha256-qLYRhbibDiERIjOcfv0cjtqkrUwK5l8AdOmaSzHB45M=">
-
-
-<script defer src="/search.min.9cfc2678b2ecb7020878d20f504713e1a58d3de092293a2e03b993ef920cc55e.js" integrity="sha256-nPwmeLLstwIIeNIPUEcT4aWNPeCSKTouA7mT75IMxV4="></script>
-
+<link rel="stylesheet" href="/book.min.6cd8553a6854f4812343f0f0c8baca31271e686434f381fbe3c7226f66639176.css" integrity="sha256-bNhVOmhU9IEjQ/DwyLrKMSceaGQ084H748cib2ZjkXY=">
+<script defer src="/en.search.min.041c68e8b7f6ef0d8ff8415cf049965f7f157ade826d1deded9e715f1b7e6600.js" integrity="sha256-BBxo6Lf27w2P&#43;EFc8EmWX38Vet6CbR3t7Z5xXxt&#43;ZgA="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -27,21 +27,22 @@ https://github.com/alex-shpak/hugo-book
   
 </head>
 
-<body>
-  <input type="checkbox" class="hidden" id="menu-control" />
-  <main class="flex container">
-
-    <aside class="book-menu fixed">
-      <nav>
+<body dir=>
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      
+  <nav>
 <h2 class="book-brand">
-  <a href="https://chezmoi.io/"><img src="/logo-144px.svg" alt="Logo" /><span>chezmoi.io</span>
+  <a href="/"><img src="/logo-144px.svg" alt="Logo" /><span>chezmoi.io</span>
   </a>
 </h2>
 
 
 <div class="book-search">
-  <input type="text" placeholder="Search" id="book-search-input" maxlength="64" />
-  <div class="book-search-spinner spinner hidden"></div>
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
   <ul id="book-search-results"></ul>
 </div>
 
@@ -49,7 +50,13 @@ https://github.com/alex-shpak/hugo-book
 
 
 
-    <ul>
+
+
+
+
+
+
+  <ul>
 <li><a href="/docs/install/">Install</a></li>
 <li><a href="/docs/quick-start/">Quick Start</a></li>
 <li><a href="/docs/how-to/">How-To</a></li>
@@ -65,36 +72,78 @@ https://github.com/alex-shpak/hugo-book
 
 
 
+
+
+
+
+
 </nav>
 
 
-<script>
-(function() {
-  var menu = document.querySelector("aside.book-menu nav");
-  addEventListener("beforeunload", function(event) {
-    localStorage.setItem("menu.scrollTop", menu.scrollTop);
-  });
-  menu.scrollTop = localStorage.getItem("menu.scrollTop");
-})();
-</script>
 
+
+  <script>(function(){var menu=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(event){localStorage.setItem("menu.scrollTop",menu.scrollTop);});menu.scrollTop=localStorage.getItem("menu.scrollTop");})();</script>
+
+
+ 
     </aside>
 
     <div class="book-page">
-      <header class="flex align-center justify-between book-header">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
   <label for="menu-control">
-    <img src="/svg/menu.svg" alt="Menu" />
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
   </label>
+
   <strong>Contributing</strong>
-</header>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#getting-started">Getting started</a></li>
+    <li><a href="#developing-locally">Developing locally</a></li>
+    <li><a href="#generated-code">Generated code</a></li>
+    <li><a href="#contributing-changes">Contributing changes</a></li>
+    <li><a href="#managing-releases">Managing releases</a></li>
+    <li><a href="#packaging">Packaging</a></li>
+    <li><a href="#updating-the-website">Updating the website</a></li>
+  </ul>
+</nav>
+
+
+  </aside>
+  
+ 
+      </header>
 
       
-<article class="markdown"><h1 id="contributing-guide">Contributing Guide</h1>
-<h2 id="getting-started">Getting started</h2>
+      
+  <article class="markdown"><h1 id="contributing-guide">
+  Contributing Guide
+  <a class="anchor" href="#contributing-guide">#</a>
+</h1>
+<h2 id="getting-started">
+  Getting started
+  <a class="anchor" href="#getting-started">#</a>
+</h2>
 <p>chezmoi is written in <a href="https://golang.org">Go</a> and development happens on
 <a href="https://github.com">GitHub</a>. The rest of this document assumes that you&rsquo;ve
 checked out chezmoi locally.</p>
-<h2 id="developing-locally">Developing locally</h2>
+<h2 id="developing-locally">
+  Developing locally
+  <a class="anchor" href="#developing-locally">#</a>
+</h2>
 <p>chezmoi requires Go 1.13 or later and Go modules enabled. Enable Go modules by
 setting the environment variable <code>GO111MODULE=on</code>.</p>
 <p>chezmoi is a standard Go project, using standard Go tooling, with a few extra
@@ -110,7 +159,10 @@ tools. Ensure that these extra tools are installed with:</p>
 <p>Run chezmoi:</p>
 <pre><code>go run .
 </code></pre>
-<h2 id="generated-code">Generated code</h2>
+<h2 id="generated-code">
+  Generated code
+  <a class="anchor" href="#generated-code">#</a>
+</h2>
 <p>chezmoi generates help text, shell completions, embedded files, and the website
 from a single source of truth. You must run</p>
 <pre><code>go generate
@@ -125,7 +177,10 @@ from a single source of truth. You must run</p>
 <p>chezmoi&rsquo;s continuous integration verifies that all generated files are up to
 date. Changes to generated files should be included in the commit that modifies
 the source of truth.</p>
-<h2 id="contributing-changes">Contributing changes</h2>
+<h2 id="contributing-changes">
+  Contributing changes
+  <a class="anchor" href="#contributing-changes">#</a>
+</h2>
 <p>Bug reports, bug fixes, and documentation improvements are always welcome.
 Please <a href="https://github.com/twpayne/chezmoi/issues/new/choose">open an issue</a> or
 <a href="https://help.github.com/en/articles/creating-a-pull-request">create a pull
@@ -175,7 +230,10 @@ included in the body of the commit message.</p>
 <p>The branch applies cleanly to <code>master</code>.</p>
 </li>
 </ul>
-<h2 id="managing-releases">Managing releases</h2>
+<h2 id="managing-releases">
+  Managing releases
+  <a class="anchor" href="#managing-releases">#</a>
+</h2>
 <p>Releases are managed with <a href="https://goreleaser.com/"><code>goreleaser</code></a>.</p>
 <p>To create a new release, push a tag, e.g.:</p>
 <pre><code>git tag -a v0.1.0 -m &quot;First release&quot;
@@ -184,7 +242,10 @@ git push origin v0.1.0
 <p>To build a test release, without publishing, run:</p>
 <pre><code>make test-release
 </code></pre>
-<h2 id="packaging">Packaging</h2>
+<h2 id="packaging">
+  Packaging
+  <a class="anchor" href="#packaging">#</a>
+</h2>
 <p>If you&rsquo;re packaging chezmoi for an operating system or distribution:</p>
 <ul>
 <li>
@@ -233,7 +294,10 @@ guide</a> are
 absent or incorrect, please open an issue or submit a PR to correct them.</p>
 </li>
 </ul>
-<h2 id="updating-the-website">Updating the website</h2>
+<h2 id="updating-the-website">
+  Updating the website
+  <a class="anchor" href="#updating-the-website">#</a>
+</h2>
 <p><a href="https://chezmoi.io">The website</a> is generated with <a href="https://gohugo.io/">Hugo</a>
 and served with <a href="https://pages.github.com/">GitHub pages</a> from the <a href="https://github.com/twpayne/chezmoi/tree/gh-pages"><code>gh-pages</code>
 branch</a> to GitHub.</p>
@@ -257,17 +321,38 @@ Theme</a> by running:</p>
 <p>to push them. You can only push changes if you have write permissions to the
 chezmoi GitHub repo.</p>
 </article>
-
+ 
       
 
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+ 
+        
+      </footer>
+
       
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
     </div>
 
     
-  
-
-  <aside class="book-toc levels-3 fixed">
-    <nav id="TableOfContents">
+    <aside class="book-toc">
+      
+  <nav id="TableOfContents">
   <ul>
     <li><a href="#getting-started">Getting started</a></li>
     <li><a href="#developing-locally">Developing locally</a></li>
@@ -278,13 +363,25 @@ chezmoi GitHub repo.</p>
     <li><a href="#updating-the-website">Updating the website</a></li>
   </ul>
 </nav>
-  </aside>
 
-
-
+ 
+    </aside>
+    
   </main>
 
   
 </body>
 
 </html>
+
+
+
+
+
+
+
+
+
+
+
+

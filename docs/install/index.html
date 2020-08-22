@@ -1,24 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir=>
 
 <head>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0"><meta property="og:title" content="Install" />
-<meta property="og:description" content="Install Guide One-line binary install Install the correct binary for your operating system and architecture in ./bin with a single command.
-curl -sfL https://git.io/chezmoi | sh  One-line package install Install chezmoi with a single command.
-   OS Method Command     Linux snap snap install chezmoi --classic   Linux Linuxbrew brew install chezmoi   Alpine Linux apk apk add chezmoi   Arch Linux pacman pacman -S chezmoi   NixOS Linux nix-env nix-env -i chezmoi   macOS Homebrew brew install chezmoi   Windows Scoop scoop bucket add twpayne https://github." />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Install Guide #  One-line binary install #  Install the correct binary for your operating system and architecture in ./bin with a single command.
+curl -sfL https://git.io/chezmoi | sh  One-line package install #  Install chezmoi with a single command.
+   OS Method Command     Linux snap snap install chezmoi --classic   Linux Linuxbrew brew install chezmoi   Alpine Linux apk apk add chezmoi   Arch Linux pacman pacman -S chezmoi   Guix Linux guix guix install chezmoi   NixOS Linux nix-env nix-env -i chezmoi   macOS Homebrew brew install chezmoi   macOS MacPorts sudo port install chezmoi   Windows Scoop scoop bucket add twpayne https://github.">
+<meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Install" />
+<meta property="og:description" content="Install Guide #  One-line binary install #  Install the correct binary for your operating system and architecture in ./bin with a single command.
+curl -sfL https://git.io/chezmoi | sh  One-line package install #  Install chezmoi with a single command.
+   OS Method Command     Linux snap snap install chezmoi --classic   Linux Linuxbrew brew install chezmoi   Alpine Linux apk apk add chezmoi   Arch Linux pacman pacman -S chezmoi   Guix Linux guix guix install chezmoi   NixOS Linux nix-env nix-env -i chezmoi   macOS Homebrew brew install chezmoi   macOS MacPorts sudo port install chezmoi   Windows Scoop scoop bucket add twpayne https://github." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chezmoi.io/docs/install/" />
 
 <title>Install | chezmoi.io</title>
+<link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
-
-
-<link rel="stylesheet" href="/book.min.a8b61185b89b0e211122339c7efd1c8edaa4ad4c0ae65f0074e99a4b31c1e393.css" integrity="sha256-qLYRhbibDiERIjOcfv0cjtqkrUwK5l8AdOmaSzHB45M=">
-
-
-<script defer src="/search.min.9cfc2678b2ecb7020878d20f504713e1a58d3de092293a2e03b993ef920cc55e.js" integrity="sha256-nPwmeLLstwIIeNIPUEcT4aWNPeCSKTouA7mT75IMxV4="></script>
-
+<link rel="stylesheet" href="/book.min.6cd8553a6854f4812343f0f0c8baca31271e686434f381fbe3c7226f66639176.css" integrity="sha256-bNhVOmhU9IEjQ/DwyLrKMSceaGQ084H748cib2ZjkXY=">
+<script defer src="/en.search.min.041c68e8b7f6ef0d8ff8415cf049965f7f157ade826d1deded9e715f1b7e6600.js" integrity="sha256-BBxo6Lf27w2P&#43;EFc8EmWX38Vet6CbR3t7Z5xXxt&#43;ZgA="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -27,21 +27,22 @@ https://github.com/alex-shpak/hugo-book
   
 </head>
 
-<body>
-  <input type="checkbox" class="hidden" id="menu-control" />
-  <main class="flex container">
-
-    <aside class="book-menu fixed">
-      <nav>
+<body dir=>
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      
+  <nav>
 <h2 class="book-brand">
-  <a href="https://chezmoi.io/"><img src="/logo-144px.svg" alt="Logo" /><span>chezmoi.io</span>
+  <a href="/"><img src="/logo-144px.svg" alt="Logo" /><span>chezmoi.io</span>
   </a>
 </h2>
 
 
 <div class="book-search">
-  <input type="text" placeholder="Search" id="book-search-input" maxlength="64" />
-  <div class="book-search-spinner spinner hidden"></div>
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
   <ul id="book-search-results"></ul>
 </div>
 
@@ -49,7 +50,13 @@ https://github.com/alex-shpak/hugo-book
 
 
 
-    <ul>
+
+
+
+
+
+
+  <ul>
 <li><a href="/docs/install/"class=active>Install</a></li>
 <li><a href="/docs/quick-start/">Quick Start</a></li>
 <li><a href="/docs/how-to/">How-To</a></li>
@@ -65,37 +72,79 @@ https://github.com/alex-shpak/hugo-book
 
 
 
+
+
+
+
+
 </nav>
 
 
-<script>
-(function() {
-  var menu = document.querySelector("aside.book-menu nav");
-  addEventListener("beforeunload", function(event) {
-    localStorage.setItem("menu.scrollTop", menu.scrollTop);
-  });
-  menu.scrollTop = localStorage.getItem("menu.scrollTop");
-})();
-</script>
 
+
+  <script>(function(){var menu=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(event){localStorage.setItem("menu.scrollTop",menu.scrollTop);});menu.scrollTop=localStorage.getItem("menu.scrollTop");})();</script>
+
+
+ 
     </aside>
 
     <div class="book-page">
-      <header class="flex align-center justify-between book-header">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
   <label for="menu-control">
-    <img src="/svg/menu.svg" alt="Menu" />
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
   </label>
+
   <strong>Install</strong>
-</header>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#one-line-binary-install">One-line binary install</a></li>
+    <li><a href="#one-line-package-install">One-line package install</a></li>
+    <li><a href="#pre-built-linux-packages">Pre-built Linux packages</a></li>
+    <li><a href="#pre-built-binaries">Pre-built binaries</a></li>
+    <li><a href="#all-pre-built-linux-packages-and-binaries">All pre-built Linux packages and binaries</a></li>
+    <li><a href="#from-source">From source</a></li>
+    <li><a href="#upgrading">Upgrading</a></li>
+  </ul>
+</nav>
+
+
+  </aside>
+  
+ 
+      </header>
 
       
-<article class="markdown"><h1 id="install-guide">Install Guide</h1>
-<h2 id="one-line-binary-install">One-line binary install</h2>
+      
+  <article class="markdown"><h1 id="install-guide">
+  Install Guide
+  <a class="anchor" href="#install-guide">#</a>
+</h1>
+<h2 id="one-line-binary-install">
+  One-line binary install
+  <a class="anchor" href="#one-line-binary-install">#</a>
+</h2>
 <p>Install the correct binary for your operating system and architecture in <code>./bin</code>
 with a single command.</p>
 <pre><code>curl -sfL https://git.io/chezmoi | sh
 </code></pre>
-<h2 id="one-line-package-install">One-line package install</h2>
+<h2 id="one-line-package-install">
+  One-line package install
+  <a class="anchor" href="#one-line-package-install">#</a>
+</h2>
 <p>Install chezmoi with a single command.</p>
 <table>
 <thead>
@@ -127,6 +176,11 @@ with a single command.</p>
 <td><code>pacman -S chezmoi</code></td>
 </tr>
 <tr>
+<td>Guix Linux</td>
+<td>guix</td>
+<td><code>guix install chezmoi</code></td>
+</tr>
+<tr>
 <td>NixOS Linux</td>
 <td>nix-env</td>
 <td><code>nix-env -i chezmoi</code></td>
@@ -135,6 +189,11 @@ with a single command.</p>
 <td>macOS</td>
 <td>Homebrew</td>
 <td><code>brew install chezmoi</code></td>
+</tr>
+<tr>
+<td>macOS</td>
+<td>MacPorts</td>
+<td><code>sudo port install chezmoi</code></td>
 </tr>
 <tr>
 <td>Windows</td>
@@ -148,7 +207,10 @@ with a single command.</p>
 </tr>
 </tbody>
 </table>
-<h2 id="pre-built-linux-packages">Pre-built Linux packages</h2>
+<h2 id="pre-built-linux-packages">
+  Pre-built Linux packages
+  <a class="anchor" href="#pre-built-linux-packages">#</a>
+</h2>
 <p>Download a package for your operating system and architecture and install it
 with your package manager.</p>
 <table>
@@ -182,7 +244,10 @@ with your package manager.</p>
 </tr>
 </tbody>
 </table>
-<h2 id="pre-built-binaries">Pre-built binaries</h2>
+<h2 id="pre-built-binaries">
+  Pre-built binaries
+  <a class="anchor" href="#pre-built-binaries">#</a>
+</h2>
 <p>Download an archive for your operating system containing a pre-built binary,
 documentation, and shell completions.</p>
 <table>
@@ -221,10 +286,16 @@ documentation, and shell completions.</p>
 </tr>
 </tbody>
 </table>
-<h2 id="all-pre-built-linux-packages-and-binaries">All pre-built Linux packages and binaries</h2>
+<h2 id="all-pre-built-linux-packages-and-binaries">
+  All pre-built Linux packages and binaries
+  <a class="anchor" href="#all-pre-built-linux-packages-and-binaries">#</a>
+</h2>
 <p>All pre-built binaries and packages can be found on the <a href="https://github.com/twpayne/chezmoi/releases/latest">chezmoi GitHub releases
 page</a>.</p>
-<h2 id="from-source">From source</h2>
+<h2 id="from-source">
+  From source
+  <a class="anchor" href="#from-source">#</a>
+</h2>
 <p>Download, build, and install chezmoi for your system:</p>
 <pre><code>cd $(mktemp -d)
 git clone --depth=1 https://github.com/twpayne/chezmoi.git
@@ -232,7 +303,10 @@ cd chezmoi
 go install
 </code></pre>
 <p>Building chezmoi requires Go 1.13 or later.</p>
-<h2 id="upgrading">Upgrading</h2>
+<h2 id="upgrading">
+  Upgrading
+  <a class="anchor" href="#upgrading">#</a>
+</h2>
 <p>If you have installed a pre-built binary of chezmoi, you can upgrade it to the
 latest release with:</p>
 <pre><code>chezmoi upgrade
@@ -240,17 +314,38 @@ latest release with:</p>
 <p>This will re-use whichever mechanism you used to install chezmoi to install the
 latest release.</p>
 </article>
-
+ 
       
 
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+ 
+        
+      </footer>
+
       
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
     </div>
 
     
-  
-
-  <aside class="book-toc levels-3 fixed">
-    <nav id="TableOfContents">
+    <aside class="book-toc">
+      
+  <nav id="TableOfContents">
   <ul>
     <li><a href="#one-line-binary-install">One-line binary install</a></li>
     <li><a href="#one-line-package-install">One-line package install</a></li>
@@ -261,13 +356,25 @@ latest release.</p>
     <li><a href="#upgrading">Upgrading</a></li>
   </ul>
 </nav>
-  </aside>
 
-
-
+ 
+    </aside>
+    
   </main>
 
   
 </body>
 
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
