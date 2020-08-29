@@ -423,7 +423,7 @@ func (c *Config) getPersistentState(options *bolt.Options) (chezmoi.PersistentSt
 	if c.DryRun {
 		options.ReadOnly = true
 	}
-	state, err := chezmoi.NewBoltPersistentState(c.fs, persistentStateFile, os.FileMode(c.Umask), options)
+	state, err := chezmoi.NewBoltPersistentState(c.fs, persistentStateFile, options)
 	if errors.Is(err, bolt.ErrTimeout) {
 		return nil, fmt.Errorf("failed to lock database: %w", err)
 	}

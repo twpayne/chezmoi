@@ -12,19 +12,15 @@ import (
 type BoltPersistentState struct {
 	fs      vfs.FS
 	path    string
-	perm    os.FileMode
-	umask   os.FileMode
 	options *bolt.Options
 	db      *bolt.DB
 }
 
 // NewBoltPersistentState returns a new BoltPersistentState.
-func NewBoltPersistentState(fs vfs.FS, path string, umask os.FileMode, options *bolt.Options) (*BoltPersistentState, error) {
+func NewBoltPersistentState(fs vfs.FS, path string, options *bolt.Options) (*BoltPersistentState, error) {
 	b := &BoltPersistentState{
 		fs:      fs,
 		path:    path,
-		perm:    0o600,
-		umask:   umask,
 		options: options,
 	}
 	_, err := fs.Stat(b.path)
@@ -105,7 +101,7 @@ func (b *BoltPersistentState) Set(bucket, key, value []byte) error {
 }
 
 func (b *BoltPersistentState) openDB() error {
-	if err := vfs.MkdirAll(b.fs, filepath.Dir(b.path), 0o777&^b.umask); err != nil {
+	if err := vfs.MkdirAll(b.fs, filepath.Dir(b.path), 0o777); err != nil {
 		return err
 	}
 	var options bolt.Options
@@ -113,7 +109,7 @@ func (b *BoltPersistentState) openDB() error {
 		options = *b.options
 	}
 	options.OpenFile = b.fs.OpenFile
-	db, err := bolt.Open(b.path, b.perm&^b.umask, &options)
+	db, err := bolt.Open(b.path, 0o666, &options)
 	if err != nil {
 		return err
 	}
