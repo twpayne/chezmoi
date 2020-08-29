@@ -1339,7 +1339,16 @@ func init() {
 		"The following assumes you are using chezmoi 1.8.4 or later. It does not work\n" +
 		"with earlier versions of chezmoi.\n" +
 		"\n" +
-		"You can use chezmoi to manage your dotfiles in [GitHub Codespaces](https://docs.github.com/en/github/developing-online-with-codespaces/personalizing-codespaces-for-your-account), [Visual Studio Codespaces](https://docs.microsoft.com/en/visualstudio/codespaces/reference/personalizing), and [Visual Studio Code Remote - Containers](https://code.visualstudio.com/docs/remote/containers#_personalizing-with-dotfile-repositories).\n" +
+		"You can use chezmoi to manage your dotfiles in [GitHub\n" +
+		"Codespaces](https://docs.github.com/en/github/developing-online-with-codespaces/personalizing-codespaces-for-your-account),\n" +
+		"[Visual Studio\n" +
+		"Codespaces](https://docs.microsoft.com/en/visualstudio/codespaces/reference/personalizing),\n" +
+		"and [Visual Studio Code Remote -\n" +
+		"Containers](https://code.visualstudio.com/docs/remote/containers#_personalizing-with-dotfile-repositories).\n" +
+		"\n" +
+		"For a quick start, you can clone the [`chezmoi/dotfiles`\n" +
+		"repository](https://github.com/chezmoi/dotfiles) which supports Codespaces out\n" +
+		"of the box.\n" +
 		"\n" +
 		"The workflow is different to using chezmoi on a new machine, notably:\n" +
 		"* These systems will automatically clone your `dotfiles` repo to `~/dotfiles`,\n" +
@@ -1354,22 +1363,22 @@ func init() {
 		"might contain:\n" +
 		"\n" +
 		"```\n" +
+		"{{- $codespaces:= env \"CODESPACES\" | not | not -}}\n" +
 		"sourceDir = \"{{ .chezmoi.sourceDir }}\"\n" +
-		"{{- if (env \"CODESPACES\") -}}\n" +
+		"\n" +
 		"[data]\n" +
-		"  codespaces = true\n" +
-		"  email = \"user@company.com\"\n" +
-		"{{- else -}}\n" +
-		"{{- $email := promptString \"email\" -}}\n" +
-		"[data]\n" +
-		"  codespaces = false\n" +
-		"  email = {{ $email }}\n" +
+		"  name = \"Your name\"\n" +
+		"  codespaces = {{ $codespaces }}\n" +
+		"{{- if $codespaces }}{{/* Codespaces dotfiles setup is non-interactive, so set an email address */}}\n" +
+		"  email = \"your@email.com\"\n" +
+		"{{- else }}{{/* Interactive setup, so prompt for an email address */}}\n" +
+		"  email = \"{{ promptString \"email\" }}\"\n" +
 		"{{- end }}\n" +
 		"```\n" +
 		"\n" +
-		"This sets the `sourceDir` configuration to the `--source` argument passed\n" +
-		"in `chezmoi init`. Also sets the `codespaces` template variable, so you don't \n" +
-		"have to repeat `(env \"CODESPACES\")` in your templates.\n" +
+		"This sets the `codespaces` template variable, so you don't have to repeat `(env\n" +
+		"\"CODESPACES\")` in your templates. It also sets the `sourceDir` configuration to\n" +
+		"the `--source` argument passed in `chezmoi init`.\n" +
 		"\n" +
 		"Second, create an `install.sh` script that installs chezmoi and your dotfiles:\n" +
 		"\n" +

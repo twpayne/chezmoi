@@ -752,7 +752,16 @@ This will install `ripgrep` on both Debian/Ubuntu Linux systems and macOS.
 The following assumes you are using chezmoi 1.8.4 or later. It does not work
 with earlier versions of chezmoi.
 
-You can use chezmoi to manage your dotfiles in [GitHub Codespaces](https://docs.github.com/en/github/developing-online-with-codespaces/personalizing-codespaces-for-your-account), [Visual Studio Codespaces](https://docs.microsoft.com/en/visualstudio/codespaces/reference/personalizing), and [Visual Studio Code Remote - Containers](https://code.visualstudio.com/docs/remote/containers#_personalizing-with-dotfile-repositories).
+You can use chezmoi to manage your dotfiles in [GitHub
+Codespaces](https://docs.github.com/en/github/developing-online-with-codespaces/personalizing-codespaces-for-your-account),
+[Visual Studio
+Codespaces](https://docs.microsoft.com/en/visualstudio/codespaces/reference/personalizing),
+and [Visual Studio Code Remote -
+Containers](https://code.visualstudio.com/docs/remote/containers#_personalizing-with-dotfile-repositories).
+
+For a quick start, you can clone the [`chezmoi/dotfiles`
+repository](https://github.com/chezmoi/dotfiles) which supports Codespaces out
+of the box.
 
 The workflow is different to using chezmoi on a new machine, notably:
 * These systems will automatically clone your `dotfiles` repo to `~/dotfiles`,
@@ -767,22 +776,22 @@ non-interactive when running in codespaces, for example, `.chezmoi.toml.tmpl`
 might contain:
 
 ```
+{{- $codespaces:= env "CODESPACES" | not | not -}}
 sourceDir = "{{ .chezmoi.sourceDir }}"
-{{- if (env "CODESPACES") -}}
+
 [data]
-  codespaces = true
-  email = "user@company.com"
-{{- else -}}
-{{- $email := promptString "email" -}}
-[data]
-  codespaces = false
-  email = {{ $email }}
+  name = "Your name"
+  codespaces = {{ $codespaces }}
+{{- if $codespaces }}{{/* Codespaces dotfiles setup is non-interactive, so set an email address */}}
+  email = "your@email.com"
+{{- else }}{{/* Interactive setup, so prompt for an email address */}}
+  email = "{{ promptString "email" }}"
 {{- end }}
 ```
 
-This sets the `sourceDir` configuration to the `--source` argument passed
-in `chezmoi init`. Also sets the `codespaces` template variable, so you don't 
-have to repeat `(env "CODESPACES")` in your templates.
+This sets the `codespaces` template variable, so you don't have to repeat `(env
+"CODESPACES")` in your templates. It also sets the `sourceDir` configuration to
+the `--source` argument passed in `chezmoi init`.
 
 Second, create an `install.sh` script that installs chezmoi and your dotfiles:
 
