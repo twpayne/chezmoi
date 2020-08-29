@@ -3,7 +3,6 @@ package cmd
 import (
 	"bytes"
 	"io"
-	"os"
 	"path/filepath"
 	"testing"
 	"text/template"
@@ -213,8 +212,7 @@ func withStdout(stdout io.Writer) configOption {
 func withTestFS(fs vfs.FS) configOption {
 	return func(c *Config) {
 		c.fs = fs
-		c.mutator = chezmoi.NewVerboseMutator(os.Stdout, chezmoi.NewFSMutator(fs), false, 0)
-		c.Verbose = true
+		c.mutator = chezmoi.NewFSMutator(fs)
 	}
 }
 
