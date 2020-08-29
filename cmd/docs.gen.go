@@ -139,14 +139,18 @@ func init() {
 		"\n" +
 		"Releases are managed with [`goreleaser`](https://goreleaser.com/).\n" +
 		"\n" +
-		"To create a new release, push a tag, e.g.:\n" +
-		"\n" +
-		"    git tag -a v0.1.0 -m \"First release\"\n" +
-		"    git push origin v0.1.0\n" +
-		"\n" +
-		"To build a test release, without publishing, run:\n" +
+		"To build a test release, without publishing, (Linux only) run:\n" +
 		"\n" +
 		"    make test-release\n" +
+		"\n" +
+		"To create a new release, create and push a tag, e.g.:\n" +
+		"\n" +
+		"    git tag v1.2.3\n" +
+		"    git push --tags\n" +
+		"\n" +
+		"[brew](https://brew.sh/) formula must be updated manually with the command:\n" +
+		"\n" +
+		"    brew bump-formula-pr --tag=v1.2.3 chezmoi\n" +
 		"\n" +
 		"## Packaging\n" +
 		"\n" +
@@ -1335,7 +1339,16 @@ func init() {
 		"The following assumes you are using chezmoi 1.8.4 or later. It does not work\n" +
 		"with earlier versions of chezmoi.\n" +
 		"\n" +
-		"You can use chezmoi to manage your dotfiles in [GitHub Codespaces](https://docs.github.com/en/github/developing-online-with-codespaces/personalizing-codespaces-for-your-account), [Visual Studio Codespaces](https://docs.microsoft.com/en/visualstudio/codespaces/reference/personalizing), and [Visual Studio Code Remote - Containers](https://code.visualstudio.com/docs/remote/containers#_personalizing-with-dotfile-repositories).\n" +
+		"You can use chezmoi to manage your dotfiles in [GitHub\n" +
+		"Codespaces](https://docs.github.com/en/github/developing-online-with-codespaces/personalizing-codespaces-for-your-account),\n" +
+		"[Visual Studio\n" +
+		"Codespaces](https://docs.microsoft.com/en/visualstudio/codespaces/reference/personalizing),\n" +
+		"and [Visual Studio Code Remote -\n" +
+		"Containers](https://code.visualstudio.com/docs/remote/containers#_personalizing-with-dotfile-repositories).\n" +
+		"\n" +
+		"For a quick start, you can clone the [`chezmoi/dotfiles`\n" +
+		"repository](https://github.com/chezmoi/dotfiles) which supports Codespaces out\n" +
+		"of the box.\n" +
 		"\n" +
 		"The workflow is different to using chezmoi on a new machine, notably:\n" +
 		"* These systems will automatically clone your `dotfiles` repo to `~/dotfiles`,\n" +
@@ -1350,22 +1363,22 @@ func init() {
 		"might contain:\n" +
 		"\n" +
 		"```\n" +
+		"{{- $codespaces:= env \"CODESPACES\" | not | not -}}\n" +
 		"sourceDir = \"{{ .chezmoi.sourceDir }}\"\n" +
-		"{{- if (env \"CODESPACES\") -}}\n" +
+		"\n" +
 		"[data]\n" +
-		"  codespaces = true\n" +
-		"  email = \"user@company.com\"\n" +
-		"{{- else -}}\n" +
-		"{{- $email := promptString \"email\" -}}\n" +
-		"[data]\n" +
-		"  codespaces = false\n" +
-		"  email = {{ $email }}\n" +
+		"  name = \"Your name\"\n" +
+		"  codespaces = {{ $codespaces }}\n" +
+		"{{- if $codespaces }}{{/* Codespaces dotfiles setup is non-interactive, so set an email address */}}\n" +
+		"  email = \"your@email.com\"\n" +
+		"{{- else }}{{/* Interactive setup, so prompt for an email address */}}\n" +
+		"  email = \"{{ promptString \"email\" }}\"\n" +
 		"{{- end }}\n" +
 		"```\n" +
 		"\n" +
-		"This sets the `sourceDir` configuration to the `--source` argument passed\n" +
-		"in `chezmoi init`. Also sets the `codespaces` template variable, so you don't \n" +
-		"have to repeat `(env \"CODESPACES\")` in your templates.\n" +
+		"This sets the `codespaces` template variable, so you don't have to repeat `(env\n" +
+		"\"CODESPACES\")` in your templates. It also sets the `sourceDir` configuration to\n" +
+		"the `--source` argument passed in `chezmoi init`.\n" +
 		"\n" +
 		"Second, create an `install.sh` script that installs chezmoi and your dotfiles:\n" +
 		"\n" +
@@ -1633,6 +1646,7 @@ func init() {
 		"\n" +
 		"| Date       | Version | Format       | Link                                                                                                                      |\n" +
 		"| ---------- | ------- | ------------ | ------------------------------------------------------------------------------------------------------------------------- |\n" +
+		"| 2020-08-09 | 1.8.3   | Text         | [Automating and testing dotfiles](https://seds.nl/posts/automating-and-testing-dotfiles/)                                 |\n" +
 		"| 2020-07-06 | 1.8.3   | Video        | [chezmoi: Manage your dotfiles across multiple machines, securely](https://www.youtube.com/watch?v=JrCMCdvoMAw).          |\n" +
 		"| 2020-07-03 | 1.8.3   | Text         | [Feeling at home in a LXD container](https://ubuntu.com/blog/feeling-at-home-in-a-lxd-container)                          |\n" +
 		"| 2020-04-27 | 1.8.0   | Text         | [Managing my dotfiles with chezmoi](http://blog.emilieschario.com/post/managing-my-dotfiles-with-chezmoi/)                |\n" +

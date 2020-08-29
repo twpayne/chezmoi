@@ -351,8 +351,8 @@ github.com/twpayne/go-shell v0.3.0 h1:nhDM9cQTqWwA0jGPOnqzsw8lke2jcKpvxDgnDO8Lq9
 github.com/twpayne/go-shell v0.3.0/go.mod h1:H/gzux0DOH5jsjQSHXs6rs2Onxy+V4j6ycZTOulC0l8=
 github.com/twpayne/go-vfs v1.0.1/go.mod h1:OIXA6zWkcn7Jk46XT7ceYqBMeIkfzJ8WOBhGJM0W4y8=
 github.com/twpayne/go-vfs v1.0.5/go.mod h1:OIXA6zWkcn7Jk46XT7ceYqBMeIkfzJ8WOBhGJM0W4y8=
-github.com/twpayne/go-vfs v1.5.0 h1:3j9j2RchDSIQ1gjuNHZqJOyZAS702lrmqUow2uUYgX8=
-github.com/twpayne/go-vfs v1.5.0/go.mod h1:MAbvpnWRAE5LfIt88Eopskigmyc+wakYCyCDnys7iNw=
+github.com/twpayne/go-vfs v1.7.0 h1:+yK0yDrbyv8cKnAaKc+ZCWLlezsA9VlXXkAFzsShCX8=
+github.com/twpayne/go-vfs v1.7.0/go.mod h1:MAbvpnWRAE5LfIt88Eopskigmyc+wakYCyCDnys7iNw=
 github.com/twpayne/go-vfsafero v1.0.0 h1:ZlH32HF4OoVX/aRqc5bZa+2+M+/ezmJ4XYpT0ShtZNc=
 github.com/twpayne/go-vfsafero v1.0.0/go.mod h1:rs2H15b2z0euJzwyoBS63eUHZgBhNXVQfIFfRp8DKEk=
 github.com/twpayne/go-xdg/v3 v3.1.0 h1:AxX5ZLJIzqYHJh+4uGxWT97ySh1ND1bJLjqMxdYF+xs=
@@ -463,6 +463,8 @@ golang.org/x/sys v0.0.0-20200323222414-85ca7c5b95cd/go.mod h1:h1NjWce9XRLGQEsW7w
 golang.org/x/sys v0.0.0-20200413165638-669c56c373c4/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20200821140526-fda516888d29 h1:mNuhGagCf3lDDm5C0376C/sxh6V7fy9WbdEu/YDNA04=
 golang.org/x/sys v0.0.0-20200821140526-fda516888d29/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+golang.org/x/sys v0.0.0-20200828194041-157a740278f4 h1:kCCpuwSAoYJPkNc6x0xT9yTtV4oKtARo4RGBQWOfg9E=
+golang.org/x/sys v0.0.0-20200828194041-157a740278f4/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/text v0.3.0 h1:g61tztE5qeGQ89tm6NTjjM9VPIm088od1l6aSorWRWg=
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 golang.org/x/text v0.3.1-0.20180807135948-17ff2d5776d2/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=

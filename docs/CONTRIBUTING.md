@@ -103,14 +103,18 @@ that:
 
 Releases are managed with [`goreleaser`](https://goreleaser.com/).
 
-To create a new release, push a tag, e.g.:
-
-    git tag -a v0.1.0 -m "First release"
-    git push origin v0.1.0
-
-To build a test release, without publishing, run:
+To build a test release, without publishing, (Linux only) run:
 
     make test-release
+
+To create a new release, create and push a tag, e.g.:
+
+    git tag v1.2.3
+    git push --tags
+
+[brew](https://brew.sh/) formula must be updated manually with the command:
+
+    brew bump-formula-pr --tag=v1.2.3 chezmoi
 
 ## Packaging
 
