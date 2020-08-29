@@ -1637,6 +1637,7 @@ func init() {
 		"\n" +
 		"| Date       | Version | Format       | Link                                                                                                                      |\n" +
 		"| ---------- | ------- | ------------ | ------------------------------------------------------------------------------------------------------------------------- |\n" +
+		"| 2020-08-09 | 1.8.3   | Text         | [Automating and testing dotfiles](https://seds.nl/posts/automating-and-testing-dotfiles/)                                 |\n" +
 		"| 2020-07-06 | 1.8.3   | Video        | [chezmoi: Manage your dotfiles across multiple machines, securely](https://www.youtube.com/watch?v=JrCMCdvoMAw).          |\n" +
 		"| 2020-07-03 | 1.8.3   | Text         | [Feeling at home in a LXD container](https://ubuntu.com/blog/feeling-at-home-in-a-lxd-container)                          |\n" +
 		"| 2020-04-27 | 1.8.0   | Text         | [Managing my dotfiles with chezmoi](http://blog.emilieschario.com/post/managing-my-dotfiles-with-chezmoi/)                |\n" +
