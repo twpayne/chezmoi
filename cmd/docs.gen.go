@@ -139,14 +139,18 @@ func init() {
 		"\n" +
 		"Releases are managed with [`goreleaser`](https://goreleaser.com/).\n" +
 		"\n" +
-		"To create a new release, push a tag, e.g.:\n" +
-		"\n" +
-		"    git tag -a v0.1.0 -m \"First release\"\n" +
-		"    git push origin v0.1.0\n" +
-		"\n" +
-		"To build a test release, without publishing, run:\n" +
+		"To build a test release, without publishing, (Linux only) run:\n" +
 		"\n" +
 		"    make test-release\n" +
+		"\n" +
+		"To create a new release, create and push a tag, e.g.:\n" +
+		"\n" +
+		"    git tag v1.2.3\n" +
+		"    git push --tags\n" +
+		"\n" +
+		"[brew](https://brew.sh/) formula must be updated manually with the command:\n" +
+		"\n" +
+		"    brew bump-formula-pr --tag=v1.2.3 chezmoi\n" +
 		"\n" +
 		"## Packaging\n" +
 		"\n" +
