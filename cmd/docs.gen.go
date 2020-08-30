@@ -257,6 +257,7 @@ func init() {
 		"* [gpg encryption fails. What could be wrong?](#gpg-encryption-fails-what-could-be-wrong)\n" +
 		"* [I'm getting errors trying to build chezmoi from source](#im-getting-errors-trying-to-build-chezmoi-from-source)\n" +
 		"* [What inspired chezmoi?](#what-inspired-chezmoi)\n" +
+		"* [Why not use Ansible/Chef/Puppet/Salt, or similar to manage my dotfiles instead?](#why-not-use-ansiblechefpuppetsalt-or-similar-to-manage-my-dotfiles-instead)\n" +
 		"* [Can I use chezmoi to manage files outside my home directory?](#can-i-use-chezmoi-to-manage-files-outside-my-home-directory)\n" +
 		"* [Where does the name \"chezmoi\" come from?](#where-does-the-name-chezmoi-come-from)\n" +
 		"* [What other questions have been asked about chezmoi?](#what-other-questions-have-been-asked-about-chezmoi)\n" +
@@ -519,6 +520,25 @@ func init() {
 		"focus of chezmoi will always be personal home directory management. If your\n" +
 		"needs grow beyond that, switch to a whole system configuration management tool.\n" +
 		"\n" +
+		"## Why not use Ansible/Chef/Puppet/Salt, or similar to manage my dotfiles instead?\n" +
+		"\n" +
+		"Whole system management tools are more than capable of managing your dotfiles,\n" +
+		"but are large systems that entail several disadvantages. Compared to whole\n" +
+		"system management tools, chezmoi offers:\n" +
+		"\n" +
+		"* Small, focused feature set designed for dotfiles. There's simply less to learn\n" +
+		"  with chezmoi compared to whole system management tools.\n" +
+		"* Easy installation and execution on every platform, without root access.\n" +
+		"  Installing chezmoi requires only copying a single binary file with no external\n" +
+		"  dependencies. Executing chezmoi just involves running the binary. In contrast,\n" +
+		"  installing and running a whole system management tools typically requires\n" +
+		"  installing a scripting language runtime, several packages, and running a\n" +
+		"  system service, all typically requiring root access.\n" +
+		"\n" +
+		"chezmoi's focus and simple installation means that it runs almost everywhere:\n" +
+		"from tiny ARM-based Linux systems to Windows desktops, from inside lightweight\n" +
+		"containers to FreeBSD-based virtual machines in the cloud. \n" +
+		"\n" +
 		"## Can I use chezmoi to manage files outside my home directory?\n" +
 		"\n" +
 		"In practice, yes, you can, but this is strongly discouraged beyond using your\n" +
@@ -549,7 +569,7 @@ func init() {
 		"\n" +
 		"If your needs extend beyond modifying a handful of files outside your target\n" +
 		"system, then existing configuration management tools like\n" +
-		"[Puppet](https://puppet.com/), [Chef](https://www.chef.io/chef/),\n" +
+		"[Puppet](https://puppet.com/), [Chef](https://chef.io/),\n" +
 		"[Ansible](https://www.ansible.com/), and [Salt](https://www.saltstack.com/) are\n" +
 		"much better suited - and of course can be called from a chezmoi `run_` script.\n" +
 		"Put your Puppet Manifests, Chef Recipes, Ansible Modules, and Salt Modules in a\n" +
