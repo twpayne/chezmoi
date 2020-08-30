@@ -16,6 +16,7 @@
 * [gpg encryption fails. What could be wrong?](#gpg-encryption-fails-what-could-be-wrong)
 * [I'm getting errors trying to build chezmoi from source](#im-getting-errors-trying-to-build-chezmoi-from-source)
 * [What inspired chezmoi?](#what-inspired-chezmoi)
+* [Why not use Ansible/Chef/Puppet/Salt, or similar to manage my dotfiles instead?](#why-not-use-ansiblechefpuppetsalt-or-similar-to-manage-my-dotfiles-instead)
 * [Can I use chezmoi to manage files outside my home directory?](#can-i-use-chezmoi-to-manage-files-outside-my-home-directory)
 * [Where does the name "chezmoi" come from?](#where-does-the-name-chezmoi-come-from)
 * [What other questions have been asked about chezmoi?](#what-other-questions-have-been-asked-about-chezmoi)
@@ -278,6 +279,25 @@ Puppet is a slow overkill for managing your personal configuration files. The
 focus of chezmoi will always be personal home directory management. If your
 needs grow beyond that, switch to a whole system configuration management tool.
 
+## Why not use Ansible/Chef/Puppet/Salt, or similar to manage my dotfiles instead?
+
+Whole system management tools are more than capable of managing your dotfiles,
+but are large systems that entail several disadvantages. Compared to whole
+system management tools, chezmoi offers:
+
+* Small, focused feature set designed for dotfiles. There's simply less to learn
+  with chezmoi compared to whole system management tools.
+* Easy installation and execution on every platform, without root access.
+  Installing chezmoi requires only copying a single binary file with no external
+  dependencies. Executing chezmoi just involves running the binary. In contrast,
+  installing and running a whole system management tools typically requires
+  installing a scripting language runtime, several packages, and running a
+  system service, all typically requiring root access.
+
+chezmoi's focus and simple installation means that it runs almost everywhere:
+from tiny ARM-based Linux systems to Windows desktops, from inside lightweight
+containers to FreeBSD-based virtual machines in the cloud. 
+
 ## Can I use chezmoi to manage files outside my home directory?
 
 In practice, yes, you can, but this is strongly discouraged beyond using your
@@ -308,7 +328,7 @@ usage is extremely strongly discouraged.
 
 If your needs extend beyond modifying a handful of files outside your target
 system, then existing configuration management tools like
-[Puppet](https://puppet.com/), [Chef](https://www.chef.io/chef/),
+[Puppet](https://puppet.com/), [Chef](https://chef.io/),
 [Ansible](https://www.ansible.com/), and [Salt](https://www.saltstack.com/) are
 much better suited - and of course can be called from a chezmoi `run_` script.
 Put your Puppet Manifests, Chef Recipes, Ansible Modules, and Salt Modules in a
