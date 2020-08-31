@@ -73,7 +73,6 @@ Manage your dotfiles securely across multiple machines.
   * [`joinPath` *elements*](#joinpath-elements)
   * [`keepassxc` *entry*](#keepassxc-entry)
   * [`keepassxcAttribute` *entry* *attribute*](#keepassxcattribute-entry-attribute)
-  * [`keyring` *service* *user*](#keyring-service-user)
   * [`lastpass` *id*](#lastpass-id)
   * [`lastpassRaw` *id*](#lastpassraw-id)
   * [`lookPath` *file*](#lookpath-file)
@@ -816,8 +815,6 @@ To get a full list of available commands run:
 #### `secret` examples
 
     chezmoi secret bitwarden list items
-    chezmoi secret keyring set --service service --user user
-    chezmoi secret keyring get --service service --user user
     chezmoi secret lastpass ls
     chezmoi secret lastpass -- show --format=json id
     chezmoi secret onepassword list items
@@ -1042,22 +1039,6 @@ prompting, password storage, and result caching.
 #### `keepassxcAttribute` examples
 
     {{ keepassxcAttribute "SSH Key" "private-key" }}
-
-### `keyring` *service* *user*
-
-`keyring` retrieves the password associated with *service* and *user* from the
-user's keyring.
-
-| OS    | Keyring       |
-| ----- | ------------- |
-| macOS | Keychain      |
-| Linux | GNOME Keyring |
-
-#### `keyring` examples
-
-    [github]
-      user = "{{ .github.user }}"
-      token = "{{ keyring "github" .github.user }}"
 
 ### `lastpass` *id*
 

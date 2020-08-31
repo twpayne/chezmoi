@@ -90,7 +90,6 @@ type Config struct {
 	executeTemplate   executeTemplateCmdConfig
 	_import           importCmdConfig
 	init              initCmdConfig
-	keyring           keyringCmdConfig
 	managed           managedCmdConfig
 	purge             purgeCmdConfig
 	remove            removeCmdConfig
