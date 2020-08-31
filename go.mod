@@ -10,7 +10,6 @@ require (
 	github.com/bmatcuk/doublestar v1.3.2
 	github.com/charmbracelet/glamour v0.2.0
 	github.com/coreos/go-semver v0.3.0
-	github.com/danieljoos/wincred v1.1.0 // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/go-git/go-git/v5 v5.1.0
 	github.com/golang/protobuf v1.4.2 // indirect
@@ -34,14 +33,12 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/spf13/viper v1.7.1
-	github.com/stretchr/objx v0.2.0 // indirect
 	github.com/stretchr/testify v1.6.1
 	github.com/twpayne/go-shell v0.3.0
 	github.com/twpayne/go-vfs v1.7.0
 	github.com/twpayne/go-vfsafero v1.0.0
 	github.com/twpayne/go-xdg/v3 v3.1.0
 	github.com/yuin/goldmark v1.2.1 // indirect
-	github.com/zalando/go-keyring v0.1.0
 	go.etcd.io/bbolt v1.3.5
 	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
 	golang.org/x/net v0.0.0-20200822124328-c89045814202 // indirect

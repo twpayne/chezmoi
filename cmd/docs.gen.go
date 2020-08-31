@@ -624,7 +624,6 @@ func init() {
 		"  * [Use gopass to keep your secrets](#use-gopass-to-keep-your-secrets)\n" +
 		"  * [Use gpg to keep your secrets](#use-gpg-to-keep-your-secrets)\n" +
 		"  * [Use KeePassXC to keep your secrets](#use-keepassxc-to-keep-your-secrets)\n" +
-		"  * [Use a keyring to keep your secrets](#use-a-keyring-to-keep-your-secrets)\n" +
 		"  * [Use LastPass to keep your secrets](#use-lastpass-to-keep-your-secrets)\n" +
 		"  * [Use 1Password to keep your secrets](#use-1password-to-keep-your-secrets)\n" +
 		"  * [Use pass to keep your secrets](#use-pass-to-keep-your-secrets)\n" +
@@ -1120,35 +1119,6 @@ func init() {
 		"called `private-key`, its value is available as:\n" +
 		"\n" +
 		"    {{ keepassxcAttribute \"SSH Key\" \"private-key\" }}\n" +
-		"\n" +
-		"### Use a keyring to keep your secrets\n" +
-		"\n" +
-		"chezmoi includes support for Keychain (on macOS), GNOME Keyring (on Linux), and\n" +
-		"Windows Credentials Manager (on Windows) via the\n" +
-		"[`zalando/go-keyring`](https://github.com/zalando/go-keyring) library.\n" +
-		"\n" +
-		"Set passwords with:\n" +
-		"\n" +
-		"    $ chezmoi keyring set --service=<service> --user=<user>\n" +
-		"    Password: xxxxxxxx\n" +
-		"\n" +
-		"The password can then be used in templates using the `keyring` function which\n" +
-		"takes the service and user as arguments.\n" +
-		"\n" +
-		"For example, save a GitHub access token in keyring with:\n" +
-		"\n" +
-		"    $ chezmoi keyring set --service=github --user=<github-username>\n" +
-		"    Password: xxxxxxxx\n" +
-		"\n" +
-		"and then include it in your `~/.gitconfig` file with:\n" +
-		"\n" +
-		"    [github]\n" +
-		"      user = \"{{ .github.user }}\"\n" +
-		"      token = \"{{ keyring \"github\" .github.user }}\"\n" +
-		"\n" +
-		"You can query the keyring from the command line:\n" +
-		"\n" +
-		"    chezmoi keyring get --service=github --user=<github-username>\n" +
 		"\n" +
 		"### Use LastPass to keep your secrets\n" +
 		"\n" +
@@ -1847,7 +1817,6 @@ func init() {
 		"  * [`joinPath` *elements*](#joinpath-elements)\n" +
 		"  * [`keepassxc` *entry*](#keepassxc-entry)\n" +
 		"  * [`keepassxcAttribute` *entry* *attribute*](#keepassxcattribute-entry-attribute)\n" +
-		"  * [`keyring` *service* *user*](#keyring-service-user)\n" +
 		"  * [`lastpass` *id*](#lastpass-id)\n" +
 		"  * [`lastpassRaw` *id*](#lastpassraw-id)\n" +
 		"  * [`lookPath` *file*](#lookpath-file)\n" +
@@ -2590,8 +2559,6 @@ func init() {
 		"#### `secret` examples\n" +
 		"\n" +
 		"    chezmoi secret bitwarden list items\n" +
-		"    chezmoi secret keyring set --service service --user user\n" +
-		"    chezmoi secret keyring get --service service --user user\n" +
 		"    chezmoi secret lastpass ls\n" +
 		"    chezmoi secret lastpass -- show --format=json id\n" +
 		"    chezmoi secret onepassword list items\n" +
@@ -2816,22 +2783,6 @@ func init() {
 		"#### `keepassxcAttribute` examples\n" +
 		"\n" +
 		"    {{ keepassxcAttribute \"SSH Key\" \"private-key\" }}\n" +
-		"\n" +
-		"### `keyring` *service* *user*\n" +
-		"\n" +
-		"`keyring` retrieves the password associated with *service* and *user* from the\n" +
-		"user's keyring.\n" +
-		"\n" +
-		"| OS    | Keyring       |\n" +
-		"| ----- | ------------- |\n" +
-		"| macOS | Keychain      |\n" +
-		"| Linux | GNOME Keyring |\n" +
-		"\n" +
-		"#### `keyring` examples\n" +
-		"\n" +
-		"    [github]\n" +
-		"      user = \"{{ .github.user }}\"\n" +
-		"      token = \"{{ keyring \"github\" .github.user }}\"\n" +
 		"\n" +
 		"### `lastpass` *id*\n" +
 		"\n" +

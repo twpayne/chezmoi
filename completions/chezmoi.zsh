@@ -618,7 +618,6 @@ function _chezmoi_secret {
       "generic:Execute a generic secret command"
       "gopass:Execute the gopass CLI"
       "keepassxc:Execute the KeePassXC CLI (keepassxc-cli)"
-      "keyring:Interact with keyring"
       "lastpass:Execute the LastPass CLI (lpass)"
       "onepassword:Execute the 1Password CLI (op)"
       "pass:Execute the pass CLI"
@@ -640,9 +639,6 @@ function _chezmoi_secret {
     ;;
   keepassxc)
     _chezmoi_secret_keepassxc
-    ;;
-  keyring)
-    _chezmoi_secret_keyring
     ;;
   lastpass)
     _chezmoi_secret_lastpass
@@ -708,76 +704,6 @@ function _chezmoi_secret_keepassxc {
     '--follow[follow symlinks]' \
     '--remove[remove targets]' \
     '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
-    '(-v --verbose)'{-v,--verbose}'[verbose]'
-}
-
-
-function _chezmoi_secret_keyring {
-  local -a commands
-
-  _arguments -C \
-    '--service[service]:' \
-    '--user[user]:' \
-    '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
-    '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
-    '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
-    '--follow[follow symlinks]' \
-    '--remove[remove targets]' \
-    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
-    '(-v --verbose)'{-v,--verbose}'[verbose]' \
-    "1: :->cmnds" \
-    "*::arg:->args"
-
-  case $state in
-  cmnds)
-    commands=(
-      "get:Get a password from keyring"
-      "set:Set a password in keyring"
-    )
-    _describe "command" commands
-    ;;
-  esac
-
-  case "$words[1]" in
-  get)
-    _chezmoi_secret_keyring_get
-    ;;
-  set)
-    _chezmoi_secret_keyring_set
-    ;;
-  esac
-}
-
-function _chezmoi_secret_keyring_get {
-  _arguments \
-    '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
-    '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
-    '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
-    '--follow[follow symlinks]' \
-    '--remove[remove targets]' \
-    '--service[service]:' \
-    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
-    '--user[user]:' \
-    '(-v --verbose)'{-v,--verbose}'[verbose]'
-}
-
-function _chezmoi_secret_keyring_set {
-  _arguments \
-    '--password[password]:' \
-    '--color[colorize diffs]:' \
-    '(-c --config)'{-c,--config}'[config file]:filename:_files' \
-    '--debug[write debug logs]' \
-    '(-D --destination)'{-D,--destination}'[destination directory]:filename:_files -g "-(/)"' \
-    '(-n --dry-run)'{-n,--dry-run}'[dry run]' \
-    '--follow[follow symlinks]' \
-    '--remove[remove targets]' \
-    '--service[service]:' \
-    '(-S --source)'{-S,--source}'[source directory]:filename:_files -g "-(/)"' \
-    '--user[user]:' \
     '(-v --verbose)'{-v,--verbose}'[verbose]'
 }
 
