@@ -52,6 +52,3 @@ require (
 	gopkg.in/ini.v1 v1.60.0 // indirect
 	gopkg.in/yaml.v2 v2.3.0
 )
-
-// Temporary while waiting for https://github.com/rogpeppe/go-internal/pull/106 to be merged.
-replace github.com/rogpeppe/go-internal => github.com/twpayne/go-internal v1.5.3-0.20200706163000-4426ab554b0a

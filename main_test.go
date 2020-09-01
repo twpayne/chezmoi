@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -42,6 +43,7 @@ func TestScript(t *testing.T) {
 			"mkfile":      cmdMkFile,
 			"mkhomedir":   cmdMkHomeDir,
 			"mksourcedir": cmdMkSourceDir,
+			"unix2dos":    cmdUNIX2DOS,
 		},
 		Condition: func(cond string) (bool, error) {
 			switch cond {
@@ -178,6 +180,8 @@ func cmdMkHomeDir(ts *testscript.TestScript, neg bool, args []string) {
 			},
 			".exists": "# contents of .exists\n",
 			".gitconfig": "" +
+				"[core]\n" +
+				"  autocrlf = false\n" +
 				"[user]\n" +
 				"  email = you@example.com\n" +
 				"  name = Your Name\n",
@@ -219,6 +223,8 @@ func cmdMkSourceDir(ts *testscript.TestScript, neg bool, args []string) {
 			"executable_dot_binary": "#!/bin/sh\n",
 			"dot_bashrc":            "# contents of .bashrc\n",
 			"dot_gitconfig.tmpl": "" +
+				"[core]\n" +
+				"  autocrlf = false\n" +
 				"[user]\n" +
 				"  email = {{ \"you@example.com\" }}\n" +
 				"  name = Your Name\n",
@@ -230,6 +236,28 @@ func cmdMkSourceDir(ts *testscript.TestScript, neg bool, args []string) {
 	})
 	if err != nil {
 		ts.Fatalf("mksourcedir: %v", err)
+	}
+}
+
+// cmdUNIX2DOS converts files from UNIX line endings to DOS line endings.
+func cmdUNIX2DOS(ts *testscript.TestScript, neg bool, args []string) {
+	if neg {
+		ts.Fatalf("unsupported: ! unix2dos")
+	}
+	if len(args) < 1 {
+		ts.Fatalf("usage: unix2dos paths...")
+	}
+	for _, arg := range args {
+		filename := ts.MkAbs(arg)
+		data, err := ioutil.ReadFile(filename)
+		if err != nil {
+			ts.Fatalf("%s: %v", filename, err)
+		}
+		data = bytes.Join(bytes.Split(data, []byte{'\n'}), []byte{'\r', '\n'})
+		//nolint:gosec
+		if err := ioutil.WriteFile(filename, data, 0o666); err != nil {
+			ts.Fatalf("%s: %v", filename, err)
+		}
 	}
 }
 
@@ -256,28 +284,13 @@ func setup(env *testscript.Env) error {
 		env.Setenv("SHELL", filepath.Join(binDir, "shell"))
 	}
 
-	if runtime.GOOS != "windows" {
-		// Fix permissions on any files in the bin directory.
-		infos, err := ioutil.ReadDir(binDir)
-		if err == nil {
-			for _, info := range infos {
-				if err := os.Chmod(filepath.Join(binDir, info.Name()), 0o755); err != nil {
-					return err
-				}
-			}
-		}
-	}
-
 	root := make(map[string]interface{})
 	switch runtime.GOOS {
 	case "windows":
 		root["/bin"] = map[string]interface{}{
 			// editor.cmd a non-interactive script that appends "# edited\n" to
 			// the end of each file.
-			"editor.cmd": &vfst.File{
-				Perm:     0o755,
-				Contents: []byte(`@for %%x in (%*) do echo # edited >> %%x`),
-			},
+			"editor.cmd": "@for %%x in (%*) do echo # edited >> %%x\r\n",
 		}
 	default:
 		root["/bin"] = map[string]interface{}{

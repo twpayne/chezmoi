@@ -11,7 +11,7 @@ chezmoi git -- commit -m 'Add dot_bashrc'
 # test chezmoi init --apply
 chhome home2${/}user
 chezmoi init --apply file://$WORK/home/user/.local/share/chezmoi
-cmp -text $HOME${/}.bashrc $WORK${/}home${/}user${/}.bashrc
+cmp $HOME${/}.bashrc $WORK${/}home${/}user${/}.bashrc
 
 # create a new commit
 chhome home${/}user
@@ -26,3 +26,6 @@ grep '# edited' $HOME${/}.bashrc
 
 -- home/user/.bashrc --
 # contents of .bashrc
+-- home2/user/.gitconfig --
+[core]
+  autocrlf = false
