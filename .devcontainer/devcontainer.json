@@ -13,14 +13,15 @@
 	"runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
 
 	// Set *default* container specific settings.json values on container create.
-	"settings": { 
+	"settings": {
 		"terminal.integrated.shell.linux": "/bin/bash",
 		"go.useGoProxyToCheckForToolUpdates": false,
 		"go.gopath": "/go"
 	},
-	
+
 	// Add the IDs of extensions you want installed when the container is created.
 	"extensions": [
+		"EditorConfig.EditorConfig",
 		"golang.Go",
 		"yzhang.markdown-all-in-one"
 	],
