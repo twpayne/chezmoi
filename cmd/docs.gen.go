@@ -619,6 +619,7 @@ func init() {
 		"* [Ensure that a target is removed](#ensure-that-a-target-is-removed)\n" +
 		"* [Include a subdirectory from another repository, like Oh My Zsh](#include-a-subdirectory-from-another-repository-like-oh-my-zsh)\n" +
 		"* [Handle configuration files which are externally modified](#handle-configuration-files-which-are-externally-modified)\n" +
+		"* [Handle different file locations on different systems with the same contents](#handle-different-file-locations-on-different-systems-with-the-same-contents)\n" +
 		"* [Keep data private](#keep-data-private)\n" +
 		"  * [Use Bitwarden to keep your secrets](#use-bitwarden-to-keep-your-secrets)\n" +
 		"  * [Use gopass to keep your secrets](#use-gopass-to-keep-your-secrets)\n" +
@@ -1003,6 +1004,33 @@ func init() {
 		"\n" +
 		"Now, when the program modifies its configuration file it will modify the file in\n" +
 		"the source state instead.\n" +
+		"\n" +
+		"## Handle different file locations on different systems with the same contents\n" +
+		"\n" +
+		"If you want to have the same file contents in different locations on different\n" +
+		"systems, but maintain only a single file in your source state, you can use\n" +
+		"a shared template.\n" +
+		"\n" +
+		"Create the common file in the `.chezmoitemplates` directory in the source state. For\n" +
+		"example, create `.chezmoitemplates/file.conf`. The contents of this file are\n" +
+		"available in templates with the `template *name*` function where *name* is the\n" +
+		"name of the file.\n" +
+		"\n" +
+		"Then create files for each system, for example `Library/Application\n" +
+		"Support/App/file.conf.tmpl` for macOS and `dot_config/app/file.conf.tmpl` for\n" +
+		"Linux. Both template files should contain `{{- template \"file.conf\" -}}`.\n" +
+		"\n" +
+		"Finally, tell chezmoi to ignore files where they are not needed by adding lines\n" +
+		"to your `.chezmoiignore` file, for example:\n" +
+		"\n" +
+		"```\n" +
+		"{{ if ne .chezmoi.os \"darwin\" }}\n" +
+		"Library/Application Support/App/file.conf\n" +
+		"{{ end }}\n" +
+		"{{ if ne .chezmoi.os \"linux\" }}\n" +
+		".config/app/file.conf\n" +
+		"{{ end }}\n" +
+		"```\n" +
 		"\n" +
 		"## Keep data private\n" +
 		"\n" +
