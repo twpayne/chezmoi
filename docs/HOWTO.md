@@ -12,6 +12,7 @@
 * [Ensure that a target is removed](#ensure-that-a-target-is-removed)
 * [Include a subdirectory from another repository, like Oh My Zsh](#include-a-subdirectory-from-another-repository-like-oh-my-zsh)
 * [Handle configuration files which are externally modified](#handle-configuration-files-which-are-externally-modified)
+* [Handle different file locations on different systems with the same contents](#handle-different-file-locations-on-different-systems-with-the-same-contents)
 * [Keep data private](#keep-data-private)
   * [Use Bitwarden to keep your secrets](#use-bitwarden-to-keep-your-secrets)
   * [Use gopass to keep your secrets](#use-gopass-to-keep-your-secrets)
@@ -396,6 +397,33 @@ Apply the changes:
 
 Now, when the program modifies its configuration file it will modify the file in
 the source state instead.
+
+## Handle different file locations on different systems with the same contents
+
+If you want to have the same file contents in different locations on different
+systems, but maintain only a single file in your source state, you can use
+a shared template.
+
+Create the common file in the `.chezmoitemplates` directory in the source state. For
+example, create `.chezmoitemplates/file.conf`. The contents of this file are
+available in templates with the `template *name*` function where *name* is the
+name of the file.
+
+Then create files for each system, for example `Library/Application
+Support/App/file.conf.tmpl` for macOS and `dot_config/app/file.conf.tmpl` for
+Linux. Both template files should contain `{{- template "file.conf" -}}`.
+
+Finally, tell chezmoi to ignore files where they are not needed by adding lines
+to your `.chezmoiignore` file, for example:
+
+```
+{{ if ne .chezmoi.os "darwin" }}
+Library/Application Support/App/file.conf
+{{ end }}
+{{ if ne .chezmoi.os "linux" }}
+.config/app/file.conf
+{{ end }}
+```
 
 ## Keep data private
 
