@@ -3,7 +3,6 @@ package cmd
 import (
 	"os"
 	"runtime"
-	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -110,21 +109,4 @@ func TestExercise(t *testing.T) {
 			),
 		)
 	})
-}
-
-var codespaces = false
-
-func init() {
-	codespaces, _ = strconv.ParseBool(os.Getenv("CODESPACES"))
-}
-
-// codespacesDirPerm returns the expected directory permissions to work around a
-// bug in GitHub Codespaces, which clears the world-executable bit when creating
-// some directories.
-//nolint:unparam
-func codespacesDirPerm(expectedPerm os.FileMode) os.FileMode {
-	if codespaces {
-		return expectedPerm &^ 0o001
-	}
-	return expectedPerm
 }

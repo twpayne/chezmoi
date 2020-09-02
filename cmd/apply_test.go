@@ -21,9 +21,8 @@ type scriptTestCase struct {
 
 func TestApplyCommand(t *testing.T) {
 	for _, tc := range []struct {
-		name                   string
-		root                   map[string]interface{}
-		noCodespacesDirPermBug bool
+		name string
+		root map[string]interface{}
 	}{
 		{
 			name: "create",
@@ -34,7 +33,6 @@ func TestApplyCommand(t *testing.T) {
 			root: map[string]interface{}{
 				"/home/user/dir": &vfst.Dir{Perm: 0o700},
 			},
-			noCodespacesDirPermBug: true,
 		},
 		{
 			name: "replace_file_with_dir",
@@ -56,21 +54,18 @@ func TestApplyCommand(t *testing.T) {
 					Contents: []byte("contents"),
 				},
 			},
-			noCodespacesDirPermBug: true,
 		},
 		{
 			name: "replace_dir_with_file",
 			root: map[string]interface{}{
 				"/home/user/dir/file": &vfst.Dir{Perm: 0o755},
 			},
-			noCodespacesDirPermBug: true,
 		},
 		{
 			name: "replace_symlink_with_file",
 			root: map[string]interface{}{
 				"/home/user/dir/file": &vfst.Symlink{Target: "target"},
 			},
-			noCodespacesDirPermBug: true,
 		},
 		{
 			name: "replace_dir_with_symlink",
@@ -164,14 +159,10 @@ func TestApplyCommand(t *testing.T) {
 			defer cleanup()
 			c := newTestConfig(fs)
 			assert.NoError(t, c.runApplyCmd(nil, nil))
-			expectedDirPerm := os.FileMode(0o755)
-			if !tc.noCodespacesDirPermBug {
-				expectedDirPerm = codespacesDirPerm(expectedDirPerm)
-			}
 			vfst.RunTests(t, fs, "",
 				vfst.TestPath("/home/user/dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(expectedDirPerm),
+					vfst.TestModePerm(0o755),
 				),
 				vfst.TestPath("/home/user/dir/file",
 					vfst.TestModeIsRegular,
