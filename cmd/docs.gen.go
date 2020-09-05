@@ -32,7 +32,8 @@ func init() {
 		"    [gpg]\n" +
 		"      recipient = \"...\"\n" +
 		"\n" +
-		"Support for the `gpgRecipient` config variable will be removed in version 2.0.0.\n")
+		"Support for the `gpgRecipient` config variable will be removed in version 2.0.0.\n" +
+		"\n")
 	assets["docs/CONTRIBUTING.md"] = []byte("" +
 		"# chezmoi Contributing Guide\n" +
 		"\n" +
@@ -237,7 +238,8 @@ func init() {
 		"    git push\n" +
 		"\n" +
 		"to push them. You can only push changes if you have write permissions to the\n" +
-		"chezmoi GitHub repo.\n")
+		"chezmoi GitHub repo.\n" +
+		"\n")
 	assets["docs/FAQ.md"] = []byte("" +
 		"# chezmoi Frequently Asked Questions\n" +
 		"\n" +

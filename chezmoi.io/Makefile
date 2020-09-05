@@ -36,4 +36,3 @@ content/docs/quick-start.md: ../docs/QUICKSTART.md ../internal/generate-chezmoi.
 
 content/docs/reference.md: ../docs/REFERENCE.md ../internal/generate-chezmoi.io-content-docs/main.go Makefile
 	go run ../internal/generate-chezmoi.io-content-docs -shorttitle="Reference" -longtitle="Reference Manual" < $< > $@ || ( rm -f $@ ; false )
-
