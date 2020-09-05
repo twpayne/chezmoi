@@ -25,7 +25,7 @@ require (
 	github.com/muesli/termenv v0.7.2 // indirect
 	github.com/pelletier/go-toml v1.8.0
 	github.com/pkg/diff v0.0.0-20190930165518-531926345625
-	github.com/rogpeppe/go-internal v1.6.1
+	github.com/rogpeppe/go-internal v1.6.2
 	github.com/sergi/go-diff v1.1.0
 	github.com/spf13/afero v1.3.4 // indirect
 	github.com/spf13/cast v1.3.1 // indirect
