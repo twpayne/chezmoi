@@ -26,5 +26,6 @@ func init() {
 		"\n" +
 		"{{- range .Untracked -}}\n" +
 		"{{ fail \"untracked files\" }}\n" +
-		"{{- end -}}\n")
+		"{{- end -}}\n" +
+		"\n")
 }
