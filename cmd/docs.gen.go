@@ -1217,7 +1217,7 @@ func init() {
 		"Login details fields can be retrieved with the `onepasswordDetailsFields`\n" +
 		"function, for example:\n" +
 		"\n" +
-		"    {{- (onepasswordDetailsField \"uuid\").password.value }}\n" +
+		"    {{- (onepasswordDetailsFields \"uuid\").password.value }}\n" +
 		"\n" +
 		"Documents can be retrieved with:\n" +
 		"\n" +
