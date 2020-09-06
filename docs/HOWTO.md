@@ -608,7 +608,7 @@ Then you can access `details.password` with the syntax:
 Login details fields can be retrieved with the `onepasswordDetailsFields`
 function, for example:
 
-    {{- (onepasswordDetailsField "uuid").password.value }}
+    {{- (onepasswordDetailsFields "uuid").password.value }}
 
 Documents can be retrieved with:
 
