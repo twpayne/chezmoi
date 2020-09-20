@@ -1,9 +1,6 @@
 package chezmoi
 
 import (
-	"bufio"
-	"bytes"
-	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -13,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/pkg/diff"
+	"github.com/pkg/diff/write"
 )
 
 // A VerboseMutator wraps an Mutator and logs all of the actions it executes and
@@ -125,26 +123,11 @@ func (m *VerboseMutator) WriteFile(name string, data []byte, perm os.FileMode, c
 				return nil
 			}
 		}
-		aLines, err := splitLines(currData)
-		if err != nil {
-			return err
-		}
-		bLines, err := splitLines(data)
-		if err != nil {
-			return err
-		}
-		ab := diff.Strings(aLines, bLines)
-		e := diff.Myers(context.Background(), ab).WithContextSize(3)
-		opts := []diff.WriteOpt{
-			diff.Names(
-				filepath.Join("a", name),
-				filepath.Join("b", name),
-			),
-		}
+		var opts []write.Option
 		if m.colored {
-			opts = append(opts, diff.TerminalColor())
+			opts = append(opts, write.TerminalColor())
 		}
-		if _, err := e.WriteUnified(m.w, ab, opts...); err != nil {
+		if err := diff.Text(filepath.Join("a", name), filepath.Join("b", name), string(currData), string(data), m.w, opts...); err != nil {
 			return err
 		}
 	} else {
@@ -176,13 +159,4 @@ func cmdString(cmd *exec.Cmd) string {
 
 func isBinary(data []byte) bool {
 	return len(data) != 0 && !strings.HasPrefix(http.DetectContentType(data), "text/")
-}
-
-func splitLines(data []byte) ([]string, error) {
-	var lines []string
-	s := bufio.NewScanner(bytes.NewReader(data))
-	for s.Scan() {
-		lines = append(lines, s.Text())
-	}
-	return lines, s.Err()
 }
