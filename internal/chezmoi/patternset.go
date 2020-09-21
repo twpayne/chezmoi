@@ -1,7 +1,7 @@
 package chezmoi
 
 import (
-	"github.com/bmatcuk/doublestar"
+	"github.com/bmatcuk/doublestar/v2"
 )
 
 // An PatternSet is a set of patterns.

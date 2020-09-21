@@ -25,7 +25,7 @@ import (
 	"syscall"
 
 	"github.com/coreos/go-semver/semver"
-	"github.com/google/go-github/v26/github"
+	"github.com/google/go-github/v32/github"
 	"github.com/spf13/cobra"
 	vfs "github.com/twpayne/go-vfs"
 	"golang.org/x/oauth2"
@@ -307,7 +307,7 @@ func (c *Config) upgradePackage(rr *github.RepositoryRelease, useSudo bool) erro
 		suffix := arch + "." + packageType
 		for i, ra := range rr.Assets {
 			if strings.HasSuffix(ra.GetName(), suffix) {
-				releaseAsset = &rr.Assets[i]
+				releaseAsset = rr.Assets[i]
 				break
 			}
 		}
@@ -464,7 +464,7 @@ func getPackageType(fs vfs.FS) (string, error) {
 func getReleaseAssetByName(rr *github.RepositoryRelease, name string) *github.ReleaseAsset {
 	for i, ra := range rr.Assets {
 		if ra.GetName() == name {
-			return &rr.Assets[i]
+			return rr.Assets[i]
 		}
 	}
 	return nil
