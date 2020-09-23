@@ -33,7 +33,12 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "go mod download",
+	"postCreateCommand": [
+		"sudo apt-get update",
+		"sudo apt-get install acl",
+		"sudo chown -R vscode .", // FIXME this needs to set ownership of $TMPDIR
+		"go mod download"
+	],
 
 	// Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
 	"remoteUser": "vscode"
