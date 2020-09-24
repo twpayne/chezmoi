@@ -12,6 +12,7 @@ linters:
   - gci
   - gocritic
   - godot
+  - goerr113
   - gofmt
   - gofumpt
   - goimports
@@ -46,7 +47,6 @@ linters:
   - goconst
   - gocyclo
   - godox
-  - goerr113
   - gomnd
   - lll
   - maligned
@@ -61,9 +61,14 @@ linters-settings:
     extra-rules: true
   goimports:
     local-prefixes: github.com/twpayne/chezmoi
+  misspell:
+    locale: US
 
 issues:
   exclude-rules:
+  - linters:
+    - goerr113
+    text: "do not define dynamic errors, use wrapped static errors instead"
   - linters:
     - dupl
     path: "secretgopass.go"
