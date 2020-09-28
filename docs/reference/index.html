@@ -20,7 +20,7 @@
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.6cd8553a6854f4812343f0f0c8baca31271e686434f381fbe3c7226f66639176.css" integrity="sha256-bNhVOmhU9IEjQ/DwyLrKMSceaGQ084H748cib2ZjkXY=">
-<script defer src="/en.search.min.041c68e8b7f6ef0d8ff8415cf049965f7f157ade826d1deded9e715f1b7e6600.js" integrity="sha256-BBxo6Lf27w2P&#43;EFc8EmWX38Vet6CbR3t7Z5xXxt&#43;ZgA="></script>
+<script defer src="/en.search.min.4d441773eef40b40d252dbdb67fb5c1bbdeea27bf3a46eb1bef35a8bd88afc1e.js" integrity="sha256-TUQXc&#43;70C0DSUtvbZ/tcG73uonvzpG6xvvNai9iK/B4="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -196,7 +196,6 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#joinpath-elements"><code>joinPath</code> <em>elements</em></a></li>
         <li><a href="#keepassxc-entry"><code>keepassxc</code> <em>entry</em></a></li>
         <li><a href="#keepassxcattribute-entry-attribute"><code>keepassxcAttribute</code> <em>entry</em> <em>attribute</em></a></li>
-        <li><a href="#keyring-service-user"><code>keyring</code> <em>service</em> <em>user</em></a></li>
         <li><a href="#lastpass-id"><code>lastpass</code> <em>id</em></a></li>
         <li><a href="#lastpassraw-id"><code>lastpassRaw</code> <em>id</em></a></li>
         <li><a href="#lookpath-file"><code>lookPath</code> <em>file</em></a></li>
@@ -609,9 +608,9 @@ of the config file is <code>chezmoi</code>, and the first config file found is u
   YAML
   <a class="anchor" href="#yaml">#</a>
 </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">sourceDir</span>: /home/user/.dotfiles
-<span style="color:#66d9ef">diff</span>:
-    <span style="color:#66d9ef">format</span>: git
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">sourceDir</span>: <span style="color:#ae81ff">/home/user/.dotfiles</span>
+<span style="color:#f92672">diff</span>:
+    <span style="color:#f92672">format</span>: <span style="color:#ae81ff">git</span>
 </code></pre></div><h2 id="source-state-attributes">
   Source state attributes
   <a class="anchor" href="#source-state-attributes">#</a>
@@ -1379,8 +1378,6 @@ separate them with <code>--</code> to prevent chezmoi from interpreting them.</p
   <a class="anchor" href="#secret-examples">#</a>
 </h4>
 <pre><code>chezmoi secret bitwarden list items
-chezmoi secret keyring set --service service --user user
-chezmoi secret keyring get --service service --user user
 chezmoi secret lastpass ls
 chezmoi secret lastpass -- show --format=json id
 chezmoi secret onepassword list items
@@ -1517,7 +1514,7 @@ differently depending on whether the target is a file or a symlink.</p>
 <li>If the result is an empty string, then the symlink is removed.</li>
 <li>Otherwise, the target symlink target is the result.</li>
 </ul>
-<p>chezmoi executes templates using <code>text/template</code>'s <code>missingkey=error</code> option,
+<p>chezmoi executes templates using <code>text/template</code>&rsquo;s <code>missingkey=error</code> option,
 which means that misspelled or missing keys will raise an error. This can be
 overridden by setting a list of options in the configuration file, for example:</p>
 <pre><code>[template]
@@ -1675,38 +1672,6 @@ prompting, password storage, and result caching.</p>
   <a class="anchor" href="#keepassxcattribute-examples">#</a>
 </h4>
 <pre><code>{{ keepassxcAttribute &quot;SSH Key&quot; &quot;private-key&quot; }}
-</code></pre>
-<h3 id="keyring-service-user">
-  <code>keyring</code> <em>service</em> <em>user</em>
-  <a class="anchor" href="#keyring-service-user">#</a>
-</h3>
-<p><code>keyring</code> retrieves the password associated with <em>service</em> and <em>user</em> from the
-user&rsquo;s keyring.</p>
-<table>
-<thead>
-<tr>
-<th>OS</th>
-<th>Keyring</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>macOS</td>
-<td>Keychain</td>
-</tr>
-<tr>
-<td>Linux</td>
-<td>GNOME Keyring</td>
-</tr>
-</tbody>
-</table>
-<h4 id="keyring-examples">
-  <code>keyring</code> examples
-  <a class="anchor" href="#keyring-examples">#</a>
-</h4>
-<pre><code>[github]
-  user = &quot;{{ .github.user }}&quot;
-  token = &quot;{{ keyring &quot;github&quot; .github.user }}&quot;
 </code></pre>
 <h3 id="lastpass-id">
   <code>lastpass</code> <em>id</em>
@@ -2051,7 +2016,6 @@ times with the same <em>key</em> will only invoke <code>vault</code> once.</p>
         <li><a href="#joinpath-elements"><code>joinPath</code> <em>elements</em></a></li>
         <li><a href="#keepassxc-entry"><code>keepassxc</code> <em>entry</em></a></li>
         <li><a href="#keepassxcattribute-entry-attribute"><code>keepassxcAttribute</code> <em>entry</em> <em>attribute</em></a></li>
-        <li><a href="#keyring-service-user"><code>keyring</code> <em>service</em> <em>user</em></a></li>
         <li><a href="#lastpass-id"><code>lastpass</code> <em>id</em></a></li>
         <li><a href="#lastpassraw-id"><code>lastpassRaw</code> <em>id</em></a></li>
         <li><a href="#lookpath-file"><code>lookPath</code> <em>file</em></a></li>

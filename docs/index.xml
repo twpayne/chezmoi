@@ -5,11 +5,7 @@
     <link>https://chezmoi.io/docs/</link>
     <description>Recent content in Docs on chezmoi.io</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language>
-    
-	<atom:link href="https://chezmoi.io/docs/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <language>en-us</language><atom:link href="https://chezmoi.io/docs/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Changes</title>
       <link>https://chezmoi.io/docs/changes/</link>
@@ -70,7 +66,7 @@ curl -sfL https://git.io/chezmoi | sh  One-line package install #  Install chezm
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/media/</guid>
-      <description>Media #     Date Version Format Link     2020-07-06 1.8.3 Video chezmoi: Manage your dotfiles across multiple machines, securely.   2020-07-03 1.8.3 Text Feeling at home in a LXD container   2020-04-27 1.8.0 Text Managing my dotfiles with chezmoi   2020-04-16 1.17.19 Text (FR) Chezmoi, visite guidée   2020-04-03 1.7.17 Text Fedora Magazine: Take back your dotfiles with Chezmoi   2020-04-01 1.</description>
+      <description>Media #     Date Version Format Link     2020-08-09 1.8.3 Text Automating and testing dotfiles   2020-07-06 1.8.3 Video chezmoi: Manage your dotfiles across multiple machines, securely.   2020-07-03 1.8.3 Text Feeling at home in a LXD container   2020-06-15 1.8.2 Text Dotfiles management using chezmoi - How I Use Linux Desktop at Work Part5   2020-04-27 1.8.0 Text Managing my dotfiles with chezmoi   2020-04-16 1.</description>
     </item>
     
     <item>

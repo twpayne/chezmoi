@@ -16,7 +16,7 @@ chezmoi cd git remote add origin https://github." />
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.6cd8553a6854f4812343f0f0c8baca31271e686434f381fbe3c7226f66639176.css" integrity="sha256-bNhVOmhU9IEjQ/DwyLrKMSceaGQ084H748cib2ZjkXY=">
-<script defer src="/en.search.min.041c68e8b7f6ef0d8ff8415cf049965f7f157ade826d1deded9e715f1b7e6600.js" integrity="sha256-BBxo6Lf27w2P&#43;EFc8EmWX38Vet6CbR3t7Z5xXxt&#43;ZgA="></script>
+<script defer src="/en.search.min.4d441773eef40b40d252dbdb67fb5c1bbdeea27bf3a46eb1bef35a8bd88afc1e.js" integrity="sha256-TUQXc&#43;70C0DSUtvbZ/tcG73uonvzpG6xvvNai9iK/B4="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -120,13 +120,13 @@ https://github.com/alex-shpak/hugo-book
     <li><a href="#ensure-that-a-target-is-removed">Ensure that a target is removed</a></li>
     <li><a href="#include-a-subdirectory-from-another-repository-like-oh-my-zsh">Include a subdirectory from another repository, like Oh My Zsh</a></li>
     <li><a href="#handle-configuration-files-which-are-externally-modified">Handle configuration files which are externally modified</a></li>
+    <li><a href="#handle-different-file-locations-on-different-systems-with-the-same-contents">Handle different file locations on different systems with the same contents</a></li>
     <li><a href="#keep-data-private">Keep data private</a>
       <ul>
         <li><a href="#use-bitwarden-to-keep-your-secrets">Use Bitwarden to keep your secrets</a></li>
         <li><a href="#use-gopass-to-keep-your-secrets">Use gopass to keep your secrets</a></li>
         <li><a href="#use-gpg-to-keep-your-secrets">Use gpg to keep your secrets</a></li>
         <li><a href="#use-keepassxc-to-keep-your-secrets">Use KeePassXC to keep your secrets</a></li>
-        <li><a href="#use-a-keyring-to-keep-your-secrets">Use a keyring to keep your secrets</a></li>
         <li><a href="#use-lastpass-to-keep-your-secrets">Use LastPass to keep your secrets</a></li>
         <li><a href="#use-1password-to-keep-your-secrets">Use 1Password to keep your secrets</a></li>
         <li><a href="#use-pass-to-keep-your-secrets">Use pass to keep your secrets</a></li>
@@ -465,7 +465,28 @@ directories are private by default.</p>
 </code></pre>
 <p>Now, when the program modifies its configuration file it will modify the file in
 the source state instead.</p>
-<h2 id="keep-data-private">
+<h2 id="handle-different-file-locations-on-different-systems-with-the-same-contents">
+  Handle different file locations on different systems with the same contents
+  <a class="anchor" href="#handle-different-file-locations-on-different-systems-with-the-same-contents">#</a>
+</h2>
+<p>If you want to have the same file contents in different locations on different
+systems, but maintain only a single file in your source state, you can use
+a shared template.</p>
+<p>Create the common file in the <code>.chezmoitemplates</code> directory in the source state. For
+example, create <code>.chezmoitemplates/file.conf</code>. The contents of this file are
+available in templates with the <code>template *name*</code> function where <em>name</em> is the
+name of the file.</p>
+<p>Then create files for each system, for example <code>Library/Application Support/App/file.conf.tmpl</code> for macOS and <code>dot_config/app/file.conf.tmpl</code> for
+Linux. Both template files should contain <code>{{- template &quot;file.conf&quot; -}}</code>.</p>
+<p>Finally, tell chezmoi to ignore files where they are not needed by adding lines
+to your <code>.chezmoiignore</code> file, for example:</p>
+<pre><code>{{ if ne .chezmoi.os &quot;darwin&quot; }}
+Library/Application Support/App/file.conf
+{{ end }}
+{{ if ne .chezmoi.os &quot;linux&quot; }}
+.config/app/file.conf
+{{ end }}
+</code></pre><h2 id="keep-data-private">
   Keep data private
   <a class="anchor" href="#keep-data-private">#</a>
 </h2>
@@ -573,31 +594,6 @@ For example, if you have an entry called <code>SSH Key</code> with an additional
 called <code>private-key</code>, its value is available as:</p>
 <pre><code>{{ keepassxcAttribute &quot;SSH Key&quot; &quot;private-key&quot; }}
 </code></pre>
-<h3 id="use-a-keyring-to-keep-your-secrets">
-  Use a keyring to keep your secrets
-  <a class="anchor" href="#use-a-keyring-to-keep-your-secrets">#</a>
-</h3>
-<p>chezmoi includes support for Keychain (on macOS), GNOME Keyring (on Linux), and
-Windows Credentials Manager (on Windows) via the
-<a href="https://github.com/zalando/go-keyring"><code>zalando/go-keyring</code></a> library.</p>
-<p>Set passwords with:</p>
-<pre><code>$ chezmoi keyring set --service=&lt;service&gt; --user=&lt;user&gt;
-Password: xxxxxxxx
-</code></pre>
-<p>The password can then be used in templates using the <code>keyring</code> function which
-takes the service and user as arguments.</p>
-<p>For example, save a GitHub access token in keyring with:</p>
-<pre><code>$ chezmoi keyring set --service=github --user=&lt;github-username&gt;
-Password: xxxxxxxx
-</code></pre>
-<p>and then include it in your <code>~/.gitconfig</code> file with:</p>
-<pre><code>[github]
-  user = &quot;{{ .github.user }}&quot;
-  token = &quot;{{ keyring &quot;github&quot; .github.user }}&quot;
-</code></pre>
-<p>You can query the keyring from the command line:</p>
-<pre><code>chezmoi keyring get --service=github --user=&lt;github-username&gt;
-</code></pre>
 <h3 id="use-lastpass-to-keep-your-secrets">
   Use LastPass to keep your secrets
   <a class="anchor" href="#use-lastpass-to-keep-your-secrets">#</a>
@@ -656,7 +652,7 @@ example, if the output of <code>op get item &quot;&lt;uuid&gt;&quot;</code> is:<
 </code></pre>
 <p>Login details fields can be retrieved with the <code>onepasswordDetailsFields</code>
 function, for example:</p>
-<pre><code>{{- (onepasswordDetailsField &quot;uuid&quot;).password.value }}
+<pre><code>{{- (onepasswordDetailsFields &quot;uuid&quot;).password.value }}
 </code></pre>
 <p>Documents can be retrieved with:</p>
 <pre><code>{{- onepasswordDocument &quot;uuid&quot; -}}
@@ -823,7 +819,15 @@ brew install ripgrep
 </h2>
 <p>The following assumes you are using chezmoi 1.8.4 or later. It does not work
 with earlier versions of chezmoi.</p>
-<p>You can use chezmoi to manage your dotfiles in <a href="https://docs.github.com/en/github/developing-online-with-codespaces/personalizing-codespaces-for-your-account">GitHub Codespaces</a>, <a href="https://docs.microsoft.com/en/visualstudio/codespaces/reference/personalizing">Visual Studio Codespaces</a>, and <a href="https://code.visualstudio.com/docs/remote/containers#_personalizing-with-dotfile-repositories">Visual Studio Code Remote - Containers</a>.</p>
+<p>You can use chezmoi to manage your dotfiles in <a href="https://docs.github.com/en/github/developing-online-with-codespaces/personalizing-codespaces-for-your-account">GitHub
+Codespaces</a>,
+<a href="https://docs.microsoft.com/en/visualstudio/codespaces/reference/personalizing">Visual Studio
+Codespaces</a>,
+and <a href="https://code.visualstudio.com/docs/remote/containers#_personalizing-with-dotfile-repositories">Visual Studio Code Remote -
+Containers</a>.</p>
+<p>For a quick start, you can clone the <a href="https://github.com/chezmoi/dotfiles"><code>chezmoi/dotfiles</code>
+repository</a> which supports Codespaces out
+of the box.</p>
 <p>The workflow is different to using chezmoi on a new machine, notably:</p>
 <ul>
 <li>These systems will automatically clone your <code>dotfiles</code> repo to <code>~/dotfiles</code>,
@@ -836,20 +840,19 @@ function</a>.</li>
 <p>First, if you are using a chezmoi configuration file template, ensure that it is
 non-interactive when running in codespaces, for example, <code>.chezmoi.toml.tmpl</code>
 might contain:</p>
-<pre><code>sourceDir = &quot;{{ .chezmoi.sourceDir }}&quot;
-{{- if (env &quot;CODESPACES&quot;) -}}
+<pre><code>{{- $codespaces:= env &quot;CODESPACES&quot; | not | not -}}
+sourceDir = &quot;{{ .chezmoi.sourceDir }}&quot;
+
 [data]
-  codespaces = true
-  email = &quot;user@company.com&quot;
-{{- else -}}
-{{- $email := promptString &quot;email&quot; -}}
-[data]
-  codespaces = false
-  email = {{ $email }}
+  name = &quot;Your name&quot;
+  codespaces = {{ $codespaces }}
+{{- if $codespaces }}{{/* Codespaces dotfiles setup is non-interactive, so set an email address */}}
+  email = &quot;your@email.com&quot;
+{{- else }}{{/* Interactive setup, so prompt for an email address */}}
+  email = &quot;{{ promptString &quot;email&quot; }}&quot;
 {{- end }}
-</code></pre><p>This sets the <code>sourceDir</code> configuration to the <code>--source</code> argument passed
-in <code>chezmoi init</code>. Also sets the <code>codespaces</code> template variable, so you don&rsquo;t
-have to repeat <code>(env &quot;CODESPACES&quot;)</code> in your templates.</p>
+</code></pre><p>This sets the <code>codespaces</code> template variable, so you don&rsquo;t have to repeat <code>(env &quot;CODESPACES&quot;)</code> in your templates. It also sets the <code>sourceDir</code> configuration to
+the <code>--source</code> argument passed in <code>chezmoi init</code>.</p>
 <p>Second, create an <code>install.sh</code> script that installs chezmoi and your dotfiles:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e">#!/bin/sh
 </span><span style="color:#75715e"></span>
@@ -1045,13 +1048,13 @@ contents.</p>
     <li><a href="#ensure-that-a-target-is-removed">Ensure that a target is removed</a></li>
     <li><a href="#include-a-subdirectory-from-another-repository-like-oh-my-zsh">Include a subdirectory from another repository, like Oh My Zsh</a></li>
     <li><a href="#handle-configuration-files-which-are-externally-modified">Handle configuration files which are externally modified</a></li>
+    <li><a href="#handle-different-file-locations-on-different-systems-with-the-same-contents">Handle different file locations on different systems with the same contents</a></li>
     <li><a href="#keep-data-private">Keep data private</a>
       <ul>
         <li><a href="#use-bitwarden-to-keep-your-secrets">Use Bitwarden to keep your secrets</a></li>
         <li><a href="#use-gopass-to-keep-your-secrets">Use gopass to keep your secrets</a></li>
         <li><a href="#use-gpg-to-keep-your-secrets">Use gpg to keep your secrets</a></li>
         <li><a href="#use-keepassxc-to-keep-your-secrets">Use KeePassXC to keep your secrets</a></li>
-        <li><a href="#use-a-keyring-to-keep-your-secrets">Use a keyring to keep your secrets</a></li>
         <li><a href="#use-lastpass-to-keep-your-secrets">Use LastPass to keep your secrets</a></li>
         <li><a href="#use-1password-to-keep-your-secrets">Use 1Password to keep your secrets</a></li>
         <li><a href="#use-pass-to-keep-your-secrets">Use pass to keep your secrets</a></li>

@@ -18,7 +18,7 @@ What are the consequences of &ldquo;bare&rdquo; modifications to the target file
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.6cd8553a6854f4812343f0f0c8baca31271e686434f381fbe3c7226f66639176.css" integrity="sha256-bNhVOmhU9IEjQ/DwyLrKMSceaGQ084H748cib2ZjkXY=">
-<script defer src="/en.search.min.041c68e8b7f6ef0d8ff8415cf049965f7f157ade826d1deded9e715f1b7e6600.js" integrity="sha256-BBxo6Lf27w2P&#43;EFc8EmWX38Vet6CbR3t7Z5xXxt&#43;ZgA="></script>
+<script defer src="/en.search.min.4d441773eef40b40d252dbdb67fb5c1bbdeea27bf3a46eb1bef35a8bd88afc1e.js" integrity="sha256-TUQXc&#43;70C0DSUtvbZ/tcG73uonvzpG6xvvNai9iK/B4="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -126,6 +126,7 @@ https://github.com/alex-shpak/hugo-book
     <li><a href="#gpg-encryption-fails-what-could-be-wrong">gpg encryption fails. What could be wrong?</a></li>
     <li><a href="#im-getting-errors-trying-to-build-chezmoi-from-source">I&rsquo;m getting errors trying to build chezmoi from source</a></li>
     <li><a href="#what-inspired-chezmoi">What inspired chezmoi?</a></li>
+    <li><a href="#why-not-use-ansiblechefpuppetsalt-or-similar-to-manage-my-dotfiles-instead">Why not use Ansible/Chef/Puppet/Salt, or similar to manage my dotfiles instead?</a></li>
     <li><a href="#can-i-use-chezmoi-to-manage-files-outside-my-home-directory">Can I use chezmoi to manage files outside my home directory?</a></li>
     <li><a href="#where-does-the-name-chezmoi-come-from">Where does the name &ldquo;chezmoi&rdquo; come from?</a></li>
     <li><a href="#what-other-questions-have-been-asked-about-chezmoi">What other questions have been asked about chezmoi?</a></li>
@@ -176,7 +177,7 @@ entire directories with <code>chezmoi add -r</code>.</p>
   If there&rsquo;s a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?
   <a class="anchor" href="#if-theres-a-mechanism-in-place-for-the-above-is-there-also-a-way-to-tell-chezmoi-to-ignore-specific-files-or-groups-of-files-eg-by-directory-name-or-by-glob">#</a>
 </h2>
-<p>By default, chezmoi ignores everything that you haven&rsquo;t explicitly <code>chezmoi add</code>'ed. If you have files in your source directory that you don&rsquo;t want added to
+<p>By default, chezmoi ignores everything that you haven&rsquo;t explicitly <code>chezmoi add</code>&lsquo;ed. If you have files in your source directory that you don&rsquo;t want added to
 your destination directory when you run <code>chezmoi apply</code> add their names to a
 file called <code>.chezmoiignore</code> in the source state.</p>
 <p>Patterns are supported, and you can change what&rsquo;s ignored from machine to
@@ -395,6 +396,26 @@ Guide</a>.</p>
 Puppet is a slow overkill for managing your personal configuration files. The
 focus of chezmoi will always be personal home directory management. If your
 needs grow beyond that, switch to a whole system configuration management tool.</p>
+<h2 id="why-not-use-ansiblechefpuppetsalt-or-similar-to-manage-my-dotfiles-instead">
+  Why not use Ansible/Chef/Puppet/Salt, or similar to manage my dotfiles instead?
+  <a class="anchor" href="#why-not-use-ansiblechefpuppetsalt-or-similar-to-manage-my-dotfiles-instead">#</a>
+</h2>
+<p>Whole system management tools are more than capable of managing your dotfiles,
+but are large systems that entail several disadvantages. Compared to whole
+system management tools, chezmoi offers:</p>
+<ul>
+<li>Small, focused feature set designed for dotfiles. There&rsquo;s simply less to learn
+with chezmoi compared to whole system management tools.</li>
+<li>Easy installation and execution on every platform, without root access.
+Installing chezmoi requires only copying a single binary file with no external
+dependencies. Executing chezmoi just involves running the binary. In contrast,
+installing and running a whole system management tools typically requires
+installing a scripting language runtime, several packages, and running a
+system service, all typically requiring root access.</li>
+</ul>
+<p>chezmoi&rsquo;s focus and simple installation means that it runs almost everywhere:
+from tiny ARM-based Linux systems to Windows desktops, from inside lightweight
+containers to FreeBSD-based virtual machines in the cloud.</p>
 <h2 id="can-i-use-chezmoi-to-manage-files-outside-my-home-directory">
   Can I use chezmoi to manage files outside my home directory?
   <a class="anchor" href="#can-i-use-chezmoi-to-manage-files-outside-my-home-directory">#</a>
@@ -422,7 +443,7 @@ you, in theory, to use chezmoi to manage any file in your filesystem, but this
 usage is extremely strongly discouraged.</p>
 <p>If your needs extend beyond modifying a handful of files outside your target
 system, then existing configuration management tools like
-<a href="https://puppet.com/">Puppet</a>, <a href="https://www.chef.io/chef/">Chef</a>,
+<a href="https://puppet.com/">Puppet</a>, <a href="https://chef.io/">Chef</a>,
 <a href="https://www.ansible.com/">Ansible</a>, and <a href="https://www.saltstack.com/">Salt</a> are
 much better suited - and of course can be called from a chezmoi <code>run_</code> script.
 Put your Puppet Manifests, Chef Recipes, Ansible Modules, and Salt Modules in a
@@ -509,6 +530,7 @@ chezmoi better. Thank you :)</p>
     <li><a href="#gpg-encryption-fails-what-could-be-wrong">gpg encryption fails. What could be wrong?</a></li>
     <li><a href="#im-getting-errors-trying-to-build-chezmoi-from-source">I&rsquo;m getting errors trying to build chezmoi from source</a></li>
     <li><a href="#what-inspired-chezmoi">What inspired chezmoi?</a></li>
+    <li><a href="#why-not-use-ansiblechefpuppetsalt-or-similar-to-manage-my-dotfiles-instead">Why not use Ansible/Chef/Puppet/Salt, or similar to manage my dotfiles instead?</a></li>
     <li><a href="#can-i-use-chezmoi-to-manage-files-outside-my-home-directory">Can I use chezmoi to manage files outside my home directory?</a></li>
     <li><a href="#where-does-the-name-chezmoi-come-from">Where does the name &ldquo;chezmoi&rdquo; come from?</a></li>
     <li><a href="#what-other-questions-have-been-asked-about-chezmoi">What other questions have been asked about chezmoi?</a></li>
