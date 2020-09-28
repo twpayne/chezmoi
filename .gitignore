@@ -1,5 +1,4 @@
 /bin/gofumports
 /bin/golangci-lint
-/chezmoi
-/chezmoi.exe
+/chezmoi*
 /dist
