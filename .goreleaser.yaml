@@ -8,11 +8,21 @@ builds:
 - id: chezmoi-cgo
   binary: chezmoi
   env:
+  - CC=/usr/bin/musl-gcc
   - CGO_ENABLED=1
   goos:
   - linux
   goarch:
   - amd64
+  ldflags:
+  - '-s'
+  - '-w'
+  - '-X main.version={{.Version}}'
+  - '-X main.commit={{.Commit}}'
+  - '-X main.date={{.Date}}'
+  - '-X main.builtBy=goreleaser'
+  - '-linkmode external'
+  - '--extldflags "-static"'
 - id: chezmoi-nocgo
   binary: chezmoi
   env:

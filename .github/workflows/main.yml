@@ -38,6 +38,9 @@ jobs:
   test-release:
     runs-on: ubuntu-latest
     steps:
+    - name: Install musl
+      run: |
+        sudo apt install -y musl-tools
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
@@ -62,7 +65,7 @@ jobs:
     - name: Test release
       run: |
         # verify that version information is embedded correctly
-        ./dist/chezmoi-cgo_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v"
+        file ./dist/chezmoi-cgo_linux_amd64/chezmoi | tee /dev/stderr | grep -q "statically linked"
         ./dist/chezmoi-cgo_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v"
         ./dist/chezmoi-nocgo_linux_386/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v"
   generate:
@@ -103,6 +106,9 @@ jobs:
     - test-release
     runs-on: ubuntu-latest
     steps:
+    - name: Install musl
+      run: |
+        sudo apt install -y musl-tools
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
