@@ -3019,4 +3019,14 @@ func init() {
 		"\n" +
 		"    {{ (vault \"<key>\").data.data.password }}\n" +
 		"\n")
+	assets["docs/TEMPLATING.md"] = []byte("" +
+		"# chezmoi Templating Guide\n" +
+		"\n" +
+		"<!--- toc --->\n" +
+		"* [Placeholder](#placeholder)\n" +
+		"\n" +
+		"## Placeholder\n" +
+		"\n" +
+		"This document is a placeholder for improved template documentation.\n" +
+		"\n")
 }

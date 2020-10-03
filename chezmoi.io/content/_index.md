@@ -9,10 +9,11 @@ Manage your dotfiles across multiple machines, securely.
 
 ## How do I start with chezmoi now?
 
-[Install chezmoi](/docs/install/) then read the [quick start
-guide](/docs/quick-start/). The [how-to guide](/docs/how-to/) covers most common
-tasks, and there's the [frequently asked questions](/docs/faq/) for specific
-questions. You can browse other people's dotfiles that use chezmoi [on
+[Install chezmoi](docs/INSTALL.md) then read the [quick start
+guide](docs/QUICKSTART.md). The [how-to guide](docs/HOWTO.md) covers most common
+tasks, and there's both documentation on [templating](docs/TEMPLATING.md) and
+[frequently asked questions](docs/FAQ.md) for specific questions. You can browse
+other people's dotfiles that use chezmoi [on
 GitHub](https://github.com/topics/chezmoi?o=desc&s=updated) and [on
 GitLab](https://gitlab.com/search?search=chezmoi). For a full description of
 chezmoi, consult the [reference](/docs/reference/).
@@ -61,7 +62,7 @@ the configuration file in the format of your choice. chezmoi can retrieve
 secrets from [1Password](https://1password.com/),
 [Bitwarden](https://bitwarden.com/), [gopass](https://www.gopass.pw/),
 [KeePassXC](https://keepassxc.org/), [LastPass](https://lastpass.com/),
-[pass](https://www.passwordstore.org/), [Vault](https://www.vaultproject.io/),,
+[pass](https://www.passwordstore.org/), [Vault](https://www.vaultproject.io/),
 or any command-line utility of your choice. You can encrypt individual files
 with [GnuPG](https://www.gnupg.org). You can checkout your dotfiles repo on as
 many machines as you want without revealing any secrets to anyone.
@@ -174,6 +175,7 @@ Read what [people have said about chezmoi](docs/MEDIA.md).
   one or two commands.
 * [Quick start guide](/docs/quick-start/) for your first steps.
 * [How-to guide](/docs/how-to/) for achieving specific tasks.
+* [Templating guide](/docs/templating/) for working with templates.
 * [FAQ](/docs/faq/) for questions that aren't answered elsewhere.
 * [Changes](/docs/changes/) for non-backwards compatible changes.
 * [Reference](/docs/reference/) for a complete description of chezmoi.
