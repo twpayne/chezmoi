@@ -3022,11 +3022,188 @@ func init() {
 	assets["docs/TEMPLATING.md"] = []byte("" +
 		"# chezmoi Templating Guide\n" +
 		"\n" +
-		"<!--- toc --->\n" +
-		"* [Placeholder](#placeholder)\n" +
+		"<!--- toc ---> \n" +
+		"* [Introduction](#introduction)\n" +
+		"* [Creating a template file](#creating-a-template-file)\n" +
+		"* [Debugging templates](#debugging-templates)\n" +
+		"* [Simple logic](#simple-logic)\n" +
+		"* [Using .chezmoitemplates for creating similar files](#using-chezmoitemplates-for-creating-similar-files)\n" +
 		"\n" +
-		"## Placeholder\n" +
+		"## Introduction\n" +
 		"\n" +
-		"This document is a placeholder for improved template documentation.\n" +
+		"Templates are used to create different configurations depending on the enviorment.\n" +
+		"For example, you can use the hostname of the machine to create different\n" +
+		"configurations.\n" +
+		"\n" +
+		"## Creating a template file\n" +
+		"\n" +
+		"chezmoi will not interpret all files as templates. It will only do that if the \n" +
+		"filename ends with .tmpl or it is in the .chezmoitemplates directory.\n" +
+		"\n" +
+		"There are a few ways to create a template file in chezmoi. \n" +
+		"If the file is not yet known by chezmoi you can do the following:\n" +
+		"\n" +
+		"\tchezmoi add ~/.zshrc --template\n" +
+		"\n" +
+		"This will add ~/.zshrc as a template to the source state. This means that chezmoi\n" +
+		"will add a .tmpl extension to file and interpret any templates in the source upon\n" +
+		"updating.\n" +
+		"\n" +
+		"You can also use the command\n" +
+		"\n" +
+		"\tchezmoi add ~/.zshrc --autotemplate\n" +
+		"\n" +
+		"to add ~/.zshrc to the source state as a template, while replacing any strings\n" +
+		"that it can match with the variables from the data section of the chezmoi config.\n" +
+		"\n" +
+		"If the file is already known by chezmoi, you can simply add the file extension\n" +
+		".tmpl to the file in the source directory. This way chezmoi will interpret the file\n" +
+		"as a template.\n" +
+		"\n" +
+		"## Template syntax\n" +
+		"\n" +
+		"Every template expression starts and ends with double curly brackets ('{{' and '}}').\n" +
+		"Between these brackets can be either variables or functions.\n" +
+		"\n" +
+		"An example with a variable\n" +
+		"\n" +
+		"\t{{.chezmoi.hostname}}\n" +
+		"\n" +
+		"An example with a function\n" +
+		"\n" +
+		"\t{{if expression}} Some text {{end}}\n" +
+		"\n" +
+		"If the result of the expression is empty (false, 0, empty string, ...), no output\n" +
+		"will be generated. Otherwise this will result in the text in between the if and the \n" +
+		"end.\n" +
+		"\n" +
+		"### Remove whitespace\n" +
+		"\n" +
+		"For formatting reasons you might want to leave some whitespace after or before the \n" +
+		"template code. This whitespace will remain in the final file, which you might not want.\n" +
+		"\n" +
+		"A solution for this is to place a minus sign and a space next to the brackets. So\n" +
+		"'{{- ' for the left brackets and ' -}}' for the right brackets. Here's an example:\n" +
+		"\n" +
+		"\tHOSTNAME=  \t\t\t{{- .chezmoi.hostname }}\n" +
+		"\n" +
+		"This will result in\n" +
+		"\n" +
+		"\tHOSTNAME=myhostname\n" +
+		"\n" +
+		"Notice that this will remove any number of tabs, spaces and even newlines and carriage\n" +
+		"returns.\n" +
+		"\n" +
+		"## Debugging templates\n" +
+		"\n" +
+		"If there is a mistake in one of your templates and you want to debug it, chezmoi\n" +
+		"can help you. You can use this subcommand to test and play with the examples in these\n" +
+		"docs as well.\n" +
+		"\n" +
+		"There is a very handy subcommand called \"execute-template\". chezmoi will interpret\n" +
+		"any data coming from stdin or at the end of the command. It will then interpret all\n" +
+		"templates and output the result to stdout.\n" +
+		"For example with the command:\n" +
+		"\n" +
+		"\tchezmoi execute-template '{{ .chezmoi.os }}/{{ .chezmoi.arch }}'\n" +
+		"\n" +
+		"chezmoi will output the current os and architecture to stdout.\n" +
+		"\n" +
+		"You can also feed the contents of a file to this command by typing:\n" +
+		"\n" +
+		"\tcat foo.txt | chezmoi exectute-template\n" +
+		"\n" +
+		"## Simple logic\n" +
+		"\n" +
+		"A very useful feature of chezmoi templates is the ability to perform logical operations.\n" +
+		"\n" +
+		"\t# common config\n" +
+		"\texport EDITOR=vi\n" +
+		"\t\n" +
+		"\t# machine-specific configuration\n" +
+		"\t{{- if eq .chezmoi.hostname \"work-laptop\" }}\n" +
+		"\t# this will only be included in ~/.bashrc on work-laptop\n" +
+		"\t{{- end }}\n" +
+		"\n" +
+		"In this example chezmoi will look at the hostname of the machine and change the\n" +
+		"contents of the resulting file based on that information.\n" +
+		"\n" +
+		"## Using .chezmoitemplates for creating similar files\n" +
+		"\n" +
+		"When you have multiple similar files, but they aren't quite the same, you can create\n" +
+		"a template file in the directory .chezmoitemplates. This template can be inserted\n" +
+		"in other template files. \n" +
+		"For example:\n" +
+		"\n" +
+		"Create:\n" +
+		"\n" +
+		"\t.local/share/chezmoi/.chezmoitemplates/alacritty:\n" +
+		"\n" +
+		"Notice the file name doesn't have to end in .tmpl, as all files in the directory\n" +
+		".chemzoitemplates are interpreted as templates.\n" +
+		"\n" +
+		"\tsome: config\n" +
+		"\tfontsize: {{ . }}\n" +
+		"\tsomemore: config\n" +
+		"\n" +
+		"Create other files using the template\n" +
+		"\n" +
+		"`.local/share/chezmoi/small-font.yml.tmpl`\n" +
+		"\n" +
+		"```\n" +
+		"{{- template \"alacritty\" 12 -}}\n" +
+		"```\n" +
+		"\n" +
+		"`.local/share/chezmoi/big-font.yml.tmpl`\n" +
+		"\n" +
+		"```\n" +
+		"{{- template \"alacritty\" 18 -}}\n" +
+		"```\n" +
+		"\n" +
+		"Here we're calling the shared `alacritty` template with the he font size as \n" +
+		"the `.` value passed in. You can test this with `chezmoi cat`:\n" +
+		"\n" +
+		"\t$ chezmoi cat ~/small-font.yml\n" +
+		"\tsome: config\n" +
+		"\tfontsize: 12\n" +
+		"\tsomemore: config\n" +
+		"\t$ chezmoi cat ~/big-font.yml\n" +
+		"\tsome: config\n" +
+		"\tfontsize: 18\n" +
+		"\tsomemore: config\n" +
+		"\n" +
+		"This approach only works for a single value. If you want to pass in more than one value you can pass in structured data from your config file:\n" +
+		"\n" +
+		"`.config/chezmoi/chezmoi.toml`\n" +
+		"\n" +
+		"```\n" +
+		"[data.alacritty.big]\n" +
+		"  fontsize = 18\n" +
+		"[data.alacritty.small]\n" +
+		"  fontsize = 12\n" +
+		"```\n" +
+		"\n" +
+		"`.local/share/chezmoi/.chezmoitemplates/alacritty`:\n" +
+		"\n" +
+		"```\n" +
+		"some: config\n" +
+		"fontsize: {{ .fontsize }}\n" +
+		"somemore: config\n" +
+		"```\n" +
+		"\n" +
+		"`.local/share/chezmoi/small-font.yml.tmpl`\n" +
+		"\n" +
+		"```\n" +
+		"{{- template \"alacritty\" .alacritty.small -}}\n" +
+		"```\n" +
+		"\n" +
+		"`.local/share/chezmoi/big-font.yml.tmpl`\n" +
+		"\n" +
+		"```\n" +
+		"{{- template \"alacritty\" .alacritty.big -}}\n" +
+		"```\n" +
+		"\n" +
+		"At the moment, this means that you'll have to duplicate the alacritty data in the config file on every machine, \n" +
+		"but a feature will be added to avoid this.\n" +
 		"\n")
 }
