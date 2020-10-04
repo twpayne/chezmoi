@@ -27,8 +27,9 @@ Manage your dotfiles across multiple machines, securely.
 
 [Install chezmoi](docs/INSTALL.md) then read the [quick start
 guide](docs/QUICKSTART.md). The [how-to guide](docs/HOWTO.md) covers most common
-tasks, and there's the [frequently asked questions](docs/FAQ.md) for specific
-questions. You can browse other people's dotfiles that use chezmoi [on
+tasks, and there's both documentation on [templating](docs/TEMPLATING.md) and
+[frequently asked questions](docs/FAQ.md) for specific questions. You can browse
+other people's dotfiles that use chezmoi [on
 GitHub](https://github.com/topics/chezmoi?o=desc&s=updated) and [on
 GitLab](https://gitlab.com/search?search=chezmoi). For a full description of
 chezmoi, consult the [reference](docs/REFERENCE.md).
@@ -190,6 +191,7 @@ Read what [people have said about chezmoi](docs/MEDIA.md).
   one or two commands.
 * [Quick start guide](docs/QUICKSTART.md) for your first steps.
 * [How-to guide](docs/HOWTO.md) for achieving specific tasks.
+* [Templating guide](docs/TEMPLATING.md) for working with templates.
 * [FAQ](docs/FAQ.md) for questions that aren't answered elsewhere.
 * [Changes](docs/CHANGES.md) for non-backwards compatible changes.
 * [Reference](docs/REFERENCE.md) for a complete description of chezmoi.

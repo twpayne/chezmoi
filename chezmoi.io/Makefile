@@ -11,7 +11,8 @@ content-docs: \
 	content/docs/install.md \
 	content/docs/media.md \
 	content/docs/quick-start.md \
-	content/docs/reference.md
+	content/docs/reference.md \
+	content/docs/templating.md
 
 content/docs/changes.md: ../docs/CHANGES.md ../internal/generate-chezmoi.io-content-docs/main.go Makefile
 	go run ../internal/generate-chezmoi.io-content-docs -shorttitle="Changes" -longtitle="Changes" < $< > $@ || ( rm -f $@ ; false )
@@ -36,3 +37,6 @@ content/docs/quick-start.md: ../docs/QUICKSTART.md ../internal/generate-chezmoi.
 
 content/docs/reference.md: ../docs/REFERENCE.md ../internal/generate-chezmoi.io-content-docs/main.go Makefile
 	go run ../internal/generate-chezmoi.io-content-docs -shorttitle="Reference" -longtitle="Reference Manual" < $< > $@ || ( rm -f $@ ; false )
+
+content/docs/templating.md: ../docs/TEMPLATING.md ../internal/generate-chezmoi.io-content-docs/main.go Makefile
+	go run ../internal/generate-chezmoi.io-content-docs -shorttitle="Templating" -longtitle="Templating Guide" < $< > $@ || ( rm -f $@ ; false )
