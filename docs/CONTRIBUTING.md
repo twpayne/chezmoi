@@ -120,6 +120,9 @@ To create a new release, create and push a tag, e.g.:
 
 If you're packaging chezmoi for an operating system or distribution:
 
+* chezmoi has no build or install dependencies other than the standard Go
+  toolchain.
+
 * Please set the version number, git commit, and build time in the binary. This
   greatly assists debugging when end users report problems or ask for help. You
   can do this by passing the following flags to the Go linker:
