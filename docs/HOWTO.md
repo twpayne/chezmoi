@@ -18,6 +18,7 @@
   * [Use gopass to keep your secrets](#use-gopass-to-keep-your-secrets)
   * [Use gpg to keep your secrets](#use-gpg-to-keep-your-secrets)
   * [Use KeePassXC to keep your secrets](#use-keepassxc-to-keep-your-secrets)
+  * [Use a keyring to keep your secrets](#use-a-keyring-to-keep-your-secrets)
   * [Use LastPass to keep your secrets](#use-lastpass-to-keep-your-secrets)
   * [Use 1Password to keep your secrets](#use-1password-to-keep-your-secrets)
   * [Use pass to keep your secrets](#use-pass-to-keep-your-secrets)
@@ -540,6 +541,35 @@ For example, if you have an entry called `SSH Key` with an additional attribute
 called `private-key`, its value is available as:
 
     {{ keepassxcAttribute "SSH Key" "private-key" }}
+
+### Use a keyring to keep your secrets
+
+chezmoi includes support for Keychain (on macOS), GNOME Keyring (on Linux), and
+Windows Credentials Manager (on Windows) via the
+[`zalando/go-keyring`](https://github.com/zalando/go-keyring) library.
+
+Set passwords with:
+
+    $ chezmoi keyring set --service=<service> --user=<user>
+    Password: xxxxxxxx
+
+The password can then be used in templates using the `keyring` function which
+takes the service and user as arguments.
+
+For example, save a GitHub access token in keyring with:
+
+    $ chezmoi keyring set --service=github --user=<github-username>
+    Password: xxxxxxxx
+
+and then include it in your `~/.gitconfig` file with:
+
+    [github]
+      user = "{{ .github.user }}"
+      token = "{{ keyring "github" .github.user }}"
+
+You can query the keyring from the command line:
+
+    chezmoi keyring get --service=github --user=<github-username>
 
 ### Use LastPass to keep your secrets
 

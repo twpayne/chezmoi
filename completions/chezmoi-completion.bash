@@ -1573,6 +1573,150 @@ _chezmoi_secret_keepassxc()
     noun_aliases=()
 }
 
+_chezmoi_secret_keyring_get()
+{
+    last_command="chezmoi_secret_keyring_get"
+
+    command_aliases=()
+
+    commands=()
+
+    flags=()
+    two_word_flags=()
+    local_nonpersistent_flags=()
+    flags_with_completion=()
+    flags_completion=()
+
+    flags+=("--color=")
+    two_word_flags+=("--color")
+    flags+=("--config=")
+    two_word_flags+=("--config")
+    flags_with_completion+=("--config")
+    flags_completion+=("_filedir")
+    two_word_flags+=("-c")
+    flags_with_completion+=("-c")
+    flags_completion+=("_filedir")
+    flags+=("--debug")
+    flags+=("--destination=")
+    two_word_flags+=("--destination")
+    two_word_flags+=("-D")
+    flags+=("--dry-run")
+    flags+=("-n")
+    flags+=("--follow")
+    flags+=("--remove")
+    flags+=("--service=")
+    two_word_flags+=("--service")
+    flags+=("--source=")
+    two_word_flags+=("--source")
+    two_word_flags+=("-S")
+    flags+=("--user=")
+    two_word_flags+=("--user")
+    flags+=("--verbose")
+    flags+=("-v")
+
+    must_have_one_flag=()
+    must_have_one_noun=()
+    noun_aliases=()
+}
+
+_chezmoi_secret_keyring_set()
+{
+    last_command="chezmoi_secret_keyring_set"
+
+    command_aliases=()
+
+    commands=()
+
+    flags=()
+    two_word_flags=()
+    local_nonpersistent_flags=()
+    flags_with_completion=()
+    flags_completion=()
+
+    flags+=("--password=")
+    two_word_flags+=("--password")
+    flags+=("--color=")
+    two_word_flags+=("--color")
+    flags+=("--config=")
+    two_word_flags+=("--config")
+    flags_with_completion+=("--config")
+    flags_completion+=("_filedir")
+    two_word_flags+=("-c")
+    flags_with_completion+=("-c")
+    flags_completion+=("_filedir")
+    flags+=("--debug")
+    flags+=("--destination=")
+    two_word_flags+=("--destination")
+    two_word_flags+=("-D")
+    flags+=("--dry-run")
+    flags+=("-n")
+    flags+=("--follow")
+    flags+=("--remove")
+    flags+=("--service=")
+    two_word_flags+=("--service")
+    flags+=("--source=")
+    two_word_flags+=("--source")
+    two_word_flags+=("-S")
+    flags+=("--user=")
+    two_word_flags+=("--user")
+    flags+=("--verbose")
+    flags+=("-v")
+
+    must_have_one_flag=()
+    must_have_one_noun=()
+    noun_aliases=()
+}
+
+_chezmoi_secret_keyring()
+{
+    last_command="chezmoi_secret_keyring"
+
+    command_aliases=()
+
+    commands=()
+    commands+=("get")
+    commands+=("set")
+
+    flags=()
+    two_word_flags=()
+    local_nonpersistent_flags=()
+    flags_with_completion=()
+    flags_completion=()
+
+    flags+=("--service=")
+    two_word_flags+=("--service")
+    flags+=("--user=")
+    two_word_flags+=("--user")
+    flags+=("--color=")
+    two_word_flags+=("--color")
+    flags+=("--config=")
+    two_word_flags+=("--config")
+    flags_with_completion+=("--config")
+    flags_completion+=("_filedir")
+    two_word_flags+=("-c")
+    flags_with_completion+=("-c")
+    flags_completion+=("_filedir")
+    flags+=("--debug")
+    flags+=("--destination=")
+    two_word_flags+=("--destination")
+    two_word_flags+=("-D")
+    flags+=("--dry-run")
+    flags+=("-n")
+    flags+=("--follow")
+    flags+=("--remove")
+    flags+=("--source=")
+    two_word_flags+=("--source")
+    two_word_flags+=("-S")
+    flags+=("--verbose")
+    flags+=("-v")
+
+    must_have_one_flag=()
+    must_have_one_flag+=("--service=")
+    must_have_one_flag+=("--user=")
+    must_have_one_noun=()
+    noun_aliases=()
+}
+
 _chezmoi_secret_lastpass()
 {
     last_command="chezmoi_secret_lastpass"
@@ -1752,6 +1896,7 @@ _chezmoi_secret()
     commands+=("generic")
     commands+=("gopass")
     commands+=("keepassxc")
+    commands+=("keyring")
     commands+=("lastpass")
     commands+=("onepassword")
     commands+=("pass")

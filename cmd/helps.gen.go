@@ -439,6 +439,8 @@ var helps = map[string]help{
 			"    chezmoi secret help",
 		example: "" +
 			"    chezmoi secret bitwarden list items\n" +
+			"    chezmoi secret keyring set --service service --user user\n" +
+			"    chezmoi secret keyring get --service service --user user\n" +
 			"    chezmoi secret lastpass ls\n" +
 			"    chezmoi secret lastpass -- show --format=json id\n" +
 			"    chezmoi secret onepassword list items\n" +
