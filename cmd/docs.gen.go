@@ -157,6 +157,9 @@ func init() {
 		"\n" +
 		"If you're packaging chezmoi for an operating system or distribution:\n" +
 		"\n" +
+		"* chezmoi has no build or install dependencies other than the standard Go\n" +
+		"  toolchain.\n" +
+		"\n" +
 		"* Please set the version number, git commit, and build time in the binary. This\n" +
 		"  greatly assists debugging when end users report problems or ask for help. You\n" +
 		"  can do this by passing the following flags to the Go linker:\n" +
