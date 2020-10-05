@@ -37,6 +37,7 @@ require (
 	github.com/twpayne/go-vfsafero v1.0.0
 	github.com/twpayne/go-xdg/v3 v3.1.0
 	github.com/yuin/goldmark v1.2.1 // indirect
+	github.com/zalando/go-keyring v0.1.0
 	go.etcd.io/bbolt v1.3.5
 	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
 	golang.org/x/net v0.0.0-20200904194848-62affa334b73 // indirect
