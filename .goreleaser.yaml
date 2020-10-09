@@ -5,7 +5,15 @@ before:
   - go mod download
 
 builds:
-- id: chezmoi-cgo
+- id: chezmoi-cgo-glibc
+  binary: chezmoi
+  env:
+  - CGO_ENABLED=1
+  goos:
+  - linux
+  goarch:
+  - amd64
+- id: chezmoi-cgo-musl
   binary: chezmoi
   env:
   - CC=/usr/bin/musl-gcc
@@ -50,7 +58,7 @@ builds:
 
 archives:
 - builds:
-  - chezmoi-cgo
+  - chezmoi-cgo-musl
   - chezmoi-nocgo
   files:
   - LICENSE
@@ -67,7 +75,7 @@ checksum:
 
 nfpms:
 - builds:
-  - chezmoi-cgo
+  - chezmoi-cgo-glibc
   - chezmoi-nocgo
   vendor: "Tom Payne <twpayne@gmail.com>"
   homepage: "https://chezmoi.io/"
@@ -116,7 +124,7 @@ scoop:
 
 snapcrafts:
 - builds:
-  - chezmoi-cgo
+  - chezmoi-cgo-glibc
   - chezmoi-nocgo
   summary: "Manage your dotfiles across multiple machines, securely."
   description: "Manage your dotfiles across multiple machines, securely."

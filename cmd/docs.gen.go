@@ -247,27 +247,29 @@ func init() {
 		"# chezmoi Frequently Asked Questions\n" +
 		"\n" +
 		"<!--- toc --->\n" +
-		"* [How can I quickly check for problems with chezmoi on my machine?](#how-can-i-quickly-check-for-problems-with-chezmoi-on-my-machine)\n" +
-		"* [What are the consequences of \"bare\" modifications to the target files? If my `.zshrc` is managed by chezmoi and I edit `~/.zshrc` without using `chezmoi edit`, what happens?](#what-are-the-consequences-of-bare-modifications-to-the-target-files-if-my-zshrc-is-managed-by-chezmoi-and-i-edit-zshrc-without-using-chezmoi-edit-what-happens)\n" +
-		"* [How can I tell what dotfiles in my home directory aren't managed by chezmoi? Is there an easy way to have chezmoi manage a subset of them?](#how-can-i-tell-what-dotfiles-in-my-home-directory-arent-managed-by-chezmoi-is-there-an-easy-way-to-have-chezmoi-manage-a-subset-of-them)\n" +
-		"* [How can I tell what dotfiles in my home directory are currently managed by chezmoi?](#how-can-i-tell-what-dotfiles-in-my-home-directory-are-currently-managed-by-chezmoi)\n" +
-		"* [If there's a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?](#if-theres-a-mechanism-in-place-for-the-above-is-there-also-a-way-to-tell-chezmoi-to-ignore-specific-files-or-groups-of-files-eg-by-directory-name-or-by-glob)\n" +
-		"* [If the target already exists, but is \"behind\" the source, can chezmoi be configured to preserve the target version before replacing it with one derived from the source?](#if-the-target-already-exists-but-is-behind-the-source-can-chezmoi-be-configured-to-preserve-the-target-version-before-replacing-it-with-one-derived-from-the-source)\n" +
-		"* [Once I've made a change to the source directory, how do I commit it?](#once-ive-made-a-change-to-the-source-directory-how-do-i-commit-it)\n" +
-		"* [How do I only run a script when a file has changed?](#how-do-i-only-run-a-script-when-a-file-has-changed)\n" +
-		"* [I've made changes to both the destination state and the source state that I want to keep. How can I keep them both?](#ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both)\n" +
-		"* [Why does chezmoi convert all my template variables to lowercase?](#why-does-chezmoi-convert-all-my-template-variables-to-lowercase)\n" +
-		"* [chezmoi makes `~/.ssh/config` group writeable. How do I stop this?](#chezmoi-makes-sshconfig-group-writeable-how-do-i-stop-this)\n" +
-		"* [Can I change how chezmoi's source state is represented on disk?](#can-i-change-how-chezmois-source-state-is-represented-on-disk)\n" +
-		"* [gpg encryption fails. What could be wrong?](#gpg-encryption-fails-what-could-be-wrong)\n" +
-		"* [I'm getting errors trying to build chezmoi from source](#im-getting-errors-trying-to-build-chezmoi-from-source)\n" +
-		"* [What inspired chezmoi?](#what-inspired-chezmoi)\n" +
-		"* [Why not use Ansible/Chef/Puppet/Salt, or similar to manage my dotfiles instead?](#why-not-use-ansiblechefpuppetsalt-or-similar-to-manage-my-dotfiles-instead)\n" +
-		"* [Can I use chezmoi to manage files outside my home directory?](#can-i-use-chezmoi-to-manage-files-outside-my-home-directory)\n" +
-		"* [Where does the name \"chezmoi\" come from?](#where-does-the-name-chezmoi-come-from)\n" +
-		"* [What other questions have been asked about chezmoi?](#what-other-questions-have-been-asked-about-chezmoi)\n" +
-		"* [Where do I ask a question that isn't answered here?](#where-do-i-ask-a-question-that-isnt-answered-here)\n" +
-		"* [I like chezmoi. How do I say thanks?](#i-like-chezmoi-how-do-i-say-thanks)\n" +
+		"- [chezmoi Frequently Asked Questions](#chezmoi-frequently-asked-questions)\n" +
+		"  - [How can I quickly check for problems with chezmoi on my machine?](#how-can-i-quickly-check-for-problems-with-chezmoi-on-my-machine)\n" +
+		"  - [What are the consequences of \"bare\" modifications to the target files? If my `.zshrc` is managed by chezmoi and I edit `~/.zshrc` without using `chezmoi edit`, what happens?](#what-are-the-consequences-of-bare-modifications-to-the-target-files-if-my-zshrc-is-managed-by-chezmoi-and-i-edit-zshrc-without-using-chezmoi-edit-what-happens)\n" +
+		"  - [How can I tell what dotfiles in my home directory aren't managed by chezmoi? Is there an easy way to have chezmoi manage a subset of them?](#how-can-i-tell-what-dotfiles-in-my-home-directory-arent-managed-by-chezmoi-is-there-an-easy-way-to-have-chezmoi-manage-a-subset-of-them)\n" +
+		"  - [How can I tell what dotfiles in my home directory are currently managed by chezmoi?](#how-can-i-tell-what-dotfiles-in-my-home-directory-are-currently-managed-by-chezmoi)\n" +
+		"  - [If there's a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?](#if-theres-a-mechanism-in-place-for-the-above-is-there-also-a-way-to-tell-chezmoi-to-ignore-specific-files-or-groups-of-files-eg-by-directory-name-or-by-glob)\n" +
+		"  - [If the target already exists, but is \"behind\" the source, can chezmoi be configured to preserve the target version before replacing it with one derived from the source?](#if-the-target-already-exists-but-is-behind-the-source-can-chezmoi-be-configured-to-preserve-the-target-version-before-replacing-it-with-one-derived-from-the-source)\n" +
+		"  - [Once I've made a change to the source directory, how do I commit it?](#once-ive-made-a-change-to-the-source-directory-how-do-i-commit-it)\n" +
+		"  - [How do I only run a script when a file has changed?](#how-do-i-only-run-a-script-when-a-file-has-changed)\n" +
+		"  - [I've made changes to both the destination state and the source state that I want to keep. How can I keep them both?](#ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both)\n" +
+		"  - [Why does chezmoi convert all my template variables to lowercase?](#why-does-chezmoi-convert-all-my-template-variables-to-lowercase)\n" +
+		"  - [chezmoi makes `~/.ssh/config` group writeable. How do I stop this?](#chezmoi-makes-sshconfig-group-writeable-how-do-i-stop-this)\n" +
+		"  - [Can I change how chezmoi's source state is represented on disk?](#can-i-change-how-chezmois-source-state-is-represented-on-disk)\n" +
+		"  - [gpg encryption fails. What could be wrong?](#gpg-encryption-fails-what-could-be-wrong)\n" +
+		"  - [chezmoi reports \"user: lookup userid NNNNN: input/output error\"](#chezmoi-reports-user-lookup-userid-nnnnn-inputoutput-error)\n" +
+		"  - [I'm getting errors trying to build chezmoi from source](#im-getting-errors-trying-to-build-chezmoi-from-source)\n" +
+		"  - [What inspired chezmoi?](#what-inspired-chezmoi)\n" +
+		"  - [Why not use Ansible/Chef/Puppet/Salt, or similar to manage my dotfiles instead?](#why-not-use-ansiblechefpuppetsalt-or-similar-to-manage-my-dotfiles-instead)\n" +
+		"  - [Can I use chezmoi to manage files outside my home directory?](#can-i-use-chezmoi-to-manage-files-outside-my-home-directory)\n" +
+		"  - [Where does the name \"chezmoi\" come from?](#where-does-the-name-chezmoi-come-from)\n" +
+		"  - [What other questions have been asked about chezmoi?](#what-other-questions-have-been-asked-about-chezmoi)\n" +
+		"  - [Where do I ask a question that isn't answered here?](#where-do-i-ask-a-question-that-isnt-answered-here)\n" +
+		"  - [I like chezmoi. How do I say thanks?](#i-like-chezmoi-how-do-i-say-thanks)\n" +
 		"\n" +
 		"## How can I quickly check for problems with chezmoi on my machine?\n" +
 		"\n" +
@@ -503,6 +505,19 @@ func init() {
 		"    gpg --edit-key $recipient\n" +
 		"\n" +
 		"Enter `trust` at the prompt and chose `5 = I trust ultimately`.\n" +
+		"\n" +
+		"## chezmoi reports \"user: lookup userid NNNNN: input/output error\"\n" +
+		"\n" +
+		"This is likely because the chezmoi binary you are using was statically compiled\n" +
+		"with [musl](https://musl.libc.org/) and the machine you are running on uses\n" +
+		"LDAP or NIS.\n" +
+		"\n" +
+		"The immediate fix is to use a package built for your distriubtion (e.g a `.deb`\n" +
+		"or `.rpm`) which is linked against glibc and includes LDAP/NIS support instead\n" +
+		"of the statically-compiled binary.\n" +
+		"\n" +
+		"If the problem still persists, then please [open an issue on\n" +
+		"GitHub](https://github.com/twpayne/chezmoi/issues/new/choose).\n" +
 		"\n" +
 		"## I'm getting errors trying to build chezmoi from source\n" +
 		"\n" +
