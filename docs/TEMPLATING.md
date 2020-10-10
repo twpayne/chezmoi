@@ -5,6 +5,9 @@
 * [Creating a template file](#creating-a-template-file)
 * [Debugging templates](#debugging-templates)
 * [Simple logic](#simple-logic)
+* [More complicated logic](#more-complicated-logic)
+* [Helper functions](#helper-functions)
+* [Template variables](#template-variables)
 * [Using .chezmoitemplates for creating similar files](#using-chezmoitemplates-for-creating-similar-files)
 
 ## Introduction
@@ -12,6 +15,10 @@
 Templates are used to create different configurations depending on the enviorment.
 For example, you can use the hostname of the machine to create different
 configurations.
+
+chezmoi uses the [`text/template`](https://pkg.go.dev/text/template) syntax from
+Go, extended with [text template functions from `sprig`](http://masterminds.github.io/sprig/)
+You can look there for more information.
 
 ## Creating a template file
 
@@ -34,9 +41,12 @@ You can also use the command
 to add ~/.zshrc to the source state as a template, while replacing any strings
 that it can match with the variables from the data section of the chezmoi config.
 
-If the file is already known by chezmoi, you can simply add the file extension
-.tmpl to the file in the source directory. This way chezmoi will interpret the file
-as a template.
+If the file is already known by chezmoi, you can use the command
+
+	chezmoi chattr template ~/.zshrc
+
+Or you can simply add the file extension .tmpl to the file in the source directory.
+This way chezmoi will interpret the file as a template.
 
 ## Template syntax
 
@@ -103,8 +113,93 @@ A very useful feature of chezmoi templates is the ability to perform logical ope
 	# this will only be included in ~/.bashrc on work-laptop
 	{{- end }}
 
-In this example chezmoi will look at the hostname of the machine and change the
-contents of the resulting file based on that information.
+In this example chezmoi will look at the hostname of the machine and if that is equal to
+"work-laptop", the text between the "if" and the "end" will be included in the result.
+
+### Locical operators
+
+The following operators are available:
+
+* `eq`  - Return true if the first argument is equal to any other argument.
+* `or`  - Return boolean or of the arguments.
+* `and` - Return boolean and of the arguments.
+* `not` - Return boolean negative of the argument.
+* `len` - Return the length of the argument.
+
+Notice that some operators can accept more than two arguments.
+
+### Integer operators
+
+There are separate operators for comparing integers.
+
+* `eq` - Return true if the first argument is equal to any other argument. - arg1 == arg2 		 
+* `ne` - Returns if arg1 is not equal to arg2                              - arg1 != arg2
+* `lt` - Returns if arg1 is less than arg2.                                - arg1 <  arg2 
+* `le` - Returns if arg1 is less than or equal to arg2.                    - arg1 <= arg2
+* `gt` - Returns if arg1 is greater than arg2.                             - arg1 >  arg2
+* `ge` - Returns if arg1 is greater than or equal to arg2.                 - arg1 >= arg2
+
+`eq` can handle multiple arguments again, the same way as the "eq" above.
+
+## More complicated logic
+
+Up until now, we have only seen if statements that can handle at most two variables.
+In this part we will see how to create more complicated expressions.
+
+You can also create more complicated expressions. The `eq` command can accept multiple
+arguments. It will check if the first argument is equal to any of the other arguments.
+	
+	{{ if eq "foo" "foo" "bar" }}hello{{end}}
+
+	{{ if eq "foo" "bar" "foo" }}hello{{end}}
+
+	{{ if eq "foo" "bar" "bar" }}hello{{end}}
+
+The first two examples will output "hello" and the last example will output nothing.
+
+The operators `or` and `and` can also accept multiple arguments.
+
+### Chaining operators
+
+You can perform multiple checks in one if statement.
+
+	{{ and ( eq .chezmoi.os "linux" ) ( ne .email "john@home.org" ) }}
+
+This will check if the operating system is Linux and the configured email
+is not the home email. The brackets are needed here, because otherwise all the
+arguments will be give to the `and` command.
+
+This way you can chain as many operators together as you like.
+
+## Helper functions
+
+chezmoi has added multiple helper functions to the [`text/template`](https://pkg.go.dev/text/template) 
+syntax.  
+
+Chezmoi includes [`Sprig`](http://masterminds.github.io/sprig/), an extension to 
+the text/template format that contains many helper functions. Take a look at 
+their documentation for a list.
+
+Chezmoi adds a few functions of its own as well. Take a look at the 
+[`reference`](REFERENCE.md#template-functions) for complete list.
+
+## Template variables
+
+Chezmoi defines a few useful templates variables that depend on the system
+you are currently on. A list of the variables defined by chezmoi can be found 
+[here](REFERENCE.md#template-variables).
+
+There are, however more variables than
+that. To view the variables available on your system, execute:
+
+	chezmoi data
+
+This outputs the variables in JSON format by default. To access the variable
+`chezmoi>kernel>osrelease` in a template, use
+
+	{{ .chezmoi.kernel.osrelease }}
+
+This way you can also access the variables you defined yourself.
 
 ## Using .chezmoitemplates for creating similar files
 
@@ -150,15 +245,25 @@ the `.` value passed in. You can test this with `chezmoi cat`:
 	fontsize: 18
 	somemore: config
 
-This approach only works for a single value. If you want to pass in more than one value you can pass in structured data from your config file:
+### Passing multiple arguments
+In the example above only one arguments is passed to the template. To pass
+more arguments to the template, you can do it in two ways.
 
-`.config/chezmoi/chezmoi.toml`
+#### Via chezmoi.toml
+
+This method is useful if you want to use the same template arguments multiple
+times, because you don't specify the arguments every time. Instead you specify
+them in the file `.chezmoi.toml`.
+
+`.config/chezmoi/chezmoi.toml`:
 
 ```
 [data.alacritty.big]
   fontsize = 18
+  font = DejaVu Serif
 [data.alacritty.small]
   fontsize = 12
+  font = DejaVu Sans Mono
 ```
 
 `.local/share/chezmoi/.chezmoitemplates/alacritty`:
@@ -166,6 +271,7 @@ This approach only works for a single value. If you want to pass in more than on
 ```
 some: config
 fontsize: {{ .fontsize }}
+font: {{ .font }}
 somemore: config
 ```
 
@@ -181,5 +287,22 @@ somemore: config
 {{- template "alacritty" .alacritty.big -}}
 ```
 
-At the moment, this means that you'll have to duplicate the alacritty data in the config file on every machine, 
-but a feature will be added to avoid this.
+At the moment, this means that you'll have to duplicate the alacritty data in 
+the config file on every machine, but a feature will be added to avoid this.
+
+#### By passing a dictionary
+
+Using the same alacritty configuration as above, you can pass the arguments to
+it with a dictionary.
+
+`.local/share/chezmoi/small-font.yml.tmpl`
+
+```
+{{- template "alacritty" dict "fontsize" 12 "font" "DejaVu Sans Mono" -}}
+```
+
+`.local/share/chezmoi/big-font.yml.tmpl`
+
+```
+{{- template "alacritty" dict "fontsize" 18 "font" "DejaVu Serif" -}}
+```
