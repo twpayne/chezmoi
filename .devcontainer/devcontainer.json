@@ -16,7 +16,10 @@
 	"settings": {
 		"terminal.integrated.shell.linux": "/bin/bash",
 		"go.useGoProxyToCheckForToolUpdates": false,
-		"go.gopath": "/go"
+		"go.useLanguageServer": true,
+		"go.gopath": "/go",
+		"go.goroot": "/usr/local/go",
+		"go.toolsGopath": "/go/bin"
 	},
 
 	// Add the IDs of extensions you want installed when the container is created.
@@ -30,8 +33,8 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "go mod download",
+	// "postCreateCommand": "go version",
 
 	// Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
-	"remoteUser": "vscode"
+	// "remoteUser": "vscode"
 }
