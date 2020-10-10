@@ -65,8 +65,10 @@ jobs:
     - name: Test release
       run: |
         # verify that version information is embedded correctly
-        file ./dist/chezmoi-cgo_linux_amd64/chezmoi | tee /dev/stderr | grep -q "statically linked"
-        ./dist/chezmoi-cgo_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v"
+        file ./dist/chezmoi-cgo-glibc_linux_amd64/chezmoi | tee /dev/stderr | grep -q "dynamically linked"
+        file ./dist/chezmoi-cgo-musl_linux_amd64/chezmoi | tee /dev/stderr | grep -q "statically linked"
+        ./dist/chezmoi-cgo-glibc_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v"
+        ./dist/chezmoi-cgo-musl_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v"
         ./dist/chezmoi-nocgo_linux_386/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v"
   generate:
     runs-on: ubuntu-latest
