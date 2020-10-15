@@ -23,6 +23,12 @@ function __chezmoi_perform_completion
     end
     __chezmoi_debug "emptyArg: $emptyArg"
 
+    if not type -q "$args[1]"
+        # This can happen when "complete --do-complete chezmoi" is called when running this script.
+        __chezmoi_debug "Cannot find $args[1]. No completions."
+        return
+    end
+
     set requestComp "$args[1] __complete $args[2..-1] $emptyArg"
     __chezmoi_debug "Calling $requestComp"
 
@@ -57,7 +63,8 @@ function __chezmoi_prepare_completions
 
     # Check if the command-line is already provided.  This is useful for testing.
     if not set --query __chezmoi_comp_commandLine
-        set __chezmoi_comp_commandLine (commandline)
+        # Use the -c flag to allow for completion in the middle of the line
+        set __chezmoi_comp_commandLine (commandline -c)
     end
     __chezmoi_debug "commandLine is: $__chezmoi_comp_commandLine"
 
@@ -69,7 +76,7 @@ function __chezmoi_prepare_completions
         __chezmoi_debug "No completion, probably due to a failure"
         # Might as well do file completion, in case it helps
         set --global __chezmoi_comp_do_file_comp 1
-        return 0
+        return 1
     end
 
     set directive (string sub --start 2 $results[-1])
@@ -78,20 +85,35 @@ function __chezmoi_prepare_completions
     __chezmoi_debug "Completions are: $__chezmoi_comp_results"
     __chezmoi_debug "Directive is: $directive"
 
+    set shellCompDirectiveError 1
+    set shellCompDirectiveNoSpace 2
+    set shellCompDirectiveNoFileComp 4
+    set shellCompDirectiveFilterFileExt 8
+    set shellCompDirectiveFilterDirs 16
+
     if test -z "$directive"
         set directive 0
     end
 
-    set compErr (math (math --scale 0 $directive / 1) % 2)
+    set compErr (math (math --scale 0 $directive / $shellCompDirectiveError) % 2)
     if test $compErr -eq 1
         __chezmoi_debug "Received error directive: aborting."
         # Might as well do file completion, in case it helps
         set --global __chezmoi_comp_do_file_comp 1
-        return 0
+        return 1
     end
 
-    set nospace (math (math --scale 0 $directive / 2) % 2)
-    set nofiles (math (math --scale 0 $directive / 4) % 2)
+    set filefilter (math (math --scale 0 $directive / $shellCompDirectiveFilterFileExt) % 2)
+    set dirfilter (math (math --scale 0 $directive / $shellCompDirectiveFilterDirs) % 2)
+    if test $filefilter -eq 1; or test $dirfilter -eq 1
+        __chezmoi_debug "File extension filtering or directory filtering not supported"
+        # Do full file completion instead
+        set --global __chezmoi_comp_do_file_comp 1
+        return 1
+    end
+
+    set nospace (math (math --scale 0 $directive / $shellCompDirectiveNoSpace) % 2)
+    set nofiles (math (math --scale 0 $directive / $shellCompDirectiveNoFileComp) % 2)
 
     __chezmoi_debug "nospace: $nospace, nofiles: $nofiles"
 
@@ -118,9 +140,14 @@ function __chezmoi_prepare_completions
     return (not set --query __chezmoi_comp_do_file_comp)
 end
 
-# Remove any pre-existing completions for the program since we will be handling all of them
-# TODO this cleanup is not sufficient.  Fish completions are only loaded once the user triggers
-# them, so the below deletion will not work as it is run too early.  What else can we do?
+# Since Fish completions are only loaded once the user triggers them, we trigger them ourselves
+# so we can properly delete any completions provided by another script.
+# The space after the the program name is essential to trigger completion for the program
+# and not completion of the program name itself.
+complete --do-complete "chezmoi " > /dev/null 2>&1
+# Using '> /dev/null 2>&1' since '&>' is not supported in older versions of fish.
+
+# Remove any pre-existing completions for the program since we will be handling all of them.
 complete -c chezmoi -e
 
 # The order in which the below two lines are defined is very important so that __chezmoi_prepare_completions
@@ -131,7 +158,7 @@ complete -c chezmoi -e
 complete -c chezmoi -n 'set --query __chezmoi_comp_do_file_comp'
 
 # This completion will be run first as complete commands are added FILO.
-# The call to __chezmoi_prepare_completions will setup both __chezmoi_comp_results abd __chezmoi_comp_do_file_comp.
+# The call to __chezmoi_prepare_completions will setup both __chezmoi_comp_results and __chezmoi_comp_do_file_comp.
 # It provides the program's completion choices.
 complete -c chezmoi -n '__chezmoi_prepare_completions' -f -a '$__chezmoi_comp_results'
 
