@@ -4,6 +4,7 @@
 
 | Date       | Version | Format      | Link                                                                                                                                                            |
 | ---------- | ------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2020-08-13 | 1.8.3   | Text        | [Using BitWarden and Chezmoi to manage SSH keys](https://www.jx0.uk/chezmoi/bitwarden/unix/ssh/2020/08/13/bitwarden-chezmoi-ssh-key.html)                       |
 | 2020-08-09 | 1.8.3   | Text        | [Automating and testing dotfiles](https://seds.nl/posts/automating-and-testing-dotfiles/)                                                                       |
 | 2020-07-06 | 1.8.3   | Video       | [chezmoi: Manage your dotfiles across multiple machines, securely](https://www.youtube.com/watch?v=JrCMCdvoMAw).                                                |
 | 2020-07-03 | 1.8.3   | Text        | [Feeling at home in a LXD container](https://ubuntu.com/blog/feeling-at-home-in-a-lxd-container)                                                                |
