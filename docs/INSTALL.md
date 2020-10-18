@@ -28,6 +28,7 @@ Install chezmoi with a single command.
 | Arch Linux   | pacman     | `pacman -S chezmoi`                                                                         |
 | Guix Linux   | guix       | `guix install chezmoi`                                                                      |
 | NixOS Linux  | nix-env    | `nix-env -i chezmoi`                                                                        |
+| Void Linux   | xbps       | `xbps-install -S chezmoi`                                                                   |
 | macOS        | Homebrew   | `brew install chezmoi`                                                                      |
 | macOS        | MacPorts   | `sudo port install chezmoi`                                                                 |
 | Windows      | Scoop      | `scoop bucket add twpayne https://github.com/twpayne/scoop-bucket && scoop install chezmoi` |
