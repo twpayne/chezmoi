@@ -57,7 +57,7 @@ chezmoi cd git remote add origin https://github.</description>
       <guid>https://chezmoi.io/docs/install/</guid>
       <description>Install Guide #  One-line binary install #  Install the correct binary for your operating system and architecture in ./bin with a single command.
 curl -sfL https://git.io/chezmoi | sh  One-line package install #  Install chezmoi with a single command.
-   OS Method Command     Linux snap snap install chezmoi --classic   Linux Linuxbrew brew install chezmoi   Alpine Linux apk apk add chezmoi   Arch Linux pacman pacman -S chezmoi   Guix Linux guix guix install chezmoi   NixOS Linux nix-env nix-env -i chezmoi   macOS Homebrew brew install chezmoi   macOS MacPorts sudo port install chezmoi   Windows Scoop scoop bucket add twpayne https://github.</description>
+   OS Method Command     Linux snap snap install chezmoi --classic   Linux Linuxbrew brew install chezmoi   Alpine Linux apk apk add chezmoi   Arch Linux pacman pacman -S chezmoi   Guix Linux guix guix install chezmoi   NixOS Linux nix-env nix-env -i chezmoi   Void Linux xbps xbps-install -S chezmoi   macOS Homebrew brew install chezmoi   macOS MacPorts sudo port install chezmoi   Windows Scoop scoop bucket add twpayne https://github.</description>
     </item>
     
     <item>
@@ -66,7 +66,7 @@ curl -sfL https://git.io/chezmoi | sh  One-line package install #  Install chezm
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/media/</guid>
-      <description>Media #     Date Version Format Link     2020-08-09 1.8.3 Text Automating and testing dotfiles   2020-07-06 1.8.3 Video chezmoi: Manage your dotfiles across multiple machines, securely.   2020-07-03 1.8.3 Text Feeling at home in a LXD container   2020-06-15 1.8.2 Text Dotfiles management using chezmoi - How I Use Linux Desktop at Work Part5   2020-04-27 1.8.0 Text Managing my dotfiles with chezmoi   2020-04-16 1.</description>
+      <description>Media #     Date Version Format Link     2020-08-13 1.8.3 Text Using BitWarden and Chezmoi to manage SSH keys   2020-08-09 1.8.3 Text Automating and testing dotfiles   2020-07-06 1.8.3 Video chezmoi: Manage your dotfiles across multiple machines, securely.   2020-07-03 1.8.3 Text Feeling at home in a LXD container   2020-06-15 1.8.2 Text Dotfiles management using chezmoi - How I Use Linux Desktop at Work Part5   2020-04-27 1.</description>
     </item>
     
     <item>
@@ -90,6 +90,15 @@ chezmoi init  This will create a new git repository in ~/.</description>
   The source state declares the desired state of your home directory, including templates and machine-specific configuration.
   The source directory is where chezmoi stores the source state, by default ~/.local/share/chezmoi.
   The target state is the source state computed for the current machine.</description>
+    </item>
+    
+    <item>
+      <title>Templating</title>
+      <link>https://chezmoi.io/docs/templating/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chezmoi.io/docs/templating/</guid>
+      <description>Templating Guide #  </description>
     </item>
     
   </channel>

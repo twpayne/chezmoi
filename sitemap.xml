@@ -50,4 +50,8 @@
     <loc>https://chezmoi.io/tags/</loc>
   </url>
   
+  <url>
+    <loc>https://chezmoi.io/docs/templating/</loc>
+  </url>
+  
 </urlset>

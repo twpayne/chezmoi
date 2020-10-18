@@ -15,8 +15,8 @@ chezmoi cd git remote add origin https://github." />
 <title>How-To | chezmoi.io</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
-<link rel="stylesheet" href="/book.min.6cd8553a6854f4812343f0f0c8baca31271e686434f381fbe3c7226f66639176.css" integrity="sha256-bNhVOmhU9IEjQ/DwyLrKMSceaGQ084H748cib2ZjkXY=">
-<script defer src="/en.search.min.4d441773eef40b40d252dbdb67fb5c1bbdeea27bf3a46eb1bef35a8bd88afc1e.js" integrity="sha256-TUQXc&#43;70C0DSUtvbZ/tcG73uonvzpG6xvvNai9iK/B4="></script>
+<link rel="stylesheet" href="/book.min.134b70e5316650a530cb42e4e8630b2a01d532bebfc0337028211175336e4806.css" integrity="sha256-E0tw5TFmUKUwy0Lk6GMLKgHVMr6/wDNwKCERdTNuSAY=">
+<script defer src="/en.search.min.d8fe04472c114f9da0d1a31a72e79ff823cce265458d9609fbdf890acc71887d.js" integrity="sha256-2P4ERywRT52g0aMacuef&#43;CPM4mVFjZYJ&#43;9&#43;JCsxxiH0="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -58,6 +58,7 @@ https://github.com/alex-shpak/hugo-book
 <li><a href="/docs/install/">Install</a></li>
 <li><a href="/docs/quick-start/">Quick Start</a></li>
 <li><a href="/docs/how-to/"class=active>How-To</a></li>
+<li><a href="/docs/templating/">Templating</a></li>
 <li><a href="/docs/faq/">FAQ</a></li>
 <li><a href="/docs/changes/">Changes</a></li>
 <li><a href="/docs/reference/">Reference</a></li>
@@ -127,6 +128,7 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#use-gopass-to-keep-your-secrets">Use gopass to keep your secrets</a></li>
         <li><a href="#use-gpg-to-keep-your-secrets">Use gpg to keep your secrets</a></li>
         <li><a href="#use-keepassxc-to-keep-your-secrets">Use KeePassXC to keep your secrets</a></li>
+        <li><a href="#use-a-keyring-to-keep-your-secrets">Use a keyring to keep your secrets</a></li>
         <li><a href="#use-lastpass-to-keep-your-secrets">Use LastPass to keep your secrets</a></li>
         <li><a href="#use-1password-to-keep-your-secrets">Use 1Password to keep your secrets</a></li>
         <li><a href="#use-pass-to-keep-your-secrets">Use pass to keep your secrets</a></li>
@@ -594,6 +596,31 @@ For example, if you have an entry called <code>SSH Key</code> with an additional
 called <code>private-key</code>, its value is available as:</p>
 <pre><code>{{ keepassxcAttribute &quot;SSH Key&quot; &quot;private-key&quot; }}
 </code></pre>
+<h3 id="use-a-keyring-to-keep-your-secrets">
+  Use a keyring to keep your secrets
+  <a class="anchor" href="#use-a-keyring-to-keep-your-secrets">#</a>
+</h3>
+<p>chezmoi includes support for Keychain (on macOS), GNOME Keyring (on Linux), and
+Windows Credentials Manager (on Windows) via the
+<a href="https://github.com/zalando/go-keyring"><code>zalando/go-keyring</code></a> library.</p>
+<p>Set passwords with:</p>
+<pre><code>$ chezmoi keyring set --service=&lt;service&gt; --user=&lt;user&gt;
+Password: xxxxxxxx
+</code></pre>
+<p>The password can then be used in templates using the <code>keyring</code> function which
+takes the service and user as arguments.</p>
+<p>For example, save a GitHub access token in keyring with:</p>
+<pre><code>$ chezmoi keyring set --service=github --user=&lt;github-username&gt;
+Password: xxxxxxxx
+</code></pre>
+<p>and then include it in your <code>~/.gitconfig</code> file with:</p>
+<pre><code>[github]
+  user = &quot;{{ .github.user }}&quot;
+  token = &quot;{{ keyring &quot;github&quot; .github.user }}&quot;
+</code></pre>
+<p>You can query the keyring from the command line:</p>
+<pre><code>chezmoi keyring get --service=github --user=&lt;github-username&gt;
+</code></pre>
 <h3 id="use-lastpass-to-keep-your-secrets">
   Use LastPass to keep your secrets
   <a class="anchor" href="#use-lastpass-to-keep-your-secrets">#</a>
@@ -1055,6 +1082,7 @@ contents.</p>
         <li><a href="#use-gopass-to-keep-your-secrets">Use gopass to keep your secrets</a></li>
         <li><a href="#use-gpg-to-keep-your-secrets">Use gpg to keep your secrets</a></li>
         <li><a href="#use-keepassxc-to-keep-your-secrets">Use KeePassXC to keep your secrets</a></li>
+        <li><a href="#use-a-keyring-to-keep-your-secrets">Use a keyring to keep your secrets</a></li>
         <li><a href="#use-lastpass-to-keep-your-secrets">Use LastPass to keep your secrets</a></li>
         <li><a href="#use-1password-to-keep-your-secrets">Use 1Password to keep your secrets</a></li>
         <li><a href="#use-pass-to-keep-your-secrets">Use pass to keep your secrets</a></li>
