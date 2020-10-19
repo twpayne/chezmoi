@@ -915,6 +915,20 @@ func init() {
 		"to `.bashrc_linux`. The `.chezmoiignore` configuration ensures that only the\n" +
 		"OS-specific `.bashrc_os` file will be installed on each OS.\n" +
 		"\n" +
+		"### Without using symlinks\n" +
+		"\n" +
+		"The same thing can be achieved using the include function.\n" +
+		"\n" +
+		"`dot_bashrc.tmpl`\n" +
+		"\n" +
+		"\t{{ if eq .chezmoi.os \"darwin\" }}\n" +
+		"\t{{ include \".bashrc_darwin\" }}\n" +
+		"\t{{ end }}\n" +
+		"\t{{ if eq .chezmoi.os \"linux\" }}\n" +
+		"\t{{ include \".bashrc_linux\" }}\n" +
+		"\t{{ end }}\n" +
+		"\n" +
+		"\n" +
 		"## Create a config file on a new machine automatically\n" +
 		"\n" +
 		"`chezmoi init` can also create a config file automatically, if one does not\n" +
@@ -3061,7 +3075,7 @@ func init() {
 		"### `stat` *name*\n" +
 		"\n" +
 		"`stat` runs `stat(2)` on *name*. If *name* exists it returns structured data. If\n" +
-		"*name* does not exist then it returns a falsey value. If `stat(2)` returns any\n" +
+		"*name* does not exist then it returns a false value. If `stat(2)` returns any\n" +
 		"other error then it raises an error. The structured value returned if *name*\n" +
 		"exists contains the fields `name`, `size`, `mode`, `perm`, `modTime`, and\n" +
 		"`isDir`.\n" +
@@ -3096,6 +3110,9 @@ func init() {
 		"* [Creating a template file](#creating-a-template-file)\n" +
 		"* [Debugging templates](#debugging-templates)\n" +
 		"* [Simple logic](#simple-logic)\n" +
+		"* [More complicated logic](#more-complicated-logic)\n" +
+		"* [Helper functions](#helper-functions)\n" +
+		"* [Template variables](#template-variables)\n" +
 		"* [Using .chezmoitemplates for creating similar files](#using-chezmoitemplates-for-creating-similar-files)\n" +
 		"\n" +
 		"## Introduction\n" +
@@ -3103,6 +3120,10 @@ func init() {
 		"Templates are used to create different configurations depending on the enviorment.\n" +
 		"For example, you can use the hostname of the machine to create different\n" +
 		"configurations.\n" +
+		"\n" +
+		"chezmoi uses the [`text/template`](https://pkg.go.dev/text/template) syntax from\n" +
+		"Go, extended with [text template functions from `sprig`](http://masterminds.github.io/sprig/)\n" +
+		"You can look there for more information.\n" +
 		"\n" +
 		"## Creating a template file\n" +
 		"\n" +
@@ -3125,9 +3146,12 @@ func init() {
 		"to add ~/.zshrc to the source state as a template, while replacing any strings\n" +
 		"that it can match with the variables from the data section of the chezmoi config.\n" +
 		"\n" +
-		"If the file is already known by chezmoi, you can simply add the file extension\n" +
-		".tmpl to the file in the source directory. This way chezmoi will interpret the file\n" +
-		"as a template.\n" +
+		"If the file is already known by chezmoi, you can use the command\n" +
+		"\n" +
+		"\tchezmoi chattr template ~/.zshrc\n" +
+		"\n" +
+		"Or you can simply add the file extension .tmpl to the file in the source directory.\n" +
+		"This way chezmoi will interpret the file as a template.\n" +
 		"\n" +
 		"## Template syntax\n" +
 		"\n" +
@@ -3194,8 +3218,93 @@ func init() {
 		"\t# this will only be included in ~/.bashrc on work-laptop\n" +
 		"\t{{- end }}\n" +
 		"\n" +
-		"In this example chezmoi will look at the hostname of the machine and change the\n" +
-		"contents of the resulting file based on that information.\n" +
+		"In this example chezmoi will look at the hostname of the machine and if that is equal to\n" +
+		"\"work-laptop\", the text between the \"if\" and the \"end\" will be included in the result.\n" +
+		"\n" +
+		"### Locical operators\n" +
+		"\n" +
+		"The following operators are available:\n" +
+		"\n" +
+		"* `eq`  - Return true if the first argument is equal to any other argument.\n" +
+		"* `or`  - Return boolean or of the arguments.\n" +
+		"* `and` - Return boolean and of the arguments.\n" +
+		"* `not` - Return boolean negative of the argument.\n" +
+		"* `len` - Return the length of the argument.\n" +
+		"\n" +
+		"Notice that some operators can accept more than two arguments.\n" +
+		"\n" +
+		"### Integer operators\n" +
+		"\n" +
+		"There are separate operators for comparing integers.\n" +
+		"\n" +
+		"* `eq` - Return true if the first argument is equal to any other argument. - arg1 == arg2 \t\t \n" +
+		"* `ne` - Returns if arg1 is not equal to arg2                              - arg1 != arg2\n" +
+		"* `lt` - Returns if arg1 is less than arg2.                                - arg1 <  arg2 \n" +
+		"* `le` - Returns if arg1 is less than or equal to arg2.                    - arg1 <= arg2\n" +
+		"* `gt` - Returns if arg1 is greater than arg2.                             - arg1 >  arg2\n" +
+		"* `ge` - Returns if arg1 is greater than or equal to arg2.                 - arg1 >= arg2\n" +
+		"\n" +
+		"`eq` can handle multiple arguments again, the same way as the \"eq\" above.\n" +
+		"\n" +
+		"## More complicated logic\n" +
+		"\n" +
+		"Up until now, we have only seen if statements that can handle at most two variables.\n" +
+		"In this part we will see how to create more complicated expressions.\n" +
+		"\n" +
+		"You can also create more complicated expressions. The `eq` command can accept multiple\n" +
+		"arguments. It will check if the first argument is equal to any of the other arguments.\n" +
+		"\t\n" +
+		"\t{{ if eq \"foo\" \"foo\" \"bar\" }}hello{{end}}\n" +
+		"\n" +
+		"\t{{ if eq \"foo\" \"bar\" \"foo\" }}hello{{end}}\n" +
+		"\n" +
+		"\t{{ if eq \"foo\" \"bar\" \"bar\" }}hello{{end}}\n" +
+		"\n" +
+		"The first two examples will output \"hello\" and the last example will output nothing.\n" +
+		"\n" +
+		"The operators `or` and `and` can also accept multiple arguments.\n" +
+		"\n" +
+		"### Chaining operators\n" +
+		"\n" +
+		"You can perform multiple checks in one if statement.\n" +
+		"\n" +
+		"\t{{ and ( eq .chezmoi.os \"linux\" ) ( ne .email \"john@home.org\" ) }}\n" +
+		"\n" +
+		"This will check if the operating system is Linux and the configured email\n" +
+		"is not the home email. The brackets are needed here, because otherwise all the\n" +
+		"arguments will be give to the `and` command.\n" +
+		"\n" +
+		"This way you can chain as many operators together as you like.\n" +
+		"\n" +
+		"## Helper functions\n" +
+		"\n" +
+		"chezmoi has added multiple helper functions to the [`text/template`](https://pkg.go.dev/text/template) \n" +
+		"syntax.  \n" +
+		"\n" +
+		"Chezmoi includes [`Sprig`](http://masterminds.github.io/sprig/), an extension to \n" +
+		"the text/template format that contains many helper functions. Take a look at \n" +
+		"their documentation for a list.\n" +
+		"\n" +
+		"Chezmoi adds a few functions of its own as well. Take a look at the \n" +
+		"[`reference`](REFERENCE.md#template-functions) for complete list.\n" +
+		"\n" +
+		"## Template variables\n" +
+		"\n" +
+		"Chezmoi defines a few useful templates variables that depend on the system\n" +
+		"you are currently on. A list of the variables defined by chezmoi can be found \n" +
+		"[here](REFERENCE.md#template-variables).\n" +
+		"\n" +
+		"There are, however more variables than\n" +
+		"that. To view the variables available on your system, execute:\n" +
+		"\n" +
+		"\tchezmoi data\n" +
+		"\n" +
+		"This outputs the variables in JSON format by default. To access the variable\n" +
+		"`chezmoi>kernel>osrelease` in a template, use\n" +
+		"\n" +
+		"\t{{ .chezmoi.kernel.osrelease }}\n" +
+		"\n" +
+		"This way you can also access the variables you defined yourself.\n" +
 		"\n" +
 		"## Using .chezmoitemplates for creating similar files\n" +
 		"\n" +
@@ -3241,15 +3350,25 @@ func init() {
 		"\tfontsize: 18\n" +
 		"\tsomemore: config\n" +
 		"\n" +
-		"This approach only works for a single value. If you want to pass in more than one value you can pass in structured data from your config file:\n" +
+		"### Passing multiple arguments\n" +
+		"In the example above only one arguments is passed to the template. To pass\n" +
+		"more arguments to the template, you can do it in two ways.\n" +
 		"\n" +
-		"`.config/chezmoi/chezmoi.toml`\n" +
+		"#### Via chezmoi.toml\n" +
+		"\n" +
+		"This method is useful if you want to use the same template arguments multiple\n" +
+		"times, because you don't specify the arguments every time. Instead you specify\n" +
+		"them in the file `.chezmoi.toml`.\n" +
+		"\n" +
+		"`.config/chezmoi/chezmoi.toml`:\n" +
 		"\n" +
 		"```\n" +
 		"[data.alacritty.big]\n" +
 		"  fontsize = 18\n" +
+		"  font = DejaVu Serif\n" +
 		"[data.alacritty.small]\n" +
 		"  fontsize = 12\n" +
+		"  font = DejaVu Sans Mono\n" +
 		"```\n" +
 		"\n" +
 		"`.local/share/chezmoi/.chezmoitemplates/alacritty`:\n" +
@@ -3257,6 +3376,7 @@ func init() {
 		"```\n" +
 		"some: config\n" +
 		"fontsize: {{ .fontsize }}\n" +
+		"font: {{ .font }}\n" +
 		"somemore: config\n" +
 		"```\n" +
 		"\n" +
@@ -3272,7 +3392,24 @@ func init() {
 		"{{- template \"alacritty\" .alacritty.big -}}\n" +
 		"```\n" +
 		"\n" +
-		"At the moment, this means that you'll have to duplicate the alacritty data in the config file on every machine, \n" +
-		"but a feature will be added to avoid this.\n" +
+		"At the moment, this means that you'll have to duplicate the alacritty data in \n" +
+		"the config file on every machine, but a feature will be added to avoid this.\n" +
+		"\n" +
+		"#### By passing a dictionary\n" +
+		"\n" +
+		"Using the same alacritty configuration as above, you can pass the arguments to\n" +
+		"it with a dictionary.\n" +
+		"\n" +
+		"`.local/share/chezmoi/small-font.yml.tmpl`\n" +
+		"\n" +
+		"```\n" +
+		"{{- template \"alacritty\" dict \"fontsize\" 12 \"font\" \"DejaVu Sans Mono\" -}}\n" +
+		"```\n" +
+		"\n" +
+		"`.local/share/chezmoi/big-font.yml.tmpl`\n" +
+		"\n" +
+		"```\n" +
+		"{{- template \"alacritty\" dict \"fontsize\" 18 \"font\" \"DejaVu Serif\" -}}\n" +
+		"```\n" +
 		"\n")
 }

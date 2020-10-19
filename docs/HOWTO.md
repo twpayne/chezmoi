@@ -288,6 +288,20 @@ This will make `~/.bashrc` will be a symlink to `.bashrc_darwin` on `darwin` and
 to `.bashrc_linux`. The `.chezmoiignore` configuration ensures that only the
 OS-specific `.bashrc_os` file will be installed on each OS.
 
+### Without using symlinks
+
+The same thing can be achieved using the include function.
+
+`dot_bashrc.tmpl`
+
+	{{ if eq .chezmoi.os "darwin" }}
+	{{ include ".bashrc_darwin" }}
+	{{ end }}
+	{{ if eq .chezmoi.os "linux" }}
+	{{ include ".bashrc_linux" }}
+	{{ end }}
+
+
 ## Create a config file on a new machine automatically
 
 `chezmoi init` can also create a config file automatically, if one does not
