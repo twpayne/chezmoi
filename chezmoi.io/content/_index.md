@@ -163,8 +163,9 @@ new machine as painless as possible.
 
 ### Dotfile repos using chezmoi
 
-Have a look at [repos tagged with `chezmoi` on
-GitHub](https://github.com/topics/chezmoi?o=desc&s=updated).
+Have a look at people using chezmoi [on
+GitHub](https://github.com/topics/chezmoi?o=desc&s=updated) and [on
+GitLab](https://gitlab.com/search?search=chezmoi).
 
 ### People talking about chezmoi
 
