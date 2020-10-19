@@ -5,7 +5,7 @@ type: docs
 
 # chezmoi
 
-Manage your dotfiles across multiple machines, securely.
+Manage your dotfiles across multiple diverse machines, securely.
 
 ## How do I start with chezmoi now?
 

@@ -2,7 +2,7 @@
 
 [![GitHub Release](https://img.shields.io/github/release/twpayne/chezmoi.svg)](https://github.com/twpayne/chezmoi/releases)
 
-Manage your dotfiles across multiple machines, securely.
+Manage your dotfiles across multiple diverse machines, securely.
 
 * [How do I start with chezmoi now?](#how-do-i-start-with-chezmoi-now)
 * [What does chezmoi do and why should I use it?](#what-does-chezmoi-do-and-why-should-i-use-it)

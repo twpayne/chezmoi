@@ -32,7 +32,7 @@ var (
 
 var rootCmd = &cobra.Command{
 	Use:               "chezmoi",
-	Short:             "Manage your dotfiles across multiple machines, securely",
+	Short:             "Manage your dotfiles across multiple diverse machines, securely",
 	SilenceErrors:     true,
 	SilenceUsage:      true,
 	PersistentPreRunE: config.persistentPreRunRootE,

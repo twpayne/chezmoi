@@ -80,7 +80,7 @@ nfpms:
   vendor: "Tom Payne <twpayne@gmail.com>"
   homepage: "https://chezmoi.io/"
   maintainer: "Tom Payne <twpayne@gmail.com>"
-  description: "Manage your dotfiles across multiple machines, securely."
+  description: "Manage your dotfiles across multiple diverse machines, securely."
   license: MIT
   formats:
   - deb
@@ -119,15 +119,15 @@ scoop:
     name: Tom Payne
     email: twpayne@gmail.com
   homepage: "https://chezmoi.io"
-  description: "Manage your dotfiles across multiple machines, securely."
+  description: "Manage your dotfiles across multiple diverse machines, securely."
   license: MIT
 
 snapcrafts:
 - builds:
   - chezmoi-cgo-glibc
   - chezmoi-nocgo
-  summary: "Manage your dotfiles across multiple machines, securely."
-  description: "Manage your dotfiles across multiple machines, securely."
+  summary: "Manage your dotfiles across multiple diverse machines, securely."
+  description: "Manage your dotfiles across multiple diverse machines, securely."
   publish: true
   grade: stable
   confinement: classic
