@@ -1909,6 +1909,7 @@ func init() {
 		"  * [`bitwarden` [*args*]](#bitwarden-args)\n" +
 		"  * [`gopass` *gopass-name*](#gopass-gopass-name)\n" +
 		"  * [`include` *filename*](#include-filename)\n" +
+		"  * [`ioreg`](#ioreg)\n" +
 		"  * [`joinPath` *elements*](#joinpath-elements)\n" +
 		"  * [`keepassxc` *entry*](#keepassxc-entry)\n" +
 		"  * [`keepassxcAttribute` *entry* *attribute*](#keepassxcattribute-entry-attribute)\n" +
@@ -2841,6 +2842,22 @@ func init() {
 		"\n" +
 		"`include` returns the literal contents of the file named `*filename*`, relative\n" +
 		"to the source directory.\n" +
+		"\n" +
+		"### `ioreg`\n" +
+		"\n" +
+		"On macOS, `ioreg` returns the structured output of the `ioreg -a -l` command,\n" +
+		"which includes detailed information about the I/O Kit registry.\n" +
+		"\n" +
+		"On non-macOS operating systems, `ioreg` returns `nil`.\n" +
+		"\n" +
+		"The output from `ioreg` is cached so multiple calls to the `ioreg` function will\n" +
+		"only execute the `ioreg -a -l` command once.\n" +
+		"\n" +
+		"#### `ioreg` examples\n" +
+		"\n" +
+		"    {{ if (eq .chezmoi.os \"darwin\") }}\n" +
+		"    {{ $serialNumber := index ioreg \"IORegistryEntryChildren\" 0 \"IOPlatformSerialNumber\" }}\n" +
+		"    {{ end }}\n" +
 		"\n" +
 		"### `joinPath` *elements*\n" +
 		"\n" +
