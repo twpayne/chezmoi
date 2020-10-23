@@ -47,4 +47,5 @@ require (
 	google.golang.org/appengine v1.6.7 // indirect
 	gopkg.in/ini.v1 v1.62.0 // indirect
 	gopkg.in/yaml.v2 v2.3.0
+	howett.net/plist v0.0.0-20200419221736-3b63eb3a43b5
 )

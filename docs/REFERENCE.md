@@ -70,6 +70,7 @@ Manage your dotfiles securely across multiple machines.
   * [`bitwarden` [*args*]](#bitwarden-args)
   * [`gopass` *gopass-name*](#gopass-gopass-name)
   * [`include` *filename*](#include-filename)
+  * [`ioreg`](#ioreg)
   * [`joinPath` *elements*](#joinpath-elements)
   * [`keepassxc` *entry*](#keepassxc-entry)
   * [`keepassxcAttribute` *entry* *attribute*](#keepassxcattribute-entry-attribute)
@@ -1002,6 +1003,22 @@ with the same *gopass-name* will only invoke `gopass` once.
 
 `include` returns the literal contents of the file named `*filename*`, relative
 to the source directory.
+
+### `ioreg`
+
+On macOS, `ioreg` returns the structured output of the `ioreg -a -l` command,
+which includes detailed information about the I/O Kit registry.
+
+On non-macOS operating systems, `ioreg` returns `nil`.
+
+The output from `ioreg` is cached so multiple calls to the `ioreg` function will
+only execute the `ioreg -a -l` command once.
+
+#### `ioreg` examples
+
+    {{ if (eq .chezmoi.os "darwin") }}
+    {{ $serialNumber := index ioreg "IORegistryEntryChildren" 0 "IOPlatformSerialNumber" }}
+    {{ end }}
 
 ### `joinPath` *elements*
 

@@ -101,6 +101,9 @@ type Config struct {
 	Stderr            io.Writer
 	bds               *xdg.BaseDirectorySpecification
 	scriptStateBucket []byte
+
+	//nolint:structcheck,unused
+	ioregData ioregData
 }
 
 // A configOption sets an option on a Config.
