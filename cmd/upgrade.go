@@ -264,7 +264,7 @@ FOR:
 				return err
 			}
 			break FOR
-		case err == io.EOF:
+		case errors.Is(err, io.EOF):
 			return fmt.Errorf("%s: could not find header", c.upgrade.repo)
 		}
 	}

@@ -154,7 +154,7 @@ func readPassword(prompt string) (pw []byte, err error) {
 		if err != nil {
 			// terminal.ReadPassword accepts EOF-terminated passwords
 			// if non-empty, so do the same
-			if err == io.EOF && len(pw) > 0 {
+			if errors.Is(err, io.EOF) && len(pw) > 0 {
 				err = nil
 			}
 			return pw, err
