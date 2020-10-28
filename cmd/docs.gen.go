@@ -634,6 +634,7 @@ func init() {
 		"* [Automatically commit and push changes to your repo](#automatically-commit-and-push-changes-to-your-repo)\n" +
 		"* [Use templates to manage files that vary from machine to machine](#use-templates-to-manage-files-that-vary-from-machine-to-machine)\n" +
 		"* [Use completely separate config files on different machines](#use-completely-separate-config-files-on-different-machines)\n" +
+		"  * [Without using symlinks](#without-using-symlinks)\n" +
 		"* [Create a config file on a new machine automatically](#create-a-config-file-on-a-new-machine-automatically)\n" +
 		"* [Have chezmoi create a directory, but ignore its contents](#have-chezmoi-create-a-directory-but-ignore-its-contents)\n" +
 		"* [Ensure that a target is removed](#ensure-that-a-target-is-removed)\n" +
@@ -1109,6 +1110,12 @@ func init() {
 		"\n" +
 		"    username = {{ (bitwarden \"item\" \"example.com\").login.username }}\n" +
 		"    password = {{ (bitwarden \"item\" \"example.com\").login.password }}\n" +
+		"\n" +
+		"Custom fields can be accessed with the `bitwardenFields` template function. For\n" +
+		"example, if you have a custom field named `token` you can retrieve its value\n" +
+		"with:\n" +
+		"\n" +
+		"    {{ (bitwardenFields \"item\" \"example.com\").token.value }}\n" +
 		"\n" +
 		"### Use gopass to keep your secrets\n" +
 		"\n" +
@@ -1907,6 +1914,7 @@ func init() {
 		"* [Template variables](#template-variables)\n" +
 		"* [Template functions](#template-functions)\n" +
 		"  * [`bitwarden` [*args*]](#bitwarden-args)\n" +
+		"  * [`bitwardenFields` [*args*]](#bitwardenfields-args)\n" +
 		"  * [`gopass` *gopass-name*](#gopass-gopass-name)\n" +
 		"  * [`include` *filename*](#include-filename)\n" +
 		"  * [`ioreg`](#ioreg)\n" +
@@ -2825,6 +2833,72 @@ func init() {
 		"\n" +
 		"    username = {{ (bitwarden \"item\" \"example.com\").login.username }}\n" +
 		"    password = {{ (bitwarden \"item\" \"example.com\").login.password }}\n" +
+		"\n" +
+		"### `bitwardenFields` [*args*]\n" +
+		"\n" +
+		"`bitwardenFields` returns structured data retrieved from\n" +
+		"[Bitwarden](https://bitwarden.com) using the [Bitwarden\n" +
+		"CLI](https://github.com/bitwarden/cli) (`bw`). *args* are passed to `bw`\n" +
+		"unchanged and the output from `bw` is parsed as JSON, and\n" +
+		"elements of `fields` are returned as a map indexed by each field's\n" +
+		"`name`. For example, given the output from `bw`:\n" +
+		"\n" +
+		"```json\n" +
+		"{\n" +
+		"  \"object\": \"item\",\n" +
+		"  \"id\": \"bf22e4b4-ae4a-4d1c-8c98-ac620004b628\",\n" +
+		"  \"organizationId\": null,\n" +
+		"  \"folderId\": null,\n" +
+		"  \"type\": 1,\n" +
+		"  \"name\": \"example.com\",\n" +
+		"  \"notes\": null,\n" +
+		"  \"favorite\": false,\n" +
+		"  \"fields\": [\n" +
+		"    {\n" +
+		"      \"name\": \"text\",\n" +
+		"      \"value\": \"text-value\",\n" +
+		"      \"type\": 0\n" +
+		"    },\n" +
+		"    {\n" +
+		"      \"name\": \"hidden\",\n" +
+		"      \"value\": \"hidden-value\",\n" +
+		"      \"type\": 1\n" +
+		"    }\n" +
+		"  ],\n" +
+		"  \"login\": {\n" +
+		"    \"username\": \"username-value\",\n" +
+		"    \"password\": \"password-value\",\n" +
+		"    \"totp\": null,\n" +
+		"    \"passwordRevisionDate\": null\n" +
+		"  },\n" +
+		"  \"collectionIds\": [],\n" +
+		"  \"revisionDate\": \"2020-10-28T00:21:02.690Z\"\n" +
+		"}\n" +
+		"```\n" +
+		"\n" +
+		"the return value will be the map\n" +
+		"\n" +
+		"```json\n" +
+		"{\n" +
+		"  \"hidden\": {\n" +
+		"    \"name\": \"hidden\",\n" +
+		"    \"type\": 1,\n" +
+		"    \"value\": \"hidden-value\"\n" +
+		"  },\n" +
+		"  \"token\": {\n" +
+		"    \"name\": \"token\",\n" +
+		"    \"type\": 0,\n" +
+		"    \"value\": \"token-value\"\n" +
+		"  }\n" +
+		"}\n" +
+		"```\n" +
+		"\n" +
+		"The output from `bw` is cached so calling `bitwarden` multiple times with the\n" +
+		"same arguments will only invoke `bw` once.\n" +
+		"\n" +
+		"#### `bitwardenFields` examples\n" +
+		"\n" +
+		"    {{ (bitwardenFields \"item\" \"example.com\").token.value }}\n" +
 		"\n" +
 		"### `gopass` *gopass-name*\n" +
 		"\n" +

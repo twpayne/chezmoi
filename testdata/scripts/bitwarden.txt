@@ -1,0 +1,92 @@
+[!windows] chmod 755 bin/bw
+[windows] unix2dos bin/bw.cmd
+
+chezmoi execute-template '{{ (bitwarden "item" "example.com").login.password }}'
+stdout password-value
+
+[short] stop
+
+chezmoi execute-template '{{ (bitwardenFields "item" "example.com").Hidden.value }}'
+stdout hidden-value
+
+-- bin/bw --
+#!/bin/sh
+
+case "$*" in
+"get item example.com")
+    cat <<EOF
+{
+  "object": "item",
+  "id": "bf22e4b4-ae4a-4d1c-8c98-ac620004b628",
+  "organizationId": null,
+  "folderId": null,
+  "type": 1,
+  "name": "example.com",
+  "notes": null,
+  "favorite": false,
+  "fields": [
+    {
+      "name": "Text",
+      "value": "text-value",
+      "type": 0
+    },
+    {
+      "name": "Hidden",
+      "value": "hidden-value",
+      "type": 1
+    }
+  ],
+  "login": {
+    "username": "username-value",
+    "password": "password-value",
+    "totp": null,
+    "passwordRevisionDate": null
+  },
+  "collectionIds": [],
+  "revisionDate": "2020-10-28T00:21:02.690Z"
+}
+EOF
+    ;;
+*)
+    echo "Invalid command: $*"
+    echo "See --help for a list of available commands."
+    exit 1
+esac
+-- bin/bw.cmd --
+@echo off
+IF "%*" == "get item example.com" (
+    echo.{
+    echo.  "object": "item",
+    echo.  "id": "bf22e4b4-ae4a-4d1c-8c98-ac620004b628",
+    echo.  "organizationId": null,
+    echo.  "folderId": null,
+    echo.  "type": 1,
+    echo.  "name": "example.com",
+    echo.  "notes": null,
+    echo.  "favorite": false,
+    echo.  "fields": [
+    echo.    {
+    echo.      "name": "Text",
+    echo.      "value": "text-value",
+    echo.      "type": 0
+    echo.    },
+    echo.    {
+    echo.      "name": "Hidden",
+    echo.      "value": "hidden-value",
+    echo.      "type": 1
+    echo.    }
+    echo.  ],
+    echo.  "login": {
+    echo.    "username": "username-value",
+    echo.    "password": "password-value",
+    echo.    "totp": null,
+    echo.    "passwordRevisionDate": null
+    echo.  },
+    echo.  "collectionIds": [],
+    echo.  "revisionDate": "2020-10-28T00:21:02.690Z"
+    echo.}
+) ELSE (
+    echo Invalid command: $*
+    echo "See --help for a list of available commands."
+    exit /b 1
+)

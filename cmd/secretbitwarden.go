@@ -23,11 +23,12 @@ type bitwardenCmdConfig struct {
 	Command string
 }
 
-var bitwardenCache = make(map[string]interface{})
+var bitwardenOutputCache = make(map[string][]byte)
 
 func init() {
 	config.Bitwarden.Command = "bw"
 	config.addTemplateFunc("bitwarden", config.bitwardenFunc)
+	config.addTemplateFunc("bitwardenFields", config.bitwardenFieldsFunc)
 
 	secretCmd.AddCommand(bitwardenCmd)
 }
@@ -36,24 +37,47 @@ func (c *Config) runBitwardenCmd(cmd *cobra.Command, args []string) error {
 	return c.run("", c.Bitwarden.Command, args...)
 }
 
-func (c *Config) bitwardenFunc(args ...string) interface{} {
+func (c *Config) bitwardenOutput(args []string) []byte {
 	key := strings.Join(args, "\x00")
-	if data, ok := bitwardenCache[key]; ok {
-		return data
+	if output, ok := bitwardenOutputCache[key]; ok {
+		return output
 	}
-	name := c.Bitwarden.Command
-	args = append([]string{"get"}, args...)
-	cmd := exec.Command(name, args...)
+
+	//nolint:gosec
+	cmd := exec.Command(c.Bitwarden.Command, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
 	output, err := c.mutator.IdempotentCmdOutput(cmd)
 	if err != nil {
-		panic(fmt.Errorf("%s %s: %w\n%s", name, chezmoi.ShellQuoteArgs(args), err, output))
+		panic(fmt.Errorf("%s %s: %w\n%s", c.Bitwarden.Command, chezmoi.ShellQuoteArgs(args), err, output))
 	}
-	var data interface{}
+
+	bitwardenOutputCache[key] = output
+	return output
+}
+
+func (c *Config) bitwardenFunc(args ...string) map[string]interface{} {
+	output := c.bitwardenOutput(append([]string{"get"}, args...))
+	var data map[string]interface{}
 	if err := json.Unmarshal(output, &data); err != nil {
-		panic(fmt.Errorf("%s %s: %w\n%s", name, chezmoi.ShellQuoteArgs(args), err, output))
+		panic(fmt.Errorf("%s %s: %w\n%s", c.Bitwarden.Command, chezmoi.ShellQuoteArgs(args), err, output))
 	}
-	bitwardenCache[key] = data
 	return data
+}
+
+func (c *Config) bitwardenFieldsFunc(args ...string) map[string]interface{} {
+	output := c.bitwardenOutput(append([]string{"get"}, args...))
+	var data struct {
+		Fields []map[string]interface{} `json:"fields"`
+	}
+	if err := json.Unmarshal(output, &data); err != nil {
+		panic(fmt.Errorf("%s %s: %w\n%s", c.Bitwarden.Command, chezmoi.ShellQuoteArgs(args), err, output))
+	}
+	result := make(map[string]interface{})
+	for _, field := range data.Fields {
+		if name, ok := field["name"].(string); ok {
+			result[name] = field
+		}
+	}
+	return result
 }
