@@ -68,6 +68,7 @@ Manage your dotfiles securely across multiple machines.
 * [Template variables](#template-variables)
 * [Template functions](#template-functions)
   * [`bitwarden` [*args*]](#bitwarden-args)
+  * [`bitwardenFields` [*args*]](#bitwardenfields-args)
   * [`gopass` *gopass-name*](#gopass-gopass-name)
   * [`include` *filename*](#include-filename)
   * [`ioreg`](#ioreg)
@@ -986,6 +987,72 @@ invoke `bw` once.
 
     username = {{ (bitwarden "item" "example.com").login.username }}
     password = {{ (bitwarden "item" "example.com").login.password }}
+
+### `bitwardenFields` [*args*]
+
+`bitwardenFields` returns structured data retrieved from
+[Bitwarden](https://bitwarden.com) using the [Bitwarden
+CLI](https://github.com/bitwarden/cli) (`bw`). *args* are passed to `bw`
+unchanged and the output from `bw` is parsed as JSON, and
+elements of `fields` are returned as a map indexed by each field's
+`name`. For example, given the output from `bw`:
+
+```json
+{
+  "object": "item",
+  "id": "bf22e4b4-ae4a-4d1c-8c98-ac620004b628",
+  "organizationId": null,
+  "folderId": null,
+  "type": 1,
+  "name": "example.com",
+  "notes": null,
+  "favorite": false,
+  "fields": [
+    {
+      "name": "text",
+      "value": "text-value",
+      "type": 0
+    },
+    {
+      "name": "hidden",
+      "value": "hidden-value",
+      "type": 1
+    }
+  ],
+  "login": {
+    "username": "username-value",
+    "password": "password-value",
+    "totp": null,
+    "passwordRevisionDate": null
+  },
+  "collectionIds": [],
+  "revisionDate": "2020-10-28T00:21:02.690Z"
+}
+```
+
+the return value will be the map
+
+```json
+{
+  "hidden": {
+    "name": "hidden",
+    "type": 1,
+    "value": "hidden-value"
+  },
+  "token": {
+    "name": "token",
+    "type": 0,
+    "value": "token-value"
+  }
+}
+```
+
+The output from `bw` is cached so calling `bitwarden` multiple times with the
+same arguments will only invoke `bw` once.
+
+#### `bitwardenFields` examples
+
+    {{ (bitwardenFields "item" "example.com").token.value }}
 
 ### `gopass` *gopass-name*
 

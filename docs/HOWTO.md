@@ -7,6 +7,7 @@
 * [Automatically commit and push changes to your repo](#automatically-commit-and-push-changes-to-your-repo)
 * [Use templates to manage files that vary from machine to machine](#use-templates-to-manage-files-that-vary-from-machine-to-machine)
 * [Use completely separate config files on different machines](#use-completely-separate-config-files-on-different-machines)
+  * [Without using symlinks](#without-using-symlinks)
 * [Create a config file on a new machine automatically](#create-a-config-file-on-a-new-machine-automatically)
 * [Have chezmoi create a directory, but ignore its contents](#have-chezmoi-create-a-directory-but-ignore-its-contents)
 * [Ensure that a target is removed](#ensure-that-a-target-is-removed)
@@ -482,6 +483,12 @@ function in your config files, for example:
 
     username = {{ (bitwarden "item" "example.com").login.username }}
     password = {{ (bitwarden "item" "example.com").login.password }}
+
+Custom fields can be accessed with the `bitwardenFields` template function. For
+example, if you have a custom field named `token` you can retrieve its value
+with:
+
+    {{ (bitwardenFields "item" "example.com").token.value }}
 
 ### Use gopass to keep your secrets
 
