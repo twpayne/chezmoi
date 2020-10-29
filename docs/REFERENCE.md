@@ -497,8 +497,8 @@ comma (`,`).
 
 ### `completion` *shell*
 
-Generate shell completion code for the specified shell (`bash`, `fish`, or
-`zsh`).
+Generate shell completion code for the specified shell (`bash`, `fish`,
+`powershell`, or `zsh`).
 
 #### `--output`, `-o` *filename*
 

@@ -121,8 +121,8 @@ var helps = map[string]help{
 	"completion": {
 		long: "" +
 			"Description:\n" +
-			"  Generate shell completion code for the specified shell (`bash`, `fish`, or\n" +
-			"  `zsh`).\n" +
+			"  Generate shell completion code for the specified shell (`bash`, `fish`,\n" +
+			"  `powershell`, or `zsh`).\n" +
 			"\n" +
 			"  `--output`, `-o` *filename*\n" +
 			"\n" +

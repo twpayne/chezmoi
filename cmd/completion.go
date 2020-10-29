@@ -17,7 +17,7 @@ var completionCmd = &cobra.Command{
 	Short:     "Generate shell completion code for the specified shell (bash, fish, or zsh)",
 	Long:      mustGetLongHelp("completion"),
 	Example:   getExample("completion"),
-	ValidArgs: []string{"bash", "fish", "zsh"},
+	ValidArgs: []string{"bash", "fish", "powershell", "zsh"},
 	RunE:      config.runCompletion,
 }
 
@@ -36,12 +36,16 @@ func (c *Config) runCompletion(cmd *cobra.Command, args []string) error {
 		if err := rootCmd.GenBashCompletion(output); err != nil {
 			return err
 		}
-	case "zsh":
-		if err := rootCmd.GenZshCompletion(output); err != nil {
-			return err
-		}
 	case "fish":
 		if err := rootCmd.GenFishCompletion(output, true); err != nil {
+			return err
+		}
+	case "powershell":
+		if err := rootCmd.GenPowerShellCompletion(output); err != nil {
+			return err
+		}
+	case "zsh":
+		if err := rootCmd.GenZshCompletion(output); err != nil {
 			return err
 		}
 	default:

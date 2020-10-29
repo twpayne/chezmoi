@@ -735,6 +735,7 @@ _chezmoi_completion()
     must_have_one_noun=()
     must_have_one_noun+=("bash")
     must_have_one_noun+=("fish")
+    must_have_one_noun+=("powershell")
     must_have_one_noun+=("zsh")
     noun_aliases=()
 }
