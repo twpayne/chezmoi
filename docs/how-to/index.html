@@ -16,7 +16,7 @@ chezmoi cd git remote add origin https://github." />
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.134b70e5316650a530cb42e4e8630b2a01d532bebfc0337028211175336e4806.css" integrity="sha256-E0tw5TFmUKUwy0Lk6GMLKgHVMr6/wDNwKCERdTNuSAY=">
-<script defer src="/en.search.min.d8fe04472c114f9da0d1a31a72e79ff823cce265458d9609fbdf890acc71887d.js" integrity="sha256-2P4ERywRT52g0aMacuef&#43;CPM4mVFjZYJ&#43;9&#43;JCsxxiH0="></script>
+<script defer src="/en.search.min.3d5f45c86f508668301e1af52691b4056e82b91cd3a79eee40b66839af64f4ee.js" integrity="sha256-PV9FyG9QhmgwHhr1JpG0BW6CuRzTp57uQLZoOa9k9O4="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -115,7 +115,11 @@ https://github.com/alex-shpak/hugo-book
     <li><a href="#pull-the-latest-changes-from-your-repo-and-see-what-would-change-without-actually-applying-the-changes">Pull the latest changes from your repo and see what would change, without actually applying the changes</a></li>
     <li><a href="#automatically-commit-and-push-changes-to-your-repo">Automatically commit and push changes to your repo</a></li>
     <li><a href="#use-templates-to-manage-files-that-vary-from-machine-to-machine">Use templates to manage files that vary from machine to machine</a></li>
-    <li><a href="#use-completely-separate-config-files-on-different-machines">Use completely separate config files on different machines</a></li>
+    <li><a href="#use-completely-separate-config-files-on-different-machines">Use completely separate config files on different machines</a>
+      <ul>
+        <li><a href="#without-using-symlinks">Without using symlinks</a></li>
+      </ul>
+    </li>
     <li><a href="#create-a-config-file-on-a-new-machine-automatically">Create a config file on a new machine automatically</a></li>
     <li><a href="#have-chezmoi-create-a-directory-but-ignore-its-contents">Have chezmoi create a directory, but ignore its contents</a></li>
     <li><a href="#ensure-that-a-target-is-removed">Ensure that a target is removed</a></li>
@@ -369,6 +373,19 @@ this using a symbolic link template. Create the following files:</p>
 </code></pre><p>This will make <code>~/.bashrc</code> will be a symlink to <code>.bashrc_darwin</code> on <code>darwin</code> and
 to <code>.bashrc_linux</code>. The <code>.chezmoiignore</code> configuration ensures that only the
 OS-specific <code>.bashrc_os</code> file will be installed on each OS.</p>
+<h3 id="without-using-symlinks">
+  Without using symlinks
+  <a class="anchor" href="#without-using-symlinks">#</a>
+</h3>
+<p>The same thing can be achieved using the include function.</p>
+<p><code>dot_bashrc.tmpl</code></p>
+<pre><code>{{ if eq .chezmoi.os &quot;darwin&quot; }}
+{{ include &quot;.bashrc_darwin&quot; }}
+{{ end }}
+{{ if eq .chezmoi.os &quot;linux&quot; }}
+{{ include &quot;.bashrc_linux&quot; }}
+{{ end }}
+</code></pre>
 <h2 id="create-a-config-file-on-a-new-machine-automatically">
   Create a config file on a new machine automatically
   <a class="anchor" href="#create-a-config-file-on-a-new-machine-automatically">#</a>
@@ -526,6 +543,11 @@ function.</p>
 function in your config files, for example:</p>
 <pre><code>username = {{ (bitwarden &quot;item&quot; &quot;example.com&quot;).login.username }}
 password = {{ (bitwarden &quot;item&quot; &quot;example.com&quot;).login.password }}
+</code></pre>
+<p>Custom fields can be accessed with the <code>bitwardenFields</code> template function. For
+example, if you have a custom field named <code>token</code> you can retrieve its value
+with:</p>
+<pre><code>{{ (bitwardenFields &quot;item&quot; &quot;example.com&quot;).token.value }}
 </code></pre>
 <h3 id="use-gopass-to-keep-your-secrets">
   Use gopass to keep your secrets
@@ -1069,7 +1091,11 @@ contents.</p>
     <li><a href="#pull-the-latest-changes-from-your-repo-and-see-what-would-change-without-actually-applying-the-changes">Pull the latest changes from your repo and see what would change, without actually applying the changes</a></li>
     <li><a href="#automatically-commit-and-push-changes-to-your-repo">Automatically commit and push changes to your repo</a></li>
     <li><a href="#use-templates-to-manage-files-that-vary-from-machine-to-machine">Use templates to manage files that vary from machine to machine</a></li>
-    <li><a href="#use-completely-separate-config-files-on-different-machines">Use completely separate config files on different machines</a></li>
+    <li><a href="#use-completely-separate-config-files-on-different-machines">Use completely separate config files on different machines</a>
+      <ul>
+        <li><a href="#without-using-symlinks">Without using symlinks</a></li>
+      </ul>
+    </li>
     <li><a href="#create-a-config-file-on-a-new-machine-automatically">Create a config file on a new machine automatically</a></li>
     <li><a href="#have-chezmoi-create-a-directory-but-ignore-its-contents">Have chezmoi create a directory, but ignore its contents</a></li>
     <li><a href="#ensure-that-a-target-is-removed">Ensure that a target is removed</a></li>

@@ -20,7 +20,7 @@
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.134b70e5316650a530cb42e4e8630b2a01d532bebfc0337028211175336e4806.css" integrity="sha256-E0tw5TFmUKUwy0Lk6GMLKgHVMr6/wDNwKCERdTNuSAY=">
-<script defer src="/en.search.min.d8fe04472c114f9da0d1a31a72e79ff823cce265458d9609fbdf890acc71887d.js" integrity="sha256-2P4ERywRT52g0aMacuef&#43;CPM4mVFjZYJ&#43;9&#43;JCsxxiH0="></script>
+<script defer src="/en.search.min.3d5f45c86f508668301e1af52691b4056e82b91cd3a79eee40b66839af64f4ee.js" integrity="sha256-PV9FyG9QhmgwHhr1JpG0BW6CuRzTp57uQLZoOa9k9O4="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -192,8 +192,10 @@ https://github.com/alex-shpak/hugo-book
     <li><a href="#template-functions">Template functions</a>
       <ul>
         <li><a href="#bitwarden-args"><code>bitwarden</code> [<em>args</em>]</a></li>
+        <li><a href="#bitwardenfields-args"><code>bitwardenFields</code> [<em>args</em>]</a></li>
         <li><a href="#gopass-gopass-name"><code>gopass</code> <em>gopass-name</em></a></li>
         <li><a href="#include-filename"><code>include</code> <em>filename</em></a></li>
+        <li><a href="#ioreg"><code>ioreg</code></a></li>
         <li><a href="#joinpath-elements"><code>joinPath</code> <em>elements</em></a></li>
         <li><a href="#keepassxc-entry"><code>keepassxc</code> <em>entry</em></a></li>
         <li><a href="#keepassxcattribute-entry-attribute"><code>keepassxcAttribute</code> <em>entry</em> <em>attribute</em></a></li>
@@ -1608,6 +1610,67 @@ invoke <code>bw</code> once.</p>
 <pre><code>username = {{ (bitwarden &quot;item&quot; &quot;example.com&quot;).login.username }}
 password = {{ (bitwarden &quot;item&quot; &quot;example.com&quot;).login.password }}
 </code></pre>
+<h3 id="bitwardenfields-args">
+  <code>bitwardenFields</code> [<em>args</em>]
+  <a class="anchor" href="#bitwardenfields-args">#</a>
+</h3>
+<p><code>bitwardenFields</code> returns structured data retrieved from
+<a href="https://bitwarden.com">Bitwarden</a> using the <a href="https://github.com/bitwarden/cli">Bitwarden
+CLI</a> (<code>bw</code>). <em>args</em> are passed to <code>bw</code>
+unchanged and the output from <code>bw</code> is parsed as JSON, and
+elements of <code>fields</code> are returned as a map indexed by each field&rsquo;s
+<code>name</code>. For example, given the output from <code>bw</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;object&#34;</span>: <span style="color:#e6db74">&#34;item&#34;</span>,
+  <span style="color:#f92672">&#34;id&#34;</span>: <span style="color:#e6db74">&#34;bf22e4b4-ae4a-4d1c-8c98-ac620004b628&#34;</span>,
+  <span style="color:#f92672">&#34;organizationId&#34;</span>: <span style="color:#66d9ef">null</span>,
+  <span style="color:#f92672">&#34;folderId&#34;</span>: <span style="color:#66d9ef">null</span>,
+  <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#ae81ff">1</span>,
+  <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;example.com&#34;</span>,
+  <span style="color:#f92672">&#34;notes&#34;</span>: <span style="color:#66d9ef">null</span>,
+  <span style="color:#f92672">&#34;favorite&#34;</span>: <span style="color:#66d9ef">false</span>,
+  <span style="color:#f92672">&#34;fields&#34;</span>: [
+    {
+      <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;text&#34;</span>,
+      <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;text-value&#34;</span>,
+      <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#ae81ff">0</span>
+    },
+    {
+      <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;hidden&#34;</span>,
+      <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;hidden-value&#34;</span>,
+      <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#ae81ff">1</span>
+    }
+  ],
+  <span style="color:#f92672">&#34;login&#34;</span>: {
+    <span style="color:#f92672">&#34;username&#34;</span>: <span style="color:#e6db74">&#34;username-value&#34;</span>,
+    <span style="color:#f92672">&#34;password&#34;</span>: <span style="color:#e6db74">&#34;password-value&#34;</span>,
+    <span style="color:#f92672">&#34;totp&#34;</span>: <span style="color:#66d9ef">null</span>,
+    <span style="color:#f92672">&#34;passwordRevisionDate&#34;</span>: <span style="color:#66d9ef">null</span>
+  },
+  <span style="color:#f92672">&#34;collectionIds&#34;</span>: [],
+  <span style="color:#f92672">&#34;revisionDate&#34;</span>: <span style="color:#e6db74">&#34;2020-10-28T00:21:02.690Z&#34;</span>
+}
+</code></pre></div><p>the return value will be the map</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;hidden&#34;</span>: {
+    <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;hidden&#34;</span>,
+    <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#ae81ff">1</span>,
+    <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;hidden-value&#34;</span>
+  },
+  <span style="color:#f92672">&#34;token&#34;</span>: {
+    <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;token&#34;</span>,
+    <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#ae81ff">0</span>,
+    <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;token-value&#34;</span>
+  }
+}
+</code></pre></div><p>The output from <code>bw</code> is cached so calling <code>bitwarden</code> multiple times with the
+same arguments will only invoke <code>bw</code> once.</p>
+<h4 id="bitwardenfields-examples">
+  <code>bitwardenFields</code> examples
+  <a class="anchor" href="#bitwardenfields-examples">#</a>
+</h4>
+<pre><code>{{ (bitwardenFields &quot;item&quot; &quot;example.com&quot;).token.value }}
+</code></pre>
 <h3 id="gopass-gopass-name">
   <code>gopass</code> <em>gopass-name</em>
   <a class="anchor" href="#gopass-gopass-name">#</a>
@@ -1629,6 +1692,23 @@ with the same <em>gopass-name</em> will only invoke <code>gopass</code> once.</p
 </h3>
 <p><code>include</code> returns the literal contents of the file named <code>*filename*</code>, relative
 to the source directory.</p>
+<h3 id="ioreg">
+  <code>ioreg</code>
+  <a class="anchor" href="#ioreg">#</a>
+</h3>
+<p>On macOS, <code>ioreg</code> returns the structured output of the <code>ioreg -a -l</code> command,
+which includes detailed information about the I/O Kit registry.</p>
+<p>On non-macOS operating systems, <code>ioreg</code> returns <code>nil</code>.</p>
+<p>The output from <code>ioreg</code> is cached so multiple calls to the <code>ioreg</code> function will
+only execute the <code>ioreg -a -l</code> command once.</p>
+<h4 id="ioreg-examples">
+  <code>ioreg</code> examples
+  <a class="anchor" href="#ioreg-examples">#</a>
+</h4>
+<pre><code>{{ if (eq .chezmoi.os &quot;darwin&quot;) }}
+{{ $serialNumber := index ioreg &quot;IORegistryEntryChildren&quot; 0 &quot;IOPlatformSerialNumber&quot; }}
+{{ end }}
+</code></pre>
 <h3 id="joinpath-elements">
   <code>joinPath</code> <em>elements</em>
   <a class="anchor" href="#joinpath-elements">#</a>
@@ -1905,7 +1985,7 @@ parsed as JSON. The output is cached so multiple calls to <code>secret</code> wi
   <a class="anchor" href="#stat-name">#</a>
 </h3>
 <p><code>stat</code> runs <code>stat(2)</code> on <em>name</em>. If <em>name</em> exists it returns structured data. If
-<em>name</em> does not exist then it returns a falsey value. If <code>stat(2)</code> returns any
+<em>name</em> does not exist then it returns a false value. If <code>stat(2)</code> returns any
 other error then it raises an error. The structured value returned if <em>name</em>
 exists contains the fields <code>name</code>, <code>size</code>, <code>mode</code>, <code>perm</code>, <code>modTime</code>, and
 <code>isDir</code>.</p>
@@ -2047,8 +2127,10 @@ times with the same <em>key</em> will only invoke <code>vault</code> once.</p>
     <li><a href="#template-functions">Template functions</a>
       <ul>
         <li><a href="#bitwarden-args"><code>bitwarden</code> [<em>args</em>]</a></li>
+        <li><a href="#bitwardenfields-args"><code>bitwardenFields</code> [<em>args</em>]</a></li>
         <li><a href="#gopass-gopass-name"><code>gopass</code> <em>gopass-name</em></a></li>
         <li><a href="#include-filename"><code>include</code> <em>filename</em></a></li>
+        <li><a href="#ioreg"><code>ioreg</code></a></li>
         <li><a href="#joinpath-elements"><code>joinPath</code> <em>elements</em></a></li>
         <li><a href="#keepassxc-entry"><code>keepassxc</code> <em>entry</em></a></li>
         <li><a href="#keepassxcattribute-entry-attribute"><code>keepassxcAttribute</code> <em>entry</em> <em>attribute</em></a></li>
