@@ -1,0 +1,60 @@
+[!windows] chmod 755 bin/keepass-test
+[windows] unix2dos bin/keepass-test.cmd
+
+stdin $HOME/input
+chezmoi apply
+cmp $HOME/.netrc golden/.netrc
+
+-- bin/keepass-test --
+#!/bin/sh
+
+case "$*" in
+"--version")
+    echo "2.5.4"
+    ;;
+"show --show-protected secrets.kdbx example.com")
+    cat <<EOF
+Title: example.com
+UserName: examplelogin
+Password: examplepassword
+URL: 
+Notes: 
+EOF
+    ;;
+"show --attributes host-name --quiet --show-protected secrets.kdbx example.com")
+    echo "example.com"
+    ;;
+*)
+    echo "keepass-test: invalid command: $*"
+    exit 1
+esac
+-- bin/keepass-test.cmd --
+@echo off
+IF "%*" == "--version" (
+    echo 2.5.4
+) ELSE IF "%*" == "show --show-protected secrets.kdbx example.com" (
+    echo.Title: example.com
+    echo.UserName: examplelogin
+    echo.Password: examplepassword
+    echo.URL: 
+    echo.Notes: 
+) ELSE IF "%*" == "show --attributes host-name --quiet --show-protected secrets.kdbx example.com" (
+    echo.example.com
+) ELSE (
+    echo keepass-test: invalid command: %*
+    exit /b 1
+)
+-- home/user/input --
+fakepassword
+-- home/user/.config/chezmoi/chezmoi.toml --
+[keepassxc]
+    command = "keepass-test"
+    database = "secrets.kdbx"
+-- home/user/.local/share/chezmoi/private_dot_netrc.tmpl --
+machine {{ keepassxcAttribute "example.com" "host-name" }}
+login {{ (keepassxc "example.com").UserName }}
+password {{ (keepassxc "example.com").Password }}
+-- golden/.netrc --
+machine example.com
+login examplelogin
+password examplepassword

@@ -1,0 +1,28 @@
+[windows] stop
+[!exec:git] stop
+
+mkhomedir golden
+mkhomedir
+
+chezmoi init
+
+# test that chezmoi add creates and pushes a commit
+chezmoi add $HOME${/}.bashrc
+exec git --git-dir=$CHEZMOISOURCEDIR/.git show HEAD
+stdout 'Add dot_bashrc'
+
+[short] stop
+
+# test that chezmoi edit creates and pushes a commit
+chezmoi edit $HOME${/}.bashrc
+exec git --git-dir=$CHEZMOISOURCEDIR/.git show HEAD
+stdout 'Update dot_bashrc'
+
+# test that chezmoi forget creates and pushes a commit
+chezmoi forget $HOME${/}.bashrc
+exec git --git-dir=$CHEZMOISOURCEDIR/.git show HEAD
+stdout 'Remove dot_bashrc'
+
+-- home/user/.config/chezmoi/chezmoi.toml --
+[sourceVCS]
+    autoCommit = true

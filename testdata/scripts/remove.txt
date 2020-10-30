@@ -1,0 +1,12 @@
+mkhomedir
+mksourcedir
+
+exists $HOME/.bashrc
+chezmoi remove --force $HOME${/}.bashrc
+! exists $HOME/.bashrc
+
+[short] stop
+
+exists $HOME/.ssh/config
+chezmoi remove --force $HOME${/}.ssh
+! exists $HOME/.ssh/config

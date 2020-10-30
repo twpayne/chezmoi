@@ -1,0 +1,19 @@
+[!windows] chmod 755 bin/git
+[windows] unix2dos bin/git.cmd
+
+mksourcedir
+
+chezmoi git hello
+stdout hello
+
+-- bin/git --
+#!/bin/sh
+
+echo $*
+-- bin/git.cmd --
+@echo off
+setlocal
+set out=%*
+set out=%out:\=%
+echo %out%
+endlocal

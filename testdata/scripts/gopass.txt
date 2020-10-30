@@ -1,0 +1,34 @@
+[!windows] chmod 755 bin/gopass
+[windows] unix2dos bin/gopass.cmd
+
+chezmoi apply
+cmp $HOME/.netrc golden/.netrc
+
+-- bin/gopass --
+#!/bin/sh
+
+case "$*" in
+"show misc/example.com")
+    echo "examplepassword"
+    ;;
+*)
+    echo "gopass: invalid command: $*"
+    exit 1
+esac
+-- bin/gopass.cmd --
+@echo off
+IF "%*" == "show misc/example.com" (
+    echo | set /p=examplepassword
+    exit /b 0
+) ELSE (
+    echo gopass: invalid command: %*
+    exit /b 1
+)
+-- home/user/.local/share/chezmoi/private_dot_netrc.tmpl --
+machine example.com
+login examplelogin
+password {{ gopass "misc/example.com" }}
+-- golden/.netrc --
+machine example.com
+login examplelogin
+password examplepassword

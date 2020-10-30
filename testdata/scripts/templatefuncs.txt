@@ -1,0 +1,11 @@
+[darwin] chezmoi execute-template '{{ index ioreg "IOKitBuildVersion" }}'
+[darwin] stdout 'Darwin Kernel Version'
+
+chezmoi execute-template '{{ joinPath "a" "b" }}'
+stdout a${/}b
+
+chezmoi execute-template '{{ lookPath "go" }}'
+stdout go${exe}
+
+chezmoi execute-template '{{ (stat ".").isDir }}'
+stdout true

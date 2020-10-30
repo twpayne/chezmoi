@@ -1,0 +1,18 @@
+chezmoi data
+stdout '"chezmoi":'
+stdout 'uniquekey.*uniqueValue' # viper downcases uniqueKey
+
+[short] stop
+
+chezmoi data --format=json
+stdout '"chezmoi":'
+
+chezmoi data --format=toml
+stdout '[chezmoi]'
+
+chezmoi data --format=yaml
+stdout 'chezmoi:'
+
+-- home/user/.config/chezmoi/chezmoi.toml --
+[data]
+  uniqueKey = "uniqueValue"

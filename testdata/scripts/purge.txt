@@ -1,9 +1,14 @@
 mksourcedir
 
+# test chezmoi purge purges source dir
+exists $CHEZMOISOURCEDIR
 chezmoi purge --force
-! exists ${CHEZMOICONFIGDIR}
-! exists ${CHEZMOISOURCEDIR}
+! exists $CHEZMOISOURCEDIR
 
--- home/user/.config/chezmoi/chezmoi.toml --
-[data]
-    email = "user@home.org"
+# test chezmoi purge purges config dir
+chhome home2/user
+exists $CHEZMOICONFIGDIR
+chezmoi purge --force
+! exists $CHEZMOICONFIGDIR
+
+-- home2/user/.config/chezmoi/chezmoi.toml --

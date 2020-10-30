@@ -1,27 +1,25 @@
+mkhomedir
+mksourcedir
+
 chezmoi unmanaged
-stdout .bashrc
-stdout .inputrc
+cmpenv stdout golden/unmanaged
 
-chezmoi add $HOME${/}.bashrc
+[short] stop
+
+rm $CHEZMOISOURCEDIR/dot_bashrc
 chezmoi unmanaged
-! stdout .bashrc
-stdout .inputrc
+cmpenv stdout golden/unmanaged-bashrc
 
-chezmoi add $HOME${/}.inputrc
+rm $CHEZMOISOURCEDIR/private_dot_ssh
 chezmoi unmanaged
-! stdout .bashrc
-! stdout .inputrc
+cmpenv stdout golden/unmanaged-bashrc-ssh
 
-chezmoi forget $HOME${/}.bashrc
-chezmoi unmanaged
-stdout .bashrc
-! stdout .inputrc
-
-chezmoi forget $HOME${/}.inputrc
-! stdout .bashrc
-! stdout .inputrc
-
--- home/user/.bashrc --
-# contents of .bashrc
--- home/user/.inputrc --
-# contents of .inputrc
+-- golden/unmanaged --
+$HOME${/}.local
+-- golden/unmanaged-bashrc --
+$HOME${/}.bashrc
+$HOME${/}.local
+-- golden/unmanaged-bashrc-ssh --
+$HOME${/}.bashrc
+$HOME${/}.local
+$HOME${/}.ssh

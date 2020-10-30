@@ -1,0 +1,8 @@
+[short] stop
+
+# test invalid config
+! chezmoi verify
+stderr 'config contains errors'
+
+-- home/user/.config/chezmoi/chezmoi.json --
+{

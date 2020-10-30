@@ -1,34 +1,42 @@
 [!exec:git] stop
 
+mkhomedir golden
 mkhomedir
 
 # test that chezmoi init creates a git repo
 chezmoi init
-exists ${CHEZMOISOURCEDIR}${/}.git
+exists $CHEZMOISOURCEDIR/.git
+
+[short] stop
 
 # create a commit
-chezmoi add $HOME${/}.bashrc
-cmp ${CHEZMOISOURCEDIR}${/}dot_bashrc $HOME${/}.bashrc
+cp golden/.bashrc $CHEZMOISOURCEDIR/dot_bashrc
 chezmoi git add dot_bashrc
 chezmoi git commit -- --message 'Add dot_bashrc'
 
 # test that chezmoi init fetches git repo but does not apply
-chhome home2${/}user
+chhome home2/user
 chezmoi init file://$WORK/home/user/.local/share/chezmoi
-exists ${CHEZMOISOURCEDIR}${/}.git
-! exists $HOME${/}.bashrc
+exists $CHEZMOISOURCEDIR/.git
+! exists $HOME/.bashrc
 
 # test that chezmoi init --apply fetches a git repo and runs chezmoi apply
-chhome home3${/}user
+chhome home3/user
 chezmoi init --apply file://$WORK/home/user/.local/share/chezmoi
-exists ${CHEZMOISOURCEDIR}${/}.git
-grep '# contents of .bashrc' $HOME${/}.bashrc
+exists $CHEZMOISOURCEDIR/.git
+cmp $HOME/.bashrc golden/.bashrc
 
 # test that chezmoi init does not clone the repo if it is already checked out but does create the config file
 chhome home4${/}user
-chezmoi init --source=${HOME}/dotfiles --verbose file://$WORK/nonexistentrepo
-exists ${CHEZMOICONFIGDIR}/chezmoi.toml
+chezmoi init --source=$HOME/dotfiles file://$WORK/nonexistentrepo
+exists $CHEZMOICONFIGDIR/chezmoi.toml
 
+-- home2/user/.gitconfig --
+[core]
+  autocrlf = false
+-- home3/user/.gitconfig --
+[core]
+  autocrlf = false
 -- home4/user/dotfiles/.git/.keep --
 -- home4/user/dotfiles/.chezmoi.toml.tmpl --
 [data]

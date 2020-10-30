@@ -1,36 +1,36 @@
-[windows] stop 'https://github.com/twpayne/chezmoi/issues/745'
-
 mksourcedir
 
 chezmoi managed
 cmpenv stdout golden/managed
 
-chezmoi --include=dirs managed
+[short] stop
+
+chezmoi managed --include=dirs
 cmpenv stdout golden/managed-dirs
 
-chezmoi --include=files managed
+chezmoi managed --include=files
 cmpenv stdout golden/managed-files
 
-chezmoi --include=symlinks managed
+chezmoi managed --include=symlinks
 cmpenv stdout golden/managed-symlinks
 
 -- golden/managed --
-$HOME/.absent
-$HOME/.bashrc
-$HOME/.binary
-$HOME/.gitconfig
-$HOME/.hushlogin
-$HOME/.ssh
-$HOME/.ssh/config
-$HOME/.symlink
+$HOME${/}.absent
+$HOME${/}.bashrc
+$HOME${/}.binary
+$HOME${/}.gitconfig
+$HOME${/}.hushlogin
+$HOME${/}.ssh
+$HOME${/}.ssh${/}config
+$HOME${/}.symlink
 -- golden/managed-dirs --
-$HOME/.ssh
+$HOME${/}.ssh
 -- golden/managed-files --
-$HOME/.absent
-$HOME/.bashrc
-$HOME/.binary
-$HOME/.gitconfig
-$HOME/.hushlogin
-$HOME/.ssh/config
+$HOME${/}.absent
+$HOME${/}.bashrc
+$HOME${/}.binary
+$HOME${/}.gitconfig
+$HOME${/}.hushlogin
+$HOME${/}.ssh${/}config
 -- golden/managed-symlinks --
-$HOME/.symlink
+$HOME${/}.symlink

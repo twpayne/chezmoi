@@ -1,0 +1,14 @@
+[short] stop
+
+chezmoi apply
+exists $HOME/dir/foo
+
+cp golden/empty $HOME/dir/bar
+chezmoi apply --dry-run
+exists $HOME/dir/bar
+chezmoi apply
+! exists $HOME/dir/bar
+
+-- golden/empty --
+-- home/user/.local/share/chezmoi/exact_dir/foo --
+# contents of foo

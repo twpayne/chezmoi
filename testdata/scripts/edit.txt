@@ -1,4 +1,29 @@
+mkhomedir
 mksourcedir
 
-chezmoi edit $HOME/.bashrc
+chezmoi edit $HOME${/}.bashrc
 grep -count=1 '# edited' $CHEZMOISOURCEDIR/dot_bashrc
+! grep '# edited' $HOME/.bashrc
+
+[short] stop
+
+chezmoi edit --apply $HOME${/}.bashrc
+grep -count=2 '# edited' $CHEZMOISOURCEDIR/dot_bashrc
+grep -count=2 '# edited' $HOME/.bashrc
+
+chezmoi edit $HOME${/}.symlink
+grep -count=1 '# edited' $CHEZMOISOURCEDIR/symlink_dot_symlink
+
+chezmoi edit $HOME${/}.bashrc $HOME${/}.symlink
+grep -count=3 '# edited' $CHEZMOISOURCEDIR/dot_bashrc
+grep -count=2 '# edited' $CHEZMOISOURCEDIR/symlink_dot_symlink
+
+# FIXME refine edit directory test
+! chezmoi edit $HOME${/}.ssh
+
+# FIXME --apply tests
+# FIXME --prompt tests
+# FIXME --verify tests
+
+-- home/user/.local/share/chezmoi/run_script --
+#!/bin/sh

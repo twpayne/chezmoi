@@ -1,16 +1,53 @@
-# test that verify returns success on an empty directory
+[windows] stop
+
+mkhomedir golden
+mkhomedir
+mksourcedir
+
+# test that chezmoi verify succeeds
 chezmoi verify
 
-# test that verify returns failure if the destination directory does not match
-# the target state
-mkdir ${CHEZMOISOURCEDIR}
-cp golden${/}empty_dot_hushlogin ${CHEZMOISOURCEDIR}${/}empty_dot_hushlogin
+[short] stop
+
+# test that chezmoi verify fails when a file is added to the source state
+cp golden/dot_inputrc $CHEZMOISOURCEDIR/dot_inputrc
 ! chezmoi verify
-
-# test that verify returns success after the chezmoi apply
-! exists $HOME${/}.hushlogin
-chezmoi apply
-exists $HOME${/}.hushlogin
+rm $CHEZMOISOURCEDIR/dot_inputrc
 chezmoi verify
 
--- golden/empty_dot_hushlogin --
+# test that chezmoi verify fails when a file is edited
+edit $HOME/.bashrc
+! chezmoi verify
+cp $CHEZMOISOURCEDIR/dot_bashrc $HOME/.bashrc
+chezmoi verify
+
+# test that chezmoi verify fails when a file is removed from the destination directory
+rm $HOME/.bashrc
+! chezmoi verify
+cp $CHEZMOISOURCEDIR/dot_bashrc $HOME/.bashrc
+chezmoi verify
+
+# test that chezmoi verify fails when a directory is removed from the destination directory
+rm $HOME/.ssh
+! chezmoi verify
+mkdir $HOME/.ssh
+chmod 700 $HOME/.ssh
+cp $CHEZMOISOURCEDIR/private_dot_ssh/config $HOME/.ssh/config
+chezmoi verify
+
+[windows] stop 'remaining tests use file modes'
+
+# test that chezmoi verify fails when a file's permissions are changed
+chmod 777 $HOME/.bashrc
+! chezmoi verify
+chmod 644 $HOME/.bashrc
+chezmoi verify
+
+# test that chezmoi verify fails when a dir's permissions are changed
+chmod 777 $HOME/.ssh
+! chezmoi verify
+chmod 700 $HOME/.ssh
+chezmoi verify
+
+-- golden/dot_inputrc --
+# contents of .inputrc

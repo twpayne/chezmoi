@@ -1,19 +1,39 @@
 mksourcedir
 
-chezmoi chattr +empty $HOME${/}.bashrc
-exists ${CHEZMOISOURCEDIR}${/}empty_dot_bashrc
+exists $CHEZMOISOURCEDIR/dot_bashrc
+chezmoi chattr empty $HOME${/}.bashrc
+! exists $CHEZMOISOURCEDIR/dot_bashrc
+exists $CHEZMOISOURCEDIR/empty_dot_bashrc
 
-chezmoi chattr +template $HOME${/}.bashrc
-exists ${CHEZMOISOURCEDIR}${/}empty_dot_bashrc.tmpl
+[short] stop
 
-chezmoi chattr +private $HOME${/}.bashrc
-exists ${CHEZMOISOURCEDIR}${/}private_empty_dot_bashrc.tmpl
+chezmoi chattr +p $HOME${/}.bashrc
+! exists $CHEZMOISOURCEDIR/empty_dot_bashrc
+exists $CHEZMOISOURCEDIR/private_empty_dot_bashrc
 
-chezmoi chattr noempty $HOME${/}.bashrc
-exists ${CHEZMOISOURCEDIR}${/}private_dot_bashrc.tmpl
+chezmoi chattr t,-e $HOME${/}.bashrc
+! exists $CHEZMOISOURCEDIR/private_empty_dot_bashrc
+exists $CHEZMOISOURCEDIR/private_dot_bashrc.tmpl
 
-chezmoi chattr -- -template $HOME${/}.bashrc
-exists ${CHEZMOISOURCEDIR}${/}private_dot_bashrc
+exists $CHEZMOISOURCEDIR/executable_dot_binary
+chezmoi chattr nox $HOME${/}.binary
+! exists $CHEZMOISOURCEDIR/executable_dot_binary
+exists $CHEZMOISOURCEDIR/dot_binary
 
-chezmoi chattr nop $HOME${/}.bashrc
-exists ${CHEZMOISOURCEDIR}${/}dot_bashrc
+chezmoi chattr x $HOME${/}.binary
+! exists $CHEZMOISOURCEDIR/dot_binary
+exists $CHEZMOISOURCEDIR/executable_dot_binary
+
+exists $CHEZMOISOURCEDIR/private_dot_ssh
+chezmoi chattr exact $HOME/.ssh
+! exists $CHEZMOISOURCEDIR/private_dot_ssh
+exists $CHEZMOISOURCEDIR/exact_private_dot_ssh
+
+exists $CHEZMOISOURCEDIR/symlink_dot_symlink
+chezmoi chattr +t $HOME${/}.symlink
+! exists $CHEZMOISOURCEDIR/symlink_dot_symlink
+exists $CHEZMOISOURCEDIR/symlink_dot_symlink.tmpl
+
+chezmoi chattr -- -t $HOME${/}.symlink
+! exists $CHEZMOISOURCEDIR/symlink_dot_symlink.tmpl
+exists $CHEZMOISOURCEDIR/symlink_dot_symlink

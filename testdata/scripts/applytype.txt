@@ -1,0 +1,25 @@
+# FIXME add more combinations
+
+[short] stop
+
+mkhomedir golden
+mkhomedir
+mksourcedir
+
+# test replace directory with file
+rm $HOME/.bashrc
+mkdir $HOME/.bashrc
+chezmoi apply
+cmp $HOME/.bashrc golden/.bashrc
+
+# test replace file with directory
+rm $HOME/.ssh
+mkfile $HOME/.ssh
+chezmoi apply
+cmp $HOME/.ssh/config golden/.ssh/config
+
+# test replace file with symlink
+rm $HOME/.symlink
+mkfile $HOME/.symlink
+chezmoi apply
+cmp $HOME/.symlink golden/.bashrc

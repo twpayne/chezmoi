@@ -1,7 +1,11 @@
-exists $HOME/.hushlogin
-chezmoi apply --remove
-! exists $HOME/.hushlogin
+[short] stop
 
--- home/user/.hushlogin --
+chezmoi apply --dry-run --remove
+exists $HOME${/}.bashrc
+chezmoi apply --remove
+! exists $HOME${/}.bashrc
+
+-- home/user/.bashrc --
+# contents of .bashrc
 -- home/user/.local/share/chezmoi/.chezmoiremove --
-.hushlogin
+.bashrc
