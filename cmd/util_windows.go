@@ -23,10 +23,6 @@ func enableVirtualTerminalProcessingOnWindows(w io.Writer) error {
 	return windows.SetConsoleMode(windows.Handle(f.Fd()), dwMode|windows.ENABLE_VIRTUAL_TERMINAL_PROCESSING)
 }
 
-func getUmask() int {
-	return 0
-}
-
 func trimExecutableSuffix(s string) string {
 	return strings.TrimSuffix(s, ".exe")
 }

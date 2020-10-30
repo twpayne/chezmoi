@@ -139,7 +139,7 @@ var (
 // newConfig creates a new Config with the given options.
 func newConfig(options ...configOption) *Config {
 	c := &Config{
-		Umask: permValue(getUmask()),
+		Umask: permValue(chezmoi.GetUmask()),
 		Color: "auto",
 		SourceVCS: sourceVCSConfig{
 			Command: "git",
