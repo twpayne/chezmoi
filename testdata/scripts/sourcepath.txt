@@ -1,8 +1,18 @@
 mksourcedir
 
 chezmoi source-path
-stdout ${CHEZMOISOURCEDIR@R}
+cmpenv stdout golden/source-path
 
 chezmoi source-path $HOME${/}.bashrc
-env WANT=${CHEZMOISOURCEDIR}${/}dot_bashrc
-stdout ${WANT@R}
+cmpenv stdout golden/source-path-bashrc
+
+! chezmoi source-path $HOME${/}.inputrc
+stderr 'file does not exist'
+
+! chezmoi source-path $WORK${/}etc${/}passwd
+stderr 'outside target directory'
+
+-- golden/source-path --
+$HOME${/}.local${/}share${/}chezmoi
+-- golden/source-path-bashrc --
+$HOME${/}.local${/}share${/}chezmoi${/}dot_bashrc

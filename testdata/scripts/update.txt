@@ -1,0 +1,54 @@
+[windows] stop
+[!exec:git] stop
+
+mkhomedir golden
+mkhomedir
+
+exec git init --bare $WORK/dotfiles.git
+
+chezmoi init file://$WORK/dotfiles.git
+
+# create a commit
+chezmoi add $HOME${/}.bashrc
+chezmoi git add dot_bashrc
+chezmoi git commit -- --message 'Add dot_bashrc'
+chezmoi git push
+
+chhome home2/user
+chezmoi init --apply file://$WORK/dotfiles.git
+cmp $HOME/.bashrc golden/.bashrc
+
+# create and push a new commit
+chhome home/user
+edit $CHEZMOISOURCEDIR/dot_bashrc
+chezmoi git -- add dot_bashrc
+chezmoi git -- commit -m 'Update dot_bashrc'
+chezmoi git -- push
+
+# test chezmoi update
+chhome home2/user
+chezmoi update
+grep -count=1 '# edited' $HOME/.bashrc
+
+[short] stop
+
+# create and push a new commit
+chhome home/user
+edit $CHEZMOISOURCEDIR/dot_bashrc
+chezmoi git -- add dot_bashrc
+chezmoi git -- commit -m 'Update dot_bashrc'
+chezmoi git -- push
+
+# test chezmoi update --apply=false
+chhome home2/user
+chezmoi update --apply=false
+grep -count=1 '# edited' $HOME/.bashrc
+chezmoi apply
+grep -count=2 '# edited' $HOME/.bashrc
+
+-- home2/user/.gitconfig --
+[core]
+  autocrlf = false
+-- home3/user/.gitconfig --
+[core]
+  autocrlf = false

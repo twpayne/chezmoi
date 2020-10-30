@@ -1,0 +1,13 @@
+chezmoi completion bash
+stdout '# bash completion for chezmoi'
+
+[short] stop
+
+chezmoi completion fish
+stdout '# fish completion for chezmoi'
+
+chezmoi completion powershell
+stdout 'Register-ArgumentCompleter'
+
+chezmoi completion zsh
+stdout '#compdef _chezmoi chezmoi'

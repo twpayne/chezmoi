@@ -1,3 +1,4 @@
+[windows] stop
 [!exec:git] stop
 
 mkhomedir
@@ -15,7 +16,7 @@ cmp $HOME${/}.bashrc $WORK${/}home${/}user${/}.bashrc
 
 # create a new commit
 chhome home${/}user
-edit ${CHEZMOISOURCEDIR}${/}dot_bashrc
+edit $CHEZMOISOURCEDIR${/}dot_bashrc
 chezmoi git -- add dot_bashrc
 chezmoi git -- commit -m 'Update dot_bashrc'
 

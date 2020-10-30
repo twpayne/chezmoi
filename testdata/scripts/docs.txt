@@ -1,8 +1,16 @@
 chezmoi docs
 stdout 'chezmoi Reference Manual'
 
+[short] stop
+
 chezmoi docs faq
 stdout 'chezmoi Frequently Asked Questions'
 
 chezmoi docs quickstart
 stdout 'chezmoi Quick Start Guide'
+
+! chezmoi docs a
+stderr 'ambiguous pattern'
+
+! chezmoi docs z
+stderr 'no matching files'

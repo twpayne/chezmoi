@@ -1,10 +1,18 @@
-[windows] stop 'https://github.com/twpayne/chezmoi/issues/745'
+[windows] stop
 [!exec:tar] stop
 
 mksourcedir
 
-chezmoi archive --output=user.tar
-exec tar -tf user.tar
+[windows] unix2dos golden/archive
+
+chezmoi archive --output=archive.tar
+exec tar -tf archive.tar
+cmp stdout golden/archive
+
+[short] stop
+
+chezmoi archive --output=archive.tar
+exec tar -tf archive.tar
 cmp stdout golden/archive
 
 -- golden/archive --

@@ -1,0 +1,38 @@
+[windows] skip # FIXME
+[!windows] skip 'Windows only'
+
+chezmoi apply
+stdout evidence
+
+[short] stop
+
+chezmoi dump
+cmpenv stdout golden/dump.json
+
+chezmoi managed --include=scripts
+cmpenv stdout golden/managed
+
+[!exec:tar] stop
+
+chezmoi archive --output=archive.tar
+exec tar -tf archive.tar
+[windows] unix2dos golden/archive
+cmp stdout golden/archive
+
+-- golden/archive --
+script.cmd
+-- golden/dump.json --
+[
+  {
+    "type": "script",
+    "sourcePath": "$WORK\\home\\user\\.local\\share\\chezmoi\\run_script.cmd",
+    "targetPath": "script.cmd",
+    "once": false,
+    "template": false,
+    "contents": "echo evidence\n"
+  }
+]
+-- golden/managed --
+$HOME\\script.cmd
+-- home/user/.local/share/chezmoi/run_script.cmd --
+echo evidence

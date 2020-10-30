@@ -1,0 +1,12 @@
+chezmoi data
+
+-- home/user/.config/chezmoi/chezmoi.toml --
+[data]
+  config = "home"
+-- home/user/.local/share/chezmoi/.chezmoiignore --
+.home
+{{ if ne .config "work" }}
+.work
+{{ end }}
+-- home/user/.local/share/chezmoi/empty_dot_home --
+-- home/user/.local/share/chezmoi/empty_dot_work --

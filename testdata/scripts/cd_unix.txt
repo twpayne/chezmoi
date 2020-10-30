@@ -1,0 +1,22 @@
+[windows] skip 'UNIX only'
+
+# test chezmoi cd creates source directory if needed
+chezmoi cd
+exists $CHEZMOISOURCEDIR
+grep -count=1 ${CHEZMOISOURCEDIR@R} shell.log
+
+# test chezmoi cd changes into an existing directory
+chezmoi cd
+grep -count=2 ${CHEZMOISOURCEDIR@R} shell.log
+
+[!exec:bash] stop
+
+# test chezmoi cd with command with args
+chhome home2/user
+chezmoi cd
+stdout version
+
+-- home2/user/.config/chezmoi/chezmoi.toml --
+[cd]
+    command = "bash"
+    args = ["--version"]

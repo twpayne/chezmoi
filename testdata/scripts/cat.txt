@@ -1,4 +1,23 @@
+mkhomedir golden
 mksourcedir
 
 chezmoi cat $HOME${/}.bashrc
-stdout '# contents of .bashrc'
+cmp stdout golden/.bashrc
+
+[short] stop
+
+chezmoi cat $HOME${/}.gitconfig
+cmp stdout golden/.gitconfig
+
+chezmoi cat $HOME${/}.symlink
+stdout '\.bashrc'
+
+! chezmoi cat $HOME${/}.ssh
+stderr 'not a file or symlink'
+
+! chezmoi cat ${/}etc${/}passwd
+stderr 'outside target directory'
+
+cd $HOME
+chezmoi cat .gitconfig
+cmp stdout $WORK/golden/.gitconfig

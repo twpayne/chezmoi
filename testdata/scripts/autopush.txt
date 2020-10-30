@@ -1,0 +1,31 @@
+stop # FIXME
+
+[!exec:git] stop
+
+mkhomedir golden
+mkhomedir
+
+# create a repo
+exec git init --bare $WORK/dotfiles.git
+chezmoi init file://$WORK/dotfiles.git
+
+# test that chezmoi add creates and pushes a commit
+chezmoi add $HOME${/}.bashrc
+exec git --git-dir=$WORK/dotfiles.git show HEAD
+stdout 'Add dot_bashrc'
+
+[short] stop
+
+# test that chezmoi edit creates and pushes a commit
+chezmoi edit $HOME${/}.bashrc
+exec git --git-dir=$WORK/dotfiles.git show HEAD
+stdout 'Update dot_bashrc'
+
+# test that chezmoi forget creates and pushes a commit
+chezmoi forget $HOME${/}.bashrc
+exec git --git-dir=$WORK/dotfiles.git show HEAD
+stdout 'Remove dot_bashrc'
+
+-- home/user/.config/chezmoi/chezmoi.toml --
+[sourceVCS]
+    autoPush = true

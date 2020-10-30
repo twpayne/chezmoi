@@ -1,0 +1,33 @@
+[windows] skip 'UNIX only'
+
+chezmoi apply
+stdout evidence
+
+[short] stop
+
+chezmoi dump
+cmpenv stdout golden/dump.json
+
+[!exec:tar] stop
+
+chezmoi archive --output=archive.tar
+exec tar -tf archive.tar
+cmp stdout golden/archive
+
+-- golden/archive --
+script
+-- golden/dump.json --
+[
+  {
+    "type": "script",
+    "sourcePath": "$WORK/home/user/.local/share/chezmoi/run_script",
+    "targetPath": "script",
+    "once": false,
+    "template": false,
+    "contents": "#!/bin/sh\n\necho evidence\n"
+  }
+]
+-- home/user/.local/share/chezmoi/run_script --
+#!/bin/sh
+
+echo evidence

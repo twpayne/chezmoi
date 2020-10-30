@@ -1,0 +1,33 @@
+mkhomedir
+mksourcedir golden
+rmfinalnewline golden/symlink_dot_symlink
+
+# test adding a normal file
+chezmoi add $HOME${/}.bashrc
+cmp $CHEZMOISOURCEDIR/dot_bashrc golden/dot_bashrc
+
+[short] stop
+
+# test adding an executable file
+chezmoi add $HOME${/}.binary
+[!windows] cmp $CHEZMOISOURCEDIR/executable_dot_binary golden/executable_dot_binary
+[windows] cmp $CHEZMOISOURCEDIR/dot_binary golden/executable_dot_binary
+
+# test adding an empty file without --empty
+chezmoi add $HOME${/}.hushlogin
+! exists $CHEZMOISOURCEDIR/dot_hushlogin
+
+# test adding an empty file with --empty
+chezmoi add --empty $HOME${/}.hushlogin
+cmp $CHEZMOISOURCEDIR/empty_dot_hushlogin golden/empty_dot_hushlogin
+
+# test adding a symlink
+chezmoi add $HOME${/}.symlink
+cmp $CHEZMOISOURCEDIR/symlink_dot_symlink golden/symlink_dot_symlink
+
+# test adding a private directory
+chezmoi add $HOME${/}.ssh
+[!windows] exists $CHEZMOISOURCEDIR/private_dot_ssh
+[windows] exists $CHEZMOISOURCEDIR/dot_ssh
+stop # FIXME
+cmp $CHEZMOISOURCEDIR/private_dot_ssh/config $HOME/.ssh/config

@@ -1,0 +1,46 @@
+[windows] skip 'UNIX only'
+
+chezmoi apply
+cmpenv stdout golden/apply
+
+[short] stop
+
+env $=$
+chezmoi dump
+cmpenv stdout golden/dump
+
+[!exec:tar] stop
+
+chezmoi archive --output=archive.tar
+exec tar -tf archive.tar
+cmp stdout golden/archive
+
+-- golden/apply --
+$HOME${/}dir
+-- golden/archive --
+dir/
+dir/script
+-- golden/dump --
+[
+  {
+    "type": "dir",
+    "sourcePath": "$WORK/home/user/.local/share/chezmoi/dir",
+    "targetPath": "dir",
+    "exact": false,
+    "perm": 493,
+    "entries": [
+      {
+        "type": "script",
+        "sourcePath": "$WORK/home/user/.local/share/chezmoi/dir/run_script",
+        "targetPath": "dir/script",
+        "once": false,
+        "template": false,
+        "contents": "#!/bin/sh\n\necho ${$}PWD\n"
+      }
+    ]
+  }
+]
+-- home/user/.local/share/chezmoi/dir/run_script --
+#!/bin/sh
+
+echo $PWD

@@ -1,4 +1,9 @@
 mksourcedir
 
 chezmoi forget $HOME${/}.bashrc
-! exists ${CHEZMOISOURCEDIR}${/}dot_bashrc
+! exists $CHEZMOISOURCEDIR/dot_bashrc
+exists $CHEZMOISOURCEDIR/private_dot_ssh
+exists $CHEZMOISOURCEDIR/private_dot_ssh/config
+
+chezmoi forget $HOME${/}.ssh
+! exists $CHEZMOISOURCEDIR/private_dot_ssh

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"fmt"
 	"io/ioutil"
@@ -16,10 +17,16 @@ import (
 	"github.com/twpayne/go-vfs/vfst"
 
 	"github.com/twpayne/chezmoi/cmd"
+	"github.com/twpayne/chezmoi/internal/chezmoi"
 )
+
+// umask is the umask used in tests. The umask applies to the process and so
+// cannot be overridden in individual tests.
+const umask = 0o22
 
 //nolint:interfacer
 func TestMain(m *testing.M) {
+	chezmoi.SetUmask(umask)
 	os.Exit(testscript.RunMain(m, map[string]func() int{
 		"chezmoi": func() int {
 			if err := cmd.Execute(); err != nil {
@@ -37,16 +44,19 @@ func TestScript(t *testing.T) {
 	testscript.Run(t, testscript.Params{
 		Dir: filepath.Join("testdata", "scripts"),
 		Cmds: map[string]func(*testscript.TestScript, bool, []string){
-			"chhome":      cmdChHome,
-			"cmpmod":      cmdCmpMod,
-			"edit":        cmdEdit,
-			"mkfile":      cmdMkFile,
-			"mkhomedir":   cmdMkHomeDir,
-			"mksourcedir": cmdMkSourceDir,
-			"unix2dos":    cmdUNIX2DOS,
+			"chhome":         cmdChHome,
+			"cmpmod":         cmdCmpMod,
+			"edit":           cmdEdit,
+			"mkfile":         cmdMkFile,
+			"mkhomedir":      cmdMkHomeDir,
+			"mksourcedir":    cmdMkSourceDir,
+			"rmfinalnewline": cmdRmFinalNewline,
+			"unix2dos":       cmdUNIX2DOS,
 		},
 		Condition: func(cond string) (bool, error) {
 			switch cond {
+			case "darwin":
+				return runtime.GOOS == "darwin", nil
 			case "windows":
 				return runtime.GOOS == "windows", nil
 			default:
@@ -88,7 +98,7 @@ func cmdCmpMod(ts *testscript.TestScript, neg bool, args []string) {
 		ts.Fatalf("usage: cmpmod mode path")
 	}
 	mode64, err := strconv.ParseUint(args[0], 8, 32)
-	if err != nil || os.FileMode(mode64)&os.ModePerm != os.FileMode(mode64) {
+	if err != nil || os.FileMode(mode64).Perm() != os.FileMode(mode64) {
 		ts.Fatalf("invalid mode: %s", args[0])
 	}
 	if runtime.GOOS == "windows" {
@@ -98,12 +108,13 @@ func cmdCmpMod(ts *testscript.TestScript, neg bool, args []string) {
 	if err != nil {
 		ts.Fatalf("%s: %v", args[1], err)
 	}
-	equal := info.Mode()&os.ModePerm == os.FileMode(mode64)
+	umask := chezmoi.GetUmask()
+	equal := info.Mode().Perm()&^umask == os.FileMode(mode64)&^umask
 	if neg && equal {
-		ts.Fatalf("%s unexpectedly has mode %03o", args[1], info.Mode()&os.ModePerm)
+		ts.Fatalf("%s unexpectedly has mode %03o", args[1], info.Mode().Perm())
 	}
 	if !neg && !equal {
-		ts.Fatalf("%s has mode %03o, expected %03o", args[1], info.Mode()&os.ModePerm, os.FileMode(mode64))
+		ts.Fatalf("%s has mode %03o, expected %03o", args[1], info.Mode().Perm(), os.FileMode(mode64))
 	}
 }
 
@@ -171,14 +182,13 @@ func cmdMkHomeDir(ts *testscript.TestScript, neg bool, args []string) {
 	workDir := ts.Getenv("WORK")
 	relPath, err := filepath.Rel(workDir, path)
 	ts.Check(err)
-	if err := vfst.NewBuilder().Build(vfs.NewPathFS(vfs.OSFS, workDir), map[string]interface{}{
+	if err := newBuilder().Build(vfs.NewPathFS(vfs.OSFS, workDir), map[string]interface{}{
 		relPath: map[string]interface{}{
 			".bashrc": "# contents of .bashrc\n",
 			".binary": &vfst.File{
-				Perm:     0o755,
+				Perm:     0o777,
 				Contents: []byte("#!/bin/sh\n"),
 			},
-			".exists": "# contents of .exists\n",
 			".gitconfig": "" +
 				"[core]\n" +
 				"  autocrlf = false\n" +
@@ -216,7 +226,7 @@ func cmdMkSourceDir(ts *testscript.TestScript, neg bool, args []string) {
 	workDir := ts.Getenv("WORK")
 	relPath, err := filepath.Rel(workDir, sourceDir)
 	ts.Check(err)
-	err = vfst.NewBuilder().Build(vfs.NewPathFS(vfs.OSFS, workDir), map[string]interface{}{
+	err = newBuilder().Build(vfs.NewPathFS(vfs.OSFS, workDir), map[string]interface{}{
 		relPath: map[string]interface{}{
 			"dot_absent":            "",
 			"empty_dot_hushlogin":   "",
@@ -239,6 +249,30 @@ func cmdMkSourceDir(ts *testscript.TestScript, neg bool, args []string) {
 	}
 }
 
+// cmdRmFinalNewline removes final newlines.
+func cmdRmFinalNewline(ts *testscript.TestScript, neg bool, args []string) {
+	if neg {
+		ts.Fatalf("unsupported: ! rmfinalnewline")
+	}
+	if len(args) < 1 {
+		ts.Fatalf("usage: rmfinalnewline paths...")
+	}
+	for _, arg := range args {
+		filename := ts.MkAbs(arg)
+		data, err := ioutil.ReadFile(filename)
+		if err != nil {
+			ts.Fatalf("%s: %v", filename, err)
+		}
+		if len(data) == 0 || data[len(data)-1] != '\n' {
+			continue
+		}
+		//nolint:gosec
+		if err := ioutil.WriteFile(filename, data[:len(data)-1], 0o666); err != nil {
+			ts.Fatalf("%s: %v", filename, err)
+		}
+	}
+}
+
 // cmdUNIX2DOS converts files from UNIX line endings to DOS line endings.
 func cmdUNIX2DOS(ts *testscript.TestScript, neg bool, args []string) {
 	if neg {
@@ -250,15 +284,22 @@ func cmdUNIX2DOS(ts *testscript.TestScript, neg bool, args []string) {
 	for _, arg := range args {
 		filename := ts.MkAbs(arg)
 		data, err := ioutil.ReadFile(filename)
-		if err != nil {
-			ts.Fatalf("%s: %v", filename, err)
-		}
-		data = bytes.Join(bytes.Split(data, []byte{'\n'}), []byte{'\r', '\n'})
+		ts.Check(err)
+		dosData, err := unix2DOS(data)
+		ts.Check(err)
 		//nolint:gosec
-		if err := ioutil.WriteFile(filename, data, 0o666); err != nil {
+		if err := ioutil.WriteFile(filename, dosData, 0666); err != nil {
 			ts.Fatalf("%s: %v", filename, err)
 		}
 	}
+}
+
+func newBuilder() *vfst.Builder {
+	return vfst.NewBuilder(vfst.BuilderUmask(umask))
+}
+
+func prependDirToPath(dir, path string) string {
+	return strings.Join(append([]string{dir}, filepath.SplitList(path)...), string(os.PathListSeparator))
 }
 
 func setup(env *testscript.Env) error {
@@ -299,11 +340,11 @@ func setup(env *testscript.Env) error {
 			"editor": &vfst.File{
 				Perm: 0o755,
 				Contents: []byte(strings.Join([]string{
-					`#!/bin/sh`,
-					``,
-					`for filename in $*; do`,
-					`    echo "# edited" >> $filename`,
-					`done`,
+					"#!/bin/sh",
+					"",
+					"for filename in $*; do",
+					"    echo '# edited' >> $filename",
+					"done",
 				}, "\n")),
 			},
 			// shell is a non-interactive script that appends the directory in
@@ -311,17 +352,31 @@ func setup(env *testscript.Env) error {
 			"shell": &vfst.File{
 				Perm: 0o755,
 				Contents: []byte(strings.Join([]string{
-					`#!/bin/sh`,
-					``,
-					`echo $PWD >> ` + filepath.Join(env.WorkDir, "shell.log"),
+					"#!/bin/sh",
+					"",
+					"echo $PWD >> '" + filepath.Join(env.WorkDir, "shell.log") + "'",
 				}, "\n")),
 			},
 		}
 	}
 
-	return vfst.NewBuilder().Build(vfs.NewPathFS(vfs.OSFS, env.WorkDir), root)
+	return newBuilder().Build(vfs.NewPathFS(vfs.OSFS, env.WorkDir), root)
 }
 
-func prependDirToPath(dir, path string) string {
-	return strings.Join(append([]string{dir}, filepath.SplitList(path)...), string(os.PathListSeparator))
+// unix2DOS returns data with UNIX line endings converted to DOS line endings.
+func unix2DOS(data []byte) ([]byte, error) {
+	sb := &strings.Builder{}
+	s := bufio.NewScanner(bytes.NewReader(data))
+	for s.Scan() {
+		if _, err := sb.Write(s.Bytes()); err != nil {
+			return nil, err
+		}
+		if _, err := sb.WriteString("\r\n"); err != nil {
+			return nil, err
+		}
+	}
+	if err := s.Err(); err != nil {
+		return nil, err
+	}
+	return []byte(sb.String()), nil
 }
