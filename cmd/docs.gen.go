@@ -1734,8 +1734,11 @@ func init() {
 		"\n" +
 		"<!--- toc --->\n" +
 		"\n" +
+		"Recommended article: [Fedora Magazine: Take back your dotfiles with Chezmoi](https://fedoramagazine.org/take-back-your-dotfiles-with-chezmoi/)\n" +
+		"\n" +
 		"| Date       | Version | Format      | Link                                                                                                                                                            |\n" +
 		"| ---------- | ------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n" +
+		"| 2020-10-05 | 1.8.6   | Text        | [Dotfiles with /Chezmoi/](https://blog.lazkani.io/posts/backup/dotfiles-with-chezmoi/)                                                                          |\n" +
 		"| 2020-08-13 | 1.8.3   | Text        | [Using BitWarden and Chezmoi to manage SSH keys](https://www.jx0.uk/chezmoi/bitwarden/unix/ssh/2020/08/13/bitwarden-chezmoi-ssh-key.html)                       |\n" +
 		"| 2020-08-09 | 1.8.3   | Text        | [Automating and testing dotfiles](https://seds.nl/posts/automating-and-testing-dotfiles/)                                                                       |\n" +
 		"| 2020-07-06 | 1.8.3   | Video       | [chezmoi: Manage your dotfiles across multiple machines, securely](https://www.youtube.com/watch?v=JrCMCdvoMAw).                                                |\n" +
