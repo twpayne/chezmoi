@@ -66,7 +66,8 @@ curl -sfL https://git.io/chezmoi | sh  One-line package install #  Install chezm
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/media/</guid>
-      <description>Media #     Date Version Format Link     2020-08-13 1.8.3 Text Using BitWarden and Chezmoi to manage SSH keys   2020-08-09 1.8.3 Text Automating and testing dotfiles   2020-07-06 1.8.3 Video chezmoi: Manage your dotfiles across multiple machines, securely.   2020-07-03 1.8.3 Text Feeling at home in a LXD container   2020-06-15 1.8.2 Text Dotfiles management using chezmoi - How I Use Linux Desktop at Work Part5   2020-04-27 1.</description>
+      <description>Media #  Recommended article: Fedora Magazine: Take back your dotfiles with Chezmoi
+   Date Version Format Link     2020-10-05 1.8.6 Text Dotfiles with /Chezmoi/   2020-08-13 1.8.3 Text Using BitWarden and Chezmoi to manage SSH keys   2020-08-09 1.8.3 Text Automating and testing dotfiles   2020-07-06 1.8.3 Video chezmoi: Manage your dotfiles across multiple machines, securely.   2020-07-03 1.8.3 Text Feeling at home in a LXD container   2020-06-15 1.</description>
     </item>
     
     <item>
@@ -98,7 +99,9 @@ chezmoi init  This will create a new git repository in ~/.</description>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/templating/</guid>
-      <description>Templating Guide #  </description>
+      <description>Templating Guide #  Introduction #  Templates are used to change the contents of a file depending on the environment. For example, you can use the hostname of the machine to create different configurations on different machines.
+chezmoi uses the text/template syntax from Go extended with text template functions from sprig.
+When reading files from the source state, chezmoi interprets them as a template if either of the following is true:</description>
     </item>
     
   </channel>
