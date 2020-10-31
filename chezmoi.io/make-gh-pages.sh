@@ -28,12 +28,12 @@ git fetch origin
 git reset origin/gh-pages
 
 # commit the new website
-if ! git diff --quiet ; then
+if ! git diff --quiet; then
     git add .
     git commit --message "Update gh-pages"
 fi
 
-# give the user the opportunity to push the new website 
+# give the user the opportunity to push the new website
 echo "run git push to push the new website"
 
 ${SHELL}

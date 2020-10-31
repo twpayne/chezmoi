@@ -5,7 +5,11 @@ set -e
 BASEDIR="${1:-$HOME}"
 STOWDIR="${2:-dotfiles}"
 
-BASEDIR="$(unset CDPATH; cd "$BASEDIR" >/dev/null 2>&1; pwd)"
+BASEDIR="$(
+    unset CDPATH
+    cd "$BASEDIR" >/dev/null 2>&1
+    pwd
+)"
 
 # if we have greadlink, use that
 READLINK="$(which greadlink 2>/dev/null || which readlink)"
@@ -29,27 +33,28 @@ act_file="$(mktemp)"
 
 trap "rm -f $work_file $act_file" EXIT
 
-find "$BASEDIR" -not -path "$BASEDIR/$STOWDIR*" -type l > "$work_file" || echo "Find skipped some files"
+find "$BASEDIR" -not -path "$BASEDIR/$STOWDIR*" -type l >"$work_file" || echo "Find skipped some files"
 
 cat "$work_file" | while read -r f; do
     target="$($READLINK -f "$f" || echo '')"
     if [[ "$target" == "$BASEDIR/$STOWDIR/"* ]]; then
         echo "Add $f"
-        echo "$f" >> "$act_file"
+        echo "$f" >>"$act_file"
     fi
 done
 
 read -p "Migrate the above to chezmoi? y/N" migrate
 case $migrate in
-    [Yy]*) echo "Migrating..."
-           ;;
-    *) exit 1
+[Yy]*)
+    echo "Migrating..."
+    ;;
+*) exit 1 ;;
 esac
 
 mkdir -p $BASEDIR/.local/share
 
 cat "$act_file" | while read -r f; do
-    if removelink "$f" ; then
+    if removelink "$f"; then
         chezmoi --source "$BASEDIR/.local/share/chezmoi" --destination "$BASEDIR" add "$f"
     else
         echo "Unable to move: $f"
