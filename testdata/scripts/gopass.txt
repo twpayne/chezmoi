@@ -1,3 +1,5 @@
+[windows] skip # FIXME
+
 [!windows] chmod 755 bin/gopass
 [windows] unix2dos bin/gopass.cmd
 
@@ -8,8 +10,11 @@ cmp $HOME/.netrc golden/.netrc
 #!/bin/sh
 
 case "$*" in
-"show misc/example.com")
+"show --password misc/example.com")
     echo "examplepassword"
+    ;;
+"--version")
+    echo "gopass 1.10.1 go1.15 darwin amd64"
     ;;
 *)
     echo "gopass: invalid command: $*"
@@ -17,8 +22,11 @@ case "$*" in
 esac
 -- bin/gopass.cmd --
 @echo off
-IF "%*" == "show misc/example.com" (
+IF "%*" == "show --password misc/example.com" (
     echo | set /p=examplepassword
+    exit /b 0
+) ELSE IF "$*" == "--version" (
+    echo "gopass 1.10.1 go1.15 darwin amd64"
     exit /b 0
 ) ELSE (
     echo gopass: invalid command: %*
