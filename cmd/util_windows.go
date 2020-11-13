@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"io"
+	"io/ioutil"
 	"os"
 	"strings"
 
@@ -25,4 +26,8 @@ func enableVirtualTerminalProcessingOnWindows(w io.Writer) error {
 
 func trimExecutableSuffix(s string) string {
 	return strings.TrimSuffix(s, ".exe")
+}
+
+func writeFile(filename string, data []byte, perm os.FileMode) error {
+	return ioutil.WriteFile(filename, data, perm)
 }

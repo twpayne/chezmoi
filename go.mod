@@ -15,7 +15,7 @@ require (
 	github.com/go-git/go-git/v5 v5.2.0
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/google/go-github/v32 v32.1.0
-	github.com/google/renameio v0.1.0
+	github.com/google/renameio v1.0.0
 	github.com/google/uuid v1.1.2 // indirect
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/imdario/mergo v0.3.11 // indirect
@@ -41,12 +41,13 @@ require (
 	github.com/yuin/goldmark v1.2.1 // indirect
 	github.com/zalando/go-keyring v0.1.0
 	go.etcd.io/bbolt v1.3.5
-	golang.org/x/crypto v0.0.0-20201016220609-9e8e0b390897
-	golang.org/x/net v0.0.0-20201024042810-be3efd7ff127 // indirect
-	golang.org/x/oauth2 v0.0.0-20200902213428-5d25da1a8d43
-	golang.org/x/sys v0.0.0-20201024232916-9f70ab9862d5
+	golang.org/x/crypto v0.0.0-20201112155050-0c6587e931a9
+	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b // indirect
+	golang.org/x/oauth2 v0.0.0-20201109201403-9fd604954f58
+	golang.org/x/sys v0.0.0-20201113135734-0a15ea8d9b02
+	golang.org/x/text v0.3.4 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	gopkg.in/ini.v1 v1.62.0 // indirect
 	gopkg.in/yaml.v2 v2.3.0
-	howett.net/plist v0.0.0-20200419221736-3b63eb3a43b5
+	howett.net/plist v0.0.0-20201026045517-117a925f2150
 )
