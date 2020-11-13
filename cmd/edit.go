@@ -6,7 +6,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/google/renameio"
 	"github.com/spf13/cobra"
 	vfs "github.com/twpayne/go-vfs"
 
@@ -117,7 +116,7 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string) error {
 			if err := os.MkdirAll(filepath.Dir(ef.plaintextPath), 0o700&^os.FileMode(c.Umask)); err != nil {
 				return err
 			}
-			if err := renameio.WriteFile(ef.plaintextPath, plaintext, 0o600&^os.FileMode(c.Umask)); err != nil {
+			if err := writeFile(ef.plaintextPath, plaintext, 0o600&^os.FileMode(c.Umask)); err != nil {
 				return err
 			}
 			argv[ef.index] = ef.plaintextPath
@@ -138,7 +137,7 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string) error {
 		if err != nil {
 			return err
 		}
-		if err := renameio.WriteFile(ef.ciphertextPath, ciphertext, 0o644); err != nil {
+		if err := writeFile(ef.ciphertextPath, ciphertext, 0o644); err != nil {
 			return err
 		}
 	}
