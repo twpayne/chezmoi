@@ -73,7 +73,7 @@ Download, build, and install chezmoi for your system:
     cd chezmoi
     go install
 
-Building chezmoi requires Go 1.13 or later.
+Building chezmoi requires Go 1.14 or later.
 
 ## Upgrading
 

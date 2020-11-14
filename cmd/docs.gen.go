@@ -54,7 +54,7 @@ func init() {
 		"\n" +
 		"## Developing locally\n" +
 		"\n" +
-		"chezmoi requires Go 1.13 or later and Go modules enabled. Enable Go modules by\n" +
+		"chezmoi requires Go 1.14 or later and Go modules enabled. Enable Go modules by\n" +
 		"setting the environment variable `GO111MODULE=on`.\n" +
 		"\n" +
 		"chezmoi is a standard Go project, using standard Go tooling, with a few extra\n" +
@@ -247,29 +247,28 @@ func init() {
 		"# chezmoi Frequently Asked Questions\n" +
 		"\n" +
 		"<!--- toc --->\n" +
-		"- [chezmoi Frequently Asked Questions](#chezmoi-frequently-asked-questions)\n" +
-		"  - [How can I quickly check for problems with chezmoi on my machine?](#how-can-i-quickly-check-for-problems-with-chezmoi-on-my-machine)\n" +
-		"  - [What are the consequences of \"bare\" modifications to the target files? If my `.zshrc` is managed by chezmoi and I edit `~/.zshrc` without using `chezmoi edit`, what happens?](#what-are-the-consequences-of-bare-modifications-to-the-target-files-if-my-zshrc-is-managed-by-chezmoi-and-i-edit-zshrc-without-using-chezmoi-edit-what-happens)\n" +
-		"  - [How can I tell what dotfiles in my home directory aren't managed by chezmoi? Is there an easy way to have chezmoi manage a subset of them?](#how-can-i-tell-what-dotfiles-in-my-home-directory-arent-managed-by-chezmoi-is-there-an-easy-way-to-have-chezmoi-manage-a-subset-of-them)\n" +
-		"  - [How can I tell what dotfiles in my home directory are currently managed by chezmoi?](#how-can-i-tell-what-dotfiles-in-my-home-directory-are-currently-managed-by-chezmoi)\n" +
-		"  - [If there's a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?](#if-theres-a-mechanism-in-place-for-the-above-is-there-also-a-way-to-tell-chezmoi-to-ignore-specific-files-or-groups-of-files-eg-by-directory-name-or-by-glob)\n" +
-		"  - [If the target already exists, but is \"behind\" the source, can chezmoi be configured to preserve the target version before replacing it with one derived from the source?](#if-the-target-already-exists-but-is-behind-the-source-can-chezmoi-be-configured-to-preserve-the-target-version-before-replacing-it-with-one-derived-from-the-source)\n" +
-		"  - [Once I've made a change to the source directory, how do I commit it?](#once-ive-made-a-change-to-the-source-directory-how-do-i-commit-it)\n" +
-		"  - [How do I only run a script when a file has changed?](#how-do-i-only-run-a-script-when-a-file-has-changed)\n" +
-		"  - [I've made changes to both the destination state and the source state that I want to keep. How can I keep them both?](#ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both)\n" +
-		"  - [Why does chezmoi convert all my template variables to lowercase?](#why-does-chezmoi-convert-all-my-template-variables-to-lowercase)\n" +
-		"  - [chezmoi makes `~/.ssh/config` group writeable. How do I stop this?](#chezmoi-makes-sshconfig-group-writeable-how-do-i-stop-this)\n" +
-		"  - [Can I change how chezmoi's source state is represented on disk?](#can-i-change-how-chezmois-source-state-is-represented-on-disk)\n" +
-		"  - [gpg encryption fails. What could be wrong?](#gpg-encryption-fails-what-could-be-wrong)\n" +
-		"  - [chezmoi reports \"user: lookup userid NNNNN: input/output error\"](#chezmoi-reports-user-lookup-userid-nnnnn-inputoutput-error)\n" +
-		"  - [I'm getting errors trying to build chezmoi from source](#im-getting-errors-trying-to-build-chezmoi-from-source)\n" +
-		"  - [What inspired chezmoi?](#what-inspired-chezmoi)\n" +
-		"  - [Why not use Ansible/Chef/Puppet/Salt, or similar to manage my dotfiles instead?](#why-not-use-ansiblechefpuppetsalt-or-similar-to-manage-my-dotfiles-instead)\n" +
-		"  - [Can I use chezmoi to manage files outside my home directory?](#can-i-use-chezmoi-to-manage-files-outside-my-home-directory)\n" +
-		"  - [Where does the name \"chezmoi\" come from?](#where-does-the-name-chezmoi-come-from)\n" +
-		"  - [What other questions have been asked about chezmoi?](#what-other-questions-have-been-asked-about-chezmoi)\n" +
-		"  - [Where do I ask a question that isn't answered here?](#where-do-i-ask-a-question-that-isnt-answered-here)\n" +
-		"  - [I like chezmoi. How do I say thanks?](#i-like-chezmoi-how-do-i-say-thanks)\n" +
+		"* [How can I quickly check for problems with chezmoi on my machine?](#how-can-i-quickly-check-for-problems-with-chezmoi-on-my-machine)\n" +
+		"* [What are the consequences of \"bare\" modifications to the target files? If my `.zshrc` is managed by chezmoi and I edit `~/.zshrc` without using `chezmoi edit`, what happens?](#what-are-the-consequences-of-bare-modifications-to-the-target-files-if-my-zshrc-is-managed-by-chezmoi-and-i-edit-zshrc-without-using-chezmoi-edit-what-happens)\n" +
+		"* [How can I tell what dotfiles in my home directory aren't managed by chezmoi? Is there an easy way to have chezmoi manage a subset of them?](#how-can-i-tell-what-dotfiles-in-my-home-directory-arent-managed-by-chezmoi-is-there-an-easy-way-to-have-chezmoi-manage-a-subset-of-them)\n" +
+		"* [How can I tell what dotfiles in my home directory are currently managed by chezmoi?](#how-can-i-tell-what-dotfiles-in-my-home-directory-are-currently-managed-by-chezmoi)\n" +
+		"* [If there's a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?](#if-theres-a-mechanism-in-place-for-the-above-is-there-also-a-way-to-tell-chezmoi-to-ignore-specific-files-or-groups-of-files-eg-by-directory-name-or-by-glob)\n" +
+		"* [If the target already exists, but is \"behind\" the source, can chezmoi be configured to preserve the target version before replacing it with one derived from the source?](#if-the-target-already-exists-but-is-behind-the-source-can-chezmoi-be-configured-to-preserve-the-target-version-before-replacing-it-with-one-derived-from-the-source)\n" +
+		"* [Once I've made a change to the source directory, how do I commit it?](#once-ive-made-a-change-to-the-source-directory-how-do-i-commit-it)\n" +
+		"* [How do I only run a script when a file has changed?](#how-do-i-only-run-a-script-when-a-file-has-changed)\n" +
+		"* [I've made changes to both the destination state and the source state that I want to keep. How can I keep them both?](#ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both)\n" +
+		"* [Why does chezmoi convert all my template variables to lowercase?](#why-does-chezmoi-convert-all-my-template-variables-to-lowercase)\n" +
+		"* [chezmoi makes `~/.ssh/config` group writeable. How do I stop this?](#chezmoi-makes-sshconfig-group-writeable-how-do-i-stop-this)\n" +
+		"* [Can I change how chezmoi's source state is represented on disk?](#can-i-change-how-chezmois-source-state-is-represented-on-disk)\n" +
+		"* [gpg encryption fails. What could be wrong?](#gpg-encryption-fails-what-could-be-wrong)\n" +
+		"* [chezmoi reports \"user: lookup userid NNNNN: input/output error\"](#chezmoi-reports-user-lookup-userid-nnnnn-inputoutput-error)\n" +
+		"* [I'm getting errors trying to build chezmoi from source](#im-getting-errors-trying-to-build-chezmoi-from-source)\n" +
+		"* [What inspired chezmoi?](#what-inspired-chezmoi)\n" +
+		"* [Why not use Ansible/Chef/Puppet/Salt, or similar to manage my dotfiles instead?](#why-not-use-ansiblechefpuppetsalt-or-similar-to-manage-my-dotfiles-instead)\n" +
+		"* [Can I use chezmoi to manage files outside my home directory?](#can-i-use-chezmoi-to-manage-files-outside-my-home-directory)\n" +
+		"* [Where does the name \"chezmoi\" come from?](#where-does-the-name-chezmoi-come-from)\n" +
+		"* [What other questions have been asked about chezmoi?](#what-other-questions-have-been-asked-about-chezmoi)\n" +
+		"* [Where do I ask a question that isn't answered here?](#where-do-i-ask-a-question-that-isnt-answered-here)\n" +
+		"* [I like chezmoi. How do I say thanks?](#i-like-chezmoi-how-do-i-say-thanks)\n" +
 		"\n" +
 		"## How can I quickly check for problems with chezmoi on my machine?\n" +
 		"\n" +
@@ -521,7 +520,7 @@ func init() {
 		"\n" +
 		"## I'm getting errors trying to build chezmoi from source\n" +
 		"\n" +
-		"chezmoi requires Go version 1.13 or later and Go modules enabled. You can check\n" +
+		"chezmoi requires Go version 1.14 or later and Go modules enabled. You can check\n" +
 		"the version of Go with:\n" +
 		"\n" +
 		"    go version\n" +
@@ -557,7 +556,7 @@ func init() {
 		"\n" +
 		"chezmoi's focus and simple installation means that it runs almost everywhere:\n" +
 		"from tiny ARM-based Linux systems to Windows desktops, from inside lightweight\n" +
-		"containers to FreeBSD-based virtual machines in the cloud. \n" +
+		"containers to FreeBSD-based virtual machines in the cloud.\n" +
 		"\n" +
 		"## Can I use chezmoi to manage files outside my home directory?\n" +
 		"\n" +
@@ -594,7 +593,7 @@ func init() {
 		"much better suited - and of course can be called from a chezmoi `run_` script.\n" +
 		"Put your Puppet Manifests, Chef Recipes, Ansible Modules, and Salt Modules in a\n" +
 		"directory ignored by `.chezmoiignore` so they do not pollute your home\n" +
-		"directory. \n" +
+		"directory.\n" +
 		"\n" +
 		"## Where does the name \"chezmoi\" come from?\n" +
 		"\n" +
@@ -1717,7 +1716,7 @@ func init() {
 		"    cd chezmoi\n" +
 		"    go install\n" +
 		"\n" +
-		"Building chezmoi requires Go 1.13 or later.\n" +
+		"Building chezmoi requires Go 1.14 or later.\n" +
 		"\n" +
 		"## Upgrading\n" +
 		"\n" +
