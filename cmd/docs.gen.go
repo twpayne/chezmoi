@@ -1738,6 +1738,7 @@ func init() {
 		"\n" +
 		"| Date       | Version | Format      | Link                                                                                                                                                            |\n" +
 		"| ---------- | ------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n" +
+		"| 2020-11-06 | 1.8.8   | Text        | [Chezmoi – Securely Manage dotfiles across multiple machines](https://computingforgeeks.com/chezmoi-manage-dotfiles-across-multiple-machines/)                  |\n" +
 		"| 2020-10-05 | 1.8.6   | Text        | [Dotfiles with /Chezmoi/](https://blog.lazkani.io/posts/backup/dotfiles-with-chezmoi/)                                                                          |\n" +
 		"| 2020-08-13 | 1.8.3   | Text        | [Using BitWarden and Chezmoi to manage SSH keys](https://www.jx0.uk/chezmoi/bitwarden/unix/ssh/2020/08/13/bitwarden-chezmoi-ssh-key.html)                       |\n" +
 		"| 2020-08-09 | 1.8.3   | Text        | [Automating and testing dotfiles](https://seds.nl/posts/automating-and-testing-dotfiles/)                                                                       |\n" +
