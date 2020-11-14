@@ -275,7 +275,7 @@ GitHub](https://github.com/twpayne/chezmoi/issues/new/choose).
 
 ## I'm getting errors trying to build chezmoi from source
 
-chezmoi requires Go version 1.13 or later and Go modules enabled. You can check
+chezmoi requires Go version 1.14 or later and Go modules enabled. You can check
 the version of Go with:
 
     go version

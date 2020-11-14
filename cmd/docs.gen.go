@@ -54,7 +54,7 @@ func init() {
 		"\n" +
 		"## Developing locally\n" +
 		"\n" +
-		"chezmoi requires Go 1.13 or later and Go modules enabled. Enable Go modules by\n" +
+		"chezmoi requires Go 1.14 or later and Go modules enabled. Enable Go modules by\n" +
 		"setting the environment variable `GO111MODULE=on`.\n" +
 		"\n" +
 		"chezmoi is a standard Go project, using standard Go tooling, with a few extra\n" +
@@ -521,7 +521,7 @@ func init() {
 		"\n" +
 		"## I'm getting errors trying to build chezmoi from source\n" +
 		"\n" +
-		"chezmoi requires Go version 1.13 or later and Go modules enabled. You can check\n" +
+		"chezmoi requires Go version 1.14 or later and Go modules enabled. You can check\n" +
 		"the version of Go with:\n" +
 		"\n" +
 		"    go version\n" +
@@ -1717,7 +1717,7 @@ func init() {
 		"    cd chezmoi\n" +
 		"    go install\n" +
 		"\n" +
-		"Building chezmoi requires Go 1.13 or later.\n" +
+		"Building chezmoi requires Go 1.14 or later.\n" +
 		"\n" +
 		"## Upgrading\n" +
 		"\n" +
