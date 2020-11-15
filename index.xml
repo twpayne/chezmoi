@@ -24,7 +24,7 @@ gpgRecipient = &amp;quot;...&amp;quot;  to:</description>
       
       <guid>https://chezmoi.io/docs/contributing/</guid>
       <description>Contributing Guide #  Getting started #  chezmoi is written in Go and development happens on GitHub. The rest of this document assumes that you&amp;rsquo;ve checked out chezmoi locally.
-Developing locally #  chezmoi requires Go 1.13 or later and Go modules enabled. Enable Go modules by setting the environment variable GO111MODULE=on.
+Developing locally #  chezmoi requires Go 1.14 or later and Go modules enabled. Enable Go modules by setting the environment variable GO111MODULE=on.
 chezmoi is a standard Go project, using standard Go tooling, with a few extra tools. Ensure that these extra tools are installed with:</description>
     </item>
     
@@ -67,7 +67,7 @@ curl -sfL https://git.io/chezmoi | sh  One-line package install #  Install chezm
       
       <guid>https://chezmoi.io/docs/media/</guid>
       <description>Media #  Recommended article: Fedora Magazine: Take back your dotfiles with Chezmoi
-   Date Version Format Link     2020-10-05 1.8.6 Text Dotfiles with /Chezmoi/   2020-08-13 1.8.3 Text Using BitWarden and Chezmoi to manage SSH keys   2020-08-09 1.8.3 Text Automating and testing dotfiles   2020-07-06 1.8.3 Video chezmoi: Manage your dotfiles across multiple machines, securely.   2020-07-03 1.8.3 Text Feeling at home in a LXD container   2020-06-15 1.</description>
+   Date Version Format Link     2020-11-06 1.8.8 Text Chezmoi – Securely Manage dotfiles across multiple machines   2020-10-05 1.8.6 Text Dotfiles with /Chezmoi/   2020-08-13 1.8.3 Text Using BitWarden and Chezmoi to manage SSH keys   2020-08-09 1.8.3 Text Automating and testing dotfiles   2020-07-06 1.8.3 Video chezmoi: Manage your dotfiles across multiple machines, securely.</description>
     </item>
     
     <item>
