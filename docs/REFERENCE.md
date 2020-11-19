@@ -83,6 +83,8 @@ Manage your dotfiles securely across multiple machines.
   * [`onepasswordDocument` *uuid* [*vault-uuid*]](#onepassworddocument-uuid-vault-uuid)
   * [`onepasswordDetailsFields` *uuid* [*vault-uuid*]](#onepassworddetailsfields-uuid-vault-uuid)
   * [`pass` *pass-name*](#pass-pass-name)
+  * [`promptBool` *prompt*](#promptbool-prompt)
+  * [`promptInt` *prompt*](#promptint-prompt)
   * [`promptString` *prompt*](#promptstring-prompt)
   * [`secret` [*args*]](#secret-args)
   * [`secretJSON` [*args*]](#secretjson-args)
@@ -639,6 +641,20 @@ Include simulated functions only available during `chezmoi init`.
 #### `--output`, `-o` *filename*
 
 Write the output to *filename* instead of stdout.
+
+#### `--promptBool` *pairs*
+
+Simulate the `promptBool` function with a function that returns values from
+*pairs*. *pairs* is a comma-separated list of *prompt*`=`*value* pairs. If
+`promptBool` is called with a *prompt* that does not match any of *pairs*, then
+it returns false.
+
+#### `--promptInt`, `-p` *pairs*
+
+Simulate the `promptInt` function with a function that returns values from
+*pairs*. *pairs* is a comma-separated list of *prompt*`=`*value* pairs. If
+`promptInt` is called with a *prompt* that does not match any of *pairs*, then
+it returns zero.
 
 #### `--promptString`, `-p` *pairs*
 
@@ -1291,11 +1307,23 @@ the same *pass-name* will only invoke `pass` once.
 
     {{ pass "<pass-name>" }}
 
+### `promptBool` *prompt*
+
+`promptBool` prompts the user with *prompt* and returns the user's response with
+interpreted as a boolean.  It is only available when generating the initial
+config file.
+
+### `promptInt` *prompt*
+
+`promptInt` prompts the user with *prompt* and returns the user's response with
+interpreted as an integer.  It is only available when generating the initial
+config file.
+
 ### `promptString` *prompt*
 
-`promptString` takes a single argument is a string prompted to the user, and the
-return value is the user's response to that prompt with all leading and trailing
-space stripped. It is only available when generating the initial config file.
+`promptString` prompts the user with *prompt* and returns the user's response
+with all leading and trailing spaces stripped.  It is only available when
+generating the initial config file.
 
 #### `promptString` examples
 

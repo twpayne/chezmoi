@@ -11,6 +11,8 @@ import (
 type executeTemplateCmdConfig struct {
 	init         bool
 	output       string
+	promptBool   map[string]string
+	promptInt    map[string]int
 	promptString map[string]string
 }
 
@@ -29,16 +31,36 @@ func init() {
 	persistentFlags := executeTemplateCmd.PersistentFlags()
 	persistentFlags.BoolVarP(&config.executeTemplate.init, "init", "i", false, "simulate chezmoi init")
 	persistentFlags.StringVarP(&config.executeTemplate.output, "output", "o", "", "output filename")
+	persistentFlags.StringToStringVar(&config.executeTemplate.promptBool, "promptBool", config.executeTemplate.promptBool, "simulate promptBool")
+	persistentFlags.StringToIntVar(&config.executeTemplate.promptInt, "promptInt", config.executeTemplate.promptInt, "simulate promptInt")
 	persistentFlags.StringToStringVarP(&config.executeTemplate.promptString, "promptString", "p", nil, "simulate promptString")
 }
 
 func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error {
+	promptBool := make(map[string]bool)
+	for key, valueStr := range c.executeTemplate.promptBool {
+		value, err := parseBool(valueStr)
+		if err != nil {
+			return err
+		}
+		promptBool[key] = value
+	}
 	if c.executeTemplate.init {
-		c.templateFuncs["promptString"] = func(prompt string) string {
-			if value, ok := c.executeTemplate.promptString[prompt]; ok {
-				return value
-			}
-			return prompt
+		for name, f := range map[string]interface{}{
+			"promptBool": func(prompt string) bool {
+				return promptBool[prompt]
+			},
+			"promptInt": func(prompt string) int {
+				return c.executeTemplate.promptInt[prompt]
+			},
+			"promptString": func(prompt string) string {
+				if value, ok := c.executeTemplate.promptString[prompt]; ok {
+					return value
+				}
+				return prompt
+			},
+		} {
+			c.templateFuncs[name] = f
 		}
 	}
 
