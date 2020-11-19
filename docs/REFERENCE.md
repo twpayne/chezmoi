@@ -215,7 +215,8 @@ The following configuration variables are available:
 | `lastpass`      | `command`    | string   | `lpass`                   | Lastpass CLI command                                |
 | `merge`         | `args`       | []string | *none*                    | Extra args to 3-way merge command                   |
 |                 | `command`    | string   | `vimdiff`                 | 3-way merge command                                 |
-| `onepassword`   | `command`    | string   | `op`                      | 1Password CLI command                               |
+| `onepassword`   | `cache`      | bool     | `true`                    | Enable optional caching provided by `op`            |
+|                 | `command`    | string   | `op`                      | 1Password CLI command                               |
 | `pass`          | `command`    | string   | `pass`                    | Pass CLI command                                    |
 | `sourceVCS`     | `autoCommit` | bool     | `false`                   | Commit changes to the source state after any change |
 |                 | `autoPush`   | bool     | `false`                   | Push changes to the source state after any change   |
