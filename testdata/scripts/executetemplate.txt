@@ -13,6 +13,18 @@ stdout stdin-template
 chezmoi execute-template '{{ template "partial" }}'
 stdout 'hello world'
 
+# test --init --promptBool
+chezmoi execute-template --init --promptBool value=yes '{{ promptBool "value" }}'
+stdout true
+! chezmoi execute-template --promptBool value=error
+stderr 'invalid syntax'
+
+# test --init --promptInt
+chezmoi execute-template --init --promptInt value=1 '{{ promptInt "value" }}'
+stdout 1
+! chezmoi execute-template --promptInt value=error
+stderr 'invalid syntax'
+
 # test --init --promptString
 chezmoi execute-template --init --promptString email=you@example.com '{{ promptString "email" }}'
 stdout 'you@example.com'

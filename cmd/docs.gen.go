@@ -1932,6 +1932,8 @@ func init() {
 		"  * [`onepasswordDocument` *uuid* [*vault-uuid*]](#onepassworddocument-uuid-vault-uuid)\n" +
 		"  * [`onepasswordDetailsFields` *uuid* [*vault-uuid*]](#onepassworddetailsfields-uuid-vault-uuid)\n" +
 		"  * [`pass` *pass-name*](#pass-pass-name)\n" +
+		"  * [`promptBool` *prompt*](#promptbool-prompt)\n" +
+		"  * [`promptInt` *prompt*](#promptint-prompt)\n" +
 		"  * [`promptString` *prompt*](#promptstring-prompt)\n" +
 		"  * [`secret` [*args*]](#secret-args)\n" +
 		"  * [`secretJSON` [*args*]](#secretjson-args)\n" +
@@ -2488,6 +2490,20 @@ func init() {
 		"#### `--output`, `-o` *filename*\n" +
 		"\n" +
 		"Write the output to *filename* instead of stdout.\n" +
+		"\n" +
+		"#### `--promptBool` *pairs*\n" +
+		"\n" +
+		"Simulate the `promptBool` function with a function that returns values from\n" +
+		"*pairs*. *pairs* is a comma-separated list of *prompt*`=`*value* pairs. If\n" +
+		"`promptBool` is called with a *prompt* that does not match any of *pairs*, then\n" +
+		"it returns false.\n" +
+		"\n" +
+		"#### `--promptInt`, `-p` *pairs*\n" +
+		"\n" +
+		"Simulate the `promptInt` function with a function that returns values from\n" +
+		"*pairs*. *pairs* is a comma-separated list of *prompt*`=`*value* pairs. If\n" +
+		"`promptInt` is called with a *prompt* that does not match any of *pairs*, then\n" +
+		"it returns zero.\n" +
 		"\n" +
 		"#### `--promptString`, `-p` *pairs*\n" +
 		"\n" +
@@ -3140,11 +3156,23 @@ func init() {
 		"\n" +
 		"    {{ pass \"<pass-name>\" }}\n" +
 		"\n" +
+		"### `promptBool` *prompt*\n" +
+		"\n" +
+		"`promptBool` prompts the user with *prompt* and returns the user's response with\n" +
+		"interpreted as a boolean.  It is only available when generating the initial\n" +
+		"config file.\n" +
+		"\n" +
+		"### `promptInt` *prompt*\n" +
+		"\n" +
+		"`promptInt` prompts the user with *prompt* and returns the user's response with\n" +
+		"interpreted as an integer.  It is only available when generating the initial\n" +
+		"config file.\n" +
+		"\n" +
 		"### `promptString` *prompt*\n" +
 		"\n" +
-		"`promptString` takes a single argument is a string prompted to the user, and the\n" +
-		"return value is the user's response to that prompt with all leading and trailing\n" +
-		"space stripped. It is only available when generating the initial config file.\n" +
+		"`promptString` prompts the user with *prompt* and returns the user's response\n" +
+		"with all leading and trailing spaces stripped.  It is only available when\n" +
+		"generating the initial config file.\n" +
 		"\n" +
 		"#### `promptString` examples\n" +
 		"\n" +

@@ -259,6 +259,20 @@ var helps = map[string]help{
 			"\n" +
 			"  Write the output to *filename* instead of stdout.\n" +
 			"\n" +
+			"  `--promptBool` *pairs*\n" +
+			"\n" +
+			"  Simulate the `promptBool` function with a function that returns values from\n" +
+			"  *pairs*. *pairs* is a comma-separated list of *prompt*`=`*value* pairs. If\n" +
+			"  `promptBool` is called with a *prompt* that does not match any of *pairs*,\n" +
+			"  then it returns false.\n" +
+			"\n" +
+			"  `--promptInt`, `-p` *pairs*\n" +
+			"\n" +
+			"  Simulate the `promptInt` function with a function that returns values from\n" +
+			"  *pairs*. *pairs* is a comma-separated list of *prompt*`=`*value* pairs. If\n" +
+			"  `promptInt` is called with a *prompt* that does not match any of *pairs*,\n" +
+			"  then it returns zero.\n" +
+			"\n" +
 			"  `--promptString`, `-p` *pairs*\n" +
 			"\n" +
 			"  Simulate the `promptString` function with a function that returns values\n" +

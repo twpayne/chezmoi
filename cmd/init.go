@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"text/template"
 
@@ -131,7 +132,13 @@ func (c *Config) createConfigFile() error {
 	for key, value := range c.templateFuncs {
 		funcMap[key] = value
 	}
-	funcMap["promptString"] = c.promptString
+	for key, value := range map[string]interface{}{
+		"promptBool":   c.promptBool,
+		"promptInt":    c.promptInt,
+		"promptString": c.promptString,
+	} {
+		funcMap[key] = value
+	}
 	t, err := template.New(filename).Funcs(funcMap).Parse(data)
 	if err != nil {
 		return err
@@ -178,6 +185,22 @@ func (c *Config) findConfigTemplate() (string, string, string, error) {
 		return "chezmoi." + ext, ext, string(contents), nil
 	}
 	return "", "", "", nil
+}
+
+func (c *Config) promptBool(field string) bool {
+	value, err := parseBool(c.promptString(field))
+	if err != nil {
+		panic(err)
+	}
+	return value
+}
+
+func (c *Config) promptInt(field string) int64 {
+	value, err := strconv.ParseInt(c.promptString(field), 10, 64)
+	if err != nil {
+		panic(err)
+	}
+	return value
 }
 
 func (c *Config) promptString(field string) string {
