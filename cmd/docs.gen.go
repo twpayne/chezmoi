@@ -2065,7 +2065,8 @@ func init() {
 		"| `lastpass`      | `command`    | string   | `lpass`                   | Lastpass CLI command                                |\n" +
 		"| `merge`         | `args`       | []string | *none*                    | Extra args to 3-way merge command                   |\n" +
 		"|                 | `command`    | string   | `vimdiff`                 | 3-way merge command                                 |\n" +
-		"| `onepassword`   | `command`    | string   | `op`                      | 1Password CLI command                               |\n" +
+		"| `onepassword`   | `cache`      | bool     | `true`                    | Enable optional caching provided by `op`            |\n" +
+		"|                 | `command`    | string   | `op`                      | 1Password CLI command                               |\n" +
 		"| `pass`          | `command`    | string   | `pass`                    | Pass CLI command                                    |\n" +
 		"| `sourceVCS`     | `autoCommit` | bool     | `false`                   | Commit changes to the source state after any change |\n" +
 		"|                 | `autoPush`   | bool     | `false`                   | Push changes to the source state after any change   |\n" +
