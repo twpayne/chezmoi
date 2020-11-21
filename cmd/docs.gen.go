@@ -911,9 +911,9 @@ func init() {
 		"{{ end }}\n" +
 		"```\n" +
 		"\n" +
-		"This will make `~/.bashrc` will be a symlink to `.bashrc_darwin` on `darwin` and\n" +
-		"to `.bashrc_linux`. The `.chezmoiignore` configuration ensures that only the\n" +
-		"OS-specific `.bashrc_os` file will be installed on each OS.\n" +
+		"This will make `~/.bashrc` a symlink to `.bashrc_darwin` on `darwin` and to\n" +
+		"`.bashrc_linux` on `linux`. The `.chezmoiignore` configuration ensures that only\n" +
+		"the OS-specific `.bashrc_os` file will be installed on each OS.\n" +
 		"\n" +
 		"### Without using symlinks\n" +
 		"\n" +

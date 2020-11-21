@@ -285,9 +285,9 @@ this using a symbolic link template. Create the following files:
 {{ end }}
 ```
 
-This will make `~/.bashrc` a symlink to `.bashrc_darwin` on `darwin` and
-to `.bashrc_linux` on `linux`. The `.chezmoiignore` configuration ensures that only the
-OS-specific `.bashrc_os` file will be installed on each OS.
+This will make `~/.bashrc` a symlink to `.bashrc_darwin` on `darwin` and to
+`.bashrc_linux` on `linux`. The `.chezmoiignore` configuration ensures that only
+the OS-specific `.bashrc_os` file will be installed on each OS.
 
 ### Without using symlinks
 
