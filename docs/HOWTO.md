@@ -30,7 +30,7 @@
   * [Understand how scripts work](#understand-how-scripts-work)
   * [Install packages with scripts](#install-packages-with-scripts)
 * [Use chezmoi with GitHub Codespaces, Visual Studio Codespaces, Visual Studio Code Remote - Containers](#use-chezmoi-with-github-codespaces-visual-studio-codespaces-visual-studio-code-remote---containers)
-* [Detect Windows Services for Linux (WSL)](#detect-windows-services-for-linux-wsl)
+* [Detect Windows Subsystem for Linux (WSL)](#detect-windows-subsystem-for-linux-wsl)
 * [Run a PowerShell script as admin on Windows](#run-a-powershell-script-as-admin-on-windows)
 * [Import archives](#import-archives)
 * [Export archives](#export-archives)
@@ -894,7 +894,7 @@ sudo apt install -y vim-gtk
 {{- end -}}
 ```
 
-## Detect Windows Services for Linux (WSL)
+## Detect Windows Subsystem for Linux (WSL)
 
 WSL can be detected by looking for the string `Microsoft` in
 `/proc/kernel/osrelease`, which is available in the template variable
