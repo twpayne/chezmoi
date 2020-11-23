@@ -656,7 +656,7 @@ func init() {
 		"  * [Understand how scripts work](#understand-how-scripts-work)\n" +
 		"  * [Install packages with scripts](#install-packages-with-scripts)\n" +
 		"* [Use chezmoi with GitHub Codespaces, Visual Studio Codespaces, Visual Studio Code Remote - Containers](#use-chezmoi-with-github-codespaces-visual-studio-codespaces-visual-studio-code-remote---containers)\n" +
-		"* [Detect Windows Services for Linux (WSL)](#detect-windows-services-for-linux-wsl)\n" +
+		"* [Detect Windows Subsystem for Linux (WSL)](#detect-windows-subsystem-for-linux-wsl)\n" +
 		"* [Run a PowerShell script as admin on Windows](#run-a-powershell-script-as-admin-on-windows)\n" +
 		"* [Import archives](#import-archives)\n" +
 		"* [Export archives](#export-archives)\n" +
@@ -1520,7 +1520,7 @@ func init() {
 		"{{- end -}}\n" +
 		"```\n" +
 		"\n" +
-		"## Detect Windows Services for Linux (WSL)\n" +
+		"## Detect Windows Subsystem for Linux (WSL)\n" +
 		"\n" +
 		"WSL can be detected by looking for the string `Microsoft` in\n" +
 		"`/proc/kernel/osrelease`, which is available in the template variable\n" +
