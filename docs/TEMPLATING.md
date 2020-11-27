@@ -286,7 +286,7 @@ Create other files using the template `.local/share/chezmoi/small-font.yml.tmpl`
 
     {{- template "alacritty" 18 -}}
 
-Here we're calling the shared `alacritty` template with the he font size as the
+Here we're calling the shared `alacritty` template with the font size as the
 `.` value passed in. You can test this with `chezmoi cat`:
 
     $ chezmoi cat ~/small-font.yml

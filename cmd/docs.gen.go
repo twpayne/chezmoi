@@ -3515,7 +3515,7 @@ func init() {
 		"\n" +
 		"    {{- template \"alacritty\" 18 -}}\n" +
 		"\n" +
-		"Here we're calling the shared `alacritty` template with the he font size as the\n" +
+		"Here we're calling the shared `alacritty` template with the font size as the\n" +
 		"`.` value passed in. You can test this with `chezmoi cat`:\n" +
 		"\n" +
 		"    $ chezmoi cat ~/small-font.yml\n" +
