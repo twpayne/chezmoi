@@ -3041,7 +3041,7 @@ func init() {
 		"\n" +
 		"`lookPath` searches for an executable named *file* in the directories named by\n" +
 		"the `PATH` environment variable. If file contains a slash, it is tried directly\n" +
-		"and the `PATH `is not consulted. The result may be an absolute path or a path\n" +
+		"and the `PATH` is not consulted. The result may be an absolute path or a path\n" +
 		"relative to the current directory. If *file* is not found, `lookPath` returns an\n" +
 		"empty string.\n" +
 		"\n" +

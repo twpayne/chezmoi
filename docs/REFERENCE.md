@@ -1191,7 +1191,7 @@ further parsing is done on the `note` field.
 
 `lookPath` searches for an executable named *file* in the directories named by
 the `PATH` environment variable. If file contains a slash, it is tried directly
-and the `PATH `is not consulted. The result may be an absolute path or a path
+and the `PATH` is not consulted. The result may be an absolute path or a path
 relative to the current directory. If *file* is not found, `lookPath` returns an
 empty string.
 
