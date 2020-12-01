@@ -6,7 +6,7 @@ require (
 	github.com/Masterminds/sprig/v3 v3.1.0
 	github.com/alecthomas/chroma v0.8.1 // indirect
 	github.com/bmatcuk/doublestar v1.3.2 // indirect
-	github.com/bmatcuk/doublestar/v2 v2.0.3
+	github.com/bmatcuk/doublestar/v2 v2.0.4
 	github.com/charmbracelet/glamour v0.2.0
 	github.com/coreos/go-semver v0.3.0
 	github.com/danieljoos/wincred v1.1.0 // indirect
