@@ -14,7 +14,7 @@ import (
 	"github.com/spf13/viper"
 	vfs "github.com/twpayne/go-vfs"
 	xdg "github.com/twpayne/go-xdg/v3"
-	"golang.org/x/crypto/ssh/terminal"
+	"golang.org/x/term"
 
 	"github.com/twpayne/chezmoi/internal/chezmoi"
 )
@@ -166,7 +166,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 			if _, ok := os.LookupEnv("NO_COLOR"); ok {
 				c.colored = false
 			} else if stdout, ok := c.Stdout.(*os.File); ok {
-				c.colored = terminal.IsTerminal(int(stdout.Fd()))
+				c.colored = term.IsTerminal(int(stdout.Fd()))
 			} else {
 				c.colored = false
 			}
