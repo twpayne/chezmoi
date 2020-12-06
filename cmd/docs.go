@@ -10,7 +10,7 @@ import (
 
 	"github.com/charmbracelet/glamour"
 	"github.com/spf13/cobra"
-	"golang.org/x/crypto/ssh/terminal"
+	"golang.org/x/term"
 )
 
 var docsCmd = &cobra.Command{
@@ -60,8 +60,8 @@ func (c *Config) runDocsCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	width := 80
-	if stdout, ok := c.Stdout.(*os.File); ok && terminal.IsTerminal(int(stdout.Fd())) {
-		width, _, err = terminal.GetSize(int(stdout.Fd()))
+	if stdout, ok := c.Stdout.(*os.File); ok && term.IsTerminal(int(stdout.Fd())) {
+		width, _, err = term.GetSize(int(stdout.Fd()))
 		if err != nil {
 			return err
 		}

@@ -3,8 +3,9 @@ module github.com/twpayne/chezmoi
 go 1.14
 
 require (
+	github.com/Masterminds/semver/v3 v3.1.1 // indirect
 	github.com/Masterminds/sprig/v3 v3.1.0
-	github.com/alecthomas/chroma v0.8.1 // indirect
+	github.com/alecthomas/chroma v0.8.2 // indirect
 	github.com/bmatcuk/doublestar v1.3.2 // indirect
 	github.com/bmatcuk/doublestar/v2 v2.0.4
 	github.com/charmbracelet/glamour v0.2.0
@@ -21,7 +22,7 @@ require (
 	github.com/imdario/mergo v0.3.11 // indirect
 	github.com/magiconair/properties v1.8.4 // indirect
 	github.com/microcosm-cc/bluemonday v1.0.4 // indirect
-	github.com/mitchellh/mapstructure v1.3.3 // indirect
+	github.com/mitchellh/mapstructure v1.4.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
 	github.com/muesli/reflow v0.2.0 // indirect
 	github.com/muesli/termenv v0.7.4 // indirect
@@ -41,13 +42,14 @@ require (
 	github.com/yuin/goldmark v1.2.1 // indirect
 	github.com/zalando/go-keyring v0.1.0
 	go.etcd.io/bbolt v1.3.5
-	golang.org/x/crypto v0.0.0-20201112155050-0c6587e931a9
-	golang.org/x/net v0.0.0-20201110031124-69a78807bb2b // indirect
-	golang.org/x/oauth2 v0.0.0-20201109201403-9fd604954f58
-	golang.org/x/sys v0.0.0-20201113135734-0a15ea8d9b02
+	golang.org/x/crypto v0.0.0-20201203163018-be400aefbc4c
+	golang.org/x/net v0.0.0-20201202161906-c7110b5ffcbb // indirect
+	golang.org/x/oauth2 v0.0.0-20201203001011-0b49973bad19
+	golang.org/x/sys v0.0.0-20201204225414-ed752295db88
+	golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1
 	golang.org/x/text v0.3.4 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	gopkg.in/ini.v1 v1.62.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0
-	howett.net/plist v0.0.0-20201026045517-117a925f2150
+	howett.net/plist v0.0.0-20201203080718-1454fab16a06
 )

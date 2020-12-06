@@ -13,7 +13,7 @@ import (
 
 	"github.com/coreos/go-semver/semver"
 	"github.com/spf13/cobra"
-	"golang.org/x/crypto/ssh/terminal"
+	"golang.org/x/term"
 
 	"github.com/twpayne/chezmoi/internal/chezmoi"
 )
@@ -130,9 +130,9 @@ func (c *Config) keePassXCAttributeFunc(entry, attribute string) string {
 
 func readPassword(prompt string) (pw []byte, err error) {
 	fd := int(os.Stdin.Fd())
-	if terminal.IsTerminal(fd) {
+	if term.IsTerminal(fd) {
 		fmt.Print(prompt)
-		pw, err = terminal.ReadPassword(fd)
+		pw, err = term.ReadPassword(fd)
 		fmt.Println()
 		return
 	}
@@ -140,20 +140,20 @@ func readPassword(prompt string) (pw []byte, err error) {
 	var b [1]byte
 	for {
 		n, err := os.Stdin.Read(b[:])
-		// terminal.ReadPassword discards any '\r', so do the same
+		// term.ReadPassword discards any '\r', so do the same.
 		if n > 0 && b[0] != '\r' {
 			if b[0] == '\n' {
 				return pw, nil
 			}
 			pw = append(pw, b[0])
-			// limit size, so that a wrong input won't fill up the memory
+			// limit size, so that a wrong input won't fill up the memory.
 			if len(pw) > 1024 {
 				err = errors.New("password too long")
 			}
 		}
 		if err != nil {
-			// terminal.ReadPassword accepts EOF-terminated passwords
-			// if non-empty, so do the same
+			// term.ReadPassword accepts EOF-terminated passwords if non-empty,
+			// so do the same.
 			if errors.Is(err, io.EOF) && len(pw) > 0 {
 				err = nil
 			}

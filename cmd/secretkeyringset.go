@@ -6,7 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 	keyring "github.com/zalando/go-keyring"
-	"golang.org/x/crypto/ssh/terminal"
+	"golang.org/x/term"
 )
 
 var keyringSetCmd = &cobra.Command{
@@ -28,7 +28,7 @@ func (c *Config) runKeyringSetCmd(cmd *cobra.Command, args []string) error {
 	passwordString := c.keyring.password
 	if passwordString == "" {
 		fmt.Print("Password: ")
-		password, err := terminal.ReadPassword(int(os.Stdin.Fd()))
+		password, err := term.ReadPassword(int(os.Stdin.Fd()))
 		if err != nil {
 			return err
 		}
