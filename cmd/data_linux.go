@@ -49,6 +49,7 @@ func getKernelInfo(fs vfs.FS) (map[string]string, error) {
 
 // getOSRelease returns the operating system identification data as defined by
 // https://www.freedesktop.org/software/systemd/man/os-release.html.
+//nolint:godot
 func getOSRelease(fs vfs.FS) (map[string]string, error) {
 	for _, filename := range []string{"/usr/lib/os-release", "/etc/os-release"} {
 		f, err := fs.Open(filename)
@@ -79,6 +80,7 @@ func maybeUnquote(s string) string {
 
 // parseOSRelease parses operating system identification data from r as defined
 // by https://www.freedesktop.org/software/systemd/man/os-release.html.
+//nolint:godot
 func parseOSRelease(r io.Reader) (map[string]string, error) {
 	result := make(map[string]string)
 	s := bufio.NewScanner(r)

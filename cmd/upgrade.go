@@ -25,7 +25,7 @@ import (
 	"syscall"
 
 	"github.com/coreos/go-semver/semver"
-	"github.com/google/go-github/v32/github"
+	"github.com/google/go-github/v33/github"
 	"github.com/spf13/cobra"
 	vfs "github.com/twpayne/go-vfs"
 	"golang.org/x/oauth2"
