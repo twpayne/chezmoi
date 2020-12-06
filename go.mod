@@ -15,7 +15,7 @@ require (
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/go-git/go-git/v5 v5.2.0
 	github.com/golang/protobuf v1.4.3 // indirect
-	github.com/google/go-github/v32 v32.1.0
+	github.com/google/go-github/v33 v33.0.0
 	github.com/google/renameio v1.0.0
 	github.com/google/uuid v1.1.2 // indirect
 	github.com/huandu/xstrings v1.3.2 // indirect
