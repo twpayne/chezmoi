@@ -811,8 +811,10 @@ func (ts *TargetState) importHeader(r io.Reader, importTAROptions ImportTAROptio
 		targetPath = filepath.Join(strings.Split(targetPath, string(os.PathSeparator))[importTAROptions.StripComponents:]...)
 	}
 	if importTAROptions.DestinationDir != "" {
+		//nolint:gosec
 		targetPath = filepath.Join(importTAROptions.DestinationDir, targetPath)
 	} else {
+		//nolint:gosec
 		targetPath = filepath.Join(ts.DestDir, targetPath)
 	}
 	targetName, err := filepath.Rel(ts.DestDir, targetPath)

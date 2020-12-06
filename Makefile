@@ -1,4 +1,4 @@
-GOLANGCI_LINT_VERSION=1.32
+GOLANGCI_LINT_VERSION=1.33
 
 .PHONY: default
 default: generate run test lint format

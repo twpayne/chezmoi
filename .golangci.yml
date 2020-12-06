@@ -58,6 +58,7 @@ linters:
   - nestif
   - nlreturn
   - noctx
+  - paralleltest
   - testpackage
   - wrapcheck
   - wsl
