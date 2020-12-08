@@ -115,6 +115,15 @@ func init() {
 					"warning: to disable this warning, set sourceVCS.notGit = true in your config file\n",
 				)
 			}
+
+			if strings.HasPrefix(config.SourceDir, "~/") {
+				home, _ := os.UserHomeDir()
+				config.SourceDir = filepath.Join(home, config.SourceDir[2:])
+			} else if strings.HasPrefix(config.SourceDir, "~") {
+				home, _ := os.UserHomeDir()
+				config.SourceDir = filepath.Join(home, config.SourceDir[1:])
+			}
+
 		case os.IsNotExist(err):
 		default:
 			initErr = err
