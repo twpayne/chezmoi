@@ -3390,7 +3390,7 @@ func init() {
 		"\n" +
 		"You can also feed the contents of a file to this command by typing:\n" +
 		"\n" +
-		"\tcat foo.txt | chezmoi exectute-template\n" +
+		"\tcat foo.txt | chezmoi execute-template\n" +
 		"\n" +
 		"## Simple logic\n" +
 		"\n" +
