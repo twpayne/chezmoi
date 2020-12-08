@@ -288,7 +288,7 @@ func cmdUNIX2DOS(ts *testscript.TestScript, neg bool, args []string) {
 		dosData, err := unix2DOS(data)
 		ts.Check(err)
 		//nolint:gosec
-		if err := ioutil.WriteFile(filename, dosData, 0666); err != nil {
+		if err := ioutil.WriteFile(filename, dosData, 0o666); err != nil {
 			ts.Fatalf("%s: %v", filename, err)
 		}
 	}
