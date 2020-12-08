@@ -161,7 +161,7 @@ chezmoi will output the current OS and architecture to stdout.
 
 You can also feed the contents of a file to this command by typing:
 
-	cat foo.txt | chezmoi exectute-template
+	cat foo.txt | chezmoi execute-template
 
 ## Simple logic
 
