@@ -330,26 +330,45 @@ func (c *Config) getDefaultData() (map[string]interface{}, error) {
 		"sourceDir": c.SourceDir,
 	}
 
-	currentUser, err := user.Current()
-	if err != nil {
-		return nil, err
-	}
-	data["username"] = currentUser.Username
+	// Determine the user's username and group, if possible.
+	//
+	// user.Current and user.LookupGroupId in Go's standard library are
+	// generally unreliable, so work around errors if possible, or ignore them.
+	//
+	// If CGO is disabled, then the Go standard library falls back to parsing
+	// /etc/passwd and /etc/group, which will return incorrect results without
+	// error if the system uses an alternative password database such as NIS or
+	// LDAP.
+	//
+	// If CGO is enabled then user.Current and user.LookupGroupId will use the
+	// underlying libc functions, namely getpwuid_r and getgrnam_r. If linked
+	// with glibc this will return the correct result. If linked with musl then
+	// they will use musl's implementation which, like Go's non-CGO
+	// implementation, also only parses /etc/passwd and /etc/group and so also
+	// returns incorrect results without error if NIS or LDAP are being used.
+	//
+	// Since neither the username nor the group are likely widely used in
+	// templates, leave these variables unset if their values cannot be
+	// determined. Unset variables will trigger template errors if used,
+	// alerting the user to the problem and allowing them to find alternative
+	// solutions.
 
-	// user.LookupGroupId is generally unreliable:
-	//
-	// If CGO is enabled, then this uses an underlying C library call (e.g.
-	// getgrgid_r on Linux) and is trustworthy, except on recent versions of Go
-	// on Android, where LookupGroupId is not implemented.
-	//
-	// If CGO is disabled then the fallback implementation only searches
-	// /etc/group, which is typically empty if an external directory service is
-	// being used, and so the lookup fails.
-	//
-	// So, only set group if user.LookupGroupId does not return an error.
-	group, err := user.LookupGroupId(currentUser.Gid)
+	// First, attempt to determine the current user using user.Current, falling
+	// back to the $USER environment variable if set, and otherwise leaving
+	// username unset.
+	currentUser, err := user.Current()
 	if err == nil {
-		data["group"] = group.Name
+		data["username"] = currentUser.Username
+	} else if user, ok := os.LookupEnv("USER"); ok {
+		data["username"] = user
+	}
+
+	// If the current user could be determined, then attempt to lookup the group
+	// id. There is no fallback.
+	if currentUser != nil {
+		if group, err := user.LookupGroupId(currentUser.Gid); err != nil {
+			data["group"] = group.Name
+		}
 	}
 
 	homedir, err := os.UserHomeDir()
