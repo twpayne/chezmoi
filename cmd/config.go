@@ -366,7 +366,7 @@ func (c *Config) getDefaultData() (map[string]interface{}, error) {
 	// If the current user could be determined, then attempt to lookup the group
 	// id. There is no fallback.
 	if currentUser != nil {
-		if group, err := user.LookupGroupId(currentUser.Gid); err != nil {
+		if group, err := user.LookupGroupId(currentUser.Gid); err == nil {
 			data["group"] = group.Name
 		}
 	}
