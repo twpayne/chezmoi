@@ -71,6 +71,12 @@ archives:
   - goos: windows
     format: zip
 
+changelog:
+  sort: asc
+  filters:
+    exclude:
+    - "Merge pull request"
+
 checksum:
 
 nfpms:
