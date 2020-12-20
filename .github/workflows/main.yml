@@ -103,7 +103,7 @@ jobs:
           scandir: ./assets/scripts
       - name: Whitespace
         run:
-          go run ./internal/lint-whitespace
+          go run ./internal/cmd/lint-whitespace
   release:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     needs:

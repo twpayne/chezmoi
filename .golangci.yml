@@ -87,10 +87,7 @@ issues:
     path: cmd/
   - linters:
     - gosec
-    path: internal/generate-assets/
-  - linters:
-    - gosec
-    path: internal/generate-helps/
+    path: internal/cmd/
   - linters:
     - scopelint
     path: "_test\\.go"
