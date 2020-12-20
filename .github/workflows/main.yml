@@ -127,7 +127,7 @@ jobs:
       env:
         SNAPCRAFT_LOGIN: ${{ secrets.SNAPCRAFT_LOGIN }}
       run: |
-        snapcraft login --with <(echo "$SNAPCRAFT_LOGIN")
+        snapcraft login --with <(echo "$SNAPCRAFT_LOGIN" | base64 -d)
     - name: Release
       uses: goreleaser/goreleaser-action@v2
       with:
