@@ -101,6 +101,9 @@ jobs:
         uses: ludeeus/action-shellcheck@1.0.0
         with:
           scandir: ./assets/scripts
+      - name: Whitespace
+        run:
+          go run ./internal/lint-whitespace
   release:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     needs:
