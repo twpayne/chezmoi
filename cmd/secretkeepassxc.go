@@ -40,7 +40,7 @@ var (
 	keePassXCVersion                     *semver.Version
 	keePassXCCache                       = make(map[string]map[string]string)
 	keePassXCAttributeCache              = make(map[keePassXCAttributeCacheKey]string)
-	keePassXCPairRegexp                  = regexp.MustCompile(`^([^:]+): (.*)$`)
+	keePassXCPairRegexp                  = regexp.MustCompile(`^([^:]+):\s*(.*)$`)
 	keePassXCPassword                    string
 	keePassXCNeedShowProtectedArgVersion = semver.Version{Major: 2, Minor: 5, Patch: 1}
 )
