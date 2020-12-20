@@ -107,10 +107,21 @@ To build a test release, without publishing, (Linux only) run:
 
     make test-release
 
-To create a new release, create and push a tag, e.g.:
+Publish a new release by creating and pushing a tag, e.g.:
 
     git tag v1.2.3
     git push --tags
+
+This triggers a [GitHub Action](https://github.com/twpayne/chezmoi/actions) that
+builds and publishes archives, packages, and snaps, and creates a new [GitHub
+Release](https://github.com/twpayne/chezmoi/releases).
+
+Publishing [Snaps](https://snapcraft.io/) requires a `SNAPCRAFT_LOGIN`
+[repository
+secret](https://github.com/twpayne/chezmoi/settings/secrets/actions). Snapcraft
+logins periodically expire. Create a new snapcraft login by running:
+
+    snapcraft export-login --snaps=chezmoi --channels=stable --acls=package_upload -
 
 [brew](https://brew.sh/) formula must be updated manually with the command:
 

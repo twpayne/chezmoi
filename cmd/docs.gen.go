@@ -144,10 +144,21 @@ func init() {
 		"\n" +
 		"    make test-release\n" +
 		"\n" +
-		"To create a new release, create and push a tag, e.g.:\n" +
+		"Publish a new release by creating and pushing a tag, e.g.:\n" +
 		"\n" +
 		"    git tag v1.2.3\n" +
 		"    git push --tags\n" +
+		"\n" +
+		"This triggers a [GitHub Action](https://github.com/twpayne/chezmoi/actions) that\n" +
+		"builds and publishes archives, packages, and snaps, and creates a new [GitHub\n" +
+		"Release](https://github.com/twpayne/chezmoi/releases).\n" +
+		"\n" +
+		"Publishing [Snaps](https://snapcraft.io/) requires a `SNAPCRAFT_LOGIN`\n" +
+		"[repository\n" +
+		"secret](https://github.com/twpayne/chezmoi/settings/secrets/actions). Snapcraft\n" +
+		"logins periodically expire. Create a new snapcraft login by running:\n" +
+		"\n" +
+		"    snapcraft export-login --snaps=chezmoi --channels=stable --acls=package_upload -\n" +
 		"\n" +
 		"[brew](https://brew.sh/) formula must be updated manually with the command:\n" +
 		"\n" +
