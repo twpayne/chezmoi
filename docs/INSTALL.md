@@ -39,12 +39,13 @@ Install chezmoi with a single command.
 Download a package for your operating system and architecture and install it
 with your package manager.
 
-| Distribution | Architectures                                             | Package                                                                   |
-| ------------ | --------------------------------------------------------- | ------------------------------------------------------------------------- |
-| Debian       | `amd64`, `arm64`, `armel`, `i386`, `ppc64`, `ppc64le`     | [`deb`](https://github.com/twpayne/chezmoi/releases/latest)               |
-| RedHat       | `aarch64`, `armhfp`, `i686`, `ppc64`, `ppc64le`, `x86_64` | [`rpm`](https://github.com/twpayne/chezmoi/releases/latest)               |
-| OpenSUSE     | `aarch64`, `armhfp`, `i686`, `ppc64`, `ppc64le`, `x86_64` | [`rpm`](https://github.com/twpayne/chezmoi/releases/latest)               |
-| Ubuntu       | `amd64`, `arm64`, `armel`, `i386`, `ppc64`, `ppc64le`     | [`deb`](https://github.com/twpayne/chezmoi/releases/latest)               |
+| Distribution | Architectures                                             | Package                                                     |
+| ------------ | --------------------------------------------------------- | ----------------------------------------------------------- |
+| Alpine       | `386`, `amd64`, `arm64`, `arm`, `ppc64`, `ppc64le`        | [`apk`](https://github.com/twpayne/chezmoi/releases/latest) |
+| Debian       | `amd64`, `arm64`, `armel`, `i386`, `ppc64`, `ppc64le`     | [`deb`](https://github.com/twpayne/chezmoi/releases/latest) |
+| RedHat       | `aarch64`, `armhfp`, `i686`, `ppc64`, `ppc64le`, `x86_64` | [`rpm`](https://github.com/twpayne/chezmoi/releases/latest) |
+| OpenSUSE     | `aarch64`, `armhfp`, `i686`, `ppc64`, `ppc64le`, `x86_64` | [`rpm`](https://github.com/twpayne/chezmoi/releases/latest) |
+| Ubuntu       | `amd64`, `arm64`, `armel`, `i386`, `ppc64`, `ppc64le`     | [`deb`](https://github.com/twpayne/chezmoi/releases/latest) |
 
 ## Pre-built binaries
 

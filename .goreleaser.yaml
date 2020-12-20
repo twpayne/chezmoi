@@ -71,6 +71,12 @@ archives:
   - goos: windows
     format: zip
 
+changelog:
+  sort: asc
+  filters:
+    exclude:
+    - "Merge pull request"
+
 checksum:
 
 nfpms:
@@ -108,6 +114,18 @@ nfpms:
         arm64: aarch64
       files:
         "completions/chezmoi.zsh": "/usr/share/zsh/functions/_chezmoi"
+- id: apks
+  builds:
+  - chezmoi-cgo-musl
+  - chezmoi-nocgo
+  vendor: "Tom Payne <twpayne@gmail.com>"
+  homepage: "https://chezmoi.io/"
+  maintainer: "Tom Payne <twpayne@gmail.com>"
+  description: "Manage your dotfiles across multiple diverse machines, securely."
+  license: MIT
+  formats:
+  - apk
+  bindir: /usr/bin
 
 release:
 
