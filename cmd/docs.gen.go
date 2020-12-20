@@ -1693,12 +1693,13 @@ func init() {
 		"Download a package for your operating system and architecture and install it\n" +
 		"with your package manager.\n" +
 		"\n" +
-		"| Distribution | Architectures                                             | Package                                                                   |\n" +
-		"| ------------ | --------------------------------------------------------- | ------------------------------------------------------------------------- |\n" +
-		"| Debian       | `amd64`, `arm64`, `armel`, `i386`, `ppc64`, `ppc64le`     | [`deb`](https://github.com/twpayne/chezmoi/releases/latest)               |\n" +
-		"| RedHat       | `aarch64`, `armhfp`, `i686`, `ppc64`, `ppc64le`, `x86_64` | [`rpm`](https://github.com/twpayne/chezmoi/releases/latest)               |\n" +
-		"| OpenSUSE     | `aarch64`, `armhfp`, `i686`, `ppc64`, `ppc64le`, `x86_64` | [`rpm`](https://github.com/twpayne/chezmoi/releases/latest)               |\n" +
-		"| Ubuntu       | `amd64`, `arm64`, `armel`, `i386`, `ppc64`, `ppc64le`     | [`deb`](https://github.com/twpayne/chezmoi/releases/latest)               |\n" +
+		"| Distribution | Architectures                                             | Package                                                     |\n" +
+		"| ------------ | --------------------------------------------------------- | ----------------------------------------------------------- |\n" +
+		"| Alpine       | `386`, `amd64`, `arm64`, `arm`, `ppc64`, `ppc64le`        | [`apk`](https://github.com/twpayne/chezmoi/releases/latest) |\n" +
+		"| Debian       | `amd64`, `arm64`, `armel`, `i386`, `ppc64`, `ppc64le`     | [`deb`](https://github.com/twpayne/chezmoi/releases/latest) |\n" +
+		"| RedHat       | `aarch64`, `armhfp`, `i686`, `ppc64`, `ppc64le`, `x86_64` | [`rpm`](https://github.com/twpayne/chezmoi/releases/latest) |\n" +
+		"| OpenSUSE     | `aarch64`, `armhfp`, `i686`, `ppc64`, `ppc64le`, `x86_64` | [`rpm`](https://github.com/twpayne/chezmoi/releases/latest) |\n" +
+		"| Ubuntu       | `amd64`, `arm64`, `armel`, `i386`, `ppc64`, `ppc64le`     | [`deb`](https://github.com/twpayne/chezmoi/releases/latest) |\n" +
 		"\n" +
 		"## Pre-built binaries\n" +
 		"\n" +
