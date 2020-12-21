@@ -76,8 +76,10 @@ main() {
 	install "${tmpdir}/${BINARY}" "${BINDIR}/"
 	log_info "installed ${BINDIR}/${BINARY}"
 
-	# shellcheck disable=SC2086
-	test -n "${EXECARGS}" && exec "${BINDIR}/${BINARY}" $EXECARGS
+	if [ -n "${EXECARGS}" ]; then
+		# shellcheck disable=SC2086
+		exec "${BINDIR}/${BINARY}" $EXECARGS
+	fi
 }
 
 parse_args() {
