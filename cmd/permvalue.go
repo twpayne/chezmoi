@@ -11,6 +11,12 @@ type permValue int
 
 func (p *permValue) Set(s string) error {
 	v, err := strconv.ParseInt(s, 8, 64)
+	if err != nil {
+		return err
+	}
+	if v < 0o000 || 0o777 < v {
+		return fmt.Errorf("%s: invalid permission value", s)
+	}
 	*p = permValue(v)
 	return err
 }
