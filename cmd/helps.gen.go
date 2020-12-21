@@ -46,10 +46,10 @@ var helps = map[string]help{
 			"\n" +
 			"  Set the `template` attribute on added files and symlinks.",
 		example: "" +
-			"    chezmoi add ~/.bashrc\n" +
-			"    chezmoi add ~/.gitconfig --template\n" +
-			"    chezmoi add ~/.vim --recursive\n" +
-			"    chezmoi add ~/.oh-my-zsh --exact --recursive",
+			"  chezmoi add ~/.bashrc\n" +
+			"  chezmoi add ~/.gitconfig --template\n" +
+			"  chezmoi add ~/.vim --recursive\n" +
+			"  chezmoi add ~/.oh-my-zsh --exact --recursive",
 	},
 	"apply": {
 		long: "" +
@@ -57,9 +57,9 @@ var helps = map[string]help{
 			"  Ensure that *targets* are in the target state, updating them if necessary.\n" +
 			"  If no targets are specified, the state of all targets are ensured.",
 		example: "" +
-			"    chezmoi apply\n" +
-			"    chezmoi apply --dry-run --verbose\n" +
-			"    chezmoi apply ~/.bashrc",
+			"  chezmoi apply\n" +
+			"  chezmoi apply --dry-run --verbose\n" +
+			"  chezmoi apply ~/.bashrc",
 	},
 	"archive": {
 		long: "" +
@@ -71,8 +71,8 @@ var helps = map[string]help{
 			"\n" +
 			"  Write the output to *filename* instead of stdout.",
 		example: "" +
-			"    chezmoi archive | tar tvf -\n" +
-			"    chezmoi archive --output=dotfiles.tar",
+			"  chezmoi archive | tar tvf -\n" +
+			"  chezmoi archive --output=dotfiles.tar",
 	},
 	"cat": {
 		long: "" +
@@ -81,7 +81,7 @@ var helps = map[string]help{
 			"  symlinks. For files, the target file contents are written. For symlinks, the\n" +
 			"  target target is written.",
 		example: "" +
-			"    chezmoi cat ~/.bashrc",
+			"  chezmoi cat ~/.bashrc",
 	},
 	"cd": {
 		long: "" +
@@ -91,7 +91,7 @@ var helps = map[string]help{
 			"  specified by `cd.args`. If this is not set, chezmoi will attempt to detect\n" +
 			"  your shell and will finally fall back to an OS-specific default.",
 		example: "" +
-			"    chezmoi cd",
+			"  chezmoi cd",
 	},
 	"chattr": {
 		long: "" +
@@ -114,9 +114,9 @@ var helps = map[string]help{
 			"  Multiple attributes modifications may be specified by separating them with a\n" +
 			"  comma (`,`).",
 		example: "" +
-			"    chezmoi chattr template ~/.bashrc\n" +
-			"    chezmoi chattr noempty ~/.profile\n" +
-			"    chezmoi chattr private,template ~/.netrc",
+			"  chezmoi chattr template ~/.bashrc\n" +
+			"  chezmoi chattr noempty ~/.profile\n" +
+			"  chezmoi chattr private,template ~/.netrc",
 	},
 	"completion": {
 		long: "" +
@@ -128,8 +128,8 @@ var helps = map[string]help{
 			"\n" +
 			"  Write the shell completion code to *filename* instead of stdout.",
 		example: "" +
-			"    chezmoi completion bash\n" +
-			"    chezmoi completion fish --output ~/.config/fish/completions/chezmoi.fish",
+			"  chezmoi completion bash\n" +
+			"  chezmoi completion fish --output ~/.config/fish/completions/chezmoi.fish",
 	},
 	"data": {
 		long: "" +
@@ -142,8 +142,8 @@ var helps = map[string]help{
 			"  Print the computed template data in the given format. The accepted formats\n" +
 			"  are `json` (JSON), `toml` (TOML), and `yaml` (YAML).",
 		example: "" +
-			"    chezmoi data\n" +
-			"    chezmoi data --format=yaml",
+			"  chezmoi data\n" +
+			"  chezmoi data --format=yaml",
 	},
 	"diff": {
 		long: "" +
@@ -175,9 +175,9 @@ var helps = map[string]help{
 			"\n" +
 			"  Do not use the pager.",
 		example: "" +
-			"    chezmoi diff\n" +
-			"    chezmoi diff ~/.bashrc\n" +
-			"    chezmoi diff --format=git",
+			"  chezmoi diff\n" +
+			"  chezmoi diff ~/.bashrc\n" +
+			"  chezmoi diff --format=git",
 	},
 	"docs": {
 		long: "" +
@@ -185,16 +185,16 @@ var helps = map[string]help{
 			"  Print the documentation page matching the regular expression *regexp*.\n" +
 			"  Matching is case insensitive. If no pattern is given, print `REFERENCE.md`.",
 		example: "" +
-			"    chezmoi docs\n" +
-			"    chezmoi docs faq\n" +
-			"    chezmoi docs howto",
+			"  chezmoi docs\n" +
+			"  chezmoi docs faq\n" +
+			"  chezmoi docs howto",
 	},
 	"doctor": {
 		long: "" +
 			"Description:\n" +
 			"  Check for potential problems.",
 		example: "" +
-			"    chezmoi doctor",
+			"  chezmoi doctor",
 	},
 	"dump": {
 		long: "" +
@@ -207,8 +207,8 @@ var helps = map[string]help{
 			"  Print the target state in the given format. The accepted formats are `json`\n" +
 			"  (JSON) and `yaml` (YAML).",
 		example: "" +
-			"    chezmoi dump ~/.bashrc\n" +
-			"    chezmoi dump --format=yaml",
+			"  chezmoi dump ~/.bashrc\n" +
+			"  chezmoi dump --format=yaml",
 	},
 	"edit": {
 		long: "" +
@@ -230,9 +230,9 @@ var helps = map[string]help{
 			"\n" +
 			"  Prompt before applying each target.. Ignored if there are no targets.",
 		example: "" +
-			"    chezmoi edit ~/.bashrc\n" +
-			"    chezmoi edit ~/.bashrc --apply --prompt\n" +
-			"    chezmoi edit",
+			"  chezmoi edit ~/.bashrc\n" +
+			"  chezmoi edit ~/.bashrc --apply --prompt\n" +
+			"  chezmoi edit",
 	},
 	"edit-config": {
 		long: "" +
@@ -293,7 +293,7 @@ var helps = map[string]help{
 			"Description:\n" +
 			"  Remove *targets* from the source state, i.e. stop managing them.",
 		example: "" +
-			"    chezmoi forget ~/.bashrc",
+			"  chezmoi forget ~/.bashrc",
 	},
 	"git": {
 		long: "" +
@@ -301,9 +301,9 @@ var helps = map[string]help{
 			"  Run `git` *arguments* in the source directory. Note that flags in\n" +
 			"  *arguments* must occur after `--` to prevent chezmoi from interpreting them.",
 		example: "" +
-			"    chezmoi git add .\n" +
-			"    chezmoi git add dot_gitconfig\n" +
-			"    chezmoi git -- commit -m \"Add .gitconfig\"",
+			"  chezmoi git add .\n" +
+			"  chezmoi git add dot_gitconfig\n" +
+			"  chezmoi git -- commit -m \"Add .gitconfig\"",
 	},
 	"help": {
 		long: "" +
@@ -316,7 +316,7 @@ var helps = map[string]help{
 			"  Run `hg` *arguments* in the source directory. Note that flags in *arguments*\n" +
 			"  must occur after `--` to prevent chezmoi from interpreting them.",
 		example: "" +
-			"    chezmoi hg -- pull --rebase --update",
+			"  chezmoi hg -- pull --rebase --update",
 	},
 	"import": {
 		long: "" +
@@ -346,10 +346,9 @@ var helps = map[string]help{
 			"\n" +
 			"  Strip *n* leading components from paths.",
 		example: "" +
-			"    curl -s -L -o oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-\n" +
-			"  zsh/archive/master.tar.gz\n" +
-			"    chezmoi import --strip-components 1 --destination ~/.oh-my-zsh oh-my-zsh-\n" +
-			"  master.tar.gz",
+			"  curl -s -L -o oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-\n" +
+			"zsh/archive/master.tar.gz\n" +
+			"  chezmoi import --strip-components 1 --destination ~/.oh-my-zsh oh-my-zsh-master.tar.gz",
 	},
 	"init": {
 		long: "" +
@@ -372,8 +371,8 @@ var helps = map[string]help{
 			"  Run `chezmoi apply` after checking out the repo and creating the config\n" +
 			"  file. This is `false` by default.",
 		example: "" +
-			"    chezmoi init https://github.com/user/dotfiles.git\n" +
-			"    chezmoi init https://github.com/user/dotfiles.git --apply",
+			"  chezmoi init https://github.com/user/dotfiles.git\n" +
+			"  chezmoi init https://github.com/user/dotfiles.git --apply",
 	},
 	"manage": {
 		long: "" +
@@ -392,11 +391,11 @@ var helps = map[string]help{
 			"  can be abbreviated to `d`, `f`, and `s` respectively. By default, `manage`\n" +
 			"  will list entries of all types.",
 		example: "" +
-			"    chezmoi managed\n" +
-			"    chezmoi managed --include=files\n" +
-			"    chezmoi managed --include=files,symlinks\n" +
-			"    chezmoi managed -i d\n" +
-			"    chezmoi managed -i d,f",
+			"  chezmoi managed\n" +
+			"  chezmoi managed --include=files\n" +
+			"  chezmoi managed --include=files,symlinks\n" +
+			"  chezmoi managed -i d\n" +
+			"  chezmoi managed -i d,f",
 	},
 	"merge": {
 		long: "" +
@@ -409,7 +408,7 @@ var helps = map[string]help{
 			"  an encrypted file that cannot be decrypted) a two-way merge is performed\n" +
 			"  instead.",
 		example: "" +
-			"    chezmoi merge ~/.bashrc",
+			"  chezmoi merge ~/.bashrc",
 	},
 	"purge": {
 		long: "" +
@@ -421,8 +420,8 @@ var helps = map[string]help{
 			"\n" +
 			"  Remove without prompting.",
 		example: "" +
-			"    chezmoi purge\n" +
-			"    chezmoi purge --force",
+			"  chezmoi purge\n" +
+			"  chezmoi purge --force",
 	},
 	"remove": {
 		long: "" +
@@ -452,15 +451,15 @@ var helps = map[string]help{
 			"\n" +
 			"    chezmoi secret help",
 		example: "" +
-			"    chezmoi secret bitwarden list items\n" +
-			"    chezmoi secret keyring set --service service --user user\n" +
-			"    chezmoi secret keyring get --service service --user user\n" +
-			"    chezmoi secret lastpass ls\n" +
-			"    chezmoi secret lastpass -- show --format=json id\n" +
-			"    chezmoi secret onepassword list items\n" +
-			"    chezmoi secret onepassword get item id\n" +
-			"    chezmoi secret pass show id\n" +
-			"    chezmoi secret vault -- kv get -format=json id",
+			"  chezmoi secret bitwarden list items\n" +
+			"  chezmoi secret keyring set --service service --user user\n" +
+			"  chezmoi secret keyring get --service service --user user\n" +
+			"  chezmoi secret lastpass ls\n" +
+			"  chezmoi secret lastpass -- show --format=json id\n" +
+			"  chezmoi secret onepassword list items\n" +
+			"  chezmoi secret onepassword get item id\n" +
+			"  chezmoi secret pass show id\n" +
+			"  chezmoi secret vault -- kv get -format=json id",
 	},
 	"source": {
 		long: "" +
@@ -469,9 +468,9 @@ var helps = map[string]help{
 			"  *args*. Note that any flags for the source version control system must be\n" +
 			"  separated with a `--` to stop chezmoi from reading them.",
 		example: "" +
-			"    chezmoi source init\n" +
-			"    chezmoi source add .\n" +
-			"    chezmoi source commit -- -m \"Initial commit\"",
+			"  chezmoi source init\n" +
+			"  chezmoi source add .\n" +
+			"  chezmoi source commit -- -m \"Initial commit\"",
 	},
 	"source-path": {
 		long: "" +
@@ -494,14 +493,14 @@ var helps = map[string]help{
 			"Description:\n" +
 			"  List all unmanaged files in the destination directory.",
 		example: "" +
-			"    chezmoi unmanaged",
+			"  chezmoi unmanaged",
 	},
 	"update": {
 		long: "" +
 			"Description:\n" +
 			"  Pull changes from the source VCS and apply any changes.",
 		example: "" +
-			"    chezmoi update",
+			"  chezmoi update",
 	},
 	"upgrade": {
 		long: "" +
@@ -522,7 +521,7 @@ var helps = map[string]help{
 			"  limiting https://developer.github.com/v3/#rate-limiting. Unauthenticated\n" +
 			"  requests should be sufficient for most cases.",
 		example: "" +
-			"    chezmoi upgrade",
+			"  chezmoi upgrade",
 	},
 	"verify": {
 		long: "" +
@@ -531,7 +530,7 @@ var helps = map[string]help{
 			"  0 (success) if all targets match their target state, or 1 (failure)\n" +
 			"  otherwise. If no targets are specified then all targets are checked.",
 		example: "" +
-			"    chezmoi verify\n" +
-			"    chezmoi verify ~/.bashrc",
+			"  chezmoi verify\n" +
+			"  chezmoi verify ~/.bashrc",
 	},
 }

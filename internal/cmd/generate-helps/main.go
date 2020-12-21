@@ -85,7 +85,7 @@ func extractHelps(r io.Reader) (map[string]*help, error) {
 	}
 
 	examplesStyleConfig := glamour.ASCIIStyleConfig
-	examplesStyleConfig.Document.Indent = nil
+	examplesStyleConfig.Document.Margin = nil
 	examplesTermRenderer, err := glamour.NewTermRenderer(
 		glamour.WithStyles(examplesStyleConfig),
 		glamour.WithWordWrap(80),
