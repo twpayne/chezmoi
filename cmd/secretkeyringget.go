@@ -10,7 +10,7 @@ import (
 var keyringGetCmd = &cobra.Command{
 	Use:     "get",
 	Args:    cobra.NoArgs,
-	Short:   "Get a password from keyring",
+	Short:   "Get a value from keyring",
 	PreRunE: config.ensureNoError,
 	RunE:    config.runKeyringGetCmd,
 }
@@ -20,10 +20,10 @@ func init() {
 }
 
 func (c *Config) runKeyringGetCmd(cmd *cobra.Command, args []string) error {
-	password, err := keyring.Get(c.keyring.service, c.keyring.user)
+	value, err := keyring.Get(c.keyring.service, c.keyring.user)
 	if err != nil {
 		return err
 	}
-	fmt.Println(password)
+	fmt.Println(value)
 	return nil
 }

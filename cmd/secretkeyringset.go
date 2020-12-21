@@ -12,7 +12,7 @@ import (
 var keyringSetCmd = &cobra.Command{
 	Use:     "set",
 	Args:    cobra.NoArgs,
-	Short:   "Set a password in keyring",
+	Short:   "Set a value in keyring",
 	PreRunE: config.ensureNoError,
 	RunE:    config.runKeyringSetCmd,
 }
@@ -21,18 +21,18 @@ func init() {
 	keyringCmd.AddCommand(keyringSetCmd)
 
 	persistentFlags := keyringSetCmd.PersistentFlags()
-	persistentFlags.StringVar(&config.keyring.password, "password", "", "password")
+	persistentFlags.StringVar(&config.keyring.value, "value", "", "value")
 }
 
 func (c *Config) runKeyringSetCmd(cmd *cobra.Command, args []string) error {
-	passwordString := c.keyring.password
-	if passwordString == "" {
-		fmt.Print("Password: ")
-		password, err := term.ReadPassword(int(os.Stdin.Fd()))
+	valueStr := c.keyring.value
+	if valueStr == "" {
+		fmt.Print("Value: ")
+		value, err := term.ReadPassword(int(os.Stdin.Fd()))
 		if err != nil {
 			return err
 		}
-		passwordString = string(password)
+		valueStr = string(value)
 	}
-	return keyring.Set(c.keyring.service, c.keyring.user, passwordString)
+	return keyring.Set(c.keyring.service, c.keyring.user, valueStr)
 }

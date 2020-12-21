@@ -1146,7 +1146,7 @@ prompting, password storage, and result caching.
 
 ### `keyring` *service* *user*
 
-`keyring` retrieves the password associated with *service* and *user* from the
+`keyring` retrieves the value associated with *service* and *user* from the
 user's keyring.
 
 | OS    | Keyring       |

@@ -569,18 +569,18 @@ chezmoi includes support for Keychain (on macOS), GNOME Keyring (on Linux), and
 Windows Credentials Manager (on Windows) via the
 [`zalando/go-keyring`](https://github.com/zalando/go-keyring) library.
 
-Set passwords with:
+Set values with:
 
     $ chezmoi keyring set --service=<service> --user=<user>
-    Password: xxxxxxxx
+    Value: xxxxxxxx
 
-The password can then be used in templates using the `keyring` function which
-takes the service and user as arguments.
+The value can then be used in templates using the `keyring` function which takes
+the service and user as arguments.
 
 For example, save a GitHub access token in keyring with:
 
     $ chezmoi keyring set --service=github --user=<github-username>
-    Password: xxxxxxxx
+    Value: xxxxxxxx
 
 and then include it in your `~/.gitconfig` file with:
 

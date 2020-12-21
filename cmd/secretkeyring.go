@@ -14,9 +14,9 @@ var keyringCmd = &cobra.Command{
 }
 
 type keyringCmdConfig struct {
-	service  string
-	user     string
-	password string
+	service string
+	user    string
+	value   string
 }
 
 type keyringKey struct {

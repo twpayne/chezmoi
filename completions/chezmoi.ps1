@@ -183,8 +183,8 @@ Register-ArgumentCompleter -Native -CommandName 'chezmoi' -ScriptBlock {
             break
         }
         'chezmoi;secret;keyring' {
-            [CompletionResult]::new('get', 'get', [CompletionResultType]::ParameterValue, 'Get a password from keyring')
-            [CompletionResult]::new('set', 'set', [CompletionResultType]::ParameterValue, 'Set a password in keyring')
+            [CompletionResult]::new('get', 'get', [CompletionResultType]::ParameterValue, 'Get a value from keyring')
+            [CompletionResult]::new('set', 'set', [CompletionResultType]::ParameterValue, 'Set a value in keyring')
             break
         }
         'chezmoi;secret;keyring;get' {
