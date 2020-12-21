@@ -3011,10 +3011,11 @@ func init() {
 		"`keyring` retrieves the value associated with *service* and *user* from the\n" +
 		"user's keyring.\n" +
 		"\n" +
-		"| OS    | Keyring       |\n" +
-		"| ----- | ------------- |\n" +
-		"| macOS | Keychain      |\n" +
-		"| Linux | GNOME Keyring |\n" +
+		"| OS      | Keyring                     |\n" +
+		"| ------- | --------------------------- |\n" +
+		"| macOS   | Keychain                    |\n" +
+		"| Linux   | GNOME Keyring               |\n" +
+		"| Windows | Windows Credentials Manager |\n" +
 		"\n" +
 		"#### `keyring` examples\n" +
 		"\n" +
