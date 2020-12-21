@@ -1206,18 +1206,18 @@ func init() {
 		"Windows Credentials Manager (on Windows) via the\n" +
 		"[`zalando/go-keyring`](https://github.com/zalando/go-keyring) library.\n" +
 		"\n" +
-		"Set passwords with:\n" +
+		"Set values with:\n" +
 		"\n" +
 		"    $ chezmoi keyring set --service=<service> --user=<user>\n" +
-		"    Password: xxxxxxxx\n" +
+		"    Value: xxxxxxxx\n" +
 		"\n" +
-		"The password can then be used in templates using the `keyring` function which\n" +
-		"takes the service and user as arguments.\n" +
+		"The value can then be used in templates using the `keyring` function which takes\n" +
+		"the service and user as arguments.\n" +
 		"\n" +
 		"For example, save a GitHub access token in keyring with:\n" +
 		"\n" +
 		"    $ chezmoi keyring set --service=github --user=<github-username>\n" +
-		"    Password: xxxxxxxx\n" +
+		"    Value: xxxxxxxx\n" +
 		"\n" +
 		"and then include it in your `~/.gitconfig` file with:\n" +
 		"\n" +
@@ -3008,13 +3008,14 @@ func init() {
 		"\n" +
 		"### `keyring` *service* *user*\n" +
 		"\n" +
-		"`keyring` retrieves the password associated with *service* and *user* from the\n" +
+		"`keyring` retrieves the value associated with *service* and *user* from the\n" +
 		"user's keyring.\n" +
 		"\n" +
-		"| OS    | Keyring       |\n" +
-		"| ----- | ------------- |\n" +
-		"| macOS | Keychain      |\n" +
-		"| Linux | GNOME Keyring |\n" +
+		"| OS      | Keyring                     |\n" +
+		"| ------- | --------------------------- |\n" +
+		"| macOS   | Keychain                    |\n" +
+		"| Linux   | GNOME Keyring               |\n" +
+		"| Windows | Windows Credentials Manager |\n" +
 		"\n" +
 		"#### `keyring` examples\n" +
 		"\n" +
