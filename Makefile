@@ -36,7 +36,7 @@ ensure-gofumports:
 .PHONY: ensure-golangci-lint
 ensure-golangci-lint:
 	if [ ! -x bin/golangci-lint ] || ( ./bin/golangci-lint --version | grep -Fqv "version ${GOLANGCI_LINT_VERSION}" ) ; then \
-		curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s -- v${GOLANGCI_LINT_VERSION} ; \
+		curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- v${GOLANGCI_LINT_VERSION} ; \
 	fi
 
 .PHONY: release
