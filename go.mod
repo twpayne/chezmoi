@@ -24,6 +24,7 @@ require (
 	github.com/magiconair/properties v1.8.4 // indirect
 	github.com/mitchellh/mapstructure v1.4.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.1 // indirect
+	github.com/muesli/termenv v0.7.1 // indirect
 	github.com/pelletier/go-toml v1.8.1
 	github.com/pkg/diff v0.0.0-20200914180035-5b29258ca4f7
 	github.com/rogpeppe/go-internal v1.6.2
