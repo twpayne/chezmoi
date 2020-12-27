@@ -14,7 +14,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/bmatcuk/doublestar/v2"
+	"github.com/bmatcuk/doublestar/v3"
 	"github.com/coreos/go-semver/semver"
 	vfs "github.com/twpayne/go-vfs"
 )
