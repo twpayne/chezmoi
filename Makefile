@@ -7,6 +7,10 @@ default: generate run test lint format
 generate:
 	go generate
 
+.PHONY: generate-install.sh
+generate-install.sh:
+	go run ./internal/cmd/generate-install.sh > assets/scripts/install.sh
+
 .PHONY: run
 run:
 	go run . --version
