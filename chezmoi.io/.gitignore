@@ -1,10 +1,4 @@
-/content/docs/changes.md
-/content/docs/contributing.md
-/content/docs/faq.md
-/content/docs/how-to.md
-/content/docs/install.md
-/content/docs/media.md
-/content/docs/quick-start.md
-/content/docs/reference.md
+/content/docs
+!/content/docs/menu
 /public
 /resources
