@@ -75,6 +75,7 @@ func TestPatternSet(t *testing.T) {
 }
 
 func mustNewPatternSet(t *testing.T, patterns map[string]bool) *PatternSet {
+	t.Helper()
 	ps := NewPatternSet()
 	for pattern, exclude := range patterns {
 		require.NoError(t, ps.Add(pattern, exclude))

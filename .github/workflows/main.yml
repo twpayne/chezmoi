@@ -96,7 +96,7 @@ jobs:
       - name: Lint
         uses: golangci/golangci-lint-action@v2
         with:
-          version: v1.33.0
+          version: v1.34.1
       - name: ShellCheck
         uses: ludeeus/action-shellcheck@1.0.0
         with:
