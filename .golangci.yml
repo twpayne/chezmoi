@@ -10,6 +10,7 @@ linters:
   - errorlint
   - exhaustive
   - exportloopref
+  - forbidigo
   - gci
   - gocritic
   - godot
@@ -25,6 +26,7 @@ linters:
   - govet
   - ineffassign
   - interfacer
+  - makezero
   - misspell
   - nakedret
   - nolintlint
@@ -35,6 +37,7 @@ linters:
   - staticcheck
   - structcheck
   - stylecheck
+  - thelper
   - tparallel
   - typecheck
   - unconvert
@@ -83,9 +86,11 @@ issues:
     - dupl
     path: "secretpass.go"
   - linters:
+    - forbidigo
     - gochecknoinits
     path: cmd/
   - linters:
+    - forbidigo
     - gosec
     path: internal/cmd/
   - linters:

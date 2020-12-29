@@ -33,6 +33,7 @@ func run() error {
 func main() {
 	if err := run(); err != nil {
 		if s := err.Error(); s != "" {
+			//nolint:forbidigo
 			fmt.Printf("chezmoi: %s\n", s)
 		}
 		os.Exit(1)
