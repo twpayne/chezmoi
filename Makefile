@@ -22,6 +22,7 @@ test:
 .PHONY: lint
 lint: ensure-golangci-lint
 	./bin/golangci-lint run
+	go run ./internal/cmd/lint-whitespace
 
 .PHONY: format
 format: ensure-gofumports
