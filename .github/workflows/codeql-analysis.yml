@@ -12,23 +12,17 @@ on:
 
 jobs:
   analyze:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     strategy:
       fail-fast: false
-      matrix:
-        language:
-        - go
     steps:
     - name: Checkout repo
       uses: actions/checkout@v2
       with:
-        fetch-depth: 2
-    - name: Checkout pull request head
-      run: git checkout HEAD^2
-      if: ${{ github.event_name == 'pull_request' }}
+        fetch-depth: 1
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v1
       with:
-        languages: ${{ matrix.language }}
+        languages: go
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
