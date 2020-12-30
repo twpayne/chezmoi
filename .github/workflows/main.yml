@@ -12,7 +12,7 @@ jobs:
       matrix:
         os:
         - macos-latest
-        - ubuntu-latest
+        - ubuntu-18.04
         - windows-latest
     runs-on: ${{ matrix.os }}
     steps:
@@ -36,7 +36,7 @@ jobs:
     - name: Test
       run: go test -race ./...
   test-release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
     - name: Install build dependencies
       run: |
@@ -69,7 +69,7 @@ jobs:
         ./dist/chezmoi-cgo-musl_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v"
         ./dist/chezmoi-nocgo_linux_386/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v"
   generate:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
     - name: Set up Go
       uses: actions/setup-go@v2
@@ -89,7 +89,7 @@ jobs:
         go generate
         git diff --exit-code
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -111,7 +111,7 @@ jobs:
     - lint
     - test
     - test-release
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     steps:
     - name: Install build dependencies
       run: |
