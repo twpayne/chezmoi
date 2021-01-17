@@ -6,7 +6,6 @@ before:
 
 builds:
 - id: chezmoi-cgo-glibc
-  binary: chezmoi
   env:
   - CGO_ENABLED=1
   goos:
@@ -14,7 +13,6 @@ builds:
   goarch:
   - amd64
 - id: chezmoi-cgo-musl
-  binary: chezmoi
   env:
   - CC=/usr/bin/musl-gcc
   - CGO_ENABLED=1
@@ -32,7 +30,6 @@ builds:
   - '-linkmode external'
   - '--extldflags "-static"'
 - id: chezmoi-nocgo
-  binary: chezmoi
   env:
   - CGO_ENABLED=0
   goos:
@@ -94,9 +91,11 @@ nfpms:
   dependencies:
   - git
   bindir: /usr/bin
-  files:
-    "completions/chezmoi-completion.bash": "/usr/share/bash-completion/completions/chezmoi"
-    "completions/chezmoi.fish": "/usr/share/fish/completions/chezmoi.fish"
+  contents:
+  - src: completions/chezmoi-completion.bash
+    dst: /usr/share/bash-completion/completions/chezmoi
+  - src: completions/chezmoi.fish
+    dst: /usr/share/fish/completions/chezmoi.fish
   overrides:
     deb:
       file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
@@ -112,8 +111,9 @@ nfpms:
         386: i686
         arm: armhfp
         arm64: aarch64
-      files:
-        "completions/chezmoi.zsh": "/usr/share/zsh/functions/_chezmoi"
+      contents:
+      - src: completions/chezmoi.zsh
+        dst: /usr/share/zsh/functions/_chezmoi
 - id: apks
   builds:
   - chezmoi-cgo-musl
