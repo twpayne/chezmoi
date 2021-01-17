@@ -2,7 +2,9 @@ package cmd
 
 import (
 	"bytes"
+	"errors"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"runtime"
 	"strings"
@@ -112,6 +114,13 @@ func TestInit(t *testing.T) {
 }
 
 func TestInitRepo(t *testing.T) {
+	switch _, err := exec.LookPath("git"); {
+	case errors.Is(err, exec.ErrNotFound):
+		t.Skip("git not found in $PATH")
+	default:
+		require.NoError(t, err)
+	}
+
 	fs, cleanup, err := vfst.NewTestFS(map[string]interface{}{
 		"/home/user": &vfst.Dir{Perm: 0o755},
 	})
