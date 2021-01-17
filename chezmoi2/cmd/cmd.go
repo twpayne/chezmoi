@@ -90,6 +90,14 @@ func mustLongHelp(command string) string {
 	return help.long
 }
 
+func markPersistentFlagsRequired(cmd *cobra.Command, flags ...string) {
+	for _, flag := range flags {
+		if err := cmd.MarkPersistentFlagRequired(flag); err != nil {
+			panic(err)
+		}
+	}
+}
+
 func runMain(versionInfo VersionInfo, args []string) error {
 	config, err := newConfig(
 		withVersionInfo(versionInfo),
