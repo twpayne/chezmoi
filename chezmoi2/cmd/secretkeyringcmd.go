@@ -22,6 +22,17 @@ func (c *Config) newSecretKeyringCmd() *cobra.Command {
 		Short: "Interact with keyring",
 	}
 
+	persistentFlags := keyringCmd.PersistentFlags()
+	persistentFlags.StringVar(&c.secretKeyring.service, "service", "", "service")
+	if err := keyringCmd.MarkPersistentFlagRequired("service"); err != nil {
+		panic(err)
+	}
+
+	persistentFlags.StringVar(&c.secretKeyring.user, "user", "", "user")
+	if err := keyringCmd.MarkPersistentFlagRequired("user"); err != nil {
+		panic(err)
+	}
+
 	keyringGetCmd := &cobra.Command{
 		Use:   "get",
 		Args:  cobra.NoArgs,
