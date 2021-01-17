@@ -1,0 +1,80 @@
+# test reading args
+chezmoi execute-template '{{ "arg-template" }}'
+stdout arg-template
+
+# test reading from stdin
+stdin golden/stdin.tmpl
+chezmoi execute-template
+stdout stdin-template
+
+# test partial templates work
+chezmoi execute-template '{{ template "partial" }}'
+stdout 'hello world'
+
+# FIXME merge the following tests into a single test
+
+chezmoi execute-template '{{ .last.config }}'
+stdout 'chezmoi\.toml'
+
+# test that template data are read from .chezmoidata.json
+chezmoi execute-template '{{ .last.json }}'
+stdout '\.chezmoidata\.json'
+
+# test that template data are read from .chezmoidata.toml
+chezmoi execute-template '{{ .last.toml }}'
+stdout '\.chezmoidata\.toml'
+
+# test that template data are read from .chezmoidata.yaml
+chezmoi execute-template '{{ .last.yaml }}'
+stdout '\.chezmoidata\.yaml'
+
+# test that the last .chezmoidata.<format> file read wins
+chezmoi execute-template '{{ .last.format }}'
+stdout '\.chezmoidata\.yaml'
+
+# test that the config file wins over .chezmoidata.<format>
+chezmoi execute-template '{{ .last.global }}'
+stdout chezmoi.toml
+
+# test --init --promptBool
+chezmoi execute-template --init --promptBool value=yes '{{ promptBool "value" }}'
+stdout true
+! chezmoi execute-template --promptBool value=error
+stderr 'invalid syntax'
+
+# test --init --promptInt
+chezmoi execute-template --init --promptInt value=1 '{{ promptInt "value" }}'
+stdout 1
+! chezmoi execute-template --promptInt value=error
+stderr 'invalid syntax'
+
+# test --init --promptString
+chezmoi execute-template --init --promptString email=user@example.com '{{ promptString "email" }}'
+stdout 'user@example.com'
+
+-- golden/stdin.tmpl --
+{{ "stdin-template" }}
+-- home/user/.config/chezmoi/chezmoi.toml --
+[data.last]
+  config = "chezmoi.toml"
+  global = "chezmoi.toml"
+-- home/user/.local/share/chezmoi/.chezmoidata.json --
+{
+  "last": {
+    "format": ".chezmoidata.json",
+    "global": ".chezmoidata.json",
+    "json": ".chezmoidata.json"
+  }
+}
+-- home/user/.local/share/chezmoi/.chezmoidata.toml --
+[last]
+  format = ".chezmoidata.toml"
+  global = ".chezmoidata.toml"
+  toml = ".chezmoidata.toml"
+-- home/user/.local/share/chezmoi/.chezmoidata.yaml --
+last:
+    format: ".chezmoidata.yaml"
+    global: ".chezmoidata.yaml"
+    yaml: ".chezmoidata.yaml"
+-- home/user/.local/share/chezmoi/.chezmoitemplates/partial --
+{{ cat "hello" "world" }}

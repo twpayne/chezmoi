@@ -28,12 +28,19 @@ jobs:
         key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
           ${{ runner.os }}-go-
+    - name: Install age
+      run: |
+        git clone https://github.com/FiloSottile/age
+        cd age
+        go install ./cmd/...
     - name: Checkout
       uses: actions/checkout@v2
     - name: Build
       run: go build ./...
     - name: Run
-      run: go run . --version
+      run: |
+        go run . --version
+        go run ./chezmoi2 --version
     - name: Test
       run: go test -race ./...
   test-release:

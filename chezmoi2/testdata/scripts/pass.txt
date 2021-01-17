@@ -1,0 +1,27 @@
+[!windows] chmod 755 bin/pass
+[windows] unix2dos bin/pass.cmd
+
+# test pass template function
+chezmoi execute-template '{{ pass "misc/example.com" }}'
+stdout examplepassword
+
+-- bin/pass --
+#!/bin/sh
+
+case "$*" in
+"show misc/example.com")
+    echo "examplepassword"
+    ;;
+*)
+    echo "pass: invalid command: $*"
+    exit 1
+esac
+-- bin/pass.cmd --
+@echo off
+IF "%*" == "show misc/example.com" (
+    echo | set /p=examplepassword
+    exit /b 0
+) ELSE (
+    echo pass: invalid command: %*
+    exit /b 1
+)

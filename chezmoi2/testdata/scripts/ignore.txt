@@ -1,0 +1,17 @@
+mksourcedir
+
+# test that chezmoi apply does not write ignored files
+! exists $HOME/.file
+chezmoi apply --force
+exists $HOME/.file
+! exists $HOME/README.md
+! exists $HOME/.dir
+
+-- home/user/.local/share/chezmoi/.chezmoiignore --
+README.md
+.dir
+{{ if false }}
+.file
+{{ end }}
+-- home/user/.local/share/chezmoi/README.md --
+# contents of README.md

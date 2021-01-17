@@ -1,0 +1,18 @@
+[!exec:tar] skip 'tar not found in $PATH'
+
+mkhomedir
+
+# test that chezmoi import imports and archive
+exec tar czf archive.tar.gz archive
+chezmoi import --strip-components=1 archive.tar.gz
+cmp $CHEZMOISOURCEDIR/dot_dir/dot_file golden/dot_dir/dot_file
+cmp $CHEZMOISOURCEDIR/dot_dir/dot_symlink golden/dot_dir/symlink_dot_symlink
+
+-- archive/.dir/.file --
+# contents of .dir/.file
+-- archive/.dir/.symlink --
+.file
+-- golden/dot_dir/dot_file --
+# contents of .dir/.file
+-- golden/dot_dir/symlink_dot_symlink --
+.file

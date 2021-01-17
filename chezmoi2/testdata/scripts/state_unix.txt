@@ -1,0 +1,25 @@
+[windows] skip 'UNIX only'
+
+# test that the persistent state is only created on demand
+chezmoi state dump --format=yaml
+cmp stdout golden/dump
+! exists $CHEZMOICONFIGDIR/chezmoistate.boltdb
+
+# test that chezmoi apply updates the persistent state
+chezmoi apply --force
+exists $CHEZMOICONFIGDIR/chezmoistate.boltdb
+
+# test that the persistent state records that script was run
+chezmoi state dump --format=yaml
+stdout a8076d3d28d21e02012b20eaf7dbf75409a6277134439025f282e368e3305abf:
+stdout runAt:
+
+# test that chezmoi state reset removes the persistent state
+chezmoi --force state reset
+! exists $CHEZMOICONFIGDIR/chezmoistate.boltdb
+
+-- golden/dump --
+entryState: {}
+scriptState: {}
+-- home/user/.local/share/chezmoi/run_once_script --
+#!/bin/sh

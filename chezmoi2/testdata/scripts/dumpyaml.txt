@@ -1,0 +1,65 @@
+mksourcedir
+
+chezmoi dump --format=yaml
+cmp stdout golden/dump.yaml
+
+-- golden/dump.yaml --
+.dir:
+    type: dir
+    name: .dir
+    perm: 511
+.dir/file:
+    type: file
+    name: .dir/file
+    contents: |
+        # contents of .dir/file
+    perm: 438
+.dir/subdir:
+    type: dir
+    name: .dir/subdir
+    perm: 511
+.dir/subdir/file:
+    type: file
+    name: .dir/subdir/file
+    contents: |
+        # contents of .dir/subdir/file
+    perm: 438
+.empty:
+    type: file
+    name: .empty
+    contents: ""
+    perm: 438
+.executable:
+    type: file
+    name: .executable
+    contents: |
+        # contents of .executable
+    perm: 511
+.exists:
+    type: file
+    name: .exists
+    contents: |
+        # contents of .exists
+    perm: 438
+.file:
+    type: file
+    name: .file
+    contents: |
+        # contents of .file
+    perm: 438
+.private:
+    type: file
+    name: .private
+    contents: |
+        # contents of .private
+    perm: 384
+.symlink:
+    type: symlink
+    name: .symlink
+    linkname: .dir/subdir/file
+.template:
+    type: file
+    name: .template
+    contents: |
+        key = value
+    perm: 438

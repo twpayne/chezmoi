@@ -9,18 +9,22 @@ build: build-darwin build-linux build-windows
 .PHONY: build-darwin
 build-darwin: generate
 	GOOS=darwin GOARCH=amd64 go build -o /dev/null .
+	GOOS=darwin GOARCH=amd64 go build -o /dev/null ./chezmoi2
 
 .PHONY: build-linux
 build-linux: generate
 	GOOS=linux GOARCH=amd64 go build -o /dev/null .
+	GOOS=linux GOARCH=amd64 go build -o /dev/null ./chezmoi2
 
 .PHONY: build-windows
 build-windows: generate
 	GOOS=windows GOARCH=amd64 go build -o /dev/null .
+	GOOS=windows GOARCH=amd64 go build -o /dev/null ./chezmoi2
 
 .PHONY: run
 run: generate
 	go run . --version
+	go run ./chezmoi2 --version
 
 .PHONY: generate
 generate:
