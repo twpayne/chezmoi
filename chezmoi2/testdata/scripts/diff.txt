@@ -1,0 +1,87 @@
+mkhomedir golden
+mkhomedir
+mksourcedir
+
+# test that chezmoi diff generates no output when the source and destination states are equal
+chezmoi diff
+! stdout .
+
+# test that chezmoi diff generates a diff when a file is added to the source state
+cp golden/dot_newfile $CHEZMOISOURCEDIR/dot_newfile
+chezmoi diff
+cmp stdout golden/add-newfile-diff
+rm $CHEZMOISOURCEDIR/dot_newfile
+
+# test that chezmoi diff generates a diff when a file is edited
+edit $HOME/.file
+chezmoi diff
+cmp stdout golden/modify-file-diff
+chezmoi apply --force $HOME${/}.file
+
+# test that chezmoi diff generates a diff when a file is removed from the destination directory
+rm $HOME/.file
+chezmoi diff
+cmp stdout golden/remove-file-diff
+chezmoi apply --force $HOME${/}.file
+
+# test that chezmoi diff generates a diff when a directory is removed from the destination directory
+rm $HOME/.dir
+chezmoi diff --recursive=false $HOME${/}.dir
+cmp stdout golden/remove-dir-diff
+chezmoi apply --force $HOME${/}.dir
+
+[windows] stop 'remaining tests use file modes'
+
+# test that chezmoi diff generates a diff when a file's permissions are changed
+chmod 777 $HOME/.file
+chezmoi diff
+cmp stdout golden/chmod-file-diff
+chezmoi apply --force $HOME${/}.file
+
+# test that chezmoi diff generates a diff when a dir's permissions are changed
+# FIXME show changes to permissions in diff
+chmod 700 $HOME/.dir
+chezmoi diff
+cmp stdout golden/chmod-dir-diff
+chezmoi apply --force --recursive=false $HOME${/}.dir
+
+-- golden/add-newfile-diff --
+diff --git a/.newfile b/.newfile
+old mode 0
+new mode 100644
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..06e05235fdd12fd5c367b6d629fef94536c85525
+--- a/.newfile
++++ b/.newfile
+@@ -0,0 +1 @@
++# contents of .newfile
+-- golden/modify-file-diff --
+diff --git a/.file b/.file
+index 5d2730a8850a2db479af83de87cc8345437aef06..8a52cb9ce9551221716a53786ad74104c5902362 100644
+--- a/.file
++++ b/.file
+@@ -1,2 +1 @@
+ # contents of .file
+-# edited
+-- golden/remove-file-diff --
+diff --git a/.file b/.file
+old mode 0
+new mode 100644
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..8a52cb9ce9551221716a53786ad74104c5902362
+--- a/.file
++++ b/.file
+@@ -0,0 +1 @@
++# contents of .file
+-- golden/remove-dir-diff --
+diff --git a/.dir b/.dir
+new file mode 40000
+index 0000000000000000000000000000000000000000..0000000000000000000000000000000000000000
+--- /dev/null
++++ b/.dir
+-- golden/chmod-file-diff --
+diff --git a/.file b/.file
+old mode 100755
+new mode 100644
+-- golden/chmod-dir-diff --
+diff --git a/.dir b/.dir
+-- golden/dot_newfile --
+# contents of .newfile

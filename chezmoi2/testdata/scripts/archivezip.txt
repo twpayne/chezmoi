@@ -1,0 +1,22 @@
+[!exec:unzip] skip 'unzip not found in $PATH'
+
+mksourcedir
+
+chezmoi archive --format=zip --output=archive.zip
+exec unzip -t archive.zip
+cmp stdout golden/archive
+
+-- golden/archive --
+Archive:  archive.zip
+    testing: .dir                     OK
+    testing: .dir/file                OK
+    testing: .dir/subdir              OK
+    testing: .dir/subdir/file         OK
+    testing: .empty                   OK
+    testing: .executable              OK
+    testing: .exists                  OK
+    testing: .file                    OK
+    testing: .private                 OK
+    testing: .symlink                 OK
+    testing: .template                OK
+No errors detected in compressed data of archive.zip.

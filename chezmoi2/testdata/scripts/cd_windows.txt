@@ -1,0 +1,11 @@
+[!windows] skip 'Windows only'
+
+# test chezmoi cd with command with args (Windows variant)
+chezmoi cd
+! stdout PowerShell
+stdout evidence
+
+-- home/user/.config/chezmoi/chezmoi.toml --
+[cd]
+    command = "powershell"
+    args = ["-nologo", "-command", "Write-Host 'evidence'"]

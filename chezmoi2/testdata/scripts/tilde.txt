@@ -1,0 +1,8 @@
+mkhomedir
+mksourcedir
+
+chezmoi source-path ~/.file
+stdout $CHEZMOISOURCEDIR/dot_file
+
+! chezmoi source-path ~
+stderr 'not in'

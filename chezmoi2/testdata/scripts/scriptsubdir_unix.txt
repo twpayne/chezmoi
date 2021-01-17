@@ -1,0 +1,37 @@
+[windows] skip 'UNIX only'
+
+# test that scripts in subdirectories are run in the subdirectory
+chezmoi apply --force
+cmpenv stdout golden/apply
+
+chezmoi dump
+cmp stdout golden/dump
+
+[!exec:tar] stop 'tar not found in $PATH'
+
+chezmoi archive --gzip --output=archive.tar.gz
+exec tar -tzf archive.tar.gz
+cmp stdout golden/archive
+
+-- golden/apply --
+$HOME/dir
+-- golden/archive --
+dir/
+dir/script
+-- golden/dump --
+{
+  "dir": {
+    "type": "dir",
+    "name": "dir",
+    "perm": 511
+  },
+  "dir/script": {
+    "type": "script",
+    "name": "dir/script",
+    "contents": "#!/bin/sh\n\necho $PWD\n"
+  }
+}
+-- home/user/.local/share/chezmoi/dir/run_script --
+#!/bin/sh
+
+echo $PWD

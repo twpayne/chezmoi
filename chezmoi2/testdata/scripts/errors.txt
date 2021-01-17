@@ -1,0 +1,39 @@
+mksourcedir
+
+# test duplicate source state entry detection
+cp $CHEZMOISOURCEDIR/dot_file $CHEZMOISOURCEDIR/empty_dot_file
+! chezmoi verify
+stderr 'duplicate source state entries'
+
+# test invalid config
+chhome home2/user
+! chezmoi verify
+stderr 'invalid config'
+
+# test source directory is not a directory
+chhome home3/user
+! chezmoi verify
+stderr 'not a directory'
+
+# test that chezmoi checks .chezmoiversion
+chhome home4/user
+! chezmoi verify
+stderr 'source state requires version'
+
+# test duplicate script detection
+chhome home5/user
+! chezmoi verify
+stderr 'duplicate source state entries'
+
+# FIXME add more tests
+
+-- home2/user/.config/chezmoi/chezmoi.json --
+{
+-- home3/user/.local/share/chezmoi --
+# contents of .local/share/chezmoi
+-- home4/user/.local/share/chezmoi/.chezmoiversion --
+3.0.0
+-- home5/user/.local/share/chezmoi/run_install_packages --
+# contents of install_packages
+-- home5/user/.local/share/chezmoi/run_once_install_packages --
+# contents of install_packages

@@ -12,6 +12,7 @@ linters:
   - exportloopref
   - forbidigo
   - gci
+  - gochecknoinits
   - gocritic
   - godot
   - goerr113
@@ -28,8 +29,7 @@ linters:
   - interfacer
   - makezero
   - misspell
-  - nakedret
-  - nolintlint
+  - paralleltest
   - prealloc
   - predeclared
   - rowserrcheck
@@ -50,7 +50,6 @@ linters:
   - exhaustivestruct
   - funlen
   - gochecknoglobals
-  - gochecknoinits
   - gocognit
   - goconst
   - gocyclo
@@ -59,10 +58,11 @@ linters:
   - gomnd
   - lll
   - maligned
+  - nakedret
   - nestif
   - nlreturn
   - noctx
-  - paralleltest
+  - nolintlint # FIXME renable
   - testpackage
   - wrapcheck
   - wsl
@@ -87,13 +87,25 @@ issues:
     - dupl
     path: "secretpass.go"
   - linters:
+    - nolintlint
+    - paralleltest
+    path: "^main_test.go$"
+  - linters:
     - forbidigo
     - gochecknoinits
+    - paralleltest
     path: cmd/
+  - linters:
+    - gochecknoinits
+    path: internal/chezmoi/chezmoi_unix.go
   - linters:
     - forbidigo
     - gosec
     path: internal/cmd/
   - linters:
+    - paralleltest
+    path: internal/
+  - linters:
+    - gosec
     - scopelint
     path: "_test\\.go"

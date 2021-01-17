@@ -1,0 +1,61 @@
+mksourcedir
+
+chezmoi managed
+cmpenv stdout golden/managed
+
+chezmoi managed --include=all
+cmpenv stdout golden/managed-all
+
+chezmoi managed --include=absent
+cmpenv stdout golden/managed-absent
+
+chezmoi managed --include=dirs
+cmpenv stdout golden/managed-dirs
+
+chezmoi managed --include=files
+cmpenv stdout golden/managed-files
+
+chezmoi managed --include=symlinks
+cmpenv stdout golden/managed-symlinks
+
+-- golden/managed --
+.dir
+.dir/file
+.dir/subdir
+.dir/subdir/file
+.empty
+.executable
+.exists
+.file
+.private
+.symlink
+.template
+-- golden/managed-all --
+.absent
+.dir
+.dir/file
+.dir/subdir
+.dir/subdir/file
+.empty
+.executable
+.exists
+.file
+.private
+.symlink
+.template
+-- golden/managed-absent --
+.absent
+-- golden/managed-dirs --
+.dir
+.dir/subdir
+-- golden/managed-files --
+.dir/file
+.dir/subdir/file
+.empty
+.executable
+.exists
+.file
+.private
+.template
+-- golden/managed-symlinks --
+.symlink

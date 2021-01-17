@@ -1,0 +1,24 @@
+[windows] skip 'UNIX only'
+
+# test that chezmoi apply runs scripts in the correct order
+symlink home/user/.local/share/chezmoi/run_first_00-first -> .script
+symlink home/user/.local/share/chezmoi/run_first_99-first -> .script
+symlink home/user/.local/share/chezmoi/run_00 -> .script
+symlink home/user/.local/share/chezmoi/run_99 -> .script
+symlink home/user/.local/share/chezmoi/run_last_00-last -> .script
+symlink home/user/.local/share/chezmoi/run_last_99-last -> .script
+chezmoi apply --force
+cmp stdout golden/apply
+
+-- golden/apply --
+00-first
+99-first
+00
+99
+00-last
+99-last
+-- home/user/.local/share/chezmoi/.script --
+#!/bin/sh
+
+basename=$(basename $0)
+echo ${basename##*.}
