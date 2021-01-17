@@ -111,6 +111,7 @@ type Config struct {
 	init            initCmdConfig
 	managed         managedCmdConfig
 	purge           purgeCmdConfig
+	secretKeyring   secretKeyringCmdConfig
 	status          statusCmdConfig
 	update          updateCmdConfig
 	verify          verifyCmdConfig
@@ -784,6 +785,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newMergeCmd,
 		c.newPurgeCmd,
 		c.newRemoveCmd,
+		c.newSecretCmd,
 		c.newSourcePathCmd,
 		c.newStateCmd,
 		c.newStatusCmd,
