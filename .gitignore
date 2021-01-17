@@ -1,3 +1,4 @@
+*.exe
 /bin/chezmoi
 /bin/gofumports
 /bin/golangci-lint

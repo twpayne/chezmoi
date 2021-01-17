@@ -1,31 +1,46 @@
 GOLANGCI_LINT_VERSION=1.35.2
 
 .PHONY: default
-default: generate run test lint format
+default: generate build run test lint format
 
-.PHONT: generate
+.PHONY: build
+build: build-darwin build-linux build-windows
+
+.PHONY: build-darwin
+build-darwin: generate
+	GOOS=darwin GOARCH=amd64 go build -o /dev/null .
+
+.PHONY: build-linux
+build-linux: generate
+	GOOS=linux GOARCH=amd64 go build -o /dev/null .
+
+.PHONY: build-windows
+build-windows: generate
+	GOOS=windows GOARCH=amd64 go build -o /dev/null .
+
+.PHONY: run
+run: generate
+	go run . --version
+
+.PHONY: generate
 generate:
 	go generate
+
+.PHONY: test
+test: generate
+	go test ./...
 
 .PHONY: generate-install.sh
 generate-install.sh:
 	go run ./internal/cmd/generate-install.sh > assets/scripts/install.sh
 
-.PHONY: run
-run:
-	go run . --version
-
-.PHONY: test
-test:
-	go test ./...
-
 .PHONY: lint
-lint: ensure-golangci-lint
+lint: ensure-golangci-lint generate
 	./bin/golangci-lint run
 	go run ./internal/cmd/lint-whitespace
 
 .PHONY: format
-format: ensure-gofumports
+format: ensure-gofumports generate
 	find . -name \*.go | xargs ./bin/gofumports -local github.com/twpayne/chezmoi -w
 
 .PHONY: ensure-tools
