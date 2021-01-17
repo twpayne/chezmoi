@@ -1,15 +1,27 @@
 package chezmoi
 
 import (
+	"errors"
 	"os"
+	"unicode/utf16"
 
 	vfs "github.com/twpayne/go-vfs"
+	"golang.org/x/sys/windows"
 )
 
-// FQDNHostname does nothing on Windows.
+// FQDNHostname returns the machine's fully-qualified DNS domain name.
 func FQDNHostname(fs vfs.FS) (string, error) {
-	// LATER find out how to determine the FQDN hostname on Windows
-	return "", nil
+	n := uint32(windows.MAX_COMPUTERNAME_LENGTH + 1)
+	buf := make([]uint16, n)
+	err := windows.GetComputerNameEx(windows.ComputerNameDnsFullyQualified, &buf[0], &n)
+	if errors.Is(err, windows.ERROR_MORE_DATA) {
+		buf = make([]uint16, n)
+		err = windows.GetComputerNameEx(windows.ComputerNameDnsFullyQualified, &buf[0], &n)
+	}
+	if err != nil {
+		return "", err
+	}
+	return string(utf16.Decode(buf[0:n])), nil
 }
 
 // GetUmask returns the umask.
