@@ -311,12 +311,13 @@ type applyArgsOptions struct {
 	ignoreEncrypted bool
 	include         *chezmoi.IncludeSet
 	recursive       bool
+	sourcePath      bool
 	umask           os.FileMode
 	preApplyFunc    chezmoi.PreApplyFunc
 }
 
 func (c *Config) applyArgs(targetSystem chezmoi.System, targetDirAbsPath chezmoi.AbsPath, args []string, options applyArgsOptions) error {
-	s, err := c.sourceState()
+	sourceState, err := c.sourceState()
 	if err != nil {
 		return err
 	}
@@ -329,10 +330,16 @@ func (c *Config) applyArgs(targetSystem chezmoi.System, targetDirAbsPath chezmoi
 	}
 
 	var targetRelPaths chezmoi.RelPaths
-	if len(args) == 0 {
-		targetRelPaths = s.TargetRelPaths()
-	} else {
-		targetRelPaths, err = c.targetRelPaths(s, args, targetRelPathsOptions{
+	switch {
+	case len(args) == 0:
+		targetRelPaths = sourceState.TargetRelPaths()
+	case options.sourcePath:
+		targetRelPaths, err = c.targetRelPathsBySourcePath(sourceState, args)
+		if err != nil {
+			return err
+		}
+	default:
+		targetRelPaths, err = c.targetRelPaths(sourceState, args, targetRelPathsOptions{
 			mustBeInSourceState: true,
 			recursive:           options.recursive,
 		})
@@ -342,7 +349,7 @@ func (c *Config) applyArgs(targetSystem chezmoi.System, targetDirAbsPath chezmoi
 	}
 
 	for _, targetRelPath := range targetRelPaths {
-		switch err := s.Apply(targetSystem, c.persistentState, targetDirAbsPath, targetRelPath, applyOptions); {
+		switch err := sourceState.Apply(targetSystem, c.persistentState, targetDirAbsPath, targetRelPath, applyOptions); {
 		case errors.Is(err, chezmoi.Skip):
 			continue
 		case err != nil && c.keepGoing:
@@ -1162,6 +1169,31 @@ func (c *Config) targetRelPaths(sourceState *chezmoi.SourceState, args []string,
 		}
 	}
 	return targetRelPaths[:n], nil
+}
+
+func (c *Config) targetRelPathsBySourcePath(sourceState *chezmoi.SourceState, args []string) (chezmoi.RelPaths, error) {
+	targetRelPaths := make(chezmoi.RelPaths, 0, len(args))
+	targetRelPathsBySourceRelPath := make(map[chezmoi.RelPath]chezmoi.RelPath)
+	for targetRelPath, sourceStateEntry := range sourceState.Entries() {
+		sourceRelPath := sourceStateEntry.SourceRelPath().RelPath()
+		targetRelPathsBySourceRelPath[sourceRelPath] = targetRelPath
+	}
+	for _, arg := range args {
+		argAbsPath, err := chezmoi.NewAbsPathFromExtPath(arg, c.homeDirAbsPath)
+		if err != nil {
+			return nil, err
+		}
+		sourceRelPath, err := argAbsPath.TrimDirPrefix(c.sourceDirAbsPath)
+		if err != nil {
+			return nil, err
+		}
+		targetRelPath, ok := targetRelPathsBySourceRelPath[sourceRelPath]
+		if !ok {
+			return nil, fmt.Errorf("%s: not in source state", arg)
+		}
+		targetRelPaths = append(targetRelPaths, targetRelPath)
+	}
+	return targetRelPaths, nil
 }
 
 func (c *Config) useBuiltinGit() (bool, error) {

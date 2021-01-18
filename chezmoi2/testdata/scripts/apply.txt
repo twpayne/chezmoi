@@ -61,3 +61,11 @@ exists $HOME/.template
 edit $CHEZMOISOURCEDIR/dot_file
 chezmoi apply --force
 cmp $HOME/.file $CHEZMOISOURCEDIR/dot_file
+
+# test that chezmoi apply --source-path applies a file based on its source path
+edit $CHEZMOISOURCEDIR/dot_file
+chezmoi apply --force --source-path $CHEZMOISOURCEDIR/dot_file
+grep -count=2 '# edited' $HOME/.file
+
+# test that chezmoi apply --source-path fails when called with a targetDirAbsPath
+! chezmoi apply --force --source-path ${HOME}${/}.file
