@@ -376,6 +376,8 @@ func (c *Config) cmdOutput(dirAbsPath chezmoi.AbsPath, name string, args []strin
 
 func (c *Config) defaultPreApplyFunc(targetRelPath chezmoi.RelPath, targetEntryState, lastWrittenEntryState, actualEntryState *chezmoi.EntryState) error {
 	switch {
+	case targetEntryState.Type == chezmoi.EntryStateTypeScript:
+		return nil
 	case c.force:
 		return nil
 	case lastWrittenEntryState == nil:
