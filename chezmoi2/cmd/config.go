@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"bufio"
 	"errors"
 	"fmt"
 	"io"
@@ -71,6 +70,7 @@ type Config struct {
 	dryRun        bool
 	force         bool
 	keepGoing     bool
+	noTTY         bool
 	outputStr     string
 	verbose       bool
 	templateFuncs template.FuncMap
@@ -123,12 +123,14 @@ type Config struct {
 	destDirAbsPath    chezmoi.AbsPath
 	encryption        chezmoi.Encryption
 
-	stdin     io.Reader
-	stdout    io.Writer
-	stderr    io.Writer
-	tty       io.ReadWriter
-	ttyReader *bufio.Reader
-	ttyWriter io.Writer
+	stdin  io.Reader
+	stdout io.Writer
+	stderr io.Writer
+
+	terminal          terminal
+	terminalFile      *os.File
+	closeTerminalFile bool
+	oldTerminalState  *term.State
 
 	ioregData ioregData
 }
@@ -641,23 +643,35 @@ func (c *Config) execute(args []string) error {
 	return rootCmd.Execute()
 }
 
-func (c *Config) getTTY() (*bufio.Reader, io.Writer, error) {
-	if c.ttyReader == nil {
-		// FIXME find out how to get a tty on Windows
-		if runtime.GOOS == "windows" {
-			c.ttyReader = bufio.NewReader(c.stdin)
-			c.ttyWriter = c.stdout
-		} else {
-			var err error
-			c.tty, err = os.OpenFile("/dev/tty", os.O_RDWR, 0)
-			if err != nil {
-				return nil, nil, err
-			}
-			c.ttyReader = bufio.NewReader(c.tty)
-			c.ttyWriter = c.tty
-		}
+func (c *Config) getTerminal() (terminal, error) {
+	if c.terminal != nil {
+		return c.terminal, nil
 	}
-	return c.ttyReader, c.ttyWriter, nil
+
+	if c.noTTY {
+		c.terminal = newDumbTerminal(c.stdin, c.stdout, "")
+		return c.terminal, nil
+	}
+
+	if stdinFile, ok := c.stdin.(*os.File); ok && term.IsTerminal(int(stdinFile.Fd())) {
+		c.terminalFile = stdinFile
+	} else {
+		var err error
+		c.terminalFile, err = os.OpenFile("/dev/tty", os.O_RDWR, 0)
+		if err != nil {
+			return nil, err
+		}
+		c.closeTerminalFile = true
+	}
+
+	var err error
+	c.oldTerminalState, err = term.MakeRaw(int(c.terminalFile.Fd()))
+	if err != nil {
+		return nil, err
+	}
+
+	c.terminal = term.NewTerminal(c.terminalFile, "")
+	return c.terminal, nil
 }
 
 func (c *Config) gitAutoAdd() (*git.Status, error) {
@@ -754,6 +768,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.BoolVarP(&c.dryRun, "dry-run", "n", c.dryRun, "dry run")
 	persistentFlags.BoolVar(&c.force, "force", c.force, "force")
 	persistentFlags.BoolVarP(&c.keepGoing, "keep-going", "k", c.keepGoing, "keep going as far as possible after an error")
+	persistentFlags.BoolVar(&c.noTTY, "no-tty", c.noTTY, "don't attempt to get a TTY for reading passwords")
 	persistentFlags.BoolVarP(&c.verbose, "verbose", "v", c.verbose, "verbose")
 	persistentFlags.StringVarP(&c.outputStr, "output", "o", c.outputStr, "output file")
 	persistentFlags.BoolVar(&c.debug, "debug", c.debug, "write debug logs")
@@ -809,6 +824,17 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 }
 
 func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error {
+	// FIXME terminal state restoration should be run whenever the process
+	// exits, not just on a clean exit
+	if c.oldTerminalState != nil {
+		_ = term.Restore(int(c.terminalFile.Fd()), c.oldTerminalState)
+		c.oldTerminalState = nil
+	}
+	if c.closeTerminalFile {
+		_ = c.terminalFile.Close()
+		c.closeTerminalFile = false
+	}
+
 	if c.persistentState != nil {
 		if err := c.persistentState.Close(); err != nil {
 			return err
@@ -1023,16 +1049,8 @@ func (c *Config) persistentStateFile() chezmoi.AbsPath {
 }
 
 func (c *Config) prompt(s, choices string) (byte, error) {
-	ttyReader, ttyWriter, err := c.getTTY()
-	if err != nil {
-		return 0, err
-	}
 	for {
-		_, err := fmt.Fprintf(ttyWriter, "%s [%s]? ", s, strings.Join(strings.Split(choices, ""), ","))
-		if err != nil {
-			return 0, err
-		}
-		line, err := ttyReader.ReadString('\n')
+		line, err := c.readLine(fmt.Sprintf("%s [%s]? ", s, strings.Join(strings.Split(choices, ""), ",")))
 		if err != nil {
 			return 0, err
 		}
@@ -1061,6 +1079,23 @@ func (c *Config) readConfig() error {
 		return err
 	}
 	return nil
+}
+
+func (c *Config) readLine(prompt string) (string, error) {
+	terminal, err := c.getTerminal()
+	if err != nil {
+		return "", err
+	}
+	terminal.SetPrompt(prompt)
+	return terminal.ReadLine()
+}
+
+func (c *Config) readPassword(prompt string) (string, error) {
+	terminal, err := c.getTerminal()
+	if err != nil {
+		return "", err
+	}
+	return terminal.ReadPassword(prompt)
 }
 
 func (c *Config) run(dir chezmoi.AbsPath, name string, args []string) error {

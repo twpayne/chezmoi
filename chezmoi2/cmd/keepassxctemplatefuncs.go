@@ -5,14 +5,11 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"io"
-	"os"
 	"os/exec"
 	"regexp"
 	"strings"
 
 	"github.com/coreos/go-semver/semver"
-	"golang.org/x/term"
 
 	"github.com/twpayne/chezmoi/chezmoi2/internal/chezmoi"
 )
@@ -123,12 +120,12 @@ func (c *Config) keepassxcVersion() *semver.Version {
 
 func (c *Config) runKeepassxcCLICommand(name string, args []string) ([]byte, error) {
 	if c.Keepassxc.password == "" {
-		password, err := readPassword(fmt.Sprintf("Insert password to unlock %s: ", c.Keepassxc.Database))
+		password, err := c.readPassword(fmt.Sprintf("Insert password to unlock %s: ", c.Keepassxc.Database))
 		fmt.Println()
 		if err != nil {
 			return nil, err
 		}
-		c.Keepassxc.password = string(password)
+		c.Keepassxc.password = password
 	}
 	cmd := exec.Command(name, args...)
 	cmd.Stdin = bytes.NewBufferString(c.Keepassxc.password + "\n")
@@ -150,38 +147,4 @@ func parseKeyPassXCOutput(output []byte) (map[string]string, error) {
 		data[match[1]] = match[2]
 	}
 	return data, s.Err()
-}
-
-func readPassword(prompt string) (pw []byte, err error) {
-	fd := int(os.Stdin.Fd())
-	if term.IsTerminal(fd) {
-		fmt.Print(prompt)
-		pw, err = term.ReadPassword(fd)
-		fmt.Println()
-		return
-	}
-
-	var b [1]byte
-	for {
-		n, err := os.Stdin.Read(b[:])
-		// term.ReadPassword discards any '\r', so do the same.
-		if n > 0 && b[0] != '\r' {
-			if b[0] == '\n' {
-				return pw, nil
-			}
-			pw = append(pw, b[0])
-			// Limit size, so that a wrong input won't fill up the memory.
-			if len(pw) > 1024 {
-				err = errors.New("password too long")
-			}
-		}
-		if err != nil {
-			// term.ReadPassword accepts EOF-terminated passwords if non-empty,
-			// so do the same.
-			if errors.Is(err, io.EOF) && len(pw) > 0 {
-				err = nil
-			}
-			return pw, err
-		}
-	}
 }
