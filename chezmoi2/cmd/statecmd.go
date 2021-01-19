@@ -58,11 +58,11 @@ func (c *Config) runStateResetCmd(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	if !c.force {
-		choice, err := c.prompt(fmt.Sprintf("Remove %s", path), "yn")
-		if err != nil {
+		switch choice, err := c.promptValue(fmt.Sprintf("Remove %s", path), []string{"yes", "no"}); {
+		case err != nil:
 			return err
-		}
-		if choice == 'n' {
+		case choice == "yes":
+		case choice == "no":
 			return nil
 		}
 	}

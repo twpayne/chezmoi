@@ -388,15 +388,15 @@ func (c *Config) defaultPreApplyFunc(targetRelPath chezmoi.RelPath, targetEntryS
 		return nil
 	}
 	// LATER add merge option
-	switch choice, err := c.prompt(fmt.Sprintf("%s has changed since chezmoi last wrote it, overwrite", targetRelPath), "ynqa"); {
+	switch choice, err := c.promptValue(fmt.Sprintf("%s has changed since chezmoi last wrote it, overwrite", targetRelPath), yesNoAllQuit); {
 	case err != nil:
 		return err
-	case choice == 'a':
+	case choice == "all":
 		c.force = true
 		return nil
-	case choice == 'n':
+	case choice == "no":
 		return chezmoi.Skip
-	case choice == 'q':
+	case choice == "quit":
 		return ErrExitCode(1)
 	default:
 		return nil
@@ -575,14 +575,15 @@ func (c *Config) doPurge(purgeOptions *purgeOptions) error {
 		}
 
 		if !c.force {
-			switch choice, err := c.prompt(fmt.Sprintf("Remove %s", absPath), "ynqa"); {
+			switch choice, err := c.promptValue(fmt.Sprintf("Remove %s", absPath), yesNoAllQuit); {
 			case err != nil:
 				return err
-			case choice == 'a':
-				c.force = true
-			case choice == 'n':
+			case choice == "yes":
+			case choice == "no":
 				continue
-			case choice == 'q':
+			case choice == "all":
+				c.force = true
+			case choice == "quit":
 				return nil
 			}
 		}
@@ -1048,15 +1049,16 @@ func (c *Config) persistentStateFile() chezmoi.AbsPath {
 	return defaultConfigFile(c.fs, c.bds).Dir().Join(persistentStateFilename)
 }
 
-func (c *Config) prompt(s, choices string) (byte, error) {
+func (c *Config) promptValue(prompt string, values []string) (string, error) {
+	promptWithValues := fmt.Sprintf("%s [%s]? ", prompt, strings.Join(values, ","))
+	abbreviations := uniqueAbbreviations(values)
 	for {
-		line, err := c.readLine(fmt.Sprintf("%s [%s]? ", s, strings.Join(strings.Split(choices, ""), ",")))
+		line, err := c.readLine(promptWithValues)
 		if err != nil {
-			return 0, err
+			return "", err
 		}
-		line = strings.TrimSpace(line)
-		if len(line) == 1 && strings.IndexByte(choices, line[0]) != -1 {
-			return line[0], nil
+		if value, ok := abbreviations[strings.TrimSpace(line)]; ok {
+			return value, nil
 		}
 	}
 }
