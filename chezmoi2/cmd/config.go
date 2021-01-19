@@ -345,15 +345,20 @@ func (c *Config) applyArgs(targetSystem chezmoi.System, targetDirAbsPath chezmoi
 		}
 	}
 
+	keptGoingAfterErr := false
 	for _, targetRelPath := range targetRelPaths {
 		switch err := sourceState.Apply(targetSystem, c.persistentState, targetDirAbsPath, targetRelPath, applyOptions); {
 		case errors.Is(err, chezmoi.Skip):
 			continue
 		case err != nil && c.keepGoing:
 			c.errorf("%v", err)
+			keptGoingAfterErr = true
 		case err != nil:
 			return err
 		}
+	}
+	if keptGoingAfterErr {
+		return ErrExitCode(1)
 	}
 
 	return nil
