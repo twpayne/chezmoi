@@ -127,11 +127,6 @@ type Config struct {
 	stdout io.Writer
 	stderr io.Writer
 
-	terminal          terminal
-	terminalFile      *os.File
-	closeTerminalFile bool
-	oldTerminalState  *term.State
-
 	ioregData ioregData
 }
 
@@ -644,37 +639,6 @@ func (c *Config) execute(args []string) error {
 	return rootCmd.Execute()
 }
 
-func (c *Config) getTerminal() (terminal, error) {
-	if c.terminal != nil {
-		return c.terminal, nil
-	}
-
-	if c.noTTY {
-		c.terminal = newDumbTerminal(c.stdin, c.stdout, "")
-		return c.terminal, nil
-	}
-
-	if stdinFile, ok := c.stdin.(*os.File); ok && term.IsTerminal(int(stdinFile.Fd())) {
-		c.terminalFile = stdinFile
-	} else {
-		var err error
-		c.terminalFile, err = os.OpenFile("/dev/tty", os.O_RDWR, 0)
-		if err != nil {
-			return nil, err
-		}
-		c.closeTerminalFile = true
-	}
-
-	var err error
-	c.oldTerminalState, err = term.MakeRaw(int(c.terminalFile.Fd()))
-	if err != nil {
-		return nil, err
-	}
-
-	c.terminal = term.NewTerminal(c.terminalFile, "")
-	return c.terminal, nil
-}
-
 func (c *Config) gitAutoAdd() (*git.Status, error) {
 	if err := c.run(c.sourceDirAbsPath, c.Git.Command, []string{"add", "."}); err != nil {
 		return nil, err
@@ -825,17 +789,6 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 }
 
 func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error {
-	// FIXME terminal state restoration should be run whenever the process
-	// exits, not just on a clean exit
-	if c.oldTerminalState != nil {
-		_ = term.Restore(int(c.terminalFile.Fd()), c.oldTerminalState)
-		c.oldTerminalState = nil
-	}
-	if c.closeTerminalFile {
-		_ = c.terminalFile.Close()
-		c.closeTerminalFile = false
-	}
-
 	if c.persistentState != nil {
 		if err := c.persistentState.Close(); err != nil {
 			return err
@@ -1084,20 +1037,27 @@ func (c *Config) readConfig() error {
 }
 
 func (c *Config) readLine(prompt string) (string, error) {
-	terminal, err := c.getTerminal()
-	if err != nil {
+	var line string
+	if err := c.withTerminal(prompt, func(t terminal) error {
+		var err error
+		line, err = t.ReadLine()
+		return err
+	}); err != nil {
 		return "", err
 	}
-	terminal.SetPrompt(prompt)
-	return terminal.ReadLine()
+	return line, nil
 }
 
 func (c *Config) readPassword(prompt string) (string, error) {
-	terminal, err := c.getTerminal()
-	if err != nil {
+	var password string
+	if err := c.withTerminal("", func(t terminal) error {
+		var err error
+		password, err = t.ReadPassword(prompt)
+		return err
+	}); err != nil {
 		return "", err
 	}
-	return terminal.ReadPassword(prompt)
+	return password, nil
 }
 
 func (c *Config) run(dir chezmoi.AbsPath, name string, args []string) error {
@@ -1247,6 +1207,49 @@ func (c *Config) useBuiltinGit() (bool, error) {
 
 func (c *Config) validateData() error {
 	return validateKeys(c.Data, identifierRx)
+}
+
+func (c *Config) withTerminal(prompt string, f func(terminal) error) error {
+	if c.noTTY {
+		return f(newDumbTerminal(c.stdin, c.stdout, prompt))
+	}
+
+	if stdinFile, ok := c.stdin.(*os.File); ok && term.IsTerminal(int(stdinFile.Fd())) {
+		fd := int(stdinFile.Fd())
+		oldState, err := term.MakeRaw(fd)
+		if err != nil {
+			return err
+		}
+		defer func() {
+			_ = term.Restore(fd, oldState)
+		}()
+		return f(term.NewTerminal(struct {
+			io.Reader
+			io.Writer
+		}{
+			Reader: c.stdin,
+			Writer: c.stdout,
+		}, prompt))
+	}
+
+	if runtime.GOOS == "windows" {
+		return f(newDumbTerminal(c.stdin, c.stdout, prompt))
+	}
+
+	devTTY, err := os.OpenFile("/dev/tty", os.O_RDWR, 0)
+	if err != nil {
+		return err
+	}
+	defer devTTY.Close()
+	fd := int(devTTY.Fd())
+	oldState, err := term.MakeRaw(fd)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		_ = term.Restore(fd, oldState)
+	}()
+	return f(term.NewTerminal(devTTY, prompt))
 }
 
 func (c *Config) writeOutput(data []byte) error {
