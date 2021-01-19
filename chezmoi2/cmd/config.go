@@ -9,6 +9,7 @@ import (
 	"os/user"
 	"regexp"
 	"runtime"
+	"runtime/pprof"
 	"sort"
 	"strings"
 	"text/template"
@@ -66,6 +67,7 @@ type Config struct {
 	UseBuiltinGit string                 `mapstructure:"useBuiltinGit"`
 
 	// Global configuration, not settable in the config file.
+	cpuProfile    string
 	debug         bool
 	dryRun        bool
 	force         bool
@@ -735,6 +737,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	}
 
 	persistentFlags.StringVarP(&c.configFile, "config", "c", c.configFile, "config file")
+	persistentFlags.StringVar(&c.cpuProfile, "cpu-profile", c.cpuProfile, "write CPU profile to file")
 	persistentFlags.BoolVarP(&c.dryRun, "dry-run", "n", c.dryRun, "dry run")
 	persistentFlags.BoolVar(&c.force, "force", c.force, "force")
 	persistentFlags.BoolVarP(&c.keepGoing, "keep-going", "k", c.keepGoing, "keep going as far as possible after an error")
@@ -745,6 +748,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 
 	for _, err := range []error{
 		rootCmd.MarkPersistentFlagFilename("config"),
+		rootCmd.MarkPersistentFlagFilename("cpu-profile"),
 		rootCmd.MarkPersistentFlagDirname("destination"),
 		rootCmd.MarkPersistentFlagFilename("output"),
 		rootCmd.MarkPersistentFlagDirname("source"),
@@ -794,6 +798,8 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 }
 
 func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error {
+	defer pprof.StopCPUProfile()
+
 	if c.persistentState != nil {
 		if err := c.persistentState.Close(); err != nil {
 			return err
@@ -839,6 +845,16 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 }
 
 func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error {
+	if c.cpuProfile != "" {
+		f, err := os.Create(c.cpuProfile)
+		if err != nil {
+			return err
+		}
+		if err := pprof.StartCPUProfile(f); err != nil {
+			return err
+		}
+	}
+
 	var err error
 	c.configFileAbsPath, err = chezmoi.NewAbsPathFromExtPath(c.configFile, c.homeDirAbsPath)
 	if err != nil {
