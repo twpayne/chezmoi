@@ -281,13 +281,7 @@ func (c *Config) promptInt(field string) int64 {
 }
 
 func (c *Config) promptString(field string) string {
-	ttyReader, ttyWriter, err := c.getTTY()
-	if err != nil {
-		returnTemplateError(err)
-		return ""
-	}
-	fmt.Fprintf(ttyWriter, "%s? ", field)
-	value, err := ttyReader.ReadString('\n')
+	value, err := c.readLine(fmt.Sprintf("%s? ", field))
 	if err != nil {
 		returnTemplateError(err)
 		return ""

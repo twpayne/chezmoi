@@ -46,3 +46,4 @@ Config file:
 - rename `homedir` to `homeDir`
 - add `encryption` (currently `age` or `gpg`)
 - apply `--ignore-encrypted`
+- apply `--source-paths`

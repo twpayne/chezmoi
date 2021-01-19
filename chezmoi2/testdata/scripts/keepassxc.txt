@@ -3,12 +3,12 @@
 
 # test keepassxcAttribute template function
 stdin $HOME/input
-chezmoi execute-template '{{ keepassxcAttribute "example.com" "host-name" }}'
+chezmoi execute-template --no-tty '{{ keepassxcAttribute "example.com" "host-name" }}'
 stdout example.com
 
 # test keepassxc template function and that password is only requested once
 stdin $HOME/input
-chezmoi execute-template '{{ (keepassxc "example.com").UserName }}/{{ (keepassxc "example.com").Password }}'
+chezmoi execute-template --no-tty '{{ (keepassxc "example.com").UserName }}/{{ (keepassxc "example.com").Password }}'
 stdout examplelogin/examplepassword
 
 -- bin/keepass-test --

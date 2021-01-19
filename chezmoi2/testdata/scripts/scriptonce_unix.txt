@@ -16,9 +16,14 @@ stdout 94d80d5c9f06d747eb874b0a05a356085515b51ac8761a923079db734fe68133 # sha256
 chezmoi status
 ! stdout .
 
-# test that chezmoi apply does not run the script a second time
-chezmoi apply --force
+# test that chezmoi apply does not run the script a second time and does not prompt
+chezmoi apply
 ! stdout ${HOME@R}
+
+# test that chezmoi apply after the script is modified runs the script a second time and does not prompt
+edit $CHEZMOISOURCEDIR/run_once_script
+chezmoi apply
+stdout ${HOME@R}
 
 # test that reseting the state causes the next chezmoi apply to run the script
 chezmoi state reset --force

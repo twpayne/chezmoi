@@ -1,12 +1,8 @@
 package cmd
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/spf13/cobra"
 	"github.com/zalando/go-keyring"
-	"golang.org/x/term"
 )
 
 type secretKeyringCmdConfig struct {
@@ -24,14 +20,8 @@ func (c *Config) newSecretKeyringCmd() *cobra.Command {
 
 	persistentFlags := keyringCmd.PersistentFlags()
 	persistentFlags.StringVar(&c.secretKeyring.service, "service", "", "service")
-	if err := keyringCmd.MarkPersistentFlagRequired("service"); err != nil {
-		panic(err)
-	}
-
 	persistentFlags.StringVar(&c.secretKeyring.user, "user", "", "user")
-	if err := keyringCmd.MarkPersistentFlagRequired("user"); err != nil {
-		panic(err)
-	}
+	markPersistentFlagsRequired(keyringCmd, "service", "user")
 
 	keyringGetCmd := &cobra.Command{
 		Use:   "get",
@@ -61,14 +51,13 @@ func (c *Config) runKeyringGetCmdE(cmd *cobra.Command, args []string) error {
 }
 
 func (c *Config) runKeyringSetCmdE(cmd *cobra.Command, args []string) error {
-	valueStr := c.secretKeyring.value
-	if valueStr == "" {
-		fmt.Print("Value: ")
-		value, err := term.ReadPassword(int(os.Stdin.Fd()))
+	value := c.secretKeyring.value
+	if value == "" {
+		var err error
+		value, err = c.readPassword("Value: ")
 		if err != nil {
 			return err
 		}
-		valueStr = string(value)
 	}
-	return keyring.Set(c.secretKeyring.service, c.secretKeyring.user, valueStr)
+	return keyring.Set(c.secretKeyring.service, c.secretKeyring.user, value)
 }

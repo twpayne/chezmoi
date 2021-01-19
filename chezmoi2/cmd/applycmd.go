@@ -10,6 +10,7 @@ type applyCmdConfig struct {
 	ignoreEncrypted bool
 	include         *chezmoi.IncludeSet
 	recursive       bool
+	sourcePath      bool
 }
 
 func (c *Config) newApplyCmd() *cobra.Command {
@@ -29,6 +30,7 @@ func (c *Config) newApplyCmd() *cobra.Command {
 	flags.BoolVar(&c.apply.ignoreEncrypted, "ignore-encrypted", c.apply.ignoreEncrypted, "ignore encrypted files")
 	flags.VarP(c.apply.include, "include", "i", "include entry types")
 	flags.BoolVarP(&c.apply.recursive, "recursive", "r", c.apply.recursive, "recursive")
+	flags.BoolVar(&c.apply.sourcePath, "source-path", c.apply.sourcePath, "specify targets by source path")
 
 	return applyCmd
 }
@@ -38,6 +40,7 @@ func (c *Config) runApplyCmd(cmd *cobra.Command, args []string) error {
 		ignoreEncrypted: c.apply.ignoreEncrypted,
 		include:         c.apply.include,
 		recursive:       c.apply.recursive,
+		sourcePath:      c.apply.sourcePath,
 		umask:           c.Umask.FileMode(),
 		preApplyFunc:    c.defaultPreApplyFunc,
 	})
