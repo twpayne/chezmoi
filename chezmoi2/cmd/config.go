@@ -654,6 +654,12 @@ func (c *Config) getTerminal() (terminal, error) {
 	}
 
 	if stdinFile, ok := c.stdin.(*os.File); ok && term.IsTerminal(int(stdinFile.Fd())) {
+		readWriter := struct {
+			io.Reader
+			io.Writer
+		}{c.stdin, c.stdout}
+
+		c.terminal = term.NewTerminal(readWriter, "")
 		c.terminalFile = stdinFile
 	} else {
 		var err error
@@ -661,6 +667,7 @@ func (c *Config) getTerminal() (terminal, error) {
 		if err != nil {
 			return nil, err
 		}
+		c.terminal = term.NewTerminal(c.terminalFile, "")
 		c.closeTerminalFile = true
 	}
 
@@ -670,7 +677,6 @@ func (c *Config) getTerminal() (terminal, error) {
 		return nil, err
 	}
 
-	c.terminal = term.NewTerminal(c.terminalFile, "")
 	return c.terminal, nil
 }
 
