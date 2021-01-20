@@ -29,6 +29,7 @@ run: generate
 .PHONY: generate
 generate:
 	go generate
+	go generate ./chezmoi2
 
 .PHONY: test
 test: generate
