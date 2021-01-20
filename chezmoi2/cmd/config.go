@@ -55,7 +55,6 @@ type Config struct {
 	color           bool
 
 	// Global configuration, settable in the config file.
-	HomeDir       string                 `mapstructure:"homeDir"`
 	SourceDir     string                 `mapstructure:"sourceDir"`
 	DestDir       string                 `mapstructure:"destDir"`
 	Umask         fileMode               `mapstructure:"umask"`
@@ -71,6 +70,7 @@ type Config struct {
 	debug         bool
 	dryRun        bool
 	force         bool
+	homeDir       string
 	keepGoing     bool
 	noTTY         bool
 	outputStr     string
@@ -164,7 +164,7 @@ func newConfig(options ...configOption) (*Config, error) {
 	c := &Config{
 		bds:     bds,
 		fs:      vfs.OSFS,
-		HomeDir: homeDir,
+		homeDir: homeDir,
 		DestDir: homeDir,
 		Umask:   fileMode(chezmoi.GetUmask()),
 		Color:   "auto",
@@ -290,7 +290,7 @@ func newConfig(options ...configOption) (*Config, error) {
 	c.configFile = string(defaultConfigFile(c.fs, c.bds))
 	c.SourceDir = string(defaultSourceDir(c.fs, c.bds))
 
-	c.homeDirAbsPath, err = chezmoi.NormalizePath(c.HomeDir)
+	c.homeDirAbsPath, err = chezmoi.NormalizePath(c.homeDir)
 	if err != nil {
 		return nil, err
 	}
@@ -408,7 +408,7 @@ func (c *Config) defaultPreApplyFunc(targetRelPath chezmoi.RelPath, targetEntryS
 func (c *Config) defaultTemplateData() map[string]interface{} {
 	data := map[string]interface{}{
 		"arch":      runtime.GOARCH,
-		"homeDir":   c.HomeDir,
+		"homeDir":   c.homeDir,
 		"os":        runtime.GOOS,
 		"sourceDir": c.sourceDirAbsPath,
 		"version": map[string]interface{}{
