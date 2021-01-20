@@ -19,8 +19,6 @@ chezmoi edit $HOME${/}.file $HOME${/}.symlink
 grep -count=3 '# edited' $CHEZMOISOURCEDIR/dot_file
 grep -count=2 '# edited' $CHEZMOISOURCEDIR/symlink_dot_symlink
 
-[windows] stop 'remaining tests need update to editor.cmd' # FIXME
-
 chezmoi edit
 exists $CHEZMOISOURCEDIR/.edited
 

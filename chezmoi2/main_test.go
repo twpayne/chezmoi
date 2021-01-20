@@ -436,13 +436,25 @@ func setup(env *testscript.Env) error {
 	case "windows":
 		root["/bin"] = map[string]interface{}{
 			// editor.cmd a non-interactive script that appends "# edited\n" to
-			// the end of each file.
-			"editor.cmd": "@for %%x in (%*) do echo # edited >> %%x\r\n",
+			// the end of each file and creates an empty .edited in each directory
+			"editor.cmd": &vfst.File{
+				Contents: []byte(chezmoitest.JoinLines(
+					`@echo off`,
+					`:loop`,
+					`IF EXIST %~s1\NUL (`,
+					`	copy /y NUL "%~1\.edited" >NUL`,
+					`) ELSE (`,
+					`	echo # edited >> "%~1"`,
+					`)`,
+					`shift`,
+					`IF NOT "%~1"=="" goto loop`,
+				)),
+			},
 		}
 	default:
 		root["/bin"] = map[string]interface{}{
 			// editor a non-interactive script that appends "# edited\n" to the
-			// end of each file.
+			// end of each file and creates an empty .edited in each directory
 			"editor": &vfst.File{
 				Perm: 0o755,
 				Contents: []byte(chezmoitest.JoinLines(

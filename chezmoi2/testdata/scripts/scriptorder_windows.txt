@@ -1,0 +1,26 @@
+[!windows] skip 'Windows only'
+
+unix2dos golden/apply
+
+# test that chezmoi apply runs scripts in the correct order
+symlink home/user/.local/share/chezmoi/run_first_00-first.cmd -> .script.cmd
+symlink home/user/.local/share/chezmoi/run_first_99-first.cmd -> .script.cmd
+symlink home/user/.local/share/chezmoi/run_00.cmd -> .script.cmd
+symlink home/user/.local/share/chezmoi/run_99.cmd -> .script.cmd
+symlink home/user/.local/share/chezmoi/run_last_00-last.cmd -> .script.cmd
+symlink home/user/.local/share/chezmoi/run_last_99-last.cmd -> .script.cmd
+chezmoi apply --force
+cmp stdout golden/apply
+
+-- golden/apply --
+00-first
+99-first
+00
+99
+00-last
+99-last
+-- home/user/.local/share/chezmoi/.script.cmd --
+@echo off
+set base=%~n0
+:: on windows, there's some randomness at the beginning of the filename. remove it.
+echo %base:*.=%
