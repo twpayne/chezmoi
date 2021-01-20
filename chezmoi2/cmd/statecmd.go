@@ -35,6 +35,9 @@ func (c *Config) newStateCmd() *cobra.Command {
 		// Example: example("state", "reset"), // FIXME
 		Args: cobra.NoArgs,
 		RunE: c.runStateResetCmd,
+		Annotations: map[string]string{
+			modifiesDestinationDirectory: "true",
+		},
 	}
 	stateCmd.AddCommand(resetCmd)
 
@@ -51,7 +54,7 @@ func (c *Config) runStateDataCmd(cmd *cobra.Command, args []string) error {
 
 func (c *Config) runStateResetCmd(cmd *cobra.Command, args []string) error {
 	path := c.persistentStateFile()
-	_, err := c.baseSystem.Stat(path)
+	_, err := c.destSystem.Stat(path)
 	if os.IsNotExist(err) {
 		return nil
 	} else if err != nil {
@@ -66,5 +69,5 @@ func (c *Config) runStateResetCmd(cmd *cobra.Command, args []string) error {
 			return nil
 		}
 	}
-	return c.baseSystem.RemoveAll(path)
+	return c.destSystem.RemoveAll(path)
 }

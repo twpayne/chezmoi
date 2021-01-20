@@ -17,7 +17,8 @@ func (c *Config) newPurgeCmd() *cobra.Command {
 		Args:    cobra.NoArgs,
 		RunE:    c.runPurgeCmd,
 		Annotations: map[string]string{
-			modifiesSourceDirectory: "true",
+			modifiesDestinationDirectory: "true",
+			modifiesSourceDirectory:      "true",
 		},
 	}
 

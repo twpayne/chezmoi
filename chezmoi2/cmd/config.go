@@ -569,7 +569,7 @@ func (c *Config) doPurge(purgeOptions *purgeOptions) error {
 
 	// Remove all paths that exist.
 	for _, absPath := range absPaths {
-		switch _, err := c.baseSystem.Stat(absPath); {
+		switch _, err := c.destSystem.Stat(absPath); {
 		case os.IsNotExist(err):
 			continue
 		case err != nil:
@@ -590,7 +590,7 @@ func (c *Config) doPurge(purgeOptions *purgeOptions) error {
 			}
 		}
 
-		switch err := c.baseSystem.RemoveAll(absPath); {
+		switch err := c.destSystem.RemoveAll(absPath); {
 		case os.IsPermission(err):
 			continue
 		case err != nil:
