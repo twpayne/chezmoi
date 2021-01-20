@@ -8,6 +8,13 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// Formats.
+var (
+	JSONFormat Format = jsonFormat{}
+	TOMLFormat Format = tomlFormat{}
+	YAMLFormat Format = yamlFormat{}
+)
+
 // A Format is a serialization format.
 type Format interface {
 	Marshal(value interface{}) ([]byte, error)
@@ -26,9 +33,9 @@ type yamlFormat struct{}
 
 // Formats is a map of all Formats by name.
 var Formats = map[string]Format{
-	"json": jsonFormat{},
-	"toml": tomlFormat{},
-	"yaml": yamlFormat{},
+	"json": JSONFormat,
+	"toml": TOMLFormat,
+	"yaml": YAMLFormat,
 }
 
 // Marshal implements Format.Marshal.

@@ -8,11 +8,6 @@ chezmoi data --format=json
 stdout '"chezmoi":'
 stdout '"uniquekey": "uniqueValue"'
 
-# test that chezmoi data --format=toml includes data set in config file
-chezmoi data --format=toml
-stdout '[chezmoi]'
-stdout 'uniquekey = "uniqueValue"'
-
 # test that chezmoi data --format=yaml includes data set in config file
 chezmoi data --format=yaml
 stdout 'chezmoi:'

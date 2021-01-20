@@ -30,6 +30,8 @@ import (
 	"github.com/twpayne/chezmoi/internal/git"
 )
 
+var defaultFormat = "json"
+
 type purgeOptions struct {
 	binary bool
 }
@@ -58,7 +60,6 @@ type Config struct {
 	SourceDir     string                 `mapstructure:"sourceDir"`
 	DestDir       string                 `mapstructure:"destDir"`
 	Umask         fileMode               `mapstructure:"umask"`
-	Format        string                 `mapstructure:"format"`
 	Remove        bool                   `mapstructure:"remove"`
 	Color         string                 `mapstructure:"color"`
 	Data          map[string]interface{} `mapstructure:"data"`
@@ -107,6 +108,7 @@ type Config struct {
 	add             addCmdConfig
 	apply           applyCmdConfig
 	archive         archiveCmdConfig
+	data            dataCmdConfig
 	dump            dumpCmdConfig
 	executeTemplate executeTemplateCmdConfig
 	_import         importCmdConfig
@@ -114,6 +116,7 @@ type Config struct {
 	managed         managedCmdConfig
 	purge           purgeCmdConfig
 	secretKeyring   secretKeyringCmdConfig
+	state           stateCmdConfig
 	status          statusCmdConfig
 	update          updateCmdConfig
 	verify          verifyCmdConfig
@@ -168,7 +171,6 @@ func newConfig(options ...configOption) (*Config, error) {
 		DestDir: homeDir,
 		Umask:   fileMode(chezmoi.GetUmask()),
 		Color:   "auto",
-		Format:  "json",
 		Diff: diffCmdConfig{
 			include: chezmoi.NewIncludeSet(chezmoi.IncludeAll &^ chezmoi.IncludeScripts),
 		},
@@ -224,7 +226,11 @@ func newConfig(options ...configOption) (*Config, error) {
 			include:   chezmoi.NewIncludeSet(chezmoi.IncludeAll),
 			recursive: true,
 		},
+		data: dataCmdConfig{
+			format: defaultFormat,
+		},
 		dump: dumpCmdConfig{
+			format:    defaultFormat,
 			include:   chezmoi.NewIncludeSet(chezmoi.IncludeAll),
 			recursive: true,
 		},
@@ -233,6 +239,11 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		managed: managedCmdConfig{
 			include: chezmoi.NewIncludeSet(chezmoi.IncludeDirs | chezmoi.IncludeFiles | chezmoi.IncludeSymlinks),
+		},
+		state: stateCmdConfig{
+			dump: stateDumpCmdConfig{
+				format: defaultFormat,
+			},
 		},
 		status: statusCmdConfig{
 			include:   chezmoi.NewIncludeSet(chezmoi.IncludeAll),
@@ -693,10 +704,15 @@ func (c *Config) makeRunEWithSourceState(runE func(*cobra.Command, []string, *ch
 	}
 }
 
-func (c *Config) marshal(data interface{}) error {
-	format, ok := chezmoi.Formats[c.Format]
-	if !ok {
-		return fmt.Errorf("%s: unknown format", c.Format)
+func (c *Config) marshal(formatStr string, data interface{}) error {
+	var format chezmoi.Format
+	switch formatStr {
+	case "json":
+		format = chezmoi.JSONFormat
+	case "yaml":
+		format = chezmoi.YAMLFormat
+	default:
+		return fmt.Errorf("%s: unknown format", formatStr)
 	}
 	marshaledData, err := format.Marshal(data)
 	if err != nil {
@@ -720,14 +736,12 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 
 	persistentFlags.StringVar(&c.Color, "color", c.Color, "colorize diffs")
 	persistentFlags.StringVarP(&c.DestDir, "destination", "D", c.DestDir, "destination directory")
-	persistentFlags.StringVar(&c.Format, "format", c.Format, "format ("+serializationFormatNamesStr()+")")
 	persistentFlags.BoolVar(&c.Remove, "remove", c.Remove, "remove targets")
 	persistentFlags.StringVarP(&c.SourceDir, "source", "S", c.SourceDir, "source directory")
 	persistentFlags.StringVar(&c.UseBuiltinGit, "use-builtin-git", c.UseBuiltinGit, "use builtin git")
 	for _, key := range []string{
 		"color",
 		"destination",
-		"format",
 		"remove",
 		"source",
 	} {

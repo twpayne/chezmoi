@@ -14,11 +14,11 @@ import (
 
 func TestDataCmd(t *testing.T) {
 	for _, tc := range []struct {
-		format string
+		format chezmoi.Format
 		root   map[string]interface{}
 	}{
 		{
-			format: "json",
+			format: chezmoi.JSONFormat,
 			root: map[string]interface{}{
 				"/home/user/.config/chezmoi/chezmoi.json": chezmoitest.JoinLines(
 					`{`,
@@ -31,17 +31,7 @@ func TestDataCmd(t *testing.T) {
 			},
 		},
 		{
-			format: "toml",
-			root: map[string]interface{}{
-				"/home/user/.config/chezmoi/chezmoi.toml": chezmoitest.JoinLines(
-					`sourceDir = "/tmp/source"`,
-					`[data]`,
-					`  test = true`,
-				),
-			},
-		},
-		{
-			format: "yaml",
+			format: chezmoi.YAMLFormat,
 			root: map[string]interface{}{
 				"/home/user/.config/chezmoi/chezmoi.yaml": chezmoitest.JoinLines(
 					`sourceDir: /tmp/source`,
@@ -51,11 +41,11 @@ func TestDataCmd(t *testing.T) {
 			},
 		},
 	} {
-		t.Run(tc.format, func(t *testing.T) {
+		t.Run(tc.format.Name(), func(t *testing.T) {
 			chezmoitest.WithTestFS(t, tc.root, func(fs vfs.FS) {
 				args := []string{
 					"data",
-					"--format", tc.format,
+					"--format", tc.format.Name(),
 				}
 				c := newTestConfig(t, fs)
 				var sb strings.Builder
@@ -64,11 +54,11 @@ func TestDataCmd(t *testing.T) {
 
 				var data struct {
 					Chezmoi struct {
-						SourceDir string `json:"sourceDir" toml:"sourceDir" yaml:"sourceDir"`
-					} `json:"chezmoi" toml:"chezmoi" yaml:"chezmoi"`
-					Test bool `json:"test" toml:"test" yaml:"test"`
+						SourceDir string `json:"sourceDir" yaml:"sourceDir"`
+					} `json:"chezmoi" yaml:"chezmoi"`
+					Test bool `json:"test" yaml:"test"`
 				}
-				assert.NoError(t, chezmoi.Formats[tc.format].Unmarshal([]byte(sb.String()), &data))
+				assert.NoError(t, tc.format.Unmarshal([]byte(sb.String()), &data))
 				normalizedSourceDir, err := chezmoi.NormalizePath("/tmp/source")
 				require.NoError(t, err)
 				assert.Equal(t, string(normalizedSourceDir), data.Chezmoi.SourceDir)

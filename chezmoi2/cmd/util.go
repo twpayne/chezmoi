@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"regexp"
-	"sort"
 	"strconv"
 	"strings"
 	"unicode"
@@ -90,27 +89,6 @@ func parseBool(str string) (bool, error) {
 		return true, nil
 	default:
 		return strconv.ParseBool(str)
-	}
-}
-
-// serializationFormatNamesStr returns the list of serialization formats as a
-// comma-separated list.
-func serializationFormatNamesStr() string {
-	names := make([]string, 0, len(chezmoi.Formats))
-	for name := range chezmoi.Formats {
-		names = append(names, name)
-	}
-	sort.Strings(names)
-	switch len(names) {
-	case 0:
-		return ""
-	case 1:
-		return names[0]
-	case 2:
-		return names[0] + " or " + names[1]
-	default:
-		names[len(names)-1] = "or " + names[len(names)-1]
-		return strings.Join(names, ", ")
 	}
 }
 
