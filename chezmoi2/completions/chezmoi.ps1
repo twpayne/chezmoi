@@ -27,7 +27,6 @@ Register-ArgumentCompleter -Native -CommandName 'chezmoi' -ScriptBlock {
             [CompletionResult]::new('-n', 'n', [CompletionResultType]::ParameterName, 'dry run')
             [CompletionResult]::new('--dry-run', 'dry-run', [CompletionResultType]::ParameterName, 'dry run')
             [CompletionResult]::new('--force', 'force', [CompletionResultType]::ParameterName, 'force')
-            [CompletionResult]::new('--format', 'format', [CompletionResultType]::ParameterName, 'format (json or yaml)')
             [CompletionResult]::new('-k', 'k', [CompletionResultType]::ParameterName, 'keep going as far as possible after an error')
             [CompletionResult]::new('--keep-going', 'keep-going', [CompletionResultType]::ParameterName, 'keep going as far as possible after an error')
             [CompletionResult]::new('--no-tty', 'no-tty', [CompletionResultType]::ParameterName, 'don''t attempt to get a TTY for reading passwords')
@@ -128,7 +127,6 @@ Register-ArgumentCompleter -Native -CommandName 'chezmoi' -ScriptBlock {
             [CompletionResult]::new('-n', 'n', [CompletionResultType]::ParameterName, 'dry run')
             [CompletionResult]::new('--dry-run', 'dry-run', [CompletionResultType]::ParameterName, 'dry run')
             [CompletionResult]::new('--force', 'force', [CompletionResultType]::ParameterName, 'force')
-            [CompletionResult]::new('--format', 'format', [CompletionResultType]::ParameterName, 'format (json or yaml)')
             [CompletionResult]::new('-h', 'h', [CompletionResultType]::ParameterName, 'help for completion')
             [CompletionResult]::new('--help', 'help', [CompletionResultType]::ParameterName, 'help for completion')
             [CompletionResult]::new('-k', 'k', [CompletionResultType]::ParameterName, 'keep going as far as possible after an error')
@@ -162,6 +160,8 @@ Register-ArgumentCompleter -Native -CommandName 'chezmoi' -ScriptBlock {
             break
         }
         'chezmoi;dump' {
+            [CompletionResult]::new('-f', 'f', [CompletionResultType]::ParameterName, 'format (json or yaml)')
+            [CompletionResult]::new('--format', 'format', [CompletionResultType]::ParameterName, 'format (json or yaml)')
             [CompletionResult]::new('-i', 'i', [CompletionResultType]::ParameterName, 'include entry types')
             [CompletionResult]::new('--include', 'include', [CompletionResultType]::ParameterName, 'include entry types')
             [CompletionResult]::new('-r', 'r', [CompletionResultType]::ParameterName, 'recursive')
@@ -213,12 +213,12 @@ Register-ArgumentCompleter -Native -CommandName 'chezmoi' -ScriptBlock {
             [CompletionResult]::new('--apply', 'apply', [CompletionResultType]::ParameterName, 'update destination directory')
             [CompletionResult]::new('-d', 'd', [CompletionResultType]::ParameterName, 'create a shallow clone')
             [CompletionResult]::new('--depth', 'depth', [CompletionResultType]::ParameterName, 'create a shallow clone')
-            [CompletionResult]::new('--ignore-encrypted', 'ignore-encrypted', [CompletionResultType]::ParameterName, 'ignore encrypted files')
             [CompletionResult]::new('--one-shot', 'one-shot', [CompletionResultType]::ParameterName, 'one shot')
             [CompletionResult]::new('-p', 'p', [CompletionResultType]::ParameterName, 'purge config and source directories')
             [CompletionResult]::new('--purge', 'purge', [CompletionResultType]::ParameterName, 'purge config and source directories')
             [CompletionResult]::new('-P', 'P', [CompletionResultType]::ParameterName, 'purge chezmoi binary')
             [CompletionResult]::new('--purge-binary', 'purge-binary', [CompletionResultType]::ParameterName, 'purge chezmoi binary')
+            [CompletionResult]::new('--skip-encrypted', 'skip-encrypted', [CompletionResultType]::ParameterName, 'skip encrypted files')
             break
         }
         'chezmoi;managed' {
