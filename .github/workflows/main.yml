@@ -95,6 +95,7 @@ jobs:
     - name: Generate
       run: |
         go generate
+        go generate ./chezmoi2
         git diff --exit-code
   lint:
     runs-on: ubuntu-18.04

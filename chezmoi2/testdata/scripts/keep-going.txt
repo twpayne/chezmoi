@@ -3,12 +3,6 @@ mkhomedir
 # test that chezmoi diff without --keep-going fails when there is an error
 ! chezmoi diff
 
-# test that chezmoi diff with --keep-going succeeds, even if there is an error
-chezmoi diff --keep-going
-stdout 1ok
-! stdout 2error
-stdout 3ok
-
 # test that chezmoi apply without --keep-going fails but still writes the first file
 ! chezmoi apply --force
 cmp $HOME/1ok golden/1ok
@@ -16,7 +10,7 @@ cmp $HOME/1ok golden/1ok
 ! exists $HOME/3ok
 
 # test that chezmoi apply with --keep-going writes all files that it can without errors
-chezmoi apply --force --keep-going
+! chezmoi apply --force --keep-going
 cmp $HOME/1ok golden/1ok
 ! exists $HOME/2error
 cmp $HOME/3ok golden/3ok

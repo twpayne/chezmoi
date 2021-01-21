@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"regexp"
-	"sort"
 	"strconv"
 	"strings"
 	"unicode"
@@ -15,12 +14,21 @@ import (
 	"github.com/twpayne/chezmoi/chezmoi2/internal/chezmoi"
 )
 
-var wellKnownAbbreviations = map[string]struct{}{
-	"ANSI": {},
-	"CPE":  {},
-	"ID":   {},
-	"URL":  {},
-}
+var (
+	wellKnownAbbreviations = map[string]struct{}{
+		"ANSI": {},
+		"CPE":  {},
+		"ID":   {},
+		"URL":  {},
+	}
+
+	yesNoAllQuit = []string{
+		"yes",
+		"no",
+		"all",
+		"quit",
+	}
+)
 
 // defaultConfigFile returns the default config file according to the XDG Base
 // Directory Specification.
@@ -84,27 +92,6 @@ func parseBool(str string) (bool, error) {
 	}
 }
 
-// serializationFormatNamesStr returns the list of serialization formats as a
-// comma-separated list.
-func serializationFormatNamesStr() string {
-	names := make([]string, 0, len(chezmoi.Formats))
-	for name := range chezmoi.Formats {
-		names = append(names, name)
-	}
-	sort.Strings(names)
-	switch len(names) {
-	case 0:
-		return ""
-	case 1:
-		return names[0]
-	case 2:
-		return names[0] + " or " + names[1]
-	default:
-		names[len(names)-1] = "or " + names[len(names)-1]
-		return strings.Join(names, ", ")
-	}
-}
-
 // titleize returns s with its first rune titlized.
 func titleize(s string) string {
 	if s == "" {
@@ -126,6 +113,28 @@ func upperSnakeCaseToCamelCase(s string) string {
 		}
 	}
 	return strings.Join(words, "")
+}
+
+// uniqueAbbreviations returns a map of unique abbreviations of values to
+// values. Values always map to themselves.
+func uniqueAbbreviations(values []string) map[string]string {
+	abbreviations := make(map[string][]string)
+	for _, value := range values {
+		for i := 1; i <= len(value); i++ {
+			abbreviation := value[:i]
+			abbreviations[abbreviation] = append(abbreviations[abbreviation], value)
+		}
+	}
+	uniqueAbbreviations := make(map[string]string)
+	for abbreviation, values := range abbreviations {
+		if len(values) == 1 {
+			uniqueAbbreviations[abbreviation] = values[0]
+		}
+	}
+	for _, value := range values {
+		uniqueAbbreviations[value] = value
+	}
+	return uniqueAbbreviations
 }
 
 // upperSnakeCaseToCamelCaseKeys returns m with all keys converted from

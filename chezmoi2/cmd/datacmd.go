@@ -6,6 +6,10 @@ import (
 	"github.com/twpayne/chezmoi/chezmoi2/internal/chezmoi"
 )
 
+type dataCmdConfig struct {
+	format string
+}
+
 func (c *Config) newDataCmd() *cobra.Command {
 	dataCmd := &cobra.Command{
 		Use:     "data",
@@ -16,9 +20,12 @@ func (c *Config) newDataCmd() *cobra.Command {
 		RunE:    c.makeRunEWithSourceState(c.runDataCmd),
 	}
 
+	persistentFlags := dataCmd.PersistentFlags()
+	persistentFlags.StringVar(&c.data.format, "format", c.data.format, "format (json or yaml)")
+
 	return dataCmd
 }
 
 func (c *Config) runDataCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
-	return c.marshal(sourceState.TemplateData())
+	return c.marshal(c.data.format, sourceState.TemplateData())
 }

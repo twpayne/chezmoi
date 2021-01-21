@@ -9,6 +9,7 @@ import (
 	"os/user"
 	"regexp"
 	"runtime"
+	"runtime/pprof"
 	"sort"
 	"strings"
 	"text/template"
@@ -28,6 +29,8 @@ import (
 	"github.com/twpayne/chezmoi/chezmoi2/internal/chezmoi"
 	"github.com/twpayne/chezmoi/internal/git"
 )
+
+var defaultFormat = "json"
 
 type purgeOptions struct {
 	binary bool
@@ -54,11 +57,9 @@ type Config struct {
 	color           bool
 
 	// Global configuration, settable in the config file.
-	HomeDir       string                 `mapstructure:"homeDir"`
 	SourceDir     string                 `mapstructure:"sourceDir"`
 	DestDir       string                 `mapstructure:"destDir"`
 	Umask         fileMode               `mapstructure:"umask"`
-	Format        string                 `mapstructure:"format"`
 	Remove        bool                   `mapstructure:"remove"`
 	Color         string                 `mapstructure:"color"`
 	Data          map[string]interface{} `mapstructure:"data"`
@@ -66,9 +67,11 @@ type Config struct {
 	UseBuiltinGit string                 `mapstructure:"useBuiltinGit"`
 
 	// Global configuration, not settable in the config file.
+	cpuProfile    string
 	debug         bool
 	dryRun        bool
 	force         bool
+	homeDir       string
 	keepGoing     bool
 	noTTY         bool
 	outputStr     string
@@ -105,6 +108,7 @@ type Config struct {
 	add             addCmdConfig
 	apply           applyCmdConfig
 	archive         archiveCmdConfig
+	data            dataCmdConfig
 	dump            dumpCmdConfig
 	executeTemplate executeTemplateCmdConfig
 	_import         importCmdConfig
@@ -112,6 +116,7 @@ type Config struct {
 	managed         managedCmdConfig
 	purge           purgeCmdConfig
 	secretKeyring   secretKeyringCmdConfig
+	state           stateCmdConfig
 	status          statusCmdConfig
 	update          updateCmdConfig
 	verify          verifyCmdConfig
@@ -126,11 +131,6 @@ type Config struct {
 	stdin  io.Reader
 	stdout io.Writer
 	stderr io.Writer
-
-	terminal          terminal
-	terminalFile      *os.File
-	closeTerminalFile bool
-	oldTerminalState  *term.State
 
 	ioregData ioregData
 }
@@ -167,11 +167,10 @@ func newConfig(options ...configOption) (*Config, error) {
 	c := &Config{
 		bds:     bds,
 		fs:      vfs.OSFS,
-		HomeDir: homeDir,
+		homeDir: homeDir,
 		DestDir: homeDir,
 		Umask:   fileMode(chezmoi.GetUmask()),
 		Color:   "auto",
-		Format:  "json",
 		Diff: diffCmdConfig{
 			include: chezmoi.NewIncludeSet(chezmoi.IncludeAll &^ chezmoi.IncludeScripts),
 		},
@@ -227,7 +226,11 @@ func newConfig(options ...configOption) (*Config, error) {
 			include:   chezmoi.NewIncludeSet(chezmoi.IncludeAll),
 			recursive: true,
 		},
+		data: dataCmdConfig{
+			format: defaultFormat,
+		},
 		dump: dumpCmdConfig{
+			format:    defaultFormat,
 			include:   chezmoi.NewIncludeSet(chezmoi.IncludeAll),
 			recursive: true,
 		},
@@ -236,6 +239,11 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		managed: managedCmdConfig{
 			include: chezmoi.NewIncludeSet(chezmoi.IncludeDirs | chezmoi.IncludeFiles | chezmoi.IncludeSymlinks),
+		},
+		state: stateCmdConfig{
+			dump: stateDumpCmdConfig{
+				format: defaultFormat,
+			},
 		},
 		status: statusCmdConfig{
 			include:   chezmoi.NewIncludeSet(chezmoi.IncludeAll),
@@ -293,7 +301,7 @@ func newConfig(options ...configOption) (*Config, error) {
 	c.configFile = string(defaultConfigFile(c.fs, c.bds))
 	c.SourceDir = string(defaultSourceDir(c.fs, c.bds))
 
-	c.homeDirAbsPath, err = chezmoi.NormalizePath(c.HomeDir)
+	c.homeDirAbsPath, err = chezmoi.NormalizePath(c.homeDir)
 	if err != nil {
 		return nil, err
 	}
@@ -310,12 +318,12 @@ func (c *Config) addTemplateFunc(key string, value interface{}) {
 }
 
 type applyArgsOptions struct {
-	ignoreEncrypted bool
-	include         *chezmoi.IncludeSet
-	recursive       bool
-	sourcePath      bool
-	umask           os.FileMode
-	preApplyFunc    chezmoi.PreApplyFunc
+	include       *chezmoi.IncludeSet
+	recursive     bool
+	skipEncrypted bool
+	sourcePath    bool
+	umask         os.FileMode
+	preApplyFunc  chezmoi.PreApplyFunc
 }
 
 func (c *Config) applyArgs(targetSystem chezmoi.System, targetDirAbsPath chezmoi.AbsPath, args []string, options applyArgsOptions) error {
@@ -325,10 +333,10 @@ func (c *Config) applyArgs(targetSystem chezmoi.System, targetDirAbsPath chezmoi
 	}
 
 	applyOptions := chezmoi.ApplyOptions{
-		IgnoreEncrypted: options.ignoreEncrypted,
-		Include:         options.include,
-		PreApplyFunc:    options.preApplyFunc,
-		Umask:           options.umask,
+		Include:       options.include,
+		PreApplyFunc:  options.preApplyFunc,
+		SkipEncrypted: options.skipEncrypted,
+		Umask:         options.umask,
 	}
 
 	var targetRelPaths chezmoi.RelPaths
@@ -350,15 +358,20 @@ func (c *Config) applyArgs(targetSystem chezmoi.System, targetDirAbsPath chezmoi
 		}
 	}
 
+	keptGoingAfterErr := false
 	for _, targetRelPath := range targetRelPaths {
 		switch err := sourceState.Apply(targetSystem, c.persistentState, targetDirAbsPath, targetRelPath, applyOptions); {
 		case errors.Is(err, chezmoi.Skip):
 			continue
 		case err != nil && c.keepGoing:
 			c.errorf("%v", err)
+			keptGoingAfterErr = true
 		case err != nil:
 			return err
 		}
+	}
+	if keptGoingAfterErr {
+		return ErrExitCode(1)
 	}
 
 	return nil
@@ -388,15 +401,15 @@ func (c *Config) defaultPreApplyFunc(targetRelPath chezmoi.RelPath, targetEntryS
 		return nil
 	}
 	// LATER add merge option
-	switch choice, err := c.prompt(fmt.Sprintf("%s has changed since chezmoi last wrote it, overwrite", targetRelPath), "ynqa"); {
+	switch choice, err := c.promptValue(fmt.Sprintf("%s has changed since chezmoi last wrote it, overwrite", targetRelPath), yesNoAllQuit); {
 	case err != nil:
 		return err
-	case choice == 'a':
+	case choice == "all":
 		c.force = true
 		return nil
-	case choice == 'n':
+	case choice == "no":
 		return chezmoi.Skip
-	case choice == 'q':
+	case choice == "quit":
 		return ErrExitCode(1)
 	default:
 		return nil
@@ -406,7 +419,7 @@ func (c *Config) defaultPreApplyFunc(targetRelPath chezmoi.RelPath, targetEntryS
 func (c *Config) defaultTemplateData() map[string]interface{} {
 	data := map[string]interface{}{
 		"arch":      runtime.GOARCH,
-		"homeDir":   c.HomeDir,
+		"homeDir":   c.homeDir,
 		"os":        runtime.GOOS,
 		"sourceDir": c.sourceDirAbsPath,
 		"version": map[string]interface{}{
@@ -567,7 +580,7 @@ func (c *Config) doPurge(purgeOptions *purgeOptions) error {
 
 	// Remove all paths that exist.
 	for _, absPath := range absPaths {
-		switch _, err := c.baseSystem.Stat(absPath); {
+		switch _, err := c.destSystem.Stat(absPath); {
 		case os.IsNotExist(err):
 			continue
 		case err != nil:
@@ -575,19 +588,20 @@ func (c *Config) doPurge(purgeOptions *purgeOptions) error {
 		}
 
 		if !c.force {
-			switch choice, err := c.prompt(fmt.Sprintf("Remove %s", absPath), "ynqa"); {
+			switch choice, err := c.promptValue(fmt.Sprintf("Remove %s", absPath), yesNoAllQuit); {
 			case err != nil:
 				return err
-			case choice == 'a':
-				c.force = true
-			case choice == 'n':
+			case choice == "yes":
+			case choice == "no":
 				continue
-			case choice == 'q':
+			case choice == "all":
+				c.force = true
+			case choice == "quit":
 				return nil
 			}
 		}
 
-		switch err := c.baseSystem.RemoveAll(absPath); {
+		switch err := c.destSystem.RemoveAll(absPath); {
 		case os.IsPermission(err):
 			continue
 		case err != nil:
@@ -643,37 +657,6 @@ func (c *Config) execute(args []string) error {
 	return rootCmd.Execute()
 }
 
-func (c *Config) getTerminal() (terminal, error) {
-	if c.terminal != nil {
-		return c.terminal, nil
-	}
-
-	if c.noTTY {
-		c.terminal = newDumbTerminal(c.stdin, c.stdout, "")
-		return c.terminal, nil
-	}
-
-	if stdinFile, ok := c.stdin.(*os.File); ok && term.IsTerminal(int(stdinFile.Fd())) {
-		c.terminalFile = stdinFile
-	} else {
-		var err error
-		c.terminalFile, err = os.OpenFile("/dev/tty", os.O_RDWR, 0)
-		if err != nil {
-			return nil, err
-		}
-		c.closeTerminalFile = true
-	}
-
-	var err error
-	c.oldTerminalState, err = term.MakeRaw(int(c.terminalFile.Fd()))
-	if err != nil {
-		return nil, err
-	}
-
-	c.terminal = term.NewTerminal(c.terminalFile, "")
-	return c.terminal, nil
-}
-
 func (c *Config) gitAutoAdd() (*git.Status, error) {
 	if err := c.run(c.sourceDirAbsPath, c.Git.Command, []string{"add", "."}); err != nil {
 		return nil, err
@@ -721,10 +704,15 @@ func (c *Config) makeRunEWithSourceState(runE func(*cobra.Command, []string, *ch
 	}
 }
 
-func (c *Config) marshal(data interface{}) error {
-	format, ok := chezmoi.Formats[c.Format]
-	if !ok {
-		return fmt.Errorf("%s: unknown format", c.Format)
+func (c *Config) marshal(formatStr string, data interface{}) error {
+	var format chezmoi.Format
+	switch formatStr {
+	case "json":
+		format = chezmoi.JSONFormat
+	case "yaml":
+		format = chezmoi.YAMLFormat
+	default:
+		return fmt.Errorf("%s: unknown format", formatStr)
 	}
 	marshaledData, err := format.Marshal(data)
 	if err != nil {
@@ -748,14 +736,12 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 
 	persistentFlags.StringVar(&c.Color, "color", c.Color, "colorize diffs")
 	persistentFlags.StringVarP(&c.DestDir, "destination", "D", c.DestDir, "destination directory")
-	persistentFlags.StringVar(&c.Format, "format", c.Format, "format ("+serializationFormatNamesStr()+")")
 	persistentFlags.BoolVar(&c.Remove, "remove", c.Remove, "remove targets")
 	persistentFlags.StringVarP(&c.SourceDir, "source", "S", c.SourceDir, "source directory")
 	persistentFlags.StringVar(&c.UseBuiltinGit, "use-builtin-git", c.UseBuiltinGit, "use builtin git")
 	for _, key := range []string{
 		"color",
 		"destination",
-		"format",
 		"remove",
 		"source",
 	} {
@@ -765,6 +751,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	}
 
 	persistentFlags.StringVarP(&c.configFile, "config", "c", c.configFile, "config file")
+	persistentFlags.StringVar(&c.cpuProfile, "cpu-profile", c.cpuProfile, "write CPU profile to file")
 	persistentFlags.BoolVarP(&c.dryRun, "dry-run", "n", c.dryRun, "dry run")
 	persistentFlags.BoolVar(&c.force, "force", c.force, "force")
 	persistentFlags.BoolVarP(&c.keepGoing, "keep-going", "k", c.keepGoing, "keep going as far as possible after an error")
@@ -775,6 +762,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 
 	for _, err := range []error{
 		rootCmd.MarkPersistentFlagFilename("config"),
+		rootCmd.MarkPersistentFlagFilename("cpu-profile"),
 		rootCmd.MarkPersistentFlagDirname("destination"),
 		rootCmd.MarkPersistentFlagFilename("output"),
 		rootCmd.MarkPersistentFlagDirname("source"),
@@ -824,16 +812,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 }
 
 func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error {
-	// FIXME terminal state restoration should be run whenever the process
-	// exits, not just on a clean exit
-	if c.oldTerminalState != nil {
-		_ = term.Restore(int(c.terminalFile.Fd()), c.oldTerminalState)
-		c.oldTerminalState = nil
-	}
-	if c.closeTerminalFile {
-		_ = c.terminalFile.Close()
-		c.closeTerminalFile = false
-	}
+	defer pprof.StopCPUProfile()
 
 	if c.persistentState != nil {
 		if err := c.persistentState.Close(); err != nil {
@@ -880,6 +859,16 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 }
 
 func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error {
+	if c.cpuProfile != "" {
+		f, err := os.Create(c.cpuProfile)
+		if err != nil {
+			return err
+		}
+		if err := pprof.StartCPUProfile(f); err != nil {
+			return err
+		}
+	}
+
 	var err error
 	c.configFileAbsPath, err = chezmoi.NewAbsPathFromExtPath(c.configFile, c.homeDirAbsPath)
 	if err != nil {
@@ -1048,15 +1037,16 @@ func (c *Config) persistentStateFile() chezmoi.AbsPath {
 	return defaultConfigFile(c.fs, c.bds).Dir().Join(persistentStateFilename)
 }
 
-func (c *Config) prompt(s, choices string) (byte, error) {
+func (c *Config) promptValue(prompt string, values []string) (string, error) {
+	promptWithValues := fmt.Sprintf("%s [%s]? ", prompt, strings.Join(values, ","))
+	abbreviations := uniqueAbbreviations(values)
 	for {
-		line, err := c.readLine(fmt.Sprintf("%s [%s]? ", s, strings.Join(strings.Split(choices, ""), ",")))
+		line, err := c.readLine(promptWithValues)
 		if err != nil {
-			return 0, err
+			return "", err
 		}
-		line = strings.TrimSpace(line)
-		if len(line) == 1 && strings.IndexByte(choices, line[0]) != -1 {
-			return line[0], nil
+		if value, ok := abbreviations[strings.TrimSpace(line)]; ok {
+			return value, nil
 		}
 	}
 }
@@ -1082,20 +1072,27 @@ func (c *Config) readConfig() error {
 }
 
 func (c *Config) readLine(prompt string) (string, error) {
-	terminal, err := c.getTerminal()
-	if err != nil {
+	var line string
+	if err := c.withTerminal(prompt, func(t terminal) error {
+		var err error
+		line, err = t.ReadLine()
+		return err
+	}); err != nil {
 		return "", err
 	}
-	terminal.SetPrompt(prompt)
-	return terminal.ReadLine()
+	return line, nil
 }
 
 func (c *Config) readPassword(prompt string) (string, error) {
-	terminal, err := c.getTerminal()
-	if err != nil {
+	var password string
+	if err := c.withTerminal("", func(t terminal) error {
+		var err error
+		password, err = t.ReadPassword(prompt)
+		return err
+	}); err != nil {
 		return "", err
 	}
-	return terminal.ReadPassword(prompt)
+	return password, nil
 }
 
 func (c *Config) run(dir chezmoi.AbsPath, name string, args []string) error {
@@ -1245,6 +1242,49 @@ func (c *Config) useBuiltinGit() (bool, error) {
 
 func (c *Config) validateData() error {
 	return validateKeys(c.Data, identifierRx)
+}
+
+func (c *Config) withTerminal(prompt string, f func(terminal) error) error {
+	if c.noTTY {
+		return f(newDumbTerminal(c.stdin, c.stdout, prompt))
+	}
+
+	if stdinFile, ok := c.stdin.(*os.File); ok && term.IsTerminal(int(stdinFile.Fd())) {
+		fd := int(stdinFile.Fd())
+		oldState, err := term.MakeRaw(fd)
+		if err != nil {
+			return err
+		}
+		defer func() {
+			_ = term.Restore(fd, oldState)
+		}()
+		return f(term.NewTerminal(struct {
+			io.Reader
+			io.Writer
+		}{
+			Reader: c.stdin,
+			Writer: c.stdout,
+		}, prompt))
+	}
+
+	if runtime.GOOS == "windows" {
+		return f(newDumbTerminal(c.stdin, c.stdout, prompt))
+	}
+
+	devTTY, err := os.OpenFile("/dev/tty", os.O_RDWR, 0)
+	if err != nil {
+		return err
+	}
+	defer devTTY.Close()
+	fd := int(devTTY.Fd())
+	oldState, err := term.MakeRaw(fd)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		_ = term.Restore(fd, oldState)
+	}()
+	return f(term.NewTerminal(devTTY, prompt))
 }
 
 func (c *Config) writeOutput(data []byte) error {

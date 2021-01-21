@@ -9,6 +9,7 @@ import (
 )
 
 type dumpCmdConfig struct {
+	format    string
 	include   *chezmoi.IncludeSet
 	recursive bool
 }
@@ -26,6 +27,7 @@ func (c *Config) newDumpCmd() *cobra.Command {
 	}
 
 	flags := dumpCmd.Flags()
+	flags.StringVarP(&c.dump.format, "format", "f", c.dump.format, "format (json or yaml)")
 	flags.VarP(c.dump.include, "include", "i", "include entry types")
 	flags.BoolVarP(&c.dump.recursive, "recursive", "r", c.dump.recursive, "recursive")
 
@@ -41,5 +43,5 @@ func (c *Config) runDumpCmd(cmd *cobra.Command, args []string) error {
 	}); err != nil {
 		return err
 	}
-	return c.marshal(dumpSystem.Data())
+	return c.marshal(c.dump.format, dumpSystem.Data())
 }

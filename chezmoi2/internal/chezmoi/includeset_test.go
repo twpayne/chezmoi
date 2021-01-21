@@ -34,10 +34,6 @@ func TestIncludeMaskSet(t *testing.T) {
 			expected: NewIncludeSet(IncludeAbsent | IncludeDirs | IncludeFiles | IncludeSymlinks),
 		},
 		{
-			s:        "a,s",
-			expected: NewIncludeSet(IncludeAbsent | IncludeSymlinks),
-		},
-		{
 			s:        "symlinks,,",
 			expected: NewIncludeSet(IncludeSymlinks),
 		},

@@ -224,26 +224,24 @@ func withTestFS(fs vfs.FS) configOption {
 
 func withTestUser(username string) configOption {
 	return func(c *Config) error {
-		var homeDirStr string
 		switch runtime.GOOS {
 		case "windows":
-			homeDirStr = `c:\home\user`
+			c.homeDir = `c:\home\user`
 		default:
-			homeDirStr = "/home/user"
+			c.homeDir = "/home/user"
 		}
-		c.HomeDir = homeDirStr
-		c.SourceDir = filepath.Join(homeDirStr, ".local", "share", "chezmoi")
-		c.DestDir = homeDirStr
+		c.SourceDir = filepath.Join(c.homeDir, ".local", "share", "chezmoi")
+		c.DestDir = c.homeDir
 		c.Umask = 0o22
-		configHome := filepath.Join(homeDirStr, ".config")
-		dataHome := filepath.Join(homeDirStr, ".local", "share")
+		configHome := filepath.Join(c.homeDir, ".config")
+		dataHome := filepath.Join(c.homeDir, ".local", "share")
 		c.bds = &xdg.BaseDirectorySpecification{
 			ConfigHome: configHome,
 			ConfigDirs: []string{configHome},
 			DataHome:   dataHome,
 			DataDirs:   []string{dataHome},
-			CacheHome:  filepath.Join(homeDirStr, ".cache"),
-			RuntimeDir: filepath.Join(homeDirStr, ".run"),
+			CacheHome:  filepath.Join(c.homeDir, ".cache"),
+			RuntimeDir: filepath.Join(c.homeDir, ".run"),
 		}
 		return nil
 	}

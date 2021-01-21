@@ -8,27 +8,11 @@ type help struct {
 }
 
 var helps = map[string]help{
-	"add": {
+	"--follow": {
 		long: "" +
 			"Description:\n" +
-			"  Add *targets* to the source state. If any target is already in the source\n" +
-			"  state, then its source state is replaced with its current state in the\n" +
-			"  destination directory. The `add` command accepts additional flags:\n" +
-			"\n" +
-			"  `--autotemplate`\n" +
-			"\n" +
-			"  Automatically generate a template by replacing strings with variable names\n" +
-			"  from the `data` section of the config file. Longer substitutions occur\n" +
-			"  before shorter ones. This implies the `--template` option.\n" +
-			"\n" +
-			"  `-e`, `--empty`\n" +
-			"\n" +
-			"  Set the `empty` attribute on added files.\n" +
-			"\n" +
-			"  `-f`, `--force`\n" +
-			"\n" +
-			"  Add *targets*, even if doing so would cause a source template to be\n" +
-			"  overwritten.\n" +
+			"  If the last part of a target is a symlink, add the target of the symlink\n" +
+			"  instead of the symlink itself.\n" +
 			"\n" +
 			"  `-x`, `--exact`\n" +
 			"\n" +
@@ -51,15 +35,48 @@ var helps = map[string]help{
 			"  chezmoi add ~/.vim --recursive\n" +
 			"  chezmoi add ~/.oh-my-zsh --exact --recursive",
 	},
+	"add": {
+		long: "" +
+			"Description:\n" +
+			"  Add *targets* to the source state. If any target is already in the source\n" +
+			"  state, then its source state is replaced with its current state in the\n" +
+			"  destination directory. The `add` command accepts additional flags:\n" +
+			"\n" +
+			"  `--autotemplate`\n" +
+			"\n" +
+			"  Automatically generate a template by replacing strings with variable names\n" +
+			"  from the `data` section of the config file. Longer substitutions occur\n" +
+			"  before shorter ones. This implies the `--template` option.\n" +
+			"\n" +
+			"  `-e`, `--empty`\n" +
+			"\n" +
+			"  Set the `empty` attribute on added files.\n" +
+			"\n" +
+			"  `-f`, `--force`\n" +
+			"\n" +
+			"  Add *targets*, even if doing so would cause a source template to be\n" +
+			"  overwritten.",
+	},
 	"apply": {
 		long: "" +
 			"Description:\n" +
 			"  Ensure that *targets* are in the target state, updating them if necessary.\n" +
-			"  If no targets are specified, the state of all targets are ensured.",
+			"  If no targets are specified, the state of all targets are ensured. If a\n" +
+			"  target has been modified since chezmoi last wrote it then the user will be\n" +
+			"  prompted if they want to overwrite the file.\n" +
+			"\n" +
+			"  `--source-path`\n" +
+			"\n" +
+			"  Specify targets by source path, rather than target path. This is useful for\n" +
+			"  applying changes after editing.",
 		example: "" +
 			"  chezmoi apply\n" +
 			"  chezmoi apply --dry-run --verbose\n" +
-			"  chezmoi apply ~/.bashrc",
+			"  chezmoi apply ~/.bashrc\n" +
+			"\n" +
+			"In `~/.vimrc`:\n" +
+			"\n" +
+			"  autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path %",
 	},
 	"archive": {
 		long: "" +
@@ -67,12 +84,18 @@ var helps = map[string]help{
 			"  Generate a tar archive of the target state. This can be piped into `tar` to\n" +
 			"  inspect the target state.\n" +
 			"\n" +
-			"  `--output`, `-o` *filename*\n" +
+			"  `--format` *format*\n" +
 			"\n" +
-			"  Write the output to *filename* instead of stdout.",
+			"  Write the archive in *format*. *format* can be either `tar` (the default) or\n" +
+			"  `zip`.\n" +
+			"\n" +
+			"  `-z`, `--gzip`\n" +
+			"\n" +
+			"  Compress the output with gzip.",
 		example: "" +
 			"  chezmoi archive | tar tvf -\n" +
-			"  chezmoi archive --output=dotfiles.tar",
+			"  chezmoi archive --output=dotfiles.tar\n" +
+			"  chezmoi archive --format=zip --output=dotfiles.zip",
 	},
 	"cat": {
 		long: "" +
@@ -122,25 +145,15 @@ var helps = map[string]help{
 		long: "" +
 			"Description:\n" +
 			"  Generate shell completion code for the specified shell (`bash`, `fish`,\n" +
-			"  `powershell`, or `zsh`).\n" +
-			"\n" +
-			"  `--output`, `-o` *filename*\n" +
-			"\n" +
-			"  Write the shell completion code to *filename* instead of stdout.",
+			"  `powershell`, or `zsh`).",
 		example: "" +
 			"  chezmoi completion bash\n" +
-			"  chezmoi completion fish --output ~/.config/fish/completions/chezmoi.fish",
+			"  chezmoi completion fish --output=~/.config/fish/completions/chezmoi.fish",
 	},
 	"data": {
 		long: "" +
 			"Description:\n" +
-			"  Write the computed template data in JSON format to stdout. The `data`\n" +
-			"  command accepts additional flags:\n" +
-			"\n" +
-			"  `-f`, `--format` *format*\n" +
-			"\n" +
-			"  Print the computed template data in the given format. The accepted formats\n" +
-			"  are `json` (JSON), `toml` (TOML), and `yaml` (YAML).",
+			"  Write the computed template data to stdout.",
 		example: "" +
 			"  chezmoi data\n" +
 			"  chezmoi data --format=yaml",
@@ -155,29 +168,12 @@ var helps = map[string]help{
 			"  If a `diff.pager` command is set in the configuration file then the output\n" +
 			"  will be piped into it.\n" +
 			"\n" +
-			"  `-f`, `--format` *format*\n" +
-			"\n" +
-			"  Print the diff in *format*. The format can be set with the `diff.format`\n" +
-			"  variable in the configuration file. Valid formats are:\n" +
-			"\n" +
-			"  ##### `chezmoi`\n" +
-			"\n" +
-			"  A mix of unified diffs and pseudo shell commands, including scripts,\n" +
-			"  equivalent to `chezmoi apply --dry-run --verbose`.\n" +
-			"\n" +
-			"  ##### `git`\n" +
-			"\n" +
-			"  A git format diff https://git-scm.com/docs/diff-format, excluding scripts. In\n" +
-			"  version 2.0.0 of chezmoi, `git` format diffs will become the default and\n" +
-			"  include scripts and the `chezmoi` format will be removed.\n" +
-			"\n" +
 			"  `--no-pager`\n" +
 			"\n" +
 			"  Do not use the pager.",
 		example: "" +
 			"  chezmoi diff\n" +
-			"  chezmoi diff ~/.bashrc\n" +
-			"  chezmoi diff --format=git",
+			"  chezmoi diff ~/.bashrc",
 	},
 	"docs": {
 		long: "" +
@@ -199,13 +195,8 @@ var helps = map[string]help{
 	"dump": {
 		long: "" +
 			"Description:\n" +
-			"  Dump the target state in JSON format. If no targets are specified, then the\n" +
-			"  entire target state. The `dump` command accepts additional arguments:\n" +
-			"\n" +
-			"  `-f`, `--format` *format*\n" +
-			"\n" +
-			"  Print the target state in the given format. The accepted formats are `json`\n" +
-			"  (JSON) and `yaml` (YAML).",
+			"  Dump the target state. If no targets are specified, then the entire target\n" +
+			"  state.",
 		example: "" +
 			"  chezmoi dump ~/.bashrc\n" +
 			"  chezmoi dump --format=yaml",
@@ -219,19 +210,10 @@ var helps = map[string]help{
 			"\n" +
 			"  `-a`, `--apply`\n" +
 			"\n" +
-			"  Apply target immediately after editing. Ignored if there are no targets.\n" +
-			"\n" +
-			"  `-d`, `--diff`\n" +
-			"\n" +
-			"  Print the difference between the target state and the actual state after\n" +
-			"  editing.. Ignored if there are no targets.\n" +
-			"\n" +
-			"  `-p`, `--prompt`\n" +
-			"\n" +
-			"  Prompt before applying each target.. Ignored if there are no targets.",
+			"  Apply target immediately after editing. Ignored if there are no targets.",
 		example: "" +
 			"  chezmoi edit ~/.bashrc\n" +
-			"  chezmoi edit ~/.bashrc --apply --prompt\n" +
+			"  chezmoi edit ~/.bashrc --apply\n" +
 			"  chezmoi edit",
 	},
 	"edit-config": {
@@ -254,10 +236,6 @@ var helps = map[string]help{
 			"  `--init`, `-i`\n" +
 			"\n" +
 			"  Include simulated functions only available during `chezmoi init`.\n" +
-			"\n" +
-			"  `--output`, `-o` *filename*\n" +
-			"\n" +
-			"  Write the output to *filename* instead of stdout.\n" +
 			"\n" +
 			"  `--promptBool` *pairs*\n" +
 			"\n" +
@@ -310,14 +288,6 @@ var helps = map[string]help{
 			"Description:\n" +
 			"  Print the help associated with *command*.",
 	},
-	"hg": {
-		long: "" +
-			"Description:\n" +
-			"  Run `hg` *arguments* in the source directory. Note that flags in *arguments*\n" +
-			"  must occur after `--` to prevent chezmoi from interpreting them.",
-		example: "" +
-			"  chezmoi hg -- pull --rebase --update",
-	},
 	"import": {
 		long: "" +
 			"Description:\n" +
@@ -354,25 +324,67 @@ var helps = map[string]help{
 		long: "" +
 			"Description:\n" +
 			"  Setup the source directory and update the destination directory to match the\n" +
-			"  target state.\n" +
+			"  target state. *repo* is expanded to a full git repo URL using the following\n" +
+			"  rules:\n" +
+			"\n" +
+			"        PATTERN      |                 REPO\n" +
+			"  -------------------+---------------------------------------\n" +
+			"    user             | https://github.com/user/dotfiles.git\n" +
+			"    user/repo        | https://github.com/user/repo.git\n" +
+			"    site/user/repo   | https://site/user/repo.git\n" +
+			"    ~sr.ht/user      | https://git.sr.ht/~user/dotfiles\n" +
+			"    ~sr.ht/user/repo | https://git.sr.ht/~user/repo\n" +
 			"\n" +
 			"  First, if the source directory is not already contain a repository, then if\n" +
 			"  *repo* is given it is checked out into the source directory, otherwise a new\n" +
 			"  repository is initialized in the source directory.\n" +
 			"\n" +
-			"  Second, if a file called `.chezmoi.format.tmpl` exists, where `format` is\n" +
-			"  one of the supported file formats (e.g. `json`, `toml`, or `yaml`) then a\n" +
+			"  Second, if a file called `.chezmoi.<format>.tmpl` exists, where `<format>`\n" +
+			"  is one of the supported file formats (e.g. `json`, `toml`, or `yaml`) then a\n" +
 			"  new configuration file is created using that file as a template.\n" +
 			"\n" +
-			"  Finally, if the `--apply` flag is passed, `chezmoi apply` is run.\n" +
+			"  Then, if the `--apply` flag is passed, `chezmoi apply` is run.\n" +
+			"\n" +
+			"  Then, if the `--purge` flag is passed, chezmoi will remove the source\n" +
+			"  directory and its config directory.\n" +
+			"\n" +
+			"  Finally, if the `--purge-binary` is passed, chezmoi will attempt to remove its\n" +
+			"  own binary.\n" +
 			"\n" +
 			"  `--apply`\n" +
 			"\n" +
 			"  Run `chezmoi apply` after checking out the repo and creating the config\n" +
-			"  file. This is `false` by default.",
+			"  file.\n" +
+			"\n" +
+			"  `--depth` *depth*\n" +
+			"\n" +
+			"  Clone the repo with depth *depth*.\n" +
+			"\n" +
+			"  `--one-shot`\n" +
+			"\n" +
+			"  `--one-shot` is the equivalent of `--apply`, `--depth=1`, `--purge`, `--purge-binary`.\n" +
+			"  It attempts to install your dotfiles with chezmoi and then remove all traces\n" +
+			"  of chezmoi from the system. This is useful for setting up temporary\n" +
+			"  environments (e.g. Docker containers).\n" +
+			"\n" +
+			"  `--purge`\n" +
+			"\n" +
+			"  Remove the source and config directories after applying.\n" +
+			"\n" +
+			"  `--purge-binary`\n" +
+			"\n" +
+			"  Attempt to remove the chezmoi binary after applying.\n" +
+			"\n" +
+			"  `--skip-encrypted`\n" +
+			"\n" +
+			"  Skip encrypted files. This is useful for setting up machines with an inital\n" +
+			"  set of dotfiles before private decryption keys are available.",
 		example: "" +
-			"  chezmoi init https://github.com/user/dotfiles.git\n" +
-			"  chezmoi init https://github.com/user/dotfiles.git --apply",
+			"  chezmoi init user\n" +
+			"  chezmoi init user --apply\n" +
+			"  chezmoi init user --apply --purge\n" +
+			"  chezmoi init user/dots\n" +
+			"  chezmoi init gitlab.com/user",
 	},
 	"manage": {
 		long: "" +
@@ -400,8 +412,8 @@ var helps = map[string]help{
 	"merge": {
 		long: "" +
 			"Description:\n" +
-			"  Perform a three-way merge between the destination state, the source state,\n" +
-			"  and the target state. The merge tool is defined by the `merge.command`\n" +
+			"  Perform a three-way merge between the destination state, the target state,\n" +
+			"  and the source state. The merge tool is defined by the `merge.command`\n" +
 			"  configuration variable, and defaults to `vimdiff`. If multiple targets are\n" +
 			"  specified the merge tool is invoked for each target. If the target state\n" +
 			"  cannot be computed (for example if source is a template containing errors or\n" +
@@ -451,26 +463,8 @@ var helps = map[string]help{
 			"\n" +
 			"    chezmoi secret help",
 		example: "" +
-			"  chezmoi secret bitwarden list items\n" +
-			"  chezmoi secret keyring set --service service --user user\n" +
-			"  chezmoi secret keyring get --service service --user user\n" +
-			"  chezmoi secret lastpass ls\n" +
-			"  chezmoi secret lastpass -- show --format=json id\n" +
-			"  chezmoi secret onepassword list items\n" +
-			"  chezmoi secret onepassword get item id\n" +
-			"  chezmoi secret pass show id\n" +
-			"  chezmoi secret vault -- kv get -format=json id",
-	},
-	"source": {
-		long: "" +
-			"Description:\n" +
-			"  Execute the source version control system in the source directory with\n" +
-			"  *args*. Note that any flags for the source version control system must be\n" +
-			"  separated with a `--` to stop chezmoi from reading them.",
-		example: "" +
-			"  chezmoi source init\n" +
-			"  chezmoi source add .\n" +
-			"  chezmoi source commit -- -m \"Initial commit\"",
+			"  chezmoi secret keyring set --service=service --user=user --value=password\n" +
+			"  chezmoi secret keyring get --service=service --user=user",
 	},
 	"source-path": {
 		long: "" +
@@ -482,6 +476,18 @@ var helps = map[string]help{
 			"\n" +
 			"    chezmoi source-path\n" +
 			"    chezmoi source-path ~/.bashrc",
+	},
+	"status": {
+		long: "" +
+			"Description:\n" +
+			"  Print the status of the files and scripts managed by chezmoi in a format\n" +
+			"  similar to git status https://git-scm.com/docs/git-status.\n" +
+			"\n" +
+			"  The first column of output indicates the difference between the last state\n" +
+			"  written by chezmoi and the actual state. The second column indicates the\n" +
+			"  difference between the actual state and the target state.",
+		example: "" +
+			"  chezmoi status",
 	},
 	"unmanage": {
 		long: "" +

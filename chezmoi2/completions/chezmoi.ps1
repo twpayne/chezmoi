@@ -20,15 +20,16 @@ Register-ArgumentCompleter -Native -CommandName 'chezmoi' -ScriptBlock {
             [CompletionResult]::new('--color', 'color', [CompletionResultType]::ParameterName, 'colorize diffs')
             [CompletionResult]::new('-c', 'c', [CompletionResultType]::ParameterName, 'config file')
             [CompletionResult]::new('--config', 'config', [CompletionResultType]::ParameterName, 'config file')
+            [CompletionResult]::new('--cpu-profile', 'cpu-profile', [CompletionResultType]::ParameterName, 'write CPU profile to file')
             [CompletionResult]::new('--debug', 'debug', [CompletionResultType]::ParameterName, 'write debug logs')
             [CompletionResult]::new('-D', 'D', [CompletionResultType]::ParameterName, 'destination directory')
             [CompletionResult]::new('--destination', 'destination', [CompletionResultType]::ParameterName, 'destination directory')
             [CompletionResult]::new('-n', 'n', [CompletionResultType]::ParameterName, 'dry run')
             [CompletionResult]::new('--dry-run', 'dry-run', [CompletionResultType]::ParameterName, 'dry run')
             [CompletionResult]::new('--force', 'force', [CompletionResultType]::ParameterName, 'force')
-            [CompletionResult]::new('--format', 'format', [CompletionResultType]::ParameterName, 'format (json, toml, or yaml)')
             [CompletionResult]::new('-k', 'k', [CompletionResultType]::ParameterName, 'keep going as far as possible after an error')
             [CompletionResult]::new('--keep-going', 'keep-going', [CompletionResultType]::ParameterName, 'keep going as far as possible after an error')
+            [CompletionResult]::new('--no-tty', 'no-tty', [CompletionResultType]::ParameterName, 'don''t attempt to get a TTY for reading passwords')
             [CompletionResult]::new('-o', 'o', [CompletionResultType]::ParameterName, 'output file')
             [CompletionResult]::new('--output', 'output', [CompletionResultType]::ParameterName, 'output file')
             [CompletionResult]::new('--remove', 'remove', [CompletionResultType]::ParameterName, 'remove targets')
@@ -55,11 +56,13 @@ Register-ArgumentCompleter -Native -CommandName 'chezmoi' -ScriptBlock {
             [CompletionResult]::new('forget', 'forget', [CompletionResultType]::ParameterValue, 'Remove a target from the source state')
             [CompletionResult]::new('git', 'git', [CompletionResultType]::ParameterValue, 'Run git in the source directory')
             [CompletionResult]::new('help', 'help', [CompletionResultType]::ParameterValue, 'Print help about a command')
+            [CompletionResult]::new('import', 'import', [CompletionResultType]::ParameterValue, 'Import a tar archive into the source state')
             [CompletionResult]::new('init', 'init', [CompletionResultType]::ParameterValue, 'Setup the source directory and update the destination directory to match the target state')
             [CompletionResult]::new('managed', 'managed', [CompletionResultType]::ParameterValue, 'List the managed entries in the destination directory')
             [CompletionResult]::new('merge', 'merge', [CompletionResultType]::ParameterValue, 'Perform a three-way merge between the destination state, the source state, and the target state')
             [CompletionResult]::new('purge', 'purge', [CompletionResultType]::ParameterValue, 'Purge chezmoi''s configuration and data')
             [CompletionResult]::new('remove', 'remove', [CompletionResultType]::ParameterValue, 'Remove a target from the source state and the destination directory')
+            [CompletionResult]::new('secret', 'secret', [CompletionResultType]::ParameterValue, 'Interact with a secret manager')
             [CompletionResult]::new('source-path', 'source-path', [CompletionResultType]::ParameterValue, 'Print the path of a target in the source state')
             [CompletionResult]::new('state', 'state', [CompletionResultType]::ParameterValue, 'Manipulate the persistent state')
             [CompletionResult]::new('status', 'status', [CompletionResultType]::ParameterValue, 'Show the status of targets')
@@ -76,6 +79,9 @@ Register-ArgumentCompleter -Native -CommandName 'chezmoi' -ScriptBlock {
             [CompletionResult]::new('--encrypt', 'encrypt', [CompletionResultType]::ParameterName, 'encrypt files')
             [CompletionResult]::new('-x', 'x', [CompletionResultType]::ParameterName, 'add directories exactly')
             [CompletionResult]::new('--exact', 'exact', [CompletionResultType]::ParameterName, 'add directories exactly')
+            [CompletionResult]::new('--exists', 'exists', [CompletionResultType]::ParameterName, 'add files that should exist, irrespective of their contents')
+            [CompletionResult]::new('-f', 'f', [CompletionResultType]::ParameterName, 'add symlink targets instead of symlinks')
+            [CompletionResult]::new('--follow', 'follow', [CompletionResultType]::ParameterName, 'add symlink targets instead of symlinks')
             [CompletionResult]::new('-r', 'r', [CompletionResultType]::ParameterName, 'recursive')
             [CompletionResult]::new('--recursive', 'recursive', [CompletionResultType]::ParameterName, 'recursive')
             [CompletionResult]::new('-T', 'T', [CompletionResultType]::ParameterName, 'add files as templates')
@@ -83,13 +89,16 @@ Register-ArgumentCompleter -Native -CommandName 'chezmoi' -ScriptBlock {
             break
         }
         'chezmoi;apply' {
+            [CompletionResult]::new('--ignore-encrypted', 'ignore-encrypted', [CompletionResultType]::ParameterName, 'ignore encrypted files')
             [CompletionResult]::new('-i', 'i', [CompletionResultType]::ParameterName, 'include entry types')
             [CompletionResult]::new('--include', 'include', [CompletionResultType]::ParameterName, 'include entry types')
             [CompletionResult]::new('-r', 'r', [CompletionResultType]::ParameterName, 'recursive')
             [CompletionResult]::new('--recursive', 'recursive', [CompletionResultType]::ParameterName, 'recursive')
+            [CompletionResult]::new('--source-path', 'source-path', [CompletionResultType]::ParameterName, 'specify targets by source path')
             break
         }
         'chezmoi;archive' {
+            [CompletionResult]::new('--format', 'format', [CompletionResultType]::ParameterName, 'format (tar or zip)')
             [CompletionResult]::new('-z', 'z', [CompletionResultType]::ParameterName, 'compress the output with gzip')
             [CompletionResult]::new('--gzip', 'gzip', [CompletionResultType]::ParameterName, 'compress the output with gzip')
             [CompletionResult]::new('-i', 'i', [CompletionResultType]::ParameterName, 'include entry types')
@@ -111,17 +120,18 @@ Register-ArgumentCompleter -Native -CommandName 'chezmoi' -ScriptBlock {
             [CompletionResult]::new('--color', 'color', [CompletionResultType]::ParameterName, 'colorize diffs')
             [CompletionResult]::new('-c', 'c', [CompletionResultType]::ParameterName, 'config file')
             [CompletionResult]::new('--config', 'config', [CompletionResultType]::ParameterName, 'config file')
+            [CompletionResult]::new('--cpu-profile', 'cpu-profile', [CompletionResultType]::ParameterName, 'write CPU profile to file')
             [CompletionResult]::new('--debug', 'debug', [CompletionResultType]::ParameterName, 'write debug logs')
             [CompletionResult]::new('-D', 'D', [CompletionResultType]::ParameterName, 'destination directory')
             [CompletionResult]::new('--destination', 'destination', [CompletionResultType]::ParameterName, 'destination directory')
             [CompletionResult]::new('-n', 'n', [CompletionResultType]::ParameterName, 'dry run')
             [CompletionResult]::new('--dry-run', 'dry-run', [CompletionResultType]::ParameterName, 'dry run')
             [CompletionResult]::new('--force', 'force', [CompletionResultType]::ParameterName, 'force')
-            [CompletionResult]::new('--format', 'format', [CompletionResultType]::ParameterName, 'format (json, toml, or yaml)')
             [CompletionResult]::new('-h', 'h', [CompletionResultType]::ParameterName, 'help for completion')
             [CompletionResult]::new('--help', 'help', [CompletionResultType]::ParameterName, 'help for completion')
             [CompletionResult]::new('-k', 'k', [CompletionResultType]::ParameterName, 'keep going as far as possible after an error')
             [CompletionResult]::new('--keep-going', 'keep-going', [CompletionResultType]::ParameterName, 'keep going as far as possible after an error')
+            [CompletionResult]::new('--no-tty', 'no-tty', [CompletionResultType]::ParameterName, 'don''t attempt to get a TTY for reading passwords')
             [CompletionResult]::new('-o', 'o', [CompletionResultType]::ParameterName, 'output file')
             [CompletionResult]::new('--output', 'output', [CompletionResultType]::ParameterName, 'output file')
             [CompletionResult]::new('--remove', 'remove', [CompletionResultType]::ParameterName, 'remove targets')
@@ -150,6 +160,8 @@ Register-ArgumentCompleter -Native -CommandName 'chezmoi' -ScriptBlock {
             break
         }
         'chezmoi;dump' {
+            [CompletionResult]::new('-f', 'f', [CompletionResultType]::ParameterName, 'format (json or yaml)')
+            [CompletionResult]::new('--format', 'format', [CompletionResultType]::ParameterName, 'format (json or yaml)')
             [CompletionResult]::new('-i', 'i', [CompletionResultType]::ParameterName, 'include entry types')
             [CompletionResult]::new('--include', 'include', [CompletionResultType]::ParameterName, 'include entry types')
             [CompletionResult]::new('-r', 'r', [CompletionResultType]::ParameterName, 'recursive')
@@ -159,6 +171,8 @@ Register-ArgumentCompleter -Native -CommandName 'chezmoi' -ScriptBlock {
         'chezmoi;edit' {
             [CompletionResult]::new('-a', 'a', [CompletionResultType]::ParameterName, 'apply edit after editing')
             [CompletionResult]::new('--apply', 'apply', [CompletionResultType]::ParameterName, 'apply edit after editing')
+            [CompletionResult]::new('-i', 'i', [CompletionResultType]::ParameterName, 'include entry types')
+            [CompletionResult]::new('--include', 'include', [CompletionResultType]::ParameterName, 'include entry types')
             break
         }
         'chezmoi;edit-config' {
@@ -182,15 +196,29 @@ Register-ArgumentCompleter -Native -CommandName 'chezmoi' -ScriptBlock {
         'chezmoi;help' {
             break
         }
+        'chezmoi;import' {
+            [CompletionResult]::new('-d', 'd', [CompletionResultType]::ParameterName, 'destination prefix')
+            [CompletionResult]::new('--destination', 'destination', [CompletionResultType]::ParameterName, 'destination prefix')
+            [CompletionResult]::new('-x', 'x', [CompletionResultType]::ParameterName, 'import directories exactly')
+            [CompletionResult]::new('--exact', 'exact', [CompletionResultType]::ParameterName, 'import directories exactly')
+            [CompletionResult]::new('-i', 'i', [CompletionResultType]::ParameterName, 'include entry types')
+            [CompletionResult]::new('--include', 'include', [CompletionResultType]::ParameterName, 'include entry types')
+            [CompletionResult]::new('-r', 'r', [CompletionResultType]::ParameterName, 'remove destination before import')
+            [CompletionResult]::new('--remove-destination', 'remove-destination', [CompletionResultType]::ParameterName, 'remove destination before import')
+            [CompletionResult]::new('--strip-components', 'strip-components', [CompletionResultType]::ParameterName, 'strip components')
+            break
+        }
         'chezmoi;init' {
             [CompletionResult]::new('-a', 'a', [CompletionResultType]::ParameterName, 'update destination directory')
             [CompletionResult]::new('--apply', 'apply', [CompletionResultType]::ParameterName, 'update destination directory')
             [CompletionResult]::new('-d', 'd', [CompletionResultType]::ParameterName, 'create a shallow clone')
             [CompletionResult]::new('--depth', 'depth', [CompletionResultType]::ParameterName, 'create a shallow clone')
+            [CompletionResult]::new('--one-shot', 'one-shot', [CompletionResultType]::ParameterName, 'one shot')
             [CompletionResult]::new('-p', 'p', [CompletionResultType]::ParameterName, 'purge config and source directories')
             [CompletionResult]::new('--purge', 'purge', [CompletionResultType]::ParameterName, 'purge config and source directories')
             [CompletionResult]::new('-P', 'P', [CompletionResultType]::ParameterName, 'purge chezmoi binary')
             [CompletionResult]::new('--purge-binary', 'purge-binary', [CompletionResultType]::ParameterName, 'purge chezmoi binary')
+            [CompletionResult]::new('--skip-encrypted', 'skip-encrypted', [CompletionResultType]::ParameterName, 'skip encrypted files')
             break
         }
         'chezmoi;managed' {
@@ -207,6 +235,21 @@ Register-ArgumentCompleter -Native -CommandName 'chezmoi' -ScriptBlock {
             break
         }
         'chezmoi;remove' {
+            break
+        }
+        'chezmoi;secret' {
+            [CompletionResult]::new('keyring', 'keyring', [CompletionResultType]::ParameterValue, 'Interact with keyring')
+            break
+        }
+        'chezmoi;secret;keyring' {
+            [CompletionResult]::new('get', 'get', [CompletionResultType]::ParameterValue, 'Get a value from keyring')
+            [CompletionResult]::new('set', 'set', [CompletionResultType]::ParameterValue, 'Set a value in keyring')
+            break
+        }
+        'chezmoi;secret;keyring;get' {
+            break
+        }
+        'chezmoi;secret;keyring;set' {
             break
         }
         'chezmoi;source-path' {
