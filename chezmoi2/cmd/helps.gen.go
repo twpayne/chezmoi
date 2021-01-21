@@ -18,6 +18,10 @@ var helps = map[string]help{
 			"\n" +
 			"  Set the `exact` attribute on added directories.\n" +
 			"\n" +
+			"  `-i`, `--include` *types*\n" +
+			"\n" +
+			"  Only add entries of type *types*.\n" +
+			"\n" +
 			"  `-p`, `--prompt`\n" +
 			"\n" +
 			"  Interactively prompt before adding each file.\n" +
@@ -65,6 +69,10 @@ var helps = map[string]help{
 			"  target has been modified since chezmoi last wrote it then the user will be\n" +
 			"  prompted if they want to overwrite the file.\n" +
 			"\n" +
+			"  `-i`, `--include` *types*\n" +
+			"\n" +
+			"  Only add entries of type *types*.\n" +
+			"\n" +
 			"  `--source-path`\n" +
 			"\n" +
 			"  Specify targets by source path, rather than target path. This is useful for\n" +
@@ -88,6 +96,10 @@ var helps = map[string]help{
 			"\n" +
 			"  Write the archive in *format*. *format* can be either `tar` (the default) or\n" +
 			"  `zip`.\n" +
+			"\n" +
+			"  `-i`, `--include` *types*\n" +
+			"\n" +
+			"  Only include entries of type *types*.\n" +
 			"\n" +
 			"  `-z`, `--gzip`\n" +
 			"\n" +
@@ -196,7 +208,11 @@ var helps = map[string]help{
 		long: "" +
 			"Description:\n" +
 			"  Dump the target state. If no targets are specified, then the entire target\n" +
-			"  state.",
+			"  state.\n" +
+			"\n" +
+			"  `-i`, `--include` *types*\n" +
+			"\n" +
+			"  Only include entries of type *types*.",
 		example: "" +
 			"  chezmoi dump ~/.bashrc\n" +
 			"  chezmoi dump --format=yaml",
@@ -398,10 +414,7 @@ var helps = map[string]help{
 			"\n" +
 			"  `-i`, `--include` *types*\n" +
 			"\n" +
-			"  Only list entries of type *types*. *types* is a comma-separated list of types\n" +
-			"  of entry to include. Valid types are `dirs`, `files`, and `symlinks` which\n" +
-			"  can be abbreviated to `d`, `f`, and `s` respectively. By default, `manage`\n" +
-			"  will list entries of all types.",
+			"  Only include entries of type *types*.",
 		example: "" +
 			"  chezmoi managed\n" +
 			"  chezmoi managed --include=files\n" +
@@ -477,6 +490,14 @@ var helps = map[string]help{
 			"    chezmoi source-path\n" +
 			"    chezmoi source-path ~/.bashrc",
 	},
+	"state": {
+		long: "" +
+			"Description:\n" +
+			"  Manipulate the persistent state.",
+		example: "" +
+			"  chezmoi state dump\n" +
+			"  chemzoi state reset",
+	},
 	"status": {
 		long: "" +
 			"Description:\n" +
@@ -485,7 +506,11 @@ var helps = map[string]help{
 			"\n" +
 			"  The first column of output indicates the difference between the last state\n" +
 			"  written by chezmoi and the actual state. The second column indicates the\n" +
-			"  difference between the actual state and the target state.",
+			"  difference between the actual state and the target state.\n" +
+			"\n" +
+			"  `-i`, `--include` *types*\n" +
+			"\n" +
+			"  Only include entries of type *types*.",
 		example: "" +
 			"  chezmoi status",
 	},
@@ -504,7 +529,11 @@ var helps = map[string]help{
 	"update": {
 		long: "" +
 			"Description:\n" +
-			"  Pull changes from the source VCS and apply any changes.",
+			"  Pull changes from the source VCS and apply any changes.\n" +
+			"\n" +
+			"  `-i`, `--include` *types*\n" +
+			"\n" +
+			"  Only update entries of type *types*.",
 		example: "" +
 			"  chezmoi update",
 	},
@@ -534,7 +563,11 @@ var helps = map[string]help{
 			"Description:\n" +
 			"  Verify that all *targets* match their target state. chezmoi exits with code\n" +
 			"  0 (success) if all targets match their target state, or 1 (failure)\n" +
-			"  otherwise. If no targets are specified then all targets are checked.",
+			"  otherwise. If no targets are specified then all targets are checked.\n" +
+			"\n" +
+			"  `-i`, `--include` *types*\n" +
+			"\n" +
+			"  Only include entries of type *types*.",
 		example: "" +
 			"  chezmoi verify\n" +
 			"  chezmoi verify ~/.bashrc",

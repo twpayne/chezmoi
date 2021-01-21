@@ -65,6 +65,7 @@ Manage your dotfiles securely across multiple machines.
   * [`rm` *targets*](#rm-targets)
   * [`secret`](#secret)
   * [`source-path` [*targets*]](#source-path-targets)
+  * [`state`](#state)
   * [`status`](#status)
   * [`unmanage` *targets*](#unmanage-targets)
   * [`unmanaged`](#unmanaged)
@@ -401,6 +402,10 @@ ignored on different machines.
     *.txt   # ignore *.txt in the target directory
     */*.txt # ignore *.txt in subdirectories of the target directory
     backups/** # ignore backups folder in chezmoi directory and all its contents
+            # but not in subdirectories of subdirectories;
+            # so a/b/c.txt would *not* be ignored
+    backups/** # ignore all contents of backups folder in chezmoi directory
+               # but not backups folder itself
 
     {{- if ne .email "john.smith@company.com" }}
     # Ignore .company-directory unless configured with a company email
@@ -480,6 +485,10 @@ of the symlink itself.
 
 Set the `exact` attribute on added directories.
 
+#### `-i`, `--include` *types*
+
+Only add entries of type *types*.
+
 #### `-p`, `--prompt`
 
 Interactively prompt before adding each file.
@@ -506,6 +515,10 @@ targets are specified, the state of all targets are ensured. If a target has
 been modified since chezmoi last wrote it then the user will be prompted if they
 want to overwrite the file.
 
+#### `-i`, `--include` *types*
+
+Only add entries of type *types*.
+
 #### `--source-path`
 
 Specify targets by source path, rather than target path. This is useful for
@@ -529,6 +542,10 @@ inspect the target state.
 #### `--format` *format*
 
 Write the archive in *format*. *format* can be either `tar` (the default) or `zip`.
+
+#### `-i`, `--include` *types*
+
+Only include entries of type *types*.
 
 #### `-z`, `--gzip`
 
@@ -646,6 +663,10 @@ Check for potential problems.
 
 Dump the target state. If no targets are specified, then the entire target
 state.
+
+#### `-i`, `--include` *types*
+
+Only include entries of type *types*.
 
 #### `dump` examples
 
@@ -844,10 +865,7 @@ List all managed entries in the destination directory in alphabetical order.
 
 #### `-i`, `--include` *types*
 
-Only list entries of type *types*. *types* is a comma-separated list of types of
-entry to include. Valid types are `dirs`, `files`, and `symlinks` which can be
-abbreviated to `d`, `f`, and `s` respectively. By default, `manage` will list
-entries of all types.
+Only include entries of type *types*.
 
 #### `managed` examples
 
@@ -923,6 +941,15 @@ print the source directory.
     chezmoi source-path
     chezmoi source-path ~/.bashrc
 
+### `state`
+
+Manipulate the persistent state.
+
+#### `state` examples
+
+    chezmoi state dump
+    chemzoi state reset
+
 ### `status`
 
 Print the status of the files and scripts managed by chezmoi in a format similar
@@ -931,6 +958,10 @@ to [`git status`](https://git-scm.com/docs/git-status).
 The first column of output indicates the difference between the last state
 written by chezmoi and the actual state. The second column indicates the
 difference between the actual state and the target state.
+
+#### `-i`, `--include` *types*
+
+Only include entries of type *types*.
 
 #### `status` examples
 
@@ -951,6 +982,10 @@ List all unmanaged files in the destination directory.
 ### `update`
 
 Pull changes from the source VCS and apply any changes.
+
+#### `-i`, `--include` *types*
+
+Only update entries of type *types*.
 
 #### `update` examples
 
@@ -983,6 +1018,10 @@ requests should be sufficient for most cases.
 Verify that all *targets* match their target state. chezmoi exits with code 0
 (success) if all targets match their target state, or 1 (failure) otherwise. If
 no targets are specified then all targets are checked.
+
+#### `-i`, `--include` *types*
+
+Only include entries of type *types*.
 
 #### `verify` examples
 

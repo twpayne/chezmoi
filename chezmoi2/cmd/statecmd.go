@@ -19,17 +19,17 @@ type stateDumpCmdConfig struct {
 
 func (c *Config) newStateCmd() *cobra.Command {
 	stateCmd := &cobra.Command{
-		Use:   "state",
-		Short: "Manipulate the persistent state",
+		Use:     "state",
+		Short:   "Manipulate the persistent state",
+		Long:    mustLongHelp("state"),
+		Example: example("state"),
 	}
 
 	dumpCmd := &cobra.Command{
 		Use:   "dump",
 		Short: "Generate a dump of the persistent state",
-		// Long: mustLongHelp("state", "dump"), // FIXME
-		// Example: example("state", "dump"), // FIXME
-		Args: cobra.NoArgs,
-		RunE: c.runStateDumpCmd,
+		Args:  cobra.NoArgs,
+		RunE:  c.runStateDumpCmd,
 		Annotations: map[string]string{
 			persistentStateMode: persistentStateModeReadOnly,
 		},
@@ -43,10 +43,8 @@ func (c *Config) newStateCmd() *cobra.Command {
 	resetCmd := &cobra.Command{
 		Use:   "reset",
 		Short: "Reset the persistent state",
-		// Long: mustLongHelp("state", "reset"), // FIXME
-		// Example: example("state", "reset"), // FIXME
-		Args: cobra.NoArgs,
-		RunE: c.runStateResetCmd,
+		Args:  cobra.NoArgs,
+		RunE:  c.runStateResetCmd,
 		Annotations: map[string]string{
 			modifiesDestinationDirectory: "true",
 		},
