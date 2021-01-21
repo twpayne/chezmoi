@@ -18,12 +18,12 @@ import (
 )
 
 type initCmdConfig struct {
-	apply           bool
-	depth           int
-	ignoreEncrypted bool
-	oneShot         bool
-	purge           bool
-	purgeBinary     bool
+	apply         bool
+	depth         int
+	oneShot       bool
+	purge         bool
+	purgeBinary   bool
+	skipEncrypted bool
 }
 
 var dotfilesRepoGuesses = []struct {
@@ -83,10 +83,10 @@ func (c *Config) newInitCmd() *cobra.Command {
 	flags := initCmd.Flags()
 	flags.BoolVarP(&c.init.apply, "apply", "a", c.init.apply, "update destination directory")
 	flags.IntVarP(&c.init.depth, "depth", "d", c.init.depth, "create a shallow clone")
-	flags.BoolVar(&c.init.ignoreEncrypted, "ignore-encrypted", c.init.ignoreEncrypted, "ignore encrypted files")
 	flags.BoolVar(&c.init.oneShot, "one-shot", c.init.oneShot, "one shot")
 	flags.BoolVarP(&c.init.purge, "purge", "p", c.init.purge, "purge config and source directories")
 	flags.BoolVarP(&c.init.purgeBinary, "purge-binary", "P", c.init.purgeBinary, "purge chezmoi binary")
+	flags.BoolVar(&c.init.skipEncrypted, "skip-encrypted", c.init.skipEncrypted, "skip encrypted files")
 
 	return initCmd
 }
@@ -186,11 +186,11 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 	// Apply.
 	if c.init.apply {
 		if err := c.applyArgs(c.destSystem, c.destDirAbsPath, noArgs, applyArgsOptions{
-			ignoreEncrypted: c.init.ignoreEncrypted,
-			include:         chezmoi.NewIncludeSet(chezmoi.IncludeAll),
-			recursive:       false,
-			umask:           c.Umask.FileMode(),
-			preApplyFunc:    c.defaultPreApplyFunc,
+			include:       chezmoi.NewIncludeSet(chezmoi.IncludeAll),
+			recursive:     false,
+			umask:         c.Umask.FileMode(),
+			preApplyFunc:  c.defaultPreApplyFunc,
+			skipEncrypted: c.init.skipEncrypted,
 		}); err != nil {
 			return err
 		}

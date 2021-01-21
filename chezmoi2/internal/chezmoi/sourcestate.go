@@ -306,17 +306,17 @@ type PreApplyFunc func(targetRelPath RelPath, targetEntryState, lastWrittenEntry
 
 // ApplyOptions are options to SourceState.ApplyAll and SourceState.ApplyOne.
 type ApplyOptions struct {
-	IgnoreEncrypted bool
-	Include         *IncludeSet
-	PreApplyFunc    PreApplyFunc
-	Umask           os.FileMode
+	Include       *IncludeSet
+	PreApplyFunc  PreApplyFunc
+	SkipEncrypted bool
+	Umask         os.FileMode
 }
 
 // Apply updates targetRelPath in targetDir in targetSystem to match s.
 func (s *SourceState) Apply(targetSystem System, persistentState PersistentState, targetDir AbsPath, targetRelPath RelPath, options ApplyOptions) error {
 	sourceStateEntry := s.entries[targetRelPath]
 
-	if options.IgnoreEncrypted {
+	if options.SkipEncrypted {
 		if sourceStateFile, ok := sourceStateEntry.(*SourceStateFile); ok && sourceStateFile.Attr.Encrypted {
 			return nil
 		}
