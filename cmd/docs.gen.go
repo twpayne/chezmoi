@@ -396,13 +396,13 @@ func init() {
 		"## chezmoi makes `~/.ssh/config` group writeable. How do I stop this?\n" +
 		"\n" +
 		"By default, chezmoi uses your system's umask when creating files. On most\n" +
-		"systems the default umask is `0022` but some systems use `0002`, which means\n" +
+		"systems the default umask is `022` but some systems use `002`, which means\n" +
 		"that files and directories are group writeable by default.\n" +
 		"\n" +
 		"You can override this for chezmoi by setting the `umask` configuration variable\n" +
 		"in your configuration file, for example:\n" +
 		"\n" +
-		"    umask = 0022\n" +
+		"    umask = 0o022\n" +
 		"\n" +
 		"Note that this will apply to all files and directories that chezmoi manages and\n" +
 		"will ensure that none of them are group writeable. It is not currently possible\n" +

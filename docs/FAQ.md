@@ -139,13 +139,13 @@ GitHub issue](https://github.com/twpayne/chezmoi/issues/463).
 ## chezmoi makes `~/.ssh/config` group writeable. How do I stop this?
 
 By default, chezmoi uses your system's umask when creating files. On most
-systems the default umask is `0022` but some systems use `0002`, which means
+systems the default umask is `022` but some systems use `002`, which means
 that files and directories are group writeable by default.
 
 You can override this for chezmoi by setting the `umask` configuration variable
 in your configuration file, for example:
 
-    umask = 0022
+    umask = 0o022
 
 Note that this will apply to all files and directories that chezmoi manages and
 will ensure that none of them are group writeable. It is not currently possible
