@@ -35,15 +35,11 @@ const (
 
 // includeBits is a map from human-readable strings to IncludeBits.
 var includeBits = map[string]IncludeBits{
-	"a":        IncludeAbsent,
 	"absent":   IncludeAbsent,
 	"all":      IncludeAll,
-	"d":        IncludeDirs,
 	"dirs":     IncludeDirs,
-	"f":        IncludeFiles,
 	"files":    IncludeFiles,
 	"scripts":  IncludeScripts,
-	"s":        IncludeSymlinks,
 	"symlinks": IncludeSymlinks,
 }
 
