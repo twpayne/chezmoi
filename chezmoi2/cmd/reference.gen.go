@@ -72,6 +72,7 @@ func init() {
 		"  * [`rm` *targets*](#rm-targets)\n" +
 		"  * [`secret`](#secret)\n" +
 		"  * [`source-path` [*targets*]](#source-path-targets)\n" +
+		"  * [`state`](#state)\n" +
 		"  * [`status`](#status)\n" +
 		"  * [`unmanage` *targets*](#unmanage-targets)\n" +
 		"  * [`unmanaged`](#unmanaged)\n" +
@@ -408,6 +409,10 @@ func init() {
 		"    *.txt   # ignore *.txt in the target directory\n" +
 		"    */*.txt # ignore *.txt in subdirectories of the target directory\n" +
 		"    backups/** # ignore backups folder in chezmoi directory and all its contents\n" +
+		"            # but not in subdirectories of subdirectories;\n" +
+		"            # so a/b/c.txt would *not* be ignored\n" +
+		"    backups/** # ignore all contents of backups folder in chezmoi directory\n" +
+		"               # but not backups folder itself\n" +
 		"\n" +
 		"    {{- if ne .email \"john.smith@company.com\" }}\n" +
 		"    # Ignore .company-directory unless configured with a company email\n" +
@@ -487,6 +492,10 @@ func init() {
 		"\n" +
 		"Set the `exact` attribute on added directories.\n" +
 		"\n" +
+		"#### `-i`, `--include` *types*\n" +
+		"\n" +
+		"Only add entries of type *types*.\n" +
+		"\n" +
 		"#### `-p`, `--prompt`\n" +
 		"\n" +
 		"Interactively prompt before adding each file.\n" +
@@ -513,6 +522,10 @@ func init() {
 		"been modified since chezmoi last wrote it then the user will be prompted if they\n" +
 		"want to overwrite the file.\n" +
 		"\n" +
+		"#### `-i`, `--include` *types*\n" +
+		"\n" +
+		"Only add entries of type *types*.\n" +
+		"\n" +
 		"#### `--source-path`\n" +
 		"\n" +
 		"Specify targets by source path, rather than target path. This is useful for\n" +
@@ -536,6 +549,10 @@ func init() {
 		"#### `--format` *format*\n" +
 		"\n" +
 		"Write the archive in *format*. *format* can be either `tar` (the default) or `zip`.\n" +
+		"\n" +
+		"#### `-i`, `--include` *types*\n" +
+		"\n" +
+		"Only include entries of type *types*.\n" +
 		"\n" +
 		"#### `-z`, `--gzip`\n" +
 		"\n" +
@@ -653,6 +670,10 @@ func init() {
 		"\n" +
 		"Dump the target state. If no targets are specified, then the entire target\n" +
 		"state.\n" +
+		"\n" +
+		"#### `-i`, `--include` *types*\n" +
+		"\n" +
+		"Only include entries of type *types*.\n" +
 		"\n" +
 		"#### `dump` examples\n" +
 		"\n" +
@@ -851,10 +872,7 @@ func init() {
 		"\n" +
 		"#### `-i`, `--include` *types*\n" +
 		"\n" +
-		"Only list entries of type *types*. *types* is a comma-separated list of types of\n" +
-		"entry to include. Valid types are `dirs`, `files`, and `symlinks` which can be\n" +
-		"abbreviated to `d`, `f`, and `s` respectively. By default, `manage` will list\n" +
-		"entries of all types.\n" +
+		"Only include entries of type *types*.\n" +
 		"\n" +
 		"#### `managed` examples\n" +
 		"\n" +
@@ -930,6 +948,15 @@ func init() {
 		"    chezmoi source-path\n" +
 		"    chezmoi source-path ~/.bashrc\n" +
 		"\n" +
+		"### `state`\n" +
+		"\n" +
+		"Manipulate the persistent state.\n" +
+		"\n" +
+		"#### `state` examples\n" +
+		"\n" +
+		"    chezmoi state dump\n" +
+		"    chemzoi state reset\n" +
+		"\n" +
 		"### `status`\n" +
 		"\n" +
 		"Print the status of the files and scripts managed by chezmoi in a format similar\n" +
@@ -938,6 +965,10 @@ func init() {
 		"The first column of output indicates the difference between the last state\n" +
 		"written by chezmoi and the actual state. The second column indicates the\n" +
 		"difference between the actual state and the target state.\n" +
+		"\n" +
+		"#### `-i`, `--include` *types*\n" +
+		"\n" +
+		"Only include entries of type *types*.\n" +
 		"\n" +
 		"#### `status` examples\n" +
 		"\n" +
@@ -958,6 +989,10 @@ func init() {
 		"### `update`\n" +
 		"\n" +
 		"Pull changes from the source VCS and apply any changes.\n" +
+		"\n" +
+		"#### `-i`, `--include` *types*\n" +
+		"\n" +
+		"Only update entries of type *types*.\n" +
 		"\n" +
 		"#### `update` examples\n" +
 		"\n" +
@@ -990,6 +1025,10 @@ func init() {
 		"Verify that all *targets* match their target state. chezmoi exits with code 0\n" +
 		"(success) if all targets match their target state, or 1 (failure) otherwise. If\n" +
 		"no targets are specified then all targets are checked.\n" +
+		"\n" +
+		"#### `-i`, `--include` *types*\n" +
+		"\n" +
+		"Only include entries of type *types*.\n" +
 		"\n" +
 		"#### `verify` examples\n" +
 		"\n" +
