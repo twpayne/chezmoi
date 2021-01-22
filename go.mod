@@ -11,7 +11,6 @@ require (
 	github.com/bmatcuk/doublestar/v3 v3.0.0
 	github.com/charmbracelet/glamour v0.2.1-0.20201227140546-4292a2106d74
 	github.com/coreos/go-semver v0.3.0
-	github.com/danieljoos/wincred v1.1.0 // indirect
 	github.com/dlclark/regexp2 v1.4.0 // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
 	github.com/go-git/go-git/v5 v5.2.0
@@ -44,7 +43,7 @@ require (
 	github.com/twpayne/go-vfsafero v1.0.0
 	github.com/twpayne/go-xdg/v3 v3.1.0
 	github.com/xanzy/ssh-agent v0.3.0 // indirect
-	github.com/zalando/go-keyring v0.1.0
+	github.com/zalando/go-keyring v0.1.1
 	go.etcd.io/bbolt v1.3.5
 	go.uber.org/multierr v1.6.0
 	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad // indirect
