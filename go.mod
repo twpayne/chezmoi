@@ -29,7 +29,7 @@ require (
 	github.com/muesli/combinator v0.3.0
 	github.com/pelletier/go-toml v1.8.1
 	github.com/pkg/diff v0.0.0-20200914180035-5b29258ca4f7
-	github.com/rogpeppe/go-internal v1.6.2
+	github.com/rogpeppe/go-internal v1.7.0
 	github.com/rs/zerolog v1.20.0
 	github.com/sergi/go-diff v1.1.0
 	github.com/smartystreets/assertions v1.2.0 // indirect
