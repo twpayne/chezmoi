@@ -12,6 +12,8 @@
 * [I've made changes to both the destination state and the source state that I want to keep. How can I keep them both?](#ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both)
 * [Why does chezmoi convert all my template variables to lowercase?](#why-does-chezmoi-convert-all-my-template-variables-to-lowercase)
 * [chezmoi makes `~/.ssh/config` group writeable. How do I stop this?](#chezmoi-makes-sshconfig-group-writeable-how-do-i-stop-this)
+* [Why doesn't chezmoi use symlinks like GNU Stow?](#why-doesnt-chezmoi-use-symlinks-like-gnu-stow)
+* [Do I have to use `chezmoi edit` to edit my dotfiles?](#do-i-have-to-use-chezmoi-edit-to-edit-my-dotfiles)
 * [Can I change how chezmoi's source state is represented on disk?](#can-i-change-how-chezmois-source-state-is-represented-on-disk)
 * [gpg encryption fails. What could be wrong?](#gpg-encryption-fails-what-could-be-wrong)
 * [chezmoi reports "user: lookup userid NNNNN: input/output error"](#chezmoi-reports-user-lookup-userid-nnnnn-inputoutput-error)
@@ -153,6 +155,63 @@ to control group write permissions for individual files or directories. Please
 [open an issue on
 GitHub](https://github.com/twpayne/chezmoi/issues/new?assignees=&labels=enhancement&template=02_feature_request.md&title=)
 if you need this.
+
+## Why doesn't chezmoi use symlinks like GNU Stow?
+
+Symlinks are first class citizens in chezmoi: chezmoi supports creating them,
+updating them, removing them, and even more advanced features not found
+elsewhere like having the same symlink point to different targets on different
+machines by using templates.
+
+With chezmoi, you only use symlinks where you really need a symlink, in contrast
+to some other dotfile managers (e.g. GNU Stow) which require the use of symlinks
+as a layer of indirection between a dotfile's location (which can be anywhere in
+your home directory) and a dotfile's content (which needs to be in a centralized
+directory that you manage with version control). chezmoi solves this problem in
+a different way.
+
+Instead of using a symlink to redirect from the dotfile's location to the
+centralized directory, chezmoi generates the dotfile in its final location from
+the contents of the centralized directory. Not only is no symlink is needed,
+this has the advantages that chezmoi is better able to cope with differences
+from machine to machine (as a dotfile's contents can be unique to that machine)
+and the dotfiles that chezmoi creates are just regular files. There's nothing
+special about dotfiles managed by chezmoi, whereas dotfiles managed with GNU
+Stow are special because they're actually symlinks to somewhere else.
+
+The only advantage to using GNU Stow-style symlinks is that changes that you
+make to the dotfile's contents in the centralized directory are immediately
+visible, whereas chezmoi currently requires you to run `chezmoi apply` or
+`chezmoi edit --apply`. chezmoi will likely get an alternative solution to this
+too, see [#752](https://github.com/twpayne/chezmoi/issues/752).
+
+You can configure chezmoi to work like GNU Stow and have it create a set of
+symlinks back to a central directory, but this currently requires a bit of
+manual work (as described in
+[#167](https://github.com/twpayne/chezmoi/issues/167)). chezmoi might get some
+automation to help (see [#886](https://github.com/twpayne/chezmoi/issues/886)
+for example) but it does need some convincing use cases that demonstrate that a
+symlink from a dotfile's location to its contents in a central directory is
+better than just having the correct dotfile contents.
+
+## Do I have to use `chezmoi edit` to edit my dotfiles?
+
+No. `chezmoi edit` is a convenience command that has a couple of useful
+features, but you don't have to use it. You can also run `chezmoi cd` and then
+just edit the files in the source state directly. After saving an edited file
+you can run `chezmoi diff` to check what effect the changes would have, and run
+`chezmoi apply` if you're happy with them.
+
+`chezmoi edit` provides the following useful features:
+* It opens the correct file in the source state for you, so you don't have to
+  know anything about source state attributes.
+* If the dotfille is encrypted in the source state, then `chezmoi edit` will
+  decrypt it to a private directory, open that file in your `$EDITOR`, and then
+  re-encrypt the file when you quit your editor. That makes encryption more
+  transparent to the user. With the `--diff` and `--apply` options you can see what
+  would change and apply those changes without having to run `chezmoi diff` or
+  `chezmoi apply`. Note also that the arguments to `chezmoi edit` are the files in
+  their target location.
 
 ## Can I change how chezmoi's source state is represented on disk?
 

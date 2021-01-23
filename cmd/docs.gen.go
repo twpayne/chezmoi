@@ -269,6 +269,8 @@ func init() {
 		"* [I've made changes to both the destination state and the source state that I want to keep. How can I keep them both?](#ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both)\n" +
 		"* [Why does chezmoi convert all my template variables to lowercase?](#why-does-chezmoi-convert-all-my-template-variables-to-lowercase)\n" +
 		"* [chezmoi makes `~/.ssh/config` group writeable. How do I stop this?](#chezmoi-makes-sshconfig-group-writeable-how-do-i-stop-this)\n" +
+		"* [Why doesn't chezmoi use symlinks like GNU Stow?](#why-doesnt-chezmoi-use-symlinks-like-gnu-stow)\n" +
+		"* [Do I have to use `chezmoi edit` to edit my dotfiles?](#do-i-have-to-use-chezmoi-edit-to-edit-my-dotfiles)\n" +
 		"* [Can I change how chezmoi's source state is represented on disk?](#can-i-change-how-chezmois-source-state-is-represented-on-disk)\n" +
 		"* [gpg encryption fails. What could be wrong?](#gpg-encryption-fails-what-could-be-wrong)\n" +
 		"* [chezmoi reports \"user: lookup userid NNNNN: input/output error\"](#chezmoi-reports-user-lookup-userid-nnnnn-inputoutput-error)\n" +
@@ -410,6 +412,63 @@ func init() {
 		"[open an issue on\n" +
 		"GitHub](https://github.com/twpayne/chezmoi/issues/new?assignees=&labels=enhancement&template=02_feature_request.md&title=)\n" +
 		"if you need this.\n" +
+		"\n" +
+		"## Why doesn't chezmoi use symlinks like GNU Stow?\n" +
+		"\n" +
+		"Symlinks are first class citizens in chezmoi: chezmoi supports creating them,\n" +
+		"updating them, removing them, and even more advanced features not found\n" +
+		"elsewhere like having the same symlink point to different targets on different\n" +
+		"machines by using templates.\n" +
+		"\n" +
+		"With chezmoi, you only use symlinks where you really need a symlink, in contrast\n" +
+		"to some other dotfile managers (e.g. GNU Stow) which require the use of symlinks\n" +
+		"as a layer of indirection between a dotfile's location (which can be anywhere in\n" +
+		"your home directory) and a dotfile's content (which needs to be in a centralized\n" +
+		"directory that you manage with version control). chezmoi solves this problem in\n" +
+		"a different way.\n" +
+		"\n" +
+		"Instead of using a symlink to redirect from the dotfile's location to the\n" +
+		"centralized directory, chezmoi generates the dotfile in its final location from\n" +
+		"the contents of the centralized directory. Not only is no symlink is needed,\n" +
+		"this has the advantages that chezmoi is better able to cope with differences\n" +
+		"from machine to machine (as a dotfile's contents can be unique to that machine)\n" +
+		"and the dotfiles that chezmoi creates are just regular files. There's nothing\n" +
+		"special about dotfiles managed by chezmoi, whereas dotfiles managed with GNU\n" +
+		"Stow are special because they're actually symlinks to somewhere else.\n" +
+		"\n" +
+		"The only advantage to using GNU Stow-style symlinks is that changes that you\n" +
+		"make to the dotfile's contents in the centralized directory are immediately\n" +
+		"visible, whereas chezmoi currently requires you to run `chezmoi apply` or\n" +
+		"`chezmoi edit --apply`. chezmoi will likely get an alternative solution to this\n" +
+		"too, see [#752](https://github.com/twpayne/chezmoi/issues/752).\n" +
+		"\n" +
+		"You can configure chezmoi to work like GNU Stow and have it create a set of\n" +
+		"symlinks back to a central directory, but this currently requires a bit of\n" +
+		"manual work (as described in\n" +
+		"[#167](https://github.com/twpayne/chezmoi/issues/167)). chezmoi might get some\n" +
+		"automation to help (see [#886](https://github.com/twpayne/chezmoi/issues/886)\n" +
+		"for example) but it does need some convincing use cases that demonstrate that a\n" +
+		"symlink from a dotfile's location to its contents in a central directory is\n" +
+		"better than just having the correct dotfile contents.\n" +
+		"\n" +
+		"## Do I have to use `chezmoi edit` to edit my dotfiles?\n" +
+		"\n" +
+		"No. `chezmoi edit` is a convenience command that has a couple of useful\n" +
+		"features, but you don't have to use it. You can also run `chezmoi cd` and then\n" +
+		"just edit the files in the source state directly. After saving an edited file\n" +
+		"you can run `chezmoi diff` to check what effect the changes would have, and run\n" +
+		"`chezmoi apply` if you're happy with them.\n" +
+		"\n" +
+		"`chezmoi edit` provides the following useful features:\n" +
+		"* It opens the correct file in the source state for you, so you don't have to\n" +
+		"  know anything about source state attributes.\n" +
+		"* If the dotfille is encrypted in the source state, then `chezmoi edit` will\n" +
+		"  decrypt it to a private directory, open that file in your `$EDITOR`, and then\n" +
+		"  re-encrypt the file when you quit your editor. That makes encryption more\n" +
+		"  transparent to the user. With the `--diff` and `--apply` options you can see what\n" +
+		"  would change and apply those changes without having to run `chezmoi diff` or\n" +
+		"  `chezmoi apply`. Note also that the arguments to `chezmoi edit` are the files in\n" +
+		"  their target location.\n" +
 		"\n" +
 		"## Can I change how chezmoi's source state is represented on disk?\n" +
 		"\n" +
@@ -1743,9 +1802,11 @@ func init() {
 	assets["docs/MEDIA.md"] = []byte("" +
 		"# chezmoi in the media\n" +
 		"\n" +
-		"<!--- toc --->\n" +
+		"<!-- toc -->\n" +
 		"\n" +
 		"Recommended article: [Fedora Magazine: Take back your dotfiles with Chezmoi](https://fedoramagazine.org/take-back-your-dotfiles-with-chezmoi/)\n" +
+		"\n" +
+		"Recommneded video: [Conf42: chezmoi: Manage your dotfiles across multiple machines, securely](https://www.youtube.com/watch?v=JrCMCdvoMAw)\n" +
 		"\n" +
 		"| Date       | Version | Format      | Link                                                                                                                                                            |\n" +
 		"| ---------- | ------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n" +
@@ -1755,7 +1816,7 @@ func init() {
 		"| 2020-08-13 | 1.8.3   | Text        | [Using BitWarden and Chezmoi to manage SSH keys](https://www.jx0.uk/chezmoi/bitwarden/unix/ssh/2020/08/13/bitwarden-chezmoi-ssh-key.html)                       |\n" +
 		"| 2020-08-09 | 1.8.3   | Text        | [Automating and testing dotfiles](https://seds.nl/posts/automating-and-testing-dotfiles/)                                                                       |\n" +
 		"| 2020-08-03 | 1.8.3   | Text        | [Automating a Linux in Windows Dev Setup](https://matt.aimonetti.net/posts/2020-08-automating-a-linux-in-windows-dev-setup/)                                    |\n" +
-		"| 2020-07-06 | 1.8.3   | Video       | [chezmoi: Manage your dotfiles across multiple machines, securely](https://www.youtube.com/watch?v=JrCMCdvoMAw).                                                |\n" +
+		"| 2020-07-06 | 1.8.3   | Video       | [Conf42: chezmoi: Manage your dotfiles across multiple machines, securely](https://www.youtube.com/watch?v=JrCMCdvoMAw)                                         |\n" +
 		"| 2020-07-03 | 1.8.3   | Text        | [Feeling at home in a LXD container](https://ubuntu.com/blog/feeling-at-home-in-a-lxd-container)                                                                |\n" +
 		"| 2020-06-15 | 1.8.2   | Text        | [Dotfiles management using chezmoi - How I Use Linux Desktop at Work Part5](https://blog.benoitj.ca/2020-06-15-how-i-use-linux-desktop-at-work-part5-dotfiles/) |\n" +
 		"| 2020-04-27 | 1.8.0   | Text        | [Managing my dotfiles with chezmoi](http://blog.emilieschario.com/post/managing-my-dotfiles-with-chezmoi/)                                                      |\n" +
