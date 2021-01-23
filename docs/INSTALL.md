@@ -16,6 +16,10 @@ with a single command.
 
     curl -sfL https://git.io/chezmoi | sh
 
+Or on systems with Powershell, you can use this command:
+
+    (iwr https://git.io/chezmoi.ps1).Content | powershell -c -
+
 ## One-line package install
 
 Install chezmoi with a single command.
