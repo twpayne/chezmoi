@@ -22,6 +22,7 @@ var (
 		regexp.MustCompile(`\Achezmoi2/completions/chezmoi\.ps1\z`),
 		regexp.MustCompile(`\Acompletions/chezmoi\.ps1\z`),
 		regexp.MustCompile(`\Achezmoi\.io/public\z`),
+		regexp.MustCompile(`\Achezmoi\.io/resources\z`),
 		regexp.MustCompile(`\Achezmoi\.io/themes/book\z`),
 	}
 	crlfLineEndingRx     = regexp.MustCompile(`\r\z`)
