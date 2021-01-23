@@ -1729,6 +1729,10 @@ func init() {
 		"\n" +
 		"    curl -sfL https://git.io/chezmoi | sh\n" +
 		"\n" +
+		"Or on systems with Powershell, you can use this command:\n" +
+		"\n" +
+		"    (iwr https://git.io/chezmoi.ps1).Content | powershell -c -\n" +
+		"\n" +
 		"## One-line package install\n" +
 		"\n" +
 		"Install chezmoi with a single command.\n" +
