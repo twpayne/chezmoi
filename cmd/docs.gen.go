@@ -1812,6 +1812,8 @@ func init() {
 		"\n" +
 		"Recommended video: [Conf42: chezmoi: Manage your dotfiles across multiple machines, securely](https://www.youtube.com/watch?v=JrCMCdvoMAw)\n" +
 		"\n" +
+		"Recommended podcast: [FLOSS weekly episode 556: chezmoi](https://twit.tv/shows/floss-weekly/episodes/556)\n" +
+		"\n" +
 		"| Date       | Version | Format      | Link                                                                                                                                                            |\n" +
 		"| ---------- | ------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n" +
 		"| 2020-11-06 | 1.8.8   | Text        | [Chezmoi – Securely Manage dotfiles across multiple machines](https://computingforgeeks.com/chezmoi-manage-dotfiles-across-multiple-machines/)                  |\n" +
