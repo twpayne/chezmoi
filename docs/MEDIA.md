@@ -10,6 +10,7 @@ Recommended podcast: [FLOSS weekly episode 556: chezmoi](https://twit.tv/shows/f
 
 | Date       | Version | Format      | Link                                                                                                                                                            |
 | ---------- | ------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2021-02-06 | 1.8.10  | Video       | [chezmoi: manage your dotfiles across multiple, diverse machines, securely](https://fosdem.org/2021/schedule/event/chezmoi/)                                    |
 | 2020-11-06 | 1.8.8   | Text        | [Chezmoi – Securely Manage dotfiles across multiple machines](https://computingforgeeks.com/chezmoi-manage-dotfiles-across-multiple-machines/)                  |
 | 2020-11-05 | 1.8.8   | Text        | [Using chezmoi to manage dotfiles](https://pashinskikh.de/posts/chezmoi/)                                                                                       |
 | 2020-10-05 | 1.8.6   | Text        | [Dotfiles with /Chezmoi/](https://blog.lazkani.io/posts/backup/dotfiles-with-chezmoi/)                                                                          |
