@@ -49,12 +49,16 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: chezmoi2-${{ matrix.os }}
-        path: dist/chezmoi2
+        path: |
+          dist/chezmoi2
+          dist/chezmoi2.exe
     - name: Artifact
       uses: actions/upload-artifact@v2
       with:
         name: chezmoi-${{ matrix.os }}
-        path: dist/chezmoi
+        path: |
+          dist/chezmoi
+          dist/chezmoi.exe
   test-release:
     runs-on: ubuntu-18.04
     steps:
