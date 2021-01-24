@@ -1731,7 +1731,14 @@ func init() {
 		"\n" +
 		"Or on systems with Powershell, you can use this command:\n" +
 		"\n" +
+		"    # To install in ./bin\n" +
 		"    (iwr https://git.io/chezmoi.ps1).Content | powershell -c -\n" +
+		"\n" +
+		"    # To install in another location\n" +
+		"    '$params = \"-BinDir ~/other\"', (iwr https://git.io/chezmoi.ps1).Content | powershell -c -\n" +
+		"\n" +
+		"    # For information about other options, try this:\n" +
+		"    '$params = \"-?\"', (iwr https://git.io/chezmoi.ps1).Content | powershell -c -\n" +
 		"\n" +
 		"## One-line package install\n" +
 		"\n" +
