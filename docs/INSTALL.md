@@ -18,7 +18,14 @@ with a single command.
 
 Or on systems with Powershell, you can use this command:
 
+    # To install in ./bin
     (iwr https://git.io/chezmoi.ps1).Content | powershell -c -
+
+    # To install in another location
+    '$params = "-BinDir ~/other"', (iwr https://git.io/chezmoi.ps1).Content | powershell -c -
+
+    # For information about other options, try this:
+    '$params = "-?"', (iwr https://git.io/chezmoi.ps1).Content | powershell -c -
 
 ## One-line package install
 

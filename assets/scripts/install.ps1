@@ -1,4 +1,3 @@
-#Requires -Version 5
 enum LogLevel {
     Debug = 3
     Info = 2
@@ -107,7 +106,8 @@ function log-critical {
 
 function get_goos {
     $ri = [System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform;
-    if ($ri.Invoke([Runtime.InteropServices.OSPlatform]::Windows)) {
+    # if $ri isn't defined, then we must be running in Powershell 5.1, which only works on Windows.
+    if (-not $ri -or $ri.Invoke([Runtime.InteropServices.OSPlatform]::Windows)) {
         return "windows"
     } elseif ($ri.Invoke([Runtime.InteropServices.OSPlatform]::Linux)) {
         return "linux"
@@ -121,22 +121,37 @@ function get_goos {
 }
 
 function get_goarch {
-    # convert these to strings because the enums don't apparently work in switch TODO: is this fixable?
-    switch ("$([Runtime.InteropServices.RuntimeInformation]::OSArchitecture)") {
-        "$([Runtime.InteropServices.Architecture]::Arm)" {
+    $arch = "$([Runtime.InteropServices.RuntimeInformation]::OSArchitecture)";
+    $wmi_arch = $null;
+
+    if (-not $arch) {
+        if (Get-Command "Get-WmiObject" -ErrorAction SilentlyContinue) {
+            $wmi_arch = (Get-WmiObject -Class Win32_OperatingSystem | Select-Object *).OSArchitecture
+            if ($wmi_arch -eq "64-bit") {
+                $arch = "X64";
+            } elseif ($wmi_arch -eq "32-bit") {
+                $arch = "X86";
+            }
+        }
+    }
+
+    switch ($arch) {
+        "Arm" {
             return "arm"
         }
-        "$([Runtime.InteropServices.Architecture]::Arm64)" {
+        "Arm64" {
             return "arm64"
         }
-        "$([Runtime.InteropServices.Architecture]::X86)" {
+        "X86" {
             return "i386"
         }
-        "$([Runtime.InteropServices.Architecture]::X64)" {
+        "X64" {
             return "amd64"
         }
+
         default {
-            throw "unsupported architecture: $_"
+            log-debug "Unsupported architecture: $arch (wmi: $wmi_arch)"
+            throw "unsupported architecture"
         }
     }
 }
@@ -191,17 +206,31 @@ function unpack-file {
     } elseif ($file.EndsWith(".tar")) {
         tar -xf $file
     } elseif ($file.EndsWith(".zip")) {
-        unzip $file
+        Expand-Archive -LiteralPath $file -DestinationPath .
     } else {
         throw "can't unpack unknown format for $file"
     }
 }
 
-function main {
+<#
+    .SYNOPSIS
+    Install the Chezmoi dotfile manager
+
+    .DESCRIPTION
+    Installs Chezmoi to the given directory, defaulting to ./bin
+
+    You can specify a particular git tag using the -Tag option.
+
+    Examples:
+    '$params = "-BinDir ~/bindir"', (iwr https://git.io/chezmoi.ps1).Content | powershell -c -
+    '$params = "-Tag v1.8.10"', (iwr https://git.io/chezmoi.ps1).Content | powershell -c -
+#>
+function Install-Chezmoi {
     [CmdletBinding(PositionalBinding=$false)]
     param(
         [Parameter(Mandatory = $false)]
-        [string] $BinDir = (Join-Path (Resolve-Path '.') 'bin'),
+        [string]
+        $BinDir = (Join-Path (Resolve-Path '.') 'bin'),
 
         [Parameter(Mandatory = $false)]
         [string] $Tag = 'latest',
@@ -272,7 +301,7 @@ function main {
 }
 
 try {
-    Invoke-Expression ("main " + $params)
+    Invoke-Expression ("Install-Chezmoi " + $params)
 } catch {
     Write-Host "An error occurred while installing: $_"
 } finally {
