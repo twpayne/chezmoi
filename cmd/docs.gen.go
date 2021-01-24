@@ -1810,7 +1810,7 @@ func init() {
 		"\n" +
 		"Recommended article: [Fedora Magazine: Take back your dotfiles with Chezmoi](https://fedoramagazine.org/take-back-your-dotfiles-with-chezmoi/)\n" +
 		"\n" +
-		"Recommneded video: [Conf42: chezmoi: Manage your dotfiles across multiple machines, securely](https://www.youtube.com/watch?v=JrCMCdvoMAw)\n" +
+		"Recommended video: [Conf42: chezmoi: Manage your dotfiles across multiple machines, securely](https://www.youtube.com/watch?v=JrCMCdvoMAw)\n" +
 		"\n" +
 		"| Date       | Version | Format      | Link                                                                                                                                                            |\n" +
 		"| ---------- | ------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n" +
@@ -1824,7 +1824,7 @@ func init() {
 		"| 2020-07-03 | 1.8.3   | Text        | [Feeling at home in a LXD container](https://ubuntu.com/blog/feeling-at-home-in-a-lxd-container)                                                                |\n" +
 		"| 2020-06-15 | 1.8.2   | Text        | [Dotfiles management using chezmoi - How I Use Linux Desktop at Work Part5](https://blog.benoitj.ca/2020-06-15-how-i-use-linux-desktop-at-work-part5-dotfiles/) |\n" +
 		"| 2020-04-27 | 1.8.0   | Text        | [Managing my dotfiles with chezmoi](http://blog.emilieschario.com/post/managing-my-dotfiles-with-chezmoi/)                                                      |\n" +
-		"| 2020-04-16 | 1.17.19 | Text (FR)   | [Chezmoi, visite guidée](https://blog.wescale.fr/2020/04/16/chezmoi-visite-guidee/)                                                                             |\n" +
+		"| 2020-04-16 | 1.7.19  | Text (FR)   | [Chezmoi, visite guidée](https://blog.wescale.fr/2020/04/16/chezmoi-visite-guidee/)                                                                             |\n" +
 		"| 2020-04-03 | 1.7.17  | Text        | [Fedora Magazine: Take back your dotfiles with Chezmoi](https://fedoramagazine.org/take-back-your-dotfiles-with-chezmoi/)                                       |\n" +
 		"| 2020-04-01 | 1.7.17  | Text        | [Managing dotfiles and secret with chezmoi](https://blog.arkey.fr/2020/04/01/manage_dotfiles_with_chezmoi/)                                                     |\n" +
 		"| 2020-03-12 | 1.7.16  | Video       | [Managing Dotfiles with ChezMoi](https://www.youtube.com/watch?v=HXx6ugA98Qo)                                                                                   |\n" +
