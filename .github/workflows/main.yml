@@ -36,13 +36,20 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Build
-      run: go build ./...
+      run: |
+        mkdir dist
+        go build -o dist ./...
     - name: Run
       run: |
         go run . --version
         go run ./chezmoi2 --version
     - name: Test
       run: go test -race ./...
+    - name: Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: chezmoi2-${{ matrix.os }}
+        path: dist/chezmoi*
   test-release:
     runs-on: ubuntu-18.04
     steps:
