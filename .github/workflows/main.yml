@@ -87,36 +87,36 @@ jobs:
       with:
         name: chezmoi-linux-amd64
         path: dist/chezmoi-cgo-glibc_linux_amd64/chezmoi
-    - name: Artifact chezmoi2-linux-amd64
-      uses: actions/upload-artifact@v2
-      with:
-        name: chezmoi2-linux-amd64
-        path: dist/chezmoi2-cgo-glibc_linux_amd64/chezmoi2
     - name: Artifact chezmoi-linux-musl-amd64
       uses: actions/upload-artifact@v2
       with:
         name: chezmoi-linux-musl-amd64
         path: dist/chezmoi-cgo-musl_linux_amd64/chezmoi
-    - name: Artifact chezmoi2-linux-musl-amd64
-      uses: actions/upload-artifact@v2
-      with:
-        name: chezmoi2-linux-musl-amd64
-        path: dist/chezmoi2-cgo-musl_linux_amd64/chezmoi2
     - name: Artifact chezmoi-macos-amd64
       uses: actions/upload-artifact@v2
       with:
         name: chezmoi-macos-amd64
         path: dist/chezmoi-nocgo_darwin_amd64/chezmoi
-    - name: Artifact chezmoi2-macos-amd64
-      uses: actions/upload-artifact@v2
-      with:
-        name: chezmoi2-macos-amd64
-        path: dist/chezmoi2-nocgo_darwin_amd64/chezmoi2
     - name: Artifact chezmoi-windows-amd64
       uses: actions/upload-artifact@v2
       with:
         name: chezmoi-windows-amd64
         path: dist/chezmoi-nocgo_windows_amd64/chezmoi.exe
+    - name: Artifact chezmoi2-linux-amd64
+      uses: actions/upload-artifact@v2
+      with:
+        name: chezmoi2-linux-amd64
+        path: dist/chezmoi2-cgo-glibc_linux_amd64/chezmoi2
+    - name: Artifact chezmoi2-linux-musl-amd64
+      uses: actions/upload-artifact@v2
+      with:
+        name: chezmoi2-linux-musl-amd64
+        path: dist/chezmoi2-cgo-musl_linux_amd64/chezmoi2
+    - name: Artifact chezmoi2-macos-amd64
+      uses: actions/upload-artifact@v2
+      with:
+        name: chezmoi2-macos-amd64
+        path: dist/chezmoi2-nocgo_darwin_amd64/chezmoi2
     - name: Artifact chezmoi2-windows-amd64
       uses: actions/upload-artifact@v2
       with:
