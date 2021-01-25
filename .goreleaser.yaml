@@ -53,6 +53,7 @@ builds:
   - goos: linux
     goarch: amd64
 - id: chezmoi2-cgo-glibc
+  binary: chezmoi2
   main: ./chezmoi2/main.go
   env:
   - CGO_ENABLED=1
@@ -61,6 +62,7 @@ builds:
   goarch:
   - amd64
 - id: chezmoi2-cgo-musl
+  binary: chezmoi2
   main: ./chezmoi2/main.go
   env:
   - CC=/usr/bin/musl-gcc
@@ -79,6 +81,7 @@ builds:
   - '-linkmode external'
   - '--extldflags "-static"'
 - id: chezmoi2-nocgo
+  binary: chezmoi2
   main: ./chezmoi2/main.go
   env:
   - CGO_ENABLED=0

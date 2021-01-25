@@ -1,10 +1,10 @@
 using namespace System.Management.Automation
 using namespace System.Management.Automation.Language
-Register-ArgumentCompleter -Native -CommandName 'chezmoi' -ScriptBlock {
+Register-ArgumentCompleter -Native -CommandName 'chezmoi2' -ScriptBlock {
     param($wordToComplete, $commandAst, $cursorPosition)
     $commandElements = $commandAst.CommandElements
     $command = @(
-        'chezmoi'
+        'chezmoi2'
         for ($i = 1; $i -lt $commandElements.Count; $i++) {
             $element = $commandElements[$i]
             if ($element -isnot [StringConstantExpressionAst] -or
@@ -16,7 +16,7 @@ Register-ArgumentCompleter -Native -CommandName 'chezmoi' -ScriptBlock {
         }
     ) -join ';'
     $completions = @(switch ($command) {
-        'chezmoi' {
+        'chezmoi2' {
             [CompletionResult]::new('--color', 'color', [CompletionResultType]::ParameterName, 'colorize diffs')
             [CompletionResult]::new('-c', 'c', [CompletionResultType]::ParameterName, 'config file')
             [CompletionResult]::new('--config', 'config', [CompletionResultType]::ParameterName, 'config file')
@@ -71,7 +71,7 @@ Register-ArgumentCompleter -Native -CommandName 'chezmoi' -ScriptBlock {
             [CompletionResult]::new('verify', 'verify', [CompletionResultType]::ParameterValue, 'Exit with success if the destination state matches the target state, fail otherwise')
             break
         }
-        'chezmoi;add' {
+        'chezmoi2;add' {
             [CompletionResult]::new('-a', 'a', [CompletionResultType]::ParameterName, 'auto generate the template when adding files as templates')
             [CompletionResult]::new('--autotemplate', 'autotemplate', [CompletionResultType]::ParameterName, 'auto generate the template when adding files as templates')
             [CompletionResult]::new('-e', 'e', [CompletionResultType]::ParameterName, 'add empty files')
@@ -88,7 +88,7 @@ Register-ArgumentCompleter -Native -CommandName 'chezmoi' -ScriptBlock {
             [CompletionResult]::new('--template', 'template', [CompletionResultType]::ParameterName, 'add files as templates')
             break
         }
-        'chezmoi;apply' {
+        'chezmoi2;apply' {
             [CompletionResult]::new('--ignore-encrypted', 'ignore-encrypted', [CompletionResultType]::ParameterName, 'ignore encrypted files')
             [CompletionResult]::new('-i', 'i', [CompletionResultType]::ParameterName, 'include entry types')
             [CompletionResult]::new('--include', 'include', [CompletionResultType]::ParameterName, 'include entry types')
@@ -97,7 +97,7 @@ Register-ArgumentCompleter -Native -CommandName 'chezmoi' -ScriptBlock {
             [CompletionResult]::new('--source-path', 'source-path', [CompletionResultType]::ParameterName, 'specify targets by source path')
             break
         }
-        'chezmoi;archive' {
+        'chezmoi2;archive' {
             [CompletionResult]::new('--format', 'format', [CompletionResultType]::ParameterName, 'format (tar or zip)')
             [CompletionResult]::new('-z', 'z', [CompletionResultType]::ParameterName, 'compress the output with gzip')
             [CompletionResult]::new('--gzip', 'gzip', [CompletionResultType]::ParameterName, 'compress the output with gzip')
@@ -107,16 +107,16 @@ Register-ArgumentCompleter -Native -CommandName 'chezmoi' -ScriptBlock {
             [CompletionResult]::new('--recursive', 'recursive', [CompletionResultType]::ParameterName, 'recursive')
             break
         }
-        'chezmoi;cat' {
+        'chezmoi2;cat' {
             break
         }
-        'chezmoi;cd' {
+        'chezmoi2;cd' {
             break
         }
-        'chezmoi;chattr' {
+        'chezmoi2;chattr' {
             break
         }
-        'chezmoi;completion' {
+        'chezmoi2;completion' {
             [CompletionResult]::new('--color', 'color', [CompletionResultType]::ParameterName, 'colorize diffs')
             [CompletionResult]::new('-c', 'c', [CompletionResultType]::ParameterName, 'config file')
             [CompletionResult]::new('--config', 'config', [CompletionResultType]::ParameterName, 'config file')
@@ -142,10 +142,10 @@ Register-ArgumentCompleter -Native -CommandName 'chezmoi' -ScriptBlock {
             [CompletionResult]::new('--verbose', 'verbose', [CompletionResultType]::ParameterName, 'verbose')
             break
         }
-        'chezmoi;data' {
+        'chezmoi2;data' {
             break
         }
-        'chezmoi;diff' {
+        'chezmoi2;diff' {
             [CompletionResult]::new('-i', 'i', [CompletionResultType]::ParameterName, 'include entry types')
             [CompletionResult]::new('--include', 'include', [CompletionResultType]::ParameterName, 'include entry types')
             [CompletionResult]::new('--no-pager', 'no-pager', [CompletionResultType]::ParameterName, 'disable pager')
@@ -153,13 +153,13 @@ Register-ArgumentCompleter -Native -CommandName 'chezmoi' -ScriptBlock {
             [CompletionResult]::new('--recursive', 'recursive', [CompletionResultType]::ParameterName, 'recursive')
             break
         }
-        'chezmoi;docs' {
+        'chezmoi2;docs' {
             break
         }
-        'chezmoi;doctor' {
+        'chezmoi2;doctor' {
             break
         }
-        'chezmoi;dump' {
+        'chezmoi2;dump' {
             [CompletionResult]::new('-f', 'f', [CompletionResultType]::ParameterName, 'format (json or yaml)')
             [CompletionResult]::new('--format', 'format', [CompletionResultType]::ParameterName, 'format (json or yaml)')
             [CompletionResult]::new('-i', 'i', [CompletionResultType]::ParameterName, 'include entry types')
@@ -168,17 +168,17 @@ Register-ArgumentCompleter -Native -CommandName 'chezmoi' -ScriptBlock {
             [CompletionResult]::new('--recursive', 'recursive', [CompletionResultType]::ParameterName, 'recursive')
             break
         }
-        'chezmoi;edit' {
+        'chezmoi2;edit' {
             [CompletionResult]::new('-a', 'a', [CompletionResultType]::ParameterName, 'apply edit after editing')
             [CompletionResult]::new('--apply', 'apply', [CompletionResultType]::ParameterName, 'apply edit after editing')
             [CompletionResult]::new('-i', 'i', [CompletionResultType]::ParameterName, 'include entry types')
             [CompletionResult]::new('--include', 'include', [CompletionResultType]::ParameterName, 'include entry types')
             break
         }
-        'chezmoi;edit-config' {
+        'chezmoi2;edit-config' {
             break
         }
-        'chezmoi;execute-template' {
+        'chezmoi2;execute-template' {
             [CompletionResult]::new('-i', 'i', [CompletionResultType]::ParameterName, 'simulate chezmoi init')
             [CompletionResult]::new('--init', 'init', [CompletionResultType]::ParameterName, 'simulate chezmoi init')
             [CompletionResult]::new('--promptBool', 'promptBool', [CompletionResultType]::ParameterName, 'simulate promptBool')
@@ -187,16 +187,16 @@ Register-ArgumentCompleter -Native -CommandName 'chezmoi' -ScriptBlock {
             [CompletionResult]::new('--promptString', 'promptString', [CompletionResultType]::ParameterName, 'simulate promptString')
             break
         }
-        'chezmoi;forget' {
+        'chezmoi2;forget' {
             break
         }
-        'chezmoi;git' {
+        'chezmoi2;git' {
             break
         }
-        'chezmoi;help' {
+        'chezmoi2;help' {
             break
         }
-        'chezmoi;import' {
+        'chezmoi2;import' {
             [CompletionResult]::new('-d', 'd', [CompletionResultType]::ParameterName, 'destination prefix')
             [CompletionResult]::new('--destination', 'destination', [CompletionResultType]::ParameterName, 'destination prefix')
             [CompletionResult]::new('-x', 'x', [CompletionResultType]::ParameterName, 'import directories exactly')
@@ -208,7 +208,7 @@ Register-ArgumentCompleter -Native -CommandName 'chezmoi' -ScriptBlock {
             [CompletionResult]::new('--strip-components', 'strip-components', [CompletionResultType]::ParameterName, 'strip components')
             break
         }
-        'chezmoi;init' {
+        'chezmoi2;init' {
             [CompletionResult]::new('-a', 'a', [CompletionResultType]::ParameterName, 'update destination directory')
             [CompletionResult]::new('--apply', 'apply', [CompletionResultType]::ParameterName, 'update destination directory')
             [CompletionResult]::new('-d', 'd', [CompletionResultType]::ParameterName, 'create a shallow clone')
@@ -221,62 +221,62 @@ Register-ArgumentCompleter -Native -CommandName 'chezmoi' -ScriptBlock {
             [CompletionResult]::new('--skip-encrypted', 'skip-encrypted', [CompletionResultType]::ParameterName, 'skip encrypted files')
             break
         }
-        'chezmoi;managed' {
+        'chezmoi2;managed' {
             [CompletionResult]::new('-i', 'i', [CompletionResultType]::ParameterName, 'include entry types')
             [CompletionResult]::new('--include', 'include', [CompletionResultType]::ParameterName, 'include entry types')
             break
         }
-        'chezmoi;merge' {
+        'chezmoi2;merge' {
             break
         }
-        'chezmoi;purge' {
+        'chezmoi2;purge' {
             [CompletionResult]::new('-P', 'P', [CompletionResultType]::ParameterName, 'purge chezmoi executable')
             [CompletionResult]::new('--binary', 'binary', [CompletionResultType]::ParameterName, 'purge chezmoi executable')
             break
         }
-        'chezmoi;remove' {
+        'chezmoi2;remove' {
             break
         }
-        'chezmoi;secret' {
+        'chezmoi2;secret' {
             [CompletionResult]::new('keyring', 'keyring', [CompletionResultType]::ParameterValue, 'Interact with keyring')
             break
         }
-        'chezmoi;secret;keyring' {
+        'chezmoi2;secret;keyring' {
             [CompletionResult]::new('get', 'get', [CompletionResultType]::ParameterValue, 'Get a value from keyring')
             [CompletionResult]::new('set', 'set', [CompletionResultType]::ParameterValue, 'Set a value in keyring')
             break
         }
-        'chezmoi;secret;keyring;get' {
+        'chezmoi2;secret;keyring;get' {
             break
         }
-        'chezmoi;secret;keyring;set' {
+        'chezmoi2;secret;keyring;set' {
             break
         }
-        'chezmoi;source-path' {
+        'chezmoi2;source-path' {
             break
         }
-        'chezmoi;state' {
+        'chezmoi2;state' {
             [CompletionResult]::new('dump', 'dump', [CompletionResultType]::ParameterValue, 'Generate a dump of the persistent state')
             [CompletionResult]::new('reset', 'reset', [CompletionResultType]::ParameterValue, 'Reset the persistent state')
             break
         }
-        'chezmoi;state;dump' {
+        'chezmoi2;state;dump' {
             break
         }
-        'chezmoi;state;reset' {
+        'chezmoi2;state;reset' {
             break
         }
-        'chezmoi;status' {
+        'chezmoi2;status' {
             [CompletionResult]::new('-i', 'i', [CompletionResultType]::ParameterName, 'include entry types')
             [CompletionResult]::new('--include', 'include', [CompletionResultType]::ParameterName, 'include entry types')
             [CompletionResult]::new('-r', 'r', [CompletionResultType]::ParameterName, 'recursive')
             [CompletionResult]::new('--recursive', 'recursive', [CompletionResultType]::ParameterName, 'recursive')
             break
         }
-        'chezmoi;unmanaged' {
+        'chezmoi2;unmanaged' {
             break
         }
-        'chezmoi;update' {
+        'chezmoi2;update' {
             [CompletionResult]::new('-a', 'a', [CompletionResultType]::ParameterName, 'apply after pulling')
             [CompletionResult]::new('--apply', 'apply', [CompletionResultType]::ParameterName, 'apply after pulling')
             [CompletionResult]::new('-i', 'i', [CompletionResultType]::ParameterName, 'include entry types')
@@ -285,7 +285,7 @@ Register-ArgumentCompleter -Native -CommandName 'chezmoi' -ScriptBlock {
             [CompletionResult]::new('--recursive', 'recursive', [CompletionResultType]::ParameterName, 'recursive')
             break
         }
-        'chezmoi;verify' {
+        'chezmoi2;verify' {
             [CompletionResult]::new('-i', 'i', [CompletionResultType]::ParameterName, 'include entry types')
             [CompletionResult]::new('--include', 'include', [CompletionResultType]::ParameterName, 'include entry types')
             [CompletionResult]::new('-r', 'r', [CompletionResultType]::ParameterName, 'recursive')
