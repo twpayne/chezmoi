@@ -2315,9 +2315,6 @@ func init() {
 		"the source state correctly. chezmoi will refuse to interpret the source state if\n" +
 		"the current version is too old.\n" +
 		"\n" +
-		"**Warning** support for `.chezmoiversion` will be introduced in a future version\n" +
-		"(likely 1.5.0). Earlier versions of chezmoi will ignore this file.\n" +
-		"\n" +
 		"#### `.chezmoiversion` examples\n" +
 		"\n" +
 		"    1.5.0\n" +
