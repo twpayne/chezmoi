@@ -1310,7 +1310,7 @@ func withVersionInfo(versionInfo VersionInfo) configOption {
 			if err != nil {
 				return err
 			}
-			versionElems = append(versionElems, version.String())
+			versionElems = append(versionElems, "v"+version.String())
 		} else {
 			versionElems = append(versionElems, "dev")
 		}

@@ -77,6 +77,11 @@ jobs:
         ./dist/chezmoi-cgo-glibc_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v"
         ./dist/chezmoi-cgo-musl_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v"
         ./dist/chezmoi-nocgo_linux_386/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v"
+        file ./dist/chezmoi2-cgo-glibc_linux_amd64/chezmoi2 | tee /dev/stderr | grep -q "dynamically linked"
+        file ./dist/chezmoi2-cgo-musl_linux_amd64/chezmoi2 | tee /dev/stderr | grep -q "statically linked"
+        ./dist/chezmoi2-cgo-glibc_linux_amd64/chezmoi2 --version | tee /dev/stderr | grep -q "chezmoi2 version v"
+        ./dist/chezmoi2-cgo-musl_linux_amd64/chezmoi2 --version | tee /dev/stderr | grep -q "chezmoi2 version v"
+        ./dist/chezmoi2-nocgo_linux_386/chezmoi2 --version | tee /dev/stderr | grep -q "chezmoi2 version v"
     - name: Artifact chezmoi-linux-amd64
       uses: actions/upload-artifact@v2
       with:
