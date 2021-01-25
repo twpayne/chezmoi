@@ -1146,7 +1146,7 @@ func (c *Config) sourceState() (*chezmoi.SourceState, error) {
 		return nil, err
 	}
 
-	if minVersion := s.MinVersion(); c.version != nil && c.version.LessThan(minVersion) {
+	if minVersion := s.MinVersion(); c.version != nil && !isDevVersion(c.version) && c.version.LessThan(minVersion) {
 		return nil, fmt.Errorf("source state requires version %s or later, chezmoi is version %s", minVersion, c.version)
 	}
 
@@ -1297,6 +1297,12 @@ func (c *Config) writeOutput(data []byte) error {
 
 func (c *Config) writeOutputString(data string) error {
 	return c.writeOutput([]byte(data))
+}
+
+// isDevVersion returns true if version is a development version (i.e. that the
+// major, minor, and patch version numbers are all zero).
+func isDevVersion(v *semver.Version) bool {
+	return v.Major == 0 && v.Minor == 0 && v.Patch == 0
 }
 
 // withVersionInfo sets the version information.

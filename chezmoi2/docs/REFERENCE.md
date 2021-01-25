@@ -447,9 +447,6 @@ a semantic version defining the minimum version of chezmoi required to interpret
 the source state correctly. chezmoi will refuse to interpret the source state if
 the current version is too old.
 
-**Warning** support for `.chezmoiversion` will be introduced in a future version
-(likely 1.5.0). Earlier versions of chezmoi will ignore this file.
-
 #### `.chezmoiversion` examples
 
     1.5.0

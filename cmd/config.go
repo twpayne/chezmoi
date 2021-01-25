@@ -18,6 +18,7 @@ import (
 	"unicode"
 
 	"github.com/Masterminds/sprig/v3"
+	"github.com/coreos/go-semver/semver"
 	"github.com/pelletier/go-toml"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -498,7 +499,7 @@ func (c *Config) getTargetState(populateOptions *chezmoi.PopulateOptions) (*chez
 	if err := ts.Populate(fs, populateOptions); err != nil {
 		return nil, err
 	}
-	if Version != nil && ts.MinVersion != nil && Version.LessThan(*ts.MinVersion) {
+	if Version != nil && !isDevVersion(Version) && ts.MinVersion != nil && Version.LessThan(*ts.MinVersion) {
 		return nil, fmt.Errorf("chezmoi version %s too old, source state requires at least %s", Version, ts.MinVersion)
 	}
 	return ts, nil
@@ -600,6 +601,12 @@ func getDefaultSourceDir(bds *xdg.BaseDirectorySpecification) string {
 	}
 	// Fallback to XDG Base Directory Specification default.
 	return filepath.Join(bds.DataHome, "chezmoi")
+}
+
+// isDevVersion returns true if version is a development version (i.e. that the
+// major, minor, and patch version numbers are all zero).
+func isDevVersion(v *semver.Version) bool {
+	return v.Major == 0 && v.Minor == 0 && v.Patch == 0
 }
 
 // isWellKnownAbbreviation returns true if word is a well known abbreviation.
