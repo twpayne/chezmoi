@@ -1,6 +1,6 @@
-# bash completion for chezmoi                              -*- shell-script -*-
+# bash completion for chezmoi2                             -*- shell-script -*-
 
-__chezmoi_debug()
+__chezmoi2_debug()
 {
     if [[ -n ${BASH_COMP_DEBUG_FILE} ]]; then
         echo "$*" >> "${BASH_COMP_DEBUG_FILE}"
@@ -9,13 +9,13 @@ __chezmoi_debug()
 
 # Homebrew on Macs have version 1.3 of bash-completion which doesn't include
 # _init_completion. This is a very minimal version of that function.
-__chezmoi_init_completion()
+__chezmoi2_init_completion()
 {
     COMPREPLY=()
     _get_comp_words_by_ref "$@" cur prev words cword
 }
 
-__chezmoi_index_of_word()
+__chezmoi2_index_of_word()
 {
     local w word=$1
     shift
@@ -27,7 +27,7 @@ __chezmoi_index_of_word()
     index=-1
 }
 
-__chezmoi_contains_word()
+__chezmoi2_contains_word()
 {
     local w word=$1; shift
     for w in "$@"; do
@@ -36,9 +36,9 @@ __chezmoi_contains_word()
     return 1
 }
 
-__chezmoi_handle_go_custom_completion()
+__chezmoi2_handle_go_custom_completion()
 {
-    __chezmoi_debug "${FUNCNAME[0]}: cur is ${cur}, words[*] is ${words[*]}, #words[@] is ${#words[@]}"
+    __chezmoi2_debug "${FUNCNAME[0]}: cur is ${cur}, words[*] is ${words[*]}, #words[@] is ${#words[@]}"
 
     local shellCompDirectiveError=1
     local shellCompDirectiveNoSpace=2
@@ -49,22 +49,22 @@ __chezmoi_handle_go_custom_completion()
     local out requestComp lastParam lastChar comp directive args
 
     # Prepare the command to request completions for the program.
-    # Calling ${words[0]} instead of directly chezmoi allows to handle aliases
+    # Calling ${words[0]} instead of directly chezmoi2 allows to handle aliases
     args=("${words[@]:1}")
     requestComp="${words[0]} __completeNoDesc ${args[*]}"
 
     lastParam=${words[$((${#words[@]}-1))]}
     lastChar=${lastParam:$((${#lastParam}-1)):1}
-    __chezmoi_debug "${FUNCNAME[0]}: lastParam ${lastParam}, lastChar ${lastChar}"
+    __chezmoi2_debug "${FUNCNAME[0]}: lastParam ${lastParam}, lastChar ${lastChar}"
 
     if [ -z "${cur}" ] && [ "${lastChar}" != "=" ]; then
         # If the last parameter is complete (there is a space following it)
         # We add an extra empty parameter so we can indicate this to the go method.
-        __chezmoi_debug "${FUNCNAME[0]}: Adding extra empty parameter"
+        __chezmoi2_debug "${FUNCNAME[0]}: Adding extra empty parameter"
         requestComp="${requestComp} \"\""
     fi
 
-    __chezmoi_debug "${FUNCNAME[0]}: calling ${requestComp}"
+    __chezmoi2_debug "${FUNCNAME[0]}: calling ${requestComp}"
     # Use eval to handle any environment variables and such
     out=$(eval "${requestComp}" 2>/dev/null)
 
@@ -76,23 +76,23 @@ __chezmoi_handle_go_custom_completion()
         # There is not directive specified
         directive=0
     fi
-    __chezmoi_debug "${FUNCNAME[0]}: the completion directive is: ${directive}"
-    __chezmoi_debug "${FUNCNAME[0]}: the completions are: ${out[*]}"
+    __chezmoi2_debug "${FUNCNAME[0]}: the completion directive is: ${directive}"
+    __chezmoi2_debug "${FUNCNAME[0]}: the completions are: ${out[*]}"
 
     if [ $((directive & shellCompDirectiveError)) -ne 0 ]; then
         # Error code.  No completion.
-        __chezmoi_debug "${FUNCNAME[0]}: received error from custom completion go code"
+        __chezmoi2_debug "${FUNCNAME[0]}: received error from custom completion go code"
         return
     else
         if [ $((directive & shellCompDirectiveNoSpace)) -ne 0 ]; then
             if [[ $(type -t compopt) = "builtin" ]]; then
-                __chezmoi_debug "${FUNCNAME[0]}: activating no space"
+                __chezmoi2_debug "${FUNCNAME[0]}: activating no space"
                 compopt -o nospace
             fi
         fi
         if [ $((directive & shellCompDirectiveNoFileComp)) -ne 0 ]; then
             if [[ $(type -t compopt) = "builtin" ]]; then
-                __chezmoi_debug "${FUNCNAME[0]}: activating no file completion"
+                __chezmoi2_debug "${FUNCNAME[0]}: activating no file completion"
                 compopt +o default
             fi
         fi
@@ -108,7 +108,7 @@ __chezmoi_handle_go_custom_completion()
         done
 
         filteringCmd="_filedir $fullFilter"
-        __chezmoi_debug "File filtering command: $filteringCmd"
+        __chezmoi2_debug "File filtering command: $filteringCmd"
         $filteringCmd
     elif [ $((directive & shellCompDirectiveFilterDirs)) -ne 0 ]; then
         # File completion for directories only
@@ -116,10 +116,10 @@ __chezmoi_handle_go_custom_completion()
         # Use printf to strip any trailing newline
         subdir=$(printf "%s" "${out[0]}")
         if [ -n "$subdir" ]; then
-            __chezmoi_debug "Listing directories in $subdir"
-            __chezmoi_handle_subdirs_in_dir_flag "$subdir"
+            __chezmoi2_debug "Listing directories in $subdir"
+            __chezmoi2_handle_subdirs_in_dir_flag "$subdir"
         else
-            __chezmoi_debug "Listing directories in ."
+            __chezmoi2_debug "Listing directories in ."
             _filedir -d
         fi
     else
@@ -129,9 +129,9 @@ __chezmoi_handle_go_custom_completion()
     fi
 }
 
-__chezmoi_handle_reply()
+__chezmoi2_handle_reply()
 {
-    __chezmoi_debug "${FUNCNAME[0]}"
+    __chezmoi2_debug "${FUNCNAME[0]}"
     local comp
     case $cur in
         -*)
@@ -159,7 +159,7 @@ __chezmoi_handle_reply()
 
                 local index flag
                 flag="${cur%=*}"
-                __chezmoi_index_of_word "${flag}" "${flags_with_completion[@]}"
+                __chezmoi2_index_of_word "${flag}" "${flags_with_completion[@]}"
                 COMPREPLY=()
                 if [[ ${index} -ge 0 ]]; then
                     PREFIX=""
@@ -177,7 +177,7 @@ __chezmoi_handle_reply()
 
     # check if we are handling a flag with special work handling
     local index
-    __chezmoi_index_of_word "${prev}" "${flags_with_completion[@]}"
+    __chezmoi2_index_of_word "${prev}" "${flags_with_completion[@]}"
     if [[ ${index} -ge 0 ]]; then
         ${flags_completion[${index}]}
         return
@@ -194,7 +194,7 @@ __chezmoi_handle_reply()
         completions+=("${must_have_one_noun[@]}")
     elif [[ -n "${has_completion_function}" ]]; then
         # if a go completion function is provided, defer to that function
-        __chezmoi_handle_go_custom_completion
+        __chezmoi2_handle_go_custom_completion
     fi
     if [[ ${#must_have_one_flag[@]} -ne 0 ]]; then
         completions+=("${must_have_one_flag[@]}")
@@ -210,9 +210,9 @@ __chezmoi_handle_reply()
     fi
 
     if [[ ${#COMPREPLY[@]} -eq 0 ]]; then
-		if declare -F __chezmoi_custom_func >/dev/null; then
+		if declare -F __chezmoi2_custom_func >/dev/null; then
 			# try command name qualified custom func
-			__chezmoi_custom_func
+			__chezmoi2_custom_func
 		else
 			# otherwise fall back to unqualified for compatibility
 			declare -F __custom_func >/dev/null && __custom_func
@@ -232,21 +232,21 @@ __chezmoi_handle_reply()
 }
 
 # The arguments should be in the form "ext1|ext2|extn"
-__chezmoi_handle_filename_extension_flag()
+__chezmoi2_handle_filename_extension_flag()
 {
     local ext="$1"
     _filedir "@(${ext})"
 }
 
-__chezmoi_handle_subdirs_in_dir_flag()
+__chezmoi2_handle_subdirs_in_dir_flag()
 {
     local dir="$1"
     pushd "${dir}" >/dev/null 2>&1 && _filedir -d && popd >/dev/null 2>&1 || return
 }
 
-__chezmoi_handle_flag()
+__chezmoi2_handle_flag()
 {
-    __chezmoi_debug "${FUNCNAME[0]}: c is $c words[c] is ${words[c]}"
+    __chezmoi2_debug "${FUNCNAME[0]}: c is $c words[c] is ${words[c]}"
 
     # if a command required a flag, and we found it, unset must_have_one_flag()
     local flagname=${words[c]}
@@ -257,13 +257,13 @@ __chezmoi_handle_flag()
         flagname=${flagname%=*} # strip everything after the =
         flagname="${flagname}=" # but put the = back
     fi
-    __chezmoi_debug "${FUNCNAME[0]}: looking for ${flagname}"
-    if __chezmoi_contains_word "${flagname}" "${must_have_one_flag[@]}"; then
+    __chezmoi2_debug "${FUNCNAME[0]}: looking for ${flagname}"
+    if __chezmoi2_contains_word "${flagname}" "${must_have_one_flag[@]}"; then
         must_have_one_flag=()
     fi
 
     # if you set a flag which only applies to this command, don't show subcommands
-    if __chezmoi_contains_word "${flagname}" "${local_nonpersistent_flags[@]}"; then
+    if __chezmoi2_contains_word "${flagname}" "${local_nonpersistent_flags[@]}"; then
       commands=()
     fi
 
@@ -280,8 +280,8 @@ __chezmoi_handle_flag()
     fi
 
     # skip the argument to a two word flag
-    if [[ ${words[c]} != *"="* ]] && __chezmoi_contains_word "${words[c]}" "${two_word_flags[@]}"; then
-			  __chezmoi_debug "${FUNCNAME[0]}: found a flag ${words[c]}, skip the next argument"
+    if [[ ${words[c]} != *"="* ]] && __chezmoi2_contains_word "${words[c]}" "${two_word_flags[@]}"; then
+			  __chezmoi2_debug "${FUNCNAME[0]}: found a flag ${words[c]}, skip the next argument"
         c=$((c+1))
         # if we are looking for a flags value, don't show commands
         if [[ $c -eq $cword ]]; then
@@ -293,13 +293,13 @@ __chezmoi_handle_flag()
 
 }
 
-__chezmoi_handle_noun()
+__chezmoi2_handle_noun()
 {
-    __chezmoi_debug "${FUNCNAME[0]}: c is $c words[c] is ${words[c]}"
+    __chezmoi2_debug "${FUNCNAME[0]}: c is $c words[c] is ${words[c]}"
 
-    if __chezmoi_contains_word "${words[c]}" "${must_have_one_noun[@]}"; then
+    if __chezmoi2_contains_word "${words[c]}" "${must_have_one_noun[@]}"; then
         must_have_one_noun=()
-    elif __chezmoi_contains_word "${words[c]}" "${noun_aliases[@]}"; then
+    elif __chezmoi2_contains_word "${words[c]}" "${noun_aliases[@]}"; then
         must_have_one_noun=()
     fi
 
@@ -307,55 +307,55 @@ __chezmoi_handle_noun()
     c=$((c+1))
 }
 
-__chezmoi_handle_command()
+__chezmoi2_handle_command()
 {
-    __chezmoi_debug "${FUNCNAME[0]}: c is $c words[c] is ${words[c]}"
+    __chezmoi2_debug "${FUNCNAME[0]}: c is $c words[c] is ${words[c]}"
 
     local next_command
     if [[ -n ${last_command} ]]; then
         next_command="_${last_command}_${words[c]//:/__}"
     else
         if [[ $c -eq 0 ]]; then
-            next_command="_chezmoi_root_command"
+            next_command="_chezmoi2_root_command"
         else
             next_command="_${words[c]//:/__}"
         fi
     fi
     c=$((c+1))
-    __chezmoi_debug "${FUNCNAME[0]}: looking for ${next_command}"
+    __chezmoi2_debug "${FUNCNAME[0]}: looking for ${next_command}"
     declare -F "$next_command" >/dev/null && $next_command
 }
 
-__chezmoi_handle_word()
+__chezmoi2_handle_word()
 {
     if [[ $c -ge $cword ]]; then
-        __chezmoi_handle_reply
+        __chezmoi2_handle_reply
         return
     fi
-    __chezmoi_debug "${FUNCNAME[0]}: c is $c words[c] is ${words[c]}"
+    __chezmoi2_debug "${FUNCNAME[0]}: c is $c words[c] is ${words[c]}"
     if [[ "${words[c]}" == -* ]]; then
-        __chezmoi_handle_flag
-    elif __chezmoi_contains_word "${words[c]}" "${commands[@]}"; then
-        __chezmoi_handle_command
+        __chezmoi2_handle_flag
+    elif __chezmoi2_contains_word "${words[c]}" "${commands[@]}"; then
+        __chezmoi2_handle_command
     elif [[ $c -eq 0 ]]; then
-        __chezmoi_handle_command
-    elif __chezmoi_contains_word "${words[c]}" "${command_aliases[@]}"; then
+        __chezmoi2_handle_command
+    elif __chezmoi2_contains_word "${words[c]}" "${command_aliases[@]}"; then
         # aliashash variable is an associative array which is only supported in bash > 3.
         if [[ -z "${BASH_VERSION}" || "${BASH_VERSINFO[0]}" -gt 3 ]]; then
             words[c]=${aliashash[${words[c]}]}
-            __chezmoi_handle_command
+            __chezmoi2_handle_command
         else
-            __chezmoi_handle_noun
+            __chezmoi2_handle_noun
         fi
     else
-        __chezmoi_handle_noun
+        __chezmoi2_handle_noun
     fi
-    __chezmoi_handle_word
+    __chezmoi2_handle_word
 }
 
-_chezmoi_add()
+_chezmoi2_add()
 {
-    last_command="chezmoi_add"
+    last_command="chezmoi2_add"
 
     command_aliases=()
 
@@ -447,9 +447,9 @@ _chezmoi_add()
     noun_aliases=()
 }
 
-_chezmoi_apply()
+_chezmoi2_apply()
 {
-    last_command="chezmoi_apply"
+    last_command="chezmoi2_apply"
 
     command_aliases=()
 
@@ -527,9 +527,9 @@ _chezmoi_apply()
     noun_aliases=()
 }
 
-_chezmoi_archive()
+_chezmoi2_archive()
 {
-    last_command="chezmoi_archive"
+    last_command="chezmoi2_archive"
 
     command_aliases=()
 
@@ -611,9 +611,9 @@ _chezmoi_archive()
     noun_aliases=()
 }
 
-_chezmoi_cat()
+_chezmoi2_cat()
 {
-    last_command="chezmoi_cat"
+    last_command="chezmoi2_cat"
 
     command_aliases=()
 
@@ -677,9 +677,9 @@ _chezmoi_cat()
     noun_aliases=()
 }
 
-_chezmoi_cd()
+_chezmoi2_cd()
 {
-    last_command="chezmoi_cd"
+    last_command="chezmoi2_cd"
 
     command_aliases=()
 
@@ -743,9 +743,9 @@ _chezmoi_cd()
     noun_aliases=()
 }
 
-_chezmoi_chattr()
+_chezmoi2_chattr()
 {
-    last_command="chezmoi_chattr"
+    last_command="chezmoi2_chattr"
 
     command_aliases=()
 
@@ -873,9 +873,9 @@ _chezmoi_chattr()
     noun_aliases=()
 }
 
-_chezmoi_completion()
+_chezmoi2_completion()
 {
-    last_command="chezmoi_completion"
+    last_command="chezmoi2_completion"
 
     command_aliases=()
 
@@ -947,9 +947,9 @@ _chezmoi_completion()
     noun_aliases=()
 }
 
-_chezmoi_data()
+_chezmoi2_data()
 {
-    last_command="chezmoi_data"
+    last_command="chezmoi2_data"
 
     command_aliases=()
 
@@ -1015,9 +1015,9 @@ _chezmoi_data()
     noun_aliases=()
 }
 
-_chezmoi_diff()
+_chezmoi2_diff()
 {
-    last_command="chezmoi_diff"
+    last_command="chezmoi2_diff"
 
     command_aliases=()
 
@@ -1093,9 +1093,9 @@ _chezmoi_diff()
     noun_aliases=()
 }
 
-_chezmoi_docs()
+_chezmoi2_docs()
 {
-    last_command="chezmoi_docs"
+    last_command="chezmoi2_docs"
 
     command_aliases=()
 
@@ -1159,9 +1159,9 @@ _chezmoi_docs()
     noun_aliases=()
 }
 
-_chezmoi_doctor()
+_chezmoi2_doctor()
 {
-    last_command="chezmoi_doctor"
+    last_command="chezmoi2_doctor"
 
     command_aliases=()
 
@@ -1225,9 +1225,9 @@ _chezmoi_doctor()
     noun_aliases=()
 }
 
-_chezmoi_dump()
+_chezmoi2_dump()
 {
-    last_command="chezmoi_dump"
+    last_command="chezmoi2_dump"
 
     command_aliases=()
 
@@ -1307,9 +1307,9 @@ _chezmoi_dump()
     noun_aliases=()
 }
 
-_chezmoi_edit()
+_chezmoi2_edit()
 {
-    last_command="chezmoi_edit"
+    last_command="chezmoi2_edit"
 
     command_aliases=()
 
@@ -1383,9 +1383,9 @@ _chezmoi_edit()
     noun_aliases=()
 }
 
-_chezmoi_edit-config()
+_chezmoi2_edit-config()
 {
-    last_command="chezmoi_edit-config"
+    last_command="chezmoi2_edit-config"
 
     command_aliases=()
 
@@ -1449,9 +1449,9 @@ _chezmoi_edit-config()
     noun_aliases=()
 }
 
-_chezmoi_execute-template()
+_chezmoi2_execute-template()
 {
-    last_command="chezmoi_execute-template"
+    last_command="chezmoi2_execute-template"
 
     command_aliases=()
 
@@ -1533,9 +1533,9 @@ _chezmoi_execute-template()
     noun_aliases=()
 }
 
-_chezmoi_forget()
+_chezmoi2_forget()
 {
-    last_command="chezmoi_forget"
+    last_command="chezmoi2_forget"
 
     command_aliases=()
 
@@ -1599,9 +1599,9 @@ _chezmoi_forget()
     noun_aliases=()
 }
 
-_chezmoi_git()
+_chezmoi2_git()
 {
-    last_command="chezmoi_git"
+    last_command="chezmoi2_git"
 
     command_aliases=()
 
@@ -1665,9 +1665,9 @@ _chezmoi_git()
     noun_aliases=()
 }
 
-_chezmoi_help()
+_chezmoi2_help()
 {
-    last_command="chezmoi_help"
+    last_command="chezmoi2_help"
 
     command_aliases=()
 
@@ -1731,9 +1731,9 @@ _chezmoi_help()
     noun_aliases=()
 }
 
-_chezmoi_import()
+_chezmoi2_import()
 {
-    last_command="chezmoi_import"
+    last_command="chezmoi2_import"
 
     command_aliases=()
 
@@ -1815,9 +1815,9 @@ _chezmoi_import()
     noun_aliases=()
 }
 
-_chezmoi_init()
+_chezmoi2_init()
 {
-    last_command="chezmoi_init"
+    last_command="chezmoi2_init"
 
     command_aliases=()
 
@@ -1903,9 +1903,9 @@ _chezmoi_init()
     noun_aliases=()
 }
 
-_chezmoi_managed()
+_chezmoi2_managed()
 {
-    last_command="chezmoi_managed"
+    last_command="chezmoi2_managed"
 
     command_aliases=()
 
@@ -1975,9 +1975,9 @@ _chezmoi_managed()
     noun_aliases=()
 }
 
-_chezmoi_merge()
+_chezmoi2_merge()
 {
-    last_command="chezmoi_merge"
+    last_command="chezmoi2_merge"
 
     command_aliases=()
 
@@ -2041,9 +2041,9 @@ _chezmoi_merge()
     noun_aliases=()
 }
 
-_chezmoi_purge()
+_chezmoi2_purge()
 {
-    last_command="chezmoi_purge"
+    last_command="chezmoi2_purge"
 
     command_aliases=()
 
@@ -2111,9 +2111,9 @@ _chezmoi_purge()
     noun_aliases=()
 }
 
-_chezmoi_remove()
+_chezmoi2_remove()
 {
-    last_command="chezmoi_remove"
+    last_command="chezmoi2_remove"
 
     command_aliases=()
 
@@ -2177,79 +2177,9 @@ _chezmoi_remove()
     noun_aliases=()
 }
 
-_chezmoi_secret_keyring_get()
+_chezmoi2_secret_keyring_get()
 {
-    last_command="chezmoi_secret_keyring_get"
-
-    command_aliases=()
-
-    commands=()
-
-    flags=()
-    two_word_flags=()
-    local_nonpersistent_flags=()
-    flags_with_completion=()
-    flags_completion=()
-
-    flags+=("--color=")
-    two_word_flags+=("--color")
-    flags+=("--config=")
-    two_word_flags+=("--config")
-    flags_with_completion+=("--config")
-    flags_completion+=("_filedir")
-    two_word_flags+=("-c")
-    flags_with_completion+=("-c")
-    flags_completion+=("_filedir")
-    flags+=("--cpu-profile=")
-    two_word_flags+=("--cpu-profile")
-    flags_with_completion+=("--cpu-profile")
-    flags_completion+=("_filedir")
-    flags+=("--debug")
-    flags+=("--destination=")
-    two_word_flags+=("--destination")
-    flags_with_completion+=("--destination")
-    flags_completion+=("_filedir -d")
-    two_word_flags+=("-D")
-    flags_with_completion+=("-D")
-    flags_completion+=("_filedir -d")
-    flags+=("--dry-run")
-    flags+=("-n")
-    flags+=("--force")
-    flags+=("--keep-going")
-    flags+=("-k")
-    flags+=("--no-tty")
-    flags+=("--output=")
-    two_word_flags+=("--output")
-    flags_with_completion+=("--output")
-    flags_completion+=("_filedir")
-    two_word_flags+=("-o")
-    flags_with_completion+=("-o")
-    flags_completion+=("_filedir")
-    flags+=("--remove")
-    flags+=("--service=")
-    two_word_flags+=("--service")
-    flags+=("--source=")
-    two_word_flags+=("--source")
-    flags_with_completion+=("--source")
-    flags_completion+=("_filedir -d")
-    two_word_flags+=("-S")
-    flags_with_completion+=("-S")
-    flags_completion+=("_filedir -d")
-    flags+=("--use-builtin-git=")
-    two_word_flags+=("--use-builtin-git")
-    flags+=("--user=")
-    two_word_flags+=("--user")
-    flags+=("--verbose")
-    flags+=("-v")
-
-    must_have_one_flag=()
-    must_have_one_noun=()
-    noun_aliases=()
-}
-
-_chezmoi_secret_keyring_set()
-{
-    last_command="chezmoi_secret_keyring_set"
+    last_command="chezmoi2_secret_keyring_get"
 
     command_aliases=()
 
@@ -2317,9 +2247,79 @@ _chezmoi_secret_keyring_set()
     noun_aliases=()
 }
 
-_chezmoi_secret_keyring()
+_chezmoi2_secret_keyring_set()
 {
-    last_command="chezmoi_secret_keyring"
+    last_command="chezmoi2_secret_keyring_set"
+
+    command_aliases=()
+
+    commands=()
+
+    flags=()
+    two_word_flags=()
+    local_nonpersistent_flags=()
+    flags_with_completion=()
+    flags_completion=()
+
+    flags+=("--color=")
+    two_word_flags+=("--color")
+    flags+=("--config=")
+    two_word_flags+=("--config")
+    flags_with_completion+=("--config")
+    flags_completion+=("_filedir")
+    two_word_flags+=("-c")
+    flags_with_completion+=("-c")
+    flags_completion+=("_filedir")
+    flags+=("--cpu-profile=")
+    two_word_flags+=("--cpu-profile")
+    flags_with_completion+=("--cpu-profile")
+    flags_completion+=("_filedir")
+    flags+=("--debug")
+    flags+=("--destination=")
+    two_word_flags+=("--destination")
+    flags_with_completion+=("--destination")
+    flags_completion+=("_filedir -d")
+    two_word_flags+=("-D")
+    flags_with_completion+=("-D")
+    flags_completion+=("_filedir -d")
+    flags+=("--dry-run")
+    flags+=("-n")
+    flags+=("--force")
+    flags+=("--keep-going")
+    flags+=("-k")
+    flags+=("--no-tty")
+    flags+=("--output=")
+    two_word_flags+=("--output")
+    flags_with_completion+=("--output")
+    flags_completion+=("_filedir")
+    two_word_flags+=("-o")
+    flags_with_completion+=("-o")
+    flags_completion+=("_filedir")
+    flags+=("--remove")
+    flags+=("--service=")
+    two_word_flags+=("--service")
+    flags+=("--source=")
+    two_word_flags+=("--source")
+    flags_with_completion+=("--source")
+    flags_completion+=("_filedir -d")
+    two_word_flags+=("-S")
+    flags_with_completion+=("-S")
+    flags_completion+=("_filedir -d")
+    flags+=("--use-builtin-git=")
+    two_word_flags+=("--use-builtin-git")
+    flags+=("--user=")
+    two_word_flags+=("--user")
+    flags+=("--verbose")
+    flags+=("-v")
+
+    must_have_one_flag=()
+    must_have_one_noun=()
+    noun_aliases=()
+}
+
+_chezmoi2_secret_keyring()
+{
+    last_command="chezmoi2_secret_keyring"
 
     command_aliases=()
 
@@ -2391,9 +2391,9 @@ _chezmoi_secret_keyring()
     noun_aliases=()
 }
 
-_chezmoi_secret()
+_chezmoi2_secret()
 {
-    last_command="chezmoi_secret"
+    last_command="chezmoi2_secret"
 
     command_aliases=()
 
@@ -2458,9 +2458,9 @@ _chezmoi_secret()
     noun_aliases=()
 }
 
-_chezmoi_source-path()
+_chezmoi2_source-path()
 {
-    last_command="chezmoi_source-path"
+    last_command="chezmoi2_source-path"
 
     command_aliases=()
 
@@ -2524,9 +2524,9 @@ _chezmoi_source-path()
     noun_aliases=()
 }
 
-_chezmoi_state_dump()
+_chezmoi2_state_dump()
 {
-    last_command="chezmoi_state_dump"
+    last_command="chezmoi2_state_dump"
 
     command_aliases=()
 
@@ -2593,9 +2593,9 @@ _chezmoi_state_dump()
     noun_aliases=()
 }
 
-_chezmoi_state_reset()
+_chezmoi2_state_reset()
 {
-    last_command="chezmoi_state_reset"
+    last_command="chezmoi2_state_reset"
 
     command_aliases=()
 
@@ -2659,9 +2659,9 @@ _chezmoi_state_reset()
     noun_aliases=()
 }
 
-_chezmoi_state()
+_chezmoi2_state()
 {
-    last_command="chezmoi_state"
+    last_command="chezmoi2_state"
 
     command_aliases=()
 
@@ -2727,9 +2727,9 @@ _chezmoi_state()
     noun_aliases=()
 }
 
-_chezmoi_status()
+_chezmoi2_status()
 {
-    last_command="chezmoi_status"
+    last_command="chezmoi2_status"
 
     command_aliases=()
 
@@ -2803,9 +2803,9 @@ _chezmoi_status()
     noun_aliases=()
 }
 
-_chezmoi_unmanaged()
+_chezmoi2_unmanaged()
 {
-    last_command="chezmoi_unmanaged"
+    last_command="chezmoi2_unmanaged"
 
     command_aliases=()
 
@@ -2869,9 +2869,9 @@ _chezmoi_unmanaged()
     noun_aliases=()
 }
 
-_chezmoi_update()
+_chezmoi2_update()
 {
-    last_command="chezmoi_update"
+    last_command="chezmoi2_update"
 
     command_aliases=()
 
@@ -2949,9 +2949,9 @@ _chezmoi_update()
     noun_aliases=()
 }
 
-_chezmoi_verify()
+_chezmoi2_verify()
 {
-    last_command="chezmoi_verify"
+    last_command="chezmoi2_verify"
 
     command_aliases=()
 
@@ -3025,9 +3025,9 @@ _chezmoi_verify()
     noun_aliases=()
 }
 
-_chezmoi_root_command()
+_chezmoi2_root_command()
 {
-    last_command="chezmoi"
+    last_command="chezmoi2"
 
     command_aliases=()
 
@@ -3134,7 +3134,7 @@ _chezmoi_root_command()
     noun_aliases=()
 }
 
-__start_chezmoi()
+__start_chezmoi2()
 {
     local cur prev words cword
     declare -A flaghash 2>/dev/null || :
@@ -3142,7 +3142,7 @@ __start_chezmoi()
     if declare -F _init_completion >/dev/null 2>&1; then
         _init_completion -s || return
     else
-        __chezmoi_init_completion -n "=" || return
+        __chezmoi2_init_completion -n "=" || return
     fi
 
     local c=0
@@ -3151,20 +3151,20 @@ __start_chezmoi()
     local local_nonpersistent_flags=()
     local flags_with_completion=()
     local flags_completion=()
-    local commands=("chezmoi")
+    local commands=("chezmoi2")
     local must_have_one_flag=()
     local must_have_one_noun=()
     local has_completion_function
     local last_command
     local nouns=()
 
-    __chezmoi_handle_word
+    __chezmoi2_handle_word
 }
 
 if [[ $(type -t compopt) = "builtin" ]]; then
-    complete -o default -F __start_chezmoi chezmoi
+    complete -o default -F __start_chezmoi2 chezmoi2
 else
-    complete -o default -o nospace -F __start_chezmoi chezmoi
+    complete -o default -o nospace -F __start_chezmoi2 chezmoi2
 fi
 
 # ex: ts=4 sw=4 et filetype=sh

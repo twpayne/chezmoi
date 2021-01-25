@@ -20,7 +20,7 @@ var (
 		regexp.MustCompile(`\A\.devcontainer/library-scripts\z`),
 		regexp.MustCompile(`\A\.git\z`),
 		regexp.MustCompile(`\Aassets/scripts/install\.ps1\z`),
-		regexp.MustCompile(`\Achezmoi2/completions/chezmoi\.ps1\z`),
+		regexp.MustCompile(`\Achezmoi2/completions/chezmoi2\.ps1\z`),
 		regexp.MustCompile(`\Acompletions/chezmoi\.ps1\z`),
 		regexp.MustCompile(`\Achezmoi\.io/public\z`),
 		regexp.MustCompile(`\Achezmoi\.io/resources\z`),

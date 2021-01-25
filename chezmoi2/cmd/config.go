@@ -723,7 +723,7 @@ func (c *Config) marshal(formatStr string, data interface{}) error {
 
 func (c *Config) newRootCmd() (*cobra.Command, error) {
 	rootCmd := &cobra.Command{
-		Use:                "chezmoi",
+		Use:                "chezmoi2",
 		Short:              "Manage your dotfiles across multiple diverse machines, securely",
 		Version:            c.versionStr,
 		PersistentPreRunE:  c.persistentPreRunRootE,
@@ -1310,7 +1310,7 @@ func withVersionInfo(versionInfo VersionInfo) configOption {
 			if err != nil {
 				return err
 			}
-			versionElems = append(versionElems, version.String())
+			versionElems = append(versionElems, "v"+version.String())
 		} else {
 			versionElems = append(versionElems, "dev")
 		}
