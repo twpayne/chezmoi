@@ -68,7 +68,7 @@ jobs:
       uses: goreleaser/goreleaser-action@v2
       with:
         version: latest
-        args: release --skip-publish --snapshot
+        args: release --skip-publish
     - name: Test release
       run: |
         # verify that version information is embedded correctly
