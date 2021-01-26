@@ -171,6 +171,10 @@ func (t *TargetStateFile) Apply(system System, persistentState PersistentState, 
 
 // EntryState returns t's entry state.
 func (t *TargetStateFile) EntryState() (*EntryState, error) {
+	contents, err := t.Contents()
+	if err != nil {
+		return nil, err
+	}
 	contentsSHA256, err := t.ContentsSHA256()
 	if err != nil {
 		return nil, err
@@ -179,6 +183,7 @@ func (t *TargetStateFile) EntryState() (*EntryState, error) {
 		Type:           EntryStateTypeFile,
 		Mode:           t.perm,
 		ContentsSHA256: hexBytes(contentsSHA256),
+		contents:       contents,
 	}, nil
 }
 
@@ -391,6 +396,10 @@ func (t *TargetStateSymlink) Apply(system System, persistentState PersistentStat
 
 // EntryState returns t's entry state.
 func (t *TargetStateSymlink) EntryState() (*EntryState, error) {
+	linkname, err := t.Linkname()
+	if err != nil {
+		return nil, err
+	}
 	linknameSHA256, err := t.LinknameSHA256()
 	if err != nil {
 		return nil, err
@@ -398,6 +407,7 @@ func (t *TargetStateSymlink) EntryState() (*EntryState, error) {
 	return &EntryState{
 		Type:           EntryStateTypeSymlink,
 		ContentsSHA256: linknameSHA256,
+		contents:       []byte(linkname),
 	}, nil
 }
 
