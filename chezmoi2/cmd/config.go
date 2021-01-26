@@ -17,6 +17,7 @@ import (
 
 	"github.com/Masterminds/sprig/v3"
 	"github.com/coreos/go-semver/semver"
+	"github.com/go-git/go-git/v5/plumbing/format/diff"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
@@ -400,19 +401,43 @@ func (c *Config) defaultPreApplyFunc(targetRelPath chezmoi.RelPath, targetEntryS
 	case lastWrittenEntryState.Equivalent(actualEntryState, c.Umask.FileMode()):
 		return nil
 	}
+
 	// LATER add merge option
-	switch choice, err := c.promptValue(fmt.Sprintf("%s has changed since chezmoi last wrote it, overwrite", targetRelPath), yesNoAllQuit); {
-	case err != nil:
-		return err
-	case choice == "all":
-		c.force = true
-		return nil
-	case choice == "no":
-		return chezmoi.Skip
-	case choice == "quit":
-		return ErrExitCode(1)
-	default:
-		return nil
+	var choices []string
+	actualContents := actualEntryState.Contents()
+	targetContents := targetEntryState.Contents()
+	if actualContents != nil || targetContents != nil {
+		choices = append(choices, "diff")
+	}
+	choices = append(choices, "overwrite", "all-overwite", "skip", "quit")
+	for {
+		switch choice, err := c.promptChoice(fmt.Sprintf("%s has changed since chezmoi last wrote it", targetRelPath), choices); {
+		case err != nil:
+			return err
+		case choice == "diff":
+			unifiedEncoder := diff.NewUnifiedEncoder(c.stdout, diff.DefaultContextLines)
+			if c.color {
+				unifiedEncoder.SetColor(diff.NewColorConfig())
+			}
+			diffPatch, err := chezmoi.DiffPatch(targetRelPath, actualContents, actualEntryState.Mode, targetContents, targetEntryState.Mode)
+			if err != nil {
+				return err
+			}
+			if err := unifiedEncoder.Encode(diffPatch); err != nil {
+				return err
+			}
+		case choice == "overwrite":
+			return nil
+		case choice == "all-overwrite":
+			c.force = true
+			return nil
+		case choice == "skip":
+			return chezmoi.Skip
+		case choice == "quit":
+			return ErrExitCode(1)
+		default:
+			return nil
+		}
 	}
 }
 
@@ -588,7 +613,7 @@ func (c *Config) doPurge(purgeOptions *purgeOptions) error {
 		}
 
 		if !c.force {
-			switch choice, err := c.promptValue(fmt.Sprintf("Remove %s", absPath), yesNoAllQuit); {
+			switch choice, err := c.promptChoice(fmt.Sprintf("Remove %s", absPath), yesNoAllQuit); {
 			case err != nil:
 				return err
 			case choice == "yes":
@@ -1037,11 +1062,11 @@ func (c *Config) persistentStateFile() chezmoi.AbsPath {
 	return defaultConfigFile(c.fs, c.bds).Dir().Join(persistentStateFilename)
 }
 
-func (c *Config) promptValue(prompt string, values []string) (string, error) {
-	promptWithValues := fmt.Sprintf("%s [%s]? ", prompt, strings.Join(values, ","))
-	abbreviations := uniqueAbbreviations(values)
+func (c *Config) promptChoice(prompt string, choices []string) (string, error) {
+	promptWithChoices := fmt.Sprintf("%s [%s]? ", prompt, strings.Join(choices, ","))
+	abbreviations := uniqueAbbreviations(choices)
 	for {
-		line, err := c.readLine(promptWithValues)
+		line, err := c.readLine(promptWithChoices)
 		if err != nil {
 			return "", err
 		}
@@ -1245,6 +1270,8 @@ func (c *Config) validateData() error {
 }
 
 func (c *Config) withTerminal(prompt string, f func(terminal) error) error {
+	// FIXME this seems to wrap lines at 80 characters by default
+
 	if c.noTTY {
 		return f(newDumbTerminal(c.stdin, c.stdout, prompt))
 	}

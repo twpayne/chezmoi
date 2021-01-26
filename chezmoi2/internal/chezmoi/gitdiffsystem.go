@@ -230,7 +230,7 @@ func (s *GitDiffSystem) WriteFile(filename AbsPath, data []byte, perm os.FileMod
 	default:
 		return err
 	}
-	diffPatch, err := diffPatch(s.trimPrefix(filename), fromData, fromMode, data, perm)
+	diffPatch, err := DiffPatch(s.trimPrefix(filename), fromData, fromMode, data, perm)
 	if err != nil {
 		return err
 	}

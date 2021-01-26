@@ -33,7 +33,7 @@ func (c *Config) runForgetCmd(cmd *cobra.Command, args []string, sourceState *ch
 
 	for _, sourceAbsPath := range sourceAbsPaths {
 		if !c.force {
-			choice, err := c.promptValue(fmt.Sprintf("Remove %s", sourceAbsPath), yesNoAllQuit)
+			choice, err := c.promptChoice(fmt.Sprintf("Remove %s", sourceAbsPath), yesNoAllQuit)
 			if err != nil {
 				return err
 			}

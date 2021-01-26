@@ -70,7 +70,9 @@ func diffChunks(from, to string) []diff.Chunk {
 	return chunks
 }
 
-func diffPatch(path RelPath, fromData []byte, fromMode os.FileMode, toData []byte, toMode os.FileMode) (diff.Patch, error) {
+// DiffPatch returns a github.com/go-git/go-git/plumbing/format/diff.Patch for
+// path from the given data and mode to the given data and mode.
+func DiffPatch(path RelPath, fromData []byte, fromMode os.FileMode, toData []byte, toMode os.FileMode) (diff.Patch, error) {
 	isBinary := isBinary(fromData) || isBinary(toData)
 
 	var from diff.File
