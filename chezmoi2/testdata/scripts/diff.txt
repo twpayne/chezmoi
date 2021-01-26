@@ -1,3 +1,5 @@
+# FIXME golden/remove-file-diff seems to be reversed
+
 mkhomedir golden
 mkhomedir
 mksourcedir
@@ -47,10 +49,9 @@ chezmoi apply --force --recursive=false $HOME${/}.dir
 
 -- golden/add-newfile-diff --
 diff --git a/.newfile b/.newfile
-old mode 0
-new mode 100644
-index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..06e05235fdd12fd5c367b6d629fef94536c85525
---- a/.newfile
+new file mode 100644
+index 0000000000000000000000000000000000000000..06e05235fdd12fd5c367b6d629fef94536c85525
+--- /dev/null
 +++ b/.newfile
 @@ -0,0 +1 @@
 +# contents of .newfile
@@ -64,17 +65,16 @@ index 5d2730a8850a2db479af83de87cc8345437aef06..8a52cb9ce9551221716a53786ad74104
 -# edited
 -- golden/remove-file-diff --
 diff --git a/.file b/.file
-old mode 0
-new mode 100644
-index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..8a52cb9ce9551221716a53786ad74104c5902362
---- a/.file
+new file mode 100644
+index 0000000000000000000000000000000000000000..8a52cb9ce9551221716a53786ad74104c5902362
+--- /dev/null
 +++ b/.file
 @@ -0,0 +1 @@
 +# contents of .file
 -- golden/remove-dir-diff --
 diff --git a/.dir b/.dir
 new file mode 40000
-index 0000000000000000000000000000000000000000..0000000000000000000000000000000000000000
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
 --- /dev/null
 +++ b/.dir
 -- golden/chmod-file-diff --

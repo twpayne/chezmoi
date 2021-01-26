@@ -24,6 +24,12 @@ type EntryState struct {
 	Type           EntryStateType `json:"type" toml:"type" yaml:"type"`
 	Mode           os.FileMode    `json:"mode,omitempty" toml:"mode,omitempty" yaml:"mode,omitempty"`
 	ContentsSHA256 hexBytes       `json:"contentsSHA256,omitempty" toml:"contentsSHA256,omitempty" yaml:"contentsSHA256,omitempty"`
+	contents       []byte
+}
+
+// Contents returns s's contents, if available.
+func (s *EntryState) Contents() []byte {
+	return s.contents
 }
 
 // Equal returns true if s is equal to other.

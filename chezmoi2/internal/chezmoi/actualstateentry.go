@@ -125,6 +125,10 @@ func (s *ActualStateDir) Remove(system System) error {
 
 // EntryState returns d's entry state.
 func (s *ActualStateFile) EntryState() (*EntryState, error) {
+	contents, err := s.Contents()
+	if err != nil {
+		return nil, err
+	}
 	contentsSHA256, err := s.ContentsSHA256()
 	if err != nil {
 		return nil, err
@@ -133,6 +137,7 @@ func (s *ActualStateFile) EntryState() (*EntryState, error) {
 		Type:           EntryStateTypeFile,
 		Mode:           s.perm,
 		ContentsSHA256: hexBytes(contentsSHA256),
+		contents:       contents,
 	}, nil
 }
 
@@ -148,13 +153,18 @@ func (s *ActualStateFile) Remove(system System) error {
 
 // EntryState returns d's entry state.
 func (s *ActualStateSymlink) EntryState() (*EntryState, error) {
-	contentsSHA256, err := s.LinknameSHA256()
+	linkname, err := s.Linkname()
+	if err != nil {
+		return nil, err
+	}
+	linknameSHA256, err := s.LinknameSHA256()
 	if err != nil {
 		return nil, err
 	}
 	return &EntryState{
 		Type:           EntryStateTypeSymlink,
-		ContentsSHA256: hexBytes(contentsSHA256),
+		ContentsSHA256: hexBytes(linknameSHA256),
+		contents:       []byte(linkname),
 	}, nil
 }
 
