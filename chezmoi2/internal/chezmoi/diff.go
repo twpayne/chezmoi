@@ -54,22 +54,6 @@ type gitDiffPatch struct {
 func (p *gitDiffPatch) FilePatches() []diff.FilePatch { return p.filePatches }
 func (p *gitDiffPatch) Message() string               { return p.message }
 
-func diffChunks(from, to string) []diff.Chunk {
-	dmp := diffmatchpatch.New()
-	dmp.DiffTimeout = time.Second
-	fromRunes, toRunes, runesToLines := dmp.DiffLinesToRunes(from, to)
-	diffs := dmp.DiffCharsToLines(dmp.DiffMainRunes(fromRunes, toRunes, false), runesToLines)
-	chunks := make([]diff.Chunk, 0, len(diffs))
-	for _, d := range diffs {
-		chunk := &gitDiffChunk{
-			content:   d.Text,
-			operation: gitDiffOperation[d.Type],
-		}
-		chunks = append(chunks, chunk)
-	}
-	return chunks
-}
-
 // DiffPatch returns a github.com/go-git/go-git/plumbing/format/diff.Patch for
 // path from the given data and mode to the given data and mode.
 func DiffPatch(path RelPath, fromData []byte, fromMode os.FileMode, toData []byte, toMode os.FileMode) (diff.Patch, error) {
@@ -88,9 +72,17 @@ func DiffPatch(path RelPath, fromData []byte, fromMode os.FileMode, toData []byt
 		}
 	}
 
-	toFileMode, err := filemode.NewFromOSFileMode(toMode)
-	if err != nil {
-		return nil, err
+	var to diff.File
+	if toData != nil || toMode != 0 {
+		toFileMode, err := filemode.NewFromOSFileMode(toMode)
+		if err != nil {
+			return nil, err
+		}
+		to = &gitDiffFile{
+			fileMode: toFileMode,
+			relPath:  path,
+			hash:     plumbing.ComputeHash(plumbing.BlobObject, toData),
+		}
 	}
 
 	var chunks []diff.Chunk
@@ -103,15 +95,27 @@ func DiffPatch(path RelPath, fromData []byte, fromMode os.FileMode, toData []byt
 			&gitDiffFilePatch{
 				isBinary: isBinary,
 				from:     from,
-				to: &gitDiffFile{
-					fileMode: toFileMode,
-					relPath:  path,
-					hash:     plumbing.ComputeHash(plumbing.BlobObject, toData),
-				},
-				chunks: chunks,
+				to:       to,
+				chunks:   chunks,
 			},
 		},
 	}, nil
+}
+
+func diffChunks(from, to string) []diff.Chunk {
+	dmp := diffmatchpatch.New()
+	dmp.DiffTimeout = time.Second
+	fromRunes, toRunes, runesToLines := dmp.DiffLinesToRunes(from, to)
+	diffs := dmp.DiffCharsToLines(dmp.DiffMainRunes(fromRunes, toRunes, false), runesToLines)
+	chunks := make([]diff.Chunk, 0, len(diffs))
+	for _, d := range diffs {
+		chunk := &gitDiffChunk{
+			content:   d.Text,
+			operation: gitDiffOperation[d.Type],
+		}
+		chunks = append(chunks, chunk)
+	}
+	return chunks
 }
 
 func isBinary(data []byte) bool {
