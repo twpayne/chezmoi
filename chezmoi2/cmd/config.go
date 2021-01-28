@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"io"
@@ -14,6 +15,7 @@ import (
 	"strings"
 	"text/template"
 	"time"
+	"unicode"
 
 	"github.com/Masterminds/sprig/v3"
 	"github.com/coreos/go-semver/semver"
@@ -22,6 +24,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/twpayne/go-shell"
 	"github.com/twpayne/go-vfs"
 	vfsafero "github.com/twpayne/go-vfsafero"
 	"github.com/twpayne/go-xdg/v3"
@@ -415,15 +418,7 @@ func (c *Config) defaultPreApplyFunc(targetRelPath chezmoi.RelPath, targetEntryS
 		case err != nil:
 			return err
 		case choice == "diff":
-			unifiedEncoder := diff.NewUnifiedEncoder(c.stdout, diff.DefaultContextLines)
-			if c.color {
-				unifiedEncoder.SetColor(diff.NewColorConfig())
-			}
-			diffPatch, err := chezmoi.DiffPatch(targetRelPath, actualContents, actualEntryState.Mode, targetContents, targetEntryState.Mode)
-			if err != nil {
-				return err
-			}
-			if err := unifiedEncoder.Encode(diffPatch); err != nil {
+			if err := c.diffFile(targetRelPath, actualContents, actualEntryState.Mode, targetContents, targetEntryState.Mode); err != nil {
 				return err
 			}
 		case choice == "overwrite":
@@ -585,6 +580,44 @@ func (c *Config) destAbsPathInfos(sourceState *chezmoi.SourceState, args []strin
 		}
 	}
 	return destAbsPathInfos, nil
+}
+
+func (c *Config) diffFile(path chezmoi.RelPath, fromData []byte, fromMode os.FileMode, toData []byte, toMode os.FileMode) error {
+	var sb strings.Builder
+	unifiedEncoder := diff.NewUnifiedEncoder(&sb, diff.DefaultContextLines)
+	if c.color {
+		unifiedEncoder.SetColor(diff.NewColorConfig())
+	}
+	diffPatch, err := chezmoi.DiffPatch(path, fromData, fromMode, toData, toMode)
+	if err != nil {
+		return err
+	}
+	if err := unifiedEncoder.Encode(diffPatch); err != nil {
+		return err
+	}
+	return c.diffPager(sb.String())
+}
+
+func (c *Config) diffPager(output string) error {
+	if c.Diff.NoPager || c.Diff.Pager == "" {
+		return c.writeOutputString(output)
+	}
+
+	// If the pager command contains any spaces, assume that it is a full
+	// shell command to be executed via the user's shell. Otherwise, execute
+	// it directly.
+	var pagerCmd *exec.Cmd
+	if strings.IndexFunc(c.Diff.Pager, unicode.IsSpace) != -1 {
+		shell, _ := shell.CurrentUserShell()
+		pagerCmd = exec.Command(shell, "-c", c.Diff.Pager)
+	} else {
+		//nolint:gosec
+		pagerCmd = exec.Command(c.Diff.Pager)
+	}
+	pagerCmd.Stdin = bytes.NewBufferString(output)
+	pagerCmd.Stdout = c.stdout
+	pagerCmd.Stderr = c.stderr
+	return pagerCmd.Run()
 }
 
 func (c *Config) doPurge(purgeOptions *purgeOptions) error {
