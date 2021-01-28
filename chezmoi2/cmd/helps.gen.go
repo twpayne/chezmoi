@@ -178,11 +178,7 @@ var helps = map[string]help{
 			"  targets.\n" +
 			"\n" +
 			"  If a `diff.pager` command is set in the configuration file then the output\n" +
-			"  will be piped into it.\n" +
-			"\n" +
-			"  `--no-pager`\n" +
-			"\n" +
-			"  Do not use the pager.",
+			"  will be piped into it.",
 		example: "" +
 			"  chezmoi diff\n" +
 			"  chezmoi diff ~/.bashrc",

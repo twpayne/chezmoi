@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"io"
@@ -14,6 +15,7 @@ import (
 	"strings"
 	"text/template"
 	"time"
+	"unicode"
 
 	"github.com/Masterminds/sprig/v3"
 	"github.com/coreos/go-semver/semver"
@@ -22,6 +24,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/twpayne/go-shell"
 	"github.com/twpayne/go-vfs"
 	vfsafero "github.com/twpayne/go-vfsafero"
 	"github.com/twpayne/go-xdg/v3"
@@ -74,6 +77,7 @@ type Config struct {
 	force         bool
 	homeDir       string
 	keepGoing     bool
+	noPager       bool
 	noTTY         bool
 	outputStr     string
 	verbose       bool
@@ -415,15 +419,7 @@ func (c *Config) defaultPreApplyFunc(targetRelPath chezmoi.RelPath, targetEntryS
 		case err != nil:
 			return err
 		case choice == "diff":
-			unifiedEncoder := diff.NewUnifiedEncoder(c.stdout, diff.DefaultContextLines)
-			if c.color {
-				unifiedEncoder.SetColor(diff.NewColorConfig())
-			}
-			diffPatch, err := chezmoi.DiffPatch(targetRelPath, actualContents, actualEntryState.Mode, targetContents, targetEntryState.Mode)
-			if err != nil {
-				return err
-			}
-			if err := unifiedEncoder.Encode(diffPatch); err != nil {
+			if err := c.diffFile(targetRelPath, actualContents, actualEntryState.Mode, targetContents, targetEntryState.Mode); err != nil {
 				return err
 			}
 		case choice == "overwrite":
@@ -472,6 +468,9 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 	// implementation, also only parses /etc/passwd and /etc/group and so also
 	// returns incorrect results without error if NIS or LDAP are being used.
 	//
+	// On Windows, the user's group ID returned by user.Current() is an SID and
+	// no further useful lookup is possible with Go's standard library.
+	//
 	// Since neither the username nor the group are likely widely used in
 	// templates, leave these variables unset if their values cannot be
 	// determined. Unset variables will trigger template errors if used,
@@ -479,13 +478,15 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 	// solutions.
 	if currentUser, err := user.Current(); err == nil {
 		data["username"] = currentUser.Username
-		if group, err := user.LookupGroupId(currentUser.Gid); err == nil {
-			data["group"] = group.Name
-		} else {
-			log.Debug().
-				Str("gid", currentUser.Gid).
-				Err(err).
-				Msg("user.LookupGroupId")
+		if runtime.GOOS != "windows" {
+			if group, err := user.LookupGroupId(currentUser.Gid); err == nil {
+				data["group"] = group.Name
+			} else {
+				log.Debug().
+					Str("gid", currentUser.Gid).
+					Err(err).
+					Msg("user.LookupGroupId")
+			}
 		}
 	} else {
 		log.Debug().
@@ -580,6 +581,44 @@ func (c *Config) destAbsPathInfos(sourceState *chezmoi.SourceState, args []strin
 		}
 	}
 	return destAbsPathInfos, nil
+}
+
+func (c *Config) diffFile(path chezmoi.RelPath, fromData []byte, fromMode os.FileMode, toData []byte, toMode os.FileMode) error {
+	var sb strings.Builder
+	unifiedEncoder := diff.NewUnifiedEncoder(&sb, diff.DefaultContextLines)
+	if c.color {
+		unifiedEncoder.SetColor(diff.NewColorConfig())
+	}
+	diffPatch, err := chezmoi.DiffPatch(path, fromData, fromMode, toData, toMode)
+	if err != nil {
+		return err
+	}
+	if err := unifiedEncoder.Encode(diffPatch); err != nil {
+		return err
+	}
+	return c.diffPager(sb.String())
+}
+
+func (c *Config) diffPager(output string) error {
+	if c.noPager || c.Diff.Pager == "" {
+		return c.writeOutputString(output)
+	}
+
+	// If the pager command contains any spaces, assume that it is a full
+	// shell command to be executed via the user's shell. Otherwise, execute
+	// it directly.
+	var pagerCmd *exec.Cmd
+	if strings.IndexFunc(c.Diff.Pager, unicode.IsSpace) != -1 {
+		shell, _ := shell.CurrentUserShell()
+		pagerCmd = exec.Command(shell, "-c", c.Diff.Pager)
+	} else {
+		//nolint:gosec
+		pagerCmd = exec.Command(c.Diff.Pager)
+	}
+	pagerCmd.Stdin = bytes.NewBufferString(output)
+	pagerCmd.Stdout = c.stdout
+	pagerCmd.Stderr = c.stderr
+	return pagerCmd.Run()
 }
 
 func (c *Config) doPurge(purgeOptions *purgeOptions) error {
@@ -780,6 +819,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.BoolVarP(&c.dryRun, "dry-run", "n", c.dryRun, "dry run")
 	persistentFlags.BoolVar(&c.force, "force", c.force, "force")
 	persistentFlags.BoolVarP(&c.keepGoing, "keep-going", "k", c.keepGoing, "keep going as far as possible after an error")
+	persistentFlags.BoolVar(&c.noPager, "no-pager", c.noPager, "do not use the pager")
 	persistentFlags.BoolVar(&c.noTTY, "no-tty", c.noTTY, "don't attempt to get a TTY for reading passwords")
 	persistentFlags.BoolVarP(&c.verbose, "verbose", "v", c.verbose, "verbose")
 	persistentFlags.StringVarP(&c.outputStr, "output", "o", c.outputStr, "output file")

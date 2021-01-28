@@ -29,6 +29,7 @@ Register-ArgumentCompleter -Native -CommandName 'chezmoi2' -ScriptBlock {
             [CompletionResult]::new('--force', 'force', [CompletionResultType]::ParameterName, 'force')
             [CompletionResult]::new('-k', 'k', [CompletionResultType]::ParameterName, 'keep going as far as possible after an error')
             [CompletionResult]::new('--keep-going', 'keep-going', [CompletionResultType]::ParameterName, 'keep going as far as possible after an error')
+            [CompletionResult]::new('--no-pager', 'no-pager', [CompletionResultType]::ParameterName, 'do not use the pager')
             [CompletionResult]::new('--no-tty', 'no-tty', [CompletionResultType]::ParameterName, 'don''t attempt to get a TTY for reading passwords')
             [CompletionResult]::new('-o', 'o', [CompletionResultType]::ParameterName, 'output file')
             [CompletionResult]::new('--output', 'output', [CompletionResultType]::ParameterName, 'output file')
@@ -131,6 +132,7 @@ Register-ArgumentCompleter -Native -CommandName 'chezmoi2' -ScriptBlock {
             [CompletionResult]::new('--help', 'help', [CompletionResultType]::ParameterName, 'help for completion')
             [CompletionResult]::new('-k', 'k', [CompletionResultType]::ParameterName, 'keep going as far as possible after an error')
             [CompletionResult]::new('--keep-going', 'keep-going', [CompletionResultType]::ParameterName, 'keep going as far as possible after an error')
+            [CompletionResult]::new('--no-pager', 'no-pager', [CompletionResultType]::ParameterName, 'do not use the pager')
             [CompletionResult]::new('--no-tty', 'no-tty', [CompletionResultType]::ParameterName, 'don''t attempt to get a TTY for reading passwords')
             [CompletionResult]::new('-o', 'o', [CompletionResultType]::ParameterName, 'output file')
             [CompletionResult]::new('--output', 'output', [CompletionResultType]::ParameterName, 'output file')
@@ -148,7 +150,6 @@ Register-ArgumentCompleter -Native -CommandName 'chezmoi2' -ScriptBlock {
         'chezmoi2;diff' {
             [CompletionResult]::new('-i', 'i', [CompletionResultType]::ParameterName, 'include entry types')
             [CompletionResult]::new('--include', 'include', [CompletionResultType]::ParameterName, 'include entry types')
-            [CompletionResult]::new('--no-pager', 'no-pager', [CompletionResultType]::ParameterName, 'disable pager')
             [CompletionResult]::new('-r', 'r', [CompletionResultType]::ParameterName, 'recursive')
             [CompletionResult]::new('--recursive', 'recursive', [CompletionResultType]::ParameterName, 'recursive')
             break
