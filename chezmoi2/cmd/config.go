@@ -472,6 +472,9 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 	// implementation, also only parses /etc/passwd and /etc/group and so also
 	// returns incorrect results without error if NIS or LDAP are being used.
 	//
+	// On Windows, the user's group ID returned by user.Current() is an SID and
+	// no further useful lookup is possible with Go's standard library.
+	//
 	// Since neither the username nor the group are likely widely used in
 	// templates, leave these variables unset if their values cannot be
 	// determined. Unset variables will trigger template errors if used,
@@ -479,13 +482,15 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 	// solutions.
 	if currentUser, err := user.Current(); err == nil {
 		data["username"] = currentUser.Username
-		if group, err := user.LookupGroupId(currentUser.Gid); err == nil {
-			data["group"] = group.Name
-		} else {
-			log.Debug().
-				Str("gid", currentUser.Gid).
-				Err(err).
-				Msg("user.LookupGroupId")
+		if runtime.GOOS != "windows" {
+			if group, err := user.LookupGroupId(currentUser.Gid); err == nil {
+				data["group"] = group.Name
+			} else {
+				log.Debug().
+					Str("gid", currentUser.Gid).
+					Err(err).
+					Msg("user.LookupGroupId")
+			}
 		}
 	} else {
 		log.Debug().
