@@ -21,6 +21,7 @@ func init() {
 		"  * [`--force`](#--force)\n" +
 		"  * [`-h`, `--help`](#-h---help)\n" +
 		"  * [`-k`, `--keep-going`](#-k---keep-going)\n" +
+		"  * [`--no-pager`](#--no-pager)\n" +
 		"  * [`--no-tty`](#--no-tty)\n" +
 		"  * [`-o`, `--output` *filename*](#-o---output-filename)\n" +
 		"  * [`-r`. `--remove`](#-r---remove)\n" +
@@ -177,6 +178,10 @@ func init() {
 		"\n" +
 		"Keep going as far as possible after a encountering an error.\n" +
 		"\n" +
+		"### `--no-pager`\n" +
+		"\n" +
+		"Do not use the pager.\n" +
+		"\n" +
 		"### `--no-tty`\n" +
 		"\n" +
 		"Do not attempt to get a TTY to read input and passwords. Instead, read them from\n" +
@@ -269,8 +274,7 @@ func init() {
 		"| `bitwarden`   | `command`         | string   | `bw`                      | Bitwarden CLI command                                  |\n" +
 		"| `cd`          | `args`            | []string | *none*                    | Extra args to shell in `cd` command                    |\n" +
 		"|               | `command`         | string   | *none*                    | Shell to run in `cd` command                           |\n" +
-		"| `diff`        | `noPager`         | bool     | *none*                    | Disable the pager                                      |\n" +
-		"|               | `pager`           | string   | *none*                    | Pager                                                  |\n" +
+		"| `diff`        | `pager`           | string   | *none*                    | Pager                                                  |\n" +
 		"| `edit`        | `args`            | []string | *none*                    | Extra args to edit command                             |\n" +
 		"|               | `command`         | string   | `$EDITOR` / `$VISUAL`     | Edit command                                           |\n" +
 		"| `secret`      | `command`         | string   | *none*                    | Generic secret command                                 |\n" +
@@ -634,10 +638,6 @@ func init() {
 		"\n" +
 		"If a `diff.pager` command is set in the configuration file then the output will\n" +
 		"be piped into it.\n" +
-		"\n" +
-		"#### `--no-pager`\n" +
-		"\n" +
-		"Do not use the pager.\n" +
 		"\n" +
 		"#### `diff` examples\n" +
 		"\n" +

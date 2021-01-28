@@ -77,6 +77,7 @@ type Config struct {
 	force         bool
 	homeDir       string
 	keepGoing     bool
+	noPager       bool
 	noTTY         bool
 	outputStr     string
 	verbose       bool
@@ -599,7 +600,7 @@ func (c *Config) diffFile(path chezmoi.RelPath, fromData []byte, fromMode os.Fil
 }
 
 func (c *Config) diffPager(output string) error {
-	if c.Diff.NoPager || c.Diff.Pager == "" {
+	if c.noPager || c.Diff.Pager == "" {
 		return c.writeOutputString(output)
 	}
 
@@ -818,6 +819,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.BoolVarP(&c.dryRun, "dry-run", "n", c.dryRun, "dry run")
 	persistentFlags.BoolVar(&c.force, "force", c.force, "force")
 	persistentFlags.BoolVarP(&c.keepGoing, "keep-going", "k", c.keepGoing, "keep going as far as possible after an error")
+	persistentFlags.BoolVar(&c.noPager, "no-pager", c.noPager, "do not use the pager")
 	persistentFlags.BoolVar(&c.noTTY, "no-tty", c.noTTY, "don't attempt to get a TTY for reading passwords")
 	persistentFlags.BoolVarP(&c.verbose, "verbose", "v", c.verbose, "verbose")
 	persistentFlags.StringVarP(&c.outputStr, "output", "o", c.outputStr, "output file")

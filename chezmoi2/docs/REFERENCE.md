@@ -14,6 +14,7 @@ Manage your dotfiles securely across multiple machines.
   * [`--force`](#--force)
   * [`-h`, `--help`](#-h---help)
   * [`-k`, `--keep-going`](#-k---keep-going)
+  * [`--no-pager`](#--no-pager)
   * [`--no-tty`](#--no-tty)
   * [`-o`, `--output` *filename*](#-o---output-filename)
   * [`-r`. `--remove`](#-r---remove)
@@ -170,6 +171,10 @@ Print help.
 
 Keep going as far as possible after a encountering an error.
 
+### `--no-pager`
+
+Do not use the pager.
+
 ### `--no-tty`
 
 Do not attempt to get a TTY to read input and passwords. Instead, read them from
@@ -262,8 +267,7 @@ The following configuration variables are available:
 | `bitwarden`   | `command`         | string   | `bw`                      | Bitwarden CLI command                                  |
 | `cd`          | `args`            | []string | *none*                    | Extra args to shell in `cd` command                    |
 |               | `command`         | string   | *none*                    | Shell to run in `cd` command                           |
-| `diff`        | `noPager`         | bool     | *none*                    | Disable the pager                                      |
-|               | `pager`           | string   | *none*                    | Pager                                                  |
+| `diff`        | `pager`           | string   | *none*                    | Pager                                                  |
 | `edit`        | `args`            | []string | *none*                    | Extra args to edit command                             |
 |               | `command`         | string   | `$EDITOR` / `$VISUAL`     | Edit command                                           |
 | `secret`      | `command`         | string   | *none*                    | Generic secret command                                 |
@@ -627,10 +631,6 @@ Print the difference between the target state and the destination state for
 
 If a `diff.pager` command is set in the configuration file then the output will
 be piped into it.
-
-#### `--no-pager`
-
-Do not use the pager.
 
 #### `diff` examples
 
