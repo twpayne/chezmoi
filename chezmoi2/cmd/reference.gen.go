@@ -340,24 +340,24 @@ func init() {
 		"\n" +
 		"| Prefix       | Effect                                                                         |\n" +
 		"| ------------ | ------------------------------------------------------------------------------ |\n" +
+		"| `after_`     | Run script after updating the destination.                                     |\n" +
+		"| `before_`    | Run script before updating the desintation.                                    |\n" +
+		"| `dot_`       | Rename to use a leading dot, e.g. `dot_foo` becomes `.foo`.                    |\n" +
+		"| `empty_`     | Ensure the file exists, even if is empty. By default, empty files are removed. |\n" +
 		"| `encrypted_` | Encrypt the file in the source state.                                          |\n" +
+		"| `exact_`     | Remove anything not managed by chezmoi.                                        |\n" +
+		"| `executable_`| Add executable permissions to the target file.                                 |\n" +
 		"| `exists_`    | Ensure that the file exists, and initalize its contents if it does not.        |\n" +
 		"| `once_`      | Run script once.                                                               |\n" +
 		"| `private_`   | Remove all group and world permissions from the target file or directory.      |\n" +
-		"| `empty_`     | Ensure the file exists, even if is empty. By default, empty files are removed. |\n" +
-		"| `exact_`     | Remove anything not managed by chezmoi.                                        |\n" +
-		"| `executable_`| Add executable permissions to the target file.                                 |\n" +
-		"| `first_`     | Run script before updating the desintation.                                    |\n" +
-		"| `last_`      | Run script after updating the destination.                                     |\n" +
 		"| `run_`       | Treat the contents as a script to run.                                         |\n" +
 		"| `symlink_`   | Create a symlink instead of a regular file.                                    |\n" +
-		"| `dot_`       | Rename to use a leading dot, e.g. `dot_foo` becomes `.foo`.                    |\n" +
 		"\n" +
 		"| Suffix  | Effect                                               |\n" +
 		"| ------- | ---------------------------------------------------- |\n" +
 		"| `.tmpl` | Treat the contents of the source file as a template. |\n" +
 		"\n" +
-		"The order of prefixes is important, the order is `run_`, `first_`, `last_`,\n" +
+		"The order of prefixes is important, the order is `run_`, `before_`, `after_`,\n" +
 		"`exact_`, `exists_`, `private_`, `empty_`, `executable_`, `symlink_`, `once_`,\n" +
 		"`dot_`.\n" +
 		"\n" +
@@ -368,7 +368,7 @@ func init() {
 		"| Directory     | `exact_`, `private_`, `dot_`                               | *none*           |\n" +
 		"| Present file  | `exists_`, `encrypted_`, `private_`, `executable_`, `dot_` | `.tmpl`          |\n" +
 		"| Regular file  | `encrypted_`, `private_`, `empty_`, `executable_`, `dot_`  | `.tmpl`          |\n" +
-		"| Script        | `run_`, `first_` or `last_`, `once_`                       | `.tmpl`          |\n" +
+		"| Script        | `run_`, `once_`, `before_` or `after_`                     | `.tmpl`          |\n" +
 		"| Symbolic link | `symlink_`, `dot_`,                                        | `.tmpl`          |\n" +
 		"\n" +
 		"## Special files and directories\n" +

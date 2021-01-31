@@ -333,24 +333,24 @@ special, and are collectively referred to as "attributes":
 
 | Prefix       | Effect                                                                         |
 | ------------ | ------------------------------------------------------------------------------ |
+| `after_`     | Run script after updating the destination.                                     |
+| `before_`    | Run script before updating the desintation.                                    |
+| `dot_`       | Rename to use a leading dot, e.g. `dot_foo` becomes `.foo`.                    |
+| `empty_`     | Ensure the file exists, even if is empty. By default, empty files are removed. |
 | `encrypted_` | Encrypt the file in the source state.                                          |
+| `exact_`     | Remove anything not managed by chezmoi.                                        |
+| `executable_`| Add executable permissions to the target file.                                 |
 | `exists_`    | Ensure that the file exists, and initalize its contents if it does not.        |
 | `once_`      | Run script once.                                                               |
 | `private_`   | Remove all group and world permissions from the target file or directory.      |
-| `empty_`     | Ensure the file exists, even if is empty. By default, empty files are removed. |
-| `exact_`     | Remove anything not managed by chezmoi.                                        |
-| `executable_`| Add executable permissions to the target file.                                 |
-| `first_`     | Run script before updating the desintation.                                    |
-| `last_`      | Run script after updating the destination.                                     |
 | `run_`       | Treat the contents as a script to run.                                         |
 | `symlink_`   | Create a symlink instead of a regular file.                                    |
-| `dot_`       | Rename to use a leading dot, e.g. `dot_foo` becomes `.foo`.                    |
 
 | Suffix  | Effect                                               |
 | ------- | ---------------------------------------------------- |
 | `.tmpl` | Treat the contents of the source file as a template. |
 
-The order of prefixes is important, the order is `run_`, `first_`, `last_`,
+The order of prefixes is important, the order is `run_`, `before_`, `after_`,
 `exact_`, `exists_`, `private_`, `empty_`, `executable_`, `symlink_`, `once_`,
 `dot_`.
 
@@ -361,7 +361,7 @@ Different target types allow different prefixes and suffixes:
 | Directory     | `exact_`, `private_`, `dot_`                               | *none*           |
 | Present file  | `exists_`, `encrypted_`, `private_`, `executable_`, `dot_` | `.tmpl`          |
 | Regular file  | `encrypted_`, `private_`, `empty_`, `executable_`, `dot_`  | `.tmpl`          |
-| Script        | `run_`, `first_` or `last_`, `once_`                       | `.tmpl`          |
+| Script        | `run_`, `once_`, `before_` or `after_`                     | `.tmpl`          |
 | Symbolic link | `symlink_`, `dot_`,                                        | `.tmpl`          |
 
 ## Special files and directories

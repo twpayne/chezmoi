@@ -31,7 +31,7 @@ General:
 - `chezmoi init --one-shot`
 - new type `--exists`
 - `chezmoi archive --format=zip`
-- `first_` and `last_` script attributes change script order, scripts now run during
+- `before_` and `after_` script attributes change script order, scripts now run during
 - new `fqdnHostname` template var (UNIX only for now)
 - age encryption support
 

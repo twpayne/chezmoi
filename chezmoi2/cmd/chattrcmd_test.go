@@ -62,27 +62,27 @@ func TestParseAttrModifier(t *testing.T) {
 			},
 		},
 		{
-			s: "f",
+			s: "b",
 			expected: &attrModifier{
-				order: orderModifierSetFirst,
+				order: orderModifierSetBefore,
 			},
 		},
 		{
-			s: "-f",
+			s: "-b",
 			expected: &attrModifier{
-				order: orderModifierClearFirst,
+				order: orderModifierClearBefore,
 			},
 		},
 		{
-			s: "last",
+			s: "after",
 			expected: &attrModifier{
-				order: orderModifierSetLast,
+				order: orderModifierSetAfter,
 			},
 		},
 		{
-			s: "nolast",
+			s: "noafter",
 			expected: &attrModifier{
-				order: orderModifierClearLast,
+				order: orderModifierClearAfter,
 			},
 		},
 		{

@@ -19,14 +19,14 @@ var (
 // Suffixes and prefixes.
 const (
 	ignorePrefix     = "."
+	afterPrefix      = "after_"
+	beforePrefix     = "before_"
 	dotPrefix        = "dot_"
 	emptyPrefix      = "empty_"
 	encryptedPrefix  = "encrypted_"
 	exactPrefix      = "exact_"
 	executablePrefix = "executable_"
 	existsPrefix     = "exists_"
-	firstPrefix      = "first_"
-	lastPrefix       = "last_"
 	oncePrefix       = "once_"
 	privatePrefix    = "private_"
 	runPrefix        = "run_"
