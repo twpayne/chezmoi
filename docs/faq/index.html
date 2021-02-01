@@ -18,8 +18,8 @@ What are the consequences of &ldquo;bare&rdquo; modifications to the target file
 <title>FAQ | chezmoi.io</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
-<link rel="stylesheet" href="/book.min.134b70e5316650a530cb42e4e8630b2a01d532bebfc0337028211175336e4806.css" integrity="sha256-E0tw5TFmUKUwy0Lk6GMLKgHVMr6/wDNwKCERdTNuSAY=">
-<script defer src="/en.search.min.2be4207861ff8087e462f187c0d8a47d4d3579f0e4c17a27f3e9bce165c48126.js" integrity="sha256-K&#43;QgeGH/gIfkYvGHwNikfU01efDkwXon8&#43;m84WXEgSY="></script>
+<link rel="stylesheet" href="/book.min.6c7c6446dfdee7c8c933e9bbc6e80ee3ed6c913b2a59519f2092c3c6a9d63e55.css" integrity="sha256-bHxkRt/e58jJM&#43;m7xugO4&#43;1skTsqWVGfIJLDxqnWPlU=">
+<script defer src="/en.search.min.a5b73ccc1809ec6c18b180859bb6b68317bf84addc77ffe878f47e64a459f672.js" integrity="sha256-pbc8zBgJ7GwYsYCFm7a2gxe/hK3cd//oePR&#43;ZKRZ9nI="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -33,7 +33,8 @@ https://github.com/alex-shpak/hugo-book
   <input type="checkbox" class="hidden toggle" id="toc-control" />
   <main class="container flex">
     <aside class="book-menu">
-      
+      <div class="book-menu-content">
+        
   <nav>
 <h2 class="book-brand">
   <a href="/"><img src="/logo-144px.svg" alt="Logo" /><span>chezmoi.io</span>
@@ -88,6 +89,7 @@ https://github.com/alex-shpak/hugo-book
 
 
  
+      </div>
     </aside>
 
     <div class="book-page">
@@ -111,7 +113,8 @@ https://github.com/alex-shpak/hugo-book
   
   <aside class="hidden clearfix">
     
-  <nav id="TableOfContents">
+  
+<nav id="TableOfContents">
   <ul>
     <li><a href="#how-can-i-quickly-check-for-problems-with-chezmoi-on-my-machine">How can I quickly check for problems with chezmoi on my machine?</a></li>
     <li><a href="#what-are-the-consequences-of-bare-modifications-to-the-target-files-if-my-zshrc-is-managed-by-chezmoi-and-i-edit-zshrc-without-using-chezmoi-edit-what-happens">What are the consequences of &ldquo;bare&rdquo; modifications to the target files? If my <code>.zshrc</code> is managed by chezmoi and I edit <code>~/.zshrc</code> without using <code>chezmoi edit</code>, what happens?</a></li>
@@ -124,6 +127,8 @@ https://github.com/alex-shpak/hugo-book
     <li><a href="#ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both">I&rsquo;ve made changes to both the destination state and the source state that I want to keep. How can I keep them both?</a></li>
     <li><a href="#why-does-chezmoi-convert-all-my-template-variables-to-lowercase">Why does chezmoi convert all my template variables to lowercase?</a></li>
     <li><a href="#chezmoi-makes-sshconfig-group-writeable-how-do-i-stop-this">chezmoi makes <code>~/.ssh/config</code> group writeable. How do I stop this?</a></li>
+    <li><a href="#why-doesnt-chezmoi-use-symlinks-like-gnu-stow">Why doesn&rsquo;t chezmoi use symlinks like GNU Stow?</a></li>
+    <li><a href="#do-i-have-to-use-chezmoi-edit-to-edit-my-dotfiles">Do I have to use <code>chezmoi edit</code> to edit my dotfiles?</a></li>
     <li><a href="#can-i-change-how-chezmois-source-state-is-represented-on-disk">Can I change how chezmoi&rsquo;s source state is represented on disk?</a></li>
     <li><a href="#gpg-encryption-fails-what-could-be-wrong">gpg encryption fails. What could be wrong?</a></li>
     <li><a href="#chezmoi-reports-user-lookup-userid-nnnnn-inputoutput-error">chezmoi reports &ldquo;user: lookup userid NNNNN: input/output error&rdquo;</a></li>
@@ -137,6 +142,7 @@ https://github.com/alex-shpak/hugo-book
     <li><a href="#i-like-chezmoi-how-do-i-say-thanks">I like chezmoi. How do I say thanks?</a></li>
   </ul>
 </nav>
+
 
 
   </aside>
@@ -271,11 +277,11 @@ GitHub issue</a>.</p>
   <a class="anchor" href="#chezmoi-makes-sshconfig-group-writeable-how-do-i-stop-this">#</a>
 </h2>
 <p>By default, chezmoi uses your system&rsquo;s umask when creating files. On most
-systems the default umask is <code>0022</code> but some systems use <code>0002</code>, which means
+systems the default umask is <code>022</code> but some systems use <code>002</code>, which means
 that files and directories are group writeable by default.</p>
 <p>You can override this for chezmoi by setting the <code>umask</code> configuration variable
 in your configuration file, for example:</p>
-<pre><code>umask = 0022
+<pre><code>umask = 0o022
 </code></pre>
 <p>Note that this will apply to all files and directories that chezmoi manages and
 will ensure that none of them are group writeable. It is not currently possible
@@ -283,6 +289,62 @@ to control group write permissions for individual files or directories. Please
 <a href="https://github.com/twpayne/chezmoi/issues/new?assignees=&amp;labels=enhancement&amp;template=02_feature_request.md&amp;title=">open an issue on
 GitHub</a>
 if you need this.</p>
+<h2 id="why-doesnt-chezmoi-use-symlinks-like-gnu-stow">
+  Why doesn&rsquo;t chezmoi use symlinks like GNU Stow?
+  <a class="anchor" href="#why-doesnt-chezmoi-use-symlinks-like-gnu-stow">#</a>
+</h2>
+<p>Symlinks are first class citizens in chezmoi: chezmoi supports creating them,
+updating them, removing them, and even more advanced features not found
+elsewhere like having the same symlink point to different targets on different
+machines by using templates.</p>
+<p>With chezmoi, you only use symlinks where you really need a symlink, in contrast
+to some other dotfile managers (e.g. GNU Stow) which require the use of symlinks
+as a layer of indirection between a dotfile&rsquo;s location (which can be anywhere in
+your home directory) and a dotfile&rsquo;s content (which needs to be in a centralized
+directory that you manage with version control). chezmoi solves this problem in
+a different way.</p>
+<p>Instead of using a symlink to redirect from the dotfile&rsquo;s location to the
+centralized directory, chezmoi generates the dotfile in its final location from
+the contents of the centralized directory. Not only is no symlink is needed,
+this has the advantages that chezmoi is better able to cope with differences
+from machine to machine (as a dotfile&rsquo;s contents can be unique to that machine)
+and the dotfiles that chezmoi creates are just regular files. There&rsquo;s nothing
+special about dotfiles managed by chezmoi, whereas dotfiles managed with GNU
+Stow are special because they&rsquo;re actually symlinks to somewhere else.</p>
+<p>The only advantage to using GNU Stow-style symlinks is that changes that you
+make to the dotfile&rsquo;s contents in the centralized directory are immediately
+visible, whereas chezmoi currently requires you to run <code>chezmoi apply</code> or
+<code>chezmoi edit --apply</code>. chezmoi will likely get an alternative solution to this
+too, see <a href="https://github.com/twpayne/chezmoi/issues/752">#752</a>.</p>
+<p>You can configure chezmoi to work like GNU Stow and have it create a set of
+symlinks back to a central directory, but this currently requires a bit of
+manual work (as described in
+<a href="https://github.com/twpayne/chezmoi/issues/167">#167</a>). chezmoi might get some
+automation to help (see <a href="https://github.com/twpayne/chezmoi/issues/886">#886</a>
+for example) but it does need some convincing use cases that demonstrate that a
+symlink from a dotfile&rsquo;s location to its contents in a central directory is
+better than just having the correct dotfile contents.</p>
+<h2 id="do-i-have-to-use-chezmoi-edit-to-edit-my-dotfiles">
+  Do I have to use <code>chezmoi edit</code> to edit my dotfiles?
+  <a class="anchor" href="#do-i-have-to-use-chezmoi-edit-to-edit-my-dotfiles">#</a>
+</h2>
+<p>No. <code>chezmoi edit</code> is a convenience command that has a couple of useful
+features, but you don&rsquo;t have to use it. You can also run <code>chezmoi cd</code> and then
+just edit the files in the source state directly. After saving an edited file
+you can run <code>chezmoi diff</code> to check what effect the changes would have, and run
+<code>chezmoi apply</code> if you&rsquo;re happy with them.</p>
+<p><code>chezmoi edit</code> provides the following useful features:</p>
+<ul>
+<li>It opens the correct file in the source state for you, so you don&rsquo;t have to
+know anything about source state attributes.</li>
+<li>If the dotfille is encrypted in the source state, then <code>chezmoi edit</code> will
+decrypt it to a private directory, open that file in your <code>$EDITOR</code>, and then
+re-encrypt the file when you quit your editor. That makes encryption more
+transparent to the user. With the <code>--diff</code> and <code>--apply</code> options you can see what
+would change and apply those changes without having to run <code>chezmoi diff</code> or
+<code>chezmoi apply</code>. Note also that the arguments to <code>chezmoi edit</code> are the files in
+their target location.</li>
+</ul>
 <h2 id="can-i-change-how-chezmois-source-state-is-represented-on-disk">
   Can I change how chezmoi&rsquo;s source state is represented on disk?
   <a class="anchor" href="#can-i-change-how-chezmois-source-state-is-represented-on-disk">#</a>
@@ -527,8 +589,10 @@ chezmoi better. Thank you :)</p>
 
     
     <aside class="book-toc">
-      
-  <nav id="TableOfContents">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
   <ul>
     <li><a href="#how-can-i-quickly-check-for-problems-with-chezmoi-on-my-machine">How can I quickly check for problems with chezmoi on my machine?</a></li>
     <li><a href="#what-are-the-consequences-of-bare-modifications-to-the-target-files-if-my-zshrc-is-managed-by-chezmoi-and-i-edit-zshrc-without-using-chezmoi-edit-what-happens">What are the consequences of &ldquo;bare&rdquo; modifications to the target files? If my <code>.zshrc</code> is managed by chezmoi and I edit <code>~/.zshrc</code> without using <code>chezmoi edit</code>, what happens?</a></li>
@@ -541,6 +605,8 @@ chezmoi better. Thank you :)</p>
     <li><a href="#ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both">I&rsquo;ve made changes to both the destination state and the source state that I want to keep. How can I keep them both?</a></li>
     <li><a href="#why-does-chezmoi-convert-all-my-template-variables-to-lowercase">Why does chezmoi convert all my template variables to lowercase?</a></li>
     <li><a href="#chezmoi-makes-sshconfig-group-writeable-how-do-i-stop-this">chezmoi makes <code>~/.ssh/config</code> group writeable. How do I stop this?</a></li>
+    <li><a href="#why-doesnt-chezmoi-use-symlinks-like-gnu-stow">Why doesn&rsquo;t chezmoi use symlinks like GNU Stow?</a></li>
+    <li><a href="#do-i-have-to-use-chezmoi-edit-to-edit-my-dotfiles">Do I have to use <code>chezmoi edit</code> to edit my dotfiles?</a></li>
     <li><a href="#can-i-change-how-chezmois-source-state-is-represented-on-disk">Can I change how chezmoi&rsquo;s source state is represented on disk?</a></li>
     <li><a href="#gpg-encryption-fails-what-could-be-wrong">gpg encryption fails. What could be wrong?</a></li>
     <li><a href="#chezmoi-reports-user-lookup-userid-nnnnn-inputoutput-error">chezmoi reports &ldquo;user: lookup userid NNNNN: input/output error&rdquo;</a></li>
@@ -555,7 +621,9 @@ chezmoi better. Thank you :)</p>
   </ul>
 </nav>
 
+
  
+      </div>
     </aside>
     
   </main>

@@ -16,8 +16,8 @@ chezmoi cd git remote add origin https://github." />
 <title>How-To | chezmoi.io</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
-<link rel="stylesheet" href="/book.min.134b70e5316650a530cb42e4e8630b2a01d532bebfc0337028211175336e4806.css" integrity="sha256-E0tw5TFmUKUwy0Lk6GMLKgHVMr6/wDNwKCERdTNuSAY=">
-<script defer src="/en.search.min.2be4207861ff8087e462f187c0d8a47d4d3579f0e4c17a27f3e9bce165c48126.js" integrity="sha256-K&#43;QgeGH/gIfkYvGHwNikfU01efDkwXon8&#43;m84WXEgSY="></script>
+<link rel="stylesheet" href="/book.min.6c7c6446dfdee7c8c933e9bbc6e80ee3ed6c913b2a59519f2092c3c6a9d63e55.css" integrity="sha256-bHxkRt/e58jJM&#43;m7xugO4&#43;1skTsqWVGfIJLDxqnWPlU=">
+<script defer src="/en.search.min.a5b73ccc1809ec6c18b180859bb6b68317bf84addc77ffe878f47e64a459f672.js" integrity="sha256-pbc8zBgJ7GwYsYCFm7a2gxe/hK3cd//oePR&#43;ZKRZ9nI="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -31,7 +31,8 @@ https://github.com/alex-shpak/hugo-book
   <input type="checkbox" class="hidden toggle" id="toc-control" />
   <main class="container flex">
     <aside class="book-menu">
-      
+      <div class="book-menu-content">
+        
   <nav>
 <h2 class="book-brand">
   <a href="/"><img src="/logo-144px.svg" alt="Logo" /><span>chezmoi.io</span>
@@ -86,6 +87,7 @@ https://github.com/alex-shpak/hugo-book
 
 
  
+      </div>
     </aside>
 
     <div class="book-page">
@@ -109,7 +111,8 @@ https://github.com/alex-shpak/hugo-book
   
   <aside class="hidden clearfix">
     
-  <nav id="TableOfContents">
+  
+<nav id="TableOfContents">
   <ul>
     <li><a href="#use-a-hosted-repo-to-manage-your-dotfiles-across-multiple-machines">Use a hosted repo to manage your dotfiles across multiple machines</a></li>
     <li><a href="#pull-the-latest-changes-from-your-repo-and-apply-them">Pull the latest changes from your repo and apply them</a></li>
@@ -159,6 +162,7 @@ https://github.com/alex-shpak/hugo-book
     <li><a href="#migrate-from-a-dotfile-manager-that-uses-symlinks">Migrate from a dotfile manager that uses symlinks</a></li>
   </ul>
 </nav>
+
 
 
   </aside>
@@ -626,15 +630,15 @@ called <code>private-key</code>, its value is available as:</p>
 <p>chezmoi includes support for Keychain (on macOS), GNOME Keyring (on Linux), and
 Windows Credentials Manager (on Windows) via the
 <a href="https://github.com/zalando/go-keyring"><code>zalando/go-keyring</code></a> library.</p>
-<p>Set passwords with:</p>
+<p>Set values with:</p>
 <pre><code>$ chezmoi keyring set --service=&lt;service&gt; --user=&lt;user&gt;
-Password: xxxxxxxx
+Value: xxxxxxxx
 </code></pre>
-<p>The password can then be used in templates using the <code>keyring</code> function which
-takes the service and user as arguments.</p>
+<p>The value can then be used in templates using the <code>keyring</code> function which takes
+the service and user as arguments.</p>
 <p>For example, save a GitHub access token in keyring with:</p>
 <pre><code>$ chezmoi keyring set --service=github --user=&lt;github-username&gt;
-Password: xxxxxxxx
+Value: xxxxxxxx
 </code></pre>
 <p>and then include it in your <code>~/.gitconfig</code> file with:</p>
 <pre><code>[github]
@@ -1084,8 +1088,10 @@ contents.</p>
 
     
     <aside class="book-toc">
-      
-  <nav id="TableOfContents">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
   <ul>
     <li><a href="#use-a-hosted-repo-to-manage-your-dotfiles-across-multiple-machines">Use a hosted repo to manage your dotfiles across multiple machines</a></li>
     <li><a href="#pull-the-latest-changes-from-your-repo-and-apply-them">Pull the latest changes from your repo and apply them</a></li>
@@ -1136,7 +1142,9 @@ contents.</p>
   </ul>
 </nav>
 
+
  
+      </div>
     </aside>
     
   </main>
