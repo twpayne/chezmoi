@@ -21,11 +21,11 @@ const (
 type orderModifier int
 
 const (
-	orderModifierSetFirst       orderModifier = -2
-	orderModifierClearFirst     orderModifier = -1
+	orderModifierSetBefore      orderModifier = -2
+	orderModifierClearBefore    orderModifier = -1
 	orderModifierLeaveUnchanged orderModifier = 0
-	orderModifierClearLast      orderModifier = 1
-	orderModifierSetLast        orderModifier = 2
+	orderModifierClearAfter     orderModifier = 1
+	orderModifierSetAfter       orderModifier = 2
 )
 
 type attrModifier struct {
@@ -41,12 +41,12 @@ type attrModifier struct {
 
 func (c *Config) newChattrCmd() *cobra.Command {
 	attrs := []string{
+		"after", "a",
+		"before", "b",
 		"empty", "e",
 		"encrypted",
 		"exact",
 		"executable", "x",
-		"first", "f",
-		"last", "l",
 		"once", "o",
 		"private", "p",
 		"template", "t",
@@ -137,21 +137,21 @@ func (m boolModifier) modify(b bool) bool {
 
 func (m orderModifier) modify(order int) int {
 	switch m {
-	case orderModifierSetFirst:
+	case orderModifierSetBefore:
 		return -1
-	case orderModifierClearFirst:
+	case orderModifierClearBefore:
 		if order < 0 {
 			return 0
 		}
 		return order
 	case orderModifierLeaveUnchanged:
 		return order
-	case orderModifierClearLast:
+	case orderModifierClearAfter:
 		if order > 0 {
 			return 0
 		}
 		return order
-	case orderModifierSetLast:
+	case orderModifierSetAfter:
 		return 1
 	default:
 		panic(fmt.Sprintf("%d: unknown order modifier", m))
@@ -182,6 +182,24 @@ func parseAttrModifier(s string) (*attrModifier, error) {
 			attribute = modifierStr
 		}
 		switch attribute {
+		case "after", "a":
+			switch bm {
+			case boolModifierClear:
+				am.order = orderModifierClearAfter
+			case boolModifierLeaveUnchanged:
+				am.order = orderModifierLeaveUnchanged
+			case boolModifierSet:
+				am.order = orderModifierSetAfter
+			}
+		case "before", "b":
+			switch bm {
+			case boolModifierClear:
+				am.order = orderModifierClearBefore
+			case boolModifierLeaveUnchanged:
+				am.order = orderModifierLeaveUnchanged
+			case boolModifierSet:
+				am.order = orderModifierSetBefore
+			}
 		case "empty", "e":
 			am.empty = bm
 		case "encrypted":
@@ -190,24 +208,6 @@ func parseAttrModifier(s string) (*attrModifier, error) {
 			am.exact = bm
 		case "executable", "x":
 			am.executable = bm
-		case "first", "f":
-			switch bm {
-			case boolModifierClear:
-				am.order = orderModifierClearFirst
-			case boolModifierLeaveUnchanged:
-				am.order = orderModifierLeaveUnchanged
-			case boolModifierSet:
-				am.order = orderModifierSetFirst
-			}
-		case "last", "l":
-			switch bm {
-			case boolModifierClear:
-				am.order = orderModifierClearLast
-			case boolModifierLeaveUnchanged:
-				am.order = orderModifierLeaveUnchanged
-			case boolModifierSet:
-				am.order = orderModifierSetLast
-			}
 		case "once", "o":
 			am.once = bm
 		case "private", "p":

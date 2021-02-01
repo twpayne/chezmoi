@@ -44,24 +44,24 @@ chezmoi chattr -- -t $HOME${/}.symlink
 ! exists $CHEZMOISOURCEDIR/symlink_dot_symlink.tmpl
 exists $CHEZMOISOURCEDIR/symlink_dot_symlink
 
-chezmoi chattr -- first $HOME/script
+chezmoi chattr -- before $HOME/script
 ! exists $CHEZMOISOURCEDIR/run_script
-exists $CHEZMOISOURCEDIR/run_first_script
+exists $CHEZMOISOURCEDIR/run_before_script
 
 chezmoi chattr -- once $HOME/script
-! exists $CHEZMOISOURCEDIR/run_first_script
-exists $CHEZMOISOURCEDIR/run_first_once_script
+! exists $CHEZMOISOURCEDIR/run_before_script
+exists $CHEZMOISOURCEDIR/run_once_before_script
 
-chezmoi chattr -- last $HOME/script
-! exists $CHEZMOISOURCEDIR/run_first_once_script
-exists $CHEZMOISOURCEDIR/run_last_once_script
+chezmoi chattr -- after $HOME/script
+! exists $CHEZMOISOURCEDIR/run_once_before_script
+exists $CHEZMOISOURCEDIR/run_once_after_script
 
 chezmoi chattr -- -o $HOME/script
-! exists $CHEZMOISOURCEDIR/run_last_once_script
-exists $CHEZMOISOURCEDIR/run_last_script
+! exists $CHEZMOISOURCEDIR/run_once_after_script
+exists $CHEZMOISOURCEDIR/run_after_script
 
-chezmoi chattr -- -l $HOME/script
-! exists $CHEZMOISOURCEDIR/run_last_script
+chezmoi chattr -- -a $HOME/script
+! exists $CHEZMOISOURCEDIR/run_after_script
 exists $CHEZMOISOURCEDIR/run_script
 
 -- home/user/.local/share/chezmoi/run_script --

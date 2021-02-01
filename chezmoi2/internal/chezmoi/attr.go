@@ -121,17 +121,17 @@ func parseFileAttr(sourceName string) FileAttr {
 	case strings.HasPrefix(name, runPrefix):
 		sourceFileType = SourceFileTypeScript
 		name = mustTrimPrefix(name, runPrefix)
-		switch {
-		case strings.HasPrefix(name, firstPrefix):
-			name = mustTrimPrefix(name, firstPrefix)
-			order = -1
-		case strings.HasPrefix(name, lastPrefix):
-			name = mustTrimPrefix(name, lastPrefix)
-			order = 1
-		}
 		if strings.HasPrefix(name, oncePrefix) {
 			name = mustTrimPrefix(name, oncePrefix)
 			once = true
+		}
+		switch {
+		case strings.HasPrefix(name, beforePrefix):
+			name = mustTrimPrefix(name, beforePrefix)
+			order = -1
+		case strings.HasPrefix(name, afterPrefix):
+			name = mustTrimPrefix(name, afterPrefix)
+			order = 1
 		}
 	case strings.HasPrefix(name, symlinkPrefix):
 		sourceFileType = SourceFileTypeSymlink
@@ -204,14 +204,14 @@ func (fa FileAttr) SourceName() string {
 		}
 	case SourceFileTypeScript:
 		sourceName = runPrefix
-		switch fa.Order {
-		case -1:
-			sourceName += firstPrefix
-		case 1:
-			sourceName += lastPrefix
-		}
 		if fa.Once {
 			sourceName += oncePrefix
+		}
+		switch fa.Order {
+		case -1:
+			sourceName += beforePrefix
+		case 1:
+			sourceName += afterPrefix
 		}
 	case SourceFileTypeSymlink:
 		sourceName = symlinkPrefix

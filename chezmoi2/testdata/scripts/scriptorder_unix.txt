@@ -1,22 +1,22 @@
 [windows] skip 'UNIX only'
 
 # test that chezmoi apply runs scripts in the correct order
-symlink home/user/.local/share/chezmoi/run_first_00-first -> .script
-symlink home/user/.local/share/chezmoi/run_first_99-first -> .script
+symlink home/user/.local/share/chezmoi/run_before_00-before -> .script
+symlink home/user/.local/share/chezmoi/run_before_99-before -> .script
 symlink home/user/.local/share/chezmoi/run_00 -> .script
 symlink home/user/.local/share/chezmoi/run_99 -> .script
-symlink home/user/.local/share/chezmoi/run_last_00-last -> .script
-symlink home/user/.local/share/chezmoi/run_last_99-last -> .script
+symlink home/user/.local/share/chezmoi/run_after_00-after -> .script
+symlink home/user/.local/share/chezmoi/run_after_99-after -> .script
 chezmoi apply --force
 cmp stdout golden/apply
 
 -- golden/apply --
-00-first
-99-first
+00-before
+99-before
 00
 99
-00-last
-99-last
+00-after
+99-after
 -- home/user/.local/share/chezmoi/.script --
 #!/bin/sh
 
