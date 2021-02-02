@@ -1079,10 +1079,7 @@ using the [Bitwarden CLI](https://bitwarden.com/help/article/cli/) (`bw`). _file
 and _itemid_ is passed to `bw get attachment <filename> --itemid <itemid>`
 and the output from `bw` is returned. The output from `bw` is cached so calling
 `bitwardenAttachment` multiple times with the same _filename_ and _itemid_ will only
-invoke `bw` once. _Beware_ that using the `id` instead of a filename, will expose your
-file publicly, as the `id` + `itemid` is built into the following URL in Bitwarden:
-`"https://cdn.bitwarden.net/attachments/<id>/<itemid>"`, which allows anyone to download
-your files.
+invoke `bw` once.
 
 #### `bitwardenAttachment` examples
 

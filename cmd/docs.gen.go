@@ -3019,10 +3019,7 @@ func init() {
 		"and _itemid_ is passed to `bw get attachment <filename> --itemid <itemid>`\n" +
 		"and the output from `bw` is returned. The output from `bw` is cached so calling\n" +
 		"`bitwardenAttachment` multiple times with the same _filename_ and _itemid_ will only\n" +
-		"invoke `bw` once. _Beware_ that using the `id` instead of a filename, will expose your\n" +
-		"file publicly, as the `id` + `itemid` is built into the following URL in Bitwarden:\n" +
-		"`\"https://cdn.bitwarden.net/attachments/<id>/<itemid>\"`, which allows anyone to download\n" +
-		"your files.\n" +
+		"invoke `bw` once.\n" +
 		"\n" +
 		"#### `bitwardenAttachment` examples\n" +
 		"\n" +
