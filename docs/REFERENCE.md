@@ -69,6 +69,7 @@ Manage your dotfiles securely across multiple machines.
 * [Template functions](#template-functions)
   * [`bitwarden` [*args*]](#bitwarden-args)
   * [`bitwardenFields` [*args*]](#bitwardenfields-args)
+  * [`bitwardenAttachment` [*args*]](#bitwardenattachment-args)
   * [`gopass` *gopass-name*](#gopass-gopass-name)
   * [`include` *filename*](#include-filename)
   * [`ioreg`](#ioreg)
@@ -1070,6 +1071,22 @@ same arguments will only invoke `bw` once.
 #### `bitwardenFields` examples
 
     {{ (bitwardenFields "item" "example.com").token.value }}
+
+### `bitwardenAttachment` _filename_ _itemid_
+
+`bitwardenAttachment` returns a document from [Bitwarden](https://bitwarden.com/)
+using the [Bitwarden CLI](https://bitwarden.com/help/article/cli/) (`bw`). _filename_
+and _itemid_ is passed to `bw get attachment <filename> --itemid <itemid>`
+and the output from `bw` is returned. The output from `bw` is cached so calling
+`bitwardenAttachment` multiple times with the same _filename_ and _itemid_ will only
+invoke `bw` once. _Beware_ that using the `id` instead of a filename, will expose your
+file publicly, as the `id` + `itemid` is built into the following URL in Bitwarden:
+`"https://cdn.bitwarden.net/attachments/<id>/<itemid>"`, which allows anyone to download
+your files.
+
+#### `bitwardenAttachment` examples
+
+    {{- (bitwardenAttachment "<filename>" "<itemid>") -}}
 
 ### `gopass` *gopass-name*
 

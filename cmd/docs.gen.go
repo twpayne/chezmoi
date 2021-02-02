@@ -2009,6 +2009,7 @@ func init() {
 		"* [Template functions](#template-functions)\n" +
 		"  * [`bitwarden` [*args*]](#bitwarden-args)\n" +
 		"  * [`bitwardenFields` [*args*]](#bitwardenfields-args)\n" +
+		"  * [`bitwardenAttachment` [*args*]](#bitwardenattachment-args)\n" +
 		"  * [`gopass` *gopass-name*](#gopass-gopass-name)\n" +
 		"  * [`include` *filename*](#include-filename)\n" +
 		"  * [`ioreg`](#ioreg)\n" +
@@ -3010,6 +3011,22 @@ func init() {
 		"#### `bitwardenFields` examples\n" +
 		"\n" +
 		"    {{ (bitwardenFields \"item\" \"example.com\").token.value }}\n" +
+		"\n" +
+		"### `bitwardenAttachment` _filename_ _itemid_\n" +
+		"\n" +
+		"`bitwardenAttachment` returns a document from [Bitwarden](https://bitwarden.com/)\n" +
+		"using the [Bitwarden CLI](https://bitwarden.com/help/article/cli/) (`bw`). _filename_\n" +
+		"and _itemid_ is passed to `bw get attachment <filename> --itemid <itemid>`\n" +
+		"and the output from `bw` is returned. The output from `bw` is cached so calling\n" +
+		"`bitwardenAttachment` multiple times with the same _filename_ and _itemid_ will only\n" +
+		"invoke `bw` once. _Beware_ that using the `id` instead of a filename, will expose your\n" +
+		"file publicly, as the `id` + `itemid` is built into the following URL in Bitwarden:\n" +
+		"`\"https://cdn.bitwarden.net/attachments/<id>/<itemid>\"`, which allows anyone to download\n" +
+		"your files.\n" +
+		"\n" +
+		"#### `bitwardenAttachment` examples\n" +
+		"\n" +
+		"    {{- (bitwardenAttachment \"<filename>\" \"<itemid>\") -}}\n" +
 		"\n" +
 		"### `gopass` *gopass-name*\n" +
 		"\n" +
