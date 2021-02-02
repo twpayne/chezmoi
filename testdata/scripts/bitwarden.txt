@@ -9,6 +9,11 @@ stdout password-value
 chezmoi execute-template '{{ (bitwardenFields "item" "example.com").Hidden.value }}'
 stdout hidden-value
 
+[short] stop
+
+chezmoi execute-template '{{ (bitwardenAttachment "filename" "item-id") }}'
+stdout hidden-file-value
+
 -- bin/bw --
 #!/bin/sh
 
@@ -45,6 +50,11 @@ case "$*" in
   "collectionIds": [],
   "revisionDate": "2020-10-28T00:21:02.690Z"
 }
+EOF
+   ;;
+"get attachment filename --itemid item-id --raw")
+    cat <<EOF
+hidden-file-value
 EOF
     ;;
 *)
@@ -85,6 +95,8 @@ IF "%*" == "get item example.com" (
     echo.  "collectionIds": [],
     echo.  "revisionDate": "2020-10-28T00:21:02.690Z"
     echo.}
+) ELSE IF "%*" == "get attachment filename --itemid item-id --raw" (
+    echo. hidden-file-value
 ) ELSE (
     echo Invalid command: $*
     echo "See --help for a list of available commands."
