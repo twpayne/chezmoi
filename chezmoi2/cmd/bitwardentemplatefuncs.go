@@ -65,3 +65,7 @@ func (c *Config) bitwardenTemplateFunc(args ...string) map[string]interface{} {
 	}
 	return data
 }
+
+func (c *Config) bitwardenAttachmentTemplateFunc(name, itemID string) string {
+	return string(c.bitwardenOutput([]string{"attachment", name, "--itemid", itemID, "--raw"}))
+}

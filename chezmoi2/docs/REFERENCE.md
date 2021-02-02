@@ -80,6 +80,7 @@ Manage your dotfiles securely across multiple machines.
 * [Template functions](#template-functions)
   * [`bitwarden` [*args*]](#bitwarden-args)
   * [`bitwardenFields` [*args*]](#bitwardenfields-args)
+  * [`bitwardenAttachment` [*args*]](#bitwardenAttachment-args)
   * [`gitHubKeys` *user*](#githubkeys-user)
   * [`gopass` *gopass-name*](#gopass-gopass-name)
   * [`include` *filename*](#include-filename)
@@ -1177,6 +1178,19 @@ same arguments will only invoke `bw` once.
 #### `bitwardenFields` examples
 
     {{ (bitwardenFields "item" "example.com").token.value }}
+
+### `bitwardenAttachment` _filename_ _itemid_
+
+`bitwardenAttachment` returns a document from [Bitwarden](https://bitwarden.com/)
+using the [Bitwarden CLI](https://bitwarden.com/help/article/cli/) (`bw`). _filename_
+and _itemid_ is passed to `bw get attachment <filename> --itemid <itemid>`
+and the output from `bw` is returned. The output from `bw` is cached so calling
+`bitwardenAttachment` multiple times with the same _filename_ and _itemid_ will only
+invoke `bw` once.
+
+#### `bitwardenAttachment` examples
+
+    {{- (bitwardenAttachment "<filename>" "<itemid>") -}}
 
 ### `gitHubKeys` *user*
 
