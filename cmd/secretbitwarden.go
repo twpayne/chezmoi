@@ -29,6 +29,7 @@ func init() {
 	config.Bitwarden.Command = "bw"
 	config.addTemplateFunc("bitwarden", config.bitwardenFunc)
 	config.addTemplateFunc("bitwardenFields", config.bitwardenFieldsFunc)
+	config.addTemplateFunc("bitwardenAttachment", config.bitwardenAttachmentFunc)
 
 	secretCmd.AddCommand(bitwardenCmd)
 }
@@ -80,4 +81,8 @@ func (c *Config) bitwardenFieldsFunc(args ...string) map[string]interface{} {
 		}
 	}
 	return result
+}
+
+func (c *Config) bitwardenAttachmentFunc(name, itemID string) string {
+	return string(c.bitwardenOutput([]string{"get", "attachment", name, "--itemid", itemID, "--raw"}))
 }
