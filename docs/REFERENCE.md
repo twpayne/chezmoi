@@ -68,8 +68,8 @@ Manage your dotfiles securely across multiple machines.
 * [Template variables](#template-variables)
 * [Template functions](#template-functions)
   * [`bitwarden` [*args*]](#bitwarden-args)
+  * [`bitwardenAttachment` *filename* *itemid*](#bitwardenattachment-filename-itemid)
   * [`bitwardenFields` [*args*]](#bitwardenfields-args)
-  * [`bitwardenAttachment` [*args*]](#bitwardenattachment-args)
   * [`gopass` *gopass-name*](#gopass-gopass-name)
   * [`include` *filename*](#include-filename)
   * [`ioreg`](#ioreg)
@@ -996,24 +996,38 @@ included. chezmoi provides some additional functions.
 
 `bitwarden` returns structured data retrieved from
 [Bitwarden](https://bitwarden.com) using the [Bitwarden
-CLI](https://github.com/bitwarden/cli) (`bw`). *args* are passed to `bw`
-unchanged and the output from `bw` is parsed as JSON. The output from `bw` is
-cached so calling `bitwarden` multiple times with the same arguments will only
-invoke `bw` once.
+CLI](https://github.com/bitwarden/cli) (`bw`). *args* are passed to `bw get`
+unchanged and the output from `bw get` is parsed as JSON. The output from `bw
+get` is cached so calling `bitwarden` multiple times with the same arguments
+will only invoke `bw` once.
 
 #### `bitwarden` examples
 
-    username = {{ (bitwarden "item" "example.com").login.username }}
-    password = {{ (bitwarden "item" "example.com").login.password }}
+    username = {{ (bitwarden "item" "<itemid>").login.username }}
+    password = {{ (bitwarden "item" "<itemid>").login.password }}
+
+### `bitwardenAttachment` *filename* *itemid*
+
+`bitwardenAttachment` returns a document from
+[Bitwarden](https://bitwarden.com/) using the [Bitwarden
+CLI](https://bitwarden.com/help/article/cli/) (`bw`). *filename* and *itemid* is
+passed to `bw get attachment <filename> --itemid <itemid>` and the output from
+`bw` is returned. The output from `bw` is cached so calling
+`bitwardenAttachment` multiple times with the same *filename* and *itemid* will
+only invoke `bw` once.
+
+#### `bitwardenAttachment` examples
+
+    {{- (bitwardenAttachment "<filename>" "<itemid>") -}}
 
 ### `bitwardenFields` [*args*]
 
 `bitwardenFields` returns structured data retrieved from
 [Bitwarden](https://bitwarden.com) using the [Bitwarden
-CLI](https://github.com/bitwarden/cli) (`bw`). *args* are passed to `bw`
-unchanged and the output from `bw` is parsed as JSON, and
-elements of `fields` are returned as a map indexed by each field's
-`name`. For example, given the output from `bw`:
+CLI](https://github.com/bitwarden/cli) (`bw`). *args* are passed to `bw get`
+unchanged, the output from `bw get` is parsed as JSON, and elements of `fields`
+are returned as a map indexed by each field's `name`. For example, given the
+output from `bw get`:
 
 ```json
 {
@@ -1065,25 +1079,12 @@ the return value will be the map
 }
 ```
 
-The output from `bw` is cached so calling `bitwarden` multiple times with the
-same arguments will only invoke `bw` once.
+The output from `bw get` is cached so calling `bitwarden` multiple times with
+the same arguments will only invoke `bw get` once.
 
 #### `bitwardenFields` examples
 
-    {{ (bitwardenFields "item" "example.com").token.value }}
-
-### `bitwardenAttachment` _filename_ _itemid_
-
-`bitwardenAttachment` returns a document from [Bitwarden](https://bitwarden.com/)
-using the [Bitwarden CLI](https://bitwarden.com/help/article/cli/) (`bw`). _filename_
-and _itemid_ is passed to `bw get attachment <filename> --itemid <itemid>`
-and the output from `bw` is returned. The output from `bw` is cached so calling
-`bitwardenAttachment` multiple times with the same _filename_ and _itemid_ will only
-invoke `bw` once.
-
-#### `bitwardenAttachment` examples
-
-    {{- (bitwardenAttachment "<filename>" "<itemid>") -}}
+    {{ (bitwardenFields "item" "<itemid>").token.value }}
 
 ### `gopass` *gopass-name*
 
