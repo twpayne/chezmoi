@@ -86,8 +86,8 @@ func init() {
 		"* [Template variables](#template-variables)\n" +
 		"* [Template functions](#template-functions)\n" +
 		"  * [`bitwarden` [*args*]](#bitwarden-args)\n" +
+		"  * [`bitwardenAttachment` *filename* *itemid*](#bitwardenattachment-filename-itemid)\n" +
 		"  * [`bitwardenFields` [*args*]](#bitwardenfields-args)\n" +
-		"  * [`bitwardenAttachment` [*args*]](#bitwardenAttachment-args)\n" +
 		"  * [`gitHubKeys` *user*](#githubkeys-user)\n" +
 		"  * [`gopass` *gopass-name*](#gopass-gopass-name)\n" +
 		"  * [`include` *filename*](#include-filename)\n" +
@@ -1110,24 +1110,38 @@ func init() {
 		"\n" +
 		"`bitwarden` returns structured data retrieved from\n" +
 		"[Bitwarden](https://bitwarden.com) using the [Bitwarden\n" +
-		"CLI](https://github.com/bitwarden/cli) (`bw`). *args* are passed to `bw`\n" +
-		"unchanged and the output from `bw` is parsed as JSON. The output from `bw` is\n" +
-		"cached so calling `bitwarden` multiple times with the same arguments will only\n" +
-		"invoke `bw` once.\n" +
+		"CLI](https://github.com/bitwarden/cli) (`bw`). *args* are passed to `bw get`\n" +
+		"unchanged and the output from `bw get` is parsed as JSON. The output from `bw\n" +
+		"get` is cached so calling `bitwarden` multiple times with the same arguments\n" +
+		"will only invoke `bw` once.\n" +
 		"\n" +
 		"#### `bitwarden` examples\n" +
 		"\n" +
-		"    username = {{ (bitwarden \"item\" \"example.com\").login.username }}\n" +
-		"    password = {{ (bitwarden \"item\" \"example.com\").login.password }}\n" +
+		"    username = {{ (bitwarden \"item\" \"<itemid>\").login.username }}\n" +
+		"    password = {{ (bitwarden \"item\" \"<itemid>\").login.password }}\n" +
+		"\n" +
+		"### `bitwardenAttachment` *filename* *itemid*\n" +
+		"\n" +
+		"`bitwardenAttachment` returns a document from\n" +
+		"[Bitwarden](https://bitwarden.com/) using the [Bitwarden\n" +
+		"CLI](https://bitwarden.com/help/article/cli/) (`bw`). *filename* and *itemid* is\n" +
+		"passed to `bw get attachment <filename> --itemid <itemid>` and the output from\n" +
+		"`bw` is returned. The output from `bw` is cached so calling\n" +
+		"`bitwardenAttachment` multiple times with the same *filename* and *itemid* will\n" +
+		"only invoke `bw` once.\n" +
+		"\n" +
+		"#### `bitwardenAttachment` examples\n" +
+		"\n" +
+		"    {{- (bitwardenAttachment \"<filename>\" \"<itemid>\") -}}\n" +
 		"\n" +
 		"### `bitwardenFields` [*args*]\n" +
 		"\n" +
 		"`bitwardenFields` returns structured data retrieved from\n" +
 		"[Bitwarden](https://bitwarden.com) using the [Bitwarden\n" +
-		"CLI](https://github.com/bitwarden/cli) (`bw`). *args* are passed to `bw`\n" +
-		"unchanged and the output from `bw` is parsed as JSON, and\n" +
-		"elements of `fields` are returned as a map indexed by each field's\n" +
-		"`name`. For example, given the output from `bw`:\n" +
+		"CLI](https://github.com/bitwarden/cli) (`bw`). *args* are passed to `bw get`\n" +
+		"unchanged, the output from `bw get` is parsed as JSON, and elements of `fields`\n" +
+		"are returned as a map indexed by each field's `name`. For example, given the\n" +
+		"output from `bw get`:\n" +
 		"\n" +
 		"```json\n" +
 		"{\n" +
@@ -1179,25 +1193,12 @@ func init() {
 		"}\n" +
 		"```\n" +
 		"\n" +
-		"The output from `bw` is cached so calling `bitwarden` multiple times with the\n" +
-		"same arguments will only invoke `bw` once.\n" +
+		"The output from `bw get` is cached so calling `bitwarden` multiple times with\n" +
+		"the same arguments will only invoke `bw get` once.\n" +
 		"\n" +
 		"#### `bitwardenFields` examples\n" +
 		"\n" +
-		"    {{ (bitwardenFields \"item\" \"example.com\").token.value }}\n" +
-		"\n" +
-		"### `bitwardenAttachment` _filename_ _itemid_\n" +
-		"\n" +
-		"`bitwardenAttachment` returns a document from [Bitwarden](https://bitwarden.com/)\n" +
-		"using the [Bitwarden CLI](https://bitwarden.com/help/article/cli/) (`bw`). _filename_\n" +
-		"and _itemid_ is passed to `bw get attachment <filename> --itemid <itemid>`\n" +
-		"and the output from `bw` is returned. The output from `bw` is cached so calling\n" +
-		"`bitwardenAttachment` multiple times with the same _filename_ and _itemid_ will only\n" +
-		"invoke `bw` once.\n" +
-		"\n" +
-		"#### `bitwardenAttachment` examples\n" +
-		"\n" +
-		"    {{- (bitwardenAttachment \"<filename>\" \"<itemid>\") -}}\n" +
+		"    {{ (bitwardenFields \"item\" \"<itemid>\").token.value }}\n" +
 		"\n" +
 		"### `gitHubKeys` *user*\n" +
 		"\n" +

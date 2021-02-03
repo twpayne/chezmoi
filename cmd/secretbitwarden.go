@@ -28,8 +28,8 @@ var bitwardenOutputCache = make(map[string][]byte)
 func init() {
 	config.Bitwarden.Command = "bw"
 	config.addTemplateFunc("bitwarden", config.bitwardenFunc)
-	config.addTemplateFunc("bitwardenFields", config.bitwardenFieldsFunc)
 	config.addTemplateFunc("bitwardenAttachment", config.bitwardenAttachmentFunc)
+	config.addTemplateFunc("bitwardenFields", config.bitwardenFieldsFunc)
 
 	secretCmd.AddCommand(bitwardenCmd)
 }
@@ -83,6 +83,6 @@ func (c *Config) bitwardenFieldsFunc(args ...string) map[string]interface{} {
 	return result
 }
 
-func (c *Config) bitwardenAttachmentFunc(name, itemID string) string {
-	return string(c.bitwardenOutput([]string{"get", "attachment", name, "--itemid", itemID, "--raw"}))
+func (c *Config) bitwardenAttachmentFunc(name, itemid string) string {
+	return string(c.bitwardenOutput([]string{"get", "attachment", name, "--itemid", itemid, "--raw"}))
 }

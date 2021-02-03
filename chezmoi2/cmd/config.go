@@ -273,8 +273,8 @@ func newConfig(options ...configOption) (*Config, error) {
 
 	for key, value := range map[string]interface{}{
 		"bitwarden":                c.bitwardenTemplateFunc,
-		"bitwardenFields":          c.bitwardenFieldsTemplateFunc,
 		"bitwardenAttachment":      c.bitwardenAttachmentTemplateFunc,
+		"bitwardenFields":          c.bitwardenFieldsTemplateFunc,
 		"gitHubKeys":               c.gitHubKeysTemplateFunc,
 		"gopass":                   c.gopassTemplateFunc,
 		"include":                  c.includeTemplateFunc,
