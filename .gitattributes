@@ -2,6 +2,5 @@
 
 # Make GitHub language breakdown more accurate, see https://github.com/github/linguist
 *.gen.go linguist-generated
-.devcontainer/* linguist-vendored
-assets/scripts/install.sh linguist-generated
+chezmoi2/completions/* linguist-generated
 completions/* linguist-generated
