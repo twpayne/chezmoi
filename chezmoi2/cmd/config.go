@@ -1319,6 +1319,10 @@ func (c *Config) withTerminal(prompt string, f func(terminal) error) error {
 
 	if stdinFile, ok := c.stdin.(*os.File); ok && term.IsTerminal(int(stdinFile.Fd())) {
 		fd := int(stdinFile.Fd())
+		width, height, err := term.GetSize(fd)
+		if err != nil {
+			return err
+		}
 		oldState, err := term.MakeRaw(fd)
 		if err != nil {
 			return err
@@ -1326,13 +1330,17 @@ func (c *Config) withTerminal(prompt string, f func(terminal) error) error {
 		defer func() {
 			_ = term.Restore(fd, oldState)
 		}()
-		return f(term.NewTerminal(struct {
+		t := term.NewTerminal(struct {
 			io.Reader
 			io.Writer
 		}{
 			Reader: c.stdin,
 			Writer: c.stdout,
-		}, prompt))
+		}, prompt)
+		if err := t.SetSize(width, height); err != nil {
+			return err
+		}
+		return f(t)
 	}
 
 	if runtime.GOOS == "windows" {
@@ -1345,6 +1353,10 @@ func (c *Config) withTerminal(prompt string, f func(terminal) error) error {
 	}
 	defer devTTY.Close()
 	fd := int(devTTY.Fd())
+	width, height, err := term.GetSize(fd)
+	if err != nil {
+		return err
+	}
 	oldState, err := term.MakeRaw(fd)
 	if err != nil {
 		return err
@@ -1352,7 +1364,11 @@ func (c *Config) withTerminal(prompt string, f func(terminal) error) error {
 	defer func() {
 		_ = term.Restore(fd, oldState)
 	}()
-	return f(term.NewTerminal(devTTY, prompt))
+	t := term.NewTerminal(devTTY, prompt)
+	if err := t.SetSize(width, height); err != nil {
+		return err
+	}
+	return f(t)
 }
 
 func (c *Config) writeOutput(data []byte) error {
