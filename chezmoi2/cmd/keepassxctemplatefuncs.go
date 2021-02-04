@@ -121,7 +121,6 @@ func (c *Config) keepassxcVersion() *semver.Version {
 func (c *Config) runKeepassxcCLICommand(name string, args []string) ([]byte, error) {
 	if c.Keepassxc.password == "" {
 		password, err := c.readPassword(fmt.Sprintf("Insert password to unlock %s: ", c.Keepassxc.Database))
-		fmt.Println()
 		if err != nil {
 			return nil, err
 		}

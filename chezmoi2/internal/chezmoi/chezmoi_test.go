@@ -8,7 +8,6 @@ import (
 	"github.com/rs/zerolog/pkgerrors"
 )
 
-//nolint:gochecknoinits
 func init() {
 	log.Logger = log.Output(zerolog.ConsoleWriter{
 		Out:     os.Stderr,

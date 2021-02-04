@@ -12,7 +12,6 @@ linters:
   - exportloopref
   - forbidigo
   - gci
-  - gochecknoinits
   - gocritic
   - godot
   - goerr113
@@ -29,7 +28,6 @@ linters:
   - interfacer
   - makezero
   - misspell
-  - paralleltest
   - prealloc
   - predeclared
   - rowserrcheck
@@ -39,7 +37,6 @@ linters:
   - structcheck
   - stylecheck
   - thelper
-  - tparallel
   - typecheck
   - unconvert
   - unparam
@@ -50,6 +47,7 @@ linters:
   - exhaustivestruct
   - funlen
   - gochecknoglobals
+  - gochecknoinits
   - gocognit
   - goconst
   - gocyclo
@@ -62,8 +60,10 @@ linters:
   - nestif
   - nlreturn
   - noctx
-  - nolintlint # FIXME renable
+  - nolintlint # FIXME re-enable
+  - paralleltest
   - testpackage
+  - tparallel
   - wrapcheck
   - wsl
 
@@ -82,30 +82,15 @@ issues:
     text: "do not define dynamic errors, use wrapped static errors instead"
   - linters:
     - dupl
-    path: "secretgopass.go"
-  - linters:
-    - dupl
-    path: "secretpass.go"
-  - linters:
-    - nolintlint
-    - paralleltest
-    path: "^main_test.go$"
+    path: "^cmd/secret(go)?pass\\.go$"
   - linters:
     - forbidigo
-    - gochecknoinits
-    - paralleltest
-    path: cmd/
-  - linters:
-    - gochecknoinits
-    path: internal/chezmoi/chezmoi_unix.go
+    path: ^cmd/
   - linters:
     - forbidigo
     - gosec
-    path: internal/cmd/
-  - linters:
-    - paralleltest
-    path: internal/
+    path: ^internal/cmd/
   - linters:
     - gosec
     - scopelint
-    path: "_test\\.go"
+    path: "_test\\.go$"

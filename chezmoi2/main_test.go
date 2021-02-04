@@ -42,7 +42,6 @@ func TestMain(m *testing.M) {
 	}))
 }
 
-//nolint:paralleltest
 func TestScript(t *testing.T) {
 	testscript.Run(t, testscript.Params{
 		Dir: filepath.Join("testdata", "scripts"),
