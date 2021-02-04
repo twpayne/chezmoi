@@ -22,6 +22,7 @@ jobs:
       with:
         go-version: 1.15.x
     - name: Cache Go modules
+      if: runner.os != 'macos' # FIXME re-enable
       uses: actions/cache@v2
       with:
         path: ~/go/pkg/mod
