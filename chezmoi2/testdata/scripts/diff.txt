@@ -1,5 +1,3 @@
-# FIXME golden/remove-file-diff seems to be reversed
-
 mkhomedir golden
 mkhomedir
 mksourcedir
@@ -11,25 +9,29 @@ chezmoi diff
 # test that chezmoi diff generates a diff when a file is added to the source state
 cp golden/dot_newfile $CHEZMOISOURCEDIR/dot_newfile
 chezmoi diff
-cmp stdout golden/add-newfile-diff
+[!windows] cmp stdout golden/add-newfile-diff-unix
+[windows] cmp stdout golden/add-newfile-diff-windows
 rm $CHEZMOISOURCEDIR/dot_newfile
 
 # test that chezmoi diff generates a diff when a file is edited
 edit $HOME/.file
 chezmoi diff
-cmp stdout golden/modify-file-diff
+[!windows] cmp stdout golden/modify-file-diff-unix
+[windows] cmp stdout golden/modify-file-diff-windows
 chezmoi apply --force $HOME${/}.file
 
 # test that chezmoi diff generates a diff when a file is removed from the destination directory
 rm $HOME/.file
 chezmoi diff
-cmp stdout golden/remove-file-diff
+[!windows] cmp stdout golden/restore-file-diff-unix
+[windows] cmp stdout golden/restore-file-diff-windows
 chezmoi apply --force $HOME${/}.file
 
 # test that chezmoi diff generates a diff when a directory is removed from the destination directory
 rm $HOME/.dir
 chezmoi diff --recursive=false $HOME${/}.dir
-cmp stdout golden/remove-dir-diff
+[!windows] cmp stdout golden/restore-dir-diff-unix
+[windows] cmp stdout golden/restore-dir-diff-windows
 chezmoi apply --force $HOME${/}.dir
 
 [windows] stop 'remaining tests use file modes'
@@ -41,13 +43,12 @@ cmp stdout golden/chmod-file-diff
 chezmoi apply --force $HOME${/}.file
 
 # test that chezmoi diff generates a diff when a dir's permissions are changed
-# FIXME show changes to permissions in diff
 chmod 700 $HOME/.dir
 chezmoi diff
 cmp stdout golden/chmod-dir-diff
 chezmoi apply --force --recursive=false $HOME${/}.dir
 
--- golden/add-newfile-diff --
+-- golden/add-newfile-diff-unix --
 diff --git a/.newfile b/.newfile
 new file mode 100644
 index 0000000000000000000000000000000000000000..06e05235fdd12fd5c367b6d629fef94536c85525
@@ -55,7 +56,15 @@ index 0000000000000000000000000000000000000000..06e05235fdd12fd5c367b6d629fef945
 +++ b/.newfile
 @@ -0,0 +1 @@
 +# contents of .newfile
--- golden/modify-file-diff --
+-- golden/add-newfile-diff-windows --
+diff --git a/.newfile b/.newfile
+new file mode 100666
+index 0000000000000000000000000000000000000000..06e05235fdd12fd5c367b6d629fef94536c85525
+--- /dev/null
++++ b/.newfile
+@@ -0,0 +1 @@
++# contents of .newfile
+-- golden/modify-file-diff-unix --
 diff --git a/.file b/.file
 index 5d2730a8850a2db479af83de87cc8345437aef06..8a52cb9ce9551221716a53786ad74104c5902362 100644
 --- a/.file
@@ -63,7 +72,15 @@ index 5d2730a8850a2db479af83de87cc8345437aef06..8a52cb9ce9551221716a53786ad74104
 @@ -1,2 +1 @@
  # contents of .file
 -# edited
--- golden/remove-file-diff --
+-- golden/modify-file-diff-windows --
+diff --git a/.file b/.file
+index 5d2730a8850a2db479af83de87cc8345437aef06..8a52cb9ce9551221716a53786ad74104c5902362 100666
+--- a/.file
++++ b/.file
+@@ -1,2 +1 @@
+ # contents of .file
+-# edited
+-- golden/restore-file-diff-unix --
 diff --git a/.file b/.file
 new file mode 100644
 index 0000000000000000000000000000000000000000..8a52cb9ce9551221716a53786ad74104c5902362
@@ -71,17 +88,35 @@ index 0000000000000000000000000000000000000000..8a52cb9ce9551221716a53786ad74104
 +++ b/.file
 @@ -0,0 +1 @@
 +# contents of .file
--- golden/remove-dir-diff --
+-- golden/restore-file-diff-windows --
+diff --git a/.file b/.file
+new file mode 100666
+index 0000000000000000000000000000000000000000..8a52cb9ce9551221716a53786ad74104c5902362
+--- /dev/null
++++ b/.file
+@@ -0,0 +1 @@
++# contents of .file
+-- golden/restore-dir-diff-unix --
 diff --git a/.dir b/.dir
-new file mode 40000
+new file mode 40755
 index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
 --- /dev/null
 +++ b/.dir
+-- golden/restore-dir-diff-windows --
+diff --git a/.dir b/.dir
+new file mode 40777
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+--- /dev/null
++++ b/.dir
+-- golden/dot_newfile --
+# contents of .newfile
 -- golden/chmod-file-diff --
 diff --git a/.file b/.file
-old mode 100755
+old mode 100777
 new mode 100644
 -- golden/chmod-dir-diff --
 diff --git a/.dir b/.dir
+old mode 40700
+new mode 40755
 -- golden/dot_newfile --
 # contents of .newfile
