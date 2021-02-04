@@ -93,18 +93,11 @@ func WithTemplateOptions(templateOptions []string) SourceStateOption {
 	}
 }
 
-// WithUmask sets the umask.
-func WithUmask(umask os.FileMode) SourceStateOption {
-	return func(s *SourceState) {
-		s.umask = umask
-	}
-}
-
 // NewSourceState creates a new source state with the given options.
 func NewSourceState(options ...SourceStateOption) *SourceState {
 	s := &SourceState{
 		entries:              make(map[RelPath]SourceStateEntry),
-		umask:                GetUmask(),
+		umask:                Umask,
 		encryption:           NoEncryption{},
 		ignore:               newPatternSet(),
 		priorityTemplateData: make(map[string]interface{}),
@@ -127,7 +120,6 @@ type AddOptions struct {
 	Include      *IncludeSet
 	RemoveDir    RelPath
 	Template     bool
-	umask        os.FileMode
 }
 
 // Add adds destAbsPathInfos to s.
@@ -253,7 +245,7 @@ func (s *SourceState) Add(sourceSystem System, persistentState PersistentState, 
 		for _, sourceRelPath := range update.sourceRelPaths {
 			if err := targetSourceState.Apply(sourceSystem, NullPersistentState{}, s.sourceDirAbsPath, sourceRelPath.RelPath(), ApplyOptions{
 				Include: options.Include,
-				Umask:   options.umask,
+				Umask:   s.umask,
 			}); err != nil {
 				return err
 			}
@@ -333,7 +325,7 @@ func (s *SourceState) Apply(targetSystem System, persistentState PersistentState
 
 	targetAbsPath := targetDir.Join(targetRelPath)
 
-	targetEntryState, err := targetStateEntry.EntryState()
+	targetEntryState, err := targetStateEntry.EntryState(options.Umask)
 	if err != nil {
 		return err
 	}

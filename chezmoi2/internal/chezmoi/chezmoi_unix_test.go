@@ -68,3 +68,7 @@ func TestEtcHostsFQDNHostname(t *testing.T) {
 		})
 	}
 }
+
+func TestUmask(t *testing.T) {
+	require.Equal(t, chezmoitest.Umask, Umask)
+}

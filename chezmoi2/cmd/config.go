@@ -63,7 +63,7 @@ type Config struct {
 	// Global configuration, settable in the config file.
 	SourceDir     string                 `mapstructure:"sourceDir"`
 	DestDir       string                 `mapstructure:"destDir"`
-	Umask         fileMode               `mapstructure:"umask"`
+	Umask         os.FileMode            `mapstructure:"umask"`
 	Remove        bool                   `mapstructure:"remove"`
 	Color         string                 `mapstructure:"color"`
 	Data          map[string]interface{} `mapstructure:"data"`
@@ -174,7 +174,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		fs:      vfs.OSFS,
 		homeDir: homeDir,
 		DestDir: homeDir,
-		Umask:   fileMode(chezmoi.GetUmask()),
+		Umask:   chezmoi.Umask,
 		Color:   "auto",
 		Diff: diffCmdConfig{
 			include: chezmoi.NewIncludeSet(chezmoi.IncludeAll &^ chezmoi.IncludeScripts),
@@ -403,7 +403,7 @@ func (c *Config) defaultPreApplyFunc(targetRelPath chezmoi.RelPath, targetEntryS
 		return nil
 	case lastWrittenEntryState == nil:
 		return nil
-	case lastWrittenEntryState.Equivalent(actualEntryState, c.Umask.FileMode()):
+	case lastWrittenEntryState.Equivalent(actualEntryState):
 		return nil
 	}
 

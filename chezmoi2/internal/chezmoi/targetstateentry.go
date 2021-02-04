@@ -4,14 +4,14 @@ import (
 	"bytes"
 	"encoding/hex"
 	"os"
+	"runtime"
 	"time"
 )
 
 // A TargetStateEntry represents the state of an entry in the target state.
 type TargetStateEntry interface {
 	Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry, umask os.FileMode) error
-	EntryState() (*EntryState, error)
-	Equal(actualStateEntry ActualStateEntry, umask os.FileMode) (bool, error)
+	EntryState(umask os.FileMode) (*EntryState, error)
 	Evaluate() error
 	SkipApply(persistentState PersistentState) (bool, error)
 }
@@ -70,19 +70,10 @@ func (t *TargetStateAbsent) Apply(system System, persistentState PersistentState
 }
 
 // EntryState returns t's entry state.
-func (t *TargetStateAbsent) EntryState() (*EntryState, error) {
+func (t *TargetStateAbsent) EntryState(umask os.FileMode) (*EntryState, error) {
 	return &EntryState{
 		Type: EntryStateTypeAbsent,
 	}, nil
-}
-
-// Equal returns true if actualStateEntry matches t.
-func (t *TargetStateAbsent) Equal(actualStateEntry ActualStateEntry, umask os.FileMode) (bool, error) {
-	_, ok := actualStateEntry.(*ActualStateAbsent)
-	if !ok {
-		return false, nil
-	}
-	return ok, nil
 }
 
 // Evaluate evaluates t.
@@ -98,35 +89,23 @@ func (t *TargetStateAbsent) SkipApply(persistentState PersistentState) (bool, er
 // Apply updates actualStateEntry to match t. It does not recurse.
 func (t *TargetStateDir) Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry, umask os.FileMode) error {
 	if actualStateDir, ok := actualStateEntry.(*ActualStateDir); ok {
-		if umaskPermEqual(actualStateDir.perm, t.perm, umask) {
+		if runtime.GOOS == "windows" || actualStateDir.perm == t.perm&^umask {
 			return nil
 		}
-		return system.Chmod(actualStateDir.Path(), t.perm)
+		return system.Chmod(actualStateDir.Path(), t.perm&^umask)
 	}
 	if err := actualStateEntry.Remove(system); err != nil {
 		return err
 	}
-	return system.Mkdir(actualStateEntry.Path(), t.perm)
+	return system.Mkdir(actualStateEntry.Path(), t.perm&^umask)
 }
 
 // EntryState returns t's entry state.
-func (t *TargetStateDir) EntryState() (*EntryState, error) {
+func (t *TargetStateDir) EntryState(umask os.FileMode) (*EntryState, error) {
 	return &EntryState{
 		Type: EntryStateTypeDir,
-		Mode: os.ModeDir | t.perm,
+		Mode: os.ModeDir | t.perm&^umask,
 	}, nil
-}
-
-// Equal returns true if actualStateEntry matches t. It does not recurse.
-func (t *TargetStateDir) Equal(actualStateEntry ActualStateEntry, umask os.FileMode) (bool, error) {
-	actualStateDir, ok := actualStateEntry.(*ActualStateDir)
-	if !ok {
-		return false, nil
-	}
-	if !umaskPermEqual(actualStateDir.perm, t.perm, umask) {
-		return false, nil
-	}
-	return true, nil
 }
 
 // Evaluate evaluates t.
@@ -154,10 +133,10 @@ func (t *TargetStateFile) Apply(system System, persistentState PersistentState, 
 			return err
 		}
 		if bytes.Equal(actualContentsSHA256, contentsSHA256) {
-			if umaskPermEqual(actualStateFile.perm, t.perm, umask) {
+			if runtime.GOOS == "windows" || actualStateFile.perm == t.perm&^umask {
 				return nil
 			}
-			return system.Chmod(actualStateFile.Path(), t.perm)
+			return system.Chmod(actualStateFile.Path(), t.perm&^umask)
 		}
 	} else if err := actualStateEntry.Remove(system); err != nil {
 		return err
@@ -166,11 +145,11 @@ func (t *TargetStateFile) Apply(system System, persistentState PersistentState, 
 	if err != nil {
 		return err
 	}
-	return system.WriteFile(actualStateEntry.Path(), contents, t.perm)
+	return system.WriteFile(actualStateEntry.Path(), contents, t.perm&^umask)
 }
 
 // EntryState returns t's entry state.
-func (t *TargetStateFile) EntryState() (*EntryState, error) {
+func (t *TargetStateFile) EntryState(umask os.FileMode) (*EntryState, error) {
 	contents, err := t.Contents()
 	if err != nil {
 		return nil, err
@@ -181,33 +160,10 @@ func (t *TargetStateFile) EntryState() (*EntryState, error) {
 	}
 	return &EntryState{
 		Type:           EntryStateTypeFile,
-		Mode:           t.perm,
+		Mode:           t.perm &^ umask,
 		ContentsSHA256: hexBytes(contentsSHA256),
 		contents:       contents,
 	}, nil
-}
-
-// Equal returns true if actualStateEntry matches t.
-func (t *TargetStateFile) Equal(actualStateEntry ActualStateEntry, umask os.FileMode) (bool, error) {
-	actualStateFile, ok := actualStateEntry.(*ActualStateFile)
-	if !ok {
-		return false, nil
-	}
-	if !umaskPermEqual(actualStateFile.perm, t.perm, umask) {
-		return false, nil
-	}
-	actualContentsSHA256, err := actualStateFile.ContentsSHA256()
-	if err != nil {
-		return false, err
-	}
-	contentsSHA256, err := t.ContentsSHA256()
-	if err != nil {
-		return false, err
-	}
-	if !bytes.Equal(actualContentsSHA256, contentsSHA256) {
-		return false, nil
-	}
-	return true, nil
 }
 
 // Evaluate evaluates t.
@@ -224,10 +180,10 @@ func (t *TargetStateFile) SkipApply(persistentState PersistentState) (bool, erro
 // Apply updates actualStateEntry to match t.
 func (t *TargetStatePresent) Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry, umask os.FileMode) error {
 	if actualStateFile, ok := actualStateEntry.(*ActualStateFile); ok {
-		if umaskPermEqual(actualStateFile.perm, t.perm, umask) {
+		if runtime.GOOS == "windows" || actualStateFile.perm == t.perm&^umask {
 			return nil
 		}
-		return system.Chmod(actualStateFile.Path(), t.perm)
+		return system.Chmod(actualStateFile.Path(), t.perm&^umask)
 	} else if err := actualStateEntry.Remove(system); err != nil {
 		return err
 	}
@@ -235,26 +191,15 @@ func (t *TargetStatePresent) Apply(system System, persistentState PersistentStat
 	if err != nil {
 		return err
 	}
-	return system.WriteFile(actualStateEntry.Path(), contents, t.perm)
+	return system.WriteFile(actualStateEntry.Path(), contents, t.perm&^umask)
 }
 
 // EntryState returns t's entry state.
-func (t *TargetStatePresent) EntryState() (*EntryState, error) {
+func (t *TargetStatePresent) EntryState(umask os.FileMode) (*EntryState, error) {
 	return &EntryState{
 		Type: EntryStateTypePresent,
+		Mode: t.perm &^ umask,
 	}, nil
-}
-
-// Equal returns true if actualStateEntry matches t.
-func (t *TargetStatePresent) Equal(actualStateEntry ActualStateEntry, umask os.FileMode) (bool, error) {
-	actualStateFile, ok := actualStateEntry.(*ActualStateFile)
-	if !ok {
-		return false, nil
-	}
-	if !umaskPermEqual(actualStateFile.perm, t.perm, umask) {
-		return false, nil
-	}
-	return true, nil
 }
 
 // Evaluate evaluates t.
@@ -275,13 +220,8 @@ func (t *TargetStateRenameDir) Apply(system System, persistentState PersistentSt
 }
 
 // EntryState returns t's entry state.
-func (t *TargetStateRenameDir) EntryState() (*EntryState, error) {
+func (t *TargetStateRenameDir) EntryState(umask os.FileMode) (*EntryState, error) {
 	return nil, nil
-}
-
-// Equal returns false because actualStateEntry has not been renamed.
-func (t *TargetStateRenameDir) Equal(actualStateEntry ActualStateEntry, umask os.FileMode) (bool, error) {
-	return false, nil
 }
 
 // Evaluate does nothing.
@@ -326,7 +266,7 @@ func (t *TargetStateScript) Apply(system System, persistentState PersistentState
 }
 
 // EntryState returns t's entry state.
-func (t *TargetStateScript) EntryState() (*EntryState, error) {
+func (t *TargetStateScript) EntryState(umask os.FileMode) (*EntryState, error) {
 	contentsSHA256, err := t.ContentsSHA256()
 	if err != nil {
 		return nil, err
@@ -335,12 +275,6 @@ func (t *TargetStateScript) EntryState() (*EntryState, error) {
 		Type:           EntryStateTypeScript,
 		ContentsSHA256: hexBytes(contentsSHA256),
 	}, nil
-}
-
-// Equal returns true if actualStateEntry matches t.
-func (t *TargetStateScript) Equal(actualStateEntry ActualStateEntry, umask os.FileMode) (bool, error) {
-	// Scripts are independent of the actual state.
-	return true, nil
 }
 
 // Evaluate evaluates t.
@@ -395,7 +329,7 @@ func (t *TargetStateSymlink) Apply(system System, persistentState PersistentStat
 }
 
 // EntryState returns t's entry state.
-func (t *TargetStateSymlink) EntryState() (*EntryState, error) {
+func (t *TargetStateSymlink) EntryState(umask os.FileMode) (*EntryState, error) {
 	linkname, err := t.Linkname()
 	if err != nil {
 		return nil, err
@@ -409,26 +343,6 @@ func (t *TargetStateSymlink) EntryState() (*EntryState, error) {
 		ContentsSHA256: linknameSHA256,
 		contents:       []byte(linkname),
 	}, nil
-}
-
-// Equal returns true if actualStateEntry matches t.
-func (t *TargetStateSymlink) Equal(actualStateEntry ActualStateEntry, umask os.FileMode) (bool, error) {
-	actualStateSymlink, ok := actualStateEntry.(*ActualStateSymlink)
-	if !ok {
-		return false, nil
-	}
-	actualLinkname, err := actualStateSymlink.Linkname()
-	if err != nil {
-		return false, err
-	}
-	linkname, err := t.Linkname()
-	if err != nil {
-		return false, nil
-	}
-	if actualLinkname != linkname {
-		return false, nil
-	}
-	return true, nil
 }
 
 // Evaluate evaluates t.

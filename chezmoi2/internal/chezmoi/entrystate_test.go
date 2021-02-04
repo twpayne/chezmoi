@@ -3,6 +3,7 @@ package chezmoi
 import (
 	"fmt"
 	"os"
+	"runtime"
 	"sort"
 	"testing"
 
@@ -65,22 +66,26 @@ func TestEntryStateEquivalent(t *testing.T) {
 	}
 
 	expectedEquivalents := map[string]bool{
-		"absent_nil1":          true,
-		"absent_nil2":          true,
-		"dir1_copy_dir1":       true,
-		"dir1_dir1_copy":       true,
-		"file1_copy_file1":     true,
-		"file1_copy_present":   true,
-		"file1_file1_copy":     true,
-		"file1_present":        true,
-		"file2_present":        true,
-		"nil1_absent":          true,
-		"nil2_absent":          true,
-		"present_file1_copy":   true,
-		"present_file1":        true,
-		"present_file2":        true,
-		"symlink_copy_symlink": true,
-		"symlink_symlink_copy": true,
+		"absent_nil1":           true,
+		"absent_nil2":           true,
+		"dir_private_dir1_copy": runtime.GOOS == "windows",
+		"dir_private_dir1":      runtime.GOOS == "windows",
+		"dir1_copy_dir_private": runtime.GOOS == "windows",
+		"dir1_copy_dir1":        true,
+		"dir1_dir_private":      runtime.GOOS == "windows",
+		"dir1_dir1_copy":        true,
+		"file1_copy_file1":      true,
+		"file1_copy_present":    true,
+		"file1_file1_copy":      true,
+		"file1_present":         true,
+		"file2_present":         true,
+		"nil1_absent":           true,
+		"nil2_absent":           true,
+		"present_file1_copy":    true,
+		"present_file1":         true,
+		"present_file2":         true,
+		"symlink_copy_symlink":  true,
+		"symlink_symlink_copy":  true,
 	}
 
 	entryStateKeys := make([]string, 0, len(entryStates))
@@ -108,7 +113,7 @@ func TestEntryStateEquivalent(t *testing.T) {
 			entryState1 := entryStates[tc.EntryState1Key]
 			entryState2 := entryStates[tc.EntryState2Key]
 			expectedEquivalent := entryState1 == entryState2 || expectedEquivalents[name]
-			assert.Equal(t, expectedEquivalent, entryState1.Equivalent(entryState2, 0o022))
+			assert.Equal(t, expectedEquivalent, entryState1.Equivalent(entryState2))
 		})
 	}
 }

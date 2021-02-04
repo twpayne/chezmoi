@@ -40,7 +40,7 @@ func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) error {
 	if err := c.applyArgs(gitDiffSystem, c.destDirAbsPath, args, applyArgsOptions{
 		include:   c.Diff.include,
 		recursive: c.Diff.recursive,
-		umask:     c.Umask.FileMode(),
+		umask:     c.Umask,
 	}); err != nil {
 		return err
 	}

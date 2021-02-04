@@ -41,7 +41,7 @@ func (c *Config) runApplyCmd(cmd *cobra.Command, args []string) error {
 		recursive:     c.apply.recursive,
 		skipEncrypted: c.apply.skipEncrypted,
 		sourcePath:    c.apply.sourcePath,
-		umask:         c.Umask.FileMode(),
+		umask:         c.Umask,
 		preApplyFunc:  c.defaultPreApplyFunc,
 	})
 }

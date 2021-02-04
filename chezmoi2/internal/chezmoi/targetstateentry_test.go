@@ -18,25 +18,25 @@ func TestTargetStateEntryApplyAndEqual(t *testing.T) {
 	targetStates := map[string]TargetStateEntry{
 		"absent": &TargetStateAbsent{},
 		"dir": &TargetStateDir{
-			perm: 0o777,
+			perm: 0o777 &^ chezmoitest.Umask,
 		},
 		"file": &TargetStateFile{
-			perm: 0o666,
+			perm: 0o666 &^ chezmoitest.Umask,
 			lazyContents: &lazyContents{
 				contents: []byte("# contents of file"),
 			},
 		},
 		"file_empty": &TargetStateFile{
-			perm: 0o666,
+			perm: 0o666 &^ chezmoitest.Umask,
 		},
 		"file_executable": &TargetStateFile{
-			perm: 0o777,
+			perm: 0o777 &^ chezmoitest.Umask,
 			lazyContents: &lazyContents{
 				contents: []byte("#!/bin/sh\n"),
 			},
 		},
 		"present": &TargetStatePresent{
-			perm: 0o666,
+			perm: 0o666 &^ chezmoitest.Umask,
 		},
 		"symlink": &TargetStateSymlink{
 			lazyLinkname: &lazyLinkname{
@@ -113,19 +113,11 @@ func TestTargetStateEntryApplyAndEqual(t *testing.T) {
 				require.NoError(t, err)
 
 				// Apply the target state entry.
-				require.NoError(t, targetState.Apply(s, nil, actualStateEntry, GetUmask()))
+				require.NoError(t, targetState.Apply(s, nil, actualStateEntry, chezmoitest.Umask))
 
 				// Verify that the actual state entry matches the desired
 				// state.
 				vfst.RunTests(t, fs, "", vfst.TestPath("/home/user/target", targetStateTest(t, targetState)...))
-
-				// Read the updated destination state entry from fs and
-				// verify that it is equal to the target state entry.
-				newActualStateEntry, err := NewActualStateEntry(s, "/home/user/target", nil, nil)
-				require.NoError(t, err)
-				equal, err := targetState.Equal(newActualStateEntry, GetUmask())
-				require.NoError(t, err)
-				require.True(t, equal)
 			})
 		})
 	}
@@ -141,7 +133,7 @@ func targetStateTest(t *testing.T, ts TargetStateEntry) []vfst.PathTest {
 	case *TargetStateDir:
 		return []vfst.PathTest{
 			vfst.TestIsDir,
-			vfst.TestModePerm(ts.perm &^ GetUmask()),
+			vfst.TestModePerm(ts.perm &^ chezmoitest.Umask),
 		}
 	case *TargetStateFile:
 		expectedContents, err := ts.Contents()
@@ -149,12 +141,12 @@ func targetStateTest(t *testing.T, ts TargetStateEntry) []vfst.PathTest {
 		return []vfst.PathTest{
 			vfst.TestModeIsRegular,
 			vfst.TestContents(expectedContents),
-			vfst.TestModePerm(ts.perm &^ GetUmask()),
+			vfst.TestModePerm(ts.perm &^ chezmoitest.Umask),
 		}
 	case *TargetStatePresent:
 		return []vfst.PathTest{
 			vfst.TestModeIsRegular,
-			vfst.TestModePerm(ts.perm &^ GetUmask()),
+			vfst.TestModePerm(ts.perm &^ chezmoitest.Umask),
 		}
 	case *TargetStateRenameDir:
 		// FIXME test for presence of newName
