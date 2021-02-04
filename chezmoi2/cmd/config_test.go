@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"io"
+	"os"
 	"path/filepath"
 	"runtime"
 	"testing"
@@ -174,6 +175,7 @@ func newTestConfig(t *testing.T, fs vfs.FS, options ...configOption) *Config {
 			withSourceSystem(system),
 			withTestFS(fs),
 			withTestUser("user"),
+			withUmask(chezmoitest.Umask),
 		}, options...)...,
 	)
 	require.NoError(t, err)
@@ -243,6 +245,13 @@ func withTestUser(username string) configOption {
 			CacheHome:  filepath.Join(c.homeDir, ".cache"),
 			RuntimeDir: filepath.Join(c.homeDir, ".run"),
 		}
+		return nil
+	}
+}
+
+func withUmask(umask os.FileMode) configOption {
+	return func(c *Config) error {
+		c.Umask = umask
 		return nil
 	}
 }

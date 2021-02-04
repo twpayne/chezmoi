@@ -9,7 +9,6 @@ import (
 	vfs "github.com/twpayne/go-vfs"
 	"github.com/twpayne/go-vfs/vfst"
 
-	"github.com/twpayne/chezmoi/chezmoi2/internal/chezmoi"
 	"github.com/twpayne/chezmoi/chezmoi2/internal/chezmoitest"
 )
 
@@ -33,7 +32,7 @@ func TestStatusCmd(t *testing.T) {
 			postApplyTests: []interface{}{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_bashrc",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0o666&^chezmoi.GetUmask()),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString("# contents of .bashrc\n"),
 				),
 			},

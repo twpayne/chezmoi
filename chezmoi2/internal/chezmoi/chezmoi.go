@@ -14,6 +14,9 @@ var (
 
 	// Skip indicates that entry should be skipped.
 	Skip = filepath.SkipDir
+
+	// Umask is the process's umask.
+	Umask = os.FileMode(0)
 )
 
 // Suffixes and prefixes.

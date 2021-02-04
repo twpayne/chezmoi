@@ -188,7 +188,7 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 		if err := c.applyArgs(c.destSystem, c.destDirAbsPath, noArgs, applyArgsOptions{
 			include:       chezmoi.NewIncludeSet(chezmoi.IncludeAll),
 			recursive:     false,
-			umask:         c.Umask.FileMode(),
+			umask:         c.Umask,
 			preApplyFunc:  c.defaultPreApplyFunc,
 			skipEncrypted: c.init.skipEncrypted,
 		}); err != nil {

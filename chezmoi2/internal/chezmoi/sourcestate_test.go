@@ -34,7 +34,7 @@ func TestSourceStateAdd(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^GetUmask()),
+					vfst.TestModePerm(0o777&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/file",
 					vfst.TestDoesNotExist,
@@ -63,11 +63,11 @@ func TestSourceStateAdd(t *testing.T) {
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^GetUmask()),
+					vfst.TestModePerm(0o777&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/file",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0o666&^GetUmask()),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString("# contents of file\n"),
 				),
 			},
@@ -83,11 +83,11 @@ func TestSourceStateAdd(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^GetUmask()),
+					vfst.TestModePerm(0o777&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/file",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0o666&^GetUmask()),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString("# contents of .dir/file\n"),
 				),
 			},
@@ -121,11 +121,11 @@ func TestSourceStateAdd(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^GetUmask()),
+					vfst.TestModePerm(0o777&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/subdir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^GetUmask()),
+					vfst.TestModePerm(0o777&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/subdir/file",
 					vfst.TestDoesNotExist,
@@ -143,18 +143,18 @@ func TestSourceStateAdd(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^GetUmask()),
+					vfst.TestModePerm(0o777&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/file",
 					vfst.TestDoesNotExist,
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/subdir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^GetUmask()),
+					vfst.TestModePerm(0o777&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/subdir/file",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0o666&^GetUmask()),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString("# contents of .dir/subdir/file\n"),
 				),
 			},
@@ -203,7 +203,7 @@ func TestSourceStateAdd(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.local/share/chezmoi/empty_dot_empty",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0o666&^GetUmask()),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContents(nil),
 				),
 			},
@@ -219,7 +219,7 @@ func TestSourceStateAdd(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.local/share/chezmoi/executable_dot_executable",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0o666&^GetUmask()),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString("# contents of .executable\n"),
 				),
 			},
@@ -235,7 +235,7 @@ func TestSourceStateAdd(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_executable",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0o666&^GetUmask()),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString("# contents of .executable\n"),
 				),
 			},
@@ -252,7 +252,7 @@ func TestSourceStateAdd(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.local/share/chezmoi/exists_dot_exists",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0o666&^GetUmask()),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString("# contents of .exists\n"),
 				),
 			},
@@ -268,7 +268,7 @@ func TestSourceStateAdd(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_file",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0o666&^GetUmask()),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString("# contents of .file\n"),
 				),
 			},
@@ -287,7 +287,7 @@ func TestSourceStateAdd(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_file",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0o666&^GetUmask()),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString("# contents of .file\n"),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/executable_dot_file",
@@ -309,7 +309,7 @@ func TestSourceStateAdd(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_file",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0o666&^GetUmask()),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString("# contents of .file\n"),
 				),
 			},
@@ -325,7 +325,7 @@ func TestSourceStateAdd(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.local/share/chezmoi/private_dot_private",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0o666&^GetUmask()),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString("# contents of .private\n"),
 				),
 			},
@@ -341,7 +341,7 @@ func TestSourceStateAdd(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_private",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0o666&^GetUmask()),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString("# contents of .private\n"),
 				),
 			},
@@ -393,7 +393,7 @@ func TestSourceStateAdd(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_template.tmpl",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0o666&^GetUmask()),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString("key = {{ .variable }}\n"),
 				),
 			},
@@ -410,11 +410,11 @@ func TestSourceStateAdd(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^GetUmask()),
+					vfst.TestModePerm(0o777&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/file",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0o666&^GetUmask()),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString("# contents of .dir/file\n"),
 				),
 			},
@@ -528,7 +528,7 @@ func TestSourceStateApplyAll(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^GetUmask()),
+					vfst.TestModePerm(0o777&^chezmoitest.Umask),
 				),
 			},
 		},
@@ -547,7 +547,7 @@ func TestSourceStateApplyAll(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^GetUmask()),
+					vfst.TestModePerm(0o777&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.dir/file",
 					vfst.TestDoesNotExist,
@@ -566,7 +566,7 @@ func TestSourceStateApplyAll(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.file",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0o666&^GetUmask()),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString("# contents of .file\n"),
 				),
 			},
@@ -599,7 +599,7 @@ func TestSourceStateApplyAll(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.empty",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0o666&^GetUmask()),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContents(nil),
 				),
 			},
@@ -621,7 +621,7 @@ func TestSourceStateApplyAll(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.template",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0o666&^GetUmask()),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString("key = value\n"),
 				),
 			},
@@ -638,7 +638,7 @@ func TestSourceStateApplyAll(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.exists",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0o666&^GetUmask()),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString("# contents of .exists\n"),
 				),
 			},
@@ -656,7 +656,7 @@ func TestSourceStateApplyAll(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.exists",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0o666&^GetUmask()),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString("# existing contents of .exists\n"),
 				),
 			},
@@ -708,7 +708,7 @@ func TestSourceStateApplyAll(t *testing.T) {
 				require.NoError(t, sourceState.Read())
 				require.NoError(t, sourceState.evaluateAll())
 				require.NoError(t, sourceState.applyAll(system, persistentState, "/home/user", ApplyOptions{
-					Umask: GetUmask(),
+					Umask: chezmoitest.Umask,
 				}))
 
 				vfst.RunTests(t, fs, "", tc.tests...)

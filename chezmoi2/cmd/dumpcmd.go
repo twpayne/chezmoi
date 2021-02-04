@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"os"
-
 	"github.com/spf13/cobra"
 
 	"github.com/twpayne/chezmoi/chezmoi2/internal/chezmoi"
@@ -39,7 +37,6 @@ func (c *Config) runDumpCmd(cmd *cobra.Command, args []string) error {
 	if err := c.applyArgs(dumpSystem, "", args, applyArgsOptions{
 		include:   c.dump.include,
 		recursive: c.dump.recursive,
-		umask:     os.ModePerm,
 	}); err != nil {
 		return err
 	}

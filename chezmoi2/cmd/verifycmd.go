@@ -35,7 +35,7 @@ func (c *Config) runVerifyCmd(cmd *cobra.Command, args []string) error {
 	if err := c.applyArgs(dryRunSystem, c.destDirAbsPath, args, applyArgsOptions{
 		include:   c.verify.include,
 		recursive: c.verify.recursive,
-		umask:     c.Umask.FileMode(),
+		umask:     c.Umask,
 	}); err != nil {
 		return err
 	}

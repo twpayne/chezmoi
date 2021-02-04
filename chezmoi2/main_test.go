@@ -19,17 +19,11 @@ import (
 	"github.com/twpayne/go-vfs/vfst"
 
 	"github.com/twpayne/chezmoi/chezmoi2/cmd"
-	"github.com/twpayne/chezmoi/chezmoi2/internal/chezmoi"
 	"github.com/twpayne/chezmoi/chezmoi2/internal/chezmoitest"
 )
 
-// umask is the umask used in tests. The umask applies to the process and so
-// cannot be overridden in individual tests.
-const umask = 0o22
-
 //nolint:interfacer
 func TestMain(m *testing.M) {
-	chezmoi.SetUmask(umask)
 	os.Exit(testscript.RunMain(m, map[string]func() int{
 		"chezmoi": func() int {
 			return cmd.Main(cmd.VersionInfo{
@@ -42,7 +36,6 @@ func TestMain(m *testing.M) {
 	}))
 }
 
-//nolint:paralleltest
 func TestScript(t *testing.T) {
 	testscript.Run(t, testscript.Params{
 		Dir: filepath.Join("testdata", "scripts"),
@@ -118,13 +111,12 @@ func cmdCmpMod(ts *testscript.TestScript, neg bool, args []string) {
 	if err != nil {
 		ts.Fatalf("%s: %v", args[1], err)
 	}
-	umask := chezmoi.GetUmask()
-	equal := info.Mode().Perm()&^umask == os.FileMode(mode64)&^umask
+	equal := info.Mode().Perm() == os.FileMode(mode64)&^chezmoitest.Umask
 	if neg && equal {
 		ts.Fatalf("%s unexpectedly has mode %03o", args[1], info.Mode().Perm())
 	}
 	if !neg && !equal {
-		ts.Fatalf("%s has mode %03o, expected %03o", args[1], info.Mode().Perm(), os.FileMode(mode64))
+		ts.Fatalf("%s has mode %03o, expected %03o", args[1], info.Mode().Perm(), os.FileMode(mode64)&^chezmoitest.Umask)
 	}
 }
 
@@ -281,7 +273,7 @@ func cmdMkHomeDir(ts *testscript.TestScript, neg bool, args []string) {
 	workDir := ts.Getenv("WORK")
 	relPath, err := filepath.Rel(workDir, path)
 	ts.Check(err)
-	if err := newBuilder().Build(vfs.NewPathFS(vfs.OSFS, workDir), map[string]interface{}{
+	if err := vfst.NewBuilder().Build(vfs.NewPathFS(vfs.OSFS, workDir), map[string]interface{}{
 		relPath: map[string]interface{}{
 			".dir": map[string]interface{}{
 				"file": "# contents of .dir/file\n",
@@ -323,7 +315,7 @@ func cmdMkSourceDir(ts *testscript.TestScript, neg bool, args []string) {
 	workDir := ts.Getenv("WORK")
 	relPath, err := filepath.Rel(workDir, sourceDir)
 	ts.Check(err)
-	err = newBuilder().Build(vfs.NewPathFS(vfs.OSFS, workDir), map[string]interface{}{
+	err = vfst.NewBuilder().Build(vfs.NewPathFS(vfs.OSFS, workDir), map[string]interface{}{
 		relPath: map[string]interface{}{
 			"dot_absent": "",
 			"dot_dir": map[string]interface{}{
@@ -389,10 +381,6 @@ func cmdUNIX2DOS(ts *testscript.TestScript, neg bool, args []string) {
 			ts.Fatalf("%s: %v", filename, err)
 		}
 	}
-}
-
-func newBuilder() *vfst.Builder {
-	return vfst.NewBuilder(vfst.BuilderUmask(umask))
 }
 
 func prependDirToPath(dir, path string) string {
@@ -484,7 +472,7 @@ func setup(env *testscript.Env) error {
 		}
 	}
 
-	return newBuilder().Build(vfs.NewPathFS(vfs.OSFS, env.WorkDir), root)
+	return vfst.NewBuilder().Build(vfs.NewPathFS(vfs.OSFS, env.WorkDir), root)
 }
 
 // unix2DOS returns data with UNIX line endings converted to DOS line endings.

@@ -130,7 +130,6 @@ func cmdEdit(ts *testscript.TestScript, neg bool, args []string) {
 			ts.Fatalf("edit: %v", err)
 		}
 		data = append(data, []byte("# edited\n")...)
-		//nolint:gosec
 		if err := ioutil.WriteFile(filename, data, 0o666); err != nil {
 			ts.Fatalf("edit: %v", err)
 		}
@@ -266,7 +265,6 @@ func cmdRmFinalNewline(ts *testscript.TestScript, neg bool, args []string) {
 		if len(data) == 0 || data[len(data)-1] != '\n' {
 			continue
 		}
-		//nolint:gosec
 		if err := ioutil.WriteFile(filename, data[:len(data)-1], 0o666); err != nil {
 			ts.Fatalf("%s: %v", filename, err)
 		}
@@ -287,7 +285,6 @@ func cmdUNIX2DOS(ts *testscript.TestScript, neg bool, args []string) {
 		ts.Check(err)
 		dosData, err := unix2DOS(data)
 		ts.Check(err)
-		//nolint:gosec
 		if err := ioutil.WriteFile(filename, dosData, 0o666); err != nil {
 			ts.Fatalf("%s: %v", filename, err)
 		}

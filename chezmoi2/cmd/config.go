@@ -63,7 +63,7 @@ type Config struct {
 	// Global configuration, settable in the config file.
 	SourceDir     string                 `mapstructure:"sourceDir"`
 	DestDir       string                 `mapstructure:"destDir"`
-	Umask         fileMode               `mapstructure:"umask"`
+	Umask         os.FileMode            `mapstructure:"umask"`
 	Remove        bool                   `mapstructure:"remove"`
 	Color         string                 `mapstructure:"color"`
 	Data          map[string]interface{} `mapstructure:"data"`
@@ -174,7 +174,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		fs:      vfs.OSFS,
 		homeDir: homeDir,
 		DestDir: homeDir,
-		Umask:   fileMode(chezmoi.GetUmask()),
+		Umask:   chezmoi.Umask,
 		Color:   "auto",
 		Diff: diffCmdConfig{
 			include: chezmoi.NewIncludeSet(chezmoi.IncludeAll &^ chezmoi.IncludeScripts),
@@ -403,7 +403,7 @@ func (c *Config) defaultPreApplyFunc(targetRelPath chezmoi.RelPath, targetEntryS
 		return nil
 	case lastWrittenEntryState == nil:
 		return nil
-	case lastWrittenEntryState.Equivalent(actualEntryState, c.Umask.FileMode()):
+	case lastWrittenEntryState.Equivalent(actualEntryState):
 		return nil
 	}
 
@@ -1319,6 +1319,10 @@ func (c *Config) withTerminal(prompt string, f func(terminal) error) error {
 
 	if stdinFile, ok := c.stdin.(*os.File); ok && term.IsTerminal(int(stdinFile.Fd())) {
 		fd := int(stdinFile.Fd())
+		width, height, err := term.GetSize(fd)
+		if err != nil {
+			return err
+		}
 		oldState, err := term.MakeRaw(fd)
 		if err != nil {
 			return err
@@ -1326,13 +1330,17 @@ func (c *Config) withTerminal(prompt string, f func(terminal) error) error {
 		defer func() {
 			_ = term.Restore(fd, oldState)
 		}()
-		return f(term.NewTerminal(struct {
+		t := term.NewTerminal(struct {
 			io.Reader
 			io.Writer
 		}{
 			Reader: c.stdin,
 			Writer: c.stdout,
-		}, prompt))
+		}, prompt)
+		if err := t.SetSize(width, height); err != nil {
+			return err
+		}
+		return f(t)
 	}
 
 	if runtime.GOOS == "windows" {
@@ -1345,6 +1353,10 @@ func (c *Config) withTerminal(prompt string, f func(terminal) error) error {
 	}
 	defer devTTY.Close()
 	fd := int(devTTY.Fd())
+	width, height, err := term.GetSize(fd)
+	if err != nil {
+		return err
+	}
 	oldState, err := term.MakeRaw(fd)
 	if err != nil {
 		return err
@@ -1352,7 +1364,11 @@ func (c *Config) withTerminal(prompt string, f func(terminal) error) error {
 	defer func() {
 		_ = term.Restore(fd, oldState)
 	}()
-	return f(term.NewTerminal(devTTY, prompt))
+	t := term.NewTerminal(devTTY, prompt)
+	if err := t.SetSize(width, height); err != nil {
+		return err
+	}
+	return f(t)
 }
 
 func (c *Config) writeOutput(data []byte) error {

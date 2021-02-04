@@ -4,7 +4,6 @@ import (
 	"archive/tar"
 	"compress/gzip"
 	"fmt"
-	"os"
 	"os/user"
 	"strconv"
 	"strings"
@@ -60,7 +59,6 @@ func (c *Config) runArchiveCmd(cmd *cobra.Command, args []string) error {
 	if err := c.applyArgs(archiveSystem, "", args, applyArgsOptions{
 		include:   c.archive.include,
 		recursive: c.archive.recursive,
-		umask:     os.ModePerm,
 	}); err != nil {
 		return err
 	}

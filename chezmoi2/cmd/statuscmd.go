@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -46,9 +45,9 @@ func (c *Config) runStatusCmd(cmd *cobra.Command, args []string, sourceState *ch
 		switch {
 		case targetEntryState.Type == chezmoi.EntryStateTypeScript:
 			y = 'R'
-		case !targetEntryState.Equivalent(actualEntryState, c.Umask.FileMode()):
-			x = statusRune(lastWrittenEntryState, actualEntryState, c.Umask.FileMode())
-			y = statusRune(actualEntryState, targetEntryState, c.Umask.FileMode())
+		case !targetEntryState.Equivalent(actualEntryState):
+			x = statusRune(lastWrittenEntryState, actualEntryState)
+			y = statusRune(actualEntryState, targetEntryState)
 		}
 		if x != ' ' || y != ' ' {
 			fmt.Fprintf(&sb, "%c%c %s\n", x, y, targetRelPath)
@@ -58,7 +57,7 @@ func (c *Config) runStatusCmd(cmd *cobra.Command, args []string, sourceState *ch
 	if err := c.applyArgs(dryRunSystem, c.destDirAbsPath, args, applyArgsOptions{
 		include:      c.status.include,
 		recursive:    c.status.recursive,
-		umask:        c.Umask.FileMode(),
+		umask:        c.Umask,
 		preApplyFunc: preApplyFunc,
 	}); err != nil {
 		return err
@@ -66,8 +65,8 @@ func (c *Config) runStatusCmd(cmd *cobra.Command, args []string, sourceState *ch
 	return c.writeOutputString(sb.String())
 }
 
-func statusRune(fromState, toState *chezmoi.EntryState, umask os.FileMode) rune {
-	if fromState == nil || fromState.Equivalent(toState, umask) {
+func statusRune(fromState, toState *chezmoi.EntryState) rune {
+	if fromState == nil || fromState.Equivalent(toState) {
 		return ' '
 	}
 	switch toState.Type {

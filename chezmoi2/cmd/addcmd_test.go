@@ -7,7 +7,6 @@ import (
 	"github.com/twpayne/go-vfs"
 	"github.com/twpayne/go-vfs/vfst"
 
-	"github.com/twpayne/chezmoi/chezmoi2/internal/chezmoi"
 	"github.com/twpayne/chezmoi/chezmoi2/internal/chezmoitest"
 )
 
@@ -29,7 +28,7 @@ func TestAddCmd(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^chezmoi.GetUmask()),
+					vfst.TestModePerm(0o777&^chezmoitest.Umask),
 				),
 			},
 		},
@@ -49,11 +48,11 @@ func TestAddCmd(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^chezmoi.GetUmask()),
+					vfst.TestModePerm(0o777&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/file",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0o666&^chezmoi.GetUmask()),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString("# contents of .dir/file\n"),
 				),
 			},
@@ -74,7 +73,7 @@ func TestAddCmd(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^chezmoi.GetUmask()),
+					vfst.TestModePerm(0o777&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/file",
 					vfst.TestDoesNotExist,
@@ -97,11 +96,11 @@ func TestAddCmd(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.local/share/chezmoi/private_dot_dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^chezmoi.GetUmask()),
+					vfst.TestModePerm(0o777&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/private_dot_dir/file",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0o666&^chezmoi.GetUmask()),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString("# contents of .dir/file\n"),
 				),
 			},
@@ -122,11 +121,11 @@ func TestAddCmd(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.local/share/chezmoi/private_dot_dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^chezmoi.GetUmask()),
+					vfst.TestModePerm(0o777&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/private_dot_dir/file",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0o666&^chezmoi.GetUmask()),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString("# contents of .dir/file\n"),
 				),
 			},
@@ -156,7 +155,7 @@ func TestAddCmd(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.local/share/chezmoi/empty_dot_empty",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0o666&^chezmoi.GetUmask()),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContents(nil),
 				),
 			},
@@ -175,7 +174,7 @@ func TestAddCmd(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.local/share/chezmoi/executable_dot_executable",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0o666&^chezmoi.GetUmask()),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString("#!/bin/sh\n"),
 				),
 			},
@@ -191,7 +190,7 @@ func TestAddCmd(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_file",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0o666&^chezmoi.GetUmask()),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString("# contents of .file\n"),
 				),
 			},
@@ -209,7 +208,7 @@ func TestAddCmd(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.local/share/chezmoi/symlink_dot_symlink",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0o666&^chezmoi.GetUmask()),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString(".dir/subdir/file\n"),
 				),
 			},
@@ -228,7 +227,7 @@ func TestAddCmd(t *testing.T) {
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_symlink",
 					vfst.TestModeIsRegular,
-					vfst.TestModePerm(0o666&^chezmoi.GetUmask()),
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString("# contents of .file\n"),
 				),
 			},

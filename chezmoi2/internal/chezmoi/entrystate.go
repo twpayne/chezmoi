@@ -3,6 +3,7 @@ package chezmoi
 import (
 	"bytes"
 	"os"
+	"runtime"
 )
 
 // An EntryStateType is an entry state type.
@@ -33,24 +34,28 @@ func (s *EntryState) Contents() []byte {
 }
 
 // Equal returns true if s is equal to other.
-func (s *EntryState) Equal(other *EntryState, umask os.FileMode) bool {
-	return s.Type == other.Type &&
-		s.Mode&^umask == other.Mode&^umask &&
-		bytes.Equal(s.ContentsSHA256, other.ContentsSHA256)
+func (s *EntryState) Equal(other *EntryState) bool {
+	if s.Type != other.Type {
+		return false
+	}
+	if runtime.GOOS != "windows" && s.Mode != other.Mode {
+		return false
+	}
+	return bytes.Equal(s.ContentsSHA256, other.ContentsSHA256)
 }
 
 // Equivalent returns true if s is equivalent to other.
-func (s *EntryState) Equivalent(other *EntryState, umask os.FileMode) bool {
+func (s *EntryState) Equivalent(other *EntryState) bool {
 	switch {
 	case s == nil:
 		return other == nil || other.Type == EntryStateTypeAbsent
 	case other == nil:
 		return s.Type == EntryStateTypeAbsent
 	case s.Type == EntryStateTypeFile:
-		return other.Type == EntryStateTypePresent || s.Equal(other, umask)
+		return other.Type == EntryStateTypePresent || s.Equal(other)
 	case s.Type == EntryStateTypePresent:
 		return other.Type == EntryStateTypeFile || other.Type == EntryStateTypePresent
 	default:
-		return s.Equal(other, umask)
+		return s.Equal(other)
 	}
 }

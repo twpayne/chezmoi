@@ -61,7 +61,7 @@ func DiffPatch(path RelPath, fromData []byte, fromMode os.FileMode, toData []byt
 
 	var from diff.File
 	if fromData != nil || fromMode != 0 {
-		fromFileMode, err := filemode.NewFromOSFileMode(fromMode)
+		fromFileMode, err := diffFileMode(fromMode)
 		if err != nil {
 			return nil, err
 		}
@@ -74,7 +74,7 @@ func DiffPatch(path RelPath, fromData []byte, fromMode os.FileMode, toData []byt
 
 	var to diff.File
 	if toData != nil || toMode != 0 {
-		toFileMode, err := filemode.NewFromOSFileMode(toMode)
+		toFileMode, err := diffFileMode(toMode)
 		if err != nil {
 			return nil, err
 		}
@@ -116,6 +116,15 @@ func diffChunks(from, to string) []diff.Chunk {
 		chunks = append(chunks, chunk)
 	}
 	return chunks
+}
+
+func diffFileMode(mode os.FileMode) (filemode.FileMode, error) {
+	fileMode, err := filemode.NewFromOSFileMode(mode)
+	if err != nil {
+		return 0, err
+	}
+	fileMode |= filemode.FileMode(mode.Perm())
+	return fileMode, nil
 }
 
 func isBinary(data []byte) bool {
