@@ -129,8 +129,7 @@ func (c *Config) keePassXCAttributeFunc(entry, attribute string) string {
 }
 
 func readPassword(prompt string) (pw []byte, err error) {
-	fd := int(os.Stdin.Fd())
-	if term.IsTerminal(fd) {
+	if fd := int(os.Stdin.Fd()); term.IsTerminal(fd) {
 		fmt.Print(prompt)
 		pw, err = term.ReadPassword(fd)
 		fmt.Println()
