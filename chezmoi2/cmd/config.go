@@ -1311,10 +1311,8 @@ func (c *Config) validateData() error {
 }
 
 func (c *Config) withTerminal(prompt string, f func(terminal) error) error {
-	// FIXME this seems to wrap lines at 80 characters by default
-
 	if c.noTTY {
-		return f(newDumbTerminal(c.stdin, c.stdout, prompt))
+		return f(newNullTerminal(c.stdin))
 	}
 
 	if stdinFile, ok := c.stdin.(*os.File); ok && term.IsTerminal(int(stdinFile.Fd())) {
