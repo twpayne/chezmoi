@@ -66,7 +66,10 @@ curl -sfL https://git.io/chezmoi | sh  Or on systems with Powershell, you can us
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/media/</guid>
-      <description>Media #  </description>
+      <description>Media #  Recommended article: Fedora Magazine: Take back your dotfiles with Chezmoi
+Recommended video: Conf42: chezmoi: Manage your dotfiles across multiple machines, securely
+Recommended podcast: FLOSS weekly episode 556: chezmoi
+   Date Version Format Link     2021-02-06 1.8.10 Video chezmoi: manage your dotfiles across multiple, diverse machines, securely   2021-01-12 1.8.10 Text Automating the Setup of a New Mac With All Your Apps, Preferences, and Development Tools   2020-11-06 1.</description>
     </item>
     
     <item>

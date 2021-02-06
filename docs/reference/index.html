@@ -2,7 +2,7 @@
 <html lang="en" dir=>
 
 <head>
-  <meta name="generator" content="Hugo 0.77.0" />
+  <meta name="generator" content="Hugo 0.80.0" />
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Reference Manual #  Concepts #  chezmoi evaluates the source state for the current machine and then updates the destination directory, where:
@@ -21,7 +21,7 @@
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.6c7c6446dfdee7c8c933e9bbc6e80ee3ed6c913b2a59519f2092c3c6a9d63e55.css" integrity="sha256-bHxkRt/e58jJM&#43;m7xugO4&#43;1skTsqWVGfIJLDxqnWPlU=">
-<script defer src="/en.search.min.a5b73ccc1809ec6c18b180859bb6b68317bf84addc77ffe878f47e64a459f672.js" integrity="sha256-pbc8zBgJ7GwYsYCFm7a2gxe/hK3cd//oePR&#43;ZKRZ9nI="></script>
+<script defer src="/en.search.min.892de525f34be93af3fcb7772ae633b46e262e8b35c6b8221cbcea6499e7e3e6.js" integrity="sha256-iS3lJfNL6Trz/Ld3KuYztG4mLos1xrgiHLzqZJnn4&#43;Y="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -196,6 +196,7 @@ https://github.com/alex-shpak/hugo-book
     <li><a href="#template-functions">Template functions</a>
       <ul>
         <li><a href="#bitwarden-args"><code>bitwarden</code> [<em>args</em>]</a></li>
+        <li><a href="#bitwardenattachment-filename-itemid"><code>bitwardenAttachment</code> <em>filename</em> <em>itemid</em></a></li>
         <li><a href="#bitwardenfields-args"><code>bitwardenFields</code> [<em>args</em>]</a></li>
         <li><a href="#gopass-gopass-name"><code>gopass</code> <em>gopass-name</em></a></li>
         <li><a href="#include-filename"><code>include</code> <em>filename</em></a></li>
@@ -1630,16 +1631,32 @@ included. chezmoi provides some additional functions.</p>
 </h3>
 <p><code>bitwarden</code> returns structured data retrieved from
 <a href="https://bitwarden.com">Bitwarden</a> using the <a href="https://github.com/bitwarden/cli">Bitwarden
-CLI</a> (<code>bw</code>). <em>args</em> are passed to <code>bw</code>
-unchanged and the output from <code>bw</code> is parsed as JSON. The output from <code>bw</code> is
-cached so calling <code>bitwarden</code> multiple times with the same arguments will only
-invoke <code>bw</code> once.</p>
+CLI</a> (<code>bw</code>). <em>args</em> are passed to <code>bw get</code>
+unchanged and the output from <code>bw get</code> is parsed as JSON. The output from <code>bw get</code> is cached so calling <code>bitwarden</code> multiple times with the same arguments
+will only invoke <code>bw</code> once.</p>
 <h4 id="bitwarden-examples">
   <code>bitwarden</code> examples
   <a class="anchor" href="#bitwarden-examples">#</a>
 </h4>
-<pre><code>username = {{ (bitwarden &quot;item&quot; &quot;example.com&quot;).login.username }}
-password = {{ (bitwarden &quot;item&quot; &quot;example.com&quot;).login.password }}
+<pre><code>username = {{ (bitwarden &quot;item&quot; &quot;&lt;itemid&gt;&quot;).login.username }}
+password = {{ (bitwarden &quot;item&quot; &quot;&lt;itemid&gt;&quot;).login.password }}
+</code></pre>
+<h3 id="bitwardenattachment-filename-itemid">
+  <code>bitwardenAttachment</code> <em>filename</em> <em>itemid</em>
+  <a class="anchor" href="#bitwardenattachment-filename-itemid">#</a>
+</h3>
+<p><code>bitwardenAttachment</code> returns a document from
+<a href="https://bitwarden.com/">Bitwarden</a> using the <a href="https://bitwarden.com/help/article/cli/">Bitwarden
+CLI</a> (<code>bw</code>). <em>filename</em> and <em>itemid</em> is
+passed to <code>bw get attachment &lt;filename&gt; --itemid &lt;itemid&gt;</code> and the output from
+<code>bw</code> is returned. The output from <code>bw</code> is cached so calling
+<code>bitwardenAttachment</code> multiple times with the same <em>filename</em> and <em>itemid</em> will
+only invoke <code>bw</code> once.</p>
+<h4 id="bitwardenattachment-examples">
+  <code>bitwardenAttachment</code> examples
+  <a class="anchor" href="#bitwardenattachment-examples">#</a>
+</h4>
+<pre><code>{{- (bitwardenAttachment &quot;&lt;filename&gt;&quot; &quot;&lt;itemid&gt;&quot;) -}}
 </code></pre>
 <h3 id="bitwardenfields-args">
   <code>bitwardenFields</code> [<em>args</em>]
@@ -1647,10 +1664,10 @@ password = {{ (bitwarden &quot;item&quot; &quot;example.com&quot;).login.passwor
 </h3>
 <p><code>bitwardenFields</code> returns structured data retrieved from
 <a href="https://bitwarden.com">Bitwarden</a> using the <a href="https://github.com/bitwarden/cli">Bitwarden
-CLI</a> (<code>bw</code>). <em>args</em> are passed to <code>bw</code>
-unchanged and the output from <code>bw</code> is parsed as JSON, and
-elements of <code>fields</code> are returned as a map indexed by each field&rsquo;s
-<code>name</code>. For example, given the output from <code>bw</code>:</p>
+CLI</a> (<code>bw</code>). <em>args</em> are passed to <code>bw get</code>
+unchanged, the output from <code>bw get</code> is parsed as JSON, and elements of <code>fields</code>
+are returned as a map indexed by each field&rsquo;s <code>name</code>. For example, given the
+output from <code>bw get</code>:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
   <span style="color:#f92672">&#34;object&#34;</span>: <span style="color:#e6db74">&#34;item&#34;</span>,
   <span style="color:#f92672">&#34;id&#34;</span>: <span style="color:#e6db74">&#34;bf22e4b4-ae4a-4d1c-8c98-ac620004b628&#34;</span>,
@@ -1694,13 +1711,13 @@ elements of <code>fields</code> are returned as a map indexed by each field&rsqu
     <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;token-value&#34;</span>
   }
 }
-</code></pre></div><p>The output from <code>bw</code> is cached so calling <code>bitwarden</code> multiple times with the
-same arguments will only invoke <code>bw</code> once.</p>
+</code></pre></div><p>The output from <code>bw get</code> is cached so calling <code>bitwarden</code> multiple times with
+the same arguments will only invoke <code>bw get</code> once.</p>
 <h4 id="bitwardenfields-examples">
   <code>bitwardenFields</code> examples
   <a class="anchor" href="#bitwardenfields-examples">#</a>
 </h4>
-<pre><code>{{ (bitwardenFields &quot;item&quot; &quot;example.com&quot;).token.value }}
+<pre><code>{{ (bitwardenFields &quot;item&quot; &quot;&lt;itemid&gt;&quot;).token.value }}
 </code></pre>
 <h3 id="gopass-gopass-name">
   <code>gopass</code> <em>gopass-name</em>
@@ -2178,6 +2195,7 @@ times with the same <em>key</em> will only invoke <code>vault</code> once.</p>
     <li><a href="#template-functions">Template functions</a>
       <ul>
         <li><a href="#bitwarden-args"><code>bitwarden</code> [<em>args</em>]</a></li>
+        <li><a href="#bitwardenattachment-filename-itemid"><code>bitwardenAttachment</code> <em>filename</em> <em>itemid</em></a></li>
         <li><a href="#bitwardenfields-args"><code>bitwardenFields</code> [<em>args</em>]</a></li>
         <li><a href="#gopass-gopass-name"><code>gopass</code> <em>gopass-name</em></a></li>
         <li><a href="#include-filename"><code>include</code> <em>filename</em></a></li>
