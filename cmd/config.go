@@ -63,6 +63,7 @@ type Config struct {
 	Verbose           bool
 	Color             string
 	Debug             bool
+	NoScript          bool
 	GPG               chezmoi.GPG
 	GPGRecipient      string
 	SourceVCS         sourceVCSConfig
@@ -196,6 +197,7 @@ func (c *Config) applyArgs(args []string, persistentState chezmoi.PersistentStat
 		Stdout:            c.Stdout,
 		Umask:             ts.Umask,
 		Verbose:           c.Verbose,
+		NoScript:          c.NoScript,
 	}
 	if len(args) == 0 {
 		return ts.Apply(fs, c.mutator, c.Follow, applyOptions)

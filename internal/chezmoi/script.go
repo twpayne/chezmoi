@@ -92,6 +92,10 @@ func (s *Script) AppendAllEntries(allEntries []Entry) []Entry {
 
 // Apply runs s.
 func (s *Script) Apply(fs vfs.FS, mutator Mutator, follow bool, applyOptions *ApplyOptions) error {
+	if applyOptions.NoScript {
+		return nil
+	}
+
 	if applyOptions.Ignore(s.targetName) {
 		return nil
 	}

@@ -45,6 +45,7 @@ type ApplyOptions struct {
 	Stdout            io.Writer
 	Umask             os.FileMode
 	Verbose           bool
+	NoScript          bool
 }
 
 // An Entry is either a Dir, a File, or a Symlink.

@@ -1956,6 +1956,7 @@ func init() {
 		"  * [`-S`, `--source` *directory*](#-s---source-directory)\n" +
 		"  * [`-v`, `--verbose`](#-v---verbose)\n" +
 		"  * [`--version`](#--version)\n" +
+		"  * [`-N`](#--noscript)\n" +
 		"* [Configuration file](#configuration-file)\n" +
 		"  * [Variables](#variables)\n" +
 		"  * [Examples](#examples)\n" +
@@ -2113,6 +2114,10 @@ func init() {
 		"\n" +
 		"Print the version of chezmoi, the commit at which it was built, and the build\n" +
 		"timestamp.\n" +
+		"\n" +
+		"### `-N`, `--noscript`\n" +
+		"\n" +
+		"Do not run post script. This applies both for `run_` and `once_` scripts.\n" +
 		"\n" +
 		"## Configuration file\n" +
 		"\n" +

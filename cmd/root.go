@@ -87,6 +87,10 @@ func init() {
 	persistentFlags.BoolVar(&config.Debug, "debug", false, "write debug logs")
 	panicOnError(viper.BindPFlag("debug", persistentFlags.Lookup("debug")))
 
+	persistentFlags.BoolVarP(&config.NoScript, "noscript", "N", false, "don't run scripts")
+	panicOnError(viper.BindPFlag("noscript", persistentFlags.Lookup("noscript")))
+	panicOnError(rootCmd.MarkPersistentFlagDirname("noscript"))
+
 	cobra.OnInitialize(func() {
 		_, err := os.Stat(config.configFile)
 		switch {

@@ -16,6 +16,7 @@ Manage your dotfiles securely across multiple machines.
   * [`-S`, `--source` *directory*](#-s---source-directory)
   * [`-v`, `--verbose`](#-v---verbose)
   * [`--version`](#--version)
+  * [`-N`](#--noscript)
 * [Configuration file](#configuration-file)
   * [Variables](#variables)
   * [Examples](#examples)
@@ -173,6 +174,10 @@ state and the destination set are printed as unified diffs.
 
 Print the version of chezmoi, the commit at which it was built, and the build
 timestamp.
+
+### `-N`, `--noscript`
+
+Do not run post script. This applies both for `run_` and `once_` scripts.
 
 ## Configuration file
 
