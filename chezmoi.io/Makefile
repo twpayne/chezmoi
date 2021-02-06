@@ -5,6 +5,7 @@ website: content-docs
 .PHONY: content-docs
 content-docs: \
 	content/docs/changes.md \
+	content/docs/comparison.md \
 	content/docs/contributing.md \
 	content/docs/faq.md \
 	content/docs/how-to.md \
@@ -16,6 +17,9 @@ content-docs: \
 
 content/docs/changes.md: ../docs/CHANGES.md ../internal/cmd/generate-chezmoi.io-content-docs/main.go Makefile
 	go run ../internal/cmd/generate-chezmoi.io-content-docs -shorttitle="Changes" -longtitle="Changes" < $< > $@ || ( rm -f $@ ; false )
+
+content/docs/comparison.md: ../docs/COMPARISON.md ../internal/cmd/generate-chezmoi.io-content-docs/main.go Makefile
+	go run ../internal/cmd/generate-chezmoi.io-content-docs -shorttitle="Comparison" -longtitle="Comparison Guide" < $< > $@ || ( rm -f $@ ; false )
 
 content/docs/contributing.md: ../docs/CONTRIBUTING.md ../internal/cmd/generate-chezmoi.io-content-docs/main.go Makefile
 	go run ../internal/cmd/generate-chezmoi.io-content-docs -shorttitle="Contributing" -longtitle="Contributing Guide" < $< > $@ || ( rm -f $@ ; false )

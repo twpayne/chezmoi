@@ -34,6 +34,122 @@ func init() {
 		"\n" +
 		"Support for the `gpgRecipient` config variable will be removed in version 2.0.0.\n" +
 		"\n")
+	assets["docs/COMPARISON.md"] = []byte("" +
+		"# chezmoi Comparison guide\n" +
+		"\n" +
+		"<!--- toc --->\n" +
+		"* [Comparison table](#comparison-table)\n" +
+		"* [I already have a system to manage my dotfiles, why should I use chezmoi?](#i-already-have-a-system-to-manage-my-dotfiles-why-should-i-use-chezmoi)\n" +
+		"  * [...if coping with differences between machines requires special care](#if-coping-with-differences-between-machines-requires-special-care)\n" +
+		"  * [...if you need to think for a moment before giving anyone access to your dotfiles](#if-you-need-to-think-for-a-moment-before-giving-anyone-access-to-your-dotfiles)\n" +
+		"  * [...if your needs are outgrowing your current tool](#if-your-needs-are-outgrowing-your-current-tool)\n" +
+		"  * [...if setting up your dotfiles requires more than two short commands](#if-setting-up-your-dotfiles-requires-more-than-two-short-commands)\n" +
+		"\n" +
+		"## Comparison table\n" +
+		"\n" +
+		"[chezmoi]: https://chezmoi.io/\n" +
+		"[dotbot]: https://github.com/anishathalye/dotbot\n" +
+		"[rcm]: https://github.com/thoughtbot/rcm\n" +
+		"[homesick]: https://github.com/technicalpickles/homesick\n" +
+		"[yadm]: https://yadm.io/\n" +
+		"[bare git]: https://www.atlassian.com/git/tutorials/dotfiles \"bare git\"\n" +
+		"\n" +
+		"|                                        | [chezmoi]     | [dotbot]          | [rcm]             | [homesick]        | [yadm]        | [bare git] |\n" +
+		"| -------------------------------------- | ------------- | ----------------- | ----------------- | ----------------- | ------------- | ---------- |\n" +
+		"| Implementation language                | Go            | Python            | Perl              | Ruby              | Bash          | C          |\n" +
+		"| Distribution                           | Single binary | Python package    | Multiple files    | Ruby gem          | Single script | n/a        |\n" +
+		"| Install method                         | Multiple      | git submodule     | Multiple          | Ruby gem          | Multiple      | n/a        |\n" +
+		"| Non-root install on bare system        | Yes           | Difficult         | Difficult         | Difficult         | Yes           | Yes        |\n" +
+		"| Windows support                        | Yes           | No                | No                | No                | No            | Yes        |\n" +
+		"| Bootstrap requirements                 | git           | Python, git       | Perl, git         | Ruby, git         | git           | git        |\n" +
+		"| Source repos                           | Single        | Single            | Multiple          | Single            | Single        | Single     |\n" +
+		"| Method                                 | File          | Symlink           | File              | Symlink           | File          | File       |\n" +
+		"| Config file                            | Optional      | Required          | Optional          | None              | None          | No         |\n" +
+		"| Private files                          | Yes           | No                | No                | No                | No            | No         |\n" +
+		"| Show differences without applying      | Yes           | No                | No                | No                | Yes           | Yes        |\n" +
+		"| Whole file encryption                  | Yes           | No                | No                | No                | Yes           | No         |\n" +
+		"| Password manager integration           | Yes           | No                | No                | No                | No            | No         |\n" +
+		"| Machine-to-machine file differences    | Templates     | Alternative files | Alternative files | Alternative files | Templates     | Manual     |\n" +
+		"| Custom variables in templates          | Yes           | n/a               | n/a               | n/a               | No            | No         |\n" +
+		"| Executable files                       | Yes           | Yes               | Yes               | Yes               | No            | Yes        |\n" +
+		"| File creation with initial contents    | Yes           | No                | No                | No                | No            | No         |\n" +
+		"| File removal                           | Yes           | Manual            | No                | No                | No            | No         |\n" +
+		"| Directory creation                     | Yes           | Yes               | Yes               | No                | No            | Yes        |\n" +
+		"| Run scripts                            | Yes           | Yes               | Yes               | No                | No            | No         |\n" +
+		"| Run once scripts                       | Yes           | No                | No                | No                | Manual        | No         |\n" +
+		"| Machine-to-machine symlink differences | Yes           | No                | No                | No                | Yes           | No         |\n" +
+		"| Shell completion                       | Yes           | No                | No                | No                | Yes           | Yes        |\n" +
+		"| Archive import                         | Yes           | No                | No                | No                | No            | No         |\n" +
+		"| Archive export                         | Yes           | No                | No                | No                | No            | Yes        |\n" +
+		"\n" +
+		"## I already have a system to manage my dotfiles, why should I use chezmoi?\n" +
+		"\n" +
+		"If you're using any of the following methods:\n" +
+		"\n" +
+		"* A custom shell script.\n" +
+		"* An existing dotfile manager like\n" +
+		"  [homeshick](https://github.com/andsens/homeshick),\n" +
+		"  [homesick](https://github.com/technicalpickles/homesick),\n" +
+		"  [rcm](https://github.com/thoughtbot/rcm), [GNU\n" +
+		"  Stow](https://www.gnu.org/software/stow/), or [yadm](https://yadm.io/).\n" +
+		"* A [bare git repo](https://www.atlassian.com/git/tutorials/dotfiles).\n" +
+		"\n" +
+		"Then you've probably run into at least one of the following problems.\n" +
+		"\n" +
+		"### ...if coping with differences between machines requires special care\n" +
+		"\n" +
+		"If you want to synchronize your dotfiles across multiple operating systems or\n" +
+		"distributions, then you may need to manually perform extra steps to cope with\n" +
+		"differences from machine to machine. You might need to run different commands on\n" +
+		"different machines, maintain separate per-machine files or branches (with the\n" +
+		"associated hassle of merging, rebasing, or copying each change), or hope that\n" +
+		"your custom logic handles the differences correctly.\n" +
+		"\n" +
+		"chezmoi uses a single source of truth (a single branch) and a single command\n" +
+		"that works on every machine. Individual files can be templates to handle machine\n" +
+		"to machine differences, if needed.\n" +
+		"\n" +
+		"### ...if you need to think for a moment before giving anyone access to your dotfiles\n" +
+		"\n" +
+		"If your system stores secrets in plain text, then you must be very careful about\n" +
+		"where you clone your dotfiles. If you clone them on your work machine then\n" +
+		"anyone with access to your work machine (e.g. your IT department) will have\n" +
+		"access to your home secrets. If you clone it on your home machine then you risk\n" +
+		"leaking work secrets.\n" +
+		"\n" +
+		"With chezmoi you can store secrets in your password manager or encrypt them, and\n" +
+		"even store passwords in different ways on different machines. You can clone your\n" +
+		"dotfiles repository anywhere, and even make your dotfiles repo public, without\n" +
+		"leaving personal secrets on your work machine or work secrets on your personal\n" +
+		"machine.\n" +
+		"\n" +
+		"### ...if your needs are outgrowing your current tool\n" +
+		"\n" +
+		"If your system was written by you for your personal use, then it probably has\n" +
+		"the minimum functionality that you needed when you wrote it. If you need more\n" +
+		"functionality then you have to implement it yourself.\n" +
+		"\n" +
+		"chezmoi includes a huge range of battle-tested functionality out-of-the-box,\n" +
+		"including dry-run and diff modes, script execution, conflict resolution, Windows\n" +
+		"support, and much, much more. chezmoi is [used by thousands of\n" +
+		"people](https://github.com/twpayne/chezmoi/stargazers), so it is likely that\n" +
+		"when you hit the limits of your existing dotfile management system, chezmoi\n" +
+		"already has a tried-and-tested solution ready for you to use.\n" +
+		"\n" +
+		"### ...if setting up your dotfiles requires more than two short commands\n" +
+		"\n" +
+		"If your system is written in a scripting language like Python, Perl, or Ruby,\n" +
+		"then you also need to install a compatible version of that language's runtime\n" +
+		"before you can use your system.\n" +
+		"\n" +
+		"chezmoi is distributed as a single stand-alone statically-linked binary with no\n" +
+		"dependencies that you can simply copy onto your machine and run. chezmoi\n" +
+		"provides one-line installs, pre-built binaries, packages for Linux and BSD\n" +
+		"distributions, Homebrew formulae, Scoop and Chocolatey support on Windows, and a\n" +
+		"initial config file generation mechanism to make installing your dotfiles on a\n" +
+		"new machine as painless as possible.\n" +
+		"\n" +
+		"\n")
 	assets["docs/CONTRIBUTING.md"] = []byte("" +
 		"# chezmoi Contributing Guide\n" +
 		"\n" +

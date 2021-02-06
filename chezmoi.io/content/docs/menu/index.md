@@ -10,5 +10,6 @@ headless = true
 - [Changes]({{< relref "/docs/changes.md" >}})
 - [Reference]({{< relref "/docs/reference.md" >}})
 - [Media]({{< relref "/docs/media.md" >}})
+- [Comparison]({{< relref "/docs/comparison.md" >}})
 - [Contributing]({{< relref "/docs/contributing.md" >}})
 - [GitHub](https://github.com/twpayne/chezmoi)
