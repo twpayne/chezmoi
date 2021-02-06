@@ -1,4 +1,4 @@
-//go:generate go run ./internal/cmd/generate-assets -o cmd/docs.gen.go -tags=!noembeddocs docs/CHANGES.md docs/CONTRIBUTING.md docs/FAQ.md docs/HOWTO.md docs/INSTALL.md docs/MEDIA.md docs/QUICKSTART.md docs/REFERENCE.md docs/TEMPLATING.md
+//go:generate go run ./internal/cmd/generate-assets -o cmd/docs.gen.go -tags=!noembeddocs docs/CHANGES.md docs/COMPARISON.md docs/CONTRIBUTING.md docs/FAQ.md docs/HOWTO.md docs/INSTALL.md docs/MEDIA.md docs/QUICKSTART.md docs/REFERENCE.md docs/TEMPLATING.md
 //go:generate go run ./internal/cmd/generate-assets -o cmd/templates.gen.go assets/templates/COMMIT_MESSAGE.tmpl
 //go:generate go run ./internal/cmd/generate-helps -o cmd/helps.gen.go -i docs/REFERENCE.md
 //go:generate go run . completion bash -o completions/chezmoi-completion.bash
