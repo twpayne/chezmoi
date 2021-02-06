@@ -16,9 +16,9 @@ type statusCmdConfig struct {
 
 func (c *Config) newStatusCmd() *cobra.Command {
 	statusCmd := &cobra.Command{
-		Use:   "status [target]...",
-		Short: "Show the status of targets",
-		// Long: mustGetLongHelp("status"), // FIXME
+		Use:     "status [target]...",
+		Short:   "Show the status of targets",
+		Long:    mustLongHelp("status"),
 		Example: example("status"),
 		RunE:    c.makeRunEWithSourceState(c.runStatusCmd),
 		Annotations: map[string]string{

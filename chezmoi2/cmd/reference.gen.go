@@ -275,7 +275,7 @@ func init() {
 		"| `bitwarden`   | `command`         | string   | `bw`                      | Bitwarden CLI command                                  |\n" +
 		"| `cd`          | `args`            | []string | *none*                    | Extra args to shell in `cd` command                    |\n" +
 		"|               | `command`         | string   | *none*                    | Shell to run in `cd` command                           |\n" +
-		"| `diff`        | `pager`           | string   | *none*                    | Pager                                                  |\n" +
+		"| `diff`        | `pager`           | string   | `$PAGER` / `less`         | Pager                                                  |\n" +
 		"| `edit`        | `args`            | []string | *none*                    | Extra args to edit command                             |\n" +
 		"|               | `command`         | string   | `$EDITOR` / `$VISUAL`     | Edit command                                           |\n" +
 		"| `secret`      | `command`         | string   | *none*                    | Generic secret command                                 |\n" +

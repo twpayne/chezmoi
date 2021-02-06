@@ -2,7 +2,6 @@ package chezmoi
 
 import (
 	"encoding/json"
-	"strings"
 
 	"github.com/pelletier/go-toml"
 	"gopkg.in/yaml.v3"
@@ -40,13 +39,11 @@ var Formats = map[string]Format{
 
 // Marshal implements Format.Marshal.
 func (jsonFormat) Marshal(value interface{}) ([]byte, error) {
-	sb := strings.Builder{}
-	e := json.NewEncoder(&sb)
-	e.SetIndent("", "  ")
-	if err := e.Encode(value); err != nil {
+	data, err := json.MarshalIndent(value, "", "  ")
+	if err != nil {
 		return nil, err
 	}
-	return []byte(sb.String()), nil
+	return append(data, '\n'), nil
 }
 
 // Name implements Format.Name.

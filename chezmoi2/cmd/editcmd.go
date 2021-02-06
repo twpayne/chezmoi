@@ -10,8 +10,8 @@ import (
 )
 
 type editCmdConfig struct {
-	Command string
-	Args    []string
+	Command string   `mapstructure:"command"`
+	Args    []string `mapstructure:"args"`
 	apply   bool
 	include *chezmoi.IncludeSet
 }

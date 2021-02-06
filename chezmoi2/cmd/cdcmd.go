@@ -6,8 +6,8 @@ import (
 )
 
 type cdCmdConfig struct {
-	Command string
-	Args    []string
+	Command string   `mapstructure:"command"`
+	Args    []string `mapstructure:"args"`
 }
 
 func (c *Config) newCDCmd() *cobra.Command {
