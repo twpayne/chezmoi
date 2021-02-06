@@ -11,7 +11,7 @@ import (
 type diffCmdConfig struct {
 	include   *chezmoi.IncludeSet
 	recursive bool
-	Pager     string
+	Pager     string `mapstructure:"pager"`
 }
 
 func (c *Config) newDiffCmd() *cobra.Command {
