@@ -18,6 +18,15 @@ gpgRecipient = &amp;quot;...&amp;quot;  to:</description>
     </item>
     
     <item>
+      <title>Comparison</title>
+      <link>https://chezmoi.io/docs/comparison/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chezmoi.io/docs/comparison/</guid>
+      <description>Comparison Guide #  Comparison table #      chezmoi dotbot rcm homesick yadm bare git     Implementation language Go Python Perl Ruby Bash C   Distribution Single binary Python package Multiple files Ruby gem Single script n/a   Install method Multiple git submodule Multiple Ruby gem Multiple n/a   Non-root install on bare system Yes Difficult Difficult Difficult Yes Yes   Windows support Yes No No No No Yes   Bootstrap requirements git Python, git Perl, git Ruby, git git git   Source repos Single Single Multiple Single Single Single   Method File Symlink File Symlink File File   Config file Optional Required Optional None None No   Private files Yes No No No No No   Show differences without applying Yes No No No Yes Yes   Whole file encryption Yes No No No Yes No   Password manager integration Yes No No No No No   Machine-to-machine file differences Templates Alternative files Alternative files Alternative files Templates Manual   Custom variables in templates Yes n/a n/a n/a No No   Executable files Yes Yes Yes Yes No Yes   File creation with initial contents Yes No No No No No   File removal Yes Manual No No No No   Directory creation Yes Yes Yes No No Yes   Run scripts Yes Yes Yes No No No   Run once scripts Yes No No No Manual No   Machine-to-machine symlink differences Yes No No No Yes No   Shell completion Yes No No No Yes Yes   Archive import Yes No No No No No   Archive export Yes No No No No Yes    I already have a system to manage my dotfiles, why should I use chezmoi?</description>
+    </item>
+    
+    <item>
       <title>Contributing</title>
       <link>https://chezmoi.io/docs/contributing/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
