@@ -177,6 +177,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		Umask:   chezmoi.Umask,
 		Color:   "auto",
 		Diff: diffCmdConfig{
+			Pager:   firstNonEmptyString(os.Getenv("PAGER"), "less"),
 			include: chezmoi.NewIncludeSet(chezmoi.IncludeAll &^ chezmoi.IncludeScripts),
 		},
 		Edit: editCmdConfig{
