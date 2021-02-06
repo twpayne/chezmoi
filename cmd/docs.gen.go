@@ -1813,7 +1813,7 @@ func init() {
 	assets["docs/MEDIA.md"] = []byte("" +
 		"# chezmoi in the media\n" +
 		"\n" +
-		"<!-- toc -->\n" +
+		"<!--- toc --->\n" +
 		"\n" +
 		"Recommended article: [Fedora Magazine: Take back your dotfiles with Chezmoi](https://fedoramagazine.org/take-back-your-dotfiles-with-chezmoi/)\n" +
 		"\n" +

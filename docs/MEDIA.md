@@ -1,6 +1,6 @@
 # chezmoi in the media
 
-<!-- toc -->
+<!--- toc --->
 
 Recommended article: [Fedora Magazine: Take back your dotfiles with Chezmoi](https://fedoramagazine.org/take-back-your-dotfiles-with-chezmoi/)
 
