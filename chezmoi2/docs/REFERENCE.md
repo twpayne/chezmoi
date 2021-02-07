@@ -342,6 +342,7 @@ special, and are collectively referred to as "attributes":
 | `exact_`     | Remove anything not managed by chezmoi.                                        |
 | `executable_`| Add executable permissions to the target file.                                 |
 | `exists_`    | Ensure that the file exists, and initalize its contents if it does not.        |
+| `modify_`    | Treat the contents as a script that modifies an existing file.                 |
 | `once_`      | Run script once.                                                               |
 | `private_`   | Remove all group and world permissions from the target file or directory.      |
 | `run_`       | Treat the contents as a script to run.                                         |
@@ -352,18 +353,18 @@ special, and are collectively referred to as "attributes":
 | `.tmpl` | Treat the contents of the source file as a template. |
 
 The order of prefixes is important, the order is `run_`, `before_`, `after_`,
-`exact_`, `exists_`, `private_`, `empty_`, `executable_`, `symlink_`, `once_`,
-`dot_`.
+`exact_`, `exists_`, `modify_`, `private_`, `empty_`, `executable_`, `symlink_`,
+`once_`, `dot_`.
 
 Different target types allow different prefixes and suffixes:
 
-| Target type   | Allowed prefixes                                           | Allowed suffixes |
-| ------------- | ---------------------------------------------------------- | ---------------- |
-| Directory     | `exact_`, `private_`, `dot_`                               | *none*           |
-| Present file  | `exists_`, `encrypted_`, `private_`, `executable_`, `dot_` | `.tmpl`          |
-| Regular file  | `encrypted_`, `private_`, `empty_`, `executable_`, `dot_`  | `.tmpl`          |
-| Script        | `run_`, `once_`, `before_` or `after_`                     | `.tmpl`          |
-| Symbolic link | `symlink_`, `dot_`,                                        | `.tmpl`          |
+| Target type   | Allowed prefixes                                                      | Allowed suffixes |
+| ------------- | --------------------------------------------------------------------- | ---------------- |
+| Directory     | `exact_`, `private_`, `dot_`                                          | *none*           |
+| Regular file  | `exists_`, `modify_`, `encrypted_`, `private_`, `executable_`, `dot_` | `.tmpl`          |
+| Script        | `run_`, `once_`, `before_` or `after_`                                | `.tmpl`          |
+| Symbolic link | `symlink_`, `dot_`,                                                   | `.tmpl`          |
+
 
 ## Special files and directories
 

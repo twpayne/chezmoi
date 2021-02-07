@@ -30,6 +30,7 @@ const (
 	exactPrefix      = "exact_"
 	executablePrefix = "executable_"
 	existsPrefix     = "exists_"
+	modifyPrefix     = "modify_"
 	oncePrefix       = "once_"
 	privatePrefix    = "private_"
 	runPrefix        = "run_"

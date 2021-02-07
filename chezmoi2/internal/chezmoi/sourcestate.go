@@ -5,7 +5,10 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"os"
+	"os/exec"
+	"runtime"
 	"sort"
 	"strings"
 	"text/template"
@@ -304,8 +307,10 @@ type ApplyOptions struct {
 	Umask         os.FileMode
 }
 
-// Apply updates targetRelPath in targetDir in targetSystem to match s.
+// Apply updates targetRelPath in targetDir in destSystem to match s.
 func (s *SourceState) Apply(targetSystem System, persistentState PersistentState, targetDir AbsPath, targetRelPath RelPath, options ApplyOptions) error {
+	// FIXME review dest vs. target paths
+
 	sourceStateEntry := s.entries[targetRelPath]
 
 	if options.SkipEncrypted {
@@ -314,7 +319,8 @@ func (s *SourceState) Apply(targetSystem System, persistentState PersistentState
 		}
 	}
 
-	targetStateEntry, err := sourceStateEntry.TargetStateEntry()
+	destAbsPath := s.destDirAbsPath.Join(targetRelPath)
+	targetStateEntry, err := sourceStateEntry.TargetStateEntry(targetSystem, destAbsPath)
 	if err != nil {
 		return err
 	}
@@ -796,7 +802,7 @@ func (s *SourceState) newSourceStateDir(sourceRelPath SourceRelPath, dirAttr Dir
 
 // newSourceStateFile returns a new SourceStateFile.
 func (s *SourceState) newSourceStateFile(sourceRelPath SourceRelPath, fileAttr FileAttr, targetRelPath RelPath) *SourceStateFile {
-	lazyContents := &lazyContents{
+	sourceLazyContents := &lazyContents{
 		contentsFunc: func() ([]byte, error) {
 			contents, err := s.system.ReadFile(s.sourceDirAbsPath.Join(sourceRelPath.RelPath()))
 			if err != nil {
@@ -812,11 +818,11 @@ func (s *SourceState) newSourceStateFile(sourceRelPath SourceRelPath, fileAttr F
 		},
 	}
 
-	var targetStateEntryFunc func() (TargetStateEntry, error)
+	var targetStateEntryFunc func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error)
 	switch fileAttr.Type {
 	case SourceFileTypeFile:
-		targetStateEntryFunc = func() (TargetStateEntry, error) {
-			contents, err := lazyContents.Contents()
+		targetStateEntryFunc = func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
+			contents, err := sourceLazyContents.Contents()
 			if err != nil {
 				return nil, err
 			}
@@ -834,9 +840,71 @@ func (s *SourceState) newSourceStateFile(sourceRelPath SourceRelPath, fileAttr F
 				perm:         fileAttr.perm(),
 			}, nil
 		}
+	case SourceFileTypeModify:
+		targetStateEntryFunc = func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
+			contentsFunc := func() (contents []byte, err error) {
+				// Read the current contents of the target.
+				var currentContents []byte
+				currentContents, err = destSystem.ReadFile(destAbsPath)
+				if err != nil && !os.IsNotExist(err) {
+					return
+				}
+
+				// Compute the contents of the modifier.
+				var modifierContents []byte
+				modifierContents, err = sourceLazyContents.Contents()
+				if err != nil {
+					return
+				}
+				if fileAttr.Template {
+					modifierContents, err = s.ExecuteTemplateData(sourceRelPath.String(), modifierContents)
+					if err != nil {
+						return
+					}
+				}
+
+				// If the modifier is empty then return the current contents unchanged.
+				if isEmpty(modifierContents) {
+					contents = currentContents
+					return
+				}
+
+				// Write the modifier to a temporary file.
+				var tempFile *os.File
+				tempFile, err = ioutil.TempFile("", "*."+fileAttr.TargetName)
+				if err != nil {
+					return
+				}
+				defer func() {
+					err = multierr.Append(err, os.RemoveAll(tempFile.Name()))
+				}()
+				if runtime.GOOS != "windows" {
+					if err = tempFile.Chmod(0o700); err != nil {
+						return
+					}
+				}
+				_, err = tempFile.Write(modifierContents)
+				err = multierr.Append(err, tempFile.Close())
+				if err != nil {
+					return
+				}
+
+				// Run the modifier on the current contents.
+				//nolint:gosec
+				cmd := exec.Command(tempFile.Name())
+				cmd.Stdin = bytes.NewReader(currentContents)
+				return destSystem.IdempotentCmdOutput(cmd)
+			}
+			return &TargetStateFile{
+				lazyContents: &lazyContents{
+					contentsFunc: contentsFunc,
+				},
+				perm: fileAttr.perm(),
+			}, nil
+		}
 	case SourceFileTypePresent:
-		targetStateEntryFunc = func() (TargetStateEntry, error) {
-			contents, err := lazyContents.Contents()
+		targetStateEntryFunc = func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
+			contents, err := sourceLazyContents.Contents()
 			if err != nil {
 				return nil, err
 			}
@@ -852,8 +920,8 @@ func (s *SourceState) newSourceStateFile(sourceRelPath SourceRelPath, fileAttr F
 			}, nil
 		}
 	case SourceFileTypeScript:
-		targetStateEntryFunc = func() (TargetStateEntry, error) {
-			contents, err := lazyContents.Contents()
+		targetStateEntryFunc = func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
+			contents, err := sourceLazyContents.Contents()
 			if err != nil {
 				return nil, err
 			}
@@ -870,8 +938,8 @@ func (s *SourceState) newSourceStateFile(sourceRelPath SourceRelPath, fileAttr F
 			}, nil
 		}
 	case SourceFileTypeSymlink:
-		targetStateEntryFunc = func() (TargetStateEntry, error) {
-			linknameBytes, err := lazyContents.Contents()
+		targetStateEntryFunc = func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
+			linknameBytes, err := sourceLazyContents.Contents()
 			if err != nil {
 				return nil, err
 			}
@@ -890,7 +958,7 @@ func (s *SourceState) newSourceStateFile(sourceRelPath SourceRelPath, fileAttr F
 	}
 
 	return &SourceStateFile{
-		lazyContents:         lazyContents,
+		lazyContents:         sourceLazyContents,
 		sourceRelPath:        sourceRelPath,
 		Attr:                 fileAttr,
 		targetStateEntryFunc: targetStateEntryFunc,

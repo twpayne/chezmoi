@@ -241,6 +241,14 @@ func (am *attrModifier) modifyFileAttr(fileAttr chezmoi.FileAttr) chezmoi.FileAt
 			Private:    am.private.modify(fileAttr.Private),
 			Template:   am.template.modify(fileAttr.Template),
 		}
+	case chezmoi.SourceFileTypeModify:
+		return chezmoi.FileAttr{
+			TargetName: fileAttr.TargetName,
+			Type:       chezmoi.SourceFileTypeModify,
+			Executable: am.executable.modify(fileAttr.Executable),
+			Private:    am.private.modify(fileAttr.Private),
+			Template:   am.template.modify(fileAttr.Template),
+		}
 	case chezmoi.SourceFileTypePresent:
 		return chezmoi.FileAttr{
 			TargetName: fileAttr.TargetName,

@@ -349,6 +349,7 @@ func init() {
 		"| `exact_`     | Remove anything not managed by chezmoi.                                        |\n" +
 		"| `executable_`| Add executable permissions to the target file.                                 |\n" +
 		"| `exists_`    | Ensure that the file exists, and initalize its contents if it does not.        |\n" +
+		"| `modify_`    | Treat the contents as a script that modifies an existing file.                 |\n" +
 		"| `once_`      | Run script once.                                                               |\n" +
 		"| `private_`   | Remove all group and world permissions from the target file or directory.      |\n" +
 		"| `run_`       | Treat the contents as a script to run.                                         |\n" +
@@ -359,18 +360,18 @@ func init() {
 		"| `.tmpl` | Treat the contents of the source file as a template. |\n" +
 		"\n" +
 		"The order of prefixes is important, the order is `run_`, `before_`, `after_`,\n" +
-		"`exact_`, `exists_`, `private_`, `empty_`, `executable_`, `symlink_`, `once_`,\n" +
-		"`dot_`.\n" +
+		"`exact_`, `exists_`, `modify_`, `private_`, `empty_`, `executable_`, `symlink_`,\n" +
+		"`once_`, `dot_`.\n" +
 		"\n" +
 		"Different target types allow different prefixes and suffixes:\n" +
 		"\n" +
-		"| Target type   | Allowed prefixes                                           | Allowed suffixes |\n" +
-		"| ------------- | ---------------------------------------------------------- | ---------------- |\n" +
-		"| Directory     | `exact_`, `private_`, `dot_`                               | *none*           |\n" +
-		"| Present file  | `exists_`, `encrypted_`, `private_`, `executable_`, `dot_` | `.tmpl`          |\n" +
-		"| Regular file  | `encrypted_`, `private_`, `empty_`, `executable_`, `dot_`  | `.tmpl`          |\n" +
-		"| Script        | `run_`, `once_`, `before_` or `after_`                     | `.tmpl`          |\n" +
-		"| Symbolic link | `symlink_`, `dot_`,                                        | `.tmpl`          |\n" +
+		"| Target type   | Allowed prefixes                                                      | Allowed suffixes |\n" +
+		"| ------------- | --------------------------------------------------------------------- | ---------------- |\n" +
+		"| Directory     | `exact_`, `private_`, `dot_`                                          | *none*           |\n" +
+		"| Regular file  | `exists_`, `modify_`, `encrypted_`, `private_`, `executable_`, `dot_` | `.tmpl`          |\n" +
+		"| Script        | `run_`, `once_`, `before_` or `after_`                                | `.tmpl`          |\n" +
+		"| Symbolic link | `symlink_`, `dot_`,                                                   | `.tmpl`          |\n" +
+		"\n" +
 		"\n" +
 		"## Special files and directories\n" +
 		"\n" +

@@ -13,6 +13,7 @@ type SourceFileTargetType int
 // Source file types.
 const (
 	SourceFileTypeFile SourceFileTargetType = iota
+	SourceFileTypeModify
 	SourceFileTypePresent
 	SourceFileTypeScript
 	SourceFileTypeSymlink
@@ -136,6 +137,17 @@ func parseFileAttr(sourceName string) FileAttr {
 	case strings.HasPrefix(name, symlinkPrefix):
 		sourceFileType = SourceFileTypeSymlink
 		name = mustTrimPrefix(name, symlinkPrefix)
+	case strings.HasPrefix(name, modifyPrefix):
+		sourceFileType = SourceFileTypeModify
+		name = mustTrimPrefix(name, modifyPrefix)
+		if strings.HasPrefix(name, privatePrefix) {
+			name = mustTrimPrefix(name, privatePrefix)
+			private = true
+		}
+		if strings.HasPrefix(name, executablePrefix) {
+			name = mustTrimPrefix(name, executablePrefix)
+			executable = true
+		}
 	default:
 		if strings.HasPrefix(name, encryptedPrefix) {
 			name = mustTrimPrefix(name, encryptedPrefix)
@@ -187,6 +199,14 @@ func (fa FileAttr) SourceName() string {
 		}
 		if fa.Empty {
 			sourceName += emptyPrefix
+		}
+		if fa.Executable {
+			sourceName += executablePrefix
+		}
+	case SourceFileTypeModify:
+		sourceName = modifyPrefix
+		if fa.Private {
+			sourceName += privatePrefix
 		}
 		if fa.Executable {
 			sourceName += executablePrefix
