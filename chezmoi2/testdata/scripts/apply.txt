@@ -3,13 +3,13 @@ mksourcedir
 
 # test that chezmoi apply --dry-run does not create any files
 chezmoi apply --dry-run --force
+! exists $HOME/.create
 ! exists $HOME/.dir
 ! exists $HOME/.dir/file
 ! exists $HOME/.dir/subdir
 ! exists $HOME/.dir/subdir/file
 ! exists $HOME/.empty
 ! exists $HOME/.executable
-! exists $HOME.create
 ! exists $HOME/.file
 ! exists $HOME/.private
 ! exists $HOME/.remove
