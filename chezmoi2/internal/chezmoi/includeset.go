@@ -89,12 +89,12 @@ func (s *IncludeSet) IncludeTargetStateEntry(targetStateEntry TargetStateEntry) 
 		return s.bits&IncludeFiles != 0
 	case *TargetStateRemove:
 		return s.bits&IncludeRemove != 0
-	case *TargetStateRenameDir:
-		return s.bits&IncludeDirs != 0
 	case *TargetStateScript:
 		return s.bits&IncludeScripts != 0
 	case *TargetStateSymlink:
 		return s.bits&IncludeSymlinks != 0
+	case *targetStateRenameDir:
+		return s.bits&IncludeDirs != 0
 	default:
 		return false
 	}

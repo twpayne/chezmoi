@@ -140,7 +140,7 @@ func targetStateTest(t *testing.T, ts TargetStateEntry) []vfst.PathTest {
 			vfst.TestContents(expectedContents),
 			vfst.TestModePerm(ts.perm &^ chezmoitest.Umask),
 		}
-	case *TargetStateRenameDir:
+	case *targetStateRenameDir:
 		// FIXME test for presence of newName
 		return []vfst.PathTest{
 			vfst.TestDoesNotExist,

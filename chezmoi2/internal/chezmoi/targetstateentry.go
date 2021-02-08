@@ -30,13 +30,6 @@ type TargetStateFile struct {
 // A TargetStateRemove represents the absence of an entry in the target state.
 type TargetStateRemove struct{}
 
-// A TargetStateRenameDir represents the renaming of a directory in the target
-// state.
-type TargetStateRenameDir struct {
-	oldRelPath RelPath
-	newRelPath RelPath
-}
-
 // A TargetStateScript represents the state of a script.
 type TargetStateScript struct {
 	*lazyContents
@@ -47,6 +40,13 @@ type TargetStateScript struct {
 // A TargetStateSymlink represents the state of a symlink in the target state.
 type TargetStateSymlink struct {
 	*lazyLinkname
+}
+
+// A targetStateRenameDir represents the renaming of a directory in the target
+// state.
+type targetStateRenameDir struct {
+	oldRelPath RelPath
+	newRelPath RelPath
 }
 
 // A scriptState records the state of a script that has been run.
@@ -171,27 +171,6 @@ func (t *TargetStateRemove) SkipApply(persistentState PersistentState) (bool, er
 	return false, nil
 }
 
-// Apply renames actualStateEntry.
-func (t *TargetStateRenameDir) Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry, umask os.FileMode) error {
-	dir := actualStateEntry.Path().Dir()
-	return system.Rename(dir.Join(t.oldRelPath), dir.Join(t.newRelPath))
-}
-
-// EntryState returns t's entry state.
-func (t *TargetStateRenameDir) EntryState(umask os.FileMode) (*EntryState, error) {
-	return nil, nil
-}
-
-// Evaluate does nothing.
-func (t *TargetStateRenameDir) Evaluate() error {
-	return nil
-}
-
-// SkipApply implements TargetState.SkipApply.
-func (t *TargetStateRenameDir) SkipApply(persistentState PersistentState) (bool, error) {
-	return false, nil
-}
-
 // Apply runs t.
 func (t *TargetStateScript) Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry, umask os.FileMode) error {
 	contentsSHA256, err := t.ContentsSHA256()
@@ -311,5 +290,26 @@ func (t *TargetStateSymlink) Evaluate() error {
 
 // SkipApply implements TargetState.SkipApply.
 func (t *TargetStateSymlink) SkipApply(persistentState PersistentState) (bool, error) {
+	return false, nil
+}
+
+// Apply renames actualStateEntry.
+func (t *targetStateRenameDir) Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry, umask os.FileMode) error {
+	dir := actualStateEntry.Path().Dir()
+	return system.Rename(dir.Join(t.oldRelPath), dir.Join(t.newRelPath))
+}
+
+// EntryState returns t's entry state.
+func (t *targetStateRenameDir) EntryState(umask os.FileMode) (*EntryState, error) {
+	return nil, nil
+}
+
+// Evaluate does nothing.
+func (t *targetStateRenameDir) Evaluate() error {
+	return nil
+}
+
+// SkipApply implements TargetState.SkipApply.
+func (t *targetStateRenameDir) SkipApply(persistentState PersistentState) (bool, error) {
 	return false, nil
 }

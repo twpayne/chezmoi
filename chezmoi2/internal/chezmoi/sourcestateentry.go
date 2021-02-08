@@ -119,7 +119,7 @@ func (s *SourceStateRenameDir) SourceRelPath() SourceRelPath {
 
 // TargetStateEntry returns s's target state entry.
 func (s *SourceStateRenameDir) TargetStateEntry(destSystem System, destDirAbsPath AbsPath) (TargetStateEntry, error) {
-	return &TargetStateRenameDir{
+	return &targetStateRenameDir{
 		oldRelPath: s.oldSourceRelPath.RelPath(),
 		newRelPath: s.newSourceRelPath.RelPath(),
 	}, nil
