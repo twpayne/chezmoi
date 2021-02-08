@@ -22,13 +22,13 @@ chezmoi chattr x $HOME${/}.executable
 ! exists $CHEZMOISOURCEDIR/dot_executable
 exists $CHEZMOISOURCEDIR/executable_dot_executable
 
-chezmoi chattr +private $HOME${/}.exists
-! exists $CHEZMOISOURCEDIR/exists_dot_exists
-exists $CHEZMOISOURCEDIR/exists_private_dot_exists
+chezmoi chattr +private $HOME${/}.create
+! exists $CHEZMOISOURCEDIR/create_dot_create
+exists $CHEZMOISOURCEDIR/create_private_dot_create
 
-chezmoi chattr noprivate $HOME${/}.exists
-! exists $CHEZMOISOURCEDIR/exists_private_dot_exists
-exists $CHEZMOISOURCEDIR/exists_dot_exists
+chezmoi chattr noprivate $HOME${/}.create
+! exists $CHEZMOISOURCEDIR/create_private_dot_create
+exists $CHEZMOISOURCEDIR/create_dot_create
 
 exists $CHEZMOISOURCEDIR/dot_dir
 chezmoi chattr exact $HOME/.dir

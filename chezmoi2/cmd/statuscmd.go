@@ -80,8 +80,6 @@ func statusRune(fromState, toState *chezmoi.EntryState) rune {
 		default:
 			return 'M'
 		}
-	case chezmoi.EntryStateTypePresent:
-		return 'A'
 	case chezmoi.EntryStateTypeScript:
 		return 'R'
 	default:

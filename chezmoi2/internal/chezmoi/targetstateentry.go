@@ -30,12 +30,6 @@ type TargetStateFile struct {
 	perm os.FileMode
 }
 
-// A TargetStatePresent represents the presence of an entry in the target state.
-type TargetStatePresent struct {
-	*lazyContents
-	perm os.FileMode
-}
-
 // A TargetStateRenameDir represents the renaming of a directory in the target
 // state.
 type TargetStateRenameDir struct {
@@ -174,42 +168,6 @@ func (t *TargetStateFile) Evaluate() error {
 
 // SkipApply implements TargetState.SkipApply.
 func (t *TargetStateFile) SkipApply(persistentState PersistentState) (bool, error) {
-	return false, nil
-}
-
-// Apply updates actualStateEntry to match t.
-func (t *TargetStatePresent) Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry, umask os.FileMode) error {
-	if actualStateFile, ok := actualStateEntry.(*ActualStateFile); ok {
-		if runtime.GOOS == "windows" || actualStateFile.perm == t.perm&^umask {
-			return nil
-		}
-		return system.Chmod(actualStateFile.Path(), t.perm&^umask)
-	} else if err := actualStateEntry.Remove(system); err != nil {
-		return err
-	}
-	contents, err := t.Contents()
-	if err != nil {
-		return err
-	}
-	return system.WriteFile(actualStateEntry.Path(), contents, t.perm&^umask)
-}
-
-// EntryState returns t's entry state.
-func (t *TargetStatePresent) EntryState(umask os.FileMode) (*EntryState, error) {
-	return &EntryState{
-		Type: EntryStateTypePresent,
-		Mode: t.perm &^ umask,
-	}, nil
-}
-
-// Evaluate evaluates t.
-func (t *TargetStatePresent) Evaluate() error {
-	_, err := t.ContentsSHA256()
-	return err
-}
-
-// SkipApply implements TargetState.SkipApply.
-func (t *TargetStatePresent) SkipApply(persistentState PersistentState) (bool, error) {
 	return false, nil
 }
 

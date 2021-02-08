@@ -4,6 +4,12 @@ chezmoi dump --format=yaml
 cmp stdout golden/dump.yaml
 
 -- golden/dump.yaml --
+.create:
+    type: file
+    name: .create
+    contents: |
+        # contents of .create
+    perm: 438
 .dir:
     type: dir
     name: .dir
@@ -35,12 +41,6 @@ cmp stdout golden/dump.yaml
     contents: |
         # contents of .executable
     perm: 511
-.exists:
-    type: file
-    name: .exists
-    contents: |
-        # contents of .exists
-    perm: 438
 .file:
     type: file
     name: .file

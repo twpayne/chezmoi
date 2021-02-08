@@ -43,12 +43,6 @@ func (c *Config) runCatCmd(cmd *cobra.Command, args []string, sourceState *chezm
 				return fmt.Errorf("%s: %w", targetRelPath, err)
 			}
 			sb.Write(contents)
-		case *chezmoi.TargetStatePresent:
-			contents, err := targetStateEntry.Contents()
-			if err != nil {
-				return fmt.Errorf("%s: %w", targetRelPath, err)
-			}
-			sb.Write(contents)
 		case *chezmoi.TargetStateSymlink:
 			linkname, err := targetStateEntry.Linkname()
 			if err != nil {

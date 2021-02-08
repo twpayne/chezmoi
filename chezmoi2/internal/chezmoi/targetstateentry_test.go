@@ -35,9 +35,6 @@ func TestTargetStateEntryApplyAndEqual(t *testing.T) {
 				contents: []byte("#!/bin/sh\n"),
 			},
 		},
-		"present": &TargetStatePresent{
-			perm: 0o666 &^ chezmoitest.Umask,
-		},
 		"symlink": &TargetStateSymlink{
 			lazyLinkname: &lazyLinkname{
 				linkname: "target",
@@ -141,11 +138,6 @@ func targetStateTest(t *testing.T, ts TargetStateEntry) []vfst.PathTest {
 		return []vfst.PathTest{
 			vfst.TestModeIsRegular,
 			vfst.TestContents(expectedContents),
-			vfst.TestModePerm(ts.perm &^ chezmoitest.Umask),
-		}
-	case *TargetStatePresent:
-		return []vfst.PathTest{
-			vfst.TestModeIsRegular,
 			vfst.TestModePerm(ts.perm &^ chezmoitest.Umask),
 		}
 	case *TargetStateRenameDir:

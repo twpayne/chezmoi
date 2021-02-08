@@ -1,6 +1,10 @@
 mkhomedir
 mksourcedir golden
 
+# test chezmoi add --create
+chezmoi add --create $HOME${/}.create
+cmp $CHEZMOISOURCEDIR/create_dot_create golden/create_dot_create
+
 # test adding a file in a directory
 chezmoi add $HOME${/}.dir/file
 cmp $CHEZMOISOURCEDIR/dot_dir/file golden/dot_dir/file
@@ -21,10 +25,6 @@ cmp $CHEZMOISOURCEDIR/empty_dot_empty golden/empty_dot_empty
 chezmoi add $HOME${/}.executable
 [!windows] cmp $CHEZMOISOURCEDIR/executable_dot_executable golden/executable_dot_executable
 [windows] cmp $CHEZMOISOURCEDIR/dot_executable golden/executable_dot_executable
-
-# test adding that a file should exist
-chezmoi add --exists $HOME${/}.exists
-cmp $CHEZMOISOURCEDIR/exists_dot_exists golden/exists_dot_exists
 
 # test adding a private file
 chezmoi add $HOME${/}.private

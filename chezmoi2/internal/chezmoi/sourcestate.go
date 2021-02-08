@@ -116,10 +116,10 @@ func NewSourceState(options ...SourceStateOption) *SourceState {
 // AddOptions are options to SourceState.Add.
 type AddOptions struct {
 	AutoTemplate bool
+	Create       bool
 	Empty        bool
 	Encrypt      bool
 	Exact        bool
-	Exists       bool
 	Include      *IncludeSet
 	RemoveDir    RelPath
 	Template     bool
@@ -820,6 +820,24 @@ func (s *SourceState) newSourceStateFile(sourceRelPath SourceRelPath, fileAttr F
 
 	var targetStateEntryFunc func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error)
 	switch fileAttr.Type {
+	case SourceFileTypeCreate:
+		targetStateEntryFunc = func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
+			contents, err := destSystem.ReadFile(destAbsPath)
+			switch {
+			case err == nil:
+			case os.IsNotExist(err):
+				contents, err = sourceLazyContents.Contents()
+				if err != nil {
+					return nil, err
+				}
+			default:
+				return nil, err
+			}
+			return &TargetStateFile{
+				lazyContents: newLazyContents(contents),
+				perm:         fileAttr.perm(),
+			}, nil
+		}
 	case SourceFileTypeFile:
 		targetStateEntryFunc = func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 			contents, err := sourceLazyContents.Contents()
@@ -902,23 +920,6 @@ func (s *SourceState) newSourceStateFile(sourceRelPath SourceRelPath, fileAttr F
 				perm: fileAttr.perm(),
 			}, nil
 		}
-	case SourceFileTypePresent:
-		targetStateEntryFunc = func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
-			contents, err := sourceLazyContents.Contents()
-			if err != nil {
-				return nil, err
-			}
-			if fileAttr.Template {
-				contents, err = s.ExecuteTemplateData(sourceRelPath.String(), contents)
-				if err != nil {
-					return nil, err
-				}
-			}
-			return &TargetStatePresent{
-				lazyContents: newLazyContents(contents),
-				perm:         fileAttr.perm(),
-			}, nil
-		}
 	case SourceFileTypeScript:
 		targetStateEntryFunc = func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 			contents, err := sourceLazyContents.Contents()
@@ -992,8 +993,8 @@ func (s *SourceState) sourceStateEntry(actualStateEntry ActualStateEntry, destAb
 			Private:    isPrivate(info),
 			Template:   options.Template || options.AutoTemplate,
 		}
-		if options.Exists {
-			fileAttr.Type = SourceFileTypePresent
+		if options.Create {
+			fileAttr.Type = SourceFileTypeCreate
 		} else {
 			fileAttr.Type = SourceFileTypeFile
 		}

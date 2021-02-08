@@ -19,26 +19,26 @@ chezmoi managed --include=symlinks
 cmpenv stdout golden/managed-symlinks
 
 -- golden/managed --
+.create
 .dir
 .dir/file
 .dir/subdir
 .dir/subdir/file
 .empty
 .executable
-.exists
 .file
 .private
 .symlink
 .template
 -- golden/managed-all --
 .absent
+.create
 .dir
 .dir/file
 .dir/subdir
 .dir/subdir/file
 .empty
 .executable
-.exists
 .file
 .private
 .symlink
@@ -49,11 +49,11 @@ cmpenv stdout golden/managed-symlinks
 .dir
 .dir/subdir
 -- golden/managed-files --
+.create
 .dir/file
 .dir/subdir/file
 .empty
 .executable
-.exists
 .file
 .private
 .template

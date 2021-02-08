@@ -10,7 +10,7 @@ chezmoi apply --dry-run --force
 ! exists $HOME/.dir/subdir/file
 ! exists $HOME/.empty
 ! exists $HOME/.executable
-! exists $HOME/.exists
+! exists $HOME.create
 ! exists $HOME/.file
 ! exists $HOME/.private
 ! exists $HOME/.template
@@ -18,13 +18,13 @@ chezmoi apply --dry-run --force
 # test that chezmoi apply file creates a single file only
 chezmoi apply --force $HOME${/}.file
 ! exists $HOME/.absent
+! exists $HOME/.create
 ! exists $HOME/.dir
 ! exists $HOME/.dir/file
 ! exists $HOME/.dir/subdir
 ! exists $HOME/.dir/subdir/file
 ! exists $HOME/.empty
 ! exists $HOME/.executable
-! exists $HOME/.exists
 exists $HOME/.file
 ! exists $HOME/.private
 ! exists $HOME/.template
@@ -46,13 +46,13 @@ exists $HOME/.dir/subdir/file
 # test that chezmoi apply creates all files
 chezmoi apply --force
 ! exists $HOME/.absent
+exists $HOME/.create
 exists $HOME/.dir
 exists $HOME/.dir/file
 exists $HOME/.dir/subdir
 exists $HOME/.dir/subdir/file
 exists $HOME/.empty
 exists $HOME/.executable
-exists $HOME/.exists
 exists $HOME/.file
 exists $HOME/.private
 exists $HOME/.template

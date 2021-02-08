@@ -8,10 +8,10 @@ import (
 
 type addCmdConfig struct {
 	autoTemplate bool
+	create       bool
 	empty        bool
 	encrypt      bool
 	exact        bool
-	exists       bool
 	follow       bool
 	include      *chezmoi.IncludeSet
 	recursive    bool
@@ -36,10 +36,10 @@ func (c *Config) newAddCmd() *cobra.Command {
 
 	flags := addCmd.Flags()
 	flags.BoolVarP(&c.add.autoTemplate, "autotemplate", "a", c.add.autoTemplate, "auto generate the template when adding files as templates")
+	flags.BoolVar(&c.add.create, "create", c.add.create, "add files that should exist, irrespective of their contents")
 	flags.BoolVarP(&c.add.empty, "empty", "e", c.add.empty, "add empty files")
 	flags.BoolVar(&c.add.encrypt, "encrypt", c.add.encrypt, "encrypt files")
 	flags.BoolVarP(&c.add.exact, "exact", "x", c.add.exact, "add directories exactly")
-	flags.BoolVar(&c.add.exists, "exists", c.add.exists, "add files that should exist, irrespective of their contents")
 	flags.BoolVarP(&c.add.follow, "follow", "f", c.add.follow, "add symlink targets instead of symlinks")
 	flags.BoolVarP(&c.add.recursive, "recursive", "r", c.add.recursive, "recursive")
 	flags.BoolVarP(&c.add.template, "template", "T", c.add.template, "add files as templates")
@@ -55,10 +55,10 @@ func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezm
 
 	return sourceState.Add(c.sourceSystem, c.persistentState, c.destSystem, destAbsPathInfos, &chezmoi.AddOptions{
 		AutoTemplate: c.add.autoTemplate,
+		Create:       c.add.create,
 		Empty:        c.add.empty,
 		Encrypt:      c.add.encrypt,
 		Exact:        c.add.exact,
-		Exists:       c.add.exists,
 		Include:      c.add.include,
 		Template:     c.add.template,
 	})

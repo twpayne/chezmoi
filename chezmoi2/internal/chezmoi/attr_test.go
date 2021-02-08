@@ -44,6 +44,25 @@ func TestFileAttr(t *testing.T) {
 	require.NoError(t, combinator.Generate(&fas, struct {
 		Type       SourceFileTargetType
 		TargetName []string
+		Encrypted  []bool
+		Executable []bool
+		Private    []bool
+		Template   []bool
+	}{
+		Type: SourceFileTypeCreate,
+		TargetName: []string{
+			".name",
+			"exact_name",
+			"name",
+		},
+		Encrypted:  []bool{false, true},
+		Executable: []bool{false, true},
+		Private:    []bool{false, true},
+		Template:   []bool{false, true},
+	}))
+	require.NoError(t, combinator.Generate(&fas, struct {
+		Type       SourceFileTargetType
+		TargetName []string
 		Empty      []bool
 		Encrypted  []bool
 		Executable []bool
@@ -75,25 +94,6 @@ func TestFileAttr(t *testing.T) {
 			"exact_name",
 			"name",
 		},
-		Executable: []bool{false, true},
-		Private:    []bool{false, true},
-		Template:   []bool{false, true},
-	}))
-	require.NoError(t, combinator.Generate(&fas, struct {
-		Type       SourceFileTargetType
-		TargetName []string
-		Encrypted  []bool
-		Executable []bool
-		Private    []bool
-		Template   []bool
-	}{
-		Type: SourceFileTypePresent,
-		TargetName: []string{
-			".name",
-			"exact_name",
-			"name",
-		},
-		Encrypted:  []bool{false, true},
 		Executable: []bool{false, true},
 		Private:    []bool{false, true},
 		Template:   []bool{false, true},

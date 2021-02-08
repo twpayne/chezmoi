@@ -46,11 +46,6 @@ func TestEntryStateEquivalent(t *testing.T) {
 		},
 		"nil1": nil,
 		"nil2": nil,
-		"present": {
-			Type:           EntryStateTypePresent,
-			Mode:           0o666,
-			ContentsSHA256: []byte{3},
-		},
 		"script": {
 			Type:           EntryStateTypeScript,
 			ContentsSHA256: []byte{4},
@@ -75,15 +70,10 @@ func TestEntryStateEquivalent(t *testing.T) {
 		"dir1_dir_private":      runtime.GOOS == "windows",
 		"dir1_dir1_copy":        true,
 		"file1_copy_file1":      true,
-		"file1_copy_present":    true,
+		"file1_create":          true,
 		"file1_file1_copy":      true,
-		"file1_present":         true,
-		"file2_present":         true,
 		"nil1_absent":           true,
 		"nil2_absent":           true,
-		"present_file1_copy":    true,
-		"present_file1":         true,
-		"present_file2":         true,
 		"symlink_copy_symlink":  true,
 		"symlink_symlink_copy":  true,
 	}

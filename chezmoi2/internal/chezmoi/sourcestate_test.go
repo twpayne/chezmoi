@@ -241,19 +241,19 @@ func TestSourceStateAdd(t *testing.T) {
 			},
 		},
 		{
-			name: "exists",
+			name: "create",
 			destAbsPaths: AbsPaths{
-				"/home/user/.exists",
+				"/home/user/.create",
 			},
 			addOptions: AddOptions{
-				Exists:  true,
+				Create:  true,
 				Include: NewIncludeSet(IncludeAll),
 			},
 			tests: []interface{}{
-				vfst.TestPath("/home/user/.local/share/chezmoi/exists_dot_exists",
+				vfst.TestPath("/home/user/.local/share/chezmoi/create_dot_create",
 					vfst.TestModeIsRegular,
 					vfst.TestModePerm(0o666&^chezmoitest.Umask),
-					vfst.TestContentsString("# contents of .exists\n"),
+					vfst.TestContentsString("# contents of .create\n"),
 				),
 			},
 		},
@@ -443,6 +443,7 @@ func TestSourceStateAdd(t *testing.T) {
 
 			chezmoitest.WithTestFS(t, map[string]interface{}{
 				"/home/user": map[string]interface{}{
+					".create": "# contents of .create\n",
 					".dir": map[string]interface{}{
 						"file": "# contents of .dir/file\n",
 						"subdir": map[string]interface{}{
@@ -454,8 +455,7 @@ func TestSourceStateAdd(t *testing.T) {
 						Perm:     0o777,
 						Contents: []byte("# contents of .executable\n"),
 					},
-					".exists": "# contents of .exists\n",
-					".file":   "# contents of .file\n",
+					".file": "# contents of .file\n",
 					".local": map[string]interface{}{
 						"share": map[string]interface{}{
 							"chezmoi": &vfst.Dir{Perm: 0o777},
@@ -627,37 +627,37 @@ func TestSourceStateApplyAll(t *testing.T) {
 			},
 		},
 		{
-			name: "exists_create",
+			name: "create",
 			root: map[string]interface{}{
 				"/home/user": map[string]interface{}{
 					".local/share/chezmoi": map[string]interface{}{
-						"exists_dot_exists": "# contents of .exists\n",
+						"create_dot_create": "# contents of .create\n",
 					},
 				},
 			},
 			tests: []interface{}{
-				vfst.TestPath("/home/user/.exists",
+				vfst.TestPath("/home/user/.create",
 					vfst.TestModeIsRegular,
 					vfst.TestModePerm(0o666&^chezmoitest.Umask),
-					vfst.TestContentsString("# contents of .exists\n"),
+					vfst.TestContentsString("# contents of .create\n"),
 				),
 			},
 		},
 		{
-			name: "exists_no_replace",
+			name: "create_no_replace",
 			root: map[string]interface{}{
 				"/home/user": map[string]interface{}{
 					".local/share/chezmoi": map[string]interface{}{
-						"exists_dot_exists": "# contents of .exists\n",
+						"create_dot_create": "# contents of .create\n",
 					},
-					".exists": "# existing contents of .exists\n",
+					".create": "# existing contents of .create\n",
 				},
 			},
 			tests: []interface{}{
-				vfst.TestPath("/home/user/.exists",
+				vfst.TestPath("/home/user/.create",
 					vfst.TestModeIsRegular,
 					vfst.TestModePerm(0o666&^chezmoitest.Umask),
-					vfst.TestContentsString("# existing contents of .exists\n"),
+					vfst.TestContentsString("# existing contents of .create\n"),
 				),
 			},
 		},
