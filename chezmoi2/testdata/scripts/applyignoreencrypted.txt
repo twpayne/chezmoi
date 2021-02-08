@@ -6,7 +6,7 @@ mkgpgconfig
 
 # test that chezmoi apply --ignore-encrypted does not apply encrypted files
 cp golden/.encrypted $HOME
-chezmoi add --encrypt ${HOME}${/}.encrypted
+chezmoi add --encrypt $HOME${/}.encrypted
 rm $HOME/.encrypted
 cp $CHEZMOICONFIGDIR/chezmoi.toml golden/chezmoi.toml
 rm $CHEZMOICONFIGDIR/chezmoi.toml
