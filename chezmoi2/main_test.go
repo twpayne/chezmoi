@@ -317,6 +317,7 @@ func cmdMkSourceDir(ts *testscript.TestScript, neg bool, args []string) {
 	ts.Check(err)
 	err = vfst.NewBuilder().Build(vfs.NewPathFS(vfs.OSFS, workDir), map[string]interface{}{
 		relPath: map[string]interface{}{
+			"create_dot_create": "# contents of .create\n",
 			"dot_dir": map[string]interface{}{
 				"file": "# contents of .dir/file\n",
 				"subdir": map[string]interface{}{
@@ -326,7 +327,6 @@ func cmdMkSourceDir(ts *testscript.TestScript, neg bool, args []string) {
 			"dot_remove":                "",
 			"empty_dot_empty":           "",
 			"executable_dot_executable": "# contents of .executable\n",
-			"create_dot_create":         "# contents of .create\n",
 			"dot_file":                  "# contents of .file\n",
 			"private_dot_private":       "# contents of .private\n",
 			"symlink_dot_symlink":       ".dir/subdir/file\n",
