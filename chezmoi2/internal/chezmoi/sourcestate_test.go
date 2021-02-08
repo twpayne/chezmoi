@@ -707,7 +707,7 @@ func TestSourceStateApplyAll(t *testing.T) {
 				s := NewSourceState(sourceStateOptions...)
 				require.NoError(t, s.Read())
 				requireEvaluateAll(t, s, system)
-				require.NoError(t, s.applyAll(system, persistentState, "/home/user", ApplyOptions{
+				require.NoError(t, s.applyAll(system, system, persistentState, "/home/user", ApplyOptions{
 					Umask: chezmoitest.Umask,
 				}))
 

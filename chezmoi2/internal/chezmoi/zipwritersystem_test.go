@@ -45,7 +45,7 @@ func TestZIPWriterSystem(t *testing.T) {
 		b := &bytes.Buffer{}
 		zipWriterSystem := NewZIPWriterSystem(b, time.Now().UTC())
 		persistentState := NewMockPersistentState()
-		require.NoError(t, s.applyAll(zipWriterSystem, persistentState, "", ApplyOptions{}))
+		require.NoError(t, s.applyAll(zipWriterSystem, system, persistentState, "", ApplyOptions{}))
 		require.NoError(t, zipWriterSystem.Close())
 
 		r, err := zip.NewReader(bytes.NewReader(b.Bytes()), int64(b.Len()))

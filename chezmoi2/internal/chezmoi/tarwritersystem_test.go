@@ -44,7 +44,7 @@ func TestTARWriterSystem(t *testing.T) {
 		b := &bytes.Buffer{}
 		tarWriterSystem := NewTARWriterSystem(b, tar.Header{})
 		persistentState := NewMockPersistentState()
-		require.NoError(t, s.applyAll(tarWriterSystem, persistentState, "", ApplyOptions{}))
+		require.NoError(t, s.applyAll(tarWriterSystem, system, persistentState, "", ApplyOptions{}))
 		require.NoError(t, tarWriterSystem.Close())
 
 		r := tar.NewReader(b)

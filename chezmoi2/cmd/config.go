@@ -367,7 +367,7 @@ func (c *Config) applyArgs(targetSystem chezmoi.System, targetDirAbsPath chezmoi
 
 	keptGoingAfterErr := false
 	for _, targetRelPath := range targetRelPaths {
-		switch err := sourceState.Apply(targetSystem, c.persistentState, targetDirAbsPath, targetRelPath, applyOptions); {
+		switch err := sourceState.Apply(targetSystem, c.destSystem, c.persistentState, targetDirAbsPath, targetRelPath, applyOptions); {
 		case errors.Is(err, chezmoi.Skip):
 			continue
 		case err != nil && c.keepGoing:

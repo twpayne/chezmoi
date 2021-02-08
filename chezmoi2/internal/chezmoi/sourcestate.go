@@ -246,7 +246,7 @@ func (s *SourceState) Add(sourceSystem System, persistentState PersistentState, 
 
 	for _, update := range updates {
 		for _, sourceRelPath := range update.sourceRelPaths {
-			if err := targetSourceState.Apply(sourceSystem, NullPersistentState{}, s.sourceDirAbsPath, sourceRelPath.RelPath(), ApplyOptions{
+			if err := targetSourceState.Apply(sourceSystem, sourceSystem, NullPersistentState{}, s.sourceDirAbsPath, sourceRelPath.RelPath(), ApplyOptions{
 				Include: options.Include,
 				Umask:   s.umask,
 			}); err != nil {
@@ -308,9 +308,7 @@ type ApplyOptions struct {
 }
 
 // Apply updates targetRelPath in targetDir in destSystem to match s.
-func (s *SourceState) Apply(targetSystem System, persistentState PersistentState, targetDir AbsPath, targetRelPath RelPath, options ApplyOptions) error {
-	// FIXME review dest vs. target paths
-
+func (s *SourceState) Apply(targetSystem, destSystem System, persistentState PersistentState, targetDir AbsPath, targetRelPath RelPath, options ApplyOptions) error {
 	sourceStateEntry := s.entries[targetRelPath]
 
 	if options.SkipEncrypted {
@@ -320,7 +318,7 @@ func (s *SourceState) Apply(targetSystem System, persistentState PersistentState
 	}
 
 	destAbsPath := s.destDirAbsPath.Join(targetRelPath)
-	targetStateEntry, err := sourceStateEntry.TargetStateEntry(targetSystem, destAbsPath)
+	targetStateEntry, err := sourceStateEntry.TargetStateEntry(destSystem, destAbsPath)
 	if err != nil {
 		return err
 	}
@@ -767,9 +765,9 @@ func (s *SourceState) addVersionFile(sourceAbsPath AbsPath) error {
 }
 
 // applyAll updates targetDir in fs to match s.
-func (s *SourceState) applyAll(targetSystem System, persistentState PersistentState, targetDir AbsPath, options ApplyOptions) error {
+func (s *SourceState) applyAll(targetSystem, destSystem System, persistentState PersistentState, targetDir AbsPath, options ApplyOptions) error {
 	for _, targetRelPath := range s.TargetRelPaths() {
-		switch err := s.Apply(targetSystem, persistentState, targetDir, targetRelPath, options); {
+		switch err := s.Apply(targetSystem, destSystem, persistentState, targetDir, targetRelPath, options); {
 		case errors.Is(err, Skip):
 			continue
 		case err != nil:
