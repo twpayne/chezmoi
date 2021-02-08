@@ -37,6 +37,11 @@ func init() {
 		"  * [Variables](#variables)\n" +
 		"  * [Examples](#examples)\n" +
 		"* [Source state attributes](#source-state-attributes)\n" +
+		"* [Target types](#target-types)\n" +
+		"  * [Files](#files)\n" +
+		"  * [Directories](#directories)\n" +
+		"  * [Symbolic links](#symbolic-links)\n" +
+		"  * [Scripts](#scripts)\n" +
 		"* [Special files and directories](#special-files-and-directories)\n" +
 		"  * [`.chezmoi.<format>.tmpl`](#chezmoiformattmpl)\n" +
 		"  * [`.chezmoiignore`](#chezmoiignore)\n" +
@@ -374,6 +379,64 @@ func init() {
 		"| Script        | `run_`, `once_`, `before_` or `after_`                                | `.tmpl`          |\n" +
 		"| Symbolic link | `symlink_`, `dot_`,                                                   | `.tmpl`          |\n" +
 		"\n" +
+		"## Target types\n" +
+		"\n" +
+		"chezmoi will create, update, and delete files, directories, and symbolic links\n" +
+		"in the destination directory, and run scripts. chezmoi deterministically\n" +
+		"performs actions in ASCII order of their target name. For example, given a file\n" +
+		"`dot_a`, a script `run_z`, and a directory `exact_dot_c`, chezmoi will first\n" +
+		"create `.a`, create `.c`, and then execute `run_z`.\n" +
+		"\n" +
+		"### Files\n" +
+		"\n" +
+		"Files are represented by regular files in the source state. The `encrypted_`\n" +
+		"attribute determines whether the file in the source state is encrypted. The\n" +
+		"`executable_` attribute will set the executable bits when the file is written to\n" +
+		"the target state, and the `private_` attribute will clear all group and world\n" +
+		"permissions. Files with the `.tmpl` suffix will be interpreted as templates.\n" +
+		"\n" +
+		"#### Create file\n" +
+		"\n" +
+		"Files with the `create_` prefix will be created in the target state with the\n" +
+		"contents of the file in the source state if they do not already exist. If the\n" +
+		"file in the destination state already exists then its contents will be left\n" +
+		"unchanged.\n" +
+		"\n" +
+		"#### Modify file\n" +
+		"\n" +
+		"Files with the `modify_` prefix are treated as scripts that modify an existing\n" +
+		"file. The contents of the existing file (which maybe empty if the existing file\n" +
+		"does not exist or is empty) are passed to the script's standard input, and the\n" +
+		"new contents are read from the scripts standard output.\n" +
+		"\n" +
+		"### Directories\n" +
+		"\n" +
+		"Directories are represented by regular directories in the source state. The\n" +
+		"`exact_` attribute causes chezmoi to remove any entries in the target state that\n" +
+		"are not explicitly specified in the source state, and the `private_` attribute\n" +
+		"causes chezmoi to clear all group and world permssions.\n" +
+		"\n" +
+		"### Symbolic links\n" +
+		"\n" +
+		"Symbolic links are represented by regular files in the source state with the\n" +
+		"prefix `symlink_`. The contents of the file will have a trailing newline\n" +
+		"stripped, and the result be interpreted as the target of the symbolic link.\n" +
+		"Symbolic links with the `.tmpl` suffix in the source state are interpreted as\n" +
+		"templates.\n" +
+		"\n" +
+		"### Scripts\n" +
+		"\n" +
+		"Scripts are represented as regular files in the source state with prefix `run_`.\n" +
+		"The file's contents (after being interpreted as a template if it has a `.tmpl`\n" +
+		"suffix) are executed. Scripts are executed on every `chezmoi apply`, unless they\n" +
+		"have the `once_` attribute, in which case they are only executed when they are\n" +
+		"first found or when their contents have changed.\n" +
+		"\n" +
+		"Scripts with the `before_` attribute are executed before any files, directories,\n" +
+		"or symlinks are updated. Scripts with the `after_` attribute are executed after\n" +
+		"all files, directories, and symlinks have been updated. Scripts without an\n" +
+		"`before_` or `after_` attribute are executed in ASCII order of their target\n" +
+		"names with respect to files, directories, and symlinks.\n" +
 		"\n" +
 		"## Special files and directories\n" +
 		"\n" +

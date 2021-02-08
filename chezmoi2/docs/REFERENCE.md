@@ -30,6 +30,11 @@ Manage your dotfiles securely across multiple machines.
   * [Variables](#variables)
   * [Examples](#examples)
 * [Source state attributes](#source-state-attributes)
+* [Target types](#target-types)
+  * [Files](#files)
+  * [Directories](#directories)
+  * [Symbolic links](#symbolic-links)
+  * [Scripts](#scripts)
 * [Special files and directories](#special-files-and-directories)
   * [`.chezmoi.<format>.tmpl`](#chezmoiformattmpl)
   * [`.chezmoiignore`](#chezmoiignore)
@@ -367,6 +372,64 @@ Different target types allow different prefixes and suffixes:
 | Script        | `run_`, `once_`, `before_` or `after_`                                | `.tmpl`          |
 | Symbolic link | `symlink_`, `dot_`,                                                   | `.tmpl`          |
 
+## Target types
+
+chezmoi will create, update, and delete files, directories, and symbolic links
+in the destination directory, and run scripts. chezmoi deterministically
+performs actions in ASCII order of their target name. For example, given a file
+`dot_a`, a script `run_z`, and a directory `exact_dot_c`, chezmoi will first
+create `.a`, create `.c`, and then execute `run_z`.
+
+### Files
+
+Files are represented by regular files in the source state. The `encrypted_`
+attribute determines whether the file in the source state is encrypted. The
+`executable_` attribute will set the executable bits when the file is written to
+the target state, and the `private_` attribute will clear all group and world
+permissions. Files with the `.tmpl` suffix will be interpreted as templates.
+
+#### Create file
+
+Files with the `create_` prefix will be created in the target state with the
+contents of the file in the source state if they do not already exist. If the
+file in the destination state already exists then its contents will be left
+unchanged.
+
+#### Modify file
+
+Files with the `modify_` prefix are treated as scripts that modify an existing
+file. The contents of the existing file (which maybe empty if the existing file
+does not exist or is empty) are passed to the script's standard input, and the
+new contents are read from the scripts standard output.
+
+### Directories
+
+Directories are represented by regular directories in the source state. The
+`exact_` attribute causes chezmoi to remove any entries in the target state that
+are not explicitly specified in the source state, and the `private_` attribute
+causes chezmoi to clear all group and world permssions.
+
+### Symbolic links
+
+Symbolic links are represented by regular files in the source state with the
+prefix `symlink_`. The contents of the file will have a trailing newline
+stripped, and the result be interpreted as the target of the symbolic link.
+Symbolic links with the `.tmpl` suffix in the source state are interpreted as
+templates.
+
+### Scripts
+
+Scripts are represented as regular files in the source state with prefix `run_`.
+The file's contents (after being interpreted as a template if it has a `.tmpl`
+suffix) are executed. Scripts are executed on every `chezmoi apply`, unless they
+have the `once_` attribute, in which case they are only executed when they are
+first found or when their contents have changed.
+
+Scripts with the `before_` attribute are executed before any files, directories,
+or symlinks are updated. Scripts with the `after_` attribute are executed after
+all files, directories, and symlinks have been updated. Scripts without an
+`before_` or `after_` attribute are executed in ASCII order of their target
+names with respect to files, directories, and symlinks.
 
 ## Special files and directories
 
