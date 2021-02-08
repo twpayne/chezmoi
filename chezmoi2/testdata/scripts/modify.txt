@@ -26,7 +26,7 @@ cmp home/user/.modify golden/.modified
 chhome home2/user
 
 # test that chezmoi cat does not fail or generate output when the target does not exist
-chezmoi cat $HOME${/}.absent
+chezmoi cat $HOME${/}.not_exist
 ! stdout .
 
 # test that chezmoi cat exits with an error when the modify script fails
@@ -62,7 +62,7 @@ index f91830d4ecd80adfe9a6aea9dca579397aa86921..6b6d41aae5e8d64a54afd8b8ad5a38a3
 sed 's/middle/modified-middle/g'
 -- home2/user/.file --
 # contents of .file
--- home2/user/.local/share/chezmoi/modify_dot_absent --
+-- home2/user/.local/share/chezmoi/modify_dot_not_exist --
 #!/bin/sh
 
 cat

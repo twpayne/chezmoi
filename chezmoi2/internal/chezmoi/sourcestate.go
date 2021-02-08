@@ -232,7 +232,7 @@ func (s *SourceState) Add(sourceSystem System, persistentState PersistentState, 
 			update := update{
 				destAbsPath: s.destDirAbsPath.Join(targetRelPath),
 				entryState: &EntryState{
-					Type: EntryStateTypeAbsent,
+					Type: EntryStateTypeRemove,
 				},
 				sourceRelPaths: []SourceRelPath{sourceRelPath},
 			}
@@ -849,7 +849,7 @@ func (s *SourceState) newSourceStateFile(sourceRelPath SourceRelPath, fileAttr F
 				}
 			}
 			if !fileAttr.Empty && isEmpty(contents) {
-				return &TargetStateAbsent{}, nil
+				return &TargetStateRemove{}, nil
 			}
 			return &TargetStateFile{
 				lazyContents: newLazyContents(contents),

@@ -227,7 +227,7 @@ Set the output format. *format* can be `json` or `yaml`.
 ### `--include` *types*
 
 Only operate on target state entries of type *types*. *types* is a
-comma-separated list of target states (`absent`, `all`, `dirs`, `files`,
+comma-separated list of target states (`all`, `dirs`, `files`, `remove`,
 `scripts`, `symlinks`) and can be excluded by preceeding them with a `!`. For
 example, `--include=all,!scripts` will cause the command to apply to all target
 state entries except scripts.

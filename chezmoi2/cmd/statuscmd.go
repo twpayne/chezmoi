@@ -70,12 +70,12 @@ func statusRune(fromState, toState *chezmoi.EntryState) rune {
 		return ' '
 	}
 	switch toState.Type {
-	case chezmoi.EntryStateTypeAbsent:
+	case chezmoi.EntryStateTypeRemove:
 		return 'D'
 	case chezmoi.EntryStateTypeDir, chezmoi.EntryStateTypeFile, chezmoi.EntryStateTypeSymlink:
 		//nolint:exhaustive
 		switch fromState.Type {
-		case chezmoi.EntryStateTypeAbsent:
+		case chezmoi.EntryStateTypeRemove:
 			return 'A'
 		default:
 			return 'M'

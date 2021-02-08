@@ -6,8 +6,8 @@ cmpenv stdout golden/managed
 chezmoi managed --include=all
 cmpenv stdout golden/managed-all
 
-chezmoi managed --include=absent
-cmpenv stdout golden/managed-absent
+chezmoi managed --include=remove
+cmpenv stdout golden/managed-remove
 
 chezmoi managed --include=dirs
 cmpenv stdout golden/managed-dirs
@@ -31,7 +31,6 @@ cmpenv stdout golden/managed-symlinks
 .symlink
 .template
 -- golden/managed-all --
-.absent
 .create
 .dir
 .dir/file
@@ -41,10 +40,9 @@ cmpenv stdout golden/managed-symlinks
 .executable
 .file
 .private
+.remove
 .symlink
 .template
--- golden/managed-absent --
-.absent
 -- golden/managed-dirs --
 .dir
 .dir/subdir
@@ -57,5 +55,7 @@ cmpenv stdout golden/managed-symlinks
 .file
 .private
 .template
+-- golden/managed-remove --
+.remove
 -- golden/managed-symlinks --
 .symlink

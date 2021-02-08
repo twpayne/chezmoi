@@ -31,7 +31,7 @@ func TestIncludeMaskSet(t *testing.T) {
 		},
 		{
 			s:        "all,!scripts",
-			expected: NewIncludeSet(IncludeAbsent | IncludeDirs | IncludeFiles | IncludeSymlinks),
+			expected: NewIncludeSet(IncludeDirs | IncludeFiles | IncludeRemove | IncludeSymlinks),
 		},
 		{
 			s:        "symlinks,,",
@@ -65,16 +65,16 @@ func TestIncludeMaskStringSlice(t *testing.T) {
 			expected: "all",
 		},
 		{
-			bits:     IncludeAbsent,
-			expected: "absent",
-		},
-		{
 			bits:     IncludeDirs,
 			expected: "dirs",
 		},
 		{
 			bits:     IncludeFiles,
 			expected: "files",
+		},
+		{
+			bits:     IncludeRemove,
+			expected: "remove",
 		},
 		{
 			bits:     IncludeScripts,
@@ -93,6 +93,8 @@ func TestIncludeMaskStringSlice(t *testing.T) {
 			expected: "dirs,files",
 		},
 	} {
-		assert.Equal(t, tc.expected, NewIncludeSet(tc.bits).String())
+		t.Run(tc.expected, func(t *testing.T) {
+			assert.Equal(t, tc.expected, NewIncludeSet(tc.bits).String())
+		})
 	}
 }

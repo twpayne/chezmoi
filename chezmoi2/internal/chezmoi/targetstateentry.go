@@ -16,9 +16,6 @@ type TargetStateEntry interface {
 	SkipApply(persistentState PersistentState) (bool, error)
 }
 
-// A TargetStateAbsent represents the absence of an entry in the target state.
-type TargetStateAbsent struct{}
-
 // A TargetStateDir represents the state of a directory in the target state.
 type TargetStateDir struct {
 	perm os.FileMode
@@ -29,6 +26,9 @@ type TargetStateFile struct {
 	*lazyContents
 	perm os.FileMode
 }
+
+// A TargetStateRemove represents the absence of an entry in the target state.
+type TargetStateRemove struct{}
 
 // A TargetStateRenameDir represents the renaming of a directory in the target
 // state.
@@ -53,31 +53,6 @@ type TargetStateSymlink struct {
 type scriptState struct {
 	Name  string    `json:"name" toml:"name" yaml:"name"`
 	RunAt time.Time `json:"runAt" toml:"runAt" yaml:"runAt"`
-}
-
-// Apply updates actualStateEntry to match t.
-func (t *TargetStateAbsent) Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry, umask os.FileMode) error {
-	if _, ok := actualStateEntry.(*ActualStateAbsent); ok {
-		return nil
-	}
-	return system.RemoveAll(actualStateEntry.Path())
-}
-
-// EntryState returns t's entry state.
-func (t *TargetStateAbsent) EntryState(umask os.FileMode) (*EntryState, error) {
-	return &EntryState{
-		Type: EntryStateTypeAbsent,
-	}, nil
-}
-
-// Evaluate evaluates t.
-func (t *TargetStateAbsent) Evaluate() error {
-	return nil
-}
-
-// SkipApply implements TargetState.SkipApply.
-func (t *TargetStateAbsent) SkipApply(persistentState PersistentState) (bool, error) {
-	return false, nil
 }
 
 // Apply updates actualStateEntry to match t. It does not recurse.
@@ -168,6 +143,31 @@ func (t *TargetStateFile) Evaluate() error {
 
 // SkipApply implements TargetState.SkipApply.
 func (t *TargetStateFile) SkipApply(persistentState PersistentState) (bool, error) {
+	return false, nil
+}
+
+// Apply updates actualStateEntry to match t.
+func (t *TargetStateRemove) Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry, umask os.FileMode) error {
+	if _, ok := actualStateEntry.(*ActualStateAbsent); ok {
+		return nil
+	}
+	return system.RemoveAll(actualStateEntry.Path())
+}
+
+// EntryState returns t's entry state.
+func (t *TargetStateRemove) EntryState(umask os.FileMode) (*EntryState, error) {
+	return &EntryState{
+		Type: EntryStateTypeRemove,
+	}, nil
+}
+
+// Evaluate evaluates t.
+func (t *TargetStateRemove) Evaluate() error {
+	return nil
+}
+
+// SkipApply implements TargetState.SkipApply.
+func (t *TargetStateRemove) SkipApply(persistentState PersistentState) (bool, error) {
 	return false, nil
 }
 

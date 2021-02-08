@@ -234,7 +234,7 @@ func init() {
 		"### `--include` *types*\n" +
 		"\n" +
 		"Only operate on target state entries of type *types*. *types* is a\n" +
-		"comma-separated list of target states (`absent`, `all`, `dirs`, `files`,\n" +
+		"comma-separated list of target states (`all`, `dirs`, `files`, `remove`,\n" +
 		"`scripts`, `symlinks`) and can be excluded by preceeding them with a `!`. For\n" +
 		"example, `--include=all,!scripts` will cause the command to apply to all target\n" +
 		"state entries except scripts.\n" +

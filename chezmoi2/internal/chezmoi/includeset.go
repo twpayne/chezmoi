@@ -20,14 +20,14 @@ type IncludeBits int
 
 // Include bits.
 const (
-	IncludeAbsent IncludeBits = 1 << iota
-	IncludeDirs
+	IncludeDirs IncludeBits = 1 << iota
 	IncludeFiles
+	IncludeRemove
 	IncludeScripts
 	IncludeSymlinks
 
 	// IncludeAll is all include bits.
-	IncludeAll IncludeBits = IncludeAbsent | IncludeDirs | IncludeFiles | IncludeScripts | IncludeSymlinks
+	IncludeAll IncludeBits = IncludeDirs | IncludeFiles | IncludeRemove | IncludeScripts | IncludeSymlinks
 
 	// includeNone is no include bits.
 	includeNone IncludeBits = 0
@@ -35,10 +35,10 @@ const (
 
 // includeBits is a map from human-readable strings to IncludeBits.
 var includeBits = map[string]IncludeBits{
-	"absent":   IncludeAbsent,
 	"all":      IncludeAll,
 	"dirs":     IncludeDirs,
 	"files":    IncludeFiles,
+	"remove":   IncludeRemove,
 	"scripts":  IncludeScripts,
 	"symlinks": IncludeSymlinks,
 }
@@ -53,6 +53,8 @@ func NewIncludeSet(bits IncludeBits) *IncludeSet {
 // IncludeActualStateEntry returns true if actualStateEntry should be included.
 func (s *IncludeSet) IncludeActualStateEntry(actualStateEntry ActualStateEntry) bool {
 	switch actualStateEntry.(type) {
+	case *ActualStateAbsent:
+		return s.bits&IncludeRemove != 0
 	case *ActualStateDir:
 		return s.bits&IncludeDirs != 0
 	case *ActualStateFile:
@@ -81,12 +83,12 @@ func (s *IncludeSet) IncludeFileInfo(info os.FileInfo) bool {
 // IncludeTargetStateEntry returns true if targetStateEntry should be included.
 func (s *IncludeSet) IncludeTargetStateEntry(targetStateEntry TargetStateEntry) bool {
 	switch targetStateEntry.(type) {
-	case *TargetStateAbsent:
-		return s.bits&IncludeAbsent != 0
 	case *TargetStateDir:
 		return s.bits&IncludeDirs != 0
 	case *TargetStateFile:
 		return s.bits&IncludeFiles != 0
+	case *TargetStateRemove:
+		return s.bits&IncludeRemove != 0
 	case *TargetStateRenameDir:
 		return s.bits&IncludeDirs != 0
 	case *TargetStateScript:
@@ -139,9 +141,9 @@ func (s *IncludeSet) String() string {
 	}
 	var elements []string
 	for i, element := range []string{
-		"absent",
 		"dirs",
 		"files",
+		"remove",
 		"scripts",
 		"symlinks",
 	} {

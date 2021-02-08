@@ -22,9 +22,6 @@ func TestApplyCmd(t *testing.T) {
 		{
 			name: "all",
 			tests: []interface{}{
-				vfst.TestPath("/home/user/.absent",
-					vfst.TestDoesNotExist,
-				),
 				vfst.TestPath("/home/user/.create",
 					vfst.TestModeIsRegular,
 					vfst.TestModePerm(0o666&^chezmoitest.Umask),
@@ -68,6 +65,9 @@ func TestApplyCmd(t *testing.T) {
 					vfst.TestModePerm(0o600&^chezmoitest.Umask),
 					vfst.TestContentsString("# contents of .private\n"),
 				),
+				vfst.TestPath("/home/user/.remove",
+					vfst.TestDoesNotExist,
+				),
 				vfst.TestPath("/home/user/.symlink",
 					vfst.TestModeType(os.ModeSymlink),
 					vfst.TestSymlinkTarget(filepath.FromSlash(".dir/subdir/file")),
@@ -83,9 +83,6 @@ func TestApplyCmd(t *testing.T) {
 			name: "all_with_--dry-run",
 			args: []string{"--dry-run"},
 			tests: []interface{}{
-				vfst.TestPath("/home/user/.absent",
-					vfst.TestDoesNotExist,
-				),
 				vfst.TestPath("/home/user/.create",
 					vfst.TestDoesNotExist,
 				),
@@ -102,6 +99,9 @@ func TestApplyCmd(t *testing.T) {
 					vfst.TestDoesNotExist,
 				),
 				vfst.TestPath("/home/user/.private",
+					vfst.TestDoesNotExist,
+				),
+				vfst.TestPath("/home/user/.remove",
 					vfst.TestDoesNotExist,
 				),
 				vfst.TestPath("/home/user/.symlink",
@@ -182,21 +182,21 @@ func TestApplyCmd(t *testing.T) {
 						"share": map[string]interface{}{
 							"chezmoi": map[string]interface{}{
 								"create_dot_create": "# contents of .create\n",
-								"dot_absent":        "",
 								"dot_dir": map[string]interface{}{
 									"file": "# contents of .dir/file\n",
 									"subdir": map[string]interface{}{
 										"file": "# contents of .dir/subdir/file\n",
 									},
 								},
-								"empty_dot_empty":           "",
-								"executable_dot_executable": "# contents of .executable\n",
-								"dot_file":                  "# contents of .file\n",
-								"private_dot_private":       "# contents of .private\n",
-								"symlink_dot_symlink":       ".dir/subdir/file\n",
+								"dot_file":   "# contents of .file\n",
+								"dot_remove": "",
 								"dot_template.tmpl": chezmoitest.JoinLines(
 									`key = {{ "value" }}`,
 								),
+								"empty_dot_empty":           "",
+								"executable_dot_executable": "# contents of .executable\n",
+								"private_dot_private":       "# contents of .private\n",
+								"symlink_dot_symlink":       ".dir/subdir/file\n",
 							},
 						},
 					},

@@ -99,7 +99,7 @@ func (s *SourceStateRemove) SourceRelPath() SourceRelPath {
 
 // TargetStateEntry returns s's target state entry.
 func (s *SourceStateRemove) TargetStateEntry(destSystem System, destDirAbsPath AbsPath) (TargetStateEntry, error) {
-	return &TargetStateAbsent{}, nil
+	return &TargetStateRemove{}, nil
 }
 
 // Evaluate evaluates s and returns any error.
