@@ -16,7 +16,6 @@ import (
 
 func TestTargetStateEntryApplyAndEqual(t *testing.T) {
 	targetStates := map[string]TargetStateEntry{
-		"absent": &TargetStateAbsent{},
 		"dir": &TargetStateDir{
 			perm: 0o777 &^ chezmoitest.Umask,
 		},
@@ -35,9 +34,7 @@ func TestTargetStateEntryApplyAndEqual(t *testing.T) {
 				contents: []byte("#!/bin/sh\n"),
 			},
 		},
-		"present": &TargetStatePresent{
-			perm: 0o666 &^ chezmoitest.Umask,
-		},
+		"remove": &TargetStateRemove{},
 		"symlink": &TargetStateSymlink{
 			lazyLinkname: &lazyLinkname{
 				linkname: "target",
@@ -46,9 +43,6 @@ func TestTargetStateEntryApplyAndEqual(t *testing.T) {
 	}
 
 	actualStates := map[string]map[string]interface{}{
-		"absent": {
-			"/home/user": &vfst.Dir{Perm: 0o777},
-		},
 		"dir": {
 			"/home/user/target": &vfst.Dir{Perm: 0o777},
 		},
@@ -63,6 +57,9 @@ func TestTargetStateEntryApplyAndEqual(t *testing.T) {
 				Perm:     0o777,
 				Contents: []byte("!/bin/sh\n"),
 			},
+		},
+		"remove": {
+			"/home/user": &vfst.Dir{Perm: 0o777},
 		},
 		"symlink": {
 			"/home/user": map[string]interface{}{
@@ -126,7 +123,7 @@ func TestTargetStateEntryApplyAndEqual(t *testing.T) {
 func targetStateTest(t *testing.T, ts TargetStateEntry) []vfst.PathTest {
 	t.Helper()
 	switch ts := ts.(type) {
-	case *TargetStateAbsent:
+	case *TargetStateRemove:
 		return []vfst.PathTest{
 			vfst.TestDoesNotExist,
 		}
@@ -143,12 +140,7 @@ func targetStateTest(t *testing.T, ts TargetStateEntry) []vfst.PathTest {
 			vfst.TestContents(expectedContents),
 			vfst.TestModePerm(ts.perm &^ chezmoitest.Umask),
 		}
-	case *TargetStatePresent:
-		return []vfst.PathTest{
-			vfst.TestModeIsRegular,
-			vfst.TestModePerm(ts.perm &^ chezmoitest.Umask),
-		}
-	case *TargetStateRenameDir:
+	case *targetStateRenameDir:
 		// FIXME test for presence of newName
 		return []vfst.PathTest{
 			vfst.TestDoesNotExist,

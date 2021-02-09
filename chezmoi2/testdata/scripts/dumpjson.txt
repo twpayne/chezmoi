@@ -17,6 +17,12 @@ stderr 'not in source state'
 
 -- golden/dump.json --
 {
+  ".create": {
+    "type": "file",
+    "name": ".create",
+    "contents": "# contents of .create\n",
+    "perm": 438
+  },
   ".dir": {
     "type": "dir",
     "name": ".dir",
@@ -50,12 +56,6 @@ stderr 'not in source state'
     "name": ".executable",
     "contents": "# contents of .executable\n",
     "perm": 511
-  },
-  ".exists": {
-    "type": "file",
-    "name": ".exists",
-    "contents": "# contents of .exists\n",
-    "perm": 438
   },
   ".file": {
     "type": "file",

@@ -29,16 +29,17 @@ func TestDumpSystem(t *testing.T) {
 			"symlink_symlink": ".dir/subdir/file\n",
 		},
 	}, func(fs vfs.FS) {
+		system := NewRealSystem(fs)
 		s := NewSourceState(
 			WithSourceDir("/home/user/.local/share/chezmoi"),
-			WithSystem(NewRealSystem(fs)),
+			WithSystem(system),
 		)
 		require.NoError(t, s.Read())
-		require.NoError(t, s.evaluateAll())
+		requireEvaluateAll(t, s, system)
 
 		dumpSystem := NewDumpSystem()
 		persistentState := NewMockPersistentState()
-		require.NoError(t, s.applyAll(dumpSystem, persistentState, "", ApplyOptions{}))
+		require.NoError(t, s.applyAll(dumpSystem, system, persistentState, "", ApplyOptions{}))
 		expectedData := map[AbsPath]interface{}{
 			".dir": &dirData{
 				Type: dataTypeDir,

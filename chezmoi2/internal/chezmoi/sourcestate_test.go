@@ -241,19 +241,19 @@ func TestSourceStateAdd(t *testing.T) {
 			},
 		},
 		{
-			name: "exists",
+			name: "create",
 			destAbsPaths: AbsPaths{
-				"/home/user/.exists",
+				"/home/user/.create",
 			},
 			addOptions: AddOptions{
-				Exists:  true,
+				Create:  true,
 				Include: NewIncludeSet(IncludeAll),
 			},
 			tests: []interface{}{
-				vfst.TestPath("/home/user/.local/share/chezmoi/exists_dot_exists",
+				vfst.TestPath("/home/user/.local/share/chezmoi/create_dot_create",
 					vfst.TestModeIsRegular,
 					vfst.TestModePerm(0o666&^chezmoitest.Umask),
-					vfst.TestContentsString("# contents of .exists\n"),
+					vfst.TestContentsString("# contents of .create\n"),
 				),
 			},
 		},
@@ -443,6 +443,7 @@ func TestSourceStateAdd(t *testing.T) {
 
 			chezmoitest.WithTestFS(t, map[string]interface{}{
 				"/home/user": map[string]interface{}{
+					".create": "# contents of .create\n",
 					".dir": map[string]interface{}{
 						"file": "# contents of .dir/file\n",
 						"subdir": map[string]interface{}{
@@ -454,8 +455,7 @@ func TestSourceStateAdd(t *testing.T) {
 						Perm:     0o777,
 						Contents: []byte("# contents of .executable\n"),
 					},
-					".exists": "# contents of .exists\n",
-					".file":   "# contents of .file\n",
+					".file": "# contents of .file\n",
 					".local": map[string]interface{}{
 						"share": map[string]interface{}{
 							"chezmoi": &vfst.Dir{Perm: 0o777},
@@ -475,7 +475,7 @@ func TestSourceStateAdd(t *testing.T) {
 					require.NoError(t, vfst.NewBuilder().Build(system.UnderlyingFS(), tc.extraRoot))
 				}
 
-				sourceState := NewSourceState(
+				s := NewSourceState(
 					WithDestDir("/home/user"),
 					WithSourceDir("/home/user/.local/share/chezmoi"),
 					WithSystem(system),
@@ -483,14 +483,14 @@ func TestSourceStateAdd(t *testing.T) {
 						"variable": "value",
 					}),
 				)
-				require.NoError(t, sourceState.Read())
-				require.NoError(t, sourceState.evaluateAll())
+				require.NoError(t, s.Read())
+				requireEvaluateAll(t, s, system)
 
 				destAbsPathInfos := make(map[AbsPath]os.FileInfo)
 				for _, destAbsPath := range tc.destAbsPaths {
-					require.NoError(t, sourceState.AddDestAbsPathInfos(destAbsPathInfos, system, destAbsPath, nil))
+					require.NoError(t, s.AddDestAbsPathInfos(destAbsPathInfos, system, destAbsPath, nil))
 				}
-				require.NoError(t, sourceState.Add(system, persistentState, system, destAbsPathInfos, &tc.addOptions))
+				require.NoError(t, s.Add(system, persistentState, system, destAbsPathInfos, &tc.addOptions))
 
 				vfst.RunTests(t, fs, "", tc.tests...)
 			})
@@ -627,37 +627,37 @@ func TestSourceStateApplyAll(t *testing.T) {
 			},
 		},
 		{
-			name: "exists_create",
+			name: "create",
 			root: map[string]interface{}{
 				"/home/user": map[string]interface{}{
 					".local/share/chezmoi": map[string]interface{}{
-						"exists_dot_exists": "# contents of .exists\n",
+						"create_dot_create": "# contents of .create\n",
 					},
 				},
 			},
 			tests: []interface{}{
-				vfst.TestPath("/home/user/.exists",
+				vfst.TestPath("/home/user/.create",
 					vfst.TestModeIsRegular,
 					vfst.TestModePerm(0o666&^chezmoitest.Umask),
-					vfst.TestContentsString("# contents of .exists\n"),
+					vfst.TestContentsString("# contents of .create\n"),
 				),
 			},
 		},
 		{
-			name: "exists_no_replace",
+			name: "create_no_replace",
 			root: map[string]interface{}{
 				"/home/user": map[string]interface{}{
 					".local/share/chezmoi": map[string]interface{}{
-						"exists_dot_exists": "# contents of .exists\n",
+						"create_dot_create": "# contents of .create\n",
 					},
-					".exists": "# existing contents of .exists\n",
+					".create": "# existing contents of .create\n",
 				},
 			},
 			tests: []interface{}{
-				vfst.TestPath("/home/user/.exists",
+				vfst.TestPath("/home/user/.create",
 					vfst.TestModeIsRegular,
 					vfst.TestModePerm(0o666&^chezmoitest.Umask),
-					vfst.TestContentsString("# existing contents of .exists\n"),
+					vfst.TestContentsString("# existing contents of .create\n"),
 				),
 			},
 		},
@@ -704,10 +704,10 @@ func TestSourceStateApplyAll(t *testing.T) {
 					WithSystem(system),
 				}
 				sourceStateOptions = append(sourceStateOptions, tc.sourceStateOptions...)
-				sourceState := NewSourceState(sourceStateOptions...)
-				require.NoError(t, sourceState.Read())
-				require.NoError(t, sourceState.evaluateAll())
-				require.NoError(t, sourceState.applyAll(system, persistentState, "/home/user", ApplyOptions{
+				s := NewSourceState(sourceStateOptions...)
+				require.NoError(t, s.Read())
+				requireEvaluateAll(t, s, system)
+				require.NoError(t, s.applyAll(system, system, persistentState, "/home/user", ApplyOptions{
 					Umask: chezmoitest.Umask,
 				}))
 
@@ -1157,10 +1157,11 @@ func TestSourceStateRead(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, tc.root, func(fs vfs.FS) {
+				system := NewRealSystem(fs)
 				s := NewSourceState(
 					WithDestDir("/home/user"),
 					WithSourceDir("/home/user/.local/share/chezmoi"),
-					WithSystem(NewRealSystem(fs)),
+					WithSystem(system),
 				)
 				err := s.Read()
 				if tc.expectedError != "" {
@@ -1169,10 +1170,10 @@ func TestSourceStateRead(t *testing.T) {
 					return
 				}
 				require.NoError(t, err)
-				require.NoError(t, s.evaluateAll())
+				requireEvaluateAll(t, s, system)
 				tc.expectedSourceState.destDirAbsPath = "/home/user"
 				tc.expectedSourceState.sourceDirAbsPath = "/home/user/.local/share/chezmoi"
-				require.NoError(t, tc.expectedSourceState.evaluateAll())
+				requireEvaluateAll(t, tc.expectedSourceState, system)
 				s.system = nil
 				s.templateData = nil
 				assert.Equal(t, tc.expectedSourceState, s)
@@ -1233,22 +1234,18 @@ func TestSourceStateTargetRelPaths(t *testing.T) {
 	}
 }
 
-// evaluateAll evaluates every target state entry in s.
-func (s *SourceState) evaluateAll() error {
+// requireEvaluateAll requires that every target state entry in s evaluates
+// without error.
+func requireEvaluateAll(t *testing.T, s *SourceState, destSystem System) {
+	t.Helper()
 	for _, targetRelPath := range s.TargetRelPaths() {
 		sourceStateEntry := s.entries[targetRelPath]
-		if err := sourceStateEntry.Evaluate(); err != nil {
-			return err
-		}
-		targetStateEntry, err := sourceStateEntry.TargetStateEntry()
-		if err != nil {
-			return err
-		}
-		if err := targetStateEntry.Evaluate(); err != nil {
-			return err
-		}
+		require.NoError(t, sourceStateEntry.Evaluate())
+		destAbsPath := s.destDirAbsPath.Join(targetRelPath)
+		targetStateEntry, err := sourceStateEntry.TargetStateEntry(destSystem, destAbsPath)
+		require.NoError(t, err)
+		require.NoError(t, targetStateEntry.Evaluate())
 	}
-	return nil
 }
 
 func withEntries(sourceEntries map[RelPath]SourceStateEntry) SourceStateOption {

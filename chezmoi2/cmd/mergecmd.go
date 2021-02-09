@@ -57,7 +57,7 @@ func (c *Config) runMergeCmd(cmd *cobra.Command, args []string, sourceState *che
 		// targetStateEntry's contents, which means that we cannot fallback to a
 		// two-way merge if the source state's contents cannot be decrypted or
 		// are an invalid template
-		targetStateEntry, err := sourceStateEntry.TargetStateEntry()
+		targetStateEntry, err := sourceStateEntry.TargetStateEntry(c.destSystem, c.destDirAbsPath.Join(targetRelPath))
 		if err != nil {
 			return fmt.Errorf("%s: %w", targetRelPath, err)
 		}

@@ -28,25 +28,25 @@ chezmoi status
 ! stdout .
 
 -- golden/status --
+ A .create
  A .dir
  A .dir/file
  A .dir/subdir
  A .dir/subdir/file
  A .empty
  A .executable
- A .exists
  A .file
  A .private
  A .symlink
  A .template
 -- golden/status-except-dot-file --
+ A .create
  A .dir
  A .dir/file
  A .dir/subdir
  A .dir/subdir/file
  A .empty
  A .executable
- A .exists
  A .private
  A .symlink
  A .template

@@ -13,13 +13,13 @@ exec tar -tzf archive.tar.gz
 cmp stdout golden/archive-tar
 
 -- golden/archive-tar --
+.create
 .dir/
 .dir/file
 .dir/subdir/
 .dir/subdir/file
 .empty
 .executable
-.exists
 .file
 .private
 .symlink

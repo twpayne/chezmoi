@@ -11,11 +11,10 @@ type EntryStateType string
 
 // Entry state types.
 const (
-	EntryStateTypeAbsent  EntryStateType = "absent"
-	EntryStateTypePresent EntryStateType = "present"
 	EntryStateTypeDir     EntryStateType = "dir"
 	EntryStateTypeFile    EntryStateType = "file"
 	EntryStateTypeSymlink EntryStateType = "symlink"
+	EntryStateTypeRemove  EntryStateType = "remove"
 	EntryStateTypeScript  EntryStateType = "script"
 )
 
@@ -48,13 +47,9 @@ func (s *EntryState) Equal(other *EntryState) bool {
 func (s *EntryState) Equivalent(other *EntryState) bool {
 	switch {
 	case s == nil:
-		return other == nil || other.Type == EntryStateTypeAbsent
+		return other == nil || other.Type == EntryStateTypeRemove
 	case other == nil:
-		return s.Type == EntryStateTypeAbsent
-	case s.Type == EntryStateTypeFile:
-		return other.Type == EntryStateTypePresent || s.Equal(other)
-	case s.Type == EntryStateTypePresent:
-		return other.Type == EntryStateTypeFile || other.Type == EntryStateTypePresent
+		return s.Type == EntryStateTypeRemove
 	default:
 		return s.Equal(other)
 	}

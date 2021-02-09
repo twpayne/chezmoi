@@ -32,18 +32,12 @@ func (c *Config) runCatCmd(cmd *cobra.Command, args []string, sourceState *chezm
 
 	sb := strings.Builder{}
 	for _, targetRelPath := range targetRelPaths {
-		targetStateEntry, err := sourceState.MustEntry(targetRelPath).TargetStateEntry()
+		targetStateEntry, err := sourceState.MustEntry(targetRelPath).TargetStateEntry(c.destSystem, c.destDirAbsPath.Join(targetRelPath))
 		if err != nil {
 			return fmt.Errorf("%s: %w", targetRelPath, err)
 		}
 		switch targetStateEntry := targetStateEntry.(type) {
 		case *chezmoi.TargetStateFile:
-			contents, err := targetStateEntry.Contents()
-			if err != nil {
-				return fmt.Errorf("%s: %w", targetRelPath, err)
-			}
-			sb.Write(contents)
-		case *chezmoi.TargetStatePresent:
 			contents, err := targetStateEntry.Contents()
 			if err != nil {
 				return fmt.Errorf("%s: %w", targetRelPath, err)

@@ -91,7 +91,7 @@ func NewActualStateEntry(system System, absPath AbsPath, info os.FileInfo, err e
 // EntryState returns d's entry state.
 func (s *ActualStateAbsent) EntryState() (*EntryState, error) {
 	return &EntryState{
-		Type: EntryStateTypeAbsent,
+		Type: EntryStateTypeRemove,
 	}, nil
 }
 

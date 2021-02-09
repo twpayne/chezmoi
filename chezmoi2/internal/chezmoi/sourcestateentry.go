@@ -5,7 +5,7 @@ type SourceStateEntry interface {
 	Evaluate() error
 	Order() int
 	SourceRelPath() SourceRelPath
-	TargetStateEntry() (TargetStateEntry, error)
+	TargetStateEntry(destSystem System, destDirAbsPath AbsPath) (TargetStateEntry, error)
 }
 
 // A SourceStateDir represents the state of a directory in the source state.
@@ -20,7 +20,7 @@ type SourceStateFile struct {
 	*lazyContents
 	Attr                 FileAttr
 	sourceRelPath        SourceRelPath
-	targetStateEntryFunc func() (TargetStateEntry, error)
+	targetStateEntryFunc func(destSystem System, destDirAbsPath AbsPath) (TargetStateEntry, error)
 	targetStateEntry     TargetStateEntry
 	targetStateEntryErr  error
 }
@@ -53,7 +53,7 @@ func (s *SourceStateDir) SourceRelPath() SourceRelPath {
 }
 
 // TargetStateEntry returns s's target state entry.
-func (s *SourceStateDir) TargetStateEntry() (TargetStateEntry, error) {
+func (s *SourceStateDir) TargetStateEntry(destSystem System, destDirAbsPath AbsPath) (TargetStateEntry, error) {
 	return s.targetStateEntry, nil
 }
 
@@ -74,9 +74,9 @@ func (s *SourceStateFile) SourceRelPath() SourceRelPath {
 }
 
 // TargetStateEntry returns s's target state entry.
-func (s *SourceStateFile) TargetStateEntry() (TargetStateEntry, error) {
+func (s *SourceStateFile) TargetStateEntry(destSystem System, destDirAbsPath AbsPath) (TargetStateEntry, error) {
 	if s.targetStateEntryFunc != nil {
-		s.targetStateEntry, s.targetStateEntryErr = s.targetStateEntryFunc()
+		s.targetStateEntry, s.targetStateEntryErr = s.targetStateEntryFunc(destSystem, destDirAbsPath)
 		s.targetStateEntryFunc = nil
 	}
 	return s.targetStateEntry, s.targetStateEntryErr
@@ -98,8 +98,8 @@ func (s *SourceStateRemove) SourceRelPath() SourceRelPath {
 }
 
 // TargetStateEntry returns s's target state entry.
-func (s *SourceStateRemove) TargetStateEntry() (TargetStateEntry, error) {
-	return &TargetStateAbsent{}, nil
+func (s *SourceStateRemove) TargetStateEntry(destSystem System, destDirAbsPath AbsPath) (TargetStateEntry, error) {
+	return &TargetStateRemove{}, nil
 }
 
 // Evaluate evaluates s and returns any error.
@@ -118,8 +118,8 @@ func (s *SourceStateRenameDir) SourceRelPath() SourceRelPath {
 }
 
 // TargetStateEntry returns s's target state entry.
-func (s *SourceStateRenameDir) TargetStateEntry() (TargetStateEntry, error) {
-	return &TargetStateRenameDir{
+func (s *SourceStateRenameDir) TargetStateEntry(destSystem System, destDirAbsPath AbsPath) (TargetStateEntry, error) {
+	return &targetStateRenameDir{
 		oldRelPath: s.oldSourceRelPath.RelPath(),
 		newRelPath: s.newSourceRelPath.RelPath(),
 	}, nil

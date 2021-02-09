@@ -29,7 +29,7 @@ General:
 - `chezmoi status`
 - `chezmoi apply` no longer overwrites by default
 - `chezmoi init --one-shot`
-- new type `--exists`
+- new type `--create`
 - `chezmoi archive --format=zip`
 - `before_` and `after_` script attributes change script order, scripts now run during
 - new `fqdnHostname` template var (UNIX only for now)

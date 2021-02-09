@@ -33,17 +33,18 @@ func TestTARWriterSystem(t *testing.T) {
 			"symlink_symlink": ".dir/subdir/file\n",
 		},
 	}, func(fs vfs.FS) {
+		system := NewRealSystem(fs)
 		s := NewSourceState(
 			WithSourceDir("/home/user/.local/share/chezmoi"),
-			WithSystem(NewRealSystem(fs)),
+			WithSystem(system),
 		)
 		require.NoError(t, s.Read())
-		require.NoError(t, s.evaluateAll())
+		requireEvaluateAll(t, s, system)
 
 		b := &bytes.Buffer{}
 		tarWriterSystem := NewTARWriterSystem(b, tar.Header{})
 		persistentState := NewMockPersistentState()
-		require.NoError(t, s.applyAll(tarWriterSystem, persistentState, "", ApplyOptions{}))
+		require.NoError(t, s.applyAll(tarWriterSystem, system, persistentState, "", ApplyOptions{}))
 		require.NoError(t, tarWriterSystem.Close())
 
 		r := tar.NewReader(b)

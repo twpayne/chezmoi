@@ -12,8 +12,9 @@ type SourceFileTargetType int
 
 // Source file types.
 const (
-	SourceFileTypeFile SourceFileTargetType = iota
-	SourceFileTypePresent
+	SourceFileTypeCreate SourceFileTargetType = iota
+	SourceFileTypeFile
+	SourceFileTypeModify
 	SourceFileTypeScript
 	SourceFileTypeSymlink
 )
@@ -103,9 +104,9 @@ func parseFileAttr(sourceName string) FileAttr {
 		order          = 0
 	)
 	switch {
-	case strings.HasPrefix(name, existsPrefix):
-		sourceFileType = SourceFileTypePresent
-		name = mustTrimPrefix(name, existsPrefix)
+	case strings.HasPrefix(name, createPrefix):
+		sourceFileType = SourceFileTypeCreate
+		name = mustTrimPrefix(name, createPrefix)
 		if strings.HasPrefix(name, encryptedPrefix) {
 			name = mustTrimPrefix(name, encryptedPrefix)
 			encrypted = true
@@ -136,6 +137,17 @@ func parseFileAttr(sourceName string) FileAttr {
 	case strings.HasPrefix(name, symlinkPrefix):
 		sourceFileType = SourceFileTypeSymlink
 		name = mustTrimPrefix(name, symlinkPrefix)
+	case strings.HasPrefix(name, modifyPrefix):
+		sourceFileType = SourceFileTypeModify
+		name = mustTrimPrefix(name, modifyPrefix)
+		if strings.HasPrefix(name, privatePrefix) {
+			name = mustTrimPrefix(name, privatePrefix)
+			private = true
+		}
+		if strings.HasPrefix(name, executablePrefix) {
+			name = mustTrimPrefix(name, executablePrefix)
+			executable = true
+		}
 	default:
 		if strings.HasPrefix(name, encryptedPrefix) {
 			name = mustTrimPrefix(name, encryptedPrefix)
@@ -178,6 +190,17 @@ func parseFileAttr(sourceName string) FileAttr {
 func (fa FileAttr) SourceName() string {
 	sourceName := ""
 	switch fa.Type {
+	case SourceFileTypeCreate:
+		sourceName = createPrefix
+		if fa.Encrypted {
+			sourceName += encryptedPrefix
+		}
+		if fa.Private {
+			sourceName += privatePrefix
+		}
+		if fa.Executable {
+			sourceName += executablePrefix
+		}
 	case SourceFileTypeFile:
 		if fa.Encrypted {
 			sourceName += encryptedPrefix
@@ -191,11 +214,8 @@ func (fa FileAttr) SourceName() string {
 		if fa.Executable {
 			sourceName += executablePrefix
 		}
-	case SourceFileTypePresent:
-		sourceName = existsPrefix
-		if fa.Encrypted {
-			sourceName += encryptedPrefix
-		}
+	case SourceFileTypeModify:
+		sourceName = modifyPrefix
 		if fa.Private {
 			sourceName += privatePrefix
 		}

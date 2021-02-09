@@ -34,17 +34,18 @@ func TestZIPWriterSystem(t *testing.T) {
 			"symlink_symlink": ".dir/subdir/file\n",
 		},
 	}, func(fs vfs.FS) {
+		system := NewRealSystem(fs)
 		s := NewSourceState(
 			WithSourceDir("/home/user/.local/share/chezmoi"),
-			WithSystem(NewRealSystem(fs)),
+			WithSystem(system),
 		)
 		require.NoError(t, s.Read())
-		require.NoError(t, s.evaluateAll())
+		requireEvaluateAll(t, s, system)
 
 		b := &bytes.Buffer{}
 		zipWriterSystem := NewZIPWriterSystem(b, time.Now().UTC())
 		persistentState := NewMockPersistentState()
-		require.NoError(t, s.applyAll(zipWriterSystem, persistentState, "", ApplyOptions{}))
+		require.NoError(t, s.applyAll(zipWriterSystem, system, persistentState, "", ApplyOptions{}))
 		require.NoError(t, zipWriterSystem.Close())
 
 		r, err := zip.NewReader(bytes.NewReader(b.Bytes()), int64(b.Len()))

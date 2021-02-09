@@ -37,6 +37,11 @@ func init() {
 		"  * [Variables](#variables)\n" +
 		"  * [Examples](#examples)\n" +
 		"* [Source state attributes](#source-state-attributes)\n" +
+		"* [Target types](#target-types)\n" +
+		"  * [Files](#files)\n" +
+		"  * [Directories](#directories)\n" +
+		"  * [Symbolic links](#symbolic-links)\n" +
+		"  * [Scripts](#scripts)\n" +
 		"* [Special files and directories](#special-files-and-directories)\n" +
 		"  * [`.chezmoi.<format>.tmpl`](#chezmoiformattmpl)\n" +
 		"  * [`.chezmoiignore`](#chezmoiignore)\n" +
@@ -229,7 +234,7 @@ func init() {
 		"### `--include` *types*\n" +
 		"\n" +
 		"Only operate on target state entries of type *types*. *types* is a\n" +
-		"comma-separated list of target states (`absent`, `all`, `dirs`, `files`,\n" +
+		"comma-separated list of target states (`all`, `dirs`, `files`, `remove`,\n" +
 		"`scripts`, `symlinks`) and can be excluded by preceeding them with a `!`. For\n" +
 		"example, `--include=all,!scripts` will cause the command to apply to all target\n" +
 		"state entries except scripts.\n" +
@@ -343,12 +348,13 @@ func init() {
 		"| ------------ | ------------------------------------------------------------------------------ |\n" +
 		"| `after_`     | Run script after updating the destination.                                     |\n" +
 		"| `before_`    | Run script before updating the desintation.                                    |\n" +
+		"| `create_`    | Ensure that the file exists, and create it with contents if it does not.       |\n" +
 		"| `dot_`       | Rename to use a leading dot, e.g. `dot_foo` becomes `.foo`.                    |\n" +
 		"| `empty_`     | Ensure the file exists, even if is empty. By default, empty files are removed. |\n" +
 		"| `encrypted_` | Encrypt the file in the source state.                                          |\n" +
 		"| `exact_`     | Remove anything not managed by chezmoi.                                        |\n" +
 		"| `executable_`| Add executable permissions to the target file.                                 |\n" +
-		"| `exists_`    | Ensure that the file exists, and initalize its contents if it does not.        |\n" +
+		"| `modify_`    | Treat the contents as a script that modifies an existing file.                 |\n" +
 		"| `once_`      | Run script once.                                                               |\n" +
 		"| `private_`   | Remove all group and world permissions from the target file or directory.      |\n" +
 		"| `run_`       | Treat the contents as a script to run.                                         |\n" +
@@ -358,19 +364,79 @@ func init() {
 		"| ------- | ---------------------------------------------------- |\n" +
 		"| `.tmpl` | Treat the contents of the source file as a template. |\n" +
 		"\n" +
-		"The order of prefixes is important, the order is `run_`, `before_`, `after_`,\n" +
-		"`exact_`, `exists_`, `private_`, `empty_`, `executable_`, `symlink_`, `once_`,\n" +
-		"`dot_`.\n" +
+		"The order of prefixes is important, the order is `run_`, `create_`, `modify_`,\n" +
+		"`before_`, `after_`, `exact_`, `private_`, `empty_`, `executable_`, `symlink_`,\n" +
+		"`once_`, `dot_`.\n" +
 		"\n" +
 		"Different target types allow different prefixes and suffixes:\n" +
 		"\n" +
-		"| Target type   | Allowed prefixes                                           | Allowed suffixes |\n" +
-		"| ------------- | ---------------------------------------------------------- | ---------------- |\n" +
-		"| Directory     | `exact_`, `private_`, `dot_`                               | *none*           |\n" +
-		"| Present file  | `exists_`, `encrypted_`, `private_`, `executable_`, `dot_` | `.tmpl`          |\n" +
-		"| Regular file  | `encrypted_`, `private_`, `empty_`, `executable_`, `dot_`  | `.tmpl`          |\n" +
-		"| Script        | `run_`, `once_`, `before_` or `after_`                     | `.tmpl`          |\n" +
-		"| Symbolic link | `symlink_`, `dot_`,                                        | `.tmpl`          |\n" +
+		"| Target type   | Allowed prefixes                                                      | Allowed suffixes |\n" +
+		"| ------------- | --------------------------------------------------------------------- | ---------------- |\n" +
+		"| Directory     | `exact_`, `private_`, `dot_`                                          | *none*           |\n" +
+		"| Regular file  | `encrypted_`, `private_`, `executable_`, `dot_`                       | `.tmpl`          |\n" +
+		"| Create file   | `create_`, `encrypted_`, `private_`, `executable_`, `dot_`            | `.tmpl`          |\n" +
+		"| Modify file   | `modify_`, `encrypted_`, `private_`, `executable_`, `dot_`            | `.tmpl`          |\n" +
+		"| Script        | `run_`, `once_`, `before_` or `after_`                                | `.tmpl`          |\n" +
+		"| Symbolic link | `symlink_`, `dot_`,                                                   | `.tmpl`          |\n" +
+		"\n" +
+		"## Target types\n" +
+		"\n" +
+		"chezmoi will create, update, and delete files, directories, and symbolic links\n" +
+		"in the destination directory, and run scripts. chezmoi deterministically\n" +
+		"performs actions in ASCII order of their target name. For example, given a file\n" +
+		"`dot_a`, a script `run_z`, and a directory `exact_dot_c`, chezmoi will first\n" +
+		"create `.a`, create `.c`, and then execute `run_z`.\n" +
+		"\n" +
+		"### Files\n" +
+		"\n" +
+		"Files are represented by regular files in the source state. The `encrypted_`\n" +
+		"attribute determines whether the file in the source state is encrypted. The\n" +
+		"`executable_` attribute will set the executable bits when the file is written to\n" +
+		"the target state, and the `private_` attribute will clear all group and world\n" +
+		"permissions. Files with the `.tmpl` suffix will be interpreted as templates.\n" +
+		"\n" +
+		"#### Create file\n" +
+		"\n" +
+		"Files with the `create_` prefix will be created in the target state with the\n" +
+		"contents of the file in the source state if they do not already exist. If the\n" +
+		"file in the destination state already exists then its contents will be left\n" +
+		"unchanged.\n" +
+		"\n" +
+		"#### Modify file\n" +
+		"\n" +
+		"Files with the `modify_` prefix are treated as scripts that modify an existing\n" +
+		"file. The contents of the existing file (which maybe empty if the existing file\n" +
+		"does not exist or is empty) are passed to the script's standard input, and the\n" +
+		"new contents are read from the scripts standard output.\n" +
+		"\n" +
+		"### Directories\n" +
+		"\n" +
+		"Directories are represented by regular directories in the source state. The\n" +
+		"`exact_` attribute causes chezmoi to remove any entries in the target state that\n" +
+		"are not explicitly specified in the source state, and the `private_` attribute\n" +
+		"causes chezmoi to clear all group and world permssions.\n" +
+		"\n" +
+		"### Symbolic links\n" +
+		"\n" +
+		"Symbolic links are represented by regular files in the source state with the\n" +
+		"prefix `symlink_`. The contents of the file will have a trailing newline\n" +
+		"stripped, and the result be interpreted as the target of the symbolic link.\n" +
+		"Symbolic links with the `.tmpl` suffix in the source state are interpreted as\n" +
+		"templates.\n" +
+		"\n" +
+		"### Scripts\n" +
+		"\n" +
+		"Scripts are represented as regular files in the source state with prefix `run_`.\n" +
+		"The file's contents (after being interpreted as a template if it has a `.tmpl`\n" +
+		"suffix) are executed. Scripts are executed on every `chezmoi apply`, unless they\n" +
+		"have the `once_` attribute, in which case they are only executed when they are\n" +
+		"first found or when their contents have changed.\n" +
+		"\n" +
+		"Scripts with the `before_` attribute are executed before any files, directories,\n" +
+		"or symlinks are updated. Scripts with the `after_` attribute are executed after\n" +
+		"all files, directories, and symlinks have been updated. Scripts without an\n" +
+		"`before_` or `after_` attribute are executed in ASCII order of their target\n" +
+		"names with respect to files, directories, and symlinks.\n" +
 		"\n" +
 		"## Special files and directories\n" +
 		"\n" +

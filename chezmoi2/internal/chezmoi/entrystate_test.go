@@ -14,9 +14,6 @@ import (
 
 func TestEntryStateEquivalent(t *testing.T) {
 	entryStates := map[string]*EntryState{
-		"absent": {
-			Type: EntryStateTypeAbsent,
-		},
 		"dir1": {
 			Type: EntryStateTypeDir,
 			Mode: os.ModeDir | 0o777,
@@ -46,10 +43,8 @@ func TestEntryStateEquivalent(t *testing.T) {
 		},
 		"nil1": nil,
 		"nil2": nil,
-		"present": {
-			Type:           EntryStateTypePresent,
-			Mode:           0o666,
-			ContentsSHA256: []byte{3},
+		"remove": {
+			Type: EntryStateTypeRemove,
 		},
 		"script": {
 			Type:           EntryStateTypeScript,
@@ -66,8 +61,6 @@ func TestEntryStateEquivalent(t *testing.T) {
 	}
 
 	expectedEquivalents := map[string]bool{
-		"absent_nil1":           true,
-		"absent_nil2":           true,
 		"dir_private_dir1_copy": runtime.GOOS == "windows",
 		"dir_private_dir1":      runtime.GOOS == "windows",
 		"dir1_copy_dir_private": runtime.GOOS == "windows",
@@ -75,15 +68,12 @@ func TestEntryStateEquivalent(t *testing.T) {
 		"dir1_dir_private":      runtime.GOOS == "windows",
 		"dir1_dir1_copy":        true,
 		"file1_copy_file1":      true,
-		"file1_copy_present":    true,
+		"file1_create":          true,
 		"file1_file1_copy":      true,
-		"file1_present":         true,
-		"file2_present":         true,
-		"nil1_absent":           true,
-		"nil2_absent":           true,
-		"present_file1_copy":    true,
-		"present_file1":         true,
-		"present_file2":         true,
+		"nil1_remove":           true,
+		"nil2_remove":           true,
+		"remove_nil1":           true,
+		"remove_nil2":           true,
 		"symlink_copy_symlink":  true,
 		"symlink_symlink_copy":  true,
 	}

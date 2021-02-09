@@ -75,12 +75,12 @@ Register-ArgumentCompleter -Native -CommandName 'chezmoi2' -ScriptBlock {
         'chezmoi2;add' {
             [CompletionResult]::new('-a', 'a', [CompletionResultType]::ParameterName, 'auto generate the template when adding files as templates')
             [CompletionResult]::new('--autotemplate', 'autotemplate', [CompletionResultType]::ParameterName, 'auto generate the template when adding files as templates')
+            [CompletionResult]::new('--create', 'create', [CompletionResultType]::ParameterName, 'add files that should exist, irrespective of their contents')
             [CompletionResult]::new('-e', 'e', [CompletionResultType]::ParameterName, 'add empty files')
             [CompletionResult]::new('--empty', 'empty', [CompletionResultType]::ParameterName, 'add empty files')
             [CompletionResult]::new('--encrypt', 'encrypt', [CompletionResultType]::ParameterName, 'encrypt files')
             [CompletionResult]::new('-x', 'x', [CompletionResultType]::ParameterName, 'add directories exactly')
             [CompletionResult]::new('--exact', 'exact', [CompletionResultType]::ParameterName, 'add directories exactly')
-            [CompletionResult]::new('--exists', 'exists', [CompletionResultType]::ParameterName, 'add files that should exist, irrespective of their contents')
             [CompletionResult]::new('-f', 'f', [CompletionResultType]::ParameterName, 'add symlink targets instead of symlinks')
             [CompletionResult]::new('--follow', 'follow', [CompletionResultType]::ParameterName, 'add symlink targets instead of symlinks')
             [CompletionResult]::new('-r', 'r', [CompletionResultType]::ParameterName, 'recursive')

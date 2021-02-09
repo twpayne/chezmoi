@@ -275,6 +275,7 @@ func cmdMkHomeDir(ts *testscript.TestScript, neg bool, args []string) {
 	ts.Check(err)
 	if err := vfst.NewBuilder().Build(vfs.NewPathFS(vfs.OSFS, workDir), map[string]interface{}{
 		relPath: map[string]interface{}{
+			".create": "# contents of .create\n",
 			".dir": map[string]interface{}{
 				"file": "# contents of .dir/file\n",
 				"subdir": map[string]interface{}{
@@ -286,8 +287,7 @@ func cmdMkHomeDir(ts *testscript.TestScript, neg bool, args []string) {
 				Perm:     0o777,
 				Contents: []byte("# contents of .executable\n"),
 			},
-			".exists": "# contents of .exists\n",
-			".file":   "# contents of .file\n",
+			".file": "# contents of .file\n",
 			".private": &vfst.File{
 				Perm:     0o600,
 				Contents: []byte("# contents of .private\n"),
@@ -317,16 +317,16 @@ func cmdMkSourceDir(ts *testscript.TestScript, neg bool, args []string) {
 	ts.Check(err)
 	err = vfst.NewBuilder().Build(vfs.NewPathFS(vfs.OSFS, workDir), map[string]interface{}{
 		relPath: map[string]interface{}{
-			"dot_absent": "",
+			"create_dot_create": "# contents of .create\n",
 			"dot_dir": map[string]interface{}{
 				"file": "# contents of .dir/file\n",
 				"subdir": map[string]interface{}{
 					"file": "# contents of .dir/subdir/file\n",
 				},
 			},
+			"dot_remove":                "",
 			"empty_dot_empty":           "",
 			"executable_dot_executable": "# contents of .executable\n",
-			"exists_dot_exists":         "# contents of .exists\n",
 			"dot_file":                  "# contents of .file\n",
 			"private_dot_private":       "# contents of .private\n",
 			"symlink_dot_symlink":       ".dir/subdir/file\n",

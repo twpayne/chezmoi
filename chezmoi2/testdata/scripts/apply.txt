@@ -3,30 +3,30 @@ mksourcedir
 
 # test that chezmoi apply --dry-run does not create any files
 chezmoi apply --dry-run --force
-! exists $HOME/.absent
+! exists $HOME/.create
 ! exists $HOME/.dir
 ! exists $HOME/.dir/file
 ! exists $HOME/.dir/subdir
 ! exists $HOME/.dir/subdir/file
 ! exists $HOME/.empty
 ! exists $HOME/.executable
-! exists $HOME/.exists
 ! exists $HOME/.file
 ! exists $HOME/.private
+! exists $HOME/.remove
 ! exists $HOME/.template
 
 # test that chezmoi apply file creates a single file only
 chezmoi apply --force $HOME${/}.file
-! exists $HOME/.absent
+! exists $HOME/.create
 ! exists $HOME/.dir
 ! exists $HOME/.dir/file
 ! exists $HOME/.dir/subdir
 ! exists $HOME/.dir/subdir/file
 ! exists $HOME/.empty
 ! exists $HOME/.executable
-! exists $HOME/.exists
 exists $HOME/.file
 ! exists $HOME/.private
+! exists $HOME/.remove
 ! exists $HOME/.template
 
 # test that chezmoi apply dir --recursive=false creates only the directory
@@ -45,16 +45,16 @@ exists $HOME/.dir/subdir/file
 
 # test that chezmoi apply creates all files
 chezmoi apply --force
-! exists $HOME/.absent
+exists $HOME/.create
 exists $HOME/.dir
 exists $HOME/.dir/file
 exists $HOME/.dir/subdir
 exists $HOME/.dir/subdir/file
 exists $HOME/.empty
 exists $HOME/.executable
-exists $HOME/.exists
 exists $HOME/.file
 exists $HOME/.private
+! exists $HOME/.remove
 exists $HOME/.template
 
 # test apply after edit
@@ -68,4 +68,4 @@ chezmoi apply --force --source-path $CHEZMOISOURCEDIR/dot_file
 grep -count=2 '# edited' $HOME/.file
 
 # test that chezmoi apply --source-path fails when called with a targetDirAbsPath
-! chezmoi apply --force --source-path ${HOME}${/}.file
+! chezmoi apply --force --source-path $HOME${/}.file
