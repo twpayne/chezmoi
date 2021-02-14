@@ -45,7 +45,7 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string, source
 		promptBool[key] = value
 	}
 	if c.executeTemplate.init {
-		for name, f := range map[string]interface{}{
+		chezmoi.RecursiveMerge(c.templateFuncs, map[string]interface{}{
 			"promptBool": func(prompt string) bool {
 				return promptBool[prompt]
 			},
@@ -58,9 +58,7 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string, source
 				}
 				return prompt
 			},
-		} {
-			c.templateFuncs[name] = f
-		}
+		})
 	}
 
 	if len(args) == 0 {

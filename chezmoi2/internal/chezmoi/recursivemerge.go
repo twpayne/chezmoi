@@ -17,8 +17,8 @@ func recursiveCopy(v interface{}) interface{} {
 	return c
 }
 
-// recursiveMerge recursively merges maps in source into dest.
-func recursiveMerge(dest, source map[string]interface{}) {
+// RecursiveMerge recursively merges maps in source into dest.
+func RecursiveMerge(dest, source map[string]interface{}) {
 	for key, sourceValue := range source {
 		destValue, ok := dest[key]
 		if !ok {
@@ -35,6 +35,6 @@ func recursiveMerge(dest, source map[string]interface{}) {
 			dest[key] = recursiveCopy(sourceValue)
 			continue
 		}
-		recursiveMerge(destMap, sourceMap)
+		RecursiveMerge(destMap, sourceMap)
 	}
 }

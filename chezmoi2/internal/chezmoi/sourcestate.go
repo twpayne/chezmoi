@@ -57,7 +57,7 @@ func WithEncryption(encryption Encryption) SourceStateOption {
 // WithPriorityTemplateData adds priority template data.
 func WithPriorityTemplateData(priorityTemplateData map[string]interface{}) SourceStateOption {
 	return func(s *SourceState) {
-		recursiveMerge(s.priorityTemplateData, priorityTemplateData)
+		RecursiveMerge(s.priorityTemplateData, priorityTemplateData)
 	}
 }
 
@@ -647,11 +647,11 @@ func (s *SourceState) TemplateData() map[string]interface{} {
 	if s.templateData == nil {
 		s.templateData = make(map[string]interface{})
 		if s.defaultTemplateDataFunc != nil {
-			recursiveMerge(s.templateData, s.defaultTemplateDataFunc())
+			RecursiveMerge(s.templateData, s.defaultTemplateDataFunc())
 			s.defaultTemplateDataFunc = nil
 		}
-		recursiveMerge(s.templateData, s.userTemplateData)
-		recursiveMerge(s.templateData, s.priorityTemplateData)
+		RecursiveMerge(s.templateData, s.userTemplateData)
+		RecursiveMerge(s.templateData, s.priorityTemplateData)
 	}
 	return s.templateData
 }
@@ -708,7 +708,7 @@ func (s *SourceState) addTemplateData(sourceAbsPath AbsPath) error {
 	if err := format.Unmarshal(data, &templateData); err != nil {
 		return fmt.Errorf("%s: %w", sourceAbsPath, err)
 	}
-	recursiveMerge(s.userTemplateData, templateData)
+	RecursiveMerge(s.userTemplateData, templateData)
 	return nil
 }
 
