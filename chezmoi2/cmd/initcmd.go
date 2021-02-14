@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"os"
 	"regexp"
@@ -99,24 +100,7 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 		c.init.purge = true
 	}
 
-	if len(args) == 0 {
-		switch useBuiltinGit, err := c.useBuiltinGit(); {
-		case err != nil:
-			return err
-		case useBuiltinGit:
-			rawSourceDir, err := c.baseSystem.RawPath(c.sourceDirAbsPath)
-			if err != nil {
-				return err
-			}
-			isBare := false
-			_, err = git.PlainInit(string(rawSourceDir), isBare)
-			return err
-		default:
-			return c.run(c.sourceDirAbsPath, c.Git.Command, []string{"init"})
-		}
-	}
-
-	// Clone repo into source directory if it does not already exist.
+	// If the source repo does not exist then init or clone it.
 	switch _, err := c.baseSystem.Stat(c.sourceDirAbsPath.Join(chezmoi.RelPath(".git"))); {
 	case os.IsNotExist(err):
 		rawSourceDir, err := c.baseSystem.RawPath(c.sourceDirAbsPath)
@@ -124,35 +108,48 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 			return err
 		}
 
-		dotfilesRepoURL := guessDotfilesRepoURL(args[0])
-		switch useBuiltinGit, err := c.useBuiltinGit(); {
-		case err != nil:
+		useBuiltinGit, err := c.useBuiltinGit()
+		if err != nil {
 			return err
-		case useBuiltinGit:
-			isBare := false
-			if _, err := git.PlainClone(string(rawSourceDir), isBare, &git.CloneOptions{
-				URL:               dotfilesRepoURL,
-				Depth:             c.init.depth,
-				RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
-			}); err != nil {
+		}
+
+		if len(args) == 0 {
+			if useBuiltinGit {
+				isBare := false
+				if _, err = git.PlainInit(string(rawSourceDir), isBare); err != nil {
+					return err
+				}
+			} else if err := c.run(c.sourceDirAbsPath, c.Git.Command, []string{"init"}); err != nil {
 				return err
 			}
-		default:
-			args := []string{
-				"clone",
-				"--recurse-submodules",
-			}
-			if c.init.depth != 0 {
+		} else {
+			dotfilesRepoURL := guessDotfilesRepoURL(args[0])
+			if useBuiltinGit {
+				isBare := false
+				if _, err := git.PlainClone(string(rawSourceDir), isBare, &git.CloneOptions{
+					URL:               dotfilesRepoURL,
+					Depth:             c.init.depth,
+					RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
+				}); err != nil {
+					return err
+				}
+			} else {
+				args := []string{
+					"clone",
+					"--recurse-submodules",
+				}
+				if c.init.depth != 0 {
+					args = append(args,
+						"--depth", strconv.Itoa(c.init.depth),
+					)
+				}
 				args = append(args,
-					"--depth", strconv.Itoa(c.init.depth),
+					dotfilesRepoURL,
+					string(rawSourceDir),
 				)
-			}
-			args = append(args,
-				dotfilesRepoURL,
-				string(rawSourceDir),
-			)
-			if err := c.run("", c.Git.Command, args); err != nil {
-				return err
+				if err := c.run("", c.Git.Command, args); err != nil {
+					return err
+				}
 			}
 		}
 	case err != nil:
@@ -168,6 +165,15 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 	if filename != "" {
 		configFileContents, err = c.createConfigFile(filename, data)
 		if err != nil {
+			return err
+		}
+		configStateValue, err := json.Marshal(configState{
+			ConfigTemplateContentsSHA256: chezmoi.HexBytes(chezmoi.SHA256Sum(configFileContents)),
+		})
+		if err != nil {
+			return err
+		}
+		if err := c.persistentState.Set(chezmoi.ConfigStateBucket, configStateKey, configStateValue); err != nil {
 			return err
 		}
 	}
@@ -245,21 +251,6 @@ func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte) ([]byte
 	}
 
 	return contents, nil
-}
-
-func (c *Config) findConfigTemplate() (chezmoi.RelPath, string, []byte, error) {
-	for _, ext := range viper.SupportedExts {
-		filename := chezmoi.RelPath(chezmoi.Prefix + "." + ext + chezmoi.TemplateSuffix)
-		contents, err := c.baseSystem.ReadFile(c.sourceDirAbsPath.Join(filename))
-		switch {
-		case os.IsNotExist(err):
-			continue
-		case err != nil:
-			return "", "", nil, err
-		}
-		return chezmoi.RelPath("chezmoi." + ext), ext, contents, nil
-	}
-	return "", "", nil, nil
 }
 
 func (c *Config) promptBool(field string) bool {

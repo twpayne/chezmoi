@@ -1,6 +1,9 @@
 package chezmoi
 
 var (
+	// ConfigStateBucket is the bucket for recording the config state.
+	ConfigStateBucket = []byte("configState")
+
 	// entryStateBucket is the bucket for recording the entry states.
 	entryStateBucket = []byte("entryState")
 
@@ -23,6 +26,10 @@ type PersistentState interface {
 
 // PersistentStateData returns the structured data in s.
 func PersistentStateData(s PersistentState) (interface{}, error) {
+	configStateData, err := persistentStateBucketData(s, ConfigStateBucket)
+	if err != nil {
+		return nil, err
+	}
 	entryStateData, err := persistentStateBucketData(s, entryStateBucket)
 	if err != nil {
 		return nil, err
@@ -32,9 +39,11 @@ func PersistentStateData(s PersistentState) (interface{}, error) {
 		return nil, err
 	}
 	return struct {
+		ConfigState interface{} `json:"configState" toml:"configState" yaml:"configState"`
 		EntryState  interface{} `json:"entryState" toml:"entryState" yaml:"entryState"`
 		ScriptState interface{} `json:"scriptState" toml:"scriptState" yaml:"scriptState"`
 	}{
+		ConfigState: configStateData,
 		EntryState:  entryStateData,
 		ScriptState: scriptStateData,
 	}, nil

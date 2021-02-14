@@ -10,7 +10,7 @@ import (
 
 func TestHexBytes(t *testing.T) {
 	for i, tc := range []struct {
-		b           hexBytes
+		b           HexBytes
 		expectedStr string
 	}{
 		{
@@ -35,7 +35,7 @@ func TestHexBytes(t *testing.T) {
 					actual, err := format.Marshal(tc.b)
 					require.NoError(t, err)
 					assert.Equal(t, []byte(tc.expectedStr), actual)
-					var actualB hexBytes
+					var actualB HexBytes
 					require.NoError(t, format.Unmarshal(actual, &actualB))
 					assert.Equal(t, tc.b, actualB)
 				})

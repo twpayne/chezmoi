@@ -23,7 +23,7 @@ const (
 type EntryState struct {
 	Type           EntryStateType `json:"type" toml:"type" yaml:"type"`
 	Mode           os.FileMode    `json:"mode,omitempty" toml:"mode,omitempty" yaml:"mode,omitempty"`
-	ContentsSHA256 hexBytes       `json:"contentsSHA256,omitempty" toml:"contentsSHA256,omitempty" yaml:"contentsSHA256,omitempty"`
+	ContentsSHA256 HexBytes       `json:"contentsSHA256,omitempty" toml:"contentsSHA256,omitempty" yaml:"contentsSHA256,omitempty"`
 	contents       []byte
 }
 

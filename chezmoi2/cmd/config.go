@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -143,8 +144,13 @@ type Config struct {
 // A configOption sets and option on a Config.
 type configOption func(*Config) error
 
+type configState struct {
+	ConfigTemplateContentsSHA256 chezmoi.HexBytes `json:"configTemplateContentsSHA256" yaml:"configTemplateContentsSHA256"`
+}
+
 var (
 	persistentStateFilename    = chezmoi.RelPath("chezmoistate.boltdb")
+	configStateKey             = []byte("configState")
 	commitMessageTemplateAsset = "assets/templates/COMMIT_MESSAGE.tmpl"
 
 	identifierRx = regexp.MustCompile(`\A[\pL_][\pL\p{Nd}_]*\z`)
@@ -337,6 +343,40 @@ func (c *Config) applyArgs(targetSystem chezmoi.System, targetDirAbsPath chezmoi
 	sourceState, err := c.sourceState()
 	if err != nil {
 		return err
+	}
+
+	var currentConfigTemplateContentsSHA256 []byte
+	_, _, configTemplateContents, err := c.findConfigTemplate()
+	if err != nil {
+		return err
+	}
+	currentConfigTemplateContentsSHA256 = chezmoi.SHA256Sum(configTemplateContents)
+	var previousConfigTemplateContentsSHA256 []byte
+	if configStateData, err := c.persistentState.Get(chezmoi.ConfigStateBucket, configStateKey); err != nil {
+		return err
+	} else if configStateData != nil {
+		var configState configState
+		if err := json.Unmarshal(configStateData, &configState); err != nil {
+			return err
+		}
+		previousConfigTemplateContentsSHA256 = []byte(configState.ConfigTemplateContentsSHA256)
+	}
+	configTemplateContentsUnchanged := (currentConfigTemplateContentsSHA256 == nil && previousConfigTemplateContentsSHA256 == nil) ||
+		bytes.Equal(currentConfigTemplateContentsSHA256, previousConfigTemplateContentsSHA256)
+	if !configTemplateContentsUnchanged {
+		if c.force {
+			configStateValue, err := json.Marshal(configState{
+				ConfigTemplateContentsSHA256: chezmoi.HexBytes(currentConfigTemplateContentsSHA256),
+			})
+			if err != nil {
+				return err
+			}
+			if err := c.persistentState.Set(chezmoi.ConfigStateBucket, configStateKey, configStateValue); err != nil {
+				return err
+			}
+		} else {
+			c.errorf("warning: config file template has changed, run chezmoi init to regenerate config file\n")
+		}
 	}
 
 	applyOptions := chezmoi.ApplyOptions{
@@ -721,6 +761,21 @@ func (c *Config) execute(args []string) error {
 	}
 	rootCmd.SetArgs(args)
 	return rootCmd.Execute()
+}
+
+func (c *Config) findConfigTemplate() (chezmoi.RelPath, string, []byte, error) {
+	for _, ext := range viper.SupportedExts {
+		filename := chezmoi.RelPath(chezmoi.Prefix + "." + ext + chezmoi.TemplateSuffix)
+		contents, err := c.baseSystem.ReadFile(c.sourceDirAbsPath.Join(filename))
+		switch {
+		case os.IsNotExist(err):
+			continue
+		case err != nil:
+			return "", "", nil, err
+		}
+		return chezmoi.RelPath("chezmoi." + ext), ext, contents, nil
+	}
+	return "", "", nil, nil
 }
 
 func (c *Config) gitAutoAdd() (*git.Status, error) {

@@ -19,6 +19,7 @@ chezmoi --force state reset
 ! exists $CHEZMOICONFIGDIR/chezmoistate.boltdb
 
 -- golden/dump --
+configState: {}
 entryState: {}
 scriptState: {}
 -- home/user/.local/share/chezmoi/run_once_script.cmd --
