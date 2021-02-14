@@ -2,6 +2,7 @@ package chezmoi
 
 import (
 	"bytes"
+	"crypto/sha256"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -107,6 +108,12 @@ type errUnsupportedFileType struct {
 
 func (e *errUnsupportedFileType) Error() string {
 	return fmt.Sprintf("%s: unsupported file type %s", e.absPath, modeTypeName(e.mode))
+}
+
+// SHA256Sum returns the SHA256 sum of data.
+func SHA256Sum(data []byte) []byte {
+	sha256SumArr := sha256.Sum256(data)
+	return sha256SumArr[:]
 }
 
 // SuspiciousSourceDirEntry returns true if base is a suspicous dir entry.

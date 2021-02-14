@@ -4,11 +4,11 @@ import (
 	"encoding/hex"
 )
 
-// A hexBytes is a []byte which is marhsaled as a hex string.
-type hexBytes []byte
+// A HexBytes is a []byte which is marhsaled as a hex string.
+type HexBytes []byte
 
 // MarshalText implements encoding.TextMarshaler.MarshalText.
-func (h hexBytes) MarshalText() ([]byte, error) {
+func (h HexBytes) MarshalText() ([]byte, error) {
 	if len(h) == 0 {
 		return nil, nil
 	}
@@ -18,7 +18,7 @@ func (h hexBytes) MarshalText() ([]byte, error) {
 }
 
 // UnmarshalText implements encoding.TextMarshaler.UnmarshalText.
-func (h *hexBytes) UnmarshalText(text []byte) error {
+func (h *HexBytes) UnmarshalText(text []byte) error {
 	if len(text) == 0 {
 		*h = nil
 		return nil

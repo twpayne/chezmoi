@@ -136,7 +136,7 @@ func (s *ActualStateFile) EntryState() (*EntryState, error) {
 	return &EntryState{
 		Type:           EntryStateTypeFile,
 		Mode:           s.perm,
-		ContentsSHA256: hexBytes(contentsSHA256),
+		ContentsSHA256: HexBytes(contentsSHA256),
 		contents:       contents,
 	}, nil
 }
@@ -163,7 +163,7 @@ func (s *ActualStateSymlink) EntryState() (*EntryState, error) {
 	}
 	return &EntryState{
 		Type:           EntryStateTypeSymlink,
-		ContentsSHA256: hexBytes(linknameSHA256),
+		ContentsSHA256: HexBytes(linknameSHA256),
 		contents:       []byte(linkname),
 	}, nil
 }

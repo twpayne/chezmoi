@@ -130,7 +130,7 @@ func (t *TargetStateFile) EntryState(umask os.FileMode) (*EntryState, error) {
 	return &EntryState{
 		Type:           EntryStateTypeFile,
 		Mode:           t.perm &^ umask,
-		ContentsSHA256: hexBytes(contentsSHA256),
+		ContentsSHA256: HexBytes(contentsSHA256),
 		contents:       contents,
 	}, nil
 }
@@ -210,7 +210,7 @@ func (t *TargetStateScript) EntryState(umask os.FileMode) (*EntryState, error) {
 	}
 	return &EntryState{
 		Type:           EntryStateTypeScript,
-		ContentsSHA256: hexBytes(contentsSHA256),
+		ContentsSHA256: HexBytes(contentsSHA256),
 	}, nil
 }
 

@@ -50,7 +50,6 @@ func init() {
 		"  * [`.chezmoiversion`](#chezmoiversion)\n" +
 		"* [Commands](#commands)\n" +
 		"  * [`add` *targets*](#add-targets)\n" +
-		"  * [`--follow`](#--follow)\n" +
 		"  * [`apply` [*targets*]](#apply-targets)\n" +
 		"  * [`archive`](#archive)\n" +
 		"  * [`cat` *targets*](#cat-targets)\n" +
@@ -551,7 +550,7 @@ func init() {
 		"\n" +
 		"Add *targets*, even if doing so would cause a source template to be overwritten.\n" +
 		"\n" +
-		"### `--follow`\n" +
+		"#### `--follow`\n" +
 		"\n" +
 		"If the last part of a target is a symlink, add the target of the symlink instead\n" +
 		"of the symlink itself.\n" +

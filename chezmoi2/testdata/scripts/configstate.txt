@@ -1,0 +1,42 @@
+# test that chezmoi init creates a config file and updates the state
+chezmoi init
+cmp $CHEZMOICONFIGDIR/chezmoi.toml golden/chezmoi.toml
+chezmoi state dump --format=yaml
+cmp stdout golden/state-dump.yaml
+
+# test that chezmoi apply succeeds
+chezmoi apply
+
+# test that chezmoi apply prints a warning if the config file template has been changed
+edit $CHEZMOISOURCEDIR/.chezmoi.toml.tmpl
+chezmoi apply
+stderr 'warning: config file template has changed'
+
+# test that chezmoi init re-generates the config file
+chezmoi init
+grep '# edited' $CHEZMOICONFIGDIR/chezmoi.toml
+
+# test that chezmoi apply no longer prints a warning after the config file is regenerated
+chezmoi apply
+! stderr .
+
+# test that chezmoi apply --force ignores config file changes and updates the state
+edit $CHEZMOISOURCEDIR/.chezmoi.toml.tmpl
+grep -count=2 '# edited' $CHEZMOISOURCEDIR/.chezmoi.toml.tmpl
+chezmoi apply --force
+! stderr .
+grep -count=1 '# edited' $CHEZMOICONFIGDIR/chezmoi.toml
+
+-- golden/chezmoi.toml --
+[data]
+  email = "user@home.org"
+-- golden/state-dump.yaml --
+configState:
+    configState:
+        configTemplateContentsSHA256: f79e9af9aab3822d28ba929391ebc14882169abd8613aec85c5a60d46d58ee32
+entryState: {}
+scriptState: {}
+-- home/user/.local/share/chezmoi/.chezmoi.toml.tmpl --
+[data]
+  email = "user@home.org"
+-- home/user/.local/share/chezmoi/.git/.keep --

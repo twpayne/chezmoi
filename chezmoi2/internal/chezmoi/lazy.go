@@ -1,9 +1,5 @@
 package chezmoi
 
-import (
-	"crypto/sha256"
-)
-
 // A contentsFunc is a function that returns the contents of a file or an error.
 // It is typically used for lazy evaluation of a file's contents.
 type contentsFunc func() ([]byte, error)
@@ -44,7 +40,7 @@ func (lc *lazyContents) Contents() ([]byte, error) {
 		lc.contents, lc.contentsErr = lc.contentsFunc()
 		lc.contentsFunc = nil
 		if lc.contentsErr == nil {
-			lc.contentsSHA256 = sha256Sum(lc.contents)
+			lc.contentsSHA256 = SHA256Sum(lc.contents)
 		}
 	}
 	return lc.contents, lc.contentsErr
@@ -53,14 +49,14 @@ func (lc *lazyContents) Contents() ([]byte, error) {
 // ContentsSHA256 returns the SHA256 sum of lc's contents.
 func (lc *lazyContents) ContentsSHA256() ([]byte, error) {
 	if lc == nil {
-		return sha256Sum(nil), nil
+		return SHA256Sum(nil), nil
 	}
 	if lc.contentsSHA256 == nil {
 		contents, err := lc.Contents()
 		if err != nil {
 			return nil, err
 		}
-		lc.contentsSHA256 = sha256Sum(contents)
+		lc.contentsSHA256 = SHA256Sum(contents)
 	}
 	return lc.contentsSHA256, nil
 }
@@ -87,20 +83,14 @@ func (ll *lazyLinkname) Linkname() (string, error) {
 // LinknameSHA256 returns the SHA256 sum of ll's linkname.
 func (ll *lazyLinkname) LinknameSHA256() ([]byte, error) {
 	if ll == nil {
-		return sha256Sum(nil), nil
+		return SHA256Sum(nil), nil
 	}
 	if ll.linknameSHA256 == nil {
 		linkname, err := ll.Linkname()
 		if err != nil {
 			return nil, err
 		}
-		ll.linknameSHA256 = sha256Sum([]byte(linkname))
+		ll.linknameSHA256 = SHA256Sum([]byte(linkname))
 	}
 	return ll.linknameSHA256, nil
-}
-
-// sha256Sum returns the SHA256 sum of data.
-func sha256Sum(data []byte) []byte {
-	sha256SumArr := sha256.Sum256(data)
-	return sha256SumArr[:]
 }
