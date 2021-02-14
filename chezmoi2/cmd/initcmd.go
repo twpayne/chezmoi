@@ -157,18 +157,18 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	// Find config template, execute it, and create config file.
-	filename, ext, data, err := c.findConfigTemplate()
+	filename, ext, configTemplateContents, err := c.findConfigTemplate()
 	if err != nil {
 		return err
 	}
 	var configFileContents []byte
 	if filename != "" {
-		configFileContents, err = c.createConfigFile(filename, data)
+		configFileContents, err = c.createConfigFile(filename, configTemplateContents)
 		if err != nil {
 			return err
 		}
 		configStateValue, err := json.Marshal(configState{
-			ConfigTemplateContentsSHA256: chezmoi.HexBytes(chezmoi.SHA256Sum(configFileContents)),
+			ConfigTemplateContentsSHA256: chezmoi.HexBytes(chezmoi.SHA256Sum(configTemplateContents)),
 		})
 		if err != nil {
 			return err
@@ -218,16 +218,12 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 // contents.
 func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte) ([]byte, error) {
 	funcMap := make(template.FuncMap)
-	for key, value := range c.templateFuncs {
-		funcMap[key] = value
-	}
-	for name, f := range map[string]interface{}{
+	chezmoi.RecursiveMerge(funcMap, c.templateFuncs)
+	chezmoi.RecursiveMerge(funcMap, map[string]interface{}{
 		"promptBool":   c.promptBool,
 		"promptInt":    c.promptInt,
 		"promptString": c.promptString,
-	} {
-		funcMap[name] = f
-	}
+	})
 
 	t, err := template.New(string(filename)).Funcs(funcMap).Parse(string(data))
 	if err != nil {
@@ -235,7 +231,9 @@ func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte) ([]byte
 	}
 
 	sb := strings.Builder{}
-	if err = t.Execute(&sb, c.defaultTemplateData()); err != nil {
+	templateData := c.defaultTemplateData()
+	chezmoi.RecursiveMerge(templateData, c.Data)
+	if err = t.Execute(&sb, templateData); err != nil {
 		return nil, err
 	}
 	contents := []byte(sb.String())

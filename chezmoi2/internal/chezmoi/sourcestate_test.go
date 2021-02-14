@@ -1269,7 +1269,7 @@ func withMinVersion(minVersion semver.Version) SourceStateOption {
 // withUserTemplateData adds template data.
 func withUserTemplateData(templateData map[string]interface{}) SourceStateOption {
 	return func(s *SourceState) {
-		recursiveMerge(s.userTemplateData, templateData)
+		RecursiveMerge(s.userTemplateData, templateData)
 	}
 }
 
