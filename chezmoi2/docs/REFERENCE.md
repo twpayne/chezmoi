@@ -43,7 +43,6 @@ Manage your dotfiles securely across multiple machines.
   * [`.chezmoiversion`](#chezmoiversion)
 * [Commands](#commands)
   * [`add` *targets*](#add-targets)
-  * [`--follow`](#--follow)
   * [`apply` [*targets*]](#apply-targets)
   * [`archive`](#archive)
   * [`cat` *targets*](#cat-targets)
@@ -544,7 +543,7 @@ Set the `empty` attribute on added files.
 
 Add *targets*, even if doing so would cause a source template to be overwritten.
 
-### `--follow`
+#### `--follow`
 
 If the last part of a target is a symlink, add the target of the symlink instead
 of the symlink itself.

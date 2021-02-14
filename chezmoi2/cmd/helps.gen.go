@@ -8,9 +8,30 @@ type help struct {
 }
 
 var helps = map[string]help{
-	"--follow": {
+	"add": {
 		long: "" +
 			"Description:\n" +
+			"  Add *targets* to the source state. If any target is already in the source\n" +
+			"  state, then its source state is replaced with its current state in the\n" +
+			"  destination directory. The `add` command accepts additional flags:\n" +
+			"\n" +
+			"  `--autotemplate`\n" +
+			"\n" +
+			"  Automatically generate a template by replacing strings with variable names\n" +
+			"  from the `data` section of the config file. Longer substitutions occur\n" +
+			"  before shorter ones. This implies the `--template` option.\n" +
+			"\n" +
+			"  `-e`, `--empty`\n" +
+			"\n" +
+			"  Set the `empty` attribute on added files.\n" +
+			"\n" +
+			"  `-f`, `--force`\n" +
+			"\n" +
+			"  Add *targets*, even if doing so would cause a source template to be\n" +
+			"  overwritten.\n" +
+			"\n" +
+			"  `--follow`\n" +
+			"\n" +
 			"  If the last part of a target is a symlink, add the target of the symlink\n" +
 			"  instead of the symlink itself.\n" +
 			"\n" +
@@ -38,28 +59,6 @@ var helps = map[string]help{
 			"  chezmoi add ~/.gitconfig --template\n" +
 			"  chezmoi add ~/.vim --recursive\n" +
 			"  chezmoi add ~/.oh-my-zsh --exact --recursive",
-	},
-	"add": {
-		long: "" +
-			"Description:\n" +
-			"  Add *targets* to the source state. If any target is already in the source\n" +
-			"  state, then its source state is replaced with its current state in the\n" +
-			"  destination directory. The `add` command accepts additional flags:\n" +
-			"\n" +
-			"  `--autotemplate`\n" +
-			"\n" +
-			"  Automatically generate a template by replacing strings with variable names\n" +
-			"  from the `data` section of the config file. Longer substitutions occur\n" +
-			"  before shorter ones. This implies the `--template` option.\n" +
-			"\n" +
-			"  `-e`, `--empty`\n" +
-			"\n" +
-			"  Set the `empty` attribute on added files.\n" +
-			"\n" +
-			"  `-f`, `--force`\n" +
-			"\n" +
-			"  Add *targets*, even if doing so would cause a source template to be\n" +
-			"  overwritten.",
 	},
 	"apply": {
 		long: "" +
