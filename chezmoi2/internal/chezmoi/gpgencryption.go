@@ -20,64 +20,64 @@ type GPGEncryption struct {
 }
 
 // Decrypt implements Encyrption.Decrypt.
-func (t *GPGEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
-	args := append([]string{"--decrypt"}, t.Args...)
+func (e *GPGEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
+	args := append([]string{"--decrypt"}, e.Args...)
 	//nolint:gosec
-	cmd := exec.Command(t.Command, args...)
+	cmd := exec.Command(e.Command, args...)
 	cmd.Stdin = bytes.NewReader(ciphertext)
 	return chezmoilog.LogCmdOutput(log.Logger, cmd)
 }
 
 // DecryptToFile implements Encryption.DecryptToFile.
-func (t *GPGEncryption) DecryptToFile(filename string, ciphertext []byte) error {
+func (e *GPGEncryption) DecryptToFile(filename string, ciphertext []byte) error {
 	args := append([]string{
 		"--decrypt",
 		"--output", filename,
 		"--yes",
-	}, t.Args...)
+	}, e.Args...)
 	//nolint:gosec
-	cmd := exec.Command(t.Command, args...)
+	cmd := exec.Command(e.Command, args...)
 	cmd.Stdin = bytes.NewReader(ciphertext)
 	return chezmoilog.LogCmdRun(log.Logger, cmd)
 }
 
 // Encrypt implements Encryption.Encrypt.
-func (t *GPGEncryption) Encrypt(plaintext []byte) ([]byte, error) {
-	args := append(t.encryptArgs(), t.Args...)
+func (e *GPGEncryption) Encrypt(plaintext []byte) ([]byte, error) {
+	args := append(e.encryptArgs(), e.Args...)
 	//nolint:gosec
-	cmd := exec.Command(t.Command, args...)
+	cmd := exec.Command(e.Command, args...)
 	cmd.Stdin = bytes.NewReader(plaintext)
 	return chezmoilog.LogCmdOutput(log.Logger, cmd)
 }
 
 // EncryptFile implements Encryption.EncryptFile.
-func (t *GPGEncryption) EncryptFile(filename string) (ciphertext []byte, err error) {
+func (e *GPGEncryption) EncryptFile(filename string) (ciphertext []byte, err error) {
 	f, err := os.Open(filename)
 	if err != nil {
 		return nil, err
 	}
 	defer f.Close()
-	args := append(t.encryptArgs(), t.Args...)
+	args := append(e.encryptArgs(), e.Args...)
 	//nolint:gosec
-	cmd := exec.Command(t.Command, args...)
+	cmd := exec.Command(e.Command, args...)
 	cmd.Stdin = f
 	return chezmoilog.LogCmdOutput(log.Logger, cmd)
 }
 
 // EncryptedSuffix implements Encryption.EncryptedSuffix.
-func (t *GPGEncryption) EncryptedSuffix() string {
-	return t.Suffix
+func (e *GPGEncryption) EncryptedSuffix() string {
+	return e.Suffix
 }
 
-func (t *GPGEncryption) encryptArgs() []string {
+func (e *GPGEncryption) encryptArgs() []string {
 	args := []string{
 		"--armor",
 		"--encrypt",
 	}
-	if t.Recipient != "" {
-		args = append(args, "--recipient", t.Recipient)
+	if e.Recipient != "" {
+		args = append(args, "--recipient", e.Recipient)
 	}
-	if t.Symmetric {
+	if e.Symmetric {
 		args = append(args, "--symmetric")
 	}
 	return args
