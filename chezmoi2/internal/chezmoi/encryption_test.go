@@ -37,6 +37,10 @@ func (t *xorEncryption) EncryptFile(filename string) ([]byte, error) {
 	return t.xorWithKey(plaintext), nil
 }
 
+func (t *xorEncryption) EncryptedSuffix() string {
+	return ".xor"
+}
+
 func (t *xorEncryption) xorWithKey(input []byte) []byte {
 	output := make([]byte, 0, len(input))
 	for _, b := range input {

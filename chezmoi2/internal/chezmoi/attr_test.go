@@ -125,9 +125,32 @@ func TestFileAttr(t *testing.T) {
 		},
 	}))
 	for _, fa := range fas {
-		actualSourceName := fa.SourceName()
-		actualFA := parseFileAttr(actualSourceName)
+		actualSourceName := fa.SourceName("")
+		actualFA := parseFileAttr(actualSourceName, "")
 		assert.Equal(t, fa, actualFA)
-		assert.Equal(t, actualSourceName, actualFA.SourceName())
+		assert.Equal(t, actualSourceName, actualFA.SourceName(""))
+	}
+}
+
+func TestFileAttrEncryptedSuffix(t *testing.T) {
+	for _, tc := range []struct {
+		sourceName         string
+		expectedTargetName string
+	}{
+		{
+			sourceName:         "encrypted_file",
+			expectedTargetName: "file",
+		},
+		{
+			sourceName:         "encrypted_file.asc",
+			expectedTargetName: "file",
+		},
+		{
+			sourceName:         "file.asc",
+			expectedTargetName: "file.asc",
+		},
+	} {
+		fa := parseFileAttr(tc.sourceName, ".asc")
+		assert.Equal(t, tc.expectedTargetName, fa.TargetName)
 	}
 }

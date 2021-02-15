@@ -20,6 +20,7 @@ type AGEEncryption struct {
 	Recipients      []string
 	RecipientsFile  string
 	RecipientsFiles []string
+	Suffix          string
 }
 
 // Decrypt implements Encyrption.Decrypt.
@@ -59,6 +60,11 @@ func (t *AGEEncryption) EncryptFile(filename string) ([]byte, error) {
 	//nolint:gosec
 	cmd := exec.Command(t.Command, append(append(t.encryptArgs(), t.Args...), filename)...)
 	return chezmoilog.LogCmdOutput(log.Logger, cmd)
+}
+
+// EncryptedSuffix implements Encryption.EncryptedSuffix.
+func (t *AGEEncryption) EncryptedSuffix() string {
+	return t.Suffix
 }
 
 func (t *AGEEncryption) decryptArgs() []string {

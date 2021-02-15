@@ -18,3 +18,6 @@ func (NoEncryption) Encrypt([]byte) ([]byte, error) { return nil, errNoEncryptio
 
 // EncryptFile implements Encryption.EncryptFile.
 func (NoEncryption) EncryptFile(string) ([]byte, error) { return nil, errNoEncryption }
+
+// EncryptedSuffix implements Encryption.EncryptedSuffix.
+func (NoEncryption) EncryptedSuffix() string { return "" }

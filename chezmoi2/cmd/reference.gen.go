@@ -276,6 +276,7 @@ func init() {
 		"|               | `recipients`      | []string | *none*                    | age recipients                                         |\n" +
 		"|               | `recipientsFile`  | []string | *none*                    | age recipients file                                    |\n" +
 		"|               | `recipientsFiles` | []string | *none*                    | age receipients files                                  |\n" +
+		"|               | `suffix`          | string   | `.age`                    | Suffix appended to age-encrypted files                 |\n" +
 		"| `bitwarden`   | `command`         | string   | `bw`                      | Bitwarden CLI command                                  |\n" +
 		"| `cd`          | `args`            | []string | *none*                    | Extra args to shell in `cd` command                    |\n" +
 		"|               | `command`         | string   | *none*                    | Shell to run in `cd` command                           |\n" +
@@ -291,6 +292,7 @@ func init() {
 		"| `gpg`         | `args`            | []string | *none*                    | Extra args to GPG CLI command                          |\n" +
 		"|               | `command`         | string   | `gpg`                     | GPG CLI command                                        |\n" +
 		"|               | `recipient`       | string   | *none*                    | GPG recipient                                          |\n" +
+		"|               | `suffix`          | string   | `.asc`                    | Suffix appended to GPG-encrypted files                 |\n" +
 		"|               | `symmetric`       | bool     | `false`                   | Use symmetric GPG encryption                           |\n" +
 		"| `keepassxc`   | `args`            | []string | *none*                    | Extra args to KeePassXC CLI command                    |\n" +
 		"|               | `command`         | string   | `keepassxc-cli`           | KeePassXC CLI command                                  |\n" +

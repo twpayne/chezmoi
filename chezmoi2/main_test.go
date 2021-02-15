@@ -40,6 +40,7 @@ func TestScript(t *testing.T) {
 	testscript.Run(t, testscript.Params{
 		Dir: filepath.Join("testdata", "scripts"),
 		Cmds: map[string]func(*testscript.TestScript, bool, []string){
+			"appendline":     cmdAppendLine,
 			"chhome":         cmdChHome,
 			"cmpmod":         cmdCmpMod,
 			"edit":           cmdEdit,
@@ -69,6 +70,21 @@ func TestScript(t *testing.T) {
 		Setup:         setup,
 		UpdateScripts: os.Getenv("CHEZMOIUPDATESCRIPTS") != "",
 	})
+}
+
+// cmdAppendLine appends lines to a file.
+func cmdAppendLine(ts *testscript.TestScript, neg bool, args []string) {
+	if neg {
+		ts.Fatalf("unsupported: ! appendline")
+	}
+	if len(args) != 2 {
+		ts.Fatalf("usage: appendline file line")
+	}
+	filename := ts.MkAbs(args[0])
+	data, err := ioutil.ReadFile(filename)
+	ts.Check(err)
+	data = append(data, append([]byte(args[1]), '\n')...)
+	ts.Check(ioutil.WriteFile(filename, data, 0o666))
 }
 
 // cmdChHome changes the home directory to its argument, creating the directory

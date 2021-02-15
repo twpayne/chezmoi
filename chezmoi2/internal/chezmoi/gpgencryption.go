@@ -16,6 +16,7 @@ type GPGEncryption struct {
 	Args      []string
 	Recipient string
 	Symmetric bool
+	Suffix    string
 }
 
 // Decrypt implements Encyrption.Decrypt.
@@ -61,6 +62,11 @@ func (t *GPGEncryption) EncryptFile(filename string) (ciphertext []byte, err err
 	cmd := exec.Command(t.Command, args...)
 	cmd.Stdin = f
 	return chezmoilog.LogCmdOutput(log.Logger, cmd)
+}
+
+// EncryptedSuffix implements Encryption.EncryptedSuffix.
+func (t *GPGEncryption) EncryptedSuffix() string {
+	return t.Suffix
 }
 
 func (t *GPGEncryption) encryptArgs() []string {

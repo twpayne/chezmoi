@@ -54,12 +54,13 @@ func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezm
 	}
 
 	return sourceState.Add(c.sourceSystem, c.persistentState, c.destSystem, destAbsPathInfos, &chezmoi.AddOptions{
-		AutoTemplate: c.add.autoTemplate,
-		Create:       c.add.create,
-		Empty:        c.add.empty,
-		Encrypt:      c.add.encrypt,
-		Exact:        c.add.exact,
-		Include:      c.add.include,
-		Template:     c.add.template,
+		AutoTemplate:    c.add.autoTemplate,
+		Create:          c.add.create,
+		Empty:           c.add.empty,
+		Encrypt:         c.add.encrypt,
+		EncryptedSuffix: c.encryption.EncryptedSuffix(),
+		Exact:           c.add.exact,
+		Include:         c.add.include,
+		Template:        c.add.template,
 	})
 }

@@ -115,14 +115,15 @@ func NewSourceState(options ...SourceStateOption) *SourceState {
 
 // AddOptions are options to SourceState.Add.
 type AddOptions struct {
-	AutoTemplate bool
-	Create       bool
-	Empty        bool
-	Encrypt      bool
-	Exact        bool
-	Include      *IncludeSet
-	RemoveDir    RelPath
-	Template     bool
+	AutoTemplate    bool
+	Create          bool
+	Empty           bool
+	Encrypt         bool
+	EncryptedSuffix string
+	Exact           bool
+	Include         *IncludeSet
+	RemoveDir       RelPath
+	Template        bool
 }
 
 // Add adds destAbsPathInfos to s.
@@ -374,6 +375,11 @@ func (s *SourceState) Apply(targetSystem, destSystem System, persistentState Per
 	return persistentStateSet(persistentState, entryStateBucket, []byte(targetAbsPath), targetEntryState)
 }
 
+// Encryption returns s's encryption.
+func (s *SourceState) Encryption() Encryption {
+	return s.encryption
+}
+
 // Entries returns s's source state entries.
 func (s *SourceState) Entries() map[RelPath]SourceStateEntry {
 	return s.entries
@@ -490,7 +496,7 @@ func (s *SourceState) Read() error {
 					n++
 				}
 			}
-			targetParentRelPath := parentSourceRelPath.TargetRelPath()
+			targetParentRelPath := parentSourceRelPath.TargetRelPath(s.encryption.EncryptedSuffix())
 			matches = matches[:n]
 			for _, match := range matches {
 				targetRelPath := targetParentRelPath.Join(RelPath(match))
@@ -516,7 +522,7 @@ func (s *SourceState) Read() error {
 			return nil
 		case info.IsDir():
 			da := parseDirAttr(sourceName.String())
-			targetRelPath := parentSourceRelPath.Dir().TargetRelPath().Join(RelPath(da.TargetName))
+			targetRelPath := parentSourceRelPath.Dir().TargetRelPath(s.encryption.EncryptedSuffix()).Join(RelPath(da.TargetName))
 			if s.Ignored(targetRelPath) {
 				return vfs.SkipDir
 			}
@@ -524,8 +530,8 @@ func (s *SourceState) Read() error {
 			allSourceStateEntries[targetRelPath] = append(allSourceStateEntries[targetRelPath], sourceStateEntry)
 			return nil
 		case info.Mode().IsRegular():
-			fa := parseFileAttr(sourceName.String())
-			targetRelPath := parentSourceRelPath.Dir().TargetRelPath().Join(RelPath(fa.TargetName))
+			fa := parseFileAttr(sourceName.String(), s.encryption.EncryptedSuffix())
+			targetRelPath := parentSourceRelPath.Dir().TargetRelPath(s.encryption.EncryptedSuffix()).Join(RelPath(fa.TargetName))
 			if s.Ignored(targetRelPath) {
 				return nil
 			}
@@ -663,7 +669,7 @@ func (s *SourceState) addPatterns(patternSet *patternSet, sourceAbsPath AbsPath,
 	if err != nil {
 		return err
 	}
-	dir := sourceRelPath.Dir().TargetRelPath()
+	dir := sourceRelPath.Dir().TargetRelPath("")
 	scanner := bufio.NewScanner(bytes.NewReader(data))
 	var lineNumber int
 	for scanner.Scan() {
@@ -975,9 +981,10 @@ func (s *SourceState) sourceStateEntry(actualStateEntry ActualStateEntry, destAb
 			Exact:      options.Exact,
 			Private:    isPrivate(info),
 		}
+		sourceRelPath := parentSourceRelPath.Join(NewSourceRelDirPath(RelPath(dirAttr.SourceName())))
 		return &SourceStateDir{
 			Attr:          dirAttr,
-			sourceRelPath: parentSourceRelPath.Join(NewSourceRelDirPath(RelPath(dirAttr.SourceName()))),
+			sourceRelPath: sourceRelPath,
 			targetStateEntry: &TargetStateDir{
 				perm: 0o777,
 			},
@@ -1015,9 +1022,10 @@ func (s *SourceState) sourceStateEntry(actualStateEntry ActualStateEntry, destAb
 		lazyContents := &lazyContents{
 			contents: contents,
 		}
+		sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(RelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix()))))
 		return &SourceStateFile{
 			Attr:          fileAttr,
-			sourceRelPath: parentSourceRelPath.Join(NewSourceRelPath(RelPath(fileAttr.SourceName()))),
+			sourceRelPath: sourceRelPath,
 			lazyContents:  lazyContents,
 			targetStateEntry: &TargetStateFile{
 				lazyContents: lazyContents,
@@ -1042,9 +1050,10 @@ func (s *SourceState) sourceStateEntry(actualStateEntry ActualStateEntry, destAb
 		lazyContents := &lazyContents{
 			contents: contents,
 		}
+		sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(RelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix()))))
 		return &SourceStateFile{
 			Attr:          fileAttr,
-			sourceRelPath: parentSourceRelPath.Join(NewSourceRelPath(RelPath(fileAttr.SourceName()))),
+			sourceRelPath: sourceRelPath,
 			lazyContents:  lazyContents,
 			targetStateEntry: &TargetStateFile{
 				lazyContents: lazyContents,

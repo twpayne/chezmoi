@@ -222,9 +222,11 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		AGE: chezmoi.AGEEncryption{
 			Command: "age",
+			Suffix:  ".age",
 		},
 		GPG: chezmoi.GPGEncryption{
 			Command: "gpg",
+			Suffix:  ".asc",
 		},
 		add: addCmdConfig{
 			include:   chezmoi.NewIncludeSet(chezmoi.IncludeAll),
