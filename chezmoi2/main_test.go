@@ -1,8 +1,6 @@
 package main
 
 import (
-	"bufio"
-	"bytes"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -51,7 +49,6 @@ func TestScript(t *testing.T) {
 			"mkhomedir":      cmdMkHomeDir,
 			"mksourcedir":    cmdMkSourceDir,
 			"rmfinalnewline": cmdRmFinalNewline,
-			"unix2dos":       cmdUNIX2DOS,
 		},
 		Condition: func(cond string) (bool, error) {
 			switch cond {
@@ -379,26 +376,6 @@ func cmdRmFinalNewline(ts *testscript.TestScript, neg bool, args []string) {
 	}
 }
 
-// cmdUNIX2DOS converts files from UNIX line endings to DOS line endings.
-func cmdUNIX2DOS(ts *testscript.TestScript, neg bool, args []string) {
-	if neg {
-		ts.Fatalf("unsupported: ! unix2dos")
-	}
-	if len(args) < 1 {
-		ts.Fatalf("usage: unix2dos paths...")
-	}
-	for _, arg := range args {
-		filename := ts.MkAbs(arg)
-		data, err := ioutil.ReadFile(filename)
-		ts.Check(err)
-		dosData, err := unix2DOS(data)
-		ts.Check(err)
-		if err := ioutil.WriteFile(filename, dosData, 0o666); err != nil {
-			ts.Fatalf("%s: %v", filename, err)
-		}
-	}
-}
-
 func prependDirToPath(dir, path string) string {
 	return strings.Join(append([]string{dir}, filepath.SplitList(path)...), string(os.PathListSeparator))
 }
@@ -489,22 +466,4 @@ func setup(env *testscript.Env) error {
 	}
 
 	return vfst.NewBuilder().Build(vfs.NewPathFS(vfs.OSFS, env.WorkDir), root)
-}
-
-// unix2DOS returns data with UNIX line endings converted to DOS line endings.
-func unix2DOS(data []byte) ([]byte, error) {
-	sb := strings.Builder{}
-	s := bufio.NewScanner(bytes.NewReader(data))
-	for s.Scan() {
-		if _, err := sb.Write(s.Bytes()); err != nil {
-			return nil, err
-		}
-		if _, err := sb.WriteString("\r\n"); err != nil {
-			return nil, err
-		}
-	}
-	if err := s.Err(); err != nil {
-		return nil, err
-	}
-	return []byte(sb.String()), nil
 }
