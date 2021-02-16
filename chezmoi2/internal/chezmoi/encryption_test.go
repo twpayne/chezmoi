@@ -17,30 +17,34 @@ type xorEncryption struct {
 
 var _ Encryption = &xorEncryption{}
 
-func (t *xorEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
-	return t.xorWithKey(ciphertext), nil
+func (e *xorEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
+	return e.xorWithKey(ciphertext), nil
 }
 
-func (t *xorEncryption) DecryptToFile(filename string, ciphertext []byte) error {
-	return ioutil.WriteFile(filename, t.xorWithKey(ciphertext), 0o666)
+func (e *xorEncryption) DecryptToFile(filename string, ciphertext []byte) error {
+	return ioutil.WriteFile(filename, e.xorWithKey(ciphertext), 0o666)
 }
 
-func (t *xorEncryption) Encrypt(plaintext []byte) ([]byte, error) {
-	return t.xorWithKey(plaintext), nil
+func (e *xorEncryption) Encrypt(plaintext []byte) ([]byte, error) {
+	return e.xorWithKey(plaintext), nil
 }
 
-func (t *xorEncryption) EncryptFile(filename string) ([]byte, error) {
+func (e *xorEncryption) EncryptFile(filename string) ([]byte, error) {
 	plaintext, err := ioutil.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
-	return t.xorWithKey(plaintext), nil
+	return e.xorWithKey(plaintext), nil
 }
 
-func (t *xorEncryption) xorWithKey(input []byte) []byte {
+func (e *xorEncryption) EncryptedSuffix() string {
+	return ".xor"
+}
+
+func (e *xorEncryption) xorWithKey(input []byte) []byte {
 	output := make([]byte, 0, len(input))
 	for _, b := range input {
-		output = append(output, b^t.key)
+		output = append(output, b^e.key)
 	}
 	return output
 }

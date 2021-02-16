@@ -91,6 +91,7 @@ func (c *Config) runChattrCmd(cmd *cobra.Command, args []string, sourceState *ch
 	// directories.
 	sort.Sort(sort.Reverse(targetRelPaths))
 
+	encryptedSuffix := sourceState.Encryption().EncryptedSuffix()
 	for _, targetRelPath := range targetRelPaths {
 		sourceStateEntry := sourceState.MustEntry(targetRelPath)
 		sourceRelPath := sourceStateEntry.SourceRelPath()
@@ -109,7 +110,7 @@ func (c *Config) runChattrCmd(cmd *cobra.Command, args []string, sourceState *ch
 		case *chezmoi.SourceStateFile:
 			// FIXME encrypted attribute changes
 			// FIXME when changing encrypted attribute add new file before removing old one
-			if newBaseNameRelPath := chezmoi.RelPath(am.modifyFileAttr(sourceStateEntry.Attr).SourceName()); newBaseNameRelPath != fileRelPath {
+			if newBaseNameRelPath := chezmoi.RelPath(am.modifyFileAttr(sourceStateEntry.Attr).SourceName(encryptedSuffix)); newBaseNameRelPath != fileRelPath {
 				oldSourceAbsPath := c.sourceDirAbsPath.Join(parentRelPath, fileRelPath)
 				newSourceAbsPath := c.sourceDirAbsPath.Join(parentRelPath, newBaseNameRelPath)
 				if err := c.sourceSystem.Rename(oldSourceAbsPath, newSourceAbsPath); err != nil {

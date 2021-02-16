@@ -269,6 +269,7 @@ The following configuration variables are available:
 |               | `recipients`      | []string | *none*                    | age recipients                                         |
 |               | `recipientsFile`  | []string | *none*                    | age recipients file                                    |
 |               | `recipientsFiles` | []string | *none*                    | age receipients files                                  |
+|               | `suffix`          | string   | `.age`                    | Suffix appended to age-encrypted files                 |
 | `bitwarden`   | `command`         | string   | `bw`                      | Bitwarden CLI command                                  |
 | `cd`          | `args`            | []string | *none*                    | Extra args to shell in `cd` command                    |
 |               | `command`         | string   | *none*                    | Shell to run in `cd` command                           |
@@ -284,6 +285,7 @@ The following configuration variables are available:
 | `gpg`         | `args`            | []string | *none*                    | Extra args to GPG CLI command                          |
 |               | `command`         | string   | `gpg`                     | GPG CLI command                                        |
 |               | `recipient`       | string   | *none*                    | GPG recipient                                          |
+|               | `suffix`          | string   | `.asc`                    | Suffix appended to GPG-encrypted files                 |
 |               | `symmetric`       | bool     | `false`                   | Use symmetric GPG encryption                           |
 | `keepassxc`   | `args`            | []string | *none*                    | Extra args to KeePassXC CLI command                    |
 |               | `command`         | string   | `keepassxc-cli`           | KeePassXC CLI command                                  |
