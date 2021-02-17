@@ -20,7 +20,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: 1.15.x
+        go-version: 1.16.0
     - name: Cache Go modules
       if: runner.os != 'macos' # FIXME re-enable
       uses: actions/cache@v2
@@ -55,7 +55,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: 1.15.x
+        go-version: 1.16.0
     - name: Cache Go modules
       uses: actions/cache@v2
       with:
@@ -129,7 +129,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: 1.15.x
+        go-version: 1.16.0
     - name: Cache Go modules
       uses: actions/cache@v2
       with:
@@ -142,7 +142,7 @@ jobs:
     - name: Generate
       run: |
         go generate
-        go generate ./chezmoi2
+        make completions
         git diff --exit-code
   lint:
     runs-on: ubuntu-18.04
@@ -152,7 +152,7 @@ jobs:
       - name: Lint
         uses: golangci/golangci-lint-action@v2
         with:
-          version: v1.36.0
+          version: v1.37.0
       - name: ShellCheck
         uses: ludeeus/action-shellcheck@1.0.0
         with:
@@ -176,7 +176,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: 1.15.x
+        go-version: 1.16.0
     - name: Cache Go modules
       uses: actions/cache@v2
       with:

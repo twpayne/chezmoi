@@ -3,7 +3,7 @@ package chezmoi
 import (
 	"archive/zip"
 	"bytes"
-	"io/ioutil"
+	"io"
 	"os"
 	"testing"
 	"time"
@@ -88,7 +88,7 @@ func TestZIPWriterSystem(t *testing.T) {
 				if expectedFile.contents != nil {
 					rc, err := actualFile.Open()
 					require.NoError(t, err)
-					actualContents, err := ioutil.ReadAll(rc)
+					actualContents, err := io.ReadAll(rc)
 					require.NoError(t, err)
 					assert.Equal(t, expectedFile.contents, actualContents)
 				}

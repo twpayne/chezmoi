@@ -61,8 +61,3 @@ func (e *DebugEncryption) EncryptFile(filename string) ([]byte, error) {
 		Msg("EncryptFile")
 	return ciphertext, err
 }
-
-// EncryptedSuffix implements Encryption.EncryptedSuffix.
-func (e *DebugEncryption) EncryptedSuffix() string {
-	return e.encryption.EncryptedSuffix()
-}

@@ -83,20 +83,20 @@ func (s *DebugSystem) RawPath(path AbsPath) (AbsPath, error) {
 }
 
 // ReadDir implements System.ReadDir.
-func (s *DebugSystem) ReadDir(name AbsPath) ([]os.FileInfo, error) {
-	infos, err := s.system.ReadDir(name)
+func (s *DebugSystem) ReadDir(name AbsPath) ([]os.DirEntry, error) {
+	dirEntries, err := s.system.ReadDir(name)
 	log.Logger.Debug().
 		Str("name", string(name)).
 		Err(err).
 		Msg("ReadDir")
-	return infos, err
+	return dirEntries, err
 }
 
 // ReadFile implements System.ReadFile.
-func (s *DebugSystem) ReadFile(filename AbsPath) ([]byte, error) {
-	data, err := s.system.ReadFile(filename)
+func (s *DebugSystem) ReadFile(name AbsPath) ([]byte, error) {
+	data, err := s.system.ReadFile(name)
 	log.Logger.Debug().
-		Str("filename", string(filename)).
+		Str("filename", string(name)).
 		Bytes("data", chezmoilog.FirstFewBytes(data)).
 		Err(err).
 		Msg("ReadFile")

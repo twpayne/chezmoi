@@ -4,7 +4,6 @@ import (
 	"archive/tar"
 	"bytes"
 	"io"
-	"io/ioutil"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -87,7 +86,7 @@ func TestTARWriterSystem(t *testing.T) {
 				assert.Equal(t, tc.expectedLinkname, header.Linkname)
 				assert.Equal(t, int64(len(tc.expectedContents)), header.Size)
 				if tc.expectedContents != nil {
-					actualContents, err := ioutil.ReadAll(r)
+					actualContents, err := io.ReadAll(r)
 					require.NoError(t, err)
 					assert.Equal(t, tc.expectedContents, actualContents)
 				}

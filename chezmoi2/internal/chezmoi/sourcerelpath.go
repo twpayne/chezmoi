@@ -72,7 +72,7 @@ func (p SourceRelPath) String() string {
 }
 
 // TargetRelPath returns the relative path of p's target.
-func (p SourceRelPath) TargetRelPath(encryptedSuffix string) RelPath {
+func (p SourceRelPath) TargetRelPath() RelPath {
 	sourceNames := strings.Split(string(p.relPath), "/")
 	relPathNames := make([]string, 0, len(sourceNames))
 	if p.isDir {
@@ -85,7 +85,7 @@ func (p SourceRelPath) TargetRelPath(encryptedSuffix string) RelPath {
 			dirAttr := parseDirAttr(sourceName)
 			relPathNames = append(relPathNames, dirAttr.TargetName)
 		}
-		fileAttr := parseFileAttr(sourceNames[len(sourceNames)-1], encryptedSuffix)
+		fileAttr := parseFileAttr(sourceNames[len(sourceNames)-1])
 		relPathNames = append(relPathNames, fileAttr.TargetName)
 	}
 	return RelPath(strings.Join(relPathNames, "/"))

@@ -1,12 +1,20 @@
 package cmd
 
 import (
+	"bufio"
+	"bytes"
 	"errors"
 	"fmt"
+	"io"
 	"os"
+	"regexp"
 	"strconv"
+	"strings"
 
+	"github.com/charmbracelet/glamour"
 	"github.com/spf13/cobra"
+
+	"github.com/twpayne/chezmoi/chezmoi2/docs"
 )
 
 // Command annotations.
@@ -29,7 +37,17 @@ const (
 	persistentStateModeReadWrite     = "read-write"
 )
 
-var noArgs = []string(nil)
+var (
+	noArgs = []string(nil)
+
+	commandsRegexp      = regexp.MustCompile(`^## Commands`)
+	commandRegexp       = regexp.MustCompile("^### `(\\S+)`")
+	exampleRegexp       = regexp.MustCompile("^#### `\\w+` examples")
+	endOfCommandsRegexp = regexp.MustCompile(`^## `)
+	trailingSpaceRegexp = regexp.MustCompile(` +\n`)
+
+	helps map[string]*help
+)
 
 // An ErrExitCode indicates the the main program should exit with the given
 // code.
@@ -45,6 +63,22 @@ type VersionInfo struct {
 	BuiltBy string
 }
 
+type help struct {
+	long    string
+	example string
+}
+
+func init() {
+	reference, err := docs.FS.ReadFile("REFERENCE.md")
+	if err != nil {
+		panic(err)
+	}
+	helps, err = extractHelps(bytes.NewReader(reference))
+	if err != nil {
+		panic(err)
+	}
+}
+
 // Main runs chezmoi and returns an exit code.
 func Main(versionInfo VersionInfo, args []string) int {
 	if err := runMain(versionInfo, args); err != nil {
@@ -56,14 +90,6 @@ func Main(versionInfo VersionInfo, args []string) int {
 		return int(errExitCode)
 	}
 	return 0
-}
-
-func asset(name string) ([]byte, error) {
-	asset, ok := assets[name]
-	if !ok {
-		return nil, fmt.Errorf("%s: not found", name)
-	}
-	return asset, nil
 }
 
 func boolAnnotation(cmd *cobra.Command, key string) bool {
@@ -79,15 +105,117 @@ func boolAnnotation(cmd *cobra.Command, key string) bool {
 }
 
 func example(command string) string {
-	return helps[command].example
-}
-
-func mustLongHelp(command string) string {
 	help, ok := helps[command]
 	if !ok {
-		panic(fmt.Sprintf("%s: no long help", command))
+		return ""
 	}
-	return help.long
+	return help.example
+}
+
+func extractHelps(r io.Reader) (map[string]*help, error) {
+	longStyleConfig := glamour.ASCIIStyleConfig
+	longStyleConfig.H4.Prefix = ""
+	longTermRenderer, err := glamour.NewTermRenderer(
+		glamour.WithStyles(longStyleConfig),
+		glamour.WithWordWrap(80),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	examplesStyleConfig := glamour.ASCIIStyleConfig
+	examplesStyleConfig.Document.Margin = nil
+	examplesTermRenderer, err := glamour.NewTermRenderer(
+		glamour.WithStyles(examplesStyleConfig),
+		glamour.WithWordWrap(80),
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	var (
+		state = "find-commands"
+		sb    = &strings.Builder{}
+		h     *help
+	)
+
+	saveAndReset := func() error {
+		var tr *glamour.TermRenderer
+		switch state {
+		case "in-command":
+			tr = longTermRenderer
+		case "in-example":
+			tr = examplesTermRenderer
+		default:
+			panic(fmt.Sprintf("%s: invalid state", state))
+		}
+		s, err := tr.Render(sb.String())
+		if err != nil {
+			return err
+		}
+		s = trailingSpaceRegexp.ReplaceAllString(s, "\n")
+		s = strings.Trim(s, "\n")
+		switch state {
+		case "in-command":
+			h.long = "Description:\n" + s
+		case "in-example":
+			h.example = s
+		default:
+			panic(fmt.Sprintf("%s: invalid state", state))
+		}
+		sb.Reset()
+		return nil
+	}
+
+	helps := make(map[string]*help)
+	s := bufio.NewScanner(r)
+FOR:
+	for s.Scan() {
+		switch state {
+		case "find-commands":
+			if commandsRegexp.MatchString(s.Text()) {
+				state = "find-first-command"
+			}
+		case "find-first-command":
+			if m := commandRegexp.FindStringSubmatch(s.Text()); m != nil {
+				h = &help{}
+				helps[m[1]] = h
+				state = "in-command"
+			}
+		case "in-command", "in-example":
+			m := commandRegexp.FindStringSubmatch(s.Text())
+			switch {
+			case m != nil:
+				if err := saveAndReset(); err != nil {
+					return nil, err
+				}
+				h = &help{}
+				helps[m[1]] = h
+				state = "in-command"
+			case exampleRegexp.MatchString(s.Text()):
+				if err := saveAndReset(); err != nil {
+					return nil, err
+				}
+				state = "in-example"
+			case endOfCommandsRegexp.MatchString(s.Text()):
+				if err := saveAndReset(); err != nil {
+					return nil, err
+				}
+				break FOR
+			default:
+				if _, err := sb.WriteString(s.Text()); err != nil {
+					return nil, err
+				}
+				if err := sb.WriteByte('\n'); err != nil {
+					return nil, err
+				}
+			}
+		}
+	}
+	if err := s.Err(); err != nil {
+		return nil, err
+	}
+	return helps, nil
 }
 
 func markPersistentFlagsRequired(cmd *cobra.Command, flags ...string) {
@@ -96,6 +224,14 @@ func markPersistentFlagsRequired(cmd *cobra.Command, flags ...string) {
 			panic(err)
 		}
 	}
+}
+
+func mustLongHelp(command string) string {
+	help, ok := helps[command]
+	if !ok {
+		panic(fmt.Sprintf("missing long help for command %s", command))
+	}
+	return help.long
 }
 
 func runMain(versionInfo VersionInfo, args []string) error {

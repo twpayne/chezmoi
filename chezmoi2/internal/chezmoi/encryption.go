@@ -6,5 +6,4 @@ type Encryption interface {
 	DecryptToFile(filename string, ciphertext []byte) error
 	Encrypt(plaintext []byte) ([]byte, error)
 	EncryptFile(filename string) ([]byte, error)
-	EncryptedSuffix() string
 }

@@ -4,7 +4,6 @@
 package cmd
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 )
@@ -14,7 +13,7 @@ import (
 var DocsDir = "docs"
 
 func doc(filename string) ([]byte, error) {
-	return ioutil.ReadFile(filepath.Join(DocsDir, filename))
+	return os.ReadFile(filepath.Join(DocsDir, filename))
 }
 
 func docsFilenames() ([]string, error) {

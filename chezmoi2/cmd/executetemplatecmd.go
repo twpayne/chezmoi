@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"io/ioutil"
+	"io"
 	"strconv"
 	"strings"
 
@@ -62,7 +62,7 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string, source
 	}
 
 	if len(args) == 0 {
-		data, err := ioutil.ReadAll(c.stdin)
+		data, err := io.ReadAll(c.stdin)
 		if err != nil {
 			return err
 		}

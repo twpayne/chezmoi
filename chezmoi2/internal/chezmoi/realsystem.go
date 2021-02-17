@@ -1,7 +1,6 @@
 package chezmoi
 
 import (
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"runtime"
@@ -49,13 +48,13 @@ func (s *RealSystem) RawPath(absPath AbsPath) (AbsPath, error) {
 }
 
 // ReadDir implements System.ReadDir.
-func (s *RealSystem) ReadDir(dirname AbsPath) ([]os.FileInfo, error) {
-	return s.fs.ReadDir(string(dirname))
+func (s *RealSystem) ReadDir(name AbsPath) ([]os.DirEntry, error) {
+	return s.fs.ReadDir(string(name))
 }
 
 // ReadFile implements System.ReadFile.
-func (s *RealSystem) ReadFile(filename AbsPath) ([]byte, error) {
-	return s.fs.ReadFile(string(filename))
+func (s *RealSystem) ReadFile(name AbsPath) ([]byte, error) {
+	return s.fs.ReadFile(string(name))
 }
 
 // RemoveAll implements System.RemoveAll.
@@ -77,7 +76,7 @@ func (s *RealSystem) RunCmd(cmd *exec.Cmd) error {
 func (s *RealSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte) (err error) {
 	// Write the temporary script file. Put the randomness at the front of the
 	// filename to preserve any file extension for Windows scripts.
-	f, err := ioutil.TempFile("", "*."+scriptname.Base())
+	f, err := os.CreateTemp("", "*."+scriptname.Base())
 	if err != nil {
 		return
 	}

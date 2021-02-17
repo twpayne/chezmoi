@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -44,7 +43,7 @@ func (c *Config) runMergeCmd(cmd *cobra.Command, args []string, sourceState *che
 	// Create a temporary directory to store the target state and ensure that it
 	// is removed afterwards. We cannot use fs as it lacks TempDir
 	// functionality.
-	tempDir, err := ioutil.TempDir("", "chezmoi")
+	tempDir, err := os.MkdirTemp("", "chezmoi")
 	if err != nil {
 		return err
 	}

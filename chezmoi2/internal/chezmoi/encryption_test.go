@@ -1,7 +1,6 @@
 package chezmoi
 
 import (
-	"io/ioutil"
 	"math/rand"
 	"os"
 	"path/filepath"
@@ -17,34 +16,30 @@ type xorEncryption struct {
 
 var _ Encryption = &xorEncryption{}
 
-func (e *xorEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
-	return e.xorWithKey(ciphertext), nil
+func (t *xorEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
+	return t.xorWithKey(ciphertext), nil
 }
 
-func (e *xorEncryption) DecryptToFile(filename string, ciphertext []byte) error {
-	return ioutil.WriteFile(filename, e.xorWithKey(ciphertext), 0o666)
+func (t *xorEncryption) DecryptToFile(filename string, ciphertext []byte) error {
+	return os.WriteFile(filename, t.xorWithKey(ciphertext), 0o666)
 }
 
-func (e *xorEncryption) Encrypt(plaintext []byte) ([]byte, error) {
-	return e.xorWithKey(plaintext), nil
+func (t *xorEncryption) Encrypt(plaintext []byte) ([]byte, error) {
+	return t.xorWithKey(plaintext), nil
 }
 
-func (e *xorEncryption) EncryptFile(filename string) ([]byte, error) {
-	plaintext, err := ioutil.ReadFile(filename)
+func (t *xorEncryption) EncryptFile(filename string) ([]byte, error) {
+	plaintext, err := os.ReadFile(filename)
 	if err != nil {
 		return nil, err
 	}
-	return e.xorWithKey(plaintext), nil
+	return t.xorWithKey(plaintext), nil
 }
 
-func (e *xorEncryption) EncryptedSuffix() string {
-	return ".xor"
-}
-
-func (e *xorEncryption) xorWithKey(input []byte) []byte {
+func (t *xorEncryption) xorWithKey(input []byte) []byte {
 	output := make([]byte, 0, len(input))
 	for _, b := range input {
-		output = append(output, b^e.key)
+		output = append(output, b^t.key)
 	}
 	return output
 }
@@ -59,7 +54,7 @@ func testEncryptionDecryptToFile(t *testing.T, encryption Encryption) {
 		require.NotEmpty(t, actualCiphertext)
 		assert.NotEqual(t, expectedPlaintext, actualCiphertext)
 
-		tempDir, err := ioutil.TempDir("", "chezmoi-test-encryption")
+		tempDir, err := os.MkdirTemp("", "chezmoi-test-encryption")
 		require.NoError(t, err)
 		defer func() {
 			assert.NoError(t, os.RemoveAll(tempDir))
@@ -68,7 +63,7 @@ func testEncryptionDecryptToFile(t *testing.T, encryption Encryption) {
 
 		require.NoError(t, encryption.DecryptToFile(filename, actualCiphertext))
 
-		actualPlaintext, err := ioutil.ReadFile(filename)
+		actualPlaintext, err := os.ReadFile(filename)
 		require.NoError(t, err)
 		require.NotEmpty(t, actualPlaintext)
 		assert.Equal(t, expectedPlaintext, actualPlaintext)
@@ -97,13 +92,13 @@ func testEncryptionEncryptFile(t *testing.T, encryption Encryption) {
 	t.Run("EncryptFile", func(t *testing.T) {
 		expectedPlaintext := []byte("plaintext\n")
 
-		tempDir, err := ioutil.TempDir("", "chezmoi-test-encryption")
+		tempDir, err := os.MkdirTemp("", "chezmoi-test-encryption")
 		require.NoError(t, err)
 		defer func() {
 			assert.NoError(t, os.RemoveAll(tempDir))
 		}()
 		filename := filepath.Join(tempDir, "filename")
-		require.NoError(t, ioutil.WriteFile(filename, expectedPlaintext, 0o666))
+		require.NoError(t, os.WriteFile(filename, expectedPlaintext, 0o666))
 
 		actualCiphertext, err := encryption.EncryptFile(filename)
 		require.NoError(t, err)

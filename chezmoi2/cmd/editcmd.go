@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"io/ioutil"
+	"os"
 	"runtime"
 
 	"github.com/spf13/cobra"
@@ -77,7 +77,7 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string, sourceState *chez
 		var editorArg string
 		if sourceStateFile, ok := sourceStateEntry.(*chezmoi.SourceStateFile); ok && sourceStateFile.Attr.Encrypted {
 			if decryptedDirAbsPath == "" {
-				decryptedDir, err := ioutil.TempDir("", "chezmoi-decrypted")
+				decryptedDir, err := os.MkdirTemp("", "chezmoi-decrypted")
 				if err != nil {
 					return err
 				}

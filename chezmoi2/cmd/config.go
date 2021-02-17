@@ -31,6 +31,7 @@ import (
 	"github.com/twpayne/go-xdg/v3"
 	"golang.org/x/term"
 
+	"github.com/twpayne/chezmoi/assets/templates"
 	"github.com/twpayne/chezmoi/chezmoi2/internal/chezmoi"
 	"github.com/twpayne/chezmoi/internal/git"
 )
@@ -149,14 +150,11 @@ type configState struct {
 }
 
 var (
-	persistentStateFilename    = chezmoi.RelPath("chezmoistate.boltdb")
-	configStateKey             = []byte("configState")
-	commitMessageTemplateAsset = "assets/templates/COMMIT_MESSAGE.tmpl"
+	persistentStateFilename = chezmoi.RelPath("chezmoistate.boltdb")
+	configStateKey          = []byte("configState")
 
 	identifierRx = regexp.MustCompile(`\A[\pL_][\pL\p{Nd}_]*\z`)
 	whitespaceRx = regexp.MustCompile(`\s+`)
-
-	assets = make(map[string][]byte)
 )
 
 // newConfig creates a new Config with the given options.
@@ -222,11 +220,9 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		AGE: chezmoi.AGEEncryption{
 			Command: "age",
-			Suffix:  ".age",
 		},
 		GPG: chezmoi.GPGEncryption{
 			Command: "gpg",
-			Suffix:  ".asc",
 		},
 		add: addCmdConfig{
 			include:   chezmoi.NewIncludeSet(chezmoi.IncludeAll),
@@ -795,11 +791,11 @@ func (c *Config) gitAutoCommit(status *git.Status) error {
 	if status.Empty() {
 		return nil
 	}
-	commitMessageText, err := asset(commitMessageTemplateAsset)
+	commitMessageTemplate, err := templates.FS.ReadFile("COMMIT_MESSAGE.tmpl")
 	if err != nil {
 		return err
 	}
-	commitMessageTmpl, err := template.New("commit_message").Funcs(c.templateFuncs).Parse(string(commitMessageText))
+	commitMessageTmpl, err := template.New("commit_message").Funcs(c.templateFuncs).Parse(string(commitMessageTemplate))
 	if err != nil {
 		return err
 	}

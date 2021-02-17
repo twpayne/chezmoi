@@ -17,8 +17,8 @@ type System interface {
 	Lstat(filename AbsPath) (os.FileInfo, error)
 	Mkdir(name AbsPath, perm os.FileMode) error
 	RawPath(absPath AbsPath) (AbsPath, error)
-	ReadDir(dirname AbsPath) ([]os.FileInfo, error)
-	ReadFile(filename AbsPath) ([]byte, error)
+	ReadDir(name AbsPath) ([]os.DirEntry, error)
+	ReadFile(name AbsPath) ([]byte, error)
 	Readlink(name AbsPath) (string, error)
 	RemoveAll(name AbsPath) error
 	Rename(oldpath, newpath AbsPath) error
@@ -37,8 +37,8 @@ func (emptySystemMixin) Glob(pattern string) ([]string, error)             { ret
 func (emptySystemMixin) IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error) { return nil, nil }
 func (emptySystemMixin) Lstat(name AbsPath) (os.FileInfo, error)           { return nil, os.ErrNotExist }
 func (emptySystemMixin) RawPath(path AbsPath) (AbsPath, error)             { return path, nil }
-func (emptySystemMixin) ReadDir(dirname AbsPath) ([]os.FileInfo, error)    { return nil, os.ErrNotExist }
-func (emptySystemMixin) ReadFile(filename AbsPath) ([]byte, error)         { return nil, os.ErrNotExist }
+func (emptySystemMixin) ReadDir(name AbsPath) ([]os.DirEntry, error)       { return nil, os.ErrNotExist }
+func (emptySystemMixin) ReadFile(name AbsPath) ([]byte, error)             { return nil, os.ErrNotExist }
 func (emptySystemMixin) Readlink(name AbsPath) (string, error)             { return "", os.ErrNotExist }
 func (emptySystemMixin) Stat(name AbsPath) (os.FileInfo, error)            { return nil, os.ErrNotExist }
 func (emptySystemMixin) UnderlyingFS() vfs.FS                              { return nil }

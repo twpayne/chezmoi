@@ -2,7 +2,6 @@ package chezmoitest
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -31,7 +30,7 @@ var (
 func AGEGenerateKey(filename string) (publicKey, privateKeyFile string, err error) {
 	if filename == "" {
 		var tempDir string
-		tempDir, err = ioutil.TempDir("", "chezmoi-test-age-key")
+		tempDir, err = os.MkdirTemp("", "chezmoi-test-age-key")
 		if err != nil {
 			return "", "", err
 		}

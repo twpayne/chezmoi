@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"strings"
 )
@@ -57,7 +56,7 @@ FOR:
 			s.fileInfos[nameAbsPath] = header.FileInfo()
 		case tar.TypeReg:
 			s.fileInfos[nameAbsPath] = header.FileInfo()
-			contents, err := ioutil.ReadAll(tarReader)
+			contents, err := io.ReadAll(tarReader)
 			if err != nil {
 				return nil, err
 			}
@@ -88,11 +87,11 @@ func (s *TARReaderSystem) Lstat(filename AbsPath) (os.FileInfo, error) {
 }
 
 // ReadFile implements System.ReadFile.
-func (s *TARReaderSystem) ReadFile(filename AbsPath) ([]byte, error) {
-	if contents, ok := s.contents[filename]; ok {
+func (s *TARReaderSystem) ReadFile(name AbsPath) ([]byte, error) {
+	if contents, ok := s.contents[name]; ok {
 		return contents, nil
 	}
-	if _, ok := s.fileInfos[filename]; ok {
+	if _, ok := s.fileInfos[name]; ok {
 		return nil, os.ErrInvalid
 	}
 	return nil, os.ErrNotExist

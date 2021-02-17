@@ -41,13 +41,13 @@ func (s *ReadOnlySystem) RawPath(path AbsPath) (AbsPath, error) {
 }
 
 // ReadDir implements System.ReadDir.
-func (s *ReadOnlySystem) ReadDir(dirname AbsPath) ([]os.FileInfo, error) {
-	return s.system.ReadDir(dirname)
+func (s *ReadOnlySystem) ReadDir(name AbsPath) ([]os.DirEntry, error) {
+	return s.system.ReadDir(name)
 }
 
 // ReadFile implements System.ReadFile.
-func (s *ReadOnlySystem) ReadFile(filename AbsPath) ([]byte, error) {
-	return s.system.ReadFile(filename)
+func (s *ReadOnlySystem) ReadFile(name AbsPath) ([]byte, error) {
+	return s.system.ReadFile(name)
 }
 
 // Readlink implements System.Readlink.

@@ -3,7 +3,6 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -288,7 +287,7 @@ func (c *dirCheck) Name() string {
 }
 
 func (c *dirCheck) Run() (checkResult, string) {
-	if _, err := ioutil.ReadDir(c.dirname); err != nil {
+	if _, err := os.ReadDir(c.dirname); err != nil {
 		return checkError, fmt.Sprintf("%s: %v", c.dirname, err)
 	}
 	return checkOK, fmt.Sprintf("%s is a directory", c.dirname)
@@ -303,7 +302,7 @@ func (c *fileCheck) Run() (checkResult, string) {
 		return checkWarning, "not set"
 	}
 
-	_, err := ioutil.ReadFile(c.filename)
+	_, err := os.ReadFile(c.filename)
 	switch {
 	case os.IsNotExist(err):
 		return c.ifNotExist, fmt.Sprintf("%s does not exist", c.filename)

@@ -92,13 +92,13 @@ func (s *GitDiffSystem) RawPath(path AbsPath) (AbsPath, error) {
 }
 
 // ReadDir implements System.ReadDir.
-func (s *GitDiffSystem) ReadDir(dirname AbsPath) ([]os.FileInfo, error) {
-	return s.system.ReadDir(dirname)
+func (s *GitDiffSystem) ReadDir(name AbsPath) ([]os.DirEntry, error) {
+	return s.system.ReadDir(name)
 }
 
 // ReadFile implements System.ReadFile.
-func (s *GitDiffSystem) ReadFile(filename AbsPath) ([]byte, error) {
-	return s.system.ReadFile(filename)
+func (s *GitDiffSystem) ReadFile(name AbsPath) ([]byte, error) {
+	return s.system.ReadFile(name)
 }
 
 // Readlink implements System.Readlink.

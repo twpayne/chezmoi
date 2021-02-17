@@ -6,6 +6,7 @@ linters:
   - depguard
   - dogsled
   - dupl
+  - durationcheck
   - errcheck
   - errorlint
   - exhaustive
@@ -31,6 +32,7 @@ linters:
   - misspell
   - prealloc
   - predeclared
+  - revive
   - rowserrcheck
   - scopelint
   - sqlclosecheck

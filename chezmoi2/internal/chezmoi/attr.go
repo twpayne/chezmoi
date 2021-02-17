@@ -91,7 +91,7 @@ func (da DirAttr) perm() os.FileMode {
 }
 
 // parseFileAttr parses a source file name in the source state.
-func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
+func parseFileAttr(sourceName string) FileAttr {
 	var (
 		sourceFileType = SourceFileTypeFile
 		name           = sourceName
@@ -169,9 +169,6 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 	if strings.HasPrefix(name, dotPrefix) {
 		name = "." + mustTrimPrefix(name, dotPrefix)
 	}
-	if encrypted {
-		name = strings.TrimSuffix(name, encryptedSuffix)
-	}
 	if strings.HasSuffix(name, TemplateSuffix) {
 		name = mustTrimSuffix(name, TemplateSuffix)
 		template = true
@@ -190,7 +187,7 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 }
 
 // SourceName returns fa's source name.
-func (fa FileAttr) SourceName(encryptedSuffix string) string {
+func (fa FileAttr) SourceName() string {
 	sourceName := ""
 	switch fa.Type {
 	case SourceFileTypeCreate:
@@ -246,9 +243,6 @@ func (fa FileAttr) SourceName(encryptedSuffix string) string {
 	}
 	if fa.Template {
 		sourceName += TemplateSuffix
-	}
-	if fa.Encrypted {
-		sourceName += encryptedSuffix
 	}
 	return sourceName
 }

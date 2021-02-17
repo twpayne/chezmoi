@@ -1,8 +1,9 @@
 package main
 
 import (
+	"bufio"
+	"bytes"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
@@ -38,7 +39,6 @@ func TestScript(t *testing.T) {
 	testscript.Run(t, testscript.Params{
 		Dir: filepath.Join("testdata", "scripts"),
 		Cmds: map[string]func(*testscript.TestScript, bool, []string){
-			"appendline":     cmdAppendLine,
 			"chhome":         cmdChHome,
 			"cmpmod":         cmdCmpMod,
 			"edit":           cmdEdit,
@@ -49,6 +49,7 @@ func TestScript(t *testing.T) {
 			"mkhomedir":      cmdMkHomeDir,
 			"mksourcedir":    cmdMkSourceDir,
 			"rmfinalnewline": cmdRmFinalNewline,
+			"unix2dos":       cmdUNIX2DOS,
 		},
 		Condition: func(cond string) (bool, error) {
 			switch cond {
@@ -67,21 +68,6 @@ func TestScript(t *testing.T) {
 		Setup:         setup,
 		UpdateScripts: os.Getenv("CHEZMOIUPDATESCRIPTS") != "",
 	})
-}
-
-// cmdAppendLine appends lines to a file.
-func cmdAppendLine(ts *testscript.TestScript, neg bool, args []string) {
-	if neg {
-		ts.Fatalf("unsupported: ! appendline")
-	}
-	if len(args) != 2 {
-		ts.Fatalf("usage: appendline file line")
-	}
-	filename := ts.MkAbs(args[0])
-	data, err := ioutil.ReadFile(filename)
-	ts.Check(err)
-	data = append(data, append([]byte(args[1]), '\n')...)
-	ts.Check(ioutil.WriteFile(filename, data, 0o666))
 }
 
 // cmdChHome changes the home directory to its argument, creating the directory
@@ -140,12 +126,12 @@ func cmdEdit(ts *testscript.TestScript, neg bool, args []string) {
 	}
 	for _, arg := range args {
 		filename := ts.MkAbs(arg)
-		data, err := ioutil.ReadFile(filename)
+		data, err := os.ReadFile(filename)
 		if err != nil {
 			ts.Fatalf("edit: %v", err)
 		}
 		data = append(data, []byte("# edited\n")...)
-		if err := ioutil.WriteFile(filename, data, 0o666); err != nil {
+		if err := os.WriteFile(filename, data, 0o666); err != nil {
 			ts.Fatalf("edit: %v", err)
 		}
 	}
@@ -175,7 +161,7 @@ func cmdMkFile(ts *testscript.TestScript, neg bool, args []string) {
 		case !os.IsNotExist(err):
 			ts.Fatalf("%s: %v", arg, err)
 		}
-		if err := ioutil.WriteFile(filename, nil, perm); err != nil {
+		if err := os.WriteFile(filename, nil, perm); err != nil {
 			ts.Fatalf("%s: %v", arg, err)
 		}
 	}
@@ -196,7 +182,7 @@ func cmdMkAGEConfig(ts *testscript.TestScript, neg bool, args []string) {
 	ts.Check(err)
 	configFile := filepath.Join(homeDir, ".config", "chezmoi", "chezmoi.toml")
 	ts.Check(os.MkdirAll(filepath.Dir(configFile), 0o777))
-	ts.Check(ioutil.WriteFile(configFile, []byte(fmt.Sprintf(chezmoitest.JoinLines(
+	ts.Check(os.WriteFile(configFile, []byte(fmt.Sprintf(chezmoitest.JoinLines(
 		`encryption = "age"`,
 		`[age]`,
 		`  identity = %q`,
@@ -217,7 +203,7 @@ func cmdMkGitConfig(ts *testscript.TestScript, neg bool, args []string) {
 		path = ts.MkAbs(args[0])
 	}
 	ts.Check(os.MkdirAll(filepath.Dir(path), 0o777))
-	ts.Check(ioutil.WriteFile(path, []byte(chezmoitest.JoinLines(
+	ts.Check(os.WriteFile(path, []byte(chezmoitest.JoinLines(
 		`[core]`,
 		`  autocrlf = false`,
 		`[user]`,
@@ -241,7 +227,7 @@ func cmdMkGPGConfig(ts *testscript.TestScript, neg bool, args []string) {
 	// unix(7)). The limit exists because GPG creates a UNIX domain socket in
 	// its home directory and UNIX domain socket paths are limited to
 	// sockaddr_un.sun_path characters.
-	gpgHomeDir, err := ioutil.TempDir("", "chezmoi-test-gpg-homedir")
+	gpgHomeDir, err := os.MkdirTemp("", "chezmoi-test-gpg-homedir")
 	ts.Check(err)
 	ts.Defer(func() {
 		os.RemoveAll(gpgHomeDir)
@@ -258,7 +244,7 @@ func cmdMkGPGConfig(ts *testscript.TestScript, neg bool, args []string) {
 
 	configFile := filepath.Join(ts.Getenv("HOME"), ".config", "chezmoi", "chezmoi.toml")
 	ts.Check(os.MkdirAll(filepath.Dir(configFile), 0o777))
-	ts.Check(ioutil.WriteFile(configFile, []byte(fmt.Sprintf(chezmoitest.JoinLines(
+	ts.Check(os.WriteFile(configFile, []byte(fmt.Sprintf(chezmoitest.JoinLines(
 		`encryption = "gpg"`,
 		`[gpg]`,
 		`  args = [`,
@@ -363,14 +349,34 @@ func cmdRmFinalNewline(ts *testscript.TestScript, neg bool, args []string) {
 	}
 	for _, arg := range args {
 		filename := ts.MkAbs(arg)
-		data, err := ioutil.ReadFile(filename)
+		data, err := os.ReadFile(filename)
 		if err != nil {
 			ts.Fatalf("%s: %v", filename, err)
 		}
 		if len(data) == 0 || data[len(data)-1] != '\n' {
 			continue
 		}
-		if err := ioutil.WriteFile(filename, data[:len(data)-1], 0o666); err != nil {
+		if err := os.WriteFile(filename, data[:len(data)-1], 0o666); err != nil {
+			ts.Fatalf("%s: %v", filename, err)
+		}
+	}
+}
+
+// cmdUNIX2DOS converts files from UNIX line endings to DOS line endings.
+func cmdUNIX2DOS(ts *testscript.TestScript, neg bool, args []string) {
+	if neg {
+		ts.Fatalf("unsupported: ! unix2dos")
+	}
+	if len(args) < 1 {
+		ts.Fatalf("usage: unix2dos paths...")
+	}
+	for _, arg := range args {
+		filename := ts.MkAbs(arg)
+		data, err := os.ReadFile(filename)
+		ts.Check(err)
+		dosData, err := unix2DOS(data)
+		ts.Check(err)
+		if err := os.WriteFile(filename, dosData, 0o666); err != nil {
 			ts.Fatalf("%s: %v", filename, err)
 		}
 	}
@@ -466,4 +472,22 @@ func setup(env *testscript.Env) error {
 	}
 
 	return vfst.NewBuilder().Build(vfs.NewPathFS(vfs.OSFS, env.WorkDir), root)
+}
+
+// unix2DOS returns data with UNIX line endings converted to DOS line endings.
+func unix2DOS(data []byte) ([]byte, error) {
+	sb := strings.Builder{}
+	s := bufio.NewScanner(bytes.NewReader(data))
+	for s.Scan() {
+		if _, err := sb.Write(s.Bytes()); err != nil {
+			return nil, err
+		}
+		if _, err := sb.WriteString("\r\n"); err != nil {
+			return nil, err
+		}
+	}
+	if err := s.Err(); err != nil {
+		return nil, err
+	}
+	return []byte(sb.String()), nil
 }

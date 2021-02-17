@@ -4,6 +4,7 @@ package cmd
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"regexp"
 	"strings"
@@ -11,6 +12,8 @@ import (
 	"github.com/charmbracelet/glamour"
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
+
+	"github.com/twpayne/chezmoi/chezmoi2/docs"
 )
 
 func (c *Config) newDocsCmd() *cobra.Command {
@@ -37,15 +40,23 @@ func (c *Config) runDocsCmd(cmd *cobra.Command, args []string) error {
 		if err != nil {
 			return err
 		}
-		allDocsFilenames, err := docsFilenames()
+		dirEntries, err := docs.FS.ReadDir(".")
 		if err != nil {
 			return err
 		}
 		var filenames []string
-		for _, fn := range allDocsFilenames {
-			if re.FindStringIndex(strings.ToLower(fn)) != nil {
-				filenames = append(filenames, fn)
+		for _, dirEntry := range dirEntries {
+			fileInfo, err := dirEntry.Info()
+			if err != nil {
+				return err
 			}
+			if fileInfo.Mode()&^os.ModePerm != 0 {
+				continue
+			}
+			if filename := dirEntry.Name(); re.FindStringIndex(strings.ToLower(filename)) != nil {
+				filenames = append(filenames, filename)
+			}
+
 		}
 		switch {
 		case len(filenames) == 0:
@@ -57,7 +68,12 @@ func (c *Config) runDocsCmd(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	documentData, err := doc(filename)
+	file, err := docs.FS.Open(filename)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+	documentData, err := io.ReadAll(file)
 	if err != nil {
 		return err
 	}

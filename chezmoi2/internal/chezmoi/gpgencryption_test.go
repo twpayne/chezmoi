@@ -2,7 +2,6 @@ package chezmoi
 
 import (
 	"errors"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"testing"
@@ -23,7 +22,7 @@ func TestGPGEncryption(t *testing.T) {
 	}
 	require.NoError(t, err)
 
-	tempDir, err := ioutil.TempDir("", "chezmoi-test-gpg")
+	tempDir, err := os.MkdirTemp("", "chezmoi-test-gpg")
 	require.NoError(t, err)
 	defer func() {
 		require.NoError(t, os.RemoveAll(tempDir))
