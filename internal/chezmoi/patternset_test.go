@@ -1,22 +1,24 @@
 package chezmoi
 
 import (
-	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	vfs "github.com/twpayne/go-vfs/v2"
+
+	"github.com/twpayne/chezmoi/internal/chezmoitest"
 )
 
 func TestPatternSet(t *testing.T) {
 	for _, tc := range []struct {
 		name          string
-		ps            *PatternSet
+		ps            *patternSet
 		expectMatches map[string]bool
 	}{
 		{
 			name: "empty",
-			ps:   NewPatternSet(),
+			ps:   newPatternSet(),
 			expectMatches: map[string]bool{
 				"foo": false,
 			},
@@ -60,25 +62,87 @@ func TestPatternSet(t *testing.T) {
 				"**/foo": true,
 			}),
 			expectMatches: map[string]bool{
-				"foo":                              true,
-				filepath.Join("bar", "foo"):        true,
-				filepath.Join("baz", "bar", "foo"): true,
+				"foo":         true,
+				"bar/foo":     true,
+				"baz/bar/foo": true,
 			},
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			for s, expectMatch := range tc.expectMatches {
-				assert.Equal(t, expectMatch, tc.ps.Match(s))
+				assert.Equal(t, expectMatch, tc.ps.match(s))
 			}
 		})
 	}
 }
 
-func mustNewPatternSet(t *testing.T, patterns map[string]bool) *PatternSet {
+func TestPatternSetGlob(t *testing.T) {
+	for _, tc := range []struct {
+		name            string
+		ps              *patternSet
+		root            interface{}
+		expectedMatches []string
+	}{
+		{
+			name:            "empty",
+			ps:              newPatternSet(),
+			root:            nil,
+			expectedMatches: []string{},
+		},
+		{
+			name: "simple",
+			ps: mustNewPatternSet(t, map[string]bool{
+				"f*": true,
+			}),
+			root: map[string]interface{}{
+				"foo": "",
+			},
+			expectedMatches: []string{
+				"foo",
+			},
+		},
+		{
+			name: "include_exclude",
+			ps: mustNewPatternSet(t, map[string]bool{
+				"b*": true,
+				"*z": false,
+			}),
+			root: map[string]interface{}{
+				"bar": "",
+				"baz": "",
+			},
+			expectedMatches: []string{
+				"bar",
+			},
+		},
+		{
+			name: "doublestar",
+			ps: mustNewPatternSet(t, map[string]bool{
+				"**/f*": true,
+			}),
+			root: map[string]interface{}{
+				"dir1/dir2/foo": "",
+			},
+			expectedMatches: []string{
+				"dir1/dir2/foo",
+			},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			chezmoitest.WithTestFS(t, tc.root, func(fs vfs.FS) {
+				actualMatches, err := tc.ps.glob(fs, "/")
+				require.NoError(t, err)
+				assert.Equal(t, tc.expectedMatches, actualMatches)
+			})
+		})
+	}
+}
+
+func mustNewPatternSet(t *testing.T, patterns map[string]bool) *patternSet {
 	t.Helper()
-	ps := NewPatternSet()
+	ps := newPatternSet()
 	for pattern, exclude := range patterns {
-		require.NoError(t, ps.Add(pattern, exclude))
+		require.NoError(t, ps.add(pattern, exclude))
 	}
 	return ps
 }

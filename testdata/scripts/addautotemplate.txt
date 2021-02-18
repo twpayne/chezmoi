@@ -1,17 +1,18 @@
-[short] stop
-
-mkhomedir
-
 # test adding a file with --autotemplate
-chezmoi add --autotemplate $HOME${/}.gitconfig
-cmp $CHEZMOISOURCEDIR/dot_gitconfig.tmpl golden/dot_gitconfig.tmpl
+chezmoi add --autotemplate $HOME${/}.template
+cmp $CHEZMOISOURCEDIR/dot_template.tmpl golden/dot_template.tmpl
 
--- golden/dot_gitconfig.tmpl --
-[core]
-  autocrlf = false
-[user]
-  email = {{ .email }}
-  name = Your Name
+# test adding a symlink with --autotemplate
+symlink $HOME/.symlink -> .target-value
+chezmoi add --autotemplate $HOME${/}.symlink
+cmp $CHEZMOISOURCEDIR/symlink_dot_symlink.tmpl golden/symlink_dot_symlink.tmpl
+
+-- golden/dot_template.tmpl --
+key = {{ .variable }}
+-- golden/symlink_dot_symlink.tmpl --
+.target-{{ .variable }}
 -- home/user/.config/chezmoi/chezmoi.toml --
 [data]
-  email = "you@example.com"
+  variable = "value"
+-- home/user/.template --
+key = value

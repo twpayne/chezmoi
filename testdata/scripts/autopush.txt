@@ -1,7 +1,6 @@
-stop # FIXME
+[!exec:git] skip 'git not found in $PATH'
 
-[!exec:git] stop
-
+mkgitconfig
 mkhomedir golden
 mkhomedir
 
@@ -10,22 +9,20 @@ exec git init --bare $WORK/dotfiles.git
 chezmoi init file://$WORK/dotfiles.git
 
 # test that chezmoi add creates and pushes a commit
-chezmoi add $HOME${/}.bashrc
+chezmoi add $HOME${/}.file
 exec git --git-dir=$WORK/dotfiles.git show HEAD
-stdout 'Add dot_bashrc'
-
-[short] stop
+stdout 'Add dot_file'
 
 # test that chezmoi edit creates and pushes a commit
-chezmoi edit $HOME${/}.bashrc
+chezmoi edit $HOME${/}.file
 exec git --git-dir=$WORK/dotfiles.git show HEAD
-stdout 'Update dot_bashrc'
+stdout 'Update dot_file'
 
 # test that chezmoi forget creates and pushes a commit
-chezmoi forget $HOME${/}.bashrc
+chezmoi forget --force $HOME${/}.file
 exec git --git-dir=$WORK/dotfiles.git show HEAD
-stdout 'Remove dot_bashrc'
+stdout 'Remove dot_file'
 
 -- home/user/.config/chezmoi/chezmoi.toml --
-[sourceVCS]
+[git]
     autoPush = true

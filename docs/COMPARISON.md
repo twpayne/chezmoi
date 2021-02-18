@@ -1,6 +1,7 @@
 # chezmoi Comparison guide
 
 <!--- toc --->
+* [Go to chezmoi.io](#go-to-chezmoiio)
 * [Comparison table](#comparison-table)
 * [I already have a system to manage my dotfiles, why should I use chezmoi?](#i-already-have-a-system-to-manage-my-dotfiles-why-should-i-use-chezmoi)
   * [...if coping with differences between machines requires special care](#if-coping-with-differences-between-machines-requires-special-care)
@@ -8,6 +9,11 @@
   * [...if your needs are outgrowing your current tool](#if-your-needs-are-outgrowing-your-current-tool)
   * [...if setting up your dotfiles requires more than two short commands](#if-setting-up-your-dotfiles-requires-more-than-two-short-commands)
 
+## Go to chezmoi.io
+
+You are looking at documentation for chezmoi version 2, which hasn't been
+released yet. Documentation for the current version of chezmoi is at
+[chezmoi.io](https://chezmoi.io/docs/comparison/).
 ## Comparison table
 
 [chezmoi]: https://chezmoi.io/
@@ -24,7 +30,7 @@
 | Install method                         | Multiple      | git submodule     | Multiple          | Ruby gem          | Multiple      | n/a        |
 | Non-root install on bare system        | Yes           | Difficult         | Difficult         | Difficult         | Yes           | Yes        |
 | Windows support                        | Yes           | No                | No                | No                | No            | Yes        |
-| Bootstrap requirements                 | git           | Python, git       | Perl, git         | Ruby, git         | git           | git        |
+| Bootstrap requirements                 | None          | Python, git       | Perl, git         | Ruby, git         | git           | git        |
 | Source repos                           | Single        | Single            | Multiple          | Single            | Single        | Single     |
 | Method                                 | File          | Symlink           | File              | Symlink           | File          | File       |
 | Config file                            | Optional      | Required          | Optional          | None              | None          | No         |
@@ -36,6 +42,7 @@
 | Custom variables in templates          | Yes           | n/a               | n/a               | n/a               | No            | No         |
 | Executable files                       | Yes           | Yes               | Yes               | Yes               | No            | Yes        |
 | File creation with initial contents    | Yes           | No                | No                | No                | No            | No         |
+| Manage partial files                   | Yes           | No                | No                | No                | No            | No         |
 | File removal                           | Yes           | Manual            | No                | No                | No            | No         |
 | Directory creation                     | Yes           | Yes               | Yes               | No                | No            | Yes        |
 | Run scripts                            | Yes           | Yes               | Yes               | No                | No            | No         |

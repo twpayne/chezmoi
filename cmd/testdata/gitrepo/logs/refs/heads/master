@@ -1,2 +1,0 @@
-0000000000000000000000000000000000000000 86609dbf1c1514d1328efd7c29b69d517dcd440d Tom Payne <twpayne@gmail.com> 1567807201 +0200	commit (initial): Add .bashrc
-86609dbf1c1514d1328efd7c29b69d517dcd440d b3b74aaf7c352e16f1de71dea4cd20b65b0a8e78 Tom Payne <twpayne@gmail.com> 1567868879 +0200	commit: Add .chezmoi.toml.tmpl

@@ -1,2 +1,0 @@
-chezmoi --version
-stdout 'chezmoi2 version v2\.0\.0'

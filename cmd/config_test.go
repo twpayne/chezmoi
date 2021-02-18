@@ -1,75 +1,107 @@
 package cmd
 
 import (
-	"bytes"
 	"io"
+	"os"
 	"path/filepath"
+	"runtime"
 	"testing"
-	"text/template"
 
-	"github.com/Masterminds/sprig/v3"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	vfs "github.com/twpayne/go-vfs"
+	vfs "github.com/twpayne/go-vfs/v2"
 	xdg "github.com/twpayne/go-xdg/v3"
 
 	"github.com/twpayne/chezmoi/internal/chezmoi"
+	"github.com/twpayne/chezmoi/internal/chezmoitest"
 )
 
-func TestAutoCommitCommitMessage(t *testing.T) {
-	commitMessageText, err := getAsset(commitMessageTemplateAsset)
-	require.NoError(t, err)
-	commitMessageTmpl, err := template.New("commit_message").Funcs(sprig.TxtFuncMap()).Parse(string(commitMessageText))
-	require.NoError(t, err)
+func TestAddTemplateFuncPanic(t *testing.T) {
+	chezmoitest.WithTestFS(t, nil, func(fs vfs.FS) {
+		c := newTestConfig(t, fs)
+		assert.NotPanics(t, func() {
+			c.addTemplateFunc("func", nil)
+		})
+		assert.Panics(t, func() {
+			c.addTemplateFunc("func", nil)
+		})
+	})
+}
+
+func TestParseConfig(t *testing.T) {
 	for _, tc := range []struct {
-		name            string
-		statusStr       string
-		wantErr         bool
-		expectedMessage string
+		name          string
+		filename      string
+		contents      string
+		expectedColor bool
 	}{
 		{
-			name:            "add",
-			statusStr:       "1 A. N... 000000 100644 100644 0000000000000000000000000000000000000000 cea5c3500651a923bacd80f960dd20f04f71d509 main.go\n",
-			expectedMessage: "Add main.go\n",
+			name:     "json_bool",
+			filename: "chezmoi.json",
+			contents: chezmoitest.JoinLines(
+				`{`,
+				`  "color":true`,
+				`}`,
+			),
+			expectedColor: true,
 		},
 		{
-			name:            "remove",
-			statusStr:       "1 D. N... 100644 000000 000000 cea5c3500651a923bacd80f960dd20f04f71d509 0000000000000000000000000000000000000000 main.go\n",
-			expectedMessage: "Remove main.go\n",
+			name:     "json_string",
+			filename: "chezmoi.json",
+			contents: chezmoitest.JoinLines(
+				`{`,
+				`  "color":"on"`,
+				`}`,
+			),
+			expectedColor: true,
 		},
 		{
-			name:            "update",
-			statusStr:       "1 M. N... 100644 100644 100644 353dbbb3c29a80fb44d4e26dac111739d25294db 353dbbb3c29a80fb44d4e26dac111739d25294db main.go\n",
-			expectedMessage: "Update main.go\n",
+			name:     "toml_bool",
+			filename: "chezmoi.toml",
+			contents: chezmoitest.JoinLines(
+				`color = true`,
+			),
+			expectedColor: true,
 		},
 		{
-			name:            "rename",
-			statusStr:       "2 R. N... 100644 100644 100644 9d06c86ecba40e1c695e69b55a40843df6a79cef 9d06c86ecba40e1c695e69b55a40843df6a79cef R100 chezmoi_rename.go\tchezmoi.go\n",
-			expectedMessage: "Rename chezmoi.go to chezmoi_rename.go\n",
+			name:     "toml_string",
+			filename: "chezmoi.toml",
+			contents: chezmoitest.JoinLines(
+				`color = "y"`,
+			),
+			expectedColor: true,
 		},
 		{
-			name:      "unsupported_xy",
-			statusStr: "1 MM N... 100644 100644 100644 353dbbb3c29a80fb44d4e26dac111739d25294db 353dbbb3c29a80fb44d4e26dac111739d25294db main.go\n",
-			wantErr:   true,
+			name:     "yaml_bool",
+			filename: "chezmoi.yaml",
+			contents: chezmoitest.JoinLines(
+				`color: true`,
+			),
+			expectedColor: true,
+		},
+		{
+			name:     "yaml_string",
+			filename: "chezmoi.yaml",
+			contents: chezmoitest.JoinLines(
+				`color: "yes"`,
+			),
+			expectedColor: true,
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			status, err := gitVCS{}.ParseStatusOutput([]byte(tc.statusStr))
-			require.NoError(t, err)
-			b := &bytes.Buffer{}
-			err = commitMessageTmpl.Execute(b, status)
-			if tc.wantErr {
-				require.Error(t, err)
-			} else {
-				require.NoError(t, err)
-				assert.Equal(t, tc.expectedMessage, b.String())
-			}
+			chezmoitest.WithTestFS(t, map[string]interface{}{
+				"/home/user/.config/chezmoi/" + tc.filename: tc.contents,
+			}, func(fs vfs.FS) {
+				c := newTestConfig(t, fs)
+				require.NoError(t, c.execute([]string{"init"}))
+				assert.Equal(t, tc.expectedColor, c.color)
+			})
 		})
 	}
 }
 
 func TestUpperSnakeCaseToCamelCase(t *testing.T) {
-	for s, want := range map[string]string{
+	for s, expected := range map[string]string{
 		"BUG_REPORT_URL":   "bugReportURL",
 		"ID":               "id",
 		"ID_LIKE":          "idLike",
@@ -77,18 +109,18 @@ func TestUpperSnakeCaseToCamelCase(t *testing.T) {
 		"VERSION_CODENAME": "versionCodename",
 		"VERSION_ID":       "versionID",
 	} {
-		assert.Equal(t, want, upperSnakeCaseToCamelCase(s))
+		assert.Equal(t, expected, upperSnakeCaseToCamelCase(s))
 	}
 }
 
 func TestValidateKeys(t *testing.T) {
 	for _, tc := range []struct {
-		data    interface{}
-		wantErr bool
+		data        interface{}
+		expectedErr bool
 	}{
 		{
-			data:    nil,
-			wantErr: false,
+			data:        nil,
+			expectedErr: false,
 		},
 		{
 			data: map[string]interface{}{
@@ -98,13 +130,13 @@ func TestValidateKeys(t *testing.T) {
 				"ThisVariableIsExported": nil,
 				"αβ":                     "",
 			},
-			wantErr: false,
+			expectedErr: false,
 		},
 		{
 			data: map[string]interface{}{
 				"foo-foo": "bar",
 			},
-			wantErr: true,
+			expectedErr: true,
 		},
 		{
 			data: map[string]interface{}{
@@ -112,7 +144,7 @@ func TestValidateKeys(t *testing.T) {
 					"bar-bar": "baz",
 				},
 			},
-			wantErr: true,
+			expectedErr: true,
 		},
 		{
 			data: map[string]interface{}{
@@ -122,111 +154,104 @@ func TestValidateKeys(t *testing.T) {
 					},
 				},
 			},
-			wantErr: true,
+			expectedErr: true,
 		},
 	} {
-		if tc.wantErr {
-			assert.Error(t, validateKeys(tc.data, identifierRegexp))
+		if tc.expectedErr {
+			assert.Error(t, validateKeys(tc.data, identifierRx))
 		} else {
-			assert.NoError(t, validateKeys(tc.data, identifierRegexp))
+			assert.NoError(t, validateKeys(tc.data, identifierRx))
 		}
 	}
 }
 
-func newTestConfig(fs vfs.FS, options ...configOption) *Config {
-	return newConfig(append(
-		[]configOption{
+func newTestConfig(t *testing.T, fs vfs.FS, options ...configOption) *Config {
+	t.Helper()
+	system := chezmoi.NewRealSystem(fs)
+	c, err := newConfig(
+		append([]configOption{
+			withBaseSystem(system),
+			withDestSystem(system),
+			withSourceSystem(system),
 			withTestFS(fs),
 			withTestUser("user"),
-		},
-		options...,
-	)...)
+			withUmask(chezmoitest.Umask),
+		}, options...)...,
+	)
+	require.NoError(t, err)
+	return c
 }
 
-func withAddCmdConfig(add addCmdConfig) configOption {
-	return func(c *Config) {
-		c.add = add
+func withBaseSystem(baseSystem chezmoi.System) configOption {
+	return func(c *Config) error {
+		c.baseSystem = baseSystem
+		return nil
 	}
 }
 
-func withData(data map[string]interface{}) configOption {
-	return func(c *Config) {
-		c.Data = data
+func withDestSystem(destSystem chezmoi.System) configOption {
+	return func(c *Config) error {
+		c.destSystem = destSystem
+		return nil
 	}
 }
 
-func withDestDir(destDir string) configOption {
-	return func(c *Config) {
-		c.DestDir = destDir
-	}
-}
-
-func withDumpCmdConfig(dumpCmdConfig dumpCmdConfig) configOption {
-	return func(c *Config) {
-		c.dump = dumpCmdConfig
-	}
-}
-
-func withFollow(follow bool) configOption {
-	return func(c *Config) {
-		c.Follow = follow
-	}
-}
-
-func withGenericSecretCmdConfig(genericSecretCmdConfig genericSecretCmdConfig) configOption {
-	return func(c *Config) {
-		c.GenericSecret = genericSecretCmdConfig
-	}
-}
-
-func withMutator(mutator chezmoi.Mutator) configOption {
-	return func(c *Config) {
-		c.mutator = mutator
-	}
-}
-
-func withRemove(remove bool) configOption {
-	return func(c *Config) {
-		c.Remove = remove
-	}
-}
-
-func withRemoveCmdConfig(remove removeCmdConfig) configOption {
-	return func(c *Config) {
-		c.remove = remove
+func withSourceSystem(sourceSystem chezmoi.System) configOption {
+	return func(c *Config) error {
+		c.sourceSystem = sourceSystem
+		return nil
 	}
 }
 
 func withStdin(stdin io.Reader) configOption {
-	return func(c *Config) {
-		c.Stdin = stdin
+	return func(c *Config) error {
+		c.stdin = stdin
+		return nil
 	}
 }
 
 func withStdout(stdout io.Writer) configOption {
-	return func(c *Config) {
-		c.Stdout = stdout
+	return func(c *Config) error {
+		c.stdout = stdout
+		return nil
 	}
 }
 
 func withTestFS(fs vfs.FS) configOption {
-	return func(c *Config) {
+	return func(c *Config) error {
 		c.fs = fs
-		c.mutator = chezmoi.NewFSMutator(fs)
+		return nil
 	}
 }
 
 func withTestUser(username string) configOption {
-	return func(c *Config) {
-		homeDir := filepath.Join("/", "home", username)
-		c.SourceDir = filepath.Join(homeDir, ".local", "share", "chezmoi")
-		c.DestDir = homeDir
-		c.Umask = 0o22
-		c.bds = &xdg.BaseDirectorySpecification{
-			ConfigHome: filepath.Join(homeDir, ".config"),
-			DataHome:   filepath.Join(homeDir, ".local"),
-			CacheHome:  filepath.Join(homeDir, ".cache"),
-			RuntimeDir: filepath.Join(homeDir, ".run"),
+	return func(c *Config) error {
+		switch runtime.GOOS {
+		case "windows":
+			c.homeDir = `c:\home\user`
+		default:
+			c.homeDir = "/home/user"
 		}
+		c.SourceDir = filepath.Join(c.homeDir, ".local", "share", "chezmoi")
+		c.DestDir = c.homeDir
+		c.Umask = 0o22
+		configHome := filepath.Join(c.homeDir, ".config")
+		dataHome := filepath.Join(c.homeDir, ".local", "share")
+		c.bds = &xdg.BaseDirectorySpecification{
+			ConfigHome: configHome,
+			ConfigDirs: []string{configHome},
+			DataHome:   dataHome,
+			DataDirs:   []string{dataHome},
+			CacheHome:  filepath.Join(c.homeDir, ".cache"),
+			RuntimeDir: filepath.Join(c.homeDir, ".run"),
+		}
+		return nil
+	}
+}
+
+func withUmask(umask os.FileMode) configOption {
+	return func(c *Config) error {
+		c.Umask = umask
+		return nil
 	}
 }

@@ -3,23 +3,40 @@
 Manage your dotfiles securely across multiple machines.
 
 <!--- toc --->
+* [Go to chezmoi.io](#go-to-chezmoiio)
 * [Concepts](#concepts)
 * [Global command line flags](#global-command-line-flags)
   * [`--color` *value*](#--color-value)
   * [`-c`, `--config` *filename*](#-c---config-filename)
+  * [`--cpu-profile` *filename*](#--cpu-profile-filename)
   * [`--debug`](#--debug)
   * [`-D`, `--destination` *directory*](#-d---destination-directory)
-  * [`--follow`](#--follow)
   * [`-n`, `--dry-run`](#-n---dry-run)
+  * [`-x`, `--exclude` *types*](#-x---exclude-types)
+  * [`--force`](#--force)
   * [`-h`, `--help`](#-h---help)
+  * [`-k`, `--keep-going`](#-k---keep-going)
+  * [`--no-pager`](#--no-pager)
+  * [`--no-tty`](#--no-tty)
+  * [`-o`, `--output` *filename*](#-o---output-filename)
   * [`-r`. `--remove`](#-r---remove)
   * [`-S`, `--source` *directory*](#-s---source-directory)
+  * [`--use-builtin-git` *value*](#--use-builtin-git-value)
   * [`-v`, `--verbose`](#-v---verbose)
   * [`--version`](#--version)
+* [Common command line flags](#common-command-line-flags)
+  * [`--format` *format*](#--format-format)
+  * [`--include` *types*](#--include-types)
+  * [`-r`, `--recursive`](#-r---recursive)
 * [Configuration file](#configuration-file)
   * [Variables](#variables)
   * [Examples](#examples)
 * [Source state attributes](#source-state-attributes)
+* [Target types](#target-types)
+  * [Files](#files)
+  * [Directories](#directories)
+  * [Symbolic links](#symbolic-links)
+  * [Scripts](#scripts)
 * [Special files and directories](#special-files-and-directories)
   * [`.chezmoi.<format>.tmpl`](#chezmoiformattmpl)
   * [`.chezmoiignore`](#chezmoiignore)
@@ -45,7 +62,6 @@ Manage your dotfiles securely across multiple machines.
   * [`forget` *targets*](#forget-targets)
   * [`git` [*arguments*]](#git-arguments)
   * [`help` *command*](#help-command)
-  * [`hg` [*arguments*]](#hg-arguments)
   * [`init` [*repo*]](#init-repo)
   * [`import` *filename*](#import-filename)
   * [`manage` *targets*](#manage-targets)
@@ -55,12 +71,12 @@ Manage your dotfiles securely across multiple machines.
   * [`remove` *targets*](#remove-targets)
   * [`rm` *targets*](#rm-targets)
   * [`secret`](#secret)
-  * [`source` [*args*]](#source-args)
   * [`source-path` [*targets*]](#source-path-targets)
+  * [`state`](#state)
+  * [`status`](#status)
   * [`unmanage` *targets*](#unmanage-targets)
   * [`unmanaged`](#unmanaged)
   * [`update`](#update)
-  * [`upgrade`](#upgrade)
   * [`verify` [*targets*]](#verify-targets)
 * [Editor configuration](#editor-configuration)
 * [Umask configuration](#umask-configuration)
@@ -70,6 +86,7 @@ Manage your dotfiles securely across multiple machines.
   * [`bitwarden` [*args*]](#bitwarden-args)
   * [`bitwardenAttachment` *filename* *itemid*](#bitwardenattachment-filename-itemid)
   * [`bitwardenFields` [*args*]](#bitwardenfields-args)
+  * [`gitHubKeys` *user*](#githubkeys-user)
   * [`gopass` *gopass-name*](#gopass-gopass-name)
   * [`include` *filename*](#include-filename)
   * [`ioreg`](#ioreg)
@@ -91,6 +108,12 @@ Manage your dotfiles securely across multiple machines.
   * [`secretJSON` [*args*]](#secretjson-args)
   * [`stat` *name*](#stat-name)
   * [`vault` *key*](#vault-key)
+
+## Go to chezmoi.io
+
+You are looking at documentation for chezmoi version 2, which hasn't been
+released yet. Documentation for the current version of chezmoi is at
+[chezmoi.io](https://chezmoi.io/docs/reference/).
 
 ## Concepts
 
@@ -123,14 +146,16 @@ Command line flags override any values set in the configuration file.
 ### `--color` *value*
 
 Colorize diffs, *value* can be `on`, `off`, `auto`, or any boolean-like value
-recognized by
-[`strconv.ParseBool`](https://pkg.go.dev/strconv?tab=doc#ParseBool). The default
-value is `auto` which will colorize diffs only if the the environment variable
-`NO_COLOR` is not set and stdout is a terminal.
+recognized by `parseBool`. The default is `auto` which will colorize diffs only
+if the the environment variable `NO_COLOR` is not set and stdout is a terminal.
 
 ### `-c`, `--config` *filename*
 
 Read the configuration from *filename*.
+
+### `--cpu-profile` *filename*
+
+Write a [CPU profile](https://blog.golang.org/pprof) to *filename*.
 
 ### `--debug`
 
@@ -140,20 +165,43 @@ Log information helpful for debugging.
 
 Use *directory* as the destination directory.
 
-### `--follow`
-
-If the last part of a target is a symlink, deal with what the symlink
-references, rather than the symlink itself.
-
 ### `-n`, `--dry-run`
 
 Set dry run mode. In dry run mode, the destination directory is never modified.
 This is most useful in combination with the `-v` (verbose) flag to print changes
 that would be made without making them.
 
+### `-x`, `--exclude` *types*
+
+Exclude target state entries of type *types*. *types* is a comma-separated list
+of target states (`all`, `dirs`, `files`, `remove`, `scripts`, `symlinks`, and
+`encrypted`). For example, `--exclude=scripts` will cause the command to not run
+scripts and `--exclude=encrypted` will exclude encrypted files.
+
+### `--force`
+
+Make changes without prompting.
+
 ### `-h`, `--help`
 
 Print help.
+
+### `-k`, `--keep-going`
+
+Keep going as far as possible after a encountering an error.
+
+### `--no-pager`
+
+Do not use the pager.
+
+### `--no-tty`
+
+Do not attempt to get a TTY to read input and passwords. Instead, read them from
+stdin.
+
+### `-o`, `--output` *filename*
+
+Write the output to *filename* instead of stdout.
 
 ### `-r`. `--remove`
 
@@ -162,6 +210,13 @@ Also remove targets according to `.chezmoiremove`.
 ### `-S`, `--source` *directory*
 
 Use *directory* as the source directory.
+
+### `--use-builtin-git` *value*
+
+Use chezmoi's builtin git instead of `git.command` for the `init` and `update`
+commands. *value* can be `on`, `off`, `auto`, or any boolean-like value
+recognized by `parseBool`. The default is `auto` which will only use the builtin
+git if `git.command` cannot be found in `$PATH`.
 
 ### `-v`, `--verbose`
 
@@ -174,7 +229,27 @@ state and the destination set are printed as unified diffs.
 Print the version of chezmoi, the commit at which it was built, and the build
 timestamp.
 
-## Configuration file
+## Common command line flags
+
+The following flags apply to multiple commands where they are relevant.
+
+### `--format` *format*
+
+Set the output format. *format* can be `json` or `yaml`.
+
+### `--include` *types*
+
+Only operate on target state entries of type *types*. *types* is a
+comma-separated list of target states (`all`, `dirs`, `files`, `remove`,
+`scripts`, `symlinks`, and `encrypted`) and can be excluded by preceeding them
+with a `no`. For example, `--include=dirs,files` will cause the command to apply
+to directories and files only.
+
+### `-r`, `--recursive`
+
+Recurse into subdirectories, `true` by default.
+
+ ## Configuration file
 
 chezmoi searches for its configuration file according to the [XDG Base Directory
 Specification](https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html)
@@ -189,41 +264,54 @@ of the config file is `chezmoi`, and the first config file found is used.
 
 The following configuration variables are available:
 
-| Section         | Variable     | Type     | Default value             | Description                                         |
-| --------------- | ------------ | -------- | ------------------------- | --------------------------------------------------- |
-| Top level       | `color`      | string   | `auto`                    | Colorize diffs                                      |
-|                 | `data`       | any      | *none*                    | Template data                                       |
-|                 | `destDir`    | string   | `~`                       | Destination directory                               |
-|                 | `dryRun`     | bool     | `false`                   | Dry run mode                                        |
-|                 | `follow`     | bool     | `false`                   | Follow symlinks                                     |
-|                 | `remove`     | bool     | `false`                   | Remove targets                                      |
-|                 | `sourceDir`  | string   | `~/.local/share/chezmoi`  | Source directory                                    |
-|                 | `umask`      | int      | *from system*             | Umask                                               |
-|                 | `verbose`    | bool     | `false`                   | Verbose mode                                        |
-| `bitwarden`     | `command`    | string   | `bw`                      | Bitwarden CLI command                               |
-| `cd`            | `args`       | []string | *none*                    | Extra args to shell in `cd` command                 |
-|                 | `command`    | string   | *none*                    | Shell to run in `cd` command                        |
-| `diff`          | `format`     | string   | `chezmoi`                 | Diff format, either `chezmoi` or `git`              |
-|                 | `pager`      | string   | *none*                    | Pager                                               |
-| `genericSecret` | `command`    | string   | *none*                    | Generic secret command                              |
-| `gopass`        | `command`    | string   | `gopass`                  | gopass CLI command                                  |
-| `gpg`           | `command`    | string   | `gpg`                     | GPG CLI command                                     |
-|                 | `recipient`  | string   | *none*                    | GPG recipient                                       |
-|                 | `symmetric`  | bool     | `false`                   | Use symmetric GPG encryption                        |
-| `keepassxc`     | `args`       | []string | *none*                    | Extra args to KeePassXC CLI command                 |
-|                 | `command`    | string   | `keepassxc-cli`           | KeePassXC CLI command                               |
-|                 | `database`   | string   | *none*                    | KeePassXC database                                  |
-| `lastpass`      | `command`    | string   | `lpass`                   | Lastpass CLI command                                |
-| `merge`         | `args`       | []string | *none*                    | Extra args to 3-way merge command                   |
-|                 | `command`    | string   | `vimdiff`                 | 3-way merge command                                 |
-| `onepassword`   | `cache`      | bool     | `true`                    | Enable optional caching provided by `op`            |
-|                 | `command`    | string   | `op`                      | 1Password CLI command                               |
-| `pass`          | `command`    | string   | `pass`                    | Pass CLI command                                    |
-| `sourceVCS`     | `autoCommit` | bool     | `false`                   | Commit changes to the source state after any change |
-|                 | `autoPush`   | bool     | `false`                   | Push changes to the source state after any change   |
-|                 | `command`    | string   | `git`                     | Source version control system                       |
-| `template`      | `options`    | []string | `["missingkey=error"]`    | Template options                                    |
-| `vault`         | `command`    | string   | `vault`                   | Vault CLI command                                   |
+| Section       | Variable          | Type     | Default value             | Description                                            |
+| ------------- | ----------------- | -------- | ------------------------- | ------------------------------------------------------ |
+| Top level     | `color`           | string   | `auto`                    | Colorize output                                        |
+|               | `data`            | any      | *none*                    | Template data                                          |
+|               | `destDir`         | string   | `~`                       | Destination directory                                  |
+|               | `encryption`      | string   | *none*                    | Encryption tool, either `age` or `gpg`                 |
+|               | `format`          | string   | `json`                    | Format for data output, either `json` or `yaml`        |
+|               | `remove`          | bool     | `false`                   | Remove targets                                         |
+|               | `sourceDir`       | string   | `~/.local/share/chezmoi`  | Source directory                                       |
+|               | `umask`           | int      | *from system*             | Umask                                                  |
+|               | `useBuiltinGit`   | string   | `auto`                    | Use builtin git if `git` command is not found in $PATH |
+| `age`         | `args`            | []string | *none*                    | Extra args to age CLI command                          |
+|               | `command`         | string   | `age`                     | age CLI command                                        |
+|               | `identity`        | string   | *none*                    | age identity file                                      |
+|               | `identities`      | []string | *none*                    | age identity files                                     |
+|               | `recipient`       | string   | *none*                    | age recipient                                          |
+|               | `recipients`      | []string | *none*                    | age recipients                                         |
+|               | `recipientsFile`  | []string | *none*                    | age recipients file                                    |
+|               | `recipientsFiles` | []string | *none*                    | age receipients files                                  |
+|               | `suffix`          | string   | `.age`                    | Suffix appended to age-encrypted files                 |
+| `bitwarden`   | `command`         | string   | `bw`                      | Bitwarden CLI command                                  |
+| `cd`          | `args`            | []string | *none*                    | Extra args to shell in `cd` command                    |
+|               | `command`         | string   | *none*                    | Shell to run in `cd` command                           |
+| `diff`        | `pager`           | string   | `$PAGER` / `less`         | Pager                                                  |
+| `edit`        | `args`            | []string | *none*                    | Extra args to edit command                             |
+|               | `command`         | string   | `$EDITOR` / `$VISUAL`     | Edit command                                           |
+| `secret`      | `command`         | string   | *none*                    | Generic secret command                                 |
+| `git`         | `autoAdd `        | bool     | `false`                   | Add changes to the source state after any change       |
+|               | `autoCommit`      | bool     | `false`                   | Commit changes to the source state after any change    |
+|               | `autoPush`        | bool     | `false`                   | Push changes to the source state after any change      |
+|               | `command`         | string   | `git`                     | Source version control system                          |
+| `gopass`      | `command`         | string   | `gopass`                  | gopass CLI command                                     |
+| `gpg`         | `args`            | []string | *none*                    | Extra args to GPG CLI command                          |
+|               | `command`         | string   | `gpg`                     | GPG CLI command                                        |
+|               | `recipient`       | string   | *none*                    | GPG recipient                                          |
+|               | `suffix`          | string   | `.asc`                    | Suffix appended to GPG-encrypted files                 |
+|               | `symmetric`       | bool     | `false`                   | Use symmetric GPG encryption                           |
+| `keepassxc`   | `args`            | []string | *none*                    | Extra args to KeePassXC CLI command                    |
+|               | `command`         | string   | `keepassxc-cli`           | KeePassXC CLI command                                  |
+|               | `database`        | string   | *none*                    | KeePassXC database                                     |
+| `lastpass`    | `command`         | string   | `lpass`                   | Lastpass CLI command                                   |
+| `merge`       | `args`            | []string | *none*                    | Extra args to 3-way merge command                      |
+|               | `command`         | string   | `vimdiff`                 | 3-way merge command                                    |
+| `onepassword` | `cache`           | bool     | `true`                    | Enable optional caching provided by `op`               |
+|               | `command`         | string   | `op`                      | 1Password CLI command                                  |
+| `pass`        | `command`         | string   | `pass`                    | Pass CLI command                                       |
+| `template`    | `options`         | []string | `["missingkey=error"]`    | Template options                                       |
+| `vault`       | `command`         | string   | `vault`                   | Vault CLI command                                      |
 
 ### Examples
 
@@ -232,8 +320,8 @@ The following configuration variables are available:
 ```json
 {
     "sourceDir": "/home/user/.dotfiles",
-    "diff": {
-        "format": "git"
+    "git": {
+        "autoPush": true
     }
 }
 ```
@@ -242,16 +330,16 @@ The following configuration variables are available:
 
 ```toml
 sourceDir = "/home/user/.dotfiles"
-[diff]
-    format = "git"
+[git]
+    autoPush = true
 ```
 
 #### YAML
 
 ```yaml
 sourceDir: /home/user/.dotfiles
-diff:
-    format: git
+git:
+    autoPush: true
 ```
 
 ## Source state attributes
@@ -266,31 +354,102 @@ special, and are collectively referred to as "attributes":
 
 | Prefix       | Effect                                                                         |
 | ------------ | ------------------------------------------------------------------------------ |
-| `encrypted_` | Encrypt the file in the source state.                                          |
-| `once_`      | Only run script once.                                                          |
-| `private_`   | Remove all group and world permissions from the target file or directory.      |
+| `after_`     | Run script after updating the destination.                                     |
+| `before_`    | Run script before updating the desintation.                                    |
+| `create_`    | Ensure that the file exists, and create it with contents if it does not.       |
+| `dot_`       | Rename to use a leading dot, e.g. `dot_foo` becomes `.foo`.                    |
 | `empty_`     | Ensure the file exists, even if is empty. By default, empty files are removed. |
+| `encrypted_` | Encrypt the file in the source state.                                          |
 | `exact_`     | Remove anything not managed by chezmoi.                                        |
 | `executable_`| Add executable permissions to the target file.                                 |
+| `modify_`    | Treat the contents as a script that modifies an existing file.                 |
+| `once_`      | Run script once.                                                               |
+| `private_`   | Remove all group and world permissions from the target file or directory.      |
 | `run_`       | Treat the contents as a script to run.                                         |
 | `symlink_`   | Create a symlink instead of a regular file.                                    |
-| `dot_`       | Rename to use a leading dot, e.g. `dot_foo` becomes `.foo`.                    |
 
 | Suffix  | Effect                                               |
 | ------- | ---------------------------------------------------- |
 | `.tmpl` | Treat the contents of the source file as a template. |
 
-Order of prefixes is important, the order is `run_`, `exact_`, `private_`,
-`empty_`, `executable_`, `symlink_`, `once_`, `dot_`.
+The order of prefixes is important, the order is `run_`, `create_`, `modify_`,
+`before_`, `after_`, `exact_`, `private_`, `empty_`, `executable_`, `symlink_`,
+`once_`, `dot_`.
 
 Different target types allow different prefixes and suffixes:
 
-| Target type   | Allowed prefixes                                          | Allowed suffixes |
-| ------------- | --------------------------------------------------------- | ---------------- |
-| Directory     | `exact_`, `private_`, `dot_`                              | *none*           |
-| Regular file  | `encrypted_`, `private_`, `empty_`, `executable_`, `dot_` | `.tmpl`          |
-| Script        | `run_`, `once_`                                           | `.tmpl`          |
-| Symbolic link | `symlink_`, `dot_`,                                       | `.tmpl`          |
+| Target type   | Allowed prefixes                                                      | Allowed suffixes |
+| ------------- | --------------------------------------------------------------------- | ---------------- |
+| Directory     | `exact_`, `private_`, `dot_`                                          | *none*           |
+| Regular file  | `encrypted_`, `private_`, `executable_`, `dot_`                       | `.tmpl`          |
+| Create file   | `create_`, `encrypted_`, `private_`, `executable_`, `dot_`            | `.tmpl`          |
+| Modify file   | `modify_`, `encrypted_`, `private_`, `executable_`, `dot_`            | `.tmpl`          |
+| Script        | `run_`, `once_`, `before_` or `after_`                                | `.tmpl`          |
+| Symbolic link | `symlink_`, `dot_`,                                                   | `.tmpl`          |
+
+In addition, if the source file is encrypted, the suffix `.age` (when age
+encryption is used) or `.asc` (when gpg encryption is used) is stripped. These
+suffixes can be overridden with the `age.suffix` and `gpg.suffix` configuration
+variables.
+
+## Target types
+
+chezmoi will create, update, and delete files, directories, and symbolic links
+in the destination directory, and run scripts. chezmoi deterministically
+performs actions in ASCII order of their target name. For example, given a file
+`dot_a`, a script `run_z`, and a directory `exact_dot_c`, chezmoi will first
+create `.a`, create `.c`, and then execute `run_z`.
+
+### Files
+
+Files are represented by regular files in the source state. The `encrypted_`
+attribute determines whether the file in the source state is encrypted. The
+`executable_` attribute will set the executable bits when the file is written to
+the target state, and the `private_` attribute will clear all group and world
+permissions. Files with the `.tmpl` suffix will be interpreted as templates.
+
+#### Create file
+
+Files with the `create_` prefix will be created in the target state with the
+contents of the file in the source state if they do not already exist. If the
+file in the destination state already exists then its contents will be left
+unchanged.
+
+#### Modify file
+
+Files with the `modify_` prefix are treated as scripts that modify an existing
+file. The contents of the existing file (which maybe empty if the existing file
+does not exist or is empty) are passed to the script's standard input, and the
+new contents are read from the scripts standard output.
+
+### Directories
+
+Directories are represented by regular directories in the source state. The
+`exact_` attribute causes chezmoi to remove any entries in the target state that
+are not explicitly specified in the source state, and the `private_` attribute
+causes chezmoi to clear all group and world permssions.
+
+### Symbolic links
+
+Symbolic links are represented by regular files in the source state with the
+prefix `symlink_`. The contents of the file will have a trailing newline
+stripped, and the result be interpreted as the target of the symbolic link.
+Symbolic links with the `.tmpl` suffix in the source state are interpreted as
+templates.
+
+### Scripts
+
+Scripts are represented as regular files in the source state with prefix `run_`.
+The file's contents (after being interpreted as a template if it has a `.tmpl`
+suffix) are executed. Scripts are executed on every `chezmoi apply`, unless they
+have the `once_` attribute, in which case they are only executed when they are
+first found or when their contents have changed.
+
+Scripts with the `before_` attribute are executed before any files, directories,
+or symlinks are updated. Scripts with the `after_` attribute are executed after
+all files, directories, and symlinks have been updated. Scripts without an
+`before_` or `after_` attribute are executed in ASCII order of their target
+names with respect to files, directories, and symlinks.
 
 ## Special files and directories
 
@@ -333,6 +492,7 @@ ignored on different machines.
 
     *.txt   # ignore *.txt in the target directory
     */*.txt # ignore *.txt in subdirectories of the target directory
+    backups/** # ignore backups folder in chezmoi directory and all its contents
             # but not in subdirectories of subdirectories;
             # so a/b/c.txt would *not* be ignored
     backups/** # ignore all contents of backups folder in chezmoi directory
@@ -404,9 +564,18 @@ Set the `empty` attribute on added files.
 
 Add *targets*, even if doing so would cause a source template to be overwritten.
 
-#### `-x`, `--exact`
+#### `--follow`
+
+If the last part of a target is a symlink, add the target of the symlink instead
+of the symlink itself.
+
+#### `--exact`
 
 Set the `exact` attribute on added directories.
+
+#### `-i`, `--include` *types*
+
+Only add entries of type *types*.
 
 #### `-p`, `--prompt`
 
@@ -430,7 +599,18 @@ Set the `template` attribute on added files and symlinks.
 ### `apply` [*targets*]
 
 Ensure that *targets* are in the target state, updating them if necessary. If no
-targets are specified, the state of all targets are ensured.
+targets are specified, the state of all targets are ensured. If a target has
+been modified since chezmoi last wrote it then the user will be prompted if they
+want to overwrite the file.
+
+#### `-i`, `--include` *types*
+
+Only add entries of type *types*.
+
+#### `--source-path`
+
+Specify targets by source path, rather than target path. This is useful for
+applying changes after editing.
 
 #### `apply` examples
 
@@ -438,19 +618,32 @@ targets are specified, the state of all targets are ensured.
     chezmoi apply --dry-run --verbose
     chezmoi apply ~/.bashrc
 
+In `~/.vimrc`:
+
+    autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path %
+
 ### `archive`
 
 Generate a tar archive of the target state. This can be piped into `tar` to
 inspect the target state.
 
-#### `--output`, `-o` *filename*
+#### `--format` *format*
 
-Write the output to *filename* instead of stdout.
+Write the archive in *format*. *format* can be either `tar` (the default) or `zip`.
+
+#### `-i`, `--include` *types*
+
+Only include entries of type *types*.
+
+#### `-z`, `--gzip`
+
+Compress the output with gzip.
 
 #### `archive` examples
 
     chezmoi archive | tar tvf -
     chezmoi archive --output=dotfiles.tar
+    chezmoi archive --format=zip --output=dotfiles.zip
 
 ### `cat` *targets*
 
@@ -504,24 +697,14 @@ comma (`,`).
 Generate shell completion code for the specified shell (`bash`, `fish`,
 `powershell`, or `zsh`).
 
-#### `--output`, `-o` *filename*
-
-Write the shell completion code to *filename* instead of stdout.
-
 #### `completion` examples
 
     chezmoi completion bash
-    chezmoi completion fish --output ~/.config/fish/completions/chezmoi.fish
+    chezmoi completion fish --output=~/.config/fish/completions/chezmoi.fish
 
 ### `data`
 
-Write the computed template data in JSON format to stdout. The `data` command
-accepts additional flags:
-
-#### `-f`, `--format` *format*
-
-Print the computed template data in the given format. The accepted formats are
-`json` (JSON), `toml` (TOML), and `yaml` (YAML).
+Write the computed template data to stdout.
 
 #### `data` examples
 
@@ -536,31 +719,10 @@ Print the difference between the target state and the destination state for
 If a `diff.pager` command is set in the configuration file then the output will
 be piped into it.
 
-#### `-f`, `--format` *format*
-
-Print the diff in *format*. The format can be set with the `diff.format`
-variable in the configuration file. Valid formats are:
-
-##### `chezmoi`
-
-A mix of unified diffs and pseudo shell commands, including scripts, equivalent
-to `chezmoi apply --dry-run --verbose`.
-
-##### `git`
-
-A [git format diff](https://git-scm.com/docs/diff-format), excluding scripts. In
-version 2.0.0 of chezmoi, `git` format diffs will become the default and include
-scripts and the `chezmoi` format will be removed.
-
-#### `--no-pager`
-
-Do not use the pager.
-
 #### `diff` examples
 
     chezmoi diff
     chezmoi diff ~/.bashrc
-    chezmoi diff --format=git
 
 ### `docs` [*regexp*]
 
@@ -583,13 +745,12 @@ Check for potential problems.
 
 ### `dump` [*targets*]
 
-Dump the target state in JSON format. If no targets are specified, then the
-entire target state. The `dump` command accepts additional arguments:
+Dump the target state. If no targets are specified, then the entire target
+state.
 
-#### `-f`, `--format` *format*
+#### `-i`, `--include` *types*
 
-Print the target state in the given format. The accepted formats are `json`
-(JSON) and `yaml` (YAML).
+Only include entries of type *types*.
 
 #### `dump` examples
 
@@ -606,19 +767,10 @@ targets are given the the source directory itself is opened with `$EDITOR`. The
 
 Apply target immediately after editing. Ignored if there are no targets.
 
-#### `-d`, `--diff`
-
-Print the difference between the target state and the actual state after
-editing.. Ignored if there are no targets.
-
-#### `-p`, `--prompt`
-
-Prompt before applying each target.. Ignored if there are no targets.
-
 #### `edit` examples
 
     chezmoi edit ~/.bashrc
-    chezmoi edit ~/.bashrc --apply --prompt
+    chezmoi edit ~/.bashrc --apply
     chezmoi edit
 
 ### `edit-config`
@@ -639,10 +791,6 @@ the template is read from stdin.
 #### `--init`, `-i`
 
 Include simulated functions only available during `chezmoi init`.
-
-#### `--output`, `-o` *filename*
-
-Write the output to *filename* instead of stdout.
 
 #### `--promptBool` *pairs*
 
@@ -695,39 +843,66 @@ must occur after `--` to prevent chezmoi from interpreting them.
 
 Print the help associated with *command*.
 
-### `hg` [*arguments*]
-
-Run `hg` *arguments* in the source directory. Note that flags in *arguments*
-must occur after `--` to prevent chezmoi from interpreting them.
-
-#### `hg` examples
-
-    chezmoi hg -- pull --rebase --update
-
 ### `init` [*repo*]
 
-Setup the source directory and update the destination directory to match the
-target state.
+Setup the source directory, generate the config file, and optionally update
+the destination directory to match the target state. *repo* is expanded to a
+full git repo URL using the following rules:
+
+| Pattern            | Repo                                   |
+| ------------------ | -------------------------------------- |
+| `user`             | `https://github.com/user/dotfiles.git` |
+| `user/repo`        | `https://github.com/user/repo.git`     |
+| `site/user/repo`   | `https://site/user/repo.git`           |
+| `~sr.ht/user`      | `https://git.sr.ht/~user/dotfiles`     |
+| `~sr.ht/user/repo` | `https://git.sr.ht/~user/repo`         |
 
 First, if the source directory is not already contain a repository, then if
 *repo* is given it is checked out into the source directory, otherwise a new
 repository is initialized in the source directory.
 
-Second, if a file called `.chezmoi.format.tmpl` exists, where `format` is one of
-the supported file formats (e.g. `json`, `toml`, or `yaml`) then a new
+Second, if a file called `.chezmoi.<format>.tmpl` exists, where `<format>` is
+one of the supported file formats (e.g. `json`, `toml`, or `yaml`) then a new
 configuration file is created using that file as a template.
 
-Finally, if the `--apply` flag is passed, `chezmoi apply` is run.
+Then, if the `--apply` flag is passed, `chezmoi apply` is run.
+
+Then, if the `--purge` flag is passed, chezmoi will remove the source directory
+and its config directory.
+
+Finally, if the `--purge-binary` is passed, chezmoi will attempt to remove its
+own binary.
 
 #### `--apply`
 
 Run `chezmoi apply` after checking out the repo and creating the config file.
-This is `false` by default.
+
+#### `--depth` *depth*
+
+Clone the repo with depth *depth*.
+
+#### `--one-shot`
+
+`--one-shot` is the equivalent of `--apply`, `--depth=1`, `--purge`,
+`--purge-binary`. It attempts to install your dotfiles with chezmoi and then
+remove all traces of chezmoi from the system. This is useful for setting up
+temporary environments (e.g. Docker containers).
+
+#### `--purge`
+
+Remove the source and config directories after applying.
+
+#### `--purge-binary`
+
+Attempt to remove the chezmoi binary after applying.
 
 #### `init` examples
 
-    chezmoi init https://github.com/user/dotfiles.git
-    chezmoi init https://github.com/user/dotfiles.git --apply
+    chezmoi init user
+    chezmoi init user --apply
+    chezmoi init user --apply --purge
+    chezmoi init user/dots
+    chezmoi init gitlab.com/user
 
 ### `import` *filename*
 
@@ -742,7 +917,7 @@ The only supported archive format is `.tar.gz`.
 
 Set the destination (in the source state) where the archive will be imported.
 
-#### `-x`, `--exact`
+#### `--exact`
 
 Set the `exact` attribute on all imported directories.
 
@@ -769,10 +944,7 @@ List all managed entries in the destination directory in alphabetical order.
 
 #### `-i`, `--include` *types*
 
-Only list entries of type *types*. *types* is a comma-separated list of types of
-entry to include. Valid types are `dirs`, `files`, and `symlinks` which can be
-abbreviated to `d`, `f`, and `s` respectively. By default, `manage` will list
-entries of all types.
+Only include entries of type *types*.
 
 #### `managed` examples
 
@@ -784,8 +956,8 @@ entries of all types.
 
 ### `merge` *targets*
 
-Perform a three-way merge between the destination state, the source state, and
-the target state. The merge tool is defined by the `merge.command` configuration
+Perform a three-way merge between the destination state, the target state, and
+the source state. The merge tool is defined by the `merge.command` configuration
 variable, and defaults to `vimdiff`. If multiple targets are specified the merge
 tool is invoked for each target. If the target state cannot be computed (for
 example if source is a template containing errors or an encrypted file that
@@ -835,27 +1007,8 @@ To get a full list of available commands run:
 
 #### `secret` examples
 
-    chezmoi secret bitwarden list items
-    chezmoi secret keyring set --service service --user user
-    chezmoi secret keyring get --service service --user user
-    chezmoi secret lastpass ls
-    chezmoi secret lastpass -- show --format=json id
-    chezmoi secret onepassword list items
-    chezmoi secret onepassword get item id
-    chezmoi secret pass show id
-    chezmoi secret vault -- kv get -format=json id
-
-### `source` [*args*]
-
-Execute the source version control system in the source directory with *args*.
-Note that any flags for the source version control system must be separated with
-a `--` to stop chezmoi from reading them.
-
-#### `source` examples
-
-    chezmoi source init
-    chezmoi source add .
-    chezmoi source commit -- -m "Initial commit"
+    chezmoi secret keyring set --service=service --user=user --value=password
+    chezmoi secret keyring get --service=service --user=user
 
 ### `source-path` [*targets*]
 
@@ -866,6 +1019,32 @@ print the source directory.
 
     chezmoi source-path
     chezmoi source-path ~/.bashrc
+
+### `state`
+
+Manipulate the persistent state.
+
+#### `state` examples
+
+    chezmoi state dump
+    chemzoi state reset
+
+### `status`
+
+Print the status of the files and scripts managed by chezmoi in a format similar
+to [`git status`](https://git-scm.com/docs/git-status).
+
+The first column of output indicates the difference between the last state
+written by chezmoi and the actual state. The second column indicates the
+difference between the actual state and the target state.
+
+#### `-i`, `--include` *types*
+
+Only include entries of type *types*.
+
+#### `status` examples
+
+    chezmoi status
 
 ### `unmanage` *targets*
 
@@ -883,37 +1062,23 @@ List all unmanaged files in the destination directory.
 
 Pull changes from the source VCS and apply any changes.
 
+#### `-i`, `--include` *types*
+
+Only update entries of type *types*.
+
 #### `update` examples
 
     chezmoi update
-
-### `upgrade`
-
-Upgrade chezmoi by downloading and installing the latest released version. This
-will call the GitHub API to determine if there is a new version of chezmoi
-available, and if so, download and attempt to install it in the same way as
-chezmoi was previously installed.
-
-If chezmoi was installed with a package manager (`dpkg` or `rpm`) then `upgrade`
-will download a new package and install it, using `sudo` if it is installed.
-Otherwise, chezmoi will download the latest executable and replace the existing
-executable with the new version.
-
-If the `CHEZMOI_GITHUB_API_TOKEN` environment variable is set, then its value
-will be used to authenticate requests to the GitHub API, otherwise
-unauthenticated requests are used which are subject to stricter [rate
-limiting](https://developer.github.com/v3/#rate-limiting). Unauthenticated
-requests should be sufficient for most cases.
-
-#### `upgrade` examples
-
-    chezmoi upgrade
 
 ### `verify` [*targets*]
 
 Verify that all *targets* match their target state. chezmoi exits with code 0
 (success) if all targets match their target state, or 1 (failure) otherwise. If
 no targets are specified then all targets are checked.
+
+#### `-i`, `--include` *types*
+
+Only include entries of type *types*.
 
 #### `verify` examples
 
@@ -967,20 +1132,21 @@ For a full list of options, see
 
 ## Template variables
 
-chezmoi provides the following automatically populated variables:
+chezmoi provides the following automatically-populated variables:
 
 | Variable                | Value                                                                                                                           |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | `.chezmoi.arch`         | Architecture, e.g. `amd64`, `arm`, etc. as returned by [runtime.GOARCH](https://pkg.go.dev/runtime?tab=doc#pkg-constants).      |
-| `.chezmoi.fullHostname` | The full hostname of the machine chezmoi is running on.                                                                         |
+| `.chezmoi.fqdnHostname` | The fully-qualified domain name hostname of the machine chezmoi is running on.                                                  |
 | `.chezmoi.group`        | The group of the user running chezmoi.                                                                                          |
-| `.chezmoi.homedir`      | The home directory of the user running chezmoi.                                                                                 |
+| `.chezmoi.homeDir`      | The home directory of the user running chezmoi.                                                                                 |
 | `.chezmoi.hostname`     | The hostname of the machine chezmoi is running on, up to the first `.`.                                                         |
 | `.chezmoi.kernel`       | Contains information from `/proc/sys/kernel`. Linux only, useful for detecting specific kernels (i.e. Microsoft's WSL kernel).  |
 | `.chezmoi.os`           | Operating system, e.g. `darwin`, `linux`, etc. as returned by [runtime.GOOS](https://pkg.go.dev/runtime?tab=doc#pkg-constants). |
 | `.chezmoi.osRelease`    | The information from `/etc/os-release`, Linux only, run `chezmoi data` to see its output.                                       |
 | `.chezmoi.sourceDir`    | The source directory.                                                                                                           |
 | `.chezmoi.username`     | The username of the user running chezmoi.                                                                                       |
+| `.chezmoi.version`      | The version of chezmoi.                                                                                                         |
 
 Additional variables can be defined in the config file in the `data` section.
 Variable names must consist of a letter and be followed by zero or more letters
@@ -1086,6 +1252,20 @@ the same arguments will only invoke `bw get` once.
 
     {{ (bitwardenFields "item" "<itemid>").token.value }}
 
+### `gitHubKeys` *user*
+
+`gitHubKeys` returns *user*'s public SSH keys from GitHub using the GitHub API.
+If any of the environment variables `CHEZMOI_GITHUB_ACCESS_TOKEN`,
+`GITHUB_ACCESS_TOKEN`, or `GITHUB_TOKEN` are found, then the first one found
+will be used to authenticate the API request, otherwise an anonymous API request
+will be used, which may be subject to lower rate limits.
+
+#### `gitHubKeys` examples
+
+    {{ range (gitHubKeys "user") }}
+    {{- .Key }}
+    {{- end }}
+
 ### `gopass` *gopass-name*
 
 `gopass` returns passwords stored in [gopass](https://www.gopass.pw/) using the
@@ -1129,7 +1309,7 @@ first non-empty element is a UNC path.
 
 #### `joinPath` examples
 
-    {{ joinPath .chezmoi.homedir ".zshrc" }}
+    {{ joinPath .chezmoi.homeDir ".zshrc" }}
 
 ### `keepassxc` *entry*
 
@@ -1327,19 +1507,24 @@ the same *pass-name* will only invoke `pass` once.
 ### `promptBool` *prompt*
 
 `promptBool` prompts the user with *prompt* and returns the user's response with
-interpreted as a boolean.  It is only available when generating the initial
-config file.
+interpreted as a boolean. It is only available when generating the initial
+config file. The user's response is interpreted as follows (case insensitive):
+
+| Response                | Result  |
+| ----------------------- | ------- |
+| 1, on, t, true, y, yes  | `true`  |
+| 0, off, f, false, n, no | `false` |
 
 ### `promptInt` *prompt*
 
 `promptInt` prompts the user with *prompt* and returns the user's response with
-interpreted as an integer.  It is only available when generating the initial
+interpreted as an integer. It is only available when generating the initial
 config file.
 
 ### `promptString` *prompt*
 
 `promptString` prompts the user with *prompt* and returns the user's response
-with all leading and trailing spaces stripped.  It is only available when
+with all leading and trailing spaces stripped. It is only available when
 generating the initial config file.
 
 #### `promptString` examples
@@ -1351,16 +1536,16 @@ generating the initial config file.
 ### `secret` [*args*]
 
 `secret` returns the output of the generic secret command defined by the
-`genericSecret.command` configuration variable with *args* with leading and
-trailing whitespace removed. The output is cached so multiple calls to `secret`
-with the same *args* will only invoke the generic secret command once.
+`secret.command` configuration variable with *args* with leading and trailing
+whitespace removed. The output is cached so multiple calls to `secret` with the
+same *args* will only invoke the generic secret command once.
 
 ### `secretJSON` [*args*]
 
 `secretJSON` returns structured data from the generic secret command defined by
-the `genericSecret.command` configuration variable with *args*. The output is
-parsed as JSON. The output is cached so multiple calls to `secret` with the same
-*args* will only invoke the generic secret command once.
+the `secret.command` configuration variable with *args*. The output is parsed as
+JSON. The output is cached so multiple calls to `secret` with the same *args*
+will only invoke the generic secret command once.
 
 ### `stat` *name*
 
@@ -1376,7 +1561,7 @@ templates.
 
 #### `stat` examples
 
-    {{ if stat (joinPath .chezmoi.homedir ".pyenv") }}
+    {{ if stat (joinPath .chezmoi.homeDir ".pyenv") }}
     # ~/.pyenv exists
     {{ end }}
 

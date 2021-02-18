@@ -6,6 +6,7 @@ linters:
   - depguard
   - dogsled
   - dupl
+  - durationcheck
   - errcheck
   - errorlint
   - exhaustive
@@ -24,13 +25,15 @@ linters:
   - gosec
   - gosimple
   - govet
-  - ifshort
   - ineffassign
   - interfacer
   - makezero
   - misspell
+  - noctx
+  - nolintlint
   - prealloc
   - predeclared
+  - revive
   - rowserrcheck
   - scopelint
   - sqlclosecheck
@@ -47,6 +50,7 @@ linters:
   disable:
   - exhaustivestruct
   - funlen
+  - ifshort # FIXME re-enable when bugs in ifshort are fixed
   - gochecknoglobals
   - gochecknoinits
   - gocognit
@@ -60,8 +64,6 @@ linters:
   - nakedret
   - nestif
   - nlreturn
-  - noctx
-  - nolintlint # FIXME re-enable
   - paralleltest
   - testpackage
   - tparallel
@@ -69,6 +71,10 @@ linters:
   - wsl
 
 linters-settings:
+  forbidigo:
+    forbid:
+    - ^fmt\.Print.*$
+    - ^ioutil\.
   gofumpt:
     extra-rules: true
   goimports:
@@ -81,12 +87,6 @@ issues:
   - linters:
     - goerr113
     text: "do not define dynamic errors, use wrapped static errors instead"
-  - linters:
-    - dupl
-    path: "^cmd/secret(go)?pass\\.go$"
-  - linters:
-    - forbidigo
-    path: ^cmd/
   - linters:
     - forbidigo
     - gosec

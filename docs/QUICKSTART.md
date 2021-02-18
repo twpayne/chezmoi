@@ -1,10 +1,17 @@
 # chezmoi Quick Start Guide
 
 <!--- toc --->
+* [Go to chezmoi.io](#go-to-chezmoiio)
 * [Concepts](#concepts)
 * [Start using chezmoi on your current machine](#start-using-chezmoi-on-your-current-machine)
 * [Using chezmoi across multiple machines](#using-chezmoi-across-multiple-machines)
 * [Next steps](#next-steps)
+
+## Go to chezmoi.io
+
+You are looking at documentation for chezmoi version 2, which hasn't been
+released yet. Documentation for the current version of chezmoi is at
+[chezmoi.io](https://chezmoi.io/docs/quickstart/).
 
 ## Concepts
 

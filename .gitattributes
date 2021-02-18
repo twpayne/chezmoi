@@ -2,5 +2,4 @@
 
 # Make GitHub language breakdown more accurate, see https://github.com/github/linguist
 *.gen.go linguist-generated
-chezmoi2/completions/* linguist-generated
 completions/* linguist-generated

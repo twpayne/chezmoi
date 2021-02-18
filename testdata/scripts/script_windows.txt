@@ -1,38 +1,32 @@
-[windows] skip # FIXME
 [!windows] skip 'Windows only'
 
-chezmoi apply
+chezmoi apply --force
 stdout evidence
 
-[short] stop
-
 chezmoi dump
-cmpenv stdout golden/dump.json
+cmp stdout golden/dump.json
 
 chezmoi managed --include=scripts
 cmpenv stdout golden/managed
 
-[!exec:tar] stop
+[!exec:tar] 'tar not found in $PATH'
 
-chezmoi archive --output=archive.tar
-exec tar -tf archive.tar
+chezmoi archive --gzip --output=archive.tar.gz
+exec tar -tzf archive.tar.gz
 [windows] unix2dos golden/archive
 cmp stdout golden/archive
 
 -- golden/archive --
 script.cmd
 -- golden/dump.json --
-[
-  {
+{
+  "script.cmd": {
     "type": "script",
-    "sourcePath": "$WORK\\home\\user\\.local\\share\\chezmoi\\run_script.cmd",
-    "targetPath": "script.cmd",
-    "once": false,
-    "template": false,
+    "name": "script.cmd",
     "contents": "echo evidence\n"
   }
-]
+}
 -- golden/managed --
-$HOME\\script.cmd
+script.cmd
 -- home/user/.local/share/chezmoi/run_script.cmd --
 echo evidence

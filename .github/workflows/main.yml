@@ -20,9 +20,8 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: 1.15.x
+        go-version: 1.16.0
     - name: Cache Go modules
-      if: runner.os != 'macos' # FIXME re-enable
       uses: actions/cache@v2
       with:
         path: ~/go/pkg/mod
@@ -42,7 +41,6 @@ jobs:
     - name: Run
       run: |
         go run . --version
-        go run ./chezmoi2 --version
     - name: Test
       run: go test -race ./...
   test-release:
@@ -55,7 +53,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: 1.15.x
+        go-version: 1.16.0
     - name: Cache Go modules
       uses: actions/cache@v2
       with:
@@ -78,11 +76,6 @@ jobs:
         ./dist/chezmoi-cgo-glibc_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v"
         ./dist/chezmoi-cgo-musl_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v"
         ./dist/chezmoi-nocgo_linux_386/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v"
-        file ./dist/chezmoi2-cgo-glibc_linux_amd64/chezmoi2 | tee /dev/stderr | grep -q "dynamically linked"
-        file ./dist/chezmoi2-cgo-musl_linux_amd64/chezmoi2 | tee /dev/stderr | grep -q "statically linked"
-        ./dist/chezmoi2-cgo-glibc_linux_amd64/chezmoi2 --version | tee /dev/stderr | grep -q "chezmoi2 version v"
-        ./dist/chezmoi2-cgo-musl_linux_amd64/chezmoi2 --version | tee /dev/stderr | grep -q "chezmoi2 version v"
-        ./dist/chezmoi2-nocgo_linux_386/chezmoi2 --version | tee /dev/stderr | grep -q "chezmoi2 version v"
     - name: Artifact chezmoi-linux-amd64
       uses: actions/upload-artifact@v2
       with:
@@ -103,33 +96,13 @@ jobs:
       with:
         name: chezmoi-windows-amd64
         path: dist/chezmoi-nocgo_windows_amd64/chezmoi.exe
-    - name: Artifact chezmoi2-linux-amd64
-      uses: actions/upload-artifact@v2
-      with:
-        name: chezmoi2-linux-amd64
-        path: dist/chezmoi2-cgo-glibc_linux_amd64/chezmoi2
-    - name: Artifact chezmoi2-linux-musl-amd64
-      uses: actions/upload-artifact@v2
-      with:
-        name: chezmoi2-linux-musl-amd64
-        path: dist/chezmoi2-cgo-musl_linux_amd64/chezmoi2
-    - name: Artifact chezmoi2-macos-amd64
-      uses: actions/upload-artifact@v2
-      with:
-        name: chezmoi2-macos-amd64
-        path: dist/chezmoi2-nocgo_darwin_amd64/chezmoi2
-    - name: Artifact chezmoi2-windows-amd64
-      uses: actions/upload-artifact@v2
-      with:
-        name: chezmoi2-windows-amd64
-        path: dist/chezmoi2-nocgo_windows_amd64/chezmoi2.exe
   generate:
     runs-on: ubuntu-18.04
     steps:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: 1.15.x
+        go-version: 1.16.0
     - name: Cache Go modules
       uses: actions/cache@v2
       with:
@@ -141,25 +114,35 @@ jobs:
       uses: actions/checkout@v2
     - name: Generate
       run: |
-        go generate
-        go generate ./chezmoi2
+        make completions
         git diff --exit-code
   lint:
     runs-on: ubuntu-18.04
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Lint
-        uses: golangci/golangci-lint-action@v2
-        with:
-          version: v1.36.0
-      - name: ShellCheck
-        uses: ludeeus/action-shellcheck@1.0.0
-        with:
-          scandir: ./assets/scripts
-      - name: Whitespace
-        run:
-          go run ./internal/cmd/lint-whitespace
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16.0
+    - name: Cache Go modules
+      uses: actions/cache@v2
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Lint
+      uses: golangci/golangci-lint-action@v2
+      with:
+        version: v1.37.0
+    - name: ShellCheck
+      uses: ludeeus/action-shellcheck@1.0.0
+      with:
+        scandir: ./assets/scripts
+    - name: Whitespace
+      run:
+        go run ./internal/cmd/lint-whitespace
   release:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     needs:
@@ -176,7 +159,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: 1.15.x
+        go-version: 1.16.0
     - name: Cache Go modules
       uses: actions/cache@v2
       with:

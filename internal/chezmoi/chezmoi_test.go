@@ -1,32 +1,17 @@
 package chezmoi
 
 import (
-	"errors"
-	"testing"
+	"os"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog/pkgerrors"
 )
 
-func TestReturnTemplateError(t *testing.T) {
-	funcs := map[string]interface{}{
-		"returnTemplateError": func() string {
-			panic(errors.New("error"))
-		},
-	}
-	for name, dataString := range map[string]string{
-		"syntax_error":         "{{",
-		"unknown_field":        "{{ .Unknown }}",
-		"unknown_func":         "{{ func }}",
-		"func_returning_error": "{{ returnTemplateError }}",
-	} {
-		t.Run(name, func(t *testing.T) {
-			ts := NewTargetState(
-				WithDestDir("/home/user"),
-				WithSourceDir("/home/user/.chezmoi"),
-				WithTemplateFuncs(funcs),
-			)
-			_, err := ts.ExecuteTemplateData(name, []byte(dataString))
-			assert.Error(t, err)
-		})
-	}
+func init() {
+	log.Logger = log.Output(zerolog.ConsoleWriter{
+		Out:     os.Stderr,
+		NoColor: true,
+	})
+	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
 }

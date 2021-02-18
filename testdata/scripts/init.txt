@@ -1,5 +1,6 @@
 [!exec:git] stop
 
+mkgitconfig
 mkhomedir golden
 mkhomedir
 
@@ -7,37 +8,51 @@ mkhomedir
 chezmoi init
 exists $CHEZMOISOURCEDIR/.git
 
-[short] stop
-
 # create a commit
-cp golden/.bashrc $CHEZMOISOURCEDIR/dot_bashrc
-chezmoi git add dot_bashrc
-chezmoi git commit -- --message 'Add dot_bashrc'
+cp golden/.file $CHEZMOISOURCEDIR/dot_file
+chezmoi git add dot_file
+chezmoi git commit -- --message 'Add dot_file'
 
 # test that chezmoi init fetches git repo but does not apply
 chhome home2/user
+mkgitconfig
 chezmoi init file://$WORK/home/user/.local/share/chezmoi
 exists $CHEZMOISOURCEDIR/.git
-! exists $HOME/.bashrc
+! exists $HOME/.file
 
 # test that chezmoi init --apply fetches a git repo and runs chezmoi apply
 chhome home3/user
-chezmoi init --apply file://$WORK/home/user/.local/share/chezmoi
+mkgitconfig
+chezmoi init --apply --force file://$WORK/home/user/.local/share/chezmoi
 exists $CHEZMOISOURCEDIR/.git
-cmp $HOME/.bashrc golden/.bashrc
+cmp $HOME/.file golden/.file
+
+# test that chezmoi init --apply --depth 1 --force --purge clones, applies, and purges
+chhome home4/user
+mkgitconfig
+exists $CHEZMOICONFIGDIR
+! exists $CHEZMOISOURCEDIR
+chezmoi init --apply --depth 1 --force --purge file://$WORK/home/user/.local/share/chezmoi
+cmp $HOME/.file golden/.file
+! exists $CHEZMOICONFIGDIR
+! exists $CHEZMOISOURCEDIR
 
 # test that chezmoi init does not clone the repo if it is already checked out but does create the config file
-chhome home4${/}user
+chhome home5/user
+mkgitconfig
 chezmoi init --source=$HOME/dotfiles file://$WORK/nonexistentrepo
 exists $CHEZMOICONFIGDIR/chezmoi.toml
 
--- home2/user/.gitconfig --
-[core]
-  autocrlf = false
--- home3/user/.gitconfig --
-[core]
-  autocrlf = false
--- home4/user/dotfiles/.git/.keep --
--- home4/user/dotfiles/.chezmoi.toml.tmpl --
+# test chezmoi init --one-shot
+chhome home6/user
+mkgitconfig
+chezmoi init --one-shot file://$WORK/home/user/.local/share/chezmoi
+cmp $HOME/.file golden/.file
+! exists $CHEZMOICONFIGDIR
+! exists $CHEZMOISOURCEDIR
+
+-- home4/user/.config/chezmoi/chezmoi.toml --
+-- home5/user/dotfiles/.git/.keep --
+-- home5/user/dotfiles/.chezmoi.toml.tmpl --
 [data]
   email = "user@home.org"

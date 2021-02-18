@@ -1,9 +1,11 @@
 mksourcedir
 
-chezmoi forget $HOME${/}.bashrc
-! exists $CHEZMOISOURCEDIR/dot_bashrc
-exists $CHEZMOISOURCEDIR/private_dot_ssh
-exists $CHEZMOISOURCEDIR/private_dot_ssh/config
+# test that chezmoi forget file forgets a file
+exists $CHEZMOISOURCEDIR/dot_file
+chezmoi forget --force $HOME${/}.file
+! exists $CHEZMOISOURCEDIR/dot_file
 
-chezmoi forget $HOME${/}.ssh
-! exists $CHEZMOISOURCEDIR/private_dot_ssh
+# test that chezmoi forget dir forgets a dir
+exists $CHEZMOISOURCEDIR/dot_dir
+chezmoi forget --force $HOME${/}.dir
+! exists $CHEZMOISOURCEDIR/dot_dir

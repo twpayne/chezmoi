@@ -1,6 +1,7 @@
 # chezmoi How-To Guide
 
 <!--- toc --->
+* [Go to chezmoi.io](#go-to-chezmoiio)
 * [Use a hosted repo to manage your dotfiles across multiple machines](#use-a-hosted-repo-to-manage-your-dotfiles-across-multiple-machines)
 * [Pull the latest changes from your repo and apply them](#pull-the-latest-changes-from-your-repo-and-apply-them)
 * [Pull the latest changes from your repo and see what would change, without actually applying the changes](#pull-the-latest-changes-from-your-repo-and-see-what-would-change-without-actually-applying-the-changes)
@@ -9,6 +10,8 @@
 * [Use completely separate config files on different machines](#use-completely-separate-config-files-on-different-machines)
   * [Without using symlinks](#without-using-symlinks)
 * [Create a config file on a new machine automatically](#create-a-config-file-on-a-new-machine-automatically)
+* [Re-create your config file](#re-create-your-config-file)
+* [Populate `~/.ssh/authorized_keys` with your public SSH keys from GitHub](#populate-sshauthorized_keys-with-your-public-ssh-keys-from-github)
 * [Have chezmoi create a directory, but ignore its contents](#have-chezmoi-create-a-directory-but-ignore-its-contents)
 * [Ensure that a target is removed](#ensure-that-a-target-is-removed)
 * [Include a subdirectory from another repository, like Oh My Zsh](#include-a-subdirectory-from-another-repository-like-oh-my-zsh)
@@ -34,10 +37,15 @@
 * [Run a PowerShell script as admin on Windows](#run-a-powershell-script-as-admin-on-windows)
 * [Import archives](#import-archives)
 * [Export archives](#export-archives)
-* [Use a non-git version control system](#use-a-non-git-version-control-system)
 * [Customize the `diff` command](#customize-the-diff-command)
 * [Use a merge tool other than vimdiff](#use-a-merge-tool-other-than-vimdiff)
 * [Migrate from a dotfile manager that uses symlinks](#migrate-from-a-dotfile-manager-that-uses-symlinks)
+
+## Go to chezmoi.io
+
+You are looking at documentation for chezmoi version 2, which hasn't been
+released yet. Documentation for the current version of chezmoi is at
+[chezmoi.io](https://chezmoi.io/docs/how-to/).
 
 ## Use a hosted repo to manage your dotfiles across multiple machines
 
@@ -81,7 +89,7 @@ This runs `git pull --rebase` in your source directory and then `chezmoi apply`.
 
 Run:
 
-    chezmoi source pull -- --rebase && chezmoi diff
+    chezmoi git pull -- --rebase && chezmoi diff
 
 This runs `git pull --rebase` in your source directory and `chezmoi
 diff` then shows the difference between the target state computed from your
@@ -99,9 +107,9 @@ chezmoi can automatically commit and push changes to your source directory to
 your repo. This feature is disabled by default. To enable it, add the following
 to your config file:
 
-    [sourceVCS]
-        autoCommit = true
-        autoPush = true
+    [git]
+      autoCommit = true
+      autoPush = true
 
 Whenever a change is made to your source directory, chezmoi will commit the
 changes with an automatically-generated commit message (if `autoCommit` is true)
@@ -296,10 +304,10 @@ The same thing can be achieved using the include function.
 `dot_bashrc.tmpl`
 
 	{{ if eq .chezmoi.os "darwin" }}
-	{{ include ".bashrc_darwin" }}
+	{{   include ".bashrc_darwin" }}
 	{{ end }}
 	{{ if eq .chezmoi.os "linux" }}
-	{{ include ".bashrc_linux" }}
+	{{   include ".bashrc_linux" }}
 	{{ end }}
 
 
@@ -315,7 +323,7 @@ Specifically, if you have `.chezmoi.toml.tmpl` that looks like this:
 
     {{- $email := promptString "email" -}}
     [data]
-        email = "{{ $email }}"
+        email = {{ $email | quote }}
 
 Then `chezmoi init` will create an initial `chezmoi.toml` using this template.
 `promptString` is a special function that prompts the user (you) for a value.
@@ -324,6 +332,50 @@ To test this template, use `chezmoi execute-template` with the `--init` and
 `--promptString` flags, for example:
 
     chezmoi execute-template --init --promptString email=john@home.org < ~/.local/share/chezmoi/.chezmoi.toml.tmpl
+
+## Re-create your config file
+
+If you change your config file template, chezmoi will warn you if your current
+config file was not generated from that template. You can re-generate your
+config file by running:
+
+    chezmoi init
+
+If you are using any `prompt*` template functions in your config file template
+you will be prompted again. However, you can avoid this with the following
+example template logic:
+
+    {{- $email := get . "email" -}}
+    {{- if not $email -}}
+    {{-   $email = promptString "email" -}}
+    {{- end -}}
+
+    [data]
+      email = {{ $email | quote }}
+
+This will cause chezmoi to first try to re-use the existing `$email` variable
+and fallback to `promptString` only if it is not set.
+
+For boolean variables you can use:
+
+    {{- $var := false -}}
+    {{- if (hasKey . "var") -}}
+    {{-   $var = get "." "var" -}}
+    {{- end -}}
+
+    [data]
+      var = $var
+
+## Populate `~/.ssh/authorized_keys` with your public SSH keys from GitHub
+
+chezmoi can retrieve your public SSH keys from GitHub, which can be useful for
+populating your `~/.ssh/authorized_keys`. Put the following in your
+`~/.local/share/chezmoi/dot_ssh/authorized_keys.tmpl`, where `username` is your
+GitHub username:
+
+    {{ range (gitHubKeys "username") -}}
+    {{   .Key }}
+    {{ end -}}
 
 ## Have chezmoi create a directory, but ignore its contents
 
@@ -512,6 +564,7 @@ it afterwards.
 Specify the encryption key to use in your configuration file (`chezmoi.toml`)
 with the `gpg.recipient` key:
 
+    encryption = "gpg"
     [gpg]
       recipient = "..."
 
@@ -530,6 +583,7 @@ decrypted when generating the target state.
 
 Specify symmetric encryption in your configuration file:
 
+    encryption = "gpg"
     [gpg]
       symmetric = true
 
@@ -571,7 +625,7 @@ Windows Credentials Manager (on Windows) via the
 
 Set values with:
 
-    $ chezmoi keyring set --service=<service> --user=<user>
+    $ chezmoi secret keyring set --service=<service> --user=<user>
     Value: xxxxxxxx
 
 The value can then be used in templates using the `keyring` function which takes
@@ -579,7 +633,7 @@ the service and user as arguments.
 
 For example, save a GitHub access token in keyring with:
 
-    $ chezmoi keyring set --service=github --user=<github-username>
+    $ chezmoi secret keyring set --service=github --user=<github-username>
     Value: xxxxxxxx
 
 and then include it in your `~/.gitconfig` file with:
@@ -590,7 +644,7 @@ and then include it in your `~/.gitconfig` file with:
 
 You can query the keyring from the command line:
 
-    chezmoi keyring get --service=github --user=<github-username>
+    chezmoi secret keyring get --service=github --user=<github-username>
 
 ### Use LastPass to keep your secrets
 
@@ -701,20 +755,19 @@ language to extract the data you want. For example:
 ### Use a generic tool to keep your secrets
 
 You can use any command line tool that outputs secrets either as a string or in
-JSON format. Choose the binary by setting `genericSecret.command` in your
-configuration file. You can then invoke this command with the `secret` and
-`secretJSON` template functions which return the raw output and JSON-decoded
-output respectively. All of the above secret managers can be supported in this
-way:
+JSON format. Choose the binary by setting `secret.command` in your configuration
+file. You can then invoke this command with the `secret` and `secretJSON`
+template functions which return the raw output and JSON-decoded output
+respectively. All of the above secret managers can be supported in this way:
 
-| Secret Manager  | `genericSecret.command` | Template skeleton                                 |
-| --------------- | ----------------------- | ------------------------------------------------- |
-| 1Password       | `op`                    | `{{ secretJSON "get" "item" <id> }}`              |
-| Bitwarden       | `bw`                    | `{{ secretJSON "get" <id> }}`                     |
-| Hashicorp Vault | `vault`                 | `{{ secretJSON "kv" "get" "-format=json" <id> }}` |
-| LastPass        | `lpass`                 | `{{ secretJSON "show" "--json" <id> }}`           |
-| KeePassXC       | `keepassxc-cli`         | Not possible (interactive command only)           |
-| pass            | `pass`                  | `{{ secret "show" <id> }}`                        |
+| Secret Manager  | `secret.command` | Template skeleton                                 |
+| --------------- | ---------------- | ------------------------------------------------- |
+| 1Password       | `op`             | `{{ secretJSON "get" "item" <id> }}`              |
+| Bitwarden       | `bw`             | `{{ secretJSON "get" <id> }}`                     |
+| Hashicorp Vault | `vault`          | `{{ secretJSON "kv" "get" "-format=json" <id> }}` |
+| LastPass        | `lpass`          | `{{ secretJSON "show" "--json" <id> }}`           |
+| KeePassXC       | `keepassxc-cli`  | Not possible (interactive command only)           |
+| pass            | `pass`           | `{{ secret "show" <id> }}`                        |
 
 ### Use templates variables to keep your secrets
 
@@ -902,22 +955,28 @@ WSL can be detected by looking for the string `Microsoft` in
 
 WSL 1:
 ```
-{{ if (contains "Microsoft" .chezmoi.kernel.osrelease) }}
+{{ if (eq .chezmoi.os "linux") }}
+{{   if (contains "Microsoft" .chezmoi.kernel.osrelease) }}
 # WSL-specific code
+{{   end }}
 {{ end }}
 ```
 
 WSL 2:
 ```
-{{ if (contains "microsoft" .chezmoi.kernel.osrelease) }}
+{{ if (eq .chezmoi.os "linux") }}
+{{   if (contains "microsoft" .chezmoi.kernel.osrelease) }}
 # WSL-specific code
+{{   end }}
 {{ end }}
 ```
 
 WSL 2 since version 4.19.112:
 ```
-{{ if (contains "microsoft-WSL2" .chezmoi.kernel.osrelease) }}
+{{ if (eq .chezmoi.os "linux") }}
+{{   if (contains "microsoft-WSL2" .chezmoi.kernel.osrelease) }}
 # WSL-specific code
+{{   end }}
 {{ end }}
 ```
 
@@ -963,20 +1022,6 @@ target state. A particularly useful command is:
 
 which lists all the targets in the target state.
 
-## Use a non-git version control system
-
-By default, chezmoi uses git, but you can use any version control system of your
-choice. In your config file, specify the command to use. For example, to use
-Mercurial specify:
-
-    [sourceVCS]
-      command = "hg"
-
-The source VCS command is used in the chezmoi commands `init`, `source`, and
-`update`, and support for VCSes other than git is limited but easy to add. If
-you'd like to see your VCS better supported, please [open an issue on
-GitHub](https://github.com/twpayne/chezmoi/issues/new/choose).
-
 ## Customize the `diff` command
 
 By default, chezmoi uses a built-in diff. You can change the format, and/or pipe
@@ -984,8 +1029,8 @@ the output into a pager of your choice. For example, to use
 [`diff-so-fancy`](https://github.com/so-fancy/diff-so-fancy) specify:
 
     [diff]
-        format = "git"
-        pager = "diff-so-fancy"
+      format = "git"
+      pager = "diff-so-fancy"
 
 The format can also be set with the `--format` option to the `diff` command, and
 the pager can be disabled using `--no-pager`.

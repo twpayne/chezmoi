@@ -1,13 +1,19 @@
 # chezmoi Install Guide
 
 <!--- toc --->
+* [Go to chezmoi.io](#go-to-chezmoiio)
 * [One-line binary install](#one-line-binary-install)
 * [One-line package install](#one-line-package-install)
 * [Pre-built Linux packages](#pre-built-linux-packages)
 * [Pre-built binaries](#pre-built-binaries)
 * [All pre-built Linux packages and binaries](#all-pre-built-linux-packages-and-binaries)
 * [From source](#from-source)
-* [Upgrading](#upgrading)
+
+## Go to chezmoi.io
+
+You are looking at documentation for chezmoi version 2, which hasn't been
+released yet. Documentation for the current version of chezmoi is at
+[chezmoi.io](https://chezmoi.io/docs/install/).
 
 ## One-line binary install
 
@@ -24,7 +30,7 @@ Or on systems with Powershell, you can use this command:
     # To install in another location
     '$params = "-BinDir ~/other"', (iwr https://git.io/chezmoi.ps1).Content | powershell -c -
 
-    # For information about other options, try this:
+    # For information about other options, run
     '$params = "-?"', (iwr https://git.io/chezmoi.ps1).Content | powershell -c -
 
 ## One-line package install
@@ -67,7 +73,7 @@ documentation, and shell completions.
 | ---------- | --------------------------------------------------- | -------------------------------------------------------------- |
 | FreeBSD    | `amd64`, `arm`, `arm64`, `i386`                     | [`tar.gz`](https://github.com/twpayne/chezmoi/releases/latest) |
 | Linux      | `amd64`, `arm`, `arm64`, `i386`, `ppc64`, `ppc64le` | [`tar.gz`](https://github.com/twpayne/chezmoi/releases/latest) |
-| macOS      | `amd64`                                             | [`tar.gz`](https://github.com/twpayne/chezmoi/releases/latest) |
+| macOS      | `amd64`, `arm64`                                    | [`tar.gz`](https://github.com/twpayne/chezmoi/releases/latest) |
 | OpenBSD    | `amd64`, `arm`, `arm64`, `i386`                     | [`tar.gz`](https://github.com/twpayne/chezmoi/releases/latest) |
 | Windows    | `amd64`, `i386`                                     | [`zip`](https://github.com/twpayne/chezmoi/releases/latest)    |
 
@@ -80,19 +86,6 @@ page](https://github.com/twpayne/chezmoi/releases/latest).
 
 Download, build, and install chezmoi for your system:
 
-    cd $(mktemp -d)
-    git clone --depth=1 https://github.com/twpayne/chezmoi.git
-    cd chezmoi
-    go install
+    go install github.com/twpayne/chezmoi@latest
 
-Building chezmoi requires Go 1.14 or later.
-
-## Upgrading
-
-If you have installed a pre-built binary of chezmoi, you can upgrade it to the
-latest release with:
-
-    chezmoi upgrade
-
-This will re-use whichever mechanism you used to install chezmoi to install the
-latest release.
+Building chezmoi requires Go 1.16 or later.

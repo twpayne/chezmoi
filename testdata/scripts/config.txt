@@ -1,0 +1,22 @@
+# test default config
+chezmoi data --format=yaml
+stdout 'sourceDir: .*/home/user/.local/share/chezmoi'
+
+# test that flags override default config
+chezmoi data --format=yaml --source=/flag/source
+stdout 'sourceDir: .*/flag/source'
+
+chhome home2/user
+
+# test that config files override default config
+chezmoi data --format=yaml
+stdout 'sourceDir: .*/config/source'
+
+# test that the config file can be set
+chezmoi data --config=$CHEZMOICONFIGDIR/chezmoi.yaml --format=yaml
+stdout 'sourceDir: .*/config2/source'
+
+-- home2/user/.config/chezmoi/chezmoi.toml --
+sourceDir = "/config/source"
+-- home2/user/.config/chezmoi/chezmoi.yaml --
+sourceDir: /config2/source

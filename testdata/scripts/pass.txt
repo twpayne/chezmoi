@@ -1,8 +1,9 @@
 [!windows] chmod 755 bin/pass
 [windows] unix2dos bin/pass.cmd
 
-chezmoi apply
-cmp $HOME/.netrc golden/.netrc
+# test pass template function
+chezmoi execute-template '{{ pass "misc/example.com" }}'
+stdout examplepassword
 
 -- bin/pass --
 #!/bin/sh
@@ -24,11 +25,3 @@ IF "%*" == "show misc/example.com" (
     echo pass: invalid command: %*
     exit /b 1
 )
--- home/user/.local/share/chezmoi/private_dot_netrc.tmpl --
-machine example.com
-login examplelogin
-password {{ pass "misc/example.com" }}
--- golden/.netrc --
-machine example.com
-login examplelogin
-password examplepassword

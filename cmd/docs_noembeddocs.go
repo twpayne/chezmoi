@@ -4,7 +4,6 @@
 package cmd
 
 import (
-	"io/ioutil"
 	"os"
 	"path/filepath"
 )
@@ -13,15 +12,15 @@ import (
 // embedded docs. It should be an absolute path.
 var DocsDir = "docs"
 
-func getDocsFilenames() ([]string, error) {
+func doc(filename string) ([]byte, error) {
+	return os.ReadFile(filepath.Join(DocsDir, filename))
+}
+
+func docsFilenames() ([]string, error) {
 	f, err := os.Open(DocsDir)
 	if err != nil {
 		return nil, err
 	}
 	defer f.Close()
 	return f.Readdirnames(-1)
-}
-
-func getDoc(filename string) ([]byte, error) {
-	return ioutil.ReadFile(filepath.Join(DocsDir, filename))
 }
