@@ -2,24 +2,22 @@ mkhomedir
 mksourcedir
 
 chezmoi unmanaged
-cmpenv stdout golden/unmanaged
+cmp stdout golden/unmanaged
 
-[short] stop
-
-rm $CHEZMOISOURCEDIR/dot_bashrc
+rm $CHEZMOISOURCEDIR/dot_dir
 chezmoi unmanaged
-cmpenv stdout golden/unmanaged-bashrc
+cmp stdout golden/unmanaged-dir
 
-rm $CHEZMOISOURCEDIR/private_dot_ssh
+rm $CHEZMOISOURCEDIR/dot_file
 chezmoi unmanaged
-cmpenv stdout golden/unmanaged-bashrc-ssh
+cmp stdout golden/unmanaged-dir-file
 
 -- golden/unmanaged --
-$HOME${/}.local
--- golden/unmanaged-bashrc --
-$HOME${/}.bashrc
-$HOME${/}.local
--- golden/unmanaged-bashrc-ssh --
-$HOME${/}.bashrc
-$HOME${/}.local
-$HOME${/}.ssh
+.local
+-- golden/unmanaged-dir --
+.dir
+.local
+-- golden/unmanaged-dir-file --
+.dir
+.file
+.local

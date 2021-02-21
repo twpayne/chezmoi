@@ -1,24 +1,38 @@
+// Package chezmoi contains chezmoi's core logic.
 package chezmoi
 
 import (
-	"archive/tar"
 	"bytes"
-	"io"
+	"crypto/sha256"
+	"fmt"
 	"os"
 	"path/filepath"
-	"sort"
 	"strings"
+)
 
-	vfs "github.com/twpayne/go-vfs"
+var (
+	// DefaultTemplateOptions are the default template options.
+	DefaultTemplateOptions = []string{"missingkey=error"}
+
+	// Skip indicates that entry should be skipped.
+	Skip = filepath.SkipDir
+
+	// Umask is the process's umask.
+	Umask = os.FileMode(0)
 )
 
 // Suffixes and prefixes.
 const (
+	ignorePrefix     = "."
+	afterPrefix      = "after_"
+	beforePrefix     = "before_"
+	createPrefix     = "create_"
 	dotPrefix        = "dot_"
 	emptyPrefix      = "empty_"
 	encryptedPrefix  = "encrypted_"
 	exactPrefix      = "exact_"
 	executablePrefix = "executable_"
+	modifyPrefix     = "modify_"
 	oncePrefix       = "once_"
 	privatePrefix    = "private_"
 	runPrefix        = "run_"
@@ -26,100 +40,125 @@ const (
 	TemplateSuffix   = ".tmpl"
 )
 
-// A PersistentState is an interface to a persistent state.
-type PersistentState interface {
-	Close() error
-	Delete(bucket, key []byte) error
-	Get(bucket, key []byte) ([]byte, error)
-	Set(bucket, key, value []byte) error
+// Special file names.
+const (
+	Prefix = ".chezmoi"
+
+	dataName         = Prefix + "data"
+	ignoreName       = Prefix + "ignore"
+	removeName       = Prefix + "remove"
+	templatesDirName = Prefix + "templates"
+	versionName      = Prefix + "version"
+)
+
+var knownPrefixedFiles = map[string]bool{
+	Prefix + ".json" + TemplateSuffix: true,
+	Prefix + ".toml" + TemplateSuffix: true,
+	Prefix + ".yaml" + TemplateSuffix: true,
+	dataName:                          true,
+	ignoreName:                        true,
+	removeName:                        true,
+	versionName:                       true,
 }
 
-// An ApplyOptions is a big ball of mud for things that affect Entry.Apply.
-type ApplyOptions struct {
-	DestDir           string
-	DryRun            bool
-	Ignore            func(string) bool
-	PersistentState   PersistentState
-	Remove            bool
-	ScriptStateBucket []byte
-	Stdout            io.Writer
-	Umask             os.FileMode
-	Verbose           bool
+var modeTypeNames = map[os.FileMode]string{
+	0:                 "file",
+	os.ModeDir:        "dir",
+	os.ModeSymlink:    "symlink",
+	os.ModeNamedPipe:  "named pipe",
+	os.ModeSocket:     "socket",
+	os.ModeDevice:     "device",
+	os.ModeCharDevice: "char device",
 }
 
-// An Entry is either a Dir, a File, or a Symlink.
-type Entry interface {
-	AppendAllEntries(allEntries []Entry) []Entry
-	Apply(fs vfs.FS, mutator Mutator, follow bool, applyOptions *ApplyOptions) error
-	ConcreteValue(ignore func(string) bool, sourceDir string, umask os.FileMode, recursive bool) (interface{}, error)
-	Evaluate(ignore func(string) bool) error
-	SourceName() string
-	TargetName() string
-	archive(w *tar.Writer, ignore func(string) bool, headerTemplate *tar.Header, umask os.FileMode) error
+type errDuplicateTarget struct {
+	targetRelPath  RelPath
+	sourceRelPaths SourceRelPaths
 }
 
-type parsedSourceFilePath struct {
-	dirAttributes    []DirAttributes
-	fileAttributes   *FileAttributes
-	scriptAttributes *ScriptAttributes
-}
-
-// dirNames returns the dir names from dirAttributes.
-func dirNames(dirAttributes []DirAttributes) []string {
-	dns := make([]string, len(dirAttributes))
-	for i, da := range dirAttributes {
-		dns[i] = da.Name
+func (e *errDuplicateTarget) Error() string {
+	sourceRelPathStrs := make([]string, 0, len(e.sourceRelPaths))
+	for _, sourceRelPath := range e.sourceRelPaths {
+		sourceRelPathStrs = append(sourceRelPathStrs, sourceRelPath.String())
 	}
-	return dns
+	return fmt.Sprintf("%s: duplicate source state entries (%s)", e.targetRelPath, strings.Join(sourceRelPathStrs, ", "))
 }
 
-// isEmpty returns true if b should be considered empty.
-func isEmpty(b []byte) bool {
-	return len(bytes.TrimSpace(b)) == 0
+type errNotInAbsDir struct {
+	pathAbsPath AbsPath
+	dirAbsPath  AbsPath
 }
 
-// parseDirNameComponents parses multiple directory name components.
-func parseDirNameComponents(components []string) []DirAttributes {
-	das := []DirAttributes{}
-	for _, component := range components {
-		da := ParseDirAttributes(component)
-		das = append(das, da)
-	}
-	return das
+func (e *errNotInAbsDir) Error() string {
+	return fmt.Sprintf("%s: not in %s", e.pathAbsPath, e.dirAbsPath)
 }
 
-// parseSourceFilePath parses a single source file path.
-func parseSourceFilePath(path string) parsedSourceFilePath {
-	components := splitPathList(path)
-	das := parseDirNameComponents(components[0 : len(components)-1])
-	sourceName := components[len(components)-1]
-	if strings.HasPrefix(sourceName, runPrefix) {
-		sa := ParseScriptAttributes(sourceName)
-		return parsedSourceFilePath{
-			dirAttributes:    das,
-			scriptAttributes: &sa,
-		}
-	}
-	fa := ParseFileAttributes(components[len(components)-1])
-	return parsedSourceFilePath{
-		dirAttributes:  das,
-		fileAttributes: &fa,
+type errNotInRelDir struct {
+	pathRelPath RelPath
+	dirRelPath  RelPath
+}
+
+func (e *errNotInRelDir) Error() string {
+	return fmt.Sprintf("%s: not in %s", e.pathRelPath, e.dirRelPath)
+}
+
+type errUnsupportedFileType struct {
+	absPath AbsPath
+	mode    os.FileMode
+}
+
+func (e *errUnsupportedFileType) Error() string {
+	return fmt.Sprintf("%s: unsupported file type %s", e.absPath, modeTypeName(e.mode))
+}
+
+// SHA256Sum returns the SHA256 sum of data.
+func SHA256Sum(data []byte) []byte {
+	sha256SumArr := sha256.Sum256(data)
+	return sha256SumArr[:]
+}
+
+// SuspiciousSourceDirEntry returns true if base is a suspicous dir entry.
+func SuspiciousSourceDirEntry(base string, info os.FileInfo) bool {
+	//nolint:exhaustive
+	switch info.Mode() & os.ModeType {
+	case 0:
+		return strings.HasPrefix(base, Prefix) && !knownPrefixedFiles[base]
+	case os.ModeDir:
+		return strings.HasPrefix(base, Prefix) && base != templatesDirName
+	case os.ModeSymlink:
+		return strings.HasPrefix(base, Prefix)
+	default:
+		return true
 	}
 }
 
-// sortedEntryNames returns a sorted slice of all entry names.
-func sortedEntryNames(entries map[string]Entry) []string {
-	entryNames := []string{}
-	for entryName := range entries {
-		entryNames = append(entryNames, entryName)
-	}
-	sort.Strings(entryNames)
-	return entryNames
+// isEmpty returns true if data is empty after trimming whitespace from both
+// ends.
+func isEmpty(data []byte) bool {
+	return len(bytes.TrimSpace(data)) == 0
 }
 
-func splitPathList(path string) []string {
-	if strings.HasPrefix(path, string(filepath.Separator)) {
-		path = strings.TrimPrefix(path, string(filepath.Separator))
+func modeTypeName(mode os.FileMode) string {
+	if name, ok := modeTypeNames[mode&os.ModeType]; ok {
+		return name
 	}
-	return strings.Split(path, string(filepath.Separator))
+	return fmt.Sprintf("0o%o: unknown type", mode&os.ModeType)
+}
+
+// mustTrimPrefix is like strings.TrimPrefix but panics if s is not prefixed by
+// prefix.
+func mustTrimPrefix(s, prefix string) string {
+	if !strings.HasPrefix(s, prefix) {
+		panic(fmt.Sprintf("%s: not prefixed by %s", s, prefix))
+	}
+	return s[len(prefix):]
+}
+
+// mustTrimSuffix is like strings.TrimSuffix but panics if s is not suffixed by
+// suffix.
+func mustTrimSuffix(s, suffix string) string {
+	if !strings.HasSuffix(s, suffix) {
+		panic(fmt.Sprintf("%s: not suffixed by %s", s, suffix))
+	}
+	return s[:len(s)-len(suffix)]
 }

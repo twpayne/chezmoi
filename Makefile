@@ -1,51 +1,51 @@
-GOLANGCI_LINT_VERSION=1.36.0
+GO?=go
+GOLANGCI_LINT_VERSION=1.37.0
 
 .PHONY: default
-default: generate build run test lint format
+default: build run test lint format
 
 .PHONY: build
 build: build-darwin build-linux build-windows
 
 .PHONY: build-darwin
-build-darwin: generate
-	GOOS=darwin GOARCH=amd64 go build -o /dev/null .
-	GOOS=darwin GOARCH=amd64 go build -o /dev/null ./chezmoi2
+build-darwin:
+	GOOS=darwin GOARCH=amd64 $(GO) build -o /dev/null .
+	GOOS=darwin GOARCH=arm64 $(GO) build -o /dev/null .
 
 .PHONY: build-linux
-build-linux: generate
-	GOOS=linux GOARCH=amd64 go build -o /dev/null .
-	GOOS=linux GOARCH=amd64 go build -o /dev/null ./chezmoi2
+build-linux:
+	GOOS=linux GOARCH=amd64 $(GO) build -o /dev/null .
 
 .PHONY: build-windows
-build-windows: generate
-	GOOS=windows GOARCH=amd64 go build -o /dev/null .
-	GOOS=windows GOARCH=amd64 go build -o /dev/null ./chezmoi2
+build-windows:
+	GOOS=windows GOARCH=amd64 $(GO) build -o /dev/null .
 
 .PHONY: run
-run: generate
-	go run . --version
-	go run ./chezmoi2 --version
-
-.PHONY: generate
-generate:
-	go generate
-	go generate ./chezmoi2
+run:
+	$(GO) run . --version
 
 .PHONY: test
-test: generate
-	go test ./...
+test:
+	$(GO) test ./...
+
+.PHONY: completions
+completions:
+	$(GO) run . completion bash -o completions/chezmoi-completion.bash
+	$(GO) run . completion fish -o completions/chezmoi.fish
+	$(GO) run . completion powershell -o completions/chezmoi.ps1
+	$(GO) run . completion zsh -o completions/chezmoi.zsh
 
 .PHONY: generate-install.sh
 generate-install.sh:
-	go run ./internal/cmd/generate-install.sh > assets/scripts/install.sh
+	$(GO) run ./internal/cmd/generate-install.sh > assets/scripts/install.sh
 
 .PHONY: lint
-lint: ensure-golangci-lint generate
+lint: ensure-golangci-lint
 	./bin/golangci-lint run
-	go run ./internal/cmd/lint-whitespace
+	$(GO) run ./internal/cmd/lint-whitespace
 
 .PHONY: format
-format: ensure-gofumports generate
+format: ensure-gofumports
 	find . -name \*.go | xargs ./bin/gofumports -local github.com/twpayne/chezmoi -w
 
 .PHONY: ensure-tools
@@ -55,7 +55,7 @@ ensure-tools: ensure-gofumports ensure-golangci-lint
 ensure-gofumports:
 	if [ ! -x bin/gofumports ] ; then \
 		mkdir -p bin ; \
-		( cd $$(mktemp -d) && go mod init tmp && GOBIN=$(shell pwd)/bin go get mvdan.cc/gofumpt/gofumports ) ; \
+		GOBIN=$(shell pwd)/bin $(GO) install mvdan.cc/gofumpt/gofumports@latest ; \
 	fi
 
 .PHONY: ensure-golangci-lint

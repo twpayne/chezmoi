@@ -2,31 +2,60 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
+
+	"howett.net/plist"
+
+	"github.com/twpayne/chezmoi/internal/chezmoi"
 )
 
-func init() {
-	config.addTemplateFunc("include", config.includeFunc)
-	config.addTemplateFunc("joinPath", config.joinPathFunc)
-	config.addTemplateFunc("lookPath", config.lookPathFunc)
-	config.addTemplateFunc("stat", config.statFunc)
+type ioregData struct {
+	value map[string]interface{}
 }
 
-func (c *Config) includeFunc(filename string) string {
-	contents, err := c.fs.ReadFile(filepath.Join(c.SourceDir, filename))
+func (c *Config) includeTemplateFunc(filename string) string {
+	contents, err := c.fs.ReadFile(string(c.sourceDirAbsPath.Join(chezmoi.RelPath(filename))))
 	if err != nil {
-		panic(err)
+		returnTemplateError(err)
+		return ""
 	}
 	return string(contents)
 }
 
-func (c *Config) joinPathFunc(elem ...string) string {
+func (c *Config) ioregTemplateFunc() map[string]interface{} {
+	if runtime.GOOS != "darwin" {
+		return nil
+	}
+
+	if c.ioregData.value != nil {
+		return c.ioregData.value
+	}
+
+	cmd := exec.Command("ioreg", "-a", "-l")
+	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
+	if err != nil {
+		returnTemplateError(fmt.Errorf("ioreg: %w", err))
+		return nil
+	}
+
+	var value map[string]interface{}
+	if _, err := plist.Unmarshal(output, &value); err != nil {
+		returnTemplateError(fmt.Errorf("ioreg: %w", err))
+		return nil
+	}
+	c.ioregData.value = value
+	return value
+}
+
+func (c *Config) joinPathTemplateFunc(elem ...string) string {
 	return filepath.Join(elem...)
 }
 
-func (c *Config) lookPathFunc(file string) string {
+func (c *Config) lookPathTemplateFunc(file string) string {
 	path, err := exec.LookPath(file)
 	switch {
 	case err == nil:
@@ -34,11 +63,12 @@ func (c *Config) lookPathFunc(file string) string {
 	case errors.Is(err, exec.ErrNotFound):
 		return ""
 	default:
-		panic(err)
+		returnTemplateError(err)
+		return ""
 	}
 }
 
-func (c *Config) statFunc(name string) interface{} {
+func (c *Config) statTemplateFunc(name string) interface{} {
 	info, err := c.fs.Stat(name)
 	switch {
 	case err == nil:
@@ -53,6 +83,11 @@ func (c *Config) statFunc(name string) interface{} {
 	case os.IsNotExist(err):
 		return nil
 	default:
-		panic(err)
+		returnTemplateError(err)
+		return nil
 	}
+}
+
+func returnTemplateError(err error) {
+	panic(err)
 }

@@ -1,14 +1,14 @@
 [!windows] chmod 755 bin/lpass
 [windows] unix2dos bin/lpass.cmd
 
-chezmoi apply
-cmp $HOME/.netrc golden/.netrc
+# test lastpass template function
+chezmoi execute-template '{{ (index (lastpass "example.com") 0).password }}'
+stdout examplepassword
 
-[short] stop
-
+# test lastpass version check
 chmod 755 $WORK/bin2/lpass
 env PATH=$WORK${/}bin2${:}$PATH
-! chezmoi apply
+! chezmoi execute-template '{{ (index (lastpass "example.com") 0).password }}'
 stderr 'need version 1\.3\.0 or later'
 
 -- bin/lpass --
@@ -82,11 +82,3 @@ IF "%*" == "--version" (
     echo lpass: invalid command: %*
     exit /b 1
 )
--- home/user/.local/share/chezmoi/private_dot_netrc.tmpl --
-machine example.com
-login {{ (index (lastpass "example.com") 0).username }}
-password {{ (index (lastpass "example.com") 0).password }}
--- golden/.netrc --
-machine example.com
-login examplelogin
-password examplepassword

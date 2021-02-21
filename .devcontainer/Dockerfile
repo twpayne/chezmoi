@@ -1,10 +1,11 @@
 # [Choice] Go version: 1, 1.15, 1.14
-ARG VARIANT=1.14
-FROM mcr.microsoft.com/vscode/devcontainers/go:0-${VARIANT}
+# FIXME remove dev- when 1.16 container is published
+ARG VARIANT=dev-1.16
+FROM mcr.microsoft.com/vscode/devcontainers/go:${VARIANT}
 
 # [Optional] Uncomment this section to install additional OS packages.
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get -y install --no-install-recommends acl musl-tools snapcraft
+    && apt-get -y install --no-install-recommends acl musl-tools
 
 # [Optional] Uncomment the next line to use go get to install anything else you need
 RUN go get -x mvdan.cc/gofumpt

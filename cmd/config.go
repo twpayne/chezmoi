@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"bufio"
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -9,9 +9,10 @@ import (
 	"os"
 	"os/exec"
 	"os/user"
-	"path/filepath"
 	"regexp"
 	"runtime"
+	"runtime/pprof"
+	"sort"
 	"strings"
 	"text/template"
 	"time"
@@ -19,316 +20,485 @@ import (
 
 	"github.com/Masterminds/sprig/v3"
 	"github.com/coreos/go-semver/semver"
-	"github.com/pelletier/go-toml"
+	"github.com/go-git/go-git/v5/plumbing/format/diff"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	vfs "github.com/twpayne/go-vfs"
-	xdg "github.com/twpayne/go-xdg/v3"
-	bolt "go.etcd.io/bbolt"
-	yaml "gopkg.in/yaml.v2"
+	"github.com/twpayne/go-shell"
+	"github.com/twpayne/go-vfs/v2"
+	vfsafero "github.com/twpayne/go-vfsafero/v2"
+	"github.com/twpayne/go-xdg/v3"
+	"golang.org/x/term"
 
+	"github.com/twpayne/chezmoi/assets/templates"
 	"github.com/twpayne/chezmoi/internal/chezmoi"
 	"github.com/twpayne/chezmoi/internal/git"
 )
 
-const commitMessageTemplateAsset = "assets/templates/COMMIT_MESSAGE.tmpl"
+var defaultFormat = "json"
 
-var whitespaceRegexp = regexp.MustCompile(`\s+`)
-
-type sourceVCSConfig struct {
-	Command    string
-	AutoCommit bool
-	AutoPush   bool
-	Init       interface{}
-	NotGit     bool
-	Pull       interface{}
+type purgeOptions struct {
+	binary bool
 }
 
 type templateConfig struct {
-	Options []string
+	Options []string `mapstructure:"options"`
 }
 
 // A Config represents a configuration.
 type Config struct {
-	configFile        string
-	err               error
-	fs                vfs.FS
-	mutator           chezmoi.Mutator
-	SourceDir         string
-	DestDir           string
-	Umask             permValue
-	DryRun            bool
-	Follow            bool
-	Remove            bool
-	Verbose           bool
-	Color             string
-	Debug             bool
-	GPG               chezmoi.GPG
-	GPGRecipient      string
-	SourceVCS         sourceVCSConfig
-	Template          templateConfig
-	Merge             mergeConfig
-	Bitwarden         bitwardenCmdConfig
-	CD                cdCmdConfig
-	Diff              diffCmdConfig
-	GenericSecret     genericSecretCmdConfig
-	Gopass            gopassCmdConfig
-	KeePassXC         keePassXCCmdConfig
-	Lastpass          lastpassCmdConfig
-	Onepassword       onepasswordCmdConfig
-	Vault             vaultCmdConfig
-	Pass              passCmdConfig
-	Data              map[string]interface{}
-	colored           bool
-	maxDiffDataSize   int
-	templateFuncs     template.FuncMap
-	add               addCmdConfig
-	archive           archiveCmdConfig
-	completion        completionCmdConfig
-	data              dataCmdConfig
-	dump              dumpCmdConfig
-	edit              editCmdConfig
-	executeTemplate   executeTemplateCmdConfig
-	_import           importCmdConfig
-	init              initCmdConfig
-	keyring           keyringCmdConfig
-	managed           managedCmdConfig
-	purge             purgeCmdConfig
-	remove            removeCmdConfig
-	update            updateCmdConfig
-	upgrade           upgradeCmdConfig
-	Stdin             io.Reader
-	Stdout            io.Writer
-	Stderr            io.Writer
-	bds               *xdg.BaseDirectorySpecification
-	scriptStateBucket []byte
+	version     *semver.Version
+	versionInfo VersionInfo
+	versionStr  string
 
-	//nolint:structcheck,unused
+	bds *xdg.BaseDirectorySpecification
+
+	fs              vfs.FS
+	configFile      string
+	baseSystem      chezmoi.System
+	sourceSystem    chezmoi.System
+	destSystem      chezmoi.System
+	persistentState chezmoi.PersistentState
+	color           bool
+
+	// Global configuration, settable in the config file.
+	SourceDir     string                 `mapstructure:"sourceDir"`
+	DestDir       string                 `mapstructure:"destDir"`
+	Umask         os.FileMode            `mapstructure:"umask"`
+	Remove        bool                   `mapstructure:"remove"`
+	Color         string                 `mapstructure:"color"`
+	Data          map[string]interface{} `mapstructure:"data"`
+	Template      templateConfig         `mapstructure:"template"`
+	UseBuiltinGit string                 `mapstructure:"useBuiltinGit"`
+
+	// Global configuration, not settable in the config file.
+	cpuProfile    string
+	debug         bool
+	dryRun        bool
+	exclude       *chezmoi.EntryTypeSet
+	force         bool
+	homeDir       string
+	keepGoing     bool
+	noPager       bool
+	noTTY         bool
+	outputStr     string
+	sourcePath    bool
+	verbose       bool
+	templateFuncs template.FuncMap
+
+	// Password manager configurations, settable in the config file.
+	Bitwarden   bitwardenConfig   `mapstructure:"bitwarden"`
+	Gopass      gopassConfig      `mapstructure:"gopass"`
+	Keepassxc   keepassxcConfig   `mapstructure:"keepassxc"`
+	Lastpass    lastpassConfig    `mapstructure:"lastpass"`
+	Onepassword onepasswordConfig `mapstructure:"onepassword"`
+	Pass        passConfig        `mapstructure:"pass"`
+	Secret      secretConfig      `mapstructure:"secret"`
+	Vault       vaultConfig       `mapstructure:"vault"`
+
+	// Encryption configurations, settable in the config file.
+	Encryption string                `mapstructure:"encryption"`
+	AGE        chezmoi.AGEEncryption `mapstructure:"age"`
+	GPG        chezmoi.GPGEncryption `mapstructure:"gpg"`
+
+	// Password manager data.
+	gitHub  gitHubData
+	keyring keyringData
+
+	// Command configurations, settable in the config file.
+	CD    cdCmdConfig    `mapstructure:"cd"`
+	Diff  diffCmdConfig  `mapstructure:"diff"`
+	Edit  editCmdConfig  `mapstructure:"edit"`
+	Git   gitCmdConfig   `mapstructure:"git"`
+	Merge mergeCmdConfig `mapstructure:"merge"`
+
+	// Command configurations, not settable in the config file.
+	add             addCmdConfig
+	apply           applyCmdConfig
+	archive         archiveCmdConfig
+	data            dataCmdConfig
+	dump            dumpCmdConfig
+	executeTemplate executeTemplateCmdConfig
+	_import         importCmdConfig
+	init            initCmdConfig
+	managed         managedCmdConfig
+	purge           purgeCmdConfig
+	secretKeyring   secretKeyringCmdConfig
+	state           stateCmdConfig
+	status          statusCmdConfig
+	update          updateCmdConfig
+	verify          verifyCmdConfig
+
+	// Computed configuration.
+	configFileAbsPath chezmoi.AbsPath
+	homeDirAbsPath    chezmoi.AbsPath
+	sourceDirAbsPath  chezmoi.AbsPath
+	destDirAbsPath    chezmoi.AbsPath
+	encryption        chezmoi.Encryption
+
+	stdin  io.Reader
+	stdout io.Writer
+	stderr io.Writer
+
 	ioregData ioregData
 }
 
-// A configOption sets an option on a Config.
-type configOption func(*Config)
+// A configOption sets and option on a Config.
+type configOption func(*Config) error
+
+type configState struct {
+	ConfigTemplateContentsSHA256 chezmoi.HexBytes `json:"configTemplateContentsSHA256" yaml:"configTemplateContentsSHA256"`
+}
 
 var (
-	formatMap = map[string]func(io.Writer, interface{}) error{
-		"json": func(w io.Writer, value interface{}) error {
-			e := json.NewEncoder(w)
-			e.SetIndent("", "  ")
-			return e.Encode(value)
-		},
-		"toml": func(w io.Writer, value interface{}) error {
-			return toml.NewEncoder(w).Encode(value)
-		},
-		"yaml": func(w io.Writer, value interface{}) error {
-			return yaml.NewEncoder(w).Encode(value)
-		},
-	}
+	persistentStateFilename = chezmoi.RelPath("chezmoistate.boltdb")
+	configStateKey          = []byte("configState")
 
-	wellKnownAbbreviations = map[string]struct{}{
-		"ANSI": {},
-		"CPE":  {},
-		"ID":   {},
-		"URL":  {},
-	}
-
-	identifierRegexp = regexp.MustCompile(`\A[\pL_][\pL\p{Nd}_]*\z`)
-
-	assets = make(map[string][]byte)
+	identifierRx = regexp.MustCompile(`\A[\pL_][\pL\p{Nd}_]*\z`)
+	whitespaceRx = regexp.MustCompile(`\s+`)
 )
 
 // newConfig creates a new Config with the given options.
-func newConfig(options ...configOption) *Config {
+func newConfig(options ...configOption) (*Config, error) {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return nil, err
+	}
+	normalizedHomeDir, err := chezmoi.NormalizePath(homeDir)
+	if err != nil {
+		return nil, err
+	}
+
+	bds, err := xdg.NewBaseDirectorySpecification()
+	if err != nil {
+		return nil, err
+	}
+
 	c := &Config{
-		Umask: permValue(chezmoi.GetUmask()),
-		Color: "auto",
-		SourceVCS: sourceVCSConfig{
+		bds:     bds,
+		fs:      vfs.OSFS,
+		homeDir: homeDir,
+		DestDir: homeDir,
+		Umask:   chezmoi.Umask,
+		Color:   "auto",
+		Diff: diffCmdConfig{
+			Pager:   firstNonEmptyString(os.Getenv("PAGER"), "less"),
+			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll &^ chezmoi.EntryTypeScripts),
+		},
+		Edit: editCmdConfig{
+			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypeDirs | chezmoi.EntryTypeFiles | chezmoi.EntryTypeSymlinks | chezmoi.EntryTypeEncrypted),
+		},
+		Git: gitCmdConfig{
 			Command: "git",
+		},
+		Merge: mergeCmdConfig{
+			Command: "vimdiff",
 		},
 		Template: templateConfig{
 			Options: chezmoi.DefaultTemplateOptions,
 		},
-		Diff: diffCmdConfig{
-			Format: "chezmoi",
+		templateFuncs: sprig.TxtFuncMap(),
+		exclude:       chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
+		Bitwarden: bitwardenConfig{
+			Command: "bw",
 		},
-		Merge: mergeConfig{
-			Command: "vimdiff",
+		Gopass: gopassConfig{
+			Command: "gopass",
 		},
-		GPG: chezmoi.GPG{
+		Keepassxc: keepassxcConfig{
+			Command: "keepassxc-cli",
+		},
+		Lastpass: lastpassConfig{
+			Command: "lpass",
+		},
+		Onepassword: onepasswordConfig{
+			Command: "op",
+		},
+		Pass: passConfig{
+			Command: "pass",
+		},
+		Vault: vaultConfig{
+			Command: "vault",
+		},
+		AGE: chezmoi.AGEEncryption{
+			Command: "age",
+			Suffix:  ".age",
+		},
+		GPG: chezmoi.GPGEncryption{
 			Command: "gpg",
+			Suffix:  ".asc",
 		},
-		maxDiffDataSize:   1 * 1024 * 1024, // 1MB
-		templateFuncs:     sprig.TxtFuncMap(),
-		scriptStateBucket: []byte("script"),
-		Stdin:             os.Stdin,
-		Stdout:            os.Stdout,
-		Stderr:            os.Stderr,
+		add: addCmdConfig{
+			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
+			recursive: true,
+		},
+		apply: applyCmdConfig{
+			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
+			recursive: true,
+		},
+		archive: archiveCmdConfig{
+			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
+			recursive: true,
+		},
+		data: dataCmdConfig{
+			format: defaultFormat,
+		},
+		dump: dumpCmdConfig{
+			format:    defaultFormat,
+			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
+			recursive: true,
+		},
+		_import: importCmdConfig{
+			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
+		},
+		managed: managedCmdConfig{
+			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypeDirs | chezmoi.EntryTypeFiles | chezmoi.EntryTypeSymlinks | chezmoi.EntryTypeEncrypted),
+		},
+		state: stateCmdConfig{
+			dump: stateDumpCmdConfig{
+				format: defaultFormat,
+			},
+		},
+		status: statusCmdConfig{
+			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
+			recursive: true,
+		},
+		update: updateCmdConfig{
+			apply:     true,
+			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
+			recursive: true,
+		},
+		verify: verifyCmdConfig{
+			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll &^ chezmoi.EntryTypeScripts),
+			recursive: true,
+		},
+
+		stdin:  os.Stdin,
+		stdout: os.Stdout,
+		stderr: os.Stderr,
+
+		homeDirAbsPath: normalizedHomeDir,
 	}
+
+	for key, value := range map[string]interface{}{
+		"bitwarden":                c.bitwardenTemplateFunc,
+		"bitwardenAttachment":      c.bitwardenAttachmentTemplateFunc,
+		"bitwardenFields":          c.bitwardenFieldsTemplateFunc,
+		"gitHubKeys":               c.gitHubKeysTemplateFunc,
+		"gopass":                   c.gopassTemplateFunc,
+		"include":                  c.includeTemplateFunc,
+		"ioreg":                    c.ioregTemplateFunc,
+		"joinPath":                 c.joinPathTemplateFunc,
+		"keepassxc":                c.keepassxcTemplateFunc,
+		"keepassxcAttribute":       c.keepassxcAttributeTemplateFunc,
+		"keyring":                  c.keyringTemplateFunc,
+		"lastpass":                 c.lastpassTemplateFunc,
+		"lastpassRaw":              c.lastpassRawTemplateFunc,
+		"lookPath":                 c.lookPathTemplateFunc,
+		"onepassword":              c.onepasswordTemplateFunc,
+		"onepasswordDetailsFields": c.onepasswordDetailsFieldsTemplateFunc,
+		"onepasswordDocument":      c.onepasswordDocumentTemplateFunc,
+		"pass":                     c.passTemplateFunc,
+		"secret":                   c.secretTemplateFunc,
+		"secretJSON":               c.secretJSONTemplateFunc,
+		"stat":                     c.statTemplateFunc,
+		"vault":                    c.vaultTemplateFunc,
+	} {
+		c.addTemplateFunc(key, value)
+	}
+
 	for _, option := range options {
-		option(c)
+		if err := option(c); err != nil {
+			return nil, err
+		}
 	}
-	return c
+
+	c.configFile = string(defaultConfigFile(c.fs, c.bds))
+	c.SourceDir = string(defaultSourceDir(c.fs, c.bds))
+
+	c.homeDirAbsPath, err = chezmoi.NormalizePath(c.homeDir)
+	if err != nil {
+		return nil, err
+	}
+	c._import.destination = string(c.homeDirAbsPath)
+
+	return c, nil
 }
 
 func (c *Config) addTemplateFunc(key string, value interface{}) {
-	if c.templateFuncs == nil {
-		c.templateFuncs = make(template.FuncMap)
-	}
 	if _, ok := c.templateFuncs[key]; ok {
-		panic(fmt.Sprintf("Config.addTemplateFunc: %s already defined", key))
+		panic(fmt.Sprintf("%s: already defined", key))
 	}
 	c.templateFuncs[key] = value
 }
 
-func (c *Config) applyArgs(args []string, persistentState chezmoi.PersistentState) error {
-	fs := vfs.NewReadOnlyFS(c.fs)
-	ts, err := c.getTargetState(nil)
+type applyArgsOptions struct {
+	include      *chezmoi.EntryTypeSet
+	recursive    bool
+	umask        os.FileMode
+	preApplyFunc chezmoi.PreApplyFunc
+}
+
+func (c *Config) applyArgs(targetSystem chezmoi.System, targetDirAbsPath chezmoi.AbsPath, args []string, options applyArgsOptions) error {
+	sourceState, err := c.sourceState()
 	if err != nil {
 		return err
 	}
-	applyOptions := &chezmoi.ApplyOptions{
-		DestDir:           ts.DestDir,
-		DryRun:            c.DryRun,
-		Ignore:            ts.TargetIgnore.Match,
-		PersistentState:   persistentState,
-		Remove:            c.Remove,
-		ScriptStateBucket: c.scriptStateBucket,
-		Stdout:            c.Stdout,
-		Umask:             ts.Umask,
-		Verbose:           c.Verbose,
-	}
-	if len(args) == 0 {
-		return ts.Apply(fs, c.mutator, c.Follow, applyOptions)
-	}
-	entries, err := c.getEntries(ts, args)
+
+	var currentConfigTemplateContentsSHA256 []byte
+	configTemplateRelPath, _, configTemplateContents, err := c.findConfigTemplate()
 	if err != nil {
 		return err
 	}
-	for _, entry := range entries {
-		if err := entry.Apply(fs, c.mutator, c.Follow, applyOptions); err != nil {
+	if configTemplateRelPath != "" {
+		currentConfigTemplateContentsSHA256 = chezmoi.SHA256Sum(configTemplateContents)
+	}
+	var previousConfigTemplateContentsSHA256 []byte
+	if configStateData, err := c.persistentState.Get(chezmoi.ConfigStateBucket, configStateKey); err != nil {
+		return err
+	} else if configStateData != nil {
+		var configState configState
+		if err := json.Unmarshal(configStateData, &configState); err != nil {
 			return err
 		}
+		previousConfigTemplateContentsSHA256 = []byte(configState.ConfigTemplateContentsSHA256)
 	}
-	return nil
-}
-
-func (c *Config) autoCommit(vcs VCS) error {
-	addArgs := vcs.AddArgs(".")
-	if addArgs == nil {
-		return fmt.Errorf("%s: autocommit not supported", c.SourceVCS.Command)
-	}
-	if err := c.run(c.SourceDir, c.SourceVCS.Command, addArgs...); err != nil {
-		return err
-	}
-	output, err := c.output(c.SourceDir, c.SourceVCS.Command, vcs.StatusArgs()...)
-	if err != nil {
-		return err
-	}
-	status, err := vcs.ParseStatusOutput(output)
-	if err != nil {
-		return err
-	}
-	if gitStatus, ok := status.(*git.Status); ok && gitStatus.Empty() {
-		return nil
-	}
-	commitMessageText, err := getAsset(commitMessageTemplateAsset)
-	if err != nil {
-		return err
-	}
-	commitMessageTmpl, err := template.New("commit_message").Funcs(c.templateFuncs).Parse(string(commitMessageText))
-	if err != nil {
-		return err
-	}
-	sb := &strings.Builder{}
-	if err := commitMessageTmpl.Execute(sb, status); err != nil {
-		return err
-	}
-	commitArgs := vcs.CommitArgs(sb.String())
-	return c.run(c.SourceDir, c.SourceVCS.Command, commitArgs...)
-}
-
-func (c *Config) autoCommitAndAutoPush(cmd *cobra.Command, args []string) error {
-	vcs, err := c.getVCS()
-	if err != nil {
-		return err
-	}
-	if c.DryRun {
-		return nil
-	}
-	if c.SourceVCS.AutoCommit || c.SourceVCS.AutoPush {
-		if err := c.autoCommit(vcs); err != nil {
-			return err
+	configTemplateContentsUnchanged := (currentConfigTemplateContentsSHA256 == nil && previousConfigTemplateContentsSHA256 == nil) ||
+		bytes.Equal(currentConfigTemplateContentsSHA256, previousConfigTemplateContentsSHA256)
+	if !configTemplateContentsUnchanged {
+		if c.force {
+			if configTemplateRelPath == "" {
+				if err := c.persistentState.Delete(chezmoi.ConfigStateBucket, configStateKey); err != nil {
+					return err
+				}
+			} else {
+				configStateValue, err := json.Marshal(configState{
+					ConfigTemplateContentsSHA256: chezmoi.HexBytes(currentConfigTemplateContentsSHA256),
+				})
+				if err != nil {
+					return err
+				}
+				if err := c.persistentState.Set(chezmoi.ConfigStateBucket, configStateKey, configStateValue); err != nil {
+					return err
+				}
+			}
+		} else {
+			c.errorf("warning: config file template has changed, run chezmoi init to regenerate config file\n")
 		}
 	}
-	if c.SourceVCS.AutoPush {
-		if err := c.autoPush(vcs); err != nil {
-			return err
-		}
-	}
-	return nil
-}
 
-func (c *Config) autoPush(vcs VCS) error {
-	pushArgs := vcs.PushArgs()
-	if pushArgs == nil {
-		return fmt.Errorf("%s: autopush not supported", c.SourceVCS.Command)
+	applyOptions := chezmoi.ApplyOptions{
+		Include:      options.include.Sub(c.exclude),
+		PreApplyFunc: options.preApplyFunc,
+		Umask:        options.umask,
 	}
-	return c.run(c.SourceDir, c.SourceVCS.Command, pushArgs...)
-}
 
-// ensureNoError ensures that no error was encountered when loading c.
-func (c *Config) ensureNoError(cmd *cobra.Command, args []string) error {
-	if c.err != nil {
-		return errors.New("config contains errors, aborting")
-	}
-	return nil
-}
-
-func (c *Config) ensureSourceDirectory() error {
-	info, err := c.fs.Stat(c.SourceDir)
+	var targetRelPaths chezmoi.RelPaths
 	switch {
-	case err == nil && info.IsDir():
-		private, err := chezmoi.IsPrivate(c.fs, c.SourceDir, true)
+	case len(args) == 0:
+		targetRelPaths = sourceState.TargetRelPaths()
+	case c.sourcePath:
+		targetRelPaths, err = c.targetRelPathsBySourcePath(sourceState, args)
 		if err != nil {
 			return err
 		}
-		if !private {
-			if err := c.mutator.Chmod(c.SourceDir, 0o700&^os.FileMode(c.Umask)); err != nil {
-				return err
-			}
-		}
-		return nil
-	case os.IsNotExist(err):
-		if err := vfs.MkdirAll(c.mutator, filepath.Dir(c.SourceDir), 0o777&^os.FileMode(c.Umask)); err != nil {
+	default:
+		targetRelPaths, err = c.targetRelPaths(sourceState, args, targetRelPathsOptions{
+			mustBeInSourceState: true,
+			recursive:           options.recursive,
+		})
+		if err != nil {
 			return err
 		}
-		return c.mutator.Mkdir(c.SourceDir, 0o700&^os.FileMode(c.Umask))
-	case err == nil:
-		return fmt.Errorf("%s: not a directory", c.SourceDir)
-	default:
-		return err
+	}
+
+	keptGoingAfterErr := false
+	for _, targetRelPath := range targetRelPaths {
+		switch err := sourceState.Apply(targetSystem, c.destSystem, c.persistentState, targetDirAbsPath, targetRelPath, applyOptions); {
+		case errors.Is(err, chezmoi.Skip):
+			continue
+		case err != nil && c.keepGoing:
+			c.errorf("%v", err)
+			keptGoingAfterErr = true
+		case err != nil:
+			return err
+		}
+	}
+	if keptGoingAfterErr {
+		return ErrExitCode(1)
+	}
+
+	return nil
+}
+
+func (c *Config) cmdOutput(dirAbsPath chezmoi.AbsPath, name string, args []string) ([]byte, error) {
+	cmd := exec.Command(name, args...)
+	if dirAbsPath != "" {
+		dirRawAbsPath, err := c.baseSystem.RawPath(dirAbsPath)
+		if err != nil {
+			return nil, err
+		}
+		cmd.Dir = string(dirRawAbsPath)
+	}
+	return c.baseSystem.IdempotentCmdOutput(cmd)
+}
+
+func (c *Config) defaultPreApplyFunc(targetRelPath chezmoi.RelPath, targetEntryState, lastWrittenEntryState, actualEntryState *chezmoi.EntryState) error {
+	switch {
+	case targetEntryState.Type == chezmoi.EntryStateTypeScript:
+		return nil
+	case c.force:
+		return nil
+	case lastWrittenEntryState == nil:
+		return nil
+	case lastWrittenEntryState.Equivalent(actualEntryState):
+		return nil
+	}
+
+	// LATER add merge option
+	var choices []string
+	actualContents := actualEntryState.Contents()
+	targetContents := targetEntryState.Contents()
+	if actualContents != nil || targetContents != nil {
+		choices = append(choices, "diff")
+	}
+	choices = append(choices, "overwrite", "all-overwite", "skip", "quit")
+	for {
+		switch choice, err := c.promptChoice(fmt.Sprintf("%s has changed since chezmoi last wrote it", targetRelPath), choices); {
+		case err != nil:
+			return err
+		case choice == "diff":
+			if err := c.diffFile(targetRelPath, actualContents, actualEntryState.Mode, targetContents, targetEntryState.Mode); err != nil {
+				return err
+			}
+		case choice == "overwrite":
+			return nil
+		case choice == "all-overwrite":
+			c.force = true
+			return nil
+		case choice == "skip":
+			return chezmoi.Skip
+		case choice == "quit":
+			return ErrExitCode(1)
+		default:
+			return nil
+		}
 	}
 }
 
-func (c *Config) getData() (map[string]interface{}, error) {
-	defaultData, err := c.getDefaultData()
-	if err != nil {
-		return nil, err
-	}
-	data := map[string]interface{}{
-		"chezmoi": defaultData,
-	}
-	for key, value := range c.Data {
-		data[key] = value
-	}
-	return data, nil
-}
-
-func (c *Config) getDefaultData() (map[string]interface{}, error) {
+func (c *Config) defaultTemplateData() map[string]interface{} {
 	data := map[string]interface{}{
 		"arch":      runtime.GOARCH,
+		"homeDir":   c.homeDir,
 		"os":        runtime.GOOS,
-		"sourceDir": c.SourceDir,
+		"sourceDir": c.sourceDirAbsPath,
+		"version": map[string]interface{}{
+			"builtBy": c.versionInfo.BuiltBy,
+			"commit":  c.versionInfo.Commit,
+			"date":    c.versionInfo.Date,
+			"version": c.versionInfo.Version,
+		},
 	}
 
 	// Determine the user's username and group, if possible.
@@ -348,259 +518,929 @@ func (c *Config) getDefaultData() (map[string]interface{}, error) {
 	// implementation, also only parses /etc/passwd and /etc/group and so also
 	// returns incorrect results without error if NIS or LDAP are being used.
 	//
+	// On Windows, the user's group ID returned by user.Current() is an SID and
+	// no further useful lookup is possible with Go's standard library.
+	//
 	// Since neither the username nor the group are likely widely used in
 	// templates, leave these variables unset if their values cannot be
 	// determined. Unset variables will trigger template errors if used,
 	// alerting the user to the problem and allowing them to find alternative
 	// solutions.
-
-	// First, attempt to determine the current user using user.Current, falling
-	// back to the $USER environment variable if set, and otherwise leaving
-	// username unset.
-	currentUser, err := user.Current()
-	if err == nil {
+	if currentUser, err := user.Current(); err == nil {
 		data["username"] = currentUser.Username
-	} else if user, ok := os.LookupEnv("USER"); ok {
-		data["username"] = user
-	}
-
-	// If the current user could be determined, then attempt to lookup the group
-	// id. There is no fallback.
-	if currentUser != nil {
-		if group, err := user.LookupGroupId(currentUser.Gid); err == nil {
-			data["group"] = group.Name
+		if runtime.GOOS != "windows" {
+			if group, err := user.LookupGroupId(currentUser.Gid); err == nil {
+				data["group"] = group.Name
+			} else {
+				log.Debug().
+					Str("gid", currentUser.Gid).
+					Err(err).
+					Msg("user.LookupGroupId")
+			}
+		}
+	} else {
+		log.Debug().
+			Err(err).
+			Msg("user.Current")
+		user, ok := os.LookupEnv("USER")
+		if ok {
+			data["username"] = user
+		} else {
+			log.Debug().
+				Str("key", "USER").
+				Bool("ok", ok).
+				Msg("os.LookupEnv")
 		}
 	}
 
-	homedir, err := os.UserHomeDir()
-	if err != nil {
-		return nil, err
-	}
-	data["homedir"] = homedir
-
-	hostname, err := os.Hostname()
-	if err != nil {
-		return nil, err
-	}
-	data["fullHostname"] = hostname
-	data["hostname"] = strings.SplitN(hostname, ".", 2)[0]
-
-	osRelease, err := getOSRelease(c.fs)
-	if err == nil {
-		if osRelease != nil {
-			data["osRelease"] = upperSnakeCaseToCamelCaseMap(osRelease)
-		}
-	} else if !os.IsNotExist(err) {
-		return nil, err
+	if fqdnHostname, err := chezmoi.FQDNHostname(c.fs); err == nil && fqdnHostname != "" {
+		data["fqdnHostname"] = fqdnHostname
+	} else {
+		log.Debug().
+			Err(err).
+			Msg("chezmoi.EtcHostsFQDNHostname")
 	}
 
-	kernelInfo, err := getKernelInfo(c.fs)
-	if err == nil && kernelInfo != nil {
+	if hostname, err := os.Hostname(); err == nil {
+		data["hostname"] = strings.SplitN(hostname, ".", 2)[0]
+	} else {
+		log.Debug().
+			Err(err).
+			Msg("os.Hostname")
+	}
+
+	if kernelInfo, err := chezmoi.KernelInfo(c.fs); err == nil {
 		data["kernel"] = kernelInfo
-	} else if err != nil {
-		return nil, err
+	} else {
+		log.Debug().
+			Err(err).
+			Msg("chezmoi.KernelInfo")
 	}
 
-	return data, nil
+	if osRelease, err := chezmoi.OSRelease(c.fs); err == nil {
+		data["osRelease"] = upperSnakeCaseToCamelCaseMap(osRelease)
+	} else {
+		log.Debug().
+			Err(err).
+			Msg("chezmoi.OSRelease")
+	}
+
+	return map[string]interface{}{
+		"chezmoi": data,
+	}
 }
 
-func (c *Config) getEditor() (string, []string) {
-	editor := os.Getenv("VISUAL")
-	if editor == "" {
-		editor = os.Getenv("EDITOR")
-	}
-	if editor == "" {
-		editor = "vi"
-	}
-	components := whitespaceRegexp.Split(editor, -1)
-	return components[0], components[1:]
-}
-
-func (c *Config) getEntries(ts *chezmoi.TargetState, args []string) ([]chezmoi.Entry, error) {
-	entries := []chezmoi.Entry{}
+func (c *Config) destAbsPathInfos(sourceState *chezmoi.SourceState, args []string, recursive, follow bool) (map[chezmoi.AbsPath]os.FileInfo, error) {
+	destAbsPathInfos := make(map[chezmoi.AbsPath]os.FileInfo)
 	for _, arg := range args {
-		targetPath, err := filepath.Abs(arg)
+		destAbsPath, err := chezmoi.NewAbsPathFromExtPath(arg, c.homeDirAbsPath)
 		if err != nil {
 			return nil, err
 		}
-		entry, err := ts.Get(c.fs, targetPath)
-		if err != nil {
+		if _, err := destAbsPath.TrimDirPrefix(c.destDirAbsPath); err != nil {
 			return nil, err
 		}
-		if entry == nil {
-			return nil, fmt.Errorf("%s: not in source state", arg)
-		}
-		entries = append(entries, entry)
-	}
-	return entries, nil
-}
-
-func (c *Config) getPersistentState(options *bolt.Options) (chezmoi.PersistentState, error) {
-	persistentStateFile := c.getPersistentStateFile()
-	if options == nil {
-		options = &bolt.Options{}
-	}
-	if options.Timeout == 0 {
-		options.Timeout = 2 * time.Second
-	}
-	if c.DryRun {
-		options.ReadOnly = true
-	}
-	state, err := chezmoi.NewBoltPersistentState(c.fs, persistentStateFile, options)
-	if errors.Is(err, bolt.ErrTimeout) {
-		return nil, fmt.Errorf("failed to lock database: %w", err)
-	}
-	return state, err
-}
-
-func (c *Config) getPersistentStateFile() string {
-	if c.configFile != "" {
-		return filepath.Join(filepath.Dir(c.configFile), "chezmoistate.boltdb")
-	}
-	for _, configDir := range c.bds.ConfigDirs {
-		persistentStateFile := filepath.Join(configDir, "chezmoi", "chezmoistate.boltdb")
-		if _, err := os.Stat(persistentStateFile); err == nil {
-			return persistentStateFile
-		}
-	}
-	return filepath.Join(filepath.Dir(getDefaultConfigFile(c.bds)), "chezmoistate.boltdb")
-}
-
-func (c *Config) getTargetState(populateOptions *chezmoi.PopulateOptions) (*chezmoi.TargetState, error) {
-	fs := vfs.NewReadOnlyFS(c.fs)
-
-	data, err := c.getData()
-	if err != nil {
-		return nil, err
-	}
-
-	destDir := c.DestDir
-	if destDir != "" {
-		destDir, err = filepath.Abs(c.DestDir)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	// For backwards compatibility, prioritize gpgRecipient over gpg.recipient.
-	if c.GPGRecipient != "" {
-		c.GPG.Recipient = c.GPGRecipient
-	}
-
-	ts := chezmoi.NewTargetState(
-		chezmoi.WithDestDir(destDir),
-		chezmoi.WithGPG(&c.GPG),
-		chezmoi.WithSourceDir(c.SourceDir),
-		chezmoi.WithTemplateData(data),
-		chezmoi.WithTemplateFuncs(c.templateFuncs),
-		chezmoi.WithTemplateOptions(c.Template.Options),
-		chezmoi.WithUmask(os.FileMode(c.Umask)),
-	)
-	if err := ts.Populate(fs, populateOptions); err != nil {
-		return nil, err
-	}
-	if Version != nil && !isDevVersion(Version) && ts.MinVersion != nil && Version.LessThan(*ts.MinVersion) {
-		return nil, fmt.Errorf("chezmoi version %s too old, source state requires at least %s", Version, ts.MinVersion)
-	}
-	return ts, nil
-}
-
-func (c *Config) getVCS() (VCS, error) {
-	vcs, ok := vcses[filepath.Base(c.SourceVCS.Command)]
-	if !ok {
-		return nil, fmt.Errorf("%s: unsupported source VCS command", c.SourceVCS.Command)
-	}
-	return vcs, nil
-}
-
-func (c *Config) output(dir, name string, argv ...string) ([]byte, error) {
-	cmd := exec.Command(name, argv...)
-	if dir != "" {
-		var err error
-		cmd.Dir, err = c.fs.RawPath(dir)
-		if err != nil {
-			return nil, err
-		}
-	}
-	return c.mutator.IdempotentCmdOutput(cmd)
-}
-
-//nolint:unparam
-func (c *Config) prompt(s, choices string) (byte, error) {
-	r := bufio.NewReader(c.Stdin)
-	for {
-		_, err := fmt.Printf("%s [%s]? ", s, strings.Join(strings.Split(choices, ""), ","))
-		if err != nil {
-			return 0, err
-		}
-		line, err := r.ReadString('\n')
-		if err != nil {
-			return 0, err
-		}
-		line = strings.TrimSpace(line)
-		if len(line) == 1 && strings.IndexByte(choices, line[0]) != -1 {
-			return line[0], nil
-		}
-	}
-}
-
-// run runs name argv... in dir.
-func (c *Config) run(dir, name string, argv ...string) error {
-	cmd := exec.Command(name, argv...)
-	if dir != "" {
-		var err error
-		cmd.Dir, err = c.fs.RawPath(dir)
-		if err != nil {
-			return err
-		}
-	}
-	cmd.Stdin = c.Stdin
-	cmd.Stdout = c.Stdout
-	cmd.Stderr = c.Stdout
-	return c.mutator.RunCmd(cmd)
-}
-
-func (c *Config) runEditor(argv ...string) error {
-	editorName, editorArgs := c.getEditor()
-	return c.run("", editorName, append(editorArgs, argv...)...)
-}
-
-func (c *Config) validateData() error {
-	return validateKeys(config.Data, identifierRegexp)
-}
-
-func getAsset(name string) ([]byte, error) {
-	asset, ok := assets[name]
-	if !ok {
-		return nil, fmt.Errorf("%s: not found", name)
-	}
-	return asset, nil
-}
-
-func getDefaultConfigFile(bds *xdg.BaseDirectorySpecification) string {
-	// Search XDG Base Directory Specification config directories first.
-	for _, configDir := range bds.ConfigDirs {
-		for _, extension := range viper.SupportedExts {
-			configFilePath := filepath.Join(configDir, "chezmoi", "chezmoi."+extension)
-			if _, err := os.Stat(configFilePath); err == nil {
-				return configFilePath
+		if recursive {
+			if err := chezmoi.Walk(c.destSystem, destAbsPath, func(destAbsPath chezmoi.AbsPath, info os.FileInfo, err error) error {
+				if err != nil {
+					return err
+				}
+				if follow && info.Mode()&os.ModeType == os.ModeSymlink {
+					info, err = c.destSystem.Stat(destAbsPath)
+					if err != nil {
+						return err
+					}
+				}
+				return sourceState.AddDestAbsPathInfos(destAbsPathInfos, c.destSystem, destAbsPath, info)
+			}); err != nil {
+				return nil, err
+			}
+		} else {
+			var info os.FileInfo
+			if follow {
+				info, err = c.destSystem.Stat(destAbsPath)
+			} else {
+				info, err = c.destSystem.Lstat(destAbsPath)
+			}
+			if err != nil {
+				return nil, err
+			}
+			if err := sourceState.AddDestAbsPathInfos(destAbsPathInfos, c.destSystem, destAbsPath, info); err != nil {
+				return nil, err
 			}
 		}
 	}
-	// Fallback to XDG Base Directory Specification default.
-	return filepath.Join(bds.ConfigHome, "chezmoi", "chezmoi.toml")
+	return destAbsPathInfos, nil
 }
 
-func getDefaultSourceDir(bds *xdg.BaseDirectorySpecification) string {
-	// Check for XDG Base Directory Specification data directories first.
-	for _, dataDir := range bds.DataDirs {
-		sourceDir := filepath.Join(dataDir, "chezmoi")
-		if _, err := os.Stat(sourceDir); err == nil {
-			return sourceDir
+func (c *Config) diffFile(path chezmoi.RelPath, fromData []byte, fromMode os.FileMode, toData []byte, toMode os.FileMode) error {
+	var sb strings.Builder
+	unifiedEncoder := diff.NewUnifiedEncoder(&sb, diff.DefaultContextLines)
+	if c.color {
+		unifiedEncoder.SetColor(diff.NewColorConfig())
+	}
+	diffPatch, err := chezmoi.DiffPatch(path, fromData, fromMode, toData, toMode)
+	if err != nil {
+		return err
+	}
+	if err := unifiedEncoder.Encode(diffPatch); err != nil {
+		return err
+	}
+	return c.diffPager(sb.String())
+}
+
+func (c *Config) diffPager(output string) error {
+	if c.noPager || c.Diff.Pager == "" {
+		return c.writeOutputString(output)
+	}
+
+	// If the pager command contains any spaces, assume that it is a full
+	// shell command to be executed via the user's shell. Otherwise, execute
+	// it directly.
+	var pagerCmd *exec.Cmd
+	if strings.IndexFunc(c.Diff.Pager, unicode.IsSpace) != -1 {
+		shell, _ := shell.CurrentUserShell()
+		pagerCmd = exec.Command(shell, "-c", c.Diff.Pager)
+	} else {
+		//nolint:gosec
+		pagerCmd = exec.Command(c.Diff.Pager)
+	}
+	pagerCmd.Stdin = bytes.NewBufferString(output)
+	pagerCmd.Stdout = c.stdout
+	pagerCmd.Stderr = c.stderr
+	return pagerCmd.Run()
+}
+
+func (c *Config) doPurge(purgeOptions *purgeOptions) error {
+	if c.persistentState != nil {
+		if err := c.persistentState.Close(); err != nil {
+			return err
 		}
 	}
-	// Fallback to XDG Base Directory Specification default.
-	return filepath.Join(bds.DataHome, "chezmoi")
+
+	absSlashPersistentStateFile := c.persistentStateFile()
+	absPaths := chezmoi.AbsPaths{
+		c.configFileAbsPath.Dir(),
+		c.configFileAbsPath,
+		absSlashPersistentStateFile,
+		c.sourceDirAbsPath,
+	}
+	if purgeOptions != nil && purgeOptions.binary {
+		executable, err := os.Executable()
+		if err == nil {
+			absPaths = append(absPaths, chezmoi.AbsPath(executable))
+		}
+	}
+
+	// Remove all paths that exist.
+	for _, absPath := range absPaths {
+		switch _, err := c.destSystem.Stat(absPath); {
+		case os.IsNotExist(err):
+			continue
+		case err != nil:
+			return err
+		}
+
+		if !c.force {
+			switch choice, err := c.promptChoice(fmt.Sprintf("Remove %s", absPath), yesNoAllQuit); {
+			case err != nil:
+				return err
+			case choice == "yes":
+			case choice == "no":
+				continue
+			case choice == "all":
+				c.force = true
+			case choice == "quit":
+				return nil
+			}
+		}
+
+		switch err := c.destSystem.RemoveAll(absPath); {
+		case os.IsPermission(err):
+			continue
+		case err != nil:
+			return err
+		}
+	}
+
+	return nil
+}
+
+// editor returns the path to the user's editor and any extra arguments.
+func (c *Config) editor() (string, []string) {
+	// If the user has set and edit command then use it.
+	if c.Edit.Command != "" {
+		return c.Edit.Command, c.Edit.Args
+	}
+
+	// Prefer $VISUAL over $EDITOR and fallback to vi.
+	editor := firstNonEmptyString(
+		os.Getenv("VISUAL"),
+		os.Getenv("EDITOR"),
+		"vi",
+	)
+
+	// If editor is found, return it.
+	if path, err := exec.LookPath(editor); err == nil {
+		return path, nil
+	}
+
+	// Otherwise, if editor contains spaces, then assume that the first word is
+	// the editor and the rest are arguments.
+	components := whitespaceRx.Split(editor, -1)
+	if len(components) > 1 {
+		if path, err := exec.LookPath(components[0]); err == nil {
+			return path, components[1:]
+		}
+	}
+
+	// Fallback to editor only.
+	return editor, nil
+}
+
+func (c *Config) errorf(format string, args ...interface{}) {
+	fmt.Fprintf(c.stderr, "chezmoi: "+format, args...)
+}
+
+func (c *Config) execute(args []string) error {
+	rootCmd, err := c.newRootCmd()
+	if err != nil {
+		return err
+	}
+	rootCmd.SetArgs(args)
+	return rootCmd.Execute()
+}
+
+func (c *Config) findConfigTemplate() (chezmoi.RelPath, string, []byte, error) {
+	for _, ext := range viper.SupportedExts {
+		filename := chezmoi.RelPath(chezmoi.Prefix + "." + ext + chezmoi.TemplateSuffix)
+		contents, err := c.baseSystem.ReadFile(c.sourceDirAbsPath.Join(filename))
+		switch {
+		case os.IsNotExist(err):
+			continue
+		case err != nil:
+			return "", "", nil, err
+		}
+		return chezmoi.RelPath("chezmoi." + ext), ext, contents, nil
+	}
+	return "", "", nil, nil
+}
+
+func (c *Config) gitAutoAdd() (*git.Status, error) {
+	if err := c.run(c.sourceDirAbsPath, c.Git.Command, []string{"add", "."}); err != nil {
+		return nil, err
+	}
+	output, err := c.cmdOutput(c.sourceDirAbsPath, c.Git.Command, []string{"status", "--porcelain=v2"})
+	if err != nil {
+		return nil, err
+	}
+	return git.ParseStatusPorcelainV2(output)
+}
+
+func (c *Config) gitAutoCommit(status *git.Status) error {
+	if status.Empty() {
+		return nil
+	}
+	commitMessageTemplate, err := templates.FS.ReadFile("COMMIT_MESSAGE.tmpl")
+	if err != nil {
+		return err
+	}
+	commitMessageTmpl, err := template.New("commit_message").Funcs(c.templateFuncs).Parse(string(commitMessageTemplate))
+	if err != nil {
+		return err
+	}
+	commitMessage := strings.Builder{}
+	if err := commitMessageTmpl.Execute(&commitMessage, status); err != nil {
+		return err
+	}
+	return c.run(c.sourceDirAbsPath, c.Git.Command, []string{"commit", "--message", commitMessage.String()})
+}
+
+func (c *Config) gitAutoPush(status *git.Status) error {
+	if status.Empty() {
+		return nil
+	}
+	return c.run(c.sourceDirAbsPath, c.Git.Command, []string{"push"})
+}
+
+func (c *Config) makeRunEWithSourceState(runE func(*cobra.Command, []string, *chezmoi.SourceState) error) func(*cobra.Command, []string) error {
+	return func(cmd *cobra.Command, args []string) error {
+		sourceState, err := c.sourceState()
+		if err != nil {
+			return err
+		}
+		return runE(cmd, args, sourceState)
+	}
+}
+
+func (c *Config) marshal(formatStr string, data interface{}) error {
+	var format chezmoi.Format
+	switch formatStr {
+	case "json":
+		format = chezmoi.JSONFormat
+	case "yaml":
+		format = chezmoi.YAMLFormat
+	default:
+		return fmt.Errorf("%s: unknown format", formatStr)
+	}
+	marshaledData, err := format.Marshal(data)
+	if err != nil {
+		return err
+	}
+	return c.writeOutput(marshaledData)
+}
+
+func (c *Config) newRootCmd() (*cobra.Command, error) {
+	rootCmd := &cobra.Command{
+		Use:                "chezmoi",
+		Short:              "Manage your dotfiles across multiple diverse machines, securely",
+		Version:            c.versionStr,
+		PersistentPreRunE:  c.persistentPreRunRootE,
+		PersistentPostRunE: c.persistentPostRunRootE,
+		SilenceErrors:      true,
+		SilenceUsage:       true,
+	}
+
+	persistentFlags := rootCmd.PersistentFlags()
+
+	persistentFlags.StringVar(&c.Color, "color", c.Color, "colorize diffs")
+	persistentFlags.StringVarP(&c.DestDir, "destination", "D", c.DestDir, "destination directory")
+	persistentFlags.BoolVar(&c.Remove, "remove", c.Remove, "remove targets")
+	persistentFlags.StringVarP(&c.SourceDir, "source", "S", c.SourceDir, "source directory")
+	persistentFlags.StringVar(&c.UseBuiltinGit, "use-builtin-git", c.UseBuiltinGit, "use builtin git")
+	for _, key := range []string{
+		"color",
+		"destination",
+		"remove",
+		"source",
+	} {
+		if err := viper.BindPFlag(key, persistentFlags.Lookup(key)); err != nil {
+			return nil, err
+		}
+	}
+
+	persistentFlags.StringVarP(&c.configFile, "config", "c", c.configFile, "config file")
+	persistentFlags.StringVar(&c.cpuProfile, "cpu-profile", c.cpuProfile, "write CPU profile to file")
+	persistentFlags.BoolVarP(&c.dryRun, "dry-run", "n", c.dryRun, "dry run")
+	persistentFlags.VarP(c.exclude, "exclude", "x", "exclude entry types")
+	persistentFlags.BoolVar(&c.force, "force", c.force, "force")
+	persistentFlags.BoolVarP(&c.keepGoing, "keep-going", "k", c.keepGoing, "keep going as far as possible after an error")
+	persistentFlags.BoolVar(&c.noPager, "no-pager", c.noPager, "do not use the pager")
+	persistentFlags.BoolVar(&c.noTTY, "no-tty", c.noTTY, "don't attempt to get a TTY for reading passwords")
+	persistentFlags.BoolVar(&c.sourcePath, "source-path", c.sourcePath, "specify targets by source path")
+	persistentFlags.BoolVarP(&c.verbose, "verbose", "v", c.verbose, "verbose")
+	persistentFlags.StringVarP(&c.outputStr, "output", "o", c.outputStr, "output file")
+	persistentFlags.BoolVar(&c.debug, "debug", c.debug, "write debug logs")
+
+	for _, err := range []error{
+		rootCmd.MarkPersistentFlagFilename("config"),
+		rootCmd.MarkPersistentFlagFilename("cpu-profile"),
+		rootCmd.MarkPersistentFlagDirname("destination"),
+		rootCmd.MarkPersistentFlagFilename("output"),
+		rootCmd.MarkPersistentFlagDirname("source"),
+	} {
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	rootCmd.SetHelpCommand(c.newHelpCmd())
+	for _, newCmdFunc := range []func() *cobra.Command{
+		c.newAddCmd,
+		c.newApplyCmd,
+		c.newArchiveCmd,
+		c.newCatCmd,
+		c.newCDCmd,
+		c.newChattrCmd,
+		c.newCompletionCmd,
+		c.newDataCmd,
+		c.newDiffCmd,
+		c.newDocsCmd,
+		c.newDoctorCmd,
+		c.newDumpCmd,
+		c.newEditCmd,
+		c.newEditConfigCmd,
+		c.newExecuteTemplateCmd,
+		c.newForgetCmd,
+		c.newGitCmd,
+		c.newImportCmd,
+		c.newInitCmd,
+		c.newManagedCmd,
+		c.newMergeCmd,
+		c.newPurgeCmd,
+		c.newRemoveCmd,
+		c.newSecretCmd,
+		c.newSourcePathCmd,
+		c.newStateCmd,
+		c.newStatusCmd,
+		c.newUnmanagedCmd,
+		c.newUpdateCmd,
+		c.newVerifyCmd,
+	} {
+		rootCmd.AddCommand(newCmdFunc())
+	}
+
+	return rootCmd, nil
+}
+
+func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error {
+	defer pprof.StopCPUProfile()
+
+	if c.persistentState != nil {
+		if err := c.persistentState.Close(); err != nil {
+			return err
+		}
+	}
+
+	if boolAnnotation(cmd, modifiesConfigFile) {
+		// Warn the user of any errors reading the config file.
+		v := viper.New()
+		v.SetFs(vfsafero.NewAferoFS(c.fs))
+		v.SetConfigFile(string(c.configFileAbsPath))
+		err := v.ReadInConfig()
+		if err == nil {
+			err = v.Unmarshal(&Config{})
+		}
+		if err != nil {
+			cmd.Printf("warning: %s: %v\n", c.configFileAbsPath, err)
+		}
+	}
+
+	if boolAnnotation(cmd, modifiesSourceDirectory) {
+		var status *git.Status
+		if c.Git.AutoAdd || c.Git.AutoCommit || c.Git.AutoPush {
+			var err error
+			status, err = c.gitAutoAdd()
+			if err != nil {
+				return err
+			}
+		}
+		if c.Git.AutoCommit || c.Git.AutoPush {
+			if err := c.gitAutoCommit(status); err != nil {
+				return err
+			}
+		}
+		if c.Git.AutoPush {
+			if err := c.gitAutoPush(status); err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
+func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error {
+	if c.cpuProfile != "" {
+		f, err := os.Create(c.cpuProfile)
+		if err != nil {
+			return err
+		}
+		if err := pprof.StartCPUProfile(f); err != nil {
+			return err
+		}
+	}
+
+	var err error
+	c.configFileAbsPath, err = chezmoi.NewAbsPathFromExtPath(c.configFile, c.homeDirAbsPath)
+	if err != nil {
+		return err
+	}
+
+	if err := c.readConfig(); err != nil {
+		if !boolAnnotation(cmd, doesNotRequireValidConfig) {
+			return fmt.Errorf("invalid config: %s: %w", c.configFile, err)
+		}
+		cmd.Printf("warning: %s: %v\n", c.configFile, err)
+	}
+
+	if c.Color == "" || strings.ToLower(c.Color) == "auto" {
+		if _, ok := os.LookupEnv("NO_COLOR"); ok {
+			c.color = false
+		} else if stdout, ok := c.stdout.(*os.File); ok {
+			c.color = term.IsTerminal(int(stdout.Fd()))
+		} else {
+			c.color = false
+		}
+	} else if color, err := parseBool(c.Color); err == nil {
+		c.color = color
+	} else if !boolAnnotation(cmd, doesNotRequireValidConfig) {
+		return fmt.Errorf("%s: invalid color value", c.Color)
+	}
+
+	if c.color {
+		if err := enableVirtualTerminalProcessing(c.stdout); err != nil {
+			return err
+		}
+	}
+
+	if c.sourceDirAbsPath, err = chezmoi.NewAbsPathFromExtPath(c.SourceDir, c.homeDirAbsPath); err != nil {
+		return err
+	}
+	if c.destDirAbsPath, err = chezmoi.NewAbsPathFromExtPath(c.DestDir, c.homeDirAbsPath); err != nil {
+		return err
+	}
+
+	log.Logger = log.Output(zerolog.NewConsoleWriter(
+		func(w *zerolog.ConsoleWriter) {
+			w.Out = c.stderr
+			w.NoColor = !c.color
+			w.TimeFormat = time.RFC3339
+		},
+	))
+	if !c.debug {
+		zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	}
+
+	c.baseSystem = chezmoi.NewRealSystem(c.fs)
+	if c.debug {
+		c.baseSystem = chezmoi.NewDebugSystem(c.baseSystem)
+	}
+
+	switch {
+	case cmd.Annotations[persistentStateMode] == persistentStateModeEmpty:
+		c.persistentState = chezmoi.NewMockPersistentState()
+	case cmd.Annotations[persistentStateMode] == persistentStateModeReadOnly:
+		persistentStateFile := c.persistentStateFile()
+		c.persistentState, err = chezmoi.NewBoltPersistentState(c.baseSystem, persistentStateFile, chezmoi.BoltPersistentStateReadOnly)
+		if err != nil {
+			return err
+		}
+	case cmd.Annotations[persistentStateMode] == persistentStateModeReadMockWrite:
+		fallthrough
+	case cmd.Annotations[persistentStateMode] == persistentStateModeReadWrite && c.dryRun:
+		persistentStateFile := c.persistentStateFile()
+		persistentState, err := chezmoi.NewBoltPersistentState(c.baseSystem, persistentStateFile, chezmoi.BoltPersistentStateReadOnly)
+		if err != nil {
+			return err
+		}
+		dryRunPeristentState := chezmoi.NewMockPersistentState()
+		if err := persistentState.CopyTo(dryRunPeristentState); err != nil {
+			return err
+		}
+		if err := persistentState.Close(); err != nil {
+			return err
+		}
+		c.persistentState = dryRunPeristentState
+	case cmd.Annotations[persistentStateMode] == persistentStateModeReadWrite:
+		persistentStateFile := c.persistentStateFile()
+		c.persistentState, err = chezmoi.NewBoltPersistentState(c.baseSystem, persistentStateFile, chezmoi.BoltPersistentStateReadWrite)
+		if err != nil {
+			return err
+		}
+	default:
+		c.persistentState = nil
+	}
+	if c.debug && c.persistentState != nil {
+		c.persistentState = chezmoi.NewDebugPersistentState(c.persistentState)
+	}
+
+	c.sourceSystem = c.baseSystem
+	c.destSystem = c.baseSystem
+	if !boolAnnotation(cmd, modifiesDestinationDirectory) {
+		c.destSystem = chezmoi.NewReadOnlySystem(c.destSystem)
+	}
+	if !boolAnnotation(cmd, modifiesSourceDirectory) {
+		c.sourceSystem = chezmoi.NewReadOnlySystem(c.sourceSystem)
+	}
+	if c.dryRun {
+		c.sourceSystem = chezmoi.NewDryRunSystem(c.sourceSystem)
+		c.destSystem = chezmoi.NewDryRunSystem(c.destSystem)
+	}
+	if c.verbose {
+		c.sourceSystem = chezmoi.NewGitDiffSystem(c.sourceSystem, c.stdout, c.sourceDirAbsPath, c.color)
+		c.destSystem = chezmoi.NewGitDiffSystem(c.destSystem, c.stdout, c.destDirAbsPath, c.color)
+	}
+
+	switch c.Encryption {
+	case "age":
+		c.encryption = &c.AGE
+	case "gpg":
+		c.encryption = &c.GPG
+	case "":
+		c.encryption = chezmoi.NoEncryption{}
+	default:
+		return fmt.Errorf("%s: unknown encryption", c.Encryption)
+	}
+	if c.debug {
+		c.encryption = chezmoi.NewDebugEncryption(c.encryption)
+	}
+
+	if boolAnnotation(cmd, requiresConfigDirectory) {
+		if err := chezmoi.MkdirAll(c.baseSystem, c.configFileAbsPath.Dir(), 0o777); err != nil {
+			return err
+		}
+	}
+
+	if boolAnnotation(cmd, requiresSourceDirectory) {
+		if err := chezmoi.MkdirAll(c.baseSystem, c.sourceDirAbsPath, 0o777); err != nil {
+			return err
+		}
+	}
+
+	if boolAnnotation(cmd, runsCommands) {
+		if runtime.GOOS == "linux" && c.bds.RuntimeDir != "" {
+			// Snap sets the $XDG_RUNTIME_DIR environment variable to
+			// /run/user/$uid/snap.$snap_name, but does not create this
+			// directory. Consequently, any spawned processes that need
+			// $XDG_DATA_DIR will fail. As a work-around, create the directory
+			// if it does not exist. See
+			// https://forum.snapcraft.io/t/wayland-dconf-and-xdg-runtime-dir/186/13.
+			if err := chezmoi.MkdirAll(c.baseSystem, chezmoi.AbsPath(c.bds.RuntimeDir), 0o700); err != nil {
+				return err
+			}
+		}
+	}
+
+	return nil
+}
+
+func (c *Config) persistentStateFile() chezmoi.AbsPath {
+	if c.configFile != "" {
+		return chezmoi.AbsPath(c.configFile).Dir().Join(persistentStateFilename)
+	}
+	for _, configDir := range c.bds.ConfigDirs {
+		configDirAbsPath := chezmoi.AbsPath(configDir)
+		persistentStateFile := configDirAbsPath.Join(chezmoi.RelPath("chezmoi"), persistentStateFilename)
+		if _, err := os.Stat(string(persistentStateFile)); err == nil {
+			return persistentStateFile
+		}
+	}
+	return defaultConfigFile(c.fs, c.bds).Dir().Join(persistentStateFilename)
+}
+
+func (c *Config) promptChoice(prompt string, choices []string) (string, error) {
+	promptWithChoices := fmt.Sprintf("%s [%s]? ", prompt, strings.Join(choices, ","))
+	abbreviations := uniqueAbbreviations(choices)
+	for {
+		line, err := c.readLine(promptWithChoices)
+		if err != nil {
+			return "", err
+		}
+		if value, ok := abbreviations[strings.TrimSpace(line)]; ok {
+			return value, nil
+		}
+	}
+}
+
+func (c *Config) readConfig() error {
+	v := viper.New()
+	v.SetConfigFile(string(c.configFileAbsPath))
+	v.SetFs(vfsafero.NewAferoFS(c.fs))
+	switch err := v.ReadInConfig(); {
+	case os.IsNotExist(err):
+		return nil
+	case err != nil:
+		return err
+	}
+	if err := v.Unmarshal(c); err != nil {
+		return err
+	}
+	return c.validateData()
+}
+
+func (c *Config) readLine(prompt string) (string, error) {
+	var line string
+	if err := c.withTerminal(prompt, func(t terminal) error {
+		var err error
+		line, err = t.ReadLine()
+		return err
+	}); err != nil {
+		return "", err
+	}
+	return line, nil
+}
+
+func (c *Config) readPassword(prompt string) (string, error) {
+	var password string
+	if err := c.withTerminal("", func(t terminal) error {
+		var err error
+		password, err = t.ReadPassword(prompt)
+		return err
+	}); err != nil {
+		return "", err
+	}
+	return password, nil
+}
+
+func (c *Config) run(dir chezmoi.AbsPath, name string, args []string) error {
+	cmd := exec.Command(name, args...)
+	if dir != "" {
+		dirRawAbsPath, err := c.baseSystem.RawPath(dir)
+		if err != nil {
+			return err
+		}
+		cmd.Dir = string(dirRawAbsPath)
+	}
+	cmd.Stdin = c.stdin
+	cmd.Stdout = c.stdout
+	cmd.Stderr = c.stderr
+	return c.baseSystem.RunCmd(cmd)
+}
+
+func (c *Config) runEditor(args []string) error {
+	editor, editorArgs := c.editor()
+	return c.run("", editor, append(editorArgs, args...))
+}
+
+func (c *Config) sourceAbsPaths(sourceState *chezmoi.SourceState, args []string) (chezmoi.AbsPaths, error) {
+	targetRelPaths, err := c.targetRelPaths(sourceState, args, targetRelPathsOptions{
+		mustBeInSourceState: true,
+	})
+	if err != nil {
+		return nil, err
+	}
+	sourceAbsPaths := make(chezmoi.AbsPaths, 0, len(targetRelPaths))
+	for _, targetRelPath := range targetRelPaths {
+		sourceAbsPath := c.sourceDirAbsPath.Join(sourceState.MustEntry(targetRelPath).SourceRelPath().RelPath())
+		sourceAbsPaths = append(sourceAbsPaths, sourceAbsPath)
+	}
+	return sourceAbsPaths, nil
+}
+
+func (c *Config) sourceState() (*chezmoi.SourceState, error) {
+	s := chezmoi.NewSourceState(
+		chezmoi.WithDefaultTemplateDataFunc(c.defaultTemplateData),
+		chezmoi.WithDestDir(c.destDirAbsPath),
+		chezmoi.WithEncryption(c.encryption),
+		chezmoi.WithPriorityTemplateData(c.Data),
+		chezmoi.WithSourceDir(c.sourceDirAbsPath),
+		chezmoi.WithSystem(c.sourceSystem),
+		chezmoi.WithTemplateFuncs(c.templateFuncs),
+		chezmoi.WithTemplateOptions(c.Template.Options),
+	)
+
+	if err := s.Read(); err != nil {
+		return nil, err
+	}
+
+	if minVersion := s.MinVersion(); c.version != nil && !isDevVersion(c.version) && c.version.LessThan(minVersion) {
+		return nil, fmt.Errorf("source state requires version %s or later, chezmoi is version %s", minVersion, c.version)
+	}
+
+	return s, nil
+}
+
+type targetRelPathsOptions struct {
+	mustBeInSourceState bool
+	recursive           bool
+}
+
+func (c *Config) targetRelPaths(sourceState *chezmoi.SourceState, args []string, options targetRelPathsOptions) (chezmoi.RelPaths, error) {
+	targetRelPaths := make(chezmoi.RelPaths, 0, len(args))
+	for _, arg := range args {
+		argAbsPath, err := chezmoi.NewAbsPathFromExtPath(arg, c.homeDirAbsPath)
+		if err != nil {
+			return nil, err
+		}
+		targetRelPath, err := argAbsPath.TrimDirPrefix(c.destDirAbsPath)
+		if err != nil {
+			return nil, err
+		}
+		if err != nil {
+			return nil, err
+		}
+		if options.mustBeInSourceState {
+			if _, ok := sourceState.Entry(targetRelPath); !ok {
+				return nil, fmt.Errorf("%s: not in source state", arg)
+			}
+		}
+		targetRelPaths = append(targetRelPaths, targetRelPath)
+		if options.recursive {
+			parentRelPath := targetRelPath
+			// FIXME we should not call s.TargetRelPaths() here - risk of accidentally quadratic
+			for _, targetRelPath := range sourceState.TargetRelPaths() {
+				if _, err := targetRelPath.TrimDirPrefix(parentRelPath); err == nil {
+					targetRelPaths = append(targetRelPaths, targetRelPath)
+				}
+			}
+		}
+	}
+
+	if len(targetRelPaths) == 0 {
+		return nil, nil
+	}
+
+	// Sort and de-duplicate targetRelPaths in place.
+	sort.Sort(targetRelPaths)
+	n := 1
+	for i := 1; i < len(targetRelPaths); i++ {
+		if targetRelPaths[i] != targetRelPaths[i-1] {
+			targetRelPaths[n] = targetRelPaths[i]
+			n++
+		}
+	}
+	return targetRelPaths[:n], nil
+}
+
+func (c *Config) targetRelPathsBySourcePath(sourceState *chezmoi.SourceState, args []string) (chezmoi.RelPaths, error) {
+	targetRelPaths := make(chezmoi.RelPaths, 0, len(args))
+	targetRelPathsBySourceRelPath := make(map[chezmoi.RelPath]chezmoi.RelPath)
+	for targetRelPath, sourceStateEntry := range sourceState.Entries() {
+		sourceRelPath := sourceStateEntry.SourceRelPath().RelPath()
+		targetRelPathsBySourceRelPath[sourceRelPath] = targetRelPath
+	}
+	for _, arg := range args {
+		argAbsPath, err := chezmoi.NewAbsPathFromExtPath(arg, c.homeDirAbsPath)
+		if err != nil {
+			return nil, err
+		}
+		sourceRelPath, err := argAbsPath.TrimDirPrefix(c.sourceDirAbsPath)
+		if err != nil {
+			return nil, err
+		}
+		targetRelPath, ok := targetRelPathsBySourceRelPath[sourceRelPath]
+		if !ok {
+			return nil, fmt.Errorf("%s: not in source state", arg)
+		}
+		targetRelPaths = append(targetRelPaths, targetRelPath)
+	}
+	return targetRelPaths, nil
+}
+
+func (c *Config) useBuiltinGit() (bool, error) {
+	if c.UseBuiltinGit == "" || strings.ToLower(c.UseBuiltinGit) == "auto" {
+		if _, err := exec.LookPath(c.Git.Command); err == nil {
+			return false, nil
+		}
+		return true, nil
+	}
+	return parseBool(c.UseBuiltinGit)
+}
+
+func (c *Config) validateData() error {
+	return validateKeys(c.Data, identifierRx)
+}
+
+func (c *Config) withTerminal(prompt string, f func(terminal) error) error {
+	if c.noTTY {
+		return f(newNullTerminal(c.stdin))
+	}
+
+	if stdinFile, ok := c.stdin.(*os.File); ok && term.IsTerminal(int(stdinFile.Fd())) {
+		fd := int(stdinFile.Fd())
+		width, height, err := term.GetSize(fd)
+		if err != nil {
+			return err
+		}
+		oldState, err := term.MakeRaw(fd)
+		if err != nil {
+			return err
+		}
+		defer func() {
+			_ = term.Restore(fd, oldState)
+		}()
+		t := term.NewTerminal(struct {
+			io.Reader
+			io.Writer
+		}{
+			Reader: c.stdin,
+			Writer: c.stdout,
+		}, prompt)
+		if err := t.SetSize(width, height); err != nil {
+			return err
+		}
+		return f(t)
+	}
+
+	if runtime.GOOS == "windows" {
+		return f(newDumbTerminal(c.stdin, c.stdout, prompt))
+	}
+
+	devTTY, err := os.OpenFile("/dev/tty", os.O_RDWR, 0)
+	if err != nil {
+		return err
+	}
+	defer devTTY.Close()
+	fd := int(devTTY.Fd())
+	width, height, err := term.GetSize(fd)
+	if err != nil {
+		return err
+	}
+	oldState, err := term.MakeRaw(fd)
+	if err != nil {
+		return err
+	}
+	defer func() {
+		_ = term.Restore(fd, oldState)
+	}()
+	t := term.NewTerminal(devTTY, prompt)
+	if err := t.SetSize(width, height); err != nil {
+		return err
+	}
+	return f(t)
+}
+
+func (c *Config) writeOutput(data []byte) error {
+	if c.outputStr == "" || c.outputStr == "-" {
+		_, err := c.stdout.Write(data)
+		return err
+	}
+	return c.baseSystem.WriteFile(chezmoi.AbsPath(c.outputStr), data, 0o666)
+}
+
+func (c *Config) writeOutputString(data string) error {
+	return c.writeOutput([]byte(data))
 }
 
 // isDevVersion returns true if version is a development version (i.e. that the
@@ -609,69 +1449,33 @@ func isDevVersion(v *semver.Version) bool {
 	return v.Major == 0 && v.Minor == 0 && v.Patch == 0
 }
 
-// isWellKnownAbbreviation returns true if word is a well known abbreviation.
-func isWellKnownAbbreviation(word string) bool {
-	_, ok := wellKnownAbbreviations[word]
-	return ok
-}
-
-func panicOnError(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
-// titilize returns s, titilized.
-func titilize(s string) string {
-	if s == "" {
-		return s
-	}
-	runes := []rune(s)
-	return string(append([]rune{unicode.ToTitle(runes[0])}, runes[1:]...))
-}
-
-// upperSnakeCaseToCamelCase converts a string in UPPER_SNAKE_CASE to
-// camelCase.
-func upperSnakeCaseToCamelCase(s string) string {
-	words := strings.Split(s, "_")
-	for i, word := range words {
-		if i == 0 {
-			words[i] = strings.ToLower(word)
-		} else if !isWellKnownAbbreviation(word) {
-			words[i] = titilize(strings.ToLower(word))
-		}
-	}
-	return strings.Join(words, "")
-}
-
-// upperSnakeCaseToCamelCaseKeys returns m with all keys converted from
-// UPPER_SNAKE_CASE to camelCase.
-func upperSnakeCaseToCamelCaseMap(m map[string]string) map[string]string {
-	result := make(map[string]string)
-	for k, v := range m {
-		result[upperSnakeCaseToCamelCase(k)] = v
-	}
-	return result
-}
-
-// validateKeys ensures that all keys in data match re.
-func validateKeys(data interface{}, re *regexp.Regexp) error {
-	switch data := data.(type) {
-	case map[string]interface{}:
-		for key, value := range data {
-			if !re.MatchString(key) {
-				return fmt.Errorf("invalid key: %q", key)
-			}
-			if err := validateKeys(value, re); err != nil {
+// withVersionInfo sets the version information.
+func withVersionInfo(versionInfo VersionInfo) configOption {
+	return func(c *Config) error {
+		var version *semver.Version
+		var versionElems []string
+		if versionInfo.Version != "" {
+			var err error
+			version, err = semver.NewVersion(strings.TrimPrefix(versionInfo.Version, "v"))
+			if err != nil {
 				return err
 			}
+			versionElems = append(versionElems, "v"+version.String())
+		} else {
+			versionElems = append(versionElems, "dev")
 		}
-	case []interface{}:
-		for _, value := range data {
-			if err := validateKeys(value, re); err != nil {
-				return err
-			}
+		if versionInfo.Commit != "" {
+			versionElems = append(versionElems, "commit "+versionInfo.Commit)
 		}
+		if versionInfo.Date != "" {
+			versionElems = append(versionElems, "built at "+versionInfo.Date)
+		}
+		if versionInfo.BuiltBy != "" {
+			versionElems = append(versionElems, "built by "+versionInfo.BuiltBy)
+		}
+		c.version = version
+		c.versionInfo = versionInfo
+		c.versionStr = strings.Join(versionElems, ", ")
+		return nil
 	}
-	return nil
 }

@@ -1,0 +1,23 @@
+[!exec:gpg] skip 'gpg not found in $PATH'
+[githubactionsonmacos] skip 'gpg is broken in GitHub Actions on macOS'
+[githubactionsonwindows] skip 'gpg is broken in GitHub Actions on Windows'
+
+mkhomedir
+mkgpgconfig
+
+# test that chezmoi apply --exclude=encrypted does not apply encrypted files
+cp golden/.encrypted $HOME
+chezmoi add --encrypt $HOME${/}.encrypted
+rm $HOME/.encrypted
+cp $CHEZMOICONFIGDIR/chezmoi.toml golden/chezmoi.toml
+rm $CHEZMOICONFIGDIR/chezmoi.toml
+chezmoi apply --force --exclude=encrypted
+! exists $HOME/.encrypted
+
+# test that chezmoi apply applies the encrypted file
+cp golden/chezmoi.toml $CHEZMOICONFIGDIR/chezmoi.toml
+chezmoi apply --force
+cmp golden/.encrypted $HOME/.encrypted
+
+-- golden/.encrypted --
+plaintext

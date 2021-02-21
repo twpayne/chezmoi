@@ -1,12 +1,18 @@
 mkhomedir
 mksourcedir
 
-exists $HOME/.bashrc
-chezmoi remove --force $HOME${/}.bashrc
-! exists $HOME/.bashrc
+# test that chezmoi remove file removes a file
+exists $HOME/.file
+chezmoi remove --force $HOME${/}.file
+! exists $HOME/.file
 
-[short] stop
+# test that chezmoi remove dir removes a directory
+exists $HOME/.dir
+chezmoi remove --force $HOME${/}.dir
+! exists $HOME/.dir
 
-exists $HOME/.ssh/config
-chezmoi remove --force $HOME${/}.ssh
-! exists $HOME/.ssh/config
+# test that if any chezmoi remove stops on any error
+exists $HOME/.executable
+! chezmoi remove --force $HOME${/}.newfile $HOME${/}.executable
+stderr 'not in source state'
+exists $HOME/.executable

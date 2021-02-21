@@ -5,19 +5,21 @@ import (
 	"strings"
 )
 
-var needShellQuoteRegexp = regexp.MustCompile(`[^+\-./0-9=A-Z_a-z]`)
+// nonShellLiteralRx is a regular expression that matches anything that is not a
+// shell literal.
+var nonShellLiteralRx = regexp.MustCompile(`[^+\-./0-9=A-Z_a-z]`)
 
-const (
-	backslash   = '\\'
-	singleQuote = '\''
-)
+// maybeShellQuote returns s quoted as a shell argument, if necessary.
+func maybeShellQuote(s string) string {
+	const (
+		backslash   = '\\'
+		singleQuote = '\''
+	)
 
-// MaybeShellQuote returns s quoted as a shell argument, if necessary.
-func MaybeShellQuote(s string) string {
 	switch {
 	case s == "":
 		return "''"
-	case needShellQuoteRegexp.MatchString(s):
+	case nonShellLiteralRx.MatchString(s):
 		result := make([]byte, 0, 2+len(s))
 		inSingleQuotes := false
 		for _, b := range []byte(s) {
@@ -33,7 +35,7 @@ func MaybeShellQuote(s string) string {
 					result = append(result, singleQuote)
 					inSingleQuotes = false
 				}
-				result = append(result, backslash, singleQuote)
+				result = append(result, '\\', singleQuote)
 			default:
 				if !inSingleQuotes {
 					result = append(result, singleQuote)
@@ -55,7 +57,7 @@ func MaybeShellQuote(s string) string {
 func ShellQuoteArgs(args []string) string {
 	shellQuotedArgs := make([]string, 0, len(args))
 	for _, arg := range args {
-		shellQuotedArgs = append(shellQuotedArgs, MaybeShellQuote(arg))
+		shellQuotedArgs = append(shellQuotedArgs, maybeShellQuote(arg))
 	}
 	return strings.Join(shellQuotedArgs, " ")
 }

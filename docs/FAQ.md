@@ -1,6 +1,7 @@
 # chezmoi Frequently Asked Questions
 
 <!--- toc --->
+* [Go to chezmoi.io](#go-to-chezmoiio)
 * [How can I quickly check for problems with chezmoi on my machine?](#how-can-i-quickly-check-for-problems-with-chezmoi-on-my-machine)
 * [What are the consequences of "bare" modifications to the target files? If my `.zshrc` is managed by chezmoi and I edit `~/.zshrc` without using `chezmoi edit`, what happens?](#what-are-the-consequences-of-bare-modifications-to-the-target-files-if-my-zshrc-is-managed-by-chezmoi-and-i-edit-zshrc-without-using-chezmoi-edit-what-happens)
 * [How can I tell what dotfiles in my home directory aren't managed by chezmoi? Is there an easy way to have chezmoi manage a subset of them?](#how-can-i-tell-what-dotfiles-in-my-home-directory-arent-managed-by-chezmoi-is-there-an-easy-way-to-have-chezmoi-manage-a-subset-of-them)
@@ -25,6 +26,12 @@
 * [What other questions have been asked about chezmoi?](#what-other-questions-have-been-asked-about-chezmoi)
 * [Where do I ask a question that isn't answered here?](#where-do-i-ask-a-question-that-isnt-answered-here)
 * [I like chezmoi. How do I say thanks?](#i-like-chezmoi-how-do-i-say-thanks)
+
+## Go to chezmoi.io
+
+You are looking at documentation for chezmoi version 2, which hasn't been
+released yet. Documentation for the current version of chezmoi is at
+[chezmoi.io](https://chezmoi.io/docs/faq/).
 
 ## How can I quickly check for problems with chezmoi on my machine?
 
@@ -72,13 +79,10 @@ You have several options:
 
 * `chezmoi cd` opens a shell in the source directory, where you can run your
   usual version control commands, like `git add` and `git commit`.
-* `chezmoi git` and `chezmoi hg` run `git` and `hg` respectively in the source
+* `chezmoi git` runs `git` in the source
   directory and pass extra arguments to the command. If you're passing any
   flags, you'll need to use `--` to prevent chezmoi from consuming them, for
   example `chezmoi git -- commit -m "Update dotfiles"`.
-* `chezmoi source` runs your configured version control system in your source
-  directory. It works in the same way as the `chezmoi git` and `chezmoi hg`
-  commands, but uses `sourceVCS.command`.
 
 ## How do I only run a script when a file has changed?
 
@@ -333,14 +337,9 @@ GitHub](https://github.com/twpayne/chezmoi/issues/new/choose).
 
 ## I'm getting errors trying to build chezmoi from source
 
-chezmoi requires Go version 1.14 or later and Go modules enabled. You can check
-the version of Go with:
+chezmoi requires Go version 1.16 or later. You can check the version of Go with:
 
     go version
-
-Enable Go modules by setting `GO111MODULE=on` when running `go get`:
-
-    GO111MODULE=on go get -u github.com/twpayne/chezmoi
 
 For more details on building chezmoi, see the [Contributing
 Guide](CONTRIBUTING.md).

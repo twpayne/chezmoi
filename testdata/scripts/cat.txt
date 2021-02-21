@@ -1,23 +1,32 @@
 mkhomedir golden
 mksourcedir
 
-chezmoi cat $HOME${/}.bashrc
-cmp stdout golden/.bashrc
+# test that chezmoi cat prints an empty file
+chezmoi cat $HOME${/}.empty
+cmp stdout golden/.empty
 
-[short] stop
+# test that chezmoi cat prints a file
+chezmoi cat $HOME${/}.file
+cmp stdout golden/.file
 
-chezmoi cat $HOME${/}.gitconfig
-cmp stdout golden/.gitconfig
-
+# test that chezmoi cat prints a symlink
 chezmoi cat $HOME${/}.symlink
-stdout '\.bashrc'
+stdout '\.dir/subdir/file'
 
-! chezmoi cat $HOME${/}.ssh
+# test that chezmoi cat prints a template
+chezmoi cat $HOME${/}.template
+cmp stdout golden/.template
+
+# test that chezmoi cat does not print directories
+! chezmoi cat $HOME${/}.dir
 stderr 'not a file or symlink'
 
+# test that chezmoi cat does not print files outside the destination directory
 ! chezmoi cat ${/}etc${/}passwd
-stderr 'outside target directory'
+stderr 'not in'
 
-cd $HOME
-chezmoi cat .gitconfig
-cmp stdout $WORK/golden/.gitconfig
+# test that chezmoi cat uses relative paths
+mkdir $HOME/.dir
+cd $HOME/.dir
+chezmoi cat file
+cmp stdout $WORK/golden/.dir/file

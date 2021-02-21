@@ -1,5 +1,3 @@
-[windows] stop
-
 mkhomedir golden
 mkhomedir
 mksourcedir
@@ -7,47 +5,44 @@ mksourcedir
 # test that chezmoi verify succeeds
 chezmoi verify
 
-[short] stop
-
 # test that chezmoi verify fails when a file is added to the source state
-cp golden/dot_inputrc $CHEZMOISOURCEDIR/dot_inputrc
+cp golden/dot_newfile $CHEZMOISOURCEDIR/dot_newfile
 ! chezmoi verify
-rm $CHEZMOISOURCEDIR/dot_inputrc
+chezmoi forget --force $HOME${/}.newfile
 chezmoi verify
 
 # test that chezmoi verify fails when a file is edited
-edit $HOME/.bashrc
+edit $HOME/.file
 ! chezmoi verify
-cp $CHEZMOISOURCEDIR/dot_bashrc $HOME/.bashrc
+chezmoi apply --force $HOME${/}.file
 chezmoi verify
 
 # test that chezmoi verify fails when a file is removed from the destination directory
-rm $HOME/.bashrc
+rm $HOME/.file
 ! chezmoi verify
-cp $CHEZMOISOURCEDIR/dot_bashrc $HOME/.bashrc
+chezmoi apply --force $HOME${/}.file
 chezmoi verify
 
 # test that chezmoi verify fails when a directory is removed from the destination directory
-rm $HOME/.ssh
+rm $HOME/.dir
 ! chezmoi verify
-mkdir $HOME/.ssh
-chmod 700 $HOME/.ssh
-cp $CHEZMOISOURCEDIR/private_dot_ssh/config $HOME/.ssh/config
+mkdir $HOME/.dir
+chezmoi apply --force $HOME${/}.dir
 chezmoi verify
 
 [windows] stop 'remaining tests use file modes'
 
 # test that chezmoi verify fails when a file's permissions are changed
-chmod 777 $HOME/.bashrc
+chmod 777 $HOME/.file
 ! chezmoi verify
-chmod 644 $HOME/.bashrc
+chezmoi apply --force $HOME${/}.file
 chezmoi verify
 
 # test that chezmoi verify fails when a dir's permissions are changed
-chmod 777 $HOME/.ssh
+chmod 700 $HOME/.dir
 ! chezmoi verify
-chmod 700 $HOME/.ssh
+chezmoi apply --force $HOME${/}.dir
 chezmoi verify
 
--- golden/dot_inputrc --
-# contents of .inputrc
+-- golden/dot_newfile --
+# contents of .newfile

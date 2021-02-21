@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"sort"
@@ -58,7 +57,7 @@ func run() error {
 	flag.Parse()
 
 	// Read goreleaser config.
-	data, err := ioutil.ReadFile(".goreleaser.yaml")
+	data, err := os.ReadFile(".goreleaser.yaml")
 	if err != nil {
 		return err
 	}
@@ -117,15 +116,11 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	if err := installShTemplate.ExecuteTemplate(os.Stdout, "install.sh.tmpl", struct {
+	return installShTemplate.ExecuteTemplate(os.Stdout, "install.sh.tmpl", struct {
 		Platforms []platform
 	}{
 		Platforms: sortedPlatforms,
-	}); err != nil {
-		return err
-	}
-
-	return nil
+	})
 }
 
 func main() {

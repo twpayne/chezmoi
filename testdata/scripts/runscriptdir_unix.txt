@@ -3,11 +3,9 @@
 chezmoi apply
 cmpenv stdout golden/apply
 
-[short] stop
-
 env $=$
 chezmoi dump
-cmpenv stdout golden/dump
+cmp stdout golden/dump
 
 [!exec:tar] stop
 
@@ -21,25 +19,18 @@ $HOME${/}dir
 dir/
 dir/script
 -- golden/dump --
-[
-  {
+{
+  "dir": {
     "type": "dir",
-    "sourcePath": "$WORK/home/user/.local/share/chezmoi/dir",
-    "targetPath": "dir",
-    "exact": false,
-    "perm": 493,
-    "entries": [
-      {
-        "type": "script",
-        "sourcePath": "$WORK/home/user/.local/share/chezmoi/dir/run_script",
-        "targetPath": "dir/script",
-        "once": false,
-        "template": false,
-        "contents": "#!/bin/sh\n\necho ${$}PWD\n"
-      }
-    ]
+    "name": "dir",
+    "perm": 511
+  },
+  "dir/script": {
+    "type": "script",
+    "name": "dir/script",
+    "contents": "#!/bin/sh\n\necho $PWD\n"
   }
-]
+}
 -- home/user/.local/share/chezmoi/dir/run_script --
 #!/bin/sh
 

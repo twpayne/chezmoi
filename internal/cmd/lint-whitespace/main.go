@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
@@ -20,7 +19,6 @@ var (
 		regexp.MustCompile(`\A\.devcontainer/library-scripts\z`),
 		regexp.MustCompile(`\A\.git\z`),
 		regexp.MustCompile(`\Aassets/scripts/install\.ps1\z`),
-		regexp.MustCompile(`\Achezmoi2/completions/chezmoi2\.ps1\z`),
 		regexp.MustCompile(`\Acompletions/chezmoi\.ps1\z`),
 		regexp.MustCompile(`\Achezmoi\.io/public\z`),
 		regexp.MustCompile(`\Achezmoi\.io/resources\z`),
@@ -31,7 +29,7 @@ var (
 )
 
 func lintFile(filename string) error {
-	data, err := ioutil.ReadFile(filename)
+	data, err := os.ReadFile(filename)
 	if err != nil {
 		return err
 	}

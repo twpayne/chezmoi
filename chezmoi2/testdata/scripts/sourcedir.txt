@@ -1,5 +1,0 @@
-chezmoi execute-template '{{ .chezmoi.sourceDir }}'
-stdout '/tmp/user'
-
--- home/user/.config/chezmoi/chezmoi.toml --
-sourceDir = "/tmp/user"

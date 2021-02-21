@@ -3,7 +3,11 @@ mksourcedir
 chezmoi managed
 cmpenv stdout golden/managed
 
-[short] stop
+chezmoi managed --include=all
+cmpenv stdout golden/managed-all
+
+chezmoi managed --include=remove
+cmpenv stdout golden/managed-remove
 
 chezmoi managed --include=dirs
 cmpenv stdout golden/managed-dirs
@@ -14,23 +18,51 @@ cmpenv stdout golden/managed-files
 chezmoi managed --include=symlinks
 cmpenv stdout golden/managed-symlinks
 
+chezmoi managed --exclude=files
+cmpenv stdout golden/managed-except-files
+
 -- golden/managed --
-$HOME${/}.absent
-$HOME${/}.bashrc
-$HOME${/}.binary
-$HOME${/}.gitconfig
-$HOME${/}.hushlogin
-$HOME${/}.ssh
-$HOME${/}.ssh${/}config
-$HOME${/}.symlink
+.create
+.dir
+.dir/file
+.dir/subdir
+.dir/subdir/file
+.empty
+.executable
+.file
+.private
+.symlink
+.template
+-- golden/managed-all --
+.create
+.dir
+.dir/file
+.dir/subdir
+.dir/subdir/file
+.empty
+.executable
+.file
+.private
+.remove
+.symlink
+.template
 -- golden/managed-dirs --
-$HOME${/}.ssh
+.dir
+.dir/subdir
 -- golden/managed-files --
-$HOME${/}.absent
-$HOME${/}.bashrc
-$HOME${/}.binary
-$HOME${/}.gitconfig
-$HOME${/}.hushlogin
-$HOME${/}.ssh${/}config
+.create
+.dir/file
+.dir/subdir/file
+.empty
+.executable
+.file
+.private
+.template
+-- golden/managed-remove --
+.remove
 -- golden/managed-symlinks --
-$HOME${/}.symlink
+.symlink
+-- golden/managed-except-files --
+.dir
+.dir/subdir
+.symlink

@@ -1,33 +1,39 @@
 mksourcedir
 
-exists $CHEZMOISOURCEDIR/dot_bashrc
-chezmoi chattr empty $HOME${/}.bashrc
-! exists $CHEZMOISOURCEDIR/dot_bashrc
-exists $CHEZMOISOURCEDIR/empty_dot_bashrc
+exists $CHEZMOISOURCEDIR/dot_file
+chezmoi chattr empty $HOME${/}.file
+! exists $CHEZMOISOURCEDIR/dot_file
+exists $CHEZMOISOURCEDIR/empty_dot_file
 
-[short] stop
+chezmoi chattr +p $HOME${/}.file
+! exists $CHEZMOISOURCEDIR/empty_dot_file
+exists $CHEZMOISOURCEDIR/private_empty_dot_file
 
-chezmoi chattr +p $HOME${/}.bashrc
-! exists $CHEZMOISOURCEDIR/empty_dot_bashrc
-exists $CHEZMOISOURCEDIR/private_empty_dot_bashrc
+chezmoi chattr t,-e $HOME${/}.file
+! exists $CHEZMOISOURCEDIR/private_empty_dot_file
+exists $CHEZMOISOURCEDIR/private_dot_file.tmpl
 
-chezmoi chattr t,-e $HOME${/}.bashrc
-! exists $CHEZMOISOURCEDIR/private_empty_dot_bashrc
-exists $CHEZMOISOURCEDIR/private_dot_bashrc.tmpl
+exists $CHEZMOISOURCEDIR/executable_dot_executable
+chezmoi chattr nox $HOME${/}.executable
+! exists $CHEZMOISOURCEDIR/executable_dot_executable
+exists $CHEZMOISOURCEDIR/dot_executable
 
-exists $CHEZMOISOURCEDIR/executable_dot_binary
-chezmoi chattr nox $HOME${/}.binary
-! exists $CHEZMOISOURCEDIR/executable_dot_binary
-exists $CHEZMOISOURCEDIR/dot_binary
+chezmoi chattr x $HOME${/}.executable
+! exists $CHEZMOISOURCEDIR/dot_executable
+exists $CHEZMOISOURCEDIR/executable_dot_executable
 
-chezmoi chattr x $HOME${/}.binary
-! exists $CHEZMOISOURCEDIR/dot_binary
-exists $CHEZMOISOURCEDIR/executable_dot_binary
+chezmoi chattr +private $HOME${/}.create
+! exists $CHEZMOISOURCEDIR/create_dot_create
+exists $CHEZMOISOURCEDIR/create_private_dot_create
 
-exists $CHEZMOISOURCEDIR/private_dot_ssh
-chezmoi chattr exact $HOME/.ssh
-! exists $CHEZMOISOURCEDIR/private_dot_ssh
-exists $CHEZMOISOURCEDIR/exact_private_dot_ssh
+chezmoi chattr noprivate $HOME${/}.create
+! exists $CHEZMOISOURCEDIR/create_private_dot_create
+exists $CHEZMOISOURCEDIR/create_dot_create
+
+exists $CHEZMOISOURCEDIR/dot_dir
+chezmoi chattr exact $HOME/.dir
+! exists $CHEZMOISOURCEDIR/dot_dir
+exists $CHEZMOISOURCEDIR/exact_dot_dir
 
 exists $CHEZMOISOURCEDIR/symlink_dot_symlink
 chezmoi chattr +t $HOME${/}.symlink
@@ -37,3 +43,26 @@ exists $CHEZMOISOURCEDIR/symlink_dot_symlink.tmpl
 chezmoi chattr -- -t $HOME${/}.symlink
 ! exists $CHEZMOISOURCEDIR/symlink_dot_symlink.tmpl
 exists $CHEZMOISOURCEDIR/symlink_dot_symlink
+
+chezmoi chattr -- before $HOME/script
+! exists $CHEZMOISOURCEDIR/run_script
+exists $CHEZMOISOURCEDIR/run_before_script
+
+chezmoi chattr -- once $HOME/script
+! exists $CHEZMOISOURCEDIR/run_before_script
+exists $CHEZMOISOURCEDIR/run_once_before_script
+
+chezmoi chattr -- after $HOME/script
+! exists $CHEZMOISOURCEDIR/run_once_before_script
+exists $CHEZMOISOURCEDIR/run_once_after_script
+
+chezmoi chattr -- -o $HOME/script
+! exists $CHEZMOISOURCEDIR/run_once_after_script
+exists $CHEZMOISOURCEDIR/run_after_script
+
+chezmoi chattr -- -a $HOME/script
+! exists $CHEZMOISOURCEDIR/run_after_script
+exists $CHEZMOISOURCEDIR/run_script
+
+-- home/user/.local/share/chezmoi/run_script --
+#!/bin/sh

@@ -1,9 +1,8 @@
 [!windows] chmod 755 bin/git
 [windows] unix2dos bin/git.cmd
 
-mksourcedir
-
 chezmoi git hello
+exists $CHEZMOISOURCEDIR
 stdout hello
 
 -- bin/git --

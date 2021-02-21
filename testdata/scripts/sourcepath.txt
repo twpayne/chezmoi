@@ -3,16 +3,16 @@ mksourcedir
 chezmoi source-path
 cmpenv stdout golden/source-path
 
-chezmoi source-path $HOME${/}.bashrc
-cmpenv stdout golden/source-path-bashrc
+chezmoi source-path $HOME${/}.file
+cmpenv stdout golden/source-path-file
 
-! chezmoi source-path $HOME${/}.inputrc
-stderr 'file does not exist'
+! chezmoi source-path $HOME${/}.newfile
+stderr 'not in source state'
 
 ! chezmoi source-path $WORK${/}etc${/}passwd
-stderr 'outside target directory'
+stderr 'not in'
 
 -- golden/source-path --
-$HOME${/}.local${/}share${/}chezmoi
--- golden/source-path-bashrc --
-$HOME${/}.local${/}share${/}chezmoi${/}dot_bashrc
+$CHEZMOISOURCEDIR
+-- golden/source-path-file --
+$CHEZMOISOURCEDIR/dot_file

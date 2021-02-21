@@ -17,8 +17,7 @@ checked out chezmoi locally.
 
 ## Developing locally
 
-chezmoi requires Go 1.14 or later and Go modules enabled. Enable Go modules by
-setting the environment variable `GO111MODULE=on`.
+chezmoi requires Go 1.16 or later.
 
 chezmoi is a standard Go project, using standard Go tooling, with a few extra
 tools. Ensure that these extra tools are installed with:
@@ -39,15 +38,13 @@ Run chezmoi:
 
 ## Generated code
 
-chezmoi generates help text, shell completions, embedded files, and the website
-from a single source of truth. You must run
+chezmoi generates shell completions, embedded files, and the website from a
+single source of truth. You must run
 
-    go generate
+    make completions
 
 if you change includes any of the following:
 
-* Modify any documentation in the `docs/` directory.
-* Modify any files in the `assets/templates/` directory.
 * Add or modify a command.
 * Add or modify a command's flags.
 

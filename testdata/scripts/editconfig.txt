@@ -2,8 +2,6 @@
 chezmoi edit-config
 grep -count=1 '# edited' $CHEZMOICONFIGDIR/chezmoi.toml
 
-[short] stop
-
 # test that edit-config edits an existing config file
 chezmoi edit-config
 grep -count=2 '# edited' $CHEZMOICONFIGDIR/chezmoi.toml
@@ -22,6 +20,6 @@ grep -count=1 '# edited' $CHEZMOICONFIGDIR/chezmoi.json
 
 -- home2/user/.config/chezmoi/chezmoi.yaml --
 data:
-    email: "you@example.com"
+    email: "user@example.com"
 -- home3/user/.config/chezmoi/chezmoi.json --
-{"data":{"email":"you@example.com"}}
+{"data":{"email":"user@example.com"}}
