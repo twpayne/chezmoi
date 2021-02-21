@@ -31,6 +31,8 @@ templates, or config file.
 * chezmoi includes a builtin `git` command which it will use if it cannot find
   `git`. This means that you don't even have to install `git` to setup your
   dotfiles on a new machine.
+* chezmoi detects when your config file template has changed and prompts you to
+  re-run `chezmoi init`.
 * The new `create_` attribute allows you to create a file with initial content,
   but not have it overwritten by `chezmoi apply`.
 * The new `modify_` attribute allows you to modify an existing file with a
