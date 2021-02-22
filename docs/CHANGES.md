@@ -45,6 +45,8 @@ templates, or config file.
   exclude encrypted files.
 * The new `--keep-going` option causes chezmoi to keep going as far as possible
   rather than stopping at the first error it encounters.
+* The new `--no-tty` option stops chezmoi from opening a TTY to read input
+  (including passwords) and instead reads them from stdin.
 * The new `--source-path` options allows you to specify targets by source path,
   which is useful for editor hooks.
 * The new `gitHubKeys` template function allows you to populate your
@@ -102,3 +104,5 @@ the new functionality and for consistency:
 * The structure of data output by `chezmoi dump` has changed.
 * The `.chezmoi.homedir` template variable has been renamed to
   `.chezmoi.homeDir`.
+* The `.chezmoi.fullHostname` template variable has been removed, as it did not
+  contain the full hostname,

@@ -10,7 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	vfs "github.com/twpayne/go-vfs/v2"
-	xdg "github.com/twpayne/go-xdg/v3"
+	xdg "github.com/twpayne/go-xdg/v4"
 
 	"github.com/twpayne/chezmoi/internal/chezmoi"
 	"github.com/twpayne/chezmoi/internal/chezmoitest"

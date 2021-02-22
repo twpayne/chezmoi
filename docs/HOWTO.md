@@ -2,44 +2,43 @@
 
 <!--- toc --->
 * [Go to chezmoi.io](#go-to-chezmoiio)
-* [Use a hosted repo to manage your dotfiles across multiple machines](#use-a-hosted-repo-to-manage-your-dotfiles-across-multiple-machines)
-* [Pull the latest changes from your repo and apply them](#pull-the-latest-changes-from-your-repo-and-apply-them)
-* [Pull the latest changes from your repo and see what would change, without actually applying the changes](#pull-the-latest-changes-from-your-repo-and-see-what-would-change-without-actually-applying-the-changes)
-* [Automatically commit and push changes to your repo](#automatically-commit-and-push-changes-to-your-repo)
-* [Use templates to manage files that vary from machine to machine](#use-templates-to-manage-files-that-vary-from-machine-to-machine)
-* [Use completely separate config files on different machines](#use-completely-separate-config-files-on-different-machines)
-  * [Without using symlinks](#without-using-symlinks)
-* [Create a config file on a new machine automatically](#create-a-config-file-on-a-new-machine-automatically)
-* [Re-create your config file](#re-create-your-config-file)
-* [Populate `~/.ssh/authorized_keys` with your public SSH keys from GitHub](#populate-sshauthorized_keys-with-your-public-ssh-keys-from-github)
-* [Have chezmoi create a directory, but ignore its contents](#have-chezmoi-create-a-directory-but-ignore-its-contents)
-* [Ensure that a target is removed](#ensure-that-a-target-is-removed)
-* [Include a subdirectory from another repository, like Oh My Zsh](#include-a-subdirectory-from-another-repository-like-oh-my-zsh)
-* [Handle configuration files which are externally modified](#handle-configuration-files-which-are-externally-modified)
-* [Handle different file locations on different systems with the same contents](#handle-different-file-locations-on-different-systems-with-the-same-contents)
+* [Daily operations](#daily-operations)
+  * [Use a hosted repo to manage your dotfiles across multiple machines](#use-a-hosted-repo-to-manage-your-dotfiles-across-multiple-machines)
+  * [Pull the latest changes from your repo and apply them](#pull-the-latest-changes-from-your-repo-and-apply-them)
+  * [Pull the latest changes from your repo and see what would change, without actually applying the changes](#pull-the-latest-changes-from-your-repo-and-see-what-would-change-without-actually-applying-the-changes)
+  * [Automatically commit and push changes to your repo](#automatically-commit-and-push-changes-to-your-repo)
+* [Manage different types of file](#manage-different-types-of-file)
+  * [Have chezmoi create a directory, but ignore its contents](#have-chezmoi-create-a-directory-but-ignore-its-contents)
+  * [Ensure that a target is removed](#ensure-that-a-target-is-removed)
+  * [Populate `~/.ssh/authorized_keys` with your public SSH keys from GitHub](#populate-sshauthorized_keys-with-your-public-ssh-keys-from-github)
+* [Include dotfiles from elsewhere](#include-dotfiles-from-elsewhere)
+  * [Include a subdirectory from another repository, like Oh My Zsh](#include-a-subdirectory-from-another-repository-like-oh-my-zsh)
+  * [Handle configuration files which are externally modified](#handle-configuration-files-which-are-externally-modified)
+  * [Import archives](#import-archives)
+* [Manage machine-to-machine differences](#manage-machine-to-machine-differences)
+  * [Use templates](#use-templates)
+  * [Use completely different dotfiles on different machines](#use-completely-different-dotfiles-on-different-machines)
+  * [Create a config file on a new machine automatically](#create-a-config-file-on-a-new-machine-automatically)
+  * [Re-create your config file](#re-create-your-config-file)
+  * [Handle different file locations on different systems with the same contents](#handle-different-file-locations-on-different-systems-with-the-same-contents)
+  * [Export archives](#export-archives)
 * [Keep data private](#keep-data-private)
-  * [Use Bitwarden to keep your secrets](#use-bitwarden-to-keep-your-secrets)
-  * [Use gopass to keep your secrets](#use-gopass-to-keep-your-secrets)
-  * [Use gpg to keep your secrets](#use-gpg-to-keep-your-secrets)
-  * [Use KeePassXC to keep your secrets](#use-keepassxc-to-keep-your-secrets)
-  * [Use a keyring to keep your secrets](#use-a-keyring-to-keep-your-secrets)
-  * [Use LastPass to keep your secrets](#use-lastpass-to-keep-your-secrets)
-  * [Use 1Password to keep your secrets](#use-1password-to-keep-your-secrets)
-  * [Use pass to keep your secrets](#use-pass-to-keep-your-secrets)
-  * [Use Vault to keep your secrets](#use-vault-to-keep-your-secrets)
-  * [Use a generic tool to keep your secrets](#use-a-generic-tool-to-keep-your-secrets)
-  * [Use templates variables to keep your secrets](#use-templates-variables-to-keep-your-secrets)
+  * [Use a password manager](#use-a-password-manager)
+  * [Encrypt whole files](#encrypt-whole-files)
+  * [Use a private configuration file and template variables](#use-a-private-configuration-file-and-template-variables)
 * [Use scripts to perform actions](#use-scripts-to-perform-actions)
   * [Understand how scripts work](#understand-how-scripts-work)
   * [Install packages with scripts](#install-packages-with-scripts)
 * [Use chezmoi with GitHub Codespaces, Visual Studio Codespaces, Visual Studio Code Remote - Containers](#use-chezmoi-with-github-codespaces-visual-studio-codespaces-visual-studio-code-remote---containers)
-* [Detect Windows Subsystem for Linux (WSL)](#detect-windows-subsystem-for-linux-wsl)
-* [Run a PowerShell script as admin on Windows](#run-a-powershell-script-as-admin-on-windows)
-* [Import archives](#import-archives)
-* [Export archives](#export-archives)
-* [Customize the `diff` command](#customize-the-diff-command)
-* [Use a merge tool other than vimdiff](#use-a-merge-tool-other-than-vimdiff)
-* [Migrate from a dotfile manager that uses symlinks](#migrate-from-a-dotfile-manager-that-uses-symlinks)
+* [Use chezmoi on Windows](#use-chezmoi-on-windows)
+  * [Detect Windows Subsystem for Linux (WSL)](#detect-windows-subsystem-for-linux-wsl)
+  * [Run a PowerShell script as admin on Windows](#run-a-powershell-script-as-admin-on-windows)
+* [Using custom tools](#using-custom-tools)
+  * [Customize the `diff` command](#customize-the-diff-command)
+  * [Use a merge tool other than vimdiff](#use-a-merge-tool-other-than-vimdiff)
+* [Migrating to chezmoi from another dotfile manager](#migrating-to-chezmoi-from-another-dotfile-manager)
+  * [Migrate from a dotfile manager that uses symlinks](#migrate-from-a-dotfile-manager-that-uses-symlinks)
+* [Migrate away from chezmoi](#migrate-away-from-chezmoi)
 
 ## Go to chezmoi.io
 
@@ -47,7 +46,9 @@ You are looking at documentation for chezmoi version 2, which hasn't been
 released yet. Documentation for the current version of chezmoi is at
 [chezmoi.io](https://chezmoi.io/docs/how-to/).
 
-## Use a hosted repo to manage your dotfiles across multiple machines
+## Daily operations
+
+### Use a hosted repo to manage your dotfiles across multiple machines
 
 chezmoi relies on your version control system and hosted repo to share changes
 across multiple machines. You should create a repo on the source code repository
@@ -77,7 +78,7 @@ The above commands can be combined into a single init, checkout, and apply:
 
     chezmoi init --apply --verbose https://github.com/username/dotfiles.git
 
-## Pull the latest changes from your repo and apply them
+### Pull the latest changes from your repo and apply them
 
 You can pull the changes from your repo and apply them in a single command:
 
@@ -85,7 +86,7 @@ You can pull the changes from your repo and apply them in a single command:
 
 This runs `git pull --rebase` in your source directory and then `chezmoi apply`.
 
-## Pull the latest changes from your repo and see what would change, without actually applying the changes
+### Pull the latest changes from your repo and see what would change, without actually applying the changes
 
 Run:
 
@@ -101,7 +102,7 @@ If you're happy with the changes, then you can run
 
 to apply them.
 
-## Automatically commit and push changes to your repo
+### Automatically commit and push changes to your repo
 
 chezmoi can automatically commit and push changes to your source directory to
 your repo. This feature is disabled by default. To enable it, add the following
@@ -122,7 +123,133 @@ Be careful when using `autoPush`. If your dotfiles repo is public and you
 accidentally add a secret in plain text, that secret will be pushed to your
 public repo.
 
-## Use templates to manage files that vary from machine to machine
+## Manage different types of file
+
+### Have chezmoi create a directory, but ignore its contents
+
+If you want chezmoi to create a directory, but ignore its contents, say `~/src`,
+first run:
+
+    mkdir -p $(chezmoi source-path)/src
+
+This creates the directory in the source state, which means that chezmoi will
+create it (if it does not already exist) when you run `chezmoi apply`.
+
+However, as this is an empty directory it will be ignored by git. So, create a
+file in the directory in the source state that will be seen by git (so git does
+not ignore the directory) but ignored by chezmoi (so chezmoi does not include it
+in the target state):
+
+    touch $(chezmoi source-path)/src/.keep
+
+chezmoi automatically creates `.keep` files when you add an empty directory with
+`chezmoi add`.
+
+### Ensure that a target is removed
+
+Create a file called `.chezmoiremove` in the source directory containing a list
+of patterns of files to remove. When you run
+
+    chezmoi apply --remove
+
+chezmoi will remove anything in the target directory that matches the pattern.
+As this command is potentially dangerous, you should run chezmoi in verbose,
+dry-run mode beforehand to see what would be removed:
+
+    chezmoi apply --remove --dry-run --verbose
+
+`.chezmoiremove` is interpreted as a template, so you can remove different files
+on different machines. Negative matches (patterns prefixed with a `!`) or
+targets listed in `.chezmoiignore` will never be removed.
+
+
+### Populate `~/.ssh/authorized_keys` with your public SSH keys from GitHub
+
+chezmoi can retrieve your public SSH keys from GitHub, which can be useful for
+populating your `~/.ssh/authorized_keys`. Put the following in your
+`~/.local/share/chezmoi/dot_ssh/authorized_keys.tmpl`, where `username` is your
+GitHub username:
+
+    {{ range (gitHubKeys "username") -}}
+    {{   .Key }}
+    {{ end -}}
+
+
+## Include dotfiles from elsewhere
+
+### Include a subdirectory from another repository, like Oh My Zsh
+
+To include a subdirectory from another repository, e.g. [Oh My
+Zsh](https://github.com/robbyrussell/oh-my-zsh), you cannot use git submodules
+because chezmoi uses its own format for the source state and Oh My Zsh is not
+distributed in this format. Instead, you can use the `import` command to import
+a snapshot from a tarball:
+
+    curl -s -L -o oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
+    chezmoi import --strip-components 1 --destination ${HOME}/.oh-my-zsh oh-my-zsh-master.tar.gz
+
+Add `oh-my-zsh-master.tar.gz` to `.chezmoiignore` if you run these commands in
+your source directory so that chezmoi doesn't try to copy the tarball anywhere.
+
+Disable Oh My Zsh auto-updates by setting `DISABLE_AUTO_UPDATE="true"` in
+`~/.zshrc`. Auto updates will cause the `~/.oh-my-zsh` directory to drift out of
+sync with chezmoi's source state. To update Oh My Zsh, re-run the `curl` and
+`chezmoi import` commands above.
+
+### Handle configuration files which are externally modified
+
+Some programs modify their configuration files. When you next run `chezmoi
+apply`, any modifications made by the program will be lost.
+
+You can track changes to these files by replacing with a symlink back to a file
+in your source directory, which is under version control. Here is a worked
+example for VSCode's `settings.json` on Linux:
+
+Copy the configuration file to your source directory:
+
+    cp ~/.config/Code/User/settings.json $(chezmoi source-path)
+
+Tell chezmoi to ignore this file:
+
+    echo settings.json >> $(chezmoi source-path)/.chezmoiignore
+
+Tell chezmoi that `~/.config/Code/User/settings.json` should be a symlink to the
+file in your source directory:
+
+    mkdir -p $(chezmoi source-path)/private_dot_config/private_Code/User
+    echo -n "{{ .chezmoi.sourceDir }}/settings.json" > $(chezmoi source-path)/private_dot_config/private_Code/User/symlink_settings.json.tmpl
+
+The prefix `private_` is used because the `~/.config` and `~/.config/Code`
+directories are private by default.
+
+Apply the changes:
+
+    chezmoi apply -v
+
+Now, when the program modifies its configuration file it will modify the file in
+the source state instead.
+
+
+### Import archives
+
+It is occasionally useful to import entire archives of configuration into your
+source state. The `import` command does this. For example, to import the latest
+version
+[`github.com/robbyrussell/oh-my-zsh`](https://github.com/robbyrussell/oh-my-zsh)
+to `~/.oh-my-zsh` run:
+
+    curl -s -L -o oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
+    chezmoi import --strip-components 1 --destination ~/.oh-my-zsh oh-my-zsh-master.tar.gz
+
+Note that this only updates the source state. You will need to run
+
+    chezmoi apply
+
+to update your destination directory.
+
+## Manage machine-to-machine differences
+
+### Use templates
 
 The primary goal of chezmoi is to manage configuration files across multiple
 machines, for example your personal macOS laptop, your work Ubuntu desktop, and
@@ -245,7 +372,7 @@ Patterns can be excluded by prefixing them with a `!`, for example:
 
 will ignore all files beginning with an `f` except `foo`.
 
-## Use completely separate config files on different machines
+### Use completely different dotfiles on different machines
 
 chezmoi's template functionality allows you to change a file's contents based on
 any variable. For example, if you want `~/.bashrc` to be different on Linux and
@@ -297,7 +424,7 @@ This will make `~/.bashrc` a symlink to `.bashrc_darwin` on `darwin` and to
 `.bashrc_linux` on `linux`. The `.chezmoiignore` configuration ensures that only
 the OS-specific `.bashrc_os` file will be installed on each OS.
 
-### Without using symlinks
+#### Without using symlinks
 
 The same thing can be achieved using the include function.
 
@@ -311,7 +438,7 @@ The same thing can be achieved using the include function.
 	{{ end }}
 
 
-## Create a config file on a new machine automatically
+### Create a config file on a new machine automatically
 
 `chezmoi init` can also create a config file automatically, if one does not
 already exist. If your repo contains a file called `.chezmoi.<format>.tmpl`
@@ -333,7 +460,7 @@ To test this template, use `chezmoi execute-template` with the `--init` and
 
     chezmoi execute-template --init --promptString email=john@home.org < ~/.local/share/chezmoi/.chezmoi.toml.tmpl
 
-## Re-create your config file
+### Re-create your config file
 
 If you change your config file template, chezmoi will warn you if your current
 config file was not generated from that template. You can re-generate your
@@ -366,107 +493,7 @@ For boolean variables you can use:
     [data]
       var = $var
 
-## Populate `~/.ssh/authorized_keys` with your public SSH keys from GitHub
-
-chezmoi can retrieve your public SSH keys from GitHub, which can be useful for
-populating your `~/.ssh/authorized_keys`. Put the following in your
-`~/.local/share/chezmoi/dot_ssh/authorized_keys.tmpl`, where `username` is your
-GitHub username:
-
-    {{ range (gitHubKeys "username") -}}
-    {{   .Key }}
-    {{ end -}}
-
-## Have chezmoi create a directory, but ignore its contents
-
-If you want chezmoi to create a directory, but ignore its contents, say `~/src`,
-first run:
-
-    mkdir -p $(chezmoi source-path)/src
-
-This creates the directory in the source state, which means that chezmoi will
-create it (if it does not already exist) when you run `chezmoi apply`.
-
-However, as this is an empty directory it will be ignored by git. So, create a
-file in the directory in the source state that will be seen by git (so git does
-not ignore the directory) but ignored by chezmoi (so chezmoi does not include it
-in the target state):
-
-    touch $(chezmoi source-path)/src/.keep
-
-chezmoi automatically creates `.keep` files when you add an empty directory with
-`chezmoi add`.
-
-## Ensure that a target is removed
-
-Create a file called `.chezmoiremove` in the source directory containing a list
-of patterns of files to remove. When you run
-
-    chezmoi apply --remove
-
-chezmoi will remove anything in the target directory that matches the pattern.
-As this command is potentially dangerous, you should run chezmoi in verbose,
-dry-run mode beforehand to see what would be removed:
-
-    chezmoi apply --remove --dry-run --verbose
-
-`.chezmoiremove` is interpreted as a template, so you can remove different files
-on different machines. Negative matches (patterns prefixed with a `!`) or
-targets listed in `.chezmoiignore` will never be removed.
-
-## Include a subdirectory from another repository, like Oh My Zsh
-
-To include a subdirectory from another repository, e.g. [Oh My
-Zsh](https://github.com/robbyrussell/oh-my-zsh), you cannot use git submodules
-because chezmoi uses its own format for the source state and Oh My Zsh is not
-distributed in this format. Instead, you can use the `import` command to import
-a snapshot from a tarball:
-
-    curl -s -L -o oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
-    chezmoi import --strip-components 1 --destination ${HOME}/.oh-my-zsh oh-my-zsh-master.tar.gz
-
-Add `oh-my-zsh-master.tar.gz` to `.chezmoiignore` if you run these commands in
-your source directory so that chezmoi doesn't try to copy the tarball anywhere.
-
-Disable Oh My Zsh auto-updates by setting `DISABLE_AUTO_UPDATE="true"` in
-`~/.zshrc`. Auto updates will cause the `~/.oh-my-zsh` directory to drift out of
-sync with chezmoi's source state. To update Oh My Zsh, re-run the `curl` and
-`chezmoi import` commands above.
-
-## Handle configuration files which are externally modified
-
-Some programs modify their configuration files. When you next run `chezmoi
-apply`, any modifications made by the program will be lost.
-
-You can track changes to these files by replacing with a symlink back to a file
-in your source directory, which is under version control. Here is a worked
-example for VSCode's `settings.json` on Linux:
-
-Copy the configuration file to your source directory:
-
-    cp ~/.config/Code/User/settings.json $(chezmoi source-path)
-
-Tell chezmoi to ignore this file:
-
-    echo settings.json >> $(chezmoi source-path)/.chezmoiignore
-
-Tell chezmoi that `~/.config/Code/User/settings.json` should be a symlink to the
-file in your source directory:
-
-    mkdir -p $(chezmoi source-path)/private_dot_config/private_Code/User
-    echo -n "{{ .chezmoi.sourceDir }}/settings.json" > $(chezmoi source-path)/private_dot_config/private_Code/User/symlink_settings.json.tmpl
-
-The prefix `private_` is used because the `~/.config` and `~/.config/Code`
-directories are private by default.
-
-Apply the changes:
-
-    chezmoi apply -v
-
-Now, when the program modifies its configuration file it will modify the file in
-the source state instead.
-
-## Handle different file locations on different systems with the same contents
+### Handle different file locations on different systems with the same contents
 
 If you want to have the same file contents in different locations on different
 systems, but maintain only a single file in your source state, you can use
@@ -493,6 +520,13 @@ Library/Application Support/App/file.conf
 {{ end }}
 ```
 
+### Export archives
+
+chezmoi can create an archive containing the target state. This can be useful
+for generating target state for a different machine. Note also that you can
+specify a different configuration file (including template variables) with the
+`--config` option.
+
 ## Keep data private
 
 chezmoi automatically detects when files and directories are private when adding
@@ -514,7 +548,9 @@ token](https://help.github.com/articles/creating-a-personal-access-token-for-the
 There are several ways to keep these tokens secure, and to prevent them leaving
 your machine.
 
-### Use Bitwarden to keep your secrets
+### Use a password manager
+
+#### Bitwarden
 
 chezmoi includes support for [Bitwarden](https://bitwarden.com/) using the
 [Bitwarden CLI](https://github.com/bitwarden/cli) to expose data as a template
@@ -542,7 +578,7 @@ with:
 
     {{ (bitwardenFields "item" "example.com").token.value }}
 
-### Use gopass to keep your secrets
+#### gopass
 
 chezmoi includes support for [gopass](https://www.gopass.pw/) using the gopass CLI.
 
@@ -551,51 +587,7 @@ The first line of the output of `gopass show <pass-name>` is available as the
 
     {{ gopass "<pass-name>" }}
 
-### Use gpg to keep your secrets
-
-chezmoi supports encrypting files with [gpg](https://www.gnupg.org/). Encrypted
-files are stored in the source state and automatically be decrypted when
-generating the target state or printing a file's contents with `chezmoi cat`.
-`chezmoi edit` will transparently decrypt the file before editing and re-encrypt
-it afterwards.
-
-#### Asymmetric (private/public-key) encryption
-
-Specify the encryption key to use in your configuration file (`chezmoi.toml`)
-with the `gpg.recipient` key:
-
-    encryption = "gpg"
-    [gpg]
-      recipient = "..."
-
-Add files to be encrypted with the `--encrypt` flag, for example:
-
-    chezmoi add --encrypt ~/.ssh/id_rsa
-
-chezmoi will encrypt the file with:
-
-    gpg --armor --recipient ${gpg.recipient} --encrypt
-
-and store the encrypted file in the source state. The file will automatically be
-decrypted when generating the target state.
-
-#### Symmetric encryption
-
-Specify symmetric encryption in your configuration file:
-
-    encryption = "gpg"
-    [gpg]
-      symmetric = true
-
-Add files to be encrypted with the `--encrypt` flag, for example:
-
-    chezmoi add --encrypt ~/.ssh/id_rsa
-
-chezmoi will encrypt the file with:
-
-    gpg --armor --symmetric
-
-### Use KeePassXC to keep your secrets
+#### KeePassXC
 
 chezmoi includes support for [KeePassXC](https://keepassxc.org) using the
 KeePassXC CLI (`keepassxc-cli`) to expose data as a template function.
@@ -617,7 +609,7 @@ called `private-key`, its value is available as:
 
     {{ keepassxcAttribute "SSH Key" "private-key" }}
 
-### Use a keyring to keep your secrets
+#### Keychain and Windows Credentials Manager
 
 chezmoi includes support for Keychain (on macOS), GNOME Keyring (on Linux), and
 Windows Credentials Manager (on Windows) via the
@@ -646,7 +638,7 @@ You can query the keyring from the command line:
 
     chezmoi secret keyring get --service=github --user=<github-username>
 
-### Use LastPass to keep your secrets
+#### LastPass
 
 chezmoi includes support for [LastPass](https://lastpass.com) using the
 [LastPass CLI](https://lastpass.github.io/lastpass-cli/lpass.1.html) to expose
@@ -685,7 +677,7 @@ can use `lastpassRaw` to get its raw value, for example:
 
     {{ (index (lastpassRaw "SSH Private Key") 0).note }}
 
-### Use 1Password to keep your secrets
+#### 1Password
 
 chezmoi includes support for [1Password](https://1password.com/) using the
 [1Password CLI](https://support.1password.com/command-line-getting-started/) to
@@ -724,7 +716,7 @@ instructs the template language to remove and whitespace before and after the
 substitution. This removes any trailing newline added by your editor when saving
 the template.
 
-### Use pass to keep your secrets
+#### pass
 
 chezmoi includes support for [pass](https://www.passwordstore.org/) using the
 pass CLI.
@@ -734,7 +726,7 @@ The first line of the output of `pass show <pass-name>` is available as the
 
     {{ pass "<pass-name>" }}
 
-### Use Vault to keep your secrets
+#### Vault
 
 chezmoi includes support for [Vault](https://www.vaultproject.io/) using the
 [Vault CLI](https://www.vaultproject.io/docs/commands/) to expose data as a
@@ -752,7 +744,7 @@ language to extract the data you want. For example:
 
     {{ (vault "<key>").data.data.password }}
 
-### Use a generic tool to keep your secrets
+#### A custom password manager
 
 You can use any command line tool that outputs secrets either as a string or in
 JSON format. Choose the binary by setting `secret.command` in your configuration
@@ -769,7 +761,55 @@ respectively. All of the above secret managers can be supported in this way:
 | KeePassXC       | `keepassxc-cli`  | Not possible (interactive command only)           |
 | pass            | `pass`           | `{{ secret "show" <id> }}`                        |
 
-### Use templates variables to keep your secrets
+
+### Encrypt whole files
+
+#### gpg
+
+chezmoi supports encrypting files with [gpg](https://www.gnupg.org/). Encrypted
+files are stored in the source state and automatically be decrypted when
+generating the target state or printing a file's contents with `chezmoi cat`.
+`chezmoi edit` will transparently decrypt the file before editing and re-encrypt
+it afterwards.
+
+##### Asymmetric (private/public-key) encryption
+
+Specify the encryption key to use in your configuration file (`chezmoi.toml`)
+with the `gpg.recipient` key:
+
+    encryption = "gpg"
+    [gpg]
+      recipient = "..."
+
+Add files to be encrypted with the `--encrypt` flag, for example:
+
+    chezmoi add --encrypt ~/.ssh/id_rsa
+
+chezmoi will encrypt the file with:
+
+    gpg --armor --recipient ${gpg.recipient} --encrypt
+
+and store the encrypted file in the source state. The file will automatically be
+decrypted when generating the target state.
+
+##### Symmetric encryption
+
+Specify symmetric encryption in your configuration file:
+
+    encryption = "gpg"
+    [gpg]
+      symmetric = true
+
+Add files to be encrypted with the `--encrypt` flag, for example:
+
+    chezmoi add --encrypt ~/.ssh/id_rsa
+
+chezmoi will encrypt the file with:
+
+    gpg --armor --symmetric
+
+
+### Use a private configuration file and template variables
 
 Typically, `~/.config/chezmoi/chezmoi.toml` is not checked in to version control
 and has permissions 0600. You can store tokens as template values in the `data`
@@ -947,7 +987,10 @@ sudo apt install -y vim-gtk
 {{- end -}}
 ```
 
-## Detect Windows Subsystem for Linux (WSL)
+## Use chezmoi on Windows
+
+
+### Detect Windows Subsystem for Linux (WSL)
 
 WSL can be detected by looking for the string `Microsoft` in
 `/proc/kernel/osrelease`, which is available in the template variable
@@ -980,7 +1023,7 @@ WSL 2 since version 4.19.112:
 {{ end }}
 ```
 
-## Run a PowerShell script as admin on Windows
+### Run a PowerShell script as admin on Windows
 
 Put the following at the top of your script:
 
@@ -995,34 +1038,9 @@ if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
 }
 ```
 
-## Import archives
+## Using custom tools
 
-It is occasionally useful to import entire archives of configuration into your
-source state. The `import` command does this. For example, to import the latest
-version
-[`github.com/robbyrussell/oh-my-zsh`](https://github.com/robbyrussell/oh-my-zsh)
-to `~/.oh-my-zsh` run:
-
-    curl -s -L -o oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
-    chezmoi import --strip-components 1 --destination ~/.oh-my-zsh oh-my-zsh-master.tar.gz
-
-Note that this only updates the source state. You will need to run
-
-    chezmoi apply
-
-to update your destination directory.
-
-## Export archives
-
-chezmoi can create an archive containing the target state. This can be useful
-for generating target state on a different machine or for simply inspecting the
-target state. A particularly useful command is:
-
-    chezmoi archive | tar tvf -
-
-which lists all the targets in the target state.
-
-## Customize the `diff` command
+### Customize the `diff` command
 
 By default, chezmoi uses a built-in diff. You can change the format, and/or pipe
 the output into a pager of your choice. For example, to use
@@ -1035,7 +1053,7 @@ the output into a pager of your choice. For example, to use
 The format can also be set with the `--format` option to the `diff` command, and
 the pager can be disabled using `--no-pager`.
 
-## Use a merge tool other than vimdiff
+### Use a merge tool other than vimdiff
 
 By default, chezmoi uses vimdiff, but you can use any merge tool of your choice.
 In your config file, specify the command and args to use. For example, to use
@@ -1045,7 +1063,9 @@ neovim's diff mode specify:
       command = "nvim"
       args = "-d"
 
-## Migrate from a dotfile manager that uses symlinks
+## Migrating to chezmoi from another dotfile manager
+
+### Migrate from a dotfile manager that uses symlinks
 
 Many dotfile managers replace dotfiles with symbolic links to files in a common
 directory. If you `chezmoi add` such a symlink, chezmoi will add the symlink,
@@ -1058,3 +1078,11 @@ This will tell `chezmoi add` that the target state of `~/.bashrc` is the target
 of the `~/.bashrc` symlink, rather than the symlink itself. When you run
 `chezmoi apply`, chezmoi will replace the `~/.bashrc` symlink with the file
 contents.
+
+## Migrate away from chezmoi
+
+chezmoi creates regular files and directories - your home directory managed by
+chezmoi is exactly the same as if you were using no dotfile manager at all. Use
+your new dotfile manager's functionality for importing your existing dotfiles.
+
+

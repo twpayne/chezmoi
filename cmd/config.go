@@ -28,7 +28,7 @@ import (
 	"github.com/twpayne/go-shell"
 	"github.com/twpayne/go-vfs/v2"
 	vfsafero "github.com/twpayne/go-vfsafero/v2"
-	"github.com/twpayne/go-xdg/v3"
+	"github.com/twpayne/go-xdg/v4"
 	"golang.org/x/term"
 
 	"github.com/twpayne/chezmoi/assets/templates"

@@ -9,7 +9,7 @@ import (
 
 	"github.com/spf13/viper"
 	"github.com/twpayne/go-vfs/v2"
-	"github.com/twpayne/go-xdg/v3"
+	"github.com/twpayne/go-xdg/v4"
 
 	"github.com/twpayne/chezmoi/internal/chezmoi"
 )
