@@ -12,6 +12,13 @@ builds:
   - linux
   goarch:
   - amd64
+  ldflags:
+  - '-s'
+  - '-w'
+  - '-X main.version=v2.0.0' # FIXME '-X main.version={{ .Version }}'
+  - '-X main.commit={{ .Commit }}'
+  - '-X main.date={{ .Date }}'
+  - '-X main.builtBy=goreleaser'
 - id: chezmoi-cgo-musl
   env:
   - CC=/usr/bin/musl-gcc
@@ -23,9 +30,9 @@ builds:
   ldflags:
   - '-s'
   - '-w'
-  - '-X main.version={{.Version}}'
-  - '-X main.commit={{.Commit}}'
-  - '-X main.date={{.Date}}'
+  - '-X main.version=v2.0.0' # FIXME '-X main.version={{ .Version }}'
+  - '-X main.commit={{ .Commit }}'
+  - '-X main.date={{ .Date }}'
   - '-X main.builtBy=goreleaser'
   - '-linkmode external'
   - '--extldflags "-static"'
@@ -47,6 +54,13 @@ builds:
   - ppc64le
   goarm:
   - ""
+  ldflags:
+  - '-s'
+  - '-w'
+  - '-X main.version=v2.0.0' # FIXME '-X main.version={{ .Version }}'
+  - '-X main.commit={{ .Commit }}'
+  - '-X main.date={{ .Date }}'
+  - '-X main.builtBy=goreleaser'
   ignore:
   - goos: darwin
     goarch: 386

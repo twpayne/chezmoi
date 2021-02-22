@@ -75,9 +75,9 @@ jobs:
         # verify that version information is embedded correctly
         file ./dist/chezmoi-cgo-glibc_linux_amd64/chezmoi | tee /dev/stderr | grep -q "dynamically linked"
         file ./dist/chezmoi-cgo-musl_linux_amd64/chezmoi | tee /dev/stderr | grep -q "statically linked"
-        ./dist/chezmoi-cgo-glibc_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v"
-        ./dist/chezmoi-cgo-musl_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v"
-        ./dist/chezmoi-nocgo_linux_386/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v"
+        ./dist/chezmoi-cgo-glibc_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v2"
+        ./dist/chezmoi-cgo-musl_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v2"
+        ./dist/chezmoi-nocgo_linux_386/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v2"
     - name: Artifact chezmoi-linux-amd64
       uses: actions/upload-artifact@v2
       with:
