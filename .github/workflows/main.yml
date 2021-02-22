@@ -63,6 +63,8 @@ jobs:
           ${{ runner.os }}-go-
     - name: Checkout
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     - name: Build release
       uses: goreleaser/goreleaser-action@v2
       with:
@@ -174,6 +176,8 @@ jobs:
           ${{ runner.os }}-go-
     - name: Checkout
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     - name: Snapcraft Login
       env:
         SNAPCRAFT_LOGIN: ${{ secrets.SNAPCRAFT_LOGIN }}
