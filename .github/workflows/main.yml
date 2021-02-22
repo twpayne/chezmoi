@@ -86,11 +86,16 @@ jobs:
       with:
         name: chezmoi-linux-musl-amd64
         path: dist/chezmoi-cgo-musl_linux_amd64/chezmoi
-    - name: Artifact chezmoi-macos-amd64
+    - name: Artifact chezmoi-darwin-amd64
       uses: actions/upload-artifact@v2
       with:
-        name: chezmoi-macos-amd64
+        name: chezmoi-darwin-amd64
         path: dist/chezmoi-nocgo_darwin_amd64/chezmoi
+    - name: Artifact chezmoi-darwin-arm64
+      uses: actions/upload-artifact@v2
+      with:
+        name: chezmoi-darwin-arm64
+        path: dist/chezmoi-nocgo_darwin_arm64/chezmoi
     - name: Artifact chezmoi-windows-amd64
       uses: actions/upload-artifact@v2
       with:
