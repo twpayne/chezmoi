@@ -73,6 +73,7 @@ func GPGCommand() (string, error) {
 func GPGGenerateKey(command, homeDir string) (key, passphrase string, err error) {
 	//nolint:gosec
 	passphrase = "chezmoi-test-gpg-passphrase"
+	chezmoilog.LogCmdCombinedOutput(log.Logger, exec.Command(command, "--version"))
 	cmd := exec.Command(
 		command,
 		"--batch",
@@ -84,7 +85,7 @@ func GPGGenerateKey(command, homeDir string) (key, passphrase string, err error)
 	)
 	output, err := chezmoilog.LogCmdCombinedOutput(log.Logger, cmd)
 	if err != nil {
-		return "", "", err
+		return "", "", fmt.Errorf("%w: %s", err, output)
 	}
 	submatch := gpgKeyMarkedAsUltimatelyTrustedRx.FindSubmatch(output)
 	if submatch == nil {
