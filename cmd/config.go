@@ -1377,6 +1377,10 @@ func (c *Config) withTerminal(prompt string, f func(terminal) error) error {
 		return f(newNullTerminal(c.stdin))
 	}
 
+	if runtime.GOOS == "windows" {
+		return f(newDumbTerminal(c.stdin, c.stdout, prompt))
+	}
+
 	if stdinFile, ok := c.stdin.(*os.File); ok && term.IsTerminal(int(stdinFile.Fd())) {
 		fd := int(stdinFile.Fd())
 		width, height, err := term.GetSize(fd)
@@ -1401,10 +1405,6 @@ func (c *Config) withTerminal(prompt string, f func(terminal) error) error {
 			return err
 		}
 		return f(t)
-	}
-
-	if runtime.GOOS == "windows" {
-		return f(newDumbTerminal(c.stdin, c.stdout, prompt))
 	}
 
 	devTTY, err := os.OpenFile("/dev/tty", os.O_RDWR, 0)
