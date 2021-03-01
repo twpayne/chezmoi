@@ -68,6 +68,17 @@ func (c *Config) lookPathTemplateFunc(file string) string {
 	}
 }
 
+func (c *Config) outputTemplateFunc(name string, args ...string) string {
+	output, err := c.baseSystem.IdempotentCmdOutput(exec.Command(name, args...))
+	if err != nil {
+		returnTemplateError(err)
+		return ""
+	}
+	// FIXME we should be able to return output directly, but
+	// github.com/Masterminds/sprig's trim function only accepts strings
+	return string(output)
+}
+
 func (c *Config) statTemplateFunc(name string) interface{} {
 	info, err := c.fs.Stat(name)
 	switch {
