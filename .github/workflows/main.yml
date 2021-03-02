@@ -15,36 +15,44 @@ jobs:
         - macos-latest
         - ubuntu-18.04
         - windows-latest
+    env:
+      AGE_VERSION: v1.0.0-beta7
+      GOFLAGS: -modcacherw
     runs-on: ${{ matrix.os }}
     steps:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
         go-version: 1.16.0
-    - name: Cache Go modules
-      uses: actions/cache@v2
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
-    - name: Install age
-      run: |
-        git clone https://github.com/FiloSottile/age
-        cd age
-        go install ./cmd/...
     - name: Checkout
       uses: actions/checkout@v2
+    - name: Cache Go modules
+      uses: actions/cache@v2.1.4
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go1.16-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go1.16-
     - name: Build
       run: |
         go build ./...
     - name: Run
       run: |
         go run . --version
+    - name: Install age (Linux/macOS)
+      if: runner.os == 'Linux' || runner.os == 'macOS' # FIXME add Windows
+      run: |
+        cd $(mktemp -d)
+        goos=$(uname -s | tr '[:upper:]' '[:lower:]')
+        curl -fsSL https://github.com/FiloSottile/age/releases/download/${AGE_VERSION}/age-${AGE_VERSION}-${goos}-amd64.tar.gz | tar xzf -
+        sudo install -m 755 age/age /usr/local/bin
+        sudo install -m 755 age/age-keygen /usr/local/bin
     - name: Test
       run: go test -race ./...
   test-release:
     runs-on: ubuntu-18.04
+    env:
+      GOFLAGS: -modcacherw
     steps:
     - name: Install build dependencies
       run: |
@@ -54,17 +62,17 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: 1.16.0
-    - name: Cache Go modules
-      uses: actions/cache@v2
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
     - name: Checkout
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
+    - name: Cache Go modules
+      uses: actions/cache@v2.1.4
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go1.16-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go1.16-
     - name: Build release
       uses: goreleaser/goreleaser-action@v2
       with:
@@ -110,35 +118,37 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: 1.16.0
-    - name: Cache Go modules
-      uses: actions/cache@v2
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
     - name: Checkout
       uses: actions/checkout@v2
+    - name: Cache Go modules
+      uses: actions/cache@v2.1.4
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go1.16-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go1.16-
     - name: Generate
       run: |
         make completions
         git diff --exit-code
   lint:
     runs-on: ubuntu-18.04
+    env:
+      GOFLAGS: -modcacherw
     steps:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
         go-version: 1.16.0
-    - name: Cache Go modules
-      uses: actions/cache@v2
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
     - name: Checkout
       uses: actions/checkout@v2
+    - name: Cache Go modules
+      uses: actions/cache@v2.1.4
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go1.16-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go1.16-
     - name: Lint
       uses: golangci/golangci-lint-action@v2
       with:
@@ -152,6 +162,8 @@ jobs:
         go run ./internal/cmd/lint-whitespace
   release:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    env:
+      GOFLAGS: -modcacherw
     needs:
     - generate
     - lint
@@ -167,18 +179,18 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: 1.16.0
-    - name: Cache Go modules
-      uses: actions/cache@v2
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
     - name: Checkout
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
-    - name: Snapcraft Login
+    - name: Cache Go modules
+      uses: actions/cache@v2.1.4
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go1.16-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go1.16-
+    - name: Snapcraft login
       env:
         SNAPCRAFT_LOGIN: ${{ secrets.SNAPCRAFT_LOGIN }}
       run: |
