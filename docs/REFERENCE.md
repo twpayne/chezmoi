@@ -100,6 +100,7 @@ Manage your dotfiles securely across multiple machines.
   * [`onepassword` *uuid* [*vault-uuid*]](#onepassword-uuid-vault-uuid)
   * [`onepasswordDocument` *uuid* [*vault-uuid*]](#onepassworddocument-uuid-vault-uuid)
   * [`onepasswordDetailsFields` *uuid* [*vault-uuid*]](#onepassworddetailsfields-uuid-vault-uuid)
+  * [`output` *name* [*args*]](#output-name-args)
   * [`pass` *pass-name*](#pass-pass-name)
   * [`promptBool` *prompt*](#promptbool-prompt)
   * [`promptInt` *prompt*](#promptint-prompt)
@@ -1491,6 +1492,18 @@ performance.
 #### `onepasswordDetailsFields` examples
 
     {{ (onepasswordDetailsFields "<uuid>").password.value }}
+
+### `output` *name* [*args*]
+
+`output` returns the output of executing the command *name* with *args*. If
+executing the command returns an error then template execution exits with an
+error. The execution occurs every time that the template is executed. It is the
+user's responsibility to ensure that executing the command is both idempotent
+and fast.
+
+#### `output` examples
+
+    current-context: {{ output "kubectl" "config" "current-context" | trim }}
 
 ### `pass` *pass-name*
 

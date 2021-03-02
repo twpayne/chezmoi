@@ -1,3 +1,6 @@
+[!windows] chmod 755 bin/chezmoi-output-test
+[windows] unix2dos bin/chezmoi-output-test.cmd
+
 [darwin] chezmoi execute-template '{{ index ioreg "IOKitBuildVersion" }}'
 [darwin] stdout 'Darwin Kernel Version'
 
@@ -9,3 +12,22 @@ stdout go${exe}
 
 chezmoi execute-template '{{ (stat ".").isDir }}'
 stdout true
+
+# test that the output template function returns a command's output
+chezmoi execute-template '{{ output "chezmoi-output-test" "arg" | trim }}'
+stdout arg
+
+# test that the output template function fails if the command fails
+! chezmoi execute-template '{{ output "false" }}'
+
+-- bin/chezmoi-output-test --
+#!/bin/sh
+
+echo "$*"
+-- bin/chezmoi-output-test.cmd --
+@echo off
+setlocal
+set out=%*
+set out=%out:\=%
+echo %out%
+endlocal
