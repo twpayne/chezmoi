@@ -463,7 +463,7 @@ func (c *Config) defaultPreApplyFunc(targetRelPath chezmoi.RelPath, targetEntryS
 	if actualContents != nil || targetContents != nil {
 		choices = append(choices, "diff")
 	}
-	choices = append(choices, "overwrite", "all-overwite", "skip", "quit")
+	choices = append(choices, "overwrite", "all-overwrite", "skip", "quit")
 	for {
 		switch choice, err := c.promptChoice(fmt.Sprintf("%s has changed since chezmoi last wrote it", targetRelPath), choices); {
 		case err != nil:
