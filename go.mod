@@ -28,6 +28,7 @@ require (
 	github.com/mitchellh/copystructure v1.1.1 // indirect
 	github.com/mitchellh/mapstructure v1.4.1 // indirect
 	github.com/muesli/combinator v0.3.0
+	github.com/olekukonko/tablewriter v0.0.5 // indirect
 	github.com/pelletier/go-toml v1.8.1
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/rogpeppe/go-internal v1.7.0
@@ -45,14 +46,15 @@ require (
 	github.com/twpayne/go-vfsafero/v2 v2.0.0
 	github.com/twpayne/go-xdg/v4 v4.0.0
 	github.com/xanzy/ssh-agent v0.3.0 // indirect
+	github.com/yuin/goldmark v1.3.2 // indirect
 	github.com/zalando/go-keyring v0.1.1
 	go.etcd.io/bbolt v1.3.5
 	go.uber.org/multierr v1.6.0
-	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad // indirect
-	golang.org/x/net v0.0.0-20210119194325-5f4716e94777 // indirect
-	golang.org/x/oauth2 v0.0.0-20210201163806-010130855d6c
-	golang.org/x/sys v0.0.0-20210124154548-22da62e12c0c
-	golang.org/x/term v0.0.0-20201210144234-2321bbc49cbf
+	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83 // indirect
+	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110 // indirect
+	golang.org/x/oauth2 v0.0.0-20210220000619-9bb904979d93
+	golang.org/x/sys v0.0.0-20210301091718-77cc2087c03b
+	golang.org/x/term v0.0.0-20210220032956-6a3ed077a48d
 	golang.org/x/text v0.3.5 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	gopkg.in/check.v1 v1.0.0-20201130134442-10cb98267c6c // indirect
