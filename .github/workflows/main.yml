@@ -17,7 +17,6 @@ jobs:
         - windows-latest
     env:
       AGE_VERSION: v1.0.0-beta7
-      GOFLAGS: -modcacherw
     runs-on: ${{ matrix.os }}
     steps:
     - name: Set up Go
@@ -51,8 +50,6 @@ jobs:
       run: go test -race ./...
   test-release:
     runs-on: ubuntu-18.04
-    env:
-      GOFLAGS: -modcacherw
     steps:
     - name: Install build dependencies
       run: |
@@ -133,8 +130,6 @@ jobs:
         git diff --exit-code
   lint:
     runs-on: ubuntu-18.04
-    env:
-      GOFLAGS: -modcacherw
     steps:
     - name: Set up Go
       uses: actions/setup-go@v2
@@ -162,8 +157,6 @@ jobs:
         go run ./internal/cmd/lint-whitespace
   release:
     if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
-    env:
-      GOFLAGS: -modcacherw
     needs:
     - generate
     - lint
