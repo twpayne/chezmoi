@@ -4,7 +4,7 @@
 
 Recommended article: [Fedora Magazine: Take back your dotfiles with Chezmoi](https://fedoramagazine.org/take-back-your-dotfiles-with-chezmoi/)
 
-Recommended video: [Conf42: chezmoi: Manage your dotfiles across multiple machines, securely](https://www.youtube.com/watch?v=JrCMCdvoMAw)
+Recommended video: [chezmoi: manage your dotfiles across multiple, diverse machines, securely](https://fosdem.org/2021/schedule/event/chezmoi/)
 
 Recommended podcast: [FLOSS weekly episode 556: chezmoi](https://twit.tv/shows/floss-weekly/episodes/556)
 
