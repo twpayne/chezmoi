@@ -30,7 +30,6 @@ linters:
   - makezero
   - misspell
   - noctx
-  - nolintlint
   - prealloc
   - predeclared
   - revive
@@ -64,6 +63,7 @@ linters:
   - nakedret
   - nestif
   - nlreturn
+  - nolintlint # FIXME re-enable when more reliable
   - paralleltest
   - testpackage
   - tparallel
