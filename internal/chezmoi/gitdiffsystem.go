@@ -202,17 +202,8 @@ func (s *GitDiffSystem) UnderlyingFS() vfs.FS {
 
 // WriteFile implements System.WriteFile.
 func (s *GitDiffSystem) WriteFile(filename AbsPath, data []byte, perm os.FileMode) error {
-	var fromData []byte
-	var fromMode os.FileMode
-	switch fromInfo, err := s.system.Stat(filename); {
-	case err == nil:
-		fromData, err = s.system.ReadFile(filename)
-		if err != nil {
-			return err
-		}
-		fromMode = fromInfo.Mode()
-	case os.IsNotExist(err):
-	default:
+	fromData, fromMode, err := s.from(filename)
+	if err != nil {
 		return err
 	}
 	diffPatch, err := DiffPatch(s.trimPrefix(filename), fromData, fromMode, data, perm)
@@ -227,22 +218,11 @@ func (s *GitDiffSystem) WriteFile(filename AbsPath, data []byte, perm os.FileMod
 
 // WriteSymlink implements System.WriteSymlink.
 func (s *GitDiffSystem) WriteSymlink(oldname string, newname AbsPath) error {
-	var fromMode os.FileMode
-	var fromData []byte
-	switch fromInfo, err := s.system.Stat(newname); {
-	case os.IsNotExist(err):
-	case err != nil:
+	fromData, fromMode, err := s.from(newname)
+	if err != nil {
 		return err
-	default:
-		fromLinkname, err := s.system.Readlink(newname)
-		if err != nil {
-			return err
-		}
-		fromMode = fromInfo.Mode()
-		fromData = []byte(fromLinkname)
 	}
-
-	diffPatch, err := DiffPatch(s.trimPrefix(newname), fromData, fromMode, []byte(oldname), os.ModeSymlink)
+	diffPatch, err := DiffPatch(s.trimPrefix(newname), fromData, fromMode, append([]byte(oldname), '\n'), os.ModeSymlink)
 	if err != nil {
 		return err
 	}
@@ -250,6 +230,29 @@ func (s *GitDiffSystem) WriteSymlink(oldname string, newname AbsPath) error {
 		return err
 	}
 	return s.system.WriteSymlink(oldname, newname)
+}
+
+func (s *GitDiffSystem) from(absPath AbsPath) ([]byte, os.FileMode, error) {
+	switch fromInfo, err := s.system.Stat(absPath); {
+	case err == nil && fromInfo.Mode()&os.ModeType == 0:
+		fromData, err := s.system.ReadFile(absPath)
+		if err != nil {
+			return nil, 0, err
+		}
+		return fromData, fromInfo.Mode(), nil
+	case err == nil && fromInfo.Mode()&os.ModeType == os.ModeSymlink:
+		fromDataStr, err := s.system.Readlink(absPath)
+		if err != nil {
+			return nil, 0, err
+		}
+		return []byte(fromDataStr), fromInfo.Mode(), nil
+	case err == nil:
+		return nil, fromInfo.Mode(), nil
+	case os.IsNotExist(err):
+		return nil, 0, nil
+	default:
+		return nil, 0, err
+	}
 }
 
 func (s *GitDiffSystem) trimPrefix(absPath AbsPath) RelPath {

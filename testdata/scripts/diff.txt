@@ -34,6 +34,14 @@ chezmoi diff --recursive=false $HOME${/}.dir
 [windows] cmp stdout golden/restore-dir-diff-windows
 chezmoi apply --force $HOME${/}.dir
 
+# test that chezmoi diff generates a diff when the actual state is a file and the target state is a symlink
+rm $HOME/.symlink
+cp golden/.file $HOME/.symlink
+chezmoi diff --debug
+[!windows] cmp stdout golden/symlink-file-diff-unix
+# [windows] cmp stdout golden/symlink-file-diff-windows # FIXME
+chezmoi apply --force $HOME${/}.symlink
+
 [windows] stop 'remaining tests use file modes'
 
 # test that chezmoi diff generates a diff when a file's permissions are changed
@@ -108,6 +116,23 @@ new file mode 40777
 index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
 --- /dev/null
 +++ b/.dir
+-- golden/symlink-file-diff-unix --
+diff --git a/.symlink b/.symlink
+deleted file mode 100644
+index 8a52cb9ce9551221716a53786ad74104c5902362..0000000000000000000000000000000000000000
+--- a/.symlink
++++ /dev/null
+@@ -1 +0,0 @@
+-# contents of .file
+diff --git a/.symlink b/.symlink
+old mode 100644
+new mode 120000
+index 8a52cb9ce9551221716a53786ad74104c5902362..9b91fdbb83798a67fbbc5cc4f120c3f7726c0d70
+--- a/.symlink
++++ b/.symlink
+@@ -1 +1 @@
+-# contents of .file
++.dir/subdir/file
 -- golden/dot_newfile --
 # contents of .newfile
 -- golden/chmod-file-diff --
