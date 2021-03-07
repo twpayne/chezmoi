@@ -93,11 +93,6 @@ func GPGGenerateKey(command, homeDir string) (key, passphrase string, err error)
 	return string(submatch[1]), passphrase, nil
 }
 
-// GitHubActionsOnMacOS returns if running in GitHub Actions on macOS.
-func GitHubActionsOnMacOS() bool {
-	return runtime.GOOS == "darwin" && os.Getenv("GITHUB_ACTIONS") == "true"
-}
-
 // GitHubActionsOnWindows returns if running in GitHub Actions on Windows.
 func GitHubActionsOnWindows() bool {
 	return runtime.GOOS == "windows" && os.Getenv("GITHUB_ACTIONS") == "true"
