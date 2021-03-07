@@ -58,8 +58,6 @@ func TestScript(t *testing.T) {
 				return runtime.GOOS == "darwin", nil
 			case "freebsd":
 				return runtime.GOOS == "freebsd", nil
-			case "githubactionsonmacos":
-				return chezmoitest.GitHubActionsOnMacOS(), nil
 			case "githubactionsonwindows":
 				return chezmoitest.GitHubActionsOnWindows(), nil
 			case "windows":
@@ -245,7 +243,7 @@ func cmdMkGPGConfig(ts *testscript.TestScript, neg bool, args []string) {
 	// unix(7)). The limit exists because GPG creates a UNIX domain socket in
 	// its home directory and UNIX domain socket paths are limited to
 	// sockaddr_un.sun_path characters.
-	gpgHomeDir, err := os.MkdirTemp("", "chezmoi-test-gpg-homedir")
+	gpgHomeDir, err := os.MkdirTemp("", "test-gpg-homedir")
 	ts.Check(err)
 	ts.Defer(func() {
 		os.RemoveAll(gpgHomeDir)

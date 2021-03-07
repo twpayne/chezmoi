@@ -98,34 +98,54 @@ func FirstFewBytes(data []byte) []byte {
 // LogCmdCombinedOutput calls cmd.CombinedOutput, logs the result, and returns the result.
 func LogCmdCombinedOutput(logger zerolog.Logger, cmd *exec.Cmd) ([]byte, error) {
 	combinedOutput, err := cmd.CombinedOutput()
-	logger.Debug().
-		EmbedObject(OSExecCmdLogObject{Cmd: cmd}).
-		Err(err).
-		EmbedObject(OSExecExitErrorLogObject{Err: err}).
-		Bytes("combinedOutput", FirstFewBytes(combinedOutput)).
-		Msg("CombinedOutput")
+	if err == nil {
+		logger.Debug().
+			EmbedObject(OSExecCmdLogObject{Cmd: cmd}).
+			Bytes("combinedOutput", FirstFewBytes(combinedOutput)).
+			Msg("CombinedOutput")
+	} else {
+		logger.Error().
+			EmbedObject(OSExecCmdLogObject{Cmd: cmd}).
+			Err(err).
+			EmbedObject(OSExecExitErrorLogObject{Err: err}).
+			Bytes("combinedOutput", combinedOutput).
+			Msg("CombinedOutput")
+	}
 	return combinedOutput, err
 }
 
 // LogCmdOutput calls cmd.Output, logs the result, and returns the result.
 func LogCmdOutput(logger zerolog.Logger, cmd *exec.Cmd) ([]byte, error) {
 	output, err := cmd.Output()
-	logger.Debug().
-		EmbedObject(OSExecCmdLogObject{Cmd: cmd}).
-		Err(err).
-		EmbedObject(OSExecExitErrorLogObject{Err: err}).
-		Bytes("output", FirstFewBytes(output)).
-		Msg("Output")
+	if err == nil {
+		logger.Debug().
+			EmbedObject(OSExecCmdLogObject{Cmd: cmd}).
+			Bytes("output", FirstFewBytes(output)).
+			Msg("Output")
+	} else {
+		logger.Error().
+			EmbedObject(OSExecCmdLogObject{Cmd: cmd}).
+			Err(err).
+			EmbedObject(OSExecExitErrorLogObject{Err: err}).
+			Bytes("output", output).
+			Msg("Output")
+	}
 	return output, err
 }
 
 // LogCmdRun calls cmd.Run, logs the result, and returns the result.
 func LogCmdRun(logger zerolog.Logger, cmd *exec.Cmd) error {
 	err := cmd.Run()
-	logger.Debug().
-		EmbedObject(OSExecCmdLogObject{Cmd: cmd}).
-		Err(err).
-		EmbedObject(OSExecExitErrorLogObject{Err: err}).
-		Msg("Run")
+	if err == nil {
+		logger.Debug().
+			EmbedObject(OSExecCmdLogObject{Cmd: cmd}).
+			Msg("Run")
+	} else {
+		logger.Error().
+			EmbedObject(OSExecCmdLogObject{Cmd: cmd}).
+			Err(err).
+			EmbedObject(OSExecExitErrorLogObject{Err: err}).
+			Msg("Run")
+	}
 	return err
 }
