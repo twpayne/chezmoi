@@ -34,26 +34,19 @@ func NewGitDiffSystem(system System, w io.Writer, dirAbsPath AbsPath, color bool
 
 // Chmod implements System.Chmod.
 func (s *GitDiffSystem) Chmod(name AbsPath, mode os.FileMode) error {
-	var fromData, toData []byte
 	fromInfo, err := s.system.Stat(name)
-	switch {
-	case err != nil:
-		return err
-	case fromInfo.IsDir():
-		mode |= os.ModeDir
-	default:
-		data, err := s.ReadFile(name)
-		if err != nil {
-			return err
-		}
-		fromData = data
-		toData = data
-	}
-	diffPatch, err := DiffPatch(s.trimPrefix(name), fromData, fromInfo.Mode(), toData, mode)
 	if err != nil {
 		return err
 	}
-	if err := s.unifiedEncoder.Encode(diffPatch); err != nil {
+	toMode := fromInfo.Mode()&^os.ModePerm | mode
+	var toData []byte
+	if fromInfo.Mode().IsRegular() {
+		toData, err = s.ReadFile(name)
+		if err != nil {
+			return err
+		}
+	}
+	if err := s.encodeDiff(name, toData, toMode); err != nil {
 		return err
 	}
 	return s.system.Chmod(name, mode)
@@ -76,11 +69,7 @@ func (s *GitDiffSystem) Lstat(name AbsPath) (os.FileInfo, error) {
 
 // Mkdir implements System.Mkdir.
 func (s *GitDiffSystem) Mkdir(name AbsPath, perm os.FileMode) error {
-	diffPatch, err := DiffPatch(s.trimPrefix(name), nil, 0, nil, os.ModeDir|perm)
-	if err != nil {
-		return err
-	}
-	if err := s.unifiedEncoder.Encode(diffPatch); err != nil {
+	if err := s.encodeDiff(name, nil, os.ModeDir|perm); err != nil {
 		return err
 	}
 	return s.system.Mkdir(name, perm)
@@ -108,26 +97,7 @@ func (s *GitDiffSystem) Readlink(name AbsPath) (string, error) {
 
 // RemoveAll implements System.RemoveAll.
 func (s *GitDiffSystem) RemoveAll(name AbsPath) error {
-	var fromData []byte
-	var fromMode os.FileMode
-	switch fromInfo, err := s.system.Stat(name); {
-	case err == nil:
-		fromMode = fromInfo.Mode()
-		if !fromInfo.IsDir() {
-			fromData, err = s.system.ReadFile(name)
-			if err != nil {
-				return err
-			}
-		}
-	case os.IsNotExist(err):
-	default:
-		return err
-	}
-	diffPatch, err := DiffPatch(s.trimPrefix(name), fromData, fromMode, nil, 0)
-	if err != nil {
-		return err
-	}
-	if err := s.unifiedEncoder.Encode(diffPatch); err != nil {
+	if err := s.encodeDiff(name, nil, 0); err != nil {
 		return err
 	}
 	return s.system.RemoveAll(name)
@@ -202,15 +172,7 @@ func (s *GitDiffSystem) UnderlyingFS() vfs.FS {
 
 // WriteFile implements System.WriteFile.
 func (s *GitDiffSystem) WriteFile(filename AbsPath, data []byte, perm os.FileMode) error {
-	fromData, fromMode, err := s.from(filename)
-	if err != nil {
-		return err
-	}
-	diffPatch, err := DiffPatch(s.trimPrefix(filename), fromData, fromMode, data, perm)
-	if err != nil {
-		return err
-	}
-	if err := s.unifiedEncoder.Encode(diffPatch); err != nil {
+	if err := s.encodeDiff(filename, data, perm); err != nil {
 		return err
 	}
 	return s.system.WriteFile(filename, data, perm)
@@ -218,41 +180,41 @@ func (s *GitDiffSystem) WriteFile(filename AbsPath, data []byte, perm os.FileMod
 
 // WriteSymlink implements System.WriteSymlink.
 func (s *GitDiffSystem) WriteSymlink(oldname string, newname AbsPath) error {
-	fromData, fromMode, err := s.from(newname)
-	if err != nil {
-		return err
-	}
-	diffPatch, err := DiffPatch(s.trimPrefix(newname), fromData, fromMode, append([]byte(oldname), '\n'), os.ModeSymlink)
-	if err != nil {
-		return err
-	}
-	if err := s.unifiedEncoder.Encode(diffPatch); err != nil {
+	if err := s.encodeDiff(newname, append([]byte(oldname), '\n'), os.ModeSymlink); err != nil {
 		return err
 	}
 	return s.system.WriteSymlink(oldname, newname)
 }
 
-func (s *GitDiffSystem) from(absPath AbsPath) ([]byte, os.FileMode, error) {
+func (s *GitDiffSystem) encodeDiff(absPath AbsPath, toData []byte, toMode os.FileMode) error {
+	var fromData []byte
+	var fromMode os.FileMode
 	switch fromInfo, err := s.system.Stat(absPath); {
-	case err == nil && fromInfo.Mode()&os.ModeType == 0:
-		fromData, err := s.system.ReadFile(absPath)
+	case err == nil && fromInfo.Mode().IsRegular():
+		fromData, err = s.system.ReadFile(absPath)
 		if err != nil {
-			return nil, 0, err
+			return err
 		}
-		return fromData, fromInfo.Mode(), nil
+		fromMode = fromInfo.Mode()
 	case err == nil && fromInfo.Mode()&os.ModeType == os.ModeSymlink:
 		fromDataStr, err := s.system.Readlink(absPath)
 		if err != nil {
-			return nil, 0, err
+			return err
 		}
-		return []byte(fromDataStr), fromInfo.Mode(), nil
+		fromData = []byte(fromDataStr)
+		fromMode = fromInfo.Mode()
 	case err == nil:
-		return nil, fromInfo.Mode(), nil
+		fromMode = fromInfo.Mode()
 	case os.IsNotExist(err):
-		return nil, 0, nil
 	default:
-		return nil, 0, err
+		return err
 	}
+
+	diffPatch, err := DiffPatch(s.trimPrefix(absPath), fromData, fromMode, toData, toMode)
+	if err != nil {
+		return err
+	}
+	return s.unifiedEncoder.Encode(diffPatch)
 }
 
 func (s *GitDiffSystem) trimPrefix(absPath AbsPath) RelPath {
