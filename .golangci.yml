@@ -12,6 +12,7 @@ linters:
   - exhaustive
   - exportloopref
   - forbidigo
+  - forcetypeassert
   - gci
   - gocritic
   - godot
@@ -25,10 +26,11 @@ linters:
   - gosec
   - gosimple
   - govet
+  - importas
   - ineffassign
-  - interfacer
   - makezero
   - misspell
+  - nilerr
   - noctx
   - prealloc
   - predeclared
@@ -45,11 +47,12 @@ linters:
   - unparam
   - unused
   - varcheck
+  - wastedassign
   - whitespace
   disable:
+  - cyclop
   - exhaustivestruct
   - funlen
-  - ifshort # FIXME re-enable when bugs in ifshort are fixed
   - gochecknoglobals
   - gochecknoinits
   - gocognit
@@ -58,6 +61,7 @@ linters:
   - godox
   - goheader
   - gomnd
+  - ifshort # FIXME re-enable when bugs in ifshort are fixed
   - lll
   - maligned
   - nakedret
