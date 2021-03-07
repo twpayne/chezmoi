@@ -1,5 +1,4 @@
 [!exec:gpg] stop
-[githubactionsonmacos] skip 'gpg is broken in GitHub Actions on macOS'
 [githubactionsonwindows] skip 'gpg is broken in GitHub Actions on Windows'
 
 mkgpgconfig
