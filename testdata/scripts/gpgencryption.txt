@@ -1,5 +1,4 @@
 [!exec:gpg] stop
-[githubactionsonwindows] skip 'gpg is broken in GitHub Actions on Windows'
 
 mkgpgconfig
 appendline $CHEZMOICONFIGDIR/chezmoi.toml '  suffix = ".gpg"'
