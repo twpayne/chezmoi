@@ -70,8 +70,8 @@ don't need chezmoi. Otherwise, read on...
 ### Flexible
 
 You can share as much configuration across machines as you want, while still
-being able to control machine-specific details.Your dotfiles can be templates (using
-[`text/template`](https://pkg.go.dev/text/template) syntax). Predefined
+being able to control machine-specific details.Your dotfiles can be templates
+(using [`text/template`](https://pkg.go.dev/text/template) syntax). Predefined
 variables allow you to change behavior depending on operating system,
 architecture, and hostname. chezmoi runs on all commonly-used platforms, like
 Linux, macOS, and Windows. It also runs on less commonly-used platforms, like
@@ -88,9 +88,9 @@ secrets from [1Password](https://1password.com/),
 [pass](https://www.passwordstore.org/), [Vault](https://www.vaultproject.io/),
 Keychain, [Keyring](https://wiki.gnome.org/Projects/GnomeKeyring), or any
 command-line utility of your choice. You can encrypt individual files with
-[GnuPG](https://www.gnupg.org) or [age](https://github.com/FiloSottile/age). You
-can checkout your dotfiles repo on as many machines as you want without
-revealing any secrets to anyone.
+[GnuPG](https://www.gnupg.org) or [age](https://age-encryption.org). You can
+checkout your dotfiles repo on as many machines as you want without revealing
+any secrets to anyone.
 
 ### Transparent
 
