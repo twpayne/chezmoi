@@ -69,8 +69,7 @@ templates, or config file.
   functions](https://masterminds.github.io/sprig/semver.html).
 * The new `.chezmoi.fqdnHostname` template variables contains the
   fully-qualified domain name of the machine, if it can be determined.
-* You can now encrypt whole files with
-  [age](https://github.com/FiloSottile/age).
+* You can now encrypt whole files with [age](https://age-encryption.org).
 
 ### Changes from version 1
 

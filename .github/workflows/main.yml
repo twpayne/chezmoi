@@ -16,7 +16,7 @@ jobs:
         - ubuntu-18.04
         - windows-latest
     env:
-      AGE_VERSION: v1.0.0-beta7
+      AGE_VERSION: v1.0.0-rc.1
     runs-on: ${{ matrix.os }}
     steps:
     - name: Set up Go
@@ -52,7 +52,7 @@ jobs:
         $env:PATH = "C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\ProgramData\chocolatey\bin"
         [Environment]::SetEnvironmentVariable("Path", $env:PATH, "Machine")
         choco install --yes gpg4win
-        echo "C:\Program Files (x86)\Gpg4win\..\GnuPG\bin" >> $env:GITHUB_PATH
+        echo "C:\Program Files (x86)\GnuPG\bin" >> $env:GITHUB_PATH
     - name: Test
       run: go test -race ./...
   test-release:
@@ -163,7 +163,7 @@ jobs:
       run:
         go run ./internal/cmd/lint-whitespace
   release:
-    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/tags/')
     needs:
     - generate
     - lint

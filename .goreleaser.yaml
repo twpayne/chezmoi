@@ -105,19 +105,19 @@ nfpms:
   dependencies:
   - git
   bindir: /usr/bin
-  contents:
-  - src: completions/chezmoi-completion.bash
-    dst: /usr/share/bash-completion/completions/chezmoi
-  - src: completions/chezmoi.fish
-    dst: /usr/share/fish/completions/chezmoi.fish
   overrides:
     deb:
       file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
       replacements:
         386: i386
         arm: armel
-      files:
-        "completions/chezmoi.zsh": "/usr/share/zsh/vendor-completions/_chezmoi"
+      contents:
+      - src: completions/chezmoi-completion.bash
+        dst: /usr/share/bash-completion/completions/chezmoi
+      - src: completions/chezmoi.fish
+        dst: /usr/share/fish/completions/chezmoi.fish
+      - src: completions/chezmoi.zsh
+        dst: /usr/share/zsh/vendor-completions/_chezmoi
     rpm:
       file_name_template: "{{ .ProjectName }}-{{ .Version }}-{{ .Arch }}"
       replacements:
@@ -126,6 +126,10 @@ nfpms:
         arm: armhfp
         arm64: aarch64
       contents:
+      - src: completions/chezmoi-completion.bash
+        dst: /usr/share/bash-completion/completions/chezmoi
+      - src: completions/chezmoi.fish
+        dst: /usr/share/fish/completions/chezmoi.fish
       - src: completions/chezmoi.zsh
         dst: /usr/share/zsh/functions/_chezmoi
 - id: apks

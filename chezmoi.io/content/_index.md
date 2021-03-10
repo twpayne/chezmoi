@@ -22,7 +22,7 @@ chezmoi, consult the [reference](/docs/reference/).
 ## What does chezmoi do and why should I use it?
 
 chezmoi helps you manage your personal configuration files (dotfiles, like
-`~/.bashrc`) across multiple machines.
+`~/.zshrc`) across multiple machines.
 
 chezmoi is helpful if you have spent time customizing the tools you use (e.g.
 shells, editors, and version control systems) and want to keep machines running
@@ -30,13 +30,17 @@ different accounts (e.g. home and work) and/or different operating systems (e.g.
 Linux, macOS, and Windows) in sync, while still being able to easily cope with
 differences from machine to machine.
 
+chezmoi scales from the trivial (e.g. copying a few dotfiles onto a Raspberry
+Pi, development container, or virtual machine) to complex long-lived
+multi-machine development environments (e.g. keeping any number of home and
+work, Linux, macOS, and Windows machines in sync). In all cases you only need to
+maintain a single source of truth (a single branch in git) and getting started
+only requires adding a single binary to your machine (which you can do with
+`curl`, `wget`, or `scp`).
+
 chezmoi has strong support for security, allowing you to manage secrets (e.g.
 passwords, access tokens, and private keys) securely and seamlessly using a
-password manager of your choice or GnuPG encryption.
-
-In all cases you only need to maintain a single source of truth: a single branch
-in a version control system (e.g. git) for everything public and a single
-password manager for all your secrets.
+password manager and/or encypt whole files with your favorite encryption tool.
 
 If you do not personalize your configuration or only ever use a single operating
 system with a single account and none of your dotfiles contain secrets then you
@@ -47,9 +51,8 @@ don't need chezmoi. Otherwise, read on...
 ### Flexible
 
 You can share as much configuration across machines as you want, while still
-being able to control machine-specific details. You only need to maintain a
-single branch. Your dotfiles can be templates (using
-[`text/template`](https://pkg.go.dev/text/template) syntax). Predefined
+being able to control machine-specific details.Your dotfiles can be templates
+(using [`text/template`](https://pkg.go.dev/text/template) syntax). Predefined
 variables allow you to change behavior depending on operating system,
 architecture, and hostname. chezmoi runs on all commonly-used platforms, like
 Linux, macOS, and Windows. It also runs on less commonly-used platforms, like
@@ -66,8 +69,9 @@ secrets from [1Password](https://1password.com/),
 [pass](https://www.passwordstore.org/), [Vault](https://www.vaultproject.io/),
 Keychain, [Keyring](https://wiki.gnome.org/Projects/GnomeKeyring), or any
 command-line utility of your choice. You can encrypt individual files with
-[GnuPG](https://www.gnupg.org). You can checkout your dotfiles repo on as many
-machines as you want without revealing any secrets to anyone.
+[GnuPG](https://www.gnupg.org) or [age](https://age-encryption.org). You can
+checkout your dotfiles repo on as many machines as you want without revealing
+any secrets to anyone.
 
 ### Transparent
 
@@ -88,8 +92,9 @@ out, even if the update process is interrupted.
 
 ### Fast and easy to use
 
-chezmoi runs in fractions of a second and makes most day-to-day operations one
-line commands, including installation, initialization, and keeping your machines
+Using chezmoi feels like using git: the commands are similar and chezmoi runs in
+fractions of a second. chezmoi makes most day-to-day operations one line
+commands, including installation, initialization, and keeping your machines
 up-to-date. chezmoi can pull and apply changes from your dotfiles repo in a
 single command, and automatically commit and push changes.
 
@@ -119,7 +124,7 @@ Read what [people have said about chezmoi](docs/MEDIA.md).
 * [FAQ](/docs/faq/) for questions that aren't answered elsewhere.
 * [Changes](/docs/changes/) for non-backwards compatible changes.
 * [Reference](/docs/reference/) for a complete description of chezmoi.
-* [Comparison guide](docs/comparison/) for a comparison with other dotfile managers.
+* [Comparison guide](/docs/comparison/) for a comparison with other dotfile managers.
 * [Contributing](/docs/contributing/) for people looking to contribute to or
   package chezmoi.
 

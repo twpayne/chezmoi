@@ -10,7 +10,7 @@ import (
 )
 
 // An AGEEncryption uses age for encryption and decryption. See
-// https://github.com/FiloSottile/age.
+// https://age-encryption.org.
 type AGEEncryption struct {
 	Command         string
 	Args            []string
