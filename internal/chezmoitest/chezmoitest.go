@@ -93,11 +93,6 @@ func GPGGenerateKey(command, homeDir string) (key, passphrase string, err error)
 	return string(submatch[1]), passphrase, nil
 }
 
-// GitHubActionsOnWindows returns if running in GitHub Actions on Windows.
-func GitHubActionsOnWindows() bool {
-	return runtime.GOOS == "windows" && os.Getenv("GITHUB_ACTIONS") == "true"
-}
-
 // HomeDir returns the home directory.
 func HomeDir() string {
 	switch runtime.GOOS {
