@@ -64,8 +64,7 @@ func TestScript(t *testing.T) {
 				return false, fmt.Errorf("%s: unknown condition", cond)
 			}
 		},
-		Setup:         setup,
-		UpdateScripts: os.Getenv("CHEZMOIUPDATESCRIPTS") != "",
+		Setup: setup,
 	})
 }
 
