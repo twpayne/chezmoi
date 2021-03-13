@@ -22,7 +22,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: 1.16.0
+        go-version: 1.16.2
     - name: Checkout
       uses: actions/checkout@v2
     - name: Cache Go modules
@@ -65,7 +65,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: 1.16.0
+        go-version: 1.16.2
     - name: Checkout
       uses: actions/checkout@v2
       with:
@@ -121,7 +121,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: 1.16.0
+        go-version: 1.16.2
     - name: Checkout
       uses: actions/checkout@v2
     - name: Cache Go modules
@@ -141,7 +141,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: 1.16.0
+        go-version: 1.16.2
     - name: Checkout
       uses: actions/checkout@v2
     - name: Cache Go modules
@@ -178,7 +178,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: 1.16.0
+        go-version: 1.16.2
     - name: Checkout
       uses: actions/checkout@v2
       with:

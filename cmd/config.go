@@ -1049,8 +1049,10 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 			w.TimeFormat = time.RFC3339
 		},
 	))
-	if !c.debug {
-		zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	if c.debug {
+		zerolog.SetGlobalLevel(zerolog.DebugLevel)
+	} else {
+		zerolog.SetGlobalLevel(zerolog.Disabled)
 	}
 
 	c.baseSystem = chezmoi.NewRealSystem(c.fs)

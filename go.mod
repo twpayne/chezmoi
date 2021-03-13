@@ -21,17 +21,17 @@ require (
 	github.com/google/uuid v1.2.0 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20200217142428-fce0ec30dd00 // indirect
 	github.com/huandu/xstrings v1.3.2 // indirect
+	github.com/imdario/mergo v0.3.12 // indirect
 	github.com/kevinburke/ssh_config v0.0.0-20201106050909-4977a11b4351 // indirect
-	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
 	github.com/magiconair/properties v1.8.4 // indirect
-	github.com/mattn/go-runewidth v0.0.10 // indirect
 	github.com/mitchellh/copystructure v1.1.1 // indirect
 	github.com/mitchellh/mapstructure v1.4.1 // indirect
 	github.com/muesli/combinator v0.3.0
+	github.com/muesli/termenv v0.8.0 // indirect
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
 	github.com/pelletier/go-toml v1.8.1
 	github.com/rivo/uniseg v0.2.0 // indirect
-	github.com/rogpeppe/go-internal v1.7.0
+	github.com/rogpeppe/go-internal v1.8.0
 	github.com/rs/zerolog v1.20.0
 	github.com/sergi/go-diff v1.1.0
 	github.com/smartystreets/assertions v1.2.0 // indirect
@@ -52,8 +52,8 @@ require (
 	go.uber.org/multierr v1.6.0
 	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83 // indirect
 	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110 // indirect
-	golang.org/x/oauth2 v0.0.0-20210220000619-9bb904979d93
-	golang.org/x/sys v0.0.0-20210301091718-77cc2087c03b
+	golang.org/x/oauth2 v0.0.0-20210311163135-5366d9dc1934
+	golang.org/x/sys v0.0.0-20210309074719-68d13333faf2
 	golang.org/x/term v0.0.0-20210220032956-6a3ed077a48d
 	golang.org/x/text v0.3.5 // indirect
 	google.golang.org/appengine v1.6.7 // indirect

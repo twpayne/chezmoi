@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"os/exec"
@@ -58,10 +59,11 @@ func (c *Config) onepasswordOutput(args []string) []byte {
 	name := c.Onepassword.Command
 	cmd := exec.Command(name, args...)
 	cmd.Stdin = c.stdin
-	cmd.Stderr = c.stderr
+	stderr := &bytes.Buffer{}
+	cmd.Stderr = stderr
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
-		returnTemplateError(fmt.Errorf("%s %s: %w\n%s", name, chezmoi.ShellQuoteArgs(args), err, output))
+		returnTemplateError(fmt.Errorf("%s %s: %w: %s", name, chezmoi.ShellQuoteArgs(args), err, bytes.TrimSpace(stderr.Bytes())))
 		return nil
 	}
 
