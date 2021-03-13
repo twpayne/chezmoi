@@ -44,13 +44,15 @@ the related feature, and anything `error` indicates a definite problem.
 
 ## What are the consequences of "bare" modifications to the target files? If my `.zshrc` is managed by chezmoi and I edit `~/.zshrc` without using `chezmoi edit`, what happens?
 
-chezmoi will overwrite the file the next time you run `chezmoi apply`. Until you
-run `chezmoi apply` your modified `~/.zshrc` will remain in place.
+Until you run `chezmoi apply` your modified `~/.zshrc` will remain in place.
+When you run `chezmoi apply` chezmoi will detect that `~/.zshrc` has changed
+since chezmoi last wrote it and prompt you what to do. You can resolve
+differences with a merge tool by running `chezmoi merge ~/.zshrc`.
 
 ## How can I tell what dotfiles in my home directory aren't managed by chezmoi? Is there an easy way to have chezmoi manage a subset of them?
 
 `chezmoi unmanaged` will list everything not managed by chezmoi. You can add
-entire directories with `chezmoi add -r`.
+entire directories with `chezmoi add`.
 
 ## How can I tell what dotfiles in my home directory are currently managed by chezmoi?
 
@@ -58,10 +60,10 @@ entire directories with `chezmoi add -r`.
 
 ## If there's a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?
 
-By default, chezmoi ignores everything that you haven't explicitly `chezmoi
-add`'ed. If you have files in your source directory that you don't want added to
-your destination directory when you run `chezmoi apply` add their names to a
-file called `.chezmoiignore` in the source state.
+By default, chezmoi ignores everything that you haven't explicitly added. If you
+have files in your source directory that you don't want added to your
+destination directory when you run `chezmoi apply` add their names to a file
+called `.chezmoiignore` in the source state.
 
 Patterns are supported, and you can change what's ignored from machine to
 machine. The full usage and syntax is described in the [reference
@@ -83,6 +85,9 @@ You have several options:
   directory and pass extra arguments to the command. If you're passing any
   flags, you'll need to use `--` to prevent chezmoi from consuming them, for
   example `chezmoi git -- commit -m "Update dotfiles"`.
+* You can configure chemzoi to automatically commit and push changes to your
+  source state, as [described in the how-to
+  guide](https://github.com/twpayne/chezmoi/blob/master/docs/HOWTO.md#automatically-commit-and-push-changes-to-your-repo).
 
 ## How do I only run a script when a file has changed?
 
@@ -167,12 +172,12 @@ updating them, removing them, and even more advanced features not found
 elsewhere like having the same symlink point to different targets on different
 machines by using templates.
 
-With chezmoi, you only use symlinks where you really need a symlink, in contrast
-to some other dotfile managers (e.g. GNU Stow) which require the use of symlinks
-as a layer of indirection between a dotfile's location (which can be anywhere in
-your home directory) and a dotfile's content (which needs to be in a centralized
-directory that you manage with version control). chezmoi solves this problem in
-a different way.
+With chezmoi, you only use a symlink where you really want a symlink, in
+contrast to some other dotfile managers (e.g. GNU Stow) which require the use of
+symlinks as a layer of indirection between a dotfile's location (which can be
+anywhere in your home directory) and a dotfile's content (which needs to be in a
+centralized directory that you manage with version control). chezmoi solves this
+problem in a different way.
 
 Instead of using a symlink to redirect from the dotfile's location to the
 centralized directory, chezmoi generates the dotfile in its final location from
@@ -209,13 +214,13 @@ you can run `chezmoi diff` to check what effect the changes would have, and run
 `chezmoi edit` provides the following useful features:
 * It opens the correct file in the source state for you, so you don't have to
   know anything about source state attributes.
-* If the dotfille is encrypted in the source state, then `chezmoi edit` will
+* If the dotfile is encrypted in the source state, then `chezmoi edit` will
   decrypt it to a private directory, open that file in your `$EDITOR`, and then
   re-encrypt the file when you quit your editor. That makes encryption more
-  transparent to the user. With the `--diff` and `--apply` options you can see what
-  would change and apply those changes without having to run `chezmoi diff` or
-  `chezmoi apply`. Note also that the arguments to `chezmoi edit` are the files in
-  their target location.
+  transparent to the user. With the `--diff` and `--apply` options you can see
+  what would change and apply those changes without having to run `chezmoi diff`
+  or `chezmoi apply`. Note also that the arguments to `chezmoi edit` are the
+  files in their target location.
 
 ## Can I change how chezmoi's source state is represented on disk?
 
@@ -224,7 +229,7 @@ disk:
 
 1. The source file naming system cannot handle all possible filenames.
 2. Not all possible file permissions can be represented.
-3. The long source file names are verbose.
+3. The long source file names are weird and verbose.
 4. Everything is in a single directory, which can end up containing many entries.
 
 chezmoi's source state representation is a deliberate, practical compromise.
@@ -268,10 +273,9 @@ also be stored in the filesystem, rather than in the filename. However, this
 requires the permissions to be preserved and handled by the underlying version
 control system and filesystem. chezmoi provides first-class support for Windows,
 where the `executable_` and `private_` attributes have no direct equivalents and
-symbolic links are not always permitted. Some version control systems do not
-preserve file permissions or handle symbolic links. By using regular files and
-directories, chezmoi avoids variations in the operating system, version control
-system, and filesystem making it both more robust and more portable.
+symbolic links are not always permitted. By using regular files and directories,
+chezmoi avoids variations in the operating system, version control system, and
+filesystem making it both more robust and more portable.
 
 chezmoi uses a 1:1 mapping between entries in the source state and entries in
 the target state. This mapping is bi-directional and unambiguous.
@@ -302,8 +306,8 @@ but must meet the following criteria, in order of importance:
 
 1. Be fully backwards-compatible for existing users.
 2. Fix a genuine problem encountered in practice.
-3. Be independent of the underlying operating system, version control system, and
-  filesystem.
+3. Be independent of the underlying operating system, version control system,
+   and filesystem.
 4. Not add significant extra complexity to the user interface or underlying
    implementation.
 
@@ -342,14 +346,14 @@ chezmoi requires Go version 1.16 or later. You can check the version of Go with:
     go version
 
 For more details on building chezmoi, see the [Contributing
-Guide](CONTRIBUTING.md).
+Guide]([CONTRIBUTING.md](https://github.com/twpayne/chezmoi/blob/master/docs/CONTRIBUTING.md)).
 
 ## What inspired chezmoi?
 
-chezmoi was inspired by [Puppet](https://puppet.com/), but created because
-Puppet is a slow overkill for managing your personal configuration files. The
-focus of chezmoi will always be personal home directory management. If your
-needs grow beyond that, switch to a whole system configuration management tool.
+chezmoi was inspired by [Puppet](https://puppet.com/), but was created because
+Puppet is an overkill for managing your personal configuration files. The focus
+of chezmoi will always be personal home directory management. If your needs grow
+beyond that, switch to a whole system configuration management tool.
 
 ## Why not use Ansible/Chef/Puppet/Salt, or similar to manage my dotfiles instead?
 
@@ -428,8 +432,14 @@ Thank you! chezmoi was written to scratch a personal itch, and I'm very happy
 that it's useful to you. Please give [chezmoi a star on
 GitHub](https://github.com/twpayne/chezmoi/stargazers), and if you're happy to
 share your public dotfile repo then [tag it with
-`chezmoi`](https://github.com/topics/chezmoi?o=desc&s=updated). [Contributions
-are very
+`chezmoi`](https://github.com/topics/chezmoi?o=desc&s=updated).
+
+If you write an article or give a talk on chezmoi please inform the author (e.g.
+by [opening an issue](https://github.com/twpayne/chezmoi/issues/new/choose)) so
+it can be added to chezmoi's [media
+page](https://github.com/twpayne/chezmoi/blob/master/docs/MEDIA.md).
+
+[Contributions are very
 welcome](https://github.com/twpayne/chezmoi/blob/master/docs/CONTRIBUTING.md)
 and every [bug report, support request, and feature
 request](https://github.com/twpayne/chezmoi/issues/new/choose) helps make
