@@ -28,6 +28,11 @@ func (c *Config) keyringTemplateFunc(service, user string) string {
 		returnTemplateError(fmt.Errorf("%s %s: %w", service, user, err))
 		return ""
 	}
+
+	if c.keyring.cache == nil {
+		c.keyring.cache = make(map[keyringKey]string)
+	}
+
 	c.keyring.cache[key] = password
 	return password
 }
