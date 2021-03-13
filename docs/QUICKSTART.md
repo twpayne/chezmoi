@@ -22,27 +22,29 @@ necessary so that your dotfiles match that state.
 
 ## Start using chezmoi on your current machine
 
-Initialize chezmoi:
+Assuming that you have already [installed
+chezmoi](https://github.com/twpayne/chezmoi/blob/master/docs/INSTALL.md),
+initialize chezmoi with:
 
     chezmoi init
 
-This will create a new git repository in `~/.local/share/chezmoi` with
-permissions `0700` where chezmoi will store the source state.  chezmoi only
-modifies files in the working copy. It is your responsibility to commit changes.
+This will create a new git repository in `~/.local/share/chezmoi` where chezmoi
+will store its source state. By default, chezmoi only modifies files in the
+working copy. It is your responsibility to commit and push changes, but chezmoi
+can automate this for you if you want.
 
-Manage an existing file with chezmoi:
+Manage your first file with chezmoi:
 
     chezmoi add ~/.bashrc
 
-This will copy `~/.bashrc` to `~/.local/share/chezmoi/dot_bashrc`. If you want
-to add a whole folder to chezmoi, you have to add the `-r` argument after `add`.
+This will copy `~/.bashrc` to `~/.local/share/chezmoi/dot_bashrc`.
 
 Edit the source state:
 
     chezmoi edit ~/.bashrc
 
 This will open `~/.local/share/chezmoi/dot_bashrc` in your `$EDITOR`. Make some
-changes and save them.
+changes and save the file.
 
 See what changes chezmoi would make:
 
@@ -57,20 +59,30 @@ changes they will make to the file system, and the `-n` (dry run) flag to not
 make any actual changes. The combination `-n` `-v` is very useful if you want to
 see exactly what changes would be made.
 
-Finally, open a shell in the source directory, commit your changes, and return
-to where you were:
+Next, open a shell in the source directory, to commit your changes:
 
     chezmoi cd
-    git add dot_bashrc
-    git commit -m "Add .bashrc"
+    git add .
+    git commit -m "Initial commit"
+
+[Create a new repository on GitHub](https://github.com/new) called `dotfiles`
+and then push your repo:
+
+    git remote add origin git@github.com:username/dotfiles.git
+    git branch -M main
+    git push -u origin main
+
+chezmoi can also be used with [GitLab](https://gitlab.com), or
+[BitBucket](https://bitbucket.org), [Source Hut](https://sr.ht/), or any other
+git hosting service.
+
+Finally, exit the shell in the source directory to return to where you were:
+
     exit
 
 ## Using chezmoi across multiple machines
 
-Clone the git repo in `~/.local/share/chezmoi` to a hosted Git service, e.g.
-[GitHub](https://github.com), [GitLab](https://gitlab.com), or
-[BitBucket](https://bitbucket.org). Many people call their dotfiles repo
-`dotfiles`. You can then setup chezmoi on a second machine:
+On a second machine, initialize chezmoi with your dotfiles repo:
 
     chezmoi init https://github.com/username/dotfiles.git
 
@@ -79,6 +91,11 @@ config file for you. It won't make any changes to your home directory until you
 run:
 
     chezmoi apply
+
+If your dotfiles repo is `https://github.com/username/dotfiles.git` then the
+above two commands can be combined into just:
+
+    chezmoi init --apply username
 
 On any machine, you can pull and apply the latest changes from your repo with:
 
@@ -90,5 +107,7 @@ For a full list of commands run:
 
     chezmoi help
 
-chezmoi has much more functionality. Read the [how-to
+chezmoi has much more functionality. Good starting points are adding more
+dotfiles, and using templates to manage files that vary from machine to machine
+and retrieve secrets from your password manager. Read the [how-to
 guide](https://github.com/twpayne/chezmoi/blob/master/docs/HOWTO.md) to explore.
