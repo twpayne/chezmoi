@@ -1,3 +1,4 @@
+# FIXME parameterize Go version in actions/cache key
 name: main
 on:
   pull_request:
@@ -29,9 +30,9 @@ jobs:
       uses: actions/cache@v2.1.4
       with:
         path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go1.16-${{ hashFiles('**/go.sum') }}
+        key: ${{ runner.os }}-go1.16.2-${{ hashFiles('**/go.sum') }}
         restore-keys: |
-          ${{ runner.os }}-go1.16-
+          ${{ runner.os }}-go1.16.2-
     - name: Build
       run: |
         go build ./...
@@ -74,9 +75,9 @@ jobs:
       uses: actions/cache@v2.1.4
       with:
         path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go1.16-${{ hashFiles('**/go.sum') }}
+        key: ${{ runner.os }}-go1.16.2-${{ hashFiles('**/go.sum') }}
         restore-keys: |
-          ${{ runner.os }}-go1.16-
+          ${{ runner.os }}-go1.16.2-
     - name: Build release
       uses: goreleaser/goreleaser-action@v2
       with:
@@ -128,9 +129,9 @@ jobs:
       uses: actions/cache@v2.1.4
       with:
         path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go1.16-${{ hashFiles('**/go.sum') }}
+        key: ${{ runner.os }}-go1.16.2-${{ hashFiles('**/go.sum') }}
         restore-keys: |
-          ${{ runner.os }}-go1.16-
+          ${{ runner.os }}-go1.16.2-
     - name: Generate
       run: |
         make completions
@@ -148,9 +149,9 @@ jobs:
       uses: actions/cache@v2.1.4
       with:
         path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go1.16-${{ hashFiles('**/go.sum') }}
+        key: ${{ runner.os }}-go1.16.2-${{ hashFiles('**/go.sum') }}
         restore-keys: |
-          ${{ runner.os }}-go1.16-
+          ${{ runner.os }}-go1.16.2-
     - name: Lint
       uses: golangci/golangci-lint-action@v2
       with:
@@ -187,9 +188,9 @@ jobs:
       uses: actions/cache@v2.1.4
       with:
         path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go1.16-${{ hashFiles('**/go.sum') }}
+        key: ${{ runner.os }}-go1.16.2-${{ hashFiles('**/go.sum') }}
         restore-keys: |
-          ${{ runner.os }}-go1.16-
+          ${{ runner.os }}-go1.16.2-
     - name: Snapcraft login
       env:
         SNAPCRAFT_LOGIN: ${{ secrets.SNAPCRAFT_LOGIN }}
