@@ -3,17 +3,19 @@
 <!--- toc --->
 * [Go to chezmoi.io](#go-to-chezmoiio)
 * [Comparison table](#comparison-table)
+* [Why should I use a dotfile manager?](#why-should-i-use-a-dotfile-manager)
 * [I already have a system to manage my dotfiles, why should I use chezmoi?](#i-already-have-a-system-to-manage-my-dotfiles-why-should-i-use-chezmoi)
-  * [...if coping with differences between machines requires special care](#if-coping-with-differences-between-machines-requires-special-care)
-  * [...if you need to think for a moment before giving anyone access to your dotfiles](#if-you-need-to-think-for-a-moment-before-giving-anyone-access-to-your-dotfiles)
-  * [...if your needs are outgrowing your current tool](#if-your-needs-are-outgrowing-your-current-tool)
-  * [...if setting up your dotfiles requires more than two short commands](#if-setting-up-your-dotfiles-requires-more-than-two-short-commands)
+  * [Coping with differences between machines requires extra effort](#coping-with-differences-between-machines-requires-extra-effort)
+  * [You have to keep your dotfiles repo private](#you-have-to-keep-your-dotfiles-repo-private)
+  * [You have to maintain your own tool](#you-have-to-maintain-your-own-tool)
+  * [Setting up your dotfiles requires more than two short commands](#setting-up-your-dotfiles-requires-more-than-two-short-commands)
 
 ## Go to chezmoi.io
 
 You are looking at documentation for chezmoi version 2, which hasn't been
 released yet. Documentation for the current version of chezmoi is at
 [chezmoi.io](https://chezmoi.io/docs/comparison/).
+
 ## Comparison table
 
 [chezmoi]: https://chezmoi.io/
@@ -25,14 +27,13 @@ released yet. Documentation for the current version of chezmoi is at
 
 |                                        | [chezmoi]     | [dotbot]          | [rcm]             | [homesick]        | [yadm]        | [bare git] |
 | -------------------------------------- | ------------- | ----------------- | ----------------- | ----------------- | ------------- | ---------- |
-| Implementation language                | Go            | Python            | Perl              | Ruby              | Bash          | C          |
 | Distribution                           | Single binary | Python package    | Multiple files    | Ruby gem          | Single script | n/a        |
-| Install method                         | Multiple      | git submodule     | Multiple          | Ruby gem          | Multiple      | n/a        |
+| Install method                         | Many          | git submodule     | Many              | Ruby gem          | Many          | Manual     |
 | Non-root install on bare system        | Yes           | Difficult         | Difficult         | Difficult         | Yes           | Yes        |
 | Windows support                        | Yes           | No                | No                | No                | No            | Yes        |
 | Bootstrap requirements                 | None          | Python, git       | Perl, git         | Ruby, git         | git           | git        |
 | Source repos                           | Single        | Single            | Multiple          | Single            | Single        | Single     |
-| Method                                 | File          | Symlink           | File              | Symlink           | File          | File       |
+| dotfiles are...                        | Files         | Symlinks          | Files             | Symlinks          | Files         | Files      |
 | Config file                            | Optional      | Required          | Optional          | None              | None          | No         |
 | Private files                          | Yes           | No                | No                | No                | No            | No         |
 | Show differences without applying      | Yes           | No                | No                | No                | Yes           | Yes        |
@@ -43,7 +44,7 @@ released yet. Documentation for the current version of chezmoi is at
 | Executable files                       | Yes           | Yes               | Yes               | Yes               | No            | Yes        |
 | File creation with initial contents    | Yes           | No                | No                | No                | No            | No         |
 | Manage partial files                   | Yes           | No                | No                | No                | No            | No         |
-| File removal                           | Yes           | Manual            | No                | No                | No            | No         |
+| File removal                           | Yes           | No                | No                | No                | No            | No         |
 | Directory creation                     | Yes           | Yes               | Yes               | No                | No            | Yes        |
 | Run scripts                            | Yes           | Yes               | Yes               | No                | No            | No         |
 | Run once scripts                       | Yes           | No                | No                | No                | Manual        | No         |
@@ -51,22 +52,48 @@ released yet. Documentation for the current version of chezmoi is at
 | Shell completion                       | Yes           | No                | No                | No                | Yes           | Yes        |
 | Archive import                         | Yes           | No                | No                | No                | No            | No         |
 | Archive export                         | Yes           | No                | No                | No                | No            | Yes        |
+| Implementation language                | Go            | Python            | Perl              | Ruby              | Bash          | C          |
+
+For more comparisons, visit [dotfiles.github.io](https://dotfiles.github.io/).
+
+## Why should I use a dotfile manager?
+
+Dotfile managers give you the combined the benefit of a consistent environment
+everywhere with an undo command and a restore from backup.
+
+As the core of our development environments become increasingly standardized
+(e.g. git or Mercurial interfaces to version control at both home and work), and
+we further customize them (with shell configs like
+[powerlevel10k](https://github.com/romkatv/powerlevel10k)), at the same time we
+increasingly work in ephemeral environments like Docker containers and [GitHub
+Codespaces](https://github.com/features/codespaces).
+
+chezmoi helps you bring your personal configuration to every environment that
+you're working in. In the same way that nobody would use an editor without an
+undo command, or develop software without a version control system, chemzoi
+brings the investment that you have made in mastering your tools to every
+environment that you work in.
 
 ## I already have a system to manage my dotfiles, why should I use chezmoi?
+
+> Regular reminder that chezmoi is the best dotfile manager utility I've used
+> and you can too
+>
+> — [@mbbroberg](https://twitter.com/mbbroberg/status/1355644967625125892)
 
 If you're using any of the following methods:
 
 * A custom shell script.
 * An existing dotfile manager like
-  [homeshick](https://github.com/andsens/homeshick),
+  [dotbot](https://github.com/anishathalye/dotbot),
+  [rcm](https://github.com/thoughtbot/rcm),
   [homesick](https://github.com/technicalpickles/homesick),
-  [rcm](https://github.com/thoughtbot/rcm), [GNU
-  Stow](https://www.gnu.org/software/stow/), or [yadm](https://yadm.io/).
+  [yadm](https://yadm.io/), or [GNU Stow](https://www.gnu.org/software/stow/).
 * A [bare git repo](https://www.atlassian.com/git/tutorials/dotfiles).
 
 Then you've probably run into at least one of the following problems.
 
-### ...if coping with differences between machines requires special care
+### Coping with differences between machines requires extra effort
 
 If you want to synchronize your dotfiles across multiple operating systems or
 distributions, then you may need to manually perform extra steps to cope with
@@ -79,7 +106,14 @@ chezmoi uses a single source of truth (a single branch) and a single command
 that works on every machine. Individual files can be templates to handle machine
 to machine differences, if needed.
 
-### ...if you need to think for a moment before giving anyone access to your dotfiles
+### You have to keep your dotfiles repo private
+
+> And regarding dotfiles, I saw that. It's only public dotfiles repos so I have
+> to evaluate my dotfiles history to be sure. I have secrets scanning and more,
+> but it was easier to keep it private for security, I'm ok mostly though. I'm
+> using chezmoi and it's easier now
+>
+> — [@sheldon_hull](https://twitter.com/sheldon_hull/status/1308139570597371907)
 
 If your system stores secrets in plain text, then you must be very careful about
 where you clone your dotfiles. If you clone them on your work machine then
@@ -93,20 +127,33 @@ dotfiles repository anywhere, and even make your dotfiles repo public, without
 leaving personal secrets on your work machine or work secrets on your personal
 machine.
 
-### ...if your needs are outgrowing your current tool
+### You have to maintain your own tool
+
+> I've offloaded my dotfiles deployment from a homespun shell script to chezmoi.
+> I'm quite happy with this decision.
+>
+> — [@gotgenes](https://twitter.com/gotgenes/status/1251008845163319297)
+
+> I discovered chezmoi and it's pretty cool, just migrated my old custom
+> multi-machine sync dotfile setup and it's so much simpler now
+>
+> in case you're wondering I have written 0 code
+>
+> — [@buritica](https://twitter.com/buritica/status/1361062902451630089)
 
 If your system was written by you for your personal use, then it probably has
-the minimum functionality that you needed when you wrote it. If you need more
+the functionality that you needed when you wrote it. If you need more
 functionality then you have to implement it yourself.
 
 chezmoi includes a huge range of battle-tested functionality out-of-the-box,
 including dry-run and diff modes, script execution, conflict resolution, Windows
 support, and much, much more. chezmoi is [used by thousands of
-people](https://github.com/twpayne/chezmoi/stargazers), so it is likely that
-when you hit the limits of your existing dotfile management system, chezmoi
-already has a tried-and-tested solution ready for you to use.
+people](https://github.com/twpayne/chezmoi/stargazers) and has a rich suite of
+both unit and integration tests. When you hit the limits of your existing
+dotfile management system, chezmoi already has a tried-and-tested solution ready
+for you to use.
 
-### ...if setting up your dotfiles requires more than two short commands
+### Setting up your dotfiles requires more than two short commands
 
 If your system is written in a scripting language like Python, Perl, or Ruby,
 then you also need to install a compatible version of that language's runtime
@@ -118,4 +165,3 @@ provides one-line installs, pre-built binaries, packages for Linux and BSD
 distributions, Homebrew formulae, Scoop and Chocolatey support on Windows, and a
 initial config file generation mechanism to make installing your dotfiles on a
 new machine as painless as possible.
-
