@@ -16,23 +16,25 @@ released yet. Documentation for the current version of chezmoi is at
 
 chezmoi version 2 brings many new features and fixes a few corner-case bugs.
 Very few, if any, changes should be required to your source directory,
-templates, or config file.
+templates, or config file. If you haven't used chezmoi before, then you should
+start with [chezmoi's
+README](https://github.com/twpayne/chezmoi/blob/master/README.md) instead.
 
 ### New features in version 2
 
 * The new `chezmoi status` command shows you a concise list of differences, much
   like `git status`.
-* The `chezmoi apply` command warns you if a file has been modified by something
-  other than chezmoi since chezmoi last wrote it. This makes chezmoi "safe by
-  default".
+* The `chezmoi apply` command prompts you if a file has been modified by
+  something other than chezmoi since chezmoi last wrote it, keeping you in full
+  control of your changes, wherever you make them.
 * The `chezmoi init` command will try to guess your dotfile repository if you
   give it a short argument. For example, `chezmoi init username` is the
   equivalent of `chezmoi init https://github.com/username/dotfiles.git`.
 * chezmoi includes a builtin `git` command which it will use if it cannot find
-  `git`. This means that you don't even have to install `git` to setup your
-  dotfiles on a new machine.
+  `git` in your `$PATH`. This means that you don't even have to install `git` to
+  setup your dotfiles on a new machine.
 * chezmoi detects when your config file template has changed and prompts you to
-  re-run `chezmoi init`.
+  re-run `chezmoi init` if needed.
 * The new `create_` attribute allows you to create a file with initial content,
   but not have it overwritten by `chezmoi apply`.
 * The new `modify_` attribute allows you to modify an existing file with a
@@ -41,14 +43,15 @@ templates, or config file.
   relative to when your files are updated.
 * The new `--exclude` option allows you to control what types of target will be
   updated. For example `chezmoi apply --exclude=scripts` will cause chezmoi to
-  not run any scripts and `chezmoi init --apply --exclude=encrypted` will
-  exclude encrypted files.
+  apply everying except scripts and `chezmoi init --apply --exclude=encrypted`
+  will exclude encrypted files.
 * The new `--keep-going` option causes chezmoi to keep going as far as possible
   rather than stopping at the first error it encounters.
 * The new `--no-tty` option stops chezmoi from opening a TTY to read input
   (including passwords) and instead reads them from stdin.
-* The new `--source-path` options allows you to specify targets by source path,
-  which is useful for editor hooks.
+* The new `--source-path` option allows you to specify targets by source path,
+  which you can use in an on-save editor hook to automatically run `chezmoi
+  apply` when you edit a dotfile in your source state.
 * The new `gitHubKeys` template function allows you to populate your
   `~/.ssh/authorized_keys` from your public SSH keys on GitHub.
 * The `promptBool` function now also recognizes `y`, `yes`, `on`, `n`, `no`, and
@@ -81,8 +84,8 @@ the new functionality and for consistency:
   `chezmoi apply`.
 * `chezmoi add`, and many other commands, are now recursive by default.
 * `chezmoi apply` will warn if a file in the destination directory has been
-  modified since chezmoi last wrote it. To force overwritting, pass the
-  `--force` option.
+  modified since chezmoi last wrote it. To force overwriting, pass the `--force`
+  option.
 * `chezmoi edit` no longer supports the `--prompt` option.
 * The only diff format is now `git`. The `diff.format` configuration variable is
   ignored.
