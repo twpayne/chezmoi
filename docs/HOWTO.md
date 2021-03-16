@@ -1,7 +1,6 @@
 # chezmoi How-To Guide
 
 <!--- toc --->
-* [Go to chezmoi.io](#go-to-chezmoiio)
 * [Daily operations](#daily-operations)
   * [Use a hosted repo to manage your dotfiles across multiple machines](#use-a-hosted-repo-to-manage-your-dotfiles-across-multiple-machines)
   * [Pull the latest changes from your repo and apply them](#pull-the-latest-changes-from-your-repo-and-apply-them)
@@ -39,12 +38,6 @@
 * [Migrating to chezmoi from another dotfile manager](#migrating-to-chezmoi-from-another-dotfile-manager)
   * [Migrate from a dotfile manager that uses symlinks](#migrate-from-a-dotfile-manager-that-uses-symlinks)
 * [Migrate away from chezmoi](#migrate-away-from-chezmoi)
-
-## Go to chezmoi.io
-
-You are looking at documentation for chezmoi version 2, which hasn't been
-released yet. Documentation for the current version of chezmoi is at
-[chezmoi.io](https://chezmoi.io/docs/how-to/).
 
 ## Daily operations
 

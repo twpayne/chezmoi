@@ -3,7 +3,6 @@
 Manage your dotfiles securely across multiple machines.
 
 <!--- toc --->
-* [Go to chezmoi.io](#go-to-chezmoiio)
 * [Concepts](#concepts)
 * [Global command line flags](#global-command-line-flags)
   * [`--color` *value*](#--color-value)
@@ -109,12 +108,6 @@ Manage your dotfiles securely across multiple machines.
   * [`secretJSON` [*args*]](#secretjson-args)
   * [`stat` *name*](#stat-name)
   * [`vault` *key*](#vault-key)
-
-## Go to chezmoi.io
-
-You are looking at documentation for chezmoi version 2, which hasn't been
-released yet. Documentation for the current version of chezmoi is at
-[chezmoi.io](https://chezmoi.io/docs/reference/).
 
 ## Concepts
 

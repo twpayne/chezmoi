@@ -4,7 +4,6 @@
 
 Manage your dotfiles across multiple diverse machines, securely.
 
-* [Go to chezmoi.io](#go-to-chezmoiio)
 * [How do I start with chezmoi now?](#how-do-i-start-with-chezmoi-now)
 * [What does chezmoi do and why should I use it?](#what-does-chezmoi-do-and-why-should-i-use-it)
 * [What are chezmoi's key features?](#what-are-chezmois-key-features)
@@ -19,12 +18,6 @@ Manage your dotfiles across multiple diverse machines, securely.
   * [People talking about chezmoi](#people-talking-about-chezmoi)
 * [What documentation is available?](#what-documentation-is-available)
 * [License](#license)
-
-## Go to chezmoi.io
-
-You are looking at documentation for chezmoi version 2, which hasn't been
-released yet. Documentation for the current version of chezmoi is at
-[chezmoi.io](https://chezmoi.io/).
 
 ## How do I start with chezmoi now?
 

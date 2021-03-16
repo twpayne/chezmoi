@@ -1,7 +1,6 @@
 # chezmoi Comparison guide
 
 <!--- toc --->
-* [Go to chezmoi.io](#go-to-chezmoiio)
 * [Comparison table](#comparison-table)
 * [Why should I use a dotfile manager?](#why-should-i-use-a-dotfile-manager)
 * [I already have a system to manage my dotfiles, why should I use chezmoi?](#i-already-have-a-system-to-manage-my-dotfiles-why-should-i-use-chezmoi)
@@ -9,12 +8,6 @@
   * [You have to keep your dotfiles repo private](#you-have-to-keep-your-dotfiles-repo-private)
   * [You have to maintain your own tool](#you-have-to-maintain-your-own-tool)
   * [Setting up your dotfiles requires more than two short commands](#setting-up-your-dotfiles-requires-more-than-two-short-commands)
-
-## Go to chezmoi.io
-
-You are looking at documentation for chezmoi version 2, which hasn't been
-released yet. Documentation for the current version of chezmoi is at
-[chezmoi.io](https://chezmoi.io/docs/comparison/).
 
 ## Comparison table
 
