@@ -91,7 +91,7 @@ the new functionality and for consistency:
   ignored.
 * Diffs include the contents of scripts that would be run.
 * Mercurial support has been removed.
-* The `chezmoi source` command has been removed, used `chezmoi git` instead.
+* The `chezmoi source` command has been removed, use `chezmoi git` instead.
 * The `sourceVCS` configuration group has been renamed to `git`.
 * The order of files for a three-way merge passed to `merge.command` is now
   actual file, target state, source state.
@@ -108,4 +108,4 @@ the new functionality and for consistency:
   `.chezmoi.homeDir`. For compatibility, `.chezmoi.homedir` will continue to be
   supported until version 2.1.
 * The `.chezmoi.fullHostname` template variable has been removed, as it did not
-  contain the full hostname,
+  contain the full hostname. Use `.chezmoi.fqdnHostname` (UNIX only) instead.
