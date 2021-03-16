@@ -104,7 +104,8 @@ the new functionality and for consistency:
 * The gpg recipient is configured with the `gpg.recipient` configuration
   variable, `gpgRecipient` is no longer used.
 * The structure of data output by `chezmoi dump` has changed.
-* The `.chezmoi.homedir` template variable has been renamed to
-  `.chezmoi.homeDir`.
+* The `.chezmoi.homedir` template variable has been replaced with
+  `.chezmoi.homeDir`. For compatibility, `.chezmoi.homedir` will continue to be
+  supported until version 2.1.
 * The `.chezmoi.fullHostname` template variable has been removed, as it did not
   contain the full hostname,

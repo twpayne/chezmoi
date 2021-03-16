@@ -492,6 +492,7 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 	data := map[string]interface{}{
 		"arch":      runtime.GOARCH,
 		"homeDir":   c.homeDir,
+		"homedir":   c.homeDir, // TODO Remove in version 2.1.
 		"os":        runtime.GOOS,
 		"sourceDir": c.sourceDirAbsPath,
 		"version": map[string]interface{}{
