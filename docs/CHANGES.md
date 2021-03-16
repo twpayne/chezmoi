@@ -1,24 +1,39 @@
 # chezmoi Changes
 
 <!--- toc --->
-* [Go to chezmoi.io](#go-to-chezmoiio)
+* [Overview](#overview)
 * [Version 2](#version-2)
   * [New features in version 2](#new-features-in-version-2)
   * [Changes from version 1](#changes-from-version-1)
 
-## Go to chezmoi.io
+## Overview
 
-You are looking at documentation for chezmoi version 2, which hasn't been
-released yet. Documentation for the current version of chezmoi is at
-[chezmoi.io](https://chezmoi.io/docs/changes/).
+This document describes what's new in chezmoi v2 for chezmoi v1 users.
+
+If you're not using a dotfile manager, then read [why you should you use a
+dotfile
+manager](https://github.com/twpayne/chezmoi/blob/master/docs/COMPARISON.md#why-should-i-use-a-dotfile-manager)
+and then [install
+chezmoi](https://github.com/twpayne/chezmoi/blob/master/docs/INSTALL.md) and
+follow the [quick-start
+guide](https://github.com/twpayne/chezmoi/blob/master/docs/QUICKSTART.md).
+
+If you're already using a dotfile manager, but not chezmoi, then read about [how
+chezmoi compares to other dotfile
+managers](https://github.com/twpayne/chezmoi/blob/master/docs/COMPARISON.md)
+first and then [install
+chezmoi](https://github.com/twpayne/chezmoi/blob/master/docs/INSTALL.md), follow
+the [quick-start
+guide](https://github.com/twpayne/chezmoi/blob/master/docs/QUICKSTART.md), and
+read the [how-to
+guide](https://github.com/twpayne/chezmoi/blob/master/docs/HOWTO.md) to quickly
+discover chezmoi's functionality.
 
 ## Version 2
 
 chezmoi version 2 brings many new features and fixes a few corner-case bugs.
 Very few, if any, changes should be required to your source directory,
-templates, or config file. If you haven't used chezmoi before, then you should
-start with [chezmoi's
-README](https://github.com/twpayne/chezmoi/blob/master/README.md) instead.
+templates, or config file.
 
 ### New features in version 2
 

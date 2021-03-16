@@ -146,7 +146,6 @@ nfpms:
   bindir: /usr/bin
 
 release:
-  prerelease: true
 
 scoop:
   bucket:
@@ -166,7 +165,7 @@ snapcrafts:
   summary: "Manage your dotfiles across multiple diverse machines, securely."
   description: "Manage your dotfiles across multiple diverse machines, securely."
   publish: true
-  grade: devel
+  grade: stable
   confinement: classic
   apps:
     chezmoi:

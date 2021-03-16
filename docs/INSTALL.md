@@ -1,19 +1,12 @@
 # chezmoi Install Guide
 
 <!--- toc --->
-* [Go to chezmoi.io](#go-to-chezmoiio)
 * [One-line binary install](#one-line-binary-install)
 * [One-line package install](#one-line-package-install)
 * [Pre-built Linux packages](#pre-built-linux-packages)
 * [Pre-built binaries](#pre-built-binaries)
 * [All pre-built Linux packages and binaries](#all-pre-built-linux-packages-and-binaries)
 * [From source](#from-source)
-
-## Go to chezmoi.io
-
-You are looking at documentation for chezmoi version 2, which hasn't been
-released yet. Documentation for the current version of chezmoi is at
-[chezmoi.io](https://chezmoi.io/docs/install/).
 
 ## One-line binary install
 
