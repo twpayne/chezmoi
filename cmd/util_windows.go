@@ -7,6 +7,8 @@ import (
 	"golang.org/x/sys/windows"
 )
 
+const defaultEditor = "notepad.exe"
+
 // enableVirtualTerminalProcessing enables virtual terminal processing. See
 // https://docs.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences.
 func enableVirtualTerminalProcessing(w io.Writer) error {

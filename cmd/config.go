@@ -735,11 +735,11 @@ func (c *Config) editor() (string, []string) {
 		return c.Edit.Command, c.Edit.Args
 	}
 
-	// Prefer $VISUAL over $EDITOR and fallback to vi.
+	// Prefer $VISUAL over $EDITOR and fallback to the OS's default editor.
 	editor := firstNonEmptyString(
 		os.Getenv("VISUAL"),
 		os.Getenv("EDITOR"),
-		"vi",
+		defaultEditor,
 	)
 
 	// If editor is found, return it.
