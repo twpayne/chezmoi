@@ -14,6 +14,13 @@ rm $HOME/.encrypted
 chezmoi apply --force
 cmp golden/.encrypted $HOME/.encrypted
 
+# test that chezmoi apply --exclude=encrypted does not apply encrypted files
+rm $HOME/.encrypted
+chezmoi apply --exclude=encrypted --force
+! exists $HOME/.encrypted
+chezmoi apply --force
+cmp $HOME/.encrypted golden/.encrypted
+
 # test that chezmoi detects age encryption if age is configured but encryption = "age" is not set
 removeline $CHEZMOICONFIGDIR/chezmoi.toml 'encryption = "age"'
 chezmoi cat $HOME${/}.encrypted
