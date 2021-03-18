@@ -18,5 +18,10 @@ cmp golden/.encrypted $HOME/.encrypted
 chezmoi edit --apply --force $HOME${/}.encrypted
 grep '# edited' $HOME/.encrypted
 
+# test that chezmoi detects age encryption if age is configured but encryption = "age" is not set
+removeline $CHEZMOICONFIGDIR/chezmoi.toml 'encryption = "age"'
+chezmoi cat $HOME${/}.encrypted
+cmp stdout $HOME/.encrypted
+
 -- golden/.encrypted --
 plaintext

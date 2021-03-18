@@ -114,8 +114,6 @@ the new functionality and for consistency:
 * The `genericSecret` configuration group has been renamed to `secret`.
 * The `chezmoi chattr` command uses `encrypted` instead of `encrypt` as the
   attribute for encrypted files.
-* No encryption tool is configured by default. To use gpg, set the `encryption`
-  configuration variable to `gpg`.
 * The gpg recipient is configured with the `gpg.recipient` configuration
   variable, `gpgRecipient` is no longer used.
 * The structure of data output by `chezmoi dump` has changed.

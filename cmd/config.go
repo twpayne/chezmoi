@@ -9,6 +9,7 @@ import (
 	"os"
 	"os/exec"
 	"os/user"
+	"reflect"
 	"regexp"
 	"runtime"
 	"runtime/pprof"
@@ -155,6 +156,15 @@ var (
 	persistentStateFilename = chezmoi.RelPath("chezmoistate.boltdb")
 	configStateKey          = []byte("configState")
 
+	defaultAGEEncryptionConfig = chezmoi.AGEEncryption{
+		Command: "age",
+		Suffix:  ".age",
+	}
+	defaultGPGEncryptionConfig = chezmoi.GPGEncryption{
+		Command: "gpg",
+		Suffix:  ".asc",
+	}
+
 	identifierRx = regexp.MustCompile(`\A[\pL_][\pL\p{Nd}_]*\z`)
 	whitespaceRx = regexp.MustCompile(`\s+`)
 )
@@ -221,14 +231,8 @@ func newConfig(options ...configOption) (*Config, error) {
 		Vault: vaultConfig{
 			Command: "vault",
 		},
-		AGE: chezmoi.AGEEncryption{
-			Command: "age",
-			Suffix:  ".age",
-		},
-		GPG: chezmoi.GPGEncryption{
-			Command: "gpg",
-			Suffix:  ".asc",
-		},
+		AGE: defaultAGEEncryptionConfig,
+		GPG: defaultGPGEncryptionConfig,
 		add: addCmdConfig{
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 			recursive: true,
@@ -1122,7 +1126,16 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	case "gpg":
 		c.encryption = &c.GPG
 	case "":
-		c.encryption = chezmoi.NoEncryption{}
+		// Detect encryption if any non-default configuration is set, preferring
+		// gpg for backwards compatibility.
+		switch {
+		case !reflect.DeepEqual(c.GPG, defaultGPGEncryptionConfig):
+			c.encryption = &c.GPG
+		case !reflect.DeepEqual(c.AGE, defaultAGEEncryptionConfig):
+			c.encryption = &c.AGE
+		default:
+			c.encryption = chezmoi.NoEncryption{}
+		}
 	default:
 		return fmt.Errorf("%s: unknown encryption", c.Encryption)
 	}

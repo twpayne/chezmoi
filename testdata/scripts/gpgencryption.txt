@@ -7,5 +7,10 @@ appendline $CHEZMOICONFIGDIR/chezmoi.toml '  suffix = ".gpg"'
 chezmoi add --encrypt $HOME${/}.file
 exists $CHEZMOISOURCEDIR/encrypted_dot_file.gpg
 
+# test that chezmoi detects gpg encryption if gpg is configured but encryption = "gpg" is not set
+removeline $CHEZMOICONFIGDIR/chezmoi.toml 'encryption = "gpg"'
+chezmoi cat $HOME${/}.file
+cmp stdout $HOME/.file
+
 -- home/user/.file --
 # contents of .file
