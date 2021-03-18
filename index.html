@@ -2,7 +2,7 @@
 <html lang="en" dir=>
 
 <head>
-  <meta name="generator" content="Hugo 0.80.0" />
+  <meta name="generator" content="Hugo 0.81.0" />
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="chezmoi #  Manage your dotfiles across multiple diverse machines, securely.
@@ -15,8 +15,8 @@ How do I start with chezmoi now? #  Install chezmoi then read the quick start gu
 <title>Home | chezmoi.io</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
-<link rel="stylesheet" href="/book.min.6c7c6446dfdee7c8c933e9bbc6e80ee3ed6c913b2a59519f2092c3c6a9d63e55.css" integrity="sha256-bHxkRt/e58jJM&#43;m7xugO4&#43;1skTsqWVGfIJLDxqnWPlU=">
-<script defer src="/en.search.min.5f522922c7a7e1f7010d51e6895fc00fe49478c8fa0c48007f91c1d93148049d.js" integrity="sha256-X1IpIsen4fcBDVHmiV/AD&#43;SUeMj6DEgAf5HB2TFIBJ0="></script>
+<link rel="stylesheet" href="/book.min.2bc2364a4a4b31f0ec1debecf0a8f90a840821f143dfe1ac6a0f7cbcbdcf64ac.css" integrity="sha256-K8I2SkpLMfDsHevs8Kj5CoQIIfFD3&#43;Gsag98vL3PZKw=">
+<script defer src="/en.search.min.04481beea89b83708b4c6ffc5dee3d3ed09254514b44be466e580e18c833747c.js" integrity="sha256-BEgb7qibg3CLTG/8Xe49PtCSVFFLRL5GblgOGMgzdHw="></script>
 <link rel="alternate" type="application/rss+xml" href="https://chezmoi.io/index.xml" title="chezmoi.io" />
 <!--
 Made with Book Theme
@@ -84,7 +84,7 @@ https://github.com/alex-shpak/hugo-book
 
 
 
-  <script>(function(){var menu=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(event){localStorage.setItem("menu.scrollTop",menu.scrollTop);});menu.scrollTop=localStorage.getItem("menu.scrollTop");})();</script>
+  <script>(function(){var a=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
 
 
  
@@ -170,18 +170,22 @@ chezmoi, consult the <a href="/docs/reference/">reference</a>.</p>
   <a class="anchor" href="#what-does-chezmoi-do-and-why-should-i-use-it">#</a>
 </h2>
 <p>chezmoi helps you manage your personal configuration files (dotfiles, like
-<code>~/.bashrc</code>) across multiple machines.</p>
+<code>~/.zshrc</code>) across multiple machines.</p>
 <p>chezmoi is helpful if you have spent time customizing the tools you use (e.g.
 shells, editors, and version control systems) and want to keep machines running
 different accounts (e.g. home and work) and/or different operating systems (e.g.
 Linux, macOS, and Windows) in sync, while still being able to easily cope with
 differences from machine to machine.</p>
+<p>chezmoi scales from the trivial (e.g. copying a few dotfiles onto a Raspberry
+Pi, development container, or virtual machine) to complex long-lived
+multi-machine development environments (e.g. keeping any number of home and
+work, Linux, macOS, and Windows machines in sync). In all cases you only need to
+maintain a single source of truth (a single branch in git) and getting started
+only requires adding a single binary to your machine (which you can do with
+<code>curl</code>, <code>wget</code>, or <code>scp</code>).</p>
 <p>chezmoi has strong support for security, allowing you to manage secrets (e.g.
 passwords, access tokens, and private keys) securely and seamlessly using a
-password manager of your choice or GnuPG encryption.</p>
-<p>In all cases you only need to maintain a single source of truth: a single branch
-in a version control system (e.g. git) for everything public and a single
-password manager for all your secrets.</p>
+password manager and/or encypt whole files with your favorite encryption tool.</p>
 <p>If you do not personalize your configuration or only ever use a single operating
 system with a single account and none of your dotfiles contain secrets then you
 don&rsquo;t need chezmoi. Otherwise, read on&hellip;</p>
@@ -194,9 +198,8 @@ don&rsquo;t need chezmoi. Otherwise, read on&hellip;</p>
   <a class="anchor" href="#flexible">#</a>
 </h3>
 <p>You can share as much configuration across machines as you want, while still
-being able to control machine-specific details. You only need to maintain a
-single branch. Your dotfiles can be templates (using
-<a href="https://pkg.go.dev/text/template"><code>text/template</code></a> syntax). Predefined
+being able to control machine-specific details.Your dotfiles can be templates
+(using <a href="https://pkg.go.dev/text/template"><code>text/template</code></a> syntax). Predefined
 variables allow you to change behavior depending on operating system,
 architecture, and hostname. chezmoi runs on all commonly-used platforms, like
 Linux, macOS, and Windows. It also runs on less commonly-used platforms, like
@@ -214,8 +217,9 @@ secrets from <a href="https://1password.com/">1Password</a>,
 <a href="https://www.passwordstore.org/">pass</a>, <a href="https://www.vaultproject.io/">Vault</a>,
 Keychain, <a href="https://wiki.gnome.org/Projects/GnomeKeyring">Keyring</a>, or any
 command-line utility of your choice. You can encrypt individual files with
-<a href="https://www.gnupg.org">GnuPG</a>. You can checkout your dotfiles repo on as many
-machines as you want without revealing any secrets to anyone.</p>
+<a href="https://www.gnupg.org">GnuPG</a> or <a href="https://age-encryption.org">age</a>. You can
+checkout your dotfiles repo on as many machines as you want without revealing
+any secrets to anyone.</p>
 <h3 id="transparent">
   Transparent
   <a class="anchor" href="#transparent">#</a>
@@ -239,8 +243,9 @@ out, even if the update process is interrupted.</p>
   Fast and easy to use
   <a class="anchor" href="#fast-and-easy-to-use">#</a>
 </h3>
-<p>chezmoi runs in fractions of a second and makes most day-to-day operations one
-line commands, including installation, initialization, and keeping your machines
+<p>Using chezmoi feels like using git: the commands are similar and chezmoi runs in
+fractions of a second. chezmoi makes most day-to-day operations one line
+commands, including installation, initialization, and keeping your machines
 up-to-date. chezmoi can pull and apply changes from your dotfiles repo in a
 single command, and automatically commit and push changes.</p>
 <h2 id="i-already-have-a-system-to-manage-my-dotfiles-why-should-i-use-chezmoi">
@@ -277,7 +282,7 @@ one or two commands.</li>
 <li><a href="/docs/faq/">FAQ</a> for questions that aren&rsquo;t answered elsewhere.</li>
 <li><a href="/docs/changes/">Changes</a> for non-backwards compatible changes.</li>
 <li><a href="/docs/reference/">Reference</a> for a complete description of chezmoi.</li>
-<li><a href="docs/comparison/">Comparison guide</a> for a comparison with other dotfile managers.</li>
+<li><a href="/docs/comparison/">Comparison guide</a> for a comparison with other dotfile managers.</li>
 <li><a href="/docs/contributing/">Contributing</a> for people looking to contribute to or
 package chezmoi.</li>
 </ul>

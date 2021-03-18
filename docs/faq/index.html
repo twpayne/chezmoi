@@ -2,7 +2,7 @@
 <html lang="en" dir=>
 
 <head>
-  <meta name="generator" content="Hugo 0.80.0" />
+  <meta name="generator" content="Hugo 0.81.0" />
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Frequently Asked Questions #  How can I quickly check for problems with chezmoi on my machine? #  Run:
@@ -13,13 +13,15 @@ What are the consequences of &ldquo;bare&rdquo; modifications to the target file
 chezmoi doctor  Anything ok is fine, anything warning is only a problem if you want to use the related feature, and anything error indicates a definite problem.
 What are the consequences of &ldquo;bare&rdquo; modifications to the target files? If my .zshrc is managed by chezmoi and I edit ~/.zshrc without using chezmoi edit, what happens?" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://chezmoi.io/docs/faq/" />
+<meta property="og:url" content="https://chezmoi.io/docs/faq/" /><meta property="article:section" content="docs" />
+
+
 
 <title>FAQ | chezmoi.io</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
-<link rel="stylesheet" href="/book.min.6c7c6446dfdee7c8c933e9bbc6e80ee3ed6c913b2a59519f2092c3c6a9d63e55.css" integrity="sha256-bHxkRt/e58jJM&#43;m7xugO4&#43;1skTsqWVGfIJLDxqnWPlU=">
-<script defer src="/en.search.min.5f522922c7a7e1f7010d51e6895fc00fe49478c8fa0c48007f91c1d93148049d.js" integrity="sha256-X1IpIsen4fcBDVHmiV/AD&#43;SUeMj6DEgAf5HB2TFIBJ0="></script>
+<link rel="stylesheet" href="/book.min.2bc2364a4a4b31f0ec1debecf0a8f90a840821f143dfe1ac6a0f7cbcbdcf64ac.css" integrity="sha256-K8I2SkpLMfDsHevs8Kj5CoQIIfFD3&#43;Gsag98vL3PZKw=">
+<script defer src="/en.search.min.04481beea89b83708b4c6ffc5dee3d3ed09254514b44be466e580e18c833747c.js" integrity="sha256-BEgb7qibg3CLTG/8Xe49PtCSVFFLRL5GblgOGMgzdHw="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -86,7 +88,7 @@ https://github.com/alex-shpak/hugo-book
 
 
 
-  <script>(function(){var menu=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(event){localStorage.setItem("menu.scrollTop",menu.scrollTop);});menu.scrollTop=localStorage.getItem("menu.scrollTop");})();</script>
+  <script>(function(){var a=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
 
 
  
@@ -170,14 +172,16 @@ the related feature, and anything <code>error</code> indicates a definite proble
   What are the consequences of &ldquo;bare&rdquo; modifications to the target files? If my <code>.zshrc</code> is managed by chezmoi and I edit <code>~/.zshrc</code> without using <code>chezmoi edit</code>, what happens?
   <a class="anchor" href="#what-are-the-consequences-of-bare-modifications-to-the-target-files-if-my-zshrc-is-managed-by-chezmoi-and-i-edit-zshrc-without-using-chezmoi-edit-what-happens">#</a>
 </h2>
-<p>chezmoi will overwrite the file the next time you run <code>chezmoi apply</code>. Until you
-run <code>chezmoi apply</code> your modified <code>~/.zshrc</code> will remain in place.</p>
+<p>Until you run <code>chezmoi apply</code> your modified <code>~/.zshrc</code> will remain in place.
+When you run <code>chezmoi apply</code> chezmoi will detect that <code>~/.zshrc</code> has changed
+since chezmoi last wrote it and prompt you what to do. You can resolve
+differences with a merge tool by running <code>chezmoi merge ~/.zshrc</code>.</p>
 <h2 id="how-can-i-tell-what-dotfiles-in-my-home-directory-arent-managed-by-chezmoi-is-there-an-easy-way-to-have-chezmoi-manage-a-subset-of-them">
   How can I tell what dotfiles in my home directory aren&rsquo;t managed by chezmoi? Is there an easy way to have chezmoi manage a subset of them?
   <a class="anchor" href="#how-can-i-tell-what-dotfiles-in-my-home-directory-arent-managed-by-chezmoi-is-there-an-easy-way-to-have-chezmoi-manage-a-subset-of-them">#</a>
 </h2>
 <p><code>chezmoi unmanaged</code> will list everything not managed by chezmoi. You can add
-entire directories with <code>chezmoi add -r</code>.</p>
+entire directories with <code>chezmoi add</code>.</p>
 <h2 id="how-can-i-tell-what-dotfiles-in-my-home-directory-are-currently-managed-by-chezmoi">
   How can I tell what dotfiles in my home directory are currently managed by chezmoi?
   <a class="anchor" href="#how-can-i-tell-what-dotfiles-in-my-home-directory-are-currently-managed-by-chezmoi">#</a>
@@ -187,9 +191,10 @@ entire directories with <code>chezmoi add -r</code>.</p>
   If there&rsquo;s a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?
   <a class="anchor" href="#if-theres-a-mechanism-in-place-for-the-above-is-there-also-a-way-to-tell-chezmoi-to-ignore-specific-files-or-groups-of-files-eg-by-directory-name-or-by-glob">#</a>
 </h2>
-<p>By default, chezmoi ignores everything that you haven&rsquo;t explicitly <code>chezmoi add</code>&lsquo;ed. If you have files in your source directory that you don&rsquo;t want added to
-your destination directory when you run <code>chezmoi apply</code> add their names to a
-file called <code>.chezmoiignore</code> in the source state.</p>
+<p>By default, chezmoi ignores everything that you haven&rsquo;t explicitly added. If you
+have files in your source directory that you don&rsquo;t want added to your
+destination directory when you run <code>chezmoi apply</code> add their names to a file
+called <code>.chezmoiignore</code> in the source state.</p>
 <p>Patterns are supported, and you can change what&rsquo;s ignored from machine to
 machine. The full usage and syntax is described in the <a href="/docs/reference/#chezmoiignore">reference
 manual</a>.</p>
@@ -207,13 +212,13 @@ diffs of what would change, without actually changing anything, use <code>chezmo
 <ul>
 <li><code>chezmoi cd</code> opens a shell in the source directory, where you can run your
 usual version control commands, like <code>git add</code> and <code>git commit</code>.</li>
-<li><code>chezmoi git</code> and <code>chezmoi hg</code> run <code>git</code> and <code>hg</code> respectively in the source
+<li><code>chezmoi git</code> runs <code>git</code> in the source
 directory and pass extra arguments to the command. If you&rsquo;re passing any
 flags, you&rsquo;ll need to use <code>--</code> to prevent chezmoi from consuming them, for
 example <code>chezmoi git -- commit -m &quot;Update dotfiles&quot;</code>.</li>
-<li><code>chezmoi source</code> runs your configured version control system in your source
-directory. It works in the same way as the <code>chezmoi git</code> and <code>chezmoi hg</code>
-commands, but uses <code>sourceVCS.command</code>.</li>
+<li>You can configure chemzoi to automatically commit and push changes to your
+source state, as <a href="/docs/how-to/#automatically-commit-and-push-changes-to-your-repo">described in the how-to
+guide</a>.</li>
 </ul>
 <h2 id="how-do-i-only-run-a-script-when-a-file-has-changed">
   How do I only run a script when a file has changed?
@@ -298,12 +303,12 @@ if you need this.</p>
 updating them, removing them, and even more advanced features not found
 elsewhere like having the same symlink point to different targets on different
 machines by using templates.</p>
-<p>With chezmoi, you only use symlinks where you really need a symlink, in contrast
-to some other dotfile managers (e.g. GNU Stow) which require the use of symlinks
-as a layer of indirection between a dotfile&rsquo;s location (which can be anywhere in
-your home directory) and a dotfile&rsquo;s content (which needs to be in a centralized
-directory that you manage with version control). chezmoi solves this problem in
-a different way.</p>
+<p>With chezmoi, you only use a symlink where you really want a symlink, in
+contrast to some other dotfile managers (e.g. GNU Stow) which require the use of
+symlinks as a layer of indirection between a dotfile&rsquo;s location (which can be
+anywhere in your home directory) and a dotfile&rsquo;s content (which needs to be in a
+centralized directory that you manage with version control). chezmoi solves this
+problem in a different way.</p>
 <p>Instead of using a symlink to redirect from the dotfile&rsquo;s location to the
 centralized directory, chezmoi generates the dotfile in its final location from
 the contents of the centralized directory. Not only is no symlink is needed,
@@ -338,13 +343,13 @@ you can run <code>chezmoi diff</code> to check what effect the changes would hav
 <ul>
 <li>It opens the correct file in the source state for you, so you don&rsquo;t have to
 know anything about source state attributes.</li>
-<li>If the dotfille is encrypted in the source state, then <code>chezmoi edit</code> will
+<li>If the dotfile is encrypted in the source state, then <code>chezmoi edit</code> will
 decrypt it to a private directory, open that file in your <code>$EDITOR</code>, and then
 re-encrypt the file when you quit your editor. That makes encryption more
-transparent to the user. With the <code>--diff</code> and <code>--apply</code> options you can see what
-would change and apply those changes without having to run <code>chezmoi diff</code> or
-<code>chezmoi apply</code>. Note also that the arguments to <code>chezmoi edit</code> are the files in
-their target location.</li>
+transparent to the user. With the <code>--diff</code> and <code>--apply</code> options you can see
+what would change and apply those changes without having to run <code>chezmoi diff</code>
+or <code>chezmoi apply</code>. Note also that the arguments to <code>chezmoi edit</code> are the
+files in their target location.</li>
 </ul>
 <h2 id="can-i-change-how-chezmois-source-state-is-represented-on-disk">
   Can I change how chezmoi&rsquo;s source state is represented on disk?
@@ -355,7 +360,7 @@ disk:</p>
 <ol>
 <li>The source file naming system cannot handle all possible filenames.</li>
 <li>Not all possible file permissions can be represented.</li>
-<li>The long source file names are verbose.</li>
+<li>The long source file names are weird and verbose.</li>
 <li>Everything is in a single directory, which can end up containing many entries.</li>
 </ol>
 <p>chezmoi&rsquo;s source state representation is a deliberate, practical compromise.</p>
@@ -393,10 +398,9 @@ also be stored in the filesystem, rather than in the filename. However, this
 requires the permissions to be preserved and handled by the underlying version
 control system and filesystem. chezmoi provides first-class support for Windows,
 where the <code>executable_</code> and <code>private_</code> attributes have no direct equivalents and
-symbolic links are not always permitted. Some version control systems do not
-preserve file permissions or handle symbolic links. By using regular files and
-directories, chezmoi avoids variations in the operating system, version control
-system, and filesystem making it both more robust and more portable.</p>
+symbolic links are not always permitted. By using regular files and directories,
+chezmoi avoids variations in the operating system, version control system, and
+filesystem making it both more robust and more portable.</p>
 <p>chezmoi uses a 1:1 mapping between entries in the source state and entries in
 the target state. This mapping is bi-directional and unambiguous.</p>
 <p>However, this also means that dotfiles that in the same directory in the target
@@ -422,8 +426,8 @@ but must meet the following criteria, in order of importance:</p>
 <ol>
 <li>Be fully backwards-compatible for existing users.</li>
 <li>Fix a genuine problem encountered in practice.</li>
-<li>Be independent of the underlying operating system, version control system, and
-filesystem.</li>
+<li>Be independent of the underlying operating system, version control system,
+and filesystem.</li>
 <li>Not add significant extra complexity to the user interface or underlying
 implementation.</li>
 </ol>
@@ -457,23 +461,19 @@ GitHub</a>.</p>
   I&rsquo;m getting errors trying to build chezmoi from source
   <a class="anchor" href="#im-getting-errors-trying-to-build-chezmoi-from-source">#</a>
 </h2>
-<p>chezmoi requires Go version 1.14 or later and Go modules enabled. You can check
-the version of Go with:</p>
+<p>chezmoi requires Go version 1.16 or later. You can check the version of Go with:</p>
 <pre><code>go version
 </code></pre>
-<p>Enable Go modules by setting <code>GO111MODULE=on</code> when running <code>go get</code>:</p>
-<pre><code>GO111MODULE=on go get -u github.com/twpayne/chezmoi
-</code></pre>
-<p>For more details on building chezmoi, see the <a href="CONTRIBUTING.md">Contributing
+<p>For more details on building chezmoi, see the <a href="[CONTRIBUTING.md]%28/docs/contributing/%29">Contributing
 Guide</a>.</p>
 <h2 id="what-inspired-chezmoi">
   What inspired chezmoi?
   <a class="anchor" href="#what-inspired-chezmoi">#</a>
 </h2>
-<p>chezmoi was inspired by <a href="https://puppet.com/">Puppet</a>, but created because
-Puppet is a slow overkill for managing your personal configuration files. The
-focus of chezmoi will always be personal home directory management. If your
-needs grow beyond that, switch to a whole system configuration management tool.</p>
+<p>chezmoi was inspired by <a href="https://puppet.com/">Puppet</a>, but was created because
+Puppet is an overkill for managing your personal configuration files. The focus
+of chezmoi will always be personal home directory management. If your needs grow
+beyond that, switch to a whole system configuration management tool.</p>
 <h2 id="why-not-use-ansiblechefpuppetsalt-or-similar-to-manage-my-dotfiles-instead">
   Why not use Ansible/Chef/Puppet/Salt, or similar to manage my dotfiles instead?
   <a class="anchor" href="#why-not-use-ansiblechefpuppetsalt-or-similar-to-manage-my-dotfiles-instead">#</a>
@@ -553,8 +553,12 @@ GitHub</a>.</p>
 that it&rsquo;s useful to you. Please give <a href="https://github.com/twpayne/chezmoi/stargazers">chezmoi a star on
 GitHub</a>, and if you&rsquo;re happy to
 share your public dotfile repo then <a href="https://github.com/topics/chezmoi?o=desc&amp;s=updated">tag it with
-<code>chezmoi</code></a>. <a href="/docs/contributing/">Contributions
-are very
+<code>chezmoi</code></a>.</p>
+<p>If you write an article or give a talk on chezmoi please inform the author (e.g.
+by <a href="https://github.com/twpayne/chezmoi/issues/new/choose">opening an issue</a>) so
+it can be added to chezmoi&rsquo;s <a href="/docs/media/">media
+page</a>.</p>
+<p><a href="/docs/contributing/">Contributions are very
 welcome</a>
 and every <a href="https://github.com/twpayne/chezmoi/issues/new/choose">bug report, support request, and feature
 request</a> helps make

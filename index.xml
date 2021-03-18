@@ -12,9 +12,9 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/changes/</guid>
-      <description>Changes #  Upcoming #  Default diff format changing from chezmoi to git. #  Currently chezmoi outputs diffs in its own format, containing a mix of unified diffs and shell commands. This will be replaced with a git format diff in version 2.0.0.
-gpgRecipient config variable changing to gpg.recipient #  The gpgRecipient config variable is changing to gpg.recipient. To update, change your config from:
-gpgRecipient = &amp;quot;...&amp;quot;  to:</description>
+      <description>Changes #  Overview #  This document describes what&amp;rsquo;s new in chezmoi v2 for chezmoi v1 users.
+If you&amp;rsquo;re not using a dotfile manager, then read why you should you use a dotfile manager and then install chezmoi and follow the quick-start guide.
+If you&amp;rsquo;re already using a dotfile manager, but not chezmoi, then read about how chezmoi compares to other dotfile managers first and then install chezmoi, follow the quick-start guide, and read the how-to guide to quickly discover chezmoi&amp;rsquo;s functionality.</description>
     </item>
     
     <item>
@@ -23,7 +23,7 @@ gpgRecipient = &amp;quot;...&amp;quot;  to:</description>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/comparison/</guid>
-      <description>Comparison Guide #  Comparison table #      chezmoi dotbot rcm homesick yadm bare git     Implementation language Go Python Perl Ruby Bash C   Distribution Single binary Python package Multiple files Ruby gem Single script n/a   Install method Multiple git submodule Multiple Ruby gem Multiple n/a   Non-root install on bare system Yes Difficult Difficult Difficult Yes Yes   Windows support Yes No No No No Yes   Bootstrap requirements git Python, git Perl, git Ruby, git git git   Source repos Single Single Multiple Single Single Single   Method File Symlink File Symlink File File   Config file Optional Required Optional None None No   Private files Yes No No No No No   Show differences without applying Yes No No No Yes Yes   Whole file encryption Yes No No No Yes No   Password manager integration Yes No No No No No   Machine-to-machine file differences Templates Alternative files Alternative files Alternative files Templates Manual   Custom variables in templates Yes n/a n/a n/a No No   Executable files Yes Yes Yes Yes No Yes   File creation with initial contents Yes No No No No No   File removal Yes Manual No No No No   Directory creation Yes Yes Yes No No Yes   Run scripts Yes Yes Yes No No No   Run once scripts Yes No No No Manual No   Machine-to-machine symlink differences Yes No No No Yes No   Shell completion Yes No No No Yes Yes   Archive import Yes No No No No No   Archive export Yes No No No No Yes    I already have a system to manage my dotfiles, why should I use chezmoi?</description>
+      <description>Comparison Guide #  Comparison table #      chezmoi dotbot rcm homesick yadm bare git     Distribution Single binary Python package Multiple files Ruby gem Single script n/a   Install method Many git submodule Many Ruby gem Many Manual   Non-root install on bare system Yes Difficult Difficult Difficult Yes Yes   Windows support Yes No No No No Yes   Bootstrap requirements None Python, git Perl, git Ruby, git git git   Source repos Single Single Multiple Single Single Single   dotfiles are&amp;hellip; Files Symlinks Files Symlinks Files Files   Config file Optional Required Optional None None No   Private files Yes No No No No No   Show differences without applying Yes No No No Yes Yes   Whole file encryption Yes No No No Yes No   Password manager integration Yes No No No No No   Machine-to-machine file differences Templates Alternative files Alternative files Alternative files Templates Manual   Custom variables in templates Yes n/a n/a n/a No No   Executable files Yes Yes Yes Yes No Yes   File creation with initial contents Yes No No No No No   Manage partial files Yes No No No No No   File removal Yes No No No No No   Directory creation Yes Yes Yes No No Yes   Run scripts Yes Yes Yes No No No   Run once scripts Yes No No No Manual No   Machine-to-machine symlink differences Yes No No No Yes No   Shell completion Yes No No No Yes Yes   Archive import Yes No No No No No   Archive export Yes No No No No Yes   Implementation language Go Python Perl Ruby Bash C    For more comparisons, visit dotfiles.</description>
     </item>
     
     <item>
@@ -33,8 +33,10 @@ gpgRecipient = &amp;quot;...&amp;quot;  to:</description>
       
       <guid>https://chezmoi.io/docs/contributing/</guid>
       <description>Contributing Guide #  Getting started #  chezmoi is written in Go and development happens on GitHub. The rest of this document assumes that you&amp;rsquo;ve checked out chezmoi locally.
-Developing locally #  chezmoi requires Go 1.14 or later and Go modules enabled. Enable Go modules by setting the environment variable GO111MODULE=on.
-chezmoi is a standard Go project, using standard Go tooling, with a few extra tools. Ensure that these extra tools are installed with:</description>
+Developing locally #  chezmoi requires Go 1.16 or later.
+chezmoi is a standard Go project, using standard Go tooling, with a few extra tools. Ensure that these extra tools are installed with:
+make ensure-tools  Build chezmoi:
+go build .</description>
     </item>
     
     <item>
@@ -54,8 +56,7 @@ What are the consequences of &amp;ldquo;bare&amp;rdquo; modifications to the tar
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/how-to/</guid>
-      <description>How-To Guide #  Use a hosted repo to manage your dotfiles across multiple machines #  chezmoi relies on your version control system and hosted repo to share changes across multiple machines. You should create a repo on the source code repository of your choice (e.g. Bitbucket, GitHub, or GitLab, many people call their repo dotfiles) and push the repo in the source directory here. For example:
-chezmoi cd git remote add origin https://github.</description>
+      <description>How-To Guide #  Daily operations #  Use a hosted repo to manage your dotfiles across multiple machines #  chezmoi relies on your version control system and hosted repo to share changes across multiple machines. You should create a repo on the source code repository of your choice (e.g. Bitbucket, GitHub, or GitLab, many people call their repo dotfiles) and push the repo in the source directory here. For example:</description>
     </item>
     
     <item>
@@ -66,7 +67,7 @@ chezmoi cd git remote add origin https://github.</description>
       <guid>https://chezmoi.io/docs/install/</guid>
       <description>Install Guide #  One-line binary install #  Install the correct binary for your operating system and architecture in ./bin with a single command.
 curl -sfL https://git.io/chezmoi | sh  Or on systems with Powershell, you can use this command:
-# To install in ./bin (iwr https://git.io/chezmoi.ps1).Content | powershell -c - # To install in another location &#39;$params = &amp;quot;-BinDir ~/other&amp;quot;&#39;, (iwr https://git.io/chezmoi.ps1).Content | powershell -c - # For information about other options, try this: &#39;$params = &amp;quot;-?</description>
+# To install in ./bin (iwr https://git.io/chezmoi.ps1).Content | powershell -c - # To install in another location &#39;$params = &amp;quot;-BinDir ~/other&amp;quot;&#39;, (iwr https://git.io/chezmoi.ps1).Content | powershell -c - # For information about other options, run &#39;$params = &amp;quot;-?</description>
     </item>
     
     <item>
@@ -76,9 +77,9 @@ curl -sfL https://git.io/chezmoi | sh  Or on systems with Powershell, you can us
       
       <guid>https://chezmoi.io/docs/media/</guid>
       <description>Media #  Recommended article: Fedora Magazine: Take back your dotfiles with Chezmoi
-Recommended video: Conf42: chezmoi: Manage your dotfiles across multiple machines, securely
+Recommended video: chezmoi: manage your dotfiles across multiple, diverse machines, securely
 Recommended podcast: FLOSS weekly episode 556: chezmoi
-   Date Version Format Link     2021-02-06 1.8.10 Video chezmoi: manage your dotfiles across multiple, diverse machines, securely   2021-01-12 1.8.10 Text Automating the Setup of a New Mac With All Your Apps, Preferences, and Development Tools   2020-11-06 1.</description>
+   Date Version Format Link     2021-02-17 1.8.11 Text (JP) chezmoi で dotfiles を手軽に柔軟にセキュアに管理する   2021-02-06 1.8.10 Video chezmoi: manage your dotfiles across multiple, diverse machines, securely   2021-01-12 1.8.10 Text Automating the Setup of a New Mac With All Your Apps, Preferences, and Development Tools   2020-11-06 1.</description>
     </item>
     
     <item>
@@ -88,7 +89,7 @@ Recommended podcast: FLOSS weekly episode 556: chezmoi
       
       <guid>https://chezmoi.io/docs/quick-start/</guid>
       <description>Quick Start Guide #  Concepts #  chezmoi stores the desired state of your dotfiles in the directory ~/.local/share/chezmoi. When you run chezmoi apply, chezmoi calculates the desired contents and permissions for each dotfile and then makes any changes necessary so that your dotfiles match that state.
-Start using chezmoi on your current machine #  Initialize chezmoi:
+Start using chezmoi on your current machine #  Assuming that you have already installed chezmoi, initialize chezmoi with:
 chezmoi init  This will create a new git repository in ~/.</description>
     </item>
     

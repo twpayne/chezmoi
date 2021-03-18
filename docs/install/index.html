@@ -2,24 +2,26 @@
 <html lang="en" dir=>
 
 <head>
-  <meta name="generator" content="Hugo 0.80.0" />
+  <meta name="generator" content="Hugo 0.81.0" />
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Install Guide #  One-line binary install #  Install the correct binary for your operating system and architecture in ./bin with a single command.
 curl -sfL https://git.io/chezmoi | sh  Or on systems with Powershell, you can use this command:
-# To install in ./bin (iwr https://git.io/chezmoi.ps1).Content | powershell -c - # To install in another location &#39;$params = &quot;-BinDir ~/other&quot;&#39;, (iwr https://git.io/chezmoi.ps1).Content | powershell -c - # For information about other options, try this: &#39;$params = &quot;-?">
+# To install in ./bin (iwr https://git.io/chezmoi.ps1).Content | powershell -c - # To install in another location &#39;$params = &quot;-BinDir ~/other&quot;&#39;, (iwr https://git.io/chezmoi.ps1).Content | powershell -c - # For information about other options, run &#39;$params = &quot;-?">
 <meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Install" />
 <meta property="og:description" content="Install Guide #  One-line binary install #  Install the correct binary for your operating system and architecture in ./bin with a single command.
 curl -sfL https://git.io/chezmoi | sh  Or on systems with Powershell, you can use this command:
-# To install in ./bin (iwr https://git.io/chezmoi.ps1).Content | powershell -c - # To install in another location &#39;$params = &quot;-BinDir ~/other&quot;&#39;, (iwr https://git.io/chezmoi.ps1).Content | powershell -c - # For information about other options, try this: &#39;$params = &quot;-?" />
+# To install in ./bin (iwr https://git.io/chezmoi.ps1).Content | powershell -c - # To install in another location &#39;$params = &quot;-BinDir ~/other&quot;&#39;, (iwr https://git.io/chezmoi.ps1).Content | powershell -c - # For information about other options, run &#39;$params = &quot;-?" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://chezmoi.io/docs/install/" />
+<meta property="og:url" content="https://chezmoi.io/docs/install/" /><meta property="article:section" content="docs" />
+
+
 
 <title>Install | chezmoi.io</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
-<link rel="stylesheet" href="/book.min.6c7c6446dfdee7c8c933e9bbc6e80ee3ed6c913b2a59519f2092c3c6a9d63e55.css" integrity="sha256-bHxkRt/e58jJM&#43;m7xugO4&#43;1skTsqWVGfIJLDxqnWPlU=">
-<script defer src="/en.search.min.5f522922c7a7e1f7010d51e6895fc00fe49478c8fa0c48007f91c1d93148049d.js" integrity="sha256-X1IpIsen4fcBDVHmiV/AD&#43;SUeMj6DEgAf5HB2TFIBJ0="></script>
+<link rel="stylesheet" href="/book.min.2bc2364a4a4b31f0ec1debecf0a8f90a840821f143dfe1ac6a0f7cbcbdcf64ac.css" integrity="sha256-K8I2SkpLMfDsHevs8Kj5CoQIIfFD3&#43;Gsag98vL3PZKw=">
+<script defer src="/en.search.min.04481beea89b83708b4c6ffc5dee3d3ed09254514b44be466e580e18c833747c.js" integrity="sha256-BEgb7qibg3CLTG/8Xe49PtCSVFFLRL5GblgOGMgzdHw="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -86,7 +88,7 @@ https://github.com/alex-shpak/hugo-book
 
 
 
-  <script>(function(){var menu=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(event){localStorage.setItem("menu.scrollTop",menu.scrollTop);});menu.scrollTop=localStorage.getItem("menu.scrollTop");})();</script>
+  <script>(function(){var a=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
 
 
  
@@ -123,7 +125,6 @@ https://github.com/alex-shpak/hugo-book
     <li><a href="#pre-built-binaries">Pre-built binaries</a></li>
     <li><a href="#all-pre-built-linux-packages-and-binaries">All pre-built Linux packages and binaries</a></li>
     <li><a href="#from-source">From source</a></li>
-    <li><a href="#upgrading">Upgrading</a></li>
   </ul>
 </nav>
 
@@ -155,7 +156,7 @@ with a single command.</p>
 # To install in another location
 '$params = &quot;-BinDir ~/other&quot;', (iwr https://git.io/chezmoi.ps1).Content | powershell -c -
 
-# For information about other options, try this:
+# For information about other options, run
 '$params = &quot;-?&quot;', (iwr https://git.io/chezmoi.ps1).Content | powershell -c -
 </code></pre>
 <h2 id="one-line-package-install">
@@ -298,7 +299,7 @@ documentation, and shell completions.</p>
 </tr>
 <tr>
 <td>macOS</td>
-<td><code>amd64</code></td>
+<td><code>amd64</code>, <code>arm64</code></td>
 <td><a href="https://github.com/twpayne/chezmoi/releases/latest"><code>tar.gz</code></a></td>
 </tr>
 <tr>
@@ -324,22 +325,9 @@ page</a>.</p>
   <a class="anchor" href="#from-source">#</a>
 </h2>
 <p>Download, build, and install chezmoi for your system:</p>
-<pre><code>cd $(mktemp -d)
-git clone --depth=1 https://github.com/twpayne/chezmoi.git
-cd chezmoi
-go install
+<pre><code>go install github.com/twpayne/chezmoi@latest
 </code></pre>
-<p>Building chezmoi requires Go 1.14 or later.</p>
-<h2 id="upgrading">
-  Upgrading
-  <a class="anchor" href="#upgrading">#</a>
-</h2>
-<p>If you have installed a pre-built binary of chezmoi, you can upgrade it to the
-latest release with:</p>
-<pre><code>chezmoi upgrade
-</code></pre>
-<p>This will re-use whichever mechanism you used to install chezmoi to install the
-latest release.</p>
+<p>Building chezmoi requires Go 1.16 or later.</p>
 </article>
  
       
@@ -382,7 +370,6 @@ latest release.</p>
     <li><a href="#pre-built-binaries">Pre-built binaries</a></li>
     <li><a href="#all-pre-built-linux-packages-and-binaries">All pre-built Linux packages and binaries</a></li>
     <li><a href="#from-source">From source</a></li>
-    <li><a href="#upgrading">Upgrading</a></li>
   </ul>
 </nav>
 

@@ -1,61 +1,33 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
-  
   <url>
     <loc>https://chezmoi.io/categories/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://chezmoi.io/docs/changes/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://chezmoi.io/docs/comparison/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://chezmoi.io/docs/contributing/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://chezmoi.io/docs/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://chezmoi.io/docs/faq/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://chezmoi.io/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://chezmoi.io/docs/how-to/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://chezmoi.io/docs/install/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://chezmoi.io/docs/media/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://chezmoi.io/docs/quick-start/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://chezmoi.io/docs/reference/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://chezmoi.io/tags/</loc>
-  </url>
-  
-  <url>
+  </url><url>
     <loc>https://chezmoi.io/docs/templating/</loc>
   </url>
-  
 </urlset>

@@ -2,7 +2,7 @@
 <html lang="en" dir=>
 
 <head>
-  <meta name="generator" content="Hugo 0.80.0" />
+  <meta name="generator" content="Hugo 0.81.0" />
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Reference Manual #  Concepts #  chezmoi evaluates the source state for the current machine and then updates the destination directory, where:
@@ -15,13 +15,15 @@
   The source directory is where chezmoi stores the source state, by default ~/.local/share/chezmoi.
   The target state is the source state computed for the current machine." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://chezmoi.io/docs/reference/" />
+<meta property="og:url" content="https://chezmoi.io/docs/reference/" /><meta property="article:section" content="docs" />
+
+
 
 <title>Reference | chezmoi.io</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
-<link rel="stylesheet" href="/book.min.6c7c6446dfdee7c8c933e9bbc6e80ee3ed6c913b2a59519f2092c3c6a9d63e55.css" integrity="sha256-bHxkRt/e58jJM&#43;m7xugO4&#43;1skTsqWVGfIJLDxqnWPlU=">
-<script defer src="/en.search.min.5f522922c7a7e1f7010d51e6895fc00fe49478c8fa0c48007f91c1d93148049d.js" integrity="sha256-X1IpIsen4fcBDVHmiV/AD&#43;SUeMj6DEgAf5HB2TFIBJ0="></script>
+<link rel="stylesheet" href="/book.min.2bc2364a4a4b31f0ec1debecf0a8f90a840821f143dfe1ac6a0f7cbcbdcf64ac.css" integrity="sha256-K8I2SkpLMfDsHevs8Kj5CoQIIfFD3&#43;Gsag98vL3PZKw=">
+<script defer src="/en.search.min.04481beea89b83708b4c6ffc5dee3d3ed09254514b44be466e580e18c833747c.js" integrity="sha256-BEgb7qibg3CLTG/8Xe49PtCSVFFLRL5GblgOGMgzdHw="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -88,7 +90,7 @@ https://github.com/alex-shpak/hugo-book
 
 
 
-  <script>(function(){var menu=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(event){localStorage.setItem("menu.scrollTop",menu.scrollTop);});menu.scrollTop=localStorage.getItem("menu.scrollTop");})();</script>
+  <script>(function(){var a=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
 
 
  
@@ -124,15 +126,29 @@ https://github.com/alex-shpak/hugo-book
       <ul>
         <li><a href="#--color-value"><code>--color</code> <em>value</em></a></li>
         <li><a href="#-c---config-filename"><code>-c</code>, <code>--config</code> <em>filename</em></a></li>
+        <li><a href="#--cpu-profile-filename"><code>--cpu-profile</code> <em>filename</em></a></li>
         <li><a href="#--debug"><code>--debug</code></a></li>
         <li><a href="#-d---destination-directory"><code>-D</code>, <code>--destination</code> <em>directory</em></a></li>
-        <li><a href="#--follow"><code>--follow</code></a></li>
         <li><a href="#-n---dry-run"><code>-n</code>, <code>--dry-run</code></a></li>
+        <li><a href="#-x---exclude-types"><code>-x</code>, <code>--exclude</code> <em>types</em></a></li>
+        <li><a href="#--force"><code>--force</code></a></li>
         <li><a href="#-h---help"><code>-h</code>, <code>--help</code></a></li>
+        <li><a href="#-k---keep-going"><code>-k</code>, <code>--keep-going</code></a></li>
+        <li><a href="#--no-pager"><code>--no-pager</code></a></li>
+        <li><a href="#--no-tty"><code>--no-tty</code></a></li>
+        <li><a href="#-o---output-filename"><code>-o</code>, <code>--output</code> <em>filename</em></a></li>
         <li><a href="#-r---remove"><code>-r</code>. <code>--remove</code></a></li>
         <li><a href="#-s---source-directory"><code>-S</code>, <code>--source</code> <em>directory</em></a></li>
+        <li><a href="#--use-builtin-git-value"><code>--use-builtin-git</code> <em>value</em></a></li>
         <li><a href="#-v---verbose"><code>-v</code>, <code>--verbose</code></a></li>
         <li><a href="#--version"><code>--version</code></a></li>
+      </ul>
+    </li>
+    <li><a href="#common-command-line-flags">Common command line flags</a>
+      <ul>
+        <li><a href="#--format-format"><code>--format</code> <em>format</em></a></li>
+        <li><a href="#--include-types"><code>--include</code> <em>types</em></a></li>
+        <li><a href="#-r---recursive"><code>-r</code>, <code>--recursive</code></a></li>
       </ul>
     </li>
     <li><a href="#configuration-file">Configuration file</a>
@@ -142,6 +158,14 @@ https://github.com/alex-shpak/hugo-book
       </ul>
     </li>
     <li><a href="#source-state-attributes">Source state attributes</a></li>
+    <li><a href="#target-types">Target types</a>
+      <ul>
+        <li><a href="#files">Files</a></li>
+        <li><a href="#directories">Directories</a></li>
+        <li><a href="#symbolic-links">Symbolic links</a></li>
+        <li><a href="#scripts">Scripts</a></li>
+      </ul>
+    </li>
     <li><a href="#special-files-and-directories">Special files and directories</a>
       <ul>
         <li><a href="#chezmoiformattmpl"><code>.chezmoi.&lt;format&gt;.tmpl</code></a></li>
@@ -171,7 +195,6 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#forget-targets"><code>forget</code> <em>targets</em></a></li>
         <li><a href="#git-arguments"><code>git</code> [<em>arguments</em>]</a></li>
         <li><a href="#help-command"><code>help</code> <em>command</em></a></li>
-        <li><a href="#hg-arguments"><code>hg</code> [<em>arguments</em>]</a></li>
         <li><a href="#init-repo"><code>init</code> [<em>repo</em>]</a></li>
         <li><a href="#import-filename"><code>import</code> <em>filename</em></a></li>
         <li><a href="#manage-targets"><code>manage</code> <em>targets</em></a></li>
@@ -181,12 +204,12 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#remove-targets"><code>remove</code> <em>targets</em></a></li>
         <li><a href="#rm-targets"><code>rm</code> <em>targets</em></a></li>
         <li><a href="#secret"><code>secret</code></a></li>
-        <li><a href="#source-args"><code>source</code> [<em>args</em>]</a></li>
         <li><a href="#source-path-targets"><code>source-path</code> [<em>targets</em>]</a></li>
+        <li><a href="#state"><code>state</code></a></li>
+        <li><a href="#status"><code>status</code></a></li>
         <li><a href="#unmanage-targets"><code>unmanage</code> <em>targets</em></a></li>
         <li><a href="#unmanaged"><code>unmanaged</code></a></li>
         <li><a href="#update"><code>update</code></a></li>
-        <li><a href="#upgrade"><code>upgrade</code></a></li>
         <li><a href="#verify-targets"><code>verify</code> [<em>targets</em>]</a></li>
       </ul>
     </li>
@@ -199,6 +222,7 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#bitwarden-args"><code>bitwarden</code> [<em>args</em>]</a></li>
         <li><a href="#bitwardenattachment-filename-itemid"><code>bitwardenAttachment</code> <em>filename</em> <em>itemid</em></a></li>
         <li><a href="#bitwardenfields-args"><code>bitwardenFields</code> [<em>args</em>]</a></li>
+        <li><a href="#githubkeys-user"><code>gitHubKeys</code> <em>user</em></a></li>
         <li><a href="#gopass-gopass-name"><code>gopass</code> <em>gopass-name</em></a></li>
         <li><a href="#include-filename"><code>include</code> <em>filename</em></a></li>
         <li><a href="#ioreg"><code>ioreg</code></a></li>
@@ -212,6 +236,7 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#onepassword-uuid-vault-uuid"><code>onepassword</code> <em>uuid</em> [<em>vault-uuid</em>]</a></li>
         <li><a href="#onepassworddocument-uuid-vault-uuid"><code>onepasswordDocument</code> <em>uuid</em> [<em>vault-uuid</em>]</a></li>
         <li><a href="#onepassworddetailsfields-uuid-vault-uuid"><code>onepasswordDetailsFields</code> <em>uuid</em> [<em>vault-uuid</em>]</a></li>
+        <li><a href="#output-name-args"><code>output</code> <em>name</em> [<em>args</em>]</a></li>
         <li><a href="#pass-pass-name"><code>pass</code> <em>pass-name</em></a></li>
         <li><a href="#promptbool-prompt"><code>promptBool</code> <em>prompt</em></a></li>
         <li><a href="#promptint-prompt"><code>promptInt</code> <em>prompt</em></a></li>
@@ -282,15 +307,18 @@ destination directory.</p>
   <a class="anchor" href="#--color-value">#</a>
 </h3>
 <p>Colorize diffs, <em>value</em> can be <code>on</code>, <code>off</code>, <code>auto</code>, or any boolean-like value
-recognized by
-<a href="https://pkg.go.dev/strconv?tab=doc#ParseBool"><code>strconv.ParseBool</code></a>. The default
-value is <code>auto</code> which will colorize diffs only if the the environment variable
-<code>NO_COLOR</code> is not set and stdout is a terminal.</p>
+recognized by <code>parseBool</code>. The default is <code>auto</code> which will colorize diffs only
+if the the environment variable <code>NO_COLOR</code> is not set and stdout is a terminal.</p>
 <h3 id="-c---config-filename">
   <code>-c</code>, <code>--config</code> <em>filename</em>
   <a class="anchor" href="#-c---config-filename">#</a>
 </h3>
 <p>Read the configuration from <em>filename</em>.</p>
+<h3 id="--cpu-profile-filename">
+  <code>--cpu-profile</code> <em>filename</em>
+  <a class="anchor" href="#--cpu-profile-filename">#</a>
+</h3>
+<p>Write a <a href="https://blog.golang.org/pprof">CPU profile</a> to <em>filename</em>.</p>
 <h3 id="--debug">
   <code>--debug</code>
   <a class="anchor" href="#--debug">#</a>
@@ -301,12 +329,6 @@ value is <code>auto</code> which will colorize diffs only if the the environment
   <a class="anchor" href="#-d---destination-directory">#</a>
 </h3>
 <p>Use <em>directory</em> as the destination directory.</p>
-<h3 id="--follow">
-  <code>--follow</code>
-  <a class="anchor" href="#--follow">#</a>
-</h3>
-<p>If the last part of a target is a symlink, deal with what the symlink
-references, rather than the symlink itself.</p>
 <h3 id="-n---dry-run">
   <code>-n</code>, <code>--dry-run</code>
   <a class="anchor" href="#-n---dry-run">#</a>
@@ -314,11 +336,45 @@ references, rather than the symlink itself.</p>
 <p>Set dry run mode. In dry run mode, the destination directory is never modified.
 This is most useful in combination with the <code>-v</code> (verbose) flag to print changes
 that would be made without making them.</p>
+<h3 id="-x---exclude-types">
+  <code>-x</code>, <code>--exclude</code> <em>types</em>
+  <a class="anchor" href="#-x---exclude-types">#</a>
+</h3>
+<p>Exclude target state entries of type <em>types</em>. <em>types</em> is a comma-separated list
+of target states (<code>all</code>, <code>dirs</code>, <code>files</code>, <code>remove</code>, <code>scripts</code>, <code>symlinks</code>, and
+<code>encrypted</code>). For example, <code>--exclude=scripts</code> will cause the command to not run
+scripts and <code>--exclude=encrypted</code> will exclude encrypted files.</p>
+<h3 id="--force">
+  <code>--force</code>
+  <a class="anchor" href="#--force">#</a>
+</h3>
+<p>Make changes without prompting.</p>
 <h3 id="-h---help">
   <code>-h</code>, <code>--help</code>
   <a class="anchor" href="#-h---help">#</a>
 </h3>
 <p>Print help.</p>
+<h3 id="-k---keep-going">
+  <code>-k</code>, <code>--keep-going</code>
+  <a class="anchor" href="#-k---keep-going">#</a>
+</h3>
+<p>Keep going as far as possible after a encountering an error.</p>
+<h3 id="--no-pager">
+  <code>--no-pager</code>
+  <a class="anchor" href="#--no-pager">#</a>
+</h3>
+<p>Do not use the pager.</p>
+<h3 id="--no-tty">
+  <code>--no-tty</code>
+  <a class="anchor" href="#--no-tty">#</a>
+</h3>
+<p>Do not attempt to get a TTY to read input and passwords. Instead, read them from
+stdin.</p>
+<h3 id="-o---output-filename">
+  <code>-o</code>, <code>--output</code> <em>filename</em>
+  <a class="anchor" href="#-o---output-filename">#</a>
+</h3>
+<p>Write the output to <em>filename</em> instead of stdout.</p>
 <h3 id="-r---remove">
   <code>-r</code>. <code>--remove</code>
   <a class="anchor" href="#-r---remove">#</a>
@@ -329,6 +385,14 @@ that would be made without making them.</p>
   <a class="anchor" href="#-s---source-directory">#</a>
 </h3>
 <p>Use <em>directory</em> as the source directory.</p>
+<h3 id="--use-builtin-git-value">
+  <code>--use-builtin-git</code> <em>value</em>
+  <a class="anchor" href="#--use-builtin-git-value">#</a>
+</h3>
+<p>Use chezmoi&rsquo;s builtin git instead of <code>git.command</code> for the <code>init</code> and <code>update</code>
+commands. <em>value</em> can be <code>on</code>, <code>off</code>, <code>auto</code>, or any boolean-like value
+recognized by <code>parseBool</code>. The default is <code>auto</code> which will only use the builtin
+git if <code>git.command</code> cannot be found in <code>$PATH</code>.</p>
 <h3 id="-v---verbose">
   <code>-v</code>, <code>--verbose</code>
   <a class="anchor" href="#-v---verbose">#</a>
@@ -342,6 +406,30 @@ state and the destination set are printed as unified diffs.</p>
 </h3>
 <p>Print the version of chezmoi, the commit at which it was built, and the build
 timestamp.</p>
+<h2 id="common-command-line-flags">
+  Common command line flags
+  <a class="anchor" href="#common-command-line-flags">#</a>
+</h2>
+<p>The following flags apply to multiple commands where they are relevant.</p>
+<h3 id="--format-format">
+  <code>--format</code> <em>format</em>
+  <a class="anchor" href="#--format-format">#</a>
+</h3>
+<p>Set the output format. <em>format</em> can be <code>json</code> or <code>yaml</code>.</p>
+<h3 id="--include-types">
+  <code>--include</code> <em>types</em>
+  <a class="anchor" href="#--include-types">#</a>
+</h3>
+<p>Only operate on target state entries of type <em>types</em>. <em>types</em> is a
+comma-separated list of target states (<code>all</code>, <code>dirs</code>, <code>files</code>, <code>remove</code>,
+<code>scripts</code>, <code>symlinks</code>, and <code>encrypted</code>) and can be excluded by preceeding them
+with a <code>no</code>. For example, <code>--include=dirs,files</code> will cause the command to apply
+to directories and files only.</p>
+<h3 id="-r---recursive">
+  <code>-r</code>, <code>--recursive</code>
+  <a class="anchor" href="#-r---recursive">#</a>
+</h3>
+<p>Recurse into subdirectories, <code>true</code> by default.</p>
 <h2 id="configuration-file">
   Configuration file
   <a class="anchor" href="#configuration-file">#</a>
@@ -375,7 +463,7 @@ of the config file is <code>chezmoi</code>, and the first config file found is u
 <td><code>color</code></td>
 <td>string</td>
 <td><code>auto</code></td>
-<td>Colorize diffs</td>
+<td>Colorize output</td>
 </tr>
 <tr>
 <td></td>
@@ -393,17 +481,17 @@ of the config file is <code>chezmoi</code>, and the first config file found is u
 </tr>
 <tr>
 <td></td>
-<td><code>dryRun</code></td>
-<td>bool</td>
-<td><code>false</code></td>
-<td>Dry run mode</td>
+<td><code>encryption</code></td>
+<td>string</td>
+<td><em>none</em></td>
+<td>Encryption tool, either <code>age</code> or <code>gpg</code></td>
 </tr>
 <tr>
 <td></td>
-<td><code>follow</code></td>
-<td>bool</td>
-<td><code>false</code></td>
-<td>Follow symlinks</td>
+<td><code>format</code></td>
+<td>string</td>
+<td><code>json</code></td>
+<td>Format for data output, either <code>json</code> or <code>yaml</code></td>
 </tr>
 <tr>
 <td></td>
@@ -428,10 +516,73 @@ of the config file is <code>chezmoi</code>, and the first config file found is u
 </tr>
 <tr>
 <td></td>
-<td><code>verbose</code></td>
-<td>bool</td>
-<td><code>false</code></td>
-<td>Verbose mode</td>
+<td><code>useBuiltinGit</code></td>
+<td>string</td>
+<td><code>auto</code></td>
+<td>Use builtin git if <code>git</code> command is not found in $PATH</td>
+</tr>
+<tr>
+<td><code>age</code></td>
+<td><code>args</code></td>
+<td>[]string</td>
+<td><em>none</em></td>
+<td>Extra args to age CLI command</td>
+</tr>
+<tr>
+<td></td>
+<td><code>command</code></td>
+<td>string</td>
+<td><code>age</code></td>
+<td>age CLI command</td>
+</tr>
+<tr>
+<td></td>
+<td><code>identity</code></td>
+<td>string</td>
+<td><em>none</em></td>
+<td>age identity file</td>
+</tr>
+<tr>
+<td></td>
+<td><code>identities</code></td>
+<td>[]string</td>
+<td><em>none</em></td>
+<td>age identity files</td>
+</tr>
+<tr>
+<td></td>
+<td><code>recipient</code></td>
+<td>string</td>
+<td><em>none</em></td>
+<td>age recipient</td>
+</tr>
+<tr>
+<td></td>
+<td><code>recipients</code></td>
+<td>[]string</td>
+<td><em>none</em></td>
+<td>age recipients</td>
+</tr>
+<tr>
+<td></td>
+<td><code>recipientsFile</code></td>
+<td>[]string</td>
+<td><em>none</em></td>
+<td>age recipients file</td>
+</tr>
+<tr>
+<td></td>
+<td><code>recipientsFiles</code></td>
+<td>[]string</td>
+<td><em>none</em></td>
+<td>age receipients files</td>
+</tr>
+<tr>
+<td></td>
+<td><code>suffix</code></td>
+<td>string</td>
+<td><code>.age</code></td>
+<td>Suffix appended to age-encrypted files</td>
 </tr>
 <tr>
 <td><code>bitwarden</code></td>
@@ -456,24 +607,59 @@ of the config file is <code>chezmoi</code>, and the first config file found is u
 </tr>
 <tr>
 <td><code>diff</code></td>
-<td><code>format</code></td>
-<td>string</td>
-<td><code>chezmoi</code></td>
-<td>Diff format, either <code>chezmoi</code> or <code>git</code></td>
-</tr>
-<tr>
-<td></td>
 <td><code>pager</code></td>
 <td>string</td>
-<td><em>none</em></td>
+<td><code>$PAGER</code> / <code>less</code></td>
 <td>Pager</td>
 </tr>
 <tr>
-<td><code>genericSecret</code></td>
+<td><code>edit</code></td>
+<td><code>args</code></td>
+<td>[]string</td>
+<td><em>none</em></td>
+<td>Extra args to edit command</td>
+</tr>
+<tr>
+<td></td>
+<td><code>command</code></td>
+<td>string</td>
+<td><code>$EDITOR</code> / <code>$VISUAL</code></td>
+<td>Edit command</td>
+</tr>
+<tr>
+<td><code>secret</code></td>
 <td><code>command</code></td>
 <td>string</td>
 <td><em>none</em></td>
 <td>Generic secret command</td>
+</tr>
+<tr>
+<td><code>git</code></td>
+<td><code>autoAdd </code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Add changes to the source state after any change</td>
+</tr>
+<tr>
+<td></td>
+<td><code>autoCommit</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Commit changes to the source state after any change</td>
+</tr>
+<tr>
+<td></td>
+<td><code>autoPush</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Push changes to the source state after any change</td>
+</tr>
+<tr>
+<td></td>
+<td><code>command</code></td>
+<td>string</td>
+<td><code>git</code></td>
+<td>Source version control system</td>
 </tr>
 <tr>
 <td><code>gopass</code></td>
@@ -484,6 +670,13 @@ of the config file is <code>chezmoi</code>, and the first config file found is u
 </tr>
 <tr>
 <td><code>gpg</code></td>
+<td><code>args</code></td>
+<td>[]string</td>
+<td><em>none</em></td>
+<td>Extra args to GPG CLI command</td>
+</tr>
+<tr>
+<td></td>
 <td><code>command</code></td>
 <td>string</td>
 <td><code>gpg</code></td>
@@ -495,6 +688,13 @@ of the config file is <code>chezmoi</code>, and the first config file found is u
 <td>string</td>
 <td><em>none</em></td>
 <td>GPG recipient</td>
+</tr>
+<tr>
+<td></td>
+<td><code>suffix</code></td>
+<td>string</td>
+<td><code>.asc</code></td>
+<td>Suffix appended to GPG-encrypted files</td>
 </tr>
 <tr>
 <td></td>
@@ -567,27 +767,6 @@ of the config file is <code>chezmoi</code>, and the first config file found is u
 <td>Pass CLI command</td>
 </tr>
 <tr>
-<td><code>sourceVCS</code></td>
-<td><code>autoCommit</code></td>
-<td>bool</td>
-<td><code>false</code></td>
-<td>Commit changes to the source state after any change</td>
-</tr>
-<tr>
-<td></td>
-<td><code>autoPush</code></td>
-<td>bool</td>
-<td><code>false</code></td>
-<td>Push changes to the source state after any change</td>
-</tr>
-<tr>
-<td></td>
-<td><code>command</code></td>
-<td>string</td>
-<td><code>git</code></td>
-<td>Source version control system</td>
-</tr>
-<tr>
 <td><code>template</code></td>
 <td><code>options</code></td>
 <td>[]string</td>
@@ -613,8 +792,8 @@ of the config file is <code>chezmoi</code>, and the first config file found is u
 </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
     <span style="color:#f92672">&#34;sourceDir&#34;</span>: <span style="color:#e6db74">&#34;/home/user/.dotfiles&#34;</span>,
-    <span style="color:#f92672">&#34;diff&#34;</span>: {
-        <span style="color:#f92672">&#34;format&#34;</span>: <span style="color:#e6db74">&#34;git&#34;</span>
+    <span style="color:#f92672">&#34;git&#34;</span>: {
+        <span style="color:#f92672">&#34;autoPush&#34;</span>: <span style="color:#66d9ef">true</span>
     }
 }
 </code></pre></div><h4 id="toml">
@@ -622,15 +801,15 @@ of the config file is <code>chezmoi</code>, and the first config file found is u
   <a class="anchor" href="#toml">#</a>
 </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml"><span style="color:#a6e22e">sourceDir</span> = <span style="color:#e6db74">&#34;/home/user/.dotfiles&#34;</span>
-[<span style="color:#a6e22e">diff</span>]
-    <span style="color:#a6e22e">format</span> = <span style="color:#e6db74">&#34;git&#34;</span>
+[<span style="color:#a6e22e">git</span>]
+    <span style="color:#a6e22e">autoPush</span> = <span style="color:#66d9ef">true</span>
 </code></pre></div><h4 id="yaml">
   YAML
   <a class="anchor" href="#yaml">#</a>
 </h4>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">sourceDir</span>: <span style="color:#ae81ff">/home/user/.dotfiles</span>
-<span style="color:#f92672">diff</span>:
-    <span style="color:#f92672">format</span>: <span style="color:#ae81ff">git</span>
+<span style="color:#f92672">git</span>:
+    <span style="color:#f92672">autoPush</span>: <span style="color:#66d9ef">true</span>
 </code></pre></div><h2 id="source-state-attributes">
   Source state attributes
   <a class="anchor" href="#source-state-attributes">#</a>
@@ -651,20 +830,28 @@ special, and are collectively referred to as &ldquo;attributes&rdquo;:</p>
 </thead>
 <tbody>
 <tr>
-<td><code>encrypted_</code></td>
-<td>Encrypt the file in the source state.</td>
+<td><code>after_</code></td>
+<td>Run script after updating the destination.</td>
 </tr>
 <tr>
-<td><code>once_</code></td>
-<td>Only run script once.</td>
+<td><code>before_</code></td>
+<td>Run script before updating the desintation.</td>
 </tr>
 <tr>
-<td><code>private_</code></td>
-<td>Remove all group and world permissions from the target file or directory.</td>
+<td><code>create_</code></td>
+<td>Ensure that the file exists, and create it with contents if it does not.</td>
+</tr>
+<tr>
+<td><code>dot_</code></td>
+<td>Rename to use a leading dot, e.g. <code>dot_foo</code> becomes <code>.foo</code>.</td>
 </tr>
 <tr>
 <td><code>empty_</code></td>
 <td>Ensure the file exists, even if is empty. By default, empty files are removed.</td>
+</tr>
+<tr>
+<td><code>encrypted_</code></td>
+<td>Encrypt the file in the source state.</td>
 </tr>
 <tr>
 <td><code>exact_</code></td>
@@ -675,16 +862,24 @@ special, and are collectively referred to as &ldquo;attributes&rdquo;:</p>
 <td>Add executable permissions to the target file.</td>
 </tr>
 <tr>
+<td><code>modify_</code></td>
+<td>Treat the contents as a script that modifies an existing file.</td>
+</tr>
+<tr>
+<td><code>once_</code></td>
+<td>Run script once.</td>
+</tr>
+<tr>
+<td><code>private_</code></td>
+<td>Remove all group and world permissions from the target file or directory.</td>
+</tr>
+<tr>
 <td><code>run_</code></td>
 <td>Treat the contents as a script to run.</td>
 </tr>
 <tr>
 <td><code>symlink_</code></td>
 <td>Create a symlink instead of a regular file.</td>
-</tr>
-<tr>
-<td><code>dot_</code></td>
-<td>Rename to use a leading dot, e.g. <code>dot_foo</code> becomes <code>.foo</code>.</td>
 </tr>
 </tbody>
 </table>
@@ -702,8 +897,9 @@ special, and are collectively referred to as &ldquo;attributes&rdquo;:</p>
 </tr>
 </tbody>
 </table>
-<p>Order of prefixes is important, the order is <code>run_</code>, <code>exact_</code>, <code>private_</code>,
-<code>empty_</code>, <code>executable_</code>, <code>symlink_</code>, <code>once_</code>, <code>dot_</code>.</p>
+<p>The order of prefixes is important, the order is <code>run_</code>, <code>create_</code>, <code>modify_</code>,
+<code>before_</code>, <code>after_</code>, <code>exact_</code>, <code>private_</code>, <code>empty_</code>, <code>executable_</code>, <code>symlink_</code>,
+<code>once_</code>, <code>dot_</code>.</p>
 <p>Different target types allow different prefixes and suffixes:</p>
 <table>
 <thead>
@@ -721,12 +917,22 @@ special, and are collectively referred to as &ldquo;attributes&rdquo;:</p>
 </tr>
 <tr>
 <td>Regular file</td>
-<td><code>encrypted_</code>, <code>private_</code>, <code>empty_</code>, <code>executable_</code>, <code>dot_</code></td>
+<td><code>encrypted_</code>, <code>private_</code>, <code>executable_</code>, <code>dot_</code></td>
+<td><code>.tmpl</code></td>
+</tr>
+<tr>
+<td>Create file</td>
+<td><code>create_</code>, <code>encrypted_</code>, <code>private_</code>, <code>executable_</code>, <code>dot_</code></td>
+<td><code>.tmpl</code></td>
+</tr>
+<tr>
+<td>Modify file</td>
+<td><code>modify_</code>, <code>encrypted_</code>, <code>private_</code>, <code>executable_</code>, <code>dot_</code></td>
 <td><code>.tmpl</code></td>
 </tr>
 <tr>
 <td>Script</td>
-<td><code>run_</code>, <code>once_</code></td>
+<td><code>run_</code>, <code>once_</code>, <code>before_</code> or <code>after_</code></td>
 <td><code>.tmpl</code></td>
 </tr>
 <tr>
@@ -736,6 +942,75 @@ special, and are collectively referred to as &ldquo;attributes&rdquo;:</p>
 </tr>
 </tbody>
 </table>
+<p>In addition, if the source file is encrypted, the suffix <code>.age</code> (when age
+encryption is used) or <code>.asc</code> (when gpg encryption is used) is stripped. These
+suffixes can be overridden with the <code>age.suffix</code> and <code>gpg.suffix</code> configuration
+variables.</p>
+<h2 id="target-types">
+  Target types
+  <a class="anchor" href="#target-types">#</a>
+</h2>
+<p>chezmoi will create, update, and delete files, directories, and symbolic links
+in the destination directory, and run scripts. chezmoi deterministically
+performs actions in ASCII order of their target name. For example, given a file
+<code>dot_a</code>, a script <code>run_z</code>, and a directory <code>exact_dot_c</code>, chezmoi will first
+create <code>.a</code>, create <code>.c</code>, and then execute <code>run_z</code>.</p>
+<h3 id="files">
+  Files
+  <a class="anchor" href="#files">#</a>
+</h3>
+<p>Files are represented by regular files in the source state. The <code>encrypted_</code>
+attribute determines whether the file in the source state is encrypted. The
+<code>executable_</code> attribute will set the executable bits when the file is written to
+the target state, and the <code>private_</code> attribute will clear all group and world
+permissions. Files with the <code>.tmpl</code> suffix will be interpreted as templates.</p>
+<h4 id="create-file">
+  Create file
+  <a class="anchor" href="#create-file">#</a>
+</h4>
+<p>Files with the <code>create_</code> prefix will be created in the target state with the
+contents of the file in the source state if they do not already exist. If the
+file in the destination state already exists then its contents will be left
+unchanged.</p>
+<h4 id="modify-file">
+  Modify file
+  <a class="anchor" href="#modify-file">#</a>
+</h4>
+<p>Files with the <code>modify_</code> prefix are treated as scripts that modify an existing
+file. The contents of the existing file (which maybe empty if the existing file
+does not exist or is empty) are passed to the script&rsquo;s standard input, and the
+new contents are read from the scripts standard output.</p>
+<h3 id="directories">
+  Directories
+  <a class="anchor" href="#directories">#</a>
+</h3>
+<p>Directories are represented by regular directories in the source state. The
+<code>exact_</code> attribute causes chezmoi to remove any entries in the target state that
+are not explicitly specified in the source state, and the <code>private_</code> attribute
+causes chezmoi to clear all group and world permssions.</p>
+<h3 id="symbolic-links">
+  Symbolic links
+  <a class="anchor" href="#symbolic-links">#</a>
+</h3>
+<p>Symbolic links are represented by regular files in the source state with the
+prefix <code>symlink_</code>. The contents of the file will have a trailing newline
+stripped, and the result be interpreted as the target of the symbolic link.
+Symbolic links with the <code>.tmpl</code> suffix in the source state are interpreted as
+templates.</p>
+<h3 id="scripts">
+  Scripts
+  <a class="anchor" href="#scripts">#</a>
+</h3>
+<p>Scripts are represented as regular files in the source state with prefix <code>run_</code>.
+The file&rsquo;s contents (after being interpreted as a template if it has a <code>.tmpl</code>
+suffix) are executed. Scripts are executed on every <code>chezmoi apply</code>, unless they
+have the <code>once_</code> attribute, in which case they are only executed when they are
+first found or when their contents have changed.</p>
+<p>Scripts with the <code>before_</code> attribute are executed before any files, directories,
+or symlinks are updated. Scripts with the <code>after_</code> attribute are executed after
+all files, directories, and symlinks have been updated. Scripts without an
+<code>before_</code> or <code>after_</code> attribute are executed in ASCII order of their target
+names with respect to files, directories, and symlinks.</p>
 <h2 id="special-files-and-directories">
   Special files and directories
   <a class="anchor" href="#special-files-and-directories">#</a>
@@ -780,6 +1055,7 @@ ignored on different machines.</p>
 
 *.txt   # ignore *.txt in the target directory
 */*.txt # ignore *.txt in subdirectories of the target directory
+backups/** # ignore backups folder in chezmoi directory and all its contents
         # but not in subdirectories of subdirectories;
         # so a/b/c.txt would *not* be ignored
 backups/** # ignore all contents of backups folder in chezmoi directory
@@ -862,19 +1138,30 @@ ones. This implies the <code>--template</code> option.</p>
   <a class="anchor" href="#-f---force">#</a>
 </h4>
 <p>Add <em>targets</em>, even if doing so would cause a source template to be overwritten.</p>
-<h4 id="-x---exact">
-  <code>-x</code>, <code>--exact</code>
-  <a class="anchor" href="#-x---exact">#</a>
+<h4 id="--follow">
+  <code>--follow</code>
+  <a class="anchor" href="#--follow">#</a>
+</h4>
+<p>If the last part of a target is a symlink, add the target of the symlink instead
+of the symlink itself.</p>
+<h4 id="--exact">
+  <code>--exact</code>
+  <a class="anchor" href="#--exact">#</a>
 </h4>
 <p>Set the <code>exact</code> attribute on added directories.</p>
+<h4 id="-i---include-types">
+  <code>-i</code>, <code>--include</code> <em>types</em>
+  <a class="anchor" href="#-i---include-types">#</a>
+</h4>
+<p>Only add entries of type <em>types</em>.</p>
 <h4 id="-p---prompt">
   <code>-p</code>, <code>--prompt</code>
   <a class="anchor" href="#-p---prompt">#</a>
 </h4>
 <p>Interactively prompt before adding each file.</p>
-<h4 id="-r---recursive">
+<h4 id="-r---recursive-1">
   <code>-r</code>, <code>--recursive</code>
-  <a class="anchor" href="#-r---recursive">#</a>
+  <a class="anchor" href="#-r---recursive-1">#</a>
 </h4>
 <p>Recursively add all files, directories, and symlinks.</p>
 <h4 id="-t---template">
@@ -896,7 +1183,20 @@ chezmoi add ~/.oh-my-zsh --exact --recursive
   <a class="anchor" href="#apply-targets">#</a>
 </h3>
 <p>Ensure that <em>targets</em> are in the target state, updating them if necessary. If no
-targets are specified, the state of all targets are ensured.</p>
+targets are specified, the state of all targets are ensured. If a target has
+been modified since chezmoi last wrote it then the user will be prompted if they
+want to overwrite the file.</p>
+<h4 id="-i---include-types-1">
+  <code>-i</code>, <code>--include</code> <em>types</em>
+  <a class="anchor" href="#-i---include-types-1">#</a>
+</h4>
+<p>Only add entries of type <em>types</em>.</p>
+<h4 id="--source-path">
+  <code>--source-path</code>
+  <a class="anchor" href="#--source-path">#</a>
+</h4>
+<p>Specify targets by source path, rather than target path. This is useful for
+applying changes after editing.</p>
 <h4 id="apply-examples">
   <code>apply</code> examples
   <a class="anchor" href="#apply-examples">#</a>
@@ -905,23 +1205,37 @@ targets are specified, the state of all targets are ensured.</p>
 chezmoi apply --dry-run --verbose
 chezmoi apply ~/.bashrc
 </code></pre>
+<p>In <code>~/.vimrc</code>:</p>
+<pre><code>autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path %
+</code></pre>
 <h3 id="archive">
   <code>archive</code>
   <a class="anchor" href="#archive">#</a>
 </h3>
 <p>Generate a tar archive of the target state. This can be piped into <code>tar</code> to
 inspect the target state.</p>
-<h4 id="--output--o-filename">
-  <code>--output</code>, <code>-o</code> <em>filename</em>
-  <a class="anchor" href="#--output--o-filename">#</a>
+<h4 id="--format-format-1">
+  <code>--format</code> <em>format</em>
+  <a class="anchor" href="#--format-format-1">#</a>
 </h4>
-<p>Write the output to <em>filename</em> instead of stdout.</p>
+<p>Write the archive in <em>format</em>. <em>format</em> can be either <code>tar</code> (the default) or <code>zip</code>.</p>
+<h4 id="-i---include-types-2">
+  <code>-i</code>, <code>--include</code> <em>types</em>
+  <a class="anchor" href="#-i---include-types-2">#</a>
+</h4>
+<p>Only include entries of type <em>types</em>.</p>
+<h4 id="-z---gzip">
+  <code>-z</code>, <code>--gzip</code>
+  <a class="anchor" href="#-z---gzip">#</a>
+</h4>
+<p>Compress the output with gzip.</p>
 <h4 id="archive-examples">
   <code>archive</code> examples
   <a class="anchor" href="#archive-examples">#</a>
 </h4>
 <pre><code>chezmoi archive | tar tvf -
 chezmoi archive --output=dotfiles.tar
+chezmoi archive --format=zip --output=dotfiles.zip
 </code></pre>
 <h3 id="cat-targets">
   <code>cat</code> <em>targets</em>
@@ -1009,30 +1323,18 @@ chezmoi chattr private,template ~/.netrc
 </h3>
 <p>Generate shell completion code for the specified shell (<code>bash</code>, <code>fish</code>,
 <code>powershell</code>, or <code>zsh</code>).</p>
-<h4 id="--output--o-filename-1">
-  <code>--output</code>, <code>-o</code> <em>filename</em>
-  <a class="anchor" href="#--output--o-filename-1">#</a>
-</h4>
-<p>Write the shell completion code to <em>filename</em> instead of stdout.</p>
 <h4 id="completion-examples">
   <code>completion</code> examples
   <a class="anchor" href="#completion-examples">#</a>
 </h4>
 <pre><code>chezmoi completion bash
-chezmoi completion fish --output ~/.config/fish/completions/chezmoi.fish
+chezmoi completion fish --output=~/.config/fish/completions/chezmoi.fish
 </code></pre>
 <h3 id="data">
   <code>data</code>
   <a class="anchor" href="#data">#</a>
 </h3>
-<p>Write the computed template data in JSON format to stdout. The <code>data</code> command
-accepts additional flags:</p>
-<h4 id="-f---format-format">
-  <code>-f</code>, <code>--format</code> <em>format</em>
-  <a class="anchor" href="#-f---format-format">#</a>
-</h4>
-<p>Print the computed template data in the given format. The accepted formats are
-<code>json</code> (JSON), <code>toml</code> (TOML), and <code>yaml</code> (YAML).</p>
+<p>Write the computed template data to stdout.</p>
 <h4 id="data-examples">
   <code>data</code> examples
   <a class="anchor" href="#data-examples">#</a>
@@ -1048,37 +1350,12 @@ chezmoi data --format=yaml
 <em>targets</em>. If no targets are specified, print the differences for all targets.</p>
 <p>If a <code>diff.pager</code> command is set in the configuration file then the output will
 be piped into it.</p>
-<h4 id="-f---format-format-1">
-  <code>-f</code>, <code>--format</code> <em>format</em>
-  <a class="anchor" href="#-f---format-format-1">#</a>
-</h4>
-<p>Print the diff in <em>format</em>. The format can be set with the <code>diff.format</code>
-variable in the configuration file. Valid formats are:</p>
-<h5 id="chezmoi">
-  <code>chezmoi</code>
-  <a class="anchor" href="#chezmoi">#</a>
-</h5>
-<p>A mix of unified diffs and pseudo shell commands, including scripts, equivalent
-to <code>chezmoi apply --dry-run --verbose</code>.</p>
-<h5 id="git">
-  <code>git</code>
-  <a class="anchor" href="#git">#</a>
-</h5>
-<p>A <a href="https://git-scm.com/docs/diff-format">git format diff</a>, excluding scripts. In
-version 2.0.0 of chezmoi, <code>git</code> format diffs will become the default and include
-scripts and the <code>chezmoi</code> format will be removed.</p>
-<h4 id="--no-pager">
-  <code>--no-pager</code>
-  <a class="anchor" href="#--no-pager">#</a>
-</h4>
-<p>Do not use the pager.</p>
 <h4 id="diff-examples">
   <code>diff</code> examples
   <a class="anchor" href="#diff-examples">#</a>
 </h4>
 <pre><code>chezmoi diff
 chezmoi diff ~/.bashrc
-chezmoi diff --format=git
 </code></pre>
 <h3 id="docs-regexp">
   <code>docs</code> [<em>regexp</em>]
@@ -1109,14 +1386,13 @@ chezmoi docs howto
   <code>dump</code> [<em>targets</em>]
   <a class="anchor" href="#dump-targets">#</a>
 </h3>
-<p>Dump the target state in JSON format. If no targets are specified, then the
-entire target state. The <code>dump</code> command accepts additional arguments:</p>
-<h4 id="-f---format-format-2">
-  <code>-f</code>, <code>--format</code> <em>format</em>
-  <a class="anchor" href="#-f---format-format-2">#</a>
+<p>Dump the target state. If no targets are specified, then the entire target
+state.</p>
+<h4 id="-i---include-types-3">
+  <code>-i</code>, <code>--include</code> <em>types</em>
+  <a class="anchor" href="#-i---include-types-3">#</a>
 </h4>
-<p>Print the target state in the given format. The accepted formats are <code>json</code>
-(JSON) and <code>yaml</code> (YAML).</p>
+<p>Only include entries of type <em>types</em>.</p>
 <h4 id="dump-examples">
   <code>dump</code> examples
   <a class="anchor" href="#dump-examples">#</a>
@@ -1136,23 +1412,12 @@ targets are given the the source directory itself is opened with <code>$EDITOR</
   <a class="anchor" href="#-a---apply">#</a>
 </h4>
 <p>Apply target immediately after editing. Ignored if there are no targets.</p>
-<h4 id="-d---diff">
-  <code>-d</code>, <code>--diff</code>
-  <a class="anchor" href="#-d---diff">#</a>
-</h4>
-<p>Print the difference between the target state and the actual state after
-editing.. Ignored if there are no targets.</p>
-<h4 id="-p---prompt-1">
-  <code>-p</code>, <code>--prompt</code>
-  <a class="anchor" href="#-p---prompt-1">#</a>
-</h4>
-<p>Prompt before applying each target.. Ignored if there are no targets.</p>
 <h4 id="edit-examples">
   <code>edit</code> examples
   <a class="anchor" href="#edit-examples">#</a>
 </h4>
 <pre><code>chezmoi edit ~/.bashrc
-chezmoi edit ~/.bashrc --apply --prompt
+chezmoi edit ~/.bashrc --apply
 chezmoi edit
 </code></pre>
 <h3 id="edit-config">
@@ -1179,11 +1444,6 @@ the template is read from stdin.</p>
   <a class="anchor" href="#--init--i">#</a>
 </h4>
 <p>Include simulated functions only available during <code>chezmoi init</code>.</p>
-<h4 id="--output--o-filename-2">
-  <code>--output</code>, <code>-o</code> <em>filename</em>
-  <a class="anchor" href="#--output--o-filename-2">#</a>
-</h4>
-<p>Write the output to <em>filename</em> instead of stdout.</p>
 <h4 id="--promptbool-pairs">
   <code>--promptBool</code> <em>pairs</em>
   <a class="anchor" href="#--promptbool-pairs">#</a>
@@ -1247,43 +1507,91 @@ chezmoi git -- commit -m &quot;Add .gitconfig&quot;
   <a class="anchor" href="#help-command">#</a>
 </h3>
 <p>Print the help associated with <em>command</em>.</p>
-<h3 id="hg-arguments">
-  <code>hg</code> [<em>arguments</em>]
-  <a class="anchor" href="#hg-arguments">#</a>
-</h3>
-<p>Run <code>hg</code> <em>arguments</em> in the source directory. Note that flags in <em>arguments</em>
-must occur after <code>--</code> to prevent chezmoi from interpreting them.</p>
-<h4 id="hg-examples">
-  <code>hg</code> examples
-  <a class="anchor" href="#hg-examples">#</a>
-</h4>
-<pre><code>chezmoi hg -- pull --rebase --update
-</code></pre>
 <h3 id="init-repo">
   <code>init</code> [<em>repo</em>]
   <a class="anchor" href="#init-repo">#</a>
 </h3>
-<p>Setup the source directory and update the destination directory to match the
-target state.</p>
+<p>Setup the source directory, generate the config file, and optionally update
+the destination directory to match the target state. <em>repo</em> is expanded to a
+full git repo URL using the following rules:</p>
+<table>
+<thead>
+<tr>
+<th>Pattern</th>
+<th>Repo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>user</code></td>
+<td><code>https://github.com/user/dotfiles.git</code></td>
+</tr>
+<tr>
+<td><code>user/repo</code></td>
+<td><code>https://github.com/user/repo.git</code></td>
+</tr>
+<tr>
+<td><code>site/user/repo</code></td>
+<td><code>https://site/user/repo.git</code></td>
+</tr>
+<tr>
+<td><code>~sr.ht/user</code></td>
+<td><code>https://git.sr.ht/~user/dotfiles</code></td>
+</tr>
+<tr>
+<td><code>~sr.ht/user/repo</code></td>
+<td><code>https://git.sr.ht/~user/repo</code></td>
+</tr>
+</tbody>
+</table>
 <p>First, if the source directory is not already contain a repository, then if
 <em>repo</em> is given it is checked out into the source directory, otherwise a new
 repository is initialized in the source directory.</p>
-<p>Second, if a file called <code>.chezmoi.format.tmpl</code> exists, where <code>format</code> is one of
-the supported file formats (e.g. <code>json</code>, <code>toml</code>, or <code>yaml</code>) then a new
+<p>Second, if a file called <code>.chezmoi.&lt;format&gt;.tmpl</code> exists, where <code>&lt;format&gt;</code> is
+one of the supported file formats (e.g. <code>json</code>, <code>toml</code>, or <code>yaml</code>) then a new
 configuration file is created using that file as a template.</p>
-<p>Finally, if the <code>--apply</code> flag is passed, <code>chezmoi apply</code> is run.</p>
+<p>Then, if the <code>--apply</code> flag is passed, <code>chezmoi apply</code> is run.</p>
+<p>Then, if the <code>--purge</code> flag is passed, chezmoi will remove the source directory
+and its config directory.</p>
+<p>Finally, if the <code>--purge-binary</code> is passed, chezmoi will attempt to remove its
+own binary.</p>
 <h4 id="--apply">
   <code>--apply</code>
   <a class="anchor" href="#--apply">#</a>
 </h4>
-<p>Run <code>chezmoi apply</code> after checking out the repo and creating the config file.
-This is <code>false</code> by default.</p>
+<p>Run <code>chezmoi apply</code> after checking out the repo and creating the config file.</p>
+<h4 id="--depth-depth">
+  <code>--depth</code> <em>depth</em>
+  <a class="anchor" href="#--depth-depth">#</a>
+</h4>
+<p>Clone the repo with depth <em>depth</em>.</p>
+<h4 id="--one-shot">
+  <code>--one-shot</code>
+  <a class="anchor" href="#--one-shot">#</a>
+</h4>
+<p><code>--one-shot</code> is the equivalent of <code>--apply</code>, <code>--depth=1</code>, <code>--purge</code>,
+<code>--purge-binary</code>. It attempts to install your dotfiles with chezmoi and then
+remove all traces of chezmoi from the system. This is useful for setting up
+temporary environments (e.g. Docker containers).</p>
+<h4 id="--purge">
+  <code>--purge</code>
+  <a class="anchor" href="#--purge">#</a>
+</h4>
+<p>Remove the source and config directories after applying.</p>
+<h4 id="--purge-binary">
+  <code>--purge-binary</code>
+  <a class="anchor" href="#--purge-binary">#</a>
+</h4>
+<p>Attempt to remove the chezmoi binary after applying.</p>
 <h4 id="init-examples">
   <code>init</code> examples
   <a class="anchor" href="#init-examples">#</a>
 </h4>
-<pre><code>chezmoi init https://github.com/user/dotfiles.git
-chezmoi init https://github.com/user/dotfiles.git --apply
+<pre><code>chezmoi init user
+chezmoi init user --apply
+chezmoi init user --apply --purge
+chezmoi init user/dots
+chezmoi init gitlab.com/user
 </code></pre>
 <h3 id="import-filename">
   <code>import</code> <em>filename</em>
@@ -1299,9 +1607,9 @@ want to set the <code>--destination</code>, <code>--exact</code>, and <code>--re
   <a class="anchor" href="#--destination-directory">#</a>
 </h4>
 <p>Set the destination (in the source state) where the archive will be imported.</p>
-<h4 id="-x---exact-1">
-  <code>-x</code>, <code>--exact</code>
-  <a class="anchor" href="#-x---exact-1">#</a>
+<h4 id="--exact-1">
+  <code>--exact</code>
+  <a class="anchor" href="#--exact-1">#</a>
 </h4>
 <p>Set the <code>exact</code> attribute on all imported directories.</p>
 <h4 id="-r---remove-destination">
@@ -1331,14 +1639,11 @@ chezmoi import --strip-components 1 --destination ~/.oh-my-zsh oh-my-zsh-master.
   <a class="anchor" href="#managed">#</a>
 </h3>
 <p>List all managed entries in the destination directory in alphabetical order.</p>
-<h4 id="-i---include-types">
+<h4 id="-i---include-types-4">
   <code>-i</code>, <code>--include</code> <em>types</em>
-  <a class="anchor" href="#-i---include-types">#</a>
+  <a class="anchor" href="#-i---include-types-4">#</a>
 </h4>
-<p>Only list entries of type <em>types</em>. <em>types</em> is a comma-separated list of types of
-entry to include. Valid types are <code>dirs</code>, <code>files</code>, and <code>symlinks</code> which can be
-abbreviated to <code>d</code>, <code>f</code>, and <code>s</code> respectively. By default, <code>manage</code> will list
-entries of all types.</p>
+<p>Only include entries of type <em>types</em>.</p>
 <h4 id="managed-examples">
   <code>managed</code> examples
   <a class="anchor" href="#managed-examples">#</a>
@@ -1353,8 +1658,8 @@ chezmoi managed -i d,f
   <code>merge</code> <em>targets</em>
   <a class="anchor" href="#merge-targets">#</a>
 </h3>
-<p>Perform a three-way merge between the destination state, the source state, and
-the target state. The merge tool is defined by the <code>merge.command</code> configuration
+<p>Perform a three-way merge between the destination state, the target state, and
+the source state. The merge tool is defined by the <code>merge.command</code> configuration
 variable, and defaults to <code>vimdiff</code>. If multiple targets are specified the merge
 tool is invoked for each target. If the target state cannot be computed (for
 example if source is a template containing errors or an encrypted file that
@@ -1414,30 +1719,8 @@ separate them with <code>--</code> to prevent chezmoi from interpreting them.</p
   <code>secret</code> examples
   <a class="anchor" href="#secret-examples">#</a>
 </h4>
-<pre><code>chezmoi secret bitwarden list items
-chezmoi secret keyring set --service service --user user
-chezmoi secret keyring get --service service --user user
-chezmoi secret lastpass ls
-chezmoi secret lastpass -- show --format=json id
-chezmoi secret onepassword list items
-chezmoi secret onepassword get item id
-chezmoi secret pass show id
-chezmoi secret vault -- kv get -format=json id
-</code></pre>
-<h3 id="source-args">
-  <code>source</code> [<em>args</em>]
-  <a class="anchor" href="#source-args">#</a>
-</h3>
-<p>Execute the source version control system in the source directory with <em>args</em>.
-Note that any flags for the source version control system must be separated with
-a <code>--</code> to stop chezmoi from reading them.</p>
-<h4 id="source-examples">
-  <code>source</code> examples
-  <a class="anchor" href="#source-examples">#</a>
-</h4>
-<pre><code>chezmoi source init
-chezmoi source add .
-chezmoi source commit -- -m &quot;Initial commit&quot;
+<pre><code>chezmoi secret keyring set --service=service --user=user --value=password
+chezmoi secret keyring get --service=service --user=user
 </code></pre>
 <h3 id="source-path-targets">
   <code>source-path</code> [<em>targets</em>]
@@ -1451,6 +1734,38 @@ print the source directory.</p>
 </h4>
 <pre><code>chezmoi source-path
 chezmoi source-path ~/.bashrc
+</code></pre>
+<h3 id="state">
+  <code>state</code>
+  <a class="anchor" href="#state">#</a>
+</h3>
+<p>Manipulate the persistent state.</p>
+<h4 id="state-examples">
+  <code>state</code> examples
+  <a class="anchor" href="#state-examples">#</a>
+</h4>
+<pre><code>chezmoi state dump
+chemzoi state reset
+</code></pre>
+<h3 id="status">
+  <code>status</code>
+  <a class="anchor" href="#status">#</a>
+</h3>
+<p>Print the status of the files and scripts managed by chezmoi in a format similar
+to <a href="https://git-scm.com/docs/git-status"><code>git status</code></a>.</p>
+<p>The first column of output indicates the difference between the last state
+written by chezmoi and the actual state. The second column indicates the
+difference between the actual state and the target state.</p>
+<h4 id="-i---include-types-5">
+  <code>-i</code>, <code>--include</code> <em>types</em>
+  <a class="anchor" href="#-i---include-types-5">#</a>
+</h4>
+<p>Only include entries of type <em>types</em>.</p>
+<h4 id="status-examples">
+  <code>status</code> examples
+  <a class="anchor" href="#status-examples">#</a>
+</h4>
+<pre><code>chezmoi status
 </code></pre>
 <h3 id="unmanage-targets">
   <code>unmanage</code> <em>targets</em>
@@ -1473,34 +1788,16 @@ chezmoi source-path ~/.bashrc
   <a class="anchor" href="#update">#</a>
 </h3>
 <p>Pull changes from the source VCS and apply any changes.</p>
+<h4 id="-i---include-types-6">
+  <code>-i</code>, <code>--include</code> <em>types</em>
+  <a class="anchor" href="#-i---include-types-6">#</a>
+</h4>
+<p>Only update entries of type <em>types</em>.</p>
 <h4 id="update-examples">
   <code>update</code> examples
   <a class="anchor" href="#update-examples">#</a>
 </h4>
 <pre><code>chezmoi update
-</code></pre>
-<h3 id="upgrade">
-  <code>upgrade</code>
-  <a class="anchor" href="#upgrade">#</a>
-</h3>
-<p>Upgrade chezmoi by downloading and installing the latest released version. This
-will call the GitHub API to determine if there is a new version of chezmoi
-available, and if so, download and attempt to install it in the same way as
-chezmoi was previously installed.</p>
-<p>If chezmoi was installed with a package manager (<code>dpkg</code> or <code>rpm</code>) then <code>upgrade</code>
-will download a new package and install it, using <code>sudo</code> if it is installed.
-Otherwise, chezmoi will download the latest executable and replace the existing
-executable with the new version.</p>
-<p>If the <code>CHEZMOI_GITHUB_API_TOKEN</code> environment variable is set, then its value
-will be used to authenticate requests to the GitHub API, otherwise
-unauthenticated requests are used which are subject to stricter <a href="https://developer.github.com/v3/#rate-limiting">rate
-limiting</a>. Unauthenticated
-requests should be sufficient for most cases.</p>
-<h4 id="upgrade-examples">
-  <code>upgrade</code> examples
-  <a class="anchor" href="#upgrade-examples">#</a>
-</h4>
-<pre><code>chezmoi upgrade
 </code></pre>
 <h3 id="verify-targets">
   <code>verify</code> [<em>targets</em>]
@@ -1509,6 +1806,11 @@ requests should be sufficient for most cases.</p>
 <p>Verify that all <em>targets</em> match their target state. chezmoi exits with code 0
 (success) if all targets match their target state, or 1 (failure) otherwise. If
 no targets are specified then all targets are checked.</p>
+<h4 id="-i---include-types-7">
+  <code>-i</code>, <code>--include</code> <em>types</em>
+  <a class="anchor" href="#-i---include-types-7">#</a>
+</h4>
+<p>Only include entries of type <em>types</em>.</p>
 <h4 id="verify-examples">
   <code>verify</code> examples
   <a class="anchor" href="#verify-examples">#</a>
@@ -1565,7 +1867,7 @@ overridden by setting a list of options in the configuration file, for example:<
   Template variables
   <a class="anchor" href="#template-variables">#</a>
 </h2>
-<p>chezmoi provides the following automatically populated variables:</p>
+<p>chezmoi provides the following automatically-populated variables:</p>
 <table>
 <thead>
 <tr>
@@ -1579,15 +1881,15 @@ overridden by setting a list of options in the configuration file, for example:<
 <td>Architecture, e.g. <code>amd64</code>, <code>arm</code>, etc. as returned by <a href="https://pkg.go.dev/runtime?tab=doc#pkg-constants">runtime.GOARCH</a>.</td>
 </tr>
 <tr>
-<td><code>.chezmoi.fullHostname</code></td>
-<td>The full hostname of the machine chezmoi is running on.</td>
+<td><code>.chezmoi.fqdnHostname</code></td>
+<td>The fully-qualified domain name hostname of the machine chezmoi is running on.</td>
 </tr>
 <tr>
 <td><code>.chezmoi.group</code></td>
 <td>The group of the user running chezmoi.</td>
 </tr>
 <tr>
-<td><code>.chezmoi.homedir</code></td>
+<td><code>.chezmoi.homeDir</code></td>
 <td>The home directory of the user running chezmoi.</td>
 </tr>
 <tr>
@@ -1613,6 +1915,10 @@ overridden by setting a list of options in the configuration file, for example:<
 <tr>
 <td><code>.chezmoi.username</code></td>
 <td>The username of the user running chezmoi.</td>
+</tr>
+<tr>
+<td><code>.chezmoi.version</code></td>
+<td>The version of chezmoi.</td>
 </tr>
 </tbody>
 </table>
@@ -1720,6 +2026,39 @@ the same arguments will only invoke <code>bw get</code> once.</p>
 </h4>
 <pre><code>{{ (bitwardenFields &quot;item&quot; &quot;&lt;itemid&gt;&quot;).token.value }}
 </code></pre>
+<h3 id="githubkeys-user">
+  <code>gitHubKeys</code> <em>user</em>
+  <a class="anchor" href="#githubkeys-user">#</a>
+</h3>
+<p><code>gitHubKeys</code> returns <em>user</em>&rsquo;s public SSH keys from GitHub using the GitHub API.
+The returned value is a slice of structs with <code>.ID</code> and <code>.Key</code> fields.</p>
+<p><strong>WARNING</strong> if you use this function to populate your <code>~/.ssh/authorized_keys</code>
+file then you potentially open SSH access to anyone who is able to modify or add
+to your GitHub public SSH keys, possibly including certain GitHub employees. You
+should not use this function on publicly-accessible machines and should always
+verify that no unwanted keys have been added, for example by using the <code>-v</code> /
+<code>--verbose</code> option when running <code>chezmoi apply</code> or <code>chezmoi update</code>.</p>
+<p>By default, an anonymous GitHub API request will be made, which is subject to
+<a href="https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting">GitHub&rsquo;s rate
+limits</a>
+(currently 60 requests per hour per source IP address). If any of the
+environment variables <code>CHEZMOI_GITHUB_ACCESS_TOKEN</code>, <code>GITHUB_ACCESS_TOKEN</code>, or
+<code>GITHUB_TOKEN</code> are found, then the first one found will be used to authenticate
+the GitHub API request, with a higher rate limit (currently 5,000 requests per
+hour per user).</p>
+<p>In practice, GitHub API rate limits are high enough that you should never need
+to set a token, unless you are sharing a source IP address with many other
+GitHub users. If needed, the GitHub documentation describes how to <a href="https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token">create a
+personal access
+token</a>.</p>
+<h4 id="githubkeys-examples">
+  <code>gitHubKeys</code> examples
+  <a class="anchor" href="#githubkeys-examples">#</a>
+</h4>
+<pre><code>{{ range (gitHubKeys &quot;user&quot;) }}
+{{- .Key }}
+{{ end }}
+</code></pre>
 <h3 id="gopass-gopass-name">
   <code>gopass</code> <em>gopass-name</em>
   <a class="anchor" href="#gopass-gopass-name">#</a>
@@ -1771,7 +2110,7 @@ first non-empty element is a UNC path.</p>
   <code>joinPath</code> examples
   <a class="anchor" href="#joinpath-examples">#</a>
 </h4>
-<pre><code>{{ joinPath .chezmoi.homedir &quot;.zshrc&quot; }}
+<pre><code>{{ joinPath .chezmoi.homeDir &quot;.zshrc&quot; }}
 </code></pre>
 <h3 id="keepassxc-entry">
   <code>keepassxc</code> <em>entry</em>
@@ -1987,6 +2326,21 @@ performance.</p>
 </h4>
 <pre><code>{{ (onepasswordDetailsFields &quot;&lt;uuid&gt;&quot;).password.value }}
 </code></pre>
+<h3 id="output-name-args">
+  <code>output</code> <em>name</em> [<em>args</em>]
+  <a class="anchor" href="#output-name-args">#</a>
+</h3>
+<p><code>output</code> returns the output of executing the command <em>name</em> with <em>args</em>. If
+executing the command returns an error then template execution exits with an
+error. The execution occurs every time that the template is executed. It is the
+user&rsquo;s responsibility to ensure that executing the command is both idempotent
+and fast.</p>
+<h4 id="output-examples">
+  <code>output</code> examples
+  <a class="anchor" href="#output-examples">#</a>
+</h4>
+<pre><code>current-context: {{ output &quot;kubectl&quot; &quot;config&quot; &quot;current-context&quot; | trim }}
+</code></pre>
 <h3 id="pass-pass-name">
   <code>pass</code> <em>pass-name</em>
   <a class="anchor" href="#pass-pass-name">#</a>
@@ -2007,21 +2361,39 @@ the same <em>pass-name</em> will only invoke <code>pass</code> once.</p>
   <a class="anchor" href="#promptbool-prompt">#</a>
 </h3>
 <p><code>promptBool</code> prompts the user with <em>prompt</em> and returns the user&rsquo;s response with
-interpreted as a boolean.  It is only available when generating the initial
-config file.</p>
+interpreted as a boolean. It is only available when generating the initial
+config file. The user&rsquo;s response is interpreted as follows (case insensitive):</p>
+<table>
+<thead>
+<tr>
+<th>Response</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1, on, t, true, y, yes</td>
+<td><code>true</code></td>
+</tr>
+<tr>
+<td>0, off, f, false, n, no</td>
+<td><code>false</code></td>
+</tr>
+</tbody>
+</table>
 <h3 id="promptint-prompt">
   <code>promptInt</code> <em>prompt</em>
   <a class="anchor" href="#promptint-prompt">#</a>
 </h3>
 <p><code>promptInt</code> prompts the user with <em>prompt</em> and returns the user&rsquo;s response with
-interpreted as an integer.  It is only available when generating the initial
+interpreted as an integer. It is only available when generating the initial
 config file.</p>
 <h3 id="promptstring-prompt">
   <code>promptString</code> <em>prompt</em>
   <a class="anchor" href="#promptstring-prompt">#</a>
 </h3>
 <p><code>promptString</code> prompts the user with <em>prompt</em> and returns the user&rsquo;s response
-with all leading and trailing spaces stripped.  It is only available when
+with all leading and trailing spaces stripped. It is only available when
 generating the initial config file.</p>
 <h4 id="promptstring-examples">
   <code>promptString</code> examples
@@ -2036,17 +2408,17 @@ generating the initial config file.</p>
   <a class="anchor" href="#secret-args">#</a>
 </h3>
 <p><code>secret</code> returns the output of the generic secret command defined by the
-<code>genericSecret.command</code> configuration variable with <em>args</em> with leading and
-trailing whitespace removed. The output is cached so multiple calls to <code>secret</code>
-with the same <em>args</em> will only invoke the generic secret command once.</p>
+<code>secret.command</code> configuration variable with <em>args</em> with leading and trailing
+whitespace removed. The output is cached so multiple calls to <code>secret</code> with the
+same <em>args</em> will only invoke the generic secret command once.</p>
 <h3 id="secretjson-args">
   <code>secretJSON</code> [<em>args</em>]
   <a class="anchor" href="#secretjson-args">#</a>
 </h3>
 <p><code>secretJSON</code> returns structured data from the generic secret command defined by
-the <code>genericSecret.command</code> configuration variable with <em>args</em>. The output is
-parsed as JSON. The output is cached so multiple calls to <code>secret</code> with the same
-<em>args</em> will only invoke the generic secret command once.</p>
+the <code>secret.command</code> configuration variable with <em>args</em>. The output is parsed as
+JSON. The output is cached so multiple calls to <code>secret</code> with the same <em>args</em>
+will only invoke the generic secret command once.</p>
 <h3 id="stat-name">
   <code>stat</code> <em>name</em>
   <a class="anchor" href="#stat-name">#</a>
@@ -2063,7 +2435,7 @@ templates.</p>
   <code>stat</code> examples
   <a class="anchor" href="#stat-examples">#</a>
 </h4>
-<pre><code>{{ if stat (joinPath .chezmoi.homedir &quot;.pyenv&quot;) }}
+<pre><code>{{ if stat (joinPath .chezmoi.homeDir &quot;.pyenv&quot;) }}
 # ~/.pyenv exists
 {{ end }}
 </code></pre>
@@ -2123,15 +2495,29 @@ times with the same <em>key</em> will only invoke <code>vault</code> once.</p>
       <ul>
         <li><a href="#--color-value"><code>--color</code> <em>value</em></a></li>
         <li><a href="#-c---config-filename"><code>-c</code>, <code>--config</code> <em>filename</em></a></li>
+        <li><a href="#--cpu-profile-filename"><code>--cpu-profile</code> <em>filename</em></a></li>
         <li><a href="#--debug"><code>--debug</code></a></li>
         <li><a href="#-d---destination-directory"><code>-D</code>, <code>--destination</code> <em>directory</em></a></li>
-        <li><a href="#--follow"><code>--follow</code></a></li>
         <li><a href="#-n---dry-run"><code>-n</code>, <code>--dry-run</code></a></li>
+        <li><a href="#-x---exclude-types"><code>-x</code>, <code>--exclude</code> <em>types</em></a></li>
+        <li><a href="#--force"><code>--force</code></a></li>
         <li><a href="#-h---help"><code>-h</code>, <code>--help</code></a></li>
+        <li><a href="#-k---keep-going"><code>-k</code>, <code>--keep-going</code></a></li>
+        <li><a href="#--no-pager"><code>--no-pager</code></a></li>
+        <li><a href="#--no-tty"><code>--no-tty</code></a></li>
+        <li><a href="#-o---output-filename"><code>-o</code>, <code>--output</code> <em>filename</em></a></li>
         <li><a href="#-r---remove"><code>-r</code>. <code>--remove</code></a></li>
         <li><a href="#-s---source-directory"><code>-S</code>, <code>--source</code> <em>directory</em></a></li>
+        <li><a href="#--use-builtin-git-value"><code>--use-builtin-git</code> <em>value</em></a></li>
         <li><a href="#-v---verbose"><code>-v</code>, <code>--verbose</code></a></li>
         <li><a href="#--version"><code>--version</code></a></li>
+      </ul>
+    </li>
+    <li><a href="#common-command-line-flags">Common command line flags</a>
+      <ul>
+        <li><a href="#--format-format"><code>--format</code> <em>format</em></a></li>
+        <li><a href="#--include-types"><code>--include</code> <em>types</em></a></li>
+        <li><a href="#-r---recursive"><code>-r</code>, <code>--recursive</code></a></li>
       </ul>
     </li>
     <li><a href="#configuration-file">Configuration file</a>
@@ -2141,6 +2527,14 @@ times with the same <em>key</em> will only invoke <code>vault</code> once.</p>
       </ul>
     </li>
     <li><a href="#source-state-attributes">Source state attributes</a></li>
+    <li><a href="#target-types">Target types</a>
+      <ul>
+        <li><a href="#files">Files</a></li>
+        <li><a href="#directories">Directories</a></li>
+        <li><a href="#symbolic-links">Symbolic links</a></li>
+        <li><a href="#scripts">Scripts</a></li>
+      </ul>
+    </li>
     <li><a href="#special-files-and-directories">Special files and directories</a>
       <ul>
         <li><a href="#chezmoiformattmpl"><code>.chezmoi.&lt;format&gt;.tmpl</code></a></li>
@@ -2170,7 +2564,6 @@ times with the same <em>key</em> will only invoke <code>vault</code> once.</p>
         <li><a href="#forget-targets"><code>forget</code> <em>targets</em></a></li>
         <li><a href="#git-arguments"><code>git</code> [<em>arguments</em>]</a></li>
         <li><a href="#help-command"><code>help</code> <em>command</em></a></li>
-        <li><a href="#hg-arguments"><code>hg</code> [<em>arguments</em>]</a></li>
         <li><a href="#init-repo"><code>init</code> [<em>repo</em>]</a></li>
         <li><a href="#import-filename"><code>import</code> <em>filename</em></a></li>
         <li><a href="#manage-targets"><code>manage</code> <em>targets</em></a></li>
@@ -2180,12 +2573,12 @@ times with the same <em>key</em> will only invoke <code>vault</code> once.</p>
         <li><a href="#remove-targets"><code>remove</code> <em>targets</em></a></li>
         <li><a href="#rm-targets"><code>rm</code> <em>targets</em></a></li>
         <li><a href="#secret"><code>secret</code></a></li>
-        <li><a href="#source-args"><code>source</code> [<em>args</em>]</a></li>
         <li><a href="#source-path-targets"><code>source-path</code> [<em>targets</em>]</a></li>
+        <li><a href="#state"><code>state</code></a></li>
+        <li><a href="#status"><code>status</code></a></li>
         <li><a href="#unmanage-targets"><code>unmanage</code> <em>targets</em></a></li>
         <li><a href="#unmanaged"><code>unmanaged</code></a></li>
         <li><a href="#update"><code>update</code></a></li>
-        <li><a href="#upgrade"><code>upgrade</code></a></li>
         <li><a href="#verify-targets"><code>verify</code> [<em>targets</em>]</a></li>
       </ul>
     </li>
@@ -2198,6 +2591,7 @@ times with the same <em>key</em> will only invoke <code>vault</code> once.</p>
         <li><a href="#bitwarden-args"><code>bitwarden</code> [<em>args</em>]</a></li>
         <li><a href="#bitwardenattachment-filename-itemid"><code>bitwardenAttachment</code> <em>filename</em> <em>itemid</em></a></li>
         <li><a href="#bitwardenfields-args"><code>bitwardenFields</code> [<em>args</em>]</a></li>
+        <li><a href="#githubkeys-user"><code>gitHubKeys</code> <em>user</em></a></li>
         <li><a href="#gopass-gopass-name"><code>gopass</code> <em>gopass-name</em></a></li>
         <li><a href="#include-filename"><code>include</code> <em>filename</em></a></li>
         <li><a href="#ioreg"><code>ioreg</code></a></li>
@@ -2211,6 +2605,7 @@ times with the same <em>key</em> will only invoke <code>vault</code> once.</p>
         <li><a href="#onepassword-uuid-vault-uuid"><code>onepassword</code> <em>uuid</em> [<em>vault-uuid</em>]</a></li>
         <li><a href="#onepassworddocument-uuid-vault-uuid"><code>onepasswordDocument</code> <em>uuid</em> [<em>vault-uuid</em>]</a></li>
         <li><a href="#onepassworddetailsfields-uuid-vault-uuid"><code>onepasswordDetailsFields</code> <em>uuid</em> [<em>vault-uuid</em>]</a></li>
+        <li><a href="#output-name-args"><code>output</code> <em>name</em> [<em>args</em>]</a></li>
         <li><a href="#pass-pass-name"><code>pass</code> <em>pass-name</em></a></li>
         <li><a href="#promptbool-prompt"><code>promptBool</code> <em>prompt</em></a></li>
         <li><a href="#promptint-prompt"><code>promptInt</code> <em>prompt</em></a></li>
