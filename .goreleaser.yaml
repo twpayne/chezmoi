@@ -15,7 +15,7 @@ builds:
   ldflags:
   - '-s'
   - '-w'
-  - '-X main.version=v2.0.0' # FIXME '-X main.version={{ .Version }}'
+  - '-X main.version={{ .Version }}'
   - '-X main.commit={{ .Commit }}'
   - '-X main.date={{ .Date }}'
   - '-X main.builtBy=goreleaser'
@@ -30,7 +30,7 @@ builds:
   ldflags:
   - '-s'
   - '-w'
-  - '-X main.version=v2.0.0' # FIXME '-X main.version={{ .Version }}'
+  - '-X main.version={{ .Version }}'
   - '-X main.commit={{ .Commit }}'
   - '-X main.date={{ .Date }}'
   - '-X main.builtBy=goreleaser'
@@ -57,7 +57,7 @@ builds:
   ldflags:
   - '-s'
   - '-w'
-  - '-X main.version=v2.0.0' # FIXME '-X main.version={{ .Version }}'
+  - '-X main.version={{ .Version }}'
   - '-X main.commit={{ .Commit }}'
   - '-X main.date={{ .Date }}'
   - '-X main.builtBy=goreleaser'
