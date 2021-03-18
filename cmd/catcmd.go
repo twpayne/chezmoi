@@ -12,7 +12,7 @@ import (
 func (c *Config) newCatCmd() *cobra.Command {
 	catCmd := &cobra.Command{
 		Use:     "cat target...",
-		Short:   "Print the target contents of a file or symlink",
+		Short:   "Print the target contents of a file, script, or symlink",
 		Long:    mustLongHelp("cat"),
 		Example: example("cat"),
 		Args:    cobra.MinimumNArgs(1),
@@ -43,6 +43,12 @@ func (c *Config) runCatCmd(cmd *cobra.Command, args []string, sourceState *chezm
 				return fmt.Errorf("%s: %w", targetRelPath, err)
 			}
 			sb.Write(contents)
+		case *chezmoi.TargetStateScript:
+			contents, err := targetStateEntry.Contents()
+			if err != nil {
+				return fmt.Errorf("%s: %w", targetRelPath, err)
+			}
+			sb.Write(contents)
 		case *chezmoi.TargetStateSymlink:
 			linkname, err := targetStateEntry.Linkname()
 			if err != nil {
@@ -50,7 +56,7 @@ func (c *Config) runCatCmd(cmd *cobra.Command, args []string, sourceState *chezm
 			}
 			sb.WriteString(linkname + "\n")
 		default:
-			return fmt.Errorf("%s: not a file or symlink", targetRelPath)
+			return fmt.Errorf("%s: not a file, script, or symlink", targetRelPath)
 		}
 	}
 	return c.writeOutputString(sb.String())

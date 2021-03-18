@@ -19,7 +19,7 @@ cmp stdout golden/.template
 
 # test that chezmoi cat does not print directories
 ! chezmoi cat $HOME${/}.dir
-stderr 'not a file or symlink'
+stderr 'not a file, script, or symlink'
 
 # test that chezmoi cat does not print files outside the destination directory
 ! chezmoi cat ${/}etc${/}passwd

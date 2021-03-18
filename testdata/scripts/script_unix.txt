@@ -28,6 +28,10 @@ cmp stdout golden/dump.json
 chezmoi managed --include=scripts
 cmpenv stdout golden/managed
 
+# test that chezmoi cat writes the contents of the script
+chezmoi cat $HOME${/}script
+cmp stdout golden/script
+
 [!exec:tar] stop 'tar not found in $PATH'
 
 # test that chezmoi archive includes the script in the archive
@@ -56,6 +60,10 @@ index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..4a10a731080ff0306ef247ca4557e190
 }
 -- golden/managed --
 script
+-- golden/script --
+#!/bin/sh
+
+echo $PWD
 -- golden/status --
  R script
 -- home/user/.local/share/chezmoi/run_script --
