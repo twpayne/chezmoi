@@ -670,10 +670,13 @@ attributes and their abbreviations are:
 
 | Attribute    | Abbreviation |
 | ------------ | ------------ |
+| `after`      | `a`          |
+| `before`     | `b`          |
 | `empty`      | `e`          |
 | `encrypted`  | *none*       |
 | `exact`      | *none*       |
 | `executable` | `x`          |
+| `once`       | `o`
 | `private`    | `p`          |
 | `template`   | `t`          |
 
