@@ -49,6 +49,7 @@ func TestScript(t *testing.T) {
 			"mkgpgconfig":    cmdMkGPGConfig,
 			"mkhomedir":      cmdMkHomeDir,
 			"mksourcedir":    cmdMkSourceDir,
+			"removeline":     cmdRemoveLine,
 			"rmfinalnewline": cmdRmFinalNewline,
 			"unix2dos":       cmdUNIX2DOS,
 		},
@@ -350,6 +351,34 @@ func cmdMkSourceDir(ts *testscript.TestScript, neg bool, args []string) {
 	if err != nil {
 		ts.Fatalf("mksourcedir: %v", err)
 	}
+}
+
+// cmdRemoveLine removes lines matching line from file, which must be present.
+func cmdRemoveLine(ts *testscript.TestScript, neg bool, args []string) {
+	if neg {
+		ts.Fatalf("unsupported: ! removeline")
+	}
+	if len(args) != 2 {
+		ts.Fatalf("usage: removeline file line")
+	}
+	filename := ts.MkAbs(args[0])
+	data, err := os.ReadFile(filename)
+	ts.Check(err)
+	lineSlice := []byte(args[1])
+	lines := bytes.Split(data, []byte{'\n'})
+	n := 0
+	for _, line := range lines {
+		if bytes.Equal(line, lineSlice) {
+			continue
+		}
+		lines[n] = line
+		n++
+	}
+	if n == len(lines) {
+		ts.Fatalf("removeline: %q not found in %s", args[1], args[0])
+	}
+	data = append(bytes.Join(lines[:n], []byte{'\n'}), '\n')
+	ts.Check(os.WriteFile(filename, data, 0o666))
 }
 
 // cmdRmFinalNewline removes final newlines.
