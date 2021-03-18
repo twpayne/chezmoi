@@ -150,7 +150,7 @@ func (s *GitDiffSystem) RunCmd(cmd *exec.Cmd) error {
 // RunScript implements System.RunScript.
 func (s *GitDiffSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte) error {
 	mode := os.FileMode(filemode.Executable)
-	diffPatch, err := DiffPatch(s.trimPrefix(AbsPath(scriptname)), nil, mode, data, mode)
+	diffPatch, err := DiffPatch(scriptname, nil, mode, data, mode)
 	if err != nil {
 		return err
 	}

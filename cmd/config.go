@@ -184,7 +184,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		Color:   "auto",
 		Diff: diffCmdConfig{
 			Pager:   os.Getenv("PAGER"),
-			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll &^ chezmoi.EntryTypeScripts),
+			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 		},
 		Edit: editCmdConfig{
 			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypeDirs | chezmoi.EntryTypeFiles | chezmoi.EntryTypeSymlinks | chezmoi.EntryTypeEncrypted),

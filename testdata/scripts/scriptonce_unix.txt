@@ -4,6 +4,10 @@
 chezmoi status
 cmp stdout golden/status
 
+# test that chezmoi diff includes the script
+chezmoi diff
+cmp stdout golden/diff
+
 # test that chezmoi apply runs the script
 chezmoi apply --force
 stdout ${HOME@R}
@@ -11,6 +15,10 @@ stdout ${HOME@R}
 # test that the script is recorded in the state
 chezmoi state dump
 stdout 94d80d5c9f06d747eb874b0a05a356085515b51ac8761a923079db734fe68133 # sha256sum of script contents
+
+# test that chezmoi diff no longer includes the script
+chezmoi diff
+! stdout .
 
 # test that chezmoi status will not print that it will run the script
 chezmoi status
@@ -30,6 +38,15 @@ chezmoi state reset --force
 chezmoi apply --force
 stdout ${HOME@R}
 
+-- golden/diff --
+diff --git a/script b/script
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..4a10a731080ff0306ef247ca4557e1902ac3bc5d 100755
+--- a/script
++++ b/script
+@@ -0,0 +1,3 @@
++#!/bin/sh
++
++echo $PWD
 -- golden/status --
  R script
 -- home/user/.local/share/chezmoi/run_once_script --

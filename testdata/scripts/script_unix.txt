@@ -4,6 +4,10 @@
 chezmoi status
 cmp stdout golden/status
 
+# test the chezmoi diff prints the script
+chezmoi diff
+cmp stdout golden/diff
+
 # test that chezmoi apply runs the script
 chezmoi apply --force
 stdout ${HOME@R}
@@ -33,6 +37,15 @@ cmp stdout golden/archive
 
 -- golden/archive --
 script
+-- golden/diff --
+diff --git a/script b/script
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..4a10a731080ff0306ef247ca4557e1902ac3bc5d 100755
+--- a/script
++++ b/script
+@@ -0,0 +1,3 @@
++#!/bin/sh
++
++echo $PWD
 -- golden/dump.json --
 {
   "script": {
