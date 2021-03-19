@@ -25,6 +25,7 @@ func (e *GPGEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
 	//nolint:gosec
 	cmd := exec.Command(e.Command, args...)
 	cmd.Stdin = bytes.NewReader(ciphertext)
+	cmd.Stderr = os.Stderr
 	return chezmoilog.LogCmdOutput(log.Logger, cmd)
 }
 
@@ -38,6 +39,7 @@ func (e *GPGEncryption) DecryptToFile(filename string, ciphertext []byte) error 
 	//nolint:gosec
 	cmd := exec.Command(e.Command, args...)
 	cmd.Stdin = bytes.NewReader(ciphertext)
+	cmd.Stderr = os.Stderr
 	return chezmoilog.LogCmdRun(log.Logger, cmd)
 }
 
@@ -47,6 +49,7 @@ func (e *GPGEncryption) Encrypt(plaintext []byte) ([]byte, error) {
 	//nolint:gosec
 	cmd := exec.Command(e.Command, args...)
 	cmd.Stdin = bytes.NewReader(plaintext)
+	cmd.Stderr = os.Stderr
 	return chezmoilog.LogCmdOutput(log.Logger, cmd)
 }
 
@@ -61,6 +64,7 @@ func (e *GPGEncryption) EncryptFile(filename string) (ciphertext []byte, err err
 	//nolint:gosec
 	cmd := exec.Command(e.Command, args...)
 	cmd.Stdin = f
+	cmd.Stderr = os.Stderr
 	return chezmoilog.LogCmdOutput(log.Logger, cmd)
 }
 

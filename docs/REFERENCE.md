@@ -641,9 +641,10 @@ Compress the output with gzip.
 
 ### `cat` *targets*
 
-Write the target state of *targets*  to stdout. *targets* must be files or
-symlinks. For files, the target file contents are written. For symlinks, the
-target target is written.
+Write the target state of *targets*  to stdout. *targets* must be files,
+scripts, or symlinks. For files, the target file contents are written. For
+scripts, the script's contents are written. For symlinks, the target target is
+written.
 
 #### `cat` examples
 

@@ -2,6 +2,7 @@ package chezmoi
 
 import (
 	"bytes"
+	"os"
 	"os/exec"
 
 	"github.com/rs/zerolog/log"
@@ -28,6 +29,7 @@ func (e *AGEEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
 	//nolint:gosec
 	cmd := exec.Command(e.Command, append(e.decryptArgs(), e.Args...)...)
 	cmd.Stdin = bytes.NewReader(ciphertext)
+	cmd.Stderr = os.Stderr
 	plaintext, err := chezmoilog.LogCmdOutput(log.Logger, cmd)
 	if err != nil {
 		return nil, err
@@ -40,6 +42,7 @@ func (e *AGEEncryption) DecryptToFile(filename string, ciphertext []byte) error 
 	//nolint:gosec
 	cmd := exec.Command(e.Command, append(append(e.decryptArgs(), "--output", filename), e.Args...)...)
 	cmd.Stdin = bytes.NewReader(ciphertext)
+	cmd.Stderr = os.Stderr
 	return chezmoilog.LogCmdRun(log.Logger, cmd)
 }
 
@@ -48,6 +51,7 @@ func (e *AGEEncryption) Encrypt(plaintext []byte) ([]byte, error) {
 	//nolint:gosec
 	cmd := exec.Command(e.Command, append(e.encryptArgs(), e.Args...)...)
 	cmd.Stdin = bytes.NewReader(plaintext)
+	cmd.Stderr = os.Stderr
 	ciphertext, err := chezmoilog.LogCmdOutput(log.Logger, cmd)
 	if err != nil {
 		return nil, err
@@ -59,6 +63,7 @@ func (e *AGEEncryption) Encrypt(plaintext []byte) ([]byte, error) {
 func (e *AGEEncryption) EncryptFile(filename string) ([]byte, error) {
 	//nolint:gosec
 	cmd := exec.Command(e.Command, append(append(e.encryptArgs(), e.Args...), filename)...)
+	cmd.Stderr = os.Stderr
 	return chezmoilog.LogCmdOutput(log.Logger, cmd)
 }
 
