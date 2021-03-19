@@ -23,7 +23,7 @@
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.2bc2364a4a4b31f0ec1debecf0a8f90a840821f143dfe1ac6a0f7cbcbdcf64ac.css" integrity="sha256-K8I2SkpLMfDsHevs8Kj5CoQIIfFD3&#43;Gsag98vL3PZKw=">
-<script defer src="/en.search.min.04481beea89b83708b4c6ffc5dee3d3ed09254514b44be466e580e18c833747c.js" integrity="sha256-BEgb7qibg3CLTG/8Xe49PtCSVFFLRL5GblgOGMgzdHw="></script>
+<script defer src="/en.search.min.18df435cd3b7f56c8b353be675f9c93f1a25927c7cf121a62ec5d469863f399b.js" integrity="sha256-GN9DXNO39WyLNTvmdfnJPxolknx88SGmLsXUaYY/OZs="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -1241,9 +1241,10 @@ chezmoi archive --format=zip --output=dotfiles.zip
   <code>cat</code> <em>targets</em>
   <a class="anchor" href="#cat-targets">#</a>
 </h3>
-<p>Write the target state of <em>targets</em>  to stdout. <em>targets</em> must be files or
-symlinks. For files, the target file contents are written. For symlinks, the
-target target is written.</p>
+<p>Write the target state of <em>targets</em>  to stdout. <em>targets</em> must be files,
+scripts, or symlinks. For files, the target file contents are written. For
+scripts, the script&rsquo;s contents are written. For symlinks, the target target is
+written.</p>
 <h4 id="cat-examples">
   <code>cat</code> examples
   <a class="anchor" href="#cat-examples">#</a>
@@ -1282,6 +1283,14 @@ attributes and their abbreviations are:</p>
 </thead>
 <tbody>
 <tr>
+<td><code>after</code></td>
+<td><code>a</code></td>
+</tr>
+<tr>
+<td><code>before</code></td>
+<td><code>b</code></td>
+</tr>
+<tr>
 <td><code>empty</code></td>
 <td><code>e</code></td>
 </tr>
@@ -1296,6 +1305,10 @@ attributes and their abbreviations are:</p>
 <tr>
 <td><code>executable</code></td>
 <td><code>x</code></td>
+</tr>
+<tr>
+<td><code>once</code></td>
+<td><code>o</code></td>
 </tr>
 <tr>
 <td><code>private</code></td>
