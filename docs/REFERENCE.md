@@ -429,7 +429,8 @@ Symbolic links are represented by regular files in the source state with the
 prefix `symlink_`. The contents of the file will have a trailing newline
 stripped, and the result be interpreted as the target of the symbolic link.
 Symbolic links with the `.tmpl` suffix in the source state are interpreted as
-templates.
+templates. If the target of the symbolic link is empty or consists only of
+whitespace, then the target is removed.
 
 ### Scripts
 

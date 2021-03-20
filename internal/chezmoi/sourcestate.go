@@ -952,6 +952,9 @@ func (s *SourceState) newSourceStateFile(sourceRelPath SourceRelPath, fileAttr F
 					return nil, err
 				}
 			}
+			if isEmpty(linknameBytes) {
+				return &TargetStateRemove{}, nil
+			}
 			return &TargetStateSymlink{
 				lazyLinkname: newLazyLinkname(string(bytes.TrimSpace(linknameBytes))),
 			}, nil
