@@ -158,18 +158,6 @@ If you're packaging chezmoi for an operating system or distribution:
   the `.chezmoi.username` and `.chezmoi.group` template variables may not be set
   correctly on some systems.
 
-* chezmoi includes a `docs` command which prints its documentation. By default,
-  the docs are embedded in the binary. You can disable this behavior, and have
-  chezmoi read its docs from the filesystem by building with the `noembeddocs`
-  build tag and setting the directory where chezmoi can find them with the `-X
-  github.com/twpayne/chezmoi/cmd.DocDir=$DOCDIR` linker flag. For example:
-
-  ```
-  go build -tags noembeddocs -ldflags "-X github.com/twpayne/chezmoi/cmd.DocsDir=/usr/share/doc/chezmoi" .
-  ```
-
-  To remove the `docs` command completely, use the `nodocs` build tag.
-
 * chezmoi includes an `upgrade` command which attempts to self-upgrade. You can
   remove this command completely by building chezmoi with the `noupgrade` build
   tag.
