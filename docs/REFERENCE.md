@@ -400,7 +400,9 @@ Files are represented by regular files in the source state. The `encrypted_`
 attribute determines whether the file in the source state is encrypted. The
 `executable_` attribute will set the executable bits when the file is written to
 the target state, and the `private_` attribute will clear all group and world
-permissions. Files with the `.tmpl` suffix will be interpreted as templates.
+permissions. Files with the `.tmpl` suffix will be interpreted as templates. If
+the target contents are empty then the file will be removed, unless it has an
+`empty_` prefix.
 
 #### Create file
 
