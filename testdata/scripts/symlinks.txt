@@ -1,0 +1,14 @@
+# test that chezmoi apply removes a symlink if the target is empty
+symlink $HOME/.empty -> .file
+chezmoi apply $HOME${/}.empty
+! exists $HOME/.empty
+
+# test that chezmoi apply evaluates symlink templates
+chezmoi apply $HOME${/}.template
+cmp $HOME/.template $HOME/.file
+
+-- home/user/.file --
+# contents of .file
+-- home/user/.local/share/chezmoi/symlink_dot_empty --
+-- home/user/.local/share/chezmoi/symlink_dot_template.tmpl --
+{{ ".file" }}
