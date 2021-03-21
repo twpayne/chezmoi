@@ -129,6 +129,7 @@ type Config struct {
 	state           stateCmdConfig
 	status          statusCmdConfig
 	update          updateCmdConfig
+	upgrade         upgradeCmdConfig
 	verify          verifyCmdConfig
 
 	// Computed configuration.
@@ -941,6 +942,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newStatusCmd,
 		c.newUnmanagedCmd,
 		c.newUpdateCmd,
+		c.newUpgradeCmd,
 		c.newVerifyCmd,
 	} {
 		rootCmd.AddCommand(newCmdFunc())
