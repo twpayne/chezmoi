@@ -97,6 +97,9 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string, sourceState *chez
 			if err != nil {
 				return err
 			}
+			if err := os.MkdirAll(string(decryptedAbsPath.Dir()), 0o700); err != nil {
+				return err
+			}
 			if err := c.baseSystem.WriteFile(decryptedAbsPath, contents, 0o600); err != nil {
 				return err
 			}
