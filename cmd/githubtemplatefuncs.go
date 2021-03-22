@@ -2,15 +2,11 @@ package cmd
 
 import (
 	"context"
-	"net/http"
-	"os"
 
 	"github.com/google/go-github/v33/github"
-	"golang.org/x/oauth2"
 )
 
 type gitHubData struct {
-	client    *github.Client
 	keysCache map[string][]*github.Key
 }
 
@@ -22,29 +18,14 @@ func (c *Config) gitHubKeysTemplateFunc(user string) []*github.Key {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	if c.gitHub.client == nil {
-		var httpClient *http.Client
-		for _, key := range []string{
-			"CHEZMOI_GITHUB_ACCESS_TOKEN",
-			"GITHUB_ACCESS_TOKEN",
-			"GITHUB_TOKEN",
-		} {
-			if accessToken := os.Getenv(key); accessToken != "" {
-				httpClient = oauth2.NewClient(ctx, oauth2.StaticTokenSource(&oauth2.Token{
-					AccessToken: accessToken,
-				}))
-				break
-			}
-		}
-		c.gitHub.client = github.NewClient(httpClient)
-	}
+	gitHubClient := newGitHubClient(ctx)
 
 	var allKeys []*github.Key
 	opts := &github.ListOptions{
 		PerPage: 100,
 	}
 	for {
-		keys, resp, err := c.gitHub.client.Users.ListKeys(ctx, user, opts)
+		keys, resp, err := gitHubClient.Users.ListKeys(ctx, user, opts)
 		if err != nil {
 			returnTemplateError(err)
 			return nil

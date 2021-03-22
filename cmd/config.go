@@ -129,6 +129,7 @@ type Config struct {
 	state           stateCmdConfig
 	status          statusCmdConfig
 	update          updateCmdConfig
+	upgrade         upgradeCmdConfig
 	verify          verifyCmdConfig
 
 	// Computed configuration.
@@ -911,40 +912,39 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	}
 
 	rootCmd.SetHelpCommand(c.newHelpCmd())
-	for _, newCmdFunc := range []func() *cobra.Command{
-		c.newAddCmd,
-		c.newApplyCmd,
-		c.newArchiveCmd,
-		c.newCatCmd,
-		c.newCDCmd,
-		c.newChattrCmd,
-		c.newCompletionCmd,
-		c.newDataCmd,
-		c.newDiffCmd,
-		c.newDocsCmd,
-		c.newDoctorCmd,
-		c.newDumpCmd,
-		c.newEditCmd,
-		c.newEditConfigCmd,
-		c.newExecuteTemplateCmd,
-		c.newForgetCmd,
-		c.newGitCmd,
-		c.newImportCmd,
-		c.newInitCmd,
-		c.newManagedCmd,
-		c.newMergeCmd,
-		c.newPurgeCmd,
-		c.newRemoveCmd,
-		c.newSecretCmd,
-		c.newSourcePathCmd,
-		c.newStateCmd,
-		c.newStatusCmd,
-		c.newUnmanagedCmd,
-		c.newUpdateCmd,
-		c.newVerifyCmd,
-	} {
-		rootCmd.AddCommand(newCmdFunc())
-	}
+	rootCmd.AddCommand(
+		c.newAddCmd(),
+		c.newApplyCmd(),
+		c.newArchiveCmd(),
+		c.newCatCmd(),
+		c.newCDCmd(),
+		c.newChattrCmd(),
+		c.newCompletionCmd(),
+		c.newDataCmd(),
+		c.newDiffCmd(),
+		c.newDocsCmd(),
+		c.newDoctorCmd(),
+		c.newDumpCmd(),
+		c.newEditCmd(),
+		c.newEditConfigCmd(),
+		c.newExecuteTemplateCmd(),
+		c.newForgetCmd(),
+		c.newGitCmd(),
+		c.newImportCmd(),
+		c.newInitCmd(),
+		c.newManagedCmd(),
+		c.newMergeCmd(),
+		c.newPurgeCmd(),
+		c.newRemoveCmd(),
+		c.newSecretCmd(),
+		c.newSourcePathCmd(),
+		c.newStateCmd(),
+		c.newStatusCmd(),
+		c.newUnmanagedCmd(),
+		c.newUpdateCmd(),
+		c.newUpgradeCmd(),
+		c.newVerifyCmd(),
+	)
 
 	return rootCmd, nil
 }

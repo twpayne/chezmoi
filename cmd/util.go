@@ -1,15 +1,20 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
+	"net/http"
+	"os"
 	"regexp"
 	"strconv"
 	"strings"
 	"unicode"
 
+	"github.com/google/go-github/v33/github"
 	"github.com/spf13/viper"
 	"github.com/twpayne/go-vfs/v2"
 	"github.com/twpayne/go-xdg/v4"
+	"golang.org/x/oauth2"
 
 	"github.com/twpayne/chezmoi/internal/chezmoi"
 )
@@ -71,6 +76,25 @@ func firstNonEmptyString(ss ...string) string {
 		}
 	}
 	return ""
+}
+
+// newGitHubClient returns a new github.Client configured with an access token,
+// if available.
+func newGitHubClient(ctx context.Context) *github.Client {
+	var httpClient *http.Client
+	for _, key := range []string{
+		"CHEZMOI_GITHUB_ACCESS_TOKEN",
+		"GITHUB_ACCESS_TOKEN",
+		"GITHUB_TOKEN",
+	} {
+		if accessToken := os.Getenv(key); accessToken != "" {
+			httpClient = oauth2.NewClient(ctx, oauth2.StaticTokenSource(&oauth2.Token{
+				AccessToken: accessToken,
+			}))
+			break
+		}
+	}
+	return github.NewClient(httpClient)
 }
 
 // isWellKnownAbbreviation returns true if word is a well known abbreviation.
