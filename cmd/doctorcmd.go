@@ -155,6 +155,14 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotExist: checkWarning,
 		},
 		&binaryCheck{
+			name:        "age-cli",
+			binaryname:  "age",
+			versionArgs: []string{"-version"},
+			versionRx:   regexp.MustCompile(`v(\d+\.\d+\.\d+\S*)`),
+			ifNotSet:    checkWarning,
+			ifNotExist:  checkInfo,
+		},
+		&binaryCheck{
 			name:        "gnupg-cli",
 			binaryname:  "gpg",
 			versionArgs: []string{"--version"},
