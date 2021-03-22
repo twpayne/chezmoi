@@ -1,4 +1,5 @@
 [windows] stop
+chmod 755 bin/age
 chmod 755 bin/bw
 chmod 755 bin/git
 chmod 755 bin/gopass
@@ -25,17 +26,22 @@ stdout 'ok\s+shell\s+'
 stdout 'ok\s+editor\s+'
 stdout 'ok\s+git-cli\s+'
 stdout 'ok\s+merge-cli\s+'
+stdout 'ok\s+age-cli\s+'
 stdout 'ok\s+gnupg-cli\s+'
 stdout 'ok\s+1password-cli\s+'
 stdout 'ok\s+bitwarden-cli\s+'
 stdout 'ok\s+gopass-cli\s+'
 stdout 'ok\s+keepassxc-cli\s+'
-stdout 'warning\s+keepassxc-db\s+'
+stdout 'info\s+keepassxc-db\s+'
 stdout 'ok\s+lastpass-cli\s+'
 stdout 'ok\s+pass-cli\s+'
 stdout 'ok\s+vault-cli\s+'
 stdout 'ok\s+secret-cli\s+'
 
+-- bin/age --
+#!/bin/sh
+
+echo "v1.0.0-rc.1"
 -- bin/bw --
 #!/bin/sh
 

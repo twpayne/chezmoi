@@ -26,9 +26,10 @@ type checkResult int
 const (
 	checkSkipped checkResult = -1 // The check was skipped.
 	checkOK      checkResult = 0  // The check completed and did not find any problems.
-	checkWarning checkResult = 1  // The check completed and found something that might indicate a problem.
-	checkError   checkResult = 2  // The check completed and found a definite problem.
-	checkFailed  checkResult = 3  // The check could not be completed.
+	checkInfo    checkResult = 1  // The check completed and found something interesting, but not a problem.
+	checkWarning checkResult = 2  // The check completed and found something that might indicate a problem.
+	checkError   checkResult = 3  // The check completed and found a definite problem.
+	checkFailed  checkResult = 4  // The check could not be completed.
 )
 
 // A check is an individual check.
@@ -40,6 +41,7 @@ type check interface {
 var checkResultStr = map[checkResult]string{
 	checkSkipped: "skipped",
 	checkOK:      "ok",
+	checkInfo:    "info",
 	checkWarning: "warning",
 	checkError:   "error",
 	checkFailed:  "failed",
@@ -50,6 +52,7 @@ var checkResultStr = map[checkResult]string{
 type binaryCheck struct {
 	name        string
 	binaryname  string
+	ifNotSet    checkResult
 	ifNotExist  checkResult
 	versionArgs []string
 	versionRx   *regexp.Regexp
@@ -66,6 +69,7 @@ type dirCheck struct {
 type fileCheck struct {
 	name       string
 	filename   string
+	ifNotSet   checkResult
 	ifNotExist checkResult
 }
 
@@ -113,7 +117,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		&fileCheck{
 			name:       "config-file",
 			filename:   string(c.configFileAbsPath),
-			ifNotExist: checkWarning,
+			ifNotExist: checkInfo,
 		},
 		&dirCheck{
 			name:    "source-dir",
@@ -129,14 +133,17 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		&binaryCheck{
 			name:       "shell",
 			binaryname: shell,
+			ifNotSet:   checkError,
 		},
 		&binaryCheck{
 			name:       "editor",
 			binaryname: editor,
+			ifNotSet:   checkWarning,
 		},
 		&binaryCheck{
 			name:        "git-cli",
 			binaryname:  c.Git.Command,
+			ifNotSet:    checkWarning,
 			ifNotExist:  checkWarning,
 			versionArgs: []string{"--version"},
 			versionRx:   regexp.MustCompile(`^git\s+version\s+(\d+\.\d+\.\d+)`),
@@ -144,32 +151,45 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		&binaryCheck{
 			name:       "merge-cli",
 			binaryname: c.Merge.Command,
+			ifNotSet:   checkWarning,
 			ifNotExist: checkWarning,
+		},
+		&binaryCheck{
+			name:        "age-cli",
+			binaryname:  "age",
+			versionArgs: []string{"-version"},
+			versionRx:   regexp.MustCompile(`v(\d+\.\d+\.\d+\S*)`),
+			ifNotSet:    checkWarning,
+			ifNotExist:  checkInfo,
 		},
 		&binaryCheck{
 			name:        "gnupg-cli",
 			binaryname:  "gpg",
 			versionArgs: []string{"--version"},
 			versionRx:   regexp.MustCompile(`^gpg\s+\(.*?\)\s+(\d+\.\d+\.\d+)`),
+			ifNotSet:    checkWarning,
 		},
 		&binaryCheck{
 			name:        "1password-cli",
 			binaryname:  c.Onepassword.Command,
-			ifNotExist:  checkWarning,
+			ifNotSet:    checkWarning,
+			ifNotExist:  checkInfo,
 			versionArgs: []string{"--version"},
 			versionRx:   regexp.MustCompile(`^(\d+\.\d+\.\d+)`),
 		},
 		&binaryCheck{
 			name:        "bitwarden-cli",
 			binaryname:  c.Bitwarden.Command,
-			ifNotExist:  checkWarning,
+			ifNotSet:    checkWarning,
+			ifNotExist:  checkInfo,
 			versionArgs: []string{"--version"},
 			versionRx:   regexp.MustCompile(`^(\d+\.\d+\.\d+)`),
 		},
 		&binaryCheck{
 			name:        "gopass-cli",
 			binaryname:  c.Gopass.Command,
-			ifNotExist:  checkWarning,
+			ifNotSet:    checkWarning,
+			ifNotExist:  checkInfo,
 			versionArgs: gopassVersionArgs,
 			versionRx:   gopassVersionRx,
 			minVersion:  &gopassMinVersion,
@@ -177,19 +197,22 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		&binaryCheck{
 			name:        "keepassxc-cli",
 			binaryname:  c.Keepassxc.Command,
-			ifNotExist:  checkWarning,
+			ifNotSet:    checkWarning,
+			ifNotExist:  checkInfo,
 			versionArgs: []string{"--version"},
 			versionRx:   regexp.MustCompile(`^(\d+\.\d+\.\d+)`),
 		},
 		&fileCheck{
 			name:       "keepassxc-db",
 			filename:   c.Keepassxc.Database,
-			ifNotExist: checkWarning,
+			ifNotSet:   checkInfo,
+			ifNotExist: checkInfo,
 		},
 		&binaryCheck{
 			name:        "lastpass-cli",
 			binaryname:  c.Lastpass.Command,
-			ifNotExist:  checkWarning,
+			ifNotSet:    checkWarning,
+			ifNotExist:  checkInfo,
 			versionArgs: lastpassVersionArgs,
 			versionRx:   lastpassVersionRx,
 			minVersion:  &lastpassMinVersion,
@@ -197,21 +220,24 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		&binaryCheck{
 			name:        "pass-cli",
 			binaryname:  c.Pass.Command,
-			ifNotExist:  checkWarning,
+			ifNotSet:    checkWarning,
+			ifNotExist:  checkInfo,
 			versionArgs: []string{"version"},
 			versionRx:   regexp.MustCompile(`(?m)=\s*v(\d+\.\d+\.\d+)`),
 		},
 		&binaryCheck{
 			name:        "vault-cli",
 			binaryname:  c.Vault.Command,
-			ifNotExist:  checkWarning,
+			ifNotSet:    checkWarning,
+			ifNotExist:  checkInfo,
 			versionArgs: []string{"version"},
 			versionRx:   regexp.MustCompile(`^Vault\s+v(\d+\.\d+\.\d+)`),
 		},
 		&binaryCheck{
 			name:       "secret-cli",
 			binaryname: c.Secret.Command,
-			ifNotExist: checkWarning,
+			ifNotSet:   checkInfo,
+			ifNotExist: checkInfo,
 		},
 	}
 
@@ -241,7 +267,7 @@ func (c *binaryCheck) Name() string {
 
 func (c *binaryCheck) Run() (checkResult, string) {
 	if c.binaryname == "" {
-		return checkWarning, "not set"
+		return c.ifNotSet, "not set"
 	}
 
 	path, err := exec.LookPath(c.binaryname)
@@ -299,7 +325,7 @@ func (c *fileCheck) Name() string {
 
 func (c *fileCheck) Run() (checkResult, string) {
 	if c.filename == "" {
-		return checkWarning, "not set"
+		return c.ifNotSet, "not set"
 	}
 
 	_, err := os.ReadFile(c.filename)
