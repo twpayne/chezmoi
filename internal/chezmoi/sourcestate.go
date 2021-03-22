@@ -366,8 +366,10 @@ func (s *SourceState) Apply(targetSystem, destSystem System, persistentState Per
 		}
 	}
 
-	if err := targetStateEntry.Apply(targetSystem, persistentState, actualStateEntry, options.Umask); err != nil {
+	if changed, err := targetStateEntry.Apply(targetSystem, persistentState, actualStateEntry, options.Umask); err != nil {
 		return err
+	} else if !changed {
+		return nil
 	}
 
 	return persistentStateSet(persistentState, entryStateBucket, []byte(targetAbsPath), targetEntryState)

@@ -110,7 +110,8 @@ func TestTargetStateEntryApplyAndEqual(t *testing.T) {
 				require.NoError(t, err)
 
 				// Apply the target state entry.
-				require.NoError(t, targetState.Apply(s, nil, actualStateEntry, chezmoitest.Umask))
+				_, err = targetState.Apply(s, nil, actualStateEntry, chezmoitest.Umask)
+				require.NoError(t, err)
 
 				// Verify that the actual state entry matches the desired
 				// state.
