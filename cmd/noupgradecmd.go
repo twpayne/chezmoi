@@ -1,3 +1,5 @@
+// +build noupgrade windows
+
 package cmd
 
 import (
