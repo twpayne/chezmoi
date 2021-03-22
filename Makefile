@@ -15,6 +15,7 @@ build-darwin:
 .PHONY: build-linux
 build-linux:
 	GOOS=linux GOARCH=amd64 $(GO) build -o /dev/null .
+	GOOS=linux GOARCH=amd64 $(GO) build -tags=noupgrade -o /dev/null .
 
 .PHONY: build-windows
 build-windows:
