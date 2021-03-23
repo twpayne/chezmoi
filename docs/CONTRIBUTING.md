@@ -77,8 +77,8 @@ that:
 * The documentation is updated, if necessary. For new features you should add an
   entry in `docs/HOWTO.md` and a complete description in `docs/REFERENCE.md`.
 
-* All generated files are up to date. You can ensure this by running `go
-  generate` and including any modified files in your commit.
+* All generated files are up to date. You can ensure this by running `make
+  completions` and including any modified files in your commit.
 
 * The code is correctly formatted, according to
   [`gofumports`](https://mvdan.cc/gofumpt/gofumports). You can ensure this by
