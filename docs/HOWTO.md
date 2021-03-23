@@ -52,7 +52,7 @@ example:
 
     chezmoi cd
     git remote add origin https://github.com/username/dotfiles.git
-    git push -u origin master
+    git push -u origin main
     exit
 
 On another machine you can checkout this repo:
