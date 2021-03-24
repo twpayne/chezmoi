@@ -69,7 +69,6 @@ builds:
 
 archives:
 - builds:
-  - chezmoi-cgo-musl # FIXME remove when install script is updated to download appropriate glibc/musl archive
   - chezmoi-nocgo
   files:
   - LICENSE

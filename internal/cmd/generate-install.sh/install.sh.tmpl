@@ -43,19 +43,28 @@ main() {
 
 	log_info "found version ${VERSION} for ${TAGARG}/${GOOS}/${GOARCH}"
 
+	BINSUFFIX=
+	FORMAT=tar.gz
+	GOOS_EXTRA=
 	case "${GOOS}" in
+	linux)
+		case "$(get_libc)" in
+		glibc)
+			GOOS_EXTRA="-glibc"
+			;;
+		musl)
+			GOOS_EXTRA="-musl"
+			;;
+		esac
+		;;
 	windows)
 		BINSUFFIX=.exe
 		FORMAT=zip
 		;;
-	*)
-		BINSUFFIX=
-		FORMAT=tar.gz
-		;;
 	esac
 
 	# download tarball
-	NAME="chezmoi_${VERSION}_${GOOS}_${GOARCH}"
+	NAME="chezmoi_${VERSION}_${GOOS}${GOOS_EXTRA}_${GOARCH}"
 	TARBALL="${NAME}.${FORMAT}"
 	TARBALL_URL="${GITHUB_DOWNLOAD}/${TAG}/${TARBALL}"
 	http_download "${tmpdir}/${TARBALL}" "${TARBALL_URL}" || exit 1
@@ -132,6 +141,31 @@ check_goos_goarch() {
 		return 1
 		;;
 	esac
+}
+
+get_libc() {
+	if is_command ldd; then
+		case "$(ldd --version 2>&1 | tr '[:upper:]' '[:lower:]')" in
+		*glibc*|"*gnu libc*")
+			echo glibc
+			return
+			;;
+		*musl*)
+			echo musl
+			return
+			;;
+		esac
+	fi
+	if is_command getconf; then
+		case "$(getconf GNU_LIBC_VERSION 2>&1)" in
+		*glibc*)
+			echo glibc
+			return
+			;;
+		esac
+	fi
+	log_crit "unable to determine libc" 1>&2
+	exit 1
 }
 
 real_tag() {
