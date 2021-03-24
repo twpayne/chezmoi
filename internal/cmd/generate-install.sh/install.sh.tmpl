@@ -58,12 +58,12 @@ main() {
 	NAME="chezmoi_${VERSION}_${GOOS}_${GOARCH}"
 	TARBALL="${NAME}.${FORMAT}"
 	TARBALL_URL="${GITHUB_DOWNLOAD}/${TAG}/${TARBALL}"
-	http_download "${tmpdir}/${TARBALL}" "${TARBALL_URL}"
+	http_download "${tmpdir}/${TARBALL}" "${TARBALL_URL}" || exit 1
 
 	# download checksums
 	CHECKSUMS="chezmoi_${VERSION}_checksums.txt"
 	CHECKSUMS_URL="${GITHUB_DOWNLOAD}/${TAG}/${CHECKSUMS}"
-	http_download "${tmpdir}/${CHECKSUMS}" "${CHECKSUMS_URL}"
+	http_download "${tmpdir}/${CHECKSUMS}" "${CHECKSUMS_URL}" || exit 1
 
 	# verify checksums
 	hash_sha256_verify "${tmpdir}/${TARBALL}" "${tmpdir}/${CHECKSUMS}"
@@ -182,19 +182,19 @@ http_download_wget() {
 	source_url=$2
 	header=$3
 	if [ -z "${header}" ]; then
-		wget -q -O "${local_file}" "${source_url}"
+		wget -q -O "${local_file}" "${source_url}" || return 1
 	else
-		wget -q --header "${header}" -O "${local_file}" "${source_url}"
+		wget -q --header "${header}" -O "${local_file}" "${source_url}" || return 1
 	fi
 }
 
 http_download() {
 	log_debug "http_download $2"
 	if is_command curl; then
-		http_download_curl "$@"
+		http_download_curl "$@" || return 1
 		return
 	elif is_command wget; then
-		http_download_wget "$@"
+		http_download_wget "$@" || return 1
 		return
 	fi
 	log_crit "http_download unable to find wget or curl"
