@@ -134,7 +134,7 @@ jobs:
           ${{ runner.os }}-go1.16.2-
     - name: Generate
       run: |
-        make completions
+        make generate
         git diff --exit-code
   lint:
     runs-on: ubuntu-18.04

@@ -29,6 +29,9 @@ run:
 test:
 	$(GO) test ./...
 
+.PHONY: generate
+generate: completions assets/scripts/install.sh
+
 .PHONY: completions
 completions:
 	$(GO) run . completion bash -o completions/chezmoi-completion.bash
@@ -36,9 +39,8 @@ completions:
 	$(GO) run . completion powershell -o completions/chezmoi.ps1
 	$(GO) run . completion zsh -o completions/chezmoi.zsh
 
-.PHONY: generate-install.sh
-generate-install.sh:
-	$(GO) run ./internal/cmd/generate-install.sh > assets/scripts/install.sh
+assets/scripts/install.sh: internal/cmd/generate-install.sh/install.sh.tmpl internal/cmd/generate-install.sh/main.go
+	$(GO) run ./internal/cmd/generate-install.sh > $@
 
 .PHONY: lint
 lint: ensure-golangci-lint
