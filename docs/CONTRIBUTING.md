@@ -38,15 +38,17 @@ Run chezmoi:
 
 ## Generated code
 
-chezmoi generates shell completions, embedded files, and the website from a
+chezmoi generates shell completions, the install script, and the website from a
 single source of truth. You must run
 
-    make completions
+    make generate
 
 if you change includes any of the following:
 
-* Add or modify a command.
-* Add or modify a command's flags.
+* Adds or modifies a command.
+* Adds or modifies a command's flags.
+* Adds or modifies the list of supported OSs and architectures.
+* Modifies the install script template.
 
 chezmoi's continuous integration verifies that all generated files are up to
 date. Changes to generated files should be included in the commit that modifies
@@ -78,7 +80,7 @@ that:
   entry in `docs/HOWTO.md` and a complete description in `docs/REFERENCE.md`.
 
 * All generated files are up to date. You can ensure this by running `make
-  completions` and including any modified files in your commit.
+  generate` and including any modified files in your commit.
 
 * The code is correctly formatted, according to
   [`gofumports`](https://mvdan.cc/gofumpt/gofumports). You can ensure this by
