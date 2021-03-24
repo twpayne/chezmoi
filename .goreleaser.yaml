@@ -69,7 +69,7 @@ builds:
 
 archives:
 - builds:
-  - chezmoi-cgo-musl
+  - chezmoi-cgo-musl # FIXME remove when install script is updated to download appropriate glibc/musl archive
   - chezmoi-nocgo
   files:
   - LICENSE
@@ -81,6 +81,24 @@ archives:
   format_overrides:
   - goos: windows
     format: zip
+- id: glibc
+  builds:
+  - chezmoi-cgo-glibc
+  files:
+  - LICENSE
+  - README.md
+  - completions/*
+  - docs/*
+  name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}-glibc_{{ .Arch }}"
+- id: musl
+  builds:
+  - chezmoi-cgo-musl
+  files:
+  - LICENSE
+  - README.md
+  - completions/*
+  - docs/*
+  name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}-musl_{{ .Arch }}"
 
 changelog:
   sort: asc
