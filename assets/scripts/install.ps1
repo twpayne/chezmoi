@@ -291,7 +291,7 @@ function Install-Chezmoi {
     $binary = "chezmoi$($binsuffix)";
     $tmp_binary = (Join-Path $tempdir $binary);
 
-    Move-Item -Path $tmp_binary -Destination $BinDir
+    Move-Item -Force -Path $tmp_binary -Destination $BinDir
 
     log-info "Installed $($BinDir)/$($binary)"
 
