@@ -100,10 +100,26 @@ func (s *RealSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte) (er
 	// Run the temporary script file.
 	//nolint:gosec
 	cmd := exec.Command(f.Name())
-	cmd.Dir = string(dir)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
+
+	// The requested working dir may not actually exist yet, if this is a
+	// `before_` script.  In that case, look through the parent hierarchy till
+	// we find one.
+	for workDir := dir; string(dir) != "."; workDir = workDir.Dir() {
+		if _, err = s.Stat(workDir); err != nil {
+			if !os.IsNotExist(err) {
+				// something bad happened, but it wasn't that the dir didn't exist
+				return
+			}
+		} else {
+			// If there was no error, workDir exists and can be used as the CWD.
+			cmd.Dir = string(workDir)
+			break
+		}
+	}
+
 	err = s.RunCmd(cmd)
 	return
 }
