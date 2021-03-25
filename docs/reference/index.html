@@ -2,7 +2,7 @@
 <html lang="en" dir=>
 
 <head>
-  <meta name="generator" content="Hugo 0.81.0" />
+  <meta name="generator" content="Hugo 0.82.0" />
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Reference Manual #  Concepts #  chezmoi evaluates the source state for the current machine and then updates the destination directory, where:
@@ -23,7 +23,7 @@
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.2bc2364a4a4b31f0ec1debecf0a8f90a840821f143dfe1ac6a0f7cbcbdcf64ac.css" integrity="sha256-K8I2SkpLMfDsHevs8Kj5CoQIIfFD3&#43;Gsag98vL3PZKw=">
-<script defer src="/en.search.min.18df435cd3b7f56c8b353be675f9c93f1a25927c7cf121a62ec5d469863f399b.js" integrity="sha256-GN9DXNO39WyLNTvmdfnJPxolknx88SGmLsXUaYY/OZs="></script>
+<script defer src="/en.search.min.c12106d61a3caa70e151a688fcefe13bc54fe78b0285caba7c405c9b8efba081.js" integrity="sha256-wSEG1ho8qnDhUaaI/O/hO8VP54sChcq6fEBcm477oIE="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -210,6 +210,7 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#unmanage-targets"><code>unmanage</code> <em>targets</em></a></li>
         <li><a href="#unmanaged"><code>unmanaged</code></a></li>
         <li><a href="#update"><code>update</code></a></li>
+        <li><a href="#upgrade"><code>upgrade</code></a></li>
         <li><a href="#verify-targets"><code>verify</code> [<em>targets</em>]</a></li>
       </ul>
     </li>
@@ -963,7 +964,9 @@ create <code>.a</code>, create <code>.c</code>, and then execute <code>run_z</co
 attribute determines whether the file in the source state is encrypted. The
 <code>executable_</code> attribute will set the executable bits when the file is written to
 the target state, and the <code>private_</code> attribute will clear all group and world
-permissions. Files with the <code>.tmpl</code> suffix will be interpreted as templates.</p>
+permissions. Files with the <code>.tmpl</code> suffix will be interpreted as templates. If
+the target contents are empty then the file will be removed, unless it has an
+<code>empty_</code> prefix.</p>
 <h4 id="create-file">
   Create file
   <a class="anchor" href="#create-file">#</a>
@@ -996,7 +999,8 @@ causes chezmoi to clear all group and world permssions.</p>
 prefix <code>symlink_</code>. The contents of the file will have a trailing newline
 stripped, and the result be interpreted as the target of the symbolic link.
 Symbolic links with the <code>.tmpl</code> suffix in the source state are interpreted as
-templates.</p>
+templates. If the target of the symbolic link is empty or consists only of
+whitespace, then the target is removed.</p>
 <h3 id="scripts">
   Scripts
   <a class="anchor" href="#scripts">#</a>
@@ -1812,6 +1816,20 @@ difference between the actual state and the target state.</p>
 </h4>
 <pre><code>chezmoi update
 </code></pre>
+<h3 id="upgrade">
+  <code>upgrade</code>
+  <a class="anchor" href="#upgrade">#</a>
+</h3>
+<p>Upgrade chezmoi by downloading and installing the latest released version. This
+will call the GitHub API to determine if there is a new version of chezmoi
+available, and if so, download and attempt to install it in the same way as
+chezmoi was previously installed.</p>
+<p>If the any of the <code>CHEZMOI_GITHUB_ACCESS_TOKEN</code>, <code>GITHUB_ACCESS_TOKEN</code>, or
+<code>GITHUB_TOKEN</code> environment variables are set, then the first value found will be
+used to authenticate requests to the GitHub API, otherwise unauthenticated
+requests are used which are subject to stricter <a href="https://developer.github.com/v3/#rate-limiting">rate
+limiting</a>. Unauthenticated
+requests should be sufficient for most cases.</p>
 <h3 id="verify-targets">
   <code>verify</code> [<em>targets</em>]
   <a class="anchor" href="#verify-targets">#</a>
@@ -2329,10 +2347,10 @@ elements of <code>details.fields</code> are returned as a map indexed by each fi
     <span style="color:#f92672">&#34;value&#34;</span>: <span style="color:#e6db74">&#34;examplepassword&#34;</span>
   }
 }
-</code></pre></div><p>The output from <code>op</code> is cached so calling <code>onepassword</code> multiple times with the
-same <em>uuid</em> will only invoke <code>op</code> once.  If the optional <em>vault-uuid</em> is supplied,
-it will be passed along to the <code>op get</code> call, which can significantly improve
-performance.</p>
+</code></pre></div><p>The output from <code>op</code> is cached so calling <code>onepasswordDetailsFields</code> multiple
+times with the same <em>uuid</em> will only invoke <code>op</code> once.  If the optional
+<em>vault-uuid</em> is supplied, it will be passed along to the <code>op get</code> call, which
+can significantly improve performance.</p>
 <h4 id="onepassworddetailsfields-examples">
   <code>onepasswordDetailsFields</code> examples
   <a class="anchor" href="#onepassworddetailsfields-examples">#</a>
@@ -2592,6 +2610,7 @@ times with the same <em>key</em> will only invoke <code>vault</code> once.</p>
         <li><a href="#unmanage-targets"><code>unmanage</code> <em>targets</em></a></li>
         <li><a href="#unmanaged"><code>unmanaged</code></a></li>
         <li><a href="#update"><code>update</code></a></li>
+        <li><a href="#upgrade"><code>upgrade</code></a></li>
         <li><a href="#verify-targets"><code>verify</code> [<em>targets</em>]</a></li>
       </ul>
     </li>

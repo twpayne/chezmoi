@@ -2,7 +2,7 @@
 <html lang="en" dir=>
 
 <head>
-  <meta name="generator" content="Hugo 0.81.0" />
+  <meta name="generator" content="Hugo 0.82.0" />
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Contributing Guide #  Getting started #  chezmoi is written in Go and development happens on GitHub. The rest of this document assumes that you&rsquo;ve checked out chezmoi locally.
@@ -25,7 +25,7 @@ go build ." />
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.2bc2364a4a4b31f0ec1debecf0a8f90a840821f143dfe1ac6a0f7cbcbdcf64ac.css" integrity="sha256-K8I2SkpLMfDsHevs8Kj5CoQIIfFD3&#43;Gsag98vL3PZKw=">
-<script defer src="/en.search.min.18df435cd3b7f56c8b353be675f9c93f1a25927c7cf121a62ec5d469863f399b.js" integrity="sha256-GN9DXNO39WyLNTvmdfnJPxolknx88SGmLsXUaYY/OZs="></script>
+<script defer src="/en.search.min.c12106d61a3caa70e151a688fcefe13bc54fe78b0285caba7c405c9b8efba081.js" integrity="sha256-wSEG1ho8qnDhUaaI/O/hO8VP54sChcq6fEBcm477oIE="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -175,14 +175,16 @@ tools. Ensure that these extra tools are installed with:</p>
   Generated code
   <a class="anchor" href="#generated-code">#</a>
 </h2>
-<p>chezmoi generates shell completions, embedded files, and the website from a
+<p>chezmoi generates shell completions, the install script, and the website from a
 single source of truth. You must run</p>
-<pre><code>make completions
+<pre><code>make generate
 </code></pre>
 <p>if you change includes any of the following:</p>
 <ul>
-<li>Add or modify a command.</li>
-<li>Add or modify a command&rsquo;s flags.</li>
+<li>Adds or modifies a command.</li>
+<li>Adds or modifies a command&rsquo;s flags.</li>
+<li>Adds or modifies the list of supported OSs and architectures.</li>
+<li>Modifies the install script template.</li>
 </ul>
 <p>chezmoi&rsquo;s continuous integration verifies that all generated files are up to
 date. Changes to generated files should be included in the commit that modifies
@@ -216,7 +218,7 @@ intended.</p>
 entry in <code>docs/HOWTO.md</code> and a complete description in <code>docs/REFERENCE.md</code>.</p>
 </li>
 <li>
-<p>All generated files are up to date. You can ensure this by running <code>go generate</code> and including any modified files in your commit.</p>
+<p>All generated files are up to date. You can ensure this by running <code>make generate</code> and including any modified files in your commit.</p>
 </li>
 <li>
 <p>The code is correctly formatted, according to
@@ -295,14 +297,6 @@ binary, e.g. <code>goreleaser</code>.</p>
 <p>Please enable cgo, if possible. chezmoi can be built and run without cgo, but
 the <code>.chezmoi.username</code> and <code>.chezmoi.group</code> template variables may not be set
 correctly on some systems.</p>
-</li>
-<li>
-<p>chezmoi includes a <code>docs</code> command which prints its documentation. By default,
-the docs are embedded in the binary. You can disable this behavior, and have
-chezmoi read its docs from the filesystem by building with the <code>noembeddocs</code>
-build tag and setting the directory where chezmoi can find them with the <code>-X github.com/twpayne/chezmoi/cmd.DocDir=$DOCDIR</code> linker flag. For example:</p>
-<pre><code>go build -tags noembeddocs -ldflags &quot;-X github.com/twpayne/chezmoi/cmd.DocsDir=/usr/share/doc/chezmoi&quot; .
-</code></pre><p>To remove the <code>docs</code> command completely, use the <code>nodocs</code> build tag.</p>
 </li>
 <li>
 <p>chezmoi includes an <code>upgrade</code> command which attempts to self-upgrade. You can
