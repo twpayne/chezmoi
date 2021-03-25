@@ -1518,10 +1518,10 @@ the return value will be the map:
 }
 ```
 
-The output from `op` is cached so calling `onepassword` multiple times with the
-same *uuid* will only invoke `op` once.  If the optional *vault-uuid* is supplied,
-it will be passed along to the `op get` call, which can significantly improve
-performance.
+The output from `op` is cached so calling `onepasswordDetailsFields` multiple
+times with the same *uuid* will only invoke `op` once.  If the optional
+*vault-uuid* is supplied, it will be passed along to the `op get` call, which
+can significantly improve performance.
 
 #### `onepasswordDetailsFields` examples
 
