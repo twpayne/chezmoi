@@ -14,10 +14,13 @@ exec tar -tzf archive.tar.gz
 cmp stdout golden/archive
 
 -- golden/apply --
+$HOME
 $HOME/dir
 -- golden/archive --
+otherdir/script
 dir/
 dir/script
+otherdir/
 -- golden/dump --
 {
   "dir": {
@@ -29,9 +32,23 @@ dir/script
     "type": "script",
     "name": "dir/script",
     "contents": "#!/bin/sh\n\necho $PWD\n"
+  },
+  "otherdir": {
+    "type": "dir",
+    "name": "otherdir",
+    "perm": 511
+  },
+  "otherdir/script": {
+    "type": "script",
+    "name": "otherdir/script",
+    "contents": "#!/bin/sh\n\necho $PWD\n"
   }
 }
 -- home/user/.local/share/chezmoi/dir/run_script --
+#!/bin/sh
+
+echo $PWD
+-- home/user/.local/share/chezmoi/otherdir/run_before_script --
 #!/bin/sh
 
 echo $PWD
