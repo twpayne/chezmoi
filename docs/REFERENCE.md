@@ -449,6 +449,14 @@ all files, directories, and symlinks have been updated. Scripts without an
 `before_` or `after_` attribute are executed in ASCII order of their target
 names with respect to files, directories, and symlinks.
 
+Scripts will normally run with their working directory set to their equivalent
+location in the destination directory. For example, a script in
+`~/.local/share/chezmoi/dir/run_script` will be run with a working directory of
+`~/dir`. If the equivalent location in the destination directory either does not
+exist or is not a directory, then chezmoi will walk up the script's directory
+hierarchy and run the script in the first directory that exists and is a
+directory.
+
 ## Special files and directories
 
 All files and directories in the source state whose name begins with `.` are

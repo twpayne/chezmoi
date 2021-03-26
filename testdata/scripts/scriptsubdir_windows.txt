@@ -19,13 +19,26 @@ cmp stdout golden/archive
 -- golden/apply --
 $HOME
 $HOME\dir
+$HOME\anotherdir
 -- golden/archive --
 otherdir/script.cmd
+anotherdir/
 dir/
 dir/script.cmd
 otherdir/
+anotherdir/script.cmd
 -- golden/dump --
 {
+  "anotherdir": {
+    "type": "dir",
+    "name": "anotherdir",
+    "perm": 511
+  },
+  "anotherdir/script.cmd": {
+    "type": "script",
+    "name": "anotherdir/script.cmd",
+    "contents": "@echo %cd%\n"
+  },
   "dir": {
     "type": "dir",
     "name": "dir",
@@ -47,6 +60,8 @@ otherdir/
     "contents": "@echo %cd%\n"
   }
 }
+-- home/user/.local/share/chezmoi/anotherdir/run_after_script.cmd --
+@echo %cd%
 -- home/user/.local/share/chezmoi/dir/run_script.cmd --
 @echo %cd%
 -- home/user/.local/share/chezmoi/otherdir/run_before_script.cmd --

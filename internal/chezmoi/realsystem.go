@@ -97,26 +97,37 @@ func (s *RealSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte) (er
 		return
 	}
 
-	// Run the temporary script file.
 	//nolint:gosec
 	cmd := exec.Command(f.Name())
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
-	// The requested working dir may not actually exist yet, if this is a
-	// `before_` script.  In that case, look through the parent hierarchy till
-	// we find one.
-	for workDir := dir; string(dir) != "."; workDir = workDir.Dir() {
-		if _, err = s.Stat(workDir); err != nil {
-			if !os.IsNotExist(err) {
-				// something bad happened, but it wasn't that the dir didn't exist
-				return
+	// Determine the script's working directory.
+	//
+	// If this is a before_ script then the requested working directory may not
+	// actually exist yet, so search through the parent directory hierarchy till
+	// we find a suitable working directory.
+	//
+	// This should always terminate because dir will eventually become ".", i.e.
+	// the current directory.
+FOR:
+	for {
+		switch info, err := s.Stat(dir); {
+		case err == nil && info.IsDir():
+			// dir exists and is a directory. Use it.
+			dirRawAbsPath, err := s.RawPath(dir)
+			if err != nil {
+				return err
 			}
-		} else {
-			// If there was no error, workDir exists and can be used as the CWD.
-			cmd.Dir = string(workDir)
-			break
+			cmd.Dir = string(dirRawAbsPath)
+			break FOR
+		case err == nil || os.IsNotExist(err):
+			// Either dir does not exist, or it exists and is not a directory.
+			dir = dir.Dir()
+		default:
+			// Some other error occurred.
+			return err
 		}
 	}
 
