@@ -134,6 +134,7 @@ get_goarch() {
 check_goos_goarch() {
 	case "$1" in
 	darwin/amd64) return 0 ;;
+	darwin/arm64) return 0 ;;
 	freebsd/386) return 0 ;;
 	freebsd/amd64) return 0 ;;
 	freebsd/arm) return 0 ;;
