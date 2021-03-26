@@ -952,10 +952,8 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error {
 	defer pprof.StopCPUProfile()
 
-	if c.persistentState != nil {
-		if err := c.persistentState.Close(); err != nil {
-			return err
-		}
+	if err := c.persistentState.Close(); err != nil {
+		return err
 	}
 
 	if boolAnnotation(cmd, modifiesConfigFile) {
@@ -1097,7 +1095,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 			return err
 		}
 	default:
-		c.persistentState = nil
+		c.persistentState = chezmoi.NullPersistentState{}
 	}
 	if c.debug && c.persistentState != nil {
 		c.persistentState = chezmoi.NewDebugPersistentState(c.persistentState)
@@ -1256,6 +1254,9 @@ func (c *Config) run(dir chezmoi.AbsPath, name string, args []string) error {
 }
 
 func (c *Config) runEditor(args []string) error {
+	if err := c.persistentState.Close(); err != nil {
+		return err
+	}
 	editor, editorArgs := c.editor()
 	return c.run("", editor, append(editorArgs, args...))
 }

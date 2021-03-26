@@ -25,17 +25,34 @@ func TestBoltPersistentState(t *testing.T) {
 
 		b1, err := NewBoltPersistentState(s, path, BoltPersistentStateReadWrite)
 		require.NoError(t, err)
+
+		// Test that getting a key from an non-existent state does not create
+		// the state.
+		actualValue, err := b1.Get(bucket, key)
+		require.NoError(t, err)
+		vfst.RunTests(t, fs, "",
+			vfst.TestPath(string(path),
+				vfst.TestDoesNotExist,
+			),
+		)
+		assert.Equal(t, []byte(nil), actualValue)
+
+		// Test that deleting a key from a non-existent state does not create
+		// the state.
+		require.NoError(t, b1.Delete(bucket, key))
+		vfst.RunTests(t, fs, "",
+			vfst.TestPath(string(path),
+				vfst.TestDoesNotExist,
+			),
+		)
+
+		// Test that setting a key creates the state.
+		assert.NoError(t, b1.Set(bucket, key, value))
 		vfst.RunTests(t, fs, "",
 			vfst.TestPath(string(path),
 				vfst.TestModeIsRegular,
 			),
 		)
-
-		actualValue, err := b1.Get(bucket, key)
-		require.NoError(t, err)
-		assert.Equal(t, []byte(nil), actualValue)
-
-		assert.NoError(t, b1.Set(bucket, key, value))
 		actualValue, err = b1.Get(bucket, key)
 		require.NoError(t, err)
 		assert.Equal(t, value, actualValue)
