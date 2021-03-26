@@ -18,19 +18,29 @@ const (
 
 // A BoltPersistentState is a state persisted with bolt.
 type BoltPersistentState struct {
-	db *bbolt.DB
+	system  System
+	empty   bool
+	path    AbsPath
+	options bbolt.Options
+	db      *bbolt.DB
 }
 
 // NewBoltPersistentState returns a new BoltPersistentState.
 func NewBoltPersistentState(system System, path AbsPath, mode BoltPersistentStateMode) (*BoltPersistentState, error) {
-	if _, err := system.Stat(path); os.IsNotExist(err) {
-		if mode == BoltPersistentStateReadOnly {
-			return &BoltPersistentState{}, nil
-		}
-		if err := MkdirAll(system, path.Dir(), 0o777); err != nil {
-			return nil, err
-		}
+	empty := false
+	switch _, err := system.Stat(path); {
+	case os.IsNotExist(err):
+		// We need to simulate an empty persistent state because Bolt's
+		// read-only mode is only supported for databases that already exist.
+		//
+		// If the database does not already exist, then Bolt will open it with
+		// O_RDONLY and then attempt to initialize it, which leads to EBADF
+		// errors on Linux. See also https://github.com/etcd-io/bbolt/issues/98.
+		empty = true
+	case err != nil:
+		return nil, err
 	}
+
 	options := bbolt.Options{
 		OpenFile: func(name string, flag int, perm os.FileMode) (*os.File, error) {
 			rawPath, err := system.RawPath(AbsPath(name))
@@ -42,27 +52,33 @@ func NewBoltPersistentState(system System, path AbsPath, mode BoltPersistentStat
 		ReadOnly: mode == BoltPersistentStateReadOnly,
 		Timeout:  time.Second,
 	}
-	db, err := bbolt.Open(string(path), 0o600, &options)
-	if err != nil {
-		return nil, err
-	}
+
 	return &BoltPersistentState{
-		db: db,
+		system:  system,
+		empty:   empty,
+		path:    path,
+		options: options,
 	}, nil
 }
 
 // Close closes b.
 func (b *BoltPersistentState) Close() error {
-	if b.db == nil {
-		return nil
+	if b.db != nil {
+		if err := b.db.Close(); err != nil {
+			return err
+		}
+		b.db = nil
 	}
-	return b.db.Close()
+	return nil
 }
 
 // CopyTo copies b to p.
 func (b *BoltPersistentState) CopyTo(p PersistentState) error {
-	if b.db == nil {
+	if b.empty {
 		return nil
+	}
+	if err := b.open(); err != nil {
+		return err
 	}
 
 	return b.db.View(func(tx *bbolt.Tx) error {
@@ -77,6 +93,13 @@ func (b *BoltPersistentState) CopyTo(p PersistentState) error {
 // Delete deletes the value associate with key in bucket. If bucket or key does
 // not exist then Delete does nothing.
 func (b *BoltPersistentState) Delete(bucket, key []byte) error {
+	if b.empty {
+		return nil
+	}
+	if err := b.open(); err != nil {
+		return err
+	}
+
 	return b.db.Update(func(tx *bbolt.Tx) error {
 		b := tx.Bucket(bucket)
 		if b == nil {
@@ -88,8 +111,11 @@ func (b *BoltPersistentState) Delete(bucket, key []byte) error {
 
 // ForEach calls fn for each key, value pair in bucket.
 func (b *BoltPersistentState) ForEach(bucket []byte, fn func(k, v []byte) error) error {
-	if b.db == nil {
+	if b.empty {
 		return nil
+	}
+	if err := b.open(); err != nil {
+		return err
 	}
 
 	return b.db.View(func(tx *bbolt.Tx) error {
@@ -105,8 +131,11 @@ func (b *BoltPersistentState) ForEach(bucket []byte, fn func(k, v []byte) error)
 
 // Get returns the value associated with key in bucket.
 func (b *BoltPersistentState) Get(bucket, key []byte) ([]byte, error) {
-	if b.db == nil {
+	if b.empty {
 		return nil, nil
+	}
+	if err := b.open(); err != nil {
+		return nil, err
 	}
 
 	var value []byte
@@ -126,6 +155,10 @@ func (b *BoltPersistentState) Get(bucket, key []byte) ([]byte, error) {
 // Set sets the value associated with key in bucket. bucket will be created if
 // it does not already exist.
 func (b *BoltPersistentState) Set(bucket, key, value []byte) error {
+	if err := b.open(); err != nil {
+		return err
+	}
+
 	return b.db.Update(func(tx *bbolt.Tx) error {
 		b, err := tx.CreateBucketIfNotExists(bucket)
 		if err != nil {
@@ -133,6 +166,22 @@ func (b *BoltPersistentState) Set(bucket, key, value []byte) error {
 		}
 		return b.Put(key, value)
 	})
+}
+
+func (b *BoltPersistentState) open() error {
+	if b.db != nil {
+		return nil
+	}
+	if err := MkdirAll(b.system, b.path.Dir(), 0o777); err != nil {
+		return err
+	}
+	db, err := bbolt.Open(string(b.path), 0o600, &b.options)
+	if err != nil {
+		return err
+	}
+	b.empty = false
+	b.db = db
+	return nil
 }
 
 func copyByteSlice(value []byte) []byte {
