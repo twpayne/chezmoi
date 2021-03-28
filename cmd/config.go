@@ -254,6 +254,9 @@ func newConfig(options ...configOption) (*Config, error) {
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 			recursive: true,
 		},
+		executeTemplate: executeTemplateCmdConfig{
+			stdinIsATTY: true,
+		},
 		_import: importCmdConfig{
 			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 		},

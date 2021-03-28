@@ -14,6 +14,7 @@ import (
 	"github.com/go-git/go-git/v5"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"golang.org/x/term"
 
 	"github.com/twpayne/chezmoi/internal/chezmoi"
 )
@@ -224,6 +225,7 @@ func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte) ([]byte
 		"promptBool":   c.promptBool,
 		"promptInt":    c.promptInt,
 		"promptString": c.promptString,
+		"stdinIsATTY":  c.stdinIsATTY,
 	})
 
 	t, err := template.New(string(filename)).Funcs(funcMap).Parse(string(data))
@@ -277,6 +279,14 @@ func (c *Config) promptString(field string) string {
 		return ""
 	}
 	return strings.TrimSpace(value)
+}
+
+func (c *Config) stdinIsATTY() bool {
+	file, ok := c.stdin.(*os.File)
+	if !ok {
+		return false
+	}
+	return term.IsTerminal(int(file.Fd()))
 }
 
 // guessDotfilesRepoURL guesses the user's dotfile repo from arg.
