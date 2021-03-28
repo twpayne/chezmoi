@@ -1,25 +1,32 @@
 mksourcedir
 
+# test chezmoi managed
 chezmoi managed
-cmpenv stdout golden/managed
+cmp stdout golden/managed
 
+# test chezmoi managed --include=all
 chezmoi managed --include=all
-cmpenv stdout golden/managed-all
+cmp stdout golden/managed-all
 
+# test chezmoi managed --include=remove
 chezmoi managed --include=remove
-cmpenv stdout golden/managed-remove
+cmp stdout golden/managed-remove
 
+# test chezmoi managed --include=dirs
 chezmoi managed --include=dirs
-cmpenv stdout golden/managed-dirs
+cmp stdout golden/managed-dirs
 
+# test chezmoi managed --include=files
 chezmoi managed --include=files
-cmpenv stdout golden/managed-files
+cmp stdout golden/managed-files
 
+# test chezmoi managed --include=symlinks
 chezmoi managed --include=symlinks
-cmpenv stdout golden/managed-symlinks
+cmp stdout golden/managed-symlinks
 
+# test chezmoi managed --exclude=files
 chezmoi managed --exclude=files
-cmpenv stdout golden/managed-except-files
+cmp stdout golden/managed-except-files
 
 -- golden/managed --
 .create
