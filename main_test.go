@@ -59,6 +59,8 @@ func TestScript(t *testing.T) {
 				return runtime.GOOS == "darwin", nil
 			case "freebsd":
 				return runtime.GOOS == "freebsd", nil
+			case "linux":
+				return runtime.GOOS == "linux", nil
 			case "windows":
 				return runtime.GOOS == "windows", nil
 			default:

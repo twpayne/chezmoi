@@ -1,0 +1,7 @@
+# test that .chezmoi.sourceDir can be used with joinPath
+[!windows] chezmoi execute-template '{{ joinPath .chezmoi.sourceDir ".file" }}'
+[!windows] stdout ${CHEZMOISOURCEDIR@R}/.file
+
+# test that .chezmoi.kernel is set on linux
+[linux] chezmoi execute-template '{{ .chezmoi.kernel.ostype }}'
+[linux] stdout Linux
