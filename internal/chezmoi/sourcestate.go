@@ -839,26 +839,28 @@ func (s *SourceState) newSourceStateFile(sourceRelPath SourceRelPath, fileAttr F
 			}
 			return &TargetStateFile{
 				lazyContents: newLazyContents(contents),
+				empty:        true,
 				perm:         fileAttr.perm(),
 			}, nil
 		}
 	case SourceFileTypeFile:
 		targetStateEntryFunc = func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
-			contents, err := sourceLazyContents.Contents()
-			if err != nil {
-				return nil, err
-			}
-			if fileAttr.Template {
-				contents, err = s.ExecuteTemplateData(sourceRelPath.String(), contents)
+			contentsFunc := func() ([]byte, error) {
+				contents, err := sourceLazyContents.Contents()
 				if err != nil {
 					return nil, err
 				}
-			}
-			if !fileAttr.Empty && isEmpty(contents) {
-				return &TargetStateRemove{}, nil
+				if fileAttr.Template {
+					contents, err = s.ExecuteTemplateData(sourceRelPath.String(), contents)
+					if err != nil {
+						return nil, err
+					}
+				}
+				return contents, nil
 			}
 			return &TargetStateFile{
-				lazyContents: newLazyContents(contents),
+				lazyContents: newLazyContentsFunc(contentsFunc),
+				empty:        fileAttr.Empty,
 				perm:         fileAttr.perm(),
 			}, nil
 		}
@@ -918,47 +920,48 @@ func (s *SourceState) newSourceStateFile(sourceRelPath SourceRelPath, fileAttr F
 				return destSystem.IdempotentCmdOutput(cmd)
 			}
 			return &TargetStateFile{
-				lazyContents: &lazyContents{
-					contentsFunc: contentsFunc,
-				},
-				perm: fileAttr.perm(),
+				lazyContents: newLazyContentsFunc(contentsFunc),
+				perm:         fileAttr.perm(),
 			}, nil
 		}
 	case SourceFileTypeScript:
 		targetStateEntryFunc = func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
-			contents, err := sourceLazyContents.Contents()
-			if err != nil {
-				return nil, err
-			}
-			if fileAttr.Template {
-				contents, err = s.ExecuteTemplateData(sourceRelPath.String(), contents)
+			contentsFunc := func() ([]byte, error) {
+				contents, err := sourceLazyContents.Contents()
 				if err != nil {
 					return nil, err
 				}
+				if fileAttr.Template {
+					contents, err = s.ExecuteTemplateData(sourceRelPath.String(), contents)
+					if err != nil {
+						return nil, err
+					}
+				}
+				return contents, nil
 			}
 			return &TargetStateScript{
-				lazyContents: newLazyContents(contents),
+				lazyContents: newLazyContentsFunc(contentsFunc),
 				name:         targetRelPath,
 				once:         fileAttr.Once,
 			}, nil
 		}
 	case SourceFileTypeSymlink:
 		targetStateEntryFunc = func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
-			linknameBytes, err := sourceLazyContents.Contents()
-			if err != nil {
-				return nil, err
-			}
-			if fileAttr.Template {
-				linknameBytes, err = s.ExecuteTemplateData(sourceRelPath.String(), linknameBytes)
+			linknameFunc := func() (string, error) {
+				linknameBytes, err := sourceLazyContents.Contents()
 				if err != nil {
-					return nil, err
+					return "", err
 				}
-			}
-			if isEmpty(linknameBytes) {
-				return &TargetStateRemove{}, nil
+				if fileAttr.Template {
+					linknameBytes, err = s.ExecuteTemplateData(sourceRelPath.String(), linknameBytes)
+					if err != nil {
+						return "", err
+					}
+				}
+				return string(bytes.TrimSpace(linknameBytes)), nil
 			}
 			return &TargetStateSymlink{
-				lazyLinkname: newLazyLinkname(string(bytes.TrimSpace(linknameBytes))),
+				lazyLinkname: newLazyLinknameFunc(linknameFunc),
 			}, nil
 		}
 	default:
@@ -1022,9 +1025,7 @@ func (s *SourceState) sourceStateEntry(actualStateEntry ActualStateEntry, destAb
 				return nil, err
 			}
 		}
-		lazyContents := &lazyContents{
-			contents: contents,
-		}
+		lazyContents := newLazyContents(contents)
 		sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(RelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix()))))
 		return &SourceStateFile{
 			Attr:          fileAttr,
@@ -1032,6 +1033,7 @@ func (s *SourceState) sourceStateEntry(actualStateEntry ActualStateEntry, destAb
 			lazyContents:  lazyContents,
 			targetStateEntry: &TargetStateFile{
 				lazyContents: lazyContents,
+				empty:        options.Empty,
 				perm:         0o666,
 			},
 		}, nil
@@ -1050,9 +1052,7 @@ func (s *SourceState) sourceStateEntry(actualStateEntry ActualStateEntry, destAb
 			contents = autoTemplate(contents, s.TemplateData())
 		}
 		contents = append(contents, '\n')
-		lazyContents := &lazyContents{
-			contents: contents,
-		}
+		lazyContents := newLazyContents(contents)
 		sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(RelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix()))))
 		return &SourceStateFile{
 			Attr:          fileAttr,

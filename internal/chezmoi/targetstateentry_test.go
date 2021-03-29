@@ -14,31 +14,26 @@ import (
 	"github.com/twpayne/chezmoi/internal/chezmoitest"
 )
 
-func TestTargetStateEntryApplyAndEqual(t *testing.T) {
+func TestTargetStateEntryApply(t *testing.T) {
 	targetStates := map[string]TargetStateEntry{
 		"dir": &TargetStateDir{
 			perm: 0o777 &^ chezmoitest.Umask,
 		},
 		"file": &TargetStateFile{
-			perm: 0o666 &^ chezmoitest.Umask,
-			lazyContents: &lazyContents{
-				contents: []byte("# contents of file"),
-			},
+			perm:         0o666 &^ chezmoitest.Umask,
+			lazyContents: newLazyContents([]byte("# contents of file")),
 		},
 		"file_empty": &TargetStateFile{
-			perm: 0o666 &^ chezmoitest.Umask,
+			perm:  0o666 &^ chezmoitest.Umask,
+			empty: true,
 		},
 		"file_executable": &TargetStateFile{
-			perm: 0o777 &^ chezmoitest.Umask,
-			lazyContents: &lazyContents{
-				contents: []byte("#!/bin/sh\n"),
-			},
+			perm:         0o777 &^ chezmoitest.Umask,
+			lazyContents: newLazyContents([]byte("#!/bin/sh\n")),
 		},
 		"remove": &TargetStateRemove{},
 		"symlink": &TargetStateSymlink{
-			lazyLinkname: &lazyLinkname{
-				linkname: "target",
-			},
+			lazyLinkname: newLazyLinkname("target"),
 		},
 	}
 

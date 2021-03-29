@@ -56,11 +56,9 @@ func NewActualStateEntry(system System, absPath AbsPath, info os.FileInfo, err e
 		return &ActualStateFile{
 			absPath: absPath,
 			perm:    info.Mode() & os.ModePerm,
-			lazyContents: &lazyContents{
-				contentsFunc: func() ([]byte, error) {
-					return system.ReadFile(absPath)
-				},
-			},
+			lazyContents: newLazyContentsFunc(func() ([]byte, error) {
+				return system.ReadFile(absPath)
+			}),
 		}, nil
 	case os.ModeDir:
 		return &ActualStateDir{
@@ -70,15 +68,9 @@ func NewActualStateEntry(system System, absPath AbsPath, info os.FileInfo, err e
 	case os.ModeSymlink:
 		return &ActualStateSymlink{
 			absPath: absPath,
-			lazyLinkname: &lazyLinkname{
-				linknameFunc: func() (string, error) {
-					linkname, err := system.Readlink(absPath)
-					if err != nil {
-						return "", err
-					}
-					return linkname, nil
-				},
-			},
+			lazyLinkname: newLazyLinknameFunc(func() (string, error) {
+				return system.Readlink(absPath)
+			}),
 		}, nil
 	default:
 		return nil, &errUnsupportedFileType{
