@@ -108,6 +108,7 @@ Manage your dotfiles securely across multiple machines.
   * [`secret` [*args*]](#secret-args)
   * [`secretJSON` [*args*]](#secretjson-args)
   * [`stat` *name*](#stat-name)
+  * [`stdinIsATTY`](#stdinisatty)
   * [`vault` *key*](#vault-key)
 
 ## Concepts
@@ -822,6 +823,10 @@ Simulate the `promptString` function with a function that returns values from
 *pairs*. *pairs* is a comma-separated list of *prompt*`=`*value* pairs. If
 `promptString` is called with a *prompt* that does not match any of *pairs*,
 then it returns *prompt* unchanged.
+
+#### `--stdinisatty` *bool*
+
+Simulate the `stdinIsATTY` function by returning *bool*.
 
 #### `execute-template` examples
 
@@ -1618,6 +1623,22 @@ templates.
 
     {{ if stat (joinPath .chezmoi.homeDir ".pyenv") }}
     # ~/.pyenv exists
+    {{ end }}
+
+### `stdinIsATTY`
+
+`stdinIsATTY` returns `true` if chezmoi's standard input is a TTY. It is only
+available when generating the initial config file. It is primarily useful for
+determining whether `prompt*` functions should be called or default values be
+used.
+
+#### `stdinIsATTY` examples
+
+    {{ $email := "" }}
+    {{ if stdinIsATTY }}
+    {{   $email = promptString "email" }}
+    {{ else }}
+    {{   $email = "user@example.com" }}
     {{ end }}
 
 ### `vault` *key*

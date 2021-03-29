@@ -15,6 +15,7 @@ type executeTemplateCmdConfig struct {
 	promptBool   map[string]string
 	promptInt    map[string]int
 	promptString map[string]string
+	stdinIsATTY  bool
 }
 
 func (c *Config) newExecuteTemplateCmd() *cobra.Command {
@@ -31,6 +32,7 @@ func (c *Config) newExecuteTemplateCmd() *cobra.Command {
 	flags.StringToStringVar(&c.executeTemplate.promptBool, "promptBool", c.executeTemplate.promptBool, "simulate promptBool")
 	flags.StringToIntVar(&c.executeTemplate.promptInt, "promptInt", c.executeTemplate.promptInt, "simulate promptInt")
 	flags.StringToStringVarP(&c.executeTemplate.promptString, "promptString", "p", c.executeTemplate.promptString, "simulate promptString")
+	flags.BoolVar(&c.executeTemplate.stdinIsATTY, "stdinisatty", c.executeTemplate.stdinIsATTY, "simulate stdinIsATTY")
 
 	return executeTemplateCmd
 }
@@ -57,6 +59,9 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string, source
 					return value
 				}
 				return prompt
+			},
+			"stdinIsATTY": func() bool {
+				return c.executeTemplate.stdinIsATTY
 			},
 		})
 	}
