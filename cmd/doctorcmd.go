@@ -160,7 +160,6 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			versionArgs: []string{"-version"},
 			versionRx:   regexp.MustCompile(`v(\d+\.\d+\.\d+\S*)`),
 			ifNotSet:    checkWarning,
-			ifNotExist:  checkInfo,
 		},
 		&binaryCheck{
 			name:        "gnupg-cli",

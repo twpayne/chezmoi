@@ -95,6 +95,8 @@ func WithTemplateOptions(templateOptions []string) SourceStateOption {
 	}
 }
 
+type targetStateEntryFunc func(System, AbsPath) (TargetStateEntry, error)
+
 // NewSourceState creates a new source state with the given options.
 func NewSourceState(options ...SourceStateOption) *SourceState {
 	s := &SourceState{
@@ -804,166 +806,184 @@ func (s *SourceState) newSourceStateDir(sourceRelPath SourceRelPath, dirAttr Dir
 	}
 }
 
-// newSourceStateFile returns a new SourceStateFile.
-func (s *SourceState) newSourceStateFile(sourceRelPath SourceRelPath, fileAttr FileAttr, targetRelPath RelPath) *SourceStateFile {
-	sourceLazyContents := &lazyContents{
-		contentsFunc: func() ([]byte, error) {
-			contents, err := s.system.ReadFile(s.sourceDirAbsPath.Join(sourceRelPath.RelPath()))
+func (s *SourceState) newCreateTargetStateEntryFunc(fileAttr FileAttr, sourceLazyContents *lazyContents) targetStateEntryFunc {
+	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
+		contents, err := destSystem.ReadFile(destAbsPath)
+		switch {
+		case err == nil:
+		case os.IsNotExist(err):
+			contents, err = sourceLazyContents.Contents()
 			if err != nil {
 				return nil, err
 			}
-			if fileAttr.Encrypted {
-				contents, err = s.encryption.Decrypt(contents)
+		default:
+			return nil, err
+		}
+		return &TargetStateFile{
+			lazyContents: newLazyContents(contents),
+			empty:        true,
+			perm:         fileAttr.perm(),
+		}, nil
+	}
+}
+
+func (s *SourceState) newFileTargetStateEntryFunc(sourceRelPath SourceRelPath, fileAttr FileAttr, sourceLazyContents *lazyContents) targetStateEntryFunc {
+	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
+		contentsFunc := func() ([]byte, error) {
+			contents, err := sourceLazyContents.Contents()
+			if err != nil {
+				return nil, err
+			}
+			if fileAttr.Template {
+				contents, err = s.ExecuteTemplateData(sourceRelPath.String(), contents)
 				if err != nil {
 					return nil, err
 				}
 			}
 			return contents, nil
-		},
+		}
+		return &TargetStateFile{
+			lazyContents: newLazyContentsFunc(contentsFunc),
+			empty:        fileAttr.Empty,
+			perm:         fileAttr.perm(),
+		}, nil
 	}
+}
 
-	var targetStateEntryFunc func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error)
-	switch fileAttr.Type {
-	case SourceFileTypeCreate:
-		targetStateEntryFunc = func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
-			contents, err := destSystem.ReadFile(destAbsPath)
-			switch {
-			case err == nil:
-			case os.IsNotExist(err):
-				contents, err = sourceLazyContents.Contents()
+func (s *SourceState) newModifyTargetStateEntryFunc(sourceRelPath SourceRelPath, fileAttr FileAttr, sourceLazyContents *lazyContents) targetStateEntryFunc {
+	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
+		contentsFunc := func() (contents []byte, err error) {
+			// Read the current contents of the target.
+			var currentContents []byte
+			currentContents, err = destSystem.ReadFile(destAbsPath)
+			if err != nil && !os.IsNotExist(err) {
+				return
+			}
+
+			// Compute the contents of the modifier.
+			var modifierContents []byte
+			modifierContents, err = sourceLazyContents.Contents()
+			if err != nil {
+				return
+			}
+			if fileAttr.Template {
+				modifierContents, err = s.ExecuteTemplateData(sourceRelPath.String(), modifierContents)
 				if err != nil {
-					return nil, err
+					return
 				}
-			default:
+			}
+
+			// If the modifier is empty then return the current contents unchanged.
+			if isEmpty(modifierContents) {
+				contents = currentContents
+				return
+			}
+
+			// Write the modifier to a temporary file.
+			var tempFile *os.File
+			tempFile, err = os.CreateTemp("", "*."+fileAttr.TargetName)
+			if err != nil {
+				return
+			}
+			defer func() {
+				err = multierr.Append(err, os.RemoveAll(tempFile.Name()))
+			}()
+			if runtime.GOOS != "windows" {
+				if err = tempFile.Chmod(0o700); err != nil {
+					return
+				}
+			}
+			_, err = tempFile.Write(modifierContents)
+			err = multierr.Append(err, tempFile.Close())
+			if err != nil {
+				return
+			}
+
+			// Run the modifier on the current contents.
+			//nolint:gosec
+			cmd := exec.Command(tempFile.Name())
+			cmd.Stdin = bytes.NewReader(currentContents)
+			return destSystem.IdempotentCmdOutput(cmd)
+		}
+		return &TargetStateFile{
+			lazyContents: newLazyContentsFunc(contentsFunc),
+			perm:         fileAttr.perm(),
+		}, nil
+	}
+}
+
+func (s *SourceState) newScriptTargetStateEntryFunc(sourceRelPath SourceRelPath, fileAttr FileAttr, targetRelPath RelPath, sourceLazyContents *lazyContents) targetStateEntryFunc {
+	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
+		contentsFunc := func() ([]byte, error) {
+			contents, err := sourceLazyContents.Contents()
+			if err != nil {
 				return nil, err
 			}
-			return &TargetStateFile{
-				lazyContents: newLazyContents(contents),
-				empty:        true,
-				perm:         fileAttr.perm(),
-			}, nil
-		}
-	case SourceFileTypeFile:
-		targetStateEntryFunc = func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
-			contentsFunc := func() ([]byte, error) {
-				contents, err := sourceLazyContents.Contents()
+			if fileAttr.Template {
+				contents, err = s.ExecuteTemplateData(sourceRelPath.String(), contents)
 				if err != nil {
 					return nil, err
 				}
-				if fileAttr.Template {
-					contents, err = s.ExecuteTemplateData(sourceRelPath.String(), contents)
-					if err != nil {
-						return nil, err
-					}
-				}
-				return contents, nil
 			}
-			return &TargetStateFile{
-				lazyContents: newLazyContentsFunc(contentsFunc),
-				empty:        fileAttr.Empty,
-				perm:         fileAttr.perm(),
-			}, nil
+			return contents, nil
 		}
-	case SourceFileTypeModify:
-		targetStateEntryFunc = func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
-			contentsFunc := func() (contents []byte, err error) {
-				// Read the current contents of the target.
-				var currentContents []byte
-				currentContents, err = destSystem.ReadFile(destAbsPath)
-				if err != nil && !os.IsNotExist(err) {
-					return
-				}
+		return &TargetStateScript{
+			lazyContents: newLazyContentsFunc(contentsFunc),
+			name:         targetRelPath,
+			once:         fileAttr.Once,
+		}, nil
+	}
+}
 
-				// Compute the contents of the modifier.
-				var modifierContents []byte
-				modifierContents, err = sourceLazyContents.Contents()
-				if err != nil {
-					return
-				}
-				if fileAttr.Template {
-					modifierContents, err = s.ExecuteTemplateData(sourceRelPath.String(), modifierContents)
-					if err != nil {
-						return
-					}
-				}
-
-				// If the modifier is empty then return the current contents unchanged.
-				if isEmpty(modifierContents) {
-					contents = currentContents
-					return
-				}
-
-				// Write the modifier to a temporary file.
-				var tempFile *os.File
-				tempFile, err = os.CreateTemp("", "*."+fileAttr.TargetName)
-				if err != nil {
-					return
-				}
-				defer func() {
-					err = multierr.Append(err, os.RemoveAll(tempFile.Name()))
-				}()
-				if runtime.GOOS != "windows" {
-					if err = tempFile.Chmod(0o700); err != nil {
-						return
-					}
-				}
-				_, err = tempFile.Write(modifierContents)
-				err = multierr.Append(err, tempFile.Close())
-				if err != nil {
-					return
-				}
-
-				// Run the modifier on the current contents.
-				//nolint:gosec
-				cmd := exec.Command(tempFile.Name())
-				cmd.Stdin = bytes.NewReader(currentContents)
-				return destSystem.IdempotentCmdOutput(cmd)
+func (s *SourceState) newSymlinkTargetStateEntryFunc(sourceRelPath SourceRelPath, fileAttr FileAttr, sourceLazyContents *lazyContents) targetStateEntryFunc {
+	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
+		linknameFunc := func() (string, error) {
+			linknameBytes, err := sourceLazyContents.Contents()
+			if err != nil {
+				return "", err
 			}
-			return &TargetStateFile{
-				lazyContents: newLazyContentsFunc(contentsFunc),
-				perm:         fileAttr.perm(),
-			}, nil
-		}
-	case SourceFileTypeScript:
-		targetStateEntryFunc = func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
-			contentsFunc := func() ([]byte, error) {
-				contents, err := sourceLazyContents.Contents()
-				if err != nil {
-					return nil, err
-				}
-				if fileAttr.Template {
-					contents, err = s.ExecuteTemplateData(sourceRelPath.String(), contents)
-					if err != nil {
-						return nil, err
-					}
-				}
-				return contents, nil
-			}
-			return &TargetStateScript{
-				lazyContents: newLazyContentsFunc(contentsFunc),
-				name:         targetRelPath,
-				once:         fileAttr.Once,
-			}, nil
-		}
-	case SourceFileTypeSymlink:
-		targetStateEntryFunc = func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
-			linknameFunc := func() (string, error) {
-				linknameBytes, err := sourceLazyContents.Contents()
+			if fileAttr.Template {
+				linknameBytes, err = s.ExecuteTemplateData(sourceRelPath.String(), linknameBytes)
 				if err != nil {
 					return "", err
 				}
-				if fileAttr.Template {
-					linknameBytes, err = s.ExecuteTemplateData(sourceRelPath.String(), linknameBytes)
-					if err != nil {
-						return "", err
-					}
-				}
-				return string(bytes.TrimSpace(linknameBytes)), nil
 			}
-			return &TargetStateSymlink{
-				lazyLinkname: newLazyLinknameFunc(linknameFunc),
-			}, nil
+			return string(bytes.TrimSpace(linknameBytes)), nil
 		}
+		return &TargetStateSymlink{
+			lazyLinkname: newLazyLinknameFunc(linknameFunc),
+		}, nil
+	}
+}
+
+// newSourceStateFile returns a new SourceStateFile.
+func (s *SourceState) newSourceStateFile(sourceRelPath SourceRelPath, fileAttr FileAttr, targetRelPath RelPath) *SourceStateFile {
+	sourceLazyContents := newLazyContentsFunc(func() ([]byte, error) {
+		contents, err := s.system.ReadFile(s.sourceDirAbsPath.Join(sourceRelPath.RelPath()))
+		if err != nil {
+			return nil, err
+		}
+		if fileAttr.Encrypted {
+			contents, err = s.encryption.Decrypt(contents)
+			if err != nil {
+				return nil, err
+			}
+		}
+		return contents, nil
+	})
+
+	var targetStateEntryFunc targetStateEntryFunc
+	switch fileAttr.Type {
+	case SourceFileTypeCreate:
+		targetStateEntryFunc = s.newCreateTargetStateEntryFunc(fileAttr, sourceLazyContents)
+	case SourceFileTypeFile:
+		targetStateEntryFunc = s.newFileTargetStateEntryFunc(sourceRelPath, fileAttr, sourceLazyContents)
+	case SourceFileTypeModify:
+		targetStateEntryFunc = s.newModifyTargetStateEntryFunc(sourceRelPath, fileAttr, sourceLazyContents)
+	case SourceFileTypeScript:
+		targetStateEntryFunc = s.newScriptTargetStateEntryFunc(sourceRelPath, fileAttr, targetRelPath, sourceLazyContents)
+	case SourceFileTypeSymlink:
+		targetStateEntryFunc = s.newSymlinkTargetStateEntryFunc(sourceRelPath, fileAttr, sourceLazyContents)
 	default:
 		panic(fmt.Sprintf("%d: unsupported type", fileAttr.Type))
 	}
@@ -976,93 +996,105 @@ func (s *SourceState) newSourceStateFile(sourceRelPath SourceRelPath, fileAttr F
 	}
 }
 
+func (s *SourceState) newSourceStateDirEntry(info os.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions) (SourceStateEntry, error) {
+	dirAttr := DirAttr{
+		TargetName: info.Name(),
+		Exact:      options.Exact,
+		Private:    isPrivate(info),
+	}
+	sourceRelPath := parentSourceRelPath.Join(NewSourceRelDirPath(RelPath(dirAttr.SourceName())))
+	return &SourceStateDir{
+		Attr:          dirAttr,
+		sourceRelPath: sourceRelPath,
+		targetStateEntry: &TargetStateDir{
+			perm: 0o777,
+		},
+	}, nil
+}
+
+func (s *SourceState) newSourceStateFileEntryFromFile(actualStateFile *ActualStateFile, info os.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions) (SourceStateEntry, error) {
+	fileAttr := FileAttr{
+		TargetName: info.Name(),
+		Empty:      options.Empty,
+		Encrypted:  options.Encrypt,
+		Executable: isExecutable(info),
+		Private:    isPrivate(info),
+		Template:   options.Template || options.AutoTemplate,
+	}
+	if options.Create {
+		fileAttr.Type = SourceFileTypeCreate
+	} else {
+		fileAttr.Type = SourceFileTypeFile
+	}
+	contents, err := actualStateFile.Contents()
+	if err != nil {
+		return nil, err
+	}
+	if options.AutoTemplate {
+		contents = autoTemplate(contents, s.TemplateData())
+	}
+	if len(contents) == 0 && !options.Empty {
+		return nil, nil
+	}
+	if options.Encrypt {
+		contents, err = s.encryption.Encrypt(contents)
+		if err != nil {
+			return nil, err
+		}
+	}
+	lazyContents := newLazyContents(contents)
+	sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(RelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix()))))
+	return &SourceStateFile{
+		Attr:          fileAttr,
+		sourceRelPath: sourceRelPath,
+		lazyContents:  lazyContents,
+		targetStateEntry: &TargetStateFile{
+			lazyContents: lazyContents,
+			empty:        options.Empty,
+			perm:         0o666,
+		},
+	}, nil
+}
+
+func (s *SourceState) newSourceStateFileEntryFromSymlink(actualStateSymlink *ActualStateSymlink, info os.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions) (SourceStateEntry, error) {
+	fileAttr := FileAttr{
+		TargetName: info.Name(),
+		Type:       SourceFileTypeSymlink,
+		Template:   options.Template || options.AutoTemplate,
+	}
+	linkname, err := actualStateSymlink.Linkname()
+	if err != nil {
+		return nil, err
+	}
+	contents := []byte(linkname)
+	if options.AutoTemplate {
+		contents = autoTemplate(contents, s.TemplateData())
+	}
+	contents = append(contents, '\n')
+	lazyContents := newLazyContents(contents)
+	sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(RelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix()))))
+	return &SourceStateFile{
+		Attr:          fileAttr,
+		sourceRelPath: sourceRelPath,
+		lazyContents:  lazyContents,
+		targetStateEntry: &TargetStateFile{
+			lazyContents: lazyContents,
+			perm:         0o666,
+		},
+	}, nil
+}
+
 // sourceStateEntry returns a new SourceStateEntry based on actualStateEntry.
 func (s *SourceState) sourceStateEntry(actualStateEntry ActualStateEntry, destAbsPath AbsPath, info os.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions) (SourceStateEntry, error) {
 	switch actualStateEntry := actualStateEntry.(type) {
 	case *ActualStateAbsent:
 		return nil, fmt.Errorf("%s: not found", destAbsPath)
 	case *ActualStateDir:
-		dirAttr := DirAttr{
-			TargetName: info.Name(),
-			Exact:      options.Exact,
-			Private:    isPrivate(info),
-		}
-		sourceRelPath := parentSourceRelPath.Join(NewSourceRelDirPath(RelPath(dirAttr.SourceName())))
-		return &SourceStateDir{
-			Attr:          dirAttr,
-			sourceRelPath: sourceRelPath,
-			targetStateEntry: &TargetStateDir{
-				perm: 0o777,
-			},
-		}, nil
+		return s.newSourceStateDirEntry(info, parentSourceRelPath, options)
 	case *ActualStateFile:
-		fileAttr := FileAttr{
-			TargetName: info.Name(),
-			Empty:      options.Empty,
-			Encrypted:  options.Encrypt,
-			Executable: isExecutable(info),
-			Private:    isPrivate(info),
-			Template:   options.Template || options.AutoTemplate,
-		}
-		if options.Create {
-			fileAttr.Type = SourceFileTypeCreate
-		} else {
-			fileAttr.Type = SourceFileTypeFile
-		}
-		contents, err := actualStateEntry.Contents()
-		if err != nil {
-			return nil, err
-		}
-		if options.AutoTemplate {
-			contents = autoTemplate(contents, s.TemplateData())
-		}
-		if len(contents) == 0 && !options.Empty {
-			return nil, nil
-		}
-		if options.Encrypt {
-			contents, err = s.encryption.Encrypt(contents)
-			if err != nil {
-				return nil, err
-			}
-		}
-		lazyContents := newLazyContents(contents)
-		sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(RelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix()))))
-		return &SourceStateFile{
-			Attr:          fileAttr,
-			sourceRelPath: sourceRelPath,
-			lazyContents:  lazyContents,
-			targetStateEntry: &TargetStateFile{
-				lazyContents: lazyContents,
-				empty:        options.Empty,
-				perm:         0o666,
-			},
-		}, nil
+		return s.newSourceStateFileEntryFromFile(actualStateEntry, info, parentSourceRelPath, options)
 	case *ActualStateSymlink:
-		fileAttr := FileAttr{
-			TargetName: info.Name(),
-			Type:       SourceFileTypeSymlink,
-			Template:   options.Template || options.AutoTemplate,
-		}
-		linkname, err := actualStateEntry.Linkname()
-		if err != nil {
-			return nil, err
-		}
-		contents := []byte(linkname)
-		if options.AutoTemplate {
-			contents = autoTemplate(contents, s.TemplateData())
-		}
-		contents = append(contents, '\n')
-		lazyContents := newLazyContents(contents)
-		sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(RelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix()))))
-		return &SourceStateFile{
-			Attr:          fileAttr,
-			sourceRelPath: sourceRelPath,
-			lazyContents:  lazyContents,
-			targetStateEntry: &TargetStateFile{
-				lazyContents: lazyContents,
-				perm:         0o666,
-			},
-		}, nil
+		return s.newSourceStateFileEntryFromSymlink(actualStateEntry, info, parentSourceRelPath, options)
 	default:
 		panic(fmt.Sprintf("%T: unsupported type", actualStateEntry))
 	}

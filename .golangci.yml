@@ -21,6 +21,7 @@ linters:
   - gofumpt
   - goimports
   - golint
+  - gomoddirectives
   - gomodguard
   - goprintffuncname
   - gosec
@@ -36,7 +37,6 @@ linters:
   - predeclared
   - revive
   - rowserrcheck
-  - scopelint
   - sqlclosecheck
   - staticcheck
   - structcheck
@@ -97,5 +97,4 @@ issues:
     path: ^internal/cmd/
   - linters:
     - gosec
-    - scopelint
     path: "_test\\.go$"
