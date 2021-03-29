@@ -23,7 +23,7 @@
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.2bc2364a4a4b31f0ec1debecf0a8f90a840821f143dfe1ac6a0f7cbcbdcf64ac.css" integrity="sha256-K8I2SkpLMfDsHevs8Kj5CoQIIfFD3&#43;Gsag98vL3PZKw=">
-<script defer src="/en.search.min.c12106d61a3caa70e151a688fcefe13bc54fe78b0285caba7c405c9b8efba081.js" integrity="sha256-wSEG1ho8qnDhUaaI/O/hO8VP54sChcq6fEBcm477oIE="></script>
+<script defer src="/en.search.min.f9660175ba4c622a6fba8f22aeaf2aa5f453f8bd948b23f73866d285ca3a809b.js" integrity="sha256-&#43;WYBdbpMYipvuo8irq8qpfRT&#43;L2UiyP3OGbShco6gJs="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -245,6 +245,7 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#secret-args"><code>secret</code> [<em>args</em>]</a></li>
         <li><a href="#secretjson-args"><code>secretJSON</code> [<em>args</em>]</a></li>
         <li><a href="#stat-name"><code>stat</code> <em>name</em></a></li>
+        <li><a href="#stdinisatty"><code>stdinIsATTY</code></a></li>
         <li><a href="#vault-key"><code>vault</code> <em>key</em></a></li>
       </ul>
     </li>
@@ -1015,6 +1016,13 @@ or symlinks are updated. Scripts with the <code>after_</code> attribute are exec
 all files, directories, and symlinks have been updated. Scripts without an
 <code>before_</code> or <code>after_</code> attribute are executed in ASCII order of their target
 names with respect to files, directories, and symlinks.</p>
+<p>Scripts will normally run with their working directory set to their equivalent
+location in the destination directory. For example, a script in
+<code>~/.local/share/chezmoi/dir/run_script</code> will be run with a working directory of
+<code>~/dir</code>. If the equivalent location in the destination directory either does not
+exist or is not a directory, then chezmoi will walk up the script&rsquo;s directory
+hierarchy and run the script in the first directory that exists and is a
+directory.</p>
 <h2 id="special-files-and-directories">
   Special files and directories
   <a class="anchor" href="#special-files-and-directories">#</a>
@@ -1485,6 +1493,11 @@ it returns zero.</p>
 <em>pairs</em>. <em>pairs</em> is a comma-separated list of <em>prompt</em><code>=</code><em>value</em> pairs. If
 <code>promptString</code> is called with a <em>prompt</em> that does not match any of <em>pairs</em>,
 then it returns <em>prompt</em> unchanged.</p>
+<h4 id="--stdinisatty-bool">
+  <code>--stdinisatty</code> <em>bool</em>
+  <a class="anchor" href="#--stdinisatty-bool">#</a>
+</h4>
+<p>Simulate the <code>stdinIsATTY</code> function by returning <em>bool</em>.</p>
 <h4 id="execute-template-examples">
   <code>execute-template</code> examples
   <a class="anchor" href="#execute-template-examples">#</a>
@@ -2470,6 +2483,25 @@ templates.</p>
 # ~/.pyenv exists
 {{ end }}
 </code></pre>
+<h3 id="stdinisatty">
+  <code>stdinIsATTY</code>
+  <a class="anchor" href="#stdinisatty">#</a>
+</h3>
+<p><code>stdinIsATTY</code> returns <code>true</code> if chezmoi&rsquo;s standard input is a TTY. It is only
+available when generating the initial config file. It is primarily useful for
+determining whether <code>prompt*</code> functions should be called or default values be
+used.</p>
+<h4 id="stdinisatty-examples">
+  <code>stdinIsATTY</code> examples
+  <a class="anchor" href="#stdinisatty-examples">#</a>
+</h4>
+<pre><code>{{ $email := &quot;&quot; }}
+{{ if stdinIsATTY }}
+{{   $email = promptString &quot;email&quot; }}
+{{ else }}
+{{   $email = &quot;user@example.com&quot; }}
+{{ end }}
+</code></pre>
 <h3 id="vault-key">
   <code>vault</code> <em>key</em>
   <a class="anchor" href="#vault-key">#</a>
@@ -2645,6 +2677,7 @@ times with the same <em>key</em> will only invoke <code>vault</code> once.</p>
         <li><a href="#secret-args"><code>secret</code> [<em>args</em>]</a></li>
         <li><a href="#secretjson-args"><code>secretJSON</code> [<em>args</em>]</a></li>
         <li><a href="#stat-name"><code>stat</code> <em>name</em></a></li>
+        <li><a href="#stdinisatty"><code>stdinIsATTY</code></a></li>
         <li><a href="#vault-key"><code>vault</code> <em>key</em></a></li>
       </ul>
     </li>
