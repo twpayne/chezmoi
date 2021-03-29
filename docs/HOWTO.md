@@ -480,7 +480,7 @@ For boolean variables you can use:
 
     {{- $var := false -}}
     {{- if (hasKey . "var") -}}
-    {{-   $var = get "." "var" -}}
+    {{-   $var = get . "var" -}}
     {{- end -}}
 
     [data]
