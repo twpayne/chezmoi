@@ -31,6 +31,13 @@ func newLazyContents(contents []byte) *lazyContents {
 	}
 }
 
+// newLazyContentsFunc returns a new lazyContents with contentsFunc.
+func newLazyContentsFunc(contentsFunc func() ([]byte, error)) *lazyContents {
+	return &lazyContents{
+		contentsFunc: contentsFunc,
+	}
+}
+
 // Contents returns lc's contents.
 func (lc *lazyContents) Contents() ([]byte, error) {
 	if lc == nil {
@@ -65,6 +72,13 @@ func (lc *lazyContents) ContentsSHA256() ([]byte, error) {
 func newLazyLinkname(linkname string) *lazyLinkname {
 	return &lazyLinkname{
 		linkname: linkname,
+	}
+}
+
+// newLazyLinknameFunc returns a new lazyLinkname with linknameFunc.
+func newLazyLinknameFunc(linknameFunc func() (string, error)) *lazyLinkname {
+	return &lazyLinkname{
+		linknameFunc: linknameFunc,
 	}
 }
 

@@ -931,14 +931,10 @@ func TestSourceStateRead(t *testing.T) {
 							TargetName: "file",
 							Type:       SourceFileTypeFile,
 						},
-						lazyContents: &lazyContents{
-							contents: []byte("# contents of .dir/file\n"),
-						},
+						lazyContents: newLazyContents([]byte("# contents of .dir/file\n")),
 						targetStateEntry: &TargetStateFile{
-							perm: 0o666,
-							lazyContents: &lazyContents{
-								contents: []byte("# contents of .dir/file\n"),
-							},
+							perm:         0o666,
+							lazyContents: newLazyContents([]byte("# contents of .dir/file\n")),
 						},
 					},
 				}),
@@ -1008,14 +1004,10 @@ func TestSourceStateRead(t *testing.T) {
 							TargetName: "file1",
 							Type:       SourceFileTypeFile,
 						},
-						lazyContents: &lazyContents{
-							contents: []byte("# contents of dir/file1\n"),
-						},
+						lazyContents: newLazyContents([]byte("# contents of dir/file1\n")),
 						targetStateEntry: &TargetStateFile{
-							perm: 0o666,
-							lazyContents: &lazyContents{
-								contents: []byte("# contents of dir/file1\n"),
-							},
+							perm:         0o666,
+							lazyContents: newLazyContents([]byte("# contents of dir/file1\n")),
 						},
 					},
 					"dir/file2": &SourceStateRemove{

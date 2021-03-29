@@ -24,7 +24,8 @@ type TargetStateDir struct {
 // A TargetStateFile represents the state of a file in the target state.
 type TargetStateFile struct {
 	*lazyContents
-	perm os.FileMode
+	empty bool
+	perm  os.FileMode
 }
 
 // A TargetStateRemove represents the absence of an entry in the target state.
@@ -89,6 +90,16 @@ func (t *TargetStateDir) SkipApply(persistentState PersistentState) (bool, error
 
 // Apply updates actualStateEntry to match t.
 func (t *TargetStateFile) Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry, umask os.FileMode) (bool, error) {
+	contents, err := t.Contents()
+	if err != nil {
+		return false, err
+	}
+	if !t.empty && isEmpty(contents) {
+		if _, ok := actualStateEntry.(*ActualStateAbsent); ok {
+			return false, nil
+		}
+		return true, system.RemoveAll(actualStateEntry.Path())
+	}
 	if actualStateFile, ok := actualStateEntry.(*ActualStateFile); ok {
 		// Compare file contents using only their SHA256 sums. This is so that
 		// we can compare last-written states without storing the full contents
@@ -110,10 +121,6 @@ func (t *TargetStateFile) Apply(system System, persistentState PersistentState, 
 	} else if err := actualStateEntry.Remove(system); err != nil {
 		return false, err
 	}
-	contents, err := t.Contents()
-	if err != nil {
-		return false, err
-	}
 	return true, system.WriteFile(actualStateEntry.Path(), contents, t.perm&^umask)
 }
 
@@ -122,6 +129,11 @@ func (t *TargetStateFile) EntryState(umask os.FileMode) (*EntryState, error) {
 	contents, err := t.Contents()
 	if err != nil {
 		return nil, err
+	}
+	if !t.empty && isEmpty(contents) {
+		return &EntryState{
+			Type: EntryStateTypeRemove,
+		}, nil
 	}
 	contentsSHA256, err := t.ContentsSHA256()
 	if err != nil {
@@ -242,6 +254,16 @@ func (t *TargetStateScript) SkipApply(persistentState PersistentState) (bool, er
 
 // Apply updates actualStateEntry to match t.
 func (t *TargetStateSymlink) Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry, umask os.FileMode) (bool, error) {
+	linkname, err := t.Linkname()
+	if err != nil {
+		return false, err
+	}
+	if linkname == "" {
+		if _, ok := actualStateEntry.(*ActualStateAbsent); ok {
+			return false, nil
+		}
+		return true, system.RemoveAll(actualStateEntry.Path())
+	}
 	if actualStateSymlink, ok := actualStateEntry.(*ActualStateSymlink); ok {
 		actualLinkname, err := actualStateSymlink.Linkname()
 		if err != nil {
@@ -255,10 +277,6 @@ func (t *TargetStateSymlink) Apply(system System, persistentState PersistentStat
 			return false, nil
 		}
 	}
-	linkname, err := t.Linkname()
-	if err != nil {
-		return false, err
-	}
 	if err := actualStateEntry.Remove(system); err != nil {
 		return false, err
 	}
@@ -270,6 +288,11 @@ func (t *TargetStateSymlink) EntryState(umask os.FileMode) (*EntryState, error) 
 	linkname, err := t.Linkname()
 	if err != nil {
 		return nil, err
+	}
+	if linkname == "" {
+		return &EntryState{
+			Type: EntryStateTypeRemove,
+		}, nil
 	}
 	linknameSHA256, err := t.LinknameSHA256()
 	if err != nil {

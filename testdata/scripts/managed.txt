@@ -1,25 +1,33 @@
 mksourcedir
 
+# test chezmoi managed
 chezmoi managed
-cmpenv stdout golden/managed
+cmp stdout golden/managed
 
+# test chezmoi managed --include=all
 chezmoi managed --include=all
-cmpenv stdout golden/managed-all
+cmp stdout golden/managed-all
 
-chezmoi managed --include=remove
-cmpenv stdout golden/managed-remove
-
+# test chezmoi managed --include=dirs
 chezmoi managed --include=dirs
-cmpenv stdout golden/managed-dirs
+cmp stdout golden/managed-dirs
 
+# test chezmoi managed --include=files
 chezmoi managed --include=files
-cmpenv stdout golden/managed-files
+cmp stdout golden/managed-files
 
+# test chezmoi managed --include=symlinks
 chezmoi managed --include=symlinks
-cmpenv stdout golden/managed-symlinks
+cmp stdout golden/managed-symlinks
 
+# test chezmoi managed --exclude=files
 chezmoi managed --exclude=files
-cmpenv stdout golden/managed-except-files
+cmp stdout golden/managed-except-files
+
+# test that chezmoi managed does not evaluate templates
+chhome home2/user
+chezmoi managed --include=all
+cmp stdout golden/managed2
 
 -- golden/managed --
 .create
@@ -31,6 +39,7 @@ cmpenv stdout golden/managed-except-files
 .executable
 .file
 .private
+.remove
 .symlink
 .template
 -- golden/managed-all --
@@ -57,12 +66,29 @@ cmpenv stdout golden/managed-except-files
 .executable
 .file
 .private
-.template
--- golden/managed-remove --
 .remove
+.template
 -- golden/managed-symlinks --
 .symlink
 -- golden/managed-except-files --
 .dir
 .dir/subdir
 .symlink
+-- golden/managed2 --
+.create
+.file
+.symlink
+.template
+script
+-- home/user/.local/share/chezmoi/.chezmoiremove --
+.remove
+-- home2/user/.local/share/chezmoi/create_dot_create.tmpl --
+{{ fail "Template should not be executed }}
+-- home2/user/.local/share/chezmoi/dot_template.tmpl --
+{{ fail "Template should not be executed }}
+-- home2/user/.local/share/chezmoi/modify_dot_file.tmpl --
+{{ fail "Template should not be executed }}
+-- home2/user/.local/share/chezmoi/symlink_dot_symlink.tmpl --
+{{ fail "Template should not be executed }}
+-- home2/user/.local/share/chezmoi/run_script.tmpl --
+{{ fail "Template should not be executed }}
