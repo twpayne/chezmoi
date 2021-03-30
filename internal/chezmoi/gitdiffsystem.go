@@ -57,6 +57,11 @@ func (s *GitDiffSystem) Glob(pattern string) ([]string, error) {
 	return s.system.Glob(pattern)
 }
 
+// IdempotentCmdCombinedOutput implements System.IdempotentCmdCombinedOutput.
+func (s *GitDiffSystem) IdempotentCmdCombinedOutput(cmd *exec.Cmd) ([]byte, error) {
+	return s.system.IdempotentCmdCombinedOutput(cmd)
+}
+
 // IdempotentCmdOutput implements System.IdempotentCmdOutput.
 func (s *GitDiffSystem) IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error) {
 	return s.system.IdempotentCmdOutput(cmd)
