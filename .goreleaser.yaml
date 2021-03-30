@@ -69,6 +69,7 @@ builds:
 
 archives:
 - builds:
+  - chezmoi-cgo-glibc # Required for chezmoi upgrade for versions <= 2.0.5
   - chezmoi-nocgo
   files:
   - LICENSE
