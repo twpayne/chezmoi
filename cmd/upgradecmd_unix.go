@@ -70,7 +70,7 @@ var (
 		},
 	}
 
-	checksumRegexp = regexp.MustCompile(`\A([0-9a-f]{64})\s+(\S+)\z`)
+	checksumRx = regexp.MustCompile(`\A([0-9a-f]{64})\s+(\S+)\z`)
 )
 
 func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
@@ -173,7 +173,7 @@ func (c *Config) getChecksums(ctx context.Context, rr *github.RepositoryRelease)
 	checksums := make(map[string][]byte)
 	s := bufio.NewScanner(bytes.NewReader(data))
 	for s.Scan() {
-		m := checksumRegexp.FindStringSubmatch(s.Text())
+		m := checksumRx.FindStringSubmatch(s.Text())
 		if m == nil {
 			return nil, fmt.Errorf("%q: cannot parse checksum", s.Text())
 		}
