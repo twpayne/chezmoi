@@ -36,6 +36,9 @@ const (
 	methodUpgradePackage    = "upgrade-package"
 	methodSudoPrefix        = "sudo-"
 
+	libcTypeGlibc = "glibc"
+	libcTypeMusl  = "musl"
+
 	packageTypeNone = ""
 	packageTypeAPK  = "apk"
 	packageTypeAUR  = "aur"
@@ -70,7 +73,9 @@ var (
 		},
 	}
 
-	checksumRegexp = regexp.MustCompile(`\A([0-9a-f]{64})\s+(\S+)\z`)
+	checksumRx      = regexp.MustCompile(`\A([0-9a-f]{64})\s+(\S+)\z`)
+	libcTypeGlibcRx = regexp.MustCompile(`(?i)glibc|gnu libc`)
+	libcTypeMuslRx  = regexp.MustCompile(`(?i)musl`)
 )
 
 func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
@@ -173,7 +178,7 @@ func (c *Config) getChecksums(ctx context.Context, rr *github.RepositoryRelease)
 	checksums := make(map[string][]byte)
 	s := bufio.NewScanner(bytes.NewReader(data))
 	for s.Scan() {
-		m := checksumRegexp.FindStringSubmatch(s.Text())
+		m := checksumRx.FindStringSubmatch(s.Text())
 		if m == nil {
 			return nil, fmt.Errorf("%q: cannot parse checksum", s.Text())
 		}
@@ -212,8 +217,42 @@ func (c *Config) downloadURL(ctx context.Context, url string) ([]byte, error) {
 	return data, nil
 }
 
+// getLibc attempts to determine the system's libc.
+func (c *Config) getLibc() (string, error) {
+	// First, try parsing the output of ldd --version. On glibc systems it
+	// writes to stdout and exits with code 0. On musl libc systems it writes to
+	// stderr and exits with code 1.
+	lddCmd := exec.Command("ldd", "--version")
+	if output, _ := c.baseSystem.IdempotentCmdCombinedOutput(lddCmd); len(output) != 0 {
+		switch {
+		case libcTypeGlibcRx.Match(output):
+			return libcTypeGlibc, nil
+		case libcTypeMuslRx.Match(output):
+			return libcTypeMusl, nil
+		}
+	}
+
+	// Second, try getconf GNU_LIBC_VERSION.
+	getconfCmd := exec.Command("getconf", "GNU_LIBC_VERSION")
+	if output, err := c.baseSystem.IdempotentCmdOutput(getconfCmd); err != nil {
+		if libcTypeGlibcRx.Match(output) {
+			return libcTypeGlibc, nil
+		}
+	}
+
+	return "", errors.New("unable to determine libc")
+}
+
 func (c *Config) replaceExecutable(ctx context.Context, executableFilenameAbsPath chezmoi.AbsPath, releaseVersion *semver.Version, rr *github.RepositoryRelease) error {
-	name := fmt.Sprintf("%s_%s_%s_%s.tar.gz", c.upgrade.repo, releaseVersion, runtime.GOOS, runtime.GOARCH)
+	goos := runtime.GOOS
+	if goos == "linux" {
+		libc, err := c.getLibc()
+		if err != nil {
+			return err
+		}
+		goos += "-" + libc
+	}
+	name := fmt.Sprintf("%s_%s_%s_%s.tar.gz", c.upgrade.repo, releaseVersion, goos, runtime.GOARCH)
 	releaseAsset := getReleaseAssetByName(rr, name)
 	if releaseAsset == nil {
 		return fmt.Errorf("%s: cannot find release asset", name)

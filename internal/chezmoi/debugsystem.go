@@ -44,6 +44,18 @@ func (s *DebugSystem) Glob(name string) ([]string, error) {
 	return matches, err
 }
 
+// IdempotentCmdCombinedOutput implements System.IdempotentCmdCombinedOutput.
+func (s *DebugSystem) IdempotentCmdCombinedOutput(cmd *exec.Cmd) ([]byte, error) {
+	output, err := s.system.IdempotentCmdCombinedOutput(cmd)
+	log.Logger.Debug().
+		EmbedObject(chezmoilog.OSExecCmdLogObject{Cmd: cmd}).
+		Bytes("output", chezmoilog.FirstFewBytes(output)).
+		Err(err).
+		EmbedObject(chezmoilog.OSExecExitErrorLogObject{Err: err}).
+		Msg("IdempotentCmdCombinedOutput")
+	return output, err
+}
+
 // IdempotentCmdOutput implements System.IdempotentCmdOutput.
 func (s *DebugSystem) IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error) {
 	output, err := s.system.IdempotentCmdOutput(cmd)

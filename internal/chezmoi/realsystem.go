@@ -18,6 +18,11 @@ func (s *RealSystem) Glob(pattern string) ([]string, error) {
 	return doublestar.GlobOS(doubleStarOS{FS: s.UnderlyingFS()}, pattern)
 }
 
+// IdempotentCmdCombinedOutput implements System.IdempotentCmdCombinedOutput.
+func (s *RealSystem) IdempotentCmdCombinedOutput(cmd *exec.Cmd) ([]byte, error) {
+	return chezmoilog.LogCmdCombinedOutput(log.Logger, cmd)
+}
+
 // IdempotentCmdOutput implements System.IdempotentCmdOutput.
 func (s *RealSystem) IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error) {
 	return chezmoilog.LogCmdOutput(log.Logger, cmd)

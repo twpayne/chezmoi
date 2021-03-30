@@ -41,11 +41,11 @@ const (
 var (
 	noArgs = []string(nil)
 
-	commandsRegexp      = regexp.MustCompile(`^## Commands`)
-	commandRegexp       = regexp.MustCompile("^### `(\\S+)`")
-	exampleRegexp       = regexp.MustCompile("^#### `\\w+` examples")
-	endOfCommandsRegexp = regexp.MustCompile(`^## `)
-	trailingSpaceRegexp = regexp.MustCompile(` +\n`)
+	commandsRx      = regexp.MustCompile(`^## Commands`)
+	commandRx       = regexp.MustCompile("^### `(\\S+)`")
+	exampleRx       = regexp.MustCompile("^#### `\\w+` examples")
+	endOfCommandsRx = regexp.MustCompile(`^## `)
+	trailingSpaceRx = regexp.MustCompile(` +\n`)
 
 	helps map[string]*help
 )
@@ -154,7 +154,7 @@ func extractHelps(r io.Reader) (map[string]*help, error) {
 		if err != nil {
 			return err
 		}
-		s = trailingSpaceRegexp.ReplaceAllString(s, "\n")
+		s = trailingSpaceRx.ReplaceAllString(s, "\n")
 		s = strings.Trim(s, "\n")
 		switch state {
 		case "in-command":
@@ -174,17 +174,17 @@ FOR:
 	for s.Scan() {
 		switch state {
 		case "find-commands":
-			if commandsRegexp.MatchString(s.Text()) {
+			if commandsRx.MatchString(s.Text()) {
 				state = "find-first-command"
 			}
 		case "find-first-command":
-			if m := commandRegexp.FindStringSubmatch(s.Text()); m != nil {
+			if m := commandRx.FindStringSubmatch(s.Text()); m != nil {
 				h = &help{}
 				helps[m[1]] = h
 				state = "in-command"
 			}
 		case "in-command", "in-example":
-			m := commandRegexp.FindStringSubmatch(s.Text())
+			m := commandRx.FindStringSubmatch(s.Text())
 			switch {
 			case m != nil:
 				if err := saveAndReset(); err != nil {
@@ -193,12 +193,12 @@ FOR:
 				h = &help{}
 				helps[m[1]] = h
 				state = "in-command"
-			case exampleRegexp.MatchString(s.Text()):
+			case exampleRx.MatchString(s.Text()):
 				if err := saveAndReset(); err != nil {
 					return nil, err
 				}
 				state = "in-example"
-			case endOfCommandsRegexp.MatchString(s.Text()):
+			case endOfCommandsRx.MatchString(s.Text()):
 				if err := saveAndReset(); err != nil {
 					return nil, err
 				}
