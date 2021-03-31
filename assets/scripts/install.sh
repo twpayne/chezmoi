@@ -70,7 +70,7 @@ main() {
 	http_download "${tmpdir}/${TARBALL}" "${TARBALL_URL}" || exit 1
 
 	# download checksums
-	CHECKSUMS="chezmoi_${VERSION}_checksums.txt"
+	CHECKSUMS="checksums.txt"
 	CHECKSUMS_URL="${GITHUB_DOWNLOAD}/${TAG}/${CHECKSUMS}"
 	http_download "${tmpdir}/${CHECKSUMS}" "${CHECKSUMS_URL}" || exit 1
 
