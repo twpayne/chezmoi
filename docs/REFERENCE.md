@@ -1042,7 +1042,7 @@ Manipulate the persistent state.
 #### `state` examples
 
     chezmoi state dump
-    chemzoi state reset
+    chezmoi state reset
 
 ### `status`
 

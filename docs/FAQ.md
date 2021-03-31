@@ -78,7 +78,7 @@ You have several options:
   directory and pass extra arguments to the command. If you're passing any
   flags, you'll need to use `--` to prevent chezmoi from consuming them, for
   example `chezmoi git -- commit -m "Update dotfiles"`.
-* You can configure chemzoi to automatically commit and push changes to your
+* You can configure chezmoi to automatically commit and push changes to your
   source state, as [described in the how-to
   guide](https://github.com/twpayne/chezmoi/blob/master/docs/HOWTO.md#automatically-commit-and-push-changes-to-your-repo).
 

@@ -276,7 +276,7 @@ Create `.local/share/chezmoi/.chezmoitemplates/alacritty`:
 	somemore: config
 
 Notice the file name doesn't have to end in `.tmpl`, as all files in the
-directory `.chemzoitemplates` are interpreted as templates.
+directory `.chezmoitemplates` are interpreted as templates.
 
 Create other files using the template `.local/share/chezmoi/small-font.yml.tmpl`
 

@@ -63,7 +63,7 @@ Codespaces](https://github.com/features/codespaces).
 
 chezmoi helps you bring your personal configuration to every environment that
 you're working in. In the same way that nobody would use an editor without an
-undo command, or develop software without a version control system, chemzoi
+undo command, or develop software without a version control system, chezmoi
 brings the investment that you have made in mastering your tools to every
 environment that you work in.
 
