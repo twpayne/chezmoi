@@ -107,6 +107,7 @@ changelog:
     - "Merge pull request"
 
 checksum:
+  name_template: checksums.txt
 
 nfpms:
 - builds:
