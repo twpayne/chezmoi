@@ -270,7 +270,7 @@ function Install-Chezmoi {
     Fetch-FileFromWeb $tarball_url $tmp_tarball
 
     # download checksums
-    $checksums = "chezmoi_$($version)_checksums.txt"
+    $checksums = "checksums.txt"
     $checksums_url = "$($github_download)/$($real_tag)/$($checksums)"
 
     $tmp_checksums = (Join-Path $tempdir $checksums)
