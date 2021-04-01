@@ -76,13 +76,14 @@ func (e *GPGEncryption) EncryptedSuffix() string {
 func (e *GPGEncryption) encryptArgs() []string {
 	args := []string{
 		"--armor",
-		"--encrypt",
-	}
-	if e.Recipient != "" {
-		args = append(args, "--recipient", e.Recipient)
 	}
 	if e.Symmetric {
 		args = append(args, "--symmetric")
+	} else {
+		args = append(args, "--encrypt")
+		if e.Recipient != "" {
+			args = append(args, "--recipient", e.Recipient)
+		}
 	}
 	return args
 }
