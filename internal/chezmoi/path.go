@@ -12,7 +12,7 @@ type AbsPath string
 
 // NewAbsPath returns a new AbsPath.
 func NewAbsPath(path string) (AbsPath, error) {
-	if filepath.IsAbs(path) {
+	if !filepath.IsAbs(path) {
 		return "", fmt.Errorf("%s: not an absolute path", path)
 	}
 	return AbsPath(path), nil
