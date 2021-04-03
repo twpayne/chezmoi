@@ -233,9 +233,10 @@ func cmdMkGPGConfig(ts *testscript.TestScript, neg bool, args []string) {
 	if neg {
 		ts.Fatalf("unupported: ! mkgpgconfig")
 	}
-	if len(args) > 0 {
-		ts.Fatalf("usage: mkgpgconfig")
+	if len(args) > 1 || len(args) == 1 && args[0] != "-symmetric" {
+		ts.Fatalf("usage: mkgpgconfig [-symmetric]")
 	}
+	symmetric := len(args) == 1 && args[0] == "-symmetric"
 
 	// Create a new directory for GPG. We can't use a subdirectory of the
 	// testscript's working directory because on darwin the absolute path can
@@ -260,17 +261,22 @@ func cmdMkGPGConfig(ts *testscript.TestScript, neg bool, args []string) {
 
 	configFile := filepath.Join(ts.Getenv("HOME"), ".config", "chezmoi", "chezmoi.toml")
 	ts.Check(os.MkdirAll(filepath.Dir(configFile), 0o777))
-	ts.Check(os.WriteFile(configFile, []byte(fmt.Sprintf(chezmoitest.JoinLines(
+	lines := []string{
 		`encryption = "gpg"`,
 		`[gpg]`,
 		`  args = [`,
-		`    "--homedir", %q,`,
+		`    "--homedir", ` + quote(gpgHomeDir) + `,`,
 		`    "--no-tty",`,
-		`    "--passphrase", %q,`,
+		`    "--passphrase", ` + quote(passphrase) + `,`,
 		`    "--pinentry-mode", "loopback",`,
 		`  ]`,
-		`  recipient = %q`,
-	), gpgHomeDir, passphrase, key)), 0o666))
+	}
+	if symmetric {
+		lines = append(lines, `  symmetric = true`)
+	} else {
+		lines = append(lines, `  recipient = "`+key+`"`)
+	}
+	ts.Check(os.WriteFile(configFile, []byte(chezmoitest.JoinLines(lines...)), 0o666))
 }
 
 // cmdMkHomeDir makes and populates a home directory.
@@ -428,6 +434,10 @@ func cmdUNIX2DOS(ts *testscript.TestScript, neg bool, args []string) {
 
 func prependDirToPath(dir, path string) string {
 	return strings.Join(append([]string{dir}, filepath.SplitList(path)...), string(os.PathListSeparator))
+}
+
+func quote(s string) string {
+	return fmt.Sprintf("%q", s)
 }
 
 func setup(env *testscript.Env) error {
