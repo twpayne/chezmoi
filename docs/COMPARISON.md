@@ -27,13 +27,13 @@
 | Bootstrap requirements                 | None          | Python, git       | Perl, git         | Ruby, git         | git           | git        |
 | Source repos                           | Single        | Single            | Multiple          | Single            | Single        | Single     |
 | dotfiles are...                        | Files         | Symlinks          | Files             | Symlinks          | Files         | Files      |
-| Config file                            | Optional      | Required          | Optional          | ➖              | ➖          | ❌         |
+| Config file                            | Optional      | Required          | Optional          | None              | None          | Optional   |
 | Private files                          | ✅           | ❌                | ❌                | ❌                | ❌            | ❌         |
 | Show differences without applying      | ✅           | ❌                | ❌                | ❌                | ✅           | ✅        |
 | Whole file encryption                  | ✅           | ❌                | ❌                | ❌                | ✅           | ❌         |
 | Password manager integration           | ✅           | ❌                | ❌                | ❌                | ❌            | ❌         |
 | Machine-to-machine file differences    | Templates     | Alternative files | Alternative files | Alternative files | Templates     | Manual     |
-| Custom variables in templates          | ✅           | n/a               | n/a               | n/a               | ❌            | ❌         |
+| Custom variables in templates          | ✅           | ❌               | ❌               | ❌               | ❌            | ❌         |
 | Executable files                       | ✅           | ✅               | ✅               | ✅               | ❌            | ✅        |
 | File creation with initial contents    | ✅           | ❌                | ❌                | ❌                | ❌            | ❌         |
 | Manage partial files                   | ✅           | ❌                | ❌                | ❌                | ❌            | ❌         |
