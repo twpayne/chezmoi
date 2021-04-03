@@ -51,7 +51,7 @@ For more comparisons, visit [dotfiles.github.io](https://dotfiles.github.io/).
 
 ## Why should I use a dotfile manager?
 
-Dotfile managers give you the combined the benefit of a consistent environment
+Dotfile managers give you the combined benefit of a consistent environment
 everywhere with an undo command and a restore from backup.
 
 As the core of our development environments become increasingly standardized
