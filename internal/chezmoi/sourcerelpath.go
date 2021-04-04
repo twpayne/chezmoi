@@ -53,6 +53,7 @@ func (p SourceRelPath) Join(elems ...SourceRelPath) SourceRelPath {
 	}
 	return SourceRelPath{
 		relPath: p.relPath.Join(elemRelPaths...),
+		isDir:   elems[len(elems)-1].isDir,
 	}
 }
 
