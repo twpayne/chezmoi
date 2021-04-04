@@ -15,7 +15,7 @@ require (
 	github.com/go-git/go-git/v5 v5.3.0
 	github.com/godbus/dbus/v5 v5.0.4 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
-	github.com/google/go-github/v33 v33.0.0
+	github.com/google/go-github/v34 v34.0.0
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/renameio v1.0.0
 	github.com/google/uuid v1.2.0 // indirect
@@ -23,11 +23,12 @@ require (
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/kevinburke/ssh_config v1.1.0 // indirect
 	github.com/magiconair/properties v1.8.5 // indirect
+	github.com/mattn/go-runewidth v0.0.12 // indirect
 	github.com/microcosm-cc/bluemonday v1.0.5 // indirect
 	github.com/mitchellh/copystructure v1.1.1 // indirect
 	github.com/mitchellh/mapstructure v1.4.1 // indirect
 	github.com/muesli/combinator v0.3.0
-	github.com/muesli/termenv v0.8.0 // indirect
+	github.com/muesli/termenv v0.8.1 // indirect
 	github.com/olekukonko/tablewriter v0.0.5 // indirect
 	github.com/pelletier/go-toml v1.8.1
 	github.com/rivo/uniseg v0.2.0 // indirect
@@ -49,11 +50,11 @@ require (
 	github.com/zalando/go-keyring v0.1.1
 	go.etcd.io/bbolt v1.3.5
 	go.uber.org/multierr v1.6.0
-	golang.org/x/net v0.0.0-20210329181859-df645c7b52b1 // indirect
-	golang.org/x/oauth2 v0.0.0-20210323180902-22b0adad7558
-	golang.org/x/sys v0.0.0-20210326220804-49726bf1d181
+	golang.org/x/net v0.0.0-20210331212208-0fccb6fa2b5c // indirect
+	golang.org/x/oauth2 v0.0.0-20210402161424-2e8d93401602
+	golang.org/x/sys v0.0.0-20210403161142-5e06dd20ab57
 	golang.org/x/term v0.0.0-20210317153231-de623e64d2a6
-	golang.org/x/text v0.3.5 // indirect
+	golang.org/x/text v0.3.6 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	gopkg.in/ini.v1 v1.62.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0

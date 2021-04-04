@@ -10,7 +10,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/google/go-github/v33/github"
+	"github.com/google/go-github/v34/github"
 	"github.com/spf13/viper"
 	"github.com/twpayne/go-vfs/v2"
 	"github.com/twpayne/go-xdg/v4"
