@@ -3,7 +3,7 @@ package cmd
 import (
 	"context"
 
-	"github.com/google/go-github/v33/github"
+	"github.com/google/go-github/v34/github"
 )
 
 type gitHubData struct {
