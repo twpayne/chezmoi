@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<html lang="en" dir=>
+<html lang="en" dir="ltr">
 
 <head>
   <meta name="generator" content="Hugo 0.82.0" />
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Comparison Guide #  Comparison table #      chezmoi dotbot rcm homesick yadm bare git     Distribution Single binary Python package Multiple files Ruby gem Single script n/a   Install method Many git submodule Many Ruby gem Many Manual   Non-root install on bare system ✅ Difficult Difficult Difficult ✅ ✅   Windows support ✅ ❌ ❌ ❌ ❌ ✅   Bootstrap requirements None Python, git Perl, git Ruby, git git git   Source repos Single Single Multiple Single Single Single   dotfiles are&hellip; Files Symlinks Files Symlinks Files Files   Config file Optional Required Optional ➖ ➖ ❌   Private files ✅ ❌ ❌ ❌ ❌ ❌   Show differences without applying ✅ ❌ ❌ ❌ ✅ ✅   Whole file encryption ✅ ❌ ❌ ❌ ✅ ❌   Password manager integration ✅ ❌ ❌ ❌ ❌ ❌   Machine-to-machine file differences Templates Alternative files Alternative files Alternative files Templates Manual   Custom variables in templates ✅ n/a n/a n/a ❌ ❌   Executable files ✅ ✅ ✅ ✅ ❌ ✅   File creation with initial contents ✅ ❌ ❌ ❌ ❌ ❌   Manage partial files ✅ ❌ ❌ ❌ ❌ ❌   File removal ✅ ❌ ❌ ❌ ❌ ❌   Directory creation ✅ ✅ ✅ ❌ ❌ ✅   Run scripts ✅ ✅ ✅ ❌ ❌ ❌   Run once scripts ✅ ❌ ❌ ❌ Manual ❌   Machine-to-machine symlink differences ✅ ❌ ❌ ❌ ✅ ❌   Shell completion ✅ ❌ ❌ ❌ ✅ ✅   Archive import ✅ ❌ ❌ ❌ ❌ ❌   Archive export ✅ ❌ ❌ ❌ ❌ ✅   Implementation language Go Python Perl Ruby Bash C    For more comparisons, visit dotfiles.">
+<meta name="description" content="Comparison Guide #  Comparison table #      chezmoi dotbot rcm homesick yadm bare git     Distribution Single binary Python package Multiple files Ruby gem Single script n/a   Install method Many git submodule Many Ruby gem Many Manual   Non-root install on bare system ✅ Difficult Difficult Difficult ✅ ✅   Windows support ✅ ❌ ❌ ❌ ❌ ✅   Bootstrap requirements None Python, git Perl, git Ruby, git git git   Source repos Single Single Multiple Single Single Single   dotfiles are&hellip; Files Symlinks Files Symlinks Files Files   Config file Optional Required Optional None None Optional   Private files ✅ ❌ ❌ ❌ ❌ ❌   Show differences without applying ✅ ❌ ❌ ❌ ✅ ✅   Whole file encryption ✅ ❌ ❌ ❌ ✅ ❌   Password manager integration ✅ ❌ ❌ ❌ ❌ ❌   Machine-to-machine file differences Templates Alternative files Alternative files Alternative files Templates Manual   Custom variables in templates ✅ ❌ ❌ ❌ ❌ ❌   Executable files ✅ ✅ ✅ ✅ ❌ ✅   File creation with initial contents ✅ ❌ ❌ ❌ ❌ ❌   Manage partial files ✅ ❌ ❌ ❌ ❌ ❌   File removal ✅ ❌ ❌ ❌ ❌ ❌   Directory creation ✅ ✅ ✅ ❌ ❌ ✅   Run scripts ✅ ✅ ✅ ❌ ❌ ❌   Run once scripts ✅ ❌ ❌ ❌ Manual ❌   Machine-to-machine symlink differences ✅ ❌ ❌ ❌ ✅ ❌   Shell completion ✅ ❌ ❌ ❌ ✅ ✅   Archive import ✅ ❌ ❌ ❌ ❌ ❌   Archive export ✅ ❌ ❌ ❌ ❌ ✅   Implementation language Go Python Perl Ruby Bash C    For more comparisons, visit dotfiles.">
 <meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Comparison" />
-<meta property="og:description" content="Comparison Guide #  Comparison table #      chezmoi dotbot rcm homesick yadm bare git     Distribution Single binary Python package Multiple files Ruby gem Single script n/a   Install method Many git submodule Many Ruby gem Many Manual   Non-root install on bare system ✅ Difficult Difficult Difficult ✅ ✅   Windows support ✅ ❌ ❌ ❌ ❌ ✅   Bootstrap requirements None Python, git Perl, git Ruby, git git git   Source repos Single Single Multiple Single Single Single   dotfiles are&hellip; Files Symlinks Files Symlinks Files Files   Config file Optional Required Optional ➖ ➖ ❌   Private files ✅ ❌ ❌ ❌ ❌ ❌   Show differences without applying ✅ ❌ ❌ ❌ ✅ ✅   Whole file encryption ✅ ❌ ❌ ❌ ✅ ❌   Password manager integration ✅ ❌ ❌ ❌ ❌ ❌   Machine-to-machine file differences Templates Alternative files Alternative files Alternative files Templates Manual   Custom variables in templates ✅ n/a n/a n/a ❌ ❌   Executable files ✅ ✅ ✅ ✅ ❌ ✅   File creation with initial contents ✅ ❌ ❌ ❌ ❌ ❌   Manage partial files ✅ ❌ ❌ ❌ ❌ ❌   File removal ✅ ❌ ❌ ❌ ❌ ❌   Directory creation ✅ ✅ ✅ ❌ ❌ ✅   Run scripts ✅ ✅ ✅ ❌ ❌ ❌   Run once scripts ✅ ❌ ❌ ❌ Manual ❌   Machine-to-machine symlink differences ✅ ❌ ❌ ❌ ✅ ❌   Shell completion ✅ ❌ ❌ ❌ ✅ ✅   Archive import ✅ ❌ ❌ ❌ ❌ ❌   Archive export ✅ ❌ ❌ ❌ ❌ ✅   Implementation language Go Python Perl Ruby Bash C    For more comparisons, visit dotfiles." />
+<meta property="og:description" content="Comparison Guide #  Comparison table #      chezmoi dotbot rcm homesick yadm bare git     Distribution Single binary Python package Multiple files Ruby gem Single script n/a   Install method Many git submodule Many Ruby gem Many Manual   Non-root install on bare system ✅ Difficult Difficult Difficult ✅ ✅   Windows support ✅ ❌ ❌ ❌ ❌ ✅   Bootstrap requirements None Python, git Perl, git Ruby, git git git   Source repos Single Single Multiple Single Single Single   dotfiles are&hellip; Files Symlinks Files Symlinks Files Files   Config file Optional Required Optional None None Optional   Private files ✅ ❌ ❌ ❌ ❌ ❌   Show differences without applying ✅ ❌ ❌ ❌ ✅ ✅   Whole file encryption ✅ ❌ ❌ ❌ ✅ ❌   Password manager integration ✅ ❌ ❌ ❌ ❌ ❌   Machine-to-machine file differences Templates Alternative files Alternative files Alternative files Templates Manual   Custom variables in templates ✅ ❌ ❌ ❌ ❌ ❌   Executable files ✅ ✅ ✅ ✅ ❌ ✅   File creation with initial contents ✅ ❌ ❌ ❌ ❌ ❌   Manage partial files ✅ ❌ ❌ ❌ ❌ ❌   File removal ✅ ❌ ❌ ❌ ❌ ❌   Directory creation ✅ ✅ ✅ ❌ ❌ ✅   Run scripts ✅ ✅ ✅ ❌ ❌ ❌   Run once scripts ✅ ❌ ❌ ❌ Manual ❌   Machine-to-machine symlink differences ✅ ❌ ❌ ❌ ✅ ❌   Shell completion ✅ ❌ ❌ ❌ ✅ ✅   Archive import ✅ ❌ ❌ ❌ ❌ ❌   Archive export ✅ ❌ ❌ ❌ ❌ ✅   Implementation language Go Python Perl Ruby Bash C    For more comparisons, visit dotfiles." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chezmoi.io/docs/comparison/" /><meta property="article:section" content="docs" />
 
@@ -17,7 +17,7 @@
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.2bc2364a4a4b31f0ec1debecf0a8f90a840821f143dfe1ac6a0f7cbcbdcf64ac.css" integrity="sha256-K8I2SkpLMfDsHevs8Kj5CoQIIfFD3&#43;Gsag98vL3PZKw=">
-<script defer src="/en.search.min.cc76d37756f0672bebcc6c2625beed47e527bd7fbe37a1bbf9e57d09962616af.js" integrity="sha256-zHbTd1bwZyvrzGwmJb7tR&#43;UnvX&#43;&#43;N6G7&#43;eV9CZYmFq8="></script>
+<script defer src="/en.search.min.dbb0a8eb8d5cc43637f52fc05ff05ada927d3d34f9131bc7eaa00f7cd9282a65.js" integrity="sha256-27Co641cxDY39S/AX/Ba2pJ9PTT5ExvH6qAPfNkoKmU="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -26,7 +26,7 @@ https://github.com/alex-shpak/hugo-book
   
 </head>
 
-<body dir=>
+<body dir="ltr">
   <input type="checkbox" class="hidden toggle" id="menu-control" />
   <input type="checkbox" class="hidden toggle" id="toc-control" />
   <main class="container flex">
@@ -226,9 +226,9 @@ https://github.com/alex-shpak/hugo-book
 <td>Optional</td>
 <td>Required</td>
 <td>Optional</td>
-<td>➖</td>
-<td>➖</td>
-<td>❌</td>
+<td>None</td>
+<td>None</td>
+<td>Optional</td>
 </tr>
 <tr>
 <td>Private files</td>
@@ -278,9 +278,9 @@ https://github.com/alex-shpak/hugo-book
 <tr>
 <td>Custom variables in templates</td>
 <td>✅</td>
-<td>n/a</td>
-<td>n/a</td>
-<td>n/a</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
 <td>❌</td>
 <td>❌</td>
 </tr>
@@ -399,7 +399,7 @@ https://github.com/alex-shpak/hugo-book
   Why should I use a dotfile manager?
   <a class="anchor" href="#why-should-i-use-a-dotfile-manager">#</a>
 </h2>
-<p>Dotfile managers give you the combined the benefit of a consistent environment
+<p>Dotfile managers give you the combined benefit of a consistent environment
 everywhere with an undo command and a restore from backup.</p>
 <p>As the core of our development environments become increasingly standardized
 (e.g. git or Mercurial interfaces to version control at both home and work), and
