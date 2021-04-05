@@ -1,23 +1,24 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 
 	"github.com/twpayne/chezmoi/internal/chezmoi"
 )
 
 type addCmdConfig struct {
-	autoTemplate           bool
-	create                 bool
-	empty                  bool
-	encrypt                bool
-	exact                  bool
-	follow                 bool
-	include                *chezmoi.EntryTypeSet
-	recursive              bool
-	template               bool
-	templateSymlinksHome   bool
-	templateSymlinksSource bool
+	autoTemplate     bool
+	create           bool
+	empty            bool
+	encrypt          bool
+	exact            bool
+	follow           bool
+	include          *chezmoi.EntryTypeSet
+	recursive        bool
+	template         bool
+	templateSymlinks string
 }
 
 func (c *Config) newAddCmd() *cobra.Command {
@@ -45,8 +46,7 @@ func (c *Config) newAddCmd() *cobra.Command {
 	flags.BoolVarP(&c.add.follow, "follow", "f", c.add.follow, "add symlink targets instead of symlinks")
 	flags.BoolVarP(&c.add.recursive, "recursive", "r", c.add.recursive, "recursive")
 	flags.BoolVarP(&c.add.template, "template", "T", c.add.template, "add files as templates")
-	flags.BoolVar(&c.add.templateSymlinksHome, "template-symlinks-home", c.add.templateSymlinksHome, "rewrite symlinks with target inside home directory to use template")
-	flags.BoolVar(&c.add.templateSymlinksSource, "template-symlinks-source", c.add.templateSymlinksSource, "rewrite symlinks with target inside source directory to use template")
+	flags.StringVar(&c.add.templateSymlinks, "template-symlinks", c.add.templateSymlinks, "rewrite symlinks with target inside directory to use template")
 
 	return addCmd
 }
@@ -57,16 +57,23 @@ func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezm
 		return err
 	}
 
+	switch c.add.templateSymlinks {
+	case chezmoi.TemplateSymlinksNone:
+	case chezmoi.TemplateSymlinksHome:
+	case chezmoi.TemplateSymlinksSource:
+	default:
+		return fmt.Errorf("%s: invalid template-symlinks value", c.add.templateSymlinks)
+	}
+
 	return sourceState.Add(c.sourceSystem, c.persistentState, c.destSystem, destAbsPathInfos, &chezmoi.AddOptions{
-		AutoTemplate:           c.add.autoTemplate,
-		Create:                 c.add.create,
-		Empty:                  c.add.empty,
-		Encrypt:                c.add.encrypt,
-		EncryptedSuffix:        c.encryption.EncryptedSuffix(),
-		Exact:                  c.add.exact,
-		Include:                c.add.include,
-		Template:               c.add.template,
-		TemplateSymlinksHome:   c.add.templateSymlinksHome,
-		TemplateSymlinksSource: c.add.templateSymlinksSource,
+		AutoTemplate:     c.add.autoTemplate,
+		Create:           c.add.create,
+		Empty:            c.add.empty,
+		Encrypt:          c.add.encrypt,
+		EncryptedSuffix:  c.encryption.EncryptedSuffix(),
+		Exact:            c.add.exact,
+		Include:          c.add.include,
+		Template:         c.add.template,
+		TemplateSymlinks: c.add.templateSymlinks,
 	})
 }

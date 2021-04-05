@@ -17,6 +17,12 @@ import (
 	"go.uber.org/multierr"
 )
 
+const (
+	TemplateSymlinksNone   = ""
+	TemplateSymlinksHome   = "home"
+	TemplateSymlinksSource = "source"
+)
+
 // A SourceState is a source state.
 type SourceState struct {
 	entries                 map[RelPath]SourceStateEntry
@@ -116,17 +122,16 @@ func NewSourceState(options ...SourceStateOption) *SourceState {
 
 // AddOptions are options to SourceState.Add.
 type AddOptions struct {
-	AutoTemplate           bool
-	Create                 bool
-	Empty                  bool
-	Encrypt                bool
-	EncryptedSuffix        string
-	Exact                  bool
-	Include                *EntryTypeSet
-	RemoveDir              RelPath
-	Template               bool
-	TemplateSymlinksHome   bool
-	TemplateSymlinksSource bool
+	AutoTemplate     bool
+	Create           bool
+	Empty            bool
+	Encrypt          bool
+	EncryptedSuffix  string
+	Exact            bool
+	Include          *EntryTypeSet
+	RemoveDir        RelPath
+	Template         bool
+	TemplateSymlinks string
 }
 
 // Add adds destAbsPathInfos to s.
@@ -1064,23 +1069,30 @@ func (s *SourceState) newSourceStateFileEntryFromSymlink(actualStateSymlink *Act
 		return nil, err
 	}
 	contents := []byte(linkname)
-	isTemplate := options.Template || options.AutoTemplate
-	if options.AutoTemplate {
+	template := false
+	switch {
+	case options.AutoTemplate:
 		contents = autoTemplate(contents, s.TemplateData())
-	} else if !options.Template {
-		if options.TemplateSymlinksSource {
-			linkname, isTemplate = s.tryTemplateSymlinkInDir(linkname, s.sourceDirAbsPath, "{{ .chezmoi.sourceDir }}/")
-		} else if options.TemplateSymlinksHome {
-			linkname, isTemplate = s.tryTemplateSymlinkInDir(linkname, s.destDirAbsPath, "{{ .chezmoi.homedir }}/")
+		fallthrough
+	case options.Template:
+		template = true
+	case !options.Template && options.TemplateSymlinks == TemplateSymlinksHome:
+		if strings.HasPrefix(linkname, string(s.destDirAbsPath)+"/") {
+			contents = []byte("{{ .chezmoi.homeDir }}/" + linkname[len(s.destDirAbsPath)+1:])
+			template = true
 		}
-		contents = []byte(linkname)
+	case !options.Template && options.TemplateSymlinks == TemplateSymlinksSource:
+		if strings.HasPrefix(linkname, string(s.sourceDirAbsPath)+"/") {
+			contents = []byte("{{ .chezmoi.sourceDir }}/" + linkname[len(s.sourceDirAbsPath)+1:])
+			template = true
+		}
 	}
 	contents = append(contents, '\n')
 	lazyContents := newLazyContents(contents)
 	fileAttr := FileAttr{
 		TargetName: info.Name(),
 		Type:       SourceFileTypeSymlink,
-		Template:   isTemplate,
+		Template:   template,
 	}
 	sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(RelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix()))))
 	return &SourceStateFile{
@@ -1092,19 +1104,6 @@ func (s *SourceState) newSourceStateFileEntryFromSymlink(actualStateSymlink *Act
 			perm:         0o666,
 		},
 	}, nil
-}
-
-// tryTemplateSymlinkInDir substitutes symlink with template if it's target is inside specified dir.
-func (s *SourceState) tryTemplateSymlinkInDir(linkname string, dir AbsPath, template string) (string, bool) {
-	ap, err := NewAbsPath(linkname)
-	if err != nil {
-		return linkname, false
-	}
-	rp, err := ap.TrimDirPrefix(dir)
-	if err != nil {
-		return linkname, false
-	}
-	return template + string(rp), true
 }
 
 // sourceStateEntry returns a new SourceStateEntry based on actualStateEntry.

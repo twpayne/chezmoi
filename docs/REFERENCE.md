@@ -596,6 +596,13 @@ Recursively add all files, directories, and symlinks.
 
 Set the `template` attribute on added files and symlinks.
 
+#### `--template-symlinks` *value*
+
+When adding symlink to an absolute path, create a symlink template using either
+`.chezmoi.homeDir` (if *value* is `home`) or `.chezmoi.sourceDir` (if *value* is
+`source`) if the path is in the relevant directory. This is useful for creating
+portable absolute symlinks.
+
 #### `add` examples
 
     chezmoi add ~/.bashrc
