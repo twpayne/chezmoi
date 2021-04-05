@@ -203,3 +203,14 @@ jobs:
         args: release
       env:
         GITHUB_TOKEN: ${{ secrets.GORELEASER_GITHUB_TOKEN }}
+    # The following is needed because chezmoi upgrade and
+    # assets/scripts/install.sh have inconsistently looked for
+    # chezmoi_${VERSION}_checksums.txt and checksums.txt. To ensure
+    # compatibility with all versions, upload checksums.txt as well.
+    - name: Upload checksums.txt
+      run: |
+        VERSION=${GITHUB_REF##*/}
+        cp dist/chezmoi_${VERSION}_checksums.txt dist/checksums.txt
+        gh release upload ${VERSION} dist/checksums.txt
+      env:
+        GITHUB_TOKEN: ${{ secrets.GORELEASER_GITHUB_TOKEN }}
