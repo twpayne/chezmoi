@@ -1,14 +1,13 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 
 	"github.com/twpayne/chezmoi/internal/chezmoi"
 )
 
 type addCmdConfig struct {
+	TemplateSymlinks bool `mapstructure:"templateSymlinks"`
 	autoTemplate     bool
 	create           bool
 	empty            bool
@@ -18,7 +17,6 @@ type addCmdConfig struct {
 	include          *chezmoi.EntryTypeSet
 	recursive        bool
 	template         bool
-	templateSymlinks string
 }
 
 func (c *Config) newAddCmd() *cobra.Command {
@@ -38,42 +36,34 @@ func (c *Config) newAddCmd() *cobra.Command {
 	}
 
 	flags := addCmd.Flags()
-	flags.BoolVarP(&c.add.autoTemplate, "autotemplate", "a", c.add.autoTemplate, "auto generate the template when adding files as templates")
-	flags.BoolVar(&c.add.create, "create", c.add.create, "add files that should exist, irrespective of their contents")
-	flags.BoolVarP(&c.add.empty, "empty", "e", c.add.empty, "add empty files")
-	flags.BoolVar(&c.add.encrypt, "encrypt", c.add.encrypt, "encrypt files")
-	flags.BoolVar(&c.add.exact, "exact", c.add.exact, "add directories exactly")
-	flags.BoolVarP(&c.add.follow, "follow", "f", c.add.follow, "add symlink targets instead of symlinks")
-	flags.BoolVarP(&c.add.recursive, "recursive", "r", c.add.recursive, "recursive")
-	flags.BoolVarP(&c.add.template, "template", "T", c.add.template, "add files as templates")
-	flags.StringVar(&c.add.templateSymlinks, "template-symlinks", c.add.templateSymlinks, "rewrite symlinks with target inside directory to use template")
+	flags.BoolVarP(&c.Add.autoTemplate, "autotemplate", "a", c.Add.autoTemplate, "auto generate the template when adding files as templates")
+	flags.BoolVar(&c.Add.create, "create", c.Add.create, "add files that should exist, irrespective of their contents")
+	flags.BoolVarP(&c.Add.empty, "empty", "e", c.Add.empty, "add empty files")
+	flags.BoolVar(&c.Add.encrypt, "encrypt", c.Add.encrypt, "encrypt files")
+	flags.BoolVar(&c.Add.exact, "exact", c.Add.exact, "add directories exactly")
+	flags.BoolVarP(&c.Add.follow, "follow", "f", c.Add.follow, "add symlink targets instead of symlinks")
+	flags.BoolVarP(&c.Add.recursive, "recursive", "r", c.Add.recursive, "recursive")
+	flags.BoolVarP(&c.Add.template, "template", "T", c.Add.template, "add files as templates")
+	flags.BoolVar(&c.Add.TemplateSymlinks, "template-symlinks", c.Add.TemplateSymlinks, "add symlinks with target in source or home dirs as templates")
 
 	return addCmd
 }
 
 func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
-	destAbsPathInfos, err := c.destAbsPathInfos(sourceState, args, c.add.recursive, c.add.follow)
+	destAbsPathInfos, err := c.destAbsPathInfos(sourceState, args, c.Add.recursive, c.Add.follow)
 	if err != nil {
 		return err
 	}
 
-	switch c.add.templateSymlinks {
-	case chezmoi.TemplateSymlinksNone:
-	case chezmoi.TemplateSymlinksHome:
-	case chezmoi.TemplateSymlinksSource:
-	default:
-		return fmt.Errorf("%s: invalid template-symlinks value", c.add.templateSymlinks)
-	}
-
 	return sourceState.Add(c.sourceSystem, c.persistentState, c.destSystem, destAbsPathInfos, &chezmoi.AddOptions{
-		AutoTemplate:     c.add.autoTemplate,
-		Create:           c.add.create,
-		Empty:            c.add.empty,
-		Encrypt:          c.add.encrypt,
+		AutoTemplate:     c.Add.autoTemplate,
+		Create:           c.Add.create,
+		Empty:            c.Add.empty,
+		Encrypt:          c.Add.encrypt,
 		EncryptedSuffix:  c.encryption.EncryptedSuffix(),
-		Exact:            c.add.exact,
-		Include:          c.add.include,
-		Template:         c.add.template,
-		TemplateSymlinks: c.add.templateSymlinks,
+		Exact:            c.Add.exact,
+		Include:          c.Add.include,
+		Template:         c.Add.template,
+		TemplateSymlinks: c.Add.TemplateSymlinks,
 	})
 }

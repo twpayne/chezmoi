@@ -108,6 +108,7 @@ type Config struct {
 	keyring keyringData
 
 	// Command configurations, settable in the config file.
+	Add   addCmdConfig   `mapstructure:"add"`
 	CD    cdCmdConfig    `mapstructure:"cd"`
 	Diff  diffCmdConfig  `mapstructure:"diff"`
 	Edit  editCmdConfig  `mapstructure:"edit"`
@@ -115,7 +116,6 @@ type Config struct {
 	Merge mergeCmdConfig `mapstructure:"merge"`
 
 	// Command configurations, not settable in the config file.
-	add             addCmdConfig
 	apply           applyCmdConfig
 	archive         archiveCmdConfig
 	data            dataCmdConfig
@@ -234,7 +234,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		AGE: defaultAGEEncryptionConfig,
 		GPG: defaultGPGEncryptionConfig,
-		add: addCmdConfig{
+		Add: addCmdConfig{
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 			recursive: true,
 		},

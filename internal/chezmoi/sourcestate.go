@@ -17,12 +17,6 @@ import (
 	"go.uber.org/multierr"
 )
 
-const (
-	TemplateSymlinksNone   = ""
-	TemplateSymlinksHome   = "home"
-	TemplateSymlinksSource = "source"
-)
-
 // A SourceState is a source state.
 type SourceState struct {
 	entries                 map[RelPath]SourceStateEntry
@@ -131,7 +125,7 @@ type AddOptions struct {
 	Include          *EntryTypeSet
 	RemoveDir        RelPath
 	Template         bool
-	TemplateSymlinks string
+	TemplateSymlinks bool
 }
 
 // Add adds destAbsPathInfos to s.
@@ -1076,14 +1070,13 @@ func (s *SourceState) newSourceStateFileEntryFromSymlink(actualStateSymlink *Act
 		fallthrough
 	case options.Template:
 		template = true
-	case !options.Template && options.TemplateSymlinks == TemplateSymlinksHome:
-		if strings.HasPrefix(linkname, string(s.destDirAbsPath)+"/") {
-			contents = []byte("{{ .chezmoi.homeDir }}/" + linkname[len(s.destDirAbsPath)+1:])
-			template = true
-		}
-	case !options.Template && options.TemplateSymlinks == TemplateSymlinksSource:
-		if strings.HasPrefix(linkname, string(s.sourceDirAbsPath)+"/") {
+	case !options.Template && options.TemplateSymlinks:
+		switch {
+		case strings.HasPrefix(linkname, string(s.sourceDirAbsPath)+"/"):
 			contents = []byte("{{ .chezmoi.sourceDir }}/" + linkname[len(s.sourceDirAbsPath)+1:])
+			template = true
+		case strings.HasPrefix(linkname, string(s.destDirAbsPath)+"/"):
+			contents = []byte("{{ .chezmoi.homeDir }}/" + linkname[len(s.destDirAbsPath)+1:])
 			template = true
 		}
 	}
