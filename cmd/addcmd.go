@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 
 	"github.com/twpayne/chezmoi/internal/chezmoi"
@@ -18,7 +16,7 @@ type addCmdConfig struct {
 	include          *chezmoi.EntryTypeSet
 	recursive        bool
 	template         bool
-	templateSymlinks string
+	templateSymlinks bool
 }
 
 func (c *Config) newAddCmd() *cobra.Command {
@@ -46,7 +44,7 @@ func (c *Config) newAddCmd() *cobra.Command {
 	flags.BoolVarP(&c.add.follow, "follow", "f", c.add.follow, "add symlink targets instead of symlinks")
 	flags.BoolVarP(&c.add.recursive, "recursive", "r", c.add.recursive, "recursive")
 	flags.BoolVarP(&c.add.template, "template", "T", c.add.template, "add files as templates")
-	flags.StringVar(&c.add.templateSymlinks, "template-symlinks", c.add.templateSymlinks, "rewrite symlinks with target inside directory to use template")
+	flags.BoolVar(&c.add.templateSymlinks, "template-symlinks", c.add.templateSymlinks, "add symlinks with target in source or home dirs as templates")
 
 	return addCmd
 }
@@ -55,14 +53,6 @@ func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezm
 	destAbsPathInfos, err := c.destAbsPathInfos(sourceState, args, c.add.recursive, c.add.follow)
 	if err != nil {
 		return err
-	}
-
-	switch c.add.templateSymlinks {
-	case chezmoi.TemplateSymlinksNone:
-	case chezmoi.TemplateSymlinksHome:
-	case chezmoi.TemplateSymlinksSource:
-	default:
-		return fmt.Errorf("%s: invalid template-symlinks value", c.add.templateSymlinks)
 	}
 
 	return sourceState.Add(c.sourceSystem, c.persistentState, c.destSystem, destAbsPathInfos, &chezmoi.AddOptions{
