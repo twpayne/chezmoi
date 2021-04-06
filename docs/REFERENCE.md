@@ -563,6 +563,10 @@ Automatically generate a template by replacing strings with variable names from
 the `data` section of the config file. Longer substitutions occur before shorter
 ones. This implies the `--template` option.
 
+When adding symlink to an absolute path, this creates a symlink template using
+either `.chezmoi.homeDir` or `.chezmoi.sourceDir`. This is useful for creating
+portable absolute symlinks.
+
 #### `-e`, `--empty`
 
 Set the `empty` attribute on added files.
@@ -595,13 +599,6 @@ Recursively add all files, directories, and symlinks.
 #### `-T`, `--template`
 
 Set the `template` attribute on added files and symlinks.
-
-#### `--template-symlinks` *value*
-
-When adding symlink to an absolute path, create a symlink template using either
-`.chezmoi.homeDir` (if *value* is `home`) or `.chezmoi.sourceDir` (if *value* is
-`source`) if the path is in the relevant directory. This is useful for creating
-portable absolute symlinks.
 
 #### `add` examples
 

@@ -17,12 +17,6 @@ import (
 	"go.uber.org/multierr"
 )
 
-const (
-	TemplateSymlinksNone   = ""
-	TemplateSymlinksHome   = "home"
-	TemplateSymlinksSource = "source"
-)
-
 // A SourceState is a source state.
 type SourceState struct {
 	entries                 map[RelPath]SourceStateEntry
@@ -1069,30 +1063,15 @@ func (s *SourceState) newSourceStateFileEntryFromSymlink(actualStateSymlink *Act
 		return nil, err
 	}
 	contents := []byte(linkname)
-	template := false
-	switch {
-	case options.AutoTemplate:
+	if options.AutoTemplate {
 		contents = autoTemplate(contents, s.TemplateData())
-		fallthrough
-	case options.Template:
-		template = true
-	case !options.Template && options.TemplateSymlinks == TemplateSymlinksHome:
-		if strings.HasPrefix(linkname, string(s.destDirAbsPath)+"/") {
-			contents = []byte("{{ .chezmoi.homeDir }}/" + linkname[len(s.destDirAbsPath)+1:])
-			template = true
-		}
-	case !options.Template && options.TemplateSymlinks == TemplateSymlinksSource:
-		if strings.HasPrefix(linkname, string(s.sourceDirAbsPath)+"/") {
-			contents = []byte("{{ .chezmoi.sourceDir }}/" + linkname[len(s.sourceDirAbsPath)+1:])
-			template = true
-		}
 	}
 	contents = append(contents, '\n')
 	lazyContents := newLazyContents(contents)
 	fileAttr := FileAttr{
 		TargetName: info.Name(),
 		Type:       SourceFileTypeSymlink,
-		Template:   template,
+		Template:   options.Template || options.AutoTemplate,
 	}
 	sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(RelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix()))))
 	return &SourceStateFile{
