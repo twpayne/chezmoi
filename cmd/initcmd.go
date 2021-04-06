@@ -22,6 +22,7 @@ import (
 type initCmdConfig struct {
 	apply       bool
 	depth       int
+	exclude     *chezmoi.EntryTypeSet
 	oneShot     bool
 	purge       bool
 	purgeBinary bool
@@ -84,6 +85,7 @@ func (c *Config) newInitCmd() *cobra.Command {
 	flags := initCmd.Flags()
 	flags.BoolVarP(&c.init.apply, "apply", "a", c.init.apply, "update destination directory")
 	flags.IntVarP(&c.init.depth, "depth", "d", c.init.depth, "create a shallow clone")
+	flags.VarP(c.init.exclude, "exclude", "x", "exclude entry types")
 	flags.BoolVar(&c.init.oneShot, "one-shot", c.init.oneShot, "one shot")
 	flags.BoolVarP(&c.init.purge, "purge", "p", c.init.purge, "purge config and source directories")
 	flags.BoolVarP(&c.init.purgeBinary, "purge-binary", "P", c.init.purgeBinary, "purge chezmoi binary")
@@ -195,7 +197,7 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 	// Apply.
 	if c.init.apply {
 		if err := c.applyArgs(c.destSystem, c.destDirAbsPath, noArgs, applyArgsOptions{
-			include:      chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
+			include:      chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll).Sub(c.init.exclude),
 			recursive:    false,
 			umask:        c.Umask,
 			preApplyFunc: c.defaultPreApplyFunc,

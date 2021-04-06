@@ -77,7 +77,6 @@ type Config struct {
 	cpuProfile    string
 	debug         bool
 	dryRun        bool
-	exclude       *chezmoi.EntryTypeSet
 	force         bool
 	homeDir       string
 	keepGoing     bool
@@ -198,6 +197,7 @@ func newConfig(options ...configOption) (*Config, error) {
 			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 		},
 		Edit: editCmdConfig{
+			exclude: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypeDirs | chezmoi.EntryTypeFiles | chezmoi.EntryTypeSymlinks | chezmoi.EntryTypeEncrypted),
 		},
 		Git: gitCmdConfig{
@@ -210,7 +210,6 @@ func newConfig(options ...configOption) (*Config, error) {
 			Options: chezmoi.DefaultTemplateOptions,
 		},
 		templateFuncs: sprig.TxtFuncMap(),
-		exclude:       chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 		Bitwarden: bitwardenConfig{
 			Command: "bw",
 		},
@@ -235,14 +234,17 @@ func newConfig(options ...configOption) (*Config, error) {
 		AGE: defaultAGEEncryptionConfig,
 		GPG: defaultGPGEncryptionConfig,
 		Add: addCmdConfig{
+			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 			recursive: true,
 		},
 		apply: applyCmdConfig{
+			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 			recursive: true,
 		},
 		archive: archiveCmdConfig{
+			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 			recursive: true,
 		},
@@ -250,6 +252,7 @@ func newConfig(options ...configOption) (*Config, error) {
 			format: defaultFormat,
 		},
 		dump: dumpCmdConfig{
+			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			format:    defaultFormat,
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 			recursive: true,
@@ -260,7 +263,11 @@ func newConfig(options ...configOption) (*Config, error) {
 		_import: importCmdConfig{
 			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 		},
+		init: initCmdConfig{
+			exclude: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
+		},
 		managed: managedCmdConfig{
+			exclude: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypeDirs | chezmoi.EntryTypeFiles | chezmoi.EntryTypeSymlinks | chezmoi.EntryTypeEncrypted),
 		},
 		state: stateCmdConfig{
@@ -269,15 +276,18 @@ func newConfig(options ...configOption) (*Config, error) {
 			},
 		},
 		status: statusCmdConfig{
+			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 			recursive: true,
 		},
 		update: updateCmdConfig{
 			apply:     true,
+			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 			recursive: true,
 		},
 		verify: verifyCmdConfig{
+			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll &^ chezmoi.EntryTypeScripts),
 			recursive: true,
 		},
@@ -344,6 +354,7 @@ func (c *Config) addTemplateFunc(key string, value interface{}) {
 
 type applyArgsOptions struct {
 	include      *chezmoi.EntryTypeSet
+	exclude      *chezmoi.EntryTypeSet
 	recursive    bool
 	umask        os.FileMode
 	preApplyFunc chezmoi.PreApplyFunc
@@ -398,7 +409,7 @@ func (c *Config) applyArgs(targetSystem chezmoi.System, targetDirAbsPath chezmoi
 	}
 
 	applyOptions := chezmoi.ApplyOptions{
-		Include:      options.include.Sub(c.exclude),
+		Include:      options.include.Sub(options.exclude),
 		PreApplyFunc: options.preApplyFunc,
 		Umask:        options.umask,
 	}
@@ -892,7 +903,6 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.StringVarP(&c.configFile, "config", "c", c.configFile, "config file")
 	persistentFlags.StringVar(&c.cpuProfile, "cpu-profile", c.cpuProfile, "write CPU profile to file")
 	persistentFlags.BoolVarP(&c.dryRun, "dry-run", "n", c.dryRun, "dry run")
-	persistentFlags.VarP(c.exclude, "exclude", "x", "exclude entry types")
 	persistentFlags.BoolVar(&c.force, "force", c.force, "force")
 	persistentFlags.BoolVarP(&c.keepGoing, "keep-going", "k", c.keepGoing, "keep going as far as possible after an error")
 	persistentFlags.BoolVar(&c.noPager, "no-pager", c.noPager, "do not use the pager")

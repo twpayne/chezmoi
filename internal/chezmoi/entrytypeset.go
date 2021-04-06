@@ -142,6 +142,9 @@ func (s *EntryTypeSet) Set(str string) error {
 }
 
 func (s *EntryTypeSet) String() string {
+	if s == nil {
+		return "none"
+	}
 	//nolint:exhaustive
 	switch s.bits {
 	case EntryTypesAll:
@@ -166,6 +169,9 @@ func (s *EntryTypeSet) String() string {
 
 // Sub returns a copy of s with the elements of other removed.
 func (s *EntryTypeSet) Sub(other *EntryTypeSet) *EntryTypeSet {
+	if other == nil {
+		return s
+	}
 	return &EntryTypeSet{
 		bits: (s.bits &^ other.bits) & EntryTypesAll,
 	}
