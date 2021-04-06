@@ -1,9 +1,0 @@
-mkhomedir
-
-# test that chezmoi add --template-symlinks replaces absolute symlinks, pointing to files inside sourcedir, with templates
-symlink $HOME${/}.symlink_source -> $CHEZMOISOURCEDIR/.dir/subdir/file
-chezmoi add --template-symlinks $HOME${/}.symlink_source
-cmp $CHEZMOISOURCEDIR/symlink_dot_symlink_source.tmpl golden/symlink_dot_symlink_source.tmpl
-
--- golden/symlink_dot_symlink_source.tmpl --
-{{ .chezmoi.sourceDir }}/.dir/subdir/file
