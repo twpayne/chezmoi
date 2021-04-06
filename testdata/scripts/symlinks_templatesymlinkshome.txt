@@ -5,5 +5,15 @@ symlink ${HOME}${/}.symlink_absolute -> $HOME/.dir/subdir/file
 chezmoi add --template-symlinks $HOME${/}.symlink_absolute
 cmp $CHEZMOISOURCEDIR/symlink_dot_symlink_absolute.tmpl golden/symlink_dot_symlink_absolute.tmpl
 
+chhome home2/user
+
+# test that chezmoi add reads add.templateSymlinks from the config file
+symlink ${HOME}${/}.symlink_absolute -> $HOME/.dir/subdir/file
+chezmoi add --template-symlinks $HOME${/}.symlink_absolute
+cmp $CHEZMOISOURCEDIR/symlink_dot_symlink_absolute.tmpl golden/symlink_dot_symlink_absolute.tmpl
+
 -- golden/symlink_dot_symlink_absolute.tmpl --
 {{ .chezmoi.homeDir }}/.dir/subdir/file
+-- home2/user/.config/chezmoi/chezmoi.toml --
+[add]
+  templateSymlinks = true
