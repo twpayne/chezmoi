@@ -1,0 +1,21 @@
+mkgpgconfig
+
+cp golden/.file $HOME/.file
+
+# test that chezmoi add adds the file unencrypted
+chezmoi add $HOME${/}.file
+cmp $CHEZMOISOURCEDIR/dot_file golden/.file
+
+# test that chezmoi add --encrypt encrypts the source file
+chezmoi add --encrypt $HOME${/}.file
+! exists $CHEZMOISOURCEDIR/dot_file
+exists $CHEZMOISOURCEDIR/encrypted_dot_file.asc
+! grep plaintext $CHEZMOISOURCEDIR/encrypted_dot_file.asc
+
+# test that chezmoi add without --encrypt replaces the source file
+chezmoi add $HOME${/}.file
+! exists $CHEZMOISOURCEDIR/encrypted_dot_file.asc
+cmp $CHEZMOISOURCEDIR/dot_file golden/.file
+
+-- golden/.file --
+plaintext
