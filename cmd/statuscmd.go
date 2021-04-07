@@ -10,6 +10,7 @@ import (
 )
 
 type statusCmdConfig struct {
+	exclude   *chezmoi.EntryTypeSet
 	include   *chezmoi.EntryTypeSet
 	recursive bool
 }
@@ -28,6 +29,7 @@ func (c *Config) newStatusCmd() *cobra.Command {
 	}
 
 	flags := statusCmd.Flags()
+	flags.VarP(c.status.exclude, "exclude", "x", "exclude entry types")
 	flags.VarP(c.status.include, "include", "i", "include entry types")
 	flags.BoolVarP(&c.status.recursive, "recursive", "r", c.status.recursive, "recursive")
 
@@ -55,7 +57,7 @@ func (c *Config) runStatusCmd(cmd *cobra.Command, args []string, sourceState *ch
 		return chezmoi.Skip
 	}
 	if err := c.applyArgs(dryRunSystem, c.destDirAbsPath, args, applyArgsOptions{
-		include:      c.status.include,
+		include:      c.status.include.Sub(c.status.exclude),
 		recursive:    c.status.recursive,
 		umask:        c.Umask,
 		preApplyFunc: preApplyFunc,

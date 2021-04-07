@@ -1,0 +1,67 @@
+# test that chezmoi diff respsects the diff.exclude configuration variable
+chezmoi diff
+[!windows] cmp stdout golden/diff
+[windows] cmp stdout golden/diff-windows
+mkdir $CHEZMOICONFIGDIR
+cp golden/chezmoi.toml $CHEZMOICONFIGDIR
+chezmoi diff
+[!windows] cmp stdout golden/diff-no-scripts
+[windows] cmp stdout golden/diff-no-scripts-windows
+
+-- home/user/.local/share/chezmoi/dot_file --
+# contents of .file
+-- home/user/.local/share/chezmoi/run_script --
+#!/bin/sh
+
+echo $*
+-- golden/chezmoi.toml --
+[diff]
+  exclude = ["scripts"]
+-- golden/diff --
+diff --git a/.file b/.file
+new file mode 100644
+index 0000000000000000000000000000000000000000..8a52cb9ce9551221716a53786ad74104c5902362
+--- /dev/null
++++ b/.file
+@@ -0,0 +1 @@
++# contents of .file
+diff --git a/script b/script
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..3747a7ba08ee591c41b7c518e430d2802137eac4 100755
+--- a/script
++++ b/script
+@@ -0,0 +1,3 @@
++#!/bin/sh
++
++echo $*
+-- golden/diff-windows --
+diff --git a/.file b/.file
+new file mode 100666
+index 0000000000000000000000000000000000000000..8a52cb9ce9551221716a53786ad74104c5902362
+--- /dev/null
++++ b/.file
+@@ -0,0 +1 @@
++# contents of .file
+diff --git a/script b/script
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..3747a7ba08ee591c41b7c518e430d2802137eac4 100755
+--- a/script
++++ b/script
+@@ -0,0 +1,3 @@
++#!/bin/sh
++
++echo $*
+-- golden/diff-no-scripts --
+diff --git a/.file b/.file
+new file mode 100644
+index 0000000000000000000000000000000000000000..8a52cb9ce9551221716a53786ad74104c5902362
+--- /dev/null
++++ b/.file
+@@ -0,0 +1 @@
++# contents of .file
+-- golden/diff-no-scripts-windows --
+diff --git a/.file b/.file
+new file mode 100666
+index 0000000000000000000000000000000000000000..8a52cb9ce9551221716a53786ad74104c5902362
+--- /dev/null
++++ b/.file
+@@ -0,0 +1 @@
++# contents of .file

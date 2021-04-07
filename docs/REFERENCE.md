@@ -260,55 +260,56 @@ of the config file is `chezmoi`, and the first config file found is used.
 
 The following configuration variables are available:
 
-| Section       | Variable           | Type     | Default value             | Description                                            |
-| ------------- | ------------------ | -------- | ------------------------- | ------------------------------------------------------ |
-| Top level     | `color`            | string   | `auto`                    | Colorize output                                        |
-|               | `data`             | any      | *none*                    | Template data                                          |
-|               | `destDir`          | string   | `~`                       | Destination directory                                  |
-|               | `encryption`       | string   | *none*                    | Encryption tool, either `age` or `gpg`                 |
-|               | `format`           | string   | `json`                    | Format for data output, either `json` or `yaml`        |
-|               | `remove`           | bool     | `false`                   | Remove targets                                         |
-|               | `sourceDir`        | string   | `~/.local/share/chezmoi`  | Source directory                                       |
-|               | `umask`            | int      | *from system*             | Umask                                                  |
-|               | `useBuiltinGit`    | string   | `auto`                    | Use builtin git if `git` command is not found in $PATH |
-| `add`         | `templateSymlinks` | bool     | `false`                   | Template symlinks to source and home dirs              |
-| `age`         | `args`             | []string | *none*                    | Extra args to age CLI command                          |
-|               | `command`          | string   | `age`                     | age CLI command                                        |
-|               | `identity`         | string   | *none*                    | age identity file                                      |
-|               | `identities`       | []string | *none*                    | age identity files                                     |
-|               | `recipient`        | string   | *none*                    | age recipient                                          |
-|               | `recipients`       | []string | *none*                    | age recipients                                         |
-|               | `recipientsFile`   | []string | *none*                    | age recipients file                                    |
-|               | `recipientsFiles`  | []string | *none*                    | age receipients files                                  |
-|               | `suffix`           | string   | `.age`                    | Suffix appended to age-encrypted files                 |
-| `bitwarden`   | `command`          | string   | `bw`                      | Bitwarden CLI command                                  |
-| `cd`          | `args`             | []string | *none*                    | Extra args to shell in `cd` command                    |
-|               | `command`          | string   | *none*                    | Shell to run in `cd` command                           |
-| `diff`        | `pager`            | string   | `$PAGER` / `less`         | Pager                                                  |
-| `edit`        | `args`             | []string | *none*                    | Extra args to edit command                             |
-|               | `command`          | string   | `$EDITOR` / `$VISUAL`     | Edit command                                           |
-| `secret`      | `command`          | string   | *none*                    | Generic secret command                                 |
-| `git`         | `autoAdd `         | bool     | `false`                   | Add changes to the source state after any change       |
-|               | `autoCommit`       | bool     | `false`                   | Commit changes to the source state after any change    |
-|               | `autoPush`         | bool     | `false`                   | Push changes to the source state after any change      |
-|               | `command`          | string   | `git`                     | Source version control system                          |
-| `gopass`      | `command`          | string   | `gopass`                  | gopass CLI command                                     |
-| `gpg`         | `args`             | []string | *none*                    | Extra args to GPG CLI command                          |
-|               | `command`          | string   | `gpg`                     | GPG CLI command                                        |
-|               | `recipient`        | string   | *none*                    | GPG recipient                                          |
-|               | `suffix`           | string   | `.asc`                    | Suffix appended to GPG-encrypted files                 |
-|               | `symmetric`        | bool     | `false`                   | Use symmetric GPG encryption                           |
-| `keepassxc`   | `args`             | []string | *none*                    | Extra args to KeePassXC CLI command                    |
-|               | `command`          | string   | `keepassxc-cli`           | KeePassXC CLI command                                  |
-|               | `database`         | string   | *none*                    | KeePassXC database                                     |
-| `lastpass`    | `command`          | string   | `lpass`                   | Lastpass CLI command                                   |
-| `merge`       | `args`             | []string | *none*                    | Extra args to 3-way merge command                      |
-|               | `command`          | string   | `vimdiff`                 | 3-way merge command                                    |
-| `onepassword` | `cache`            | bool     | `true`                    | Enable optional caching provided by `op`               |
-|               | `command`          | string   | `op`                      | 1Password CLI command                                  |
-| `pass`        | `command`          | string   | `pass`                    | Pass CLI command                                       |
-| `template`    | `options`          | []string | `["missingkey=error"]`    | Template options                                       |
-| `vault`       | `command`          | string   | `vault`                   | Vault CLI command                                      |
+| Section       | Variable           | Type     | Default value            | Description                                            |
+| ------------- | ------------------ | -------- | ------------------------ | ------------------------------------------------------ |
+| Top level     | `color`            | string   | `auto`                   | Colorize output                                        |
+|               | `data`             | any      | *none*                   | Template data                                          |
+|               | `destDir`          | string   | `~`                      | Destination directory                                  |
+|               | `encryption`       | string   | *none*                   | Encryption tool, either `age` or `gpg`                 |
+|               | `format`           | string   | `json`                   | Format for data output, either `json` or `yaml`        |
+|               | `remove`           | bool     | `false`                  | Remove targets                                         |
+|               | `sourceDir`        | string   | `~/.local/share/chezmoi` | Source directory                                       |
+|               | `umask`            | int      | *from system*            | Umask                                                  |
+|               | `useBuiltinGit`    | string   | `auto`                   | Use builtin git if `git` command is not found in $PATH |
+| `add`         | `templateSymlinks` | bool     | `false`                  | Template symlinks to source and home dirs              |
+| `age`         | `args`             | []string | *none*                   | Extra args to age CLI command                          |
+|               | `command`          | string   | `age`                    | age CLI command                                        |
+|               | `identity`         | string   | *none*                   | age identity file                                      |
+|               | `identities`       | []string | *none*                   | age identity files                                     |
+|               | `recipient`        | string   | *none*                   | age recipient                                          |
+|               | `recipients`       | []string | *none*                   | age recipients                                         |
+|               | `recipientsFile`   | []string | *none*                   | age recipients file                                    |
+|               | `recipientsFiles`  | []string | *none*                   | age receipients files                                  |
+|               | `suffix`           | string   | `.age`                   | Suffix appended to age-encrypted files                 |
+| `bitwarden`   | `command`          | string   | `bw`                     | Bitwarden CLI command                                  |
+| `cd`          | `args`             | []string | *none*                   | Extra args to shell in `cd` command                    |
+|               | `command`          | string   | *none*                   | Shell to run in `cd` command                           |
+| `diff`        | `exclude`          | []string | *none*                   | Entry types to exclude from diff                       |
+|               | `pager`            | string   | `$PAGER` / `less`        | Pager                                                  |
+| `edit`        | `args`             | []string | *none*                   | Extra args to edit command                             |
+|               | `command`          | string   | `$EDITOR` / `$VISUAL`    | Edit command                                           |
+| `secret`      | `command`          | string   | *none*                   | Generic secret command                                 |
+| `git`         | `autoAdd `         | bool     | `false`                  | Add changes to the source state after any change       |
+|               | `autoCommit`       | bool     | `false`                  | Commit changes to the source state after any change    |
+|               | `autoPush`         | bool     | `false`                  | Push changes to the source state after any change      |
+|               | `command`          | string   | `git`                    | Source version control system                          |
+| `gopass`      | `command`          | string   | `gopass`                 | gopass CLI command                                     |
+| `gpg`         | `args`             | []string | *none*                   | Extra args to GPG CLI command                          |
+|               | `command`          | string   | `gpg`                    | GPG CLI command                                        |
+|               | `recipient`        | string   | *none*                   | GPG recipient                                          |
+|               | `suffix`           | string   | `.asc`                   | Suffix appended to GPG-encrypted files                 |
+|               | `symmetric`        | bool     | `false`                  | Use symmetric GPG encryption                           |
+| `keepassxc`   | `args`             | []string | *none*                   | Extra args to KeePassXC CLI command                    |
+|               | `command`          | string   | `keepassxc-cli`          | KeePassXC CLI command                                  |
+|               | `database`         | string   | *none*                   | KeePassXC database                                     |
+| `lastpass`    | `command`          | string   | `lpass`                  | Lastpass CLI command                                   |
+| `merge`       | `args`             | []string | *none*                   | Extra args to 3-way merge command                      |
+|               | `command`          | string   | `vimdiff`                | 3-way merge command                                    |
+| `onepassword` | `cache`            | bool     | `true`                   | Enable optional caching provided by `op`               |
+|               | `command`          | string   | `op`                     | 1Password CLI command                                  |
+| `pass`        | `command`          | string   | `pass`                   | Pass CLI command                                       |
+| `template`    | `options`          | []string | `["missingkey=error"]`   | Template options                                       |
+| `vault`       | `command`          | string   | `vault`                  | Vault CLI command                                      |
 
 ### Examples
 

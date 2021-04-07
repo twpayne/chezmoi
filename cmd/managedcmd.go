@@ -11,6 +11,7 @@ import (
 )
 
 type managedCmdConfig struct {
+	exclude *chezmoi.EntryTypeSet
 	include *chezmoi.EntryTypeSet
 }
 
@@ -25,13 +26,14 @@ func (c *Config) newManagedCmd() *cobra.Command {
 	}
 
 	flags := managedCmd.Flags()
+	flags.VarP(c.managed.exclude, "exclude", "x", "exclude entry types")
 	flags.VarP(c.managed.include, "include", "i", "include entry types")
 
 	return managedCmd
 }
 
 func (c *Config) runManagedCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
-	include := c.managed.include.Sub(c.exclude)
+	include := c.managed.include.Sub(c.managed.exclude)
 	entries := sourceState.Entries()
 	targetRelPaths := make(chezmoi.RelPaths, 0, len(entries))
 	for targetRelPath, sourceStateEntry := range entries {

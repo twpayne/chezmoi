@@ -13,6 +13,7 @@ type addCmdConfig struct {
 	empty            bool
 	encrypt          bool
 	exact            bool
+	exclude          *chezmoi.EntryTypeSet
 	follow           bool
 	include          *chezmoi.EntryTypeSet
 	recursive        bool
@@ -41,6 +42,7 @@ func (c *Config) newAddCmd() *cobra.Command {
 	flags.BoolVarP(&c.Add.empty, "empty", "e", c.Add.empty, "add empty files")
 	flags.BoolVar(&c.Add.encrypt, "encrypt", c.Add.encrypt, "encrypt files")
 	flags.BoolVar(&c.Add.exact, "exact", c.Add.exact, "add directories exactly")
+	flags.VarP(c.Add.exclude, "exclude", "x", "exclude entry types")
 	flags.BoolVarP(&c.Add.follow, "follow", "f", c.Add.follow, "add symlink targets instead of symlinks")
 	flags.BoolVarP(&c.Add.recursive, "recursive", "r", c.Add.recursive, "recursive")
 	flags.BoolVarP(&c.Add.template, "template", "T", c.Add.template, "add files as templates")
@@ -62,7 +64,7 @@ func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezm
 		Encrypt:          c.Add.encrypt,
 		EncryptedSuffix:  c.encryption.EncryptedSuffix(),
 		Exact:            c.Add.exact,
-		Include:          c.Add.include,
+		Include:          c.Add.include.Sub(c.Add.exclude),
 		Template:         c.Add.template,
 		TemplateSymlinks: c.Add.TemplateSymlinks,
 	})

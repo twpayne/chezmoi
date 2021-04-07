@@ -7,6 +7,7 @@ import (
 )
 
 type verifyCmdConfig struct {
+	exclude   *chezmoi.EntryTypeSet
 	include   *chezmoi.EntryTypeSet
 	recursive bool
 }
@@ -24,6 +25,7 @@ func (c *Config) newVerifyCmd() *cobra.Command {
 	}
 
 	flags := verifyCmd.Flags()
+	flags.VarP(c.verify.exclude, "exclude", "x", "exclude entry types")
 	flags.VarP(c.verify.include, "include", "i", "include entry types")
 	flags.BoolVarP(&c.verify.recursive, "recursive", "r", c.verify.recursive, "recursive")
 
@@ -33,7 +35,7 @@ func (c *Config) newVerifyCmd() *cobra.Command {
 func (c *Config) runVerifyCmd(cmd *cobra.Command, args []string) error {
 	dryRunSystem := chezmoi.NewDryRunSystem(c.destSystem)
 	if err := c.applyArgs(dryRunSystem, c.destDirAbsPath, args, applyArgsOptions{
-		include:   c.verify.include,
+		include:   c.verify.include.Sub(c.verify.exclude),
 		recursive: c.verify.recursive,
 		umask:     c.Umask,
 	}); err != nil {

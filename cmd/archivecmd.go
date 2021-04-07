@@ -15,6 +15,7 @@ import (
 )
 
 type archiveCmdConfig struct {
+	exclude   *chezmoi.EntryTypeSet
 	format    string
 	gzip      bool
 	include   *chezmoi.EntryTypeSet
@@ -34,6 +35,7 @@ func (c *Config) newArchiveCmd() *cobra.Command {
 	}
 
 	flags := archiveCmd.Flags()
+	flags.VarP(c.archive.exclude, "exclude", "x", "exclude entry types")
 	flags.StringVar(&c.archive.format, "format", "tar", "format (tar or zip)")
 	flags.BoolVarP(&c.archive.gzip, "gzip", "z", c.archive.gzip, "compress the output with gzip")
 	flags.VarP(c.archive.include, "include", "i", "include entry types")
@@ -57,7 +59,7 @@ func (c *Config) runArchiveCmd(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("%s: invalid format", c.archive.format)
 	}
 	if err := c.applyArgs(archiveSystem, "", args, applyArgsOptions{
-		include:   c.archive.include,
+		include:   c.archive.include.Sub(c.archive.exclude),
 		recursive: c.archive.recursive,
 	}); err != nil {
 		return err

@@ -13,6 +13,7 @@ type editCmdConfig struct {
 	Command string   `mapstructure:"command"`
 	Args    []string `mapstructure:"args"`
 	apply   bool
+	exclude *chezmoi.EntryTypeSet
 	include *chezmoi.EntryTypeSet
 }
 
@@ -34,6 +35,7 @@ func (c *Config) newEditCmd() *cobra.Command {
 
 	flags := editCmd.Flags()
 	flags.BoolVarP(&c.Edit.apply, "apply", "a", c.Edit.apply, "apply edit after editing")
+	flags.VarP(c.Edit.exclude, "exclude", "x", "exclude entry types")
 	flags.VarP(c.Edit.include, "include", "i", "include entry types")
 
 	return editCmd
@@ -46,7 +48,7 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string, sourceState *chez
 		}
 		if c.Edit.apply {
 			if err := c.applyArgs(c.destSystem, c.destDirAbsPath, noArgs, applyArgsOptions{
-				include:      c.Edit.include,
+				include:      c.Edit.include.Sub(c.Edit.exclude),
 				recursive:    true,
 				umask:        c.Umask,
 				preApplyFunc: c.defaultPreApplyFunc,
