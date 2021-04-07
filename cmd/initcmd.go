@@ -185,11 +185,12 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 
 	// Reload config if it was created.
 	if configTemplateRelPath != "" {
-		viper.SetConfigType(ext)
-		if err := viper.ReadConfig(bytes.NewBuffer(configFileContents)); err != nil {
+		v := viper.New()
+		v.SetConfigType(ext)
+		if err := v.ReadConfig(bytes.NewBuffer(configFileContents)); err != nil {
 			return err
 		}
-		if err := viper.Unmarshal(c); err != nil {
+		if err := v.Unmarshal(c, viperDecodeConfigOptions...); err != nil {
 			return err
 		}
 	}

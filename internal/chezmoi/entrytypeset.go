@@ -1,11 +1,12 @@
 package chezmoi
 
-// FIXME Add IncludeEncrypted
-
 import (
 	"fmt"
 	"os"
+	"reflect"
 	"strings"
+
+	"github.com/mitchellh/mapstructure"
 )
 
 // An EntryTypeSet is a set of entry types. It parses and prints as a
@@ -113,9 +114,13 @@ func (s *EntryTypeSet) Set(str string) error {
 		s.bits = EntryTypesNone
 		return nil
 	}
+	return s.SetSlice(strings.Split(str, ","))
+}
 
-	var bits EntryTypeBits
-	for i, element := range strings.Split(str, ",") {
+// SetSlice sets s from a []string.
+func (s *EntryTypeSet) SetSlice(ss []string) error {
+	bits := EntryTypesNone
+	for i, element := range ss {
 		if element == "" {
 			continue
 		}
@@ -180,4 +185,32 @@ func (s *EntryTypeSet) Sub(other *EntryTypeSet) *EntryTypeSet {
 // Type implements github.com/spf13/pflag.Value.Type.
 func (s *EntryTypeSet) Type() string {
 	return "entry type set"
+}
+
+// StringSliceToEntryTypeSetHookFunc is a
+// github.com/mitchellh/mapstructure.DecodeHookFunc that parses an EntryTypeSet
+// from a []string.
+func StringSliceToEntryTypeSetHookFunc() mapstructure.DecodeHookFunc {
+	return func(from, to reflect.Type, data interface{}) (interface{}, error) {
+		if to != reflect.TypeOf(&EntryTypeSet{}) {
+			return data, nil
+		}
+		sl, ok := data.([]interface{})
+		if !ok {
+			return nil, fmt.Errorf("expected a []string, got %T", data)
+		}
+		ss := make([]string, 0, len(sl))
+		for _, i := range sl {
+			s, ok := i.(string)
+			if !ok {
+				return nil, fmt.Errorf("expected a []string, got a %T element", i)
+			}
+			ss = append(ss, s)
+		}
+		s := NewEntryTypeSet(EntryTypesNone)
+		if err := s.SetSlice(ss); err != nil {
+			return nil, err
+		}
+		return s, nil
+	}
 }

@@ -22,6 +22,7 @@ import (
 	"github.com/Masterminds/sprig/v3"
 	"github.com/coreos/go-semver/semver"
 	"github.com/go-git/go-git/v5/plumbing/format/diff"
+	"github.com/mitchellh/mapstructure"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
@@ -167,6 +168,16 @@ var (
 
 	identifierRx = regexp.MustCompile(`\A[\pL_][\pL\p{Nd}_]*\z`)
 	whitespaceRx = regexp.MustCompile(`\s+`)
+
+	viperDecodeConfigOptions = []viper.DecoderConfigOption{
+		viper.DecodeHook(
+			mapstructure.ComposeDecodeHookFunc(
+				mapstructure.StringToTimeDurationHookFunc(),
+				mapstructure.StringToSliceHookFunc(","),
+				chezmoi.StringSliceToEntryTypeSetHookFunc(),
+			),
+		),
+	}
 )
 
 // newConfig creates a new Config with the given options.
@@ -976,7 +987,7 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 		v.SetConfigFile(string(c.configFileAbsPath))
 		err := v.ReadInConfig()
 		if err == nil {
-			err = v.Unmarshal(&Config{})
+			err = v.Unmarshal(&Config{}, viperDecodeConfigOptions...)
 		}
 		if err != nil {
 			cmd.Printf("warning: %s: %v\n", c.configFileAbsPath, err)
@@ -1221,7 +1232,7 @@ func (c *Config) readConfig() error {
 	case err != nil:
 		return err
 	}
-	if err := v.Unmarshal(c); err != nil {
+	if err := v.Unmarshal(c, viperDecodeConfigOptions...); err != nil {
 		return err
 	}
 	return c.validateData()
