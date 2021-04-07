@@ -284,7 +284,8 @@ The following configuration variables are available:
 | `bitwarden`   | `command`          | string   | `bw`                      | Bitwarden CLI command                                  |
 | `cd`          | `args`             | []string | *none*                    | Extra args to shell in `cd` command                    |
 |               | `command`          | string   | *none*                    | Shell to run in `cd` command                           |
-| `diff`        | `pager`            | string   | `$PAGER` / `less`         | Pager                                                  |
+| `diff`        | `exclude`          | []string | *none*                    | Entry types to exclude from diff                       |
+|               | `pager`            | string   | `$PAGER` / `less`         | Pager                                                  |
 | `edit`        | `args`             | []string | *none*                    | Extra args to edit command                             |
 |               | `command`          | string   | `$EDITOR` / `$VISUAL`     | Edit command                                           |
 | `secret`      | `command`          | string   | *none*                    | Generic secret command                                 |

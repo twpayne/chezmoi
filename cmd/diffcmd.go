@@ -9,7 +9,7 @@ import (
 )
 
 type diffCmdConfig struct {
-	exclude   *chezmoi.EntryTypeSet
+	Exclude   *chezmoi.EntryTypeSet `mapstructure:"exclude"`
 	include   *chezmoi.EntryTypeSet
 	recursive bool
 	Pager     string `mapstructure:"pager"`
@@ -28,7 +28,7 @@ func (c *Config) newDiffCmd() *cobra.Command {
 	}
 
 	flags := diffCmd.Flags()
-	flags.VarP(c.Diff.exclude, "exclude", "x", "exclude entry types")
+	flags.VarP(c.Diff.Exclude, "exclude", "x", "exclude entry types")
 	flags.VarP(c.Diff.include, "include", "i", "include entry types")
 	flags.BoolVarP(&c.Diff.recursive, "recursive", "r", c.Diff.recursive, "recursive")
 
@@ -40,7 +40,7 @@ func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) error {
 	dryRunSystem := chezmoi.NewDryRunSystem(c.destSystem)
 	gitDiffSystem := chezmoi.NewGitDiffSystem(dryRunSystem, &sb, c.destDirAbsPath, c.color)
 	if err := c.applyArgs(gitDiffSystem, c.destDirAbsPath, args, applyArgsOptions{
-		include:   c.Diff.include.Sub(c.Diff.exclude),
+		include:   c.Diff.include.Sub(c.Diff.Exclude),
 		recursive: c.Diff.recursive,
 		umask:     c.Umask,
 	}); err != nil {
