@@ -48,13 +48,16 @@ main() {
 	GOOS_EXTRA=
 	case "${GOOS}" in
 	linux)
-		case "$(get_libc)" in
-		glibc)
-			GOOS_EXTRA="-glibc"
-			;;
-		musl)
-			GOOS_EXTRA="-musl"
-			;;
+		case "${GOARCH}" in
+		amd64)
+			case "$(get_libc)" in
+			glibc)
+				GOOS_EXTRA="-glibc"
+				;;
+			musl)
+				GOOS_EXTRA="-musl"
+				;;
+			esac
 		esac
 		;;
 	windows)
