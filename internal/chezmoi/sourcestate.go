@@ -369,7 +369,7 @@ func (s *SourceState) Apply(targetSystem, destSystem System, persistentState Per
 		}
 	}
 
-	if changed, err := targetStateEntry.Apply(targetSystem, persistentState, actualStateEntry, options.Umask); err != nil {
+	if changed, err := targetStateEntry.Apply(targetSystem, persistentState, actualStateEntry); err != nil {
 		return err
 	} else if !changed {
 		return nil
@@ -798,7 +798,7 @@ func (s *SourceState) executeTemplate(templateAbsPath AbsPath) ([]byte, error) {
 // newSourceStateDir returns a new SourceStateDir.
 func (s *SourceState) newSourceStateDir(sourceRelPath SourceRelPath, dirAttr DirAttr) *SourceStateDir {
 	targetStateDir := &TargetStateDir{
-		perm: dirAttr.perm(),
+		perm: dirAttr.perm() &^ s.umask,
 	}
 	return &SourceStateDir{
 		sourceRelPath:    sourceRelPath,
@@ -823,7 +823,7 @@ func (s *SourceState) newCreateTargetStateEntryFunc(fileAttr FileAttr, sourceLaz
 		return &TargetStateFile{
 			lazyContents: newLazyContents(contents),
 			empty:        true,
-			perm:         fileAttr.perm(),
+			perm:         fileAttr.perm() &^ s.umask,
 		}, nil
 	}
 }
@@ -846,7 +846,7 @@ func (s *SourceState) newFileTargetStateEntryFunc(sourceRelPath SourceRelPath, f
 		return &TargetStateFile{
 			lazyContents: newLazyContentsFunc(contentsFunc),
 			empty:        fileAttr.Empty,
-			perm:         fileAttr.perm(),
+			perm:         fileAttr.perm() &^ s.umask,
 		}, nil
 	}
 }
@@ -908,7 +908,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(sourceRelPath SourceRelPath,
 		}
 		return &TargetStateFile{
 			lazyContents: newLazyContentsFunc(contentsFunc),
-			perm:         fileAttr.perm(),
+			perm:         fileAttr.perm() &^ s.umask,
 		}, nil
 	}
 }
@@ -1008,7 +1008,7 @@ func (s *SourceState) newSourceStateDirEntry(info os.FileInfo, parentSourceRelPa
 		Attr:          dirAttr,
 		sourceRelPath: sourceRelPath,
 		targetStateEntry: &TargetStateDir{
-			perm: 0o777,
+			perm: 0o777 &^ s.umask,
 		},
 	}, nil
 }
@@ -1052,7 +1052,7 @@ func (s *SourceState) newSourceStateFileEntryFromFile(actualStateFile *ActualSta
 		targetStateEntry: &TargetStateFile{
 			lazyContents: lazyContents,
 			empty:        options.Empty,
-			perm:         0o666,
+			perm:         0o666 &^ s.umask,
 		},
 	}, nil
 }
@@ -1094,7 +1094,7 @@ func (s *SourceState) newSourceStateFileEntryFromSymlink(actualStateSymlink *Act
 		lazyContents:  lazyContents,
 		targetStateEntry: &TargetStateFile{
 			lazyContents: lazyContents,
-			perm:         0o666,
+			perm:         0o666 &^ s.umask,
 		},
 	}, nil
 }

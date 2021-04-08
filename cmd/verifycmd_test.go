@@ -19,7 +19,9 @@ func TestVerifyCmd(t *testing.T) {
 		{
 			name: "empty",
 			root: map[string]interface{}{
-				"/home/user": &vfst.Dir{Perm: 0o700},
+				"/home/user": &vfst.Dir{
+					Perm: 0o700,
+				},
 			},
 		},
 		{

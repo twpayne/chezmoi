@@ -59,13 +59,13 @@ func TestTARWriterSystem(t *testing.T) {
 			{
 				expectedTypeflag: tar.TypeDir,
 				expectedName:     ".dir/",
-				expectedMode:     0o777,
+				expectedMode:     0o777 &^ int64(chezmoitest.Umask),
 			},
 			{
 				expectedTypeflag: tar.TypeReg,
 				expectedName:     ".dir/file",
 				expectedContents: []byte("# contents of .dir/file\n"),
-				expectedMode:     0o666,
+				expectedMode:     0o666 &^ int64(chezmoitest.Umask),
 			},
 			{
 				expectedTypeflag: tar.TypeReg,

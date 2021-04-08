@@ -46,13 +46,13 @@ func TestDumpSystem(t *testing.T) {
 			".dir": &dirData{
 				Type: dataTypeDir,
 				Name: ".dir",
-				Perm: 0o777,
+				Perm: 0o777 &^ chezmoitest.Umask,
 			},
 			".dir/file": &fileData{
 				Type:     dataTypeFile,
 				Name:     ".dir/file",
 				Contents: "# contents of .dir/file\n",
-				Perm:     0o666,
+				Perm:     0o666 &^ chezmoitest.Umask,
 			},
 			"script": &scriptData{
 				Type:     dataTypeScript,

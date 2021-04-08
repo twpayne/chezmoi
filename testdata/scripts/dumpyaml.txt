@@ -12,44 +12,44 @@ cmp stdout golden/dump-except-dirs.yaml
     name: .create
     contents: |
         # contents of .create
-    perm: 438
+    perm: 420
 .dir:
     type: dir
     name: .dir
-    perm: 511
+    perm: 493
 .dir/file:
     type: file
     name: .dir/file
     contents: |
         # contents of .dir/file
-    perm: 438
+    perm: 420
 .dir/subdir:
     type: dir
     name: .dir/subdir
-    perm: 511
+    perm: 493
 .dir/subdir/file:
     type: file
     name: .dir/subdir/file
     contents: |
         # contents of .dir/subdir/file
-    perm: 438
+    perm: 420
 .empty:
     type: file
     name: .empty
     contents: ""
-    perm: 438
+    perm: 420
 .executable:
     type: file
     name: .executable
     contents: |
         # contents of .executable
-    perm: 511
+    perm: 493
 .file:
     type: file
     name: .file
     contents: |
         # contents of .file
-    perm: 438
+    perm: 420
 .private:
     type: file
     name: .private
@@ -65,43 +65,43 @@ cmp stdout golden/dump-except-dirs.yaml
     name: .template
     contents: |
         key = value
-    perm: 438
+    perm: 420
 -- golden/dump-except-dirs.yaml --
 .create:
     type: file
     name: .create
     contents: |
         # contents of .create
-    perm: 438
+    perm: 420
 .dir/file:
     type: file
     name: .dir/file
     contents: |
         # contents of .dir/file
-    perm: 438
+    perm: 420
 .dir/subdir/file:
     type: file
     name: .dir/subdir/file
     contents: |
         # contents of .dir/subdir/file
-    perm: 438
+    perm: 420
 .empty:
     type: file
     name: .empty
     contents: ""
-    perm: 438
+    perm: 420
 .executable:
     type: file
     name: .executable
     contents: |
         # contents of .executable
-    perm: 511
+    perm: 493
 .file:
     type: file
     name: .file
     contents: |
         # contents of .file
-    perm: 438
+    perm: 420
 .private:
     type: file
     name: .private
@@ -117,4 +117,4 @@ cmp stdout golden/dump-except-dirs.yaml
     name: .template
     contents: |
         key = value
-    perm: 438
+    perm: 420
