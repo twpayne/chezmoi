@@ -4,11 +4,10 @@ go 1.16
 
 require (
 	github.com/Masterminds/sprig/v3 v3.2.2
-	github.com/alecthomas/chroma v0.8.2 // indirect
 	github.com/alecthomas/colour v0.1.0 // indirect
 	github.com/alecthomas/repr v0.0.0-20201120212035-bb82daffcca2 // indirect
 	github.com/bmatcuk/doublestar/v3 v3.0.0
-	github.com/charmbracelet/glamour v0.2.1-0.20201227140546-4292a2106d74
+	github.com/charmbracelet/glamour v0.3.0
 	github.com/coreos/go-semver v0.3.0
 	github.com/dlclark/regexp2 v1.4.0 // indirect
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
@@ -24,13 +23,10 @@ require (
 	github.com/kevinburke/ssh_config v1.1.0 // indirect
 	github.com/magiconair/properties v1.8.5 // indirect
 	github.com/mattn/go-runewidth v0.0.12 // indirect
-	github.com/microcosm-cc/bluemonday v1.0.5 // indirect
-	github.com/mitchellh/copystructure v1.1.1 // indirect
-	github.com/mitchellh/mapstructure v1.4.1 // indirect
+	github.com/mitchellh/copystructure v1.1.2 // indirect
+	github.com/mitchellh/mapstructure v1.4.1
 	github.com/muesli/combinator v0.3.0
-	github.com/muesli/termenv v0.8.1 // indirect
-	github.com/olekukonko/tablewriter v0.0.5 // indirect
-	github.com/pelletier/go-toml v1.8.1
+	github.com/pelletier/go-toml v1.9.0
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/rogpeppe/go-internal v1.8.0
 	github.com/rs/zerolog v1.21.0
@@ -46,14 +42,13 @@ require (
 	github.com/twpayne/go-vfs/v2 v2.0.0
 	github.com/twpayne/go-vfsafero/v2 v2.0.0
 	github.com/twpayne/go-xdg/v4 v4.0.0
-	github.com/yuin/goldmark v1.3.3 // indirect
 	github.com/zalando/go-keyring v0.1.1
 	go.etcd.io/bbolt v1.3.5
 	go.uber.org/multierr v1.6.0
-	golang.org/x/net v0.0.0-20210331212208-0fccb6fa2b5c // indirect
+	golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4 // indirect
 	golang.org/x/oauth2 v0.0.0-20210402161424-2e8d93401602
 	golang.org/x/sys v0.0.0-20210403161142-5e06dd20ab57
-	golang.org/x/term v0.0.0-20210317153231-de623e64d2a6
+	golang.org/x/term v0.0.0-20210406210042-72f3dc4e9b72
 	golang.org/x/text v0.3.6 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	gopkg.in/ini.v1 v1.62.0 // indirect
@@ -61,3 +56,5 @@ require (
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 	howett.net/plist v0.0.0-20201203080718-1454fab16a06
 )
+
+exclude github.com/sergi/go-diff v1.2.0 // Produces incorrect diffs
