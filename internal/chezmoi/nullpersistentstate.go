@@ -10,6 +10,9 @@ func (NullPersistentState) Close() error { return nil }
 // CopyTo does nothing.
 func (NullPersistentState) CopyTo(s PersistentState) error { return nil }
 
+// Data does nothing.
+func (NullPersistentState) Data() (interface{}, error) { return nil, nil }
+
 // Delete does nothing.
 func (NullPersistentState) Delete(bucket, key []byte) error { return nil }
 

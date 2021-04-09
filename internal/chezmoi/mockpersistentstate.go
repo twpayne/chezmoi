@@ -29,6 +29,11 @@ func (s *MockPersistentState) CopyTo(p PersistentState) error {
 	return nil
 }
 
+// Data implements PersistentState.Data.
+func (s *MockPersistentState) Data() (interface{}, error) {
+	return s.buckets, nil
+}
+
 // Delete implements PersistentState.Delete.
 func (s *MockPersistentState) Delete(bucket, key []byte) error {
 	bucketMap, ok := s.buckets[string(bucket)]

@@ -109,6 +109,36 @@ func (b *BoltPersistentState) Delete(bucket, key []byte) error {
 	})
 }
 
+// Data returns all the data in b.
+func (b *BoltPersistentState) Data() (interface{}, error) {
+	if b.empty {
+		return nil, nil
+	}
+	if err := b.open(); err != nil {
+		return nil, err
+	}
+
+	data := make(map[string]map[string]string)
+	err := b.db.View(func(tx *bbolt.Tx) error {
+		return tx.ForEach(func(name []byte, b *bbolt.Bucket) error {
+			bucketName := string(name)
+			bucket, ok := data[bucketName]
+			if !ok {
+				bucket = make(map[string]string)
+				data[bucketName] = bucket
+			}
+			return b.ForEach(func(k, v []byte) error {
+				bucket[string(k)] = string(v)
+				return nil
+			})
+		})
+	})
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
+}
+
 // ForEach calls fn for each key, value pair in bucket.
 func (b *BoltPersistentState) ForEach(bucket []byte, fn func(k, v []byte) error) error {
 	if b.empty {

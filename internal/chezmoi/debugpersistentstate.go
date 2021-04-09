@@ -34,6 +34,16 @@ func (s *DebugPersistentState) CopyTo(p PersistentState) error {
 	return err
 }
 
+// Data implements PersistentState.Data.
+func (s *DebugPersistentState) Data() (interface{}, error) {
+	data, err := s.persistentState.Data()
+	log.Logger.Debug().
+		Err(err).
+		Interface("data", data).
+		Msg("Data")
+	return data, err
+}
+
 // Delete implements PersistentState.Delete.
 func (s *DebugPersistentState) Delete(bucket, key []byte) error {
 	err := s.persistentState.Delete(bucket, key)
