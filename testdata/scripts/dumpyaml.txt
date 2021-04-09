@@ -1,3 +1,5 @@
+[!umask:022] skip
+
 mksourcedir
 
 chezmoi dump --format=yaml

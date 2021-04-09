@@ -28,7 +28,10 @@ func TestVerifyCmd(t *testing.T) {
 			name: "file",
 			root: map[string]interface{}{
 				"/home/user": map[string]interface{}{
-					".bashrc":                         "# contents of .bashrc\n",
+					".bashrc": &vfst.File{
+						Contents: []byte("# contents of .bashrc\n"),
+						Perm:     0o666 &^ chezmoitest.Umask,
+					},
 					".local/share/chezmoi/dot_bashrc": "# contents of .bashrc\n",
 				},
 			},

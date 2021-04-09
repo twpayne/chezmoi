@@ -1,4 +1,5 @@
 [windows] skip 'UNIX only'
+[!umask:022] skip
 
 # test that scripts in subdirectories are run in the subdirectory
 chezmoi apply --force

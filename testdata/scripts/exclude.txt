@@ -1,3 +1,5 @@
+[!umask:022] skip
+
 # test that chezmoi diff respsects the diff.exclude configuration variable
 chezmoi diff
 [!windows] cmp stdout golden/diff

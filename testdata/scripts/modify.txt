@@ -1,5 +1,6 @@
 [windows] stop 'UNIX only' # FIXME
 [!exec:sed] stop
+[!umask:022] skip
 
 cp golden/.modify home/user
 

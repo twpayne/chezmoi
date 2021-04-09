@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"runtime"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -122,8 +123,16 @@ func SkipUnlessGOOS(t *testing.T, name string) {
 // WithTestFS calls f with a test filesystem populated with root.
 func WithTestFS(t *testing.T, root interface{}, f func(fs vfs.FS)) {
 	t.Helper()
-	fs, cleanup, err := vfst.NewTestFS(root)
+	fs, cleanup, err := vfst.NewTestFS(root, vfst.BuilderUmask(Umask))
 	require.NoError(t, err)
 	t.Cleanup(cleanup)
 	f(fs)
+}
+
+func mustParseFilemode(s string) os.FileMode {
+	i, err := strconv.ParseInt(s, 0, 32)
+	if err != nil {
+		panic(err)
+	}
+	return os.FileMode(i)
 }

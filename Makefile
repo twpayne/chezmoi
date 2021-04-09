@@ -27,7 +27,8 @@ run:
 
 .PHONY: test
 test:
-	$(GO) test ./...
+	$(GO) test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o022" ./...
+	$(GO) test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o002" ./...
 
 .PHONY: generate
 generate: completions assets/scripts/install.sh

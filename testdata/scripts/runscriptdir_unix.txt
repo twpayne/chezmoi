@@ -1,4 +1,5 @@
 [windows] skip 'UNIX only'
+[!umask:022] skip
 
 chezmoi apply
 cmpenv stdout golden/apply

@@ -53,7 +53,14 @@ jobs:
         [Environment]::SetEnvironmentVariable("Path", $env:PATH, "Machine")
         choco install --yes gpg4win
         echo "C:\Program Files (x86)\GnuPG\bin" >> $env:GITHUB_PATH
+    - name: Test (umask 022)
+      if: runner.os != 'Windows'
+      run: go test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o022" -race ./...
+    - name: Test (umask 002)
+      if: runner.os != 'Windows'
+      run: go test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o002" -race ./...
     - name: Test
+      if: runner.os == 'Windows'
       run: go test -race ./...
   test-release:
     runs-on: ubuntu-18.04

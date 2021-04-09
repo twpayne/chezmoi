@@ -1,6 +1,8 @@
 package chezmoitest
 
-import "os"
+var (
+	umaskStr = "0"
 
-// Umask is the umask used in tests.
-const Umask = os.FileMode(0)
+	// Umask is the umask used in tests.
+	Umask = mustParseFilemode(umaskStr)
+)
