@@ -10,11 +10,35 @@ import (
 )
 
 type stateCmdConfig struct {
-	dump stateDumpCmdConfig
+	data   stateDataCmdConfig
+	delete stateDeleteCmdConfig
+	dump   stateDumpCmdConfig
+	get    stateGetCmdConfig
+	set    stateSetCmdConfig
+}
+
+type stateDataCmdConfig struct {
+	format string
+}
+
+type stateDeleteCmdConfig struct {
+	bucket string
+	key    string
 }
 
 type stateDumpCmdConfig struct {
 	format string
+}
+
+type stateGetCmdConfig struct {
+	bucket string
+	key    string
+}
+
+type stateSetCmdConfig struct {
+	bucket string
+	key    string
+	value  string
 }
 
 func (c *Config) newStateCmd() *cobra.Command {
@@ -25,7 +49,34 @@ func (c *Config) newStateCmd() *cobra.Command {
 		Example: example("state"),
 	}
 
-	dumpCmd := &cobra.Command{
+	stateDataCmd := &cobra.Command{
+		Use:   "data",
+		Short: "Print the raw data in the persistent state",
+		Args:  cobra.NoArgs,
+		RunE:  c.runStateDataCmd,
+		Annotations: map[string]string{
+			persistentStateMode: persistentStateModeReadOnly,
+		},
+	}
+	stateDataPersistentFlags := stateDataCmd.PersistentFlags()
+	stateDataPersistentFlags.StringVarP(&c.state.data.format, "format", "f", c.state.data.format, "format (json or yaml)")
+	stateCmd.AddCommand(stateDataCmd)
+
+	stateDeleteCmd := &cobra.Command{
+		Use:   "delete",
+		Short: "Delete a value from the persistent state",
+		Args:  cobra.NoArgs,
+		RunE:  c.runStateDeleteCmd,
+		Annotations: map[string]string{
+			persistentStateMode: persistentStateModeReadWrite,
+		},
+	}
+	stateDeletePersistentFlags := stateDeleteCmd.PersistentFlags()
+	stateDeletePersistentFlags.StringVar(&c.state.delete.bucket, "bucket", c.state.delete.bucket, "bucket")
+	stateDeletePersistentFlags.StringVar(&c.state.delete.key, "key", c.state.delete.key, "key")
+	stateCmd.AddCommand(stateDeleteCmd)
+
+	stateDumpCmd := &cobra.Command{
 		Use:   "dump",
 		Short: "Generate a dump of the persistent state",
 		Args:  cobra.NoArgs,
@@ -34,13 +85,25 @@ func (c *Config) newStateCmd() *cobra.Command {
 			persistentStateMode: persistentStateModeReadOnly,
 		},
 	}
+	stateDumpPersistentFlags := stateDumpCmd.PersistentFlags()
+	stateDumpPersistentFlags.StringVarP(&c.state.dump.format, "format", "f", c.state.dump.format, "format (json or yaml)")
+	stateCmd.AddCommand(stateDumpCmd)
 
-	persistentFlags := dumpCmd.PersistentFlags()
-	persistentFlags.StringVarP(&c.state.dump.format, "format", "f", c.state.dump.format, "format (json or yaml)")
+	stateGetCmd := &cobra.Command{
+		Use:   "get",
+		Short: "Get a value from the persistent state",
+		Args:  cobra.NoArgs,
+		RunE:  c.runStateGetCmd,
+		Annotations: map[string]string{
+			persistentStateMode: persistentStateModeReadOnly,
+		},
+	}
+	stateGetPersistentFlags := stateGetCmd.PersistentFlags()
+	stateGetPersistentFlags.StringVar(&c.state.get.bucket, "bucket", c.state.get.bucket, "bucket")
+	stateGetPersistentFlags.StringVar(&c.state.get.key, "key", c.state.get.key, "key")
+	stateCmd.AddCommand(stateGetCmd)
 
-	stateCmd.AddCommand(dumpCmd)
-
-	resetCmd := &cobra.Command{
+	stateResetCmd := &cobra.Command{
 		Use:   "reset",
 		Short: "Reset the persistent state",
 		Args:  cobra.NoArgs,
@@ -49,9 +112,36 @@ func (c *Config) newStateCmd() *cobra.Command {
 			modifiesDestinationDirectory: "true",
 		},
 	}
-	stateCmd.AddCommand(resetCmd)
+	stateCmd.AddCommand(stateResetCmd)
+
+	stateSetCmd := &cobra.Command{
+		Use:   "set",
+		Short: "Set a value from the persistent state",
+		Args:  cobra.NoArgs,
+		RunE:  c.runStateSetCmd,
+		Annotations: map[string]string{
+			persistentStateMode: persistentStateModeReadWrite,
+		},
+	}
+	stateSetPersistentFlags := stateSetCmd.PersistentFlags()
+	stateSetPersistentFlags.StringVar(&c.state.set.bucket, "bucket", c.state.set.bucket, "bucket")
+	stateSetPersistentFlags.StringVar(&c.state.set.key, "key", c.state.set.key, "key")
+	stateSetPersistentFlags.StringVar(&c.state.set.value, "value", c.state.set.value, "value")
+	stateCmd.AddCommand(stateSetCmd)
 
 	return stateCmd
+}
+
+func (c *Config) runStateDataCmd(cmd *cobra.Command, args []string) error {
+	data, err := c.persistentState.Data()
+	if err != nil {
+		return err
+	}
+	return c.marshal(c.state.data.format, data)
+}
+
+func (c *Config) runStateDeleteCmd(cmd *cobra.Command, args []string) error {
+	return c.persistentState.Delete([]byte(c.state.delete.bucket), []byte(c.state.delete.key))
 }
 
 func (c *Config) runStateDumpCmd(cmd *cobra.Command, args []string) error {
@@ -60,6 +150,14 @@ func (c *Config) runStateDumpCmd(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	return c.marshal(c.state.dump.format, data)
+}
+
+func (c *Config) runStateGetCmd(cmd *cobra.Command, args []string) error {
+	value, err := c.persistentState.Get([]byte(c.state.get.bucket), []byte(c.state.get.key))
+	if err != nil {
+		return err
+	}
+	return c.writeOutput(value)
 }
 
 func (c *Config) runStateResetCmd(cmd *cobra.Command, args []string) error {
@@ -80,4 +178,8 @@ func (c *Config) runStateResetCmd(cmd *cobra.Command, args []string) error {
 		}
 	}
 	return c.destSystem.RemoveAll(path)
+}
+
+func (c *Config) runStateSetCmd(cmd *cobra.Command, args []string) error {
+	return c.persistentState.Set([]byte(c.state.set.bucket), []byte(c.state.set.key), []byte(c.state.set.value))
 }

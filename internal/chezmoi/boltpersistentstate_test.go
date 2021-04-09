@@ -66,6 +66,14 @@ func TestBoltPersistentState(t *testing.T) {
 		}))
 		require.True(t, visited)
 
+		data, err := b1.Data()
+		require.NoError(t, err)
+		assert.Equal(t, map[string]map[string]string{
+			string(bucket): {
+				string(key): string(value),
+			},
+		}, data)
+
 		require.NoError(t, b1.Close())
 
 		b2, err := NewBoltPersistentState(s, path, BoltPersistentStateReadWrite)

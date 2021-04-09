@@ -1049,7 +1049,11 @@ Manipulate the persistent state.
 
 #### `state` examples
 
+    chezmoi state data
+    chezmoi state delete --bucket=bucket --key=key
     chezmoi state dump
+    chezmoi state get --bucket=bucket --key=key
+    chezmoi state set --bucket=bucket --key=key --value=value
     chezmoi state reset
 
 ### `status`

@@ -282,6 +282,9 @@ func newConfig(options ...configOption) (*Config, error) {
 			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypeDirs | chezmoi.EntryTypeFiles | chezmoi.EntryTypeSymlinks | chezmoi.EntryTypeEncrypted),
 		},
 		state: stateCmdConfig{
+			data: stateDataCmdConfig{
+				format: defaultFormat,
+			},
 			dump: stateDumpCmdConfig{
 				format: defaultFormat,
 			},

@@ -18,6 +18,7 @@ var (
 type PersistentState interface {
 	Close() error
 	CopyTo(s PersistentState) error
+	Data() (interface{}, error)
 	Delete(bucket, key []byte) error
 	ForEach(bucket []byte, fn func(k, v []byte) error) error
 	Get(bucket, key []byte) ([]byte, error)
