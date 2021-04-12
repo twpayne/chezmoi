@@ -345,10 +345,13 @@ git:
 chezmoi stores the source state of files, symbolic links, and directories in
 regular files and directories in the source directory (`~/.local/share/chezmoi`
 by default). This location can be overridden with the `-S` flag or by giving a
-value for `sourceDir` in `~/.config/chezmoi/chezmoi.toml`.  Some state is
-encoded in the source names. chezmoi ignores all files and directories in the
-source directory that begin with a `.`. The following prefixes and suffixes are
-special, and are collectively referred to as "attributes":
+value for `sourceDir` in `~/.config/chezmoi/chezmoi.toml`. Directory targets are
+represented as directories in the source state. All other target types are
+represented as files in the source state. Some state is encoded in the source
+names.
+
+The following prefixes and suffixes are special, and are collectively referred
+to as "attributes":
 
 | Prefix       | Effect                                                                         |
 | ------------ | ------------------------------------------------------------------------------ |
@@ -370,29 +373,26 @@ special, and are collectively referred to as "attributes":
 | ------- | ---------------------------------------------------- |
 | `.tmpl` | Treat the contents of the source file as a template. |
 
-The order of prefixes is important.
+Different target types allow different prefixes and suffixes. The order of
+prefixes is important.
 
- The order for files is `create_`, `modify_`, `exact_`, `private_`, `empty_`, `executable_`,
- `symlink_`, `dot_`.
-
- The order for scripts is `run_`, `once_`, `before_`, `after_`. `run_` is mandatory, others are
- optional, `before_` and `after_` are mutually exclusive.
-
-Different target types allow different prefixes and suffixes:
-
-| Target type   | Allowed prefixes                                                      | Allowed suffixes |
-| ------------- | --------------------------------------------------------------------- | ---------------- |
-| Directory     | `exact_`, `private_`, `dot_`                                          | *none*           |
-| Regular file  | `encrypted_`, `private_`, `executable_`, `dot_`                       | `.tmpl`          |
-| Create file   | `create_`, `encrypted_`, `private_`, `executable_`, `dot_`            | `.tmpl`          |
-| Modify file   | `modify_`, `encrypted_`, `private_`, `executable_`, `dot_`            | `.tmpl`          |
-| Script        | `run_`, `once_`, `before_` or `after_`                                | `.tmpl`          |
-| Symbolic link | `symlink_`, `dot_`,                                                   | `.tmpl`          |
+| Target type   | Source type | Allowed prefixes in order                                             | Allowed suffixes |
+| ------------- | ----------- | --------------------------------------------------------------------- | ---------------- |
+| Directory     | Directory   | `exact_`, `private_`, `dot_`                                          | *none*           |
+| Regular file  | File        | `encrypted_`, `private_`, `executable_`, `dot_`                       | `.tmpl`          |
+| Create file   | File        | `create_`, `encrypted_`, `private_`, `executable_`, `dot_`            | `.tmpl`          |
+| Modify file   | File        | `modify_`, `encrypted_`, `private_`, `executable_`, `dot_`            | `.tmpl`          |
+| Script        | File        | `run_`, `once_`, `before_` or `after_`                                | `.tmpl`          |
+| Symbolic link | File        | `symlink_`, `dot_`,                                                   | `.tmpl`          |
 
 In addition, if the source file is encrypted, the suffix `.age` (when age
 encryption is used) or `.asc` (when gpg encryption is used) is stripped. These
 suffixes can be overridden with the `age.suffix` and `gpg.suffix` configuration
 variables.
+
+chezmoi ignores all files and directories in the source directory that begin
+with a `.` with the exception of files and directories that begin with
+`.chezmoi`.
 
 ## Target types
 
