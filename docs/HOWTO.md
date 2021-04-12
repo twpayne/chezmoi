@@ -6,6 +6,7 @@
   * [Pull the latest changes from your repo and apply them](#pull-the-latest-changes-from-your-repo-and-apply-them)
   * [Pull the latest changes from your repo and see what would change, without actually applying the changes](#pull-the-latest-changes-from-your-repo-and-see-what-would-change-without-actually-applying-the-changes)
   * [Automatically commit and push changes to your repo](#automatically-commit-and-push-changes-to-your-repo)
+  * [Install chezmoi and your dotfiles on a new machine with a single command](#install-chezmoi-and-your-dotfiles-on-a-new-machine-with-a-single-command)
 * [Manage different types of file](#manage-different-types-of-file)
   * [Have chezmoi create a directory, but ignore its contents](#have-chezmoi-create-a-directory-but-ignore-its-contents)
   * [Ensure that a target is removed](#ensure-that-a-target-is-removed)
@@ -115,6 +116,27 @@ not pushed.
 Be careful when using `autoPush`. If your dotfiles repo is public and you
 accidentally add a secret in plain text, that secret will be pushed to your
 public repo.
+
+### Install chezmoi and your dotfiles on a new machine with a single command
+
+chezmoi's install script can run `chezmoi init` for you by passing extra
+arguments to the newly installed chezmoi binary. If your dotfiles repo is
+`github.com/<github-username>/dotfiles` then installing chezmoi, running
+`chezmoi init`, and running `chezmoi apply` can be done in a single line of
+shell:
+
+    sh -c "$(curl -fsLS git.io/chezmoi)" -- init --apply <github-username>
+
+If your dotfiles repo has a different name to `dotfiles`, or if you host your
+dotfiles on a different service, then see the [reference manual for `chezmoi
+init`](https://github.com/twpayne/chezmoi/blob/master/docs/REFERENCE.md#init-repo).
+
+For setting up transitory environments (e.g. short-lived Linux containers) you
+can install chezmoi, install your dotfiles, and then remove all traces of
+chezmoi, including the source directory and chezmoi's configuration directory,
+with a single command:
+
+    sh -c "$(curl -fsLS git.io/chezmoi)" -- init --one-shot <github-username>
 
 ## Manage different types of file
 
@@ -939,7 +961,7 @@ if [ ! "$(command -v chezmoi)" ]; then
   bin_dir="$HOME/.local/bin"
   chezmoi="$bin_dir/chezmoi"
   if [ "$(command -v curl)" ]; then
-    sh -c "$(curl -fsSL https://git.io/chezmoi)" -- -b "$bin_dir"
+    sh -c "$(curl -fsLS https://git.io/chezmoi)" -- -b "$bin_dir"
   elif [ "$(command -v wget)" ]; then
     sh -c "$(wget -qO- https://git.io/chezmoi)" -- -b "$bin_dir"
   else

@@ -1,4 +1,4 @@
-module github.com/twpayne/chezmoi
+module github.com/twpayne/chezmoi/v2
 
 go 1.16
 

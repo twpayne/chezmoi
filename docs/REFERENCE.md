@@ -906,8 +906,8 @@ Clone the repo with depth *depth*.
 
 #### `--one-shot`
 
-`--one-shot` is the equivalent of `--apply`, `--depth=1`, `--purge`,
-`--purge-binary`. It attempts to install your dotfiles with chezmoi and then
+`--one-shot` is the equivalent of `--apply`, `--depth=1`, `--force`, `--purge`,
+and `--purge-binary`. It attempts to install your dotfiles with chezmoi and then
 remove all traces of chezmoi from the system. This is useful for setting up
 temporary environments (e.g. Docker containers).
 

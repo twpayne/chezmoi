@@ -7,7 +7,7 @@ import (
 
 	"github.com/rs/zerolog/log"
 
-	"github.com/twpayne/chezmoi/internal/chezmoilog"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )
 
 // An AGEEncryption uses age for encryption and decryption. See

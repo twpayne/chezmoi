@@ -16,7 +16,7 @@ import (
 	"github.com/twpayne/go-vfs/v2"
 	"github.com/twpayne/go-vfs/v2/vfst"
 
-	"github.com/twpayne/chezmoi/internal/chezmoilog"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )
 
 var (

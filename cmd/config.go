@@ -33,9 +33,9 @@ import (
 	"github.com/twpayne/go-xdg/v4"
 	"golang.org/x/term"
 
-	"github.com/twpayne/chezmoi/assets/templates"
-	"github.com/twpayne/chezmoi/internal/chezmoi"
-	"github.com/twpayne/chezmoi/internal/git"
+	"github.com/twpayne/chezmoi/v2/assets/templates"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
+	"github.com/twpayne/chezmoi/v2/internal/git"
 )
 
 var defaultFormat = "json"
@@ -722,7 +722,9 @@ func (c *Config) doPurge(purgeOptions *purgeOptions) error {
 	}
 	if purgeOptions != nil && purgeOptions.binary {
 		executable, err := os.Executable()
-		if err == nil {
+		// Special case: do not purge the binary if it is a test binary created
+		// by go test as this would break later tests.
+		if err == nil && !strings.Contains(executable, "test") {
 			absPaths = append(absPaths, chezmoi.AbsPath(executable))
 		}
 	}

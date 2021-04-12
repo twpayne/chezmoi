@@ -13,7 +13,13 @@
 Install the correct binary for your operating system and architecture in `./bin`
 with a single command.
 
-    curl -sfL https://git.io/chezmoi | sh
+    sh -c "$(curl -fsLS git.io/chezmoi)"
+
+If you already have a dotfiles repo using chezmoi on GitHub at
+`https://github.com/<github-username>/dotfiles` then you can install chezmoi and
+your dotfiles with the single command:
+
+    sh -c "$(curl -fsLS git.io/chezmoi)" -- init --apply <github-username>
 
 Or on systems with Powershell, you can use this command:
 

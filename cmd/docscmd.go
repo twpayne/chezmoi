@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
 
-	"github.com/twpayne/chezmoi/docs"
+	"github.com/twpayne/chezmoi/v2/docs"
 )
 
 func (c *Config) newDocsCmd() *cobra.Command {

@@ -10,7 +10,7 @@ import (
 	vfs "github.com/twpayne/go-vfs/v2"
 	"go.uber.org/multierr"
 
-	"github.com/twpayne/chezmoi/internal/chezmoilog"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )
 
 // Glob implements System.Glob.

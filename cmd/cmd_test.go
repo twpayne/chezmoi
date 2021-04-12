@@ -5,14 +5,13 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/twpayne/chezmoi/internal/chezmoi"
-	"github.com/twpayne/chezmoi/internal/chezmoitest"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
 
 func init() {
-	// github.com/twpayne/chezmoi/internal/chezmoi reads the umask
-	// before github.com/twpayne/chezmoi/internal/chezmoitest sets it,
-	// so update it.
+	// github.com/twpayne/chezmoi/v2/internal/chezmoi reads the umask before
+	// github.com/twpayne/chezmoi/v2/internal/chezmoitest sets it, so update it.
 	chezmoi.Umask = chezmoitest.Umask
 }
 
