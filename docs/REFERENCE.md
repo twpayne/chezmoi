@@ -1350,8 +1350,8 @@ with the same *gopass-name* will only invoke `gopass` once.
 
 ### `include` *filename*
 
-`include` returns the literal contents of the file named `*filename*`, relative
-to the source directory.
+`include` returns the literal contents of the file named `*filename*`. Relative
+paths are interpreted relative to the source directory.
 
 ### `ioreg`
 

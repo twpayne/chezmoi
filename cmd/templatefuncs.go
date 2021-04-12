@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"path"
 	"path/filepath"
 	"runtime"
 
@@ -18,7 +19,17 @@ type ioregData struct {
 }
 
 func (c *Config) includeTemplateFunc(filename string) string {
-	contents, err := c.fs.ReadFile(string(c.sourceDirAbsPath.Join(chezmoi.RelPath(filename))))
+	var absPath chezmoi.AbsPath
+	if path.IsAbs(filename) {
+		var err error
+		absPath, err = chezmoi.NewAbsPathFromExtPath(filename, c.homeDirAbsPath)
+		if err != nil {
+			panic(err)
+		}
+	} else {
+		absPath = c.sourceDirAbsPath.Join(chezmoi.RelPath(filename))
+	}
+	contents, err := c.fs.ReadFile(string(absPath))
 	if err != nil {
 		returnTemplateError(err)
 		return ""
