@@ -370,9 +370,13 @@ special, and are collectively referred to as "attributes":
 | ------- | ---------------------------------------------------- |
 | `.tmpl` | Treat the contents of the source file as a template. |
 
-The order of prefixes is important, the order is `run_`, `create_`, `modify_`,
-`before_`, `after_`, `exact_`, `private_`, `empty_`, `executable_`, `symlink_`,
-`once_`, `dot_`.
+The order of prefixes is important.
+
+ The order for files is `create_`, `modify_`, `exact_`, `private_`, `empty_`, `executable_`,
+ `symlink_`, `dot_`.
+
+ The order for scripts is `run_`, `once_`, `before_`, `after_`. `run_` is mandatory, others are
+ optional, `before_` and `after_` are mutually exclusive.
 
 Different target types allow different prefixes and suffixes:
 
