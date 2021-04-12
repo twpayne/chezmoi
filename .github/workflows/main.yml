@@ -1,4 +1,3 @@
-# FIXME parameterize Go version in actions/cache key
 name: main
 on:
   pull_request:
@@ -27,12 +26,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Cache Go modules
-      uses: actions/cache@v2.1.4
+      uses: actions/cache@v2
       with:
         path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go1.16.3-${{ hashFiles('**/go.sum') }}
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
-          ${{ runner.os }}-go1.16.3-
+          ${{ runner.os }}-go-
     - name: Build
       run: |
         go build ./...
@@ -72,12 +71,12 @@ jobs:
       with:
         fetch-depth: 0
     - name: Cache Go modules
-      uses: actions/cache@v2.1.4
+      uses: actions/cache@v2
       with:
         path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go1.16.3-${{ hashFiles('**/go.sum') }}
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
-          ${{ runner.os }}-go1.16.3-
+          ${{ runner.os }}-go-
     - name: Build release
       uses: goreleaser/goreleaser-action@v2
       with:
@@ -126,12 +125,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Cache Go modules
-      uses: actions/cache@v2.1.4
+      uses: actions/cache@v2
       with:
         path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go1.16.3-${{ hashFiles('**/go.sum') }}
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
-          ${{ runner.os }}-go1.16.3-
+          ${{ runner.os }}-go-
     - name: Generate
       run: |
         make generate
@@ -146,12 +145,12 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Cache Go modules
-      uses: actions/cache@v2.1.4
+      uses: actions/cache@v2
       with:
         path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go1.16.3-${{ hashFiles('**/go.sum') }}
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
-          ${{ runner.os }}-go1.16.3-
+          ${{ runner.os }}-go-
     - name: Lint
       uses: golangci/golangci-lint-action@v2
       with:
@@ -185,12 +184,12 @@ jobs:
       with:
         fetch-depth: 0
     - name: Cache Go modules
-      uses: actions/cache@v2.1.4
+      uses: actions/cache@v2
       with:
         path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go1.16.3-${{ hashFiles('**/go.sum') }}
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
         restore-keys: |
-          ${{ runner.os }}-go1.16.3-
+          ${{ runner.os }}-go-
     - name: Snapcraft login
       env:
         SNAPCRAFT_LOGIN: ${{ secrets.SNAPCRAFT_LOGIN }}
