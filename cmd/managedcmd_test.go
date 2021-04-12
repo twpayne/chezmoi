@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/twpayne/go-vfs/v2"
 
-	"github.com/twpayne/chezmoi/internal/chezmoitest"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
 
 func TestManagedCmd(t *testing.T) {

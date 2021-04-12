@@ -16,7 +16,7 @@ import (
 	"github.com/twpayne/go-xdg/v4"
 	"golang.org/x/oauth2"
 
-	"github.com/twpayne/chezmoi/internal/chezmoi"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
 var (

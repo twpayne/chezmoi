@@ -17,8 +17,8 @@ import (
 	"github.com/twpayne/go-vfs/v2"
 	"github.com/twpayne/go-vfs/v2/vfst"
 
-	"github.com/twpayne/chezmoi/cmd"
-	"github.com/twpayne/chezmoi/internal/chezmoitest"
+	"github.com/twpayne/chezmoi/v2/cmd"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
 
 //nolint:interfacer

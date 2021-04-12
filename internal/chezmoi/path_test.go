@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/twpayne/chezmoi/internal/chezmoitest"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
 
 func TestNewAbsPathFromExtPath(t *testing.T) {

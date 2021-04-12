@@ -12,8 +12,8 @@ import (
 	vfs "github.com/twpayne/go-vfs/v2"
 	xdg "github.com/twpayne/go-xdg/v4"
 
-	"github.com/twpayne/chezmoi/internal/chezmoi"
-	"github.com/twpayne/chezmoi/internal/chezmoitest"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
 
 func TestAddTemplateFuncPanic(t *testing.T) {

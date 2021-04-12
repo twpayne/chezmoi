@@ -27,7 +27,7 @@ import (
 	"github.com/spf13/cobra"
 	vfs "github.com/twpayne/go-vfs/v2"
 
-	"github.com/twpayne/chezmoi/internal/chezmoi"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
 const (

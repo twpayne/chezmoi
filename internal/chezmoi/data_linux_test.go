@@ -8,7 +8,7 @@ import (
 	"github.com/twpayne/go-vfs/v2"
 	"github.com/twpayne/go-vfs/v2/vfst"
 
-	"github.com/twpayne/chezmoi/internal/chezmoitest"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
 
 func TestKernelInfo(t *testing.T) {

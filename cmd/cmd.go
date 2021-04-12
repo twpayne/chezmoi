@@ -15,7 +15,7 @@ import (
 	"github.com/charmbracelet/glamour"
 	"github.com/spf13/cobra"
 
-	"github.com/twpayne/chezmoi/docs"
+	"github.com/twpayne/chezmoi/v2/docs"
 )
 
 // Command annotations.

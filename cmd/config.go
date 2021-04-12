@@ -33,9 +33,9 @@ import (
 	"github.com/twpayne/go-xdg/v4"
 	"golang.org/x/term"
 
-	"github.com/twpayne/chezmoi/assets/templates"
-	"github.com/twpayne/chezmoi/internal/chezmoi"
-	"github.com/twpayne/chezmoi/internal/git"
+	"github.com/twpayne/chezmoi/v2/assets/templates"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
+	"github.com/twpayne/chezmoi/v2/internal/git"
 )
 
 var defaultFormat = "json"

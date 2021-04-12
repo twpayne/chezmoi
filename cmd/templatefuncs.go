@@ -10,7 +10,7 @@ import (
 
 	"howett.net/plist"
 
-	"github.com/twpayne/chezmoi/internal/chezmoi"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
 type ioregData struct {

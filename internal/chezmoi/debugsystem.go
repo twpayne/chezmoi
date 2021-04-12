@@ -7,7 +7,7 @@ import (
 	"github.com/rs/zerolog/log"
 	vfs "github.com/twpayne/go-vfs/v2"
 
-	"github.com/twpayne/chezmoi/internal/chezmoilog"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )
 
 // A DebugSystem logs all calls to a System.
