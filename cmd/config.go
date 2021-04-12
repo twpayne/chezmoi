@@ -722,7 +722,9 @@ func (c *Config) doPurge(purgeOptions *purgeOptions) error {
 	}
 	if purgeOptions != nil && purgeOptions.binary {
 		executable, err := os.Executable()
-		if err == nil {
+		// Special case: do not purge the binary if it is a test binary created
+		// by go test as this would break later tests.
+		if err == nil && !strings.Contains(executable, "test") {
 			absPaths = append(absPaths, chezmoi.AbsPath(executable))
 		}
 	}

@@ -99,6 +99,7 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 		c.init.apply = true
 		c.init.depth = 1
 		c.init.purge = true
+		c.init.purgeBinary = true
 	}
 
 	// If the source repo does not exist then init or clone it.
