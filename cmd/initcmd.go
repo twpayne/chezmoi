@@ -21,6 +21,7 @@ import (
 
 type initCmdConfig struct {
 	apply       bool
+	data        bool
 	depth       int
 	exclude     *chezmoi.EntryTypeSet
 	oneShot     bool
@@ -84,6 +85,7 @@ func (c *Config) newInitCmd() *cobra.Command {
 
 	flags := initCmd.Flags()
 	flags.BoolVarP(&c.init.apply, "apply", "a", c.init.apply, "update destination directory")
+	flags.BoolVar(&c.init.data, "data", c.init.data, "include existing template data")
 	flags.IntVarP(&c.init.depth, "depth", "d", c.init.depth, "create a shallow clone")
 	flags.VarP(c.init.exclude, "exclude", "x", "exclude entry types")
 	flags.BoolVar(&c.init.oneShot, "one-shot", c.init.oneShot, "one shot")
@@ -239,7 +241,9 @@ func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte) ([]byte
 
 	sb := strings.Builder{}
 	templateData := c.defaultTemplateData()
-	chezmoi.RecursiveMerge(templateData, c.Data)
+	if c.init.data {
+		chezmoi.RecursiveMerge(templateData, c.Data)
+	}
 	if err = t.Execute(&sb, templateData); err != nil {
 		return nil, err
 	}
