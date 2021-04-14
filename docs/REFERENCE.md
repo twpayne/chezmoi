@@ -904,6 +904,12 @@ own binary.
 
 Run `chezmoi apply` after checking out the repo and creating the config file.
 
+#### `--data` *bool*
+
+Include existing template data when creating the config file. This defaults to
+`true`. Set this to `false` to simulate creating the config file with no
+existing template data.
+
 #### `--depth` *depth*
 
 Clone the repo with depth *depth*.
