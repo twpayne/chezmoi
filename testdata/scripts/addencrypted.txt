@@ -1,3 +1,5 @@
+[!exec:gpg] skip 'gpg not found in $PATH'
+
 mkgpgconfig
 
 cp golden/.file $HOME/.file
