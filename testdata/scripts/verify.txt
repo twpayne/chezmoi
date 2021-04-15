@@ -1,5 +1,3 @@
-[!umask:022] skip
-
 mkhomedir golden
 mkhomedir
 mksourcedir
