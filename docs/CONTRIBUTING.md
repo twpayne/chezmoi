@@ -131,7 +131,7 @@ logins periodically expire. Create a new snapcraft login by running:
 If you're packaging chezmoi for an operating system or distribution:
 
 * chezmoi has no build or install dependencies other than the standard Go
-  toolchain.
+  tool chain.
 
 * Please set the version number, git commit, and build time in the binary. This
   greatly assists debugging when end users report problems or ask for help. You

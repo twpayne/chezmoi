@@ -929,7 +929,7 @@ The workflow is different to using chezmoi on a new machine, notably:
   function](http://masterminds.github.io/sprig/os.html).
 
 First, if you are using a chezmoi configuration file template, ensure that it is
-non-interactive when running in codespaces, for example, `.chezmoi.toml.tmpl`
+non-interactive when running in Codespaces, for example, `.chezmoi.toml.tmpl`
 might contain:
 
 ```
