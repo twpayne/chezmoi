@@ -215,8 +215,8 @@ jobs:
     # compatibility with all versions, upload checksums.txt as well.
     - name: Upload checksums.txt
       run: |
-        VERSION=${GITHUB_REF##*/}
+        VERSION=${GITHUB_REF##*/v}
         cp dist/chezmoi_${VERSION}_checksums.txt dist/checksums.txt
-        gh release upload ${VERSION} dist/checksums.txt
+        gh release upload v${VERSION} dist/checksums.txt
       env:
         GITHUB_TOKEN: ${{ secrets.GORELEASER_GITHUB_TOKEN }}
