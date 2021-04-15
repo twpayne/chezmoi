@@ -72,7 +72,7 @@ FOR:
 	}
 }
 
-// FileInfos retunrs s's os.FileInfos.
+// FileInfos returns s's os.FileInfos.
 func (s *TARReaderSystem) FileInfos() map[AbsPath]os.FileInfo {
 	return s.fileInfos
 }

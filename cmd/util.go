@@ -116,7 +116,7 @@ func parseBool(str string) (bool, error) {
 	}
 }
 
-// titleize returns s with its first rune titlized.
+// titleize returns s with its first rune titleized.
 func titleize(s string) string {
 	if s == "" {
 		return s

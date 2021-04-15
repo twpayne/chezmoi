@@ -117,7 +117,7 @@ func SHA256Sum(data []byte) []byte {
 	return sha256SumArr[:]
 }
 
-// SuspiciousSourceDirEntry returns true if base is a suspicous dir entry.
+// SuspiciousSourceDirEntry returns true if base is a suspicious dir entry.
 func SuspiciousSourceDirEntry(base string, info os.FileInfo) bool {
 	//nolint:exhaustive
 	switch info.Mode() & os.ModeType {

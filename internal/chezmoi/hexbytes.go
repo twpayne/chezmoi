@@ -4,7 +4,7 @@ import (
 	"encoding/hex"
 )
 
-// A HexBytes is a []byte which is marhsaled as a hex string.
+// A HexBytes is a []byte which is marshaled as a hex string.
 type HexBytes []byte
 
 // MarshalText implements encoding.TextMarshaler.MarshalText.
