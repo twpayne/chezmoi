@@ -65,9 +65,9 @@ What are the consequences of &amp;ldquo;bare&amp;rdquo; modifications to the tar
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/install/</guid>
-      <description>Install Guide #  One-line binary install #  Install the correct binary for your operating system and architecture in ./bin with a single command.
-curl -sfL https://git.io/chezmoi | sh  Or on systems with Powershell, you can use this command:
-# To install in ./bin (iwr https://git.io/chezmoi.ps1).Content | powershell -c - # To install in another location &#39;$params = &amp;quot;-BinDir ~/other&amp;quot;&#39;, (iwr https://git.io/chezmoi.ps1).Content | powershell -c - # For information about other options, run &#39;$params = &amp;quot;-?</description>
+      <description>Install Guide #  One-line binary install #  Install the correct binary for your operating system and architecture in ./bin with a single command:
+sh -c &amp;quot;$(curl -fsLS git.io/chezmoi)&amp;quot;  Or, if you have wget instead of curl:
+sh -c &amp;quot;$(wget -qO- git.io/chezmoi)&amp;quot;  If you already have a dotfiles repo using chezmoi on GitHub at https://github.com/&amp;lt;github-username&amp;gt;/dotfiles then you can install chezmoi and your dotfiles with the single command:</description>
     </item>
     
     <item>

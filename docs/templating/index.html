@@ -21,7 +21,7 @@ When reading files from the source state, chezmoi interprets them as a template 
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.2bc2364a4a4b31f0ec1debecf0a8f90a840821f143dfe1ac6a0f7cbcbdcf64ac.css" integrity="sha256-K8I2SkpLMfDsHevs8Kj5CoQIIfFD3&#43;Gsag98vL3PZKw=">
-<script defer src="/en.search.min.dbb0a8eb8d5cc43637f52fc05ff05ada927d3d34f9131bc7eaa00f7cd9282a65.js" integrity="sha256-27Co641cxDY39S/AX/Ba2pJ9PTT5ExvH6qAPfNkoKmU="></script>
+<script defer src="/en.search.min.b8228fae32c9eb27fdb60f89e602dde9a4f356c64528b462368e92db87d4d8a7.js" integrity="sha256-uCKPrjLJ6yf9tg&#43;J5gLd6aTzVsZFKLRiNo6S24fU2Kc="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -473,7 +473,7 @@ be inserted in other template files, for example:</p>
 <p>Create <code>.local/share/chezmoi/.chezmoitemplates/alacritty</code>:</p>
 <pre><code>some: config
 fontsize: {{ . }}
-somemore: config
+more: config
 </code></pre>
 <p>Notice the file name doesn&rsquo;t have to end in <code>.tmpl</code>, as all files in the
 directory <code>.chezmoitemplates</code> are interpreted as templates.</p>
@@ -488,11 +488,11 @@ directory <code>.chezmoitemplates</code> are interpreted as templates.</p>
 <pre><code>$ chezmoi cat ~/small-font.yml
 some: config
 fontsize: 12
-somemore: config
+more: config
 $ chezmoi cat ~/big-font.yml
 some: config
 fontsize: 18
-somemore: config
+more: config
 </code></pre>
 <h3 id="passing-multiple-arguments">
   Passing multiple arguments
@@ -517,7 +517,7 @@ them in the file <code>.config/chezmoi/.chezmoi.toml</code>:</p>
 <pre><code>some: config
 fontsize: {{ .fontsize }}
 font: {{ .font }}
-somemore: config
+more: config
 </code></pre>
 <p>And connect them with <code>.local/share/chezmoi/small-font.yml.tmpl</code>:</p>
 <pre><code>{{- template &quot;alacritty&quot; .alacritty.small -}}

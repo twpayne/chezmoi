@@ -23,7 +23,7 @@
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.2bc2364a4a4b31f0ec1debecf0a8f90a840821f143dfe1ac6a0f7cbcbdcf64ac.css" integrity="sha256-K8I2SkpLMfDsHevs8Kj5CoQIIfFD3&#43;Gsag98vL3PZKw=">
-<script defer src="/en.search.min.dbb0a8eb8d5cc43637f52fc05ff05ada927d3d34f9131bc7eaa00f7cd9282a65.js" integrity="sha256-27Co641cxDY39S/AX/Ba2pJ9PTT5ExvH6qAPfNkoKmU="></script>
+<script defer src="/en.search.min.b8228fae32c9eb27fdb60f89e602dde9a4f356c64528b462368e92db87d4d8a7.js" integrity="sha256-uCKPrjLJ6yf9tg&#43;J5gLd6aTzVsZFKLRiNo6S24fU2Kc="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -424,7 +424,7 @@ timestamp.</p>
 </h3>
 <p>Only operate on target state entries of type <em>types</em>. <em>types</em> is a
 comma-separated list of target states (<code>all</code>, <code>dirs</code>, <code>files</code>, <code>remove</code>,
-<code>scripts</code>, <code>symlinks</code>, and <code>encrypted</code>) and can be excluded by preceeding them
+<code>scripts</code>, <code>symlinks</code>, and <code>encrypted</code>) and can be excluded by preceding them
 with a <code>no</code>. For example, <code>--include=dirs,files</code> will cause the command to apply
 to directories and files only.</p>
 <h3 id="-r---recursive">
@@ -524,6 +524,13 @@ of the config file is <code>chezmoi</code>, and the first config file found is u
 <td>Use builtin git if <code>git</code> command is not found in $PATH</td>
 </tr>
 <tr>
+<td><code>add</code></td>
+<td><code>templateSymlinks</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Template symlinks to source and home dirs</td>
+</tr>
+<tr>
 <td><code>age</code></td>
 <td><code>args</code></td>
 <td>[]string</td>
@@ -577,7 +584,7 @@ of the config file is <code>chezmoi</code>, and the first config file found is u
 <td><code>recipientsFiles</code></td>
 <td>[]string</td>
 <td><em>none</em></td>
-<td>age receipients files</td>
+<td>age recipients files</td>
 </tr>
 <tr>
 <td></td>
@@ -609,6 +616,13 @@ of the config file is <code>chezmoi</code>, and the first config file found is u
 </tr>
 <tr>
 <td><code>diff</code></td>
+<td><code>exclude</code></td>
+<td>[]string</td>
+<td><em>none</em></td>
+<td>Entry types to exclude from diff</td>
+</tr>
+<tr>
+<td></td>
 <td><code>pager</code></td>
 <td>string</td>
 <td><code>$PAGER</code> / <code>less</code></td>
@@ -819,10 +833,12 @@ of the config file is <code>chezmoi</code>, and the first config file found is u
 <p>chezmoi stores the source state of files, symbolic links, and directories in
 regular files and directories in the source directory (<code>~/.local/share/chezmoi</code>
 by default). This location can be overridden with the <code>-S</code> flag or by giving a
-value for <code>sourceDir</code> in <code>~/.config/chezmoi/chezmoi.toml</code>.  Some state is
-encoded in the source names. chezmoi ignores all files and directories in the
-source directory that begin with a <code>.</code>. The following prefixes and suffixes are
-special, and are collectively referred to as &ldquo;attributes&rdquo;:</p>
+value for <code>sourceDir</code> in <code>~/.config/chezmoi/chezmoi.toml</code>. Directory targets are
+represented as directories in the source state. All other target types are
+represented as files in the source state. Some state is encoded in the source
+names.</p>
+<p>The following prefixes and suffixes are special, and are collectively referred
+to as &ldquo;attributes&rdquo;:</p>
 <table>
 <thead>
 <tr>
@@ -837,7 +853,7 @@ special, and are collectively referred to as &ldquo;attributes&rdquo;:</p>
 </tr>
 <tr>
 <td><code>before_</code></td>
-<td>Run script before updating the desintation.</td>
+<td>Run script before updating the destination.</td>
 </tr>
 <tr>
 <td><code>create_</code></td>
@@ -899,46 +915,51 @@ special, and are collectively referred to as &ldquo;attributes&rdquo;:</p>
 </tr>
 </tbody>
 </table>
-<p>The order of prefixes is important, the order is <code>run_</code>, <code>create_</code>, <code>modify_</code>,
-<code>before_</code>, <code>after_</code>, <code>exact_</code>, <code>private_</code>, <code>empty_</code>, <code>executable_</code>, <code>symlink_</code>,
-<code>once_</code>, <code>dot_</code>.</p>
-<p>Different target types allow different prefixes and suffixes:</p>
+<p>Different target types allow different prefixes and suffixes. The order of
+prefixes is important.</p>
 <table>
 <thead>
 <tr>
 <th>Target type</th>
-<th>Allowed prefixes</th>
+<th>Source type</th>
+<th>Allowed prefixes in order</th>
 <th>Allowed suffixes</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td>Directory</td>
+<td>Directory</td>
 <td><code>exact_</code>, <code>private_</code>, <code>dot_</code></td>
 <td><em>none</em></td>
 </tr>
 <tr>
 <td>Regular file</td>
+<td>File</td>
 <td><code>encrypted_</code>, <code>private_</code>, <code>executable_</code>, <code>dot_</code></td>
 <td><code>.tmpl</code></td>
 </tr>
 <tr>
 <td>Create file</td>
+<td>File</td>
 <td><code>create_</code>, <code>encrypted_</code>, <code>private_</code>, <code>executable_</code>, <code>dot_</code></td>
 <td><code>.tmpl</code></td>
 </tr>
 <tr>
 <td>Modify file</td>
+<td>File</td>
 <td><code>modify_</code>, <code>encrypted_</code>, <code>private_</code>, <code>executable_</code>, <code>dot_</code></td>
 <td><code>.tmpl</code></td>
 </tr>
 <tr>
 <td>Script</td>
+<td>File</td>
 <td><code>run_</code>, <code>once_</code>, <code>before_</code> or <code>after_</code></td>
 <td><code>.tmpl</code></td>
 </tr>
 <tr>
 <td>Symbolic link</td>
+<td>File</td>
 <td><code>symlink_</code>, <code>dot_</code>,</td>
 <td><code>.tmpl</code></td>
 </tr>
@@ -948,6 +969,9 @@ special, and are collectively referred to as &ldquo;attributes&rdquo;:</p>
 encryption is used) or <code>.asc</code> (when gpg encryption is used) is stripped. These
 suffixes can be overridden with the <code>age.suffix</code> and <code>gpg.suffix</code> configuration
 variables.</p>
+<p>chezmoi ignores all files and directories in the source directory that begin
+with a <code>.</code> with the exception of files and directories that begin with
+<code>.chezmoi</code>.</p>
 <h2 id="target-types">
   Target types
   <a class="anchor" href="#target-types">#</a>
@@ -1181,6 +1205,13 @@ of the symlink itself.</p>
   <a class="anchor" href="#-t---template">#</a>
 </h4>
 <p>Set the <code>template</code> attribute on added files and symlinks.</p>
+<h4 id="--template-symlinks">
+  <code>--template-symlinks</code>
+  <a class="anchor" href="#--template-symlinks">#</a>
+</h4>
+<p>When adding symlink to an absolute path in the source directory or destination
+directory, create a symlink template with <code>.chezmoi.sourceDir</code> or
+<code>.chezmoi.homeDir</code>. This is useful for creating portable absolute symlinks.</p>
 <h4 id="add-examples">
   <code>add</code> examples
   <a class="anchor" href="#add-examples">#</a>
@@ -1590,6 +1621,13 @@ own binary.</p>
   <a class="anchor" href="#--apply">#</a>
 </h4>
 <p>Run <code>chezmoi apply</code> after checking out the repo and creating the config file.</p>
+<h4 id="--data-bool">
+  <code>--data</code> <em>bool</em>
+  <a class="anchor" href="#--data-bool">#</a>
+</h4>
+<p>Include existing template data when creating the config file. This defaults to
+<code>true</code>. Set this to <code>false</code> to simulate creating the config file with no
+existing template data.</p>
 <h4 id="--depth-depth">
   <code>--depth</code> <em>depth</em>
   <a class="anchor" href="#--depth-depth">#</a>
@@ -1599,8 +1637,8 @@ own binary.</p>
   <code>--one-shot</code>
   <a class="anchor" href="#--one-shot">#</a>
 </h4>
-<p><code>--one-shot</code> is the equivalent of <code>--apply</code>, <code>--depth=1</code>, <code>--purge</code>,
-<code>--purge-binary</code>. It attempts to install your dotfiles with chezmoi and then
+<p><code>--one-shot</code> is the equivalent of <code>--apply</code>, <code>--depth=1</code>, <code>--force</code>, <code>--purge</code>,
+and <code>--purge-binary</code>. It attempts to install your dotfiles with chezmoi and then
 remove all traces of chezmoi from the system. This is useful for setting up
 temporary environments (e.g. Docker containers).</p>
 <h4 id="--purge">
@@ -1774,7 +1812,11 @@ chezmoi source-path ~/.bashrc
   <code>state</code> examples
   <a class="anchor" href="#state-examples">#</a>
 </h4>
-<pre><code>chezmoi state dump
+<pre><code>chezmoi state data
+chezmoi state delete --bucket=bucket --key=key
+chezmoi state dump
+chezmoi state get --bucket=bucket --key=key
+chezmoi state set --bucket=bucket --key=key --value=value
 chezmoi state reset
 </code></pre>
 <h3 id="status">

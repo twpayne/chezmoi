@@ -5,13 +5,13 @@
   <meta name="generator" content="Hugo 0.82.0" />
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Install Guide #  One-line binary install #  Install the correct binary for your operating system and architecture in ./bin with a single command.
-curl -sfL https://git.io/chezmoi | sh  Or on systems with Powershell, you can use this command:
-# To install in ./bin (iwr https://git.io/chezmoi.ps1).Content | powershell -c - # To install in another location &#39;$params = &quot;-BinDir ~/other&quot;&#39;, (iwr https://git.io/chezmoi.ps1).Content | powershell -c - # For information about other options, run &#39;$params = &quot;-?">
+<meta name="description" content="Install Guide #  One-line binary install #  Install the correct binary for your operating system and architecture in ./bin with a single command:
+sh -c &quot;$(curl -fsLS git.io/chezmoi)&quot;  Or, if you have wget instead of curl:
+sh -c &quot;$(wget -qO- git.io/chezmoi)&quot;  If you already have a dotfiles repo using chezmoi on GitHub at https://github.com/&lt;github-username&gt;/dotfiles then you can install chezmoi and your dotfiles with the single command:">
 <meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Install" />
-<meta property="og:description" content="Install Guide #  One-line binary install #  Install the correct binary for your operating system and architecture in ./bin with a single command.
-curl -sfL https://git.io/chezmoi | sh  Or on systems with Powershell, you can use this command:
-# To install in ./bin (iwr https://git.io/chezmoi.ps1).Content | powershell -c - # To install in another location &#39;$params = &quot;-BinDir ~/other&quot;&#39;, (iwr https://git.io/chezmoi.ps1).Content | powershell -c - # For information about other options, run &#39;$params = &quot;-?" />
+<meta property="og:description" content="Install Guide #  One-line binary install #  Install the correct binary for your operating system and architecture in ./bin with a single command:
+sh -c &quot;$(curl -fsLS git.io/chezmoi)&quot;  Or, if you have wget instead of curl:
+sh -c &quot;$(wget -qO- git.io/chezmoi)&quot;  If you already have a dotfiles repo using chezmoi on GitHub at https://github.com/&lt;github-username&gt;/dotfiles then you can install chezmoi and your dotfiles with the single command:" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chezmoi.io/docs/install/" /><meta property="article:section" content="docs" />
 
@@ -21,7 +21,7 @@ curl -sfL https://git.io/chezmoi | sh  Or on systems with Powershell, you can us
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.2bc2364a4a4b31f0ec1debecf0a8f90a840821f143dfe1ac6a0f7cbcbdcf64ac.css" integrity="sha256-K8I2SkpLMfDsHevs8Kj5CoQIIfFD3&#43;Gsag98vL3PZKw=">
-<script defer src="/en.search.min.dbb0a8eb8d5cc43637f52fc05ff05ada927d3d34f9131bc7eaa00f7cd9282a65.js" integrity="sha256-27Co641cxDY39S/AX/Ba2pJ9PTT5ExvH6qAPfNkoKmU="></script>
+<script defer src="/en.search.min.b8228fae32c9eb27fdb60f89e602dde9a4f356c64528b462368e92db87d4d8a7.js" integrity="sha256-uCKPrjLJ6yf9tg&#43;J5gLd6aTzVsZFKLRiNo6S24fU2Kc="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -146,8 +146,16 @@ https://github.com/alex-shpak/hugo-book
   <a class="anchor" href="#one-line-binary-install">#</a>
 </h2>
 <p>Install the correct binary for your operating system and architecture in <code>./bin</code>
-with a single command.</p>
-<pre><code>curl -sfL https://git.io/chezmoi | sh
+with a single command:</p>
+<pre><code>sh -c &quot;$(curl -fsLS git.io/chezmoi)&quot;
+</code></pre>
+<p>Or, if you have <code>wget</code> instead of <code>curl</code>:</p>
+<pre><code>sh -c &quot;$(wget -qO- git.io/chezmoi)&quot;
+</code></pre>
+<p>If you already have a dotfiles repo using chezmoi on GitHub at
+<code>https://github.com/&lt;github-username&gt;/dotfiles</code> then you can install chezmoi and
+your dotfiles with the single command:</p>
+<pre><code>sh -c &quot;$(curl -fsLS git.io/chezmoi)&quot; -- init --apply &lt;github-username&gt;
 </code></pre>
 <p>Or on systems with Powershell, you can use this command:</p>
 <pre><code># To install in ./bin

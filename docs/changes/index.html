@@ -21,7 +21,7 @@ If you&rsquo;re already using a dotfile manager, but not chezmoi, then read abou
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.2bc2364a4a4b31f0ec1debecf0a8f90a840821f143dfe1ac6a0f7cbcbdcf64ac.css" integrity="sha256-K8I2SkpLMfDsHevs8Kj5CoQIIfFD3&#43;Gsag98vL3PZKw=">
-<script defer src="/en.search.min.dbb0a8eb8d5cc43637f52fc05ff05ada927d3d34f9131bc7eaa00f7cd9282a65.js" integrity="sha256-27Co641cxDY39S/AX/Ba2pJ9PTT5ExvH6qAPfNkoKmU="></script>
+<script defer src="/en.search.min.b8228fae32c9eb27fdb60f89e602dde9a4f356c64528b462368e92db87d4d8a7.js" integrity="sha256-uCKPrjLJ6yf9tg&#43;J5gLd6aTzVsZFKLRiNo6S24fU2Kc="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -197,7 +197,7 @@ script, so you can use chezmoi to manage parts, but not all, of a file.</li>
 relative to when your files are updated.</li>
 <li>The new <code>--exclude</code> option allows you to control what types of target will be
 updated. For example <code>chezmoi apply --exclude=scripts</code> will cause chezmoi to
-apply everying except scripts and <code>chezmoi init --apply --exclude=encrypted</code>
+apply everything except scripts and <code>chezmoi init --apply --exclude=encrypted</code>
 will exclude encrypted files.</li>
 <li>The new <code>--keep-going</code> option causes chezmoi to keep going as far as possible
 rather than stopping at the first error it encounters.</li>
@@ -216,7 +216,7 @@ control over the command invoked by <code>chezmoi edit</code>.</li>
 <li>The <code>chezmoi init</code> command has a new <code>--one-shot</code> option which does a shallow
 clone of your dotfiles repo, runs <code>chezmoi apply</code>, and then removes your
 source and configuration directories. It&rsquo;s the fastest way to set up your
-dotfiles on a emphemeral machine and then remove all traces of chezmoi.</li>
+dotfiles on a ephemeral machine and then remove all traces of chezmoi.</li>
 <li>Standard template variables are set on a best-effort basis. If errors are
 encountered, chezmoi leaves the variable unset rather than terminating with
 the error.</li>

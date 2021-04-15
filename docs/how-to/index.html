@@ -17,7 +17,7 @@
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.2bc2364a4a4b31f0ec1debecf0a8f90a840821f143dfe1ac6a0f7cbcbdcf64ac.css" integrity="sha256-K8I2SkpLMfDsHevs8Kj5CoQIIfFD3&#43;Gsag98vL3PZKw=">
-<script defer src="/en.search.min.dbb0a8eb8d5cc43637f52fc05ff05ada927d3d34f9131bc7eaa00f7cd9282a65.js" integrity="sha256-27Co641cxDY39S/AX/Ba2pJ9PTT5ExvH6qAPfNkoKmU="></script>
+<script defer src="/en.search.min.b8228fae32c9eb27fdb60f89e602dde9a4f356c64528b462368e92db87d4d8a7.js" integrity="sha256-uCKPrjLJ6yf9tg&#43;J5gLd6aTzVsZFKLRiNo6S24fU2Kc="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -121,6 +121,7 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#pull-the-latest-changes-from-your-repo-and-apply-them">Pull the latest changes from your repo and apply them</a></li>
         <li><a href="#pull-the-latest-changes-from-your-repo-and-see-what-would-change-without-actually-applying-the-changes">Pull the latest changes from your repo and see what would change, without actually applying the changes</a></li>
         <li><a href="#automatically-commit-and-push-changes-to-your-repo">Automatically commit and push changes to your repo</a></li>
+        <li><a href="#install-chezmoi-and-your-dotfiles-on-a-new-machine-with-a-single-command">Install chezmoi and your dotfiles on a new machine with a single command</a></li>
       </ul>
     </li>
     <li><a href="#manage-different-types-of-file">Manage different types of file</a>
@@ -267,6 +268,25 @@ not pushed.</p>
 <p>Be careful when using <code>autoPush</code>. If your dotfiles repo is public and you
 accidentally add a secret in plain text, that secret will be pushed to your
 public repo.</p>
+<h3 id="install-chezmoi-and-your-dotfiles-on-a-new-machine-with-a-single-command">
+  Install chezmoi and your dotfiles on a new machine with a single command
+  <a class="anchor" href="#install-chezmoi-and-your-dotfiles-on-a-new-machine-with-a-single-command">#</a>
+</h3>
+<p>chezmoi&rsquo;s install script can run <code>chezmoi init</code> for you by passing extra
+arguments to the newly installed chezmoi binary. If your dotfiles repo is
+<code>github.com/&lt;github-username&gt;/dotfiles</code> then installing chezmoi, running
+<code>chezmoi init</code>, and running <code>chezmoi apply</code> can be done in a single line of
+shell:</p>
+<pre><code>sh -c &quot;$(curl -fsLS git.io/chezmoi)&quot; -- init --apply &lt;github-username&gt;
+</code></pre>
+<p>If your dotfiles repo has a different name to <code>dotfiles</code>, or if you host your
+dotfiles on a different service, then see the <a href="/docs/reference/#init-repo">reference manual for <code>chezmoi init</code></a>.</p>
+<p>For setting up transitory environments (e.g. short-lived Linux containers) you
+can install chezmoi, install your dotfiles, and then remove all traces of
+chezmoi, including the source directory and chezmoi&rsquo;s configuration directory,
+with a single command:</p>
+<pre><code>sh -c &quot;$(curl -fsLS git.io/chezmoi)&quot; -- init --one-shot &lt;github-username&gt;
+</code></pre>
 <h2 id="manage-different-types-of-file">
   Manage different types of file
   <a class="anchor" href="#manage-different-types-of-file">#</a>
@@ -1003,7 +1023,7 @@ to <code>true</code>. You can read its value with the <a href="http://mastermind
 function</a>.</li>
 </ul>
 <p>First, if you are using a chezmoi configuration file template, ensure that it is
-non-interactive when running in codespaces, for example, <code>.chezmoi.toml.tmpl</code>
+non-interactive when running in Codespaces, for example, <code>.chezmoi.toml.tmpl</code>
 might contain:</p>
 <pre><code>{{- $codespaces:= env &quot;CODESPACES&quot; | not | not -}}
 sourceDir = &quot;{{ .chezmoi.sourceDir }}&quot;
@@ -1027,7 +1047,7 @@ set -e <span style="color:#75715e"># -e: exit on error</span>
   bin_dir<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$HOME<span style="color:#e6db74">/.local/bin&#34;</span>
   chezmoi<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$bin_dir<span style="color:#e6db74">/chezmoi&#34;</span>
   <span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>command -v curl<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
-    sh -c <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>curl -fsSL https://git.io/chezmoi<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> -- -b <span style="color:#e6db74">&#34;</span>$bin_dir<span style="color:#e6db74">&#34;</span>
+    sh -c <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>curl -fsLS https://git.io/chezmoi<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> -- -b <span style="color:#e6db74">&#34;</span>$bin_dir<span style="color:#e6db74">&#34;</span>
   <span style="color:#66d9ef">elif</span> <span style="color:#f92672">[</span> <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>command -v wget<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
     sh -c <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>wget -qO- https://git.io/chezmoi<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> -- -b <span style="color:#e6db74">&#34;</span>$bin_dir<span style="color:#e6db74">&#34;</span>
   <span style="color:#66d9ef">else</span>
@@ -1195,6 +1215,7 @@ your new dotfile manager&rsquo;s functionality for importing your existing dotfi
         <li><a href="#pull-the-latest-changes-from-your-repo-and-apply-them">Pull the latest changes from your repo and apply them</a></li>
         <li><a href="#pull-the-latest-changes-from-your-repo-and-see-what-would-change-without-actually-applying-the-changes">Pull the latest changes from your repo and see what would change, without actually applying the changes</a></li>
         <li><a href="#automatically-commit-and-push-changes-to-your-repo">Automatically commit and push changes to your repo</a></li>
+        <li><a href="#install-chezmoi-and-your-dotfiles-on-a-new-machine-with-a-single-command">Install chezmoi and your dotfiles on a new machine with a single command</a></li>
       </ul>
     </li>
     <li><a href="#manage-different-types-of-file">Manage different types of file</a>
