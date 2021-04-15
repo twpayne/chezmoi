@@ -11,9 +11,13 @@
 ## One-line binary install
 
 Install the correct binary for your operating system and architecture in `./bin`
-with a single command.
+with a single command:
 
     sh -c "$(curl -fsLS git.io/chezmoi)"
+
+Or, if you have `wget` instead of `curl`:
+
+    sh -c "$(wget -qO- git.io/chezmoi)"
 
 If you already have a dotfiles repo using chezmoi on GitHub at
 `https://github.com/<github-username>/dotfiles` then you can install chezmoi and
