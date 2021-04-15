@@ -325,7 +325,7 @@ This is likely because the chezmoi binary you are using was statically compiled
 with [musl](https://musl.libc.org/) and the machine you are running on uses
 LDAP or NIS.
 
-The immediate fix is to use a package built for your distriubtion (e.g a `.deb`
+The immediate fix is to use a package built for your distribution (e.g a `.deb`
 or `.rpm`) which is linked against glibc and includes LDAP/NIS support instead
 of the statically-compiled binary.
 

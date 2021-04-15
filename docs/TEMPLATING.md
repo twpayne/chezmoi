@@ -273,7 +273,7 @@ Create `.local/share/chezmoi/.chezmoitemplates/alacritty`:
 
 	some: config
 	fontsize: {{ . }}
-	somemore: config
+	more: config
 
 Notice the file name doesn't have to end in `.tmpl`, as all files in the
 directory `.chezmoitemplates` are interpreted as templates.
@@ -292,11 +292,11 @@ Here we're calling the shared `alacritty` template with the font size as the
     $ chezmoi cat ~/small-font.yml
     some: config
     fontsize: 12
-    somemore: config
+    more: config
     $ chezmoi cat ~/big-font.yml
     some: config
     fontsize: 18
-    somemore: config
+    more: config
 
 ### Passing multiple arguments
 
@@ -323,7 +323,7 @@ Use the variables in `.local/share/chezmoi/.chezmoitemplates/alacritty`:
     some: config
     fontsize: {{ .fontsize }}
     font: {{ .font }}
-    somemore: config
+    more: config
 
 And connect them with `.local/share/chezmoi/small-font.yml.tmpl`:
 

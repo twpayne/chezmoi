@@ -237,7 +237,7 @@ Set the output format. *format* can be `json` or `yaml`.
 
 Only operate on target state entries of type *types*. *types* is a
 comma-separated list of target states (`all`, `dirs`, `files`, `remove`,
-`scripts`, `symlinks`, and `encrypted`) and can be excluded by preceeding them
+`scripts`, `symlinks`, and `encrypted`) and can be excluded by preceding them
 with a `no`. For example, `--include=dirs,files` will cause the command to apply
 to directories and files only.
 
@@ -279,7 +279,7 @@ The following configuration variables are available:
 |               | `recipient`        | string   | *none*                   | age recipient                                          |
 |               | `recipients`       | []string | *none*                   | age recipients                                         |
 |               | `recipientsFile`   | []string | *none*                   | age recipients file                                    |
-|               | `recipientsFiles`  | []string | *none*                   | age receipients files                                  |
+|               | `recipientsFiles`  | []string | *none*                   | age recipients files                                   |
 |               | `suffix`           | string   | `.age`                   | Suffix appended to age-encrypted files                 |
 | `bitwarden`   | `command`          | string   | `bw`                     | Bitwarden CLI command                                  |
 | `cd`          | `args`             | []string | *none*                   | Extra args to shell in `cd` command                    |
@@ -356,7 +356,7 @@ to as "attributes":
 | Prefix       | Effect                                                                         |
 | ------------ | ------------------------------------------------------------------------------ |
 | `after_`     | Run script after updating the destination.                                     |
-| `before_`    | Run script before updating the desintation.                                    |
+| `before_`    | Run script before updating the destination.                                    |
 | `create_`    | Ensure that the file exists, and create it with contents if it does not.       |
 | `dot_`       | Rename to use a leading dot, e.g. `dot_foo` becomes `.foo`.                    |
 | `empty_`     | Ensure the file exists, even if is empty. By default, empty files are removed. |

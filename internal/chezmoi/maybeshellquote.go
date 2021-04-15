@@ -53,7 +53,7 @@ func maybeShellQuote(s string) string {
 	}
 }
 
-// ShellQuoteArgs returs args shell quoted and joined into a single string.
+// ShellQuoteArgs returns args shell quoted and joined into a single string.
 func ShellQuoteArgs(args []string) string {
 	shellQuotedArgs := make([]string, 0, len(args))
 	for _, arg := range args {

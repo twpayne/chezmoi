@@ -58,7 +58,7 @@ templates, or config file.
   relative to when your files are updated.
 * The new `--exclude` option allows you to control what types of target will be
   updated. For example `chezmoi apply --exclude=scripts` will cause chezmoi to
-  apply everying except scripts and `chezmoi init --apply --exclude=encrypted`
+  apply everything except scripts and `chezmoi init --apply --exclude=encrypted`
   will exclude encrypted files.
 * The new `--keep-going` option causes chezmoi to keep going as far as possible
   rather than stopping at the first error it encounters.
@@ -78,7 +78,7 @@ templates, or config file.
 * The `chezmoi init` command has a new `--one-shot` option which does a shallow
   clone of your dotfiles repo, runs `chezmoi apply`, and then removes your
   source and configuration directories. It's the fastest way to set up your
-  dotfiles on a emphemeral machine and then remove all traces of chezmoi.
+  dotfiles on a ephemeral machine and then remove all traces of chezmoi.
 * Standard template variables are set on a best-effort basis. If errors are
   encountered, chezmoi leaves the variable unset rather than terminating with
   the error.
