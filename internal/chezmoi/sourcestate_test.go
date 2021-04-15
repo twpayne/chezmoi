@@ -736,7 +736,9 @@ func TestSourceStateRead(t *testing.T) {
 			name: "dir",
 			root: map[string]interface{}{
 				"/home/user/.local/share/chezmoi": map[string]interface{}{
-					"dir": &vfst.Dir{Perm: 0o777},
+					"dir": &vfst.Dir{
+						Perm: 0o777 &^ chezmoitest.Umask,
+					},
 				},
 			},
 			expectedSourceState: NewSourceState(
@@ -747,7 +749,7 @@ func TestSourceStateRead(t *testing.T) {
 							TargetName: "dir",
 						},
 						targetStateEntry: &TargetStateDir{
-							perm: 0o777,
+							perm: 0o777 &^ chezmoitest.Umask,
 						},
 					},
 				}),
@@ -770,7 +772,7 @@ func TestSourceStateRead(t *testing.T) {
 						},
 						lazyContents: newLazyContents([]byte("# contents of .file\n")),
 						targetStateEntry: &TargetStateFile{
-							perm:         0o666,
+							perm:         0o666 &^ chezmoitest.Umask,
 							lazyContents: newLazyContents([]byte("# contents of .file\n")),
 						},
 					},
@@ -791,8 +793,12 @@ func TestSourceStateRead(t *testing.T) {
 			name: "duplicate_target_dir",
 			root: map[string]interface{}{
 				"/home/user/.local/share/chezmoi": map[string]interface{}{
-					"dir":       &vfst.Dir{Perm: 0o777},
-					"exact_dir": &vfst.Dir{Perm: 0o777},
+					"dir": &vfst.Dir{
+						Perm: 0o777 &^ chezmoitest.Umask,
+					},
+					"exact_dir": &vfst.Dir{
+						Perm: 0o777 &^ chezmoitest.Umask,
+					},
 				},
 			},
 			expectedError: "dir: duplicate source state entries (dir, exact_dir)",
@@ -826,7 +832,7 @@ func TestSourceStateRead(t *testing.T) {
 						},
 						lazyContents: newLazyContents([]byte("# contents of .file\n")),
 						targetStateEntry: &TargetStateFile{
-							perm:         0o777,
+							perm:         0o777 &^ chezmoitest.Umask,
 							lazyContents: newLazyContents([]byte("# contents of .file\n")),
 						},
 					},
@@ -922,7 +928,7 @@ func TestSourceStateRead(t *testing.T) {
 							TargetName: "dir",
 						},
 						targetStateEntry: &TargetStateDir{
-							perm: 0o777,
+							perm: 0o777 &^ chezmoitest.Umask,
 						},
 					},
 					"dir/file": &SourceStateFile{
@@ -933,7 +939,7 @@ func TestSourceStateRead(t *testing.T) {
 						},
 						lazyContents: newLazyContents([]byte("# contents of .dir/file\n")),
 						targetStateEntry: &TargetStateFile{
-							perm:         0o666,
+							perm:         0o666 &^ chezmoitest.Umask,
 							lazyContents: newLazyContents([]byte("# contents of .dir/file\n")),
 						},
 					},
@@ -995,7 +1001,7 @@ func TestSourceStateRead(t *testing.T) {
 							Exact:      true,
 						},
 						targetStateEntry: &TargetStateDir{
-							perm: 0o777,
+							perm: 0o777 &^ chezmoitest.Umask,
 						},
 					},
 					"dir/file1": &SourceStateFile{
@@ -1006,7 +1012,7 @@ func TestSourceStateRead(t *testing.T) {
 						},
 						lazyContents: newLazyContents([]byte("# contents of dir/file1\n")),
 						targetStateEntry: &TargetStateFile{
-							perm:         0o666,
+							perm:         0o666 &^ chezmoitest.Umask,
 							lazyContents: newLazyContents([]byte("# contents of dir/file1\n")),
 						},
 					},
@@ -1114,7 +1120,7 @@ func TestSourceStateRead(t *testing.T) {
 							TargetName: "dir",
 						},
 						targetStateEntry: &TargetStateDir{
-							perm: 0o777,
+							perm: 0o777 &^ chezmoitest.Umask,
 						},
 					},
 				}),

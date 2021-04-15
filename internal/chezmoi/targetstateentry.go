@@ -10,7 +10,7 @@ import (
 
 // A TargetStateEntry represents the state of an entry in the target state.
 type TargetStateEntry interface {
-	Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry, umask os.FileMode) (bool, error)
+	Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry) (bool, error)
 	EntryState(umask os.FileMode) (*EntryState, error)
 	Evaluate() error
 	SkipApply(persistentState PersistentState) (bool, error)
@@ -57,17 +57,17 @@ type scriptState struct {
 }
 
 // Apply updates actualStateEntry to match t. It does not recurse.
-func (t *TargetStateDir) Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry, umask os.FileMode) (bool, error) {
+func (t *TargetStateDir) Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry) (bool, error) {
 	if actualStateDir, ok := actualStateEntry.(*ActualStateDir); ok {
-		if runtime.GOOS == "windows" || actualStateDir.perm == t.perm&^umask {
+		if runtime.GOOS == "windows" || actualStateDir.perm == t.perm {
 			return false, nil
 		}
-		return true, system.Chmod(actualStateDir.Path(), t.perm&^umask)
+		return true, system.Chmod(actualStateDir.Path(), t.perm)
 	}
 	if err := actualStateEntry.Remove(system); err != nil {
 		return false, err
 	}
-	return true, system.Mkdir(actualStateEntry.Path(), t.perm&^umask)
+	return true, system.Mkdir(actualStateEntry.Path(), t.perm)
 }
 
 // EntryState returns t's entry state.
@@ -89,7 +89,7 @@ func (t *TargetStateDir) SkipApply(persistentState PersistentState) (bool, error
 }
 
 // Apply updates actualStateEntry to match t.
-func (t *TargetStateFile) Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry, umask os.FileMode) (bool, error) {
+func (t *TargetStateFile) Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry) (bool, error) {
 	contents, err := t.Contents()
 	if err != nil {
 		return false, err
@@ -113,15 +113,15 @@ func (t *TargetStateFile) Apply(system System, persistentState PersistentState, 
 			return false, err
 		}
 		if bytes.Equal(actualContentsSHA256, contentsSHA256) {
-			if runtime.GOOS == "windows" || actualStateFile.perm == t.perm&^umask {
+			if runtime.GOOS == "windows" || actualStateFile.perm == t.perm {
 				return false, nil
 			}
-			return true, system.Chmod(actualStateFile.Path(), t.perm&^umask)
+			return true, system.Chmod(actualStateFile.Path(), t.perm)
 		}
 	} else if err := actualStateEntry.Remove(system); err != nil {
 		return false, err
 	}
-	return true, system.WriteFile(actualStateEntry.Path(), contents, t.perm&^umask)
+	return true, system.WriteFile(actualStateEntry.Path(), contents, t.perm)
 }
 
 // EntryState returns t's entry state.
@@ -159,7 +159,7 @@ func (t *TargetStateFile) SkipApply(persistentState PersistentState) (bool, erro
 }
 
 // Apply updates actualStateEntry to match t.
-func (t *TargetStateRemove) Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry, umask os.FileMode) (bool, error) {
+func (t *TargetStateRemove) Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry) (bool, error) {
 	if _, ok := actualStateEntry.(*ActualStateAbsent); ok {
 		return false, nil
 	}
@@ -184,7 +184,7 @@ func (t *TargetStateRemove) SkipApply(persistentState PersistentState) (bool, er
 }
 
 // Apply runs t.
-func (t *TargetStateScript) Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry, umask os.FileMode) (bool, error) {
+func (t *TargetStateScript) Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry) (bool, error) {
 	contentsSHA256, err := t.ContentsSHA256()
 	if err != nil {
 		return false, err
@@ -253,7 +253,7 @@ func (t *TargetStateScript) SkipApply(persistentState PersistentState) (bool, er
 }
 
 // Apply updates actualStateEntry to match t.
-func (t *TargetStateSymlink) Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry, umask os.FileMode) (bool, error) {
+func (t *TargetStateSymlink) Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry) (bool, error) {
 	linkname, err := t.Linkname()
 	if err != nil {
 		return false, err
@@ -317,7 +317,7 @@ func (t *TargetStateSymlink) SkipApply(persistentState PersistentState) (bool, e
 }
 
 // Apply renames actualStateEntry.
-func (t *targetStateRenameDir) Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry, umask os.FileMode) (bool, error) {
+func (t *targetStateRenameDir) Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry) (bool, error) {
 	dir := actualStateEntry.Path().Dir()
 	return true, system.Rename(dir.Join(t.oldRelPath), dir.Join(t.newRelPath))
 }

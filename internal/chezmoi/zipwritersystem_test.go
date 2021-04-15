@@ -60,18 +60,18 @@ func TestZIPWriterSystem(t *testing.T) {
 		}{
 			{
 				name: ".dir",
-				mode: os.ModeDir | 0o777,
+				mode: (os.ModeDir | 0o777) &^ chezmoitest.Umask,
 			},
 			{
 				name:     ".dir/file",
 				method:   zip.Deflate,
-				mode:     0o666,
+				mode:     0o666 &^ chezmoitest.Umask,
 				contents: []byte("# contents of .dir/file\n"),
 			},
 			{
 				name:     "script",
 				method:   zip.Deflate,
-				mode:     0o700,
+				mode:     0o700 &^ chezmoitest.Umask,
 				contents: []byte("# contents of script\n"),
 			},
 			{

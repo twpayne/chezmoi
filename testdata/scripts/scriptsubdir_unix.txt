@@ -1,4 +1,5 @@
 [windows] skip 'UNIX only'
+[!umask:022] skip
 
 # test that scripts in subdirectories are run in the subdirectory
 chezmoi apply --force
@@ -29,7 +30,7 @@ anotherdir/script
   "anotherdir": {
     "type": "dir",
     "name": "anotherdir",
-    "perm": 511
+    "perm": 493
   },
   "anotherdir/script": {
     "type": "script",
@@ -39,7 +40,7 @@ anotherdir/script
   "dir": {
     "type": "dir",
     "name": "dir",
-    "perm": 511
+    "perm": 493
   },
   "dir/script": {
     "type": "script",
@@ -49,7 +50,7 @@ anotherdir/script
   "otherdir": {
     "type": "dir",
     "name": "otherdir",
-    "perm": 511
+    "perm": 493
   },
   "otherdir/script": {
     "type": "script",

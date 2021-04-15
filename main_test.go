@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"regexp"
 	"runtime"
 	"strconv"
 	"strings"
@@ -20,6 +21,8 @@ import (
 	"github.com/twpayne/chezmoi/v2/cmd"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
+
+var umaskConditionRx = regexp.MustCompile(`\Aumask:([0-7]{3})\z`)
 
 //nolint:interfacer
 func TestMain(m *testing.M) {
@@ -63,9 +66,12 @@ func TestScript(t *testing.T) {
 				return runtime.GOOS == "linux", nil
 			case "windows":
 				return runtime.GOOS == "windows", nil
-			default:
-				return false, fmt.Errorf("%s: unknown condition", cond)
 			}
+			if m := umaskConditionRx.FindStringSubmatch(cond); m != nil {
+				umask, _ := strconv.ParseInt(m[1], 8, 64)
+				return chezmoitest.Umask == os.FileMode(umask), nil
+			}
+			return false, fmt.Errorf("%s: unknown condition", cond)
 		},
 		Setup: setup,
 	})

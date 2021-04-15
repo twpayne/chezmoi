@@ -364,12 +364,66 @@ func (s *SourceState) Apply(targetSystem, destSystem System, persistentState Per
 			return err
 		}
 
+		// Mitigate a bug in chezmoi before version 2.0.10 in a user-friendly
+		// way.
+		//
+		// chezmoi before version 2.0.10 incorrectly stored the last written
+		// entry state permissions, due to buggy umask handling. This caused
+		// chezmoi apply to raise a false positive that a file or directory had
+		// been modified since chezmoi last wrote it, since the permissions did
+		// not match. Further compounding the problem, the diff presented to the
+		// user was empty as the target state matched the actual state.
+		//
+		// The mitigation consists of several parts. First, detect that the bug
+		// as precisely as possible by detecting where the the target state,
+		// actual state, and last written entry state permissions match when the
+		// umask is considered.
+		//
+		// If this is the case, then patch the last written entry state as if
+		// the permissions were correctly stored.
+		//
+		// Finally, try to update the last written entry state in the persistent
+		// state so we don't hit this path the next time the user runs chezmoi
+		// apply. We ignore any errors because the persistent state might be in
+		// read-only or dry-run mode.
+		//
+		// FIXME remove this mitigation in a later version of chezmoi
+		switch {
+		case lastWrittenEntryState == nil:
+		case lastWrittenEntryState.Type == EntryStateTypeFile:
+			if targetStateFile, ok := targetStateEntry.(*TargetStateFile); ok {
+				if actualStateFile, ok := actualStateEntry.(*ActualStateFile); ok {
+					if actualStateFile.perm.Perm() == targetStateFile.perm.Perm() {
+						if targetStateFile.perm.Perm() != lastWrittenEntryState.Mode.Perm() {
+							if targetStateFile.perm.Perm() == lastWrittenEntryState.Mode.Perm()&^s.umask {
+								lastWrittenEntryState.Mode = targetStateFile.perm
+								_ = persistentStateSet(persistentState, entryStateBucket, []byte(targetAbsPath), lastWrittenEntryState)
+							}
+						}
+					}
+				}
+			}
+		case lastWrittenEntryState.Type == EntryStateTypeDir:
+			if targetStateDir, ok := targetStateEntry.(*TargetStateDir); ok {
+				if actualStateDir, ok := actualStateEntry.(*ActualStateDir); ok {
+					if actualStateDir.perm.Perm() == targetStateDir.perm.Perm() {
+						if targetStateDir.perm.Perm() != lastWrittenEntryState.Mode.Perm() {
+							if targetStateDir.perm.Perm() == lastWrittenEntryState.Mode.Perm()&^s.umask {
+								lastWrittenEntryState.Mode = os.ModeDir | targetStateDir.perm
+								_ = persistentStateSet(persistentState, entryStateBucket, []byte(targetAbsPath), lastWrittenEntryState)
+							}
+						}
+					}
+				}
+			}
+		}
+
 		if err := options.PreApplyFunc(targetRelPath, targetEntryState, lastWrittenEntryState, actualEntryState); err != nil {
 			return err
 		}
 	}
 
-	if changed, err := targetStateEntry.Apply(targetSystem, persistentState, actualStateEntry, options.Umask); err != nil {
+	if changed, err := targetStateEntry.Apply(targetSystem, persistentState, actualStateEntry); err != nil {
 		return err
 	} else if !changed {
 		return nil
@@ -798,7 +852,7 @@ func (s *SourceState) executeTemplate(templateAbsPath AbsPath) ([]byte, error) {
 // newSourceStateDir returns a new SourceStateDir.
 func (s *SourceState) newSourceStateDir(sourceRelPath SourceRelPath, dirAttr DirAttr) *SourceStateDir {
 	targetStateDir := &TargetStateDir{
-		perm: dirAttr.perm(),
+		perm: dirAttr.perm() &^ s.umask,
 	}
 	return &SourceStateDir{
 		sourceRelPath:    sourceRelPath,
@@ -823,7 +877,7 @@ func (s *SourceState) newCreateTargetStateEntryFunc(fileAttr FileAttr, sourceLaz
 		return &TargetStateFile{
 			lazyContents: newLazyContents(contents),
 			empty:        true,
-			perm:         fileAttr.perm(),
+			perm:         fileAttr.perm() &^ s.umask,
 		}, nil
 	}
 }
@@ -846,7 +900,7 @@ func (s *SourceState) newFileTargetStateEntryFunc(sourceRelPath SourceRelPath, f
 		return &TargetStateFile{
 			lazyContents: newLazyContentsFunc(contentsFunc),
 			empty:        fileAttr.Empty,
-			perm:         fileAttr.perm(),
+			perm:         fileAttr.perm() &^ s.umask,
 		}, nil
 	}
 }
@@ -908,7 +962,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(sourceRelPath SourceRelPath,
 		}
 		return &TargetStateFile{
 			lazyContents: newLazyContentsFunc(contentsFunc),
-			perm:         fileAttr.perm(),
+			perm:         fileAttr.perm() &^ s.umask,
 		}, nil
 	}
 }
@@ -1008,7 +1062,7 @@ func (s *SourceState) newSourceStateDirEntry(info os.FileInfo, parentSourceRelPa
 		Attr:          dirAttr,
 		sourceRelPath: sourceRelPath,
 		targetStateEntry: &TargetStateDir{
-			perm: 0o777,
+			perm: 0o777 &^ s.umask,
 		},
 	}, nil
 }
@@ -1052,7 +1106,7 @@ func (s *SourceState) newSourceStateFileEntryFromFile(actualStateFile *ActualSta
 		targetStateEntry: &TargetStateFile{
 			lazyContents: lazyContents,
 			empty:        options.Empty,
-			perm:         0o666,
+			perm:         0o666 &^ s.umask,
 		},
 	}, nil
 }
@@ -1094,7 +1148,7 @@ func (s *SourceState) newSourceStateFileEntryFromSymlink(actualStateSymlink *Act
 		lazyContents:  lazyContents,
 		targetStateEntry: &TargetStateFile{
 			lazyContents: lazyContents,
-			perm:         0o666,
+			perm:         0o666 &^ s.umask,
 		},
 	}, nil
 }
