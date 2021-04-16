@@ -519,6 +519,12 @@ func (s *SourceState) Read() error {
 		parentSourceRelPath, sourceName := sourceRelPath.Split()
 		// Follow symlinks in the source directory.
 		if info.Mode()&os.ModeType == os.ModeSymlink {
+			// Some programs (notably emacs) use invalid symlinks as lockfiles.
+			// To avoid following them and getting an ENOENT error, check first
+			// if this is an entry that we will ignore anyway.
+			if strings.HasPrefix(info.Name(), ignorePrefix) && !strings.HasPrefix(info.Name(), Prefix) {
+				return nil
+			}
 			info, err = s.system.Stat(s.sourceDirAbsPath.Join(sourceRelPath.RelPath()))
 			if err != nil {
 				return err
