@@ -52,7 +52,7 @@ chezmoi diff
 cmp stdout golden/chmod-file-diff
 chezmoi apply --force $HOME${/}.file
 
-# test that chezmoi diff generates a diff when a dir's permissions are changed
+# test that chezmoi diff generates a diff when a directory's permissions are changed
 chmod 700 $HOME/.dir
 chezmoi diff
 cmp stdout golden/chmod-dir-diff

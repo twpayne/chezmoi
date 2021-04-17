@@ -38,7 +38,7 @@ chmod 777 $HOME/.file
 chezmoi apply --force $HOME${/}.file
 chezmoi verify
 
-# test that chezmoi verify fails when a dir's permissions are changed
+# test that chezmoi verify fails when a directory's permissions are changed
 chmod 700 $HOME/.dir
 ! chezmoi verify
 chezmoi apply --force $HOME${/}.dir

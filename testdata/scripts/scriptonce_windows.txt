@@ -20,7 +20,7 @@ chezmoi status
 chezmoi apply --force
 ! stdout ${HOME@R}
 
-# test that reseting the state causes the next chezmoi apply to run the script
+# test that resetting the state causes the next chezmoi apply to run the script
 chezmoi state reset --force
 chezmoi apply --force
 stdout ${HOME@R}
