@@ -273,6 +273,7 @@ func newConfig(options ...configOption) (*Config, error) {
 			stdinIsATTY: true,
 		},
 		_import: importCmdConfig{
+			exclude: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 		},
 		init: initCmdConfig{
