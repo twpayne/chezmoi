@@ -192,7 +192,7 @@ func (s *EntryTypeSet) Type() string {
 // from a []string.
 func StringSliceToEntryTypeSetHookFunc() mapstructure.DecodeHookFunc {
 	return func(from, to reflect.Type, data interface{}) (interface{}, error) {
-		if to != reflect.TypeOf(&EntryTypeSet{}) {
+		if to != reflect.TypeOf(EntryTypeSet{}) {
 			return data, nil
 		}
 		sl, ok := data.([]interface{})

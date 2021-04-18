@@ -1,5 +1,10 @@
 [!umask:022] skip
 
+# test chezmoi diff --exclude
+chezmoi diff --exclude=scripts
+[!windows] cmp stdout golden/diff-no-scripts
+[windows] cmp stdout golden/diff-no-scripts-windows
+
 # test that chezmoi diff respects the diff.exclude configuration variable
 chezmoi diff
 [!windows] cmp stdout golden/diff

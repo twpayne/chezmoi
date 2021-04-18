@@ -204,6 +204,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		Umask:   chezmoi.Umask,
 		Color:   "auto",
 		Diff: diffCmdConfig{
+			Exclude: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			Pager:   os.Getenv("PAGER"),
 			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 		},
