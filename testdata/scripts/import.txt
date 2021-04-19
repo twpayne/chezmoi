@@ -1,12 +1,13 @@
 [!exec:tar] skip 'tar not found in $PATH'
 
 mkhomedir
+symlink archive/.dir/.symlink -> .file
 exec tar czf archive.tar.gz archive
 
 # test that chezmoi import imports an archive
 chezmoi import --strip-components=1 archive.tar.gz
 cmp $CHEZMOISOURCEDIR/dot_dir/dot_file golden/dot_dir/dot_file
-cmp $CHEZMOISOURCEDIR/dot_dir/dot_symlink golden/dot_dir/symlink_dot_symlink
+[!windows] cmp $CHEZMOISOURCEDIR/dot_dir/symlink_dot_symlink golden/dot_dir/symlink_dot_symlink # FIXME this should pass on Windows
 
 # test that chezmoi import run a second time overwrites
 chezmoi import --strip-components=1 --debug archive.tar.gz
@@ -15,14 +16,19 @@ chezmoi import --strip-components=1 --debug archive.tar.gz
 chhome home2/user
 chezmoi import --strip-components=1 --destination=$HOME${/}.subdir archive.tar.gz
 cmp $CHEZMOISOURCEDIR/dot_subdir/dot_dir/dot_file golden/dot_dir/dot_file
-cmp $CHEZMOISOURCEDIR/dot_subdir/dot_dir/dot_symlink golden/dot_dir/symlink_dot_symlink
+[!windows] cmp $CHEZMOISOURCEDIR/dot_subdir/dot_dir/symlink_dot_symlink golden/dot_dir/symlink_dot_symlink # FIXME this should pass on Windows
+
+# test chezmoi --import --exclude
+chhome home3/user
+chezmoi import --strip-components=1 --destination=$HOME${/}.subdir --exclude=symlinks archive.tar.gz
+cmp $CHEZMOISOURCEDIR/dot_subdir/dot_dir/dot_file golden/dot_dir/dot_file
+! exists $CHEZMOISOURCEDIR/dot_subdir/dot_dir/symlink_dot_symlink
 
 -- archive/.dir/.file --
 # contents of .dir/.file
--- archive/.dir/.symlink --
-.file
 -- golden/dot_dir/dot_file --
 # contents of .dir/.file
 -- golden/dot_dir/symlink_dot_symlink --
 .file
 -- home2/user/.local/share/chezmoi/dot_subdir/.keep --
+-- home3/user/.local/share/chezmoi/dot_subdir/.keep --

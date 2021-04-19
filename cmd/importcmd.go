@@ -17,6 +17,7 @@ import (
 )
 
 type importCmdConfig struct {
+	exclude           *chezmoi.EntryTypeSet
 	destination       string
 	exact             bool
 	include           *chezmoi.EntryTypeSet
@@ -42,6 +43,7 @@ func (c *Config) newImportCmd() *cobra.Command {
 	flags := importCmd.Flags()
 	flags.StringVarP(&c._import.destination, "destination", "d", c._import.destination, "destination prefix")
 	flags.BoolVar(&c._import.exact, "exact", c._import.exact, "import directories exactly")
+	flags.VarP(c._import.exclude, "exclude", "x", "exclude entry types")
 	flags.VarP(c._import.include, "include", "i", "include entry types")
 	flags.BoolVarP(&c._import.removeDestination, "remove-destination", "r", c._import.removeDestination, "remove destination before import")
 	flags.IntVar(&c._import.stripComponents, "strip-components", c._import.stripComponents, "strip components")
@@ -96,7 +98,7 @@ func (c *Config) runImportCmd(cmd *cobra.Command, args []string, sourceState *ch
 	}
 	return sourceState.Add(c.sourceSystem, c.persistentState, tarReaderSystem, tarReaderSystem.FileInfos(), &chezmoi.AddOptions{
 		Exact:     c._import.exact,
-		Include:   c._import.include,
+		Include:   c._import.include.Sub(c._import.exclude),
 		RemoveDir: removeDir,
 	})
 }
