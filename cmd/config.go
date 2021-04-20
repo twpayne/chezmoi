@@ -62,17 +62,16 @@ type Config struct {
 	sourceSystem      chezmoi.System
 	destSystem        chezmoi.System
 	persistentState   chezmoi.PersistentState
-	color             bool
 
 	// Global configuration, settable in the config file.
 	SourceDirAbsPath chezmoi.AbsPath        `mapstructure:"sourceDir"`
 	DestDirAbsPath   chezmoi.AbsPath        `mapstructure:"destDir"`
 	Umask            os.FileMode            `mapstructure:"umask"`
 	Remove           bool                   `mapstructure:"remove"`
-	Color            string                 `mapstructure:"color"`
+	Color            *autoBool              `mapstructure:"color"`
 	Data             map[string]interface{} `mapstructure:"data"`
 	Template         templateConfig         `mapstructure:"template"`
-	UseBuiltinGit    string                 `mapstructure:"useBuiltinGit"`
+	UseBuiltinGit    *autoBool              `mapstructure:"useBuiltinGit"`
 
 	// Global configuration, not settable in the config file.
 	cpuProfile    string
@@ -173,6 +172,7 @@ var (
 				mapstructure.StringToSliceHookFunc(","),
 				chezmoi.StringSliceToEntryTypeSetHookFunc(),
 				chezmoi.StringToAbsPathHookFunc(),
+				StringOrBoolToAutoBoolHookFunc(),
 			),
 		),
 	}
@@ -199,7 +199,6 @@ func newConfig(options ...configOption) (*Config, error) {
 		fs:      vfs.OSFS,
 		homeDir: userHomeDir,
 		Umask:   chezmoi.Umask,
-		Color:   "auto",
 		Diff: diffCmdConfig{
 			Exclude: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			Pager:   os.Getenv("PAGER"),
@@ -361,6 +360,8 @@ func newConfig(options ...configOption) (*Config, error) {
 		return nil, err
 	}
 	c.DestDirAbsPath = c.homeDirAbsPath
+	c.Color = newAutoBool(c.colorAutoFunc)
+	c.UseBuiltinGit = newAutoBool(c.useBuiltinGitAutoFunc)
 	c._import.destination = c.homeDirAbsPath
 
 	return c, nil
@@ -483,6 +484,16 @@ func (c *Config) cmdOutput(dirAbsPath chezmoi.AbsPath, name string, args []strin
 		cmd.Dir = string(dirRawAbsPath)
 	}
 	return c.baseSystem.IdempotentCmdOutput(cmd)
+}
+
+func (c *Config) colorAutoFunc() (bool, error) {
+	if _, ok := os.LookupEnv("NO_COLOR"); ok {
+		return false, nil
+	}
+	if stdout, ok := c.stdout.(*os.File); ok {
+		return term.IsTerminal(int(stdout.Fd())), nil
+	}
+	return false, nil
 }
 
 // defaultConfigFile returns the default config file according to the XDG Base
@@ -724,7 +735,11 @@ func (c *Config) destAbsPathInfos(sourceState *chezmoi.SourceState, args []strin
 func (c *Config) diffFile(path chezmoi.RelPath, fromData []byte, fromMode os.FileMode, toData []byte, toMode os.FileMode) error {
 	var sb strings.Builder
 	unifiedEncoder := diff.NewUnifiedEncoder(&sb, diff.DefaultContextLines)
-	if c.color {
+	color, err := c.Color.Value()
+	if err != nil {
+		return err
+	}
+	if color {
 		unifiedEncoder.SetColor(diff.NewColorConfig())
 	}
 	diffPatch, err := chezmoi.DiffPatch(path, fromData, fromMode, toData, toMode)
@@ -956,11 +971,11 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 
 	persistentFlags := rootCmd.PersistentFlags()
 
-	persistentFlags.StringVar(&c.Color, "color", c.Color, "colorize diffs")
+	persistentFlags.Var(c.Color, "color", "colorize diffs")
 	persistentFlags.VarP(&c.DestDirAbsPath, "destination", "D", "destination directory")
 	persistentFlags.BoolVar(&c.Remove, "remove", c.Remove, "remove targets")
 	persistentFlags.VarP(&c.SourceDirAbsPath, "source", "S", "source directory")
-	persistentFlags.StringVar(&c.UseBuiltinGit, "use-builtin-git", c.UseBuiltinGit, "use builtin git")
+	persistentFlags.Var(c.UseBuiltinGit, "use-builtin-git", "use builtin git")
 	for _, key := range []string{
 		"color",
 		"destination",
@@ -1097,21 +1112,11 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		cmd.Printf("warning: %s: %v\n", c.configFileAbsPath, err)
 	}
 
-	if c.Color == "" || strings.ToLower(c.Color) == "auto" {
-		if _, ok := os.LookupEnv("NO_COLOR"); ok {
-			c.color = false
-		} else if stdout, ok := c.stdout.(*os.File); ok {
-			c.color = term.IsTerminal(int(stdout.Fd()))
-		} else {
-			c.color = false
-		}
-	} else if color, err := parseBool(c.Color); err == nil {
-		c.color = color
-	} else if !boolAnnotation(cmd, doesNotRequireValidConfig) {
-		return fmt.Errorf("%s: invalid color value", c.Color)
+	color, err := c.Color.Value()
+	if err != nil {
+		return err
 	}
-
-	if c.color {
+	if color {
 		if err := enableVirtualTerminalProcessing(c.stdout); err != nil {
 			return err
 		}
@@ -1120,7 +1125,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	log.Logger = log.Output(zerolog.NewConsoleWriter(
 		func(w *zerolog.ConsoleWriter) {
 			w.Out = c.stderr
-			w.NoColor = !c.color
+			w.NoColor = !color
 			w.TimeFormat = time.RFC3339
 		},
 	))
@@ -1195,8 +1200,8 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		c.destSystem = chezmoi.NewDryRunSystem(c.destSystem)
 	}
 	if c.verbose {
-		c.sourceSystem = chezmoi.NewGitDiffSystem(c.sourceSystem, c.stdout, c.SourceDirAbsPath, c.color)
-		c.destSystem = chezmoi.NewGitDiffSystem(c.destSystem, c.stdout, c.DestDirAbsPath, c.color)
+		c.sourceSystem = chezmoi.NewGitDiffSystem(c.sourceSystem, c.stdout, c.SourceDirAbsPath, color)
+		c.destSystem = chezmoi.NewGitDiffSystem(c.destSystem, c.stdout, c.DestDirAbsPath, color)
 	}
 
 	switch c.Encryption {
@@ -1464,14 +1469,11 @@ func (c *Config) targetRelPathsBySourcePath(sourceState *chezmoi.SourceState, ar
 	return targetRelPaths, nil
 }
 
-func (c *Config) useBuiltinGit() (bool, error) {
-	if c.UseBuiltinGit == "" || strings.ToLower(c.UseBuiltinGit) == "auto" {
-		if _, err := exec.LookPath(c.Git.Command); err == nil {
-			return false, nil
-		}
-		return true, nil
+func (c *Config) useBuiltinGitAutoFunc() (bool, error) {
+	if _, err := exec.LookPath(c.Git.Command); err == nil {
+		return false, nil
 	}
-	return parseBool(c.UseBuiltinGit)
+	return true, nil
 }
 
 func (c *Config) validateData() error {
