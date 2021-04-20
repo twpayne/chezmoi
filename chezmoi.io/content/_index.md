@@ -43,7 +43,7 @@ only requires adding a single binary to your machine (which you can do with
 
 chezmoi has strong support for security, allowing you to manage secrets (e.g.
 passwords, access tokens, and private keys) securely and seamlessly using a
-password manager and/or encypt whole files with your favorite encryption tool.
+password manager and/or encrypt whole files with your favorite encryption tool.
 
 If you do not personalize your configuration or only ever use a single operating
 system with a single account and none of your dotfiles contain secrets then you
@@ -115,7 +115,7 @@ GitLab](https://gitlab.com/search?search=chezmoi).
 
 ### People talking about chezmoi
 
-Read what [people have said about chezmoi](docs/MEDIA.md).
+Read what [people have said about chezmoi](/docs/media/).
 
 ## What documentation is available?
 
@@ -125,7 +125,8 @@ Read what [people have said about chezmoi](docs/MEDIA.md).
 * [How-to guide](/docs/how-to/) for achieving specific tasks.
 * [Templating guide](/docs/templating/) for working with templates.
 * [FAQ](/docs/faq/) for questions that aren't answered elsewhere.
-* [Changes](/docs/changes/) for non-backwards compatible changes.
+* [Changes guide](/docs/changes/) for upgrading from a previous major version of
+  chezmoi.
 * [Reference](/docs/reference/) for a complete description of chezmoi.
 * [Comparison guide](/docs/comparison/) for a comparison with other dotfile managers.
 * [Contributing](/docs/contributing/) for people looking to contribute to or

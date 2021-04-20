@@ -456,7 +456,7 @@ func (c *Config) applyArgs(targetSystem chezmoi.System, targetDirAbsPath chezmoi
 		case errors.Is(err, chezmoi.Skip):
 			continue
 		case err != nil && c.keepGoing:
-			c.errorf("%v", err)
+			c.errorf("%v\n", err)
 			keptGoingAfterErr = true
 		case err != nil:
 			return err
@@ -921,6 +921,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 
 	persistentFlags.StringVarP(&c.configFile, "config", "c", c.configFile, "config file")
 	persistentFlags.StringVar(&c.cpuProfile, "cpu-profile", c.cpuProfile, "write CPU profile to file")
+	persistentFlags.BoolVar(&c.debug, "debug", c.debug, "write debug logs")
 	persistentFlags.BoolVarP(&c.dryRun, "dry-run", "n", c.dryRun, "dry run")
 	persistentFlags.BoolVar(&c.force, "force", c.force, "force")
 	persistentFlags.BoolVarP(&c.keepGoing, "keep-going", "k", c.keepGoing, "keep going as far as possible after an error")
@@ -929,7 +930,6 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.BoolVar(&c.sourcePath, "source-path", c.sourcePath, "specify targets by source path")
 	persistentFlags.BoolVarP(&c.verbose, "verbose", "v", c.verbose, "verbose")
 	persistentFlags.StringVarP(&c.outputStr, "output", "o", c.outputStr, "output file")
-	persistentFlags.BoolVar(&c.debug, "debug", c.debug, "write debug logs")
 
 	for _, err := range []error{
 		rootCmd.MarkPersistentFlagFilename("config"),

@@ -197,7 +197,7 @@ func StringSliceToEntryTypeSetHookFunc() mapstructure.DecodeHookFunc {
 		}
 		sl, ok := data.([]interface{})
 		if !ok {
-			return nil, fmt.Errorf("expected a []string, got %T", data)
+			return nil, fmt.Errorf("expected a []string, got a %T", data)
 		}
 		ss := make([]string, 0, len(sl))
 		for _, i := range sl {

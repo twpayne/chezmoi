@@ -146,15 +146,15 @@ both unit and integration tests. When you hit the limits of your existing
 dotfile management system, chezmoi already has a tried-and-tested solution ready
 for you to use.
 
-### Setting up your dotfiles requires more than two short commands
+### Setting up your dotfiles requires more than one short command
 
 If your system is written in a scripting language like Python, Perl, or Ruby,
 then you also need to install a compatible version of that language's runtime
 before you can use your system.
 
 chezmoi is distributed as a single stand-alone statically-linked binary with no
-dependencies that you can simply copy onto your machine and run. chezmoi
-provides one-line installs, pre-built binaries, packages for Linux and BSD
-distributions, Homebrew formulae, Scoop and Chocolatey support on Windows, and a
-initial config file generation mechanism to make installing your dotfiles on a
-new machine as painless as possible.
+dependencies that you can simply copy onto your machine and run. You don't even
+need git installed. chezmoi provides one-line installs, pre-built binaries,
+packages for Linux and BSD distributions, Homebrew formulae, Scoop and
+Chocolatey support on Windows, and a initial config file generation mechanism to
+make installing your dotfiles on a new machine as painless as possible.

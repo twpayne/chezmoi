@@ -55,7 +55,7 @@ only requires adding a single binary to your machine (which you can do with
 
 chezmoi has strong support for security, allowing you to manage secrets (e.g.
 passwords, access tokens, and private keys) securely and seamlessly using a
-password manager and/or encypt whole files with your favorite encryption tool.
+password manager and/or encrypt whole files with your favorite encryption tool.
 
 If you do not personalize your configuration or only ever use a single operating
 system with a single account and none of your dotfiles contain secrets then you
@@ -133,13 +133,12 @@ Read what [people have said about chezmoi](docs/MEDIA.md).
 
 * [Install guide](docs/INSTALL.md) to get chezmoi installed on your machine with
   one or two commands.
-* [Changes guide](docs/CHANGES.md) for upgrading from a previous major version
-  of chezmoi.
 * [Quick start guide](docs/QUICKSTART.md) for your first steps.
 * [How-to guide](docs/HOWTO.md) for achieving specific tasks.
 * [Templating guide](docs/TEMPLATING.md) for working with templates.
 * [FAQ](docs/FAQ.md) for questions that aren't answered elsewhere.
-* [Changes](docs/CHANGES.md) for non-backwards compatible changes.
+* [Changes guide](docs/CHANGES.md) for upgrading from a previous major version
+  of chezmoi.
 * [Reference](docs/REFERENCE.md) for a complete description of chezmoi.
 * [Comparison guide](docs/COMPARISON.md) for a comparison with other dotfile managers.
 * [Contributing](docs/CONTRIBUTING.md) for people looking to contribute to or
