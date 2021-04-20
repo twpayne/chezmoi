@@ -56,7 +56,7 @@ func (c *Config) runStatusCmd(cmd *cobra.Command, args []string, sourceState *ch
 		}
 		return chezmoi.Skip
 	}
-	if err := c.applyArgs(dryRunSystem, c.destDirAbsPath, args, applyArgsOptions{
+	if err := c.applyArgs(dryRunSystem, c.DestDirAbsPath, args, applyArgsOptions{
 		include:      c.status.include.Sub(c.status.exclude),
 		recursive:    c.status.recursive,
 		umask:        c.Umask,

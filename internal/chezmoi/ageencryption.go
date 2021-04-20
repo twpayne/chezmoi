@@ -19,8 +19,8 @@ type AGEEncryption struct {
 	Identities      []string
 	Recipient       string
 	Recipients      []string
-	RecipientsFile  string
-	RecipientsFiles []string
+	RecipientsFile  AbsPath
+	RecipientsFiles []AbsPath
 	Suffix          string
 }
 
@@ -94,10 +94,10 @@ func (e *AGEEncryption) encryptArgs() []string {
 		args = append(args, "--recipient", recipient)
 	}
 	if e.RecipientsFile != "" {
-		args = append(args, "--recipients-file", e.RecipientsFile)
+		args = append(args, "--recipients-file", string(e.RecipientsFile))
 	}
 	for _, recipientsFile := range e.RecipientsFiles {
-		args = append(args, "--recipients-file", recipientsFile)
+		args = append(args, "--recipients-file", string(recipientsFile))
 	}
 	return args
 }

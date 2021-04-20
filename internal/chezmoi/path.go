@@ -2,9 +2,13 @@ package chezmoi
 
 import (
 	"fmt"
+	"os"
 	"path"
 	"path/filepath"
+	"reflect"
 	"strings"
+
+	"github.com/mitchellh/mapstructure"
 )
 
 // An AbsPath is an absolute path.
@@ -47,10 +51,28 @@ func (p AbsPath) MustTrimDirPrefix(dirPrefix AbsPath) RelPath {
 	return relPath
 }
 
+// Set implements github.com/spf13/pflag.Value.Set.
+func (p *AbsPath) Set(s string) error {
+	homeDirAbsPath, err := homeDirAbsPath()
+	if err != nil {
+		return err
+	}
+	absPath, err := NewAbsPathFromExtPath(s, homeDirAbsPath)
+	if err != nil {
+		return err
+	}
+	*p = absPath
+	return nil
+}
+
 // Split returns p's directory and file.
 func (p AbsPath) Split() (AbsPath, RelPath) {
 	dir, file := path.Split(string(p))
 	return AbsPath(dir), RelPath(file)
+}
+
+func (p AbsPath) String() string {
+	return string(p)
 }
 
 // TrimDirPrefix trims prefix from p.
@@ -62,6 +84,11 @@ func (p AbsPath) TrimDirPrefix(dirPrefixAbsPath AbsPath) (RelPath, error) {
 		}
 	}
 	return RelPath(p[len(dirPrefixAbsPath)+1:]), nil
+}
+
+// Type implements github.com/spf13/pflag.Value.Type.
+func (p AbsPath) Type() string {
+	return "absolute path"
 }
 
 // AbsPaths is a slice of AbsPaths that implements sort.Interface.
@@ -122,3 +149,35 @@ type RelPaths []RelPath
 func (ps RelPaths) Len() int           { return len(ps) }
 func (ps RelPaths) Less(i, j int) bool { return string(ps[i]) < string(ps[j]) }
 func (ps RelPaths) Swap(i, j int)      { ps[i], ps[j] = ps[j], ps[i] }
+
+// StringSliceToAbsPathHookFunc is a
+// github.com/mitchellh/mapstructure.DecodeHookFunc that parses an AbsPath from
+// a string.
+func StringToAbsPathHookFunc() mapstructure.DecodeHookFunc {
+	return func(from, to reflect.Type, data interface{}) (interface{}, error) {
+		if to != reflect.TypeOf(AbsPath("")) {
+			return data, nil
+		}
+		s, ok := data.(string)
+		if !ok {
+			return nil, fmt.Errorf("expected a string, got a %T", data)
+		}
+		var absPath AbsPath
+		if err := absPath.Set(s); err != nil {
+			return nil, err
+		}
+		return absPath, nil
+	}
+}
+
+func homeDirAbsPath() (AbsPath, error) {
+	userHomeDir, err := os.UserHomeDir()
+	if err != nil {
+		return AbsPath(""), err
+	}
+	absPath, err := NormalizePath(userHomeDir)
+	if err != nil {
+		return AbsPath(""), err
+	}
+	return absPath, nil
+}

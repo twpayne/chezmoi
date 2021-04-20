@@ -38,8 +38,8 @@ func (c *Config) newDiffCmd() *cobra.Command {
 func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) error {
 	sb := strings.Builder{}
 	dryRunSystem := chezmoi.NewDryRunSystem(c.destSystem)
-	gitDiffSystem := chezmoi.NewGitDiffSystem(dryRunSystem, &sb, c.destDirAbsPath, c.color)
-	if err := c.applyArgs(gitDiffSystem, c.destDirAbsPath, args, applyArgsOptions{
+	gitDiffSystem := chezmoi.NewGitDiffSystem(dryRunSystem, &sb, c.DestDirAbsPath, c.color)
+	if err := c.applyArgs(gitDiffSystem, c.DestDirAbsPath, args, applyArgsOptions{
 		include:   c.Diff.include.Sub(c.Diff.Exclude),
 		recursive: c.Diff.recursive,
 		umask:     c.Umask,

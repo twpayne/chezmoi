@@ -226,14 +226,28 @@ func withTestFS(fs vfs.FS) configOption {
 
 func withTestUser(username string) configOption {
 	return func(c *Config) error {
+		var env string
 		switch runtime.GOOS {
+		case "plan9":
+			c.homeDir = "/home/user"
+			env = "home"
 		case "windows":
 			c.homeDir = `c:\home\user`
+			env = "USERPROFILE"
 		default:
 			c.homeDir = "/home/user"
+			env = "HOME"
 		}
-		c.SourceDir = filepath.Join(c.homeDir, ".local", "share", "chezmoi")
-		c.DestDir = c.homeDir
+		if err := os.Setenv(env, c.homeDir); err != nil {
+			panic(err)
+		}
+		var err error
+		c.homeDirAbsPath, err = chezmoi.NormalizePath(c.homeDir)
+		if err != nil {
+			panic(err)
+		}
+		c.SourceDirAbsPath = c.homeDirAbsPath.Join(".local", "share", "chezmoi")
+		c.DestDirAbsPath = c.homeDirAbsPath
 		c.Umask = 0o22
 		configHome := filepath.Join(c.homeDir, ".config")
 		dataHome := filepath.Join(c.homeDir, ".local", "share")

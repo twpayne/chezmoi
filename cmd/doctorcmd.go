@@ -121,14 +121,14 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		&dirCheck{
 			name:    "source-dir",
-			dirname: string(c.sourceDirAbsPath),
+			dirname: string(c.SourceDirAbsPath),
 		},
 		&suspiciousEntriesCheck{
-			dirname: string(c.sourceDirAbsPath),
+			dirname: string(c.SourceDirAbsPath),
 		},
 		&dirCheck{
 			name:    "dest-dir",
-			dirname: string(c.destDirAbsPath),
+			dirname: string(c.DestDirAbsPath),
 		},
 		&binaryCheck{
 			name:       "shell",
