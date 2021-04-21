@@ -34,7 +34,7 @@ func (c *Config) newApplyCmd() *cobra.Command {
 }
 
 func (c *Config) runApplyCmd(cmd *cobra.Command, args []string) error {
-	return c.applyArgs(c.destSystem, c.destDirAbsPath, args, applyArgsOptions{
+	return c.applyArgs(c.destSystem, c.DestDirAbsPath, args, applyArgsOptions{
 		include:      c.apply.include.Sub(c.apply.exclude),
 		recursive:    c.apply.recursive,
 		umask:        c.Umask,

@@ -34,7 +34,7 @@ func (c *Config) newVerifyCmd() *cobra.Command {
 
 func (c *Config) runVerifyCmd(cmd *cobra.Command, args []string) error {
 	dryRunSystem := chezmoi.NewDryRunSystem(c.destSystem)
-	if err := c.applyArgs(dryRunSystem, c.destDirAbsPath, args, applyArgsOptions{
+	if err := c.applyArgs(dryRunSystem, c.DestDirAbsPath, args, applyArgsOptions{
 		include:   c.verify.include.Sub(c.verify.exclude),
 		recursive: c.verify.recursive,
 		umask:     c.Umask,

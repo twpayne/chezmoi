@@ -28,5 +28,5 @@ func (c *Config) newGitCmd() *cobra.Command {
 }
 
 func (c *Config) runGitCmd(cmd *cobra.Command, args []string) error {
-	return c.run(c.sourceDirAbsPath, c.Git.Command, args)
+	return c.run(c.SourceDirAbsPath, c.Git.Command, args)
 }

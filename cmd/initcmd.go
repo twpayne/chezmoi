@@ -105,14 +105,14 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	// If the source repo does not exist then init or clone it.
-	switch _, err := c.baseSystem.Stat(c.sourceDirAbsPath.Join(chezmoi.RelPath(".git"))); {
+	switch _, err := c.baseSystem.Stat(c.SourceDirAbsPath.Join(chezmoi.RelPath(".git"))); {
 	case os.IsNotExist(err):
-		rawSourceDir, err := c.baseSystem.RawPath(c.sourceDirAbsPath)
+		rawSourceDir, err := c.baseSystem.RawPath(c.SourceDirAbsPath)
 		if err != nil {
 			return err
 		}
 
-		useBuiltinGit, err := c.useBuiltinGit()
+		useBuiltinGit, err := c.UseBuiltinGit.Value()
 		if err != nil {
 			return err
 		}
@@ -123,7 +123,7 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 				if _, err = git.PlainInit(string(rawSourceDir), isBare); err != nil {
 					return err
 				}
-			} else if err := c.run(c.sourceDirAbsPath, c.Git.Command, []string{"init"}); err != nil {
+			} else if err := c.run(c.SourceDirAbsPath, c.Git.Command, []string{"init"}); err != nil {
 				return err
 			}
 		} else {
@@ -200,7 +200,7 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 
 	// Apply.
 	if c.init.apply {
-		if err := c.applyArgs(c.destSystem, c.destDirAbsPath, noArgs, applyArgsOptions{
+		if err := c.applyArgs(c.destSystem, c.DestDirAbsPath, noArgs, applyArgsOptions{
 			include:      chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll).Sub(c.init.exclude),
 			recursive:    false,
 			umask:        c.Umask,

@@ -101,8 +101,8 @@ func (c *Config) runChattrCmd(cmd *cobra.Command, args []string, sourceState *ch
 		switch sourceStateEntry := sourceStateEntry.(type) {
 		case *chezmoi.SourceStateDir:
 			if newBaseNameRelPath := chezmoi.RelPath(am.modifyDirAttr(sourceStateEntry.Attr).SourceName()); newBaseNameRelPath != fileRelPath {
-				oldSourceAbsPath := c.sourceDirAbsPath.Join(parentRelPath, fileRelPath)
-				newSourceAbsPath := c.sourceDirAbsPath.Join(parentRelPath, newBaseNameRelPath)
+				oldSourceAbsPath := c.SourceDirAbsPath.Join(parentRelPath, fileRelPath)
+				newSourceAbsPath := c.SourceDirAbsPath.Join(parentRelPath, newBaseNameRelPath)
 				if err := c.sourceSystem.Rename(oldSourceAbsPath, newSourceAbsPath); err != nil {
 					return err
 				}
@@ -111,8 +111,8 @@ func (c *Config) runChattrCmd(cmd *cobra.Command, args []string, sourceState *ch
 			// FIXME encrypted attribute changes
 			// FIXME when changing encrypted attribute add new file before removing old one
 			if newBaseNameRelPath := chezmoi.RelPath(am.modifyFileAttr(sourceStateEntry.Attr).SourceName(encryptedSuffix)); newBaseNameRelPath != fileRelPath {
-				oldSourceAbsPath := c.sourceDirAbsPath.Join(parentRelPath, fileRelPath)
-				newSourceAbsPath := c.sourceDirAbsPath.Join(parentRelPath, newBaseNameRelPath)
+				oldSourceAbsPath := c.SourceDirAbsPath.Join(parentRelPath, fileRelPath)
+				newSourceAbsPath := c.SourceDirAbsPath.Join(parentRelPath, newBaseNameRelPath)
 				if err := c.sourceSystem.Rename(oldSourceAbsPath, newSourceAbsPath); err != nil {
 					return err
 				}

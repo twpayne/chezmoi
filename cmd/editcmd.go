@@ -43,11 +43,11 @@ func (c *Config) newEditCmd() *cobra.Command {
 
 func (c *Config) runEditCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
 	if len(args) == 0 {
-		if err := c.runEditor([]string{string(c.sourceDirAbsPath)}); err != nil {
+		if err := c.runEditor([]string{string(c.SourceDirAbsPath)}); err != nil {
 			return err
 		}
 		if c.Edit.apply {
-			if err := c.applyArgs(c.destSystem, c.destDirAbsPath, noArgs, applyArgsOptions{
+			if err := c.applyArgs(c.destSystem, c.DestDirAbsPath, noArgs, applyArgsOptions{
 				include:      c.Edit.include.Sub(c.Edit.exclude),
 				recursive:    true,
 				umask:        c.Umask,
@@ -106,13 +106,13 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string, sourceState *chez
 				return err
 			}
 			transparentlyDecryptedFile := transparentlyDecryptedFile{
-				sourceAbsPath:    c.sourceDirAbsPath.Join(sourceRelPath),
+				sourceAbsPath:    c.SourceDirAbsPath.Join(sourceRelPath),
 				decryptedAbsPath: decryptedAbsPath,
 			}
 			transparentlyDecryptedFiles = append(transparentlyDecryptedFiles, transparentlyDecryptedFile)
 			editorArg = string(decryptedAbsPath)
 		} else {
-			sourceAbsPath := c.sourceDirAbsPath.Join(sourceRelPath)
+			sourceAbsPath := c.SourceDirAbsPath.Join(sourceRelPath)
 			editorArg = string(sourceAbsPath)
 		}
 		editorArgs = append(editorArgs, editorArg)
@@ -133,7 +133,7 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string, sourceState *chez
 	}
 
 	if c.Edit.apply {
-		if err := c.applyArgs(c.destSystem, c.destDirAbsPath, args, applyArgsOptions{
+		if err := c.applyArgs(c.destSystem, c.DestDirAbsPath, args, applyArgsOptions{
 			include:      c.Edit.include,
 			recursive:    false,
 			umask:        c.Umask,

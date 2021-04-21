@@ -18,7 +18,7 @@ import (
 
 type importCmdConfig struct {
 	exclude           *chezmoi.EntryTypeSet
-	destination       string
+	destination       chezmoi.AbsPath
 	exact             bool
 	include           *chezmoi.EntryTypeSet
 	removeDestination bool
@@ -41,7 +41,7 @@ func (c *Config) newImportCmd() *cobra.Command {
 	}
 
 	flags := importCmd.Flags()
-	flags.StringVarP(&c._import.destination, "destination", "d", c._import.destination, "destination prefix")
+	flags.VarP(&c._import.destination, "destination", "d", "destination prefix")
 	flags.BoolVar(&c._import.exact, "exact", c._import.exact, "import directories exactly")
 	flags.VarP(c._import.exclude, "exclude", "x", "exclude entry types")
 	flags.VarP(c._import.include, "include", "i", "include entry types")
@@ -78,12 +78,8 @@ func (c *Config) runImportCmd(cmd *cobra.Command, args []string, sourceState *ch
 			return fmt.Errorf("unknown format: %s", base)
 		}
 	}
-	rootAbsPath, err := chezmoi.NewAbsPathFromExtPath(c._import.destination, c.homeDirAbsPath)
-	if err != nil {
-		return err
-	}
 	tarReaderSystem, err := chezmoi.NewTARReaderSystem(tar.NewReader(r), chezmoi.TARReaderSystemOptions{
-		RootAbsPath:     rootAbsPath,
+		RootAbsPath:     c._import.destination,
 		StripComponents: c._import.stripComponents,
 	})
 	if err != nil {
@@ -91,7 +87,7 @@ func (c *Config) runImportCmd(cmd *cobra.Command, args []string, sourceState *ch
 	}
 	var removeDir chezmoi.RelPath
 	if c._import.removeDestination {
-		removeDir, err = rootAbsPath.TrimDirPrefix(c.destDirAbsPath)
+		removeDir, err = c._import.destination.TrimDirPrefix(c.DestDirAbsPath)
 		if err != nil {
 			return err
 		}

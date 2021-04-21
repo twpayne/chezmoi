@@ -161,15 +161,18 @@ func (c *Config) runStateGetCmd(cmd *cobra.Command, args []string) error {
 }
 
 func (c *Config) runStateResetCmd(cmd *cobra.Command, args []string) error {
-	path := c.persistentStateFile()
-	_, err := c.destSystem.Stat(path)
-	if os.IsNotExist(err) {
+	persistentStateFileAbsPath, err := c.persistentStateFile()
+	if err != nil {
+		return err
+	}
+	switch _, err := c.destSystem.Stat(persistentStateFileAbsPath); {
+	case os.IsNotExist(err):
 		return nil
-	} else if err != nil {
+	case err != nil:
 		return err
 	}
 	if !c.force {
-		switch choice, err := c.promptChoice(fmt.Sprintf("Remove %s", path), []string{"yes", "no"}); {
+		switch choice, err := c.promptChoice(fmt.Sprintf("Remove %s", persistentStateFileAbsPath), []string{"yes", "no"}); {
 		case err != nil:
 			return err
 		case choice == "yes":
@@ -177,7 +180,7 @@ func (c *Config) runStateResetCmd(cmd *cobra.Command, args []string) error {
 			return nil
 		}
 	}
-	return c.destSystem.RemoveAll(path)
+	return c.destSystem.RemoveAll(persistentStateFileAbsPath)
 }
 
 func (c *Config) runStateSetCmd(cmd *cobra.Command, args []string) error {

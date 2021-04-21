@@ -11,12 +11,7 @@ import (
 	"unicode"
 
 	"github.com/google/go-github/v34/github"
-	"github.com/spf13/viper"
-	"github.com/twpayne/go-vfs/v2"
-	"github.com/twpayne/go-xdg/v4"
 	"golang.org/x/oauth2"
-
-	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
 var (
@@ -34,38 +29,6 @@ var (
 		"quit",
 	}
 )
-
-// defaultConfigFile returns the default config file according to the XDG Base
-// Directory Specification.
-func defaultConfigFile(fs vfs.Stater, bds *xdg.BaseDirectorySpecification) chezmoi.AbsPath {
-	// Search XDG Base Directory Specification config directories first.
-	for _, configDir := range bds.ConfigDirs {
-		configDirAbsPath := chezmoi.AbsPath(configDir)
-		for _, extension := range viper.SupportedExts {
-			configFileAbsPath := configDirAbsPath.Join(chezmoi.RelPath("chezmoi"), chezmoi.RelPath("chezmoi."+extension))
-			if _, err := fs.Stat(string(configFileAbsPath)); err == nil {
-				return configFileAbsPath
-			}
-		}
-	}
-	// Fallback to XDG Base Directory Specification default.
-	return chezmoi.AbsPath(bds.ConfigHome).Join(chezmoi.RelPath("chezmoi"), chezmoi.RelPath("chezmoi.toml"))
-}
-
-// defaultSourceDir returns the default source directory according to the XDG
-// Base Directory Specification.
-func defaultSourceDir(fs vfs.Stater, bds *xdg.BaseDirectorySpecification) chezmoi.AbsPath {
-	// Check for XDG Base Directory Specification data directories first.
-	for _, dataDir := range bds.DataDirs {
-		dataDirAbsPath := chezmoi.AbsPath(dataDir)
-		sourceDirAbsPath := dataDirAbsPath.Join(chezmoi.RelPath("chezmoi"))
-		if _, err := fs.Stat(string(sourceDirAbsPath)); err == nil {
-			return sourceDirAbsPath
-		}
-	}
-	// Fallback to XDG Base Directory Specification default.
-	return chezmoi.AbsPath(bds.DataHome).Join(chezmoi.RelPath("chezmoi"))
-}
 
 // firstNonEmptyString returns its first non-empty argument, or "" if all
 // arguments are empty.

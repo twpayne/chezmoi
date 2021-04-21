@@ -33,5 +33,5 @@ func (c *Config) runCDCmd(cmd *cobra.Command, args []string) error {
 	if shellCommand == "" {
 		shellCommand, _ = shell.CurrentUserShell()
 	}
-	return c.run(c.sourceDirAbsPath, shellCommand, c.CD.Args)
+	return c.run(c.SourceDirAbsPath, shellCommand, c.CD.Args)
 }
