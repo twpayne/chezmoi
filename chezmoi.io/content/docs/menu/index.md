@@ -12,4 +12,5 @@ headless = true
 - [Media]({{< relref "/docs/media.md" >}})
 - [Comparison]({{< relref "/docs/comparison.md" >}})
 - [Contributing]({{< relref "/docs/contributing.md" >}})
+- [Related Software]({{< relref "/docs/related.md" >}})
 - [GitHub](https://github.com/twpayne/chezmoi)

@@ -141,6 +141,8 @@ Read what [people have said about chezmoi](docs/MEDIA.md).
   of chezmoi.
 * [Reference](docs/REFERENCE.md) for a complete description of chezmoi.
 * [Comparison guide](docs/COMPARISON.md) for a comparison with other dotfile managers.
+* [Related software](docs/RELATED.md) for third party software that works with
+  chezmoi.
 * [Contributing](docs/CONTRIBUTING.md) for people looking to contribute to or
   package chezmoi.
 
