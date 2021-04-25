@@ -210,7 +210,7 @@ You can also create more complicated expressions. The `eq` command can accept
 multiple arguments. It will check if the first argument is equal to any of the
 other arguments.
 
-	{{ if eq "foo" "foo" "bar" }}one{{end}}
+	{{ if eq "foo" "foo" "bar" }}hello{{end}}
 	{{ if eq "foo" "bar" "foo" }}hello{{end}}
 	{{ if eq "foo" "bar" "bar" }}hello{{end}}
 
