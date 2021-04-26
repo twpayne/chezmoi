@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
@@ -51,6 +53,54 @@ func (c *Config) newAddCmd() *cobra.Command {
 	return addCmd
 }
 
+// defaultPreAddFunc prompts the user for confirmation if the adding the entry
+// would remove any of the encrypted, private, or template attributes.
+func (c *Config) defaultPreAddFunc(targetRelPath chezmoi.RelPath, newSourceStateEntry, oldSourceStateEntry chezmoi.SourceStateEntry) error {
+	if c.force {
+		return nil
+	}
+
+	newFile, newIsFile := newSourceStateEntry.(*chezmoi.SourceStateFile)
+	oldFile, oldIsFile := oldSourceStateEntry.(*chezmoi.SourceStateFile)
+	if !newIsFile || !oldIsFile {
+		return nil
+	}
+
+	var removedAttributes []string
+	if !newFile.Attr.Encrypted && oldFile.Attr.Encrypted {
+		removedAttributes = append(removedAttributes, "encrypted")
+	}
+	if !newFile.Attr.Private && oldFile.Attr.Private {
+		removedAttributes = append(removedAttributes, "private")
+	}
+	if !newFile.Attr.Template && oldFile.Attr.Template {
+		removedAttributes = append(removedAttributes, "template")
+	}
+	if len(removedAttributes) == 0 {
+		return nil
+	}
+	removedAttributesStr := englishList(removedAttributes, "attribute", "")
+
+	choices := []string{"yes", "no", "all", "quit"}
+	for {
+		switch choice, err := c.promptChoice(fmt.Sprintf("adding %s would remove %s, continue", targetRelPath, removedAttributesStr), choices); {
+		case err != nil:
+			return err
+		case choice == "all":
+			c.force = true
+			return nil
+		case choice == "no":
+			return chezmoi.Skip
+		case choice == "quit":
+			return ErrExitCode(1)
+		case choice == "yes":
+			return nil
+		default:
+			return nil
+		}
+	}
+}
+
 func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
 	destAbsPathInfos, err := c.destAbsPathInfos(sourceState, args, c.Add.recursive, c.Add.follow)
 	if err != nil {
@@ -65,6 +115,7 @@ func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezm
 		EncryptedSuffix:  c.encryption.EncryptedSuffix(),
 		Exact:            c.Add.exact,
 		Include:          c.Add.include.Sub(c.Add.exclude),
+		PreAddFunc:       c.defaultPreAddFunc,
 		Template:         c.Add.template,
 		TemplateSymlinks: c.Add.TemplateSymlinks,
 	})

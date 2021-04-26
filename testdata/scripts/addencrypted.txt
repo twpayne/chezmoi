@@ -15,7 +15,7 @@ exists $CHEZMOISOURCEDIR/encrypted_dot_file.asc
 ! grep plaintext $CHEZMOISOURCEDIR/encrypted_dot_file.asc
 
 # test that chezmoi add without --encrypt replaces the source file
-chezmoi add $HOME${/}.file
+chezmoi add --force $HOME${/}.file
 ! exists $CHEZMOISOURCEDIR/encrypted_dot_file.asc
 cmp $CHEZMOISOURCEDIR/dot_file golden/.file
 
