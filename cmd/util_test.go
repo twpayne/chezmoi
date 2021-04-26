@@ -7,6 +7,55 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestEnglishList(t *testing.T) {
+	for _, tc := range []struct {
+		ss       []string
+		singular string
+		plural   string
+		expected string
+	}{
+		{
+			singular: "item",
+			expected: "zero items",
+		},
+		{
+			ss:       []string{"first"},
+			singular: "item",
+			expected: "first item",
+		},
+		{
+			ss:       []string{"first", "second"},
+			singular: "item",
+			expected: "first and second items",
+		},
+		{
+			ss:       []string{"first", "second", "third"},
+			singular: "item",
+			expected: "first, second, and third items",
+		},
+		{
+			ss:       []string{"first", "second", "third", "fourth"},
+			singular: "item",
+			expected: "first, second, third, and fourth items",
+		},
+		{
+			ss:       []string{"first"},
+			singular: "person",
+			plural:   "people",
+			expected: "first person",
+		},
+		{
+			ss:       []string{"first", "second", "third"},
+			singular: "person",
+			plural:   "people",
+			expected: "first, second, and third people",
+		},
+	} {
+		actual := englishList(tc.ss, tc.singular, tc.plural)
+		assert.Equal(t, tc.expected, actual)
+	}
+}
+
 func TestUniqueAbbreviations(t *testing.T) {
 	for _, tc := range []struct {
 		values   []string

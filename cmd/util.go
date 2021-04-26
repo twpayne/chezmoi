@@ -30,6 +30,24 @@ var (
 	}
 )
 
+// englishList returns ss formatted as an English list, including an Oxford
+// comma.
+func englishList(ss []string, singular, plural string) string {
+	if plural == "" {
+		plural = singular + "s"
+	}
+	switch n := len(ss); n {
+	case 0:
+		return "zero " + plural
+	case 1:
+		return ss[0] + " " + singular
+	case 2:
+		return ss[0] + " and " + ss[1] + " " + plural
+	default:
+		return strings.Join(ss[:n-1], ", ") + ", and " + ss[n-1] + " " + plural
+	}
+}
+
 // firstNonEmptyString returns its first non-empty argument, or "" if all
 // arguments are empty.
 func firstNonEmptyString(ss ...string) string {

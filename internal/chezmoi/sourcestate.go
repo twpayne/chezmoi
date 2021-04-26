@@ -114,6 +114,9 @@ func NewSourceState(options ...SourceStateOption) *SourceState {
 	return s
 }
 
+// A PreAddFunc is called before a new source state entry is added.
+type PreAddFunc func(targetRelPath RelPath, newSourceStateEntry, oldSourceStateEntry SourceStateEntry) error
+
 // AddOptions are options to SourceState.Add.
 type AddOptions struct {
 	AutoTemplate     bool
@@ -123,6 +126,7 @@ type AddOptions struct {
 	EncryptedSuffix  string
 	Exact            bool
 	Include          *EntryTypeSet
+	PreAddFunc       PreAddFunc
 	RemoveDir        RelPath
 	Template         bool
 	TemplateSymlinks bool
@@ -145,6 +149,7 @@ func (s *SourceState) Add(sourceSystem System, persistentState PersistentState, 
 	updates := make([]update, 0, len(destAbsPathInfos))
 	newSourceStateEntries := make(map[SourceRelPath]SourceStateEntry)
 	newSourceStateEntriesByTargetRelPath := make(map[RelPath]SourceStateEntry)
+DESTABSPATH:
 	for _, destAbsPath := range destAbsPaths {
 		destAbsPathInfo := destAbsPathInfos[destAbsPath]
 		if !options.Include.IncludeFileInfo(destAbsPathInfo) {
@@ -189,11 +194,20 @@ func (s *SourceState) Add(sourceSystem System, persistentState PersistentState, 
 		}
 
 		if oldSourceStateEntry, ok := s.entries[targetRelPath]; ok {
-			// If both the new and old source state entries are directories but
-			// the name has changed, rename to avoid losing the directory's
-			// contents. Otherwise, remove the old.
 			oldSourceEntryRelPath := oldSourceStateEntry.SourceRelPath()
 			if !oldSourceEntryRelPath.Empty() && oldSourceEntryRelPath != sourceEntryRelPath {
+				if options.PreAddFunc != nil {
+					switch err := options.PreAddFunc(targetRelPath, newSourceStateEntry, oldSourceStateEntry); {
+					case errors.Is(err, Skip):
+						continue DESTABSPATH
+					case err != nil:
+						return err
+					}
+				}
+
+				// If both the new and old source state entries are directories
+				// but the name has changed, rename to avoid losing the
+				// directory's contents. Otherwise, remove the old.
 				_, newIsDir := newSourceStateEntry.(*SourceStateDir)
 				_, oldIsDir := oldSourceStateEntry.(*SourceStateDir)
 				if newIsDir && oldIsDir {
