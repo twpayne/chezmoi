@@ -1481,11 +1481,7 @@ func (c *Config) validateData() error {
 }
 
 func (c *Config) withTerminal(prompt string, f func(terminal) error) error {
-	if c.noTTY {
-		return f(newNullTerminal(c.stdin))
-	}
-
-	if runtime.GOOS == "windows" {
+	if c.noTTY || runtime.GOOS == "windows" {
 		return f(newDumbTerminal(c.stdin, c.stdout, prompt))
 	}
 
