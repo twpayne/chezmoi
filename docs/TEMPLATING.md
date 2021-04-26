@@ -263,7 +263,30 @@ This outputs the variables in JSON format by default. To access the variable
 
 This way you can also access the variables you defined yourself.
 
-## Using .chezmoitemplates for creating similar files
+## Using `.chezmoitemplates`
+
+Files in the `.chezmoitemplates` subdirectory are parsed as templates and are
+available to be included in other templates using the [`template`
+action](https://pkg.go.dev/text/template#hdr-Actions) with a name equal to their
+relative path to the `.chezmoitemplates` directory.
+
+By default, such templates will be executed with `nil` data. If you want to
+access template variables (e.g. `.chezmoi.os`) in the template you must pass the
+data explicitly.
+
+For example:
+
+    .chezmoitemplates/part.tmpl:
+	{{ if eq .chezmoi.os "linux" }}
+	# linux config
+	{{ else }}
+	# non-linux config
+	{{ end }}
+
+	dot_file.tmpl:
+    {{ template "part.tmpl" . }}
+
+## Using `.chezmoitemplates` for creating similar files
 
 When you have multiple similar files, but they aren't quite the same, you can
 create a template file in the directory `.chezmoitemplates`. This template can
