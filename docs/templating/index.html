@@ -21,7 +21,7 @@ When reading files from the source state, chezmoi interprets them as a template 
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.2bc2364a4a4b31f0ec1debecf0a8f90a840821f143dfe1ac6a0f7cbcbdcf64ac.css" integrity="sha256-K8I2SkpLMfDsHevs8Kj5CoQIIfFD3&#43;Gsag98vL3PZKw=">
-<script defer src="/en.search.min.b8228fae32c9eb27fdb60f89e602dde9a4f356c64528b462368e92db87d4d8a7.js" integrity="sha256-uCKPrjLJ6yf9tg&#43;J5gLd6aTzVsZFKLRiNo6S24fU2Kc="></script>
+<script defer src="/en.search.min.99ac8d95149a5eea57caa864d6b6d7ed44c4da1b7e3ad2204ed16ff9ada6d8aa.js" integrity="sha256-mayNlRSaXupXyqhk1rbX7UTE2ht&#43;OtIgTtFv&#43;a2m2Ko="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -71,6 +71,7 @@ https://github.com/alex-shpak/hugo-book
 <li><a href="/docs/media/">Media</a></li>
 <li><a href="/docs/comparison/">Comparison</a></li>
 <li><a href="/docs/contributing/">Contributing</a></li>
+<li><a href="/docs/related/">Related Software</a></li>
 <li><a href="https://github.com/twpayne/chezmoi">GitHub</a></li>
 </ul>
 
@@ -143,7 +144,8 @@ https://github.com/alex-shpak/hugo-book
     </li>
     <li><a href="#helper-functions">Helper functions</a></li>
     <li><a href="#template-variables">Template variables</a></li>
-    <li><a href="#using-chezmoitemplates-for-creating-similar-files">Using .chezmoitemplates for creating similar files</a>
+    <li><a href="#using-chezmoitemplates">Using <code>.chezmoitemplates</code></a></li>
+    <li><a href="#using-chezmoitemplates-for-creating-similar-files">Using <code>.chezmoitemplates</code> for creating similar files</a>
       <ul>
         <li><a href="#passing-multiple-arguments">Passing multiple arguments</a></li>
       </ul>
@@ -416,7 +418,7 @@ variables. In this part we will see how to create more complicated expressions.<
 <p>You can also create more complicated expressions. The <code>eq</code> command can accept
 multiple arguments. It will check if the first argument is equal to any of the
 other arguments.</p>
-<pre><code>{{ if eq &quot;foo&quot; &quot;foo&quot; &quot;bar&quot; }}one{{end}}
+<pre><code>{{ if eq &quot;foo&quot; &quot;foo&quot; &quot;bar&quot; }}hello{{end}}
 {{ if eq &quot;foo&quot; &quot;bar&quot; &quot;foo&quot; }}hello{{end}}
 {{ if eq &quot;foo&quot; &quot;bar&quot; &quot;bar&quot; }}hello{{end}}
 </code></pre>
@@ -463,8 +465,30 @@ your system, execute:</p>
 <pre><code>{{ .chezmoi.kernel.osrelease }}
 </code></pre>
 <p>This way you can also access the variables you defined yourself.</p>
+<h2 id="using-chezmoitemplates">
+  Using <code>.chezmoitemplates</code>
+  <a class="anchor" href="#using-chezmoitemplates">#</a>
+</h2>
+<p>Files in the <code>.chezmoitemplates</code> subdirectory are parsed as templates and are
+available to be included in other templates using the <a href="https://pkg.go.dev/text/template#hdr-Actions"><code>template</code>
+action</a> with a name equal to their
+relative path to the <code>.chezmoitemplates</code> directory.</p>
+<p>By default, such templates will be executed with <code>nil</code> data. If you want to
+access template variables (e.g. <code>.chezmoi.os</code>) in the template you must pass the
+data explicitly.</p>
+<p>For example:</p>
+<pre><code>.chezmoitemplates/part.tmpl:
+{{ if eq .chezmoi.os &quot;linux&quot; }}
+# linux config
+{{ else }}
+# non-linux config
+{{ end }}
+
+dot_file.tmpl:
+{{ template &quot;part.tmpl&quot; . }}
+</code></pre>
 <h2 id="using-chezmoitemplates-for-creating-similar-files">
-  Using .chezmoitemplates for creating similar files
+  Using <code>.chezmoitemplates</code> for creating similar files
   <a class="anchor" href="#using-chezmoitemplates-for-creating-similar-files">#</a>
 </h2>
 <p>When you have multiple similar files, but they aren&rsquo;t quite the same, you can
@@ -592,7 +616,8 @@ it with a dictionary, for example <code>.local/share/chezmoi/small-font.yml.tmpl
     </li>
     <li><a href="#helper-functions">Helper functions</a></li>
     <li><a href="#template-variables">Template variables</a></li>
-    <li><a href="#using-chezmoitemplates-for-creating-similar-files">Using .chezmoitemplates for creating similar files</a>
+    <li><a href="#using-chezmoitemplates">Using <code>.chezmoitemplates</code></a></li>
+    <li><a href="#using-chezmoitemplates-for-creating-similar-files">Using <code>.chezmoitemplates</code> for creating similar files</a>
       <ul>
         <li><a href="#passing-multiple-arguments">Passing multiple arguments</a></li>
       </ul>

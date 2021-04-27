@@ -23,7 +23,7 @@
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.2bc2364a4a4b31f0ec1debecf0a8f90a840821f143dfe1ac6a0f7cbcbdcf64ac.css" integrity="sha256-K8I2SkpLMfDsHevs8Kj5CoQIIfFD3&#43;Gsag98vL3PZKw=">
-<script defer src="/en.search.min.b8228fae32c9eb27fdb60f89e602dde9a4f356c64528b462368e92db87d4d8a7.js" integrity="sha256-uCKPrjLJ6yf9tg&#43;J5gLd6aTzVsZFKLRiNo6S24fU2Kc="></script>
+<script defer src="/en.search.min.99ac8d95149a5eea57caa864d6b6d7ed44c4da1b7e3ad2204ed16ff9ada6d8aa.js" integrity="sha256-mayNlRSaXupXyqhk1rbX7UTE2ht&#43;OtIgTtFv&#43;a2m2Ko="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -73,6 +73,7 @@ https://github.com/alex-shpak/hugo-book
 <li><a href="/docs/media/">Media</a></li>
 <li><a href="/docs/comparison/">Comparison</a></li>
 <li><a href="/docs/contributing/">Contributing</a></li>
+<li><a href="/docs/related/">Related Software</a></li>
 <li><a href="https://github.com/twpayne/chezmoi">GitHub</a></li>
 </ul>
 
@@ -1119,7 +1120,11 @@ template.</p>
 </h3>
 <p>If a directory called <code>.chezmoitemplates</code> exists, then all files in this
 directory are parsed as templates are available as templates with a name equal
-to the relative path of the file.</p>
+to the relative path to the <code>.chezmoitemplates</code> directory.</p>
+<p>The <a href="https://pkg.go.dev/text/template#hdr-Actions"><code>template</code> action</a> can be
+used to include these templates in another template. The value of <code>.</code> must be
+set explicitly if needed, otherwise the template will be executed with <code>nil</code>
+data.</p>
 <h4 id="chezmoitemplates-examples">
   <code>.chezmoitemplates</code> examples
   <a class="anchor" href="#chezmoitemplates-examples">#</a>
@@ -1129,7 +1134,7 @@ to the relative path of the file.</p>
 {{ if true }}bar{{ end }}
 
 dot_config.tmpl
-{{ template &quot;foo&quot; }}
+{{ template &quot;foo&quot; . }}
 </code></pre>
 <p>The target state of <code>.config</code> will be <code>bar</code>.</p>
 <h3 id="chezmoiversion">
@@ -2164,8 +2169,8 @@ with the same <em>gopass-name</em> will only invoke <code>gopass</code> once.</p
   <code>include</code> <em>filename</em>
   <a class="anchor" href="#include-filename">#</a>
 </h3>
-<p><code>include</code> returns the literal contents of the file named <code>*filename*</code>, relative
-to the source directory.</p>
+<p><code>include</code> returns the literal contents of the file named <code>*filename*</code>. Relative
+paths are interpreted relative to the source directory.</p>
 <h3 id="ioreg">
   <code>ioreg</code>
   <a class="anchor" href="#ioreg">#</a>
