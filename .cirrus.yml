@@ -1,12 +1,13 @@
 env:
   CIRRUS_CLONE_DEPTH: 1
 
-freebsd_12_task:
-  freebsd_instance:
-    image: freebsd-12-1-release-amd64
+freebsd_instance:
+  image_family: freebsd-12-1-snap
+
+task:
   install_script: |
     pkg install -y git go
     GOBIN=$PWD/bin go get golang.org/dl/go1.16.3
     bin/go1.16.3 download
   build_script: bin/go1.16.3 build -v ./...
-  test_script: bin/go1.16.3 test -race ./...
+  test_script: bin/go1.16.3 test -race -v ./...

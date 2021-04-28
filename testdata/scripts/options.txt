@@ -10,7 +10,7 @@ cmp tmp/.file golden/.file
 
 # test that --config flag is respected
 chhome home3/user
-chezmoi apply --config=$HOME/.chezmoi.toml --debug
+chezmoi apply --config=$HOME/.chezmoi.toml
 cmp $HOME/tmp/.file golden/.file
 
 -- golden/.file --

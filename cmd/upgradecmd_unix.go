@@ -160,7 +160,11 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 		Str("arg0", arg0).
 		Strs("argv", argv).
 		Msg("exec")
-	return syscall.Exec(arg0, argv, os.Environ())
+	err = syscall.Exec(arg0, argv, os.Environ())
+	for errors.Is(err, syscall.EINTR) {
+		err = syscall.Exec(arg0, argv, os.Environ())
+	}
+	return err
 }
 
 func (c *Config) getChecksums(ctx context.Context, rr *github.RepositoryRelease) (map[string][]byte, error) {
