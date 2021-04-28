@@ -10,7 +10,7 @@ cmp $CHEZMOISOURCEDIR/dot_dir/dot_file golden/dot_dir/dot_file
 [!windows] cmp $CHEZMOISOURCEDIR/dot_dir/symlink_dot_symlink golden/dot_dir/symlink_dot_symlink # FIXME this should pass on Windows
 
 # test that chezmoi import run a second time overwrites
-chezmoi import --strip-components=1 --debug archive.tar.gz
+chezmoi import --strip-components=1 archive.tar.gz
 
 # test chezmoi import --destination
 chhome home2/user

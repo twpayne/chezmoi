@@ -39,7 +39,7 @@ chezmoi apply --force $HOME${/}.dir
 # test that chezmoi diff generates a diff when the actual state is a file and the target state is a symlink
 rm $HOME/.symlink
 cp golden/.file $HOME/.symlink
-chezmoi diff --debug
+chezmoi diff
 [!windows] cmp stdout golden/symlink-file-diff-unix
 # [windows] cmp stdout golden/symlink-file-diff-windows # FIXME
 chezmoi apply --force $HOME${/}.symlink
