@@ -8,7 +8,7 @@ import (
 
 type dumpCmdConfig struct {
 	exclude   *chezmoi.EntryTypeSet
-	format    string
+	format    dataFormat
 	include   *chezmoi.EntryTypeSet
 	recursive bool
 }
@@ -27,7 +27,7 @@ func (c *Config) newDumpCmd() *cobra.Command {
 
 	flags := dumpCmd.Flags()
 	flags.VarP(c.dump.exclude, "exclude", "x", "exclude entry types")
-	flags.StringVarP(&c.dump.format, "format", "f", c.dump.format, "format (json or yaml)")
+	flags.VarP(&c.dump.format, "format", "f", "format")
 	flags.VarP(c.dump.include, "include", "i", "include entry types")
 	flags.BoolVarP(&c.dump.recursive, "recursive", "r", c.dump.recursive, "recursive")
 

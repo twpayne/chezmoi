@@ -48,7 +48,7 @@ func (b *autoBool) String() string {
 
 // Type implements github.com/spf13/pflag.Value.Type.
 func (b *autoBool) Type() string {
-	return "bool or auto"
+	return "bool|auto"
 }
 
 // Value returns b's value, calling b's autoFunc if needed.

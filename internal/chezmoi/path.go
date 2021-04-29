@@ -88,7 +88,7 @@ func (p AbsPath) TrimDirPrefix(dirPrefixAbsPath AbsPath) (RelPath, error) {
 
 // Type implements github.com/spf13/pflag.Value.Type.
 func (p AbsPath) Type() string {
-	return "absolute path"
+	return "path"
 }
 
 // AbsPaths is a slice of AbsPaths that implements sort.Interface.
