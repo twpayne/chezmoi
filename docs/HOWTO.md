@@ -996,7 +996,7 @@ needed. For example, to install `vim-gtk` on Linux but not in Codespaces, your
 `run_once_install-packages.sh.tmpl` might contain:
 
 ```
-{{- if (and (eq .chezmoi.os "linux")) (not .codespaces))) -}}
+{{- if (and (eq .chezmoi.os "linux") (not .codespaces)) -}}
 #!/bin/sh
 sudo apt install -y vim-gtk
 {{- end -}}
