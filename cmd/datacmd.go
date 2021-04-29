@@ -7,7 +7,7 @@ import (
 )
 
 type dataCmdConfig struct {
-	format string
+	format dataFormat
 }
 
 func (c *Config) newDataCmd() *cobra.Command {
@@ -21,7 +21,7 @@ func (c *Config) newDataCmd() *cobra.Command {
 	}
 
 	persistentFlags := dataCmd.PersistentFlags()
-	persistentFlags.StringVar(&c.data.format, "format", c.data.format, "format (json or yaml)")
+	persistentFlags.VarP(&c.data.format, "format", "f", "format")
 
 	return dataCmd
 }

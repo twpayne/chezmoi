@@ -3,6 +3,7 @@ package cmd
 import (
 	"archive/tar"
 	"compress/gzip"
+	"errors"
 	"fmt"
 	"os/user"
 	"strconv"
@@ -14,9 +15,18 @@ import (
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
+// An archiveFormat is either tar or zip and implements the
+// github.com/spf13/pflag.Value interface.
+type archiveFormat string
+
+const (
+	archiveFormatTar archiveFormat = "tar"
+	archiveFormatZip archiveFormat = "zip"
+)
+
 type archiveCmdConfig struct {
 	exclude   *chezmoi.EntryTypeSet
-	format    string
+	format    archiveFormat
 	gzip      bool
 	include   *chezmoi.EntryTypeSet
 	recursive bool
@@ -36,7 +46,7 @@ func (c *Config) newArchiveCmd() *cobra.Command {
 
 	flags := archiveCmd.Flags()
 	flags.VarP(c.archive.exclude, "exclude", "x", "exclude entry types")
-	flags.StringVar(&c.archive.format, "format", "tar", "format (tar or zip)")
+	flags.VarP(&c.archive.format, "format", "f", "format")
 	flags.BoolVarP(&c.archive.gzip, "gzip", "z", c.archive.gzip, "compress the output with gzip")
 	flags.VarP(c.archive.include, "include", "i", "include entry types")
 	flags.BoolVarP(&c.archive.recursive, "recursive", "r", c.archive.recursive, "recursive")
@@ -51,9 +61,9 @@ func (c *Config) runArchiveCmd(cmd *cobra.Command, args []string) error {
 		Close() error
 	}
 	switch c.archive.format {
-	case "tar":
+	case archiveFormatTar:
 		archiveSystem = chezmoi.NewTARWriterSystem(&output, tarHeaderTemplate())
-	case "zip":
+	case archiveFormatZip:
 		archiveSystem = chezmoi.NewZIPWriterSystem(&output, time.Now().UTC())
 	default:
 		return fmt.Errorf("%s: invalid format", c.archive.format)
@@ -68,7 +78,7 @@ func (c *Config) runArchiveCmd(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	if c.archive.format == "zip" || !c.archive.gzip {
+	if c.archive.format == archiveFormatZip || !c.archive.gzip {
 		return c.writeOutputString(output.String())
 	}
 
@@ -113,4 +123,24 @@ func tarHeaderTemplate() tar.Header {
 		AccessTime: now,
 		ChangeTime: now,
 	}
+}
+
+func (f *archiveFormat) Set(s string) error {
+	switch strings.ToLower(s) {
+	case "tar":
+		*f = archiveFormatTar
+	case "zip":
+		*f = archiveFormatZip
+	default:
+		return errors.New("invalid archive format")
+	}
+	return nil
+}
+
+func (f archiveFormat) String() string {
+	return string(f)
+}
+
+func (f archiveFormat) Type() string {
+	return "tar|zip"
 }

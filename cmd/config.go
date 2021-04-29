@@ -38,8 +38,6 @@ import (
 	"github.com/twpayne/chezmoi/v2/internal/git"
 )
 
-var defaultFormat = "json"
-
 type purgeOptions struct {
 	binary bool
 }
@@ -74,7 +72,7 @@ type Config struct {
 	UseBuiltinGit    *autoBool              `mapstructure:"useBuiltinGit"`
 
 	// Global configuration, not settable in the config file.
-	cpuProfile    string
+	cpuProfile    chezmoi.AbsPath
 	debug         bool
 	dryRun        bool
 	force         bool
@@ -253,15 +251,16 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		archive: archiveCmdConfig{
 			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
+			format:    archiveFormatTar,
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 			recursive: true,
 		},
 		data: dataCmdConfig{
-			format: defaultFormat,
+			format: defaultDataFormat,
 		},
 		dump: dumpCmdConfig{
 			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			format:    defaultFormat,
+			format:    defaultDataFormat,
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 			recursive: true,
 		},
@@ -283,10 +282,10 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		state: stateCmdConfig{
 			data: stateDataCmdConfig{
-				format: defaultFormat,
+				format: defaultDataFormat,
 			},
 			dump: stateDumpCmdConfig{
-				format: defaultFormat,
+				format: defaultDataFormat,
 			},
 		},
 		status: statusCmdConfig{
@@ -941,15 +940,15 @@ func (c *Config) makeRunEWithSourceState(runE func(*cobra.Command, []string, *ch
 	}
 }
 
-func (c *Config) marshal(formatStr string, data interface{}) error {
+func (c *Config) marshal(dataFormat dataFormat, data interface{}) error {
 	var format chezmoi.Format
-	switch formatStr {
-	case "json":
+	switch dataFormat {
+	case dataFormatJSON:
 		format = chezmoi.JSONFormat
-	case "yaml":
+	case dataFormatYAML:
 		format = chezmoi.YAMLFormat
 	default:
-		return fmt.Errorf("%s: unknown format", formatStr)
+		return fmt.Errorf("%s: unknown format", dataFormat)
 	}
 	marshaledData, err := format.Marshal(data)
 	if err != nil {
@@ -988,7 +987,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	}
 
 	persistentFlags.VarP(&c.configFileAbsPath, "config", "c", "config file")
-	persistentFlags.StringVar(&c.cpuProfile, "cpu-profile", c.cpuProfile, "write CPU profile to file")
+	persistentFlags.Var(&c.cpuProfile, "cpu-profile", "write CPU profile")
 	persistentFlags.BoolVar(&c.debug, "debug", c.debug, "write debug logs")
 	persistentFlags.BoolVarP(&c.dryRun, "dry-run", "n", c.dryRun, "dry run")
 	persistentFlags.BoolVar(&c.force, "force", c.force, "force")
@@ -1096,7 +1095,7 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 
 func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error {
 	if c.cpuProfile != "" {
-		f, err := os.Create(c.cpuProfile)
+		f, err := os.Create(string(c.cpuProfile))
 		if err != nil {
 			return err
 		}

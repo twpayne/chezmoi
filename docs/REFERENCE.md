@@ -24,7 +24,7 @@ Manage your dotfiles securely across multiple machines.
   * [`-v`, `--verbose`](#-v---verbose)
   * [`--version`](#--version)
 * [Common command line flags](#common-command-line-flags)
-  * [`--format` *format*](#--format-format)
+  * [`-f`, `--format` `json`|`yaml`](#-f---format-jsonyaml)
   * [`--include` *types*](#--include-types)
   * [`-r`, `--recursive`](#-r---recursive)
 * [Configuration file](#configuration-file)
@@ -60,7 +60,7 @@ Manage your dotfiles securely across multiple machines.
   * [`execute-template` [*templates*]](#execute-template-templates)
   * [`forget` *targets*](#forget-targets)
   * [`git` [*arguments*]](#git-arguments)
-  * [`help` *command*](#help-command)
+  * [`help` [*command*...]](#help-command)
   * [`init` [*repo*]](#init-repo)
   * [`import` *filename*](#import-filename)
   * [`manage` *targets*](#manage-targets)
@@ -143,7 +143,7 @@ Command line flags override any values set in the configuration file.
 
 Colorize diffs, *value* can be `on`, `off`, `auto`, or any boolean-like value
 recognized by `parseBool`. The default is `auto` which will colorize diffs only
-if the the environment variable `NO_COLOR` is not set and stdout is a terminal.
+if the the environment variable `$NO_COLOR` is not set and stdout is a terminal.
 
 ### `-c`, `--config` *filename*
 
@@ -229,9 +229,9 @@ timestamp.
 
 The following flags apply to multiple commands where they are relevant.
 
-### `--format` *format*
+### `-f`, `--format` `json`|`yaml`
 
-Set the output format. *format* can be `json` or `yaml`.
+Set the output format.
 
 ### `--include` *types*
 
@@ -566,7 +566,7 @@ the current version is too old.
 
 Add *targets* to the source state. If any target is already in the source state,
 then its source state is replaced with its current state in the destination
-directory. The `add` command accepts additional flags:
+directory.
 
 #### `--autotemplate`
 
@@ -644,12 +644,12 @@ applying changes after editing.
 
 ### `archive`
 
-Generate a tar archive of the target state. This can be piped into `tar` to
-inspect the target state.
+Generate an archive of the target state. This can be piped into `tar` to inspect
+the target state.
 
-#### `--format` *format*
+#### `-f`, `--format` `tar`|`zip`
 
-Write the archive in *format*. *format* can be either `tar` (the default) or `zip`.
+Write the archive in *format*.
 
 #### `-i`, `--include` *types*
 
@@ -667,7 +667,7 @@ Compress the output with gzip.
 
 ### `cat` *targets*
 
-Write the target state of *targets*  to stdout. *targets* must be files,
+Write the target contents of *targets* to stdout. *targets* must be files,
 scripts, or symlinks. For files, the target file contents are written. For
 scripts, the script's contents are written. For symlinks, the target target is
 written.
@@ -730,6 +730,10 @@ Generate shell completion code for the specified shell (`bash`, `fish`,
 
 Write the computed template data to stdout.
 
+#### `-f`, `--format` `json`|`yaml`
+
+Set the output format.
+
 #### `data` examples
 
     chezmoi data
@@ -772,6 +776,10 @@ Check for potential problems.
 Dump the target state. If no targets are specified, then the entire target
 state.
 
+#### `-f`, `--format` `json`|`yaml`
+
+Set the output format.
+
 #### `-i`, `--include` *types*
 
 Only include entries of type *types*.
@@ -784,8 +792,7 @@ Only include entries of type *types*.
 ### `edit` [*targets*]
 
 Edit the source state of *targets*, which must be files or symlinks. If no
-targets are given the the source directory itself is opened with `$EDITOR`. The
-`edit` command accepts additional arguments:
+targets are given the the source directory itself is opened with `$EDITOR`.
 
 #### `-a`, `--apply`
 
@@ -867,9 +874,10 @@ must occur after `--` to prevent chezmoi from interpreting them.
     chezmoi git add dot_gitconfig
     chezmoi git -- commit -m "Add .gitconfig"
 
-### `help` *command*
+### `help` [*command*...]
 
-Print the help associated with *command*.
+Print the help associated with *command*, or general help if no command is
+given.
 
 ### `init` [*repo*]
 
@@ -1098,7 +1106,7 @@ List all unmanaged files in the destination directory.
 
 ### `update`
 
-Pull changes from the source VCS and apply any changes.
+Pull changes from the source repo and apply any changes.
 
 #### `-i`, `--include` *types*
 
@@ -1115,9 +1123,9 @@ will call the GitHub API to determine if there is a new version of chezmoi
 available, and if so, download and attempt to install it in the same way as
 chezmoi was previously installed.
 
-If the any of the `CHEZMOI_GITHUB_ACCESS_TOKEN`, `GITHUB_ACCESS_TOKEN`, or
-`GITHUB_TOKEN` environment variables are set, then the first value found will be
-used to authenticate requests to the GitHub API, otherwise unauthenticated
+If the any of the `$CHEZMOI_GITHUB_ACCESS_TOKEN`, `$GITHUB_ACCESS_TOKEN`, or
+`$GITHUB_TOKEN` environment variables are set, then the first value found will
+be used to authenticate requests to the GitHub API, otherwise unauthenticated
 requests are used which are subject to stricter [rate
 limiting](https://developer.github.com/v3/#rate-limiting). Unauthenticated
 requests should be sufficient for most cases.
@@ -1140,7 +1148,7 @@ Only include entries of type *types*.
 ## Editor configuration
 
 The `edit` and `edit-config` commands use the editor specified by the `VISUAL`
-environment variable, the `EDITOR` environment variable, or `vi`, whichever is
+environment variable, the `$EDITOR` environment variable, or `vi`, whichever is
 specified first.
 
 ## Umask configuration
@@ -1320,8 +1328,8 @@ By default, an anonymous GitHub API request will be made, which is subject to
 [GitHub's rate
 limits](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting)
 (currently 60 requests per hour per source IP address). If any of the
-environment variables `CHEZMOI_GITHUB_ACCESS_TOKEN`, `GITHUB_ACCESS_TOKEN`, or
-`GITHUB_TOKEN` are found, then the first one found will be used to authenticate
+environment variables `$CHEZMOI_GITHUB_ACCESS_TOKEN`, `$GITHUB_ACCESS_TOKEN`, or
+`$GITHUB_TOKEN` are found, then the first one found will be used to authenticate
 the GitHub API request, with a higher rate limit (currently 5,000 requests per
 hour per user).
 

@@ -184,7 +184,7 @@ func (s *EntryTypeSet) Sub(other *EntryTypeSet) *EntryTypeSet {
 
 // Type implements github.com/spf13/pflag.Value.Type.
 func (s *EntryTypeSet) Type() string {
-	return "entry type set"
+	return "types"
 }
 
 // StringSliceToEntryTypeSetHookFunc is a

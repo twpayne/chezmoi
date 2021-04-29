@@ -81,9 +81,8 @@ func (c *Config) defaultPreAddFunc(targetRelPath chezmoi.RelPath, newSourceState
 	}
 	removedAttributesStr := englishList(removedAttributes, "attribute", "")
 
-	choices := []string{"yes", "no", "all", "quit"}
 	for {
-		switch choice, err := c.promptChoice(fmt.Sprintf("adding %s would remove %s, continue", targetRelPath, removedAttributesStr), choices); {
+		switch choice, err := c.promptChoice(fmt.Sprintf("adding %s would remove %s, continue", targetRelPath, removedAttributesStr), yesNoAllQuit); {
 		case err != nil:
 			return err
 		case choice == "all":

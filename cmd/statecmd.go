@@ -18,7 +18,7 @@ type stateCmdConfig struct {
 }
 
 type stateDataCmdConfig struct {
-	format string
+	format dataFormat
 }
 
 type stateDeleteCmdConfig struct {
@@ -27,7 +27,7 @@ type stateDeleteCmdConfig struct {
 }
 
 type stateDumpCmdConfig struct {
-	format string
+	format dataFormat
 }
 
 type stateGetCmdConfig struct {
@@ -59,7 +59,7 @@ func (c *Config) newStateCmd() *cobra.Command {
 		},
 	}
 	stateDataPersistentFlags := stateDataCmd.PersistentFlags()
-	stateDataPersistentFlags.StringVarP(&c.state.data.format, "format", "f", c.state.data.format, "format (json or yaml)")
+	stateDataPersistentFlags.VarP(&c.state.data.format, "format", "f", "format")
 	stateCmd.AddCommand(stateDataCmd)
 
 	stateDeleteCmd := &cobra.Command{
@@ -86,7 +86,7 @@ func (c *Config) newStateCmd() *cobra.Command {
 		},
 	}
 	stateDumpPersistentFlags := stateDumpCmd.PersistentFlags()
-	stateDumpPersistentFlags.StringVarP(&c.state.dump.format, "format", "f", c.state.dump.format, "format (json or yaml)")
+	stateDumpPersistentFlags.VarP(&c.state.dump.format, "format", "f", "format")
 	stateCmd.AddCommand(stateDumpCmd)
 
 	stateGetCmd := &cobra.Command{

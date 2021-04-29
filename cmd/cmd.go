@@ -43,7 +43,8 @@ var (
 
 	commandsRx      = regexp.MustCompile(`^## Commands`)
 	commandRx       = regexp.MustCompile("^### `(\\S+)`")
-	exampleRx       = regexp.MustCompile("^#### `\\w+` examples")
+	exampleRx       = regexp.MustCompile("^#### `.+` examples")
+	optionRx        = regexp.MustCompile("^#### `(-\\w|--\\w+)`")
 	endOfCommandsRx = regexp.MustCompile(`^## `)
 	trailingSpaceRx = regexp.MustCompile(` +\n`)
 
@@ -115,6 +116,10 @@ func example(command string) string {
 
 func extractHelps(r io.Reader) (map[string]*help, error) {
 	longStyleConfig := glamour.ASCIIStyleConfig
+	longStyleConfig.Code.StylePrimitive.BlockPrefix = ""
+	longStyleConfig.Code.StylePrimitive.BlockSuffix = ""
+	longStyleConfig.Emph.BlockPrefix = ""
+	longStyleConfig.Emph.BlockSuffix = ""
 	longStyleConfig.H4.Prefix = ""
 	longTermRenderer, err := glamour.NewTermRenderer(
 		glamour.WithStyles(longStyleConfig),
@@ -143,7 +148,7 @@ func extractHelps(r io.Reader) (map[string]*help, error) {
 	saveAndReset := func() error {
 		var tr *glamour.TermRenderer
 		switch state {
-		case "in-command":
+		case "in-command", "find-example":
 			tr = longTermRenderer
 		case "in-example":
 			tr = examplesTermRenderer
@@ -157,7 +162,7 @@ func extractHelps(r io.Reader) (map[string]*help, error) {
 		s = trailingSpaceRx.ReplaceAllString(s, "\n")
 		s = strings.Trim(s, "\n")
 		switch state {
-		case "in-command":
+		case "in-command", "find-example":
 			h.long = "Description:\n" + s
 		case "in-example":
 			h.example = s
@@ -183,7 +188,7 @@ FOR:
 				helps[m[1]] = h
 				state = "in-command"
 			}
-		case "in-command", "in-example":
+		case "in-command", "find-example", "in-example":
 			m := commandRx.FindStringSubmatch(s.Text())
 			switch {
 			case m != nil:
@@ -193,6 +198,8 @@ FOR:
 				h = &help{}
 				helps[m[1]] = h
 				state = "in-command"
+			case optionRx.MatchString(s.Text()):
+				state = "find-example"
 			case exampleRx.MatchString(s.Text()):
 				if err := saveAndReset(); err != nil {
 					return nil, err
@@ -203,7 +210,7 @@ FOR:
 					return nil, err
 				}
 				break FOR
-			default:
+			case state != "find-example":
 				if _, err := sb.WriteString(s.Text()); err != nil {
 					return nil, err
 				}
