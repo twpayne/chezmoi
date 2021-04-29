@@ -642,10 +642,6 @@ applying changes after editing.
     chezmoi apply --dry-run --verbose
     chezmoi apply ~/.bashrc
 
-In `~/.vimrc`:
-
-    autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path %
-
 ### `archive`
 
 Generate a tar archive of the target state. This can be piped into `tar` to

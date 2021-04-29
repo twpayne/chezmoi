@@ -11,6 +11,8 @@
   * [Have chezmoi create a directory, but ignore its contents](#have-chezmoi-create-a-directory-but-ignore-its-contents)
   * [Ensure that a target is removed](#ensure-that-a-target-is-removed)
   * [Populate `~/.ssh/authorized_keys` with your public SSH keys from GitHub](#populate-sshauthorized_keys-with-your-public-ssh-keys-from-github)
+* [Integrate chezmoi with your editor](#integrate-chezmoi-with-your-editor)
+  * [How do I configure VIM to run `chezmoi apply` whenever I save a dotfile?](#how-do-i-configure-vim-to-run-chezmoi-apply-whenever-i-save-a-dotfile)
 * [Include dotfiles from elsewhere](#include-dotfiles-from-elsewhere)
   * [Include a subdirectory from another repository, like Oh My Zsh](#include-a-subdirectory-from-another-repository-like-oh-my-zsh)
   * [Handle configuration files which are externally modified](#handle-configuration-files-which-are-externally-modified)
@@ -189,6 +191,13 @@ GitHub username:
     {{   .Key }}
     {{ end -}}
 
+## Integrate chezmoi with your editor
+
+### How do I configure VIM to run `chezmoi apply` whenever I save a dotfile?
+
+Put the following in your `.vimrc`:
+
+    autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path %
 
 ## Include dotfiles from elsewhere
 
