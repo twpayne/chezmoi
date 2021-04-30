@@ -505,7 +505,7 @@ func (c *Config) defaultConfigFile(fs vfs.Stater, bds *xdg.BaseDirectorySpecific
 			return "", err
 		}
 		for _, extension := range viper.SupportedExts {
-			configFileAbsPath := configDirAbsPath.Join(chezmoi.RelPath("chezmoi"), chezmoi.RelPath("chezmoi."+extension))
+			configFileAbsPath := configDirAbsPath.Join("chezmoi", chezmoi.RelPath("chezmoi."+extension))
 			if _, err := fs.Stat(string(configFileAbsPath)); err == nil {
 				return configFileAbsPath, nil
 			}
@@ -516,7 +516,7 @@ func (c *Config) defaultConfigFile(fs vfs.Stater, bds *xdg.BaseDirectorySpecific
 	if err != nil {
 		return "", err
 	}
-	return configHomeAbsPath.Join(chezmoi.RelPath("chezmoi"), chezmoi.RelPath("chezmoi.toml")), nil
+	return configHomeAbsPath.Join("chezmoi", "chezmoi.toml"), nil
 }
 
 func (c *Config) defaultPreApplyFunc(targetRelPath chezmoi.RelPath, targetEntryState, lastWrittenEntryState, actualEntryState *chezmoi.EntryState) error {
@@ -571,7 +571,7 @@ func (c *Config) defaultSourceDir(fs vfs.Stater, bds *xdg.BaseDirectorySpecifica
 		if err != nil {
 			return "", err
 		}
-		sourceDirAbsPath := dataDirAbsPath.Join(chezmoi.RelPath("chezmoi"))
+		sourceDirAbsPath := dataDirAbsPath.Join("chezmoi")
 		if _, err := fs.Stat(string(sourceDirAbsPath)); err == nil {
 			return sourceDirAbsPath, nil
 		}
@@ -581,7 +581,7 @@ func (c *Config) defaultSourceDir(fs vfs.Stater, bds *xdg.BaseDirectorySpecifica
 	if err != nil {
 		return "", err
 	}
-	return dataHomeAbsPath.Join(chezmoi.RelPath("chezmoi")), nil
+	return dataHomeAbsPath.Join("chezmoi"), nil
 }
 
 func (c *Config) defaultTemplateData() map[string]interface{} {
@@ -1264,7 +1264,7 @@ func (c *Config) persistentStateFile() (chezmoi.AbsPath, error) {
 		if err != nil {
 			return "", err
 		}
-		persistentStateFile := configDirAbsPath.Join(chezmoi.RelPath("chezmoi"), persistentStateFilename)
+		persistentStateFile := configDirAbsPath.Join("chezmoi", persistentStateFilename)
 		if _, err := os.Stat(string(persistentStateFile)); err == nil {
 			return persistentStateFile, nil
 		}

@@ -105,7 +105,7 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	// If the source repo does not exist then init or clone it.
-	switch _, err := c.baseSystem.Stat(c.SourceDirAbsPath.Join(chezmoi.RelPath(".git"))); {
+	switch _, err := c.baseSystem.Stat(c.SourceDirAbsPath.Join(".git")); {
 	case os.IsNotExist(err):
 		rawSourceDir, err := c.baseSystem.RawPath(c.SourceDirAbsPath)
 		if err != nil {
