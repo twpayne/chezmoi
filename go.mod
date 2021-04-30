@@ -30,6 +30,7 @@ require (
 	github.com/mitchellh/mapstructure v1.4.1
 	github.com/muesli/combinator v0.3.0
 	github.com/pelletier/go-toml v1.9.0
+	github.com/pkg/browser v0.0.0-20210115035449-ce105d075bb4 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/rogpeppe/go-internal v1.8.0
 	github.com/rs/zerolog v1.21.0

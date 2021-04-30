@@ -125,6 +125,7 @@ type Config struct {
 	secretKeyring   secretKeyringCmdConfig
 	state           stateCmdConfig
 	status          statusCmdConfig
+	thanks          thanksCmdConfig
 	update          updateCmdConfig
 	upgrade         upgradeCmdConfig
 	verify          verifyCmdConfig
@@ -292,6 +293,10 @@ func newConfig(options ...configOption) (*Config, error) {
 			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 			recursive: true,
+		},
+		thanks: thanksCmdConfig{
+			owner: defaultOwner,
+			repo:  defaultRepo,
 		},
 		update: updateCmdConfig{
 			apply:     true,
@@ -1039,6 +1044,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newSourcePathCmd(),
 		c.newStateCmd(),
 		c.newStatusCmd(),
+		c.newThanksCmd(),
 		c.newUnmanagedCmd(),
 		c.newUpdateCmd(),
 		c.newUpgradeCmd(),

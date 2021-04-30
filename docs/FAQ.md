@@ -437,3 +437,7 @@ welcome](https://github.com/twpayne/chezmoi/blob/master/docs/CONTRIBUTING.md)
 and every [bug report, support request, and feature
 request](https://github.com/twpayne/chezmoi/issues/new/choose) helps make
 chezmoi better. Thank you :)
+
+<a class="github-button" href="https://github.com/twpayne/chezmoi" data-show-count="true" aria-label="Star twpayne/chezmoi on GitHub">Star</a>
+
+<script async defer src="https://buttons.github.io/buttons.js"></script>

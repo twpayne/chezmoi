@@ -5,6 +5,8 @@ type: docs
 
 # chezmoi
 
+<a class="github-button" href="https://github.com/twpayne/chezmoi" data-show-count="true" aria-label="Star twpayne/chezmoi on GitHub">Star</a>
+
 Manage your dotfiles across multiple diverse machines, securely.
 
 chezmoi makes installing your dotfiles on any new machine as easy as `sh -c
@@ -137,3 +139,5 @@ Read what [people have said about chezmoi](/docs/media/).
 ## License
 
 MIT
+
+<script async defer src="https://buttons.github.io/buttons.js"></script>

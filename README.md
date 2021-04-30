@@ -2,6 +2,8 @@
 
 [![GitHub Release](https://img.shields.io/github/release/twpayne/chezmoi.svg)](https://github.com/twpayne/chezmoi/releases)
 
+<a class="github-button" href="https://github.com/twpayne/chezmoi" data-show-count="true" aria-label="Star twpayne/chezmoi on GitHub">Star</a>
+
 Manage your dotfiles across multiple diverse machines, securely.
 
 chezmoi makes installing your dotfiles on any new machine as easy as `sh -c

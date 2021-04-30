@@ -18,6 +18,11 @@ import (
 	"github.com/twpayne/chezmoi/v2/docs"
 )
 
+const (
+	defaultOwner = "twpayne"
+	defaultRepo  = "chezmoi"
+)
+
 // Command annotations.
 const (
 	doesNotRequireValidConfig    = "chezmoi_does_not_require_valid_config"
