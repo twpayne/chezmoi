@@ -270,7 +270,7 @@ DESTABSPATH:
 				return err
 			}
 		}
-		if err := persistentStateSet(persistentState, entryStateBucket, []byte(update.destAbsPath), update.entryState); err != nil {
+		if err := persistentStateSet(persistentState, EntryStateBucket, []byte(update.destAbsPath), update.entryState); err != nil {
 			return err
 		}
 	}
@@ -365,7 +365,7 @@ func (s *SourceState) Apply(targetSystem, destSystem System, persistentState Per
 	if options.PreApplyFunc != nil {
 		var lastWrittenEntryState *EntryState
 		var entryState EntryState
-		ok, err := persistentStateGet(persistentState, entryStateBucket, []byte(targetAbsPath), &entryState)
+		ok, err := persistentStateGet(persistentState, EntryStateBucket, []byte(targetAbsPath), &entryState)
 		if err != nil {
 			return err
 		}
@@ -411,7 +411,7 @@ func (s *SourceState) Apply(targetSystem, destSystem System, persistentState Per
 						if targetStateFile.perm.Perm() != lastWrittenEntryState.Mode.Perm() {
 							if targetStateFile.perm.Perm() == lastWrittenEntryState.Mode.Perm()&^s.umask {
 								lastWrittenEntryState.Mode = targetStateFile.perm
-								_ = persistentStateSet(persistentState, entryStateBucket, []byte(targetAbsPath), lastWrittenEntryState)
+								_ = persistentStateSet(persistentState, EntryStateBucket, []byte(targetAbsPath), lastWrittenEntryState)
 							}
 						}
 					}
@@ -424,7 +424,7 @@ func (s *SourceState) Apply(targetSystem, destSystem System, persistentState Per
 						if targetStateDir.perm.Perm() != lastWrittenEntryState.Mode.Perm() {
 							if targetStateDir.perm.Perm() == lastWrittenEntryState.Mode.Perm()&^s.umask {
 								lastWrittenEntryState.Mode = os.ModeDir | targetStateDir.perm
-								_ = persistentStateSet(persistentState, entryStateBucket, []byte(targetAbsPath), lastWrittenEntryState)
+								_ = persistentStateSet(persistentState, EntryStateBucket, []byte(targetAbsPath), lastWrittenEntryState)
 							}
 						}
 					}
@@ -443,7 +443,7 @@ func (s *SourceState) Apply(targetSystem, destSystem System, persistentState Per
 		return nil
 	}
 
-	return persistentStateSet(persistentState, entryStateBucket, []byte(targetAbsPath), targetEntryState)
+	return persistentStateSet(persistentState, EntryStateBucket, []byte(targetAbsPath), targetEntryState)
 }
 
 // Encryption returns s's encryption.

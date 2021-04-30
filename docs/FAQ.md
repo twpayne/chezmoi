@@ -345,9 +345,9 @@ This can happen, for example, if you have a `run_` script that invokes
 Under the hood, chezmoi uses [bbolt](https://github.com/etcd-io/bbolt) which
 permits multiple simultaneous readers, but only one writer (with no readers).
 
-Commands that take a write lock include `add`, `apply`, `edit`, `import`,
-`init`, `state`, and `update`. Commands that take a read lock include `diff`,
-`status`, and `verify`.
+Commands that take a write lock include `add`, `apply`, `edit`, `forget`,
+`import`, `init`, `state`, `unmanage`, and `update`. Commands that take a read
+lock include `diff`, `status`, and `verify`.
 
 ## I'm getting errors trying to build chezmoi from source
 
