@@ -14,6 +14,7 @@ import (
 
 	"github.com/charmbracelet/glamour"
 	"github.com/spf13/cobra"
+	"go.etcd.io/bbolt"
 
 	"github.com/twpayne/chezmoi/v2/docs"
 )
@@ -249,5 +250,13 @@ func runMain(versionInfo VersionInfo, args []string) error {
 	if err != nil {
 		return err
 	}
-	return config.execute(args)
+	switch err := config.execute(args); {
+	case errors.Is(err, bbolt.ErrTimeout):
+		// Translate bbolt timeout errors into a friendlier message. As the
+		// persistent state is opened lazily, this error could occur at any
+		// time, so it's easiest to intercept it here.
+		return errors.New("timeout obtaining persistent state lock, is another instance of chezmoi running?")
+	default:
+		return err
+	}
 }
