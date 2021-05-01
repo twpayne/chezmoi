@@ -61,7 +61,7 @@ func TestEtcHostsFQDNHostname(t *testing.T) {
 			chezmoitest.WithTestFS(t, map[string]interface{}{
 				"/etc/hosts": tc.etcHostsContentsStr,
 			}, func(fs vfs.FS) {
-				actual, err := etcHostsFQDNHostname(fs)
+				actual, err := FQDNHostname(fs)
 				require.NoError(t, err)
 				assert.Equal(t, tc.expected, actual)
 			})
