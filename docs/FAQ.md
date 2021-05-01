@@ -16,7 +16,8 @@
 * [Do I have to use `chezmoi edit` to edit my dotfiles?](#do-i-have-to-use-chezmoi-edit-to-edit-my-dotfiles)
 * [Can I change how chezmoi's source state is represented on disk?](#can-i-change-how-chezmois-source-state-is-represented-on-disk)
 * [gpg encryption fails. What could be wrong?](#gpg-encryption-fails-what-could-be-wrong)
-* [chezmoi reports "user: lookup userid NNNNN: input/output error"](#chezmoi-reports-user-lookup-userid-nnnnn-inputoutput-error)
+* [chezmoi reports `chezmoi: user: lookup userid NNNNN: input/output error`](#chezmoi-reports-chezmoi-user-lookup-userid-nnnnn-inputoutput-error)
+* [chezmoi reports `chemzoi: timeout` or `chemzoi: timeout obtaining persistent state lock`](#chezmoi-reports-chemzoi-timeout-or-chemzoi-timeout-obtaining-persistent-state-lock)
 * [I'm getting errors trying to build chezmoi from source](#im-getting-errors-trying-to-build-chezmoi-from-source)
 * [What inspired chezmoi?](#what-inspired-chezmoi)
 * [Why not use Ansible/Chef/Puppet/Salt, or similar to manage my dotfiles instead?](#why-not-use-ansiblechefpuppetsalt-or-similar-to-manage-my-dotfiles-instead)
@@ -319,7 +320,7 @@ change the trust level by running:
 
 Enter `trust` at the prompt and chose `5 = I trust ultimately`.
 
-## chezmoi reports "user: lookup userid NNNNN: input/output error"
+## chezmoi reports `chezmoi: user: lookup userid NNNNN: input/output error`
 
 This is likely because the chezmoi binary you are using was statically compiled
 with [musl](https://musl.libc.org/) and the machine you are running on uses
@@ -331,6 +332,22 @@ of the statically-compiled binary.
 
 If the problem still persists, then please [open an issue on
 GitHub](https://github.com/twpayne/chezmoi/issues/new/choose).
+
+## chezmoi reports `chemzoi: timeout` or `chemzoi: timeout obtaining persistent state lock`
+
+chezmoi will report this when it is unable to lock its persistent state
+(`~/.config/chezmoi/chezmoistate.boltdb`), typically because another instance of
+chezmoi is currently running and holding the lock.
+
+This can happen, for example, if you have a `run_` script that invokes
+`chezmoi`, or are running chezmoi in another window.
+
+Under the hood, chezmoi uses [bbolt](https://github.com/etcd-io/bbolt) which
+permits multiple simultaneous readers, but only one writer (with no readers).
+
+Commands that take a write lock include `add`, `apply`, `edit`, `forget`,
+`import`, `init`, `state`, `unmanage`, and `update`. Commands that take a read
+lock include `diff`, `status`, and `verify`.
 
 ## I'm getting errors trying to build chezmoi from source
 

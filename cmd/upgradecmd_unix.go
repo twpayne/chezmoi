@@ -160,7 +160,7 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 		Str("arg0", arg0).
 		Strs("argv", argv).
 		Msg("exec")
-	err = syscall.Exec(arg0, argv, os.Environ())
+	err = syscall.EINTR
 	for errors.Is(err, syscall.EINTR) {
 		err = syscall.Exec(arg0, argv, os.Environ())
 	}

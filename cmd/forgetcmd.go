@@ -19,6 +19,7 @@ func (c *Config) newForgetCmd() *cobra.Command {
 		RunE:    c.makeRunEWithSourceState(c.runForgetCmd),
 		Annotations: map[string]string{
 			modifiesSourceDirectory: "true",
+			persistentStateMode:     persistentStateModeReadWrite,
 		},
 	}
 
@@ -26,12 +27,15 @@ func (c *Config) newForgetCmd() *cobra.Command {
 }
 
 func (c *Config) runForgetCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
-	sourceAbsPaths, err := c.sourceAbsPaths(sourceState, args)
+	targetRelPaths, err := c.targetRelPaths(sourceState, args, targetRelPathsOptions{
+		mustBeInSourceState: true,
+	})
 	if err != nil {
 		return err
 	}
 
-	for _, sourceAbsPath := range sourceAbsPaths {
+	for _, targetRelPath := range targetRelPaths {
+		sourceAbsPath := c.SourceDirAbsPath.Join(sourceState.MustEntry(targetRelPath).SourceRelPath().RelPath())
 		if !c.force {
 			choice, err := c.promptChoice(fmt.Sprintf("Remove %s", sourceAbsPath), yesNoAllQuit)
 			if err != nil {
@@ -48,6 +52,11 @@ func (c *Config) runForgetCmd(cmd *cobra.Command, args []string, sourceState *ch
 			}
 		}
 		if err := c.sourceSystem.RemoveAll(sourceAbsPath); err != nil {
+			return err
+		}
+
+		targetAbsPath := c.DestDirAbsPath.Join(targetRelPath)
+		if err := c.persistentState.Delete(chezmoi.EntryStateBucket, []byte(targetAbsPath)); err != nil {
 			return err
 		}
 	}

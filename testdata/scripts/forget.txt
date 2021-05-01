@@ -1,11 +1,36 @@
+[windows] skip # FIXME make this test pass on windows
+
 mksourcedir
 
-# test that chezmoi forget file forgets a file
+# test that chezmoi apply sets the state
+chezmoi apply --force
 exists $CHEZMOISOURCEDIR/dot_file
-chezmoi forget --force $HOME${/}.file
-! exists $CHEZMOISOURCEDIR/dot_file
+chezmoi state get --bucket=entryState --key=$WORK/home/user/.dir
+cmp stdout golden/state-get-dir.json
+chezmoi state get --bucket=entryState --key=$WORK/home/user/.file
+cmp stdout golden/state-get-file.json
 
-# test that chezmoi forget dir forgets a dir
+# test that chezmoi forget forgets a dir
 exists $CHEZMOISOURCEDIR/dot_dir
 chezmoi forget --force $HOME${/}.dir
 ! exists $CHEZMOISOURCEDIR/dot_dir
+chezmoi state get --bucket=entryState --key=$WORK/home/user/.dir
+! stdout .
+
+# test that chezmoi forget forgets a file
+chezmoi forget --force $HOME${/}.file
+! exists $CHEZMOISOURCEDIR/dot_file
+chezmoi state get --bucket=entryState --key=$WORK/home/user/.file
+! stdout .
+
+-- golden/state-get-dir.json --
+{
+  "type": "dir",
+  "mode": 2147484141
+}
+-- golden/state-get-file.json --
+{
+  "type": "file",
+  "mode": 420,
+  "contentsSHA256": "634a4dd193c7b3b926d2e08026aa81a416fd41cec52854863b974af422495663"
+}
