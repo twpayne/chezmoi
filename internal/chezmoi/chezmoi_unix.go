@@ -5,7 +5,6 @@ package chezmoi
 import (
 	"bufio"
 	"bytes"
-	"net"
 	"os"
 	"regexp"
 	"strings"
@@ -21,16 +20,8 @@ func init() {
 	syscall.Umask(int(Umask))
 }
 
-// FQDNHostname returns the FQDN hostname.
+// FQDNHostname returns the FQDN hostname from parsing /etc/hosts.
 func FQDNHostname(fs vfs.FS) (string, error) {
-	if fqdnHostname, err := etcHostsFQDNHostname(fs); err == nil && fqdnHostname != "" {
-		return fqdnHostname, nil
-	}
-	return lookupAddrFQDNHostname()
-}
-
-// etcHostsFQDNHostname returns the FQDN hostname from parsing /etc/hosts.
-func etcHostsFQDNHostname(fs vfs.FS) (string, error) {
 	etcHostsContents, err := fs.ReadFile("/etc/hosts")
 	if err != nil {
 		return "", err
@@ -58,17 +49,4 @@ func isExecutable(info os.FileInfo) bool {
 // isPrivate returns if info is private.
 func isPrivate(info os.FileInfo) bool {
 	return info.Mode().Perm()&0o77 == 0
-}
-
-// lookupAddrFQDNHostname returns the FQDN hostname by doing a reverse lookup of
-// 127.0.1.1.
-func lookupAddrFQDNHostname() (string, error) {
-	names, err := net.LookupAddr("127.0.1.1")
-	if err != nil {
-		return "", err
-	}
-	if len(names) == 0 {
-		return "", nil
-	}
-	return strings.TrimSuffix(names[0], "."), nil
 }
