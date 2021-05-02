@@ -127,9 +127,9 @@ function get_goarch {
     if (-not $arch) {
         if (Get-Command "Get-WmiObject" -ErrorAction SilentlyContinue) {
             $wmi_arch = (Get-WmiObject -Class Win32_OperatingSystem | Select-Object *).OSArchitecture
-            if ($wmi_arch -eq "64-bit") {
+            if ($wmi_arch.StartsWith("64")) {
                 $arch = "X64";
-            } elseif ($wmi_arch -eq "32-bit") {
+            } elseif ($wmi_arch.StartsWith("32")) {
                 $arch = "X86";
             }
         }
@@ -311,4 +311,3 @@ try {
         Remove-Item -LiteralPath $tempdir -Recurse -Force
     }
 }
-
