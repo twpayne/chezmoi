@@ -124,6 +124,12 @@ function get_goarch {
     $arch = "$([Runtime.InteropServices.RuntimeInformation]::OSArchitecture)";
     $wmi_arch = $null;
 
+    if ((-not $arch) -and [Environment]::Is64BitOperatingSystem) {
+        $arch = "X64";
+    }
+
+    # [Environment]::Is64BitOperatingSystem is only available on .net 4 or
+    # newer, so if we still don't know, try another method
     if (-not $arch) {
         if (Get-Command "Get-WmiObject" -ErrorAction SilentlyContinue) {
             $wmi_arch = (Get-WmiObject -Class Win32_OperatingSystem | Select-Object *).OSArchitecture
