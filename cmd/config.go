@@ -1065,7 +1065,7 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 			err = v.Unmarshal(&Config{}, viperDecodeConfigOptions...)
 		}
 		if err != nil {
-			cmd.Printf("warning: %s: %v\n", c.configFileAbsPath, err)
+			c.errorf("warning: %s: %v\n", c.configFileAbsPath, err)
 		}
 	}
 
@@ -1108,7 +1108,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		if !boolAnnotation(cmd, doesNotRequireValidConfig) {
 			return fmt.Errorf("invalid config: %s: %w", c.configFileAbsPath, err)
 		}
-		cmd.Printf("warning: %s: %v\n", c.configFileAbsPath, err)
+		c.errorf("warning: %s: %v\n", c.configFileAbsPath, err)
 	}
 
 	color, err := c.Color.Value()

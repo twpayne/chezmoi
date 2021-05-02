@@ -143,8 +143,8 @@ Read what [people have said about chezmoi](docs/MEDIA.md).
 * [Comparison guide](docs/COMPARISON.md) for a comparison with other dotfile managers.
 * [Related software](docs/RELATED.md) for third party software that works with
   chezmoi.
-* [Contributing](docs/CONTRIBUTING.md) for people looking to contribute to or
-  package chezmoi.
+* [Contributing](docs/CONTRIBUTING.md) and [Architecture](docs/ARCHITECTURE.md)
+  for people looking to contribute to or package chezmoi.
 
 ## License
 
