@@ -1047,6 +1047,15 @@ WSL 2 since version 4.19.112:
 {{ end }}
 ```
 
+WSL 2 since version 5.4.72:
+```
+{{ if (eq .chezmoi.os "linux") }}
+{{   if (contains "microsoft-standard-WSL2" .chezmoi.kernel.osrelease) }}
+# WSL-specific code
+{{   end }}
+{{ end }}
+```
+
 ### Run a PowerShell script as admin on Windows
 
 Put the following at the top of your script:
