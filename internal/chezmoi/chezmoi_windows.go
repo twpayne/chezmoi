@@ -9,8 +9,9 @@ import (
 	"golang.org/x/sys/windows"
 )
 
-// FQDNHostname returns the machine's fully-qualified DNS domain name.
-func FQDNHostname(fs vfs.FS) (string, error) {
+// FQDNHostname returns the machine's fully-qualified DNS domain name, if
+// available.
+func FQDNHostname(fs vfs.FS) string {
 	n := uint32(windows.MAX_COMPUTERNAME_LENGTH + 1)
 	buf := make([]uint16, n)
 	err := windows.GetComputerNameEx(windows.ComputerNameDnsFullyQualified, &buf[0], &n)
@@ -19,9 +20,9 @@ func FQDNHostname(fs vfs.FS) (string, error) {
 		err = windows.GetComputerNameEx(windows.ComputerNameDnsFullyQualified, &buf[0], &n)
 	}
 	if err != nil {
-		return "", err
+		return ""
 	}
-	return string(utf16.Decode(buf[0:n])), nil
+	return string(utf16.Decode(buf[0:n]))
 }
 
 // isExecutable returns false on Windows.

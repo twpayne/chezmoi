@@ -20,13 +20,43 @@ func init() {
 	syscall.Umask(int(Umask))
 }
 
-// FQDNHostname returns the FQDN hostname from parsing /etc/hosts.
-func FQDNHostname(fs vfs.FS) (string, error) {
-	etcHostsContents, err := fs.ReadFile("/etc/hosts")
+// FQDNHostname returns the FQDN hostname, if it can be determined.
+func FQDNHostname(fs vfs.FS) string {
+	if fqdnHostname, err := etcHostnameFQDNHostname(fs); err == nil && fqdnHostname != "" {
+		return fqdnHostname
+	}
+	if fqdnHostname, err := etcHostsFQDNHostname(fs); err == nil && fqdnHostname != "" {
+		return fqdnHostname
+	}
+	return ""
+}
+
+// etcHostnameFQDNHostname returns the FQDN hostname from parsing /etc/hostname.
+func etcHostnameFQDNHostname(fs vfs.FS) (string, error) {
+	contents, err := fs.ReadFile("/etc/hostname")
 	if err != nil {
 		return "", err
 	}
-	s := bufio.NewScanner(bytes.NewReader(etcHostsContents))
+	s := bufio.NewScanner(bytes.NewReader(contents))
+	for s.Scan() {
+		text := s.Text()
+		if index := strings.IndexByte(text, '#'); index != -1 {
+			text = text[:index]
+		}
+		if hostname := strings.TrimSpace(text); hostname != "" {
+			return hostname, nil
+		}
+	}
+	return "", s.Err()
+}
+
+// etcHostsFQDNHostname returns the FQDN hostname from parsing /etc/hosts.
+func etcHostsFQDNHostname(fs vfs.FS) (string, error) {
+	contents, err := fs.ReadFile("/etc/hosts")
+	if err != nil {
+		return "", err
+	}
+	s := bufio.NewScanner(bytes.NewReader(contents))
 	for s.Scan() {
 		text := s.Text()
 		text = strings.TrimSpace(text)

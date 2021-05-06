@@ -651,12 +651,8 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 		}
 	}
 
-	if fqdnHostname, err := chezmoi.FQDNHostname(c.fs); err == nil && fqdnHostname != "" {
+	if fqdnHostname := chezmoi.FQDNHostname(c.fs); fqdnHostname != "" {
 		data["fqdnHostname"] = fqdnHostname
-	} else {
-		log.Debug().
-			Err(err).
-			Msg("chezmoi.EtcHostsFQDNHostname")
 	}
 
 	if hostname, err := os.Hostname(); err == nil {
