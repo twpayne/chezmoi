@@ -48,19 +48,6 @@ type templateConfig struct {
 
 // A Config represents a configuration.
 type Config struct {
-	version     *semver.Version
-	versionInfo VersionInfo
-	versionStr  string
-
-	bds *xdg.BaseDirectorySpecification
-
-	fs                vfs.FS
-	configFileAbsPath chezmoi.AbsPath
-	baseSystem        chezmoi.System
-	sourceSystem      chezmoi.System
-	destSystem        chezmoi.System
-	persistentState   chezmoi.PersistentState
-
 	// Global configuration, settable in the config file.
 	SourceDirAbsPath chezmoi.AbsPath        `mapstructure:"sourceDir"`
 	DestDirAbsPath   chezmoi.AbsPath        `mapstructure:"destDir"`
@@ -128,6 +115,20 @@ type Config struct {
 	update          updateCmdConfig
 	upgrade         upgradeCmdConfig
 	verify          verifyCmdConfig
+
+	// Version information.
+	version     *semver.Version
+	versionInfo VersionInfo
+	versionStr  string
+
+	// Configuration.
+	fs                vfs.FS
+	bds               *xdg.BaseDirectorySpecification
+	configFileAbsPath chezmoi.AbsPath
+	baseSystem        chezmoi.System
+	sourceSystem      chezmoi.System
+	destSystem        chezmoi.System
+	persistentState   chezmoi.PersistentState
 
 	// Computed configuration.
 	homeDirAbsPath chezmoi.AbsPath
