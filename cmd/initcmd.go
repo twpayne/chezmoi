@@ -175,6 +175,27 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 		if err != nil {
 			return err
 		}
+
+		// Validate the config.
+		v := viper.New()
+		v.SetConfigType(ext)
+		if err := v.ReadConfig(bytes.NewBuffer(configFileContents)); err != nil {
+			return err
+		}
+		if err := v.Unmarshal(&Config{}, viperDecodeConfigOptions...); err != nil {
+			return err
+		}
+
+		// Write the config.
+		configDir := chezmoi.AbsPath(c.bds.ConfigHome).Join("chezmoi")
+		if err := chezmoi.MkdirAll(c.baseSystem, configDir, 0o777); err != nil {
+			return err
+		}
+		configPath := configDir.Join(configTemplateRelPath)
+		if err := c.baseSystem.WriteFile(configPath, configFileContents, 0o600); err != nil {
+			return err
+		}
+
 		configStateValue, err := json.Marshal(configState{
 			ConfigTemplateContentsSHA256: chezmoi.HexBytes(chezmoi.SHA256Sum(configTemplateContents)),
 		})
@@ -247,19 +268,7 @@ func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte) ([]byte
 	if err = t.Execute(&sb, templateData); err != nil {
 		return nil, err
 	}
-	contents := []byte(sb.String())
-
-	configDir := chezmoi.AbsPath(c.bds.ConfigHome).Join("chezmoi")
-	if err := chezmoi.MkdirAll(c.baseSystem, configDir, 0o777); err != nil {
-		return nil, err
-	}
-
-	configPath := configDir.Join(filename)
-	if err := c.baseSystem.WriteFile(configPath, contents, 0o600); err != nil {
-		return nil, err
-	}
-
-	return contents, nil
+	return []byte(sb.String()), nil
 }
 
 func (c *Config) promptBool(field string) bool {
