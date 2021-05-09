@@ -47,7 +47,7 @@ func (p SourceRelPath) Empty() bool {
 
 // Join appends elems to p.
 func (p SourceRelPath) Join(elems ...SourceRelPath) SourceRelPath {
-	elemRelPaths := make(RelPaths, 0, len(elems))
+	elemRelPaths := make([]RelPath, 0, len(elems))
 	for _, elem := range elems {
 		elemRelPaths = append(elemRelPaths, elem.relPath)
 	}

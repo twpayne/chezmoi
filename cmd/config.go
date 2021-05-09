@@ -48,19 +48,6 @@ type templateConfig struct {
 
 // A Config represents a configuration.
 type Config struct {
-	version     *semver.Version
-	versionInfo VersionInfo
-	versionStr  string
-
-	bds *xdg.BaseDirectorySpecification
-
-	fs                vfs.FS
-	configFileAbsPath chezmoi.AbsPath
-	baseSystem        chezmoi.System
-	sourceSystem      chezmoi.System
-	destSystem        chezmoi.System
-	persistentState   chezmoi.PersistentState
-
 	// Global configuration, settable in the config file.
 	SourceDirAbsPath chezmoi.AbsPath        `mapstructure:"sourceDir"`
 	DestDirAbsPath   chezmoi.AbsPath        `mapstructure:"destDir"`
@@ -128,6 +115,20 @@ type Config struct {
 	update          updateCmdConfig
 	upgrade         upgradeCmdConfig
 	verify          verifyCmdConfig
+
+	// Version information.
+	version     *semver.Version
+	versionInfo VersionInfo
+	versionStr  string
+
+	// Configuration.
+	fs                vfs.FS
+	bds               *xdg.BaseDirectorySpecification
+	configFileAbsPath chezmoi.AbsPath
+	baseSystem        chezmoi.System
+	sourceSystem      chezmoi.System
+	destSystem        chezmoi.System
+	persistentState   chezmoi.PersistentState
 
 	// Computed configuration.
 	homeDirAbsPath chezmoi.AbsPath
@@ -435,7 +436,7 @@ func (c *Config) applyArgs(targetSystem chezmoi.System, targetDirAbsPath chezmoi
 		Umask:        options.umask,
 	}
 
-	var targetRelPaths chezmoi.RelPaths
+	var targetRelPaths []chezmoi.RelPath
 	switch {
 	case len(args) == 0:
 		targetRelPaths = sourceState.TargetRelPaths()
@@ -780,7 +781,7 @@ func (c *Config) doPurge(purgeOptions *purgeOptions) error {
 	if err != nil {
 		return err
 	}
-	absPaths := chezmoi.AbsPaths{
+	absPaths := []chezmoi.AbsPath{
 		c.configFileAbsPath.Dir(),
 		c.configFileAbsPath,
 		persistentStateFileAbsPath,
@@ -1349,14 +1350,14 @@ func (c *Config) runEditor(args []string) error {
 	return c.run("", editor, append(editorArgs, args...))
 }
 
-func (c *Config) sourceAbsPaths(sourceState *chezmoi.SourceState, args []string) (chezmoi.AbsPaths, error) {
+func (c *Config) sourceAbsPaths(sourceState *chezmoi.SourceState, args []string) ([]chezmoi.AbsPath, error) {
 	targetRelPaths, err := c.targetRelPaths(sourceState, args, targetRelPathsOptions{
 		mustBeInSourceState: true,
 	})
 	if err != nil {
 		return nil, err
 	}
-	sourceAbsPaths := make(chezmoi.AbsPaths, 0, len(targetRelPaths))
+	sourceAbsPaths := make([]chezmoi.AbsPath, 0, len(targetRelPaths))
 	for _, targetRelPath := range targetRelPaths {
 		sourceAbsPath := c.SourceDirAbsPath.Join(sourceState.MustEntry(targetRelPath).SourceRelPath().RelPath())
 		sourceAbsPaths = append(sourceAbsPaths, sourceAbsPath)
@@ -1392,8 +1393,8 @@ type targetRelPathsOptions struct {
 	recursive           bool
 }
 
-func (c *Config) targetRelPaths(sourceState *chezmoi.SourceState, args []string, options targetRelPathsOptions) (chezmoi.RelPaths, error) {
-	targetRelPaths := make(chezmoi.RelPaths, 0, len(args))
+func (c *Config) targetRelPaths(sourceState *chezmoi.SourceState, args []string, options targetRelPathsOptions) ([]chezmoi.RelPath, error) {
+	targetRelPaths := make([]chezmoi.RelPath, 0, len(args))
 	for _, arg := range args {
 		argAbsPath, err := chezmoi.NewAbsPathFromExtPath(arg, c.homeDirAbsPath)
 		if err != nil {
@@ -1428,7 +1429,9 @@ func (c *Config) targetRelPaths(sourceState *chezmoi.SourceState, args []string,
 	}
 
 	// Sort and de-duplicate targetRelPaths in place.
-	sort.Sort(targetRelPaths)
+	sort.Slice(targetRelPaths, func(i, j int) bool {
+		return targetRelPaths[i] < targetRelPaths[j]
+	})
 	n := 1
 	for i := 1; i < len(targetRelPaths); i++ {
 		if targetRelPaths[i] != targetRelPaths[i-1] {
@@ -1439,8 +1442,8 @@ func (c *Config) targetRelPaths(sourceState *chezmoi.SourceState, args []string,
 	return targetRelPaths[:n], nil
 }
 
-func (c *Config) targetRelPathsBySourcePath(sourceState *chezmoi.SourceState, args []string) (chezmoi.RelPaths, error) {
-	targetRelPaths := make(chezmoi.RelPaths, 0, len(args))
+func (c *Config) targetRelPathsBySourcePath(sourceState *chezmoi.SourceState, args []string) ([]chezmoi.RelPath, error) {
+	targetRelPaths := make([]chezmoi.RelPath, 0, len(args))
 	targetRelPathsBySourceRelPath := make(map[chezmoi.RelPath]chezmoi.RelPath)
 	for targetRelPath, sourceStateEntry := range sourceState.Entries() {
 		sourceRelPath := sourceStateEntry.SourceRelPath().RelPath()
