@@ -780,7 +780,7 @@ func (c *Config) doPurge(purgeOptions *purgeOptions) error {
 	if err != nil {
 		return err
 	}
-	absPaths := chezmoi.AbsPaths{
+	absPaths := []chezmoi.AbsPath{
 		c.configFileAbsPath.Dir(),
 		c.configFileAbsPath,
 		persistentStateFileAbsPath,
@@ -1349,14 +1349,14 @@ func (c *Config) runEditor(args []string) error {
 	return c.run("", editor, append(editorArgs, args...))
 }
 
-func (c *Config) sourceAbsPaths(sourceState *chezmoi.SourceState, args []string) (chezmoi.AbsPaths, error) {
+func (c *Config) sourceAbsPaths(sourceState *chezmoi.SourceState, args []string) ([]chezmoi.AbsPath, error) {
 	targetRelPaths, err := c.targetRelPaths(sourceState, args, targetRelPathsOptions{
 		mustBeInSourceState: true,
 	})
 	if err != nil {
 		return nil, err
 	}
-	sourceAbsPaths := make(chezmoi.AbsPaths, 0, len(targetRelPaths))
+	sourceAbsPaths := make([]chezmoi.AbsPath, 0, len(targetRelPaths))
 	for _, targetRelPath := range targetRelPaths {
 		sourceAbsPath := c.SourceDirAbsPath.Join(sourceState.MustEntry(targetRelPath).SourceRelPath().RelPath())
 		sourceAbsPaths = append(sourceAbsPaths, sourceAbsPath)

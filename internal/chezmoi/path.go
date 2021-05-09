@@ -91,13 +91,6 @@ func (p AbsPath) Type() string {
 	return "path"
 }
 
-// AbsPaths is a slice of AbsPaths that implements sort.Interface.
-type AbsPaths []AbsPath
-
-func (ps AbsPaths) Len() int           { return len(ps) }
-func (ps AbsPaths) Less(i, j int) bool { return string(ps[i]) < string(ps[j]) }
-func (ps AbsPaths) Swap(i, j int)      { ps[i], ps[j] = ps[j], ps[i] }
-
 // A RelPath is a relative path.
 type RelPath string
 

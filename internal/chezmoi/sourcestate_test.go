@@ -18,14 +18,14 @@ import (
 func TestSourceStateAdd(t *testing.T) {
 	for _, tc := range []struct {
 		name         string
-		destAbsPaths AbsPaths
+		destAbsPaths []AbsPath
 		addOptions   AddOptions
 		extraRoot    interface{}
 		tests        []interface{}
 	}{
 		{
 			name: "dir",
-			destAbsPaths: AbsPaths{
+			destAbsPaths: []AbsPath{
 				"/home/user/.dir",
 			},
 			addOptions: AddOptions{
@@ -46,7 +46,7 @@ func TestSourceStateAdd(t *testing.T) {
 		},
 		{
 			name: "dir_change_attributes",
-			destAbsPaths: AbsPaths{
+			destAbsPaths: []AbsPath{
 				"/home/user/.dir",
 			},
 			addOptions: AddOptions{
@@ -74,7 +74,7 @@ func TestSourceStateAdd(t *testing.T) {
 		},
 		{
 			name: "dir_file",
-			destAbsPaths: AbsPaths{
+			destAbsPaths: []AbsPath{
 				"/home/user/.dir/file",
 			},
 			addOptions: AddOptions{
@@ -94,7 +94,7 @@ func TestSourceStateAdd(t *testing.T) {
 		},
 		{
 			name: "dir_file_existing_dir",
-			destAbsPaths: AbsPaths{
+			destAbsPaths: []AbsPath{
 				"/home/user/.dir/file",
 			},
 			addOptions: AddOptions{
@@ -112,7 +112,7 @@ func TestSourceStateAdd(t *testing.T) {
 		},
 		{
 			name: "dir_subdir",
-			destAbsPaths: AbsPaths{
+			destAbsPaths: []AbsPath{
 				"/home/user/.dir/subdir",
 			},
 			addOptions: AddOptions{
@@ -134,7 +134,7 @@ func TestSourceStateAdd(t *testing.T) {
 		},
 		{
 			name: "dir_subdir_file",
-			destAbsPaths: AbsPaths{
+			destAbsPaths: []AbsPath{
 				"/home/user/.dir/subdir/file",
 			},
 			addOptions: AddOptions{
@@ -161,7 +161,7 @@ func TestSourceStateAdd(t *testing.T) {
 		},
 		{
 			name: "dir_subdir_file_existing_dir_subdir",
-			destAbsPaths: AbsPaths{
+			destAbsPaths: []AbsPath{
 				"/home/user/.dir/subdir/file",
 			},
 			addOptions: AddOptions{
@@ -179,7 +179,7 @@ func TestSourceStateAdd(t *testing.T) {
 		},
 		{
 			name: "empty",
-			destAbsPaths: AbsPaths{
+			destAbsPaths: []AbsPath{
 				"/home/user/.empty",
 			},
 			addOptions: AddOptions{
@@ -193,7 +193,7 @@ func TestSourceStateAdd(t *testing.T) {
 		},
 		{
 			name: "empty_with_empty",
-			destAbsPaths: AbsPaths{
+			destAbsPaths: []AbsPath{
 				"/home/user/.empty",
 			},
 			addOptions: AddOptions{
@@ -210,7 +210,7 @@ func TestSourceStateAdd(t *testing.T) {
 		},
 		{
 			name: "executable_unix",
-			destAbsPaths: AbsPaths{
+			destAbsPaths: []AbsPath{
 				"/home/user/.executable",
 			},
 			addOptions: AddOptions{
@@ -226,7 +226,7 @@ func TestSourceStateAdd(t *testing.T) {
 		},
 		{
 			name: "executable_windows",
-			destAbsPaths: AbsPaths{
+			destAbsPaths: []AbsPath{
 				"/home/user/.executable",
 			},
 			addOptions: AddOptions{
@@ -242,7 +242,7 @@ func TestSourceStateAdd(t *testing.T) {
 		},
 		{
 			name: "create",
-			destAbsPaths: AbsPaths{
+			destAbsPaths: []AbsPath{
 				"/home/user/.create",
 			},
 			addOptions: AddOptions{
@@ -259,7 +259,7 @@ func TestSourceStateAdd(t *testing.T) {
 		},
 		{
 			name: "file",
-			destAbsPaths: AbsPaths{
+			destAbsPaths: []AbsPath{
 				"/home/user/.file",
 			},
 			addOptions: AddOptions{
@@ -275,7 +275,7 @@ func TestSourceStateAdd(t *testing.T) {
 		},
 		{
 			name: "file_change_attributes",
-			destAbsPaths: AbsPaths{
+			destAbsPaths: []AbsPath{
 				"/home/user/.file",
 			},
 			addOptions: AddOptions{
@@ -297,7 +297,7 @@ func TestSourceStateAdd(t *testing.T) {
 		},
 		{
 			name: "file_replace_contents",
-			destAbsPaths: AbsPaths{
+			destAbsPaths: []AbsPath{
 				"/home/user/.file",
 			},
 			addOptions: AddOptions{
@@ -316,7 +316,7 @@ func TestSourceStateAdd(t *testing.T) {
 		},
 		{
 			name: "private_unix",
-			destAbsPaths: AbsPaths{
+			destAbsPaths: []AbsPath{
 				"/home/user/.private",
 			},
 			addOptions: AddOptions{
@@ -332,7 +332,7 @@ func TestSourceStateAdd(t *testing.T) {
 		},
 		{
 			name: "private_windows",
-			destAbsPaths: AbsPaths{
+			destAbsPaths: []AbsPath{
 				"/home/user/.private",
 			},
 			addOptions: AddOptions{
@@ -348,7 +348,7 @@ func TestSourceStateAdd(t *testing.T) {
 		},
 		{
 			name: "symlink",
-			destAbsPaths: AbsPaths{
+			destAbsPaths: []AbsPath{
 				"/home/user/.symlink",
 			},
 			addOptions: AddOptions{
@@ -363,7 +363,7 @@ func TestSourceStateAdd(t *testing.T) {
 		},
 		{
 			name: "symlink_backslash_windows",
-			destAbsPaths: AbsPaths{
+			destAbsPaths: []AbsPath{
 				"/home/user/.symlink_windows",
 			},
 			addOptions: AddOptions{
@@ -383,7 +383,7 @@ func TestSourceStateAdd(t *testing.T) {
 		},
 		{
 			name: "template",
-			destAbsPaths: AbsPaths{
+			destAbsPaths: []AbsPath{
 				"/home/user/.template",
 			},
 			addOptions: AddOptions{
@@ -400,7 +400,7 @@ func TestSourceStateAdd(t *testing.T) {
 		},
 		{
 			name: "dir_and_dir_file",
-			destAbsPaths: AbsPaths{
+			destAbsPaths: []AbsPath{
 				"/home/user/.dir",
 				"/home/user/.dir/file",
 			},
@@ -421,7 +421,7 @@ func TestSourceStateAdd(t *testing.T) {
 		},
 		{
 			name: "file_in_dir_exact_subdir",
-			destAbsPaths: AbsPaths{
+			destAbsPaths: []AbsPath{
 				"/home/user/.dir/subdir/file",
 			},
 			addOptions: AddOptions{
