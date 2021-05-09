@@ -89,7 +89,9 @@ func (c *Config) runChattrCmd(cmd *cobra.Command, args []string, sourceState *ch
 
 	// Sort targets in reverse so we update children before their parent
 	// directories.
-	sort.Sort(sort.Reverse(targetRelPaths))
+	sort.Slice(targetRelPaths, func(i, j int) bool {
+		return targetRelPaths[i] > targetRelPaths[j]
+	})
 
 	encryptedSuffix := sourceState.Encryption().EncryptedSuffix()
 	for _, targetRelPath := range targetRelPaths {

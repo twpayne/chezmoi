@@ -435,7 +435,7 @@ func (c *Config) applyArgs(targetSystem chezmoi.System, targetDirAbsPath chezmoi
 		Umask:        options.umask,
 	}
 
-	var targetRelPaths chezmoi.RelPaths
+	var targetRelPaths []chezmoi.RelPath
 	switch {
 	case len(args) == 0:
 		targetRelPaths = sourceState.TargetRelPaths()
@@ -1392,8 +1392,8 @@ type targetRelPathsOptions struct {
 	recursive           bool
 }
 
-func (c *Config) targetRelPaths(sourceState *chezmoi.SourceState, args []string, options targetRelPathsOptions) (chezmoi.RelPaths, error) {
-	targetRelPaths := make(chezmoi.RelPaths, 0, len(args))
+func (c *Config) targetRelPaths(sourceState *chezmoi.SourceState, args []string, options targetRelPathsOptions) ([]chezmoi.RelPath, error) {
+	targetRelPaths := make([]chezmoi.RelPath, 0, len(args))
 	for _, arg := range args {
 		argAbsPath, err := chezmoi.NewAbsPathFromExtPath(arg, c.homeDirAbsPath)
 		if err != nil {
@@ -1428,7 +1428,9 @@ func (c *Config) targetRelPaths(sourceState *chezmoi.SourceState, args []string,
 	}
 
 	// Sort and de-duplicate targetRelPaths in place.
-	sort.Sort(targetRelPaths)
+	sort.Slice(targetRelPaths, func(i, j int) bool {
+		return targetRelPaths[i] < targetRelPaths[j]
+	})
 	n := 1
 	for i := 1; i < len(targetRelPaths); i++ {
 		if targetRelPaths[i] != targetRelPaths[i-1] {
@@ -1439,8 +1441,8 @@ func (c *Config) targetRelPaths(sourceState *chezmoi.SourceState, args []string,
 	return targetRelPaths[:n], nil
 }
 
-func (c *Config) targetRelPathsBySourcePath(sourceState *chezmoi.SourceState, args []string) (chezmoi.RelPaths, error) {
-	targetRelPaths := make(chezmoi.RelPaths, 0, len(args))
+func (c *Config) targetRelPathsBySourcePath(sourceState *chezmoi.SourceState, args []string) ([]chezmoi.RelPath, error) {
+	targetRelPaths := make([]chezmoi.RelPath, 0, len(args))
 	targetRelPathsBySourceRelPath := make(map[chezmoi.RelPath]chezmoi.RelPath)
 	for targetRelPath, sourceStateEntry := range sourceState.Entries() {
 		sourceRelPath := sourceStateEntry.SourceRelPath().RelPath()

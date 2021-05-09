@@ -674,11 +674,13 @@ func (s *SourceState) Read() error {
 
 	// Check for duplicate source entries with the same target name. Iterate
 	// over the target names in order so that any error is deterministic.
-	targetRelPaths := make(RelPaths, 0, len(allSourceStateEntries))
+	targetRelPaths := make([]RelPath, 0, len(allSourceStateEntries))
 	for targetRelPath := range allSourceStateEntries {
 		targetRelPaths = append(targetRelPaths, targetRelPath)
 	}
-	sort.Sort(targetRelPaths)
+	sort.Slice(targetRelPaths, func(i, j int) bool {
+		return targetRelPaths[i] < targetRelPaths[j]
+	})
 	for _, targetRelPath := range targetRelPaths {
 		sourceStateEntries := allSourceStateEntries[targetRelPath]
 		if len(sourceStateEntries) == 1 {
@@ -707,8 +709,8 @@ func (s *SourceState) Read() error {
 }
 
 // TargetRelPaths returns all of s's target relative paths in order.
-func (s *SourceState) TargetRelPaths() RelPaths {
-	targetRelPaths := make(RelPaths, 0, len(s.entries))
+func (s *SourceState) TargetRelPaths() []RelPath {
+	targetRelPaths := make([]RelPath, 0, len(s.entries))
 	for targetRelPath := range s.entries {
 		targetRelPaths = append(targetRelPaths, targetRelPath)
 	}

@@ -35,7 +35,7 @@ func (c *Config) newManagedCmd() *cobra.Command {
 func (c *Config) runManagedCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
 	include := c.managed.include.Sub(c.managed.exclude)
 	entries := sourceState.Entries()
-	targetRelPaths := make(chezmoi.RelPaths, 0, len(entries))
+	targetRelPaths := make([]chezmoi.RelPath, 0, len(entries))
 	for targetRelPath, sourceStateEntry := range entries {
 		targetStateEntry, err := sourceStateEntry.TargetStateEntry(c.destSystem, c.DestDirAbsPath.Join(targetRelPath))
 		if err != nil {
@@ -47,7 +47,9 @@ func (c *Config) runManagedCmd(cmd *cobra.Command, args []string, sourceState *c
 		targetRelPaths = append(targetRelPaths, targetRelPath)
 	}
 
-	sort.Sort(targetRelPaths)
+	sort.Slice(targetRelPaths, func(i, j int) bool {
+		return targetRelPaths[i] < targetRelPaths[j]
+	})
 	sb := strings.Builder{}
 	for _, targetRelPath := range targetRelPaths {
 		fmt.Fprintln(&sb, targetRelPath)

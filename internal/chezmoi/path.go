@@ -136,13 +136,6 @@ func (p RelPath) TrimDirPrefix(dirPrefix RelPath) (RelPath, error) {
 	return p[len(dirPrefix)+1:], nil
 }
 
-// RelPaths is a slice of RelPaths that implements sort.Interface.
-type RelPaths []RelPath
-
-func (ps RelPaths) Len() int           { return len(ps) }
-func (ps RelPaths) Less(i, j int) bool { return string(ps[i]) < string(ps[j]) }
-func (ps RelPaths) Swap(i, j int)      { ps[i], ps[j] = ps[j], ps[i] }
-
 // StringSliceToAbsPathHookFunc is a
 // github.com/mitchellh/mapstructure.DecodeHookFunc that parses an AbsPath from
 // a string.

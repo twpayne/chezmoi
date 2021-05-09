@@ -1185,12 +1185,12 @@ func TestSourceStateTargetRelPaths(t *testing.T) {
 	for _, tc := range []struct {
 		name                   string
 		root                   interface{}
-		expectedTargetRelPaths RelPaths
+		expectedTargetRelPaths []RelPath
 	}{
 		{
 			name:                   "empty",
 			root:                   nil,
-			expectedTargetRelPaths: RelPaths{},
+			expectedTargetRelPaths: []RelPath{},
 		},
 		{
 			name: "scripts",
@@ -1207,7 +1207,7 @@ func TestSourceStateTargetRelPaths(t *testing.T) {
 					"run_after_3after":   "",
 				},
 			},
-			expectedTargetRelPaths: RelPaths{
+			expectedTargetRelPaths: []RelPath{
 				"1before",
 				"2before",
 				"3before",
