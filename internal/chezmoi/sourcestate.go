@@ -434,6 +434,19 @@ func (s *SourceState) Apply(targetSystem, destSystem System, persistentState Per
 			}
 		}
 
+		// If the target entry state matches the actual entry state, but not the
+		// last written entry state then silently update the last written entry
+		// state. This handles the case where the user makes identical edits to
+		// the source and target states: instead of reporting a diff with
+		// respect to the last written state, we record the effect of the last
+		// apply as the last written state.
+		if targetEntryState.Equivalent(actualEntryState) && !lastWrittenEntryState.Equivalent(actualEntryState) {
+			if err := persistentStateSet(persistentState, EntryStateBucket, []byte(targetAbsPath), targetEntryState); err != nil {
+				return err
+			}
+			lastWrittenEntryState = targetEntryState
+		}
+
 		if err := options.PreApplyFunc(targetRelPath, targetEntryState, lastWrittenEntryState, actualEntryState); err != nil {
 			return err
 		}
