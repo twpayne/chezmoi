@@ -228,6 +228,8 @@ func cmdMkGitConfig(ts *testscript.TestScript, neg bool, args []string) {
 	ts.Check(os.WriteFile(path, []byte(chezmoitest.JoinLines(
 		`[core]`,
 		`  autocrlf = false`,
+		`[init]`,
+		`  defaultBranch = master`,
 		`[user]`,
 		`  name = User`,
 		`  email = user@example.com`,

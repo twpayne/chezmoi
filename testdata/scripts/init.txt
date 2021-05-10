@@ -61,6 +61,13 @@ cmp $CHEZMOICONFIGDIR/chezmoi.toml golden/chezmoi.toml
 chezmoi init --data=false file://$WORK/home/user/.local/share/chezmoi
 cmp $CHEZMOICONFIGDIR/chezmoi.toml golden/chezmoi.toml-no-data
 
+# test that chezmoi init fails if the generated config is not valid
+chhome home8/user
+mkgitconfig
+! chezmoi init
+stderr 'parsing error'
+! exists .config/chezmoi
+
 -- golden/chezmoi.toml --
 [data]
   email = "user@company.com"
@@ -83,3 +90,6 @@ cmp $CHEZMOICONFIGDIR/chezmoi.toml golden/chezmoi.toml-no-data
 {{- end -}}
 [data]
   email = {{ $email | quote }}
+-- home8/user/.local/share/chezmoi/.chezmoi.toml.tmpl --
+[diff]
+exclude: ["scripts"]
