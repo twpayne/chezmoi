@@ -9,7 +9,6 @@ linters:
   - durationcheck
   - errcheck
   - errorlint
-  - exhaustive
   - exportloopref
   - forbidigo
   - forcetypeassert
@@ -55,6 +54,7 @@ linters:
   - whitespace
   disable:
   - cyclop
+  - exhaustive
   - exhaustivestruct
   - funlen
   - gochecknoglobals
