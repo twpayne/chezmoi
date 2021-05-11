@@ -17,7 +17,7 @@
 * [Can I change how chezmoi's source state is represented on disk?](#can-i-change-how-chezmois-source-state-is-represented-on-disk)
 * [gpg encryption fails. What could be wrong?](#gpg-encryption-fails-what-could-be-wrong)
 * [chezmoi reports `chezmoi: user: lookup userid NNNNN: input/output error`](#chezmoi-reports-chezmoi-user-lookup-userid-nnnnn-inputoutput-error)
-* [chezmoi reports `chemzoi: timeout` or `chemzoi: timeout obtaining persistent state lock`](#chezmoi-reports-chemzoi-timeout-or-chemzoi-timeout-obtaining-persistent-state-lock)
+* [chezmoi reports `chezmoi: timeout` or `chemzoi: timeout obtaining persistent state lock`](#chezmoi-reports-chezmoi-timeout-or-chemzoi-timeout-obtaining-persistent-state-lock)
 * [I'm getting errors trying to build chezmoi from source](#im-getting-errors-trying-to-build-chezmoi-from-source)
 * [What inspired chezmoi?](#what-inspired-chezmoi)
 * [Why not use Ansible/Chef/Puppet/Salt, or similar to manage my dotfiles instead?](#why-not-use-ansiblechefpuppetsalt-or-similar-to-manage-my-dotfiles-instead)
@@ -333,7 +333,7 @@ of the statically-compiled binary.
 If the problem still persists, then please [open an issue on
 GitHub](https://github.com/twpayne/chezmoi/issues/new/choose).
 
-## chezmoi reports `chemzoi: timeout` or `chemzoi: timeout obtaining persistent state lock`
+## chezmoi reports `chezmoi: timeout` or `chemzoi: timeout obtaining persistent state lock`
 
 chezmoi will report this when it is unable to lock its persistent state
 (`~/.config/chezmoi/chezmoistate.boltdb`), typically because another instance of
@@ -376,7 +376,7 @@ system management tools, chezmoi offers:
 * Easy installation and execution on every platform, without root access.
   Installing chezmoi requires only copying a single binary file with no external
   dependencies. Executing chezmoi just involves running the binary. In contrast,
-  installing and running a whole system management tools typically requires
+  installing and running a whole system management tool typically requires
   installing a scripting language runtime, several packages, and running a
   system service, all typically requiring root access.
 
