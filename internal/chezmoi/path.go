@@ -136,9 +136,8 @@ func (p RelPath) TrimDirPrefix(dirPrefix RelPath) (RelPath, error) {
 	return p[len(dirPrefix)+1:], nil
 }
 
-// StringSliceToAbsPathHookFunc is a
-// github.com/mitchellh/mapstructure.DecodeHookFunc that parses an AbsPath from
-// a string.
+// StringToAbsPathHookFunc is a github.com/mitchellh/mapstructure.DecodeHookFunc
+// that parses an AbsPath from a string.
 func StringToAbsPathHookFunc() mapstructure.DecodeHookFunc {
 	return func(from, to reflect.Type, data interface{}) (interface{}, error) {
 		if to != reflect.TypeOf(AbsPath("")) {

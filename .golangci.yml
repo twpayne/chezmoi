@@ -27,20 +27,24 @@ linters:
   - gosec
   - gosimple
   - govet
+  - ifshort
   - importas
   - ineffassign
   - makezero
   - misspell
   - nilerr
   - noctx
+  - nolintlint
   - prealloc
   - predeclared
+  - promlinter
   - revive
   - rowserrcheck
   - sqlclosecheck
   - staticcheck
   - structcheck
   - stylecheck
+  - tagliatelle
   - thelper
   - typecheck
   - unconvert
@@ -61,13 +65,11 @@ linters:
   - godox
   - goheader
   - gomnd
-  - ifshort # FIXME re-enable when bugs in ifshort are fixed
   - lll
   - maligned
   - nakedret
   - nestif
   - nlreturn
-  - nolintlint # FIXME re-enable when more reliable
   - paralleltest
   - testpackage
   - tparallel

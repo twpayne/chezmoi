@@ -145,7 +145,7 @@ type Config struct {
 type configOption func(*Config) error
 
 type configState struct {
-	ConfigTemplateContentsSHA256 chezmoi.HexBytes `json:"configTemplateContentsSHA256" yaml:"configTemplateContentsSHA256"`
+	ConfigTemplateContentsSHA256 chezmoi.HexBytes `json:"configTemplateContentsSHA256" yaml:"configTemplateContentsSHA256"` //nolint:tagliatelle
 }
 
 var (
@@ -455,6 +455,7 @@ func (c *Config) applyArgs(targetSystem chezmoi.System, targetDirAbsPath chezmoi
 		}
 	}
 
+	//nolint:ifshort
 	keptGoingAfterErr := false
 	for _, targetRelPath := range targetRelPaths {
 		switch err := sourceState.Apply(targetSystem, c.destSystem, c.persistentState, targetDirAbsPath, targetRelPath, applyOptions); {
