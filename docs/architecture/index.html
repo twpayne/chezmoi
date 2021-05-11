@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta name="generator" content="Hugo 0.83.1" />
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Architecture #  Directory structure #  The important directories in chezmoi are:
+   Directory Contents     cmd/ Code for the chezmoi command.   docs/ The documentation single source of truth. Help text, examples, and the chezmoi.io website are generated from the files in this directory, particularly docs/REFERENCE.md.   internal/chezmoi/ chezmoi&rsquo;s core functionality.   testdata/scripts/ High-level tests of chezmoi&rsquo;s commands using testscript.    Key concepts #  As described in the reference manual, chezmoi evaluates the source state to compute a target state for the destination directory (typically your home directory).">
+<meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Architecture" />
+<meta property="og:description" content="Architecture #  Directory structure #  The important directories in chezmoi are:
+   Directory Contents     cmd/ Code for the chezmoi command.   docs/ The documentation single source of truth. Help text, examples, and the chezmoi.io website are generated from the files in this directory, particularly docs/REFERENCE.md.   internal/chezmoi/ chezmoi&rsquo;s core functionality.   testdata/scripts/ High-level tests of chezmoi&rsquo;s commands using testscript.    Key concepts #  As described in the reference manual, chezmoi evaluates the source state to compute a target state for the destination directory (typically your home directory)." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chezmoi.io/docs/architecture/" /><meta property="article:section" content="docs" />
+
+
+
+<title>Architecture | chezmoi.io</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="/book.min.e935e20bd0d469378cb482f0958edf258c731a4f895dccd55799c6fbc8043f23.css" integrity="sha256-6TXiC9DUaTeMtILwlY7fJYxzGk&#43;JXczVV5nG&#43;8gEPyM=">
+<script defer src="/en.search.min.195d7fcf5fbaa74667a96b881f131a95e4fb48d040c9710a382b96e4babf85eb.js" integrity="sha256-GV1/z1&#43;6p0ZnqWuIHxMaleT7SNBAyXEKOCuW5Lq/hes="></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+  
+</head>
+
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a href="/"><img src="/logo-144px.svg" alt="Logo" /><span>chezmoi.io</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  <ul>
+<li><a href="/docs/install/">Install</a></li>
+<li><a href="/docs/quick-start/">Quick Start</a></li>
+<li><a href="/docs/how-to/">How-To</a></li>
+<li><a href="/docs/templating/">Templating</a></li>
+<li><a href="/docs/faq/">FAQ</a></li>
+<li><a href="/docs/changes/">Changes</a></li>
+<li><a href="/docs/reference/">Reference</a></li>
+<li><a href="/docs/media/">Media</a></li>
+<li><a href="/docs/comparison/">Comparison</a></li>
+<li><a href="/docs/contributing/">Contributing</a></li>
+<li><a href="/docs/architecture/"class=active>Architecture</a></li>
+<li><a href="/docs/related/">Related Software</a></li>
+<li><a href="https://github.com/twpayne/chezmoi">GitHub</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var a=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>Architecture</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#directory-structure">Directory structure</a></li>
+    <li><a href="#key-concepts">Key concepts</a></li>
+    <li><a href="#internalchezmoi"><code>internal/chezmoi</code></a></li>
+    <li><a href="#cmd"><code>cmd/</code></a></li>
+    <li><a href="#path-handling">Path handling</a></li>
+    <li><a href="#persistent-state">Persistent state</a></li>
+    <li><a href="#encryption">Encryption</a></li>
+    <li><a href="#run_once_-scripts"><code>run_once_</code> scripts</a></li>
+    <li><a href="#testing">Testing</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h1 id="architecture">
+  Architecture
+  <a class="anchor" href="#architecture">#</a>
+</h1>
+<h2 id="directory-structure">
+  Directory structure
+  <a class="anchor" href="#directory-structure">#</a>
+</h2>
+<p>The important directories in chezmoi are:</p>
+<table>
+<thead>
+<tr>
+<th>Directory</th>
+<th>Contents</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cmd/</code></td>
+<td>Code for the <code>chezmoi</code> command.</td>
+</tr>
+<tr>
+<td><code>docs/</code></td>
+<td>The documentation single source of truth. Help text, examples, and the <a href="https://chezmoi.io">chezmoi.io</a> website are generated from the files in this directory, particularly <code>docs/REFERENCE.md</code>.</td>
+</tr>
+<tr>
+<td><code>internal/chezmoi/</code></td>
+<td>chezmoi&rsquo;s core functionality.</td>
+</tr>
+<tr>
+<td><code>testdata/scripts/</code></td>
+<td>High-level tests of chezmoi&rsquo;s commands using <a href="https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript"><code>testscript</code></a>.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="key-concepts">
+  Key concepts
+  <a class="anchor" href="#key-concepts">#</a>
+</h2>
+<p>As described in the <a href="REFERENCE.md">reference manual</a>, chezmoi evaluates the
+source state to compute a target state for the destination directory (typically
+your home directory). It then compares the target state to the actual state of
+the destination directory and performs any changes necessary to update the
+destination directory to match the target state. The concepts are represented
+directly in chezmoi&rsquo;s code.</p>
+<p>chezmoi uses the generic term <em>entry</em> to describe something that it manages.
+Entries can be files, directories, symlinks, scripts, amongst other things.</p>
+<h2 id="internalchezmoi">
+  <code>internal/chezmoi</code>
+  <a class="anchor" href="#internalchezmoi">#</a>
+</h2>
+<p>All of chezmoi&rsquo;s interaction with the operating system is abstracted through the
+<code>System</code> interface. A <code>System</code> includes functionality to read and write files
+and directories and execute commands. chezmoi makes a distinction between
+idempotent commands that can be run multiple times without modifying the
+underlying system and arbitrary commands that may modify the underlying system.</p>
+<p>The real underlying system is implemented via a <code>RealSystem</code> struct. Other
+<code>System</code>s are composed on top of this to provide further functionality. For
+example, the <code>--debug</code> flag is implemented by wrapping the <code>RealSystem</code> with a
+<code>DebugSystem</code> that logs all calls to the underlying <code>RealSystem</code>. <code>--dry-run</code> is
+implemented by wrapping the <code>RealSystem</code> with a <code>DryRunSystem</code> that allows reads
+to pass through but silently discards all writes.</p>
+<p>The <code>SourceState</code> struct represents a source state, including reading a source
+state from the source directory, executing templates, applying the source state
+(i.e. updating a <code>System</code> to match the desired source state), and adding more
+entries to the source state.</p>
+<p>Entries in the source state are abstracted by the <code>SourceStateEntry</code> interface
+implemented by the <code>SourceStateFile</code> and <code>SourceStateDir</code> structs, as the source
+state only consists of regular files and directories.</p>
+<p>A <code>SourceStateFile</code> includes a <code>FileAttr</code> struct describing the attributes
+parsed from its file name. Similarly, a <code>SourceStateDir</code> includes a <code>DirAttr</code>
+struct describing the directory attributes parsed from a directory name.</p>
+<p><code>SourceStateEntry</code>s can compute their target state entries, i.e. what the
+equivalent entry should be in the target state, abstracted by the
+<code>TargetStateEntry</code> interface.</p>
+<p>Actual target state entries include <code>TargetStateFile</code> structs, representing a
+file with contents and permissions, <code>TargetStateDir</code> structs, representing a
+directory, <code>TargetStateSymlink</code> for symlinks, <code>TargetStateRemove</code> for entries
+that should be removed, and <code>TargetStateScript</code> for scripts that should be run.</p>
+<p>The actual state of an entry in the target state is abstracted via the
+<code>ActualStateEntry</code> interface, with <code>ActualStateAbsent</code>, <code>ActualStateDir</code>,
+<code>ActualStateFile</code>, <code>ActualStateSymlink</code> structs implementing this interface.</p>
+<p>Finally, an <code>EntryState</code> struct represents a serialization of an
+<code>ActualEntryState</code> for storage in and retrieval from chezmoi&rsquo;s persistent state.
+It stores a SHA256 of the entry&rsquo;s contents, rather than the full contents, to
+avoid storing secrets in the persistent state.</p>
+<p>With these concepts, chezmoi&rsquo;s apply command is effectively:</p>
+<ol>
+<li>Read the source state from the source directory.</li>
+<li>For each entry in the source state (<code>SourceStateEntry</code>), compute its
+<code>TargetStateEntry</code> and read its actual state in the destination state
+(<code>ActualStateEntry</code>).</li>
+<li>If the <code>ActualStateEntry</code> is not equivalent to the <code>TargetStateEntry</code> then
+apply the minimal set of changes to the <code>ActualStateEntry</code> so that they are
+equivalent.</li>
+</ol>
+<p>Furthermore, chezmoi stores the <code>EntryState</code> of each entry that it writes in its
+persistent state. chezmoi can then detect if a third party has updated a target
+since chezmoi last wrote it by comparing the actual state entry in the target
+state with the entry state in the persistent state.</p>
+<h2 id="cmd">
+  <code>cmd/</code>
+  <a class="anchor" href="#cmd">#</a>
+</h2>
+<p><code>cmd/*cmd.go</code> contains the code for each individual command and
+<code>cmd/*templatefuncs.go</code> contain the template functions.</p>
+<p>Commands are defined as methods on the <code>Config</code> struct. The <code>Config</code> struct is
+large, containing all configuration values read from the config file, command
+line arguments, and computed and cached values.</p>
+<p>The <code>Config.persistentPreRunRootE</code> and <code>Config.persistentPostRunRootE</code> methods
+set up and tear down state for individual commands based on the command&rsquo;s
+<code>Annotations</code> field.</p>
+<h2 id="path-handling">
+  Path handling
+  <a class="anchor" href="#path-handling">#</a>
+</h2>
+<p>chezmoi uses separate types for absolute paths (<code>AbsPath</code>) and relative paths
+(<code>RelPath</code>) to avoid errors where paths are combined (e.g. joining two absolute
+paths). A further type <code>SourceRelPath</code> is a relative path within the source
+directory and handles file and directory attributes.</p>
+<p>Internally, chezmoi normalizes all paths to use forward slashes with an optional
+upper-cased Windows volume so they can be compared with string comparisons.
+Paths read from the user may include tilde (<code>~</code>) to represent the user&rsquo;s home
+directory, use forward or backward slashes, and are treated as external paths
+(<code>ExtPath</code>). These are normalized to absolute paths. chezmoi is case-sensitive
+internally and makes no attempt to handle case-insensitive or case-preserving
+filesystems.</p>
+<h2 id="persistent-state">
+  Persistent state
+  <a class="anchor" href="#persistent-state">#</a>
+</h2>
+<p>Persistent state is treated as a two-level key-value store with the
+pseudo-structure <code>map[Bucket]map[Key]Value</code>, where <code>Bucket</code>, <code>Key</code>, and <code>Value</code>
+are all <code>[]byte</code>s. The <code>PersistentState</code> interface defines interaction with
+them. Sometimes temporary persistent states are used. For example, in dry run
+mode (<code>--dry-run</code>) the actual persistent state is copied into a temporary
+persistent state in memory which remembers writes but does not persist them to
+disk.</p>
+<h2 id="encryption">
+  Encryption
+  <a class="anchor" href="#encryption">#</a>
+</h2>
+<p>Encryption tools are abstracted by the <code>Encryption</code> interface that contains
+methods of encrypting and decrypting files and <code>[]byte</code>s. Implementations are
+the <code>AGEEncryption</code> and <code>GPGEncryption</code> structs. A <code>DebugEncryption</code> struct
+wraps an <code>Encryption</code> interface and logs the methods called.</p>
+<h2 id="run_once_-scripts">
+  <code>run_once_</code> scripts
+  <a class="anchor" href="#run_once_-scripts">#</a>
+</h2>
+<p>The execution of <code>run_once_</code> scripts is recorded by storing the SHA256 of their
+contents in the persistent state. <code>run_once_</code> scripts are only run if they are
+new or if their contents have not changed.</p>
+<h2 id="testing">
+  Testing
+  <a class="anchor" href="#testing">#</a>
+</h2>
+<p>chezmoi has a mix of, unit, integration, and end-to-end tests. Unit and
+integration tests use the
+<a href="https://pkg.go.dev/github.com/stretchr/testify"><code>github.com/stretchr/testify</code></a>
+framework. End-to-end tests use
+<a href="https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript"><code>github.com/rogpeppe/go-internal/testscript</code></a>
+with the test scripts themselves in <code>testdata/scripts</code>. You can run individual
+end-to-end tests with</p>
+<pre><code>go test . -run=TestScript/&lt;name&gt;
+</code></pre>
+<p>where <code>&lt;name&gt;</code> is the basename of file in <code>testdata/scripts</code>.</p>
+<p>Tests should, if at all possible, run unmodified on all operating systems tested
+in CI (Linux, macOS, Windows, and FreeBSD). Windows will sometimes need special
+handling due to its path separator and lack of POSIX-style file permissions.</p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#directory-structure">Directory structure</a></li>
+    <li><a href="#key-concepts">Key concepts</a></li>
+    <li><a href="#internalchezmoi"><code>internal/chezmoi</code></a></li>
+    <li><a href="#cmd"><code>cmd/</code></a></li>
+    <li><a href="#path-handling">Path handling</a></li>
+    <li><a href="#persistent-state">Persistent state</a></li>
+    <li><a href="#encryption">Encryption</a></li>
+    <li><a href="#run_once_-scripts"><code>run_once_</code> scripts</a></li>
+    <li><a href="#testing">Testing</a></li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

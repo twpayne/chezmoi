@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
 
 <head>
-  <meta name="generator" content="Hugo 0.82.0" />
+  <meta name="generator" content="Hugo 0.83.1" />
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Reference Manual #  Concepts #  chezmoi evaluates the source state for the current machine and then updates the destination directory, where:
@@ -22,8 +22,8 @@
 <title>Reference | chezmoi.io</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
-<link rel="stylesheet" href="/book.min.2bc2364a4a4b31f0ec1debecf0a8f90a840821f143dfe1ac6a0f7cbcbdcf64ac.css" integrity="sha256-K8I2SkpLMfDsHevs8Kj5CoQIIfFD3&#43;Gsag98vL3PZKw=">
-<script defer src="/en.search.min.0d109eb06cbf094a4fccd2119b8a570dd651c50b6c8200ec5ce9749c14e1388f.js" integrity="sha256-DRCesGy/CUpPzNIRm4pXDdZRxQtsggDsXOl0nBThOI8="></script>
+<link rel="stylesheet" href="/book.min.e935e20bd0d469378cb482f0958edf258c731a4f895dccd55799c6fbc8043f23.css" integrity="sha256-6TXiC9DUaTeMtILwlY7fJYxzGk&#43;JXczVV5nG&#43;8gEPyM=">
+<script defer src="/en.search.min.195d7fcf5fbaa74667a96b881f131a95e4fb48d040c9710a382b96e4babf85eb.js" integrity="sha256-GV1/z1&#43;6p0ZnqWuIHxMaleT7SNBAyXEKOCuW5Lq/hes="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -73,6 +73,7 @@ https://github.com/alex-shpak/hugo-book
 <li><a href="/docs/media/">Media</a></li>
 <li><a href="/docs/comparison/">Comparison</a></li>
 <li><a href="/docs/contributing/">Contributing</a></li>
+<li><a href="/docs/architecture/">Architecture</a></li>
 <li><a href="/docs/related/">Related Software</a></li>
 <li><a href="https://github.com/twpayne/chezmoi">GitHub</a></li>
 </ul>
@@ -147,7 +148,7 @@ https://github.com/alex-shpak/hugo-book
     </li>
     <li><a href="#common-command-line-flags">Common command line flags</a>
       <ul>
-        <li><a href="#--format-format"><code>--format</code> <em>format</em></a></li>
+        <li><a href="#-f---format-jsonyaml"><code>-f</code>, <code>--format</code> <code>json</code>|<code>yaml</code></a></li>
         <li><a href="#--include-types"><code>--include</code> <em>types</em></a></li>
         <li><a href="#-r---recursive"><code>-r</code>, <code>--recursive</code></a></li>
       </ul>
@@ -195,7 +196,7 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#execute-template-templates"><code>execute-template</code> [<em>templates</em>]</a></li>
         <li><a href="#forget-targets"><code>forget</code> <em>targets</em></a></li>
         <li><a href="#git-arguments"><code>git</code> [<em>arguments</em>]</a></li>
-        <li><a href="#help-command"><code>help</code> <em>command</em></a></li>
+        <li><a href="#help-command"><code>help</code> [<em>command</em>&hellip;]</a></li>
         <li><a href="#init-repo"><code>init</code> [<em>repo</em>]</a></li>
         <li><a href="#import-filename"><code>import</code> <em>filename</em></a></li>
         <li><a href="#manage-targets"><code>manage</code> <em>targets</em></a></li>
@@ -311,7 +312,7 @@ destination directory.</p>
 </h3>
 <p>Colorize diffs, <em>value</em> can be <code>on</code>, <code>off</code>, <code>auto</code>, or any boolean-like value
 recognized by <code>parseBool</code>. The default is <code>auto</code> which will colorize diffs only
-if the the environment variable <code>NO_COLOR</code> is not set and stdout is a terminal.</p>
+if the the environment variable <code>$NO_COLOR</code> is not set and stdout is a terminal.</p>
 <h3 id="-c---config-filename">
   <code>-c</code>, <code>--config</code> <em>filename</em>
   <a class="anchor" href="#-c---config-filename">#</a>
@@ -414,11 +415,11 @@ timestamp.</p>
   <a class="anchor" href="#common-command-line-flags">#</a>
 </h2>
 <p>The following flags apply to multiple commands where they are relevant.</p>
-<h3 id="--format-format">
-  <code>--format</code> <em>format</em>
-  <a class="anchor" href="#--format-format">#</a>
+<h3 id="-f---format-jsonyaml">
+  <code>-f</code>, <code>--format</code> <code>json</code>|<code>yaml</code>
+  <a class="anchor" href="#-f---format-jsonyaml">#</a>
 </h3>
-<p>Set the output format. <em>format</em> can be <code>json</code> or <code>yaml</code>.</p>
+<p>Set the output format.</p>
 <h3 id="--include-types">
   <code>--include</code> <em>types</em>
   <a class="anchor" href="#--include-types">#</a>
@@ -1161,7 +1162,7 @@ the current version is too old.</p>
 </h3>
 <p>Add <em>targets</em> to the source state. If any target is already in the source state,
 then its source state is replaced with its current state in the destination
-directory. The <code>add</code> command accepts additional flags:</p>
+directory.</p>
 <h4 id="--autotemplate">
   <code>--autotemplate</code>
   <a class="anchor" href="#--autotemplate">#</a>
@@ -1253,20 +1254,17 @@ applying changes after editing.</p>
 chezmoi apply --dry-run --verbose
 chezmoi apply ~/.bashrc
 </code></pre>
-<p>In <code>~/.vimrc</code>:</p>
-<pre><code>autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path %
-</code></pre>
 <h3 id="archive">
   <code>archive</code>
   <a class="anchor" href="#archive">#</a>
 </h3>
-<p>Generate a tar archive of the target state. This can be piped into <code>tar</code> to
-inspect the target state.</p>
-<h4 id="--format-format-1">
-  <code>--format</code> <em>format</em>
-  <a class="anchor" href="#--format-format-1">#</a>
+<p>Generate an archive of the target state. This can be piped into <code>tar</code> to inspect
+the target state.</p>
+<h4 id="-f---format-tarzip">
+  <code>-f</code>, <code>--format</code> <code>tar</code>|<code>zip</code>
+  <a class="anchor" href="#-f---format-tarzip">#</a>
 </h4>
-<p>Write the archive in <em>format</em>. <em>format</em> can be either <code>tar</code> (the default) or <code>zip</code>.</p>
+<p>Write the archive in <em>format</em>.</p>
 <h4 id="-i---include-types-2">
   <code>-i</code>, <code>--include</code> <em>types</em>
   <a class="anchor" href="#-i---include-types-2">#</a>
@@ -1289,7 +1287,7 @@ chezmoi archive --format=zip --output=dotfiles.zip
   <code>cat</code> <em>targets</em>
   <a class="anchor" href="#cat-targets">#</a>
 </h3>
-<p>Write the target state of <em>targets</em>  to stdout. <em>targets</em> must be files,
+<p>Write the target contents of <em>targets</em> to stdout. <em>targets</em> must be files,
 scripts, or symlinks. For files, the target file contents are written. For
 scripts, the script&rsquo;s contents are written. For symlinks, the target target is
 written.</p>
@@ -1396,6 +1394,11 @@ chezmoi completion fish --output=~/.config/fish/completions/chezmoi.fish
   <a class="anchor" href="#data">#</a>
 </h3>
 <p>Write the computed template data to stdout.</p>
+<h4 id="-f---format-jsonyaml-1">
+  <code>-f</code>, <code>--format</code> <code>json</code>|<code>yaml</code>
+  <a class="anchor" href="#-f---format-jsonyaml-1">#</a>
+</h4>
+<p>Set the output format.</p>
 <h4 id="data-examples">
   <code>data</code> examples
   <a class="anchor" href="#data-examples">#</a>
@@ -1449,6 +1452,11 @@ chezmoi docs howto
 </h3>
 <p>Dump the target state. If no targets are specified, then the entire target
 state.</p>
+<h4 id="-f---format-jsonyaml-2">
+  <code>-f</code>, <code>--format</code> <code>json</code>|<code>yaml</code>
+  <a class="anchor" href="#-f---format-jsonyaml-2">#</a>
+</h4>
+<p>Set the output format.</p>
 <h4 id="-i---include-types-3">
   <code>-i</code>, <code>--include</code> <em>types</em>
   <a class="anchor" href="#-i---include-types-3">#</a>
@@ -1466,8 +1474,7 @@ chezmoi dump --format=yaml
   <a class="anchor" href="#edit-targets">#</a>
 </h3>
 <p>Edit the source state of <em>targets</em>, which must be files or symlinks. If no
-targets are given the the source directory itself is opened with <code>$EDITOR</code>. The
-<code>edit</code> command accepts additional arguments:</p>
+targets are given the the source directory itself is opened with <code>$EDITOR</code>.</p>
 <h4 id="-a---apply">
   <code>-a</code>, <code>--apply</code>
   <a class="anchor" href="#-a---apply">#</a>
@@ -1569,10 +1576,11 @@ chezmoi git add dot_gitconfig
 chezmoi git -- commit -m &quot;Add .gitconfig&quot;
 </code></pre>
 <h3 id="help-command">
-  <code>help</code> <em>command</em>
+  <code>help</code> [<em>command</em>&hellip;]
   <a class="anchor" href="#help-command">#</a>
 </h3>
-<p>Print the help associated with <em>command</em>.</p>
+<p>Print the help associated with <em>command</em>, or general help if no command is
+given.</p>
 <h3 id="init-repo">
   <code>init</code> [<em>repo</em>]
   <a class="anchor" href="#init-repo">#</a>
@@ -1864,7 +1872,7 @@ difference between the actual state and the target state.</p>
   <code>update</code>
   <a class="anchor" href="#update">#</a>
 </h3>
-<p>Pull changes from the source VCS and apply any changes.</p>
+<p>Pull changes from the source repo and apply any changes.</p>
 <h4 id="-i---include-types-6">
   <code>-i</code>, <code>--include</code> <em>types</em>
   <a class="anchor" href="#-i---include-types-6">#</a>
@@ -1884,9 +1892,9 @@ difference between the actual state and the target state.</p>
 will call the GitHub API to determine if there is a new version of chezmoi
 available, and if so, download and attempt to install it in the same way as
 chezmoi was previously installed.</p>
-<p>If the any of the <code>CHEZMOI_GITHUB_ACCESS_TOKEN</code>, <code>GITHUB_ACCESS_TOKEN</code>, or
-<code>GITHUB_TOKEN</code> environment variables are set, then the first value found will be
-used to authenticate requests to the GitHub API, otherwise unauthenticated
+<p>If the any of the <code>$CHEZMOI_GITHUB_ACCESS_TOKEN</code>, <code>$GITHUB_ACCESS_TOKEN</code>, or
+<code>$GITHUB_TOKEN</code> environment variables are set, then the first value found will
+be used to authenticate requests to the GitHub API, otherwise unauthenticated
 requests are used which are subject to stricter <a href="https://developer.github.com/v3/#rate-limiting">rate
 limiting</a>. Unauthenticated
 requests should be sufficient for most cases.</p>
@@ -1914,7 +1922,7 @@ chezmoi verify ~/.bashrc
   <a class="anchor" href="#editor-configuration">#</a>
 </h2>
 <p>The <code>edit</code> and <code>edit-config</code> commands use the editor specified by the <code>VISUAL</code>
-environment variable, the <code>EDITOR</code> environment variable, or <code>vi</code>, whichever is
+environment variable, the <code>$EDITOR</code> environment variable, or <code>vi</code>, whichever is
 specified first.</p>
 <h2 id="umask-configuration">
   Umask configuration
@@ -2133,8 +2141,8 @@ verify that no unwanted keys have been added, for example by using the <code>-v<
 <a href="https://docs.github.com/en/rest/overview/resources-in-the-rest-api#rate-limiting">GitHub&rsquo;s rate
 limits</a>
 (currently 60 requests per hour per source IP address). If any of the
-environment variables <code>CHEZMOI_GITHUB_ACCESS_TOKEN</code>, <code>GITHUB_ACCESS_TOKEN</code>, or
-<code>GITHUB_TOKEN</code> are found, then the first one found will be used to authenticate
+environment variables <code>$CHEZMOI_GITHUB_ACCESS_TOKEN</code>, <code>$GITHUB_ACCESS_TOKEN</code>, or
+<code>$GITHUB_TOKEN</code> are found, then the first one found will be used to authenticate
 the GitHub API request, with a higher rate limit (currently 5,000 requests per
 hour per user).</p>
 <p>In practice, GitHub API rate limits are high enough that you should never need
@@ -2625,7 +2633,7 @@ times with the same <em>key</em> will only invoke <code>vault</code> once.</p>
     </li>
     <li><a href="#common-command-line-flags">Common command line flags</a>
       <ul>
-        <li><a href="#--format-format"><code>--format</code> <em>format</em></a></li>
+        <li><a href="#-f---format-jsonyaml"><code>-f</code>, <code>--format</code> <code>json</code>|<code>yaml</code></a></li>
         <li><a href="#--include-types"><code>--include</code> <em>types</em></a></li>
         <li><a href="#-r---recursive"><code>-r</code>, <code>--recursive</code></a></li>
       </ul>
@@ -2673,7 +2681,7 @@ times with the same <em>key</em> will only invoke <code>vault</code> once.</p>
         <li><a href="#execute-template-templates"><code>execute-template</code> [<em>templates</em>]</a></li>
         <li><a href="#forget-targets"><code>forget</code> <em>targets</em></a></li>
         <li><a href="#git-arguments"><code>git</code> [<em>arguments</em>]</a></li>
-        <li><a href="#help-command"><code>help</code> <em>command</em></a></li>
+        <li><a href="#help-command"><code>help</code> [<em>command</em>&hellip;]</a></li>
         <li><a href="#init-repo"><code>init</code> [<em>repo</em>]</a></li>
         <li><a href="#import-filename"><code>import</code> <em>filename</em></a></li>
         <li><a href="#manage-targets"><code>manage</code> <em>targets</em></a></li>
