@@ -240,7 +240,6 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 	}
 
-	//nolint:ifshort
 	worstResult := checkOK
 	resultWriter := tabwriter.NewWriter(c.stdout, 3, 0, 3, ' ', 0)
 	fmt.Fprint(resultWriter, "RESULT\tCHECK\tMESSAGE\n")

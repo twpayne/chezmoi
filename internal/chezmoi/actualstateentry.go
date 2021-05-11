@@ -50,7 +50,6 @@ func NewActualStateEntry(system System, absPath AbsPath, info os.FileInfo, err e
 	case err != nil:
 		return nil, err
 	}
-	//nolint:exhaustive
 	switch info.Mode() & os.ModeType {
 	case 0:
 		return &ActualStateFile{
