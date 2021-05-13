@@ -32,6 +32,8 @@
   * [Understand how scripts work](#understand-how-scripts-work)
   * [Install packages with scripts](#install-packages-with-scripts)
 * [Use chezmoi with GitHub Codespaces, Visual Studio Codespaces, Visual Studio Code Remote - Containers](#use-chezmoi-with-github-codespaces-visual-studio-codespaces-visual-studio-code-remote---containers)
+* [Use chezmoi on macOS](#use-chezmoi-on-macos)
+  * [Use `brew bundle` to manage your brews and casks](#use-brew-bundle-to-manage-your-brews-and-casks)
 * [Use chezmoi on Windows](#use-chezmoi-on-windows)
   * [Detect Windows Subsystem for Linux (WSL)](#detect-windows-subsystem-for-linux-wsl)
   * [Run a PowerShell script as admin on Windows](#run-a-powershell-script-as-admin-on-windows)
@@ -1010,6 +1012,30 @@ needed. For example, to install `vim-gtk` on Linux but not in Codespaces, your
 sudo apt install -y vim-gtk
 {{- end -}}
 ```
+
+## Use chezmoi on macOS
+
+### Use `brew bundle` to manage your brews and casks
+
+Homebrew's [`brew bundle`
+subcommand](https://docs.brew.sh/Manpage#bundle-subcommand) allows you to
+specify a list of brews and casks to be installed. You can integrate this with
+chezmoi by creating a `run_once_` script. For example, create a file in your
+source directory called `run_once_before_install-packages-darwin.sh.tmpl`
+containing:
+
+    {{- if (eq .chezmoi.os "darwin") -}}
+    #!/bin/bash
+
+    brew bundle --no-lock --file=/dev/stdin <<EOF
+    brew "git"
+    cask "google-chrome"
+    EOF
+    {{ end -}}
+
+Note that the `Brewfile` is embedded directly in the script with a bash here
+document. chezmoi will run this script whenever its contents change, i.e. when
+you add or remove brews or casks.
 
 ## Use chezmoi on Windows
 
