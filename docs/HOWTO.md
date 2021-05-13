@@ -1087,11 +1087,9 @@ the output into a pager of your choice. For example, to use
 [`diff-so-fancy`](https://github.com/so-fancy/diff-so-fancy) specify:
 
     [diff]
-      format = "git"
       pager = "diff-so-fancy"
 
-The format can also be set with the `--format` option to the `diff` command, and
-the pager can be disabled using `--no-pager`.
+The pager can be disabled using the `--no-pager` flag.
 
 ### Use a merge tool other than vimdiff
 
