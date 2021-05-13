@@ -1039,39 +1039,17 @@ you add or remove brews or casks.
 
 ## Use chezmoi on Windows
 
-
 ### Detect Windows Subsystem for Linux (WSL)
 
-WSL can be detected by looking for the string `Microsoft` in
-`/proc/kernel/osrelease`, which is available in the template variable
+WSL can be detected by looking for the string `Microsoft` or `microsoft` in
+`/proc/sys/kernel/osrelease`, which is available in the template variable
 `.chezmoi.kernel.osrelease`, for example:
 
-WSL 1:
-```
-{{ if (eq .chezmoi.os "linux") }}
-{{   if (contains "Microsoft" .chezmoi.kernel.osrelease) }}
-# WSL-specific code
-{{   end }}
-{{ end }}
-```
-
-WSL 2:
-```
-{{ if (eq .chezmoi.os "linux") }}
-{{   if (contains "microsoft" .chezmoi.kernel.osrelease) }}
-# WSL-specific code
-{{   end }}
-{{ end }}
-```
-
-WSL 2 since version 4.19.112:
-```
-{{ if (eq .chezmoi.os "linux") }}
-{{   if (contains "microsoft-WSL2" .chezmoi.kernel.osrelease) }}
-# WSL-specific code
-{{   end }}
-{{ end }}
-```
+    {{ if (eq .chezmoi.os "linux") }}
+    {{   if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
+    # WSL-specific code
+    {{   end }}
+    {{ end }}
 
 ### Run a PowerShell script as admin on Windows
 
