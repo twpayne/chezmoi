@@ -39,6 +39,7 @@
 * [Use scripts to perform actions](#use-scripts-to-perform-actions)
   * [Understand how scripts work](#understand-how-scripts-work)
   * [Install packages with scripts](#install-packages-with-scripts)
+  * [Run a script when the contents of another file changes](#run-a-script-when-the-contents-of-another-file-changes)
 * [Use chezmoi on macOS](#use-chezmoi-on-macos)
   * [Use `brew bundle` to manage your brews and casks](#use-brew-bundle-to-manage-your-brews-and-casks)
 * [Use chezmoi on Windows](#use-chezmoi-on-windows)
@@ -903,6 +904,32 @@ This script can also be a template. For example, if you create
     {{ end -}}
 
 This will install `ripgrep` on both Debian/Ubuntu Linux systems and macOS.
+
+### Run a script when the contents of another file changes
+
+chezmoi's `run_` scripts are run every time you run `chezmoi apply`, whereas
+`run_once_` scripts are run only when their contents have changed, after
+executing them as templates. You use this to cause a `run_once_` script to run
+when the contents of another file has changed by including a checksum of the
+other file's contents in the script.
+
+For example, if your [dconf](https://wiki.gnome.org/Projects/dconf) settings are
+stored in `dconf.ini` in your source directory then you can make `chezmoi apply`
+only load them when the contents of `dconf.ini` has changed by adding the
+following script as `run_once_dconf-load.sh.tmpl`:
+
+    #!/bin/bash
+
+    # dconf.ini hash: {{ include "dconf.ini" | sha256sum }}
+    dconf load / "{{ joinPath .chezmoi.sourceDir "dconf.ini" }}"
+
+As the SHA256 sum of `dconf.ini` is included in a comment in the script, the
+contents of the script will change whenever the contents of `dconf.ini` are
+changed, so chezmoi will re-run the script whenever the contents of `dconf.ini`
+change.
+
+In this example you should also add `dconf.ini` to `.chezmoiignore` so chezmoi
+does not create `dconf.ini` in your home directory.
 
 ## Use chezmoi on macOS
 
