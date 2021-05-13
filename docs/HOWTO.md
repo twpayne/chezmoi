@@ -10,6 +10,7 @@
 * [Manage different types of file](#manage-different-types-of-file)
   * [Have chezmoi create a directory, but ignore its contents](#have-chezmoi-create-a-directory-but-ignore-its-contents)
   * [Ensure that a target is removed](#ensure-that-a-target-is-removed)
+  * [Manage part, but not all, of a file](#manage-part-but-not-all-of-a-file)
   * [Populate `~/.ssh/authorized_keys` with your public SSH keys from GitHub](#populate-sshauthorized_keys-with-your-public-ssh-keys-from-github)
 * [Integrate chezmoi with your editor](#integrate-chezmoi-with-your-editor)
   * [Configure VIM to run `chezmoi apply` whenever you save a dotfile](#configure-vim-to-run-chezmoi-apply-whenever-you-save-a-dotfile)
@@ -189,6 +190,25 @@ dry-run mode beforehand to see what would be removed:
 `.chezmoiremove` is interpreted as a template, so you can remove different files
 on different machines. Negative matches (patterns prefixed with a `!`) or
 targets listed in `.chezmoiignore` will never be removed.
+
+### Manage part, but not all, of a file
+
+chezmoi, by default, manages whole files, but there are two ways to manage just
+parts of a file.
+
+Firstly, a `modify_` script receives the current contents of the file on the
+standard input and chezmoi reads the target contents of the file from the
+script's standard output. This can be used to change parts of a file, for
+example using `sed`. Note that if the file does not exist then the standard
+input to the `modify_` script will be empty and it is the script's
+responsibility to write a complete file to the standard output.
+
+Secondly, if only a small part of the file changes then consider using a
+template to re-generate the full contents of the file from the current state.
+For example, Kubernetes configurations include a current context that can be
+substituted with:
+
+    current-context: {{ output "kubectl" "config" "current-context" | trim }}
 
 ### Populate `~/.ssh/authorized_keys` with your public SSH keys from GitHub
 
