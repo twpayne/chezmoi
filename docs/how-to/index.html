@@ -2,12 +2,12 @@
 <html lang="en" dir="ltr">
 
 <head>
-  <meta name="generator" content="Hugo 0.82.0" />
+  <meta name="generator" content="Hugo 0.83.1" />
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="How-To Guide #  Daily operations #  Use a hosted repo to manage your dotfiles across multiple machines #  chezmoi relies on your version control system and hosted repo to share changes across multiple machines. You should create a repo on the source code repository of your choice (e.g. Bitbucket, GitHub, or GitLab, many people call their repo dotfiles) and push the repo in the source directory here. For example:">
+<meta name="description" content="How-To Guide #  Perform daily operations #  Use a hosted repo to manage your dotfiles across multiple machines #  chezmoi relies on your version control system and hosted repo to share changes across multiple machines. You should create a repo on the source code repository of your choice (e.g. Bitbucket, GitHub, or GitLab, many people call their repo dotfiles) and push the repo in the source directory here.">
 <meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="How-To" />
-<meta property="og:description" content="How-To Guide #  Daily operations #  Use a hosted repo to manage your dotfiles across multiple machines #  chezmoi relies on your version control system and hosted repo to share changes across multiple machines. You should create a repo on the source code repository of your choice (e.g. Bitbucket, GitHub, or GitLab, many people call their repo dotfiles) and push the repo in the source directory here. For example:" />
+<meta property="og:description" content="How-To Guide #  Perform daily operations #  Use a hosted repo to manage your dotfiles across multiple machines #  chezmoi relies on your version control system and hosted repo to share changes across multiple machines. You should create a repo on the source code repository of your choice (e.g. Bitbucket, GitHub, or GitLab, many people call their repo dotfiles) and push the repo in the source directory here." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chezmoi.io/docs/how-to/" /><meta property="article:section" content="docs" />
 
@@ -16,8 +16,8 @@
 <title>How-To | chezmoi.io</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
-<link rel="stylesheet" href="/book.min.2bc2364a4a4b31f0ec1debecf0a8f90a840821f143dfe1ac6a0f7cbcbdcf64ac.css" integrity="sha256-K8I2SkpLMfDsHevs8Kj5CoQIIfFD3&#43;Gsag98vL3PZKw=">
-<script defer src="/en.search.min.d8d608f2d3890af4d9208884010003886ea2beee2b00a90782154002fcba5d21.js" integrity="sha256-2NYI8tOJCvTZIIiEAQADiG6ivu4rAKkHghVAAvy6XSE="></script>
+<link rel="stylesheet" href="/book.min.e935e20bd0d469378cb482f0958edf258c731a4f895dccd55799c6fbc8043f23.css" integrity="sha256-6TXiC9DUaTeMtILwlY7fJYxzGk&#43;JXczVV5nG&#43;8gEPyM=">
+<script defer src="/en.search.min.2f7ef13a8f173dfd74a9df8859909e6a4a467c8ff8c1634d87d6d6d3d3059383.js" integrity="sha256-L37xOo8XPf10qd&#43;IWZCeakpGfI/4wWNNh9bW09MFk4M="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -117,7 +117,7 @@ https://github.com/alex-shpak/hugo-book
   
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#daily-operations">Daily operations</a>
+    <li><a href="#perform-daily-operations">Perform daily operations</a>
       <ul>
         <li><a href="#use-a-hosted-repo-to-manage-your-dotfiles-across-multiple-machines">Use a hosted repo to manage your dotfiles across multiple machines</a></li>
         <li><a href="#pull-the-latest-changes-from-your-repo-and-apply-them">Pull the latest changes from your repo and apply them</a></li>
@@ -130,12 +130,13 @@ https://github.com/alex-shpak/hugo-book
       <ul>
         <li><a href="#have-chezmoi-create-a-directory-but-ignore-its-contents">Have chezmoi create a directory, but ignore its contents</a></li>
         <li><a href="#ensure-that-a-target-is-removed">Ensure that a target is removed</a></li>
+        <li><a href="#manage-part-but-not-all-of-a-file">Manage part, but not all, of a file</a></li>
         <li><a href="#populate-sshauthorized_keys-with-your-public-ssh-keys-from-github">Populate <code>~/.ssh/authorized_keys</code> with your public SSH keys from GitHub</a></li>
       </ul>
     </li>
     <li><a href="#integrate-chezmoi-with-your-editor">Integrate chezmoi with your editor</a>
       <ul>
-        <li><a href="#how-do-i-configure-vim-to-run-chezmoi-apply-whenever-i-save-a-dotfile">How do I configure VIM to run <code>chezmoi apply</code> whenever I save a dotfile?</a></li>
+        <li><a href="#configure-vim-to-run-chezmoi-apply-whenever-you-save-a-dotfile">Configure VIM to run <code>chezmoi apply</code> whenever you save a dotfile</a></li>
       </ul>
     </li>
     <li><a href="#include-dotfiles-from-elsewhere">Include dotfiles from elsewhere</a>
@@ -152,12 +153,20 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#create-a-config-file-on-a-new-machine-automatically">Create a config file on a new machine automatically</a></li>
         <li><a href="#re-create-your-config-file">Re-create your config file</a></li>
         <li><a href="#handle-different-file-locations-on-different-systems-with-the-same-contents">Handle different file locations on different systems with the same contents</a></li>
-        <li><a href="#export-archives">Export archives</a></li>
+        <li><a href="#create-an-archive-of-your-dotfiles">Create an archive of your dotfiles</a></li>
       </ul>
     </li>
     <li><a href="#keep-data-private">Keep data private</a>
       <ul>
-        <li><a href="#use-a-password-manager">Use a password manager</a></li>
+        <li><a href="#use-1password">Use 1Password</a></li>
+        <li><a href="#use-bitwarden">Use Bitwarden</a></li>
+        <li><a href="#use-gopass">Use gopass</a></li>
+        <li><a href="#use-keepassxc">Use KeePassXC</a></li>
+        <li><a href="#use-keychain-or-windows-credentials-manager">Use Keychain or Windows Credentials Manager</a></li>
+        <li><a href="#use-lastpass">Use LastPass</a></li>
+        <li><a href="#use-pass">Use pass</a></li>
+        <li><a href="#use-vault">Use Vault</a></li>
+        <li><a href="#use-a-custom-password-manager">Use a custom password manager</a></li>
         <li><a href="#encrypt-whole-files">Encrypt whole files</a></li>
         <li><a href="#use-a-private-configuration-file-and-template-variables">Use a private configuration file and template variables</a></li>
       </ul>
@@ -166,16 +175,22 @@ https://github.com/alex-shpak/hugo-book
       <ul>
         <li><a href="#understand-how-scripts-work">Understand how scripts work</a></li>
         <li><a href="#install-packages-with-scripts">Install packages with scripts</a></li>
+        <li><a href="#run-a-script-when-the-contents-of-another-file-changes">Run a script when the contents of another file changes</a></li>
       </ul>
     </li>
-    <li><a href="#use-chezmoi-with-github-codespaces-visual-studio-codespaces-visual-studio-code-remote---containers">Use chezmoi with GitHub Codespaces, Visual Studio Codespaces, Visual Studio Code Remote - Containers</a></li>
+    <li><a href="#use-chezmoi-on-macos">Use chezmoi on macOS</a>
+      <ul>
+        <li><a href="#use-brew-bundle-to-manage-your-brews-and-casks">Use <code>brew bundle</code> to manage your brews and casks</a></li>
+      </ul>
+    </li>
     <li><a href="#use-chezmoi-on-windows">Use chezmoi on Windows</a>
       <ul>
         <li><a href="#detect-windows-subsystem-for-linux-wsl">Detect Windows Subsystem for Linux (WSL)</a></li>
         <li><a href="#run-a-powershell-script-as-admin-on-windows">Run a PowerShell script as admin on Windows</a></li>
       </ul>
     </li>
-    <li><a href="#using-custom-tools">Using custom tools</a>
+    <li><a href="#use-chezmoi-with-github-codespaces-visual-studio-codespaces-or-visual-studio-code-remote---containers">Use chezmoi with GitHub Codespaces, Visual Studio Codespaces, or Visual Studio Code Remote - Containers</a></li>
+    <li><a href="#use-custom-tools">Use custom tools</a>
       <ul>
         <li><a href="#customize-the-diff-command">Customize the <code>diff</code> command</a></li>
         <li><a href="#use-a-merge-tool-other-than-vimdiff">Use a merge tool other than vimdiff</a></li>
@@ -203,9 +218,9 @@ https://github.com/alex-shpak/hugo-book
   How-To Guide
   <a class="anchor" href="#how-to-guide">#</a>
 </h1>
-<h2 id="daily-operations">
-  Daily operations
-  <a class="anchor" href="#daily-operations">#</a>
+<h2 id="perform-daily-operations">
+  Perform daily operations
+  <a class="anchor" href="#perform-daily-operations">#</a>
 </h2>
 <h3 id="use-a-hosted-repo-to-manage-your-dotfiles-across-multiple-machines">
   Use a hosted repo to manage your dotfiles across multiple machines
@@ -332,6 +347,24 @@ dry-run mode beforehand to see what would be removed:</p>
 <p><code>.chezmoiremove</code> is interpreted as a template, so you can remove different files
 on different machines. Negative matches (patterns prefixed with a <code>!</code>) or
 targets listed in <code>.chezmoiignore</code> will never be removed.</p>
+<h3 id="manage-part-but-not-all-of-a-file">
+  Manage part, but not all, of a file
+  <a class="anchor" href="#manage-part-but-not-all-of-a-file">#</a>
+</h3>
+<p>chezmoi, by default, manages whole files, but there are two ways to manage just
+parts of a file.</p>
+<p>Firstly, a <code>modify_</code> script receives the current contents of the file on the
+standard input and chezmoi reads the target contents of the file from the
+script&rsquo;s standard output. This can be used to change parts of a file, for
+example using <code>sed</code>. Note that if the file does not exist then the standard
+input to the <code>modify_</code> script will be empty and it is the script&rsquo;s
+responsibility to write a complete file to the standard output.</p>
+<p>Secondly, if only a small part of the file changes then consider using a
+template to re-generate the full contents of the file from the current state.
+For example, Kubernetes configurations include a current context that can be
+substituted with:</p>
+<pre><code>current-context: {{ output &quot;kubectl&quot; &quot;config&quot; &quot;current-context&quot; | trim }}
+</code></pre>
 <h3 id="populate-sshauthorized_keys-with-your-public-ssh-keys-from-github">
   Populate <code>~/.ssh/authorized_keys</code> with your public SSH keys from GitHub
   <a class="anchor" href="#populate-sshauthorized_keys-with-your-public-ssh-keys-from-github">#</a>
@@ -348,9 +381,9 @@ GitHub username:</p>
   Integrate chezmoi with your editor
   <a class="anchor" href="#integrate-chezmoi-with-your-editor">#</a>
 </h2>
-<h3 id="how-do-i-configure-vim-to-run-chezmoi-apply-whenever-i-save-a-dotfile">
-  How do I configure VIM to run <code>chezmoi apply</code> whenever I save a dotfile?
-  <a class="anchor" href="#how-do-i-configure-vim-to-run-chezmoi-apply-whenever-i-save-a-dotfile">#</a>
+<h3 id="configure-vim-to-run-chezmoi-apply-whenever-you-save-a-dotfile">
+  Configure VIM to run <code>chezmoi apply</code> whenever you save a dotfile
+  <a class="anchor" href="#configure-vim-to-run-chezmoi-apply-whenever-you-save-a-dotfile">#</a>
 </h3>
 <p>Put the following in your <code>.vimrc</code>:</p>
 <pre><code>autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path %
@@ -538,23 +571,28 @@ containing:</p>
 {{ else if eq .chezmoi.os &quot;linux&quot; -}}
 # Linux .bashrc contents
 {{ end -}}
-</code></pre><p>However, if the differences between the two versions are so large that you&rsquo;d
+</code></pre>
+<p>However, if the differences between the two versions are so large that you&rsquo;d
 prefer to use completely separate files in the source state, you can achieve
 this using a symbolic link template. Create the following files:</p>
 <p><code>symlink_dot_bashrc.tmpl</code>:</p>
 <pre><code>.bashrc_{{ .chezmoi.os }}
-</code></pre><p><code>dot_bashrc_darwin</code>:</p>
+</code></pre>
+<p><code>dot_bashrc_darwin</code>:</p>
 <pre><code># macOS .bashrc contents
-</code></pre><p><code>dot_bashrc_linux</code>:</p>
+</code></pre>
+<p><code>dot_bashrc_linux</code>:</p>
 <pre><code># Linux .bashrc contents
-</code></pre><p><code>.chezmoiignore</code></p>
+</code></pre>
+<p><code>.chezmoiignore</code></p>
 <pre><code>{{ if ne .chezmoi.os &quot;darwin&quot; }}
 .bashrc_darwin
 {{ end }}
 {{ if ne .chezmoi.os &quot;linux&quot; }}
 .bashrc_linux
 {{ end }}
-</code></pre><p>This will make <code>~/.bashrc</code> a symlink to <code>.bashrc_darwin</code> on <code>darwin</code> and to
+</code></pre>
+<p>This will make <code>~/.bashrc</code> a symlink to <code>.bashrc_darwin</code> on <code>darwin</code> and to
 <code>.bashrc_linux</code> on <code>linux</code>. The <code>.chezmoiignore</code> configuration ensures that only
 the OS-specific <code>.bashrc_os</code> file will be installed on each OS.</p>
 <h4 id="without-using-symlinks">
@@ -642,14 +680,15 @@ Library/Application Support/App/file.conf
 {{ if ne .chezmoi.os &quot;linux&quot; }}
 .config/app/file.conf
 {{ end }}
-</code></pre><h3 id="export-archives">
-  Export archives
-  <a class="anchor" href="#export-archives">#</a>
+</code></pre>
+<h3 id="create-an-archive-of-your-dotfiles">
+  Create an archive of your dotfiles
+  <a class="anchor" href="#create-an-archive-of-your-dotfiles">#</a>
 </h3>
-<p>chezmoi can create an archive containing the target state. This can be useful
-for generating target state for a different machine. Note also that you can
-specify a different configuration file (including template variables) with the
-<code>--config</code> option.</p>
+<p><code>chezmoi archive</code> creates an archive containing the target state. This can be
+useful for generating target state for a different machine. You can specify a
+different configuration file (including template variables) with the <code>--config</code>
+option.</p>
 <h2 id="keep-data-private">
   Keep data private
   <a class="anchor" href="#keep-data-private">#</a>
@@ -670,125 +709,10 @@ every run and will print a warning if they are not.</p>
 token</a>.
 There are several ways to keep these tokens secure, and to prevent them leaving
 your machine.</p>
-<h3 id="use-a-password-manager">
-  Use a password manager
-  <a class="anchor" href="#use-a-password-manager">#</a>
+<h3 id="use-1password">
+  Use 1Password
+  <a class="anchor" href="#use-1password">#</a>
 </h3>
-<h4 id="bitwarden">
-  Bitwarden
-  <a class="anchor" href="#bitwarden">#</a>
-</h4>
-<p>chezmoi includes support for <a href="https://bitwarden.com/">Bitwarden</a> using the
-<a href="https://github.com/bitwarden/cli">Bitwarden CLI</a> to expose data as a template
-function.</p>
-<p>Log in to Bitwarden using:</p>
-<pre><code>bw login &lt;bitwarden-email&gt;
-</code></pre>
-<p>Unlock your Bitwarden vault:</p>
-<pre><code>bw unlock
-</code></pre>
-<p>Set the <code>BW_SESSION</code> environment variable, as instructed.</p>
-<p>The structured data from <code>bw get</code> is available as the <code>bitwarden</code> template
-function in your config files, for example:</p>
-<pre><code>username = {{ (bitwarden &quot;item&quot; &quot;example.com&quot;).login.username }}
-password = {{ (bitwarden &quot;item&quot; &quot;example.com&quot;).login.password }}
-</code></pre>
-<p>Custom fields can be accessed with the <code>bitwardenFields</code> template function. For
-example, if you have a custom field named <code>token</code> you can retrieve its value
-with:</p>
-<pre><code>{{ (bitwardenFields &quot;item&quot; &quot;example.com&quot;).token.value }}
-</code></pre>
-<h4 id="gopass">
-  gopass
-  <a class="anchor" href="#gopass">#</a>
-</h4>
-<p>chezmoi includes support for <a href="https://www.gopass.pw/">gopass</a> using the gopass CLI.</p>
-<p>The first line of the output of <code>gopass show &lt;pass-name&gt;</code> is available as the
-<code>gopass</code> template function, for example:</p>
-<pre><code>{{ gopass &quot;&lt;pass-name&gt;&quot; }}
-</code></pre>
-<h4 id="keepassxc">
-  KeePassXC
-  <a class="anchor" href="#keepassxc">#</a>
-</h4>
-<p>chezmoi includes support for <a href="https://keepassxc.org">KeePassXC</a> using the
-KeePassXC CLI (<code>keepassxc-cli</code>) to expose data as a template function.</p>
-<p>Provide the path to your KeePassXC database in your configuration file:</p>
-<pre><code>[keepassxc]
-  database = &quot;/home/user/Passwords.kdbx&quot;
-</code></pre>
-<p>The structured data from <code>keepassxc-cli show $database</code> is available as the
-<code>keepassxc</code> template function in your config files, for example:</p>
-<pre><code>username = {{ (keepassxc &quot;example.com&quot;).UserName }}
-password = {{ (keepassxc &quot;example.com&quot;).Password }}
-</code></pre>
-<p>Additional attributes are available through the <code>keepassxcAttribute</code> function.
-For example, if you have an entry called <code>SSH Key</code> with an additional attribute
-called <code>private-key</code>, its value is available as:</p>
-<pre><code>{{ keepassxcAttribute &quot;SSH Key&quot; &quot;private-key&quot; }}
-</code></pre>
-<h4 id="keychain-and-windows-credentials-manager">
-  Keychain and Windows Credentials Manager
-  <a class="anchor" href="#keychain-and-windows-credentials-manager">#</a>
-</h4>
-<p>chezmoi includes support for Keychain (on macOS), GNOME Keyring (on Linux), and
-Windows Credentials Manager (on Windows) via the
-<a href="https://github.com/zalando/go-keyring"><code>zalando/go-keyring</code></a> library.</p>
-<p>Set values with:</p>
-<pre><code>$ chezmoi secret keyring set --service=&lt;service&gt; --user=&lt;user&gt;
-Value: xxxxxxxx
-</code></pre>
-<p>The value can then be used in templates using the <code>keyring</code> function which takes
-the service and user as arguments.</p>
-<p>For example, save a GitHub access token in keyring with:</p>
-<pre><code>$ chezmoi secret keyring set --service=github --user=&lt;github-username&gt;
-Value: xxxxxxxx
-</code></pre>
-<p>and then include it in your <code>~/.gitconfig</code> file with:</p>
-<pre><code>[github]
-  user = &quot;{{ .github.user }}&quot;
-  token = &quot;{{ keyring &quot;github&quot; .github.user }}&quot;
-</code></pre>
-<p>You can query the keyring from the command line:</p>
-<pre><code>chezmoi secret keyring get --service=github --user=&lt;github-username&gt;
-</code></pre>
-<h4 id="lastpass">
-  LastPass
-  <a class="anchor" href="#lastpass">#</a>
-</h4>
-<p>chezmoi includes support for <a href="https://lastpass.com">LastPass</a> using the
-<a href="https://lastpass.github.io/lastpass-cli/lpass.1.html">LastPass CLI</a> to expose
-data as a template function.</p>
-<p>Log in to LastPass using:</p>
-<pre><code>lpass login &lt;lastpass-username&gt;
-</code></pre>
-<p>Check that <code>lpass</code> is working correctly by showing password data:</p>
-<pre><code>lpass show --json &lt;lastpass-entry-id&gt;
-</code></pre>
-<p>where <code>&lt;lastpass-entry-id&gt;</code> is a <a href="https://lastpass.github.io/lastpass-cli/lpass.1.html#_entry_specification">LastPass Entry
-Specification</a>.</p>
-<p>The structured data from <code>lpass show --json id</code> is available as the <code>lastpass</code>
-template function. The value will be an array of objects. You can use the
-<code>index</code> function and <code>.Field</code> syntax of the <code>text/template</code> language to extract
-the field you want. For example, to extract the <code>password</code> field from first the
-&ldquo;GitHub&rdquo; entry, use:</p>
-<pre><code>githubPassword = &quot;{{ (index (lastpass &quot;GitHub&quot;) 0).password }}&quot;
-</code></pre>
-<p>chezmoi automatically parses the <code>note</code> value of the Lastpass entry as
-colon-separated key-value pairs, so, for example, you can extract a private SSH
-key like this:</p>
-<pre><code>{{ (index (lastpass &quot;SSH&quot;) 0).note.privateKey }}
-</code></pre>
-<p>Keys in the <code>note</code> section written as <code>CamelCase Words</code> are converted to
-<code>camelCaseWords</code>.</p>
-<p>If the <code>note</code> value does not contain colon-separated key-value pairs, then you
-can use <code>lastpassRaw</code> to get its raw value, for example:</p>
-<pre><code>{{ (index (lastpassRaw &quot;SSH Private Key&quot;) 0).note }}
-</code></pre>
-<h4 id="1password">
-  1Password
-  <a class="anchor" href="#1password">#</a>
-</h4>
 <p>chezmoi includes support for <a href="https://1password.com/">1Password</a> using the
 <a href="https://support.1password.com/command-line-getting-started/">1Password CLI</a> to
 expose data as a template function.</p>
@@ -819,20 +743,131 @@ function, for example:</p>
 instructs the template language to remove and whitespace before and after the
 substitution. This removes any trailing newline added by your editor when saving
 the template.</p>
-<h4 id="pass">
-  pass
-  <a class="anchor" href="#pass">#</a>
-</h4>
+<h3 id="use-bitwarden">
+  Use Bitwarden
+  <a class="anchor" href="#use-bitwarden">#</a>
+</h3>
+<p>chezmoi includes support for <a href="https://bitwarden.com/">Bitwarden</a> using the
+<a href="https://github.com/bitwarden/cli">Bitwarden CLI</a> to expose data as a template
+function.</p>
+<p>Log in to Bitwarden using:</p>
+<pre><code>bw login &lt;bitwarden-email&gt;
+</code></pre>
+<p>Unlock your Bitwarden vault:</p>
+<pre><code>bw unlock
+</code></pre>
+<p>Set the <code>BW_SESSION</code> environment variable, as instructed.</p>
+<p>The structured data from <code>bw get</code> is available as the <code>bitwarden</code> template
+function in your config files, for example:</p>
+<pre><code>username = {{ (bitwarden &quot;item&quot; &quot;example.com&quot;).login.username }}
+password = {{ (bitwarden &quot;item&quot; &quot;example.com&quot;).login.password }}
+</code></pre>
+<p>Custom fields can be accessed with the <code>bitwardenFields</code> template function. For
+example, if you have a custom field named <code>token</code> you can retrieve its value
+with:</p>
+<pre><code>{{ (bitwardenFields &quot;item&quot; &quot;example.com&quot;).token.value }}
+</code></pre>
+<h3 id="use-gopass">
+  Use gopass
+  <a class="anchor" href="#use-gopass">#</a>
+</h3>
+<p>chezmoi includes support for <a href="https://www.gopass.pw/">gopass</a> using the gopass CLI.</p>
+<p>The first line of the output of <code>gopass show &lt;pass-name&gt;</code> is available as the
+<code>gopass</code> template function, for example:</p>
+<pre><code>{{ gopass &quot;&lt;pass-name&gt;&quot; }}
+</code></pre>
+<h3 id="use-keepassxc">
+  Use KeePassXC
+  <a class="anchor" href="#use-keepassxc">#</a>
+</h3>
+<p>chezmoi includes support for <a href="https://keepassxc.org">KeePassXC</a> using the
+KeePassXC CLI (<code>keepassxc-cli</code>) to expose data as a template function.</p>
+<p>Provide the path to your KeePassXC database in your configuration file:</p>
+<pre><code>[keepassxc]
+  database = &quot;/home/user/Passwords.kdbx&quot;
+</code></pre>
+<p>The structured data from <code>keepassxc-cli show $database</code> is available as the
+<code>keepassxc</code> template function in your config files, for example:</p>
+<pre><code>username = {{ (keepassxc &quot;example.com&quot;).UserName }}
+password = {{ (keepassxc &quot;example.com&quot;).Password }}
+</code></pre>
+<p>Additional attributes are available through the <code>keepassxcAttribute</code> function.
+For example, if you have an entry called <code>SSH Key</code> with an additional attribute
+called <code>private-key</code>, its value is available as:</p>
+<pre><code>{{ keepassxcAttribute &quot;SSH Key&quot; &quot;private-key&quot; }}
+</code></pre>
+<h3 id="use-keychain-or-windows-credentials-manager">
+  Use Keychain or Windows Credentials Manager
+  <a class="anchor" href="#use-keychain-or-windows-credentials-manager">#</a>
+</h3>
+<p>chezmoi includes support for Keychain (on macOS), GNOME Keyring (on Linux), and
+Windows Credentials Manager (on Windows) via the
+<a href="https://github.com/zalando/go-keyring"><code>zalando/go-keyring</code></a> library.</p>
+<p>Set values with:</p>
+<pre><code>$ chezmoi secret keyring set --service=&lt;service&gt; --user=&lt;user&gt;
+Value: xxxxxxxx
+</code></pre>
+<p>The value can then be used in templates using the <code>keyring</code> function which takes
+the service and user as arguments.</p>
+<p>For example, save a GitHub access token in keyring with:</p>
+<pre><code>$ chezmoi secret keyring set --service=github --user=&lt;github-username&gt;
+Value: xxxxxxxx
+</code></pre>
+<p>and then include it in your <code>~/.gitconfig</code> file with:</p>
+<pre><code>[github]
+  user = &quot;{{ .github.user }}&quot;
+  token = &quot;{{ keyring &quot;github&quot; .github.user }}&quot;
+</code></pre>
+<p>You can query the keyring from the command line:</p>
+<pre><code>chezmoi secret keyring get --service=github --user=&lt;github-username&gt;
+</code></pre>
+<h3 id="use-lastpass">
+  Use LastPass
+  <a class="anchor" href="#use-lastpass">#</a>
+</h3>
+<p>chezmoi includes support for <a href="https://lastpass.com">LastPass</a> using the
+<a href="https://lastpass.github.io/lastpass-cli/lpass.1.html">LastPass CLI</a> to expose
+data as a template function.</p>
+<p>Log in to LastPass using:</p>
+<pre><code>lpass login &lt;lastpass-username&gt;
+</code></pre>
+<p>Check that <code>lpass</code> is working correctly by showing password data:</p>
+<pre><code>lpass show --json &lt;lastpass-entry-id&gt;
+</code></pre>
+<p>where <code>&lt;lastpass-entry-id&gt;</code> is a <a href="https://lastpass.github.io/lastpass-cli/lpass.1.html#_entry_specification">LastPass Entry
+Specification</a>.</p>
+<p>The structured data from <code>lpass show --json id</code> is available as the <code>lastpass</code>
+template function. The value will be an array of objects. You can use the
+<code>index</code> function and <code>.Field</code> syntax of the <code>text/template</code> language to extract
+the field you want. For example, to extract the <code>password</code> field from first the
+&ldquo;GitHub&rdquo; entry, use:</p>
+<pre><code>githubPassword = &quot;{{ (index (lastpass &quot;GitHub&quot;) 0).password }}&quot;
+</code></pre>
+<p>chezmoi automatically parses the <code>note</code> value of the Lastpass entry as
+colon-separated key-value pairs, so, for example, you can extract a private SSH
+key like this:</p>
+<pre><code>{{ (index (lastpass &quot;SSH&quot;) 0).note.privateKey }}
+</code></pre>
+<p>Keys in the <code>note</code> section written as <code>CamelCase Words</code> are converted to
+<code>camelCaseWords</code>.</p>
+<p>If the <code>note</code> value does not contain colon-separated key-value pairs, then you
+can use <code>lastpassRaw</code> to get its raw value, for example:</p>
+<pre><code>{{ (index (lastpassRaw &quot;SSH Private Key&quot;) 0).note }}
+</code></pre>
+<h3 id="use-pass">
+  Use pass
+  <a class="anchor" href="#use-pass">#</a>
+</h3>
 <p>chezmoi includes support for <a href="https://www.passwordstore.org/">pass</a> using the
 pass CLI.</p>
 <p>The first line of the output of <code>pass show &lt;pass-name&gt;</code> is available as the
 <code>pass</code> template function, for example:</p>
 <pre><code>{{ pass &quot;&lt;pass-name&gt;&quot; }}
 </code></pre>
-<h4 id="vault">
-  Vault
-  <a class="anchor" href="#vault">#</a>
-</h4>
+<h3 id="use-vault">
+  Use Vault
+  <a class="anchor" href="#use-vault">#</a>
+</h3>
 <p>chezmoi includes support for <a href="https://www.vaultproject.io/">Vault</a> using the
 <a href="https://www.vaultproject.io/docs/commands/">Vault CLI</a> to expose data as a
 template function.</p>
@@ -846,10 +881,10 @@ template function. You can use the <code>.Field</code> syntax of the <code>text/
 language to extract the data you want. For example:</p>
 <pre><code>{{ (vault &quot;&lt;key&gt;&quot;).data.data.password }}
 </code></pre>
-<h4 id="a-custom-password-manager">
-  A custom password manager
-  <a class="anchor" href="#a-custom-password-manager">#</a>
-</h4>
+<h3 id="use-a-custom-password-manager">
+  Use a custom password manager
+  <a class="anchor" href="#use-a-custom-password-manager">#</a>
+</h3>
 <p>You can use any command line tool that outputs secrets either as a string or in
 JSON format. Choose the binary by setting <code>secret.command</code> in your configuration
 file. You can then invoke this command with the <code>secret</code> and <code>secretJSON</code>
@@ -875,7 +910,7 @@ respectively. All of the above secret managers can be supported in this way:</p>
 <td><code>{{ secretJSON &quot;get&quot; &lt;id&gt; }}</code></td>
 </tr>
 <tr>
-<td>Hashicorp Vault</td>
+<td>HashiCorp Vault</td>
 <td><code>vault</code></td>
 <td><code>{{ secretJSON &quot;kv&quot; &quot;get&quot; &quot;-format=json&quot; &lt;id&gt; }}</code></td>
 </tr>
@@ -1016,9 +1051,89 @@ brew install ripgrep
 {{ end -}}
 </code></pre>
 <p>This will install <code>ripgrep</code> on both Debian/Ubuntu Linux systems and macOS.</p>
-<h2 id="use-chezmoi-with-github-codespaces-visual-studio-codespaces-visual-studio-code-remote---containers">
-  Use chezmoi with GitHub Codespaces, Visual Studio Codespaces, Visual Studio Code Remote - Containers
-  <a class="anchor" href="#use-chezmoi-with-github-codespaces-visual-studio-codespaces-visual-studio-code-remote---containers">#</a>
+<h3 id="run-a-script-when-the-contents-of-another-file-changes">
+  Run a script when the contents of another file changes
+  <a class="anchor" href="#run-a-script-when-the-contents-of-another-file-changes">#</a>
+</h3>
+<p>chezmoi&rsquo;s <code>run_</code> scripts are run every time you run <code>chezmoi apply</code>, whereas
+<code>run_once_</code> scripts are run only when their contents have changed, after
+executing them as templates. You use this to cause a <code>run_once_</code> script to run
+when the contents of another file has changed by including a checksum of the
+other file&rsquo;s contents in the script.</p>
+<p>For example, if your <a href="https://wiki.gnome.org/Projects/dconf">dconf</a> settings are
+stored in <code>dconf.ini</code> in your source directory then you can make <code>chezmoi apply</code>
+only load them when the contents of <code>dconf.ini</code> has changed by adding the
+following script as <code>run_once_dconf-load.sh.tmpl</code>:</p>
+<pre><code>#!/bin/bash
+
+# dconf.ini hash: {{ include &quot;dconf.ini&quot; | sha256sum }}
+dconf load / &quot;{{ joinPath .chezmoi.sourceDir &quot;dconf.ini&quot; }}&quot;
+</code></pre>
+<p>As the SHA256 sum of <code>dconf.ini</code> is included in a comment in the script, the
+contents of the script will change whenever the contents of <code>dconf.ini</code> are
+changed, so chezmoi will re-run the script whenever the contents of <code>dconf.ini</code>
+change.</p>
+<p>In this example you should also add <code>dconf.ini</code> to <code>.chezmoiignore</code> so chezmoi
+does not create <code>dconf.ini</code> in your home directory.</p>
+<h2 id="use-chezmoi-on-macos">
+  Use chezmoi on macOS
+  <a class="anchor" href="#use-chezmoi-on-macos">#</a>
+</h2>
+<h3 id="use-brew-bundle-to-manage-your-brews-and-casks">
+  Use <code>brew bundle</code> to manage your brews and casks
+  <a class="anchor" href="#use-brew-bundle-to-manage-your-brews-and-casks">#</a>
+</h3>
+<p>Homebrew&rsquo;s <a href="https://docs.brew.sh/Manpage#bundle-subcommand"><code>brew bundle</code>
+subcommand</a> allows you to
+specify a list of brews and casks to be installed. You can integrate this with
+chezmoi by creating a <code>run_once_</code> script. For example, create a file in your
+source directory called <code>run_once_before_install-packages-darwin.sh.tmpl</code>
+containing:</p>
+<pre><code>{{- if (eq .chezmoi.os &quot;darwin&quot;) -}}
+#!/bin/bash
+
+brew bundle --no-lock --file=/dev/stdin &lt;&lt;EOF
+brew &quot;git&quot;
+cask &quot;google-chrome&quot;
+EOF
+{{ end -}}
+</code></pre>
+<p>Note that the <code>Brewfile</code> is embedded directly in the script with a bash here
+document. chezmoi will run this script whenever its contents change, i.e. when
+you add or remove brews or casks.</p>
+<h2 id="use-chezmoi-on-windows">
+  Use chezmoi on Windows
+  <a class="anchor" href="#use-chezmoi-on-windows">#</a>
+</h2>
+<h3 id="detect-windows-subsystem-for-linux-wsl">
+  Detect Windows Subsystem for Linux (WSL)
+  <a class="anchor" href="#detect-windows-subsystem-for-linux-wsl">#</a>
+</h3>
+<p>WSL can be detected by looking for the string <code>Microsoft</code> or <code>microsoft</code> in
+<code>/proc/sys/kernel/osrelease</code>, which is available in the template variable
+<code>.chezmoi.kernel.osrelease</code>, for example:</p>
+<pre><code>{{ if (eq .chezmoi.os &quot;linux&quot;) }}
+{{   if (.chezmoi.kernel.osrelease | lower | contains &quot;microsoft&quot;) }}
+# WSL-specific code
+{{   end }}
+{{ end }}
+</code></pre>
+<h3 id="run-a-powershell-script-as-admin-on-windows">
+  Run a PowerShell script as admin on Windows
+  <a class="anchor" href="#run-a-powershell-script-as-admin-on-windows">#</a>
+</h3>
+<p>Put the following at the top of your script:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#75715e"># Self-elevate the script if required</span>
+<span style="color:#66d9ef">if</span> (<span style="color:#f92672">-Not</span> (<span style="color:#66d9ef">[Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]</span>::GetCurrent()).IsInRole(<span style="color:#66d9ef">[Security.Principal.WindowsBuiltInRole]</span> <span style="color:#e6db74">&#39;Administrator&#39;</span>)) {
+  <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">[int]</span>(Get-CimInstance -Class Win32_OperatingSystem | Select-Object -ExpandProperty BuildNumber) <span style="color:#f92672">-ge</span> 6000) {
+    $CommandLine = <span style="color:#e6db74">&#34;-NoExit -File </span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">&#34;</span> + $MyInvocation.MyCommand.Path + <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74"> &#34;</span> + $MyInvocation.UnboundArguments
+    Start-Process -FilePath PowerShell.exe -Verb Runas -ArgumentList $CommandLine
+    Exit
+  }
+}
+</code></pre></div><h2 id="use-chezmoi-with-github-codespaces-visual-studio-codespaces-or-visual-studio-code-remote---containers">
+  Use chezmoi with GitHub Codespaces, Visual Studio Codespaces, or Visual Studio Code Remote - Containers
+  <a class="anchor" href="#use-chezmoi-with-github-codespaces-visual-studio-codespaces-or-visual-studio-code-remote---containers">#</a>
 </h2>
 <p>The following assumes you are using chezmoi 1.8.4 or later. It does not work
 with earlier versions of chezmoi.</p>
@@ -1054,7 +1169,8 @@ sourceDir = &quot;{{ .chezmoi.sourceDir }}&quot;
 {{- else }}{{/* Interactive setup, so prompt for an email address */}}
   email = &quot;{{ promptString &quot;email&quot; }}&quot;
 {{- end }}
-</code></pre><p>This sets the <code>codespaces</code> template variable, so you don&rsquo;t have to repeat <code>(env &quot;CODESPACES&quot;)</code> in your templates. It also sets the <code>sourceDir</code> configuration to
+</code></pre>
+<p>This sets the <code>codespaces</code> template variable, so you don&rsquo;t have to repeat <code>(env &quot;CODESPACES&quot;)</code> in your templates. It also sets the <code>sourceDir</code> configuration to
 the <code>--source</code> argument passed in <code>chezmoi init</code>.</p>
 <p>Second, create an <code>install.sh</code> script that installs chezmoi and your dotfiles:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e">#!/bin/sh
@@ -1096,51 +1212,10 @@ needed. For example, to install <code>vim-gtk</code> on Linux but not in Codespa
 #!/bin/sh
 sudo apt install -y vim-gtk
 {{- end -}}
-</code></pre><h2 id="use-chezmoi-on-windows">
-  Use chezmoi on Windows
-  <a class="anchor" href="#use-chezmoi-on-windows">#</a>
-</h2>
-<h3 id="detect-windows-subsystem-for-linux-wsl">
-  Detect Windows Subsystem for Linux (WSL)
-  <a class="anchor" href="#detect-windows-subsystem-for-linux-wsl">#</a>
-</h3>
-<p>WSL can be detected by looking for the string <code>Microsoft</code> in
-<code>/proc/kernel/osrelease</code>, which is available in the template variable
-<code>.chezmoi.kernel.osrelease</code>, for example:</p>
-<p>WSL 1:</p>
-<pre><code>{{ if (eq .chezmoi.os &quot;linux&quot;) }}
-{{   if (contains &quot;Microsoft&quot; .chezmoi.kernel.osrelease) }}
-# WSL-specific code
-{{   end }}
-{{ end }}
-</code></pre><p>WSL 2:</p>
-<pre><code>{{ if (eq .chezmoi.os &quot;linux&quot;) }}
-{{   if (contains &quot;microsoft&quot; .chezmoi.kernel.osrelease) }}
-# WSL-specific code
-{{   end }}
-{{ end }}
-</code></pre><p>WSL 2 since version 4.19.112:</p>
-<pre><code>{{ if (eq .chezmoi.os &quot;linux&quot;) }}
-{{   if (contains &quot;microsoft-WSL2&quot; .chezmoi.kernel.osrelease) }}
-# WSL-specific code
-{{   end }}
-{{ end }}
-</code></pre><h3 id="run-a-powershell-script-as-admin-on-windows">
-  Run a PowerShell script as admin on Windows
-  <a class="anchor" href="#run-a-powershell-script-as-admin-on-windows">#</a>
-</h3>
-<p>Put the following at the top of your script:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#75715e"># Self-elevate the script if required</span>
-<span style="color:#66d9ef">if</span> (<span style="color:#f92672">-Not</span> (<span style="color:#66d9ef">[Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]</span>::GetCurrent()).IsInRole(<span style="color:#66d9ef">[Security.Principal.WindowsBuiltInRole]</span> <span style="color:#e6db74">&#39;Administrator&#39;</span>)) {
-  <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">[int]</span>(Get-CimInstance -Class Win32_OperatingSystem | Select-Object -ExpandProperty BuildNumber) <span style="color:#f92672">-ge</span> 6000) {
-    $CommandLine = <span style="color:#e6db74">&#34;-NoExit -File </span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">&#34;</span> + $MyInvocation.MyCommand.Path + <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74"> &#34;</span> + $MyInvocation.UnboundArguments
-    Start-Process -FilePath PowerShell.exe -Verb Runas -ArgumentList $CommandLine
-    Exit
-  }
-}
-</code></pre></div><h2 id="using-custom-tools">
-  Using custom tools
-  <a class="anchor" href="#using-custom-tools">#</a>
+</code></pre>
+<h2 id="use-custom-tools">
+  Use custom tools
+  <a class="anchor" href="#use-custom-tools">#</a>
 </h2>
 <h3 id="customize-the-diff-command">
   Customize the <code>diff</code> command
@@ -1150,11 +1225,9 @@ sudo apt install -y vim-gtk
 the output into a pager of your choice. For example, to use
 <a href="https://github.com/so-fancy/diff-so-fancy"><code>diff-so-fancy</code></a> specify:</p>
 <pre><code>[diff]
-  format = &quot;git&quot;
   pager = &quot;diff-so-fancy&quot;
 </code></pre>
-<p>The format can also be set with the <code>--format</code> option to the <code>diff</code> command, and
-the pager can be disabled using <code>--no-pager</code>.</p>
+<p>The pager can be disabled using the <code>--no-pager</code> flag.</p>
 <h3 id="use-a-merge-tool-other-than-vimdiff">
   Use a merge tool other than vimdiff
   <a class="anchor" href="#use-a-merge-tool-other-than-vimdiff">#</a>
@@ -1227,7 +1300,7 @@ your new dotfile manager&rsquo;s functionality for importing your existing dotfi
   
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#daily-operations">Daily operations</a>
+    <li><a href="#perform-daily-operations">Perform daily operations</a>
       <ul>
         <li><a href="#use-a-hosted-repo-to-manage-your-dotfiles-across-multiple-machines">Use a hosted repo to manage your dotfiles across multiple machines</a></li>
         <li><a href="#pull-the-latest-changes-from-your-repo-and-apply-them">Pull the latest changes from your repo and apply them</a></li>
@@ -1240,12 +1313,13 @@ your new dotfile manager&rsquo;s functionality for importing your existing dotfi
       <ul>
         <li><a href="#have-chezmoi-create-a-directory-but-ignore-its-contents">Have chezmoi create a directory, but ignore its contents</a></li>
         <li><a href="#ensure-that-a-target-is-removed">Ensure that a target is removed</a></li>
+        <li><a href="#manage-part-but-not-all-of-a-file">Manage part, but not all, of a file</a></li>
         <li><a href="#populate-sshauthorized_keys-with-your-public-ssh-keys-from-github">Populate <code>~/.ssh/authorized_keys</code> with your public SSH keys from GitHub</a></li>
       </ul>
     </li>
     <li><a href="#integrate-chezmoi-with-your-editor">Integrate chezmoi with your editor</a>
       <ul>
-        <li><a href="#how-do-i-configure-vim-to-run-chezmoi-apply-whenever-i-save-a-dotfile">How do I configure VIM to run <code>chezmoi apply</code> whenever I save a dotfile?</a></li>
+        <li><a href="#configure-vim-to-run-chezmoi-apply-whenever-you-save-a-dotfile">Configure VIM to run <code>chezmoi apply</code> whenever you save a dotfile</a></li>
       </ul>
     </li>
     <li><a href="#include-dotfiles-from-elsewhere">Include dotfiles from elsewhere</a>
@@ -1262,12 +1336,20 @@ your new dotfile manager&rsquo;s functionality for importing your existing dotfi
         <li><a href="#create-a-config-file-on-a-new-machine-automatically">Create a config file on a new machine automatically</a></li>
         <li><a href="#re-create-your-config-file">Re-create your config file</a></li>
         <li><a href="#handle-different-file-locations-on-different-systems-with-the-same-contents">Handle different file locations on different systems with the same contents</a></li>
-        <li><a href="#export-archives">Export archives</a></li>
+        <li><a href="#create-an-archive-of-your-dotfiles">Create an archive of your dotfiles</a></li>
       </ul>
     </li>
     <li><a href="#keep-data-private">Keep data private</a>
       <ul>
-        <li><a href="#use-a-password-manager">Use a password manager</a></li>
+        <li><a href="#use-1password">Use 1Password</a></li>
+        <li><a href="#use-bitwarden">Use Bitwarden</a></li>
+        <li><a href="#use-gopass">Use gopass</a></li>
+        <li><a href="#use-keepassxc">Use KeePassXC</a></li>
+        <li><a href="#use-keychain-or-windows-credentials-manager">Use Keychain or Windows Credentials Manager</a></li>
+        <li><a href="#use-lastpass">Use LastPass</a></li>
+        <li><a href="#use-pass">Use pass</a></li>
+        <li><a href="#use-vault">Use Vault</a></li>
+        <li><a href="#use-a-custom-password-manager">Use a custom password manager</a></li>
         <li><a href="#encrypt-whole-files">Encrypt whole files</a></li>
         <li><a href="#use-a-private-configuration-file-and-template-variables">Use a private configuration file and template variables</a></li>
       </ul>
@@ -1276,16 +1358,22 @@ your new dotfile manager&rsquo;s functionality for importing your existing dotfi
       <ul>
         <li><a href="#understand-how-scripts-work">Understand how scripts work</a></li>
         <li><a href="#install-packages-with-scripts">Install packages with scripts</a></li>
+        <li><a href="#run-a-script-when-the-contents-of-another-file-changes">Run a script when the contents of another file changes</a></li>
       </ul>
     </li>
-    <li><a href="#use-chezmoi-with-github-codespaces-visual-studio-codespaces-visual-studio-code-remote---containers">Use chezmoi with GitHub Codespaces, Visual Studio Codespaces, Visual Studio Code Remote - Containers</a></li>
+    <li><a href="#use-chezmoi-on-macos">Use chezmoi on macOS</a>
+      <ul>
+        <li><a href="#use-brew-bundle-to-manage-your-brews-and-casks">Use <code>brew bundle</code> to manage your brews and casks</a></li>
+      </ul>
+    </li>
     <li><a href="#use-chezmoi-on-windows">Use chezmoi on Windows</a>
       <ul>
         <li><a href="#detect-windows-subsystem-for-linux-wsl">Detect Windows Subsystem for Linux (WSL)</a></li>
         <li><a href="#run-a-powershell-script-as-admin-on-windows">Run a PowerShell script as admin on Windows</a></li>
       </ul>
     </li>
-    <li><a href="#using-custom-tools">Using custom tools</a>
+    <li><a href="#use-chezmoi-with-github-codespaces-visual-studio-codespaces-or-visual-studio-code-remote---containers">Use chezmoi with GitHub Codespaces, Visual Studio Codespaces, or Visual Studio Code Remote - Containers</a></li>
+    <li><a href="#use-custom-tools">Use custom tools</a>
       <ul>
         <li><a href="#customize-the-diff-command">Customize the <code>diff</code> command</a></li>
         <li><a href="#use-a-merge-tool-other-than-vimdiff">Use a merge tool other than vimdiff</a></li>

@@ -66,7 +66,7 @@ What are the consequences of &amp;ldquo;bare&amp;rdquo; modifications to the tar
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/how-to/</guid>
-      <description>How-To Guide #  Daily operations #  Use a hosted repo to manage your dotfiles across multiple machines #  chezmoi relies on your version control system and hosted repo to share changes across multiple machines. You should create a repo on the source code repository of your choice (e.g. Bitbucket, GitHub, or GitLab, many people call their repo dotfiles) and push the repo in the source directory here. For example:</description>
+      <description>How-To Guide #  Perform daily operations #  Use a hosted repo to manage your dotfiles across multiple machines #  chezmoi relies on your version control system and hosted repo to share changes across multiple machines. You should create a repo on the source code repository of your choice (e.g. Bitbucket, GitHub, or GitLab, many people call their repo dotfiles) and push the repo in the source directory here.</description>
     </item>
     
     <item>
