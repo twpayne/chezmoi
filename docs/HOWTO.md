@@ -1,7 +1,7 @@
 # chezmoi How-To Guide
 
 <!--- toc --->
-* [Daily operations](#daily-operations)
+* [Perform daily operations](#perform-daily-operations)
   * [Use a hosted repo to manage your dotfiles across multiple machines](#use-a-hosted-repo-to-manage-your-dotfiles-across-multiple-machines)
   * [Pull the latest changes from your repo and apply them](#pull-the-latest-changes-from-your-repo-and-apply-them)
   * [Pull the latest changes from your repo and see what would change, without actually applying the changes](#pull-the-latest-changes-from-your-repo-and-see-what-would-change-without-actually-applying-the-changes)
@@ -12,7 +12,7 @@
   * [Ensure that a target is removed](#ensure-that-a-target-is-removed)
   * [Populate `~/.ssh/authorized_keys` with your public SSH keys from GitHub](#populate-sshauthorized_keys-with-your-public-ssh-keys-from-github)
 * [Integrate chezmoi with your editor](#integrate-chezmoi-with-your-editor)
-  * [How do I configure VIM to run `chezmoi apply` whenever I save a dotfile?](#how-do-i-configure-vim-to-run-chezmoi-apply-whenever-i-save-a-dotfile)
+  * [Configure VIM to run `chezmoi apply` whenever you save a dotfile](#configure-vim-to-run-chezmoi-apply-whenever-you-save-a-dotfile)
 * [Include dotfiles from elsewhere](#include-dotfiles-from-elsewhere)
   * [Include a subdirectory from another repository, like Oh My Zsh](#include-a-subdirectory-from-another-repository-like-oh-my-zsh)
   * [Handle configuration files which are externally modified](#handle-configuration-files-which-are-externally-modified)
@@ -23,28 +23,36 @@
   * [Create a config file on a new machine automatically](#create-a-config-file-on-a-new-machine-automatically)
   * [Re-create your config file](#re-create-your-config-file)
   * [Handle different file locations on different systems with the same contents](#handle-different-file-locations-on-different-systems-with-the-same-contents)
-  * [Export archives](#export-archives)
+  * [Create an archive of your dotfiles](#create-an-archive-of-your-dotfiles)
 * [Keep data private](#keep-data-private)
-  * [Use a password manager](#use-a-password-manager)
+  * [Use 1Password](#use-1password)
+  * [Use Bitwarden](#use-bitwarden)
+  * [Use gopass](#use-gopass)
+  * [Use KeePassXC](#use-keepassxc)
+  * [Use Keychain or Windows Credentials Manager](#use-keychain-or-windows-credentials-manager)
+  * [Use LastPass](#use-lastpass)
+  * [Use pass](#use-pass)
+  * [Use Vault](#use-vault)
+  * [Use a custom password manager](#use-a-custom-password-manager)
   * [Encrypt whole files](#encrypt-whole-files)
   * [Use a private configuration file and template variables](#use-a-private-configuration-file-and-template-variables)
 * [Use scripts to perform actions](#use-scripts-to-perform-actions)
   * [Understand how scripts work](#understand-how-scripts-work)
   * [Install packages with scripts](#install-packages-with-scripts)
-* [Use chezmoi with GitHub Codespaces, Visual Studio Codespaces, Visual Studio Code Remote - Containers](#use-chezmoi-with-github-codespaces-visual-studio-codespaces-visual-studio-code-remote---containers)
 * [Use chezmoi on macOS](#use-chezmoi-on-macos)
   * [Use `brew bundle` to manage your brews and casks](#use-brew-bundle-to-manage-your-brews-and-casks)
 * [Use chezmoi on Windows](#use-chezmoi-on-windows)
   * [Detect Windows Subsystem for Linux (WSL)](#detect-windows-subsystem-for-linux-wsl)
   * [Run a PowerShell script as admin on Windows](#run-a-powershell-script-as-admin-on-windows)
-* [Using custom tools](#using-custom-tools)
+* [Use chezmoi with GitHub Codespaces, Visual Studio Codespaces, or Visual Studio Code Remote - Containers](#use-chezmoi-with-github-codespaces-visual-studio-codespaces-or-visual-studio-code-remote---containers)
+* [Use custom tools](#use-custom-tools)
   * [Customize the `diff` command](#customize-the-diff-command)
   * [Use a merge tool other than vimdiff](#use-a-merge-tool-other-than-vimdiff)
 * [Migrating to chezmoi from another dotfile manager](#migrating-to-chezmoi-from-another-dotfile-manager)
   * [Migrate from a dotfile manager that uses symlinks](#migrate-from-a-dotfile-manager-that-uses-symlinks)
 * [Migrate away from chezmoi](#migrate-away-from-chezmoi)
 
-## Daily operations
+## Perform daily operations
 
 ### Use a hosted repo to manage your dotfiles across multiple machines
 
@@ -181,7 +189,6 @@ dry-run mode beforehand to see what would be removed:
 on different machines. Negative matches (patterns prefixed with a `!`) or
 targets listed in `.chezmoiignore` will never be removed.
 
-
 ### Populate `~/.ssh/authorized_keys` with your public SSH keys from GitHub
 
 chezmoi can retrieve your public SSH keys from GitHub, which can be useful for
@@ -195,7 +202,7 @@ GitHub username:
 
 ## Integrate chezmoi with your editor
 
-### How do I configure VIM to run `chezmoi apply` whenever I save a dotfile?
+### Configure VIM to run `chezmoi apply` whenever you save a dotfile
 
 Put the following in your `.vimrc`:
 
@@ -254,7 +261,6 @@ Apply the changes:
 
 Now, when the program modifies its configuration file it will modify the file in
 the source state instead.
-
 
 ### Import archives
 
@@ -405,13 +411,11 @@ any variable. For example, if you want `~/.bashrc` to be different on Linux and
 macOS you would create a file in the source state called `dot_bashrc.tmpl`
 containing:
 
-```
-{{ if eq .chezmoi.os "darwin" -}}
-# macOS .bashrc contents
-{{ else if eq .chezmoi.os "linux" -}}
-# Linux .bashrc contents
-{{ end -}}
-```
+    {{ if eq .chezmoi.os "darwin" -}}
+    # macOS .bashrc contents
+    {{ else if eq .chezmoi.os "linux" -}}
+    # Linux .bashrc contents
+    {{ end -}}
 
 However, if the differences between the two versions are so large that you'd
 prefer to use completely separate files in the source state, you can achieve
@@ -419,32 +423,24 @@ this using a symbolic link template. Create the following files:
 
 `symlink_dot_bashrc.tmpl`:
 
-```
-.bashrc_{{ .chezmoi.os }}
-```
+    .bashrc_{{ .chezmoi.os }}
 
 `dot_bashrc_darwin`:
 
-```
-# macOS .bashrc contents
-```
+    # macOS .bashrc contents
 
 `dot_bashrc_linux`:
 
-```
-# Linux .bashrc contents
-```
+    # Linux .bashrc contents
 
 `.chezmoiignore`
 
-```
-{{ if ne .chezmoi.os "darwin" }}
-.bashrc_darwin
-{{ end }}
-{{ if ne .chezmoi.os "linux" }}
-.bashrc_linux
-{{ end }}
-```
+    {{ if ne .chezmoi.os "darwin" }}
+    .bashrc_darwin
+    {{ end }}
+    {{ if ne .chezmoi.os "linux" }}
+    .bashrc_linux
+    {{ end }}
 
 This will make `~/.bashrc` a symlink to `.bashrc_darwin` on `darwin` and to
 `.bashrc_linux` on `linux`. The `.chezmoiignore` configuration ensures that only
@@ -462,7 +458,6 @@ The same thing can be achieved using the include function.
 	{{ if eq .chezmoi.os "linux" }}
 	{{   include ".bashrc_linux" }}
 	{{ end }}
-
 
 ### Create a config file on a new machine automatically
 
@@ -537,21 +532,19 @@ Linux. Both template files should contain `{{- template "file.conf" -}}`.
 Finally, tell chezmoi to ignore files where they are not needed by adding lines
 to your `.chezmoiignore` file, for example:
 
-```
-{{ if ne .chezmoi.os "darwin" }}
-Library/Application Support/App/file.conf
-{{ end }}
-{{ if ne .chezmoi.os "linux" }}
-.config/app/file.conf
-{{ end }}
-```
+    {{ if ne .chezmoi.os "darwin" }}
+    Library/Application Support/App/file.conf
+    {{ end }}
+    {{ if ne .chezmoi.os "linux" }}
+    .config/app/file.conf
+    {{ end }}
 
-### Export archives
+### Create an archive of your dotfiles
 
-chezmoi can create an archive containing the target state. This can be useful
-for generating target state for a different machine. Note also that you can
-specify a different configuration file (including template variables) with the
-`--config` option.
+`chezmoi archive` creates an archive containing the target state. This can be
+useful for generating target state for a different machine. You can specify a
+different configuration file (including template variables) with the `--config`
+option.
 
 ## Keep data private
 
@@ -574,136 +567,7 @@ token](https://help.github.com/articles/creating-a-personal-access-token-for-the
 There are several ways to keep these tokens secure, and to prevent them leaving
 your machine.
 
-### Use a password manager
-
-#### Bitwarden
-
-chezmoi includes support for [Bitwarden](https://bitwarden.com/) using the
-[Bitwarden CLI](https://github.com/bitwarden/cli) to expose data as a template
-function.
-
-Log in to Bitwarden using:
-
-    bw login <bitwarden-email>
-
-Unlock your Bitwarden vault:
-
-    bw unlock
-
-Set the `BW_SESSION` environment variable, as instructed.
-
-The structured data from `bw get` is available as the `bitwarden` template
-function in your config files, for example:
-
-    username = {{ (bitwarden "item" "example.com").login.username }}
-    password = {{ (bitwarden "item" "example.com").login.password }}
-
-Custom fields can be accessed with the `bitwardenFields` template function. For
-example, if you have a custom field named `token` you can retrieve its value
-with:
-
-    {{ (bitwardenFields "item" "example.com").token.value }}
-
-#### gopass
-
-chezmoi includes support for [gopass](https://www.gopass.pw/) using the gopass CLI.
-
-The first line of the output of `gopass show <pass-name>` is available as the
-`gopass` template function, for example:
-
-    {{ gopass "<pass-name>" }}
-
-#### KeePassXC
-
-chezmoi includes support for [KeePassXC](https://keepassxc.org) using the
-KeePassXC CLI (`keepassxc-cli`) to expose data as a template function.
-
-Provide the path to your KeePassXC database in your configuration file:
-
-    [keepassxc]
-      database = "/home/user/Passwords.kdbx"
-
-The structured data from `keepassxc-cli show $database` is available as the
-`keepassxc` template function in your config files, for example:
-
-    username = {{ (keepassxc "example.com").UserName }}
-    password = {{ (keepassxc "example.com").Password }}
-
-Additional attributes are available through the `keepassxcAttribute` function.
-For example, if you have an entry called `SSH Key` with an additional attribute
-called `private-key`, its value is available as:
-
-    {{ keepassxcAttribute "SSH Key" "private-key" }}
-
-#### Keychain and Windows Credentials Manager
-
-chezmoi includes support for Keychain (on macOS), GNOME Keyring (on Linux), and
-Windows Credentials Manager (on Windows) via the
-[`zalando/go-keyring`](https://github.com/zalando/go-keyring) library.
-
-Set values with:
-
-    $ chezmoi secret keyring set --service=<service> --user=<user>
-    Value: xxxxxxxx
-
-The value can then be used in templates using the `keyring` function which takes
-the service and user as arguments.
-
-For example, save a GitHub access token in keyring with:
-
-    $ chezmoi secret keyring set --service=github --user=<github-username>
-    Value: xxxxxxxx
-
-and then include it in your `~/.gitconfig` file with:
-
-    [github]
-      user = "{{ .github.user }}"
-      token = "{{ keyring "github" .github.user }}"
-
-You can query the keyring from the command line:
-
-    chezmoi secret keyring get --service=github --user=<github-username>
-
-#### LastPass
-
-chezmoi includes support for [LastPass](https://lastpass.com) using the
-[LastPass CLI](https://lastpass.github.io/lastpass-cli/lpass.1.html) to expose
-data as a template function.
-
-Log in to LastPass using:
-
-    lpass login <lastpass-username>
-
-Check that `lpass` is working correctly by showing password data:
-
-    lpass show --json <lastpass-entry-id>
-
-where `<lastpass-entry-id>` is a [LastPass Entry
-Specification](https://lastpass.github.io/lastpass-cli/lpass.1.html#_entry_specification).
-
-The structured data from `lpass show --json id` is available as the `lastpass`
-template function. The value will be an array of objects. You can use the
-`index` function and `.Field` syntax of the `text/template` language to extract
-the field you want. For example, to extract the `password` field from first the
-"GitHub" entry, use:
-
-    githubPassword = "{{ (index (lastpass "GitHub") 0).password }}"
-
-chezmoi automatically parses the `note` value of the Lastpass entry as
-colon-separated key-value pairs, so, for example, you can extract a private SSH
-key like this:
-
-    {{ (index (lastpass "SSH") 0).note.privateKey }}
-
-Keys in the `note` section written as `CamelCase Words` are converted to
-`camelCaseWords`.
-
-If the `note` value does not contain colon-separated key-value pairs, then you
-can use `lastpassRaw` to get its raw value, for example:
-
-    {{ (index (lastpassRaw "SSH Private Key") 0).note }}
-
-#### 1Password
+### Use 1Password
 
 chezmoi includes support for [1Password](https://1password.com/) using the
 [1Password CLI](https://support.1password.com/command-line-getting-started/) to
@@ -742,7 +606,134 @@ instructs the template language to remove and whitespace before and after the
 substitution. This removes any trailing newline added by your editor when saving
 the template.
 
-#### pass
+### Use Bitwarden
+
+chezmoi includes support for [Bitwarden](https://bitwarden.com/) using the
+[Bitwarden CLI](https://github.com/bitwarden/cli) to expose data as a template
+function.
+
+Log in to Bitwarden using:
+
+    bw login <bitwarden-email>
+
+Unlock your Bitwarden vault:
+
+    bw unlock
+
+Set the `BW_SESSION` environment variable, as instructed.
+
+The structured data from `bw get` is available as the `bitwarden` template
+function in your config files, for example:
+
+    username = {{ (bitwarden "item" "example.com").login.username }}
+    password = {{ (bitwarden "item" "example.com").login.password }}
+
+Custom fields can be accessed with the `bitwardenFields` template function. For
+example, if you have a custom field named `token` you can retrieve its value
+with:
+
+    {{ (bitwardenFields "item" "example.com").token.value }}
+
+### Use gopass
+
+chezmoi includes support for [gopass](https://www.gopass.pw/) using the gopass CLI.
+
+The first line of the output of `gopass show <pass-name>` is available as the
+`gopass` template function, for example:
+
+    {{ gopass "<pass-name>" }}
+
+### Use KeePassXC
+
+chezmoi includes support for [KeePassXC](https://keepassxc.org) using the
+KeePassXC CLI (`keepassxc-cli`) to expose data as a template function.
+
+Provide the path to your KeePassXC database in your configuration file:
+
+    [keepassxc]
+      database = "/home/user/Passwords.kdbx"
+
+The structured data from `keepassxc-cli show $database` is available as the
+`keepassxc` template function in your config files, for example:
+
+    username = {{ (keepassxc "example.com").UserName }}
+    password = {{ (keepassxc "example.com").Password }}
+
+Additional attributes are available through the `keepassxcAttribute` function.
+For example, if you have an entry called `SSH Key` with an additional attribute
+called `private-key`, its value is available as:
+
+    {{ keepassxcAttribute "SSH Key" "private-key" }}
+
+### Use Keychain or Windows Credentials Manager
+
+chezmoi includes support for Keychain (on macOS), GNOME Keyring (on Linux), and
+Windows Credentials Manager (on Windows) via the
+[`zalando/go-keyring`](https://github.com/zalando/go-keyring) library.
+
+Set values with:
+
+    $ chezmoi secret keyring set --service=<service> --user=<user>
+    Value: xxxxxxxx
+
+The value can then be used in templates using the `keyring` function which takes
+the service and user as arguments.
+
+For example, save a GitHub access token in keyring with:
+
+    $ chezmoi secret keyring set --service=github --user=<github-username>
+    Value: xxxxxxxx
+
+and then include it in your `~/.gitconfig` file with:
+
+    [github]
+      user = "{{ .github.user }}"
+      token = "{{ keyring "github" .github.user }}"
+
+You can query the keyring from the command line:
+
+    chezmoi secret keyring get --service=github --user=<github-username>
+
+### Use LastPass
+
+chezmoi includes support for [LastPass](https://lastpass.com) using the
+[LastPass CLI](https://lastpass.github.io/lastpass-cli/lpass.1.html) to expose
+data as a template function.
+
+Log in to LastPass using:
+
+    lpass login <lastpass-username>
+
+Check that `lpass` is working correctly by showing password data:
+
+    lpass show --json <lastpass-entry-id>
+
+where `<lastpass-entry-id>` is a [LastPass Entry
+Specification](https://lastpass.github.io/lastpass-cli/lpass.1.html#_entry_specification).
+
+The structured data from `lpass show --json id` is available as the `lastpass`
+template function. The value will be an array of objects. You can use the
+`index` function and `.Field` syntax of the `text/template` language to extract
+the field you want. For example, to extract the `password` field from first the
+"GitHub" entry, use:
+
+    githubPassword = "{{ (index (lastpass "GitHub") 0).password }}"
+
+chezmoi automatically parses the `note` value of the Lastpass entry as
+colon-separated key-value pairs, so, for example, you can extract a private SSH
+key like this:
+
+    {{ (index (lastpass "SSH") 0).note.privateKey }}
+
+Keys in the `note` section written as `CamelCase Words` are converted to
+`camelCaseWords`.
+
+If the `note` value does not contain colon-separated key-value pairs, then you
+can use `lastpassRaw` to get its raw value, for example:
+
+    {{ (index (lastpassRaw "SSH Private Key") 0).note }}
+
+### Use pass
 
 chezmoi includes support for [pass](https://www.passwordstore.org/) using the
 pass CLI.
@@ -752,7 +743,7 @@ The first line of the output of `pass show <pass-name>` is available as the
 
     {{ pass "<pass-name>" }}
 
-#### Vault
+### Use Vault
 
 chezmoi includes support for [Vault](https://www.vaultproject.io/) using the
 [Vault CLI](https://www.vaultproject.io/docs/commands/) to expose data as a
@@ -770,7 +761,7 @@ language to extract the data you want. For example:
 
     {{ (vault "<key>").data.data.password }}
 
-#### A custom password manager
+### Use a custom password manager
 
 You can use any command line tool that outputs secrets either as a string or in
 JSON format. Choose the binary by setting `secret.command` in your configuration
@@ -782,11 +773,10 @@ respectively. All of the above secret managers can be supported in this way:
 | --------------- | ---------------- | ------------------------------------------------- |
 | 1Password       | `op`             | `{{ secretJSON "get" "item" <id> }}`              |
 | Bitwarden       | `bw`             | `{{ secretJSON "get" <id> }}`                     |
-| Hashicorp Vault | `vault`          | `{{ secretJSON "kv" "get" "-format=json" <id> }}` |
+| HashiCorp Vault | `vault`          | `{{ secretJSON "kv" "get" "-format=json" <id> }}` |
 | LastPass        | `lpass`          | `{{ secretJSON "show" "--json" <id> }}`           |
 | KeePassXC       | `keepassxc-cli`  | Not possible (interactive command only)           |
 | pass            | `pass`           | `{{ secret "show" <id> }}`                        |
-
 
 ### Encrypt whole files
 
@@ -833,7 +823,6 @@ Add files to be encrypted with the `--encrypt` flag, for example:
 chezmoi will encrypt the file with:
 
     gpg --armor --symmetric
-
 
 ### Use a private configuration file and template variables
 
@@ -915,104 +904,6 @@ This script can also be a template. For example, if you create
 
 This will install `ripgrep` on both Debian/Ubuntu Linux systems and macOS.
 
-## Use chezmoi with GitHub Codespaces, Visual Studio Codespaces, Visual Studio Code Remote - Containers
-
-The following assumes you are using chezmoi 1.8.4 or later. It does not work
-with earlier versions of chezmoi.
-
-You can use chezmoi to manage your dotfiles in [GitHub
-Codespaces](https://docs.github.com/en/github/developing-online-with-codespaces/personalizing-codespaces-for-your-account),
-[Visual Studio
-Codespaces](https://docs.microsoft.com/en/visualstudio/codespaces/reference/personalizing),
-and [Visual Studio Code Remote -
-Containers](https://code.visualstudio.com/docs/remote/containers#_personalizing-with-dotfile-repositories).
-
-For a quick start, you can clone the [`chezmoi/dotfiles`
-repository](https://github.com/chezmoi/dotfiles) which supports Codespaces out
-of the box.
-
-The workflow is different to using chezmoi on a new machine, notably:
-* These systems will automatically clone your `dotfiles` repo to `~/dotfiles`,
-  so there is no need to clone your repo yourself.
-* The installation script must be non-interactive.
-* When running in a Codespace, the environment variable `CODESPACES` will be set
-  to `true`. You can read its value with the [`env` template
-  function](http://masterminds.github.io/sprig/os.html).
-
-First, if you are using a chezmoi configuration file template, ensure that it is
-non-interactive when running in Codespaces, for example, `.chezmoi.toml.tmpl`
-might contain:
-
-```
-{{- $codespaces:= env "CODESPACES" | not | not -}}
-sourceDir = "{{ .chezmoi.sourceDir }}"
-
-[data]
-  name = "Your name"
-  codespaces = {{ $codespaces }}
-{{- if $codespaces }}{{/* Codespaces dotfiles setup is non-interactive, so set an email address */}}
-  email = "your@email.com"
-{{- else }}{{/* Interactive setup, so prompt for an email address */}}
-  email = "{{ promptString "email" }}"
-{{- end }}
-```
-
-This sets the `codespaces` template variable, so you don't have to repeat `(env
-"CODESPACES")` in your templates. It also sets the `sourceDir` configuration to
-the `--source` argument passed in `chezmoi init`.
-
-Second, create an `install.sh` script that installs chezmoi and your dotfiles:
-
-```sh
-#!/bin/sh
-
-set -e # -e: exit on error
-
-if [ ! "$(command -v chezmoi)" ]; then
-  bin_dir="$HOME/.local/bin"
-  chezmoi="$bin_dir/chezmoi"
-  if [ "$(command -v curl)" ]; then
-    sh -c "$(curl -fsLS https://git.io/chezmoi)" -- -b "$bin_dir"
-  elif [ "$(command -v wget)" ]; then
-    sh -c "$(wget -qO- https://git.io/chezmoi)" -- -b "$bin_dir"
-  else
-    echo "To install chezmoi, you must have curl or wget installed." >&2
-    exit 1
-  fi
-else
-  chezmoi=chezmoi
-fi
-
-# POSIX way to get script's dir: https://stackoverflow.com/a/29834779/12156188
-script_dir="$(cd -P -- "$(dirname -- "$(command -v -- "$0")")" && pwd -P)"
-# exec: replace current process with chezmoi init
-exec "$chezmoi" init --apply "--source=$script_dir"
-```
-
-Ensure that this file is executable (`chmod a+x install.sh`), and add
-`install.sh` to your `.chezmoiignore` file.
-
-It installs the latest version of chezmoi in `~/.local/bin` if needed, and then
-`chezmoi init ...` invokes chezmoi to create its configuration file and
-initialize your dotfiles. `--apply` tells chezmoi to apply the changes
-immediately, and `--source=...` tells chezmoi where to find the cloned
-`dotfiles` repo, which in this case is the same folder in which the script is
-running from.
-
-If you do not use a chezmoi configuration file template you can use `chezmoi
-apply --source=$HOME/dotfiles` instead of `chezmoi init ...` in `install.sh`.
-
-Finally, modify any of your templates to use the `codespaces` variable if
-needed. For example, to install `vim-gtk` on Linux but not in Codespaces, your
-`run_once_install-packages.sh.tmpl` might contain:
-
-```
-{{- if (and (eq .chezmoi.os "linux") (not .codespaces)) -}}
-#!/bin/sh
-sudo apt install -y vim-gtk
-{{- end -}}
-```
-
 ## Use chezmoi on macOS
 
 ### Use `brew bundle` to manage your brews and casks
@@ -1066,7 +957,101 @@ if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
 }
 ```
 
-## Using custom tools
+## Use chezmoi with GitHub Codespaces, Visual Studio Codespaces, or Visual Studio Code Remote - Containers
+
+The following assumes you are using chezmoi 1.8.4 or later. It does not work
+with earlier versions of chezmoi.
+
+You can use chezmoi to manage your dotfiles in [GitHub
+Codespaces](https://docs.github.com/en/github/developing-online-with-codespaces/personalizing-codespaces-for-your-account),
+[Visual Studio
+Codespaces](https://docs.microsoft.com/en/visualstudio/codespaces/reference/personalizing),
+and [Visual Studio Code Remote -
+Containers](https://code.visualstudio.com/docs/remote/containers#_personalizing-with-dotfile-repositories).
+
+For a quick start, you can clone the [`chezmoi/dotfiles`
+repository](https://github.com/chezmoi/dotfiles) which supports Codespaces out
+of the box.
+
+The workflow is different to using chezmoi on a new machine, notably:
+* These systems will automatically clone your `dotfiles` repo to `~/dotfiles`,
+  so there is no need to clone your repo yourself.
+* The installation script must be non-interactive.
+* When running in a Codespace, the environment variable `CODESPACES` will be set
+  to `true`. You can read its value with the [`env` template
+  function](http://masterminds.github.io/sprig/os.html).
+
+First, if you are using a chezmoi configuration file template, ensure that it is
+non-interactive when running in Codespaces, for example, `.chezmoi.toml.tmpl`
+might contain:
+
+    {{- $codespaces:= env "CODESPACES" | not | not -}}
+    sourceDir = "{{ .chezmoi.sourceDir }}"
+
+    [data]
+      name = "Your name"
+      codespaces = {{ $codespaces }}
+    {{- if $codespaces }}{{/* Codespaces dotfiles setup is non-interactive, so set an email address */}}
+      email = "your@email.com"
+    {{- else }}{{/* Interactive setup, so prompt for an email address */}}
+      email = "{{ promptString "email" }}"
+    {{- end }}
+
+This sets the `codespaces` template variable, so you don't have to repeat `(env
+"CODESPACES")` in your templates. It also sets the `sourceDir` configuration to
+the `--source` argument passed in `chezmoi init`.
+
+Second, create an `install.sh` script that installs chezmoi and your dotfiles:
+
+```sh
+#!/bin/sh
+
+set -e # -e: exit on error
+
+if [ ! "$(command -v chezmoi)" ]; then
+  bin_dir="$HOME/.local/bin"
+  chezmoi="$bin_dir/chezmoi"
+  if [ "$(command -v curl)" ]; then
+    sh -c "$(curl -fsLS https://git.io/chezmoi)" -- -b "$bin_dir"
+  elif [ "$(command -v wget)" ]; then
+    sh -c "$(wget -qO- https://git.io/chezmoi)" -- -b "$bin_dir"
+  else
+    echo "To install chezmoi, you must have curl or wget installed." >&2
+    exit 1
+  fi
+else
+  chezmoi=chezmoi
+fi
+
+# POSIX way to get script's dir: https://stackoverflow.com/a/29834779/12156188
+script_dir="$(cd -P -- "$(dirname -- "$(command -v -- "$0")")" && pwd -P)"
+# exec: replace current process with chezmoi init
+exec "$chezmoi" init --apply "--source=$script_dir"
+```
+
+Ensure that this file is executable (`chmod a+x install.sh`), and add
+`install.sh` to your `.chezmoiignore` file.
+
+It installs the latest version of chezmoi in `~/.local/bin` if needed, and then
+`chezmoi init ...` invokes chezmoi to create its configuration file and
+initialize your dotfiles. `--apply` tells chezmoi to apply the changes
+immediately, and `--source=...` tells chezmoi where to find the cloned
+`dotfiles` repo, which in this case is the same folder in which the script is
+running from.
+
+If you do not use a chezmoi configuration file template you can use `chezmoi
+apply --source=$HOME/dotfiles` instead of `chezmoi init ...` in `install.sh`.
+
+Finally, modify any of your templates to use the `codespaces` variable if
+needed. For example, to install `vim-gtk` on Linux but not in Codespaces, your
+`run_once_install-packages.sh.tmpl` might contain:
+
+    {{- if (and (eq .chezmoi.os "linux") (not .codespaces)) -}}
+    #!/bin/sh
+    sudo apt install -y vim-gtk
+    {{- end -}}
+
+## Use custom tools
 
 ### Customize the `diff` command
 
@@ -1112,5 +1097,3 @@ contents.
 chezmoi creates regular files and directories - your home directory managed by
 chezmoi is exactly the same as if you were using no dotfile manager at all. Use
 your new dotfile manager's functionality for importing your existing dotfiles.
-
-
