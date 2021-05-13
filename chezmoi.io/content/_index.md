@@ -7,8 +7,14 @@ type: docs
 
 Manage your dotfiles across multiple diverse machines, securely.
 
-chezmoi makes installing your dotfiles on any new machine as easy as `sh -c
-"$(curl -fsLS git.io/chezmoi)" -- init --apply <github-username>`.
+With chezmoi, you can install chezmoi and your dotfiles on a new, empty machine
+with a single command:
+
+    sh -c "$(curl -fsLS git.io/chezmoi)" -- init --apply <github-username>
+
+Updating your dotfiles on any machine is a single command:
+
+    chezmoi update
 
 ## How do I start with chezmoi now?
 
