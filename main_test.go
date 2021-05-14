@@ -192,7 +192,7 @@ func cmdMkFile(ts *testscript.TestScript, neg bool, args []string) {
 // cmdMkAGEConfig creates a AGE key and a chezmoi configuration file.
 func cmdMkAGEConfig(ts *testscript.TestScript, neg bool, args []string) {
 	if neg {
-		ts.Fatalf("unupported: ! mkageconfig")
+		ts.Fatalf("unsupported: ! mkageconfig")
 	}
 	if len(args) > 0 {
 		ts.Fatalf("usage: mkageconfig")
@@ -239,7 +239,7 @@ func cmdMkGitConfig(ts *testscript.TestScript, neg bool, args []string) {
 // cmdMkGPGConfig creates a GPG key and a chezmoi configuration file.
 func cmdMkGPGConfig(ts *testscript.TestScript, neg bool, args []string) {
 	if neg {
-		ts.Fatalf("unupported: ! mkgpgconfig")
+		ts.Fatalf("unsupported: ! mkgpgconfig")
 	}
 	if len(args) > 1 || len(args) == 1 && args[0] != "-symmetric" {
 		ts.Fatalf("usage: mkgpgconfig [-symmetric]")
