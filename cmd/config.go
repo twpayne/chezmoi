@@ -109,6 +109,7 @@ type Config struct {
 	init            initCmdConfig
 	managed         managedCmdConfig
 	purge           purgeCmdConfig
+	reAdd           reAddCmdConfig
 	secretKeyring   secretKeyringCmdConfig
 	state           stateCmdConfig
 	status          statusCmdConfig
@@ -280,6 +281,11 @@ func newConfig(options ...configOption) (*Config, error) {
 		managed: managedCmdConfig{
 			exclude: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypeDirs | chezmoi.EntryTypeFiles | chezmoi.EntryTypeSymlinks | chezmoi.EntryTypeEncrypted),
+		},
+		reAdd: reAddCmdConfig{
+			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
+			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
+			recursive: true,
 		},
 		state: stateCmdConfig{
 			data: stateDataCmdConfig{
@@ -1032,6 +1038,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newManagedCmd(),
 		c.newMergeCmd(),
 		c.newPurgeCmd(),
+		c.newReAddCmd(),
 		c.newRemoveCmd(),
 		c.newSecretCmd(),
 		c.newSourcePathCmd(),

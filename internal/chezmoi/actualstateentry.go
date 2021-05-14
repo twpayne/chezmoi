@@ -137,6 +137,11 @@ func (s *ActualStateFile) Path() AbsPath {
 	return s.absPath
 }
 
+// Perm returns s's perm.
+func (s *ActualStateFile) Perm() os.FileMode {
+	return s.perm
+}
+
 // Remove removes s.
 func (s *ActualStateFile) Remove(system System) error {
 	return system.RemoveAll(s.absPath)
