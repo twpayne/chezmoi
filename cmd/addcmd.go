@@ -46,6 +46,7 @@ func (c *Config) newAddCmd() *cobra.Command {
 	flags.BoolVar(&c.Add.exact, "exact", c.Add.exact, "add directories exactly")
 	flags.VarP(c.Add.exclude, "exclude", "x", "exclude entry types")
 	flags.BoolVarP(&c.Add.follow, "follow", "f", c.Add.follow, "add symlink targets instead of symlinks")
+	flags.VarP(c.Add.include, "include", "i", "include entry types")
 	flags.BoolVarP(&c.Add.recursive, "recursive", "r", c.Add.recursive, "recursive")
 	flags.BoolVarP(&c.Add.template, "template", "T", c.Add.template, "add files as templates")
 	flags.BoolVar(&c.Add.TemplateSymlinks, "template-symlinks", c.Add.TemplateSymlinks, "add symlinks with target in source or home dirs as templates")

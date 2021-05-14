@@ -198,6 +198,11 @@ func newConfig(options ...configOption) (*Config, error) {
 		fs:      vfs.OSFS,
 		homeDir: userHomeDir,
 		Umask:   chezmoi.Umask,
+		Add: addCmdConfig{
+			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
+			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
+			recursive: true,
+		},
 		Diff: diffCmdConfig{
 			Exclude: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			Pager:   os.Getenv("PAGER"),
@@ -240,11 +245,6 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		AGE: defaultAGEEncryptionConfig,
 		GPG: defaultGPGEncryptionConfig,
-		Add: addCmdConfig{
-			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
-			recursive: true,
-		},
 		apply: applyCmdConfig{
 			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
