@@ -3,7 +3,7 @@ package cmd
 import (
 	"errors"
 	"fmt"
-	"os"
+	"io/fs"
 	"os/exec"
 	"path"
 	"path/filepath"
@@ -29,7 +29,7 @@ func (c *Config) includeTemplateFunc(filename string) string {
 	} else {
 		absPath = c.SourceDirAbsPath.Join(chezmoi.RelPath(filename))
 	}
-	contents, err := c.fs.ReadFile(string(absPath))
+	contents, err := c.fileSystem.ReadFile(string(absPath))
 	if err != nil {
 		returnTemplateError(err)
 		return ""
@@ -91,18 +91,18 @@ func (c *Config) outputTemplateFunc(name string, args ...string) string {
 }
 
 func (c *Config) statTemplateFunc(name string) interface{} {
-	info, err := c.fs.Stat(name)
+	info, err := c.fileSystem.Stat(name)
 	switch {
 	case err == nil:
 		return map[string]interface{}{
 			"name":    info.Name(),
 			"size":    info.Size(),
 			"mode":    int(info.Mode()),
-			"perm":    int(info.Mode() & os.ModePerm),
+			"perm":    int(info.Mode().Perm()),
 			"modTime": info.ModTime().Unix(),
 			"isDir":   info.IsDir(),
 		}
-	case os.IsNotExist(err):
+	case errors.Is(err, fs.ErrNotExist):
 		return nil
 	default:
 		returnTemplateError(err)

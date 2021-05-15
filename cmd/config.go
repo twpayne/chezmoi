@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"os/exec"
 	"os/user"
@@ -25,12 +26,12 @@ import (
 	"github.com/mitchellh/mapstructure"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/twpayne/go-shell"
-	"github.com/twpayne/go-vfs/v2"
-	vfsafero "github.com/twpayne/go-vfsafero/v2"
-	"github.com/twpayne/go-xdg/v4"
+	"github.com/twpayne/go-vfs/v3"
+	"github.com/twpayne/go-xdg/v6"
 	"golang.org/x/term"
 
 	"github.com/twpayne/chezmoi/v2/assets/templates"
@@ -51,7 +52,7 @@ type Config struct {
 	// Global configuration, settable in the config file.
 	SourceDirAbsPath chezmoi.AbsPath        `mapstructure:"sourceDir"`
 	DestDirAbsPath   chezmoi.AbsPath        `mapstructure:"destDir"`
-	Umask            os.FileMode            `mapstructure:"umask"`
+	Umask            fs.FileMode            `mapstructure:"umask"`
 	Remove           bool                   `mapstructure:"remove"`
 	Color            *autoBool              `mapstructure:"color"`
 	Data             map[string]interface{} `mapstructure:"data"`
@@ -123,7 +124,7 @@ type Config struct {
 	versionStr  string
 
 	// Configuration.
-	fs                vfs.FS
+	fileSystem        vfs.FS
 	bds               *xdg.BaseDirectorySpecification
 	configFileAbsPath chezmoi.AbsPath
 	baseSystem        chezmoi.System
@@ -195,10 +196,10 @@ func newConfig(options ...configOption) (*Config, error) {
 	}
 
 	c := &Config{
-		bds:     bds,
-		fs:      vfs.OSFS,
-		homeDir: userHomeDir,
-		Umask:   chezmoi.Umask,
+		bds:        bds,
+		fileSystem: vfs.OSFS,
+		homeDir:    userHomeDir,
+		Umask:      chezmoi.Umask,
 		Add: addCmdConfig{
 			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
@@ -357,11 +358,11 @@ func newConfig(options ...configOption) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
-	c.configFileAbsPath, err = c.defaultConfigFile(c.fs, c.bds)
+	c.configFileAbsPath, err = c.defaultConfigFile(c.fileSystem, c.bds)
 	if err != nil {
 		return nil, err
 	}
-	c.SourceDirAbsPath, err = c.defaultSourceDir(c.fs, c.bds)
+	c.SourceDirAbsPath, err = c.defaultSourceDir(c.fileSystem, c.bds)
 	if err != nil {
 		return nil, err
 	}
@@ -384,7 +385,7 @@ type applyArgsOptions struct {
 	include      *chezmoi.EntryTypeSet
 	exclude      *chezmoi.EntryTypeSet
 	recursive    bool
-	umask        os.FileMode
+	umask        fs.FileMode
 	preApplyFunc chezmoi.PreApplyFunc
 }
 
@@ -505,7 +506,7 @@ func (c *Config) colorAutoFunc() (bool, error) {
 
 // defaultConfigFile returns the default config file according to the XDG Base
 // Directory Specification.
-func (c *Config) defaultConfigFile(fs vfs.Stater, bds *xdg.BaseDirectorySpecification) (chezmoi.AbsPath, error) {
+func (c *Config) defaultConfigFile(fileSystem vfs.Stater, bds *xdg.BaseDirectorySpecification) (chezmoi.AbsPath, error) {
 	// Search XDG Base Directory Specification config directories first.
 	for _, configDir := range bds.ConfigDirs {
 		configDirAbsPath, err := chezmoi.NewAbsPathFromExtPath(configDir, c.homeDirAbsPath)
@@ -514,7 +515,7 @@ func (c *Config) defaultConfigFile(fs vfs.Stater, bds *xdg.BaseDirectorySpecific
 		}
 		for _, extension := range viper.SupportedExts {
 			configFileAbsPath := configDirAbsPath.Join("chezmoi", chezmoi.RelPath("chezmoi."+extension))
-			if _, err := fs.Stat(string(configFileAbsPath)); err == nil {
+			if _, err := fileSystem.Stat(string(configFileAbsPath)); err == nil {
 				return configFileAbsPath, nil
 			}
 		}
@@ -572,7 +573,7 @@ func (c *Config) defaultPreApplyFunc(targetRelPath chezmoi.RelPath, targetEntryS
 
 // defaultSourceDir returns the default source directory according to the XDG
 // Base Directory Specification.
-func (c *Config) defaultSourceDir(fs vfs.Stater, bds *xdg.BaseDirectorySpecification) (chezmoi.AbsPath, error) {
+func (c *Config) defaultSourceDir(fileSystem vfs.Stater, bds *xdg.BaseDirectorySpecification) (chezmoi.AbsPath, error) {
 	// Check for XDG Base Directory Specification data directories first.
 	for _, dataDir := range bds.DataDirs {
 		dataDirAbsPath, err := chezmoi.NewAbsPathFromExtPath(dataDir, c.homeDirAbsPath)
@@ -580,7 +581,7 @@ func (c *Config) defaultSourceDir(fs vfs.Stater, bds *xdg.BaseDirectorySpecifica
 			return "", err
 		}
 		sourceDirAbsPath := dataDirAbsPath.Join("chezmoi")
-		if _, err := fs.Stat(string(sourceDirAbsPath)); err == nil {
+		if _, err := fileSystem.Stat(string(sourceDirAbsPath)); err == nil {
 			return sourceDirAbsPath, nil
 		}
 	}
@@ -659,7 +660,7 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 		}
 	}
 
-	if fqdnHostname := chezmoi.FQDNHostname(c.fs); fqdnHostname != "" {
+	if fqdnHostname := chezmoi.FQDNHostname(c.fileSystem); fqdnHostname != "" {
 		data["fqdnHostname"] = fqdnHostname
 	}
 
@@ -671,7 +672,7 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 			Msg("os.Hostname")
 	}
 
-	if kernelInfo, err := chezmoi.KernelInfo(c.fs); err == nil {
+	if kernelInfo, err := chezmoi.KernelInfo(c.fileSystem); err == nil {
 		data["kernel"] = kernelInfo
 	} else {
 		log.Debug().
@@ -679,7 +680,7 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 			Msg("chezmoi.KernelInfo")
 	}
 
-	if osRelease, err := chezmoi.OSRelease(c.fs); err == nil {
+	if osRelease, err := chezmoi.OSRelease(c.fileSystem); err == nil {
 		data["osRelease"] = upperSnakeCaseToCamelCaseMap(osRelease)
 	} else {
 		log.Debug().
@@ -692,8 +693,8 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 	}
 }
 
-func (c *Config) destAbsPathInfos(sourceState *chezmoi.SourceState, args []string, recursive, follow bool) (map[chezmoi.AbsPath]os.FileInfo, error) {
-	destAbsPathInfos := make(map[chezmoi.AbsPath]os.FileInfo)
+func (c *Config) destAbsPathInfos(sourceState *chezmoi.SourceState, args []string, recursive, follow bool) (map[chezmoi.AbsPath]fs.FileInfo, error) {
+	destAbsPathInfos := make(map[chezmoi.AbsPath]fs.FileInfo)
 	for _, arg := range args {
 		destAbsPath, err := chezmoi.NewAbsPathFromExtPath(arg, c.homeDirAbsPath)
 		if err != nil {
@@ -703,11 +704,11 @@ func (c *Config) destAbsPathInfos(sourceState *chezmoi.SourceState, args []strin
 			return nil, err
 		}
 		if recursive {
-			if err := chezmoi.Walk(c.destSystem, destAbsPath, func(destAbsPath chezmoi.AbsPath, info os.FileInfo, err error) error {
+			if err := chezmoi.Walk(c.destSystem, destAbsPath, func(destAbsPath chezmoi.AbsPath, info fs.FileInfo, err error) error {
 				if err != nil {
 					return err
 				}
-				if follow && info.Mode()&os.ModeType == os.ModeSymlink {
+				if follow && info.Mode().Type() == fs.ModeSymlink {
 					info, err = c.destSystem.Stat(destAbsPath)
 					if err != nil {
 						return err
@@ -718,7 +719,7 @@ func (c *Config) destAbsPathInfos(sourceState *chezmoi.SourceState, args []strin
 				return nil, err
 			}
 		} else {
-			var info os.FileInfo
+			var info fs.FileInfo
 			if follow {
 				info, err = c.destSystem.Stat(destAbsPath)
 			} else {
@@ -735,7 +736,7 @@ func (c *Config) destAbsPathInfos(sourceState *chezmoi.SourceState, args []strin
 	return destAbsPathInfos, nil
 }
 
-func (c *Config) diffFile(path chezmoi.RelPath, fromData []byte, fromMode os.FileMode, toData []byte, toMode os.FileMode) error {
+func (c *Config) diffFile(path chezmoi.RelPath, fromData []byte, fromMode fs.FileMode, toData []byte, toMode fs.FileMode) error {
 	var sb strings.Builder
 	unifiedEncoder := diff.NewUnifiedEncoder(&sb, diff.DefaultContextLines)
 	color, err := c.Color.Value()
@@ -806,7 +807,7 @@ func (c *Config) doPurge(purgeOptions *purgeOptions) error {
 	// Remove all paths that exist.
 	for _, absPath := range absPaths {
 		switch _, err := c.destSystem.Stat(absPath); {
-		case os.IsNotExist(err):
+		case errors.Is(err, fs.ErrNotExist):
 			continue
 		case err != nil:
 			return err
@@ -827,7 +828,7 @@ func (c *Config) doPurge(purgeOptions *purgeOptions) error {
 		}
 
 		switch err := c.destSystem.RemoveAll(absPath); {
-		case os.IsPermission(err):
+		case errors.Is(err, fs.ErrPermission):
 			continue
 		case err != nil:
 			return err
@@ -887,7 +888,7 @@ func (c *Config) findConfigTemplate() (chezmoi.RelPath, string, []byte, error) {
 		filename := chezmoi.RelPath(chezmoi.Prefix + "." + ext + chezmoi.TemplateSuffix)
 		contents, err := c.baseSystem.ReadFile(c.SourceDirAbsPath.Join(filename))
 		switch {
-		case os.IsNotExist(err):
+		case errors.Is(err, fs.ErrNotExist):
 			continue
 		case err != nil:
 			return "", "", nil, err
@@ -1063,7 +1064,7 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 	if boolAnnotation(cmd, modifiesConfigFile) {
 		// Warn the user of any errors reading the config file.
 		v := viper.New()
-		v.SetFs(vfsafero.NewAferoFS(c.fs))
+		v.SetFs(afero.FromIOFS{FS: c.fileSystem})
 		v.SetConfigFile(string(c.configFileAbsPath))
 		err := v.ReadInConfig()
 		if err == nil {
@@ -1139,7 +1140,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		zerolog.SetGlobalLevel(zerolog.Disabled)
 	}
 
-	c.baseSystem = chezmoi.NewRealSystem(c.fs)
+	c.baseSystem = chezmoi.NewRealSystem(c.fileSystem)
 	if c.debug {
 		c.baseSystem = chezmoi.NewDebugSystem(c.baseSystem)
 	}
@@ -1274,7 +1275,7 @@ func (c *Config) persistentStateFile() (chezmoi.AbsPath, error) {
 			return persistentStateFile, nil
 		}
 	}
-	defaultConfigFileAbsPath, err := c.defaultConfigFile(c.fs, c.bds)
+	defaultConfigFileAbsPath, err := c.defaultConfigFile(c.fileSystem, c.bds)
 	if err != nil {
 		return "", err
 	}
@@ -1298,9 +1299,9 @@ func (c *Config) promptChoice(prompt string, choices []string) (string, error) {
 func (c *Config) readConfig() error {
 	v := viper.New()
 	v.SetConfigFile(string(c.configFileAbsPath))
-	v.SetFs(vfsafero.NewAferoFS(c.fs))
+	v.SetFs(afero.FromIOFS{FS: c.fileSystem})
 	switch err := v.ReadInConfig(); {
-	case os.IsNotExist(err):
+	case errors.Is(err, fs.ErrNotExist):
 		return nil
 	case err != nil:
 		return err

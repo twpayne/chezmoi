@@ -1,6 +1,8 @@
 package chezmoi
 
 import (
+	"errors"
+	"io/fs"
 	"os"
 	"time"
 
@@ -29,7 +31,7 @@ type BoltPersistentState struct {
 func NewBoltPersistentState(system System, path AbsPath, mode BoltPersistentStateMode) (*BoltPersistentState, error) {
 	empty := false
 	switch _, err := system.Stat(path); {
-	case os.IsNotExist(err):
+	case errors.Is(err, fs.ErrNotExist):
 		// We need to simulate an empty persistent state because Bolt's
 		// read-only mode is only supported for databases that already exist.
 		//
@@ -42,7 +44,7 @@ func NewBoltPersistentState(system System, path AbsPath, mode BoltPersistentStat
 	}
 
 	options := bbolt.Options{
-		OpenFile: func(name string, flag int, perm os.FileMode) (*os.File, error) {
+		OpenFile: func(name string, flag int, perm fs.FileMode) (*os.File, error) {
 			rawPath, err := system.RawPath(AbsPath(name))
 			if err != nil {
 				return nil, err

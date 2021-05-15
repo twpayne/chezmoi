@@ -80,7 +80,8 @@ linters-settings:
   forbidigo:
     forbid:
     - ^fmt\.Print.*$
-    - ^ioutil\.
+    - ^ioutil\..*$
+    - ^os\.(DirEntry|FileInfo|FileMode|Is.*|Mode.*)$
   gofumpt:
     extra-rules: true
   goimports:

@@ -3,7 +3,9 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"errors"
 	"fmt"
+	"io/fs"
 	"os"
 	"path"
 	"path/filepath"
@@ -15,8 +17,8 @@ import (
 	"time"
 
 	"github.com/rogpeppe/go-internal/testscript"
-	"github.com/twpayne/go-vfs/v2"
-	"github.com/twpayne/go-vfs/v2/vfst"
+	"github.com/twpayne/go-vfs/v3"
+	"github.com/twpayne/go-vfs/v3/vfst"
 
 	"github.com/twpayne/chezmoi/v2/cmd"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
@@ -69,7 +71,7 @@ func TestScript(t *testing.T) {
 			}
 			if m := umaskConditionRx.FindStringSubmatch(cond); m != nil {
 				umask, _ := strconv.ParseInt(m[1], 8, 64)
-				return chezmoitest.Umask == os.FileMode(umask), nil
+				return chezmoitest.Umask == fs.FileMode(umask), nil
 			}
 			return false, fmt.Errorf("%s: unknown condition", cond)
 		},
@@ -122,7 +124,7 @@ func cmdCmpMod(ts *testscript.TestScript, neg bool, args []string) {
 		ts.Fatalf("usage: cmpmod mode path")
 	}
 	mode64, err := strconv.ParseUint(args[0], 8, 32)
-	if err != nil || os.FileMode(mode64).Perm() != os.FileMode(mode64) {
+	if err != nil || fs.FileMode(mode64).Perm() != fs.FileMode(mode64) {
 		ts.Fatalf("invalid mode: %s", args[0])
 	}
 	if runtime.GOOS == "windows" {
@@ -132,12 +134,12 @@ func cmdCmpMod(ts *testscript.TestScript, neg bool, args []string) {
 	if err != nil {
 		ts.Fatalf("%s: %v", args[1], err)
 	}
-	equal := info.Mode().Perm() == os.FileMode(mode64)&^chezmoitest.Umask
+	equal := info.Mode().Perm() == fs.FileMode(mode64)&^chezmoitest.Umask
 	if neg && equal {
 		ts.Fatalf("%s unexpectedly has mode %03o", args[1], info.Mode().Perm())
 	}
 	if !neg && !equal {
-		ts.Fatalf("%s has mode %03o, expected %03o", args[1], info.Mode().Perm(), os.FileMode(mode64)&^chezmoitest.Umask)
+		ts.Fatalf("%s has mode %03o, expected %03o", args[1], info.Mode().Perm(), fs.FileMode(mode64)&^chezmoitest.Umask)
 	}
 }
 
@@ -164,14 +166,14 @@ func cmdMkFile(ts *testscript.TestScript, neg bool, args []string) {
 	if neg {
 		ts.Fatalf("unsupported: ! mkfile")
 	}
-	perm := os.FileMode(0o666)
+	perm := fs.FileMode(0o666)
 	if len(args) >= 1 && strings.HasPrefix(args[0], "-perm=") {
 		permStr := strings.TrimPrefix(args[0], "-perm=")
 		permUint32, err := strconv.ParseUint(permStr, 8, 32)
 		if err != nil {
 			ts.Fatalf("%s: bad permissions", permStr)
 		}
-		perm = os.FileMode(permUint32)
+		perm = fs.FileMode(permUint32)
 		args = args[1:]
 	}
 	for _, arg := range args {
@@ -180,7 +182,7 @@ func cmdMkFile(ts *testscript.TestScript, neg bool, args []string) {
 		switch {
 		case err == nil:
 			ts.Fatalf("%s: already exists", arg)
-		case !os.IsNotExist(err):
+		case !errors.Is(err, fs.ErrNotExist):
 			ts.Fatalf("%s: %v", arg, err)
 		}
 		if err := os.WriteFile(filename, nil, perm); err != nil {

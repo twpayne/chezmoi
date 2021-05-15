@@ -2,7 +2,7 @@ package chezmoi
 
 import (
 	"fmt"
-	"os"
+	"io/fs"
 	"runtime"
 	"sort"
 	"testing"
@@ -16,15 +16,15 @@ func TestEntryStateEquivalent(t *testing.T) {
 	entryStates := map[string]*EntryState{
 		"dir1": {
 			Type: EntryStateTypeDir,
-			Mode: os.ModeDir | 0o777,
+			Mode: fs.ModeDir | 0o777,
 		},
 		"dir1_copy": {
 			Type: EntryStateTypeDir,
-			Mode: os.ModeDir | 0o777,
+			Mode: fs.ModeDir | 0o777,
 		},
 		"dir_private": {
 			Type: EntryStateTypeDir,
-			Mode: os.ModeDir | 0o700,
+			Mode: fs.ModeDir | 0o700,
 		},
 		"file1": {
 			Type:           EntryStateTypeFile,

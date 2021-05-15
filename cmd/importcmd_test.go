@@ -8,8 +8,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/twpayne/go-vfs/v2"
-	"github.com/twpayne/go-vfs/v2/vfst"
+	"github.com/twpayne/go-vfs/v3"
+	"github.com/twpayne/go-vfs/v3/vfst"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
@@ -154,13 +154,13 @@ func TestImportCmd(t *testing.T) {
 		t.Run(strings.Join(tc.args, "_"), func(t *testing.T) {
 			chezmoitest.WithTestFS(t, map[string]interface{}{
 				"/home/user": &vfst.Dir{Perm: 0o777},
-			}, func(fs vfs.FS) {
+			}, func(fileSystem vfs.FS) {
 				if tc.extraRoot != nil {
-					require.NoError(t, vfst.NewBuilder().Build(fs, tc.extraRoot))
+					require.NoError(t, vfst.NewBuilder().Build(fileSystem, tc.extraRoot))
 				}
-				c := newTestConfig(t, fs, withStdin(bytes.NewReader(b.Bytes())))
+				c := newTestConfig(t, fileSystem, withStdin(bytes.NewReader(b.Bytes())))
 				require.NoError(t, c.execute(append([]string{"import"}, tc.args...)))
-				vfst.RunTests(t, fs, "", tc.tests...)
+				vfst.RunTests(t, fileSystem, "", tc.tests...)
 			})
 		})
 	}

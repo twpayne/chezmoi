@@ -25,7 +25,7 @@ import (
 	"github.com/google/go-github/v35/github"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
-	vfs "github.com/twpayne/go-vfs/v2"
+	vfs "github.com/twpayne/go-vfs/v3"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
@@ -113,7 +113,7 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 	executableAbsPath := chezmoi.AbsPath(executable)
 	method := c.upgrade.method
 	if method == "" {
-		method, err = getMethod(c.fs, executableAbsPath)
+		method, err = getMethod(c.fileSystem, executableAbsPath)
 		if err != nil {
 			return err
 		}
@@ -306,7 +306,7 @@ func (c *Config) upgradePackage(ctx context.Context, rr *github.RepositoryReleas
 		return c.run("", "brew", []string{"upgrade", c.upgrade.repo})
 	case "linux":
 		// Determine the package type and architecture.
-		packageType, err := getPackageType(c.fs)
+		packageType, err := getPackageType(c.fileSystem)
 		if err != nil {
 			return err
 		}
@@ -404,14 +404,14 @@ func (c *Config) verifyChecksum(ctx context.Context, rr *github.RepositoryReleas
 
 // getMethod attempts to determine the method by which chezmoi can be upgraded
 // by looking at how it was installed.
-func getMethod(fs vfs.Stater, executableAbsPath chezmoi.AbsPath) (string, error) {
+func getMethod(fileSystem vfs.Stater, executableAbsPath chezmoi.AbsPath) (string, error) {
 	// If the executable is in the user's home directory, then always use
 	// replace-executable.
 	userHomeDir, err := os.UserHomeDir()
 	if err != nil {
 		return "", err
 	}
-	if executableInUserHomeDir, err := vfs.Contains(fs, string(executableAbsPath), userHomeDir); err != nil {
+	if executableInUserHomeDir, err := vfs.Contains(fileSystem, string(executableAbsPath), userHomeDir); err != nil {
 		return "", err
 	} else if executableInUserHomeDir {
 		return methodReplaceExecutable, nil
@@ -419,7 +419,7 @@ func getMethod(fs vfs.Stater, executableAbsPath chezmoi.AbsPath) (string, error)
 
 	// If the executable is in the system's temporary directory, then always use
 	// replace-executable.
-	if executableIsInTempDir, err := vfs.Contains(fs, string(executableAbsPath), os.TempDir()); err != nil {
+	if executableIsInTempDir, err := vfs.Contains(fileSystem, string(executableAbsPath), os.TempDir()); err != nil {
 		return "", err
 	} else if executableIsInTempDir {
 		return methodReplaceExecutable, nil
@@ -431,11 +431,11 @@ func getMethod(fs vfs.Stater, executableAbsPath chezmoi.AbsPath) (string, error)
 	case "freebsd":
 		return methodReplaceExecutable, nil
 	case "linux":
-		if ok, _ := vfs.Contains(fs, string(executableAbsPath), "/snap"); ok {
+		if ok, _ := vfs.Contains(fileSystem, string(executableAbsPath), "/snap"); ok {
 			return methodSnapRefresh, nil
 		}
 
-		info, err := fs.Stat(string(executableAbsPath))
+		info, err := fileSystem.Stat(string(executableAbsPath))
 		if err != nil {
 			return "", err
 		}
@@ -463,8 +463,8 @@ func getMethod(fs vfs.Stater, executableAbsPath chezmoi.AbsPath) (string, error)
 	}
 }
 
-func getPackageType(fs vfs.FS) (string, error) {
-	osRelease, err := chezmoi.OSRelease(fs)
+func getPackageType(fileSystem vfs.FS) (string, error) {
+	osRelease, err := chezmoi.OSRelease(fileSystem)
 	if err != nil {
 		return packageTypeNone, err
 	}

@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/twpayne/go-vfs/v2"
+	"github.com/twpayne/go-vfs/v3"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
@@ -42,12 +42,12 @@ func TestDataCmd(t *testing.T) {
 		},
 	} {
 		t.Run(tc.format.Name(), func(t *testing.T) {
-			chezmoitest.WithTestFS(t, tc.root, func(fs vfs.FS) {
+			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
 				args := []string{
 					"data",
 					"--format", tc.format.Name(),
 				}
-				c := newTestConfig(t, fs)
+				c := newTestConfig(t, fileSystem)
 				var sb strings.Builder
 				c.stdout = &sb
 				require.NoError(t, c.execute(args))

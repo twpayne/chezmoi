@@ -3,6 +3,7 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"io/fs"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -328,7 +329,7 @@ func (c *fileCheck) Run() (checkResult, string) {
 
 	_, err := os.ReadFile(c.filename)
 	switch {
-	case os.IsNotExist(err):
+	case errors.Is(err, fs.ErrNotExist):
 		return c.ifNotExist, fmt.Sprintf("%s does not exist", c.filename)
 	case err != nil:
 		return checkError, fmt.Sprintf("%s: %v", c.filename, err)
@@ -352,7 +353,7 @@ func (c *suspiciousEntriesCheck) Name() string {
 func (c *suspiciousEntriesCheck) Run() (checkResult, string) {
 	// FIXME check that config file templates are in root
 	var suspiciousEntries []string
-	if err := filepath.Walk(c.dirname, func(path string, info os.FileInfo, err error) error {
+	if err := filepath.Walk(c.dirname, func(path string, info fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}

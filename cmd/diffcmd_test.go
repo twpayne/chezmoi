@@ -6,8 +6,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/twpayne/go-vfs/v2"
-	"github.com/twpayne/go-vfs/v2/vfst"
+	"github.com/twpayne/go-vfs/v3"
+	"github.com/twpayne/go-vfs/v3/vfst"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
@@ -91,12 +91,12 @@ func TestDiffCmd(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, map[string]interface{}{
 				"/home/user": &vfst.Dir{Perm: 0o777 &^ chezmoitest.Umask},
-			}, func(fs vfs.FS) {
+			}, func(fileSystem vfs.FS) {
 				if tc.extraRoot != nil {
-					require.NoError(t, vfst.NewBuilder().Build(fs, tc.extraRoot))
+					require.NoError(t, vfst.NewBuilder().Build(fileSystem, tc.extraRoot))
 				}
 				var stdout strings.Builder
-				require.NoError(t, newTestConfig(t, fs, withStdout(&stdout)).execute(append([]string{"diff"}, tc.args...)))
+				require.NoError(t, newTestConfig(t, fileSystem, withStdout(&stdout)).execute(append([]string{"diff"}, tc.args...)))
 				assert.Equal(t, tc.stdoutStr, stdout.String())
 			})
 		})

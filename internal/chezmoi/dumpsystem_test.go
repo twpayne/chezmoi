@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	vfs "github.com/twpayne/go-vfs/v2"
+	vfs "github.com/twpayne/go-vfs/v3"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
@@ -28,8 +28,8 @@ func TestDumpSystem(t *testing.T) {
 			"run_script":      "# contents of script\n",
 			"symlink_symlink": ".dir/subdir/file\n",
 		},
-	}, func(fs vfs.FS) {
-		system := NewRealSystem(fs)
+	}, func(fileSystem vfs.FS) {
+		system := NewRealSystem(fileSystem)
 		s := NewSourceState(
 			WithSourceDir("/home/user/.local/share/chezmoi"),
 			WithSystem(system),

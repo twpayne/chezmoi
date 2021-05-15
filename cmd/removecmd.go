@@ -1,8 +1,9 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
-	"os"
+	"io/fs"
 
 	"github.com/spf13/cobra"
 
@@ -53,10 +54,10 @@ func (c *Config) runRemoveCmd(cmd *cobra.Command, args []string, sourceState *ch
 				return nil
 			}
 		}
-		if err := c.destSystem.RemoveAll(destAbsPath); err != nil && !os.IsNotExist(err) {
+		if err := c.destSystem.RemoveAll(destAbsPath); err != nil && !errors.Is(err, fs.ErrNotExist) {
 			return err
 		}
-		if err := c.sourceSystem.RemoveAll(sourceAbsPath); err != nil && !os.IsNotExist(err) {
+		if err := c.sourceSystem.RemoveAll(sourceAbsPath); err != nil && !errors.Is(err, fs.ErrNotExist) {
 			return err
 		}
 	}

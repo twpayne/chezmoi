@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	vfs "github.com/twpayne/go-vfs/v2"
+	vfs "github.com/twpayne/go-vfs/v3"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
@@ -74,8 +74,8 @@ func TestFQDNHostname(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			chezmoitest.WithTestFS(t, tc.root, func(fs vfs.FS) {
-				assert.Equal(t, tc.expected, FQDNHostname(fs))
+			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
+				assert.Equal(t, tc.expected, FQDNHostname(fileSystem))
 			})
 		})
 	}

@@ -8,7 +8,7 @@ require (
 	github.com/alecthomas/chroma v0.9.1 // indirect
 	github.com/alecthomas/colour v0.1.0 // indirect
 	github.com/alecthomas/repr v0.0.0-20201120212035-bb82daffcca2 // indirect
-	github.com/bmatcuk/doublestar/v3 v3.0.0
+	github.com/bmatcuk/doublestar/v4 v4.0.1
 	github.com/charmbracelet/glamour v0.3.0
 	github.com/coreos/go-semver v0.3.0
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
@@ -35,16 +35,15 @@ require (
 	github.com/rs/zerolog v1.21.0
 	github.com/sergi/go-diff v1.1.0
 	github.com/smartystreets/assertions v1.2.0 // indirect
-	github.com/spf13/afero v1.6.0 // indirect
+	github.com/spf13/afero v1.6.0
 	github.com/spf13/cobra v1.1.3
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/objx v0.3.0 // indirect
 	github.com/stretchr/testify v1.7.0
 	github.com/twpayne/go-shell v0.3.0
-	github.com/twpayne/go-vfs/v2 v2.0.0
-	github.com/twpayne/go-vfsafero/v2 v2.0.0
-	github.com/twpayne/go-xdg/v4 v4.0.0
+	github.com/twpayne/go-vfs/v3 v3.0.0
+	github.com/twpayne/go-xdg/v6 v6.0.0-20210516085827-5a2e03f8263a
 	github.com/yuin/goldmark v1.3.5 // indirect
 	github.com/zalando/go-keyring v0.1.1
 	go.etcd.io/bbolt v1.3.5
