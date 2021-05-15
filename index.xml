@@ -89,7 +89,7 @@ sh -c &amp;quot;$(wget -qO- git.io/chezmoi)&amp;quot;  If you already have a dot
       <description>Media #  Recommended article: Fedora Magazine: Take back your dotfiles with Chezmoi
 Recommended video: chezmoi: manage your dotfiles across multiple, diverse machines, securely
 Recommended podcast: FLOSS weekly episode 556: chezmoi
-   Date Version Format Link     2021-02-17 1.8.11 Text (JP) chezmoi で dotfiles を手軽に柔軟にセキュアに管理する   2021-02-06 1.8.10 Video chezmoi: manage your dotfiles across multiple, diverse machines, securely   2021-01-29 1.8.10 Text (CN) [归档] 用 Chezmoi 管理配置文件   2021-01-12 1.</description>
+   Date Version Format Link     2021-05-12 2.0.12 Text My Dotfiles Story: A Journey to Chezmoi   2021-04-08 2.0.9 Text (FR) Bienvenue chez moi   2021-02-17 1.8.11 Text (JP) chezmoi で dotfiles を手軽に柔軟にセキュアに管理する   2021-02-06 1.</description>
     </item>
     
     <item>

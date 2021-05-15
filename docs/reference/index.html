@@ -23,7 +23,7 @@
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.e935e20bd0d469378cb482f0958edf258c731a4f895dccd55799c6fbc8043f23.css" integrity="sha256-6TXiC9DUaTeMtILwlY7fJYxzGk&#43;JXczVV5nG&#43;8gEPyM=">
-<script defer src="/en.search.min.2f7ef13a8f173dfd74a9df8859909e6a4a467c8ff8c1634d87d6d6d3d3059383.js" integrity="sha256-L37xOo8XPf10qd&#43;IWZCeakpGfI/4wWNNh9bW09MFk4M="></script>
+<script defer src="/en.search.min.6480df7a510affb851acd48f7c418ac188db3222f39af79e817c021d72d2ed7a.js" integrity="sha256-ZIDfelEK/7hRrNSPfEGKwYjbMiLzmveegXwCHXLS7Xo="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -204,6 +204,7 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#merge-targets"><code>merge</code> <em>targets</em></a></li>
         <li><a href="#purge"><code>purge</code></a></li>
         <li><a href="#remove-targets"><code>remove</code> <em>targets</em></a></li>
+        <li><a href="#re-add"><code>re-add</code></a></li>
         <li><a href="#rm-targets"><code>rm</code> <em>targets</em></a></li>
         <li><a href="#secret"><code>secret</code></a></li>
         <li><a href="#source-path-targets"><code>source-path</code> [<em>targets</em>]</a></li>
@@ -1779,6 +1780,18 @@ chezmoi purge --force
   <a class="anchor" href="#-f---force-2">#</a>
 </h4>
 <p>Remove without prompting.</p>
+<h3 id="re-add">
+  <code>re-add</code>
+  <a class="anchor" href="#re-add">#</a>
+</h3>
+<p>Re-add all modified files in the target state. chezmoi will not overwrite
+templates, and all entries that are not files are ignored.</p>
+<h4 id="re-add-examples">
+  <code>re-add</code> examples
+  <a class="anchor" href="#re-add-examples">#</a>
+</h4>
+<pre><code>chezmoi re-add
+</code></pre>
 <h3 id="rm-targets">
   <code>rm</code> <em>targets</em>
   <a class="anchor" href="#rm-targets">#</a>
@@ -2689,6 +2702,7 @@ times with the same <em>key</em> will only invoke <code>vault</code> once.</p>
         <li><a href="#merge-targets"><code>merge</code> <em>targets</em></a></li>
         <li><a href="#purge"><code>purge</code></a></li>
         <li><a href="#remove-targets"><code>remove</code> <em>targets</em></a></li>
+        <li><a href="#re-add"><code>re-add</code></a></li>
         <li><a href="#rm-targets"><code>rm</code> <em>targets</em></a></li>
         <li><a href="#secret"><code>secret</code></a></li>
         <li><a href="#source-path-targets"><code>source-path</code> [<em>targets</em>]</a></li>
