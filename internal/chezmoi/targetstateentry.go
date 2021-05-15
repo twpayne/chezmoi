@@ -153,6 +153,11 @@ func (t *TargetStateFile) Evaluate() error {
 	return err
 }
 
+// Perm returns t's perm.
+func (t *TargetStateFile) Perm(umask os.FileMode) os.FileMode {
+	return t.perm &^ umask
+}
+
 // SkipApply implements TargetState.SkipApply.
 func (t *TargetStateFile) SkipApply(persistentState PersistentState) (bool, error) {
 	return false, nil

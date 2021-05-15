@@ -68,6 +68,7 @@ Manage your dotfiles securely across multiple machines.
   * [`merge` *targets*](#merge-targets)
   * [`purge`](#purge)
   * [`remove` *targets*](#remove-targets)
+  * [`re-add`](#re-add)
   * [`rm` *targets*](#rm-targets)
   * [`secret`](#secret)
   * [`source-path` [*targets*]](#source-path-targets)
@@ -1030,6 +1031,15 @@ Remove *targets* from both the source state and the destination directory.
 #### `-f`, `--force`
 
 Remove without prompting.
+
+### `re-add`
+
+Re-add all modified files in the target state. chezmoi will not overwrite
+templates, and all entries that are not files are ignored.
+
+#### `re-add` examples
+
+    chezmoi re-add
 
 ### `rm` *targets*
 

@@ -79,24 +79,24 @@ func NewActualStateEntry(system System, absPath AbsPath, info os.FileInfo, err e
 	}
 }
 
-// EntryState returns d's entry state.
+// EntryState returns s's entry state.
 func (s *ActualStateAbsent) EntryState() (*EntryState, error) {
 	return &EntryState{
 		Type: EntryStateTypeRemove,
 	}, nil
 }
 
-// Path returns d's path.
+// Path returns s's path.
 func (s *ActualStateAbsent) Path() AbsPath {
 	return s.absPath
 }
 
-// Remove removes d.
+// Remove removes s.
 func (s *ActualStateAbsent) Remove(system System) error {
 	return nil
 }
 
-// EntryState returns d's entry state.
+// EntryState returns s's entry state.
 func (s *ActualStateDir) EntryState() (*EntryState, error) {
 	return &EntryState{
 		Type: EntryStateTypeDir,
@@ -104,17 +104,17 @@ func (s *ActualStateDir) EntryState() (*EntryState, error) {
 	}, nil
 }
 
-// Path returns d's path.
+// Path returns s's path.
 func (s *ActualStateDir) Path() AbsPath {
 	return s.absPath
 }
 
-// Remove removes d.
+// Remove removes s.
 func (s *ActualStateDir) Remove(system System) error {
 	return system.RemoveAll(s.absPath)
 }
 
-// EntryState returns d's entry state.
+// EntryState returns s's entry state.
 func (s *ActualStateFile) EntryState() (*EntryState, error) {
 	contents, err := s.Contents()
 	if err != nil {
@@ -132,17 +132,22 @@ func (s *ActualStateFile) EntryState() (*EntryState, error) {
 	}, nil
 }
 
-// Path returns d's path.
+// Path returns s's path.
 func (s *ActualStateFile) Path() AbsPath {
 	return s.absPath
 }
 
-// Remove removes d.
+// Perm returns s's perm.
+func (s *ActualStateFile) Perm() os.FileMode {
+	return s.perm
+}
+
+// Remove removes s.
 func (s *ActualStateFile) Remove(system System) error {
 	return system.RemoveAll(s.absPath)
 }
 
-// EntryState returns d's entry state.
+// EntryState returns s's entry state.
 func (s *ActualStateSymlink) EntryState() (*EntryState, error) {
 	linkname, err := s.Linkname()
 	if err != nil {
@@ -159,12 +164,12 @@ func (s *ActualStateSymlink) EntryState() (*EntryState, error) {
 	}, nil
 }
 
-// Path returns d's path.
+// Path returns s's path.
 func (s *ActualStateSymlink) Path() AbsPath {
 	return s.absPath
 }
 
-// Remove removes d.
+// Remove removes s.
 func (s *ActualStateSymlink) Remove(system System) error {
 	return system.RemoveAll(s.absPath)
 }
