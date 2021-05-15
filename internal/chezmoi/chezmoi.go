@@ -73,7 +73,7 @@ var modeTypeNames = map[os.FileMode]string{
 
 type errDuplicateTarget struct {
 	targetRelPath  RelPath
-	sourceRelPaths SourceRelPaths
+	sourceRelPaths []SourceRelPath
 }
 
 func (e *errDuplicateTarget) Error() string {

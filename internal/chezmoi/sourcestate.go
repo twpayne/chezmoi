@@ -137,7 +137,7 @@ func (s *SourceState) Add(sourceSystem System, persistentState PersistentState, 
 	type update struct {
 		destAbsPath    AbsPath
 		entryState     *EntryState
-		sourceRelPaths SourceRelPaths
+		sourceRelPaths []SourceRelPath
 	}
 
 	destAbsPaths := make([]AbsPath, 0, len(destAbsPathInfos))
@@ -192,7 +192,7 @@ DESTABSPATH:
 		update := update{
 			destAbsPath:    destAbsPath,
 			entryState:     entryState,
-			sourceRelPaths: SourceRelPaths{sourceEntryRelPath},
+			sourceRelPaths: []SourceRelPath{sourceEntryRelPath},
 		}
 
 		if oldSourceStateEntry, ok := s.entries[targetRelPath]; ok {
@@ -699,11 +699,13 @@ func (s *SourceState) Read() error {
 		if len(sourceStateEntries) == 1 {
 			continue
 		}
-		sourceRelPaths := make(SourceRelPaths, 0, len(sourceStateEntries))
+		sourceRelPaths := make([]SourceRelPath, 0, len(sourceStateEntries))
 		for _, sourceStateEntry := range sourceStateEntries {
 			sourceRelPaths = append(sourceRelPaths, sourceStateEntry.SourceRelPath())
 		}
-		sort.Sort(sourceRelPaths)
+		sort.Slice(sourceRelPaths, func(i, j int) bool {
+			return sourceRelPaths[i].relPath < sourceRelPaths[j].relPath
+		})
 		err = multierr.Append(err, &errDuplicateTarget{
 			targetRelPath:  targetRelPath,
 			sourceRelPaths: sourceRelPaths,
