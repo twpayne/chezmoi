@@ -486,14 +486,23 @@ func (s *SourceState) ExecuteTemplateData(name string, data []byte) ([]byte, err
 	if err != nil {
 		return nil, err
 	}
+
 	for name, t := range s.templates {
 		tmpl, err = tmpl.AddParseTree(name, t.Tree)
 		if err != nil {
 			return nil, err
 		}
 	}
+
+	// Temporarily set .chezmoi.sourceFile to the name of the template.
+	templateData := s.TemplateData()
+	if chezmoiTemplateData, ok := templateData["chezmoi"].(map[string]interface{}); ok {
+		chezmoiTemplateData["sourceFile"] = name
+		defer delete(chezmoiTemplateData, "sourceFile")
+	}
+
 	var sb strings.Builder
-	if err = tmpl.ExecuteTemplate(&sb, name, s.TemplateData()); err != nil {
+	if err = tmpl.ExecuteTemplate(&sb, name, templateData); err != nil {
 		return nil, err
 	}
 	return []byte(sb.String()), nil

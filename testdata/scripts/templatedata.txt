@@ -2,6 +2,13 @@
 [!windows] chezmoi execute-template '{{ joinPath .chezmoi.sourceDir ".file" }}'
 [!windows] stdout ${CHEZMOISOURCEDIR@R}/.file
 
+# test that .chezmoi.sourceFile is set
+chezmoi cat $HOME${/}.file
+stdout dot_file.tmpl
+
 # test that .chezmoi.kernel is set on linux
 [linux] chezmoi execute-template '{{ .chezmoi.kernel.ostype }}'
 [linux] stdout Linux
+
+-- home/user/.local/share/chezmoi/dot_file.tmpl --
+{{ .chezmoi.sourceFile }}

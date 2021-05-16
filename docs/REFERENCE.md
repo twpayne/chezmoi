@@ -1215,6 +1215,7 @@ chezmoi provides the following automatically-populated variables:
 | `.chezmoi.os`           | Operating system, e.g. `darwin`, `linux`, etc. as returned by [runtime.GOOS](https://pkg.go.dev/runtime?tab=doc#pkg-constants). |
 | `.chezmoi.osRelease`    | The information from `/etc/os-release`, Linux only, run `chezmoi data` to see its output.                                       |
 | `.chezmoi.sourceDir`    | The source directory.                                                                                                           |
+| `.chezmoi.sourceFile`   | The path of the template relative to the source directory.                                                                      |
 | `.chezmoi.username`     | The username of the user running chezmoi.                                                                                       |
 | `.chezmoi.version`      | The version of chezmoi.                                                                                                         |
 
