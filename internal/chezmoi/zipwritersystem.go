@@ -3,7 +3,7 @@ package chezmoi
 import (
 	"archive/zip"
 	"io"
-	"os"
+	"io/fs"
 	"time"
 )
 
@@ -30,12 +30,12 @@ func (s *ZIPWriterSystem) Close() error {
 }
 
 // Mkdir implements System.Mkdir.
-func (s *ZIPWriterSystem) Mkdir(name AbsPath, perm os.FileMode) error {
+func (s *ZIPWriterSystem) Mkdir(name AbsPath, perm fs.FileMode) error {
 	fh := zip.FileHeader{
 		Name:     string(name),
 		Modified: s.modified,
 	}
-	fh.SetMode(os.ModeDir | perm)
+	fh.SetMode(fs.ModeDir | perm)
 	_, err := s.w.CreateHeader(&fh)
 	return err
 }
@@ -46,7 +46,7 @@ func (s *ZIPWriterSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte
 }
 
 // WriteFile implements System.WriteFile.
-func (s *ZIPWriterSystem) WriteFile(filename AbsPath, data []byte, perm os.FileMode) error {
+func (s *ZIPWriterSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error {
 	fh := zip.FileHeader{
 		Name:               string(filename),
 		Method:             zip.Deflate,
@@ -70,7 +70,7 @@ func (s *ZIPWriterSystem) WriteSymlink(oldname string, newname AbsPath) error {
 		Modified:           s.modified,
 		UncompressedSize64: uint64(len(data)),
 	}
-	fh.SetMode(os.ModeSymlink)
+	fh.SetMode(fs.ModeSymlink)
 	fw, err := s.w.CreateHeader(&fh)
 	if err != nil {
 		return err

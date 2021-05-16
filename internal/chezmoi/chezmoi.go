@@ -5,7 +5,7 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"fmt"
-	"os"
+	"io/fs"
 	"path/filepath"
 	"strings"
 )
@@ -18,7 +18,7 @@ var (
 	Skip = filepath.SkipDir
 
 	// Umask is the process's umask.
-	Umask = os.FileMode(0)
+	Umask = fs.FileMode(0)
 )
 
 // Suffixes and prefixes.
@@ -61,19 +61,19 @@ var knownPrefixedFiles = map[string]bool{
 	versionName:                       true,
 }
 
-var modeTypeNames = map[os.FileMode]string{
+var modeTypeNames = map[fs.FileMode]string{
 	0:                 "file",
-	os.ModeDir:        "dir",
-	os.ModeSymlink:    "symlink",
-	os.ModeNamedPipe:  "named pipe",
-	os.ModeSocket:     "socket",
-	os.ModeDevice:     "device",
-	os.ModeCharDevice: "char device",
+	fs.ModeDir:        "dir",
+	fs.ModeSymlink:    "symlink",
+	fs.ModeNamedPipe:  "named pipe",
+	fs.ModeSocket:     "socket",
+	fs.ModeDevice:     "device",
+	fs.ModeCharDevice: "char device",
 }
 
 type errDuplicateTarget struct {
 	targetRelPath  RelPath
-	sourceRelPaths SourceRelPaths
+	sourceRelPaths []SourceRelPath
 }
 
 func (e *errDuplicateTarget) Error() string {
@@ -104,7 +104,7 @@ func (e *errNotInRelDir) Error() string {
 
 type errUnsupportedFileType struct {
 	absPath AbsPath
-	mode    os.FileMode
+	mode    fs.FileMode
 }
 
 func (e *errUnsupportedFileType) Error() string {
@@ -118,13 +118,13 @@ func SHA256Sum(data []byte) []byte {
 }
 
 // SuspiciousSourceDirEntry returns true if base is a suspicious dir entry.
-func SuspiciousSourceDirEntry(base string, info os.FileInfo) bool {
-	switch info.Mode() & os.ModeType {
+func SuspiciousSourceDirEntry(base string, info fs.FileInfo) bool {
+	switch info.Mode().Type() {
 	case 0:
 		return strings.HasPrefix(base, Prefix) && !knownPrefixedFiles[base]
-	case os.ModeDir:
+	case fs.ModeDir:
 		return strings.HasPrefix(base, Prefix) && base != templatesDirName
-	case os.ModeSymlink:
+	case fs.ModeSymlink:
 		return strings.HasPrefix(base, Prefix)
 	default:
 		return true
@@ -137,11 +137,11 @@ func isEmpty(data []byte) bool {
 	return len(bytes.TrimSpace(data)) == 0
 }
 
-func modeTypeName(mode os.FileMode) string {
-	if name, ok := modeTypeNames[mode&os.ModeType]; ok {
+func modeTypeName(mode fs.FileMode) string {
+	if name, ok := modeTypeNames[mode.Type()]; ok {
 		return name
 	}
-	return fmt.Sprintf("0o%o: unknown type", mode&os.ModeType)
+	return fmt.Sprintf("0o%o: unknown type", mode.Type())
 }
 
 // mustTrimPrefix is like strings.TrimPrefix but panics if s is not prefixed by

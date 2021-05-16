@@ -5,7 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"os"
+	"io/fs"
 	"strings"
 )
 
@@ -13,7 +13,7 @@ import (
 type TARReaderSystem struct {
 	emptySystemMixin
 	noUpdateSystemMixin
-	fileInfos map[AbsPath]os.FileInfo
+	fileInfos map[AbsPath]fs.FileInfo
 	contents  map[AbsPath][]byte
 	linkname  map[AbsPath]string
 }
@@ -27,7 +27,7 @@ type TARReaderSystemOptions struct {
 // NewTARReaderSystem returns a new TARReaderSystem from tarReader.
 func NewTARReaderSystem(tarReader *tar.Reader, options TARReaderSystemOptions) (*TARReaderSystem, error) {
 	s := &TARReaderSystem{
-		fileInfos: make(map[AbsPath]os.FileInfo),
+		fileInfos: make(map[AbsPath]fs.FileInfo),
 		contents:  make(map[AbsPath][]byte),
 		linkname:  make(map[AbsPath]string),
 	}
@@ -72,16 +72,16 @@ FOR:
 	}
 }
 
-// FileInfos returns s's os.FileInfos.
-func (s *TARReaderSystem) FileInfos() map[AbsPath]os.FileInfo {
+// FileInfos returns s's fs.FileInfos.
+func (s *TARReaderSystem) FileInfos() map[AbsPath]fs.FileInfo {
 	return s.fileInfos
 }
 
 // Lstat implements System.Lstat.
-func (s *TARReaderSystem) Lstat(filename AbsPath) (os.FileInfo, error) {
+func (s *TARReaderSystem) Lstat(filename AbsPath) (fs.FileInfo, error) {
 	fileInfo, ok := s.fileInfos[filename]
 	if !ok {
-		return nil, os.ErrNotExist
+		return nil, fs.ErrNotExist
 	}
 	return fileInfo, nil
 }
@@ -92,9 +92,9 @@ func (s *TARReaderSystem) ReadFile(name AbsPath) ([]byte, error) {
 		return contents, nil
 	}
 	if _, ok := s.fileInfos[name]; ok {
-		return nil, os.ErrInvalid
+		return nil, fs.ErrInvalid
 	}
-	return nil, os.ErrNotExist
+	return nil, fs.ErrNotExist
 }
 
 // Readlink implements System.Readlink.
@@ -103,7 +103,7 @@ func (s *TARReaderSystem) Readlink(name AbsPath) (string, error) {
 		return linkname, nil
 	}
 	if _, ok := s.fileInfos[name]; ok {
-		return "", os.ErrInvalid
+		return "", fs.ErrInvalid
 	}
-	return "", os.ErrNotExist
+	return "", fs.ErrNotExist
 }

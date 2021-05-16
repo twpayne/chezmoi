@@ -3,26 +3,27 @@ package chezmoi
 import (
 	"bufio"
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
-	"os"
+	"io/fs"
 	"path/filepath"
 	"strconv"
 	"strings"
 	"unicode"
 
-	"github.com/twpayne/go-vfs/v2"
+	"github.com/twpayne/go-vfs/v3"
 )
 
 // KernelInfo returns the kernel information parsed from /proc/sys/kernel.
-func KernelInfo(fs vfs.FS) (map[string]string, error) {
+func KernelInfo(fileSystem vfs.FS) (map[string]string, error) {
 	const procSysKernel = "/proc/sys/kernel"
 
-	info, err := fs.Stat(procSysKernel)
+	info, err := fileSystem.Stat(procSysKernel)
 	switch {
-	case os.IsNotExist(err):
+	case errors.Is(err, fs.ErrNotExist):
 		return nil, nil
-	case os.IsPermission(err):
+	case errors.Is(err, fs.ErrPermission):
 		return nil, nil
 	case err != nil:
 		return nil, err
@@ -36,11 +37,11 @@ func KernelInfo(fs vfs.FS) (map[string]string, error) {
 		"ostype",
 		"version",
 	} {
-		data, err := fs.ReadFile(filepath.Join(procSysKernel, filename))
+		data, err := fileSystem.ReadFile(filepath.Join(procSysKernel, filename))
 		switch {
-		case os.IsNotExist(err):
+		case errors.Is(err, fs.ErrNotExist):
 			continue
-		case os.IsPermission(err):
+		case errors.Is(err, fs.ErrPermission):
 			continue
 		case err != nil:
 			return nil, err
@@ -52,13 +53,13 @@ func KernelInfo(fs vfs.FS) (map[string]string, error) {
 
 // OSRelease returns the operating system identification data as defined by the
 // os-release specification.
-func OSRelease(fs vfs.FS) (map[string]string, error) {
+func OSRelease(fileSystem vfs.FS) (map[string]string, error) {
 	for _, filename := range []string{
 		"/usr/lib/os-release",
 		"/etc/os-release",
 	} {
-		data, err := fs.ReadFile(filename)
-		if os.IsNotExist(err) {
+		data, err := fileSystem.ReadFile(filename)
+		if errors.Is(err, fs.ErrNotExist) {
 			continue
 		} else if err != nil {
 			return nil, err
@@ -69,7 +70,7 @@ func OSRelease(fs vfs.FS) (map[string]string, error) {
 		}
 		return m, nil
 	}
-	return nil, os.ErrNotExist
+	return nil, fs.ErrNotExist
 }
 
 // maybeUnquote removes quotation marks around s.

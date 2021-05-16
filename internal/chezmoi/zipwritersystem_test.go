@@ -4,13 +4,13 @@ import (
 	"archive/zip"
 	"bytes"
 	"io"
-	"os"
+	"io/fs"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	vfs "github.com/twpayne/go-vfs/v2"
+	vfs "github.com/twpayne/go-vfs/v3"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
@@ -33,8 +33,8 @@ func TestZIPWriterSystem(t *testing.T) {
 			"run_script":      "# contents of script\n",
 			"symlink_symlink": ".dir/subdir/file\n",
 		},
-	}, func(fs vfs.FS) {
-		system := NewRealSystem(fs)
+	}, func(fileSystem vfs.FS) {
+		system := NewRealSystem(fileSystem)
 		s := NewSourceState(
 			WithSourceDir("/home/user/.local/share/chezmoi"),
 			WithSystem(system),
@@ -55,12 +55,12 @@ func TestZIPWriterSystem(t *testing.T) {
 		expectedFiles := []struct {
 			name     string
 			method   uint16
-			mode     os.FileMode
+			mode     fs.FileMode
 			contents []byte
 		}{
 			{
 				name: ".dir",
-				mode: (os.ModeDir | 0o777) &^ chezmoitest.Umask,
+				mode: (fs.ModeDir | 0o777) &^ chezmoitest.Umask,
 			},
 			{
 				name:     ".dir/file",
@@ -76,7 +76,7 @@ func TestZIPWriterSystem(t *testing.T) {
 			},
 			{
 				name:     "symlink",
-				mode:     os.ModeSymlink,
+				mode:     fs.ModeSymlink,
 				contents: []byte(".dir/subdir/file"),
 			},
 		}

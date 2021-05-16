@@ -1,8 +1,9 @@
 package cmd
 
 import (
+	"errors"
 	"fmt"
-	"os"
+	"io/fs"
 
 	"github.com/spf13/cobra"
 
@@ -166,7 +167,7 @@ func (c *Config) runStateResetCmd(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	switch _, err := c.destSystem.Stat(persistentStateFileAbsPath); {
-	case os.IsNotExist(err):
+	case errors.Is(err, fs.ErrNotExist):
 		return nil
 	case err != nil:
 		return err

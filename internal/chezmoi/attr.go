@@ -1,7 +1,7 @@
 package chezmoi
 
 import (
-	"os"
+	"io/fs"
 	"strings"
 )
 
@@ -82,8 +82,8 @@ func (da DirAttr) SourceName() string {
 }
 
 // perm returns da's file mode.
-func (da DirAttr) perm() os.FileMode {
-	perm := os.FileMode(0o777)
+func (da DirAttr) perm() fs.FileMode {
+	perm := fs.FileMode(0o777)
 	if da.Private {
 		perm &^= 0o77
 	}
@@ -254,8 +254,8 @@ func (fa FileAttr) SourceName(encryptedSuffix string) string {
 }
 
 // perm returns fa's permissions.
-func (fa FileAttr) perm() os.FileMode {
-	perm := os.FileMode(0o666)
+func (fa FileAttr) perm() fs.FileMode {
+	perm := fs.FileMode(0o666)
 	if fa.Executable {
 		perm |= 0o111
 	}

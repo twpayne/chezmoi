@@ -1,13 +1,15 @@
 package chezmoi
 
 import (
+	"errors"
+	"io/fs"
 	"os"
 	"os/exec"
 	"runtime"
 
-	"github.com/bmatcuk/doublestar/v3"
+	"github.com/bmatcuk/doublestar/v4"
 	"github.com/rs/zerolog/log"
-	vfs "github.com/twpayne/go-vfs/v2"
+	vfs "github.com/twpayne/go-vfs/v3"
 	"go.uber.org/multierr"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
@@ -15,7 +17,7 @@ import (
 
 // Glob implements System.Glob.
 func (s *RealSystem) Glob(pattern string) ([]string, error) {
-	return doublestar.GlobOS(doubleStarOS{FS: s.UnderlyingFS()}, pattern)
+	return doublestar.Glob(s.UnderlyingFS(), pattern)
 }
 
 // IdempotentCmdCombinedOutput implements System.IdempotentCmdCombinedOutput.
@@ -29,23 +31,18 @@ func (s *RealSystem) IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error) {
 }
 
 // Lstat implements System.Lstat.
-func (s *RealSystem) Lstat(filename AbsPath) (os.FileInfo, error) {
-	return s.fs.Lstat(string(filename))
+func (s *RealSystem) Lstat(filename AbsPath) (fs.FileInfo, error) {
+	return s.fileSystem.Lstat(string(filename))
 }
 
 // Mkdir implements System.Mkdir.
-func (s *RealSystem) Mkdir(name AbsPath, perm os.FileMode) error {
-	return s.fs.Mkdir(string(name), perm)
-}
-
-// PathSeparator implements doublestar.OS.PathSeparator.
-func (s *RealSystem) PathSeparator() rune {
-	return '/'
+func (s *RealSystem) Mkdir(name AbsPath, perm fs.FileMode) error {
+	return s.fileSystem.Mkdir(string(name), perm)
 }
 
 // RawPath implements System.RawPath.
 func (s *RealSystem) RawPath(absPath AbsPath) (AbsPath, error) {
-	rawAbsPath, err := s.fs.RawPath(string(absPath))
+	rawAbsPath, err := s.fileSystem.RawPath(string(absPath))
 	if err != nil {
 		return "", err
 	}
@@ -53,23 +50,23 @@ func (s *RealSystem) RawPath(absPath AbsPath) (AbsPath, error) {
 }
 
 // ReadDir implements System.ReadDir.
-func (s *RealSystem) ReadDir(name AbsPath) ([]os.DirEntry, error) {
-	return s.fs.ReadDir(string(name))
+func (s *RealSystem) ReadDir(name AbsPath) ([]fs.DirEntry, error) {
+	return s.fileSystem.ReadDir(string(name))
 }
 
 // ReadFile implements System.ReadFile.
 func (s *RealSystem) ReadFile(name AbsPath) ([]byte, error) {
-	return s.fs.ReadFile(string(name))
+	return s.fileSystem.ReadFile(string(name))
 }
 
 // RemoveAll implements System.RemoveAll.
 func (s *RealSystem) RemoveAll(name AbsPath) error {
-	return s.fs.RemoveAll(string(name))
+	return s.fileSystem.RemoveAll(string(name))
 }
 
 // Rename implements System.Rename.
 func (s *RealSystem) Rename(oldpath, newpath AbsPath) error {
-	return s.fs.Rename(string(oldpath), string(newpath))
+	return s.fileSystem.Rename(string(oldpath), string(newpath))
 }
 
 // RunCmd implements System.RunCmd.
@@ -127,7 +124,7 @@ FOR:
 			}
 			cmd.Dir = string(dirRawAbsPath)
 			break FOR
-		case err == nil || os.IsNotExist(err):
+		case err == nil || errors.Is(err, fs.ErrNotExist):
 			// Either dir does not exist, or it exists and is not a directory.
 			dir = dir.Dir()
 		default:
@@ -141,11 +138,11 @@ FOR:
 }
 
 // Stat implements System.Stat.
-func (s *RealSystem) Stat(name AbsPath) (os.FileInfo, error) {
-	return s.fs.Stat(string(name))
+func (s *RealSystem) Stat(name AbsPath) (fs.FileInfo, error) {
+	return s.fileSystem.Stat(string(name))
 }
 
 // UnderlyingFS implements System.UnderlyingFS.
 func (s *RealSystem) UnderlyingFS() vfs.FS {
-	return s.fs
+	return s.fileSystem
 }

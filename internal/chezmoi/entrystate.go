@@ -2,7 +2,7 @@ package chezmoi
 
 import (
 	"bytes"
-	"os"
+	"io/fs"
 	"runtime"
 )
 
@@ -22,7 +22,7 @@ const (
 // equivalent to EntryStateTypeAbsent.
 type EntryState struct {
 	Type           EntryStateType `json:"type" toml:"type" yaml:"type"`
-	Mode           os.FileMode    `json:"mode,omitempty" toml:"mode,omitempty" yaml:"mode,omitempty"`
+	Mode           fs.FileMode    `json:"mode,omitempty" toml:"mode,omitempty" yaml:"mode,omitempty"`
 	ContentsSHA256 HexBytes       `json:"contentsSHA256,omitempty" toml:"contentsSHA256,omitempty" yaml:"contentsSHA256,omitempty"` //nolint:tagliatelle
 	contents       []byte
 }

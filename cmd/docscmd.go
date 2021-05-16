@@ -48,7 +48,7 @@ func (c *Config) runDocsCmd(cmd *cobra.Command, args []string) error {
 			if err != nil {
 				return err
 			}
-			if fileInfo.Mode()&^os.ModePerm != 0 {
+			if fileInfo.Mode().Type() != 0 {
 				continue
 			}
 			if filename := dirEntry.Name(); re.FindStringIndex(strings.ToLower(filename)) != nil {

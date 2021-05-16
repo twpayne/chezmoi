@@ -1,13 +1,13 @@
 package cmd
 
 import (
-	"os"
+	"io/fs"
 	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/twpayne/go-vfs/v2"
-	"github.com/twpayne/go-vfs/v2/vfst"
+	"github.com/twpayne/go-vfs/v3"
+	"github.com/twpayne/go-vfs/v3/vfst"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
@@ -69,7 +69,7 @@ func TestApplyCmd(t *testing.T) {
 					vfst.TestDoesNotExist,
 				),
 				vfst.TestPath("/home/user/.symlink",
-					vfst.TestModeType(os.ModeSymlink),
+					vfst.TestModeType(fs.ModeSymlink),
 					vfst.TestSymlinkTarget(filepath.FromSlash(".dir/subdir/file")),
 				),
 				vfst.TestPath("/home/user/.template",
@@ -201,12 +201,12 @@ func TestApplyCmd(t *testing.T) {
 						},
 					},
 				},
-			}, func(fs vfs.FS) {
+			}, func(fileSystem vfs.FS) {
 				if tc.extraRoot != nil {
-					require.NoError(t, vfst.NewBuilder().Build(fs, tc.extraRoot))
+					require.NoError(t, vfst.NewBuilder().Build(fileSystem, tc.extraRoot))
 				}
-				require.NoError(t, newTestConfig(t, fs).execute(append([]string{"apply"}, tc.args...)))
-				vfst.RunTests(t, fs, "", tc.tests)
+				require.NoError(t, newTestConfig(t, fileSystem).execute(append([]string{"apply"}, tc.args...)))
+				vfst.RunTests(t, fileSystem, "", tc.tests)
 			})
 		})
 	}

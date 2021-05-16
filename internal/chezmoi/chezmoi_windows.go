@@ -2,16 +2,16 @@ package chezmoi
 
 import (
 	"errors"
-	"os"
+	"io/fs"
 	"unicode/utf16"
 
-	vfs "github.com/twpayne/go-vfs/v2"
+	vfs "github.com/twpayne/go-vfs/v3"
 	"golang.org/x/sys/windows"
 )
 
 // FQDNHostname returns the machine's fully-qualified DNS domain name, if
 // available.
-func FQDNHostname(fs vfs.FS) string {
+func FQDNHostname(fileSystem vfs.FS) string {
 	n := uint32(windows.MAX_COMPUTERNAME_LENGTH + 1)
 	buf := make([]uint16, n)
 	err := windows.GetComputerNameEx(windows.ComputerNameDnsFullyQualified, &buf[0], &n)
@@ -26,12 +26,12 @@ func FQDNHostname(fs vfs.FS) string {
 }
 
 // isExecutable returns false on Windows.
-func isExecutable(info os.FileInfo) bool {
+func isExecutable(info fs.FileInfo) bool {
 	return false
 }
 
 // isPrivate returns false on Windows.
-func isPrivate(info os.FileInfo) bool {
+func isPrivate(info fs.FileInfo) bool {
 	return false
 }
 

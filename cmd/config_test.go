@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"io"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -9,16 +10,16 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	vfs "github.com/twpayne/go-vfs/v2"
-	xdg "github.com/twpayne/go-xdg/v4"
+	vfs "github.com/twpayne/go-vfs/v3"
+	xdg "github.com/twpayne/go-xdg/v6"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
 
 func TestAddTemplateFuncPanic(t *testing.T) {
-	chezmoitest.WithTestFS(t, nil, func(fs vfs.FS) {
-		c := newTestConfig(t, fs)
+	chezmoitest.WithTestFS(t, nil, func(fileSystem vfs.FS) {
+		c := newTestConfig(t, fileSystem)
 		assert.NotPanics(t, func() {
 			c.addTemplateFunc("func", nil)
 		})
@@ -91,8 +92,8 @@ func TestParseConfig(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, map[string]interface{}{
 				"/home/user/.config/chezmoi/" + tc.filename: tc.contents,
-			}, func(fs vfs.FS) {
-				c := newTestConfig(t, fs)
+			}, func(fileSystem vfs.FS) {
+				c := newTestConfig(t, fileSystem)
 				require.NoError(t, c.execute([]string{"init"}))
 				actualColor, err := c.Color.Value()
 				assert.NoError(t, err)
@@ -167,15 +168,15 @@ func TestValidateKeys(t *testing.T) {
 	}
 }
 
-func newTestConfig(t *testing.T, fs vfs.FS, options ...configOption) *Config {
+func newTestConfig(t *testing.T, fileSystem vfs.FS, options ...configOption) *Config {
 	t.Helper()
-	system := chezmoi.NewRealSystem(fs)
+	system := chezmoi.NewRealSystem(fileSystem)
 	c, err := newConfig(
 		append([]configOption{
 			withBaseSystem(system),
 			withDestSystem(system),
 			withSourceSystem(system),
-			withTestFS(fs),
+			withTestFS(fileSystem),
 			withTestUser("user"),
 			withUmask(chezmoitest.Umask),
 		}, options...)...,
@@ -219,9 +220,9 @@ func withStdout(stdout io.Writer) configOption {
 	}
 }
 
-func withTestFS(fs vfs.FS) configOption {
+func withTestFS(fileSystem vfs.FS) configOption {
 	return func(c *Config) error {
-		c.fs = fs
+		c.fileSystem = fileSystem
 		return nil
 	}
 }
@@ -265,7 +266,7 @@ func withTestUser(username string) configOption {
 	}
 }
 
-func withUmask(umask os.FileMode) configOption {
+func withUmask(umask fs.FileMode) configOption {
 	return func(c *Config) error {
 		c.Umask = umask
 		return nil

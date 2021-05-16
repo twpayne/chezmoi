@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"io/fs"
 	"os"
 	"os/exec"
 	"runtime"
@@ -13,7 +14,7 @@ import (
 	"text/template"
 
 	"github.com/coreos/go-semver/semver"
-	vfs "github.com/twpayne/go-vfs/v2"
+	vfs "github.com/twpayne/go-vfs/v3"
 	"go.uber.org/multierr"
 )
 
@@ -23,7 +24,7 @@ type SourceState struct {
 	system                  System
 	sourceDirAbsPath        AbsPath
 	destDirAbsPath          AbsPath
-	umask                   os.FileMode
+	umask                   fs.FileMode
 	encryption              Encryption
 	ignore                  *patternSet
 	minVersion              semver.Version
@@ -133,11 +134,11 @@ type AddOptions struct {
 }
 
 // Add adds destAbsPathInfos to s.
-func (s *SourceState) Add(sourceSystem System, persistentState PersistentState, destSystem System, destAbsPathInfos map[AbsPath]os.FileInfo, options *AddOptions) error {
+func (s *SourceState) Add(sourceSystem System, persistentState PersistentState, destSystem System, destAbsPathInfos map[AbsPath]fs.FileInfo, options *AddOptions) error {
 	type update struct {
 		destAbsPath    AbsPath
 		entryState     *EntryState
-		sourceRelPaths SourceRelPaths
+		sourceRelPaths []SourceRelPath
 	}
 
 	destAbsPaths := make([]AbsPath, 0, len(destAbsPathInfos))
@@ -192,7 +193,7 @@ DESTABSPATH:
 		update := update{
 			destAbsPath:    destAbsPath,
 			entryState:     entryState,
-			sourceRelPaths: SourceRelPaths{sourceEntryRelPath},
+			sourceRelPaths: []SourceRelPath{sourceEntryRelPath},
 		}
 
 		if oldSourceStateEntry, ok := s.entries[targetRelPath]; ok {
@@ -280,9 +281,9 @@ DESTABSPATH:
 	return nil
 }
 
-// AddDestAbsPathInfos adds an os.FileInfo to destAbsPathInfos for destAbsPath
+// AddDestAbsPathInfos adds an fs.FileInfo to destAbsPathInfos for destAbsPath
 // and any of its parents which are not already known.
-func (s *SourceState) AddDestAbsPathInfos(destAbsPathInfos map[AbsPath]os.FileInfo, system System, destAbsPath AbsPath, info os.FileInfo) error {
+func (s *SourceState) AddDestAbsPathInfos(destAbsPathInfos map[AbsPath]fs.FileInfo, system System, destAbsPath AbsPath, info fs.FileInfo) error {
 	for {
 		if _, err := destAbsPath.TrimDirPrefix(s.destDirAbsPath); err != nil {
 			return err
@@ -322,7 +323,7 @@ type PreApplyFunc func(targetRelPath RelPath, targetEntryState, lastWrittenEntry
 type ApplyOptions struct {
 	Include      *EntryTypeSet
 	PreApplyFunc PreApplyFunc
-	Umask        os.FileMode
+	Umask        fs.FileMode
 }
 
 // Apply updates targetRelPath in targetDir in destSystem to match s.
@@ -425,7 +426,7 @@ func (s *SourceState) Apply(targetSystem, destSystem System, persistentState Per
 					if actualStateDir.perm.Perm() == targetStateDir.perm.Perm() {
 						if targetStateDir.perm.Perm() != lastWrittenEntryState.Mode.Perm() {
 							if targetStateDir.perm.Perm() == lastWrittenEntryState.Mode.Perm()&^s.umask {
-								lastWrittenEntryState.Mode = os.ModeDir | targetStateDir.perm
+								lastWrittenEntryState.Mode = fs.ModeDir | targetStateDir.perm
 								_ = persistentStateSet(persistentState, EntryStateBucket, []byte(targetAbsPath), lastWrittenEntryState)
 							}
 						}
@@ -523,7 +524,7 @@ func (s *SourceState) MustEntry(targetRelPath RelPath) SourceStateEntry {
 func (s *SourceState) Read() error {
 	info, err := s.system.Lstat(s.sourceDirAbsPath)
 	switch {
-	case os.IsNotExist(err):
+	case errors.Is(err, fs.ErrNotExist):
 		return nil
 	case err != nil:
 		return err
@@ -533,7 +534,7 @@ func (s *SourceState) Read() error {
 
 	// Read all source entries.
 	allSourceStateEntries := make(map[RelPath][]SourceStateEntry)
-	if err := Walk(s.system, s.sourceDirAbsPath, func(sourceAbsPath AbsPath, info os.FileInfo, err error) error {
+	if err := Walk(s.system, s.sourceDirAbsPath, func(sourceAbsPath AbsPath, info fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -547,7 +548,7 @@ func (s *SourceState) Read() error {
 
 		parentSourceRelPath, sourceName := sourceRelPath.Split()
 		// Follow symlinks in the source directory.
-		if info.Mode()&os.ModeType == os.ModeSymlink {
+		if info.Mode().Type() == fs.ModeSymlink {
 			// Some programs (notably emacs) use invalid symlinks as lockfiles.
 			// To avoid following them and getting an ENOENT error, check first
 			// if this is an entry that we will ignore anyway.
@@ -678,7 +679,7 @@ func (s *SourceState) Read() error {
 					targetRelPath: destEntryRelPath,
 				})
 			}
-		case os.IsNotExist(err):
+		case errors.Is(err, fs.ErrNotExist):
 			// Do nothing.
 		default:
 			return err
@@ -699,11 +700,13 @@ func (s *SourceState) Read() error {
 		if len(sourceStateEntries) == 1 {
 			continue
 		}
-		sourceRelPaths := make(SourceRelPaths, 0, len(sourceStateEntries))
+		sourceRelPaths := make([]SourceRelPath, 0, len(sourceStateEntries))
 		for _, sourceStateEntry := range sourceStateEntries {
 			sourceRelPaths = append(sourceRelPaths, sourceStateEntry.SourceRelPath())
 		}
-		sort.Sort(sourceRelPaths)
+		sort.Slice(sourceRelPaths, func(i, j int) bool {
+			return sourceRelPaths[i].relPath < sourceRelPaths[j].relPath
+		})
 		err = multierr.Append(err, &errDuplicateTarget{
 			targetRelPath:  targetRelPath,
 			sourceRelPaths: sourceRelPaths,
@@ -814,7 +817,7 @@ func (s *SourceState) addTemplateData(sourceAbsPath AbsPath) error {
 
 // addTemplatesDir adds all templates in templateDir to s.
 func (s *SourceState) addTemplatesDir(templatesDirAbsPath AbsPath) error {
-	return Walk(s.system, templatesDirAbsPath, func(templateAbsPath AbsPath, info os.FileInfo, err error) error {
+	return Walk(s.system, templatesDirAbsPath, func(templateAbsPath AbsPath, info fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -864,7 +867,7 @@ func (s *SourceState) addVersionFile(sourceAbsPath AbsPath) error {
 	return nil
 }
 
-// applyAll updates targetDir in fs to match s.
+// applyAll updates targetDir in targetSystem to match s.
 func (s *SourceState) applyAll(targetSystem, destSystem System, persistentState PersistentState, targetDir AbsPath, options ApplyOptions) error {
 	for _, targetRelPath := range s.TargetRelPaths() {
 		switch err := s.Apply(targetSystem, destSystem, persistentState, targetDir, targetRelPath, options); {
@@ -903,7 +906,7 @@ func (s *SourceState) newCreateTargetStateEntryFunc(fileAttr FileAttr, sourceLaz
 		contents, err := destSystem.ReadFile(destAbsPath)
 		switch {
 		case err == nil:
-		case os.IsNotExist(err):
+		case errors.Is(err, fs.ErrNotExist):
 			contents, err = sourceLazyContents.Contents()
 			if err != nil {
 				return nil, err
@@ -948,7 +951,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(sourceRelPath SourceRelPath,
 			// Read the current contents of the target.
 			var currentContents []byte
 			currentContents, err = destSystem.ReadFile(destAbsPath)
-			if err != nil && !os.IsNotExist(err) {
+			if err != nil && !errors.Is(err, fs.ErrNotExist) {
 				return
 			}
 
@@ -1088,7 +1091,7 @@ func (s *SourceState) newSourceStateFile(sourceRelPath SourceRelPath, fileAttr F
 	}
 }
 
-func (s *SourceState) newSourceStateDirEntry(info os.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions) (SourceStateEntry, error) {
+func (s *SourceState) newSourceStateDirEntry(info fs.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions) (SourceStateEntry, error) {
 	dirAttr := DirAttr{
 		TargetName: info.Name(),
 		Exact:      options.Exact,
@@ -1104,7 +1107,7 @@ func (s *SourceState) newSourceStateDirEntry(info os.FileInfo, parentSourceRelPa
 	}, nil
 }
 
-func (s *SourceState) newSourceStateFileEntryFromFile(actualStateFile *ActualStateFile, info os.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions) (SourceStateEntry, error) {
+func (s *SourceState) newSourceStateFileEntryFromFile(actualStateFile *ActualStateFile, info fs.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions) (SourceStateEntry, error) {
 	fileAttr := FileAttr{
 		TargetName: info.Name(),
 		Empty:      options.Empty,
@@ -1148,7 +1151,7 @@ func (s *SourceState) newSourceStateFileEntryFromFile(actualStateFile *ActualSta
 	}, nil
 }
 
-func (s *SourceState) newSourceStateFileEntryFromSymlink(actualStateSymlink *ActualStateSymlink, info os.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions) (SourceStateEntry, error) {
+func (s *SourceState) newSourceStateFileEntryFromSymlink(actualStateSymlink *ActualStateSymlink, info fs.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions) (SourceStateEntry, error) {
 	linkname, err := actualStateSymlink.Linkname()
 	if err != nil {
 		return nil, err
@@ -1191,7 +1194,7 @@ func (s *SourceState) newSourceStateFileEntryFromSymlink(actualStateSymlink *Act
 }
 
 // sourceStateEntry returns a new SourceStateEntry based on actualStateEntry.
-func (s *SourceState) sourceStateEntry(actualStateEntry ActualStateEntry, destAbsPath AbsPath, info os.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions) (SourceStateEntry, error) {
+func (s *SourceState) sourceStateEntry(actualStateEntry ActualStateEntry, destAbsPath AbsPath, info fs.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions) (SourceStateEntry, error) {
 	switch actualStateEntry := actualStateEntry.(type) {
 	case *ActualStateAbsent:
 		return nil, fmt.Errorf("%s: not found", destAbsPath)

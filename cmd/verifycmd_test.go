@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/twpayne/go-vfs/v2"
-	"github.com/twpayne/go-vfs/v2/vfst"
+	"github.com/twpayne/go-vfs/v3"
+	"github.com/twpayne/go-vfs/v3/vfst"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
@@ -38,8 +38,8 @@ func TestVerifyCmd(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			chezmoitest.WithTestFS(t, tc.root, func(fs vfs.FS) {
-				assert.Equal(t, tc.expectedErr, newTestConfig(t, fs).execute([]string{"verify"}))
+			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
+				assert.Equal(t, tc.expectedErr, newTestConfig(t, fileSystem).execute([]string{"verify"}))
 			})
 		})
 	}

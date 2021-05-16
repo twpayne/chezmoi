@@ -1,7 +1,7 @@
 package chezmoi
 
 import (
-	"os"
+	"io/fs"
 	"path/filepath"
 	"testing"
 	"text/template"
@@ -9,8 +9,8 @@ import (
 	"github.com/coreos/go-semver/semver"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	vfs "github.com/twpayne/go-vfs/v2"
-	"github.com/twpayne/go-vfs/v2/vfst"
+	vfs "github.com/twpayne/go-vfs/v3"
+	"github.com/twpayne/go-vfs/v3/vfst"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
@@ -468,8 +468,8 @@ func TestSourceStateAdd(t *testing.T) {
 					".symlink":  &vfst.Symlink{Target: ".dir/subdir/file"},
 					".template": "key = value\n",
 				},
-			}, func(fs vfs.FS) {
-				system := NewRealSystem(fs)
+			}, func(fileSystem vfs.FS) {
+				system := NewRealSystem(fileSystem)
 				persistentState := NewMockPersistentState()
 				if tc.extraRoot != nil {
 					require.NoError(t, vfst.NewBuilder().Build(system.UnderlyingFS(), tc.extraRoot))
@@ -486,13 +486,13 @@ func TestSourceStateAdd(t *testing.T) {
 				require.NoError(t, s.Read())
 				requireEvaluateAll(t, s, system)
 
-				destAbsPathInfos := make(map[AbsPath]os.FileInfo)
+				destAbsPathInfos := make(map[AbsPath]fs.FileInfo)
 				for _, destAbsPath := range tc.destAbsPaths {
 					require.NoError(t, s.AddDestAbsPathInfos(destAbsPathInfos, system, destAbsPath, nil))
 				}
 				require.NoError(t, s.Add(system, persistentState, system, destAbsPathInfos, &tc.addOptions))
 
-				vfst.RunTests(t, fs, "", tc.tests...)
+				vfst.RunTests(t, fileSystem, "", tc.tests...)
 			})
 		})
 	}
@@ -672,7 +672,7 @@ func TestSourceStateApplyAll(t *testing.T) {
 			},
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.symlink",
-					vfst.TestModeType(os.ModeSymlink),
+					vfst.TestModeType(fs.ModeSymlink),
 					vfst.TestSymlinkTarget(filepath.FromSlash(".dir/subdir/file")),
 				),
 			},
@@ -688,15 +688,15 @@ func TestSourceStateApplyAll(t *testing.T) {
 			},
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.symlink",
-					vfst.TestModeType(os.ModeSymlink),
+					vfst.TestModeType(fs.ModeSymlink),
 					vfst.TestSymlinkTarget(filepath.FromSlash(".dir/subdir/file")),
 				),
 			},
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			chezmoitest.WithTestFS(t, tc.root, func(fs vfs.FS) {
-				system := NewRealSystem(fs)
+			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
+				system := NewRealSystem(fileSystem)
 				persistentState := NewMockPersistentState()
 				sourceStateOptions := []SourceStateOption{
 					WithDestDir("/home/user"),
@@ -712,7 +712,7 @@ func TestSourceStateApplyAll(t *testing.T) {
 					Umask:   chezmoitest.Umask,
 				}))
 
-				vfst.RunTests(t, fs, "", tc.tests...)
+				vfst.RunTests(t, fileSystem, "", tc.tests...)
 			})
 		})
 	}
@@ -1155,8 +1155,8 @@ func TestSourceStateRead(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			chezmoitest.WithTestFS(t, tc.root, func(fs vfs.FS) {
-				system := NewRealSystem(fs)
+			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
+				system := NewRealSystem(fileSystem)
 				s := NewSourceState(
 					WithDestDir("/home/user"),
 					WithSourceDir("/home/user/.local/share/chezmoi"),
@@ -1221,10 +1221,10 @@ func TestSourceStateTargetRelPaths(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			chezmoitest.WithTestFS(t, tc.root, func(fs vfs.FS) {
+			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
 				s := NewSourceState(
 					WithSourceDir("/home/user/.local/share/chezmoi"),
-					WithSystem(NewRealSystem(fs)),
+					WithSystem(NewRealSystem(fileSystem)),
 				)
 				require.NoError(t, s.Read())
 				assert.Equal(t, tc.expectedTargetRelPaths, s.TargetRelPaths())

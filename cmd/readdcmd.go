@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"bytes"
-	"os"
+	"io/fs"
 	"sort"
 
 	"github.com/spf13/cobra"
@@ -93,7 +93,7 @@ func (c *Config) runReAddCmd(cmd *cobra.Command, args []string, sourceState *che
 			continue
 		}
 
-		destAbsPathInfos := map[chezmoi.AbsPath]os.FileInfo{
+		destAbsPathInfos := map[chezmoi.AbsPath]fs.FileInfo{
 			destAbsPath: destAbsPathInfo,
 		}
 		if err := sourceState.Add(c.sourceSystem, c.persistentState, c.destSystem, destAbsPathInfos, &chezmoi.AddOptions{

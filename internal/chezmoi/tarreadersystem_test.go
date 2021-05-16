@@ -4,7 +4,7 @@ import (
 	"archive/tar"
 	"bytes"
 	"errors"
-	"os"
+	"io/fs"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -52,19 +52,19 @@ func TestTARReaderSystem(t *testing.T) {
 	}{
 		{
 			absPath:      "/home/user/file",
-			readlinkErr:  os.ErrInvalid,
+			readlinkErr:  fs.ErrInvalid,
 			readFileData: data,
 		},
 		{
 			absPath:     "/home/user/notexist",
-			readlinkErr: os.ErrNotExist,
-			lstatErr:    os.ErrNotExist,
-			readFileErr: os.ErrNotExist,
+			readlinkErr: fs.ErrNotExist,
+			lstatErr:    fs.ErrNotExist,
+			readFileErr: fs.ErrNotExist,
 		},
 		{
 			absPath:     "/home/user/symlink",
 			readlink:    "file",
-			readFileErr: os.ErrInvalid,
+			readFileErr: fs.ErrInvalid,
 		},
 	} {
 		_, err = tarReaderSystem.Lstat(tc.absPath)

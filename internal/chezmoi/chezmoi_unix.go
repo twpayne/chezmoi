@@ -5,35 +5,35 @@ package chezmoi
 import (
 	"bufio"
 	"bytes"
-	"os"
+	"io/fs"
 	"regexp"
 	"strings"
 	"syscall"
 
-	vfs "github.com/twpayne/go-vfs/v2"
+	vfs "github.com/twpayne/go-vfs/v3"
 )
 
 var whitespaceRx = regexp.MustCompile(`\s+`)
 
 func init() {
-	Umask = os.FileMode(syscall.Umask(0))
+	Umask = fs.FileMode(syscall.Umask(0))
 	syscall.Umask(int(Umask))
 }
 
 // FQDNHostname returns the FQDN hostname, if it can be determined.
-func FQDNHostname(fs vfs.FS) string {
-	if fqdnHostname, err := etcHostnameFQDNHostname(fs); err == nil && fqdnHostname != "" {
+func FQDNHostname(fileSystem vfs.FS) string {
+	if fqdnHostname, err := etcHostnameFQDNHostname(fileSystem); err == nil && fqdnHostname != "" {
 		return fqdnHostname
 	}
-	if fqdnHostname, err := etcHostsFQDNHostname(fs); err == nil && fqdnHostname != "" {
+	if fqdnHostname, err := etcHostsFQDNHostname(fileSystem); err == nil && fqdnHostname != "" {
 		return fqdnHostname
 	}
 	return ""
 }
 
 // etcHostnameFQDNHostname returns the FQDN hostname from parsing /etc/hostname.
-func etcHostnameFQDNHostname(fs vfs.FS) (string, error) {
-	contents, err := fs.ReadFile("/etc/hostname")
+func etcHostnameFQDNHostname(fileSystem vfs.FS) (string, error) {
+	contents, err := fileSystem.ReadFile("/etc/hostname")
 	if err != nil {
 		return "", err
 	}
@@ -51,8 +51,8 @@ func etcHostnameFQDNHostname(fs vfs.FS) (string, error) {
 }
 
 // etcHostsFQDNHostname returns the FQDN hostname from parsing /etc/hosts.
-func etcHostsFQDNHostname(fs vfs.FS) (string, error) {
-	contents, err := fs.ReadFile("/etc/hosts")
+func etcHostsFQDNHostname(fileSystem vfs.FS) (string, error) {
+	contents, err := fileSystem.ReadFile("/etc/hosts")
 	if err != nil {
 		return "", err
 	}
@@ -72,11 +72,11 @@ func etcHostsFQDNHostname(fs vfs.FS) (string, error) {
 }
 
 // isExecutable returns if info is executable.
-func isExecutable(info os.FileInfo) bool {
+func isExecutable(info fs.FileInfo) bool {
 	return info.Mode().Perm()&0o111 != 0
 }
 
 // isPrivate returns if info is private.
-func isPrivate(info os.FileInfo) bool {
+func isPrivate(info fs.FileInfo) bool {
 	return info.Mode().Perm()&0o77 == 0
 }

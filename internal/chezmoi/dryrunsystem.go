@@ -1,10 +1,10 @@
 package chezmoi
 
 import (
-	"os"
+	"io/fs"
 	"os/exec"
 
-	vfs "github.com/twpayne/go-vfs/v2"
+	vfs "github.com/twpayne/go-vfs/v3"
 )
 
 // DryRunSystem is an System that reads from, but does not write to, to
@@ -22,7 +22,7 @@ func NewDryRunSystem(system System) *DryRunSystem {
 }
 
 // Chmod implements System.Chmod.
-func (s *DryRunSystem) Chmod(name AbsPath, mode os.FileMode) error {
+func (s *DryRunSystem) Chmod(name AbsPath, mode fs.FileMode) error {
 	s.modified = true
 	return nil
 }
@@ -43,12 +43,12 @@ func (s *DryRunSystem) IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error) {
 }
 
 // Lstat implements System.Lstat.
-func (s *DryRunSystem) Lstat(name AbsPath) (os.FileInfo, error) {
+func (s *DryRunSystem) Lstat(name AbsPath) (fs.FileInfo, error) {
 	return s.system.Lstat(name)
 }
 
 // Mkdir implements System.Mkdir.
-func (s *DryRunSystem) Mkdir(name AbsPath, perm os.FileMode) error {
+func (s *DryRunSystem) Mkdir(name AbsPath, perm fs.FileMode) error {
 	s.modified = true
 	return nil
 }
@@ -65,7 +65,7 @@ func (s *DryRunSystem) RawPath(path AbsPath) (AbsPath, error) {
 }
 
 // ReadDir implements System.ReadDir.
-func (s *DryRunSystem) ReadDir(name AbsPath) ([]os.DirEntry, error) {
+func (s *DryRunSystem) ReadDir(name AbsPath) ([]fs.DirEntry, error) {
 	return s.system.ReadDir(name)
 }
 
@@ -104,7 +104,7 @@ func (s *DryRunSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte) e
 }
 
 // Stat implements System.Stat.
-func (s *DryRunSystem) Stat(name AbsPath) (os.FileInfo, error) {
+func (s *DryRunSystem) Stat(name AbsPath) (fs.FileInfo, error) {
 	return s.system.Stat(name)
 }
 
@@ -114,7 +114,7 @@ func (s *DryRunSystem) UnderlyingFS() vfs.FS {
 }
 
 // WriteFile implements System.WriteFile.
-func (s *DryRunSystem) WriteFile(AbsPath, []byte, os.FileMode) error {
+func (s *DryRunSystem) WriteFile(AbsPath, []byte, fs.FileMode) error {
 	s.modified = true
 	return nil
 }

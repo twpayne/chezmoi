@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/twpayne/go-vfs/v2"
-	"github.com/twpayne/go-vfs/v2/vfst"
+	"github.com/twpayne/go-vfs/v3"
+	"github.com/twpayne/go-vfs/v3/vfst"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
@@ -14,9 +14,9 @@ import (
 var _ PersistentState = &BoltPersistentState{}
 
 func TestBoltPersistentState(t *testing.T) {
-	chezmoitest.WithTestFS(t, nil, func(fs vfs.FS) {
+	chezmoitest.WithTestFS(t, nil, func(fileSystem vfs.FS) {
 		var (
-			s      = NewRealSystem(fs)
+			s      = NewRealSystem(fileSystem)
 			path   = AbsPath("/home/user/.config/chezmoi/chezmoistate.boltdb")
 			bucket = []byte("bucket")
 			key    = []byte("key")
@@ -30,7 +30,7 @@ func TestBoltPersistentState(t *testing.T) {
 		// the state.
 		actualValue, err := b1.Get(bucket, key)
 		require.NoError(t, err)
-		vfst.RunTests(t, fs, "",
+		vfst.RunTests(t, fileSystem, "",
 			vfst.TestPath(string(path),
 				vfst.TestDoesNotExist,
 			),
@@ -40,7 +40,7 @@ func TestBoltPersistentState(t *testing.T) {
 		// Test that deleting a key from a non-existent state does not create
 		// the state.
 		require.NoError(t, b1.Delete(bucket, key))
-		vfst.RunTests(t, fs, "",
+		vfst.RunTests(t, fileSystem, "",
 			vfst.TestPath(string(path),
 				vfst.TestDoesNotExist,
 			),
@@ -48,7 +48,7 @@ func TestBoltPersistentState(t *testing.T) {
 
 		// Test that setting a key creates the state.
 		assert.NoError(t, b1.Set(bucket, key, value))
-		vfst.RunTests(t, fs, "",
+		vfst.RunTests(t, fileSystem, "",
 			vfst.TestPath(string(path),
 				vfst.TestModeIsRegular,
 			),
@@ -88,9 +88,9 @@ func TestBoltPersistentState(t *testing.T) {
 }
 
 func TestBoltPersistentStateMock(t *testing.T) {
-	chezmoitest.WithTestFS(t, nil, func(fs vfs.FS) {
+	chezmoitest.WithTestFS(t, nil, func(fileSystem vfs.FS) {
 		var (
-			s      = NewRealSystem(fs)
+			s      = NewRealSystem(fileSystem)
 			path   = AbsPath("/home/user/.config/chezmoi/chezmoistate.boltdb")
 			bucket = []byte("bucket")
 			key    = []byte("key")
@@ -130,9 +130,9 @@ func TestBoltPersistentStateMock(t *testing.T) {
 }
 
 func TestBoltPersistentStateReadOnly(t *testing.T) {
-	chezmoitest.WithTestFS(t, nil, func(fs vfs.FS) {
+	chezmoitest.WithTestFS(t, nil, func(fileSystem vfs.FS) {
 		var (
-			s      = NewRealSystem(fs)
+			s      = NewRealSystem(fileSystem)
 			path   = AbsPath("/home/user/.config/chezmoi/chezmoistate.boltdb")
 			bucket = []byte("bucket")
 			key    = []byte("key")

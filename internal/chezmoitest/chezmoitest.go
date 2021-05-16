@@ -3,6 +3,7 @@ package chezmoitest
 
 import (
 	"fmt"
+	"io/fs"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -14,8 +15,8 @@ import (
 
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/require"
-	"github.com/twpayne/go-vfs/v2"
-	"github.com/twpayne/go-vfs/v2/vfst"
+	"github.com/twpayne/go-vfs/v3"
+	"github.com/twpayne/go-vfs/v3/vfst"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )
@@ -121,18 +122,18 @@ func SkipUnlessGOOS(t *testing.T, name string) {
 }
 
 // WithTestFS calls f with a test filesystem populated with root.
-func WithTestFS(t *testing.T, root interface{}, f func(fs vfs.FS)) {
+func WithTestFS(t *testing.T, root interface{}, f func(vfs.FS)) {
 	t.Helper()
-	fs, cleanup, err := vfst.NewTestFS(root, vfst.BuilderUmask(Umask))
+	fileSystem, cleanup, err := vfst.NewTestFS(root, vfst.BuilderUmask(Umask))
 	require.NoError(t, err)
 	t.Cleanup(cleanup)
-	f(fs)
+	f(fileSystem)
 }
 
-func mustParseFilemode(s string) os.FileMode {
+func mustParseFilemode(s string) fs.FileMode {
 	i, err := strconv.ParseInt(s, 0, 32)
 	if err != nil {
 		panic(err)
 	}
-	return os.FileMode(i)
+	return fs.FileMode(i)
 }

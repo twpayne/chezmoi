@@ -4,45 +4,46 @@ package chezmoi
 
 import (
 	"errors"
+	"io/fs"
 	"os"
 	"syscall"
 
 	"github.com/google/renameio"
-	vfs "github.com/twpayne/go-vfs/v2"
+	vfs "github.com/twpayne/go-vfs/v3"
 	"go.uber.org/multierr"
 )
 
 // An RealSystem is a System that writes to a filesystem and executes scripts.
 type RealSystem struct {
-	fs           vfs.FS
+	fileSystem   vfs.FS
 	devCache     map[AbsPath]uint // devCache maps directories to device numbers.
 	tempDirCache map[uint]string  // tempDirCache maps device numbers to renameio temporary directories.
 }
 
-// NewRealSystem returns a System that acts on fs.
-func NewRealSystem(fs vfs.FS) *RealSystem {
+// NewRealSystem returns a System that acts on fileSystem.
+func NewRealSystem(fileSystem vfs.FS) *RealSystem {
 	return &RealSystem{
-		fs:           fs,
+		fileSystem:   fileSystem,
 		devCache:     make(map[AbsPath]uint),
 		tempDirCache: make(map[uint]string),
 	}
 }
 
 // Chmod implements System.Chmod.
-func (s *RealSystem) Chmod(name AbsPath, mode os.FileMode) error {
-	return s.fs.Chmod(string(name), mode)
+func (s *RealSystem) Chmod(name AbsPath, mode fs.FileMode) error {
+	return s.fileSystem.Chmod(string(name), mode)
 }
 
 // Readlink implements System.Readlink.
 func (s *RealSystem) Readlink(name AbsPath) (string, error) {
-	return s.fs.Readlink(string(name))
+	return s.fileSystem.Readlink(string(name))
 }
 
 // WriteFile implements System.WriteFile.
-func (s *RealSystem) WriteFile(filename AbsPath, data []byte, perm os.FileMode) error {
+func (s *RealSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error {
 	// Special case: if writing to the real filesystem, use
 	// github.com/google/renameio.
-	if s.fs == vfs.OSFS {
+	if s.fileSystem == vfs.OSFS {
 		dir := filename.Dir()
 		dev, ok := s.devCache[dir]
 		if !ok {
@@ -52,7 +53,7 @@ func (s *RealSystem) WriteFile(filename AbsPath, data []byte, perm os.FileMode) 
 			}
 			statT, ok := info.Sys().(*syscall.Stat_t)
 			if !ok {
-				return errors.New("os.FileInfo.Sys() cannot be converted to a *syscall.Stat_t")
+				return errors.New("fs.FileInfo.Sys() cannot be converted to a *syscall.Stat_t")
 			}
 			dev = uint(statT.Dev)
 			s.devCache[dir] = dev
@@ -78,28 +79,28 @@ func (s *RealSystem) WriteFile(filename AbsPath, data []byte, perm os.FileMode) 
 		return t.CloseAtomicallyReplace()
 	}
 
-	return writeFile(s.fs, filename, data, perm)
+	return writeFile(s.fileSystem, filename, data, perm)
 }
 
 // WriteSymlink implements System.WriteSymlink.
 func (s *RealSystem) WriteSymlink(oldname string, newname AbsPath) error {
 	// Special case: if writing to the real filesystem, use
 	// github.com/google/renameio.
-	if s.fs == vfs.OSFS {
+	if s.fileSystem == vfs.OSFS {
 		return renameio.Symlink(oldname, string(newname))
 	}
-	if err := s.fs.RemoveAll(string(newname)); err != nil && !os.IsNotExist(err) {
+	if err := s.fileSystem.RemoveAll(string(newname)); err != nil && !errors.Is(err, fs.ErrNotExist) {
 		return err
 	}
-	return s.fs.Symlink(oldname, string(newname))
+	return s.fileSystem.Symlink(oldname, string(newname))
 }
 
 // writeFile is like os.WriteFile but always sets perm before writing data.
 // os.WriteFile only sets the permissions when creating a new file. We need to
 // ensure permissions, so we use our own implementation.
-func writeFile(fs vfs.FS, filename AbsPath, data []byte, perm os.FileMode) (err error) {
+func writeFile(fileSystem vfs.FS, filename AbsPath, data []byte, perm fs.FileMode) (err error) {
 	// Create a new file, or truncate any existing one.
-	f, err := fs.OpenFile(string(filename), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, perm)
+	f, err := fileSystem.OpenFile(string(filename), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, perm)
 	if err != nil {
 		return
 	}

@@ -2,7 +2,7 @@ package chezmoi
 
 import (
 	"fmt"
-	"os"
+	"io/fs"
 	"reflect"
 	"strings"
 
@@ -75,13 +75,13 @@ func (s *EntryTypeSet) IncludeEncrypted() bool {
 }
 
 // IncludeFileInfo returns true if the type of info is a member.
-func (s *EntryTypeSet) IncludeFileInfo(info os.FileInfo) bool {
+func (s *EntryTypeSet) IncludeFileInfo(info fs.FileInfo) bool {
 	switch {
 	case info.IsDir():
 		return s.bits&EntryTypeDirs != 0
 	case info.Mode().IsRegular():
 		return s.bits&EntryTypeFiles != 0
-	case info.Mode()&os.ModeType == os.ModeSymlink:
+	case info.Mode().Type() == fs.ModeSymlink:
 		return s.bits&EntryTypeSymlinks != 0
 	default:
 		return false

@@ -3,7 +3,7 @@ package chezmoi
 import (
 	"bytes"
 	"encoding/hex"
-	"os"
+	"io/fs"
 	"runtime"
 	"time"
 )
@@ -11,21 +11,21 @@ import (
 // A TargetStateEntry represents the state of an entry in the target state.
 type TargetStateEntry interface {
 	Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry) (bool, error)
-	EntryState(umask os.FileMode) (*EntryState, error)
+	EntryState(umask fs.FileMode) (*EntryState, error)
 	Evaluate() error
 	SkipApply(persistentState PersistentState) (bool, error)
 }
 
 // A TargetStateDir represents the state of a directory in the target state.
 type TargetStateDir struct {
-	perm os.FileMode
+	perm fs.FileMode
 }
 
 // A TargetStateFile represents the state of a file in the target state.
 type TargetStateFile struct {
 	*lazyContents
 	empty bool
-	perm  os.FileMode
+	perm  fs.FileMode
 }
 
 // A TargetStateRemove represents the absence of an entry in the target state.
@@ -71,10 +71,10 @@ func (t *TargetStateDir) Apply(system System, persistentState PersistentState, a
 }
 
 // EntryState returns t's entry state.
-func (t *TargetStateDir) EntryState(umask os.FileMode) (*EntryState, error) {
+func (t *TargetStateDir) EntryState(umask fs.FileMode) (*EntryState, error) {
 	return &EntryState{
 		Type: EntryStateTypeDir,
-		Mode: os.ModeDir | t.perm&^umask,
+		Mode: fs.ModeDir | t.perm&^umask,
 	}, nil
 }
 
@@ -125,7 +125,7 @@ func (t *TargetStateFile) Apply(system System, persistentState PersistentState, 
 }
 
 // EntryState returns t's entry state.
-func (t *TargetStateFile) EntryState(umask os.FileMode) (*EntryState, error) {
+func (t *TargetStateFile) EntryState(umask fs.FileMode) (*EntryState, error) {
 	contents, err := t.Contents()
 	if err != nil {
 		return nil, err
@@ -154,7 +154,7 @@ func (t *TargetStateFile) Evaluate() error {
 }
 
 // Perm returns t's perm.
-func (t *TargetStateFile) Perm(umask os.FileMode) os.FileMode {
+func (t *TargetStateFile) Perm(umask fs.FileMode) fs.FileMode {
 	return t.perm &^ umask
 }
 
@@ -172,7 +172,7 @@ func (t *TargetStateRemove) Apply(system System, persistentState PersistentState
 }
 
 // EntryState returns t's entry state.
-func (t *TargetStateRemove) EntryState(umask os.FileMode) (*EntryState, error) {
+func (t *TargetStateRemove) EntryState(umask fs.FileMode) (*EntryState, error) {
 	return &EntryState{
 		Type: EntryStateTypeRemove,
 	}, nil
@@ -220,7 +220,7 @@ func (t *TargetStateScript) Apply(system System, persistentState PersistentState
 }
 
 // EntryState returns t's entry state.
-func (t *TargetStateScript) EntryState(umask os.FileMode) (*EntryState, error) {
+func (t *TargetStateScript) EntryState(umask fs.FileMode) (*EntryState, error) {
 	contentsSHA256, err := t.ContentsSHA256()
 	if err != nil {
 		return nil, err
@@ -289,7 +289,7 @@ func (t *TargetStateSymlink) Apply(system System, persistentState PersistentStat
 }
 
 // EntryState returns t's entry state.
-func (t *TargetStateSymlink) EntryState(umask os.FileMode) (*EntryState, error) {
+func (t *TargetStateSymlink) EntryState(umask fs.FileMode) (*EntryState, error) {
 	linkname, err := t.Linkname()
 	if err != nil {
 		return nil, err
@@ -328,7 +328,7 @@ func (t *targetStateRenameDir) Apply(system System, persistentState PersistentSt
 }
 
 // EntryState returns t's entry state.
-func (t *targetStateRenameDir) EntryState(umask os.FileMode) (*EntryState, error) {
+func (t *targetStateRenameDir) EntryState(umask fs.FileMode) (*EntryState, error) {
 	return nil, nil
 }
 
