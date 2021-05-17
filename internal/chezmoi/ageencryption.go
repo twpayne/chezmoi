@@ -72,6 +72,7 @@ func (e *AGEEncryption) EncryptedSuffix() string {
 	return e.Suffix
 }
 
+// decryptArgs returns the arguments for decryption.
 func (e *AGEEncryption) decryptArgs() []string {
 	args := make([]string, 0, 1+2*(1+len(e.Identities)))
 	args = append(args, "--decrypt")
@@ -84,6 +85,7 @@ func (e *AGEEncryption) decryptArgs() []string {
 	return args
 }
 
+// encryptArgs returns the arguments for encryption.
 func (e *AGEEncryption) encryptArgs() []string {
 	args := make([]string, 0, 1+2*(1+len(e.Recipients))+2*(1+len(e.RecipientsFiles)))
 	args = append(args, "--armor")

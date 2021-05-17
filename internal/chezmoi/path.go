@@ -155,6 +155,7 @@ func StringToAbsPathHookFunc() mapstructure.DecodeHookFunc {
 	}
 }
 
+// homeDirAbsPath returns the user's home directory as an AbsPath.
 func homeDirAbsPath() (AbsPath, error) {
 	userHomeDir, err := os.UserHomeDir()
 	if err != nil {

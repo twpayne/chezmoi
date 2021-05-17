@@ -66,12 +66,13 @@ func AGEGenerateKey(filename string) (publicKey, privateKeyFile string, err erro
 	return
 }
 
-// GPGCommand returns the GPG command, if it can be found.
+// GPGCommand returns the path to gpg, if it can be found.
 func GPGCommand() (string, error) {
 	return exec.LookPath("gpg")
 }
 
-// GPGGenerateKey generates and returns a GPG key in homeDir.
+// GPGGenerateKey generates GPG key in homeDir and returns the key and the
+// passphrase.
 func GPGGenerateKey(command, homeDir string) (key, passphrase string, err error) {
 	//nolint:gosec
 	passphrase = "chezmoi-test-gpg-passphrase"
@@ -130,7 +131,8 @@ func WithTestFS(t *testing.T, root interface{}, f func(vfs.FS)) {
 	f(fileSystem)
 }
 
-func mustParseFilemode(s string) fs.FileMode {
+// mustParseFileMode parses s as a fs.FileMode and panics on any error.
+func mustParseFileMode(s string) fs.FileMode {
 	i, err := strconv.ParseInt(s, 0, 32)
 	if err != nil {
 		panic(err)

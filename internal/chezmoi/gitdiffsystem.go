@@ -20,7 +20,9 @@ type GitDiffSystem struct {
 	unifiedEncoder *diff.UnifiedEncoder
 }
 
-// NewGitDiffSystem returns a new GitDiffSystem.
+// NewGitDiffSystem returns a new GitDiffSystem. Output is written to w, the
+// dirAbsPath is stripped from paths, and color controls whether the output
+// contains ANSI color escape sequences.
 func NewGitDiffSystem(system System, w io.Writer, dirAbsPath AbsPath, color bool) *GitDiffSystem {
 	unifiedEncoder := diff.NewUnifiedEncoder(w, diff.DefaultContextLines)
 	if color {
@@ -192,6 +194,8 @@ func (s *GitDiffSystem) WriteSymlink(oldname string, newname AbsPath) error {
 	return s.system.WriteSymlink(oldname, newname)
 }
 
+// encodeDiff encodes the diff between the actual state of absPath and the
+// target state of toData and toMode.
 func (s *GitDiffSystem) encodeDiff(absPath AbsPath, toData []byte, toMode fs.FileMode) error {
 	var fromData []byte
 	var fromMode fs.FileMode
@@ -223,6 +227,7 @@ func (s *GitDiffSystem) encodeDiff(absPath AbsPath, toData []byte, toMode fs.Fil
 	return s.unifiedEncoder.Encode(diffPatch)
 }
 
+// trimPrefix removes s's directory prefix from absPath.
 func (s *GitDiffSystem) trimPrefix(absPath AbsPath) RelPath {
 	return absPath.MustTrimDirPrefix(s.dirAbsPath)
 }

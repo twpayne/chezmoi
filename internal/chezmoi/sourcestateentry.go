@@ -20,7 +20,7 @@ type SourceStateFile struct {
 	*lazyContents
 	Attr                 FileAttr
 	sourceRelPath        SourceRelPath
-	targetStateEntryFunc func(destSystem System, destDirAbsPath AbsPath) (TargetStateEntry, error)
+	targetStateEntryFunc targetStateEntryFunc
 	targetStateEntry     TargetStateEntry
 	targetStateEntryErr  error
 }

@@ -138,6 +138,7 @@ func isEmpty(data []byte) bool {
 	return len(bytes.TrimSpace(data)) == 0
 }
 
+// modeTypeName returns a string representation of mode.
 func modeTypeName(mode fs.FileMode) string {
 	if name, ok := modeTypeNames[mode.Type()]; ok {
 		return name

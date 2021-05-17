@@ -463,6 +463,7 @@ func getMethod(fileSystem vfs.Stater, executableAbsPath chezmoi.AbsPath) (string
 	}
 }
 
+// getPackageType returns the distributions package type based on is OS release.
 func getPackageType(fileSystem vfs.FS) (string, error) {
 	osRelease, err := chezmoi.OSRelease(fileSystem)
 	if err != nil {
@@ -483,6 +484,7 @@ func getPackageType(fileSystem vfs.FS) (string, error) {
 	return packageTypeNone, fmt.Errorf("could not determine package type (ID=%q, ID_LIKE=%q)", osRelease["ID"], osRelease["ID_LIKE"])
 }
 
+// getReleaseAssetByName returns the release asset from rr with the given name.
 func getReleaseAssetByName(rr *github.RepositoryRelease, name string) *github.ReleaseAsset {
 	for i, ra := range rr.Assets {
 		if ra.GetName() == name {

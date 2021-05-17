@@ -1,6 +1,7 @@
 # chezmoi Architecture
 
 <!--- toc --->
+* [Introduction](#introduction)
 * [Directory structure](#directory-structure)
 * [Key concepts](#key-concepts)
 * [`internal/chezmoi`](#internalchezmoi)
@@ -10,6 +11,20 @@
 * [Encryption](#encryption)
 * [`run_once_` scripts](#run_once_-scripts)
 * [Testing](#testing)
+
+## Introduction
+
+This document gives a high-level overview of chezmoi's source code for anyone
+interested in contributing to chezmoi.
+
+You can generate Go documentation for chezmoi's source code with `go doc`, for
+example:
+
+    go doc -all -u github.com/twpayne/chezmoi/v2/internal/chezmoi
+
+You can also [browse chezmoi's generated documentation
+online](https://pkg.go.dev/github.com/twpayne/chezmoi/v2) but this only includes
+exported symbols.
 
 ## Directory structure
 

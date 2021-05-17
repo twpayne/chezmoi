@@ -102,6 +102,9 @@ func DiffPatch(path RelPath, fromData []byte, fromMode fs.FileMode, toData []byt
 	}, nil
 }
 
+// diffChunks returns the
+// github.com/go-git/go-git/v5/plumbing/format/diff.Chunks required to transform
+// from into to.
 func diffChunks(from, to string) []diff.Chunk {
 	dmp := diffmatchpatch.New()
 	dmp.DiffTimeout = time.Second
@@ -118,6 +121,8 @@ func diffChunks(from, to string) []diff.Chunk {
 	return chunks
 }
 
+// diffFileMode converts an io/fs.FileMode into a
+// github.com/go-git/go-git/v5/plumbing/format/diff.FileMode.
 func diffFileMode(mode fs.FileMode) (filemode.FileMode, error) {
 	fileMode, err := filemode.NewFromOSFileMode(mode)
 	if err != nil {
@@ -127,6 +132,7 @@ func diffFileMode(mode fs.FileMode) (filemode.FileMode, error) {
 	return fileMode, nil
 }
 
+// isBinary returns true if data contains binary (non-human-readable) data.
 func isBinary(data []byte) bool {
 	return len(data) != 0 && !strings.HasPrefix(http.DetectContentType(data), "text/")
 }
