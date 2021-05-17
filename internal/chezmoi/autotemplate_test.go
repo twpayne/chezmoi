@@ -8,10 +8,11 @@ import (
 
 func TestAutoTemplate(t *testing.T) {
 	for _, tc := range []struct {
-		name        string
-		contentsStr string
-		data        map[string]interface{}
-		expected    string
+		name                 string
+		contentsStr          string
+		data                 map[string]interface{}
+		expected             string
+		expectedReplacements bool
 	}{
 		{
 			name:        "simple",
@@ -19,7 +20,8 @@ func TestAutoTemplate(t *testing.T) {
 			data: map[string]interface{}{
 				"email": "you@example.com",
 			},
-			expected: "email = {{ .email }}\n",
+			expected:             "email = {{ .email }}\n",
+			expectedReplacements: true,
 		},
 		{
 			name:        "longest_first",
@@ -31,6 +33,7 @@ func TestAutoTemplate(t *testing.T) {
 			expected: "" +
 				"name = {{ .name }}\n" +
 				"firstName = {{ .firstName }}\n",
+			expectedReplacements: true,
 		},
 		{
 			name:        "alphabetical_first",
@@ -40,7 +43,8 @@ func TestAutoTemplate(t *testing.T) {
 				"beta":  "John Smith",
 				"gamma": "John Smith",
 			},
-			expected: "name = {{ .alpha }}\n",
+			expected:             "name = {{ .alpha }}\n",
+			expectedReplacements: true,
 		},
 		{
 			name:        "nested_values",
@@ -50,7 +54,8 @@ func TestAutoTemplate(t *testing.T) {
 					"email": "you@example.com",
 				},
 			},
-			expected: "email = {{ .personal.email }}\n",
+			expected:             "email = {{ .personal.email }}\n",
+			expectedReplacements: true,
 		},
 		{
 			name:        "only_replace_words",
@@ -66,7 +71,8 @@ func TestAutoTemplate(t *testing.T) {
 			data: map[string]interface{}{
 				"homeDir": "/home/user",
 			},
-			expected: "{{ .homeDir }}",
+			expected:             "{{ .homeDir }}",
+			expectedReplacements: true,
 		},
 		{
 			name:        "longest_match_first_prefix",
@@ -74,7 +80,8 @@ func TestAutoTemplate(t *testing.T) {
 			data: map[string]interface{}{
 				"homeDir": "/home/user",
 			},
-			expected: "HOME={{ .homeDir }}",
+			expected:             "HOME={{ .homeDir }}",
+			expectedReplacements: true,
 		},
 		{
 			name:        "longest_match_first_suffix",
@@ -82,7 +89,8 @@ func TestAutoTemplate(t *testing.T) {
 			data: map[string]interface{}{
 				"homeDir": "/home/user",
 			},
-			expected: "{{ .homeDir }}/something",
+			expected:             "{{ .homeDir }}/something",
+			expectedReplacements: true,
 		},
 		{
 			name:        "longest_match_first_prefix_and_suffix",
@@ -90,7 +98,8 @@ func TestAutoTemplate(t *testing.T) {
 			data: map[string]interface{}{
 				"homeDir": "/home/user",
 			},
-			expected: "HOME={{ .homeDir }}/something",
+			expected:             "HOME={{ .homeDir }}/something",
+			expectedReplacements: true,
 		},
 		{
 			name:        "words_only",
@@ -98,7 +107,8 @@ func TestAutoTemplate(t *testing.T) {
 			data: map[string]interface{}{
 				"alpha": "a",
 			},
-			expected: "aaa aa {{ .alpha }} aa aaa aa {{ .alpha }} aa aaa",
+			expected:             "aaa aa {{ .alpha }} aa aaa aa {{ .alpha }} aa aaa",
+			expectedReplacements: true,
 		},
 		{
 			name:        "words_only_2",
@@ -106,7 +116,8 @@ func TestAutoTemplate(t *testing.T) {
 			data: map[string]interface{}{
 				"alpha": "aa",
 			},
-			expected: "aaa {{ .alpha }} a {{ .alpha }} aaa {{ .alpha }} a {{ .alpha }} aaa",
+			expected:             "aaa {{ .alpha }} a {{ .alpha }} aaa {{ .alpha }} a {{ .alpha }} aaa",
+			expectedReplacements: true,
 		},
 		{
 			name:        "words_only_3",
@@ -114,7 +125,8 @@ func TestAutoTemplate(t *testing.T) {
 			data: map[string]interface{}{
 				"alpha": "aaa",
 			},
-			expected: "{{ .alpha }} aa a aa {{ .alpha }} aa a aa {{ .alpha }}",
+			expected:             "{{ .alpha }} aa a aa {{ .alpha }} aa a aa {{ .alpha }}",
+			expectedReplacements: true,
 		},
 		{
 			name:        "skip_empty",
@@ -126,7 +138,9 @@ func TestAutoTemplate(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			assert.Equal(t, tc.expected, string(autoTemplate([]byte(tc.contentsStr), tc.data)))
+			actualTemplate, actualReplacements := autoTemplate([]byte(tc.contentsStr), tc.data)
+			assert.Equal(t, tc.expected, string(actualTemplate))
+			assert.Equal(t, tc.expectedReplacements, actualReplacements)
 		})
 	}
 }

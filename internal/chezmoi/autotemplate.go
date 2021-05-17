@@ -29,13 +29,16 @@ func (b byValueLength) Less(i, j int) bool {
 }
 func (b byValueLength) Swap(i, j int) { b[i], b[j] = b[j], b[i] }
 
-func autoTemplate(contents []byte, data map[string]interface{}) []byte {
+// autoTemplate converts contents into a template by replacing values in data
+// with their keys. It returns the template and if any replacements were made.
+func autoTemplate(contents []byte, data map[string]interface{}) ([]byte, bool) {
 	// This naive approach will generate incorrect templates if the variable
 	// names match variable values. The algorithm here is probably O(N^2), we
 	// can do better.
 	variables := extractVariables(data)
 	sort.Sort(sort.Reverse(byValueLength(variables)))
 	contentsStr := string(contents)
+	replacements := false
 	for _, variable := range variables {
 		if variable.value == "" {
 			continue
@@ -48,6 +51,7 @@ func autoTemplate(contents []byte, data map[string]interface{}) []byte {
 				replacement := "{{ ." + variable.name + " }}"
 				contentsStr = contentsStr[:index] + replacement + contentsStr[index+len(variable.value):]
 				index += len(replacement)
+				replacements = true
 			} else {
 				// Otherwise, keep looking. Consume at least one byte so we make
 				// progress.
@@ -64,7 +68,7 @@ func autoTemplate(contents []byte, data map[string]interface{}) []byte {
 			}
 		}
 	}
-	return []byte(contentsStr)
+	return []byte(contentsStr), replacements
 }
 
 // extractVariables extracts all template variables from data.

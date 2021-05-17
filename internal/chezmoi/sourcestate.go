@@ -1123,7 +1123,7 @@ func (s *SourceState) newSourceStateFileEntryFromFile(actualStateFile *ActualSta
 		Encrypted:  options.Encrypt,
 		Executable: isExecutable(info),
 		Private:    isPrivate(info),
-		Template:   options.Template || options.AutoTemplate,
+		Template:   options.Template,
 	}
 	if options.Create {
 		fileAttr.Type = SourceFileTypeCreate
@@ -1135,7 +1135,11 @@ func (s *SourceState) newSourceStateFileEntryFromFile(actualStateFile *ActualSta
 		return nil, err
 	}
 	if options.AutoTemplate {
-		contents = autoTemplate(contents, s.TemplateData())
+		var replacements bool
+		contents, replacements = autoTemplate(contents, s.TemplateData())
+		if replacements {
+			fileAttr.Template = true
+		}
 	}
 	if len(contents) == 0 && !options.Empty {
 		return nil, nil
@@ -1169,8 +1173,7 @@ func (s *SourceState) newSourceStateFileEntryFromSymlink(actualStateSymlink *Act
 	template := false
 	switch {
 	case options.AutoTemplate:
-		contents = autoTemplate(contents, s.TemplateData())
-		fallthrough
+		contents, template = autoTemplate(contents, s.TemplateData())
 	case options.Template:
 		template = true
 	case !options.Template && options.TemplateSymlinks:
