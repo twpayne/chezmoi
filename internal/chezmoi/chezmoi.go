@@ -51,15 +51,16 @@ const (
 	versionName      = Prefix + "version"
 )
 
-var knownPrefixedFiles = map[string]bool{
-	Prefix + ".json" + TemplateSuffix: true,
-	Prefix + ".toml" + TemplateSuffix: true,
-	Prefix + ".yaml" + TemplateSuffix: true,
-	dataName:                          true,
-	ignoreName:                        true,
-	removeName:                        true,
-	versionName:                       true,
-}
+// knownPrefixedFiles is a set of known filenames with the .chezmoi prefix.
+var knownPrefixedFiles = newStringSet(
+	Prefix+".json"+TemplateSuffix,
+	Prefix+".toml"+TemplateSuffix,
+	Prefix+".yaml"+TemplateSuffix,
+	dataName,
+	ignoreName,
+	removeName,
+	versionName,
+)
 
 var modeTypeNames = map[fs.FileMode]string{
 	0:                 "file",
@@ -121,7 +122,7 @@ func SHA256Sum(data []byte) []byte {
 func SuspiciousSourceDirEntry(base string, info fs.FileInfo) bool {
 	switch info.Mode().Type() {
 	case 0:
-		return strings.HasPrefix(base, Prefix) && !knownPrefixedFiles[base]
+		return strings.HasPrefix(base, Prefix) && knownPrefixedFiles.contains(base)
 	case fs.ModeDir:
 		return strings.HasPrefix(base, Prefix) && base != templatesDirName
 	case fs.ModeSymlink:
