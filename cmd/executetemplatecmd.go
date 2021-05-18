@@ -63,6 +63,7 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string, source
 			"stdinIsATTY": func() bool {
 				return c.executeTemplate.stdinIsATTY
 			},
+			"writeToStdout": c.writeToStdout,
 		})
 	}
 
