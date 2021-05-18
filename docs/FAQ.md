@@ -8,7 +8,6 @@
 * [If there's a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?](#if-theres-a-mechanism-in-place-for-the-above-is-there-also-a-way-to-tell-chezmoi-to-ignore-specific-files-or-groups-of-files-eg-by-directory-name-or-by-glob)
 * [If the target already exists, but is "behind" the source, can chezmoi be configured to preserve the target version before replacing it with one derived from the source?](#if-the-target-already-exists-but-is-behind-the-source-can-chezmoi-be-configured-to-preserve-the-target-version-before-replacing-it-with-one-derived-from-the-source)
 * [Once I've made a change to the source directory, how do I commit it?](#once-ive-made-a-change-to-the-source-directory-how-do-i-commit-it)
-* [How do I only run a script when a file has changed?](#how-do-i-only-run-a-script-when-a-file-has-changed)
 * [I've made changes to both the destination state and the source state that I want to keep. How can I keep them both?](#ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both)
 * [Why does chezmoi convert all my template variables to lowercase?](#why-does-chezmoi-convert-all-my-template-variables-to-lowercase)
 * [chezmoi makes `~/.ssh/config` group writeable. How do I stop this?](#chezmoi-makes-sshconfig-group-writeable-how-do-i-stop-this)
@@ -82,51 +81,6 @@ You have several options:
 * You can configure chezmoi to automatically commit and push changes to your
   source state, as [described in the how-to
   guide](https://github.com/twpayne/chezmoi/blob/master/docs/HOWTO.md#automatically-commit-and-push-changes-to-your-repo).
-
-## How do I only run a script when a file has changed?
-
-A common example of this is that you're using [Homebrew](https://brew.sh/) and
-have `.Brewfile` listing all the packages that you want installed and only want
-to run `brew bundle --global` when the contents of `.Brewfile` have changed.
-
-chezmoi has two types of scripts: scripts that run every time, and scripts that
-only run when their contents change. chezmoi does not have a mechanism to run a
-script when an arbitrary file has changed, but there are some ways to achieve
-the desired behavior:
-
-1. Have the script create `.Brewfile` instead of chezmoi, e.g. in your
-   `run_once_install-packages`:
-
-   ```sh
-   #!/bin/sh
-
-   cat > $HOME/.Brewfile <<EOF
-   brew "imagemagick"
-   brew "openssl"
-   EOF
-
-   brew bundle --global
-   ```
-
-2. Don't use `.Brewfile`, and instead install the packages explicitly in
-   `run_once_install-packages`:
-
-   ```sh
-   #!/bin/sh
-
-   brew install imagemagick || true
-   brew install openssl || true
-   ```
-
-   The `|| true` is necessary because `brew install` exits with failure if the
-   package is already installed.
-
-3. Use a script that runs every time (not just once) and rely on `brew bundle
-   --global` being idempotent.
-
-4. Use a script that runs every time, records a checksum of `.Brewfile` in
-   another file, and only runs `brew bundle --global` if the checksum has
-   changed, and updates the recorded checksum after.
 
 ## I've made changes to both the destination state and the source state that I want to keep. How can I keep them both?
 
