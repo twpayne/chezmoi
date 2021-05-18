@@ -40,6 +40,10 @@ stdout arg
 # test that the output template function fails if the command fails
 ! chezmoi execute-template '{{ output "false" }}'
 
+# test writeToStdout
+chezmoi execute-template --init '{{ writeToStdout "string" }}'
+stdout string
+
 -- bin/chezmoi-output-test --
 #!/bin/sh
 

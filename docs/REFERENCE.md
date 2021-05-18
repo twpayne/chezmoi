@@ -111,6 +111,7 @@ Manage your dotfiles securely across multiple machines.
   * [`stat` *name*](#stat-name)
   * [`stdinIsATTY`](#stdinisatty)
   * [`vault` *key*](#vault-key)
+  * [`writeToStdout` *string*...](#writetostdout-string)
 
 ## Concepts
 
@@ -1694,3 +1695,12 @@ times with the same *key* will only invoke `vault` once.
 #### `vault` examples
 
     {{ (vault "<key>").data.data.password }}
+
+### `writeToStdout` *string*...
+
+`writeToStdout` writes each *string* to stdout. It is only available when
+generating the initial config file.
+
+#### `writeToStdout` examples
+
+    {{- writeToStdout "Hello, world\n" -}}

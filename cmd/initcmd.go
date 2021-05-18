@@ -251,10 +251,11 @@ func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte) ([]byte
 	funcMap := make(template.FuncMap)
 	chezmoi.RecursiveMerge(funcMap, c.templateFuncs)
 	chezmoi.RecursiveMerge(funcMap, map[string]interface{}{
-		"promptBool":   c.promptBool,
-		"promptInt":    c.promptInt,
-		"promptString": c.promptString,
-		"stdinIsATTY":  c.stdinIsATTY,
+		"promptBool":    c.promptBool,
+		"promptInt":     c.promptInt,
+		"promptString":  c.promptString,
+		"stdinIsATTY":   c.stdinIsATTY,
+		"writeToStdout": c.writeToStdout,
 	})
 
 	t, err := template.New(string(filename)).Funcs(funcMap).Parse(string(data))
@@ -306,6 +307,15 @@ func (c *Config) stdinIsATTY() bool {
 		return false
 	}
 	return term.IsTerminal(int(file.Fd()))
+}
+
+func (c *Config) writeToStdout(args ...string) string {
+	for _, arg := range args {
+		if _, err := c.stdout.Write([]byte(arg)); err != nil {
+			panic(err)
+		}
+	}
+	return ""
 }
 
 // guessDotfilesRepoURL guesses the user's dotfile repo from arg.
