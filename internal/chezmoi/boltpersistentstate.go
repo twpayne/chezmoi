@@ -12,7 +12,7 @@ import (
 // A BoltPersistentStateMode is a mode for opening a PersistentState.
 type BoltPersistentStateMode int
 
-// PersistentStateModes.
+// Persistent state modes.
 const (
 	BoltPersistentStateReadOnly BoltPersistentStateMode = iota
 	BoltPersistentStateReadWrite
@@ -216,6 +216,7 @@ func (b *BoltPersistentState) open() error {
 	return nil
 }
 
+// copyByteSlice returns a copy of value.
 func copyByteSlice(value []byte) []byte {
 	if value == nil {
 		return nil

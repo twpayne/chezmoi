@@ -96,6 +96,8 @@ func WithTemplateOptions(templateOptions []string) SourceStateOption {
 	}
 }
 
+// A targetStateEntryFunc returns a TargetStateEntry based on reading an AbsPath
+// on a System.
 type targetStateEntryFunc func(System, AbsPath) (TargetStateEntry, error)
 
 // NewSourceState creates a new source state with the given options.
@@ -120,17 +122,17 @@ type PreAddFunc func(targetRelPath RelPath, newSourceStateEntry, oldSourceStateE
 
 // AddOptions are options to SourceState.Add.
 type AddOptions struct {
-	AutoTemplate     bool
-	Create           bool
-	Empty            bool
-	Encrypt          bool
-	EncryptedSuffix  string
-	Exact            bool
-	Include          *EntryTypeSet
-	PreAddFunc       PreAddFunc
-	RemoveDir        RelPath
-	Template         bool
-	TemplateSymlinks bool
+	AutoTemplate     bool          // Automatically create templates, if possible.
+	Create           bool          // Add create_ entries instead of normal entries.
+	Empty            bool          // Add the empty_ attribute to added files.
+	Encrypt          bool          // Encrypt files.
+	EncryptedSuffix  string        // Suffix for encrypted files.
+	Exact            bool          // Add the exact_ attribute to added directories.
+	Include          *EntryTypeSet // Only add types in this set.
+	PreAddFunc       PreAddFunc    // Function to be called before the source entry is added.
+	RemoveDir        RelPath       // Directory to remove before adding.
+	Template         bool          // Add the .tmpl attribute to added files.
+	TemplateSymlinks bool          // Add symlinks with targets in the source or home directories as templates.
 }
 
 // Add adds destAbsPathInfos to s.
@@ -910,6 +912,9 @@ func (s *SourceState) newSourceStateDir(sourceRelPath SourceRelPath, dirAttr Dir
 	}
 }
 
+// newCreateTargetStateEntryFunc returns a targetStateEntryFunc that returns a
+// file with sourceLazyContents if the file does not already exist, or returns
+// the actual file's contents unchanged if the file already exists.
 func (s *SourceState) newCreateTargetStateEntryFunc(fileAttr FileAttr, sourceLazyContents *lazyContents) targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		contents, err := destSystem.ReadFile(destAbsPath)
@@ -931,6 +936,8 @@ func (s *SourceState) newCreateTargetStateEntryFunc(fileAttr FileAttr, sourceLaz
 	}
 }
 
+// newFileTargetStateEntryFunc returns a targetStateEntryFunc that returns a
+// file with sourceLazyContents.
 func (s *SourceState) newFileTargetStateEntryFunc(sourceRelPath SourceRelPath, fileAttr FileAttr, sourceLazyContents *lazyContents) targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		contentsFunc := func() ([]byte, error) {
@@ -954,6 +961,8 @@ func (s *SourceState) newFileTargetStateEntryFunc(sourceRelPath SourceRelPath, f
 	}
 }
 
+// newModifyTargetStateEntryFunc returns a targetStateEntryFunc that returns a
+// file with the contents modified by running the sourceLazyContents script.
 func (s *SourceState) newModifyTargetStateEntryFunc(sourceRelPath SourceRelPath, fileAttr FileAttr, sourceLazyContents *lazyContents) targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		contentsFunc := func() (contents []byte, err error) {
@@ -1016,6 +1025,8 @@ func (s *SourceState) newModifyTargetStateEntryFunc(sourceRelPath SourceRelPath,
 	}
 }
 
+// newScriptTargetStateEntryFunc returns a targetStateEntryFunc that returns a
+// script with sourceLazyContents.
 func (s *SourceState) newScriptTargetStateEntryFunc(sourceRelPath SourceRelPath, fileAttr FileAttr, targetRelPath RelPath, sourceLazyContents *lazyContents) targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		contentsFunc := func() ([]byte, error) {
@@ -1039,6 +1050,8 @@ func (s *SourceState) newScriptTargetStateEntryFunc(sourceRelPath SourceRelPath,
 	}
 }
 
+// newSymlinkTargetStateEntryFunc returns a targetStateEntryFunc that returns a
+// symlink with the linkname sourceLazyContents.
 func (s *SourceState) newSymlinkTargetStateEntryFunc(sourceRelPath SourceRelPath, fileAttr FileAttr, sourceLazyContents *lazyContents) targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		linknameFunc := func() (string, error) {
@@ -1100,6 +1113,11 @@ func (s *SourceState) newSourceStateFile(sourceRelPath SourceRelPath, fileAttr F
 	}
 }
 
+// newSourceStateDirEntry returns a SourceStateEntry constructed from a
+// directory in s.
+//
+// We return a SourceStateEntry rather than a *SourceStateDir to simplify nil
+// checks later.
 func (s *SourceState) newSourceStateDirEntry(info fs.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions) (SourceStateEntry, error) {
 	dirAttr := DirAttr{
 		TargetName: info.Name(),
@@ -1116,6 +1134,11 @@ func (s *SourceState) newSourceStateDirEntry(info fs.FileInfo, parentSourceRelPa
 	}, nil
 }
 
+// newSourceStateFileEntryFromFile returns a SourceStateEntry constructed from a
+// file in s.
+//
+// We return a SourceStateEntry rather than a *SourceStateFile to simplify nil
+// checks later.
 func (s *SourceState) newSourceStateFileEntryFromFile(actualStateFile *ActualStateFile, info fs.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions) (SourceStateEntry, error) {
 	fileAttr := FileAttr{
 		TargetName: info.Name(),
@@ -1123,7 +1146,7 @@ func (s *SourceState) newSourceStateFileEntryFromFile(actualStateFile *ActualSta
 		Encrypted:  options.Encrypt,
 		Executable: isExecutable(info),
 		Private:    isPrivate(info),
-		Template:   options.Template || options.AutoTemplate,
+		Template:   options.Template,
 	}
 	if options.Create {
 		fileAttr.Type = SourceFileTypeCreate
@@ -1135,7 +1158,11 @@ func (s *SourceState) newSourceStateFileEntryFromFile(actualStateFile *ActualSta
 		return nil, err
 	}
 	if options.AutoTemplate {
-		contents = autoTemplate(contents, s.TemplateData())
+		var replacements bool
+		contents, replacements = autoTemplate(contents, s.TemplateData())
+		if replacements {
+			fileAttr.Template = true
+		}
 	}
 	if len(contents) == 0 && !options.Empty {
 		return nil, nil
@@ -1160,6 +1187,11 @@ func (s *SourceState) newSourceStateFileEntryFromFile(actualStateFile *ActualSta
 	}, nil
 }
 
+// newSourceStateFileEntryFromSymlink returns a SourceStateEntry constructed
+// from a symlink in s.
+//
+// We return a SourceStateEntry rather than a *SourceStateFile to simplify nil
+// checks later.
 func (s *SourceState) newSourceStateFileEntryFromSymlink(actualStateSymlink *ActualStateSymlink, info fs.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions) (SourceStateEntry, error) {
 	linkname, err := actualStateSymlink.Linkname()
 	if err != nil {
@@ -1169,8 +1201,7 @@ func (s *SourceState) newSourceStateFileEntryFromSymlink(actualStateSymlink *Act
 	template := false
 	switch {
 	case options.AutoTemplate:
-		contents = autoTemplate(contents, s.TemplateData())
-		fallthrough
+		contents, template = autoTemplate(contents, s.TemplateData())
 	case options.Template:
 		template = true
 	case !options.Template && options.TemplateSymlinks:

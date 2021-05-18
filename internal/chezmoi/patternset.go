@@ -98,6 +98,12 @@ func (s stringSet) add(elements ...string) {
 	}
 }
 
+// contains returns true if s contains element.
+func (s stringSet) contains(element string) bool {
+	_, ok := s[element]
+	return ok
+}
+
 // elements returns all the elements of s.
 func (s stringSet) elements() []string {
 	elements := make([]string, 0, len(s))

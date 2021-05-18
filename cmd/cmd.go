@@ -95,6 +95,7 @@ func Main(versionInfo VersionInfo, args []string) int {
 	return 0
 }
 
+// boolAnnotation returns whether cmd is annotated with key.
 func boolAnnotation(cmd *cobra.Command, key string) bool {
 	value, ok := cmd.Annotations[key]
 	if !ok {
@@ -107,6 +108,7 @@ func boolAnnotation(cmd *cobra.Command, key string) bool {
 	return boolValue
 }
 
+// example returns command's example.
 func example(command string) string {
 	help, ok := helps[command]
 	if !ok {
@@ -115,6 +117,7 @@ func example(command string) string {
 	return help.example
 }
 
+// extractHelps returns the helps parse from r.
 func extractHelps(r io.Reader) (map[string]*help, error) {
 	longStyleConfig := glamour.ASCIIStyleConfig
 	longStyleConfig.Code.StylePrimitive.BlockPrefix = ""
@@ -227,6 +230,7 @@ FOR:
 	return helps, nil
 }
 
+// markPersistentFlagsRequired marks all of flags as required for cmd.
 func markPersistentFlagsRequired(cmd *cobra.Command, flags ...string) {
 	for _, flag := range flags {
 		if err := cmd.MarkPersistentFlagRequired(flag); err != nil {
@@ -235,6 +239,8 @@ func markPersistentFlagsRequired(cmd *cobra.Command, flags ...string) {
 	}
 }
 
+// mustLongHelp returns the long help for command or panics if no long help
+// exists.
 func mustLongHelp(command string) string {
 	help, ok := helps[command]
 	if !ok {
@@ -243,6 +249,7 @@ func mustLongHelp(command string) string {
 	return help.long
 }
 
+// runMain runs chezmoi's main function.
 func runMain(versionInfo VersionInfo, args []string) error {
 	config, err := newConfig(
 		withVersionInfo(versionInfo),
