@@ -11,7 +11,6 @@ Manage your dotfiles securely across multiple machines.
   * [`--debug`](#--debug)
   * [`-D`, `--destination` *directory*](#-d---destination-directory)
   * [`-n`, `--dry-run`](#-n---dry-run)
-  * [`-x`, `--exclude` *types*](#-x---exclude-types)
   * [`--force`](#--force)
   * [`-h`, `--help`](#-h---help)
   * [`-k`, `--keep-going`](#-k---keep-going)
@@ -25,8 +24,9 @@ Manage your dotfiles securely across multiple machines.
   * [`--version`](#--version)
 * [Common command line flags](#common-command-line-flags)
   * [`-f`, `--format` `json`|`yaml`](#-f---format-jsonyaml)
-  * [`--include` *types*](#--include-types)
+  * [`-i`, `--include` *types*](#-i---include-types)
   * [`-r`, `--recursive`](#-r---recursive)
+  * [`-x`, `--exclude` *types*](#-x---exclude-types)
 * [Configuration file](#configuration-file)
   * [Variables](#variables)
   * [Examples](#examples)
@@ -43,55 +43,55 @@ Manage your dotfiles securely across multiple machines.
   * [`.chezmoitemplates`](#chezmoitemplates)
   * [`.chezmoiversion`](#chezmoiversion)
 * [Commands](#commands)
-  * [`add` *targets*](#add-targets)
-  * [`apply` [*targets*]](#apply-targets)
+  * [`add` *target*...](#add-target)
+  * [`apply` [*target*...]](#apply-target)
   * [`archive`](#archive)
-  * [`cat` *targets*](#cat-targets)
+  * [`cat` *target*...](#cat-target)
   * [`cd`](#cd)
-  * [`chattr` *attributes* *targets*](#chattr-attributes-targets)
+  * [`chattr` *attributes* *target*...](#chattr-attributes-target)
   * [`completion` *shell*](#completion-shell)
   * [`data`](#data)
-  * [`diff` [*targets*]](#diff-targets)
+  * [`diff` [*target*...]](#diff-target)
   * [`docs` [*regexp*]](#docs-regexp)
   * [`doctor`](#doctor)
-  * [`dump` [*targets*]](#dump-targets)
-  * [`edit` [*targets*]](#edit-targets)
+  * [`dump` [*target*...]](#dump-target)
+  * [`edit` [*target*...]](#edit-target)
   * [`edit-config`](#edit-config)
-  * [`execute-template` [*templates*]](#execute-template-templates)
+  * [`execute-template` [*template*...]](#execute-template-template)
   * [`forget` *targets*](#forget-targets)
-  * [`git` [*arguments*]](#git-arguments)
+  * [`git` [*arg*...]](#git-arg)
   * [`help` [*command*...]](#help-command)
   * [`init` [*repo*]](#init-repo)
   * [`import` *filename*](#import-filename)
   * [`manage` *targets*](#manage-targets)
   * [`managed`](#managed)
-  * [`merge` *targets*](#merge-targets)
+  * [`merge` *target*...](#merge-target)
   * [`purge`](#purge)
   * [`remove` *targets*](#remove-targets)
   * [`re-add`](#re-add)
   * [`rm` *targets*](#rm-targets)
   * [`secret`](#secret)
-  * [`source-path` [*targets*]](#source-path-targets)
+  * [`source-path` [*target*...]](#source-path-target)
   * [`state`](#state)
   * [`status`](#status)
-  * [`unmanage` *targets*](#unmanage-targets)
+  * [`unmanage` *target*...](#unmanage-target)
   * [`unmanaged`](#unmanaged)
   * [`update`](#update)
   * [`upgrade`](#upgrade)
-  * [`verify` [*targets*]](#verify-targets)
+  * [`verify` [*target*...]](#verify-target)
 * [Editor configuration](#editor-configuration)
 * [Umask configuration](#umask-configuration)
 * [Template execution](#template-execution)
 * [Template variables](#template-variables)
 * [Template functions](#template-functions)
-  * [`bitwarden` [*args*]](#bitwarden-args)
+  * [`bitwarden` [*arg*...]](#bitwarden-arg)
   * [`bitwardenAttachment` *filename* *itemid*](#bitwardenattachment-filename-itemid)
-  * [`bitwardenFields` [*args*]](#bitwardenfields-args)
+  * [`bitwardenFields` [*arg*...]](#bitwardenfields-arg)
   * [`gitHubKeys` *user*](#githubkeys-user)
   * [`gopass` *gopass-name*](#gopass-gopass-name)
   * [`include` *filename*](#include-filename)
   * [`ioreg`](#ioreg)
-  * [`joinPath` *elements*](#joinpath-elements)
+  * [`joinPath` *element*...](#joinpath-element)
   * [`keepassxc` *entry*](#keepassxc-entry)
   * [`keepassxcAttribute` *entry* *attribute*](#keepassxcattribute-entry-attribute)
   * [`keyring` *service* *user*](#keyring-service-user)
@@ -101,13 +101,13 @@ Manage your dotfiles securely across multiple machines.
   * [`onepassword` *uuid* [*vault-uuid*]](#onepassword-uuid-vault-uuid)
   * [`onepasswordDocument` *uuid* [*vault-uuid*]](#onepassworddocument-uuid-vault-uuid)
   * [`onepasswordDetailsFields` *uuid* [*vault-uuid*]](#onepassworddetailsfields-uuid-vault-uuid)
-  * [`output` *name* [*args*]](#output-name-args)
+  * [`output` *name* [*arg*...]](#output-name-arg)
   * [`pass` *pass-name*](#pass-pass-name)
   * [`promptBool` *prompt*](#promptbool-prompt)
   * [`promptInt` *prompt*](#promptint-prompt)
   * [`promptString` *prompt*](#promptstring-prompt)
-  * [`secret` [*args*]](#secret-args)
-  * [`secretJSON` [*args*]](#secretjson-args)
+  * [`secret` [*arg*...]](#secret-arg)
+  * [`secretJSON` [*arg*...]](#secretjson-arg)
   * [`stat` *name*](#stat-name)
   * [`stdinIsATTY`](#stdinisatty)
   * [`vault` *key*](#vault-key)
@@ -169,13 +169,6 @@ Set dry run mode. In dry run mode, the destination directory is never modified.
 This is most useful in combination with the `-v` (verbose) flag to print changes
 that would be made without making them.
 
-### `-x`, `--exclude` *types*
-
-Exclude target state entries of type *types*. *types* is a comma-separated list
-of target states (`all`, `dirs`, `files`, `remove`, `scripts`, `symlinks`, and
-`encrypted`). For example, `--exclude=scripts` will cause the command to not run
-scripts and `--exclude=encrypted` will exclude encrypted files.
-
 ### `--force`
 
 Make changes without prompting.
@@ -235,7 +228,7 @@ The following flags apply to multiple commands where they are relevant.
 
 Set the output format.
 
-### `--include` *types*
+### `-i`, `--include` *types*
 
 Only operate on target state entries of type *types*. *types* is a
 comma-separated list of target states (`all`, `dirs`, `files`, `remove`,
@@ -246,6 +239,13 @@ to directories and files only.
 ### `-r`, `--recursive`
 
 Recurse into subdirectories, `true` by default.
+
+### `-x`, `--exclude` *types*
+
+Exclude target state entries of type *types*. *types* is a comma-separated list
+of target states (`all`, `dirs`, `files`, `remove`, `scripts`, `symlinks`, and
+`encrypted`). For example, `--exclude=scripts` will cause the command to not run
+scripts and `--exclude=encrypted` will exclude encrypted files.
 
  ## Configuration file
 
@@ -564,9 +564,9 @@ the current version is too old.
 
 ## Commands
 
-### `add` *targets*
+### `add` *target*...
 
-Add *targets* to the source state. If any target is already in the source state,
+Add *target*s to the source state. If any target is already in the source state,
 then its source state is replaced with its current state in the destination
 directory.
 
@@ -622,10 +622,10 @@ directory, create a symlink template with `.chezmoi.sourceDir` or
     chezmoi add ~/.vim --recursive
     chezmoi add ~/.oh-my-zsh --exact --recursive
 
-### `apply` [*targets*]
+### `apply` [*target*...]
 
-Ensure that *targets* are in the target state, updating them if necessary. If no
-targets are specified, the state of all targets are ensured. If a target has
+Ensure that *target*... are in the target state, updating them if necessary. If
+no targets are specified, the state of all targets are ensured. If a target has
 been modified since chezmoi last wrote it then the user will be prompted if they
 want to overwrite the file.
 
@@ -667,9 +667,9 @@ Compress the output with gzip.
     chezmoi archive --output=dotfiles.tar
     chezmoi archive --format=zip --output=dotfiles.zip
 
-### `cat` *targets*
+### `cat` *target*...
 
-Write the target contents of *targets* to stdout. *targets* must be files,
+Write the target contents of *target*s to stdout. *targets* must be files,
 scripts, or symlinks. For files, the target file contents are written. For
 scripts, the script's contents are written. For symlinks, the target target is
 written.
@@ -689,9 +689,9 @@ will finally fall back to an OS-specific default.
 
     chezmoi cd
 
-### `chattr` *attributes* *targets*
+### `chattr` *attributes* *target*...
 
-Change the attributes of *targets*. *attributes* specifies which attributes to
+Change the attributes of *target*s. *attributes* specifies which attributes to
 modify. Add attributes by specifying them or their abbreviations directly,
 optionally prefixed with a plus sign (`+`). Remove attributes by prefixing them
 or their attributes with the string `no` or a minus sign (`-`). The available
@@ -741,10 +741,10 @@ Set the output format.
     chezmoi data
     chezmoi data --format=yaml
 
-### `diff` [*targets*]
+### `diff` [*target*...]
 
 Print the difference between the target state and the destination state for
-*targets*. If no targets are specified, print the differences for all targets.
+*target*s. If no targets are specified, print the differences for all targets.
 
 If a `diff.pager` command is set in the configuration file then the output will
 be piped into it.
@@ -773,10 +773,10 @@ Check for potential problems.
 
     chezmoi doctor
 
-### `dump` [*targets*]
+### `dump` [*target*...]
 
-Dump the target state. If no targets are specified, then the entire target
-state.
+Dump the target state of *target*s. If no targets are specified, then the entire
+target state.
 
 #### `-f`, `--format` `json`|`yaml`
 
@@ -791,9 +791,9 @@ Only include entries of type *types*.
     chezmoi dump ~/.bashrc
     chezmoi dump --format=yaml
 
-### `edit` [*targets*]
+### `edit` [*target*...]
 
-Edit the source state of *targets*, which must be files or symlinks. If no
+Edit the source state of *target*s, which must be files or symlinks. If no
 targets are given the the source directory itself is opened with `$EDITOR`.
 
 #### `-a`, `--apply`
@@ -814,9 +814,9 @@ Edit the configuration file.
 
     chezmoi edit-config
 
-### `execute-template` [*templates*]
+### `execute-template` [*template*...]
 
-Execute *templates*. This is useful for testing templates or for calling chezmoi
+Execute *template*s. This is useful for testing templates or for calling chezmoi
 from other scripts. *templates* are interpreted as literal templates, with no
 whitespace added to the output between arguments. If no templates are specified,
 the template is read from stdin.
@@ -865,10 +865,10 @@ Remove *targets* from the source state, i.e. stop managing them.
 
     chezmoi forget ~/.bashrc
 
-### `git` [*arguments*]
+### `git` [*arg*...]
 
-Run `git` *arguments* in the source directory. Note that flags in *arguments*
-must occur after `--` to prevent chezmoi from interpreting them.
+Run `git` *arg*s in the source directory. Note that flags in *arguments* must
+occur after `--` to prevent chezmoi from interpreting them.
 
 #### `git` examples
 
@@ -998,14 +998,15 @@ Only include entries of type *types*.
     chezmoi managed -i d
     chezmoi managed -i d,f
 
-### `merge` *targets*
+### `merge` *target*...
 
 Perform a three-way merge between the destination state, the target state, and
-the source state. The merge tool is defined by the `merge.command` configuration
-variable, and defaults to `vimdiff`. If multiple targets are specified the merge
-tool is invoked for each target. If the target state cannot be computed (for
-example if source is a template containing errors or an encrypted file that
-cannot be decrypted) a two-way merge is performed instead.
+the source state for each *target*. The merge tool is defined by the
+`merge.command` configuration variable, and defaults to `vimdiff`. If multiple
+targets are specified the merge tool is invoked for each target. If the target
+state cannot be computed (for example if source is a template containing errors
+or an encrypted file that cannot be decrypted) a two-way merge is performed
+instead.
 
 #### `merge` examples
 
@@ -1063,7 +1064,7 @@ To get a full list of available commands run:
     chezmoi secret keyring set --service=service --user=user --value=password
     chezmoi secret keyring get --service=service --user=user
 
-### `source-path` [*targets*]
+### `source-path` [*target*...]
 
 Print the path to each target's source state. If no targets are specified then
 print the source directory.
@@ -1103,7 +1104,7 @@ Only include entries of type *types*.
 
     chezmoi status
 
-### `unmanage` *targets*
+### `unmanage` *target*...
 
 `unmanage` is an alias for `forget` for symmetry with `manage`.
 
@@ -1141,9 +1142,9 @@ requests are used which are subject to stricter [rate
 limiting](https://developer.github.com/v3/#rate-limiting). Unauthenticated
 requests should be sufficient for most cases.
 
-### `verify` [*targets*]
+### `verify` [*target*...]
 
-Verify that all *targets* match their target state. chezmoi exits with code 0
+Verify that all *target*s match their target state. chezmoi exits with code 0
 (success) if all targets match their target state, or 1 (failure) otherwise. If
 no targets are specified then all targets are checked.
 
@@ -1230,11 +1231,11 @@ All standard [`text/template`](https://pkg.go.dev/text/template) and [text
 template functions from `sprig`](http://masterminds.github.io/sprig/) are
 included. chezmoi provides some additional functions.
 
-### `bitwarden` [*args*]
+### `bitwarden` [*arg*...]
 
 `bitwarden` returns structured data retrieved from
 [Bitwarden](https://bitwarden.com) using the [Bitwarden
-CLI](https://github.com/bitwarden/cli) (`bw`). *args* are passed to `bw get`
+CLI](https://github.com/bitwarden/cli) (`bw`). *arg*s are passed to `bw get`
 unchanged and the output from `bw get` is parsed as JSON. The output from `bw
 get` is cached so calling `bitwarden` multiple times with the same arguments
 will only invoke `bw` once.
@@ -1258,11 +1259,11 @@ only invoke `bw` once.
 
     {{- (bitwardenAttachment "<filename>" "<itemid>") -}}
 
-### `bitwardenFields` [*args*]
+### `bitwardenFields` [*arg*...]
 
 `bitwardenFields` returns structured data retrieved from
 [Bitwarden](https://bitwarden.com) using the [Bitwarden
-CLI](https://github.com/bitwarden/cli) (`bw`). *args* are passed to `bw get`
+CLI](https://github.com/bitwarden/cli) (`bw`). *arg*s are passed to `bw get`
 unchanged, the output from `bw get` is parsed as JSON, and elements of `fields`
 are returned as a map indexed by each field's `name`. For example, given the
 output from `bw get`:
@@ -1390,7 +1391,7 @@ only execute the `ioreg -a -l` command once.
     {{ $serialNumber := index ioreg "IORegistryEntryChildren" 0 "IOPlatformSerialNumber" }}
     {{ end }}
 
-### `joinPath` *elements*
+### `joinPath` *element*...
 
 `joinPath` joins any number of path elements into a single path, separating them
 with the OS-specific path separator. Empty elements are ignored. The result is
@@ -1583,9 +1584,9 @@ can significantly improve performance.
 
     {{ (onepasswordDetailsFields "<uuid>").password.value }}
 
-### `output` *name* [*args*]
+### `output` *name* [*arg*...]
 
-`output` returns the output of executing the command *name* with *args*. If
+`output` returns the output of executing the command *name* with *arg*s. If
 executing the command returns an error then template execution exits with an
 error. The execution occurs every time that the template is executed. It is the
 user's responsibility to ensure that executing the command is both idempotent
@@ -1636,17 +1637,17 @@ generating the initial config file.
     [data]
         email = "{{ $email }}"
 
-### `secret` [*args*]
+### `secret` [*arg*...]
 
 `secret` returns the output of the generic secret command defined by the
-`secret.command` configuration variable with *args* with leading and trailing
+`secret.command` configuration variable with *arg*s with leading and trailing
 whitespace removed. The output is cached so multiple calls to `secret` with the
-same *args* will only invoke the generic secret command once.
+same *arg*s will only invoke the generic secret command once.
 
-### `secretJSON` [*args*]
+### `secretJSON` [*arg*...]
 
 `secretJSON` returns structured data from the generic secret command defined by
-the `secret.command` configuration variable with *args*. The output is parsed as
+the `secret.command` configuration variable with *arg*s. The output is parsed as
 JSON. The output is cached so multiple calls to `secret` with the same *args*
 will only invoke the generic secret command once.
 
