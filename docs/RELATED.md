@@ -7,6 +7,10 @@
 Intelligent VIM syntax highlighting when editing files in your source directory.
 Works with both `chezmoi edit` and editing files directly.
 
+## [`hussainweb/ansible-role-chezmoi`](https://github.com/hussainweb/ansible-role-chezmoi)
+
+Installs chezmoi on Ubuntu and Debian servers.
+
 ## [`github.com/tuh8888/chezmoi.el`](https://github.com/tuh8888/chezmoi.el)
 
 Convenience functions for interacting with chezmoi in Emacs.
