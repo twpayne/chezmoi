@@ -487,7 +487,7 @@ config file formats.
 
 If a file called `.chezmoiignore` exists in the source state then it is
 interpreted as a set of patterns to ignore. Patterns are matched using
-[`doublestar.PathMatch`](https://pkg.go.dev/github.com/bmatcuk/doublestar?tab=doc#PathMatch)
+[`doublestar.Match`](https://pkg.go.dev/github.com/bmatcuk/doublestar/v4#Match)
 and match against the target path, not the source path.
 
 Patterns can be excluded by prefixing them with a `!` character. All excludes
