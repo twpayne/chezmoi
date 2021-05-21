@@ -20,6 +20,7 @@
   * [Import archives](#import-archives)
 * [Manage machine-to-machine differences](#manage-machine-to-machine-differences)
   * [Use templates](#use-templates)
+  * [Ignore files or a directory on different machines](#ignore-files-or-a-directory-on-different-machines)
   * [Use completely different dotfiles on different machines](#use-completely-different-dotfiles-on-different-machines)
   * [Create a config file on a new machine automatically](#create-a-config-file-on-a-new-machine-automatically)
   * [Re-create your config file](#re-create-your-config-file)
@@ -401,6 +402,8 @@ If, after executing the template, the file contents are empty, the target file
 will be removed. This can be used to ensure that files are only present on
 certain machines. If you want an empty file to be created anyway, you will need
 to give it an `empty_` prefix.
+
+### Ignore files or a directory on different machines
 
 For coarser-grained control of files and entire directories managed on different
 machines, or to exclude certain files completely, you can create
