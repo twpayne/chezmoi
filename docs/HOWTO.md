@@ -241,6 +241,7 @@ distributed in this format. Instead, you can use the `import` command to import
 a snapshot from a tarball:
 
     curl -s -L -o oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
+    mkdir -p $(chezmoi source-path)/dot_oh-my-zsh
     chezmoi import --strip-components 1 --destination ${HOME}/.oh-my-zsh oh-my-zsh-master.tar.gz
 
 Add `oh-my-zsh-master.tar.gz` to `.chezmoiignore` if you run these commands in
