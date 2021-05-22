@@ -120,7 +120,7 @@ updating them, removing them, and even more advanced features not found
 elsewhere like having the same symlink point to different targets on different
 machines by using templates.
 
-With chezmoi, you only use a symlink where you really want a symlink, in
+With chezmoi, you only use a symlink where you really need a symlink, in
 contrast to some other dotfile managers (e.g. GNU Stow) which require the use of
 symlinks as a layer of indirection between a dotfile's location (which can be
 anywhere in your home directory) and a dotfile's content (which needs to be in a
@@ -128,13 +128,14 @@ centralized directory that you manage with version control). chezmoi solves this
 problem in a different way.
 
 Instead of using a symlink to redirect from the dotfile's location to the
-centralized directory, chezmoi generates the dotfile in its final location from
-the contents of the centralized directory. Not only is no symlink is needed,
-this has the advantages that chezmoi is better able to cope with differences
-from machine to machine (as a dotfile's contents can be unique to that machine)
-and the dotfiles that chezmoi creates are just regular files. There's nothing
-special about dotfiles managed by chezmoi, whereas dotfiles managed with GNU
-Stow are special because they're actually symlinks to somewhere else.
+centralized directory, chezmoi generates the dotfile as a regular file in its
+final location from the contents of the centralized directory. This approach
+means that symlinks are not needed for regular files and that chezmoi is better
+able to cope with differences from machine to machine (as a dotfile's contents
+can be unique to that machine) and the dotfiles that chezmoi creates are just
+regular files. There's nothing special about dotfiles managed by chezmoi,
+whereas dotfiles managed with GNU Stow are special because they're actually
+symlinks to somewhere else.
 
 The only advantage to using GNU Stow-style symlinks is that changes that you
 make to the dotfile's contents in the centralized directory are immediately
