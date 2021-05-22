@@ -223,7 +223,7 @@ The operators `or` and `and` can also accept multiple arguments.
 
 You can perform multiple checks in one if statement.
 
-	{{ if (and (eq .chezmoi.os "linux") (ne .email "user@home.org")) }}
+	{{ if (and (eq .chezmoi.os "linux") (ne .email "me@home.org")) }}
 	...
 	{{ end }}
 

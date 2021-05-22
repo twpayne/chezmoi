@@ -317,7 +317,7 @@ needed.
 For example, your home `~/.gitconfig` on your personal machine might look like:
 
     [user]
-      email = "user@home.org"
+      email = "me@home.org"
 
 Whereas at work it might be:
 
@@ -329,7 +329,7 @@ To handle this, on each machine create a configuration file called
 to machine. For example, for your home machine:
 
     [data]
-      email = "user@home.org"
+      email = "me@home.org"
 
 Note that all variable names will be converted to lowercase. This is due to a
 feature of a library used by chezmoi.
@@ -504,7 +504,7 @@ Then `chezmoi init` will create an initial `chezmoi.toml` using this template.
 To test this template, use `chezmoi execute-template` with the `--init` and
 `--promptString` flags, for example:
 
-    chezmoi execute-template --init --promptString email=user@home.org < ~/.local/share/chezmoi/.chezmoi.toml.tmpl
+    chezmoi execute-template --init --promptString email=me@home.org < ~/.local/share/chezmoi/.chezmoi.toml.tmpl
 
 ### Re-create your config file
 

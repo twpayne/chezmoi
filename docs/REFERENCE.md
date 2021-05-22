@@ -518,7 +518,7 @@ ignored on different machines.
     .company-directory # note that the pattern is not dot_company-directory
     {{- end }}
 
-    {{- if ne .email "user@home.org }}
+    {{- if ne .email "me@home.org }}
     .personal-file
     {{- end }}
 
@@ -855,7 +855,7 @@ Simulate the `stdinIsATTY` function by returning *bool*.
     chezmoi execute-template '{{ .chezmoi.sourceDir }}'
     chezmoi execute-template '{{ .chezmoi.os }}' / '{{ .chezmoi.arch }}'
     echo '{{ .chezmoi | toJson }}' | chezmoi execute-template
-    chezmoi execute-template --init --promptString email=user@home.org < ~/.local/share/chezmoi/.chezmoi.toml.tmpl
+    chezmoi execute-template --init --promptString email=me@home.org < ~/.local/share/chezmoi/.chezmoi.toml.tmpl
 
 ### `forget` *targets*
 

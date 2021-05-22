@@ -73,12 +73,12 @@ stderr 'parsing error'
   email = "firstname.lastname@company.com"
 -- golden/chezmoi.toml-no-data --
 [data]
-  email = "user@home.org"
+  email = "me@home.org"
 -- home4/user/.config/chezmoi/chezmoi.toml --
 -- home5/user/dotfiles/.git/.keep --
 -- home5/user/dotfiles/.chezmoi.toml.tmpl --
 [data]
-  email = "user@home.org"
+  email = "me@home.org"
 -- home7/user/.config/chezmoi/chezmoi.toml --
 [data]
   email = "firstname.lastname@company.com"
@@ -86,7 +86,7 @@ stderr 'parsing error'
 -- home7/user/.local/share/chezmoi/.chezmoi.toml.tmpl --
 {{- $email := get . "email" -}}
 {{- if not $email -}}
-{{-   $email = "user@home.org" -}}
+{{-   $email = "me@home.org" -}}
 {{- end -}}
 [data]
   email = {{ $email | quote }}
