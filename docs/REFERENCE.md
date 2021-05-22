@@ -513,12 +513,12 @@ ignored on different machines.
     backups/** # ignore all contents of backups folder in chezmoi directory
                # but not backups folder itself
 
-    {{- if ne .email "john.smith@company.com" }}
+    {{- if ne .email "firstname.lastname@company.com" }}
     # Ignore .company-directory unless configured with a company email
     .company-directory # note that the pattern is not dot_company-directory
     {{- end }}
 
-    {{- if ne .email "john@home.org }}
+    {{- if ne .email "user@home.org }}
     .personal-file
     {{- end }}
 
@@ -855,7 +855,7 @@ Simulate the `stdinIsATTY` function by returning *bool*.
     chezmoi execute-template '{{ .chezmoi.sourceDir }}'
     chezmoi execute-template '{{ .chezmoi.os }}' / '{{ .chezmoi.arch }}'
     echo '{{ .chezmoi | toJson }}' | chezmoi execute-template
-    chezmoi execute-template --init --promptString email=john@home.org < ~/.local/share/chezmoi/.chezmoi.toml.tmpl
+    chezmoi execute-template --init --promptString email=user@home.org < ~/.local/share/chezmoi/.chezmoi.toml.tmpl
 
 ### `forget` *targets*
 
