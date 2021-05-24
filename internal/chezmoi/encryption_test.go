@@ -20,16 +20,16 @@ func (e *xorEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
 	return e.xorWithKey(ciphertext), nil
 }
 
-func (e *xorEncryption) DecryptToFile(filename string, ciphertext []byte) error {
-	return os.WriteFile(filename, e.xorWithKey(ciphertext), 0o666)
+func (e *xorEncryption) DecryptToFile(plaintextFilename string, ciphertext []byte) error {
+	return os.WriteFile(plaintextFilename, e.xorWithKey(ciphertext), 0o666)
 }
 
 func (e *xorEncryption) Encrypt(plaintext []byte) ([]byte, error) {
 	return e.xorWithKey(plaintext), nil
 }
 
-func (e *xorEncryption) EncryptFile(filename string) ([]byte, error) {
-	plaintext, err := os.ReadFile(filename)
+func (e *xorEncryption) EncryptFile(plaintextFilename string) ([]byte, error) {
+	plaintext, err := os.ReadFile(plaintextFilename)
 	if err != nil {
 		return nil, err
 	}
@@ -63,11 +63,11 @@ func testEncryptionDecryptToFile(t *testing.T, encryption Encryption) {
 		defer func() {
 			assert.NoError(t, os.RemoveAll(tempDir))
 		}()
-		filename := filepath.Join(tempDir, "filename")
+		plaintextFilename := filepath.Join(tempDir, "plaintext")
 
-		require.NoError(t, encryption.DecryptToFile(filename, actualCiphertext))
+		require.NoError(t, encryption.DecryptToFile(plaintextFilename, actualCiphertext))
 
-		actualPlaintext, err := os.ReadFile(filename)
+		actualPlaintext, err := os.ReadFile(plaintextFilename)
 		require.NoError(t, err)
 		require.NotEmpty(t, actualPlaintext)
 		assert.Equal(t, expectedPlaintext, actualPlaintext)
@@ -101,10 +101,10 @@ func testEncryptionEncryptFile(t *testing.T, encryption Encryption) {
 		defer func() {
 			assert.NoError(t, os.RemoveAll(tempDir))
 		}()
-		filename := filepath.Join(tempDir, "filename")
-		require.NoError(t, os.WriteFile(filename, expectedPlaintext, 0o666))
+		plaintextFilename := filepath.Join(tempDir, "plaintext")
+		require.NoError(t, os.WriteFile(plaintextFilename, expectedPlaintext, 0o666))
 
-		actualCiphertext, err := encryption.EncryptFile(filename)
+		actualCiphertext, err := encryption.EncryptFile(plaintextFilename)
 		require.NoError(t, err)
 		require.NotEmpty(t, actualCiphertext)
 		assert.NotEqual(t, expectedPlaintext, actualCiphertext)

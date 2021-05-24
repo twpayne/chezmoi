@@ -30,10 +30,10 @@ func (e *GPGEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
 }
 
 // DecryptToFile implements Encryption.DecryptToFile.
-func (e *GPGEncryption) DecryptToFile(filename string, ciphertext []byte) error {
+func (e *GPGEncryption) DecryptToFile(plaintextFilename string, ciphertext []byte) error {
 	args := append([]string{
 		"--decrypt",
-		"--output", filename,
+		"--output", plaintextFilename,
 		"--yes",
 	}, e.Args...)
 	//nolint:gosec
@@ -54,8 +54,8 @@ func (e *GPGEncryption) Encrypt(plaintext []byte) ([]byte, error) {
 }
 
 // EncryptFile implements Encryption.EncryptFile.
-func (e *GPGEncryption) EncryptFile(filename string) (ciphertext []byte, err error) {
-	f, err := os.Open(filename)
+func (e *GPGEncryption) EncryptFile(plaintextFilename string) (ciphertext []byte, err error) {
+	f, err := os.Open(plaintextFilename)
 	if err != nil {
 		return nil, err
 	}

@@ -38,9 +38,9 @@ func (e *AGEEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
 }
 
 // DecryptToFile implements Encryption.DecryptToFile.
-func (e *AGEEncryption) DecryptToFile(filename string, ciphertext []byte) error {
+func (e *AGEEncryption) DecryptToFile(plaintextFilename string, ciphertext []byte) error {
 	//nolint:gosec
-	cmd := exec.Command(e.Command, append(append(e.decryptArgs(), "--output", filename), e.Args...)...)
+	cmd := exec.Command(e.Command, append(append(e.decryptArgs(), "--output", plaintextFilename), e.Args...)...)
 	cmd.Stdin = bytes.NewReader(ciphertext)
 	cmd.Stderr = os.Stderr
 	return chezmoilog.LogCmdRun(log.Logger, cmd)
@@ -60,9 +60,9 @@ func (e *AGEEncryption) Encrypt(plaintext []byte) ([]byte, error) {
 }
 
 // EncryptFile implements Encryption.EncryptFile.
-func (e *AGEEncryption) EncryptFile(filename string) ([]byte, error) {
+func (e *AGEEncryption) EncryptFile(plaintextFilename string) ([]byte, error) {
 	//nolint:gosec
-	cmd := exec.Command(e.Command, append(append(e.encryptArgs(), e.Args...), filename)...)
+	cmd := exec.Command(e.Command, append(append(e.encryptArgs(), e.Args...), plaintextFilename)...)
 	cmd.Stderr = os.Stderr
 	return chezmoilog.LogCmdOutput(log.Logger, cmd)
 }
