@@ -289,7 +289,8 @@ The following configuration variables are available:
 |               | `command`          | string   | *none*                   | Shell to run in `cd` command                           |
 | `diff`        | `exclude`          | []string | *none*                   | Entry types to exclude from diff                       |
 |               | `pager`            | string   | *none*                   | Diff-specific pager                                    |
-| `docs`        | `pager`            | string   | *none*                   | Docs-specific pager                                    |
+| `docs`        | `maxWidth`         | int      | 80                       | Maximum width of output                                |
+|               | `pager`            | string   | *none*                   | Docs-specific pager                                    |
 | `edit`        | `args`             | []string | *none*                   | Extra args to edit command                             |
 |               | `command`          | string   | `$EDITOR` / `$VISUAL`    | Edit command                                           |
 | `secret`      | `command`          | string   | *none*                   | Generic secret command                                 |

@@ -15,7 +15,8 @@ import (
 )
 
 type docsCmdConfig struct {
-	Pager string `mapstructure:"pager"`
+	MaxWidth int    `mapstructure:"maxWidth"`
+	Pager    string `mapstructure:"pager"`
 }
 
 func (c *Config) newDocsCmd() *cobra.Command {
@@ -32,6 +33,7 @@ func (c *Config) newDocsCmd() *cobra.Command {
 	}
 
 	flags := docsCmd.Flags()
+	flags.IntVar(&c.Docs.MaxWidth, "max-width", c.Docs.MaxWidth, "maximum output width")
 	flags.StringVar(&c.Docs.Pager, "pager", c.Docs.Pager, "pager")
 
 	return docsCmd
@@ -88,6 +90,9 @@ func (c *Config) runDocsCmd(cmd *cobra.Command, args []string) error {
 		if err != nil {
 			return err
 		}
+	}
+	if c.Docs.MaxWidth != 0 && width > c.Docs.MaxWidth {
+		width = c.Docs.MaxWidth
 	}
 
 	tr, err := glamour.NewTermRenderer(
