@@ -883,17 +883,18 @@ given.
 
 ### `init` [*repo*]
 
-Setup the source directory, generate the config file, and optionally update
-the destination directory to match the target state. *repo* is expanded to a
-full git repo URL using the following rules:
+Setup the source directory, generate the config file, and optionally update the
+destination directory to match the target state. *repo* is expanded to a full
+git repo URL, using HTTPS by default, or SSH if the `--ssh` option is specified,
+according to the following patterns:
 
-| Pattern            | Repo                                   |
-| ------------------ | -------------------------------------- |
-| `user`             | `https://github.com/user/dotfiles.git` |
-| `user/repo`        | `https://github.com/user/repo.git`     |
-| `site/user/repo`   | `https://site/user/repo.git`           |
-| `~sr.ht/user`      | `https://git.sr.ht/~user/dotfiles`     |
-| `~sr.ht/user/repo` | `https://git.sr.ht/~user/repo`         |
+| Pattern            | HTTPS Repo                             | SSH repo                           |
+| ------------------ | -------------------------------------- | ---------------------------------- |
+| `user`             | `https://github.com/user/dotfiles.git` | `git@github.com:user/dotfiles.git` |
+| `user/repo`        | `https://github.com/user/repo.git`     | `git@github.com:user/repo.git`     |
+| `site/user/repo`   | `https://site/user/repo.git`           | `git@site:user/repo.git`           |
+| `~sr.ht/user`      | `https://git.sr.ht/~user/dotfiles`     | `git@git.sr.ht:~user/dotfiles.git` |
+| `~sr.ht/user/repo` | `https://git.sr.ht/~user/repo`         | `git@git.sr.ht:~/user/repo.git`    |
 
 First, if the source directory is not already contain a repository, then if
 *repo* is given it is checked out into the source directory, otherwise a new
@@ -939,6 +940,10 @@ Remove the source and config directories after applying.
 #### `--purge-binary`
 
 Attempt to remove the chezmoi binary after applying.
+
+#### `--ssh`
+
+Guess an SSH repo URL instead of an HTTPS repo.
 
 #### `init` examples
 
