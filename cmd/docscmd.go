@@ -14,6 +14,10 @@ import (
 	"github.com/twpayne/chezmoi/v2/docs"
 )
 
+type docsCmdConfig struct {
+	Pager string `mapstructure:"pager"`
+}
+
 func (c *Config) newDocsCmd() *cobra.Command {
 	docsCmd := &cobra.Command{
 		Use:     "docs [regexp]",
@@ -26,6 +30,9 @@ func (c *Config) newDocsCmd() *cobra.Command {
 			doesNotRequireValidConfig: "true",
 		},
 	}
+
+	flags := docsCmd.Flags()
+	flags.StringVar(&c.Docs.Pager, "pager", c.Docs.Pager, "pager")
 
 	return docsCmd
 }
@@ -96,5 +103,5 @@ func (c *Config) runDocsCmd(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	return c.writeOutput(renderedData)
+	return c.pageOutputString(string(renderedData), c.Docs.Pager)
 }

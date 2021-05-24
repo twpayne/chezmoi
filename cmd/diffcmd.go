@@ -10,9 +10,9 @@ import (
 
 type diffCmdConfig struct {
 	Exclude   *chezmoi.EntryTypeSet `mapstructure:"exclude"`
+	Pager     string                `mapstructure:"pager"`
 	include   *chezmoi.EntryTypeSet
 	recursive bool
-	Pager     string `mapstructure:"pager"`
 }
 
 func (c *Config) newDiffCmd() *cobra.Command {
@@ -31,6 +31,7 @@ func (c *Config) newDiffCmd() *cobra.Command {
 	flags.VarP(c.Diff.Exclude, "exclude", "x", "exclude entry types")
 	flags.VarP(c.Diff.include, "include", "i", "include entry types")
 	flags.BoolVarP(&c.Diff.recursive, "recursive", "r", c.Diff.recursive, "recursive")
+	flags.StringVar(&c.Diff.Pager, "pager", c.Diff.Pager, "pager")
 
 	return diffCmd
 }
@@ -50,5 +51,5 @@ func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) error {
 	}); err != nil {
 		return err
 	}
-	return c.diffPager(sb.String())
+	return c.pageOutputString(sb.String(), c.Diff.Pager)
 }
