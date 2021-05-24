@@ -37,7 +37,7 @@ The important directories in chezmoi are:
 | `cmd/` | Code for the `chezmoi` command.  |
 | `docs/` | The documentation single source of truth. Help text, examples, and the [chezmoi.io](https://chezmoi.io) website are generated from the files in this directory, particularly `docs/REFERENCE.md`. |
 | `internal/chezmoi/` | chezmoi's core functionality. |
-| `testdata/scripts/` | High-level tests of chezmoi's commands using [`testscript`](https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript). |
+| `internal/integrationtests/testdata/scripts/` | High-level tests of chezmoi's commands using [`testscript`](https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript). |
 
 ## Key concepts
 
@@ -169,14 +169,16 @@ integration tests use the
 [`github.com/stretchr/testify`](https://pkg.go.dev/github.com/stretchr/testify)
 framework. End-to-end tests use
 [`github.com/rogpeppe/go-internal/testscript`](https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript)
-with the test scripts themselves in `testdata/scripts`. You can run individual
-end-to-end tests with
+with the test scripts themselves in
+`internal/integerationtests/testdata/scripts`. You can run individual end-to-end
+tests with
 
 ```console
-$ go test . -run=TestScript/<name>
+$ go test ./internal/integrationtests -run=TestScript/<name>
 ```
 
-where `<name>` is the basename of file in `testdata/scripts`.
+where `<name>` is the basename of file in
+`internal/integrationtests/testdata/scripts`.
 
 Tests should, if at all possible, run unmodified on all operating systems tested
 in CI (Linux, macOS, Windows, and FreeBSD). Windows will sometimes need special
