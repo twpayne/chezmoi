@@ -34,9 +34,9 @@ The important directories in chezmoi are:
 
 | Directory | Contents |
 | --------- | -------- |
-| `cmd/` | Code for the `chezmoi` command.  |
 | `docs/` | The documentation single source of truth. Help text, examples, and the [chezmoi.io](https://chezmoi.io) website are generated from the files in this directory, particularly `docs/REFERENCE.md`. |
 | `internal/chezmoi/` | chezmoi's core functionality. |
+| `internal/chezmoicmd/` | Code for the `chezmoi` command.  |
 | `internal/integrationtests/testdata/scripts/` | High-level tests of chezmoi's commands using [`testscript`](https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript). |
 
 ## Key concepts

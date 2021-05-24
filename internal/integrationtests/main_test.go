@@ -1,4 +1,4 @@
-package main
+package integrationtests
 
 import (
 	"bufio"
@@ -20,7 +20,7 @@ import (
 	"github.com/twpayne/go-vfs/v3"
 	"github.com/twpayne/go-vfs/v3/vfst"
 
-	"github.com/twpayne/chezmoi/v2/cmd"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoicmd"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
 
@@ -30,7 +30,7 @@ var umaskConditionRx = regexp.MustCompile(`\Aumask:([0-7]{3})\z`)
 func TestMain(m *testing.M) {
 	os.Exit(testscript.RunMain(m, map[string]func() int{
 		"chezmoi": func() int {
-			return cmd.Main(cmd.VersionInfo{
+			return chezmoicmd.Main(chezmoicmd.VersionInfo{
 				Version: "v2.0.0+test",
 				Commit:  "HEAD",
 				Date:    time.Now().UTC().Format(time.RFC3339),

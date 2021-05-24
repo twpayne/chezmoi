@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/twpayne/chezmoi/v2/cmd"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoicmd"
 )
 
 var (
@@ -14,7 +14,7 @@ var (
 )
 
 func main() {
-	if exitCode := cmd.Main(cmd.VersionInfo{
+	if exitCode := chezmoicmd.Main(chezmoicmd.VersionInfo{
 		Version: version,
 		Commit:  commit,
 		Date:    date,
