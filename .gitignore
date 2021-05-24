@@ -1,7 +1,5 @@
 *.exe
-/bin/chezmoi
-/bin/gofumports
-/bin/golangci-lint
+/bin
 /chezmoi
 /chezmoi.exe
 /coverage.out
