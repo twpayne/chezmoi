@@ -19,7 +19,6 @@ linters:
   - gofmt
   - gofumpt
   - goimports
-  - golint
   - gomoddirectives
   - gomodguard
   - goprintffuncname
