@@ -271,6 +271,7 @@ The following configuration variables are available:
 |               | `format`           | string   | `json`                   | Format for data output, either `json` or `yaml`        |
 |               | `remove`           | bool     | `false`                  | Remove targets                                         |
 |               | `sourceDir`        | string   | `~/.local/share/chezmoi` | Source directory                                       |
+|               | `pager`            | string   | `$PAGER`                 | Default pager                                          |
 |               | `umask`            | int      | *from system*            | Umask                                                  |
 |               | `useBuiltinGit`    | string   | `auto`                   | Use builtin git if `git` command is not found in $PATH |
 | `add`         | `templateSymlinks` | bool     | `false`                  | Template symlinks to source and home dirs              |
@@ -287,7 +288,9 @@ The following configuration variables are available:
 | `cd`          | `args`             | []string | *none*                   | Extra args to shell in `cd` command                    |
 |               | `command`          | string   | *none*                   | Shell to run in `cd` command                           |
 | `diff`        | `exclude`          | []string | *none*                   | Entry types to exclude from diff                       |
-|               | `pager`            | string   | `$PAGER` / `less`        | Pager                                                  |
+|               | `pager`            | string   | *none*                   | Diff-specific pager                                    |
+| `docs`        | `maxWidth`         | int      | 80                       | Maximum width of output                                |
+|               | `pager`            | string   | *none*                   | Docs-specific pager                                    |
 | `edit`        | `args`             | []string | *none*                   | Extra args to edit command                             |
 |               | `command`          | string   | `$EDITOR` / `$VISUAL`    | Edit command                                           |
 | `secret`      | `command`          | string   | *none*                   | Generic secret command                                 |
@@ -775,6 +778,10 @@ Print the difference between the target state and the destination state for
 If a `diff.pager` command is set in the configuration file then the output will
 be piped into it.
 
+#### `--pager` *pager*
+
+Pager to use for output.
+
 #### `diff` examples
 
 ```console
@@ -786,6 +793,10 @@ $ chezmoi diff ~/.bashrc
 
 Print the documentation page matching the regular expression *regexp*. Matching
 is case insensitive. If no pattern is given, print `REFERENCE.md`.
+
+#### `--pager` *pager*
+
+Pager to use for output.
 
 #### `docs` examples
 

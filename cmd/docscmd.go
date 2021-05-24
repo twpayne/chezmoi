@@ -14,6 +14,11 @@ import (
 	"github.com/twpayne/chezmoi/v2/docs"
 )
 
+type docsCmdConfig struct {
+	MaxWidth int    `mapstructure:"maxWidth"`
+	Pager    string `mapstructure:"pager"`
+}
+
 func (c *Config) newDocsCmd() *cobra.Command {
 	docsCmd := &cobra.Command{
 		Use:     "docs [regexp]",
@@ -26,6 +31,10 @@ func (c *Config) newDocsCmd() *cobra.Command {
 			doesNotRequireValidConfig: "true",
 		},
 	}
+
+	flags := docsCmd.Flags()
+	flags.IntVar(&c.Docs.MaxWidth, "max-width", c.Docs.MaxWidth, "maximum output width")
+	flags.StringVar(&c.Docs.Pager, "pager", c.Docs.Pager, "pager")
 
 	return docsCmd
 }
@@ -82,6 +91,9 @@ func (c *Config) runDocsCmd(cmd *cobra.Command, args []string) error {
 			return err
 		}
 	}
+	if c.Docs.MaxWidth != 0 && width > c.Docs.MaxWidth {
+		width = c.Docs.MaxWidth
+	}
 
 	tr, err := glamour.NewTermRenderer(
 		glamour.WithStyles(glamour.ASCIIStyleConfig),
@@ -96,5 +108,5 @@ func (c *Config) runDocsCmd(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	return c.writeOutput(renderedData)
+	return c.pageOutputString(string(renderedData), c.Docs.Pager)
 }

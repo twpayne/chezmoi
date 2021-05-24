@@ -58,6 +58,7 @@ type Config struct {
 	Data             map[string]interface{} `mapstructure:"data"`
 	Template         templateConfig         `mapstructure:"template"`
 	UseBuiltinGit    *autoBool              `mapstructure:"useBuiltinGit"`
+	Pager            string                 `mapstructure:"pager"`
 
 	// Global configuration, not settable in the config file.
 	cpuProfile    chezmoi.AbsPath
@@ -96,6 +97,7 @@ type Config struct {
 	Add   addCmdConfig   `mapstructure:"add"`
 	CD    cdCmdConfig    `mapstructure:"cd"`
 	Diff  diffCmdConfig  `mapstructure:"diff"`
+	Docs  docsCmdConfig  `mapstructure:"docs"`
 	Edit  editCmdConfig  `mapstructure:"edit"`
 	Git   gitCmdConfig   `mapstructure:"git"`
 	Merge mergeCmdConfig `mapstructure:"merge"`
@@ -200,6 +202,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		fileSystem: vfs.OSFS,
 		homeDir:    userHomeDir,
 		Umask:      chezmoi.Umask,
+		Pager:      os.Getenv("PAGER"),
 		Add: addCmdConfig{
 			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
@@ -207,8 +210,10 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		Diff: diffCmdConfig{
 			Exclude: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			Pager:   os.Getenv("PAGER"),
 			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
+		},
+		Docs: docsCmdConfig{
+			MaxWidth: 80,
 		},
 		Edit: editCmdConfig{
 			exclude: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
@@ -753,29 +758,7 @@ func (c *Config) diffFile(path chezmoi.RelPath, fromData []byte, fromMode fs.Fil
 	if err := unifiedEncoder.Encode(diffPatch); err != nil {
 		return err
 	}
-	return c.diffPager(sb.String())
-}
-
-func (c *Config) diffPager(output string) error {
-	if c.noPager || c.Diff.Pager == "" {
-		return c.writeOutputString(output)
-	}
-
-	// If the pager command contains any spaces, assume that it is a full
-	// shell command to be executed via the user's shell. Otherwise, execute
-	// it directly.
-	var pagerCmd *exec.Cmd
-	if strings.IndexFunc(c.Diff.Pager, unicode.IsSpace) != -1 {
-		shell, _ := shell.CurrentUserShell()
-		pagerCmd = exec.Command(shell, "-c", c.Diff.Pager)
-	} else {
-		//nolint:gosec
-		pagerCmd = exec.Command(c.Diff.Pager)
-	}
-	pagerCmd.Stdin = bytes.NewBufferString(output)
-	pagerCmd.Stdout = c.stdout
-	pagerCmd.Stderr = c.stderr
-	return pagerCmd.Run()
+	return c.pageOutputString(sb.String(), c.Diff.Pager)
 }
 
 func (c *Config) doPurge(purgeOptions *purgeOptions) error {
@@ -1097,6 +1080,28 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 	}
 
 	return nil
+}
+
+func (c *Config) pageOutputString(output, cmdPager string) error {
+	pager := firstNonEmptyString(cmdPager, c.Pager)
+	if c.noPager || pager == "" {
+		return c.writeOutputString(output)
+	}
+
+	// If the pager command contains any spaces, assume that it is a full
+	// shell command to be executed via the user's shell. Otherwise, execute
+	// it directly.
+	var pagerCmd *exec.Cmd
+	if strings.IndexFunc(pager, unicode.IsSpace) != -1 {
+		shell, _ := shell.CurrentUserShell()
+		pagerCmd = exec.Command(shell, "-c", pager)
+	} else {
+		pagerCmd = exec.Command(pager)
+	}
+	pagerCmd.Stdin = bytes.NewBufferString(output)
+	pagerCmd.Stdout = c.stdout
+	pagerCmd.Stderr = c.stderr
+	return pagerCmd.Run()
 }
 
 func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error {
