@@ -27,7 +27,7 @@ stdout a${/}b
 
 # test lookPath template function
 chezmoi execute-template '{{ lookPath "go" }}'
-stdout go${exe}
+stdout go$exe
 
 # test stat template function
 chezmoi execute-template '{{ (stat ".").isDir }}'

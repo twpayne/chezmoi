@@ -3,9 +3,9 @@ mksourcedir
 
 # test that chezmoi re-add adds all modified files
 chezmoi apply --force
-edit $HOME${/}.file
-edit $HOME${/}.dir/file
-edit $HOME${/}.dir/subdir/file
+edit $HOME/.file
+edit $HOME/.dir/file
+edit $HOME/.dir/subdir/file
 chezmoi re-add
 grep '# edited' $CHEZMOISOURCEDIR/dot_file
 grep '# edited' $CHEZMOISOURCEDIR/dot_dir/file

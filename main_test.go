@@ -275,9 +275,9 @@ func cmdMkGPGConfig(ts *testscript.TestScript, neg bool, args []string) {
 		`encryption = "gpg"`,
 		`[gpg]`,
 		`  args = [`,
-		`    "--homedir", ` + quote(gpgHomeDir) + `,`,
+		`    "--homedir", ` + strconv.Quote(gpgHomeDir) + `,`,
 		`    "--no-tty",`,
-		`    "--passphrase", ` + quote(passphrase) + `,`,
+		`    "--passphrase", ` + strconv.Quote(passphrase) + `,`,
 		`    "--pinentry-mode", "loopback",`,
 		`  ]`,
 	}
@@ -444,10 +444,6 @@ func cmdUNIX2DOS(ts *testscript.TestScript, neg bool, args []string) {
 
 func prependDirToPath(dir, path string) string {
 	return strings.Join(append([]string{dir}, filepath.SplitList(path)...), string(os.PathListSeparator))
-}
-
-func quote(s string) string {
-	return fmt.Sprintf("%q", s)
 }
 
 func setup(env *testscript.Env) error {
