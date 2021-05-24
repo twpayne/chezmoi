@@ -481,7 +481,7 @@ config file formats.
 
     {{ $email := promptString "email" -}}
     data:
-        email: "{{ $email }}"
+        email: {{ $email | quote }}
 
 ### `.chezmoiignore`
 
@@ -1446,8 +1446,8 @@ user's keyring.
 #### `keyring` examples
 
     [github]
-      user = "{{ .github.user }}"
-      token = "{{ keyring "github" .github.user }}"
+      user = {{ .github.user | quote }}
+      token = {{ keyring "github" .github.user | quote }}
 
 ### `lastpass` *id*
 
@@ -1462,7 +1462,7 @@ from `lastpass` is cached so calling `lastpass` multiple times with the same
 
 #### `lastpass` examples
 
-    githubPassword = "{{ (index (lastpass "GitHub") 0).password }}"
+    githubPassword = {{ (index (lastpass "GitHub") 0).password | quote }}
     {{ (index (lastpass "SSH") 0).note.privateKey }}
 
 ### `lastpassRaw` *id*
@@ -1636,7 +1636,7 @@ generating the initial config file.
 
     {{ $email := promptString "email" -}}
     [data]
-        email = "{{ $email }}"
+        email = {{ $email | quote }}
 
 ### `secret` [*arg*...]
 

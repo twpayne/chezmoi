@@ -356,7 +356,7 @@ You can then open the template (which will be saved in the file
 The file should look something like:
 
     [user]
-      email = "{{ .email }}"
+      email = {{ .email | quote }}
 
 To disable automatic variable detection, use the `--template` or `-T` option to
 `chezmoi add` instead of `--autotemplate`.
@@ -712,8 +712,8 @@ For example, save a GitHub access token in keyring with:
 and then include it in your `~/.gitconfig` file with:
 
     [github]
-      user = "{{ .github.user }}"
-      token = "{{ keyring "github" .github.user }}"
+      user = {{ .github.user | quote }}
+      token = {{ keyring "github" .github.user | quote }}
 
 You can query the keyring from the command line:
 
@@ -742,7 +742,7 @@ template function. The value will be an array of objects. You can use the
 the field you want. For example, to extract the `password` field from first the
 "GitHub" entry, use:
 
-    githubPassword = "{{ (index (lastpass "GitHub") 0).password }}"
+    githubPassword = {{ (index (lastpass "GitHub") 0).password | quote }}
 
 chezmoi automatically parses the `note` value of the Lastpass entry as
 colon-separated key-value pairs, so, for example, you can extract a private SSH
@@ -864,8 +864,8 @@ Your `~/.local/share/chezmoi/private_dot_gitconfig.tmpl` can then contain:
 
     {{- if (index . "github") }}
     [github]
-      user = "{{ .github.user }}"
-      token = "{{ .github.token }}"
+      user = {{ .github.user | quote }}
+      token = {{ .github.token | quote }}
     {{- end }}
 
 Any config files containing tokens in plain text should be private (permissions
@@ -945,7 +945,7 @@ following script as `run_once_dconf-load.sh.tmpl`:
     #!/bin/bash
 
     # dconf.ini hash: {{ include "dconf.ini" | sha256sum }}
-    dconf load / "{{ joinPath .chezmoi.sourceDir "dconf.ini" }}"
+    dconf load / {{ joinPath .chezmoi.sourceDir "dconf.ini" | quote }}
 
 As the SHA256 sum of `dconf.ini` is included in a comment in the script, the
 contents of the script will change whenever the contents of `dconf.ini` are
@@ -1037,7 +1037,7 @@ non-interactive when running in Codespaces, for example, `.chezmoi.toml.tmpl`
 might contain:
 
     {{- $codespaces:= env "CODESPACES" | not | not -}}
-    sourceDir = "{{ .chezmoi.sourceDir }}"
+    sourceDir = {{ .chezmoi.sourceDir | quote }}
 
     [data]
       name = "Your name"
@@ -1045,7 +1045,7 @@ might contain:
     {{- if $codespaces }}{{/* Codespaces dotfiles setup is non-interactive, so set an email address */}}
       email = "your@email.com"
     {{- else }}{{/* Interactive setup, so prompt for an email address */}}
-      email = "{{ promptString "email" }}"
+      email = {{ promptString "email" | quote }}
     {{- end }}
 
 This sets the `codespaces` template variable, so you don't have to repeat `(env
