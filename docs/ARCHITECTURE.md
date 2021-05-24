@@ -20,7 +20,9 @@ interested in contributing to chezmoi.
 You can generate Go documentation for chezmoi's source code with `go doc`, for
 example:
 
-    go doc -all -u github.com/twpayne/chezmoi/v2/internal/chezmoi
+```console
+$ go doc -all -u github.com/twpayne/chezmoi/v2/internal/chezmoi
+```
 
 You can also [browse chezmoi's generated documentation
 online](https://pkg.go.dev/github.com/twpayne/chezmoi/v2) but this only includes
@@ -170,7 +172,9 @@ framework. End-to-end tests use
 with the test scripts themselves in `testdata/scripts`. You can run individual
 end-to-end tests with
 
-    go test . -run=TestScript/<name>
+```console
+$ go test . -run=TestScript/<name>
+```
 
 where `<name>` is the basename of file in `testdata/scripts`.
 

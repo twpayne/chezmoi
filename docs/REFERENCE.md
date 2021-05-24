@@ -479,9 +479,11 @@ config file formats.
 
 #### `.chezmoi.<format>.tmpl` examples
 
-    {{ $email := promptString "email" -}}
-    data:
-        email: {{ $email | quote }}
+```
+{{ $email := promptString "email" -}}
+data:
+    email: {{ $email | quote }}
+```
 
 ### `.chezmoiignore`
 
@@ -503,24 +505,26 @@ ignored on different machines.
 
 #### `.chezmoiignore` examples
 
-    README.md
+```
+README.md
 
-    *.txt   # ignore *.txt in the target directory
-    */*.txt # ignore *.txt in subdirectories of the target directory
-    backups/** # ignore backups folder in chezmoi directory and all its contents
-            # but not in subdirectories of subdirectories;
-            # so a/b/c.txt would *not* be ignored
-    backups/** # ignore all contents of backups folder in chezmoi directory
-               # but not backups folder itself
+*.txt   # ignore *.txt in the target directory
+*/*.txt # ignore *.txt in subdirectories of the target directory
+backups/** # ignore backups folder in chezmoi directory and all its contents
+        # but not in subdirectories of subdirectories;
+        # so a/b/c.txt would *not* be ignored
+backups/** # ignore all contents of backups folder in chezmoi directory
+           # but not backups folder itself
 
-    {{- if ne .email "firstname.lastname@company.com" }}
-    # Ignore .company-directory unless configured with a company email
-    .company-directory # note that the pattern is not dot_company-directory
-    {{- end }}
+{{- if ne .email "firstname.lastname@company.com" }}
+# Ignore .company-directory unless configured with a company email
+.company-directory # note that the pattern is not dot_company-directory
+{{- end }}
 
-    {{- if ne .email "me@home.org }}
-    .personal-file
-    {{- end }}
+{{- if ne .email "me@home.org }}
+.personal-file
+{{- end }}
+```
 
 ### `.chezmoiremove`
 
@@ -543,11 +547,15 @@ data.
 
 Given:
 
-    .chezmoitemplates/foo
-    {{ if true }}bar{{ end }}
+`.chezmoitemplates/foo`:
+```
+{{ if true }}bar{{ end }}
+```
 
-    dot_config.tmpl
-    {{ template "foo" . }}
+`dot_config.tmpl`:
+```
+{{ template "foo" . }}
+```
 
 The target state of `.config` will be `bar`.
 
@@ -560,7 +568,9 @@ the current version is too old.
 
 #### `.chezmoiversion` examples
 
-    1.5.0
+```
+1.5.0
+```
 
 ## Commands
 
@@ -617,10 +627,12 @@ directory, create a symlink template with `.chezmoi.sourceDir` or
 
 #### `add` examples
 
-    chezmoi add ~/.bashrc
-    chezmoi add ~/.gitconfig --template
-    chezmoi add ~/.vim --recursive
-    chezmoi add ~/.oh-my-zsh --exact --recursive
+```console
+$ chezmoi add ~/.bashrc
+$ chezmoi add ~/.gitconfig --template
+$ chezmoi add ~/.vim --recursive
+$ chezmoi add ~/.oh-my-zsh --exact --recursive
+```
 
 ### `apply` [*target*...]
 
@@ -640,9 +652,11 @@ applying changes after editing.
 
 #### `apply` examples
 
-    chezmoi apply
-    chezmoi apply --dry-run --verbose
-    chezmoi apply ~/.bashrc
+```console
+$ chezmoi apply
+$ chezmoi apply --dry-run --verbose
+$ chezmoi apply ~/.bashrc
+```
 
 ### `archive`
 
@@ -663,9 +677,11 @@ Compress the output with gzip.
 
 #### `archive` examples
 
-    chezmoi archive | tar tvf -
-    chezmoi archive --output=dotfiles.tar
-    chezmoi archive --format=zip --output=dotfiles.zip
+```console
+$ chezmoi archive | tar tvf -
+$ chezmoi archive --output=dotfiles.tar
+$ chezmoi archive --format=zip --output=dotfiles.zip
+```
 
 ### `cat` *target*...
 
@@ -676,7 +692,9 @@ written.
 
 #### `cat` examples
 
-    chezmoi cat ~/.bashrc
+```console
+$ chezmoi cat ~/.bashrc
+```
 
 ### `cd`
 
@@ -687,7 +705,9 @@ will finally fall back to an OS-specific default.
 
 #### `cd` examples
 
-    chezmoi cd
+```console
+$ chezmoi cd
+```
 
 ### `chattr` *attributes* *target*...
 
@@ -714,9 +734,11 @@ comma (`,`).
 
 #### `chattr` examples
 
-    chezmoi chattr template ~/.bashrc
-    chezmoi chattr noempty ~/.profile
-    chezmoi chattr private,template ~/.netrc
+```console
+$ chezmoi chattr template ~/.bashrc
+$ chezmoi chattr noempty ~/.profile
+$ chezmoi chattr private,template ~/.netrc
+```
 
 ### `completion` *shell*
 
@@ -725,8 +747,10 @@ Generate shell completion code for the specified shell (`bash`, `fish`,
 
 #### `completion` examples
 
-    chezmoi completion bash
-    chezmoi completion fish --output=~/.config/fish/completions/chezmoi.fish
+```console
+$ chezmoi completion bash
+$ chezmoi completion fish --output=~/.config/fish/completions/chezmoi.fish
+```
 
 ### `data`
 
@@ -738,8 +762,10 @@ Set the output format.
 
 #### `data` examples
 
-    chezmoi data
-    chezmoi data --format=yaml
+```console
+$ chezmoi data
+$ chezmoi data --format=yaml
+```
 
 ### `diff` [*target*...]
 
@@ -751,8 +777,10 @@ be piped into it.
 
 #### `diff` examples
 
-    chezmoi diff
-    chezmoi diff ~/.bashrc
+```console
+$ chezmoi diff
+$ chezmoi diff ~/.bashrc
+```
 
 ### `docs` [*regexp*]
 
@@ -761,9 +789,11 @@ is case insensitive. If no pattern is given, print `REFERENCE.md`.
 
 #### `docs` examples
 
-    chezmoi docs
-    chezmoi docs faq
-    chezmoi docs howto
+```console
+$ chezmoi docs
+$ chezmoi docs faq
+$ chezmoi docs howto
+```
 
 ### `doctor`
 
@@ -771,7 +801,9 @@ Check for potential problems.
 
 #### `doctor` examples
 
-    chezmoi doctor
+```console
+$ chezmoi doctor
+```
 
 ### `dump` [*target*...]
 
@@ -788,8 +820,10 @@ Only include entries of type *types*.
 
 #### `dump` examples
 
-    chezmoi dump ~/.bashrc
-    chezmoi dump --format=yaml
+```console
+$ chezmoi dump ~/.bashrc
+$ chezmoi dump --format=yaml
+```
 
 ### `edit` [*target*...]
 
@@ -802,9 +836,11 @@ Apply target immediately after editing. Ignored if there are no targets.
 
 #### `edit` examples
 
-    chezmoi edit ~/.bashrc
-    chezmoi edit ~/.bashrc --apply
-    chezmoi edit
+```console
+$ chezmoi edit ~/.bashrc
+$ chezmoi edit ~/.bashrc --apply
+$ chezmoi edit
+```
 
 ### `edit-config`
 
@@ -812,7 +848,9 @@ Edit the configuration file.
 
 #### `edit-config` examples
 
-    chezmoi edit-config
+```console
+$ chezmoi edit-config
+```
 
 ### `execute-template` [*template*...]
 
@@ -852,10 +890,12 @@ Simulate the `stdinIsATTY` function by returning *bool*.
 
 #### `execute-template` examples
 
-    chezmoi execute-template '{{ .chezmoi.sourceDir }}'
-    chezmoi execute-template '{{ .chezmoi.os }}' / '{{ .chezmoi.arch }}'
-    echo '{{ .chezmoi | toJson }}' | chezmoi execute-template
-    chezmoi execute-template --init --promptString email=me@home.org < ~/.local/share/chezmoi/.chezmoi.toml.tmpl
+```console
+$ chezmoi execute-template '{{ .chezmoi.sourceDir }}'
+$ chezmoi execute-template '{{ .chezmoi.os }}' / '{{ .chezmoi.arch }}'
+$ echo '{{ .chezmoi | toJson }}' | chezmoi execute-template
+$ chezmoi execute-template --init --promptString email=me@home.org < ~/.local/share/chezmoi/.chezmoi.toml.tmpl
+```
 
 ### `forget` *targets*
 
@@ -863,7 +903,9 @@ Remove *targets* from the source state, i.e. stop managing them.
 
 #### `forget` examples
 
-    chezmoi forget ~/.bashrc
+```console
+$ chezmoi forget ~/.bashrc
+```
 
 ### `git` [*arg*...]
 
@@ -872,9 +914,11 @@ occur after `--` to prevent chezmoi from interpreting them.
 
 #### `git` examples
 
-    chezmoi git add .
-    chezmoi git add dot_gitconfig
-    chezmoi git -- commit -m "Add .gitconfig"
+```console
+$ chezmoi git add .
+$ chezmoi git add dot_gitconfig
+$ chezmoi git -- commit -m "Add .gitconfig"
+```
 
 ### `help` [*command*...]
 
@@ -947,11 +991,13 @@ Guess an SSH repo URL instead of an HTTPS repo.
 
 #### `init` examples
 
-    chezmoi init user
-    chezmoi init user --apply
-    chezmoi init user --apply --purge
-    chezmoi init user/dots
-    chezmoi init gitlab.com/user
+```console
+$ chezmoi init user
+$ chezmoi init user --apply
+$ chezmoi init user --apply --purge
+$ chezmoi init user/dots
+$ chezmoi init gitlab.com/user
+```
 
 ### `import` *filename*
 
@@ -980,9 +1026,11 @@ Strip *n* leading components from paths.
 
 #### `import` examples
 
-    curl -s -L -o oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
-    mkdir -p $(chezmoi source-path)/dot_oh-my-zsh
-    chezmoi import --strip-components 1 --destination ~/.oh-my-zsh oh-my-zsh-master.tar.gz
+```console
+$ curl -s -L -o oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
+$ mkdir -p $(chezmoi source-path)/dot_oh-my-zsh
+$ chezmoi import --strip-components 1 --destination ~/.oh-my-zsh oh-my-zsh-master.tar.gz
+```
 
 ### `manage` *targets*
 
@@ -998,11 +1046,13 @@ Only include entries of type *types*.
 
 #### `managed` examples
 
-    chezmoi managed
-    chezmoi managed --include=files
-    chezmoi managed --include=files,symlinks
-    chezmoi managed -i d
-    chezmoi managed -i d,f
+```console
+$ chezmoi managed
+$ chezmoi managed --include=files
+$ chezmoi managed --include=files,symlinks
+$ chezmoi managed -i d
+$ chezmoi managed -i d,f
+```
 
 ### `merge` *target*...
 
@@ -1016,7 +1066,9 @@ instead.
 
 #### `merge` examples
 
-    chezmoi merge ~/.bashrc
+```console
+$ chezmoi merge ~/.bashrc
+```
 
 ### `purge`
 
@@ -1029,8 +1081,10 @@ Remove without prompting.
 
 #### `purge` examples
 
-    chezmoi purge
-    chezmoi purge --force
+```console
+$ chezmoi purge
+$ chezmoi purge --force
+```
 
 ### `remove` *targets*
 
@@ -1047,7 +1101,9 @@ templates, and all entries that are not files are ignored.
 
 #### `re-add` examples
 
-    chezmoi re-add
+```console
+$ chezmoi re-add
+```
 
 ### `rm` *targets*
 
@@ -1063,12 +1119,16 @@ separate them with `--` to prevent chezmoi from interpreting them.
 
 To get a full list of available commands run:
 
-    chezmoi secret help
+```console
+$ chezmoi secret help
+```
 
 #### `secret` examples
 
-    chezmoi secret keyring set --service=service --user=user --value=password
-    chezmoi secret keyring get --service=service --user=user
+```console
+$ chezmoi secret keyring set --service=service --user=user --value=password
+$ chezmoi secret keyring get --service=service --user=user
+```
 
 ### `source-path` [*target*...]
 
@@ -1077,8 +1137,10 @@ print the source directory.
 
 #### `source-path` examples
 
-    chezmoi source-path
-    chezmoi source-path ~/.bashrc
+```console
+$ chezmoi source-path
+$ chezmoi source-path ~/.bashrc
+```
 
 ### `state`
 
@@ -1086,12 +1148,14 @@ Manipulate the persistent state.
 
 #### `state` examples
 
-    chezmoi state data
-    chezmoi state delete --bucket=bucket --key=key
-    chezmoi state dump
-    chezmoi state get --bucket=bucket --key=key
-    chezmoi state set --bucket=bucket --key=key --value=value
-    chezmoi state reset
+```console
+$ chezmoi state data
+$ chezmoi state delete --bucket=bucket --key=key
+$ chezmoi state dump
+$ chezmoi state get --bucket=bucket --key=key
+$ chezmoi state set --bucket=bucket --key=key --value=value
+$ chezmoi state reset
+```
 
 ### `status`
 
@@ -1108,7 +1172,9 @@ Only include entries of type *types*.
 
 #### `status` examples
 
-    chezmoi status
+```console
+$ chezmoi status
+```
 
 ### `unmanage` *target*...
 
@@ -1120,7 +1186,9 @@ List all unmanaged files in the destination directory.
 
 #### `unmanaged` examples
 
-    chezmoi unmanaged
+```console
+$ chezmoi unmanaged
+```
 
 ### `update`
 
@@ -1132,7 +1200,9 @@ Only update entries of type *types*.
 
 #### `update` examples
 
-    chezmoi update
+```console
+$ chezmoi update
+```
 
 ### `upgrade`
 
@@ -1160,8 +1230,10 @@ Only include entries of type *types*.
 
 #### `verify` examples
 
-    chezmoi verify
-    chezmoi verify ~/.bashrc
+```console
+$ chezmoi verify
+$ chezmoi verify ~/.bashrc
+```
 
 ## Editor configuration
 
@@ -1179,7 +1251,9 @@ and `0o077` respectively.
 For machine-specific control of umask, set the `umask` configuration variable in
 chezmoi's configuration file, for example:
 
-    umask = 0o22
+```toml
+umask = 0o22
+```
 
 ## Template execution
 
@@ -1202,8 +1276,10 @@ chezmoi executes templates using `text/template`'s `missingkey=error` option,
 which means that misspelled or missing keys will raise an error. This can be
 overridden by setting a list of options in the configuration file, for example:
 
-    [template]
-      options = ["missingkey=zero"]
+```toml
+[template]
+    options = ["missingkey=zero"]
+```
 
 For a full list of options, see
 [`Template.Option`](https://pkg.go.dev/text/template?tab=doc#Template.Option).
@@ -1248,8 +1324,10 @@ will only invoke `bw` once.
 
 #### `bitwarden` examples
 
-    username = {{ (bitwarden "item" "<itemid>").login.username }}
-    password = {{ (bitwarden "item" "<itemid>").login.password }}
+```
+username = {{ (bitwarden "item" "<itemid>").login.username }}
+password = {{ (bitwarden "item" "<itemid>").login.password }}
+```
 
 ### `bitwardenAttachment` *filename* *itemid*
 
@@ -1263,7 +1341,9 @@ only invoke `bw` once.
 
 #### `bitwardenAttachment` examples
 
-    {{- (bitwardenAttachment "<filename>" "<itemid>") -}}
+```
+{{- (bitwardenAttachment "<filename>" "<itemid>") -}}
+```
 
 ### `bitwardenFields` [*arg*...]
 
@@ -1276,34 +1356,34 @@ output from `bw get`:
 
 ```json
 {
-  "object": "item",
-  "id": "bf22e4b4-ae4a-4d1c-8c98-ac620004b628",
-  "organizationId": null,
-  "folderId": null,
-  "type": 1,
-  "name": "example.com",
-  "notes": null,
-  "favorite": false,
-  "fields": [
-    {
-      "name": "text",
-      "value": "text-value",
-      "type": 0
+    "object": "item",
+    "id": "bf22e4b4-ae4a-4d1c-8c98-ac620004b628",
+    "organizationId": null,
+    "folderId": null,
+    "type": 1,
+    "name": "example.com",
+    "notes": null,
+    "favorite": false,
+    "fields": [
+        {
+            "name": "text",
+            "value": "text-value",
+            "type": 0
+        },
+        {
+            "name": "hidden",
+            "value": "hidden-value",
+            "type": 1
+        }
+    ],
+    "login": {
+        "username": "username-value",
+        "password": "password-value",
+        "totp": null,
+        "passwordRevisionDate": null
     },
-    {
-      "name": "hidden",
-      "value": "hidden-value",
-      "type": 1
-    }
-  ],
-  "login": {
-    "username": "username-value",
-    "password": "password-value",
-    "totp": null,
-    "passwordRevisionDate": null
-  },
-  "collectionIds": [],
-  "revisionDate": "2020-10-28T00:21:02.690Z"
+    "collectionIds": [],
+    "revisionDate": "2020-10-28T00:21:02.690Z"
 }
 ```
 
@@ -1311,16 +1391,16 @@ the return value will be the map
 
 ```json
 {
-  "hidden": {
-    "name": "hidden",
-    "type": 1,
-    "value": "hidden-value"
-  },
-  "token": {
-    "name": "token",
-    "type": 0,
-    "value": "token-value"
-  }
+    "hidden": {
+        "name": "hidden",
+        "type": 1,
+        "value": "hidden-value"
+    },
+    "token": {
+        "name": "token",
+        "type": 0,
+        "value": "token-value"
+    }
 }
 ```
 
@@ -1329,7 +1409,9 @@ the same arguments will only invoke `bw get` once.
 
 #### `bitwardenFields` examples
 
-    {{ (bitwardenFields "item" "<itemid>").token.value }}
+```
+{{ (bitwardenFields "item" "<itemid>").token.value }}
+```
 
 ### `gitHubKeys` *user*
 
@@ -1360,9 +1442,11 @@ token](https://docs.github.com/en/github/authenticating-to-github/creating-a-per
 
 #### `gitHubKeys` examples
 
-    {{ range (gitHubKeys "user") }}
-    {{- .Key }}
-    {{ end }}
+```
+{{ range (gitHubKeys "user") }}
+{{- .Key }}
+{{ end }}
+```
 
 ### `gopass` *gopass-name*
 
@@ -1374,7 +1458,9 @@ with the same *gopass-name* will only invoke `gopass` once.
 
 #### `gopass` examples
 
-    {{ gopass "<pass-name>" }}
+```
+{{ gopass "<pass-name>" }}
+```
 
 ### `include` *filename*
 
@@ -1393,9 +1479,11 @@ only execute the `ioreg -a -l` command once.
 
 #### `ioreg` examples
 
-    {{ if (eq .chezmoi.os "darwin") }}
-    {{ $serialNumber := index ioreg "IORegistryEntryChildren" 0 "IOPlatformSerialNumber" }}
-    {{ end }}
+```
+{{ if (eq .chezmoi.os "darwin") }}
+{{ $serialNumber := index ioreg "IORegistryEntryChildren" 0 "IOPlatformSerialNumber" }}
+{{ end }}
+```
 
 ### `joinPath` *element*...
 
@@ -1407,7 +1495,9 @@ first non-empty element is a UNC path.
 
 #### `joinPath` examples
 
-    {{ joinPath .chezmoi.homeDir ".zshrc" }}
+```
+{{ joinPath .chezmoi.homeDir ".zshrc" }}
+```
 
 ### `keepassxc` *entry*
 
@@ -1423,8 +1513,10 @@ key-value pairs and cached so calling `keepassxc` multiple times with the same
 
 #### `keepassxc` examples
 
-    username = {{ (keepassxc "example.com").UserName }}
-    password = {{ (keepassxc "example.com").Password }}
+```
+username = {{ (keepassxc "example.com").UserName }}
+password = {{ (keepassxc "example.com").Password }}
+```
 
 ### `keepassxcAttribute` *entry* *attribute*
 
@@ -1435,7 +1527,9 @@ prompting, password storage, and result caching.
 
 #### `keepassxcAttribute` examples
 
-    {{ keepassxcAttribute "SSH Key" "private-key" }}
+```
+{{ keepassxcAttribute "SSH Key" "private-key" }}
+```
 
 ### `keyring` *service* *user*
 
@@ -1450,9 +1544,11 @@ user's keyring.
 
 #### `keyring` examples
 
-    [github]
-      user = {{ .github.user | quote }}
-      token = {{ keyring "github" .github.user | quote }}
+```
+[github]
+    user = {{ .github.user | quote }}
+    token = {{ keyring "github" .github.user | quote }}
+```
 
 ### `lastpass` *id*
 
@@ -1467,8 +1563,10 @@ from `lastpass` is cached so calling `lastpass` multiple times with the same
 
 #### `lastpass` examples
 
-    githubPassword = {{ (index (lastpass "GitHub") 0).password | quote }}
-    {{ (index (lastpass "SSH") 0).note.privateKey }}
+```
+githubPassword = {{ (index (lastpass "GitHub") 0).password | quote }}
+{{ (index (lastpass "SSH") 0).note.privateKey }}
+```
 
 ### `lastpassRaw` *id*
 
@@ -1479,7 +1577,9 @@ further parsing is done on the `note` field.
 
 #### `lastpassRaw` examples
 
-    {{ (index (lastpassRaw "SSH Private Key") 0).note }}
+```
+{{ (index (lastpassRaw "SSH Private Key") 0).note }}
+```
 
 ### `lookPath` *file*
 
@@ -1495,9 +1595,11 @@ caution when using it in your templates.
 
 #### `lookPath` examples
 
-    {{ if lookPath "diff-so-fancy" }}
-    # diff-so-fancy is in $PATH
-    {{ end }}
+```
+{{ if lookPath "diff-so-fancy" }}
+# diff-so-fancy is in $PATH
+{{ end }}
+```
 
 ### `onepassword` *uuid* [*vault-uuid*]
 
@@ -1512,8 +1614,10 @@ performance.
 
 #### `onepassword` examples
 
-    {{ (onepassword "<uuid>").details.password }}
-    {{ (onepassword "<uuid>" "<vault-uuid>").details.password }}
+```
+{{ (onepassword "<uuid>").details.password }}
+{{ (onepassword "<uuid>" "<vault-uuid>").details.password }}
+```
 
 ### `onepasswordDocument` *uuid* [*vault-uuid*]
 
@@ -1528,8 +1632,10 @@ performance.
 
 #### `onepasswordDocument` examples
 
-    {{- onepasswordDocument "<uuid>" -}}
-    {{- onepasswordDocument "<uuid>" "<vault-uuid>" -}}
+```
+{{- onepasswordDocument "<uuid>" -}}
+{{- onepasswordDocument "<uuid>" "<vault-uuid>" -}}
+```
 
 ### `onepasswordDetailsFields` *uuid* [*vault-uuid*]
 
@@ -1542,23 +1648,23 @@ elements of `details.fields` are returned as a map indexed by each field's
 
 ```json
 {
-  "uuid": "<uuid>",
-  "details": {
-    "fields": [
-      {
-        "designation": "username",
-        "name": "username",
-        "type": "T",
-        "value": "exampleuser"
-      },
-      {
-        "designation": "password",
-        "name": "password",
-        "type": "P",
-        "value": "examplepassword"
-      }
-    ],
-  }
+    "uuid": "<uuid>",
+    "details": {
+        "fields": [
+            {
+                "designation": "username",
+                "name": "username",
+                "type": "T",
+                "value": "exampleuser"
+            },
+            {
+                "designation": "password",
+                "name": "password",
+                "type": "P",
+                "value": "examplepassword"
+            }
+        ]
+    }
 }
 ```
 
@@ -1566,18 +1672,18 @@ the return value will be the map:
 
 ```json
 {
-  "username": {
-    "designation": "username",
-    "name": "username",
-    "type": "T",
-    "value": "exampleuser"
-  },
-  "password": {
-    "designation": "password",
-    "name": "password",
-    "type": "P",
-    "value": "examplepassword"
-  }
+    "username": {
+        "designation": "username",
+        "name": "username",
+        "type": "T",
+        "value": "exampleuser"
+    },
+    "password": {
+        "designation": "password",
+        "name": "password",
+        "type": "P",
+        "value": "examplepassword"
+    }
 }
 ```
 
@@ -1588,7 +1694,9 @@ can significantly improve performance.
 
 #### `onepasswordDetailsFields` examples
 
-    {{ (onepasswordDetailsFields "<uuid>").password.value }}
+```
+{{ (onepasswordDetailsFields "<uuid>").password.value }}
+```
 
 ### `output` *name* [*arg*...]
 
@@ -1600,7 +1708,9 @@ and fast.
 
 #### `output` examples
 
-    current-context: {{ output "kubectl" "config" "current-context" | trim }}
+```
+current-context: {{ output "kubectl" "config" "current-context" | trim }}
+```
 
 ### `pass` *pass-name*
 
@@ -1612,7 +1722,9 @@ the same *pass-name* will only invoke `pass` once.
 
 #### `pass` examples
 
-    {{ pass "<pass-name>" }}
+```
+{{ pass "<pass-name>" }}
+```
 
 ### `promptBool` *prompt*
 
@@ -1639,9 +1751,11 @@ generating the initial config file.
 
 #### `promptString` examples
 
-    {{ $email := promptString "email" -}}
-    [data]
-        email = {{ $email | quote }}
+```
+{{ $email := promptString "email" -}}
+[data]
+    email = {{ $email | quote }}
+```
 
 ### `secret` [*arg*...]
 
@@ -1671,9 +1785,11 @@ templates.
 
 #### `stat` examples
 
-    {{ if stat (joinPath .chezmoi.homeDir ".pyenv") }}
-    # ~/.pyenv exists
-    {{ end }}
+```
+{{ if stat (joinPath .chezmoi.homeDir ".pyenv") }}
+# ~/.pyenv exists
+{{ end }}
+```
 
 ### `stdinIsATTY`
 
@@ -1684,12 +1800,14 @@ used.
 
 #### `stdinIsATTY` examples
 
-    {{ $email := "" }}
-    {{ if stdinIsATTY }}
-    {{   $email = promptString "email" }}
-    {{ else }}
-    {{   $email = "user@example.com" }}
-    {{ end }}
+```
+{{ $email := "" }}
+{{ if stdinIsATTY }}
+{{   $email = promptString "email" }}
+{{ else }}
+{{   $email = "user@example.com" }}
+{{ end }}
+```
 
 ### `vault` *key*
 
@@ -1701,7 +1819,9 @@ times with the same *key* will only invoke `vault` once.
 
 #### `vault` examples
 
-    {{ (vault "<key>").data.data.password }}
+```
+{{ (vault "<key>").data.data.password }}
+```
 
 ### `writeToStdout` *string*...
 
@@ -1710,4 +1830,6 @@ generating the initial config file.
 
 #### `writeToStdout` examples
 
-    {{- writeToStdout "Hello, world\n" -}}
+```
+{{- writeToStdout "Hello, world\n" -}}
+```

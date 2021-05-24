@@ -67,32 +67,44 @@ of your choice (e.g. [Bitbucket](https://bitbucket.org),
 their repo `dotfiles`) and push the repo in the source directory here. For
 example:
 
-    chezmoi cd
-    git remote add origin https://github.com/username/dotfiles.git
-    git push -u origin main
-    exit
+```console
+$ chezmoi cd
+$ git remote add origin https://github.com/username/dotfiles.git
+$ git push -u origin main
+$ exit
+```
 
 On another machine you can checkout this repo:
 
-    chezmoi init https://github.com/username/dotfiles.git
+```console
+$ chezmoi init https://github.com/username/dotfiles.git
+```
 
 You can then see what would be changed:
 
-    chezmoi diff
+```console
+$ chezmoi diff
+```
 
 If you're happy with the changes then apply them:
 
-    chezmoi apply
+```console
+$ chezmoi apply
+```
 
 The above commands can be combined into a single init, checkout, and apply:
 
-    chezmoi init --apply --verbose https://github.com/username/dotfiles.git
+```console
+$ chezmoi init --apply --verbose https://github.com/username/dotfiles.git
+```
 
 ### Pull the latest changes from your repo and apply them
 
 You can pull the changes from your repo and apply them in a single command:
 
-    chezmoi update
+```console
+$ chezmoi update
+```
 
 This runs `git pull --rebase` in your source directory and then `chezmoi apply`.
 
@@ -100,7 +112,9 @@ This runs `git pull --rebase` in your source directory and then `chezmoi apply`.
 
 Run:
 
-    chezmoi git pull -- --rebase && chezmoi diff
+```console
+$ chezmoi git pull -- --rebase && chezmoi diff
+```
 
 This runs `git pull --rebase` in your source directory and `chezmoi
 diff` then shows the difference between the target state computed from your
@@ -108,7 +122,9 @@ source directory and the actual state.
 
 If you're happy with the changes, then you can run
 
-    chezmoi apply
+```console
+$ chezmoi apply
+```
 
 to apply them.
 
@@ -118,9 +134,11 @@ chezmoi can automatically commit and push changes to your source directory to
 your repo. This feature is disabled by default. To enable it, add the following
 to your config file:
 
-    [git]
-      autoCommit = true
-      autoPush = true
+```toml
+[git]
+    autoCommit = true
+    autoPush = true
+```
 
 Whenever a change is made to your source directory, chezmoi will commit the
 changes with an automatically-generated commit message (if `autoCommit` is true)
@@ -141,7 +159,9 @@ arguments to the newly installed chezmoi binary. If your dotfiles repo is
 `chezmoi init`, and running `chezmoi apply` can be done in a single line of
 shell:
 
-    sh -c "$(curl -fsLS git.io/chezmoi)" -- init --apply <github-username>
+```console
+$ sh -c "$(curl -fsLS git.io/chezmoi)" -- init --apply <github-username>
+```
 
 If your dotfiles repo has a different name to `dotfiles`, or if you host your
 dotfiles on a different service, then see the [reference manual for `chezmoi
@@ -152,7 +172,9 @@ can install chezmoi, install your dotfiles, and then remove all traces of
 chezmoi, including the source directory and chezmoi's configuration directory,
 with a single command:
 
-    sh -c "$(curl -fsLS git.io/chezmoi)" -- init --one-shot <github-username>
+```console
+$ sh -c "$(curl -fsLS git.io/chezmoi)" -- init --one-shot <github-username>
+```
 
 ## Manage different types of file
 
@@ -161,7 +183,9 @@ with a single command:
 If you want chezmoi to create a directory, but ignore its contents, say `~/src`,
 first run:
 
-    mkdir -p $(chezmoi source-path)/src
+```console
+$ mkdir -p $(chezmoi source-path)/src
+```
 
 This creates the directory in the source state, which means that chezmoi will
 create it (if it does not already exist) when you run `chezmoi apply`.
@@ -171,7 +195,9 @@ file in the directory in the source state that will be seen by git (so git does
 not ignore the directory) but ignored by chezmoi (so chezmoi does not include it
 in the target state):
 
-    touch $(chezmoi source-path)/src/.keep
+```console
+$ touch $(chezmoi source-path)/src/.keep
+```
 
 chezmoi automatically creates `.keep` files when you add an empty directory with
 `chezmoi add`.
@@ -181,13 +207,17 @@ chezmoi automatically creates `.keep` files when you add an empty directory with
 Create a file called `.chezmoiremove` in the source directory containing a list
 of patterns of files to remove. When you run
 
-    chezmoi apply --remove
+```console
+$ chezmoi apply --remove
+```
 
 chezmoi will remove anything in the target directory that matches the pattern.
 As this command is potentially dangerous, you should run chezmoi in verbose,
 dry-run mode beforehand to see what would be removed:
 
-    chezmoi apply --remove --dry-run --verbose
+```console
+$ chezmoi apply --remove --dry-run --verbose
+```
 
 `.chezmoiremove` is interpreted as a template, so you can remove different files
 on different machines. Negative matches (patterns prefixed with a `!`) or
@@ -210,7 +240,9 @@ template to re-generate the full contents of the file from the current state.
 For example, Kubernetes configurations include a current context that can be
 substituted with:
 
-    current-context: {{ output "kubectl" "config" "current-context" | trim }}
+```
+current-context: {{ output "kubectl" "config" "current-context" | trim }}
+```
 
 ### Populate `~/.ssh/authorized_keys` with your public SSH keys from GitHub
 
@@ -219,9 +251,11 @@ populating your `~/.ssh/authorized_keys`. Put the following in your
 `~/.local/share/chezmoi/dot_ssh/authorized_keys.tmpl`, where `username` is your
 GitHub username:
 
-    {{ range (gitHubKeys "username") -}}
-    {{   .Key }}
-    {{ end -}}
+```
+{{ range (gitHubKeys "username") -}}
+{{   .Key }}
+{{ end -}}
+```
 
 ## Integrate chezmoi with your editor
 
@@ -229,7 +263,9 @@ GitHub username:
 
 Put the following in your `.vimrc`:
 
-    autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path %
+```vim
+autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path %
+```
 
 ## Include dotfiles from elsewhere
 
@@ -241,9 +277,11 @@ because chezmoi uses its own format for the source state and Oh My Zsh is not
 distributed in this format. Instead, you can use the `import` command to import
 a snapshot from a tarball:
 
-    curl -s -L -o oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
-    mkdir -p $(chezmoi source-path)/dot_oh-my-zsh
-    chezmoi import --strip-components 1 --destination ${HOME}/.oh-my-zsh oh-my-zsh-master.tar.gz
+```console
+$ curl -s -L -o oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
+$ mkdir -p $(chezmoi source-path)/dot_oh-my-zsh
+$ chezmoi import --strip-components 1 --destination ${HOME}/.oh-my-zsh oh-my-zsh-master.tar.gz
+```
 
 Add `oh-my-zsh-master.tar.gz` to `.chezmoiignore` if you run these commands in
 your source directory so that chezmoi doesn't try to copy the tarball anywhere.
@@ -264,24 +302,32 @@ example for VSCode's `settings.json` on Linux:
 
 Copy the configuration file to your source directory:
 
-    cp ~/.config/Code/User/settings.json $(chezmoi source-path)
+```console
+$ cp ~/.config/Code/User/settings.json $(chezmoi source-path)
+```
 
 Tell chezmoi to ignore this file:
 
-    echo settings.json >> $(chezmoi source-path)/.chezmoiignore
+```console
+$ echo settings.json >> $(chezmoi source-path)/.chezmoiignore
+```
 
 Tell chezmoi that `~/.config/Code/User/settings.json` should be a symlink to the
 file in your source directory:
 
-    mkdir -p $(chezmoi source-path)/private_dot_config/private_Code/User
-    echo -n "{{ .chezmoi.sourceDir }}/settings.json" > $(chezmoi source-path)/private_dot_config/private_Code/User/symlink_settings.json.tmpl
+```console
+$ mkdir -p $(chezmoi source-path)/private_dot_config/private_Code/User
+$ echo -n "{{ .chezmoi.sourceDir }}/settings.json" > $(chezmoi source-path)/private_dot_config/private_Code/User/symlink_settings.json.tmpl
+```
 
 The prefix `private_` is used because the `~/.config` and `~/.config/Code`
 directories are private by default.
 
 Apply the changes:
 
-    chezmoi apply -v
+```console
+$ chezmoi apply -v
+```
 
 Now, when the program modifies its configuration file it will modify the file in
 the source state instead.
@@ -294,12 +340,17 @@ version
 [`github.com/robbyrussell/oh-my-zsh`](https://github.com/robbyrussell/oh-my-zsh)
 to `~/.oh-my-zsh` run:
 
-    curl -s -L -o oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
-    chezmoi import --strip-components 1 --destination ~/.oh-my-zsh oh-my-zsh-master.tar.gz
+```console
+$ curl -s -L -o oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
+$ mkdir -p $(chezmoi source-path)/dot_oh-my-zsh
+$ chezmoi import --strip-components 1 --destination ~/.oh-my-zsh oh-my-zsh-master.tar.gz
+```
 
 Note that this only updates the source state. You will need to run
 
-    chezmoi apply
+```console
+$ chezmoi apply
+```
 
 to update your destination directory.
 
@@ -317,20 +368,26 @@ needed.
 
 For example, your home `~/.gitconfig` on your personal machine might look like:
 
-    [user]
-      email = "me@home.org"
+```toml
+[user]
+    email = "me@home.org"
+```
 
 Whereas at work it might be:
 
-    [user]
-      email = "firstname.lastname@company.com"
+```toml
+[user]
+    email = "firstname.lastname@company.com"
+```
 
 To handle this, on each machine create a configuration file called
 `~/.config/chezmoi/chezmoi.toml` defining variables that might vary from machine
 to machine. For example, for your home machine:
 
-    [data]
-      email = "me@home.org"
+```toml
+[data]
+    email = "me@home.org"
+```
 
 Note that all variable names will be converted to lowercase. This is due to a
 feature of a library used by chezmoi.
@@ -347,17 +404,23 @@ Then, add `~/.gitconfig` to chezmoi using the `--autotemplate` flag to turn it
 into a template and automatically detect variables from the `data` section
 of your `~/.config/chezmoi/chezmoi.toml` file:
 
-    chezmoi add --autotemplate ~/.gitconfig
+```
+$ chezmoi add --autotemplate ~/.gitconfig
+```
 
 You can then open the template (which will be saved in the file
 `~/.local/share/chezmoi/dot_gitconfig.tmpl`):
 
-    chezmoi edit ~/.gitconfig
+```
+$ chezmoi edit ~/.gitconfig
+```
 
 The file should look something like:
 
-    [user]
-      email = {{ .email | quote }}
+```toml
+[user]
+    email = {{ .email | quote }}
+```
 
 To disable automatic variable detection, use the `--template` or `-T` option to
 `chezmoi add` instead of `--autotemplate`.
@@ -365,17 +428,21 @@ To disable automatic variable detection, use the `--template` or `-T` option to
 Templates are often used to capture machine-specific differences. For example,
 in your `~/.local/share/chezmoi/dot_bashrc.tmpl` you might have:
 
-    # common config
-    export EDITOR=vi
+```
+# common config
+export EDITOR=vi
 
-    # machine-specific configuration
-    {{- if eq .chezmoi.hostname "work-laptop" }}
-    # this will only be included in ~/.bashrc on work-laptop
-    {{- end }}
+# machine-specific configuration
+{{- if eq .chezmoi.hostname "work-laptop" }}
+# this will only be included in ~/.bashrc on work-laptop
+{{- end }}
+```
 
 For a full list of variables, run:
 
-    chezmoi data
+```
+$ chezmoi data
+```
 
 For more advanced usage, you can use the full power of the
 [`text/template`](https://pkg.go.dev/text/template) language. chezmoi includes
@@ -386,7 +453,9 @@ managers](https://github.com/twpayne/chezmoi/blob/master/docs/REFERENCE.md#templ
 Templates can be executed directly from the command line, without the need to
 create a file on disk, with the `execute-template` command, for example:
 
-    chezmoi execute-template '{{ .chezmoi.os }}/{{ .chezmoi.arch }}'
+```
+$ chezmoi execute-template "{{ .chezmoi.os }}/{{ .chezmoi.arch }}"
+```
 
 This is useful when developing or debugging templates.
 
@@ -395,7 +464,9 @@ retrieved with chezmoi's template functions. For example, if you have a file
 stored in 1Password with the UUID `uuid` then you can retrieve it with the
 template:
 
-    {{- onepasswordDocument "uuid" -}}
+```
+{{- onepasswordDocument "uuid" -}}
+```
 
 The `-`s inside the brackets remove any whitespace before or after the template
 expression, which is useful if your editor has added any newlines.
@@ -413,10 +484,12 @@ machines, or to exclude certain files completely, you can create
 that chezmoi should ignore, and are interpreted as templates. An example
 `.chezmoiignore` file might look like:
 
-    README.md
-    {{- if ne .chezmoi.hostname "work-laptop" }}
-    .work # only manage .work on work-laptop
-    {{- end }}
+```
+README.md
+{{- if ne .chezmoi.hostname "work-laptop" }}
+.work # only manage .work on work-laptop
+{{- end }}
+```
 
 The use of `ne` (not equal) is deliberate. What we want to achieve is "only
 install `.work` if hostname is `work-laptop`" but chezmoi installs everything by
@@ -425,8 +498,10 @@ unless the hostname is `work-laptop`".
 
 Patterns can be excluded by prefixing them with a `!`, for example:
 
-    f*
-    !foo
+```
+f*
+!foo
+```
 
 will ignore all files beginning with an `f` except `foo`.
 
@@ -437,11 +512,13 @@ any variable. For example, if you want `~/.bashrc` to be different on Linux and
 macOS you would create a file in the source state called `dot_bashrc.tmpl`
 containing:
 
-    {{ if eq .chezmoi.os "darwin" -}}
-    # macOS .bashrc contents
-    {{ else if eq .chezmoi.os "linux" -}}
-    # Linux .bashrc contents
-    {{ end -}}
+```
+{{ if eq .chezmoi.os "darwin" -}}
+# macOS .bashrc contents
+{{ else if eq .chezmoi.os "linux" -}}
+# Linux .bashrc contents
+{{ end -}}
+```
 
 However, if the differences between the two versions are so large that you'd
 prefer to use completely separate files in the source state, you can achieve
@@ -449,24 +526,32 @@ this using a symbolic link template. Create the following files:
 
 `symlink_dot_bashrc.tmpl`:
 
-    .bashrc_{{ .chezmoi.os }}
+```
+.bashrc_{{ .chezmoi.os }}
+```
 
 `dot_bashrc_darwin`:
 
-    # macOS .bashrc contents
+```
+  # macOS .bashrc contents
+```
 
 `dot_bashrc_linux`:
 
-    # Linux .bashrc contents
+```
+# Linux .bashrc contents
+```
 
 `.chezmoiignore`
 
-    {{ if ne .chezmoi.os "darwin" }}
-    .bashrc_darwin
-    {{ end }}
-    {{ if ne .chezmoi.os "linux" }}
-    .bashrc_linux
-    {{ end }}
+```
+{{ if ne .chezmoi.os "darwin" }}
+.bashrc_darwin
+{{ end }}
+{{ if ne .chezmoi.os "linux" }}
+.bashrc_linux
+{{ end }}
+```
 
 This will make `~/.bashrc` a symlink to `.bashrc_darwin` on `darwin` and to
 `.bashrc_linux` on `linux`. The `.chezmoiignore` configuration ensures that only
@@ -478,12 +563,14 @@ The same thing can be achieved using the include function.
 
 `dot_bashrc.tmpl`
 
-	{{ if eq .chezmoi.os "darwin" }}
-	{{   include ".bashrc_darwin" }}
-	{{ end }}
-	{{ if eq .chezmoi.os "linux" }}
-	{{   include ".bashrc_linux" }}
-	{{ end }}
+```
+{{ if eq .chezmoi.os "darwin" }}
+{{   include ".bashrc_darwin" }}
+{{ end }}
+{{ if eq .chezmoi.os "linux" }}
+{{   include ".bashrc_linux" }}
+{{ end }}
+```
 
 ### Create a config file on a new machine automatically
 
@@ -495,9 +582,11 @@ initial config file.
 
 Specifically, if you have `.chezmoi.toml.tmpl` that looks like this:
 
-    {{- $email := promptString "email" -}}
-    [data]
-        email = {{ $email | quote }}
+```
+{{- $email := promptString "email" -}}
+[data]
+    email = {{ $email | quote }}
+```
 
 Then `chezmoi init` will create an initial `chezmoi.toml` using this template.
 `promptString` is a special function that prompts the user (you) for a value.
@@ -505,7 +594,9 @@ Then `chezmoi init` will create an initial `chezmoi.toml` using this template.
 To test this template, use `chezmoi execute-template` with the `--init` and
 `--promptString` flags, for example:
 
-    chezmoi execute-template --init --promptString email=me@home.org < ~/.local/share/chezmoi/.chezmoi.toml.tmpl
+```console
+$ chezmoi execute-template --init --promptString email=me@home.org < ~/.local/share/chezmoi/.chezmoi.toml.tmpl
+```
 
 ### Re-create your config file
 
@@ -513,32 +604,38 @@ If you change your config file template, chezmoi will warn you if your current
 config file was not generated from that template. You can re-generate your
 config file by running:
 
-    chezmoi init
+```console
+$ chezmoi init
+```
 
 If you are using any `prompt*` template functions in your config file template
 you will be prompted again. However, you can avoid this with the following
 example template logic:
 
-    {{- $email := get . "email" -}}
-    {{- if not $email -}}
-    {{-   $email = promptString "email" -}}
-    {{- end -}}
+```
+{{- $email := get . "email" -}}
+{{- if not $email -}}
+{{-   $email = promptString "email" -}}
+{{- end -}}
 
-    [data]
-      email = {{ $email | quote }}
+[data]
+    email = {{ $email | quote }}
+```
 
 This will cause chezmoi to first try to re-use the existing `$email` variable
 and fallback to `promptString` only if it is not set.
 
 For boolean variables you can use:
 
-    {{- $var := false -}}
-    {{- if (hasKey . "var") -}}
-    {{-   $var = get . "var" -}}
-    {{- end -}}
+```
+{{- $var := false -}}
+{{- if (hasKey . "var") -}}
+{{-   $var = get . "var" -}}
+{{- end -}}
 
-    [data]
-      var = $var
+[data]
+    var = $var
+```
 
 ### Handle different file locations on different systems with the same contents
 
@@ -558,12 +655,14 @@ Linux. Both template files should contain `{{- template "file.conf" -}}`.
 Finally, tell chezmoi to ignore files where they are not needed by adding lines
 to your `.chezmoiignore` file, for example:
 
-    {{ if ne .chezmoi.os "darwin" }}
-    Library/Application Support/App/file.conf
-    {{ end }}
-    {{ if ne .chezmoi.os "linux" }}
-    .config/app/file.conf
-    {{ end }}
+```
+{{ if ne .chezmoi.os "darwin" }}
+Library/Application Support/App/file.conf
+{{ end }}
+{{ if ne .chezmoi.os "linux" }}
+.config/app/file.conf
+{{ end }}
+```
 
 ### Create an archive of your dotfiles
 
@@ -579,7 +678,9 @@ them by inspecting their permissions. Private files and directories are stored
 in `~/.local/share/chezmoi` as regular, public files with permissions `0644` and
 the name prefix `private_`. For example:
 
-    chezmoi add ~/.netrc
+```
+$ chezmoi add ~/.netrc
+```
 
 will create `~/.local/share/chezmoi/private_dot_netrc` (assuming `~/.netrc` is
 not world- or group- readable, as it should be). This file is still private
@@ -601,31 +702,41 @@ expose data as a template function.
 
 Log in and get a session using:
 
-    eval $(op signin <subdomain>.1password.com <email>)
+```
+$ eval $(op signin <subdomain>.1password.com <email>)
+```
 
 The output of `op get item <uuid>` is available as the `onepassword` template
 function. chezmoi parses the JSON output and returns it as structured data. For
 example, if the output of `op get item "<uuid>"` is:
 
-    {
-        "uuid": "<uuid>",
-        "details": {
-            "password": "xxx"
-        }
+```json
+{
+    "uuid": "<uuid>",
+    "details": {
+        "password": "xxx"
     }
+}
+```
 
 Then you can access `details.password` with the syntax:
 
-    {{ (onepassword "<uuid>").details.password }}
+```
+{{ (onepassword "<uuid>").details.password }}
+```
 
 Login details fields can be retrieved with the `onepasswordDetailsFields`
 function, for example:
 
-    {{- (onepasswordDetailsFields "uuid").password.value }}
+```
+{{- (onepasswordDetailsFields "uuid").password.value }}
+```
 
 Documents can be retrieved with:
 
-    {{- onepasswordDocument "uuid" -}}
+```
+{{- onepasswordDocument "uuid" -}}
+```
 
 Note the extra `-` after the opening `{{` and before the closing `}}`. This
 instructs the template language to remove and whitespace before and after the
@@ -640,25 +751,33 @@ function.
 
 Log in to Bitwarden using:
 
-    bw login <bitwarden-email>
+```console
+$ bw login <bitwarden-email>
+```
 
 Unlock your Bitwarden vault:
 
-    bw unlock
+```console
+$ bw unlock
+```
 
 Set the `BW_SESSION` environment variable, as instructed.
 
 The structured data from `bw get` is available as the `bitwarden` template
 function in your config files, for example:
 
-    username = {{ (bitwarden "item" "example.com").login.username }}
-    password = {{ (bitwarden "item" "example.com").login.password }}
+```
+username = {{ (bitwarden "item" "example.com").login.username }}
+password = {{ (bitwarden "item" "example.com").login.password }}
+```
 
 Custom fields can be accessed with the `bitwardenFields` template function. For
 example, if you have a custom field named `token` you can retrieve its value
 with:
 
-    {{ (bitwardenFields "item" "example.com").token.value }}
+```
+{{ (bitwardenFields "item" "example.com").token.value }}
+```
 
 ### Use gopass
 
@@ -667,7 +786,9 @@ chezmoi includes support for [gopass](https://www.gopass.pw/) using the gopass C
 The first line of the output of `gopass show <pass-name>` is available as the
 `gopass` template function, for example:
 
-    {{ gopass "<pass-name>" }}
+```
+{{ gopass "<pass-name>" }}
+```
 
 ### Use KeePassXC
 
@@ -676,20 +797,26 @@ KeePassXC CLI (`keepassxc-cli`) to expose data as a template function.
 
 Provide the path to your KeePassXC database in your configuration file:
 
-    [keepassxc]
-      database = "/home/user/Passwords.kdbx"
+```toml
+[keepassxc]
+    database = "/home/user/Passwords.kdbx"
+```
 
 The structured data from `keepassxc-cli show $database` is available as the
 `keepassxc` template function in your config files, for example:
 
-    username = {{ (keepassxc "example.com").UserName }}
-    password = {{ (keepassxc "example.com").Password }}
+```
+username = {{ (keepassxc "example.com").UserName }}
+password = {{ (keepassxc "example.com").Password }}
+```
 
 Additional attributes are available through the `keepassxcAttribute` function.
 For example, if you have an entry called `SSH Key` with an additional attribute
 called `private-key`, its value is available as:
 
-    {{ keepassxcAttribute "SSH Key" "private-key" }}
+```
+{{ keepassxcAttribute "SSH Key" "private-key" }}
+```
 
 ### Use Keychain or Windows Credentials Manager
 
@@ -699,26 +826,34 @@ Windows Credentials Manager (on Windows) via the
 
 Set values with:
 
-    $ chezmoi secret keyring set --service=<service> --user=<user>
-    Value: xxxxxxxx
+```console
+$ chezmoi secret keyring set --service=<service> --user=<user>
+Value: xxxxxxxx
+```
 
 The value can then be used in templates using the `keyring` function which takes
 the service and user as arguments.
 
 For example, save a GitHub access token in keyring with:
 
-    $ chezmoi secret keyring set --service=github --user=<github-username>
-    Value: xxxxxxxx
+```console
+$ chezmoi secret keyring set --service=github --user=<github-username>
+Value: xxxxxxxx
+```
 
 and then include it in your `~/.gitconfig` file with:
 
-    [github]
-      user = {{ .github.user | quote }}
-      token = {{ keyring "github" .github.user | quote }}
+```
+[github]
+    user = {{ .github.user | quote }}
+    token = {{ keyring "github" .github.user | quote }}
+```
 
 You can query the keyring from the command line:
 
-    chezmoi secret keyring get --service=github --user=<github-username>
+```console
+$ chezmoi secret keyring get --service=github --user=<github-username>
+```
 
 ### Use LastPass
 
@@ -728,11 +863,15 @@ data as a template function.
 
 Log in to LastPass using:
 
-    lpass login <lastpass-username>
+```console
+$ lpass login <lastpass-username>
+```
 
 Check that `lpass` is working correctly by showing password data:
 
-    lpass show --json <lastpass-entry-id>
+``` console
+$ lpass show --json <lastpass-entry-id>
+```
 
 where `<lastpass-entry-id>` is a [LastPass Entry
 Specification](https://lastpass.github.io/lastpass-cli/lpass.1.html#_entry_specification).
@@ -743,13 +882,17 @@ template function. The value will be an array of objects. You can use the
 the field you want. For example, to extract the `password` field from first the
 "GitHub" entry, use:
 
-    githubPassword = {{ (index (lastpass "GitHub") 0).password | quote }}
+```
+githubPassword = {{ (index (lastpass "GitHub") 0).password | quote }}
+```
 
 chezmoi automatically parses the `note` value of the Lastpass entry as
 colon-separated key-value pairs, so, for example, you can extract a private SSH
 key like this:
 
-    {{ (index (lastpass "SSH") 0).note.privateKey }}
+```
+{{ (index (lastpass "SSH") 0).note.privateKey }}
+```
 
 Keys in the `note` section written as `CamelCase Words` are converted to
 `camelCaseWords`.
@@ -757,7 +900,9 @@ Keys in the `note` section written as `CamelCase Words` are converted to
 If the `note` value does not contain colon-separated key-value pairs, then you
 can use `lastpassRaw` to get its raw value, for example:
 
-    {{ (index (lastpassRaw "SSH Private Key") 0).note }}
+```
+{{ (index (lastpassRaw "SSH Private Key") 0).note }}
+```
 
 ### Use pass
 
@@ -767,7 +912,9 @@ pass CLI.
 The first line of the output of `pass show <pass-name>` is available as the
 `pass` template function, for example:
 
-    {{ pass "<pass-name>" }}
+```
+{{ pass "<pass-name>" }}
+```
 
 ### Use Vault
 
@@ -779,13 +926,17 @@ The vault CLI needs to be correctly configured on your machine, e.g. the
 `VAULT_ADDR` and `VAULT_TOKEN` environment variables must be set correctly.
 Verify that this is the case by running:
 
-    vault kv get -format=json <key>
+```
+$ vault kv get -format=json <key>
+```
 
 The structured data from `vault kv get -format=json` is available as the `vault`
 template function. You can use the `.Field` syntax of the `text/template`
 language to extract the data you want. For example:
 
-    {{ (vault "<key>").data.data.password }}
+```
+{{ (vault "<key>").data.data.password }}
+```
 
 ### Use a custom password manager
 
@@ -817,17 +968,23 @@ it afterwards.
 Specify the encryption key to use in your configuration file (`chezmoi.toml`)
 with the `gpg.recipient` key:
 
-    encryption = "gpg"
-    [gpg]
-      recipient = "..."
+```toml
+encryption = "gpg"
+[gpg]
+    recipient = "..."
+```
 
 Add files to be encrypted with the `--encrypt` flag, for example:
 
-    chezmoi add --encrypt ~/.ssh/id_rsa
+```console
+$ chezmoi add --encrypt ~/.ssh/id_rsa
+```
 
 chezmoi will encrypt the file with:
 
-    gpg --armor --recipient ${gpg.recipient} --encrypt
+```bash
+gpg --armor --recipient ${gpg.recipient} --encrypt
+```
 
 and store the encrypted file in the source state. The file will automatically be
 decrypted when generating the target state.
@@ -836,17 +993,23 @@ decrypted when generating the target state.
 
 Specify symmetric encryption in your configuration file:
 
-    encryption = "gpg"
-    [gpg]
-      symmetric = true
+```toml
+encryption = "gpg"
+[gpg]
+    symmetric = true
+```
 
 Add files to be encrypted with the `--encrypt` flag, for example:
 
-    chezmoi add --encrypt ~/.ssh/id_rsa
+```console
+$ chezmoi add --encrypt ~/.ssh/id_rsa
+```
 
 chezmoi will encrypt the file with:
 
-    gpg --armor --symmetric
+```bash
+gpg --armor --symmetric
+```
 
 ### Encrypt whole files with age
 
@@ -858,20 +1021,26 @@ re-encrypt it afterwards.
 
 Generate a key using `age-keygen`:
 
-    $ age-keygen -o $HOME/key.txt
-    Public key: age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p
+```console
+$ age-keygen -o $HOME/key.txt
+Public key: age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p
+```
 
 Specify age encryption in your configuration file, being sure to specify at
 least the identity and one recipient:
 
-    encryption = "age"
-    [age]
-        identity = "/home/user/key.txt"
-        recipient = "age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p"
+```toml
+encryption = "age"
+[age]
+    identity = "/home/user/key.txt"
+    recipient = "age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p"
+```
 
 Add files to be encrypted with the `--encrypt` flag, for example:
 
-    chezmoi add --encrypt ~/.ssh/id_rsa
+```console
+$ chezmoi add --encrypt ~/.ssh/id_rsa
+```
 
 chezmoi supports multiple recipients and recipient files, and multiple
 identities.
@@ -882,18 +1051,23 @@ Typically, `~/.config/chezmoi/chezmoi.toml` is not checked in to version control
 and has permissions 0600. You can store tokens as template values in the `data`
 section. For example, if your `~/.config/chezmoi/chezmoi.toml` contains:
 
-    [data]
-      [data.github]
+```toml
+[data]
+    [data.github]
         user = "<github-username>"
         token = "<github-token>"
+```
 
 Your `~/.local/share/chezmoi/private_dot_gitconfig.tmpl` can then contain:
 
-    {{- if (index . "github") }}
-    [github]
-      user = {{ .github.user | quote }}
-      token = {{ .github.token | quote }}
-    {{- end }}
+```
+{{- if (index . "github") }}
+[github]
+    user = {{ .github.user | quote }}
+    token = {{ .github.token | quote }}
+{{- end }}
+```
+
 
 Any config files containing tokens in plain text should be private (permissions
 `0600`).
@@ -931,13 +1105,17 @@ useful for disabling scripts.
 Change to the source directory and create a file called
 `run_once_install-packages.sh`:
 
-    chezmoi cd
-    $EDITOR run_once_install-packages.sh
+```console
+$ chezmoi cd
+$ $EDITOR run_once_install-packages.sh
+```
 
 In this file create your package installation script, e.g.
 
-    #!/bin/sh
-    sudo apt install ripgrep
+```sh
+#!/bin/sh
+sudo apt install ripgrep
+```
 
 The next time you run `chezmoi apply` or `chezmoi update` this script will be
 run. As it has the `run_once_` prefix, it will not be run again unless its
@@ -946,13 +1124,15 @@ contents change, for example if you add more packages to be installed.
 This script can also be a template. For example, if you create
 `run_once_install-packages.sh.tmpl` with the contents:
 
-    {{ if eq .chezmoi.os "linux" -}}
-    #!/bin/sh
-    sudo apt install ripgrep
-    {{ else if eq .chezmoi.os "darwin" -}}
-    #!/bin/sh
-    brew install ripgrep
-    {{ end -}}
+```
+{{ if eq .chezmoi.os "linux" -}}
+#!/bin/sh
+sudo apt install ripgrep
+{{ else if eq .chezmoi.os "darwin" -}}
+#!/bin/sh
+brew install ripgrep
+{{ end -}}
+```
 
 This will install `ripgrep` on both Debian/Ubuntu Linux systems and macOS.
 
@@ -969,10 +1149,12 @@ stored in `dconf.ini` in your source directory then you can make `chezmoi apply`
 only load them when the contents of `dconf.ini` has changed by adding the
 following script as `run_once_dconf-load.sh.tmpl`:
 
-    #!/bin/bash
+```
+#!/bin/bash
 
-    # dconf.ini hash: {{ include "dconf.ini" | sha256sum }}
-    dconf load / {{ joinPath .chezmoi.sourceDir "dconf.ini" | quote }}
+# dconf.ini hash: {{ include "dconf.ini" | sha256sum }}
+dconf load / {{ joinPath .chezmoi.sourceDir "dconf.ini" | quote }}
+```
 
 As the SHA256 sum of `dconf.ini` is included in a comment in the script, the
 contents of the script will change whenever the contents of `dconf.ini` are
@@ -993,14 +1175,16 @@ chezmoi by creating a `run_once_` script. For example, create a file in your
 source directory called `run_once_before_install-packages-darwin.sh.tmpl`
 containing:
 
-    {{- if (eq .chezmoi.os "darwin") -}}
-    #!/bin/bash
+```
+{{- if (eq .chezmoi.os "darwin") -}}
+#!/bin/bash
 
-    brew bundle --no-lock --file=/dev/stdin <<EOF
-    brew "git"
-    cask "google-chrome"
-    EOF
-    {{ end -}}
+brew bundle --no-lock --file=/dev/stdin <<EOF
+brew "git"
+cask "google-chrome"
+EOF
+{{ end -}}
+```
 
 Note that the `Brewfile` is embedded directly in the script with a bash here
 document. chezmoi will run this script whenever its contents change, i.e. when
@@ -1014,11 +1198,13 @@ WSL can be detected by looking for the string `Microsoft` or `microsoft` in
 `/proc/sys/kernel/osrelease`, which is available in the template variable
 `.chezmoi.kernel.osrelease`, for example:
 
-    {{ if (eq .chezmoi.os "linux") }}
-    {{   if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
-    # WSL-specific code
-    {{   end }}
-    {{ end }}
+```
+{{ if (eq .chezmoi.os "linux") }}
+{{   if (.chezmoi.kernel.osrelease | lower | contains "microsoft") }}
+# WSL-specific code
+{{   end }}
+{{ end }}
+```
 
 ### Run a PowerShell script as admin on Windows
 
@@ -1063,17 +1249,19 @@ First, if you are using a chezmoi configuration file template, ensure that it is
 non-interactive when running in Codespaces, for example, `.chezmoi.toml.tmpl`
 might contain:
 
-    {{- $codespaces:= env "CODESPACES" | not | not -}}
-    sourceDir = {{ .chezmoi.sourceDir | quote }}
+```
+{{- $codespaces:= env "CODESPACES" | not | not -}}
+sourceDir = {{ .chezmoi.sourceDir | quote }}
 
-    [data]
-      name = "Your name"
-      codespaces = {{ $codespaces }}
-    {{- if $codespaces }}{{/* Codespaces dotfiles setup is non-interactive, so set an email address */}}
-      email = "your@email.com"
-    {{- else }}{{/* Interactive setup, so prompt for an email address */}}
-      email = {{ promptString "email" | quote }}
-    {{- end }}
+[data]
+    name = "Your name"
+    codespaces = {{ $codespaces }}
+{{- if $codespaces }}{{/* Codespaces dotfiles setup is non-interactive, so set an email address */}}
+    email = "your@email.com"
+{{- else }}{{/* Interactive setup, so prompt for an email address */}}
+    email = {{ promptString "email" | quote }}
+{{- end }}
+```
 
 This sets the `codespaces` template variable, so you don't have to repeat `(env
 "CODESPACES")` in your templates. It also sets the `sourceDir` configuration to
@@ -1124,10 +1312,12 @@ Finally, modify any of your templates to use the `codespaces` variable if
 needed. For example, to install `vim-gtk` on Linux but not in Codespaces, your
 `run_once_install-packages.sh.tmpl` might contain:
 
-    {{- if (and (eq .chezmoi.os "linux") (not .codespaces)) -}}
-    #!/bin/sh
-    sudo apt install -y vim-gtk
-    {{- end -}}
+```
+{{- if (and (eq .chezmoi.os "linux") (not .codespaces)) -}}
+#!/bin/sh
+sudo apt install -y vim-gtk
+{{- end -}}
+```
 
 ## Use custom tools
 
@@ -1137,8 +1327,10 @@ By default, chezmoi uses a built-in diff. You can change the format, and/or pipe
 the output into a pager of your choice. For example, to use
 [`diff-so-fancy`](https://github.com/so-fancy/diff-so-fancy) specify:
 
-    [diff]
-      pager = "diff-so-fancy"
+```toml
+[diff]
+    pager = "diff-so-fancy"
+```
 
 The pager can be disabled using the `--no-pager` flag.
 
@@ -1148,9 +1340,11 @@ By default, chezmoi uses vimdiff, but you can use any merge tool of your choice.
 In your config file, specify the command and args to use. For example, to use
 neovim's diff mode specify:
 
-    [merge]
-      command = "nvim"
-      args = "-d"
+```toml
+[merge]
+    command = "nvim"
+    args = "-d"
+```
 
 ## Migrating to chezmoi from another dotfile manager
 
@@ -1161,7 +1355,9 @@ directory. If you `chezmoi add` such a symlink, chezmoi will add the symlink,
 not the file. To assist with migrating from symlink-based systems, use the
 `--follow` option to `chezmoi add`, for example:
 
-    chezmoi add --follow ~/.bashrc
+```console
+$ chezmoi add --follow ~/.bashrc
+```
 
 This will tell `chezmoi add` that the target state of `~/.bashrc` is the target
 of the `~/.bashrc` symlink, rather than the symlink itself. When you run

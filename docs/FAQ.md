@@ -30,7 +30,9 @@
 
 Run:
 
-    chezmoi doctor
+```console
+$ chezmoi doctor
+```
 
 Anything `ok` is fine, anything `warning` is only a problem if you want to use
 the related feature, and anything `error` indicates a definite problem.
@@ -104,7 +106,9 @@ that files and directories are group writeable by default.
 You can override this for chezmoi by setting the `umask` configuration variable
 in your configuration file, for example:
 
-    umask = 0o022
+```toml
+umask = 0o022
+```
 
 Note that this will apply to all files and directories that chezmoi manages and
 will ensure that none of them are group writeable. It is not currently possible
@@ -266,12 +270,16 @@ The `gpg.recipient` key should be ultimately trusted, otherwise encryption will
 fail because gpg will prompt for input, which chezmoi does not handle. You can
 check the trust level by running:
 
-    gpg --export-ownertrust
+```console
+$ gpg --export-ownertrust
+```
 
 The trust level for the recipient's key should be `6`. If it is not, you can
 change the trust level by running:
 
-    gpg --edit-key $recipient
+```console
+$ gpg --edit-key $recipient
+```
 
 Enter `trust` at the prompt and chose `5 = I trust ultimately`.
 
@@ -308,7 +316,9 @@ lock include `diff`, `status`, and `verify`.
 
 chezmoi requires Go version 1.16 or later. You can check the version of Go with:
 
-    go version
+```console
+$ go version
+```
 
 For more details on building chezmoi, see the [Contributing
 Guide]([CONTRIBUTING.md](https://github.com/twpayne/chezmoi/blob/master/docs/CONTRIBUTING.md)).

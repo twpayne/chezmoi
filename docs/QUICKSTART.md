@@ -19,7 +19,9 @@ Assuming that you have already [installed
 chezmoi](https://github.com/twpayne/chezmoi/blob/master/docs/INSTALL.md),
 initialize chezmoi with:
 
-    chezmoi init
+```console
+$ chezmoi init
+```
 
 This will create a new git repository in `~/.local/share/chezmoi` where chezmoi
 will store its source state. By default, chezmoi only modifies files in the
@@ -28,24 +30,32 @@ can automate this for you if you want.
 
 Manage your first file with chezmoi:
 
-    chezmoi add ~/.bashrc
+```console
+$ chezmoi add ~/.bashrc
+```
 
 This will copy `~/.bashrc` to `~/.local/share/chezmoi/dot_bashrc`.
 
 Edit the source state:
 
-    chezmoi edit ~/.bashrc
+```console
+$ chezmoi edit ~/.bashrc
+```
 
 This will open `~/.local/share/chezmoi/dot_bashrc` in your `$EDITOR`. Make some
 changes and save the file.
 
 See what changes chezmoi would make:
 
-    chezmoi diff
+```console
+$ chezmoi diff
+```
 
 Apply the changes:
 
-    chezmoi -v apply
+```console
+$ chezmoi -v apply
+```
 
 All chezmoi commands accept the `-v` (verbose) flag to print out exactly what
 changes they will make to the file system, and the `-n` (dry run) flag to not
@@ -54,16 +64,20 @@ see exactly what changes would be made.
 
 Next, open a shell in the source directory, to commit your changes:
 
-    chezmoi cd
-    git add .
-    git commit -m "Initial commit"
+```console
+$ chezmoi cd
+$ git add .
+$ git commit -m "Initial commit"
+```
 
 [Create a new repository on GitHub](https://github.com/new) called `dotfiles`
 and then push your repo:
 
-    git remote add origin git@github.com:username/dotfiles.git
-    git branch -M main
-    git push -u origin main
+```console
+$ git remote add origin git@github.com:username/dotfiles.git
+$ git branch -M main
+$ git push -u origin main
+```
 
 chezmoi can also be used with [GitLab](https://gitlab.com), or
 [BitBucket](https://bitbucket.org), [Source Hut](https://sr.ht/), or any other
@@ -71,34 +85,46 @@ git hosting service.
 
 Finally, exit the shell in the source directory to return to where you were:
 
-    exit
+```console
+$ exit
+```
 
 ## Using chezmoi across multiple machines
 
 On a second machine, initialize chezmoi with your dotfiles repo:
 
-    chezmoi init https://github.com/username/dotfiles.git
+```console
+$ chezmoi init https://github.com/username/dotfiles.git
+```
 
 This will check out the repo and any submodules and optionally create a chezmoi
 config file for you. It won't make any changes to your home directory until you
 run:
 
-    chezmoi apply
+```console
+$ chezmoi apply
+```
 
 If your dotfiles repo is `https://github.com/username/dotfiles.git` then the
 above two commands can be combined into just:
 
-    chezmoi init --apply username
+```console
+$ chezmoi init --apply username
+```
 
 On any machine, you can pull and apply the latest changes from your repo with:
 
-    chezmoi update
+```console
+$ chezmoi update
+```
 
 ## Next steps
 
 For a full list of commands run:
 
-    chezmoi help
+```console
+$ chezmoi help
+```
 
 chezmoi has much more functionality. Good starting points are adding more
 dotfiles, and using templates to manage files that vary from machine to machine

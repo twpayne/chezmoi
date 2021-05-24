@@ -22,26 +22,36 @@ chezmoi requires Go 1.16 or later.
 chezmoi is a standard Go project, using standard Go tooling, with a few extra
 tools. Ensure that these extra tools are installed with:
 
-    make ensure-tools
+```console
+$ make ensure-tools
+```
 
 Build chezmoi:
 
-    go build .
+```console
+$ go build .
+```
 
 Run all tests:
 
-    go test ./...
+```console
+$ go test ./...
+```
 
 Run chezmoi:
 
-    go run .
+```console
+$ go run .
+```
 
 ## Generated code
 
 chezmoi generates shell completions, the install script, and the website from a
 single source of truth. You must run
 
-    make generate
+```console
+$ make generate
+```
 
 if you change includes any of the following:
 
@@ -104,12 +114,15 @@ Releases are managed with [`goreleaser`](https://goreleaser.com/).
 
 To build a test release, without publishing, (Linux only) run:
 
-    make test-release
-
+```console
+$ make test-release
+```
 Publish a new release by creating and pushing a tag, e.g.:
 
-    git tag v1.2.3
-    git push --tags
+```console
+$ git tag v1.2.3
+$ git push --tags
+```
 
 This triggers a [GitHub Action](https://github.com/twpayne/chezmoi/actions) that
 builds and publishes archives, packages, and snaps, and creates a new [GitHub
@@ -120,11 +133,15 @@ Publishing [Snaps](https://snapcraft.io/) requires a `SNAPCRAFT_LOGIN`
 secret](https://github.com/twpayne/chezmoi/settings/secrets/actions). Snapcraft
 logins periodically expire. Create a new snapcraft login by running:
 
-    snapcraft export-login --snaps=chezmoi --channels=stable --acls=package_upload -
+```console
+$ snapcraft export-login --snaps=chezmoi --channels=stable --acls=package_upload -
+```
 
 [brew](https://brew.sh/) formula must be updated manually with the command:
 
-    brew bump-formula-pr --tag=v1.2.3 chezmoi
+```console
+$ brew bump-formula-pr --tag=v1.2.3 chezmoi
+```
 
 ## Packaging
 
@@ -181,25 +198,35 @@ branch](https://github.com/twpayne/chezmoi/tree/gh-pages) to GitHub.
 Before building the website, you must download the [Hugo Book
 Theme](https://github.com/alex-shpak/hugo-book) by running:
 
-    git submodule update --init
+```console
+$ git submodule update --init
+```
 
 Test the website locally by running:
 
-    ( cd chezmoi.io && hugo serve )
+```console
+$ ( cd chezmoi.io && hugo serve )
+```
 
 and visit http://localhost:1313/.
 
 To build the website in a temporary directory, run:
 
-    ( cd chezmoi.io && make )
+```console
+$ ( cd chezmoi.io && make )
+```
 
 From here you can run
 
-    git show
+```console
+$ git show
+```
 
 to show changes and
 
-    git push
+```console
+$ git push
+```
 
 to push them. You can only push changes if you have write permissions to the
 chezmoi GitHub repo.

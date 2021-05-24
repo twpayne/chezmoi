@@ -13,28 +13,36 @@
 Install the correct binary for your operating system and architecture in `./bin`
 with a single command:
 
-    sh -c "$(curl -fsLS git.io/chezmoi)"
+```console
+$ sh -c "$(curl -fsLS git.io/chezmoi)"
+```
 
 Or, if you have `wget` instead of `curl`:
 
-    sh -c "$(wget -qO- git.io/chezmoi)"
+```console
+$ sh -c "$(wget -qO- git.io/chezmoi)"
+```
 
 If you already have a dotfiles repo using chezmoi on GitHub at
 `https://github.com/<github-username>/dotfiles` then you can install chezmoi and
 your dotfiles with the single command:
 
-    sh -c "$(curl -fsLS git.io/chezmoi)" -- init --apply <github-username>
+```console
+$ sh -c "$(curl -fsLS git.io/chezmoi)" -- init --apply <github-username>
+```
 
-Or on systems with Powershell, you can use this command:
+Or on systems with Powershell, you can use one of the following command:
 
-    # To install in ./bin
-    (iwr -UseBasicParsing https://git.io/chezmoi.ps1).Content | powershell -c -
+```
+# To install in ./bin
+(iwr -UseBasicParsing https://git.io/chezmoi.ps1).Content | powershell -c -
 
-    # To install in another location
-    '$params = "-BinDir ~/other"', (iwr https://git.io/chezmoi.ps1).Content | powershell -c -
+# To install in another location
+'$params = "-BinDir ~/other"', (iwr https://git.io/chezmoi.ps1).Content | powershell -c -
 
-    # For information about other options, run
-    '$params = "-?"', (iwr https://git.io/chezmoi.ps1).Content | powershell -c -
+# For information about other options, run
+'$params = "-?"', (iwr https://git.io/chezmoi.ps1).Content | powershell -c -
+```
 
 ## One-line package install
 
@@ -89,6 +97,8 @@ page](https://github.com/twpayne/chezmoi/releases/latest).
 
 Download, build, and install chezmoi for your system:
 
-    go install github.com/twpayne/chezmoi@latest
+```console
+$ go install github.com/twpayne/chezmoi@latest
+```
 
 Building chezmoi requires Go 1.16 or later.
