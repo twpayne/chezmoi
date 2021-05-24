@@ -36,7 +36,7 @@ chezmoi add $HOME${/}.symlink
 cmp $CHEZMOISOURCEDIR/symlink_dot_symlink golden/symlink_dot_symlink
 
 # test adding a symlink with a separator
-symlink $HOME${/}.symlink2 -> .dir${/}subdir${/}file
+symlink $HOME/.symlink2 -> .dir/subdir/file
 chezmoi add $HOME${/}.symlink2
 cmp $CHEZMOISOURCEDIR/symlink_dot_symlink2 golden/symlink_dot_symlink
 

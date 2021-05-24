@@ -8,19 +8,19 @@ chezmoi apply $HOME${/}.template
 cmp $HOME/.template $HOME/.file
 
 # test that chezmoi add --template-symlinks replaces absolute symlinks, pointing to files inside home, with templates
-symlink ${HOME}${/}.symlink_absolute -> $HOME/.dir/subdir/file
+symlink $HOME/.symlink_absolute -> $HOME/.dir/subdir/file
 chezmoi add --template-symlinks $HOME${/}.symlink_absolute
 cmp $CHEZMOISOURCEDIR/symlink_dot_symlink_absolute.tmpl golden/symlink_dot_symlink_absolute.tmpl
 
 # test that chezmoi add --template-symlinks replaces absolute symlinks, pointing to files inside the source directory, with templates
-symlink $HOME${/}.symlink_source -> $CHEZMOISOURCEDIR/.dir/subdir/file
+symlink $HOME/.symlink_source -> $CHEZMOISOURCEDIR/.dir/subdir/file
 chezmoi add --template-symlinks $HOME${/}.symlink_source
 cmp $CHEZMOISOURCEDIR/symlink_dot_symlink_source.tmpl golden/symlink_dot_symlink_source.tmpl
 
 chhome home2/user
 
 # test that chezmoi add reads add.templateSymlinks from the config file
-symlink ${HOME}${/}.symlink_absolute -> $HOME/.dir/subdir/file
+symlink $HOME/.symlink_absolute -> $HOME/.dir/subdir/file
 chezmoi add --template-symlinks $HOME${/}.symlink_absolute
 cmp $CHEZMOISOURCEDIR/symlink_dot_symlink_absolute.tmpl golden/symlink_dot_symlink_absolute.tmpl
 
