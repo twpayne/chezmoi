@@ -36,7 +36,8 @@
   * [Use pass](#use-pass)
   * [Use Vault](#use-vault)
   * [Use a custom password manager](#use-a-custom-password-manager)
-  * [Encrypt whole files](#encrypt-whole-files)
+  * [Encrypt whole files with gpg](#encrypt-whole-files-with-gpg)
+  * [Encrypt whole files with age](#encrypt-whole-files-with-age)
   * [Use a private configuration file and template variables](#use-a-private-configuration-file-and-template-variables)
 * [Use scripts to perform actions](#use-scripts-to-perform-actions)
   * [Understand how scripts work](#understand-how-scripts-work)
@@ -803,9 +804,7 @@ respectively. All of the above secret managers can be supported in this way:
 | KeePassXC       | `keepassxc-cli`  | Not possible (interactive command only)           |
 | pass            | `pass`           | `{{ secret "show" <id> }}`                        |
 
-### Encrypt whole files
-
-#### gpg
+### Encrypt whole files with gpg
 
 chezmoi supports encrypting files with [gpg](https://www.gnupg.org/). Encrypted
 files are stored in the source state and automatically be decrypted when
@@ -813,7 +812,7 @@ generating the target state or printing a file's contents with `chezmoi cat`.
 `chezmoi edit` will transparently decrypt the file before editing and re-encrypt
 it afterwards.
 
-##### Asymmetric (private/public-key) encryption
+#### Asymmetric (private/public-key) encryption
 
 Specify the encryption key to use in your configuration file (`chezmoi.toml`)
 with the `gpg.recipient` key:
@@ -833,7 +832,7 @@ chezmoi will encrypt the file with:
 and store the encrypted file in the source state. The file will automatically be
 decrypted when generating the target state.
 
-##### Symmetric encryption
+#### Symmetric encryption
 
 Specify symmetric encryption in your configuration file:
 
@@ -848,6 +847,34 @@ Add files to be encrypted with the `--encrypt` flag, for example:
 chezmoi will encrypt the file with:
 
     gpg --armor --symmetric
+
+### Encrypt whole files with age
+
+chezmoi supports encrypting files with [age](https://age-encryption.org/).
+Encrypted files are stored in the source state and automatically be decrypted
+when generating the target state or printing a file's contents with `chezmoi
+cat`. `chezmoi edit` will transparently decrypt the file before editing and
+re-encrypt it afterwards.
+
+Generate a key using `age-keygen`:
+
+    $ age-keygen -o $HOME/key.txt
+    Public key: age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p
+
+Specify age encryption in your configuration file, being sure to specify at
+least the identity and one recipient:
+
+    encryption = "age"
+    [age]
+        identity = "/home/user/key.txt"
+        recipient = "age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p"
+
+Add files to be encrypted with the `--encrypt` flag, for example:
+
+    chezmoi add --encrypt ~/.ssh/id_rsa
+
+chezmoi supports multiple recipients and recipient files, and multiple
+identities.
 
 ### Use a private configuration file and template variables
 
