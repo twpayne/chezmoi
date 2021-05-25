@@ -38,6 +38,7 @@ Manage your dotfiles securely across multiple machines.
   * [Scripts](#scripts)
 * [Special files and directories](#special-files-and-directories)
   * [`.chezmoi.<format>.tmpl`](#chezmoiformattmpl)
+  * [`.chezmoidata`](#chezmoidata)
   * [`.chezmoiignore`](#chezmoiignore)
   * [`.chezmoiremove`](#chezmoiremove)
   * [`.chezmoitemplates`](#chezmoitemplates)
@@ -486,6 +487,42 @@ config file formats.
 {{ $email := promptString "email" -}}
 data:
     email: {{ $email | quote }}
+```
+
+### `.chezmoidata`
+
+If a file called `.chezmoidata` exists in the source state, it is interpreted
+as a datasource available in most [templates](TEMPLATING.md#template-data).
+
+#### `.chezmoidata` examples
+
+If `.chezmoidata` contains the following (and no variable is overwritten in later stages):
+```toml
+editor = "nvim"
+[directions]
+	up = "k"
+	down = "j"
+	right = "l"
+	left = "l"
+```
+
+Then the following template:
+```
+EDITOR={{ .editor }}
+MOVE_UP={{ .directions.up }}
+MOVE_DOWN={{ .directions.down }}
+MOVE_RIGHT={{ .directions.right }}
+MOVE_LEFT={{ .directions.left }}
+```
+
+Will result in:
+
+```
+EDITOR=nvim
+MOVE_UP=k
+MOVE_DOWN=k
+MOVE_RIGHT=k
+MOVE_LEFT=k
 ```
 
 ### `.chezmoiignore`

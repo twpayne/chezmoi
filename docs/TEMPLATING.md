@@ -45,9 +45,12 @@ chezmoi provides a variety of template variables. For a full list, run
 $ chezmoi data
 ```
 
-These come from a variety of sources:
+These come from a variety of sources (later data overwrite earlier ones):
 
 * Variables populated by chezmoi are in `.chezmoi`, for example `.chezmoi.os`.
+* Variables created by you in the `.chezmoidata.<format>` configuration file.
+  The various supported formats (json, toml and yaml) are read in alphabetical
+  order.
 * Variables created by you in the `data` section of the configuration file.
 
 Furthermore, chezmoi provides a variety of functions to retrieve data at runtime
