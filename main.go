@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/twpayne/chezmoi/v2/cmd"
+	"github.com/twpayne/chezmoi/v2/internal/cmd"
 )
 
 var (

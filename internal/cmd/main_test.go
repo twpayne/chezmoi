@@ -1,4 +1,4 @@
-package main
+package cmd_test
 
 import (
 	"bufio"
@@ -20,8 +20,8 @@ import (
 	"github.com/twpayne/go-vfs/v3"
 	"github.com/twpayne/go-vfs/v3/vfst"
 
-	"github.com/twpayne/chezmoi/v2/cmd"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
+	"github.com/twpayne/chezmoi/v2/internal/cmd"
 )
 
 var umaskConditionRx = regexp.MustCompile(`\Aumask:([0-7]{3})\z`)
@@ -275,9 +275,9 @@ func cmdMkGPGConfig(ts *testscript.TestScript, neg bool, args []string) {
 		`encryption = "gpg"`,
 		`[gpg]`,
 		`  args = [`,
-		`    "--homedir", ` + quote(gpgHomeDir) + `,`,
+		`    "--homedir", ` + strconv.Quote(gpgHomeDir) + `,`,
 		`    "--no-tty",`,
-		`    "--passphrase", ` + quote(passphrase) + `,`,
+		`    "--passphrase", ` + strconv.Quote(passphrase) + `,`,
 		`    "--pinentry-mode", "loopback",`,
 		`  ]`,
 	}
@@ -444,10 +444,6 @@ func cmdUNIX2DOS(ts *testscript.TestScript, neg bool, args []string) {
 
 func prependDirToPath(dir, path string) string {
 	return strings.Join(append([]string{dir}, filepath.SplitList(path)...), string(os.PathListSeparator))
-}
-
-func quote(s string) string {
-	return fmt.Sprintf("%q", s)
 }
 
 func setup(env *testscript.Env) error {

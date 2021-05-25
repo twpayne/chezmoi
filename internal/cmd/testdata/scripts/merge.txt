@@ -10,7 +10,7 @@ stdout ^${HOME@R}/\.file\s+${CHEZMOISOURCEDIR@R}/dot_file\s+${WORK@R}/.*/\.file$
 # test that chezmoi merge falls back to a two-way merge when the template is invalid
 # FIXME the following test fails
 # chezmoi merge $HOME${/}.invalid_template
-# stdout ^${HOME@R}/\.invalid_template\s+${CHEZMOISOURCEDIR}/dot_invalid_template\.tmpl$
+# stdout ^${HOME@R}/\.invalid_template\s+$CHEZMOISOURCEDIR/dot_invalid_template\.tmpl$
 
 -- bin/vimdiff --
 #!/bin/sh

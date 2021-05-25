@@ -5,7 +5,7 @@ mkhomedir
 mksourcedir
 
 # test change file mode
-chmod 777 $HOME${/}.file
+chmod 777 $HOME/.file
 chezmoi apply --force
 cmpmod 666 $HOME/.file
 

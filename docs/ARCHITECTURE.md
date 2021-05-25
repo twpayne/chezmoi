@@ -34,10 +34,10 @@ The important directories in chezmoi are:
 
 | Directory | Contents |
 | --------- | -------- |
-| `cmd/` | Code for the `chezmoi` command.  |
 | `docs/` | The documentation single source of truth. Help text, examples, and the [chezmoi.io](https://chezmoi.io) website are generated from the files in this directory, particularly `docs/REFERENCE.md`. |
 | `internal/chezmoi/` | chezmoi's core functionality. |
-| `testdata/scripts/` | High-level tests of chezmoi's commands using [`testscript`](https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript). |
+| `internal/cmd/` | Code for the `chezmoi` command.  |
+| `internal/cmd/testdata/scripts/` | High-level tests of chezmoi's commands using [`testscript`](https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript). |
 
 ## Key concepts
 
@@ -111,10 +111,10 @@ persistent state. chezmoi can then detect if a third party has updated a target
 since chezmoi last wrote it by comparing the actual state entry in the target
 state with the entry state in the persistent state.
 
-## `cmd/`
+## `internal/cmd/`
 
-`cmd/*cmd.go` contains the code for each individual command and
-`cmd/*templatefuncs.go` contain the template functions.
+`internal/cmd/*cmd.go` contains the code for each individual command and
+`internal/cmd/*templatefuncs.go` contain the template functions.
 
 Commands are defined as methods on the `Config` struct. The `Config` struct is
 large, containing all configuration values read from the config file, command
