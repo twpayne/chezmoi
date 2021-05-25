@@ -1,4 +1,4 @@
-package main
+package cmd_test
 
 import (
 	"bufio"
@@ -20,8 +20,8 @@ import (
 	"github.com/twpayne/go-vfs/v3"
 	"github.com/twpayne/go-vfs/v3/vfst"
 
-	"github.com/twpayne/chezmoi/v2/cmd"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
+	"github.com/twpayne/chezmoi/v2/internal/cmd"
 )
 
 var umaskConditionRx = regexp.MustCompile(`\Aumask:([0-7]{3})\z`)
