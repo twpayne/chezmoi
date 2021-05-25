@@ -167,7 +167,7 @@ jobs:
       with:
         scandir: ./assets/scripts
     - name: Whitespace
-      run: go run ./internal/cmd/lint-whitespace
+      run: go run ./internal/cmds/lint-whitespace
     - name: Typos
       run: |
         go install github.com/twpayne/findtypos@latest

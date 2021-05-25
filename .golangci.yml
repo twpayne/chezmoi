@@ -96,7 +96,7 @@ issues:
   - linters:
     - forbidigo
     - gosec
-    path: ^internal/cmd/
+    path: ^internal/cmds/
   - linters:
     - gosec
     path: "_test\\.go$"

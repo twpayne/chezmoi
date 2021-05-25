@@ -48,13 +48,13 @@ completions:
 	$(GO) run . completion powershell -o completions/chezmoi.ps1
 	$(GO) run . completion zsh -o completions/chezmoi.zsh
 
-assets/scripts/install.sh: internal/cmd/generate-install.sh/install.sh.tmpl internal/cmd/generate-install.sh/main.go
-	$(GO) run ./internal/cmd/generate-install.sh > $@
+assets/scripts/install.sh: internal/cmds/generate-install.sh/install.sh.tmpl internal/cmds/generate-install.sh/main.go
+	$(GO) run ./internal/cmds/generate-install.sh > $@
 
 .PHONY: lint
 lint: ensure-golangci-lint
 	./bin/golangci-lint run
-	$(GO) run ./internal/cmd/lint-whitespace
+	$(GO) run ./internal/cmds/lint-whitespace
 
 .PHONY: format
 format: ensure-gofumports
