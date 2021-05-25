@@ -38,7 +38,7 @@ Manage your dotfiles securely across multiple machines.
   * [Scripts](#scripts)
 * [Special files and directories](#special-files-and-directories)
   * [`.chezmoi.<format>.tmpl`](#chezmoiformattmpl)
-  * [`.chezmoidata`](#chezmoidata)
+  * [`.chezmoidata.<format>`](#chezmoidataformat)
   * [`.chezmoiignore`](#chezmoiignore)
   * [`.chezmoiremove`](#chezmoiremove)
   * [`.chezmoitemplates`](#chezmoitemplates)
@@ -489,21 +489,21 @@ data:
     email: {{ $email | quote }}
 ```
 
-### `.chezmoidata`
+### `.chezmoidata.<format>`
 
-If a file called `.chezmoidata` exists in the source state, it is interpreted
+If a file called `.chezmoidata.<format>` exists in the source state, it is interpreted
 as a datasource available in most [templates](TEMPLATING.md#template-data).
 
-#### `.chezmoidata` examples
+#### `.chezmoidata.<format>` examples
 
-If `.chezmoidata` contains the following (and no variable is overwritten in later stages):
+If `.chezmoidata.toml` contains the following (and no variable is overwritten in later stages):
 ```toml
 editor = "nvim"
 [directions]
 	up = "k"
 	down = "j"
 	right = "l"
-	left = "l"
+	left = "h"
 ```
 
 Then the following template:
@@ -520,9 +520,9 @@ Will result in:
 ```
 EDITOR=nvim
 MOVE_UP=k
-MOVE_DOWN=k
-MOVE_RIGHT=k
-MOVE_LEFT=k
+MOVE_DOWN=j
+MOVE_RIGHT=l
+MOVE_LEFT=h
 ```
 
 ### `.chezmoiignore`
