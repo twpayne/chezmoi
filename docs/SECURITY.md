@@ -2,6 +2,7 @@
 
 <!--- toc --->
 * [Supported versions](#supported-versions)
+* [Reporting a vulnerability](#reporting-a-vulnerability)
 
 ## Supported versions
 
