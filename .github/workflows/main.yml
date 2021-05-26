@@ -16,7 +16,7 @@ jobs:
         - ubuntu-18.04
         - windows-latest
     env:
-      AGE_VERSION: v1.0.0-rc.1
+      AGE_VERSION: v1.0.0-rc.2
     runs-on: ${{ matrix.os }}
     steps:
     - name: Set up Go
