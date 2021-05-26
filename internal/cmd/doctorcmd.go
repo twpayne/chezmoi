@@ -16,6 +16,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"github.com/twpayne/go-shell"
+	"github.com/twpayne/go-vfs/v3"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
@@ -343,7 +344,11 @@ func (osArchCheck) Name() string {
 }
 
 func (osArchCheck) Run() (checkResult, string) {
-	return checkOK, fmt.Sprintf("%s/%s", runtime.GOOS, runtime.GOARCH)
+	fields := []string{runtime.GOOS + "/" + runtime.GOARCH}
+	if osRelease, err := chezmoi.OSRelease(vfs.OSFS); err == nil {
+		fields = append(fields, "("+osRelease["NAME"]+"/"+osRelease["VERSION"]+")")
+	}
+	return checkOK, strings.Join(fields, " ")
 }
 
 func (c *suspiciousEntriesCheck) Name() string {
