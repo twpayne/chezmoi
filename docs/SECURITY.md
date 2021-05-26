@@ -1,5 +1,9 @@
 # Security policy
 
+<!--- toc --->
+* [Supported versions](#supported-versions)
+* [Reporting a vulnerability](#reporting-a-vulnerability)
+
 ## Supported versions
 
 Only the most recent version of chezmoi is supported with security updates.
