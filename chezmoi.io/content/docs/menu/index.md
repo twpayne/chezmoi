@@ -14,4 +14,5 @@ headless = true
 - [Contributing]({{< relref "/docs/contributing.md" >}})
 - [Architecture]({{< relref "/docs/architecture.md" >}})
 - [Related Software]({{< relref "/docs/related.md" >}})
+- [Security]({{< relref "/docs/security.md" >}})
 - [GitHub](https://github.com/twpayne/chezmoi)

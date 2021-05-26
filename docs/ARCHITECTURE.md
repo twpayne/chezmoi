@@ -173,7 +173,7 @@ with the test scripts themselves in `testdata/scripts`. You can run individual
 end-to-end tests with
 
 ```console
-$ go test . -run=TestScript/<name>
+$ go test ./internal/cmd -run=TestScript/<name>
 ```
 
 where `<name>` is the basename of file in `testdata/scripts`.
