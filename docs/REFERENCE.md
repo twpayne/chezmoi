@@ -497,6 +497,7 @@ as a datasource available in most [templates](TEMPLATING.md#template-data).
 #### `.chezmoidata.<format>` examples
 
 If `.chezmoidata.toml` contains the following (and no variable is overwritten in later stages):
+
 ```toml
 editor = "nvim"
 [directions]
@@ -507,6 +508,7 @@ editor = "nvim"
 ```
 
 Then the following template:
+
 ```
 EDITOR={{ .editor }}
 MOVE_UP={{ .directions.up }}
