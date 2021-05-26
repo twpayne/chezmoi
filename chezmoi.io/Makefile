@@ -2,6 +2,10 @@
 website: content-docs
 	./make-gh-pages.sh
 
+.PHONY: serve
+serve:
+	hugo serve
+
 .PHONY: content-docs
 content-docs: \
 	content/docs/architecture.md \
@@ -15,6 +19,7 @@ content-docs: \
 	content/docs/quick-start.md \
 	content/docs/reference.md \
 	content/docs/related.md \
+	content/docs/security.md \
 	content/docs/templating.md
 
 content/docs/architecture.md: ../docs/ARCHITECTURE.md ../internal/cmds/generate-chezmoi.io-content-docs/main.go Makefile
@@ -49,6 +54,9 @@ content/docs/reference.md: ../docs/REFERENCE.md ../internal/cmds/generate-chezmo
 
 content/docs/related.md: ../docs/RELATED.md ../internal/cmds/generate-chezmoi.io-content-docs/main.go Makefile
 	go run ../internal/cmds/generate-chezmoi.io-content-docs -shorttitle="Related" -longtitle="Related Software" < $< > $@ || ( rm -f $@ ; false )
+
+content/docs/security.md: ../docs/SECURITY.md ../internal/cmds/generate-chezmoi.io-content-docs/main.go Makefile
+	go run ../internal/cmds/generate-chezmoi.io-content-docs -shorttitle="Security" -longtitle="Security" < $< > $@ || ( rm -f $@ ; false )
 
 content/docs/templating.md: ../docs/TEMPLATING.md ../internal/cmds/generate-chezmoi.io-content-docs/main.go Makefile
 	go run ../internal/cmds/generate-chezmoi.io-content-docs -shorttitle="Templating" -longtitle="Templating Guide" < $< > $@ || ( rm -f $@ ; false )
