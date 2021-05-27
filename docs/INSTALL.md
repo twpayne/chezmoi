@@ -61,6 +61,7 @@ Install chezmoi with a single command.
 | macOS        | MacPorts   | `sudo port install chezmoi`                                                                 |
 | Windows      | Scoop      | `scoop bucket add twpayne https://github.com/twpayne/scoop-bucket && scoop install chezmoi` |
 | Windows      | Chocolatey | `choco install chezmoi`                                                                     |
+| FreeBSD      | ports      | `pkg add chezmoi`                                                                           |
 
 ## Pre-built Linux packages
 
