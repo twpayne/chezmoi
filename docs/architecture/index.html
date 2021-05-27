@@ -2,14 +2,20 @@
 <html lang="en" dir="ltr">
 
 <head>
-  <meta name="generator" content="Hugo 0.83.1" />
+  <meta name="generator" content="Hugo 0.84.0-DEV" />
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Architecture #  Directory structure #  The important directories in chezmoi are:
-   Directory Contents     cmd/ Code for the chezmoi command.   docs/ The documentation single source of truth. Help text, examples, and the chezmoi.io website are generated from the files in this directory, particularly docs/REFERENCE.md.   internal/chezmoi/ chezmoi&rsquo;s core functionality.   testdata/scripts/ High-level tests of chezmoi&rsquo;s commands using testscript.    Key concepts #  As described in the reference manual, chezmoi evaluates the source state to compute a target state for the destination directory (typically your home directory).">
+<meta name="description" content="Architecture #  Introduction #  This document gives a high-level overview of chezmoi&rsquo;s source code for anyone interested in contributing to chezmoi.
+You can generate Go documentation for chezmoi&rsquo;s source code with go doc, for example:
+$ go doc -all -u github.com/twpayne/chezmoi/v2/internal/chezmoi You can also browse chezmoi&rsquo;s generated documentation online but this only includes exported symbols.
+Directory structure #  The important directories in chezmoi are:
+   Directory Contents     docs/ The documentation single source of truth.">
 <meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Architecture" />
-<meta property="og:description" content="Architecture #  Directory structure #  The important directories in chezmoi are:
-   Directory Contents     cmd/ Code for the chezmoi command.   docs/ The documentation single source of truth. Help text, examples, and the chezmoi.io website are generated from the files in this directory, particularly docs/REFERENCE.md.   internal/chezmoi/ chezmoi&rsquo;s core functionality.   testdata/scripts/ High-level tests of chezmoi&rsquo;s commands using testscript.    Key concepts #  As described in the reference manual, chezmoi evaluates the source state to compute a target state for the destination directory (typically your home directory)." />
+<meta property="og:description" content="Architecture #  Introduction #  This document gives a high-level overview of chezmoi&rsquo;s source code for anyone interested in contributing to chezmoi.
+You can generate Go documentation for chezmoi&rsquo;s source code with go doc, for example:
+$ go doc -all -u github.com/twpayne/chezmoi/v2/internal/chezmoi You can also browse chezmoi&rsquo;s generated documentation online but this only includes exported symbols.
+Directory structure #  The important directories in chezmoi are:
+   Directory Contents     docs/ The documentation single source of truth." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chezmoi.io/docs/architecture/" /><meta property="article:section" content="docs" />
 
@@ -19,7 +25,7 @@
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.e935e20bd0d469378cb482f0958edf258c731a4f895dccd55799c6fbc8043f23.css" integrity="sha256-6TXiC9DUaTeMtILwlY7fJYxzGk&#43;JXczVV5nG&#43;8gEPyM=">
-<script defer src="/en.search.min.6480df7a510affb851acd48f7c418ac188db3222f39af79e817c021d72d2ed7a.js" integrity="sha256-ZIDfelEK/7hRrNSPfEGKwYjbMiLzmveegXwCHXLS7Xo="></script>
+<script defer src="/en.search.min.2972de56dc034a2de7ad9dd63c2a87d2e57f0490c70847cf832589da0a2cf6ad.js" integrity="sha256-KXLeVtwDSi3nrZ3WPCqH0uV/BJDHCEfPgyWJ2gos9q0="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -71,6 +77,7 @@ https://github.com/alex-shpak/hugo-book
 <li><a href="/docs/contributing/">Contributing</a></li>
 <li><a href="/docs/architecture/"class=active>Architecture</a></li>
 <li><a href="/docs/related/">Related Software</a></li>
+<li><a href="/docs/security/">Security</a></li>
 <li><a href="https://github.com/twpayne/chezmoi">GitHub</a></li>
 </ul>
 
@@ -119,10 +126,11 @@ https://github.com/alex-shpak/hugo-book
   
 <nav id="TableOfContents">
   <ul>
+    <li><a href="#introduction">Introduction</a></li>
     <li><a href="#directory-structure">Directory structure</a></li>
     <li><a href="#key-concepts">Key concepts</a></li>
     <li><a href="#internalchezmoi"><code>internal/chezmoi</code></a></li>
-    <li><a href="#cmd"><code>cmd/</code></a></li>
+    <li><a href="#internalcmd"><code>internal/cmd/</code></a></li>
     <li><a href="#path-handling">Path handling</a></li>
     <li><a href="#persistent-state">Persistent state</a></li>
     <li><a href="#encryption">Encryption</a></li>
@@ -144,6 +152,18 @@ https://github.com/alex-shpak/hugo-book
   Architecture
   <a class="anchor" href="#architecture">#</a>
 </h1>
+<h2 id="introduction">
+  Introduction
+  <a class="anchor" href="#introduction">#</a>
+</h2>
+<p>This document gives a high-level overview of chezmoi&rsquo;s source code for anyone
+interested in contributing to chezmoi.</p>
+<p>You can generate Go documentation for chezmoi&rsquo;s source code with <code>go doc</code>, for
+example:</p>
+<pre><code class="language-console" data-lang="console">$ go doc -all -u github.com/twpayne/chezmoi/v2/internal/chezmoi
+</code></pre><p>You can also <a href="https://pkg.go.dev/github.com/twpayne/chezmoi/v2">browse chezmoi&rsquo;s generated documentation
+online</a> but this only includes
+exported symbols.</p>
 <h2 id="directory-structure">
   Directory structure
   <a class="anchor" href="#directory-structure">#</a>
@@ -158,10 +178,6 @@ https://github.com/alex-shpak/hugo-book
 </thead>
 <tbody>
 <tr>
-<td><code>cmd/</code></td>
-<td>Code for the <code>chezmoi</code> command.</td>
-</tr>
-<tr>
 <td><code>docs/</code></td>
 <td>The documentation single source of truth. Help text, examples, and the <a href="https://chezmoi.io">chezmoi.io</a> website are generated from the files in this directory, particularly <code>docs/REFERENCE.md</code>.</td>
 </tr>
@@ -170,7 +186,11 @@ https://github.com/alex-shpak/hugo-book
 <td>chezmoi&rsquo;s core functionality.</td>
 </tr>
 <tr>
-<td><code>testdata/scripts/</code></td>
+<td><code>internal/cmd/</code></td>
+<td>Code for the <code>chezmoi</code> command.</td>
+</tr>
+<tr>
+<td><code>internal/cmd/testdata/scripts/</code></td>
 <td>High-level tests of chezmoi&rsquo;s commands using <a href="https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript"><code>testscript</code></a>.</td>
 </tr>
 </tbody>
@@ -240,12 +260,12 @@ equivalent.</li>
 persistent state. chezmoi can then detect if a third party has updated a target
 since chezmoi last wrote it by comparing the actual state entry in the target
 state with the entry state in the persistent state.</p>
-<h2 id="cmd">
-  <code>cmd/</code>
-  <a class="anchor" href="#cmd">#</a>
+<h2 id="internalcmd">
+  <code>internal/cmd/</code>
+  <a class="anchor" href="#internalcmd">#</a>
 </h2>
-<p><code>cmd/*cmd.go</code> contains the code for each individual command and
-<code>cmd/*templatefuncs.go</code> contain the template functions.</p>
+<p><code>internal/cmd/*cmd.go</code> contains the code for each individual command and
+<code>internal/cmd/*templatefuncs.go</code> contain the template functions.</p>
 <p>Commands are defined as methods on the <code>Config</code> struct. The <code>Config</code> struct is
 large, containing all configuration values read from the config file, command
 line arguments, and computed and cached values.</p>
@@ -304,9 +324,8 @@ framework. End-to-end tests use
 <a href="https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript"><code>github.com/rogpeppe/go-internal/testscript</code></a>
 with the test scripts themselves in <code>testdata/scripts</code>. You can run individual
 end-to-end tests with</p>
-<pre><code>go test . -run=TestScript/&lt;name&gt;
-</code></pre>
-<p>where <code>&lt;name&gt;</code> is the basename of file in <code>testdata/scripts</code>.</p>
+<pre><code class="language-console" data-lang="console">$ go test ./internal/cmd -run=TestScript/&lt;name&gt;
+</code></pre><p>where <code>&lt;name&gt;</code> is the basename of file in <code>testdata/scripts</code>.</p>
 <p>Tests should, if at all possible, run unmodified on all operating systems tested
 in CI (Linux, macOS, Windows, and FreeBSD). Windows will sometimes need special
 handling due to its path separator and lack of POSIX-style file permissions.</p>
@@ -346,10 +365,11 @@ handling due to its path separator and lack of POSIX-style file permissions.</p>
   
 <nav id="TableOfContents">
   <ul>
+    <li><a href="#introduction">Introduction</a></li>
     <li><a href="#directory-structure">Directory structure</a></li>
     <li><a href="#key-concepts">Key concepts</a></li>
     <li><a href="#internalchezmoi"><code>internal/chezmoi</code></a></li>
-    <li><a href="#cmd"><code>cmd/</code></a></li>
+    <li><a href="#internalcmd"><code>internal/cmd/</code></a></li>
     <li><a href="#path-handling">Path handling</a></li>
     <li><a href="#persistent-state">Persistent state</a></li>
     <li><a href="#encryption">Encryption</a></li>

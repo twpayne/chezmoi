@@ -12,8 +12,11 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/architecture/</guid>
-      <description>Architecture #  Directory structure #  The important directories in chezmoi are:
-   Directory Contents     cmd/ Code for the chezmoi command.   docs/ The documentation single source of truth. Help text, examples, and the chezmoi.io website are generated from the files in this directory, particularly docs/REFERENCE.md.   internal/chezmoi/ chezmoi&amp;rsquo;s core functionality.   testdata/scripts/ High-level tests of chezmoi&amp;rsquo;s commands using testscript.    Key concepts #  As described in the reference manual, chezmoi evaluates the source state to compute a target state for the destination directory (typically your home directory).</description>
+      <description>Architecture #  Introduction #  This document gives a high-level overview of chezmoi&amp;rsquo;s source code for anyone interested in contributing to chezmoi.
+You can generate Go documentation for chezmoi&amp;rsquo;s source code with go doc, for example:
+$ go doc -all -u github.com/twpayne/chezmoi/v2/internal/chezmoi You can also browse chezmoi&amp;rsquo;s generated documentation online but this only includes exported symbols.
+Directory structure #  The important directories in chezmoi are:
+   Directory Contents     docs/ The documentation single source of truth.</description>
     </item>
     
     <item>
@@ -45,8 +48,8 @@ If you&amp;rsquo;re already using a dotfile manager, but not chezmoi, then read 
       <description>Contributing Guide #  Getting started #  chezmoi is written in Go and development happens on GitHub. The rest of this document assumes that you&amp;rsquo;ve checked out chezmoi locally.
 Developing locally #  chezmoi requires Go 1.16 or later.
 chezmoi is a standard Go project, using standard Go tooling, with a few extra tools. Ensure that these extra tools are installed with:
-make ensure-tools  Build chezmoi:
-go build .</description>
+$ make ensure-tools Build chezmoi:
+$ go build .</description>
     </item>
     
     <item>
@@ -56,7 +59,7 @@ go build .</description>
       
       <guid>https://chezmoi.io/docs/faq/</guid>
       <description>Frequently Asked Questions #  How can I quickly check for problems with chezmoi on my machine? #  Run:
-chezmoi doctor  Anything ok is fine, anything warning is only a problem if you want to use the related feature, and anything error indicates a definite problem.
+$ chezmoi doctor Anything ok is fine, anything warning is only a problem if you want to use the related feature, and anything error indicates a definite problem.
 What are the consequences of &amp;ldquo;bare&amp;rdquo; modifications to the target files? If my .zshrc is managed by chezmoi and I edit ~/.zshrc without using chezmoi edit, what happens?</description>
     </item>
     
@@ -76,8 +79,8 @@ What are the consequences of &amp;ldquo;bare&amp;rdquo; modifications to the tar
       
       <guid>https://chezmoi.io/docs/install/</guid>
       <description>Install Guide #  One-line binary install #  Install the correct binary for your operating system and architecture in ./bin with a single command:
-sh -c &amp;quot;$(curl -fsLS git.io/chezmoi)&amp;quot;  Or, if you have wget instead of curl:
-sh -c &amp;quot;$(wget -qO- git.io/chezmoi)&amp;quot;  If you already have a dotfiles repo using chezmoi on GitHub at https://github.com/&amp;lt;github-username&amp;gt;/dotfiles then you can install chezmoi and your dotfiles with the single command:</description>
+$ sh -c &amp;quot;$(curl -fsLS git.io/chezmoi)&amp;quot; Or, if you have wget instead of curl:
+$ sh -c &amp;quot;$(wget -qO- git.io/chezmoi)&amp;quot; If you already have a dotfiles repo using chezmoi on GitHub at https://github.com/&amp;lt;github-username&amp;gt;/dotfiles then you can install chezmoi and your dotfiles with the single command:</description>
     </item>
     
     <item>
@@ -100,7 +103,7 @@ Recommended podcast: FLOSS weekly episode 556: chezmoi
       <guid>https://chezmoi.io/docs/quick-start/</guid>
       <description>Quick Start Guide #  Concepts #  chezmoi stores the desired state of your dotfiles in the directory ~/.local/share/chezmoi. When you run chezmoi apply, chezmoi calculates the desired contents and permissions for each dotfile and then makes any changes necessary so that your dotfiles match that state.
 Start using chezmoi on your current machine #  Assuming that you have already installed chezmoi, initialize chezmoi with:
-chezmoi init  This will create a new git repository in ~/.</description>
+$ chezmoi init This will create a new git repository in ~/.</description>
     </item>
     
     <item>
@@ -122,8 +125,19 @@ chezmoi init  This will create a new git repository in ~/.</description>
       
       <guid>https://chezmoi.io/docs/related/</guid>
       <description>Related Software #  github.com/alker0/chezmoi.vim #  Intelligent VIM syntax highlighting when editing files in your source directory. Works with both chezmoi edit and editing files directly.
+hussainweb/ansible-role-chezmoi #  Installs chezmoi on Ubuntu and Debian servers.
 github.com/tuh8888/chezmoi.el #  Convenience functions for interacting with chezmoi in Emacs.
 github.com/Lilja/vim-chezmoi #  A plugin for VIM to apply the dotfile you are editing on :w.</description>
+    </item>
+    
+    <item>
+      <title>Security</title>
+      <link>https://chezmoi.io/docs/security/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://chezmoi.io/docs/security/</guid>
+      <description>Security #  Supported versions #  Only the most recent version of chezmoi is supported with security updates.
+Reporting a vulnerability #  Please report vulnerabilities by opening a GitHub issue or sending an email to twpayne+chezmoi-security@gmail.com.</description>
     </item>
     
     <item>

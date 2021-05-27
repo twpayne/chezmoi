@@ -2,20 +2,20 @@
 <html lang="en" dir="ltr">
 
 <head>
-  <meta name="generator" content="Hugo 0.83.1" />
+  <meta name="generator" content="Hugo 0.84.0-DEV" />
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Contributing Guide #  Getting started #  chezmoi is written in Go and development happens on GitHub. The rest of this document assumes that you&rsquo;ve checked out chezmoi locally.
 Developing locally #  chezmoi requires Go 1.16 or later.
 chezmoi is a standard Go project, using standard Go tooling, with a few extra tools. Ensure that these extra tools are installed with:
-make ensure-tools  Build chezmoi:
-go build .">
+$ make ensure-tools Build chezmoi:
+$ go build .">
 <meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Contributing" />
 <meta property="og:description" content="Contributing Guide #  Getting started #  chezmoi is written in Go and development happens on GitHub. The rest of this document assumes that you&rsquo;ve checked out chezmoi locally.
 Developing locally #  chezmoi requires Go 1.16 or later.
 chezmoi is a standard Go project, using standard Go tooling, with a few extra tools. Ensure that these extra tools are installed with:
-make ensure-tools  Build chezmoi:
-go build ." />
+$ make ensure-tools Build chezmoi:
+$ go build ." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chezmoi.io/docs/contributing/" /><meta property="article:section" content="docs" />
 
@@ -25,7 +25,7 @@ go build ." />
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.e935e20bd0d469378cb482f0958edf258c731a4f895dccd55799c6fbc8043f23.css" integrity="sha256-6TXiC9DUaTeMtILwlY7fJYxzGk&#43;JXczVV5nG&#43;8gEPyM=">
-<script defer src="/en.search.min.6480df7a510affb851acd48f7c418ac188db3222f39af79e817c021d72d2ed7a.js" integrity="sha256-ZIDfelEK/7hRrNSPfEGKwYjbMiLzmveegXwCHXLS7Xo="></script>
+<script defer src="/en.search.min.2972de56dc034a2de7ad9dd63c2a87d2e57f0490c70847cf832589da0a2cf6ad.js" integrity="sha256-KXLeVtwDSi3nrZ3WPCqH0uV/BJDHCEfPgyWJ2gos9q0="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -77,6 +77,7 @@ https://github.com/alex-shpak/hugo-book
 <li><a href="/docs/contributing/"class=active>Contributing</a></li>
 <li><a href="/docs/architecture/">Architecture</a></li>
 <li><a href="/docs/related/">Related Software</a></li>
+<li><a href="/docs/security/">Security</a></li>
 <li><a href="https://github.com/twpayne/chezmoi">GitHub</a></li>
 </ul>
 
@@ -162,26 +163,21 @@ checked out chezmoi locally.</p>
 <p>chezmoi requires Go 1.16 or later.</p>
 <p>chezmoi is a standard Go project, using standard Go tooling, with a few extra
 tools. Ensure that these extra tools are installed with:</p>
-<pre><code>make ensure-tools
-</code></pre>
-<p>Build chezmoi:</p>
-<pre><code>go build .
-</code></pre>
-<p>Run all tests:</p>
-<pre><code>go test ./...
-</code></pre>
-<p>Run chezmoi:</p>
-<pre><code>go run .
-</code></pre>
-<h2 id="generated-code">
+<pre><code class="language-console" data-lang="console">$ make ensure-tools
+</code></pre><p>Build chezmoi:</p>
+<pre><code class="language-console" data-lang="console">$ go build .
+</code></pre><p>Run all tests:</p>
+<pre><code class="language-console" data-lang="console">$ go test ./...
+</code></pre><p>Run chezmoi:</p>
+<pre><code class="language-console" data-lang="console">$ go run .
+</code></pre><h2 id="generated-code">
   Generated code
   <a class="anchor" href="#generated-code">#</a>
 </h2>
 <p>chezmoi generates shell completions, the install script, and the website from a
 single source of truth. You must run</p>
-<pre><code>make generate
-</code></pre>
-<p>if you change includes any of the following:</p>
+<pre><code class="language-console" data-lang="console">$ make generate
+</code></pre><p>if you change includes any of the following:</p>
 <ul>
 <li>Adds or modifies a command.</li>
 <li>Adds or modifies a command&rsquo;s flags.</li>
@@ -250,25 +246,21 @@ included in the body of the commit message.</p>
 </h2>
 <p>Releases are managed with <a href="https://goreleaser.com/"><code>goreleaser</code></a>.</p>
 <p>To build a test release, without publishing, (Linux only) run:</p>
-<pre><code>make test-release
-</code></pre>
-<p>Publish a new release by creating and pushing a tag, e.g.:</p>
-<pre><code>git tag v1.2.3
-git push --tags
-</code></pre>
-<p>This triggers a <a href="https://github.com/twpayne/chezmoi/actions">GitHub Action</a> that
+<pre><code class="language-console" data-lang="console">$ make test-release
+</code></pre><p>Publish a new release by creating and pushing a tag, e.g.:</p>
+<pre><code class="language-console" data-lang="console">$ git tag v1.2.3
+$ git push --tags
+</code></pre><p>This triggers a <a href="https://github.com/twpayne/chezmoi/actions">GitHub Action</a> that
 builds and publishes archives, packages, and snaps, and creates a new <a href="https://github.com/twpayne/chezmoi/releases">GitHub
 Release</a>.</p>
 <p>Publishing <a href="https://snapcraft.io/">Snaps</a> requires a <code>SNAPCRAFT_LOGIN</code>
 <a href="https://github.com/twpayne/chezmoi/settings/secrets/actions">repository
 secret</a>. Snapcraft
 logins periodically expire. Create a new snapcraft login by running:</p>
-<pre><code>snapcraft export-login --snaps=chezmoi --channels=stable --acls=package_upload -
-</code></pre>
-<p><a href="https://brew.sh/">brew</a> formula must be updated manually with the command:</p>
-<pre><code>brew bump-formula-pr --tag=v1.2.3 chezmoi
-</code></pre>
-<h2 id="packaging">
+<pre><code class="language-console" data-lang="console">$ snapcraft export-login --snaps=chezmoi --channels=stable --acls=package_upload -
+</code></pre><p><a href="https://brew.sh/">brew</a> formula must be updated manually with the command:</p>
+<pre><code class="language-console" data-lang="console">$ brew bump-formula-pr --tag=v1.2.3 chezmoi
+</code></pre><h2 id="packaging">
   Packaging
   <a class="anchor" href="#packaging">#</a>
 </h2>
@@ -325,22 +317,17 @@ and served with <a href="https://pages.github.com/">GitHub pages</a> from the <a
 branch</a> to GitHub.</p>
 <p>Before building the website, you must download the <a href="https://github.com/alex-shpak/hugo-book">Hugo Book
 Theme</a> by running:</p>
-<pre><code>git submodule update --init
-</code></pre>
-<p>Test the website locally by running:</p>
-<pre><code>( cd chezmoi.io &amp;&amp; hugo serve )
-</code></pre>
-<p>and visit http://localhost:1313/.</p>
+<pre><code class="language-console" data-lang="console">$ git submodule update --init
+</code></pre><p>Test the website locally by running:</p>
+<pre><code class="language-console" data-lang="console">$ ( cd chezmoi.io &amp;&amp; hugo serve )
+</code></pre><p>and visit http://localhost:1313/.</p>
 <p>To build the website in a temporary directory, run:</p>
-<pre><code>( cd chezmoi.io &amp;&amp; make )
-</code></pre>
-<p>From here you can run</p>
-<pre><code>git show
-</code></pre>
-<p>to show changes and</p>
-<pre><code>git push
-</code></pre>
-<p>to push them. You can only push changes if you have write permissions to the
+<pre><code class="language-console" data-lang="console">$ ( cd chezmoi.io &amp;&amp; make )
+</code></pre><p>From here you can run</p>
+<pre><code class="language-console" data-lang="console">$ git show
+</code></pre><p>to show changes and</p>
+<pre><code class="language-console" data-lang="console">$ git push
+</code></pre><p>to push them. You can only push changes if you have write permissions to the
 chezmoi GitHub repo.</p>
 </article>
  

@@ -2,16 +2,16 @@
 <html lang="en" dir="ltr">
 
 <head>
-  <meta name="generator" content="Hugo 0.83.1" />
+  <meta name="generator" content="Hugo 0.84.0-DEV" />
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Install Guide #  One-line binary install #  Install the correct binary for your operating system and architecture in ./bin with a single command:
-sh -c &quot;$(curl -fsLS git.io/chezmoi)&quot;  Or, if you have wget instead of curl:
-sh -c &quot;$(wget -qO- git.io/chezmoi)&quot;  If you already have a dotfiles repo using chezmoi on GitHub at https://github.com/&lt;github-username&gt;/dotfiles then you can install chezmoi and your dotfiles with the single command:">
+$ sh -c &quot;$(curl -fsLS git.io/chezmoi)&quot; Or, if you have wget instead of curl:
+$ sh -c &quot;$(wget -qO- git.io/chezmoi)&quot; If you already have a dotfiles repo using chezmoi on GitHub at https://github.com/&lt;github-username&gt;/dotfiles then you can install chezmoi and your dotfiles with the single command:">
 <meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Install" />
 <meta property="og:description" content="Install Guide #  One-line binary install #  Install the correct binary for your operating system and architecture in ./bin with a single command:
-sh -c &quot;$(curl -fsLS git.io/chezmoi)&quot;  Or, if you have wget instead of curl:
-sh -c &quot;$(wget -qO- git.io/chezmoi)&quot;  If you already have a dotfiles repo using chezmoi on GitHub at https://github.com/&lt;github-username&gt;/dotfiles then you can install chezmoi and your dotfiles with the single command:" />
+$ sh -c &quot;$(curl -fsLS git.io/chezmoi)&quot; Or, if you have wget instead of curl:
+$ sh -c &quot;$(wget -qO- git.io/chezmoi)&quot; If you already have a dotfiles repo using chezmoi on GitHub at https://github.com/&lt;github-username&gt;/dotfiles then you can install chezmoi and your dotfiles with the single command:" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chezmoi.io/docs/install/" /><meta property="article:section" content="docs" />
 
@@ -21,7 +21,7 @@ sh -c &quot;$(wget -qO- git.io/chezmoi)&quot;  If you already have a dotfiles re
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.e935e20bd0d469378cb482f0958edf258c731a4f895dccd55799c6fbc8043f23.css" integrity="sha256-6TXiC9DUaTeMtILwlY7fJYxzGk&#43;JXczVV5nG&#43;8gEPyM=">
-<script defer src="/en.search.min.6480df7a510affb851acd48f7c418ac188db3222f39af79e817c021d72d2ed7a.js" integrity="sha256-ZIDfelEK/7hRrNSPfEGKwYjbMiLzmveegXwCHXLS7Xo="></script>
+<script defer src="/en.search.min.2972de56dc034a2de7ad9dd63c2a87d2e57f0490c70847cf832589da0a2cf6ad.js" integrity="sha256-KXLeVtwDSi3nrZ3WPCqH0uV/BJDHCEfPgyWJ2gos9q0="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -73,6 +73,7 @@ https://github.com/alex-shpak/hugo-book
 <li><a href="/docs/contributing/">Contributing</a></li>
 <li><a href="/docs/architecture/">Architecture</a></li>
 <li><a href="/docs/related/">Related Software</a></li>
+<li><a href="/docs/security/">Security</a></li>
 <li><a href="https://github.com/twpayne/chezmoi">GitHub</a></li>
 </ul>
 
@@ -149,17 +150,14 @@ https://github.com/alex-shpak/hugo-book
 </h2>
 <p>Install the correct binary for your operating system and architecture in <code>./bin</code>
 with a single command:</p>
-<pre><code>sh -c &quot;$(curl -fsLS git.io/chezmoi)&quot;
-</code></pre>
-<p>Or, if you have <code>wget</code> instead of <code>curl</code>:</p>
-<pre><code>sh -c &quot;$(wget -qO- git.io/chezmoi)&quot;
-</code></pre>
-<p>If you already have a dotfiles repo using chezmoi on GitHub at
+<pre><code class="language-console" data-lang="console">$ sh -c &quot;$(curl -fsLS git.io/chezmoi)&quot;
+</code></pre><p>Or, if you have <code>wget</code> instead of <code>curl</code>:</p>
+<pre><code class="language-console" data-lang="console">$ sh -c &quot;$(wget -qO- git.io/chezmoi)&quot;
+</code></pre><p>If you already have a dotfiles repo using chezmoi on GitHub at
 <code>https://github.com/&lt;github-username&gt;/dotfiles</code> then you can install chezmoi and
 your dotfiles with the single command:</p>
-<pre><code>sh -c &quot;$(curl -fsLS git.io/chezmoi)&quot; -- init --apply &lt;github-username&gt;
-</code></pre>
-<p>Or on systems with Powershell, you can use this command:</p>
+<pre><code class="language-console" data-lang="console">$ sh -c &quot;$(curl -fsLS git.io/chezmoi)&quot; -- init --apply &lt;github-username&gt;
+</code></pre><p>Or on systems with Powershell, you can use one of the following command:</p>
 <pre><code># To install in ./bin
 (iwr -UseBasicParsing https://git.io/chezmoi.ps1).Content | powershell -c -
 
@@ -168,8 +166,7 @@ your dotfiles with the single command:</p>
 
 # For information about other options, run
 '$params = &quot;-?&quot;', (iwr https://git.io/chezmoi.ps1).Content | powershell -c -
-</code></pre>
-<h2 id="one-line-package-install">
+</code></pre><h2 id="one-line-package-install">
   One-line package install
   <a class="anchor" href="#one-line-package-install">#</a>
 </h2>
@@ -335,9 +332,8 @@ page</a>.</p>
   <a class="anchor" href="#from-source">#</a>
 </h2>
 <p>Download, build, and install chezmoi for your system:</p>
-<pre><code>go install github.com/twpayne/chezmoi@latest
-</code></pre>
-<p>Building chezmoi requires Go 1.16 or later.</p>
+<pre><code class="language-console" data-lang="console">$ go install github.com/twpayne/chezmoi@latest
+</code></pre><p>Building chezmoi requires Go 1.16 or later.</p>
 </article>
  
       

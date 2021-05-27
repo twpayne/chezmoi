@@ -2,16 +2,16 @@
 <html lang="en" dir="ltr">
 
 <head>
-  <meta name="generator" content="Hugo 0.83.1" />
+  <meta name="generator" content="Hugo 0.84.0-DEV" />
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Quick Start Guide #  Concepts #  chezmoi stores the desired state of your dotfiles in the directory ~/.local/share/chezmoi. When you run chezmoi apply, chezmoi calculates the desired contents and permissions for each dotfile and then makes any changes necessary so that your dotfiles match that state.
 Start using chezmoi on your current machine #  Assuming that you have already installed chezmoi, initialize chezmoi with:
-chezmoi init  This will create a new git repository in ~/.">
+$ chezmoi init This will create a new git repository in ~/.">
 <meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Quick Start" />
 <meta property="og:description" content="Quick Start Guide #  Concepts #  chezmoi stores the desired state of your dotfiles in the directory ~/.local/share/chezmoi. When you run chezmoi apply, chezmoi calculates the desired contents and permissions for each dotfile and then makes any changes necessary so that your dotfiles match that state.
 Start using chezmoi on your current machine #  Assuming that you have already installed chezmoi, initialize chezmoi with:
-chezmoi init  This will create a new git repository in ~/." />
+$ chezmoi init This will create a new git repository in ~/." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chezmoi.io/docs/quick-start/" /><meta property="article:section" content="docs" />
 
@@ -21,7 +21,7 @@ chezmoi init  This will create a new git repository in ~/." />
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.e935e20bd0d469378cb482f0958edf258c731a4f895dccd55799c6fbc8043f23.css" integrity="sha256-6TXiC9DUaTeMtILwlY7fJYxzGk&#43;JXczVV5nG&#43;8gEPyM=">
-<script defer src="/en.search.min.6480df7a510affb851acd48f7c418ac188db3222f39af79e817c021d72d2ed7a.js" integrity="sha256-ZIDfelEK/7hRrNSPfEGKwYjbMiLzmveegXwCHXLS7Xo="></script>
+<script defer src="/en.search.min.2972de56dc034a2de7ad9dd63c2a87d2e57f0490c70847cf832589da0a2cf6ad.js" integrity="sha256-KXLeVtwDSi3nrZ3WPCqH0uV/BJDHCEfPgyWJ2gos9q0="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -73,6 +73,7 @@ https://github.com/alex-shpak/hugo-book
 <li><a href="/docs/contributing/">Contributing</a></li>
 <li><a href="/docs/architecture/">Architecture</a></li>
 <li><a href="/docs/related/">Related Software</a></li>
+<li><a href="/docs/security/">Security</a></li>
 <li><a href="https://github.com/twpayne/chezmoi">GitHub</a></li>
 </ul>
 
@@ -156,75 +157,62 @@ necessary so that your dotfiles match that state.</p>
 <p>Assuming that you have already <a href="/docs/install/">installed
 chezmoi</a>,
 initialize chezmoi with:</p>
-<pre><code>chezmoi init
-</code></pre>
-<p>This will create a new git repository in <code>~/.local/share/chezmoi</code> where chezmoi
+<pre><code class="language-console" data-lang="console">$ chezmoi init
+</code></pre><p>This will create a new git repository in <code>~/.local/share/chezmoi</code> where chezmoi
 will store its source state. By default, chezmoi only modifies files in the
 working copy. It is your responsibility to commit and push changes, but chezmoi
 can automate this for you if you want.</p>
 <p>Manage your first file with chezmoi:</p>
-<pre><code>chezmoi add ~/.bashrc
-</code></pre>
-<p>This will copy <code>~/.bashrc</code> to <code>~/.local/share/chezmoi/dot_bashrc</code>.</p>
+<pre><code class="language-console" data-lang="console">$ chezmoi add ~/.bashrc
+</code></pre><p>This will copy <code>~/.bashrc</code> to <code>~/.local/share/chezmoi/dot_bashrc</code>.</p>
 <p>Edit the source state:</p>
-<pre><code>chezmoi edit ~/.bashrc
-</code></pre>
-<p>This will open <code>~/.local/share/chezmoi/dot_bashrc</code> in your <code>$EDITOR</code>. Make some
+<pre><code class="language-console" data-lang="console">$ chezmoi edit ~/.bashrc
+</code></pre><p>This will open <code>~/.local/share/chezmoi/dot_bashrc</code> in your <code>$EDITOR</code>. Make some
 changes and save the file.</p>
 <p>See what changes chezmoi would make:</p>
-<pre><code>chezmoi diff
-</code></pre>
-<p>Apply the changes:</p>
-<pre><code>chezmoi -v apply
-</code></pre>
-<p>All chezmoi commands accept the <code>-v</code> (verbose) flag to print out exactly what
+<pre><code class="language-console" data-lang="console">$ chezmoi diff
+</code></pre><p>Apply the changes:</p>
+<pre><code class="language-console" data-lang="console">$ chezmoi -v apply
+</code></pre><p>All chezmoi commands accept the <code>-v</code> (verbose) flag to print out exactly what
 changes they will make to the file system, and the <code>-n</code> (dry run) flag to not
 make any actual changes. The combination <code>-n</code> <code>-v</code> is very useful if you want to
 see exactly what changes would be made.</p>
 <p>Next, open a shell in the source directory, to commit your changes:</p>
-<pre><code>chezmoi cd
-git add .
-git commit -m &quot;Initial commit&quot;
-</code></pre>
-<p><a href="https://github.com/new">Create a new repository on GitHub</a> called <code>dotfiles</code>
+<pre><code class="language-console" data-lang="console">$ chezmoi cd
+$ git add .
+$ git commit -m &quot;Initial commit&quot;
+</code></pre><p><a href="https://github.com/new">Create a new repository on GitHub</a> called <code>dotfiles</code>
 and then push your repo:</p>
-<pre><code>git remote add origin git@github.com:username/dotfiles.git
-git branch -M main
-git push -u origin main
-</code></pre>
-<p>chezmoi can also be used with <a href="https://gitlab.com">GitLab</a>, or
+<pre><code class="language-console" data-lang="console">$ git remote add origin git@github.com:username/dotfiles.git
+$ git branch -M main
+$ git push -u origin main
+</code></pre><p>chezmoi can also be used with <a href="https://gitlab.com">GitLab</a>, or
 <a href="https://bitbucket.org">BitBucket</a>, <a href="https://sr.ht/">Source Hut</a>, or any other
 git hosting service.</p>
 <p>Finally, exit the shell in the source directory to return to where you were:</p>
-<pre><code>exit
-</code></pre>
-<h2 id="using-chezmoi-across-multiple-machines">
+<pre><code class="language-console" data-lang="console">$ exit
+</code></pre><h2 id="using-chezmoi-across-multiple-machines">
   Using chezmoi across multiple machines
   <a class="anchor" href="#using-chezmoi-across-multiple-machines">#</a>
 </h2>
 <p>On a second machine, initialize chezmoi with your dotfiles repo:</p>
-<pre><code>chezmoi init https://github.com/username/dotfiles.git
-</code></pre>
-<p>This will check out the repo and any submodules and optionally create a chezmoi
+<pre><code class="language-console" data-lang="console">$ chezmoi init https://github.com/username/dotfiles.git
+</code></pre><p>This will check out the repo and any submodules and optionally create a chezmoi
 config file for you. It won&rsquo;t make any changes to your home directory until you
 run:</p>
-<pre><code>chezmoi apply
-</code></pre>
-<p>If your dotfiles repo is <code>https://github.com/username/dotfiles.git</code> then the
+<pre><code class="language-console" data-lang="console">$ chezmoi apply
+</code></pre><p>If your dotfiles repo is <code>https://github.com/username/dotfiles.git</code> then the
 above two commands can be combined into just:</p>
-<pre><code>chezmoi init --apply username
-</code></pre>
-<p>On any machine, you can pull and apply the latest changes from your repo with:</p>
-<pre><code>chezmoi update
-</code></pre>
-<h2 id="next-steps">
+<pre><code class="language-console" data-lang="console">$ chezmoi init --apply username
+</code></pre><p>On any machine, you can pull and apply the latest changes from your repo with:</p>
+<pre><code class="language-console" data-lang="console">$ chezmoi update
+</code></pre><h2 id="next-steps">
   Next steps
   <a class="anchor" href="#next-steps">#</a>
 </h2>
 <p>For a full list of commands run:</p>
-<pre><code>chezmoi help
-</code></pre>
-<p>chezmoi has much more functionality. Good starting points are adding more
+<pre><code class="language-console" data-lang="console">$ chezmoi help
+</code></pre><p>chezmoi has much more functionality. Good starting points are adding more
 dotfiles, and using templates to manage files that vary from machine to machine
 and retrieve secrets from your password manager. Read the <a href="/docs/how-to/">how-to
 guide</a> to explore.</p>

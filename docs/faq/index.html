@@ -2,15 +2,15 @@
 <html lang="en" dir="ltr">
 
 <head>
-  <meta name="generator" content="Hugo 0.83.1" />
+  <meta name="generator" content="Hugo 0.84.0-DEV" />
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Frequently Asked Questions #  How can I quickly check for problems with chezmoi on my machine? #  Run:
-chezmoi doctor  Anything ok is fine, anything warning is only a problem if you want to use the related feature, and anything error indicates a definite problem.
+$ chezmoi doctor Anything ok is fine, anything warning is only a problem if you want to use the related feature, and anything error indicates a definite problem.
 What are the consequences of &ldquo;bare&rdquo; modifications to the target files? If my .zshrc is managed by chezmoi and I edit ~/.zshrc without using chezmoi edit, what happens?">
 <meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="FAQ" />
 <meta property="og:description" content="Frequently Asked Questions #  How can I quickly check for problems with chezmoi on my machine? #  Run:
-chezmoi doctor  Anything ok is fine, anything warning is only a problem if you want to use the related feature, and anything error indicates a definite problem.
+$ chezmoi doctor Anything ok is fine, anything warning is only a problem if you want to use the related feature, and anything error indicates a definite problem.
 What are the consequences of &ldquo;bare&rdquo; modifications to the target files? If my .zshrc is managed by chezmoi and I edit ~/.zshrc without using chezmoi edit, what happens?" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chezmoi.io/docs/faq/" /><meta property="article:section" content="docs" />
@@ -21,7 +21,7 @@ What are the consequences of &ldquo;bare&rdquo; modifications to the target file
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.e935e20bd0d469378cb482f0958edf258c731a4f895dccd55799c6fbc8043f23.css" integrity="sha256-6TXiC9DUaTeMtILwlY7fJYxzGk&#43;JXczVV5nG&#43;8gEPyM=">
-<script defer src="/en.search.min.6480df7a510affb851acd48f7c418ac188db3222f39af79e817c021d72d2ed7a.js" integrity="sha256-ZIDfelEK/7hRrNSPfEGKwYjbMiLzmveegXwCHXLS7Xo="></script>
+<script defer src="/en.search.min.2972de56dc034a2de7ad9dd63c2a87d2e57f0490c70847cf832589da0a2cf6ad.js" integrity="sha256-KXLeVtwDSi3nrZ3WPCqH0uV/BJDHCEfPgyWJ2gos9q0="></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -73,6 +73,7 @@ https://github.com/alex-shpak/hugo-book
 <li><a href="/docs/contributing/">Contributing</a></li>
 <li><a href="/docs/architecture/">Architecture</a></li>
 <li><a href="/docs/related/">Related Software</a></li>
+<li><a href="/docs/security/">Security</a></li>
 <li><a href="https://github.com/twpayne/chezmoi">GitHub</a></li>
 </ul>
 
@@ -128,7 +129,6 @@ https://github.com/alex-shpak/hugo-book
     <li><a href="#if-theres-a-mechanism-in-place-for-the-above-is-there-also-a-way-to-tell-chezmoi-to-ignore-specific-files-or-groups-of-files-eg-by-directory-name-or-by-glob">If there&rsquo;s a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?</a></li>
     <li><a href="#if-the-target-already-exists-but-is-behind-the-source-can-chezmoi-be-configured-to-preserve-the-target-version-before-replacing-it-with-one-derived-from-the-source">If the target already exists, but is &ldquo;behind&rdquo; the source, can chezmoi be configured to preserve the target version before replacing it with one derived from the source?</a></li>
     <li><a href="#once-ive-made-a-change-to-the-source-directory-how-do-i-commit-it">Once I&rsquo;ve made a change to the source directory, how do I commit it?</a></li>
-    <li><a href="#how-do-i-only-run-a-script-when-a-file-has-changed">How do I only run a script when a file has changed?</a></li>
     <li><a href="#ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both">I&rsquo;ve made changes to both the destination state and the source state that I want to keep. How can I keep them both?</a></li>
     <li><a href="#why-does-chezmoi-convert-all-my-template-variables-to-lowercase">Why does chezmoi convert all my template variables to lowercase?</a></li>
     <li><a href="#chezmoi-makes-sshconfig-group-writeable-how-do-i-stop-this">chezmoi makes <code>~/.ssh/config</code> group writeable. How do I stop this?</a></li>
@@ -167,9 +167,8 @@ https://github.com/alex-shpak/hugo-book
   <a class="anchor" href="#how-can-i-quickly-check-for-problems-with-chezmoi-on-my-machine">#</a>
 </h2>
 <p>Run:</p>
-<pre><code>chezmoi doctor
-</code></pre>
-<p>Anything <code>ok</code> is fine, anything <code>warning</code> is only a problem if you want to use
+<pre><code class="language-console" data-lang="console">$ chezmoi doctor
+</code></pre><p>Anything <code>ok</code> is fine, anything <code>warning</code> is only a problem if you want to use
 the related feature, and anything <code>error</code> indicates a definite problem.</p>
 <h2 id="what-are-the-consequences-of-bare-modifications-to-the-target-files-if-my-zshrc-is-managed-by-chezmoi-and-i-edit-zshrc-without-using-chezmoi-edit-what-happens">
   What are the consequences of &ldquo;bare&rdquo; modifications to the target files? If my <code>.zshrc</code> is managed by chezmoi and I edit <code>~/.zshrc</code> without using <code>chezmoi edit</code>, what happens?
@@ -223,49 +222,6 @@ example <code>chezmoi git -- commit -m &quot;Update dotfiles&quot;</code>.</li>
 source state, as <a href="/docs/how-to/#automatically-commit-and-push-changes-to-your-repo">described in the how-to
 guide</a>.</li>
 </ul>
-<h2 id="how-do-i-only-run-a-script-when-a-file-has-changed">
-  How do I only run a script when a file has changed?
-  <a class="anchor" href="#how-do-i-only-run-a-script-when-a-file-has-changed">#</a>
-</h2>
-<p>A common example of this is that you&rsquo;re using <a href="https://brew.sh/">Homebrew</a> and
-have <code>.Brewfile</code> listing all the packages that you want installed and only want
-to run <code>brew bundle --global</code> when the contents of <code>.Brewfile</code> have changed.</p>
-<p>chezmoi has two types of scripts: scripts that run every time, and scripts that
-only run when their contents change. chezmoi does not have a mechanism to run a
-script when an arbitrary file has changed, but there are some ways to achieve
-the desired behavior:</p>
-<ol>
-<li>
-<p>Have the script create <code>.Brewfile</code> instead of chezmoi, e.g. in your
-<code>run_once_install-packages</code>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e">#!/bin/sh
-</span><span style="color:#75715e"></span>
-cat &gt; $HOME/.Brewfile <span style="color:#e6db74">&lt;&lt;EOF
-</span><span style="color:#e6db74">brew &#34;imagemagick&#34;
-</span><span style="color:#e6db74">brew &#34;openssl&#34;
-</span><span style="color:#e6db74">EOF</span>
-
-brew bundle --global
-</code></pre></div></li>
-<li>
-<p>Don&rsquo;t use <code>.Brewfile</code>, and instead install the packages explicitly in
-<code>run_once_install-packages</code>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e">#!/bin/sh
-</span><span style="color:#75715e"></span>
-brew install imagemagick <span style="color:#f92672">||</span> true
-brew install openssl <span style="color:#f92672">||</span> true
-</code></pre></div><p>The <code>|| true</code> is necessary because <code>brew install</code> exits with failure if the
-package is already installed.</p>
-</li>
-<li>
-<p>Use a script that runs every time (not just once) and rely on <code>brew bundle --global</code> being idempotent.</p>
-</li>
-<li>
-<p>Use a script that runs every time, records a checksum of <code>.Brewfile</code> in
-another file, and only runs <code>brew bundle --global</code> if the checksum has
-changed, and updates the recorded checksum after.</p>
-</li>
-</ol>
 <h2 id="ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both">
   I&rsquo;ve made changes to both the destination state and the source state that I want to keep. How can I keep them both?
   <a class="anchor" href="#ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both">#</a>
@@ -290,9 +246,8 @@ systems the default umask is <code>022</code> but some systems use <code>002</co
 that files and directories are group writeable by default.</p>
 <p>You can override this for chezmoi by setting the <code>umask</code> configuration variable
 in your configuration file, for example:</p>
-<pre><code>umask = 0o022
-</code></pre>
-<p>Note that this will apply to all files and directories that chezmoi manages and
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml"><span style="color:#a6e22e">umask</span> = <span style="color:#ae81ff">0</span><span style="color:#a6e22e">o022</span>
+</code></pre></div><p>Note that this will apply to all files and directories that chezmoi manages and
 will ensure that none of them are group writeable. It is not currently possible
 to control group write permissions for individual files or directories. Please
 <a href="https://github.com/twpayne/chezmoi/issues/new?assignees=&amp;labels=enhancement&amp;template=02_feature_request.md&amp;title=">open an issue on
@@ -306,20 +261,21 @@ if you need this.</p>
 updating them, removing them, and even more advanced features not found
 elsewhere like having the same symlink point to different targets on different
 machines by using templates.</p>
-<p>With chezmoi, you only use a symlink where you really want a symlink, in
+<p>With chezmoi, you only use a symlink where you really need a symlink, in
 contrast to some other dotfile managers (e.g. GNU Stow) which require the use of
 symlinks as a layer of indirection between a dotfile&rsquo;s location (which can be
 anywhere in your home directory) and a dotfile&rsquo;s content (which needs to be in a
 centralized directory that you manage with version control). chezmoi solves this
 problem in a different way.</p>
 <p>Instead of using a symlink to redirect from the dotfile&rsquo;s location to the
-centralized directory, chezmoi generates the dotfile in its final location from
-the contents of the centralized directory. Not only is no symlink is needed,
-this has the advantages that chezmoi is better able to cope with differences
-from machine to machine (as a dotfile&rsquo;s contents can be unique to that machine)
-and the dotfiles that chezmoi creates are just regular files. There&rsquo;s nothing
-special about dotfiles managed by chezmoi, whereas dotfiles managed with GNU
-Stow are special because they&rsquo;re actually symlinks to somewhere else.</p>
+centralized directory, chezmoi generates the dotfile as a regular file in its
+final location from the contents of the centralized directory. This approach
+means that symlinks are not needed for regular files and that chezmoi is better
+able to cope with differences from machine to machine (as a dotfile&rsquo;s contents
+can be unique to that machine) and the dotfiles that chezmoi creates are just
+regular files. There&rsquo;s nothing special about dotfiles managed by chezmoi,
+whereas dotfiles managed with GNU Stow are special because they&rsquo;re actually
+symlinks to somewhere else.</p>
 <p>The only advantage to using GNU Stow-style symlinks is that changes that you
 make to the dotfile&rsquo;s contents in the centralized directory are immediately
 visible, whereas chezmoi currently requires you to run <code>chezmoi apply</code> or
@@ -441,13 +397,11 @@ implementation.</li>
 <p>The <code>gpg.recipient</code> key should be ultimately trusted, otherwise encryption will
 fail because gpg will prompt for input, which chezmoi does not handle. You can
 check the trust level by running:</p>
-<pre><code>gpg --export-ownertrust
-</code></pre>
-<p>The trust level for the recipient&rsquo;s key should be <code>6</code>. If it is not, you can
+<pre><code class="language-console" data-lang="console">$ gpg --export-ownertrust
+</code></pre><p>The trust level for the recipient&rsquo;s key should be <code>6</code>. If it is not, you can
 change the trust level by running:</p>
-<pre><code>gpg --edit-key $recipient
-</code></pre>
-<p>Enter <code>trust</code> at the prompt and chose <code>5 = I trust ultimately</code>.</p>
+<pre><code class="language-console" data-lang="console">$ gpg --edit-key $recipient
+</code></pre><p>Enter <code>trust</code> at the prompt and chose <code>5 = I trust ultimately</code>.</p>
 <h2 id="chezmoi-reports-chezmoi-user-lookup-userid-nnnnn-inputoutput-error">
   chezmoi reports <code>chezmoi: user: lookup userid NNNNN: input/output error</code>
   <a class="anchor" href="#chezmoi-reports-chezmoi-user-lookup-userid-nnnnn-inputoutput-error">#</a>
@@ -479,9 +433,8 @@ lock include <code>diff</code>, <code>status</code>, and <code>verify</code>.</p
   <a class="anchor" href="#im-getting-errors-trying-to-build-chezmoi-from-source">#</a>
 </h2>
 <p>chezmoi requires Go version 1.16 or later. You can check the version of Go with:</p>
-<pre><code>go version
-</code></pre>
-<p>For more details on building chezmoi, see the <a href="[CONTRIBUTING.md]%28/docs/contributing/%29">Contributing
+<pre><code class="language-console" data-lang="console">$ go version
+</code></pre><p>For more details on building chezmoi, see the <a href="[CONTRIBUTING.md]%28/docs/contributing/%29">Contributing
 Guide</a>.</p>
 <h2 id="what-inspired-chezmoi">
   What inspired chezmoi?
@@ -623,7 +576,6 @@ chezmoi better. Thank you :)</p>
     <li><a href="#if-theres-a-mechanism-in-place-for-the-above-is-there-also-a-way-to-tell-chezmoi-to-ignore-specific-files-or-groups-of-files-eg-by-directory-name-or-by-glob">If there&rsquo;s a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?</a></li>
     <li><a href="#if-the-target-already-exists-but-is-behind-the-source-can-chezmoi-be-configured-to-preserve-the-target-version-before-replacing-it-with-one-derived-from-the-source">If the target already exists, but is &ldquo;behind&rdquo; the source, can chezmoi be configured to preserve the target version before replacing it with one derived from the source?</a></li>
     <li><a href="#once-ive-made-a-change-to-the-source-directory-how-do-i-commit-it">Once I&rsquo;ve made a change to the source directory, how do I commit it?</a></li>
-    <li><a href="#how-do-i-only-run-a-script-when-a-file-has-changed">How do I only run a script when a file has changed?</a></li>
     <li><a href="#ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both">I&rsquo;ve made changes to both the destination state and the source state that I want to keep. How can I keep them both?</a></li>
     <li><a href="#why-does-chezmoi-convert-all-my-template-variables-to-lowercase">Why does chezmoi convert all my template variables to lowercase?</a></li>
     <li><a href="#chezmoi-makes-sshconfig-group-writeable-how-do-i-stop-this">chezmoi makes <code>~/.ssh/config</code> group writeable. How do I stop this?</a></li>
