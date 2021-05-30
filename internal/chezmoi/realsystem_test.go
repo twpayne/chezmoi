@@ -25,7 +25,7 @@ func TestRealSystemGlob(t *testing.T) {
 			"dir/subdir/foo": "",
 		},
 	}, func(fileSystem vfs.FS) {
-		s := NewRealSystem(fileSystem)
+		s := NewRealSystem(fileSystem, nil)
 		for _, tc := range []struct {
 			pattern         string
 			expectedMatches []string

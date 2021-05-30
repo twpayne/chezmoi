@@ -32,7 +32,7 @@ func TestTARWriterSystem(t *testing.T) {
 			"symlink_symlink": ".dir/subdir/file\n",
 		},
 	}, func(fileSystem vfs.FS) {
-		system := NewRealSystem(fileSystem)
+		system := NewRealSystem(fileSystem, nil)
 		s := NewSourceState(
 			WithSourceDir("/home/user/.local/share/chezmoi"),
 			WithSystem(system),

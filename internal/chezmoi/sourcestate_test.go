@@ -469,7 +469,7 @@ func TestSourceStateAdd(t *testing.T) {
 					".template": "key = value\n",
 				},
 			}, func(fileSystem vfs.FS) {
-				system := NewRealSystem(fileSystem)
+				system := NewRealSystem(fileSystem, nil)
 				persistentState := NewMockPersistentState()
 				if tc.extraRoot != nil {
 					require.NoError(t, vfst.NewBuilder().Build(system.UnderlyingFS(), tc.extraRoot))
@@ -696,7 +696,7 @@ func TestSourceStateApplyAll(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
-				system := NewRealSystem(fileSystem)
+				system := NewRealSystem(fileSystem, nil)
 				persistentState := NewMockPersistentState()
 				sourceStateOptions := []SourceStateOption{
 					WithDestDir("/home/user"),
@@ -1156,7 +1156,7 @@ func TestSourceStateRead(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
-				system := NewRealSystem(fileSystem)
+				system := NewRealSystem(fileSystem, nil)
 				s := NewSourceState(
 					WithDestDir("/home/user"),
 					WithSourceDir("/home/user/.local/share/chezmoi"),
@@ -1224,7 +1224,7 @@ func TestSourceStateTargetRelPaths(t *testing.T) {
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
 				s := NewSourceState(
 					WithSourceDir("/home/user/.local/share/chezmoi"),
-					WithSystem(NewRealSystem(fileSystem)),
+					WithSystem(NewRealSystem(fileSystem, nil)),
 				)
 				require.NoError(t, s.Read())
 				assert.Equal(t, tc.expectedTargetRelPaths, s.TargetRelPaths())
