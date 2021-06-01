@@ -15,6 +15,9 @@ chezmoi is written in [Go](https://golang.org) and development happens on
 [GitHub](https://github.com). The rest of this document assumes that you've
 checked out chezmoi locally.
 
+The [Architecture Guide](ARCHITECTURE.md) contains a high-level overview of
+chezmoi's source code.
+
 ## Developing locally
 
 chezmoi requires Go 1.16 or later.

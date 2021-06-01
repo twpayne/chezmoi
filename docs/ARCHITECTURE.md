@@ -4,8 +4,8 @@
 * [Introduction](#introduction)
 * [Directory structure](#directory-structure)
 * [Key concepts](#key-concepts)
-* [`internal/chezmoi`](#internalchezmoi)
-* [`cmd/`](#cmd)
+* [`internal/chezmoi/`](#internalchezmoi)
+* [`internal/cmd/`](#internalcmd)
 * [Path handling](#path-handling)
 * [Persistent state](#persistent-state)
 * [Encryption](#encryption)
@@ -51,7 +51,7 @@ directly in chezmoi's code.
 chezmoi uses the generic term *entry* to describe something that it manages.
 Entries can be files, directories, symlinks, scripts, amongst other things.
 
-## `internal/chezmoi`
+## `internal/chezmoi/`
 
 All of chezmoi's interaction with the operating system is abstracted through the
 `System` interface. A `System` includes functionality to read and write files
