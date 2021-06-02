@@ -3,17 +3,20 @@ package chezmoi
 import (
 	"errors"
 	"io/fs"
-	"os"
 	"os/exec"
-	"runtime"
 
 	"github.com/bmatcuk/doublestar/v4"
 	"github.com/rs/zerolog/log"
 	vfs "github.com/twpayne/go-vfs/v3"
-	"go.uber.org/multierr"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )
+
+// An Interpreter interprets scripts.
+type Interpreter struct {
+	Command string   `mapstructure:"command"`
+	Args    []string `mapstructure:"args"`
+}
 
 // Glob implements System.Glob.
 func (s *RealSystem) Glob(pattern string) ([]string, error) {
@@ -74,69 +77,6 @@ func (s *RealSystem) RunCmd(cmd *exec.Cmd) error {
 	return chezmoilog.LogCmdRun(log.Logger, cmd)
 }
 
-// RunScript implements System.RunScript.
-func (s *RealSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte) (err error) {
-	// Write the temporary script file. Put the randomness at the front of the
-	// filename to preserve any file extension for Windows scripts.
-	f, err := os.CreateTemp("", "*."+scriptname.Base())
-	if err != nil {
-		return
-	}
-	defer func() {
-		err = multierr.Append(err, os.RemoveAll(f.Name()))
-	}()
-
-	// Make the script private before writing it in case it contains any
-	// secrets.
-	if runtime.GOOS != "windows" {
-		if err = f.Chmod(0o700); err != nil {
-			return
-		}
-	}
-	_, err = f.Write(data)
-	err = multierr.Append(err, f.Close())
-	if err != nil {
-		return
-	}
-
-	//nolint:gosec
-	cmd := exec.Command(f.Name())
-	cmd.Stdin = os.Stdin
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-
-	// Determine the script's working directory.
-	//
-	// If this is a before_ script then the requested working directory may not
-	// actually exist yet, so search through the parent directory hierarchy till
-	// we find a suitable working directory.
-	//
-	// This should always terminate because dir will eventually become ".", i.e.
-	// the current directory.
-FOR:
-	for {
-		switch info, err := s.Stat(dir); {
-		case err == nil && info.IsDir():
-			// dir exists and is a directory. Use it.
-			dirRawAbsPath, err := s.RawPath(dir)
-			if err != nil {
-				return err
-			}
-			cmd.Dir = string(dirRawAbsPath)
-			break FOR
-		case err == nil || errors.Is(err, fs.ErrNotExist):
-			// Either dir does not exist, or it exists and is not a directory.
-			dir = dir.Dir()
-		default:
-			// Some other error occurred.
-			return err
-		}
-	}
-
-	err = s.RunCmd(cmd)
-	return
-}
-
 // Stat implements System.Stat.
 func (s *RealSystem) Stat(name AbsPath) (fs.FileInfo, error) {
 	return s.fileSystem.Stat(string(name))
@@ -145,4 +85,31 @@ func (s *RealSystem) Stat(name AbsPath) (fs.FileInfo, error) {
 // UnderlyingFS implements System.UnderlyingFS.
 func (s *RealSystem) UnderlyingFS() vfs.FS {
 	return s.fileSystem
+}
+
+// getScriptWorkingDir returns the script's working directory.
+//
+// If this is a before_ script then the requested working directory may not
+// actually exist yet, so search through the parent directory hierarchy till
+// we find a suitable working directory.
+func (s *RealSystem) getScriptWorkingDir(dir AbsPath) (string, error) {
+	// This should always terminate because dir will eventually become ".", i.e.
+	// the current directory.
+	for {
+		switch info, err := s.Stat(dir); {
+		case err == nil && info.IsDir():
+			// dir exists and is a directory. Use it.
+			dirRawAbsPath, err := s.RawPath(dir)
+			if err != nil {
+				return "", err
+			}
+			return string(dirRawAbsPath), nil
+		case err == nil || errors.Is(err, fs.ErrNotExist):
+			// Either dir does not exist, or it exists and is not a directory.
+			dir = dir.Dir()
+		default:
+			// Some other error occurred.
+			return "", err
+		}
+	}
 }

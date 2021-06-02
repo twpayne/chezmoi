@@ -1,0 +1,9 @@
+[!exec:python] skip 'python not found in $PATH'
+
+chezmoi apply
+stdout 'Hello from Python'
+
+-- home/user/.local/share/chezmoi/run_script.py --
+#!/usr/bin/env python
+
+print("Hello from Python\n")

@@ -104,6 +104,11 @@ func (p RelPath) Dir() RelPath {
 	return RelPath(path.Dir(string(p)))
 }
 
+// Ext returns p's extension.
+func (p RelPath) Ext() string {
+	return path.Ext(string(p))
+}
+
 // HasDirPrefix returns true if p has dir prefix dirPrefix.
 func (p RelPath) HasDirPrefix(dirPrefix RelPath) bool {
 	return strings.HasPrefix(string(p), string(dirPrefix)+"/")

@@ -5,9 +5,30 @@ import (
 	"os"
 
 	"golang.org/x/sys/windows"
+
+	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
 const defaultEditor = "notepad.exe"
+
+var defaultInterpreters = map[string]chezmoi.Interpreter{
+	"bat": {},
+	"cmd": {},
+	"exe": {},
+	"pl": {
+		Command: "perl",
+	},
+	"ps1": {
+		Command: "powershell",
+		Args:    []string{"-NoLogo"},
+	},
+	"py": {
+		Command: "python",
+	},
+	"rb": {
+		Command: "ruby",
+	},
+}
 
 // enableVirtualTerminalProcessing enables virtual terminal processing. See
 // https://docs.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences.
