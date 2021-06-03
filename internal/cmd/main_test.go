@@ -210,12 +210,12 @@ func cmdMkAGEConfig(ts *testscript.TestScript, neg bool, args []string) {
 	lines := []string{
 		`encryption = "age"`,
 		`[age]`,
-		`  identity = ` + strconv.Quote(privateKeyFile),
+		`    identity = ` + strconv.Quote(privateKeyFile),
 	}
 	if symmetric {
-		lines = append(lines, `  symmetric = true`)
+		lines = append(lines, `    symmetric = true`)
 	} else {
-		lines = append(lines, `  recipient = `+strconv.Quote(publicKey))
+		lines = append(lines, `    recipient = `+strconv.Quote(publicKey))
 	}
 	ts.Check(os.WriteFile(configFile, []byte(chezmoitest.JoinLines(lines...)), 0o666))
 }
@@ -235,12 +235,12 @@ func cmdMkGitConfig(ts *testscript.TestScript, neg bool, args []string) {
 	ts.Check(os.MkdirAll(filepath.Dir(path), 0o777))
 	ts.Check(os.WriteFile(path, []byte(chezmoitest.JoinLines(
 		`[core]`,
-		`  autocrlf = false`,
+		`    autocrlf = false`,
 		`[init]`,
-		`  defaultBranch = master`,
+		`    defaultBranch = master`,
 		`[user]`,
-		`  name = User`,
-		`  email = user@example.com`,
+		`    name = User`,
+		`    email = user@example.com`,
 	)), 0o666))
 }
 
@@ -280,17 +280,17 @@ func cmdMkGPGConfig(ts *testscript.TestScript, neg bool, args []string) {
 	lines := []string{
 		`encryption = "gpg"`,
 		`[gpg]`,
-		`  args = [`,
-		`    "--homedir", ` + strconv.Quote(gpgHomeDir) + `,`,
-		`    "--no-tty",`,
-		`    "--passphrase", ` + strconv.Quote(passphrase) + `,`,
-		`    "--pinentry-mode", "loopback",`,
-		`  ]`,
+		`    args = [`,
+		`        "--homedir", ` + strconv.Quote(gpgHomeDir) + `,`,
+		`        "--no-tty",`,
+		`        "--passphrase", ` + strconv.Quote(passphrase) + `,`,
+		`        "--pinentry-mode", "loopback",`,
+		`    ]`,
 	}
 	if symmetric {
-		lines = append(lines, `  symmetric = true`)
+		lines = append(lines, `    symmetric = true`)
 	} else {
-		lines = append(lines, `  recipient = "`+key+`"`)
+		lines = append(lines, `    recipient = "`+key+`"`)
 	}
 	ts.Check(os.WriteFile(configFile, []byte(chezmoitest.JoinLines(lines...)), 0o666))
 }

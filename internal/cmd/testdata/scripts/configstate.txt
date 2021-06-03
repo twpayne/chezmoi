@@ -50,19 +50,19 @@ chezmoi diff
 {{   $email = promptString "email" -}}
 {{ end -}}
 [data]
-  email = {{ $email | quote }}
+    email = {{ $email | quote }}
 -- golden/chezmoi.toml --
 [data]
-  email = "me@home.org"
+    email = "me@home.org"
 -- golden/state-dump.yaml --
 configState:
     configState:
-        configTemplateContentsSHA256: 88f0ada7664c84129ff7ca2992bcc201f97dd2cf6641a4c4132f0efecbe0337c
+        configTemplateContentsSHA256: af43121a524340707b84e390f510c949731177e6f2a25b3b6b11b2fc656cf8f2
 entryState: {}
 scriptState: {}
 -- home/user/.local/share/chezmoi/.chezmoi.toml.tmpl --
 [data]
-  email = "me@home.org"
+    email = "me@home.org"
 -- home/user/.local/share/chezmoi/.git/.keep --
 -- home2/user/.local/share/chezmoi/.keep --
 

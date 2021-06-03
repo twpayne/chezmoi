@@ -19,7 +19,7 @@ key = {{ .variable }}
 .target-{{ .variable }}
 -- home/user/.config/chezmoi/chezmoi.toml --
 [data]
-  variable = "value"
+    variable = "value"
 -- home/user/.file --
 # contents of .file
 -- home/user/.template --

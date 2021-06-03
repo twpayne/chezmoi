@@ -56,8 +56,8 @@ stdout 'user@example.com'
 {{ "stdin-template" }}
 -- home/user/.config/chezmoi/chezmoi.toml --
 [data.last]
-  config = "chezmoi.toml"
-  global = "chezmoi.toml"
+    config = "chezmoi.toml"
+    global = "chezmoi.toml"
 -- home/user/.local/share/chezmoi/.chezmoidata.json --
 {
   "last": {
@@ -68,9 +68,9 @@ stdout 'user@example.com'
 }
 -- home/user/.local/share/chezmoi/.chezmoidata.toml --
 [last]
-  format = ".chezmoidata.toml"
-  global = ".chezmoidata.toml"
-  toml = ".chezmoidata.toml"
+    format = ".chezmoidata.toml"
+    global = ".chezmoidata.toml"
+    toml = ".chezmoidata.toml"
 -- home/user/.local/share/chezmoi/.chezmoidata.yaml --
 last:
     format: ".chezmoidata.yaml"

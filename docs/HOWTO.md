@@ -1064,10 +1064,9 @@ and has permissions 0600. You can store tokens as template values in the `data`
 section. For example, if your `~/.config/chezmoi/chezmoi.toml` contains:
 
 ```toml
-[data]
-    [data.github]
-        user = "<github-username>"
-        token = "<github-token>"
+[data.github]
+    user = "<github-username>"
+    token = "<github-token>"
 ```
 
 Your `~/.local/share/chezmoi/private_dot_gitconfig.tmpl` can then contain:
