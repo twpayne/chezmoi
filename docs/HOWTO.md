@@ -1045,6 +1045,18 @@ $ chezmoi add --encrypt ~/.ssh/id_rsa
 chezmoi supports multiple recipients and recipient files, and multiple
 identities.
 
+#### Symmetric encryption
+
+To use age's symmetric encryption, specifiy a single identity and enable
+symmetric encryption in your config file, for example:
+
+```toml
+encryption = "age"
+[age]
+    identity = "~/.ssh/id_rsa"
+    symmetric = true
+```
+
 ### Use a private configuration file and template variables
 
 Typically, `~/.config/chezmoi/chezmoi.toml` is not checked in to version control

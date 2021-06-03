@@ -196,9 +196,10 @@ func cmdMkAGEConfig(ts *testscript.TestScript, neg bool, args []string) {
 	if neg {
 		ts.Fatalf("unsupported: ! mkageconfig")
 	}
-	if len(args) > 0 {
-		ts.Fatalf("usage: mkageconfig")
+	if len(args) > 1 || len(args) == 1 && args[0] != "-symmetric" {
+		ts.Fatalf("usage: mkageconfig [-symmetric]")
 	}
+	symmetric := len(args) == 1 && args[0] == "-symmetric"
 	homeDir := ts.Getenv("HOME")
 	ts.Check(os.MkdirAll(homeDir, 0o777))
 	privateKeyFile := filepath.Join(homeDir, "key.txt")
@@ -206,12 +207,17 @@ func cmdMkAGEConfig(ts *testscript.TestScript, neg bool, args []string) {
 	ts.Check(err)
 	configFile := filepath.Join(homeDir, ".config", "chezmoi", "chezmoi.toml")
 	ts.Check(os.MkdirAll(filepath.Dir(configFile), 0o777))
-	ts.Check(os.WriteFile(configFile, []byte(fmt.Sprintf(chezmoitest.JoinLines(
+	lines := []string{
 		`encryption = "age"`,
 		`[age]`,
-		`  identity = %q`,
-		`  recipient = %q`,
-	), privateKeyFile, publicKey)), 0o666))
+		`  identity = ` + strconv.Quote(privateKeyFile),
+	}
+	if symmetric {
+		lines = append(lines, `  symmetric = true`)
+	} else {
+		lines = append(lines, `  recipient = `+strconv.Quote(publicKey))
+	}
+	ts.Check(os.WriteFile(configFile, []byte(chezmoitest.JoinLines(lines...)), 0o666))
 }
 
 // cmdMkGitConfig makes a .gitconfig file in the home directory.

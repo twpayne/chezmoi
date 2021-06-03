@@ -22,6 +22,7 @@ type AGEEncryption struct {
 	RecipientsFile  AbsPath
 	RecipientsFiles []AbsPath
 	Suffix          string
+	Symmetric       bool
 }
 
 // Decrypt implements Encyrption.Decrypt.
@@ -76,12 +77,7 @@ func (e *AGEEncryption) EncryptedSuffix() string {
 func (e *AGEEncryption) decryptArgs() []string {
 	args := make([]string, 0, 1+2*(1+len(e.Identities)))
 	args = append(args, "--decrypt")
-	if e.Identity != "" {
-		args = append(args, "--identity", e.Identity)
-	}
-	for _, identity := range e.Identities {
-		args = append(args, "--identity", identity)
-	}
+	args = append(args, e.identityArgs()...)
 	return args
 }
 
@@ -89,17 +85,33 @@ func (e *AGEEncryption) decryptArgs() []string {
 func (e *AGEEncryption) encryptArgs() []string {
 	args := make([]string, 0, 1+2*(1+len(e.Recipients))+2*(1+len(e.RecipientsFiles)))
 	args = append(args, "--armor")
-	if e.Recipient != "" {
-		args = append(args, "--recipient", e.Recipient)
+	if e.Symmetric {
+		args = append(args, "--encrypt")
+		args = append(args, e.identityArgs()...)
+	} else {
+		if e.Recipient != "" {
+			args = append(args, "--recipient", e.Recipient)
+		}
+		for _, recipient := range e.Recipients {
+			args = append(args, "--recipient", recipient)
+		}
+		if e.RecipientsFile != "" {
+			args = append(args, "--recipients-file", string(e.RecipientsFile))
+		}
+		for _, recipientsFile := range e.RecipientsFiles {
+			args = append(args, "--recipients-file", string(recipientsFile))
+		}
 	}
-	for _, recipient := range e.Recipients {
-		args = append(args, "--recipient", recipient)
+	return args
+}
+
+func (e *AGEEncryption) identityArgs() []string {
+	args := make([]string, 0, 1+2*len(e.Identities))
+	if e.Identity != "" {
+		args = append(args, "--identity", e.Identity)
 	}
-	if e.RecipientsFile != "" {
-		args = append(args, "--recipients-file", string(e.RecipientsFile))
-	}
-	for _, recipientsFile := range e.RecipientsFiles {
-		args = append(args, "--recipients-file", string(recipientsFile))
+	for _, identity := range e.Identities {
+		args = append(args, "--identity", identity)
 	}
 	return args
 }

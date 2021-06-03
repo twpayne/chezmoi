@@ -285,6 +285,7 @@ The following configuration variables are available:
 |                | `recipientsFile`      | []string | *none*                   | age recipients file                                    |
 |                | `recipientsFiles`     | []string | *none*                   | age recipients files                                   |
 |                | `suffix`              | string   | `.age`                   | Suffix appended to age-encrypted files                 |
+|                | `symmetric`           | bool     | `false`                  | Use age symmetric encryption                           |
 | `bitwarden`    | `command`             | string   | `bw`                     | Bitwarden CLI command                                  |
 | `cd`           | `args`                | []string | *none*                   | Extra args to shell in `cd` command                    |
 |                | `command`             | string   | *none*                   | Shell to run in `cd` command                           |
