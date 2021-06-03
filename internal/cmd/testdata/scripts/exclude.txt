@@ -23,7 +23,7 @@ chezmoi diff
 echo $*
 -- golden/chezmoi.toml --
 [diff]
-  exclude = ["scripts"]
+    exclude = ["scripts"]
 -- golden/diff --
 diff --git a/.file b/.file
 new file mode 100644

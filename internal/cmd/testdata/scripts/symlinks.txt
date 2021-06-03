@@ -35,4 +35,4 @@ cmp $CHEZMOISOURCEDIR/symlink_dot_symlink_absolute.tmpl golden/symlink_dot_symli
 {{ ".file" }}
 -- home2/user/.config/chezmoi/chezmoi.toml --
 [add]
-  templateSymlinks = true
+    templateSymlinks = true

@@ -15,4 +15,4 @@ stdout 'uniquekey: uniqueValue'
 
 -- home/user/.config/chezmoi/chezmoi.toml --
 [data]
-  uniqueKey = "uniqueValue"
+    uniqueKey = "uniqueValue"

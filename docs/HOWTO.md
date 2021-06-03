@@ -1045,6 +1045,18 @@ $ chezmoi add --encrypt ~/.ssh/id_rsa
 chezmoi supports multiple recipients and recipient files, and multiple
 identities.
 
+#### Symmetric encryption
+
+To use age's symmetric encryption, specifiy a single identity and enable
+symmetric encryption in your config file, for example:
+
+```toml
+encryption = "age"
+[age]
+    identity = "~/.ssh/id_rsa"
+    symmetric = true
+```
+
 ### Use a private configuration file and template variables
 
 Typically, `~/.config/chezmoi/chezmoi.toml` is not checked in to version control
@@ -1052,10 +1064,9 @@ and has permissions 0600. You can store tokens as template values in the `data`
 section. For example, if your `~/.config/chezmoi/chezmoi.toml` contains:
 
 ```toml
-[data]
-    [data.github]
-        user = "<github-username>"
-        token = "<github-token>"
+[data.github]
+    user = "<github-username>"
+    token = "<github-token>"
 ```
 
 Your `~/.local/share/chezmoi/private_dot_gitconfig.tmpl` can then contain:
