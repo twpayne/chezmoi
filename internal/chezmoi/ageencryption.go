@@ -17,6 +17,7 @@ type AGEEncryption struct {
 	Args            []string
 	Identity        string
 	Identities      []string
+	Passphrase      bool
 	Recipient       string
 	Recipients      []string
 	RecipientsFile  AbsPath
@@ -75,20 +76,27 @@ func (e *AGEEncryption) EncryptedSuffix() string {
 
 // decryptArgs returns the arguments for decryption.
 func (e *AGEEncryption) decryptArgs() []string {
-	args := make([]string, 0, 1+2*(1+len(e.Identities)))
+	var args []string
 	args = append(args, "--decrypt")
-	args = append(args, e.identityArgs()...)
+	if !e.Passphrase {
+		args = append(args, e.identityArgs()...)
+	}
 	return args
 }
 
 // encryptArgs returns the arguments for encryption.
 func (e *AGEEncryption) encryptArgs() []string {
-	args := make([]string, 0, 1+2*(1+len(e.Recipients))+2*(1+len(e.RecipientsFiles)))
-	args = append(args, "--armor")
-	if e.Symmetric {
-		args = append(args, "--encrypt")
+	var args []string
+	args = append(args,
+		"--armor",
+		"--encrypt",
+	)
+	switch {
+	case e.Passphrase:
+		args = append(args, "--passphrase")
+	case e.Symmetric:
 		args = append(args, e.identityArgs()...)
-	} else {
+	default:
 		if e.Recipient != "" {
 			args = append(args, "--recipient", e.Recipient)
 		}
@@ -106,7 +114,7 @@ func (e *AGEEncryption) encryptArgs() []string {
 }
 
 func (e *AGEEncryption) identityArgs() []string {
-	args := make([]string, 0, 1+2*len(e.Identities))
+	args := make([]string, 0, 2+2*len(e.Identities))
 	if e.Identity != "" {
 		args = append(args, "--identity", e.Identity)
 	}

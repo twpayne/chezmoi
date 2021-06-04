@@ -280,6 +280,7 @@ The following configuration variables are available:
 |                | `command`             | string   | `age`                    | age CLI command                                        |
 |                | `identity`            | string   | *none*                   | age identity file                                      |
 |                | `identities`          | []string | *none*                   | age identity files                                     |
+|                | `passphrase`          | bool     | `false`                  | Use age passphrase instead of identity                 |
 |                | `recipient`           | string   | *none*                   | age recipient                                          |
 |                | `recipients`          | []string | *none*                   | age recipients                                         |
 |                | `recipientsFile`      | []string | *none*                   | age recipients file                                    |
