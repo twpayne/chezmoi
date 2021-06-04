@@ -1057,6 +1057,21 @@ encryption = "age"
     symmetric = true
 ```
 
+#### Symmetric ncryption with a passphrase
+
+To use age's symmetric encryption with a passphrase, set `age.passphrase` to
+`true` in your config file, for example:
+
+```toml
+encryption = "age"
+[age]
+    passphrase = true
+```
+
+You will be prompted for the passphrase whenever you run `chezmoi add --encrypt`
+and whenever chezmoi needs to decrypt the file, for example when you run
+`chezmoi apply`, `chezmoi diff`, or `chezmoi status`.
+
 ### Use a private configuration file and template variables
 
 Typically, `~/.config/chezmoi/chezmoi.toml` is not checked in to version control
