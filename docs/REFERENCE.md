@@ -441,7 +441,7 @@ new contents are read from the scripts standard output.
 Directories are represented by regular directories in the source state. The
 `exact_` attribute causes chezmoi to remove any entries in the target state that
 are not explicitly specified in the source state, and the `private_` attribute
-causes chezmoi to clear all group and world permssions.
+causes chezmoi to clear all group and world permissions.
 
 ### Symbolic links
 
