@@ -53,7 +53,7 @@ chezmoi generates shell completions, the install script, and the website from a
 single source of truth. You must run
 
 ```console
-$ make generate
+$ go generate
 ```
 
 if you change includes any of the following:
