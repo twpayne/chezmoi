@@ -1,6 +1,6 @@
-[windows] stop 'UNIX only' # FIXME
-[!exec:sed] stop
-[!umask:022] skip
+[windows] skip 'UNIX only'
+[!exec:sed] skip 'sed not found in $PATH'
+[!umask:022] skip 'unsupported umask'
 
 cp golden/.modify home/user
 

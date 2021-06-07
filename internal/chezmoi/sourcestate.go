@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io/fs"
 	"os"
-	"os/exec"
 	"runtime"
 	"sort"
 	"strings"
@@ -27,6 +26,7 @@ type SourceState struct {
 	umask                   fs.FileMode
 	encryption              Encryption
 	ignore                  *patternSet
+	interpreters            map[string]*Interpreter
 	minVersion              semver.Version
 	defaultTemplateDataFunc func() map[string]interface{}
 	userTemplateData        map[string]interface{}
@@ -51,6 +51,13 @@ func WithDestDir(destDirAbsPath AbsPath) SourceStateOption {
 func WithEncryption(encryption Encryption) SourceStateOption {
 	return func(s *SourceState) {
 		s.encryption = encryption
+	}
+}
+
+// WithInterpreters sets the interpreters.
+func WithInterpreters(interpreters map[string]*Interpreter) SourceStateOption {
+	return func(s *SourceState) {
+		s.interpreters = interpreters
 	}
 }
 
@@ -639,7 +646,8 @@ func (s *SourceState) Read() error {
 			if s.Ignored(targetRelPath) {
 				return nil
 			}
-			sourceStateEntry := s.newSourceStateFile(sourceRelPath, fa, targetRelPath)
+			var sourceStateEntry SourceStateEntry
+			targetRelPath, sourceStateEntry = s.newSourceStateFile(sourceRelPath, fa, targetRelPath)
 			allSourceStateEntries[targetRelPath] = append(allSourceStateEntries[targetRelPath], sourceStateEntry)
 			return nil
 		default:
@@ -963,7 +971,7 @@ func (s *SourceState) newFileTargetStateEntryFunc(sourceRelPath SourceRelPath, f
 
 // newModifyTargetStateEntryFunc returns a targetStateEntryFunc that returns a
 // file with the contents modified by running the sourceLazyContents script.
-func (s *SourceState) newModifyTargetStateEntryFunc(sourceRelPath SourceRelPath, fileAttr FileAttr, sourceLazyContents *lazyContents) targetStateEntryFunc {
+func (s *SourceState) newModifyTargetStateEntryFunc(sourceRelPath SourceRelPath, fileAttr FileAttr, sourceLazyContents *lazyContents, interpreter *Interpreter) targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		contentsFunc := func() (contents []byte, err error) {
 			// Read the current contents of the target.
@@ -1013,9 +1021,9 @@ func (s *SourceState) newModifyTargetStateEntryFunc(sourceRelPath SourceRelPath,
 			}
 
 			// Run the modifier on the current contents.
-			//nolint:gosec
-			cmd := exec.Command(tempFile.Name())
+			cmd := interpreter.ExecCommand(tempFile.Name())
 			cmd.Stdin = bytes.NewReader(currentContents)
+			cmd.Stderr = os.Stderr
 			return destSystem.IdempotentCmdOutput(cmd)
 		}
 		return &TargetStateFile{
@@ -1042,9 +1050,11 @@ func (s *SourceState) newScriptTargetStateEntryFunc(sourceRelPath SourceRelPath,
 			}
 			return contents, nil
 		}
+		ext := strings.ToLower(strings.TrimPrefix(sourceRelPath.RelPath().Ext(), "."))
 		return &TargetStateScript{
 			lazyContents: newLazyContentsFunc(contentsFunc),
 			name:         targetRelPath,
+			interpreter:  s.interpreters[ext],
 			once:         fileAttr.Once,
 		}, nil
 	}
@@ -1073,8 +1083,9 @@ func (s *SourceState) newSymlinkTargetStateEntryFunc(sourceRelPath SourceRelPath
 	}
 }
 
-// newSourceStateFile returns a new SourceStateFile.
-func (s *SourceState) newSourceStateFile(sourceRelPath SourceRelPath, fileAttr FileAttr, targetRelPath RelPath) *SourceStateFile {
+// newSourceStateFile returns a possibly new target RalPath and a new
+// SourceStateFile.
+func (s *SourceState) newSourceStateFile(sourceRelPath SourceRelPath, fileAttr FileAttr, targetRelPath RelPath) (RelPath, *SourceStateFile) {
 	sourceLazyContents := newLazyContentsFunc(func() ([]byte, error) {
 		contents, err := s.system.ReadFile(s.sourceDirAbsPath.Join(sourceRelPath.RelPath()))
 		if err != nil {
@@ -1096,7 +1107,14 @@ func (s *SourceState) newSourceStateFile(sourceRelPath SourceRelPath, fileAttr F
 	case SourceFileTypeFile:
 		targetStateEntryFunc = s.newFileTargetStateEntryFunc(sourceRelPath, fileAttr, sourceLazyContents)
 	case SourceFileTypeModify:
-		targetStateEntryFunc = s.newModifyTargetStateEntryFunc(sourceRelPath, fileAttr, sourceLazyContents)
+		// If the target has an extension the determine if it indicates an
+		// interpreter to use.
+		ext := strings.ToLower(strings.TrimPrefix(targetRelPath.Ext(), "."))
+		interpreter := s.interpreters[ext]
+		if interpreter != nil {
+			targetRelPath = targetRelPath[:len(targetRelPath)-len(ext)-1]
+		}
+		targetStateEntryFunc = s.newModifyTargetStateEntryFunc(sourceRelPath, fileAttr, sourceLazyContents, interpreter)
 	case SourceFileTypeScript:
 		targetStateEntryFunc = s.newScriptTargetStateEntryFunc(sourceRelPath, fileAttr, targetRelPath, sourceLazyContents)
 	case SourceFileTypeSymlink:
@@ -1105,7 +1123,7 @@ func (s *SourceState) newSourceStateFile(sourceRelPath SourceRelPath, fileAttr F
 		panic(fmt.Sprintf("%d: unsupported type", fileAttr.Type))
 	}
 
-	return &SourceStateFile{
+	return targetRelPath, &SourceStateFile{
 		lazyContents:         sourceLazyContents,
 		sourceRelPath:        sourceRelPath,
 		Attr:                 fileAttr,

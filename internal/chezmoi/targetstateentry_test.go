@@ -98,7 +98,7 @@ func TestTargetStateEntryApply(t *testing.T) {
 			actualState := actualStates[tc.ActualDestDirStateKey]
 
 			chezmoitest.WithTestFS(t, actualState, func(fileSystem vfs.FS) {
-				s := NewRealSystem(fileSystem, nil)
+				s := NewRealSystem(fileSystem)
 
 				// Read the initial destination state entry from fileSystem.
 				actualStateEntry, err := NewActualStateEntry(s, "/home/user/target", nil, nil)

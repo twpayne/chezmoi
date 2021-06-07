@@ -16,7 +16,7 @@ var _ PersistentState = &BoltPersistentState{}
 func TestBoltPersistentState(t *testing.T) {
 	chezmoitest.WithTestFS(t, nil, func(fileSystem vfs.FS) {
 		var (
-			s      = NewRealSystem(fileSystem, nil)
+			s      = NewRealSystem(fileSystem)
 			path   = AbsPath("/home/user/.config/chezmoi/chezmoistate.boltdb")
 			bucket = []byte("bucket")
 			key    = []byte("key")
@@ -90,7 +90,7 @@ func TestBoltPersistentState(t *testing.T) {
 func TestBoltPersistentStateMock(t *testing.T) {
 	chezmoitest.WithTestFS(t, nil, func(fileSystem vfs.FS) {
 		var (
-			s      = NewRealSystem(fileSystem, nil)
+			s      = NewRealSystem(fileSystem)
 			path   = AbsPath("/home/user/.config/chezmoi/chezmoistate.boltdb")
 			bucket = []byte("bucket")
 			key    = []byte("key")
@@ -132,7 +132,7 @@ func TestBoltPersistentStateMock(t *testing.T) {
 func TestBoltPersistentStateReadOnly(t *testing.T) {
 	chezmoitest.WithTestFS(t, nil, func(fileSystem vfs.FS) {
 		var (
-			s      = NewRealSystem(fileSystem, nil)
+			s      = NewRealSystem(fileSystem)
 			path   = AbsPath("/home/user/.config/chezmoi/chezmoistate.boltdb")
 			bucket = []byte("bucket")
 			key    = []byte("key")

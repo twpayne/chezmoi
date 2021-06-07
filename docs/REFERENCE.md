@@ -479,7 +479,7 @@ directory.
 <!-- FIXME: some of the following needs to be moved to the how-to -->
 
 The execution of scripts on Windows depends on the script's file extension.
-Windows will natively execute scripts with a `.bat`, `.cmd`, and `.exe`
+Windows will natively execute scripts with a `.bat`, `.cmd`, `.com`, and `.exe`
 extensions. Other extensions require an interpreter, which must be in your
 `%PATH%`.
 

@@ -37,7 +37,7 @@ func (s *TARWriterSystem) Mkdir(name AbsPath, perm fs.FileMode) error {
 }
 
 // RunScript implements System.RunScript.
-func (s *TARWriterSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte) error {
+func (s *TARWriterSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
 	return s.WriteFile(AbsPath(scriptname), data, 0o700)
 }
 
