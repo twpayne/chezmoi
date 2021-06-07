@@ -739,7 +739,7 @@ Documents can be retrieved with:
 ```
 
 Note the extra `-` after the opening `{{` and before the closing `}}`. This
-instructs the template language to remove and whitespace before and after the
+instructs the template language to remove any whitespace before and after the
 substitution. This removes any trailing newline added by your editor when saving
 the template.
 
