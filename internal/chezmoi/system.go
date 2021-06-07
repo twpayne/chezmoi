@@ -25,7 +25,7 @@ type System interface {
 	RemoveAll(name AbsPath) error
 	Rename(oldpath, newpath AbsPath) error
 	RunCmd(cmd *exec.Cmd) error
-	RunScript(scriptname RelPath, dir AbsPath, data []byte) error
+	RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error
 	Stat(name AbsPath) (fs.FileInfo, error)
 	UnderlyingFS() vfs.FS
 	WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error
@@ -49,12 +49,15 @@ func (emptySystemMixin) UnderlyingFS() vfs.FS                                   
 // A noUpdateSystemMixin panics on any update.
 type noUpdateSystemMixin struct{}
 
-func (noUpdateSystemMixin) Chmod(name AbsPath, perm fs.FileMode) error                   { panic(nil) }
-func (noUpdateSystemMixin) Mkdir(name AbsPath, perm fs.FileMode) error                   { panic(nil) }
-func (noUpdateSystemMixin) RemoveAll(name AbsPath) error                                 { panic(nil) }
-func (noUpdateSystemMixin) Rename(oldpath, newpath AbsPath) error                        { panic(nil) }
-func (noUpdateSystemMixin) RunCmd(cmd *exec.Cmd) error                                   { panic(nil) }
-func (noUpdateSystemMixin) RunScript(scriptname RelPath, dir AbsPath, data []byte) error { panic(nil) }
+func (noUpdateSystemMixin) Chmod(name AbsPath, perm fs.FileMode) error { panic(nil) }
+func (noUpdateSystemMixin) Mkdir(name AbsPath, perm fs.FileMode) error { panic(nil) }
+func (noUpdateSystemMixin) RemoveAll(name AbsPath) error               { panic(nil) }
+func (noUpdateSystemMixin) Rename(oldpath, newpath AbsPath) error      { panic(nil) }
+func (noUpdateSystemMixin) RunCmd(cmd *exec.Cmd) error                 { panic(nil) }
+func (noUpdateSystemMixin) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
+	panic(nil)
+}
+
 func (noUpdateSystemMixin) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error {
 	panic(nil)
 }

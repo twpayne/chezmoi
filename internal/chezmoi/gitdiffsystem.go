@@ -156,7 +156,7 @@ func (s *GitDiffSystem) RunCmd(cmd *exec.Cmd) error {
 }
 
 // RunScript implements System.RunScript.
-func (s *GitDiffSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte) error {
+func (s *GitDiffSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
 	mode := fs.FileMode(filemode.Executable)
 	diffPatch, err := DiffPatch(scriptname, nil, mode, data, mode)
 	if err != nil {
@@ -165,7 +165,7 @@ func (s *GitDiffSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte) 
 	if err := s.unifiedEncoder.Encode(diffPatch); err != nil {
 		return err
 	}
-	return s.system.RunScript(scriptname, dir, data)
+	return s.system.RunScript(scriptname, dir, data, interpreter)
 }
 
 // Stat implements System.Stat.

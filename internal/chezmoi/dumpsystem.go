@@ -41,9 +41,10 @@ type fileData struct {
 
 // A scriptData contains data about a script.
 type scriptData struct {
-	Type     dataType `json:"type" toml:"type" yaml:"type"`
-	Name     AbsPath  `json:"name" toml:"name" yaml:"name"`
-	Contents string   `json:"contents" toml:"contents" yaml:"contents"`
+	Type        dataType     `json:"type" toml:"type" yaml:"type"`
+	Name        AbsPath      `json:"name" toml:"name" yaml:"name"`
+	Contents    string       `json:"contents" toml:"contents" yaml:"contents"`
+	Interpreter *Interpreter `json:"interpreter,omitempty" toml:"interpreter,omitempty" yaml:"interpreter,omitempty"`
 }
 
 // A symlinkData contains data about a symlink.
@@ -79,16 +80,20 @@ func (s *DumpSystem) Mkdir(dirname AbsPath, perm fs.FileMode) error {
 }
 
 // RunScript implements System.RunScript.
-func (s *DumpSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte) error {
+func (s *DumpSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
 	scriptnameAbsPath := AbsPath(scriptname)
 	if _, exists := s.data[scriptnameAbsPath]; exists {
 		return fs.ErrExist
 	}
-	s.data[scriptnameAbsPath] = &scriptData{
+	scriptData := &scriptData{
 		Type:     dataTypeScript,
 		Name:     scriptnameAbsPath,
 		Contents: string(data),
 	}
+	if !interpreter.None() {
+		scriptData.Interpreter = interpreter
+	}
+	s.data[scriptnameAbsPath] = scriptData
 	return nil
 }
 

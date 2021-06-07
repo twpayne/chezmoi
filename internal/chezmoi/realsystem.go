@@ -3,20 +3,17 @@ package chezmoi
 import (
 	"errors"
 	"io/fs"
+	"os"
 	"os/exec"
+	"runtime"
 
 	"github.com/bmatcuk/doublestar/v4"
 	"github.com/rs/zerolog/log"
 	vfs "github.com/twpayne/go-vfs/v3"
+	"go.uber.org/multierr"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )
-
-// An Interpreter interprets scripts.
-type Interpreter struct {
-	Command string   `mapstructure:"command"`
-	Args    []string `mapstructure:"args"`
-}
 
 // Glob implements System.Glob.
 func (s *RealSystem) Glob(pattern string) ([]string, error) {
@@ -75,6 +72,43 @@ func (s *RealSystem) Rename(oldpath, newpath AbsPath) error {
 // RunCmd implements System.RunCmd.
 func (s *RealSystem) RunCmd(cmd *exec.Cmd) error {
 	return chezmoilog.LogCmdRun(log.Logger, cmd)
+}
+
+// RunScript implements System.RunScript.
+func (s *RealSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) (err error) {
+	// Write the temporary script file. Put the randomness at the front of the
+	// filename to preserve any file extension for Windows scripts.
+	f, err := os.CreateTemp("", "*."+scriptname.Base())
+	if err != nil {
+		return
+	}
+	defer func() {
+		err = multierr.Append(err, os.RemoveAll(f.Name()))
+	}()
+
+	// Make the script private before writing it in case it contains any
+	// secrets.
+	if runtime.GOOS != "windows" {
+		if err = f.Chmod(0o700); err != nil {
+			return
+		}
+	}
+	_, err = f.Write(data)
+	err = multierr.Append(err, f.Close())
+	if err != nil {
+		return
+	}
+
+	cmd := interpreter.ExecCommand(f.Name())
+	cmd.Dir, err = s.getScriptWorkingDir(dir)
+	if err != nil {
+		return err
+	}
+	cmd.Stdin = os.Stdin
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+
+	return s.RunCmd(cmd)
 }
 
 // Stat implements System.Stat.

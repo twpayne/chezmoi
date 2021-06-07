@@ -159,12 +159,13 @@ func (s *DebugSystem) RunCmd(cmd *exec.Cmd) error {
 }
 
 // RunScript implements System.RunScript.
-func (s *DebugSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte) error {
-	err := s.system.RunScript(scriptname, dir, data)
+func (s *DebugSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
+	err := s.system.RunScript(scriptname, dir, data, interpreter)
 	log.Logger.Debug().
 		Str("scriptname", string(scriptname)).
 		Str("dir", string(dir)).
 		Bytes("data", chezmoilog.FirstFewBytes(data)).
+		Object("interpreter", interpreter).
 		Err(err).
 		EmbedObject(chezmoilog.OSExecExitErrorLogObject{Err: err}).
 		Msg("RunScript")

@@ -10,7 +10,7 @@ import (
 
 const defaultEditor = "vi"
 
-var defaultInterpreters = make(map[string]chezmoi.Interpreter)
+var defaultInterpreters = make(map[string]*chezmoi.Interpreter)
 
 // enableVirtualTerminalProcessing does nothing.
 func enableVirtualTerminalProcessing(w io.Writer) error {

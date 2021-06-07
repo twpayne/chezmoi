@@ -50,16 +50,16 @@ type templateConfig struct {
 // A Config represents a configuration.
 type Config struct {
 	// Global configuration, settable in the config file.
-	SourceDirAbsPath chezmoi.AbsPath                `mapstructure:"sourceDir"`
-	DestDirAbsPath   chezmoi.AbsPath                `mapstructure:"destDir"`
-	Umask            fs.FileMode                    `mapstructure:"umask"`
-	Remove           bool                           `mapstructure:"remove"`
-	Color            *autoBool                      `mapstructure:"color"`
-	Data             map[string]interface{}         `mapstructure:"data"`
-	Template         templateConfig                 `mapstructure:"template"`
-	UseBuiltinGit    *autoBool                      `mapstructure:"useBuiltinGit"`
-	Pager            string                         `mapstructure:"pager"`
-	Interpreters     map[string]chezmoi.Interpreter `mapstructure:"interpreters"`
+	SourceDirAbsPath chezmoi.AbsPath                 `mapstructure:"sourceDir"`
+	DestDirAbsPath   chezmoi.AbsPath                 `mapstructure:"destDir"`
+	Umask            fs.FileMode                     `mapstructure:"umask"`
+	Remove           bool                            `mapstructure:"remove"`
+	Color            *autoBool                       `mapstructure:"color"`
+	Data             map[string]interface{}          `mapstructure:"data"`
+	Template         templateConfig                  `mapstructure:"template"`
+	UseBuiltinGit    *autoBool                       `mapstructure:"useBuiltinGit"`
+	Pager            string                          `mapstructure:"pager"`
+	Interpreters     map[string]*chezmoi.Interpreter `mapstructure:"interpreters"`
 
 	// Global configuration, not settable in the config file.
 	cpuProfile    chezmoi.AbsPath
@@ -1147,7 +1147,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		zerolog.SetGlobalLevel(zerolog.Disabled)
 	}
 
-	c.baseSystem = chezmoi.NewRealSystem(c.fileSystem, c.Interpreters)
+	c.baseSystem = chezmoi.NewRealSystem(c.fileSystem)
 	if c.debug {
 		c.baseSystem = chezmoi.NewDebugSystem(c.baseSystem)
 	}
@@ -1386,6 +1386,7 @@ func (c *Config) sourceState() (*chezmoi.SourceState, error) {
 		chezmoi.WithDefaultTemplateDataFunc(c.defaultTemplateData),
 		chezmoi.WithDestDir(c.DestDirAbsPath),
 		chezmoi.WithEncryption(c.encryption),
+		chezmoi.WithInterpreters(c.Interpreters),
 		chezmoi.WithPriorityTemplateData(c.Data),
 		chezmoi.WithSourceDir(c.SourceDirAbsPath),
 		chezmoi.WithSystem(c.sourceSystem),

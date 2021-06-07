@@ -170,7 +170,7 @@ func TestValidateKeys(t *testing.T) {
 
 func newTestConfig(t *testing.T, fileSystem vfs.FS, options ...configOption) *Config {
 	t.Helper()
-	system := chezmoi.NewRealSystem(fileSystem, nil)
+	system := chezmoi.NewRealSystem(fileSystem)
 	c, err := newConfig(
 		append([]configOption{
 			withBaseSystem(system),

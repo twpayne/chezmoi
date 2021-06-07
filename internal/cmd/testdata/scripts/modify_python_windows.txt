@@ -1,0 +1,18 @@
+[!windows] skip 'Windows only'
+[!exec:python] skip 'python not found in %PATH%'
+
+# test that chezmoi apply modifies a file with python
+chezmoi apply
+unix2dos golden/modified
+cmp $HOME/.file golden/modified
+
+-- golden/modified --
+# contents of .file
+# modified
+-- home/user/.file --
+# contents of .file
+-- home/user/.local/share/chezmoi/modify_dot_file.py --
+import sys
+
+sys.stdout.write(sys.stdin.read())
+sys.stdout.write("# modified\n")

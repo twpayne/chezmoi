@@ -98,7 +98,7 @@ func (s *DryRunSystem) RunCmd(cmd *exec.Cmd) error {
 }
 
 // RunScript implements System.RunScript.
-func (s *DryRunSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte) error {
+func (s *DryRunSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
 	s.modified = true
 	return nil
 }
