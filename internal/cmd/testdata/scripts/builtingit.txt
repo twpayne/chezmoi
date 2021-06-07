@@ -1,5 +1,4 @@
 [windows] skip 'go-git does not support file:// URLs on windows'
-[!exec:git] skip 'git not found in $PATH'
 
 chmod 755 golden/git
 mkgitconfig
