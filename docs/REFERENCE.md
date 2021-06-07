@@ -1050,6 +1050,10 @@ own binary.
 
 Run `chezmoi apply` after checking out the repo and creating the config file.
 
+#### `--branch` *branch*
+
+Check out *branch* instead of the default branch.
+
 #### `--data` *bool*
 
 Include existing template data when creating the config file. This defaults to

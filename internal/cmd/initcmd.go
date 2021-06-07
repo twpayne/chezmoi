@@ -14,6 +14,7 @@ import (
 	"text/template"
 
 	"github.com/go-git/go-git/v5"
+	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"golang.org/x/term"
@@ -23,6 +24,7 @@ import (
 
 type initCmdConfig struct {
 	apply       bool
+	branch      string
 	data        bool
 	depth       int
 	exclude     *chezmoi.EntryTypeSet
@@ -103,6 +105,7 @@ func (c *Config) newInitCmd() *cobra.Command {
 	flags.BoolVar(&c.init.oneShot, "one-shot", c.init.oneShot, "one shot")
 	flags.BoolVarP(&c.init.purge, "purge", "p", c.init.purge, "purge config and source directories")
 	flags.BoolVarP(&c.init.purgeBinary, "purge-binary", "P", c.init.purgeBinary, "purge chezmoi binary")
+	flags.StringVar(&c.init.branch, "branch", c.init.branch, "initbranch to checkout")
 	flags.BoolVar(&c.init.ssh, "ssh", false, "use ssh instead of https for guessed dotfile repo URL")
 
 	return initCmd
@@ -143,9 +146,14 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 			dotfilesRepoURL := guessDotfilesRepoURL(args[0], c.init.ssh)
 			if useBuiltinGit {
 				isBare := false
+				var referenceName plumbing.ReferenceName
+				if c.init.branch != "" {
+					referenceName = plumbing.NewBranchReferenceName(c.init.branch)
+				}
 				if _, err := git.PlainClone(string(rawSourceDir), isBare, &git.CloneOptions{
 					URL:               dotfilesRepoURL,
 					Depth:             c.init.depth,
+					ReferenceName:     referenceName,
 					RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
 				}); err != nil {
 					return err
@@ -154,6 +162,11 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 				args := []string{
 					"clone",
 					"--recurse-submodules",
+				}
+				if c.init.branch != "" {
+					args = append(args,
+						"--branch", c.init.branch,
+					)
 				}
 				if c.init.depth != 0 {
 					args = append(args,
