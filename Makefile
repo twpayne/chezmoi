@@ -2,7 +2,7 @@ GO?=go
 GOLANGCI_LINT_VERSION=1.40.1
 
 .PHONY: default
-default: build run test lint format
+default: run build test lint format
 
 .PHONY: build
 build: build-darwin build-linux build-windows
