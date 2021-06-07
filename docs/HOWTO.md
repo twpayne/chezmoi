@@ -404,14 +404,14 @@ Then, add `~/.gitconfig` to chezmoi using the `--autotemplate` flag to turn it
 into a template and automatically detect variables from the `data` section
 of your `~/.config/chezmoi/chezmoi.toml` file:
 
-```
+```console
 $ chezmoi add --autotemplate ~/.gitconfig
 ```
 
 You can then open the template (which will be saved in the file
 `~/.local/share/chezmoi/dot_gitconfig.tmpl`):
 
-```
+```console
 $ chezmoi edit ~/.gitconfig
 ```
 
@@ -440,7 +440,7 @@ export EDITOR=vi
 
 For a full list of variables, run:
 
-```
+```console
 $ chezmoi data
 ```
 
@@ -453,7 +453,7 @@ managers](https://github.com/twpayne/chezmoi/blob/master/docs/REFERENCE.md#templ
 Templates can be executed directly from the command line, without the need to
 create a file on disk, with the `execute-template` command, for example:
 
-```
+```console
 $ chezmoi execute-template "{{ .chezmoi.os }}/{{ .chezmoi.arch }}"
 ```
 
@@ -702,7 +702,7 @@ expose data as a template function.
 
 Log in and get a session using:
 
-```
+```console
 $ eval $(op signin <subdomain>.1password.com <email>)
 ```
 
@@ -926,7 +926,7 @@ The vault CLI needs to be correctly configured on your machine, e.g. the
 `VAULT_ADDR` and `VAULT_TOKEN` environment variables must be set correctly.
 Verify that this is the case by running:
 
-```
+```console
 $ vault kv get -format=json <key>
 ```
 
@@ -1047,7 +1047,7 @@ identities.
 
 #### Symmetric encryption
 
-To use age's symmetric encryption, specifiy a single identity and enable
+To use age's symmetric encryption, specify a single identity and enable
 symmetric encryption in your config file, for example:
 
 ```toml
@@ -1057,7 +1057,7 @@ encryption = "age"
     symmetric = true
 ```
 
-#### Symmetric ncryption with a passphrase
+#### Symmetric encryption with a passphrase
 
 To use age's symmetric encryption with a passphrase, set `age.passphrase` to
 `true` in your config file, for example:

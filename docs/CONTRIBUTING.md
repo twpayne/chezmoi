@@ -99,7 +99,8 @@ that:
   [`gofumports`](https://mvdan.cc/gofumpt/gofumports). You can ensure this by
   running `make format`.
 
-* The code passes [`golangci-lint`](https://github.com/golangci/golangci-lint).
+* The code passes [`golangci
+* -lint`](https://github.com/golangci/golangci-lint).
   You can ensure this by running `make lint`.
 
 * The commit messages match chezmoi's convention, specifically that they begin
@@ -120,6 +121,7 @@ To build a test release, without publishing, (Linux only) run:
 ```console
 $ make test-release
 ```
+
 Publish a new release by creating and pushing a tag, e.g.:
 
 ```console

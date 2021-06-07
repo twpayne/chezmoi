@@ -7,7 +7,7 @@
   * [Coping with differences between machines requires extra effort](#coping-with-differences-between-machines-requires-extra-effort)
   * [You have to keep your dotfiles repo private](#you-have-to-keep-your-dotfiles-repo-private)
   * [You have to maintain your own tool](#you-have-to-maintain-your-own-tool)
-  * [Setting up your dotfiles requires more than two short commands](#setting-up-your-dotfiles-requires-more-than-two-short-commands)
+  * [Setting up your dotfiles requires more than one short command](#setting-up-your-dotfiles-requires-more-than-one-short-command)
 
 ## Comparison table
 
@@ -40,7 +40,7 @@
 | File removal                           | ✅           | ❌                | ❌                | ❌                | ❌            | ❌         |
 | Directory creation                     | ✅           | ✅               | ✅               | ❌                | ❌            | ✅        |
 | Run scripts                            | ✅           | ✅               | ✅               | ❌                | ❌            | ❌         |
-| Run once scripts                       | ✅           | ❌                | ❌                | ❌                | Manual        | ❌         |
+| Run once scripts                       | ✅           | ❌                | ❌                | ❌                | ❌            | ❌         |
 | Machine-to-machine symlink differences | ✅           | ❌                | ❌                | ❌                | ✅           | ❌         |
 | Shell completion                       | ✅           | ❌                | ❌                | ❌                | ✅           | ✅        |
 | Archive import                         | ✅           | ❌                | ❌                | ❌                | ❌            | ❌         |

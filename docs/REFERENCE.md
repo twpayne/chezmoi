@@ -501,7 +501,7 @@ a Tcl/Tk interpreter, include the following in `~/.config/chezmoi/chezmoi.toml`:
 
 ```toml
 [interpreters.py]
-    command = "C:\\Python39\\python.exe"
+    command = 'C:\Python39\python.exe'
 [interpreters.tcl]
     command = "tclsh"
 ```
