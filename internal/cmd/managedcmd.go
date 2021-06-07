@@ -26,8 +26,8 @@ func (c *Config) newManagedCmd() *cobra.Command {
 	}
 
 	flags := managedCmd.Flags()
-	flags.VarP(c.managed.exclude, "exclude", "x", "exclude entry types")
-	flags.VarP(c.managed.include, "include", "i", "include entry types")
+	flags.VarP(c.managed.exclude, "exclude", "x", "Exclude entry types")
+	flags.VarP(c.managed.include, "include", "i", "Include entry types")
 
 	return managedCmd
 }

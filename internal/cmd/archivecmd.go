@@ -45,11 +45,11 @@ func (c *Config) newArchiveCmd() *cobra.Command {
 	}
 
 	flags := archiveCmd.Flags()
-	flags.VarP(c.archive.exclude, "exclude", "x", "exclude entry types")
-	flags.VarP(&c.archive.format, "format", "f", "format")
-	flags.BoolVarP(&c.archive.gzip, "gzip", "z", c.archive.gzip, "compress the output with gzip")
-	flags.VarP(c.archive.include, "include", "i", "include entry types")
-	flags.BoolVarP(&c.archive.recursive, "recursive", "r", c.archive.recursive, "recursive")
+	flags.VarP(c.archive.exclude, "exclude", "x", "Exclude entry types")
+	flags.VarP(&c.archive.format, "format", "f", "Set archive format")
+	flags.BoolVarP(&c.archive.gzip, "gzip", "z", c.archive.gzip, "Compress output with gzip")
+	flags.VarP(c.archive.include, "include", "i", "Include entry types")
+	flags.BoolVarP(&c.archive.recursive, "recursive", "r", c.archive.recursive, "Recurse into subdirectories")
 
 	return archiveCmd
 }

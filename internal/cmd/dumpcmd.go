@@ -26,10 +26,10 @@ func (c *Config) newDumpCmd() *cobra.Command {
 	}
 
 	flags := dumpCmd.Flags()
-	flags.VarP(c.dump.exclude, "exclude", "x", "exclude entry types")
-	flags.VarP(&c.dump.format, "format", "f", "format")
-	flags.VarP(c.dump.include, "include", "i", "include entry types")
-	flags.BoolVarP(&c.dump.recursive, "recursive", "r", c.dump.recursive, "recursive")
+	flags.VarP(c.dump.exclude, "exclude", "x", "Exclude entry types")
+	flags.VarP(&c.dump.format, "format", "f", "Set output format")
+	flags.VarP(c.dump.include, "include", "i", "Include entry types")
+	flags.BoolVarP(&c.dump.recursive, "recursive", "r", c.dump.recursive, "Recurse into subdirectories")
 
 	return dumpCmd
 }

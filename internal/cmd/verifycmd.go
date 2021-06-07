@@ -25,9 +25,9 @@ func (c *Config) newVerifyCmd() *cobra.Command {
 	}
 
 	flags := verifyCmd.Flags()
-	flags.VarP(c.verify.exclude, "exclude", "x", "exclude entry types")
-	flags.VarP(c.verify.include, "include", "i", "include entry types")
-	flags.BoolVarP(&c.verify.recursive, "recursive", "r", c.verify.recursive, "recursive")
+	flags.VarP(c.verify.exclude, "exclude", "x", "Exclude entry types")
+	flags.VarP(c.verify.include, "include", "i", "Include entry types")
+	flags.BoolVarP(&c.verify.recursive, "recursive", "r", c.verify.recursive, "Recurse into subdirectories")
 
 	return verifyCmd
 }

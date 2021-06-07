@@ -99,14 +99,14 @@ func (c *Config) newInitCmd() *cobra.Command {
 
 	flags := initCmd.Flags()
 	flags.BoolVarP(&c.init.apply, "apply", "a", c.init.apply, "update destination directory")
-	flags.BoolVar(&c.init.data, "data", c.init.data, "include existing template data")
-	flags.IntVarP(&c.init.depth, "depth", "d", c.init.depth, "create a shallow clone")
-	flags.VarP(c.init.exclude, "exclude", "x", "exclude entry types")
-	flags.BoolVar(&c.init.oneShot, "one-shot", c.init.oneShot, "one shot")
-	flags.BoolVarP(&c.init.purge, "purge", "p", c.init.purge, "purge config and source directories")
-	flags.BoolVarP(&c.init.purgeBinary, "purge-binary", "P", c.init.purgeBinary, "purge chezmoi binary")
-	flags.StringVar(&c.init.branch, "branch", c.init.branch, "initbranch to checkout")
-	flags.BoolVar(&c.init.ssh, "ssh", false, "use ssh instead of https for guessed dotfile repo URL")
+	flags.BoolVar(&c.init.data, "data", c.init.data, "Include existing template data")
+	flags.IntVarP(&c.init.depth, "depth", "d", c.init.depth, "Create a shallow clone")
+	flags.VarP(c.init.exclude, "exclude", "x", "Exclude entry types")
+	flags.BoolVar(&c.init.oneShot, "one-shot", c.init.oneShot, "Run in one-shot mode")
+	flags.BoolVarP(&c.init.purge, "purge", "p", c.init.purge, "Purge config and source directories after running")
+	flags.BoolVarP(&c.init.purgeBinary, "purge-binary", "P", c.init.purgeBinary, "Purge chezmoi binary after running")
+	flags.StringVar(&c.init.branch, "branch", c.init.branch, "Set initial branch to checkout")
+	flags.BoolVar(&c.init.ssh, "ssh", false, "Use ssh instead of https when guessing dotfile repo URL")
 
 	return initCmd
 }

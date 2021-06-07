@@ -34,9 +34,9 @@ func (c *Config) newEditCmd() *cobra.Command {
 	}
 
 	flags := editCmd.Flags()
-	flags.BoolVarP(&c.Edit.apply, "apply", "a", c.Edit.apply, "apply edit after editing")
-	flags.VarP(c.Edit.exclude, "exclude", "x", "exclude entry types")
-	flags.VarP(c.Edit.include, "include", "i", "include entry types")
+	flags.BoolVarP(&c.Edit.apply, "apply", "a", c.Edit.apply, "Apply after editing")
+	flags.VarP(c.Edit.exclude, "exclude", "x", "Exclude entry types")
+	flags.VarP(c.Edit.include, "include", "i", "Include entry types")
 
 	return editCmd
 }

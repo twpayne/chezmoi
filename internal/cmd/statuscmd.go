@@ -29,9 +29,9 @@ func (c *Config) newStatusCmd() *cobra.Command {
 	}
 
 	flags := statusCmd.Flags()
-	flags.VarP(c.status.exclude, "exclude", "x", "exclude entry types")
-	flags.VarP(c.status.include, "include", "i", "include entry types")
-	flags.BoolVarP(&c.status.recursive, "recursive", "r", c.status.recursive, "recursive")
+	flags.VarP(c.status.exclude, "exclude", "x", "Exclude entry types")
+	flags.VarP(c.status.include, "include", "i", "Include entry types")
+	flags.BoolVarP(&c.status.recursive, "recursive", "r", c.status.recursive, "Recurse into subdirectories")
 
 	return statusCmd
 }

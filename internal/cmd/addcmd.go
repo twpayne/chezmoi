@@ -39,17 +39,17 @@ func (c *Config) newAddCmd() *cobra.Command {
 	}
 
 	flags := addCmd.Flags()
-	flags.BoolVarP(&c.Add.autoTemplate, "autotemplate", "a", c.Add.autoTemplate, "auto generate the template when adding files as templates")
-	flags.BoolVar(&c.Add.create, "create", c.Add.create, "add files that should exist, irrespective of their contents")
-	flags.BoolVarP(&c.Add.empty, "empty", "e", c.Add.empty, "add empty files")
-	flags.BoolVar(&c.Add.encrypt, "encrypt", c.Add.encrypt, "encrypt files")
-	flags.BoolVar(&c.Add.exact, "exact", c.Add.exact, "add directories exactly")
-	flags.VarP(c.Add.exclude, "exclude", "x", "exclude entry types")
-	flags.BoolVarP(&c.Add.follow, "follow", "f", c.Add.follow, "add symlink targets instead of symlinks")
-	flags.VarP(c.Add.include, "include", "i", "include entry types")
-	flags.BoolVarP(&c.Add.recursive, "recursive", "r", c.Add.recursive, "recursive")
-	flags.BoolVarP(&c.Add.template, "template", "T", c.Add.template, "add files as templates")
-	flags.BoolVar(&c.Add.TemplateSymlinks, "template-symlinks", c.Add.TemplateSymlinks, "add symlinks with target in source or home dirs as templates")
+	flags.BoolVarP(&c.Add.autoTemplate, "autotemplate", "a", c.Add.autoTemplate, "Generate the template when adding files as templates")
+	flags.BoolVar(&c.Add.create, "create", c.Add.create, "Add files that should exist, irrespective of their contents")
+	flags.BoolVarP(&c.Add.empty, "empty", "e", c.Add.empty, "Add empty files")
+	flags.BoolVar(&c.Add.encrypt, "encrypt", c.Add.encrypt, "Encrypt files")
+	flags.BoolVar(&c.Add.exact, "exact", c.Add.exact, "Add directories exactly")
+	flags.VarP(c.Add.exclude, "exclude", "x", "Exclude entry types")
+	flags.BoolVarP(&c.Add.follow, "follow", "f", c.Add.follow, "Add symlink targets instead of symlinks")
+	flags.VarP(c.Add.include, "include", "i", "Include entry types")
+	flags.BoolVarP(&c.Add.recursive, "recursive", "r", c.Add.recursive, "Recurse into subdirectories")
+	flags.BoolVarP(&c.Add.template, "template", "T", c.Add.template, "Add files as templates")
+	flags.BoolVar(&c.Add.TemplateSymlinks, "template-symlinks", c.Add.TemplateSymlinks, "Add symlinks with target in source or home dirs as templates")
 
 	return addCmd
 }

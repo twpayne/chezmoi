@@ -26,9 +26,9 @@ func (c *Config) newApplyCmd() *cobra.Command {
 	}
 
 	flags := applyCmd.Flags()
-	flags.VarP(c.apply.exclude, "exclude", "x", "exclude entry types")
-	flags.VarP(c.apply.include, "include", "i", "include entry types")
-	flags.BoolVarP(&c.apply.recursive, "recursive", "r", c.apply.recursive, "recursive")
+	flags.VarP(c.apply.exclude, "exclude", "x", "Exclude entry types")
+	flags.VarP(c.apply.include, "include", "i", "Include entry types")
+	flags.BoolVarP(&c.apply.recursive, "recursive", "r", c.apply.recursive, "Recurse into subdirectories")
 
 	return applyCmd
 }

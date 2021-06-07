@@ -960,11 +960,11 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 
 	persistentFlags := rootCmd.PersistentFlags()
 
-	persistentFlags.Var(c.Color, "color", "colorize diffs")
-	persistentFlags.VarP(&c.DestDirAbsPath, "destination", "D", "destination directory")
-	persistentFlags.BoolVar(&c.Remove, "remove", c.Remove, "remove targets")
-	persistentFlags.VarP(&c.SourceDirAbsPath, "source", "S", "source directory")
-	persistentFlags.Var(c.UseBuiltinGit, "use-builtin-git", "use builtin git")
+	persistentFlags.Var(c.Color, "color", "Colorize output")
+	persistentFlags.VarP(&c.DestDirAbsPath, "destination", "D", "Set destination directory")
+	persistentFlags.BoolVar(&c.Remove, "remove", c.Remove, "Remove entries from destination directory")
+	persistentFlags.VarP(&c.SourceDirAbsPath, "source", "S", "Set source directory")
+	persistentFlags.Var(c.UseBuiltinGit, "use-builtin-git", "Use builtin git")
 	for _, key := range []string{
 		"color",
 		"destination",
@@ -976,17 +976,17 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		}
 	}
 
-	persistentFlags.VarP(&c.configFileAbsPath, "config", "c", "config file")
-	persistentFlags.Var(&c.cpuProfile, "cpu-profile", "write CPU profile")
-	persistentFlags.BoolVar(&c.debug, "debug", c.debug, "write debug logs")
-	persistentFlags.BoolVarP(&c.dryRun, "dry-run", "n", c.dryRun, "dry run")
-	persistentFlags.BoolVar(&c.force, "force", c.force, "force")
-	persistentFlags.BoolVarP(&c.keepGoing, "keep-going", "k", c.keepGoing, "keep going as far as possible after an error")
-	persistentFlags.BoolVar(&c.noPager, "no-pager", c.noPager, "do not use the pager")
-	persistentFlags.BoolVar(&c.noTTY, "no-tty", c.noTTY, "don't attempt to get a TTY for reading passwords")
-	persistentFlags.VarP(&c.outputAbsPath, "output", "o", "output file")
-	persistentFlags.BoolVar(&c.sourcePath, "source-path", c.sourcePath, "specify targets by source path")
-	persistentFlags.BoolVarP(&c.verbose, "verbose", "v", c.verbose, "verbose")
+	persistentFlags.VarP(&c.configFileAbsPath, "config", "c", "Set config file")
+	persistentFlags.Var(&c.cpuProfile, "cpu-profile", "Write a CPU profile to path")
+	persistentFlags.BoolVar(&c.debug, "debug", c.debug, "Include debug information in output")
+	persistentFlags.BoolVarP(&c.dryRun, "dry-run", "n", c.dryRun, "Do not make any modifications to the destination directory")
+	persistentFlags.BoolVar(&c.force, "force", c.force, "Make all changes without prompting")
+	persistentFlags.BoolVarP(&c.keepGoing, "keep-going", "k", c.keepGoing, "Keep going as far as possible after an error")
+	persistentFlags.BoolVar(&c.noPager, "no-pager", c.noPager, "Do not use the pager")
+	persistentFlags.BoolVar(&c.noTTY, "no-tty", c.noTTY, "Do not attempt to get a TTY for reading passwords")
+	persistentFlags.VarP(&c.outputAbsPath, "output", "o", "Write output to path instead of stdout")
+	persistentFlags.BoolVar(&c.sourcePath, "source-path", c.sourcePath, "Specify targets by source path")
+	persistentFlags.BoolVarP(&c.verbose, "verbose", "v", c.verbose, "Make output more verbose")
 
 	for _, err := range []error{
 		rootCmd.MarkPersistentFlagFilename("config"),
