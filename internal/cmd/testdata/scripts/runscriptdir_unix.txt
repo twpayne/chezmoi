@@ -8,7 +8,7 @@ env $=$
 chezmoi dump
 cmp stdout golden/dump
 
-[!exec:tar] stop
+[!exec:tar] skip 'remaining tests require tar in $PATH'
 
 chezmoi archive --output=archive.tar
 exec tar -tf archive.tar

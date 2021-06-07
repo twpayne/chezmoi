@@ -32,7 +32,7 @@ cmpenv stdout golden/managed
 chezmoi cat $HOME${/}script
 cmp stdout golden/script
 
-[!exec:tar] stop 'tar not found in $PATH'
+[!exec:tar] stop 'remaining tests require tar in $PATH'
 
 # test that chezmoi archive includes the script in the archive
 chezmoi archive --format=tar --gzip --output=archive.tar.gz
