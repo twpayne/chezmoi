@@ -39,17 +39,8 @@ coverage:
 	$(GO) test -test.coverprofile=coverage.out ./...
 
 .PHONY: generate
-generate: completions assets/scripts/install.sh
-
-.PHONY: completions
-completions:
-	$(GO) run . completion bash -o completions/chezmoi-completion.bash
-	$(GO) run . completion fish -o completions/chezmoi.fish
-	$(GO) run . completion powershell -o completions/chezmoi.ps1
-	$(GO) run . completion zsh -o completions/chezmoi.zsh
-
-assets/scripts/install.sh: internal/cmds/generate-install.sh/install.sh.tmpl internal/cmds/generate-install.sh/main.go
-	$(GO) run ./internal/cmds/generate-install.sh > $@
+generate:
+	$(GO) generate
 
 .PHONY: lint
 lint: ensure-golangci-lint

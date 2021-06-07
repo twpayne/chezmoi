@@ -140,7 +140,7 @@ jobs:
           ${{ runner.os }}-go-
     - name: Generate
       run: |
-        make generate
+        go generate
         git diff --exit-code
   lint:
     runs-on: ubuntu-18.04

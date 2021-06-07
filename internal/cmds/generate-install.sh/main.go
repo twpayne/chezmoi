@@ -12,6 +12,8 @@ import (
 	"gopkg.in/yaml.v2"
 )
 
+var output = flag.String("o", "", "output")
+
 type platform struct {
 	GOOS   string
 	GOARCH string
@@ -115,7 +117,17 @@ func run() error {
 	if err != nil {
 		return err
 	}
-	return installShTemplate.ExecuteTemplate(os.Stdout, "install.sh.tmpl", struct {
+	var outputFile *os.File
+	if *output == "" || *output == "-" {
+		outputFile = os.Stdout
+	} else {
+		outputFile, err = os.Create(*output)
+		if err != nil {
+			return err
+		}
+		defer outputFile.Close()
+	}
+	return installShTemplate.ExecuteTemplate(outputFile, "install.sh.tmpl", struct {
 		Platforms []platform
 	}{
 		Platforms: sortedPlatforms,
