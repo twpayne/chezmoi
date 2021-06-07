@@ -1,5 +1,3 @@
-[!exec:git] stop
-
 mkgitconfig
 
 # create a repo

@@ -8,8 +8,6 @@ cmpenv stdout golden/apply
 chezmoi dump
 cmp stdout golden/dump
 
-[!exec:tar] stop 'tar not found in $PATH'
-
 chezmoi archive --gzip --output=archive.tar.gz
 exec tar -tzf archive.tar.gz
 cmp stdout golden/archive

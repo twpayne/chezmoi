@@ -1,5 +1,3 @@
-[!exec:tar] skip 'tar not found in $PATH'
-
 mkhomedir
 symlink archive/.dir/.symlink -> .file
 exec tar czf archive.tar.gz archive

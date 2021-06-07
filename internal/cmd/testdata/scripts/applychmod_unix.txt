@@ -1,4 +1,4 @@
-[windows] stop
+[windows] skip 'UNIX only'
 
 mkhomedir golden
 mkhomedir

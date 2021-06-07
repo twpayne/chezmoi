@@ -8,8 +8,6 @@ env $=$
 chezmoi dump
 cmp stdout golden/dump
 
-[!exec:tar] stop
-
 chezmoi archive --output=archive.tar
 exec tar -tf archive.tar
 cmp stdout golden/archive

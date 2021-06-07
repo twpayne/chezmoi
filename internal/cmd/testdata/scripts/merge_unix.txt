@@ -1,4 +1,4 @@
-[windows] stop
+[windows] skip 'UNIX only'
 
 chmod 755 bin/vimdiff
 mkhomedir

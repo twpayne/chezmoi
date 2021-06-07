@@ -1,4 +1,5 @@
-[windows] stop
+[windows] skip 'UNIX only'
+
 chmod 755 bin/age
 chmod 755 bin/bw
 chmod 755 bin/git

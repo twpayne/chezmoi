@@ -14,7 +14,6 @@ exists $CHEZMOISOURCEDIR/.git
 
 # create a commit
 rm bin/git # disable fake git
-[!exec:git] stop
 cp golden/.file $CHEZMOISOURCEDIR/dot_file
 chezmoi git add dot_file
 chezmoi git commit -- --message 'Add dot_file'

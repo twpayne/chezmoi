@@ -1,4 +1,4 @@
-[!exec:gpg] stop
+[!exec:gpg] skip 'gpg not found in $PATH'
 
 mkhomedir
 mkgpgconfig -symmetric

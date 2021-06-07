@@ -16,8 +16,8 @@ cmp home/user/.modify golden/.modify
 
 # test that chezmoi archive includes the modified file
 chezmoi archive --output=archive.tar
-[exec:tar] exec tar xf archive.tar
-[exec:tar] cmp .modify golden/.modified
+exec tar xf archive.tar
+cmp .modify golden/.modified
 cmp home/user/.modify golden/.modify
 
 # test that chezmoi apply modifies the file
