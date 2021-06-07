@@ -68,6 +68,18 @@ mkgitconfig
 stderr 'parsing error'
 ! exists .config/chezmoi
 
+# test chezmoi init --branch
+chhome home/user
+chezmoi git checkout -- -b new-branch
+edit $CHEZMOISOURCEDIR/dot_file
+chezmoi git add dot_file
+chezmoi git commit -- --message 'Edit .file'
+chezmoi git checkout master
+chhome home9/user
+mkgitconfig
+chezmoi init --apply --branch=new-branch file://$WORK/home/user/.local/share/chezmoi
+grep '# edited' $HOME/.file
+
 -- golden/chezmoi.toml --
 [data]
     email = "firstname.lastname@company.com"
