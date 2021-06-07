@@ -10,8 +10,6 @@ cmpenv stdout golden/apply
 chezmoi dump
 cmp stdout golden/dump
 
-[!exec:tar] stop 'remaining tests require tar in %PATH%'
-
 chezmoi archive --gzip --output=archive.tar.gz
 exec tar -tzf archive.tar.gz
 cmp stdout golden/archive

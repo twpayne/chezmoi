@@ -9,8 +9,6 @@ cmp stdout golden/dump.json
 chezmoi managed --include=scripts
 cmpenv stdout golden/managed
 
-[!exec:tar] 'tar not found in $PATH'
-
 chezmoi archive --gzip --output=archive.tar.gz
 exec tar -tzf archive.tar.gz
 [windows] unix2dos golden/archive
