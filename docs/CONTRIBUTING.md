@@ -99,8 +99,7 @@ that:
   [`gofumports`](https://mvdan.cc/gofumpt/gofumports). You can ensure this by
   running `make format`.
 
-* The code passes [`golangci
-* -lint`](https://github.com/golangci/golangci-lint).
+* The code passes [`golangci-lint`](https://github.com/golangci/golangci-lint).
   You can ensure this by running `make lint`.
 
 * The commit messages match chezmoi's convention, specifically that they begin
