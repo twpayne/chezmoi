@@ -33,8 +33,8 @@ func (c *Config) newDocsCmd() *cobra.Command {
 	}
 
 	flags := docsCmd.Flags()
-	flags.IntVar(&c.Docs.MaxWidth, "max-width", c.Docs.MaxWidth, "maximum output width")
-	flags.StringVar(&c.Docs.Pager, "pager", c.Docs.Pager, "pager")
+	flags.IntVar(&c.Docs.MaxWidth, "max-width", c.Docs.MaxWidth, "Set maximum output width")
+	flags.StringVar(&c.Docs.Pager, "pager", c.Docs.Pager, "Set pager")
 
 	return docsCmd
 }

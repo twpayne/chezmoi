@@ -32,9 +32,9 @@ func (c *Config) newReAddCmd() *cobra.Command {
 	}
 
 	flags := reAddCmd.Flags()
-	flags.VarP(c.reAdd.exclude, "exclude", "x", "exclude entry types")
-	flags.VarP(c.reAdd.include, "include", "i", "include entry types")
-	flags.BoolVarP(&c.reAdd.recursive, "recursive", "r", c.reAdd.recursive, "recursive")
+	flags.VarP(c.reAdd.exclude, "exclude", "x", "Exclude entry types")
+	flags.VarP(c.reAdd.include, "include", "i", "Include entry types")
+	flags.BoolVarP(&c.reAdd.recursive, "recursive", "r", c.reAdd.recursive, "Recurse into subdirectories")
 
 	return reAddCmd
 }

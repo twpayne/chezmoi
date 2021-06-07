@@ -24,9 +24,9 @@ func (c *Config) newUpgradeCmd() *cobra.Command {
 	}
 
 	flags := upgradeCmd.Flags()
-	flags.StringVar(&c.upgrade.method, "method", "", "set method")
-	flags.StringVar(&c.upgrade.owner, "owner", "twpayne", "set owner")
-	flags.StringVar(&c.upgrade.repo, "repo", "chezmoi", "set repo")
+	flags.StringVar(&c.upgrade.method, "method", "", "Set upgrade method")
+	flags.StringVar(&c.upgrade.owner, "owner", "twpayne", "Set owner")
+	flags.StringVar(&c.upgrade.repo, "repo", "chezmoi", "Set repo")
 
 	return upgradeCmd
 }

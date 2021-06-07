@@ -41,12 +41,12 @@ func (c *Config) newImportCmd() *cobra.Command {
 	}
 
 	flags := importCmd.Flags()
-	flags.VarP(&c._import.destination, "destination", "d", "destination prefix")
-	flags.BoolVar(&c._import.exact, "exact", c._import.exact, "import directories exactly")
-	flags.VarP(c._import.exclude, "exclude", "x", "exclude entry types")
-	flags.VarP(c._import.include, "include", "i", "include entry types")
-	flags.BoolVarP(&c._import.removeDestination, "remove-destination", "r", c._import.removeDestination, "remove destination before import")
-	flags.IntVar(&c._import.stripComponents, "strip-components", c._import.stripComponents, "strip components")
+	flags.VarP(&c._import.destination, "destination", "d", "Set destination prefix")
+	flags.BoolVar(&c._import.exact, "exact", c._import.exact, "Set exact_ attribute on imported directories")
+	flags.VarP(c._import.exclude, "exclude", "x", "Exclude entry types")
+	flags.VarP(c._import.include, "include", "i", "Include entry types")
+	flags.BoolVarP(&c._import.removeDestination, "remove-destination", "r", c._import.removeDestination, "Remove destination before import")
+	flags.IntVar(&c._import.stripComponents, "strip-components", c._import.stripComponents, "Strip leading path components")
 
 	return importCmd
 }
