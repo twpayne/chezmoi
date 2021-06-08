@@ -209,7 +209,7 @@ $ git submodule update --init
 Test the website locally by running:
 
 ```console
-$ ( cd chezmoi.io && hugo serve )
+$ ( cd assets/chezmoi.io && hugo serve )
 ```
 
 and visit http://localhost:1313/.
@@ -217,7 +217,7 @@ and visit http://localhost:1313/.
 To build the website in a temporary directory, run:
 
 ```console
-$ ( cd chezmoi.io && make )
+$ ( cd assets/chezmoi.io && make )
 ```
 
 From here you can run
