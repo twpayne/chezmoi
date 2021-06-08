@@ -85,15 +85,15 @@ FreeBSD, OpenBSD, and Termux.
 
 ### Personal and secure
 
-Nothing leaves your machine, unless you want it to. You can use the version
-control system of your choice to manage your configuration, and you can write
-the configuration file in the format of your choice. chezmoi can retrieve
-secrets from [1Password](https://1password.com/),
-[Bitwarden](https://bitwarden.com/), [gopass](https://www.gopass.pw/),
-[KeePassXC](https://keepassxc.org/), [LastPass](https://lastpass.com/),
-[pass](https://www.passwordstore.org/), [Vault](https://www.vaultproject.io/),
-Keychain, [Keyring](https://wiki.gnome.org/Projects/GnomeKeyring), or any
-command-line utility of your choice. You can encrypt individual files with
+Nothing leaves your machine, unless you want it to. Your configuration remains
+in a git repo under your control. You can write the configuration file in the
+format of your choice. chezmoi can retrieve secrets from
+[1Password](https://1password.com/), [Bitwarden](https://bitwarden.com/),
+[gopass](https://www.gopass.pw/), [KeePassXC](https://keepassxc.org/),
+[LastPass](https://lastpass.com/), [pass](https://www.passwordstore.org/),
+[Vault](https://www.vaultproject.io/), Keychain,
+[Keyring](https://wiki.gnome.org/Projects/GnomeKeyring), or any command-line
+utility of your choice. You can encrypt individual files with
 [GnuPG](https://www.gnupg.org) or [age](https://age-encryption.org). You can
 checkout your dotfiles repo on as many machines as you want without revealing
 any secrets to anyone.
