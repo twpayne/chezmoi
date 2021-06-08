@@ -1,6 +1,10 @@
-# chezmoi Related software
+# chezmoi related software
 
 <!--- toc --->
+* [`github.com/alker0/chezmoi.vim`](#githubcomalker0chezmoivim)
+* [`hussainweb/ansible-role-chezmoi`](#hussainwebansible-role-chezmoi)
+* [`github.com/tuh8888/chezmoi.el`](#githubcomtuh8888chezmoiel)
+* [`github.com/Lilja/vim-chezmoi`](#githubcomliljavim-chezmoi)
 
 ## [`github.com/alker0/chezmoi.vim`](https://github.com/alker0/chezmoi.vim)
 

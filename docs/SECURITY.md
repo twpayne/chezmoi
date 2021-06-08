@@ -1,4 +1,4 @@
-# Security policy
+# chezmoi security policy
 
 <!--- toc --->
 * [Supported versions](#supported-versions)

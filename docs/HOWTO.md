@@ -1,4 +1,4 @@
-# chezmoi How-To Guide
+# chezmoi how-to guide
 
 <!--- toc --->
 * [Perform daily operations](#perform-daily-operations)

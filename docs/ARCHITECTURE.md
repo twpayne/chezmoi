@@ -1,4 +1,4 @@
-# chezmoi Architecture
+# chezmoi architecture guide
 
 <!--- toc --->
 * [Introduction](#introduction)

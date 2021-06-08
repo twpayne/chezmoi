@@ -1,4 +1,4 @@
-# chezmoi Install Guide
+# chezmoi install guide
 
 <!--- toc --->
 * [One-line binary install](#one-line-binary-install)

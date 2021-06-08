@@ -1,4 +1,4 @@
-# chezmoi Contributing Guide
+# chezmoi contributing guide
 
 <!--- toc --->
 * [Getting started](#getting-started)

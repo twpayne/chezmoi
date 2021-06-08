@@ -1,4 +1,4 @@
-# chezmoi Frequently Asked Questions
+# chezmoi frequently asked questions
 
 <!--- toc --->
 * [How can I quickly check for problems with chezmoi on my machine?](#how-can-i-quickly-check-for-problems-with-chezmoi-on-my-machine)
