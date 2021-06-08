@@ -1,4 +1,4 @@
-# chezmoi Changes
+# chezmoi changes
 
 <!--- toc --->
 * [Overview](#overview)

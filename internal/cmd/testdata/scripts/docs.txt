@@ -1,11 +1,11 @@
 chezmoi docs
-stdout 'chezmoi Reference Manual'
+stdout 'chezmoi reference manual'
 
 chezmoi docs faq
-stdout 'chezmoi Frequently Asked Questions'
+stdout 'chezmoi frequently asked questions'
 
 chezmoi docs quickstart
-stdout 'chezmoi Quick Start Guide'
+stdout 'chezmoi quick start guide'
 
 ! chezmoi docs c
 stderr 'ambiguous pattern'

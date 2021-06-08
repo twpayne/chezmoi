@@ -1,4 +1,4 @@
-# chezmoi Reference Manual
+# chezmoi reference manual
 
 Manage your dotfiles securely across multiple machines.
 

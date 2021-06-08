@@ -1,4 +1,4 @@
-# chezmoi Templating Guide
+# chezmoi templating guide
 
 <!--- toc --->
 * [Introduction](#introduction)
@@ -7,18 +7,18 @@
 * [Editing a template file](#editing-a-template-file)
 * [Testing templates](#testing-templates)
 * [Template syntax](#template-syntax)
-	* [Removing whitespace](#removing-whitespace)
+  * [Removing whitespace](#removing-whitespace)
 * [Debugging templates](#debugging-templates)
 * [Simple logic](#simple-logic)
-	* [Boolean functions](#boolean-functions)
-	* [Integer functions](#integer-functions)
+  * [Boolean functions](#boolean-functions)
+  * [Integer functions](#integer-functions)
 * [More complicated logic](#more-complicated-logic)
-	* [Chaining operators](#chaining-operators)
+  * [Chaining operators](#chaining-operators)
 * [Helper functions](#helper-functions)
 * [Template variables](#template-variables)
 * [Using `.chezmoitemplates`](#using-chezmoitemplates)
 * [Using `.chezmoitemplates` for creating similar files](#using-chezmoitemplates-for-creating-similar-files)
-	* [Passing multiple arguments](#passing-multiple-arguments)
+  * [Passing multiple arguments](#passing-multiple-arguments)
 
 ## Introduction
 

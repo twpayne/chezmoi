@@ -1,4 +1,4 @@
-# chezmoi Comparison guide
+# chezmoi comparison guide
 
 <!--- toc --->
 * [Comparison table](#comparison-table)

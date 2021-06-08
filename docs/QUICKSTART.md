@@ -1,4 +1,4 @@
-# chezmoi Quick Start Guide
+# chezmoi quick start guide
 
 <!--- toc --->
 * [Concepts](#concepts)
