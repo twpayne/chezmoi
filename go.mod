@@ -9,14 +9,14 @@ require (
 	github.com/alecthomas/chroma v0.9.1 // indirect
 	github.com/alecthomas/colour v0.1.0 // indirect
 	github.com/alecthomas/repr v0.0.0-20201120212035-bb82daffcca2 // indirect
-	github.com/bmatcuk/doublestar/v4 v4.0.1
+	github.com/bmatcuk/doublestar/v4 v4.0.2
 	github.com/charmbracelet/glamour v0.3.0
 	github.com/coreos/go-semver v0.3.0
 	github.com/fsnotify/fsnotify v1.4.9 // indirect
-	github.com/go-git/go-git/v5 v5.4.1
+	github.com/go-git/go-git/v5 v5.4.2
 	github.com/godbus/dbus/v5 v5.0.4 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
-	github.com/google/go-github/v35 v35.2.0
+	github.com/google/go-github/v35 v35.3.0
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/renameio v1.0.1
 	github.com/google/uuid v1.2.0 // indirect
@@ -24,12 +24,14 @@ require (
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/kevinburke/ssh_config v1.1.0 // indirect
 	github.com/magiconair/properties v1.8.5 // indirect
-	github.com/microcosm-cc/bluemonday v1.0.9 // indirect
+	github.com/mattn/go-isatty v0.0.13 // indirect
+	github.com/mattn/go-runewidth v0.0.13 // indirect
+	github.com/microcosm-cc/bluemonday v1.0.10 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/mapstructure v1.4.1
 	github.com/muesli/combinator v0.3.0
 	github.com/muesli/reflow v0.3.0 // indirect
-	github.com/pelletier/go-toml v1.9.1
+	github.com/pelletier/go-toml v1.9.2
 	github.com/rogpeppe/go-internal v1.8.0
 	github.com/rs/zerolog v1.22.0
 	github.com/sergi/go-diff v1.1.0
@@ -45,12 +47,12 @@ require (
 	github.com/twpayne/go-xdg/v6 v6.0.0
 	github.com/yuin/goldmark v1.3.7 // indirect
 	github.com/zalando/go-keyring v0.1.1
-	go.etcd.io/bbolt v1.3.5
+	go.etcd.io/bbolt v1.3.6
+	go.uber.org/atomic v1.8.0 // indirect
 	go.uber.org/multierr v1.7.0
 	golang.org/x/crypto v0.0.0-20210513164829-c07d793c2f9a // indirect
-	golang.org/x/net v0.0.0-20210521195947-fe42d452be8f // indirect
 	golang.org/x/oauth2 v0.0.0-20210514164344-f6687ab2804c
-	golang.org/x/sys v0.0.0-20210521203332-0cec03c779c1
+	golang.org/x/sys v0.0.0-20210611083646-a4fc73990273
 	golang.org/x/term v0.0.0-20210503060354-a79de5458b56
 	google.golang.org/appengine v1.6.7 // indirect
 	gopkg.in/ini.v1 v1.62.0 // indirect
