@@ -7,7 +7,6 @@ Manage your dotfiles securely across multiple machines.
 * [Global command line flags](#global-command-line-flags)
   * [`--color` *value*](#--color-value)
   * [`-c`, `--config` *filename*](#-c---config-filename)
-  * [`--cpu-profile` *filename*](#--cpu-profile-filename)
   * [`--debug`](#--debug)
   * [`-D`, `--destination` *directory*](#-d---destination-directory)
   * [`-n`, `--dry-run`](#-n---dry-run)
@@ -27,6 +26,9 @@ Manage your dotfiles securely across multiple machines.
   * [`-i`, `--include` *types*](#-i---include-types)
   * [`-r`, `--recursive`](#-r---recursive)
   * [`-x`, `--exclude` *types*](#-x---exclude-types)
+* [Developer command line flags](#developer-command-line-flags)
+  * [`--cpu-profile` *filename*](#--cpu-profile-filename)
+  * [`--gops`](#--gops)
 * [Configuration file](#configuration-file)
   * [Variables](#variables)
   * [Examples](#examples)
@@ -152,10 +154,6 @@ if the the environment variable `$NO_COLOR` is not set and stdout is a terminal.
 
 Read the configuration from *filename*.
 
-### `--cpu-profile` *filename*
-
-Write a [CPU profile](https://blog.golang.org/pprof) to *filename*.
-
 ### `--debug`
 
 Log information helpful for debugging.
@@ -247,6 +245,19 @@ Exclude target state entries of type *types*. *types* is a comma-separated list
 of target states (`all`, `dirs`, `files`, `remove`, `scripts`, `symlinks`, and
 `encrypted`). For example, `--exclude=scripts` will cause the command to not run
 scripts and `--exclude=encrypted` will exclude encrypted files.
+
+## Developer command line flags
+
+The following flags are global but only relevant for developers and debugging.
+
+### `--cpu-profile` *filename*
+
+Write a [Go CPU profile](https://blog.golang.org/pprof) to *filename*.
+
+### `--gops`
+
+Enable the [gops](https://github.com/google/gops) agent.
+
 
  ## Configuration file
 
