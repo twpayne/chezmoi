@@ -18,6 +18,7 @@ require (
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-github/v35 v35.3.0
 	github.com/google/go-querystring v1.1.0 // indirect
+	github.com/google/gops v0.3.18
 	github.com/google/renameio v1.0.1
 	github.com/google/uuid v1.2.0 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20200217142428-fce0ec30dd00 // indirect
