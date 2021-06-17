@@ -5,12 +5,16 @@ GOLANGCI_LINT_VERSION=1.40.1
 default: run build test lint format
 
 .PHONY: build
-build: build-darwin build-linux build-windows
+build: build-darwin build-freebsd build-linux build-windows
 
 .PHONY: build-darwin
 build-darwin:
 	GOOS=darwin GOARCH=amd64 $(GO) build -o /dev/null .
 	GOOS=darwin GOARCH=arm64 $(GO) build -o /dev/null .
+
+.PHONY: build-freebsd
+build-freebsd:
+	GOOS=freebsd GOARCH=amd64 $(GO) build -o /dev/null .
 
 .PHONY: build-linux
 build-linux:
