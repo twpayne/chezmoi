@@ -2,6 +2,8 @@
 
 <!--- toc --->
 * [How can I quickly check for problems with chezmoi on my machine?](#how-can-i-quickly-check-for-problems-with-chezmoi-on-my-machine)
+* [How do I edit my dotfiles with chezmoi?](#how-do-i-edit-my-dotfiles-with-chezmoi)
+* [Do I have to use `chezmoi edit` to edit my dotfiles?](#do-i-have-to-use-chezmoi-edit-to-edit-my-dotfiles)
 * [What are the consequences of "bare" modifications to the target files? If my `.zshrc` is managed by chezmoi and I edit `~/.zshrc` without using `chezmoi edit`, what happens?](#what-are-the-consequences-of-bare-modifications-to-the-target-files-if-my-zshrc-is-managed-by-chezmoi-and-i-edit-zshrc-without-using-chezmoi-edit-what-happens)
 * [How can I tell what dotfiles in my home directory aren't managed by chezmoi? Is there an easy way to have chezmoi manage a subset of them?](#how-can-i-tell-what-dotfiles-in-my-home-directory-arent-managed-by-chezmoi-is-there-an-easy-way-to-have-chezmoi-manage-a-subset-of-them)
 * [How can I tell what dotfiles in my home directory are currently managed by chezmoi?](#how-can-i-tell-what-dotfiles-in-my-home-directory-are-currently-managed-by-chezmoi)
@@ -12,7 +14,6 @@
 * [Why does chezmoi convert all my template variables to lowercase?](#why-does-chezmoi-convert-all-my-template-variables-to-lowercase)
 * [chezmoi makes `~/.ssh/config` group writeable. How do I stop this?](#chezmoi-makes-sshconfig-group-writeable-how-do-i-stop-this)
 * [Why doesn't chezmoi use symlinks like GNU Stow?](#why-doesnt-chezmoi-use-symlinks-like-gnu-stow)
-* [Do I have to use `chezmoi edit` to edit my dotfiles?](#do-i-have-to-use-chezmoi-edit-to-edit-my-dotfiles)
 * [Can I change how chezmoi's source state is represented on disk?](#can-i-change-how-chezmois-source-state-is-represented-on-disk)
 * [gpg encryption fails. What could be wrong?](#gpg-encryption-fails-what-could-be-wrong)
 * [chezmoi reports `chezmoi: user: lookup userid NNNNN: input/output error`](#chezmoi-reports-chezmoi-user-lookup-userid-nnnnn-inputoutput-error)
@@ -36,6 +37,41 @@ $ chezmoi doctor
 
 Anything `ok` is fine, anything `warning` is only a problem if you want to use
 the related feature, and anything `error` indicates a definite problem.
+
+## How do I edit my dotfiles with chezmoi?
+
+There are four popular approaches:
+
+1. Use `chezmoi edit $FILE`. This will open the source file for `$FILE` in your
+   editor, including . For extra ease, use `chezmoi edit --apply $FILE` to apply
+   the changes when you quit your editor.
+2. Use `chezmoi cd` and edit the files in the source directory directly. Run
+   `chezmoi diff` to see what changes would be made, and `chezmoi apply` to make
+   the changes.
+3. If your editor supports opening directories, run `chezmoi edit` with no
+   arguments to open the source directory.
+4. Edit the file in your home directory, and then either re-add it by running
+   `chezmoi add $FILE` or `chezmoi re-add`. Note that `re-add` doesn't work with
+   templates.
+
+## Do I have to use `chezmoi edit` to edit my dotfiles?
+
+No. `chezmoi edit` is a convenience command that has a couple of useful
+features, but you don't have to use it. You can also run `chezmoi cd` and then
+just edit the files in the source state directly. After saving an edited file
+you can run `chezmoi diff` to check what effect the changes would have, and run
+`chezmoi apply` if you're happy with them.
+
+`chezmoi edit` provides the following useful features:
+* It opens the correct file in the source state for you, so you don't have to
+  know anything about source state attributes.
+* If the dotfile is encrypted in the source state, then `chezmoi edit` will
+  decrypt it to a private directory, open that file in your `$EDITOR`, and then
+  re-encrypt the file when you quit your editor. That makes encryption more
+  transparent to the user. With the `--diff` and `--apply` options you can see
+  what would change and apply those changes without having to run `chezmoi diff`
+  or `chezmoi apply`. Note also that the arguments to `chezmoi edit` are the
+  files in their target location.
 
 ## What are the consequences of "bare" modifications to the target files? If my `.zshrc` is managed by chezmoi and I edit `~/.zshrc` without using `chezmoi edit`, what happens?
 
@@ -155,25 +191,6 @@ automation to help (see [#886](https://github.com/twpayne/chezmoi/issues/886)
 for example) but it does need some convincing use cases that demonstrate that a
 symlink from a dotfile's location to its contents in a central directory is
 better than just having the correct dotfile contents.
-
-## Do I have to use `chezmoi edit` to edit my dotfiles?
-
-No. `chezmoi edit` is a convenience command that has a couple of useful
-features, but you don't have to use it. You can also run `chezmoi cd` and then
-just edit the files in the source state directly. After saving an edited file
-you can run `chezmoi diff` to check what effect the changes would have, and run
-`chezmoi apply` if you're happy with them.
-
-`chezmoi edit` provides the following useful features:
-* It opens the correct file in the source state for you, so you don't have to
-  know anything about source state attributes.
-* If the dotfile is encrypted in the source state, then `chezmoi edit` will
-  decrypt it to a private directory, open that file in your `$EDITOR`, and then
-  re-encrypt the file when you quit your editor. That makes encryption more
-  transparent to the user. With the `--diff` and `--apply` options you can see
-  what would change and apply those changes without having to run `chezmoi diff`
-  or `chezmoi apply`. Note also that the arguments to `chezmoi edit` are the
-  files in their target location.
 
 ## Can I change how chezmoi's source state is represented on disk?
 
