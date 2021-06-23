@@ -929,7 +929,15 @@ $ chezmoi dump --format=yaml
 ### `edit` [*target*...]
 
 Edit the source state of *target*s, which must be files or symlinks. If no
-targets are given the the source directory itself is opened with `$EDITOR`.
+targets are given the the source directory itself is opened.
+
+The editor used is the first non-empty string of the `edit.command`
+configuration variable, the `$VISUAL` environment variable, the `$EDITOR`
+environment variable. If none are set then chezmoi falls back to `notepad.exe`
+on Windows systems and `vi` on non-Windows systems.
+
+When the `edit.command` configuration variable is used, extra arguments can be
+passed to the editor with the `editor.args` configuration variable.
 
 #### `-a`, `--apply`
 
