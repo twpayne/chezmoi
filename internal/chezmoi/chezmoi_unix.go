@@ -22,10 +22,10 @@ func init() {
 
 // FQDNHostname returns the FQDN hostname, if it can be determined.
 func FQDNHostname(fileSystem vfs.FS) string {
-	if fqdnHostname, err := etcHostnameFQDNHostname(fileSystem); err == nil && fqdnHostname != "" {
+	if fqdnHostname, err := etcHostsFQDNHostname(fileSystem); err == nil && fqdnHostname != "" {
 		return fqdnHostname
 	}
-	if fqdnHostname, err := etcHostsFQDNHostname(fileSystem); err == nil && fqdnHostname != "" {
+	if fqdnHostname, err := etcHostnameFQDNHostname(fileSystem); err == nil && fqdnHostname != "" {
 		return fqdnHostname
 	}
 	return ""
