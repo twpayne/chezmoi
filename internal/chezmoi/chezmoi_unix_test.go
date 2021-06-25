@@ -72,6 +72,14 @@ func TestFQDNHostname(t *testing.T) {
 			},
 			expected: "hostname.example.com",
 		},
+		{
+			name: "etc_hosts_and_etc_hostname",
+			root: map[string]interface{}{
+				"/etc/hosts":    "127.0.1.1 hostname.example.com hostname\n",
+				"/etc/hostname": "hostname\n",
+			},
+			expected: "hostname.example.com",
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
