@@ -278,13 +278,17 @@ distributed in this format. Instead, you can use the `import` command to import
 a snapshot from a tarball:
 
 ```console
-$ curl -s -L -o oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
+$ curl -s -L -o ${TMPDIR}/oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
 $ mkdir -p $(chezmoi source-path)/dot_oh-my-zsh
-$ chezmoi import --strip-components 1 --destination ${HOME}/.oh-my-zsh oh-my-zsh-master.tar.gz
+$ chezmoi import --strip-components 1 --destination ${HOME}/.oh-my-zsh ${TMPDIR}/oh-my-zsh-master.tar.gz
 ```
 
-Add `oh-my-zsh-master.tar.gz` to `.chezmoiignore` if you run these commands in
-your source directory so that chezmoi doesn't try to copy the tarball anywhere.
+The tarball is downloaded to the temporary directory and imported to the source state.
+
+You can also download the tarball to the `$HOME` directory by removing `${TMPDIR}/` from
+the `curl` command and the chezmoi `import` command. Add `oh-my-zsh-master.tar.gz` to
+`.chezmoiignore` if you run these commands in your source directory so that chezmoi doesn't
+try to copy the tarball anywhere.
 
 Disable Oh My Zsh auto-updates by setting `DISABLE_AUTO_UPDATE="true"` in
 `~/.zshrc`. Auto updates will cause the `~/.oh-my-zsh` directory to drift out of
@@ -341,9 +345,9 @@ version
 to `~/.oh-my-zsh` run:
 
 ```console
-$ curl -s -L -o oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
+$ curl -s -L -o ${TMPDIR}/oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
 $ mkdir -p $(chezmoi source-path)/dot_oh-my-zsh
-$ chezmoi import --strip-components 1 --destination ~/.oh-my-zsh oh-my-zsh-master.tar.gz
+$ chezmoi import --strip-components 1 --destination ~/.oh-my-zsh ${TMPDIR}/oh-my-zsh-master.tar.gz
 ```
 
 Note that this only updates the source state. You will need to run
