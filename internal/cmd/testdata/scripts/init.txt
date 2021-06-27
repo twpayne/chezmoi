@@ -7,9 +7,10 @@ chezmoi init
 exists $CHEZMOISOURCEDIR/.git
 
 # create a commit
+cp golden/chezmoi.toml $CHEZMOISOURCEDIR/.chezmoi.toml.tmpl
 cp golden/.file $CHEZMOISOURCEDIR/dot_file
-chezmoi git add dot_file
-chezmoi git commit -- --message 'Add dot_file'
+chezmoi git add .
+chezmoi git commit -- --message 'Initial commit'
 
 # test that chezmoi init fetches git repo but does not apply
 chhome home2/user
@@ -77,6 +78,13 @@ chhome home9/user
 mkgitconfig
 chezmoi init --apply --branch=new-branch file://$WORK/home/user/.local/share/chezmoi
 grep '# edited' $HOME/.file
+
+# test chezmoi init --config-path
+chhome home10/user
+mkgitconfig
+chezmoi init --config-path=$HOME/.chezmoi.toml --debug file://$WORK/home/user/.local/share/chezmoi
+cmp $HOME/.chezmoi.toml golden/chezmoi.toml
+! exists $CHEZMOICONFIGDIR/chezmoi.toml
 
 -- golden/chezmoi.toml --
 [data]

@@ -1073,6 +1073,10 @@ Run `chezmoi apply` after checking out the repo and creating the config file.
 
 Check out *branch* instead of the default branch.
 
+#### `--config-path` *path*
+
+Write the generated config file to *path* instead of the default location.
+
 #### `--data` *bool*
 
 Include existing template data when creating the config file. This defaults to
