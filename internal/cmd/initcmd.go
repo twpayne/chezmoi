@@ -25,6 +25,7 @@ import (
 type initCmdConfig struct {
 	apply       bool
 	branch      string
+	configPath  chezmoi.AbsPath
 	data        bool
 	depth       int
 	exclude     *chezmoi.EntryTypeSet
@@ -99,6 +100,7 @@ func (c *Config) newInitCmd() *cobra.Command {
 
 	flags := initCmd.Flags()
 	flags.BoolVarP(&c.init.apply, "apply", "a", c.init.apply, "update destination directory")
+	flags.VarP(&c.init.configPath, "config-path", "C", "Path to write generated config file")
 	flags.BoolVar(&c.init.data, "data", c.init.data, "Include existing template data")
 	flags.IntVarP(&c.init.depth, "depth", "d", c.init.depth, "Create a shallow clone")
 	flags.VarP(c.init.exclude, "exclude", "x", "Exclude entry types")
@@ -213,11 +215,13 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 		}
 
 		// Write the config.
-		configDir := chezmoi.AbsPath(c.bds.ConfigHome).Join("chezmoi")
-		if err := chezmoi.MkdirAll(c.baseSystem, configDir, 0o777); err != nil {
+		configPath := c.init.configPath
+		if c.init.configPath == "" {
+			configPath = chezmoi.AbsPath(c.bds.ConfigHome).Join("chezmoi").Join(configTemplateRelPath)
+		}
+		if err := chezmoi.MkdirAll(c.baseSystem, configPath.Dir(), 0o777); err != nil {
 			return err
 		}
-		configPath := configDir.Join(configTemplateRelPath)
 		if err := c.baseSystem.WriteFile(configPath, configFileContents, 0o600); err != nil {
 			return err
 		}
