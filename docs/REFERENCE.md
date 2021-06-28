@@ -107,6 +107,7 @@ Manage your dotfiles securely across multiple machines.
   * [`onepasswordDetailsFields` *uuid* [*vault-uuid*]](#onepassworddetailsfields-uuid-vault-uuid)
   * [`output` *name* [*arg*...]](#output-name-arg)
   * [`pass` *pass-name*](#pass-pass-name)
+  * [`passRaw` *pass-name*](#passraw-pass-name)
   * [`promptBool` *prompt*](#promptbool-prompt)
   * [`promptInt` *prompt*](#promptint-prompt)
   * [`promptString` *prompt*](#promptstring-prompt)
@@ -1842,7 +1843,7 @@ current-context: {{ output "kubectl" "config" "current-context" | trim }}
 ### `pass` *pass-name*
 
 `pass` returns passwords stored in [pass](https://www.passwordstore.org/) using
-the pass CLI (`pass`). *pass-name* is passed to `pass show <pass-name>` and
+the pass CLI (`pass`). *pass-name* is passed to `pass show <pass-name>` and the
 first line of the output of `pass` is returned with the trailing newline
 stripped. The output from `pass` is cached so calling `pass` multiple times with
 the same *pass-name* will only invoke `pass` once.
@@ -1852,6 +1853,13 @@ the same *pass-name* will only invoke `pass` once.
 ```
 {{ pass "<pass-name>" }}
 ```
+
+### `passRaw` *pass-name*
+
+`passRaw` returns passwords stored in [pass](https://www.passwordstore.org/)
+using the pass CLI (`pass`). *pass-name* is passed to `pass show <pass-name>`
+and the output is returned. The output from `pass` is cached so calling
+`passRaw` multiple times with the same *pass-name* will only invoke `pass` once.
 
 ### `promptBool` *prompt*
 
