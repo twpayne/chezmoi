@@ -24,6 +24,7 @@ type gopassConfig struct {
 	Command   string
 	versionOK bool
 	cache     map[string]string
+	rawCache  map[string][]byte
 }
 
 func (c *Config) gopassOutput(args ...string) ([]byte, error) {
@@ -38,6 +39,34 @@ func (c *Config) gopassOutput(args ...string) ([]byte, error) {
 	return output, nil
 }
 
+func (c *Config) gopassRawTemplateFunc(id string) string {
+	if !c.Gopass.versionOK {
+		if err := c.gopassVersionCheck(); err != nil {
+			returnTemplateError(err)
+			return ""
+		}
+		c.Gopass.versionOK = true
+	}
+
+	if output, ok := c.Gopass.rawCache[id]; ok {
+		return string(output)
+	}
+
+	args := []string{"show", id}
+	output, err := c.gopassOutput(args...)
+	if err != nil {
+		returnTemplateError(fmt.Errorf("%s %s: %w", c.Gopass.Command, chezmoi.ShellQuoteArgs(args), err))
+		return ""
+	}
+
+	if c.Gopass.rawCache == nil {
+		c.Gopass.rawCache = make(map[string][]byte)
+	}
+	c.Gopass.rawCache[id] = output
+
+	return string(output)
+}
+
 func (c *Config) gopassTemplateFunc(id string) string {
 	if !c.Gopass.versionOK {
 		if err := c.gopassVersionCheck(); err != nil {
@@ -47,8 +76,8 @@ func (c *Config) gopassTemplateFunc(id string) string {
 		c.Gopass.versionOK = true
 	}
 
-	if s, ok := c.Gopass.cache[id]; ok {
-		return s
+	if password, ok := c.Gopass.cache[id]; ok {
+		return password
 	}
 
 	args := []string{"show", "--password", id}
@@ -69,6 +98,7 @@ func (c *Config) gopassTemplateFunc(id string) string {
 		c.Gopass.cache = make(map[string]string)
 	}
 	c.Gopass.cache[id] = password
+
 	return password
 }
 

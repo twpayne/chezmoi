@@ -5,12 +5,22 @@
 chezmoi execute-template '{{ gopass "misc/example.com" }}'
 stdout examplepassword
 
+# test gopass template function
+chezmoi execute-template '{{ gopassRaw "misc/example.com" }}'
+stdout 'Secret: misc/example\.com'
+
 -- bin/gopass --
 #!/bin/sh
 
 case "$*" in
 "--version")
     echo "gopass 1.10.1 go1.15 linux amd64"
+    ;;
+"show misc/example.com")
+    echo "Secret: misc/example.com"
+    echo
+    echo "examplepassword"
+    echo "key: value"
     ;;
 "show --password misc/example.com")
     echo "examplepassword"
@@ -23,6 +33,11 @@ esac
 @echo off
 IF "%*" == "--version" (
     echo "gopass 1.10.1 go1.15 windows amd64"
+) ELSE IF "%*" == "show misc/example.com" (
+    echo "Secret: misc/example.com"
+    echo
+    echo "examplepassword"
+    echo "key: value"
 ) ELSE IF "%*" == "show --password misc/example.com" (
     echo | set /p=examplepassword
     exit /b 0

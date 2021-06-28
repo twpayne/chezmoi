@@ -335,6 +335,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"bitwardenFields":          c.bitwardenFieldsTemplateFunc,
 		"gitHubKeys":               c.gitHubKeysTemplateFunc,
 		"gopass":                   c.gopassTemplateFunc,
+		"gopassRaw":                c.gopassRawTemplateFunc,
 		"include":                  c.includeTemplateFunc,
 		"ioreg":                    c.ioregTemplateFunc,
 		"joinPath":                 c.joinPathTemplateFunc,

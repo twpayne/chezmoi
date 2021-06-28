@@ -92,6 +92,7 @@ Manage your dotfiles securely across multiple machines.
   * [`bitwardenFields` [*arg*...]](#bitwardenfields-arg)
   * [`gitHubKeys` *user*](#githubkeys-user)
   * [`gopass` *gopass-name*](#gopass-gopass-name)
+  * [`gopassRaw` *gopass-name*](#gopassraw-gopass-name)
   * [`include` *filename*](#include-filename)
   * [`ioreg`](#ioreg)
   * [`joinPath` *element*...](#joinpath-element)
@@ -1568,16 +1569,25 @@ token](https://docs.github.com/en/github/authenticating-to-github/creating-a-per
 ### `gopass` *gopass-name*
 
 `gopass` returns passwords stored in [gopass](https://www.gopass.pw/) using the
-gopass CLI (`gopass`). *gopass-name* is passed to `gopass show <gopass-name>`
-and first line of the output of `gopass` is returned with the trailing newline
-stripped. The output from `gopass` is cached so calling `gopass` multiple times
-with the same *gopass-name* will only invoke `gopass` once.
+gopass CLI (`gopass`). *gopass-name* is passed to `gopass show --password
+<gopass-name>` and the first line of the output of `gopass` is returned with the
+trailing newline stripped. The output from `gopass` is cached so calling
+`gopass` multiple times with the same *gopass-name* will only invoke `gopass`
+once.
 
 #### `gopass` examples
 
 ```
 {{ gopass "<pass-name>" }}
 ```
+
+### `gopassRaw` *gopass-name*
+
+`gopass` returns passwords stored in [gopass](https://www.gopass.pw/) using the
+gopass CLI (`gopass`). *gopass-name* is passed to `gopass show <gopass-name>`
+and  output of `gopass` is returned. The output from `gopassRaw` is cached so
+calling `gopassRaw` multiple times with the same *gopass-name* will only invoke
+`gopass` once.
 
 ### `include` *filename*
 
