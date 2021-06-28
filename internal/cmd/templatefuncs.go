@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"runtime"
 
+	"github.com/bradenhilton/mozillainstallhash"
 	"howett.net/plist"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
@@ -77,6 +78,15 @@ func (c *Config) lookPathTemplateFunc(file string) string {
 		returnTemplateError(err)
 		return ""
 	}
+}
+
+func (c *Config) mozillaInstallHashTemplateFunc(path string) string {
+	mozillaInstallHash, err := mozillainstallhash.MozillaInstallHash(path)
+	if err != nil {
+		returnTemplateError(err)
+		return ""
+	}
+	return mozillaInstallHash
 }
 
 func (c *Config) outputTemplateFunc(name string, args ...string) string {

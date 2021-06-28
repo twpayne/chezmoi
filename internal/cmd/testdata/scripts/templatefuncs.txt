@@ -29,6 +29,10 @@ stdout a${/}b
 chezmoi execute-template '{{ lookPath "go" }}'
 stdout go$exe
 
+# test mozillaInstallHash template function
+chezmoi execute-template '{{ mozillaInstallHash "/Applications/Firefox.app/Contents/MacOS" }}'
+stdout 2656FF1E876E9973
+
 # test stat template function
 chezmoi execute-template '{{ (stat ".").isDir }}'
 stdout true

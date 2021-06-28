@@ -108,6 +108,10 @@ github.com/bketelsen/crypt v0.0.4 h1:w/jqZtC9YD4DS/Vp9GhWfWcCpuAL58oTnLoI8vE9YHU
 github.com/bketelsen/crypt v0.0.4/go.mod h1:aI6NrJ0pMGgvZKL1iVgXLnfIFJtfV+bKCoqOes/6LfM=
 github.com/bmatcuk/doublestar/v4 v4.0.2 h1:X0krlUVAVmtr2cRoTqR8aDMrDqnB36ht8wpWTiQ3jsA=
 github.com/bmatcuk/doublestar/v4 v4.0.2/go.mod h1:xBQ8jztBU6kakFMg+8WGxn0c6z1fTSPVIjEY1Wr7jzc=
+github.com/bradenhilton/cityhash v1.0.0 h1:1QauDCwfxwIGwO2jBTJdEBqXgfCusAgQOSgdl4RsTMI=
+github.com/bradenhilton/cityhash v1.0.0/go.mod h1:Wmb8yW1egA9ulrsRX4mxfYx5zq4nBWOCZ+j63oK6uz8=
+github.com/bradenhilton/mozillainstallhash v1.0.0 h1:QL9byVGb4FrVOI7MubnME3uPNj5R78tqYQPlxuBmXMw=
+github.com/bradenhilton/mozillainstallhash v1.0.0/go.mod h1:yVD0OX1izZHYl1lBm2UDojyE/k0xIqKJK78k+tdWV+k=
 github.com/census-instrumentation/opencensus-proto v0.2.1 h1:glEXhBS5PSLLv4IXzLA5yPRVX4bilULVyxxbrfOtDAk=
 github.com/census-instrumentation/opencensus-proto v0.2.1/go.mod h1:f6KPmirojxKA12rnyqOA5BBL4O983OfeGPqjHWSTneU=
 github.com/cespare/xxhash v1.1.0 h1:a6HrQnmkObjyL+Gs60czilIUGqrzKutQD6XZog3p+ko=
