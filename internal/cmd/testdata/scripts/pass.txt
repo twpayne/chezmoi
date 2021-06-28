@@ -4,6 +4,11 @@
 # test pass template function
 chezmoi execute-template '{{ pass "misc/example.com" }}'
 stdout examplepassword
+! stdout 'second line'
+
+# test pass template function
+chezmoi execute-template '{{ passRaw "misc/example.com" }}'
+stdout 'second line'
 
 -- bin/pass --
 #!/bin/sh
@@ -11,6 +16,7 @@ stdout examplepassword
 case "$*" in
 "show misc/example.com")
     echo "examplepassword"
+    echo "second line"
     ;;
 *)
     echo "pass: invalid command: $*"
@@ -19,7 +25,8 @@ esac
 -- bin/pass.cmd --
 @echo off
 IF "%*" == "show misc/example.com" (
-    echo | set /p=examplepassword
+    echo "examplepassword"
+    echo "second line"
     exit /b 0
 ) ELSE (
     echo pass: invalid command: %*
