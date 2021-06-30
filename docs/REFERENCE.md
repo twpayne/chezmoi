@@ -102,9 +102,9 @@ Manage your dotfiles securely across multiple machines.
   * [`lastpass` *id*](#lastpass-id)
   * [`lastpassRaw` *id*](#lastpassraw-id)
   * [`lookPath` *file*](#lookpath-file)
-  * [`onepassword` *uuid* [*vault-uuid*]](#onepassword-uuid-vault-uuid)
-  * [`onepasswordDocument` *uuid* [*vault-uuid*]](#onepassworddocument-uuid-vault-uuid)
-  * [`onepasswordDetailsFields` *uuid* [*vault-uuid*]](#onepassworddetailsfields-uuid-vault-uuid)
+  * [`onepassword` *uuid* [*vault-uuid* [*account-name*]]](#onepassword-uuid-vault-uuid-account-name)
+  * [`onepasswordDocument` *uuid* [*vault-uuid* [*account-name*]]](#onepassworddocument-uuid-vault-uuid-account-name)
+  * [`onepasswordDetailsFields` *uuid* [*vault-uuid* [*account-name*]]](#onepassworddetailsfields-uuid-vault-uuid-account-name)
   * [`output` *name* [*arg*...]](#output-name-arg)
   * [`pass` *pass-name*](#pass-pass-name)
   * [`passRaw` *pass-name*](#passraw-pass-name)
@@ -1729,7 +1729,7 @@ caution when using it in your templates.
 {{ end }}
 ```
 
-### `onepassword` *uuid* [*vault-uuid*]
+### `onepassword` *uuid* [*vault-uuid* [*account-name*]]
 
 `onepassword` returns structured data from [1Password](https://1password.com/)
 using the [1Password
@@ -1738,16 +1738,20 @@ is passed to `op get item <uuid>` and the output from `op` is parsed as JSON.
 The output from `op` is cached so calling `onepassword` multiple times with the
 same *uuid* will only invoke `op` once.  If the optional *vault-uuid* is supplied,
 it will be passed along to the `op get` call, which can significantly improve
-performance.
+performance. If the optional *account-name* is supplied, it will be passed along
+to the `op get` call, which will help it look in the right account, in case you
+have multiple accounts (eg. personal and work account).
 
 #### `onepassword` examples
 
 ```
 {{ (onepassword "<uuid>").details.password }}
 {{ (onepassword "<uuid>" "<vault-uuid>").details.password }}
+{{ (onepassword "<uuid>" "<vault-uuid>" "<account-name>").details.password }}
+{{ (onepassword "<uuid>" "" "<account-name>").details.password }}
 ```
 
-### `onepasswordDocument` *uuid* [*vault-uuid*]
+### `onepasswordDocument` *uuid* [*vault-uuid* [*account-name*]]
 
 `onepassword` returns a document from [1Password](https://1password.com/)
 using the [1Password
@@ -1756,16 +1760,20 @@ is passed to `op get document <uuid>` and the output from `op` is returned.
 The output from `op` is cached so calling `onepasswordDocument` multiple times with the
 same *uuid* will only invoke `op` once.  If the optional *vault-uuid* is supplied,
 it will be passed along to the `op get` call, which can significantly improve
-performance.
+performance. If the optional *account-name* is supplied, it will be passed along
+to the `op get` call, which will help it look in the right account, in case you
+have multiple accounts (eg. personal and work account).
 
 #### `onepasswordDocument` examples
 
 ```
 {{- onepasswordDocument "<uuid>" -}}
 {{- onepasswordDocument "<uuid>" "<vault-uuid>" -}}
+{{- onepasswordDocument "<uuid>" "<vault-uuid>" "<account-name>" -}}
+{{- onepasswordDocument "<uuid>" "" "<account-name>" -}}
 ```
 
-### `onepasswordDetailsFields` *uuid* [*vault-uuid*]
+### `onepasswordDetailsFields` *uuid* [*vault-uuid* [*account-name*]]
 
 `onepasswordDetailsFields` returns structured data from
 [1Password](https://1password.com/) using the [1Password
@@ -1818,12 +1826,18 @@ the return value will be the map:
 The output from `op` is cached so calling `onepasswordDetailsFields` multiple
 times with the same *uuid* will only invoke `op` once.  If the optional
 *vault-uuid* is supplied, it will be passed along to the `op get` call, which
-can significantly improve performance.
+can significantly improve performance. If the optional *account-name* is
+supplied, it will be passed along to the `op get` call, which will help it look
+in the right account, in case you have multiple accounts (eg. personal and work
+account).
 
 #### `onepasswordDetailsFields` examples
 
 ```
 {{ (onepasswordDetailsFields "<uuid>").password.value }}
+{{ (onepasswordDetailsFields "<uuid>" "<vault-uuid>").password.value }}
+{{ (onepasswordDetailsFields "<uuid>" "<vault-uuid>" "<account-name>").password.value }}
+{{ (onepasswordDetailsFields "<uuid>" "" "<account-name>").password.value }}
 ```
 
 ### `output` *name* [*arg*...]

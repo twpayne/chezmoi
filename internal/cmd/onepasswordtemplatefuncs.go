@@ -16,10 +16,13 @@ type onepasswordConfig struct {
 }
 
 func (c *Config) onepasswordDetailsFieldsTemplateFunc(args ...string) map[string]interface{} {
-	key, vault := onepasswordGetKeyAndVault(args)
+	key, vault, account := onepasswordGetKeyAndVaultAndAccount(args)
 	onepasswordArgs := []string{"get", "item", key}
 	if vault != "" {
 		onepasswordArgs = append(onepasswordArgs, "--vault", vault)
+	}
+	if account != "" {
+		onepasswordArgs = append(onepasswordArgs, "--account", account)
 	}
 	output := c.onepasswordOutput(onepasswordArgs)
 	var data struct {
@@ -41,10 +44,13 @@ func (c *Config) onepasswordDetailsFieldsTemplateFunc(args ...string) map[string
 }
 
 func (c *Config) onepasswordDocumentTemplateFunc(args ...string) string {
-	key, vault := onepasswordGetKeyAndVault(args)
+	key, vault, account := onepasswordGetKeyAndVaultAndAccount(args)
 	onepasswordArgs := []string{"get", "document", key}
 	if vault != "" {
 		onepasswordArgs = append(onepasswordArgs, "--vault", vault)
+	}
+	if account != "" {
+		onepasswordArgs = append(onepasswordArgs, "--account", account)
 	}
 	output := c.onepasswordOutput(onepasswordArgs)
 	return string(output)
@@ -75,10 +81,13 @@ func (c *Config) onepasswordOutput(args []string) []byte {
 }
 
 func (c *Config) onepasswordTemplateFunc(args ...string) map[string]interface{} {
-	key, vault := onepasswordGetKeyAndVault(args)
+	key, vault, account := onepasswordGetKeyAndVaultAndAccount(args)
 	onepasswordArgs := []string{"get", "item", key}
 	if vault != "" {
 		onepasswordArgs = append(onepasswordArgs, "--vault", vault)
+	}
+	if account != "" {
+		onepasswordArgs = append(onepasswordArgs, "--account", account)
 	}
 	output := c.onepasswordOutput(onepasswordArgs)
 	var data map[string]interface{}
@@ -89,14 +98,16 @@ func (c *Config) onepasswordTemplateFunc(args ...string) map[string]interface{} 
 	return data
 }
 
-func onepasswordGetKeyAndVault(args []string) (string, string) {
+func onepasswordGetKeyAndVaultAndAccount(args []string) (string, string, string) {
 	switch len(args) {
 	case 1:
-		return args[0], ""
+		return args[0], "", ""
 	case 2:
-		return args[0], args[1]
+		return args[0], args[1], ""
+	case 3:
+		return args[0], args[1], args[2]
 	default:
-		returnTemplateError(fmt.Errorf("expected 1 or 2 arguments, got %d", len(args)))
-		return "", ""
+		returnTemplateError(fmt.Errorf("expected 1 or 2 or 3 arguments, got %d", len(args)))
+		return "", "", ""
 	}
 }
