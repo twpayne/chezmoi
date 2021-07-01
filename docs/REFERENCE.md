@@ -102,6 +102,7 @@ Manage your dotfiles securely across multiple machines.
   * [`lastpass` *id*](#lastpass-id)
   * [`lastpassRaw` *id*](#lastpassraw-id)
   * [`lookPath` *file*](#lookpath-file)
+  * [`mozillaInstallHash` *path*](#mozillainstallhash-path)
   * [`onepassword` *uuid* [*vault-uuid* [*account-name*]]](#onepassword-uuid-vault-uuid-account-name)
   * [`onepasswordDocument` *uuid* [*vault-uuid* [*account-name*]]](#onepassworddocument-uuid-vault-uuid-account-name)
   * [`onepasswordDetailsFields` *uuid* [*vault-uuid* [*account-name*]]](#onepassworddetailsfields-uuid-vault-uuid-account-name)
@@ -1728,6 +1729,11 @@ caution when using it in your templates.
 # diff-so-fancy is in $PATH
 {{ end }}
 ```
+
+### `mozillaInstallHash` *path*
+
+`mozillaInstallHash` returns the Mozilla install hash for *path*. This is a
+convenience function to assist the management of Firefox profiles.
 
 ### `onepassword` *uuid* [*vault-uuid* [*account-name*]]
 
