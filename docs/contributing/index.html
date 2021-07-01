@@ -1,21 +1,17 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-
 <head>
-  <meta name="generator" content="Hugo 0.84.0-DEV" />
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Contributing Guide #  Getting started #  chezmoi is written in Go and development happens on GitHub. The rest of this document assumes that you&rsquo;ve checked out chezmoi locally.
+The Architecture Guide contains a high-level overview of chezmoi&rsquo;s source code.
 Developing locally #  chezmoi requires Go 1.16 or later.
-chezmoi is a standard Go project, using standard Go tooling, with a few extra tools. Ensure that these extra tools are installed with:
-$ make ensure-tools Build chezmoi:
-$ go build .">
+chezmoi is a standard Go project, using standard Go tooling, with a few extra tools. Ensure that these extra tools are installed with:">
 <meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Contributing" />
 <meta property="og:description" content="Contributing Guide #  Getting started #  chezmoi is written in Go and development happens on GitHub. The rest of this document assumes that you&rsquo;ve checked out chezmoi locally.
+The Architecture Guide contains a high-level overview of chezmoi&rsquo;s source code.
 Developing locally #  chezmoi requires Go 1.16 or later.
-chezmoi is a standard Go project, using standard Go tooling, with a few extra tools. Ensure that these extra tools are installed with:
-$ make ensure-tools Build chezmoi:
-$ go build ." />
+chezmoi is a standard Go project, using standard Go tooling, with a few extra tools. Ensure that these extra tools are installed with:" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chezmoi.io/docs/contributing/" /><meta property="article:section" content="docs" />
 
@@ -24,16 +20,15 @@ $ go build ." />
 <title>Contributing | chezmoi.io</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
-<link rel="stylesheet" href="/book.min.e935e20bd0d469378cb482f0958edf258c731a4f895dccd55799c6fbc8043f23.css" integrity="sha256-6TXiC9DUaTeMtILwlY7fJYxzGk&#43;JXczVV5nG&#43;8gEPyM=">
-<script defer src="/en.search.min.d65e0aa466f8dab7d74b9f906e5c533f26ad27367675272ae3303b563a16ff5b.js" integrity="sha256-1l4KpGb42rfXS5&#43;QblxTPyatJzZ2dScq4zA7VjoW/1s="></script>
+<link rel="stylesheet" href="/book.min.3e90539cf7130f0a89ba2f8b9f54ac5e5ecdd1fa345b6c8e3e5a83ec6f19ec8e.css" integrity="sha256-PpBTnPcTDwqJui&#43;Ln1SsXl7N0fo0W2yOPlqD7G8Z7I4=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.5c6b36859b7afcb58ef4831e73358bd2fe1ede42d36c19723f8fe62e99725679.js" integrity="sha256-XGs2hZt6/LWO9IMeczWL0v4e3kLTbBlyP4/mLplyVnk=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
 -->
-
   
 </head>
-
 <body dir="ltr">
   <input type="checkbox" class="hidden toggle" id="menu-control" />
   <input type="checkbox" class="hidden toggle" id="toc-control" />
@@ -95,7 +90,7 @@ https://github.com/alex-shpak/hugo-book
 
 
 
-  <script>(function(){var a=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+  <script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
 
 
  
@@ -156,6 +151,8 @@ https://github.com/alex-shpak/hugo-book
 <p>chezmoi is written in <a href="https://golang.org">Go</a> and development happens on
 <a href="https://github.com">GitHub</a>. The rest of this document assumes that you&rsquo;ve
 checked out chezmoi locally.</p>
+<p>The <a href="ARCHITECTURE.md">Architecture Guide</a> contains a high-level overview of
+chezmoi&rsquo;s source code.</p>
 <h2 id="developing-locally">
   Developing locally
   <a class="anchor" href="#developing-locally">#</a>
@@ -176,7 +173,7 @@ tools. Ensure that these extra tools are installed with:</p>
 </h2>
 <p>chezmoi generates shell completions, the install script, and the website from a
 single source of truth. You must run</p>
-<pre><code class="language-console" data-lang="console">$ make generate
+<pre><code class="language-console" data-lang="console">$ go generate
 </code></pre><p>if you change includes any of the following:</p>
 <ul>
 <li>Adds or modifies a command.</li>
@@ -319,10 +316,10 @@ branch</a> to GitHub.</p>
 Theme</a> by running:</p>
 <pre><code class="language-console" data-lang="console">$ git submodule update --init
 </code></pre><p>Test the website locally by running:</p>
-<pre><code class="language-console" data-lang="console">$ ( cd chezmoi.io &amp;&amp; hugo serve )
+<pre><code class="language-console" data-lang="console">$ ( cd assets/chezmoi.io &amp;&amp; hugo serve )
 </code></pre><p>and visit http://localhost:1313/.</p>
 <p>To build the website in a temporary directory, run:</p>
-<pre><code class="language-console" data-lang="console">$ ( cd chezmoi.io &amp;&amp; make )
+<pre><code class="language-console" data-lang="console">$ ( cd assets/chezmoi.io &amp;&amp; make )
 </code></pre><p>From here you can run</p>
 <pre><code class="language-console" data-lang="console">$ git show
 </code></pre><p>to show changes and</p>
@@ -342,6 +339,11 @@ chezmoi GitHub repo.</p>
 
 
 </div>
+
+
+
+  <script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+
 
  
         
@@ -384,7 +386,6 @@ chezmoi GitHub repo.</p>
 
   
 </body>
-
 </html>
 
 

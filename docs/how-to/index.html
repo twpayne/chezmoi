@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-
 <head>
-  <meta name="generator" content="Hugo 0.84.0-DEV" />
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="How-To Guide #  Perform daily operations #  Use a hosted repo to manage your dotfiles across multiple machines #  chezmoi relies on your version control system and hosted repo to share changes across multiple machines. You should create a repo on the source code repository of your choice (e.g. Bitbucket, GitHub, or GitLab, many people call their repo dotfiles) and push the repo in the source directory here.">
@@ -16,16 +14,15 @@
 <title>How-To | chezmoi.io</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
-<link rel="stylesheet" href="/book.min.e935e20bd0d469378cb482f0958edf258c731a4f895dccd55799c6fbc8043f23.css" integrity="sha256-6TXiC9DUaTeMtILwlY7fJYxzGk&#43;JXczVV5nG&#43;8gEPyM=">
-<script defer src="/en.search.min.d65e0aa466f8dab7d74b9f906e5c533f26ad27367675272ae3303b563a16ff5b.js" integrity="sha256-1l4KpGb42rfXS5&#43;QblxTPyatJzZ2dScq4zA7VjoW/1s="></script>
+<link rel="stylesheet" href="/book.min.3e90539cf7130f0a89ba2f8b9f54ac5e5ecdd1fa345b6c8e3e5a83ec6f19ec8e.css" integrity="sha256-PpBTnPcTDwqJui&#43;Ln1SsXl7N0fo0W2yOPlqD7G8Z7I4=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.5c6b36859b7afcb58ef4831e73358bd2fe1ede42d36c19723f8fe62e99725679.js" integrity="sha256-XGs2hZt6/LWO9IMeczWL0v4e3kLTbBlyP4/mLplyVnk=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
 -->
-
   
 </head>
-
 <body dir="ltr">
   <input type="checkbox" class="hidden toggle" id="menu-control" />
   <input type="checkbox" class="hidden toggle" id="toc-control" />
@@ -87,7 +84,7 @@ https://github.com/alex-shpak/hugo-book
 
 
 
-  <script>(function(){var a=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+  <script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
 
 
  
@@ -386,11 +383,14 @@ Zsh</a>, you cannot use git submodules
 because chezmoi uses its own format for the source state and Oh My Zsh is not
 distributed in this format. Instead, you can use the <code>import</code> command to import
 a snapshot from a tarball:</p>
-<pre><code class="language-console" data-lang="console">$ curl -s -L -o oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
+<pre><code class="language-console" data-lang="console">$ curl -s -L -o ${TMPDIR}/oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
 $ mkdir -p $(chezmoi source-path)/dot_oh-my-zsh
-$ chezmoi import --strip-components 1 --destination ${HOME}/.oh-my-zsh oh-my-zsh-master.tar.gz
-</code></pre><p>Add <code>oh-my-zsh-master.tar.gz</code> to <code>.chezmoiignore</code> if you run these commands in
-your source directory so that chezmoi doesn&rsquo;t try to copy the tarball anywhere.</p>
+$ chezmoi import --strip-components 1 --destination ${HOME}/.oh-my-zsh ${TMPDIR}/oh-my-zsh-master.tar.gz
+</code></pre><p>The tarball is downloaded to the temporary directory and imported to the source state.</p>
+<p>You can also download the tarball to the <code>$HOME</code> directory by removing <code>${TMPDIR}/</code> from
+the <code>curl</code> command and the chezmoi <code>import</code> command. Add <code>oh-my-zsh-master.tar.gz</code> to
+<code>.chezmoiignore</code> if you run these commands in your source directory so that chezmoi doesn&rsquo;t
+try to copy the tarball anywhere.</p>
 <p>Disable Oh My Zsh auto-updates by setting <code>DISABLE_AUTO_UPDATE=&quot;true&quot;</code> in
 <code>~/.zshrc</code>. Auto updates will cause the <code>~/.oh-my-zsh</code> directory to drift out of
 sync with chezmoi&rsquo;s source state. To update Oh My Zsh, re-run the <code>curl</code> and
@@ -426,9 +426,9 @@ source state. The <code>import</code> command does this. For example, to import 
 version
 <a href="https://github.com/robbyrussell/oh-my-zsh"><code>github.com/robbyrussell/oh-my-zsh</code></a>
 to <code>~/.oh-my-zsh</code> run:</p>
-<pre><code class="language-console" data-lang="console">$ curl -s -L -o oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
+<pre><code class="language-console" data-lang="console">$ curl -s -L -o ${TMPDIR}/oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
 $ mkdir -p $(chezmoi source-path)/dot_oh-my-zsh
-$ chezmoi import --strip-components 1 --destination ~/.oh-my-zsh oh-my-zsh-master.tar.gz
+$ chezmoi import --strip-components 1 --destination ~/.oh-my-zsh ${TMPDIR}/oh-my-zsh-master.tar.gz
 </code></pre><p>Note that this only updates the source state. You will need to run</p>
 <pre><code class="language-console" data-lang="console">$ chezmoi apply
 </code></pre><p>to update your destination directory.</p>
@@ -469,10 +469,10 @@ followed by zero or more letters or digits.</p>
 <p>Then, add <code>~/.gitconfig</code> to chezmoi using the <code>--autotemplate</code> flag to turn it
 into a template and automatically detect variables from the <code>data</code> section
 of your <code>~/.config/chezmoi/chezmoi.toml</code> file:</p>
-<pre><code>$ chezmoi add --autotemplate ~/.gitconfig
+<pre><code class="language-console" data-lang="console">$ chezmoi add --autotemplate ~/.gitconfig
 </code></pre><p>You can then open the template (which will be saved in the file
 <code>~/.local/share/chezmoi/dot_gitconfig.tmpl</code>):</p>
-<pre><code>$ chezmoi edit ~/.gitconfig
+<pre><code class="language-console" data-lang="console">$ chezmoi edit ~/.gitconfig
 </code></pre><p>The file should look something like:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">user</span>]
     <span style="color:#a6e22e">email</span> = {{ .<span style="color:#a6e22e">email</span> <span style="color:#960050;background-color:#1e0010">|</span> <span style="color:#a6e22e">quote</span> }}
@@ -488,7 +488,7 @@ export EDITOR=vi
 # this will only be included in ~/.bashrc on work-laptop
 {{- end }}
 </code></pre><p>For a full list of variables, run:</p>
-<pre><code>$ chezmoi data
+<pre><code class="language-console" data-lang="console">$ chezmoi data
 </code></pre><p>For more advanced usage, you can use the full power of the
 <a href="https://pkg.go.dev/text/template"><code>text/template</code></a> language. chezmoi includes
 all of the text functions from <a href="http://masterminds.github.io/sprig/">sprig</a> and
@@ -496,7 +496,7 @@ its own <a href="/docs/reference/#template-functions">functions for interacting 
 managers</a>.</p>
 <p>Templates can be executed directly from the command line, without the need to
 create a file on disk, with the <code>execute-template</code> command, for example:</p>
-<pre><code>$ chezmoi execute-template &quot;{{ .chezmoi.os }}/{{ .chezmoi.arch }}&quot;
+<pre><code class="language-console" data-lang="console">$ chezmoi execute-template &quot;{{ .chezmoi.os }}/{{ .chezmoi.arch }}&quot;
 </code></pre><p>This is useful when developing or debugging templates.</p>
 <p>Some password managers allow you to store complete files. The files can be
 retrieved with chezmoi&rsquo;s template functions. For example, if you have a file
@@ -676,7 +676,7 @@ your machine.</p>
 <a href="https://support.1password.com/command-line-getting-started/">1Password CLI</a> to
 expose data as a template function.</p>
 <p>Log in and get a session using:</p>
-<pre><code>$ eval $(op signin &lt;subdomain&gt;.1password.com &lt;email&gt;)
+<pre><code class="language-console" data-lang="console">$ eval $(op signin &lt;subdomain&gt;.1password.com &lt;email&gt;)
 </code></pre><p>The output of <code>op get item &lt;uuid&gt;</code> is available as the <code>onepassword</code> template
 function. chezmoi parses the JSON output and returns it as structured data. For
 example, if the output of <code>op get item &quot;&lt;uuid&gt;&quot;</code> is:</p>
@@ -694,7 +694,7 @@ function, for example:</p>
 </code></pre><p>Documents can be retrieved with:</p>
 <pre><code>{{- onepasswordDocument &quot;uuid&quot; -}}
 </code></pre><p>Note the extra <code>-</code> after the opening <code>{{</code> and before the closing <code>}}</code>. This
-instructs the template language to remove and whitespace before and after the
+instructs the template language to remove any whitespace before and after the
 substitution. This removes any trailing newline added by your editor when saving
 the template.</p>
 <h3 id="use-bitwarden">
@@ -810,7 +810,7 @@ template function.</p>
 <p>The vault CLI needs to be correctly configured on your machine, e.g. the
 <code>VAULT_ADDR</code> and <code>VAULT_TOKEN</code> environment variables must be set correctly.
 Verify that this is the case by running:</p>
-<pre><code>$ vault kv get -format=json &lt;key&gt;
+<pre><code class="language-console" data-lang="console">$ vault kv get -format=json &lt;key&gt;
 </code></pre><p>The structured data from <code>vault kv get -format=json</code> is available as the <code>vault</code>
 template function. You can use the <code>.Field</code> syntax of the <code>text/template</code>
 language to extract the data you want. For example:</p>
@@ -922,6 +922,28 @@ least the identity and one recipient:</p>
 <pre><code class="language-console" data-lang="console">$ chezmoi add --encrypt ~/.ssh/id_rsa
 </code></pre><p>chezmoi supports multiple recipients and recipient files, and multiple
 identities.</p>
+<h4 id="symmetric-encryption-1">
+  Symmetric encryption
+  <a class="anchor" href="#symmetric-encryption-1">#</a>
+</h4>
+<p>To use age&rsquo;s symmetric encryption, specify a single identity and enable
+symmetric encryption in your config file, for example:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml"><span style="color:#a6e22e">encryption</span> = <span style="color:#e6db74">&#34;age&#34;</span>
+[<span style="color:#a6e22e">age</span>]
+    <span style="color:#a6e22e">identity</span> = <span style="color:#e6db74">&#34;~/.ssh/id_rsa&#34;</span>
+    <span style="color:#a6e22e">symmetric</span> = <span style="color:#66d9ef">true</span>
+</code></pre></div><h4 id="symmetric-encryption-with-a-passphrase">
+  Symmetric encryption with a passphrase
+  <a class="anchor" href="#symmetric-encryption-with-a-passphrase">#</a>
+</h4>
+<p>To use age&rsquo;s symmetric encryption with a passphrase, set <code>age.passphrase</code> to
+<code>true</code> in your config file, for example:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml"><span style="color:#a6e22e">encryption</span> = <span style="color:#e6db74">&#34;age&#34;</span>
+[<span style="color:#a6e22e">age</span>]
+    <span style="color:#a6e22e">passphrase</span> = <span style="color:#66d9ef">true</span>
+</code></pre></div><p>You will be prompted for the passphrase whenever you run <code>chezmoi add --encrypt</code>
+and whenever chezmoi needs to decrypt the file, for example when you run
+<code>chezmoi apply</code>, <code>chezmoi diff</code>, or <code>chezmoi status</code>.</p>
 <h3 id="use-a-private-configuration-file-and-template-variables">
   Use a private configuration file and template variables
   <a class="anchor" href="#use-a-private-configuration-file-and-template-variables">#</a>
@@ -929,10 +951,9 @@ identities.</p>
 <p>Typically, <code>~/.config/chezmoi/chezmoi.toml</code> is not checked in to version control
 and has permissions 0600. You can store tokens as template values in the <code>data</code>
 section. For example, if your <code>~/.config/chezmoi/chezmoi.toml</code> contains:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">data</span>]
-    [<span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">github</span>]
-        <span style="color:#a6e22e">user</span> = <span style="color:#e6db74">&#34;&lt;github-username&gt;&#34;</span>
-        <span style="color:#a6e22e">token</span> = <span style="color:#e6db74">&#34;&lt;github-token&gt;&#34;</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">github</span>]
+    <span style="color:#a6e22e">user</span> = <span style="color:#e6db74">&#34;&lt;github-username&gt;&#34;</span>
+    <span style="color:#a6e22e">token</span> = <span style="color:#e6db74">&#34;&lt;github-token&gt;&#34;</span>
 </code></pre></div><p>Your <code>~/.local/share/chezmoi/private_dot_gitconfig.tmpl</code> can then contain:</p>
 <pre><code>{{- if (index . &quot;github&quot;) }}
 [github]
@@ -1210,6 +1231,11 @@ your new dotfile manager&rsquo;s functionality for importing your existing dotfi
 
 </div>
 
+
+
+  <script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+
+
  
         
       </footer>
@@ -1331,7 +1357,6 @@ your new dotfile manager&rsquo;s functionality for importing your existing dotfi
 
   
 </body>
-
 </html>
 
 

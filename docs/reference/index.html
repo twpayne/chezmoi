@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
-
 <head>
-  <meta name="generator" content="Hugo 0.84.0-DEV" />
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Reference Manual #  Concepts #  chezmoi evaluates the source state for the current machine and then updates the destination directory, where:
@@ -22,16 +20,15 @@
 <title>Reference | chezmoi.io</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
-<link rel="stylesheet" href="/book.min.e935e20bd0d469378cb482f0958edf258c731a4f895dccd55799c6fbc8043f23.css" integrity="sha256-6TXiC9DUaTeMtILwlY7fJYxzGk&#43;JXczVV5nG&#43;8gEPyM=">
-<script defer src="/en.search.min.d65e0aa466f8dab7d74b9f906e5c533f26ad27367675272ae3303b563a16ff5b.js" integrity="sha256-1l4KpGb42rfXS5&#43;QblxTPyatJzZ2dScq4zA7VjoW/1s="></script>
+<link rel="stylesheet" href="/book.min.3e90539cf7130f0a89ba2f8b9f54ac5e5ecdd1fa345b6c8e3e5a83ec6f19ec8e.css" integrity="sha256-PpBTnPcTDwqJui&#43;Ln1SsXl7N0fo0W2yOPlqD7G8Z7I4=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.5c6b36859b7afcb58ef4831e73358bd2fe1ede42d36c19723f8fe62e99725679.js" integrity="sha256-XGs2hZt6/LWO9IMeczWL0v4e3kLTbBlyP4/mLplyVnk=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
 -->
-
   
 </head>
-
 <body dir="ltr">
   <input type="checkbox" class="hidden toggle" id="menu-control" />
   <input type="checkbox" class="hidden toggle" id="toc-control" />
@@ -93,7 +90,7 @@ https://github.com/alex-shpak/hugo-book
 
 
 
-  <script>(function(){var a=document.querySelector("aside.book-menu nav");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+  <script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
 
 
  
@@ -129,7 +126,6 @@ https://github.com/alex-shpak/hugo-book
       <ul>
         <li><a href="#--color-value"><code>--color</code> <em>value</em></a></li>
         <li><a href="#-c---config-filename"><code>-c</code>, <code>--config</code> <em>filename</em></a></li>
-        <li><a href="#--cpu-profile-filename"><code>--cpu-profile</code> <em>filename</em></a></li>
         <li><a href="#--debug"><code>--debug</code></a></li>
         <li><a href="#-d---destination-directory"><code>-D</code>, <code>--destination</code> <em>directory</em></a></li>
         <li><a href="#-n---dry-run"><code>-n</code>, <code>--dry-run</code></a></li>
@@ -152,6 +148,12 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#-i---include-types"><code>-i</code>, <code>--include</code> <em>types</em></a></li>
         <li><a href="#-r---recursive"><code>-r</code>, <code>--recursive</code></a></li>
         <li><a href="#-x---exclude-types"><code>-x</code>, <code>--exclude</code> <em>types</em></a></li>
+      </ul>
+    </li>
+    <li><a href="#developer-command-line-flags">Developer command line flags</a>
+      <ul>
+        <li><a href="#--cpu-profile-filename"><code>--cpu-profile</code> <em>filename</em></a></li>
+        <li><a href="#--gops"><code>--gops</code></a></li>
       </ul>
     </li>
     <li><a href="#configuration-file">Configuration file</a>
@@ -322,11 +324,6 @@ if the the environment variable <code>$NO_COLOR</code> is not set and stdout is 
   <a class="anchor" href="#-c---config-filename">#</a>
 </h3>
 <p>Read the configuration from <em>filename</em>.</p>
-<h3 id="--cpu-profile-filename">
-  <code>--cpu-profile</code> <em>filename</em>
-  <a class="anchor" href="#--cpu-profile-filename">#</a>
-</h3>
-<p>Write a <a href="https://blog.golang.org/pprof">CPU profile</a> to <em>filename</em>.</p>
 <h3 id="--debug">
   <code>--debug</code>
   <a class="anchor" href="#--debug">#</a>
@@ -438,6 +435,21 @@ to directories and files only.</p>
 of target states (<code>all</code>, <code>dirs</code>, <code>files</code>, <code>remove</code>, <code>scripts</code>, <code>symlinks</code>, and
 <code>encrypted</code>). For example, <code>--exclude=scripts</code> will cause the command to not run
 scripts and <code>--exclude=encrypted</code> will exclude encrypted files.</p>
+<h2 id="developer-command-line-flags">
+  Developer command line flags
+  <a class="anchor" href="#developer-command-line-flags">#</a>
+</h2>
+<p>The following flags are global but only relevant for developers and debugging.</p>
+<h3 id="--cpu-profile-filename">
+  <code>--cpu-profile</code> <em>filename</em>
+  <a class="anchor" href="#--cpu-profile-filename">#</a>
+</h3>
+<p>Write a <a href="https://blog.golang.org/pprof">Go CPU profile</a> to <em>filename</em>.</p>
+<h3 id="--gops">
+  <code>--gops</code>
+  <a class="anchor" href="#--gops">#</a>
+</h3>
+<p>Enable the <a href="https://github.com/google/gops">gops</a> agent.</p>
 <h2 id="configuration-file">
   Configuration file
   <a class="anchor" href="#configuration-file">#</a>
@@ -573,6 +585,13 @@ of the config file is <code>chezmoi</code>, and the first config file found is u
 </tr>
 <tr>
 <td></td>
+<td><code>passphrase</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Use age passphrase instead of identity</td>
+</tr>
+<tr>
+<td></td>
 <td><code>recipient</code></td>
 <td>string</td>
 <td><em>none</em></td>
@@ -605,6 +624,13 @@ of the config file is <code>chezmoi</code>, and the first config file found is u
 <td>string</td>
 <td><code>.age</code></td>
 <td>Suffix appended to age-encrypted files</td>
+</tr>
+<tr>
+<td></td>
+<td><code>symmetric</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Use age symmetric encryption</td>
 </tr>
 <tr>
 <td><code>bitwarden</code></td>
@@ -745,6 +771,20 @@ of the config file is <code>chezmoi</code>, and the first config file found is u
 <td>bool</td>
 <td><code>false</code></td>
 <td>Use symmetric GPG encryption</td>
+</tr>
+<tr>
+<td><code>interpreters</code></td>
+<td><em>extension</em><code>.args</code></td>
+<td>[]string</td>
+<td><em>none</em></td>
+<td>See section on &ldquo;Scripts on Windows&rdquo;</td>
+</tr>
+<tr>
+<td></td>
+<td><em>extension</em><code>.command</code></td>
+<td>string</td>
+<td><em>special</em></td>
+<td>See section on &ldquo;Scripts on Windows&rdquo;</td>
 </tr>
 <tr>
 <td><code>keepassxc</code></td>
@@ -1042,7 +1082,7 @@ new contents are read from the scripts standard output.</p>
 <p>Directories are represented by regular directories in the source state. The
 <code>exact_</code> attribute causes chezmoi to remove any entries in the target state that
 are not explicitly specified in the source state, and the <code>private_</code> attribute
-causes chezmoi to clear all group and world permssions.</p>
+causes chezmoi to clear all group and world permissions.</p>
 <h3 id="symbolic-links">
   Symbolic links
   <a class="anchor" href="#symbolic-links">#</a>
@@ -1074,6 +1114,59 @@ location in the destination directory. For example, a script in
 exist or is not a directory, then chezmoi will walk up the script&rsquo;s directory
 hierarchy and run the script in the first directory that exists and is a
 directory.</p>
+<h4 id="scripts-on-windows">
+  Scripts on Windows
+  <a class="anchor" href="#scripts-on-windows">#</a>
+</h4>
+<!-- raw HTML omitted -->
+<p>The execution of scripts on Windows depends on the script&rsquo;s file extension.
+Windows will natively execute scripts with a <code>.bat</code>, <code>.cmd</code>, <code>.com</code>, and <code>.exe</code>
+extensions. Other extensions require an interpreter, which must be in your
+<code>%PATH%</code>.</p>
+<p>The default script interpreters are:</p>
+<table>
+<thead>
+<tr>
+<th>Extension</th>
+<th>Command</th>
+<th>Arguments</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.pl</code></td>
+<td><code>perl</code></td>
+<td><em>none</em></td>
+</tr>
+<tr>
+<td><code>.py</code></td>
+<td><code>python</code></td>
+<td><em>none</em></td>
+</tr>
+<tr>
+<td><code>.ps1</code></td>
+<td><code>powershell</code></td>
+<td><code>-NoLogo</code></td>
+</tr>
+<tr>
+<td><code>.rb</code></td>
+<td><code>ruby</code></td>
+<td><em>none</em></td>
+</tr>
+</tbody>
+</table>
+<p>Script interpreters can be added or overridden with the
+<code>interpreters.</code><em>extension</em> section in the configuration file. Note that the
+leading <code>.</code> is dropped from <em>extension</em>.</p>
+<p>For example to change the Python interpreter to <code>C:\Python39\python.exe</code> and add
+a Tcl/Tk interpreter, include the following in <code>~/.config/chezmoi/chezmoi.toml</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">interpreters</span>.<span style="color:#a6e22e">py</span>]
+    <span style="color:#a6e22e">command</span> = <span style="color:#e6db74">&#39;C:\Python39\python.exe&#39;</span>
+[<span style="color:#a6e22e">interpreters</span>.<span style="color:#a6e22e">tcl</span>]
+    <span style="color:#a6e22e">command</span> = <span style="color:#e6db74">&#34;tclsh&#34;</span>
+</code></pre></div><p>If the script in the source state is a template (with a <code>.tmpl</code> extension), then
+chezmoi will strip the <code>.tmpl</code> extension and use the next remaining extension to
+determine the interpreter to use.</p>
 <h2 id="special-files-and-directories">
   Special files and directories
   <a class="anchor" href="#special-files-and-directories">#</a>
@@ -1521,7 +1614,13 @@ $ chezmoi dump --format=yaml
   <a class="anchor" href="#edit-target">#</a>
 </h3>
 <p>Edit the source state of <em>target</em>s, which must be files or symlinks. If no
-targets are given the the source directory itself is opened with <code>$EDITOR</code>.</p>
+targets are given the the source directory itself is opened.</p>
+<p>The editor used is the first non-empty string of the <code>edit.command</code>
+configuration variable, the <code>$VISUAL</code> environment variable, the <code>$EDITOR</code>
+environment variable. If none are set then chezmoi falls back to <code>notepad.exe</code>
+on Windows systems and <code>vi</code> on non-Windows systems.</p>
+<p>When the <code>edit.command</code> configuration variable is used, extra arguments can be
+passed to the editor with the <code>editor.args</code> configuration variable.</p>
 <h4 id="-a---apply">
   <code>-a</code>, <code>--apply</code>
   <a class="anchor" href="#-a---apply">#</a>
@@ -1683,6 +1782,16 @@ own binary.</p>
   <a class="anchor" href="#--apply">#</a>
 </h4>
 <p>Run <code>chezmoi apply</code> after checking out the repo and creating the config file.</p>
+<h4 id="--branch-branch">
+  <code>--branch</code> <em>branch</em>
+  <a class="anchor" href="#--branch-branch">#</a>
+</h4>
+<p>Check out <em>branch</em> instead of the default branch.</p>
+<h4 id="--config-path-path">
+  <code>--config-path</code> <em>path</em>
+  <a class="anchor" href="#--config-path-path">#</a>
+</h4>
+<p>Write the generated config file to <em>path</em> instead of the default location.</p>
 <h4 id="--data-bool">
   <code>--data</code> <em>bool</em>
   <a class="anchor" href="#--data-bool">#</a>
@@ -1760,9 +1869,9 @@ want to set the <code>--destination</code>, <code>--exact</code>, and <code>--re
   <code>import</code> examples
   <a class="anchor" href="#import-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ curl -s -L -o oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
+<pre><code class="language-console" data-lang="console">$ curl -s -L -o ${TMPDIR}/oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
 $ mkdir -p $(chezmoi source-path)/dot_oh-my-zsh
-$ chezmoi import --strip-components 1 --destination ~/.oh-my-zsh oh-my-zsh-master.tar.gz
+$ chezmoi import --strip-components 1 --destination ~/.oh-my-zsh ${TMPDIR}/oh-my-zsh-master.tar.gz
 </code></pre><h3 id="manage-targets">
   <code>manage</code> <em>targets</em>
   <a class="anchor" href="#manage-targets">#</a>
@@ -2631,6 +2740,11 @@ generating the initial config file.</p>
 
 </div>
 
+
+
+  <script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+
+
  
         
       </footer>
@@ -2658,7 +2772,6 @@ generating the initial config file.</p>
       <ul>
         <li><a href="#--color-value"><code>--color</code> <em>value</em></a></li>
         <li><a href="#-c---config-filename"><code>-c</code>, <code>--config</code> <em>filename</em></a></li>
-        <li><a href="#--cpu-profile-filename"><code>--cpu-profile</code> <em>filename</em></a></li>
         <li><a href="#--debug"><code>--debug</code></a></li>
         <li><a href="#-d---destination-directory"><code>-D</code>, <code>--destination</code> <em>directory</em></a></li>
         <li><a href="#-n---dry-run"><code>-n</code>, <code>--dry-run</code></a></li>
@@ -2681,6 +2794,12 @@ generating the initial config file.</p>
         <li><a href="#-i---include-types"><code>-i</code>, <code>--include</code> <em>types</em></a></li>
         <li><a href="#-r---recursive"><code>-r</code>, <code>--recursive</code></a></li>
         <li><a href="#-x---exclude-types"><code>-x</code>, <code>--exclude</code> <em>types</em></a></li>
+      </ul>
+    </li>
+    <li><a href="#developer-command-line-flags">Developer command line flags</a>
+      <ul>
+        <li><a href="#--cpu-profile-filename"><code>--cpu-profile</code> <em>filename</em></a></li>
+        <li><a href="#--gops"><code>--gops</code></a></li>
       </ul>
     </li>
     <li><a href="#configuration-file">Configuration file</a>
@@ -2796,7 +2915,6 @@ generating the initial config file.</p>
 
   
 </body>
-
 </html>
 
 
