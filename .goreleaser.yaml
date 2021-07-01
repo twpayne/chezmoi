@@ -2,7 +2,7 @@ project_name: chezmoi
 
 before:
   hooks:
-  - go mod download
+  - go mod download all
 
 builds:
 - id: chezmoi-cgo-glibc
