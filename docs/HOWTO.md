@@ -638,7 +638,7 @@ For boolean variables you can use:
 {{- end -}}
 
 [data]
-    var = $var
+    var = {{ $var }}
 ```
 
 ### Handle different file locations on different systems with the same contents
