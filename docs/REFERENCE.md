@@ -394,9 +394,10 @@ to as "attributes":
 | `run_`       | Treat the contents as a script to run.                                         |
 | `symlink_`   | Create a symlink instead of a regular file.                                    |
 
-| Suffix  | Effect                                               |
-| ------- | ---------------------------------------------------- |
-| `.tmpl` | Treat the contents of the source file as a template. |
+| Suffix     | Effect                                               |
+| ---------- | ---------------------------------------------------- |
+| `.literal` | Stop parsing suffix attributes.                      |
+| `.tmpl`    | Treat the contents of the source file as a template. |
 
 Different target types allow different prefixes and suffixes. The order of
 prefixes is important.
@@ -410,9 +411,9 @@ prefixes is important.
 | Script        | File        | `run_`, `once_`, `before_` or `after_`                                | `.tmpl`          |
 | Symbolic link | File        | `symlink_`, `dot_`,                                                   | `.tmpl`          |
 
-The `literal_` prefix can appear anywhere and stop prefix attribute parsing.
-This permits filenames that would otherwise conflict with chezmoi's attributes
-to be represented.
+The `literal_` prefix and `.literal` suffix can appear anywhere and stop
+attribute parsing. This permits filenames that would otherwise conflict with
+chezmoi's attributes to be represented.
 
 In addition, if the source file is encrypted, the suffix `.age` (when age
 encryption is used) or `.asc` (when gpg encryption is used) is stripped. These

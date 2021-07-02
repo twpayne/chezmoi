@@ -181,9 +181,15 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 	if encrypted {
 		name = strings.TrimSuffix(name, encryptedSuffix)
 	}
-	if strings.HasSuffix(name, TemplateSuffix) {
+	switch {
+	case strings.HasSuffix(name, literalSuffix):
+		name = mustTrimSuffix(name, literalSuffix)
+	case strings.HasSuffix(name, TemplateSuffix):
 		name = mustTrimSuffix(name, TemplateSuffix)
 		template = true
+		if strings.HasSuffix(name, literalSuffix) {
+			name = mustTrimSuffix(name, literalSuffix)
+		}
 	}
 	return FileAttr{
 		TargetName: name,
@@ -255,6 +261,9 @@ func (fa FileAttr) SourceName(encryptedSuffix string) string {
 		sourceName += literalPrefix + fa.TargetName
 	default:
 		sourceName += fa.TargetName
+	}
+	if fileSuffixRegexp.MatchString(fa.TargetName) {
+		sourceName += literalSuffix
 	}
 	if fa.Template {
 		sourceName += TemplateSuffix

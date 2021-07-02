@@ -80,10 +80,13 @@ func TestFileAttr(t *testing.T) {
 		"dot_name",
 		"exact_name",
 		"literal_name",
+		"literal_name",
 		"modify_name",
+		"name.literal",
 		"name",
 		"run_name",
 		"symlink_name",
+		"template.tmpl",
 	}
 	require.NoError(t, combinator.Generate(&fas, struct {
 		Type       SourceFileTargetType
@@ -184,6 +187,7 @@ func TestFileAttrLiteral(t *testing.T) {
 		sourceName      string
 		encryptedSuffix string
 		fileAttr        FileAttr
+		nonCanonical    bool
 	}{
 		{
 			sourceName: "dot_file",
@@ -221,10 +225,50 @@ func TestFileAttrLiteral(t *testing.T) {
 				Type:       SourceFileTypeScript,
 			},
 		},
+		{
+			sourceName: "file.literal",
+			fileAttr: FileAttr{
+				TargetName: "file",
+				Type:       SourceFileTypeFile,
+			},
+			nonCanonical: true,
+		},
+		{
+			sourceName: "file.literal.literal",
+			fileAttr: FileAttr{
+				TargetName: "file.literal",
+				Type:       SourceFileTypeFile,
+			},
+		},
+		{
+			sourceName: "file.tmpl",
+			fileAttr: FileAttr{
+				TargetName: "file",
+				Type:       SourceFileTypeFile,
+				Template:   true,
+			},
+		},
+		{
+			sourceName: "file.tmpl.literal",
+			fileAttr: FileAttr{
+				TargetName: "file.tmpl",
+				Type:       SourceFileTypeFile,
+			},
+		},
+		{
+			sourceName: "file.tmpl.literal.tmpl",
+			fileAttr: FileAttr{
+				TargetName: "file.tmpl",
+				Type:       SourceFileTypeFile,
+				Template:   true,
+			},
+		},
 	} {
 		t.Run(tc.sourceName, func(t *testing.T) {
 			assert.Equal(t, tc.fileAttr, parseFileAttr(tc.sourceName, tc.encryptedSuffix))
-			assert.Equal(t, tc.sourceName, tc.fileAttr.SourceName(tc.encryptedSuffix))
+			if !tc.nonCanonical {
+				assert.Equal(t, tc.sourceName, tc.fileAttr.SourceName(tc.encryptedSuffix))
+			}
 		})
 	}
 }

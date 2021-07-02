@@ -39,6 +39,7 @@ const (
 	privatePrefix    = "private_"
 	runPrefix        = "run_"
 	symlinkPrefix    = "symlink_"
+	literalSuffix    = ".literal"
 	TemplateSuffix   = ".tmpl"
 )
 
@@ -56,6 +57,7 @@ const (
 var (
 	dirPrefixRegexp  = regexp.MustCompile(`\A(dot|exact|literal|private)_`)
 	filePrefixRegexp = regexp.MustCompile(`\A(after|before|create|dot|empty|encrypted|executable|literal|modify|once|private|run|symlink)_`)
+	fileSuffixRegexp = regexp.MustCompile(`\.(literal|tmpl)\z`)
 )
 
 // knownPrefixedFiles is a set of known filenames with the .chezmoi prefix.
