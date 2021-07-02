@@ -54,8 +54,11 @@ func parseDirAttr(sourceName string) DirAttr {
 		name = mustTrimPrefix(name, privatePrefix)
 		private = true
 	}
-	if strings.HasPrefix(name, dotPrefix) {
+	switch {
+	case strings.HasPrefix(name, dotPrefix):
 		name = "." + mustTrimPrefix(name, dotPrefix)
+	case strings.HasPrefix(name, literalPrefix):
+		name = name[len(literalPrefix):]
 	}
 	return DirAttr{
 		TargetName: name,
@@ -73,9 +76,12 @@ func (da DirAttr) SourceName() string {
 	if da.Private {
 		sourceName += privatePrefix
 	}
-	if strings.HasPrefix(da.TargetName, ".") {
+	switch {
+	case strings.HasPrefix(da.TargetName, "."):
 		sourceName += dotPrefix + mustTrimPrefix(da.TargetName, ".")
-	} else {
+	case dirPrefixRegexp.MatchString(da.TargetName):
+		sourceName += literalPrefix + da.TargetName
+	default:
 		sourceName += da.TargetName
 	}
 	return sourceName
@@ -166,8 +172,11 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 			executable = true
 		}
 	}
-	if strings.HasPrefix(name, dotPrefix) {
+	switch {
+	case strings.HasPrefix(name, dotPrefix):
 		name = "." + mustTrimPrefix(name, dotPrefix)
+	case strings.HasPrefix(name, literalPrefix):
+		name = name[len(literalPrefix):]
 	}
 	if encrypted {
 		name = strings.TrimSuffix(name, encryptedSuffix)
@@ -239,9 +248,12 @@ func (fa FileAttr) SourceName(encryptedSuffix string) string {
 	case SourceFileTypeSymlink:
 		sourceName = symlinkPrefix
 	}
-	if strings.HasPrefix(fa.TargetName, ".") {
+	switch {
+	case strings.HasPrefix(fa.TargetName, "."):
 		sourceName += dotPrefix + mustTrimPrefix(fa.TargetName, ".")
-	} else {
+	case filePrefixRegexp.MatchString(fa.TargetName):
+		sourceName += literalPrefix + fa.TargetName
+	default:
 		sourceName += fa.TargetName
 	}
 	if fa.Template {

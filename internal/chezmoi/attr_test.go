@@ -18,6 +18,7 @@ func TestDirAttr(t *testing.T) {
 			".dir",
 			"dir.tmpl",
 			"dir",
+			"exact_dir",
 			"empty_dir",
 			"encrypted_dir",
 			"executable_dir",
@@ -39,8 +40,51 @@ func TestDirAttr(t *testing.T) {
 	}
 }
 
+func TestDirAttrLiteral(t *testing.T) {
+	for _, tc := range []struct {
+		sourceName string
+		dirAttr    DirAttr
+	}{
+		{
+			sourceName: "exact_dir",
+			dirAttr: DirAttr{
+				TargetName: "dir",
+				Exact:      true,
+			},
+		},
+		{
+			sourceName: "literal_exact_dir",
+			dirAttr: DirAttr{
+				TargetName: "exact_dir",
+			},
+		},
+		{
+			sourceName: "literal_literal_dir",
+			dirAttr: DirAttr{
+				TargetName: "literal_dir",
+			},
+		},
+	} {
+		t.Run(tc.sourceName, func(t *testing.T) {
+			assert.Equal(t, tc.sourceName, tc.dirAttr.SourceName())
+			assert.Equal(t, tc.dirAttr, parseDirAttr(tc.sourceName))
+		})
+	}
+}
+
 func TestFileAttr(t *testing.T) {
 	var fas []FileAttr
+	targetNames := []string{
+		".name",
+		"create_name",
+		"dot_name",
+		"exact_name",
+		"literal_name",
+		"modify_name",
+		"name",
+		"run_name",
+		"symlink_name",
+	}
 	require.NoError(t, combinator.Generate(&fas, struct {
 		Type       SourceFileTargetType
 		TargetName []string
@@ -49,12 +93,8 @@ func TestFileAttr(t *testing.T) {
 		Private    []bool
 		Template   []bool
 	}{
-		Type: SourceFileTypeCreate,
-		TargetName: []string{
-			".name",
-			"exact_name",
-			"name",
-		},
+		Type:       SourceFileTypeCreate,
+		TargetName: []string{},
 		Encrypted:  []bool{false, true},
 		Executable: []bool{false, true},
 		Private:    []bool{false, true},
@@ -69,12 +109,8 @@ func TestFileAttr(t *testing.T) {
 		Private    []bool
 		Template   []bool
 	}{
-		Type: SourceFileTypeFile,
-		TargetName: []string{
-			".name",
-			"exact_name",
-			"name",
-		},
+		Type:       SourceFileTypeFile,
+		TargetName: targetNames,
 		Empty:      []bool{false, true},
 		Encrypted:  []bool{false, true},
 		Executable: []bool{false, true},
@@ -88,12 +124,8 @@ func TestFileAttr(t *testing.T) {
 		Private    []bool
 		Template   []bool
 	}{
-		Type: SourceFileTypeModify,
-		TargetName: []string{
-			".name",
-			"exact_name",
-			"name",
-		},
+		Type:       SourceFileTypeModify,
+		TargetName: targetNames,
 		Executable: []bool{false, true},
 		Private:    []bool{false, true},
 		Template:   []bool{false, true},
@@ -104,25 +136,17 @@ func TestFileAttr(t *testing.T) {
 		Once       []bool
 		Order      []int
 	}{
-		Type: SourceFileTypeScript,
-		TargetName: []string{
-			".name",
-			"exact_name",
-			"name",
-		},
-		Once:  []bool{false, true},
-		Order: []int{-1, 0, 1},
+		Type:       SourceFileTypeScript,
+		TargetName: targetNames,
+		Once:       []bool{false, true},
+		Order:      []int{-1, 0, 1},
 	}))
 	require.NoError(t, combinator.Generate(&fas, struct {
 		Type       SourceFileTargetType
 		TargetName []string
 	}{
-		Type: SourceFileTypeSymlink,
-		TargetName: []string{
-			".name",
-			"exact_name",
-			"name",
-		},
+		Type:       SourceFileTypeSymlink,
+		TargetName: targetNames,
 	}))
 	for _, fa := range fas {
 		actualSourceName := fa.SourceName("")
@@ -152,5 +176,55 @@ func TestFileAttrEncryptedSuffix(t *testing.T) {
 	} {
 		fa := parseFileAttr(tc.sourceName, ".asc")
 		assert.Equal(t, tc.expectedTargetName, fa.TargetName)
+	}
+}
+
+func TestFileAttrLiteral(t *testing.T) {
+	for _, tc := range []struct {
+		sourceName      string
+		encryptedSuffix string
+		fileAttr        FileAttr
+	}{
+		{
+			sourceName: "dot_file",
+			fileAttr: FileAttr{
+				TargetName: ".file",
+				Type:       SourceFileTypeFile,
+			},
+		},
+		{
+			sourceName: "literal_dot_file",
+			fileAttr: FileAttr{
+				TargetName: "dot_file",
+				Type:       SourceFileTypeFile,
+			},
+		},
+		{
+			sourceName: "literal_literal_file",
+			fileAttr: FileAttr{
+				TargetName: "literal_file",
+				Type:       SourceFileTypeFile,
+			},
+		},
+		{
+			sourceName: "run_once_script",
+			fileAttr: FileAttr{
+				TargetName: "script",
+				Type:       SourceFileTypeScript,
+				Once:       true,
+			},
+		},
+		{
+			sourceName: "run_literal_once_script",
+			fileAttr: FileAttr{
+				TargetName: "once_script",
+				Type:       SourceFileTypeScript,
+			},
+		},
+	} {
+		t.Run(tc.sourceName, func(t *testing.T) {
+			assert.Equal(t, tc.fileAttr, parseFileAttr(tc.sourceName, tc.encryptedSuffix))
+			assert.Equal(t, tc.sourceName, tc.fileAttr.SourceName(tc.encryptedSuffix))
+		})
 	}
 }

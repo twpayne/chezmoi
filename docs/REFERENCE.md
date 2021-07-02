@@ -387,6 +387,7 @@ to as "attributes":
 | `encrypted_` | Encrypt the file in the source state.                                          |
 | `exact_`     | Remove anything not managed by chezmoi.                                        |
 | `executable_`| Add executable permissions to the target file.                                 |
+| `literal_`   | Stop parsing prefix attributes.                                                |
 | `modify_`    | Treat the contents as a script that modifies an existing file.                 |
 | `once_`      | Run script once.                                                               |
 | `private_`   | Remove all group and world permissions from the target file or directory.      |
@@ -408,6 +409,10 @@ prefixes is important.
 | Modify file   | File        | `modify_`, `encrypted_`, `private_`, `executable_`, `dot_`            | `.tmpl`          |
 | Script        | File        | `run_`, `once_`, `before_` or `after_`                                | `.tmpl`          |
 | Symbolic link | File        | `symlink_`, `dot_`,                                                   | `.tmpl`          |
+
+The `literal_` prefix can appear anywhere and stop prefix attribute parsing.
+This permits filenames that would otherwise conflict with chezmoi's attributes
+to be represented.
 
 In addition, if the source file is encrypted, the suffix `.age` (when age
 encryption is used) or `.asc` (when gpg encryption is used) is stripped. These
