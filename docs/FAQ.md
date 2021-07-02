@@ -197,20 +197,11 @@ better than just having the correct dotfile contents.
 There are a number of criticisms of how chezmoi's source state is represented on
 disk:
 
-1. The source file naming system cannot handle all possible filenames.
-2. Not all possible file permissions can be represented.
-3. The long source file names are weird and verbose.
-4. Everything is in a single directory, which can end up containing many entries.
+1. Not all possible file permissions can be represented.
+2. The long source file names are weird and verbose.
+3. Everything is in a single directory, which can end up containing many entries.
 
 chezmoi's source state representation is a deliberate, practical compromise.
-
-Certain target filenames, for example `~/dot_example`, are incompatible with
-chezmoi's
-[attributes](https://github.com/twpayne/chezmoi/blob/master/docs/REFERENCE.md#source-state-attributes)
-used in the source state. In practice, dotfile filenames are unlikely to
-conflict with chezmoi's attributes. If this does cause a genuine problem for
-you, please [open an issue on
-GitHub](https://github.com/twpayne/chezmoi/issues/new/choose).
 
 The `dot_` attribute makes it transparent which dotfiles are managed by chezmoi
 and which files are ignored by chezmoi. chezmoi ignores all files and

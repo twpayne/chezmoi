@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/fs"
 	"path/filepath"
+	"regexp"
 	"strings"
 )
 
@@ -21,7 +22,7 @@ var (
 	Umask = fs.FileMode(0)
 )
 
-// Suffixes and prefixes.
+// Prefixes and suffixes.
 const (
 	ignorePrefix     = "."
 	afterPrefix      = "after_"
@@ -32,11 +33,13 @@ const (
 	encryptedPrefix  = "encrypted_"
 	exactPrefix      = "exact_"
 	executablePrefix = "executable_"
+	literalPrefix    = "literal_"
 	modifyPrefix     = "modify_"
 	oncePrefix       = "once_"
 	privatePrefix    = "private_"
 	runPrefix        = "run_"
 	symlinkPrefix    = "symlink_"
+	literalSuffix    = ".literal"
 	TemplateSuffix   = ".tmpl"
 )
 
@@ -49,6 +52,12 @@ const (
 	removeName       = Prefix + "remove"
 	templatesDirName = Prefix + "templates"
 	versionName      = Prefix + "version"
+)
+
+var (
+	dirPrefixRegexp  = regexp.MustCompile(`\A(dot|exact|literal|private)_`)
+	filePrefixRegexp = regexp.MustCompile(`\A(after|before|create|dot|empty|encrypted|executable|literal|modify|once|private|run|symlink)_`)
+	fileSuffixRegexp = regexp.MustCompile(`\.(literal|tmpl)\z`)
 )
 
 // knownPrefixedFiles is a set of known filenames with the .chezmoi prefix.
