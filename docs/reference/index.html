@@ -20,9 +20,9 @@
 <title>Reference | chezmoi.io</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
-<link rel="stylesheet" href="/book.min.3e90539cf7130f0a89ba2f8b9f54ac5e5ecdd1fa345b6c8e3e5a83ec6f19ec8e.css" integrity="sha256-PpBTnPcTDwqJui&#43;Ln1SsXl7N0fo0W2yOPlqD7G8Z7I4=" crossorigin="anonymous">
+<link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" integrity="sha256-lYzqeCdiHW&#43;8s6zwkTRMPkTj0qlCj5w8OLues3v4xF0=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.5c6b36859b7afcb58ef4831e73358bd2fe1ede42d36c19723f8fe62e99725679.js" integrity="sha256-XGs2hZt6/LWO9IMeczWL0v4e3kLTbBlyP4/mLplyVnk=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.d17e2b3ae0057ee6b76bc634acf67b445efcecca54d8960135e0cada0b9c0f38.js" integrity="sha256-0X4rOuAFfua3a8Y0rPZ7RF787MpU2JYBNeDK2gucDzg=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -232,6 +232,7 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#bitwardenfields-arg"><code>bitwardenFields</code> [<em>arg</em>&hellip;]</a></li>
         <li><a href="#githubkeys-user"><code>gitHubKeys</code> <em>user</em></a></li>
         <li><a href="#gopass-gopass-name"><code>gopass</code> <em>gopass-name</em></a></li>
+        <li><a href="#gopassraw-gopass-name"><code>gopassRaw</code> <em>gopass-name</em></a></li>
         <li><a href="#include-filename"><code>include</code> <em>filename</em></a></li>
         <li><a href="#ioreg"><code>ioreg</code></a></li>
         <li><a href="#joinpath-element"><code>joinPath</code> <em>element</em>&hellip;</a></li>
@@ -241,11 +242,13 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#lastpass-id"><code>lastpass</code> <em>id</em></a></li>
         <li><a href="#lastpassraw-id"><code>lastpassRaw</code> <em>id</em></a></li>
         <li><a href="#lookpath-file"><code>lookPath</code> <em>file</em></a></li>
-        <li><a href="#onepassword-uuid-vault-uuid"><code>onepassword</code> <em>uuid</em> [<em>vault-uuid</em>]</a></li>
-        <li><a href="#onepassworddocument-uuid-vault-uuid"><code>onepasswordDocument</code> <em>uuid</em> [<em>vault-uuid</em>]</a></li>
-        <li><a href="#onepassworddetailsfields-uuid-vault-uuid"><code>onepasswordDetailsFields</code> <em>uuid</em> [<em>vault-uuid</em>]</a></li>
+        <li><a href="#mozillainstallhash-path"><code>mozillaInstallHash</code> <em>path</em></a></li>
+        <li><a href="#onepassword-uuid-vault-uuid-account-name"><code>onepassword</code> <em>uuid</em> [<em>vault-uuid</em> [<em>account-name</em>]]</a></li>
+        <li><a href="#onepassworddocument-uuid-vault-uuid-account-name"><code>onepasswordDocument</code> <em>uuid</em> [<em>vault-uuid</em> [<em>account-name</em>]]</a></li>
+        <li><a href="#onepassworddetailsfields-uuid-vault-uuid-account-name"><code>onepasswordDetailsFields</code> <em>uuid</em> [<em>vault-uuid</em> [<em>account-name</em>]]</a></li>
         <li><a href="#output-name-arg"><code>output</code> <em>name</em> [<em>arg</em>&hellip;]</a></li>
         <li><a href="#pass-pass-name"><code>pass</code> <em>pass-name</em></a></li>
+        <li><a href="#passraw-pass-name"><code>passRaw</code> <em>pass-name</em></a></li>
         <li><a href="#promptbool-prompt"><code>promptBool</code> <em>prompt</em></a></li>
         <li><a href="#promptint-prompt"><code>promptInt</code> <em>prompt</em></a></li>
         <li><a href="#promptstring-prompt"><code>promptString</code> <em>prompt</em></a></li>
@@ -947,6 +950,10 @@ to as &ldquo;attributes&rdquo;:</p>
 <td>Add executable permissions to the target file.</td>
 </tr>
 <tr>
+<td><code>literal_</code></td>
+<td>Stop parsing prefix attributes.</td>
+</tr>
+<tr>
 <td><code>modify_</code></td>
 <td>Treat the contents as a script that modifies an existing file.</td>
 </tr>
@@ -976,6 +983,10 @@ to as &ldquo;attributes&rdquo;:</p>
 </tr>
 </thead>
 <tbody>
+<tr>
+<td><code>.literal</code></td>
+<td>Stop parsing suffix attributes.</td>
+</tr>
 <tr>
 <td><code>.tmpl</code></td>
 <td>Treat the contents of the source file as a template.</td>
@@ -1032,6 +1043,9 @@ prefixes is important.</p>
 </tr>
 </tbody>
 </table>
+<p>The <code>literal_</code> prefix and <code>.literal</code> suffix can appear anywhere and stop
+attribute parsing. This permits filenames that would otherwise conflict with
+chezmoi&rsquo;s attributes to be represented.</p>
 <p>In addition, if the source file is encrypted, the suffix <code>.age</code> (when age
 encryption is used) or <code>.asc</code> (when gpg encryption is used) is stripped. These
 suffixes can be overridden with the <code>age.suffix</code> and <code>gpg.suffix</code> configuration
@@ -2324,16 +2338,25 @@ token</a>.</p>
   <a class="anchor" href="#gopass-gopass-name">#</a>
 </h3>
 <p><code>gopass</code> returns passwords stored in <a href="https://www.gopass.pw/">gopass</a> using the
-gopass CLI (<code>gopass</code>). <em>gopass-name</em> is passed to <code>gopass show &lt;gopass-name&gt;</code>
-and first line of the output of <code>gopass</code> is returned with the trailing newline
-stripped. The output from <code>gopass</code> is cached so calling <code>gopass</code> multiple times
-with the same <em>gopass-name</em> will only invoke <code>gopass</code> once.</p>
+gopass CLI (<code>gopass</code>). <em>gopass-name</em> is passed to <code>gopass show --password &lt;gopass-name&gt;</code> and the first line of the output of <code>gopass</code> is returned with the
+trailing newline stripped. The output from <code>gopass</code> is cached so calling
+<code>gopass</code> multiple times with the same <em>gopass-name</em> will only invoke <code>gopass</code>
+once.</p>
 <h4 id="gopass-examples">
   <code>gopass</code> examples
   <a class="anchor" href="#gopass-examples">#</a>
 </h4>
 <pre><code>{{ gopass &quot;&lt;pass-name&gt;&quot; }}
-</code></pre><h3 id="include-filename">
+</code></pre><h3 id="gopassraw-gopass-name">
+  <code>gopassRaw</code> <em>gopass-name</em>
+  <a class="anchor" href="#gopassraw-gopass-name">#</a>
+</h3>
+<p><code>gopass</code> returns passwords stored in <a href="https://www.gopass.pw/">gopass</a> using the
+gopass CLI (<code>gopass</code>). <em>gopass-name</em> is passed to <code>gopass show &lt;gopass-name&gt;</code>
+and  output of <code>gopass</code> is returned. The output from <code>gopassRaw</code> is cached so
+calling <code>gopassRaw</code> multiple times with the same <em>gopass-name</em> will only invoke
+<code>gopass</code> once.</p>
+<h3 id="include-filename">
   <code>include</code> <em>filename</em>
   <a class="anchor" href="#include-filename">#</a>
 </h3>
@@ -2485,9 +2508,15 @@ caution when using it in your templates.</p>
 <pre><code>{{ if lookPath &quot;diff-so-fancy&quot; }}
 # diff-so-fancy is in $PATH
 {{ end }}
-</code></pre><h3 id="onepassword-uuid-vault-uuid">
-  <code>onepassword</code> <em>uuid</em> [<em>vault-uuid</em>]
-  <a class="anchor" href="#onepassword-uuid-vault-uuid">#</a>
+</code></pre><h3 id="mozillainstallhash-path">
+  <code>mozillaInstallHash</code> <em>path</em>
+  <a class="anchor" href="#mozillainstallhash-path">#</a>
+</h3>
+<p><code>mozillaInstallHash</code> returns the Mozilla install hash for <em>path</em>. This is a
+convenience function to assist the management of Firefox profiles.</p>
+<h3 id="onepassword-uuid-vault-uuid-account-name">
+  <code>onepassword</code> <em>uuid</em> [<em>vault-uuid</em> [<em>account-name</em>]]
+  <a class="anchor" href="#onepassword-uuid-vault-uuid-account-name">#</a>
 </h3>
 <p><code>onepassword</code> returns structured data from <a href="https://1password.com/">1Password</a>
 using the <a href="https://support.1password.com/command-line-getting-started/">1Password
@@ -2496,16 +2525,20 @@ is passed to <code>op get item &lt;uuid&gt;</code> and the output from <code>op<
 The output from <code>op</code> is cached so calling <code>onepassword</code> multiple times with the
 same <em>uuid</em> will only invoke <code>op</code> once.  If the optional <em>vault-uuid</em> is supplied,
 it will be passed along to the <code>op get</code> call, which can significantly improve
-performance.</p>
+performance. If the optional <em>account-name</em> is supplied, it will be passed along
+to the <code>op get</code> call, which will help it look in the right account, in case you
+have multiple accounts (eg. personal and work account).</p>
 <h4 id="onepassword-examples">
   <code>onepassword</code> examples
   <a class="anchor" href="#onepassword-examples">#</a>
 </h4>
 <pre><code>{{ (onepassword &quot;&lt;uuid&gt;&quot;).details.password }}
 {{ (onepassword &quot;&lt;uuid&gt;&quot; &quot;&lt;vault-uuid&gt;&quot;).details.password }}
-</code></pre><h3 id="onepassworddocument-uuid-vault-uuid">
-  <code>onepasswordDocument</code> <em>uuid</em> [<em>vault-uuid</em>]
-  <a class="anchor" href="#onepassworddocument-uuid-vault-uuid">#</a>
+{{ (onepassword &quot;&lt;uuid&gt;&quot; &quot;&lt;vault-uuid&gt;&quot; &quot;&lt;account-name&gt;&quot;).details.password }}
+{{ (onepassword &quot;&lt;uuid&gt;&quot; &quot;&quot; &quot;&lt;account-name&gt;&quot;).details.password }}
+</code></pre><h3 id="onepassworddocument-uuid-vault-uuid-account-name">
+  <code>onepasswordDocument</code> <em>uuid</em> [<em>vault-uuid</em> [<em>account-name</em>]]
+  <a class="anchor" href="#onepassworddocument-uuid-vault-uuid-account-name">#</a>
 </h3>
 <p><code>onepassword</code> returns a document from <a href="https://1password.com/">1Password</a>
 using the <a href="https://support.1password.com/command-line-getting-started/">1Password
@@ -2514,16 +2547,20 @@ is passed to <code>op get document &lt;uuid&gt;</code> and the output from <code
 The output from <code>op</code> is cached so calling <code>onepasswordDocument</code> multiple times with the
 same <em>uuid</em> will only invoke <code>op</code> once.  If the optional <em>vault-uuid</em> is supplied,
 it will be passed along to the <code>op get</code> call, which can significantly improve
-performance.</p>
+performance. If the optional <em>account-name</em> is supplied, it will be passed along
+to the <code>op get</code> call, which will help it look in the right account, in case you
+have multiple accounts (eg. personal and work account).</p>
 <h4 id="onepassworddocument-examples">
   <code>onepasswordDocument</code> examples
   <a class="anchor" href="#onepassworddocument-examples">#</a>
 </h4>
 <pre><code>{{- onepasswordDocument &quot;&lt;uuid&gt;&quot; -}}
 {{- onepasswordDocument &quot;&lt;uuid&gt;&quot; &quot;&lt;vault-uuid&gt;&quot; -}}
-</code></pre><h3 id="onepassworddetailsfields-uuid-vault-uuid">
-  <code>onepasswordDetailsFields</code> <em>uuid</em> [<em>vault-uuid</em>]
-  <a class="anchor" href="#onepassworddetailsfields-uuid-vault-uuid">#</a>
+{{- onepasswordDocument &quot;&lt;uuid&gt;&quot; &quot;&lt;vault-uuid&gt;&quot; &quot;&lt;account-name&gt;&quot; -}}
+{{- onepasswordDocument &quot;&lt;uuid&gt;&quot; &quot;&quot; &quot;&lt;account-name&gt;&quot; -}}
+</code></pre><h3 id="onepassworddetailsfields-uuid-vault-uuid-account-name">
+  <code>onepasswordDetailsFields</code> <em>uuid</em> [<em>vault-uuid</em> [<em>account-name</em>]]
+  <a class="anchor" href="#onepassworddetailsfields-uuid-vault-uuid-account-name">#</a>
 </h3>
 <p><code>onepasswordDetailsFields</code> returns structured data from
 <a href="https://1password.com/">1Password</a> using the <a href="https://support.1password.com/command-line-getting-started/">1Password
@@ -2568,12 +2605,18 @@ elements of <code>details.fields</code> are returned as a map indexed by each fi
 </code></pre></div><p>The output from <code>op</code> is cached so calling <code>onepasswordDetailsFields</code> multiple
 times with the same <em>uuid</em> will only invoke <code>op</code> once.  If the optional
 <em>vault-uuid</em> is supplied, it will be passed along to the <code>op get</code> call, which
-can significantly improve performance.</p>
+can significantly improve performance. If the optional <em>account-name</em> is
+supplied, it will be passed along to the <code>op get</code> call, which will help it look
+in the right account, in case you have multiple accounts (eg. personal and work
+account).</p>
 <h4 id="onepassworddetailsfields-examples">
   <code>onepasswordDetailsFields</code> examples
   <a class="anchor" href="#onepassworddetailsfields-examples">#</a>
 </h4>
 <pre><code>{{ (onepasswordDetailsFields &quot;&lt;uuid&gt;&quot;).password.value }}
+{{ (onepasswordDetailsFields &quot;&lt;uuid&gt;&quot; &quot;&lt;vault-uuid&gt;&quot;).password.value }}
+{{ (onepasswordDetailsFields &quot;&lt;uuid&gt;&quot; &quot;&lt;vault-uuid&gt;&quot; &quot;&lt;account-name&gt;&quot;).password.value }}
+{{ (onepasswordDetailsFields &quot;&lt;uuid&gt;&quot; &quot;&quot; &quot;&lt;account-name&gt;&quot;).password.value }}
 </code></pre><h3 id="output-name-arg">
   <code>output</code> <em>name</em> [<em>arg</em>&hellip;]
   <a class="anchor" href="#output-name-arg">#</a>
@@ -2593,7 +2636,7 @@ and fast.</p>
   <a class="anchor" href="#pass-pass-name">#</a>
 </h3>
 <p><code>pass</code> returns passwords stored in <a href="https://www.passwordstore.org/">pass</a> using
-the pass CLI (<code>pass</code>). <em>pass-name</em> is passed to <code>pass show &lt;pass-name&gt;</code> and
+the pass CLI (<code>pass</code>). <em>pass-name</em> is passed to <code>pass show &lt;pass-name&gt;</code> and the
 first line of the output of <code>pass</code> is returned with the trailing newline
 stripped. The output from <code>pass</code> is cached so calling <code>pass</code> multiple times with
 the same <em>pass-name</em> will only invoke <code>pass</code> once.</p>
@@ -2602,7 +2645,15 @@ the same <em>pass-name</em> will only invoke <code>pass</code> once.</p>
   <a class="anchor" href="#pass-examples">#</a>
 </h4>
 <pre><code>{{ pass &quot;&lt;pass-name&gt;&quot; }}
-</code></pre><h3 id="promptbool-prompt">
+</code></pre><h3 id="passraw-pass-name">
+  <code>passRaw</code> <em>pass-name</em>
+  <a class="anchor" href="#passraw-pass-name">#</a>
+</h3>
+<p><code>passRaw</code> returns passwords stored in <a href="https://www.passwordstore.org/">pass</a>
+using the pass CLI (<code>pass</code>). <em>pass-name</em> is passed to <code>pass show &lt;pass-name&gt;</code>
+and the output is returned. The output from <code>pass</code> is cached so calling
+<code>passRaw</code> multiple times with the same <em>pass-name</em> will only invoke <code>pass</code> once.</p>
+<h3 id="promptbool-prompt">
   <code>promptBool</code> <em>prompt</em>
   <a class="anchor" href="#promptbool-prompt">#</a>
 </h3>
@@ -2878,6 +2929,7 @@ generating the initial config file.</p>
         <li><a href="#bitwardenfields-arg"><code>bitwardenFields</code> [<em>arg</em>&hellip;]</a></li>
         <li><a href="#githubkeys-user"><code>gitHubKeys</code> <em>user</em></a></li>
         <li><a href="#gopass-gopass-name"><code>gopass</code> <em>gopass-name</em></a></li>
+        <li><a href="#gopassraw-gopass-name"><code>gopassRaw</code> <em>gopass-name</em></a></li>
         <li><a href="#include-filename"><code>include</code> <em>filename</em></a></li>
         <li><a href="#ioreg"><code>ioreg</code></a></li>
         <li><a href="#joinpath-element"><code>joinPath</code> <em>element</em>&hellip;</a></li>
@@ -2887,11 +2939,13 @@ generating the initial config file.</p>
         <li><a href="#lastpass-id"><code>lastpass</code> <em>id</em></a></li>
         <li><a href="#lastpassraw-id"><code>lastpassRaw</code> <em>id</em></a></li>
         <li><a href="#lookpath-file"><code>lookPath</code> <em>file</em></a></li>
-        <li><a href="#onepassword-uuid-vault-uuid"><code>onepassword</code> <em>uuid</em> [<em>vault-uuid</em>]</a></li>
-        <li><a href="#onepassworddocument-uuid-vault-uuid"><code>onepasswordDocument</code> <em>uuid</em> [<em>vault-uuid</em>]</a></li>
-        <li><a href="#onepassworddetailsfields-uuid-vault-uuid"><code>onepasswordDetailsFields</code> <em>uuid</em> [<em>vault-uuid</em>]</a></li>
+        <li><a href="#mozillainstallhash-path"><code>mozillaInstallHash</code> <em>path</em></a></li>
+        <li><a href="#onepassword-uuid-vault-uuid-account-name"><code>onepassword</code> <em>uuid</em> [<em>vault-uuid</em> [<em>account-name</em>]]</a></li>
+        <li><a href="#onepassworddocument-uuid-vault-uuid-account-name"><code>onepasswordDocument</code> <em>uuid</em> [<em>vault-uuid</em> [<em>account-name</em>]]</a></li>
+        <li><a href="#onepassworddetailsfields-uuid-vault-uuid-account-name"><code>onepasswordDetailsFields</code> <em>uuid</em> [<em>vault-uuid</em> [<em>account-name</em>]]</a></li>
         <li><a href="#output-name-arg"><code>output</code> <em>name</em> [<em>arg</em>&hellip;]</a></li>
         <li><a href="#pass-pass-name"><code>pass</code> <em>pass-name</em></a></li>
+        <li><a href="#passraw-pass-name"><code>passRaw</code> <em>pass-name</em></a></li>
         <li><a href="#promptbool-prompt"><code>promptBool</code> <em>prompt</em></a></li>
         <li><a href="#promptint-prompt"><code>promptInt</code> <em>prompt</em></a></li>
         <li><a href="#promptstring-prompt"><code>promptString</code> <em>prompt</em></a></li>
