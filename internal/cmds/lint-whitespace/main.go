@@ -6,9 +6,7 @@ import (
 	"io/fs"
 	"net/http"
 	"os"
-	"path/filepath"
 	"regexp"
-	"sort"
 	"strings"
 
 	"go.uber.org/multierr"
@@ -59,38 +57,27 @@ func lintFile(filename string) error {
 }
 
 func run() error {
-	filenames := make(map[string]struct{})
-	if err := filepath.Walk(".", func(path string, info fs.FileInfo, err error) error {
+	var lintErrs error
+	if err := fs.WalkDir(os.DirFS("."), ".", func(path string, dirEntry fs.DirEntry, err error) error {
 		if err != nil {
 			return err
 		}
 		for _, rx := range ignoreRxs {
 			if rx.MatchString(path) {
-				if info.IsDir() {
-					return filepath.SkipDir
+				if dirEntry.IsDir() {
+					return fs.SkipDir
 				}
 				return nil
 			}
 		}
-		if info.Mode().IsRegular() {
-			filenames[path] = struct{}{}
+		if dirEntry.Type().IsRegular() {
+			lintErrs = multierr.Append(lintErrs, lintFile(path))
 		}
 		return nil
 	}); err != nil {
 		return err
 	}
-
-	sortedFilenames := make([]string, 0, len(filenames))
-	for path := range filenames {
-		sortedFilenames = append(sortedFilenames, path)
-	}
-	sort.Strings(sortedFilenames)
-
-	var err error
-	for _, filename := range sortedFilenames {
-		err = multierr.Append(err, lintFile(filename))
-	}
-	return err
+	return lintErrs
 }
 
 func main() {

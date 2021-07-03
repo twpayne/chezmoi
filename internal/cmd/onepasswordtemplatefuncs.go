@@ -16,14 +16,7 @@ type onepasswordConfig struct {
 }
 
 func (c *Config) onepasswordDetailsFieldsTemplateFunc(args ...string) map[string]interface{} {
-	key, vault, account := onepasswordGetKeyAndVaultAndAccount(args)
-	onepasswordArgs := []string{"get", "item", key}
-	if vault != "" {
-		onepasswordArgs = append(onepasswordArgs, "--vault", vault)
-	}
-	if account != "" {
-		onepasswordArgs = append(onepasswordArgs, "--account", account)
-	}
+	onepasswordArgs := getOnepasswordArgs([]string{"get", "item"}, args)
 	output := c.onepasswordOutput(onepasswordArgs)
 	var data struct {
 		Details struct {
@@ -44,14 +37,7 @@ func (c *Config) onepasswordDetailsFieldsTemplateFunc(args ...string) map[string
 }
 
 func (c *Config) onepasswordDocumentTemplateFunc(args ...string) string {
-	key, vault, account := onepasswordGetKeyAndVaultAndAccount(args)
-	onepasswordArgs := []string{"get", "document", key}
-	if vault != "" {
-		onepasswordArgs = append(onepasswordArgs, "--vault", vault)
-	}
-	if account != "" {
-		onepasswordArgs = append(onepasswordArgs, "--account", account)
-	}
+	onepasswordArgs := getOnepasswordArgs([]string{"get", "document"}, args)
 	output := c.onepasswordOutput(onepasswordArgs)
 	return string(output)
 }
@@ -81,14 +67,7 @@ func (c *Config) onepasswordOutput(args []string) []byte {
 }
 
 func (c *Config) onepasswordTemplateFunc(args ...string) map[string]interface{} {
-	key, vault, account := onepasswordGetKeyAndVaultAndAccount(args)
-	onepasswordArgs := []string{"get", "item", key}
-	if vault != "" {
-		onepasswordArgs = append(onepasswordArgs, "--vault", vault)
-	}
-	if account != "" {
-		onepasswordArgs = append(onepasswordArgs, "--account", account)
-	}
+	onepasswordArgs := getOnepasswordArgs([]string{"get", "item"}, args)
 	output := c.onepasswordOutput(onepasswordArgs)
 	var data map[string]interface{}
 	if err := json.Unmarshal(output, &data); err != nil {
@@ -98,16 +77,17 @@ func (c *Config) onepasswordTemplateFunc(args ...string) map[string]interface{} 
 	return data
 }
 
-func onepasswordGetKeyAndVaultAndAccount(args []string) (string, string, string) {
-	switch len(args) {
-	case 1:
-		return args[0], "", ""
-	case 2:
-		return args[0], args[1], ""
-	case 3:
-		return args[0], args[1], args[2]
-	default:
-		returnTemplateError(fmt.Errorf("expected 1 or 2 or 3 arguments, got %d", len(args)))
-		return "", "", ""
+func getOnepasswordArgs(baseArgs, args []string) []string {
+	if len(args) < 1 || len(args) > 3 {
+		returnTemplateError(fmt.Errorf("expected 1, 2, or 3 arguments, got %d", len(args)))
+		return nil
 	}
+	baseArgs = append(baseArgs, args[0])
+	if len(args) > 1 {
+		baseArgs = append(baseArgs, "--vault", args[1])
+	}
+	if len(args) > 2 {
+		baseArgs = append(baseArgs, "--account", args[2])
+	}
+	return baseArgs
 }

@@ -1748,11 +1748,11 @@ using the [1Password
 CLI](https://support.1password.com/command-line-getting-started/) (`op`). *uuid*
 is passed to `op get item <uuid>` and the output from `op` is parsed as JSON.
 The output from `op` is cached so calling `onepassword` multiple times with the
-same *uuid* will only invoke `op` once.  If the optional *vault-uuid* is supplied,
-it will be passed along to the `op get` call, which can significantly improve
-performance. If the optional *account-name* is supplied, it will be passed along
-to the `op get` call, which will help it look in the right account, in case you
-have multiple accounts (eg. personal and work account).
+same *uuid* will only invoke `op` once.  If the optional *vault-uuid* is
+supplied, it will be passed along to the `op get` call, which can significantly
+improve performance. If the optional *account-name* is supplied, it will be
+passed along to the `op get` call, which will help it look in the right account,
+in case you have multiple accounts (eg. personal and work accounts).
 
 #### `onepassword` examples
 
@@ -1765,16 +1765,16 @@ have multiple accounts (eg. personal and work account).
 
 ### `onepasswordDocument` *uuid* [*vault-uuid* [*account-name*]]
 
-`onepassword` returns a document from [1Password](https://1password.com/)
-using the [1Password
-CLI](https://support.1password.com/command-line-getting-started/) (`op`). *uuid*
-is passed to `op get document <uuid>` and the output from `op` is returned.
-The output from `op` is cached so calling `onepasswordDocument` multiple times with the
-same *uuid* will only invoke `op` once.  If the optional *vault-uuid* is supplied,
-it will be passed along to the `op get` call, which can significantly improve
-performance. If the optional *account-name* is supplied, it will be passed along
-to the `op get` call, which will help it look in the right account, in case you
-have multiple accounts (eg. personal and work account).
+`onepassword` returns a document from [1Password](https://1password.com/) using
+the [1Password CLI](https://support.1password.com/command-line-getting-started/)
+(`op`). *uuid* is passed to `op get document <uuid>` and the output from `op` is
+returned. The output from `op` is cached so calling `onepasswordDocument`
+multiple times with the same *uuid* will only invoke `op` once.  If the optional
+*vault-uuid* is supplied, it will be passed along to the `op get` call, which
+can significantly improve performance. If the optional *account-name* is
+supplied, it will be passed along to the `op get` call, which will help it look
+in the right account, in case you have multiple accounts (eg. personal and work
+accounts).
 
 #### `onepasswordDocument` examples
 
@@ -1841,7 +1841,7 @@ times with the same *uuid* will only invoke `op` once.  If the optional
 can significantly improve performance. If the optional *account-name* is
 supplied, it will be passed along to the `op get` call, which will help it look
 in the right account, in case you have multiple accounts (eg. personal and work
-account).
+accounts).
 
 #### `onepasswordDetailsFields` examples
 
