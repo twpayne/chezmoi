@@ -1,44 +1,47 @@
 # fish completion for chezmoi                              -*- shell-script -*-
 
 function __chezmoi_debug
-    set file "$BASH_COMP_DEBUG_FILE"
+    set -l file "$BASH_COMP_DEBUG_FILE"
     if test -n "$file"
         echo "$argv" >> $file
     end
 end
 
 function __chezmoi_perform_completion
-    __chezmoi_debug "Starting __chezmoi_perform_completion with: $argv"
+    __chezmoi_debug "Starting __chezmoi_perform_completion"
 
-    set args (string split -- " " "$argv")
-    set lastArg "$args[-1]"
+    # Extract all args except the last one
+    set -l args (commandline -opc)
+    # Extract the last arg and escape it in case it is a space
+    set -l lastArg (string escape -- (commandline -ct))
 
     __chezmoi_debug "args: $args"
     __chezmoi_debug "last arg: $lastArg"
 
-    set emptyArg ""
-    if test -z "$lastArg"
-        __chezmoi_debug "Setting emptyArg"
-        set emptyArg \"\"
-    end
-    __chezmoi_debug "emptyArg: $emptyArg"
+    set -l requestComp "$args[1] __complete $args[2..-1] $lastArg"
 
-    if not type -q "$args[1]"
-        # This can happen when "complete --do-complete chezmoi" is called when running this script.
-        __chezmoi_debug "Cannot find $args[1]. No completions."
-        return
-    end
-
-    set requestComp "$args[1] __complete $args[2..-1] $emptyArg"
     __chezmoi_debug "Calling $requestComp"
+    set -l results (eval $requestComp 2> /dev/null)
 
-    set results (eval $requestComp 2> /dev/null)
-    set comps $results[1..-2]
-    set directiveLine $results[-1]
+    # Some programs may output extra empty lines after the directive.
+    # Let's ignore them or else it will break completion.
+    # Ref: https://github.com/spf13/cobra/issues/1279
+    for line in $results[-1..1]
+        if test (string trim -- $line) = ""
+            # Found an empty line, remove it
+            set results $results[1..-2]
+        else
+            # Found non-empty line, we have our proper output
+            break
+        end
+    end
+
+    set -l comps $results[1..-2]
+    set -l directiveLine $results[-1]
 
     # For Fish, when completing a flag with an = (e.g., <program> -n=<TAB>)
     # completions must be prefixed with the flag
-    set flagPrefix (string match -r -- '-.*=' "$lastArg")
+    set -l flagPrefix (string match -r -- '-.*=' "$lastArg")
 
     __chezmoi_debug "Comps: $comps"
     __chezmoi_debug "DirectiveLine: $directiveLine"
@@ -51,114 +54,123 @@ function __chezmoi_perform_completion
     printf "%s\n" "$directiveLine"
 end
 
-# This function does three things:
-# 1- Obtain the completions and store them in the global __chezmoi_comp_results
-# 2- Set the __chezmoi_comp_do_file_comp flag if file completion should be performed
-#    and unset it otherwise
-# 3- Return true if the completion results are not empty
+# This function does two things:
+# - Obtain the completions and store them in the global __chezmoi_comp_results
+# - Return false if file completion should be performed
 function __chezmoi_prepare_completions
+    __chezmoi_debug ""
+    __chezmoi_debug "========= starting completion logic =========="
+
     # Start fresh
-    set --erase __chezmoi_comp_do_file_comp
     set --erase __chezmoi_comp_results
 
-    # Check if the command-line is already provided.  This is useful for testing.
-    if not set --query __chezmoi_comp_commandLine
-        # Use the -c flag to allow for completion in the middle of the line
-        set __chezmoi_comp_commandLine (commandline -c)
-    end
-    __chezmoi_debug "commandLine is: $__chezmoi_comp_commandLine"
-
-    set results (__chezmoi_perform_completion "$__chezmoi_comp_commandLine")
-    set --erase __chezmoi_comp_commandLine
+    set -l results (__chezmoi_perform_completion)
     __chezmoi_debug "Completion results: $results"
 
     if test -z "$results"
         __chezmoi_debug "No completion, probably due to a failure"
         # Might as well do file completion, in case it helps
-        set --global __chezmoi_comp_do_file_comp 1
         return 1
     end
 
-    set directive (string sub --start 2 $results[-1])
+    set -l directive (string sub --start 2 $results[-1])
     set --global __chezmoi_comp_results $results[1..-2]
 
     __chezmoi_debug "Completions are: $__chezmoi_comp_results"
     __chezmoi_debug "Directive is: $directive"
 
-    set shellCompDirectiveError 1
-    set shellCompDirectiveNoSpace 2
-    set shellCompDirectiveNoFileComp 4
-    set shellCompDirectiveFilterFileExt 8
-    set shellCompDirectiveFilterDirs 16
+    set -l shellCompDirectiveError 1
+    set -l shellCompDirectiveNoSpace 2
+    set -l shellCompDirectiveNoFileComp 4
+    set -l shellCompDirectiveFilterFileExt 8
+    set -l shellCompDirectiveFilterDirs 16
 
     if test -z "$directive"
         set directive 0
     end
 
-    set compErr (math (math --scale 0 $directive / $shellCompDirectiveError) % 2)
+    set -l compErr (math (math --scale 0 $directive / $shellCompDirectiveError) % 2)
     if test $compErr -eq 1
         __chezmoi_debug "Received error directive: aborting."
         # Might as well do file completion, in case it helps
-        set --global __chezmoi_comp_do_file_comp 1
         return 1
     end
 
-    set filefilter (math (math --scale 0 $directive / $shellCompDirectiveFilterFileExt) % 2)
-    set dirfilter (math (math --scale 0 $directive / $shellCompDirectiveFilterDirs) % 2)
+    set -l filefilter (math (math --scale 0 $directive / $shellCompDirectiveFilterFileExt) % 2)
+    set -l dirfilter (math (math --scale 0 $directive / $shellCompDirectiveFilterDirs) % 2)
     if test $filefilter -eq 1; or test $dirfilter -eq 1
         __chezmoi_debug "File extension filtering or directory filtering not supported"
         # Do full file completion instead
-        set --global __chezmoi_comp_do_file_comp 1
         return 1
     end
 
-    set nospace (math (math --scale 0 $directive / $shellCompDirectiveNoSpace) % 2)
-    set nofiles (math (math --scale 0 $directive / $shellCompDirectiveNoFileComp) % 2)
+    set -l nospace (math (math --scale 0 $directive / $shellCompDirectiveNoSpace) % 2)
+    set -l nofiles (math (math --scale 0 $directive / $shellCompDirectiveNoFileComp) % 2)
 
     __chezmoi_debug "nospace: $nospace, nofiles: $nofiles"
 
-    # Important not to quote the variable for count to work
-    set numComps (count $__chezmoi_comp_results)
-    __chezmoi_debug "numComps: $numComps"
+    # If we want to prevent a space, or if file completion is NOT disabled,
+    # we need to count the number of valid completions.
+    # To do so, we will filter on prefix as the completions we have received
+    # may not already be filtered so as to allow fish to match on different
+    # criteria than the prefix.
+    if test $nospace -ne 0; or test $nofiles -eq 0
+        set -l prefix (commandline -t | string escape --style=regex)
+        __chezmoi_debug "prefix: $prefix"
 
-    if test $numComps -eq 1; and test $nospace -ne 0
-        # To support the "nospace" directive we trick the shell
-        # by outputting an extra, longer completion.
-        __chezmoi_debug "Adding second completion to perform nospace directive"
-        set --append __chezmoi_comp_results $__chezmoi_comp_results[1].
+        set -l completions (string match -r -- "^$prefix.*" $__chezmoi_comp_results)
+        set --global __chezmoi_comp_results $completions
+        __chezmoi_debug "Filtered completions are: $__chezmoi_comp_results"
+
+        # Important not to quote the variable for count to work
+        set -l numComps (count $__chezmoi_comp_results)
+        __chezmoi_debug "numComps: $numComps"
+
+        if test $numComps -eq 1; and test $nospace -ne 0
+            # We must first split on \t to get rid of the descriptions to be
+            # able to check what the actual completion will be.
+            # We don't need descriptions anyway since there is only a single
+            # real completion which the shell will expand immediately.
+            set -l split (string split --max 1 \t $__chezmoi_comp_results[1])
+
+            # Fish won't add a space if the completion ends with any
+            # of the following characters: @=/:.,
+            set -l lastChar (string sub -s -1 -- $split)
+            if not string match -r -q "[@=/:.,]" -- "$lastChar"
+                # In other cases, to support the "nospace" directive we trick the shell
+                # by outputting an extra, longer completion.
+                __chezmoi_debug "Adding second completion to perform nospace directive"
+                set --global __chezmoi_comp_results $split[1] $split[1].
+                __chezmoi_debug "Completions are now: $__chezmoi_comp_results"
+            end
+        end
+
+        if test $numComps -eq 0; and test $nofiles -eq 0
+            # To be consistent with bash and zsh, we only trigger file
+            # completion when there are no other completions
+            __chezmoi_debug "Requesting file completion"
+            return 1
+        end
     end
 
-    if test $numComps -eq 0; and test $nofiles -eq 0
-        __chezmoi_debug "Requesting file completion"
-        set --global __chezmoi_comp_do_file_comp 1
-    end
-
-    # If we don't want file completion, we must return true even if there
-    # are no completions found.  This is because fish will perform the last
-    # completion command, even if its condition is false, if no other
-    # completion command was triggered
-    return (not set --query __chezmoi_comp_do_file_comp)
+    return 0
 end
 
 # Since Fish completions are only loaded once the user triggers them, we trigger them ourselves
 # so we can properly delete any completions provided by another script.
-# The space after the the program name is essential to trigger completion for the program
-# and not completion of the program name itself.
-complete --do-complete "chezmoi " > /dev/null 2>&1
-# Using '> /dev/null 2>&1' since '&>' is not supported in older versions of fish.
+# Only do this if the program can be found, or else fish may print some errors; besides,
+# the existing completions will only be loaded if the program can be found.
+if type -q "chezmoi"
+    # The space after the program name is essential to trigger completion for the program
+    # and not completion of the program name itself.
+    # Also, we use '> /dev/null 2>&1' since '&>' is not supported in older versions of fish.
+    complete --do-complete "chezmoi " > /dev/null 2>&1
+end
 
 # Remove any pre-existing completions for the program since we will be handling all of them.
 complete -c chezmoi -e
 
-# The order in which the below two lines are defined is very important so that __chezmoi_prepare_completions
-# is called first.  It is __chezmoi_prepare_completions that sets up the __chezmoi_comp_do_file_comp variable.
-#
-# This completion will be run second as complete commands are added FILO.
-# It triggers file completion choices when __chezmoi_comp_do_file_comp is set.
-complete -c chezmoi -n 'set --query __chezmoi_comp_do_file_comp'
-
-# This completion will be run first as complete commands are added FILO.
-# The call to __chezmoi_prepare_completions will setup both __chezmoi_comp_results and __chezmoi_comp_do_file_comp.
-# It provides the program's completion choices.
+# The call to __chezmoi_prepare_completions will setup __chezmoi_comp_results
+# which provides the program's completion choices.
 complete -c chezmoi -n '__chezmoi_prepare_completions' -f -a '$__chezmoi_comp_results'
 

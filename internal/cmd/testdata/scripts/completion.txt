@@ -1,5 +1,5 @@
 chezmoi completion bash
-stdout '# bash completion for chezmoi'
+stdout '# bash completion V2 for chezmoi'
 
 chezmoi completion fish
 stdout '# fish completion for chezmoi'
