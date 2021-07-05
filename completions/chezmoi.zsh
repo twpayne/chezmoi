@@ -18,7 +18,7 @@ _chezmoi()
     local shellCompDirectiveFilterFileExt=8
     local shellCompDirectiveFilterDirs=16
 
-    local lastParam lastChar flagPrefix requestComp out directive compCount comp lastComp
+    local lastParam lastChar flagPrefix requestComp out directive comp lastComp noSpace
     local -a completions
 
     __chezmoi_debug "\n========= starting completion logic =========="
@@ -86,7 +86,6 @@ _chezmoi()
         return
     fi
 
-    compCount=0
     while IFS='\n' read -r comp; do
         if [ -n "$comp" ]; then
             # If requested, completions are returned with a description.
@@ -98,12 +97,16 @@ _chezmoi()
             local tab=$(printf '\t')
             comp=${comp//$tab/:}
 
-            ((compCount++))
             __chezmoi_debug "Adding completion: ${comp}"
             completions+=${comp}
             lastComp=$comp
         fi
     done < <(printf "%s\n" "${out[@]}")
+
+    if [ $((directive & shellCompDirectiveNoSpace)) -ne 0 ]; then
+        __chezmoi_debug "Activating nospace."
+        noSpace="-S ''"
+    fi
 
     if [ $((directive & shellCompDirectiveFilterFileExt)) -ne 0 ]; then
         # File extension filtering
@@ -131,25 +134,40 @@ _chezmoi()
             __chezmoi_debug "Listing directories in ."
         fi
 
+        local result
         _arguments '*:dirname:_files -/'" ${flagPrefix}"
+        result=$?
         if [ -n "$subdir" ]; then
             popd >/dev/null 2>&1
         fi
-    elif [ $((directive & shellCompDirectiveNoSpace)) -ne 0 ] && [ ${compCount} -eq 1 ]; then
-        __chezmoi_debug "Activating nospace."
-        # We can use compadd here as there is no description when
-        # there is only one completion.
-        compadd -S '' "${lastComp}"
-    elif [ ${compCount} -eq 0 ]; then
-        if [ $((directive & shellCompDirectiveNoFileComp)) -ne 0 ]; then
-            __chezmoi_debug "deactivating file completion"
-        else
-            # Perform file completion
-            __chezmoi_debug "activating file completion"
-            _arguments '*:filename:_files'" ${flagPrefix}"
-        fi
+        return $result
     else
-        _describe "completions" completions $(echo $flagPrefix)
+        __chezmoi_debug "Calling _describe"
+        if eval _describe "completions" completions $flagPrefix $noSpace; then
+            __chezmoi_debug "_describe found some completions"
+
+            # Return the success of having called _describe
+            return 0
+        else
+            __chezmoi_debug "_describe did not find completions."
+            __chezmoi_debug "Checking if we should do file completion."
+            if [ $((directive & shellCompDirectiveNoFileComp)) -ne 0 ]; then
+                __chezmoi_debug "deactivating file completion"
+
+                # We must return an error code here to let zsh know that there were no
+                # completions found by _describe; this is what will trigger other
+                # matching algorithms to attempt to find completions.
+                # For example zsh can match letters in the middle of words.
+                return 1
+            else
+                # Perform file completion
+                __chezmoi_debug "Activating file completion"
+
+                # We must return the result of this command, so it must be the
+                # last command, or else we must store its result to return it.
+                _arguments '*:filename:_files'" ${flagPrefix}"
+            fi
+        fi
     fi
 }
 

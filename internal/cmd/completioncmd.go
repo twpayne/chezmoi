@@ -26,13 +26,16 @@ func (c *Config) newCompletionCmd() *cobra.Command {
 
 func (c *Config) runCompletionCmd(cmd *cobra.Command, args []string) error {
 	var sb strings.Builder
+	sb.Grow(16384)
 	switch args[0] {
 	case "bash":
-		if err := cmd.Root().GenBashCompletion(&sb); err != nil {
+		includeDesc := true
+		if err := cmd.Root().GenBashCompletionV2(&sb, includeDesc); err != nil {
 			return err
 		}
 	case "fish":
-		if err := cmd.Root().GenFishCompletion(&sb, true); err != nil {
+		includeDesc := true
+		if err := cmd.Root().GenFishCompletion(&sb, includeDesc); err != nil {
 			return err
 		}
 	case "powershell":
