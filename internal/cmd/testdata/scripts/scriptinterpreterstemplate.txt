@@ -1,0 +1,10 @@
+[!exec:python] skip 'python not found in $PATH'
+
+# test python scripts
+chezmoi apply
+stdout 'Hello from Python'
+
+-- home/user/.local/share/chezmoi/run_python.py.tmpl --
+#!/usr/bin/env python
+
+print({{ "Hello from Python\n" | quote }})

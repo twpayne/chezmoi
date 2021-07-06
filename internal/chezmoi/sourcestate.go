@@ -1035,7 +1035,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(sourceRelPath SourceRelPath,
 
 // newScriptTargetStateEntryFunc returns a targetStateEntryFunc that returns a
 // script with sourceLazyContents.
-func (s *SourceState) newScriptTargetStateEntryFunc(sourceRelPath SourceRelPath, fileAttr FileAttr, targetRelPath RelPath, sourceLazyContents *lazyContents) targetStateEntryFunc {
+func (s *SourceState) newScriptTargetStateEntryFunc(sourceRelPath SourceRelPath, fileAttr FileAttr, targetRelPath RelPath, sourceLazyContents *lazyContents, interpreter *Interpreter) targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		contentsFunc := func() ([]byte, error) {
 			contents, err := sourceLazyContents.Contents()
@@ -1050,11 +1050,10 @@ func (s *SourceState) newScriptTargetStateEntryFunc(sourceRelPath SourceRelPath,
 			}
 			return contents, nil
 		}
-		ext := strings.ToLower(strings.TrimPrefix(sourceRelPath.RelPath().Ext(), "."))
 		return &TargetStateScript{
 			lazyContents: newLazyContentsFunc(contentsFunc),
 			name:         targetRelPath,
-			interpreter:  s.interpreters[ext],
+			interpreter:  interpreter,
 			once:         fileAttr.Once,
 		}, nil
 	}
@@ -1107,16 +1106,22 @@ func (s *SourceState) newSourceStateFile(sourceRelPath SourceRelPath, fileAttr F
 	case SourceFileTypeFile:
 		targetStateEntryFunc = s.newFileTargetStateEntryFunc(sourceRelPath, fileAttr, sourceLazyContents)
 	case SourceFileTypeModify:
-		// If the target has an extension the determine if it indicates an
+		// If the target has an extension, determine if it indicates an
 		// interpreter to use.
 		ext := strings.ToLower(strings.TrimPrefix(targetRelPath.Ext(), "."))
 		interpreter := s.interpreters[ext]
 		if interpreter != nil {
+			// For modify scripts, the script extension is not considered part
+			// of the target name, so remove it.
 			targetRelPath = targetRelPath[:len(targetRelPath)-len(ext)-1]
 		}
 		targetStateEntryFunc = s.newModifyTargetStateEntryFunc(sourceRelPath, fileAttr, sourceLazyContents, interpreter)
 	case SourceFileTypeScript:
-		targetStateEntryFunc = s.newScriptTargetStateEntryFunc(sourceRelPath, fileAttr, targetRelPath, sourceLazyContents)
+		// If the script has an extension, determine if it indicates an
+		// interpreter to use.
+		ext := strings.ToLower(strings.TrimPrefix(targetRelPath.Ext(), "."))
+		interpreter := s.interpreters[ext]
+		targetStateEntryFunc = s.newScriptTargetStateEntryFunc(sourceRelPath, fileAttr, targetRelPath, sourceLazyContents, interpreter)
 	case SourceFileTypeSymlink:
 		targetStateEntryFunc = s.newSymlinkTargetStateEntryFunc(sourceRelPath, fileAttr, sourceLazyContents)
 	default:
