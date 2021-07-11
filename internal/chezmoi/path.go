@@ -77,13 +77,17 @@ func (p AbsPath) String() string {
 
 // TrimDirPrefix trims prefix from p.
 func (p AbsPath) TrimDirPrefix(dirPrefixAbsPath AbsPath) (RelPath, error) {
-	if !strings.HasPrefix(string(p), string(dirPrefixAbsPath+"/")) {
+	dirAbsPath := dirPrefixAbsPath
+	if dirAbsPath != "/" {
+		dirAbsPath += "/"
+	}
+	if !strings.HasPrefix(string(p), string(dirAbsPath)) {
 		return "", &errNotInAbsDir{
 			pathAbsPath: p,
 			dirAbsPath:  dirPrefixAbsPath,
 		}
 	}
-	return RelPath(p[len(dirPrefixAbsPath)+1:]), nil
+	return RelPath(p[len(dirAbsPath):]), nil
 }
 
 // Type implements github.com/spf13/pflag.Value.Type.
