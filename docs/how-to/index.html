@@ -16,7 +16,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" integrity="sha256-lYzqeCdiHW&#43;8s6zwkTRMPkTj0qlCj5w8OLues3v4xF0=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.d17e2b3ae0057ee6b76bc634acf67b445efcecca54d8960135e0cada0b9c0f38.js" integrity="sha256-0X4rOuAFfua3a8Y0rPZ7RF787MpU2JYBNeDK2gucDzg=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.adab8f13a443f7d8cbc7ef6ae4258d6237906b83de8d27b4a33b378581d0e890.js" integrity="sha256-rauPE6RD99jLx&#43;9q5CWNYjeQa4PejSe0ozs3hYHQ6JA=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -619,7 +619,7 @@ and fallback to <code>promptString</code> only if it is not set.</p>
 {{- end -}}
 
 [data]
-    var = $var
+    var = {{ $var }}
 </code></pre><h3 id="handle-different-file-locations-on-different-systems-with-the-same-contents">
   Handle different file locations on different systems with the same contents
   <a class="anchor" href="#handle-different-file-locations-on-different-systems-with-the-same-contents">#</a>
@@ -1214,9 +1214,23 @@ contents.</p>
   Migrate away from chezmoi
   <a class="anchor" href="#migrate-away-from-chezmoi">#</a>
 </h2>
-<p>chezmoi creates regular files and directories - your home directory managed by
-chezmoi is exactly the same as if you were using no dotfile manager at all. Use
-your new dotfile manager&rsquo;s functionality for importing your existing dotfiles.</p>
+<p>chezmoi provides several mechanisms to help you move to an alternative dotfile
+manager (or even no dotfile manager at all) in the future:</p>
+<ul>
+<li>chezmoi creates your dotfiles just as if you were not using a dotfile manager
+at all. Your dotfiles are regular files, directories, and symlinks. You can
+run <a href="/docs/reference/#purge"><code>chezmoi purge</code></a>
+to delete all traces of chezmoi and then, if you&rsquo;re migrating to a new dotfile
+manager, then you can use whatever mechanism it provides to add your dotfiles
+to your new system.</li>
+<li>chezmoi has a <a href="/docs/reference/#archive"><code>chezmoi archive</code></a>
+command that generates a tarball of your dotfiles. You can replace the
+contents of your dotfiles repo with the contents of the archive and you&rsquo;ve
+effectively immediately migrated away from chezmoi.</li>
+<li>chezmoi has a <a href="/docs/reference/#dump-target"><code>chezmoi dump</code></a>
+command that dumps the interpreted (target) state in a machine-readable form,
+so you can write scripts around chezmoi.</li>
+</ul>
 </article>
  
       
