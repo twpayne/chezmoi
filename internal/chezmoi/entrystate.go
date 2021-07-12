@@ -25,6 +25,7 @@ type EntryState struct {
 	Mode           fs.FileMode    `json:"mode,omitempty" toml:"mode,omitempty" yaml:"mode,omitempty"`
 	ContentsSHA256 HexBytes       `json:"contentsSHA256,omitempty" toml:"contentsSHA256,omitempty" yaml:"contentsSHA256,omitempty"` //nolint:tagliatelle
 	contents       []byte
+	overwrite      bool
 }
 
 // Contents returns s's contents, if available.
@@ -53,4 +54,9 @@ func (s *EntryState) Equivalent(other *EntryState) bool {
 	default:
 		return s.Equal(other)
 	}
+}
+
+// Overwrite returns true if s should be overwritten by default.
+func (s *EntryState) Overwrite() bool {
+	return s.overwrite
 }

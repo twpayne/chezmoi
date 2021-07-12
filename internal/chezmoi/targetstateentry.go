@@ -24,8 +24,9 @@ type TargetStateDir struct {
 // A TargetStateFile represents the state of a file in the target state.
 type TargetStateFile struct {
 	*lazyContents
-	empty bool
-	perm  fs.FileMode
+	empty     bool
+	overwrite bool
+	perm      fs.FileMode
 }
 
 // A TargetStateRemove represents the absence of an entry in the target state.
@@ -145,6 +146,7 @@ func (t *TargetStateFile) EntryState(umask fs.FileMode) (*EntryState, error) {
 		Mode:           t.perm &^ umask,
 		ContentsSHA256: HexBytes(contentsSHA256),
 		contents:       contents,
+		overwrite:      t.overwrite,
 	}, nil
 }
 

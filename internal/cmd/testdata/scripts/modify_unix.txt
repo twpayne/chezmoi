@@ -39,6 +39,22 @@ cmpmod 666 $HOME/.file
 chezmoi apply $HOME${/}.file
 cmpmod 700 $HOME/.file
 
+chhome home3/user
+
+# test that chezmoi apply always overwrites modified files without --force
+chezmoi add $HOME${/}.modify
+chezmoi apply
+edit $HOME${/}.modify
+rm $CHEZMOISOURCEDIR/dot_modify
+cp home/user/.local/share/chezmoi/modify_dot_modify $CHEZMOISOURCEDIR
+chezmoi apply
+cmp $HOME${/}.modify golden/.edited-and-modified
+
+-- golden/.edited-and-modified --
+beginning
+modified-middle
+end
+# edited
 -- golden/.modified --
 beginning
 modified-middle
@@ -76,3 +92,7 @@ exit 1
 #!/bin/sh
 
 cat
+-- home3/user/.modify --
+beginning
+middle
+end

@@ -542,6 +542,8 @@ func (c *Config) defaultConfigFile(fileSystem vfs.Stater, bds *xdg.BaseDirectory
 
 func (c *Config) defaultPreApplyFunc(targetRelPath chezmoi.RelPath, targetEntryState, lastWrittenEntryState, actualEntryState *chezmoi.EntryState) error {
 	switch {
+	case targetEntryState.Overwrite():
+		return nil
 	case targetEntryState.Type == chezmoi.EntryStateTypeScript:
 		return nil
 	case c.force:

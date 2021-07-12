@@ -1028,6 +1028,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(sourceRelPath SourceRelPath,
 		}
 		return &TargetStateFile{
 			lazyContents: newLazyContentsFunc(contentsFunc),
+			overwrite:    true,
 			perm:         fileAttr.perm() &^ s.umask,
 		}, nil
 	}
