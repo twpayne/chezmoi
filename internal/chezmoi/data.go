@@ -53,7 +53,7 @@ func KernelInfo(fileSystem vfs.FS) (map[string]string, error) {
 
 // OSRelease returns the operating system identification data as defined by the
 // os-release specification.
-func OSRelease(fileSystem vfs.FS) (map[string]string, error) {
+func OSRelease(fileSystem vfs.FS) (map[string]interface{}, error) {
 	for _, filename := range []string{
 		"/usr/lib/os-release",
 		"/etc/os-release",
@@ -85,8 +85,8 @@ func maybeUnquote(s string) string {
 
 // parseOSRelease parses operating system identification data from r as defined
 // by the os-release specification.
-func parseOSRelease(r io.Reader) (map[string]string, error) {
-	result := make(map[string]string)
+func parseOSRelease(r io.Reader) (map[string]interface{}, error) {
+	result := make(map[string]interface{})
 	s := bufio.NewScanner(r)
 	for s.Scan() {
 		// Trim all leading whitespace, but not necessarily trailing whitespace.

@@ -124,11 +124,11 @@ func TestUniqueAbbreviations(t *testing.T) {
 }
 
 func TestUpperSnakeCaseToCamelCaseMap(t *testing.T) {
-	actual := upperSnakeCaseToCamelCaseMap(map[string]string{
+	actual := upperSnakeCaseToCamelCaseMap(map[string]interface{}{
 		"BUG_REPORT_URL": "",
 		"ID":             "",
 	})
-	assert.Equal(t, map[string]string{
+	assert.Equal(t, map[string]interface{}{
 		"bugReportURL": "",
 		"id":           "",
 	}, actual)

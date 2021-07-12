@@ -65,7 +65,7 @@ func TestOSRelease(t *testing.T) {
 	for _, tc := range []struct {
 		name     string
 		root     map[string]interface{}
-		expected map[string]string
+		expected map[string]interface{}
 	}{
 		{
 			name: "fedora",
@@ -82,7 +82,7 @@ func TestOSRelease(t *testing.T) {
 					`BUG_REPORT_URL="https://bugzilla.redhat.com/"`,
 				),
 			},
-			expected: map[string]string{
+			expected: map[string]interface{}{
 				"NAME":           "Fedora",
 				"VERSION":        "17 (Beefy Miracle)",
 				"ID":             "fedora",
@@ -112,7 +112,7 @@ func TestOSRelease(t *testing.T) {
 					`UBUNTU_CODENAME=bionic`,
 				),
 			},
-			expected: map[string]string{
+			expected: map[string]interface{}{
 				"NAME":               "Ubuntu",
 				"VERSION":            "18.04.1 LTS (Bionic Beaver)",
 				"ID":                 "ubuntu",
@@ -142,7 +142,7 @@ func TestParseOSRelease(t *testing.T) {
 	for _, tc := range []struct {
 		name     string
 		s        string
-		expected map[string]string
+		expected map[string]interface{}
 	}{
 		{
 			name: "fedora",
@@ -157,7 +157,7 @@ func TestParseOSRelease(t *testing.T) {
 				`HOME_URL="https://fedoraproject.org/"`,
 				`BUG_REPORT_URL="https://bugzilla.redhat.com/"`,
 			),
-			expected: map[string]string{
+			expected: map[string]interface{}{
 				"NAME":           "Fedora",
 				"VERSION":        "17 (Beefy Miracle)",
 				"ID":             "fedora",
@@ -188,7 +188,7 @@ func TestParseOSRelease(t *testing.T) {
 				`VERSION_CODENAME=bionic`,
 				`UBUNTU_CODENAME=bionic`,
 			),
-			expected: map[string]string{
+			expected: map[string]interface{}{
 				"NAME":               "Ubuntu",
 				"VERSION":            "18.04.1 LTS (Bionic Beaver)",
 				"ID":                 "ubuntu",

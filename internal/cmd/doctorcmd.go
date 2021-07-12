@@ -346,7 +346,11 @@ func (osArchCheck) Name() string {
 func (osArchCheck) Run() (checkResult, string) {
 	fields := []string{runtime.GOOS + "/" + runtime.GOARCH}
 	if osRelease, err := chezmoi.OSRelease(vfs.OSFS); err == nil {
-		fields = append(fields, "("+osRelease["NAME"]+"/"+osRelease["VERSION"]+")")
+		if name, ok := osRelease["NAME"].(string); ok {
+			if version, ok := osRelease["VERSION"].(string); ok {
+				fields = append(fields, "("+name+"/"+version+")")
+			}
+		}
 	}
 	return checkOK, strings.Join(fields, " ")
 }
