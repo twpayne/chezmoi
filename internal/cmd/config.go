@@ -693,7 +693,6 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 			"fqdnHostname": fqdnHostname,
 			"group":        group,
 			"homeDir":      c.homeDir,
-			"homedir":      c.homeDir, // TODO Remove in version 2.1.
 			"hostname":     hostname,
 			"kernel":       kernel,
 			"os":           runtime.GOOS,
