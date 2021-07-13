@@ -608,20 +608,6 @@ func (c *Config) defaultSourceDir(fileSystem vfs.Stater, bds *xdg.BaseDirectoryS
 }
 
 func (c *Config) defaultTemplateData() map[string]interface{} {
-	data := map[string]interface{}{
-		"arch":      runtime.GOARCH,
-		"homeDir":   c.homeDir,
-		"homedir":   c.homeDir, // TODO Remove in version 2.1.
-		"os":        runtime.GOOS,
-		"sourceDir": string(c.SourceDirAbsPath),
-		"version": map[string]interface{}{
-			"builtBy": c.versionInfo.BuiltBy,
-			"commit":  c.versionInfo.Commit,
-			"date":    c.versionInfo.Date,
-			"version": c.versionInfo.Version,
-		},
-	}
-
 	// Determine the user's username and group, if possible.
 	//
 	// user.Current and user.LookupGroupId in Go's standard library are
@@ -647,11 +633,12 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 	// determined. Unset variables will trigger template errors if used,
 	// alerting the user to the problem and allowing them to find alternative
 	// solutions.
+	var username, group string
 	if currentUser, err := user.Current(); err == nil {
-		data["username"] = currentUser.Username
+		username = currentUser.Username
 		if runtime.GOOS != "windows" {
-			if group, err := user.LookupGroupId(currentUser.Gid); err == nil {
-				data["group"] = group.Name
+			if rawGroup, err := user.LookupGroupId(currentUser.Gid); err == nil {
+				group = rawGroup.Name
 			} else {
 				log.Debug().
 					Str("gid", currentUser.Gid).
@@ -663,10 +650,9 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 		log.Debug().
 			Err(err).
 			Msg("user.Current")
-		user, ok := os.LookupEnv("USER")
-		if ok {
-			data["username"] = user
-		} else {
+		var ok bool
+		username, ok = os.LookupEnv("USER")
+		if !ok {
 			log.Debug().
 				Str("key", "USER").
 				Bool("ok", ok).
@@ -674,28 +660,27 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 		}
 	}
 
-	if fqdnHostname := chezmoi.FQDNHostname(c.fileSystem); fqdnHostname != "" {
-		data["fqdnHostname"] = fqdnHostname
-	}
+	fqdnHostname := chezmoi.FQDNHostname(c.fileSystem)
 
-	if hostname, err := os.Hostname(); err == nil {
-		data["hostname"] = strings.SplitN(hostname, ".", 2)[0]
+	var hostname string
+	if rawHostname, err := os.Hostname(); err == nil {
+		hostname = strings.SplitN(rawHostname, ".", 2)[0]
 	} else {
 		log.Debug().
 			Err(err).
 			Msg("os.Hostname")
 	}
 
-	if kernel, err := chezmoi.Kernel(c.fileSystem); err == nil {
-		data["kernel"] = kernel
-	} else {
+	kernel, err := chezmoi.Kernel(c.fileSystem)
+	if err != nil {
 		log.Debug().
 			Err(err).
 			Msg("chezmoi.Kernel")
 	}
 
-	if osRelease, err := chezmoi.OSRelease(c.fileSystem); err == nil {
-		data["osRelease"] = upperSnakeCaseToCamelCaseMap(osRelease)
+	var osRelease map[string]interface{}
+	if rawOSRelease, err := chezmoi.OSRelease(c.fileSystem); err == nil {
+		osRelease = upperSnakeCaseToCamelCaseMap(rawOSRelease)
 	} else {
 		log.Debug().
 			Err(err).
@@ -703,7 +688,25 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 	}
 
 	return map[string]interface{}{
-		"chezmoi": data,
+		"chezmoi": map[string]interface{}{
+			"arch":         runtime.GOARCH,
+			"fqdnHostname": fqdnHostname,
+			"group":        group,
+			"homeDir":      c.homeDir,
+			"homedir":      c.homeDir, // TODO Remove in version 2.1.
+			"hostname":     hostname,
+			"kernel":       kernel,
+			"os":           runtime.GOOS,
+			"osRelease":    osRelease,
+			"sourceDir":    string(c.SourceDirAbsPath),
+			"username":     username,
+			"version": map[string]interface{}{
+				"builtBy": c.versionInfo.BuiltBy,
+				"commit":  c.versionInfo.Commit,
+				"date":    c.versionInfo.Date,
+				"version": c.versionInfo.Version,
+			},
+		},
 	}
 }
 
