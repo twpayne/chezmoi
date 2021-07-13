@@ -15,8 +15,8 @@ import (
 	"github.com/twpayne/go-vfs/v3"
 )
 
-// KernelInfo returns the kernel information parsed from /proc/sys/kernel.
-func KernelInfo(fileSystem vfs.FS) (map[string]string, error) {
+// Kernel returns the kernel information parsed from /proc/sys/kernel.
+func Kernel(fileSystem vfs.FS) (map[string]interface{}, error) {
 	const procSysKernel = "/proc/sys/kernel"
 
 	info, err := fileSystem.Stat(procSysKernel)
@@ -31,7 +31,7 @@ func KernelInfo(fileSystem vfs.FS) (map[string]string, error) {
 		return nil, nil
 	}
 
-	kernelInfo := make(map[string]string)
+	kernel := make(map[string]interface{})
 	for _, filename := range []string{
 		"osrelease",
 		"ostype",
@@ -46,9 +46,9 @@ func KernelInfo(fileSystem vfs.FS) (map[string]string, error) {
 		case err != nil:
 			return nil, err
 		}
-		kernelInfo[filename] = string(bytes.TrimSpace(data))
+		kernel[filename] = string(bytes.TrimSpace(data))
 	}
-	return kernelInfo, nil
+	return kernel, nil
 }
 
 // OSRelease returns the operating system identification data as defined by the

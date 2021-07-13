@@ -11,11 +11,11 @@ import (
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
 
-func TestKernelInfo(t *testing.T) {
+func TestKernel(t *testing.T) {
 	for _, tc := range []struct {
-		name               string
-		root               interface{}
-		expectedKernelInfo map[string]string
+		name           string
+		root           interface{}
+		expectedKernel map[string]interface{}
 	}{
 		{
 			name: "windows_services_for_linux",
@@ -26,7 +26,7 @@ func TestKernelInfo(t *testing.T) {
 					"version":   "#1 SMP Debian 5.2.9-2 (2019-08-21)\n",
 				},
 			},
-			expectedKernelInfo: map[string]string{
+			expectedKernel: map[string]interface{}{
 				"osrelease": "4.19.81-microsoft-standard",
 				"ostype":    "Linux",
 				"version":   "#1 SMP Debian 5.2.9-2 (2019-08-21)",
@@ -39,7 +39,7 @@ func TestKernelInfo(t *testing.T) {
 					"version": "#1 SMP Debian 5.2.9-2 (2019-08-21)\n",
 				},
 			},
-			expectedKernelInfo: map[string]string{
+			expectedKernel: map[string]interface{}{
 				"version": "#1 SMP Debian 5.2.9-2 (2019-08-21)",
 			},
 		},
@@ -48,14 +48,14 @@ func TestKernelInfo(t *testing.T) {
 			root: map[string]interface{}{
 				"/proc/sys": &vfst.Dir{Perm: 0o755},
 			},
-			expectedKernelInfo: nil,
+			expectedKernel: nil,
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
-				actual, err := KernelInfo(fileSystem)
+				actual, err := Kernel(fileSystem)
 				assert.NoError(t, err)
-				assert.Equal(t, tc.expectedKernelInfo, actual)
+				assert.Equal(t, tc.expectedKernel, actual)
 			})
 		})
 	}

@@ -686,12 +686,12 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 			Msg("os.Hostname")
 	}
 
-	if kernelInfo, err := chezmoi.KernelInfo(c.fileSystem); err == nil {
-		data["kernel"] = kernelInfo
+	if kernel, err := chezmoi.Kernel(c.fileSystem); err == nil {
+		data["kernel"] = kernel
 	} else {
 		log.Debug().
 			Err(err).
-			Msg("chezmoi.KernelInfo")
+			Msg("chezmoi.Kernel")
 	}
 
 	if osRelease, err := chezmoi.OSRelease(c.fileSystem); err == nil {
