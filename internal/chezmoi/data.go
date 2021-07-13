@@ -15,8 +15,8 @@ import (
 	"github.com/twpayne/go-vfs/v3"
 )
 
-// KernelInfo returns the kernel information parsed from /proc/sys/kernel.
-func KernelInfo(fileSystem vfs.FS) (map[string]string, error) {
+// Kernel returns the kernel information parsed from /proc/sys/kernel.
+func Kernel(fileSystem vfs.FS) (map[string]interface{}, error) {
 	const procSysKernel = "/proc/sys/kernel"
 
 	info, err := fileSystem.Stat(procSysKernel)
@@ -31,7 +31,7 @@ func KernelInfo(fileSystem vfs.FS) (map[string]string, error) {
 		return nil, nil
 	}
 
-	kernelInfo := make(map[string]string)
+	kernel := make(map[string]interface{})
 	for _, filename := range []string{
 		"osrelease",
 		"ostype",
@@ -46,14 +46,14 @@ func KernelInfo(fileSystem vfs.FS) (map[string]string, error) {
 		case err != nil:
 			return nil, err
 		}
-		kernelInfo[filename] = string(bytes.TrimSpace(data))
+		kernel[filename] = string(bytes.TrimSpace(data))
 	}
-	return kernelInfo, nil
+	return kernel, nil
 }
 
 // OSRelease returns the operating system identification data as defined by the
 // os-release specification.
-func OSRelease(fileSystem vfs.FS) (map[string]string, error) {
+func OSRelease(fileSystem vfs.FS) (map[string]interface{}, error) {
 	for _, filename := range []string{
 		"/usr/lib/os-release",
 		"/etc/os-release",
@@ -85,8 +85,8 @@ func maybeUnquote(s string) string {
 
 // parseOSRelease parses operating system identification data from r as defined
 // by the os-release specification.
-func parseOSRelease(r io.Reader) (map[string]string, error) {
-	result := make(map[string]string)
+func parseOSRelease(r io.Reader) (map[string]interface{}, error) {
+	result := make(map[string]interface{})
 	s := bufio.NewScanner(r)
 	for s.Scan() {
 		// Trim all leading whitespace, but not necessarily trailing whitespace.

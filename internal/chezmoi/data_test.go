@@ -11,11 +11,11 @@ import (
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
 
-func TestKernelInfo(t *testing.T) {
+func TestKernel(t *testing.T) {
 	for _, tc := range []struct {
-		name               string
-		root               interface{}
-		expectedKernelInfo map[string]string
+		name           string
+		root           interface{}
+		expectedKernel map[string]interface{}
 	}{
 		{
 			name: "windows_services_for_linux",
@@ -26,7 +26,7 @@ func TestKernelInfo(t *testing.T) {
 					"version":   "#1 SMP Debian 5.2.9-2 (2019-08-21)\n",
 				},
 			},
-			expectedKernelInfo: map[string]string{
+			expectedKernel: map[string]interface{}{
 				"osrelease": "4.19.81-microsoft-standard",
 				"ostype":    "Linux",
 				"version":   "#1 SMP Debian 5.2.9-2 (2019-08-21)",
@@ -39,7 +39,7 @@ func TestKernelInfo(t *testing.T) {
 					"version": "#1 SMP Debian 5.2.9-2 (2019-08-21)\n",
 				},
 			},
-			expectedKernelInfo: map[string]string{
+			expectedKernel: map[string]interface{}{
 				"version": "#1 SMP Debian 5.2.9-2 (2019-08-21)",
 			},
 		},
@@ -48,14 +48,14 @@ func TestKernelInfo(t *testing.T) {
 			root: map[string]interface{}{
 				"/proc/sys": &vfst.Dir{Perm: 0o755},
 			},
-			expectedKernelInfo: nil,
+			expectedKernel: nil,
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
-				actual, err := KernelInfo(fileSystem)
+				actual, err := Kernel(fileSystem)
 				assert.NoError(t, err)
-				assert.Equal(t, tc.expectedKernelInfo, actual)
+				assert.Equal(t, tc.expectedKernel, actual)
 			})
 		})
 	}
@@ -65,7 +65,7 @@ func TestOSRelease(t *testing.T) {
 	for _, tc := range []struct {
 		name     string
 		root     map[string]interface{}
-		expected map[string]string
+		expected map[string]interface{}
 	}{
 		{
 			name: "fedora",
@@ -82,7 +82,7 @@ func TestOSRelease(t *testing.T) {
 					`BUG_REPORT_URL="https://bugzilla.redhat.com/"`,
 				),
 			},
-			expected: map[string]string{
+			expected: map[string]interface{}{
 				"NAME":           "Fedora",
 				"VERSION":        "17 (Beefy Miracle)",
 				"ID":             "fedora",
@@ -112,7 +112,7 @@ func TestOSRelease(t *testing.T) {
 					`UBUNTU_CODENAME=bionic`,
 				),
 			},
-			expected: map[string]string{
+			expected: map[string]interface{}{
 				"NAME":               "Ubuntu",
 				"VERSION":            "18.04.1 LTS (Bionic Beaver)",
 				"ID":                 "ubuntu",
@@ -142,7 +142,7 @@ func TestParseOSRelease(t *testing.T) {
 	for _, tc := range []struct {
 		name     string
 		s        string
-		expected map[string]string
+		expected map[string]interface{}
 	}{
 		{
 			name: "fedora",
@@ -157,7 +157,7 @@ func TestParseOSRelease(t *testing.T) {
 				`HOME_URL="https://fedoraproject.org/"`,
 				`BUG_REPORT_URL="https://bugzilla.redhat.com/"`,
 			),
-			expected: map[string]string{
+			expected: map[string]interface{}{
 				"NAME":           "Fedora",
 				"VERSION":        "17 (Beefy Miracle)",
 				"ID":             "fedora",
@@ -188,7 +188,7 @@ func TestParseOSRelease(t *testing.T) {
 				`VERSION_CODENAME=bionic`,
 				`UBUNTU_CODENAME=bionic`,
 			),
-			expected: map[string]string{
+			expected: map[string]interface{}{
 				"NAME":               "Ubuntu",
 				"VERSION":            "18.04.1 LTS (Bionic Beaver)",
 				"ID":                 "ubuntu",

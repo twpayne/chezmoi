@@ -469,12 +469,12 @@ func getPackageType(fileSystem vfs.FS) (string, error) {
 	if err != nil {
 		return packageTypeNone, err
 	}
-	if id, ok := osRelease["ID"]; ok {
+	if id, ok := osRelease["ID"].(string); ok {
 		if packageType, ok := packageTypeByID[id]; ok {
 			return packageType, nil
 		}
 	}
-	if idLikes, ok := osRelease["ID_LIKE"]; ok {
+	if idLikes, ok := osRelease["ID_LIKE"].(string); ok {
 		for _, id := range strings.Split(idLikes, " ") {
 			if packageType, ok := packageTypeByID[id]; ok {
 				return packageType, nil
