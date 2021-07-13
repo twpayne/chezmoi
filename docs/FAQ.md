@@ -13,6 +13,7 @@
 * [I've made changes to both the destination state and the source state that I want to keep. How can I keep them both?](#ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both)
 * [Why does chezmoi convert all my template variables to lowercase?](#why-does-chezmoi-convert-all-my-template-variables-to-lowercase)
 * [chezmoi makes `~/.ssh/config` group writeable. How do I stop this?](#chezmoi-makes-sshconfig-group-writeable-how-do-i-stop-this)
+* [Why does `chezmoi cd` spawn a shell instead of just changing directory?](#why-does-chezmoi-cd-spawn-a-shell-instead-of-just-changing-directory)
 * [Why doesn't chezmoi use symlinks like GNU Stow?](#why-doesnt-chezmoi-use-symlinks-like-gnu-stow)
 * [Can I change how chezmoi's source state is represented on disk?](#can-i-change-how-chezmois-source-state-is-represented-on-disk)
 * [gpg encryption fails. What could be wrong?](#gpg-encryption-fails-what-could-be-wrong)
@@ -152,6 +153,20 @@ to control group write permissions for individual files or directories. Please
 [open an issue on
 GitHub](https://github.com/twpayne/chezmoi/issues/new?assignees=&labels=enhancement&template=02_feature_request.md&title=)
 if you need this.
+
+## Why does `chezmoi cd` spawn a shell instead of just changing directory?
+
+`chezmoi cd` spawns a shell because it is not possible for a program to change
+the working directory of its parent process. You can add a shell function instead:
+
+```bash
+chezmoi-cd() {
+    cd $(chezmoi source-path)
+}
+```
+
+Typing `chezmoi-cd` will then change the directory of your current shell to
+chezmoi's source directory.
 
 ## Why doesn't chezmoi use symlinks like GNU Stow?
 

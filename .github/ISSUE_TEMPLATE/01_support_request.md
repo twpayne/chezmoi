@@ -22,15 +22,15 @@ Describe what you have tried so far.
 * [ ] I have searched [chezmoi's reference guide](https://github.com/twpayne/chezmoi/blob/master/docs/REFERENCE.md), and not found the answer.
 * [ ] Other, please give details.
 
-## Output of any commands you've tried with `--verbose`
+## Output of any commands you've tried with `--verbose` flag
 
-```
-$ chezmoi command --verbose
+```console
+$ chezmoi --verbose <your-command>
 ```
 
 ## Output of `chezmoi doctor`
 
-```
+```console
 $ chezmoi doctor
 ```
 

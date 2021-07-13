@@ -18,15 +18,15 @@ Steps to reproduce the behavior.
 
 A clear and concise description of what you expected to happen.
 
-## Output of command with `--verbose`
+## Output of command with the `--verbose` flag
 
-```
-$ chezmoi command --verbose
+```console
+$ chezmoi --verbose <your-command>
 ```
 
 ## Output of `chezmoi doctor`
 
-```
+```console
 $ chezmoi doctor
 ```
 
