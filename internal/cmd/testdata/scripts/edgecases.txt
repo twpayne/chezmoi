@@ -22,3 +22,14 @@ chezmoi state dump
 chezmoi apply $HOME${/}.file
 chezmoi state dump
 stdout 2e9dd6a2a8c15b20d4b0882d4c0fb8c7eea4e8ece46818090b387132f9f84c34 # sha256sum of "# contents of .file\n# edited\n"
+
+# test that the source directory can be a symlink to another directory
+chhome home2/user
+symlink $HOME/.chezmoi -> $CHEZMOISOURCEDIR
+chezmoi apply --source=$HOME${/}.chezmoi
+cmp $HOME/.file golden/.file
+
+-- golden/.file --
+# contents of .file
+-- home2/user/.local/share/chezmoi/dot_file --
+# contents of .file
