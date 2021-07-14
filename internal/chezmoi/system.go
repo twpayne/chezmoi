@@ -106,9 +106,27 @@ func MkdirAll(system System, absPath AbsPath, perm fs.FileMode) error {
 	}
 }
 
-// Walk walks rootAbsPath in s.
+// Walk walks rootAbsPath in system, alling walkFn for each file or directory in
+// the tree, including rootAbsPath.
+//
+// Walk does not follow symlinks.
 func Walk(system System, rootAbsPath AbsPath, walkFn func(absPath AbsPath, info fs.FileInfo, err error) error) error {
 	return vfs.Walk(system.UnderlyingFS(), string(rootAbsPath), func(absPath string, info fs.FileInfo, err error) error {
 		return walkFn(AbsPath(filepath.ToSlash(absPath)), info, err)
+	})
+}
+
+// WalkDir walks the file tree rooted at rootAbsPath in system, calling walkFn
+// for each file or directory in the tree, including rootAbsPath.
+//
+// WalkDir does not follow symbolic links found in directories, but if
+// rootAbsPath itself is a symbolic link, its target will be walked.
+func WalkDir(system System, rootAbsPath AbsPath, walkFn func(absPath AbsPath, info fs.FileInfo, err error) error) error {
+	return fs.WalkDir(system.UnderlyingFS(), string(rootAbsPath), func(path string, dirEntry fs.DirEntry, err error) error {
+		var info fs.FileInfo
+		if err == nil {
+			info, err = dirEntry.Info()
+		}
+		return walkFn(AbsPath(path), info, err)
 	})
 }

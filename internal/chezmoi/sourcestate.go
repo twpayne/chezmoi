@@ -540,8 +540,7 @@ func (s *SourceState) MustEntry(targetRelPath RelPath) SourceStateEntry {
 
 // Read reads the source state from the source directory.
 func (s *SourceState) Read() error {
-	info, err := s.system.Lstat(s.sourceDirAbsPath)
-	switch {
+	switch info, err := s.system.Stat(s.sourceDirAbsPath); {
 	case errors.Is(err, fs.ErrNotExist):
 		return nil
 	case err != nil:
@@ -552,7 +551,7 @@ func (s *SourceState) Read() error {
 
 	// Read all source entries.
 	allSourceStateEntries := make(map[RelPath][]SourceStateEntry)
-	if err := Walk(s.system, s.sourceDirAbsPath, func(sourceAbsPath AbsPath, info fs.FileInfo, err error) error {
+	if err := WalkDir(s.system, s.sourceDirAbsPath, func(sourceAbsPath AbsPath, info fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -714,6 +713,7 @@ func (s *SourceState) Read() error {
 	sort.Slice(targetRelPaths, func(i, j int) bool {
 		return targetRelPaths[i] < targetRelPaths[j]
 	})
+	var err error
 	for _, targetRelPath := range targetRelPaths {
 		sourceStateEntries := allSourceStateEntries[targetRelPath]
 		if len(sourceStateEntries) == 1 {
@@ -836,7 +836,7 @@ func (s *SourceState) addTemplateData(sourceAbsPath AbsPath) error {
 
 // addTemplatesDir adds all templates in templateDir to s.
 func (s *SourceState) addTemplatesDir(templatesDirAbsPath AbsPath) error {
-	return Walk(s.system, templatesDirAbsPath, func(templateAbsPath AbsPath, info fs.FileInfo, err error) error {
+	return WalkDir(s.system, templatesDirAbsPath, func(templateAbsPath AbsPath, info fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
