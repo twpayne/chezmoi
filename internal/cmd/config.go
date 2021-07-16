@@ -57,6 +57,7 @@ type Config struct {
 	Remove           bool                            `mapstructure:"remove"`
 	Color            *autoBool                       `mapstructure:"color"`
 	Data             map[string]interface{}          `mapstructure:"data"`
+	Mode             chezmoi.Mode                    `mapstructure:"mode"`
 	Template         templateConfig                  `mapstructure:"template"`
 	UseBuiltinGit    *autoBool                       `mapstructure:"useBuiltinGit"`
 	Pager            string                          `mapstructure:"pager"`
@@ -973,10 +974,12 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.VarP(&c.DestDirAbsPath, "destination", "D", "Set destination directory")
 	persistentFlags.BoolVar(&c.Remove, "remove", c.Remove, "Remove entries from destination directory")
 	persistentFlags.VarP(&c.SourceDirAbsPath, "source", "S", "Set source directory")
+	persistentFlags.Var(&c.Mode, "mode", "Mode")
 	persistentFlags.Var(c.UseBuiltinGit, "use-builtin-git", "Use builtin git")
 	for _, key := range []string{
 		"color",
 		"destination",
+		"mode",
 		"remove",
 		"source",
 	} {
@@ -1409,6 +1412,7 @@ func (c *Config) sourceState() (*chezmoi.SourceState, error) {
 		chezmoi.WithDestDir(c.DestDirAbsPath),
 		chezmoi.WithEncryption(c.encryption),
 		chezmoi.WithInterpreters(c.Interpreters),
+		chezmoi.WithMode(c.Mode),
 		chezmoi.WithPriorityTemplateData(c.Data),
 		chezmoi.WithSourceDir(c.SourceDirAbsPath),
 		chezmoi.WithSystem(c.sourceSystem),

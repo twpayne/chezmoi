@@ -38,6 +38,7 @@ Manage your dotfiles securely across multiple machines.
   * [Directories](#directories)
   * [Symbolic links](#symbolic-links)
   * [Scripts](#scripts)
+  * [`symlink` mode](#symlink-mode)
 * [Special files and directories](#special-files-and-directories)
   * [`.chezmoi.<format>.tmpl`](#chezmoiformattmpl)
   * [`.chezmoidata.<format>`](#chezmoidataformat)
@@ -284,6 +285,7 @@ The following configuration variables are available:
 |                | `destDir`             | string   | `~`                      | Destination directory                                  |
 |                | `encryption`          | string   | *none*                   | Encryption tool, either `age` or `gpg`                 |
 |                | `format`              | string   | `json`                   | Format for data output, either `json` or `yaml`        |
+|                | `mode`                | string   | `file`                   | Mode in target dir, either `file` or `symlink`         |
 |                | `remove`              | bool     | `false`                  | Remove targets                                         |
 |                | `sourceDir`           | string   | `~/.local/share/chezmoi` | Source directory                                       |
 |                | `pager`               | string   | `$PAGER`                 | Default pager                                          |
@@ -529,6 +531,14 @@ a Tcl/Tk interpreter, include the following in `~/.config/chezmoi/chezmoi.toml`:
 If the script in the source state is a template (with a `.tmpl` extension), then
 chezmoi will strip the `.tmpl` extension and use the next remaining extension to
 determine the interpreter to use.
+
+### `symlink` mode
+
+By default, chezmoi will create regular files and directories. Setting `mode =
+"symlink"` will make chezmoi behave like a dotfile manager that uses symlinks by
+default, i.e. by making dotfiles symlinks to the to the source directory.
+
+FIXME: expand this description
 
 ## Special files and directories
 

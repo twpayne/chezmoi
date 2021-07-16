@@ -102,7 +102,8 @@ func (c *Config) defaultPreAddFunc(targetRelPath chezmoi.RelPath, newSourceState
 }
 
 func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
-	destAbsPathInfos, err := c.destAbsPathInfos(sourceState, args, c.Add.recursive, c.Add.follow)
+	follow := c.Mode == chezmoi.ModeSymlink || c.Add.follow
+	destAbsPathInfos, err := c.destAbsPathInfos(sourceState, args, c.Add.recursive, follow)
 	if err != nil {
 		return err
 	}
