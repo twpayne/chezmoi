@@ -22,29 +22,29 @@
 | -------------------------------------- | ------------- | ----------------- | ----------------- | ----------------- | ------------- | ---------- |
 | Distribution                           | Single binary | Python package    | Multiple files    | Ruby gem          | Single script | n/a        |
 | Install method                         | Many          | git submodule     | Many              | Ruby gem          | Many          | Manual     |
-| Non-root install on bare system        | ✅           | Difficult         | Difficult         | Difficult         | ✅           | ✅        |
-| Windows support                        | ✅           | ❌                | ❌                | ❌                | ❌            | ✅        |
+| Non-root install on bare system        | ✅            | Difficult         | Difficult         | Difficult         | ✅            | ✅         |
+| Windows support                        | ✅            | ❌                | ❌                | ❌                | ❌            | ✅         |
 | Bootstrap requirements                 | None          | Python, git       | Perl, git         | Ruby, git         | git           | git        |
 | Source repos                           | Single        | Single            | Multiple          | Single            | Single        | Single     |
 | dotfiles are...                        | Files         | Symlinks          | Files             | Symlinks          | Files         | Files      |
 | Config file                            | Optional      | Required          | Optional          | None              | None          | Optional   |
-| Private files                          | ✅           | ❌                | ❌                | ❌                | ❌            | ❌         |
-| Show differences without applying      | ✅           | ❌                | ❌                | ❌                | ✅           | ✅        |
-| Whole file encryption                  | ✅           | ❌                | ❌                | ❌                | ✅           | ❌         |
-| Password manager integration           | ✅           | ❌                | ❌                | ❌                | ❌            | ❌         |
+| Private files                          | ✅            | ❌                | ❌                | ❌                | ❌            | ❌         |
+| Show differences without applying      | ✅            | ❌                | ❌                | ❌                | ✅            | ✅         |
+| Whole file encryption                  | ✅            | ❌                | ❌                | ❌                | ✅            | ❌         |
+| Password manager integration           | ✅            | ❌                | ❌                | ❌                | ❌            | ❌         |
 | Machine-to-machine file differences    | Templates     | Alternative files | Alternative files | Alternative files | Templates     | Manual     |
-| Custom variables in templates          | ✅           | ❌               | ❌               | ❌               | ❌            | ❌         |
-| Executable files                       | ✅           | ✅               | ✅               | ✅               | ❌            | ✅        |
-| File creation with initial contents    | ✅           | ❌                | ❌                | ❌                | ❌            | ❌         |
-| Manage partial files                   | ✅           | ❌                | ❌                | ❌                | ❌            | ❌         |
-| File removal                           | ✅           | ❌                | ❌                | ❌                | ❌            | ❌         |
-| Directory creation                     | ✅           | ✅               | ✅               | ❌                | ❌            | ✅        |
-| Run scripts                            | ✅           | ✅               | ✅               | ❌                | ❌            | ❌         |
-| Run once scripts                       | ✅           | ❌                | ❌                | ❌                | ❌            | ❌         |
-| Machine-to-machine symlink differences | ✅           | ❌                | ❌                | ❌                | ✅           | ❌         |
-| Shell completion                       | ✅           | ❌                | ❌                | ❌                | ✅           | ✅        |
-| Archive import                         | ✅           | ❌                | ❌                | ❌                | ❌            | ❌         |
-| Archive export                         | ✅           | ❌                | ❌                | ❌                | ❌            | ✅        |
+| Custom variables in templates          | ✅            | ❌                | ❌                | ❌                | ❌            | ❌         |
+| Executable files                       | ✅            | ✅                | ✅                | ✅                | ❌            | ✅         |
+| File creation with initial contents    | ✅            | ❌                | ❌                | ❌                | ❌            | ❌         |
+| Manage partial files                   | ✅            | ❌                | ❌                | ❌                | ❌            | ❌         |
+| File removal                           | ✅            | ❌                | ❌                | ❌                | ❌            | ❌         |
+| Directory creation                     | ✅            | ✅                | ✅                | ❌                | ❌            | ✅         |
+| Run scripts                            | ✅            | ✅                | ✅                | ❌                | ❌            | ❌         |
+| Run once scripts                       | ✅            | ❌                | ❌                | ❌                | ❌            | ❌         |
+| Machine-to-machine symlink differences | ✅            | ❌                | ❌                | ❌                | ✅            | ❌         |
+| Shell completion                       | ✅            | ❌                | ❌                | ❌                | ✅            | ✅         |
+| Archive import                         | ✅            | ❌                | ❌                | ❌                | ❌            | ❌         |
+| Archive export                         | ✅            | ❌                | ❌                | ❌                | ❌            | ✅         |
 | Implementation language                | Go            | Python            | Perl              | Ruby              | Bash          | C          |
 
 For more comparisons, visit [dotfiles.github.io](https://dotfiles.github.io/).
