@@ -36,14 +36,14 @@
 | Custom variables in templates          | ✅            | ❌                | ❌                | ❌                | ❌            | ❌         |
 | Executable files                       | ✅            | ✅                | ✅                | ✅                | ❌            | ✅         |
 | File creation with initial contents    | ✅            | ❌                | ❌                | ❌                | ❌            | ❌         |
-| Manage partial files                   | ✅            | ❌                | ❌                | ❌                | ❌            | ❌         |
+| Manage partial files                   | ✅            | ❌                | ❌                | ❌                | ❌            | Manual     |
 | File removal                           | ✅            | ❌                | ❌                | ❌                | ❌            | ❌         |
 | Directory creation                     | ✅            | ✅                | ✅                | ❌                | ❌            | ✅         |
 | Run scripts                            | ✅            | ✅                | ✅                | ❌                | ❌            | ❌         |
 | Run once scripts                       | ✅            | ❌                | ❌                | ❌                | ❌            | ❌         |
-| Machine-to-machine symlink differences | ✅            | ❌                | ❌                | ❌                | ✅            | ❌         |
+| Machine-to-machine symlink differences | ✅            | ❌                | ❌                | ❌                | ✅            | Manual     |
 | Shell completion                       | ✅            | ❌                | ❌                | ❌                | ✅            | ✅         |
-| Archive import                         | ✅            | ❌                | ❌                | ❌                | ❌            | ❌         |
+| Archive import                         | ✅            | ❌                | ❌                | ❌                | ❌            | ✅         |
 | Archive export                         | ✅            | ❌                | ❌                | ❌                | ❌            | ✅         |
 | Implementation language                | Go            | Python            | Perl              | Ruby              | Bash          | C          |
 
