@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
 	"errors"
@@ -11,10 +12,13 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"syscall"
 	"text/template"
 
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
+	"github.com/go-git/go-git/v5/plumbing/transport"
+	"github.com/go-git/go-git/v5/plumbing/transport/http"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"golang.org/x/term"
@@ -152,13 +156,42 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 				if c.init.branch != "" {
 					referenceName = plumbing.NewBranchReferenceName(c.init.branch)
 				}
-				if _, err := git.PlainClone(string(rawSourceDir), isBare, &git.CloneOptions{
+				cloneOptions := git.CloneOptions{
 					URL:               dotfilesRepoURL,
 					Depth:             c.init.depth,
 					ReferenceName:     referenceName,
 					RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
-				}); err != nil {
-					return err
+				}
+
+				if _, err := git.PlainClone(string(rawSourceDir), isBare, &cloneOptions); err != nil {
+					if errors.Is(err, transport.ErrAuthenticationRequired) {
+						reader := bufio.NewReader(os.Stdin)
+
+						c.writeToStdout("Git authentication required - enter username and password...\n")
+						c.writeToStdout("Username: ")
+						username, err := reader.ReadString('\n')
+						if err != nil {
+							return err
+						}
+						c.writeToStdout("Password: ")
+						passwordBytes, err := term.ReadPassword(int(syscall.Stdin))
+						c.writeToStdout("\n")
+						if err != nil {
+							return err
+						}
+						password := string(passwordBytes)
+						username = strings.TrimSpace(username)
+						password = strings.TrimSpace(password)
+						cloneOptions.Auth = &http.BasicAuth{
+							Username: username,
+							Password: password,
+						}
+						if _, err := git.PlainClone(string(rawSourceDir), isBare, &cloneOptions); err != nil {
+							return err
+						}
+					} else {
+						return err
+					}
 				}
 			} else {
 				args := []string{
