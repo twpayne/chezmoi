@@ -15,37 +15,38 @@
 [dotbot]: https://github.com/anishathalye/dotbot
 [rcm]: https://github.com/thoughtbot/rcm
 [homesick]: https://github.com/technicalpickles/homesick
+[vcsh]: https://github.com/RichiH/vcsh
 [yadm]: https://yadm.io/
 [bare git]: https://www.atlassian.com/git/tutorials/dotfiles "bare git"
 
-|                                        | [chezmoi]     | [dotbot]          | [rcm]             | [homesick]        | [yadm]        | [bare git] |
-| -------------------------------------- | ------------- | ----------------- | ----------------- | ----------------- | ------------- | ---------- |
-| Distribution                           | Single binary | Python package    | Multiple files    | Ruby gem          | Single script | n/a        |
-| Install method                         | Many          | git submodule     | Many              | Ruby gem          | Many          | Manual     |
-| Non-root install on bare system        | ✅           | Difficult         | Difficult         | Difficult         | ✅           | ✅        |
-| Windows support                        | ✅           | ❌                | ❌                | ❌                | ❌            | ✅        |
-| Bootstrap requirements                 | None          | Python, git       | Perl, git         | Ruby, git         | git           | git        |
-| Source repos                           | Single        | Single            | Multiple          | Single            | Single        | Single     |
-| dotfiles are...                        | Files         | Symlinks          | Files             | Symlinks          | Files         | Files      |
-| Config file                            | Optional      | Required          | Optional          | None              | None          | Optional   |
-| Private files                          | ✅           | ❌                | ❌                | ❌                | ❌            | ❌         |
-| Show differences without applying      | ✅           | ❌                | ❌                | ❌                | ✅           | ✅        |
-| Whole file encryption                  | ✅           | ❌                | ❌                | ❌                | ✅           | ❌         |
-| Password manager integration           | ✅           | ❌                | ❌                | ❌                | ❌            | ❌         |
-| Machine-to-machine file differences    | Templates     | Alternative files | Alternative files | Alternative files | Templates     | Manual     |
-| Custom variables in templates          | ✅           | ❌               | ❌               | ❌               | ❌            | ❌         |
-| Executable files                       | ✅           | ✅               | ✅               | ✅               | ❌            | ✅        |
-| File creation with initial contents    | ✅           | ❌                | ❌                | ❌                | ❌            | ❌         |
-| Manage partial files                   | ✅           | ❌                | ❌                | ❌                | ❌            | ❌         |
-| File removal                           | ✅           | ❌                | ❌                | ❌                | ❌            | ❌         |
-| Directory creation                     | ✅           | ✅               | ✅               | ❌                | ❌            | ✅        |
-| Run scripts                            | ✅           | ✅               | ✅               | ❌                | ❌            | ❌         |
-| Run once scripts                       | ✅           | ❌                | ❌                | ❌                | ❌            | ❌         |
-| Machine-to-machine symlink differences | ✅           | ❌                | ❌                | ❌                | ✅           | ❌         |
-| Shell completion                       | ✅           | ❌                | ❌                | ❌                | ✅           | ✅        |
-| Archive import                         | ✅           | ❌                | ❌                | ❌                | ❌            | ❌         |
-| Archive export                         | ✅           | ❌                | ❌                | ❌                | ❌            | ✅        |
-| Implementation language                | Go            | Python            | Perl              | Ruby              | Bash          | C          |
+|                                        | [chezmoi]     | [dotbot]          | [rcm]             | [homesick]        | [vcsh ]                  | [yadm]        | [bare git] |
+| -------------------------------------- | ------------- | ----------------- | ----------------- | ----------------- | ------------------------ | ------------- | ---------- |
+| Distribution                           | Single binary | Python package    | Multiple files    | Ruby gem          | Single script or package | Single script | n/a        |
+| Install method                         | Many          | git submodule     | Many              | Ruby gem          | Many                     | Many          | Manual     |
+| Non-root install on bare system        | ✅            | Difficult         | Difficult         | Difficult         | ✅                       | ✅            | ✅         |
+| Windows support                        | ✅            | ❌                | ❌                | ❌                | ❌                       | ❌            | ✅         |
+| Bootstrap requirements                 | None          | Python, git       | Perl, git         | Ruby, git         | SH, git                  | git           | git        |
+| Source repos                           | Single        | Single            | Multiple          | Single            | Multiple                 | Single        | Single     |
+| dotfiles are...                        | Files         | Symlinks          | Files             | Symlinks          | Files                    | Files         | Files      |
+| Config file                            | Optional      | Required          | Optional          | None              | None                     | None          | Optional   |
+| Private files                          | ✅            | ❌                | ❌                | ❌                | ❌                       | ❌            | ❌         |
+| Show differences without applying      | ✅            | ❌                | ❌                | ❌                | ✅                       | ✅            | ✅         |
+| Whole file encryption                  | ✅            | ❌                | ❌                | ❌                | ❌                       | ✅            | ❌         |
+| Password manager integration           | ✅            | ❌                | ❌                | ❌                | ❌                       | ❌            | ❌         |
+| Machine-to-machine file differences    | Templates     | Alternative files | Alternative files | Alternative files | Branches                 | Templates     | Manual     |
+| Custom variables in templates          | ✅            | ❌                | ❌                | ❌                | ❌                       | ❌            | ❌         |
+| Executable files                       | ✅            | ✅                | ✅                | ✅                | ✅                       | ❌            | ✅         |
+| File creation with initial contents    | ✅            | ❌                | ❌                | ❌                | ✅                       | ❌            | ❌         |
+| Manage partial files                   | ✅            | ❌                | ❌                | ❌                | Manual                   | ❌            | Manual     |
+| File removal                           | ✅            | ❌                | ❌                | ❌                | ✅                       | ❌            | ❌         |
+| Directory creation                     | ✅            | ✅                | ✅                | ❌                | ✅                       | ❌            | ✅         |
+| Run scripts                            | ✅            | ✅                | ✅                | ❌                | ✅                       | ❌            | ❌         |
+| Run once scripts                       | ✅            | ❌                | ❌                | ❌                | ✅                       | ❌            | ❌         |
+| Machine-to-machine symlink differences | ✅            | ❌                | ❌                | ❌                | Manual                   | ✅            | Manual     |
+| Shell completion                       | ✅            | ❌                | ❌                | ❌                | ✅                       | ✅            | ✅         |
+| Archive import                         | ✅            | ❌                | ❌                | ❌                | ❌                       | ❌            | ❌         |
+| Archive export                         | ✅            | ❌                | ❌                | ❌                | ✅                       | ❌            | ✅         |
+| Implementation language                | Go            | Python            | Perl              | Ruby              | POSIX                    | Bash          | C          |
 
 For more comparisons, visit [dotfiles.github.io](https://dotfiles.github.io/).
 
@@ -81,6 +82,7 @@ If you're using any of the following methods:
   [dotbot](https://github.com/anishathalye/dotbot),
   [rcm](https://github.com/thoughtbot/rcm),
   [homesick](https://github.com/technicalpickles/homesick),
+  [vcsh](https://github.com/RichiH/vcsh),
   [yadm](https://yadm.io/), or [GNU Stow](https://www.gnu.org/software/stow/).
 * A [bare git repo](https://www.atlassian.com/git/tutorials/dotfiles).
 
