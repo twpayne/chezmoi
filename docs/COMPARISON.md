@@ -44,7 +44,7 @@
 | Run once scripts                       | ✅            | ❌                | ❌                | ❌                | ✅                       | ❌            | ❌         |
 | Machine-to-machine symlink differences | ✅            | ❌                | ❌                | ❌                | Manual                   | ✅            | Manual     |
 | Shell completion                       | ✅            | ❌                | ❌                | ❌                | ✅                       | ✅            | ✅         |
-| Archive import                         | ✅            | ❌                | ❌                | ❌                | ❌                       | ❌            | ❌         |
+| Archive import                         | ✅            | ❌                | ❌                | ❌                | ✅                       | ❌            | ✅         |
 | Archive export                         | ✅            | ❌                | ❌                | ❌                | ✅                       | ❌            | ✅         |
 | Implementation language                | Go            | Python            | Perl              | Ruby              | POSIX                    | Bash          | C          |
 
