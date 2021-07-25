@@ -19,13 +19,13 @@
 [yadm]: https://yadm.io/
 [bare git]: https://www.atlassian.com/git/tutorials/dotfiles "bare git"
 
-|                                        | [chezmoi]     | [dotbot]          | [rcm]             | [homesick]        | [vcsh ]                  | [yadm]        | [bare git] |
+|                                        | [chezmoi]     | [dotbot]          | [rcm]             | [homesick]        | [vcsh]                   | [yadm]        | [bare git] |
 | -------------------------------------- | ------------- | ----------------- | ----------------- | ----------------- | ------------------------ | ------------- | ---------- |
 | Distribution                           | Single binary | Python package    | Multiple files    | Ruby gem          | Single script or package | Single script | n/a        |
 | Install method                         | Many          | git submodule     | Many              | Ruby gem          | Many                     | Many          | Manual     |
 | Non-root install on bare system        | ✅            | Difficult         | Difficult         | Difficult         | ✅                       | ✅            | ✅         |
 | Windows support                        | ✅            | ❌                | ❌                | ❌                | ❌                       | ❌            | ✅         |
-| Bootstrap requirements                 | None          | Python, git       | Perl, git         | Ruby, git         | SH, git                  | git           | git        |
+| Bootstrap requirements                 | None          | Python, git       | Perl, git         | Ruby, git         | sh, git                  | git           | git        |
 | Source repos                           | Single        | Single            | Multiple          | Single            | Multiple                 | Single        | Single     |
 | dotfiles are...                        | Files         | Symlinks          | Files             | Symlinks          | Files                    | Files         | Files      |
 | Config file                            | Optional      | Required          | Optional          | None              | None                     | None          | Optional   |
@@ -46,7 +46,7 @@
 | Shell completion                       | ✅            | ❌                | ❌                | ❌                | ✅                       | ✅            | ✅         |
 | Archive import                         | ✅            | ❌                | ❌                | ❌                | ✅                       | ❌            | ✅         |
 | Archive export                         | ✅            | ❌                | ❌                | ❌                | ✅                       | ❌            | ✅         |
-| Implementation language                | Go            | Python            | Perl              | Ruby              | POSIX                    | Bash          | C          |
+| Implementation language                | Go            | Python            | Perl              | Ruby              | POSIX Shell              | Bash          | C          |
 
 For more comparisons, visit [dotfiles.github.io](https://dotfiles.github.io/).
 
