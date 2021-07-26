@@ -10,6 +10,8 @@ Recommended podcast: [FLOSS weekly episode 556: chezmoi](https://twit.tv/shows/f
 
 | Date       | Version | Format      | Link                                                                                                                                                                                                                |
 | ---------- | ------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2021-07-23 | 2.1.2   | Audio       | [Managing Dot Files and an Introduction to Chezmoi](https://www.podfeet.com/blog/2021/07/ccatp-693/)                                                                                                                |
+| 2021-07-15 | 2.1.2   | Text (CN)   | [使用Chezmoi管理配置文件](https://marvinsblog.net/post/2021-07-15-chezmoi-intro/) |
 | 2021-05-14 | 2.0.12  | Text        | [A brief history of my dotfile management](https://jonathanbartlett.co.uk/2021/05/14/a-brief-history-of-my-dotfiles.html)                                                                                           |
 | 2021-05-12 | 2.0.12  | Text        | [My Dotfiles Story: A Journey to Chezmoi](https://www.mikekasberg.com/blog/2021/05/12/my-dotfiles-story.html)                                                                                                       |
 | 2021-05-10 | 2.0.11  | Text        | [Development Environment (2021)](https://ideas.offby1.net/posts/development-environment-2021.html)                                                                                                                  |
