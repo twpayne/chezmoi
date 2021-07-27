@@ -39,5 +39,18 @@ chezmoi add --encrypt $HOME${/}.dir${/}.encrypted
 chezmoi edit --apply $HOME${/}.dir${/}.encrypted
 grep '# edited' $HOME/.dir/.encrypted
 
+# test that chezmoi edit strips the encrypted suffix
+[!windows] env EDITOR=echo
+[windows] env EDITOR=printargs
+chezmoi edit $HOME${/}.dir${/}.encrypted
+stdout '\.dir/\.encrypted\r?$'
+
+-- bin/printargs.cmd --
+@echo off
+setlocal
+set out=%*
+set out=%out:\=%
+echo %out%
+endlocal
 -- golden/.encrypted --
 plaintext
