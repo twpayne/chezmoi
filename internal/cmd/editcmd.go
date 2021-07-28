@@ -75,7 +75,7 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string, sourceState *chez
 	var transparentlyDecryptedFiles []transparentlyDecryptedFile
 	for _, targetRelPath := range targetRelPaths {
 		sourceStateEntry := sourceState.MustEntry(targetRelPath)
-		sourceRelPath := sourceStateEntry.SourceRelPath().RelPath()
+		sourceRelPath := sourceStateEntry.SourceRelPath()
 		var editorArg string
 		if sourceStateFile, ok := sourceStateEntry.(*chezmoi.SourceStateFile); ok && sourceStateFile.Attr.Encrypted {
 			if decryptedDirAbsPath == "" {
@@ -94,7 +94,7 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string, sourceState *chez
 				}
 			}
 			// FIXME use RawContents and DecryptFile
-			decryptedAbsPath := decryptedDirAbsPath.Join(sourceRelPath)
+			decryptedAbsPath := decryptedDirAbsPath.Join(sourceRelPath.TargetRelPath(c.encryption.EncryptedSuffix()))
 			contents, err := sourceStateFile.Contents()
 			if err != nil {
 				return err
@@ -106,13 +106,13 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string, sourceState *chez
 				return err
 			}
 			transparentlyDecryptedFile := transparentlyDecryptedFile{
-				sourceAbsPath:    c.SourceDirAbsPath.Join(sourceRelPath),
+				sourceAbsPath:    c.SourceDirAbsPath.Join(sourceRelPath.RelPath()),
 				decryptedAbsPath: decryptedAbsPath,
 			}
 			transparentlyDecryptedFiles = append(transparentlyDecryptedFiles, transparentlyDecryptedFile)
 			editorArg = string(decryptedAbsPath)
 		} else {
-			sourceAbsPath := c.SourceDirAbsPath.Join(sourceRelPath)
+			sourceAbsPath := c.SourceDirAbsPath.Join(sourceRelPath.RelPath())
 			editorArg = string(sourceAbsPath)
 		}
 		editorArgs = append(editorArgs, editorArg)
