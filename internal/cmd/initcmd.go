@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"bufio"
 	"bytes"
 	"encoding/json"
 	"errors"
@@ -12,7 +11,6 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
-	"syscall"
 	"text/template"
 
 	"github.com/go-git/go-git/v5"
@@ -151,7 +149,6 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 		} else {
 			dotfilesRepoURL := guessDotfilesRepoURL(args[0], c.init.ssh)
 			if useBuiltinGit {
-				isBare := false
 				var referenceName plumbing.ReferenceName
 				if c.init.branch != "" {
 					referenceName = plumbing.NewBranchReferenceName(c.init.branch)
@@ -162,36 +159,21 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 					ReferenceName:     referenceName,
 					RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
 				}
-
-				if _, err := git.PlainClone(string(rawSourceDir), isBare, &cloneOptions); err != nil {
-					if errors.Is(err, transport.ErrAuthenticationRequired) {
-						reader := bufio.NewReader(os.Stdin)
-
-						c.writeToStdout("Git authentication required - enter username and password...\n")
-						c.writeToStdout("Username: ")
-						username, err := reader.ReadString('\n')
-						if err != nil {
-							return err
-						}
-						c.writeToStdout("Password: ")
-						passwordBytes, err := term.ReadPassword(int(syscall.Stdin))
-						c.writeToStdout("\n")
-						if err != nil {
-							return err
-						}
-						password := string(passwordBytes)
-						username = strings.TrimSpace(username)
-						password = strings.TrimSpace(password)
-						cloneOptions.Auth = &http.BasicAuth{
-							Username: username,
-							Password: password,
-						}
-						if _, err := git.PlainClone(string(rawSourceDir), isBare, &cloneOptions); err != nil {
-							return err
-						}
-					} else {
+				isBare := false
+				_, err = git.PlainClone(string(rawSourceDir), isBare, &cloneOptions)
+				if errors.Is(err, transport.ErrAuthenticationRequired) {
+					var basicAuth http.BasicAuth
+					if basicAuth.Username, err = c.readLine("Username? "); err != nil {
 						return err
 					}
+					if basicAuth.Password, err = c.readPassword("Password? "); err != nil {
+						return err
+					}
+					cloneOptions.Auth = &basicAuth
+					_, err = git.PlainClone(string(rawSourceDir), isBare, &cloneOptions)
+				}
+				if err != nil {
+					return err
 				}
 			} else {
 				args := []string{
