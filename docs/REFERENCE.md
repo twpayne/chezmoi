@@ -988,7 +988,7 @@ Simulate the `promptBool` function with a function that returns values from
 `promptBool` is called with a *prompt* that does not match any of *pairs*, then
 it returns false.
 
-#### `--promptInt`, `-p` *pairs*
+#### `--promptInt` *pairs*
 
 Simulate the `promptInt` function with a function that returns values from
 *pairs*. *pairs* is a comma-separated list of *prompt*`=`*value* pairs. If
