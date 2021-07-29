@@ -40,49 +40,49 @@ type initCmdConfig struct {
 }
 
 var dotfilesRepoGuesses = []struct {
-	rx             *regexp.Regexp
-	httpsGuessFunc func([]string) string
-	sshGuessFunc   func([]string) string
+	rx            *regexp.Regexp
+	httpGuessRepl string
+	sshGuessRepl  string
 }{
 	{
-		rx:             regexp.MustCompile(`\A([-0-9A-Za-z]+)\z`),
-		httpsGuessFunc: func(m []string) string { return "https://github.com/" + m[1] + "/dotfiles.git" },
-		sshGuessFunc:   func(m []string) string { return "git@github.com:" + m[1] + "/dotfiles.git" },
+		rx:            regexp.MustCompile(`\A([-0-9A-Za-z]+)\z`),
+		httpGuessRepl: "https://github.com/$1/dotfiles.git",
+		sshGuessRepl:  "git@github.com:$1/dotfiles.git",
 	},
 	{
-		rx:             regexp.MustCompile(`\A([-0-9A-Za-z]+/[-0-9A-Za-z]+\.git)\z`),
-		httpsGuessFunc: func(m []string) string { return "https://github.com/" + m[1] },
-		sshGuessFunc:   func(m []string) string { return "git@github.com:" + m[1] },
+		rx:            regexp.MustCompile(`\A([-0-9A-Za-z]+/[-0-9A-Za-z]+\.git)\z`),
+		httpGuessRepl: "https://github.com/$1",
+		sshGuessRepl:  "git@github.com:$1",
 	},
 	{
-		rx:             regexp.MustCompile(`\A([-0-9A-Za-z]+/[-0-9A-Za-z]+)\z`),
-		httpsGuessFunc: func(m []string) string { return "https://github.com/" + m[1] + ".git" },
-		sshGuessFunc:   func(m []string) string { return "git@github.com:" + m[1] + ".git" },
+		rx:            regexp.MustCompile(`\A([-0-9A-Za-z]+/[-0-9A-Za-z]+)\z`),
+		httpGuessRepl: "https://github.com/$1.git",
+		sshGuessRepl:  "git@github.com:$1.git",
 	},
 	{
-		rx:             regexp.MustCompile(`\A([-.0-9A-Za-z]+)/([-0-9A-Za-z]+)\z`),
-		httpsGuessFunc: func(m []string) string { return "https://" + m[1] + "/" + m[2] + "/dotfiles.git" },
-		sshGuessFunc:   func(m []string) string { return "git@" + m[1] + ":" + m[2] + "/dotfiles.git" },
+		rx:            regexp.MustCompile(`\A([-.0-9A-Za-z]+)/([-0-9A-Za-z]+)\z`),
+		httpGuessRepl: "https://$1/$2/dotfiles.git",
+		sshGuessRepl:  "git@$1:$2/dotfiles.git",
 	},
 	{
-		rx:             regexp.MustCompile(`\A([-.0-9A-Za-z]+)/([-0-9A-Za-z]+/[-0-9A-Za-z]+)\z`),
-		httpsGuessFunc: func(m []string) string { return "https://" + m[1] + "/" + m[2] + ".git" },
-		sshGuessFunc:   func(m []string) string { return "git@" + m[1] + ":" + m[2] + ".git" },
+		rx:            regexp.MustCompile(`\A([-.0-9A-Za-z]+)/([-0-9A-Za-z]+/[-0-9A-Za-z]+)\z`),
+		httpGuessRepl: "https://$1/$2.git",
+		sshGuessRepl:  "git@$1:$2.git",
 	},
 	{
-		rx:             regexp.MustCompile(`\A([-.0-9A-Za-z]+)/([-0-9A-Za-z]+/[-0-9A-Za-z]+\.git)\z`),
-		httpsGuessFunc: func(m []string) string { return "https://" + m[1] + "/" + m[2] },
-		sshGuessFunc:   func(m []string) string { return "git@" + m[1] + ":" + m[2] },
+		rx:            regexp.MustCompile(`\A([-.0-9A-Za-z]+)/([-0-9A-Za-z]+/[-0-9A-Za-z]+\.git)\z`),
+		httpGuessRepl: "https://$1/$2",
+		sshGuessRepl:  "git@$1:$2",
 	},
 	{
-		rx:             regexp.MustCompile(`\Asr\.ht/(~[-0-9A-Za-z]+)\z`),
-		httpsGuessFunc: func(m []string) string { return "https://git.sr.ht/" + m[1] + "/dotfiles" },
-		sshGuessFunc:   func(m []string) string { return "git@git.sr.ht:" + m[1] + "/dotfiles" },
+		rx:            regexp.MustCompile(`\Asr\.ht/(~[-0-9A-Za-z]+)\z`),
+		httpGuessRepl: "https://git.sr.ht/$1/dotfiles",
+		sshGuessRepl:  "git@git.sr.ht:$1/dotfiles",
 	},
 	{
-		rx:             regexp.MustCompile(`\Asr\.ht/(~[-0-9A-Za-z]+/[-0-9A-Za-z]+)\z`),
-		httpsGuessFunc: func(m []string) string { return "https://git.sr.ht/" + m[1] },
-		sshGuessFunc:   func(m []string) string { return "git@git.sr.ht:" + m[1] },
+		rx:            regexp.MustCompile(`\Asr\.ht/(~[-0-9A-Za-z]+/[-0-9A-Za-z]+)\z`),
+		httpGuessRepl: "https://git.sr.ht/$1",
+		sshGuessRepl:  "git@git.sr.ht:$1",
 	},
 }
 
@@ -382,19 +382,14 @@ func (c *Config) writeToStdout(args ...string) string {
 // guessDotfilesRepoURL guesses the user's dotfile repo from arg.
 func guessDotfilesRepoURL(arg string, ssh bool) string {
 	for _, dotfileRepoGuess := range dotfilesRepoGuesses {
+		if !dotfileRepoGuess.rx.MatchString(arg) {
+			continue
+		}
 		switch {
-		case ssh:
-			if dotfileRepoGuess.sshGuessFunc != nil {
-				if m := dotfileRepoGuess.rx.FindStringSubmatch(arg); m != nil {
-					return dotfileRepoGuess.sshGuessFunc(m)
-				}
-			}
-		default:
-			if dotfileRepoGuess.rx.MatchString(arg) {
-				if m := dotfileRepoGuess.rx.FindStringSubmatch(arg); m != nil {
-					return dotfileRepoGuess.httpsGuessFunc(m)
-				}
-			}
+		case ssh && dotfileRepoGuess.sshGuessRepl != "":
+			return dotfileRepoGuess.rx.ReplaceAllString(arg, dotfileRepoGuess.sshGuessRepl)
+		case !ssh && dotfileRepoGuess.httpGuessRepl != "":
+			return dotfileRepoGuess.rx.ReplaceAllString(arg, dotfileRepoGuess.httpGuessRepl)
 		}
 	}
 	return arg
