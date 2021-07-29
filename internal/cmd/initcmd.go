@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"bufio"
 	"bytes"
 	"encoding/json"
 	"errors"
@@ -12,7 +11,6 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
-	"syscall"
 	"text/template"
 
 	"github.com/go-git/go-git/v5"
@@ -40,49 +38,49 @@ type initCmdConfig struct {
 }
 
 var dotfilesRepoGuesses = []struct {
-	rx             *regexp.Regexp
-	httpsGuessFunc func([]string) string
-	sshGuessFunc   func([]string) string
+	rx            *regexp.Regexp
+	httpGuessRepl string
+	sshGuessRepl  string
 }{
 	{
-		rx:             regexp.MustCompile(`\A([-0-9A-Za-z]+)\z`),
-		httpsGuessFunc: func(m []string) string { return "https://github.com/" + m[1] + "/dotfiles.git" },
-		sshGuessFunc:   func(m []string) string { return "git@github.com:" + m[1] + "/dotfiles.git" },
+		rx:            regexp.MustCompile(`\A([-0-9A-Za-z]+)\z`),
+		httpGuessRepl: "https://github.com/$1/dotfiles.git",
+		sshGuessRepl:  "git@github.com:$1/dotfiles.git",
 	},
 	{
-		rx:             regexp.MustCompile(`\A([-0-9A-Za-z]+/[-0-9A-Za-z]+\.git)\z`),
-		httpsGuessFunc: func(m []string) string { return "https://github.com/" + m[1] },
-		sshGuessFunc:   func(m []string) string { return "git@github.com:" + m[1] },
+		rx:            regexp.MustCompile(`\A([-0-9A-Za-z]+/[-0-9A-Za-z]+\.git)\z`),
+		httpGuessRepl: "https://github.com/$1",
+		sshGuessRepl:  "git@github.com:$1",
 	},
 	{
-		rx:             regexp.MustCompile(`\A([-0-9A-Za-z]+/[-0-9A-Za-z]+)\z`),
-		httpsGuessFunc: func(m []string) string { return "https://github.com/" + m[1] + ".git" },
-		sshGuessFunc:   func(m []string) string { return "git@github.com:" + m[1] + ".git" },
+		rx:            regexp.MustCompile(`\A([-0-9A-Za-z]+/[-0-9A-Za-z]+)\z`),
+		httpGuessRepl: "https://github.com/$1.git",
+		sshGuessRepl:  "git@github.com:$1.git",
 	},
 	{
-		rx:             regexp.MustCompile(`\A([-.0-9A-Za-z]+)/([-0-9A-Za-z]+)\z`),
-		httpsGuessFunc: func(m []string) string { return "https://" + m[1] + "/" + m[2] + "/dotfiles.git" },
-		sshGuessFunc:   func(m []string) string { return "git@" + m[1] + ":" + m[2] + "/dotfiles.git" },
+		rx:            regexp.MustCompile(`\A([-.0-9A-Za-z]+)/([-0-9A-Za-z]+)\z`),
+		httpGuessRepl: "https://$1/$2/dotfiles.git",
+		sshGuessRepl:  "git@$1:$2/dotfiles.git",
 	},
 	{
-		rx:             regexp.MustCompile(`\A([-.0-9A-Za-z]+)/([-0-9A-Za-z]+/[-0-9A-Za-z]+)\z`),
-		httpsGuessFunc: func(m []string) string { return "https://" + m[1] + "/" + m[2] + ".git" },
-		sshGuessFunc:   func(m []string) string { return "git@" + m[1] + ":" + m[2] + ".git" },
+		rx:            regexp.MustCompile(`\A([-.0-9A-Za-z]+)/([-0-9A-Za-z]+/[-0-9A-Za-z]+)\z`),
+		httpGuessRepl: "https://$1/$2.git",
+		sshGuessRepl:  "git@$1:$2.git",
 	},
 	{
-		rx:             regexp.MustCompile(`\A([-.0-9A-Za-z]+)/([-0-9A-Za-z]+/[-0-9A-Za-z]+\.git)\z`),
-		httpsGuessFunc: func(m []string) string { return "https://" + m[1] + "/" + m[2] },
-		sshGuessFunc:   func(m []string) string { return "git@" + m[1] + ":" + m[2] },
+		rx:            regexp.MustCompile(`\A([-.0-9A-Za-z]+)/([-0-9A-Za-z]+/[-0-9A-Za-z]+\.git)\z`),
+		httpGuessRepl: "https://$1/$2",
+		sshGuessRepl:  "git@$1:$2",
 	},
 	{
-		rx:             regexp.MustCompile(`\Asr\.ht/(~[-0-9A-Za-z]+)\z`),
-		httpsGuessFunc: func(m []string) string { return "https://git.sr.ht/" + m[1] + "/dotfiles" },
-		sshGuessFunc:   func(m []string) string { return "git@git.sr.ht:" + m[1] + "/dotfiles" },
+		rx:            regexp.MustCompile(`\Asr\.ht/(~[-0-9A-Za-z]+)\z`),
+		httpGuessRepl: "https://git.sr.ht/$1/dotfiles",
+		sshGuessRepl:  "git@git.sr.ht:$1/dotfiles",
 	},
 	{
-		rx:             regexp.MustCompile(`\Asr\.ht/(~[-0-9A-Za-z]+/[-0-9A-Za-z]+)\z`),
-		httpsGuessFunc: func(m []string) string { return "https://git.sr.ht/" + m[1] },
-		sshGuessFunc:   func(m []string) string { return "git@git.sr.ht:" + m[1] },
+		rx:            regexp.MustCompile(`\Asr\.ht/(~[-0-9A-Za-z]+/[-0-9A-Za-z]+)\z`),
+		httpGuessRepl: "https://git.sr.ht/$1",
+		sshGuessRepl:  "git@git.sr.ht:$1",
 	},
 }
 
@@ -151,7 +149,6 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 		} else {
 			dotfilesRepoURL := guessDotfilesRepoURL(args[0], c.init.ssh)
 			if useBuiltinGit {
-				isBare := false
 				var referenceName plumbing.ReferenceName
 				if c.init.branch != "" {
 					referenceName = plumbing.NewBranchReferenceName(c.init.branch)
@@ -162,36 +159,21 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 					ReferenceName:     referenceName,
 					RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
 				}
-
-				if _, err := git.PlainClone(string(rawSourceDir), isBare, &cloneOptions); err != nil {
-					if errors.Is(err, transport.ErrAuthenticationRequired) {
-						reader := bufio.NewReader(os.Stdin)
-
-						c.writeToStdout("Git authentication required - enter username and password...\n")
-						c.writeToStdout("Username: ")
-						username, err := reader.ReadString('\n')
-						if err != nil {
-							return err
-						}
-						c.writeToStdout("Password: ")
-						passwordBytes, err := term.ReadPassword(int(syscall.Stdin))
-						c.writeToStdout("\n")
-						if err != nil {
-							return err
-						}
-						password := string(passwordBytes)
-						username = strings.TrimSpace(username)
-						password = strings.TrimSpace(password)
-						cloneOptions.Auth = &http.BasicAuth{
-							Username: username,
-							Password: password,
-						}
-						if _, err := git.PlainClone(string(rawSourceDir), isBare, &cloneOptions); err != nil {
-							return err
-						}
-					} else {
+				isBare := false
+				_, err = git.PlainClone(string(rawSourceDir), isBare, &cloneOptions)
+				if errors.Is(err, transport.ErrAuthenticationRequired) {
+					var basicAuth http.BasicAuth
+					if basicAuth.Username, err = c.readLine("Username? "); err != nil {
 						return err
 					}
+					if basicAuth.Password, err = c.readPassword("Password? "); err != nil {
+						return err
+					}
+					cloneOptions.Auth = &basicAuth
+					_, err = git.PlainClone(string(rawSourceDir), isBare, &cloneOptions)
+				}
+				if err != nil {
+					return err
 				}
 			} else {
 				args := []string{
@@ -382,19 +364,14 @@ func (c *Config) writeToStdout(args ...string) string {
 // guessDotfilesRepoURL guesses the user's dotfile repo from arg.
 func guessDotfilesRepoURL(arg string, ssh bool) string {
 	for _, dotfileRepoGuess := range dotfilesRepoGuesses {
+		if !dotfileRepoGuess.rx.MatchString(arg) {
+			continue
+		}
 		switch {
-		case ssh:
-			if dotfileRepoGuess.sshGuessFunc != nil {
-				if m := dotfileRepoGuess.rx.FindStringSubmatch(arg); m != nil {
-					return dotfileRepoGuess.sshGuessFunc(m)
-				}
-			}
-		default:
-			if dotfileRepoGuess.rx.MatchString(arg) {
-				if m := dotfileRepoGuess.rx.FindStringSubmatch(arg); m != nil {
-					return dotfileRepoGuess.httpsGuessFunc(m)
-				}
-			}
+		case ssh && dotfileRepoGuess.sshGuessRepl != "":
+			return dotfileRepoGuess.rx.ReplaceAllString(arg, dotfileRepoGuess.sshGuessRepl)
+		case !ssh && dotfileRepoGuess.httpGuessRepl != "":
+			return dotfileRepoGuess.rx.ReplaceAllString(arg, dotfileRepoGuess.httpGuessRepl)
 		}
 	}
 	return arg
