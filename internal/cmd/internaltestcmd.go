@@ -26,5 +26,5 @@ func (c *Config) runInternalTestReadPasswordCmd(cmd *cobra.Command, args []strin
 	if err != nil {
 		return err
 	}
-	return c.writeOutputString(password)
+	return c.writeOutputString(password + "\n")
 }
