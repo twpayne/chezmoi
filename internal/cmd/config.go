@@ -1033,6 +1033,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newGitCmd(),
 		c.newImportCmd(),
 		c.newInitCmd(),
+		c.newInternalTestCmd(),
 		c.newManagedCmd(),
 		c.newMergeCmd(),
 		c.newPurgeCmd(),
