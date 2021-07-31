@@ -8,16 +8,16 @@ import (
 	"io/fs"
 	"regexp"
 	"strings"
-	"syscall"
 
 	vfs "github.com/twpayne/go-vfs/v3"
+	"golang.org/x/sys/unix"
 )
 
 var whitespaceRx = regexp.MustCompile(`\s+`)
 
 func init() {
-	Umask = fs.FileMode(syscall.Umask(0))
-	syscall.Umask(int(Umask))
+	Umask = fs.FileMode(unix.Umask(0))
+	unix.Umask(int(Umask))
 }
 
 // FQDNHostname returns the FQDN hostname, if it can be determined.

@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
 	"errors"
@@ -1033,6 +1034,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newGitCmd(),
 		c.newImportCmd(),
 		c.newInitCmd(),
+		c.newInternalTestCmd(),
 		c.newManagedCmd(),
 		c.newMergeCmd(),
 		c.newPurgeCmd(),
@@ -1342,27 +1344,15 @@ func (c *Config) readConfig() error {
 }
 
 func (c *Config) readLine(prompt string) (string, error) {
-	var line string
-	if err := c.withTerminal(prompt, func(t terminal) error {
-		var err error
-		line, err = t.ReadLine()
-		return err
-	}); err != nil {
+	_, err := c.stdout.Write([]byte(prompt))
+	if err != nil {
 		return "", err
 	}
-	return line, nil
-}
-
-func (c *Config) readPassword(prompt string) (string, error) {
-	var password string
-	if err := c.withTerminal("", func(t terminal) error {
-		var err error
-		password, err = t.ReadPassword(prompt)
-		return err
-	}); err != nil {
+	line, err := bufio.NewReader(c.stdin).ReadString('\n')
+	if err != nil {
 		return "", err
 	}
-	return password, nil
+	return strings.TrimSuffix(line, "\n"), nil
 }
 
 func (c *Config) run(dir chezmoi.AbsPath, name string, args []string) error {
@@ -1515,61 +1505,6 @@ func (c *Config) useBuiltinGitAutoFunc() (bool, error) {
 
 func (c *Config) validateData() error {
 	return validateKeys(c.Data, identifierRx)
-}
-
-func (c *Config) withTerminal(prompt string, f func(terminal) error) error {
-	if c.noTTY || runtime.GOOS == "windows" {
-		return f(newDumbTerminal(c.stdin, c.stdout, prompt))
-	}
-
-	if stdinFile, ok := c.stdin.(*os.File); ok && term.IsTerminal(int(stdinFile.Fd())) {
-		fd := int(stdinFile.Fd())
-		width, height, err := term.GetSize(fd)
-		if err != nil {
-			return err
-		}
-		oldState, err := term.MakeRaw(fd)
-		if err != nil {
-			return err
-		}
-		defer func() {
-			_ = term.Restore(fd, oldState)
-		}()
-		t := term.NewTerminal(struct {
-			io.Reader
-			io.Writer
-		}{
-			Reader: c.stdin,
-			Writer: c.stdout,
-		}, prompt)
-		if err := t.SetSize(width, height); err != nil {
-			return err
-		}
-		return f(t)
-	}
-
-	devTTY, err := os.OpenFile("/dev/tty", os.O_RDWR, 0)
-	if err != nil {
-		return err
-	}
-	defer devTTY.Close()
-	fd := int(devTTY.Fd())
-	width, height, err := term.GetSize(fd)
-	if err != nil {
-		return err
-	}
-	oldState, err := term.MakeRaw(fd)
-	if err != nil {
-		return err
-	}
-	defer func() {
-		_ = term.Restore(fd, oldState)
-	}()
-	t := term.NewTerminal(devTTY, prompt)
-	if err := t.SetSize(width, height); err != nil {
-		return err
-	}
-	return f(t)
 }
 
 func (c *Config) writeOutput(data []byte) error {
