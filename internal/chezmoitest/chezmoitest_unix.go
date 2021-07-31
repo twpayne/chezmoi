@@ -3,7 +3,7 @@
 package chezmoitest
 
 import (
-	"syscall"
+	"golang.org/x/sys/unix"
 )
 
 var (
@@ -25,5 +25,5 @@ var (
 )
 
 func init() {
-	syscall.Umask(int(Umask))
+	unix.Umask(int(Umask))
 }

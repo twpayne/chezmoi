@@ -26,6 +26,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	vfs "github.com/twpayne/go-vfs/v3"
+	"golang.org/x/sys/unix"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
@@ -160,9 +161,9 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 		Str("arg0", arg0).
 		Strs("argv", argv).
 		Msg("exec")
-	err = syscall.EINTR
-	for errors.Is(err, syscall.EINTR) {
-		err = syscall.Exec(arg0, argv, os.Environ())
+	err = unix.EINTR
+	for errors.Is(err, unix.EINTR) {
+		err = unix.Exec(arg0, argv, os.Environ())
 	}
 	return err
 }
