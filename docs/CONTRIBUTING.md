@@ -138,7 +138,7 @@ secret](https://github.com/twpayne/chezmoi/settings/secrets/actions). Snapcraft
 logins periodically expire. Create a new snapcraft login by running:
 
 ```console
-$ snapcraft export-login --snaps=chezmoi --channels=stable --acls=package_upload -
+$ snapcraft export-login --snaps=chezmoi --channels=stable,candidate,beta,edge --acls=package_upload -
 ```
 
 [brew](https://brew.sh/) formula must be updated manually with the command:
