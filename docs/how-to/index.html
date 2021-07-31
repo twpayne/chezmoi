@@ -16,7 +16,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" integrity="sha256-lYzqeCdiHW&#43;8s6zwkTRMPkTj0qlCj5w8OLues3v4xF0=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.adab8f13a443f7d8cbc7ef6ae4258d6237906b83de8d27b4a33b378581d0e890.js" integrity="sha256-rauPE6RD99jLx&#43;9q5CWNYjeQa4PejSe0ozs3hYHQ6JA=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.c6fccc1cf30b47d97fe844e3b24889bfd1b9e49061bbc6a8653f4a8c9e64507f.js" integrity="sha256-xvzMHPMLR9l/6ETjskiJv9G55JBhu8aoZT9KjJ5kUH8=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -269,7 +269,7 @@ source directory and the actual state.</p>
 <p>chezmoi can automatically commit and push changes to your source directory to
 your repo. This feature is disabled by default. To enable it, add the following
 to your config file:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">git</span>]
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">git</span>]
     <span style="color:#a6e22e">autoCommit</span> = <span style="color:#66d9ef">true</span>
     <span style="color:#a6e22e">autoPush</span> = <span style="color:#66d9ef">true</span>
 </code></pre></div><p>Whenever a change is made to your source directory, chezmoi will commit the
@@ -369,7 +369,7 @@ GitHub username:</p>
   <a class="anchor" href="#configure-vim-to-run-chezmoi-apply-whenever-you-save-a-dotfile">#</a>
 </h3>
 <p>Put the following in your <code>.vimrc</code>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-vim" data-lang="vim"><span style="color:#a6e22e">autocmd</span> <span style="color:#a6e22e">BufWritePost</span> ~<span style="color:#e6db74">/.local/</span><span style="color:#a6e22e">share</span><span style="color:#e6db74">/chezmoi/</span>* ! <span style="color:#a6e22e">chezmoi</span> <span style="color:#a6e22e">apply</span> --<span style="color:#a6e22e">source</span>-<span style="color:#a6e22e">path</span> %<span style="color:#960050;background-color:#1e0010">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-vim" data-lang="vim"><span style="color:#a6e22e">autocmd</span> <span style="color:#a6e22e">BufWritePost</span> ~<span style="color:#e6db74">/.local/</span><span style="color:#a6e22e">share</span><span style="color:#e6db74">/chezmoi/</span>* ! <span style="color:#a6e22e">chezmoi</span> <span style="color:#a6e22e">apply</span> --<span style="color:#a6e22e">source</span>-<span style="color:#a6e22e">path</span> %<span style="color:#960050;background-color:#1e0010">
 </span></code></pre></div><h2 id="include-dotfiles-from-elsewhere">
   Include dotfiles from elsewhere
   <a class="anchor" href="#include-dotfiles-from-elsewhere">#</a>
@@ -448,15 +448,15 @@ credentials, etc. chezmoi achieves this functionality by using
 <a href="https://pkg.go.dev/text/template"><code>text/template</code></a> for the source state where
 needed.</p>
 <p>For example, your home <code>~/.gitconfig</code> on your personal machine might look like:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">user</span>]
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">user</span>]
     <span style="color:#a6e22e">email</span> = <span style="color:#e6db74">&#34;me@home.org&#34;</span>
 </code></pre></div><p>Whereas at work it might be:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">user</span>]
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">user</span>]
     <span style="color:#a6e22e">email</span> = <span style="color:#e6db74">&#34;firstname.lastname@company.com&#34;</span>
 </code></pre></div><p>To handle this, on each machine create a configuration file called
 <code>~/.config/chezmoi/chezmoi.toml</code> defining variables that might vary from machine
 to machine. For example, for your home machine:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">data</span>]
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">data</span>]
     <span style="color:#a6e22e">email</span> = <span style="color:#e6db74">&#34;me@home.org&#34;</span>
 </code></pre></div><p>Note that all variable names will be converted to lowercase. This is due to a
 feature of a library used by chezmoi.</p>
@@ -474,7 +474,7 @@ of your <code>~/.config/chezmoi/chezmoi.toml</code> file:</p>
 <code>~/.local/share/chezmoi/dot_gitconfig.tmpl</code>):</p>
 <pre><code class="language-console" data-lang="console">$ chezmoi edit ~/.gitconfig
 </code></pre><p>The file should look something like:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">user</span>]
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">user</span>]
     <span style="color:#a6e22e">email</span> = {{ .<span style="color:#a6e22e">email</span> <span style="color:#960050;background-color:#1e0010">|</span> <span style="color:#a6e22e">quote</span> }}
 </code></pre></div><p>To disable automatic variable detection, use the <code>--template</code> or <code>-T</code> option to
 <code>chezmoi add</code> instead of <code>--autotemplate</code>.</p>
@@ -680,7 +680,7 @@ expose data as a template function.</p>
 </code></pre><p>The output of <code>op get item &lt;uuid&gt;</code> is available as the <code>onepassword</code> template
 function. chezmoi parses the JSON output and returns it as structured data. For
 example, if the output of <code>op get item &quot;&lt;uuid&gt;&quot;</code> is:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
     <span style="color:#f92672">&#34;uuid&#34;</span>: <span style="color:#e6db74">&#34;&lt;uuid&gt;&#34;</span>,
     <span style="color:#f92672">&#34;details&#34;</span>: {
         <span style="color:#f92672">&#34;password&#34;</span>: <span style="color:#e6db74">&#34;xxx&#34;</span>
@@ -732,7 +732,7 @@ with:</p>
 <p>chezmoi includes support for <a href="https://keepassxc.org">KeePassXC</a> using the
 KeePassXC CLI (<code>keepassxc-cli</code>) to expose data as a template function.</p>
 <p>Provide the path to your KeePassXC database in your configuration file:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">keepassxc</span>]
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">keepassxc</span>]
     <span style="color:#a6e22e">database</span> = <span style="color:#e6db74">&#34;/home/user/Passwords.kdbx&#34;</span>
 </code></pre></div><p>The structured data from <code>keepassxc-cli show $database</code> is available as the
 <code>keepassxc</code> template function in your config files, for example:</p>
@@ -880,13 +880,13 @@ it afterwards.</p>
 </h4>
 <p>Specify the encryption key to use in your configuration file (<code>chezmoi.toml</code>)
 with the <code>gpg.recipient</code> key:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml"><span style="color:#a6e22e">encryption</span> = <span style="color:#e6db74">&#34;gpg&#34;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml"><span style="color:#a6e22e">encryption</span> = <span style="color:#e6db74">&#34;gpg&#34;</span>
 [<span style="color:#a6e22e">gpg</span>]
     <span style="color:#a6e22e">recipient</span> = <span style="color:#e6db74">&#34;...&#34;</span>
 </code></pre></div><p>Add files to be encrypted with the <code>--encrypt</code> flag, for example:</p>
 <pre><code class="language-console" data-lang="console">$ chezmoi add --encrypt ~/.ssh/id_rsa
 </code></pre><p>chezmoi will encrypt the file with:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">gpg --armor --recipient <span style="color:#e6db74">${</span>gpg.recipient<span style="color:#e6db74">}</span> --encrypt
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">gpg --armor --recipient <span style="color:#e6db74">${</span>gpg.recipient<span style="color:#e6db74">}</span> --encrypt
 </code></pre></div><p>and store the encrypted file in the source state. The file will automatically be
 decrypted when generating the target state.</p>
 <h4 id="symmetric-encryption">
@@ -894,13 +894,13 @@ decrypted when generating the target state.</p>
   <a class="anchor" href="#symmetric-encryption">#</a>
 </h4>
 <p>Specify symmetric encryption in your configuration file:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml"><span style="color:#a6e22e">encryption</span> = <span style="color:#e6db74">&#34;gpg&#34;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml"><span style="color:#a6e22e">encryption</span> = <span style="color:#e6db74">&#34;gpg&#34;</span>
 [<span style="color:#a6e22e">gpg</span>]
     <span style="color:#a6e22e">symmetric</span> = <span style="color:#66d9ef">true</span>
 </code></pre></div><p>Add files to be encrypted with the <code>--encrypt</code> flag, for example:</p>
 <pre><code class="language-console" data-lang="console">$ chezmoi add --encrypt ~/.ssh/id_rsa
 </code></pre><p>chezmoi will encrypt the file with:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">gpg --armor --symmetric
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">gpg --armor --symmetric
 </code></pre></div><h3 id="encrypt-whole-files-with-age">
   Encrypt whole files with age
   <a class="anchor" href="#encrypt-whole-files-with-age">#</a>
@@ -914,7 +914,7 @@ re-encrypt it afterwards.</p>
 Public key: age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p
 </code></pre><p>Specify age encryption in your configuration file, being sure to specify at
 least the identity and one recipient:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml"><span style="color:#a6e22e">encryption</span> = <span style="color:#e6db74">&#34;age&#34;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml"><span style="color:#a6e22e">encryption</span> = <span style="color:#e6db74">&#34;age&#34;</span>
 [<span style="color:#a6e22e">age</span>]
     <span style="color:#a6e22e">identity</span> = <span style="color:#e6db74">&#34;/home/user/key.txt&#34;</span>
     <span style="color:#a6e22e">recipient</span> = <span style="color:#e6db74">&#34;age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p&#34;</span>
@@ -928,7 +928,7 @@ identities.</p>
 </h4>
 <p>To use age&rsquo;s symmetric encryption, specify a single identity and enable
 symmetric encryption in your config file, for example:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml"><span style="color:#a6e22e">encryption</span> = <span style="color:#e6db74">&#34;age&#34;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml"><span style="color:#a6e22e">encryption</span> = <span style="color:#e6db74">&#34;age&#34;</span>
 [<span style="color:#a6e22e">age</span>]
     <span style="color:#a6e22e">identity</span> = <span style="color:#e6db74">&#34;~/.ssh/id_rsa&#34;</span>
     <span style="color:#a6e22e">symmetric</span> = <span style="color:#66d9ef">true</span>
@@ -938,7 +938,7 @@ symmetric encryption in your config file, for example:</p>
 </h4>
 <p>To use age&rsquo;s symmetric encryption with a passphrase, set <code>age.passphrase</code> to
 <code>true</code> in your config file, for example:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml"><span style="color:#a6e22e">encryption</span> = <span style="color:#e6db74">&#34;age&#34;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml"><span style="color:#a6e22e">encryption</span> = <span style="color:#e6db74">&#34;age&#34;</span>
 [<span style="color:#a6e22e">age</span>]
     <span style="color:#a6e22e">passphrase</span> = <span style="color:#66d9ef">true</span>
 </code></pre></div><p>You will be prompted for the passphrase whenever you run <code>chezmoi add --encrypt</code>
@@ -951,7 +951,7 @@ and whenever chezmoi needs to decrypt the file, for example when you run
 <p>Typically, <code>~/.config/chezmoi/chezmoi.toml</code> is not checked in to version control
 and has permissions 0600. You can store tokens as template values in the <code>data</code>
 section. For example, if your <code>~/.config/chezmoi/chezmoi.toml</code> contains:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">github</span>]
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">data</span>.<span style="color:#a6e22e">github</span>]
     <span style="color:#a6e22e">user</span> = <span style="color:#e6db74">&#34;&lt;github-username&gt;&#34;</span>
     <span style="color:#a6e22e">token</span> = <span style="color:#e6db74">&#34;&lt;github-token&gt;&#34;</span>
 </code></pre></div><p>Your <code>~/.local/share/chezmoi/private_dot_gitconfig.tmpl</code> can then contain:</p>
@@ -997,7 +997,7 @@ useful for disabling scripts.</p>
 <pre><code class="language-console" data-lang="console">$ chezmoi cd
 $ $EDITOR run_once_install-packages.sh
 </code></pre><p>In this file create your package installation script, e.g.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e">#!/bin/sh
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e">#!/bin/sh
 </span><span style="color:#75715e"></span>sudo apt install ripgrep
 </code></pre></div><p>The next time you run <code>chezmoi apply</code> or <code>chezmoi update</code> this script will be
 run. As it has the <code>run_once_</code> prefix, it will not be run again unless its
@@ -1081,7 +1081,7 @@ you add or remove brews or casks.</p>
   <a class="anchor" href="#run-a-powershell-script-as-admin-on-windows">#</a>
 </h3>
 <p>Put the following at the top of your script:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#75715e"># Self-elevate the script if required</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell"><span style="color:#75715e"># Self-elevate the script if required</span>
 <span style="color:#66d9ef">if</span> (<span style="color:#f92672">-Not</span> (<span style="color:#66d9ef">[Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]</span>::GetCurrent()).IsInRole(<span style="color:#66d9ef">[Security.Principal.WindowsBuiltInRole]</span> <span style="color:#e6db74">&#39;Administrator&#39;</span>)) {
   <span style="color:#66d9ef">if</span> (<span style="color:#66d9ef">[int]</span>(Get-CimInstance -Class Win32_OperatingSystem | Select-Object -ExpandProperty BuildNumber) <span style="color:#f92672">-ge</span> 6000) {
     $CommandLine = <span style="color:#e6db74">&#34;-NoExit -File </span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74">&#34;</span> + $MyInvocation.MyCommand.Path + <span style="color:#e6db74">&#34;</span><span style="color:#ae81ff">`&#34;</span><span style="color:#e6db74"> &#34;</span> + $MyInvocation.UnboundArguments
@@ -1130,7 +1130,7 @@ sourceDir = {{ .chezmoi.sourceDir | quote }}
 </code></pre><p>This sets the <code>codespaces</code> template variable, so you don&rsquo;t have to repeat <code>(env &quot;CODESPACES&quot;)</code> in your templates. It also sets the <code>sourceDir</code> configuration to
 the <code>--source</code> argument passed in <code>chezmoi init</code>.</p>
 <p>Second, create an <code>install.sh</code> script that installs chezmoi and your dotfiles:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e">#!/bin/sh
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e">#!/bin/sh
 </span><span style="color:#75715e"></span>
 set -e <span style="color:#75715e"># -e: exit on error</span>
 
@@ -1180,7 +1180,7 @@ sudo apt install -y vim-gtk
 <p>By default, chezmoi uses a built-in diff. You can change the format, and/or pipe
 the output into a pager of your choice. For example, to use
 <a href="https://github.com/so-fancy/diff-so-fancy"><code>diff-so-fancy</code></a> specify:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">diff</span>]
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">diff</span>]
     <span style="color:#a6e22e">pager</span> = <span style="color:#e6db74">&#34;diff-so-fancy&#34;</span>
 </code></pre></div><p>The pager can be disabled using the <code>--no-pager</code> flag.</p>
 <h3 id="use-a-merge-tool-other-than-vimdiff">
@@ -1190,7 +1190,7 @@ the output into a pager of your choice. For example, to use
 <p>By default, chezmoi uses vimdiff, but you can use any merge tool of your choice.
 In your config file, specify the command and args to use. For example, to use
 neovim&rsquo;s diff mode specify:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">merge</span>]
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">merge</span>]
     <span style="color:#a6e22e">command</span> = <span style="color:#e6db74">&#34;nvim&#34;</span>
     <span style="color:#a6e22e">args</span> = <span style="color:#e6db74">&#34;-d&#34;</span>
 </code></pre></div><h2 id="migrating-to-chezmoi-from-another-dotfile-manager">

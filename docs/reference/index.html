@@ -22,7 +22,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" integrity="sha256-lYzqeCdiHW&#43;8s6zwkTRMPkTj0qlCj5w8OLues3v4xF0=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.adab8f13a443f7d8cbc7ef6ae4258d6237906b83de8d27b4a33b378581d0e890.js" integrity="sha256-rauPE6RD99jLx&#43;9q5CWNYjeQa4PejSe0ozs3hYHQ6JA=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.c6fccc1cf30b47d97fe844e3b24889bfd1b9e49061bbc6a8653f4a8c9e64507f.js" integrity="sha256-xvzMHPMLR9l/6ETjskiJv9G55JBhu8aoZT9KjJ5kUH8=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -876,7 +876,7 @@ of the config file is <code>chezmoi</code>, and the first config file found is u
   JSON
   <a class="anchor" href="#json">#</a>
 </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
     <span style="color:#f92672">&#34;sourceDir&#34;</span>: <span style="color:#e6db74">&#34;/home/user/.dotfiles&#34;</span>,
     <span style="color:#f92672">&#34;git&#34;</span>: {
         <span style="color:#f92672">&#34;autoPush&#34;</span>: <span style="color:#66d9ef">true</span>
@@ -886,14 +886,14 @@ of the config file is <code>chezmoi</code>, and the first config file found is u
   TOML
   <a class="anchor" href="#toml">#</a>
 </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml"><span style="color:#a6e22e">sourceDir</span> = <span style="color:#e6db74">&#34;/home/user/.dotfiles&#34;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml"><span style="color:#a6e22e">sourceDir</span> = <span style="color:#e6db74">&#34;/home/user/.dotfiles&#34;</span>
 [<span style="color:#a6e22e">git</span>]
     <span style="color:#a6e22e">autoPush</span> = <span style="color:#66d9ef">true</span>
 </code></pre></div><h4 id="yaml">
   YAML
   <a class="anchor" href="#yaml">#</a>
 </h4>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">sourceDir</span>: <span style="color:#ae81ff">/home/user/.dotfiles</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#f92672">sourceDir</span>: <span style="color:#ae81ff">/home/user/.dotfiles</span>
 <span style="color:#f92672">git</span>:
     <span style="color:#f92672">autoPush</span>: <span style="color:#66d9ef">true</span>
 </code></pre></div><h2 id="source-state-attributes">
@@ -1174,7 +1174,7 @@ extensions. Other extensions require an interpreter, which must be in your
 leading <code>.</code> is dropped from <em>extension</em>.</p>
 <p>For example to change the Python interpreter to <code>C:\Python39\python.exe</code> and add
 a Tcl/Tk interpreter, include the following in <code>~/.config/chezmoi/chezmoi.toml</code>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">interpreters</span>.<span style="color:#a6e22e">py</span>]
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">interpreters</span>.<span style="color:#a6e22e">py</span>]
     <span style="color:#a6e22e">command</span> = <span style="color:#e6db74">&#39;C:\Python39\python.exe&#39;</span>
 [<span style="color:#a6e22e">interpreters</span>.<span style="color:#a6e22e">tcl</span>]
     <span style="color:#a6e22e">command</span> = <span style="color:#e6db74">&#34;tclsh&#34;</span>
@@ -1212,7 +1212,7 @@ as a datasource available in most <a href="TEMPLATING.md#template-data">template
   <a class="anchor" href="#chezmoidataformat-examples">#</a>
 </h4>
 <p>If <code>.chezmoidata.toml</code> contains the following (and no variable is overwritten in later stages):</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml"><span style="color:#a6e22e">editor</span> = <span style="color:#e6db74">&#34;nvim&#34;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml"><span style="color:#a6e22e">editor</span> = <span style="color:#e6db74">&#34;nvim&#34;</span>
 [<span style="color:#a6e22e">directions</span>]
 	<span style="color:#a6e22e">up</span> = <span style="color:#e6db74">&#34;k&#34;</span>
 	<span style="color:#a6e22e">down</span> = <span style="color:#e6db74">&#34;j&#34;</span>
@@ -1678,9 +1678,9 @@ the template is read from stdin.</p>
 <em>pairs</em>. <em>pairs</em> is a comma-separated list of <em>prompt</em><code>=</code><em>value</em> pairs. If
 <code>promptBool</code> is called with a <em>prompt</em> that does not match any of <em>pairs</em>, then
 it returns false.</p>
-<h4 id="--promptint--p-pairs">
-  <code>--promptInt</code>, <code>-p</code> <em>pairs</em>
-  <a class="anchor" href="#--promptint--p-pairs">#</a>
+<h4 id="--promptint-pairs">
+  <code>--promptInt</code> <em>pairs</em>
+  <a class="anchor" href="#--promptint-pairs">#</a>
 </h4>
 <p>Simulate the <code>promptInt</code> function with a function that returns values from
 <em>pairs</em>. <em>pairs</em> is a comma-separated list of <em>prompt</em><code>=</code><em>value</em> pairs. If
@@ -2111,7 +2111,7 @@ shell. chezmoi only stores crude permissions in its source state, namely in the
 and <code>0o077</code> respectively.</p>
 <p>For machine-specific control of umask, set the <code>umask</code> configuration variable in
 chezmoi&rsquo;s configuration file, for example:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml"><span style="color:#a6e22e">umask</span> = <span style="color:#ae81ff">0</span><span style="color:#a6e22e">o22</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml"><span style="color:#a6e22e">umask</span> = <span style="color:#ae81ff">0</span><span style="color:#a6e22e">o22</span>
 </code></pre></div><h2 id="template-execution">
   Template execution
   <a class="anchor" href="#template-execution">#</a>
@@ -2133,7 +2133,7 @@ differently depending on whether the target is a file or a symlink.</p>
 <p>chezmoi executes templates using <code>text/template</code>&rsquo;s <code>missingkey=error</code> option,
 which means that misspelled or missing keys will raise an error. This can be
 overridden by setting a list of options in the configuration file, for example:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">template</span>]
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">template</span>]
     <span style="color:#a6e22e">options</span> = [<span style="color:#e6db74">&#34;missingkey=zero&#34;</span>]
 </code></pre></div><p>For a full list of options, see
 <a href="https://pkg.go.dev/text/template?tab=doc#Template.Option"><code>Template.Option</code></a>.</p>
@@ -2251,7 +2251,7 @@ CLI</a> (<code>bw</code>). <em>arg</em>s are passed to <code>bw get</code>
 unchanged, the output from <code>bw get</code> is parsed as JSON, and elements of <code>fields</code>
 are returned as a map indexed by each field&rsquo;s <code>name</code>. For example, given the
 output from <code>bw get</code>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
     <span style="color:#f92672">&#34;object&#34;</span>: <span style="color:#e6db74">&#34;item&#34;</span>,
     <span style="color:#f92672">&#34;id&#34;</span>: <span style="color:#e6db74">&#34;bf22e4b4-ae4a-4d1c-8c98-ac620004b628&#34;</span>,
     <span style="color:#f92672">&#34;organizationId&#34;</span>: <span style="color:#66d9ef">null</span>,
@@ -2282,7 +2282,7 @@ output from <code>bw get</code>:</p>
     <span style="color:#f92672">&#34;revisionDate&#34;</span>: <span style="color:#e6db74">&#34;2020-10-28T00:21:02.690Z&#34;</span>
 }
 </code></pre></div><p>the return value will be the map</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
     <span style="color:#f92672">&#34;hidden&#34;</span>: {
         <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;hidden&#34;</span>,
         <span style="color:#f92672">&#34;type&#34;</span>: <span style="color:#ae81ff">1</span>,
@@ -2568,7 +2568,7 @@ CLI</a> (<code>op</code>). <em>uuid</em>
 is passed to <code>op get item &lt;uuid&gt;</code>, the output from <code>op</code> is parsed as JSON, and
 elements of <code>details.fields</code> are returned as a map indexed by each field&rsquo;s
 <code>designation</code>. For example, give the output from <code>op</code>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
     <span style="color:#f92672">&#34;uuid&#34;</span>: <span style="color:#e6db74">&#34;&lt;uuid&gt;&#34;</span>,
     <span style="color:#f92672">&#34;details&#34;</span>: {
         <span style="color:#f92672">&#34;fields&#34;</span>: [
@@ -2588,7 +2588,7 @@ elements of <code>details.fields</code> are returned as a map indexed by each fi
     }
 }
 </code></pre></div><p>the return value will be the map:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
     <span style="color:#f92672">&#34;username&#34;</span>: {
         <span style="color:#f92672">&#34;designation&#34;</span>: <span style="color:#e6db74">&#34;username&#34;</span>,
         <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;username&#34;</span>,

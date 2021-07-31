@@ -22,7 +22,7 @@ How do I edit my dotfiles with chezmoi? #  There are four popular approaches:
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" integrity="sha256-lYzqeCdiHW&#43;8s6zwkTRMPkTj0qlCj5w8OLues3v4xF0=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.adab8f13a443f7d8cbc7ef6ae4258d6237906b83de8d27b4a33b378581d0e890.js" integrity="sha256-rauPE6RD99jLx&#43;9q5CWNYjeQa4PejSe0ozs3hYHQ6JA=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.c6fccc1cf30b47d97fe844e3b24889bfd1b9e49061bbc6a8653f4a8c9e64507f.js" integrity="sha256-xvzMHPMLR9l/6ETjskiJv9G55JBhu8aoZT9KjJ5kUH8=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -133,6 +133,7 @@ https://github.com/alex-shpak/hugo-book
     <li><a href="#ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both">I&rsquo;ve made changes to both the destination state and the source state that I want to keep. How can I keep them both?</a></li>
     <li><a href="#why-does-chezmoi-convert-all-my-template-variables-to-lowercase">Why does chezmoi convert all my template variables to lowercase?</a></li>
     <li><a href="#chezmoi-makes-sshconfig-group-writeable-how-do-i-stop-this">chezmoi makes <code>~/.ssh/config</code> group writeable. How do I stop this?</a></li>
+    <li><a href="#why-does-chezmoi-cd-spawn-a-shell-instead-of-just-changing-directory">Why does <code>chezmoi cd</code> spawn a shell instead of just changing directory?</a></li>
     <li><a href="#why-doesnt-chezmoi-use-symlinks-like-gnu-stow">Why doesn&rsquo;t chezmoi use symlinks like GNU Stow?</a></li>
     <li><a href="#can-i-change-how-chezmois-source-state-is-represented-on-disk">Can I change how chezmoi&rsquo;s source state is represented on disk?</a></li>
     <li><a href="#gpg-encryption-fails-what-could-be-wrong">gpg encryption fails. What could be wrong?</a></li>
@@ -285,13 +286,24 @@ systems the default umask is <code>022</code> but some systems use <code>002</co
 that files and directories are group writeable by default.</p>
 <p>You can override this for chezmoi by setting the <code>umask</code> configuration variable
 in your configuration file, for example:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml"><span style="color:#a6e22e">umask</span> = <span style="color:#ae81ff">0</span><span style="color:#a6e22e">o022</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml"><span style="color:#a6e22e">umask</span> = <span style="color:#ae81ff">0</span><span style="color:#a6e22e">o022</span>
 </code></pre></div><p>Note that this will apply to all files and directories that chezmoi manages and
 will ensure that none of them are group writeable. It is not currently possible
 to control group write permissions for individual files or directories. Please
 <a href="https://github.com/twpayne/chezmoi/issues/new?assignees=&amp;labels=enhancement&amp;template=02_feature_request.md&amp;title=">open an issue on
 GitHub</a>
 if you need this.</p>
+<h2 id="why-does-chezmoi-cd-spawn-a-shell-instead-of-just-changing-directory">
+  Why does <code>chezmoi cd</code> spawn a shell instead of just changing directory?
+  <a class="anchor" href="#why-does-chezmoi-cd-spawn-a-shell-instead-of-just-changing-directory">#</a>
+</h2>
+<p><code>chezmoi cd</code> spawns a shell because it is not possible for a program to change
+the working directory of its parent process. You can add a shell function instead:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">chezmoi-cd<span style="color:#f92672">()</span> <span style="color:#f92672">{</span>
+    cd <span style="color:#66d9ef">$(</span>chezmoi source-path<span style="color:#66d9ef">)</span>
+<span style="color:#f92672">}</span>
+</code></pre></div><p>Typing <code>chezmoi-cd</code> will then change the directory of your current shell to
+chezmoi&rsquo;s source directory.</p>
 <h2 id="why-doesnt-chezmoi-use-symlinks-like-gnu-stow">
   Why doesn&rsquo;t chezmoi use symlinks like GNU Stow?
   <a class="anchor" href="#why-doesnt-chezmoi-use-symlinks-like-gnu-stow">#</a>
@@ -596,6 +608,7 @@ chezmoi better. Thank you :)</p>
     <li><a href="#ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both">I&rsquo;ve made changes to both the destination state and the source state that I want to keep. How can I keep them both?</a></li>
     <li><a href="#why-does-chezmoi-convert-all-my-template-variables-to-lowercase">Why does chezmoi convert all my template variables to lowercase?</a></li>
     <li><a href="#chezmoi-makes-sshconfig-group-writeable-how-do-i-stop-this">chezmoi makes <code>~/.ssh/config</code> group writeable. How do I stop this?</a></li>
+    <li><a href="#why-does-chezmoi-cd-spawn-a-shell-instead-of-just-changing-directory">Why does <code>chezmoi cd</code> spawn a shell instead of just changing directory?</a></li>
     <li><a href="#why-doesnt-chezmoi-use-symlinks-like-gnu-stow">Why doesn&rsquo;t chezmoi use symlinks like GNU Stow?</a></li>
     <li><a href="#can-i-change-how-chezmois-source-state-is-represented-on-disk">Can I change how chezmoi&rsquo;s source state is represented on disk?</a></li>
     <li><a href="#gpg-encryption-fails-what-could-be-wrong">gpg encryption fails. What could be wrong?</a></li>
