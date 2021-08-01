@@ -229,6 +229,11 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		Merge: mergeCmdConfig{
 			Command: "vimdiff",
+			Args: []string{
+				"{{ .Destination }}",
+				"{{ .Source }}",
+				"{{ .Target }}",
+			},
 		},
 		Template: templateConfig{
 			Options: chezmoi.DefaultTemplateOptions,

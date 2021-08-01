@@ -12,6 +12,10 @@ stdout ^${HOME@R}/\.file\s+${CHEZMOISOURCEDIR@R}/dot_file\s+${WORK@R}/.*/\.file$
 # chezmoi merge $HOME${/}.invalid_template
 # stdout ^${HOME@R}/\.invalid_template\s+$CHEZMOISOURCEDIR/dot_invalid_template\.tmpl$
 
+chhome home2/user
+chezmoi merge $HOME${/}.file
+stdout ^${CHEZMOISOURCEDIR@R}/dot_file\s+${HOME@R}/\.file\s+${WORK@R}/.*/\.file$
+
 -- bin/vimdiff --
 #!/bin/sh
 
@@ -19,3 +23,10 @@ echo "$*"
 -- home/user/.invalid_template --
 -- home/user/.local/share/chezmoi/dot_invalid_template.tmpl --
 {{
+-- home2/user/.config/chezmoi/chezmoi.toml --
+[merge]
+    args = ["{{ .Source }}", "{{ .Destination }}", "{{ .Target }}"]
+-- home2/user/.file --
+# destination
+-- home2/user/.local/share/chezmoi/dot_file --
+# source

@@ -3,6 +3,8 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strings"
+	"text/template"
 
 	"github.com/spf13/cobra"
 
@@ -73,12 +75,27 @@ func (c *Config) runMergeCmd(cmd *cobra.Command, args []string, sourceState *che
 		if err := c.baseSystem.WriteFile(targetStatePath, contents, 0o600); err != nil {
 			return err
 		}
-		args := append(
-			append([]string{}, c.Merge.Args...),
-			string(c.DestDirAbsPath.Join(targetRelPath)),
-			string(c.SourceDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath())),
-			string(targetStatePath),
-		)
+		templateData := struct {
+			Destination string
+			Source      string
+			Target      string
+		}{
+			Destination: string(c.DestDirAbsPath.Join(targetRelPath)),
+			Source:      string(c.SourceDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath())),
+			Target:      string(targetStatePath),
+		}
+		args := make([]string, 0, len(c.Merge.Args))
+		for _, arg := range c.Merge.Args {
+			tmpl, err := template.New("").Parse(arg)
+			if err != nil {
+				return err
+			}
+			var sb strings.Builder
+			if err := tmpl.Execute(&sb, templateData); err != nil {
+				return err
+			}
+			args = append(args, sb.String())
+		}
 		if err := c.persistentState.Close(); err != nil {
 			return err
 		}
