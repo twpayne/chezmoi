@@ -327,7 +327,7 @@ The following configuration variables are available:
 |                | `command`             | string   | `keepassxc-cli`          | KeePassXC CLI command                                  |
 |                | `database`            | string   | *none*                   | KeePassXC database                                     |
 | `lastpass`     | `command`             | string   | `lpass`                  | Lastpass CLI command                                   |
-| `merge`        | `args`                | []string | *none*                   | Extra args to 3-way merge command                      |
+| `merge`        | `args`                | []string | *see `merge` below*      | Args to 3-way merge command                            |
 |                | `command`             | string   | `vimdiff`                | 3-way merge command                                    |
 | `onepassword`  | `cache`               | bool     | `true`                   | Enable optional caching provided by `op`               |
 |                | `command`             | string   | `op`                     | 1Password CLI command                                  |
@@ -1189,6 +1189,12 @@ targets are specified the merge tool is invoked for each target. If the target
 state cannot be computed (for example if source is a template containing errors
 or an encrypted file that cannot be decrypted) a two-way merge is performed
 instead.
+
+The order of arguments to `merge.command` is controlled by `merge.args`. Each
+argument is interpreted a template with the variables `.Destination`, `.Source`,
+and `.Target` available corresponding to the path of the file in the destination
+state, the source state, and the target state respectively. The default value of
+`merge.args` is `["{{ .Destination }}", "{{ .Source }}", "{{ .Target }}"]`.
 
 #### `merge` examples
 
