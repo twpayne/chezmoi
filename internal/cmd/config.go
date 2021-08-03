@@ -52,16 +52,16 @@ type templateConfig struct {
 // A Config represents a configuration.
 type Config struct {
 	// Global configuration, settable in the config file.
-	SourceDirAbsPath chezmoi.AbsPath                 `mapstructure:"sourceDir"`
-	DestDirAbsPath   chezmoi.AbsPath                 `mapstructure:"destDir"`
-	Umask            fs.FileMode                     `mapstructure:"umask"`
-	Remove           bool                            `mapstructure:"remove"`
-	Color            *autoBool                       `mapstructure:"color"`
+	Color            autoBool                        `mapstructure:"color"`
 	Data             map[string]interface{}          `mapstructure:"data"`
-	Template         templateConfig                  `mapstructure:"template"`
-	UseBuiltinGit    *autoBool                       `mapstructure:"useBuiltinGit"`
-	Pager            string                          `mapstructure:"pager"`
+	DestDirAbsPath   chezmoi.AbsPath                 `mapstructure:"destDir"`
 	Interpreters     map[string]*chezmoi.Interpreter `mapstructure:"interpreters"`
+	Pager            string                          `mapstructure:"pager"`
+	Remove           bool                            `mapstructure:"remove"`
+	SourceDirAbsPath chezmoi.AbsPath                 `mapstructure:"sourceDir"`
+	Template         templateConfig                  `mapstructure:"template"`
+	Umask            fs.FileMode                     `mapstructure:"umask"`
+	UseBuiltinGit    autoBool                        `mapstructure:"useBuiltinGit"`
 
 	// Global configuration, not settable in the config file.
 	cpuProfile    chezmoi.AbsPath
@@ -202,12 +202,54 @@ func newConfig(options ...configOption) (*Config, error) {
 	}
 
 	c := &Config{
-		bds:          bds,
-		fileSystem:   vfs.OSFS,
-		homeDir:      userHomeDir,
-		Umask:        chezmoi.Umask,
-		Pager:        os.Getenv("PAGER"),
+		// Global configuration, settable in the config file.
+		Color: autoBool{
+			auto: true,
+		},
 		Interpreters: defaultInterpreters,
+		Pager:        os.Getenv("PAGER"),
+		Template: templateConfig{
+			Options: chezmoi.DefaultTemplateOptions,
+		},
+		Umask: chezmoi.Umask,
+		UseBuiltinGit: autoBool{
+			auto: true,
+		},
+
+		// Global configuration, not settable in the config file.
+		homeDir:       userHomeDir,
+		templateFuncs: sprig.TxtFuncMap(),
+
+		// Password manager configurations, settable in the config file.
+		Bitwarden: bitwardenConfig{
+			Command: "bw",
+		},
+		Gopass: gopassConfig{
+			Command: "gopass",
+		},
+		Keepassxc: keepassxcConfig{
+			Command: "keepassxc-cli",
+		},
+		Lastpass: lastpassConfig{
+			Command: "lpass",
+		},
+		Onepassword: onepasswordConfig{
+			Command: "op",
+		},
+		Pass: passConfig{
+			Command: "pass",
+		},
+		Vault: vaultConfig{
+			Command: "vault",
+		},
+
+		// Encryption configurations, settable in the config file.
+		AGE: defaultAGEEncryptionConfig,
+		GPG: defaultGPGEncryptionConfig,
+
+		// Password manager data.
+
+		// Command configurations, settable in the config file.
 		Add: addCmdConfig{
 			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
@@ -235,33 +277,8 @@ func newConfig(options ...configOption) (*Config, error) {
 				"{{ .Target }}",
 			},
 		},
-		Template: templateConfig{
-			Options: chezmoi.DefaultTemplateOptions,
-		},
-		templateFuncs: sprig.TxtFuncMap(),
-		Bitwarden: bitwardenConfig{
-			Command: "bw",
-		},
-		Gopass: gopassConfig{
-			Command: "gopass",
-		},
-		Keepassxc: keepassxcConfig{
-			Command: "keepassxc-cli",
-		},
-		Lastpass: lastpassConfig{
-			Command: "lpass",
-		},
-		Onepassword: onepasswordConfig{
-			Command: "op",
-		},
-		Pass: passConfig{
-			Command: "pass",
-		},
-		Vault: vaultConfig{
-			Command: "vault",
-		},
-		AGE: defaultAGEEncryptionConfig,
-		GPG: defaultGPGEncryptionConfig,
+
+		// Command configurations, not settable in the config file.
 		apply: applyCmdConfig{
 			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
@@ -328,11 +345,16 @@ func newConfig(options ...configOption) (*Config, error) {
 			recursive: true,
 		},
 
+		// Configuration.
+		fileSystem: vfs.OSFS,
+		bds:        bds,
+
+		// Computed configuration.
+		homeDirAbsPath: homeDirAbsPath,
+
 		stdin:  os.Stdin,
 		stdout: os.Stdout,
 		stderr: os.Stderr,
-
-		homeDirAbsPath: homeDirAbsPath,
 	}
 
 	for key, value := range map[string]interface{}{
@@ -385,8 +407,6 @@ func newConfig(options ...configOption) (*Config, error) {
 		return nil, err
 	}
 	c.DestDirAbsPath = c.homeDirAbsPath
-	c.Color = newAutoBool(c.colorAutoFunc)
-	c.UseBuiltinGit = newAutoBool(c.useBuiltinGitAutoFunc)
 	c._import.destination = c.homeDirAbsPath
 
 	return c, nil
@@ -761,7 +781,7 @@ func (c *Config) destAbsPathInfos(sourceState *chezmoi.SourceState, args []strin
 func (c *Config) diffFile(path chezmoi.RelPath, fromData []byte, fromMode fs.FileMode, toData []byte, toMode fs.FileMode) error {
 	var sb strings.Builder
 	unifiedEncoder := diff.NewUnifiedEncoder(&sb, diff.DefaultContextLines)
-	color, err := c.Color.Value()
+	color, err := c.Color.Value(c.colorAutoFunc)
 	if err != nil {
 		return err
 	}
@@ -975,11 +995,11 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 
 	persistentFlags := rootCmd.PersistentFlags()
 
-	persistentFlags.Var(c.Color, "color", "Colorize output")
+	persistentFlags.Var(&c.Color, "color", "Colorize output")
 	persistentFlags.VarP(&c.DestDirAbsPath, "destination", "D", "Set destination directory")
 	persistentFlags.BoolVar(&c.Remove, "remove", c.Remove, "Remove entries from destination directory")
 	persistentFlags.VarP(&c.SourceDirAbsPath, "source", "S", "Set source directory")
-	persistentFlags.Var(c.UseBuiltinGit, "use-builtin-git", "Use builtin git")
+	persistentFlags.Var(&c.UseBuiltinGit, "use-builtin-git", "Use builtin git")
 	for _, key := range []string{
 		"color",
 		"destination",
@@ -1153,7 +1173,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		c.errorf("warning: %s: %v\n", c.configFileAbsPath, err)
 	}
 
-	color, err := c.Color.Value()
+	color, err := c.Color.Value(c.colorAutoFunc)
 	if err != nil {
 		return err
 	}

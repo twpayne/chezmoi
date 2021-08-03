@@ -39,7 +39,7 @@ func (c *Config) newDiffCmd() *cobra.Command {
 func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) error {
 	sb := strings.Builder{}
 	dryRunSystem := chezmoi.NewDryRunSystem(c.destSystem)
-	color, err := c.Color.Value()
+	color, err := c.Color.Value(c.colorAutoFunc)
 	if err != nil {
 		return err
 	}

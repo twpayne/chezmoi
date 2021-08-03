@@ -11,17 +11,8 @@ import (
 
 type autoBool struct {
 	auto     bool
-	autoFunc func() (bool, error)
 	value    bool
 	valueErr error
-}
-
-// newAutoBool returns a new autoBool.
-func newAutoBool(autoFunc func() (bool, error)) *autoBool {
-	return &autoBool{
-		auto:     true,
-		autoFunc: autoFunc,
-	}
 }
 
 // Set implements github.com/spf13/pflag.Value.Set.
@@ -52,9 +43,9 @@ func (b *autoBool) Type() string {
 }
 
 // Value returns b's value, calling b's autoFunc if needed.
-func (b *autoBool) Value() (bool, error) {
+func (b *autoBool) Value(autoFunc func() (bool, error)) (bool, error) {
 	if b.auto {
-		b.value, b.valueErr = b.autoFunc()
+		b.value, b.valueErr = autoFunc()
 		b.auto = false
 	}
 	return b.value, b.valueErr

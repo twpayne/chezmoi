@@ -42,7 +42,7 @@ func (c *Config) newUpdateCmd() *cobra.Command {
 }
 
 func (c *Config) runUpdateCmd(cmd *cobra.Command, args []string) error {
-	switch useBuiltinGit, err := c.UseBuiltinGit.Value(); {
+	switch useBuiltinGit, err := c.UseBuiltinGit.Value(c.useBuiltinGitAutoFunc); {
 	case err != nil:
 		return err
 	case useBuiltinGit:
