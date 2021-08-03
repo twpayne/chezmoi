@@ -52,16 +52,16 @@ type templateConfig struct {
 // A Config represents a configuration.
 type Config struct {
 	// Global configuration, settable in the config file.
-	SourceDirAbsPath chezmoi.AbsPath                 `mapstructure:"sourceDir"`
-	DestDirAbsPath   chezmoi.AbsPath                 `mapstructure:"destDir"`
-	Umask            fs.FileMode                     `mapstructure:"umask"`
-	Remove           bool                            `mapstructure:"remove"`
 	Color            autoBool                        `mapstructure:"color"`
 	Data             map[string]interface{}          `mapstructure:"data"`
-	Template         templateConfig                  `mapstructure:"template"`
-	UseBuiltinGit    autoBool                        `mapstructure:"useBuiltinGit"`
-	Pager            string                          `mapstructure:"pager"`
+	DestDirAbsPath   chezmoi.AbsPath                 `mapstructure:"destDir"`
 	Interpreters     map[string]*chezmoi.Interpreter `mapstructure:"interpreters"`
+	Pager            string                          `mapstructure:"pager"`
+	Remove           bool                            `mapstructure:"remove"`
+	SourceDirAbsPath chezmoi.AbsPath                 `mapstructure:"sourceDir"`
+	Template         templateConfig                  `mapstructure:"template"`
+	Umask            fs.FileMode                     `mapstructure:"umask"`
+	UseBuiltinGit    autoBool                        `mapstructure:"useBuiltinGit"`
 
 	// Global configuration, not settable in the config file.
 	cpuProfile    chezmoi.AbsPath
@@ -202,18 +202,54 @@ func newConfig(options ...configOption) (*Config, error) {
 	}
 
 	c := &Config{
-		bds:        bds,
-		fileSystem: vfs.OSFS,
-		homeDir:    userHomeDir,
-		Umask:      chezmoi.Umask,
+		// Global configuration, settable in the config file.
 		Color: autoBool{
 			auto: true,
 		},
+		Interpreters: defaultInterpreters,
+		Pager:        os.Getenv("PAGER"),
+		Template: templateConfig{
+			Options: chezmoi.DefaultTemplateOptions,
+		},
+		Umask: chezmoi.Umask,
 		UseBuiltinGit: autoBool{
 			auto: true,
 		},
-		Pager:        os.Getenv("PAGER"),
-		Interpreters: defaultInterpreters,
+
+		// Global configuration, not settable in the config file.
+		homeDir:       userHomeDir,
+		templateFuncs: sprig.TxtFuncMap(),
+
+		// Password manager configurations, settable in the config file.
+		Bitwarden: bitwardenConfig{
+			Command: "bw",
+		},
+		Gopass: gopassConfig{
+			Command: "gopass",
+		},
+		Keepassxc: keepassxcConfig{
+			Command: "keepassxc-cli",
+		},
+		Lastpass: lastpassConfig{
+			Command: "lpass",
+		},
+		Onepassword: onepasswordConfig{
+			Command: "op",
+		},
+		Pass: passConfig{
+			Command: "pass",
+		},
+		Vault: vaultConfig{
+			Command: "vault",
+		},
+
+		// Encryption configurations, settable in the config file.
+		AGE: defaultAGEEncryptionConfig,
+		GPG: defaultGPGEncryptionConfig,
+
+		// Password manager data.
+
+		// Command configurations, settable in the config file.
 		Add: addCmdConfig{
 			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
@@ -241,33 +277,8 @@ func newConfig(options ...configOption) (*Config, error) {
 				"{{ .Target }}",
 			},
 		},
-		Template: templateConfig{
-			Options: chezmoi.DefaultTemplateOptions,
-		},
-		templateFuncs: sprig.TxtFuncMap(),
-		Bitwarden: bitwardenConfig{
-			Command: "bw",
-		},
-		Gopass: gopassConfig{
-			Command: "gopass",
-		},
-		Keepassxc: keepassxcConfig{
-			Command: "keepassxc-cli",
-		},
-		Lastpass: lastpassConfig{
-			Command: "lpass",
-		},
-		Onepassword: onepasswordConfig{
-			Command: "op",
-		},
-		Pass: passConfig{
-			Command: "pass",
-		},
-		Vault: vaultConfig{
-			Command: "vault",
-		},
-		AGE: defaultAGEEncryptionConfig,
-		GPG: defaultGPGEncryptionConfig,
+
+		// Command configurations, not settable in the config file.
 		apply: applyCmdConfig{
 			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
@@ -334,11 +345,16 @@ func newConfig(options ...configOption) (*Config, error) {
 			recursive: true,
 		},
 
+		// Configuration.
+		fileSystem: vfs.OSFS,
+		bds:        bds,
+
+		// Computed configuration.
+		homeDirAbsPath: homeDirAbsPath,
+
 		stdin:  os.Stdin,
 		stdout: os.Stdout,
 		stderr: os.Stderr,
-
-		homeDirAbsPath: homeDirAbsPath,
 	}
 
 	for key, value := range map[string]interface{}{
