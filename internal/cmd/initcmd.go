@@ -132,7 +132,7 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 			return err
 		}
 
-		useBuiltinGit, err := c.UseBuiltinGit.Value()
+		useBuiltinGit, err := c.UseBuiltinGit.Value(c.useBuiltinGitAutoFunc)
 		if err != nil {
 			return err
 		}

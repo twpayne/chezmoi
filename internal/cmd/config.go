@@ -56,10 +56,10 @@ type Config struct {
 	DestDirAbsPath   chezmoi.AbsPath                 `mapstructure:"destDir"`
 	Umask            fs.FileMode                     `mapstructure:"umask"`
 	Remove           bool                            `mapstructure:"remove"`
-	Color            *autoBool                       `mapstructure:"color"`
+	Color            autoBool                        `mapstructure:"color"`
 	Data             map[string]interface{}          `mapstructure:"data"`
 	Template         templateConfig                  `mapstructure:"template"`
-	UseBuiltinGit    *autoBool                       `mapstructure:"useBuiltinGit"`
+	UseBuiltinGit    autoBool                        `mapstructure:"useBuiltinGit"`
 	Pager            string                          `mapstructure:"pager"`
 	Interpreters     map[string]*chezmoi.Interpreter `mapstructure:"interpreters"`
 
@@ -202,10 +202,16 @@ func newConfig(options ...configOption) (*Config, error) {
 	}
 
 	c := &Config{
-		bds:          bds,
-		fileSystem:   vfs.OSFS,
-		homeDir:      userHomeDir,
-		Umask:        chezmoi.Umask,
+		bds:        bds,
+		fileSystem: vfs.OSFS,
+		homeDir:    userHomeDir,
+		Umask:      chezmoi.Umask,
+		Color: autoBool{
+			auto: true,
+		},
+		UseBuiltinGit: autoBool{
+			auto: true,
+		},
 		Pager:        os.Getenv("PAGER"),
 		Interpreters: defaultInterpreters,
 		Add: addCmdConfig{
@@ -385,8 +391,6 @@ func newConfig(options ...configOption) (*Config, error) {
 		return nil, err
 	}
 	c.DestDirAbsPath = c.homeDirAbsPath
-	c.Color = newAutoBool(c.colorAutoFunc)
-	c.UseBuiltinGit = newAutoBool(c.useBuiltinGitAutoFunc)
 	c._import.destination = c.homeDirAbsPath
 
 	return c, nil
@@ -761,7 +765,7 @@ func (c *Config) destAbsPathInfos(sourceState *chezmoi.SourceState, args []strin
 func (c *Config) diffFile(path chezmoi.RelPath, fromData []byte, fromMode fs.FileMode, toData []byte, toMode fs.FileMode) error {
 	var sb strings.Builder
 	unifiedEncoder := diff.NewUnifiedEncoder(&sb, diff.DefaultContextLines)
-	color, err := c.Color.Value()
+	color, err := c.Color.Value(c.colorAutoFunc)
 	if err != nil {
 		return err
 	}
@@ -975,11 +979,11 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 
 	persistentFlags := rootCmd.PersistentFlags()
 
-	persistentFlags.Var(c.Color, "color", "Colorize output")
+	persistentFlags.Var(&c.Color, "color", "Colorize output")
 	persistentFlags.VarP(&c.DestDirAbsPath, "destination", "D", "Set destination directory")
 	persistentFlags.BoolVar(&c.Remove, "remove", c.Remove, "Remove entries from destination directory")
 	persistentFlags.VarP(&c.SourceDirAbsPath, "source", "S", "Set source directory")
-	persistentFlags.Var(c.UseBuiltinGit, "use-builtin-git", "Use builtin git")
+	persistentFlags.Var(&c.UseBuiltinGit, "use-builtin-git", "Use builtin git")
 	for _, key := range []string{
 		"color",
 		"destination",
@@ -1153,7 +1157,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		c.errorf("warning: %s: %v\n", c.configFileAbsPath, err)
 	}
 
-	color, err := c.Color.Value()
+	color, err := c.Color.Value(c.colorAutoFunc)
 	if err != nil {
 		return err
 	}

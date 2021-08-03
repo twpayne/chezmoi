@@ -17,6 +17,8 @@ chezmoi data --config=$CHEZMOICONFIGDIR/chezmoi.yaml --format=yaml
 stdout 'sourceDir: .*/config2/source'
 
 -- home2/user/.config/chezmoi/chezmoi.toml --
+color = "auto"
 sourceDir = "/config/source"
 -- home2/user/.config/chezmoi/chezmoi.yaml --
+color: auto
 sourceDir: /config2/source
