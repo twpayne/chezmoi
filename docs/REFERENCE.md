@@ -1,6 +1,6 @@
 # chezmoi reference manual
 
-Manage your dotfiles securely across multiple machines.
+Manage your dotfiles across multiple machines, securely.
 
 <!--- toc --->
 * [Concepts](#concepts)
@@ -133,7 +133,7 @@ destination directory, where:
 * The *target state* is the source state computed for the current machine.
 
 * The *destination directory* is the directory that chezmoi manages, by default
-  `~`, your home directory.
+  your home directory.
 
 * A *target* is a file, directory, or symlink in the destination directory.
 
