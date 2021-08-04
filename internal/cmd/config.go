@@ -735,7 +735,13 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 	}
 }
 
-func (c *Config) destAbsPathInfos(sourceState *chezmoi.SourceState, args []string, recursive, follow bool) (map[chezmoi.AbsPath]fs.FileInfo, error) {
+type destAbsPathInfosOptions struct {
+	follow         bool
+	ignoreNotExist bool
+	recursive      bool
+}
+
+func (c *Config) destAbsPathInfos(sourceState *chezmoi.SourceState, args []string, options destAbsPathInfosOptions) (map[chezmoi.AbsPath]fs.FileInfo, error) {
 	destAbsPathInfos := make(map[chezmoi.AbsPath]fs.FileInfo)
 	for _, arg := range args {
 		destAbsPath, err := chezmoi.NewAbsPathFromExtPath(arg, c.homeDirAbsPath)
@@ -745,12 +751,15 @@ func (c *Config) destAbsPathInfos(sourceState *chezmoi.SourceState, args []strin
 		if _, err := destAbsPath.TrimDirPrefix(c.DestDirAbsPath); err != nil {
 			return nil, err
 		}
-		if recursive {
+		if options.recursive {
 			if err := chezmoi.Walk(c.destSystem, destAbsPath, func(destAbsPath chezmoi.AbsPath, info fs.FileInfo, err error) error {
-				if err != nil {
+				switch {
+				case options.ignoreNotExist && errors.Is(err, fs.ErrNotExist):
+					return nil
+				case err != nil:
 					return err
 				}
-				if follow && info.Mode().Type() == fs.ModeSymlink {
+				if options.follow && info.Mode().Type() == fs.ModeSymlink {
 					info, err = c.destSystem.Stat(destAbsPath)
 					if err != nil {
 						return err
@@ -762,12 +771,15 @@ func (c *Config) destAbsPathInfos(sourceState *chezmoi.SourceState, args []strin
 			}
 		} else {
 			var info fs.FileInfo
-			if follow {
+			if options.follow {
 				info, err = c.destSystem.Stat(destAbsPath)
 			} else {
 				info, err = c.destSystem.Lstat(destAbsPath)
 			}
-			if err != nil {
+			switch {
+			case options.ignoreNotExist && errors.Is(err, fs.ErrNotExist):
+				continue
+			case err != nil:
 				return nil, err
 			}
 			if err := sourceState.AddDestAbsPathInfos(destAbsPathInfos, c.destSystem, destAbsPath, info); err != nil {
@@ -1039,7 +1051,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	}
 
 	rootCmd.SetHelpCommand(c.newHelpCmd())
-	rootCmd.AddCommand(
+	for _, cmd := range []*cobra.Command{
 		c.newAddCmd(),
 		c.newApplyCmd(),
 		c.newArchiveCmd(),
@@ -1060,6 +1072,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newImportCmd(),
 		c.newInitCmd(),
 		c.newInternalTestCmd(),
+		c.newMackupCmd(),
 		c.newManagedCmd(),
 		c.newMergeCmd(),
 		c.newPurgeCmd(),
@@ -1073,7 +1086,11 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newUpdateCmd(),
 		c.newUpgradeCmd(),
 		c.newVerifyCmd(),
-	)
+	} {
+		if cmd != nil {
+			rootCmd.AddCommand(cmd)
+		}
+	}
 
 	return rootCmd, nil
 }

@@ -62,8 +62,8 @@ endlocal
 -- golden/include-abspath --
 $HOME/.include
 -- golden/include-relpath --
-# contents of ~/.local/share/chezmoi/.include
+# contents of .local/share/chezmoi/.include
 -- home/user/.include --
 # contents of $HOME/.include
 -- home/user/.local/share/chezmoi/.include --
-# contents of ~/.local/share/chezmoi/.include
+# contents of .local/share/chezmoi/.include
