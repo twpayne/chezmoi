@@ -408,8 +408,9 @@ github.com/twpayne/go-vfs/v3 v3.0.0 h1:rMFBISZVhSowKeX1BxL8utM64V7CuUw9/rfekPdS7
 github.com/twpayne/go-vfs/v3 v3.0.0/go.mod h1:JKfJtOC57Wqo7xYxFRKSqdXwyj3AhfyRrDxSE/XiAVA=
 github.com/twpayne/go-xdg/v6 v6.0.0 h1:kt2KGpflK5q8ZpkmQfX6kJphh6+oAWikf4LiAZxFT0Y=
 github.com/twpayne/go-xdg/v6 v6.0.0/go.mod h1:XlfiGBU0iBxudVRWh+SXF+I1Cfb7rMq1IFwOprG4Ts8=
-github.com/xanzy/ssh-agent v0.3.0 h1:wUMzuKtKilRgBAD1sUb8gOwwRr2FGoBVumcjoOACClI=
 github.com/xanzy/ssh-agent v0.3.0/go.mod h1:3s9xbODqPuuhK9JV1R321M/FlMZSBvE5aY6eAcqrDh0=
+github.com/xanzy/ssh-agent v0.3.1 h1:AmzO1SSWxw73zxFZPRwaMN1MohDw8UyHnmuxyceTEGo=
+github.com/xanzy/ssh-agent v0.3.1/go.mod h1:QIE4lCeL7nkC25x+yA3LBIYfwCc1TFziCtG7cBAac6w=
 github.com/xlab/treeprint v1.1.0/go.mod h1:gj5Gd3gPdKtR1ikdDK6fnFLdmIS0X30kTTuNd/WEJu0=
 github.com/yuin/goldmark v1.1.25/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
