@@ -1191,10 +1191,11 @@ or an encrypted file that cannot be decrypted) a two-way merge is performed
 instead.
 
 The order of arguments to `merge.command` is controlled by `merge.args`. Each
-argument is interpreted a template with the variables `.Destination`, `.Source`,
-and `.Target` available corresponding to the path of the file in the destination
-state, the source state, and the target state respectively. The default value of
-`merge.args` is `["{{ .Destination }}", "{{ .Source }}", "{{ .Target }}"]`.
+argument is interpreted as a template with the variables `.Destination`,
+`.Source`, and `.Target` available corresponding to the path of the file in the
+destination state, the source state, and the target state respectively. The
+default value of `merge.args` is `["{{ .Destination }}", "{{ .Source }}", "{{
+.Target }}"]`.
 
 #### `merge` examples
 
