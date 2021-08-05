@@ -28,6 +28,7 @@ type SourceState struct {
 	ignore                  *patternSet
 	interpreters            map[string]*Interpreter
 	minVersion              semver.Version
+	mode                    Mode
 	defaultTemplateDataFunc func() map[string]interface{}
 	userTemplateData        map[string]interface{}
 	priorityTemplateData    map[string]interface{}
@@ -58,6 +59,13 @@ func WithEncryption(encryption Encryption) SourceStateOption {
 func WithInterpreters(interpreters map[string]*Interpreter) SourceStateOption {
 	return func(s *SourceState) {
 		s.interpreters = interpreters
+	}
+}
+
+// WithMode sets the mode.
+func WithMode(mode Mode) SourceStateOption {
+	return func(s *SourceState) {
+		s.mode = mode
 	}
 }
 
@@ -158,7 +166,7 @@ func (s *SourceState) Add(sourceSystem System, persistentState PersistentState, 
 		return destAbsPaths[i] < destAbsPaths[j]
 	})
 
-	updates := make([]update, 0, len(destAbsPathInfos))
+	sourceUpdates := make([]update, 0, len(destAbsPathInfos))
 	newSourceStateEntries := make(map[SourceRelPath]SourceStateEntry)
 	newSourceStateEntriesByTargetRelPath := make(map[RelPath]SourceStateEntry)
 DESTABSPATH:
@@ -237,12 +245,12 @@ DESTABSPATH:
 		newSourceStateEntries[sourceEntryRelPath] = newSourceStateEntry
 		newSourceStateEntriesByTargetRelPath[targetRelPath] = newSourceStateEntry
 
-		updates = append(updates, update)
+		sourceUpdates = append(sourceUpdates, update)
 	}
 
-	entries := make(map[RelPath]SourceStateEntry)
+	sourceEntries := make(map[RelPath]SourceStateEntry)
 	for sourceRelPath, sourceStateEntry := range newSourceStateEntries {
-		entries[sourceRelPath.RelPath()] = sourceStateEntry
+		sourceEntries[sourceRelPath.RelPath()] = sourceStateEntry
 	}
 
 	// Simulate removing a directory by creating SourceStateRemove entries for
@@ -257,7 +265,7 @@ DESTABSPATH:
 				continue
 			}
 			sourceRelPath := sourceStateEntry.SourceRelPath()
-			entries[sourceRelPath.RelPath()] = &SourceStateRemove{}
+			sourceEntries[sourceRelPath.RelPath()] = &SourceStateRemove{}
 			update := update{
 				destAbsPath: s.destDirAbsPath.Join(targetRelPath),
 				entryState: &EntryState{
@@ -265,16 +273,16 @@ DESTABSPATH:
 				},
 				sourceRelPaths: []SourceRelPath{sourceRelPath},
 			}
-			updates = append(updates, update)
+			sourceUpdates = append(sourceUpdates, update)
 		}
 	}
 
 	targetSourceState := &SourceState{
-		entries: entries,
+		entries: sourceEntries,
 	}
 
-	for _, update := range updates {
-		for _, sourceRelPath := range update.sourceRelPaths {
+	for _, sourceUpdate := range sourceUpdates {
+		for _, sourceRelPath := range sourceUpdate.sourceRelPaths {
 			if err := targetSourceState.Apply(sourceSystem, sourceSystem, NullPersistentState{}, s.sourceDirAbsPath, sourceRelPath.RelPath(), ApplyOptions{
 				Include: options.Include,
 				Umask:   s.umask,
@@ -282,7 +290,7 @@ DESTABSPATH:
 				return err
 			}
 		}
-		if err := persistentStateSet(persistentState, EntryStateBucket, []byte(update.destAbsPath), update.entryState); err != nil {
+		if err := persistentStateSet(persistentState, EntryStateBucket, []byte(sourceUpdate.destAbsPath), sourceUpdate.entryState); err != nil {
 			return err
 		}
 	}
@@ -948,6 +956,18 @@ func (s *SourceState) newCreateTargetStateEntryFunc(fileAttr FileAttr, sourceLaz
 // file with sourceLazyContents.
 func (s *SourceState) newFileTargetStateEntryFunc(sourceRelPath SourceRelPath, fileAttr FileAttr, sourceLazyContents *lazyContents) targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
+		if s.mode == ModeSymlink && !fileAttr.Encrypted && !fileAttr.Executable && !fileAttr.Private && !fileAttr.Template {
+			switch contents, err := sourceLazyContents.Contents(); {
+			case err != nil:
+				return nil, err
+			case isEmpty(contents) && !fileAttr.Empty:
+				return &TargetStateRemove{}, nil
+			default:
+				return &TargetStateSymlink{
+					lazyLinkname: newLazyLinkname(string(s.sourceDirAbsPath.Join(sourceRelPath.RelPath()))),
+				}, nil
+			}
+		}
 		contentsFunc := func() ([]byte, error) {
 			contents, err := sourceLazyContents.Contents()
 			if err != nil {

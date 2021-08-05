@@ -48,6 +48,7 @@ func TestScript(t *testing.T) {
 			"chhome":         cmdChHome,
 			"cmpmod":         cmdCmpMod,
 			"edit":           cmdEdit,
+			"issymlink":      cmdIsSymlink,
 			"mkfile":         cmdMkFile,
 			"mkageconfig":    cmdMkAGEConfig,
 			"mkgitconfig":    cmdMkGitConfig,
@@ -157,6 +158,23 @@ func cmdEdit(ts *testscript.TestScript, neg bool, args []string) {
 		data = append(data, []byte("# edited\n")...)
 		if err := os.WriteFile(filename, data, 0o666); err != nil {
 			ts.Fatalf("edit: %v", err)
+		}
+	}
+}
+
+// cmdIsSymlink returns true if all of its arguments are symlinks.
+func cmdIsSymlink(ts *testscript.TestScript, neg bool, args []string) {
+	for _, arg := range args {
+		filename := ts.MkAbs(arg)
+		info, err := os.Lstat(filename)
+		if err != nil {
+			ts.Fatalf("%s: %v", arg, err)
+		}
+		switch isSymlink := info.Mode().Type() == fs.ModeSymlink; {
+		case isSymlink && neg:
+			ts.Fatalf("%s is a symlink", arg)
+		case !isSymlink && !neg:
+			ts.Fatalf("%s is not a symlink", arg)
 		}
 	}
 }
