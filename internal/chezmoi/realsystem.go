@@ -74,6 +74,11 @@ func (s *RealSystem) RunCmd(cmd *exec.Cmd) error {
 	return chezmoilog.LogCmdRun(log.Logger, cmd)
 }
 
+// RunIdempotentCmd implements System.RunIdempotentCmd.
+func (s *RealSystem) RunIdempotentCmd(cmd *exec.Cmd) error {
+	return chezmoilog.LogCmdRun(log.Logger, cmd)
+}
+
 // RunScript implements System.RunScript.
 func (s *RealSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) (err error) {
 	// Write the temporary script file. Put the randomness at the front of the

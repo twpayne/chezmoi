@@ -97,6 +97,11 @@ func (s *DryRunSystem) RunCmd(cmd *exec.Cmd) error {
 	return nil
 }
 
+// RunIdempotentCmd implements System.RunIdempotentCmd.
+func (s *DryRunSystem) RunIdempotentCmd(cmd *exec.Cmd) error {
+	return s.system.RunIdempotentCmd(cmd)
+}
+
 // RunScript implements System.RunScript.
 func (s *DryRunSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
 	s.modified = true

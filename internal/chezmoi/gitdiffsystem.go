@@ -155,6 +155,11 @@ func (s *GitDiffSystem) RunCmd(cmd *exec.Cmd) error {
 	return s.system.RunCmd(cmd)
 }
 
+// RunIdempotentCmd implements System.RunIdempotentCmd.
+func (s *GitDiffSystem) RunIdempotentCmd(cmd *exec.Cmd) error {
+	return s.system.RunIdempotentCmd(cmd)
+}
+
 // RunScript implements System.RunScript.
 func (s *GitDiffSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
 	mode := fs.FileMode(filemode.Executable)

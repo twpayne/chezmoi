@@ -25,6 +25,7 @@ type System interface {
 	RemoveAll(name AbsPath) error
 	Rename(oldpath, newpath AbsPath) error
 	RunCmd(cmd *exec.Cmd) error
+	RunIdempotentCmd(cmd *exec.Cmd) error
 	RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error
 	Stat(name AbsPath) (fs.FileInfo, error)
 	UnderlyingFS() vfs.FS
@@ -43,6 +44,7 @@ func (emptySystemMixin) RawPath(path AbsPath) (AbsPath, error)                  
 func (emptySystemMixin) ReadDir(name AbsPath) ([]fs.DirEntry, error)               { return nil, fs.ErrNotExist }
 func (emptySystemMixin) ReadFile(name AbsPath) ([]byte, error)                     { return nil, fs.ErrNotExist }
 func (emptySystemMixin) Readlink(name AbsPath) (string, error)                     { return "", fs.ErrNotExist }
+func (emptySystemMixin) RunIdempotentCmd(cmd *exec.Cmd) error                      { return nil }
 func (emptySystemMixin) Stat(name AbsPath) (fs.FileInfo, error)                    { return nil, fs.ErrNotExist }
 func (emptySystemMixin) UnderlyingFS() vfs.FS                                      { return nil }
 

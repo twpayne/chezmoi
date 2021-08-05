@@ -60,6 +60,11 @@ func (s *ReadOnlySystem) Readlink(name AbsPath) (string, error) {
 	return s.system.Readlink(name)
 }
 
+// RunIdempotentCmd implements System.RunIdempotentCmd.
+func (s *ReadOnlySystem) RunIdempotentCmd(cmd *exec.Cmd) error {
+	return s.system.RunIdempotentCmd(cmd)
+}
+
 // Stat implements System.Stat.
 func (s *ReadOnlySystem) Stat(name AbsPath) (fs.FileInfo, error) {
 	return s.system.Stat(name)
