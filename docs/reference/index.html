@@ -22,7 +22,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" integrity="sha256-lYzqeCdiHW&#43;8s6zwkTRMPkTj0qlCj5w8OLues3v4xF0=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.c6fccc1cf30b47d97fe844e3b24889bfd1b9e49061bbc6a8653f4a8c9e64507f.js" integrity="sha256-xvzMHPMLR9l/6ETjskiJv9G55JBhu8aoZT9KjJ5kUH8=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.77d04ee9569afdbbb0ace800e15fa15d76ace95070933c416fe4f6a87396ec39.js" integrity="sha256-d9BO6Vaa/buwrOgA4V&#43;hXXas6VBwkzxBb&#43;T2qHOW7Dk=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -296,7 +296,7 @@ including templates and machine-specific configuration.</p>
 </li>
 <li>
 <p>The <em>destination directory</em> is the directory that chezmoi manages, by default
-<code>~</code>, your home directory.</p>
+your home directory.</p>
 </li>
 <li>
 <p>A <em>target</em> is a file, directory, or symlink in the destination directory.</p>
@@ -821,8 +821,8 @@ of the config file is <code>chezmoi</code>, and the first config file found is u
 <td><code>merge</code></td>
 <td><code>args</code></td>
 <td>[]string</td>
-<td><em>none</em></td>
-<td>Extra args to 3-way merge command</td>
+<td><em>see <code>merge</code> below</em></td>
+<td>Args to 3-way merge command</td>
 </tr>
 <tr>
 <td></td>
@@ -1921,6 +1921,11 @@ targets are specified the merge tool is invoked for each target. If the target
 state cannot be computed (for example if source is a template containing errors
 or an encrypted file that cannot be decrypted) a two-way merge is performed
 instead.</p>
+<p>The order of arguments to <code>merge.command</code> is controlled by <code>merge.args</code>. Each
+argument is interpreted as a template with the variables <code>.Destination</code>,
+<code>.Source</code>, and <code>.Target</code> available corresponding to the path of the file in the
+destination state, the source state, and the target state respectively. The
+default value of <code>merge.args</code> is <code>[&quot;{{ .Destination }}&quot;, &quot;{{ .Source }}&quot;, &quot;{{ .Target }}&quot;]</code>.</p>
 <h4 id="merge-examples">
   <code>merge</code> examples
   <a class="anchor" href="#merge-examples">#</a>
