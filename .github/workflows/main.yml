@@ -117,10 +117,10 @@ jobs:
       with:
         name: chezmoi-darwin-arm64
         path: dist/chezmoi-nocgo_darwin_arm64/chezmoi
-    - name: Upload artifact chezmoi-windows-amd64
+    - name: Upload artifact chezmoi-windows-amd64.exe
       uses: actions/upload-artifact@v2
       with:
-        name: chezmoi-windows-amd64
+        name: chezmoi-windows-amd64.exe
         path: dist/chezmoi-nocgo_windows_amd64/chezmoi.exe
   generate:
     runs-on: ubuntu-18.04
