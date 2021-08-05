@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"text/template"
 
@@ -85,8 +86,8 @@ func (c *Config) runMergeCmd(cmd *cobra.Command, args []string, sourceState *che
 			Target:      string(targetStatePath),
 		}
 		args := make([]string, 0, len(c.Merge.Args))
-		for _, arg := range c.Merge.Args {
-			tmpl, err := template.New("").Parse(arg)
+		for i, arg := range c.Merge.Args {
+			tmpl, err := template.New("merge.args[" + strconv.Itoa(i) + "]").Parse(arg)
 			if err != nil {
 				return err
 			}
