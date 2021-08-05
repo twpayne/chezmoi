@@ -1,0 +1,31 @@
+[windows] skip 'UNIX only'
+
+chmod 755 bin/vimdiff
+
+# test that chezmoi diff invokes diff.command when configured
+chezmoi diff
+stdout 'vimdiff .*/home/user/\.file .*/chezmoi-diff.*/\.file' # FIXME should be able to use ${HOME@R} in this regexp
+
+# test that chezmoi diff --use-builtin-diff uses the builtin diff even if diff.command is configured
+chezmoi diff --use-builtin-diff
+cmp stdout golden/diff
+
+-- bin/vimdiff --
+#!/bin/sh
+
+echo vimdiff "$*"
+-- golden/diff --
+diff --git a/.file b/.file
+index bd729e8ee3cc005444c67dc77eed60016886b5e0..b508963510528ab709627ec448026a10a64c72ef 100644
+--- a/.file
++++ b/.file
+@@ -1 +1 @@
+-# destination contents of .file
++# target contents of .file
+-- home/user/.config/chezmoi/chezmoi.toml --
+[diff]
+    command = "vimdiff"
+-- home/user/.file --
+# destination contents of .file
+-- home/user/.local/share/chezmoi/dot_file --
+# target contents of .file

@@ -9,10 +9,13 @@ import (
 )
 
 type diffCmdConfig struct {
-	Exclude   *chezmoi.EntryTypeSet `mapstructure:"exclude"`
-	Pager     string                `mapstructure:"pager"`
-	include   *chezmoi.EntryTypeSet
-	recursive bool
+	Command        string                `mapstructure:"command"`
+	Args           []string              `mapstructure:"args"`
+	Exclude        *chezmoi.EntryTypeSet `mapstructure:"exclude"`
+	Pager          string                `mapstructure:"pager"`
+	include        *chezmoi.EntryTypeSet
+	recursive      bool
+	useBuiltinDiff bool
 }
 
 func (c *Config) newDiffCmd() *cobra.Command {
@@ -32,6 +35,7 @@ func (c *Config) newDiffCmd() *cobra.Command {
 	flags.VarP(c.Diff.include, "include", "i", "Include entry types")
 	flags.BoolVarP(&c.Diff.recursive, "recursive", "r", c.Diff.recursive, "Recurse into subdirectories")
 	flags.StringVar(&c.Diff.Pager, "pager", c.Diff.Pager, "Set pager")
+	flags.BoolVarP(&c.Diff.useBuiltinDiff, "use-builtin-diff", "", c.Diff.useBuiltinDiff, "Use the builtin diff")
 
 	return diffCmd
 }
@@ -43,13 +47,22 @@ func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	gitDiffSystem := chezmoi.NewGitDiffSystem(dryRunSystem, &sb, c.DestDirAbsPath, color)
-	if err := c.applyArgs(gitDiffSystem, c.DestDirAbsPath, args, applyArgsOptions{
+	if c.Diff.useBuiltinDiff || c.Diff.Command == "" {
+		gitDiffSystem := chezmoi.NewGitDiffSystem(dryRunSystem, &sb, c.DestDirAbsPath, color)
+		if err := c.applyArgs(gitDiffSystem, c.DestDirAbsPath, args, applyArgsOptions{
+			include:   c.Diff.include.Sub(c.Diff.Exclude),
+			recursive: c.Diff.recursive,
+			umask:     c.Umask,
+		}); err != nil {
+			return err
+		}
+		return c.pageOutputString(sb.String(), c.Diff.Pager)
+	}
+	diffSystem := chezmoi.NewExternalDiffSystem(dryRunSystem, c.Diff.Command, c.Diff.Args, c.DestDirAbsPath)
+	defer diffSystem.Close()
+	return c.applyArgs(diffSystem, c.DestDirAbsPath, args, applyArgsOptions{
 		include:   c.Diff.include.Sub(c.Diff.Exclude),
 		recursive: c.Diff.recursive,
 		umask:     c.Umask,
-	}); err != nil {
-		return err
-	}
-	return c.pageOutputString(sb.String(), c.Diff.Pager)
+	})
 }
