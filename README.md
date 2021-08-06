@@ -76,7 +76,7 @@ don't need chezmoi. Otherwise, read on...
 ### Flexible
 
 You can share as much configuration across machines as you want, while still
-being able to control machine-specific details.Your dotfiles can be templates
+being able to control machine-specific details. Your dotfiles can be templates
 (using [`text/template`](https://pkg.go.dev/text/template) syntax). Predefined
 variables allow you to change behavior depending on operating system,
 architecture, and hostname. chezmoi runs on all commonly-used platforms, like
