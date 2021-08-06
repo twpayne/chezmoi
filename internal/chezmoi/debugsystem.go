@@ -158,6 +158,17 @@ func (s *DebugSystem) RunCmd(cmd *exec.Cmd) error {
 	return err
 }
 
+// RunIdempotentCmd implements System.RunIdempotentCmd.
+func (s *DebugSystem) RunIdempotentCmd(cmd *exec.Cmd) error {
+	err := s.system.RunIdempotentCmd(cmd)
+	log.Logger.Debug().
+		EmbedObject(chezmoilog.OSExecCmdLogObject{Cmd: cmd}).
+		Err(err).
+		EmbedObject(chezmoilog.OSExecExitErrorLogObject{Err: err}).
+		Msg("RunIdempotentCmd")
+	return err
+}
+
 // RunScript implements System.RunScript.
 func (s *DebugSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
 	err := s.system.RunScript(scriptname, dir, data, interpreter)
