@@ -713,6 +713,13 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 			Msg("chezmoi.OSRelease")
 	}
 
+	userHomeDir, err := os.UserHomeDir()
+	if err != nil {
+		log.Debug().
+			Err(err).
+			Msg("os.UserHomeDir")
+	}
+
 	return map[string]interface{}{
 		"chezmoi": map[string]interface{}{
 			"arch":         runtime.GOARCH,
@@ -723,6 +730,7 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 			"kernel":       kernel,
 			"os":           runtime.GOOS,
 			"osRelease":    osRelease,
+			"rawHomeDir":   userHomeDir,
 			"sourceDir":    string(c.SourceDirAbsPath),
 			"username":     username,
 			"version": map[string]interface{}{

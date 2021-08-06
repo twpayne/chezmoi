@@ -1426,12 +1426,13 @@ chezmoi provides the following automatically-populated variables:
 | `.chezmoi.arch`         | Architecture, e.g. `amd64`, `arm`, etc. as returned by [runtime.GOARCH](https://pkg.go.dev/runtime?tab=doc#pkg-constants).      |
 | `.chezmoi.fqdnHostname` | The fully-qualified domain name hostname of the machine chezmoi is running on.                                                  |
 | `.chezmoi.group`        | The group of the user running chezmoi.                                                                                          |
-| `.chezmoi.homeDir`      | The home directory of the user running chezmoi.                                                                                 |
+| `.chezmoi.homeDir`      | The normalized home directory of the user running chezmoi.                                                                      |
 | `.chezmoi.hostname`     | The hostname of the machine chezmoi is running on, up to the first `.`.                                                         |
 | `.chezmoi.kernel`       | Contains information from `/proc/sys/kernel`. Linux only, useful for detecting specific kernels (i.e. Microsoft's WSL kernel).  |
 | `.chezmoi.os`           | Operating system, e.g. `darwin`, `linux`, etc. as returned by [runtime.GOOS](https://pkg.go.dev/runtime?tab=doc#pkg-constants). |
 | `.chezmoi.osRelease`    | The information from `/etc/os-release`, Linux only, run `chezmoi data` to see its output.                                       |
 | `.chezmoi.sourceDir`    | The source directory.                                                                                                           |
+| `.chezmoi.rawHomeDir`   | The home directory of the user running chezmoi, without normalization.                                                          |
 | `.chezmoi.sourceFile`   | The path of the template relative to the source directory.                                                                      |
 | `.chezmoi.username`     | The username of the user running chezmoi.                                                                                       |
 | `.chezmoi.version`      | The version of chezmoi.                                                                                                         |

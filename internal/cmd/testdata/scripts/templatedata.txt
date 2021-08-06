@@ -1,3 +1,10 @@
+# test that .chezmoi.rawHomeDir uses the OS's path separator
+chezmoi execute-template '{{ .chezmoi.rawHomeDir }}'
+[!windows] stdout '/'
+[!windows] ! stdout '\\'
+[windows] stdout '\\'
+[windows] ! stdout '/'
+
 # test that .chezmoi.sourceDir can be used with joinPath
 [!windows] chezmoi execute-template '{{ joinPath .chezmoi.sourceDir ".file" }}'
 [!windows] stdout ${CHEZMOISOURCEDIR@R}/.file
