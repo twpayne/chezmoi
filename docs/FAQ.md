@@ -15,6 +15,7 @@
 * [chezmoi makes `~/.ssh/config` group writeable. How do I stop this?](#chezmoi-makes-sshconfig-group-writeable-how-do-i-stop-this)
 * [Why does `chezmoi cd` spawn a shell instead of just changing directory?](#why-does-chezmoi-cd-spawn-a-shell-instead-of-just-changing-directory)
 * [Why doesn't chezmoi use symlinks like GNU Stow?](#why-doesnt-chezmoi-use-symlinks-like-gnu-stow)
+* [What are the limitations of chezmoi's symlink mode?](#what-are-the-limitations-of-chezmois-symlink-mode)
 * [Can I change how chezmoi's source state is represented on disk?](#can-i-change-how-chezmois-source-state-is-represented-on-disk)
 * [gpg encryption fails. What could be wrong?](#gpg-encryption-fails-what-could-be-wrong)
 * [chezmoi reports `chezmoi: user: lookup userid NNNNN: input/output error`](#chezmoi-reports-chezmoi-user-lookup-userid-nnnnn-inputoutput-error)
@@ -173,7 +174,7 @@ chezmoi's source directory.
 Symlinks are first class citizens in chezmoi: chezmoi supports creating them,
 updating them, removing them, and even more advanced features not found
 elsewhere like having the same symlink point to different targets on different
-machines by using templates.
+machines by using a template.
 
 With chezmoi, you only use a symlink where you really need a symlink, in
 contrast to some other dotfile managers (e.g. GNU Stow) which require the use of
@@ -185,18 +186,22 @@ problem in a different way.
 Instead of using a symlink to redirect from the dotfile's location to the
 centralized directory, chezmoi generates the dotfile as a regular file in its
 final location from the contents of the centralized directory. This approach
-means that symlinks are not needed for regular files and that chezmoi is better
-able to cope with differences from machine to machine (as a dotfile's contents
-can be unique to that machine) and the dotfiles that chezmoi creates are just
-regular files. There's nothing special about dotfiles managed by chezmoi,
-whereas dotfiles managed with GNU Stow are special because they're actually
-symlinks to somewhere else.
+allows chezmoi to provide features that are not possible when using symlinks,
+for example having files that encrypted, executable, private, or templates.
+
+There's nothing special about dotfiles managed by chezmoi, whereas dotfiles
+managed with GNU Stow are special because they're actually symlinks to somewhere
+else.
 
 The only advantage to using GNU Stow-style symlinks is that changes that you
 make to the dotfile's contents in the centralized directory are immediately
 visible, whereas chezmoi currently requires you to run `chezmoi apply` or
 `chezmoi edit --apply`. chezmoi will likely get an alternative solution to this
 too, see [#752](https://github.com/twpayne/chezmoi/issues/752).
+
+If you really want to use symlinks, then chezmoi provides a [symlink
+mode](https://github.com/twpayne/chezmoi/blob/master/docs/REFERENCE.md#symlink-mode)
+which uses symlinks where possible.
 
 You can configure chezmoi to work like GNU Stow and have it create a set of
 symlinks back to a central directory, but this currently requires a bit of
@@ -206,6 +211,34 @@ automation to help (see [#886](https://github.com/twpayne/chezmoi/issues/886)
 for example) but it does need some convincing use cases that demonstrate that a
 symlink from a dotfile's location to its contents in a central directory is
 better than just having the correct dotfile contents.
+
+## What are the limitations of chezmoi's symlink mode?
+
+In symlink mode chezmoi replaces targets with symlinks to the source directory
+if the the target is a regular file and is not encrypted, executable, private,
+or a template.
+
+Symlinks cannot be used for encrypted files because the source state contains
+the ciphertext, not the plaintext.
+
+Symlinks cannot be used for executable files as the executable bit would need to
+be set on the file in the source directory and chezmoi uses only regular files
+and directories in its source state for portability across operating systems.
+This may change in the future.
+
+Symlinks cannot be used for private files because git does not persist group and
+world permission bits.
+
+Symlinks cannot be used for templated files because the source state contains
+the template, not the result of executing the template.
+
+Symlinks cannot be used for entire directories because of chezmoi's use of
+attributes in the filename mangles entries in the directory, directories might
+have the `exact_` attribute and contain empty files, and the directory's entries
+might not be usable with symlinks.
+
+In symlink mode, running `chezmoi add` does not immediately replace the targets
+with a symlink. You must run `chezmoi apply` to create the symlinks.
 
 ## Can I change how chezmoi's source state is represented on disk?
 
