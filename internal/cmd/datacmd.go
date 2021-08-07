@@ -7,7 +7,7 @@ import (
 )
 
 type dataCmdConfig struct {
-	format dataFormat
+	format writeDataFormat
 }
 
 func (c *Config) newDataCmd() *cobra.Command {

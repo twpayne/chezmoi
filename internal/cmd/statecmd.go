@@ -19,7 +19,7 @@ type stateCmdConfig struct {
 }
 
 type stateDataCmdConfig struct {
-	format dataFormat
+	format writeDataFormat
 }
 
 type stateDeleteCmdConfig struct {
@@ -28,7 +28,7 @@ type stateDeleteCmdConfig struct {
 }
 
 type stateDumpCmdConfig struct {
-	format dataFormat
+	format writeDataFormat
 }
 
 type stateGetCmdConfig struct {

@@ -8,7 +8,7 @@ import (
 
 type dumpCmdConfig struct {
 	exclude   *chezmoi.EntryTypeSet
-	format    dataFormat
+	format    writeDataFormat
 	include   *chezmoi.EntryTypeSet
 	recursive bool
 }

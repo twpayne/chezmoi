@@ -7,6 +7,7 @@ Manage your dotfiles across multiple machines, securely.
 * [Global command line flags](#global-command-line-flags)
   * [`--color` *value*](#--color-value)
   * [`-c`, `--config` *filename*](#-c---config-filename)
+  * [`--config-format` *format*](#--config-format-format)
   * [`--debug`](#--debug)
   * [`-D`, `--destination` *directory*](#-d---destination-directory)
   * [`-n`, `--dry-run`](#-n---dry-run)
@@ -157,6 +158,12 @@ if the the environment variable `$NO_COLOR` is not set and stdout is a terminal.
 ### `-c`, `--config` *filename*
 
 Read the configuration from *filename*.
+
+### `--config-format` *format*
+
+Assume the configuration file is in the given format. *format* may be `json`,
+`toml`, or `yaml`. This is only needed if the config filename does not have an
+extension, for example when it is `/dev/stdin`.
 
 ### `--debug`
 
