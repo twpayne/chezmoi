@@ -65,6 +65,7 @@ type Config struct {
 	UseBuiltinGit    autoBool                        `mapstructure:"useBuiltinGit"`
 
 	// Global configuration, not settable in the config file.
+	configFormat  readDataFormat
 	cpuProfile    chezmoi.AbsPath
 	debug         bool
 	dryRun        bool
@@ -296,11 +297,11 @@ func newConfig(options ...configOption) (*Config, error) {
 			recursive: true,
 		},
 		data: dataCmdConfig{
-			format: defaultDataFormat,
+			format: defaultWriteDataFormat,
 		},
 		dump: dumpCmdConfig{
 			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			format:    defaultDataFormat,
+			format:    defaultWriteDataFormat,
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 			recursive: true,
 		},
@@ -327,10 +328,10 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		state: stateCmdConfig{
 			data: stateDataCmdConfig{
-				format: defaultDataFormat,
+				format: defaultWriteDataFormat,
 			},
 			dump: stateDumpCmdConfig{
-				format: defaultDataFormat,
+				format: defaultWriteDataFormat,
 			},
 		},
 		status: statusCmdConfig{
@@ -982,12 +983,12 @@ func (c *Config) makeRunEWithSourceState(runE func(*cobra.Command, []string, *ch
 	}
 }
 
-func (c *Config) marshal(dataFormat dataFormat, data interface{}) error {
+func (c *Config) marshal(dataFormat writeDataFormat, data interface{}) error {
 	var format chezmoi.Format
 	switch dataFormat {
-	case dataFormatJSON:
+	case writeDataFormatJSON:
 		format = chezmoi.JSONFormat
-	case dataFormatYAML:
+	case writeDataFormatYAML:
 		format = chezmoi.YAMLFormat
 	default:
 		return fmt.Errorf("%s: unknown format", dataFormat)
@@ -1031,6 +1032,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	}
 
 	persistentFlags.VarP(&c.configFileAbsPath, "config", "c", "Set config file")
+	persistentFlags.Var(&c.configFormat, "config-format", "Set config file format")
 	persistentFlags.Var(&c.cpuProfile, "cpu-profile", "Write a CPU profile to path")
 	persistentFlags.BoolVar(&c.debug, "debug", c.debug, "Include debug information in output")
 	persistentFlags.BoolVarP(&c.dryRun, "dry-run", "n", c.dryRun, "Do not make any modifications to the destination directory")
@@ -1379,6 +1381,9 @@ func (c *Config) promptChoice(prompt string, choices []string) (string, error) {
 func (c *Config) readConfig() error {
 	v := viper.New()
 	v.SetConfigFile(string(c.configFileAbsPath))
+	if c.configFormat != "" {
+		v.SetConfigType(c.configFormat.String())
+	}
 	v.SetFs(afero.FromIOFS{FS: c.fileSystem})
 	switch err := v.ReadInConfig(); {
 	case errors.Is(err, fs.ErrNotExist):

@@ -5,33 +5,67 @@ import (
 	"strings"
 )
 
-// A dataFormat is either JSON or YAML and implements the
-// github.com/spf13/pflag.Value interface.
-type dataFormat string
+// A readDataFormat is a format that chezmoi uses for reading (JSON, TOML, or
+// YAML) and implements the github.com/spf13/pflag.Value interface.
+type readDataFormat string
+
+// A writeDataFormat is format that chezmoi uses for writing (JSON or YAML) and
+// implements the github.com/spf13/pflag.Value interface.
+//
+// TOML is not included as write format as it requires the top level value to be
+// an object, and chezmoi occasionally requires the top level value to be a
+// simple value or array.
+type writeDataFormat string
 
 const (
-	dataFormatJSON dataFormat = "json"
-	dataFormatYAML dataFormat = "yaml"
+	readDataFormatJSON readDataFormat = "json"
+	readDataFormatTOML readDataFormat = "toml"
+	readDataFormatYAML readDataFormat = "yaml"
 
-	defaultDataFormat = dataFormatJSON
+	writeDataFormatJSON writeDataFormat = "json"
+	writeDataFormatYAML writeDataFormat = "yaml"
+
+	defaultWriteDataFormat = writeDataFormatJSON
 )
 
-func (f *dataFormat) Set(s string) error {
+func (f *readDataFormat) Set(s string) error {
 	switch strings.ToLower(s) {
 	case "json":
-		*f = dataFormatJSON
+		*f = readDataFormatJSON
+	case "toml":
+		*f = readDataFormatTOML
 	case "yaml":
-		*f = dataFormatYAML
+		*f = readDataFormatYAML
 	default:
-		return errors.New("invalid data format")
+		return errors.New("invalid or unsupported data format")
 	}
 	return nil
 }
 
-func (f dataFormat) String() string {
+func (f readDataFormat) String() string {
 	return string(f)
 }
 
-func (f dataFormat) Type() string {
+func (f readDataFormat) Type() string {
+	return "json|toml|yaml"
+}
+
+func (f *writeDataFormat) Set(s string) error {
+	switch strings.ToLower(s) {
+	case "json":
+		*f = writeDataFormatJSON
+	case "yaml":
+		*f = writeDataFormatYAML
+	default:
+		return errors.New("invalid or unsupported data format")
+	}
+	return nil
+}
+
+func (f writeDataFormat) String() string {
+	return string(f)
+}
+
+func (f writeDataFormat) Type() string {
 	return "json|yaml"
 }
