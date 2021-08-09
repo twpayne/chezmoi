@@ -203,6 +203,12 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	sourceState, err := c.sourceState()
+	if err != nil {
+		return err
+	}
+	c.Data = sourceState.TemplateData()
+
 	// Find config template, execute it, and create config file.
 	configTemplateRelPath, ext, configTemplateContents, err := c.findConfigTemplate()
 	if err != nil {
