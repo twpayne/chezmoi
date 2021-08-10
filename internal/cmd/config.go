@@ -1447,8 +1447,8 @@ func (c *Config) sourceAbsPaths(sourceState *chezmoi.SourceState, args []string)
 	return sourceAbsPaths, nil
 }
 
-func (c *Config) sourceState() (*chezmoi.SourceState, error) {
-	s := chezmoi.NewSourceState(
+func (c *Config) sourceState(options ...chezmoi.SourceStateOption) (*chezmoi.SourceState, error) {
+	s := chezmoi.NewSourceState(append([]chezmoi.SourceStateOption{
 		chezmoi.WithDefaultTemplateDataFunc(c.defaultTemplateData),
 		chezmoi.WithDestDir(c.DestDirAbsPath),
 		chezmoi.WithEncryption(c.encryption),
@@ -1459,7 +1459,7 @@ func (c *Config) sourceState() (*chezmoi.SourceState, error) {
 		chezmoi.WithSystem(c.sourceSystem),
 		chezmoi.WithTemplateFuncs(c.templateFuncs),
 		chezmoi.WithTemplateOptions(c.Template.Options),
-	)
+	}, options...)...)
 
 	if err := s.Read(); err != nil {
 		return nil, err
