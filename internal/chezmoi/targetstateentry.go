@@ -281,7 +281,7 @@ func (t *TargetStateSymlink) Apply(system System, persistentState PersistentStat
 		if err != nil {
 			return false, err
 		}
-		if actualLinkname == linkname {
+		if normalizeLinkname(actualLinkname) == normalizeLinkname(linkname) {
 			return false, nil
 		}
 	}

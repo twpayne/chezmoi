@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path"
-	"path/filepath"
 	"reflect"
 	"strings"
 
@@ -13,14 +12,6 @@ import (
 
 // An AbsPath is an absolute path.
 type AbsPath string
-
-// NewAbsPath returns a new AbsPath.
-func NewAbsPath(path string) (AbsPath, error) {
-	if !filepath.IsAbs(path) {
-		return "", fmt.Errorf("%s: not an absolute path", path)
-	}
-	return AbsPath(path), nil
-}
 
 // Base returns p's basename.
 func (p AbsPath) Base() string {

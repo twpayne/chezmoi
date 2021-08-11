@@ -55,6 +55,7 @@ func TestScript(t *testing.T) {
 			"mkgpgconfig":    cmdMkGPGConfig,
 			"mkhomedir":      cmdMkHomeDir,
 			"mksourcedir":    cmdMkSourceDir,
+			"readlink":       cmdReadLink,
 			"removeline":     cmdRemoveLine,
 			"rmfinalnewline": cmdRmFinalNewline,
 			"unix2dos":       cmdUNIX2DOS,
@@ -392,6 +393,22 @@ func cmdMkSourceDir(ts *testscript.TestScript, neg bool, args []string) {
 	})
 	if err != nil {
 		ts.Fatalf("mksourcedir: %v", err)
+	}
+}
+
+// cmdReadLink reads a symlink and verifies that its target is as expected.
+func cmdReadLink(ts *testscript.TestScript, neg bool, args []string) {
+	if len(args) != 2 {
+		ts.Fatalf("usage: readlink path target")
+	}
+	filename := ts.MkAbs(args[0])
+	link, err := os.Readlink(filename)
+	ts.Check(err)
+	switch {
+	case !neg && link != args[1]:
+		ts.Fatalf("readlink: %s -> %s, expected %s", args[0], link, args[1])
+	case neg && link == args[1]:
+		ts.Fatalf("readlink: %s -> %s, expected ! %s", args[0], link, args[1])
 	}
 }
 

@@ -69,7 +69,11 @@ func NewActualStateEntry(system System, absPath AbsPath, info fs.FileInfo, err e
 		return &ActualStateSymlink{
 			absPath: absPath,
 			lazyLinkname: newLazyLinknameFunc(func() (string, error) {
-				return system.Readlink(absPath)
+				linkame, err := system.Readlink(absPath)
+				if err != nil {
+					return "", err
+				}
+				return normalizeLinkname(linkame), nil
 			}),
 		}, nil
 	default:

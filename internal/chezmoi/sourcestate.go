@@ -975,8 +975,9 @@ func (s *SourceState) newFileTargetStateEntryFunc(sourceRelPath SourceRelPath, f
 			case isEmpty(contents) && !fileAttr.Empty:
 				return &TargetStateRemove{}, nil
 			default:
+				linkname := normalizeLinkname(string(s.sourceDirAbsPath.Join(sourceRelPath.RelPath())))
 				return &TargetStateSymlink{
-					lazyLinkname: newLazyLinkname(string(s.sourceDirAbsPath.Join(sourceRelPath.RelPath()))),
+					lazyLinkname: newLazyLinkname(linkname),
 				}, nil
 			}
 		}
@@ -1107,7 +1108,8 @@ func (s *SourceState) newSymlinkTargetStateEntryFunc(sourceRelPath SourceRelPath
 					return "", err
 				}
 			}
-			return string(bytes.TrimSpace(linknameBytes)), nil
+			linkname := normalizeLinkname(string(bytes.TrimSpace(linknameBytes)))
+			return linkname, nil
 		}
 		return &TargetStateSymlink{
 			lazyLinkname: newLazyLinknameFunc(linknameFunc),
