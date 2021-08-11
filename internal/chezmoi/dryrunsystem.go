@@ -23,7 +23,7 @@ func NewDryRunSystem(system System) *DryRunSystem {
 
 // Chmod implements System.Chmod.
 func (s *DryRunSystem) Chmod(name AbsPath, mode fs.FileMode) error {
-	s.modified = true
+	s.setModified()
 	return nil
 }
 
@@ -49,7 +49,7 @@ func (s *DryRunSystem) Lstat(name AbsPath) (fs.FileInfo, error) {
 
 // Mkdir implements System.Mkdir.
 func (s *DryRunSystem) Mkdir(name AbsPath, perm fs.FileMode) error {
-	s.modified = true
+	s.setModified()
 	return nil
 }
 
@@ -81,19 +81,19 @@ func (s *DryRunSystem) Readlink(name AbsPath) (string, error) {
 
 // RemoveAll implements System.RemoveAll.
 func (s *DryRunSystem) RemoveAll(AbsPath) error {
-	s.modified = true
+	s.setModified()
 	return nil
 }
 
 // Rename implements System.Rename.
 func (s *DryRunSystem) Rename(oldpath, newpath AbsPath) error {
-	s.modified = true
+	s.setModified()
 	return nil
 }
 
 // RunCmd implements System.RunCmd.
 func (s *DryRunSystem) RunCmd(cmd *exec.Cmd) error {
-	s.modified = true
+	s.setModified()
 	return nil
 }
 
@@ -104,7 +104,7 @@ func (s *DryRunSystem) RunIdempotentCmd(cmd *exec.Cmd) error {
 
 // RunScript implements System.RunScript.
 func (s *DryRunSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
-	s.modified = true
+	s.setModified()
 	return nil
 }
 
@@ -120,12 +120,19 @@ func (s *DryRunSystem) UnderlyingFS() vfs.FS {
 
 // WriteFile implements System.WriteFile.
 func (s *DryRunSystem) WriteFile(AbsPath, []byte, fs.FileMode) error {
-	s.modified = true
+	s.setModified()
 	return nil
 }
 
 // WriteSymlink implements System.WriteSymlink.
 func (s *DryRunSystem) WriteSymlink(string, AbsPath) error {
-	s.modified = true
+	s.setModified()
 	return nil
+}
+
+// setModified sets the modified flag to true. It is a separate function so that
+// it can act as a convenient breakpoint for detecting modifications to the
+// underlying system.
+func (s *DryRunSystem) setModified() {
+	s.modified = true
 }
