@@ -30,6 +30,7 @@ type SourceState struct {
 	minVersion              semver.Version
 	mode                    Mode
 	defaultTemplateDataFunc func() map[string]interface{}
+	readTemplateData        bool
 	userTemplateData        map[string]interface{}
 	priorityTemplateData    map[string]interface{}
 	templateData            map[string]interface{}
@@ -73,6 +74,13 @@ func WithMode(mode Mode) SourceStateOption {
 func WithPriorityTemplateData(priorityTemplateData map[string]interface{}) SourceStateOption {
 	return func(s *SourceState) {
 		RecursiveMerge(s.priorityTemplateData, priorityTemplateData)
+	}
+}
+
+// WithReadTemplateData sets whether to read .chezmoidata.<format> files.
+func WithReadTemplateData(readTemplateData bool) SourceStateOption {
+	return func(s *SourceState) {
+		s.readTemplateData = readTemplateData
 	}
 }
 
@@ -122,6 +130,7 @@ func NewSourceState(options ...SourceStateOption) *SourceState {
 		umask:                Umask,
 		encryption:           NoEncryption{},
 		ignore:               newPatternSet(),
+		readTemplateData:     true,
 		priorityTemplateData: make(map[string]interface{}),
 		userTemplateData:     make(map[string]interface{}),
 		templateOptions:      DefaultTemplateOptions,
@@ -587,6 +596,9 @@ func (s *SourceState) Read() error {
 		}
 		switch {
 		case strings.HasPrefix(info.Name(), dataName):
+			if !s.readTemplateData {
+				return nil
+			}
 			return s.addTemplateData(sourceAbsPath)
 		case info.Name() == ignoreName:
 			// .chezmoiignore is interpreted as a template. we walk the

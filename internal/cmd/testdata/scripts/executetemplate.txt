@@ -36,6 +36,10 @@ stdout '\.chezmoidata\.yaml'
 chezmoi execute-template '{{ .last.global }}'
 stdout chezmoi.toml
 
+# test that chezmoi execute-template --init does not include .chezmoidata.<format> data
+! chezmoi execute-template --init '{{ .last.format }}'
+stderr 'map has no entry for key "format"'
+
 # test --init --promptBool
 chezmoi execute-template --init --promptBool value=yes '{{ promptBool "value" }}'
 stdout true

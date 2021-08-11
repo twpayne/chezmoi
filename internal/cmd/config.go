@@ -434,7 +434,7 @@ type applyArgsOptions struct {
 }
 
 func (c *Config) applyArgs(targetSystem chezmoi.System, targetDirAbsPath chezmoi.AbsPath, args []string, options applyArgsOptions) error {
-	sourceState, err := c.sourceState()
+	sourceState, err := c.newSourceState()
 	if err != nil {
 		return err
 	}
@@ -975,7 +975,7 @@ func (c *Config) gitAutoPush(status *git.Status) error {
 
 func (c *Config) makeRunEWithSourceState(runE func(*cobra.Command, []string, *chezmoi.SourceState) error) func(*cobra.Command, []string) error {
 	return func(cmd *cobra.Command, args []string) error {
-		sourceState, err := c.sourceState()
+		sourceState, err := c.newSourceState()
 		if err != nil {
 			return err
 		}
@@ -1102,6 +1102,31 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	}
 
 	return rootCmd, nil
+}
+
+func (c *Config) newSourceState(options ...chezmoi.SourceStateOption) (*chezmoi.SourceState, error) {
+	s := chezmoi.NewSourceState(append([]chezmoi.SourceStateOption{
+		chezmoi.WithDefaultTemplateDataFunc(c.defaultTemplateData),
+		chezmoi.WithDestDir(c.DestDirAbsPath),
+		chezmoi.WithEncryption(c.encryption),
+		chezmoi.WithInterpreters(c.Interpreters),
+		chezmoi.WithMode(c.Mode),
+		chezmoi.WithPriorityTemplateData(c.Data),
+		chezmoi.WithSourceDir(c.SourceDirAbsPath),
+		chezmoi.WithSystem(c.sourceSystem),
+		chezmoi.WithTemplateFuncs(c.templateFuncs),
+		chezmoi.WithTemplateOptions(c.Template.Options),
+	}, options...)...)
+
+	if err := s.Read(); err != nil {
+		return nil, err
+	}
+
+	if minVersion := s.MinVersion(); c.version != nil && !isDevVersion(c.version) && c.version.LessThan(minVersion) {
+		return nil, fmt.Errorf("source state requires version %s or later, chezmoi is version %s", minVersion, c.version)
+	}
+
+	return s, nil
 }
 
 func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error {
@@ -1445,31 +1470,6 @@ func (c *Config) sourceAbsPaths(sourceState *chezmoi.SourceState, args []string)
 		sourceAbsPaths = append(sourceAbsPaths, sourceAbsPath)
 	}
 	return sourceAbsPaths, nil
-}
-
-func (c *Config) sourceState() (*chezmoi.SourceState, error) {
-	s := chezmoi.NewSourceState(
-		chezmoi.WithDefaultTemplateDataFunc(c.defaultTemplateData),
-		chezmoi.WithDestDir(c.DestDirAbsPath),
-		chezmoi.WithEncryption(c.encryption),
-		chezmoi.WithInterpreters(c.Interpreters),
-		chezmoi.WithMode(c.Mode),
-		chezmoi.WithPriorityTemplateData(c.Data),
-		chezmoi.WithSourceDir(c.SourceDirAbsPath),
-		chezmoi.WithSystem(c.sourceSystem),
-		chezmoi.WithTemplateFuncs(c.templateFuncs),
-		chezmoi.WithTemplateOptions(c.Template.Options),
-	)
-
-	if err := s.Read(); err != nil {
-		return nil, err
-	}
-
-	if minVersion := s.MinVersion(); c.version != nil && !isDevVersion(c.version) && c.version.LessThan(minVersion) {
-		return nil, fmt.Errorf("source state requires version %s or later, chezmoi is version %s", minVersion, c.version)
-	}
-
-	return s, nil
 }
 
 type targetRelPathsOptions struct {

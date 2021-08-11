@@ -24,7 +24,7 @@ func (c *Config) newExecuteTemplateCmd() *cobra.Command {
 		Short:   "Execute the given template(s)",
 		Long:    mustLongHelp("execute-template"),
 		Example: example("execute-template"),
-		RunE:    c.makeRunEWithSourceState(c.runExecuteTemplateCmd),
+		RunE:    c.runExecuteTemplateCmd,
 	}
 
 	flags := executeTemplateCmd.Flags()
@@ -37,7 +37,16 @@ func (c *Config) newExecuteTemplateCmd() *cobra.Command {
 	return executeTemplateCmd
 }
 
-func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
+func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error {
+	var options []chezmoi.SourceStateOption
+	if c.executeTemplate.init {
+		options = append(options, chezmoi.WithReadTemplateData(false))
+	}
+	sourceState, err := c.newSourceState(options...)
+	if err != nil {
+		return err
+	}
+
 	promptBool := make(map[string]bool)
 	for key, valueStr := range c.executeTemplate.promptBool {
 		value, err := parseBool(valueStr)
