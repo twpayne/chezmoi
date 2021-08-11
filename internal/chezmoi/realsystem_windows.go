@@ -31,7 +31,7 @@ func (s *RealSystem) Readlink(name AbsPath) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return filepath.ToSlash(linkname), nil
+	return normalizeLinkname(linkname), nil
 }
 
 // WriteFile implements System.WriteFile.

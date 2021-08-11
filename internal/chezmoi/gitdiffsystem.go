@@ -5,6 +5,7 @@ import (
 	"io"
 	"io/fs"
 	"os/exec"
+	"runtime"
 
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/filemode"
@@ -193,7 +194,12 @@ func (s *GitDiffSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMod
 
 // WriteSymlink implements System.WriteSymlink.
 func (s *GitDiffSystem) WriteSymlink(oldname string, newname AbsPath) error {
-	if err := s.encodeDiff(newname, append([]byte(oldname), '\n'), fs.ModeSymlink); err != nil {
+	toData := append([]byte(normalizeLinkname(oldname)), '\n')
+	toMode := fs.ModeSymlink
+	if runtime.GOOS == "windows" {
+		toMode |= 0o666
+	}
+	if err := s.encodeDiff(newname, toData, toMode); err != nil {
 		return err
 	}
 	return s.system.WriteSymlink(oldname, newname)
@@ -204,25 +210,25 @@ func (s *GitDiffSystem) WriteSymlink(oldname string, newname AbsPath) error {
 func (s *GitDiffSystem) encodeDiff(absPath AbsPath, toData []byte, toMode fs.FileMode) error {
 	var fromData []byte
 	var fromMode fs.FileMode
-	switch fromInfo, err := s.system.Stat(absPath); {
-	case err == nil && fromInfo.Mode().IsRegular():
+	switch fromInfo, err := s.system.Lstat(absPath); {
+	case errors.Is(err, fs.ErrNotExist):
+	case err != nil:
+		return err
+	case fromInfo.Mode().IsRegular():
 		fromData, err = s.system.ReadFile(absPath)
 		if err != nil {
 			return err
 		}
 		fromMode = fromInfo.Mode()
-	case err == nil && fromInfo.Mode().Type() == fs.ModeSymlink:
+	case fromInfo.Mode().Type() == fs.ModeSymlink:
 		fromDataStr, err := s.system.Readlink(absPath)
 		if err != nil {
 			return err
 		}
-		fromData = []byte(fromDataStr)
+		fromData = append([]byte(fromDataStr), '\n')
 		fromMode = fromInfo.Mode()
-	case err == nil:
-		fromMode = fromInfo.Mode()
-	case errors.Is(err, fs.ErrNotExist):
 	default:
-		return err
+		fromMode = fromInfo.Mode()
 	}
 
 	diffPatch, err := DiffPatch(s.trimPrefix(absPath), fromData, fromMode, toData, toMode)

@@ -42,3 +42,9 @@ func expandTilde(path string, homeDirAbsPath AbsPath) string {
 		return path
 	}
 }
+
+// normalizeLinkname returns linkname normalized. On non-Windows systems, it
+// returns linkname unchanged.
+func normalizeLinkname(linkname string) string {
+	return linkname
+}

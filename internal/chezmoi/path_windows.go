@@ -48,6 +48,16 @@ func expandTilde(path string, homeDirAbsPath AbsPath) string {
 	}
 }
 
+// normalizeLinkname returns linkname normalized. On Windows, backslashes are
+// converted to forward slashes and if linkname is an absolute path then the
+// volume name is converted to uppercase.
+func normalizeLinkname(linkname string) string {
+	if filepath.IsAbs(linkname) {
+		return filepath.ToSlash(volumeNameToUpper(linkname))
+	}
+	return filepath.ToSlash(linkname)
+}
+
 // volumeNameLen returns length of the leading volume name on Windows. It
 // returns 0 elsewhere.
 func volumeNameLen(path string) int {
