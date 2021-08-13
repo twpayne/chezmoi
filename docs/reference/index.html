@@ -22,7 +22,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" integrity="sha256-lYzqeCdiHW&#43;8s6zwkTRMPkTj0qlCj5w8OLues3v4xF0=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.77d04ee9569afdbbb0ace800e15fa15d76ace95070933c416fe4f6a87396ec39.js" integrity="sha256-d9BO6Vaa/buwrOgA4V&#43;hXXas6VBwkzxBb&#43;T2qHOW7Dk=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.caa923a4aaac68b09a6d8f44ee0e91cddb3fc6c64271a1cb79fc31916c6a0657.js" integrity="sha256-yqkjpKqsaLCabY9E7g6Rzds/xsZCcaHLefwxkWxqBlc=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -126,6 +126,7 @@ https://github.com/alex-shpak/hugo-book
       <ul>
         <li><a href="#--color-value"><code>--color</code> <em>value</em></a></li>
         <li><a href="#-c---config-filename"><code>-c</code>, <code>--config</code> <em>filename</em></a></li>
+        <li><a href="#--config-format-jsontomlyaml"><code>--config-format</code> <code>json</code>|<code>toml</code>|<code>yaml</code></a></li>
         <li><a href="#--debug"><code>--debug</code></a></li>
         <li><a href="#-d---destination-directory"><code>-D</code>, <code>--destination</code> <em>directory</em></a></li>
         <li><a href="#-n---dry-run"><code>-n</code>, <code>--dry-run</code></a></li>
@@ -169,6 +170,7 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#directories">Directories</a></li>
         <li><a href="#symbolic-links">Symbolic links</a></li>
         <li><a href="#scripts">Scripts</a></li>
+        <li><a href="#symlink-mode"><code>symlink</code> mode</a></li>
       </ul>
     </li>
     <li><a href="#special-files-and-directories">Special files and directories</a>
@@ -327,6 +329,12 @@ if the the environment variable <code>$NO_COLOR</code> is not set and stdout is 
   <a class="anchor" href="#-c---config-filename">#</a>
 </h3>
 <p>Read the configuration from <em>filename</em>.</p>
+<h3 id="--config-format-jsontomlyaml">
+  <code>--config-format</code> <code>json</code>|<code>toml</code>|<code>yaml</code>
+  <a class="anchor" href="#--config-format-jsontomlyaml">#</a>
+</h3>
+<p>Assume the configuration file is in the given format. This is only needed if the
+config filename does not have an extension, for example when it is <code>/dev/stdin</code>.</p>
 <h3 id="--debug">
   <code>--debug</code>
   <a class="anchor" href="#--debug">#</a>
@@ -518,6 +526,13 @@ of the config file is <code>chezmoi</code>, and the first config file found is u
 </tr>
 <tr>
 <td></td>
+<td><code>mode</code></td>
+<td>string</td>
+<td><code>file</code></td>
+<td>Mode in target dir, either <code>file</code> or <code>symlink</code></td>
+</tr>
+<tr>
+<td></td>
 <td><code>remove</code></td>
 <td>bool</td>
 <td><code>false</code></td>
@@ -658,6 +673,20 @@ of the config file is <code>chezmoi</code>, and the first config file found is u
 </tr>
 <tr>
 <td><code>diff</code></td>
+<td><code>args</code></td>
+<td>[]string</td>
+<td><em>see <code>diff</code> below</em></td>
+<td>Extra args to external diff command</td>
+</tr>
+<tr>
+<td></td>
+<td><code>command</code></td>
+<td>string</td>
+<td><em>none</em></td>
+<td>External diff command</td>
+</tr>
+<tr>
+<td></td>
 <td><code>exclude</code></td>
 <td>[]string</td>
 <td><em>none</em></td>
@@ -1181,6 +1210,14 @@ a Tcl/Tk interpreter, include the following in <code>~/.config/chezmoi/chezmoi.t
 </code></pre></div><p>If the script in the source state is a template (with a <code>.tmpl</code> extension), then
 chezmoi will strip the <code>.tmpl</code> extension and use the next remaining extension to
 determine the interpreter to use.</p>
+<h3 id="symlink-mode">
+  <code>symlink</code> mode
+  <a class="anchor" href="#symlink-mode">#</a>
+</h3>
+<p>By default, chezmoi will create regular files and directories. Setting <code>mode = &quot;symlink&quot;</code> will make chezmoi behave more like a dotfile manager that uses
+symlinks by default, i.e. <code>chezmoi apply</code> will make dotfiles symlinks to files
+in the source directory if the target is a regular file and is not
+encrypted, executable, private, or a template.</p>
 <h2 id="special-files-and-directories">
   Special files and directories
   <a class="anchor" href="#special-files-and-directories">#</a>
@@ -1562,11 +1599,22 @@ $ chezmoi data --format=yaml
 <em>target</em>s. If no targets are specified, print the differences for all targets.</p>
 <p>If a <code>diff.pager</code> command is set in the configuration file then the output will
 be piped into it.</p>
+<p>If <code>diff.command</code> is set then it will be invoked to show individual file
+differences with <code>diff.args</code> passed as arguments. Each element of <code>diff.args</code> is
+interpreted as a template with the variables <code>.Destination</code> and <code>.Target</code>
+available corresponding to the path of the file in the source and target state
+respectively. The default value of <code>diff.args</code> is <code>[&quot;{{ .Destination }}&quot;, &quot;{{ .Target }}&quot;]</code>.</p>
 <h4 id="--pager-pager">
   <code>--pager</code> <em>pager</em>
   <a class="anchor" href="#--pager-pager">#</a>
 </h4>
 <p>Pager to use for output.</p>
+<h4 id="--use-builtin-diff">
+  <code>--use-builtin-diff</code>
+  <a class="anchor" href="#--use-builtin-diff">#</a>
+</h4>
+<p>Use chezmoi&rsquo;s builtin diff, even if the <code>diff.command</code> configuration variable is
+set.</p>
 <h4 id="diff-examples">
   <code>diff</code> examples
   <a class="anchor" href="#diff-examples">#</a>
@@ -2828,6 +2876,7 @@ generating the initial config file.</p>
       <ul>
         <li><a href="#--color-value"><code>--color</code> <em>value</em></a></li>
         <li><a href="#-c---config-filename"><code>-c</code>, <code>--config</code> <em>filename</em></a></li>
+        <li><a href="#--config-format-jsontomlyaml"><code>--config-format</code> <code>json</code>|<code>toml</code>|<code>yaml</code></a></li>
         <li><a href="#--debug"><code>--debug</code></a></li>
         <li><a href="#-d---destination-directory"><code>-D</code>, <code>--destination</code> <em>directory</em></a></li>
         <li><a href="#-n---dry-run"><code>-n</code>, <code>--dry-run</code></a></li>
@@ -2871,6 +2920,7 @@ generating the initial config file.</p>
         <li><a href="#directories">Directories</a></li>
         <li><a href="#symbolic-links">Symbolic links</a></li>
         <li><a href="#scripts">Scripts</a></li>
+        <li><a href="#symlink-mode"><code>symlink</code> mode</a></li>
       </ul>
     </li>
     <li><a href="#special-files-and-directories">Special files and directories</a>

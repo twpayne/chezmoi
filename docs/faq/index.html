@@ -22,7 +22,7 @@ How do I edit my dotfiles with chezmoi? #  There are four popular approaches:
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" integrity="sha256-lYzqeCdiHW&#43;8s6zwkTRMPkTj0qlCj5w8OLues3v4xF0=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.77d04ee9569afdbbb0ace800e15fa15d76ace95070933c416fe4f6a87396ec39.js" integrity="sha256-d9BO6Vaa/buwrOgA4V&#43;hXXas6VBwkzxBb&#43;T2qHOW7Dk=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.caa923a4aaac68b09a6d8f44ee0e91cddb3fc6c64271a1cb79fc31916c6a0657.js" integrity="sha256-yqkjpKqsaLCabY9E7g6Rzds/xsZCcaHLefwxkWxqBlc=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -135,6 +135,7 @@ https://github.com/alex-shpak/hugo-book
     <li><a href="#chezmoi-makes-sshconfig-group-writeable-how-do-i-stop-this">chezmoi makes <code>~/.ssh/config</code> group writeable. How do I stop this?</a></li>
     <li><a href="#why-does-chezmoi-cd-spawn-a-shell-instead-of-just-changing-directory">Why does <code>chezmoi cd</code> spawn a shell instead of just changing directory?</a></li>
     <li><a href="#why-doesnt-chezmoi-use-symlinks-like-gnu-stow">Why doesn&rsquo;t chezmoi use symlinks like GNU Stow?</a></li>
+    <li><a href="#what-are-the-limitations-of-chezmois-symlink-mode">What are the limitations of chezmoi&rsquo;s symlink mode?</a></li>
     <li><a href="#can-i-change-how-chezmois-source-state-is-represented-on-disk">Can I change how chezmoi&rsquo;s source state is represented on disk?</a></li>
     <li><a href="#gpg-encryption-fails-what-could-be-wrong">gpg encryption fails. What could be wrong?</a></li>
     <li><a href="#chezmoi-reports-chezmoi-user-lookup-userid-nnnnn-inputoutput-error">chezmoi reports <code>chezmoi: user: lookup userid NNNNN: input/output error</code></a></li>
@@ -311,7 +312,7 @@ chezmoi&rsquo;s source directory.</p>
 <p>Symlinks are first class citizens in chezmoi: chezmoi supports creating them,
 updating them, removing them, and even more advanced features not found
 elsewhere like having the same symlink point to different targets on different
-machines by using templates.</p>
+machines by using a template.</p>
 <p>With chezmoi, you only use a symlink where you really need a symlink, in
 contrast to some other dotfile managers (e.g. GNU Stow) which require the use of
 symlinks as a layer of indirection between a dotfile&rsquo;s location (which can be
@@ -321,17 +322,19 @@ problem in a different way.</p>
 <p>Instead of using a symlink to redirect from the dotfile&rsquo;s location to the
 centralized directory, chezmoi generates the dotfile as a regular file in its
 final location from the contents of the centralized directory. This approach
-means that symlinks are not needed for regular files and that chezmoi is better
-able to cope with differences from machine to machine (as a dotfile&rsquo;s contents
-can be unique to that machine) and the dotfiles that chezmoi creates are just
-regular files. There&rsquo;s nothing special about dotfiles managed by chezmoi,
-whereas dotfiles managed with GNU Stow are special because they&rsquo;re actually
-symlinks to somewhere else.</p>
+allows chezmoi to provide features that are not possible when using symlinks,
+for example having files that encrypted, executable, private, or templates.</p>
+<p>There&rsquo;s nothing special about dotfiles managed by chezmoi, whereas dotfiles
+managed with GNU Stow are special because they&rsquo;re actually symlinks to somewhere
+else.</p>
 <p>The only advantage to using GNU Stow-style symlinks is that changes that you
 make to the dotfile&rsquo;s contents in the centralized directory are immediately
 visible, whereas chezmoi currently requires you to run <code>chezmoi apply</code> or
 <code>chezmoi edit --apply</code>. chezmoi will likely get an alternative solution to this
 too, see <a href="https://github.com/twpayne/chezmoi/issues/752">#752</a>.</p>
+<p>If you really want to use symlinks, then chezmoi provides a <a href="/docs/reference/#symlink-mode">symlink
+mode</a>
+which uses symlinks where possible.</p>
 <p>You can configure chezmoi to work like GNU Stow and have it create a set of
 symlinks back to a central directory, but this currently requires a bit of
 manual work (as described in
@@ -340,6 +343,29 @@ automation to help (see <a href="https://github.com/twpayne/chezmoi/issues/886">
 for example) but it does need some convincing use cases that demonstrate that a
 symlink from a dotfile&rsquo;s location to its contents in a central directory is
 better than just having the correct dotfile contents.</p>
+<h2 id="what-are-the-limitations-of-chezmois-symlink-mode">
+  What are the limitations of chezmoi&rsquo;s symlink mode?
+  <a class="anchor" href="#what-are-the-limitations-of-chezmois-symlink-mode">#</a>
+</h2>
+<p>In symlink mode chezmoi replaces targets with symlinks to the source directory
+if the the target is a regular file and is not encrypted, executable, private,
+or a template.</p>
+<p>Symlinks cannot be used for encrypted files because the source state contains
+the ciphertext, not the plaintext.</p>
+<p>Symlinks cannot be used for executable files as the executable bit would need to
+be set on the file in the source directory and chezmoi uses only regular files
+and directories in its source state for portability across operating systems.
+This may change in the future.</p>
+<p>Symlinks cannot be used for private files because git does not persist group and
+world permission bits.</p>
+<p>Symlinks cannot be used for templated files because the source state contains
+the template, not the result of executing the template.</p>
+<p>Symlinks cannot be used for entire directories because of chezmoi&rsquo;s use of
+attributes in the filename mangles entries in the directory, directories might
+have the <code>exact_</code> attribute and contain empty files, and the directory&rsquo;s entries
+might not be usable with symlinks.</p>
+<p>In symlink mode, running <code>chezmoi add</code> does not immediately replace the targets
+with a symlink. You must run <code>chezmoi apply</code> to create the symlinks.</p>
 <h2 id="can-i-change-how-chezmois-source-state-is-represented-on-disk">
   Can I change how chezmoi&rsquo;s source state is represented on disk?
   <a class="anchor" href="#can-i-change-how-chezmois-source-state-is-represented-on-disk">#</a>
@@ -610,6 +636,7 @@ chezmoi better. Thank you :)</p>
     <li><a href="#chezmoi-makes-sshconfig-group-writeable-how-do-i-stop-this">chezmoi makes <code>~/.ssh/config</code> group writeable. How do I stop this?</a></li>
     <li><a href="#why-does-chezmoi-cd-spawn-a-shell-instead-of-just-changing-directory">Why does <code>chezmoi cd</code> spawn a shell instead of just changing directory?</a></li>
     <li><a href="#why-doesnt-chezmoi-use-symlinks-like-gnu-stow">Why doesn&rsquo;t chezmoi use symlinks like GNU Stow?</a></li>
+    <li><a href="#what-are-the-limitations-of-chezmois-symlink-mode">What are the limitations of chezmoi&rsquo;s symlink mode?</a></li>
     <li><a href="#can-i-change-how-chezmois-source-state-is-represented-on-disk">Can I change how chezmoi&rsquo;s source state is represented on disk?</a></li>
     <li><a href="#gpg-encryption-fails-what-could-be-wrong">gpg encryption fails. What could be wrong?</a></li>
     <li><a href="#chezmoi-reports-chezmoi-user-lookup-userid-nnnnn-inputoutput-error">chezmoi reports <code>chezmoi: user: lookup userid NNNNN: input/output error</code></a></li>
