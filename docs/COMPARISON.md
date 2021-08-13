@@ -24,6 +24,9 @@
 | Distribution                           | Single binary | Python package    | Multiple files    | Ruby gem          | Single script or package | Single script | -          |
 | Install method                         | Many          | git submodule     | Many              | Ruby gem          | Many                     | Many          | Manual     |
 | Non-root install on bare system        | 🟢            | 🟠                | 🟠                | 🟠                | 🟢                       | 🟢            | 🟢         |
+| Install from Ubuntu repositories       | 🔴            | 🔴                | 20.04+            | 18.04+            | 18.04+                   | 18.04+        | -          |
+| Install from Debian repositories       | 🔴            | 🔴                | 10 buster+        | 9 stretch+        | 8 jessie+                | 9 stretch+    | -          |
+| Install from Fedora repositories       | 🔴            | 🔴                | 28+               | 🔴                | 26+                      | 🔴            | -          |
 | Windows support                        | 🟢            | 🔴                | 🔴                | 🔴                | 🔴                       | 🔴            | 🟢         |
 | Bootstrap requirements                 | None          | Python, git       | Perl, git         | Ruby, git         | sh, git                  | git           | git        |
 | Source repos                           | Single        | Single            | Multiple          | Single            | Multiple                 | Single        | Single     |
