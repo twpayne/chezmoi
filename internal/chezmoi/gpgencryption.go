@@ -3,7 +3,6 @@ package chezmoi
 import (
 	"os"
 	"os/exec"
-	"path/filepath"
 	"runtime"
 
 	"github.com/rs/zerolog/log"
@@ -23,20 +22,20 @@ type GPGEncryption struct {
 // Decrypt implements Encyrption.Decrypt.
 func (e *GPGEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
 	var plaintext []byte
-	if err := withPrivateTempDir(func(tempDir string) error {
-		ciphertextFilename := filepath.Join(tempDir, "ciphertext"+e.EncryptedSuffix())
-		if err := os.WriteFile(ciphertextFilename, ciphertext, 0o600); err != nil {
+	if err := withPrivateTempDir(func(tempDirAbsPath AbsPath) error {
+		ciphertextAbsPath := tempDirAbsPath.Join(RelPath("ciphertext" + e.EncryptedSuffix()))
+		if err := os.WriteFile(string(ciphertextAbsPath), ciphertext, 0o600); err != nil {
 			return err
 		}
-		plaintextFilename := filepath.Join(tempDir, "plaintext")
+		plaintextAbsPath := tempDirAbsPath.Join("plaintext")
 
-		args := e.decryptArgs(plaintextFilename, ciphertextFilename)
+		args := e.decryptArgs(plaintextAbsPath, ciphertextAbsPath)
 		if err := e.run(args); err != nil {
 			return err
 		}
 
 		var err error
-		plaintext, err = os.ReadFile(plaintextFilename)
+		plaintext, err = os.ReadFile(string(plaintextAbsPath))
 		return err
 	}); err != nil {
 		return nil, err
@@ -45,13 +44,13 @@ func (e *GPGEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
 }
 
 // DecryptToFile implements Encryption.DecryptToFile.
-func (e *GPGEncryption) DecryptToFile(plaintextFilename string, ciphertext []byte) error {
-	return withPrivateTempDir(func(tempDir string) error {
-		ciphertextFilename := filepath.Join(tempDir, "ciphertext"+e.EncryptedSuffix())
-		if err := os.WriteFile(ciphertextFilename, ciphertext, 0o600); err != nil {
+func (e *GPGEncryption) DecryptToFile(plaintextFilename AbsPath, ciphertext []byte) error {
+	return withPrivateTempDir(func(tempDirAbsPath AbsPath) error {
+		ciphertextAbsPath := tempDirAbsPath.Join(RelPath("ciphertext" + e.EncryptedSuffix()))
+		if err := os.WriteFile(string(ciphertextAbsPath), ciphertext, 0o600); err != nil {
 			return err
 		}
-		args := e.decryptArgs(plaintextFilename, ciphertextFilename)
+		args := e.decryptArgs(plaintextFilename, ciphertextAbsPath)
 		return e.run(args)
 	})
 }
@@ -59,20 +58,20 @@ func (e *GPGEncryption) DecryptToFile(plaintextFilename string, ciphertext []byt
 // Encrypt implements Encryption.Encrypt.
 func (e *GPGEncryption) Encrypt(plaintext []byte) ([]byte, error) {
 	var ciphertext []byte
-	if err := withPrivateTempDir(func(tempDir string) error {
-		plaintextFilename := filepath.Join(tempDir, "plaintext")
-		if err := os.WriteFile(plaintextFilename, plaintext, 0o600); err != nil {
+	if err := withPrivateTempDir(func(tempDirAbsPath AbsPath) error {
+		plaintextAbsPath := tempDirAbsPath.Join("plaintext")
+		if err := os.WriteFile(string(plaintextAbsPath), plaintext, 0o600); err != nil {
 			return err
 		}
-		ciphertextFilename := filepath.Join(tempDir, "ciphertext"+e.EncryptedSuffix())
+		ciphertextAbsPath := tempDirAbsPath.Join(RelPath("ciphertext" + e.EncryptedSuffix()))
 
-		args := e.encryptArgs(plaintextFilename, ciphertextFilename)
+		args := e.encryptArgs(plaintextAbsPath, ciphertextAbsPath)
 		if err := e.run(args); err != nil {
 			return err
 		}
 
 		var err error
-		ciphertext, err = os.ReadFile(ciphertextFilename)
+		ciphertext, err = os.ReadFile(string(ciphertextAbsPath))
 		return err
 	}); err != nil {
 		return nil, err
@@ -81,18 +80,18 @@ func (e *GPGEncryption) Encrypt(plaintext []byte) ([]byte, error) {
 }
 
 // EncryptFile implements Encryption.EncryptFile.
-func (e *GPGEncryption) EncryptFile(plaintextFilename string) ([]byte, error) {
+func (e *GPGEncryption) EncryptFile(plaintextFilename AbsPath) ([]byte, error) {
 	var ciphertext []byte
-	if err := withPrivateTempDir(func(tempDir string) error {
-		ciphertextFilename := filepath.Join(tempDir, "ciphertext"+e.EncryptedSuffix())
+	if err := withPrivateTempDir(func(tempDirAbsPath AbsPath) error {
+		ciphertextAbsPath := tempDirAbsPath.Join(RelPath("ciphertext" + e.EncryptedSuffix()))
 
-		args := e.encryptArgs(plaintextFilename, ciphertextFilename)
+		args := e.encryptArgs(plaintextFilename, ciphertextAbsPath)
 		if err := e.run(args); err != nil {
 			return err
 		}
 
 		var err error
-		ciphertext, err = os.ReadFile(ciphertextFilename)
+		ciphertext, err = os.ReadFile(string(ciphertextAbsPath))
 		return err
 	}); err != nil {
 		return nil, err
@@ -105,17 +104,17 @@ func (e *GPGEncryption) EncryptedSuffix() string {
 	return e.Suffix
 }
 
-func (e *GPGEncryption) decryptArgs(plaintextFilename, ciphertextFilename string) []string {
-	args := []string{"--output", plaintextFilename}
+func (e *GPGEncryption) decryptArgs(plaintextFilename, ciphertextFilename AbsPath) []string {
+	args := []string{"--output", string(plaintextFilename)}
 	args = append(args, e.Args...)
-	args = append(args, "--decrypt", ciphertextFilename)
+	args = append(args, "--decrypt", string(ciphertextFilename))
 	return args
 }
 
-func (e *GPGEncryption) encryptArgs(plaintextFilename, ciphertextFilename string) []string {
+func (e *GPGEncryption) encryptArgs(plaintextFilename, ciphertextFilename AbsPath) []string {
 	args := []string{
 		"--armor",
-		"--output", ciphertextFilename,
+		"--output", string(ciphertextFilename),
 	}
 	if e.Symmetric {
 		args = append(args, "--symmetric")
@@ -126,7 +125,7 @@ func (e *GPGEncryption) encryptArgs(plaintextFilename, ciphertextFilename string
 	if !e.Symmetric {
 		args = append(args, "--encrypt")
 	}
-	args = append(args, plaintextFilename)
+	args = append(args, string(plaintextFilename))
 	return args
 }
 
@@ -140,7 +139,7 @@ func (e *GPGEncryption) run(args []string) error {
 }
 
 // withPrivateTempDir creates a private temporary and calls f.
-func withPrivateTempDir(f func(tempDir string) error) error {
+func withPrivateTempDir(f func(tempDirAbsPath AbsPath) error) error {
 	tempDir, err := os.MkdirTemp("", "chezmoi-encryption")
 	if err != nil {
 		return err
@@ -152,5 +151,5 @@ func withPrivateTempDir(f func(tempDir string) error) error {
 		}
 	}
 
-	return f(tempDir)
+	return f(AbsPath(tempDir))
 }

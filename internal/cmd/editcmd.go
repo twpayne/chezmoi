@@ -123,7 +123,7 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string, sourceState *chez
 	}
 
 	for _, transparentlyDecryptedFile := range transparentlyDecryptedFiles {
-		contents, err := c.encryption.EncryptFile(string(transparentlyDecryptedFile.decryptedAbsPath))
+		contents, err := c.encryption.EncryptFile(transparentlyDecryptedFile.decryptedAbsPath)
 		if err != nil {
 			return err
 		}

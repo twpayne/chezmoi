@@ -3,7 +3,6 @@ package chezmoi
 import (
 	"math/rand"
 	"os"
-	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -20,16 +19,16 @@ func (e *xorEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
 	return e.xorWithKey(ciphertext), nil
 }
 
-func (e *xorEncryption) DecryptToFile(plaintextFilename string, ciphertext []byte) error {
-	return os.WriteFile(plaintextFilename, e.xorWithKey(ciphertext), 0o666)
+func (e *xorEncryption) DecryptToFile(plaintextAbsPath AbsPath, ciphertext []byte) error {
+	return os.WriteFile(string(plaintextAbsPath), e.xorWithKey(ciphertext), 0o666)
 }
 
 func (e *xorEncryption) Encrypt(plaintext []byte) ([]byte, error) {
 	return e.xorWithKey(plaintext), nil
 }
 
-func (e *xorEncryption) EncryptFile(plaintextFilename string) ([]byte, error) {
-	plaintext, err := os.ReadFile(plaintextFilename)
+func (e *xorEncryption) EncryptFile(plaintextAbsPath AbsPath) ([]byte, error) {
+	plaintext, err := os.ReadFile(string(plaintextAbsPath))
 	if err != nil {
 		return nil, err
 	}
@@ -63,11 +62,11 @@ func testEncryptionDecryptToFile(t *testing.T, encryption Encryption) {
 		defer func() {
 			assert.NoError(t, os.RemoveAll(tempDir))
 		}()
-		plaintextFilename := filepath.Join(tempDir, "plaintext")
+		plaintextAbsPath := AbsPath(tempDir).Join("plaintext")
 
-		require.NoError(t, encryption.DecryptToFile(plaintextFilename, actualCiphertext))
+		require.NoError(t, encryption.DecryptToFile(plaintextAbsPath, actualCiphertext))
 
-		actualPlaintext, err := os.ReadFile(plaintextFilename)
+		actualPlaintext, err := os.ReadFile(string(plaintextAbsPath))
 		require.NoError(t, err)
 		require.NotEmpty(t, actualPlaintext)
 		assert.Equal(t, expectedPlaintext, actualPlaintext)
@@ -101,10 +100,10 @@ func testEncryptionEncryptFile(t *testing.T, encryption Encryption) {
 		defer func() {
 			assert.NoError(t, os.RemoveAll(tempDir))
 		}()
-		plaintextFilename := filepath.Join(tempDir, "plaintext")
-		require.NoError(t, os.WriteFile(plaintextFilename, expectedPlaintext, 0o666))
+		plaintextAbsPath := AbsPath(tempDir).Join("plaintext")
+		require.NoError(t, os.WriteFile(string(plaintextAbsPath), expectedPlaintext, 0o666))
 
-		actualCiphertext, err := encryption.EncryptFile(plaintextFilename)
+		actualCiphertext, err := encryption.EncryptFile(plaintextAbsPath)
 		require.NoError(t, err)
 		require.NotEmpty(t, actualCiphertext)
 		assert.NotEqual(t, expectedPlaintext, actualCiphertext)
