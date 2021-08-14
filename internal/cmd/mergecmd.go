@@ -53,8 +53,47 @@ func (c *Config) runMergeCmd(cmd *cobra.Command, args []string, sourceState *che
 	defer os.RemoveAll(tempDir)
 	tempDirAbsPath := chezmoi.AbsPath(tempDir)
 
+	var plaintextTempDirAbsPath chezmoi.AbsPath
+	defer func() {
+		if plaintextTempDirAbsPath != "" {
+			_ = os.RemoveAll(string(plaintextTempDirAbsPath))
+		}
+	}()
+
 	for _, targetRelPath := range targetRelPaths {
 		sourceStateEntry := sourceState.MustEntry(targetRelPath)
+
+		// If the source state entry is an encrypted file, then decrypt it to a
+		// temporary directory and pass the plaintext to the merge command
+		// instead.
+		var (
+			source           string
+			plaintextAbsPath chezmoi.AbsPath
+		)
+		if sourceStateFile, ok := sourceStateEntry.(*chezmoi.SourceStateFile); ok {
+			if sourceStateFile.Attr.Encrypted {
+				if plaintextTempDirAbsPath == "" {
+					plaintextTempDir, err := os.MkdirTemp("", "chezmoi-merge-plaintext")
+					if err != nil {
+						return err
+					}
+					plaintextTempDirAbsPath = chezmoi.AbsPath(plaintextTempDir)
+				}
+				plaintextAbsPath = plaintextTempDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath())
+				plaintext, err := sourceStateFile.Contents()
+				if err != nil {
+					return err
+				}
+				if err := c.baseSystem.WriteFile(plaintextAbsPath, plaintext, 0o600); err != nil {
+					return err
+				}
+				source = string(plaintextAbsPath)
+			}
+		}
+		if source == "" {
+			source = string(c.SourceDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath()))
+		}
+
 		// FIXME sourceStateEntry.TargetStateEntry eagerly evaluates the return
 		// targetStateEntry's contents, which means that we cannot fallback to a
 		// two-way merge if the source state's contents cannot be decrypted or
@@ -72,19 +111,21 @@ func (c *Config) runMergeCmd(cmd *cobra.Command, args []string, sourceState *che
 		if err != nil {
 			return err
 		}
-		targetStatePath := tempDirAbsPath.Join(chezmoi.RelPath(targetRelPath.Base()))
-		if err := c.baseSystem.WriteFile(targetStatePath, contents, 0o600); err != nil {
+		targetStateAbsPath := tempDirAbsPath.Join(chezmoi.RelPath(targetRelPath.Base()))
+		if err := c.baseSystem.WriteFile(targetStateAbsPath, contents, 0o600); err != nil {
 			return err
 		}
+
 		templateData := struct {
 			Destination string
 			Source      string
 			Target      string
 		}{
 			Destination: string(c.DestDirAbsPath.Join(targetRelPath)),
-			Source:      string(c.SourceDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath())),
-			Target:      string(targetStatePath),
+			Source:      source,
+			Target:      string(targetStateAbsPath),
 		}
+
 		args := make([]string, 0, len(c.Merge.Args))
 		for i, arg := range c.Merge.Args {
 			tmpl, err := template.New("merge.args[" + strconv.Itoa(i) + "]").Parse(arg)
@@ -102,6 +143,18 @@ func (c *Config) runMergeCmd(cmd *cobra.Command, args []string, sourceState *che
 		}
 		if err := c.run(c.DestDirAbsPath, c.Merge.Command, args); err != nil {
 			return fmt.Errorf("%s: %w", targetRelPath, err)
+		}
+
+		// If the source state entry was an encrypted file, then re-encrypt the
+		// plaintext.
+		if plaintextAbsPath != "" {
+			encryptedContents, err := c.encryption.EncryptFile(plaintextAbsPath)
+			if err != nil {
+				return err
+			}
+			if err := c.baseSystem.WriteFile(c.SourceDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath()), encryptedContents, 0o644); err != nil {
+				return err
+			}
 		}
 	}
 
