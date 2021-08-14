@@ -1,6 +1,5 @@
 [windows] skip 'UNIX only'
 
-chmod 755 bin/vimdiff
 mkhomedir
 mksourcedir
 
@@ -16,15 +15,15 @@ chhome home2/user
 chezmoi merge $HOME${/}.file
 stdout ^${CHEZMOISOURCEDIR@R}/dot_file\s+${HOME@R}/\.file\s+${WORK@R}/.*/\.file$
 
--- bin/vimdiff --
-#!/bin/sh
-
-echo "$*"
+-- home/user/.config/chezmoi/chezmoi.toml --
+[merge]
+    command = "echo"
 -- home/user/.invalid_template --
 -- home/user/.local/share/chezmoi/dot_invalid_template.tmpl --
 {{
 -- home2/user/.config/chezmoi/chezmoi.toml --
 [merge]
+    command = "echo"
     args = ["{{ .Source }}", "{{ .Destination }}", "{{ .Target }}"]
 -- home2/user/.file --
 # destination
