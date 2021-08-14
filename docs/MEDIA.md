@@ -10,6 +10,7 @@ Recommended podcast: [Managing Dot Files and an Introduction to Chezmoi](https:/
 
 | Date       | Version | Format      | Link                                                                                                                                                                                                                |
 | ---------- | ------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2021-08-08 | 2.1.4   | Audio/text  | [PBS 122 of X — Managing Dot Files with Chezmoi](https://pbs.bartificer.net/pbs122)                                                                                                                                 |
 | 2021-07-23 | 2.1.2   | Audio       | [Managing Dot Files and an Introduction to Chezmoi](https://www.podfeet.com/blog/2021/07/ccatp-693/)                                                                                                                |
 | 2021-07-15 | 2.1.2   | Text (CN)   | [使用Chezmoi管理配置文件](https://marvinsblog.net/post/2021-07-15-chezmoi-intro/) |
 | 2021-05-14 | 2.0.12  | Text        | [A brief history of my dotfile management](https://jonathanbartlett.co.uk/2021/05/14/a-brief-history-of-my-dotfiles.html)                                                                                           |
