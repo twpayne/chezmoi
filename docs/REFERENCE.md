@@ -280,6 +280,13 @@ and supports all formats supported by
 property file format, and [HCL](https://github.com/hashicorp/hcl). The basename
 of the config file is `chezmoi`, and the first config file found is used.
 
+In most installations, the config file will be read from
+`~/.config/chezmoi/chezmoi.<format>`, where `<format>` is one of `json`, `toml`,
+or `yaml`. The config file can be set explicitly with the `--config` command
+line option. By default, the format is detected based on the extension of the
+config file name, but can be overridden with the `--config-format` command line
+option.
+
 ### Variables
 
 The following configuration variables are available:
