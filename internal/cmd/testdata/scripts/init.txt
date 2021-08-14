@@ -82,7 +82,7 @@ grep '# edited' $HOME/.file
 # test chezmoi init --config-path
 chhome home10/user
 mkgitconfig
-chezmoi init --config-path=$HOME/.chezmoi.toml --debug file://$WORK/home/user/.local/share/chezmoi
+chezmoi init --config-path=$HOME/.chezmoi.toml file://$WORK/home/user/.local/share/chezmoi
 cmp $HOME/.chezmoi.toml golden/chezmoi.toml
 ! exists $CHEZMOICONFIGDIR/chezmoi.toml
 

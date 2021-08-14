@@ -11,13 +11,13 @@ type NoEncryption struct{}
 func (NoEncryption) Decrypt([]byte) ([]byte, error) { return nil, errNoEncryption }
 
 // DecryptToFile implements Encryption.DecryptToFile.
-func (NoEncryption) DecryptToFile(string, []byte) error { return errNoEncryption }
+func (NoEncryption) DecryptToFile(AbsPath, []byte) error { return errNoEncryption }
 
 // Encrypt implements Encryption.Encrypt.
 func (NoEncryption) Encrypt([]byte) ([]byte, error) { return nil, errNoEncryption }
 
 // EncryptFile implements Encryption.EncryptFile.
-func (NoEncryption) EncryptFile(string) ([]byte, error) { return nil, errNoEncryption }
+func (NoEncryption) EncryptFile(AbsPath) ([]byte, error) { return nil, errNoEncryption }
 
 // EncryptedSuffix implements Encryption.EncryptedSuffix.
 func (NoEncryption) EncryptedSuffix() string { return "" }

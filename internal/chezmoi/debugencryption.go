@@ -30,10 +30,10 @@ func (e *DebugEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
 }
 
 // DecryptToFile implements Encryption.DecryptToFile.
-func (e *DebugEncryption) DecryptToFile(plaintextFilename string, ciphertext []byte) error {
-	err := e.encryption.DecryptToFile(plaintextFilename, ciphertext)
+func (e *DebugEncryption) DecryptToFile(plaintextAbsPath AbsPath, ciphertext []byte) error {
+	err := e.encryption.DecryptToFile(plaintextAbsPath, ciphertext)
 	log.Debug().
-		Str("plaintextFilename", plaintextFilename).
+		Str("plaintextAbsPath", string(plaintextAbsPath)).
 		Bytes("ciphertext", chezmoilog.FirstFewBytes(ciphertext)).
 		Err(err).
 		Msg("DecryptToFile")
@@ -52,10 +52,10 @@ func (e *DebugEncryption) Encrypt(plaintext []byte) ([]byte, error) {
 }
 
 // EncryptFile implements Encryption.EncryptFile.
-func (e *DebugEncryption) EncryptFile(plaintextFilename string) ([]byte, error) {
-	ciphertext, err := e.encryption.EncryptFile(plaintextFilename)
+func (e *DebugEncryption) EncryptFile(plaintextAbsPath AbsPath) ([]byte, error) {
+	ciphertext, err := e.encryption.EncryptFile(plaintextAbsPath)
 	log.Debug().
-		Str("plaintextFilename", plaintextFilename).
+		Str("plaintextAbsPath", string(plaintextAbsPath)).
 		Err(err).
 		Bytes("ciphertext", chezmoilog.FirstFewBytes(ciphertext)).
 		Msg("EncryptFile")
