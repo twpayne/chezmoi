@@ -1,4 +1,5 @@
 [!windows] chmod 755 bin/chezmoi-output-test
+[!windows] chmod 755 bin/generate-color-formats
 [windows] unix2dos bin/chezmoi-output-test.cmd
 
 # test ioreg template function
@@ -33,6 +34,10 @@ stdout go$exe
 chezmoi execute-template '{{ mozillaInstallHash "/Applications/Firefox.app/Contents/MacOS" }}'
 stdout 2656FF1E876E9973
 
+# test the output and fromJson template functions
+[!windows] chezmoi execute-template '{{ $red := output "generate-color-formats" "#ff0000" | fromJson }}{{ $red.rgb.r }}'
+[!windows] stdout '^255$'
+
 # test stat template function
 chezmoi execute-template '{{ (stat ".").isDir }}'
 stdout true
@@ -59,6 +64,39 @@ set out=%*
 set out=%out:\=%
 echo %out%
 endlocal
+-- bin/generate-color-formats --
+#!/bin/sh
+
+case "$1" in
+"#ff0000")
+    cat <<EOF
+{
+  "hex": {
+    "rgb": "ff0000",
+    "bgr": "0000ff",
+    "r": "ff",
+    "g": "00",
+    "b": "00"
+  },
+  "rgb": {
+    "r": 255,
+    "g": 0,
+    "b": 0
+  },
+  "dec": {
+    "r": 1.000,
+    "g": 0.000,
+    "b": 0.000
+  }
+}
+EOF
+    ;;
+*)
+    echo "Usage: $0 <hex-color>"
+    ;;
+esac
+-- golden/expected --
+255
 -- golden/include-abspath --
 $HOME/.include
 -- golden/include-relpath --
