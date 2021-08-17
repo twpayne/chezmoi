@@ -1,3 +1,4 @@
+//go:build !noupgrade && !windows
 // +build !noupgrade,!windows
 
 package cmd
