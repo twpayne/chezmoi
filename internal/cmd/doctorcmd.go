@@ -67,6 +67,9 @@ type dirCheck struct {
 	dirname string
 }
 
+// An executableCheck checks the executable.
+type executableCheck struct{}
+
 // A fileCheck checks that a file exists.
 type fileCheck struct {
 	name       string
@@ -116,6 +119,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			versionStr:  c.versionStr,
 		},
 		&osArchCheck{},
+		&executableCheck{},
 		&fileCheck{
 			name:       "config-file",
 			filename:   string(c.configFileAbsPath),
@@ -317,6 +321,18 @@ func (c *dirCheck) Run() (checkResult, string) {
 		return checkError, fmt.Sprintf("%s: %v", c.dirname, err)
 	}
 	return checkOK, fmt.Sprintf("%s is a directory", c.dirname)
+}
+
+func (c *executableCheck) Name() string {
+	return "executable"
+}
+
+func (c *executableCheck) Run() (checkResult, string) {
+	executable, err := os.Executable()
+	if err != nil {
+		return checkError, err.Error()
+	}
+	return checkOK, executable
 }
 
 func (c *fileCheck) Name() string {
