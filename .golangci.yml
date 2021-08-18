@@ -8,6 +8,7 @@ linters:
   - dupl
   - durationcheck
   - errcheck
+  - errname
   - errorlint
   - exportloopref
   - forbidigo

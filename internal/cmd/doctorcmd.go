@@ -255,7 +255,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 	resultWriter.Flush()
 
 	if worstResult > checkWarning {
-		return ErrExitCode(1)
+		return ExitCodeError(1)
 	}
 
 	return nil

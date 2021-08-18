@@ -92,7 +92,7 @@ func (c *Config) defaultPreAddFunc(targetRelPath chezmoi.RelPath, newSourceState
 		case choice == "no":
 			return chezmoi.Skip
 		case choice == "quit":
-			return ErrExitCode(1)
+			return ExitCodeError(1)
 		case choice == "yes":
 			return nil
 		default:

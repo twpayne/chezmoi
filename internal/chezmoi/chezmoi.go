@@ -81,12 +81,12 @@ var modeTypeNames = map[fs.FileMode]string{
 	fs.ModeCharDevice: "char device",
 }
 
-type errDuplicateTarget struct {
+type duplicateTargetError struct {
 	targetRelPath  RelPath
 	sourceRelPaths []SourceRelPath
 }
 
-func (e *errDuplicateTarget) Error() string {
+func (e *duplicateTargetError) Error() string {
 	sourceRelPathStrs := make([]string, 0, len(e.sourceRelPaths))
 	for _, sourceRelPath := range e.sourceRelPaths {
 		sourceRelPathStrs = append(sourceRelPathStrs, sourceRelPath.String())
@@ -94,30 +94,30 @@ func (e *errDuplicateTarget) Error() string {
 	return fmt.Sprintf("%s: duplicate source state entries (%s)", e.targetRelPath, strings.Join(sourceRelPathStrs, ", "))
 }
 
-type errNotInAbsDir struct {
+type notInAbsDirError struct {
 	pathAbsPath AbsPath
 	dirAbsPath  AbsPath
 }
 
-func (e *errNotInAbsDir) Error() string {
+func (e *notInAbsDirError) Error() string {
 	return fmt.Sprintf("%s: not in %s", e.pathAbsPath, e.dirAbsPath)
 }
 
-type errNotInRelDir struct {
+type notInRelDirError struct {
 	pathRelPath RelPath
 	dirRelPath  RelPath
 }
 
-func (e *errNotInRelDir) Error() string {
+func (e *notInRelDirError) Error() string {
 	return fmt.Sprintf("%s: not in %s", e.pathRelPath, e.dirRelPath)
 }
 
-type errUnsupportedFileType struct {
+type unsupportedFileTypeError struct {
 	absPath AbsPath
 	mode    fs.FileMode
 }
 
-func (e *errUnsupportedFileType) Error() string {
+func (e *unsupportedFileTypeError) Error() string {
 	return fmt.Sprintf("%s: unsupported file type %s", e.absPath, modeTypeName(e.mode))
 }
 

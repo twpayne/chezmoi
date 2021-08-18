@@ -1,5 +1,5 @@
 GO?=go
-GOLANGCI_LINT_VERSION=1.41.1
+GOLANGCI_LINT_VERSION=1.42.0
 
 .PHONY: default
 default: run build test lint format
