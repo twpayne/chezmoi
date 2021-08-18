@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/exec"
 	"os/user"
+	"path/filepath"
 	"reflect"
 	"regexp"
 	"runtime"
@@ -750,6 +751,7 @@ type destAbsPathInfosOptions struct {
 func (c *Config) destAbsPathInfos(sourceState *chezmoi.SourceState, args []string, options destAbsPathInfosOptions) (map[chezmoi.AbsPath]fs.FileInfo, error) {
 	destAbsPathInfos := make(map[chezmoi.AbsPath]fs.FileInfo)
 	for _, arg := range args {
+		arg = filepath.Clean(arg)
 		destAbsPath, err := chezmoi.NewAbsPathFromExtPath(arg, c.homeDirAbsPath)
 		if err != nil {
 			return nil, err
