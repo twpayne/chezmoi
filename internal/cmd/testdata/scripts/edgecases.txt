@@ -29,6 +29,11 @@ symlink $HOME/.chezmoi -> $CHEZMOISOURCEDIR
 chezmoi apply --source=$HOME${/}.chezmoi
 cmp $HOME/.file golden/.file
 
+# test that adding a directory ending in a slash only adds the directory once
+mkdir $HOME/.dir
+chezmoi add $HOME${/}.dir/
+! exists $CHEZMOISOURCEDIR/dot_dir/dot_dir
+
 -- golden/.file --
 # contents of .file
 -- home2/user/.local/share/chezmoi/dot_file --
