@@ -49,9 +49,11 @@
   * [Detect Windows Subsystem for Linux (WSL)](#detect-windows-subsystem-for-linux-wsl)
   * [Run a PowerShell script as admin on Windows](#run-a-powershell-script-as-admin-on-windows)
 * [Use chezmoi with GitHub Codespaces, Visual Studio Codespaces, or Visual Studio Code Remote - Containers](#use-chezmoi-with-github-codespaces-visual-studio-codespaces-or-visual-studio-code-remote---containers)
-* [Use custom tools](#use-custom-tools)
-  * [Customize the `diff` command](#customize-the-diff-command)
-  * [Use a merge tool other than vimdiff](#use-a-merge-tool-other-than-vimdiff)
+* [Customize chezmoi](#customize-chezmoi)
+  * [Don't show scripts in the diff output](#dont-show-scripts-in-the-diff-output)
+  * [Customize the diff pager](#customize-the-diff-pager)
+  * [Use a custom diff tool](#use-a-custom-diff-tool)
+  * [Use a custom merge tool](#use-a-custom-merge-tool)
 * [Migrating to chezmoi from another dotfile manager](#migrating-to-chezmoi-from-another-dotfile-manager)
   * [Migrate from a dotfile manager that uses symlinks](#migrate-from-a-dotfile-manager-that-uses-symlinks)
 * [Migrate away from chezmoi](#migrate-away-from-chezmoi)
@@ -1349,12 +1351,24 @@ sudo apt install -y vim-gtk
 {{- end -}}
 ```
 
-## Use custom tools
+## Customize chezmoi
 
-### Customize the `diff` command
+### Don't show scripts in the diff output
 
-By default, chezmoi uses a built-in diff. You can change the format, and/or pipe
-the output into a pager of your choice. For example, to use
+By default, `chezmoi diff` will show all changes, including the contents of
+scripts that will be run. You can exclude scripts from the diff output by
+setting the `diff.exclude` configuration variable in your configuration file,
+for example:
+
+```toml
+[diff]
+    exclude = ["scripts"]
+```
+
+### Customize the diff pager
+
+You can change the diff format, and/or pipe the output into a pager of your
+choice by setting `diff.pager` configuration variable. For example, to use
 [`diff-so-fancy`](https://github.com/so-fancy/diff-so-fancy) specify:
 
 ```toml
@@ -1362,18 +1376,37 @@ the output into a pager of your choice. For example, to use
     pager = "diff-so-fancy"
 ```
 
-The pager can be disabled using the `--no-pager` flag.
+The pager can be disabled using the `--no-pager` flag or by setting `diff.pager`
+to an empty string.
 
-### Use a merge tool other than vimdiff
+### Use a custom diff tool
 
-By default, chezmoi uses vimdiff, but you can use any merge tool of your choice.
-In your config file, specify the command and args to use. For example, to use
-neovim's diff mode specify:
+By default, chezmoi uses a built-in diff. You can use a custom tool by setting
+the `diff.command` and `diff.args` configuration variables. The elements of
+`diff.args` are interpreted as templates with the variables `.Destination` and
+`.Target` containing filenames of the file in the destination state and the
+target state respectively. For example, to use [meld](https://meldmerge.org/),
+specify:
+
+```toml
+[diff]
+    command = "meld"
+    args = ["--diff", "{{ .Destination }}", "{{ .Target }}"]
+```
+
+### Use a custom merge tool
+
+By default, chezmoi uses vimdiff. You can use a custom tool by setting the
+`merge.command` and `merge.args` configuration variables. The elements of
+`merge.args` are interprested as templates with the variables `.Destination`,
+`.Source`, and `.Target` containing filenames of the file in the destination
+state, source state, and target state respectively. For example, to use
+[neovim's diff mode](https://neovim.io/doc/user/diff.html), specify:
 
 ```toml
 [merge]
     command = "nvim"
-    args = "-d"
+    args = ["-d", "{{ .Destination }}", "{{ .Source }}", "{{ .Target }}"]
 ```
 
 ## Migrating to chezmoi from another dotfile manager
