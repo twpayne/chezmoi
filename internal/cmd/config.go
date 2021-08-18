@@ -521,7 +521,7 @@ func (c *Config) applyArgs(targetSystem chezmoi.System, targetDirAbsPath chezmoi
 		}
 	}
 	if keptGoingAfterErr {
-		return ErrExitCode(1)
+		return ExitCodeError(1)
 	}
 
 	return nil
@@ -611,7 +611,7 @@ func (c *Config) defaultPreApplyFunc(targetRelPath chezmoi.RelPath, targetEntryS
 		case choice == "skip":
 			return chezmoi.Skip
 		case choice == "quit":
-			return ErrExitCode(1)
+			return ExitCodeError(1)
 		default:
 			return nil
 		}

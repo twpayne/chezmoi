@@ -77,7 +77,7 @@ func NewActualStateEntry(system System, absPath AbsPath, info fs.FileInfo, err e
 			}),
 		}, nil
 	default:
-		return nil, &errUnsupportedFileType{
+		return nil, &unsupportedFileTypeError{
 			absPath: absPath,
 			mode:    info.Mode(),
 		}

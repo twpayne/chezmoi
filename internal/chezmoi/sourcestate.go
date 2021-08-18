@@ -670,7 +670,7 @@ func (s *SourceState) Read() error {
 			allSourceStateEntries[targetRelPath] = append(allSourceStateEntries[targetRelPath], sourceStateEntry)
 			return nil
 		default:
-			return &errUnsupportedFileType{
+			return &unsupportedFileTypeError{
 				absPath: sourceAbsPath,
 				mode:    info.Mode(),
 			}
@@ -746,7 +746,7 @@ func (s *SourceState) Read() error {
 		sort.Slice(sourceRelPaths, func(i, j int) bool {
 			return sourceRelPaths[i].relPath < sourceRelPaths[j].relPath
 		})
-		err = multierr.Append(err, &errDuplicateTarget{
+		err = multierr.Append(err, &duplicateTargetError{
 			targetRelPath:  targetRelPath,
 			sourceRelPaths: sourceRelPaths,
 		})
@@ -880,7 +880,7 @@ func (s *SourceState) addTemplatesDir(templatesDirAbsPath AbsPath) error {
 		case info.IsDir():
 			return nil
 		default:
-			return &errUnsupportedFileType{
+			return &unsupportedFileTypeError{
 				absPath: templateAbsPath,
 				mode:    info.Mode(),
 			}

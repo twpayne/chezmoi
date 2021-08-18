@@ -52,11 +52,11 @@ var (
 	helps map[string]*help
 )
 
-// An ErrExitCode indicates the the main program should exit with the given
+// An ExitCodeError indicates the the main program should exit with the given
 // code.
-type ErrExitCode int
+type ExitCodeError int
 
-func (e ErrExitCode) Error() string { return "" }
+func (e ExitCodeError) Error() string { return "" }
 
 // A VersionInfo contains a version.
 type VersionInfo struct {
@@ -88,7 +88,7 @@ func Main(versionInfo VersionInfo, args []string) int {
 		if s := err.Error(); s != "" {
 			fmt.Fprintf(os.Stderr, "chezmoi: %s\n", s)
 		}
-		errExitCode := ErrExitCode(1)
+		errExitCode := ExitCodeError(1)
 		_ = errors.As(err, &errExitCode)
 		return int(errExitCode)
 	}

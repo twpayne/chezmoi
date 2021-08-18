@@ -73,7 +73,7 @@ func (p AbsPath) TrimDirPrefix(dirPrefixAbsPath AbsPath) (RelPath, error) {
 		dirAbsPath += "/"
 	}
 	if !strings.HasPrefix(string(p), string(dirAbsPath)) {
-		return "", &errNotInAbsDir{
+		return "", &notInAbsDirError{
 			pathAbsPath: p,
 			dirAbsPath:  dirPrefixAbsPath,
 		}
@@ -128,7 +128,7 @@ func (p RelPath) Split() (RelPath, RelPath) {
 // TrimDirPrefix trims prefix from p.
 func (p RelPath) TrimDirPrefix(dirPrefix RelPath) (RelPath, error) {
 	if !p.HasDirPrefix(dirPrefix) {
-		return "", &errNotInRelDir{
+		return "", &notInRelDirError{
 			pathRelPath: p,
 			dirRelPath:  dirPrefix,
 		}
