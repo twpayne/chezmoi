@@ -161,7 +161,7 @@ type AddOptions struct {
 
 // Add adds destAbsPathInfos to s.
 func (s *SourceState) Add(sourceSystem System, persistentState PersistentState, destSystem System, destAbsPathInfos map[AbsPath]fs.FileInfo, options *AddOptions) error {
-	type update struct {
+	type sourceUpdate struct {
 		destAbsPath    AbsPath
 		entryState     *EntryState
 		sourceRelPaths []SourceRelPath
@@ -175,7 +175,7 @@ func (s *SourceState) Add(sourceSystem System, persistentState PersistentState, 
 		return destAbsPaths[i] < destAbsPaths[j]
 	})
 
-	sourceUpdates := make([]update, 0, len(destAbsPathInfos))
+	sourceUpdates := make([]sourceUpdate, 0, len(destAbsPathInfos))
 	newSourceStateEntries := make(map[SourceRelPath]SourceStateEntry)
 	newSourceStateEntriesByTargetRelPath := make(map[RelPath]SourceStateEntry)
 DESTABSPATH:
@@ -216,7 +216,7 @@ DESTABSPATH:
 		if err != nil {
 			return err
 		}
-		update := update{
+		update := sourceUpdate{
 			destAbsPath:    destAbsPath,
 			entryState:     entryState,
 			sourceRelPaths: []SourceRelPath{sourceEntryRelPath},
@@ -255,6 +255,28 @@ DESTABSPATH:
 		newSourceStateEntriesByTargetRelPath[targetRelPath] = newSourceStateEntry
 
 		sourceUpdates = append(sourceUpdates, update)
+
+		if _, ok := newSourceStateEntry.(*SourceStateDir); ok {
+			dotKeepFileRelPath := sourceEntryRelPath.Join(NewSourceRelPath(".keep"))
+			dotKeepFileTargetStateEntry := &TargetStateFile{
+				empty: true,
+				perm:  0o666,
+			}
+			dotKeepFileEntryState, err := dotKeepFileTargetStateEntry.EntryState(s.umask)
+			if err != nil {
+				return err
+			}
+
+			dotKeepFileSourceUpdate := sourceUpdate{
+				entryState:     dotKeepFileEntryState,
+				sourceRelPaths: []SourceRelPath{dotKeepFileRelPath},
+			}
+			sourceUpdates = append(sourceUpdates, dotKeepFileSourceUpdate)
+
+			newSourceStateEntries[dotKeepFileRelPath] = &SourceStateFile{
+				targetStateEntry: dotKeepFileTargetStateEntry,
+			}
+		}
 	}
 
 	sourceEntries := make(map[RelPath]SourceStateEntry)
@@ -275,7 +297,7 @@ DESTABSPATH:
 			}
 			sourceRelPath := sourceStateEntry.SourceRelPath()
 			sourceEntries[sourceRelPath.RelPath()] = &SourceStateRemove{}
-			update := update{
+			update := sourceUpdate{
 				destAbsPath: s.destDirAbsPath.Join(targetRelPath),
 				entryState: &EntryState{
 					Type: EntryStateTypeRemove,
@@ -299,8 +321,10 @@ DESTABSPATH:
 				return err
 			}
 		}
-		if err := persistentStateSet(persistentState, EntryStateBucket, []byte(sourceUpdate.destAbsPath), sourceUpdate.entryState); err != nil {
-			return err
+		if sourceUpdate.destAbsPath != "" {
+			if err := persistentStateSet(persistentState, EntryStateBucket, []byte(sourceUpdate.destAbsPath), sourceUpdate.entryState); err != nil {
+				return err
+			}
 		}
 	}
 
