@@ -87,7 +87,7 @@ documentation, and shell completions.
 | Linux      | `amd64`, `arm`, `arm64`, `i386`, `ppc64`, `ppc64le` | [`tar.gz`](https://github.com/twpayne/chezmoi/releases/latest) |
 | macOS      | `amd64`, `arm64`                                    | [`tar.gz`](https://github.com/twpayne/chezmoi/releases/latest) |
 | OpenBSD    | `amd64`, `arm`, `arm64`, `i386`                     | [`tar.gz`](https://github.com/twpayne/chezmoi/releases/latest) |
-| Windows    | `amd64`, `i386`                                     | [`zip`](https://github.com/twpayne/chezmoi/releases/latest)    |
+| Windows    | `amd64`, `arm`, `i386`                              | [`zip`](https://github.com/twpayne/chezmoi/releases/latest)    |
 
 ## All pre-built Linux packages and binaries
 
@@ -102,4 +102,4 @@ Download, build, and install chezmoi for your system:
 $ go install github.com/twpayne/chezmoi@latest
 ```
 
-Building chezmoi requires Go 1.16 or later.
+Building chezmoi requires Go 1.17 or later.

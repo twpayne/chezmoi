@@ -23,6 +23,7 @@ var (
 		regexp.MustCompile(`\Aassets/chezmoi\.io/themes/book\z`),
 		regexp.MustCompile(`\Aassets/scripts/install\.ps1\z`),
 		regexp.MustCompile(`\Acompletions/chezmoi\.ps1\z`),
+		regexp.MustCompile(`\Adist\z`),
 	}
 	crlfLineEndingRx     = regexp.MustCompile(`\r\z`)
 	trailingWhitespaceRx = regexp.MustCompile(`\s+\z`)

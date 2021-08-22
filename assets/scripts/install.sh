@@ -154,6 +154,7 @@ check_goos_goarch() {
 	openbsd/arm64) return 0 ;;
 	windows/386) return 0 ;;
 	windows/amd64) return 0 ;;
+	windows/arm) return 0 ;;
 	*)
 		echo "$1: unsupported platform" 1>&2
 		return 1

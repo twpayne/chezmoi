@@ -20,7 +20,7 @@ chezmoi's source code.
 
 ## Developing locally
 
-chezmoi requires Go 1.16 or later.
+chezmoi requires Go 1.17 or later.
 
 chezmoi is a standard Go project, using standard Go tooling, with a few extra
 tools. Ensure that these extra tools are installed with:

@@ -370,7 +370,7 @@ lock include `diff`, `status`, and `verify`.
 
 ## I'm getting errors trying to build chezmoi from source
 
-chezmoi requires Go version 1.16 or later. You can check the version of Go with:
+chezmoi requires Go version 1.17 or later. You can check the version of Go with:
 
 ```console
 $ go version
