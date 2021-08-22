@@ -10,6 +10,10 @@ import (
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
+type removeCmdConfig struct {
+	recursive bool
+}
+
 func (c *Config) newRemoveCmd() *cobra.Command {
 	removeCmd := &cobra.Command{
 		Use:     "remove target...",
@@ -26,12 +30,16 @@ func (c *Config) newRemoveCmd() *cobra.Command {
 		},
 	}
 
+	flags := removeCmd.Flags()
+	flags.BoolVarP(&c.remove.recursive, "recursive", "r", c.remove.recursive, "Recurse into subdirectories")
+
 	return removeCmd
 }
 
 func (c *Config) runRemoveCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
 	targetRelPaths, err := c.targetRelPaths(sourceState, args, targetRelPathsOptions{
 		mustBeInSourceState: true,
+		recursive:           c.remove.recursive,
 	})
 	if err != nil {
 		return err
