@@ -10,13 +10,43 @@ import (
 func TestEnglishList(t *testing.T) {
 	for _, tc := range []struct {
 		ss       []string
+		expected string
+	}{
+		{
+			expected: "",
+		},
+		{
+			ss:       []string{"first"},
+			expected: "first",
+		},
+		{
+			ss:       []string{"first", "second"},
+			expected: "first and second",
+		},
+		{
+			ss:       []string{"first", "second", "third"},
+			expected: "first, second, and third",
+		},
+		{
+			ss:       []string{"first", "second", "third", "fourth"},
+			expected: "first, second, third, and fourth",
+		},
+	} {
+		actual := englishList(tc.ss)
+		assert.Equal(t, tc.expected, actual)
+	}
+}
+
+func TestEnglishListWithNoun(t *testing.T) {
+	for _, tc := range []struct {
+		ss       []string
 		singular string
 		plural   string
 		expected string
 	}{
 		{
 			singular: "item",
-			expected: "zero items",
+			expected: "no items",
 		},
 		{
 			ss:       []string{"first"},
@@ -39,6 +69,30 @@ func TestEnglishList(t *testing.T) {
 			expected: "first, second, third, and fourth items",
 		},
 		{
+			singular: "entry",
+			expected: "no entries",
+		},
+		{
+			ss:       []string{"first"},
+			singular: "entry",
+			expected: "first entry",
+		},
+		{
+			ss:       []string{"first", "second"},
+			singular: "entry",
+			expected: "first and second entries",
+		},
+		{
+			ss:       []string{"first", "second", "third"},
+			singular: "entry",
+			expected: "first, second, and third entries",
+		},
+		{
+			ss:       []string{"first", "second", "third", "fourth"},
+			singular: "entry",
+			expected: "first, second, third, and fourth entries",
+		},
+		{
 			ss:       []string{"first"},
 			singular: "person",
 			plural:   "people",
@@ -51,7 +105,7 @@ func TestEnglishList(t *testing.T) {
 			expected: "first, second, and third people",
 		},
 	} {
-		actual := englishList(tc.ss, tc.singular, tc.plural)
+		actual := englishListWithNoun(tc.ss, tc.singular, tc.plural)
 		assert.Equal(t, tc.expected, actual)
 	}
 }

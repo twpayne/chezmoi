@@ -80,7 +80,7 @@ func (c *Config) defaultPreAddFunc(targetRelPath chezmoi.RelPath, newSourceState
 	if len(removedAttributes) == 0 {
 		return nil
 	}
-	removedAttributesStr := englishList(removedAttributes, "attribute", "")
+	removedAttributesStr := englishListWithNoun(removedAttributes, "attribute", "")
 
 	for {
 		switch choice, err := c.promptChoice(fmt.Sprintf("adding %s would remove %s, continue", targetRelPath, removedAttributesStr), yesNoAllQuit); {
