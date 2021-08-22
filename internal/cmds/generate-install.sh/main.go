@@ -81,7 +81,7 @@ func run() error {
 	}
 
 	// Exclude unsupported platforms.
-	delete(supportedPlatforms, newPlatform("windows", "arm")) // Not supported by goreleaser.
+	delete(supportedPlatforms, newPlatform("windows", "arm64"))
 
 	// Build set of platforms.
 	allPlatforms := make(map[platform]struct{})
