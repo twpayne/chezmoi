@@ -5,6 +5,10 @@ mksourcedir golden
 chezmoi add --create $HOME${/}.create
 cmp $CHEZMOISOURCEDIR/create_dot_create golden/create_dot_create
 
+# test that adding a directory creates a .keep file
+chezmoi add --recursive=false $HOME${/}.dir
+exists $CHEZMOISOURCEDIR/dot_dir/.keep
+
 # test adding a file in a directory
 chezmoi add $HOME${/}.dir/file
 cmp $CHEZMOISOURCEDIR/dot_dir/file golden/dot_dir/file
