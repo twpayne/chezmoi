@@ -383,17 +383,20 @@ func (c *suspiciousEntriesCheck) Run() (checkResult, string) {
 			return err
 		}
 		if chezmoi.SuspiciousSourceDirEntry(filepath.Base(path), info) {
-			suspiciousEntries = append(suspiciousEntries, path)
+			relPath, err := filepath.Rel(c.dirname, path)
+			if err != nil {
+				return err
+			}
+			suspiciousEntries = append(suspiciousEntries, relPath)
 		}
 		return nil
 	}); err != nil {
 		return checkError, err.Error()
 	}
 	if len(suspiciousEntries) > 0 {
-		return checkWarning, fmt.Sprintf("found suspicious entries in %s: %s", c.dirname, strings.Join(suspiciousEntries, ", "))
+		return checkWarning, fmt.Sprintf("%s: %s", c.dirname, englishList(suspiciousEntries))
 	}
-
-	return checkOK, fmt.Sprintf("no suspicious entries found in %s", c.dirname)
+	return checkOK, fmt.Sprintf("%s: no suspicious entries", c.dirname)
 }
 
 func (c *versionCheck) Name() string {

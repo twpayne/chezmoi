@@ -30,21 +30,34 @@ var (
 	}
 )
 
-// englishList returns ss formatted as an English list, including an Oxford
+// englishList returns ss formatted as a list, including an Oxford comma.
+func englishList(ss []string) string {
+	switch n := len(ss); n {
+	case 0:
+		return ""
+	case 1:
+		return ss[0]
+	case 2:
+		return ss[0] + " and " + ss[1]
+	default:
+		return strings.Join(ss[:n-1], ", ") + ", and " + ss[n-1]
+	}
+}
+
+// englishListWithNoun returns ss formatted as an English list, including an Oxford
 // comma.
-func englishList(ss []string, singular, plural string) string {
+func englishListWithNoun(ss []string, singular, plural string) string {
+	if len(ss) == 1 {
+		return ss[0] + " " + singular
+	}
 	if plural == "" {
-		plural = singular + "s"
+		plural = pluralize(singular)
 	}
 	switch n := len(ss); n {
 	case 0:
-		return "zero " + plural
-	case 1:
-		return ss[0] + " " + singular
-	case 2:
-		return ss[0] + " and " + ss[1] + " " + plural
+		return "no " + plural
 	default:
-		return strings.Join(ss[:n-1], ", ") + ", and " + ss[n-1] + " " + plural
+		return englishList(ss) + " " + plural
 	}
 }
 
@@ -95,6 +108,14 @@ func parseBool(str string) (bool, error) {
 	default:
 		return strconv.ParseBool(str)
 	}
+}
+
+// pluralize returns the English plural form of singular.
+func pluralize(singular string) string {
+	if strings.HasSuffix(singular, "y") {
+		return strings.TrimSuffix(singular, "y") + "ies"
+	}
+	return singular + "s"
 }
 
 // titleize returns s with its first rune titleized.
