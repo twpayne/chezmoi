@@ -1,6 +1,4 @@
-# [Choice] Go version: 1, 1.15, 1.14
-# FIXME remove dev- when 1.16 container is published
-ARG VARIANT=dev-1.16
+ARG VARIANT=dev-1.17
 FROM mcr.microsoft.com/vscode/devcontainers/go:${VARIANT}
 
 # [Optional] Uncomment this section to install additional OS packages.

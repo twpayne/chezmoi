@@ -102,4 +102,4 @@ Download, build, and install chezmoi for your system:
 $ go install github.com/twpayne/chezmoi@latest
 ```
 
-Building chezmoi requires Go 1.16 or later.
+Building chezmoi requires Go 1.17 or later.
