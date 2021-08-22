@@ -22,7 +22,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" integrity="sha256-lYzqeCdiHW&#43;8s6zwkTRMPkTj0qlCj5w8OLues3v4xF0=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.caa923a4aaac68b09a6d8f44ee0e91cddb3fc6c64271a1cb79fc31916c6a0657.js" integrity="sha256-yqkjpKqsaLCabY9E7g6Rzds/xsZCcaHLefwxkWxqBlc=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.f3b52a56bca053d20dc667eeeb1a96b181b97d36f68013e1c8542f160138c18d.js" integrity="sha256-87UqVrygU9INxmfu6xqWsYG5fTb2gBPhyFQvFgE4wY0=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -473,6 +473,12 @@ and supports all formats supported by
 <a href="https://github.com/toml-lang/toml">TOML</a>, <a href="https://yaml.org/">YAML</a>, macOS
 property file format, and <a href="https://github.com/hashicorp/hcl">HCL</a>. The basename
 of the config file is <code>chezmoi</code>, and the first config file found is used.</p>
+<p>In most installations, the config file will be read from
+<code>~/.config/chezmoi/chezmoi.&lt;format&gt;</code>, where <code>&lt;format&gt;</code> is one of <code>json</code>, <code>toml</code>,
+or <code>yaml</code>. The config file can be set explicitly with the <code>--config</code> command
+line option. By default, the format is detected based on the extension of the
+config file name, but can be overridden with the <code>--config-format</code> command line
+option.</p>
 <h3 id="variables">
   Variables
   <a class="anchor" href="#variables">#</a>
@@ -1555,7 +1561,8 @@ attributes and their abbreviations are:</p>
 </tbody>
 </table>
 <p>Multiple attributes modifications may be specified by separating them with a
-comma (<code>,</code>).</p>
+comma (<code>,</code>). If you use the <code>-</code><em>attr</em> form then you must put <em>attributes</em> after
+a <code>--</code> to prevent chezmoi from interpreting <code>-</code>*attr as an option.</p>
 <h4 id="chattr-examples">
   <code>chattr</code> examples
   <a class="anchor" href="#chattr-examples">#</a>
@@ -1563,6 +1570,7 @@ comma (<code>,</code>).</p>
 <pre><code class="language-console" data-lang="console">$ chezmoi chattr template ~/.bashrc
 $ chezmoi chattr noempty ~/.profile
 $ chezmoi chattr private,template ~/.netrc
+$ chezmoi chattr -- -x ~/.zshrc
 </code></pre><h3 id="completion-shell">
   <code>completion</code> <em>shell</em>
   <a class="anchor" href="#completion-shell">#</a>

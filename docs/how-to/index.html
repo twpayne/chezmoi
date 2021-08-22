@@ -16,7 +16,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" integrity="sha256-lYzqeCdiHW&#43;8s6zwkTRMPkTj0qlCj5w8OLues3v4xF0=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.caa923a4aaac68b09a6d8f44ee0e91cddb3fc6c64271a1cb79fc31916c6a0657.js" integrity="sha256-yqkjpKqsaLCabY9E7g6Rzds/xsZCcaHLefwxkWxqBlc=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.f3b52a56bca053d20dc667eeeb1a96b181b97d36f68013e1c8542f160138c18d.js" integrity="sha256-87UqVrygU9INxmfu6xqWsYG5fTb2gBPhyFQvFgE4wY0=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -190,10 +190,12 @@ https://github.com/alex-shpak/hugo-book
       </ul>
     </li>
     <li><a href="#use-chezmoi-with-github-codespaces-visual-studio-codespaces-or-visual-studio-code-remote---containers">Use chezmoi with GitHub Codespaces, Visual Studio Codespaces, or Visual Studio Code Remote - Containers</a></li>
-    <li><a href="#use-custom-tools">Use custom tools</a>
+    <li><a href="#customize-chezmoi">Customize chezmoi</a>
       <ul>
-        <li><a href="#customize-the-diff-command">Customize the <code>diff</code> command</a></li>
-        <li><a href="#use-a-merge-tool-other-than-vimdiff">Use a merge tool other than vimdiff</a></li>
+        <li><a href="#dont-show-scripts-in-the-diff-output">Don&rsquo;t show scripts in the diff output</a></li>
+        <li><a href="#customize-the-diff-pager">Customize the diff pager</a></li>
+        <li><a href="#use-a-custom-diff-tool">Use a custom diff tool</a></li>
+        <li><a href="#use-a-custom-merge-tool">Use a custom merge tool</a></li>
       </ul>
     </li>
     <li><a href="#migrating-to-chezmoi-from-another-dotfile-manager">Migrating to chezmoi from another dotfile manager</a>
@@ -1169,30 +1171,57 @@ needed. For example, to install <code>vim-gtk</code> on Linux but not in Codespa
 #!/bin/sh
 sudo apt install -y vim-gtk
 {{- end -}}
-</code></pre><h2 id="use-custom-tools">
-  Use custom tools
-  <a class="anchor" href="#use-custom-tools">#</a>
+</code></pre><h2 id="customize-chezmoi">
+  Customize chezmoi
+  <a class="anchor" href="#customize-chezmoi">#</a>
 </h2>
-<h3 id="customize-the-diff-command">
-  Customize the <code>diff</code> command
-  <a class="anchor" href="#customize-the-diff-command">#</a>
+<h3 id="dont-show-scripts-in-the-diff-output">
+  Don&rsquo;t show scripts in the diff output
+  <a class="anchor" href="#dont-show-scripts-in-the-diff-output">#</a>
 </h3>
-<p>By default, chezmoi uses a built-in diff. You can change the format, and/or pipe
-the output into a pager of your choice. For example, to use
+<p>By default, <code>chezmoi diff</code> will show all changes, including the contents of
+scripts that will be run. You can exclude scripts from the diff output by
+setting the <code>diff.exclude</code> configuration variable in your configuration file,
+for example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">diff</span>]
+    <span style="color:#a6e22e">exclude</span> = [<span style="color:#e6db74">&#34;scripts&#34;</span>]
+</code></pre></div><h3 id="customize-the-diff-pager">
+  Customize the diff pager
+  <a class="anchor" href="#customize-the-diff-pager">#</a>
+</h3>
+<p>You can change the diff format, and/or pipe the output into a pager of your
+choice by setting <code>diff.pager</code> configuration variable. For example, to use
 <a href="https://github.com/so-fancy/diff-so-fancy"><code>diff-so-fancy</code></a> specify:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">diff</span>]
     <span style="color:#a6e22e">pager</span> = <span style="color:#e6db74">&#34;diff-so-fancy&#34;</span>
-</code></pre></div><p>The pager can be disabled using the <code>--no-pager</code> flag.</p>
-<h3 id="use-a-merge-tool-other-than-vimdiff">
-  Use a merge tool other than vimdiff
-  <a class="anchor" href="#use-a-merge-tool-other-than-vimdiff">#</a>
+</code></pre></div><p>The pager can be disabled using the <code>--no-pager</code> flag or by setting <code>diff.pager</code>
+to an empty string.</p>
+<h3 id="use-a-custom-diff-tool">
+  Use a custom diff tool
+  <a class="anchor" href="#use-a-custom-diff-tool">#</a>
 </h3>
-<p>By default, chezmoi uses vimdiff, but you can use any merge tool of your choice.
-In your config file, specify the command and args to use. For example, to use
-neovim&rsquo;s diff mode specify:</p>
+<p>By default, chezmoi uses a built-in diff. You can use a custom tool by setting
+the <code>diff.command</code> and <code>diff.args</code> configuration variables. The elements of
+<code>diff.args</code> are interpreted as templates with the variables <code>.Destination</code> and
+<code>.Target</code> containing filenames of the file in the destination state and the
+target state respectively. For example, to use <a href="https://meldmerge.org/">meld</a>,
+specify:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">diff</span>]
+    <span style="color:#a6e22e">command</span> = <span style="color:#e6db74">&#34;meld&#34;</span>
+    <span style="color:#a6e22e">args</span> = [<span style="color:#e6db74">&#34;--diff&#34;</span>, <span style="color:#e6db74">&#34;{{ .Destination }}&#34;</span>, <span style="color:#e6db74">&#34;{{ .Target }}&#34;</span>]
+</code></pre></div><h3 id="use-a-custom-merge-tool">
+  Use a custom merge tool
+  <a class="anchor" href="#use-a-custom-merge-tool">#</a>
+</h3>
+<p>By default, chezmoi uses vimdiff. You can use a custom tool by setting the
+<code>merge.command</code> and <code>merge.args</code> configuration variables. The elements of
+<code>merge.args</code> are interprested as templates with the variables <code>.Destination</code>,
+<code>.Source</code>, and <code>.Target</code> containing filenames of the file in the destination
+state, source state, and target state respectively. For example, to use
+<a href="https://neovim.io/doc/user/diff.html">neovim&rsquo;s diff mode</a>, specify:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">merge</span>]
     <span style="color:#a6e22e">command</span> = <span style="color:#e6db74">&#34;nvim&#34;</span>
-    <span style="color:#a6e22e">args</span> = <span style="color:#e6db74">&#34;-d&#34;</span>
+    <span style="color:#a6e22e">args</span> = [<span style="color:#e6db74">&#34;-d&#34;</span>, <span style="color:#e6db74">&#34;{{ .Destination }}&#34;</span>, <span style="color:#e6db74">&#34;{{ .Source }}&#34;</span>, <span style="color:#e6db74">&#34;{{ .Target }}&#34;</span>]
 </code></pre></div><h2 id="migrating-to-chezmoi-from-another-dotfile-manager">
   Migrating to chezmoi from another dotfile manager
   <a class="anchor" href="#migrating-to-chezmoi-from-another-dotfile-manager">#</a>
@@ -1347,10 +1376,12 @@ so you can write scripts around chezmoi.</li>
       </ul>
     </li>
     <li><a href="#use-chezmoi-with-github-codespaces-visual-studio-codespaces-or-visual-studio-code-remote---containers">Use chezmoi with GitHub Codespaces, Visual Studio Codespaces, or Visual Studio Code Remote - Containers</a></li>
-    <li><a href="#use-custom-tools">Use custom tools</a>
+    <li><a href="#customize-chezmoi">Customize chezmoi</a>
       <ul>
-        <li><a href="#customize-the-diff-command">Customize the <code>diff</code> command</a></li>
-        <li><a href="#use-a-merge-tool-other-than-vimdiff">Use a merge tool other than vimdiff</a></li>
+        <li><a href="#dont-show-scripts-in-the-diff-output">Don&rsquo;t show scripts in the diff output</a></li>
+        <li><a href="#customize-the-diff-pager">Customize the diff pager</a></li>
+        <li><a href="#use-a-custom-diff-tool">Use a custom diff tool</a></li>
+        <li><a href="#use-a-custom-merge-tool">Use a custom merge tool</a></li>
       </ul>
     </li>
     <li><a href="#migrating-to-chezmoi-from-another-dotfile-manager">Migrating to chezmoi from another dotfile manager</a>
