@@ -857,7 +857,8 @@ attributes and their abbreviations are:
 | `template`   | `t`          |
 
 Multiple attributes modifications may be specified by separating them with a
-comma (`,`).
+comma (`,`). If you use the `-`*attr* form then you must put *attributes* after
+a `--` to prevent chezmoi from interpreting `-`*attr as an option.
 
 #### `chattr` examples
 
@@ -865,6 +866,7 @@ comma (`,`).
 $ chezmoi chattr template ~/.bashrc
 $ chezmoi chattr noempty ~/.profile
 $ chezmoi chattr private,template ~/.netrc
+$ chezmoi chattr -- -x ~/.zshrc
 ```
 
 ### `completion` *shell*
