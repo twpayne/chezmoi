@@ -120,6 +120,7 @@ type Config struct {
 	managed         managedCmdConfig
 	purge           purgeCmdConfig
 	reAdd           reAddCmdConfig
+	remove          removeCmdConfig
 	secretKeyring   secretKeyringCmdConfig
 	state           stateCmdConfig
 	status          statusCmdConfig

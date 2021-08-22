@@ -10,6 +10,10 @@ import (
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
+type removeCmdConfig struct {
+	recursive bool
+}
+
 func (c *Config) newRemoveCmd() *cobra.Command {
 	removeCmd := &cobra.Command{
 		Use:     "remove target...",
@@ -22,8 +26,12 @@ func (c *Config) newRemoveCmd() *cobra.Command {
 		Annotations: map[string]string{
 			modifiesDestinationDirectory: "true",
 			modifiesSourceDirectory:      "true",
+			persistentStateMode:          persistentStateModeReadWrite,
 		},
 	}
+
+	flags := removeCmd.Flags()
+	flags.BoolVarP(&c.remove.recursive, "recursive", "r", c.remove.recursive, "Recurse into subdirectories")
 
 	return removeCmd
 }
@@ -31,6 +39,7 @@ func (c *Config) newRemoveCmd() *cobra.Command {
 func (c *Config) runRemoveCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
 	targetRelPaths, err := c.targetRelPaths(sourceState, args, targetRelPathsOptions{
 		mustBeInSourceState: true,
+		recursive:           c.remove.recursive,
 	})
 	if err != nil {
 		return err
@@ -58,6 +67,9 @@ func (c *Config) runRemoveCmd(cmd *cobra.Command, args []string, sourceState *ch
 			return err
 		}
 		if err := c.sourceSystem.RemoveAll(sourceAbsPath); err != nil && !errors.Is(err, fs.ErrNotExist) {
+			return err
+		}
+		if err := c.persistentState.Delete(chezmoi.EntryStateBucket, []byte(destAbsPath)); err != nil {
 			return err
 		}
 	}
