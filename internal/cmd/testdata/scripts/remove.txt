@@ -2,9 +2,12 @@ mkhomedir
 mksourcedir
 
 # test that chezmoi remove file removes a file
+chezmoi apply --force
 exists $HOME/.file
 chezmoi remove --force $HOME${/}.file
 ! exists $HOME/.file
+chezmoi state get --bucket=entryState --key=$WORK/home/user/.file
+! stdout .
 
 # test that chezmoi remove dir removes a directory
 exists $HOME/.dir
