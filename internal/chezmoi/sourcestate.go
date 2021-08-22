@@ -258,23 +258,21 @@ DESTABSPATH:
 
 		if _, ok := newSourceStateEntry.(*SourceStateDir); ok {
 			dotKeepFileRelPath := sourceEntryRelPath.Join(NewSourceRelPath(".keep"))
-			dotKeepFileTargetStateEntry := &TargetStateFile{
-				empty: true,
-				perm:  0o666,
-			}
-			dotKeepFileEntryState, err := dotKeepFileTargetStateEntry.EntryState(s.umask)
-			if err != nil {
-				return err
-			}
 
 			dotKeepFileSourceUpdate := sourceUpdate{
-				entryState:     dotKeepFileEntryState,
+				entryState: &EntryState{
+					Type: EntryStateTypeFile,
+					Mode: 0o666 &^ s.umask,
+				},
 				sourceRelPaths: []SourceRelPath{dotKeepFileRelPath},
 			}
 			sourceUpdates = append(sourceUpdates, dotKeepFileSourceUpdate)
 
 			newSourceStateEntries[dotKeepFileRelPath] = &SourceStateFile{
-				targetStateEntry: dotKeepFileTargetStateEntry,
+				targetStateEntry: &TargetStateFile{
+					empty: true,
+					perm:  0o666 &^ s.umask,
+				},
 			}
 		}
 	}
