@@ -18,7 +18,7 @@ func TestDataCmd(t *testing.T) {
 		root   map[string]interface{}
 	}{
 		{
-			format: chezmoi.JSONFormat,
+			format: chezmoi.FormatJSON,
 			root: map[string]interface{}{
 				"/home/user/.config/chezmoi/chezmoi.json": chezmoitest.JoinLines(
 					`{`,
@@ -31,7 +31,7 @@ func TestDataCmd(t *testing.T) {
 			},
 		},
 		{
-			format: chezmoi.YAMLFormat,
+			format: chezmoi.FormatYAML,
 			root: map[string]interface{}{
 				"/home/user/.config/chezmoi/chezmoi.yaml": chezmoitest.JoinLines(
 					`sourceDir: /tmp/source`,

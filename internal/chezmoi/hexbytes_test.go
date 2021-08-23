@@ -28,8 +28,8 @@ func TestHexBytes(t *testing.T) {
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			for _, format := range []Format{
-				jsonFormat{},
-				yamlFormat{},
+				formatJSON{},
+				formatYAML{},
 			} {
 				t.Run(format.Name(), func(t *testing.T) {
 					actual, err := format.Marshal(tc.b)

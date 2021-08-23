@@ -9,9 +9,9 @@ import (
 
 // Formats.
 var (
-	JSONFormat Format = jsonFormat{}
-	TOMLFormat Format = tomlFormat{}
-	YAMLFormat Format = yamlFormat{}
+	FormatJSON Format = formatJSON{}
+	FormatTOML Format = formatTOML{}
+	FormatYAML Format = formatYAML{}
 )
 
 // A Format is a serialization format.
@@ -21,24 +21,24 @@ type Format interface {
 	Unmarshal(data []byte, value interface{}) error
 }
 
-// A jsonFormat implements the JSON serialization format.
-type jsonFormat struct{}
+// A formatJSON implements the JSON serialization format.
+type formatJSON struct{}
 
-// A tomlFormat implements the TOML serialization format.
-type tomlFormat struct{}
+// A formatTOML implements the TOML serialization format.
+type formatTOML struct{}
 
-// A yamlFormat implements the YAML serialization format.
-type yamlFormat struct{}
+// A formatYAML implements the YAML serialization format.
+type formatYAML struct{}
 
 // Formats is a map of all Formats by name.
 var Formats = map[string]Format{
-	"json": JSONFormat,
-	"toml": TOMLFormat,
-	"yaml": YAMLFormat,
+	"json": FormatJSON,
+	"toml": FormatTOML,
+	"yaml": FormatYAML,
 }
 
 // Marshal implements Format.Marshal.
-func (jsonFormat) Marshal(value interface{}) ([]byte, error) {
+func (formatJSON) Marshal(value interface{}) ([]byte, error) {
 	data, err := json.MarshalIndent(value, "", "  ")
 	if err != nil {
 		return nil, err
@@ -47,41 +47,41 @@ func (jsonFormat) Marshal(value interface{}) ([]byte, error) {
 }
 
 // Name implements Format.Name.
-func (jsonFormat) Name() string {
+func (formatJSON) Name() string {
 	return "json"
 }
 
 // Unmarshal implements Format.Unmarshal.
-func (jsonFormat) Unmarshal(data []byte, value interface{}) error {
+func (formatJSON) Unmarshal(data []byte, value interface{}) error {
 	return json.Unmarshal(data, value)
 }
 
 // Marshal implements Format.Marshal.
-func (tomlFormat) Marshal(value interface{}) ([]byte, error) {
+func (formatTOML) Marshal(value interface{}) ([]byte, error) {
 	return toml.Marshal(value)
 }
 
 // Name implements Format.Name.
-func (yamlFormat) Name() string {
+func (formatYAML) Name() string {
 	return "yaml"
 }
 
 // Unmarshal implements Format.Unmarshal.
-func (tomlFormat) Unmarshal(data []byte, value interface{}) error {
+func (formatTOML) Unmarshal(data []byte, value interface{}) error {
 	return toml.Unmarshal(data, value)
 }
 
 // Marshal implements Format.Marshal.
-func (yamlFormat) Marshal(value interface{}) ([]byte, error) {
+func (formatYAML) Marshal(value interface{}) ([]byte, error) {
 	return yaml.Marshal(value)
 }
 
 // Name implements Format.Name.
-func (tomlFormat) Name() string {
+func (formatTOML) Name() string {
 	return "toml"
 }
 
 // Unmarshal implements Format.Unmarshal.
-func (yamlFormat) Unmarshal(data []byte, value interface{}) error {
+func (formatYAML) Unmarshal(data []byte, value interface{}) error {
 	return yaml.Unmarshal(data, value)
 }

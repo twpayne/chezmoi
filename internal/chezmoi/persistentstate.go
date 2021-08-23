@@ -11,7 +11,7 @@ var (
 	// scripts.
 	scriptStateBucket = []byte("scriptState")
 
-	stateFormat = jsonFormat{}
+	stateFormat = formatJSON{}
 )
 
 // A PersistentState is a persistent state.

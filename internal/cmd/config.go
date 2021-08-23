@@ -990,9 +990,9 @@ func (c *Config) marshal(dataFormat writeDataFormat, data interface{}) error {
 	var format chezmoi.Format
 	switch dataFormat {
 	case writeDataFormatJSON:
-		format = chezmoi.JSONFormat
+		format = chezmoi.FormatJSON
 	case writeDataFormatYAML:
-		format = chezmoi.YAMLFormat
+		format = chezmoi.FormatYAML
 	default:
 		return fmt.Errorf("%s: unknown format", dataFormat)
 	}
