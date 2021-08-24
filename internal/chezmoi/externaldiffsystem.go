@@ -141,6 +141,9 @@ func (s *ExternalDiffSystem) WriteFile(filename AbsPath, data []byte, perm fs.Fi
 		return err
 	}
 	targetAbsPath := tempDirAbsPath.Join(targetRelPath)
+	if err := os.MkdirAll(string(targetAbsPath.Dir()), 0o700); err != nil {
+		return err
+	}
 	if err := os.WriteFile(string(targetAbsPath), data, perm); err != nil {
 		return err
 	}
