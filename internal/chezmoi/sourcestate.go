@@ -42,6 +42,7 @@ const (
 // An External is an external source.
 type External struct {
 	Type            ExternalType `json:"type" toml:"type" yaml:"type"`
+	Encrypted       bool         `json:"encrypted" toml:"encrypted" yaml:"encrypted"`
 	Exact           bool         `json:"exact" toml:"exact" yaml:"exact"`
 	Executable      bool         `json:"executable" toml:"executable" yaml:"executable"`
 	StripComponents int          `json:"stripComponents" toml:"stripComponents" yaml:"stripComponents"`
@@ -1038,6 +1039,12 @@ func (s *SourceState) getExternalData(ctx context.Context, externalRelPath RelPa
 		data, err := s.system.ReadFile(cachedDataAbsPath)
 		switch {
 		case err == nil:
+			if external.Encrypted {
+				data, err = s.encryption.Decrypt(data)
+				if err != nil {
+					return nil, fmt.Errorf("%s: %s: %w", externalRelPath, external.URL, err)
+				}
+			}
 			return data, nil
 		case !errors.Is(err, fs.ErrNotExist):
 			return nil, err
@@ -1075,6 +1082,13 @@ func (s *SourceState) getExternalData(ctx context.Context, externalRelPath RelPa
 	}
 	if err := s.baseSystem.WriteFile(cachedDataAbsPath, data, 0o600); err != nil {
 		return nil, err
+	}
+
+	if external.Encrypted {
+		data, err = s.encryption.Decrypt(data)
+		if err != nil {
+			return nil, fmt.Errorf("%s: %s: %w", externalRelPath, external.URL, err)
+		}
 	}
 
 	return data, nil
@@ -1468,7 +1482,11 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 		return nil, fmt.Errorf("%s: %s: %w", externalRelPath, external.URL, err)
 	}
 	var r io.Reader = bytes.NewReader(data)
-	switch path := strings.ToLower(url.Path); {
+	path := url.Path
+	if external.Encrypted {
+		path = strings.TrimSuffix(path, s.encryption.EncryptedSuffix())
+	}
+	switch {
 	case strings.HasSuffix(path, ".tar.gz") || strings.HasSuffix(path, ".tgz"):
 		r, err = gzip.NewReader(r)
 		if err != nil {

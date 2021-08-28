@@ -632,6 +632,9 @@ Entries are indexed by target name, and must have a `type` and a `url` field.
 must be defined in the source state. chezmoi will not create parent directories
 automatically.
 
+The optional boolean `encrypted` field specifies whether the file or archive
+is encrypted.
+
 If `type` is `file` then the target is a file with the contents of `url`. The
 optional boolean field `executable` may be set, in which case the target file
 will be executable.

@@ -18,14 +18,14 @@ cmp $HOME/.file golden/.file
 chhome home3/user
 chezmoi apply --force
 cmp $HOME/.dir/dir/file golden/dir/file
-readlink $HOME/.dir/dir/symlink file
+[!windows] readlink $HOME/.dir/dir/symlink file
 exists $HOME/.dir/file
 
 # test that chezmoi reads exact external archives from .chezmoiexternal.yaml
 chhome home4/user
 chezmoi apply --force
 cmp $HOME/.dir/dir/file golden/dir/file
-readlink $HOME/.dir/dir/symlink file
+[!windows] readlink $HOME/.dir/dir/symlink file
 ! exists $HOME/.dir/file
 
 -- archive/dir/file --
