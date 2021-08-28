@@ -36,7 +36,7 @@ FOR:
 		header, err := tarReader.Next()
 		switch {
 		case errors.Is(err, io.EOF):
-			return s, nil
+			break FOR
 		case err != nil:
 			return nil, err
 		}
@@ -70,6 +70,7 @@ FOR:
 			return nil, fmt.Errorf("unsupported typeflag '%c'", header.Typeflag)
 		}
 	}
+	return s, nil
 }
 
 // FileInfos returns s's fs.FileInfos.

@@ -2,6 +2,7 @@ package chezmoi
 
 import (
 	"context"
+	"errors"
 	"io/fs"
 	"path/filepath"
 	"testing"
@@ -1236,6 +1237,19 @@ func TestSourceStateTargetRelPaths(t *testing.T) {
 			})
 		})
 	}
+}
+
+// applyAll updates targetDir in targetSystem to match s.
+func (s *SourceState) applyAll(targetSystem, destSystem System, persistentState PersistentState, targetDir AbsPath, options ApplyOptions) error {
+	for _, targetRelPath := range s.TargetRelPaths() {
+		switch err := s.Apply(targetSystem, destSystem, persistentState, targetDir, targetRelPath, options); {
+		case errors.Is(err, Skip):
+			continue
+		case err != nil:
+			return err
+		}
+	}
+	return nil
 }
 
 // requireEvaluateAll requires that every target state entry in s evaluates

@@ -929,19 +929,6 @@ func (s *SourceState) addVersionFile(sourceAbsPath AbsPath) error {
 	return nil
 }
 
-// applyAll updates targetDir in targetSystem to match s.
-func (s *SourceState) applyAll(targetSystem, destSystem System, persistentState PersistentState, targetDir AbsPath, options ApplyOptions) error {
-	for _, targetRelPath := range s.TargetRelPaths() {
-		switch err := s.Apply(targetSystem, destSystem, persistentState, targetDir, targetRelPath, options); {
-		case errors.Is(err, Skip):
-			continue
-		case err != nil:
-			return err
-		}
-	}
-	return nil
-}
-
 // executeTemplate executes the template at path and returns the result.
 func (s *SourceState) executeTemplate(templateAbsPath AbsPath) ([]byte, error) {
 	data, err := s.system.ReadFile(templateAbsPath)
