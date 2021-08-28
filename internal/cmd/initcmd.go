@@ -266,7 +266,7 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 
 	// Apply.
 	if c.init.apply {
-		if err := c.applyArgs(c.destSystem, c.DestDirAbsPath, noArgs, applyArgsOptions{
+		if err := c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, noArgs, applyArgsOptions{
 			include:      chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll).Sub(c.init.exclude),
 			recursive:    false,
 			umask:        c.Umask,

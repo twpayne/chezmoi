@@ -3,6 +3,7 @@ package cmd
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -435,8 +436,8 @@ type applyArgsOptions struct {
 	preApplyFunc chezmoi.PreApplyFunc
 }
 
-func (c *Config) applyArgs(targetSystem chezmoi.System, targetDirAbsPath chezmoi.AbsPath, args []string, options applyArgsOptions) error {
-	sourceState, err := c.newSourceState()
+func (c *Config) applyArgs(ctx context.Context, targetSystem chezmoi.System, targetDirAbsPath chezmoi.AbsPath, args []string, options applyArgsOptions) error {
+	sourceState, err := c.newSourceState(ctx)
 	if err != nil {
 		return err
 	}
@@ -978,7 +979,7 @@ func (c *Config) gitAutoPush(status *git.Status) error {
 
 func (c *Config) makeRunEWithSourceState(runE func(*cobra.Command, []string, *chezmoi.SourceState) error) func(*cobra.Command, []string) error {
 	return func(cmd *cobra.Command, args []string) error {
-		sourceState, err := c.newSourceState()
+		sourceState, err := c.newSourceState(cmd.Context())
 		if err != nil {
 			return err
 		}
@@ -1107,7 +1108,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	return rootCmd, nil
 }
 
-func (c *Config) newSourceState(options ...chezmoi.SourceStateOption) (*chezmoi.SourceState, error) {
+func (c *Config) newSourceState(ctx context.Context, options ...chezmoi.SourceStateOption) (*chezmoi.SourceState, error) {
 	s := chezmoi.NewSourceState(append([]chezmoi.SourceStateOption{
 		chezmoi.WithDefaultTemplateDataFunc(c.defaultTemplateData),
 		chezmoi.WithDestDir(c.DestDirAbsPath),
@@ -1121,7 +1122,7 @@ func (c *Config) newSourceState(options ...chezmoi.SourceStateOption) (*chezmoi.
 		chezmoi.WithTemplateOptions(c.Template.Options),
 	}, options...)...)
 
-	if err := s.Read(); err != nil {
+	if err := s.Read(ctx); err != nil {
 		return nil, err
 	}
 

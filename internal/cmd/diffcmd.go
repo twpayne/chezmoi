@@ -49,7 +49,7 @@ func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) error {
 	}
 	if c.Diff.useBuiltinDiff || c.Diff.Command == "" {
 		gitDiffSystem := chezmoi.NewGitDiffSystem(dryRunSystem, &sb, c.DestDirAbsPath, color)
-		if err := c.applyArgs(gitDiffSystem, c.DestDirAbsPath, args, applyArgsOptions{
+		if err := c.applyArgs(cmd.Context(), gitDiffSystem, c.DestDirAbsPath, args, applyArgsOptions{
 			include:   c.Diff.include.Sub(c.Diff.Exclude),
 			recursive: c.Diff.recursive,
 			umask:     c.Umask,
@@ -60,7 +60,7 @@ func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) error {
 	}
 	diffSystem := chezmoi.NewExternalDiffSystem(dryRunSystem, c.Diff.Command, c.Diff.Args, c.DestDirAbsPath)
 	defer diffSystem.Close()
-	return c.applyArgs(diffSystem, c.DestDirAbsPath, args, applyArgsOptions{
+	return c.applyArgs(cmd.Context(), diffSystem, c.DestDirAbsPath, args, applyArgsOptions{
 		include:   c.Diff.include.Sub(c.Diff.Exclude),
 		recursive: c.Diff.recursive,
 		umask:     c.Umask,

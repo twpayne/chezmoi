@@ -1,6 +1,7 @@
 package chezmoi
 
 import (
+	"context"
 	"io/fs"
 	"path/filepath"
 	"testing"
@@ -469,6 +470,7 @@ func TestSourceStateAdd(t *testing.T) {
 					".template": "key = value\n",
 				},
 			}, func(fileSystem vfs.FS) {
+				ctx := context.Background()
 				system := NewRealSystem(fileSystem)
 				persistentState := NewMockPersistentState()
 				if tc.extraRoot != nil {
@@ -483,7 +485,7 @@ func TestSourceStateAdd(t *testing.T) {
 						"variable": "value",
 					}),
 				)
-				require.NoError(t, s.Read())
+				require.NoError(t, s.Read(ctx))
 				requireEvaluateAll(t, s, system)
 
 				destAbsPathInfos := make(map[AbsPath]fs.FileInfo)
@@ -696,6 +698,7 @@ func TestSourceStateApplyAll(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
+				ctx := context.Background()
 				system := NewRealSystem(fileSystem)
 				persistentState := NewMockPersistentState()
 				sourceStateOptions := []SourceStateOption{
@@ -705,7 +708,7 @@ func TestSourceStateApplyAll(t *testing.T) {
 				}
 				sourceStateOptions = append(sourceStateOptions, tc.sourceStateOptions...)
 				s := NewSourceState(sourceStateOptions...)
-				require.NoError(t, s.Read())
+				require.NoError(t, s.Read(ctx))
 				requireEvaluateAll(t, s, system)
 				require.NoError(t, s.applyAll(system, system, persistentState, "/home/user", ApplyOptions{
 					Include: NewEntryTypeSet(EntryTypesAll),
@@ -1156,13 +1159,14 @@ func TestSourceStateRead(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
+				ctx := context.Background()
 				system := NewRealSystem(fileSystem)
 				s := NewSourceState(
 					WithDestDir("/home/user"),
 					WithSourceDir("/home/user/.local/share/chezmoi"),
 					WithSystem(system),
 				)
-				err := s.Read()
+				err := s.Read(ctx)
 				if tc.expectedError != "" {
 					assert.Error(t, err)
 					assert.Equal(t, tc.expectedError, err.Error())
@@ -1222,11 +1226,12 @@ func TestSourceStateTargetRelPaths(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
+				ctx := context.Background()
 				s := NewSourceState(
 					WithSourceDir("/home/user/.local/share/chezmoi"),
 					WithSystem(NewRealSystem(fileSystem)),
 				)
-				require.NoError(t, s.Read())
+				require.NoError(t, s.Read(ctx))
 				assert.Equal(t, tc.expectedTargetRelPaths, s.TargetRelPaths())
 			})
 		})

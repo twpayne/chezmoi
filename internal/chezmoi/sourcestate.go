@@ -3,6 +3,7 @@ package chezmoi
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"errors"
 	"fmt"
 	"io/fs"
@@ -578,7 +579,7 @@ func (s *SourceState) MustEntry(targetRelPath RelPath) SourceStateEntry {
 }
 
 // Read reads the source state from the source directory.
-func (s *SourceState) Read() error {
+func (s *SourceState) Read(ctx context.Context) error {
 	switch info, err := s.system.Stat(s.sourceDirAbsPath); {
 	case errors.Is(err, fs.ErrNotExist):
 		return nil

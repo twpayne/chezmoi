@@ -42,7 +42,7 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 	if c.executeTemplate.init {
 		options = append(options, chezmoi.WithReadTemplateData(false))
 	}
-	sourceState, err := c.newSourceState(options...)
+	sourceState, err := c.newSourceState(cmd.Context(), options...)
 	if err != nil {
 		return err
 	}
