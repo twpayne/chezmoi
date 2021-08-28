@@ -9,6 +9,8 @@
   * [You have to maintain your own tool](#you-have-to-maintain-your-own-tool)
   * [Setting up your dotfiles requires more than one short command](#setting-up-your-dotfiles-requires-more-than-one-short-command)
 
+---
+
 ## Comparison table
 
 [chezmoi]: https://chezmoi.io/
@@ -53,6 +55,8 @@
 
 For more comparisons, visit [dotfiles.github.io](https://dotfiles.github.io/).
 
+---
+
 ## Why should I use a dotfile manager?
 
 Dotfile managers give you the combined benefit of a consistent environment
@@ -70,6 +74,8 @@ you're working in. In the same way that nobody would use an editor without an
 undo command, or develop software without a version control system, chezmoi
 brings the investment that you have made in mastering your tools to every
 environment that you work in.
+
+---
 
 ## I already have a system to manage my dotfiles, why should I use chezmoi?
 
@@ -91,6 +97,8 @@ If you're using any of the following methods:
 
 Then you've probably run into at least one of the following problems.
 
+---
+
 ### Coping with differences between machines requires extra effort
 
 If you want to synchronize your dotfiles across multiple operating systems or
@@ -103,6 +111,8 @@ your custom logic handles the differences correctly.
 chezmoi uses a single source of truth (a single branch) and a single command
 that works on every machine. Individual files can be templates to handle machine
 to machine differences, if needed.
+
+---
 
 ### You have to keep your dotfiles repo private
 
@@ -124,6 +134,8 @@ even store passwords in different ways on different machines. You can clone your
 dotfiles repository anywhere, and even make your dotfiles repo public, without
 leaving personal secrets on your work machine or work secrets on your personal
 machine.
+
+---
 
 ### You have to maintain your own tool
 
@@ -151,6 +163,8 @@ both unit and integration tests. When you hit the limits of your existing
 dotfile management system, chezmoi already has a tried-and-tested solution ready
 for you to use.
 
+---
+
 ### Setting up your dotfiles requires more than one short command
 
 If your system is written in a scripting language like Python, Perl, or Ruby,
@@ -163,3 +177,5 @@ need git installed. chezmoi provides one-line installs, pre-built binaries,
 packages for Linux and BSD distributions, Homebrew formulae, Scoop and
 Chocolatey support on Windows, and a initial config file generation mechanism to
 make installing your dotfiles on a new machine as painless as possible.
+
+---

@@ -6,6 +6,8 @@
   * [New features in version 2](#new-features-in-version-2)
   * [Changes from version 1](#changes-from-version-1)
 
+---
+
 ## Overview
 
 This document describes what's new in chezmoi v2 for chezmoi v1 users.
@@ -29,11 +31,15 @@ read the [how-to
 guide](https://github.com/twpayne/chezmoi/blob/master/docs/HOWTO.md) to quickly
 discover chezmoi's functionality.
 
+---
+
 ## Version 2
 
 chezmoi version 2 brings many new features and fixes a few corner-case bugs.
 Very few, if any, changes should be required to your source directory,
 templates, or config file.
+
+---
 
 ### New features in version 2
 
@@ -89,6 +95,8 @@ templates, or config file.
   fully-qualified domain name of the machine, if it can be determined.
 * You can now encrypt whole files with [age](https://age-encryption.org).
 
+---
+
 ### Changes from version 1
 
 chezmoi version 2 includes a few minor changes from version 1, mainly to enable
@@ -122,3 +130,5 @@ the new functionality and for consistency:
   supported until version 2.1.
 * The `.chezmoi.fullHostname` template variable has been removed, as it did not
   contain the full hostname. Use `.chezmoi.fqdnHostname` (UNIX only) instead.
+
+---

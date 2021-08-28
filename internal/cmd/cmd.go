@@ -42,12 +42,13 @@ const (
 var (
 	noArgs = []string(nil)
 
-	commandsRx      = regexp.MustCompile(`^## Commands`)
-	commandRx       = regexp.MustCompile("^### `(\\S+)`")
-	exampleRx       = regexp.MustCompile("^#### `.+` examples")
-	optionRx        = regexp.MustCompile("^#### `(-\\w|--\\w+)`")
-	endOfCommandsRx = regexp.MustCompile(`^## `)
-	trailingSpaceRx = regexp.MustCompile(` +\n`)
+	commandsRx       = regexp.MustCompile(`^## Commands`)
+	commandRx        = regexp.MustCompile("^### `(\\S+)`")
+	exampleRx        = regexp.MustCompile("^#### `.+` examples")
+	optionRx         = regexp.MustCompile("^#### `(-\\w|--\\w+)`")
+	endOfCommandsRx  = regexp.MustCompile("^## ")
+	horizontalRuleRx = regexp.MustCompile(`^---`)
+	trailingSpaceRx  = regexp.MustCompile(` +\n`)
 
 	helps map[string]*help
 )
@@ -143,8 +144,17 @@ func extractHelps(r io.Reader) (map[string]*help, error) {
 		return nil, err
 	}
 
+	type stateType int
+	const (
+		stateFindCommands stateType = iota
+		stateFindFirstCommand
+		stateInCommand
+		stateFindExample
+		stateInExample
+	)
+
 	var (
-		state = "find-commands"
+		state = stateFindCommands
 		sb    = &strings.Builder{}
 		h     *help
 	)
@@ -152,12 +162,12 @@ func extractHelps(r io.Reader) (map[string]*help, error) {
 	saveAndReset := func() error {
 		var tr *glamour.TermRenderer
 		switch state {
-		case "in-command", "find-example":
+		case stateInCommand, stateFindExample:
 			tr = longTermRenderer
-		case "in-example":
+		case stateInExample:
 			tr = examplesTermRenderer
 		default:
-			panic(fmt.Sprintf("%s: invalid state", state))
+			panic(fmt.Sprintf("%d: invalid state", state))
 		}
 		s, err := tr.Render(sb.String())
 		if err != nil {
@@ -166,12 +176,12 @@ func extractHelps(r io.Reader) (map[string]*help, error) {
 		s = trailingSpaceRx.ReplaceAllString(s, "\n")
 		s = strings.Trim(s, "\n")
 		switch state {
-		case "in-command", "find-example":
+		case stateInCommand, stateFindExample:
 			h.long = "Description:\n" + s
-		case "in-example":
+		case stateInExample:
 			h.example = s
 		default:
-			panic(fmt.Sprintf("%s: invalid state", state))
+			panic(fmt.Sprintf("%d: invalid state", state))
 		}
 		sb.Reset()
 		return nil
@@ -182,17 +192,17 @@ func extractHelps(r io.Reader) (map[string]*help, error) {
 FOR:
 	for s.Scan() {
 		switch state {
-		case "find-commands":
+		case stateFindCommands:
 			if commandsRx.MatchString(s.Text()) {
-				state = "find-first-command"
+				state = stateFindFirstCommand
 			}
-		case "find-first-command":
+		case stateFindFirstCommand:
 			if m := commandRx.FindStringSubmatch(s.Text()); m != nil {
 				h = &help{}
 				helps[m[1]] = h
-				state = "in-command"
+				state = stateInCommand
 			}
-		case "in-command", "find-example", "in-example":
+		case stateInCommand, stateFindExample, stateInExample:
 			m := commandRx.FindStringSubmatch(s.Text())
 			switch {
 			case m != nil:
@@ -201,20 +211,25 @@ FOR:
 				}
 				h = &help{}
 				helps[m[1]] = h
-				state = "in-command"
+				state = stateInCommand
 			case optionRx.MatchString(s.Text()):
-				state = "find-example"
+				state = stateFindExample
 			case exampleRx.MatchString(s.Text()):
 				if err := saveAndReset(); err != nil {
 					return nil, err
 				}
-				state = "in-example"
+				state = stateInExample
 			case endOfCommandsRx.MatchString(s.Text()):
 				if err := saveAndReset(); err != nil {
 					return nil, err
 				}
 				break FOR
-			case state != "find-example":
+			case horizontalRuleRx.MatchString(s.Text()):
+				if err := saveAndReset(); err != nil {
+					return nil, err
+				}
+				state = stateFindFirstCommand
+			case state != stateFindExample:
 				if _, err := sb.WriteString(s.Text()); err != nil {
 					return nil, err
 				}

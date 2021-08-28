@@ -8,6 +8,8 @@ Recommended video: [chezmoi: manage your dotfiles across multiple, diverse machi
 
 Recommended podcast: [Managing Dot Files and an Introduction to Chezmoi](https://www.podfeet.com/blog/2021/07/ccatp-693/)
 
+---
+
 | Date       | Version | Format      | Link                                                                                                                                                                                                                |
 | ---------- | ------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 2021-08-22 | 2.1.2   | Audio/text  | [PBS 123 of X — Backing up and Syncing Dot Files with Chezmoi](https://pbs.bartificer.net/pbs123)                                                                                                                   |
@@ -45,7 +47,11 @@ Recommended podcast: [Managing Dot Files and an Introduction to Chezmoi](https:/
 | 2019-11-20 | 1.7.2   | Audio/video | [FLOSS weekly episode 556: chezmoi](https://twit.tv/shows/floss-weekly/episodes/556)                                                                                                                                |
 | 2019-01-10 | 0.0.11  | Text        | [Linux Fu: The kitchen sync](https://hackaday.com/2019/01/10/linux-fu-the-kitchen-sync/)                                                                                                                            |
 
+---
+
 To add your article to this page please either [open an
 issue](https://github.com/twpayne/chezmoi/issues/new/choose) or submit a pull
 request that modifies this file
 ([`docs/MEDIA.md`](https://github.com/twpayne/chezmoi/blob/master/docs/MEDIA.md)).
+
+---

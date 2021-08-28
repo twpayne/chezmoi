@@ -123,6 +123,8 @@ Manage your dotfiles across multiple machines, securely.
   * [`vault` *key*](#vault-key)
   * [`writeToStdout` *string*...](#writetostdout-string)
 
+---
+
 ## Concepts
 
 chezmoi evaluates the source state for the current machine and then updates the
@@ -146,6 +148,8 @@ destination directory, where:
 
 * The *config file* contains machine-specific configuration, by default it is
   `~/.config/chezmoi/chezmoi.toml`.
+
+---
 
 ## Global command line flags
 
@@ -235,6 +239,8 @@ state and the destination set are printed as unified diffs.
 Print the version of chezmoi, the commit at which it was built, and the build
 timestamp.
 
+---
+
 ## Common command line flags
 
 The following flags apply to multiple commands where they are relevant.
@@ -275,7 +281,9 @@ Write a [Go CPU profile](https://blog.golang.org/pprof) to *filename*.
 Enable the [gops](https://github.com/google/gops) agent.
 
 
- ## Configuration file
+ ---
+
+## Configuration file
 
 chezmoi searches for its configuration file according to the [XDG Base Directory
 Specification](https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html)
@@ -387,6 +395,8 @@ git:
     autoPush: true
 ```
 
+---
+
 ## Source state attributes
 
 chezmoi stores the source state of files, symbolic links, and directories in
@@ -447,6 +457,8 @@ chezmoi ignores all files and directories in the source directory that begin
 with a `.` with the exception of files and directories that begin with
 `.chezmoi`.
 
+---
+
 ## Target types
 
 chezmoi will create, update, and delete files, directories, and symbolic links
@@ -454,6 +466,8 @@ in the destination directory, and run scripts. chezmoi deterministically
 performs actions in ASCII order of their target name. For example, given a file
 `dot_a`, a script `run_z`, and a directory `exact_dot_c`, chezmoi will first
 create `.a`, create `.c`, and then execute `run_z`.
+
+---
 
 ### Files
 
@@ -479,12 +493,16 @@ file. The contents of the existing file (which maybe empty if the existing file
 does not exist or is empty) are passed to the script's standard input, and the
 new contents are read from the scripts standard output.
 
+---
+
 ### Directories
 
 Directories are represented by regular directories in the source state. The
 `exact_` attribute causes chezmoi to remove any entries in the target state that
 are not explicitly specified in the source state, and the `private_` attribute
 causes chezmoi to clear all group and world permissions.
+
+---
 
 ### Symbolic links
 
@@ -494,6 +512,8 @@ stripped, and the result be interpreted as the target of the symbolic link.
 Symbolic links with the `.tmpl` suffix in the source state are interpreted as
 templates. If the target of the symbolic link is empty or consists only of
 whitespace, then the target is removed.
+
+---
 
 ### Scripts
 
@@ -553,6 +573,8 @@ If the script in the source state is a template (with a `.tmpl` extension), then
 chezmoi will strip the `.tmpl` extension and use the next remaining extension to
 determine the interpreter to use.
 
+---
+
 ### `symlink` mode
 
 By default, chezmoi will create regular files and directories. Setting `mode =
@@ -561,10 +583,14 @@ symlinks by default, i.e. `chezmoi apply` will make dotfiles symlinks to files
 in the source directory if the target is a regular file and is not
 encrypted, executable, private, or a template.
 
+---
+
 ## Special files and directories
 
 All files and directories in the source state whose name begins with `.` are
 ignored by default, unless they are one of the special files listed here.
+
+---
 
 ### `.chezmoi.<format>.tmpl`
 
@@ -579,6 +605,8 @@ config file formats.
 data:
     email: {{ $email | quote }}
 ```
+
+---
 
 ### `.chezmoidata.<format>`
 
@@ -617,6 +645,8 @@ MOVE_DOWN=j
 MOVE_RIGHT=l
 MOVE_LEFT=h
 ```
+
+---
 
 ### `.chezmoiexternal.<format>`
 
@@ -667,6 +697,8 @@ To force chezmoi to re-download URLs, pass the `--refresh-externals` flag.
     stripComponents = 1
 ```
 
+---
+
 ### `.chezmoiignore`
 
 If a file called `.chezmoiignore` exists in the source state then it is
@@ -708,11 +740,15 @@ backups/** # ignore all contents of backups folder in chezmoi directory
 {{- end }}
 ```
 
+---
+
 ### `.chezmoiremove`
 
 If a file called `.chezmoiremove` exists in the source state then it is
 interpreted as a list of targets to remove. `.chezmoiremove` is interpreted as a
 template.
+
+---
 
 ### `.chezmoitemplates`
 
@@ -741,6 +777,8 @@ Given:
 
 The target state of `.config` will be `bar`.
 
+---
+
 ### `.chezmoiversion`
 
 If a file called `.chezmoiversion` exists, then its contents are interpreted as
@@ -754,7 +792,11 @@ the current version is too old.
 1.5.0
 ```
 
+---
+
 ## Commands
+
+---
 
 ### `add` *target*...
 
@@ -816,6 +858,8 @@ $ chezmoi add ~/.vim --recursive
 $ chezmoi add ~/.oh-my-zsh --exact --recursive
 ```
 
+---
+
 ### `apply` [*target*...]
 
 Ensure that *target*... are in the target state, updating them if necessary. If
@@ -839,6 +883,8 @@ $ chezmoi apply
 $ chezmoi apply --dry-run --verbose
 $ chezmoi apply ~/.bashrc
 ```
+
+---
 
 ### `archive`
 
@@ -865,6 +911,8 @@ $ chezmoi archive --output=dotfiles.tar
 $ chezmoi archive --format=zip --output=dotfiles.zip
 ```
 
+---
+
 ### `cat` *target*...
 
 Write the target contents of *target*s to stdout. *targets* must be files,
@@ -878,6 +926,8 @@ written.
 $ chezmoi cat ~/.bashrc
 ```
 
+---
+
 ### `cd`
 
 Launch a shell in the source directory. chezmoi will launch the command set by
@@ -890,6 +940,8 @@ will finally fall back to an OS-specific default.
 ```console
 $ chezmoi cd
 ```
+
+---
 
 ### `chattr` *attributes* *target*...
 
@@ -924,6 +976,8 @@ $ chezmoi chattr private,template ~/.netrc
 $ chezmoi chattr -- -x ~/.zshrc
 ```
 
+---
+
 ### `completion` *shell*
 
 Generate shell completion code for the specified shell (`bash`, `fish`,
@@ -935,6 +989,8 @@ Generate shell completion code for the specified shell (`bash`, `fish`,
 $ chezmoi completion bash
 $ chezmoi completion fish --output=~/.config/fish/completions/chezmoi.fish
 ```
+
+---
 
 ### `data`
 
@@ -950,6 +1006,8 @@ Set the output format.
 $ chezmoi data
 $ chezmoi data --format=yaml
 ```
+
+---
 
 ### `diff` [*target*...]
 
@@ -982,6 +1040,8 @@ $ chezmoi diff
 $ chezmoi diff ~/.bashrc
 ```
 
+---
+
 ### `docs` [*regexp*]
 
 Print the documentation page matching the regular expression *regexp*. Matching
@@ -999,6 +1059,8 @@ $ chezmoi docs faq
 $ chezmoi docs howto
 ```
 
+---
+
 ### `doctor`
 
 Check for potential problems.
@@ -1008,6 +1070,8 @@ Check for potential problems.
 ```console
 $ chezmoi doctor
 ```
+
+---
 
 ### `dump` [*target*...]
 
@@ -1028,6 +1092,8 @@ Only include entries of type *types*.
 $ chezmoi dump ~/.bashrc
 $ chezmoi dump --format=yaml
 ```
+
+---
 
 ### `edit` [*target*...]
 
@@ -1054,6 +1120,8 @@ $ chezmoi edit ~/.bashrc --apply
 $ chezmoi edit
 ```
 
+---
+
 ### `edit-config`
 
 Edit the configuration file.
@@ -1063,6 +1131,8 @@ Edit the configuration file.
 ```console
 $ chezmoi edit-config
 ```
+
+---
 
 ### `execute-template` [*template*...]
 
@@ -1109,6 +1179,8 @@ $ echo '{{ .chezmoi | toJson }}' | chezmoi execute-template
 $ chezmoi execute-template --init --promptString email=me@home.org < ~/.local/share/chezmoi/.chezmoi.toml.tmpl
 ```
 
+---
+
 ### `forget` *targets*
 
 Remove *targets* from the source state, i.e. stop managing them.
@@ -1118,6 +1190,8 @@ Remove *targets* from the source state, i.e. stop managing them.
 ```console
 $ chezmoi forget ~/.bashrc
 ```
+
+---
 
 ### `git` [*arg*...]
 
@@ -1132,10 +1206,14 @@ $ chezmoi git add dot_gitconfig
 $ chezmoi git -- commit -m "Add .gitconfig"
 ```
 
+---
+
 ### `help` [*command*...]
 
 Print the help associated with *command*, or general help if no command is
 given.
+
+---
 
 ### `init` [*repo*]
 
@@ -1219,6 +1297,8 @@ $ chezmoi init user/dots
 $ chezmoi init gitlab.com/user
 ```
 
+---
+
 ### `import` *filename*
 
 Import the source state from an archive file in to a directory in the source
@@ -1253,9 +1333,13 @@ $ mkdir -p $(chezmoi source-path)/dot_oh-my-zsh
 $ chezmoi import --strip-components 1 --destination ~/.oh-my-zsh ${TMPDIR}/oh-my-zsh-master.tar.gz
 ```
 
+---
+
 ### `manage` *targets*
 
 `manage` is an alias for `add` for symmetry with `unmanage`.
+
+---
 
 ### `managed`
 
@@ -1274,6 +1358,8 @@ $ chezmoi managed --include=files,symlinks
 $ chezmoi managed -i d
 $ chezmoi managed -i d,f
 ```
+
+---
 
 ### `merge` *target*...
 
@@ -1298,6 +1384,8 @@ default value of `merge.args` is `["{{ .Destination }}", "{{ .Source }}", "{{
 $ chezmoi merge ~/.bashrc
 ```
 
+---
+
 ### `purge`
 
 Remove chezmoi's configuration, state, and source directory, but leave the
@@ -1314,6 +1402,8 @@ $ chezmoi purge
 $ chezmoi purge --force
 ```
 
+---
+
 ### `remove` *targets*
 
 Remove *targets* from both the source state and the destination directory.
@@ -1321,6 +1411,8 @@ Remove *targets* from both the source state and the destination directory.
 #### `-f`, `--force`
 
 Remove without prompting.
+
+---
 
 ### `re-add`
 
@@ -1336,6 +1428,8 @@ $ chezmoi re-add
 ### `rm` *targets*
 
 `rm` is an alias for `remove`.
+
+---
 
 ### `secret`
 
@@ -1358,6 +1452,8 @@ $ chezmoi secret keyring set --service=service --user=user --value=password
 $ chezmoi secret keyring get --service=service --user=user
 ```
 
+---
+
 ### `source-path` [*target*...]
 
 Print the path to each target's source state. If no targets are specified then
@@ -1369,6 +1465,8 @@ print the source directory.
 $ chezmoi source-path
 $ chezmoi source-path ~/.bashrc
 ```
+
+---
 
 ### `state`
 
@@ -1384,6 +1482,8 @@ $ chezmoi state get --bucket=bucket --key=key
 $ chezmoi state set --bucket=bucket --key=key --value=value
 $ chezmoi state reset
 ```
+
+---
 
 ### `status`
 
@@ -1404,6 +1504,8 @@ Only include entries of type *types*.
 $ chezmoi status
 ```
 
+---
+
 ### `unmanage` *target*...
 
 `unmanage` is an alias for `forget` for symmetry with `manage`.
@@ -1417,6 +1519,8 @@ List all unmanaged files in the destination directory.
 ```console
 $ chezmoi unmanaged
 ```
+
+---
 
 ### `update`
 
@@ -1432,6 +1536,8 @@ Only update entries of type *types*.
 $ chezmoi update
 ```
 
+---
+
 ### `upgrade`
 
 Upgrade chezmoi by downloading and installing the latest released version. This
@@ -1445,6 +1551,8 @@ be used to authenticate requests to the GitHub API, otherwise unauthenticated
 requests are used which are subject to stricter [rate
 limiting](https://developer.github.com/v3/#rate-limiting). Unauthenticated
 requests should be sufficient for most cases.
+
+---
 
 ### `verify` [*target*...]
 
@@ -1463,11 +1571,15 @@ $ chezmoi verify
 $ chezmoi verify ~/.bashrc
 ```
 
+---
+
 ## Editor configuration
 
 The `edit` and `edit-config` commands use the editor specified by the `VISUAL`
 environment variable, the `$EDITOR` environment variable, or `vi`, whichever is
 specified first.
+
+---
 
 ## Umask configuration
 
@@ -1482,6 +1594,8 @@ chezmoi's configuration file, for example:
 ```toml
 umask = 0o22
 ```
+
+---
 
 ## Template execution
 
@@ -1512,6 +1626,8 @@ overridden by setting a list of options in the configuration file, for example:
 For a full list of options, see
 [`Template.Option`](https://pkg.go.dev/text/template?tab=doc#Template.Option).
 
+---
+
 ## Template variables
 
 chezmoi provides the following automatically-populated variables:
@@ -1535,11 +1651,15 @@ Additional variables can be defined in the config file in the `data` section.
 Variable names must consist of a letter and be followed by zero or more letters
 and/or digits.
 
+---
+
 ## Template functions
 
 All standard [`text/template`](https://pkg.go.dev/text/template) and [text
 template functions from `sprig`](http://masterminds.github.io/sprig/) are
 included. chezmoi provides some additional functions.
+
+---
 
 ### `bitwarden` [*arg*...]
 
@@ -1557,6 +1677,8 @@ username = {{ (bitwarden "item" "<itemid>").login.username }}
 password = {{ (bitwarden "item" "<itemid>").login.password }}
 ```
 
+---
+
 ### `bitwardenAttachment` *filename* *itemid*
 
 `bitwardenAttachment` returns a document from
@@ -1572,6 +1694,8 @@ only invoke `bw` once.
 ```
 {{- (bitwardenAttachment "<filename>" "<itemid>") -}}
 ```
+
+---
 
 ### `bitwardenFields` [*arg*...]
 
@@ -1641,6 +1765,8 @@ the same arguments will only invoke `bw get` once.
 {{ (bitwardenFields "item" "<itemid>").token.value }}
 ```
 
+---
+
 ### `gitHubKeys` *user*
 
 `gitHubKeys` returns *user*'s public SSH keys from GitHub using the GitHub API.
@@ -1676,6 +1802,8 @@ token](https://docs.github.com/en/github/authenticating-to-github/creating-a-per
 {{ end }}
 ```
 
+---
+
 ### `gopass` *gopass-name*
 
 `gopass` returns passwords stored in [gopass](https://www.gopass.pw/) using the
@@ -1691,6 +1819,8 @@ once.
 {{ gopass "<pass-name>" }}
 ```
 
+---
+
 ### `gopassRaw` *gopass-name*
 
 `gopass` returns passwords stored in [gopass](https://www.gopass.pw/) using the
@@ -1699,10 +1829,14 @@ and  output of `gopass` is returned. The output from `gopassRaw` is cached so
 calling `gopassRaw` multiple times with the same *gopass-name* will only invoke
 `gopass` once.
 
+---
+
 ### `include` *filename*
 
 `include` returns the literal contents of the file named `*filename*`. Relative
 paths are interpreted relative to the source directory.
+
+---
 
 ### `ioreg`
 
@@ -1722,6 +1856,8 @@ only execute the `ioreg -a -l` command once.
 {{ end }}
 ```
 
+---
+
 ### `joinPath` *element*...
 
 `joinPath` joins any number of path elements into a single path, separating them
@@ -1735,6 +1871,8 @@ first non-empty element is a UNC path.
 ```
 {{ joinPath .chezmoi.homeDir ".zshrc" }}
 ```
+
+---
 
 ### `keepassxc` *entry*
 
@@ -1755,6 +1893,8 @@ username = {{ (keepassxc "example.com").UserName }}
 password = {{ (keepassxc "example.com").Password }}
 ```
 
+---
+
 ### `keepassxcAttribute` *entry* *attribute*
 
 `keepassxcAttribute` returns the attribute *attribute* of *entry* using
@@ -1767,6 +1907,8 @@ prompting, password storage, and result caching.
 ```
 {{ keepassxcAttribute "SSH Key" "private-key" }}
 ```
+
+---
 
 ### `keyring` *service* *user*
 
@@ -1787,6 +1929,8 @@ user's keyring.
     token = {{ keyring "github" .github.user | quote }}
 ```
 
+---
+
 ### `lastpass` *id*
 
 `lastpass` returns structured data from [LastPass](https://lastpass.com) using
@@ -1805,6 +1949,8 @@ githubPassword = {{ (index (lastpass "GitHub") 0).password | quote }}
 {{ (index (lastpass "SSH") 0).note.privateKey }}
 ```
 
+---
+
 ### `lastpassRaw` *id*
 
 `lastpassRaw` returns structured data from [LastPass](https://lastpass.com)
@@ -1817,6 +1963,8 @@ further parsing is done on the `note` field.
 ```
 {{ (index (lastpassRaw "SSH Private Key") 0).note }}
 ```
+
+---
 
 ### `lookPath` *file*
 
@@ -1838,10 +1986,14 @@ caution when using it in your templates.
 {{ end }}
 ```
 
+---
+
 ### `mozillaInstallHash` *path*
 
 `mozillaInstallHash` returns the Mozilla install hash for *path*. This is a
 convenience function to assist the management of Firefox profiles.
+
+---
 
 ### `onepassword` *uuid* [*vault-uuid* [*account-name*]]
 
@@ -1865,6 +2017,8 @@ in case you have multiple accounts (eg. personal and work accounts).
 {{ (onepassword "<uuid>" "" "<account-name>").details.password }}
 ```
 
+---
+
 ### `onepasswordDocument` *uuid* [*vault-uuid* [*account-name*]]
 
 `onepassword` returns a document from [1Password](https://1password.com/) using
@@ -1886,6 +2040,8 @@ accounts).
 {{- onepasswordDocument "<uuid>" "<vault-uuid>" "<account-name>" -}}
 {{- onepasswordDocument "<uuid>" "" "<account-name>" -}}
 ```
+
+---
 
 ### `onepasswordDetailsFields` *uuid* [*vault-uuid* [*account-name*]]
 
@@ -1954,6 +2110,8 @@ accounts).
 {{ (onepasswordDetailsFields "<uuid>" "" "<account-name>").password.value }}
 ```
 
+---
+
 ### `output` *name* [*arg*...]
 
 `output` returns the output of executing the command *name* with *arg*s. If
@@ -1967,6 +2125,8 @@ and fast.
 ```
 current-context: {{ output "kubectl" "config" "current-context" | trim }}
 ```
+
+---
 
 ### `pass` *pass-name*
 
@@ -1982,12 +2142,16 @@ the same *pass-name* will only invoke `pass` once.
 {{ pass "<pass-name>" }}
 ```
 
+---
+
 ### `passRaw` *pass-name*
 
 `passRaw` returns passwords stored in [pass](https://www.passwordstore.org/)
 using the pass CLI (`pass`). *pass-name* is passed to `pass show <pass-name>`
 and the output is returned. The output from `pass` is cached so calling
 `passRaw` multiple times with the same *pass-name* will only invoke `pass` once.
+
+---
 
 ### `promptBool` *prompt*
 
@@ -2000,11 +2164,15 @@ config file. The user's response is interpreted as follows (case insensitive):
 | 1, on, t, true, y, yes  | `true`  |
 | 0, off, f, false, n, no | `false` |
 
+---
+
 ### `promptInt` *prompt*
 
 `promptInt` prompts the user with *prompt* and returns the user's response with
 interpreted as an integer. It is only available when generating the initial
 config file.
+
+---
 
 ### `promptString` *prompt*
 
@@ -2020,6 +2188,8 @@ generating the initial config file.
     email = {{ $email | quote }}
 ```
 
+---
+
 ### `secret` [*arg*...]
 
 `secret` returns the output of the generic secret command defined by the
@@ -2027,12 +2197,16 @@ generating the initial config file.
 whitespace removed. The output is cached so multiple calls to `secret` with the
 same *arg*s will only invoke the generic secret command once.
 
+---
+
 ### `secretJSON` [*arg*...]
 
 `secretJSON` returns structured data from the generic secret command defined by
 the `secret.command` configuration variable with *arg*s. The output is parsed as
 JSON. The output is cached so multiple calls to `secret` with the same *args*
 will only invoke the generic secret command once.
+
+---
 
 ### `stat` *name*
 
@@ -2054,6 +2228,8 @@ templates.
 {{ end }}
 ```
 
+---
+
 ### `stdinIsATTY`
 
 `stdinIsATTY` returns `true` if chezmoi's standard input is a TTY. It is only
@@ -2072,6 +2248,8 @@ used.
 {{ end }}
 ```
 
+---
+
 ### `vault` *key*
 
 `vault` returns structured data from [Vault](https://www.vaultproject.io/) using
@@ -2085,6 +2263,8 @@ times with the same *key* will only invoke `vault` once.
 ```
 {{ (vault "<key>").data.data.password }}
 ```
+
+---
 
 ### `writeToStdout` *string*...
 

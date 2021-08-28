@@ -20,6 +20,8 @@ Updating your dotfiles on any machine is a single command:
 $ chezmoi update
 ```
 
+---
+
 ## How do I start with chezmoi now?
 
 [Install chezmoi](/docs/install/) then read the [quick start
@@ -31,6 +33,8 @@ GitHub](https://github.com/topics/chezmoi?o=desc&s=updated) and [on
 GitLab](https://gitlab.com/search?search=chezmoi), and see how chezmoi [compares
 to other dotfile managers](/docs/comparison/). For a full description of
 chezmoi, consult the [reference](/docs/reference/).
+
+---
 
 ## What does chezmoi do and why should I use it?
 
@@ -58,6 +62,8 @@ password manager and/or encrypt whole files with your favorite encryption tool.
 If you do not personalize your configuration or only ever use a single operating
 system with a single account and none of your dotfiles contain secrets then you
 don't need chezmoi. Otherwise, read on...
+
+---
 
 ## What are chezmoi's key features?
 
@@ -111,9 +117,13 @@ commands, including installation, initialization, and keeping your machines
 up-to-date. chezmoi can pull and apply changes from your dotfiles repo in a
 single command, and automatically commit and push changes.
 
+---
+
 ## I already have a system to manage my dotfiles, why should I use chezmoi?
 
 Read the [comparison of chezmoi to other dotfile managers](/docs/comparison/).
+
+---
 
 ## How do people use chezmoi?
 
@@ -126,6 +136,8 @@ GitLab](https://gitlab.com/search?search=chezmoi).
 ### People talking about chezmoi
 
 Read what [people have said about chezmoi](/docs/media/).
+
+---
 
 ## What documentation is available?
 
@@ -144,6 +156,10 @@ Read what [people have said about chezmoi](/docs/media/).
 * [Contributing](/docs/contributing/) and [Architecture](/docs/architecture/)
   for people looking to contribute to or package chezmoi.
 
+---
+
 ## License
 
 MIT
+
+---
