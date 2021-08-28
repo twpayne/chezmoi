@@ -47,7 +47,7 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string, sourceState *chez
 			return err
 		}
 		if c.Edit.apply {
-			if err := c.applyArgs(c.destSystem, c.DestDirAbsPath, noArgs, applyArgsOptions{
+			if err := c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, noArgs, applyArgsOptions{
 				include:      c.Edit.include.Sub(c.Edit.exclude),
 				recursive:    true,
 				umask:        c.Umask,
@@ -133,7 +133,7 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string, sourceState *chez
 	}
 
 	if c.Edit.apply {
-		if err := c.applyArgs(c.destSystem, c.DestDirAbsPath, args, applyArgsOptions{
+		if err := c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, args, applyArgsOptions{
 			include:      c.Edit.include,
 			recursive:    false,
 			umask:        c.Umask,

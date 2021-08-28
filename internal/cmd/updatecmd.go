@@ -78,7 +78,7 @@ func (c *Config) runUpdateCmd(cmd *cobra.Command, args []string) error {
 		return nil
 	}
 
-	return c.applyArgs(c.destSystem, c.DestDirAbsPath, args, applyArgsOptions{
+	return c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, args, applyArgsOptions{
 		include:      c.update.include.Sub(c.update.exclude),
 		recursive:    c.update.recursive,
 		umask:        c.Umask,

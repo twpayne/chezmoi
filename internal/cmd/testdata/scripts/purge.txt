@@ -1,14 +1,19 @@
 mksourcedir
 
-# test chezmoi purge purges source dir
+# test that chezmoi purge purges the source dir
 exists $CHEZMOISOURCEDIR
 chezmoi purge --force
 ! exists $CHEZMOISOURCEDIR
 
-# test chezmoi purge purges config dir
+# test that chezmoi purge purges the config dir
 chhome home2/user
 exists $CHEZMOICONFIGDIR
 chezmoi purge --force
 ! exists $CHEZMOICONFIGDIR
+
+# test that chezmoi purge purges the cache dir
+mkdir $HOME/.cache/chezmoi
+chezmoi purge --force
+! exists $HOME/.cache/chezmoi
 
 -- home2/user/.config/chezmoi/chezmoi.toml --

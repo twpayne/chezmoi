@@ -3,6 +3,7 @@ package chezmoi
 import (
 	"archive/tar"
 	"bytes"
+	"context"
 	"io"
 	"testing"
 
@@ -32,12 +33,14 @@ func TestTARWriterSystem(t *testing.T) {
 			"symlink_symlink": ".dir/subdir/file\n",
 		},
 	}, func(fileSystem vfs.FS) {
+		ctx := context.Background()
 		system := NewRealSystem(fileSystem)
 		s := NewSourceState(
+			WithBaseSystem(system),
 			WithSourceDir("/home/user/.local/share/chezmoi"),
 			WithSystem(system),
 		)
-		require.NoError(t, s.Read())
+		require.NoError(t, s.Read(ctx, nil))
 		requireEvaluateAll(t, s, system)
 
 		b := &bytes.Buffer{}

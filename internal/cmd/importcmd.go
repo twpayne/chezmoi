@@ -71,7 +71,7 @@ func (c *Config) runImportCmd(cmd *cobra.Command, args []string, sourceState *ch
 			if err != nil {
 				return err
 			}
-		case strings.HasSuffix(base, ".tar.bz2"):
+		case strings.HasSuffix(base, ".tar.bz2") || strings.HasSuffix(base, ".tbz2"):
 			r = bzip2.NewReader(r)
 		case strings.HasSuffix(base, ".tar"):
 		default:

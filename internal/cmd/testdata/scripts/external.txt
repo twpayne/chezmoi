@@ -1,0 +1,60 @@
+symlink archive/dir/symlink -> file
+exec tar czf www/archive.tar.gz archive
+
+httpd www
+
+# test that chezmoi reads external files from .chezmoiexternal.toml
+chezmoi apply --force
+cmp $HOME/.file golden/.file
+[!windows] cmpmod 666 $HOME/.file
+
+# test that chezmoi reads executable external files from .chezmoiexternal.toml
+chhome home2/user
+chezmoi apply --force
+cmp $HOME/.file golden/.file
+[!windows] cmpmod 777 $HOME/.file
+
+# test that chezmoi reads external archives from .chezmoiexternal.yaml
+chhome home3/user
+chezmoi apply --force
+cmp $HOME/.dir/dir/file golden/dir/file
+[!windows] readlink $HOME/.dir/dir/symlink file
+exists $HOME/.dir/file
+
+# test that chezmoi reads exact external archives from .chezmoiexternal.yaml
+chhome home4/user
+chezmoi apply --force
+cmp $HOME/.dir/dir/file golden/dir/file
+[!windows] readlink $HOME/.dir/dir/symlink file
+! exists $HOME/.dir/file
+
+-- archive/dir/file --
+# contents of dir/file
+-- golden/.file --
+# contents of .file
+-- golden/dir/file --
+# contents of dir/file
+-- home/user/.local/share/chezmoi/.chezmoiexternal.toml --
+[".file"]
+    type = "file"
+    url = "{{ env "HTTPD_URL" }}/.file"
+-- home2/user/.local/share/chezmoi/.chezmoiexternal.toml --
+[".file"]
+    type = "file"
+    url = "{{ env "HTTPD_URL" }}/.file"
+    executable = true
+-- home3/user/.dir/file --
+-- home3/user/.local/share/chezmoi/.chezmoiexternal.yaml --
+.dir:
+    type: archive
+    url: {{ env "HTTPD_URL" }}/archive.tar.gz
+    stripComponents: 1
+-- home4/user/.dir/file --
+-- home4/user/.local/share/chezmoi/.chezmoiexternal.yaml --
+.dir:
+    type: archive
+    url: {{ env "HTTPD_URL" }}/archive.tar.gz
+    exact: true
+    stripComponents: 1
+-- www/.file --
+# contents of .file
