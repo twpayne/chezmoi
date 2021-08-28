@@ -17,6 +17,7 @@ Manage your dotfiles across multiple machines, securely.
   * [`--no-pager`](#--no-pager)
   * [`--no-tty`](#--no-tty)
   * [`-o`, `--output` *filename*](#-o---output-filename)
+  * [`-R`, `--refresh-externals`](#-r---refresh-externals)
   * [`-r`. `--remove`](#-r---remove)
   * [`-S`, `--source` *directory*](#-s---source-directory)
   * [`--use-builtin-git` *value*](#--use-builtin-git-value)
@@ -43,6 +44,7 @@ Manage your dotfiles across multiple machines, securely.
 * [Special files and directories](#special-files-and-directories)
   * [`.chezmoi.<format>.tmpl`](#chezmoiformattmpl)
   * [`.chezmoidata.<format>`](#chezmoidataformat)
+  * [`.chezmoiexternal.<format>`](#chezmoiexternalformat)
   * [`.chezmoiignore`](#chezmoiignore)
   * [`.chezmoiremove`](#chezmoiremove)
   * [`.chezmoitemplates`](#chezmoitemplates)
@@ -202,6 +204,10 @@ stdin.
 ### `-o`, `--output` *filename*
 
 Write the output to *filename* instead of stdout.
+
+### `-R`, `--refresh-externals`
+
+Refresh externals cache. See `.chezmoiexternal.<format>`.
 
 ### `-r`. `--remove`
 
@@ -610,6 +616,52 @@ MOVE_UP=k
 MOVE_DOWN=j
 MOVE_RIGHT=l
 MOVE_LEFT=h
+```
+
+### `.chezmoiexternal.<format>`
+
+If a file called `.chezmoiexternal.<format>` exists in the source state, it is
+interpreted as a list of external files and archives to be included as if they
+were in the source state.
+
+`.chezmoiexternal.<format>` is interpreted as a template. This allows different
+externals to be included on different machines.
+
+Entries are indexed by target name, and must have a `type` and a `url` field.
+`type` can be either `file` or `archive`. All of the entries parent directories
+must be defined in the source state. chezmoi will not create parent directories
+automatically.
+
+If `type` is `file` then the target is a file with the contents of `url`. The
+optional boolean field `executable` may be set, in which case the target file
+will be executable.
+
+If `type` is `archive` then the target is a directory with the contents of the
+archive at `url`. The optional boolean field `exact` may be set, in which case
+the directory and all subdirectories will be treated as exact directories, i.e.
+`chezmoi apply` will remove entries not present in the archive. The optional
+integer field `stripComponents` will remove leading path components from the
+members of archive.
+
+By default, chezmoi will cache downloaded URLs the first time they are accessed.
+To force chezmoi to re-download URLs, pass the `--refresh-externals` flag.
+
+#### `.chezmoiexternal.<format>` examples
+
+```toml
+[".vim/autoload/plug.vim"]
+    type = "file"
+    url = "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+[".oh-my-zsh"]
+    type = "archive"
+    url = "https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz"
+    exact = true
+    stripComponents = 1
+[".oh-my-zsh/custom/plugins/zsh-syntax-highlighting"]
+    type = "archive"
+    url = "https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz"
+    exact = true
+    stripComponents = 1
 ```
 
 ### `.chezmoiignore`
@@ -1193,7 +1245,7 @@ Strip *n* leading components from paths.
 #### `import` examples
 
 ```console
-$ curl -s -L -o ${TMPDIR}/oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
+$ curl -s -L -o ${TMPDIR}/oh-my-zsh-master.tar.gz https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz
 $ mkdir -p $(chezmoi source-path)/dot_oh-my-zsh
 $ chezmoi import --strip-components 1 --destination ~/.oh-my-zsh ${TMPDIR}/oh-my-zsh-master.tar.gz
 ```

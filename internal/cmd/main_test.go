@@ -6,6 +6,8 @@ import (
 	"errors"
 	"fmt"
 	"io/fs"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"path"
 	"path/filepath"
@@ -48,6 +50,7 @@ func TestScript(t *testing.T) {
 			"chhome":         cmdChHome,
 			"cmpmod":         cmdCmpMod,
 			"edit":           cmdEdit,
+			"httpd":          cmdHTTPD,
 			"issymlink":      cmdIsSymlink,
 			"mkfile":         cmdMkFile,
 			"mkageconfig":    cmdMkAGEConfig,
@@ -161,6 +164,20 @@ func cmdEdit(ts *testscript.TestScript, neg bool, args []string) {
 			ts.Fatalf("edit: %v", err)
 		}
 	}
+}
+
+// cmdHTTPD starts an HTTP server serving files from the given directory and
+// sets the HTTPD_URL environment variable to the URL of the server.
+func cmdHTTPD(ts *testscript.TestScript, neg bool, args []string) {
+	if neg {
+		ts.Fatalf("unsupported: ! httpd")
+	}
+	if len(args) != 1 {
+		ts.Fatalf("usage: httpd dir")
+	}
+	dir := ts.MkAbs(args[0])
+	server := httptest.NewServer(http.FileServer(http.Dir(dir)))
+	ts.Setenv("HTTPD_URL", server.URL)
 }
 
 // cmdIsSymlink returns true if all of its arguments are symlinks.

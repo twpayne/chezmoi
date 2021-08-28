@@ -36,10 +36,11 @@ func TestTARWriterSystem(t *testing.T) {
 		ctx := context.Background()
 		system := NewRealSystem(fileSystem)
 		s := NewSourceState(
+			WithBaseSystem(system),
 			WithSourceDir("/home/user/.local/share/chezmoi"),
 			WithSystem(system),
 		)
-		require.NoError(t, s.Read(ctx))
+		require.NoError(t, s.Read(ctx, nil))
 		requireEvaluateAll(t, s, system)
 
 		b := &bytes.Buffer{}

@@ -1,12 +1,23 @@
 package chezmoi
 
+// FIXME implement externals in chezmoi source state format
+// FIXME implement external git repos
+// FIXME implement include and exclude entry type sets for externals
+
 import (
+	"archive/tar"
 	"bufio"
 	"bytes"
+	"compress/bzip2"
+	"compress/gzip"
 	"context"
+	"encoding/hex"
 	"errors"
 	"fmt"
+	"io"
 	"io/fs"
+	"net/http"
+	"net/url"
 	"os"
 	"runtime"
 	"sort"
@@ -14,16 +25,37 @@ import (
 	"text/template"
 
 	"github.com/coreos/go-semver/semver"
+	"github.com/rs/zerolog/log"
 	vfs "github.com/twpayne/go-vfs/v3"
 	"go.uber.org/multierr"
 )
 
+// An ExternalType is a type of external source.
+type ExternalType string
+
+// ExternalTypes.
+const (
+	ExternalTypeArchive ExternalType = "archive"
+	ExternalTypeFile    ExternalType = "file"
+)
+
+// An External is an external source.
+type External struct {
+	Type            ExternalType `json:"type" toml:"type" yaml:"type"`
+	Exact           bool         `json:"exact" toml:"exact" yaml:"exact"`
+	Executable      bool         `json:"executable" toml:"executable" yaml:"executable"`
+	StripComponents int          `json:"stripComponents" toml:"stripComponents" yaml:"stripComponents"`
+	URL             string       `json:"url" toml:"url" yaml:"url"`
+}
+
 // A SourceState is a source state.
 type SourceState struct {
 	entries                 map[RelPath]SourceStateEntry
+	baseSystem              System
 	system                  System
 	sourceDirAbsPath        AbsPath
 	destDirAbsPath          AbsPath
+	cacheDirAbsPath         AbsPath
 	umask                   fs.FileMode
 	encryption              Encryption
 	ignore                  *patternSet
@@ -38,10 +70,25 @@ type SourceState struct {
 	templateFuncs           template.FuncMap
 	templateOptions         []string
 	templates               map[string]*template.Template
+	externals               map[RelPath]External
 }
 
 // A SourceStateOption sets an option on a source state.
 type SourceStateOption func(*SourceState)
+
+// WithBaseSystem sets the base system.
+func WithBaseSystem(baseSystem System) SourceStateOption {
+	return func(s *SourceState) {
+		s.baseSystem = baseSystem
+	}
+}
+
+// WithCacheDir sets the cache directory.
+func WithCacheDir(cacheDirAbsPath AbsPath) SourceStateOption {
+	return func(s *SourceState) {
+		s.cacheDirAbsPath = cacheDirAbsPath
+	}
+}
 
 // WithDestDir sets the destination directory.
 func WithDestDir(destDirAbsPath AbsPath) SourceStateOption {
@@ -135,6 +182,7 @@ func NewSourceState(options ...SourceStateOption) *SourceState {
 		priorityTemplateData: make(map[string]interface{}),
 		userTemplateData:     make(map[string]interface{}),
 		templateOptions:      DefaultTemplateOptions,
+		externals:            make(map[RelPath]External),
 	}
 	for _, option := range options {
 		option(s)
@@ -578,8 +626,13 @@ func (s *SourceState) MustEntry(targetRelPath RelPath) SourceStateEntry {
 	return sourceStateEntry
 }
 
+// ReadOptions are options to SourceState.Read.
+type ReadOptions struct {
+	RefreshExternals bool
+}
+
 // Read reads the source state from the source directory.
-func (s *SourceState) Read(ctx context.Context) error {
+func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 	switch info, err := s.system.Stat(s.sourceDirAbsPath); {
 	case errors.Is(err, fs.ErrNotExist):
 		return nil
@@ -623,6 +676,8 @@ func (s *SourceState) Read(ctx context.Context) error {
 				return nil
 			}
 			return s.addTemplateData(sourceAbsPath)
+		case strings.HasPrefix(info.Name(), externalName):
+			return s.addExternal(sourceAbsPath)
 		case info.Name() == ignoreName:
 			// .chezmoiignore is interpreted as a template. we walk the
 			// filesystem in alphabetical order, so, luckily for us,
@@ -700,6 +755,24 @@ func (s *SourceState) Read(ctx context.Context) error {
 		}
 	}); err != nil {
 		return err
+	}
+
+	// Read externals.
+	externalRelPaths := make([]RelPath, 0, len(s.externals))
+	for externalRelPath := range s.externals {
+		externalRelPaths = append(externalRelPaths, externalRelPath)
+	}
+	sort.Slice(externalRelPaths, func(i, j int) bool {
+		return externalRelPaths[i] < externalRelPaths[j]
+	})
+	for _, externalRelPath := range externalRelPaths {
+		externalSourceStateEntries, err := s.readExternal(ctx, externalRelPath, s.externals[externalRelPath], options)
+		if err != nil {
+			return err
+		}
+		for targetRelPath, sourceStateEntries := range externalSourceStateEntries {
+			allSourceStateEntries[targetRelPath] = append(allSourceStateEntries[targetRelPath], sourceStateEntries...)
+		}
 	}
 
 	// Remove all ignored targets.
@@ -821,6 +894,24 @@ func (s *SourceState) TemplateData() map[string]interface{} {
 	return s.templateData
 }
 
+// addExternal adds external source entries to s.
+func (s *SourceState) addExternal(sourceAbsPath AbsPath) error {
+	_, name := sourceAbsPath.Split()
+	suffix := mustTrimPrefix(string(name), externalName+".")
+	format, ok := Formats[suffix]
+	if !ok {
+		return fmt.Errorf("%s: unknown format", sourceAbsPath)
+	}
+	data, err := s.executeTemplate(sourceAbsPath)
+	if err != nil {
+		return fmt.Errorf("%s: %w", sourceAbsPath, err)
+	}
+	if err := format.Unmarshal(data, &s.externals); err != nil {
+		return fmt.Errorf("%s: %w", sourceAbsPath, err)
+	}
+	return nil
+}
+
 // addPatterns executes the template at sourceAbsPath, interprets the result as
 // a list of patterns, and adds all patterns found to patternSet.
 func (s *SourceState) addPatterns(patternSet *patternSet, sourceAbsPath AbsPath, sourceRelPath SourceRelPath) error {
@@ -936,6 +1027,57 @@ func (s *SourceState) executeTemplate(templateAbsPath AbsPath) ([]byte, error) {
 		return nil, err
 	}
 	return s.ExecuteTemplateData(string(templateAbsPath), data)
+}
+
+// getExternalData reads the external data for externalRelPath from
+// external.URL.
+func (s *SourceState) getExternalData(ctx context.Context, externalRelPath RelPath, external External, options *ReadOptions) ([]byte, error) {
+	cacheKey := hex.EncodeToString(SHA256Sum([]byte(external.URL)))
+	cachedDataAbsPath := s.cacheDirAbsPath.Join("external", RelPath(cacheKey))
+	if options == nil || !options.RefreshExternals {
+		data, err := s.system.ReadFile(cachedDataAbsPath)
+		switch {
+		case err == nil:
+			return data, nil
+		case !errors.Is(err, fs.ErrNotExist):
+			return nil, err
+		}
+	}
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, external.URL, nil)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Logger.Debug().
+			Str("url", external.URL).
+			Err(err).
+			Msg("HTTP GET")
+		return nil, err
+	}
+	log.Logger.Debug().
+		Str("url", external.URL).
+		Int("statusCode", resp.StatusCode).
+		Str("status", resp.Status).
+		Msg("HTTP GET")
+	data, err := io.ReadAll(resp.Body)
+	resp.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+	if resp.StatusCode < http.StatusOK || http.StatusMultipleChoices <= resp.StatusCode {
+		return nil, fmt.Errorf("%s: %s: %s", externalRelPath, external.URL, resp.Status)
+	}
+
+	if err := MkdirAll(s.baseSystem, cachedDataAbsPath.Dir(), 0o700); err != nil {
+		return nil, err
+	}
+	if err := s.baseSystem.WriteFile(cachedDataAbsPath, data, 0o600); err != nil {
+		return nil, err
+	}
+
+	return data, nil
 }
 
 // newSourceStateDir returns a new SourceStateDir.
@@ -1298,6 +1440,157 @@ func (s *SourceState) newSourceStateFileEntryFromSymlink(actualStateSymlink *Act
 			lazyContents: lazyContents,
 			perm:         0o666 &^ s.umask,
 		},
+	}, nil
+}
+
+// readExternal reads an external and returns its SourceStateEntries.
+func (s *SourceState) readExternal(ctx context.Context, externalRelPath RelPath, external External, options *ReadOptions) (map[RelPath][]SourceStateEntry, error) {
+	switch external.Type {
+	case ExternalTypeArchive:
+		return s.readExternalArchive(ctx, externalRelPath, external, options)
+	case ExternalTypeFile:
+		return s.readExternalFile(ctx, externalRelPath, external, options)
+	default:
+		return nil, fmt.Errorf("%s: unknown external type: %s", externalRelPath, external.Type)
+	}
+}
+
+// readExternalArchive reads an external archive and returns its
+// SourceStateEntries.
+func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath RelPath, external External, options *ReadOptions) (map[RelPath][]SourceStateEntry, error) {
+	data, err := s.getExternalData(ctx, externalRelPath, external, options)
+	if err != nil {
+		return nil, err
+	}
+
+	url, err := url.Parse(external.URL)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %s: %w", externalRelPath, external.URL, err)
+	}
+	var r io.Reader = bytes.NewReader(data)
+	switch path := strings.ToLower(url.Path); {
+	case strings.HasSuffix(path, ".tar.gz") || strings.HasSuffix(path, ".tgz"):
+		r, err = gzip.NewReader(r)
+		if err != nil {
+			return nil, fmt.Errorf("%s: %s: %w", externalRelPath, external.URL, err)
+		}
+	case strings.HasSuffix(path, ".tar.bz2") || strings.HasSuffix(path, ".tbz2"):
+		r = bzip2.NewReader(r)
+	default:
+		return nil, fmt.Errorf("%s: %s: unknown format", externalRelPath, external.URL)
+	}
+
+	tarReader := tar.NewReader(r)
+	sourceRelPath := NewSourceRelPath(RelPath(external.URL))
+	sourceStateEntries := map[RelPath][]SourceStateEntry{
+		externalRelPath: {
+			&SourceStateDir{
+				Attr: DirAttr{
+					Exact: external.Exact,
+				},
+				sourceRelPath: sourceRelPath,
+				targetStateEntry: &TargetStateDir{
+					perm: 0o777 &^ s.umask,
+				},
+			},
+		},
+	}
+FOR:
+	for {
+		header, err := tarReader.Next()
+		switch {
+		case errors.Is(err, io.EOF):
+			break FOR
+		case err != nil:
+			return nil, fmt.Errorf("%s: %s: %w", externalRelPath, external.URL, err)
+		}
+
+		name := strings.TrimSuffix(header.Name, "/")
+		if external.StripComponents > 0 {
+			components := strings.Split(name, "/")
+			if len(components) <= external.StripComponents {
+				continue FOR
+			}
+			name = strings.Join(components[external.StripComponents:], "/")
+		}
+		targetRelPath := externalRelPath.Join(RelPath(name))
+
+		if s.Ignored(targetRelPath) {
+			continue FOR
+		}
+
+		var sourceStateEntry SourceStateEntry
+		switch header.Typeflag {
+		case tar.TypeDir:
+			targetStateEntry := &TargetStateDir{
+				perm: fs.FileMode(header.Mode).Perm() &^ s.umask,
+			}
+			sourceStateEntry = &SourceStateDir{
+				Attr: DirAttr{
+					Exact: external.Exact,
+				},
+				sourceRelPath:    sourceRelPath,
+				targetStateEntry: targetStateEntry,
+			}
+		case tar.TypeReg:
+			contents, err := io.ReadAll(tarReader)
+			if err != nil {
+				return nil, fmt.Errorf("%s: %s: %s: %w", externalRelPath, external.URL, header.Name, err)
+			}
+			lazyContents := newLazyContents(contents)
+			fileAttr := FileAttr{
+				Empty:      true,
+				Executable: header.FileInfo().Mode()&0o111 != 0,
+			}
+			targetStateEntry := &TargetStateFile{
+				lazyContents: lazyContents,
+				empty:        fileAttr.Empty,
+				perm:         fileAttr.perm() &^ s.umask,
+			}
+			sourceStateEntry = &SourceStateFile{
+				Attr:             fileAttr,
+				sourceRelPath:    sourceRelPath,
+				targetStateEntry: targetStateEntry,
+			}
+		case tar.TypeSymlink:
+			targetStateEntry := &TargetStateSymlink{
+				lazyLinkname: newLazyLinkname(header.Linkname),
+			}
+			sourceStateEntry = &SourceStateFile{
+				sourceRelPath:    sourceRelPath,
+				targetStateEntry: targetStateEntry,
+			}
+		case tar.TypeXGlobalHeader:
+			continue FOR
+		default:
+			return nil, fmt.Errorf("%s: %s: unsupported typeflag: '%c'", externalRelPath, external.URL, header.Typeflag)
+		}
+
+		sourceStateEntries[targetRelPath] = append(sourceStateEntries[targetRelPath], sourceStateEntry)
+	}
+	return sourceStateEntries, nil
+}
+
+// readExternalFile reads an external file and returns its SourceStateEntries.
+func (s *SourceState) readExternalFile(ctx context.Context, externalRelPath RelPath, external External, options *ReadOptions) (map[RelPath][]SourceStateEntry, error) {
+	lazyContents := newLazyContentsFunc(func() ([]byte, error) {
+		return s.getExternalData(ctx, externalRelPath, external, options)
+	})
+	fileAttr := FileAttr{
+		Empty:      true,
+		Executable: external.Executable,
+	}
+	targetStateEntry := &TargetStateFile{
+		lazyContents: lazyContents,
+		empty:        fileAttr.Empty,
+		perm:         fileAttr.perm() &^ s.umask,
+	}
+	sourceStateEntry := &SourceStateFile{
+		sourceRelPath:    NewSourceRelPath(RelPath(external.URL)),
+		targetStateEntry: targetStateEntry,
+	}
+	return map[RelPath][]SourceStateEntry{
+		externalRelPath: {sourceStateEntry},
 	}, nil
 }
 

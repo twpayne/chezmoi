@@ -44,6 +44,7 @@
 | Run once scripts                       | 🟢            | 🔴                | 🔴                | 🔴                | 🟢                       | 🔴            | 🔴         |
 | Machine-to-machine symlink differences | 🟢            | 🔴                | 🔴                | 🔴                | 🟠                       | 🟢            | 🟠         |
 | Shell completion                       | 🟢            | 🔴                | 🔴                | 🔴                | 🟢                       | 🟢            | 🟢         |
+| Externals                              | 🟢            | 🔴                | 🔴                | 🔴                | 🔴                       | 🔴            | 🔴         |
 | Archive import                         | 🟢            | 🔴                | 🔴                | 🔴                | 🟢                       | 🔴            | 🟢         |
 | Archive export                         | 🟢            | 🔴                | 🔴                | 🔴                | 🟢                       | 🔴            | 🟢         |
 | Implementation language                | Go            | Python            | Perl              | Ruby              | POSIX Shell              | Bash          | C          |

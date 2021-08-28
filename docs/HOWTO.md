@@ -274,28 +274,53 @@ autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path %
 ### Include a subdirectory from another repository, like Oh My Zsh
 
 To include a subdirectory from another repository, e.g. [Oh My
-Zsh](https://github.com/robbyrussell/oh-my-zsh), you cannot use git submodules
-because chezmoi uses its own format for the source state and Oh My Zsh is not
-distributed in this format. Instead, you can use the `import` command to import
-a snapshot from a tarball:
+Zsh](https://github.com/ohmyzsh/ohmyzsh), you cannot use git submodules because
+chezmoi uses its own format for the source state and Oh My Zsh is not
+distributed in this format. Instead, you can use the `.chezmoiexternal.<format>`
+to tell chezmoi to import dotfiles from an external source.
 
-```console
-$ curl -s -L -o ${TMPDIR}/oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
-$ mkdir -p $(chezmoi source-path)/dot_oh-my-zsh
-$ chezmoi import --strip-components 1 --destination ${HOME}/.oh-my-zsh ${TMPDIR}/oh-my-zsh-master.tar.gz
+For example, to import Oh My Zsh and the [zsh-syntax-highlighting
+plugin](https://github.com/zsh-users/zsh-syntax-highlighting), put the following
+in `~/.local/share/chezmoi/.chezmoiexternal.toml`:
+
+```toml
+[".oh-my-zsh"]
+    type = "archive"
+    url = "https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz"
+    exact = true
+    stripComponents = 1
+[".oh-my-zsh/custom/plugins/zsh-syntax-highlighting"]
+    type = "archive"
+    url = "https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz"
+    exact = true
+    stripComponents = 1
 ```
 
-The tarball is downloaded to the temporary directory and imported to the source state.
+To apply the changes, run:
 
-You can also download the tarball to the `$HOME` directory by removing `${TMPDIR}/` from
-the `curl` command and the chezmoi `import` command. Add `oh-my-zsh-master.tar.gz` to
-`.chezmoiignore` if you run these commands in your source directory so that chezmoi doesn't
-try to copy the tarball anywhere.
+```console
+$ chezmoi apply
+```
 
-Disable Oh My Zsh auto-updates by setting `DISABLE_AUTO_UPDATE="true"` in
-`~/.zshrc`. Auto updates will cause the `~/.oh-my-zsh` directory to drift out of
-sync with chezmoi's source state. To update Oh My Zsh, re-run the `curl` and
-`chezmoi import` commands above.
+chezmoi will download the archives and unpack them as if they were part of the
+source state. chezmoi caches downloaded archives locally to avoid re-downloading
+them every time you run a chezmoi command. To refresh the downloaded archives,
+use the `--refresh-externals` flag to `chezmoi apply`:
+
+```console
+$ chezmoi --refresh-externals apply
+```
+
+`--refresh-externals` can be shortened to `-R`:
+
+```console
+$ chezmoi -R apply
+```
+
+When using Oh My Zsh, make sure you disable auto-updates by setting
+`DISABLE_AUTO_UPDATE="true"` in `~/.zshrc`. Auto updates will cause the
+`~/.oh-my-zsh` directory to drift out of sync with chezmoi's source state. To
+update Oh My Zsh and its plugins, refresh the downloaded archives.
 
 ### Handle configuration files which are externally modified
 
@@ -342,12 +367,11 @@ the source state instead.
 
 It is occasionally useful to import entire archives of configuration into your
 source state. The `import` command does this. For example, to import the latest
-version
-[`github.com/robbyrussell/oh-my-zsh`](https://github.com/robbyrussell/oh-my-zsh)
-to `~/.oh-my-zsh` run:
+version [`github.com/ohmyzsh/ohmyzsh`](https://github.com/ohmyzsh/ohmyzsh) to
+`~/.oh-my-zsh` run:
 
 ```console
-$ curl -s -L -o ${TMPDIR}/oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
+$ curl -s -L -o ${TMPDIR}/oh-my-zsh-master.tar.gz https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz
 $ mkdir -p $(chezmoi source-path)/dot_oh-my-zsh
 $ chezmoi import --strip-components 1 --destination ~/.oh-my-zsh ${TMPDIR}/oh-my-zsh-master.tar.gz
 ```

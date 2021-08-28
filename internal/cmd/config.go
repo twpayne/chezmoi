@@ -54,6 +54,7 @@ type templateConfig struct {
 // A Config represents a configuration.
 type Config struct {
 	// Global configuration, settable in the config file.
+	CacheDirAbsPath  chezmoi.AbsPath                 `mapstructure:"cacheDir"`
 	Color            autoBool                        `mapstructure:"color"`
 	Data             map[string]interface{}          `mapstructure:"data"`
 	DestDirAbsPath   chezmoi.AbsPath                 `mapstructure:"destDir"`
@@ -67,20 +68,21 @@ type Config struct {
 	UseBuiltinGit    autoBool                        `mapstructure:"useBuiltinGit"`
 
 	// Global configuration, not settable in the config file.
-	configFormat  readDataFormat
-	cpuProfile    chezmoi.AbsPath
-	debug         bool
-	dryRun        bool
-	force         bool
-	gops          bool
-	homeDir       string
-	keepGoing     bool
-	noPager       bool
-	noTTY         bool
-	outputAbsPath chezmoi.AbsPath
-	sourcePath    bool
-	verbose       bool
-	templateFuncs template.FuncMap
+	configFormat     readDataFormat
+	cpuProfile       chezmoi.AbsPath
+	debug            bool
+	dryRun           bool
+	force            bool
+	gops             bool
+	homeDir          string
+	keepGoing        bool
+	noPager          bool
+	noTTY            bool
+	outputAbsPath    chezmoi.AbsPath
+	refreshExternals bool
+	sourcePath       bool
+	verbose          bool
+	templateFuncs    template.FuncMap
 
 	// Password manager configurations, settable in the config file.
 	Bitwarden   bitwardenConfig   `mapstructure:"bitwarden"`
@@ -208,6 +210,7 @@ func newConfig(options ...configOption) (*Config, error) {
 
 	c := &Config{
 		// Global configuration, settable in the config file.
+		CacheDirAbsPath: chezmoi.AbsPath(bds.CacheHome).Join("chezmoi"),
 		Color: autoBool{
 			auto: true,
 		},
@@ -832,6 +835,7 @@ func (c *Config) doPurge(purgeOptions *purgeOptions) error {
 		return err
 	}
 	absPaths := []chezmoi.AbsPath{
+		c.CacheDirAbsPath,
 		c.configFileAbsPath.Dir(),
 		c.configFileAbsPath,
 		persistentStateFileAbsPath,
@@ -1046,6 +1050,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.BoolVar(&c.noPager, "no-pager", c.noPager, "Do not use the pager")
 	persistentFlags.BoolVar(&c.noTTY, "no-tty", c.noTTY, "Do not attempt to get a TTY for reading passwords")
 	persistentFlags.VarP(&c.outputAbsPath, "output", "o", "Write output to path instead of stdout")
+	persistentFlags.BoolVarP(&c.refreshExternals, "refresh-externals", "R", c.refreshExternals, "Refresh external cache")
 	persistentFlags.BoolVar(&c.sourcePath, "source-path", c.sourcePath, "Specify targets by source path")
 	persistentFlags.BoolVarP(&c.verbose, "verbose", "v", c.verbose, "Make output more verbose")
 
@@ -1110,6 +1115,8 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 
 func (c *Config) newSourceState(ctx context.Context, options ...chezmoi.SourceStateOption) (*chezmoi.SourceState, error) {
 	s := chezmoi.NewSourceState(append([]chezmoi.SourceStateOption{
+		chezmoi.WithBaseSystem(c.baseSystem),
+		chezmoi.WithCacheDir(c.CacheDirAbsPath),
 		chezmoi.WithDefaultTemplateDataFunc(c.defaultTemplateData),
 		chezmoi.WithDestDir(c.DestDirAbsPath),
 		chezmoi.WithEncryption(c.encryption),
@@ -1122,7 +1129,9 @@ func (c *Config) newSourceState(ctx context.Context, options ...chezmoi.SourceSt
 		chezmoi.WithTemplateOptions(c.Template.Options),
 	}, options...)...)
 
-	if err := s.Read(ctx); err != nil {
+	if err := s.Read(ctx, &chezmoi.ReadOptions{
+		RefreshExternals: c.refreshExternals,
+	}); err != nil {
 		return nil, err
 	}
 
