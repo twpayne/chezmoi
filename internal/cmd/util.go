@@ -10,7 +10,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/google/go-github/v36/github"
+	"github.com/google/go-github/v38/github"
 	"golang.org/x/oauth2"
 )
 
