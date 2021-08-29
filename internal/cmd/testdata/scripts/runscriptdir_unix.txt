@@ -1,6 +1,8 @@
 [windows] skip 'UNIX only'
 [!umask:022] skip
 
+[openbsd] exec sed -e 's:/$::g' -i golden/archive
+
 chezmoi apply
 cmpenv stdout golden/apply
 

@@ -1,5 +1,6 @@
 mksourcedir
 
+[openbsd] exec sed -e 's:/$::g' -i golden/archive-tar
 [windows] unix2dos golden/archive-tar
 
 chezmoi archive --output=archive.tar

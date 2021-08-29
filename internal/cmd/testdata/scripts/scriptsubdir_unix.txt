@@ -1,6 +1,8 @@
 [windows] skip 'UNIX only'
 [!umask:022] skip
 
+[openbsd] exec sed -e 's:/$::g' -i golden/archive
+
 # test that scripts in subdirectories are run in the subdirectory
 chezmoi apply --force
 cmpenv stdout golden/apply
