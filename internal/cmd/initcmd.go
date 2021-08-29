@@ -143,7 +143,7 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 				if _, err = git.PlainInit(string(rawSourceDir), isBare); err != nil {
 					return err
 				}
-			} else if err := c.run(c.SourceDirAbsPath, c.Git.Command, []string{"init"}); err != nil {
+			} else if err := c.run(c.SourceDirAbsPath, c.Git.Command, []string{"init", "--quiet"}); err != nil {
 				return err
 			}
 		} else {
