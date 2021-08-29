@@ -29,6 +29,8 @@
 * [Where do I ask a question that isn't answered here?](#where-do-i-ask-a-question-that-isnt-answered-here)
 * [I like chezmoi. How do I say thanks?](#i-like-chezmoi-how-do-i-say-thanks)
 
+---
+
 ## How can I quickly check for problems with chezmoi on my machine?
 
 Run:
@@ -39,6 +41,8 @@ $ chezmoi doctor
 
 Anything `ok` is fine, anything `warning` is only a problem if you want to use
 the related feature, and anything `error` indicates a definite problem.
+
+---
 
 ## How do I edit my dotfiles with chezmoi?
 
@@ -55,6 +59,8 @@ There are four popular approaches:
 4. Edit the file in your home directory, and then either re-add it by running
    `chezmoi add $FILE` or `chezmoi re-add`. Note that `re-add` doesn't work with
    templates.
+
+---
 
 ## Do I have to use `chezmoi edit` to edit my dotfiles?
 
@@ -75,6 +81,8 @@ you can run `chezmoi diff` to check what effect the changes would have, and run
   or `chezmoi apply`. Note also that the arguments to `chezmoi edit` are the
   files in their target location.
 
+---
+
 ## What are the consequences of "bare" modifications to the target files? If my `.zshrc` is managed by chezmoi and I edit `~/.zshrc` without using `chezmoi edit`, what happens?
 
 Until you run `chezmoi apply` your modified `~/.zshrc` will remain in place.
@@ -82,14 +90,20 @@ When you run `chezmoi apply` chezmoi will detect that `~/.zshrc` has changed
 since chezmoi last wrote it and prompt you what to do. You can resolve
 differences with a merge tool by running `chezmoi merge ~/.zshrc`.
 
+---
+
 ## How can I tell what dotfiles in my home directory aren't managed by chezmoi? Is there an easy way to have chezmoi manage a subset of them?
 
 `chezmoi unmanaged` will list everything not managed by chezmoi. You can add
 entire directories with `chezmoi add`.
 
+---
+
 ## How can I tell what dotfiles in my home directory are currently managed by chezmoi?
 
 `chezmoi managed` will list everything managed by chezmoi.
+
+---
 
 ## If there's a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?
 
@@ -102,11 +116,15 @@ Patterns are supported, and you can change what's ignored from machine to
 machine. The full usage and syntax is described in the [reference
 manual](https://github.com/twpayne/chezmoi/blob/master/docs/REFERENCE.md#chezmoiignore).
 
+---
+
 ## If the target already exists, but is "behind" the source, can chezmoi be configured to preserve the target version before replacing it with one derived from the source?
 
 Yes. Run `chezmoi add` will update the source state with the target. To see
 diffs of what would change, without actually changing anything, use `chezmoi
 diff`.
+
+---
 
 ## Once I've made a change to the source directory, how do I commit it?
 
@@ -122,11 +140,15 @@ You have several options:
   source state, as [described in the how-to
   guide](https://github.com/twpayne/chezmoi/blob/master/docs/HOWTO.md#automatically-commit-and-push-changes-to-your-repo).
 
+---
+
 ## I've made changes to both the destination state and the source state that I want to keep. How can I keep them both?
 
 `chezmoi merge` will open a merge tool to resolve differences between the source
 state, target state, and destination state. Copy the changes you want to keep in
 to the source state.
+
+---
 
 ## Why does chezmoi convert all my template variables to lowercase?
 
@@ -134,6 +156,8 @@ This is due to a feature in
 [`github.com/spf13/viper`](https://github.com/spf13/viper), the library that
 chezmoi uses to read its configuration file. For more information see [this
 GitHub issue](https://github.com/twpayne/chezmoi/issues/463).
+
+---
 
 ## chezmoi makes `~/.ssh/config` group writeable. How do I stop this?
 
@@ -155,6 +179,8 @@ to control group write permissions for individual files or directories. Please
 GitHub](https://github.com/twpayne/chezmoi/issues/new?assignees=&labels=enhancement&template=02_feature_request.md&title=)
 if you need this.
 
+---
+
 ## Why does `chezmoi cd` spawn a shell instead of just changing directory?
 
 `chezmoi cd` spawns a shell because it is not possible for a program to change
@@ -168,6 +194,8 @@ chezmoi-cd() {
 
 Typing `chezmoi-cd` will then change the directory of your current shell to
 chezmoi's source directory.
+
+---
 
 ## Why doesn't chezmoi use symlinks like GNU Stow?
 
@@ -212,6 +240,8 @@ for example) but it does need some convincing use cases that demonstrate that a
 symlink from a dotfile's location to its contents in a central directory is
 better than just having the correct dotfile contents.
 
+---
+
 ## What are the limitations of chezmoi's symlink mode?
 
 In symlink mode chezmoi replaces targets with symlinks to the source directory
@@ -239,6 +269,8 @@ might not be usable with symlinks.
 
 In symlink mode, running `chezmoi add` does not immediately replace the targets
 with a symlink. You must run `chezmoi apply` to create the symlinks.
+
+---
 
 ## Can I change how chezmoi's source state is represented on disk?
 
@@ -320,6 +352,8 @@ but must meet the following criteria, in order of importance:
 4. Not add significant extra complexity to the user interface or underlying
    implementation.
 
+---
+
 ## gpg encryption fails. What could be wrong?
 
 The `gpg.recipient` key should be ultimately trusted, otherwise encryption will
@@ -339,6 +373,8 @@ $ gpg --edit-key $recipient
 
 Enter `trust` at the prompt and chose `5 = I trust ultimately`.
 
+---
+
 ## chezmoi reports `chezmoi: user: lookup userid NNNNN: input/output error`
 
 This is likely because the chezmoi binary you are using was statically compiled
@@ -351,6 +387,8 @@ of the statically-compiled binary.
 
 If the problem still persists, then please [open an issue on
 GitHub](https://github.com/twpayne/chezmoi/issues/new/choose).
+
+---
 
 ## chezmoi reports `chezmoi: timeout` or `chezmoi: timeout obtaining persistent state lock`
 
@@ -368,6 +406,8 @@ Commands that take a write lock include `add`, `apply`, `edit`, `forget`,
 `import`, `init`, `state`, `unmanage`, and `update`. Commands that take a read
 lock include `diff`, `status`, and `verify`.
 
+---
+
 ## I'm getting errors trying to build chezmoi from source
 
 chezmoi requires Go version 1.17 or later. You can check the version of Go with:
@@ -379,12 +419,16 @@ $ go version
 For more details on building chezmoi, see the [Contributing
 Guide]([CONTRIBUTING.md](https://github.com/twpayne/chezmoi/blob/master/docs/CONTRIBUTING.md)).
 
+---
+
 ## What inspired chezmoi?
 
 chezmoi was inspired by [Puppet](https://puppet.com/), but was created because
 Puppet is an overkill for managing your personal configuration files. The focus
 of chezmoi will always be personal home directory management. If your needs grow
 beyond that, switch to a whole system configuration management tool.
+
+---
 
 ## Why not use Ansible/Chef/Puppet/Salt, or similar to manage my dotfiles instead?
 
@@ -404,6 +448,8 @@ system management tools, chezmoi offers:
 chezmoi's focus and simple installation means that it runs almost everywhere:
 from tiny ARM-based Linux systems to Windows desktops, from inside lightweight
 containers to FreeBSD-based virtual machines in the cloud.
+
+---
 
 ## Can I use chezmoi to manage files outside my home directory?
 
@@ -442,20 +488,28 @@ Put your Puppet Manifests, Chef Recipes, Ansible Modules, and Salt Modules in a
 directory ignored by `.chezmoiignore` so they do not pollute your home
 directory.
 
+---
+
 ## Where does the name "chezmoi" come from?
 
 "chezmoi" splits to "chez moi" and pronounced /ʃeɪ mwa/ (shay-moi) meaning "at
 my house" in French. It's seven letters long, which is an appropriate length for
 a command that is only run occasionally.
 
+---
+
 ## What other questions have been asked about chezmoi?
 
 See the [issues on
 GitHub](https://github.com/twpayne/chezmoi/issues?utf8=%E2%9C%93&q=is%3Aissue+sort%3Aupdated-desc+label%3Asupport).
 
+---
+
 ## Where do I ask a question that isn't answered here?
 
 Please [open an issue on GitHub](https://github.com/twpayne/chezmoi/issues/new/choose).
+
+---
 
 ## I like chezmoi. How do I say thanks?
 
@@ -475,3 +529,5 @@ welcome](https://github.com/twpayne/chezmoi/blob/master/docs/CONTRIBUTING.md)
 and every [bug report, support request, and feature
 request](https://github.com/twpayne/chezmoi/issues/new/choose) helps make
 chezmoi better. Thank you :)
+
+---

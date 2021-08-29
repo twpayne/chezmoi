@@ -6,12 +6,16 @@
 * [Using chezmoi across multiple machines](#using-chezmoi-across-multiple-machines)
 * [Next steps](#next-steps)
 
+---
+
 ## Concepts
 
 chezmoi stores the desired state of your dotfiles in the directory
 `~/.local/share/chezmoi`. When you run `chezmoi apply`, chezmoi calculates the
 desired contents and permissions for each dotfile and then makes any changes
 necessary so that your dotfiles match that state.
+
+---
 
 ## Start using chezmoi on your current machine
 
@@ -89,6 +93,8 @@ Finally, exit the shell in the source directory to return to where you were:
 $ exit
 ```
 
+---
+
 ## Using chezmoi across multiple machines
 
 On a second machine, initialize chezmoi with your dotfiles repo:
@@ -118,6 +124,8 @@ On any machine, you can pull and apply the latest changes from your repo with:
 $ chezmoi update
 ```
 
+---
+
 ## Next steps
 
 For a full list of commands run:
@@ -126,7 +134,10 @@ For a full list of commands run:
 $ chezmoi help
 ```
 
-chezmoi has much more functionality. Good starting points are adding more
-dotfiles, and using templates to manage files that vary from machine to machine
-and retrieve secrets from your password manager. Read the [how-to
+chezmoi has much more functionality. Good starting points are reading [articles
+about chezmoi](https://github.com/twpayne/chezmoi/blob/master/docs/MEDIA.md)
+adding more dotfiles, and using templates to manage files that vary from machine
+to machine and retrieve secrets from your password manager. Read the [how-to
 guide](https://github.com/twpayne/chezmoi/blob/master/docs/HOWTO.md) to explore.
+
+---

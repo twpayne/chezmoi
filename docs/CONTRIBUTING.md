@@ -9,6 +9,8 @@
 * [Packaging](#packaging)
 * [Updating the website](#updating-the-website)
 
+---
+
 ## Getting started
 
 chezmoi is written in [Go](https://golang.org) and development happens on
@@ -17,6 +19,8 @@ checked out chezmoi locally.
 
 The [Architecture Guide](ARCHITECTURE.md) contains a high-level overview of
 chezmoi's source code.
+
+---
 
 ## Developing locally
 
@@ -47,6 +51,8 @@ Run chezmoi:
 $ go run .
 ```
 
+---
+
 ## Generated code
 
 chezmoi generates shell completions, the install script, and the website from a
@@ -66,6 +72,8 @@ if you change includes any of the following:
 chezmoi's continuous integration verifies that all generated files are up to
 date. Changes to generated files should be included in the commit that modifies
 the source of truth.
+
+---
 
 ## Contributing changes
 
@@ -111,6 +119,8 @@ that:
 
 * The branch applies cleanly to `master`.
 
+---
+
 ## Managing releases
 
 Releases are managed with [`goreleaser`](https://goreleaser.com/).
@@ -146,6 +156,8 @@ $ snapcraft export-login --snaps=chezmoi --channels=stable,candidate,beta,edge -
 ```console
 $ brew bump-formula-pr --tag=v1.2.3 chezmoi
 ```
+
+---
 
 ## Packaging
 
@@ -193,6 +205,8 @@ If you're packaging chezmoi for an operating system or distribution:
   guide](https://github.com/twpayne/chezmoi/blob/master/docs/INSTALL.md) are
   absent or incorrect, please open an issue or submit a PR to correct them.
 
+---
+
 ## Updating the website
 
 [The website](https://chezmoi.io) is generated with [Hugo](https://gohugo.io/)
@@ -234,3 +248,5 @@ $ git push
 
 to push them. You can only push changes if you have write permissions to the
 chezmoi GitHub repo.
+
+---

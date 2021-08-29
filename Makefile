@@ -9,47 +9,51 @@ build: build-darwin build-freebsd build-linux build-windows
 
 .PHONY: build-darwin
 build-darwin:
-	GOOS=darwin GOARCH=amd64 $(GO) build -o /dev/null .
-	GOOS=darwin GOARCH=arm64 $(GO) build -o /dev/null .
+	GOOS=darwin GOARCH=amd64 ${GO} build -o /dev/null .
+	GOOS=darwin GOARCH=arm64 ${GO} build -o /dev/null .
 
 .PHONY: build-freebsd
 build-freebsd:
-	GOOS=freebsd GOARCH=amd64 $(GO) build -o /dev/null .
+	GOOS=freebsd GOARCH=amd64 ${GO} build -o /dev/null .
 
 .PHONY: build-linux
 build-linux:
-	GOOS=linux GOARCH=amd64 $(GO) build -o /dev/null .
-	GOOS=linux GOARCH=amd64 $(GO) build -tags=noupgrade -o /dev/null .
+	GOOS=linux GOARCH=amd64 ${GO} build -o /dev/null .
+	GOOS=linux GOARCH=amd64 ${GO} build -tags=noupgrade -o /dev/null .
 
 .PHONY: build-windows
 build-windows:
-	GOOS=windows GOARCH=amd64 $(GO) build -o /dev/null .
+	GOOS=windows GOARCH=amd64 ${GO} build -o /dev/null .
 
 .PHONY: run
 run:
-	$(GO) run . --version
+	${GO} run . --version
 
 .PHONY: test
 test:
-	$(GO) test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o022" ./...
-	$(GO) test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o002" ./...
+	${GO} test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o022" ./...
+	${GO} test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o002" ./...
+
+.PHONY: test-os
+test-os:
+	( cd assets/vagrant && ./test.sh fedora33 freebsd13 openbsd6 )
 
 .PHONY: coverage-html
 coverage-html: coverage
-	$(GO) tool cover -html=coverage.out
+	${GO} tool cover -html=coverage.out
 
 .PHONY: coverage
 coverage:
-	$(GO) test -test.coverprofile=coverage.out ./...
+	${GO} test -test.coverprofile=coverage.out ./...
 
 .PHONY: generate
 generate:
-	$(GO) generate
+	${GO} generate
 
 .PHONY: lint
 lint: ensure-golangci-lint
 	./bin/golangci-lint run
-	$(GO) run ./internal/cmds/lint-whitespace
+	${GO} run ./internal/cmds/lint-whitespace
 
 .PHONY: format
 format: ensure-gofumports
@@ -62,7 +66,7 @@ ensure-tools: ensure-gofumports ensure-golangci-lint
 ensure-gofumports:
 	if [ ! -x bin/gofumports ] ; then \
 		mkdir -p bin ; \
-		GOBIN=$(shell pwd)/bin $(GO) install mvdan.cc/gofumpt/gofumports@latest ; \
+		GOBIN=$(shell pwd)/bin ${GO} install mvdan.cc/gofumpt/gofumports@latest ; \
 	fi
 
 .PHONY: ensure-golangci-lint

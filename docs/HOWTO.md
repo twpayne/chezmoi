@@ -58,7 +58,11 @@
   * [Migrate from a dotfile manager that uses symlinks](#migrate-from-a-dotfile-manager-that-uses-symlinks)
 * [Migrate away from chezmoi](#migrate-away-from-chezmoi)
 
+---
+
 ## Perform daily operations
+
+---
 
 ### Use a hosted repo to manage your dotfiles across multiple machines
 
@@ -100,6 +104,8 @@ The above commands can be combined into a single init, checkout, and apply:
 $ chezmoi init --apply --verbose https://github.com/username/dotfiles.git
 ```
 
+---
+
 ### Pull the latest changes from your repo and apply them
 
 You can pull the changes from your repo and apply them in a single command:
@@ -109,6 +115,8 @@ $ chezmoi update
 ```
 
 This runs `git pull --rebase` in your source directory and then `chezmoi apply`.
+
+---
 
 ### Pull the latest changes from your repo and see what would change, without actually applying the changes
 
@@ -129,6 +137,8 @@ $ chezmoi apply
 ```
 
 to apply them.
+
+---
 
 ### Automatically commit and push changes to your repo
 
@@ -152,6 +162,8 @@ not pushed.
 Be careful when using `autoPush`. If your dotfiles repo is public and you
 accidentally add a secret in plain text, that secret will be pushed to your
 public repo.
+
+---
 
 ### Install chezmoi and your dotfiles on a new machine with a single command
 
@@ -178,7 +190,11 @@ with a single command:
 $ sh -c "$(curl -fsLS git.io/chezmoi)" -- init --one-shot <github-username>
 ```
 
+---
+
 ## Manage different types of file
+
+---
 
 ### Have chezmoi create a directory, but ignore its contents
 
@@ -204,6 +220,8 @@ $ touch $(chezmoi source-path)/src/.keep
 chezmoi automatically creates `.keep` files when you add an empty directory with
 `chezmoi add`.
 
+---
+
 ### Ensure that a target is removed
 
 Create a file called `.chezmoiremove` in the source directory containing a list
@@ -224,6 +242,8 @@ $ chezmoi apply --remove --dry-run --verbose
 `.chezmoiremove` is interpreted as a template, so you can remove different files
 on different machines. Negative matches (patterns prefixed with a `!`) or
 targets listed in `.chezmoiignore` will never be removed.
+
+---
 
 ### Manage part, but not all, of a file
 
@@ -246,6 +266,8 @@ substituted with:
 current-context: {{ output "kubectl" "config" "current-context" | trim }}
 ```
 
+---
+
 ### Populate `~/.ssh/authorized_keys` with your public SSH keys from GitHub
 
 chezmoi can retrieve your public SSH keys from GitHub, which can be useful for
@@ -259,7 +281,11 @@ GitHub username:
 {{ end -}}
 ```
 
+---
+
 ## Integrate chezmoi with your editor
+
+---
 
 ### Configure VIM to run `chezmoi apply` whenever you save a dotfile
 
@@ -269,7 +295,11 @@ Put the following in your `.vimrc`:
 autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path %
 ```
 
+---
+
 ## Include dotfiles from elsewhere
+
+---
 
 ### Include a subdirectory from another repository, like Oh My Zsh
 
@@ -322,6 +352,8 @@ When using Oh My Zsh, make sure you disable auto-updates by setting
 `~/.oh-my-zsh` directory to drift out of sync with chezmoi's source state. To
 update Oh My Zsh and its plugins, refresh the downloaded archives.
 
+---
+
 ### Handle configuration files which are externally modified
 
 Some programs modify their configuration files. When you next run `chezmoi
@@ -363,6 +395,8 @@ $ chezmoi apply -v
 Now, when the program modifies its configuration file it will modify the file in
 the source state instead.
 
+---
+
 ### Import archives
 
 It is occasionally useful to import entire archives of configuration into your
@@ -384,7 +418,11 @@ $ chezmoi apply
 
 to update your destination directory.
 
+---
+
 ## Manage machine-to-machine differences
+
+---
 
 ### Use templates
 
@@ -506,6 +544,8 @@ will be removed. This can be used to ensure that files are only present on
 certain machines. If you want an empty file to be created anyway, you will need
 to give it an `empty_` prefix.
 
+---
+
 ### Ignore files or a directory on different machines
 
 For coarser-grained control of files and entire directories managed on different
@@ -534,6 +574,8 @@ f*
 ```
 
 will ignore all files beginning with an `f` except `foo`.
+
+---
 
 ### Use completely different dotfiles on different machines
 
@@ -602,6 +644,8 @@ The same thing can be achieved using the include function.
 {{ end }}
 ```
 
+---
+
 ### Create a config file on a new machine automatically
 
 `chezmoi init` can also create a config file automatically, if one does not
@@ -627,6 +671,8 @@ To test this template, use `chezmoi execute-template` with the `--init` and
 ```console
 $ chezmoi execute-template --init --promptString email=me@home.org < ~/.local/share/chezmoi/.chezmoi.toml.tmpl
 ```
+
+---
 
 ### Re-create your config file
 
@@ -667,6 +713,8 @@ For boolean variables you can use:
     var = {{ $var }}
 ```
 
+---
+
 ### Handle different file locations on different systems with the same contents
 
 If you want to have the same file contents in different locations on different
@@ -694,12 +742,16 @@ Library/Application Support/App/file.conf
 {{ end }}
 ```
 
+---
+
 ### Create an archive of your dotfiles
 
 `chezmoi archive` creates an archive containing the target state. This can be
 useful for generating target state for a different machine. You can specify a
 different configuration file (including template variables) with the `--config`
 option.
+
+---
 
 ## Keep data private
 
@@ -723,6 +775,8 @@ It is common that you need to store access tokens in config files, e.g. a
 token](https://help.github.com/articles/creating-a-personal-access-token-for-the-command-line/).
 There are several ways to keep these tokens secure, and to prevent them leaving
 your machine.
+
+---
 
 ### Use 1Password
 
@@ -773,6 +827,8 @@ instructs the template language to remove any whitespace before and after the
 substitution. This removes any trailing newline added by your editor when saving
 the template.
 
+---
+
 ### Use Bitwarden
 
 chezmoi includes support for [Bitwarden](https://bitwarden.com/) using the
@@ -809,6 +865,8 @@ with:
 {{ (bitwardenFields "item" "example.com").token.value }}
 ```
 
+---
+
 ### Use gopass
 
 chezmoi includes support for [gopass](https://www.gopass.pw/) using the gopass CLI.
@@ -819,6 +877,8 @@ The first line of the output of `gopass show <pass-name>` is available as the
 ```
 {{ gopass "<pass-name>" }}
 ```
+
+---
 
 ### Use KeePassXC
 
@@ -847,6 +907,8 @@ called `private-key`, its value is available as:
 ```
 {{ keepassxcAttribute "SSH Key" "private-key" }}
 ```
+
+---
 
 ### Use Keychain or Windows Credentials Manager
 
@@ -884,6 +946,8 @@ You can query the keyring from the command line:
 ```console
 $ chezmoi secret keyring get --service=github --user=<github-username>
 ```
+
+---
 
 ### Use LastPass
 
@@ -934,6 +998,8 @@ can use `lastpassRaw` to get its raw value, for example:
 {{ (index (lastpassRaw "SSH Private Key") 0).note }}
 ```
 
+---
+
 ### Use pass
 
 chezmoi includes support for [pass](https://www.passwordstore.org/) using the
@@ -945,6 +1011,8 @@ The first line of the output of `pass show <pass-name>` is available as the
 ```
 {{ pass "<pass-name>" }}
 ```
+
+---
 
 ### Use Vault
 
@@ -968,6 +1036,8 @@ language to extract the data you want. For example:
 {{ (vault "<key>").data.data.password }}
 ```
 
+---
+
 ### Use a custom password manager
 
 You can use any command line tool that outputs secrets either as a string or in
@@ -985,6 +1055,8 @@ respectively. All of the above secret managers can be supported in this way:
 | KeePassXC       | `keepassxc-cli`  | Not possible (interactive command only)           |
 | pass            | `pass`           | `{{ secret "show" <id> }}`                        |
 
+---
+
 ### Encrypt whole files with gpg
 
 chezmoi supports encrypting files with [gpg](https://www.gnupg.org/). Encrypted
@@ -992,6 +1064,8 @@ files are stored in the source state and automatically be decrypted when
 generating the target state or printing a file's contents with `chezmoi cat`.
 `chezmoi edit` will transparently decrypt the file before editing and re-encrypt
 it afterwards.
+
+---
 
 #### Asymmetric (private/public-key) encryption
 
@@ -1019,6 +1093,8 @@ gpg --armor --recipient ${gpg.recipient} --encrypt
 and store the encrypted file in the source state. The file will automatically be
 decrypted when generating the target state.
 
+---
+
 #### Symmetric encryption
 
 Specify symmetric encryption in your configuration file:
@@ -1040,6 +1116,8 @@ chezmoi will encrypt the file with:
 ```bash
 gpg --armor --symmetric
 ```
+
+---
 
 ### Encrypt whole files with age
 
@@ -1075,6 +1153,8 @@ $ chezmoi add --encrypt ~/.ssh/id_rsa
 chezmoi supports multiple recipients and recipient files, and multiple
 identities.
 
+---
+
 #### Symmetric encryption
 
 To use age's symmetric encryption, specify a single identity and enable
@@ -1086,6 +1166,8 @@ encryption = "age"
     identity = "~/.ssh/id_rsa"
     symmetric = true
 ```
+
+---
 
 #### Symmetric encryption with a passphrase
 
@@ -1101,6 +1183,8 @@ encryption = "age"
 You will be prompted for the passphrase whenever you run `chezmoi add --encrypt`
 and whenever chezmoi needs to decrypt the file, for example when you run
 `chezmoi apply`, `chezmoi diff`, or `chezmoi status`.
+
+---
 
 ### Use a private configuration file and template variables
 
@@ -1128,7 +1212,11 @@ Your `~/.local/share/chezmoi/private_dot_gitconfig.tmpl` can then contain:
 Any config files containing tokens in plain text should be private (permissions
 `0600`).
 
+---
+
 ## Use scripts to perform actions
+
+---
 
 ### Understand how scripts work
 
@@ -1155,6 +1243,8 @@ Scripts with the suffix `.tmpl` are treated as templates, with the usual
 template variables available. If, after executing the template, the result is
 only whitespace or an empty string, then the script is not executed. This is
 useful for disabling scripts.
+
+---
 
 ### Install packages with scripts
 
@@ -1192,6 +1282,8 @@ brew install ripgrep
 
 This will install `ripgrep` on both Debian/Ubuntu Linux systems and macOS.
 
+---
+
 ### Run a script when the contents of another file changes
 
 chezmoi's `run_` scripts are run every time you run `chezmoi apply`, whereas
@@ -1220,7 +1312,11 @@ change.
 In this example you should also add `dconf.ini` to `.chezmoiignore` so chezmoi
 does not create `dconf.ini` in your home directory.
 
+---
+
 ## Use chezmoi on macOS
+
+---
 
 ### Use `brew bundle` to manage your brews and casks
 
@@ -1246,7 +1342,11 @@ Note that the `Brewfile` is embedded directly in the script with a bash here
 document. chezmoi will run this script whenever its contents change, i.e. when
 you add or remove brews or casks.
 
+---
+
 ## Use chezmoi on Windows
+
+---
 
 ### Detect Windows Subsystem for Linux (WSL)
 
@@ -1262,6 +1362,8 @@ WSL can be detected by looking for the string `Microsoft` or `microsoft` in
 {{ end }}
 ```
 
+---
+
 ### Run a PowerShell script as admin on Windows
 
 Put the following at the top of your script:
@@ -1276,6 +1378,8 @@ if (-Not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdent
   }
 }
 ```
+
+---
 
 ## Use chezmoi with GitHub Codespaces, Visual Studio Codespaces, or Visual Studio Code Remote - Containers
 
@@ -1375,7 +1479,11 @@ sudo apt install -y vim-gtk
 {{- end -}}
 ```
 
+---
+
 ## Customize chezmoi
+
+---
 
 ### Don't show scripts in the diff output
 
@@ -1388,6 +1496,8 @@ for example:
 [diff]
     exclude = ["scripts"]
 ```
+
+---
 
 ### Customize the diff pager
 
@@ -1402,6 +1512,8 @@ choice by setting `diff.pager` configuration variable. For example, to use
 
 The pager can be disabled using the `--no-pager` flag or by setting `diff.pager`
 to an empty string.
+
+---
 
 ### Use a custom diff tool
 
@@ -1418,6 +1530,8 @@ specify:
     args = ["--diff", "{{ .Destination }}", "{{ .Target }}"]
 ```
 
+---
+
 ### Use a custom merge tool
 
 By default, chezmoi uses vimdiff. You can use a custom tool by setting the
@@ -1433,7 +1547,11 @@ state, source state, and target state respectively. For example, to use
     args = ["-d", "{{ .Destination }}", "{{ .Source }}", "{{ .Target }}"]
 ```
 
+---
+
 ## Migrating to chezmoi from another dotfile manager
+
+---
 
 ### Migrate from a dotfile manager that uses symlinks
 
@@ -1450,6 +1568,8 @@ This will tell `chezmoi add` that the target state of `~/.bashrc` is the target
 of the `~/.bashrc` symlink, rather than the symlink itself. When you run
 `chezmoi apply`, chezmoi will replace the `~/.bashrc` symlink with the file
 contents.
+
+---
 
 ## Migrate away from chezmoi
 

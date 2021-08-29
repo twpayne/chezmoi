@@ -165,7 +165,7 @@ jobs:
     - name: ShellCheck
       uses: ludeeus/action-shellcheck@1.1.0
       with:
-        scandir: ./assets/scripts
+        ignore: completions
     - name: Whitespace
       run: go run ./internal/cmds/lint-whitespace
     - name: Typos

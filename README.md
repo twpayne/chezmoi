@@ -17,6 +17,8 @@ Updating your dotfiles on any machine is a single command:
 $ chezmoi update
 ```
 
+---
+
 * [How do I start with chezmoi now?](#how-do-i-start-with-chezmoi-now)
 * [What does chezmoi do and why should I use it?](#what-does-chezmoi-do-and-why-should-i-use-it)
 * [What are chezmoi's key features?](#what-are-chezmois-key-features)
@@ -32,6 +34,7 @@ $ chezmoi update
 * [What documentation is available?](#what-documentation-is-available)
 * [License](#license)
 
+---
 ## How do I start with chezmoi now?
 
 [Install chezmoi](docs/INSTALL.md) then read the [quick start
@@ -44,6 +47,7 @@ GitLab](https://gitlab.com/search?search=chezmoi), and see how chezmoi [compares
 to other dotfile managers](docs/COMPARISON.md). For a full description of
 chezmoi, consult the [reference](docs/REFERENCE.md).
 
+---
 ## What does chezmoi do and why should I use it?
 
 chezmoi helps you manage your personal configuration files (dotfiles, like
@@ -70,6 +74,8 @@ password manager and/or encrypt whole files with your favorite encryption tool.
 If you do not personalize your configuration or only ever use a single operating
 system with a single account and none of your dotfiles contain secrets then you
 don't need chezmoi. Otherwise, read on...
+
+---
 
 ## What are chezmoi's key features?
 
@@ -123,9 +129,13 @@ commands, including installation, initialization, and keeping your machines
 up-to-date. chezmoi can pull and apply changes from your dotfiles repo in a
 single command, and automatically commit and push changes.
 
+---
+
 ## I already have a system to manage my dotfiles, why should I use chezmoi?
 
 Read the [comparison of chezmoi to other dotfile managers](docs/COMPARISON.md).
+
+---
 
 ## How do people use chezmoi?
 
@@ -138,6 +148,8 @@ GitLab](https://gitlab.com/search?search=chezmoi).
 ### People talking about chezmoi
 
 Read what [people have said about chezmoi](docs/MEDIA.md).
+
+---
 
 ## What documentation is available?
 
@@ -156,6 +168,10 @@ Read what [people have said about chezmoi](docs/MEDIA.md).
 * [Contributing](docs/CONTRIBUTING.md) and [Architecture](docs/ARCHITECTURE.md)
   for people looking to contribute to or package chezmoi.
 
+---
+
 ## License
 
 MIT
+
+---

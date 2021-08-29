@@ -4,13 +4,15 @@
 * [Introduction](#introduction)
 * [Directory structure](#directory-structure)
 * [Key concepts](#key-concepts)
-* [`internal/chezmoi/`](#internalchezmoi)
-* [`internal/cmd/`](#internalcmd)
+* [`internal/chezmoi/` directory](#internalchezmoi-directory)
+* [`internal/cmd/` directory](#internalcmd-directory)
 * [Path handling](#path-handling)
 * [Persistent state](#persistent-state)
 * [Encryption](#encryption)
 * [`run_once_` scripts](#run_once_-scripts)
 * [Testing](#testing)
+
+---
 
 ## Introduction
 
@@ -28,6 +30,8 @@ You can also [browse chezmoi's generated documentation
 online](https://pkg.go.dev/github.com/twpayne/chezmoi/v2) but this only includes
 exported symbols.
 
+---
+
 ## Directory structure
 
 The important directories in chezmoi are:
@@ -38,6 +42,8 @@ The important directories in chezmoi are:
 | `internal/chezmoi/` | chezmoi's core functionality. |
 | `internal/cmd/` | Code for the `chezmoi` command.  |
 | `internal/cmd/testdata/scripts/` | High-level tests of chezmoi's commands using [`testscript`](https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript). |
+
+---
 
 ## Key concepts
 
@@ -51,7 +57,9 @@ directly in chezmoi's code.
 chezmoi uses the generic term *entry* to describe something that it manages.
 Entries can be files, directories, symlinks, scripts, amongst other things.
 
-## `internal/chezmoi/`
+---
+
+## `internal/chezmoi/` directory
 
 All of chezmoi's interaction with the operating system is abstracted through the
 `System` interface. A `System` includes functionality to read and write files
@@ -111,7 +119,9 @@ persistent state. chezmoi can then detect if a third party has updated a target
 since chezmoi last wrote it by comparing the actual state entry in the target
 state with the entry state in the persistent state.
 
-## `internal/cmd/`
+---
+
+## `internal/cmd/` directory
 
 `internal/cmd/*cmd.go` contains the code for each individual command and
 `internal/cmd/*templatefuncs.go` contain the template functions.
@@ -123,6 +133,8 @@ line arguments, and computed and cached values.
 The `Config.persistentPreRunRootE` and `Config.persistentPostRunRootE` methods
 set up and tear down state for individual commands based on the command's
 `Annotations` field.
+
+---
 
 ## Path handling
 
@@ -139,6 +151,8 @@ directory, use forward or backward slashes, and are treated as external paths
 internally and makes no attempt to handle case-insensitive or case-preserving
 filesystems.
 
+---
+
 ## Persistent state
 
 Persistent state is treated as a two-level key-value store with the
@@ -149,6 +163,8 @@ mode (`--dry-run`) the actual persistent state is copied into a temporary
 persistent state in memory which remembers writes but does not persist them to
 disk.
 
+---
+
 ## Encryption
 
 Encryption tools are abstracted by the `Encryption` interface that contains
@@ -156,11 +172,15 @@ methods of encrypting and decrypting files and `[]byte`s. Implementations are
 the `AGEEncryption` and `GPGEncryption` structs. A `DebugEncryption` struct
 wraps an `Encryption` interface and logs the methods called.
 
+---
+
 ## `run_once_` scripts
 
 The execution of `run_once_` scripts is recorded by storing the SHA256 of their
 contents in the persistent state. `run_once_` scripts are only run if they are
 new or if their contents have not changed.
+
+---
 
 ## Testing
 
@@ -181,3 +201,5 @@ where `<name>` is the basename of file in `testdata/scripts`.
 Tests should, if at all possible, run unmodified on all operating systems tested
 in CI (Linux, macOS, Windows, and FreeBSD). Windows will sometimes need special
 handling due to its path separator and lack of POSIX-style file permissions.
+
+---

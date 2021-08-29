@@ -20,6 +20,8 @@
 * [Using `.chezmoitemplates` for creating similar files](#using-chezmoitemplates-for-creating-similar-files)
   * [Passing multiple arguments](#passing-multiple-arguments)
 
+---
+
 ## Introduction
 
 Templates are used to change the contents of a file depending on the
@@ -36,6 +38,8 @@ if either of the following is true:
 * The file name has a `.tmpl` suffix.
 * The file is in the `.chezmoitemplates` directory, or a subdirectory of
   `.chezmoitemplates`.
+
+---
 
 ## Template data
 
@@ -55,6 +59,8 @@ These come from a variety of sources (later data overwrite earlier ones):
 
 Furthermore, chezmoi provides a variety of functions to retrieve data at runtime
 from password managers, environment variables, and the filesystem.
+
+---
 
 ## Creating a template file
 
@@ -96,6 +102,8 @@ $ $EDITOR dot_zshrc.tmpl
 	  cd .chezmoitemplates
 	  $EDITOR mytemplate
 
+---
+
 ## Editing a template file
 
 The easiest way to edit a template is to use `chezmoi edit`, for example:
@@ -114,6 +122,8 @@ editor, use the `--apply` option, for example:
 $ chezmoi edit --apply ~/.zshrc
 ```
 
+---
+
 ## Testing templates
 
 Templates can be tested with the `chezmoi execute-template` command which treats
@@ -131,6 +141,8 @@ from the standard input. This can be useful for testing whole files, for example
 $ chezmoi cd
 $ chezmoi execute-template < dot_zshrc.tmpl
 ```
+
+---
 
 ## Template syntax
 
@@ -160,6 +172,8 @@ for example:
 For a full description of the template syntax, see the [`text/template`
 documentation](https://pkg.go.dev/text/template).
 
+---
+
 ### Removing whitespace
 
 For formatting reasons you might want to leave some whitespace after or before
@@ -182,6 +196,8 @@ HOSTNAME=myhostname
 
 Notice that this will remove any number of tabs, spaces and even newlines and
 carriage returns.
+
+---
 
 ## Debugging templates
 
@@ -206,6 +222,8 @@ You can also feed the contents of a file to this command by typing:
 $ cat foo.txt | chezmoi execute-template
 ```
 
+---
+
 ## Simple logic
 
 A very useful feature of chezmoi templates is the ability to perform logical
@@ -225,6 +243,8 @@ In this example chezmoi will look at the hostname of the machine and if that is
 equal to "work-laptop", the text between the `if` and the `end` will be included
 in the result.
 
+---
+
 ### Boolean functions
 
 | Function | Return value                                              |
@@ -233,6 +253,8 @@ in the result.
 | `not`    | Returns the boolean negation of its single argument. |
 | `and`    | Returns the boolean AND of its arguments by returning the first empty argument or the last argument, that is, `and x y` behaves as `if x then y else x`. All the arguments are evaluated. |
 | `or`     | Returns the boolean OR of its arguments by returning the first non-empty argument or the last argument, that is, `or x y` behaves as `if x then x else y` All the arguments are evaluated. |
+
+---
 
 ### Integer functions
 
@@ -245,6 +267,8 @@ in the result.
 | `le`     | Returns the boolean truth of arg1 <= arg2.  |
 | `gt`     | Returns the boolean truth of arg1 > arg2.   |
 | `ge`     | Returns the boolean truth of arg1 >= arg2.  |
+
+---
 
 ## More complicated logic
 
@@ -266,6 +290,8 @@ nothing.
 
 The operators `or` and `and` can also accept multiple arguments.
 
+---
+
 ### Chaining operators
 
 You can perform multiple checks in one if statement.
@@ -282,6 +308,8 @@ arguments will be give to the `and` command.
 
 This way you can chain as many operators together as you like.
 
+---
+
 ## Helper functions
 
 chezmoi has added multiple helper functions to the
@@ -293,6 +321,8 @@ their documentation for a list.
 
 chezmoi adds a few functions of its own as well. Take a look at the
 [`reference`](REFERENCE.md#template-functions) for complete list.
+
+---
 
 ## Template variables
 
@@ -315,6 +345,8 @@ This outputs the variables in JSON format by default. To access the variable
 ```
 
 This way you can also access the variables you defined yourself.
+
+---
 
 ## Using `.chezmoitemplates`
 
@@ -340,6 +372,8 @@ For example:
 dot_file.tmpl:
 {{ template "part.tmpl" . }}
 ```
+
+---
 
 ## Using `.chezmoitemplates` for creating similar files
 
@@ -384,10 +418,14 @@ fontsize: 18
 more: config
 ```
 
+---
+
 ### Passing multiple arguments
 
 In the example above only one arguments is passed to the template. To pass more
 arguments to the template, you can do it in two ways.
+
+---
 
 #### Via the config file
 
@@ -422,6 +460,8 @@ And connect them with `.local/share/chezmoi/small-font.yml.tmpl`:
 At the moment, this means that you'll have to duplicate the alacritty data in
 the config file on every machine, but a feature will be added to avoid this.
 
+---
+
 #### By passing a dictionary
 
 Using the same alacritty configuration as above, you can pass the arguments to
@@ -430,3 +470,5 @@ it with a dictionary, for example `.local/share/chezmoi/small-font.yml.tmpl`:
 ```
 {{- template "alacritty" dict "fontsize" 12 "font" "DejaVu Sans Mono" -}}
 ```
+
+---
