@@ -34,6 +34,10 @@ test:
 	${GO} test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o022" ./...
 	${GO} test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o002" ./...
 
+.PHONY: test-os
+test-os:
+	( cd assets/vagrant && ./test.sh fedora33 freebsd13 openbsd6 )
+
 .PHONY: coverage-html
 coverage-html: coverage
 	${GO} tool cover -html=coverage.out
