@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Contributing Guide #  Getting started #  chezmoi is written in Go and development happens on GitHub. The rest of this document assumes that you&rsquo;ve checked out chezmoi locally.
+<meta name="description" content="Contributing Guide #   Getting started #  chezmoi is written in Go and development happens on GitHub. The rest of this document assumes that you&rsquo;ve checked out chezmoi locally.
 The Architecture Guide contains a high-level overview of chezmoi&rsquo;s source code.
-Developing locally #  chezmoi requires Go 1.17 or later.
+ Developing locally #  chezmoi requires Go 1.17 or later.
 chezmoi is a standard Go project, using standard Go tooling, with a few extra tools. Ensure that these extra tools are installed with:">
 <meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Contributing" />
-<meta property="og:description" content="Contributing Guide #  Getting started #  chezmoi is written in Go and development happens on GitHub. The rest of this document assumes that you&rsquo;ve checked out chezmoi locally.
+<meta property="og:description" content="Contributing Guide #   Getting started #  chezmoi is written in Go and development happens on GitHub. The rest of this document assumes that you&rsquo;ve checked out chezmoi locally.
 The Architecture Guide contains a high-level overview of chezmoi&rsquo;s source code.
-Developing locally #  chezmoi requires Go 1.17 or later.
+ Developing locally #  chezmoi requires Go 1.17 or later.
 chezmoi is a standard Go project, using standard Go tooling, with a few extra tools. Ensure that these extra tools are installed with:" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chezmoi.io/docs/contributing/" /><meta property="article:section" content="docs" />
@@ -22,7 +22,7 @@ chezmoi is a standard Go project, using standard Go tooling, with a few extra to
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" integrity="sha256-lYzqeCdiHW&#43;8s6zwkTRMPkTj0qlCj5w8OLues3v4xF0=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.f3b52a56bca053d20dc667eeeb1a96b181b97d36f68013e1c8542f160138c18d.js" integrity="sha256-87UqVrygU9INxmfu6xqWsYG5fTb2gBPhyFQvFgE4wY0=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.c115908d5df4a99c542383b1ee4ccbd967748872223b93e3162b8a08daa23940.js" integrity="sha256-wRWQjV30qZxUI4Ox7kzL2Wd0iHIiO5PjFiuKCNqiOUA=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -144,6 +144,7 @@ https://github.com/alex-shpak/hugo-book
   Contributing Guide
   <a class="anchor" href="#contributing-guide">#</a>
 </h1>
+<hr>
 <h2 id="getting-started">
   Getting started
   <a class="anchor" href="#getting-started">#</a>
@@ -153,6 +154,7 @@ https://github.com/alex-shpak/hugo-book
 checked out chezmoi locally.</p>
 <p>The <a href="ARCHITECTURE.md">Architecture Guide</a> contains a high-level overview of
 chezmoi&rsquo;s source code.</p>
+<hr>
 <h2 id="developing-locally">
   Developing locally
   <a class="anchor" href="#developing-locally">#</a>
@@ -167,7 +169,8 @@ tools. Ensure that these extra tools are installed with:</p>
 <pre><code class="language-console" data-lang="console">$ go test ./...
 </code></pre><p>Run chezmoi:</p>
 <pre><code class="language-console" data-lang="console">$ go run .
-</code></pre><h2 id="generated-code">
+</code></pre><hr>
+<h2 id="generated-code">
   Generated code
   <a class="anchor" href="#generated-code">#</a>
 </h2>
@@ -184,6 +187,7 @@ single source of truth. You must run</p>
 <p>chezmoi&rsquo;s continuous integration verifies that all generated files are up to
 date. Changes to generated files should be included in the commit that modifies
 the source of truth.</p>
+<hr>
 <h2 id="contributing-changes">
   Contributing changes
   <a class="anchor" href="#contributing-changes">#</a>
@@ -237,6 +241,7 @@ included in the body of the commit message.</p>
 <p>The branch applies cleanly to <code>master</code>.</p>
 </li>
 </ul>
+<hr>
 <h2 id="managing-releases">
   Managing releases
   <a class="anchor" href="#managing-releases">#</a>
@@ -257,7 +262,8 @@ logins periodically expire. Create a new snapcraft login by running:</p>
 <pre><code class="language-console" data-lang="console">$ snapcraft export-login --snaps=chezmoi --channels=stable,candidate,beta,edge --acls=package_upload -
 </code></pre><p><a href="https://brew.sh/">brew</a> formula must be updated manually with the command:</p>
 <pre><code class="language-console" data-lang="console">$ brew bump-formula-pr --tag=v1.2.3 chezmoi
-</code></pre><h2 id="packaging">
+</code></pre><hr>
+<h2 id="packaging">
   Packaging
   <a class="anchor" href="#packaging">#</a>
 </h2>
@@ -305,6 +311,7 @@ guide</a> are
 absent or incorrect, please open an issue or submit a PR to correct them.</p>
 </li>
 </ul>
+<hr>
 <h2 id="updating-the-website">
   Updating the website
   <a class="anchor" href="#updating-the-website">#</a>
@@ -326,6 +333,7 @@ Theme</a> by running:</p>
 <pre><code class="language-console" data-lang="console">$ git push
 </code></pre><p>to push them. You can only push changes if you have write permissions to the
 chezmoi GitHub repo.</p>
+<hr>
 </article>
  
       

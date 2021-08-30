@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Frequently Asked Questions #  How can I quickly check for problems with chezmoi on my machine? #  Run:
+<meta name="description" content="Frequently Asked Questions #   How can I quickly check for problems with chezmoi on my machine? #  Run:
 $ chezmoi doctor Anything ok is fine, anything warning is only a problem if you want to use the related feature, and anything error indicates a definite problem.
-How do I edit my dotfiles with chezmoi? #  There are four popular approaches:
+ How do I edit my dotfiles with chezmoi? #  There are four popular approaches:
  Use chezmoi edit $FILE. This will open the source file for $FILE in your editor, including .">
 <meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="FAQ" />
-<meta property="og:description" content="Frequently Asked Questions #  How can I quickly check for problems with chezmoi on my machine? #  Run:
+<meta property="og:description" content="Frequently Asked Questions #   How can I quickly check for problems with chezmoi on my machine? #  Run:
 $ chezmoi doctor Anything ok is fine, anything warning is only a problem if you want to use the related feature, and anything error indicates a definite problem.
-How do I edit my dotfiles with chezmoi? #  There are four popular approaches:
+ How do I edit my dotfiles with chezmoi? #  There are four popular approaches:
  Use chezmoi edit $FILE. This will open the source file for $FILE in your editor, including ." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chezmoi.io/docs/faq/" /><meta property="article:section" content="docs" />
@@ -22,7 +22,7 @@ How do I edit my dotfiles with chezmoi? #  There are four popular approaches:
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" integrity="sha256-lYzqeCdiHW&#43;8s6zwkTRMPkTj0qlCj5w8OLues3v4xF0=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.f3b52a56bca053d20dc667eeeb1a96b181b97d36f68013e1c8542f160138c18d.js" integrity="sha256-87UqVrygU9INxmfu6xqWsYG5fTb2gBPhyFQvFgE4wY0=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.c115908d5df4a99c542383b1ee4ccbd967748872223b93e3162b8a08daa23940.js" integrity="sha256-wRWQjV30qZxUI4Ox7kzL2Wd0iHIiO5PjFiuKCNqiOUA=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -164,6 +164,7 @@ https://github.com/alex-shpak/hugo-book
   Frequently Asked Questions
   <a class="anchor" href="#frequently-asked-questions">#</a>
 </h1>
+<hr>
 <h2 id="how-can-i-quickly-check-for-problems-with-chezmoi-on-my-machine">
   How can I quickly check for problems with chezmoi on my machine?
   <a class="anchor" href="#how-can-i-quickly-check-for-problems-with-chezmoi-on-my-machine">#</a>
@@ -172,6 +173,7 @@ https://github.com/alex-shpak/hugo-book
 <pre><code class="language-console" data-lang="console">$ chezmoi doctor
 </code></pre><p>Anything <code>ok</code> is fine, anything <code>warning</code> is only a problem if you want to use
 the related feature, and anything <code>error</code> indicates a definite problem.</p>
+<hr>
 <h2 id="how-do-i-edit-my-dotfiles-with-chezmoi">
   How do I edit my dotfiles with chezmoi?
   <a class="anchor" href="#how-do-i-edit-my-dotfiles-with-chezmoi">#</a>
@@ -190,6 +192,7 @@ arguments to open the source directory.</li>
 <code>chezmoi add $FILE</code> or <code>chezmoi re-add</code>. Note that <code>re-add</code> doesn&rsquo;t work with
 templates.</li>
 </ol>
+<hr>
 <h2 id="do-i-have-to-use-chezmoi-edit-to-edit-my-dotfiles">
   Do I have to use <code>chezmoi edit</code> to edit my dotfiles?
   <a class="anchor" href="#do-i-have-to-use-chezmoi-edit-to-edit-my-dotfiles">#</a>
@@ -211,6 +214,7 @@ what would change and apply those changes without having to run <code>chezmoi di
 or <code>chezmoi apply</code>. Note also that the arguments to <code>chezmoi edit</code> are the
 files in their target location.</li>
 </ul>
+<hr>
 <h2 id="what-are-the-consequences-of-bare-modifications-to-the-target-files-if-my-zshrc-is-managed-by-chezmoi-and-i-edit-zshrc-without-using-chezmoi-edit-what-happens">
   What are the consequences of &ldquo;bare&rdquo; modifications to the target files? If my <code>.zshrc</code> is managed by chezmoi and I edit <code>~/.zshrc</code> without using <code>chezmoi edit</code>, what happens?
   <a class="anchor" href="#what-are-the-consequences-of-bare-modifications-to-the-target-files-if-my-zshrc-is-managed-by-chezmoi-and-i-edit-zshrc-without-using-chezmoi-edit-what-happens">#</a>
@@ -219,17 +223,20 @@ files in their target location.</li>
 When you run <code>chezmoi apply</code> chezmoi will detect that <code>~/.zshrc</code> has changed
 since chezmoi last wrote it and prompt you what to do. You can resolve
 differences with a merge tool by running <code>chezmoi merge ~/.zshrc</code>.</p>
+<hr>
 <h2 id="how-can-i-tell-what-dotfiles-in-my-home-directory-arent-managed-by-chezmoi-is-there-an-easy-way-to-have-chezmoi-manage-a-subset-of-them">
   How can I tell what dotfiles in my home directory aren&rsquo;t managed by chezmoi? Is there an easy way to have chezmoi manage a subset of them?
   <a class="anchor" href="#how-can-i-tell-what-dotfiles-in-my-home-directory-arent-managed-by-chezmoi-is-there-an-easy-way-to-have-chezmoi-manage-a-subset-of-them">#</a>
 </h2>
 <p><code>chezmoi unmanaged</code> will list everything not managed by chezmoi. You can add
 entire directories with <code>chezmoi add</code>.</p>
+<hr>
 <h2 id="how-can-i-tell-what-dotfiles-in-my-home-directory-are-currently-managed-by-chezmoi">
   How can I tell what dotfiles in my home directory are currently managed by chezmoi?
   <a class="anchor" href="#how-can-i-tell-what-dotfiles-in-my-home-directory-are-currently-managed-by-chezmoi">#</a>
 </h2>
 <p><code>chezmoi managed</code> will list everything managed by chezmoi.</p>
+<hr>
 <h2 id="if-theres-a-mechanism-in-place-for-the-above-is-there-also-a-way-to-tell-chezmoi-to-ignore-specific-files-or-groups-of-files-eg-by-directory-name-or-by-glob">
   If there&rsquo;s a mechanism in place for the above, is there also a way to tell chezmoi to ignore specific files or groups of files (e.g. by directory name or by glob)?
   <a class="anchor" href="#if-theres-a-mechanism-in-place-for-the-above-is-there-also-a-way-to-tell-chezmoi-to-ignore-specific-files-or-groups-of-files-eg-by-directory-name-or-by-glob">#</a>
@@ -241,12 +248,14 @@ called <code>.chezmoiignore</code> in the source state.</p>
 <p>Patterns are supported, and you can change what&rsquo;s ignored from machine to
 machine. The full usage and syntax is described in the <a href="/docs/reference/#chezmoiignore">reference
 manual</a>.</p>
+<hr>
 <h2 id="if-the-target-already-exists-but-is-behind-the-source-can-chezmoi-be-configured-to-preserve-the-target-version-before-replacing-it-with-one-derived-from-the-source">
   If the target already exists, but is &ldquo;behind&rdquo; the source, can chezmoi be configured to preserve the target version before replacing it with one derived from the source?
   <a class="anchor" href="#if-the-target-already-exists-but-is-behind-the-source-can-chezmoi-be-configured-to-preserve-the-target-version-before-replacing-it-with-one-derived-from-the-source">#</a>
 </h2>
 <p>Yes. Run <code>chezmoi add</code> will update the source state with the target. To see
 diffs of what would change, without actually changing anything, use <code>chezmoi diff</code>.</p>
+<hr>
 <h2 id="once-ive-made-a-change-to-the-source-directory-how-do-i-commit-it">
   Once I&rsquo;ve made a change to the source directory, how do I commit it?
   <a class="anchor" href="#once-ive-made-a-change-to-the-source-directory-how-do-i-commit-it">#</a>
@@ -263,6 +272,7 @@ example <code>chezmoi git -- commit -m &quot;Update dotfiles&quot;</code>.</li>
 source state, as <a href="/docs/how-to/#automatically-commit-and-push-changes-to-your-repo">described in the how-to
 guide</a>.</li>
 </ul>
+<hr>
 <h2 id="ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both">
   I&rsquo;ve made changes to both the destination state and the source state that I want to keep. How can I keep them both?
   <a class="anchor" href="#ive-made-changes-to-both-the-destination-state-and-the-source-state-that-i-want-to-keep-how-can-i-keep-them-both">#</a>
@@ -270,6 +280,7 @@ guide</a>.</li>
 <p><code>chezmoi merge</code> will open a merge tool to resolve differences between the source
 state, target state, and destination state. Copy the changes you want to keep in
 to the source state.</p>
+<hr>
 <h2 id="why-does-chezmoi-convert-all-my-template-variables-to-lowercase">
   Why does chezmoi convert all my template variables to lowercase?
   <a class="anchor" href="#why-does-chezmoi-convert-all-my-template-variables-to-lowercase">#</a>
@@ -278,6 +289,7 @@ to the source state.</p>
 <a href="https://github.com/spf13/viper"><code>github.com/spf13/viper</code></a>, the library that
 chezmoi uses to read its configuration file. For more information see <a href="https://github.com/twpayne/chezmoi/issues/463">this
 GitHub issue</a>.</p>
+<hr>
 <h2 id="chezmoi-makes-sshconfig-group-writeable-how-do-i-stop-this">
   chezmoi makes <code>~/.ssh/config</code> group writeable. How do I stop this?
   <a class="anchor" href="#chezmoi-makes-sshconfig-group-writeable-how-do-i-stop-this">#</a>
@@ -294,6 +306,7 @@ to control group write permissions for individual files or directories. Please
 <a href="https://github.com/twpayne/chezmoi/issues/new?assignees=&amp;labels=enhancement&amp;template=02_feature_request.md&amp;title=">open an issue on
 GitHub</a>
 if you need this.</p>
+<hr>
 <h2 id="why-does-chezmoi-cd-spawn-a-shell-instead-of-just-changing-directory">
   Why does <code>chezmoi cd</code> spawn a shell instead of just changing directory?
   <a class="anchor" href="#why-does-chezmoi-cd-spawn-a-shell-instead-of-just-changing-directory">#</a>
@@ -305,6 +318,7 @@ the working directory of its parent process. You can add a shell function instea
 <span style="color:#f92672">}</span>
 </code></pre></div><p>Typing <code>chezmoi-cd</code> will then change the directory of your current shell to
 chezmoi&rsquo;s source directory.</p>
+<hr>
 <h2 id="why-doesnt-chezmoi-use-symlinks-like-gnu-stow">
   Why doesn&rsquo;t chezmoi use symlinks like GNU Stow?
   <a class="anchor" href="#why-doesnt-chezmoi-use-symlinks-like-gnu-stow">#</a>
@@ -343,6 +357,7 @@ automation to help (see <a href="https://github.com/twpayne/chezmoi/issues/886">
 for example) but it does need some convincing use cases that demonstrate that a
 symlink from a dotfile&rsquo;s location to its contents in a central directory is
 better than just having the correct dotfile contents.</p>
+<hr>
 <h2 id="what-are-the-limitations-of-chezmois-symlink-mode">
   What are the limitations of chezmoi&rsquo;s symlink mode?
   <a class="anchor" href="#what-are-the-limitations-of-chezmois-symlink-mode">#</a>
@@ -366,6 +381,7 @@ have the <code>exact_</code> attribute and contain empty files, and the director
 might not be usable with symlinks.</p>
 <p>In symlink mode, running <code>chezmoi add</code> does not immediately replace the targets
 with a symlink. You must run <code>chezmoi apply</code> to create the symlinks.</p>
+<hr>
 <h2 id="can-i-change-how-chezmois-source-state-is-represented-on-disk">
   Can I change how chezmoi&rsquo;s source state is represented on disk?
   <a class="anchor" href="#can-i-change-how-chezmois-source-state-is-represented-on-disk">#</a>
@@ -438,6 +454,7 @@ and filesystem.</li>
 <li>Not add significant extra complexity to the user interface or underlying
 implementation.</li>
 </ol>
+<hr>
 <h2 id="gpg-encryption-fails-what-could-be-wrong">
   gpg encryption fails. What could be wrong?
   <a class="anchor" href="#gpg-encryption-fails-what-could-be-wrong">#</a>
@@ -450,6 +467,7 @@ check the trust level by running:</p>
 change the trust level by running:</p>
 <pre><code class="language-console" data-lang="console">$ gpg --edit-key $recipient
 </code></pre><p>Enter <code>trust</code> at the prompt and chose <code>5 = I trust ultimately</code>.</p>
+<hr>
 <h2 id="chezmoi-reports-chezmoi-user-lookup-userid-nnnnn-inputoutput-error">
   chezmoi reports <code>chezmoi: user: lookup userid NNNNN: input/output error</code>
   <a class="anchor" href="#chezmoi-reports-chezmoi-user-lookup-userid-nnnnn-inputoutput-error">#</a>
@@ -462,6 +480,7 @@ or <code>.rpm</code>) which is linked against glibc and includes LDAP/NIS suppor
 of the statically-compiled binary.</p>
 <p>If the problem still persists, then please <a href="https://github.com/twpayne/chezmoi/issues/new/choose">open an issue on
 GitHub</a>.</p>
+<hr>
 <h2 id="chezmoi-reports-chezmoi-timeout-or-chezmoi-timeout-obtaining-persistent-state-lock">
   chezmoi reports <code>chezmoi: timeout</code> or <code>chezmoi: timeout obtaining persistent state lock</code>
   <a class="anchor" href="#chezmoi-reports-chezmoi-timeout-or-chezmoi-timeout-obtaining-persistent-state-lock">#</a>
@@ -476,6 +495,7 @@ permits multiple simultaneous readers, but only one writer (with no readers).</p
 <p>Commands that take a write lock include <code>add</code>, <code>apply</code>, <code>edit</code>, <code>forget</code>,
 <code>import</code>, <code>init</code>, <code>state</code>, <code>unmanage</code>, and <code>update</code>. Commands that take a read
 lock include <code>diff</code>, <code>status</code>, and <code>verify</code>.</p>
+<hr>
 <h2 id="im-getting-errors-trying-to-build-chezmoi-from-source">
   I&rsquo;m getting errors trying to build chezmoi from source
   <a class="anchor" href="#im-getting-errors-trying-to-build-chezmoi-from-source">#</a>
@@ -484,6 +504,7 @@ lock include <code>diff</code>, <code>status</code>, and <code>verify</code>.</p
 <pre><code class="language-console" data-lang="console">$ go version
 </code></pre><p>For more details on building chezmoi, see the <a href="[CONTRIBUTING.md]%28/docs/contributing/%29">Contributing
 Guide</a>.</p>
+<hr>
 <h2 id="what-inspired-chezmoi">
   What inspired chezmoi?
   <a class="anchor" href="#what-inspired-chezmoi">#</a>
@@ -492,6 +513,7 @@ Guide</a>.</p>
 Puppet is an overkill for managing your personal configuration files. The focus
 of chezmoi will always be personal home directory management. If your needs grow
 beyond that, switch to a whole system configuration management tool.</p>
+<hr>
 <h2 id="why-not-use-ansiblechefpuppetsalt-or-similar-to-manage-my-dotfiles-instead">
   Why not use Ansible/Chef/Puppet/Salt, or similar to manage my dotfiles instead?
   <a class="anchor" href="#why-not-use-ansiblechefpuppetsalt-or-similar-to-manage-my-dotfiles-instead">#</a>
@@ -512,6 +534,7 @@ system service, all typically requiring root access.</li>
 <p>chezmoi&rsquo;s focus and simple installation means that it runs almost everywhere:
 from tiny ARM-based Linux systems to Windows desktops, from inside lightweight
 containers to FreeBSD-based virtual machines in the cloud.</p>
+<hr>
 <h2 id="can-i-use-chezmoi-to-manage-files-outside-my-home-directory">
   Can I use chezmoi to manage files outside my home directory?
   <a class="anchor" href="#can-i-use-chezmoi-to-manage-files-outside-my-home-directory">#</a>
@@ -545,6 +568,7 @@ much better suited - and of course can be called from a chezmoi <code>run_</code
 Put your Puppet Manifests, Chef Recipes, Ansible Modules, and Salt Modules in a
 directory ignored by <code>.chezmoiignore</code> so they do not pollute your home
 directory.</p>
+<hr>
 <h2 id="where-does-the-name-chezmoi-come-from">
   Where does the name &ldquo;chezmoi&rdquo; come from?
   <a class="anchor" href="#where-does-the-name-chezmoi-come-from">#</a>
@@ -552,17 +576,20 @@ directory.</p>
 <p>&ldquo;chezmoi&rdquo; splits to &ldquo;chez moi&rdquo; and pronounced /ʃeɪ mwa/ (shay-moi) meaning &ldquo;at
 my house&rdquo; in French. It&rsquo;s seven letters long, which is an appropriate length for
 a command that is only run occasionally.</p>
+<hr>
 <h2 id="what-other-questions-have-been-asked-about-chezmoi">
   What other questions have been asked about chezmoi?
   <a class="anchor" href="#what-other-questions-have-been-asked-about-chezmoi">#</a>
 </h2>
 <p>See the <a href="https://github.com/twpayne/chezmoi/issues?utf8=%E2%9C%93&amp;q=is%3Aissue&#43;sort%3Aupdated-desc&#43;label%3Asupport">issues on
 GitHub</a>.</p>
+<hr>
 <h2 id="where-do-i-ask-a-question-that-isnt-answered-here">
   Where do I ask a question that isn&rsquo;t answered here?
   <a class="anchor" href="#where-do-i-ask-a-question-that-isnt-answered-here">#</a>
 </h2>
 <p>Please <a href="https://github.com/twpayne/chezmoi/issues/new/choose">open an issue on GitHub</a>.</p>
+<hr>
 <h2 id="i-like-chezmoi-how-do-i-say-thanks">
   I like chezmoi. How do I say thanks?
   <a class="anchor" href="#i-like-chezmoi-how-do-i-say-thanks">#</a>
@@ -581,6 +608,7 @@ welcome</a>
 and every <a href="https://github.com/twpayne/chezmoi/issues/new/choose">bug report, support request, and feature
 request</a> helps make
 chezmoi better. Thank you :)</p>
+<hr>
 </article>
  
       

@@ -12,10 +12,10 @@
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/architecture/</guid>
-      <description>Architecture #  Introduction #  This document gives a high-level overview of chezmoi&amp;rsquo;s source code for anyone interested in contributing to chezmoi.
+      <description>Architecture #   Introduction #  This document gives a high-level overview of chezmoi&amp;rsquo;s source code for anyone interested in contributing to chezmoi.
 You can generate Go documentation for chezmoi&amp;rsquo;s source code with go doc, for example:
 $ go doc -all -u github.com/twpayne/chezmoi/v2/internal/chezmoi You can also browse chezmoi&amp;rsquo;s generated documentation online but this only includes exported symbols.
-Directory structure #  The important directories in chezmoi are:
+ Directory structure #  The important directories in chezmoi are:
    Directory Contents     docs/ The documentation single source of truth.</description>
     </item>
     
@@ -25,7 +25,7 @@ Directory structure #  The important directories in chezmoi are:
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/changes/</guid>
-      <description>Changes #  Overview #  This document describes what&amp;rsquo;s new in chezmoi v2 for chezmoi v1 users.
+      <description>Changes #   Overview #  This document describes what&amp;rsquo;s new in chezmoi v2 for chezmoi v1 users.
 If you&amp;rsquo;re not using a dotfile manager, then read why you should you use a dotfile manager and then install chezmoi and follow the quick-start guide.
 If you&amp;rsquo;re already using a dotfile manager, but not chezmoi, then read about how chezmoi compares to other dotfile managers first and then install chezmoi, follow the quick-start guide, and read the how-to guide to quickly discover chezmoi&amp;rsquo;s functionality.</description>
     </item>
@@ -36,7 +36,7 @@ If you&amp;rsquo;re already using a dotfile manager, but not chezmoi, then read 
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/comparison/</guid>
-      <description>Comparison Guide #  Comparison table #      chezmoi dotbot rcm homesick vcsh yadm bare git     Distribution Single binary Python package Multiple files Ruby gem Single script or package Single script -   Install method Many git submodule Many Ruby gem Many Many Manual   Non-root install on bare system 🟢 🟠 🟠 🟠 🟢 🟢 🟢   Windows support 🟢 🔴 🔴 🔴 🔴 🔴 🟢   Bootstrap requirements None Python, git Perl, git Ruby, git sh, git git git   Source repos Single Single Multiple Single Multiple Single Single   dotfiles are&amp;hellip; Files Symlinks Files Symlinks Files Files Files   Config file Optional Required Optional None None None Optional   Private files 🟢 🔴 🔴 🔴 🔴 🔴 🔴   Show differences without applying 🟢 🔴 🔴 🔴 🟢 🟢 🟢   Whole file encryption 🟢 🔴 🔴 🔴 🔴 🟢 🔴   Password manager integration 🟢 🔴 🔴 🔴 🔴 🔴 🔴   Machine-to-machine file differences Templates Alternative files Alternative files Alternative files Branches Templates 🟠   Custom variables in templates 🟢 🔴 🔴 🔴 🔴 🔴 🔴   Executable files 🟢 🟢 🟢 🟢 🟢 🔴 🟢   File creation with initial contents 🟢 🔴 🔴 🔴 🟢 🔴 🔴   Manage partial files 🟢 🔴 🔴 🔴 🟠 🔴 🟠   File removal 🟢 🔴 🔴 🔴 🟢 🔴 🔴   Directory creation 🟢 🟢 🟢 🔴 🟢 🔴 🟢   Run scripts 🟢 🟢 🟢 🔴 🟢 🔴 🔴   Run once scripts 🟢 🔴 🔴 🔴 🟢 🔴 🔴   Machine-to-machine symlink differences 🟢 🔴 🔴 🔴 🟠 🟢 🟠   Shell completion 🟢 🔴 🔴 🔴 🟢 🟢 🟢   Archive import 🟢 🔴 🔴 🔴 🟢 🔴 🟢   Archive export 🟢 🔴 🔴 🔴 🟢 🔴 🟢   Implementation language Go Python Perl Ruby POSIX Shell Bash C    🟢 Supported 🟠 Possible with significant manual effort 🔴 Not supported</description>
+      <description>Comparison Guide #   Comparison table #      chezmoi dotbot rcm homesick vcsh yadm bare git     Distribution Single binary Python package Multiple files Ruby gem Single script or package Single script -   Install method Many git submodule Many Ruby gem Many Many Manual   Non-root install on bare system 🟢 🟠 🟠 🟠 🟢 🟢 🟢   Windows support 🟢 🔴 🔴 🔴 🔴 🔴 🟢   Bootstrap requirements None Python, git Perl, git Ruby, git sh, git git git   Source repos Single Single Multiple Single Multiple Single Single   dotfiles are&amp;hellip; Files Symlinks Files Symlinks Files Files Files   Config file Optional Required Optional None None None Optional   Private files 🟢 🔴 🔴 🔴 🔴 🔴 🔴   Show differences without applying 🟢 🔴 🔴 🔴 🟢 🟢 🟢   Whole file encryption 🟢 🔴 🔴 🔴 🔴 🟢 🔴   Password manager integration 🟢 🔴 🔴 🔴 🔴 🔴 🔴   Machine-to-machine file differences Templates Alternative files Alternative files Alternative files Branches Templates 🟠   Custom variables in templates 🟢 🔴 🔴 🔴 🔴 🔴 🔴   Executable files 🟢 🟢 🟢 🟢 🟢 🔴 🟢   File creation with initial contents 🟢 🔴 🔴 🔴 🟢 🔴 🔴   Manage partial files 🟢 🔴 🔴 🔴 🟠 🔴 🟠   File removal 🟢 🔴 🔴 🔴 🟢 🔴 🔴   Directory creation 🟢 🟢 🟢 🔴 🟢 🔴 🟢   Run scripts 🟢 🟢 🟢 🔴 🟢 🔴 🔴   Run once scripts 🟢 🔴 🔴 🔴 🟢 🔴 🔴   Machine-to-machine symlink differences 🟢 🔴 🔴 🔴 🟠 🟢 🟠   Shell completion 🟢 🔴 🔴 🔴 🟢 🟢 🟢   Externals 🟢 🔴 🔴 🔴 🔴 🔴 🔴   Archive import 🟢 🔴 🔴 🔴 🟢 🔴 🟢   Archive export 🟢 🔴 🔴 🔴 🟢 🔴 🟢   Implementation language Go Python Perl Ruby POSIX Shell Bash C    🟢 Supported 🟠 Possible with significant manual effort 🔴 Not supported</description>
     </item>
     
     <item>
@@ -45,9 +45,9 @@ If you&amp;rsquo;re already using a dotfile manager, but not chezmoi, then read 
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/contributing/</guid>
-      <description>Contributing Guide #  Getting started #  chezmoi is written in Go and development happens on GitHub. The rest of this document assumes that you&amp;rsquo;ve checked out chezmoi locally.
+      <description>Contributing Guide #   Getting started #  chezmoi is written in Go and development happens on GitHub. The rest of this document assumes that you&amp;rsquo;ve checked out chezmoi locally.
 The Architecture Guide contains a high-level overview of chezmoi&amp;rsquo;s source code.
-Developing locally #  chezmoi requires Go 1.17 or later.
+ Developing locally #  chezmoi requires Go 1.17 or later.
 chezmoi is a standard Go project, using standard Go tooling, with a few extra tools. Ensure that these extra tools are installed with:</description>
     </item>
     
@@ -57,9 +57,9 @@ chezmoi is a standard Go project, using standard Go tooling, with a few extra to
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/faq/</guid>
-      <description>Frequently Asked Questions #  How can I quickly check for problems with chezmoi on my machine? #  Run:
+      <description>Frequently Asked Questions #   How can I quickly check for problems with chezmoi on my machine? #  Run:
 $ chezmoi doctor Anything ok is fine, anything warning is only a problem if you want to use the related feature, and anything error indicates a definite problem.
-How do I edit my dotfiles with chezmoi? #  There are four popular approaches:
+ How do I edit my dotfiles with chezmoi? #  There are four popular approaches:
  Use chezmoi edit $FILE. This will open the source file for $FILE in your editor, including .</description>
     </item>
     
@@ -69,7 +69,7 @@ How do I edit my dotfiles with chezmoi? #  There are four popular approaches:
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/how-to/</guid>
-      <description>How-To Guide #  Perform daily operations #  Use a hosted repo to manage your dotfiles across multiple machines #  chezmoi relies on your version control system and hosted repo to share changes across multiple machines. You should create a repo on the source code repository of your choice (e.g. Bitbucket, GitHub, or GitLab, many people call their repo dotfiles) and push the repo in the source directory here.</description>
+      <description>How-To Guide #   Perform daily operations #   Use a hosted repo to manage your dotfiles across multiple machines #  chezmoi relies on your version control system and hosted repo to share changes across multiple machines. You should create a repo on the source code repository of your choice (e.g. Bitbucket, GitHub, or GitLab, many people call their repo dotfiles) and push the repo in the source directory here.</description>
     </item>
     
     <item>
@@ -78,7 +78,7 @@ How do I edit my dotfiles with chezmoi? #  There are four popular approaches:
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/install/</guid>
-      <description>Install Guide #  One-line binary install #  Install the correct binary for your operating system and architecture in ./bin with a single command:
+      <description>Install Guide #   One-line binary install #  Install the correct binary for your operating system and architecture in ./bin with a single command:
 $ sh -c &amp;quot;$(curl -fsLS git.io/chezmoi)&amp;quot; Or, if you have wget instead of curl:
 $ sh -c &amp;quot;$(wget -qO- git.io/chezmoi)&amp;quot; If you already have a dotfiles repo using chezmoi on GitHub at https://github.com/&amp;lt;github-username&amp;gt;/dotfiles then you can install chezmoi and your dotfiles with the single command:</description>
     </item>
@@ -92,7 +92,7 @@ $ sh -c &amp;quot;$(wget -qO- git.io/chezmoi)&amp;quot; If you already have a do
       <description>Media #  Recommended article: Fedora Magazine: Take back your dotfiles with Chezmoi
 Recommended video: chezmoi: manage your dotfiles across multiple, diverse machines, securely
 Recommended podcast: Managing Dot Files and an Introduction to Chezmoi
-   Date Version Format Link     2021-08-08 2.1.4 Audio/text PBS 122 of X — Managing Dot Files with Chezmoi   2021-07-23 2.1.2 Audio Managing Dot Files and an Introduction to Chezmoi   2021-07-15 2.</description>
+    Date Version Format Link     2021-08-22 2.1.2 Audio/text PBS 123 of X — Backing up and Syncing Dot Files with Chezmoi   2021-08-08 2.1.2 Audio/text PBS 122 of X — Managing Dot Files with Chezmoi   2021-07-23 2.</description>
     </item>
     
     <item>
@@ -101,8 +101,8 @@ Recommended podcast: Managing Dot Files and an Introduction to Chezmoi
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/quick-start/</guid>
-      <description>Quick Start Guide #  Concepts #  chezmoi stores the desired state of your dotfiles in the directory ~/.local/share/chezmoi. When you run chezmoi apply, chezmoi calculates the desired contents and permissions for each dotfile and then makes any changes necessary so that your dotfiles match that state.
-Start using chezmoi on your current machine #  Assuming that you have already installed chezmoi, initialize chezmoi with:
+      <description>Quick Start Guide #   Concepts #  chezmoi stores the desired state of your dotfiles in the directory ~/.local/share/chezmoi. When you run chezmoi apply, chezmoi calculates the desired contents and permissions for each dotfile and then makes any changes necessary so that your dotfiles match that state.
+ Start using chezmoi on your current machine #  Assuming that you have already installed chezmoi, initialize chezmoi with:
 $ chezmoi init This will create a new git repository in ~/.</description>
     </item>
     
@@ -112,7 +112,7 @@ $ chezmoi init This will create a new git repository in ~/.</description>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/reference/</guid>
-      <description>Reference Manual #  Concepts #  chezmoi evaluates the source state for the current machine and then updates the destination directory, where:
+      <description>Reference Manual #   Concepts #  chezmoi evaluates the source state for the current machine and then updates the destination directory, where:
   The source state declares the desired state of your home directory, including templates and machine-specific configuration.
   The source directory is where chezmoi stores the source state, by default ~/.local/share/chezmoi.
   The target state is the source state computed for the current machine.</description>
@@ -124,11 +124,10 @@ $ chezmoi init This will create a new git repository in ~/.</description>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/related/</guid>
-      <description>Related Software #  github.com/alker0/chezmoi.vim #  Intelligent VIM syntax highlighting when editing files in your source directory. Works with both chezmoi edit and editing files directly.
-github.com/hussainweb/ansible-role-chezmoi #  Installs chezmoi on Ubuntu and Debian servers.
-github.com/tcaxle/drapeau #  An add-on to synchronise your colorschemes across systems and allow easy colorscheme switching using chezmoi templates.
-github.com/tuh8888/chezmoi.el #  Convenience functions for interacting with chezmoi in Emacs.
-github.com/Lilja/vim-chezmoi #  A plugin for VIM to apply the dotfile you are editing on :w.</description>
+      <description>Related Software #   github.com/alker0/chezmoi.vim #  Intelligent VIM syntax highlighting when editing files in your source directory. Works with both chezmoi edit and editing files directly.
+ github.com/hussainweb/ansible-role-chezmoi #  Installs chezmoi on Ubuntu and Debian servers.
+ github.com/tcaxle/drapeau #  An add-on to synchronise your colorschemes across systems and allow easy colorscheme switching using chezmoi templates.
+ github.com/tuh8888/chezmoi.el #  Convenience functions for interacting with chezmoi in Emacs.</description>
     </item>
     
     <item>
@@ -137,8 +136,9 @@ github.com/Lilja/vim-chezmoi #  A plugin for VIM to apply the dotfile you are ed
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/security/</guid>
-      <description>Security #  Supported versions #  Only the most recent version of chezmoi is supported with security updates.
-Reporting a vulnerability #  Please report vulnerabilities by opening a GitHub issue or sending an email to twpayne+chezmoi-security@gmail.com.</description>
+      <description>Security #   Supported versions #  Only the most recent version of chezmoi is supported with security updates.
+ Reporting a vulnerability #  Please report vulnerabilities by opening a GitHub issue or sending an email to twpayne+chezmoi-security@gmail.com.
+ </description>
     </item>
     
     <item>
@@ -147,7 +147,7 @@ Reporting a vulnerability #  Please report vulnerabilities by opening a GitHub i
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://chezmoi.io/docs/templating/</guid>
-      <description>Templating Guide #  Introduction #  Templates are used to change the contents of a file depending on the environment. For example, you can use the hostname of the machine to create different configurations on different machines.
+      <description>Templating Guide #   Introduction #  Templates are used to change the contents of a file depending on the environment. For example, you can use the hostname of the machine to create different configurations on different machines.
 chezmoi uses the text/template syntax from Go extended with text template functions from sprig.
 When reading files from the source state, chezmoi interprets them as a template if either of the following is true:</description>
     </item>

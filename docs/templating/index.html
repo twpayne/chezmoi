@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Templating Guide #  Introduction #  Templates are used to change the contents of a file depending on the environment. For example, you can use the hostname of the machine to create different configurations on different machines.
+<meta name="description" content="Templating Guide #   Introduction #  Templates are used to change the contents of a file depending on the environment. For example, you can use the hostname of the machine to create different configurations on different machines.
 chezmoi uses the text/template syntax from Go extended with text template functions from sprig.
 When reading files from the source state, chezmoi interprets them as a template if either of the following is true:">
 <meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Templating" />
-<meta property="og:description" content="Templating Guide #  Introduction #  Templates are used to change the contents of a file depending on the environment. For example, you can use the hostname of the machine to create different configurations on different machines.
+<meta property="og:description" content="Templating Guide #   Introduction #  Templates are used to change the contents of a file depending on the environment. For example, you can use the hostname of the machine to create different configurations on different machines.
 chezmoi uses the text/template syntax from Go extended with text template functions from sprig.
 When reading files from the source state, chezmoi interprets them as a template if either of the following is true:" />
 <meta property="og:type" content="article" />
@@ -20,7 +20,7 @@ When reading files from the source state, chezmoi interprets them as a template 
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" integrity="sha256-lYzqeCdiHW&#43;8s6zwkTRMPkTj0qlCj5w8OLues3v4xF0=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.f3b52a56bca053d20dc667eeeb1a96b181b97d36f68013e1c8542f160138c18d.js" integrity="sha256-87UqVrygU9INxmfu6xqWsYG5fTb2gBPhyFQvFgE4wY0=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.c115908d5df4a99c542383b1ee4ccbd967748872223b93e3162b8a08daa23940.js" integrity="sha256-wRWQjV30qZxUI4Ox7kzL2Wd0iHIiO5PjFiuKCNqiOUA=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -165,6 +165,7 @@ https://github.com/alex-shpak/hugo-book
   Templating Guide
   <a class="anchor" href="#templating-guide">#</a>
 </h1>
+<hr>
 <h2 id="introduction">
   Introduction
   <a class="anchor" href="#introduction">#</a>
@@ -182,6 +183,7 @@ if either of the following is true:</p>
 <li>The file is in the <code>.chezmoitemplates</code> directory, or a subdirectory of
 <code>.chezmoitemplates</code>.</li>
 </ul>
+<hr>
 <h2 id="template-data">
   Template data
   <a class="anchor" href="#template-data">#</a>
@@ -198,6 +200,7 @@ order.</li>
 </ul>
 <p>Furthermore, chezmoi provides a variety of functions to retrieve data at runtime
 from password managers, environment variables, and the filesystem.</p>
+<hr>
 <h2 id="creating-a-template-file">
   Creating a template file
   <a class="anchor" href="#creating-a-template-file">#</a>
@@ -234,6 +237,7 @@ $EDITOR mytemplate
 </code></pre>
 </li>
 </ul>
+<hr>
 <h2 id="editing-a-template-file">
   Editing a template file
   <a class="anchor" href="#editing-a-template-file">#</a>
@@ -245,7 +249,8 @@ editor, chezmoi will check the template syntax.</p>
 <p>If you want the changes you make to be immediately applied after you quit the
 editor, use the <code>--apply</code> option, for example:</p>
 <pre><code class="language-console" data-lang="console">$ chezmoi edit --apply ~/.zshrc
-</code></pre><h2 id="testing-templates">
+</code></pre><hr>
+<h2 id="testing-templates">
   Testing templates
   <a class="anchor" href="#testing-templates">#</a>
 </h2>
@@ -257,7 +262,8 @@ testing small fragments of templates, for example:</p>
 from the standard input. This can be useful for testing whole files, for example:</p>
 <pre><code class="language-console" data-lang="console">$ chezmoi cd
 $ chezmoi execute-template &lt; dot_zshrc.tmpl
-</code></pre><h2 id="template-syntax">
+</code></pre><hr>
+<h2 id="template-syntax">
   Template syntax
   <a class="anchor" href="#template-syntax">#</a>
 </h2>
@@ -277,6 +283,7 @@ for example:</p>
 {{ end }}
 </code></pre><p>For a full description of the template syntax, see the <a href="https://pkg.go.dev/text/template"><code>text/template</code>
 documentation</a>.</p>
+<hr>
 <h3 id="removing-whitespace">
   Removing whitespace
   <a class="anchor" href="#removing-whitespace">#</a>
@@ -292,6 +299,7 @@ example:</p>
 <pre><code>HOSTNAME=myhostname
 </code></pre><p>Notice that this will remove any number of tabs, spaces and even newlines and
 carriage returns.</p>
+<hr>
 <h2 id="debugging-templates">
   Debugging templates
   <a class="anchor" href="#debugging-templates">#</a>
@@ -307,7 +315,8 @@ command:</p>
 </code></pre><p>chezmoi will output the current OS and architecture to stdout.</p>
 <p>You can also feed the contents of a file to this command by typing:</p>
 <pre><code class="language-console" data-lang="console">$ cat foo.txt | chezmoi execute-template
-</code></pre><h2 id="simple-logic">
+</code></pre><hr>
+<h2 id="simple-logic">
   Simple logic
   <a class="anchor" href="#simple-logic">#</a>
 </h2>
@@ -323,6 +332,7 @@ export EDITOR=vi
 </code></pre><p>In this example chezmoi will look at the hostname of the machine and if that is
 equal to &ldquo;work-laptop&rdquo;, the text between the <code>if</code> and the <code>end</code> will be included
 in the result.</p>
+<hr>
 <h3 id="boolean-functions">
   Boolean functions
   <a class="anchor" href="#boolean-functions">#</a>
@@ -353,6 +363,7 @@ in the result.</p>
 </tr>
 </tbody>
 </table>
+<hr>
 <h3 id="integer-functions">
   Integer functions
   <a class="anchor" href="#integer-functions">#</a>
@@ -395,6 +406,7 @@ in the result.</p>
 </tr>
 </tbody>
 </table>
+<hr>
 <h2 id="more-complicated-logic">
   More complicated logic
   <a class="anchor" href="#more-complicated-logic">#</a>
@@ -410,6 +422,7 @@ other arguments.</p>
 </code></pre><p>The first two examples will output <code>hello</code> and the last example will output
 nothing.</p>
 <p>The operators <code>or</code> and <code>and</code> can also accept multiple arguments.</p>
+<hr>
 <h3 id="chaining-operators">
   Chaining operators
   <a class="anchor" href="#chaining-operators">#</a>
@@ -422,6 +435,7 @@ nothing.</p>
 the home email. The brackets are needed here, because otherwise all the
 arguments will be give to the <code>and</code> command.</p>
 <p>This way you can chain as many operators together as you like.</p>
+<hr>
 <h2 id="helper-functions">
   Helper functions
   <a class="anchor" href="#helper-functions">#</a>
@@ -433,6 +447,7 @@ the <code>text/template</code> format that contains many helper functions. Take 
 their documentation for a list.</p>
 <p>chezmoi adds a few functions of its own as well. Take a look at the
 <a href="REFERENCE.md#template-functions"><code>reference</code></a> for complete list.</p>
+<hr>
 <h2 id="template-variables">
   Template variables
   <a class="anchor" href="#template-variables">#</a>
@@ -447,6 +462,7 @@ your system, execute:</p>
 <code>chezmoi.kernel.osrelease</code> in a template, use</p>
 <pre><code>{{ .chezmoi.kernel.osrelease }}
 </code></pre><p>This way you can also access the variables you defined yourself.</p>
+<hr>
 <h2 id="using-chezmoitemplates">
   Using <code>.chezmoitemplates</code>
   <a class="anchor" href="#using-chezmoitemplates">#</a>
@@ -468,7 +484,8 @@ data explicitly.</p>
 
 dot_file.tmpl:
 {{ template &quot;part.tmpl&quot; . }}
-</code></pre><h2 id="using-chezmoitemplates-for-creating-similar-files">
+</code></pre><hr>
+<h2 id="using-chezmoitemplates-for-creating-similar-files">
   Using <code>.chezmoitemplates</code> for creating similar files
   <a class="anchor" href="#using-chezmoitemplates-for-creating-similar-files">#</a>
 </h2>
@@ -495,12 +512,14 @@ $ chezmoi cat ~/big-font.yml
 some: config
 fontsize: 18
 more: config
-</code></pre><h3 id="passing-multiple-arguments">
+</code></pre><hr>
+<h3 id="passing-multiple-arguments">
   Passing multiple arguments
   <a class="anchor" href="#passing-multiple-arguments">#</a>
 </h3>
 <p>In the example above only one arguments is passed to the template. To pass more
 arguments to the template, you can do it in two ways.</p>
+<hr>
 <h4 id="via-the-config-file">
   Via the config file
   <a class="anchor" href="#via-the-config-file">#</a>
@@ -523,6 +542,7 @@ more: config
 <pre><code>{{- template &quot;alacritty&quot; .alacritty.small -}}
 </code></pre><p>At the moment, this means that you&rsquo;ll have to duplicate the alacritty data in
 the config file on every machine, but a feature will be added to avoid this.</p>
+<hr>
 <h4 id="by-passing-a-dictionary">
   By passing a dictionary
   <a class="anchor" href="#by-passing-a-dictionary">#</a>
@@ -530,7 +550,8 @@ the config file on every machine, but a feature will be added to avoid this.</p>
 <p>Using the same alacritty configuration as above, you can pass the arguments to
 it with a dictionary, for example <code>.local/share/chezmoi/small-font.yml.tmpl</code>:</p>
 <pre><code>{{- template &quot;alacritty&quot; dict &quot;fontsize&quot; 12 &quot;font&quot; &quot;DejaVu Sans Mono&quot; -}}
-</code></pre></article>
+</code></pre><hr>
+</article>
  
       
 

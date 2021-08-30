@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="How-To Guide #  Perform daily operations #  Use a hosted repo to manage your dotfiles across multiple machines #  chezmoi relies on your version control system and hosted repo to share changes across multiple machines. You should create a repo on the source code repository of your choice (e.g. Bitbucket, GitHub, or GitLab, many people call their repo dotfiles) and push the repo in the source directory here.">
+<meta name="description" content="How-To Guide #   Perform daily operations #   Use a hosted repo to manage your dotfiles across multiple machines #  chezmoi relies on your version control system and hosted repo to share changes across multiple machines. You should create a repo on the source code repository of your choice (e.g. Bitbucket, GitHub, or GitLab, many people call their repo dotfiles) and push the repo in the source directory here.">
 <meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="How-To" />
-<meta property="og:description" content="How-To Guide #  Perform daily operations #  Use a hosted repo to manage your dotfiles across multiple machines #  chezmoi relies on your version control system and hosted repo to share changes across multiple machines. You should create a repo on the source code repository of your choice (e.g. Bitbucket, GitHub, or GitLab, many people call their repo dotfiles) and push the repo in the source directory here." />
+<meta property="og:description" content="How-To Guide #   Perform daily operations #   Use a hosted repo to manage your dotfiles across multiple machines #  chezmoi relies on your version control system and hosted repo to share changes across multiple machines. You should create a repo on the source code repository of your choice (e.g. Bitbucket, GitHub, or GitLab, many people call their repo dotfiles) and push the repo in the source directory here." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chezmoi.io/docs/how-to/" /><meta property="article:section" content="docs" />
 
@@ -16,7 +16,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" integrity="sha256-lYzqeCdiHW&#43;8s6zwkTRMPkTj0qlCj5w8OLues3v4xF0=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.f3b52a56bca053d20dc667eeeb1a96b181b97d36f68013e1c8542f160138c18d.js" integrity="sha256-87UqVrygU9INxmfu6xqWsYG5fTb2gBPhyFQvFgE4wY0=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.c115908d5df4a99c542383b1ee4ccbd967748872223b93e3162b8a08daa23940.js" integrity="sha256-wRWQjV30qZxUI4Ox7kzL2Wd0iHIiO5PjFiuKCNqiOUA=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -220,10 +220,12 @@ https://github.com/alex-shpak/hugo-book
   How-To Guide
   <a class="anchor" href="#how-to-guide">#</a>
 </h1>
+<hr>
 <h2 id="perform-daily-operations">
   Perform daily operations
   <a class="anchor" href="#perform-daily-operations">#</a>
 </h2>
+<hr>
 <h3 id="use-a-hosted-repo-to-manage-your-dotfiles-across-multiple-machines">
   Use a hosted repo to manage your dotfiles across multiple machines
   <a class="anchor" href="#use-a-hosted-repo-to-manage-your-dotfiles-across-multiple-machines">#</a>
@@ -246,13 +248,15 @@ $ exit
 <pre><code class="language-console" data-lang="console">$ chezmoi apply
 </code></pre><p>The above commands can be combined into a single init, checkout, and apply:</p>
 <pre><code class="language-console" data-lang="console">$ chezmoi init --apply --verbose https://github.com/username/dotfiles.git
-</code></pre><h3 id="pull-the-latest-changes-from-your-repo-and-apply-them">
+</code></pre><hr>
+<h3 id="pull-the-latest-changes-from-your-repo-and-apply-them">
   Pull the latest changes from your repo and apply them
   <a class="anchor" href="#pull-the-latest-changes-from-your-repo-and-apply-them">#</a>
 </h3>
 <p>You can pull the changes from your repo and apply them in a single command:</p>
 <pre><code class="language-console" data-lang="console">$ chezmoi update
 </code></pre><p>This runs <code>git pull --rebase</code> in your source directory and then <code>chezmoi apply</code>.</p>
+<hr>
 <h3 id="pull-the-latest-changes-from-your-repo-and-see-what-would-change-without-actually-applying-the-changes">
   Pull the latest changes from your repo and see what would change, without actually applying the changes
   <a class="anchor" href="#pull-the-latest-changes-from-your-repo-and-see-what-would-change-without-actually-applying-the-changes">#</a>
@@ -264,6 +268,7 @@ source directory and the actual state.</p>
 <p>If you&rsquo;re happy with the changes, then you can run</p>
 <pre><code class="language-console" data-lang="console">$ chezmoi apply
 </code></pre><p>to apply them.</p>
+<hr>
 <h3 id="automatically-commit-and-push-changes-to-your-repo">
   Automatically commit and push changes to your repo
   <a class="anchor" href="#automatically-commit-and-push-changes-to-your-repo">#</a>
@@ -283,6 +288,7 @@ not pushed.</p>
 <p>Be careful when using <code>autoPush</code>. If your dotfiles repo is public and you
 accidentally add a secret in plain text, that secret will be pushed to your
 public repo.</p>
+<hr>
 <h3 id="install-chezmoi-and-your-dotfiles-on-a-new-machine-with-a-single-command">
   Install chezmoi and your dotfiles on a new machine with a single command
   <a class="anchor" href="#install-chezmoi-and-your-dotfiles-on-a-new-machine-with-a-single-command">#</a>
@@ -300,10 +306,12 @@ can install chezmoi, install your dotfiles, and then remove all traces of
 chezmoi, including the source directory and chezmoi&rsquo;s configuration directory,
 with a single command:</p>
 <pre><code class="language-console" data-lang="console">$ sh -c &quot;$(curl -fsLS git.io/chezmoi)&quot; -- init --one-shot &lt;github-username&gt;
-</code></pre><h2 id="manage-different-types-of-file">
+</code></pre><hr>
+<h2 id="manage-different-types-of-file">
   Manage different types of file
   <a class="anchor" href="#manage-different-types-of-file">#</a>
 </h2>
+<hr>
 <h3 id="have-chezmoi-create-a-directory-but-ignore-its-contents">
   Have chezmoi create a directory, but ignore its contents
   <a class="anchor" href="#have-chezmoi-create-a-directory-but-ignore-its-contents">#</a>
@@ -320,6 +328,7 @@ in the target state):</p>
 <pre><code class="language-console" data-lang="console">$ touch $(chezmoi source-path)/src/.keep
 </code></pre><p>chezmoi automatically creates <code>.keep</code> files when you add an empty directory with
 <code>chezmoi add</code>.</p>
+<hr>
 <h3 id="ensure-that-a-target-is-removed">
   Ensure that a target is removed
   <a class="anchor" href="#ensure-that-a-target-is-removed">#</a>
@@ -334,6 +343,7 @@ dry-run mode beforehand to see what would be removed:</p>
 </code></pre><p><code>.chezmoiremove</code> is interpreted as a template, so you can remove different files
 on different machines. Negative matches (patterns prefixed with a <code>!</code>) or
 targets listed in <code>.chezmoiignore</code> will never be removed.</p>
+<hr>
 <h3 id="manage-part-but-not-all-of-a-file">
   Manage part, but not all, of a file
   <a class="anchor" href="#manage-part-but-not-all-of-a-file">#</a>
@@ -351,7 +361,8 @@ template to re-generate the full contents of the file from the current state.
 For example, Kubernetes configurations include a current context that can be
 substituted with:</p>
 <pre><code>current-context: {{ output &quot;kubectl&quot; &quot;config&quot; &quot;current-context&quot; | trim }}
-</code></pre><h3 id="populate-sshauthorized_keys-with-your-public-ssh-keys-from-github">
+</code></pre><hr>
+<h3 id="populate-sshauthorized_keys-with-your-public-ssh-keys-from-github">
   Populate <code>~/.ssh/authorized_keys</code> with your public SSH keys from GitHub
   <a class="anchor" href="#populate-sshauthorized_keys-with-your-public-ssh-keys-from-github">#</a>
 </h3>
@@ -362,41 +373,60 @@ GitHub username:</p>
 <pre><code>{{ range (gitHubKeys &quot;username&quot;) -}}
 {{   .Key }}
 {{ end -}}
-</code></pre><h2 id="integrate-chezmoi-with-your-editor">
+</code></pre><hr>
+<h2 id="integrate-chezmoi-with-your-editor">
   Integrate chezmoi with your editor
   <a class="anchor" href="#integrate-chezmoi-with-your-editor">#</a>
 </h2>
+<hr>
 <h3 id="configure-vim-to-run-chezmoi-apply-whenever-you-save-a-dotfile">
   Configure VIM to run <code>chezmoi apply</code> whenever you save a dotfile
   <a class="anchor" href="#configure-vim-to-run-chezmoi-apply-whenever-you-save-a-dotfile">#</a>
 </h3>
 <p>Put the following in your <code>.vimrc</code>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-vim" data-lang="vim"><span style="color:#a6e22e">autocmd</span> <span style="color:#a6e22e">BufWritePost</span> ~<span style="color:#e6db74">/.local/</span><span style="color:#a6e22e">share</span><span style="color:#e6db74">/chezmoi/</span>* ! <span style="color:#a6e22e">chezmoi</span> <span style="color:#a6e22e">apply</span> --<span style="color:#a6e22e">source</span>-<span style="color:#a6e22e">path</span> %<span style="color:#960050;background-color:#1e0010">
-</span></code></pre></div><h2 id="include-dotfiles-from-elsewhere">
+</span></code></pre></div><hr>
+<h2 id="include-dotfiles-from-elsewhere">
   Include dotfiles from elsewhere
   <a class="anchor" href="#include-dotfiles-from-elsewhere">#</a>
 </h2>
+<hr>
 <h3 id="include-a-subdirectory-from-another-repository-like-oh-my-zsh">
   Include a subdirectory from another repository, like Oh My Zsh
   <a class="anchor" href="#include-a-subdirectory-from-another-repository-like-oh-my-zsh">#</a>
 </h3>
-<p>To include a subdirectory from another repository, e.g. <a href="https://github.com/robbyrussell/oh-my-zsh">Oh My
-Zsh</a>, you cannot use git submodules
-because chezmoi uses its own format for the source state and Oh My Zsh is not
-distributed in this format. Instead, you can use the <code>import</code> command to import
-a snapshot from a tarball:</p>
-<pre><code class="language-console" data-lang="console">$ curl -s -L -o ${TMPDIR}/oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
-$ mkdir -p $(chezmoi source-path)/dot_oh-my-zsh
-$ chezmoi import --strip-components 1 --destination ${HOME}/.oh-my-zsh ${TMPDIR}/oh-my-zsh-master.tar.gz
-</code></pre><p>The tarball is downloaded to the temporary directory and imported to the source state.</p>
-<p>You can also download the tarball to the <code>$HOME</code> directory by removing <code>${TMPDIR}/</code> from
-the <code>curl</code> command and the chezmoi <code>import</code> command. Add <code>oh-my-zsh-master.tar.gz</code> to
-<code>.chezmoiignore</code> if you run these commands in your source directory so that chezmoi doesn&rsquo;t
-try to copy the tarball anywhere.</p>
-<p>Disable Oh My Zsh auto-updates by setting <code>DISABLE_AUTO_UPDATE=&quot;true&quot;</code> in
-<code>~/.zshrc</code>. Auto updates will cause the <code>~/.oh-my-zsh</code> directory to drift out of
-sync with chezmoi&rsquo;s source state. To update Oh My Zsh, re-run the <code>curl</code> and
-<code>chezmoi import</code> commands above.</p>
+<p>To include a subdirectory from another repository, e.g. <a href="https://github.com/ohmyzsh/ohmyzsh">Oh My
+Zsh</a>, you cannot use git submodules because
+chezmoi uses its own format for the source state and Oh My Zsh is not
+distributed in this format. Instead, you can use the <code>.chezmoiexternal.&lt;format&gt;</code>
+to tell chezmoi to import dotfiles from an external source.</p>
+<p>For example, to import Oh My Zsh and the <a href="https://github.com/zsh-users/zsh-syntax-highlighting">zsh-syntax-highlighting
+plugin</a>, put the following
+in <code>~/.local/share/chezmoi/.chezmoiexternal.toml</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#e6db74">&#34;.oh-my-zsh&#34;</span>]
+    <span style="color:#a6e22e">type</span> = <span style="color:#e6db74">&#34;archive&#34;</span>
+    <span style="color:#a6e22e">url</span> = <span style="color:#e6db74">&#34;https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz&#34;</span>
+    <span style="color:#a6e22e">exact</span> = <span style="color:#66d9ef">true</span>
+    <span style="color:#a6e22e">stripComponents</span> = <span style="color:#ae81ff">1</span>
+[<span style="color:#e6db74">&#34;.oh-my-zsh/custom/plugins/zsh-syntax-highlighting&#34;</span>]
+    <span style="color:#a6e22e">type</span> = <span style="color:#e6db74">&#34;archive&#34;</span>
+    <span style="color:#a6e22e">url</span> = <span style="color:#e6db74">&#34;https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz&#34;</span>
+    <span style="color:#a6e22e">exact</span> = <span style="color:#66d9ef">true</span>
+    <span style="color:#a6e22e">stripComponents</span> = <span style="color:#ae81ff">1</span>
+</code></pre></div><p>To apply the changes, run:</p>
+<pre><code class="language-console" data-lang="console">$ chezmoi apply
+</code></pre><p>chezmoi will download the archives and unpack them as if they were part of the
+source state. chezmoi caches downloaded archives locally to avoid re-downloading
+them every time you run a chezmoi command. To refresh the downloaded archives,
+use the <code>--refresh-externals</code> flag to <code>chezmoi apply</code>:</p>
+<pre><code class="language-console" data-lang="console">$ chezmoi --refresh-externals apply
+</code></pre><p><code>--refresh-externals</code> can be shortened to <code>-R</code>:</p>
+<pre><code class="language-console" data-lang="console">$ chezmoi -R apply
+</code></pre><p>When using Oh My Zsh, make sure you disable auto-updates by setting
+<code>DISABLE_AUTO_UPDATE=&quot;true&quot;</code> in <code>~/.zshrc</code>. Auto updates will cause the
+<code>~/.oh-my-zsh</code> directory to drift out of sync with chezmoi&rsquo;s source state. To
+update Oh My Zsh and its plugins, refresh the downloaded archives.</p>
+<hr>
 <h3 id="handle-configuration-files-which-are-externally-modified">
   Handle configuration files which are externally modified
   <a class="anchor" href="#handle-configuration-files-which-are-externally-modified">#</a>
@@ -419,25 +449,27 @@ directories are private by default.</p>
 <pre><code class="language-console" data-lang="console">$ chezmoi apply -v
 </code></pre><p>Now, when the program modifies its configuration file it will modify the file in
 the source state instead.</p>
+<hr>
 <h3 id="import-archives">
   Import archives
   <a class="anchor" href="#import-archives">#</a>
 </h3>
 <p>It is occasionally useful to import entire archives of configuration into your
 source state. The <code>import</code> command does this. For example, to import the latest
-version
-<a href="https://github.com/robbyrussell/oh-my-zsh"><code>github.com/robbyrussell/oh-my-zsh</code></a>
-to <code>~/.oh-my-zsh</code> run:</p>
-<pre><code class="language-console" data-lang="console">$ curl -s -L -o ${TMPDIR}/oh-my-zsh-master.tar.gz https://github.com/robbyrussell/oh-my-zsh/archive/master.tar.gz
+version <a href="https://github.com/ohmyzsh/ohmyzsh"><code>github.com/ohmyzsh/ohmyzsh</code></a> to
+<code>~/.oh-my-zsh</code> run:</p>
+<pre><code class="language-console" data-lang="console">$ curl -s -L -o ${TMPDIR}/oh-my-zsh-master.tar.gz https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz
 $ mkdir -p $(chezmoi source-path)/dot_oh-my-zsh
 $ chezmoi import --strip-components 1 --destination ~/.oh-my-zsh ${TMPDIR}/oh-my-zsh-master.tar.gz
 </code></pre><p>Note that this only updates the source state. You will need to run</p>
 <pre><code class="language-console" data-lang="console">$ chezmoi apply
 </code></pre><p>to update your destination directory.</p>
+<hr>
 <h2 id="manage-machine-to-machine-differences">
   Manage machine-to-machine differences
   <a class="anchor" href="#manage-machine-to-machine-differences">#</a>
 </h2>
+<hr>
 <h3 id="use-templates">
   Use templates
   <a class="anchor" href="#use-templates">#</a>
@@ -511,6 +543,7 @@ expression, which is useful if your editor has added any newlines.</p>
 will be removed. This can be used to ensure that files are only present on
 certain machines. If you want an empty file to be created anyway, you will need
 to give it an <code>empty_</code> prefix.</p>
+<hr>
 <h3 id="ignore-files-or-a-directory-on-different-machines">
   Ignore files or a directory on different machines
   <a class="anchor" href="#ignore-files-or-a-directory-on-different-machines">#</a>
@@ -532,6 +565,7 @@ unless the hostname is <code>work-laptop</code>&rdquo;.</p>
 <pre><code>f*
 !foo
 </code></pre><p>will ignore all files beginning with an <code>f</code> except <code>foo</code>.</p>
+<hr>
 <h3 id="use-completely-different-dotfiles-on-different-machines">
   Use completely different dotfiles on different machines
   <a class="anchor" href="#use-completely-different-dotfiles-on-different-machines">#</a>
@@ -576,7 +610,8 @@ the OS-specific <code>.bashrc_os</code> file will be installed on each OS.</p>
 {{ if eq .chezmoi.os &quot;linux&quot; }}
 {{   include &quot;.bashrc_linux&quot; }}
 {{ end }}
-</code></pre><h3 id="create-a-config-file-on-a-new-machine-automatically">
+</code></pre><hr>
+<h3 id="create-a-config-file-on-a-new-machine-automatically">
   Create a config file on a new machine automatically
   <a class="anchor" href="#create-a-config-file-on-a-new-machine-automatically">#</a>
 </h3>
@@ -594,7 +629,8 @@ initial config file.</p>
 <p>To test this template, use <code>chezmoi execute-template</code> with the <code>--init</code> and
 <code>--promptString</code> flags, for example:</p>
 <pre><code class="language-console" data-lang="console">$ chezmoi execute-template --init --promptString email=me@home.org &lt; ~/.local/share/chezmoi/.chezmoi.toml.tmpl
-</code></pre><h3 id="re-create-your-config-file">
+</code></pre><hr>
+<h3 id="re-create-your-config-file">
   Re-create your config file
   <a class="anchor" href="#re-create-your-config-file">#</a>
 </h3>
@@ -622,7 +658,8 @@ and fallback to <code>promptString</code> only if it is not set.</p>
 
 [data]
     var = {{ $var }}
-</code></pre><h3 id="handle-different-file-locations-on-different-systems-with-the-same-contents">
+</code></pre><hr>
+<h3 id="handle-different-file-locations-on-different-systems-with-the-same-contents">
   Handle different file locations on different systems with the same contents
   <a class="anchor" href="#handle-different-file-locations-on-different-systems-with-the-same-contents">#</a>
 </h3>
@@ -643,7 +680,8 @@ Library/Application Support/App/file.conf
 {{ if ne .chezmoi.os &quot;linux&quot; }}
 .config/app/file.conf
 {{ end }}
-</code></pre><h3 id="create-an-archive-of-your-dotfiles">
+</code></pre><hr>
+<h3 id="create-an-archive-of-your-dotfiles">
   Create an archive of your dotfiles
   <a class="anchor" href="#create-an-archive-of-your-dotfiles">#</a>
 </h3>
@@ -651,6 +689,7 @@ Library/Application Support/App/file.conf
 useful for generating target state for a different machine. You can specify a
 different configuration file (including template variables) with the <code>--config</code>
 option.</p>
+<hr>
 <h2 id="keep-data-private">
   Keep data private
   <a class="anchor" href="#keep-data-private">#</a>
@@ -670,6 +709,7 @@ every run and will print a warning if they are not.</p>
 token</a>.
 There are several ways to keep these tokens secure, and to prevent them leaving
 your machine.</p>
+<hr>
 <h3 id="use-1password">
   Use 1Password
   <a class="anchor" href="#use-1password">#</a>
@@ -699,6 +739,7 @@ function, for example:</p>
 instructs the template language to remove any whitespace before and after the
 substitution. This removes any trailing newline added by your editor when saving
 the template.</p>
+<hr>
 <h3 id="use-bitwarden">
   Use Bitwarden
   <a class="anchor" href="#use-bitwarden">#</a>
@@ -719,7 +760,8 @@ password = {{ (bitwarden &quot;item&quot; &quot;example.com&quot;).login.passwor
 example, if you have a custom field named <code>token</code> you can retrieve its value
 with:</p>
 <pre><code>{{ (bitwardenFields &quot;item&quot; &quot;example.com&quot;).token.value }}
-</code></pre><h3 id="use-gopass">
+</code></pre><hr>
+<h3 id="use-gopass">
   Use gopass
   <a class="anchor" href="#use-gopass">#</a>
 </h3>
@@ -727,7 +769,8 @@ with:</p>
 <p>The first line of the output of <code>gopass show &lt;pass-name&gt;</code> is available as the
 <code>gopass</code> template function, for example:</p>
 <pre><code>{{ gopass &quot;&lt;pass-name&gt;&quot; }}
-</code></pre><h3 id="use-keepassxc">
+</code></pre><hr>
+<h3 id="use-keepassxc">
   Use KeePassXC
   <a class="anchor" href="#use-keepassxc">#</a>
 </h3>
@@ -744,7 +787,8 @@ password = {{ (keepassxc &quot;example.com&quot;).Password }}
 For example, if you have an entry called <code>SSH Key</code> with an additional attribute
 called <code>private-key</code>, its value is available as:</p>
 <pre><code>{{ keepassxcAttribute &quot;SSH Key&quot; &quot;private-key&quot; }}
-</code></pre><h3 id="use-keychain-or-windows-credentials-manager">
+</code></pre><hr>
+<h3 id="use-keychain-or-windows-credentials-manager">
   Use Keychain or Windows Credentials Manager
   <a class="anchor" href="#use-keychain-or-windows-credentials-manager">#</a>
 </h3>
@@ -765,7 +809,8 @@ Value: xxxxxxxx
     token = {{ keyring &quot;github&quot; .github.user | quote }}
 </code></pre><p>You can query the keyring from the command line:</p>
 <pre><code class="language-console" data-lang="console">$ chezmoi secret keyring get --service=github --user=&lt;github-username&gt;
-</code></pre><h3 id="use-lastpass">
+</code></pre><hr>
+<h3 id="use-lastpass">
   Use LastPass
   <a class="anchor" href="#use-lastpass">#</a>
 </h3>
@@ -793,7 +838,8 @@ key like this:</p>
 <p>If the <code>note</code> value does not contain colon-separated key-value pairs, then you
 can use <code>lastpassRaw</code> to get its raw value, for example:</p>
 <pre><code>{{ (index (lastpassRaw &quot;SSH Private Key&quot;) 0).note }}
-</code></pre><h3 id="use-pass">
+</code></pre><hr>
+<h3 id="use-pass">
   Use pass
   <a class="anchor" href="#use-pass">#</a>
 </h3>
@@ -802,7 +848,8 @@ pass CLI.</p>
 <p>The first line of the output of <code>pass show &lt;pass-name&gt;</code> is available as the
 <code>pass</code> template function, for example:</p>
 <pre><code>{{ pass &quot;&lt;pass-name&gt;&quot; }}
-</code></pre><h3 id="use-vault">
+</code></pre><hr>
+<h3 id="use-vault">
   Use Vault
   <a class="anchor" href="#use-vault">#</a>
 </h3>
@@ -817,7 +864,8 @@ Verify that this is the case by running:</p>
 template function. You can use the <code>.Field</code> syntax of the <code>text/template</code>
 language to extract the data you want. For example:</p>
 <pre><code>{{ (vault &quot;&lt;key&gt;&quot;).data.data.password }}
-</code></pre><h3 id="use-a-custom-password-manager">
+</code></pre><hr>
+<h3 id="use-a-custom-password-manager">
   Use a custom password manager
   <a class="anchor" href="#use-a-custom-password-manager">#</a>
 </h3>
@@ -867,6 +915,7 @@ respectively. All of the above secret managers can be supported in this way:</p>
 </tr>
 </tbody>
 </table>
+<hr>
 <h3 id="encrypt-whole-files-with-gpg">
   Encrypt whole files with gpg
   <a class="anchor" href="#encrypt-whole-files-with-gpg">#</a>
@@ -876,6 +925,7 @@ files are stored in the source state and automatically be decrypted when
 generating the target state or printing a file&rsquo;s contents with <code>chezmoi cat</code>.
 <code>chezmoi edit</code> will transparently decrypt the file before editing and re-encrypt
 it afterwards.</p>
+<hr>
 <h4 id="asymmetric-privatepublic-key-encryption">
   Asymmetric (private/public-key) encryption
   <a class="anchor" href="#asymmetric-privatepublic-key-encryption">#</a>
@@ -891,6 +941,7 @@ with the <code>gpg.recipient</code> key:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">gpg --armor --recipient <span style="color:#e6db74">${</span>gpg.recipient<span style="color:#e6db74">}</span> --encrypt
 </code></pre></div><p>and store the encrypted file in the source state. The file will automatically be
 decrypted when generating the target state.</p>
+<hr>
 <h4 id="symmetric-encryption">
   Symmetric encryption
   <a class="anchor" href="#symmetric-encryption">#</a>
@@ -903,7 +954,8 @@ decrypted when generating the target state.</p>
 <pre><code class="language-console" data-lang="console">$ chezmoi add --encrypt ~/.ssh/id_rsa
 </code></pre><p>chezmoi will encrypt the file with:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">gpg --armor --symmetric
-</code></pre></div><h3 id="encrypt-whole-files-with-age">
+</code></pre></div><hr>
+<h3 id="encrypt-whole-files-with-age">
   Encrypt whole files with age
   <a class="anchor" href="#encrypt-whole-files-with-age">#</a>
 </h3>
@@ -924,6 +976,7 @@ least the identity and one recipient:</p>
 <pre><code class="language-console" data-lang="console">$ chezmoi add --encrypt ~/.ssh/id_rsa
 </code></pre><p>chezmoi supports multiple recipients and recipient files, and multiple
 identities.</p>
+<hr>
 <h4 id="symmetric-encryption-1">
   Symmetric encryption
   <a class="anchor" href="#symmetric-encryption-1">#</a>
@@ -934,7 +987,8 @@ symmetric encryption in your config file, for example:</p>
 [<span style="color:#a6e22e">age</span>]
     <span style="color:#a6e22e">identity</span> = <span style="color:#e6db74">&#34;~/.ssh/id_rsa&#34;</span>
     <span style="color:#a6e22e">symmetric</span> = <span style="color:#66d9ef">true</span>
-</code></pre></div><h4 id="symmetric-encryption-with-a-passphrase">
+</code></pre></div><hr>
+<h4 id="symmetric-encryption-with-a-passphrase">
   Symmetric encryption with a passphrase
   <a class="anchor" href="#symmetric-encryption-with-a-passphrase">#</a>
 </h4>
@@ -946,6 +1000,7 @@ symmetric encryption in your config file, for example:</p>
 </code></pre></div><p>You will be prompted for the passphrase whenever you run <code>chezmoi add --encrypt</code>
 and whenever chezmoi needs to decrypt the file, for example when you run
 <code>chezmoi apply</code>, <code>chezmoi diff</code>, or <code>chezmoi status</code>.</p>
+<hr>
 <h3 id="use-a-private-configuration-file-and-template-variables">
   Use a private configuration file and template variables
   <a class="anchor" href="#use-a-private-configuration-file-and-template-variables">#</a>
@@ -964,10 +1019,12 @@ section. For example, if your <code>~/.config/chezmoi/chezmoi.toml</code> contai
 {{- end }}
 </code></pre><p>Any config files containing tokens in plain text should be private (permissions
 <code>0600</code>).</p>
+<hr>
 <h2 id="use-scripts-to-perform-actions">
   Use scripts to perform actions
   <a class="anchor" href="#use-scripts-to-perform-actions">#</a>
 </h2>
+<hr>
 <h3 id="understand-how-scripts-work">
   Understand how scripts work
   <a class="anchor" href="#understand-how-scripts-work">#</a>
@@ -990,6 +1047,7 @@ There is no need to set the executable bit on the script.</p>
 template variables available. If, after executing the template, the result is
 only whitespace or an empty string, then the script is not executed. This is
 useful for disabling scripts.</p>
+<hr>
 <h3 id="install-packages-with-scripts">
   Install packages with scripts
   <a class="anchor" href="#install-packages-with-scripts">#</a>
@@ -1014,6 +1072,7 @@ sudo apt install ripgrep
 brew install ripgrep
 {{ end -}}
 </code></pre><p>This will install <code>ripgrep</code> on both Debian/Ubuntu Linux systems and macOS.</p>
+<hr>
 <h3 id="run-a-script-when-the-contents-of-another-file-changes">
   Run a script when the contents of another file changes
   <a class="anchor" href="#run-a-script-when-the-contents-of-another-file-changes">#</a>
@@ -1037,10 +1096,12 @@ changed, so chezmoi will re-run the script whenever the contents of <code>dconf.
 change.</p>
 <p>In this example you should also add <code>dconf.ini</code> to <code>.chezmoiignore</code> so chezmoi
 does not create <code>dconf.ini</code> in your home directory.</p>
+<hr>
 <h2 id="use-chezmoi-on-macos">
   Use chezmoi on macOS
   <a class="anchor" href="#use-chezmoi-on-macos">#</a>
 </h2>
+<hr>
 <h3 id="use-brew-bundle-to-manage-your-brews-and-casks">
   Use <code>brew bundle</code> to manage your brews and casks
   <a class="anchor" href="#use-brew-bundle-to-manage-your-brews-and-casks">#</a>
@@ -1062,10 +1123,12 @@ EOF
 </code></pre><p>Note that the <code>Brewfile</code> is embedded directly in the script with a bash here
 document. chezmoi will run this script whenever its contents change, i.e. when
 you add or remove brews or casks.</p>
+<hr>
 <h2 id="use-chezmoi-on-windows">
   Use chezmoi on Windows
   <a class="anchor" href="#use-chezmoi-on-windows">#</a>
 </h2>
+<hr>
 <h3 id="detect-windows-subsystem-for-linux-wsl">
   Detect Windows Subsystem for Linux (WSL)
   <a class="anchor" href="#detect-windows-subsystem-for-linux-wsl">#</a>
@@ -1078,7 +1141,8 @@ you add or remove brews or casks.</p>
 # WSL-specific code
 {{   end }}
 {{ end }}
-</code></pre><h3 id="run-a-powershell-script-as-admin-on-windows">
+</code></pre><hr>
+<h3 id="run-a-powershell-script-as-admin-on-windows">
   Run a PowerShell script as admin on Windows
   <a class="anchor" href="#run-a-powershell-script-as-admin-on-windows">#</a>
 </h3>
@@ -1091,7 +1155,8 @@ you add or remove brews or casks.</p>
     Exit
   }
 }
-</code></pre></div><h2 id="use-chezmoi-with-github-codespaces-visual-studio-codespaces-or-visual-studio-code-remote---containers">
+</code></pre></div><hr>
+<h2 id="use-chezmoi-with-github-codespaces-visual-studio-codespaces-or-visual-studio-code-remote---containers">
   Use chezmoi with GitHub Codespaces, Visual Studio Codespaces, or Visual Studio Code Remote - Containers
   <a class="anchor" href="#use-chezmoi-with-github-codespaces-visual-studio-codespaces-or-visual-studio-code-remote---containers">#</a>
 </h2>
@@ -1171,10 +1236,12 @@ needed. For example, to install <code>vim-gtk</code> on Linux but not in Codespa
 #!/bin/sh
 sudo apt install -y vim-gtk
 {{- end -}}
-</code></pre><h2 id="customize-chezmoi">
+</code></pre><hr>
+<h2 id="customize-chezmoi">
   Customize chezmoi
   <a class="anchor" href="#customize-chezmoi">#</a>
 </h2>
+<hr>
 <h3 id="dont-show-scripts-in-the-diff-output">
   Don&rsquo;t show scripts in the diff output
   <a class="anchor" href="#dont-show-scripts-in-the-diff-output">#</a>
@@ -1185,7 +1252,8 @@ setting the <code>diff.exclude</code> configuration variable in your configurati
 for example:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">diff</span>]
     <span style="color:#a6e22e">exclude</span> = [<span style="color:#e6db74">&#34;scripts&#34;</span>]
-</code></pre></div><h3 id="customize-the-diff-pager">
+</code></pre></div><hr>
+<h3 id="customize-the-diff-pager">
   Customize the diff pager
   <a class="anchor" href="#customize-the-diff-pager">#</a>
 </h3>
@@ -1196,6 +1264,7 @@ choice by setting <code>diff.pager</code> configuration variable. For example, t
     <span style="color:#a6e22e">pager</span> = <span style="color:#e6db74">&#34;diff-so-fancy&#34;</span>
 </code></pre></div><p>The pager can be disabled using the <code>--no-pager</code> flag or by setting <code>diff.pager</code>
 to an empty string.</p>
+<hr>
 <h3 id="use-a-custom-diff-tool">
   Use a custom diff tool
   <a class="anchor" href="#use-a-custom-diff-tool">#</a>
@@ -1209,7 +1278,8 @@ specify:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">diff</span>]
     <span style="color:#a6e22e">command</span> = <span style="color:#e6db74">&#34;meld&#34;</span>
     <span style="color:#a6e22e">args</span> = [<span style="color:#e6db74">&#34;--diff&#34;</span>, <span style="color:#e6db74">&#34;{{ .Destination }}&#34;</span>, <span style="color:#e6db74">&#34;{{ .Target }}&#34;</span>]
-</code></pre></div><h3 id="use-a-custom-merge-tool">
+</code></pre></div><hr>
+<h3 id="use-a-custom-merge-tool">
   Use a custom merge tool
   <a class="anchor" href="#use-a-custom-merge-tool">#</a>
 </h3>
@@ -1222,10 +1292,12 @@ state, source state, and target state respectively. For example, to use
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">merge</span>]
     <span style="color:#a6e22e">command</span> = <span style="color:#e6db74">&#34;nvim&#34;</span>
     <span style="color:#a6e22e">args</span> = [<span style="color:#e6db74">&#34;-d&#34;</span>, <span style="color:#e6db74">&#34;{{ .Destination }}&#34;</span>, <span style="color:#e6db74">&#34;{{ .Source }}&#34;</span>, <span style="color:#e6db74">&#34;{{ .Target }}&#34;</span>]
-</code></pre></div><h2 id="migrating-to-chezmoi-from-another-dotfile-manager">
+</code></pre></div><hr>
+<h2 id="migrating-to-chezmoi-from-another-dotfile-manager">
   Migrating to chezmoi from another dotfile manager
   <a class="anchor" href="#migrating-to-chezmoi-from-another-dotfile-manager">#</a>
 </h2>
+<hr>
 <h3 id="migrate-from-a-dotfile-manager-that-uses-symlinks">
   Migrate from a dotfile manager that uses symlinks
   <a class="anchor" href="#migrate-from-a-dotfile-manager-that-uses-symlinks">#</a>
@@ -1239,6 +1311,7 @@ not the file. To assist with migrating from symlink-based systems, use the
 of the <code>~/.bashrc</code> symlink, rather than the symlink itself. When you run
 <code>chezmoi apply</code>, chezmoi will replace the <code>~/.bashrc</code> symlink with the file
 contents.</p>
+<hr>
 <h2 id="migrate-away-from-chezmoi">
   Migrate away from chezmoi
   <a class="anchor" href="#migrate-away-from-chezmoi">#</a>

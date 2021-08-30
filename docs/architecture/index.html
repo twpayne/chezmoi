@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Architecture #  Introduction #  This document gives a high-level overview of chezmoi&rsquo;s source code for anyone interested in contributing to chezmoi.
+<meta name="description" content="Architecture #   Introduction #  This document gives a high-level overview of chezmoi&rsquo;s source code for anyone interested in contributing to chezmoi.
 You can generate Go documentation for chezmoi&rsquo;s source code with go doc, for example:
 $ go doc -all -u github.com/twpayne/chezmoi/v2/internal/chezmoi You can also browse chezmoi&rsquo;s generated documentation online but this only includes exported symbols.
-Directory structure #  The important directories in chezmoi are:
+ Directory structure #  The important directories in chezmoi are:
    Directory Contents     docs/ The documentation single source of truth.">
 <meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Architecture" />
-<meta property="og:description" content="Architecture #  Introduction #  This document gives a high-level overview of chezmoi&rsquo;s source code for anyone interested in contributing to chezmoi.
+<meta property="og:description" content="Architecture #   Introduction #  This document gives a high-level overview of chezmoi&rsquo;s source code for anyone interested in contributing to chezmoi.
 You can generate Go documentation for chezmoi&rsquo;s source code with go doc, for example:
 $ go doc -all -u github.com/twpayne/chezmoi/v2/internal/chezmoi You can also browse chezmoi&rsquo;s generated documentation online but this only includes exported symbols.
-Directory structure #  The important directories in chezmoi are:
+ Directory structure #  The important directories in chezmoi are:
    Directory Contents     docs/ The documentation single source of truth." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chezmoi.io/docs/architecture/" /><meta property="article:section" content="docs" />
@@ -24,7 +24,7 @@ Directory structure #  The important directories in chezmoi are:
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" integrity="sha256-lYzqeCdiHW&#43;8s6zwkTRMPkTj0qlCj5w8OLues3v4xF0=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.f3b52a56bca053d20dc667eeeb1a96b181b97d36f68013e1c8542f160138c18d.js" integrity="sha256-87UqVrygU9INxmfu6xqWsYG5fTb2gBPhyFQvFgE4wY0=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.c115908d5df4a99c542383b1ee4ccbd967748872223b93e3162b8a08daa23940.js" integrity="sha256-wRWQjV30qZxUI4Ox7kzL2Wd0iHIiO5PjFiuKCNqiOUA=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -126,8 +126,8 @@ https://github.com/alex-shpak/hugo-book
     <li><a href="#introduction">Introduction</a></li>
     <li><a href="#directory-structure">Directory structure</a></li>
     <li><a href="#key-concepts">Key concepts</a></li>
-    <li><a href="#internalchezmoi"><code>internal/chezmoi/</code></a></li>
-    <li><a href="#internalcmd"><code>internal/cmd/</code></a></li>
+    <li><a href="#internalchezmoi-directory"><code>internal/chezmoi/</code> directory</a></li>
+    <li><a href="#internalcmd-directory"><code>internal/cmd/</code> directory</a></li>
     <li><a href="#path-handling">Path handling</a></li>
     <li><a href="#persistent-state">Persistent state</a></li>
     <li><a href="#encryption">Encryption</a></li>
@@ -149,6 +149,7 @@ https://github.com/alex-shpak/hugo-book
   Architecture
   <a class="anchor" href="#architecture">#</a>
 </h1>
+<hr>
 <h2 id="introduction">
   Introduction
   <a class="anchor" href="#introduction">#</a>
@@ -161,6 +162,7 @@ example:</p>
 </code></pre><p>You can also <a href="https://pkg.go.dev/github.com/twpayne/chezmoi/v2">browse chezmoi&rsquo;s generated documentation
 online</a> but this only includes
 exported symbols.</p>
+<hr>
 <h2 id="directory-structure">
   Directory structure
   <a class="anchor" href="#directory-structure">#</a>
@@ -192,6 +194,7 @@ exported symbols.</p>
 </tr>
 </tbody>
 </table>
+<hr>
 <h2 id="key-concepts">
   Key concepts
   <a class="anchor" href="#key-concepts">#</a>
@@ -204,9 +207,10 @@ destination directory to match the target state. The concepts are represented
 directly in chezmoi&rsquo;s code.</p>
 <p>chezmoi uses the generic term <em>entry</em> to describe something that it manages.
 Entries can be files, directories, symlinks, scripts, amongst other things.</p>
-<h2 id="internalchezmoi">
-  <code>internal/chezmoi/</code>
-  <a class="anchor" href="#internalchezmoi">#</a>
+<hr>
+<h2 id="internalchezmoi-directory">
+  <code>internal/chezmoi/</code> directory
+  <a class="anchor" href="#internalchezmoi-directory">#</a>
 </h2>
 <p>All of chezmoi&rsquo;s interaction with the operating system is abstracted through the
 <code>System</code> interface. A <code>System</code> includes functionality to read and write files
@@ -257,9 +261,10 @@ equivalent.</li>
 persistent state. chezmoi can then detect if a third party has updated a target
 since chezmoi last wrote it by comparing the actual state entry in the target
 state with the entry state in the persistent state.</p>
-<h2 id="internalcmd">
-  <code>internal/cmd/</code>
-  <a class="anchor" href="#internalcmd">#</a>
+<hr>
+<h2 id="internalcmd-directory">
+  <code>internal/cmd/</code> directory
+  <a class="anchor" href="#internalcmd-directory">#</a>
 </h2>
 <p><code>internal/cmd/*cmd.go</code> contains the code for each individual command and
 <code>internal/cmd/*templatefuncs.go</code> contain the template functions.</p>
@@ -269,6 +274,7 @@ line arguments, and computed and cached values.</p>
 <p>The <code>Config.persistentPreRunRootE</code> and <code>Config.persistentPostRunRootE</code> methods
 set up and tear down state for individual commands based on the command&rsquo;s
 <code>Annotations</code> field.</p>
+<hr>
 <h2 id="path-handling">
   Path handling
   <a class="anchor" href="#path-handling">#</a>
@@ -284,6 +290,7 @@ directory, use forward or backward slashes, and are treated as external paths
 (<code>ExtPath</code>). These are normalized to absolute paths. chezmoi is case-sensitive
 internally and makes no attempt to handle case-insensitive or case-preserving
 filesystems.</p>
+<hr>
 <h2 id="persistent-state">
   Persistent state
   <a class="anchor" href="#persistent-state">#</a>
@@ -295,6 +302,7 @@ them. Sometimes temporary persistent states are used. For example, in dry run
 mode (<code>--dry-run</code>) the actual persistent state is copied into a temporary
 persistent state in memory which remembers writes but does not persist them to
 disk.</p>
+<hr>
 <h2 id="encryption">
   Encryption
   <a class="anchor" href="#encryption">#</a>
@@ -303,6 +311,7 @@ disk.</p>
 methods of encrypting and decrypting files and <code>[]byte</code>s. Implementations are
 the <code>AGEEncryption</code> and <code>GPGEncryption</code> structs. A <code>DebugEncryption</code> struct
 wraps an <code>Encryption</code> interface and logs the methods called.</p>
+<hr>
 <h2 id="run_once_-scripts">
   <code>run_once_</code> scripts
   <a class="anchor" href="#run_once_-scripts">#</a>
@@ -310,6 +319,7 @@ wraps an <code>Encryption</code> interface and logs the methods called.</p>
 <p>The execution of <code>run_once_</code> scripts is recorded by storing the SHA256 of their
 contents in the persistent state. <code>run_once_</code> scripts are only run if they are
 new or if their contents have not changed.</p>
+<hr>
 <h2 id="testing">
   Testing
   <a class="anchor" href="#testing">#</a>
@@ -326,6 +336,7 @@ end-to-end tests with</p>
 <p>Tests should, if at all possible, run unmodified on all operating systems tested
 in CI (Linux, macOS, Windows, and FreeBSD). Windows will sometimes need special
 handling due to its path separator and lack of POSIX-style file permissions.</p>
+<hr>
 </article>
  
       
@@ -370,8 +381,8 @@ handling due to its path separator and lack of POSIX-style file permissions.</p>
     <li><a href="#introduction">Introduction</a></li>
     <li><a href="#directory-structure">Directory structure</a></li>
     <li><a href="#key-concepts">Key concepts</a></li>
-    <li><a href="#internalchezmoi"><code>internal/chezmoi/</code></a></li>
-    <li><a href="#internalcmd"><code>internal/cmd/</code></a></li>
+    <li><a href="#internalchezmoi-directory"><code>internal/chezmoi/</code> directory</a></li>
+    <li><a href="#internalcmd-directory"><code>internal/cmd/</code> directory</a></li>
     <li><a href="#path-handling">Path handling</a></li>
     <li><a href="#persistent-state">Persistent state</a></li>
     <li><a href="#encryption">Encryption</a></li>
