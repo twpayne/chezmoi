@@ -137,12 +137,11 @@ func targetStateTest(t *testing.T, ts TargetStateEntry) []vfst.PathTest {
 			vfst.TestModePerm(ts.perm &^ chezmoitest.Umask),
 		}
 	case *targetStateRenameDir:
-		// FIXME test for presence of newName
 		return []vfst.PathTest{
 			vfst.TestDoesNotExist,
 		}
 	case *TargetStateScript:
-		return nil // FIXME how to verify scripts?
+		return nil
 	case *TargetStateSymlink:
 		expectedLinkname, err := ts.Linkname()
 		require.NoError(t, err)

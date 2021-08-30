@@ -503,9 +503,6 @@ func TestSourceStateAdd(t *testing.T) {
 }
 
 func TestSourceStateApplyAll(t *testing.T) {
-	// FIXME script tests
-	// FIXME script template tests
-
 	for _, tc := range []struct {
 		name               string
 		root               interface{}

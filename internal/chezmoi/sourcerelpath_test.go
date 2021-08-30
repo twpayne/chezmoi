@@ -7,7 +7,6 @@ import (
 )
 
 func TestSourceRelPath(t *testing.T) {
-	// FIXME test Split
 	for _, tc := range []struct {
 		name                  string
 		sourceStatePath       SourceRelPath
