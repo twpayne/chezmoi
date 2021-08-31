@@ -17,17 +17,30 @@ import (
 // An RealSystem is a System that writes to a filesystem and executes scripts.
 type RealSystem struct {
 	fileSystem   vfs.FS
+	safe         bool
 	devCache     map[AbsPath]uint // devCache maps directories to device numbers.
 	tempDirCache map[uint]string  // tempDirCache maps device numbers to renameio temporary directories.
 }
 
+// RealSystemWithSafe sets the safe flag of the RealSystem.
+func RealSystemWithSafe(safe bool) RealSystemOption {
+	return func(s *RealSystem) {
+		s.safe = safe
+	}
+}
+
 // NewRealSystem returns a System that acts on fileSystem.
-func NewRealSystem(fileSystem vfs.FS) *RealSystem {
-	return &RealSystem{
+func NewRealSystem(fileSystem vfs.FS, options ...RealSystemOption) *RealSystem {
+	s := &RealSystem{
 		fileSystem:   fileSystem,
+		safe:         true,
 		devCache:     make(map[AbsPath]uint),
 		tempDirCache: make(map[uint]string),
 	}
+	for _, option := range options {
+		option(s)
+	}
+	return s
 }
 
 // Chmod implements System.Chmod.
@@ -42,9 +55,9 @@ func (s *RealSystem) Readlink(name AbsPath) (string, error) {
 
 // WriteFile implements System.WriteFile.
 func (s *RealSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error {
-	// Special case: if writing to the real filesystem, use
+	// Special case: if writing to the real filesystem in safe mode, use
 	// github.com/google/renameio.
-	if s.fileSystem == vfs.OSFS {
+	if s.safe && s.fileSystem == vfs.OSFS {
 		dir := filename.Dir()
 		dev, ok := s.devCache[dir]
 		if !ok {
@@ -85,9 +98,9 @@ func (s *RealSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) 
 
 // WriteSymlink implements System.WriteSymlink.
 func (s *RealSystem) WriteSymlink(oldname string, newname AbsPath) error {
-	// Special case: if writing to the real filesystem, use
+	// Special case: if writing to the real filesystem in safe mode, use
 	// github.com/google/renameio.
-	if s.fileSystem == vfs.OSFS {
+	if s.safe && s.fileSystem == vfs.OSFS {
 		return renameio.Symlink(oldname, string(newname))
 	}
 	if err := s.fileSystem.RemoveAll(string(newname)); err != nil && !errors.Is(err, fs.ErrNotExist) {
