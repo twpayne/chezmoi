@@ -15,6 +15,9 @@ import (
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )
 
+// A RealSystemOption sets an option on a RealSystem.
+type RealSystemOption func(*RealSystem)
+
 // Glob implements System.Glob.
 func (s *RealSystem) Glob(pattern string) ([]string, error) {
 	return doublestar.Glob(s.UnderlyingFS(), pattern)

@@ -61,6 +61,7 @@ type Config struct {
 	Interpreters     map[string]*chezmoi.Interpreter `mapstructure:"interpreters"`
 	Mode             chezmoi.Mode                    `mapstructure:"mode"`
 	Pager            string                          `mapstructure:"pager"`
+	Safe             bool                            `mapstructure:"safe"`
 	Remove           bool                            `mapstructure:"remove"`
 	SourceDirAbsPath chezmoi.AbsPath                 `mapstructure:"sourceDir"`
 	Template         templateConfig                  `mapstructure:"template"`
@@ -216,6 +217,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		Interpreters: defaultInterpreters,
 		Pager:        os.Getenv("PAGER"),
+		Safe:         true,
 		Template: templateConfig{
 			Options: chezmoi.DefaultTemplateOptions,
 		},
@@ -1023,6 +1025,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 
 	persistentFlags.Var(&c.Color, "color", "Colorize output")
 	persistentFlags.VarP(&c.DestDirAbsPath, "destination", "D", "Set destination directory")
+	persistentFlags.BoolVar(&c.Safe, "safe", c.Safe, "Safely replace files and symlinks")
 	persistentFlags.BoolVar(&c.Remove, "remove", c.Remove, "Remove entries from destination directory")
 	persistentFlags.VarP(&c.SourceDirAbsPath, "source", "S", "Set source directory")
 	persistentFlags.Var(&c.Mode, "mode", "Mode")
@@ -1061,6 +1064,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		rootCmd.MarkPersistentFlagDirname("destination"),
 		persistentFlags.MarkHidden("gops"),
 		rootCmd.MarkPersistentFlagFilename("output"),
+		persistentFlags.MarkHidden("safe"),
 		rootCmd.MarkPersistentFlagDirname("source"),
 	} {
 		if err != nil {
@@ -1260,7 +1264,9 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		zerolog.SetGlobalLevel(zerolog.Disabled)
 	}
 
-	c.baseSystem = chezmoi.NewRealSystem(c.fileSystem)
+	c.baseSystem = chezmoi.NewRealSystem(c.fileSystem,
+		chezmoi.RealSystemWithSafe(c.Safe),
+	)
 	if c.debug {
 		c.baseSystem = chezmoi.NewDebugSystem(c.baseSystem)
 	}
