@@ -1,6 +1,6 @@
 package cmd
 
-// LATER add zip import
+// LATER add zip import using chezmoi.walkArchive
 
 import (
 	"archive/tar"
@@ -66,14 +66,14 @@ func (c *Config) runImportCmd(cmd *cobra.Command, args []string, sourceState *ch
 		}
 		r = bytes.NewReader(data)
 		switch base := strings.ToLower(absPath.Base()); {
+		case strings.HasSuffix(base, ".tar"):
+		case strings.HasSuffix(base, ".tar.bz2") || strings.HasSuffix(base, ".tbz2"):
+			r = bzip2.NewReader(r)
 		case strings.HasSuffix(base, ".tar.gz") || strings.HasSuffix(base, ".tgz"):
 			r, err = gzip.NewReader(r)
 			if err != nil {
 				return err
 			}
-		case strings.HasSuffix(base, ".tar.bz2") || strings.HasSuffix(base, ".tbz2"):
-			r = bzip2.NewReader(r)
-		case strings.HasSuffix(base, ".tar"):
 		default:
 			return fmt.Errorf("unknown format: %s", base)
 		}
