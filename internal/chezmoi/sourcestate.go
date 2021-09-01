@@ -5,11 +5,8 @@ package chezmoi
 // FIXME implement include and exclude entry type sets for externals
 
 import (
-	"archive/tar"
 	"bufio"
 	"bytes"
-	"compress/bzip2"
-	"compress/gzip"
 	"context"
 	"encoding/hex"
 	"errors"
@@ -1481,24 +1478,10 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 	if err != nil {
 		return nil, fmt.Errorf("%s: %s: %w", externalRelPath, external.URL, err)
 	}
-	var r io.Reader = bytes.NewReader(data)
 	path := url.Path
 	if external.Encrypted {
 		path = strings.TrimSuffix(path, s.encryption.EncryptedSuffix())
 	}
-	switch {
-	case strings.HasSuffix(path, ".tar.gz") || strings.HasSuffix(path, ".tgz"):
-		r, err = gzip.NewReader(r)
-		if err != nil {
-			return nil, fmt.Errorf("%s: %s: %w", externalRelPath, external.URL, err)
-		}
-	case strings.HasSuffix(path, ".tar.bz2") || strings.HasSuffix(path, ".tbz2"):
-		r = bzip2.NewReader(r)
-	default:
-		return nil, fmt.Errorf("%s: %s: unknown format", externalRelPath, external.URL)
-	}
-
-	tarReader := tar.NewReader(r)
 	sourceRelPath := NewSourceRelPath(RelPath(external.URL))
 	sourceStateEntries := map[RelPath][]SourceStateEntry{
 		externalRelPath: {
@@ -1513,35 +1496,29 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 			},
 		},
 	}
-FOR:
-	for {
-		header, err := tarReader.Next()
-		switch {
-		case errors.Is(err, io.EOF):
-			break FOR
-		case err != nil:
-			return nil, fmt.Errorf("%s: %s: %w", externalRelPath, external.URL, err)
-		}
 
-		name := strings.TrimSuffix(header.Name, "/")
+	if err := walkArchive(path, data, func(name string, info fs.FileInfo, r io.Reader, linkname string) error {
 		if external.StripComponents > 0 {
 			components := strings.Split(name, "/")
 			if len(components) <= external.StripComponents {
-				continue FOR
+				return nil
 			}
 			name = strings.Join(components[external.StripComponents:], "/")
+		}
+		if name == "" {
+			return nil
 		}
 		targetRelPath := externalRelPath.Join(RelPath(name))
 
 		if s.Ignored(targetRelPath) {
-			continue FOR
+			return nil
 		}
 
 		var sourceStateEntry SourceStateEntry
-		switch header.Typeflag {
-		case tar.TypeDir:
+		switch {
+		case info.IsDir():
 			targetStateEntry := &TargetStateDir{
-				perm: fs.FileMode(header.Mode).Perm() &^ s.umask,
+				perm: info.Mode().Perm() &^ s.umask,
 			}
 			sourceStateEntry = &SourceStateDir{
 				Attr: DirAttr{
@@ -1550,15 +1527,15 @@ FOR:
 				sourceRelPath:    sourceRelPath,
 				targetStateEntry: targetStateEntry,
 			}
-		case tar.TypeReg:
-			contents, err := io.ReadAll(tarReader)
+		case info.Mode()&fs.ModeType == 0:
+			contents, err := io.ReadAll(r)
 			if err != nil {
-				return nil, fmt.Errorf("%s: %s: %s: %w", externalRelPath, external.URL, header.Name, err)
+				return fmt.Errorf("%s: %w", name, err)
 			}
 			lazyContents := newLazyContents(contents)
 			fileAttr := FileAttr{
 				Empty:      true,
-				Executable: header.FileInfo().Mode()&0o111 != 0,
+				Executable: info.Mode().Perm()&0o111 != 0,
 			}
 			targetStateEntry := &TargetStateFile{
 				lazyContents: lazyContents,
@@ -1570,22 +1547,23 @@ FOR:
 				sourceRelPath:    sourceRelPath,
 				targetStateEntry: targetStateEntry,
 			}
-		case tar.TypeSymlink:
+		case info.Mode()&fs.ModeType == fs.ModeSymlink:
 			targetStateEntry := &TargetStateSymlink{
-				lazyLinkname: newLazyLinkname(header.Linkname),
+				lazyLinkname: newLazyLinkname(linkname),
 			}
 			sourceStateEntry = &SourceStateFile{
 				sourceRelPath:    sourceRelPath,
 				targetStateEntry: targetStateEntry,
 			}
-		case tar.TypeXGlobalHeader:
-			continue FOR
 		default:
-			return nil, fmt.Errorf("%s: %s: unsupported typeflag: '%c'", externalRelPath, external.URL, header.Typeflag)
+			return fmt.Errorf("%s: unsupported mode %o", name, info.Mode()&fs.ModeType)
 		}
-
 		sourceStateEntries[targetRelPath] = append(sourceStateEntries[targetRelPath], sourceStateEntry)
+		return nil
+	}); err != nil {
+		return nil, fmt.Errorf("%s: %s: %w", externalRelPath, external.URL, err)
 	}
+
 	return sourceStateEntries, nil
 }
 

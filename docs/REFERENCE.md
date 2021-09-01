@@ -674,7 +674,8 @@ archive at `url`. The optional boolean field `exact` may be set, in which case
 the directory and all subdirectories will be treated as exact directories, i.e.
 `chezmoi apply` will remove entries not present in the archive. The optional
 integer field `stripComponents` will remove leading path components from the
-members of archive.
+members of archive. The supported archive formats are `.tar`, `.tar.gz`, `.tgz`,
+`.tar.bz2`, `.tbz2`, and `.zip`.
 
 By default, chezmoi will cache downloaded URLs the first time they are accessed.
 To force chezmoi to re-download URLs, pass the `--refresh-externals` flag.
@@ -1306,8 +1307,8 @@ state. This is primarily used to make subdirectories of your home directory
 exactly match the contents of a downloaded archive. You will generally always
 want to set the `--destination`, `--exact`, and `--remove-destination` flags.
 
-The supported archive formats are `.tar`, `.tar.gz`, `.tgz`, `.tar.bz2`, and
-`.tbz2`.
+The supported archive formats are `.tar`, `.tar.gz`, `.tgz`, `.tar.bz2`,
+`.tbz2`, and `.zip`.
 
 #### `--destination` *directory*
 
