@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestTARReaderSystem(t *testing.T) {
+func TestArchiveReaderSystemTAR(t *testing.T) {
 	b := &bytes.Buffer{}
 	w := tar.NewWriter(b)
 	assert.NoError(t, w.WriteHeader(&tar.Header{
@@ -36,7 +36,7 @@ func TestTARReaderSystem(t *testing.T) {
 	}))
 	require.NoError(t, w.Close())
 
-	tarReaderSystem, err := NewTARReaderSystem(tar.NewReader(b), TARReaderSystemOptions{
+	archiveReaderSystem, err := NewArchiveReaderSystem("archive.tar", b.Bytes(), ArchiveReaderSystemOptions{
 		RootAbsPath:     "/home/user",
 		StripComponents: 1,
 	})
@@ -67,14 +67,14 @@ func TestTARReaderSystem(t *testing.T) {
 			readFileErr: fs.ErrInvalid,
 		},
 	} {
-		_, err = tarReaderSystem.Lstat(tc.absPath)
+		_, err = archiveReaderSystem.Lstat(tc.absPath)
 		if tc.lstatErr != nil {
 			assert.True(t, errors.Is(err, tc.lstatErr))
 		} else {
 			assert.NoError(t, err)
 		}
 
-		actualLinkname, err := tarReaderSystem.Readlink(tc.absPath)
+		actualLinkname, err := archiveReaderSystem.Readlink(tc.absPath)
 		if tc.readlinkErr != nil {
 			assert.True(t, errors.Is(err, tc.readlinkErr))
 		} else {
@@ -82,7 +82,7 @@ func TestTARReaderSystem(t *testing.T) {
 			assert.Equal(t, tc.readlink, actualLinkname)
 		}
 
-		actualReadFileData, err := tarReaderSystem.ReadFile(tc.absPath)
+		actualReadFileData, err := archiveReaderSystem.ReadFile(tc.absPath)
 		if tc.readFileErr != nil {
 			assert.True(t, errors.Is(err, tc.readFileErr))
 		} else {

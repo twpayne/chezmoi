@@ -1307,8 +1307,8 @@ state. This is primarily used to make subdirectories of your home directory
 exactly match the contents of a downloaded archive. You will generally always
 want to set the `--destination`, `--exact`, and `--remove-destination` flags.
 
-The supported archive formats are `.tar`, `.tar.gz`, `.tgz`, `.tar.bz2`, and
-`.tbz2`.
+The supported archive formats are `.tar`, `.tar.gz`, `.tgz`, `.tar.bz2`,
+`.tbz2`, and `.zip`.
 
 #### `--destination` *directory*
 
