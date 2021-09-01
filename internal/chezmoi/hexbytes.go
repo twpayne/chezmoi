@@ -31,3 +31,7 @@ func (h *HexBytes) UnmarshalText(text []byte) error {
 	*h = result
 	return nil
 }
+
+func (h HexBytes) String() string {
+	return hex.EncodeToString(h)
+}

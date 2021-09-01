@@ -4,6 +4,10 @@ import (
 	"bytes"
 	"io/fs"
 	"runtime"
+
+	"github.com/rs/zerolog"
+
+	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )
 
 // An EntryStateType is an entry state type.
@@ -59,4 +63,16 @@ func (s *EntryState) Equivalent(other *EntryState) bool {
 // Overwrite returns true if s should be overwritten by default.
 func (s *EntryState) Overwrite() bool {
 	return s.overwrite
+}
+
+func (s *EntryState) MarshalZerologObject(e *zerolog.Event) {
+	e.Str("Type", string(s.Type))
+	e.Int("Mode", int(s.Mode))
+	e.Stringer("ContentsSHA256", s.ContentsSHA256)
+	if len(s.contents) != 0 {
+		e.Bytes("contents", chezmoilog.FirstFewBytes(s.contents))
+	}
+	if s.overwrite {
+		e.Bool("overwrite", s.overwrite)
+	}
 }

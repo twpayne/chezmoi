@@ -581,6 +581,13 @@ func (c *Config) defaultConfigFile(fileSystem vfs.Stater, bds *xdg.BaseDirectory
 }
 
 func (c *Config) defaultPreApplyFunc(targetRelPath chezmoi.RelPath, targetEntryState, lastWrittenEntryState, actualEntryState *chezmoi.EntryState) error {
+	log.Debug().
+		Stringer("targetRelPath", targetRelPath).
+		Object("targetEntryState", targetEntryState).
+		Object("lastWrittenEntryState", lastWrittenEntryState).
+		Object("actualEntryState", actualEntryState).
+		Msg("defaultPreApplyFunc")
+
 	switch {
 	case targetEntryState.Overwrite():
 		return nil
