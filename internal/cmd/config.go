@@ -1271,6 +1271,11 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		zerolog.SetGlobalLevel(zerolog.Disabled)
 	}
 
+	log.Debug().
+		Object("version", c.versionInfo).
+		Strs("args", args).
+		Msg("persistentPreRunRootE")
+
 	c.baseSystem = chezmoi.NewRealSystem(c.fileSystem,
 		chezmoi.RealSystemWithSafe(c.Safe),
 	)

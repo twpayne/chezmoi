@@ -13,6 +13,7 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/glamour"
+	"github.com/rs/zerolog"
 	"github.com/spf13/cobra"
 	"go.etcd.io/bbolt"
 
@@ -81,6 +82,13 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func (v VersionInfo) MarshalZerologObject(e *zerolog.Event) {
+	e.Str("version", v.Version)
+	e.Str("commit", v.Commit)
+	e.Str("date", v.Date)
+	e.Str("builtBy", v.BuiltBy)
 }
 
 // Main runs chezmoi and returns an exit code.
