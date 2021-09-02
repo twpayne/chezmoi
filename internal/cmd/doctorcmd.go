@@ -26,12 +26,12 @@ import (
 type checkResult int
 
 const (
-	checkSkipped checkResult = -1 // The check was skipped.
-	checkOK      checkResult = 0  // The check completed and did not find any problems.
-	checkInfo    checkResult = 1  // The check completed and found something interesting, but not a problem.
-	checkWarning checkResult = 2  // The check completed and found something that might indicate a problem.
-	checkError   checkResult = 3  // The check completed and found a definite problem.
-	checkFailed  checkResult = 4  // The check could not be completed.
+	checkResultSkipped checkResult = -1 // The check was skipped.
+	checkResultOK      checkResult = 0  // The check completed and did not find any problems.
+	checkResultInfo    checkResult = 1  // The check completed and found something interesting, but not a problem.
+	checkResultWarning checkResult = 2  // The check completed and found something that might indicate a problem.
+	checkResultError   checkResult = 3  // The check completed and found a definite problem.
+	checkResultFailed  checkResult = 4  // The check could not be completed.
 )
 
 // A check is an individual check.
@@ -41,12 +41,12 @@ type check interface {
 }
 
 var checkResultStr = map[checkResult]string{
-	checkSkipped: "skipped",
-	checkOK:      "ok",
-	checkInfo:    "info",
-	checkWarning: "warning",
-	checkError:   "error",
-	checkFailed:  "failed",
+	checkResultSkipped: "skipped",
+	checkResultOK:      "ok",
+	checkResultInfo:    "info",
+	checkResultWarning: "warning",
+	checkResultError:   "error",
+	checkResultFailed:  "failed",
 }
 
 // A binaryCheck checks that a binary called name is installed and optionally at
@@ -87,6 +87,9 @@ type suspiciousEntriesCheck struct {
 	dirname string
 }
 
+// A umaskCheck checks the umask.
+type umaskCheck struct{}
+
 // A versionCheck checks the version information.
 type versionCheck struct {
 	versionInfo VersionInfo
@@ -123,7 +126,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		&fileCheck{
 			name:       "config-file",
 			filename:   string(c.configFileAbsPath),
-			ifNotExist: checkInfo,
+			ifNotExist: checkResultInfo,
 		},
 		&dirCheck{
 			name:    "source-dir",
@@ -139,62 +142,63 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		&binaryCheck{
 			name:       "shell",
 			binaryname: shell,
-			ifNotSet:   checkError,
+			ifNotSet:   checkResultError,
 		},
 		&binaryCheck{
 			name:       "editor",
 			binaryname: editor,
-			ifNotSet:   checkWarning,
+			ifNotSet:   checkResultWarning,
 		},
+		&umaskCheck{},
 		&binaryCheck{
 			name:        "git-cli",
 			binaryname:  c.Git.Command,
-			ifNotSet:    checkWarning,
-			ifNotExist:  checkWarning,
+			ifNotSet:    checkResultWarning,
+			ifNotExist:  checkResultWarning,
 			versionArgs: []string{"--version"},
 			versionRx:   regexp.MustCompile(`^git\s+version\s+(\d+\.\d+\.\d+)`),
 		},
 		&binaryCheck{
 			name:       "merge-cli",
 			binaryname: c.Merge.Command,
-			ifNotSet:   checkWarning,
-			ifNotExist: checkWarning,
+			ifNotSet:   checkResultWarning,
+			ifNotExist: checkResultWarning,
 		},
 		&binaryCheck{
 			name:        "age-cli",
 			binaryname:  "age",
 			versionArgs: []string{"-version"},
 			versionRx:   regexp.MustCompile(`v(\d+\.\d+\.\d+\S*)`),
-			ifNotSet:    checkWarning,
+			ifNotSet:    checkResultWarning,
 		},
 		&binaryCheck{
 			name:        "gnupg-cli",
 			binaryname:  "gpg",
 			versionArgs: []string{"--version"},
 			versionRx:   regexp.MustCompile(`^gpg\s+\(.*?\)\s+(\d+\.\d+\.\d+)`),
-			ifNotSet:    checkWarning,
+			ifNotSet:    checkResultWarning,
 		},
 		&binaryCheck{
 			name:        "1password-cli",
 			binaryname:  c.Onepassword.Command,
-			ifNotSet:    checkWarning,
-			ifNotExist:  checkInfo,
+			ifNotSet:    checkResultWarning,
+			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"--version"},
 			versionRx:   regexp.MustCompile(`^(\d+\.\d+\.\d+)`),
 		},
 		&binaryCheck{
 			name:        "bitwarden-cli",
 			binaryname:  c.Bitwarden.Command,
-			ifNotSet:    checkWarning,
-			ifNotExist:  checkInfo,
+			ifNotSet:    checkResultWarning,
+			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"--version"},
 			versionRx:   regexp.MustCompile(`^(\d+\.\d+\.\d+)`),
 		},
 		&binaryCheck{
 			name:        "gopass-cli",
 			binaryname:  c.Gopass.Command,
-			ifNotSet:    checkWarning,
-			ifNotExist:  checkInfo,
+			ifNotSet:    checkResultWarning,
+			ifNotExist:  checkResultInfo,
 			versionArgs: gopassVersionArgs,
 			versionRx:   gopassVersionRx,
 			minVersion:  &gopassMinVersion,
@@ -202,22 +206,22 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		&binaryCheck{
 			name:        "keepassxc-cli",
 			binaryname:  c.Keepassxc.Command,
-			ifNotSet:    checkWarning,
-			ifNotExist:  checkInfo,
+			ifNotSet:    checkResultWarning,
+			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"--version"},
 			versionRx:   regexp.MustCompile(`^(\d+\.\d+\.\d+)`),
 		},
 		&fileCheck{
 			name:       "keepassxc-db",
 			filename:   c.Keepassxc.Database,
-			ifNotSet:   checkInfo,
-			ifNotExist: checkInfo,
+			ifNotSet:   checkResultInfo,
+			ifNotExist: checkResultInfo,
 		},
 		&binaryCheck{
 			name:        "lastpass-cli",
 			binaryname:  c.Lastpass.Command,
-			ifNotSet:    checkWarning,
-			ifNotExist:  checkInfo,
+			ifNotSet:    checkResultWarning,
+			ifNotExist:  checkResultInfo,
 			versionArgs: lastpassVersionArgs,
 			versionRx:   lastpassVersionRx,
 			minVersion:  &lastpassMinVersion,
@@ -225,28 +229,28 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		&binaryCheck{
 			name:        "pass-cli",
 			binaryname:  c.Pass.Command,
-			ifNotSet:    checkWarning,
-			ifNotExist:  checkInfo,
+			ifNotSet:    checkResultWarning,
+			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"version"},
 			versionRx:   regexp.MustCompile(`(?m)=\s*v(\d+\.\d+\.\d+)`),
 		},
 		&binaryCheck{
 			name:        "vault-cli",
 			binaryname:  c.Vault.Command,
-			ifNotSet:    checkWarning,
-			ifNotExist:  checkInfo,
+			ifNotSet:    checkResultWarning,
+			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"version"},
 			versionRx:   regexp.MustCompile(`^Vault\s+v(\d+\.\d+\.\d+)`),
 		},
 		&binaryCheck{
 			name:       "secret-cli",
 			binaryname: c.Secret.Command,
-			ifNotSet:   checkInfo,
-			ifNotExist: checkInfo,
+			ifNotSet:   checkResultInfo,
+			ifNotExist: checkResultInfo,
 		},
 	}
 
-	worstResult := checkOK
+	worstResult := checkResultOK
 	resultWriter := tabwriter.NewWriter(c.stdout, 3, 0, 3, ' ', 0)
 	fmt.Fprint(resultWriter, "RESULT\tCHECK\tMESSAGE\n")
 	for _, check := range checks {
@@ -258,7 +262,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 	}
 	resultWriter.Flush()
 
-	if worstResult > checkWarning {
+	if worstResult > checkResultWarning {
 		return ExitCodeError(1)
 	}
 
@@ -279,37 +283,37 @@ func (c *binaryCheck) Run() (checkResult, string) {
 	case errors.Is(err, exec.ErrNotFound):
 		return c.ifNotExist, fmt.Sprintf("%s not found in $PATH", c.binaryname)
 	case err != nil:
-		return checkFailed, err.Error()
+		return checkResultFailed, err.Error()
 	}
 
 	if c.versionArgs == nil {
-		return checkOK, fmt.Sprintf("found %s", path)
+		return checkResultOK, fmt.Sprintf("found %s", path)
 	}
 
 	cmd := exec.Command(path, c.versionArgs...)
 	output, err := chezmoilog.LogCmdCombinedOutput(log.Logger, cmd)
 	if err != nil {
-		return checkFailed, err.Error()
+		return checkResultFailed, err.Error()
 	}
 
 	versionBytes := output
 	if c.versionRx != nil {
 		match := c.versionRx.FindSubmatch(versionBytes)
 		if len(match) != 2 {
-			return checkFailed, fmt.Sprintf("found %s, could not parse version from %s", path, versionBytes)
+			return checkResultFailed, fmt.Sprintf("found %s, could not parse version from %s", path, versionBytes)
 		}
 		versionBytes = match[1]
 	}
 	version, err := semver.NewVersion(string(versionBytes))
 	if err != nil {
-		return checkFailed, err.Error()
+		return checkResultFailed, err.Error()
 	}
 
 	if c.minVersion != nil && version.LessThan(*c.minVersion) {
-		return checkError, fmt.Sprintf("found %s, version %s, need %s", path, version, c.minVersion)
+		return checkResultError, fmt.Sprintf("found %s, version %s, need %s", path, version, c.minVersion)
 	}
 
-	return checkOK, fmt.Sprintf("found %s, version %s", path, version)
+	return checkResultOK, fmt.Sprintf("found %s, version %s", path, version)
 }
 
 func (c *dirCheck) Name() string {
@@ -318,9 +322,9 @@ func (c *dirCheck) Name() string {
 
 func (c *dirCheck) Run() (checkResult, string) {
 	if _, err := os.ReadDir(c.dirname); err != nil {
-		return checkError, fmt.Sprintf("%s: %v", c.dirname, err)
+		return checkResultError, fmt.Sprintf("%s: %v", c.dirname, err)
 	}
-	return checkOK, fmt.Sprintf("%s is a directory", c.dirname)
+	return checkResultOK, fmt.Sprintf("%s is a directory", c.dirname)
 }
 
 func (c *executableCheck) Name() string {
@@ -330,9 +334,9 @@ func (c *executableCheck) Name() string {
 func (c *executableCheck) Run() (checkResult, string) {
 	executable, err := os.Executable()
 	if err != nil {
-		return checkError, err.Error()
+		return checkResultError, err.Error()
 	}
-	return checkOK, executable
+	return checkResultOK, executable
 }
 
 func (c *fileCheck) Name() string {
@@ -349,9 +353,9 @@ func (c *fileCheck) Run() (checkResult, string) {
 	case errors.Is(err, fs.ErrNotExist):
 		return c.ifNotExist, fmt.Sprintf("%s does not exist", c.filename)
 	case err != nil:
-		return checkError, fmt.Sprintf("%s: %v", c.filename, err)
+		return checkResultError, fmt.Sprintf("%s: %v", c.filename, err)
 	default:
-		return checkOK, fmt.Sprintf("%s is a file", c.filename)
+		return checkResultOK, fmt.Sprintf("%s is a file", c.filename)
 	}
 }
 
@@ -368,7 +372,7 @@ func (osArchCheck) Run() (checkResult, string) {
 			}
 		}
 	}
-	return checkOK, strings.Join(fields, " ")
+	return checkResultOK, strings.Join(fields, " ")
 }
 
 func (c *suspiciousEntriesCheck) Name() string {
@@ -391,12 +395,16 @@ func (c *suspiciousEntriesCheck) Run() (checkResult, string) {
 		}
 		return nil
 	}); err != nil {
-		return checkError, err.Error()
+		return checkResultError, err.Error()
 	}
 	if len(suspiciousEntries) > 0 {
-		return checkWarning, fmt.Sprintf("%s: %s", c.dirname, englishList(suspiciousEntries))
+		return checkResultWarning, fmt.Sprintf("%s: %s", c.dirname, englishList(suspiciousEntries))
 	}
-	return checkOK, fmt.Sprintf("%s: no suspicious entries", c.dirname)
+	return checkResultOK, fmt.Sprintf("%s: no suspicious entries", c.dirname)
+}
+
+func (c *umaskCheck) Name() string {
+	return "umask"
 }
 
 func (c *versionCheck) Name() string {
@@ -408,7 +416,7 @@ func (c *versionCheck) Run() (checkResult, string) {
 		c.versionInfo.Commit == "" ||
 		c.versionInfo.Date == "" ||
 		c.versionInfo.BuiltBy == "" {
-		return checkWarning, c.versionStr
+		return checkResultWarning, c.versionStr
 	}
-	return checkOK, c.versionStr
+	return checkResultOK, c.versionStr
 }
