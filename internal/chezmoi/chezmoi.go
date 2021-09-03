@@ -37,6 +37,7 @@ const (
 	modifyPrefix     = "modify_"
 	oncePrefix       = "once_"
 	privatePrefix    = "private_"
+	removePrefix     = "remove_"
 	runPrefix        = "run_"
 	symlinkPrefix    = "symlink_"
 	literalSuffix    = ".literal"
@@ -57,7 +58,7 @@ const (
 
 var (
 	dirPrefixRegexp  = regexp.MustCompile(`\A(dot|exact|literal|private)_`)
-	filePrefixRegexp = regexp.MustCompile(`\A(after|before|create|dot|empty|encrypted|executable|literal|modify|once|private|run|symlink)_`)
+	filePrefixRegexp = regexp.MustCompile(`\A(after|before|create|dot|empty|encrypted|executable|literal|modify|once|private|remove|run|symlink)_`)
 	fileSuffixRegexp = regexp.MustCompile(`\.(literal|tmpl)\z`)
 )
 

@@ -136,6 +136,13 @@ func TestFileAttr(t *testing.T) {
 	require.NoError(t, combinator.Generate(&fas, struct {
 		Type       SourceFileTargetType
 		TargetName []string
+	}{
+		Type:       SourceFileTypeRemove,
+		TargetName: targetNames,
+	}))
+	require.NoError(t, combinator.Generate(&fas, struct {
+		Type       SourceFileTargetType
+		TargetName []string
 		Once       []bool
 		Order      []int
 	}{

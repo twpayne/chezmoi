@@ -424,6 +424,7 @@ to as "attributes":
 | `modify_`    | Treat the contents as a script that modifies an existing file.                 |
 | `once_`      | Run script once.                                                               |
 | `private_`   | Remove all group and world permissions from the target file or directory.      |
+| `remove_`    | Remove the entry if it exists.                                                 |
 | `run_`       | Treat the contents as a script to run.                                         |
 | `symlink_`   | Create a symlink instead of a regular file.                                    |
 
@@ -441,6 +442,7 @@ prefixes is important.
 | Regular file  | File        | `encrypted_`, `private_`, `executable_`, `dot_`                       | `.tmpl`          |
 | Create file   | File        | `create_`, `encrypted_`, `private_`, `executable_`, `dot_`            | `.tmpl`          |
 | Modify file   | File        | `modify_`, `encrypted_`, `private_`, `executable_`, `dot_`            | `.tmpl`          |
+| Remove        | File        | `remove_`, `dot_`                                                     | *none*           |
 | Script        | File        | `run_`, `once_`, `before_` or `after_`                                | `.tmpl`          |
 | Symbolic link | File        | `symlink_`, `dot_`,                                                   | `.tmpl`          |
 
@@ -492,6 +494,13 @@ Files with the `modify_` prefix are treated as scripts that modify an existing
 file. The contents of the existing file (which maybe empty if the existing file
 does not exist or is empty) are passed to the script's standard input, and the
 new contents are read from the scripts standard output.
+
+---
+
+#### Remove entry
+
+Files with the `remove_` prefix will cause the corresponding entry (file,
+directory, or symlink) to be removed in the target state.
 
 ---
 

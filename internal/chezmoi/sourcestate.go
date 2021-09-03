@@ -1230,6 +1230,14 @@ func (s *SourceState) newModifyTargetStateEntryFunc(sourceRelPath SourceRelPath,
 	}
 }
 
+// newRemoveTargetStateEntryFunc returns a targetStateEntryFunc that removes a
+// target.
+func (s *SourceState) newRemoveTargetStateEntryFunc(sourceRelPath SourceRelPath, fileAttr FileAttr) targetStateEntryFunc {
+	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
+		return &TargetStateRemove{}, nil
+	}
+}
+
 // newScriptTargetStateEntryFunc returns a targetStateEntryFunc that returns a
 // script with sourceLazyContents.
 func (s *SourceState) newScriptTargetStateEntryFunc(sourceRelPath SourceRelPath, fileAttr FileAttr, targetRelPath RelPath, sourceLazyContents *lazyContents, interpreter *Interpreter) targetStateEntryFunc {
@@ -1314,6 +1322,8 @@ func (s *SourceState) newSourceStateFile(sourceRelPath SourceRelPath, fileAttr F
 			targetRelPath = targetRelPath[:len(targetRelPath)-len(ext)-1]
 		}
 		targetStateEntryFunc = s.newModifyTargetStateEntryFunc(sourceRelPath, fileAttr, sourceLazyContents, interpreter)
+	case SourceFileTypeRemove:
+		targetStateEntryFunc = s.newRemoveTargetStateEntryFunc(sourceRelPath, fileAttr)
 	case SourceFileTypeScript:
 		// If the script has an extension, determine if it indicates an
 		// interpreter to use.

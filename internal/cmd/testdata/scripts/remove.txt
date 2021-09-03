@@ -19,3 +19,18 @@ exists $HOME/.executable
 ! chezmoi remove --force $HOME${/}.newfile $HOME${/}.executable
 stderr 'not in source state'
 exists $HOME/.executable
+
+chhome home2/user
+
+# test that chezmoi apply removes a file and a directory
+exists $HOME/.file
+exists $HOME/.dir
+chezmoi apply
+! exists $HOME/.file
+! exists $HOME/.dir
+
+-- home2/user/.dir/.keep --
+-- home2/user/.file --
+# contents of .file
+-- home2/user/.local/share/chezmoi/remove_dot_file --
+-- home2/user/.local/share/chezmoi/remove_dot_dir --
