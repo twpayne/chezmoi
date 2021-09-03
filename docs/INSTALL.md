@@ -111,7 +111,9 @@ page](https://github.com/twpayne/chezmoi/releases/latest).
 Download, build, and install chezmoi for your system:
 
 ```console
-$ go install github.com/twpayne/chezmoi@latest
+$ git clone https://github.com/twpayne/chezmoi.git
+$ cd chezmoi
+$ make install
 ```
 
 Building chezmoi requires Go 1.17 or later.

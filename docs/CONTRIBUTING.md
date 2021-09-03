@@ -36,7 +36,7 @@ $ make ensure-tools
 Build chezmoi:
 
 ```console
-$ go build .
+$ go build
 ```
 
 Run all tests:
@@ -164,30 +164,34 @@ $ brew bump-formula-pr --tag=v1.2.3 chezmoi
 If you're packaging chezmoi for an operating system or distribution:
 
 * chezmoi has no build or install dependencies other than the standard Go
-  tool chain.
+  toolchain.
 
 * Please set the version number, git commit, and build time in the binary. This
   greatly assists debugging when end users report problems or ask for help. You
-  can do this by passing the following flags to the Go linker:
+  can do this by passing the following flags to `go build`:
 
   ```
-  -X main.version=$VERSION
-  -X main.commit=$COMMIT
-  -X main.date=$DATE
-  -X main.builtBy=$BUILT_BY
+  -ldflags "-X main.version=$VERSION
+            -X main.commit=$COMMIT
+            -X main.date=$DATE
+            -X main.builtBy=$BUILT_BY"
   ```
 
   `$VERSION` should be the chezmoi version, e.g. `1.7.3`. Any `v` prefix is
-  optional and will be stripped, so you can pass the git tag in directly.
+  optional and will be stripped, so you can pass the git tag in directly. The
+  command `git describe --abbrev=0 --tags` will return a suitable value.
 
   `$COMMIT` should be the full git commit hash at which chezmoi is built, e.g.
-  `4d678ce6850c9d81c7ab2fe0d8f20c1547688b91`.
+  `4d678ce6850c9d81c7ab2fe0d8f20c1547688b91`. The command `git rev-parse HEAD`
+  will return a suitable value.
 
   `$DATE` should be the date of the build in RFC3339 format, e.g.
-  `2019-11-23T18:29:25Z`.
+  `2019-11-23T18:29:25Z`. The command `date -u +%Y-%m-%dT%H:%M:%SZ` will return
+  a suitable value.
 
-  `$BUILT_BY` should be a string indicating what mechanism was used to build the
-  binary, e.g. `goreleaser`.
+  `$BUILT_BY` should be a string indicating what system was used to build the
+  binary. Typically it should be the name of your packaging system, e.g.
+  `homebrew`.
 
 * Please enable cgo, if possible. chezmoi can be built and run without cgo, but
   the `.chezmoi.username` and `.chezmoi.group` template variables may not be set
