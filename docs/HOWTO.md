@@ -3,6 +3,7 @@
 <!--- toc --->
 * [Perform daily operations](#perform-daily-operations)
   * [Use a hosted repo to manage your dotfiles across multiple machines](#use-a-hosted-repo-to-manage-your-dotfiles-across-multiple-machines)
+  * [Use a private repo to store your dotfiles](#use-a-private-repo-to-store-your-dotfiles)
   * [Pull the latest changes from your repo and apply them](#pull-the-latest-changes-from-your-repo-and-apply-them)
   * [Pull the latest changes from your repo and see what would change, without actually applying the changes](#pull-the-latest-changes-from-your-repo-and-see-what-would-change-without-actually-applying-the-changes)
   * [Automatically commit and push changes to your repo](#automatically-commit-and-push-changes-to-your-repo)
@@ -103,6 +104,30 @@ The above commands can be combined into a single init, checkout, and apply:
 ```console
 $ chezmoi init --apply --verbose https://github.com/username/dotfiles.git
 ```
+
+---
+
+### Use a private repo to store your dotfiles
+
+chezmoi supports storing your dotfiles in both public and private repos.
+
+chezmoi is designed so that your dotfiles repo can be public by making it easy
+for you to store your secrets either in your password manager, in encrypted
+files, or in private configuration files. Your dotfiles repo can still be
+private, if you choose.
+
+If you use a private repo for your dotfiles then you will typically need to
+enter your credentials (e.g. your username and password) each time you interact
+with the repo, for example when pulling or pushing changes. chezmoi itself does
+not store any credentials, but instead relies on your local git configuration
+for these operations.
+
+When using a private repo on GitHub, when prompted for a password you will need
+to enter a [GitHub personal access
+token](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token).
+For more information on these changes, read the [GitHub blog post on Token
+authentication requirements for Git
+operations](https://github.blog/2020-12-15-token-authentication-requirements-for-git-operations/)
 
 ---
 
