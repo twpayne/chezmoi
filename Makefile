@@ -4,6 +4,13 @@ GOLANGCI_LINT_VERSION=1.42.0
 .PHONY: default
 default: run build test lint format
 
+.PHONY: install
+install:
+	go install -ldflags "-X main.version=$(shell git describe --abbrev=0 --tags) \
+		-X main.commit=$(shell git rev-parse HEAD) \
+		-X main.date=$(shell date -u +%Y-%m-%dT%H:%M:%SZ) \
+		-X main.builtBy=source"
+
 .PHONY: build
 build: build-darwin build-freebsd build-linux build-windows
 
