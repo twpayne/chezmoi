@@ -18,7 +18,6 @@ Manage your dotfiles across multiple machines, securely.
   * [`--no-tty`](#--no-tty)
   * [`-o`, `--output` *filename*](#-o---output-filename)
   * [`-R`, `--refresh-externals`](#-r---refresh-externals)
-  * [`-r`. `--remove`](#-r---remove)
   * [`-S`, `--source` *directory*](#-s---source-directory)
   * [`--use-builtin-git` *value*](#--use-builtin-git-value)
   * [`-v`, `--verbose`](#-v---verbose)
@@ -213,10 +212,6 @@ Write the output to *filename* instead of stdout.
 
 Refresh externals cache. See `.chezmoiexternal.<format>`.
 
-### `-r`. `--remove`
-
-Also remove targets according to `.chezmoiremove`.
-
 ### `-S`, `--source` *directory*
 
 Use *directory* as the source directory.
@@ -313,7 +308,6 @@ The following configuration variables are available:
 |                | `encryption`          | string   | *none*                   | Encryption tool, either `age` or `gpg`                 |
 |                | `format`              | string   | `json`                   | Format for data output, either `json` or `yaml`        |
 |                | `mode`                | string   | `file`                   | Mode in target dir, either `file` or `symlink`         |
-|                | `remove`              | bool     | `false`                  | Remove targets                                         |
 |                | `sourceDir`           | string   | `~/.local/share/chezmoi` | Source directory                                       |
 |                | `pager`               | string   | `$PAGER`                 | Default pager                                          |
 |                | `umask`               | int      | *from system*            | Umask                                                  |

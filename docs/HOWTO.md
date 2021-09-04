@@ -250,18 +250,13 @@ chezmoi automatically creates `.keep` files when you add an empty directory with
 ### Ensure that a target is removed
 
 Create a file called `.chezmoiremove` in the source directory containing a list
-of patterns of files to remove. When you run
+of patterns of files to remove. chezmoi will remove anything in the target
+directory that matches the pattern. As this command is potentially dangerous,
+you should run chezmoi in verbose, dry-run mode beforehand to see what would be
+removed:
 
 ```console
-$ chezmoi apply --remove
-```
-
-chezmoi will remove anything in the target directory that matches the pattern.
-As this command is potentially dangerous, you should run chezmoi in verbose,
-dry-run mode beforehand to see what would be removed:
-
-```console
-$ chezmoi apply --remove --dry-run --verbose
+$ chezmoi apply --dry-run --verbose
 ```
 
 `.chezmoiremove` is interpreted as a template, so you can remove different files

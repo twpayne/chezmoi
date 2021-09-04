@@ -62,7 +62,6 @@ type Config struct {
 	Mode             chezmoi.Mode                    `mapstructure:"mode"`
 	Pager            string                          `mapstructure:"pager"`
 	Safe             bool                            `mapstructure:"safe"`
-	Remove           bool                            `mapstructure:"remove"`
 	SourceDirAbsPath chezmoi.AbsPath                 `mapstructure:"sourceDir"`
 	Template         templateConfig                  `mapstructure:"template"`
 	Umask            fs.FileMode                     `mapstructure:"umask"`
@@ -1033,7 +1032,6 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.Var(&c.Color, "color", "Colorize output")
 	persistentFlags.VarP(&c.DestDirAbsPath, "destination", "D", "Set destination directory")
 	persistentFlags.BoolVar(&c.Safe, "safe", c.Safe, "Safely replace files and symlinks")
-	persistentFlags.BoolVar(&c.Remove, "remove", c.Remove, "Remove entries from destination directory")
 	persistentFlags.VarP(&c.SourceDirAbsPath, "source", "S", "Set source directory")
 	persistentFlags.Var(&c.Mode, "mode", "Mode")
 	persistentFlags.Var(&c.UseBuiltinGit, "use-builtin-git", "Use builtin git")
@@ -1041,7 +1039,6 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		"color",
 		"destination",
 		"mode",
-		"remove",
 		"source",
 	} {
 		if err := viper.BindPFlag(key, persistentFlags.Lookup(key)); err != nil {
