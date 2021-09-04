@@ -15,6 +15,7 @@ const (
 	SourceFileTypeCreate SourceFileTargetType = iota
 	SourceFileTypeFile
 	SourceFileTypeModify
+	SourceFileTypeRemove
 	SourceFileTypeScript
 	SourceFileTypeSymlink
 )
@@ -125,6 +126,9 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 			name = mustTrimPrefix(name, executablePrefix)
 			executable = true
 		}
+	case strings.HasPrefix(name, removePrefix):
+		sourceFileType = SourceFileTypeRemove
+		name = mustTrimPrefix(name, removePrefix)
 	case strings.HasPrefix(name, runPrefix):
 		sourceFileType = SourceFileTypeScript
 		name = mustTrimPrefix(name, runPrefix)
@@ -240,6 +244,8 @@ func (fa FileAttr) SourceName(encryptedSuffix string) string {
 		if fa.Executable {
 			sourceName += executablePrefix
 		}
+	case SourceFileTypeRemove:
+		sourceName = removePrefix
 	case SourceFileTypeScript:
 		sourceName = runPrefix
 		if fa.Once {
