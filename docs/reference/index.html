@@ -20,9 +20,9 @@
 <title>Reference | chezmoi.io</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
-<link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" integrity="sha256-lYzqeCdiHW&#43;8s6zwkTRMPkTj0qlCj5w8OLues3v4xF0=" crossorigin="anonymous">
+<link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.c115908d5df4a99c542383b1ee4ccbd967748872223b93e3162b8a08daa23940.js" integrity="sha256-wRWQjV30qZxUI4Ox7kzL2Wd0iHIiO5PjFiuKCNqiOUA=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.58d471f9e520b531e7b0d8d23de4e32fd933557f321e3e1f363cfc240a1fa600.js" integrity="sha256-WNRx&#43;eUgtTHnsNjSPeTjL9kzVX8yHj4fNjz8JAofpgA=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -38,7 +38,7 @@ https://github.com/alex-shpak/hugo-book
         
   <nav>
 <h2 class="book-brand">
-  <a href="/"><img src="/logo-144px.svg" alt="Logo" /><span>chezmoi.io</span>
+  <a class="flex align-center" href="/"><img src="/logo-144px.svg" alt="Logo" /><span>chezmoi.io</span>
   </a>
 </h2>
 
@@ -48,6 +48,7 @@ https://github.com/alex-shpak/hugo-book
   <div class="book-search-spinner hidden"></div>
   <ul id="book-search-results"></ul>
 </div>
+
 
 
 
@@ -137,7 +138,6 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#--no-tty"><code>--no-tty</code></a></li>
         <li><a href="#-o---output-filename"><code>-o</code>, <code>--output</code> <em>filename</em></a></li>
         <li><a href="#-r---refresh-externals"><code>-R</code>, <code>--refresh-externals</code></a></li>
-        <li><a href="#-r---remove"><code>-r</code>. <code>--remove</code></a></li>
         <li><a href="#-s---source-directory"><code>-S</code>, <code>--source</code> <em>directory</em></a></li>
         <li><a href="#--use-builtin-git-value"><code>--use-builtin-git</code> <em>value</em></a></li>
         <li><a href="#-v---verbose"><code>-v</code>, <code>--verbose</code></a></li>
@@ -392,11 +392,6 @@ stdin.</p>
   <a class="anchor" href="#-r---refresh-externals">#</a>
 </h3>
 <p>Refresh externals cache. See <code>.chezmoiexternal.&lt;format&gt;</code>.</p>
-<h3 id="-r---remove">
-  <code>-r</code>. <code>--remove</code>
-  <a class="anchor" href="#-r---remove">#</a>
-</h3>
-<p>Also remove targets according to <code>.chezmoiremove</code>.</p>
 <h3 id="-s---source-directory">
   <code>-S</code>, <code>--source</code> <em>directory</em>
   <a class="anchor" href="#-s---source-directory">#</a>
@@ -547,13 +542,6 @@ option.</p>
 <td>string</td>
 <td><code>file</code></td>
 <td>Mode in target dir, either <code>file</code> or <code>symlink</code></td>
-</tr>
-<tr>
-<td></td>
-<td><code>remove</code></td>
-<td>bool</td>
-<td><code>false</code></td>
-<td>Remove targets</td>
 </tr>
 <tr>
 <td></td>
@@ -1013,6 +1001,10 @@ to as &ldquo;attributes&rdquo;:</p>
 <td>Remove all group and world permissions from the target file or directory.</td>
 </tr>
 <tr>
+<td><code>remove_</code></td>
+<td>Remove the entry if it exists.</td>
+</tr>
+<tr>
 <td><code>run_</code></td>
 <td>Treat the contents as a script to run.</td>
 </tr>
@@ -1077,6 +1069,12 @@ prefixes is important.</p>
 <td><code>.tmpl</code></td>
 </tr>
 <tr>
+<td>Remove</td>
+<td>File</td>
+<td><code>remove_</code>, <code>dot_</code></td>
+<td><em>none</em></td>
+</tr>
+<tr>
 <td>Script</td>
 <td>File</td>
 <td><code>run_</code>, <code>once_</code>, <code>before_</code> or <code>after_</code></td>
@@ -1138,6 +1136,13 @@ unchanged.</p>
 file. The contents of the existing file (which maybe empty if the existing file
 does not exist or is empty) are passed to the script&rsquo;s standard input, and the
 new contents are read from the scripts standard output.</p>
+<hr>
+<h4 id="remove-entry">
+  Remove entry
+  <a class="anchor" href="#remove-entry">#</a>
+</h4>
+<p>Files with the <code>remove_</code> prefix will cause the corresponding entry (file,
+directory, or symlink) to be removed in the target state.</p>
 <hr>
 <h3 id="directories">
   Directories
@@ -1261,7 +1266,7 @@ config file formats.</p>
   <code>.chezmoi.&lt;format&gt;.tmpl</code> examples
   <a class="anchor" href="#chezmoiformattmpl-examples">#</a>
 </h4>
-<pre><code>{{ $email := promptString &quot;email&quot; -}}
+<pre tabindex="0"><code>{{ $email := promptString &quot;email&quot; -}}
 data:
     email: {{ $email | quote }}
 </code></pre><hr>
@@ -1283,13 +1288,13 @@ as a datasource available in most <a href="TEMPLATING.md#template-data">template
 	<span style="color:#a6e22e">right</span> = <span style="color:#e6db74">&#34;l&#34;</span>
 	<span style="color:#a6e22e">left</span> = <span style="color:#e6db74">&#34;h&#34;</span>
 </code></pre></div><p>Then the following template:</p>
-<pre><code>EDITOR={{ .editor }}
+<pre tabindex="0"><code>EDITOR={{ .editor }}
 MOVE_UP={{ .directions.up }}
 MOVE_DOWN={{ .directions.down }}
 MOVE_RIGHT={{ .directions.right }}
 MOVE_LEFT={{ .directions.left }}
 </code></pre><p>Will result in:</p>
-<pre><code>EDITOR=nvim
+<pre tabindex="0"><code>EDITOR=nvim
 MOVE_UP=k
 MOVE_DOWN=j
 MOVE_RIGHT=l
@@ -1318,7 +1323,8 @@ archive at <code>url</code>. The optional boolean field <code>exact</code> may b
 the directory and all subdirectories will be treated as exact directories, i.e.
 <code>chezmoi apply</code> will remove entries not present in the archive. The optional
 integer field <code>stripComponents</code> will remove leading path components from the
-members of archive.</p>
+members of archive. The supported archive formats are <code>.tar</code>, <code>.tar.gz</code>, <code>.tgz</code>,
+<code>.tar.bz2</code>, <code>.tbz2</code>, and <code>.zip</code>.</p>
 <p>By default, chezmoi will cache downloaded URLs the first time they are accessed.
 To force chezmoi to re-download URLs, pass the <code>--refresh-externals</code> flag.</p>
 <h4 id="chezmoiexternalformat-examples">
@@ -1358,7 +1364,7 @@ ignored on different machines.</p>
   <code>.chezmoiignore</code> examples
   <a class="anchor" href="#chezmoiignore-examples">#</a>
 </h4>
-<pre><code>README.md
+<pre tabindex="0"><code>README.md
 
 *.txt   # ignore *.txt in the target directory
 */*.txt # ignore *.txt in subdirectories of the target directory
@@ -1402,9 +1408,9 @@ data.</p>
 </h4>
 <p>Given:</p>
 <p><code>.chezmoitemplates/foo</code>:</p>
-<pre><code>{{ if true }}bar{{ end }}
+<pre tabindex="0"><code>{{ if true }}bar{{ end }}
 </code></pre><p><code>dot_config.tmpl</code>:</p>
-<pre><code>{{ template &quot;foo&quot; . }}
+<pre tabindex="0"><code>{{ template &quot;foo&quot; . }}
 </code></pre><p>The target state of <code>.config</code> will be <code>bar</code>.</p>
 <hr>
 <h3 id="chezmoiversion">
@@ -1419,7 +1425,7 @@ the current version is too old.</p>
   <code>.chezmoiversion</code> examples
   <a class="anchor" href="#chezmoiversion-examples">#</a>
 </h4>
-<pre><code>1.5.0
+<pre tabindex="0"><code>1.5.0
 </code></pre><hr>
 <h2 id="commands">
   Commands
@@ -1492,7 +1498,7 @@ directory, create a symlink template with <code>.chezmoi.sourceDir</code> or
   <code>add</code> examples
   <a class="anchor" href="#add-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ chezmoi add ~/.bashrc
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi add ~/.bashrc
 $ chezmoi add ~/.gitconfig --template
 $ chezmoi add ~/.vim --recursive
 $ chezmoi add ~/.oh-my-zsh --exact --recursive
@@ -1520,7 +1526,7 @@ applying changes after editing.</p>
   <code>apply</code> examples
   <a class="anchor" href="#apply-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ chezmoi apply
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi apply
 $ chezmoi apply --dry-run --verbose
 $ chezmoi apply ~/.bashrc
 </code></pre><hr>
@@ -1549,7 +1555,7 @@ the target state.</p>
   <code>archive</code> examples
   <a class="anchor" href="#archive-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ chezmoi archive | tar tvf -
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi archive | tar tvf -
 $ chezmoi archive --output=dotfiles.tar
 $ chezmoi archive --format=zip --output=dotfiles.zip
 </code></pre><hr>
@@ -1565,7 +1571,7 @@ written.</p>
   <code>cat</code> examples
   <a class="anchor" href="#cat-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ chezmoi cat ~/.bashrc
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi cat ~/.bashrc
 </code></pre><hr>
 <h3 id="cd">
   <code>cd</code>
@@ -1579,7 +1585,7 @@ will finally fall back to an OS-specific default.</p>
   <code>cd</code> examples
   <a class="anchor" href="#cd-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ chezmoi cd
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi cd
 </code></pre><hr>
 <h3 id="chattr-attributes-target">
   <code>chattr</code> <em>attributes</em> <em>target</em>&hellip;
@@ -1643,7 +1649,7 @@ a <code>--</code> to prevent chezmoi from interpreting <code>-</code>*attr as an
   <code>chattr</code> examples
   <a class="anchor" href="#chattr-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ chezmoi chattr template ~/.bashrc
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi chattr template ~/.bashrc
 $ chezmoi chattr noempty ~/.profile
 $ chezmoi chattr private,template ~/.netrc
 $ chezmoi chattr -- -x ~/.zshrc
@@ -1658,7 +1664,7 @@ $ chezmoi chattr -- -x ~/.zshrc
   <code>completion</code> examples
   <a class="anchor" href="#completion-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ chezmoi completion bash
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi completion bash
 $ chezmoi completion fish --output=~/.config/fish/completions/chezmoi.fish
 </code></pre><hr>
 <h3 id="data">
@@ -1675,7 +1681,7 @@ $ chezmoi completion fish --output=~/.config/fish/completions/chezmoi.fish
   <code>data</code> examples
   <a class="anchor" href="#data-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ chezmoi data
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi data
 $ chezmoi data --format=yaml
 </code></pre><hr>
 <h3 id="diff-target">
@@ -1706,7 +1712,7 @@ set.</p>
   <code>diff</code> examples
   <a class="anchor" href="#diff-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ chezmoi diff
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi diff
 $ chezmoi diff ~/.bashrc
 </code></pre><hr>
 <h3 id="docs-regexp">
@@ -1724,7 +1730,7 @@ is case insensitive. If no pattern is given, print <code>REFERENCE.md</code>.</p
   <code>docs</code> examples
   <a class="anchor" href="#docs-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ chezmoi docs
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi docs
 $ chezmoi docs faq
 $ chezmoi docs howto
 </code></pre><hr>
@@ -1737,7 +1743,7 @@ $ chezmoi docs howto
   <code>doctor</code> examples
   <a class="anchor" href="#doctor-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ chezmoi doctor
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi doctor
 </code></pre><hr>
 <h3 id="dump-target">
   <code>dump</code> [<em>target</em>&hellip;]
@@ -1759,7 +1765,7 @@ target state.</p>
   <code>dump</code> examples
   <a class="anchor" href="#dump-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ chezmoi dump ~/.bashrc
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi dump ~/.bashrc
 $ chezmoi dump --format=yaml
 </code></pre><hr>
 <h3 id="edit-target">
@@ -1783,7 +1789,7 @@ passed to the editor with the <code>editor.args</code> configuration variable.</
   <code>edit</code> examples
   <a class="anchor" href="#edit-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ chezmoi edit ~/.bashrc
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi edit ~/.bashrc
 $ chezmoi edit ~/.bashrc --apply
 $ chezmoi edit
 </code></pre><hr>
@@ -1796,7 +1802,7 @@ $ chezmoi edit
   <code>edit-config</code> examples
   <a class="anchor" href="#edit-config-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ chezmoi edit-config
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi edit-config
 </code></pre><hr>
 <h3 id="execute-template-template">
   <code>execute-template</code> [<em>template</em>&hellip;]
@@ -1844,7 +1850,7 @@ then it returns <em>prompt</em> unchanged.</p>
   <code>execute-template</code> examples
   <a class="anchor" href="#execute-template-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ chezmoi execute-template '{{ .chezmoi.sourceDir }}'
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi execute-template '{{ .chezmoi.sourceDir }}'
 $ chezmoi execute-template '{{ .chezmoi.os }}' / '{{ .chezmoi.arch }}'
 $ echo '{{ .chezmoi | toJson }}' | chezmoi execute-template
 $ chezmoi execute-template --init --promptString email=me@home.org &lt; ~/.local/share/chezmoi/.chezmoi.toml.tmpl
@@ -1858,7 +1864,7 @@ $ chezmoi execute-template --init --promptString email=me@home.org &lt; ~/.local
   <code>forget</code> examples
   <a class="anchor" href="#forget-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ chezmoi forget ~/.bashrc
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi forget ~/.bashrc
 </code></pre><hr>
 <h3 id="git-arg">
   <code>git</code> [<em>arg</em>&hellip;]
@@ -1870,7 +1876,7 @@ occur after <code>--</code> to prevent chezmoi from interpreting them.</p>
   <code>git</code> examples
   <a class="anchor" href="#git-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ chezmoi git add .
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi git add .
 $ chezmoi git add dot_gitconfig
 $ chezmoi git -- commit -m &quot;Add .gitconfig&quot;
 </code></pre><hr>
@@ -1990,7 +1996,7 @@ temporary environments (e.g. Docker containers).</p>
   <code>init</code> examples
   <a class="anchor" href="#init-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ chezmoi init user
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi init user
 $ chezmoi init user --apply
 $ chezmoi init user --apply --purge
 $ chezmoi init user/dots
@@ -2004,8 +2010,8 @@ $ chezmoi init gitlab.com/user
 state. This is primarily used to make subdirectories of your home directory
 exactly match the contents of a downloaded archive. You will generally always
 want to set the <code>--destination</code>, <code>--exact</code>, and <code>--remove-destination</code> flags.</p>
-<p>The supported archive formats are <code>.tar</code>, <code>.tar.gz</code>, <code>.tgz</code>, <code>.tar.bz2</code>, and
-<code>.tbz2</code>.</p>
+<p>The supported archive formats are <code>.tar</code>, <code>.tar.gz</code>, <code>.tgz</code>, <code>.tar.bz2</code>,
+<code>.tbz2</code>, and <code>.zip</code>.</p>
 <h4 id="--destination-directory">
   <code>--destination</code> <em>directory</em>
   <a class="anchor" href="#--destination-directory">#</a>
@@ -2030,7 +2036,7 @@ want to set the <code>--destination</code>, <code>--exact</code>, and <code>--re
   <code>import</code> examples
   <a class="anchor" href="#import-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ curl -s -L -o ${TMPDIR}/oh-my-zsh-master.tar.gz https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz
+<pre tabindex="0"><code class="language-console" data-lang="console">$ curl -s -L -o ${TMPDIR}/oh-my-zsh-master.tar.gz https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz
 $ mkdir -p $(chezmoi source-path)/dot_oh-my-zsh
 $ chezmoi import --strip-components 1 --destination ~/.oh-my-zsh ${TMPDIR}/oh-my-zsh-master.tar.gz
 </code></pre><hr>
@@ -2054,7 +2060,7 @@ $ chezmoi import --strip-components 1 --destination ~/.oh-my-zsh ${TMPDIR}/oh-my
   <code>managed</code> examples
   <a class="anchor" href="#managed-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ chezmoi managed
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi managed
 $ chezmoi managed --include=files
 $ chezmoi managed --include=files,symlinks
 $ chezmoi managed -i d
@@ -2080,7 +2086,7 @@ default value of <code>merge.args</code> is <code>[&quot;{{ .Destination }}&quot
   <code>merge</code> examples
   <a class="anchor" href="#merge-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ chezmoi merge ~/.bashrc
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi merge ~/.bashrc
 </code></pre><hr>
 <h3 id="purge">
   <code>purge</code>
@@ -2097,7 +2103,7 @@ target state intact.</p>
   <code>purge</code> examples
   <a class="anchor" href="#purge-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ chezmoi purge
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi purge
 $ chezmoi purge --force
 </code></pre><hr>
 <h3 id="remove-targets">
@@ -2121,7 +2127,7 @@ templates, and all entries that are not files are ignored.</p>
   <code>re-add</code> examples
   <a class="anchor" href="#re-add-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ chezmoi re-add
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi re-add
 </code></pre><h3 id="rm-targets">
   <code>rm</code> <em>targets</em>
   <a class="anchor" href="#rm-targets">#</a>
@@ -2138,12 +2144,12 @@ manager. Normally you would use template functions to retrieve secrets. Note
 that if you want to pass flags to the secret manager&rsquo;s CLI you will need to
 separate them with <code>--</code> to prevent chezmoi from interpreting them.</p>
 <p>To get a full list of available commands run:</p>
-<pre><code class="language-console" data-lang="console">$ chezmoi secret help
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi secret help
 </code></pre><h4 id="secret-examples">
   <code>secret</code> examples
   <a class="anchor" href="#secret-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ chezmoi secret keyring set --service=service --user=user --value=password
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi secret keyring set --service=service --user=user --value=password
 $ chezmoi secret keyring get --service=service --user=user
 </code></pre><hr>
 <h3 id="source-path-target">
@@ -2156,7 +2162,7 @@ print the source directory.</p>
   <code>source-path</code> examples
   <a class="anchor" href="#source-path-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ chezmoi source-path
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi source-path
 $ chezmoi source-path ~/.bashrc
 </code></pre><hr>
 <h3 id="state">
@@ -2168,7 +2174,7 @@ $ chezmoi source-path ~/.bashrc
   <code>state</code> examples
   <a class="anchor" href="#state-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ chezmoi state data
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi state data
 $ chezmoi state delete --bucket=bucket --key=key
 $ chezmoi state dump
 $ chezmoi state get --bucket=bucket --key=key
@@ -2193,7 +2199,7 @@ difference between the actual state and the target state.</p>
   <code>status</code> examples
   <a class="anchor" href="#status-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ chezmoi status
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi status
 </code></pre><hr>
 <h3 id="unmanage-target">
   <code>unmanage</code> <em>target</em>&hellip;
@@ -2209,7 +2215,7 @@ difference between the actual state and the target state.</p>
   <code>unmanaged</code> examples
   <a class="anchor" href="#unmanaged-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ chezmoi unmanaged
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi unmanaged
 </code></pre><hr>
 <h3 id="update">
   <code>update</code>
@@ -2225,7 +2231,7 @@ difference between the actual state and the target state.</p>
   <code>update</code> examples
   <a class="anchor" href="#update-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ chezmoi update
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi update
 </code></pre><hr>
 <h3 id="upgrade">
   <code>upgrade</code>
@@ -2258,7 +2264,7 @@ no targets are specified then all targets are checked.</p>
   <code>verify</code> examples
   <a class="anchor" href="#verify-examples">#</a>
 </h4>
-<pre><code class="language-console" data-lang="console">$ chezmoi verify
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi verify
 $ chezmoi verify ~/.bashrc
 </code></pre><hr>
 <h2 id="editor-configuration">
@@ -2395,7 +2401,7 @@ will only invoke <code>bw</code> once.</p>
   <code>bitwarden</code> examples
   <a class="anchor" href="#bitwarden-examples">#</a>
 </h4>
-<pre><code>username = {{ (bitwarden &quot;item&quot; &quot;&lt;itemid&gt;&quot;).login.username }}
+<pre tabindex="0"><code>username = {{ (bitwarden &quot;item&quot; &quot;&lt;itemid&gt;&quot;).login.username }}
 password = {{ (bitwarden &quot;item&quot; &quot;&lt;itemid&gt;&quot;).login.password }}
 </code></pre><hr>
 <h3 id="bitwardenattachment-filename-itemid">
@@ -2413,7 +2419,7 @@ only invoke <code>bw</code> once.</p>
   <code>bitwardenAttachment</code> examples
   <a class="anchor" href="#bitwardenattachment-examples">#</a>
 </h4>
-<pre><code>{{- (bitwardenAttachment &quot;&lt;filename&gt;&quot; &quot;&lt;itemid&gt;&quot;) -}}
+<pre tabindex="0"><code>{{- (bitwardenAttachment &quot;&lt;filename&gt;&quot; &quot;&lt;itemid&gt;&quot;) -}}
 </code></pre><hr>
 <h3 id="bitwardenfields-arg">
   <code>bitwardenFields</code> [<em>arg</em>&hellip;]
@@ -2474,7 +2480,7 @@ the same arguments will only invoke <code>bw get</code> once.</p>
   <code>bitwardenFields</code> examples
   <a class="anchor" href="#bitwardenfields-examples">#</a>
 </h4>
-<pre><code>{{ (bitwardenFields &quot;item&quot; &quot;&lt;itemid&gt;&quot;).token.value }}
+<pre tabindex="0"><code>{{ (bitwardenFields &quot;item&quot; &quot;&lt;itemid&gt;&quot;).token.value }}
 </code></pre><hr>
 <h3 id="githubkeys-user">
   <code>gitHubKeys</code> <em>user</em>
@@ -2505,7 +2511,7 @@ token</a>.</p>
   <code>gitHubKeys</code> examples
   <a class="anchor" href="#githubkeys-examples">#</a>
 </h4>
-<pre><code>{{ range (gitHubKeys &quot;user&quot;) }}
+<pre tabindex="0"><code>{{ range (gitHubKeys &quot;user&quot;) }}
 {{- .Key }}
 {{ end }}
 </code></pre><hr>
@@ -2522,7 +2528,7 @@ once.</p>
   <code>gopass</code> examples
   <a class="anchor" href="#gopass-examples">#</a>
 </h4>
-<pre><code>{{ gopass &quot;&lt;pass-name&gt;&quot; }}
+<pre tabindex="0"><code>{{ gopass &quot;&lt;pass-name&gt;&quot; }}
 </code></pre><hr>
 <h3 id="gopassraw-gopass-name">
   <code>gopassRaw</code> <em>gopass-name</em>
@@ -2554,7 +2560,7 @@ only execute the <code>ioreg -a -l</code> command once.</p>
   <code>ioreg</code> examples
   <a class="anchor" href="#ioreg-examples">#</a>
 </h4>
-<pre><code>{{ if (eq .chezmoi.os &quot;darwin&quot;) }}
+<pre tabindex="0"><code>{{ if (eq .chezmoi.os &quot;darwin&quot;) }}
 {{ $serialNumber := index ioreg &quot;IORegistryEntryChildren&quot; 0 &quot;IOPlatformSerialNumber&quot; }}
 {{ end }}
 </code></pre><hr>
@@ -2571,7 +2577,7 @@ first non-empty element is a UNC path.</p>
   <code>joinPath</code> examples
   <a class="anchor" href="#joinpath-examples">#</a>
 </h4>
-<pre><code>{{ joinPath .chezmoi.homeDir &quot;.zshrc&quot; }}
+<pre tabindex="0"><code>{{ joinPath .chezmoi.homeDir &quot;.zshrc&quot; }}
 </code></pre><hr>
 <h3 id="keepassxc-entry">
   <code>keepassxc</code> <em>entry</em>
@@ -2589,7 +2595,7 @@ key-value pairs and cached so calling <code>keepassxc</code> multiple times with
   <code>keepassxc</code> examples
   <a class="anchor" href="#keepassxc-examples">#</a>
 </h4>
-<pre><code>username = {{ (keepassxc &quot;example.com&quot;).UserName }}
+<pre tabindex="0"><code>username = {{ (keepassxc &quot;example.com&quot;).UserName }}
 password = {{ (keepassxc &quot;example.com&quot;).Password }}
 </code></pre><hr>
 <h3 id="keepassxcattribute-entry-attribute">
@@ -2604,7 +2610,7 @@ prompting, password storage, and result caching.</p>
   <code>keepassxcAttribute</code> examples
   <a class="anchor" href="#keepassxcattribute-examples">#</a>
 </h4>
-<pre><code>{{ keepassxcAttribute &quot;SSH Key&quot; &quot;private-key&quot; }}
+<pre tabindex="0"><code>{{ keepassxcAttribute &quot;SSH Key&quot; &quot;private-key&quot; }}
 </code></pre><hr>
 <h3 id="keyring-service-user">
   <code>keyring</code> <em>service</em> <em>user</em>
@@ -2638,7 +2644,7 @@ user&rsquo;s keyring.</p>
   <code>keyring</code> examples
   <a class="anchor" href="#keyring-examples">#</a>
 </h4>
-<pre><code>[github]
+<pre tabindex="0"><code>[github]
     user = {{ .github.user | quote }}
     token = {{ keyring &quot;github&quot; .github.user | quote }}
 </code></pre><hr>
@@ -2658,7 +2664,7 @@ from <code>lastpass</code> is cached so calling <code>lastpass</code> multiple t
   <code>lastpass</code> examples
   <a class="anchor" href="#lastpass-examples">#</a>
 </h4>
-<pre><code>githubPassword = {{ (index (lastpass &quot;GitHub&quot;) 0).password | quote }}
+<pre tabindex="0"><code>githubPassword = {{ (index (lastpass &quot;GitHub&quot;) 0).password | quote }}
 {{ (index (lastpass &quot;SSH&quot;) 0).note.privateKey }}
 </code></pre><hr>
 <h3 id="lastpassraw-id">
@@ -2673,7 +2679,7 @@ further parsing is done on the <code>note</code> field.</p>
   <code>lastpassRaw</code> examples
   <a class="anchor" href="#lastpassraw-examples">#</a>
 </h4>
-<pre><code>{{ (index (lastpassRaw &quot;SSH Private Key&quot;) 0).note }}
+<pre tabindex="0"><code>{{ (index (lastpassRaw &quot;SSH Private Key&quot;) 0).note }}
 </code></pre><hr>
 <h3 id="lookpath-file">
   <code>lookPath</code> <em>file</em>
@@ -2691,7 +2697,7 @@ caution when using it in your templates.</p>
   <code>lookPath</code> examples
   <a class="anchor" href="#lookpath-examples">#</a>
 </h4>
-<pre><code>{{ if lookPath &quot;diff-so-fancy&quot; }}
+<pre tabindex="0"><code>{{ if lookPath &quot;diff-so-fancy&quot; }}
 # diff-so-fancy is in $PATH
 {{ end }}
 </code></pre><hr>
@@ -2720,7 +2726,7 @@ in case you have multiple accounts (eg. personal and work accounts).</p>
   <code>onepassword</code> examples
   <a class="anchor" href="#onepassword-examples">#</a>
 </h4>
-<pre><code>{{ (onepassword &quot;&lt;uuid&gt;&quot;).details.password }}
+<pre tabindex="0"><code>{{ (onepassword &quot;&lt;uuid&gt;&quot;).details.password }}
 {{ (onepassword &quot;&lt;uuid&gt;&quot; &quot;&lt;vault-uuid&gt;&quot;).details.password }}
 {{ (onepassword &quot;&lt;uuid&gt;&quot; &quot;&lt;vault-uuid&gt;&quot; &quot;&lt;account-name&gt;&quot;).details.password }}
 {{ (onepassword &quot;&lt;uuid&gt;&quot; &quot;&quot; &quot;&lt;account-name&gt;&quot;).details.password }}
@@ -2743,7 +2749,7 @@ accounts).</p>
   <code>onepasswordDocument</code> examples
   <a class="anchor" href="#onepassworddocument-examples">#</a>
 </h4>
-<pre><code>{{- onepasswordDocument &quot;&lt;uuid&gt;&quot; -}}
+<pre tabindex="0"><code>{{- onepasswordDocument &quot;&lt;uuid&gt;&quot; -}}
 {{- onepasswordDocument &quot;&lt;uuid&gt;&quot; &quot;&lt;vault-uuid&gt;&quot; -}}
 {{- onepasswordDocument &quot;&lt;uuid&gt;&quot; &quot;&lt;vault-uuid&gt;&quot; &quot;&lt;account-name&gt;&quot; -}}
 {{- onepasswordDocument &quot;&lt;uuid&gt;&quot; &quot;&quot; &quot;&lt;account-name&gt;&quot; -}}
@@ -2803,7 +2809,7 @@ accounts).</p>
   <code>onepasswordDetailsFields</code> examples
   <a class="anchor" href="#onepassworddetailsfields-examples">#</a>
 </h4>
-<pre><code>{{ (onepasswordDetailsFields &quot;&lt;uuid&gt;&quot;).password.value }}
+<pre tabindex="0"><code>{{ (onepasswordDetailsFields &quot;&lt;uuid&gt;&quot;).password.value }}
 {{ (onepasswordDetailsFields &quot;&lt;uuid&gt;&quot; &quot;&lt;vault-uuid&gt;&quot;).password.value }}
 {{ (onepasswordDetailsFields &quot;&lt;uuid&gt;&quot; &quot;&lt;vault-uuid&gt;&quot; &quot;&lt;account-name&gt;&quot;).password.value }}
 {{ (onepasswordDetailsFields &quot;&lt;uuid&gt;&quot; &quot;&quot; &quot;&lt;account-name&gt;&quot;).password.value }}
@@ -2821,7 +2827,7 @@ and fast.</p>
   <code>output</code> examples
   <a class="anchor" href="#output-examples">#</a>
 </h4>
-<pre><code>current-context: {{ output &quot;kubectl&quot; &quot;config&quot; &quot;current-context&quot; | trim }}
+<pre tabindex="0"><code>current-context: {{ output &quot;kubectl&quot; &quot;config&quot; &quot;current-context&quot; | trim }}
 </code></pre><hr>
 <h3 id="pass-pass-name">
   <code>pass</code> <em>pass-name</em>
@@ -2836,7 +2842,7 @@ the same <em>pass-name</em> will only invoke <code>pass</code> once.</p>
   <code>pass</code> examples
   <a class="anchor" href="#pass-examples">#</a>
 </h4>
-<pre><code>{{ pass &quot;&lt;pass-name&gt;&quot; }}
+<pre tabindex="0"><code>{{ pass &quot;&lt;pass-name&gt;&quot; }}
 </code></pre><hr>
 <h3 id="passraw-pass-name">
   <code>passRaw</code> <em>pass-name</em>
@@ -2892,7 +2898,7 @@ generating the initial config file.</p>
   <code>promptString</code> examples
   <a class="anchor" href="#promptstring-examples">#</a>
 </h4>
-<pre><code>{{ $email := promptString &quot;email&quot; -}}
+<pre tabindex="0"><code>{{ $email := promptString &quot;email&quot; -}}
 [data]
     email = {{ $email | quote }}
 </code></pre><hr>
@@ -2930,7 +2936,7 @@ templates.</p>
   <code>stat</code> examples
   <a class="anchor" href="#stat-examples">#</a>
 </h4>
-<pre><code>{{ if stat (joinPath .chezmoi.homeDir &quot;.pyenv&quot;) }}
+<pre tabindex="0"><code>{{ if stat (joinPath .chezmoi.homeDir &quot;.pyenv&quot;) }}
 # ~/.pyenv exists
 {{ end }}
 </code></pre><hr>
@@ -2946,7 +2952,7 @@ used.</p>
   <code>stdinIsATTY</code> examples
   <a class="anchor" href="#stdinisatty-examples">#</a>
 </h4>
-<pre><code>{{ $email := &quot;&quot; }}
+<pre tabindex="0"><code>{{ $email := &quot;&quot; }}
 {{ if stdinIsATTY }}
 {{   $email = promptString &quot;email&quot; }}
 {{ else }}
@@ -2966,7 +2972,7 @@ times with the same <em>key</em> will only invoke <code>vault</code> once.</p>
   <code>vault</code> examples
   <a class="anchor" href="#vault-examples">#</a>
 </h4>
-<pre><code>{{ (vault &quot;&lt;key&gt;&quot;).data.data.password }}
+<pre tabindex="0"><code>{{ (vault &quot;&lt;key&gt;&quot;).data.data.password }}
 </code></pre><hr>
 <h3 id="writetostdout-string">
   <code>writeToStdout</code> <em>string</em>&hellip;
@@ -2978,7 +2984,7 @@ generating the initial config file.</p>
   <code>writeToStdout</code> examples
   <a class="anchor" href="#writetostdout-examples">#</a>
 </h4>
-<pre><code>{{- writeToStdout &quot;Hello, world\n&quot; -}}
+<pre tabindex="0"><code>{{- writeToStdout &quot;Hello, world\n&quot; -}}
 </code></pre></article>
  
       
@@ -3036,7 +3042,6 @@ generating the initial config file.</p>
         <li><a href="#--no-tty"><code>--no-tty</code></a></li>
         <li><a href="#-o---output-filename"><code>-o</code>, <code>--output</code> <em>filename</em></a></li>
         <li><a href="#-r---refresh-externals"><code>-R</code>, <code>--refresh-externals</code></a></li>
-        <li><a href="#-r---remove"><code>-r</code>. <code>--remove</code></a></li>
         <li><a href="#-s---source-directory"><code>-S</code>, <code>--source</code> <em>directory</em></a></li>
         <li><a href="#--use-builtin-git-value"><code>--use-builtin-git</code> <em>value</em></a></li>
         <li><a href="#-v---verbose"><code>-v</code>, <code>--verbose</code></a></li>

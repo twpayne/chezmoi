@@ -14,9 +14,9 @@
 <title>How-To | chezmoi.io</title>
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" href="/favicon.png" type="image/x-icon">
-<link rel="stylesheet" href="/book.min.958cea7827621d6fbcb3acf091344c3e44e3d2a9428f9c3c38bb9eb37bf8c45d.css" integrity="sha256-lYzqeCdiHW&#43;8s6zwkTRMPkTj0qlCj5w8OLues3v4xF0=" crossorigin="anonymous">
+<link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.c115908d5df4a99c542383b1ee4ccbd967748872223b93e3162b8a08daa23940.js" integrity="sha256-wRWQjV30qZxUI4Ox7kzL2Wd0iHIiO5PjFiuKCNqiOUA=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.58d471f9e520b531e7b0d8d23de4e32fd933557f321e3e1f363cfc240a1fa600.js" integrity="sha256-WNRx&#43;eUgtTHnsNjSPeTjL9kzVX8yHj4fNjz8JAofpgA=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -32,7 +32,7 @@ https://github.com/alex-shpak/hugo-book
         
   <nav>
 <h2 class="book-brand">
-  <a href="/"><img src="/logo-144px.svg" alt="Logo" /><span>chezmoi.io</span>
+  <a class="flex align-center" href="/"><img src="/logo-144px.svg" alt="Logo" /><span>chezmoi.io</span>
   </a>
 </h2>
 
@@ -42,6 +42,7 @@ https://github.com/alex-shpak/hugo-book
   <div class="book-search-spinner hidden"></div>
   <ul id="book-search-results"></ul>
 </div>
+
 
 
 
@@ -118,6 +119,7 @@ https://github.com/alex-shpak/hugo-book
     <li><a href="#perform-daily-operations">Perform daily operations</a>
       <ul>
         <li><a href="#use-a-hosted-repo-to-manage-your-dotfiles-across-multiple-machines">Use a hosted repo to manage your dotfiles across multiple machines</a></li>
+        <li><a href="#use-a-private-repo-to-store-your-dotfiles">Use a private repo to store your dotfiles</a></li>
         <li><a href="#pull-the-latest-changes-from-your-repo-and-apply-them">Pull the latest changes from your repo and apply them</a></li>
         <li><a href="#pull-the-latest-changes-from-your-repo-and-see-what-would-change-without-actually-applying-the-changes">Pull the latest changes from your repo and see what would change, without actually applying the changes</a></li>
         <li><a href="#automatically-commit-and-push-changes-to-your-repo">Automatically commit and push changes to your repo</a></li>
@@ -236,25 +238,46 @@ of your choice (e.g. <a href="https://bitbucket.org">Bitbucket</a>,
 <a href="https://github.com/">GitHub</a>, or <a href="https://gitlab.com">GitLab</a>, many people call
 their repo <code>dotfiles</code>) and push the repo in the source directory here. For
 example:</p>
-<pre><code class="language-console" data-lang="console">$ chezmoi cd
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi cd
 $ git remote add origin https://github.com/username/dotfiles.git
 $ git push -u origin main
 $ exit
 </code></pre><p>On another machine you can checkout this repo:</p>
-<pre><code class="language-console" data-lang="console">$ chezmoi init https://github.com/username/dotfiles.git
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi init https://github.com/username/dotfiles.git
 </code></pre><p>You can then see what would be changed:</p>
-<pre><code class="language-console" data-lang="console">$ chezmoi diff
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi diff
 </code></pre><p>If you&rsquo;re happy with the changes then apply them:</p>
-<pre><code class="language-console" data-lang="console">$ chezmoi apply
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi apply
 </code></pre><p>The above commands can be combined into a single init, checkout, and apply:</p>
-<pre><code class="language-console" data-lang="console">$ chezmoi init --apply --verbose https://github.com/username/dotfiles.git
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi init --apply --verbose https://github.com/username/dotfiles.git
 </code></pre><hr>
+<h3 id="use-a-private-repo-to-store-your-dotfiles">
+  Use a private repo to store your dotfiles
+  <a class="anchor" href="#use-a-private-repo-to-store-your-dotfiles">#</a>
+</h3>
+<p>chezmoi supports storing your dotfiles in both public and private repos.</p>
+<p>chezmoi is designed so that your dotfiles repo can be public by making it easy
+for you to store your secrets either in your password manager, in encrypted
+files, or in private configuration files. Your dotfiles repo can still be
+private, if you choose.</p>
+<p>If you use a private repo for your dotfiles then you will typically need to
+enter your credentials (e.g. your username and password) each time you interact
+with the repo, for example when pulling or pushing changes. chezmoi itself does
+not store any credentials, but instead relies on your local git configuration
+for these operations.</p>
+<p>When using a private repo on GitHub, when prompted for a password you will need
+to enter a <a href="https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token">GitHub personal access
+token</a>.
+For more information on these changes, read the <a href="https://github.blog/2020-12-15-token-authentication-requirements-for-git-operations/">GitHub blog post on Token
+authentication requirements for Git
+operations</a></p>
+<hr>
 <h3 id="pull-the-latest-changes-from-your-repo-and-apply-them">
   Pull the latest changes from your repo and apply them
   <a class="anchor" href="#pull-the-latest-changes-from-your-repo-and-apply-them">#</a>
 </h3>
 <p>You can pull the changes from your repo and apply them in a single command:</p>
-<pre><code class="language-console" data-lang="console">$ chezmoi update
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi update
 </code></pre><p>This runs <code>git pull --rebase</code> in your source directory and then <code>chezmoi apply</code>.</p>
 <hr>
 <h3 id="pull-the-latest-changes-from-your-repo-and-see-what-would-change-without-actually-applying-the-changes">
@@ -262,11 +285,11 @@ $ exit
   <a class="anchor" href="#pull-the-latest-changes-from-your-repo-and-see-what-would-change-without-actually-applying-the-changes">#</a>
 </h3>
 <p>Run:</p>
-<pre><code class="language-console" data-lang="console">$ chezmoi git pull -- --rebase &amp;&amp; chezmoi diff
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi git pull -- --rebase &amp;&amp; chezmoi diff
 </code></pre><p>This runs <code>git pull --rebase</code> in your source directory and <code>chezmoi diff</code> then shows the difference between the target state computed from your
 source directory and the actual state.</p>
 <p>If you&rsquo;re happy with the changes, then you can run</p>
-<pre><code class="language-console" data-lang="console">$ chezmoi apply
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi apply
 </code></pre><p>to apply them.</p>
 <hr>
 <h3 id="automatically-commit-and-push-changes-to-your-repo">
@@ -298,14 +321,14 @@ arguments to the newly installed chezmoi binary. If your dotfiles repo is
 <code>github.com/&lt;github-username&gt;/dotfiles</code> then installing chezmoi, running
 <code>chezmoi init</code>, and running <code>chezmoi apply</code> can be done in a single line of
 shell:</p>
-<pre><code class="language-console" data-lang="console">$ sh -c &quot;$(curl -fsLS git.io/chezmoi)&quot; -- init --apply &lt;github-username&gt;
+<pre tabindex="0"><code class="language-console" data-lang="console">$ sh -c &quot;$(curl -fsLS git.io/chezmoi)&quot; -- init --apply &lt;github-username&gt;
 </code></pre><p>If your dotfiles repo has a different name to <code>dotfiles</code>, or if you host your
 dotfiles on a different service, then see the <a href="/docs/reference/#init-repo">reference manual for <code>chezmoi init</code></a>.</p>
 <p>For setting up transitory environments (e.g. short-lived Linux containers) you
 can install chezmoi, install your dotfiles, and then remove all traces of
 chezmoi, including the source directory and chezmoi&rsquo;s configuration directory,
 with a single command:</p>
-<pre><code class="language-console" data-lang="console">$ sh -c &quot;$(curl -fsLS git.io/chezmoi)&quot; -- init --one-shot &lt;github-username&gt;
+<pre tabindex="0"><code class="language-console" data-lang="console">$ sh -c &quot;$(curl -fsLS git.io/chezmoi)&quot; -- init --one-shot &lt;github-username&gt;
 </code></pre><hr>
 <h2 id="manage-different-types-of-file">
   Manage different types of file
@@ -318,14 +341,14 @@ with a single command:</p>
 </h3>
 <p>If you want chezmoi to create a directory, but ignore its contents, say <code>~/src</code>,
 first run:</p>
-<pre><code class="language-console" data-lang="console">$ mkdir -p $(chezmoi source-path)/src
+<pre tabindex="0"><code class="language-console" data-lang="console">$ mkdir -p $(chezmoi source-path)/src
 </code></pre><p>This creates the directory in the source state, which means that chezmoi will
 create it (if it does not already exist) when you run <code>chezmoi apply</code>.</p>
 <p>However, as this is an empty directory it will be ignored by git. So, create a
 file in the directory in the source state that will be seen by git (so git does
 not ignore the directory) but ignored by chezmoi (so chezmoi does not include it
 in the target state):</p>
-<pre><code class="language-console" data-lang="console">$ touch $(chezmoi source-path)/src/.keep
+<pre tabindex="0"><code class="language-console" data-lang="console">$ touch $(chezmoi source-path)/src/.keep
 </code></pre><p>chezmoi automatically creates <code>.keep</code> files when you add an empty directory with
 <code>chezmoi add</code>.</p>
 <hr>
@@ -334,12 +357,11 @@ in the target state):</p>
   <a class="anchor" href="#ensure-that-a-target-is-removed">#</a>
 </h3>
 <p>Create a file called <code>.chezmoiremove</code> in the source directory containing a list
-of patterns of files to remove. When you run</p>
-<pre><code class="language-console" data-lang="console">$ chezmoi apply --remove
-</code></pre><p>chezmoi will remove anything in the target directory that matches the pattern.
-As this command is potentially dangerous, you should run chezmoi in verbose,
-dry-run mode beforehand to see what would be removed:</p>
-<pre><code class="language-console" data-lang="console">$ chezmoi apply --remove --dry-run --verbose
+of patterns of files to remove. chezmoi will remove anything in the target
+directory that matches the pattern. As this command is potentially dangerous,
+you should run chezmoi in verbose, dry-run mode beforehand to see what would be
+removed:</p>
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi apply --dry-run --verbose
 </code></pre><p><code>.chezmoiremove</code> is interpreted as a template, so you can remove different files
 on different machines. Negative matches (patterns prefixed with a <code>!</code>) or
 targets listed in <code>.chezmoiignore</code> will never be removed.</p>
@@ -360,7 +382,7 @@ responsibility to write a complete file to the standard output.</p>
 template to re-generate the full contents of the file from the current state.
 For example, Kubernetes configurations include a current context that can be
 substituted with:</p>
-<pre><code>current-context: {{ output &quot;kubectl&quot; &quot;config&quot; &quot;current-context&quot; | trim }}
+<pre tabindex="0"><code>current-context: {{ output &quot;kubectl&quot; &quot;config&quot; &quot;current-context&quot; | trim }}
 </code></pre><hr>
 <h3 id="populate-sshauthorized_keys-with-your-public-ssh-keys-from-github">
   Populate <code>~/.ssh/authorized_keys</code> with your public SSH keys from GitHub
@@ -370,7 +392,7 @@ substituted with:</p>
 populating your <code>~/.ssh/authorized_keys</code>. Put the following in your
 <code>~/.local/share/chezmoi/dot_ssh/authorized_keys.tmpl</code>, where <code>username</code> is your
 GitHub username:</p>
-<pre><code>{{ range (gitHubKeys &quot;username&quot;) -}}
+<pre tabindex="0"><code>{{ range (gitHubKeys &quot;username&quot;) -}}
 {{   .Key }}
 {{ end -}}
 </code></pre><hr>
@@ -414,14 +436,14 @@ in <code>~/.local/share/chezmoi/.chezmoiexternal.toml</code>:</p>
     <span style="color:#a6e22e">exact</span> = <span style="color:#66d9ef">true</span>
     <span style="color:#a6e22e">stripComponents</span> = <span style="color:#ae81ff">1</span>
 </code></pre></div><p>To apply the changes, run:</p>
-<pre><code class="language-console" data-lang="console">$ chezmoi apply
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi apply
 </code></pre><p>chezmoi will download the archives and unpack them as if they were part of the
 source state. chezmoi caches downloaded archives locally to avoid re-downloading
 them every time you run a chezmoi command. To refresh the downloaded archives,
 use the <code>--refresh-externals</code> flag to <code>chezmoi apply</code>:</p>
-<pre><code class="language-console" data-lang="console">$ chezmoi --refresh-externals apply
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi --refresh-externals apply
 </code></pre><p><code>--refresh-externals</code> can be shortened to <code>-R</code>:</p>
-<pre><code class="language-console" data-lang="console">$ chezmoi -R apply
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi -R apply
 </code></pre><p>When using Oh My Zsh, make sure you disable auto-updates by setting
 <code>DISABLE_AUTO_UPDATE=&quot;true&quot;</code> in <code>~/.zshrc</code>. Auto updates will cause the
 <code>~/.oh-my-zsh</code> directory to drift out of sync with chezmoi&rsquo;s source state. To
@@ -436,17 +458,17 @@ update Oh My Zsh and its plugins, refresh the downloaded archives.</p>
 in your source directory, which is under version control. Here is a worked
 example for VSCode&rsquo;s <code>settings.json</code> on Linux:</p>
 <p>Copy the configuration file to your source directory:</p>
-<pre><code class="language-console" data-lang="console">$ cp ~/.config/Code/User/settings.json $(chezmoi source-path)
+<pre tabindex="0"><code class="language-console" data-lang="console">$ cp ~/.config/Code/User/settings.json $(chezmoi source-path)
 </code></pre><p>Tell chezmoi to ignore this file:</p>
-<pre><code class="language-console" data-lang="console">$ echo settings.json &gt;&gt; $(chezmoi source-path)/.chezmoiignore
+<pre tabindex="0"><code class="language-console" data-lang="console">$ echo settings.json &gt;&gt; $(chezmoi source-path)/.chezmoiignore
 </code></pre><p>Tell chezmoi that <code>~/.config/Code/User/settings.json</code> should be a symlink to the
 file in your source directory:</p>
-<pre><code class="language-console" data-lang="console">$ mkdir -p $(chezmoi source-path)/private_dot_config/private_Code/User
+<pre tabindex="0"><code class="language-console" data-lang="console">$ mkdir -p $(chezmoi source-path)/private_dot_config/private_Code/User
 $ echo -n &quot;{{ .chezmoi.sourceDir }}/settings.json&quot; &gt; $(chezmoi source-path)/private_dot_config/private_Code/User/symlink_settings.json.tmpl
 </code></pre><p>The prefix <code>private_</code> is used because the <code>~/.config</code> and <code>~/.config/Code</code>
 directories are private by default.</p>
 <p>Apply the changes:</p>
-<pre><code class="language-console" data-lang="console">$ chezmoi apply -v
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi apply -v
 </code></pre><p>Now, when the program modifies its configuration file it will modify the file in
 the source state instead.</p>
 <hr>
@@ -458,11 +480,11 @@ the source state instead.</p>
 source state. The <code>import</code> command does this. For example, to import the latest
 version <a href="https://github.com/ohmyzsh/ohmyzsh"><code>github.com/ohmyzsh/ohmyzsh</code></a> to
 <code>~/.oh-my-zsh</code> run:</p>
-<pre><code class="language-console" data-lang="console">$ curl -s -L -o ${TMPDIR}/oh-my-zsh-master.tar.gz https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz
+<pre tabindex="0"><code class="language-console" data-lang="console">$ curl -s -L -o ${TMPDIR}/oh-my-zsh-master.tar.gz https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz
 $ mkdir -p $(chezmoi source-path)/dot_oh-my-zsh
 $ chezmoi import --strip-components 1 --destination ~/.oh-my-zsh ${TMPDIR}/oh-my-zsh-master.tar.gz
 </code></pre><p>Note that this only updates the source state. You will need to run</p>
-<pre><code class="language-console" data-lang="console">$ chezmoi apply
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi apply
 </code></pre><p>to update your destination directory.</p>
 <hr>
 <h2 id="manage-machine-to-machine-differences">
@@ -503,10 +525,10 @@ followed by zero or more letters or digits.</p>
 <p>Then, add <code>~/.gitconfig</code> to chezmoi using the <code>--autotemplate</code> flag to turn it
 into a template and automatically detect variables from the <code>data</code> section
 of your <code>~/.config/chezmoi/chezmoi.toml</code> file:</p>
-<pre><code class="language-console" data-lang="console">$ chezmoi add --autotemplate ~/.gitconfig
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi add --autotemplate ~/.gitconfig
 </code></pre><p>You can then open the template (which will be saved in the file
 <code>~/.local/share/chezmoi/dot_gitconfig.tmpl</code>):</p>
-<pre><code class="language-console" data-lang="console">$ chezmoi edit ~/.gitconfig
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi edit ~/.gitconfig
 </code></pre><p>The file should look something like:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">user</span>]
     <span style="color:#a6e22e">email</span> = {{ .<span style="color:#a6e22e">email</span> <span style="color:#960050;background-color:#1e0010">|</span> <span style="color:#a6e22e">quote</span> }}
@@ -514,7 +536,7 @@ of your <code>~/.config/chezmoi/chezmoi.toml</code> file:</p>
 <code>chezmoi add</code> instead of <code>--autotemplate</code>.</p>
 <p>Templates are often used to capture machine-specific differences. For example,
 in your <code>~/.local/share/chezmoi/dot_bashrc.tmpl</code> you might have:</p>
-<pre><code># common config
+<pre tabindex="0"><code># common config
 export EDITOR=vi
 
 # machine-specific configuration
@@ -522,7 +544,7 @@ export EDITOR=vi
 # this will only be included in ~/.bashrc on work-laptop
 {{- end }}
 </code></pre><p>For a full list of variables, run:</p>
-<pre><code class="language-console" data-lang="console">$ chezmoi data
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi data
 </code></pre><p>For more advanced usage, you can use the full power of the
 <a href="https://pkg.go.dev/text/template"><code>text/template</code></a> language. chezmoi includes
 all of the text functions from <a href="http://masterminds.github.io/sprig/">sprig</a> and
@@ -530,13 +552,13 @@ its own <a href="/docs/reference/#template-functions">functions for interacting 
 managers</a>.</p>
 <p>Templates can be executed directly from the command line, without the need to
 create a file on disk, with the <code>execute-template</code> command, for example:</p>
-<pre><code class="language-console" data-lang="console">$ chezmoi execute-template &quot;{{ .chezmoi.os }}/{{ .chezmoi.arch }}&quot;
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi execute-template &quot;{{ .chezmoi.os }}/{{ .chezmoi.arch }}&quot;
 </code></pre><p>This is useful when developing or debugging templates.</p>
 <p>Some password managers allow you to store complete files. The files can be
 retrieved with chezmoi&rsquo;s template functions. For example, if you have a file
 stored in 1Password with the UUID <code>uuid</code> then you can retrieve it with the
 template:</p>
-<pre><code>{{- onepasswordDocument &quot;uuid&quot; -}}
+<pre tabindex="0"><code>{{- onepasswordDocument &quot;uuid&quot; -}}
 </code></pre><p>The <code>-</code>s inside the brackets remove any whitespace before or after the template
 expression, which is useful if your editor has added any newlines.</p>
 <p>If, after executing the template, the file contents are empty, the target file
@@ -553,7 +575,7 @@ machines, or to exclude certain files completely, you can create
 <code>.chezmoiignore</code> files in the source directory. These specify a list of patterns
 that chezmoi should ignore, and are interpreted as templates. An example
 <code>.chezmoiignore</code> file might look like:</p>
-<pre><code>README.md
+<pre tabindex="0"><code>README.md
 {{- if ne .chezmoi.hostname &quot;work-laptop&quot; }}
 .work # only manage .work on work-laptop
 {{- end }}
@@ -562,7 +584,7 @@ install <code>.work</code> if hostname is <code>work-laptop</code>&rdquo; but ch
 default, so we have to turn the logic around and instead write &ldquo;ignore <code>.work</code>
 unless the hostname is <code>work-laptop</code>&rdquo;.</p>
 <p>Patterns can be excluded by prefixing them with a <code>!</code>, for example:</p>
-<pre><code>f*
+<pre tabindex="0"><code>f*
 !foo
 </code></pre><p>will ignore all files beginning with an <code>f</code> except <code>foo</code>.</p>
 <hr>
@@ -574,7 +596,7 @@ unless the hostname is <code>work-laptop</code>&rdquo;.</p>
 any variable. For example, if you want <code>~/.bashrc</code> to be different on Linux and
 macOS you would create a file in the source state called <code>dot_bashrc.tmpl</code>
 containing:</p>
-<pre><code>{{ if eq .chezmoi.os &quot;darwin&quot; -}}
+<pre tabindex="0"><code>{{ if eq .chezmoi.os &quot;darwin&quot; -}}
 # macOS .bashrc contents
 {{ else if eq .chezmoi.os &quot;linux&quot; -}}
 # Linux .bashrc contents
@@ -583,13 +605,13 @@ containing:</p>
 prefer to use completely separate files in the source state, you can achieve
 this using a symbolic link template. Create the following files:</p>
 <p><code>symlink_dot_bashrc.tmpl</code>:</p>
-<pre><code>.bashrc_{{ .chezmoi.os }}
+<pre tabindex="0"><code>.bashrc_{{ .chezmoi.os }}
 </code></pre><p><code>dot_bashrc_darwin</code>:</p>
-<pre><code>  # macOS .bashrc contents
+<pre tabindex="0"><code>  # macOS .bashrc contents
 </code></pre><p><code>dot_bashrc_linux</code>:</p>
-<pre><code># Linux .bashrc contents
+<pre tabindex="0"><code># Linux .bashrc contents
 </code></pre><p><code>.chezmoiignore</code></p>
-<pre><code>{{ if ne .chezmoi.os &quot;darwin&quot; }}
+<pre tabindex="0"><code>{{ if ne .chezmoi.os &quot;darwin&quot; }}
 .bashrc_darwin
 {{ end }}
 {{ if ne .chezmoi.os &quot;linux&quot; }}
@@ -604,7 +626,7 @@ the OS-specific <code>.bashrc_os</code> file will be installed on each OS.</p>
 </h4>
 <p>The same thing can be achieved using the include function.</p>
 <p><code>dot_bashrc.tmpl</code></p>
-<pre><code>{{ if eq .chezmoi.os &quot;darwin&quot; }}
+<pre tabindex="0"><code>{{ if eq .chezmoi.os &quot;darwin&quot; }}
 {{   include &quot;.bashrc_darwin&quot; }}
 {{ end }}
 {{ if eq .chezmoi.os &quot;linux&quot; }}
@@ -621,14 +643,14 @@ where <em>format</em> is one of the supported config file formats (e.g. <code>js
 or <code>yaml</code>) then <code>chezmoi init</code> will execute that template to generate your
 initial config file.</p>
 <p>Specifically, if you have <code>.chezmoi.toml.tmpl</code> that looks like this:</p>
-<pre><code>{{- $email := promptString &quot;email&quot; -}}
+<pre tabindex="0"><code>{{- $email := promptString &quot;email&quot; -}}
 [data]
     email = {{ $email | quote }}
 </code></pre><p>Then <code>chezmoi init</code> will create an initial <code>chezmoi.toml</code> using this template.
 <code>promptString</code> is a special function that prompts the user (you) for a value.</p>
 <p>To test this template, use <code>chezmoi execute-template</code> with the <code>--init</code> and
 <code>--promptString</code> flags, for example:</p>
-<pre><code class="language-console" data-lang="console">$ chezmoi execute-template --init --promptString email=me@home.org &lt; ~/.local/share/chezmoi/.chezmoi.toml.tmpl
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi execute-template --init --promptString email=me@home.org &lt; ~/.local/share/chezmoi/.chezmoi.toml.tmpl
 </code></pre><hr>
 <h3 id="re-create-your-config-file">
   Re-create your config file
@@ -637,11 +659,11 @@ initial config file.</p>
 <p>If you change your config file template, chezmoi will warn you if your current
 config file was not generated from that template. You can re-generate your
 config file by running:</p>
-<pre><code class="language-console" data-lang="console">$ chezmoi init
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi init
 </code></pre><p>If you are using any <code>prompt*</code> template functions in your config file template
 you will be prompted again. However, you can avoid this with the following
 example template logic:</p>
-<pre><code>{{- $email := get . &quot;email&quot; -}}
+<pre tabindex="0"><code>{{- $email := get . &quot;email&quot; -}}
 {{- if not $email -}}
 {{-   $email = promptString &quot;email&quot; -}}
 {{- end -}}
@@ -651,7 +673,7 @@ example template logic:</p>
 </code></pre><p>This will cause chezmoi to first try to re-use the existing <code>$email</code> variable
 and fallback to <code>promptString</code> only if it is not set.</p>
 <p>For boolean variables you can use:</p>
-<pre><code>{{- $var := false -}}
+<pre tabindex="0"><code>{{- $var := false -}}
 {{- if (hasKey . &quot;var&quot;) -}}
 {{-   $var = get . &quot;var&quot; -}}
 {{- end -}}
@@ -674,7 +696,7 @@ name of the file.</p>
 Linux. Both template files should contain <code>{{- template &quot;file.conf&quot; -}}</code>.</p>
 <p>Finally, tell chezmoi to ignore files where they are not needed by adding lines
 to your <code>.chezmoiignore</code> file, for example:</p>
-<pre><code>{{ if ne .chezmoi.os &quot;darwin&quot; }}
+<pre tabindex="0"><code>{{ if ne .chezmoi.os &quot;darwin&quot; }}
 Library/Application Support/App/file.conf
 {{ end }}
 {{ if ne .chezmoi.os &quot;linux&quot; }}
@@ -698,7 +720,7 @@ option.</p>
 them by inspecting their permissions. Private files and directories are stored
 in <code>~/.local/share/chezmoi</code> as regular, public files with permissions <code>0644</code> and
 the name prefix <code>private_</code>. For example:</p>
-<pre><code>$ chezmoi add ~/.netrc
+<pre tabindex="0"><code>$ chezmoi add ~/.netrc
 </code></pre><p>will create <code>~/.local/share/chezmoi/private_dot_netrc</code> (assuming <code>~/.netrc</code> is
 not world- or group- readable, as it should be). This file is still private
 because <code>~/.local/share/chezmoi</code> is not group- or world- readable or executable.
@@ -718,7 +740,7 @@ your machine.</p>
 <a href="https://support.1password.com/command-line-getting-started/">1Password CLI</a> to
 expose data as a template function.</p>
 <p>Log in and get a session using:</p>
-<pre><code class="language-console" data-lang="console">$ eval $(op signin &lt;subdomain&gt;.1password.com &lt;email&gt;)
+<pre tabindex="0"><code class="language-console" data-lang="console">$ eval $(op signin &lt;subdomain&gt;.1password.com &lt;email&gt;)
 </code></pre><p>The output of <code>op get item &lt;uuid&gt;</code> is available as the <code>onepassword</code> template
 function. chezmoi parses the JSON output and returns it as structured data. For
 example, if the output of <code>op get item &quot;&lt;uuid&gt;&quot;</code> is:</p>
@@ -729,12 +751,12 @@ example, if the output of <code>op get item &quot;&lt;uuid&gt;&quot;</code> is:<
     }
 }
 </code></pre></div><p>Then you can access <code>details.password</code> with the syntax:</p>
-<pre><code>{{ (onepassword &quot;&lt;uuid&gt;&quot;).details.password }}
+<pre tabindex="0"><code>{{ (onepassword &quot;&lt;uuid&gt;&quot;).details.password }}
 </code></pre><p>Login details fields can be retrieved with the <code>onepasswordDetailsFields</code>
 function, for example:</p>
-<pre><code>{{- (onepasswordDetailsFields &quot;uuid&quot;).password.value }}
+<pre tabindex="0"><code>{{- (onepasswordDetailsFields &quot;uuid&quot;).password.value }}
 </code></pre><p>Documents can be retrieved with:</p>
-<pre><code>{{- onepasswordDocument &quot;uuid&quot; -}}
+<pre tabindex="0"><code>{{- onepasswordDocument &quot;uuid&quot; -}}
 </code></pre><p>Note the extra <code>-</code> after the opening <code>{{</code> and before the closing <code>}}</code>. This
 instructs the template language to remove any whitespace before and after the
 substitution. This removes any trailing newline added by your editor when saving
@@ -748,18 +770,18 @@ the template.</p>
 <a href="https://github.com/bitwarden/cli">Bitwarden CLI</a> to expose data as a template
 function.</p>
 <p>Log in to Bitwarden using:</p>
-<pre><code class="language-console" data-lang="console">$ bw login &lt;bitwarden-email&gt;
+<pre tabindex="0"><code class="language-console" data-lang="console">$ bw login &lt;bitwarden-email&gt;
 </code></pre><p>Unlock your Bitwarden vault:</p>
-<pre><code class="language-console" data-lang="console">$ bw unlock
+<pre tabindex="0"><code class="language-console" data-lang="console">$ bw unlock
 </code></pre><p>Set the <code>BW_SESSION</code> environment variable, as instructed.</p>
 <p>The structured data from <code>bw get</code> is available as the <code>bitwarden</code> template
 function in your config files, for example:</p>
-<pre><code>username = {{ (bitwarden &quot;item&quot; &quot;example.com&quot;).login.username }}
+<pre tabindex="0"><code>username = {{ (bitwarden &quot;item&quot; &quot;example.com&quot;).login.username }}
 password = {{ (bitwarden &quot;item&quot; &quot;example.com&quot;).login.password }}
 </code></pre><p>Custom fields can be accessed with the <code>bitwardenFields</code> template function. For
 example, if you have a custom field named <code>token</code> you can retrieve its value
 with:</p>
-<pre><code>{{ (bitwardenFields &quot;item&quot; &quot;example.com&quot;).token.value }}
+<pre tabindex="0"><code>{{ (bitwardenFields &quot;item&quot; &quot;example.com&quot;).token.value }}
 </code></pre><hr>
 <h3 id="use-gopass">
   Use gopass
@@ -768,7 +790,7 @@ with:</p>
 <p>chezmoi includes support for <a href="https://www.gopass.pw/">gopass</a> using the gopass CLI.</p>
 <p>The first line of the output of <code>gopass show &lt;pass-name&gt;</code> is available as the
 <code>gopass</code> template function, for example:</p>
-<pre><code>{{ gopass &quot;&lt;pass-name&gt;&quot; }}
+<pre tabindex="0"><code>{{ gopass &quot;&lt;pass-name&gt;&quot; }}
 </code></pre><hr>
 <h3 id="use-keepassxc">
   Use KeePassXC
@@ -781,12 +803,12 @@ KeePassXC CLI (<code>keepassxc-cli</code>) to expose data as a template function
     <span style="color:#a6e22e">database</span> = <span style="color:#e6db74">&#34;/home/user/Passwords.kdbx&#34;</span>
 </code></pre></div><p>The structured data from <code>keepassxc-cli show $database</code> is available as the
 <code>keepassxc</code> template function in your config files, for example:</p>
-<pre><code>username = {{ (keepassxc &quot;example.com&quot;).UserName }}
+<pre tabindex="0"><code>username = {{ (keepassxc &quot;example.com&quot;).UserName }}
 password = {{ (keepassxc &quot;example.com&quot;).Password }}
 </code></pre><p>Additional attributes are available through the <code>keepassxcAttribute</code> function.
 For example, if you have an entry called <code>SSH Key</code> with an additional attribute
 called <code>private-key</code>, its value is available as:</p>
-<pre><code>{{ keepassxcAttribute &quot;SSH Key&quot; &quot;private-key&quot; }}
+<pre tabindex="0"><code>{{ keepassxcAttribute &quot;SSH Key&quot; &quot;private-key&quot; }}
 </code></pre><hr>
 <h3 id="use-keychain-or-windows-credentials-manager">
   Use Keychain or Windows Credentials Manager
@@ -796,19 +818,19 @@ called <code>private-key</code>, its value is available as:</p>
 Windows Credentials Manager (on Windows) via the
 <a href="https://github.com/zalando/go-keyring"><code>zalando/go-keyring</code></a> library.</p>
 <p>Set values with:</p>
-<pre><code class="language-console" data-lang="console">$ chezmoi secret keyring set --service=&lt;service&gt; --user=&lt;user&gt;
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi secret keyring set --service=&lt;service&gt; --user=&lt;user&gt;
 Value: xxxxxxxx
 </code></pre><p>The value can then be used in templates using the <code>keyring</code> function which takes
 the service and user as arguments.</p>
 <p>For example, save a GitHub access token in keyring with:</p>
-<pre><code class="language-console" data-lang="console">$ chezmoi secret keyring set --service=github --user=&lt;github-username&gt;
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi secret keyring set --service=github --user=&lt;github-username&gt;
 Value: xxxxxxxx
 </code></pre><p>and then include it in your <code>~/.gitconfig</code> file with:</p>
-<pre><code>[github]
+<pre tabindex="0"><code>[github]
     user = {{ .github.user | quote }}
     token = {{ keyring &quot;github&quot; .github.user | quote }}
 </code></pre><p>You can query the keyring from the command line:</p>
-<pre><code class="language-console" data-lang="console">$ chezmoi secret keyring get --service=github --user=&lt;github-username&gt;
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi secret keyring get --service=github --user=&lt;github-username&gt;
 </code></pre><hr>
 <h3 id="use-lastpass">
   Use LastPass
@@ -818,9 +840,9 @@ Value: xxxxxxxx
 <a href="https://lastpass.github.io/lastpass-cli/lpass.1.html">LastPass CLI</a> to expose
 data as a template function.</p>
 <p>Log in to LastPass using:</p>
-<pre><code class="language-console" data-lang="console">$ lpass login &lt;lastpass-username&gt;
+<pre tabindex="0"><code class="language-console" data-lang="console">$ lpass login &lt;lastpass-username&gt;
 </code></pre><p>Check that <code>lpass</code> is working correctly by showing password data:</p>
-<pre><code class="language-console" data-lang="console">$ lpass show --json &lt;lastpass-entry-id&gt;
+<pre tabindex="0"><code class="language-console" data-lang="console">$ lpass show --json &lt;lastpass-entry-id&gt;
 </code></pre><p>where <code>&lt;lastpass-entry-id&gt;</code> is a <a href="https://lastpass.github.io/lastpass-cli/lpass.1.html#_entry_specification">LastPass Entry
 Specification</a>.</p>
 <p>The structured data from <code>lpass show --json id</code> is available as the <code>lastpass</code>
@@ -828,16 +850,16 @@ template function. The value will be an array of objects. You can use the
 <code>index</code> function and <code>.Field</code> syntax of the <code>text/template</code> language to extract
 the field you want. For example, to extract the <code>password</code> field from first the
 &ldquo;GitHub&rdquo; entry, use:</p>
-<pre><code>githubPassword = {{ (index (lastpass &quot;GitHub&quot;) 0).password | quote }}
+<pre tabindex="0"><code>githubPassword = {{ (index (lastpass &quot;GitHub&quot;) 0).password | quote }}
 </code></pre><p>chezmoi automatically parses the <code>note</code> value of the Lastpass entry as
 colon-separated key-value pairs, so, for example, you can extract a private SSH
 key like this:</p>
-<pre><code>{{ (index (lastpass &quot;SSH&quot;) 0).note.privateKey }}
+<pre tabindex="0"><code>{{ (index (lastpass &quot;SSH&quot;) 0).note.privateKey }}
 </code></pre><p>Keys in the <code>note</code> section written as <code>CamelCase Words</code> are converted to
 <code>camelCaseWords</code>.</p>
 <p>If the <code>note</code> value does not contain colon-separated key-value pairs, then you
 can use <code>lastpassRaw</code> to get its raw value, for example:</p>
-<pre><code>{{ (index (lastpassRaw &quot;SSH Private Key&quot;) 0).note }}
+<pre tabindex="0"><code>{{ (index (lastpassRaw &quot;SSH Private Key&quot;) 0).note }}
 </code></pre><hr>
 <h3 id="use-pass">
   Use pass
@@ -847,7 +869,7 @@ can use <code>lastpassRaw</code> to get its raw value, for example:</p>
 pass CLI.</p>
 <p>The first line of the output of <code>pass show &lt;pass-name&gt;</code> is available as the
 <code>pass</code> template function, for example:</p>
-<pre><code>{{ pass &quot;&lt;pass-name&gt;&quot; }}
+<pre tabindex="0"><code>{{ pass &quot;&lt;pass-name&gt;&quot; }}
 </code></pre><hr>
 <h3 id="use-vault">
   Use Vault
@@ -859,11 +881,11 @@ template function.</p>
 <p>The vault CLI needs to be correctly configured on your machine, e.g. the
 <code>VAULT_ADDR</code> and <code>VAULT_TOKEN</code> environment variables must be set correctly.
 Verify that this is the case by running:</p>
-<pre><code class="language-console" data-lang="console">$ vault kv get -format=json &lt;key&gt;
+<pre tabindex="0"><code class="language-console" data-lang="console">$ vault kv get -format=json &lt;key&gt;
 </code></pre><p>The structured data from <code>vault kv get -format=json</code> is available as the <code>vault</code>
 template function. You can use the <code>.Field</code> syntax of the <code>text/template</code>
 language to extract the data you want. For example:</p>
-<pre><code>{{ (vault &quot;&lt;key&gt;&quot;).data.data.password }}
+<pre tabindex="0"><code>{{ (vault &quot;&lt;key&gt;&quot;).data.data.password }}
 </code></pre><hr>
 <h3 id="use-a-custom-password-manager">
   Use a custom password manager
@@ -936,7 +958,7 @@ with the <code>gpg.recipient</code> key:</p>
 [<span style="color:#a6e22e">gpg</span>]
     <span style="color:#a6e22e">recipient</span> = <span style="color:#e6db74">&#34;...&#34;</span>
 </code></pre></div><p>Add files to be encrypted with the <code>--encrypt</code> flag, for example:</p>
-<pre><code class="language-console" data-lang="console">$ chezmoi add --encrypt ~/.ssh/id_rsa
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi add --encrypt ~/.ssh/id_rsa
 </code></pre><p>chezmoi will encrypt the file with:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">gpg --armor --recipient <span style="color:#e6db74">${</span>gpg.recipient<span style="color:#e6db74">}</span> --encrypt
 </code></pre></div><p>and store the encrypted file in the source state. The file will automatically be
@@ -951,7 +973,7 @@ decrypted when generating the target state.</p>
 [<span style="color:#a6e22e">gpg</span>]
     <span style="color:#a6e22e">symmetric</span> = <span style="color:#66d9ef">true</span>
 </code></pre></div><p>Add files to be encrypted with the <code>--encrypt</code> flag, for example:</p>
-<pre><code class="language-console" data-lang="console">$ chezmoi add --encrypt ~/.ssh/id_rsa
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi add --encrypt ~/.ssh/id_rsa
 </code></pre><p>chezmoi will encrypt the file with:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">gpg --armor --symmetric
 </code></pre></div><hr>
@@ -964,7 +986,7 @@ Encrypted files are stored in the source state and automatically be decrypted
 when generating the target state or printing a file&rsquo;s contents with <code>chezmoi cat</code>. <code>chezmoi edit</code> will transparently decrypt the file before editing and
 re-encrypt it afterwards.</p>
 <p>Generate a key using <code>age-keygen</code>:</p>
-<pre><code class="language-console" data-lang="console">$ age-keygen -o $HOME/key.txt
+<pre tabindex="0"><code class="language-console" data-lang="console">$ age-keygen -o $HOME/key.txt
 Public key: age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p
 </code></pre><p>Specify age encryption in your configuration file, being sure to specify at
 least the identity and one recipient:</p>
@@ -973,7 +995,7 @@ least the identity and one recipient:</p>
     <span style="color:#a6e22e">identity</span> = <span style="color:#e6db74">&#34;/home/user/key.txt&#34;</span>
     <span style="color:#a6e22e">recipient</span> = <span style="color:#e6db74">&#34;age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p&#34;</span>
 </code></pre></div><p>Add files to be encrypted with the <code>--encrypt</code> flag, for example:</p>
-<pre><code class="language-console" data-lang="console">$ chezmoi add --encrypt ~/.ssh/id_rsa
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi add --encrypt ~/.ssh/id_rsa
 </code></pre><p>chezmoi supports multiple recipients and recipient files, and multiple
 identities.</p>
 <hr>
@@ -1012,7 +1034,7 @@ section. For example, if your <code>~/.config/chezmoi/chezmoi.toml</code> contai
     <span style="color:#a6e22e">user</span> = <span style="color:#e6db74">&#34;&lt;github-username&gt;&#34;</span>
     <span style="color:#a6e22e">token</span> = <span style="color:#e6db74">&#34;&lt;github-token&gt;&#34;</span>
 </code></pre></div><p>Your <code>~/.local/share/chezmoi/private_dot_gitconfig.tmpl</code> can then contain:</p>
-<pre><code>{{- if (index . &quot;github&quot;) }}
+<pre tabindex="0"><code>{{- if (index . &quot;github&quot;) }}
 [github]
     user = {{ .github.user | quote }}
     token = {{ .github.token | quote }}
@@ -1054,7 +1076,7 @@ useful for disabling scripts.</p>
 </h3>
 <p>Change to the source directory and create a file called
 <code>run_once_install-packages.sh</code>:</p>
-<pre><code class="language-console" data-lang="console">$ chezmoi cd
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi cd
 $ $EDITOR run_once_install-packages.sh
 </code></pre><p>In this file create your package installation script, e.g.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh"><span style="color:#75715e">#!/bin/sh
@@ -1064,7 +1086,7 @@ run. As it has the <code>run_once_</code> prefix, it will not be run again unles
 contents change, for example if you add more packages to be installed.</p>
 <p>This script can also be a template. For example, if you create
 <code>run_once_install-packages.sh.tmpl</code> with the contents:</p>
-<pre><code>{{ if eq .chezmoi.os &quot;linux&quot; -}}
+<pre tabindex="0"><code>{{ if eq .chezmoi.os &quot;linux&quot; -}}
 #!/bin/sh
 sudo apt install ripgrep
 {{ else if eq .chezmoi.os &quot;darwin&quot; -}}
@@ -1086,7 +1108,7 @@ other file&rsquo;s contents in the script.</p>
 stored in <code>dconf.ini</code> in your source directory then you can make <code>chezmoi apply</code>
 only load them when the contents of <code>dconf.ini</code> has changed by adding the
 following script as <code>run_once_dconf-load.sh.tmpl</code>:</p>
-<pre><code>#!/bin/bash
+<pre tabindex="0"><code>#!/bin/bash
 
 # dconf.ini hash: {{ include &quot;dconf.ini&quot; | sha256sum }}
 dconf load / {{ joinPath .chezmoi.sourceDir &quot;dconf.ini&quot; | quote }}
@@ -1112,7 +1134,7 @@ specify a list of brews and casks to be installed. You can integrate this with
 chezmoi by creating a <code>run_once_</code> script. For example, create a file in your
 source directory called <code>run_once_before_install-packages-darwin.sh.tmpl</code>
 containing:</p>
-<pre><code>{{- if (eq .chezmoi.os &quot;darwin&quot;) -}}
+<pre tabindex="0"><code>{{- if (eq .chezmoi.os &quot;darwin&quot;) -}}
 #!/bin/bash
 
 brew bundle --no-lock --file=/dev/stdin &lt;&lt;EOF
@@ -1136,7 +1158,7 @@ you add or remove brews or casks.</p>
 <p>WSL can be detected by looking for the string <code>Microsoft</code> or <code>microsoft</code> in
 <code>/proc/sys/kernel/osrelease</code>, which is available in the template variable
 <code>.chezmoi.kernel.osrelease</code>, for example:</p>
-<pre><code>{{ if (eq .chezmoi.os &quot;linux&quot;) }}
+<pre tabindex="0"><code>{{ if (eq .chezmoi.os &quot;linux&quot;) }}
 {{   if (.chezmoi.kernel.osrelease | lower | contains &quot;microsoft&quot;) }}
 # WSL-specific code
 {{   end }}
@@ -1183,7 +1205,7 @@ function</a>.</li>
 <p>First, if you are using a chezmoi configuration file template, ensure that it is
 non-interactive when running in Codespaces, for example, <code>.chezmoi.toml.tmpl</code>
 might contain:</p>
-<pre><code>{{- $codespaces:= env &quot;CODESPACES&quot; | not | not -}}
+<pre tabindex="0"><code>{{- $codespaces:= env &quot;CODESPACES&quot; | not | not -}}
 sourceDir = {{ .chezmoi.sourceDir | quote }}
 
 [data]
@@ -1232,7 +1254,7 @@ running from.</p>
 <p>Finally, modify any of your templates to use the <code>codespaces</code> variable if
 needed. For example, to install <code>vim-gtk</code> on Linux but not in Codespaces, your
 <code>run_once_install-packages.sh.tmpl</code> might contain:</p>
-<pre><code>{{- if (and (eq .chezmoi.os &quot;linux&quot;) (not .codespaces)) -}}
+<pre tabindex="0"><code>{{- if (and (eq .chezmoi.os &quot;linux&quot;) (not .codespaces)) -}}
 #!/bin/sh
 sudo apt install -y vim-gtk
 {{- end -}}
@@ -1306,7 +1328,7 @@ state, source state, and target state respectively. For example, to use
 directory. If you <code>chezmoi add</code> such a symlink, chezmoi will add the symlink,
 not the file. To assist with migrating from symlink-based systems, use the
 <code>--follow</code> option to <code>chezmoi add</code>, for example:</p>
-<pre><code class="language-console" data-lang="console">$ chezmoi add --follow ~/.bashrc
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi add --follow ~/.bashrc
 </code></pre><p>This will tell <code>chezmoi add</code> that the target state of <code>~/.bashrc</code> is the target
 of the <code>~/.bashrc</code> symlink, rather than the symlink itself. When you run
 <code>chezmoi apply</code>, chezmoi will replace the <code>~/.bashrc</code> symlink with the file
@@ -1377,6 +1399,7 @@ so you can write scripts around chezmoi.</li>
     <li><a href="#perform-daily-operations">Perform daily operations</a>
       <ul>
         <li><a href="#use-a-hosted-repo-to-manage-your-dotfiles-across-multiple-machines">Use a hosted repo to manage your dotfiles across multiple machines</a></li>
+        <li><a href="#use-a-private-repo-to-store-your-dotfiles">Use a private repo to store your dotfiles</a></li>
         <li><a href="#pull-the-latest-changes-from-your-repo-and-apply-them">Pull the latest changes from your repo and apply them</a></li>
         <li><a href="#pull-the-latest-changes-from-your-repo-and-see-what-would-change-without-actually-applying-the-changes">Pull the latest changes from your repo and see what would change, without actually applying the changes</a></li>
         <li><a href="#automatically-commit-and-push-changes-to-your-repo">Automatically commit and push changes to your repo</a></li>
