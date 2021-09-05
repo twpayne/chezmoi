@@ -15,22 +15,45 @@ type onepasswordConfig struct {
 	outputCache map[string][]byte
 }
 
-func (c *Config) onepasswordDetailsFieldsTemplateFunc(args ...string) map[string]interface{} {
+type onePasswordItem struct {
+	Details struct {
+		Fields   []map[string]interface{} `json:"fields"`
+		Sections []struct {
+			Fields []map[string]interface{} `json:"fields,omitempty"`
+		} `json:"sections"`
+	} `json:"details"`
+}
+
+func (c *Config) onepasswordItem(args ...string) *onePasswordItem {
 	onepasswordArgs := getOnepasswordArgs([]string{"get", "item"}, args)
 	output := c.onepasswordOutput(onepasswordArgs)
-	var data struct {
-		Details struct {
-			Fields []map[string]interface{} `json:"fields"`
-		} `json:"details"`
-	}
-	if err := json.Unmarshal(output, &data); err != nil {
+	var onepasswordItem onePasswordItem
+	if err := json.Unmarshal(output, &onepasswordItem); err != nil {
 		returnTemplateError(fmt.Errorf("%s %s: %w\n%s", c.Onepassword.Command, chezmoi.ShellQuoteArgs(onepasswordArgs), err, output))
 		return nil
 	}
+	return &onepasswordItem
+}
+
+func (c *Config) onepasswordDetailsFieldsTemplateFunc(args ...string) map[string]interface{} {
+	onepasswordItem := c.onepasswordItem(args...)
 	result := make(map[string]interface{})
-	for _, field := range data.Details.Fields {
+	for _, field := range onepasswordItem.Details.Fields {
 		if designation, ok := field["designation"].(string); ok {
 			result[designation] = field
+		}
+	}
+	return result
+}
+
+func (c *Config) onepasswordItemFieldsTemplateFunc(args ...string) map[string]interface{} {
+	onepasswordItem := c.onepasswordItem(args...)
+	result := make(map[string]interface{})
+	for _, section := range onepasswordItem.Details.Sections {
+		for _, field := range section.Fields {
+			if t, ok := field["t"].(string); ok {
+				result[t] = field
+			}
 		}
 	}
 	return result
