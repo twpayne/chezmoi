@@ -109,6 +109,7 @@ Manage your dotfiles across multiple machines, securely.
   * [`onepassword` *uuid* [*vault-uuid* [*account-name*]]](#onepassword-uuid-vault-uuid-account-name)
   * [`onepasswordDocument` *uuid* [*vault-uuid* [*account-name*]]](#onepassworddocument-uuid-vault-uuid-account-name)
   * [`onepasswordDetailsFields` *uuid* [*vault-uuid* [*account-name*]]](#onepassworddetailsfields-uuid-vault-uuid-account-name)
+  * [`onepasswordItemFields` *uuid* [*vault-uuid* [*account-name*]]](#onepassworditemfields-uuid-vault-uuid-account-name)
   * [`output` *name* [*arg*...]](#output-name-arg)
   * [`pass` *pass-name*](#pass-pass-name)
   * [`passRaw` *pass-name*](#passraw-pass-name)
@@ -2112,6 +2113,57 @@ accounts).
 {{ (onepasswordDetailsFields "<uuid>" "<vault-uuid>").password.value }}
 {{ (onepasswordDetailsFields "<uuid>" "<vault-uuid>" "<account-name>").password.value }}
 {{ (onepasswordDetailsFields "<uuid>" "" "<account-name>").password.value }}
+```
+
+---
+
+### `onepasswordItemFields` *uuid* [*vault-uuid* [*account-name*]]
+
+`onepasswordItemFields` returns structured data from
+[1Password](https://1password.com/) using the [1Password
+CLI](https://support.1password.com/command-line-getting-started/) (`op`). *uuid*
+is passed to `op get item <uuid>`, the output from `op` is parsed as JSON, and
+each element of `details.sections` are iterated over and any `fields` are
+returned as a map indexed by each field's `n`. For example, give the output from
+`op`:
+
+```json
+{
+  "uuid": "<uuid>",
+  "details": {
+    "sections": [
+      {
+        "name": "linked items",
+        "title": "Related Items"
+      },
+      {
+        "fields": [
+          {
+            "k": "string",
+            "n": "D4328E0846D2461E8E455D7A07B93397",
+            "t": "exampleLabel",
+            "v": "exampleValue"
+          }
+        ],
+        "name": "Section_20E0BD380789477D8904F830BFE8A121",
+        "title": ""
+      }
+    ]
+  },
+}
+```
+
+the return value will be the map:
+
+```json
+{
+    "exampleLabel": {
+        "k": "string",
+        "n": "D4328E0846D2461E8E455D7A07B93397",
+        "t": "exampleLabel",
+        "v": "exampleValue"
+    }
+}
 ```
 
 ---

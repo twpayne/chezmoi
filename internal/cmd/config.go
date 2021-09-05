@@ -390,6 +390,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"onepassword":              c.onepasswordTemplateFunc,
 		"onepasswordDetailsFields": c.onepasswordDetailsFieldsTemplateFunc,
 		"onepasswordDocument":      c.onepasswordDocumentTemplateFunc,
+		"onepasswordItemFields":    c.onepasswordItemFieldsTemplateFunc,
 		"output":                   c.outputTemplateFunc,
 		"pass":                     c.passTemplateFunc,
 		"passRaw":                  c.passRawTemplateFunc,
