@@ -16,7 +16,7 @@ jobs:
         - ubuntu-18.04
         - windows-latest
     env:
-      AGE_VERSION: v1.0.0-rc.3
+      AGE_VERSION: v1.0.0
     runs-on: ${{ matrix.os }}
     steps:
     - name: Set up Go
@@ -43,7 +43,7 @@ jobs:
       run: |
         cd $(mktemp -d)
         goos=$(uname -s | tr '[:upper:]' '[:lower:]')
-        curl -fsSL https://github.com/FiloSottile/age/releases/download/${AGE_VERSION}/age-${AGE_VERSION}-${goos}-amd64.tar.gz | tar xzf -
+        curl -fsSL https://dl.filippo.io/age/${AGE_VERSION}?for=${goos}/amd64 | tar xzf -
         sudo install -m 755 age/age /usr/local/bin
         sudo install -m 755 age/age-keygen /usr/local/bin
     - name: Install gpg4win (Windows)
