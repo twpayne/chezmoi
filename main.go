@@ -1,3 +1,6 @@
+//go:build go1.17
+// +build go1.17
+
 //go:generate go run . completion bash -o completions/chezmoi-completion.bash
 //go:generate go run . completion fish -o completions/chezmoi.fish
 //go:generate go run . completion powershell -o completions/chezmoi.ps1
