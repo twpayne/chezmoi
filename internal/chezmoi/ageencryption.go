@@ -10,9 +10,9 @@ import (
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )
 
-// An AGEEncryption uses age for encryption and decryption. See
+// An AgeEncryption uses age for encryption and decryption. See
 // https://age-encryption.org.
-type AGEEncryption struct {
+type AgeEncryption struct {
 	Command         string
 	Args            []string
 	Identity        string
@@ -27,7 +27,7 @@ type AGEEncryption struct {
 }
 
 // Decrypt implements Encyrption.Decrypt.
-func (e *AGEEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
+func (e *AgeEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
 	//nolint:gosec
 	cmd := exec.Command(e.Command, append(e.decryptArgs(), e.Args...)...)
 	cmd.Stdin = bytes.NewReader(ciphertext)
@@ -40,7 +40,7 @@ func (e *AGEEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
 }
 
 // DecryptToFile implements Encryption.DecryptToFile.
-func (e *AGEEncryption) DecryptToFile(plaintextAbsPath AbsPath, ciphertext []byte) error {
+func (e *AgeEncryption) DecryptToFile(plaintextAbsPath AbsPath, ciphertext []byte) error {
 	//nolint:gosec
 	cmd := exec.Command(e.Command, append(append(e.decryptArgs(), "--output", string(plaintextAbsPath)), e.Args...)...)
 	cmd.Stdin = bytes.NewReader(ciphertext)
@@ -49,7 +49,7 @@ func (e *AGEEncryption) DecryptToFile(plaintextAbsPath AbsPath, ciphertext []byt
 }
 
 // Encrypt implements Encryption.Encrypt.
-func (e *AGEEncryption) Encrypt(plaintext []byte) ([]byte, error) {
+func (e *AgeEncryption) Encrypt(plaintext []byte) ([]byte, error) {
 	//nolint:gosec
 	cmd := exec.Command(e.Command, append(e.encryptArgs(), e.Args...)...)
 	cmd.Stdin = bytes.NewReader(plaintext)
@@ -62,7 +62,7 @@ func (e *AGEEncryption) Encrypt(plaintext []byte) ([]byte, error) {
 }
 
 // EncryptFile implements Encryption.EncryptFile.
-func (e *AGEEncryption) EncryptFile(plaintextAbsPath AbsPath) ([]byte, error) {
+func (e *AgeEncryption) EncryptFile(plaintextAbsPath AbsPath) ([]byte, error) {
 	//nolint:gosec
 	cmd := exec.Command(e.Command, append(append(e.encryptArgs(), e.Args...), string(plaintextAbsPath))...)
 	cmd.Stderr = os.Stderr
@@ -70,12 +70,12 @@ func (e *AGEEncryption) EncryptFile(plaintextAbsPath AbsPath) ([]byte, error) {
 }
 
 // EncryptedSuffix implements Encryption.EncryptedSuffix.
-func (e *AGEEncryption) EncryptedSuffix() string {
+func (e *AgeEncryption) EncryptedSuffix() string {
 	return e.Suffix
 }
 
 // decryptArgs returns the arguments for decryption.
-func (e *AGEEncryption) decryptArgs() []string {
+func (e *AgeEncryption) decryptArgs() []string {
 	var args []string
 	args = append(args, "--decrypt")
 	if !e.Passphrase {
@@ -85,7 +85,7 @@ func (e *AGEEncryption) decryptArgs() []string {
 }
 
 // encryptArgs returns the arguments for encryption.
-func (e *AGEEncryption) encryptArgs() []string {
+func (e *AgeEncryption) encryptArgs() []string {
 	var args []string
 	args = append(args,
 		"--armor",
@@ -113,7 +113,7 @@ func (e *AGEEncryption) encryptArgs() []string {
 	return args
 }
 
-func (e *AGEEncryption) identityArgs() []string {
+func (e *AgeEncryption) identityArgs() []string {
 	args := make([]string, 0, 2+2*len(e.Identities))
 	if e.Identity != "" {
 		args = append(args, "--identity", e.Identity)

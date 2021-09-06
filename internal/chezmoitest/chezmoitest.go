@@ -26,11 +26,11 @@ var (
 	gpgKeyMarkedAsUltimatelyTrustedRx = regexp.MustCompile(`(?m)^gpg: key ([0-9A-F]+) marked as ultimately trusted\s*$`)
 )
 
-// AGEGenerateKey generates and returns an age public key and the path to the
+// AgeGenerateKey generates and returns an age public key and the path to the
 // private key. If filename is non-zero then the private key is written to it,
 // otherwise a new file is created in a temporary directory and the caller is
 // responsible for removing the temporary directory.
-func AGEGenerateKey(filename string) (publicKey, privateKeyFile string, err error) {
+func AgeGenerateKey(filename string) (publicKey, privateKeyFile string, err error) {
 	if filename == "" {
 		var tempDir string
 		tempDir, err = os.MkdirTemp("", "chezmoi-test-age-key")

@@ -96,7 +96,7 @@ type Config struct {
 
 	// Encryption configurations, settable in the config file.
 	Encryption string                `mapstructure:"encryption"`
-	AGE        chezmoi.AGEEncryption `mapstructure:"age"`
+	Age        chezmoi.AgeEncryption `mapstructure:"age"`
 	GPG        chezmoi.GPGEncryption `mapstructure:"gpg"`
 
 	// Password manager data.
@@ -167,7 +167,7 @@ var (
 	persistentStateFilename = chezmoi.RelPath("chezmoistate.boltdb")
 	configStateKey          = []byte("configState")
 
-	defaultAGEEncryptionConfig = chezmoi.AGEEncryption{
+	defaultAgeEncryptionConfig = chezmoi.AgeEncryption{
 		Command: "age",
 		Suffix:  ".age",
 	}
@@ -253,7 +253,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 
 		// Encryption configurations, settable in the config file.
-		AGE: defaultAGEEncryptionConfig,
+		Age: defaultAgeEncryptionConfig,
 		GPG: defaultGPGEncryptionConfig,
 
 		// Password manager data.
@@ -1377,7 +1377,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 
 	switch c.Encryption {
 	case "age":
-		c.encryption = &c.AGE
+		c.encryption = &c.Age
 	case "gpg":
 		c.encryption = &c.GPG
 	case "":
@@ -1386,8 +1386,8 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		switch {
 		case !reflect.DeepEqual(c.GPG, defaultGPGEncryptionConfig):
 			c.encryption = &c.GPG
-		case !reflect.DeepEqual(c.AGE, defaultAGEEncryptionConfig):
-			c.encryption = &c.AGE
+		case !reflect.DeepEqual(c.Age, defaultAgeEncryptionConfig):
+			c.encryption = &c.Age
 		default:
 			c.encryption = chezmoi.NoEncryption{}
 		}

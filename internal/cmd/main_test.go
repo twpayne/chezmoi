@@ -53,7 +53,7 @@ func TestScript(t *testing.T) {
 			"httpd":          cmdHTTPD,
 			"issymlink":      cmdIsSymlink,
 			"mkfile":         cmdMkFile,
-			"mkageconfig":    cmdMkAGEConfig,
+			"mkageconfig":    cmdMkAgeConfig,
 			"mkgitconfig":    cmdMkGitConfig,
 			"mkgpgconfig":    cmdMkGPGConfig,
 			"mkhomedir":      cmdMkHomeDir,
@@ -229,8 +229,8 @@ func cmdMkFile(ts *testscript.TestScript, neg bool, args []string) {
 	}
 }
 
-// cmdMkAGEConfig creates a AGE key and a chezmoi configuration file.
-func cmdMkAGEConfig(ts *testscript.TestScript, neg bool, args []string) {
+// cmdMkAgeConfig creates an age key and a chezmoi configuration file.
+func cmdMkAgeConfig(ts *testscript.TestScript, neg bool, args []string) {
 	if neg {
 		ts.Fatalf("unsupported: ! mkageconfig")
 	}
@@ -241,7 +241,7 @@ func cmdMkAGEConfig(ts *testscript.TestScript, neg bool, args []string) {
 	homeDir := ts.Getenv("HOME")
 	ts.Check(os.MkdirAll(homeDir, 0o777))
 	privateKeyFile := filepath.Join(homeDir, "key.txt")
-	publicKey, _, err := chezmoitest.AGEGenerateKey(ts.MkAbs(privateKeyFile))
+	publicKey, _, err := chezmoitest.AgeGenerateKey(ts.MkAbs(privateKeyFile))
 	ts.Check(err)
 	configFile := filepath.Join(homeDir, ".config", "chezmoi", "chezmoi.toml")
 	ts.Check(os.MkdirAll(filepath.Dir(configFile), 0o777))
