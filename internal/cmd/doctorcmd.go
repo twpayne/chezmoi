@@ -114,6 +114,10 @@ func (c *Config) newDoctorCmd() *cobra.Command {
 }
 
 func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return err
+	}
 	shell, _ := shell.CurrentUserShell()
 	editor, _ := c.editor()
 	checks := []check{
@@ -255,6 +259,10 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 	fmt.Fprint(resultWriter, "RESULT\tCHECK\tMESSAGE\n")
 	for _, check := range checks {
 		checkResult, message := check.Run()
+		// Conceal the user's actual home directory in the message as the
+		// output of chezmoi doctor is often posted publicly and would otherwise
+		// reveal the user's username.
+		message = strings.ReplaceAll(message, home, "~")
 		fmt.Fprintf(resultWriter, "%s\t%s\t%s\n", checkResultStr[checkResult], check.Name(), message)
 		if checkResult > worstResult {
 			worstResult = checkResult
