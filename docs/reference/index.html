@@ -22,7 +22,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.7ab54c031eb7778354dc94393a417ddefbce42376a6d2a758d37628937111c90.js" integrity="sha256-erVMAx63d4NU3JQ5OkF93vvOQjdqbSp1jTdiiTcRHJA=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.955c01c258a89851de543310e16c765f40a6454ab6ee7b0a7f9c1f9b06667312.js" integrity="sha256-lVwBwliomFHeVDMQ4Wx2X0CmRUq27nsKf5wfmwZmcxI=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -250,6 +250,7 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#onepassword-uuid-vault-uuid-account-name"><code>onepassword</code> <em>uuid</em> [<em>vault-uuid</em> [<em>account-name</em>]]</a></li>
         <li><a href="#onepassworddocument-uuid-vault-uuid-account-name"><code>onepasswordDocument</code> <em>uuid</em> [<em>vault-uuid</em> [<em>account-name</em>]]</a></li>
         <li><a href="#onepassworddetailsfields-uuid-vault-uuid-account-name"><code>onepasswordDetailsFields</code> <em>uuid</em> [<em>vault-uuid</em> [<em>account-name</em>]]</a></li>
+        <li><a href="#onepassworditemfields-uuid-vault-uuid-account-name"><code>onepasswordItemFields</code> <em>uuid</em> [<em>vault-uuid</em> [<em>account-name</em>]]</a></li>
         <li><a href="#output-name-arg"><code>output</code> <em>name</em> [<em>arg</em>&hellip;]</a></li>
         <li><a href="#pass-pass-name"><code>pass</code> <em>pass-name</em></a></li>
         <li><a href="#passraw-pass-name"><code>passRaw</code> <em>pass-name</em></a></li>
@@ -1696,7 +1697,7 @@ be piped into it.</p>
 differences with <code>diff.args</code> passed as arguments. Each element of <code>diff.args</code> is
 interpreted as a template with the variables <code>.Destination</code> and <code>.Target</code>
 available corresponding to the path of the file in the source and target state
-respectively. The default value of <code>diff.args</code> is <code>[&quot;{{ .Destination }}&quot;, &quot;{{ .Target }}&quot;]</code>.</p>
+respectively. The default value of <code>diff.args</code> is <code>[&quot;{{ .Destination }}&quot;, &quot;{{ .Target }}&quot;]</code>. If <code>diff.args</code> does not contain any template arguments then <code>{{ .Destination }}</code> and <code>{{ .Target }}</code> will be appended automatically.</p>
 <h4 id="--pager-pager">
   <code>--pager</code> <em>pager</em>
   <a class="anchor" href="#--pager-pager">#</a>
@@ -2081,7 +2082,9 @@ instead.</p>
 argument is interpreted as a template with the variables <code>.Destination</code>,
 <code>.Source</code>, and <code>.Target</code> available corresponding to the path of the file in the
 destination state, the source state, and the target state respectively. The
-default value of <code>merge.args</code> is <code>[&quot;{{ .Destination }}&quot;, &quot;{{ .Source }}&quot;, &quot;{{ .Target }}&quot;]</code>.</p>
+default value of <code>merge.args</code> is <code>[&quot;{{ .Destination }}&quot;, &quot;{{ .Source }}&quot;, &quot;{{.Target }}&quot;]</code>. If <code>merge.args</code> does not contain any template arguments then
+<code>{{.Destination }}</code>, <code>{{ .Source }}</code>, and <code>{{ .Target }}</code> will be appended
+automatically.</p>
 <h4 id="merge-examples">
   <code>merge</code> examples
   <a class="anchor" href="#merge-examples">#</a>
@@ -2814,6 +2817,50 @@ accounts).</p>
 {{ (onepasswordDetailsFields &quot;&lt;uuid&gt;&quot; &quot;&lt;vault-uuid&gt;&quot; &quot;&lt;account-name&gt;&quot;).password.value }}
 {{ (onepasswordDetailsFields &quot;&lt;uuid&gt;&quot; &quot;&quot; &quot;&lt;account-name&gt;&quot;).password.value }}
 </code></pre><hr>
+<h3 id="onepassworditemfields-uuid-vault-uuid-account-name">
+  <code>onepasswordItemFields</code> <em>uuid</em> [<em>vault-uuid</em> [<em>account-name</em>]]
+  <a class="anchor" href="#onepassworditemfields-uuid-vault-uuid-account-name">#</a>
+</h3>
+<p><code>onepasswordItemFields</code> returns structured data from
+<a href="https://1password.com/">1Password</a> using the <a href="https://support.1password.com/command-line-getting-started/">1Password
+CLI</a> (<code>op</code>). <em>uuid</em>
+is passed to <code>op get item &lt;uuid&gt;</code>, the output from <code>op</code> is parsed as JSON, and
+each element of <code>details.sections</code> are iterated over and any <code>fields</code> are
+returned as a map indexed by each field&rsquo;s <code>n</code>. For example, give the output from
+<code>op</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+  <span style="color:#f92672">&#34;uuid&#34;</span>: <span style="color:#e6db74">&#34;&lt;uuid&gt;&#34;</span>,
+  <span style="color:#f92672">&#34;details&#34;</span>: {
+    <span style="color:#f92672">&#34;sections&#34;</span>: [
+      {
+        <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;linked items&#34;</span>,
+        <span style="color:#f92672">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;Related Items&#34;</span>
+      },
+      {
+        <span style="color:#f92672">&#34;fields&#34;</span>: [
+          {
+            <span style="color:#f92672">&#34;k&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>,
+            <span style="color:#f92672">&#34;n&#34;</span>: <span style="color:#e6db74">&#34;D4328E0846D2461E8E455D7A07B93397&#34;</span>,
+            <span style="color:#f92672">&#34;t&#34;</span>: <span style="color:#e6db74">&#34;exampleLabel&#34;</span>,
+            <span style="color:#f92672">&#34;v&#34;</span>: <span style="color:#e6db74">&#34;exampleValue&#34;</span>
+          }
+        ],
+        <span style="color:#f92672">&#34;name&#34;</span>: <span style="color:#e6db74">&#34;Section_20E0BD380789477D8904F830BFE8A121&#34;</span>,
+        <span style="color:#f92672">&#34;title&#34;</span>: <span style="color:#e6db74">&#34;&#34;</span>
+      }
+    ]
+  },
+}
+</code></pre></div><p>the return value will be the map:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json">{
+    <span style="color:#f92672">&#34;exampleLabel&#34;</span>: {
+        <span style="color:#f92672">&#34;k&#34;</span>: <span style="color:#e6db74">&#34;string&#34;</span>,
+        <span style="color:#f92672">&#34;n&#34;</span>: <span style="color:#e6db74">&#34;D4328E0846D2461E8E455D7A07B93397&#34;</span>,
+        <span style="color:#f92672">&#34;t&#34;</span>: <span style="color:#e6db74">&#34;exampleLabel&#34;</span>,
+        <span style="color:#f92672">&#34;v&#34;</span>: <span style="color:#e6db74">&#34;exampleValue&#34;</span>
+    }
+}
+</code></pre></div><hr>
 <h3 id="output-name-arg">
   <code>output</code> <em>name</em> [<em>arg</em>&hellip;]
   <a class="anchor" href="#output-name-arg">#</a>
@@ -3154,6 +3201,7 @@ generating the initial config file.</p>
         <li><a href="#onepassword-uuid-vault-uuid-account-name"><code>onepassword</code> <em>uuid</em> [<em>vault-uuid</em> [<em>account-name</em>]]</a></li>
         <li><a href="#onepassworddocument-uuid-vault-uuid-account-name"><code>onepasswordDocument</code> <em>uuid</em> [<em>vault-uuid</em> [<em>account-name</em>]]</a></li>
         <li><a href="#onepassworddetailsfields-uuid-vault-uuid-account-name"><code>onepasswordDetailsFields</code> <em>uuid</em> [<em>vault-uuid</em> [<em>account-name</em>]]</a></li>
+        <li><a href="#onepassworditemfields-uuid-vault-uuid-account-name"><code>onepasswordItemFields</code> <em>uuid</em> [<em>vault-uuid</em> [<em>account-name</em>]]</a></li>
         <li><a href="#output-name-arg"><code>output</code> <em>name</em> [<em>arg</em>&hellip;]</a></li>
         <li><a href="#pass-pass-name"><code>pass</code> <em>pass-name</em></a></li>
         <li><a href="#passraw-pass-name"><code>passRaw</code> <em>pass-name</em></a></li>
