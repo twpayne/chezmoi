@@ -127,20 +127,46 @@ func (c *Config) runMergeCmd(cmd *cobra.Command, args []string, sourceState *che
 		}
 
 		args := make([]string, 0, len(c.Merge.Args))
+		// Work around a regression introduced in 2.1.4
+		// (https://github.com/twpayne/chezmoi/pull/1324) in a user-friendly
+		// way.
+		//
+		// Prior to #1324, the merge.args config option was prepended to the
+		// default order of files to the merge command. Post #1324, the
+		// merge.args config option replaced all arguments to the merge command.
+		//
+		// Work around this by looking for any templates in merge.args. An arg
+		// is considered a template if, after execution as as template, it is
+		// not equal to the original arg.
+		anyTemplateArgs := false
 		for i, arg := range c.Merge.Args {
 			tmpl, err := template.New("merge.args[" + strconv.Itoa(i) + "]").Parse(arg)
 			if err != nil {
 				return err
 			}
+
 			var sb strings.Builder
 			if err := tmpl.Execute(&sb, templateData); err != nil {
 				return err
 			}
 			args = append(args, sb.String())
+
+			// Detect template arguments.
+			if arg != sb.String() {
+				anyTemplateArgs = true
+			}
 		}
+
 		if err := c.persistentState.Close(); err != nil {
 			return err
 		}
+
+		// If there are no template arguments, then append the destination,
+		// source, and target paths as prior to #1324.
+		if !anyTemplateArgs {
+			args = append(args, templateData.Destination, templateData.Source, templateData.Target)
+		}
+
 		if err := c.run(c.DestDirAbsPath, c.Merge.Command, args); err != nil {
 			return fmt.Errorf("%s: %w", targetRelPath, err)
 		}

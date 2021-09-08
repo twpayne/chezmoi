@@ -265,10 +265,6 @@ func newConfig(options ...configOption) (*Config, error) {
 			recursive: true,
 		},
 		Diff: diffCmdConfig{
-			Args: []string{
-				"{{ .Destination }}",
-				"{{ .Target }}",
-			},
 			Exclude: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 		},
@@ -284,11 +280,6 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		Merge: mergeCmdConfig{
 			Command: "vimdiff",
-			Args: []string{
-				"{{ .Destination }}",
-				"{{ .Source }}",
-				"{{ .Target }}",
-			},
 		},
 
 		// Command configurations, not settable in the config file.

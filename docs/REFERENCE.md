@@ -1026,8 +1026,9 @@ If `diff.command` is set then it will be invoked to show individual file
 differences with `diff.args` passed as arguments. Each element of `diff.args` is
 interpreted as a template with the variables `.Destination` and `.Target`
 available corresponding to the path of the file in the source and target state
-respectively. The default value of `diff.args` is `["{{ .Destination }}",
-"{{ .Target }}"]`.
+respectively. The default value of `diff.args` is `["{{ .Destination }}", "{{
+.Target }}"]`. If `diff.args` does not contain any template arguments then `{{
+.Destination }}` and `{{ .Target }}` will be appended automatically.
 
 #### `--pager` *pager*
 
@@ -1380,8 +1381,10 @@ The order of arguments to `merge.command` is controlled by `merge.args`. Each
 argument is interpreted as a template with the variables `.Destination`,
 `.Source`, and `.Target` available corresponding to the path of the file in the
 destination state, the source state, and the target state respectively. The
-default value of `merge.args` is `["{{ .Destination }}", "{{ .Source }}", "{{
-.Target }}"]`.
+default value of `merge.args` is `["{{ .Destination }}", "{{ .Source }}",
+"{{.Target }}"]`. If `merge.args` does not contain any template arguments then
+`{{.Destination }}`, `{{ .Source }}`, and `{{ .Target }}` will be appended
+automatically.
 
 #### `merge` examples
 
