@@ -1026,8 +1026,9 @@ If `diff.command` is set then it will be invoked to show individual file
 differences with `diff.args` passed as arguments. Each element of `diff.args` is
 interpreted as a template with the variables `.Destination` and `.Target`
 available corresponding to the path of the file in the source and target state
-respectively. The default value of `diff.args` is `["{{ .Destination }}",
-"{{ .Target }}"]`.
+respectively. The default value of `diff.args` is `["{{ .Destination }}", "{{
+.Target }}"]`. If `diff.args` does not contain any template arguments then `{{
+.Destination }}` and `{{ .Target }}` will be appended automatically.
 
 #### `--pager` *pager*
 

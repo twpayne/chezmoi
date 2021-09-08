@@ -265,10 +265,6 @@ func newConfig(options ...configOption) (*Config, error) {
 			recursive: true,
 		},
 		Diff: diffCmdConfig{
-			Args: []string{
-				"{{ .Destination }}",
-				"{{ .Target }}",
-			},
 			Exclude: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 		},
