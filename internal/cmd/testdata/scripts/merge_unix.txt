@@ -15,6 +15,11 @@ chhome home2/user
 chezmoi merge $HOME${/}.file
 stdout ^${CHEZMOISOURCEDIR@R}/dot_file\s+${HOME@R}/\.file\s+${WORK@R}/.*/\.file$
 
+# test that chezmoi merge appends the destination, source, and target paths if merge.args does not contain any templates
+chhome home3/user
+chezmoi merge $HOME${/}.file
+stdout ^arg\s+${HOME@R}/\.file\s+${CHEZMOISOURCEDIR@R}/dot_file\s+${WORK@R}/.*/\.file$
+
 -- home/user/.config/chezmoi/chezmoi.toml --
 [merge]
     command = "echo"
@@ -28,4 +33,10 @@ stdout ^${CHEZMOISOURCEDIR@R}/dot_file\s+${HOME@R}/\.file\s+${WORK@R}/.*/\.file$
 -- home2/user/.file --
 # destination
 -- home2/user/.local/share/chezmoi/dot_file --
+# source
+-- home3/user/.config/chezmoi/chezmoi.toml --
+[merge]
+    command = "echo"
+    args = ["arg"]
+-- home3/user/.local/share/chezmoi/dot_file --
 # source

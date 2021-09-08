@@ -280,11 +280,6 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		Merge: mergeCmdConfig{
 			Command: "vimdiff",
-			Args: []string{
-				"{{ .Destination }}",
-				"{{ .Source }}",
-				"{{ .Target }}",
-			},
 		},
 
 		// Command configurations, not settable in the config file.

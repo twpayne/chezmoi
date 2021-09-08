@@ -1381,8 +1381,10 @@ The order of arguments to `merge.command` is controlled by `merge.args`. Each
 argument is interpreted as a template with the variables `.Destination`,
 `.Source`, and `.Target` available corresponding to the path of the file in the
 destination state, the source state, and the target state respectively. The
-default value of `merge.args` is `["{{ .Destination }}", "{{ .Source }}", "{{
-.Target }}"]`.
+default value of `merge.args` is `["{{ .Destination }}", "{{ .Source }}",
+"{{.Target }}"]`. If `merge.args` does not contain any template arguments then
+`{{.Destination }}`, `{{ .Source }}`, and `{{ .Target }}` will be appended
+automatically.
 
 #### `merge` examples
 
