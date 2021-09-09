@@ -95,9 +95,7 @@ func TestParseConfig(t *testing.T) {
 			}, func(fileSystem vfs.FS) {
 				c := newTestConfig(t, fileSystem)
 				require.NoError(t, c.execute([]string{"init"}))
-				actualColor, err := c.Color.Value(c.colorAutoFunc)
-				assert.NoError(t, err)
-				assert.Equal(t, tc.expectedColor, actualColor)
+				assert.Equal(t, tc.expectedColor, c.Color.Value(c.colorAutoFunc))
 			})
 		})
 	}

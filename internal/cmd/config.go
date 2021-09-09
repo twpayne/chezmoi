@@ -541,14 +541,14 @@ func (c *Config) cmdOutput(dirAbsPath chezmoi.AbsPath, name string, args []strin
 	return c.baseSystem.IdempotentCmdOutput(cmd)
 }
 
-func (c *Config) colorAutoFunc() (bool, error) {
+func (c *Config) colorAutoFunc() bool {
 	if _, ok := os.LookupEnv("NO_COLOR"); ok {
-		return false, nil
+		return false
 	}
 	if stdout, ok := c.stdout.(*os.File); ok {
-		return term.IsTerminal(int(stdout.Fd())), nil
+		return term.IsTerminal(int(stdout.Fd()))
 	}
-	return false, nil
+	return false
 }
 
 // defaultConfigFile returns the default config file according to the XDG Base
@@ -810,10 +810,7 @@ func (c *Config) destAbsPathInfos(sourceState *chezmoi.SourceState, args []strin
 func (c *Config) diffFile(path chezmoi.RelPath, fromData []byte, fromMode fs.FileMode, toData []byte, toMode fs.FileMode) error {
 	var sb strings.Builder
 	unifiedEncoder := diff.NewUnifiedEncoder(&sb, diff.DefaultContextLines)
-	color, err := c.Color.Value(c.colorAutoFunc)
-	if err != nil {
-		return err
-	}
+	color := c.Color.Value(c.colorAutoFunc)
 	if color {
 		unifiedEncoder.SetColor(diff.NewColorConfig())
 	}
@@ -1280,10 +1277,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		c.errorf("warning: %s: %v\n", c.configFileAbsPath, err)
 	}
 
-	color, err := c.Color.Value(c.colorAutoFunc)
-	if err != nil {
-		return err
-	}
+	color := c.Color.Value(c.colorAutoFunc)
 	if color {
 		if err := enableVirtualTerminalProcessing(c.stdout); err != nil {
 			return err
@@ -1387,10 +1381,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		// (rather than no encryption) if age is not in $PATH, which leads to
 		// error messages from the builtin age instead of error messages about
 		// encryption not being configured.
-		c.Age.UseBuiltin, err = c.UseBuiltinAge.Value(c.useBuiltinAgeAutoFunc)
-		if err != nil {
-			return err
-		}
+		c.Age.UseBuiltin = c.UseBuiltinAge.Value(c.useBuiltinAgeAutoFunc)
 		c.encryption = &c.Age
 	case "gpg":
 		c.encryption = &c.GPG
@@ -1624,18 +1615,18 @@ func (c *Config) targetRelPathsBySourcePath(sourceState *chezmoi.SourceState, ar
 	return targetRelPaths, nil
 }
 
-func (c *Config) useBuiltinAgeAutoFunc() (bool, error) {
+func (c *Config) useBuiltinAgeAutoFunc() bool {
 	if _, err := exec.LookPath(c.Age.Command); err == nil {
-		return false, nil
+		return false
 	}
-	return true, nil
+	return true
 }
 
-func (c *Config) useBuiltinGitAutoFunc() (bool, error) {
+func (c *Config) useBuiltinGitAutoFunc() bool {
 	if _, err := exec.LookPath(c.Git.Command); err == nil {
-		return false, nil
+		return false
 	}
-	return true, nil
+	return true
 }
 
 func (c *Config) validateData() error {

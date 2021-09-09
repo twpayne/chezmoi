@@ -43,11 +43,8 @@ func (c *Config) newDiffCmd() *cobra.Command {
 func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) error {
 	sb := strings.Builder{}
 	dryRunSystem := chezmoi.NewDryRunSystem(c.destSystem)
-	color, err := c.Color.Value(c.colorAutoFunc)
-	if err != nil {
-		return err
-	}
 	if c.Diff.useBuiltinDiff || c.Diff.Command == "" {
+		color := c.Color.Value(c.colorAutoFunc)
 		gitDiffSystem := chezmoi.NewGitDiffSystem(dryRunSystem, &sb, c.DestDirAbsPath, color)
 		if err := c.applyArgs(cmd.Context(), gitDiffSystem, c.DestDirAbsPath, args, applyArgsOptions{
 			include:   c.Diff.include.Sub(c.Diff.Exclude),
