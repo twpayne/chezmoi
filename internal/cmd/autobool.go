@@ -10,9 +10,8 @@ import (
 )
 
 type autoBool struct {
-	auto     bool
-	value    bool
-	valueErr error
+	auto  bool
+	value bool
 }
 
 // Set implements github.com/spf13/pflag.Value.Set.
@@ -43,12 +42,12 @@ func (b *autoBool) Type() string {
 }
 
 // Value returns b's value, calling b's autoFunc if needed.
-func (b *autoBool) Value(autoFunc func() (bool, error)) (bool, error) {
+func (b *autoBool) Value(autoFunc func() bool) bool {
 	if b.auto {
-		b.value, b.valueErr = autoFunc()
+		b.value = autoFunc()
 		b.auto = false
 	}
-	return b.value, b.valueErr
+	return b.value
 }
 
 // StringOrBoolToAutoBoolHookFunc is a

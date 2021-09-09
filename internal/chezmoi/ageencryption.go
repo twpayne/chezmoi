@@ -1,22 +1,31 @@
 package chezmoi
 
+// FIXME add builtin support for --passphrase
+// FIXME add builtin support for --symmetric
+// FIXME add builtin support for SSH keys if recommended
+
 import (
 	"bytes"
+	"io"
 	"os"
 	"os/exec"
 
+	"filippo.io/age"
+	"filippo.io/age/armor"
 	"github.com/rs/zerolog/log"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )
 
-// An AGEEncryption uses age for encryption and decryption. See
+// An AgeEncryption uses age for encryption and decryption. See
 // https://age-encryption.org.
-type AGEEncryption struct {
+type AgeEncryption struct {
+	UseBuiltin      bool
+	BaseSystem      System
 	Command         string
 	Args            []string
-	Identity        string
-	Identities      []string
+	Identity        AbsPath
+	Identities      []AbsPath
 	Passphrase      bool
 	Recipient       string
 	Recipients      []string
@@ -27,7 +36,11 @@ type AGEEncryption struct {
 }
 
 // Decrypt implements Encyrption.Decrypt.
-func (e *AGEEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
+func (e *AgeEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
+	if e.UseBuiltin {
+		return e.builtinDecrypt(ciphertext)
+	}
+
 	//nolint:gosec
 	cmd := exec.Command(e.Command, append(e.decryptArgs(), e.Args...)...)
 	cmd.Stdin = bytes.NewReader(ciphertext)
@@ -40,7 +53,15 @@ func (e *AGEEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
 }
 
 // DecryptToFile implements Encryption.DecryptToFile.
-func (e *AGEEncryption) DecryptToFile(plaintextAbsPath AbsPath, ciphertext []byte) error {
+func (e *AgeEncryption) DecryptToFile(plaintextAbsPath AbsPath, ciphertext []byte) error {
+	if e.UseBuiltin {
+		plaintext, err := e.builtinDecrypt(ciphertext)
+		if err != nil {
+			return err
+		}
+		return e.BaseSystem.WriteFile(plaintextAbsPath, plaintext, 0o644) // FIXME encrypted executables
+	}
+
 	//nolint:gosec
 	cmd := exec.Command(e.Command, append(append(e.decryptArgs(), "--output", string(plaintextAbsPath)), e.Args...)...)
 	cmd.Stdin = bytes.NewReader(ciphertext)
@@ -49,7 +70,11 @@ func (e *AGEEncryption) DecryptToFile(plaintextAbsPath AbsPath, ciphertext []byt
 }
 
 // Encrypt implements Encryption.Encrypt.
-func (e *AGEEncryption) Encrypt(plaintext []byte) ([]byte, error) {
+func (e *AgeEncryption) Encrypt(plaintext []byte) ([]byte, error) {
+	if e.UseBuiltin {
+		return e.builtinEncrypt(plaintext)
+	}
+
 	//nolint:gosec
 	cmd := exec.Command(e.Command, append(e.encryptArgs(), e.Args...)...)
 	cmd.Stdin = bytes.NewReader(plaintext)
@@ -62,7 +87,15 @@ func (e *AGEEncryption) Encrypt(plaintext []byte) ([]byte, error) {
 }
 
 // EncryptFile implements Encryption.EncryptFile.
-func (e *AGEEncryption) EncryptFile(plaintextAbsPath AbsPath) ([]byte, error) {
+func (e *AgeEncryption) EncryptFile(plaintextAbsPath AbsPath) ([]byte, error) {
+	if e.UseBuiltin {
+		plaintext, err := e.BaseSystem.ReadFile(plaintextAbsPath)
+		if err != nil {
+			return nil, err
+		}
+		return e.builtinEncrypt(plaintext)
+	}
+
 	//nolint:gosec
 	cmd := exec.Command(e.Command, append(append(e.encryptArgs(), e.Args...), string(plaintextAbsPath))...)
 	cmd.Stderr = os.Stderr
@@ -70,12 +103,96 @@ func (e *AGEEncryption) EncryptFile(plaintextAbsPath AbsPath) ([]byte, error) {
 }
 
 // EncryptedSuffix implements Encryption.EncryptedSuffix.
-func (e *AGEEncryption) EncryptedSuffix() string {
+func (e *AgeEncryption) EncryptedSuffix() string {
 	return e.Suffix
 }
 
+func (e *AgeEncryption) builtinDecrypt(ciphertext []byte) ([]byte, error) {
+	identities, err := e.builtinIdentities()
+	if err != nil {
+		return nil, err
+	}
+	r, err := age.Decrypt(armor.NewReader(bytes.NewReader(ciphertext)), identities...)
+	if err != nil {
+		return nil, err
+	}
+	w := &bytes.Buffer{}
+	if _, err = io.Copy(w, r); err != nil {
+		return nil, err
+	}
+	return w.Bytes(), err
+}
+
+func (e *AgeEncryption) builtinEncrypt(plaintext []byte) ([]byte, error) {
+	recipients, err := e.builtinRecipients()
+	if err != nil {
+		return nil, err
+	}
+	output := &bytes.Buffer{}
+	armorWriter := armor.NewWriter(output)
+	writer, err := age.Encrypt(armorWriter, recipients...)
+	if err != nil {
+		return nil, err
+	}
+	if _, err := io.Copy(writer, bytes.NewReader(plaintext)); err != nil {
+		return nil, err
+	}
+	if err := writer.Close(); err != nil {
+		return nil, err
+	}
+	if err := armorWriter.Close(); err != nil {
+		return nil, err
+	}
+	return output.Bytes(), nil
+}
+
+func (e *AgeEncryption) builtinIdentities() ([]age.Identity, error) {
+	var identities []age.Identity
+	if e.Identity != "" {
+		parsedIdentities, err := parseIdentityFile(e.Identity)
+		if err != nil {
+			return nil, err
+		}
+		identities = append(identities, parsedIdentities...)
+	}
+	for _, identityAbsPath := range e.Identities {
+		parsedIdentities, err := parseIdentityFile(identityAbsPath)
+		if err != nil {
+			return nil, err
+		}
+		identities = append(identities, parsedIdentities...)
+	}
+	return identities, nil
+}
+
+func (e *AgeEncryption) builtinRecipients() ([]age.Recipient, error) {
+	recipients := make([]age.Recipient, 0, 1+len(e.Recipients))
+	if e.Recipient != "" {
+		parsedRecipient, err := age.ParseX25519Recipient(e.Recipient)
+		if err != nil {
+			return nil, err
+		}
+		recipients = append(recipients, parsedRecipient)
+	}
+	for _, recipient := range e.Recipients {
+		parsedRecipient, err := age.ParseX25519Recipient(recipient)
+		if err != nil {
+			return nil, err
+		}
+		recipients = append(recipients, parsedRecipient)
+	}
+	for _, recipientsFile := range e.RecipientsFiles {
+		parsedRecipients, err := parseRecipientsFile(recipientsFile)
+		if err != nil {
+			return nil, err
+		}
+		recipients = append(recipients, parsedRecipients...)
+	}
+	return recipients, nil
+}
+
 // decryptArgs returns the arguments for decryption.
-func (e *AGEEncryption) decryptArgs() []string {
+func (e *AgeEncryption) decryptArgs() []string {
 	var args []string
 	args = append(args, "--decrypt")
 	if !e.Passphrase {
@@ -85,7 +202,7 @@ func (e *AGEEncryption) decryptArgs() []string {
 }
 
 // encryptArgs returns the arguments for encryption.
-func (e *AGEEncryption) encryptArgs() []string {
+func (e *AgeEncryption) encryptArgs() []string {
 	var args []string
 	args = append(args,
 		"--armor",
@@ -113,13 +230,31 @@ func (e *AGEEncryption) encryptArgs() []string {
 	return args
 }
 
-func (e *AGEEncryption) identityArgs() []string {
+func (e *AgeEncryption) identityArgs() []string {
 	args := make([]string, 0, 2+2*len(e.Identities))
 	if e.Identity != "" {
-		args = append(args, "--identity", e.Identity)
+		args = append(args, "--identity", string(e.Identity))
 	}
 	for _, identity := range e.Identities {
-		args = append(args, "--identity", identity)
+		args = append(args, "--identity", string(identity))
 	}
 	return args
+}
+
+func parseIdentityFile(identityFile AbsPath) ([]age.Identity, error) {
+	file, err := os.Open(string(identityFile))
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+	return age.ParseIdentities(file)
+}
+
+func parseRecipientsFile(recipientsFile AbsPath) ([]age.Recipient, error) {
+	file, err := os.Open(string(recipientsFile))
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+	return age.ParseRecipients(file)
 }

@@ -42,10 +42,7 @@ func (c *Config) newUpdateCmd() *cobra.Command {
 }
 
 func (c *Config) runUpdateCmd(cmd *cobra.Command, args []string) error {
-	switch useBuiltinGit, err := c.UseBuiltinGit.Value(c.useBuiltinGitAutoFunc); {
-	case err != nil:
-		return err
-	case useBuiltinGit:
+	if c.UseBuiltinGit.Value(c.useBuiltinGitAutoFunc) {
 		rawSourceAbsPath, err := c.baseSystem.RawPath(c.SourceDirAbsPath)
 		if err != nil {
 			return err
@@ -63,7 +60,7 @@ func (c *Config) runUpdateCmd(cmd *cobra.Command, args []string) error {
 		}); err != nil && !errors.Is(err, git.NoErrAlreadyUpToDate) {
 			return err
 		}
-	default:
+	} else {
 		args := []string{
 			"pull",
 			"--rebase",

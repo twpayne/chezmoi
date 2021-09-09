@@ -53,11 +53,12 @@ func TestScript(t *testing.T) {
 			"httpd":          cmdHTTPD,
 			"issymlink":      cmdIsSymlink,
 			"mkfile":         cmdMkFile,
-			"mkageconfig":    cmdMkAGEConfig,
+			"mkageconfig":    cmdMkAgeConfig,
 			"mkgitconfig":    cmdMkGitConfig,
 			"mkgpgconfig":    cmdMkGPGConfig,
 			"mkhomedir":      cmdMkHomeDir,
 			"mksourcedir":    cmdMkSourceDir,
+			"prependline":    cmdPrependLine,
 			"readlink":       cmdReadLink,
 			"removeline":     cmdRemoveLine,
 			"rmfinalnewline": cmdRmFinalNewline,
@@ -229,8 +230,8 @@ func cmdMkFile(ts *testscript.TestScript, neg bool, args []string) {
 	}
 }
 
-// cmdMkAGEConfig creates a AGE key and a chezmoi configuration file.
-func cmdMkAGEConfig(ts *testscript.TestScript, neg bool, args []string) {
+// cmdMkAgeConfig creates an age key and a chezmoi configuration file.
+func cmdMkAgeConfig(ts *testscript.TestScript, neg bool, args []string) {
 	if neg {
 		ts.Fatalf("unsupported: ! mkageconfig")
 	}
@@ -241,7 +242,7 @@ func cmdMkAGEConfig(ts *testscript.TestScript, neg bool, args []string) {
 	homeDir := ts.Getenv("HOME")
 	ts.Check(os.MkdirAll(homeDir, 0o777))
 	privateKeyFile := filepath.Join(homeDir, "key.txt")
-	publicKey, _, err := chezmoitest.AGEGenerateKey(ts.MkAbs(privateKeyFile))
+	publicKey, _, err := chezmoitest.AgeGenerateKey(ts.MkAbs(privateKeyFile))
 	ts.Check(err)
 	configFile := filepath.Join(homeDir, ".config", "chezmoi", "chezmoi.toml")
 	ts.Check(os.MkdirAll(filepath.Dir(configFile), 0o777))
@@ -413,6 +414,21 @@ func cmdMkSourceDir(ts *testscript.TestScript, neg bool, args []string) {
 	if err != nil {
 		ts.Fatalf("mksourcedir: %v", err)
 	}
+}
+
+// cmdPrependLine prepends lines to a file.
+func cmdPrependLine(ts *testscript.TestScript, neg bool, args []string) {
+	if neg {
+		ts.Fatalf("unsupported: ! prependline")
+	}
+	if len(args) != 2 {
+		ts.Fatalf("usage: prependline file line")
+	}
+	filename := ts.MkAbs(args[0])
+	data, err := os.ReadFile(filename)
+	ts.Check(err)
+	data = append(append([]byte(args[1]), '\n'), data...)
+	ts.Check(os.WriteFile(filename, data, 0o666))
 }
 
 // cmdReadLink reads a symlink and verifies that its target is as expected.
