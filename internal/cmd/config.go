@@ -929,6 +929,42 @@ func (c *Config) execute(args []string) error {
 	return rootCmd.Execute()
 }
 
+// filterInput reads from args (or the standard input if args is empty),
+// transforms it with f, and writes the output.
+func (c *Config) filterInput(args []string, f func([]byte) ([]byte, error)) error {
+	if len(args) == 0 {
+		input, err := io.ReadAll(c.stdin)
+		if err != nil {
+			return err
+		}
+		output, err := f(input)
+		if err != nil {
+			return err
+		}
+		return c.writeOutput(output)
+	}
+
+	for _, arg := range args {
+		argAbsPath, err := chezmoi.NewAbsPathFromExtPath(arg, c.homeDirAbsPath)
+		if err != nil {
+			return err
+		}
+		input, err := c.baseSystem.ReadFile(argAbsPath)
+		if err != nil {
+			return err
+		}
+		output, err := f(input)
+		if err != nil {
+			return err
+		}
+		if err := c.writeOutput(output); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (c *Config) findConfigTemplate() (chezmoi.RelPath, string, []byte, error) {
 	for _, ext := range viper.SupportedExts {
 		filename := chezmoi.RelPath(chezmoi.Prefix + "." + ext + chezmoi.TemplateSuffix)
@@ -1078,12 +1114,14 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newChattrCmd(),
 		c.newCompletionCmd(),
 		c.newDataCmd(),
+		c.newDecryptCommand(),
 		c.newDiffCmd(),
 		c.newDocsCmd(),
 		c.newDoctorCmd(),
 		c.newDumpCmd(),
 		c.newEditCmd(),
 		c.newEditConfigCmd(),
+		c.newEncryptCommand(),
 		c.newExecuteTemplateCmd(),
 		c.newForgetCmd(),
 		c.newGitCmd(),
