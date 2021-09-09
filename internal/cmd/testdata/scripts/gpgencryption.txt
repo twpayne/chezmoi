@@ -27,12 +27,12 @@ chezmoi cat $HOME${/}.encrypted
 cmp stdout golden/.encrypted
 
 # test that chezmoi decrypt decrypts stdin
-stdin ${CHEZMOISOURCEDIR}${/}encrypted_dot_encrypted.asc
+stdin $CHEZMOISOURCEDIR${/}encrypted_dot_encrypted.asc
 chezmoi decrypt
 cmp stdout golden/.encrypted
 
 # test that chezmoi decrypt decrypts a file
-chezmoi decrypt ${CHEZMOISOURCEDIR}${/}encrypted_dot_encrypted.asc
+chezmoi decrypt $CHEZMOISOURCEDIR${/}encrypted_dot_encrypted.asc
 cmp stdout golden/.encrypted
 
 # test chezmoi encrypt/chezmoi decrypt round trip

@@ -58,6 +58,7 @@ func TestScript(t *testing.T) {
 			"mkgpgconfig":    cmdMkGPGConfig,
 			"mkhomedir":      cmdMkHomeDir,
 			"mksourcedir":    cmdMkSourceDir,
+			"prependline":    cmdPrependLine,
 			"readlink":       cmdReadLink,
 			"removeline":     cmdRemoveLine,
 			"rmfinalnewline": cmdRmFinalNewline,
@@ -413,6 +414,21 @@ func cmdMkSourceDir(ts *testscript.TestScript, neg bool, args []string) {
 	if err != nil {
 		ts.Fatalf("mksourcedir: %v", err)
 	}
+}
+
+// cmdPrependLine prepends lines to a file.
+func cmdPrependLine(ts *testscript.TestScript, neg bool, args []string) {
+	if neg {
+		ts.Fatalf("unsupported: ! prependline")
+	}
+	if len(args) != 2 {
+		ts.Fatalf("usage: prependline file line")
+	}
+	filename := ts.MkAbs(args[0])
+	data, err := os.ReadFile(filename)
+	ts.Check(err)
+	data = append(append([]byte(args[1]), '\n'), data...)
+	ts.Check(os.WriteFile(filename, data, 0o666))
 }
 
 // cmdReadLink reads a symlink and verifies that its target is as expected.

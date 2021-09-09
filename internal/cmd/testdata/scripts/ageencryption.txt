@@ -8,6 +8,7 @@ cp golden/.encrypted $HOME
 chezmoi add --encrypt $HOME${/}.encrypted
 exists $CHEZMOISOURCEDIR/encrypted_dot_encrypted.age
 ! grep plaintext $CHEZMOISOURCEDIR/encrypted_dot_encrypted.age
+cp $CHEZMOISOURCEDIR/encrypted_dot_encrypted.age golden
 
 # test that chezmoi apply decrypts
 rm $HOME/.encrypted
@@ -27,12 +28,12 @@ chezmoi cat $HOME${/}.encrypted
 cmp stdout golden/.encrypted
 
 # test that chezmoi decrypt decrypts stdin
-stdin ${CHEZMOISOURCEDIR}${/}encrypted_dot_encrypted.age
+stdin $CHEZMOISOURCEDIR${/}encrypted_dot_encrypted.age
 chezmoi decrypt
 cmp stdout golden/.encrypted
 
 # test that chezmoi decrypt decrypts a file
-chezmoi decrypt ${CHEZMOISOURCEDIR}${/}encrypted_dot_encrypted.age
+chezmoi decrypt $CHEZMOISOURCEDIR${/}encrypted_dot_encrypted.age
 cmp stdout golden/.encrypted
 
 # test chezmoi encrypt/chezmoi decrypt round trip
@@ -40,6 +41,15 @@ chezmoi encrypt golden/.encrypted
 stdout '-----BEGIN AGE ENCRYPTED FILE-----'
 stdin stdout
 chezmoi decrypt
+cmp stdout golden/.encrypted
+
+# test that chezmoi --use-builtin-age=true decrypt decrypts a file encrypted by age
+chezmoi --use-builtin-age=true decrypt $CHEZMOISOURCEDIR${/}encrypted_dot_encrypted.age
+cmp stdout golden/.encrypted
+
+# test that chezmoi --use-builtin-age=true encrypts a file than age then decrypts
+chezmoi --use-builtin-age=true --output=$WORK${/}encrypted.age encrypt golden/.encrypted
+chezmoi --use-builtin-age=false decrypt $WORK${/}encrypted.age
 cmp stdout golden/.encrypted
 
 # test that chezmoi edit --apply transparently decrypts and re-encrypts

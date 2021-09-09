@@ -65,6 +65,7 @@ type Config struct {
 	SourceDirAbsPath chezmoi.AbsPath                 `mapstructure:"sourceDir"`
 	Template         templateConfig                  `mapstructure:"template"`
 	Umask            fs.FileMode                     `mapstructure:"umask"`
+	UseBuiltinAge    autoBool                        `mapstructure:"useBuiltinAge"`
 	UseBuiltinGit    autoBool                        `mapstructure:"useBuiltinGit"`
 
 	// Global configuration, not settable in the config file.
@@ -221,6 +222,9 @@ func newConfig(options ...configOption) (*Config, error) {
 			Options: chezmoi.DefaultTemplateOptions,
 		},
 		Umask: chezmoi.Umask,
+		UseBuiltinAge: autoBool{
+			auto: true,
+		},
 		UseBuiltinGit: autoBool{
 			auto: true,
 		},
@@ -1062,6 +1066,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.BoolVar(&c.Safe, "safe", c.Safe, "Safely replace files and symlinks")
 	persistentFlags.VarP(&c.SourceDirAbsPath, "source", "S", "Set source directory")
 	persistentFlags.Var(&c.Mode, "mode", "Mode")
+	persistentFlags.Var(&c.UseBuiltinAge, "use-builtin-age", "Use builtin age")
 	persistentFlags.Var(&c.UseBuiltinGit, "use-builtin-git", "Use builtin git")
 	for _, key := range []string{
 		"color",
@@ -1377,6 +1382,15 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 
 	switch c.Encryption {
 	case "age":
+		// Only use builtin age encryption if age encryption is explicitly
+		// specified. Otherwise, chezmoi would fall back to using age encryption
+		// (rather than no encryption) if age is not in $PATH, which leads to
+		// error messages from the builtin age instead of error messages about
+		// encryption not being configured.
+		c.Age.UseBuiltin, err = c.UseBuiltinAge.Value(c.useBuiltinAgeAutoFunc)
+		if err != nil {
+			return err
+		}
 		c.encryption = &c.Age
 	case "gpg":
 		c.encryption = &c.GPG
@@ -1608,6 +1622,13 @@ func (c *Config) targetRelPathsBySourcePath(sourceState *chezmoi.SourceState, ar
 		targetRelPaths = append(targetRelPaths, targetRelPath)
 	}
 	return targetRelPaths, nil
+}
+
+func (c *Config) useBuiltinAgeAutoFunc() (bool, error) {
+	if _, err := exec.LookPath(c.Age.Command); err == nil {
+		return false, nil
+	}
+	return true, nil
 }
 
 func (c *Config) useBuiltinGitAutoFunc() (bool, error) {

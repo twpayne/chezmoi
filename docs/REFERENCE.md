@@ -19,6 +19,7 @@ Manage your dotfiles across multiple machines, securely.
   * [`-o`, `--output` *filename*](#-o---output-filename)
   * [`-R`, `--refresh-externals`](#-r---refresh-externals)
   * [`-S`, `--source` *directory*](#-s---source-directory)
+  * [`--use-builtin-age` *value*](#--use-builtin-age-value)
   * [`--use-builtin-git` *value*](#--use-builtin-git-value)
   * [`-v`, `--verbose`](#-v---verbose)
   * [`--version`](#--version)
@@ -218,6 +219,16 @@ Refresh externals cache. See `.chezmoiexternal.<format>`.
 ### `-S`, `--source` *directory*
 
 Use *directory* as the source directory.
+
+### `--use-builtin-age` *value*
+
+Use chezmoi's builtin [age encryption](https://age-encryption.org) instead of an
+external `age` command. *value* can be `on`, `off`, `auto`, or any boolean-like
+value recognized by `parseBool`. The default is `auto` which will only use the
+builtin age if `age.command` cannot be found in `$PATH`.
+
+The builtin `age` command does not support passphrases, symmetric encryption, or
+the use of SSH keys.
 
 ### `--use-builtin-git` *value*
 

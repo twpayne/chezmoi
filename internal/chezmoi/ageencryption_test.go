@@ -28,7 +28,7 @@ func TestAgeEncryption(t *testing.T) {
 
 	ageEncryption := &AgeEncryption{
 		Command:   command,
-		Identity:  privateKeyFile,
+		Identity:  AbsPath(privateKeyFile),
 		Recipient: publicKey,
 	}
 
