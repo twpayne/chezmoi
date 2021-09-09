@@ -64,6 +64,7 @@ Manage your dotfiles across multiple machines, securely.
   * [`dump` [*target*...]](#dump-target)
   * [`edit` [*target*...]](#edit-target)
   * [`edit-config`](#edit-config)
+  * [`encrypt` [*file*...]](#encrypt-file)
   * [`execute-template` [*template*...]](#execute-template-template)
   * [`forget` *targets*](#forget-targets)
   * [`git` [*arg*...]](#git-arg)
@@ -1146,6 +1147,14 @@ Edit the configuration file.
 ```console
 $ chezmoi edit-config
 ```
+
+---
+
+### `encrypt` [*file*...]
+
+Encrypt *file*s using chezmoi's configured encryption. If no files are given,
+encrypt the standard input. The encrypted result is written to the standard
+output or a file if the `--output` flag is set.
 
 ---
 
