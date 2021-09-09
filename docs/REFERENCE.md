@@ -57,6 +57,7 @@ Manage your dotfiles across multiple machines, securely.
   * [`chattr` *attributes* *target*...](#chattr-attributes-target)
   * [`completion` *shell*](#completion-shell)
   * [`data`](#data)
+  * [`decrypt` [*file*...]](#decrypt-file)
   * [`diff` [*target*...]](#diff-target)
   * [`docs` [*regexp*]](#docs-regexp)
   * [`doctor`](#doctor)
@@ -1011,6 +1012,14 @@ Set the output format.
 $ chezmoi data
 $ chezmoi data --format=yaml
 ```
+
+---
+
+### `decrypt` [*file*...]
+
+Decrypt *file*s using chezmoi's configured encryption. If no files are given,
+decrypt the standard input. The decrypted result is written to the standard
+output or a file if the `--output` flag is set.
 
 ---
 

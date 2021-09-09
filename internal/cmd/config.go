@@ -1078,6 +1078,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newChattrCmd(),
 		c.newCompletionCmd(),
 		c.newDataCmd(),
+		c.newDecryptCommand(),
 		c.newDiffCmd(),
 		c.newDocsCmd(),
 		c.newDoctorCmd(),

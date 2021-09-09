@@ -26,6 +26,15 @@ removeline $CHEZMOICONFIGDIR/chezmoi.toml 'encryption = "age"'
 chezmoi cat $HOME${/}.encrypted
 cmp stdout golden/.encrypted
 
+# test that chezmoi decrypt decrypts stdin
+stdin ${CHEZMOISOURCEDIR}${/}encrypted_dot_encrypted.age
+chezmoi decrypt
+cmp stdout golden/.encrypted
+
+# test that chezmoi decrypt decrypts a file
+chezmoi decrypt ${CHEZMOISOURCEDIR}${/}encrypted_dot_encrypted.age
+cmp stdout golden/.encrypted
+
 # test that chezmoi edit --apply transparently decrypts and re-encrypts
 chezmoi edit --apply --force $HOME${/}.encrypted
 grep '# edited' $HOME/.encrypted
