@@ -23,7 +23,7 @@ import (
 
 	"github.com/coreos/go-semver/semver"
 	"github.com/rs/zerolog/log"
-	vfs "github.com/twpayne/go-vfs/v3"
+	vfs "github.com/twpayne/go-vfs/v4"
 	"go.uber.org/multierr"
 )
 

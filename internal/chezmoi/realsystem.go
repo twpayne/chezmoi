@@ -9,7 +9,7 @@ import (
 
 	"github.com/bmatcuk/doublestar/v4"
 	"github.com/rs/zerolog/log"
-	vfs "github.com/twpayne/go-vfs/v3"
+	vfs "github.com/twpayne/go-vfs/v4"
 	"go.uber.org/multierr"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"

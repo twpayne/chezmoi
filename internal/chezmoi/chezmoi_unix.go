@@ -10,7 +10,7 @@ import (
 	"regexp"
 	"strings"
 
-	vfs "github.com/twpayne/go-vfs/v3"
+	vfs "github.com/twpayne/go-vfs/v4"
 	"golang.org/x/sys/unix"
 )
 

@@ -15,8 +15,8 @@ import (
 
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/require"
-	"github.com/twpayne/go-vfs/v3"
-	"github.com/twpayne/go-vfs/v3/vfst"
+	"github.com/twpayne/go-vfs/v4"
+	"github.com/twpayne/go-vfs/v4/vfst"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )

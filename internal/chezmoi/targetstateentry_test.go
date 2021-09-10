@@ -8,8 +8,8 @@ import (
 
 	"github.com/muesli/combinator"
 	"github.com/stretchr/testify/require"
-	vfs "github.com/twpayne/go-vfs/v3"
-	"github.com/twpayne/go-vfs/v3/vfst"
+	vfs "github.com/twpayne/go-vfs/v4"
+	"github.com/twpayne/go-vfs/v4/vfst"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )

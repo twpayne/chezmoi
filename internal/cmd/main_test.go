@@ -19,8 +19,8 @@ import (
 	"time"
 
 	"github.com/rogpeppe/go-internal/testscript"
-	"github.com/twpayne/go-vfs/v3"
-	"github.com/twpayne/go-vfs/v3/vfst"
+	"github.com/twpayne/go-vfs/v4"
+	"github.com/twpayne/go-vfs/v4/vfst"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 	"github.com/twpayne/chezmoi/v2/internal/cmd"

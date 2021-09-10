@@ -9,7 +9,7 @@ import (
 	"strings"
 	"text/template"
 
-	vfs "github.com/twpayne/go-vfs/v3"
+	vfs "github.com/twpayne/go-vfs/v4"
 )
 
 // An ExternalDiffSystem is a DiffSystem that uses an external diff tool.

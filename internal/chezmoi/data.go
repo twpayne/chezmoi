@@ -12,7 +12,7 @@ import (
 	"strings"
 	"unicode"
 
-	"github.com/twpayne/go-vfs/v3"
+	"github.com/twpayne/go-vfs/v4"
 )
 
 // Kernel returns the kernel information parsed from /proc/sys/kernel.

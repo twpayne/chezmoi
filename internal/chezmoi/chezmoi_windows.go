@@ -5,7 +5,7 @@ import (
 	"io/fs"
 	"unicode/utf16"
 
-	vfs "github.com/twpayne/go-vfs/v3"
+	vfs "github.com/twpayne/go-vfs/v4"
 	"golang.org/x/sys/windows"
 )
 

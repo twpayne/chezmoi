@@ -34,7 +34,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/twpayne/go-shell"
-	"github.com/twpayne/go-vfs/v3"
+	"github.com/twpayne/go-vfs/v4"
 	"github.com/twpayne/go-xdg/v6"
 	"golang.org/x/term"
 

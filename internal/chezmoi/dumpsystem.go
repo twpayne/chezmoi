@@ -3,7 +3,7 @@ package chezmoi
 import (
 	"io/fs"
 
-	vfs "github.com/twpayne/go-vfs/v3"
+	vfs "github.com/twpayne/go-vfs/v4"
 )
 
 // A dataType is a data type.
