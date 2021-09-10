@@ -16,7 +16,7 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"github.com/twpayne/go-shell"
-	"github.com/twpayne/go-vfs/v3"
+	"github.com/twpayne/go-vfs/v4"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"

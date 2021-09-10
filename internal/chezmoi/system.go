@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"path/filepath"
 
-	vfs "github.com/twpayne/go-vfs/v3"
+	vfs "github.com/twpayne/go-vfs/v4"
 )
 
 // A System reads from and writes to a filesystem, executes idempotent commands,

@@ -4,7 +4,7 @@ import (
 	"io/fs"
 	"os/exec"
 
-	vfs "github.com/twpayne/go-vfs/v3"
+	vfs "github.com/twpayne/go-vfs/v4"
 )
 
 // DryRunSystem is an System that reads from, but does not write to, to

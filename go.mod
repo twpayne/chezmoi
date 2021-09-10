@@ -15,9 +15,9 @@ require (
 	github.com/coreos/go-semver v0.3.0
 	github.com/danieljoos/wincred v1.1.2 // indirect
 	github.com/go-git/go-git/v5 v5.4.2
-	github.com/google/go-github/v38 v38.1.0
+	github.com/google/go-github/v39 v39.0.0
 	github.com/google/go-querystring v1.1.0 // indirect
-	github.com/google/gops v0.3.19
+	github.com/google/gops v0.3.20
 	github.com/google/renameio v1.0.1
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20200217142428-fce0ec30dd00 // indirect
@@ -29,9 +29,9 @@ require (
 	github.com/muesli/combinator v0.3.0
 	github.com/muesli/reflow v0.3.0 // indirect
 	github.com/muesli/termenv v0.9.0 // indirect
-	github.com/pelletier/go-toml v1.9.3
+	github.com/pelletier/go-toml v1.9.4
 	github.com/rogpeppe/go-internal v1.8.0
-	github.com/rs/zerolog v1.24.0
+	github.com/rs/zerolog v1.25.0
 	github.com/sergi/go-diff v1.1.0
 	github.com/smartystreets/assertions v1.2.0 // indirect
 	github.com/spf13/afero v1.6.0
@@ -40,7 +40,7 @@ require (
 	github.com/spf13/viper v1.8.1
 	github.com/stretchr/testify v1.7.0
 	github.com/twpayne/go-shell v0.3.0
-	github.com/twpayne/go-vfs/v3 v3.0.0
+	github.com/twpayne/go-vfs/v4 v4.0.0
 	github.com/twpayne/go-xdg/v6 v6.0.0
 	github.com/xanzy/ssh-agent v0.3.1 // indirect
 	github.com/yuin/goldmark v1.4.0 // indirect
@@ -48,9 +48,9 @@ require (
 	go.etcd.io/bbolt v1.3.6
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.7.0
-	golang.org/x/net v0.0.0-20210825183410-e898025ed96a // indirect
+	golang.org/x/net v0.0.0-20210908191846-a5e095526f91 // indirect
 	golang.org/x/oauth2 v0.0.0-20210819190943-2bc19b11175f
-	golang.org/x/sys v0.0.0-20210903071746-97244b99971b
+	golang.org/x/sys v0.0.0-20210909193231-528a39cd75f3
 	golang.org/x/term v0.0.0-20210615171337-6886f2dfbf5b
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0
@@ -72,7 +72,7 @@ require (
 	github.com/fsnotify/fsnotify v1.5.1 // indirect
 	github.com/go-git/gcfg v1.5.0 // indirect
 	github.com/go-git/go-billy/v5 v5.3.1 // indirect
-	github.com/godbus/dbus/v5 v5.0.4 // indirect
+	github.com/godbus/dbus/v5 v5.0.5 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/gorilla/css v1.0.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
@@ -81,7 +81,7 @@ require (
 	github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
 	github.com/magiconair/properties v1.8.5 // indirect
-	github.com/mattn/go-isatty v0.0.13 // indirect
+	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/mattn/go-runewidth v0.0.13 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
@@ -100,7 +100,7 @@ require (
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	gopkg.in/errgo.v2 v2.1.0 // indirect
-	gopkg.in/ini.v1 v1.62.0 // indirect
+	gopkg.in/ini.v1 v1.63.0 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 )
 

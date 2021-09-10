@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/twpayne/go-vfs/v3"
-	"github.com/twpayne/go-vfs/v3/vfst"
+	"github.com/twpayne/go-vfs/v4"
+	"github.com/twpayne/go-vfs/v4/vfst"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )

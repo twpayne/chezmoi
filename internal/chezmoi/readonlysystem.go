@@ -4,7 +4,7 @@ import (
 	"io/fs"
 	"os/exec"
 
-	vfs "github.com/twpayne/go-vfs/v3"
+	vfs "github.com/twpayne/go-vfs/v4"
 )
 
 // A ReadOnlySystem is a system that may only be read from.

@@ -6,7 +6,7 @@ import (
 	"sort"
 
 	"github.com/bmatcuk/doublestar/v4"
-	vfs "github.com/twpayne/go-vfs/v3"
+	vfs "github.com/twpayne/go-vfs/v4"
 )
 
 // A stringSet is a set of strings.
