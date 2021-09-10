@@ -41,19 +41,19 @@ jobs:
       run: |
         go run . --version
     - name: Install age (Linux/macOS)
-      if: runner.os == 'Linux' || runner.os == 'macOS' # FIXME add Windows
+      if: runner.os == 'Linux' || runner.os == 'macOS'
       run: |
         cd $(mktemp -d)
         goos=$(uname -s | tr '[:upper:]' '[:lower:]')
         curl -fsSL https://dl.filippo.io/age/v${AGE_VERSION}?for=${goos}/amd64 | tar xzf -
         sudo install -m 755 age/age /usr/local/bin
         sudo install -m 755 age/age-keygen /usr/local/bin
-    - name: Install gpg4win (Windows)
+    - name: Install age and gpg4win (Windows)
       if: runner.os == 'Windows'
       run: |
         $env:PATH = "C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\ProgramData\chocolatey\bin"
         [Environment]::SetEnvironmentVariable("Path", $env:PATH, "Machine")
-        choco install --yes gpg4win
+        choco install --yes age.portable gpg4win
         echo "C:\Program Files (x86)\GnuPG\bin" >> $env:GITHUB_PATH
     - name: Test (umask 022)
       if: runner.os != 'Windows'
