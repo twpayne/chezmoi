@@ -1,5 +1,5 @@
 GO?=go
-GOLANGCI_LINT_VERSION=1.42.1
+GOLANGCI_LINT_VERSION=$(shell python3 -c "import yaml; print(yaml.safe_load(open('.github/workflows/main.yml', 'r'))['env']['GOLANGCI_LINT_VERSION'])")
 
 .PHONY: default
 default: run build test lint format

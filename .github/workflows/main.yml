@@ -6,6 +6,10 @@ on:
     - master
     tags:
     - v*
+env:
+  AGE_VERSION: 1.0.0
+  GO_VERSION: 1.17.1
+  GOLANGCI_LINT_VERSION: 1.42.1
 jobs:
   test:
     strategy:
@@ -15,14 +19,12 @@ jobs:
         - macos-latest
         - ubuntu-18.04
         - windows-latest
-    env:
-      AGE_VERSION: v1.0.0
     runs-on: ${{ matrix.os }}
     steps:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: 1.17.1
+        go-version: ${{ env.GO_VERSION }}
     - name: Checkout
       uses: actions/checkout@v2
     - name: Cache Go modules
@@ -39,19 +41,19 @@ jobs:
       run: |
         go run . --version
     - name: Install age (Linux/macOS)
-      if: runner.os == 'Linux' || runner.os == 'macOS' # FIXME add Windows
+      if: runner.os == 'Linux' || runner.os == 'macOS'
       run: |
         cd $(mktemp -d)
         goos=$(uname -s | tr '[:upper:]' '[:lower:]')
-        curl -fsSL https://dl.filippo.io/age/${AGE_VERSION}?for=${goos}/amd64 | tar xzf -
+        curl -fsSL https://dl.filippo.io/age/v${AGE_VERSION}?for=${goos}/amd64 | tar xzf -
         sudo install -m 755 age/age /usr/local/bin
         sudo install -m 755 age/age-keygen /usr/local/bin
-    - name: Install gpg4win (Windows)
+    - name: Install age and gpg4win (Windows)
       if: runner.os == 'Windows'
       run: |
         $env:PATH = "C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\ProgramData\chocolatey\bin"
         [Environment]::SetEnvironmentVariable("Path", $env:PATH, "Machine")
-        choco install --yes gpg4win
+        choco install --yes age.portable gpg4win
         echo "C:\Program Files (x86)\GnuPG\bin" >> $env:GITHUB_PATH
     - name: Test (umask 022)
       if: runner.os != 'Windows'
@@ -72,7 +74,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: 1.17.1
+        go-version: ${{ env.GO_VERSION }}
     - name: Checkout
       uses: actions/checkout@v2
       with:
@@ -128,7 +130,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: 1.17.1
+        go-version: ${{ env.GO_VERSION }}
     - name: Checkout
       uses: actions/checkout@v2
     - name: Cache Go modules
@@ -148,7 +150,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: 1.17.1
+        go-version: ${{ env.GO_VERSION }}
     - name: Checkout
       uses: actions/checkout@v2
     - name: Cache Go modules
@@ -161,7 +163,7 @@ jobs:
     - name: Lint
       uses: golangci/golangci-lint-action@v2
       with:
-        version: v1.42.1
+        version: v${{ env.GOLANGCI_LINT_VERSION }}
     - name: ShellCheck
       uses: ludeeus/action-shellcheck@1.1.0
       with:
@@ -188,7 +190,7 @@ jobs:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
-        go-version: 1.17.1
+        go-version: ${{ env.GO_VERSION }}
     - name: Checkout
       uses: actions/checkout@v2
       with:
