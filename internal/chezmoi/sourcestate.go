@@ -1507,7 +1507,12 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 		},
 	}
 
-	if err := walkArchive(path, data, func(name string, info fs.FileInfo, r io.Reader, linkname string) error {
+	archiveFormat, err := guessArchiveFormat(path, data)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := walkArchive(archiveFormat, data, func(name string, info fs.FileInfo, r io.Reader, linkname string) error {
 		if external.StripComponents > 0 {
 			components := strings.Split(name, "/")
 			if len(components) <= external.StripComponents {
