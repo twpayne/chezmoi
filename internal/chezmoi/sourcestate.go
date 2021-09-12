@@ -225,6 +225,7 @@ func (s *SourceState) Add(sourceSystem System, persistentState PersistentState, 
 	sourceUpdates := make([]sourceUpdate, 0, len(destAbsPathInfos))
 	newSourceStateEntries := make(map[SourceRelPath]SourceStateEntry)
 	newSourceStateEntriesByTargetRelPath := make(map[RelPath]SourceStateEntry)
+	nonEmptyDirs := make(map[SourceRelPath]struct{})
 DESTABSPATH:
 	for _, destAbsPath := range destAbsPaths {
 		destAbsPathInfo := destAbsPathInfos[destAbsPath]
@@ -244,6 +245,7 @@ DESTABSPATH:
 		} else {
 			return fmt.Errorf("%s: parent directory not in source state", destAbsPath)
 		}
+		nonEmptyDirs[parentSourceRelPath] = struct{}{}
 
 		actualStateEntry, err := NewActualStateEntry(destSystem, destAbsPath, destAbsPathInfo, nil)
 		if err != nil {
@@ -302,25 +304,33 @@ DESTABSPATH:
 		newSourceStateEntriesByTargetRelPath[targetRelPath] = newSourceStateEntry
 
 		sourceUpdates = append(sourceUpdates, update)
+	}
 
-		if _, ok := newSourceStateEntry.(*SourceStateDir); ok {
-			dotKeepFileRelPath := sourceEntryRelPath.Join(NewSourceRelPath(".keep"))
+	// Create .keep files in empty added directories.
+	for sourceEntryRelPath, sourceStateEntry := range newSourceStateEntries {
+		if _, ok := sourceStateEntry.(*SourceStateDir); !ok {
+			continue
+		}
+		if _, ok := nonEmptyDirs[sourceEntryRelPath]; ok {
+			continue
+		}
 
-			dotKeepFileSourceUpdate := sourceUpdate{
-				entryState: &EntryState{
-					Type: EntryStateTypeFile,
-					Mode: 0o666 &^ s.umask,
-				},
-				sourceRelPaths: []SourceRelPath{dotKeepFileRelPath},
-			}
-			sourceUpdates = append(sourceUpdates, dotKeepFileSourceUpdate)
+		dotKeepFileRelPath := sourceEntryRelPath.Join(NewSourceRelPath(".keep"))
 
-			newSourceStateEntries[dotKeepFileRelPath] = &SourceStateFile{
-				targetStateEntry: &TargetStateFile{
-					empty: true,
-					perm:  0o666 &^ s.umask,
-				},
-			}
+		dotKeepFileSourceUpdate := sourceUpdate{
+			entryState: &EntryState{
+				Type: EntryStateTypeFile,
+				Mode: 0o666 &^ s.umask,
+			},
+			sourceRelPaths: []SourceRelPath{dotKeepFileRelPath},
+		}
+		sourceUpdates = append(sourceUpdates, dotKeepFileSourceUpdate)
+
+		newSourceStateEntries[dotKeepFileRelPath] = &SourceStateFile{
+			targetStateEntry: &TargetStateFile{
+				empty: true,
+				perm:  0o666 &^ s.umask,
+			},
 		}
 	}
 
