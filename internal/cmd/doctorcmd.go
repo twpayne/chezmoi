@@ -420,10 +420,7 @@ func (c *versionCheck) Name() string {
 }
 
 func (c *versionCheck) Run() (checkResult, string) {
-	if c.versionInfo.Version == "" ||
-		c.versionInfo.Commit == "" ||
-		c.versionInfo.Date == "" ||
-		c.versionInfo.BuiltBy == "" {
+	if c.versionInfo.Version == "" || c.versionInfo.Commit == "" {
 		return checkResultWarning, c.versionStr
 	}
 	return checkResultOK, c.versionStr
