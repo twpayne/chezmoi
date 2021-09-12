@@ -302,21 +302,22 @@ to the common configuration file. Automating updates to configuration files
 requires a round trip (read config file, update config, write config) and it is
 not always possible preserve comments and formatting.
 
-chezmoi's attributes of `executable_` and `private_` only allow a the file
-permissions `0o644`, `0o755`, `0o600`, and `0o700` to be represented.
-Directories can only have permissions `0o755` or `0o700`. In practice, these
-cover all permissions typically used for dotfiles. If this does cause a genuine
-problem for you, please [open an issue on
+chezmoi's attributes of `executable_`, `private_`, and `readonly_` allow a the
+file permissions `0o644`, `0o755`, `0o600`, `0o700`, `0o444`, `0o555`, `0o400`,
+and `0o500` to be represented. Directories can only have permissions `0o755`,
+`0o700`, or `0o500`. In practice, these cover all permissions typically used for
+dotfiles. If this does cause a genuine problem for you, please [open an issue on
 GitHub](https://github.com/twpayne/chezmoi/issues/new/choose).
 
-File permissions and modes like `executable_`, `private_`, and `symlink_` could
-also be stored in the filesystem, rather than in the filename. However, this
-requires the permissions to be preserved and handled by the underlying version
-control system and filesystem. chezmoi provides first-class support for Windows,
-where the `executable_` and `private_` attributes have no direct equivalents and
-symbolic links are not always permitted. By using regular files and directories,
-chezmoi avoids variations in the operating system, version control system, and
-filesystem making it both more robust and more portable.
+File permissions and modes like `executable_`, `private_`, `readonly_`, and
+`symlink_` could also be stored in the filesystem, rather than in the filename.
+However, this requires the permissions to be preserved and handled by the
+underlying version control system and filesystem. chezmoi provides first-class
+support for Windows, where the `executable_` and `private_` attributes have no
+direct equivalents and symbolic links are not always permitted. By using regular
+files and directories, chezmoi avoids variations in the operating system,
+version control system, and filesystem making it both more robust and more
+portable.
 
 chezmoi uses a 1:1 mapping between entries in the source state and entries in
 the target state. This mapping is bi-directional and unambiguous.

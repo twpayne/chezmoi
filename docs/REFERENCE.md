@@ -432,6 +432,7 @@ to as "attributes":
 | `modify_`    | Treat the contents as a script that modifies an existing file.                 |
 | `once_`      | Run script once.                                                               |
 | `private_`   | Remove all group and world permissions from the target file or directory.      |
+| `readonly_`  | Remove all write permissions from the target file or directory.                |
 | `remove_`    | Remove the entry if it exists.                                                 |
 | `run_`       | Treat the contents as a script to run.                                         |
 | `symlink_`   | Create a symlink instead of a regular file.                                    |
@@ -444,15 +445,15 @@ to as "attributes":
 Different target types allow different prefixes and suffixes. The order of
 prefixes is important.
 
-| Target type   | Source type | Allowed prefixes in order                                             | Allowed suffixes |
-| ------------- | ----------- | --------------------------------------------------------------------- | ---------------- |
-| Directory     | Directory   | `exact_`, `private_`, `dot_`                                          | *none*           |
-| Regular file  | File        | `encrypted_`, `private_`, `executable_`, `dot_`                       | `.tmpl`          |
-| Create file   | File        | `create_`, `encrypted_`, `private_`, `executable_`, `dot_`            | `.tmpl`          |
-| Modify file   | File        | `modify_`, `encrypted_`, `private_`, `executable_`, `dot_`            | `.tmpl`          |
-| Remove        | File        | `remove_`, `dot_`                                                     | *none*           |
-| Script        | File        | `run_`, `once_`, `before_` or `after_`                                | `.tmpl`          |
-| Symbolic link | File        | `symlink_`, `dot_`,                                                   | `.tmpl`          |
+| Target type   | Source type | Allowed prefixes in order                                               | Allowed suffixes |
+| ------------- | ----------- | ----------------------------------------------------------------------- | ---------------- |
+| Directory     | Directory   | `exact_`, `private_`, `readonly_`, `dot_`                               | *none*           |
+| Regular file  | File        | `encrypted_`, `private_`, `executable_`, `dot_`                         | `.tmpl`          |
+| Create file   | File        | `create_`, `encrypted_`, `private_`, `readonly_`, `executable_`, `dot_` | `.tmpl`          |
+| Modify file   | File        | `modify_`, `encrypted_`, `private_`, `readonly_`, `executable_`, `dot_` | `.tmpl`          |
+| Remove        | File        | `remove_`, `dot_`                                                       | *none*           |
+| Script        | File        | `run_`, `once_`, `before_` or `after_`                                  | `.tmpl`          |
+| Symbolic link | File        | `symlink_`, `dot_`,                                                     | `.tmpl`          |
 
 The `literal_` prefix and `.literal` suffix can appear anywhere and stop
 attribute parsing. This permits filenames that would otherwise conflict with
@@ -483,11 +484,12 @@ create `.a`, create `.c`, and then execute `run_z`.
 
 Files are represented by regular files in the source state. The `encrypted_`
 attribute determines whether the file in the source state is encrypted. The
-`executable_` attribute will set the executable bits when the file is written to
-the target state, and the `private_` attribute will clear all group and world
-permissions. Files with the `.tmpl` suffix will be interpreted as templates. If
-the target contents are empty then the file will be removed, unless it has an
-`empty_` prefix.
+`executable_` attribute will set the executable bits in the the target state,
+and the `private_` attribute will clear all group and world permissions. The
+`readonly_` attribute will clear all write permission bits in the target state.
+Files with the `.tmpl` suffix will be interpreted as templates. If the target
+contents are empty then the file will be removed, unless it has an `empty_`
+prefix.
 
 #### Create file
 
@@ -517,7 +519,8 @@ directory, or symlink) to be removed in the target state.
 Directories are represented by regular directories in the source state. The
 `exact_` attribute causes chezmoi to remove any entries in the target state that
 are not explicitly specified in the source state, and the `private_` attribute
-causes chezmoi to clear all group and world permissions.
+causes chezmoi to clear all group and world permissions. The `readonly_`
+attribute will clear all write permission bits.
 
 ---
 

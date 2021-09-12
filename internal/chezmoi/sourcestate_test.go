@@ -180,6 +180,24 @@ func TestSourceStateAdd(t *testing.T) {
 			},
 		},
 		{
+			name: "dir_readonly_unix",
+			destAbsPaths: []AbsPath{
+				"/home/user/.readonly_dir",
+			},
+			addOptions: AddOptions{
+				Include: NewEntryTypeSet(EntryTypesAll),
+			},
+			extraRoot: map[string]interface{}{
+				"/home/user/.readonly_dir": &vfst.Dir{Perm: 0o555},
+			},
+			tests: []interface{}{
+				vfst.TestPath("/home/user/.local/share/chezmoi/readonly_dot_readonly_dir",
+					vfst.TestIsDir,
+					vfst.TestModePerm(0o777&^chezmoitest.Umask),
+				),
+			},
+		},
+		{
 			name: "empty",
 			destAbsPaths: []AbsPath{
 				"/home/user/.empty",
@@ -345,6 +363,28 @@ func TestSourceStateAdd(t *testing.T) {
 					vfst.TestModeIsRegular,
 					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContentsString("# contents of .private\n"),
+				),
+			},
+		},
+		{
+			name: "file_readonly_unix",
+			destAbsPaths: []AbsPath{
+				"/home/user/.readonly",
+			},
+			addOptions: AddOptions{
+				Include: NewEntryTypeSet(EntryTypesAll),
+			},
+			extraRoot: map[string]interface{}{
+				"/home/user/.readonly": &vfst.File{
+					Perm:     0o444,
+					Contents: []byte("# contents of .readonly\n"),
+				},
+			},
+			tests: []interface{}{
+				vfst.TestPath("/home/user/.local/share/chezmoi/readonly_dot_readonly",
+					vfst.TestModeIsRegular,
+					vfst.TestModePerm(0o666&^chezmoitest.Umask),
+					vfst.TestContentsString("# contents of .readonly\n"),
 				),
 			},
 		},

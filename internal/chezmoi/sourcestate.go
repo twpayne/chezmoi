@@ -1354,6 +1354,7 @@ func (s *SourceState) newSourceStateDirEntry(info fs.FileInfo, parentSourceRelPa
 		TargetName: info.Name(),
 		Exact:      options.Exact,
 		Private:    isPrivate(info),
+		ReadOnly:   isReadOnly(info),
 	}
 	sourceRelPath := parentSourceRelPath.Join(NewSourceRelDirPath(RelPath(dirAttr.SourceName())))
 	return &SourceStateDir{
@@ -1377,6 +1378,7 @@ func (s *SourceState) newSourceStateFileEntryFromFile(actualStateFile *ActualSta
 		Encrypted:  options.Encrypt,
 		Executable: isExecutable(info),
 		Private:    isPrivate(info),
+		ReadOnly:   isReadOnly(info),
 		Template:   options.Template,
 	}
 	if options.Create {

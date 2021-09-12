@@ -81,3 +81,8 @@ func isExecutable(info fs.FileInfo) bool {
 func isPrivate(info fs.FileInfo) bool {
 	return info.Mode().Perm()&0o77 == 0
 }
+
+// isReadOnly returns if info is read-only.
+func isReadOnly(info fs.FileInfo) bool {
+	return info.Mode().Perm()&0o222 == 0
+}

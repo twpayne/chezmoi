@@ -25,6 +25,7 @@ type DirAttr struct {
 	TargetName string
 	Exact      bool
 	Private    bool
+	ReadOnly   bool
 }
 
 // A FileAttr holds attributes parsed from a source file name.
@@ -37,15 +38,17 @@ type FileAttr struct {
 	Once       bool
 	Order      int
 	Private    bool
+	ReadOnly   bool
 	Template   bool
 }
 
 // parseDirAttr parses a single directory name in the source state.
 func parseDirAttr(sourceName string) DirAttr {
 	var (
-		name    = sourceName
-		exact   = false
-		private = false
+		name     = sourceName
+		exact    = false
+		private  = false
+		readOnly = false
 	)
 	if strings.HasPrefix(name, exactPrefix) {
 		name = mustTrimPrefix(name, exactPrefix)
@@ -54,6 +57,10 @@ func parseDirAttr(sourceName string) DirAttr {
 	if strings.HasPrefix(name, privatePrefix) {
 		name = mustTrimPrefix(name, privatePrefix)
 		private = true
+	}
+	if strings.HasPrefix(name, readOnlyPrefix) {
+		name = mustTrimPrefix(name, readOnlyPrefix)
+		readOnly = true
 	}
 	switch {
 	case strings.HasPrefix(name, dotPrefix):
@@ -65,6 +72,7 @@ func parseDirAttr(sourceName string) DirAttr {
 		TargetName: name,
 		Exact:      exact,
 		Private:    private,
+		ReadOnly:   readOnly,
 	}
 }
 
@@ -76,6 +84,9 @@ func (da DirAttr) SourceName() string {
 	}
 	if da.Private {
 		sourceName += privatePrefix
+	}
+	if da.ReadOnly {
+		sourceName += readOnlyPrefix
 	}
 	switch {
 	case strings.HasPrefix(da.TargetName, "."):
@@ -94,6 +105,9 @@ func (da DirAttr) perm() fs.FileMode {
 	if da.Private {
 		perm &^= 0o77
 	}
+	if da.ReadOnly {
+		perm &^= 0o222
+	}
 	return perm
 }
 
@@ -107,6 +121,7 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 		executable     = false
 		once           = false
 		private        = false
+		readOnly       = false
 		template       = false
 		order          = 0
 	)
@@ -121,6 +136,10 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 		if strings.HasPrefix(name, privatePrefix) {
 			name = mustTrimPrefix(name, privatePrefix)
 			private = true
+		}
+		if strings.HasPrefix(name, readOnlyPrefix) {
+			name = mustTrimPrefix(name, readOnlyPrefix)
+			readOnly = true
 		}
 		if strings.HasPrefix(name, executablePrefix) {
 			name = mustTrimPrefix(name, executablePrefix)
@@ -154,6 +173,10 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 			name = mustTrimPrefix(name, privatePrefix)
 			private = true
 		}
+		if strings.HasPrefix(name, readOnlyPrefix) {
+			name = mustTrimPrefix(name, readOnlyPrefix)
+			readOnly = true
+		}
 		if strings.HasPrefix(name, executablePrefix) {
 			name = mustTrimPrefix(name, executablePrefix)
 			executable = true
@@ -166,6 +189,10 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 		if strings.HasPrefix(name, privatePrefix) {
 			name = mustTrimPrefix(name, privatePrefix)
 			private = true
+		}
+		if strings.HasPrefix(name, readOnlyPrefix) {
+			name = mustTrimPrefix(name, readOnlyPrefix)
+			readOnly = true
 		}
 		if strings.HasPrefix(name, emptyPrefix) {
 			name = mustTrimPrefix(name, emptyPrefix)
@@ -203,6 +230,7 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 		Executable: executable,
 		Once:       once,
 		Private:    private,
+		ReadOnly:   readOnly,
 		Template:   template,
 		Order:      order,
 	}
@@ -220,6 +248,9 @@ func (fa FileAttr) SourceName(encryptedSuffix string) string {
 		if fa.Private {
 			sourceName += privatePrefix
 		}
+		if fa.ReadOnly {
+			sourceName += readOnlyPrefix
+		}
 		if fa.Executable {
 			sourceName += executablePrefix
 		}
@@ -229,6 +260,9 @@ func (fa FileAttr) SourceName(encryptedSuffix string) string {
 		}
 		if fa.Private {
 			sourceName += privatePrefix
+		}
+		if fa.ReadOnly {
+			sourceName += readOnlyPrefix
 		}
 		if fa.Empty {
 			sourceName += emptyPrefix
@@ -240,6 +274,9 @@ func (fa FileAttr) SourceName(encryptedSuffix string) string {
 		sourceName = modifyPrefix
 		if fa.Private {
 			sourceName += privatePrefix
+		}
+		if fa.ReadOnly {
+			sourceName += readOnlyPrefix
 		}
 		if fa.Executable {
 			sourceName += executablePrefix
@@ -288,6 +325,9 @@ func (fa FileAttr) perm() fs.FileMode {
 	}
 	if fa.Private {
 		perm &^= 0o77
+	}
+	if fa.ReadOnly {
+		perm &^= 0o222
 	}
 	return perm
 }
