@@ -2201,6 +2201,18 @@ the return value will be the map:
 }
 ```
 
+The result of
+
+```
+{{ (onepasswordItemFields "abcdefghijklmnopqrstuvwxyz").exampleLabel.v }}
+```
+
+is equivalent to calling
+
+```console
+$ op get item abcdefghijklmnopqrstuvwxyz --fields exampleLabel
+```
+
 ---
 
 ### `output` *name* [*arg*...]
