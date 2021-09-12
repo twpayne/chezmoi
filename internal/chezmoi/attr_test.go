@@ -13,6 +13,7 @@ func TestDirAttr(t *testing.T) {
 		TargetName []string
 		Exact      []bool
 		Private    []bool
+		ReadOnly   []bool
 	}{
 		TargetName: []string{
 			".dir",
@@ -27,8 +28,9 @@ func TestDirAttr(t *testing.T) {
 			"run_once_dir",
 			"symlink_dir",
 		},
-		Exact:   []bool{false, true},
-		Private: []bool{false, true},
+		Exact:    []bool{false, true},
+		Private:  []bool{false, true},
+		ReadOnly: []bool{false, true},
 	}
 	var das []DirAttr
 	require.NoError(t, combinator.Generate(&das, testData))
@@ -94,6 +96,7 @@ func TestFileAttr(t *testing.T) {
 		Encrypted  []bool
 		Executable []bool
 		Private    []bool
+		ReadOnly   []bool
 		Template   []bool
 	}{
 		Type:       SourceFileTypeCreate,
@@ -101,6 +104,7 @@ func TestFileAttr(t *testing.T) {
 		Encrypted:  []bool{false, true},
 		Executable: []bool{false, true},
 		Private:    []bool{false, true},
+		ReadOnly:   []bool{false, true},
 		Template:   []bool{false, true},
 	}))
 	require.NoError(t, combinator.Generate(&fas, struct {
@@ -110,6 +114,7 @@ func TestFileAttr(t *testing.T) {
 		Encrypted  []bool
 		Executable []bool
 		Private    []bool
+		ReadOnly   []bool
 		Template   []bool
 	}{
 		Type:       SourceFileTypeFile,
@@ -118,6 +123,7 @@ func TestFileAttr(t *testing.T) {
 		Encrypted:  []bool{false, true},
 		Executable: []bool{false, true},
 		Private:    []bool{false, true},
+		ReadOnly:   []bool{false, true},
 		Template:   []bool{false, true},
 	}))
 	require.NoError(t, combinator.Generate(&fas, struct {
@@ -125,12 +131,14 @@ func TestFileAttr(t *testing.T) {
 		TargetName []string
 		Executable []bool
 		Private    []bool
+		ReadOnly   []bool
 		Template   []bool
 	}{
 		Type:       SourceFileTypeModify,
 		TargetName: targetNames,
 		Executable: []bool{false, true},
 		Private:    []bool{false, true},
+		ReadOnly:   []bool{false, true},
 		Template:   []bool{false, true},
 	}))
 	require.NoError(t, combinator.Generate(&fas, struct {

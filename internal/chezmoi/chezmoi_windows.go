@@ -35,6 +35,11 @@ func isPrivate(info fs.FileInfo) bool {
 	return false
 }
 
+// isReadOnly returns false on Windows.
+func isReadOnly(info fs.FileInfo) bool {
+	return false
+}
+
 func isSlash(c uint8) bool {
 	return c == '\\' || c == '/'
 }
