@@ -43,9 +43,9 @@ tasks, and there's both documentation on [templating](docs/TEMPLATING.md) and
 [frequently asked questions](docs/FAQ.md) for specific questions. You can browse
 other people's dotfiles that use chezmoi [on
 GitHub](https://github.com/topics/chezmoi?o=desc&s=updated) and [on
-GitLab](https://gitlab.com/search?search=chezmoi), and see how chezmoi [compares
-to other dotfile managers](docs/COMPARISON.md). For a full description of
-chezmoi, consult the [reference](docs/REFERENCE.md).
+GitLab](https://gitlab.com/explore/projects?topic=chezmoi), and see how chezmoi
+[compares to other dotfile managers](docs/COMPARISON.md). For a full description
+of chezmoi, consult the [reference](docs/REFERENCE.md).
 
 ---
 ## What does chezmoi do and why should I use it?
@@ -143,7 +143,7 @@ Read the [comparison of chezmoi to other dotfile managers](docs/COMPARISON.md).
 
 Have a look at people using chezmoi [on
 GitHub](https://github.com/topics/chezmoi?o=desc&s=updated) and [on
-GitLab](https://gitlab.com/search?search=chezmoi).
+GitLab](https://gitlab.com/explore/projects?topic=chezmoi).
 
 ### People talking about chezmoi
 
