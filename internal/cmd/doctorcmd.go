@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"io/fs"
@@ -308,7 +309,7 @@ func (c *binaryCheck) Run() (checkResult, string) {
 	if c.versionRx != nil {
 		match := c.versionRx.FindSubmatch(versionBytes)
 		if len(match) != 2 {
-			return checkResultFailed, fmt.Sprintf("found %s, could not parse version from %s", path, versionBytes)
+			return checkResultFailed, fmt.Sprintf("found %s, could not parse version from %s", path, bytes.TrimSpace(versionBytes))
 		}
 		versionBytes = match[1]
 	}
