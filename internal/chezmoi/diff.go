@@ -128,8 +128,7 @@ func diffFileMode(mode fs.FileMode) (filemode.FileMode, error) {
 	if err != nil {
 		return 0, err
 	}
-	fileMode |= filemode.FileMode(mode.Perm())
-	return fileMode, nil
+	return (fileMode &^ filemode.FileMode(fs.ModePerm)) | filemode.FileMode(mode.Perm()), nil
 }
 
 // isBinary returns true if data contains binary (non-human-readable) data.
