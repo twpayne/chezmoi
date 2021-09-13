@@ -66,6 +66,9 @@ func (s *EntryState) Overwrite() bool {
 }
 
 func (s *EntryState) MarshalZerologObject(e *zerolog.Event) {
+	if s == nil {
+		return
+	}
 	e.Str("Type", string(s.Type))
 	e.Int("Mode", int(s.Mode))
 	e.Stringer("ContentsSHA256", s.ContentsSHA256)

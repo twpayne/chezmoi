@@ -3,6 +3,8 @@ package chezmoi
 import (
 	"io/fs"
 	"strings"
+
+	"github.com/rs/zerolog"
 )
 
 // A SourceFileTargetType is a the type of a target represented by a file in the
@@ -19,6 +21,15 @@ const (
 	SourceFileTypeScript
 	SourceFileTypeSymlink
 )
+
+var sourceFileTypeStrs = map[SourceFileTargetType]string{
+	SourceFileTypeCreate:  "create",
+	SourceFileTypeFile:    "file",
+	SourceFileTypeModify:  "modify",
+	SourceFileTypeRemove:  "remove",
+	SourceFileTypeScript:  "script",
+	SourceFileTypeSymlink: "symlink",
+}
 
 // DirAttr holds attributes parsed from a source directory name.
 type DirAttr struct {
@@ -74,6 +85,14 @@ func parseDirAttr(sourceName string) DirAttr {
 		Private:    private,
 		ReadOnly:   readOnly,
 	}
+}
+
+// MarshalZerologObject implements zerolog.Marshaler.
+func (da DirAttr) MarshalZerologObject(e *zerolog.Event) {
+	e.Str("targetName", da.TargetName)
+	e.Bool("exact", da.Exact)
+	e.Bool("private", da.Private)
+	e.Bool("readOnly", da.ReadOnly)
 }
 
 // SourceName returns da's source name.
@@ -234,6 +253,20 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 		Template:   template,
 		Order:      order,
 	}
+}
+
+// MarshalZerologObject implements zerolog.ObjectMarshaler.
+func (fa FileAttr) MarshalZerologObject(e *zerolog.Event) {
+	e.Str("TargetName", fa.TargetName)
+	e.Str("Type", sourceFileTypeStrs[fa.Type])
+	e.Bool("Empty", fa.Empty)
+	e.Bool("Encrypted", fa.Encrypted)
+	e.Bool("Executable", fa.Executable)
+	e.Bool("Once", fa.Once)
+	e.Int("Order", fa.Order)
+	e.Bool("Private", fa.Private)
+	e.Bool("ReadOnly", fa.ReadOnly)
+	e.Bool("Template", fa.Template)
 }
 
 // SourceName returns fa's source name.
