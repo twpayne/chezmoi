@@ -13,8 +13,8 @@ on:
 jobs:
   analyze:
     runs-on: ubuntu-18.04
-    strategy:
-      fail-fast: false
+    permissions:
+      security-events: write
     steps:
     - name: Checkout repo
       uses: actions/checkout@v2
