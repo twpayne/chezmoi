@@ -69,7 +69,9 @@ jobs:
       run: go test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o002" -race ./...
     - name: Test (Windows)
       if: runner.os == 'Windows'
-      run: go test -race ./...
+      run: |
+        go run . doctor
+        go test -race ./...
   test-release:
     runs-on: ubuntu-18.04
     steps:
