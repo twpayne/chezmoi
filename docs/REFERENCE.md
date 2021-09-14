@@ -914,9 +914,10 @@ $ chezmoi apply ~/.bashrc
 Generate an archive of the target state. This can be piped into `tar` to inspect
 the target state.
 
-#### `-f`, `--format` `tar`|`zip`
+#### `-f`, `--format` `tar`|`tar.gz`|`tgz`|`zip`
 
-Write the archive in *format*.
+Write the archive in *format*. If `--output` is set the format is guessed from
+the extension, otherwise the default is `tar`.
 
 #### `-i`, `--include` *types*
 
@@ -924,14 +925,15 @@ Only include entries of type *types*.
 
 #### `-z`, `--gzip`
 
-Compress the output with gzip.
+Compress the archive with gzip. This is automatically set if the format is
+`tar.gz` or `tgz` and is ignored if the format is `zip`.
 
 #### `archive` examples
 
 ```console
 $ chezmoi archive | tar tvf -
-$ chezmoi archive --output=dotfiles.tar
-$ chezmoi archive --format=zip --output=dotfiles.zip
+$ chezmoi archive --output=dotfiles.tar.gz
+$ chezmoi archive --output=dotfiles.zip
 ```
 
 ---
