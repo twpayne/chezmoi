@@ -66,7 +66,7 @@ func (c *Config) runImportCmd(cmd *cobra.Command, args []string, sourceState *ch
 			return err
 		}
 	}
-	archiveReaderSystem, err := chezmoi.NewArchiveReaderSystem(name, data, chezmoi.ArchiveReaderSystemOptions{
+	archiveReaderSystem, err := chezmoi.NewArchiveReaderSystem(name, data, chezmoi.ArchiveFormatUnknown, chezmoi.ArchiveReaderSystemOptions{
 		RootAbsPath:     c._import.destination,
 		StripComponents: c._import.stripComponents,
 	})

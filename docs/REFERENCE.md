@@ -694,8 +694,10 @@ archive at `url`. The optional boolean field `exact` may be set, in which case
 the directory and all subdirectories will be treated as exact directories, i.e.
 `chezmoi apply` will remove entries not present in the archive. The optional
 integer field `stripComponents` will remove leading path components from the
-members of archive. The supported archive formats are `.tar`, `.tar.gz`, `.tgz`,
-`.tar.bz2`, `.tbz2`, and `.zip`.
+members of archive. The optional string field `format` sets the archive format.
+The supported archive formats are `tar`, `tar.gz`, `tgz`, `tar.bz2`, `tbz2`, and
+`zip`. If `format` is not specified then chezmoi will guess the format using
+firstly the path of the URL and secondly its contents.
 
 By default, chezmoi will cache downloaded URLs the first time they are accessed.
 To force chezmoi to re-download URLs, pass the `--refresh-externals` flag.
@@ -912,9 +914,10 @@ $ chezmoi apply ~/.bashrc
 Generate an archive of the target state. This can be piped into `tar` to inspect
 the target state.
 
-#### `-f`, `--format` `tar`|`zip`
+#### `-f`, `--format` `tar`|`tar.gz`|`tgz`|`zip`
 
-Write the archive in *format*.
+Write the archive in *format*. If `--output` is set the format is guessed from
+the extension, otherwise the default is `tar`.
 
 #### `-i`, `--include` *types*
 
@@ -922,14 +925,15 @@ Only include entries of type *types*.
 
 #### `-z`, `--gzip`
 
-Compress the output with gzip.
+Compress the archive with gzip. This is automatically set if the format is
+`tar.gz` or `tgz` and is ignored if the format is `zip`.
 
 #### `archive` examples
 
 ```console
 $ chezmoi archive | tar tvf -
-$ chezmoi archive --output=dotfiles.tar
-$ chezmoi archive --format=zip --output=dotfiles.zip
+$ chezmoi archive --output=dotfiles.tar.gz
+$ chezmoi archive --output=dotfiles.zip
 ```
 
 ---
@@ -1344,8 +1348,8 @@ state. This is primarily used to make subdirectories of your home directory
 exactly match the contents of a downloaded archive. You will generally always
 want to set the `--destination`, `--exact`, and `--remove-destination` flags.
 
-The supported archive formats are `.tar`, `.tar.gz`, `.tgz`, `.tar.bz2`,
-`.tbz2`, and `.zip`.
+The supported archive formats are `tar`, `tar.gz`, `tgz`, `tar.bz2`, `tbz2`, and
+`zip`.
 
 #### `--destination` *directory*
 

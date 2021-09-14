@@ -36,7 +36,7 @@ func TestArchiveReaderSystemTAR(t *testing.T) {
 	}))
 	require.NoError(t, w.Close())
 
-	archiveReaderSystem, err := NewArchiveReaderSystem("archive.tar", b.Bytes(), ArchiveReaderSystemOptions{
+	archiveReaderSystem, err := NewArchiveReaderSystem("archive.tar", b.Bytes(), ArchiveFormatTar, ArchiveReaderSystemOptions{
 		RootAbsPath:     "/home/user",
 		StripComponents: 1,
 	})

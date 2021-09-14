@@ -3,8 +3,6 @@ package cmd
 import (
 	"archive/tar"
 	"compress/gzip"
-	"errors"
-	"fmt"
 	"os/user"
 	"strconv"
 	"strings"
@@ -15,18 +13,9 @@ import (
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
-// An archiveFormat is either tar or zip and implements the
-// github.com/spf13/pflag.Value interface.
-type archiveFormat string
-
-const (
-	archiveFormatTar archiveFormat = "tar"
-	archiveFormatZip archiveFormat = "zip"
-)
-
 type archiveCmdConfig struct {
 	exclude   *chezmoi.EntryTypeSet
-	format    archiveFormat
+	format    chezmoi.ArchiveFormat
 	gzip      bool
 	include   *chezmoi.EntryTypeSet
 	recursive bool
@@ -55,18 +44,31 @@ func (c *Config) newArchiveCmd() *cobra.Command {
 }
 
 func (c *Config) runArchiveCmd(cmd *cobra.Command, args []string) error {
+	format := c.archive.format
+	if format == chezmoi.ArchiveFormatUnknown {
+		format = chezmoi.GuessArchiveFormat(c.outputAbsPath.String(), nil)
+		if format == chezmoi.ArchiveFormatUnknown {
+			format = chezmoi.ArchiveFormatTar
+		}
+	}
+
+	gzipOutput := c.archive.gzip
+	if format == chezmoi.ArchiveFormatTarGz || format == chezmoi.ArchiveFormatTgz {
+		gzipOutput = true
+	}
+
 	output := strings.Builder{}
 	var archiveSystem interface {
 		chezmoi.System
 		Close() error
 	}
-	switch c.archive.format {
-	case archiveFormatTar:
+	switch format {
+	case chezmoi.ArchiveFormatTar, chezmoi.ArchiveFormatTarGz, chezmoi.ArchiveFormatTgz:
 		archiveSystem = chezmoi.NewTARWriterSystem(&output, tarHeaderTemplate())
-	case archiveFormatZip:
+	case chezmoi.ArchiveFormatZip:
 		archiveSystem = chezmoi.NewZIPWriterSystem(&output, time.Now().UTC())
 	default:
-		return fmt.Errorf("%s: invalid format", c.archive.format)
+		return chezmoi.InvalidArchiveFormatError(format)
 	}
 	if err := c.applyArgs(cmd.Context(), archiveSystem, "", args, applyArgsOptions{
 		include:   c.archive.include.Sub(c.archive.exclude),
@@ -78,7 +80,7 @@ func (c *Config) runArchiveCmd(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	if c.archive.format == archiveFormatZip || !c.archive.gzip {
+	if format == chezmoi.ArchiveFormatZip || !gzipOutput {
 		return c.writeOutputString(output.String())
 	}
 
@@ -123,24 +125,4 @@ func tarHeaderTemplate() tar.Header {
 		AccessTime: now,
 		ChangeTime: now,
 	}
-}
-
-func (f *archiveFormat) Set(s string) error {
-	switch strings.ToLower(s) {
-	case "tar":
-		*f = archiveFormatTar
-	case "zip":
-		*f = archiveFormatZip
-	default:
-		return errors.New("invalid archive format")
-	}
-	return nil
-}
-
-func (f archiveFormat) String() string {
-	return string(f)
-}
-
-func (f archiveFormat) Type() string {
-	return "tar|zip"
 }

@@ -294,7 +294,6 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		archive: archiveCmdConfig{
 			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			format:    archiveFormatTar,
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 			recursive: true,
 		},
