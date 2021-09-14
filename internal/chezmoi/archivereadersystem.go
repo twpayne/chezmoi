@@ -14,17 +14,29 @@ import (
 	"strings"
 )
 
-type archiveFormat string
+// An ArchiveFormat is an archive format and implements the
+// github.com/spf13/pflag.Value interface.
+type ArchiveFormat string
 
+// Archive formats.
 const (
-	archiveFormatUnknown archiveFormat = ""
-	archiveFormatTar     archiveFormat = "tar"
-	archiveFormatTarGz   archiveFormat = "tar.gz"
-	archiveFormatTarBz2  archiveFormat = "tar.bz2"
-	archiveFormatZip     archiveFormat = "zip"
+	ArchiveFormatUnknown ArchiveFormat = ""
+	ArchiveFormatTar     ArchiveFormat = "tar"
+	ArchiveFormatTarBz2  ArchiveFormat = "tar.bz2"
+	ArchiveFormatTarGz   ArchiveFormat = "tar.gz"
+	ArchiveFormatTbz2    ArchiveFormat = "tbz2"
+	ArchiveFormatTgz     ArchiveFormat = "tgz"
+	ArchiveFormatZip     ArchiveFormat = "zip"
 )
 
-var errUnknownArchiveFormat = errors.New("unknown archive format")
+type InvalidArchiveFormatError string
+
+func (e InvalidArchiveFormatError) Error() string {
+	if e == InvalidArchiveFormatError(ArchiveFormatUnknown) {
+		return "invalid archive format"
+	}
+	return fmt.Sprintf("%s: invalid archive format", string(e))
+}
 
 // An walkArchiveFunc is called once for each entry in an archive.
 type walkArchiveFunc func(name string, info fs.FileInfo, r io.Reader, linkname string) error
@@ -46,19 +58,18 @@ type ArchiveReaderSystemOptions struct {
 
 // NewArchiveReaderSystem returns a new ArchiveReaderSystem reading from data
 // and using path as a hint for the archive format.
-func NewArchiveReaderSystem(path string, data []byte, options ArchiveReaderSystemOptions) (*ArchiveReaderSystem, error) {
+func NewArchiveReaderSystem(path string, data []byte, format ArchiveFormat, options ArchiveReaderSystemOptions) (*ArchiveReaderSystem, error) {
 	s := &ArchiveReaderSystem{
 		fileInfos: make(map[AbsPath]fs.FileInfo),
 		contents:  make(map[AbsPath][]byte),
 		linkname:  make(map[AbsPath]string),
 	}
 
-	archiveFormat, err := guessArchiveFormat(path, data)
-	if err != nil {
-		return nil, err
+	if format == ArchiveFormatUnknown {
+		format = GuessArchiveFormat(path, data)
 	}
 
-	if err := walkArchive(archiveFormat, data, func(name string, info fs.FileInfo, r io.Reader, linkname string) error {
+	if err := walkArchive(data, format, func(name string, info fs.FileInfo, r io.Reader, linkname string) error {
 		if options.StripComponents > 0 {
 			components := strings.Split(name, "/")
 			if len(components) <= options.StripComponents {
@@ -129,31 +140,44 @@ func (s *ArchiveReaderSystem) Readlink(name AbsPath) (string, error) {
 	return "", fs.ErrNotExist
 }
 
-// guessArchiveFormat guesses the archive format from the path and data.
-func guessArchiveFormat(path string, data []byte) (archiveFormat, error) {
+func (f *ArchiveFormat) Set(s string) error {
+	*f = ArchiveFormat(s)
+	return nil
+}
+
+func (f ArchiveFormat) String() string {
+	return string(f)
+}
+
+func (f ArchiveFormat) Type() string {
+	return "format"
+}
+
+// GuessArchiveFormat guesses the archive format from the path and data.
+func GuessArchiveFormat(path string, data []byte) ArchiveFormat {
 	switch pathLower := strings.ToLower(path); {
 	case strings.HasSuffix(pathLower, ".tar"):
-		return archiveFormatTar, nil
+		return ArchiveFormatTar
 	case strings.HasSuffix(pathLower, ".tar.bz2") || strings.HasSuffix(pathLower, ".tbz2"):
-		return archiveFormatTarBz2, nil
+		return ArchiveFormatTarBz2
 	case strings.HasSuffix(pathLower, ".tar.gz") || strings.HasSuffix(pathLower, ".tgz"):
-		return archiveFormatTarGz, nil
+		return ArchiveFormatTarGz
 	case strings.HasSuffix(pathLower, ".zip"):
-		return archiveFormatZip, nil
+		return ArchiveFormatZip
 	}
 
 	switch {
 	case len(data) >= 3 && bytes.Equal(data[:3], []byte{0x1f, 0x8b, 0x08}):
-		return archiveFormatTarGz, nil
+		return ArchiveFormatTarGz
 	case len(data) >= 4 && bytes.Equal(data[:4], []byte{'P', 'K', 0x03, 0x04}):
-		return archiveFormatZip, nil
+		return ArchiveFormatZip
 	case isTarArchive(bytes.NewReader(data)):
-		return archiveFormatTar, nil
+		return ArchiveFormatTar
 	case isTarArchive(bzip2.NewReader(bytes.NewReader(data))):
-		return archiveFormatTarBz2, nil
+		return ArchiveFormatTarBz2
 	}
 
-	return archiveFormatUnknown, errUnknownArchiveFormat
+	return ArchiveFormatUnknown
 }
 
 // isTarArchive returns if r looks like a tar archive.
@@ -164,23 +188,23 @@ func isTarArchive(r io.Reader) bool {
 }
 
 // walkArchive walks over all the entries in an archive.
-func walkArchive(format archiveFormat, data []byte, f walkArchiveFunc) error {
-	if format == archiveFormatZip {
+func walkArchive(data []byte, format ArchiveFormat, f walkArchiveFunc) error {
+	if format == ArchiveFormatZip {
 		return walkArchiveZip(bytes.NewReader(data), int64(len(data)), f)
 	}
 	var r io.Reader = bytes.NewReader(data)
 	switch format {
-	case archiveFormatTar:
-	case archiveFormatTarBz2:
+	case ArchiveFormatTar:
+	case ArchiveFormatTarBz2, ArchiveFormatTbz2:
 		r = bzip2.NewReader(r)
-	case archiveFormatTarGz:
+	case ArchiveFormatTarGz, ArchiveFormatTgz:
 		var err error
 		r, err = gzip.NewReader(r)
 		if err != nil {
 			return err
 		}
 	default:
-		return errUnknownArchiveFormat
+		return InvalidArchiveFormatError(format)
 	}
 	return walkArchiveTar(r, f)
 }

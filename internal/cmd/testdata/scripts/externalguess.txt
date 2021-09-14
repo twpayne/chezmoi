@@ -26,6 +26,12 @@ cp www/archive.zip www/archive
 chezmoi apply --force --refresh-externals
 cmp $HOME/.dir/dir/file golden/dir/file
 
+# test that chezmoi allows the format to be overridden
+cp www/archive.zip www/archive2.tar.gz
+chhome home2/user
+chezmoi apply --force
+cmp $HOME/.dir/dir/file golden/dir/file
+
 -- archive/dir/file --
 # contents of dir/file
 -- golden/dir/file --
@@ -35,4 +41,10 @@ cmp $HOME/.dir/dir/file golden/dir/file
   type: archive
   url: "{{ env "HTTPD_URL" }}/archive"
   stripComponents: 1
+-- home2/user/.local/share/chezmoi/.chezmoiexternal.yaml --
+.dir:
+  type: archive
+  url: "{{ env "HTTPD_URL" }}/archive2.tar.gz"
+  stripComponents: 1
+  format: zip
 -- www/.keep --

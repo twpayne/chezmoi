@@ -38,12 +38,13 @@ const (
 
 // An External is an external source.
 type External struct {
-	Type            ExternalType `json:"type" toml:"type" yaml:"type"`
-	Encrypted       bool         `json:"encrypted" toml:"encrypted" yaml:"encrypted"`
-	Exact           bool         `json:"exact" toml:"exact" yaml:"exact"`
-	Executable      bool         `json:"executable" toml:"executable" yaml:"executable"`
-	StripComponents int          `json:"stripComponents" toml:"stripComponents" yaml:"stripComponents"`
-	URL             string       `json:"url" toml:"url" yaml:"url"`
+	Type            ExternalType  `json:"type" toml:"type" yaml:"type"`
+	Encrypted       bool          `json:"encrypted" toml:"encrypted" yaml:"encrypted"`
+	Exact           bool          `json:"exact" toml:"exact" yaml:"exact"`
+	Executable      bool          `json:"executable" toml:"executable" yaml:"executable"`
+	Format          ArchiveFormat `json:"format" toml:"format" yaml:"format"`
+	StripComponents int           `json:"stripComponents" toml:"stripComponents" yaml:"stripComponents"`
+	URL             string        `json:"url" toml:"url" yaml:"url"`
 }
 
 // A SourceState is a source state.
@@ -1519,12 +1520,12 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 		},
 	}
 
-	archiveFormat, err := guessArchiveFormat(path, data)
-	if err != nil {
-		return nil, err
+	format := external.Format
+	if format == ArchiveFormatUnknown {
+		format = GuessArchiveFormat(path, data)
 	}
 
-	if err := walkArchive(archiveFormat, data, func(name string, info fs.FileInfo, r io.Reader, linkname string) error {
+	if err := walkArchive(data, format, func(name string, info fs.FileInfo, r io.Reader, linkname string) error {
 		if external.StripComponents > 0 {
 			components := strings.Split(name, "/")
 			if len(components) <= external.StripComponents {
