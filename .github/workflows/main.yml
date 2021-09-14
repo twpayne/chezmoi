@@ -48,22 +48,27 @@ jobs:
         curl -fsSL https://dl.filippo.io/age/v${AGE_VERSION}?for=${goos}/amd64 | tar xzf -
         sudo install -m 755 age/age /usr/local/bin
         sudo install -m 755 age/age-keygen /usr/local/bin
-    - name: Install age and gpg4win (Windows)
+    - name: Install age (Windows)
       if: runner.os == 'Windows'
       run: |
         $env:PATH = "C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\ProgramData\chocolatey\bin"
         [Environment]::SetEnvironmentVariable("Path", $env:PATH, "Machine")
-        choco install --yes age.portable gpg4win
-        echo "C:\Program Files (x86)\GnuPG\bin" >> $env:GITHUB_PATH
-    - name: Test (umask 022)
+        choco install --yes age.portable
+    - name: Test (UNIX, umask 022)
       if: runner.os != 'Windows'
       run: go test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o022" -race ./...
-    - name: Test (umask 002)
+    - name: Test (UNIX, umask 002)
       if: runner.os != 'Windows'
       run: go test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o002" -race ./...
-    - name: Test
+    - name: Test (Windows)
       if: runner.os == 'Windows'
       run: go test -race ./...
+    - name: Upload artifact chocolatey.log
+      if: runner.os == 'Windows' # FIXME && failure()
+      uses: actions/upload-artifact@v2
+      with:
+        name: chocolatey.log
+        path: C:/ProgramData/chocolatey/logs/chocolatey.log
   test-release:
     runs-on: ubuntu-18.04
     steps:
