@@ -55,7 +55,7 @@ jobs:
         [Environment]::SetEnvironmentVariable("Path", $env:PATH, "Machine")
         choco install --yes age.portable
     - name: Install gpg4win (Windows)
-      if: runner.os == 'Windows'
+      if: false && runner.os == 'Windows' # FIXME
       run: |
         $env:PATH = "C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\ProgramData\chocolatey\bin"
         [Environment]::SetEnvironmentVariable("Path", $env:PATH, "Machine")
