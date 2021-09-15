@@ -53,14 +53,27 @@ jobs:
       run: |
         $env:PATH = "C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\ProgramData\chocolatey\bin"
         [Environment]::SetEnvironmentVariable("Path", $env:PATH, "Machine")
-        choco install --yes age.portable
-    - name: Test (umask 022)
+        choco install --no-progress --yes age.portable
+    - name: Install gpg4win (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        $env:PATH = "C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\ProgramData\chocolatey\bin"
+        [Environment]::SetEnvironmentVariable("Path", $env:PATH, "Machine")
+        choco install --no-progress --yes gpg4win
+        echo "C:\Program Files (x86)\GnuPG\bin" >> $env:GITHUB_PATH
+    - name: Upload chocolatey logs (Windows)
+      if: runner.os == 'Windows' && failure()
+      uses: actions/upload-artifact@v2
+      with:
+        name: chocolatey.log
+        path: C:/ProgramData/chocolatey/logs/chocolatey.log
+    - name: Test (UNIX, umask 022)
       if: runner.os != 'Windows'
       run: go test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o022" -race ./...
-    - name: Test (umask 002)
+    - name: Test (UNIX, umask 002)
       if: runner.os != 'Windows'
       run: go test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o002" -race ./...
-    - name: Test
+    - name: Test (Windows)
       if: runner.os == 'Windows'
       run: go test -race ./...
   test-release:
