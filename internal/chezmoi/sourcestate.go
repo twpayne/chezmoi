@@ -1510,7 +1510,8 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 		externalRelPath: {
 			&SourceStateDir{
 				Attr: DirAttr{
-					Exact: external.Exact,
+					TargetName: externalRelPath.Base(),
+					Exact:      external.Exact,
 				},
 				sourceRelPath: sourceRelPath,
 				targetStateEntry: &TargetStateDir{
@@ -1550,7 +1551,10 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 			}
 			sourceStateEntry = &SourceStateDir{
 				Attr: DirAttr{
-					Exact: external.Exact,
+					TargetName: info.Name(),
+					Exact:      external.Exact,
+					Private:    isPrivate(info),
+					ReadOnly:   isReadOnly(info),
 				},
 				sourceRelPath:    sourceRelPath,
 				targetStateEntry: targetStateEntry,
@@ -1562,8 +1566,12 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 			}
 			lazyContents := newLazyContents(contents)
 			fileAttr := FileAttr{
-				Empty:      true,
-				Executable: info.Mode().Perm()&0o111 != 0,
+				TargetName: info.Name(),
+				Type:       SourceFileTypeFile,
+				Empty:      info.Size() == 0,
+				Executable: isExecutable(info),
+				Private:    isPrivate(info),
+				ReadOnly:   isReadOnly(info),
 			}
 			targetStateEntry := &TargetStateFile{
 				lazyContents: lazyContents,
@@ -1571,6 +1579,7 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 				perm:         fileAttr.perm() &^ s.umask,
 			}
 			sourceStateEntry = &SourceStateFile{
+				lazyContents:     lazyContents,
 				Attr:             fileAttr,
 				sourceRelPath:    sourceRelPath,
 				targetStateEntry: targetStateEntry,
@@ -1580,6 +1589,10 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 				lazyLinkname: newLazyLinkname(linkname),
 			}
 			sourceStateEntry = &SourceStateFile{
+				Attr: FileAttr{
+					TargetName: info.Name(),
+					Type:       SourceFileTypeSymlink,
+				},
 				sourceRelPath:    sourceRelPath,
 				targetStateEntry: targetStateEntry,
 			}
