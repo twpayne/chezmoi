@@ -417,6 +417,15 @@ chezmoi requires Go version 1.17 or later. You can check the version of Go with:
 $ go version
 ```
 
+If you try to build chezmoi with an earlier version of Go you will get the error:
+
+```
+package github.com/twpayne/chezmoi/v2: build constraints exclude all Go files in /home/twp/src/github.com/twpayne/chezmoi
+```
+
+This is because chezmoi includes the build tag `go1.17` in `main.go`, which is
+only set on Go 1.17 or later.
+
 For more details on building chezmoi, see the [Contributing
 Guide]([CONTRIBUTING.md](https://github.com/twpayne/chezmoi/blob/master/docs/CONTRIBUTING.md)).
 
