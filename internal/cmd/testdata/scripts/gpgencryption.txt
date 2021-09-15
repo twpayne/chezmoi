@@ -1,4 +1,3 @@
-[windows] skip 'UNIX only'
 [!exec:gpg] skip 'gpg not found in $PATH'
 
 mkhomedir
