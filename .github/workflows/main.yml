@@ -76,6 +76,30 @@ jobs:
     - name: Test (Windows)
       if: runner.os == 'Windows'
       run: go test -race ./...
+  test-fedora:
+    runs-on: macos-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Test
+      run: |
+        ( cd assets/vagrant && ./test.sh fedora33 )
+  test-freebsd:
+    runs-on: macos-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Test
+      run: |
+        ( cd assets/vagrant && ./test.sh freebsd13 )
+  test-openbsd:
+    runs-on: macos-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Test
+      run: |
+        ( cd assets/vagrant && ./test.sh openbsd6 )
   test-release:
     runs-on: ubuntu-18.04
     steps:
@@ -192,6 +216,9 @@ jobs:
     - generate
     - lint
     - test
+    - test-fedora
+    - test-freebsd
+    - test-openbsd
     - test-release
     runs-on: ubuntu-18.04
     steps:
