@@ -11,15 +11,24 @@ env:
   GO_VERSION: 1.17.1
   GOLANGCI_LINT_VERSION: 1.42.1
 jobs:
-  test:
-    strategy:
-      fail-fast: false
-      matrix:
-        os:
-        - macos-latest
-        - ubuntu-18.04
-        - windows-latest
-    runs-on: ${{ matrix.os }}
+  test-fedora:
+    runs-on: macos-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Test
+      run: |
+        ( cd assets/vagrant && ./test.sh fedora33 )
+  test-freebsd:
+    runs-on: macos-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Test
+      run: |
+        ( cd assets/vagrant && ./test.sh freebsd13 )
+  test-macos:
+    runs-on: macos-latest
     steps:
     - name: Set up Go
       uses: actions/setup-go@v2
@@ -40,58 +49,14 @@ jobs:
     - name: Run
       run: |
         go run . --version
-    - name: Install age (Linux/macOS)
-      if: runner.os == 'Linux' || runner.os == 'macOS'
+    - name: Install age
       run: |
         cd $(mktemp -d)
-        goos=$(uname -s | tr '[:upper:]' '[:lower:]')
-        curl -fsSL https://dl.filippo.io/age/v${AGE_VERSION}?for=${goos}/amd64 | tar xzf -
+        curl -fsSL https://dl.filippo.io/age/v${AGE_VERSION}?for=darwin/amd64 | tar xzf -
         sudo install -m 755 age/age /usr/local/bin
         sudo install -m 755 age/age-keygen /usr/local/bin
-    - name: Install age (Windows)
-      if: runner.os == 'Windows'
-      run: |
-        $env:PATH = "C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\ProgramData\chocolatey\bin"
-        [Environment]::SetEnvironmentVariable("Path", $env:PATH, "Machine")
-        choco install --no-progress --yes age.portable
-    - name: Install gpg4win (Windows)
-      if: runner.os == 'Windows'
-      run: |
-        $env:PATH = "C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\ProgramData\chocolatey\bin"
-        [Environment]::SetEnvironmentVariable("Path", $env:PATH, "Machine")
-        choco install --no-progress --yes gpg4win
-        echo "C:\Program Files (x86)\GnuPG\bin" >> $env:GITHUB_PATH
-    - name: Upload chocolatey logs (Windows)
-      if: runner.os == 'Windows' && failure()
-      uses: actions/upload-artifact@v2
-      with:
-        name: chocolatey.log
-        path: C:/ProgramData/chocolatey/logs/chocolatey.log
-    - name: Test (UNIX, umask 022)
-      if: runner.os != 'Windows'
-      run: go test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o022" -race ./...
-    - name: Test (UNIX, umask 002)
-      if: runner.os != 'Windows'
-      run: go test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o002" -race ./...
-    - name: Test (Windows)
-      if: runner.os == 'Windows'
+    - name: Test
       run: go test -race ./...
-  test-fedora:
-    runs-on: macos-latest
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Test
-      run: |
-        ( cd assets/vagrant && ./test.sh fedora33 )
-  test-freebsd:
-    runs-on: macos-latest
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Test
-      run: |
-        ( cd assets/vagrant && ./test.sh freebsd13 )
   test-openbsd:
     runs-on: macos-latest
     steps:
@@ -100,6 +65,79 @@ jobs:
     - name: Test
       run: |
         ( cd assets/vagrant && ./test.sh openbsd6 )
+  test-ubuntu:
+    runs-on: ubuntu-18.04
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: ${{ env.GO_VERSION }}
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Cache Go modules
+      uses: actions/cache@v2
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+    - name: Build
+      run: |
+        go build ./...
+    - name: Run
+      run: |
+        go run . --version
+    - name: Install age
+      run: |
+        cd $(mktemp -d)
+        curl -fsSL https://dl.filippo.io/age/v${AGE_VERSION}?for=linux/amd64 | tar xzf -
+        sudo install -m 755 age/age /usr/local/bin
+        sudo install -m 755 age/age-keygen /usr/local/bin
+    - name: Test (umask 022)
+      run: go test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o022" -race ./...
+    - name: Test (umask 002)
+      run: go test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o002" -race ./...
+  test-windows:
+    runs-on: windows-latest
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: ${{ env.GO_VERSION }}
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Cache Go modules
+      uses: actions/cache@v2
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+    - name: Build
+      run: |
+        go build ./...
+    - name: Run
+      run: |
+        go run . --version
+    - name: Install age
+      run: |
+        $env:PATH = "C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\ProgramData\chocolatey\bin"
+        [Environment]::SetEnvironmentVariable("Path", $env:PATH, "Machine")
+        choco install --no-progress --yes age.portable
+    - name: Install gpg4win
+      run: |
+        $env:PATH = "C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\ProgramData\chocolatey\bin"
+        [Environment]::SetEnvironmentVariable("Path", $env:PATH, "Machine")
+        choco install --no-progress --yes gpg4win
+        echo "C:\Program Files (x86)\GnuPG\bin" >> $env:GITHUB_PATH
+    - name: Upload chocolatey
+      if: failure()
+      uses: actions/upload-artifact@v2
+      with:
+        name: chocolatey.log
+        path: C:/ProgramData/chocolatey/logs/chocolatey.log
+    - name: Test
+      run: go test -race ./...
   test-release:
     runs-on: ubuntu-18.04
     steps:
@@ -215,11 +253,13 @@ jobs:
     needs:
     - generate
     - lint
-    - test
     - test-fedora
     - test-freebsd
+    - test-macos
     - test-openbsd
     - test-release
+    - test-ubuntu
+    - test-windows
     runs-on: ubuntu-18.04
     steps:
     - name: Install build dependencies
