@@ -74,6 +74,8 @@ jobs:
         go-version: ${{ env.GO_VERSION }}
     - name: Checkout
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     - name: Cache Go modules
       uses: actions/cache@v2
       with:
@@ -97,6 +99,48 @@ jobs:
       run: go test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o022" -race ./...
     - name: Test (umask 002)
       run: go test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o002" -race ./...
+    - name: Install release dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get -yq --no-install-suggests --no-install-recommends install musl-tools snapcraft
+    - name: Build release
+      uses: goreleaser/goreleaser-action@v2
+      with:
+        version: latest
+        args: release --skip-publish --snapshot
+    - name: Test release
+      run: |
+        # verify that version information is embedded correctly
+        file ./dist/chezmoi-cgo-glibc_linux_amd64/chezmoi | tee /dev/stderr | grep -q "dynamically linked"
+        file ./dist/chezmoi-cgo-musl_linux_amd64/chezmoi | tee /dev/stderr | grep -q "statically linked"
+        ./dist/chezmoi-cgo-glibc_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v2"
+        ./dist/chezmoi-cgo-musl_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v2"
+        ./dist/chezmoi-nocgo_linux_386/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v2"
+    - name: Upload artifact chezmoi-linux-amd64
+      uses: actions/upload-artifact@v2
+      with:
+        name: chezmoi-linux-amd64
+        path: dist/chezmoi-cgo-glibc_linux_amd64/chezmoi
+    - name: Upload artifact chezmoi-linux-musl-amd64
+      uses: actions/upload-artifact@v2
+      with:
+        name: chezmoi-linux-musl-amd64
+        path: dist/chezmoi-cgo-musl_linux_amd64/chezmoi
+    - name: Upload artifact chezmoi-darwin-amd64
+      uses: actions/upload-artifact@v2
+      with:
+        name: chezmoi-darwin-amd64
+        path: dist/chezmoi-nocgo_darwin_amd64/chezmoi
+    - name: Upload artifact chezmoi-darwin-arm64
+      uses: actions/upload-artifact@v2
+      with:
+        name: chezmoi-darwin-arm64
+        path: dist/chezmoi-nocgo_darwin_arm64/chezmoi
+    - name: Upload artifact chezmoi-windows-amd64.exe
+      uses: actions/upload-artifact@v2
+      with:
+        name: chezmoi-windows-amd64.exe
+        path: dist/chezmoi-nocgo_windows_amd64/chezmoi.exe
   test-windows:
     runs-on: windows-latest
     steps:
@@ -138,66 +182,6 @@ jobs:
         path: C:/ProgramData/chocolatey/logs/chocolatey.log
     - name: Test
       run: go test -race ./...
-  test-release:
-    runs-on: ubuntu-18.04
-    steps:
-    - name: Install build dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get -yq --no-install-suggests --no-install-recommends install musl-tools snapcraft
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: ${{ env.GO_VERSION }}
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-    - name: Cache Go modules
-      uses: actions/cache@v2
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
-    - name: Build release
-      uses: goreleaser/goreleaser-action@v2
-      with:
-        version: latest
-        args: release --skip-publish --snapshot
-    - name: Test release
-      run: |
-        # verify that version information is embedded correctly
-        file ./dist/chezmoi-cgo-glibc_linux_amd64/chezmoi | tee /dev/stderr | grep -q "dynamically linked"
-        file ./dist/chezmoi-cgo-musl_linux_amd64/chezmoi | tee /dev/stderr | grep -q "statically linked"
-        ./dist/chezmoi-cgo-glibc_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v2"
-        ./dist/chezmoi-cgo-musl_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v2"
-        ./dist/chezmoi-nocgo_linux_386/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v2"
-    - name: Upload artifact chezmoi-linux-amd64
-      uses: actions/upload-artifact@v2
-      with:
-        name: chezmoi-linux-amd64
-        path: dist/chezmoi-cgo-glibc_linux_amd64/chezmoi
-    - name: Upload artifact chezmoi-linux-musl-amd64
-      uses: actions/upload-artifact@v2
-      with:
-        name: chezmoi-linux-musl-amd64
-        path: dist/chezmoi-cgo-musl_linux_amd64/chezmoi
-    - name: Upload artifact chezmoi-darwin-amd64
-      uses: actions/upload-artifact@v2
-      with:
-        name: chezmoi-darwin-amd64
-        path: dist/chezmoi-nocgo_darwin_amd64/chezmoi
-    - name: Upload artifact chezmoi-darwin-arm64
-      uses: actions/upload-artifact@v2
-      with:
-        name: chezmoi-darwin-arm64
-        path: dist/chezmoi-nocgo_darwin_arm64/chezmoi
-    - name: Upload artifact chezmoi-windows-amd64.exe
-      uses: actions/upload-artifact@v2
-      with:
-        name: chezmoi-windows-amd64.exe
-        path: dist/chezmoi-nocgo_windows_amd64/chezmoi.exe
   generate:
     runs-on: ubuntu-18.04
     steps:
@@ -248,7 +232,7 @@ jobs:
       run: |
         go install github.com/twpayne/findtypos@latest
         findtypos chezmoi .
-  release:
+  release: # FIXME this should be merged into test-ubuntu above
     if: startsWith(github.ref, 'refs/tags/')
     needs:
     - generate
@@ -257,7 +241,6 @@ jobs:
     - test-freebsd
     - test-macos
     - test-openbsd
-    - test-release
     - test-ubuntu
     - test-windows
     runs-on: ubuntu-18.04
