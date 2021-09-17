@@ -5,13 +5,16 @@ for os in "$@"; do
         export VAGRANT_VAGRANTFILE=assets/vagrant/${os}.Vagrantfile
         if ( cd ../.. && vagrant up ); then
             vagrant ssh -c "sh test-chezmoi.sh"
-            vagrantSSHExitCode=$?
+            vagrant_ssh_exit_code=$?
             vagrant destroy -f || exit 1
-            if [ $vagrantSSHExitCode -ne 0 ]; then
-                exit $vagrantSSHExitCode
+            if [ $vagrant_ssh_exit_code -ne 0 ]; then
+                exit $vagrant_ssh_exit_code
             fi
+        else
+            exit 1
         fi
     else
         echo "${os}.Vagrantfile not found"
+        exit 1
     fi
 done
