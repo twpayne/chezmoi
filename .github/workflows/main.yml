@@ -13,17 +13,35 @@ env:
 jobs:
   test-fedora:
     runs-on: macos-latest
+    env:
+      VAGRANT_BOX: fedora33
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+    - name: Cache Vagrant Boxes
+      uses: actions/cache@v2
+      with:
+        path: ~/.vagrant.d
+        key: ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-${{ hashFiles('assets/vagrant/*.Vagrantfile') }}
+        restore-keys: |
+          ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-
     - name: Test
       run: |
         ( cd assets/vagrant && ./test.sh fedora33 )
   test-freebsd:
     runs-on: macos-latest
+    env:
+      VAGRANT_BOX: freebsd13
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+    - name: Cache Vagrant Boxes
+      uses: actions/cache@v2
+      with:
+        path: ~/.vagrant.d
+        key: ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-${{ hashFiles('assets/vagrant/*.Vagrantfile') }}
+        restore-keys: |
+          ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-
     - name: Test
       run: |
         ( cd assets/vagrant && ./test.sh freebsd13 )
@@ -59,9 +77,18 @@ jobs:
       run: go test -race ./...
   test-openbsd:
     runs-on: macos-latest
+    env:
+      VAGRANT_BOX: openbsd6
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+    - name: Cache Vagrant Boxes
+      uses: actions/cache@v2
+      with:
+        path: ~/.vagrant.d
+        key: ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-${{ hashFiles('assets/vagrant/*.Vagrantfile') }}
+        restore-keys: |
+          ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-
     - name: Test
       run: |
         ( cd assets/vagrant && ./test.sh openbsd6 )
