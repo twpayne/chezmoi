@@ -984,8 +984,9 @@ attributes and their abbreviations are:
 | `encrypted`  | *none*       |
 | `exact`      | *none*       |
 | `executable` | `x`          |
-| `once`       | `o`
+| `once`       | `o`          |
 | `private`    | `p`          |
+| `readonly`   | `r`          |
 | `template`   | `t`          |
 
 Multiple attributes modifications may be specified by separating them with a
