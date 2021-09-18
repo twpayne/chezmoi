@@ -36,6 +36,7 @@ type attrModifier struct {
 	once       boolModifier
 	order      orderModifier
 	private    boolModifier
+	readOnly   boolModifier
 	template   boolModifier
 }
 
@@ -49,6 +50,7 @@ func (c *Config) newChattrCmd() *cobra.Command {
 		"executable", "x",
 		"once", "o",
 		"private", "p",
+		"readonly", "r",
 		"template", "t",
 	}
 	validArgs := make([]string, 0, 4*len(attrs))
@@ -215,6 +217,8 @@ func parseAttrModifier(s string) (*attrModifier, error) {
 			am.once = bm
 		case "private", "p":
 			am.private = bm
+		case "readonly", "r":
+			am.readOnly = bm
 		case "template", "t":
 			am.template = bm
 		default:
@@ -229,6 +233,7 @@ func (am *attrModifier) modifyDirAttr(dirAttr chezmoi.DirAttr) chezmoi.DirAttr {
 		TargetName: dirAttr.TargetName,
 		Exact:      am.exact.modify(dirAttr.Exact),
 		Private:    am.private.modify(dirAttr.Private),
+		ReadOnly:   am.readOnly.modify(dirAttr.ReadOnly),
 	}
 }
 
@@ -242,6 +247,7 @@ func (am *attrModifier) modifyFileAttr(fileAttr chezmoi.FileAttr) chezmoi.FileAt
 			Encrypted:  am.encrypted.modify(fileAttr.Encrypted),
 			Executable: am.executable.modify(fileAttr.Executable),
 			Private:    am.private.modify(fileAttr.Private),
+			ReadOnly:   am.readOnly.modify(fileAttr.ReadOnly),
 			Template:   am.template.modify(fileAttr.Template),
 		}
 	case chezmoi.SourceFileTypeModify:
@@ -250,6 +256,7 @@ func (am *attrModifier) modifyFileAttr(fileAttr chezmoi.FileAttr) chezmoi.FileAt
 			Type:       chezmoi.SourceFileTypeModify,
 			Executable: am.executable.modify(fileAttr.Executable),
 			Private:    am.private.modify(fileAttr.Private),
+			ReadOnly:   am.readOnly.modify(fileAttr.ReadOnly),
 			Template:   am.template.modify(fileAttr.Template),
 		}
 	case chezmoi.SourceFileTypeCreate:
@@ -259,6 +266,7 @@ func (am *attrModifier) modifyFileAttr(fileAttr chezmoi.FileAttr) chezmoi.FileAt
 			Encrypted:  am.encrypted.modify(fileAttr.Encrypted),
 			Executable: am.executable.modify(fileAttr.Executable),
 			Private:    am.private.modify(fileAttr.Private),
+			ReadOnly:   am.readOnly.modify(fileAttr.ReadOnly),
 			Template:   am.template.modify(fileAttr.Template),
 		}
 	case chezmoi.SourceFileTypeScript:
