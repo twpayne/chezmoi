@@ -910,7 +910,15 @@ func (s *SourceState) TemplateData() map[string]interface{} {
 
 // addExternal adds external source entries to s.
 func (s *SourceState) addExternal(sourceAbsPath AbsPath) error {
-	_, name := sourceAbsPath.Split()
+	parentAbsPath, name := sourceAbsPath.Split()
+
+	parentRelPath, err := parentAbsPath.TrimDirPrefix(s.sourceDirAbsPath)
+	if err != nil {
+		return err
+	}
+	parentSourceRelPath := NewSourceRelDirPath(parentRelPath)
+	parentTargetSourceRelPath := parentSourceRelPath.TargetRelPath(s.encryption.EncryptedSuffix())
+
 	suffix := mustTrimPrefix(string(name), externalName+".")
 	format, ok := Formats[suffix]
 	if !ok {
@@ -920,8 +928,16 @@ func (s *SourceState) addExternal(sourceAbsPath AbsPath) error {
 	if err != nil {
 		return fmt.Errorf("%s: %w", sourceAbsPath, err)
 	}
-	if err := format.Unmarshal(data, &s.externals); err != nil {
+	externals := make(map[RelPath]External)
+	if err := format.Unmarshal(data, &externals); err != nil {
 		return fmt.Errorf("%s: %w", sourceAbsPath, err)
+	}
+	for relPath, external := range externals {
+		targetRelPath := parentTargetSourceRelPath.Join(relPath)
+		if _, ok := s.externals[targetRelPath]; ok {
+			return fmt.Errorf("%s: duplicate externals", targetRelPath)
+		}
+		s.externals[targetRelPath] = external
 	}
 	return nil
 }
