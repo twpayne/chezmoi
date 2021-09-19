@@ -12,6 +12,7 @@
   * [Have chezmoi create a directory, but ignore its contents](#have-chezmoi-create-a-directory-but-ignore-its-contents)
   * [Ensure that a target is removed](#ensure-that-a-target-is-removed)
   * [Manage part, but not all, of a file](#manage-part-but-not-all-of-a-file)
+  * [Manage a file's permissions, but not its contents](#manage-a-files-permissions-but-not-its-contents)
   * [Populate `~/.ssh/authorized_keys` with your public SSH keys from GitHub](#populate-sshauthorized_keys-with-your-public-ssh-keys-from-github)
 * [Integrate chezmoi with your editor](#integrate-chezmoi-with-your-editor)
   * [Configure VIM to run `chezmoi apply` whenever you save a dotfile](#configure-vim-to-run-chezmoi-apply-whenever-you-save-a-dotfile)
@@ -284,6 +285,37 @@ substituted with:
 
 ```
 current-context: {{ output "kubectl" "config" "current-context" | trim }}
+```
+
+---
+
+### Manage a file's permissions, but not its contents
+
+chezmoi's `create_` attributes allows you to tell chezmoi to create a file if it
+does not already exist. chezmoi, however, will apply any permission changes from
+the `executable_`, `private_`, and `readonly_` attributes. This can be used to
+control a file's permissions without altering its contents.
+
+For example, if you want to ensure that `~/.kube/config` always has permissions
+600 then if you create an empty file called `dot_kube/private_dot_config` in
+your source state, chezmoi will ensure `~/.kube/config`'s permissions are 0600
+when you run `chezmoi apply` without changing its contents.
+
+This approach does have the downside that chezmoi will create the file if it
+does not already exist. If you only want `chezmoi apply` to set a file's
+permissions if it already exists and not create the file otherwise, you can use
+a `run_` script. For example, create a file in your source state called
+`run_set_kube_config_permissions.sh` containing:
+
+```bash
+#!/bin/sh
+
+FILE="$HOME/.kube/config"
+if [ -f "$FILE" ]; then
+    if [ "$(stat -c %a "$FILE")" != "600" ] ; then
+        chmod 600 "$FILE"
+    fi
+fi
 ```
 
 ---
