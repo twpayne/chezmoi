@@ -16,6 +16,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"os/exec"
 	"runtime"
 	"sort"
 	"strings"
@@ -38,10 +39,14 @@ const (
 
 // An External is an external source.
 type External struct {
-	Type            ExternalType  `json:"type" toml:"type" yaml:"type"`
-	Encrypted       bool          `json:"encrypted" toml:"encrypted" yaml:"encrypted"`
-	Exact           bool          `json:"exact" toml:"exact" yaml:"exact"`
-	Executable      bool          `json:"executable" toml:"executable" yaml:"executable"`
+	Type       ExternalType `json:"type" toml:"type" yaml:"type"`
+	Encrypted  bool         `json:"encrypted" toml:"encrypted" yaml:"encrypted"`
+	Exact      bool         `json:"exact" toml:"exact" yaml:"exact"`
+	Executable bool         `json:"executable" toml:"executable" yaml:"executable"`
+	Filter     struct {
+		Command string   `json:"command" toml:"command" yaml:"command"`
+		Args    []string `json:"args" toml:"args" yaml:"args"`
+	} `json:"filter" toml:"filter" yaml:"filter"`
 	Format          ArchiveFormat `json:"format" toml:"format" yaml:"format"`
 	StripComponents int           `json:"stripComponents" toml:"stripComponents" yaml:"stripComponents"`
 	URL             string        `json:"url" toml:"url" yaml:"url"`
@@ -1038,21 +1043,13 @@ func (s *SourceState) executeTemplate(templateAbsPath AbsPath) ([]byte, error) {
 	return s.ExecuteTemplateData(string(templateAbsPath), data)
 }
 
-// getExternalData reads the external data for externalRelPath from
-// external.URL.
-func (s *SourceState) getExternalData(ctx context.Context, externalRelPath RelPath, external External, options *ReadOptions) ([]byte, error) {
+func (s *SourceState) getExternalDataRaw(ctx context.Context, externalRelPath RelPath, external External, options *ReadOptions) ([]byte, error) {
 	cacheKey := hex.EncodeToString(SHA256Sum([]byte(external.URL)))
 	cachedDataAbsPath := s.cacheDirAbsPath.Join("external", RelPath(cacheKey))
 	if options == nil || !options.RefreshExternals {
 		data, err := s.system.ReadFile(cachedDataAbsPath)
 		switch {
 		case err == nil:
-			if external.Encrypted {
-				data, err = s.encryption.Decrypt(data)
-				if err != nil {
-					return nil, fmt.Errorf("%s: %s: %w", externalRelPath, external.URL, err)
-				}
-			}
 			return data, nil
 		case !errors.Is(err, fs.ErrNotExist):
 			return nil, err
@@ -1092,8 +1089,29 @@ func (s *SourceState) getExternalData(ctx context.Context, externalRelPath RelPa
 		return nil, err
 	}
 
+	return data, nil
+}
+
+// getExternalDataRaw reads the external data for externalRelPath from
+// external.URL.
+func (s *SourceState) getExternalData(ctx context.Context, externalRelPath RelPath, external External, options *ReadOptions) ([]byte, error) {
+	data, err := s.getExternalDataRaw(ctx, externalRelPath, external, options)
+	if err != nil {
+		return nil, err
+	}
+
 	if external.Encrypted {
 		data, err = s.encryption.Decrypt(data)
+		if err != nil {
+			return nil, fmt.Errorf("%s: %s: %w", externalRelPath, external.URL, err)
+		}
+	}
+
+	if external.Filter.Command != "" {
+		//nolint:gosec
+		cmd := exec.Command(external.Filter.Command, external.Filter.Args...)
+		cmd.Stdin = bytes.NewReader(data)
+		data, err = s.system.IdempotentCmdOutput(cmd)
 		if err != nil {
 			return nil, fmt.Errorf("%s: %s: %w", externalRelPath, external.URL, err)
 		}
