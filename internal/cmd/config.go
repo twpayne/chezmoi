@@ -720,7 +720,7 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 	}
 
 	var osRelease map[string]interface{}
-	if rawOSRelease, err := chezmoi.OSRelease(c.fileSystem); err == nil {
+	if rawOSRelease, err := chezmoi.OSRelease(c.baseSystem); err == nil {
 		osRelease = upperSnakeCaseToCamelCaseMap(rawOSRelease)
 	} else {
 		log.Debug().

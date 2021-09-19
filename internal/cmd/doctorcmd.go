@@ -10,14 +10,16 @@ import (
 	"path/filepath"
 	"regexp"
 	"runtime"
+	"sort"
 	"strings"
 	"text/tabwriter"
 
 	"github.com/coreos/go-semver/semver"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"github.com/twpayne/go-shell"
-	"github.com/twpayne/go-vfs/v4"
+	"github.com/twpayne/go-xdg/v6"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
@@ -37,8 +39,8 @@ const (
 
 // A check is an individual check.
 type check interface {
-	Name() string               // Name returns the check's name.
-	Run() (checkResult, string) // Run runs the check.
+	Name() string                                    // Name returns the check's name.
+	Run(system chezmoi.System) (checkResult, string) // Run runs the check.
 }
 
 var checkResultStr = map[checkResult]string{
@@ -62,10 +64,18 @@ type binaryCheck struct {
 	minVersion  *semver.Version
 }
 
+// A configFileCheck checks that only one config file exists and that is
+// readable.
+type configFileCheck struct {
+	basename chezmoi.RelPath
+	bds      *xdg.BaseDirectorySpecification
+	expected chezmoi.AbsPath
+}
+
 // A dirCheck checks that a directory exists.
 type dirCheck struct {
 	name    string
-	dirname string
+	dirname chezmoi.AbsPath
 }
 
 // An executableCheck checks the executable.
@@ -74,7 +84,7 @@ type executableCheck struct{}
 // A fileCheck checks that a file exists.
 type fileCheck struct {
 	name       string
-	filename   string
+	filename   chezmoi.AbsPath
 	ifNotSet   checkResult
 	ifNotExist checkResult
 }
@@ -85,7 +95,7 @@ type osArchCheck struct{}
 // A suspiciousEntriesCheck checks that a source directory does not contain any
 // suspicious files.
 type suspiciousEntriesCheck struct {
-	dirname string
+	dirname chezmoi.AbsPath
 }
 
 // A umaskCheck checks the umask.
@@ -128,21 +138,21 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		&osArchCheck{},
 		&executableCheck{},
-		&fileCheck{
-			name:       "config-file",
-			filename:   string(c.configFileAbsPath),
-			ifNotExist: checkResultInfo,
+		&configFileCheck{
+			basename: "chezmoi",
+			bds:      c.bds,
+			expected: c.configFileAbsPath,
 		},
 		&dirCheck{
 			name:    "source-dir",
-			dirname: string(c.SourceDirAbsPath),
+			dirname: c.SourceDirAbsPath,
 		},
 		&suspiciousEntriesCheck{
-			dirname: string(c.SourceDirAbsPath),
+			dirname: c.SourceDirAbsPath,
 		},
 		&dirCheck{
 			name:    "dest-dir",
-			dirname: string(c.DestDirAbsPath),
+			dirname: c.DestDirAbsPath,
 		},
 		&binaryCheck{
 			name:       "shell",
@@ -218,7 +228,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		&fileCheck{
 			name:       "keepassxc-db",
-			filename:   c.Keepassxc.Database,
+			filename:   chezmoi.AbsPath(c.Keepassxc.Database),
 			ifNotSet:   checkResultInfo,
 			ifNotExist: checkResultInfo,
 		},
@@ -259,7 +269,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 	resultWriter := tabwriter.NewWriter(c.stdout, 3, 0, 3, ' ', 0)
 	fmt.Fprint(resultWriter, "RESULT\tCHECK\tMESSAGE\n")
 	for _, check := range checks {
-		checkResult, message := check.Run()
+		checkResult, message := check.Run(c.baseSystem)
 		// Conceal the user's actual home directory in the message as the
 		// output of chezmoi doctor is often posted publicly and would otherwise
 		// reveal the user's username.
@@ -282,7 +292,7 @@ func (c *binaryCheck) Name() string {
 	return c.name
 }
 
-func (c *binaryCheck) Run() (checkResult, string) {
+func (c *binaryCheck) Run(system chezmoi.System) (checkResult, string) {
 	if c.binaryname == "" {
 		return c.ifNotSet, "not set"
 	}
@@ -325,12 +335,49 @@ func (c *binaryCheck) Run() (checkResult, string) {
 	return checkResultOK, fmt.Sprintf("found %s, version %s", path, version)
 }
 
+func (c *configFileCheck) Name() string {
+	return "config-file"
+}
+
+func (c *configFileCheck) Run(system chezmoi.System) (checkResult, string) {
+	filenames := chezmoi.NewStringSet()
+	for _, dir := range append([]string{c.bds.ConfigHome}, c.bds.ConfigDirs...) {
+		dirAbsPath := chezmoi.AbsPath(dir)
+		for _, extension := range viper.SupportedExts {
+			filename := dirAbsPath.Join(c.basename, chezmoi.RelPath(c.basename.String()+"."+extension))
+			if _, err := system.Stat(filename); err == nil {
+				filenames.Add(filename.String())
+			}
+		}
+	}
+	switch len(filenames) {
+	case 0:
+		return checkResultOK, "no config file found"
+	case 1:
+		filename := filenames.Element()
+		if filename != c.expected.String() {
+			return checkResultFailed, fmt.Sprintf("found %s, expected %s", filename, c.expected)
+		}
+		if _, err := system.ReadFile(chezmoi.AbsPath(filename)); err != nil {
+			return checkResultError, fmt.Sprintf("%s: %v", filename, err)
+		}
+		return checkResultOK, filename
+	default:
+		filenameStrs := make([]string, 0, len(filenames))
+		for filename := range filenames {
+			filenameStrs = append(filenameStrs, filename)
+		}
+		sort.Strings(filenameStrs)
+		return checkResultWarning, fmt.Sprintf("%s: multiple config files", englishList(filenameStrs))
+	}
+}
+
 func (c *dirCheck) Name() string {
 	return c.name
 }
 
-func (c *dirCheck) Run() (checkResult, string) {
-	if _, err := os.ReadDir(c.dirname); err != nil {
+func (c *dirCheck) Run(system chezmoi.System) (checkResult, string) {
+	if _, err := system.ReadDir(c.dirname); err != nil {
 		return checkResultError, fmt.Sprintf("%s: %v", c.dirname, err)
 	}
 	return checkResultOK, fmt.Sprintf("%s is a directory", c.dirname)
@@ -340,7 +387,7 @@ func (c *executableCheck) Name() string {
 	return "executable"
 }
 
-func (c *executableCheck) Run() (checkResult, string) {
+func (c *executableCheck) Run(system chezmoi.System) (checkResult, string) {
 	executable, err := os.Executable()
 	if err != nil {
 		return checkResultError, err.Error()
@@ -352,12 +399,12 @@ func (c *fileCheck) Name() string {
 	return c.name
 }
 
-func (c *fileCheck) Run() (checkResult, string) {
+func (c *fileCheck) Run(system chezmoi.System) (checkResult, string) {
 	if c.filename == "" {
 		return c.ifNotSet, "not set"
 	}
 
-	_, err := os.ReadFile(c.filename)
+	_, err := system.ReadFile(c.filename)
 	switch {
 	case errors.Is(err, fs.ErrNotExist):
 		return c.ifNotExist, fmt.Sprintf("%s does not exist", c.filename)
@@ -372,9 +419,9 @@ func (osArchCheck) Name() string {
 	return "os-arch"
 }
 
-func (osArchCheck) Run() (checkResult, string) {
+func (osArchCheck) Run(system chezmoi.System) (checkResult, string) {
 	fields := []string{runtime.GOOS + "/" + runtime.GOARCH}
-	if osRelease, err := chezmoi.OSRelease(vfs.OSFS); err == nil {
+	if osRelease, err := chezmoi.OSRelease(system); err == nil {
 		if name, ok := osRelease["NAME"].(string); ok {
 			if version, ok := osRelease["VERSION"].(string); ok {
 				fields = append(fields, "("+name+"/"+version+")")
@@ -388,15 +435,15 @@ func (c *suspiciousEntriesCheck) Name() string {
 	return "suspicious-entries"
 }
 
-func (c *suspiciousEntriesCheck) Run() (checkResult, string) {
+func (c *suspiciousEntriesCheck) Run(system chezmoi.System) (checkResult, string) {
 	// FIXME check that config file templates are in root
 	var suspiciousEntries []string
-	if err := filepath.Walk(c.dirname, func(path string, info fs.FileInfo, err error) error {
+	if err := chezmoi.WalkDir(system, c.dirname, func(absPath chezmoi.AbsPath, info fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
-		if chezmoi.SuspiciousSourceDirEntry(filepath.Base(path), info) {
-			relPath, err := filepath.Rel(c.dirname, path)
+		if chezmoi.SuspiciousSourceDirEntry(absPath.Base(), info) {
+			relPath, err := filepath.Rel(c.dirname.String(), absPath.String()) // FIXME add Rel to chezmoi.AbsPath
 			if err != nil {
 				return err
 			}
@@ -420,7 +467,7 @@ func (c *versionCheck) Name() string {
 	return "version"
 }
 
-func (c *versionCheck) Run() (checkResult, string) {
+func (c *versionCheck) Run(system chezmoi.System) (checkResult, string) {
 	if c.versionInfo.Version == "" || c.versionInfo.Commit == "" {
 		return checkResultWarning, c.versionStr
 	}

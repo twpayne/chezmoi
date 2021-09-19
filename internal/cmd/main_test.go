@@ -534,15 +534,11 @@ func setup(env *testscript.Env) error {
 	}
 	absSlashHomeDir := filepath.ToSlash(absHomeDir)
 
-	var (
-		chezmoiConfigDir = path.Join(absSlashHomeDir, ".config", "chezmoi")
-		chezmoiSourceDir = path.Join(absSlashHomeDir, ".local", "share", "chezmoi")
-	)
-
 	env.Setenv("HOME", homeDir)
 	env.Setenv("PATH", prependDirToPath(binDir, env.Getenv("PATH")))
-	env.Setenv("CHEZMOICONFIGDIR", chezmoiConfigDir)
-	env.Setenv("CHEZMOISOURCEDIR", chezmoiSourceDir)
+	env.Setenv("CHEZMOICONFIGDIR", path.Join(absSlashHomeDir, ".config", "chezmoi"))
+	env.Setenv("CHEZMOISOURCEDIR", path.Join(absSlashHomeDir, ".local", "share", "chezmoi"))
+
 	switch runtime.GOOS {
 	case "windows":
 		env.Setenv("EDITOR", filepath.Join(binDir, "editor.cmd"))
