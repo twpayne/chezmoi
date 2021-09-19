@@ -677,7 +677,8 @@ were in the source state.
 `.chezmoiexternal.<format>` is interpreted as a template. This allows different
 externals to be included on different machines.
 
-Entries are indexed by target name, and must have a `type` and a `url` field.
+Entries are indexed by target name relative to the directory of the
+`.chezmoiexternal.<format>` file, and must have a `type` and a `url` field.
 `type` can be either `file` or `archive`. All of the entries parent directories
 must be defined in the source state. chezmoi will not create parent directories
 automatically.

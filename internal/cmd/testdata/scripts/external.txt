@@ -28,6 +28,12 @@ cmp $HOME/.dir/dir/file golden/dir/file
 [!windows] readlink $HOME/.dir/dir/symlink file
 ! exists $HOME/.dir/file
 
+# test that chezmoi reads externals from subdirectories
+chhome home5/user
+chezmoi apply --force
+cmp $HOME/.dir/subdir/dir/file golden/dir/file
+[!windows] readlink $HOME/.dir/subdir/dir/symlink file
+
 -- archive/dir/file --
 # contents of dir/file
 -- golden/.file --
@@ -52,6 +58,12 @@ cmp $HOME/.dir/dir/file golden/dir/file
 -- home4/user/.dir/file --
 -- home4/user/.local/share/chezmoi/.chezmoiexternal.yaml --
 .dir:
+    type: archive
+    url: {{ env "HTTPD_URL" }}/archive.tar.gz
+    exact: true
+    stripComponents: 1
+-- home5/user/.local/share/chezmoi/dot_dir/.chezmoiexternal.yaml --
+subdir:
     type: archive
     url: {{ env "HTTPD_URL" }}/archive.tar.gz
     exact: true

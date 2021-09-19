@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"io/fs"
+	"net/http"
+	"net/http/httptest"
 	"path/filepath"
 	"testing"
 	"text/template"
@@ -1222,6 +1224,73 @@ func TestSourceStateRead(t *testing.T) {
 				s.system = nil
 				s.templateData = nil
 				assert.Equal(t, tc.expectedSourceState, s)
+			})
+		})
+	}
+}
+
+func TestSourceStateReadExternal(t *testing.T) {
+	httpServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_, err := w.Write([]byte("data"))
+		require.NoError(t, err)
+	}))
+	defer httpServer.Close()
+
+	for _, tc := range []struct {
+		name              string
+		root              interface{}
+		expectedExternals map[RelPath]External
+	}{
+		{
+			name: "external",
+			root: map[string]interface{}{
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
+					".chezmoiexternal.yaml": chezmoitest.JoinLines(
+						`file:`,
+						`    type: "file"`,
+						`    url: "`+httpServer.URL+`/file"`,
+					),
+				},
+			},
+			expectedExternals: map[RelPath]External{
+				"file": {
+					Type: "file",
+					URL:  httpServer.URL + "/file",
+				},
+			},
+		},
+		{
+			name: "external_in_subdir",
+			root: map[string]interface{}{
+				"/home/user/.local/share/chezmoi/dot_dir": map[string]interface{}{
+					".chezmoiexternal.yaml": chezmoitest.JoinLines(
+						`file:`,
+						`    type: "file"`,
+						`    url: "`+httpServer.URL+`/file"`,
+					),
+				},
+			},
+			expectedExternals: map[RelPath]External{
+				".dir/file": {
+					Type: "file",
+					URL:  httpServer.URL + "/file",
+				},
+			},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
+				ctx := context.Background()
+				system := NewRealSystem(fileSystem)
+				s := NewSourceState(
+					WithBaseSystem(system),
+					WithCacheDir("/home/user/.cache/chezmoi"),
+					WithDestDir("/home/user"),
+					WithSourceDir("/home/user/.local/share/chezmoi"),
+					WithSystem(system),
+				)
+				require.NoError(t, s.Read(ctx, nil))
+				assert.Equal(t, tc.expectedExternals, s.externals)
 			})
 		})
 	}
