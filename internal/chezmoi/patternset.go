@@ -9,20 +9,20 @@ import (
 	vfs "github.com/twpayne/go-vfs/v4"
 )
 
-// A stringSet is a set of strings.
-type stringSet map[string]struct{}
+// A StringSet is a set of strings.
+type StringSet map[string]struct{}
 
 // An patternSet is a set of patterns.
 type patternSet struct {
-	includePatterns stringSet
-	excludePatterns stringSet
+	includePatterns StringSet
+	excludePatterns StringSet
 }
 
 // newPatternSet returns a new patternSet.
 func newPatternSet() *patternSet {
 	return &patternSet{
-		includePatterns: newStringSet(),
-		excludePatterns: newStringSet(),
+		includePatterns: NewStringSet(),
+		excludePatterns: NewStringSet(),
 	}
 }
 
@@ -32,9 +32,9 @@ func (ps *patternSet) add(pattern string, include bool) error {
 		return fmt.Errorf("%s: invalid pattern", pattern)
 	}
 	if include {
-		ps.includePatterns.add(pattern)
+		ps.includePatterns.Add(pattern)
 	} else {
-		ps.excludePatterns.add(pattern)
+		ps.excludePatterns.Add(pattern)
 	}
 	return nil
 }
@@ -42,13 +42,13 @@ func (ps *patternSet) add(pattern string, include bool) error {
 // glob returns all matches in fileSystem.
 func (ps *patternSet) glob(fileSystem vfs.FS, prefix string) ([]string, error) {
 	// FIXME use AbsPath and RelPath
-	allMatches := newStringSet()
+	allMatches := NewStringSet()
 	for includePattern := range ps.includePatterns {
 		matches, err := doublestar.Glob(fileSystem, prefix+includePattern)
 		if err != nil {
 			return nil, err
 		}
-		allMatches.add(matches...)
+		allMatches.Add(matches...)
 	}
 	for match := range allMatches {
 		for excludePattern := range ps.excludePatterns {
@@ -61,7 +61,7 @@ func (ps *patternSet) glob(fileSystem vfs.FS, prefix string) ([]string, error) {
 			}
 		}
 	}
-	matchesSlice := allMatches.elements()
+	matchesSlice := allMatches.Elements()
 	for i, match := range matchesSlice {
 		matchesSlice[i] = mustTrimPrefix(filepath.ToSlash(match), prefix)
 	}
@@ -84,28 +84,37 @@ func (ps *patternSet) match(name string) bool {
 	return false
 }
 
-// newStringSet returns a new StringSet containing elements.
-func newStringSet(elements ...string) stringSet {
-	s := make(stringSet)
-	s.add(elements...)
+// NewStringSet returns a new StringSet containing elements.
+func NewStringSet(elements ...string) StringSet {
+	s := make(StringSet)
+	s.Add(elements...)
 	return s
 }
 
-// add adds elements to s.
-func (s stringSet) add(elements ...string) {
+// Add adds elements to s.
+func (s StringSet) Add(elements ...string) {
 	for _, element := range elements {
 		s[element] = struct{}{}
 	}
 }
 
-// contains returns true if s contains element.
-func (s stringSet) contains(element string) bool {
+// Contains returns true if s Contains element.
+func (s StringSet) Contains(element string) bool {
 	_, ok := s[element]
 	return ok
 }
 
-// elements returns all the elements of s.
-func (s stringSet) elements() []string {
+// Element returns an arbitrary element from s or the empty string if s is
+// empty.
+func (s StringSet) Element() string {
+	for element := range s {
+		return element
+	}
+	return ""
+}
+
+// Elements returns all the Elements of s.
+func (s StringSet) Elements() []string {
 	elements := make([]string, 0, len(s))
 	for element := range s {
 		elements = append(elements, element)

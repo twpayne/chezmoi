@@ -7,9 +7,11 @@ import (
 	"fmt"
 
 	"golang.org/x/sys/unix"
+
+	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
-func (c *umaskCheck) Run() (checkResult, string) {
+func (c *umaskCheck) Run(system chezmoi.System) (checkResult, string) {
 	umask := unix.Umask(0)
 	unix.Umask(umask)
 	result := checkResultOK

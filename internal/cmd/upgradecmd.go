@@ -339,7 +339,7 @@ func (c *Config) upgradePackage(ctx context.Context, rr *github.RepositoryReleas
 		return c.run("", "brew", []string{"upgrade", c.upgrade.repo})
 	case "linux":
 		// Determine the package type and architecture.
-		packageType, err := getPackageType(c.fileSystem)
+		packageType, err := getPackageType(c.baseSystem)
 		if err != nil {
 			return err
 		}
@@ -497,8 +497,8 @@ func getMethod(fileSystem vfs.Stater, executableAbsPath chezmoi.AbsPath) (string
 }
 
 // getPackageType returns the distributions package type based on is OS release.
-func getPackageType(fileSystem vfs.FS) (string, error) {
-	osRelease, err := chezmoi.OSRelease(fileSystem)
+func getPackageType(system chezmoi.System) (string, error) {
+	osRelease, err := chezmoi.OSRelease(system)
 	if err != nil {
 		return packageTypeNone, err
 	}

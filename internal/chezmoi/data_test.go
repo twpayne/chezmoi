@@ -130,7 +130,8 @@ func TestOSRelease(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
-				actual, err := OSRelease(fileSystem)
+				system := NewRealSystem(fileSystem)
+				actual, err := OSRelease(system)
 				assert.NoError(t, err)
 				assert.Equal(t, tc.expected, actual)
 			})

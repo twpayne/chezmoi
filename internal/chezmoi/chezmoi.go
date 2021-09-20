@@ -64,7 +64,7 @@ var (
 )
 
 // knownPrefixedFiles is a set of known filenames with the .chezmoi prefix.
-var knownPrefixedFiles = newStringSet(
+var knownPrefixedFiles = NewStringSet(
 	Prefix+".json"+TemplateSuffix,
 	Prefix+".toml"+TemplateSuffix,
 	Prefix+".yaml"+TemplateSuffix,
@@ -137,7 +137,7 @@ func SHA256Sum(data []byte) []byte {
 func SuspiciousSourceDirEntry(base string, info fs.FileInfo) bool {
 	switch info.Mode().Type() {
 	case 0:
-		return strings.HasPrefix(base, Prefix) && !knownPrefixedFiles.contains(base)
+		return strings.HasPrefix(base, Prefix) && !knownPrefixedFiles.Contains(base)
 	case fs.ModeDir:
 		return strings.HasPrefix(base, Prefix) && base != templatesDirName
 	case fs.ModeSymlink:
