@@ -1070,7 +1070,13 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		"mode",
 		"source",
 	} {
-		if err := viper.BindPFlag(key, persistentFlags.Lookup(key)); err != nil {
+		viperKey := key
+		if key == "source" {
+			viperKey = "sourceDir"
+		} else if key == "destination" {
+			viperKey = "destDir"
+		}
+		if err := viper.BindPFlag(viperKey, persistentFlags.Lookup(key)); err != nil {
 			return nil, err
 		}
 	}
@@ -1467,19 +1473,18 @@ func (c *Config) promptChoice(prompt string, choices []string) (string, error) {
 }
 
 func (c *Config) readConfig() error {
-	v := viper.New()
-	v.SetConfigFile(string(c.configFileAbsPath))
+	viper.SetConfigFile(string(c.configFileAbsPath))
 	if c.configFormat != "" {
-		v.SetConfigType(c.configFormat.String())
+		viper.SetConfigType(c.configFormat.String())
 	}
-	v.SetFs(afero.FromIOFS{FS: c.fileSystem})
-	switch err := v.ReadInConfig(); {
+	viper.SetFs(afero.FromIOFS{FS: c.fileSystem})
+	switch err := viper.ReadInConfig(); {
 	case errors.Is(err, fs.ErrNotExist):
 		return nil
 	case err != nil:
 		return err
 	}
-	if err := v.Unmarshal(c, viperDecodeConfigOptions...); err != nil {
+	if err := viper.Unmarshal(c, viperDecodeConfigOptions...); err != nil {
 		return err
 	}
 	return c.validateData()
