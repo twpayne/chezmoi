@@ -8,6 +8,10 @@ stdout 'sourceDir: .*/flag/source'
 
 chhome home2/user
 
+# test that flags override default config
+chezmoi execute-template --source=/flag/source '{{ .chezmoi.sourceDir }}'
+stdout /flag/source
+
 # test that config files override default config
 chezmoi data --format=yaml
 stdout 'sourceDir: .*/config/source'
