@@ -263,12 +263,11 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 
 	// Reload config if it was created.
 	if configTemplateRelPath != "" {
-		v := viper.New()
-		v.SetConfigType(ext)
-		if err := v.ReadConfig(bytes.NewBuffer(configFileContents)); err != nil {
+		viper.SetConfigType(ext)
+		if err := viper.ReadConfig(bytes.NewBuffer(configFileContents)); err != nil {
 			return err
 		}
-		if err := v.Unmarshal(c, viperDecodeConfigOptions...); err != nil {
+		if err := viper.Unmarshal(c, viperDecodeConfigOptions...); err != nil {
 			return err
 		}
 	}

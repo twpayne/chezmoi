@@ -1059,23 +1059,20 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 
 	persistentFlags.Var(&c.Color, "color", "Colorize output")
 	persistentFlags.VarP(&c.DestDirAbsPath, "destination", "D", "Set destination directory")
+	persistentFlags.Var(&c.Mode, "mode", "Mode")
 	persistentFlags.BoolVar(&c.Safe, "safe", c.Safe, "Safely replace files and symlinks")
 	persistentFlags.VarP(&c.SourceDirAbsPath, "source", "S", "Set source directory")
-	persistentFlags.Var(&c.Mode, "mode", "Mode")
 	persistentFlags.Var(&c.UseBuiltinAge, "use-builtin-age", "Use builtin age")
 	persistentFlags.Var(&c.UseBuiltinGit, "use-builtin-git", "Use builtin git")
-	for _, key := range []string{
-		"color",
-		"destination",
-		"mode",
-		"source",
+	for viperKey, key := range map[string]string{
+		"color":         "color",
+		"destDir":       "destination",
+		"mode":          "mode",
+		"safe":          "safe",
+		"sourceDir":     "source",
+		"useBuiltinAge": "use-builtin-age",
+		"useBuiltinGit": "use-builtin-git",
 	} {
-		viperKey := key
-		if key == "source" {
-			viperKey = "sourceDir"
-		} else if key == "destination" {
-			viperKey = "destDir"
-		}
 		if err := viper.BindPFlag(viperKey, persistentFlags.Lookup(key)); err != nil {
 			return nil, err
 		}
