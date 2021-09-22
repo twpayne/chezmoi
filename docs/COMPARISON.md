@@ -39,6 +39,7 @@
 | Custom variables in templates          | 🟢            | 🔴                | 🔴                | 🔴                | 🔴                       | 🔴            | 🔴         |
 | Executable files                       | 🟢            | 🟢                | 🟢                | 🟢                | 🟢                       | 🔴            | 🟢         |
 | File creation with initial contents    | 🟢            | 🔴                | 🔴                | 🔴                | 🟢                       | 🔴            | 🔴         |
+| Externals                              | 🟢            | 🔴                | 🔴                | 🔴                | 🔴                       | 🔴            | 🔴         |
 | Manage partial files                   | 🟢            | 🔴                | 🔴                | 🔴                | 🟠                       | 🔴            | 🟠         |
 | File removal                           | 🟢            | 🔴                | 🔴                | 🔴                | 🟢                       | 🔴            | 🔴         |
 | Directory creation                     | 🟢            | 🟢                | 🟢                | 🔴                | 🟢                       | 🔴            | 🟢         |
