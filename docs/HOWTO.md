@@ -344,7 +344,7 @@ GitHub username:
 Put the following in your `.vimrc`:
 
 ```vim
-autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path %
+autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path "%"
 ```
 
 ---
