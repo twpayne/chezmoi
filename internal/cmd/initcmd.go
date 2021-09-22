@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/fs"
 	"os"
 	"regexp"
 	"runtime"
@@ -133,9 +132,24 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 		c.init.purgeBinary = true
 	}
 
-	// If the source repo does not exist then init or clone it.
-	switch _, err := c.baseSystem.Stat(c.SourceDirAbsPath.Join(".git")); {
-	case errors.Is(err, fs.ErrNotExist):
+	// Search upwards to find out if we're already in a git repository.
+	inWorkingCopy := false
+	workingCopyDirAbsPath := c.SourceDirAbsPath
+FOR:
+	for {
+		if info, err := c.baseSystem.Stat(workingCopyDirAbsPath.Join(".git")); err == nil && info.IsDir() {
+			inWorkingCopy = true
+			break FOR
+		}
+		prevWorkingCopyDirAbsPath := workingCopyDirAbsPath
+		workingCopyDirAbsPath = workingCopyDirAbsPath.Dir()
+		if len(workingCopyDirAbsPath) >= len(prevWorkingCopyDirAbsPath) {
+			break FOR
+		}
+	}
+
+	// If the working copy does not exist then init it or clone it.
+	if !inWorkingCopy {
 		rawSourceDir, err := c.baseSystem.RawPath(c.SourceDirAbsPath)
 		if err != nil {
 			return err
@@ -208,8 +222,6 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 				}
 			}
 		}
-	case err != nil:
-		return err
 	}
 
 	// Find config template, execute it, and create config file.

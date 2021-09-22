@@ -86,6 +86,13 @@ chezmoi init --config-path=$HOME/.chezmoi.toml file://$WORK/home/user/.local/sha
 cmp $HOME/.chezmoi.toml golden/chezmoi.toml
 ! exists $CHEZMOICONFIGDIR/chezmoi.toml
 
+# test chezmoi init when the source dir is already in a git working copy
+chhome home11/user
+mkgitconfig
+exec git init $HOME/.local/share
+chezmoi init
+! exists $CHEZMOISOURCEDIR/.git
+
 -- golden/chezmoi.toml --
 [data]
     email = "firstname.lastname@company.com"
