@@ -104,7 +104,10 @@ changelog:
   sort: asc
   filters:
     exclude:
-    - "Merge pull request"
+    - "^chore:"
+    - "^test:"
+    - Merge pull request
+    - Merge branch
 
 checksum:
 

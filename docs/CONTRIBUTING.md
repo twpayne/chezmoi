@@ -115,10 +115,8 @@ that:
 * The code passes [`golangci-lint`](https://github.com/golangci/golangci-lint).
   You can ensure this by running `make lint`.
 
-* The commit messages match chezmoi's convention, specifically that they begin
-  with a capitalized verb in the imperative and give a short description of what
-  the commit does. Detailed information or justification can be optionally
-  included in the body of the commit message.
+* The commit messages follow the [conventional commits
+  specification](https://www.conventionalcommits.org/en/v1.0.0/).
 
 * Commits are logically separate, with no merge or "fixup" commits.
 
