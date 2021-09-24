@@ -16,7 +16,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.955c01c258a89851de543310e16c765f40a6454ab6ee7b0a7f9c1f9b06667312.js" integrity="sha256-lVwBwliomFHeVDMQ4Wx2X0CmRUq27nsKf5wfmwZmcxI=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.04d432bb1bec1ab7b0aef0c9f450c05e8bd2ffc2d3963f5161a8d73c484b6a6d.js" integrity="sha256-BNQyuxvsGrewrvDJ9FDAXovS/8LTlj9RYajXPEhLam0=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -131,6 +131,7 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#have-chezmoi-create-a-directory-but-ignore-its-contents">Have chezmoi create a directory, but ignore its contents</a></li>
         <li><a href="#ensure-that-a-target-is-removed">Ensure that a target is removed</a></li>
         <li><a href="#manage-part-but-not-all-of-a-file">Manage part, but not all, of a file</a></li>
+        <li><a href="#manage-a-files-permissions-but-not-its-contents">Manage a file&rsquo;s permissions, but not its contents</a></li>
         <li><a href="#populate-sshauthorized_keys-with-your-public-ssh-keys-from-github">Populate <code>~/.ssh/authorized_keys</code> with your public SSH keys from GitHub</a></li>
       </ul>
     </li>
@@ -384,6 +385,32 @@ For example, Kubernetes configurations include a current context that can be
 substituted with:</p>
 <pre tabindex="0"><code>current-context: {{ output &quot;kubectl&quot; &quot;config&quot; &quot;current-context&quot; | trim }}
 </code></pre><hr>
+<h3 id="manage-a-files-permissions-but-not-its-contents">
+  Manage a file&rsquo;s permissions, but not its contents
+  <a class="anchor" href="#manage-a-files-permissions-but-not-its-contents">#</a>
+</h3>
+<p>chezmoi&rsquo;s <code>create_</code> attributes allows you to tell chezmoi to create a file if it
+does not already exist. chezmoi, however, will apply any permission changes from
+the <code>executable_</code>, <code>private_</code>, and <code>readonly_</code> attributes. This can be used to
+control a file&rsquo;s permissions without altering its contents.</p>
+<p>For example, if you want to ensure that <code>~/.kube/config</code> always has permissions
+600 then if you create an empty file called <code>dot_kube/private_dot_config</code> in
+your source state, chezmoi will ensure <code>~/.kube/config</code>&rsquo;s permissions are 0600
+when you run <code>chezmoi apply</code> without changing its contents.</p>
+<p>This approach does have the downside that chezmoi will create the file if it
+does not already exist. If you only want <code>chezmoi apply</code> to set a file&rsquo;s
+permissions if it already exists and not create the file otherwise, you can use
+a <code>run_</code> script. For example, create a file in your source state called
+<code>run_set_kube_config_permissions.sh</code> containing:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#!/bin/sh
+</span><span style="color:#75715e"></span>
+FILE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$HOME<span style="color:#e6db74">/.kube/config&#34;</span>
+<span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> -f <span style="color:#e6db74">&#34;</span>$FILE<span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
+    <span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>stat -c %a <span style="color:#e6db74">&#34;</span>$FILE<span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> !<span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;600&#34;</span> <span style="color:#f92672">]</span> ; <span style="color:#66d9ef">then</span>
+        chmod <span style="color:#ae81ff">600</span> <span style="color:#e6db74">&#34;</span>$FILE<span style="color:#e6db74">&#34;</span>
+    <span style="color:#66d9ef">fi</span>
+<span style="color:#66d9ef">fi</span>
+</code></pre></div><hr>
 <h3 id="populate-sshauthorized_keys-with-your-public-ssh-keys-from-github">
   Populate <code>~/.ssh/authorized_keys</code> with your public SSH keys from GitHub
   <a class="anchor" href="#populate-sshauthorized_keys-with-your-public-ssh-keys-from-github">#</a>
@@ -406,7 +433,7 @@ GitHub username:</p>
   <a class="anchor" href="#configure-vim-to-run-chezmoi-apply-whenever-you-save-a-dotfile">#</a>
 </h3>
 <p>Put the following in your <code>.vimrc</code>:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-vim" data-lang="vim"><span style="color:#a6e22e">autocmd</span> <span style="color:#a6e22e">BufWritePost</span> ~<span style="color:#e6db74">/.local/</span><span style="color:#a6e22e">share</span><span style="color:#e6db74">/chezmoi/</span>* ! <span style="color:#a6e22e">chezmoi</span> <span style="color:#a6e22e">apply</span> --<span style="color:#a6e22e">source</span>-<span style="color:#a6e22e">path</span> %<span style="color:#960050;background-color:#1e0010">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-vim" data-lang="vim"><span style="color:#a6e22e">autocmd</span> <span style="color:#a6e22e">BufWritePost</span> ~<span style="color:#e6db74">/.local/</span><span style="color:#a6e22e">share</span><span style="color:#e6db74">/chezmoi/</span>* ! <span style="color:#a6e22e">chezmoi</span> <span style="color:#a6e22e">apply</span> --<span style="color:#a6e22e">source</span>-<span style="color:#a6e22e">path</span> <span style="color:#e6db74">&#34;%&#34;</span><span style="color:#960050;background-color:#1e0010">
 </span></code></pre></div><hr>
 <h2 id="include-dotfiles-from-elsewhere">
   Include dotfiles from elsewhere
@@ -1411,6 +1438,7 @@ so you can write scripts around chezmoi.</li>
         <li><a href="#have-chezmoi-create-a-directory-but-ignore-its-contents">Have chezmoi create a directory, but ignore its contents</a></li>
         <li><a href="#ensure-that-a-target-is-removed">Ensure that a target is removed</a></li>
         <li><a href="#manage-part-but-not-all-of-a-file">Manage part, but not all, of a file</a></li>
+        <li><a href="#manage-a-files-permissions-but-not-its-contents">Manage a file&rsquo;s permissions, but not its contents</a></li>
         <li><a href="#populate-sshauthorized_keys-with-your-public-ssh-keys-from-github">Populate <code>~/.ssh/authorized_keys</code> with your public SSH keys from GitHub</a></li>
       </ul>
     </li>
