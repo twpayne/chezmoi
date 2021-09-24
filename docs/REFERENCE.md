@@ -8,7 +8,6 @@ Manage your dotfiles across multiple machines, securely.
   * [`--color` *value*](#--color-value)
   * [`-c`, `--config` *filename*](#-c---config-filename)
   * [`--config-format` `json`|`toml`|`yaml`](#--config-format-jsontomlyaml)
-  * [`--debug`](#--debug)
   * [`-D`, `--destination` *directory*](#-d---destination-directory)
   * [`-n`, `--dry-run`](#-n---dry-run)
   * [`--force`](#--force)
@@ -30,6 +29,7 @@ Manage your dotfiles across multiple machines, securely.
   * [`-x`, `--exclude` *types*](#-x---exclude-types)
 * [Developer command line flags](#developer-command-line-flags)
   * [`--cpu-profile` *filename*](#--cpu-profile-filename)
+  * [`--debug`](#--debug)
   * [`--gops`](#--gops)
 * [Configuration file](#configuration-file)
   * [Variables](#variables)
@@ -173,10 +173,6 @@ Read the configuration from *filename*.
 Assume the configuration file is in the given format. This is only needed if the
 config filename does not have an extension, for example when it is `/dev/stdin`.
 
-### `--debug`
-
-Log information helpful for debugging.
-
 ### `-D`, `--destination` *directory*
 
 Use *directory* as the destination directory.
@@ -285,6 +281,10 @@ The following flags are global but only relevant for developers and debugging.
 
 Write a [Go CPU profile](https://blog.golang.org/pprof) to *filename*.
 
+### `--debug`
+
+Log information helpful for debugging.
+
 ### `--gops`
 
 Enable the [gops](https://github.com/google/gops) agent.
@@ -325,6 +325,7 @@ The following configuration variables are available:
 |                | `sourceDir`           | string   | `~/.local/share/chezmoi` | Source directory                                       |
 |                | `pager`               | string   | `$PAGER`                 | Default pager                                          |
 |                | `umask`               | int      | *from system*            | Umask                                                  |
+|                | `useBuiltinAge`       | string   | `auto`                   | Use builtin git if `age` command is not found in $PATH |
 |                | `useBuiltinGit`       | string   | `auto`                   | Use builtin git if `git` command is not found in $PATH |
 | `add`          | `templateSymlinks`    | bool     | `false`                  | Template symlinks to source and home dirs              |
 | `age`          | `args`                | []string | *none*                   | Extra args to age CLI command                          |
