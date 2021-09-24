@@ -132,24 +132,8 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 		c.init.purgeBinary = true
 	}
 
-	// Search upwards to find out if we're already in a git repository.
-	inWorkingCopy := false
-	workingCopyDirAbsPath := c.SourceDirAbsPath
-FOR:
-	for {
-		if info, err := c.baseSystem.Stat(workingCopyDirAbsPath.Join(".git")); err == nil && info.IsDir() {
-			inWorkingCopy = true
-			break FOR
-		}
-		prevWorkingCopyDirAbsPath := workingCopyDirAbsPath
-		workingCopyDirAbsPath = workingCopyDirAbsPath.Dir()
-		if len(workingCopyDirAbsPath) >= len(prevWorkingCopyDirAbsPath) {
-			break FOR
-		}
-	}
-
-	// If the working copy does not exist then init it or clone it.
-	if !inWorkingCopy {
+	// If we're not in a working tree then init it or clone it.
+	if c.workingTree() == "" {
 		rawSourceDir, err := c.baseSystem.RawPath(c.SourceDirAbsPath)
 		if err != nil {
 			return err
