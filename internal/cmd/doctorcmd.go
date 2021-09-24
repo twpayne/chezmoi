@@ -158,11 +158,13 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			name:       "shell",
 			binaryname: shell,
 			ifNotSet:   checkResultError,
+			ifNotExist: checkResultError,
 		},
 		&binaryCheck{
 			name:       "editor",
 			binaryname: editor,
 			ifNotSet:   checkResultWarning,
+			ifNotExist: checkResultWarning,
 		},
 		&umaskCheck{},
 		&binaryCheck{
@@ -378,7 +380,7 @@ func (c *dirCheck) Name() string {
 
 func (c *dirCheck) Run(system chezmoi.System) (checkResult, string) {
 	if _, err := system.ReadDir(c.dirname); err != nil {
-		return checkResultError, fmt.Sprintf("%s: %v", c.dirname, err)
+		return checkResultError, err.Error()
 	}
 	return checkResultOK, fmt.Sprintf("%s is a directory", c.dirname)
 }
@@ -438,7 +440,7 @@ func (c *suspiciousEntriesCheck) Name() string {
 func (c *suspiciousEntriesCheck) Run(system chezmoi.System) (checkResult, string) {
 	// FIXME check that config file templates are in root
 	var suspiciousEntries []string
-	if err := chezmoi.WalkDir(system, c.dirname, func(absPath chezmoi.AbsPath, info fs.FileInfo, err error) error {
+	switch err := chezmoi.WalkDir(system, c.dirname, func(absPath chezmoi.AbsPath, info fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -450,7 +452,10 @@ func (c *suspiciousEntriesCheck) Run(system chezmoi.System) (checkResult, string
 			suspiciousEntries = append(suspiciousEntries, relPath)
 		}
 		return nil
-	}); err != nil {
+	}); {
+	case errors.Is(err, fs.ErrNotExist):
+		return checkResultOK, fmt.Sprintf("%s: no such file or directory", c.dirname)
+	case err != nil:
 		return checkResultError, err.Error()
 	}
 	if len(suspiciousEntries) > 0 {
