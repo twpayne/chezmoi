@@ -1132,7 +1132,6 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newImportCmd(),
 		c.newInitCmd(),
 		c.newInternalTestCmd(),
-		c.newMackupCmd(),
 		c.newManagedCmd(),
 		c.newMergeCmd(),
 		c.newPurgeCmd(),
