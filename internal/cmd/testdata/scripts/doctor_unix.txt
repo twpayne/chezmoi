@@ -16,28 +16,36 @@ chmod 755 bin/vimdiff
 mkhomedir
 mksourcedir
 
+# test that chezmoi doctor behaves as expected
 chezmoi doctor
-stdout 'ok\s+version\s+'
-stdout 'ok\s+os-arch\s+'
-stdout 'warning\s+config-file\s+.*multiple config files'
-stdout 'ok\s+source-dir\s+'
-stdout 'ok\s+suspicious-entries\s+'
-stdout 'ok\s+dest-dir\s+'
-stdout 'ok\s+shell\s+'
-stdout 'ok\s+editor\s+'
-stdout 'ok\s+git-cli\s+'
-stdout 'ok\s+merge-cli\s+'
-stdout 'ok\s+age-cli\s+'
-stdout 'ok\s+gnupg-cli\s+'
-stdout 'ok\s+1password-cli\s+'
-stdout 'ok\s+bitwarden-cli\s+'
-stdout 'ok\s+gopass-cli\s+'
-stdout 'ok\s+keepassxc-cli\s+'
-stdout 'info\s+keepassxc-db\s+'
-stdout 'ok\s+lastpass-cli\s+'
-stdout 'ok\s+pass-cli\s+'
-stdout 'ok\s+vault-cli\s+'
-stdout 'ok\s+secret-cli\s+'
+stdout '^ok\s+version\s+'
+stdout '^ok\s+os-arch\s+'
+stdout '^warning\s+config-file\s+.*multiple config files'
+stdout '^ok\s+source-dir\s+'
+stdout '^ok\s+suspicious-entries\s+'
+stdout '^ok\s+dest-dir\s+'
+stdout '^ok\s+shell\s+'
+stdout '^ok\s+editor\s+'
+stdout '^ok\s+git-cli\s+'
+stdout '^ok\s+merge-cli\s+'
+stdout '^ok\s+age-cli\s+'
+stdout '^ok\s+gnupg-cli\s+'
+stdout '^ok\s+1password-cli\s+'
+stdout '^ok\s+bitwarden-cli\s+'
+stdout '^ok\s+gopass-cli\s+'
+stdout '^ok\s+keepassxc-cli\s+'
+stdout '^info\s+keepassxc-db\s+'
+stdout '^ok\s+lastpass-cli\s+'
+stdout '^ok\s+pass-cli\s+'
+stdout '^ok\s+vault-cli\s+'
+stdout '^ok\s+secret-cli\s+'
+
+# test that chezmoi doctor warns about missing directories on an empty system
+chhome home2/user
+! chezmoi doctor
+stdout '^ok\s+config-file\s+'
+stdout '^error\s+source-dir\s+'
+stdout '^ok\s+suspicious-entries\s+'
 
 -- bin/age --
 #!/bin/sh
