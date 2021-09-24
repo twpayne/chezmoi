@@ -1138,7 +1138,7 @@ $ chezmoi dump --format=yaml
 ### `edit` [*target*...]
 
 Edit the source state of *target*s, which must be files or symlinks. If no
-targets are given the the source directory itself is opened.
+targets are given then the working tree of the source directory is opened.
 
 The editor used is the first non-empty string of the `edit.command`
 configuration variable, the `$VISUAL` environment variable, the `$EDITOR`

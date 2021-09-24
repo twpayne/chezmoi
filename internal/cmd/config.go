@@ -1634,6 +1634,21 @@ func (c *Config) validateData() error {
 	return validateKeys(c.Data, identifierRx)
 }
 
+// workingTree searches upwards to find the git working tree.
+func (c *Config) workingTree() chezmoi.AbsPath {
+	workingTreeDirAbsPath := c.SourceDirAbsPath
+	for {
+		if info, err := c.baseSystem.Stat(workingTreeDirAbsPath.Join(".git")); err == nil && info.IsDir() {
+			return workingTreeDirAbsPath
+		}
+		prevWorkingTreeDirAbsPath := workingTreeDirAbsPath
+		workingTreeDirAbsPath = workingTreeDirAbsPath.Dir()
+		if len(workingTreeDirAbsPath) >= len(prevWorkingTreeDirAbsPath) {
+			return ""
+		}
+	}
+}
+
 func (c *Config) writeOutput(data []byte) error {
 	if c.outputAbsPath == "" || c.outputAbsPath == "-" {
 		_, err := c.stdout.Write(data)
