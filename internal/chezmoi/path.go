@@ -44,6 +44,10 @@ func (p AbsPath) MustTrimDirPrefix(dirPrefix AbsPath) RelPath {
 
 // Set implements github.com/spf13/pflag.Value.Set.
 func (p *AbsPath) Set(s string) error {
+	if s == "" {
+		*p = ""
+		return nil
+	}
 	homeDirAbsPath, err := homeDirAbsPath()
 	if err != nil {
 		return err
@@ -68,6 +72,9 @@ func (p AbsPath) String() string {
 
 // TrimDirPrefix trims prefix from p.
 func (p AbsPath) TrimDirPrefix(dirPrefixAbsPath AbsPath) (RelPath, error) {
+	if p == dirPrefixAbsPath {
+		return "", nil
+	}
 	dirAbsPath := dirPrefixAbsPath
 	if dirAbsPath != "/" {
 		dirAbsPath += "/"

@@ -21,6 +21,7 @@ func (c *Config) newCDCmd() *cobra.Command {
 		Annotations: map[string]string{
 			doesNotRequireValidConfig: "true",
 			requiresSourceDirectory:   "true",
+			requiresWorkingTree:       "true",
 			runsCommands:              "true",
 		},
 	}
@@ -33,5 +34,5 @@ func (c *Config) runCDCmd(cmd *cobra.Command, args []string) error {
 	if shellCommand == "" {
 		shellCommand, _ = shell.CurrentUserShell()
 	}
-	return c.run(c.SourceDirAbsPath, shellCommand, c.CD.Args)
+	return c.run(c.WorkingTreeAbsPath, shellCommand, c.CD.Args)
 }

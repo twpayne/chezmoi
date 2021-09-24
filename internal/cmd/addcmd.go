@@ -35,6 +35,7 @@ func (c *Config) newAddCmd() *cobra.Command {
 			modifiesSourceDirectory: "true",
 			persistentStateMode:     persistentStateModeReadWrite,
 			requiresSourceDirectory: "true",
+			requiresWorkingTree:     "true",
 		},
 	}
 

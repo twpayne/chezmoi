@@ -28,6 +28,7 @@ func (c *Config) newUpdateCmd() *cobra.Command {
 			modifiesDestinationDirectory: "true",
 			persistentStateMode:          persistentStateModeReadWrite,
 			requiresSourceDirectory:      "true",
+			requiresWorkingTree:          "true",
 			runsCommands:                 "true",
 		},
 	}
@@ -66,7 +67,7 @@ func (c *Config) runUpdateCmd(cmd *cobra.Command, args []string) error {
 			"--rebase",
 			"--recurse-submodules",
 		}
-		if err := c.run(c.SourceDirAbsPath, c.Git.Command, args); err != nil {
+		if err := c.run(c.WorkingTreeAbsPath, c.Git.Command, args); err != nil {
 			return err
 		}
 	}

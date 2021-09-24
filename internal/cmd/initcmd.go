@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io/fs"
 	"os"
 	"regexp"
 	"runtime"
@@ -104,6 +105,7 @@ func (c *Config) newInitCmd() *cobra.Command {
 			modifiesDestinationDirectory: "true",
 			persistentStateMode:          persistentStateModeReadWrite,
 			requiresSourceDirectory:      "true",
+			requiresWorkingTree:          "true",
 			runsCommands:                 "true",
 		},
 	}
@@ -133,8 +135,13 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	// If we're not in a working tree then init it or clone it.
-	if c.workingTree() == "" {
-		rawSourceDir, err := c.baseSystem.RawPath(c.SourceDirAbsPath)
+	gitDirAbsPath := c.WorkingTreeAbsPath.Join(".git")
+	switch info, err := c.baseSystem.Stat(gitDirAbsPath); {
+	case err == nil && info.IsDir():
+	case err == nil && !info.IsDir():
+		return fmt.Errorf("%s: not a directory", gitDirAbsPath)
+	case errors.Is(err, fs.ErrNotExist):
+		workingTreeRawPath, err := c.baseSystem.RawPath(c.WorkingTreeAbsPath)
 		if err != nil {
 			return err
 		}
@@ -144,10 +151,10 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 		if len(args) == 0 {
 			if useBuiltinGit {
 				isBare := false
-				if _, err = git.PlainInit(string(rawSourceDir), isBare); err != nil {
+				if _, err = git.PlainInit(string(workingTreeRawPath), isBare); err != nil {
 					return err
 				}
-			} else if err := c.run(c.SourceDirAbsPath, c.Git.Command, []string{"init", "--quiet"}); err != nil {
+			} else if err := c.run(c.WorkingTreeAbsPath, c.Git.Command, []string{"init", "--quiet"}); err != nil {
 				return err
 			}
 		} else {
@@ -164,7 +171,7 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 					RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
 				}
 				isBare := false
-				_, err = git.PlainClone(string(rawSourceDir), isBare, &cloneOptions)
+				_, err = git.PlainClone(string(workingTreeRawPath), isBare, &cloneOptions)
 				if errors.Is(err, transport.ErrAuthenticationRequired) {
 					var basicAuth http.BasicAuth
 					if basicAuth.Username, err = c.readLine(fmt.Sprintf("Username [default %q]? ", username)); err != nil {
@@ -177,7 +184,7 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 						return err
 					}
 					cloneOptions.Auth = &basicAuth
-					_, err = git.PlainClone(string(rawSourceDir), isBare, &cloneOptions)
+					_, err = git.PlainClone(string(workingTreeRawPath), isBare, &cloneOptions)
 				}
 				if err != nil {
 					return err
@@ -199,13 +206,15 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 				}
 				args = append(args,
 					dotfilesRepoURL,
-					string(rawSourceDir),
+					string(workingTreeRawPath),
 				)
 				if err := c.run("", c.Git.Command, args); err != nil {
 					return err
 				}
 			}
 		}
+	case err != nil:
+		return err
 	}
 
 	// Find config template, execute it, and create config file.
