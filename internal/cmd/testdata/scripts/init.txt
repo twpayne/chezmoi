@@ -1,3 +1,5 @@
+[!exec:git] skip 'git not found in $PATH'
+
 mkgitconfig
 mkhomedir golden
 mkhomedir
