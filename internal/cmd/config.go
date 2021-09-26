@@ -54,19 +54,20 @@ type templateConfig struct {
 // A Config represents a configuration.
 type Config struct {
 	// Global configuration, settable in the config file.
-	CacheDirAbsPath  chezmoi.AbsPath                 `mapstructure:"cacheDir"`
-	Color            autoBool                        `mapstructure:"color"`
-	Data             map[string]interface{}          `mapstructure:"data"`
-	DestDirAbsPath   chezmoi.AbsPath                 `mapstructure:"destDir"`
-	Interpreters     map[string]*chezmoi.Interpreter `mapstructure:"interpreters"`
-	Mode             chezmoi.Mode                    `mapstructure:"mode"`
-	Pager            string                          `mapstructure:"pager"`
-	Safe             bool                            `mapstructure:"safe"`
-	SourceDirAbsPath chezmoi.AbsPath                 `mapstructure:"sourceDir"`
-	Template         templateConfig                  `mapstructure:"template"`
-	Umask            fs.FileMode                     `mapstructure:"umask"`
-	UseBuiltinAge    autoBool                        `mapstructure:"useBuiltinAge"`
-	UseBuiltinGit    autoBool                        `mapstructure:"useBuiltinGit"`
+	CacheDirAbsPath    chezmoi.AbsPath                 `mapstructure:"cacheDir"`
+	Color              autoBool                        `mapstructure:"color"`
+	Data               map[string]interface{}          `mapstructure:"data"`
+	DestDirAbsPath     chezmoi.AbsPath                 `mapstructure:"destDir"`
+	Interpreters       map[string]*chezmoi.Interpreter `mapstructure:"interpreters"`
+	Mode               chezmoi.Mode                    `mapstructure:"mode"`
+	Pager              string                          `mapstructure:"pager"`
+	Safe               bool                            `mapstructure:"safe"`
+	SourceDirAbsPath   chezmoi.AbsPath                 `mapstructure:"sourceDir"`
+	Template           templateConfig                  `mapstructure:"template"`
+	Umask              fs.FileMode                     `mapstructure:"umask"`
+	UseBuiltinAge      autoBool                        `mapstructure:"useBuiltinAge"`
+	UseBuiltinGit      autoBool                        `mapstructure:"useBuiltinGit"`
+	WorkingTreeAbsPath chezmoi.AbsPath                 `mapstructure:"workingTree"`
 
 	// Global configuration, not settable in the config file.
 	configFormat     readDataFormat
@@ -839,6 +840,7 @@ func (c *Config) doPurge(purgeOptions *purgeOptions) error {
 		c.configFileAbsPath.Dir(),
 		c.configFileAbsPath,
 		persistentStateFileAbsPath,
+		c.WorkingTreeAbsPath,
 		c.SourceDirAbsPath,
 	}
 	if purgeOptions != nil && purgeOptions.binary {
@@ -981,10 +983,10 @@ func (c *Config) findConfigTemplate() (chezmoi.RelPath, string, []byte, error) {
 }
 
 func (c *Config) gitAutoAdd() (*git.Status, error) {
-	if err := c.run(c.SourceDirAbsPath, c.Git.Command, []string{"add", "."}); err != nil {
+	if err := c.run(c.WorkingTreeAbsPath, c.Git.Command, []string{"add", "."}); err != nil {
 		return nil, err
 	}
-	output, err := c.cmdOutput(c.SourceDirAbsPath, c.Git.Command, []string{"status", "--porcelain=v2"})
+	output, err := c.cmdOutput(c.WorkingTreeAbsPath, c.Git.Command, []string{"status", "--porcelain=v2"})
 	if err != nil {
 		return nil, err
 	}
@@ -1007,14 +1009,14 @@ func (c *Config) gitAutoCommit(status *git.Status) error {
 	if err := commitMessageTmpl.Execute(&commitMessage, status); err != nil {
 		return err
 	}
-	return c.run(c.SourceDirAbsPath, c.Git.Command, []string{"commit", "--message", commitMessage.String()})
+	return c.run(c.WorkingTreeAbsPath, c.Git.Command, []string{"commit", "--message", commitMessage.String()})
 }
 
 func (c *Config) gitAutoPush(status *git.Status) error {
 	if status.Empty() {
 		return nil
 	}
-	return c.run(c.SourceDirAbsPath, c.Git.Command, []string{"push"})
+	return c.run(c.WorkingTreeAbsPath, c.Git.Command, []string{"push"})
 }
 
 func (c *Config) makeRunEWithSourceState(runE func(*cobra.Command, []string, *chezmoi.SourceState) error) func(*cobra.Command, []string) error {
@@ -1064,6 +1066,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.VarP(&c.SourceDirAbsPath, "source", "S", "Set source directory")
 	persistentFlags.Var(&c.UseBuiltinAge, "use-builtin-age", "Use builtin age")
 	persistentFlags.Var(&c.UseBuiltinGit, "use-builtin-git", "Use builtin git")
+	persistentFlags.VarP(&c.WorkingTreeAbsPath, "working-tree", "W", "Set working tree directory")
 	for viperKey, key := range map[string]string{
 		"color":         "color",
 		"destDir":       "destination",
@@ -1072,6 +1075,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		"sourceDir":     "source",
 		"useBuiltinAge": "use-builtin-age",
 		"useBuiltinGit": "use-builtin-git",
+		"workingTree":   "working-tree",
 	} {
 		if err := viper.BindPFlag(viperKey, persistentFlags.Lookup(key)); err != nil {
 			return nil, err
@@ -1430,6 +1434,32 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		}
 	}
 
+	if c.WorkingTreeAbsPath == "" {
+		workingTreeAbsPath := c.SourceDirAbsPath
+	FOR:
+		for {
+			if info, err := c.baseSystem.Stat(workingTreeAbsPath.Join(".git")); err == nil && info.IsDir() {
+				c.WorkingTreeAbsPath = workingTreeAbsPath
+				break FOR
+			}
+			prevWorkingTreeDirAbsPath := workingTreeAbsPath
+			workingTreeAbsPath = workingTreeAbsPath.Dir()
+			if len(workingTreeAbsPath) >= len(prevWorkingTreeDirAbsPath) {
+				c.WorkingTreeAbsPath = c.SourceDirAbsPath
+				break FOR
+			}
+		}
+	}
+
+	if boolAnnotation(cmd, requiresWorkingTree) {
+		if _, err := c.SourceDirAbsPath.TrimDirPrefix(c.WorkingTreeAbsPath); err != nil {
+			return err
+		}
+		if err := chezmoi.MkdirAll(c.baseSystem, c.WorkingTreeAbsPath, 0o777); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -1631,21 +1661,6 @@ func (c *Config) useBuiltinGitAutoFunc() bool {
 
 func (c *Config) validateData() error {
 	return validateKeys(c.Data, identifierRx)
-}
-
-// workingTree searches upwards to find the git working tree.
-func (c *Config) workingTree() chezmoi.AbsPath {
-	workingTreeDirAbsPath := c.SourceDirAbsPath
-	for {
-		if info, err := c.baseSystem.Stat(workingTreeDirAbsPath.Join(".git")); err == nil && info.IsDir() {
-			return workingTreeDirAbsPath
-		}
-		prevWorkingTreeDirAbsPath := workingTreeDirAbsPath
-		workingTreeDirAbsPath = workingTreeDirAbsPath.Dir()
-		if len(workingTreeDirAbsPath) >= len(prevWorkingTreeDirAbsPath) {
-			return ""
-		}
-	}
 }
 
 func (c *Config) writeOutput(data []byte) error {

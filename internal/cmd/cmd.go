@@ -29,6 +29,7 @@ const (
 	persistentStateMode          = "chezmoi_persistent_state_mode"
 	requiresConfigDirectory      = "chezmoi_requires_config_directory"
 	requiresSourceDirectory      = "chezmoi_requires_source_directory"
+	requiresWorkingTree          = "chezmoi_requires_working_tree"
 	runsCommands                 = "chezmoi_runs_commands"
 )
 

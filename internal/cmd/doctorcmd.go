@@ -151,6 +151,10 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			dirname: c.SourceDirAbsPath,
 		},
 		&dirCheck{
+			name:    "working-tree",
+			dirname: c.WorkingTreeAbsPath,
+		},
+		&dirCheck{
 			name:    "dest-dir",
 			dirname: c.DestDirAbsPath,
 		},

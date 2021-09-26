@@ -22,6 +22,7 @@ Manage your dotfiles across multiple machines, securely.
   * [`--use-builtin-git` *value*](#--use-builtin-git-value)
   * [`-v`, `--verbose`](#-v---verbose)
   * [`--version`](#--version)
+  * [`-w`, `--working-tree` *directory*](#-w---working-tree-directory)
 * [Common command line flags](#common-command-line-flags)
   * [`-f`, `--format` `json`|`yaml`](#-f---format-jsonyaml)
   * [`-i`, `--include` *types*](#-i---include-types)
@@ -152,6 +153,9 @@ destination directory, where:
 * The *config file* contains machine-specific configuration, by default it is
   `~/.config/chezmoi/chezmoi.toml`.
 
+* The *working tree* is the git working tree. Normally it is the same as the
+  source directory, but can be a parent of the source directory.
+
 ---
 
 ## Global command line flags
@@ -244,6 +248,12 @@ state and the destination set are printed as unified diffs.
 Print the version of chezmoi, the commit at which it was built, and the build
 timestamp.
 
+### `-w`, `--working-tree` *directory*
+
+Use *directory* as the git working tree directory. By default, chezmoi searches
+the source directory and then its ancestors for the first directory that
+contains a `.git` directory.
+
 ---
 
 ## Common command line flags
@@ -327,6 +337,7 @@ The following configuration variables are available:
 |                | `umask`               | int      | *from system*            | Umask                                                  |
 |                | `useBuiltinAge`       | string   | `auto`                   | Use builtin git if `age` command is not found in $PATH |
 |                | `useBuiltinGit`       | string   | `auto`                   | Use builtin git if `git` command is not found in $PATH |
+|                | `workingTree`         | string   | *source directory*       | git working tree directory                             |
 | `add`          | `templateSymlinks`    | bool     | `false`                  | Template symlinks to source and home dirs              |
 | `age`          | `args`                | []string | *none*                   | Extra args to age CLI command                          |
 |                | `command`             | string   | `age`                    | age CLI command                                        |
@@ -961,10 +972,10 @@ $ chezmoi cat ~/.bashrc
 
 ### `cd`
 
-Launch a shell in the source directory. chezmoi will launch the command set by
-the `cd.command` configuration variable with any extra arguments specified by
-`cd.args`. If this is not set, chezmoi will attempt to detect your shell and
-will finally fall back to an OS-specific default.
+Launch a shell in the working tree (typically the source directory). chezmoi
+will launch the command set by the `cd.command` configuration variable with any
+extra arguments specified by `cd.args`. If this is not set, chezmoi will attempt
+to detect your shell and will finally fall back to an OS-specific default.
 
 #### `cd` examples
 
@@ -1244,8 +1255,9 @@ $ chezmoi forget ~/.bashrc
 
 ### `git` [*arg*...]
 
-Run `git` *arg*s in the source directory. Note that flags in *arguments* must
-occur after `--` to prevent chezmoi from interpreting them.
+Run `git` *arg*s in the working tree (typically the source directory). Note that
+flags in *arguments* must occur after `--` to prevent chezmoi from interpreting
+them.
 
 #### `git` examples
 

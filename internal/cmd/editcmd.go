@@ -43,11 +43,7 @@ func (c *Config) newEditCmd() *cobra.Command {
 
 func (c *Config) runEditCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
 	if len(args) == 0 {
-		dirAbsPath := c.workingTree()
-		if dirAbsPath == "" {
-			dirAbsPath = c.SourceDirAbsPath
-		}
-		if err := c.runEditor([]string{string(dirAbsPath)}); err != nil {
+		if err := c.runEditor([]string{string(c.WorkingTreeAbsPath)}); err != nil {
 			return err
 		}
 		if c.Edit.apply {

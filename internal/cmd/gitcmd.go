@@ -20,6 +20,7 @@ func (c *Config) newGitCmd() *cobra.Command {
 		RunE:    c.runGitCmd,
 		Annotations: map[string]string{
 			requiresSourceDirectory: "true",
+			requiresWorkingTree:     "true",
 			runsCommands:            "true",
 		},
 	}
@@ -28,5 +29,5 @@ func (c *Config) newGitCmd() *cobra.Command {
 }
 
 func (c *Config) runGitCmd(cmd *cobra.Command, args []string) error {
-	return c.run(c.SourceDirAbsPath, c.Git.Command, args)
+	return c.run(c.WorkingTreeAbsPath, c.Git.Command, args)
 }
