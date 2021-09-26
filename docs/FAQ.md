@@ -17,6 +17,7 @@
 * [Why doesn't chezmoi use symlinks like GNU Stow?](#why-doesnt-chezmoi-use-symlinks-like-gnu-stow)
 * [What are the limitations of chezmoi's symlink mode?](#what-are-the-limitations-of-chezmois-symlink-mode)
 * [Can I change how chezmoi's source state is represented on disk?](#can-i-change-how-chezmois-source-state-is-represented-on-disk)
+  * [The output of `chezmoi diff` is broken and does not contain color. What could be wrong?](#the-output-of-chezmoi-diff-is-broken-and-does-not-contain-color-what-could-be-wrong)
 * [gpg encryption fails. What could be wrong?](#gpg-encryption-fails-what-could-be-wrong)
 * [chezmoi reports `chezmoi: user: lookup userid NNNNN: input/output error`](#chezmoi-reports-chezmoi-user-lookup-userid-nnnnn-inputoutput-error)
 * [chezmoi reports `chezmoi: timeout` or `chezmoi: timeout obtaining persistent state lock`](#chezmoi-reports-chezmoi-timeout-or-chezmoi-timeout-obtaining-persistent-state-lock)
@@ -352,6 +353,39 @@ but must meet the following criteria, in order of importance:
    and filesystem.
 4. Not add significant extra complexity to the user interface or underlying
    implementation.
+
+---
+
+### The output of `chezmoi diff` is broken and does not contain color. What could be wrong?
+
+By default, chezmoi's diff output includes ANSI color escape sequences (e.g.
+`ESC[37m`) and is piped into your pager (by default `less`). chezmoi assumes
+that your pager passes through the ANSI color escape sequences, as configured on
+many systems, but not all. If your pager does not pass through ANSI color escape
+sequences then you will see monochrome diff output with uninterpreted ANSI color
+escape sequences.
+
+This can typically by fixed by setting the environment variable
+
+```console
+$ export LESS=-R
+```
+
+which instructs `less` to display "raw" control characters via the `-R` /
+`--RAW-CONTROL-CHARS` option.
+
+You can also set the `pager` configuration variable in your config file, for
+example:
+
+```toml
+pager = "less -R"
+```
+
+If you have set a different pager (via the `pager` configuration variable or
+`PAGER` environment variable) then you must ensure that it passes through raw
+control characters. Alternatively, you can use the `--color=false` option to
+chezmoi to disable colors or the `--no-pager` option to chezmoi to disable the
+pager.
 
 ---
 
