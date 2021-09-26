@@ -1,3 +1,4 @@
+[!exec:git] skip 'git not found in $PATH'
 [windows] skip 'go-git does not support file:// URLs on windows'
 
 chmod 755 golden/git
