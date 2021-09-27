@@ -17,6 +17,7 @@ Archive:  archive.zip
     testing: .executable              OK
     testing: .file                    OK
     testing: .private                 OK
+    testing: .readonly                OK
     testing: .symlink                 OK
     testing: .template                OK
 No errors detected in compressed data of archive.zip.
