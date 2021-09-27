@@ -50,6 +50,12 @@ cp home/user/.local/share/chezmoi/modify_dot_modify $CHEZMOISOURCEDIR
 chezmoi apply
 cmp $HOME${/}.modify golden/.edited-and-modified
 
+chhome home4/user
+
+# test that modify scripts can be templates
+chezmoi cat $HOME${/}.modify
+cmp stdout golden/.modified
+
 -- golden/.edited-and-modified --
 beginning
 modified-middle
@@ -96,3 +102,11 @@ cat
 beginning
 middle
 end
+-- home4/user/.modify --
+beginning
+middle
+end
+-- home4/user/.local/share/chezmoi/modify_dot_modify.tmpl --
+#!/bin/sh
+
+{{ "sed 's/middle/modified-middle/g'" }}

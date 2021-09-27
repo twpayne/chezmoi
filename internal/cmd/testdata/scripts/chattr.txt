@@ -89,5 +89,15 @@ chezmoi chattr -- -a $HOME/script
 ! exists $CHEZMOISOURCEDIR/run_after_script
 exists $CHEZMOISOURCEDIR/run_script
 
+# test that chezmoi chattr +executable,+private,+readonly,+template sets the attributes on a modify script
+chezmoi chattr +executable,+private,+readonly,+template $HOME${/}.modify
+! exists $CHEZMOISOURCEDIR/modify_dot_modify
+exists $CHEZMOISOURCEDIR/modify_private_readonly_executable_dot_modify.tmpl
+
 -- home/user/.local/share/chezmoi/run_script --
 #!/bin/sh
+-- home/user/.local/share/chezmoi/modify_dot_modify --
+#!/bin/sh
+
+cat
+
