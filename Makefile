@@ -51,7 +51,7 @@ coverage-html: coverage
 
 .PHONY: coverage
 coverage:
-	${GO} test -test.coverprofile=coverage.out ./...
+	${GO} test -coverprofile=coverage.out -coverpkg=./... ./...
 
 .PHONY: generate
 generate:
