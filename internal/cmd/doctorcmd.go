@@ -15,7 +15,6 @@ import (
 	"text/tabwriter"
 
 	"github.com/coreos/go-semver/semver"
-	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/twpayne/go-shell"
@@ -316,7 +315,7 @@ func (c *binaryCheck) Run(system chezmoi.System) (checkResult, string) {
 	}
 
 	cmd := exec.Command(path, c.versionArgs...)
-	output, err := chezmoilog.LogCmdCombinedOutput(log.Logger, cmd)
+	output, err := chezmoilog.LogCmdCombinedOutput(cmd)
 	if err != nil {
 		return checkResultFailed, err.Error()
 	}

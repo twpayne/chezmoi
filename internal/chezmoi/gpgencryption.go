@@ -5,8 +5,6 @@ import (
 	"os/exec"
 	"runtime"
 
-	"github.com/rs/zerolog/log"
-
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )
 
@@ -135,7 +133,7 @@ func (e *GPGEncryption) run(args []string) error {
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	return chezmoilog.LogCmdRun(log.Logger, cmd)
+	return chezmoilog.LogCmdRun(cmd)
 }
 
 // withPrivateTempDir creates a private temporary and calls f.

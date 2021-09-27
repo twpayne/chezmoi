@@ -13,7 +13,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/require"
 	"github.com/twpayne/go-vfs/v4"
 	"github.com/twpayne/go-vfs/v4/vfst"
@@ -53,7 +52,7 @@ func AgeGenerateKey(filename string) (publicKey, privateKeyFile string, err erro
 	privateKeyFile = filename
 	var output []byte
 	cmd := exec.Command("age-keygen", "--output", privateKeyFile)
-	output, err = chezmoilog.LogCmdCombinedOutput(log.Logger, cmd)
+	output, err = chezmoilog.LogCmdCombinedOutput(cmd)
 	if err != nil {
 		return
 	}
@@ -85,7 +84,7 @@ func GPGGenerateKey(command, homeDir string) (key, passphrase string, err error)
 		"--pinentry-mode", "loopback",
 		"--quick-generate-key", "chezmoi-test-gpg-key",
 	)
-	output, err := chezmoilog.LogCmdCombinedOutput(log.Logger, cmd)
+	output, err := chezmoilog.LogCmdCombinedOutput(cmd)
 	if err != nil {
 		return "", "", err
 	}

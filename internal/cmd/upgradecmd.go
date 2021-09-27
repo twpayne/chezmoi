@@ -189,7 +189,7 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 	// Execute the new version.
 	arg0 := path
 	argv := []string{arg0, "--version"}
-	log.Logger.Debug().
+	log.Debug().
 		Str("arg0", arg0).
 		Strs("argv", argv).
 		Msg("exec")
@@ -227,16 +227,15 @@ func (c *Config) getChecksums(ctx context.Context, rr *github.RepositoryRelease)
 func (c *Config) downloadURL(ctx context.Context, url string) ([]byte, error) {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		log.Logger.Error().
-			Err(err).
-			Str("url", url).
-			Msg("http get")
 		return nil, err
 	}
-	log.Logger.Debug().
-		Str("url", url).
-		Msg("http get")
 	resp, err := http.DefaultClient.Do(req)
+	log.Err(err).
+		Str("method", req.Method).
+		Int("statusCode", resp.StatusCode).
+		Str("status", resp.Status).
+		Stringer("url", req.URL).
+		Msg("HTTP")
 	if err != nil {
 		return nil, err
 	}

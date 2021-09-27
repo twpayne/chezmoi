@@ -21,10 +21,9 @@ func NewDebugEncryption(encryption Encryption) *DebugEncryption {
 // Decrypt implements Encryption.Decrypt.
 func (e *DebugEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
 	plaintext, err := e.encryption.Decrypt(ciphertext)
-	log.Debug().
-		Bytes("ciphertext", chezmoilog.FirstFewBytes(ciphertext)).
-		Err(err).
-		Bytes("plaintext", chezmoilog.FirstFewBytes(plaintext)).
+	log.Err(err).
+		Bytes("ciphertext", chezmoilog.Output(ciphertext, err)).
+		Bytes("plaintext", chezmoilog.Output(plaintext, err)).
 		Msg("Decrypt")
 	return plaintext, err
 }
@@ -32,10 +31,9 @@ func (e *DebugEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
 // DecryptToFile implements Encryption.DecryptToFile.
 func (e *DebugEncryption) DecryptToFile(plaintextAbsPath AbsPath, ciphertext []byte) error {
 	err := e.encryption.DecryptToFile(plaintextAbsPath, ciphertext)
-	log.Debug().
+	log.Err(err).
 		Str("plaintextAbsPath", string(plaintextAbsPath)).
-		Bytes("ciphertext", chezmoilog.FirstFewBytes(ciphertext)).
-		Err(err).
+		Bytes("ciphertext", chezmoilog.Output(ciphertext, err)).
 		Msg("DecryptToFile")
 	return err
 }
@@ -43,10 +41,9 @@ func (e *DebugEncryption) DecryptToFile(plaintextAbsPath AbsPath, ciphertext []b
 // Encrypt implements Encryption.Encrypt.
 func (e *DebugEncryption) Encrypt(plaintext []byte) ([]byte, error) {
 	ciphertext, err := e.encryption.Encrypt(plaintext)
-	log.Debug().
-		Bytes("plaintext", chezmoilog.FirstFewBytes(plaintext)).
-		Err(err).
-		Bytes("ciphertext", chezmoilog.FirstFewBytes(ciphertext)).
+	log.Err(err).
+		Bytes("plaintext", chezmoilog.Output(plaintext, err)).
+		Bytes("ciphertext", chezmoilog.Output(ciphertext, err)).
 		Msg("Encrypt")
 	return ciphertext, err
 }
@@ -54,10 +51,9 @@ func (e *DebugEncryption) Encrypt(plaintext []byte) ([]byte, error) {
 // EncryptFile implements Encryption.EncryptFile.
 func (e *DebugEncryption) EncryptFile(plaintextAbsPath AbsPath) ([]byte, error) {
 	ciphertext, err := e.encryption.EncryptFile(plaintextAbsPath)
-	log.Debug().
+	log.Err(err).
 		Str("plaintextAbsPath", string(plaintextAbsPath)).
-		Err(err).
-		Bytes("ciphertext", chezmoilog.FirstFewBytes(ciphertext)).
+		Bytes("ciphertext", chezmoilog.Output(ciphertext, err)).
 		Msg("EncryptFile")
 	return ciphertext, err
 }

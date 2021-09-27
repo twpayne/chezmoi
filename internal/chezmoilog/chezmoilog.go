@@ -7,6 +7,7 @@ import (
 	"os/exec"
 
 	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 )
 
 // An OSExecCmdLogObject wraps an *os/exec.Cmd and adds
@@ -96,56 +97,42 @@ func FirstFewBytes(data []byte) []byte {
 }
 
 // LogCmdCombinedOutput calls cmd.CombinedOutput, logs the result, and returns the result.
-func LogCmdCombinedOutput(logger zerolog.Logger, cmd *exec.Cmd) ([]byte, error) {
+func LogCmdCombinedOutput(cmd *exec.Cmd) ([]byte, error) {
 	combinedOutput, err := cmd.CombinedOutput()
-	if err == nil {
-		logger.Debug().
-			EmbedObject(OSExecCmdLogObject{Cmd: cmd}).
-			Bytes("combinedOutput", FirstFewBytes(combinedOutput)).
-			Msg("CombinedOutput")
-	} else {
-		logger.Error().
-			EmbedObject(OSExecCmdLogObject{Cmd: cmd}).
-			Err(err).
-			EmbedObject(OSExecExitErrorLogObject{Err: err}).
-			Bytes("combinedOutput", combinedOutput).
-			Msg("CombinedOutput")
-	}
+	log.Err(err).
+		EmbedObject(OSExecCmdLogObject{Cmd: cmd}).
+		EmbedObject(OSExecExitErrorLogObject{Err: err}).
+		Bytes("combinedOutput", Output(combinedOutput, err)).
+		Msg("CombinedOutput")
 	return combinedOutput, err
 }
 
 // LogCmdOutput calls cmd.Output, logs the result, and returns the result.
-func LogCmdOutput(logger zerolog.Logger, cmd *exec.Cmd) ([]byte, error) {
+func LogCmdOutput(cmd *exec.Cmd) ([]byte, error) {
 	output, err := cmd.Output()
-	if err == nil {
-		logger.Debug().
-			EmbedObject(OSExecCmdLogObject{Cmd: cmd}).
-			Bytes("output", FirstFewBytes(output)).
-			Msg("Output")
-	} else {
-		logger.Error().
-			EmbedObject(OSExecCmdLogObject{Cmd: cmd}).
-			Err(err).
-			EmbedObject(OSExecExitErrorLogObject{Err: err}).
-			Bytes("output", output).
-			Msg("Output")
-	}
+	log.Err(err).
+		EmbedObject(OSExecCmdLogObject{Cmd: cmd}).
+		EmbedObject(OSExecExitErrorLogObject{Err: err}).
+		Bytes("output", Output(output, err)).
+		Msg("Output")
 	return output, err
 }
 
 // LogCmdRun calls cmd.Run, logs the result, and returns the result.
-func LogCmdRun(logger zerolog.Logger, cmd *exec.Cmd) error {
+func LogCmdRun(cmd *exec.Cmd) error {
 	err := cmd.Run()
-	if err == nil {
-		logger.Debug().
-			EmbedObject(OSExecCmdLogObject{Cmd: cmd}).
-			Msg("Run")
-	} else {
-		logger.Error().
-			EmbedObject(OSExecCmdLogObject{Cmd: cmd}).
-			Err(err).
-			EmbedObject(OSExecExitErrorLogObject{Err: err}).
-			Msg("Run")
-	}
+	log.Err(err).
+		EmbedObject(OSExecCmdLogObject{Cmd: cmd}).
+		EmbedObject(OSExecExitErrorLogObject{Err: err}).
+		Msg("Run")
 	return err
+}
+
+// Output returns the first few bytes of output if err is nil, otherwise it
+// returns the full output.
+func Output(data []byte, err error) []byte {
+	if err != nil {
+		return data
+	}
+	return FirstFewBytes(data)
 }

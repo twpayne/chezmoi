@@ -12,7 +12,6 @@ import (
 
 	"filippo.io/age"
 	"filippo.io/age/armor"
-	"github.com/rs/zerolog/log"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )
@@ -45,11 +44,7 @@ func (e *AgeEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
 	cmd := exec.Command(e.Command, append(e.decryptArgs(), e.Args...)...)
 	cmd.Stdin = bytes.NewReader(ciphertext)
 	cmd.Stderr = os.Stderr
-	plaintext, err := chezmoilog.LogCmdOutput(log.Logger, cmd)
-	if err != nil {
-		return nil, err
-	}
-	return plaintext, nil
+	return chezmoilog.LogCmdOutput(cmd)
 }
 
 // DecryptToFile implements Encryption.DecryptToFile.
@@ -66,7 +61,7 @@ func (e *AgeEncryption) DecryptToFile(plaintextAbsPath AbsPath, ciphertext []byt
 	cmd := exec.Command(e.Command, append(append(e.decryptArgs(), "--output", string(plaintextAbsPath)), e.Args...)...)
 	cmd.Stdin = bytes.NewReader(ciphertext)
 	cmd.Stderr = os.Stderr
-	return chezmoilog.LogCmdRun(log.Logger, cmd)
+	return chezmoilog.LogCmdRun(cmd)
 }
 
 // Encrypt implements Encryption.Encrypt.
@@ -79,11 +74,7 @@ func (e *AgeEncryption) Encrypt(plaintext []byte) ([]byte, error) {
 	cmd := exec.Command(e.Command, append(e.encryptArgs(), e.Args...)...)
 	cmd.Stdin = bytes.NewReader(plaintext)
 	cmd.Stderr = os.Stderr
-	ciphertext, err := chezmoilog.LogCmdOutput(log.Logger, cmd)
-	if err != nil {
-		return nil, err
-	}
-	return ciphertext, nil
+	return chezmoilog.LogCmdOutput(cmd)
 }
 
 // EncryptFile implements Encryption.EncryptFile.
@@ -99,7 +90,7 @@ func (e *AgeEncryption) EncryptFile(plaintextAbsPath AbsPath) ([]byte, error) {
 	//nolint:gosec
 	cmd := exec.Command(e.Command, append(append(e.encryptArgs(), e.Args...), string(plaintextAbsPath))...)
 	cmd.Stderr = os.Stderr
-	return chezmoilog.LogCmdOutput(log.Logger, cmd)
+	return chezmoilog.LogCmdOutput(cmd)
 }
 
 // EncryptedSuffix implements Encryption.EncryptedSuffix.
