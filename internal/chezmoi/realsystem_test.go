@@ -25,7 +25,7 @@ func TestRealSystemGlob(t *testing.T) {
 			"dir/subdir/foo": "",
 		},
 	}, func(fileSystem vfs.FS) {
-		s := NewRealSystem(fileSystem)
+		system := NewRealSystem(fileSystem)
 		for _, tc := range []struct {
 			pattern         string
 			expectedMatches []string
@@ -54,7 +54,7 @@ func TestRealSystemGlob(t *testing.T) {
 			},
 		} {
 			t.Run(tc.pattern, func(t *testing.T) {
-				actualMatches, err := s.Glob(tc.pattern)
+				actualMatches, err := system.Glob(tc.pattern)
 				require.NoError(t, err)
 				sort.Strings(actualMatches)
 				assert.Equal(t, tc.expectedMatches, pathsToSlashes(actualMatches))
