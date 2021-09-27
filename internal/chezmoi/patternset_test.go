@@ -128,9 +128,6 @@ func TestPatternSetGlob(t *testing.T) {
 			},
 		},
 	} {
-		if tc.name != "simple" {
-			continue
-		}
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
 				actualMatches, err := tc.ps.glob(fileSystem, "/")
@@ -144,8 +141,8 @@ func TestPatternSetGlob(t *testing.T) {
 func mustNewPatternSet(t *testing.T, patterns map[string]bool) *patternSet {
 	t.Helper()
 	ps := newPatternSet()
-	for pattern, exclude := range patterns {
-		require.NoError(t, ps.add(pattern, exclude))
+	for pattern, include := range patterns {
+		require.NoError(t, ps.add(pattern, include))
 	}
 	return ps
 }
