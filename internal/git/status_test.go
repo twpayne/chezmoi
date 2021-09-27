@@ -140,6 +140,27 @@ func TestParseStatusPorcelainV2(t *testing.T) {
 			},
 		},
 		{
+			name:      "unmerged",
+			outputStr: "u UU N... 100644 100644 100644 100644 78981922613b2afb6025042ff6bd878ac1994e85 0f7bc766052a5a0ee28a393d51d2370f96d8ceb8 422c2b7ab3b3c668038da977e4e93a5fc623169c README.md\n",
+			expectedStatus: &Status{
+				Unmerged: []UnmergedStatus{
+					{
+						X:    'U',
+						Y:    'U',
+						Sub:  "N...",
+						M1:   0o100644,
+						M2:   0o100644,
+						M3:   0o100644,
+						MW:   0o100644,
+						H1:   "78981922613b2afb6025042ff6bd878ac1994e85",
+						H2:   "0f7bc766052a5a0ee28a393d51d2370f96d8ceb8",
+						H3:   "422c2b7ab3b3c668038da977e4e93a5fc623169c",
+						Path: "README.md",
+					},
+				},
+			},
+		},
+		{
 			name:      "untracked",
 			outputStr: "? chezmoi.go\n",
 			expectedStatus: &Status{
