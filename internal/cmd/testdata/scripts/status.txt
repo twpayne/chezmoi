@@ -37,6 +37,7 @@ chezmoi status
  A .executable
  A .file
  A .private
+ A .readonly
  A .symlink
  A .template
 -- golden/status-except-dot-file --
@@ -48,6 +49,7 @@ chezmoi status
  A .empty
  A .executable
  A .private
+ A .readonly
  A .symlink
  A .template
 -- golden/status-modified-file --

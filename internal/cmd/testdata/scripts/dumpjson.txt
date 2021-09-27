@@ -71,6 +71,12 @@ stderr 'not in source state'
     "contents": "# contents of .private\n",
     "perm": 384
   },
+  ".readonly": {
+    "type": "file",
+    "name": ".readonly",
+    "contents": "# contents of .readonly\n",
+    "perm": 292
+  },
   ".symlink": {
     "type": "symlink",
     "name": ".symlink",

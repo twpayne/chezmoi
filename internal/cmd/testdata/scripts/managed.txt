@@ -39,6 +39,7 @@ cmp stdout golden/managed2
 .executable
 .file
 .private
+.readonly
 .remove
 .symlink
 .template
@@ -52,6 +53,7 @@ cmp stdout golden/managed2
 .executable
 .file
 .private
+.readonly
 .remove
 .symlink
 .template
@@ -66,6 +68,7 @@ cmp stdout golden/managed2
 .executable
 .file
 .private
+.readonly
 .remove
 .template
 -- golden/managed-symlinks --

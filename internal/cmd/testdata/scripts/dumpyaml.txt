@@ -58,6 +58,12 @@ cmp stdout golden/dump-except-dirs.yaml
     contents: |
         # contents of .private
     perm: 384
+.readonly:
+    type: file
+    name: .readonly
+    contents: |
+        # contents of .readonly
+    perm: 292
 .symlink:
     type: symlink
     name: .symlink
@@ -110,6 +116,12 @@ cmp stdout golden/dump-except-dirs.yaml
     contents: |
         # contents of .private
     perm: 384
+.readonly:
+    type: file
+    name: .readonly
+    contents: |
+        # contents of .readonly
+    perm: 292
 .symlink:
     type: symlink
     name: .symlink

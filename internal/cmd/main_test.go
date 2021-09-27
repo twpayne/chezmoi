@@ -368,6 +368,10 @@ func cmdMkHomeDir(ts *testscript.TestScript, neg bool, args []string) {
 				Perm:     0o600,
 				Contents: []byte("# contents of .private\n"),
 			},
+			".readonly": &vfst.File{
+				Perm:     0o444,
+				Contents: []byte("# contents of .readonly\n"),
+			},
 			".symlink":  &vfst.Symlink{Target: ".dir/subdir/file"},
 			".template": "key = value\n",
 		},
@@ -405,6 +409,7 @@ func cmdMkSourceDir(ts *testscript.TestScript, neg bool, args []string) {
 			"executable_dot_executable": "# contents of .executable\n",
 			"dot_file":                  "# contents of .file\n",
 			"private_dot_private":       "# contents of .private\n",
+			"readonly_dot_readonly":     "# contents of .readonly\n",
 			"symlink_dot_symlink":       ".dir/subdir/file\n",
 			"dot_template.tmpl": chezmoitest.JoinLines(
 				`key = {{ "value" }}`,
