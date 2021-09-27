@@ -1077,18 +1077,15 @@ func (s *SourceState) getExternalDataRaw(ctx context.Context, externalRelPath Re
 		return nil, err
 	}
 	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		log.Logger.Debug().
-			Str("url", external.URL).
-			Err(err).
-			Msg("HTTP GET")
-		return nil, err
-	}
-	log.Logger.Debug().
-		Str("url", external.URL).
+	log.Err(err).
+		Str("method", req.Method).
 		Int("statusCode", resp.StatusCode).
 		Str("status", resp.Status).
-		Msg("HTTP GET")
+		Stringer("url", req.URL).
+		Msg("HTTP")
+	if err != nil {
+		return nil, err
+	}
 	data, err := io.ReadAll(resp.Body)
 	resp.Body.Close()
 	if err != nil {

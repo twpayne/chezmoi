@@ -19,8 +19,7 @@ func NewDebugPersistentState(persistentState PersistentState) *DebugPersistentSt
 // Close implements PersistentState.Close.
 func (s *DebugPersistentState) Close() error {
 	err := s.persistentState.Close()
-	log.Logger.Debug().
-		Err(err).
+	log.Err(err).
 		Msg("Close")
 	return err
 }
@@ -28,8 +27,7 @@ func (s *DebugPersistentState) Close() error {
 // CopyTo implements PersistentState.CopyTo.
 func (s *DebugPersistentState) CopyTo(p PersistentState) error {
 	err := s.persistentState.CopyTo(p)
-	log.Logger.Debug().
-		Err(err).
+	log.Err(err).
 		Msg("CopyTo")
 	return err
 }
@@ -37,8 +35,7 @@ func (s *DebugPersistentState) CopyTo(p PersistentState) error {
 // Data implements PersistentState.Data.
 func (s *DebugPersistentState) Data() (interface{}, error) {
 	data, err := s.persistentState.Data()
-	log.Logger.Debug().
-		Err(err).
+	log.Err(err).
 		Interface("data", data).
 		Msg("Data")
 	return data, err
@@ -47,10 +44,9 @@ func (s *DebugPersistentState) Data() (interface{}, error) {
 // Delete implements PersistentState.Delete.
 func (s *DebugPersistentState) Delete(bucket, key []byte) error {
 	err := s.persistentState.Delete(bucket, key)
-	log.Logger.Debug().
+	log.Err(err).
 		Bytes("bucket", bucket).
 		Bytes("key", key).
-		Err(err).
 		Msg("Delete")
 	return err
 }
@@ -59,28 +55,26 @@ func (s *DebugPersistentState) Delete(bucket, key []byte) error {
 func (s *DebugPersistentState) ForEach(bucket []byte, fn func(k, v []byte) error) error {
 	err := s.persistentState.ForEach(bucket, func(k, v []byte) error {
 		err := fn(k, v)
-		log.Logger.Debug().
+		log.Err(err).
 			Bytes("bucket", bucket).
 			Bytes("key", k).
 			Bytes("value", v).
-			Err(err).
 			Msg("ForEach")
 		return err
 	})
-	log.Logger.Debug().
+	log.Err(err).
 		Bytes("bucket", bucket).
-		Err(err)
+		Msg("ForEach")
 	return err
 }
 
 // Get implements PersistentState.Get.
 func (s *DebugPersistentState) Get(bucket, key []byte) ([]byte, error) {
 	value, err := s.persistentState.Get(bucket, key)
-	log.Logger.Debug().
+	log.Err(err).
 		Bytes("bucket", bucket).
 		Bytes("key", key).
 		Bytes("value", value).
-		Err(err).
 		Msg("Get")
 	return value, err
 }
@@ -88,11 +82,10 @@ func (s *DebugPersistentState) Get(bucket, key []byte) ([]byte, error) {
 // Set implements PersistentState.Set.
 func (s *DebugPersistentState) Set(bucket, key, value []byte) error {
 	err := s.persistentState.Set(bucket, key, value)
-	log.Logger.Debug().
+	log.Err(err).
 		Bytes("bucket", bucket).
 		Bytes("key", key).
 		Bytes("value", value).
-		Err(err).
 		Msg("Set")
 	return err
 }
