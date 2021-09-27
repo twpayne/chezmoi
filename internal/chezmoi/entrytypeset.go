@@ -53,22 +53,6 @@ func NewEntryTypeSet(bits EntryTypeBits) *EntryTypeSet {
 	}
 }
 
-// IncludeActualStateEntry returns true if the type of actualStateEntry is a member.
-func (s *EntryTypeSet) IncludeActualStateEntry(actualStateEntry ActualStateEntry) bool {
-	switch actualStateEntry.(type) {
-	case *ActualStateAbsent:
-		return s.bits&EntryTypeRemove != 0
-	case *ActualStateDir:
-		return s.bits&EntryTypeDirs != 0
-	case *ActualStateFile:
-		return s.bits&EntryTypeFiles != 0
-	case *ActualStateSymlink:
-		return s.bits&EntryTypeSymlinks != 0
-	default:
-		return false
-	}
-}
-
 // IncludeEncrypted returns true if s includes encrypted files.
 func (s *EntryTypeSet) IncludeEncrypted() bool {
 	return s.bits&EntryTypeEncrypted != 0
