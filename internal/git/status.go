@@ -209,30 +209,34 @@ func ParseStatusPorcelainV2(output []byte) (*Status, error) {
 			if m == nil {
 				return nil, ParseError(text)
 			}
-			m1, err := strconv.ParseInt(text[m[6]:m[7]], 8, 64)
+			m1, err := strconv.ParseInt(text[m[8]:m[9]], 8, 64)
 			if err != nil {
 				return nil, err
 			}
-			m2, err := strconv.ParseInt(text[m[8]:m[9]], 8, 64)
+			m2, err := strconv.ParseInt(text[m[10]:m[11]], 8, 64)
 			if err != nil {
 				return nil, err
 			}
-			m3, err := strconv.ParseInt(text[m[10]:m[11]], 8, 64)
+			m3, err := strconv.ParseInt(text[m[12]:m[13]], 8, 64)
 			if err != nil {
 				return nil, err
 			}
-			mW, err := strconv.ParseInt(text[m[12]:m[13]], 8, 64)
+			mW, err := strconv.ParseInt(text[m[14]:m[15]], 8, 64)
 			if err != nil {
 				return nil, err
 			}
 			us := UnmergedStatus{
-				X:   text[m[2]],
-				Y:   text[m[4]],
-				Sub: text[m[6]:m[7]],
-				M1:  m1,
-				M2:  m2,
-				M3:  m3,
-				MW:  mW,
+				X:    text[m[2]],
+				Y:    text[m[4]],
+				Sub:  text[m[6]:m[7]],
+				M1:   m1,
+				M2:   m2,
+				M3:   m3,
+				MW:   mW,
+				H1:   text[m[16]:m[17]],
+				H2:   text[m[18]:m[19]],
+				H3:   text[m[20]:m[21]],
+				Path: text[m[22]:m[23]],
 			}
 			status.Unmerged = append(status.Unmerged, us)
 		case '?':
