@@ -2,6 +2,7 @@ package chezmoi
 
 import (
 	"fmt"
+	"path"
 	"path/filepath"
 	"sort"
 
@@ -52,12 +53,12 @@ func (ps *patternSet) glob(fileSystem vfs.FS, prefix string) ([]string, error) {
 	}
 	for match := range allMatches {
 		for excludePattern := range ps.excludePatterns {
-			exclude, err := doublestar.Match(prefix+excludePattern, match)
+			exclude, err := doublestar.Match(path.Clean(prefix+excludePattern), match)
 			if err != nil {
 				return nil, err
 			}
 			if exclude {
-				delete(allMatches, match)
+				allMatches.Delete(match)
 			}
 		}
 	}
@@ -102,6 +103,11 @@ func (s StringSet) Add(elements ...string) {
 func (s StringSet) Contains(element string) bool {
 	_, ok := s[element]
 	return ok
+}
+
+// Delete deletes element from s.
+func (s StringSet) Delete(element string) {
+	delete(s, element)
 }
 
 // Element returns an arbitrary element from s or the empty string if s is
