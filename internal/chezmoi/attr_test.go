@@ -1,6 +1,7 @@
 package chezmoi
 
 import (
+	"io/fs"
 	"testing"
 
 	"github.com/muesli/combinator"
@@ -285,5 +286,66 @@ func TestFileAttrLiteral(t *testing.T) {
 				assert.Equal(t, tc.sourceName, tc.fileAttr.SourceName(tc.encryptedSuffix))
 			}
 		})
+	}
+}
+
+func TestFileAttrPerm(t *testing.T) {
+	for _, tc := range []struct {
+		fileAttr FileAttr
+		expected fs.FileMode
+	}{
+		{
+			fileAttr: FileAttr{},
+			expected: 0o666,
+		},
+		{
+			fileAttr: FileAttr{
+				Executable: true,
+			},
+			expected: 0o777,
+		},
+		{
+			fileAttr: FileAttr{
+				Private: true,
+			},
+			expected: 0o600,
+		},
+		{
+			fileAttr: FileAttr{
+				Executable: true,
+				Private:    true,
+			},
+			expected: 0o700,
+		},
+		{
+			fileAttr: FileAttr{
+				ReadOnly: true,
+			},
+			expected: 0o444,
+		},
+		{
+			fileAttr: FileAttr{
+				Executable: true,
+				ReadOnly:   true,
+			},
+			expected: 0o555,
+		},
+		{
+			fileAttr: FileAttr{
+				Private:  true,
+				ReadOnly: true,
+			},
+			expected: 0o400,
+		},
+		{
+			fileAttr: FileAttr{
+				Executable: true,
+				Private:    true,
+				ReadOnly:   true,
+			},
+			expected: 0o500,
+		},
+	} {
+		assert.Equal(t, tc.expected, tc.fileAttr.perm())
 	}
 }
