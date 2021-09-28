@@ -33,11 +33,11 @@ func NewExternalDiffSystem(system System, command string, args []string, destDir
 
 // Close frees all resources held by s.
 func (s *ExternalDiffSystem) Close() error {
-	if s.tempDirAbsPath != "" {
-		if err := os.RemoveAll(string(s.tempDirAbsPath)); err != nil && !errors.Is(err, fs.ErrNotExist) {
+	if !s.tempDirAbsPath.Empty() {
+		if err := os.RemoveAll(s.tempDirAbsPath.String()); err != nil && !errors.Is(err, fs.ErrNotExist) {
 			return err
 		}
-		s.tempDirAbsPath = ""
+		s.tempDirAbsPath = EmptyAbsPath
 	}
 	return nil
 }
@@ -141,10 +141,10 @@ func (s *ExternalDiffSystem) WriteFile(filename AbsPath, data []byte, perm fs.Fi
 		return err
 	}
 	targetAbsPath := tempDirAbsPath.Join(targetRelPath)
-	if err := os.MkdirAll(string(targetAbsPath.Dir()), 0o700); err != nil {
+	if err := os.MkdirAll(targetAbsPath.Dir().String(), 0o700); err != nil {
 		return err
 	}
-	if err := os.WriteFile(string(targetAbsPath), data, perm); err != nil {
+	if err := os.WriteFile(targetAbsPath.String(), data, perm); err != nil {
 		return err
 	}
 	return s.runDiffCommand(filename, targetAbsPath)
@@ -159,12 +159,12 @@ func (s *ExternalDiffSystem) WriteSymlink(oldname string, newname AbsPath) error
 // tempDir creates a temporary directory for s if it does not already exist and
 // returns its path.
 func (s *ExternalDiffSystem) tempDir() (AbsPath, error) {
-	if s.tempDirAbsPath == "" {
+	if s.tempDirAbsPath.Empty() {
 		tempDir, err := os.MkdirTemp("", "chezmoi-diff")
 		if err != nil {
-			return "", err
+			return EmptyAbsPath, err
 		}
-		s.tempDirAbsPath = AbsPath(tempDir)
+		s.tempDirAbsPath = NewAbsPath(tempDir)
 	}
 	return s.tempDirAbsPath, nil
 }
@@ -175,8 +175,8 @@ func (s *ExternalDiffSystem) runDiffCommand(destAbsPath, targetAbsPath AbsPath) 
 		Destination string
 		Target      string
 	}{
-		Destination: string(destAbsPath),
-		Target:      string(targetAbsPath),
+		Destination: destAbsPath.String(),
+		Target:      targetAbsPath.String(),
 	}
 
 	args := make([]string, 0, len(s.args))

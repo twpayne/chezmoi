@@ -32,7 +32,7 @@ func (s *ZIPWriterSystem) Close() error {
 // Mkdir implements System.Mkdir.
 func (s *ZIPWriterSystem) Mkdir(name AbsPath, perm fs.FileMode) error {
 	fh := zip.FileHeader{
-		Name:     string(name),
+		Name:     name.String(),
 		Modified: s.modified,
 	}
 	fh.SetMode(fs.ModeDir | perm)
@@ -42,13 +42,13 @@ func (s *ZIPWriterSystem) Mkdir(name AbsPath, perm fs.FileMode) error {
 
 // RunScript implements System.RunScript.
 func (s *ZIPWriterSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
-	return s.WriteFile(AbsPath(scriptname), data, 0o700)
+	return s.WriteFile(NewAbsPath(scriptname.String()), data, 0o700)
 }
 
 // WriteFile implements System.WriteFile.
 func (s *ZIPWriterSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error {
 	fh := zip.FileHeader{
-		Name:               string(filename),
+		Name:               filename.String(),
 		Method:             zip.Deflate,
 		Modified:           s.modified,
 		UncompressedSize64: uint64(len(data)),
@@ -66,7 +66,7 @@ func (s *ZIPWriterSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileM
 func (s *ZIPWriterSystem) WriteSymlink(oldname string, newname AbsPath) error {
 	data := []byte(oldname)
 	fh := zip.FileHeader{
-		Name:               string(newname),
+		Name:               newname.String(),
 		Modified:           s.modified,
 		UncompressedSize64: uint64(len(data)),
 	}

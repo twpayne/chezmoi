@@ -51,12 +51,12 @@ func (c *Config) runMergeCmd(cmd *cobra.Command, args []string, sourceState *che
 		return err
 	}
 	defer os.RemoveAll(tempDir)
-	tempDirAbsPath := chezmoi.AbsPath(tempDir)
+	tempDirAbsPath := chezmoi.NewAbsPath(tempDir)
 
 	var plaintextTempDirAbsPath chezmoi.AbsPath
 	defer func() {
-		if plaintextTempDirAbsPath != "" {
-			_ = os.RemoveAll(string(plaintextTempDirAbsPath))
+		if !plaintextTempDirAbsPath.Empty() {
+			_ = os.RemoveAll(plaintextTempDirAbsPath.String())
 		}
 	}()
 
@@ -72,12 +72,12 @@ func (c *Config) runMergeCmd(cmd *cobra.Command, args []string, sourceState *che
 		)
 		if sourceStateFile, ok := sourceStateEntry.(*chezmoi.SourceStateFile); ok {
 			if sourceStateFile.Attr.Encrypted {
-				if plaintextTempDirAbsPath == "" {
+				if plaintextTempDirAbsPath.Empty() {
 					plaintextTempDir, err := os.MkdirTemp("", "chezmoi-merge-plaintext")
 					if err != nil {
 						return err
 					}
-					plaintextTempDirAbsPath = chezmoi.AbsPath(plaintextTempDir)
+					plaintextTempDirAbsPath = chezmoi.NewAbsPath(plaintextTempDir)
 				}
 				plaintextAbsPath = plaintextTempDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath())
 				plaintext, err := sourceStateFile.Contents()
@@ -87,11 +87,11 @@ func (c *Config) runMergeCmd(cmd *cobra.Command, args []string, sourceState *che
 				if err := c.baseSystem.WriteFile(plaintextAbsPath, plaintext, 0o600); err != nil {
 					return err
 				}
-				source = string(plaintextAbsPath)
+				source = plaintextAbsPath.String()
 			}
 		}
 		if source == "" {
-			source = string(c.SourceDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath()))
+			source = c.SourceDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath()).String()
 		}
 
 		// FIXME sourceStateEntry.TargetStateEntry eagerly evaluates the return
@@ -121,9 +121,9 @@ func (c *Config) runMergeCmd(cmd *cobra.Command, args []string, sourceState *che
 			Source      string
 			Target      string
 		}{
-			Destination: string(c.DestDirAbsPath.Join(targetRelPath)),
+			Destination: c.DestDirAbsPath.Join(targetRelPath).String(),
 			Source:      source,
-			Target:      string(targetStateAbsPath),
+			Target:      targetStateAbsPath.String(),
 		}
 
 		args := make([]string, 0, len(c.Merge.Args))
@@ -173,7 +173,7 @@ func (c *Config) runMergeCmd(cmd *cobra.Command, args []string, sourceState *che
 
 		// If the source state entry was an encrypted file, then re-encrypt the
 		// plaintext.
-		if plaintextAbsPath != "" {
+		if !plaintextAbsPath.Empty() {
 			encryptedContents, err := c.encryption.EncryptFile(plaintextAbsPath)
 			if err != nil {
 				return err

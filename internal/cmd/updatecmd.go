@@ -48,7 +48,7 @@ func (c *Config) runUpdateCmd(cmd *cobra.Command, args []string) error {
 		if err != nil {
 			return err
 		}
-		repo, err := git.PlainOpen(string(rawSourceAbsPath))
+		repo, err := git.PlainOpen(rawSourceAbsPath.String())
 		if err != nil {
 			return err
 		}

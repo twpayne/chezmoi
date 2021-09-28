@@ -31,21 +31,21 @@ func (s *TARWriterSystem) Close() error {
 func (s *TARWriterSystem) Mkdir(name AbsPath, perm fs.FileMode) error {
 	header := s.headerTemplate
 	header.Typeflag = tar.TypeDir
-	header.Name = string(name) + "/"
+	header.Name = name.String() + "/"
 	header.Mode = int64(perm)
 	return s.w.WriteHeader(&header)
 }
 
 // RunScript implements System.RunScript.
 func (s *TARWriterSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
-	return s.WriteFile(AbsPath(scriptname), data, 0o700)
+	return s.WriteFile(NewAbsPath(scriptname.String()), data, 0o700)
 }
 
 // WriteFile implements System.WriteFile.
 func (s *TARWriterSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error {
 	header := s.headerTemplate
 	header.Typeflag = tar.TypeReg
-	header.Name = string(filename)
+	header.Name = filename.String()
 	header.Size = int64(len(data))
 	header.Mode = int64(perm)
 	if err := s.w.WriteHeader(&header); err != nil {
@@ -59,7 +59,7 @@ func (s *TARWriterSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileM
 func (s *TARWriterSystem) WriteSymlink(oldname string, newname AbsPath) error {
 	header := s.headerTemplate
 	header.Typeflag = tar.TypeSymlink
-	header.Name = string(newname)
+	header.Name = newname.String()
 	header.Linkname = oldname
 	return s.w.WriteHeader(&header)
 }

@@ -45,12 +45,12 @@ func NewRealSystem(fileSystem vfs.FS, options ...RealSystemOption) *RealSystem {
 
 // Chmod implements System.Chmod.
 func (s *RealSystem) Chmod(name AbsPath, mode fs.FileMode) error {
-	return s.fileSystem.Chmod(string(name), mode)
+	return s.fileSystem.Chmod(name.String(), mode)
 }
 
 // Readlink implements System.Readlink.
 func (s *RealSystem) Readlink(name AbsPath) (string, error) {
-	return s.fileSystem.Readlink(string(name))
+	return s.fileSystem.Readlink(name.String())
 }
 
 // WriteFile implements System.WriteFile.
@@ -74,10 +74,10 @@ func (s *RealSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) 
 		}
 		tempDir, ok := s.tempDirCache[dev]
 		if !ok {
-			tempDir = renameio.TempDir(string(dir))
+			tempDir = renameio.TempDir(dir.String())
 			s.tempDirCache[dev] = tempDir
 		}
-		t, err := renameio.TempFile(tempDir, string(filename))
+		t, err := renameio.TempFile(tempDir, filename.String())
 		if err != nil {
 			return err
 		}
@@ -101,12 +101,12 @@ func (s *RealSystem) WriteSymlink(oldname string, newname AbsPath) error {
 	// Special case: if writing to the real filesystem in safe mode, use
 	// github.com/google/renameio.
 	if s.safe && s.fileSystem == vfs.OSFS {
-		return renameio.Symlink(oldname, string(newname))
+		return renameio.Symlink(oldname, newname.String())
 	}
-	if err := s.fileSystem.RemoveAll(string(newname)); err != nil && !errors.Is(err, fs.ErrNotExist) {
+	if err := s.fileSystem.RemoveAll(newname.String()); err != nil && !errors.Is(err, fs.ErrNotExist) {
 		return err
 	}
-	return s.fileSystem.Symlink(oldname, string(newname))
+	return s.fileSystem.Symlink(oldname, newname.String())
 }
 
 // writeFile is like os.WriteFile but always sets perm before writing data.
@@ -114,7 +114,7 @@ func (s *RealSystem) WriteSymlink(oldname string, newname AbsPath) error {
 // ensure permissions, so we use our own implementation.
 func writeFile(fileSystem vfs.FS, filename AbsPath, data []byte, perm fs.FileMode) (err error) {
 	// Create a new file, or truncate any existing one.
-	f, err := fileSystem.OpenFile(string(filename), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, perm)
+	f, err := fileSystem.OpenFile(filename.String(), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, perm)
 	if err != nil {
 		return
 	}

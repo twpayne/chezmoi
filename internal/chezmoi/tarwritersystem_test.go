@@ -37,7 +37,7 @@ func TestTARWriterSystem(t *testing.T) {
 		system := NewRealSystem(fileSystem)
 		s := NewSourceState(
 			WithBaseSystem(system),
-			WithSourceDir("/home/user/.local/share/chezmoi"),
+			WithSourceDir(NewAbsPath("/home/user/.local/share/chezmoi")),
 			WithSystem(system),
 		)
 		require.NoError(t, s.Read(ctx, nil))
@@ -46,7 +46,7 @@ func TestTARWriterSystem(t *testing.T) {
 		b := &bytes.Buffer{}
 		tarWriterSystem := NewTARWriterSystem(b, tar.Header{})
 		persistentState := NewMockPersistentState()
-		require.NoError(t, s.applyAll(tarWriterSystem, system, persistentState, "", ApplyOptions{
+		require.NoError(t, s.applyAll(tarWriterSystem, system, persistentState, EmptyAbsPath, ApplyOptions{
 			Include: NewEntryTypeSet(EntryTypesAll),
 		}))
 		require.NoError(t, tarWriterSystem.Close())

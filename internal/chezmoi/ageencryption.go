@@ -58,7 +58,7 @@ func (e *AgeEncryption) DecryptToFile(plaintextAbsPath AbsPath, ciphertext []byt
 	}
 
 	//nolint:gosec
-	cmd := exec.Command(e.Command, append(append(e.decryptArgs(), "--output", string(plaintextAbsPath)), e.Args...)...)
+	cmd := exec.Command(e.Command, append(append(e.decryptArgs(), "--output", plaintextAbsPath.String()), e.Args...)...)
 	cmd.Stdin = bytes.NewReader(ciphertext)
 	cmd.Stderr = os.Stderr
 	return chezmoilog.LogCmdRun(cmd)
@@ -88,7 +88,7 @@ func (e *AgeEncryption) EncryptFile(plaintextAbsPath AbsPath) ([]byte, error) {
 	}
 
 	//nolint:gosec
-	cmd := exec.Command(e.Command, append(append(e.encryptArgs(), e.Args...), string(plaintextAbsPath))...)
+	cmd := exec.Command(e.Command, append(append(e.encryptArgs(), e.Args...), plaintextAbsPath.String())...)
 	cmd.Stderr = os.Stderr
 	return chezmoilog.LogCmdOutput(cmd)
 }
@@ -139,7 +139,7 @@ func (e *AgeEncryption) builtinEncrypt(plaintext []byte) ([]byte, error) {
 
 func (e *AgeEncryption) builtinIdentities() ([]age.Identity, error) {
 	var identities []age.Identity
-	if e.Identity != "" {
+	if !e.Identity.Empty() {
 		parsedIdentities, err := parseIdentityFile(e.Identity)
 		if err != nil {
 			return nil, err
@@ -211,11 +211,11 @@ func (e *AgeEncryption) encryptArgs() []string {
 		for _, recipient := range e.Recipients {
 			args = append(args, "--recipient", recipient)
 		}
-		if e.RecipientsFile != "" {
-			args = append(args, "--recipients-file", string(e.RecipientsFile))
+		if !e.RecipientsFile.Empty() {
+			args = append(args, "--recipients-file", e.RecipientsFile.String())
 		}
 		for _, recipientsFile := range e.RecipientsFiles {
-			args = append(args, "--recipients-file", string(recipientsFile))
+			args = append(args, "--recipients-file", recipientsFile.String())
 		}
 	}
 	return args
@@ -223,17 +223,17 @@ func (e *AgeEncryption) encryptArgs() []string {
 
 func (e *AgeEncryption) identityArgs() []string {
 	args := make([]string, 0, 2+2*len(e.Identities))
-	if e.Identity != "" {
-		args = append(args, "--identity", string(e.Identity))
+	if !e.Identity.Empty() {
+		args = append(args, "--identity", e.Identity.String())
 	}
 	for _, identity := range e.Identities {
-		args = append(args, "--identity", string(identity))
+		args = append(args, "--identity", identity.String())
 	}
 	return args
 }
 
 func parseIdentityFile(identityFile AbsPath) ([]age.Identity, error) {
-	file, err := os.Open(string(identityFile))
+	file, err := os.Open(identityFile.String())
 	if err != nil {
 		return nil, err
 	}
@@ -242,7 +242,7 @@ func parseIdentityFile(identityFile AbsPath) ([]age.Identity, error) {
 }
 
 func parseRecipientsFile(recipientsFile AbsPath) ([]age.Recipient, error) {
-	file, err := os.Open(string(recipientsFile))
+	file, err := os.Open(recipientsFile.String())
 	if err != nil {
 		return nil, err
 	}

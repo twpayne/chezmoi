@@ -32,7 +32,7 @@ func (e *DebugEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
 func (e *DebugEncryption) DecryptToFile(plaintextAbsPath AbsPath, ciphertext []byte) error {
 	err := e.encryption.DecryptToFile(plaintextAbsPath, ciphertext)
 	log.Err(err).
-		Str("plaintextAbsPath", string(plaintextAbsPath)).
+		Stringer("plaintextAbsPath", plaintextAbsPath).
 		Bytes("ciphertext", chezmoilog.Output(ciphertext, err)).
 		Msg("DecryptToFile")
 	return err
@@ -52,7 +52,7 @@ func (e *DebugEncryption) Encrypt(plaintext []byte) ([]byte, error) {
 func (e *DebugEncryption) EncryptFile(plaintextAbsPath AbsPath) ([]byte, error) {
 	ciphertext, err := e.encryption.EncryptFile(plaintextAbsPath)
 	log.Err(err).
-		Str("plaintextAbsPath", string(plaintextAbsPath)).
+		Stringer("plaintextAbsPath", plaintextAbsPath).
 		Bytes("ciphertext", chezmoilog.Output(ciphertext, err)).
 		Msg("EncryptFile")
 	return ciphertext, err

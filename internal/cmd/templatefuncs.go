@@ -30,7 +30,7 @@ func (c *Config) includeTemplateFunc(filename string) string {
 	} else {
 		absPath = c.SourceDirAbsPath.Join(chezmoi.RelPath(filename))
 	}
-	contents, err := c.fileSystem.ReadFile(string(absPath))
+	contents, err := c.fileSystem.ReadFile(absPath.String())
 	if err != nil {
 		returnTemplateError(err)
 		return ""

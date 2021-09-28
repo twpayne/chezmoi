@@ -56,7 +56,7 @@ func (c *Config) runForgetCmd(cmd *cobra.Command, args []string, sourceState *ch
 		}
 
 		targetAbsPath := c.DestDirAbsPath.Join(targetRelPath)
-		if err := c.persistentState.Delete(chezmoi.EntryStateBucket, []byte(targetAbsPath)); err != nil {
+		if err := c.persistentState.Delete(chezmoi.EntryStateBucket, targetAbsPath.Bytes()); err != nil {
 			return err
 		}
 	}

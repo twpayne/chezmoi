@@ -212,7 +212,7 @@ func newConfig(options ...configOption) (*Config, error) {
 
 	c := &Config{
 		// Global configuration, settable in the config file.
-		CacheDirAbsPath: chezmoi.AbsPath(bds.CacheHome).Join("chezmoi"),
+		CacheDirAbsPath: chezmoi.NewAbsPath(bds.CacheHome).Join("chezmoi"),
 		Color: autoBool{
 			auto: true,
 		},
@@ -531,12 +531,12 @@ func (c *Config) applyArgs(ctx context.Context, targetSystem chezmoi.System, tar
 
 func (c *Config) cmdOutput(dirAbsPath chezmoi.AbsPath, name string, args []string) ([]byte, error) {
 	cmd := exec.Command(name, args...)
-	if dirAbsPath != "" {
+	if !dirAbsPath.Empty() {
 		dirRawAbsPath, err := c.baseSystem.RawPath(dirAbsPath)
 		if err != nil {
 			return nil, err
 		}
-		cmd.Dir = string(dirRawAbsPath)
+		cmd.Dir = dirRawAbsPath.String()
 	}
 	return c.baseSystem.IdempotentCmdOutput(cmd)
 }
@@ -558,11 +558,11 @@ func (c *Config) defaultConfigFile(fileSystem vfs.Stater, bds *xdg.BaseDirectory
 	for _, configDir := range bds.ConfigDirs {
 		configDirAbsPath, err := chezmoi.NewAbsPathFromExtPath(configDir, c.homeDirAbsPath)
 		if err != nil {
-			return "", err
+			return chezmoi.EmptyAbsPath, err
 		}
 		for _, extension := range viper.SupportedExts {
 			configFileAbsPath := configDirAbsPath.Join("chezmoi", chezmoi.RelPath("chezmoi."+extension))
-			if _, err := fileSystem.Stat(string(configFileAbsPath)); err == nil {
+			if _, err := fileSystem.Stat(configFileAbsPath.String()); err == nil {
 				return configFileAbsPath, nil
 			}
 		}
@@ -570,7 +570,7 @@ func (c *Config) defaultConfigFile(fileSystem vfs.Stater, bds *xdg.BaseDirectory
 	// Fallback to XDG Base Directory Specification default.
 	configHomeAbsPath, err := chezmoi.NewAbsPathFromExtPath(bds.ConfigHome, c.homeDirAbsPath)
 	if err != nil {
-		return "", err
+		return chezmoi.EmptyAbsPath, err
 	}
 	return configHomeAbsPath.Join("chezmoi", "chezmoi.toml"), nil
 }
@@ -634,17 +634,17 @@ func (c *Config) defaultSourceDir(fileSystem vfs.Stater, bds *xdg.BaseDirectoryS
 	for _, dataDir := range bds.DataDirs {
 		dataDirAbsPath, err := chezmoi.NewAbsPathFromExtPath(dataDir, c.homeDirAbsPath)
 		if err != nil {
-			return "", err
+			return chezmoi.EmptyAbsPath, err
 		}
 		sourceDirAbsPath := dataDirAbsPath.Join("chezmoi")
-		if _, err := fileSystem.Stat(string(sourceDirAbsPath)); err == nil {
+		if _, err := fileSystem.Stat(sourceDirAbsPath.String()); err == nil {
 			return sourceDirAbsPath, nil
 		}
 	}
 	// Fallback to XDG Base Directory Specification default.
 	dataHomeAbsPath, err := chezmoi.NewAbsPathFromExtPath(bds.DataHome, c.homeDirAbsPath)
 	if err != nil {
-		return "", err
+		return chezmoi.EmptyAbsPath, err
 	}
 	return dataHomeAbsPath.Join("chezmoi"), nil
 }
@@ -739,7 +739,7 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 			"kernel":       kernel,
 			"os":           runtime.GOOS,
 			"osRelease":    osRelease,
-			"sourceDir":    string(c.SourceDirAbsPath),
+			"sourceDir":    c.SourceDirAbsPath.String(),
 			"username":     username,
 			"version": map[string]interface{}{
 				"builtBy": c.versionInfo.BuiltBy,
@@ -848,7 +848,7 @@ func (c *Config) doPurge(purgeOptions *purgeOptions) error {
 		// Special case: do not purge the binary if it is a test binary created
 		// by go test as this would break later tests.
 		if err == nil && !strings.Contains(executable, "test") {
-			absPaths = append(absPaths, chezmoi.AbsPath(executable))
+			absPaths = append(absPaths, chezmoi.NewAbsPath(executable))
 		}
 	}
 
@@ -1198,7 +1198,7 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 		// Warn the user of any errors reading the config file.
 		v := viper.New()
 		v.SetFs(afero.FromIOFS{FS: c.fileSystem})
-		v.SetConfigFile(string(c.configFileAbsPath))
+		v.SetConfigFile(c.configFileAbsPath.String())
 		err := v.ReadInConfig()
 		if err == nil {
 			err = v.Unmarshal(&Config{}, viperDecodeConfigOptions...)
@@ -1259,8 +1259,8 @@ func (c *Config) pageOutputString(output, cmdPager string) error {
 }
 
 func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error {
-	if c.cpuProfile != "" {
-		f, err := os.Create(string(c.cpuProfile))
+	if !c.cpuProfile.Empty() {
+		f, err := os.Create(c.cpuProfile.String())
 		if err != nil {
 			return err
 		}
@@ -1428,13 +1428,13 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 			// $XDG_DATA_DIR will fail. As a work-around, create the directory
 			// if it does not exist. See
 			// https://forum.snapcraft.io/t/wayland-dconf-and-xdg-runtime-dir/186/13.
-			if err := chezmoi.MkdirAll(c.baseSystem, chezmoi.AbsPath(c.bds.RuntimeDir), 0o700); err != nil {
+			if err := chezmoi.MkdirAll(c.baseSystem, chezmoi.NewAbsPath(c.bds.RuntimeDir), 0o700); err != nil {
 				return err
 			}
 		}
 	}
 
-	if c.WorkingTreeAbsPath == "" {
+	if c.WorkingTreeAbsPath.Empty() {
 		workingTreeAbsPath := c.SourceDirAbsPath
 	FOR:
 		for {
@@ -1444,7 +1444,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 			}
 			prevWorkingTreeDirAbsPath := workingTreeAbsPath
 			workingTreeAbsPath = workingTreeAbsPath.Dir()
-			if len(workingTreeAbsPath) >= len(prevWorkingTreeDirAbsPath) {
+			if workingTreeAbsPath.Len() >= prevWorkingTreeDirAbsPath.Len() {
 				c.WorkingTreeAbsPath = c.SourceDirAbsPath
 				break FOR
 			}
@@ -1464,22 +1464,22 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 }
 
 func (c *Config) persistentStateFile() (chezmoi.AbsPath, error) {
-	if c.configFileAbsPath != "" {
+	if !c.configFileAbsPath.Empty() {
 		return c.configFileAbsPath.Dir().Join(persistentStateFilename), nil
 	}
 	for _, configDir := range c.bds.ConfigDirs {
 		configDirAbsPath, err := chezmoi.NewAbsPathFromExtPath(configDir, c.homeDirAbsPath)
 		if err != nil {
-			return "", err
+			return chezmoi.EmptyAbsPath, err
 		}
 		persistentStateFile := configDirAbsPath.Join("chezmoi", persistentStateFilename)
-		if _, err := os.Stat(string(persistentStateFile)); err == nil {
+		if _, err := os.Stat(persistentStateFile.String()); err == nil {
 			return persistentStateFile, nil
 		}
 	}
 	defaultConfigFileAbsPath, err := c.defaultConfigFile(c.fileSystem, c.bds)
 	if err != nil {
-		return "", err
+		return chezmoi.EmptyAbsPath, err
 	}
 	return defaultConfigFileAbsPath.Dir().Join(persistentStateFilename), nil
 }
@@ -1499,7 +1499,7 @@ func (c *Config) promptChoice(prompt string, choices []string) (string, error) {
 }
 
 func (c *Config) readConfig() error {
-	viper.SetConfigFile(string(c.configFileAbsPath))
+	viper.SetConfigFile(c.configFileAbsPath.String())
 	if c.configFormat != "" {
 		viper.SetConfigType(c.configFormat.String())
 	}
@@ -1530,12 +1530,12 @@ func (c *Config) readLine(prompt string) (string, error) {
 
 func (c *Config) run(dir chezmoi.AbsPath, name string, args []string) error {
 	cmd := exec.Command(name, args...)
-	if dir != "" {
+	if !dir.Empty() {
 		dirRawAbsPath, err := c.baseSystem.RawPath(dir)
 		if err != nil {
 			return err
 		}
-		cmd.Dir = string(dirRawAbsPath)
+		cmd.Dir = dirRawAbsPath.String()
 	}
 	cmd.Stdin = c.stdin
 	cmd.Stdout = c.stdout
@@ -1548,7 +1548,7 @@ func (c *Config) runEditor(args []string) error {
 		return err
 	}
 	editor, editorArgs := c.editor()
-	return c.run("", editor, append(editorArgs, args...))
+	return c.run(chezmoi.EmptyAbsPath, editor, append(editorArgs, args...))
 }
 
 func (c *Config) sourceAbsPaths(sourceState *chezmoi.SourceState, args []string) ([]chezmoi.AbsPath, error) {
@@ -1664,7 +1664,7 @@ func (c *Config) validateData() error {
 }
 
 func (c *Config) writeOutput(data []byte) error {
-	if c.outputAbsPath == "" || c.outputAbsPath == "-" {
+	if c.outputAbsPath.Empty() || c.outputAbsPath == chezmoi.NewAbsPath("-") {
 		_, err := c.stdout.Write(data)
 		return err
 	}

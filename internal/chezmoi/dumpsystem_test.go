@@ -34,7 +34,7 @@ func TestDumpSystem(t *testing.T) {
 		system := NewRealSystem(fileSystem)
 		s := NewSourceState(
 			WithBaseSystem(system),
-			WithSourceDir("/home/user/.local/share/chezmoi"),
+			WithSourceDir(NewAbsPath("/home/user/.local/share/chezmoi")),
 			WithSystem(system),
 		)
 		require.NoError(t, s.Read(ctx, nil))
@@ -42,29 +42,29 @@ func TestDumpSystem(t *testing.T) {
 
 		dumpSystem := NewDumpSystem()
 		persistentState := NewMockPersistentState()
-		require.NoError(t, s.applyAll(dumpSystem, system, persistentState, "", ApplyOptions{
+		require.NoError(t, s.applyAll(dumpSystem, system, persistentState, EmptyAbsPath, ApplyOptions{
 			Include: NewEntryTypeSet(EntryTypesAll),
 		}))
-		expectedData := map[AbsPath]interface{}{
+		expectedData := map[string]interface{}{
 			".dir": &dirData{
 				Type: dataTypeDir,
-				Name: ".dir",
+				Name: NewAbsPath(".dir"),
 				Perm: 0o777 &^ chezmoitest.Umask,
 			},
 			".dir/file": &fileData{
 				Type:     dataTypeFile,
-				Name:     ".dir/file",
+				Name:     NewAbsPath(".dir/file"),
 				Contents: "# contents of .dir/file\n",
 				Perm:     0o666 &^ chezmoitest.Umask,
 			},
 			"script": &scriptData{
 				Type:     dataTypeScript,
-				Name:     "script",
+				Name:     NewAbsPath("script"),
 				Contents: "# contents of script\n",
 			},
 			"symlink": &symlinkData{
 				Type:     dataTypeSymlink,
-				Name:     "symlink",
+				Name:     NewAbsPath("symlink"),
 				Linkname: ".dir/subdir/file",
 			},
 		}

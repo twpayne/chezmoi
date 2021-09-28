@@ -39,7 +39,7 @@ func TestZIPWriterSystem(t *testing.T) {
 		system := NewRealSystem(fileSystem)
 		s := NewSourceState(
 			WithBaseSystem(system),
-			WithSourceDir("/home/user/.local/share/chezmoi"),
+			WithSourceDir(NewAbsPath("/home/user/.local/share/chezmoi")),
 			WithSystem(system),
 		)
 		require.NoError(t, s.Read(ctx, nil))
@@ -48,7 +48,7 @@ func TestZIPWriterSystem(t *testing.T) {
 		b := &bytes.Buffer{}
 		zipWriterSystem := NewZIPWriterSystem(b, time.Now().UTC())
 		persistentState := NewMockPersistentState()
-		require.NoError(t, s.applyAll(zipWriterSystem, system, persistentState, "", ApplyOptions{
+		require.NoError(t, s.applyAll(zipWriterSystem, system, persistentState, EmptyAbsPath, ApplyOptions{
 			Include: NewEntryTypeSet(EntryTypesAll),
 		}))
 		require.NoError(t, zipWriterSystem.Close())

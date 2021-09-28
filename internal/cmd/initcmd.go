@@ -151,7 +151,7 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 		if len(args) == 0 {
 			if useBuiltinGit {
 				isBare := false
-				if _, err = git.PlainInit(string(workingTreeRawPath), isBare); err != nil {
+				if _, err = git.PlainInit(workingTreeRawPath.String(), isBare); err != nil {
 					return err
 				}
 			} else if err := c.run(c.WorkingTreeAbsPath, c.Git.Command, []string{"init", "--quiet"}); err != nil {
@@ -171,7 +171,7 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 					RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
 				}
 				isBare := false
-				_, err = git.PlainClone(string(workingTreeRawPath), isBare, &cloneOptions)
+				_, err = git.PlainClone(workingTreeRawPath.String(), isBare, &cloneOptions)
 				if errors.Is(err, transport.ErrAuthenticationRequired) {
 					var basicAuth http.BasicAuth
 					if basicAuth.Username, err = c.readLine(fmt.Sprintf("Username [default %q]? ", username)); err != nil {
@@ -184,7 +184,7 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 						return err
 					}
 					cloneOptions.Auth = &basicAuth
-					_, err = git.PlainClone(string(workingTreeRawPath), isBare, &cloneOptions)
+					_, err = git.PlainClone(workingTreeRawPath.String(), isBare, &cloneOptions)
 				}
 				if err != nil {
 					return err
@@ -206,9 +206,9 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 				}
 				args = append(args,
 					dotfilesRepoURL,
-					string(workingTreeRawPath),
+					workingTreeRawPath.String(),
 				)
-				if err := c.run("", c.Git.Command, args); err != nil {
+				if err := c.run(chezmoi.EmptyAbsPath, c.Git.Command, args); err != nil {
 					return err
 				}
 			}
@@ -245,8 +245,8 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 
 		// Write the config.
 		configPath := c.init.configPath
-		if c.init.configPath == "" {
-			configPath = chezmoi.AbsPath(c.bds.ConfigHome).Join("chezmoi").Join(configTemplateRelPath)
+		if c.init.configPath.Empty() {
+			configPath = chezmoi.NewAbsPath(c.bds.ConfigHome).Join("chezmoi").Join(configTemplateRelPath)
 		}
 		if err := chezmoi.MkdirAll(c.baseSystem, configPath.Dir(), 0o777); err != nil {
 			return err

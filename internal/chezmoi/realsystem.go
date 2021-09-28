@@ -34,41 +34,41 @@ func (s *RealSystem) IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error) {
 
 // Lstat implements System.Lstat.
 func (s *RealSystem) Lstat(filename AbsPath) (fs.FileInfo, error) {
-	return s.fileSystem.Lstat(string(filename))
+	return s.fileSystem.Lstat(filename.String())
 }
 
 // Mkdir implements System.Mkdir.
 func (s *RealSystem) Mkdir(name AbsPath, perm fs.FileMode) error {
-	return s.fileSystem.Mkdir(string(name), perm)
+	return s.fileSystem.Mkdir(name.String(), perm)
 }
 
 // RawPath implements System.RawPath.
 func (s *RealSystem) RawPath(absPath AbsPath) (AbsPath, error) {
-	rawAbsPath, err := s.fileSystem.RawPath(string(absPath))
+	rawAbsPath, err := s.fileSystem.RawPath(absPath.String())
 	if err != nil {
-		return "", err
+		return EmptyAbsPath, err
 	}
-	return AbsPath(rawAbsPath), nil
+	return NewAbsPath(rawAbsPath), nil
 }
 
 // ReadDir implements System.ReadDir.
 func (s *RealSystem) ReadDir(name AbsPath) ([]fs.DirEntry, error) {
-	return s.fileSystem.ReadDir(string(name))
+	return s.fileSystem.ReadDir(name.String())
 }
 
 // ReadFile implements System.ReadFile.
 func (s *RealSystem) ReadFile(name AbsPath) ([]byte, error) {
-	return s.fileSystem.ReadFile(string(name))
+	return s.fileSystem.ReadFile(name.String())
 }
 
 // RemoveAll implements System.RemoveAll.
 func (s *RealSystem) RemoveAll(name AbsPath) error {
-	return s.fileSystem.RemoveAll(string(name))
+	return s.fileSystem.RemoveAll(name.String())
 }
 
 // Rename implements System.Rename.
 func (s *RealSystem) Rename(oldpath, newpath AbsPath) error {
-	return s.fileSystem.Rename(string(oldpath), string(newpath))
+	return s.fileSystem.Rename(oldpath.String(), newpath.String())
 }
 
 // RunCmd implements System.RunCmd.
@@ -120,7 +120,7 @@ func (s *RealSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, int
 
 // Stat implements System.Stat.
 func (s *RealSystem) Stat(name AbsPath) (fs.FileInfo, error) {
-	return s.fileSystem.Stat(string(name))
+	return s.fileSystem.Stat(name.String())
 }
 
 // UnderlyingFS implements System.UnderlyingFS.
@@ -144,7 +144,7 @@ func (s *RealSystem) getScriptWorkingDir(dir AbsPath) (string, error) {
 			if err != nil {
 				return "", err
 			}
-			return string(dirRawAbsPath), nil
+			return dirRawAbsPath.String(), nil
 		case err == nil || errors.Is(err, fs.ErrNotExist):
 			// Either dir does not exist, or it exists and is not a directory.
 			dir = dir.Dir()

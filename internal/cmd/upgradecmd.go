@@ -143,7 +143,7 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	executableAbsPath := chezmoi.AbsPath(executable)
+	executableAbsPath := chezmoi.NewAbsPath(executable)
 	method := c.upgrade.method
 	if method == "" {
 		method, err = getMethod(c.fileSystem, executableAbsPath)
@@ -329,13 +329,13 @@ FOR:
 }
 
 func (c *Config) snapRefresh() error {
-	return c.run("", "snap", []string{"refresh", c.upgrade.repo})
+	return c.run(chezmoi.EmptyAbsPath, "snap", []string{"refresh", c.upgrade.repo})
 }
 
 func (c *Config) upgradePackage(ctx context.Context, rr *github.RepositoryRelease, useSudo bool) error {
 	switch runtime.GOOS {
 	case "darwin":
-		return c.run("", "brew", []string{"upgrade", c.upgrade.repo})
+		return c.run(chezmoi.EmptyAbsPath, "brew", []string{"upgrade", c.upgrade.repo})
 	case "linux":
 		// Determine the package type and architecture.
 		packageType, err := getPackageType(c.baseSystem)
@@ -355,7 +355,7 @@ func (c *Config) upgradePackage(ctx context.Context, rr *github.RepositoryReleas
 				args = append(args, "sudo")
 			}
 			args = append(args, "pacman", "-S", c.upgrade.repo)
-			return c.run("", args[0], args[1:])
+			return c.run(chezmoi.EmptyAbsPath, args[0], args[1:])
 		}
 
 		// Find the corresponding release asset.
@@ -374,13 +374,13 @@ func (c *Config) upgradePackage(ctx context.Context, rr *github.RepositoryReleas
 		// Create a temporary directory for the package.
 		var tempDirAbsPath chezmoi.AbsPath
 		if c.dryRun {
-			tempDirAbsPath = chezmoi.AbsPath(os.TempDir())
+			tempDirAbsPath = chezmoi.NewAbsPath(os.TempDir())
 		} else {
 			tempDir, err := os.MkdirTemp("", "chezmoi")
 			if err != nil {
 				return err
 			}
-			tempDirAbsPath = chezmoi.AbsPath(tempDir)
+			tempDirAbsPath = chezmoi.NewAbsPath(tempDir)
 			defer func() {
 				_ = c.baseSystem.RemoveAll(tempDirAbsPath)
 			}()
@@ -406,13 +406,13 @@ func (c *Config) upgradePackage(ctx context.Context, rr *github.RepositoryReleas
 		}
 		switch packageType {
 		case packageTypeAPK:
-			args = append(args, "apk", "--allow-untrusted", string(packageFilename))
+			args = append(args, "apk", "--allow-untrusted", packageFilename.String())
 		case packageTypeDEB:
-			args = append(args, "dpkg", "-i", string(packageFilename))
+			args = append(args, "dpkg", "-i", packageFilename.String())
 		case packageTypeRPM:
-			args = append(args, "rpm", "-U", string(packageFilename))
+			args = append(args, "rpm", "-U", packageFilename.String())
 		}
-		return c.run("", args[0], args[1:])
+		return c.run(chezmoi.EmptyAbsPath, args[0], args[1:])
 	default:
 		return fmt.Errorf("%s: unsupported GOOS", runtime.GOOS)
 	}
@@ -443,7 +443,7 @@ func getMethod(fileSystem vfs.Stater, executableAbsPath chezmoi.AbsPath) (string
 	if err != nil {
 		return "", err
 	}
-	if executableInUserHomeDir, err := vfs.Contains(fileSystem, string(executableAbsPath), userHomeDir); err != nil {
+	if executableInUserHomeDir, err := vfs.Contains(fileSystem, executableAbsPath.String(), userHomeDir); err != nil {
 		return "", err
 	} else if executableInUserHomeDir {
 		return methodReplaceExecutable, nil
@@ -451,7 +451,7 @@ func getMethod(fileSystem vfs.Stater, executableAbsPath chezmoi.AbsPath) (string
 
 	// If the executable is in the system's temporary directory, then always use
 	// replace-executable.
-	if executableIsInTempDir, err := vfs.Contains(fileSystem, string(executableAbsPath), os.TempDir()); err != nil {
+	if executableIsInTempDir, err := vfs.Contains(fileSystem, executableAbsPath.String(), os.TempDir()); err != nil {
 		return "", err
 	} else if executableIsInTempDir {
 		return methodReplaceExecutable, nil
@@ -463,11 +463,11 @@ func getMethod(fileSystem vfs.Stater, executableAbsPath chezmoi.AbsPath) (string
 	case "freebsd":
 		return methodReplaceExecutable, nil
 	case "linux":
-		if ok, _ := vfs.Contains(fileSystem, string(executableAbsPath), "/snap"); ok {
+		if ok, _ := vfs.Contains(fileSystem, executableAbsPath.String(), "/snap"); ok {
 			return methodSnapRefresh, nil
 		}
 
-		info, err := fileSystem.Stat(string(executableAbsPath))
+		info, err := fileSystem.Stat(executableAbsPath.String())
 		if err != nil {
 			return "", err
 		}

@@ -61,7 +61,7 @@ func TestDataCmd(t *testing.T) {
 				assert.NoError(t, tc.format.Unmarshal([]byte(sb.String()), &data))
 				normalizedSourceDir, err := chezmoi.NormalizePath("/tmp/source")
 				require.NoError(t, err)
-				assert.Equal(t, string(normalizedSourceDir), data.Chezmoi.SourceDir)
+				assert.Equal(t, normalizedSourceDir.String(), data.Chezmoi.SourceDir)
 				assert.True(t, data.Test)
 			})
 		})

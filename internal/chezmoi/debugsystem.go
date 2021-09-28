@@ -26,7 +26,7 @@ func NewDebugSystem(system System) *DebugSystem {
 func (s *DebugSystem) Chmod(name AbsPath, mode fs.FileMode) error {
 	err := s.system.Chmod(name, mode)
 	log.Err(err).
-		Str("name", string(name)).
+		Stringer("name", name).
 		Int("mode", int(mode)).
 		Msg("Chmod")
 	return err
@@ -68,7 +68,7 @@ func (s *DebugSystem) IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error) {
 func (s *DebugSystem) Lstat(name AbsPath) (fs.FileInfo, error) {
 	info, err := s.system.Lstat(name)
 	log.Err(err).
-		Str("name", string(name)).
+		Stringer("name", name).
 		Msg("Lstat")
 	return info, err
 }
@@ -77,7 +77,7 @@ func (s *DebugSystem) Lstat(name AbsPath) (fs.FileInfo, error) {
 func (s *DebugSystem) Mkdir(name AbsPath, perm fs.FileMode) error {
 	err := s.system.Mkdir(name, perm)
 	log.Err(err).
-		Str("name", string(name)).
+		Stringer("name", name).
 		Int("perm", int(perm)).
 		Msg("Mkdir")
 	return err
@@ -92,7 +92,7 @@ func (s *DebugSystem) RawPath(path AbsPath) (AbsPath, error) {
 func (s *DebugSystem) ReadDir(name AbsPath) ([]fs.DirEntry, error) {
 	dirEntries, err := s.system.ReadDir(name)
 	log.Err(err).
-		Str("name", string(name)).
+		Stringer("name", name).
 		Msg("ReadDir")
 	return dirEntries, err
 }
@@ -101,7 +101,7 @@ func (s *DebugSystem) ReadDir(name AbsPath) ([]fs.DirEntry, error) {
 func (s *DebugSystem) ReadFile(name AbsPath) ([]byte, error) {
 	data, err := s.system.ReadFile(name)
 	log.Err(err).
-		Str("filename", string(name)).
+		Stringer("name", name).
 		Bytes("data", chezmoilog.Output(data, err)).
 		Msg("ReadFile")
 	return data, err
@@ -111,7 +111,7 @@ func (s *DebugSystem) ReadFile(name AbsPath) ([]byte, error) {
 func (s *DebugSystem) Readlink(name AbsPath) (string, error) {
 	linkname, err := s.system.Readlink(name)
 	log.Err(err).
-		Str("name", string(name)).
+		Stringer("name", name).
 		Str("linkname", linkname).
 		Msg("Readlink")
 	return linkname, err
@@ -121,7 +121,7 @@ func (s *DebugSystem) Readlink(name AbsPath) (string, error) {
 func (s *DebugSystem) RemoveAll(name AbsPath) error {
 	err := s.system.RemoveAll(name)
 	log.Err(err).
-		Str("name", string(name)).
+		Stringer("name", name).
 		Msg("RemoveAll")
 	return err
 }
@@ -130,8 +130,8 @@ func (s *DebugSystem) RemoveAll(name AbsPath) error {
 func (s *DebugSystem) Rename(oldpath, newpath AbsPath) error {
 	err := s.system.Rename(oldpath, newpath)
 	log.Err(err).
-		Str("oldpath", string(oldpath)).
-		Str("newpath", string(newpath)).
+		Stringer("oldpath", oldpath).
+		Stringer("newpath", newpath).
 		Msg("Rename")
 	return err
 }
@@ -161,7 +161,7 @@ func (s *DebugSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, in
 	err := s.system.RunScript(scriptname, dir, data, interpreter)
 	log.Err(err).
 		Str("scriptname", string(scriptname)).
-		Str("dir", string(dir)).
+		Stringer("dir", dir).
 		Bytes("data", chezmoilog.Output(data, err)).
 		Object("interpreter", interpreter).
 		EmbedObject(chezmoilog.OSExecExitErrorLogObject{Err: err}).
@@ -173,7 +173,7 @@ func (s *DebugSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, in
 func (s *DebugSystem) Stat(name AbsPath) (fs.FileInfo, error) {
 	info, err := s.system.Stat(name)
 	log.Err(err).
-		Str("name", string(name)).
+		Stringer("name", name).
 		Msg("Stat")
 	return info, err
 }
@@ -187,7 +187,7 @@ func (s *DebugSystem) UnderlyingFS() vfs.FS {
 func (s *DebugSystem) WriteFile(name AbsPath, data []byte, perm fs.FileMode) error {
 	err := s.system.WriteFile(name, data, perm)
 	log.Err(err).
-		Str("name", string(name)).
+		Stringer("name", name).
 		Bytes("data", chezmoilog.Output(data, err)).
 		Int("perm", int(perm)).
 		Msg("WriteFile")
@@ -199,7 +199,7 @@ func (s *DebugSystem) WriteSymlink(oldname string, newname AbsPath) error {
 	err := s.system.WriteSymlink(oldname, newname)
 	log.Err(err).
 		Str("oldname", oldname).
-		Str("newname", string(newname)).
+		Stringer("newname", newname).
 		Msg("WriteSymlink")
 	return err
 }

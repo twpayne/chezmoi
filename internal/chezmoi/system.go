@@ -4,7 +4,6 @@ import (
 	"errors"
 	"io/fs"
 	"os/exec"
-	"path/filepath"
 
 	vfs "github.com/twpayne/go-vfs/v4"
 )
@@ -93,7 +92,7 @@ func MkdirAll(system System, absPath AbsPath, perm fs.FileMode) error {
 		// Parent directory does not exist. Create the parent directory
 		// recursively, then try again.
 		parentDir := absPath.Dir()
-		if parentDir == "/" || parentDir == "." {
+		if parentDir == RootAbsPath || parentDir == DotAbsPath {
 			// We cannot create the root directory or the current directory, so
 			// return the original error.
 			return err
@@ -113,8 +112,8 @@ func MkdirAll(system System, absPath AbsPath, perm fs.FileMode) error {
 //
 // Walk does not follow symlinks.
 func Walk(system System, rootAbsPath AbsPath, walkFn func(absPath AbsPath, info fs.FileInfo, err error) error) error {
-	return vfs.Walk(system.UnderlyingFS(), string(rootAbsPath), func(absPath string, info fs.FileInfo, err error) error {
-		return walkFn(AbsPath(filepath.ToSlash(absPath)), info, err)
+	return vfs.Walk(system.UnderlyingFS(), rootAbsPath.String(), func(absPath string, info fs.FileInfo, err error) error {
+		return walkFn(NewAbsPath(absPath).ToSlash(), info, err)
 	})
 }
 
@@ -124,11 +123,11 @@ func Walk(system System, rootAbsPath AbsPath, walkFn func(absPath AbsPath, info 
 // WalkDir does not follow symbolic links found in directories, but if
 // rootAbsPath itself is a symbolic link, its target will be walked.
 func WalkDir(system System, rootAbsPath AbsPath, walkFn func(absPath AbsPath, info fs.FileInfo, err error) error) error {
-	return fs.WalkDir(system.UnderlyingFS(), string(rootAbsPath), func(path string, dirEntry fs.DirEntry, err error) error {
+	return fs.WalkDir(system.UnderlyingFS(), rootAbsPath.String(), func(path string, dirEntry fs.DirEntry, err error) error {
 		var info fs.FileInfo
 		if err == nil {
 			info, err = dirEntry.Info()
 		}
-		return walkFn(AbsPath(path), info, err)
+		return walkFn(NewAbsPath(path).ToSlash(), info, err)
 	})
 }
