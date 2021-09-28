@@ -188,6 +188,10 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 	case strings.HasPrefix(name, modifyPrefix):
 		sourceFileType = SourceFileTypeModify
 		name = mustTrimPrefix(name, modifyPrefix)
+		if strings.HasPrefix(name, encryptedPrefix) {
+			name = mustTrimPrefix(name, encryptedPrefix)
+			encrypted = true
+		}
 		if strings.HasPrefix(name, privatePrefix) {
 			name = mustTrimPrefix(name, privatePrefix)
 			private = true
