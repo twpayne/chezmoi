@@ -35,7 +35,7 @@ func (s *RealSystem) Chmod(name AbsPath, mode fs.FileMode) error {
 
 // Readlink implements System.Readlink.
 func (s *RealSystem) Readlink(name AbsPath) (string, error) {
-	linkname, err := s.fileSystem.Readlink(string(name))
+	linkname, err := s.fileSystem.Readlink(name.String())
 	if err != nil {
 		return "", err
 	}
@@ -44,13 +44,13 @@ func (s *RealSystem) Readlink(name AbsPath) (string, error) {
 
 // WriteFile implements System.WriteFile.
 func (s *RealSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error {
-	return s.fileSystem.WriteFile(string(filename), data, perm)
+	return s.fileSystem.WriteFile(filename.String(), data, perm)
 }
 
 // WriteSymlink implements System.WriteSymlink.
 func (s *RealSystem) WriteSymlink(oldname string, newname AbsPath) error {
-	if err := s.fileSystem.RemoveAll(string(newname)); err != nil && !errors.Is(err, fs.ErrNotExist) {
+	if err := s.fileSystem.RemoveAll(newname.String()); err != nil && !errors.Is(err, fs.ErrNotExist) {
 		return err
 	}
-	return s.fileSystem.Symlink(filepath.FromSlash(oldname), string(newname))
+	return s.fileSystem.Symlink(filepath.FromSlash(oldname), newname.String())
 }

@@ -101,7 +101,7 @@ func TestTargetStateEntryApply(t *testing.T) {
 				system := NewRealSystem(fileSystem)
 
 				// Read the initial destination state entry from fileSystem.
-				actualStateEntry, err := NewActualStateEntry(system, "/home/user/target", nil, nil)
+				actualStateEntry, err := NewActualStateEntry(system, NewAbsPath("/home/user/target"), nil, nil)
 				require.NoError(t, err)
 
 				// Apply the target state entry.

@@ -69,7 +69,7 @@ func (c *Config) runRemoveCmd(cmd *cobra.Command, args []string, sourceState *ch
 		if err := c.sourceSystem.RemoveAll(sourceAbsPath); err != nil && !errors.Is(err, fs.ErrNotExist) {
 			return err
 		}
-		if err := c.persistentState.Delete(chezmoi.EntryStateBucket, []byte(destAbsPath)); err != nil {
+		if err := c.persistentState.Delete(chezmoi.EntryStateBucket, destAbsPath.Bytes()); err != nil {
 			return err
 		}
 	}

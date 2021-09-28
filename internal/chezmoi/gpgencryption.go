@@ -22,7 +22,7 @@ func (e *GPGEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
 	var plaintext []byte
 	if err := withPrivateTempDir(func(tempDirAbsPath AbsPath) error {
 		ciphertextAbsPath := tempDirAbsPath.Join(RelPath("ciphertext" + e.EncryptedSuffix()))
-		if err := os.WriteFile(string(ciphertextAbsPath), ciphertext, 0o600); err != nil {
+		if err := os.WriteFile(ciphertextAbsPath.String(), ciphertext, 0o600); err != nil {
 			return err
 		}
 		plaintextAbsPath := tempDirAbsPath.Join("plaintext")
@@ -33,7 +33,7 @@ func (e *GPGEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
 		}
 
 		var err error
-		plaintext, err = os.ReadFile(string(plaintextAbsPath))
+		plaintext, err = os.ReadFile(plaintextAbsPath.String())
 		return err
 	}); err != nil {
 		return nil, err
@@ -45,7 +45,7 @@ func (e *GPGEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
 func (e *GPGEncryption) DecryptToFile(plaintextFilename AbsPath, ciphertext []byte) error {
 	return withPrivateTempDir(func(tempDirAbsPath AbsPath) error {
 		ciphertextAbsPath := tempDirAbsPath.Join(RelPath("ciphertext" + e.EncryptedSuffix()))
-		if err := os.WriteFile(string(ciphertextAbsPath), ciphertext, 0o600); err != nil {
+		if err := os.WriteFile(ciphertextAbsPath.String(), ciphertext, 0o600); err != nil {
 			return err
 		}
 		args := e.decryptArgs(plaintextFilename, ciphertextAbsPath)
@@ -58,7 +58,7 @@ func (e *GPGEncryption) Encrypt(plaintext []byte) ([]byte, error) {
 	var ciphertext []byte
 	if err := withPrivateTempDir(func(tempDirAbsPath AbsPath) error {
 		plaintextAbsPath := tempDirAbsPath.Join("plaintext")
-		if err := os.WriteFile(string(plaintextAbsPath), plaintext, 0o600); err != nil {
+		if err := os.WriteFile(plaintextAbsPath.String(), plaintext, 0o600); err != nil {
 			return err
 		}
 		ciphertextAbsPath := tempDirAbsPath.Join(RelPath("ciphertext" + e.EncryptedSuffix()))
@@ -69,7 +69,7 @@ func (e *GPGEncryption) Encrypt(plaintext []byte) ([]byte, error) {
 		}
 
 		var err error
-		ciphertext, err = os.ReadFile(string(ciphertextAbsPath))
+		ciphertext, err = os.ReadFile(ciphertextAbsPath.String())
 		return err
 	}); err != nil {
 		return nil, err
@@ -89,7 +89,7 @@ func (e *GPGEncryption) EncryptFile(plaintextFilename AbsPath) ([]byte, error) {
 		}
 
 		var err error
-		ciphertext, err = os.ReadFile(string(ciphertextAbsPath))
+		ciphertext, err = os.ReadFile(ciphertextAbsPath.String())
 		return err
 	}); err != nil {
 		return nil, err
@@ -103,16 +103,16 @@ func (e *GPGEncryption) EncryptedSuffix() string {
 }
 
 func (e *GPGEncryption) decryptArgs(plaintextFilename, ciphertextFilename AbsPath) []string {
-	args := []string{"--output", string(plaintextFilename)}
+	args := []string{"--output", plaintextFilename.String()}
 	args = append(args, e.Args...)
-	args = append(args, "--decrypt", string(ciphertextFilename))
+	args = append(args, "--decrypt", ciphertextFilename.String())
 	return args
 }
 
 func (e *GPGEncryption) encryptArgs(plaintextFilename, ciphertextFilename AbsPath) []string {
 	args := []string{
 		"--armor",
-		"--output", string(ciphertextFilename),
+		"--output", ciphertextFilename.String(),
 	}
 	if e.Symmetric {
 		args = append(args, "--symmetric")
@@ -123,7 +123,7 @@ func (e *GPGEncryption) encryptArgs(plaintextFilename, ciphertextFilename AbsPat
 	if !e.Symmetric {
 		args = append(args, "--encrypt")
 	}
-	args = append(args, string(plaintextFilename))
+	args = append(args, plaintextFilename.String())
 	return args
 }
 
@@ -149,5 +149,5 @@ func withPrivateTempDir(f func(tempDirAbsPath AbsPath) error) error {
 		}
 	}
 
-	return f(AbsPath(tempDir))
+	return f(NewAbsPath(tempDir))
 }

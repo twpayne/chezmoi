@@ -45,11 +45,11 @@ func NewBoltPersistentState(system System, path AbsPath, mode BoltPersistentStat
 
 	options := bbolt.Options{
 		OpenFile: func(name string, flag int, perm fs.FileMode) (*os.File, error) {
-			rawPath, err := system.RawPath(AbsPath(name))
+			rawPath, err := system.RawPath(NewAbsPath(name))
 			if err != nil {
 				return nil, err
 			}
-			return os.OpenFile(string(rawPath), flag, perm)
+			return os.OpenFile(rawPath.String(), flag, perm)
 		},
 		ReadOnly: mode == BoltPersistentStateReadOnly,
 		Timeout:  time.Second,
@@ -207,7 +207,7 @@ func (b *BoltPersistentState) open() error {
 	if err := MkdirAll(b.system, b.path.Dir(), 0o777); err != nil {
 		return err
 	}
-	db, err := bbolt.Open(string(b.path), 0o600, &b.options)
+	db, err := bbolt.Open(b.path.String(), 0o600, &b.options)
 	if err != nil {
 		return err
 	}

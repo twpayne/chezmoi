@@ -225,7 +225,7 @@ func (s *SourceState) Add(sourceSystem System, persistentState PersistentState, 
 		destAbsPaths = append(destAbsPaths, destAbsPath)
 	}
 	sort.Slice(destAbsPaths, func(i, j int) bool {
-		return destAbsPaths[i] < destAbsPaths[j]
+		return destAbsPaths[i].absPath < destAbsPaths[j].absPath
 	})
 
 	sourceUpdates := make([]sourceUpdate, 0, len(destAbsPathInfos))
@@ -382,8 +382,8 @@ DESTABSPATH:
 				return err
 			}
 		}
-		if sourceUpdate.destAbsPath != "" {
-			if err := persistentStateSet(persistentState, EntryStateBucket, []byte(sourceUpdate.destAbsPath), sourceUpdate.entryState); err != nil {
+		if !sourceUpdate.destAbsPath.Empty() {
+			if err := persistentStateSet(persistentState, EntryStateBucket, sourceUpdate.destAbsPath.Bytes(), sourceUpdate.entryState); err != nil {
 				return err
 			}
 		}
@@ -479,7 +479,7 @@ func (s *SourceState) Apply(targetSystem, destSystem System, persistentState Per
 	if options.PreApplyFunc != nil {
 		var lastWrittenEntryState *EntryState
 		var entryState EntryState
-		ok, err := persistentStateGet(persistentState, EntryStateBucket, []byte(targetAbsPath), &entryState)
+		ok, err := persistentStateGet(persistentState, EntryStateBucket, targetAbsPath.Bytes(), &entryState)
 		if err != nil {
 			return err
 		}
@@ -525,7 +525,7 @@ func (s *SourceState) Apply(targetSystem, destSystem System, persistentState Per
 						if targetStateFile.perm.Perm() != lastWrittenEntryState.Mode.Perm() {
 							if targetStateFile.perm.Perm() == lastWrittenEntryState.Mode.Perm()&^s.umask {
 								lastWrittenEntryState.Mode = targetStateFile.perm
-								_ = persistentStateSet(persistentState, EntryStateBucket, []byte(targetAbsPath), lastWrittenEntryState)
+								_ = persistentStateSet(persistentState, EntryStateBucket, targetAbsPath.Bytes(), lastWrittenEntryState)
 							}
 						}
 					}
@@ -538,7 +538,7 @@ func (s *SourceState) Apply(targetSystem, destSystem System, persistentState Per
 						if targetStateDir.perm.Perm() != lastWrittenEntryState.Mode.Perm() {
 							if targetStateDir.perm.Perm() == lastWrittenEntryState.Mode.Perm()&^s.umask {
 								lastWrittenEntryState.Mode = fs.ModeDir | targetStateDir.perm
-								_ = persistentStateSet(persistentState, EntryStateBucket, []byte(targetAbsPath), lastWrittenEntryState)
+								_ = persistentStateSet(persistentState, EntryStateBucket, targetAbsPath.Bytes(), lastWrittenEntryState)
 							}
 						}
 					}
@@ -553,7 +553,7 @@ func (s *SourceState) Apply(targetSystem, destSystem System, persistentState Per
 		// respect to the last written state, we record the effect of the last
 		// apply as the last written state.
 		if targetEntryState.Equivalent(actualEntryState) && !lastWrittenEntryState.Equivalent(actualEntryState) {
-			if err := persistentStateSet(persistentState, EntryStateBucket, []byte(targetAbsPath), targetEntryState); err != nil {
+			if err := persistentStateSet(persistentState, EntryStateBucket, targetAbsPath.Bytes(), targetEntryState); err != nil {
 				return err
 			}
 			lastWrittenEntryState = targetEntryState
@@ -570,7 +570,7 @@ func (s *SourceState) Apply(targetSystem, destSystem System, persistentState Per
 		return nil
 	}
 
-	return persistentStateSet(persistentState, EntryStateBucket, []byte(targetAbsPath), targetEntryState)
+	return persistentStateSet(persistentState, EntryStateBucket, targetAbsPath.Bytes(), targetEntryState)
 }
 
 // Encryption returns s's encryption.
@@ -707,7 +707,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			if err := s.addPatterns(removePatterns, sourceAbsPath, sourceRelPath); err != nil {
 				return err
 			}
-			matches, err := removePatterns.glob(s.system.UnderlyingFS(), string(s.destDirAbsPath)+"/")
+			matches, err := removePatterns.glob(s.system.UnderlyingFS(), s.destDirAbsPath.String()+"/")
 			if err != nil {
 				return err
 			}
@@ -1056,7 +1056,7 @@ func (s *SourceState) executeTemplate(templateAbsPath AbsPath) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	return s.ExecuteTemplateData(string(templateAbsPath), data)
+	return s.ExecuteTemplateData(templateAbsPath.String(), data)
 }
 
 func (s *SourceState) getExternalDataRaw(ctx context.Context, externalRelPath RelPath, external External, options *ReadOptions) ([]byte, error) {
@@ -1180,7 +1180,7 @@ func (s *SourceState) newFileTargetStateEntryFunc(sourceRelPath SourceRelPath, f
 			case isEmpty(contents) && !fileAttr.Empty:
 				return &TargetStateRemove{}, nil
 			default:
-				linkname := normalizeLinkname(string(s.sourceDirAbsPath.Join(sourceRelPath.RelPath())))
+				linkname := normalizeLinkname(s.sourceDirAbsPath.Join(sourceRelPath.RelPath()).String())
 				return &TargetStateSymlink{
 					lazyLinkname: newLazyLinkname(linkname),
 				}, nil
@@ -1481,11 +1481,11 @@ func (s *SourceState) newSourceStateFileEntryFromSymlink(actualStateSymlink *Act
 		template = true
 	case !options.Template && options.TemplateSymlinks:
 		switch {
-		case strings.HasPrefix(linkname, string(s.sourceDirAbsPath)+"/"):
-			contents = []byte("{{ .chezmoi.sourceDir }}/" + linkname[len(s.sourceDirAbsPath)+1:])
+		case strings.HasPrefix(linkname, s.sourceDirAbsPath.String()+"/"):
+			contents = []byte("{{ .chezmoi.sourceDir }}/" + linkname[s.sourceDirAbsPath.Len()+1:])
 			template = true
-		case strings.HasPrefix(linkname, string(s.destDirAbsPath)+"/"):
-			contents = []byte("{{ .chezmoi.homeDir }}/" + linkname[len(s.destDirAbsPath)+1:])
+		case strings.HasPrefix(linkname, s.destDirAbsPath.String()+"/"):
+			contents = []byte("{{ .chezmoi.homeDir }}/" + linkname[s.destDirAbsPath.Len()+1:])
 			template = true
 		}
 	}

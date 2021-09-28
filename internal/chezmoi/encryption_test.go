@@ -20,7 +20,7 @@ func (e *xorEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
 }
 
 func (e *xorEncryption) DecryptToFile(plaintextAbsPath AbsPath, ciphertext []byte) error {
-	return os.WriteFile(string(plaintextAbsPath), e.xorWithKey(ciphertext), 0o666)
+	return os.WriteFile(plaintextAbsPath.String(), e.xorWithKey(ciphertext), 0o666)
 }
 
 func (e *xorEncryption) Encrypt(plaintext []byte) ([]byte, error) {
@@ -28,7 +28,7 @@ func (e *xorEncryption) Encrypt(plaintext []byte) ([]byte, error) {
 }
 
 func (e *xorEncryption) EncryptFile(plaintextAbsPath AbsPath) ([]byte, error) {
-	plaintext, err := os.ReadFile(string(plaintextAbsPath))
+	plaintext, err := os.ReadFile(plaintextAbsPath.String())
 	if err != nil {
 		return nil, err
 	}
@@ -62,11 +62,11 @@ func testEncryptionDecryptToFile(t *testing.T, encryption Encryption) {
 		defer func() {
 			assert.NoError(t, os.RemoveAll(tempDir))
 		}()
-		plaintextAbsPath := AbsPath(tempDir).Join("plaintext")
+		plaintextAbsPath := NewAbsPath(tempDir).Join("plaintext")
 
 		require.NoError(t, encryption.DecryptToFile(plaintextAbsPath, actualCiphertext))
 
-		actualPlaintext, err := os.ReadFile(string(plaintextAbsPath))
+		actualPlaintext, err := os.ReadFile(plaintextAbsPath.String())
 		require.NoError(t, err)
 		require.NotEmpty(t, actualPlaintext)
 		assert.Equal(t, expectedPlaintext, actualPlaintext)
@@ -100,8 +100,8 @@ func testEncryptionEncryptFile(t *testing.T, encryption Encryption) {
 		defer func() {
 			assert.NoError(t, os.RemoveAll(tempDir))
 		}()
-		plaintextAbsPath := AbsPath(tempDir).Join("plaintext")
-		require.NoError(t, os.WriteFile(string(plaintextAbsPath), expectedPlaintext, 0o666))
+		plaintextAbsPath := NewAbsPath(tempDir).Join("plaintext")
+		require.NoError(t, os.WriteFile(plaintextAbsPath.String(), expectedPlaintext, 0o666))
 
 		actualCiphertext, err := encryption.EncryptFile(plaintextAbsPath)
 		require.NoError(t, err)

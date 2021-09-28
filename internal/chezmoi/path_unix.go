@@ -13,13 +13,13 @@ import (
 func NewAbsPathFromExtPath(extPath string, homeDirAbsPath AbsPath) (AbsPath, error) {
 	tildeSlashPath := expandTilde(filepath.ToSlash(extPath), homeDirAbsPath)
 	if filepath.IsAbs(tildeSlashPath) {
-		return AbsPath(tildeSlashPath), nil
+		return NewAbsPath(tildeSlashPath), nil
 	}
 	slashPathAbsPath, err := filepath.Abs(tildeSlashPath)
 	if err != nil {
-		return "", err
+		return EmptyAbsPath, err
 	}
-	return AbsPath(slashPathAbsPath), nil
+	return NewAbsPath(slashPathAbsPath), nil
 }
 
 // NormalizePath returns path normalized. On non-Windows systems, normalized
@@ -27,18 +27,18 @@ func NewAbsPathFromExtPath(extPath string, homeDirAbsPath AbsPath) (AbsPath, err
 func NormalizePath(path string) (AbsPath, error) {
 	absPath, err := filepath.Abs(path)
 	if err != nil {
-		return "", err
+		return EmptyAbsPath, err
 	}
-	return AbsPath(absPath), nil
+	return NewAbsPath(absPath), nil
 }
 
 // expandTilde expands a leading tilde in path.
 func expandTilde(path string, homeDirAbsPath AbsPath) string {
 	switch {
 	case path == "~":
-		return string(homeDirAbsPath)
+		return homeDirAbsPath.String()
 	case strings.HasPrefix(path, "~/"):
-		return string(homeDirAbsPath.Join(RelPath(path[2:])))
+		return homeDirAbsPath.Join(RelPath(path[2:])).String()
 	default:
 		return path
 	}

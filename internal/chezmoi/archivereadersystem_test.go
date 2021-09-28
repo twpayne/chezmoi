@@ -37,7 +37,7 @@ func TestArchiveReaderSystemTAR(t *testing.T) {
 	require.NoError(t, w.Close())
 
 	archiveReaderSystem, err := NewArchiveReaderSystem("archive.tar", b.Bytes(), ArchiveFormatTar, ArchiveReaderSystemOptions{
-		RootAbsPath:     "/home/user",
+		RootAbsPath:     NewAbsPath("/home/user"),
 		StripComponents: 1,
 	})
 	assert.NoError(t, err)
@@ -51,18 +51,18 @@ func TestArchiveReaderSystemTAR(t *testing.T) {
 		readFileErr  error
 	}{
 		{
-			absPath:      "/home/user/file",
+			absPath:      NewAbsPath("/home/user/file"),
 			readlinkErr:  fs.ErrInvalid,
 			readFileData: data,
 		},
 		{
-			absPath:     "/home/user/notexist",
+			absPath:     NewAbsPath("/home/user/notexist"),
 			readlinkErr: fs.ErrNotExist,
 			lstatErr:    fs.ErrNotExist,
 			readFileErr: fs.ErrNotExist,
 		},
 		{
-			absPath:     "/home/user/symlink",
+			absPath:     NewAbsPath("/home/user/symlink"),
 			readlink:    "file",
 			readFileErr: fs.ErrInvalid,
 		},

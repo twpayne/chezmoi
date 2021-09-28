@@ -233,7 +233,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		&fileCheck{
 			name:       "keepassxc-db",
-			filename:   chezmoi.AbsPath(c.Keepassxc.Database),
+			filename:   chezmoi.NewAbsPath(c.Keepassxc.Database),
 			ifNotSet:   checkResultInfo,
 			ifNotExist: checkResultInfo,
 		},
@@ -347,7 +347,7 @@ func (c *configFileCheck) Name() string {
 func (c *configFileCheck) Run(system chezmoi.System) (checkResult, string) {
 	filenames := chezmoi.NewStringSet()
 	for _, dir := range append([]string{c.bds.ConfigHome}, c.bds.ConfigDirs...) {
-		dirAbsPath := chezmoi.AbsPath(dir)
+		dirAbsPath := chezmoi.NewAbsPath(dir)
 		for _, extension := range viper.SupportedExts {
 			filename := dirAbsPath.Join(c.basename, chezmoi.RelPath(c.basename.String()+"."+extension))
 			if _, err := system.Stat(filename); err == nil {
@@ -363,7 +363,7 @@ func (c *configFileCheck) Run(system chezmoi.System) (checkResult, string) {
 		if filename != c.expected.String() {
 			return checkResultFailed, fmt.Sprintf("found %s, expected %s", filename, c.expected)
 		}
-		if _, err := system.ReadFile(chezmoi.AbsPath(filename)); err != nil {
+		if _, err := system.ReadFile(chezmoi.NewAbsPath(filename)); err != nil {
 			return checkResultError, fmt.Sprintf("%s: %v", filename, err)
 		}
 		return checkResultOK, filename
@@ -405,7 +405,7 @@ func (c *fileCheck) Name() string {
 }
 
 func (c *fileCheck) Run(system chezmoi.System) (checkResult, string) {
-	if c.filename == "" {
+	if c.filename.Empty() {
 		return c.ifNotSet, "not set"
 	}
 

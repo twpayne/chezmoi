@@ -17,7 +17,7 @@ func TestBoltPersistentState(t *testing.T) {
 	chezmoitest.WithTestFS(t, nil, func(fileSystem vfs.FS) {
 		var (
 			system = NewRealSystem(fileSystem)
-			path   = AbsPath("/home/user/.config/chezmoi/chezmoistate.boltdb")
+			path   = NewAbsPath("/home/user/.config/chezmoi/chezmoistate.boltdb")
 			bucket = []byte("bucket")
 			key    = []byte("key")
 			value  = []byte("value")
@@ -31,7 +31,7 @@ func TestBoltPersistentState(t *testing.T) {
 		actualValue, err := b1.Get(bucket, key)
 		require.NoError(t, err)
 		vfst.RunTests(t, fileSystem, "",
-			vfst.TestPath(string(path),
+			vfst.TestPath(path.String(),
 				vfst.TestDoesNotExist,
 			),
 		)
@@ -41,7 +41,7 @@ func TestBoltPersistentState(t *testing.T) {
 		// the state.
 		require.NoError(t, b1.Delete(bucket, key))
 		vfst.RunTests(t, fileSystem, "",
-			vfst.TestPath(string(path),
+			vfst.TestPath(path.String(),
 				vfst.TestDoesNotExist,
 			),
 		)
@@ -49,7 +49,7 @@ func TestBoltPersistentState(t *testing.T) {
 		// Test that setting a key creates the state.
 		assert.NoError(t, b1.Set(bucket, key, value))
 		vfst.RunTests(t, fileSystem, "",
-			vfst.TestPath(string(path),
+			vfst.TestPath(path.String(),
 				vfst.TestModeIsRegular,
 			),
 		)
@@ -91,7 +91,7 @@ func TestBoltPersistentStateMock(t *testing.T) {
 	chezmoitest.WithTestFS(t, nil, func(fileSystem vfs.FS) {
 		var (
 			system = NewRealSystem(fileSystem)
-			path   = AbsPath("/home/user/.config/chezmoi/chezmoistate.boltdb")
+			path   = NewAbsPath("/home/user/.config/chezmoi/chezmoistate.boltdb")
 			bucket = []byte("bucket")
 			key    = []byte("key")
 			value1 = []byte("value1")
@@ -133,7 +133,7 @@ func TestBoltPersistentStateReadOnly(t *testing.T) {
 	chezmoitest.WithTestFS(t, nil, func(fileSystem vfs.FS) {
 		var (
 			system = NewRealSystem(fileSystem)
-			path   = AbsPath("/home/user/.config/chezmoi/chezmoistate.boltdb")
+			path   = NewAbsPath("/home/user/.config/chezmoi/chezmoistate.boltdb")
 			bucket = []byte("bucket")
 			key    = []byte("key")
 			value  = []byte("value")

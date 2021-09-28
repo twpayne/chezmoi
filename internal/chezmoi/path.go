@@ -4,33 +4,69 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"path/filepath"
 	"reflect"
 	"strings"
 
 	"github.com/mitchellh/mapstructure"
 )
 
+var (
+	DotAbsPath   = NewAbsPath(".")
+	EmptyAbsPath = NewAbsPath("")
+	RootAbsPath  = NewAbsPath("/")
+)
+
 // An AbsPath is an absolute path.
-type AbsPath string
+type AbsPath struct {
+	absPath string
+}
+
+// NewAbsPath returns a new AbsPath.
+func NewAbsPath(absPath string) AbsPath {
+	return AbsPath{
+		absPath: absPath,
+	}
+}
 
 // Base returns p's basename.
 func (p AbsPath) Base() string {
-	return path.Base(string(p))
+	return path.Base(p.absPath)
+}
+
+// Bytes returns p as a []byte.
+func (p AbsPath) Bytes() []byte {
+	return []byte(p.absPath)
 }
 
 // Dir returns p's directory.
 func (p AbsPath) Dir() AbsPath {
-	return AbsPath(path.Dir(string(p)))
+	return NewAbsPath(path.Dir(p.absPath))
+}
+
+// Empty returns if p is empty.
+func (p AbsPath) Empty() bool {
+	return p.absPath == ""
 }
 
 // Join appends elems to p.
 func (p AbsPath) Join(elems ...RelPath) AbsPath {
 	elemStrs := make([]string, 0, len(elems)+1)
-	elemStrs = append(elemStrs, string(p))
+	elemStrs = append(elemStrs, p.absPath)
 	for _, elem := range elems {
 		elemStrs = append(elemStrs, string(elem))
 	}
-	return AbsPath(path.Join(elemStrs...))
+	return NewAbsPath(path.Join(elemStrs...))
+}
+
+// Len returns the length of p.
+func (p AbsPath) Len() int {
+	return len(p.absPath)
+}
+
+// MarshalText implements encoding.TextMarshaler.
+func (p AbsPath) MarshalText() ([]byte, error) {
+	return []byte(p.absPath), nil
 }
 
 // MustTrimDirPrefix is like TrimPrefix but panics on any error.
@@ -45,7 +81,7 @@ func (p AbsPath) MustTrimDirPrefix(dirPrefix AbsPath) RelPath {
 // Set implements github.com/spf13/pflag.Value.Set.
 func (p *AbsPath) Set(s string) error {
 	if s == "" {
-		*p = ""
+		p.absPath = ""
 		return nil
 	}
 	homeDirAbsPath, err := homeDirAbsPath()
@@ -62,12 +98,17 @@ func (p *AbsPath) Set(s string) error {
 
 // Split returns p's directory and file.
 func (p AbsPath) Split() (AbsPath, RelPath) {
-	dir, file := path.Split(string(p))
-	return AbsPath(dir), RelPath(file)
+	dir, file := path.Split(p.String())
+	return NewAbsPath(dir), RelPath(file)
 }
 
 func (p AbsPath) String() string {
-	return string(p)
+	return p.absPath
+}
+
+// ToSlash calls filepath.ToSlash on p.
+func (p AbsPath) ToSlash() AbsPath {
+	return NewAbsPath(filepath.ToSlash(p.absPath))
 }
 
 // TrimDirPrefix trims prefix from p.
@@ -76,21 +117,26 @@ func (p AbsPath) TrimDirPrefix(dirPrefixAbsPath AbsPath) (RelPath, error) {
 		return "", nil
 	}
 	dirAbsPath := dirPrefixAbsPath
-	if dirAbsPath != "/" {
-		dirAbsPath += "/"
+	if dirAbsPath.absPath != "/" {
+		dirAbsPath.absPath += "/"
 	}
-	if !strings.HasPrefix(string(p), string(dirAbsPath)) {
+	if !strings.HasPrefix(p.absPath, dirAbsPath.absPath) {
 		return "", &notInAbsDirError{
 			pathAbsPath: p,
 			dirAbsPath:  dirPrefixAbsPath,
 		}
 	}
-	return RelPath(p[len(dirAbsPath):]), nil
+	return RelPath(p.absPath[len(dirAbsPath.absPath):]), nil
 }
 
 // Type implements github.com/spf13/pflag.Value.Type.
 func (p AbsPath) Type() string {
 	return "path"
+}
+
+// UnmarshalText implements encoding.UnmarshalText.
+func (p *AbsPath) UnmarshalText(text []byte) error {
+	return p.Set(string(text))
 }
 
 // A RelPath is a relative path.
@@ -151,7 +197,7 @@ func (p RelPath) TrimDirPrefix(dirPrefix RelPath) (RelPath, error) {
 // that parses an AbsPath from a string.
 func StringToAbsPathHookFunc() mapstructure.DecodeHookFunc {
 	return func(from, to reflect.Type, data interface{}) (interface{}, error) {
-		if to != reflect.TypeOf(AbsPath("")) {
+		if to != reflect.TypeOf(EmptyAbsPath) {
 			return data, nil
 		}
 		s, ok := data.(string)
@@ -170,11 +216,11 @@ func StringToAbsPathHookFunc() mapstructure.DecodeHookFunc {
 func homeDirAbsPath() (AbsPath, error) {
 	userHomeDir, err := os.UserHomeDir()
 	if err != nil {
-		return AbsPath(""), err
+		return EmptyAbsPath, err
 	}
 	absPath, err := NormalizePath(userHomeDir)
 	if err != nil {
-		return AbsPath(""), err
+		return EmptyAbsPath, err
 	}
 	return absPath, nil
 }

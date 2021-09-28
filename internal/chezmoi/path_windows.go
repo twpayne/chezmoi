@@ -11,15 +11,15 @@ import (
 func NewAbsPathFromExtPath(extPath string, homeDirAbsPath AbsPath) (AbsPath, error) {
 	slashTildePath := filepath.ToSlash(expandTilde(extPath, homeDirAbsPath))
 	if filepath.IsAbs(slashTildePath) {
-		return AbsPath(volumeNameToUpper(slashTildePath)), nil
+		return NewAbsPath(volumeNameToUpper(slashTildePath)), nil
 	}
 	tildeAbsPath, err := filepath.Abs(slashTildePath)
 	if err != nil {
-		return "", err
+		return EmptyAbsPath, err
 	}
 	// filepath.Abs on Windows converts forward slashes to backslashes so we
 	// have to call filepath.ToSlash again.
-	return AbsPath(filepath.ToSlash(volumeNameToUpper(tildeAbsPath))), nil
+	return NewAbsPath(filepath.ToSlash(volumeNameToUpper(tildeAbsPath))), nil
 }
 
 // NormalizePath returns path normalized. On Windows, normalized paths are
@@ -28,21 +28,21 @@ func NormalizePath(path string) (AbsPath, error) {
 	var err error
 	path, err = filepath.Abs(path)
 	if err != nil {
-		return "", err
+		return EmptyAbsPath, err
 	}
 	if n := volumeNameLen(path); n > 0 {
 		path = strings.ToUpper(path[:n]) + path[n:]
 	}
-	return AbsPath(filepath.ToSlash(path)), nil
+	return NewAbsPath(path).ToSlash(), nil
 }
 
 // expandTilde expands a leading tilde in path.
 func expandTilde(path string, homeDirAbsPath AbsPath) string {
 	switch {
 	case path == "~":
-		return string(homeDirAbsPath)
+		return homeDirAbsPath.String()
 	case len(path) >= 2 && path[0] == '~' && isSlash(path[1]):
-		return string(homeDirAbsPath.Join(RelPath(path[2:])))
+		return homeDirAbsPath.Join(RelPath(path[2:])).String()
 	default:
 		return path
 	}

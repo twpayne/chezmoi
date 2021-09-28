@@ -36,7 +36,7 @@ func (c *Config) newDumpCmd() *cobra.Command {
 
 func (c *Config) runDumpCmd(cmd *cobra.Command, args []string) error {
 	dumpSystem := chezmoi.NewDumpSystem()
-	if err := c.applyArgs(cmd.Context(), dumpSystem, "", args, applyArgsOptions{
+	if err := c.applyArgs(cmd.Context(), dumpSystem, chezmoi.EmptyAbsPath, args, applyArgsOptions{
 		include:   c.dump.include.Sub(c.dump.exclude),
 		recursive: c.dump.recursive,
 	}); err != nil {

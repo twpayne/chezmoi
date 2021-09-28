@@ -29,7 +29,7 @@ func TestAgeEncryption(t *testing.T) {
 
 	ageEncryption := &AgeEncryption{
 		Command:   command,
-		Identity:  AbsPath(privateKeyFile),
+		Identity:  NewAbsPath(privateKeyFile),
 		Recipient: publicKey,
 	}
 
@@ -54,7 +54,7 @@ func TestBuiltinAgeEncryption(t *testing.T) {
 	ageEncryption := &AgeEncryption{
 		UseBuiltin: true,
 		BaseSystem: NewRealSystem(vfs.OSFS),
-		Identity:   AbsPath(privateKeyFile),
+		Identity:   NewAbsPath(privateKeyFile),
 		Recipient:  publicKey,
 	}
 

@@ -43,7 +43,7 @@ func (c *Config) newEditCmd() *cobra.Command {
 
 func (c *Config) runEditCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
 	if len(args) == 0 {
-		if err := c.runEditor([]string{string(c.WorkingTreeAbsPath)}); err != nil {
+		if err := c.runEditor([]string{c.WorkingTreeAbsPath.String()}); err != nil {
 			return err
 		}
 		if c.Edit.apply {
@@ -78,12 +78,12 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string, sourceState *chez
 		sourceRelPath := sourceStateEntry.SourceRelPath()
 		var editorArg string
 		if sourceStateFile, ok := sourceStateEntry.(*chezmoi.SourceStateFile); ok && sourceStateFile.Attr.Encrypted {
-			if decryptedDirAbsPath == "" {
+			if decryptedDirAbsPath.Empty() {
 				decryptedDir, err := os.MkdirTemp("", "chezmoi-decrypted")
 				if err != nil {
 					return err
 				}
-				decryptedDirAbsPath = chezmoi.AbsPath(decryptedDir)
+				decryptedDirAbsPath = chezmoi.NewAbsPath(decryptedDir)
 				defer func() {
 					_ = c.baseSystem.RemoveAll(decryptedDirAbsPath)
 				}()
@@ -99,7 +99,7 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string, sourceState *chez
 			if err != nil {
 				return err
 			}
-			if err := os.MkdirAll(string(decryptedAbsPath.Dir()), 0o700); err != nil {
+			if err := os.MkdirAll(decryptedAbsPath.Dir().String(), 0o700); err != nil {
 				return err
 			}
 			if err := c.baseSystem.WriteFile(decryptedAbsPath, contents, 0o600); err != nil {
@@ -110,10 +110,10 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string, sourceState *chez
 				decryptedAbsPath: decryptedAbsPath,
 			}
 			transparentlyDecryptedFiles = append(transparentlyDecryptedFiles, transparentlyDecryptedFile)
-			editorArg = string(decryptedAbsPath)
+			editorArg = decryptedAbsPath.String()
 		} else {
 			sourceAbsPath := c.SourceDirAbsPath.Join(sourceRelPath.RelPath())
-			editorArg = string(sourceAbsPath)
+			editorArg = sourceAbsPath.String()
 		}
 		editorArgs = append(editorArgs, editorArg)
 	}

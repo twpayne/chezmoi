@@ -13,7 +13,7 @@ import (
 func TestNewAbsPathFromExtPath(t *testing.T) {
 	wd, err := os.Getwd()
 	require.NoError(t, err)
-	wdAbsPath := AbsPath(wd)
+	wdAbsPath := NewAbsPath(wd)
 	require.NoError(t, err)
 	homeDirAbsPath, err := NormalizePath(chezmoitest.HomeDir())
 	require.NoError(t, err)
@@ -40,12 +40,12 @@ func TestNewAbsPathFromExtPath(t *testing.T) {
 		{
 			name:     "tilde_home_file",
 			extPath:  "~/file",
-			expected: homeDirAbsPath + "/file",
+			expected: homeDirAbsPath.Join("file"),
 		},
 		{
 			name:     "tilde_home_file_windows",
 			extPath:  `~\file`,
-			expected: homeDirAbsPath + "/file",
+			expected: homeDirAbsPath.Join("file"),
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -53,9 +53,9 @@ func TestNewAbsPathFromExtPath(t *testing.T) {
 
 			actual, err := NewAbsPathFromExtPath(tc.extPath, homeDirAbsPath)
 			require.NoError(t, err)
-			normalizedActual, err := NormalizePath(string(actual))
+			normalizedActual, err := NormalizePath(actual.String())
 			require.NoError(t, err)
-			expected, err := NormalizePath(string(tc.expected))
+			expected, err := NormalizePath(tc.expected.String())
 			require.NoError(t, err)
 			assert.Equal(t, expected, normalizedActual)
 		})

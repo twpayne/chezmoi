@@ -14,6 +14,8 @@ import (
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
+// FIXME use chezmoi.AbsPath for keepassxcConfig.Database
+
 type keepassxcAttributeCacheKey struct {
 	entry     string
 	attribute string

@@ -23,5 +23,5 @@ func (c *Config) newEditConfigCmd() *cobra.Command {
 }
 
 func (c *Config) runEditConfigCmd(cmd *cobra.Command, args []string) error {
-	return c.runEditor([]string{string(c.configFileAbsPath)})
+	return c.runEditor([]string{c.configFileAbsPath.String()})
 }
