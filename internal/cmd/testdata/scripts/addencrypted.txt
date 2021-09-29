@@ -2,22 +2,22 @@
 
 mkgpgconfig
 
-cp golden/.file $HOME/.file
+cp golden/.encrypted $HOME/.encrypted
 
-# test that chezmoi add adds the file unencrypted
-chezmoi add $HOME${/}.file
-cmp $CHEZMOISOURCEDIR/dot_file golden/.file
+# test that chezmoi add adds a file unencrypted
+chezmoi add $HOME${/}.encrypted
+cmp $CHEZMOISOURCEDIR/dot_encrypted golden/.encrypted
 
-# test that chezmoi add --encrypt encrypts the source file
-chezmoi add --encrypt $HOME${/}.file
-! exists $CHEZMOISOURCEDIR/dot_file
-exists $CHEZMOISOURCEDIR/encrypted_dot_file.asc
-! grep plaintext $CHEZMOISOURCEDIR/encrypted_dot_file.asc
+# test that chezmoi add --encrypt encrypts the file in the source state
+chezmoi add --encrypt $HOME${/}.encrypted
+! exists $CHEZMOISOURCEDIR/dot_encrypted
+exists $CHEZMOISOURCEDIR/encrypted_dot_encrypted.asc
+grep '-----BEGIN PGP MESSAGE-----' $CHEZMOISOURCEDIR/encrypted_dot_encrypted.asc
 
 # test that chezmoi add without --encrypt replaces the source file
-chezmoi add --force $HOME${/}.file
-! exists $CHEZMOISOURCEDIR/encrypted_dot_file.asc
-cmp $CHEZMOISOURCEDIR/dot_file golden/.file
+chezmoi add --force $HOME${/}.encrypted
+! exists $CHEZMOISOURCEDIR/encrypted_dot_encrypted.asc
+cmp $CHEZMOISOURCEDIR/dot_encrypted golden/.encrypted
 
--- golden/.file --
-plaintext
+-- golden/.encrypted --
+# contents of .encrypted

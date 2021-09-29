@@ -18,4 +18,4 @@ chezmoi apply --force
 cmp golden/.encrypted $HOME/.encrypted
 
 -- golden/.encrypted --
-plaintext
+# contents of .encrypted

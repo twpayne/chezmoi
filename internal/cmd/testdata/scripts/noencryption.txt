@@ -9,6 +9,5 @@ stderr 'no encryption'
 stderr 'no encryption'
 
 -- home/user/.encrypted --
-plaintext
+# contents of .encrypted
 -- home/user/.local/share/chezmoi/encrypted_dot_encrypted --
-ciphertext

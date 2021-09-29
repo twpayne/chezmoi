@@ -13,14 +13,14 @@ prependline $CHEZMOICONFIGDIR/chezmoi.toml 'useBuiltinAge = true'
 cp golden/.encrypted $HOME
 chezmoi add --encrypt $HOME${/}.encrypted
 exists $CHEZMOISOURCEDIR/encrypted_dot_encrypted.age
-! grep plaintext $CHEZMOISOURCEDIR/encrypted_dot_encrypted.age
+grep '-----BEGIN AGE ENCRYPTED FILE-----' $CHEZMOISOURCEDIR/encrypted_dot_encrypted.age
 
 # test that chezmoi cat decrypts
 chezmoi cat $HOME${/}.encrypted
 cmp stdout golden/.encrypted
 
 -- golden/.encrypted --
-plaintext
+# contents of .encrypted
 -- golden/age --
 #!/bin/sh
 
