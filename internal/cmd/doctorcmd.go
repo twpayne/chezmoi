@@ -429,7 +429,9 @@ func (osArchCheck) Run(system chezmoi.System) (checkResult, string) {
 	if osRelease, err := chezmoi.OSRelease(system); err == nil {
 		if name, ok := osRelease["NAME"].(string); ok {
 			if version, ok := osRelease["VERSION"].(string); ok {
-				fields = append(fields, "("+name+"/"+version+")")
+				fields = append(fields, "("+name+" "+version+")")
+			} else {
+				fields = append(fields, "("+name+")")
 			}
 		}
 	}
