@@ -2,14 +2,16 @@
 chezmoi apply --source=~/.dotfiles
 cmp $HOME/.file golden/.file
 
-# test that --destination flag is respected
 chhome home2/user
+
+# test that --destination flag is respected
 mkdir tmp
 chezmoi apply --destination=$WORK/tmp
 cmp tmp/.file golden/.file
 
-# test that --config flag is respected
 chhome home3/user
+
+# test that --config flag is respected
 chezmoi apply --config=$HOME/.chezmoi.toml
 cmp $HOME/tmp/.file golden/.file
 

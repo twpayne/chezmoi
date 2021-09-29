@@ -10,8 +10,9 @@ exists $CHEZMOISOURCEDIR/home
 chezmoi add $HOME${/}.file
 cp golden/.file $CHEZMOISOURCEDIR/home/dot_file
 
-# test that chezmoi add returns an error if the source directory is not in the working tree
 chhome home2/user
+
+# test that chezmoi add returns an error if the source directory is not in the working tree
 mkhomedir
 ! chezmoi add $HOME${/}.file
 stderr 'not in'

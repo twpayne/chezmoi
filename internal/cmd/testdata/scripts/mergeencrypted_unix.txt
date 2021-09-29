@@ -15,6 +15,7 @@ chezmoi merge $HOME${/}.file
 cmp stdout golden/expected
 
 chhome home2/user
+
 mkgpgconfig
 appendline $CHEZMOICONFIGDIR/chezmoi.toml '[merge]'
 appendline $CHEZMOICONFIGDIR/chezmoi.toml '    command = "edit-source"'

@@ -11,8 +11,9 @@ cp $CHEZMOISOURCEDIR/encrypted_archive.tar.gz.asc www/archive.tar.gz.asc
 
 httpd www
 
-# test that chezmoi reads encrypted external files and archives
 chhome home2/user
+
+# test that chezmoi reads encrypted external files and archives
 mkdir $CHEZMOICONFIGDIR
 cp home/user/.config/chezmoi/chezmoi.toml $CHEZMOICONFIGDIR
 chezmoi apply --force

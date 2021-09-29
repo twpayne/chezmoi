@@ -11,8 +11,9 @@ grep -count=2 ${CHEZMOISOURCEDIR@R} shell.log
 
 [!exec:bash] stop 'remaining tests require bash in $PATH'
 
-# test chezmoi cd with command with args
 chhome home2/user
+
+# test chezmoi cd with command with args
 chezmoi cd
 stdout version
 

@@ -3,6 +3,7 @@
 mkhomedir
 mksourcedir
 
+# test that chezmoi merge does a three-way merge
 chezmoi merge $HOME${/}.file
 stdout ^${HOME@R}/\.file\s+${CHEZMOISOURCEDIR@R}/dot_file\s+${WORK@R}/.*/\.file$
 
@@ -12,11 +13,14 @@ stdout ^${HOME@R}/\.file\s+${CHEZMOISOURCEDIR@R}/dot_file\s+${WORK@R}/.*/\.file$
 # stdout ^${HOME@R}/\.invalid_template\s+$CHEZMOISOURCEDIR/dot_invalid_template\.tmpl$
 
 chhome home2/user
+
+# test that chezmoi merge does a three-way merge with the arguments in the configured order
 chezmoi merge $HOME${/}.file
 stdout ^${CHEZMOISOURCEDIR@R}/dot_file\s+${HOME@R}/\.file\s+${WORK@R}/.*/\.file$
 
-# test that chezmoi merge appends the destination, source, and target paths if merge.args does not contain any templates
 chhome home3/user
+
+# test that chezmoi merge appends the destination, source, and target paths if merge.args does not contain any templates
 chezmoi merge $HOME${/}.file
 stdout ^arg\s+${HOME@R}/\.file\s+${CHEZMOISOURCEDIR@R}/dot_file\s+${WORK@R}/.*/\.file$
 

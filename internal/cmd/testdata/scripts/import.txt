@@ -10,14 +10,16 @@ cmp $CHEZMOISOURCEDIR/dot_dir/dot_file golden/dot_dir/dot_file
 # test that chezmoi import run a second time overwrites
 chezmoi import --strip-components=1 archive.tar.gz
 
-# test chezmoi import --destination
 chhome home2/user
+
+# test chezmoi import --destination
 chezmoi import --strip-components=1 --destination=$HOME${/}.subdir archive.tar.gz
 cmp $CHEZMOISOURCEDIR/dot_subdir/dot_dir/dot_file golden/dot_dir/dot_file
 [!windows] cmp $CHEZMOISOURCEDIR/dot_subdir/dot_dir/symlink_dot_symlink golden/dot_dir/symlink_dot_symlink # FIXME this should pass on Windows
 
-# test chezmoi --import --exclude
 chhome home3/user
+
+# test chezmoi --import --exclude
 chezmoi import --strip-components=1 --destination=$HOME${/}.subdir --exclude=symlinks archive.tar.gz
 cmp $CHEZMOISOURCEDIR/dot_subdir/dot_dir/dot_file golden/dot_dir/dot_file
 ! exists $CHEZMOISOURCEDIR/dot_subdir/dot_dir/symlink_dot_symlink

@@ -32,8 +32,9 @@ exists $CHEZMOISOURCEDIR/.edited
 [!windows] chezmoi edit $HOME${/}.dir
 [!windows] exists $CHEZMOISOURCEDIR/dot_dir/.edited
 
-# test that chezmoi edit edits a file when the working tree and the source dir are different
 chhome home2/user
+
+# test that chezmoi edit edits a file when the working tree and the source dir are different
 chezmoi edit $HOME${/}.file
 grep -count=1 '# edited' $CHEZMOISOURCEDIR/home/dot_file
 

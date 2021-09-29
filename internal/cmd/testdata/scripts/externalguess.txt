@@ -29,9 +29,10 @@ cp www/archive.zip www/archive
 chezmoi apply --force --refresh-externals
 cmp $HOME/.dir/dir/file golden/dir/file
 
+chhome home2/user
+
 # test that chezmoi allows the format to be overridden
 cp www/archive.zip www/archive2.tar.gz
-chhome home2/user
 chezmoi apply --force
 cmp $HOME/.dir/dir/file golden/dir/file
 

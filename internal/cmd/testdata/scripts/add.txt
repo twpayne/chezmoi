@@ -49,8 +49,9 @@ symlink $HOME${/}.symlink3 -> .file
 chezmoi add --follow $HOME${/}.symlink3
 cmp $CHEZMOISOURCEDIR/dot_symlink3 golden/dot_file
 
-# test that chezmoi add only creates .keep files in empty directories
 chhome home2/user
+
+# test that chezmoi add only creates .keep files in empty directories
 mkdir $HOME/.dir/empty_subdir
 chezmoi add $HOME${/}.dir
 ! exists $CHEZMOISOURCEDIR/dot_dir/.keep

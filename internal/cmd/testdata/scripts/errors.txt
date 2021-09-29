@@ -5,23 +5,27 @@ cp $CHEZMOISOURCEDIR/dot_file $CHEZMOISOURCEDIR/empty_dot_file
 ! chezmoi verify
 stderr 'duplicate source state entries'
 
-# test invalid config
 chhome home2/user
+
+# test invalid config
 ! chezmoi verify
 stderr 'invalid config'
 
-# test source directory is not a directory
 chhome home3/user
+
+# test source directory is not a directory
 ! chezmoi verify
 stderr 'not a directory'
 
-# test that chezmoi checks .chezmoiversion
 chhome home4/user
+
+# test that chezmoi checks .chezmoiversion
 ! chezmoi verify
 stderr 'source state requires version'
 
-# test duplicate script detection
 chhome home5/user
+
+# test duplicate script detection
 ! chezmoi verify
 stderr 'duplicate source state entries'
 
