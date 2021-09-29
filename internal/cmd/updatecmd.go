@@ -13,6 +13,7 @@ type updateCmdConfig struct {
 	apply     bool
 	exclude   *chezmoi.EntryTypeSet
 	include   *chezmoi.EntryTypeSet
+	init      bool
 	recursive bool
 }
 
@@ -37,6 +38,7 @@ func (c *Config) newUpdateCmd() *cobra.Command {
 	flags.BoolVarP(&c.update.apply, "apply", "a", c.update.apply, "Apply after pulling")
 	flags.VarP(c.update.exclude, "exclude", "x", "Exclude entry types")
 	flags.VarP(c.update.include, "include", "i", "Include entry types")
+	flags.BoolVar(&c.update.init, "init", c.update.init, "Recreate config file from template")
 	flags.BoolVarP(&c.update.recursive, "recursive", "r", c.update.recursive, "Recurse into subdirectories")
 
 	return updateCmd
@@ -72,14 +74,22 @@ func (c *Config) runUpdateCmd(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	if !c.update.apply {
-		return nil
+	if c.update.init {
+		if err := c.createAndReloadConfigFile(); err != nil {
+			return err
+		}
 	}
 
-	return c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, args, applyArgsOptions{
-		include:      c.update.include.Sub(c.update.exclude),
-		recursive:    c.update.recursive,
-		umask:        c.Umask,
-		preApplyFunc: c.defaultPreApplyFunc,
-	})
+	if c.update.apply {
+		if err := c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, args, applyArgsOptions{
+			include:      c.update.include.Sub(c.update.exclude),
+			recursive:    c.update.recursive,
+			umask:        c.Umask,
+			preApplyFunc: c.defaultPreApplyFunc,
+		}); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

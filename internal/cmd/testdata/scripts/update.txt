@@ -50,3 +50,13 @@ chezmoi update --apply=false
 grep -count=1 '# edited' $HOME/.file
 chezmoi apply --force
 grep -count=2 '# edited' $HOME/.file
+
+# test chezmoi update --init
+cp golden/.chezmoi.toml.tmpl $CHEZMOISOURCEDIR
+chezmoi update --init
+chezmoi execute-template '{{ .key }}'
+stdout value
+
+-- golden/.chezmoi.toml.tmpl --
+[data]
+    key = "value"

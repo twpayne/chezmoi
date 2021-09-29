@@ -1593,6 +1593,11 @@ Pull changes from the source repo and apply any changes.
 
 Only update entries of type *types*.
 
+#### `--init`
+
+Regenerate and reread the config file from the config file template before
+applying any changes.
+
 #### `update` examples
 
 ```console
