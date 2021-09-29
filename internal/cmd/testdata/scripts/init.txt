@@ -14,22 +14,25 @@ cp golden/.file $CHEZMOISOURCEDIR/dot_file
 chezmoi git add .
 chezmoi git commit -- --message 'Initial commit'
 
-# test that chezmoi init fetches git repo but does not apply
 chhome home2/user
+
+# test that chezmoi init fetches git repo but does not apply
 mkgitconfig
 chezmoi init file://$WORK/home/user/.local/share/chezmoi
 exists $CHEZMOISOURCEDIR/.git
 ! exists $HOME/.file
 
-# test that chezmoi init --apply fetches a git repo and runs chezmoi apply
 chhome home3/user
+
+# test that chezmoi init --apply fetches a git repo and runs chezmoi apply
 mkgitconfig
 chezmoi init --apply --force file://$WORK/home/user/.local/share/chezmoi
 exists $CHEZMOISOURCEDIR/.git
 cmp $HOME/.file golden/.file
 
-# test that chezmoi init --apply --depth 1 --force --purge clones, applies, and purges
 chhome home4/user
+
+# test that chezmoi init --apply --depth 1 --force --purge clones, applies, and purges
 mkgitconfig
 exists $CHEZMOICONFIGDIR
 ! exists $CHEZMOISOURCEDIR
@@ -38,22 +41,25 @@ cmp $HOME/.file golden/.file
 ! exists $CHEZMOICONFIGDIR
 ! exists $CHEZMOISOURCEDIR
 
-# test that chezmoi init does not clone the repo if it is already checked out but does create the config file
 chhome home5/user
+
+# test that chezmoi init does not clone the repo if it is already checked out but does create the config file
 mkgitconfig
 chezmoi init --source=$HOME/dotfiles file://$WORK/nonexistentrepo
 exists $CHEZMOICONFIGDIR/chezmoi.toml
 
-# test chezmoi init --one-shot
 chhome home6/user
+
+# test chezmoi init --one-shot
 mkgitconfig
 chezmoi init --one-shot file://$WORK/home/user/.local/share/chezmoi
 cmp $HOME/.file golden/.file
 ! exists $CHEZMOICONFIGDIR
 ! exists $CHEZMOISOURCEDIR
 
-# test chezmoi init --data=true
 chhome home7/user
+
+# test chezmoi init --data=true
 mkgitconfig
 chezmoi init --data=true file://$WORK/home/user/.local/share/chezmoi
 cmp $CHEZMOICONFIGDIR/chezmoi.toml golden/chezmoi.toml
@@ -62,34 +68,41 @@ cmp $CHEZMOICONFIGDIR/chezmoi.toml golden/chezmoi.toml
 chezmoi init --data=false file://$WORK/home/user/.local/share/chezmoi
 cmp $CHEZMOICONFIGDIR/chezmoi.toml golden/chezmoi.toml-no-data
 
-# test that chezmoi init fails if the generated config is not valid
 chhome home8/user
+
+# test that chezmoi init fails if the generated config is not valid
 mkgitconfig
 ! chezmoi init
 stderr 'parsing error'
 ! exists .config/chezmoi
 
-# test chezmoi init --branch
 chhome home/user
+
+# create a new branch
 chezmoi git checkout -- -b new-branch
 edit $CHEZMOISOURCEDIR/dot_file
 chezmoi git add dot_file
 chezmoi git commit -- --message 'Edit .file'
 chezmoi git checkout master
+
 chhome home9/user
+
+# test chezmoi init --branch
 mkgitconfig
 chezmoi init --apply --branch=new-branch file://$WORK/home/user/.local/share/chezmoi
 grep '# edited' $HOME/.file
 
-# test chezmoi init --config-path
 chhome home10/user
+
+# test chezmoi init --config-path
 mkgitconfig
 chezmoi init --config-path=$HOME/.chezmoi.toml file://$WORK/home/user/.local/share/chezmoi
 cmp $HOME/.chezmoi.toml golden/chezmoi.toml
 ! exists $CHEZMOICONFIGDIR/chezmoi.toml
 
-# test chezmoi init when the source dir is already in a git working copy
 chhome home11/user
+
+# test chezmoi init when the source dir is already in a git working copy
 mkgitconfig
 exec git init $HOME/.local/share
 chezmoi init

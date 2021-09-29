@@ -40,8 +40,9 @@ stdout '^ok\s+pass-cli\s+'
 stdout '^ok\s+vault-cli\s+'
 stdout '^ok\s+secret-cli\s+'
 
-# test that chezmoi doctor warns about missing directories on an empty system
 chhome home2/user
+
+# test that chezmoi doctor warns about missing directories on an empty system
 ! chezmoi doctor
 stdout '^ok\s+config-file\s+'
 stdout '^error\s+source-dir\s+'

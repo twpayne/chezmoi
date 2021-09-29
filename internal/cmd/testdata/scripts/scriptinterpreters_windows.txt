@@ -5,13 +5,15 @@ chezmoi apply
 unix2dos golden/stdout # normalize line endings before comparison
 cmp stdout golden/stdout
 
-# test that chezmoi apply runs PowerShell scripts
 chhome home2/user
+
+# test that chezmoi apply runs PowerShell scripts
 chezmoi apply
 cmp stdout golden/stdout2 # PowerShell already uses UNIX line endings
 
-# test that interpreters can be overridden
 chhome home3/user
+
+# test that interpreters can be overridden
 chezmoi apply
 unix2dos golden/stdout3 # normalize line endings before comparison
 cmp stdout golden/stdout3

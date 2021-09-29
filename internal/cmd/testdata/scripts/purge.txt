@@ -5,8 +5,9 @@ exists $CHEZMOISOURCEDIR
 chezmoi purge --force
 ! exists $CHEZMOISOURCEDIR
 
-# test that chezmoi purge purges the config dir
 chhome home2/user
+
+# test that chezmoi purge purges the config dir
 exists $CHEZMOICONFIGDIR
 chezmoi purge --force
 ! exists $CHEZMOICONFIGDIR

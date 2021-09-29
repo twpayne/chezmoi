@@ -24,8 +24,9 @@ cmp stdout golden/managed-symlinks
 chezmoi managed --exclude=files
 cmp stdout golden/managed-except-files
 
-# test that chezmoi managed does not evaluate templates
 chhome home2/user
+
+# test that chezmoi managed does not evaluate templates
 chezmoi managed --include=all
 cmp stdout golden/managed2
 

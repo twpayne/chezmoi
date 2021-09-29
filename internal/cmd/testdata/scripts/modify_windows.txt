@@ -5,8 +5,9 @@ chezmoi apply
 unix2dos golden/modified
 cmp $HOME/.file golden/modified
 
-# test that chezmoi apply returns an error when there are multiple modify scripts for the same target
 chhome home2/user
+
+# test that chezmoi apply returns an error when there are multiple modify scripts for the same target
 ! chezmoi apply
 stderr 'duplicate source state entries'
 

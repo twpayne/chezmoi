@@ -6,13 +6,15 @@ grep -count=1 '# edited' $CHEZMOICONFIGDIR/chezmoi.toml
 chezmoi edit-config
 grep -count=2 '# edited' $CHEZMOICONFIGDIR/chezmoi.toml
 
-# test that edit-config edits an existing YAML config file
 chhome home2/user
+
+# test that edit-config edits an existing YAML config file
 chezmoi edit-config
 grep -count=1 '# edited' $CHEZMOICONFIGDIR/chezmoi.yaml
 
-# test that edit-config reports a warning if the config is no longer valid
 chhome home3/user
+
+# test that edit-config reports a warning if the config is no longer valid
 ! stderr warning
 chezmoi edit-config
 stderr warning
