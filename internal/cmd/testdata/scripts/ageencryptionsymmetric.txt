@@ -7,7 +7,7 @@ mkageconfig -symmetric
 cp golden/.encrypted $HOME
 chezmoi add --encrypt $HOME${/}.encrypted
 exists $CHEZMOISOURCEDIR/encrypted_dot_encrypted.age
-! grep plaintext $CHEZMOISOURCEDIR/encrypted_dot_encrypted.age
+grep '-----BEGIN AGE ENCRYPTED FILE-----' $CHEZMOISOURCEDIR/encrypted_dot_encrypted.age
 
 # test that chezmoi apply decrypts
 rm $HOME/.encrypted

@@ -7,7 +7,7 @@ mkgpgconfig -symmetric
 cp golden/.encrypted $HOME
 chezmoi add --encrypt $HOME${/}.encrypted
 exists $CHEZMOISOURCEDIR/encrypted_dot_encrypted.asc
-! grep plaintext $CHEZMOISOURCEDIR/encrypted_dot_encrypted.asc
+grep '-----BEGIN PGP MESSAGE-----' $CHEZMOISOURCEDIR/encrypted_dot_encrypted.asc
 
 # test that chezmoi apply decrypts
 rm $HOME/.encrypted
@@ -35,9 +35,9 @@ appendline $CHEZMOICONFIGDIR/chezmoi.toml '  suffix = ".gpg"'
 mkdir $HOME/.dir
 cp golden/.encrypted $HOME/.dir
 chezmoi add --encrypt $HOME${/}.dir${/}.encrypted
-! grep plaintext $CHEZMOISOURCEDIR/dot_dir/encrypted_dot_encrypted.gpg
+grep '-----BEGIN PGP MESSAGE-----' $CHEZMOISOURCEDIR/dot_dir/encrypted_dot_encrypted.gpg
 chezmoi edit --apply $HOME${/}.dir${/}.encrypted
 grep '# edited' $HOME/.dir/.encrypted
 
 -- golden/.encrypted --
-plaintext
+# contents of .encrypted
