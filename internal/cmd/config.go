@@ -551,6 +551,101 @@ func (c *Config) colorAutoFunc() bool {
 	return false
 }
 
+// createAndReloadConfigFile creates a config file if it there is a config file
+// template and reloads it.
+func (c *Config) createAndReloadConfigFile() error {
+	// Find config template, execute it, and create config file.
+	configTemplateRelPath, ext, configTemplateContents, err := c.findConfigTemplate()
+	if err != nil {
+		return err
+	}
+	var configFileContents []byte
+	if configTemplateRelPath == "" {
+		if err := c.persistentState.Delete(chezmoi.ConfigStateBucket, configStateKey); err != nil {
+			return err
+		}
+	} else {
+		configFileContents, err = c.createConfigFile(configTemplateRelPath, configTemplateContents)
+		if err != nil {
+			return err
+		}
+
+		// Validate the config.
+		v := viper.New()
+		v.SetConfigType(ext)
+		if err := v.ReadConfig(bytes.NewBuffer(configFileContents)); err != nil {
+			return err
+		}
+		if err := v.Unmarshal(&Config{}, viperDecodeConfigOptions...); err != nil {
+			return err
+		}
+
+		// Write the config.
+		configPath := c.init.configPath
+		if c.init.configPath.Empty() {
+			configPath = chezmoi.NewAbsPath(c.bds.ConfigHome).Join("chezmoi").Join(configTemplateRelPath)
+		}
+		if err := chezmoi.MkdirAll(c.baseSystem, configPath.Dir(), 0o777); err != nil {
+			return err
+		}
+		if err := c.baseSystem.WriteFile(configPath, configFileContents, 0o600); err != nil {
+			return err
+		}
+
+		configStateValue, err := json.Marshal(configState{
+			ConfigTemplateContentsSHA256: chezmoi.HexBytes(chezmoi.SHA256Sum(configTemplateContents)),
+		})
+		if err != nil {
+			return err
+		}
+		if err := c.persistentState.Set(chezmoi.ConfigStateBucket, configStateKey, configStateValue); err != nil {
+			return err
+		}
+	}
+
+	// Reload config if it was created.
+	if configTemplateRelPath != "" {
+		viper.SetConfigType(ext)
+		if err := viper.ReadConfig(bytes.NewBuffer(configFileContents)); err != nil {
+			return err
+		}
+		if err := viper.Unmarshal(c, viperDecodeConfigOptions...); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// createConfigFile creates a config file using a template and returns its
+// contents.
+func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte) ([]byte, error) {
+	funcMap := make(template.FuncMap)
+	chezmoi.RecursiveMerge(funcMap, c.templateFuncs)
+	chezmoi.RecursiveMerge(funcMap, map[string]interface{}{
+		"promptBool":    c.promptBool,
+		"promptInt":     c.promptInt,
+		"promptString":  c.promptString,
+		"stdinIsATTY":   c.stdinIsATTY,
+		"writeToStdout": c.writeToStdout,
+	})
+
+	t, err := template.New(string(filename)).Funcs(funcMap).Parse(string(data))
+	if err != nil {
+		return nil, err
+	}
+
+	sb := strings.Builder{}
+	templateData := c.defaultTemplateData()
+	if c.init.data {
+		chezmoi.RecursiveMerge(templateData, c.Data)
+	}
+	if err = t.Execute(&sb, templateData); err != nil {
+		return nil, err
+	}
+	return []byte(sb.String()), nil
+}
+
 // defaultConfigFile returns the default config file according to the XDG Base
 // Directory Specification.
 func (c *Config) defaultConfigFile(fileSystem vfs.Stater, bds *xdg.BaseDirectorySpecification) (chezmoi.AbsPath, error) {

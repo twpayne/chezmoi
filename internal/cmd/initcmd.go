@@ -1,25 +1,18 @@
 package cmd
 
 import (
-	"bytes"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io/fs"
-	"os"
 	"regexp"
 	"runtime"
 	"strconv"
-	"strings"
-	"text/template"
 
 	"github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/transport"
 	"github.com/go-git/go-git/v5/plumbing/transport/http"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
-	"golang.org/x/term"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
@@ -217,64 +210,8 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	// Find config template, execute it, and create config file.
-	configTemplateRelPath, ext, configTemplateContents, err := c.findConfigTemplate()
-	if err != nil {
+	if err := c.createAndReloadConfigFile(); err != nil {
 		return err
-	}
-	var configFileContents []byte
-	if configTemplateRelPath == "" {
-		if err := c.persistentState.Delete(chezmoi.ConfigStateBucket, configStateKey); err != nil {
-			return err
-		}
-	} else {
-		configFileContents, err = c.createConfigFile(configTemplateRelPath, configTemplateContents)
-		if err != nil {
-			return err
-		}
-
-		// Validate the config.
-		v := viper.New()
-		v.SetConfigType(ext)
-		if err := v.ReadConfig(bytes.NewBuffer(configFileContents)); err != nil {
-			return err
-		}
-		if err := v.Unmarshal(&Config{}, viperDecodeConfigOptions...); err != nil {
-			return err
-		}
-
-		// Write the config.
-		configPath := c.init.configPath
-		if c.init.configPath.Empty() {
-			configPath = chezmoi.NewAbsPath(c.bds.ConfigHome).Join("chezmoi").Join(configTemplateRelPath)
-		}
-		if err := chezmoi.MkdirAll(c.baseSystem, configPath.Dir(), 0o777); err != nil {
-			return err
-		}
-		if err := c.baseSystem.WriteFile(configPath, configFileContents, 0o600); err != nil {
-			return err
-		}
-
-		configStateValue, err := json.Marshal(configState{
-			ConfigTemplateContentsSHA256: chezmoi.HexBytes(chezmoi.SHA256Sum(configTemplateContents)),
-		})
-		if err != nil {
-			return err
-		}
-		if err := c.persistentState.Set(chezmoi.ConfigStateBucket, configStateKey, configStateValue); err != nil {
-			return err
-		}
-	}
-
-	// Reload config if it was created.
-	if configTemplateRelPath != "" {
-		viper.SetConfigType(ext)
-		if err := viper.ReadConfig(bytes.NewBuffer(configFileContents)); err != nil {
-			return err
-		}
-		if err := viper.Unmarshal(c, viperDecodeConfigOptions...); err != nil {
-			return err
-		}
 	}
 
 	// Apply.
@@ -299,79 +236,6 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
-}
-
-// createConfigFile creates a config file using a template and returns its
-// contents.
-func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte) ([]byte, error) {
-	funcMap := make(template.FuncMap)
-	chezmoi.RecursiveMerge(funcMap, c.templateFuncs)
-	chezmoi.RecursiveMerge(funcMap, map[string]interface{}{
-		"promptBool":    c.promptBool,
-		"promptInt":     c.promptInt,
-		"promptString":  c.promptString,
-		"stdinIsATTY":   c.stdinIsATTY,
-		"writeToStdout": c.writeToStdout,
-	})
-
-	t, err := template.New(string(filename)).Funcs(funcMap).Parse(string(data))
-	if err != nil {
-		return nil, err
-	}
-
-	sb := strings.Builder{}
-	templateData := c.defaultTemplateData()
-	if c.init.data {
-		chezmoi.RecursiveMerge(templateData, c.Data)
-	}
-	if err = t.Execute(&sb, templateData); err != nil {
-		return nil, err
-	}
-	return []byte(sb.String()), nil
-}
-
-func (c *Config) promptBool(field string) bool {
-	value, err := parseBool(c.promptString(field))
-	if err != nil {
-		returnTemplateError(err)
-		return false
-	}
-	return value
-}
-
-func (c *Config) promptInt(field string) int64 {
-	value, err := strconv.ParseInt(c.promptString(field), 10, 64)
-	if err != nil {
-		returnTemplateError(err)
-		return 0
-	}
-	return value
-}
-
-func (c *Config) promptString(field string) string {
-	value, err := c.readLine(fmt.Sprintf("%s? ", field))
-	if err != nil {
-		returnTemplateError(err)
-		return ""
-	}
-	return strings.TrimSpace(value)
-}
-
-func (c *Config) stdinIsATTY() bool {
-	file, ok := c.stdin.(*os.File)
-	if !ok {
-		return false
-	}
-	return term.IsTerminal(int(file.Fd()))
-}
-
-func (c *Config) writeToStdout(args ...string) string {
-	for _, arg := range args {
-		if _, err := c.stdout.Write([]byte(arg)); err != nil {
-			panic(err)
-		}
-	}
-	return ""
 }
 
 // guessDotfilesRepoURL guesses the user's username and dotfile repo from arg.
