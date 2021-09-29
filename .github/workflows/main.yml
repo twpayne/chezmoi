@@ -208,6 +208,14 @@ jobs:
         path: C:/ProgramData/chocolatey/logs/chocolatey.log
     - name: Test
       run: go test -race ./...
+  test-voidlinux:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Test
+      run: |
+        ( cd assets/docker && ./test.sh voidlinux )
   generate:
     runs-on: ubuntu-18.04
     steps:
