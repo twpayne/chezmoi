@@ -775,12 +775,13 @@ a shared template.
 
 Create the common file in the `.chezmoitemplates` directory in the source state. For
 example, create `.chezmoitemplates/file.conf`. The contents of this file are
-available in templates with the `template *name*` function where *name* is the
-name of the file.
+available in templates with the `template *name* .` function where *name* is the
+name of the file (`.` passes the current data to the template code in `file.conf`;
+see https://pkg.go.dev/text/template#hdr-Actions for details).
 
 Then create files for each system, for example `Library/Application
 Support/App/file.conf.tmpl` for macOS and `dot_config/app/file.conf.tmpl` for
-Linux. Both template files should contain `{{- template "file.conf" -}}`.
+Linux. Both template files should contain `{{- template "file.conf" . -}}`.
 
 Finally, tell chezmoi to ignore files where they are not needed by adding lines
 to your `.chezmoiignore` file, for example:
