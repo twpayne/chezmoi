@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"os"
-	"runtime"
 
 	"github.com/spf13/cobra"
 
@@ -70,7 +69,6 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string, sourceState *chez
 	}
 
 	editorArgs := make([]string, 0, len(targetRelPaths))
-	var decryptedDirAbsPath chezmoi.AbsPath
 	type transparentlyDecryptedFile struct {
 		sourceAbsPath    chezmoi.AbsPath
 		decryptedAbsPath chezmoi.AbsPath
@@ -79,25 +77,13 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string, sourceState *chez
 	for _, targetRelPath := range targetRelPaths {
 		sourceStateEntry := sourceState.MustEntry(targetRelPath)
 		sourceRelPath := sourceStateEntry.SourceRelPath()
-		var editorArg string
 		if sourceStateFile, ok := sourceStateEntry.(*chezmoi.SourceStateFile); ok && sourceStateFile.Attr.Encrypted {
-			if decryptedDirAbsPath.Empty() {
-				decryptedDir, err := os.MkdirTemp("", "chezmoi-decrypted")
-				if err != nil {
-					return err
-				}
-				decryptedDirAbsPath = chezmoi.NewAbsPath(decryptedDir)
-				defer func() {
-					_ = c.baseSystem.RemoveAll(decryptedDirAbsPath)
-				}()
-				if runtime.GOOS != "windows" {
-					if err := c.baseSystem.Chmod(decryptedDirAbsPath, 0o700); err != nil {
-						return err
-					}
-				}
+			tempDirAbsPath, err := c.tempDir("chezmoi-edit")
+			if err != nil {
+				return err
 			}
 			// FIXME use RawContents and DecryptFile
-			decryptedAbsPath := decryptedDirAbsPath.Join(sourceRelPath.TargetRelPath(c.encryption.EncryptedSuffix()))
+			decryptedAbsPath := tempDirAbsPath.Join(sourceRelPath.TargetRelPath(c.encryption.EncryptedSuffix()))
 			contents, err := sourceStateFile.Contents()
 			if err != nil {
 				return err
@@ -113,12 +99,11 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string, sourceState *chez
 				decryptedAbsPath: decryptedAbsPath,
 			}
 			transparentlyDecryptedFiles = append(transparentlyDecryptedFiles, transparentlyDecryptedFile)
-			editorArg = decryptedAbsPath.String()
+			editorArgs = append(editorArgs, decryptedAbsPath.String())
 		} else {
 			sourceAbsPath := c.SourceDirAbsPath.Join(sourceRelPath.RelPath())
-			editorArg = sourceAbsPath.String()
+			editorArgs = append(editorArgs, sourceAbsPath.String())
 		}
-		editorArgs = append(editorArgs, editorArg)
 	}
 
 	if err := c.runEditor(editorArgs); err != nil {

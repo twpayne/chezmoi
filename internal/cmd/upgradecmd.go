@@ -372,18 +372,9 @@ func (c *Config) upgradePackage(ctx context.Context, rr *github.RepositoryReleas
 		}
 
 		// Create a temporary directory for the package.
-		var tempDirAbsPath chezmoi.AbsPath
-		if c.dryRun {
-			tempDirAbsPath = chezmoi.NewAbsPath(os.TempDir())
-		} else {
-			tempDir, err := os.MkdirTemp("", "chezmoi")
-			if err != nil {
-				return err
-			}
-			tempDirAbsPath = chezmoi.NewAbsPath(tempDir)
-			defer func() {
-				_ = c.baseSystem.RemoveAll(tempDirAbsPath)
-			}()
+		tempDirAbsPath, err := c.tempDir("chezmoi")
+		if err != nil {
+			return err
 		}
 
 		data, err := c.downloadURL(ctx, releaseAsset.GetBrowserDownloadURL())

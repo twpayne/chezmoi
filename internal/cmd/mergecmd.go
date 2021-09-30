@@ -46,12 +46,10 @@ func (c *Config) runMergeCmd(cmd *cobra.Command, args []string, sourceState *che
 	// Create a temporary directory to store the target state and ensure that it
 	// is removed afterwards. We cannot use fs as it lacks TempDir
 	// functionality.
-	tempDir, err := os.MkdirTemp("", "chezmoi-merge")
+	tempDirAbsPath, err := c.tempDir("chezmoi-merge")
 	if err != nil {
 		return err
 	}
-	defer os.RemoveAll(tempDir)
-	tempDirAbsPath := chezmoi.NewAbsPath(tempDir)
 
 	var plaintextTempDirAbsPath chezmoi.AbsPath
 	defer func() {
@@ -72,12 +70,9 @@ func (c *Config) runMergeCmd(cmd *cobra.Command, args []string, sourceState *che
 		)
 		if sourceStateFile, ok := sourceStateEntry.(*chezmoi.SourceStateFile); ok {
 			if sourceStateFile.Attr.Encrypted {
-				if plaintextTempDirAbsPath.Empty() {
-					plaintextTempDir, err := os.MkdirTemp("", "chezmoi-merge-plaintext")
-					if err != nil {
-						return err
-					}
-					plaintextTempDirAbsPath = chezmoi.NewAbsPath(plaintextTempDir)
+				plaintextTempDirAbsPath, err := c.tempDir("chezmoi-merge-plaintext")
+				if err != nil {
+					return err
 				}
 				plaintextAbsPath = plaintextTempDirAbsPath.Join(sourceStateEntry.SourceRelPath().RelPath())
 				plaintext, err := sourceStateFile.Contents()
