@@ -15,6 +15,7 @@ type editCmdConfig struct {
 	apply   bool
 	exclude *chezmoi.EntryTypeSet
 	include *chezmoi.EntryTypeSet
+	init    bool
 }
 
 func (c *Config) newEditCmd() *cobra.Command {
@@ -37,6 +38,7 @@ func (c *Config) newEditCmd() *cobra.Command {
 	flags.BoolVarP(&c.Edit.apply, "apply", "a", c.Edit.apply, "Apply after editing")
 	flags.VarP(c.Edit.exclude, "exclude", "x", "Exclude entry types")
 	flags.VarP(c.Edit.include, "include", "i", "Include entry types")
+	flags.BoolVar(&c.Edit.init, "init", c.update.init, "Recreate config file from template")
 
 	return editCmd
 }
@@ -49,6 +51,7 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string, sourceState *chez
 		if c.Edit.apply {
 			if err := c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, noArgs, applyArgsOptions{
 				include:      c.Edit.include.Sub(c.Edit.exclude),
+				init:         c.Edit.init,
 				recursive:    true,
 				umask:        c.Umask,
 				preApplyFunc: c.defaultPreApplyFunc,
@@ -135,6 +138,7 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string, sourceState *chez
 	if c.Edit.apply {
 		if err := c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, args, applyArgsOptions{
 			include:      c.Edit.include,
+			init:         c.Edit.init,
 			recursive:    false,
 			umask:        c.Umask,
 			preApplyFunc: c.defaultPreApplyFunc,

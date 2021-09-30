@@ -9,6 +9,7 @@ import (
 type verifyCmdConfig struct {
 	exclude   *chezmoi.EntryTypeSet
 	include   *chezmoi.EntryTypeSet
+	init      bool
 	recursive bool
 }
 
@@ -27,6 +28,7 @@ func (c *Config) newVerifyCmd() *cobra.Command {
 	flags := verifyCmd.Flags()
 	flags.VarP(c.verify.exclude, "exclude", "x", "Exclude entry types")
 	flags.VarP(c.verify.include, "include", "i", "Include entry types")
+	flags.BoolVar(&c.verify.init, "init", c.update.init, "Recreate config file from template")
 	flags.BoolVarP(&c.verify.recursive, "recursive", "r", c.verify.recursive, "Recurse into subdirectories")
 
 	return verifyCmd
@@ -36,6 +38,7 @@ func (c *Config) runVerifyCmd(cmd *cobra.Command, args []string) error {
 	dryRunSystem := chezmoi.NewDryRunSystem(c.destSystem)
 	if err := c.applyArgs(cmd.Context(), dryRunSystem, c.DestDirAbsPath, args, applyArgsOptions{
 		include:   c.verify.include.Sub(c.verify.exclude),
+		init:      c.verify.init,
 		recursive: c.verify.recursive,
 		umask:     c.Umask,
 	}); err != nil {

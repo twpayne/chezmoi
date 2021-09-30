@@ -272,6 +272,11 @@ comma-separated list of target states (`all`, `dirs`, `files`, `remove`,
 with a `no`. For example, `--include=dirs,files` will cause the command to apply
 to directories and files only.
 
+#### `--init`
+
+Regenerate and reread the config file from the config file template before
+computing the target state.
+
 ### `-r`, `--recursive`
 
 Recurse into subdirectories, `true` by default.
@@ -1592,11 +1597,6 @@ Pull changes from the source repo and apply any changes.
 #### `-i`, `--include` *types*
 
 Only update entries of type *types*.
-
-#### `--init`
-
-Regenerate and reread the config file from the config file template before
-applying any changes.
 
 #### `update` examples
 

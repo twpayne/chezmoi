@@ -14,6 +14,7 @@ type diffCmdConfig struct {
 	Exclude        *chezmoi.EntryTypeSet `mapstructure:"exclude"`
 	Pager          string                `mapstructure:"pager"`
 	include        *chezmoi.EntryTypeSet
+	init           bool
 	recursive      bool
 	useBuiltinDiff bool
 }
@@ -33,6 +34,7 @@ func (c *Config) newDiffCmd() *cobra.Command {
 	flags := diffCmd.Flags()
 	flags.VarP(c.Diff.Exclude, "exclude", "x", "Exclude entry types")
 	flags.VarP(c.Diff.include, "include", "i", "Include entry types")
+	flags.BoolVar(&c.Diff.init, "init", c.update.init, "Recreate config file from template")
 	flags.BoolVarP(&c.Diff.recursive, "recursive", "r", c.Diff.recursive, "Recurse into subdirectories")
 	flags.StringVar(&c.Diff.Pager, "pager", c.Diff.Pager, "Set pager")
 	flags.BoolVarP(&c.Diff.useBuiltinDiff, "use-builtin-diff", "", c.Diff.useBuiltinDiff, "Use the builtin diff")
@@ -48,6 +50,7 @@ func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) error {
 		gitDiffSystem := chezmoi.NewGitDiffSystem(dryRunSystem, &sb, c.DestDirAbsPath, color)
 		if err := c.applyArgs(cmd.Context(), gitDiffSystem, c.DestDirAbsPath, args, applyArgsOptions{
 			include:   c.Diff.include.Sub(c.Diff.Exclude),
+			init:      c.Diff.init,
 			recursive: c.Diff.recursive,
 			umask:     c.Umask,
 		}); err != nil {
@@ -59,6 +62,7 @@ func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) error {
 	defer diffSystem.Close()
 	return c.applyArgs(cmd.Context(), diffSystem, c.DestDirAbsPath, args, applyArgsOptions{
 		include:   c.Diff.include.Sub(c.Diff.Exclude),
+		init:      c.Diff.init,
 		recursive: c.Diff.recursive,
 		umask:     c.Umask,
 	})

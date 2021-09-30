@@ -430,6 +430,7 @@ func (c *Config) addTemplateFunc(key string, value interface{}) {
 
 type applyArgsOptions struct {
 	include      *chezmoi.EntryTypeSet
+	init         bool
 	exclude      *chezmoi.EntryTypeSet
 	recursive    bool
 	umask        fs.FileMode
@@ -437,6 +438,12 @@ type applyArgsOptions struct {
 }
 
 func (c *Config) applyArgs(ctx context.Context, targetSystem chezmoi.System, targetDirAbsPath chezmoi.AbsPath, args []string, options applyArgsOptions) error {
+	if options.init {
+		if err := c.createAndReloadConfigFile(); err != nil {
+			return err
+		}
+	}
+
 	sourceState, err := c.newSourceState(ctx)
 	if err != nil {
 		return err
