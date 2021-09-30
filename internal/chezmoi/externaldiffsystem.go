@@ -62,6 +62,12 @@ func (s *ExternalDiffSystem) IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error) 
 	return s.system.IdempotentCmdOutput(cmd)
 }
 
+// Link implements System.Link.
+func (s *ExternalDiffSystem) Link(oldname, newname AbsPath) error {
+	// FIXME generate suitable inputs for s.command
+	return s.system.Link(oldname, newname)
+}
+
 // Lstat implements System.Lstat.
 func (s *ExternalDiffSystem) Lstat(name AbsPath) (fs.FileInfo, error) {
 	return s.system.Lstat(name)

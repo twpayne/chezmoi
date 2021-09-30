@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"os"
+	"runtime"
 
 	"github.com/spf13/cobra"
 
@@ -74,11 +75,18 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string, sourceState *chez
 		decryptedAbsPath chezmoi.AbsPath
 	}
 	var transparentlyDecryptedFiles []transparentlyDecryptedFile
+TARGETRELPATH:
 	for _, targetRelPath := range targetRelPaths {
 		sourceStateEntry := sourceState.MustEntry(targetRelPath)
 		sourceRelPath := sourceStateEntry.SourceRelPath()
-		if sourceStateFile, ok := sourceStateEntry.(*chezmoi.SourceStateFile); ok && sourceStateFile.Attr.Encrypted {
-			tempDirAbsPath, err := c.tempDir("chezmoi-edit")
+		switch sourceStateFile, ok := sourceStateEntry.(*chezmoi.SourceStateFile); {
+		case ok && sourceStateFile.Attr.Encrypted:
+			// FIXME in the case that the file is an encrypted template then we
+			// should first decrypt the file to a temporary directory and
+			// secondly add a hardlink from the edit directory to the temporary
+			// directory.
+
+			tempDirAbsPath, err := c.tempDir("chezmoi-encrypted")
 			if err != nil {
 				return err
 			}
@@ -100,7 +108,44 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string, sourceState *chez
 			}
 			transparentlyDecryptedFiles = append(transparentlyDecryptedFiles, transparentlyDecryptedFile)
 			editorArgs = append(editorArgs, decryptedAbsPath.String())
-		} else {
+		case ok && runtime.GOOS != "windows":
+			// If the operating system supports hard links and the file is not
+			// encrypted, then create a hard link to the file in the source
+			// directory in the temporary edit directory. This means that the
+			// editor will see the target filename while simultaneously updating
+			// the file in the source directory.
+
+			// Compute the hard link path from the target path. If the file is a
+			// template then preserve the .tmpl suffix as a clue to the editor.
+			targetRelPath := sourceRelPath.TargetRelPath(c.encryption.EncryptedSuffix())
+			if sourceStateFile.Attr.Template {
+				targetRelPath += chezmoi.TemplateSuffix
+			}
+			tempDirAbsPath, err := c.tempDir("chezmoi-edit")
+			if err != nil {
+				return err
+			}
+			hardlinkAbsPath := tempDirAbsPath.Join(targetRelPath)
+
+			// Attempt to create the hard link. If this succeeds, continue to
+			// the next target. Hardlinking will fail if the temporary directory
+			// is on a different filesystem to the source directory, which is
+			// not the case for most users.
+			//
+			// FIXME create a temporary directory on the same filesystem as the
+			// source directory if needed.
+			if err := os.MkdirAll(hardlinkAbsPath.Dir().String(), 0o700); err != nil {
+				return err
+			}
+			if err := c.baseSystem.Link(c.SourceDirAbsPath.Join(sourceRelPath.RelPath()), hardlinkAbsPath); err == nil {
+				editorArgs = append(editorArgs, hardlinkAbsPath.String())
+				continue TARGETRELPATH
+			}
+
+			// Otherwise, fall through to the default option of editing the
+			// source file in the source state.
+			fallthrough
+		default:
 			sourceAbsPath := c.SourceDirAbsPath.Join(sourceRelPath.RelPath())
 			editorArgs = append(editorArgs, sourceAbsPath.String())
 		}
