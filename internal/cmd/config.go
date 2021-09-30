@@ -36,6 +36,7 @@ import (
 	"github.com/twpayne/go-shell"
 	"github.com/twpayne/go-vfs/v4"
 	"github.com/twpayne/go-xdg/v6"
+	"go.uber.org/multierr"
 	"golang.org/x/term"
 
 	"github.com/twpayne/chezmoi/v2/assets/templates"
@@ -154,6 +155,8 @@ type Config struct {
 	stdin  io.Reader
 	stdout io.Writer
 	stderr io.Writer
+
+	tempDirs map[string]chezmoi.AbsPath
 
 	ioregData ioregData
 }
@@ -360,6 +363,8 @@ func newConfig(options ...configOption) (*Config, error) {
 		// Computed configuration.
 		homeDirAbsPath: homeDirAbsPath,
 
+		tempDirs: make(map[string]chezmoi.AbsPath),
+
 		stdin:  os.Stdin,
 		stdout: os.Stdout,
 		stderr: os.Stderr,
@@ -534,6 +539,20 @@ func (c *Config) applyArgs(ctx context.Context, targetSystem chezmoi.System, tar
 	}
 
 	return nil
+}
+
+func (c *Config) close() error {
+	var err error
+	for _, tempDirAbsPath := range c.tempDirs {
+		err2 := os.RemoveAll(tempDirAbsPath.String())
+		log.Err(err2).
+			Stringer("tempDir", tempDirAbsPath).
+			Msg("RemoveAll")
+		err = multierr.Append(err, err2)
+	}
+	pprof.StopCPUProfile()
+	agent.Close()
+	return err
 }
 
 func (c *Config) cmdOutput(dirAbsPath chezmoi.AbsPath, name string, args []string) ([]byte, error) {
@@ -1290,8 +1309,6 @@ func (c *Config) newSourceState(ctx context.Context, options ...chezmoi.SourceSt
 }
 
 func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error {
-	defer pprof.StopCPUProfile()
-
 	if err := c.persistentState.Close(); err != nil {
 		return err
 	}
@@ -1329,10 +1346,6 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 				return err
 			}
 		}
-	}
-
-	if c.gops {
-		agent.Close()
 	}
 
 	return nil
@@ -1745,6 +1758,29 @@ func (c *Config) targetRelPathsBySourcePath(sourceState *chezmoi.SourceState, ar
 		targetRelPaths = append(targetRelPaths, targetRelPath)
 	}
 	return targetRelPaths, nil
+}
+
+// tempDir returns the temporary directory for the given key, creating it if
+// needed.
+func (c *Config) tempDir(key string) (chezmoi.AbsPath, error) {
+	if tempDirAbsPath, ok := c.tempDirs[key]; ok {
+		return tempDirAbsPath, nil
+	}
+	tempDir, err := os.MkdirTemp("", key)
+	log.Err(err).
+		Str("tempDir", tempDir).
+		Msg("MkdirTemp")
+	if err != nil {
+		return chezmoi.EmptyAbsPath, err
+	}
+	tempDirAbsPath := chezmoi.NewAbsPath(tempDir)
+	c.tempDirs[key] = tempDirAbsPath
+	if runtime.GOOS != "windows" {
+		if err := os.Chmod(tempDir, 0o700); err != nil {
+			return chezmoi.EmptyAbsPath, err
+		}
+	}
+	return tempDirAbsPath, nil
 }
 
 func (c *Config) useBuiltinAgeAutoFunc() bool {

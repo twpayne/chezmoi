@@ -281,6 +281,7 @@ func runMain(versionInfo VersionInfo, args []string) error {
 	if err != nil {
 		return err
 	}
+	defer config.close()
 	switch err := config.execute(args); {
 	case errors.Is(err, bbolt.ErrTimeout):
 		// Translate bbolt timeout errors into a friendlier message. As the
