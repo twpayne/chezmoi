@@ -57,12 +57,7 @@ func testEncryptionDecryptToFile(t *testing.T, encryption Encryption) {
 		require.NotEmpty(t, actualCiphertext)
 		assert.NotEqual(t, expectedPlaintext, actualCiphertext)
 
-		tempDir, err := os.MkdirTemp("", "chezmoi-test-encryption")
-		require.NoError(t, err)
-		defer func() {
-			assert.NoError(t, os.RemoveAll(tempDir))
-		}()
-		plaintextAbsPath := NewAbsPath(tempDir).Join("plaintext")
+		plaintextAbsPath := NewAbsPath(t.TempDir()).Join("plaintext")
 
 		require.NoError(t, encryption.DecryptToFile(plaintextAbsPath, actualCiphertext))
 
@@ -95,12 +90,7 @@ func testEncryptionEncryptFile(t *testing.T, encryption Encryption) {
 	t.Run("EncryptFile", func(t *testing.T) {
 		expectedPlaintext := []byte("plaintext\n")
 
-		tempDir, err := os.MkdirTemp("", "chezmoi-test-encryption")
-		require.NoError(t, err)
-		defer func() {
-			assert.NoError(t, os.RemoveAll(tempDir))
-		}()
-		plaintextAbsPath := NewAbsPath(tempDir).Join("plaintext")
+		plaintextAbsPath := NewAbsPath(t.TempDir()).Join("plaintext")
 		require.NoError(t, os.WriteFile(plaintextAbsPath.String(), expectedPlaintext, 0o666))
 
 		actualCiphertext, err := encryption.EncryptFile(plaintextAbsPath)
