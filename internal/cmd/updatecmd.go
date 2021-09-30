@@ -74,15 +74,10 @@ func (c *Config) runUpdateCmd(cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	if c.update.init {
-		if err := c.createAndReloadConfigFile(); err != nil {
-			return err
-		}
-	}
-
 	if c.update.apply {
 		if err := c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, args, applyArgsOptions{
 			include:      c.update.include.Sub(c.update.exclude),
+			init:         c.update.init,
 			recursive:    c.update.recursive,
 			umask:        c.Umask,
 			preApplyFunc: c.defaultPreApplyFunc,
