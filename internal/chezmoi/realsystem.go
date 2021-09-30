@@ -32,6 +32,11 @@ func (s *RealSystem) IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error) {
 	return chezmoilog.LogCmdOutput(cmd)
 }
 
+// Link implements System.Link.
+func (s *RealSystem) Link(oldname, newname AbsPath) error {
+	return s.fileSystem.Link(oldname.String(), newname.String())
+}
+
 // Lstat implements System.Lstat.
 func (s *RealSystem) Lstat(filename AbsPath) (fs.FileInfo, error) {
 	return s.fileSystem.Lstat(filename.String())

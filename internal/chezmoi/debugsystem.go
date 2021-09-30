@@ -64,6 +64,16 @@ func (s *DebugSystem) IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error) {
 	return output, err
 }
 
+// Link implements System.Link.
+func (s *DebugSystem) Link(oldpath, newpath AbsPath) error {
+	err := s.system.Link(oldpath, newpath)
+	log.Err(err).
+		Stringer("oldpath", oldpath).
+		Stringer("newpath", newpath).
+		Msg("Link")
+	return err
+}
+
 // Lstat implements System.Lstat.
 func (s *DebugSystem) Lstat(name AbsPath) (fs.FileInfo, error) {
 	info, err := s.system.Lstat(name)

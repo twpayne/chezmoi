@@ -1165,6 +1165,13 @@ on Windows systems and `vi` on non-Windows systems.
 When the `edit.command` configuration variable is used, extra arguments can be
 passed to the editor with the `editor.args` configuration variable.
 
+Encrypted files are decrypted to a private temporary directory and the editor is
+invoked with the decrypted file. When the editor exits the edited decrypted file
+is re-encrypted and replaces the original file in the source state.
+
+If the operating system supports hard links, then the edit command invokes the
+editor with filenames which match the target filename.
+
 #### `-a`, `--apply`
 
 Apply target immediately after editing. Ignored if there are no targets.

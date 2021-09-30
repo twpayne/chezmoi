@@ -15,6 +15,7 @@ type System interface {
 	Glob(pattern string) ([]string, error)
 	IdempotentCmdCombinedOutput(cmd *exec.Cmd) ([]byte, error)
 	IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error)
+	Link(oldname, newname AbsPath) error
 	Lstat(filename AbsPath) (fs.FileInfo, error)
 	Mkdir(name AbsPath, perm fs.FileMode) error
 	RawPath(absPath AbsPath) (AbsPath, error)
@@ -51,6 +52,7 @@ func (emptySystemMixin) UnderlyingFS() vfs.FS                                   
 type noUpdateSystemMixin struct{}
 
 func (noUpdateSystemMixin) Chmod(name AbsPath, perm fs.FileMode) error { panic(nil) }
+func (noUpdateSystemMixin) Link(oldname, newname AbsPath) error        { panic(nil) }
 func (noUpdateSystemMixin) Mkdir(name AbsPath, perm fs.FileMode) error { panic(nil) }
 func (noUpdateSystemMixin) RemoveAll(name AbsPath) error               { panic(nil) }
 func (noUpdateSystemMixin) Rename(oldpath, newpath AbsPath) error      { panic(nil) }

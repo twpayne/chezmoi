@@ -72,8 +72,9 @@ you can run `chezmoi diff` to check what effect the changes would have, and run
 `chezmoi apply` if you're happy with them.
 
 `chezmoi edit` provides the following useful features:
-* It opens the correct file in the source state for you, so you don't have to
-  know anything about source state attributes.
+* It opens the correct file in the source state for you with a filename matching
+  the target filename, so your editor's syntax highlighting will work and you
+  don't have to know anything about source state attributes.
 * If the dotfile is encrypted in the source state, then `chezmoi edit` will
   decrypt it to a private directory, open that file in your `$EDITOR`, and then
   re-encrypt the file when you quit your editor. That makes encryption more

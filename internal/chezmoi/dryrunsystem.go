@@ -42,6 +42,12 @@ func (s *DryRunSystem) IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error) {
 	return s.system.IdempotentCmdOutput(cmd)
 }
 
+// Link implements System.Link.
+func (s *DryRunSystem) Link(oldname, newname AbsPath) error {
+	s.setModified()
+	return nil
+}
+
 // Lstat implements System.Lstat.
 func (s *DryRunSystem) Lstat(name AbsPath) (fs.FileInfo, error) {
 	return s.system.Lstat(name)

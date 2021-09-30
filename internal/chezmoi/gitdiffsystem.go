@@ -71,6 +71,12 @@ func (s *GitDiffSystem) IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error) {
 	return s.system.IdempotentCmdOutput(cmd)
 }
 
+// Link implements System.Link.
+func (s *GitDiffSystem) Link(oldname, newname AbsPath) error {
+	// LATER generate a diff
+	return s.system.Link(oldname, newname)
+}
+
 // Lstat implements System.Lstat.
 func (s *GitDiffSystem) Lstat(name AbsPath) (fs.FileInfo, error) {
 	return s.system.Lstat(name)
