@@ -22,7 +22,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.04d432bb1bec1ab7b0aef0c9f450c05e8bd2ffc2d3963f5161a8d73c484b6a6d.js" integrity="sha256-BNQyuxvsGrewrvDJ9FDAXovS/8LTlj9RYajXPEhLam0=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.254ec019dff55df7bd9512236001c36b8dd0ee11c86df6641036616833c0af32.js" integrity="sha256-JU7AGd/1Xfe9lRIjYAHDa43Q7hHIbfZkEDZhaDPArzI=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -128,7 +128,6 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#--color-value"><code>--color</code> <em>value</em></a></li>
         <li><a href="#-c---config-filename"><code>-c</code>, <code>--config</code> <em>filename</em></a></li>
         <li><a href="#--config-format-jsontomlyaml"><code>--config-format</code> <code>json</code>|<code>toml</code>|<code>yaml</code></a></li>
-        <li><a href="#--debug"><code>--debug</code></a></li>
         <li><a href="#-d---destination-directory"><code>-D</code>, <code>--destination</code> <em>directory</em></a></li>
         <li><a href="#-n---dry-run"><code>-n</code>, <code>--dry-run</code></a></li>
         <li><a href="#--force"><code>--force</code></a></li>
@@ -143,6 +142,7 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#--use-builtin-git-value"><code>--use-builtin-git</code> <em>value</em></a></li>
         <li><a href="#-v---verbose"><code>-v</code>, <code>--verbose</code></a></li>
         <li><a href="#--version"><code>--version</code></a></li>
+        <li><a href="#-w---working-tree-directory"><code>-w</code>, <code>--working-tree</code> <em>directory</em></a></li>
       </ul>
     </li>
     <li><a href="#common-command-line-flags">Common command line flags</a>
@@ -156,6 +156,7 @@ https://github.com/alex-shpak/hugo-book
     <li><a href="#developer-command-line-flags">Developer command line flags</a>
       <ul>
         <li><a href="#--cpu-profile-filename"><code>--cpu-profile</code> <em>filename</em></a></li>
+        <li><a href="#--debug"><code>--debug</code></a></li>
         <li><a href="#--gops"><code>--gops</code></a></li>
       </ul>
     </li>
@@ -318,6 +319,10 @@ destination directory.</p>
 <p>The <em>config file</em> contains machine-specific configuration, by default it is
 <code>~/.config/chezmoi/chezmoi.toml</code>.</p>
 </li>
+<li>
+<p>The <em>working tree</em> is the git working tree. Normally it is the same as the
+source directory, but can be a parent of the source directory.</p>
+</li>
 </ul>
 <hr>
 <h2 id="global-command-line-flags">
@@ -343,11 +348,6 @@ if the the environment variable <code>$NO_COLOR</code> is not set and stdout is 
 </h3>
 <p>Assume the configuration file is in the given format. This is only needed if the
 config filename does not have an extension, for example when it is <code>/dev/stdin</code>.</p>
-<h3 id="--debug">
-  <code>--debug</code>
-  <a class="anchor" href="#--debug">#</a>
-</h3>
-<p>Log information helpful for debugging.</p>
 <h3 id="-d---destination-directory">
   <code>-D</code>, <code>--destination</code> <em>directory</em>
   <a class="anchor" href="#-d---destination-directory">#</a>
@@ -432,6 +432,13 @@ state and the destination set are printed as unified diffs.</p>
 </h3>
 <p>Print the version of chezmoi, the commit at which it was built, and the build
 timestamp.</p>
+<h3 id="-w---working-tree-directory">
+  <code>-w</code>, <code>--working-tree</code> <em>directory</em>
+  <a class="anchor" href="#-w---working-tree-directory">#</a>
+</h3>
+<p>Use <em>directory</em> as the git working tree directory. By default, chezmoi searches
+the source directory and then its ancestors for the first directory that
+contains a <code>.git</code> directory.</p>
 <hr>
 <h2 id="common-command-line-flags">
   Common command line flags
@@ -475,6 +482,11 @@ scripts and <code>--exclude=encrypted</code> will exclude encrypted files.</p>
   <a class="anchor" href="#--cpu-profile-filename">#</a>
 </h3>
 <p>Write a <a href="https://blog.golang.org/pprof">Go CPU profile</a> to <em>filename</em>.</p>
+<h3 id="--debug">
+  <code>--debug</code>
+  <a class="anchor" href="#--debug">#</a>
+</h3>
+<p>Log information helpful for debugging.</p>
 <h3 id="--gops">
   <code>--gops</code>
   <a class="anchor" href="#--gops">#</a>
@@ -580,10 +592,24 @@ option.</p>
 </tr>
 <tr>
 <td></td>
+<td><code>useBuiltinAge</code></td>
+<td>string</td>
+<td><code>auto</code></td>
+<td>Use builtin git if <code>age</code> command is not found in $PATH</td>
+</tr>
+<tr>
+<td></td>
 <td><code>useBuiltinGit</code></td>
 <td>string</td>
 <td><code>auto</code></td>
 <td>Use builtin git if <code>git</code> command is not found in $PATH</td>
+</tr>
+<tr>
+<td></td>
+<td><code>workingTree</code></td>
+<td>string</td>
+<td><em>source directory</em></td>
+<td>git working tree directory</td>
 </tr>
 <tr>
 <td><code>add</code></td>
@@ -1605,10 +1631,10 @@ written.</p>
   <code>cd</code>
   <a class="anchor" href="#cd">#</a>
 </h3>
-<p>Launch a shell in the source directory. chezmoi will launch the command set by
-the <code>cd.command</code> configuration variable with any extra arguments specified by
-<code>cd.args</code>. If this is not set, chezmoi will attempt to detect your shell and
-will finally fall back to an OS-specific default.</p>
+<p>Launch a shell in the working tree (typically the source directory). chezmoi
+will launch the command set by the <code>cd.command</code> configuration variable with any
+extra arguments specified by <code>cd.args</code>. If this is not set, chezmoi will attempt
+to detect your shell and will finally fall back to an OS-specific default.</p>
 <h4 id="cd-examples">
   <code>cd</code> examples
   <a class="anchor" href="#cd-examples">#</a>
@@ -1813,7 +1839,7 @@ $ chezmoi dump --format=yaml
   <a class="anchor" href="#edit-target">#</a>
 </h3>
 <p>Edit the source state of <em>target</em>s, which must be files or symlinks. If no
-targets are given the the source directory itself is opened.</p>
+targets are given then the working tree of the source directory is opened.</p>
 <p>The editor used is the first non-empty string of the <code>edit.command</code>
 configuration variable, the <code>$VISUAL</code> environment variable, the <code>$EDITOR</code>
 environment variable. If none are set then chezmoi falls back to <code>notepad.exe</code>
@@ -1918,8 +1944,9 @@ $ chezmoi execute-template --init --promptString email=me@home.org &lt; ~/.local
   <code>git</code> [<em>arg</em>&hellip;]
   <a class="anchor" href="#git-arg">#</a>
 </h3>
-<p>Run <code>git</code> <em>arg</em>s in the source directory. Note that flags in <em>arguments</em> must
-occur after <code>--</code> to prevent chezmoi from interpreting them.</p>
+<p>Run <code>git</code> <em>arg</em>s in the working tree (typically the source directory). Note that
+flags in <em>arguments</em> must occur after <code>--</code> to prevent chezmoi from interpreting
+them.</p>
 <h4 id="git-examples">
   <code>git</code> examples
   <a class="anchor" href="#git-examples">#</a>
@@ -2277,6 +2304,12 @@ difference between the actual state and the target state.</p>
   <a class="anchor" href="#-i---include-types-7">#</a>
 </h4>
 <p>Only update entries of type <em>types</em>.</p>
+<h4 id="--init">
+  <code>--init</code>
+  <a class="anchor" href="#--init">#</a>
+</h4>
+<p>Regenerate and reread the config file from the config file template before
+applying any changes.</p>
 <h4 id="update-examples">
   <code>update</code> examples
   <a class="anchor" href="#update-examples">#</a>
@@ -3130,7 +3163,6 @@ generating the initial config file.</p>
         <li><a href="#--color-value"><code>--color</code> <em>value</em></a></li>
         <li><a href="#-c---config-filename"><code>-c</code>, <code>--config</code> <em>filename</em></a></li>
         <li><a href="#--config-format-jsontomlyaml"><code>--config-format</code> <code>json</code>|<code>toml</code>|<code>yaml</code></a></li>
-        <li><a href="#--debug"><code>--debug</code></a></li>
         <li><a href="#-d---destination-directory"><code>-D</code>, <code>--destination</code> <em>directory</em></a></li>
         <li><a href="#-n---dry-run"><code>-n</code>, <code>--dry-run</code></a></li>
         <li><a href="#--force"><code>--force</code></a></li>
@@ -3145,6 +3177,7 @@ generating the initial config file.</p>
         <li><a href="#--use-builtin-git-value"><code>--use-builtin-git</code> <em>value</em></a></li>
         <li><a href="#-v---verbose"><code>-v</code>, <code>--verbose</code></a></li>
         <li><a href="#--version"><code>--version</code></a></li>
+        <li><a href="#-w---working-tree-directory"><code>-w</code>, <code>--working-tree</code> <em>directory</em></a></li>
       </ul>
     </li>
     <li><a href="#common-command-line-flags">Common command line flags</a>
@@ -3158,6 +3191,7 @@ generating the initial config file.</p>
     <li><a href="#developer-command-line-flags">Developer command line flags</a>
       <ul>
         <li><a href="#--cpu-profile-filename"><code>--cpu-profile</code> <em>filename</em></a></li>
+        <li><a href="#--debug"><code>--debug</code></a></li>
         <li><a href="#--gops"><code>--gops</code></a></li>
       </ul>
     </li>

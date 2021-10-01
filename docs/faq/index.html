@@ -22,7 +22,7 @@ $ chezmoi doctor Anything ok is fine, anything warning is only a problem if you 
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.04d432bb1bec1ab7b0aef0c9f450c05e8bd2ffc2d3963f5161a8d73c484b6a6d.js" integrity="sha256-BNQyuxvsGrewrvDJ9FDAXovS/8LTlj9RYajXPEhLam0=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.254ec019dff55df7bd9512236001c36b8dd0ee11c86df6641036616833c0af32.js" integrity="sha256-JU7AGd/1Xfe9lRIjYAHDa43Q7hHIbfZkEDZhaDPArzI=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -137,7 +137,11 @@ https://github.com/alex-shpak/hugo-book
     <li><a href="#why-does-chezmoi-cd-spawn-a-shell-instead-of-just-changing-directory">Why does <code>chezmoi cd</code> spawn a shell instead of just changing directory?</a></li>
     <li><a href="#why-doesnt-chezmoi-use-symlinks-like-gnu-stow">Why doesn&rsquo;t chezmoi use symlinks like GNU Stow?</a></li>
     <li><a href="#what-are-the-limitations-of-chezmois-symlink-mode">What are the limitations of chezmoi&rsquo;s symlink mode?</a></li>
-    <li><a href="#can-i-change-how-chezmois-source-state-is-represented-on-disk">Can I change how chezmoi&rsquo;s source state is represented on disk?</a></li>
+    <li><a href="#can-i-change-how-chezmois-source-state-is-represented-on-disk">Can I change how chezmoi&rsquo;s source state is represented on disk?</a>
+      <ul>
+        <li><a href="#the-output-of-chezmoi-diff-is-broken-and-does-not-contain-color-what-could-be-wrong">The output of <code>chezmoi diff</code> is broken and does not contain color. What could be wrong?</a></li>
+      </ul>
+    </li>
     <li><a href="#gpg-encryption-fails-what-could-be-wrong">gpg encryption fails. What could be wrong?</a></li>
     <li><a href="#chezmoi-reports-chezmoi-user-lookup-userid-nnnnn-inputoutput-error">chezmoi reports <code>chezmoi: user: lookup userid NNNNN: input/output error</code></a></li>
     <li><a href="#chezmoi-reports-chezmoi-timeout-or-chezmoi-timeout-obtaining-persistent-state-lock">chezmoi reports <code>chezmoi: timeout</code> or <code>chezmoi: timeout obtaining persistent state lock</code></a></li>
@@ -457,6 +461,29 @@ and filesystem.</li>
 implementation.</li>
 </ol>
 <hr>
+<h3 id="the-output-of-chezmoi-diff-is-broken-and-does-not-contain-color-what-could-be-wrong">
+  The output of <code>chezmoi diff</code> is broken and does not contain color. What could be wrong?
+  <a class="anchor" href="#the-output-of-chezmoi-diff-is-broken-and-does-not-contain-color-what-could-be-wrong">#</a>
+</h3>
+<p>By default, chezmoi&rsquo;s diff output includes ANSI color escape sequences (e.g.
+<code>ESC[37m</code>) and is piped into your pager (by default <code>less</code>). chezmoi assumes
+that your pager passes through the ANSI color escape sequences, as configured on
+many systems, but not all. If your pager does not pass through ANSI color escape
+sequences then you will see monochrome diff output with uninterpreted ANSI color
+escape sequences.</p>
+<p>This can typically by fixed by setting the environment variable</p>
+<pre tabindex="0"><code class="language-console" data-lang="console">$ export LESS=-R
+</code></pre><p>which instructs <code>less</code> to display &ldquo;raw&rdquo; control characters via the <code>-R</code> /
+<code>--RAW-CONTROL-CHARS</code> option.</p>
+<p>You can also set the <code>pager</code> configuration variable in your config file, for
+example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml"><span style="color:#a6e22e">pager</span> = <span style="color:#e6db74">&#34;less -R&#34;</span>
+</code></pre></div><p>If you have set a different pager (via the <code>pager</code> configuration variable or
+<code>PAGER</code> environment variable) then you must ensure that it passes through raw
+control characters. Alternatively, you can use the <code>--color=false</code> option to
+chezmoi to disable colors or the <code>--no-pager</code> option to chezmoi to disable the
+pager.</p>
+<hr>
 <h2 id="gpg-encryption-fails-what-could-be-wrong">
   gpg encryption fails. What could be wrong?
   <a class="anchor" href="#gpg-encryption-fails-what-could-be-wrong">#</a>
@@ -671,7 +698,11 @@ chezmoi better. Thank you :)</p>
     <li><a href="#why-does-chezmoi-cd-spawn-a-shell-instead-of-just-changing-directory">Why does <code>chezmoi cd</code> spawn a shell instead of just changing directory?</a></li>
     <li><a href="#why-doesnt-chezmoi-use-symlinks-like-gnu-stow">Why doesn&rsquo;t chezmoi use symlinks like GNU Stow?</a></li>
     <li><a href="#what-are-the-limitations-of-chezmois-symlink-mode">What are the limitations of chezmoi&rsquo;s symlink mode?</a></li>
-    <li><a href="#can-i-change-how-chezmois-source-state-is-represented-on-disk">Can I change how chezmoi&rsquo;s source state is represented on disk?</a></li>
+    <li><a href="#can-i-change-how-chezmois-source-state-is-represented-on-disk">Can I change how chezmoi&rsquo;s source state is represented on disk?</a>
+      <ul>
+        <li><a href="#the-output-of-chezmoi-diff-is-broken-and-does-not-contain-color-what-could-be-wrong">The output of <code>chezmoi diff</code> is broken and does not contain color. What could be wrong?</a></li>
+      </ul>
+    </li>
     <li><a href="#gpg-encryption-fails-what-could-be-wrong">gpg encryption fails. What could be wrong?</a></li>
     <li><a href="#chezmoi-reports-chezmoi-user-lookup-userid-nnnnn-inputoutput-error">chezmoi reports <code>chezmoi: user: lookup userid NNNNN: input/output error</code></a></li>
     <li><a href="#chezmoi-reports-chezmoi-timeout-or-chezmoi-timeout-obtaining-persistent-state-lock">chezmoi reports <code>chezmoi: timeout</code> or <code>chezmoi: timeout obtaining persistent state lock</code></a></li>

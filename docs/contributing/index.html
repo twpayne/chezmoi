@@ -22,7 +22,7 @@ chezmoi is a standard Go project, using standard Go tooling, with a few extra to
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.04d432bb1bec1ab7b0aef0c9f450c05e8bd2ffc2d3963f5161a8d73c484b6a6d.js" integrity="sha256-BNQyuxvsGrewrvDJ9FDAXovS/8LTlj9RYajXPEhLam0=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.254ec019dff55df7bd9512236001c36b8dd0ee11c86df6641036616833c0af32.js" integrity="sha256-JU7AGd/1Xfe9lRIjYAHDa43Q7hHIbfZkEDZhaDPArzI=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -168,7 +168,11 @@ tools. Ensure that these extra tools are installed with:</p>
 <pre tabindex="0"><code class="language-console" data-lang="console">$ go build
 </code></pre><p>Run all tests:</p>
 <pre tabindex="0"><code class="language-console" data-lang="console">$ go test ./...
-</code></pre><p>Run chezmoi:</p>
+</code></pre><p>chezmoi&rsquo;s tests include integration tests with other software. If the other
+software is not found in <code>$PATH</code> the tests will be skipped. Running the full set
+of tests requires <code>age</code>, <code>base64</code>, <code>bash</code>, <code>gpg</code>, <code>perl</code>, <code>python</code>, <code>ruby</code>,
+<code>sed</code>, <code>sha256sum</code>, <code>unzip</code>, and <code>zip</code>.</p>
+<p>Run chezmoi:</p>
 <pre tabindex="0"><code class="language-console" data-lang="console">$ go run .
 </code></pre><hr>
 <h2 id="generated-code">
@@ -230,10 +234,8 @@ running <code>make format</code>.</p>
 You can ensure this by running <code>make lint</code>.</p>
 </li>
 <li>
-<p>The commit messages match chezmoi&rsquo;s convention, specifically that they begin
-with a capitalized verb in the imperative and give a short description of what
-the commit does. Detailed information or justification can be optionally
-included in the body of the commit message.</p>
+<p>The commit messages follow the <a href="https://www.conventionalcommits.org/en/v1.0.0/">conventional commits
+specification</a>.</p>
 </li>
 <li>
 <p>Commits are logically separate, with no merge or &ldquo;fixup&rdquo; commits.</p>

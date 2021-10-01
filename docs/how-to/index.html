@@ -16,7 +16,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.04d432bb1bec1ab7b0aef0c9f450c05e8bd2ffc2d3963f5161a8d73c484b6a6d.js" integrity="sha256-BNQyuxvsGrewrvDJ9FDAXovS/8LTlj9RYajXPEhLam0=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.254ec019dff55df7bd9512236001c36b8dd0ee11c86df6641036616833c0af32.js" integrity="sha256-JU7AGd/1Xfe9lRIjYAHDa43Q7hHIbfZkEDZhaDPArzI=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -717,10 +717,11 @@ systems, but maintain only a single file in your source state, you can use
 a shared template.</p>
 <p>Create the common file in the <code>.chezmoitemplates</code> directory in the source state. For
 example, create <code>.chezmoitemplates/file.conf</code>. The contents of this file are
-available in templates with the <code>template *name*</code> function where <em>name</em> is the
-name of the file.</p>
+available in templates with the <code>template *name* .</code> function where <em>name</em> is the
+name of the file (<code>.</code> passes the current data to the template code in <code>file.conf</code>;
+see <a href="https://pkg.go.dev/text/template#hdr-Actions">https://pkg.go.dev/text/template#hdr-Actions</a> for details).</p>
 <p>Then create files for each system, for example <code>Library/Application Support/App/file.conf.tmpl</code> for macOS and <code>dot_config/app/file.conf.tmpl</code> for
-Linux. Both template files should contain <code>{{- template &quot;file.conf&quot; -}}</code>.</p>
+Linux. Both template files should contain <code>{{- template &quot;file.conf&quot; . -}}</code>.</p>
 <p>Finally, tell chezmoi to ignore files where they are not needed by adding lines
 to your <code>.chezmoiignore</code> file, for example:</p>
 <pre tabindex="0"><code>{{ if ne .chezmoi.os &quot;darwin&quot; }}
