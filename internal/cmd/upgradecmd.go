@@ -281,7 +281,7 @@ func (c *Config) getLibc() (string, error) {
 
 func (c *Config) replaceExecutable(ctx context.Context, executableFilenameAbsPath chezmoi.AbsPath, releaseVersion *semver.Version, rr *github.RepositoryRelease) error {
 	goos := runtime.GOOS
-	if goos == "linux" {
+	if goos == "linux" && runtime.GOARCH == "amd64" {
 		libc, err := c.getLibc()
 		if err != nil {
 			return err
