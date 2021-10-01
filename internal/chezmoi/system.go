@@ -51,20 +51,41 @@ func (emptySystemMixin) UnderlyingFS() vfs.FS                                   
 // A noUpdateSystemMixin panics on any update.
 type noUpdateSystemMixin struct{}
 
-func (noUpdateSystemMixin) Chmod(name AbsPath, perm fs.FileMode) error { panic(nil) }
-func (noUpdateSystemMixin) Link(oldname, newname AbsPath) error        { panic(nil) }
-func (noUpdateSystemMixin) Mkdir(name AbsPath, perm fs.FileMode) error { panic(nil) }
-func (noUpdateSystemMixin) RemoveAll(name AbsPath) error               { panic(nil) }
-func (noUpdateSystemMixin) Rename(oldpath, newpath AbsPath) error      { panic(nil) }
-func (noUpdateSystemMixin) RunCmd(cmd *exec.Cmd) error                 { panic(nil) }
+func (noUpdateSystemMixin) Chmod(name AbsPath, perm fs.FileMode) error {
+	panic("update to no update system")
+}
+
+func (noUpdateSystemMixin) Link(oldname, newname AbsPath) error {
+	panic("update to no update system")
+}
+
+func (noUpdateSystemMixin) Mkdir(name AbsPath, perm fs.FileMode) error {
+	panic("update to no update system")
+}
+
+func (noUpdateSystemMixin) RemoveAll(name AbsPath) error {
+	panic("update to no update system")
+}
+
+func (noUpdateSystemMixin) Rename(oldpath, newpath AbsPath) error {
+	panic("update to no update system")
+}
+
+func (noUpdateSystemMixin) RunCmd(cmd *exec.Cmd) error {
+	panic("update to no update system")
+}
+
 func (noUpdateSystemMixin) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
-	panic(nil)
+	panic("update to no update system")
 }
 
 func (noUpdateSystemMixin) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error {
-	panic(nil)
+	panic("update to no update system")
 }
-func (noUpdateSystemMixin) WriteSymlink(oldname string, newname AbsPath) error { panic(nil) }
+
+func (noUpdateSystemMixin) WriteSymlink(oldname string, newname AbsPath) error {
+	panic("update to no update system")
+}
 
 // MkdirAll is the equivalent of os.MkdirAll but operates on system.
 func MkdirAll(system System, absPath AbsPath, perm fs.FileMode) error {
