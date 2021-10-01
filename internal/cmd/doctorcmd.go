@@ -129,7 +129,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	shell, _ := shell.CurrentUserShell()
-	editor, _ := c.editor()
+	editCommand, _ := c.editor()
 	checks := []check{
 		&versionCheck{
 			versionInfo: c.versionInfo,
@@ -164,14 +164,14 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotExist: checkResultError,
 		},
 		&binaryCheck{
-			name:       "editor",
-			binaryname: editor,
+			name:       "edit-command",
+			binaryname: editCommand,
 			ifNotSet:   checkResultWarning,
 			ifNotExist: checkResultWarning,
 		},
 		&umaskCheck{},
 		&binaryCheck{
-			name:        "git-cli",
+			name:        "git-command",
 			binaryname:  c.Git.Command,
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultWarning,
@@ -179,27 +179,27 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			versionRx:   regexp.MustCompile(`^git\s+version\s+(\d+\.\d+\.\d+)`),
 		},
 		&binaryCheck{
-			name:       "merge-cli",
+			name:       "merge-command",
 			binaryname: c.Merge.Command,
 			ifNotSet:   checkResultWarning,
 			ifNotExist: checkResultWarning,
 		},
 		&binaryCheck{
-			name:        "age-cli",
-			binaryname:  "age",
+			name:        "age-command",
+			binaryname:  c.Age.Command,
 			versionArgs: []string{"-version"},
 			versionRx:   regexp.MustCompile(`v(\d+\.\d+\.\d+\S*)`),
 			ifNotSet:    checkResultWarning,
 		},
 		&binaryCheck{
-			name:        "gnupg-cli",
-			binaryname:  "gpg",
+			name:        "gpg-command",
+			binaryname:  c.GPG.Command,
 			versionArgs: []string{"--version"},
 			versionRx:   regexp.MustCompile(`^gpg\s+\(.*?\)\s+(\d+\.\d+\.\d+)`),
 			ifNotSet:    checkResultWarning,
 		},
 		&binaryCheck{
-			name:        "1password-cli",
+			name:        "1password-command",
 			binaryname:  c.Onepassword.Command,
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
@@ -207,7 +207,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			versionRx:   regexp.MustCompile(`^(\d+\.\d+\.\d+)`),
 		},
 		&binaryCheck{
-			name:        "bitwarden-cli",
+			name:        "bitwarden-command",
 			binaryname:  c.Bitwarden.Command,
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
@@ -215,7 +215,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			versionRx:   regexp.MustCompile(`^(\d+\.\d+\.\d+)`),
 		},
 		&binaryCheck{
-			name:        "gopass-cli",
+			name:        "gopass-command",
 			binaryname:  c.Gopass.Command,
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
@@ -224,7 +224,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			minVersion:  &gopassMinVersion,
 		},
 		&binaryCheck{
-			name:        "keepassxc-cli",
+			name:        "keepassxc-command",
 			binaryname:  c.Keepassxc.Command,
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
@@ -238,7 +238,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotExist: checkResultInfo,
 		},
 		&binaryCheck{
-			name:        "lastpass-cli",
+			name:        "lastpass-command",
 			binaryname:  c.Lastpass.Command,
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
@@ -247,7 +247,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			minVersion:  &lastpassMinVersion,
 		},
 		&binaryCheck{
-			name:        "pass-cli",
+			name:        "pass-command",
 			binaryname:  c.Pass.Command,
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
@@ -255,7 +255,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			versionRx:   regexp.MustCompile(`(?m)=\s*v(\d+\.\d+\.\d+)`),
 		},
 		&binaryCheck{
-			name:        "vault-cli",
+			name:        "vault-command",
 			binaryname:  c.Vault.Command,
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
@@ -263,7 +263,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			versionRx:   regexp.MustCompile(`^Vault\s+v(\d+\.\d+\.\d+)`),
 		},
 		&binaryCheck{
-			name:       "secret-cli",
+			name:       "secret-command",
 			binaryname: c.Secret.Command,
 			ifNotSet:   checkResultInfo,
 			ifNotExist: checkResultInfo,
