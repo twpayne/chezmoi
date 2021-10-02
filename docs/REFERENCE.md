@@ -700,6 +700,21 @@ Entries are indexed by target name relative to the directory of the
 must be defined in the source state. chezmoi will not create parent directories
 automatically.
 
+Entries may have the following fields:
+
+| Variable          | Type     | Default value | Description                                                   |
+| ----------------- | -------- | ------------- | ------------------------------------------------------------- |
+| `type`            | string   | *none*        | External type (`file` or `archive`)                           |
+| `encrypted`       | bool     | `false`       | Whether the external is encrypted                             |
+| `exact`           | bool     | `false`       | Add `exact_` attribute to directories in archive              |
+| `executable`      | bool     | `false`       | Add `executable_` attribute to file                           |
+| `filter.command`  | string   | *none*        | Command to filter contents                                    |
+| `filter.args`     | []string | *none*        | Extra args to command to filter contents                      |
+| `format`          | string   | *autodetect*  | Format of archive                                             |
+| `refreshPeriod`   | duration | `0`           | Refresh period                                                |
+| `stripComponents` | int      | `0`           | Number of leading directory components to strip from archives |
+| `url`             | string   | *none*        | URL                                                           |
+
 The optional boolean `encrypted` field specifies whether the file or archive
 is encrypted.
 

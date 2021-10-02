@@ -18,6 +18,7 @@
   * [Configure VIM to run `chezmoi apply` whenever you save a dotfile](#configure-vim-to-run-chezmoi-apply-whenever-you-save-a-dotfile)
 * [Include dotfiles from elsewhere](#include-dotfiles-from-elsewhere)
   * [Include a subdirectory from another repository, like Oh My Zsh](#include-a-subdirectory-from-another-repository-like-oh-my-zsh)
+  * [Include a single file from another repository](#include-a-single-file-from-another-repository)
   * [Handle configuration files which are externally modified](#handle-configuration-files-which-are-externally-modified)
   * [Import archives](#import-archives)
 * [Manage machine-to-machine differences](#manage-machine-to-machine-differences)
@@ -421,6 +422,25 @@ When using Oh My Zsh, make sure you disable auto-updates by setting
 `DISABLE_AUTO_UPDATE="true"` in `~/.zshrc`. Auto updates will cause the
 `~/.oh-my-zsh` directory to drift out of sync with chezmoi's source state. To
 update Oh My Zsh and its plugins, refresh the downloaded archives.
+
+---
+
+### Include a single file from another repository
+
+Including single files uses the same mechanism as including a subdirectory
+above, except with the external type `file` instead of `archive`. For example,
+to include
+[`plug.vim`](https://github.com/junegunn/vim-plug/blob/master/plug.vim) from
+[`github.com/junegunn/vim-plug`](https://github.com/junegunn/vim-plug) in
+`~/.vim/autoload/plug.vim` put the following in
+`~/.local/share/chezmoi/.chezmoiexternals.toml`:
+
+```toml
+[".vim/autoload/plug.vim"]
+    type = "file"
+    url = "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+    refreshPeriod = "1w"
+```
 
 ---
 
