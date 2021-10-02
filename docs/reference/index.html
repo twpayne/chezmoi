@@ -7,7 +7,8 @@
   The source state declares the desired state of your home directory, including templates and machine-specific configuration.
   The source directory is where chezmoi stores the source state, by default ~/.local/share/chezmoi.
   The target state is the source state computed for the current machine.">
-<meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="Reference" />
+<meta name="theme-color" content="#FFFFFF">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="Reference" />
 <meta property="og:description" content="Reference Manual #   Concepts #  chezmoi evaluates the source state for the current machine and then updates the destination directory, where:
   The source state declares the desired state of your home directory, including templates and machine-specific configuration.
   The source directory is where chezmoi stores the source state, by default ~/.local/share/chezmoi.
@@ -22,7 +23,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.254ec019dff55df7bd9512236001c36b8dd0ee11c86df6641036616833c0af32.js" integrity="sha256-JU7AGd/1Xfe9lRIjYAHDa43Q7hHIbfZkEDZhaDPArzI=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.feeed5143ae67506cbcf0d94e3edbdce7f8b59de6d4521161b2a7125f3df46a0.js" integrity="sha256-/u7VFDrmdQbLzw2U4&#43;29zn&#43;LWd5tRSEWGypxJfPfRqA=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -459,6 +460,12 @@ comma-separated list of target states (<code>all</code>, <code>dirs</code>, <cod
 <code>scripts</code>, <code>symlinks</code>, and <code>encrypted</code>) and can be excluded by preceding them
 with a <code>no</code>. For example, <code>--include=dirs,files</code> will cause the command to apply
 to directories and files only.</p>
+<h4 id="--init">
+  <code>--init</code>
+  <a class="anchor" href="#--init">#</a>
+</h4>
+<p>Regenerate and reread the config file from the config file template before
+computing the target state.</p>
 <h3 id="-r---recursive">
   <code>-r</code>, <code>--recursive</code>
   <a class="anchor" href="#-r---recursive">#</a>
@@ -1360,6 +1367,79 @@ externals to be included on different machines.</p>
 <code>type</code> can be either <code>file</code> or <code>archive</code>. All of the entries parent directories
 must be defined in the source state. chezmoi will not create parent directories
 automatically.</p>
+<p>Entries may have the following fields:</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Type</th>
+<th>Default value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>type</code></td>
+<td>string</td>
+<td><em>none</em></td>
+<td>External type (<code>file</code> or <code>archive</code>)</td>
+</tr>
+<tr>
+<td><code>encrypted</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Whether the external is encrypted</td>
+</tr>
+<tr>
+<td><code>exact</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Add <code>exact_</code> attribute to directories in archive</td>
+</tr>
+<tr>
+<td><code>executable</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Add <code>executable_</code> attribute to file</td>
+</tr>
+<tr>
+<td><code>filter.command</code></td>
+<td>string</td>
+<td><em>none</em></td>
+<td>Command to filter contents</td>
+</tr>
+<tr>
+<td><code>filter.args</code></td>
+<td>[]string</td>
+<td><em>none</em></td>
+<td>Extra args to command to filter contents</td>
+</tr>
+<tr>
+<td><code>format</code></td>
+<td>string</td>
+<td><em>autodetect</em></td>
+<td>Format of archive</td>
+</tr>
+<tr>
+<td><code>refreshPeriod</code></td>
+<td>duration</td>
+<td><code>0</code></td>
+<td>Refresh period</td>
+</tr>
+<tr>
+<td><code>stripComponents</code></td>
+<td>int</td>
+<td><code>0</code></td>
+<td>Number of leading directory components to strip from archives</td>
+</tr>
+<tr>
+<td><code>url</code></td>
+<td>string</td>
+<td><em>none</em></td>
+<td>URL</td>
+</tr>
+</tbody>
+</table>
 <p>The optional boolean <code>encrypted</code> field specifies whether the file or archive
 is encrypted.</p>
 <p>If optional string <code>filter.command</code> and array of strings <code>filter.args</code> are
@@ -1377,8 +1457,12 @@ members of archive. The optional string field <code>format</code> sets the archi
 The supported archive formats are <code>tar</code>, <code>tar.gz</code>, <code>tgz</code>, <code>tar.bz2</code>, <code>tbz2</code>, and
 <code>zip</code>. If <code>format</code> is not specified then chezmoi will guess the format using
 firstly the path of the URL and secondly its contents.</p>
-<p>By default, chezmoi will cache downloaded URLs the first time they are accessed.
-To force chezmoi to re-download URLs, pass the <code>--refresh-externals</code> flag.</p>
+<p>By default, chezmoi will cache downloaded URLs. The optional duration
+<code>refreshPeriod</code> field specifies how often chezmoi will re-download the URL. The
+default is zero meaning that chezmoi will never re-download unless forced. To
+force chezmoi to re-download URLs, pass the <code>-R</code>/<code>--refresh-externals</code> flag.
+Suitable refresh periods include one day (<code>1d</code>), one week (<code>1w</code>), or four weeks
+(<code>4w</code>).</p>
 <h4 id="chezmoiexternalformat-examples">
   <code>.chezmoiexternal.&lt;format&gt;</code> examples
   <a class="anchor" href="#chezmoiexternalformat-examples">#</a>
@@ -1386,14 +1470,22 @@ To force chezmoi to re-download URLs, pass the <code>--refresh-externals</code> 
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#e6db74">&#34;.vim/autoload/plug.vim&#34;</span>]
     <span style="color:#a6e22e">type</span> = <span style="color:#e6db74">&#34;file&#34;</span>
     <span style="color:#a6e22e">url</span> = <span style="color:#e6db74">&#34;https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim&#34;</span>
+    <span style="color:#a6e22e">refreshPeriod</span> = <span style="color:#e6db74">&#34;1w&#34;</span>
 [<span style="color:#e6db74">&#34;.oh-my-zsh&#34;</span>]
     <span style="color:#a6e22e">type</span> = <span style="color:#e6db74">&#34;archive&#34;</span>
     <span style="color:#a6e22e">url</span> = <span style="color:#e6db74">&#34;https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz&#34;</span>
     <span style="color:#a6e22e">exact</span> = <span style="color:#66d9ef">true</span>
     <span style="color:#a6e22e">stripComponents</span> = <span style="color:#ae81ff">1</span>
+    <span style="color:#a6e22e">refreshPeriod</span> = <span style="color:#e6db74">&#34;1w&#34;</span>
 [<span style="color:#e6db74">&#34;.oh-my-zsh/custom/plugins/zsh-syntax-highlighting&#34;</span>]
     <span style="color:#a6e22e">type</span> = <span style="color:#e6db74">&#34;archive&#34;</span>
     <span style="color:#a6e22e">url</span> = <span style="color:#e6db74">&#34;https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz&#34;</span>
+    <span style="color:#a6e22e">exact</span> = <span style="color:#66d9ef">true</span>
+    <span style="color:#a6e22e">stripComponents</span> = <span style="color:#ae81ff">1</span>
+    <span style="color:#a6e22e">refreshPeriod</span> = <span style="color:#e6db74">&#34;1w&#34;</span>
+[<span style="color:#e6db74">&#34;.oh-my-zsh/custom/themes/powerlevel10k&#34;</span>]
+    <span style="color:#a6e22e">type</span> = <span style="color:#e6db74">&#34;archive&#34;</span>
+    <span style="color:#a6e22e">url</span> = <span style="color:#e6db74">&#34;https://github.com/romkatv/powerlevel10k/archive/v1.15.0.tar.gz&#34;</span>
     <span style="color:#a6e22e">exact</span> = <span style="color:#66d9ef">true</span>
     <span style="color:#a6e22e">stripComponents</span> = <span style="color:#ae81ff">1</span>
 </code></pre></div><hr>
@@ -1846,6 +1938,11 @@ environment variable. If none are set then chezmoi falls back to <code>notepad.e
 on Windows systems and <code>vi</code> on non-Windows systems.</p>
 <p>When the <code>edit.command</code> configuration variable is used, extra arguments can be
 passed to the editor with the <code>editor.args</code> configuration variable.</p>
+<p>Encrypted files are decrypted to a private temporary directory and the editor is
+invoked with the decrypted file. When the editor exits the edited decrypted file
+is re-encrypted and replaces the original file in the source state.</p>
+<p>If the operating system supports hard links, then the edit command invokes the
+editor with filenames which match the target filename.</p>
 <h4 id="-a---apply">
   <code>-a</code>, <code>--apply</code>
   <a class="anchor" href="#-a---apply">#</a>
@@ -2304,12 +2401,6 @@ difference between the actual state and the target state.</p>
   <a class="anchor" href="#-i---include-types-7">#</a>
 </h4>
 <p>Only update entries of type <em>types</em>.</p>
-<h4 id="--init">
-  <code>--init</code>
-  <a class="anchor" href="#--init">#</a>
-</h4>
-<p>Regenerate and reread the config file from the config file template before
-applying any changes.</p>
 <h4 id="update-examples">
   <code>update</code> examples
   <a class="anchor" href="#update-examples">#</a>

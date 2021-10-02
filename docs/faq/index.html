@@ -7,7 +7,8 @@
 $ chezmoi doctor Anything ok is fine, anything warning is only a problem if you want to use the related feature, and anything error indicates a definite problem.
  How do I edit my dotfiles with chezmoi? #  There are four popular approaches:
  Use chezmoi edit $FILE. This will open the source file for $FILE in your editor, including .">
-<meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="FAQ" />
+<meta name="theme-color" content="#FFFFFF">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="FAQ" />
 <meta property="og:description" content="Frequently Asked Questions #   How can I quickly check for problems with chezmoi on my machine? #  Run:
 $ chezmoi doctor Anything ok is fine, anything warning is only a problem if you want to use the related feature, and anything error indicates a definite problem.
  How do I edit my dotfiles with chezmoi? #  There are four popular approaches:
@@ -22,7 +23,7 @@ $ chezmoi doctor Anything ok is fine, anything warning is only a problem if you 
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.254ec019dff55df7bd9512236001c36b8dd0ee11c86df6641036616833c0af32.js" integrity="sha256-JU7AGd/1Xfe9lRIjYAHDa43Q7hHIbfZkEDZhaDPArzI=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.feeed5143ae67506cbcf0d94e3edbdce7f8b59de6d4521161b2a7125f3df46a0.js" integrity="sha256-/u7VFDrmdQbLzw2U4&#43;29zn&#43;LWd5tRSEWGypxJfPfRqA=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -209,8 +210,9 @@ you can run <code>chezmoi diff</code> to check what effect the changes would hav
 <code>chezmoi apply</code> if you&rsquo;re happy with them.</p>
 <p><code>chezmoi edit</code> provides the following useful features:</p>
 <ul>
-<li>It opens the correct file in the source state for you, so you don&rsquo;t have to
-know anything about source state attributes.</li>
+<li>It opens the correct file in the source state for you with a filename matching
+the target filename, so your editor&rsquo;s syntax highlighting will work and you
+don&rsquo;t have to know anything about source state attributes.</li>
 <li>If the dotfile is encrypted in the source state, then <code>chezmoi edit</code> will
 decrypt it to a private directory, open that file in your <code>$EDITOR</code>, and then
 re-encrypt the file when you quit your editor. That makes encryption more

@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="How-To Guide #   Perform daily operations #   Use a hosted repo to manage your dotfiles across multiple machines #  chezmoi relies on your version control system and hosted repo to share changes across multiple machines. You should create a repo on the source code repository of your choice (e.g. Bitbucket, GitHub, or GitLab, many people call their repo dotfiles) and push the repo in the source directory here.">
-<meta name="theme-color" content="#FFFFFF"><meta property="og:title" content="How-To" />
+<meta name="theme-color" content="#FFFFFF">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="How-To" />
 <meta property="og:description" content="How-To Guide #   Perform daily operations #   Use a hosted repo to manage your dotfiles across multiple machines #  chezmoi relies on your version control system and hosted repo to share changes across multiple machines. You should create a repo on the source code repository of your choice (e.g. Bitbucket, GitHub, or GitLab, many people call their repo dotfiles) and push the repo in the source directory here." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chezmoi.io/docs/how-to/" /><meta property="article:section" content="docs" />
@@ -16,7 +17,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.254ec019dff55df7bd9512236001c36b8dd0ee11c86df6641036616833c0af32.js" integrity="sha256-JU7AGd/1Xfe9lRIjYAHDa43Q7hHIbfZkEDZhaDPArzI=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.feeed5143ae67506cbcf0d94e3edbdce7f8b59de6d4521161b2a7125f3df46a0.js" integrity="sha256-/u7VFDrmdQbLzw2U4&#43;29zn&#43;LWd5tRSEWGypxJfPfRqA=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -143,6 +144,7 @@ https://github.com/alex-shpak/hugo-book
     <li><a href="#include-dotfiles-from-elsewhere">Include dotfiles from elsewhere</a>
       <ul>
         <li><a href="#include-a-subdirectory-from-another-repository-like-oh-my-zsh">Include a subdirectory from another repository, like Oh My Zsh</a></li>
+        <li><a href="#include-a-single-file-from-another-repository">Include a single file from another repository</a></li>
         <li><a href="#handle-configuration-files-which-are-externally-modified">Handle configuration files which are externally modified</a></li>
         <li><a href="#import-archives">Import archives</a></li>
       </ul>
@@ -449,25 +451,41 @@ Zsh</a>, you cannot use git submodules because
 chezmoi uses its own format for the source state and Oh My Zsh is not
 distributed in this format. Instead, you can use the <code>.chezmoiexternal.&lt;format&gt;</code>
 to tell chezmoi to import dotfiles from an external source.</p>
-<p>For example, to import Oh My Zsh and the <a href="https://github.com/zsh-users/zsh-syntax-highlighting">zsh-syntax-highlighting
-plugin</a>, put the following
-in <code>~/.local/share/chezmoi/.chezmoiexternal.toml</code>:</p>
+<p>For example, to import Oh My Zsh, the <a href="https://github.com/zsh-users/zsh-syntax-highlighting">zsh-syntax-highlighting
+plugin</a>, and
+<a href="https://github.com/romkatv/powerlevel10k">powerlevel10k</a>, put the following in
+<code>~/.local/share/chezmoi/.chezmoiexternal.toml</code>:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#e6db74">&#34;.oh-my-zsh&#34;</span>]
     <span style="color:#a6e22e">type</span> = <span style="color:#e6db74">&#34;archive&#34;</span>
     <span style="color:#a6e22e">url</span> = <span style="color:#e6db74">&#34;https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz&#34;</span>
     <span style="color:#a6e22e">exact</span> = <span style="color:#66d9ef">true</span>
     <span style="color:#a6e22e">stripComponents</span> = <span style="color:#ae81ff">1</span>
+    <span style="color:#a6e22e">refreshPeriod</span> = <span style="color:#e6db74">&#34;1w&#34;</span>
 [<span style="color:#e6db74">&#34;.oh-my-zsh/custom/plugins/zsh-syntax-highlighting&#34;</span>]
     <span style="color:#a6e22e">type</span> = <span style="color:#e6db74">&#34;archive&#34;</span>
     <span style="color:#a6e22e">url</span> = <span style="color:#e6db74">&#34;https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz&#34;</span>
+    <span style="color:#a6e22e">exact</span> = <span style="color:#66d9ef">true</span>
+    <span style="color:#a6e22e">stripComponents</span> = <span style="color:#ae81ff">1</span>
+    <span style="color:#a6e22e">refreshPeriod</span> = <span style="color:#e6db74">&#34;1w&#34;</span>
+[<span style="color:#e6db74">&#34;.oh-my-zsh/custom/themes/powerlevel10k&#34;</span>]
+    <span style="color:#a6e22e">type</span> = <span style="color:#e6db74">&#34;archive&#34;</span>
+    <span style="color:#a6e22e">url</span> = <span style="color:#e6db74">&#34;https://github.com/romkatv/powerlevel10k/archive/v1.15.0.tar.gz&#34;</span>
     <span style="color:#a6e22e">exact</span> = <span style="color:#66d9ef">true</span>
     <span style="color:#a6e22e">stripComponents</span> = <span style="color:#ae81ff">1</span>
 </code></pre></div><p>To apply the changes, run:</p>
 <pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi apply
 </code></pre><p>chezmoi will download the archives and unpack them as if they were part of the
 source state. chezmoi caches downloaded archives locally to avoid re-downloading
-them every time you run a chezmoi command. To refresh the downloaded archives,
-use the <code>--refresh-externals</code> flag to <code>chezmoi apply</code>:</p>
+them every time you run a chezmoi command, and will only re-download them at
+most every <code>refreshPeriod</code> (default never).</p>
+<p>In the above example <code>refreshPeriod</code> is set to <code>1w</code> (one week) for <code>.oh-my-zsh</code>
+and <code>.oh-my-zsh/custom/plugins/zsh-syntax-highlighting</code> because the URL point to
+tarballs of the <code>master</code> branch, which changes over time. No refresh period is
+set for <code>.oh-my-zsh/custom/themes/powerlevel10k</code> because the URL points to the a
+tarball of a tagged version, which does not change over time. To bump the
+version of powerlevel10k, change the version in the URL.</p>
+<p>To force a refresh the downloaded archives, use the <code>--refresh-externals</code> flag
+to <code>chezmoi apply</code>:</p>
 <pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi --refresh-externals apply
 </code></pre><p><code>--refresh-externals</code> can be shortened to <code>-R</code>:</p>
 <pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi -R apply
@@ -476,6 +494,22 @@ use the <code>--refresh-externals</code> flag to <code>chezmoi apply</code>:</p>
 <code>~/.oh-my-zsh</code> directory to drift out of sync with chezmoi&rsquo;s source state. To
 update Oh My Zsh and its plugins, refresh the downloaded archives.</p>
 <hr>
+<h3 id="include-a-single-file-from-another-repository">
+  Include a single file from another repository
+  <a class="anchor" href="#include-a-single-file-from-another-repository">#</a>
+</h3>
+<p>Including single files uses the same mechanism as including a subdirectory
+above, except with the external type <code>file</code> instead of <code>archive</code>. For example,
+to include
+<a href="https://github.com/junegunn/vim-plug/blob/master/plug.vim"><code>plug.vim</code></a> from
+<a href="https://github.com/junegunn/vim-plug"><code>github.com/junegunn/vim-plug</code></a> in
+<code>~/.vim/autoload/plug.vim</code> put the following in
+<code>~/.local/share/chezmoi/.chezmoiexternals.toml</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#e6db74">&#34;.vim/autoload/plug.vim&#34;</span>]
+    <span style="color:#a6e22e">type</span> = <span style="color:#e6db74">&#34;file&#34;</span>
+    <span style="color:#a6e22e">url</span> = <span style="color:#e6db74">&#34;https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim&#34;</span>
+    <span style="color:#a6e22e">refreshPeriod</span> = <span style="color:#e6db74">&#34;1w&#34;</span>
+</code></pre></div><hr>
 <h3 id="handle-configuration-files-which-are-externally-modified">
   Handle configuration files which are externally modified
   <a class="anchor" href="#handle-configuration-files-which-are-externally-modified">#</a>
@@ -1451,6 +1485,7 @@ so you can write scripts around chezmoi.</li>
     <li><a href="#include-dotfiles-from-elsewhere">Include dotfiles from elsewhere</a>
       <ul>
         <li><a href="#include-a-subdirectory-from-another-repository-like-oh-my-zsh">Include a subdirectory from another repository, like Oh My Zsh</a></li>
+        <li><a href="#include-a-single-file-from-another-repository">Include a single file from another repository</a></li>
         <li><a href="#handle-configuration-files-which-are-externally-modified">Handle configuration files which are externally modified</a></li>
         <li><a href="#import-archives">Import archives</a></li>
       </ul>
