@@ -21,6 +21,7 @@ import (
 	"sort"
 	"strings"
 	"text/template"
+	"time"
 
 	"github.com/coreos/go-semver/semver"
 	"github.com/rs/zerolog/log"
@@ -48,9 +49,19 @@ type External struct {
 		Args    []string `json:"args" toml:"args" yaml:"args"`
 	} `json:"filter" toml:"filter" yaml:"filter"`
 	Format          ArchiveFormat `json:"format" toml:"format" yaml:"format"`
+	RefreshPeriod   time.Duration `json:"refreshPeriod" toml:"refreshPeriod" yaml:"refreshPeriod"`
 	StripComponents int           `json:"stripComponents" toml:"stripComponents" yaml:"stripComponents"`
 	URL             string        `json:"url" toml:"url" yaml:"url"`
 }
+
+// A externalCacheEntry is an external cache entry.
+type externalCacheEntry struct {
+	URL  string    `json:"url" toml:"url" time:"url"`
+	Time time.Time `json:"time" toml:"time" yaml:"time"`
+	Data []byte    `json:"data" toml:"data" yaml:"data"`
+}
+
+var externalCacheFormat = formatGzippedJSON{}
 
 // A SourceState is a source state.
 type SourceState struct {
@@ -643,6 +654,7 @@ func (s *SourceState) MustEntry(targetRelPath RelPath) SourceStateEntry {
 // ReadOptions are options to SourceState.Read.
 type ReadOptions struct {
 	RefreshExternals bool
+	TimeNow          func() time.Time
 }
 
 // Read reads the source state from the source directory.
@@ -1060,15 +1072,29 @@ func (s *SourceState) executeTemplate(templateAbsPath AbsPath) ([]byte, error) {
 }
 
 func (s *SourceState) getExternalDataRaw(ctx context.Context, externalRelPath RelPath, external External, options *ReadOptions) ([]byte, error) {
+	// FIXME be more intelligent about HTTP caching, e.g. following RFC 7234,
+	// rather than blindly re-downloading each time
+
+	var now time.Time
+	if options != nil && options.TimeNow != nil {
+		now = options.TimeNow()
+	} else {
+		now = time.Now()
+	}
+	now = now.UTC()
+
 	cacheKey := hex.EncodeToString(SHA256Sum([]byte(external.URL)))
-	cachedDataAbsPath := s.cacheDirAbsPath.Join("external", RelPath(cacheKey))
+	cachedDataAbsPath := s.cacheDirAbsPath.Join("external", RelPath(cacheKey+"."+externalCacheFormat.Name()))
 	if options == nil || !options.RefreshExternals {
-		data, err := s.system.ReadFile(cachedDataAbsPath)
-		switch {
-		case err == nil:
-			return data, nil
-		case !errors.Is(err, fs.ErrNotExist):
-			return nil, err
+		if data, err := s.system.ReadFile(cachedDataAbsPath); err == nil {
+			var externalCacheEntry externalCacheEntry
+			if err := externalCacheFormat.Unmarshal(data, &externalCacheEntry); err == nil {
+				if externalCacheEntry.URL == external.URL {
+					if external.RefreshPeriod == 0 || externalCacheEntry.Time.Add(external.RefreshPeriod).After(now) {
+						return externalCacheEntry.Data, nil
+					}
+				}
+			}
 		}
 	}
 
@@ -1095,10 +1121,18 @@ func (s *SourceState) getExternalDataRaw(ctx context.Context, externalRelPath Re
 		return nil, fmt.Errorf("%s: %s: %s", externalRelPath, external.URL, resp.Status)
 	}
 
+	cachedExternalData, err := externalCacheFormat.Marshal(&externalCacheEntry{
+		URL:  external.URL,
+		Time: now,
+		Data: data,
+	})
+	if err != nil {
+		return nil, err
+	}
 	if err := MkdirAll(s.baseSystem, cachedDataAbsPath.Dir(), 0o700); err != nil {
 		return nil, err
 	}
-	if err := s.baseSystem.WriteFile(cachedDataAbsPath, data, 0o600); err != nil {
+	if err := s.baseSystem.WriteFile(cachedDataAbsPath, cachedExternalData, 0o600); err != nil {
 		return nil, err
 	}
 

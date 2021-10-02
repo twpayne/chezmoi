@@ -721,8 +721,12 @@ The supported archive formats are `tar`, `tar.gz`, `tgz`, `tar.bz2`, `tbz2`, and
 `zip`. If `format` is not specified then chezmoi will guess the format using
 firstly the path of the URL and secondly its contents.
 
-By default, chezmoi will cache downloaded URLs the first time they are accessed.
-To force chezmoi to re-download URLs, pass the `--refresh-externals` flag.
+By default, chezmoi will cache downloaded URLs. The optional duration
+`refreshPeriod` field specifies how often chezmoi will re-download the URL. The
+default is zero meaning that chezmoi will never re-download unless forced. To
+force chezmoi to re-download URLs, pass the `-R`/`--refresh-externals` flag.
+Suitable refresh periods include one day (`1d`), one week (`1w`), or four weeks
+(`4w`).
 
 #### `.chezmoiexternal.<format>` examples
 
@@ -730,14 +734,22 @@ To force chezmoi to re-download URLs, pass the `--refresh-externals` flag.
 [".vim/autoload/plug.vim"]
     type = "file"
     url = "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+    refreshPeriod = "1w"
 [".oh-my-zsh"]
     type = "archive"
     url = "https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz"
     exact = true
     stripComponents = 1
+    refreshPeriod = "1w"
 [".oh-my-zsh/custom/plugins/zsh-syntax-highlighting"]
     type = "archive"
     url = "https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz"
+    exact = true
+    stripComponents = 1
+    refreshPeriod = "1w"
+[".oh-my-zsh/custom/themes/powerlevel10k"]
+    type = "archive"
+    url = "https://github.com/romkatv/powerlevel10k/archive/v1.15.0.tar.gz"
     exact = true
     stripComponents = 1
 ```

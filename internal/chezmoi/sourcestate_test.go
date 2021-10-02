@@ -1,6 +1,8 @@
 package chezmoi
 
 import (
+	"archive/tar"
+	"bytes"
 	"context"
 	"errors"
 	"io/fs"
@@ -9,6 +11,7 @@ import (
 	"path/filepath"
 	"testing"
 	"text/template"
+	"time"
 
 	"github.com/coreos/go-semver/semver"
 	"github.com/stretchr/testify/assert"
@@ -1294,6 +1297,72 @@ func TestSourceStateReadExternal(t *testing.T) {
 			})
 		})
 	}
+}
+
+func TestSourceStateReadExternalCache(t *testing.T) {
+	buffer := &bytes.Buffer{}
+	tarWriterSystem := NewTARWriterSystem(buffer, tar.Header{})
+	require.NoError(t, tarWriterSystem.WriteFile(NewAbsPath("file"), []byte("# contents of file\n"), 0o666))
+	require.NoError(t, tarWriterSystem.Close())
+	archiveData := buffer.Bytes()
+
+	httpRequests := 0
+	httpServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		httpRequests++
+		_, err := w.Write(archiveData)
+		require.NoError(t, err)
+	}))
+	defer httpServer.Close()
+
+	now := time.Now()
+	readOptions := &ReadOptions{
+		TimeNow: func() time.Time {
+			return now
+		},
+	}
+
+	chezmoitest.WithTestFS(t, map[string]interface{}{
+		"/home/user/.local/share/chezmoi": map[string]interface{}{
+			".chezmoiexternal.yaml": chezmoitest.JoinLines(
+				`.dir:`,
+				`    type: "archive"`,
+				`    url: "`+httpServer.URL+`/archive.tar"`,
+				`    refreshPeriod: "1m"`,
+			),
+		},
+	}, func(fileSystem vfs.FS) {
+		ctx := context.Background()
+		system := NewRealSystem(fileSystem)
+
+		readSourceState := func() {
+			s := NewSourceState(
+				WithBaseSystem(system),
+				WithCacheDir(NewAbsPath("/home/user/.cache/chezmoi")),
+				WithDestDir(NewAbsPath("/home/user")),
+				WithSourceDir(NewAbsPath("/home/user/.local/share/chezmoi")),
+				WithSystem(system),
+			)
+			require.NoError(t, s.Read(ctx, readOptions))
+			assert.Equal(t, map[RelPath]External{
+				".dir": {
+					Type:          "archive",
+					URL:           httpServer.URL + "/archive.tar",
+					RefreshPeriod: 1 * time.Minute,
+				},
+			}, s.externals)
+		}
+
+		readSourceState()
+		assert.Equal(t, 1, httpRequests)
+
+		now = now.Add(10 * time.Second)
+		readSourceState()
+		assert.Equal(t, 1, httpRequests)
+
+		now = now.Add(1 * time.Minute)
+		readSourceState()
+		assert.Equal(t, 2, httpRequests)
+	})
 }
 
 func TestSourceStateTargetRelPaths(t *testing.T) {

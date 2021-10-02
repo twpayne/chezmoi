@@ -361,9 +361,10 @@ chezmoi uses its own format for the source state and Oh My Zsh is not
 distributed in this format. Instead, you can use the `.chezmoiexternal.<format>`
 to tell chezmoi to import dotfiles from an external source.
 
-For example, to import Oh My Zsh and the [zsh-syntax-highlighting
-plugin](https://github.com/zsh-users/zsh-syntax-highlighting), put the following
-in `~/.local/share/chezmoi/.chezmoiexternal.toml`:
+For example, to import Oh My Zsh, the [zsh-syntax-highlighting
+plugin](https://github.com/zsh-users/zsh-syntax-highlighting), and
+[powerlevel10k](https://github.com/romkatv/powerlevel10k), put the following in
+`~/.local/share/chezmoi/.chezmoiexternal.toml`:
 
 ```toml
 [".oh-my-zsh"]
@@ -371,9 +372,16 @@ in `~/.local/share/chezmoi/.chezmoiexternal.toml`:
     url = "https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz"
     exact = true
     stripComponents = 1
+    refreshPeriod = "1w"
 [".oh-my-zsh/custom/plugins/zsh-syntax-highlighting"]
     type = "archive"
     url = "https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz"
+    exact = true
+    stripComponents = 1
+    refreshPeriod = "1w"
+[".oh-my-zsh/custom/themes/powerlevel10k"]
+    type = "archive"
+    url = "https://github.com/romkatv/powerlevel10k/archive/v1.15.0.tar.gz"
     exact = true
     stripComponents = 1
 ```
@@ -386,8 +394,18 @@ $ chezmoi apply
 
 chezmoi will download the archives and unpack them as if they were part of the
 source state. chezmoi caches downloaded archives locally to avoid re-downloading
-them every time you run a chezmoi command. To refresh the downloaded archives,
-use the `--refresh-externals` flag to `chezmoi apply`:
+them every time you run a chezmoi command, and will only re-download them at
+most every `refreshPeriod` (default never).
+
+In the above example `refreshPeriod` is set to `1w` (one week) for `.oh-my-zsh`
+and `.oh-my-zsh/custom/plugins/zsh-syntax-highlighting` because the URL point to
+tarballs of the `master` branch, which changes over time. No refresh period is
+set for `.oh-my-zsh/custom/themes/powerlevel10k` because the URL points to the a
+tarball of a tagged version, which does not change over time. To bump the
+version of powerlevel10k, change the version in the URL.
+
+To force a refresh the downloaded archives, use the `--refresh-externals` flag
+to `chezmoi apply`:
 
 ```console
 $ chezmoi --refresh-externals apply
