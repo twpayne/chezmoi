@@ -18,7 +18,7 @@ require (
 	github.com/google/go-github/v39 v39.1.0
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/gops v0.3.20
-	github.com/google/renameio v1.0.1
+	github.com/google/renameio/v2 v2.0.0
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/kevinburke/ssh_config v1.1.0 // indirect
@@ -48,7 +48,7 @@ require (
 	go.uber.org/multierr v1.7.0
 	golang.org/x/net v0.0.0-20210929193557-e81a3d93ecf6 // indirect
 	golang.org/x/oauth2 v0.0.0-20210819190943-2bc19b11175f
-	golang.org/x/sys v0.0.0-20210927094055-39ccf1dd6fa6
+	golang.org/x/sys v0.0.0-20211001092434-39dca1131b70
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211
 	google.golang.org/protobuf v1.27.1 // indirect
 	gopkg.in/yaml.v2 v2.4.0
