@@ -3,7 +3,6 @@ package cmd
 import (
 	"io"
 	"io/fs"
-	"os"
 	"path/filepath"
 	"runtime"
 	"testing"
@@ -175,7 +174,7 @@ func newTestConfig(t *testing.T, fileSystem vfs.FS, options ...configOption) *Co
 			withDestSystem(system),
 			withSourceSystem(system),
 			withTestFS(fileSystem),
-			withTestUser("user"),
+			withTestUser(t, "user"),
 			withUmask(chezmoitest.Umask),
 		}, options...)...,
 	)
@@ -225,23 +224,22 @@ func withTestFS(fileSystem vfs.FS) configOption {
 	}
 }
 
-func withTestUser(username string) configOption {
+func withTestUser(t *testing.T, username string) configOption {
+	t.Helper()
 	return func(c *Config) error {
 		var env string
 		switch runtime.GOOS {
 		case "plan9":
-			c.homeDir = "/home/user"
+			c.homeDir = filepath.Join("/", "home", username)
 			env = "home"
 		case "windows":
-			c.homeDir = `c:\home\user`
+			c.homeDir = filepath.Join("C:\\", "home", username)
 			env = "USERPROFILE"
 		default:
-			c.homeDir = "/home/user"
+			c.homeDir = filepath.Join("/", "home", username)
 			env = "HOME"
 		}
-		if err := os.Setenv(env, c.homeDir); err != nil {
-			panic(err)
-		}
+		t.Setenv(env, c.homeDir)
 		var err error
 		c.homeDirAbsPath, err = chezmoi.NormalizePath(c.homeDir)
 		if err != nil {

@@ -41,6 +41,10 @@ test:
 	${GO} test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o022" ./...
 	${GO} test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o002" ./...
 
+.PHONY: test-docker
+test-docker:
+	( cd assets/docker && ./test.sh archlinux fedora voidlinux )
+
 .PHONY: test-vagrant
 test-vagrant:
 	( cd assets/vagrant && ./test.sh debian11-i386 freebsd13 openbsd6 )
