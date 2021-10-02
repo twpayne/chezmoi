@@ -19,6 +19,23 @@ jobs:
     - name: Test
       run: |
         ( cd assets/docker && ./test.sh archlinux )
+  test-debian-i386:
+    runs-on: macos-latest
+    env:
+      VAGRANT_BOX: debian11-i386
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Cache Vagrant Boxes
+      uses: actions/cache@v2
+      with:
+        path: ~/.vagrant.d
+        key: ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-${{ hashFiles('assets/vagrant/*.Vagrantfile') }}
+        restore-keys: |
+          ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-
+    - name: Test
+      run: |
+        ( cd assets/vagrant && ./test.sh debian11-i386 )
   test-fedora:
     runs-on: ubuntu-latest
     steps:
@@ -271,6 +288,7 @@ jobs:
     needs:
     - generate
     - lint
+    - test-debian-i386
     - test-fedora
     - test-freebsd
     - test-macos
