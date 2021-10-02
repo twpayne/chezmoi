@@ -65,6 +65,8 @@ func (s *EntryState) Overwrite() bool {
 	return s.overwrite
 }
 
+// MarshalZerologObject implements
+// github.com/rs/zerolog.LogObjectMarshaler.MarshalZerologObject.
 func (s *EntryState) MarshalZerologObject(e *zerolog.Event) {
 	if s == nil {
 		return

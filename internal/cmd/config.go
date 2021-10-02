@@ -426,6 +426,9 @@ func newConfig(options ...configOption) (*Config, error) {
 	return c, nil
 }
 
+// addTemplateFunc adds the template function with the key key and value value
+// to c. It panics if there is already an existing template function with the
+// same key.
 func (c *Config) addTemplateFunc(key string, value interface{}) {
 	if _, ok := c.templateFuncs[key]; ok {
 		panic(fmt.Sprintf("%s: already defined", key))
@@ -442,6 +445,10 @@ type applyArgsOptions struct {
 	preApplyFunc chezmoi.PreApplyFunc
 }
 
+// applyArgs is the core of all commands that make changes to a target system.
+// It checks config file freshness, reads the source state, and then applies the
+// source state for each target entry in args. If args is empty then the source
+// state is applied to all target entries.
 func (c *Config) applyArgs(ctx context.Context, targetSystem chezmoi.System, targetDirAbsPath chezmoi.AbsPath, args []string, options applyArgsOptions) error {
 	if options.init {
 		if err := c.createAndReloadConfigFile(); err != nil {
@@ -449,13 +456,8 @@ func (c *Config) applyArgs(ctx context.Context, targetSystem chezmoi.System, tar
 		}
 	}
 
-	sourceState, err := c.newSourceState(ctx)
-	if err != nil {
-		return err
-	}
-
 	var currentConfigTemplateContentsSHA256 []byte
-	configTemplateRelPath, _, configTemplateContents, err := c.findConfigTemplate()
+	configTemplateRelPath, _, configTemplateContents, err := c.findFirstConfigTemplate()
 	if err != nil {
 		return err
 	}
@@ -496,10 +498,9 @@ func (c *Config) applyArgs(ctx context.Context, targetSystem chezmoi.System, tar
 		}
 	}
 
-	applyOptions := chezmoi.ApplyOptions{
-		Include:      options.include.Sub(options.exclude),
-		PreApplyFunc: options.preApplyFunc,
-		Umask:        options.umask,
+	sourceState, err := c.newSourceState(ctx)
+	if err != nil {
+		return err
 	}
 
 	var targetRelPaths []chezmoi.RelPath
@@ -519,6 +520,12 @@ func (c *Config) applyArgs(ctx context.Context, targetSystem chezmoi.System, tar
 		if err != nil {
 			return err
 		}
+	}
+
+	applyOptions := chezmoi.ApplyOptions{
+		Include:      options.include.Sub(options.exclude),
+		PreApplyFunc: options.preApplyFunc,
+		Umask:        options.umask,
 	}
 
 	//nolint:ifshort
@@ -541,6 +548,7 @@ func (c *Config) applyArgs(ctx context.Context, targetSystem chezmoi.System, tar
 	return nil
 }
 
+// close closes resources associated with c.
 func (c *Config) close() error {
 	var err error
 	for _, tempDirAbsPath := range c.tempDirs {
@@ -555,6 +563,7 @@ func (c *Config) close() error {
 	return err
 }
 
+// cmdOutput returns the of running the command name with args in dirAbsPath.
 func (c *Config) cmdOutput(dirAbsPath chezmoi.AbsPath, name string, args []string) ([]byte, error) {
 	cmd := exec.Command(name, args...)
 	if !dirAbsPath.Empty() {
@@ -567,6 +576,7 @@ func (c *Config) cmdOutput(dirAbsPath chezmoi.AbsPath, name string, args []strin
 	return c.baseSystem.IdempotentCmdOutput(cmd)
 }
 
+// colorAutoFunc detects whether color should be used.
 func (c *Config) colorAutoFunc() bool {
 	if _, ok := os.LookupEnv("NO_COLOR"); ok {
 		return false
@@ -581,7 +591,7 @@ func (c *Config) colorAutoFunc() bool {
 // template and reloads it.
 func (c *Config) createAndReloadConfigFile() error {
 	// Find config template, execute it, and create config file.
-	configTemplateRelPath, ext, configTemplateContents, err := c.findConfigTemplate()
+	configTemplateRelPath, ext, configTemplateContents, err := c.findFirstConfigTemplate()
 	if err != nil {
 		return err
 	}
@@ -696,6 +706,9 @@ func (c *Config) defaultConfigFile(fileSystem vfs.Stater, bds *xdg.BaseDirectory
 	return configHomeAbsPath.Join("chezmoi", "chezmoi.toml"), nil
 }
 
+// defaultPreApplyFunc is the default pre-apply function. If the target entry
+// has changed since chezmoi last wrote it then it prompts the user for the
+// action to take.
 func (c *Config) defaultPreApplyFunc(targetRelPath chezmoi.RelPath, targetEntryState, lastWrittenEntryState, actualEntryState *chezmoi.EntryState) error {
 	log.Info().
 		Stringer("targetRelPath", targetRelPath).
@@ -770,6 +783,7 @@ func (c *Config) defaultSourceDir(fileSystem vfs.Stater, bds *xdg.BaseDirectoryS
 	return dataHomeAbsPath.Join("chezmoi"), nil
 }
 
+// defaultTemplateData returns the default template data.
 func (c *Config) defaultTemplateData() map[string]interface{} {
 	// Determine the user's username and group, if possible.
 	//
@@ -878,6 +892,9 @@ type destAbsPathInfosOptions struct {
 	recursive      bool
 }
 
+// destAbsPathInfos returns the os/fs.FileInfos for each destination entry in
+// args, recursing into subdirectories and following symlinks if configured in
+// options.
 func (c *Config) destAbsPathInfos(sourceState *chezmoi.SourceState, args []string, options destAbsPathInfosOptions) (map[chezmoi.AbsPath]fs.FileInfo, error) {
 	destAbsPathInfos := make(map[chezmoi.AbsPath]fs.FileInfo)
 	for _, arg := range args {
@@ -928,6 +945,8 @@ func (c *Config) destAbsPathInfos(sourceState *chezmoi.SourceState, args []strin
 	return destAbsPathInfos, nil
 }
 
+// diffFile outputs the diff between fromData and fromMode and toData and toMode
+// at path.
 func (c *Config) diffFile(path chezmoi.RelPath, fromData []byte, fromMode fs.FileMode, toData []byte, toMode fs.FileMode) error {
 	var sb strings.Builder
 	unifiedEncoder := diff.NewUnifiedEncoder(&sb, diff.DefaultContextLines)
@@ -945,6 +964,8 @@ func (c *Config) diffFile(path chezmoi.RelPath, fromData []byte, fromMode fs.Fil
 	return c.pageOutputString(sb.String(), c.Diff.Pager)
 }
 
+// doPurge is the core purge functionality. It removes all files and directories
+// associated with chezmoi.
 func (c *Config) doPurge(purgeOptions *purgeOptions) error {
 	if c.persistentState != nil {
 		if err := c.persistentState.Close(); err != nil {
@@ -1039,10 +1060,12 @@ func (c *Config) editor() (string, []string) {
 	return editor, nil
 }
 
+// errorf writes an error to stderr.
 func (c *Config) errorf(format string, args ...interface{}) {
 	fmt.Fprintf(c.stderr, "chezmoi: "+format, args...)
 }
 
+// execute creates a new root command and executes it with args.
 func (c *Config) execute(args []string) error {
 	rootCmd, err := c.newRootCmd()
 	if err != nil {
@@ -1088,7 +1111,9 @@ func (c *Config) filterInput(args []string, f func([]byte) ([]byte, error)) erro
 	return nil
 }
 
-func (c *Config) findConfigTemplate() (chezmoi.RelPath, string, []byte, error) {
+// findFirstConfigTemplate searches for a config template, returning the path,
+// format, and contents of the first one that it finds.
+func (c *Config) findFirstConfigTemplate() (chezmoi.RelPath, string, []byte, error) {
 	for _, ext := range viper.SupportedExts {
 		filename := chezmoi.RelPath(chezmoi.Prefix + "." + ext + chezmoi.TemplateSuffix)
 		contents, err := c.baseSystem.ReadFile(c.SourceDirAbsPath.Join(filename))
@@ -1103,6 +1128,7 @@ func (c *Config) findConfigTemplate() (chezmoi.RelPath, string, []byte, error) {
 	return "", "", nil, nil
 }
 
+// gitAutoAdd adds all changes to the git index and returns the new git status.
 func (c *Config) gitAutoAdd() (*git.Status, error) {
 	if err := c.run(c.WorkingTreeAbsPath, c.Git.Command, []string{"add", "."}); err != nil {
 		return nil, err
@@ -1114,6 +1140,8 @@ func (c *Config) gitAutoAdd() (*git.Status, error) {
 	return git.ParseStatusPorcelainV2(output)
 }
 
+// gitAutoCommit commits all changes in the git index, including generating a
+// commit message from status.
 func (c *Config) gitAutoCommit(status *git.Status) error {
 	if status.Empty() {
 		return nil
@@ -1133,6 +1161,7 @@ func (c *Config) gitAutoCommit(status *git.Status) error {
 	return c.run(c.WorkingTreeAbsPath, c.Git.Command, []string{"commit", "--message", commitMessage.String()})
 }
 
+// gitAutoPush pushes all changes to the remote if status is not empty.
 func (c *Config) gitAutoPush(status *git.Status) error {
 	if status.Empty() {
 		return nil
@@ -1140,6 +1169,8 @@ func (c *Config) gitAutoPush(status *git.Status) error {
 	return c.run(c.WorkingTreeAbsPath, c.Git.Command, []string{"push"})
 }
 
+// makeRunEWithSourceState returns a function for
+// github.com/spf13/cobra.Command.RunE that includes reading the source state.
 func (c *Config) makeRunEWithSourceState(runE func(*cobra.Command, []string, *chezmoi.SourceState) error) func(*cobra.Command, []string) error {
 	return func(cmd *cobra.Command, args []string) error {
 		sourceState, err := c.newSourceState(cmd.Context())
@@ -1150,6 +1181,7 @@ func (c *Config) makeRunEWithSourceState(runE func(*cobra.Command, []string, *ch
 	}
 }
 
+// marshal formats data in dataFormat and writes it to the standard output.
 func (c *Config) marshal(dataFormat writeDataFormat, data interface{}) error {
 	var format chezmoi.Format
 	switch dataFormat {
@@ -1167,6 +1199,7 @@ func (c *Config) marshal(dataFormat writeDataFormat, data interface{}) error {
 	return c.writeOutput(marshaledData)
 }
 
+// newRootCmd returns a new root github.com/spf13/cobra.Command.
 func (c *Config) newRootCmd() (*cobra.Command, error) {
 	rootCmd := &cobra.Command{
 		Use:                "chezmoi",
@@ -1279,6 +1312,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	return rootCmd, nil
 }
 
+// newSourceState returns a new SourceState with options.
 func (c *Config) newSourceState(ctx context.Context, options ...chezmoi.SourceStateOption) (*chezmoi.SourceState, error) {
 	s := chezmoi.NewSourceState(append([]chezmoi.SourceStateOption{
 		chezmoi.WithBaseSystem(c.baseSystem),
@@ -1308,6 +1342,7 @@ func (c *Config) newSourceState(ctx context.Context, options ...chezmoi.SourceSt
 	return s, nil
 }
 
+// persistentPostRunRootE performs post-run actions for the root command.
 func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error {
 	if err := c.persistentState.Close(); err != nil {
 		return err
@@ -1351,6 +1386,7 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 	return nil
 }
 
+// pageOutputString writes output using cmdPager as the pager command.
 func (c *Config) pageOutputString(output, cmdPager string) error {
 	pager := firstNonEmptyString(cmdPager, c.Pager)
 	if c.noPager || pager == "" {
@@ -1373,7 +1409,9 @@ func (c *Config) pageOutputString(output, cmdPager string) error {
 	return pagerCmd.Run()
 }
 
+// persistentPreRunRootE performs pre-run actions for the root command.
 func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error {
+	// Enable CPU profiling if configured.
 	if !c.cpuProfile.Empty() {
 		f, err := os.Create(c.cpuProfile.String())
 		if err != nil {
@@ -1384,12 +1422,14 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		}
 	}
 
+	// Enable gops if configured.
 	if c.gops {
 		if err := agent.Listen(agent.Options{}); err != nil {
 			return err
 		}
 	}
 
+	// Read the config file.
 	if err := c.readConfig(); err != nil {
 		if !boolAnnotation(cmd, doesNotRequireValidConfig) {
 			return fmt.Errorf("invalid config: %s: %w", c.configFileAbsPath, err)
@@ -1397,6 +1437,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		c.errorf("warning: %s: %v\n", c.configFileAbsPath, err)
 	}
 
+	// Determine whether color should be used.
 	color := c.Color.Value(c.colorAutoFunc)
 	if color {
 		if err := enableVirtualTerminalProcessing(c.stdout); err != nil {
@@ -1404,6 +1445,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		}
 	}
 
+	// Configure the logger.
 	log.Logger = log.Output(zerolog.NewConsoleWriter(
 		func(w *zerolog.ConsoleWriter) {
 			w.Out = c.stderr
@@ -1417,6 +1459,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		zerolog.SetGlobalLevel(zerolog.Disabled)
 	}
 
+	// Log basic information.
 	log.Info().
 		Object("version", c.versionInfo).
 		Strs("args", args).
@@ -1430,6 +1473,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		c.baseSystem = chezmoi.NewDebugSystem(c.baseSystem)
 	}
 
+	// Set up the persistent state.
 	switch {
 	case cmd.Annotations[persistentStateMode] == persistentStateModeEmpty:
 		c.persistentState = chezmoi.NewMockPersistentState()
@@ -1477,6 +1521,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		c.persistentState = chezmoi.NewDebugPersistentState(c.persistentState)
 	}
 
+	// Set up the source and destination systems.
 	c.sourceSystem = c.baseSystem
 	c.destSystem = c.baseSystem
 	if !boolAnnotation(cmd, modifiesDestinationDirectory) {
@@ -1494,6 +1539,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		c.destSystem = chezmoi.NewGitDiffSystem(c.destSystem, c.stdout, c.DestDirAbsPath, color)
 	}
 
+	// Set up encryption.
 	switch c.Encryption {
 	case "age":
 		// Only use builtin age encryption if age encryption is explicitly
@@ -1523,18 +1569,21 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		c.encryption = chezmoi.NewDebugEncryption(c.encryption)
 	}
 
+	// Create the config directory if needed.
 	if boolAnnotation(cmd, requiresConfigDirectory) {
 		if err := chezmoi.MkdirAll(c.baseSystem, c.configFileAbsPath.Dir(), 0o777); err != nil {
 			return err
 		}
 	}
 
+	// Create the source directory if needed.
 	if boolAnnotation(cmd, requiresSourceDirectory) {
 		if err := chezmoi.MkdirAll(c.baseSystem, c.SourceDirAbsPath, 0o777); err != nil {
 			return err
 		}
 	}
 
+	// Create the runtime directory if needed.
 	if boolAnnotation(cmd, runsCommands) {
 		if runtime.GOOS == "linux" && c.bds.RuntimeDir != "" {
 			// Snap sets the $XDG_RUNTIME_DIR environment variable to
@@ -1549,6 +1598,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		}
 	}
 
+	// Determine the working tree directory if it is not configured.
 	if c.WorkingTreeAbsPath.Empty() {
 		workingTreeAbsPath := c.SourceDirAbsPath
 	FOR:
@@ -1566,6 +1616,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		}
 	}
 
+	// Create the working tree directory if needed.
 	if boolAnnotation(cmd, requiresWorkingTree) {
 		if _, err := c.SourceDirAbsPath.TrimDirPrefix(c.WorkingTreeAbsPath); err != nil {
 			return err
@@ -1578,6 +1629,9 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	return nil
 }
 
+// persistentStateFile returns the absolute path to the persistent state file,
+// returning the first persistent file found, and returning the default path if
+// none are found.
 func (c *Config) persistentStateFile() (chezmoi.AbsPath, error) {
 	if !c.configFileAbsPath.Empty() {
 		return c.configFileAbsPath.Dir().Join(persistentStateFilename), nil
@@ -1599,6 +1653,7 @@ func (c *Config) persistentStateFile() (chezmoi.AbsPath, error) {
 	return defaultConfigFileAbsPath.Dir().Join(persistentStateFilename), nil
 }
 
+// promptChoice prompts the user for one of choices until a valid choice is made.
 func (c *Config) promptChoice(prompt string, choices []string) (string, error) {
 	promptWithChoices := fmt.Sprintf("%s [%s]? ", prompt, strings.Join(choices, ","))
 	abbreviations := uniqueAbbreviations(choices)
@@ -1613,6 +1668,7 @@ func (c *Config) promptChoice(prompt string, choices []string) (string, error) {
 	}
 }
 
+// readConfig reads the config file, if it exists.
 func (c *Config) readConfig() error {
 	viper.SetConfigFile(c.configFileAbsPath.String())
 	if c.configFormat != "" {
@@ -1631,6 +1687,7 @@ func (c *Config) readConfig() error {
 	return c.validateData()
 }
 
+// readLine reads a line from stdin.
 func (c *Config) readLine(prompt string) (string, error) {
 	_, err := c.stdout.Write([]byte(prompt))
 	if err != nil {
@@ -1643,6 +1700,7 @@ func (c *Config) readLine(prompt string) (string, error) {
 	return strings.TrimSuffix(line, "\n"), nil
 }
 
+// run runs name with args in dir.
 func (c *Config) run(dir chezmoi.AbsPath, name string, args []string) error {
 	cmd := exec.Command(name, args...)
 	if !dir.Empty() {
@@ -1658,6 +1716,7 @@ func (c *Config) run(dir chezmoi.AbsPath, name string, args []string) error {
 	return c.baseSystem.RunCmd(cmd)
 }
 
+// runEditor runs the configured editor with args.
 func (c *Config) runEditor(args []string) error {
 	if err := c.persistentState.Close(); err != nil {
 		return err
@@ -1666,6 +1725,8 @@ func (c *Config) runEditor(args []string) error {
 	return c.run(chezmoi.EmptyAbsPath, editor, append(editorArgs, args...))
 }
 
+// sourceAbsPaths returns the source absolute paths for each target path in
+// args.
 func (c *Config) sourceAbsPaths(sourceState *chezmoi.SourceState, args []string) ([]chezmoi.AbsPath, error) {
 	targetRelPaths, err := c.targetRelPaths(sourceState, args, targetRelPathsOptions{
 		mustBeInSourceState: true,
@@ -1686,6 +1747,8 @@ type targetRelPathsOptions struct {
 	recursive           bool
 }
 
+// targetRelPaths returns the target relative paths for each target path in
+// args.
 func (c *Config) targetRelPaths(sourceState *chezmoi.SourceState, args []string, options targetRelPathsOptions) ([]chezmoi.RelPath, error) {
 	targetRelPaths := make([]chezmoi.RelPath, 0, len(args))
 	for _, arg := range args {
@@ -1708,7 +1771,8 @@ func (c *Config) targetRelPaths(sourceState *chezmoi.SourceState, args []string,
 		targetRelPaths = append(targetRelPaths, targetRelPath)
 		if options.recursive {
 			parentRelPath := targetRelPath
-			// FIXME we should not call s.TargetRelPaths() here - risk of accidentally quadratic
+			// FIXME we should not call s.TargetRelPaths() here - risk of
+			// accidentally quadratic
 			for _, targetRelPath := range sourceState.TargetRelPaths() {
 				if _, err := targetRelPath.TrimDirPrefix(parentRelPath); err == nil {
 					targetRelPaths = append(targetRelPaths, targetRelPath)
@@ -1735,6 +1799,8 @@ func (c *Config) targetRelPaths(sourceState *chezmoi.SourceState, args []string,
 	return targetRelPaths[:n], nil
 }
 
+// targetRelPathsBySourcePath returns the target relative paths for each arg in
+// args.
 func (c *Config) targetRelPathsBySourcePath(sourceState *chezmoi.SourceState, args []string) ([]chezmoi.RelPath, error) {
 	targetRelPaths := make([]chezmoi.RelPath, 0, len(args))
 	targetRelPathsBySourceRelPath := make(map[chezmoi.RelPath]chezmoi.RelPath)
@@ -1783,6 +1849,7 @@ func (c *Config) tempDir(key string) (chezmoi.AbsPath, error) {
 	return tempDirAbsPath, nil
 }
 
+// useBuiltinAgeAutoFunc detects whether the builtin age should be used.
 func (c *Config) useBuiltinAgeAutoFunc() bool {
 	if _, err := exec.LookPath(c.Age.Command); err == nil {
 		return false
@@ -1790,6 +1857,7 @@ func (c *Config) useBuiltinAgeAutoFunc() bool {
 	return true
 }
 
+// useBuiltinGitAutoFunc detects whether the builitin git should be used.
 func (c *Config) useBuiltinGitAutoFunc() bool {
 	if _, err := exec.LookPath(c.Git.Command); err == nil {
 		return false
@@ -1797,10 +1865,12 @@ func (c *Config) useBuiltinGitAutoFunc() bool {
 	return true
 }
 
+// validateData valides that the config data does not contain any invalid keys.
 func (c *Config) validateData() error {
 	return validateKeys(c.Data, identifierRx)
 }
 
+// writeOutput writes data to the configured output.
 func (c *Config) writeOutput(data []byte) error {
 	if c.outputAbsPath.Empty() || c.outputAbsPath == chezmoi.NewAbsPath("-") {
 		_, err := c.stdout.Write(data)
@@ -1809,6 +1879,7 @@ func (c *Config) writeOutput(data []byte) error {
 	return c.baseSystem.WriteFile(c.outputAbsPath, data, 0o666)
 }
 
+// writeOutputString writes data to the configured output.
 func (c *Config) writeOutputString(data string) error {
 	return c.writeOutput([]byte(data))
 }

@@ -85,6 +85,8 @@ func init() {
 	}
 }
 
+// MarshalZerologObject implements
+// github.com/rs/zerolog.LogObjectMarshaler.MarshalZerologObject.
 func (v VersionInfo) MarshalZerologObject(e *zerolog.Event) {
 	e.Str("version", v.Version)
 	e.Str("commit", v.Commit)

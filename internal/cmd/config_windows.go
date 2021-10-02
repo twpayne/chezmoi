@@ -7,6 +7,7 @@ import (
 	"golang.org/x/term"
 )
 
+// readPassword reads a password.
 func (c *Config) readPassword(prompt string) (string, error) {
 	if c.noTTY {
 		return c.readLine(prompt)

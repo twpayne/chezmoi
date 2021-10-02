@@ -130,6 +130,7 @@ func (s *EntryTypeSet) SetSlice(ss []string) error {
 	return nil
 }
 
+// String implements github.com/spf13/pflag.Value.String.
 func (s *EntryTypeSet) String() string {
 	if s == nil {
 		return "none"

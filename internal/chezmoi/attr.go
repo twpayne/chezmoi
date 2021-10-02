@@ -87,7 +87,8 @@ func parseDirAttr(sourceName string) DirAttr {
 	}
 }
 
-// MarshalZerologObject implements zerolog.Marshaler.
+// MarshalZerologObject implements
+// github.com/rs/zerolog.ObjectMarshaler.MarshalZerologObject.
 func (da DirAttr) MarshalZerologObject(e *zerolog.Event) {
 	e.Str("targetName", da.TargetName)
 	e.Bool("exact", da.Exact)
@@ -259,7 +260,8 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 	}
 }
 
-// MarshalZerologObject implements zerolog.ObjectMarshaler.
+// MarshalZerologObject implements
+// github.com/rs/zerolog.LogObjectMarshaler.MarshalZerologObject.
 func (fa FileAttr) MarshalZerologObject(e *zerolog.Event) {
 	e.Str("TargetName", fa.TargetName)
 	e.Str("Type", sourceFileTypeStrs[fa.Type])
