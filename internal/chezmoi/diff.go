@@ -18,6 +18,8 @@ var gitDiffOperation = map[diffmatchpatch.Operation]diff.Operation{
 	diffmatchpatch.DiffInsert: diff.Add,
 }
 
+// A gitDiffChunk implements the
+// github.com/go-git/go-git/v5/plumbing/format/diff.Chunk interface.
 type gitDiffChunk struct {
 	content   string
 	operation diff.Operation
@@ -26,6 +28,8 @@ type gitDiffChunk struct {
 func (c *gitDiffChunk) Content() string      { return c.content }
 func (c *gitDiffChunk) Type() diff.Operation { return c.operation }
 
+// A gitDiffFile implements the
+// github.com/go-git/go-git/v5/plumbing/format/diff.File interface.
 type gitDiffFile struct {
 	hash     plumbing.Hash
 	fileMode filemode.FileMode
@@ -36,6 +40,8 @@ func (f *gitDiffFile) Hash() plumbing.Hash     { return f.hash }
 func (f *gitDiffFile) Mode() filemode.FileMode { return f.fileMode }
 func (f *gitDiffFile) Path() string            { return string(f.relPath) }
 
+// A gitDiffFilePatch implements the
+// github.com/go-git/go-git/v5/plumbing/format/diff.FilePatch interface.
 type gitDiffFilePatch struct {
 	isBinary bool
 	from, to diff.File
@@ -46,6 +52,8 @@ func (fp *gitDiffFilePatch) IsBinary() bool                { return fp.isBinary 
 func (fp *gitDiffFilePatch) Files() (diff.File, diff.File) { return fp.from, fp.to }
 func (fp *gitDiffFilePatch) Chunks() []diff.Chunk          { return fp.chunks }
 
+// A gitDiffPatch implements the
+// github.com/go-git/go-git/v5/plumbing/format/diff.Patch interface.
 type gitDiffPatch struct {
 	filePatches []diff.FilePatch
 	message     string

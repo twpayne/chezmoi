@@ -127,6 +127,7 @@ func (c *Config) runChattrCmd(cmd *cobra.Command, args []string, sourceState *ch
 	return nil
 }
 
+// modify returns the modified value of b.
 func (m boolModifier) modify(b bool) bool {
 	switch m {
 	case boolModifierSet:
@@ -140,6 +141,7 @@ func (m boolModifier) modify(b bool) bool {
 	}
 }
 
+// modify returns the modified value of order.
 func (m orderModifier) modify(order int) int {
 	switch m {
 	case orderModifierSetBefore:
@@ -163,6 +165,7 @@ func (m orderModifier) modify(order int) int {
 	}
 }
 
+// parseAttrModifier parses the attrMmodifier from s.
 func parseAttrModifier(s string) (*attrModifier, error) {
 	am := &attrModifier{}
 	for _, modifierStr := range strings.Split(s, ",") {
@@ -228,6 +231,7 @@ func parseAttrModifier(s string) (*attrModifier, error) {
 	return am, nil
 }
 
+// modifyDirAttr returns the modified value of dirAttr.
 func (am *attrModifier) modifyDirAttr(dirAttr chezmoi.DirAttr) chezmoi.DirAttr {
 	return chezmoi.DirAttr{
 		TargetName: dirAttr.TargetName,
@@ -237,6 +241,7 @@ func (am *attrModifier) modifyDirAttr(dirAttr chezmoi.DirAttr) chezmoi.DirAttr {
 	}
 }
 
+// modifyFileAttr returns the modified value of fileAttr.
 func (am *attrModifier) modifyFileAttr(fileAttr chezmoi.FileAttr) chezmoi.FileAttr {
 	switch fileAttr.Type {
 	case chezmoi.SourceFileTypeFile:

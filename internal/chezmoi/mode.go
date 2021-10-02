@@ -1,6 +1,7 @@
 package chezmoi
 
-// A Mode is a mode of operation.
+// A Mode is a mode of operation. It implements the github.com/spf13/flag.Value
+// interface.
 type Mode string
 
 // Modes.
@@ -15,6 +16,7 @@ func (e invalidModeError) Error() string {
 	return "invalid mode: " + string(e)
 }
 
+// Set implements github.com/spf13/flag.Value.Set.
 func (m *Mode) Set(s string) error {
 	switch Mode(s) {
 	case ModeFile:
@@ -28,10 +30,12 @@ func (m *Mode) Set(s string) error {
 	}
 }
 
+// String implements github.com/spf13/flag.Value.String.
 func (m Mode) String() string {
 	return string(m)
 }
 
+// Type implements github.com/spf13/flag.Value.Type.
 func (m Mode) Type() string {
 	return "mode"
 }

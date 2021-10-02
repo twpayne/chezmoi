@@ -140,15 +140,18 @@ func (s *ArchiveReaderSystem) Readlink(name AbsPath) (string, error) {
 	return "", fs.ErrNotExist
 }
 
+// Set implements github.com/spf13/pflag.Value.Set.
 func (f *ArchiveFormat) Set(s string) error {
 	*f = ArchiveFormat(s)
 	return nil
 }
 
+// String implements github.com/spf13/pflag.Value.String.
 func (f ArchiveFormat) String() string {
 	return string(f)
 }
 
+// Type implements github.com/spf13/pflag.Value.Type.
 func (f ArchiveFormat) Type() string {
 	return "format"
 }

@@ -98,6 +98,7 @@ func (e *AgeEncryption) EncryptedSuffix() string {
 	return e.Suffix
 }
 
+// builtinDecrypt decrypts ciphertext using the builtin age.
 func (e *AgeEncryption) builtinDecrypt(ciphertext []byte) ([]byte, error) {
 	identities, err := e.builtinIdentities()
 	if err != nil {
@@ -114,6 +115,7 @@ func (e *AgeEncryption) builtinDecrypt(ciphertext []byte) ([]byte, error) {
 	return w.Bytes(), err
 }
 
+// builtinEncrypt encrypts ciphertext using the builtin age.
 func (e *AgeEncryption) builtinEncrypt(plaintext []byte) ([]byte, error) {
 	recipients, err := e.builtinRecipients()
 	if err != nil {
@@ -137,6 +139,8 @@ func (e *AgeEncryption) builtinEncrypt(plaintext []byte) ([]byte, error) {
 	return output.Bytes(), nil
 }
 
+// builtinIdentities returns the identities for decryption using the builtin
+// age.
 func (e *AgeEncryption) builtinIdentities() ([]age.Identity, error) {
 	var identities []age.Identity
 	if !e.Identity.Empty() {
@@ -156,6 +160,8 @@ func (e *AgeEncryption) builtinIdentities() ([]age.Identity, error) {
 	return identities, nil
 }
 
+// builtinRecipients returns the recipients for encryption using the builtin
+// age.
 func (e *AgeEncryption) builtinRecipients() ([]age.Recipient, error) {
 	recipients := make([]age.Recipient, 0, 1+len(e.Recipients))
 	if e.Recipient != "" {
@@ -221,6 +227,7 @@ func (e *AgeEncryption) encryptArgs() []string {
 	return args
 }
 
+// identityArgs returns the arguments for identity.
 func (e *AgeEncryption) identityArgs() []string {
 	args := make([]string, 0, 2+2*len(e.Identities))
 	if !e.Identity.Empty() {
@@ -232,6 +239,8 @@ func (e *AgeEncryption) identityArgs() []string {
 	return args
 }
 
+// parseIdentityFile parses the identities from indentityFile using the builtin
+// age.
 func parseIdentityFile(identityFile AbsPath) ([]age.Identity, error) {
 	file, err := os.Open(identityFile.String())
 	if err != nil {
@@ -241,6 +250,8 @@ func parseIdentityFile(identityFile AbsPath) ([]age.Identity, error) {
 	return age.ParseIdentities(file)
 }
 
+// parseRecipientFile parses the recipients from recipientFile using the builtin
+// age.
 func parseRecipientsFile(recipientsFile AbsPath) ([]age.Recipient, error) {
 	file, err := os.Open(recipientsFile.String())
 	if err != nil {

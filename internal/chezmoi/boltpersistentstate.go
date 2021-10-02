@@ -200,6 +200,7 @@ func (b *BoltPersistentState) Set(bucket, key, value []byte) error {
 	})
 }
 
+// open opens b's database if it is not already open, creating it if needed.
 func (b *BoltPersistentState) open() error {
 	if b.db != nil {
 		return nil

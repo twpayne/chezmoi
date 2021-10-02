@@ -1071,6 +1071,8 @@ func (s *SourceState) executeTemplate(templateAbsPath AbsPath) ([]byte, error) {
 	return s.ExecuteTemplateData(templateAbsPath.String(), data)
 }
 
+// getExternalDataRaw returns the raw data for external at externalRelPath,
+// possibly from the external cache.
 func (s *SourceState) getExternalDataRaw(ctx context.Context, externalRelPath RelPath, external External, options *ReadOptions) ([]byte, error) {
 	// FIXME be more intelligent about HTTP caching, e.g. following RFC 7234,
 	// rather than blindly re-downloading each time

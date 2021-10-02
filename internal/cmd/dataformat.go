@@ -28,6 +28,7 @@ const (
 	defaultWriteDataFormat = writeDataFormatJSON
 )
 
+// Set implements github.com/spf13/pflag.Value.Set.
 func (f *readDataFormat) Set(s string) error {
 	switch strings.ToLower(s) {
 	case "json":
@@ -42,14 +43,17 @@ func (f *readDataFormat) Set(s string) error {
 	return nil
 }
 
+// String implements github.com/spf13/pflag.Value.String.
 func (f readDataFormat) String() string {
 	return string(f)
 }
 
+// Type implements github.com/spf13/pflag.Value.Type.
 func (f readDataFormat) Type() string {
 	return "json|toml|yaml"
 }
 
+// Set implements github.com/spf13/pflag.Value.Set.
 func (f *writeDataFormat) Set(s string) error {
 	switch strings.ToLower(s) {
 	case "json":
@@ -62,10 +66,12 @@ func (f *writeDataFormat) Set(s string) error {
 	return nil
 }
 
+// String implements github.com/spf13/pflag.Value.String.
 func (f writeDataFormat) String() string {
 	return string(f)
 }
 
+// Type implements github.com/spf13/pflag.Value.Type.
 func (f writeDataFormat) Type() string {
 	return "json|yaml"
 }

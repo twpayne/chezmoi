@@ -51,7 +51,8 @@ func (s *SourceStateDir) Evaluate() error {
 	return nil
 }
 
-// MarshalZerologObject implements zerolog.LogObjectMarshaler.
+// MarshalZerologObject implements
+// github.com/rs/zerolog.LogObjectMarshaler.MarshalZerologObject.
 func (s *SourceStateDir) MarshalZerologObject(e *zerolog.Event) {
 	e.Stringer("sourceRelPath", s.sourceRelPath)
 	e.Object("attr", s.Attr)
@@ -78,7 +79,8 @@ func (s *SourceStateFile) Evaluate() error {
 	return err
 }
 
-// MarshalZerologObject implements zerolog.LogObjectMarshaler.
+// MarshalZerologObject implements
+// github.com/rs/zerolog.LogObjectMarshaler.MarshalZerologObject.
 func (s *SourceStateFile) MarshalZerologObject(e *zerolog.Event) {
 	e.Stringer("sourceRelPath", s.sourceRelPath)
 	e.Interface("attr", s.Attr)
@@ -144,7 +146,8 @@ func (s *SourceStateRenameDir) Evaluate() error {
 	return nil
 }
 
-// MarashalLogObject implements zerolog.LogObjectMarshaler.
+// MarshalZerologObject implements
+// github.com/rs/zerolog.LogObjectMarshaler.MarshalZerologObject.
 func (s *SourceStateRenameDir) MarshalZerologObject(e *zerolog.Event) {
 	e.Stringer("oldSourceRelPath", s.oldSourceRelPath)
 	e.Stringer("newSourceRelPath", s.newSourceRelPath)

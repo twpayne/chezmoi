@@ -102,6 +102,7 @@ func (e *GPGEncryption) EncryptedSuffix() string {
 	return e.Suffix
 }
 
+// decryptArgs returns the arguments for decryption.
 func (e *GPGEncryption) decryptArgs(plaintextFilename, ciphertextFilename AbsPath) []string {
 	args := []string{"--output", plaintextFilename.String()}
 	args = append(args, e.Args...)
@@ -109,6 +110,7 @@ func (e *GPGEncryption) decryptArgs(plaintextFilename, ciphertextFilename AbsPat
 	return args
 }
 
+// encryptArgs returns the arguments for encryption.
 func (e *GPGEncryption) encryptArgs(plaintextFilename, ciphertextFilename AbsPath) []string {
 	args := []string{
 		"--armor",
@@ -127,6 +129,7 @@ func (e *GPGEncryption) encryptArgs(plaintextFilename, ciphertextFilename AbsPat
 	return args
 }
 
+// run runs the command with args.
 func (e *GPGEncryption) run(args []string) error {
 	//nolint:gosec
 	cmd := exec.Command(e.Command, args...)

@@ -40,6 +40,7 @@ func isReadOnly(info fs.FileInfo) bool {
 	return false
 }
 
-func isSlash(c uint8) bool {
+// isSlash returns if c is a slash character.
+func isSlash(c byte) bool {
 	return c == '\\' || c == '/'
 }
