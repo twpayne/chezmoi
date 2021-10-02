@@ -5,5 +5,5 @@
 /bin/golangci-lint
 /chezmoi
 /chezmoi.exe
-/coverage.out
+/coverage.txt
 /dist

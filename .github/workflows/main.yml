@@ -141,7 +141,10 @@ jobs:
     - name: Test (umask 022)
       run: go test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o022" -race ./...
     - name: Test (umask 002)
-      run: go test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o002" -race ./...
+      run: go test -coverpkg=./... -coverprofile=coverage.txt -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o002" -race ./...
+    - name: Upload coverage to Codecov
+      run: |
+        bash <(curl -s https://codecov.io/bash)
     - name: Install release dependencies
       run: |
         sudo apt-get update

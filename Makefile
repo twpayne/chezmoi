@@ -51,11 +51,11 @@ test-vagrant:
 
 .PHONY: coverage-html
 coverage-html: coverage
-	${GO} tool cover -html=coverage.out
+	${GO} tool cover -html=coverage.txt
 
 .PHONY: coverage
 coverage:
-	${GO} test -coverprofile=coverage.out -coverpkg=./... ./...
+	${GO} test -coverprofile=coverage.txt -coverpkg=./... ./...
 
 .PHONY: generate
 generate:
