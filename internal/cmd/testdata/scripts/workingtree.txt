@@ -1,3 +1,5 @@
+[!exec:true] skip 'true not found in $PATH'
+
 mkhomedir
 
 # test that chezmoi cd creates the working tree if needed
@@ -11,6 +13,13 @@ chezmoi add $HOME${/}.file
 cp golden/.file $CHEZMOISOURCEDIR/home/dot_file
 
 chhome home2/user
+
+# test chezmoi init --working-tree creates the correct directory
+chezmoi init --working-tree=$HOME${/}.dotfiles --source=$HOME${/}.dotfiles${/}home
+exists $HOME/.dotfiles/.git
+exists $HOME/.dotfiles/home
+
+chhome home3/user
 
 # test that chezmoi add returns an error if the source directory is not in the working tree
 mkhomedir
@@ -27,6 +36,6 @@ workingTree = "~/.local/share/chezmoi"
 sourceDir = "~/.local/share/chezmoi/home"
 [cd]
     command = "true"
--- home2/user/.config/chezmoi/chezmoi.toml --
+-- home3/user/.config/chezmoi/chezmoi.toml --
 workingTree = "~/.local/share/chezmoi/home"
 sourceDir = "~/.local/share/chezmoi"

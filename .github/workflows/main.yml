@@ -217,7 +217,7 @@ jobs:
         [Environment]::SetEnvironmentVariable("Path", $env:PATH, "Machine")
         choco install --no-progress --yes gpg4win
         echo "C:\Program Files (x86)\GnuPG\bin" >> $env:GITHUB_PATH
-    - name: Upload chocolatey
+    - name: Upload chocolatey log
       if: failure()
       uses: actions/upload-artifact@v2
       with:
