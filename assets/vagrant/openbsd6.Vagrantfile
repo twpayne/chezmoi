@@ -1,3 +1,5 @@
+# OpenBSD currently includes Go version 1.16.2, but chezmoi requires version
+# 1.17 or later.
 Vagrant.configure("2") do |config|
   config.vm.box = "generic/openbsd6"
   config.vm.define :openbsd6
