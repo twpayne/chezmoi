@@ -43,7 +43,7 @@ func (c *Config) runStatusCmd(cmd *cobra.Command, args []string, sourceState *ch
 	sb := strings.Builder{}
 	dryRunSystem := chezmoi.NewDryRunSystem(c.destSystem)
 	statusCmdPreApplyFunc := func(targetRelPath chezmoi.RelPath, targetEntryState, lastWrittenEntryState, actualEntryState *chezmoi.EntryState) error {
-		log.Debug().
+		log.Info().
 			Stringer("targetRelPath", targetRelPath).
 			Object("targetEntryState", targetEntryState).
 			Object("lastWrittenEntryState", lastWrittenEntryState).

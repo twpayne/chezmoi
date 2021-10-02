@@ -697,7 +697,7 @@ func (c *Config) defaultConfigFile(fileSystem vfs.Stater, bds *xdg.BaseDirectory
 }
 
 func (c *Config) defaultPreApplyFunc(targetRelPath chezmoi.RelPath, targetEntryState, lastWrittenEntryState, actualEntryState *chezmoi.EntryState) error {
-	log.Debug().
+	log.Info().
 		Stringer("targetRelPath", targetRelPath).
 		Object("targetEntryState", targetEntryState).
 		Object("lastWrittenEntryState", lastWrittenEntryState).
@@ -803,20 +803,20 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 			if rawGroup, err := user.LookupGroupId(currentUser.Gid); err == nil {
 				group = rawGroup.Name
 			} else {
-				log.Debug().
+				log.Info().
 					Str("gid", currentUser.Gid).
 					Err(err).
 					Msg("user.LookupGroupId")
 			}
 		}
 	} else {
-		log.Debug().
+		log.Info().
 			Err(err).
 			Msg("user.Current")
 		var ok bool
 		username, ok = os.LookupEnv("USER")
 		if !ok {
-			log.Debug().
+			log.Info().
 				Str("key", "USER").
 				Bool("ok", ok).
 				Msg("os.LookupEnv")
@@ -829,14 +829,14 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 	if rawHostname, err := os.Hostname(); err == nil {
 		hostname = strings.SplitN(rawHostname, ".", 2)[0]
 	} else {
-		log.Debug().
+		log.Info().
 			Err(err).
 			Msg("os.Hostname")
 	}
 
 	kernel, err := chezmoi.Kernel(c.fileSystem)
 	if err != nil {
-		log.Debug().
+		log.Info().
 			Err(err).
 			Msg("chezmoi.Kernel")
 	}
@@ -845,7 +845,7 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 	if rawOSRelease, err := chezmoi.OSRelease(c.baseSystem); err == nil {
 		osRelease = upperSnakeCaseToCamelCaseMap(rawOSRelease)
 	} else {
-		log.Debug().
+		log.Info().
 			Err(err).
 			Msg("chezmoi.OSRelease")
 	}
@@ -1412,12 +1412,12 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		},
 	))
 	if c.debug {
-		zerolog.SetGlobalLevel(zerolog.DebugLevel)
+		zerolog.SetGlobalLevel(zerolog.InfoLevel)
 	} else {
 		zerolog.SetGlobalLevel(zerolog.Disabled)
 	}
 
-	log.Debug().
+	log.Info().
 		Object("version", c.versionInfo).
 		Strs("args", args).
 		Str("goVersion", runtime.Version()).
