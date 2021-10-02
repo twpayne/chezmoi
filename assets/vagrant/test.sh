@@ -11,7 +11,7 @@ for os in "$@"; do
     if ! ( cd ../.. && vagrant up ); then
         exit 1
     fi
-    vagrant ssh -c "sh test-chezmoi.sh"
+    vagrant ssh -c "./test-chezmoi.sh"
     vagrant_ssh_exit_code=$?
     vagrant destroy -f || exit 1
     if [ $vagrant_ssh_exit_code -ne 0 ]; then
