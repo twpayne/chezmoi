@@ -189,7 +189,7 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 	// Execute the new version.
 	arg0 := path
 	argv := []string{arg0, "--version"}
-	log.Debug().
+	log.Info().
 		Str("arg0", arg0).
 		Strs("argv", argv).
 		Msg("exec")
