@@ -9,7 +9,7 @@ import (
 	"os"
 	"syscall"
 
-	"github.com/google/renameio"
+	"github.com/google/renameio/v2"
 	vfs "github.com/twpayne/go-vfs/v4"
 	"go.uber.org/multierr"
 )
