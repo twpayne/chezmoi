@@ -239,7 +239,7 @@ func withTestUser(t *testing.T, username string) configOption {
 			c.homeDir = filepath.Join("/", "home", username)
 			env = "HOME"
 		}
-		t.Setenv(env, c.homeDir)
+		testSetenv(t, env, c.homeDir)
 		var err error
 		c.homeDirAbsPath, err = chezmoi.NormalizePath(c.homeDir)
 		if err != nil {
