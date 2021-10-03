@@ -23,7 +23,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.feeed5143ae67506cbcf0d94e3edbdce7f8b59de6d4521161b2a7125f3df46a0.js" integrity="sha256-/u7VFDrmdQbLzw2U4&#43;29zn&#43;LWd5tRSEWGypxJfPfRqA=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.0f3d2e4d019bfdfdf363073ec5607d29e10bb3c6d21480334a9820f55c941034.js" integrity="sha256-Dz0uTQGb/f3zYwc&#43;xWB9KeELs8bSFIAzSpgg9VyUEDQ=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -1461,8 +1461,8 @@ firstly the path of the URL and secondly its contents.</p>
 <code>refreshPeriod</code> field specifies how often chezmoi will re-download the URL. The
 default is zero meaning that chezmoi will never re-download unless forced. To
 force chezmoi to re-download URLs, pass the <code>-R</code>/<code>--refresh-externals</code> flag.
-Suitable refresh periods include one day (<code>1d</code>), one week (<code>1w</code>), or four weeks
-(<code>4w</code>).</p>
+Suitable refresh periods include one day (<code>24h</code>), one week (<code>168h</code>), or four
+weeks (<code>672h</code>).</p>
 <h4 id="chezmoiexternalformat-examples">
   <code>.chezmoiexternal.&lt;format&gt;</code> examples
   <a class="anchor" href="#chezmoiexternalformat-examples">#</a>
@@ -1470,19 +1470,19 @@ Suitable refresh periods include one day (<code>1d</code>), one week (<code>1w</
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#e6db74">&#34;.vim/autoload/plug.vim&#34;</span>]
     <span style="color:#a6e22e">type</span> = <span style="color:#e6db74">&#34;file&#34;</span>
     <span style="color:#a6e22e">url</span> = <span style="color:#e6db74">&#34;https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim&#34;</span>
-    <span style="color:#a6e22e">refreshPeriod</span> = <span style="color:#e6db74">&#34;1w&#34;</span>
+    <span style="color:#a6e22e">refreshPeriod</span> = <span style="color:#e6db74">&#34;168h&#34;</span>
 [<span style="color:#e6db74">&#34;.oh-my-zsh&#34;</span>]
     <span style="color:#a6e22e">type</span> = <span style="color:#e6db74">&#34;archive&#34;</span>
     <span style="color:#a6e22e">url</span> = <span style="color:#e6db74">&#34;https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz&#34;</span>
     <span style="color:#a6e22e">exact</span> = <span style="color:#66d9ef">true</span>
     <span style="color:#a6e22e">stripComponents</span> = <span style="color:#ae81ff">1</span>
-    <span style="color:#a6e22e">refreshPeriod</span> = <span style="color:#e6db74">&#34;1w&#34;</span>
+    <span style="color:#a6e22e">refreshPeriod</span> = <span style="color:#e6db74">&#34;168h&#34;</span>
 [<span style="color:#e6db74">&#34;.oh-my-zsh/custom/plugins/zsh-syntax-highlighting&#34;</span>]
     <span style="color:#a6e22e">type</span> = <span style="color:#e6db74">&#34;archive&#34;</span>
     <span style="color:#a6e22e">url</span> = <span style="color:#e6db74">&#34;https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz&#34;</span>
     <span style="color:#a6e22e">exact</span> = <span style="color:#66d9ef">true</span>
     <span style="color:#a6e22e">stripComponents</span> = <span style="color:#ae81ff">1</span>
-    <span style="color:#a6e22e">refreshPeriod</span> = <span style="color:#e6db74">&#34;1w&#34;</span>
+    <span style="color:#a6e22e">refreshPeriod</span> = <span style="color:#e6db74">&#34;168h&#34;</span>
 [<span style="color:#e6db74">&#34;.oh-my-zsh/custom/themes/powerlevel10k&#34;</span>]
     <span style="color:#a6e22e">type</span> = <span style="color:#e6db74">&#34;archive&#34;</span>
     <span style="color:#a6e22e">url</span> = <span style="color:#e6db74">&#34;https://github.com/romkatv/powerlevel10k/archive/v1.15.0.tar.gz&#34;</span>

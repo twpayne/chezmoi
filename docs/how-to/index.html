@@ -17,7 +17,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.feeed5143ae67506cbcf0d94e3edbdce7f8b59de6d4521161b2a7125f3df46a0.js" integrity="sha256-/u7VFDrmdQbLzw2U4&#43;29zn&#43;LWd5tRSEWGypxJfPfRqA=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.0f3d2e4d019bfdfdf363073ec5607d29e10bb3c6d21480334a9820f55c941034.js" integrity="sha256-Dz0uTQGb/f3zYwc&#43;xWB9KeELs8bSFIAzSpgg9VyUEDQ=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -460,13 +460,13 @@ plugin</a>, and
     <span style="color:#a6e22e">url</span> = <span style="color:#e6db74">&#34;https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz&#34;</span>
     <span style="color:#a6e22e">exact</span> = <span style="color:#66d9ef">true</span>
     <span style="color:#a6e22e">stripComponents</span> = <span style="color:#ae81ff">1</span>
-    <span style="color:#a6e22e">refreshPeriod</span> = <span style="color:#e6db74">&#34;1w&#34;</span>
+    <span style="color:#a6e22e">refreshPeriod</span> = <span style="color:#e6db74">&#34;168h&#34;</span>
 [<span style="color:#e6db74">&#34;.oh-my-zsh/custom/plugins/zsh-syntax-highlighting&#34;</span>]
     <span style="color:#a6e22e">type</span> = <span style="color:#e6db74">&#34;archive&#34;</span>
     <span style="color:#a6e22e">url</span> = <span style="color:#e6db74">&#34;https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz&#34;</span>
     <span style="color:#a6e22e">exact</span> = <span style="color:#66d9ef">true</span>
     <span style="color:#a6e22e">stripComponents</span> = <span style="color:#ae81ff">1</span>
-    <span style="color:#a6e22e">refreshPeriod</span> = <span style="color:#e6db74">&#34;1w&#34;</span>
+    <span style="color:#a6e22e">refreshPeriod</span> = <span style="color:#e6db74">&#34;168h&#34;</span>
 [<span style="color:#e6db74">&#34;.oh-my-zsh/custom/themes/powerlevel10k&#34;</span>]
     <span style="color:#a6e22e">type</span> = <span style="color:#e6db74">&#34;archive&#34;</span>
     <span style="color:#a6e22e">url</span> = <span style="color:#e6db74">&#34;https://github.com/romkatv/powerlevel10k/archive/v1.15.0.tar.gz&#34;</span>
@@ -478,12 +478,12 @@ plugin</a>, and
 source state. chezmoi caches downloaded archives locally to avoid re-downloading
 them every time you run a chezmoi command, and will only re-download them at
 most every <code>refreshPeriod</code> (default never).</p>
-<p>In the above example <code>refreshPeriod</code> is set to <code>1w</code> (one week) for <code>.oh-my-zsh</code>
-and <code>.oh-my-zsh/custom/plugins/zsh-syntax-highlighting</code> because the URL point to
-tarballs of the <code>master</code> branch, which changes over time. No refresh period is
-set for <code>.oh-my-zsh/custom/themes/powerlevel10k</code> because the URL points to the a
-tarball of a tagged version, which does not change over time. To bump the
-version of powerlevel10k, change the version in the URL.</p>
+<p>In the above example <code>refreshPeriod</code> is set to <code>168h</code> (one week) for
+<code>.oh-my-zsh</code> and <code>.oh-my-zsh/custom/plugins/zsh-syntax-highlighting</code> because the
+URL point to tarballs of the <code>master</code> branch, which changes over time. No
+refresh period is set for <code>.oh-my-zsh/custom/themes/powerlevel10k</code> because the
+URL points to the a tarball of a tagged version, which does not change over
+time. To bump the version of powerlevel10k, change the version in the URL.</p>
 <p>To force a refresh the downloaded archives, use the <code>--refresh-externals</code> flag
 to <code>chezmoi apply</code>:</p>
 <pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi --refresh-externals apply
@@ -508,7 +508,7 @@ to include
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#e6db74">&#34;.vim/autoload/plug.vim&#34;</span>]
     <span style="color:#a6e22e">type</span> = <span style="color:#e6db74">&#34;file&#34;</span>
     <span style="color:#a6e22e">url</span> = <span style="color:#e6db74">&#34;https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim&#34;</span>
-    <span style="color:#a6e22e">refreshPeriod</span> = <span style="color:#e6db74">&#34;1w&#34;</span>
+    <span style="color:#a6e22e">refreshPeriod</span> = <span style="color:#e6db74">&#34;168h&#34;</span>
 </code></pre></div><hr>
 <h3 id="handle-configuration-files-which-are-externally-modified">
   Handle configuration files which are externally modified
