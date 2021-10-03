@@ -116,6 +116,6 @@ $ cd chezmoi
 $ make install
 ```
 
-Building chezmoi requires Go 1.17 or later.
+Building chezmoi requires Go 1.16 or later.
 
 ---

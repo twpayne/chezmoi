@@ -91,6 +91,23 @@ jobs:
         sudo install -m 755 age/age-keygen /usr/local/bin
     - name: Test
       run: go test -race ./...
+  test-openbsd:
+    runs-on: macos-latest
+    env:
+      VAGRANT_BOX: openbsd6
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Cache Vagrant Boxes
+      uses: actions/cache@v2
+      with:
+        path: ~/.vagrant.d
+        key: ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-${{ hashFiles('assets/vagrant/*.Vagrantfile') }}
+        restore-keys: |
+          ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-
+    - name: Test
+      run: |
+        ( cd assets/vagrant && ./test.sh openbsd6 )
   test-ubuntu:
     runs-on: ubuntu-18.04
     steps:
@@ -167,6 +184,36 @@ jobs:
       with:
         name: chezmoi-windows-amd64.exe
         path: dist/chezmoi-nocgo_windows_amd64/chezmoi.exe
+  test-ubuntu-go1-16:
+    runs-on: ubuntu-18.04
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.16.x
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Cache Go modules
+      uses: actions/cache@v2
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-ubuntu-go-1-16-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-ubuntu-go-1-16-
+    - name: Build
+      run: |
+        go build ./...
+    - name: Run
+      run: |
+        go run . --version
+    - name: Install age
+      run: |
+        cd $(mktemp -d)
+        curl -fsSL https://dl.filippo.io/age/v${AGE_VERSION}?for=linux/amd64 | tar xzf -
+        sudo install -m 755 age/age /usr/local/bin
+        sudo install -m 755 age/age-keygen /usr/local/bin
+    - name: Test
+      run: go test ./...
   test-windows:
     runs-on: windows-latest
     steps:
@@ -275,6 +322,7 @@ jobs:
     - test-fedora
     - test-freebsd
     - test-macos
+    - test-openbsd
     - test-ubuntu
     - test-windows
     runs-on: ubuntu-18.04
