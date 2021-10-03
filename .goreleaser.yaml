@@ -105,6 +105,7 @@ changelog:
   filters:
     exclude:
     - "^chore:"
+    - "^chore\\(deps\\):"
     - "^test:"
     - Merge pull request
     - Merge branch
