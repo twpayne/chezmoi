@@ -740,8 +740,8 @@ By default, chezmoi will cache downloaded URLs. The optional duration
 `refreshPeriod` field specifies how often chezmoi will re-download the URL. The
 default is zero meaning that chezmoi will never re-download unless forced. To
 force chezmoi to re-download URLs, pass the `-R`/`--refresh-externals` flag.
-Suitable refresh periods include one day (`1d`), one week (`1w`), or four weeks
-(`4w`).
+Suitable refresh periods include one day (`24h`), one week (`168h`), or four
+weeks (`672h`).
 
 #### `.chezmoiexternal.<format>` examples
 
@@ -749,19 +749,19 @@ Suitable refresh periods include one day (`1d`), one week (`1w`), or four weeks
 [".vim/autoload/plug.vim"]
     type = "file"
     url = "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
-    refreshPeriod = "1w"
+    refreshPeriod = "168h"
 [".oh-my-zsh"]
     type = "archive"
     url = "https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz"
     exact = true
     stripComponents = 1
-    refreshPeriod = "1w"
+    refreshPeriod = "168h"
 [".oh-my-zsh/custom/plugins/zsh-syntax-highlighting"]
     type = "archive"
     url = "https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz"
     exact = true
     stripComponents = 1
-    refreshPeriod = "1w"
+    refreshPeriod = "168h"
 [".oh-my-zsh/custom/themes/powerlevel10k"]
     type = "archive"
     url = "https://github.com/romkatv/powerlevel10k/archive/v1.15.0.tar.gz"

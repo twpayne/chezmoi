@@ -373,13 +373,13 @@ plugin](https://github.com/zsh-users/zsh-syntax-highlighting), and
     url = "https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz"
     exact = true
     stripComponents = 1
-    refreshPeriod = "1w"
+    refreshPeriod = "168h"
 [".oh-my-zsh/custom/plugins/zsh-syntax-highlighting"]
     type = "archive"
     url = "https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz"
     exact = true
     stripComponents = 1
-    refreshPeriod = "1w"
+    refreshPeriod = "168h"
 [".oh-my-zsh/custom/themes/powerlevel10k"]
     type = "archive"
     url = "https://github.com/romkatv/powerlevel10k/archive/v1.15.0.tar.gz"
@@ -398,12 +398,12 @@ source state. chezmoi caches downloaded archives locally to avoid re-downloading
 them every time you run a chezmoi command, and will only re-download them at
 most every `refreshPeriod` (default never).
 
-In the above example `refreshPeriod` is set to `1w` (one week) for `.oh-my-zsh`
-and `.oh-my-zsh/custom/plugins/zsh-syntax-highlighting` because the URL point to
-tarballs of the `master` branch, which changes over time. No refresh period is
-set for `.oh-my-zsh/custom/themes/powerlevel10k` because the URL points to the a
-tarball of a tagged version, which does not change over time. To bump the
-version of powerlevel10k, change the version in the URL.
+In the above example `refreshPeriod` is set to `168h` (one week) for
+`.oh-my-zsh` and `.oh-my-zsh/custom/plugins/zsh-syntax-highlighting` because the
+URL point to tarballs of the `master` branch, which changes over time. No
+refresh period is set for `.oh-my-zsh/custom/themes/powerlevel10k` because the
+URL points to the a tarball of a tagged version, which does not change over
+time. To bump the version of powerlevel10k, change the version in the URL.
 
 To force a refresh the downloaded archives, use the `--refresh-externals` flag
 to `chezmoi apply`:
@@ -439,7 +439,7 @@ to include
 [".vim/autoload/plug.vim"]
     type = "file"
     url = "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
-    refreshPeriod = "1w"
+    refreshPeriod = "168h"
 ```
 
 ---
