@@ -1184,21 +1184,32 @@ func (s *SourceState) newSourceStateDir(sourceRelPath SourceRelPath, dirAttr Dir
 // newCreateTargetStateEntryFunc returns a targetStateEntryFunc that returns a
 // file with sourceLazyContents if the file does not already exist, or returns
 // the actual file's contents unchanged if the file already exists.
-func (s *SourceState) newCreateTargetStateEntryFunc(fileAttr FileAttr, sourceLazyContents *lazyContents) targetStateEntryFunc {
+func (s *SourceState) newCreateTargetStateEntryFunc(sourceRelPath SourceRelPath, fileAttr FileAttr, sourceLazyContents *lazyContents) targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
+		var lazyContents *lazyContents
 		contents, err := destSystem.ReadFile(destAbsPath)
 		switch {
 		case err == nil:
+			lazyContents = newLazyContents(contents)
 		case errors.Is(err, fs.ErrNotExist):
-			contents, err = sourceLazyContents.Contents()
-			if err != nil {
-				return nil, err
-			}
+			lazyContents = newLazyContentsFunc(func() ([]byte, error) {
+				contents, err = sourceLazyContents.Contents()
+				if err != nil {
+					return nil, err
+				}
+				if fileAttr.Template {
+					contents, err = s.ExecuteTemplateData(sourceRelPath.String(), contents)
+					if err != nil {
+						return nil, err
+					}
+				}
+				return contents, nil
+			})
 		default:
 			return nil, err
 		}
 		return &TargetStateFile{
-			lazyContents: newLazyContents(contents),
+			lazyContents: lazyContents,
 			empty:        true,
 			perm:         fileAttr.perm() &^ s.umask,
 		}, nil
@@ -1386,7 +1397,7 @@ func (s *SourceState) newSourceStateFile(sourceRelPath SourceRelPath, fileAttr F
 	var targetStateEntryFunc targetStateEntryFunc
 	switch fileAttr.Type {
 	case SourceFileTypeCreate:
-		targetStateEntryFunc = s.newCreateTargetStateEntryFunc(fileAttr, sourceLazyContents)
+		targetStateEntryFunc = s.newCreateTargetStateEntryFunc(sourceRelPath, fileAttr, sourceLazyContents)
 	case SourceFileTypeFile:
 		targetStateEntryFunc = s.newFileTargetStateEntryFunc(sourceRelPath, fileAttr, sourceLazyContents)
 	case SourceFileTypeModify:
