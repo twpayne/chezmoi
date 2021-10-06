@@ -1187,8 +1187,7 @@ func (s *SourceState) newSourceStateDir(sourceRelPath SourceRelPath, dirAttr Dir
 func (s *SourceState) newCreateTargetStateEntryFunc(sourceRelPath SourceRelPath, fileAttr FileAttr, sourceLazyContents *lazyContents) targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		var lazyContents *lazyContents
-		contents, err := destSystem.ReadFile(destAbsPath)
-		switch {
+		switch contents, err := destSystem.ReadFile(destAbsPath); {
 		case err == nil:
 			lazyContents = newLazyContents(contents)
 		case errors.Is(err, fs.ErrNotExist):
