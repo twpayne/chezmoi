@@ -65,11 +65,6 @@ func AgeGenerateKey(filename string) (publicKey, privateKeyFile string, err erro
 	return
 }
 
-// GPGCommand returns the path to gpg, if it can be found.
-func GPGCommand() (string, error) {
-	return exec.LookPath("gpg")
-}
-
 // GPGGenerateKey generates GPG key in homeDir and returns the key and the
 // passphrase.
 func GPGGenerateKey(command, homeDir string) (key, passphrase string, err error) {

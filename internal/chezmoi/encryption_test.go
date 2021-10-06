@@ -1,8 +1,10 @@
 package chezmoi
 
 import (
+	"errors"
 	"math/rand"
 	"os"
+	"os/exec"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -45,6 +47,16 @@ func (e *xorEncryption) xorWithKey(input []byte) []byte {
 		output = append(output, b^e.key)
 	}
 	return output
+}
+
+func lookPathOrSkip(t *testing.T, file string) string {
+	t.Helper()
+	command, err := exec.LookPath(file)
+	if errors.Is(err, exec.ErrNotFound) {
+		t.Skipf("%s not found in $PATH", file)
+	}
+	require.NoError(t, err)
+	return command
 }
 
 func testEncryptionDecryptToFile(t *testing.T, encryption Encryption) {
@@ -106,10 +118,14 @@ func testEncryptionEncryptFile(t *testing.T, encryption Encryption) {
 }
 
 func TestXOREncryption(t *testing.T) {
-	xorEncryption := &xorEncryption{
+	testEncryption(t, &xorEncryption{
 		key: byte(rand.Int() + 1),
-	}
-	testEncryptionDecryptToFile(t, xorEncryption)
-	testEncryptionEncryptDecrypt(t, xorEncryption)
-	testEncryptionEncryptFile(t, xorEncryption)
+	})
+}
+
+func testEncryption(t *testing.T, encryption Encryption) {
+	t.Helper()
+	testEncryptionDecryptToFile(t, encryption)
+	testEncryptionEncryptDecrypt(t, encryption)
+	testEncryptionEncryptFile(t, encryption)
 }

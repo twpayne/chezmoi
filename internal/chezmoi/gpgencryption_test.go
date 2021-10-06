@@ -1,8 +1,6 @@
 package chezmoi
 
 import (
-	"errors"
-	"os/exec"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -11,11 +9,7 @@ import (
 )
 
 func TestGPGEncryption(t *testing.T) {
-	command, err := chezmoitest.GPGCommand()
-	if errors.Is(err, exec.ErrNotFound) {
-		t.Skip("gpg not found in $PATH")
-	}
-	require.NoError(t, err)
+	command := lookPathOrSkip(t, "gpg")
 
 	tempDir := t.TempDir()
 	key, passphrase, err := chezmoitest.GPGGenerateKey(command, tempDir)
@@ -35,7 +29,7 @@ func TestGPGEncryption(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			gpgEncryption := &GPGEncryption{
+			testEncryption(t, &GPGEncryption{
 				Command: command,
 				Args: []string{
 					"--homedir", tempDir,
@@ -45,11 +39,7 @@ func TestGPGEncryption(t *testing.T) {
 				},
 				Recipient: key,
 				Symmetric: tc.symmetric,
-			}
-
-			testEncryptionDecryptToFile(t, gpgEncryption)
-			testEncryptionEncryptDecrypt(t, gpgEncryption)
-			testEncryptionEncryptFile(t, gpgEncryption)
+			})
 		})
 	}
 }
