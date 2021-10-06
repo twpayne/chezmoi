@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
+	"os/exec"
 	"path"
 	"path/filepath"
 	"regexp"
@@ -307,7 +308,7 @@ func cmdMkGPGConfig(ts *testscript.TestScript, neg bool, args []string) {
 		ts.Check(os.Chmod(gpgHomeDir, 0o700))
 	}
 
-	command, err := chezmoitest.GPGCommand()
+	command, err := exec.LookPath("gpg")
 	ts.Check(err)
 
 	key, passphrase, err := chezmoitest.GPGGenerateKey(command, gpgHomeDir)
