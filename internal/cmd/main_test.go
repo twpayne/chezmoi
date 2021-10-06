@@ -217,8 +217,7 @@ func cmdMkFile(ts *testscript.TestScript, neg bool, args []string) {
 	}
 	for _, arg := range args {
 		filename := ts.MkAbs(arg)
-		_, err := os.Lstat(filename)
-		switch {
+		switch _, err := os.Lstat(filename); {
 		case err == nil:
 			ts.Fatalf("%s: already exists", arg)
 		case !errors.Is(err, fs.ErrNotExist):
@@ -613,18 +612,18 @@ func setup(env *testscript.Env) error {
 
 // unix2DOS returns data with UNIX line endings converted to DOS line endings.
 func unix2DOS(data []byte) ([]byte, error) {
-	sb := strings.Builder{}
-	s := bufio.NewScanner(bytes.NewReader(data))
-	for s.Scan() {
-		if _, err := sb.Write(s.Bytes()); err != nil {
+	builder := strings.Builder{}
+	scanner := bufio.NewScanner(bytes.NewReader(data))
+	for scanner.Scan() {
+		if _, err := builder.Write(scanner.Bytes()); err != nil {
 			return nil, err
 		}
-		if _, err := sb.WriteString("\r\n"); err != nil {
+		if _, err := builder.WriteString("\r\n"); err != nil {
 			return nil, err
 		}
 	}
-	if err := s.Err(); err != nil {
+	if err := scanner.Err(); err != nil {
 		return nil, err
 	}
-	return []byte(sb.String()), nil
+	return []byte(builder.String()), nil
 }

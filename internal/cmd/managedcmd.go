@@ -50,9 +50,9 @@ func (c *Config) runManagedCmd(cmd *cobra.Command, args []string, sourceState *c
 	sort.Slice(targetRelPaths, func(i, j int) bool {
 		return targetRelPaths[i] < targetRelPaths[j]
 	})
-	sb := strings.Builder{}
+	builder := strings.Builder{}
 	for _, targetRelPath := range targetRelPaths {
-		fmt.Fprintln(&sb, targetRelPath)
+		fmt.Fprintln(&builder, targetRelPath)
 	}
-	return c.writeOutputString(sb.String())
+	return c.writeOutputString(builder.String())
 }

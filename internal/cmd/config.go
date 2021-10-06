@@ -671,15 +671,15 @@ func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte) ([]byte
 		return nil, err
 	}
 
-	sb := strings.Builder{}
+	builder := strings.Builder{}
 	templateData := c.defaultTemplateData()
 	if c.init.data {
 		chezmoi.RecursiveMerge(templateData, c.Data)
 	}
-	if err = t.Execute(&sb, templateData); err != nil {
+	if err = t.Execute(&builder, templateData); err != nil {
 		return nil, err
 	}
-	return []byte(sb.String()), nil
+	return []byte(builder.String()), nil
 }
 
 // defaultConfigFile returns the default config file according to the XDG Base
@@ -948,8 +948,8 @@ func (c *Config) destAbsPathInfos(sourceState *chezmoi.SourceState, args []strin
 // diffFile outputs the diff between fromData and fromMode and toData and toMode
 // at path.
 func (c *Config) diffFile(path chezmoi.RelPath, fromData []byte, fromMode fs.FileMode, toData []byte, toMode fs.FileMode) error {
-	var sb strings.Builder
-	unifiedEncoder := diff.NewUnifiedEncoder(&sb, diff.DefaultContextLines)
+	builder := strings.Builder{}
+	unifiedEncoder := diff.NewUnifiedEncoder(&builder, diff.DefaultContextLines)
 	color := c.Color.Value(c.colorAutoFunc)
 	if color {
 		unifiedEncoder.SetColor(diff.NewColorConfig())
@@ -961,7 +961,7 @@ func (c *Config) diffFile(path chezmoi.RelPath, fromData []byte, fromMode fs.Fil
 	if err := unifiedEncoder.Encode(diffPatch); err != nil {
 		return err
 	}
-	return c.pageOutputString(sb.String(), c.Diff.Pager)
+	return c.pageOutputString(builder.String(), c.Diff.Pager)
 }
 
 // doPurge is the core purge functionality. It removes all files and directories

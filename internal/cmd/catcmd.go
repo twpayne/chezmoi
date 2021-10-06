@@ -30,7 +30,7 @@ func (c *Config) runCatCmd(cmd *cobra.Command, args []string, sourceState *chezm
 		return err
 	}
 
-	sb := strings.Builder{}
+	builder := strings.Builder{}
 	for _, targetRelPath := range targetRelPaths {
 		targetStateEntry, err := sourceState.MustEntry(targetRelPath).TargetStateEntry(c.destSystem, c.DestDirAbsPath.Join(targetRelPath))
 		if err != nil {
@@ -42,22 +42,22 @@ func (c *Config) runCatCmd(cmd *cobra.Command, args []string, sourceState *chezm
 			if err != nil {
 				return fmt.Errorf("%s: %w", targetRelPath, err)
 			}
-			sb.Write(contents)
+			builder.Write(contents)
 		case *chezmoi.TargetStateScript:
 			contents, err := targetStateEntry.Contents()
 			if err != nil {
 				return fmt.Errorf("%s: %w", targetRelPath, err)
 			}
-			sb.Write(contents)
+			builder.Write(contents)
 		case *chezmoi.TargetStateSymlink:
 			linkname, err := targetStateEntry.Linkname()
 			if err != nil {
 				return fmt.Errorf("%s: %w", targetRelPath, err)
 			}
-			sb.WriteString(linkname + "\n")
+			builder.WriteString(linkname + "\n")
 		default:
 			return fmt.Errorf("%s: not a file, script, or symlink", targetRelPath)
 		}
 	}
-	return c.writeOutputString(sb.String())
+	return c.writeOutputString(builder.String())
 }

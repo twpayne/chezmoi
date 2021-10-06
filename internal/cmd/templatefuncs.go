@@ -68,8 +68,7 @@ func (c *Config) joinPathTemplateFunc(elem ...string) string {
 }
 
 func (c *Config) lookPathTemplateFunc(file string) string {
-	path, err := exec.LookPath(file)
-	switch {
+	switch path, err := exec.LookPath(file); {
 	case err == nil:
 		return path
 	case errors.Is(err, exec.ErrNotFound):
@@ -101,8 +100,7 @@ func (c *Config) outputTemplateFunc(name string, args ...string) string {
 }
 
 func (c *Config) statTemplateFunc(name string) interface{} {
-	info, err := c.fileSystem.Stat(name)
-	switch {
+	switch info, err := c.fileSystem.Stat(name); {
 	case err == nil:
 		return map[string]interface{}{
 			"name":    info.Name(),

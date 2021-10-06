@@ -12,31 +12,31 @@ import (
 )
 
 func TestArchiveReaderSystemTAR(t *testing.T) {
-	b := &bytes.Buffer{}
-	w := tar.NewWriter(b)
-	assert.NoError(t, w.WriteHeader(&tar.Header{
+	buffer := &bytes.Buffer{}
+	tarWriter := tar.NewWriter(buffer)
+	assert.NoError(t, tarWriter.WriteHeader(&tar.Header{
 		Typeflag: tar.TypeDir,
 		Name:     "dir/",
 		Mode:     0o777,
 	}))
 	data := []byte("# contents of dir/file\n")
-	assert.NoError(t, w.WriteHeader(&tar.Header{
+	assert.NoError(t, tarWriter.WriteHeader(&tar.Header{
 		Typeflag: tar.TypeReg,
 		Name:     "dir/file",
 		Size:     int64(len(data)),
 		Mode:     0o666,
 	}))
-	_, err := w.Write(data)
+	_, err := tarWriter.Write(data)
 	assert.NoError(t, err)
 	linkname := "file"
-	assert.NoError(t, w.WriteHeader(&tar.Header{
+	assert.NoError(t, tarWriter.WriteHeader(&tar.Header{
 		Typeflag: tar.TypeSymlink,
 		Name:     "dir/symlink",
 		Linkname: linkname,
 	}))
-	require.NoError(t, w.Close())
+	require.NoError(t, tarWriter.Close())
 
-	archiveReaderSystem, err := NewArchiveReaderSystem("archive.tar", b.Bytes(), ArchiveFormatTar, ArchiveReaderSystemOptions{
+	archiveReaderSystem, err := NewArchiveReaderSystem("archive.tar", buffer.Bytes(), ArchiveFormatTar, ArchiveReaderSystemOptions{
 		RootAbsPath:     NewAbsPath("/home/user"),
 		StripComponents: 1,
 	})

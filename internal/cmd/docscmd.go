@@ -95,7 +95,7 @@ func (c *Config) runDocsCmd(cmd *cobra.Command, args []string) error {
 		width = c.Docs.MaxWidth
 	}
 
-	tr, err := glamour.NewTermRenderer(
+	termRenderer, err := glamour.NewTermRenderer(
 		glamour.WithStyles(glamour.ASCIIStyleConfig),
 		glamour.WithWordWrap(width),
 	)
@@ -103,7 +103,7 @@ func (c *Config) runDocsCmd(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	renderedData, err := tr.RenderBytes(documentData)
+	renderedData, err := termRenderer.RenderBytes(documentData)
 	if err != nil {
 		return err
 	}

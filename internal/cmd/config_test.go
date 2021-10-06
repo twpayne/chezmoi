@@ -18,12 +18,12 @@ import (
 
 func TestAddTemplateFuncPanic(t *testing.T) {
 	chezmoitest.WithTestFS(t, nil, func(fileSystem vfs.FS) {
-		c := newTestConfig(t, fileSystem)
+		config := newTestConfig(t, fileSystem)
 		assert.NotPanics(t, func() {
-			c.addTemplateFunc("func", nil)
+			config.addTemplateFunc("func", nil)
 		})
 		assert.Panics(t, func() {
-			c.addTemplateFunc("func", nil)
+			config.addTemplateFunc("func", nil)
 		})
 	})
 }
@@ -168,7 +168,7 @@ func TestValidateKeys(t *testing.T) {
 func newTestConfig(t *testing.T, fileSystem vfs.FS, options ...configOption) *Config {
 	t.Helper()
 	system := chezmoi.NewRealSystem(fileSystem)
-	c, err := newConfig(
+	config, err := newConfig(
 		append([]configOption{
 			withBaseSystem(system),
 			withDestSystem(system),
@@ -179,7 +179,7 @@ func newTestConfig(t *testing.T, fileSystem vfs.FS, options ...configOption) *Co
 		}, options...)...,
 	)
 	require.NoError(t, err)
-	return c
+	return config
 }
 
 func withBaseSystem(baseSystem chezmoi.System) configOption {
@@ -226,38 +226,38 @@ func withTestFS(fileSystem vfs.FS) configOption {
 
 func withTestUser(t *testing.T, username string) configOption {
 	t.Helper()
-	return func(c *Config) error {
+	return func(config *Config) error {
 		var env string
 		switch runtime.GOOS {
 		case "plan9":
-			c.homeDir = filepath.Join("/", "home", username)
+			config.homeDir = filepath.Join("/", "home", username)
 			env = "home"
 		case "windows":
-			c.homeDir = filepath.Join("C:\\", "home", username)
+			config.homeDir = filepath.Join("C:\\", "home", username)
 			env = "USERPROFILE"
 		default:
-			c.homeDir = filepath.Join("/", "home", username)
+			config.homeDir = filepath.Join("/", "home", username)
 			env = "HOME"
 		}
-		testSetenv(t, env, c.homeDir)
+		testSetenv(t, env, config.homeDir)
 		var err error
-		c.homeDirAbsPath, err = chezmoi.NormalizePath(c.homeDir)
+		config.homeDirAbsPath, err = chezmoi.NormalizePath(config.homeDir)
 		if err != nil {
 			panic(err)
 		}
-		c.CacheDirAbsPath = c.homeDirAbsPath.Join(".cache", "chezmoi")
-		c.SourceDirAbsPath = c.homeDirAbsPath.Join(".local", "share", "chezmoi")
-		c.DestDirAbsPath = c.homeDirAbsPath
-		c.Umask = 0o22
-		configHome := filepath.Join(c.homeDir, ".config")
-		dataHome := filepath.Join(c.homeDir, ".local", "share")
-		c.bds = &xdg.BaseDirectorySpecification{
+		config.CacheDirAbsPath = config.homeDirAbsPath.Join(".cache", "chezmoi")
+		config.SourceDirAbsPath = config.homeDirAbsPath.Join(".local", "share", "chezmoi")
+		config.DestDirAbsPath = config.homeDirAbsPath
+		config.Umask = 0o22
+		configHome := filepath.Join(config.homeDir, ".config")
+		dataHome := filepath.Join(config.homeDir, ".local", "share")
+		config.bds = &xdg.BaseDirectorySpecification{
 			ConfigHome: configHome,
 			ConfigDirs: []string{configHome},
 			DataHome:   dataHome,
 			DataDirs:   []string{dataHome},
-			CacheHome:  filepath.Join(c.homeDir, ".cache"),
-			RuntimeDir: filepath.Join(c.homeDir, ".run"),
+			CacheHome:  filepath.Join(config.homeDir, ".cache"),
+			RuntimeDir: filepath.Join(config.homeDir, ".run"),
 		}
 		return nil
 	}

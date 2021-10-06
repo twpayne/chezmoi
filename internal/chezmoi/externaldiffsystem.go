@@ -203,14 +203,14 @@ func (s *ExternalDiffSystem) runDiffCommand(destAbsPath, targetAbsPath AbsPath) 
 			return err
 		}
 
-		var sb strings.Builder
-		if err := tmpl.Execute(&sb, templateData); err != nil {
+		builder := strings.Builder{}
+		if err := tmpl.Execute(&builder, templateData); err != nil {
 			return err
 		}
-		args = append(args, sb.String())
+		args = append(args, builder.String())
 
 		// Detect template arguments.
-		if arg != sb.String() {
+		if arg != builder.String() {
 			anyTemplateArgs = true
 		}
 	}

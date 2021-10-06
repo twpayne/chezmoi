@@ -40,7 +40,7 @@ func (c *Config) newStatusCmd() *cobra.Command {
 }
 
 func (c *Config) runStatusCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
-	sb := strings.Builder{}
+	builder := strings.Builder{}
 	dryRunSystem := chezmoi.NewDryRunSystem(c.destSystem)
 	statusCmdPreApplyFunc := func(targetRelPath chezmoi.RelPath, targetEntryState, lastWrittenEntryState, actualEntryState *chezmoi.EntryState) error {
 		log.Info().
@@ -62,7 +62,7 @@ func (c *Config) runStatusCmd(cmd *cobra.Command, args []string, sourceState *ch
 			y = statusRune(actualEntryState, targetEntryState)
 		}
 		if x != ' ' || y != ' ' {
-			fmt.Fprintf(&sb, "%c%c %s\n", x, y, targetRelPath)
+			fmt.Fprintf(&builder, "%c%c %s\n", x, y, targetRelPath)
 		}
 		return chezmoi.Skip
 	}
@@ -75,7 +75,7 @@ func (c *Config) runStatusCmd(cmd *cobra.Command, args []string, sourceState *ch
 	}); err != nil {
 		return err
 	}
-	return c.writeOutputString(sb.String())
+	return c.writeOutputString(builder.String())
 }
 
 func statusRune(fromState, toState *chezmoi.EntryState) rune {

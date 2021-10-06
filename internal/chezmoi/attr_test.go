@@ -33,13 +33,13 @@ func TestDirAttr(t *testing.T) {
 		Private:  []bool{false, true},
 		ReadOnly: []bool{false, true},
 	}
-	var das []DirAttr
-	require.NoError(t, combinator.Generate(&das, testData))
-	for _, da := range das {
-		actualSourceName := da.SourceName()
-		actualDA := parseDirAttr(actualSourceName)
-		assert.Equal(t, da, actualDA)
-		assert.Equal(t, actualSourceName, actualDA.SourceName())
+	var dirAttrs []DirAttr
+	require.NoError(t, combinator.Generate(&dirAttrs, testData))
+	for _, dirAttr := range dirAttrs {
+		actualSourceName := dirAttr.SourceName()
+		actualDirAttr := parseDirAttr(actualSourceName)
+		assert.Equal(t, dirAttr, actualDirAttr)
+		assert.Equal(t, actualSourceName, actualDirAttr.SourceName())
 	}
 }
 
@@ -76,7 +76,7 @@ func TestDirAttrLiteral(t *testing.T) {
 }
 
 func TestFileAttr(t *testing.T) {
-	var fas []FileAttr
+	var fileAttrs []FileAttr
 	targetNames := []string{
 		".name",
 		"create_name",
@@ -91,7 +91,7 @@ func TestFileAttr(t *testing.T) {
 		"symlink_name",
 		"template.tmpl",
 	}
-	require.NoError(t, combinator.Generate(&fas, struct {
+	require.NoError(t, combinator.Generate(&fileAttrs, struct {
 		Type       SourceFileTargetType
 		TargetName []string
 		Encrypted  []bool
@@ -108,7 +108,7 @@ func TestFileAttr(t *testing.T) {
 		ReadOnly:   []bool{false, true},
 		Template:   []bool{false, true},
 	}))
-	require.NoError(t, combinator.Generate(&fas, struct {
+	require.NoError(t, combinator.Generate(&fileAttrs, struct {
 		Type       SourceFileTargetType
 		TargetName []string
 		Empty      []bool
@@ -127,7 +127,7 @@ func TestFileAttr(t *testing.T) {
 		ReadOnly:   []bool{false, true},
 		Template:   []bool{false, true},
 	}))
-	require.NoError(t, combinator.Generate(&fas, struct {
+	require.NoError(t, combinator.Generate(&fileAttrs, struct {
 		Type       SourceFileTargetType
 		TargetName []string
 		Executable []bool
@@ -142,14 +142,14 @@ func TestFileAttr(t *testing.T) {
 		ReadOnly:   []bool{false, true},
 		Template:   []bool{false, true},
 	}))
-	require.NoError(t, combinator.Generate(&fas, struct {
+	require.NoError(t, combinator.Generate(&fileAttrs, struct {
 		Type       SourceFileTargetType
 		TargetName []string
 	}{
 		Type:       SourceFileTypeRemove,
 		TargetName: targetNames,
 	}))
-	require.NoError(t, combinator.Generate(&fas, struct {
+	require.NoError(t, combinator.Generate(&fileAttrs, struct {
 		Type       SourceFileTargetType
 		TargetName []string
 		Once       []bool
@@ -160,18 +160,18 @@ func TestFileAttr(t *testing.T) {
 		Once:       []bool{false, true},
 		Order:      []int{-1, 0, 1},
 	}))
-	require.NoError(t, combinator.Generate(&fas, struct {
+	require.NoError(t, combinator.Generate(&fileAttrs, struct {
 		Type       SourceFileTargetType
 		TargetName []string
 	}{
 		Type:       SourceFileTypeSymlink,
 		TargetName: targetNames,
 	}))
-	for _, fa := range fas {
-		actualSourceName := fa.SourceName("")
-		actualFA := parseFileAttr(actualSourceName, "")
-		assert.Equal(t, fa, actualFA)
-		assert.Equal(t, actualSourceName, actualFA.SourceName(""))
+	for _, fileAttr := range fileAttrs {
+		actualSourceName := fileAttr.SourceName("")
+		actualFileAttr := parseFileAttr(actualSourceName, "")
+		assert.Equal(t, fileAttr, actualFileAttr)
+		assert.Equal(t, actualSourceName, actualFileAttr.SourceName(""))
 	}
 }
 

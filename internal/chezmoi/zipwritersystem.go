@@ -11,32 +11,32 @@ import (
 type ZIPWriterSystem struct {
 	emptySystemMixin
 	noUpdateSystemMixin
-	w        *zip.Writer
-	modified time.Time
+	zipWriter *zip.Writer
+	modified  time.Time
 }
 
 // NewZIPWriterSystem returns a new ZIPWriterSystem that writes a ZIP archive to
 // w.
 func NewZIPWriterSystem(w io.Writer, modified time.Time) *ZIPWriterSystem {
 	return &ZIPWriterSystem{
-		w:        zip.NewWriter(w),
-		modified: modified,
+		zipWriter: zip.NewWriter(w),
+		modified:  modified,
 	}
 }
 
 // Close closes m.
 func (s *ZIPWriterSystem) Close() error {
-	return s.w.Close()
+	return s.zipWriter.Close()
 }
 
 // Mkdir implements System.Mkdir.
 func (s *ZIPWriterSystem) Mkdir(name AbsPath, perm fs.FileMode) error {
-	fh := zip.FileHeader{
+	fileHeader := zip.FileHeader{
 		Name:     name.String(),
 		Modified: s.modified,
 	}
-	fh.SetMode(fs.ModeDir | perm)
-	_, err := s.w.CreateHeader(&fh)
+	fileHeader.SetMode(fs.ModeDir | perm)
+	_, err := s.zipWriter.CreateHeader(&fileHeader)
 	return err
 }
 
@@ -54,7 +54,7 @@ func (s *ZIPWriterSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileM
 		UncompressedSize64: uint64(len(data)),
 	}
 	fh.SetMode(perm)
-	fw, err := s.w.CreateHeader(&fh)
+	fw, err := s.zipWriter.CreateHeader(&fh)
 	if err != nil {
 		return err
 	}
@@ -71,7 +71,7 @@ func (s *ZIPWriterSystem) WriteSymlink(oldname string, newname AbsPath) error {
 		UncompressedSize64: uint64(len(data)),
 	}
 	fh.SetMode(fs.ModeSymlink)
-	fw, err := s.w.CreateHeader(&fh)
+	fw, err := s.zipWriter.CreateHeader(&fh)
 	if err != nil {
 		return err
 	}

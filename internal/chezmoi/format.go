@@ -50,16 +50,16 @@ func (formatGzippedJSON) Marshal(value interface{}) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	sb := &strings.Builder{}
-	sb.Grow(len(jsonData))
-	w := gzip.NewWriter(sb)
-	if _, err := w.Write(jsonData); err != nil {
+	builder := &strings.Builder{}
+	builder.Grow(len(jsonData))
+	gzipWriter := gzip.NewWriter(builder)
+	if _, err := gzipWriter.Write(jsonData); err != nil {
 		return nil, err
 	}
-	if err := w.Close(); err != nil {
+	if err := gzipWriter.Close(); err != nil {
 		return nil, err
 	}
-	return []byte(sb.String()), nil
+	return []byte(builder.String()), nil
 }
 
 // Name implements Format.Name.

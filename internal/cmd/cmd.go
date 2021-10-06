@@ -165,22 +165,22 @@ func extractHelps(r io.Reader) (map[string]*help, error) {
 	)
 
 	var (
-		state = stateFindCommands
-		sb    = &strings.Builder{}
-		h     *help
+		state   = stateFindCommands
+		builder = &strings.Builder{}
+		h       *help
 	)
 
 	saveAndReset := func() error {
-		var tr *glamour.TermRenderer
+		var termRenderer *glamour.TermRenderer
 		switch state {
 		case stateInCommand, stateFindExample:
-			tr = longTermRenderer
+			termRenderer = longTermRenderer
 		case stateInExample:
-			tr = examplesTermRenderer
+			termRenderer = examplesTermRenderer
 		default:
 			panic(fmt.Sprintf("%d: invalid state", state))
 		}
-		s, err := tr.Render(sb.String())
+		s, err := termRenderer.Render(builder.String())
 		if err != nil {
 			return err
 		}
@@ -194,7 +194,7 @@ func extractHelps(r io.Reader) (map[string]*help, error) {
 		default:
 			panic(fmt.Sprintf("%d: invalid state", state))
 		}
-		sb.Reset()
+		builder.Reset()
 		return nil
 	}
 
@@ -214,8 +214,7 @@ FOR:
 				state = stateInCommand
 			}
 		case stateInCommand, stateFindExample, stateInExample:
-			m := commandRx.FindStringSubmatch(s.Text())
-			switch {
+			switch m := commandRx.FindStringSubmatch(s.Text()); {
 			case m != nil:
 				if err := saveAndReset(); err != nil {
 					return nil, err
@@ -241,10 +240,10 @@ FOR:
 				}
 				state = stateFindFirstCommand
 			case state != stateFindExample:
-				if _, err := sb.WriteString(s.Text()); err != nil {
+				if _, err := builder.WriteString(s.Text()); err != nil {
 					return nil, err
 				}
-				if err := sb.WriteByte('\n'); err != nil {
+				if err := builder.WriteByte('\n'); err != nil {
 					return nil, err
 				}
 			}
