@@ -15,34 +15,34 @@ import (
 )
 
 func TestImportCmd(t *testing.T) {
-	b := &bytes.Buffer{}
-	w := tar.NewWriter(b)
-	assert.NoError(t, w.WriteHeader(&tar.Header{
+	buffer := &bytes.Buffer{}
+	tarWriter := tar.NewWriter(buffer)
+	assert.NoError(t, tarWriter.WriteHeader(&tar.Header{
 		Typeflag: tar.TypeDir,
 		Name:     "archive/",
 		Mode:     0o777,
 	}))
-	assert.NoError(t, w.WriteHeader(&tar.Header{
+	assert.NoError(t, tarWriter.WriteHeader(&tar.Header{
 		Typeflag: tar.TypeDir,
 		Name:     "archive/.dir/",
 		Mode:     0o777,
 	}))
 	data := []byte("# contents of archive/.dir/.file\n")
-	assert.NoError(t, w.WriteHeader(&tar.Header{
+	assert.NoError(t, tarWriter.WriteHeader(&tar.Header{
 		Typeflag: tar.TypeReg,
 		Name:     "archive/.dir/.file",
 		Size:     int64(len(data)),
 		Mode:     0o666,
 	}))
-	_, err := w.Write(data)
+	_, err := tarWriter.Write(data)
 	assert.NoError(t, err)
 	linkname := ".file"
-	assert.NoError(t, w.WriteHeader(&tar.Header{
+	assert.NoError(t, tarWriter.WriteHeader(&tar.Header{
 		Typeflag: tar.TypeSymlink,
 		Name:     "archive/.dir/.symlink",
 		Linkname: linkname,
 	}))
-	require.NoError(t, w.Close())
+	require.NoError(t, tarWriter.Close())
 
 	for _, tc := range []struct {
 		args      []string
@@ -158,8 +158,8 @@ func TestImportCmd(t *testing.T) {
 				if tc.extraRoot != nil {
 					require.NoError(t, vfst.NewBuilder().Build(fileSystem, tc.extraRoot))
 				}
-				c := newTestConfig(t, fileSystem, withStdin(bytes.NewReader(b.Bytes())))
-				require.NoError(t, c.execute(append([]string{"import"}, tc.args...)))
+				config := newTestConfig(t, fileSystem, withStdin(bytes.NewReader(buffer.Bytes())))
+				require.NoError(t, config.execute(append([]string{"import"}, tc.args...)))
 				vfst.RunTests(t, fileSystem, "", tc.tests...)
 			})
 		})

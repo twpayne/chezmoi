@@ -108,11 +108,11 @@ func (e *AgeEncryption) builtinDecrypt(ciphertext []byte) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	w := &bytes.Buffer{}
-	if _, err = io.Copy(w, r); err != nil {
+	buffer := &bytes.Buffer{}
+	if _, err = io.Copy(buffer, r); err != nil {
 		return nil, err
 	}
-	return w.Bytes(), err
+	return buffer.Bytes(), err
 }
 
 // builtinEncrypt encrypts ciphertext using the builtin age.

@@ -259,13 +259,11 @@ func (c *Config) getLibc() (string, error) {
 	// writes to stdout and exits with code 0. On musl libc systems it writes to
 	// stderr and exits with code 1.
 	lddCmd := exec.Command("ldd", "--version")
-	if output, _ := c.baseSystem.IdempotentCmdCombinedOutput(lddCmd); len(output) != 0 {
-		switch {
-		case libcTypeGlibcRx.Match(output):
-			return libcTypeGlibc, nil
-		case libcTypeMuslRx.Match(output):
-			return libcTypeMusl, nil
-		}
+	switch output, _ := c.baseSystem.IdempotentCmdCombinedOutput(lddCmd); {
+	case libcTypeGlibcRx.Match(output):
+		return libcTypeGlibc, nil
+	case libcTypeMuslRx.Match(output):
+		return libcTypeMusl, nil
 	}
 
 	// Second, try getconf GNU_LIBC_VERSION.
@@ -303,19 +301,18 @@ func (c *Config) replaceExecutable(ctx context.Context, executableFilenameAbsPat
 	}
 
 	// Extract the executable from the archive.
-	gzipr, err := gzip.NewReader(bytes.NewReader(data))
+	gzipReader, err := gzip.NewReader(bytes.NewReader(data))
 	if err != nil {
 		return err
 	}
-	defer gzipr.Close()
-	tr := tar.NewReader(gzipr)
+	defer gzipReader.Close()
+	tarReader := tar.NewReader(gzipReader)
 	var executableData []byte
 FOR:
 	for {
-		h, err := tr.Next()
-		switch {
-		case err == nil && h.Name == c.upgrade.repo:
-			executableData, err = io.ReadAll(tr)
+		switch header, err := tarReader.Next(); {
+		case err == nil && header.Name == c.upgrade.repo:
+			executableData, err = io.ReadAll(tarReader)
 			if err != nil {
 				return err
 			}

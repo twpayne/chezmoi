@@ -35,9 +35,9 @@ func TestHexBytes(t *testing.T) {
 					actual, err := format.Marshal(tc.b)
 					require.NoError(t, err)
 					assert.Equal(t, []byte(tc.expectedStr), actual)
-					var actualB HexBytes
-					require.NoError(t, format.Unmarshal(actual, &actualB))
-					assert.Equal(t, tc.b, actualB)
+					var actualHexBytes HexBytes
+					require.NoError(t, format.Unmarshal(actual, &actualHexBytes))
+					assert.Equal(t, tc.b, actualHexBytes)
 				})
 			}
 		})

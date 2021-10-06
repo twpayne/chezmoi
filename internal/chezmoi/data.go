@@ -19,8 +19,7 @@ import (
 func Kernel(fileSystem vfs.FS) (map[string]interface{}, error) {
 	const procSysKernel = "/proc/sys/kernel"
 
-	info, err := fileSystem.Stat(procSysKernel)
-	switch {
+	switch info, err := fileSystem.Stat(procSysKernel); {
 	case errors.Is(err, fs.ErrNotExist):
 		return nil, nil
 	case errors.Is(err, fs.ErrPermission):
@@ -37,16 +36,16 @@ func Kernel(fileSystem vfs.FS) (map[string]interface{}, error) {
 		"ostype",
 		"version",
 	} {
-		data, err := fileSystem.ReadFile(filepath.Join(procSysKernel, filename))
-		switch {
+		switch data, err := fileSystem.ReadFile(filepath.Join(procSysKernel, filename)); {
+		case err == nil:
+			kernel[filename] = string(bytes.TrimSpace(data))
 		case errors.Is(err, fs.ErrNotExist):
 			continue
 		case errors.Is(err, fs.ErrPermission):
 			continue
-		case err != nil:
+		default:
 			return nil, err
 		}
-		kernel[filename] = string(bytes.TrimSpace(data))
 	}
 	return kernel, nil
 }

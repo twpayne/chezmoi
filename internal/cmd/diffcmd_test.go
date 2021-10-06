@@ -95,7 +95,7 @@ func TestDiffCmd(t *testing.T) {
 				if tc.extraRoot != nil {
 					require.NoError(t, vfst.NewBuilder().Build(fileSystem, tc.extraRoot))
 				}
-				var stdout strings.Builder
+				stdout := strings.Builder{}
 				require.NoError(t, newTestConfig(t, fileSystem, withStdout(&stdout)).execute(append([]string{"diff"}, tc.args...)))
 				assert.Equal(t, tc.stdoutStr, stdout.String())
 			})

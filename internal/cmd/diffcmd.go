@@ -43,11 +43,11 @@ func (c *Config) newDiffCmd() *cobra.Command {
 }
 
 func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) error {
-	sb := strings.Builder{}
+	builder := strings.Builder{}
 	dryRunSystem := chezmoi.NewDryRunSystem(c.destSystem)
 	if c.Diff.useBuiltinDiff || c.Diff.Command == "" {
 		color := c.Color.Value(c.colorAutoFunc)
-		gitDiffSystem := chezmoi.NewGitDiffSystem(dryRunSystem, &sb, c.DestDirAbsPath, color)
+		gitDiffSystem := chezmoi.NewGitDiffSystem(dryRunSystem, &builder, c.DestDirAbsPath, color)
 		if err := c.applyArgs(cmd.Context(), gitDiffSystem, c.DestDirAbsPath, args, applyArgsOptions{
 			include:   c.Diff.include.Sub(c.Diff.Exclude),
 			init:      c.Diff.init,
@@ -56,7 +56,7 @@ func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) error {
 		}); err != nil {
 			return err
 		}
-		return c.pageOutputString(sb.String(), c.Diff.Pager)
+		return c.pageOutputString(builder.String(), c.Diff.Pager)
 	}
 	diffSystem := chezmoi.NewExternalDiffSystem(dryRunSystem, c.Diff.Command, c.Diff.Args, c.DestDirAbsPath)
 	defer diffSystem.Close()

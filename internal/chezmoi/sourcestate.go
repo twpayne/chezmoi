@@ -624,11 +624,11 @@ func (s *SourceState) ExecuteTemplateData(name string, data []byte) ([]byte, err
 		defer delete(chezmoiTemplateData, "sourceFile")
 	}
 
-	var sb strings.Builder
-	if err = tmpl.ExecuteTemplate(&sb, name, templateData); err != nil {
+	builder := strings.Builder{}
+	if err = tmpl.ExecuteTemplate(&builder, name, templateData); err != nil {
 		return nil, err
 	}
-	return []byte(sb.String()), nil
+	return []byte(builder.String()), nil
 }
 
 // Ignored returns if targetRelPath is ignored.
@@ -963,7 +963,7 @@ func (s *SourceState) addPatterns(patternSet *patternSet, sourceAbsPath AbsPath,
 	}
 	dir := sourceRelPath.Dir().TargetRelPath("")
 	scanner := bufio.NewScanner(bytes.NewReader(data))
-	var lineNumber int
+	lineNumber := 0
 	for scanner.Scan() {
 		lineNumber++
 		text := scanner.Text()
@@ -1013,10 +1013,9 @@ func (s *SourceState) addTemplateData(sourceAbsPath AbsPath) error {
 // addTemplatesDir adds all templates in templateDir to s.
 func (s *SourceState) addTemplatesDir(templatesDirAbsPath AbsPath) error {
 	return WalkDir(s.system, templatesDirAbsPath, func(templateAbsPath AbsPath, info fs.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
 		switch {
+		case err != nil:
+			return err
 		case info.Mode().IsRegular():
 			contents, err := s.system.ReadFile(templateAbsPath)
 			if err != nil {

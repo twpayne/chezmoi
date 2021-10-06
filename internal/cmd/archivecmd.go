@@ -88,11 +88,11 @@ func (c *Config) runArchiveCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	gzippedArchive := strings.Builder{}
-	w := gzip.NewWriter(&gzippedArchive)
-	if _, err := w.Write([]byte(output.String())); err != nil {
+	gzipWriter := gzip.NewWriter(&gzippedArchive)
+	if _, err := gzipWriter.Write([]byte(output.String())); err != nil {
 		return err
 	}
-	if err := w.Close(); err != nil {
+	if err := gzipWriter.Close(); err != nil {
 		return err
 	}
 	return c.writeOutputString(gzippedArchive.String())

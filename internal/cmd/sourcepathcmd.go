@@ -31,9 +31,9 @@ func (c *Config) runSourcePathCmd(cmd *cobra.Command, args []string, sourceState
 		return err
 	}
 
-	sb := strings.Builder{}
+	builder := strings.Builder{}
 	for _, sourceAbsPath := range sourceAbsPaths {
-		fmt.Fprintln(&sb, sourceAbsPath)
+		fmt.Fprintln(&builder, sourceAbsPath)
 	}
-	return c.writeOutputString(sb.String())
+	return c.writeOutputString(builder.String())
 }

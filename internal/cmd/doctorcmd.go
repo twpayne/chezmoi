@@ -409,8 +409,7 @@ func (c *fileCheck) Run(system chezmoi.System) (checkResult, string) {
 		return c.ifNotSet, "not set"
 	}
 
-	_, err := system.ReadFile(c.filename)
-	switch {
+	switch _, err := system.ReadFile(c.filename); {
 	case errors.Is(err, fs.ErrNotExist):
 		return c.ifNotExist, fmt.Sprintf("%s does not exist", c.filename)
 	case err != nil:

@@ -56,7 +56,7 @@ func TestStatusCmd(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
-				var stdout strings.Builder
+				stdout := strings.Builder{}
 				require.NoError(t, newTestConfig(t, fileSystem, withStdout(&stdout)).execute(append([]string{"status"}, tc.args...)))
 				assert.Equal(t, tc.stdoutStr, stdout.String())
 
