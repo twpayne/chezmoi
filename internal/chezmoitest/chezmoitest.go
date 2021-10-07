@@ -4,9 +4,7 @@ package chezmoitest
 import (
 	"fmt"
 	"io/fs"
-	"os"
 	"os/exec"
-	"path/filepath"
 	"regexp"
 	"runtime"
 	"strconv"
@@ -21,48 +19,23 @@ import (
 )
 
 var (
-	agePublicKeyRx                    = regexp.MustCompile(`(?m)^Public key: ([0-9a-z]+)\s*$`)
+	ageRecipientRx                    = regexp.MustCompile(`(?m)^Public key: ([0-9a-z]+)\s*$`)
 	gpgKeyMarkedAsUltimatelyTrustedRx = regexp.MustCompile(`(?m)^gpg: key ([0-9A-F]+) marked as ultimately trusted\s*$`)
 )
 
-// AgeGenerateKey generates and returns an age public key and the path to the
-// private key. If filename is non-zero then the private key is written to it,
-// otherwise a new file is created in a temporary directory and the caller is
-// responsible for removing the temporary directory.
-func AgeGenerateKey(filename string) (publicKey, privateKeyFile string, err error) {
-	if filename == "" {
-		var tempDir string
-		tempDir, err = os.MkdirTemp("", "chezmoi-test-age-key")
-		if err != nil {
-			return "", "", err
-		}
-		defer func() {
-			if err != nil {
-				os.RemoveAll(tempDir)
-			}
-		}()
-		if runtime.GOOS != "windows" {
-			if err = os.Chmod(tempDir, 0o700); err != nil {
-				return
-			}
-		}
-		filename = filepath.Join(tempDir, "key.txt")
-	}
-
-	privateKeyFile = filename
-	var output []byte
-	cmd := exec.Command("age-keygen", "--output", privateKeyFile)
-	output, err = chezmoilog.LogCmdCombinedOutput(cmd)
+// AgeGenerateKey generates an identity in identityFile and returns the
+// recipient.
+func AgeGenerateKey(identityFile string) (string, error) {
+	cmd := exec.Command("age-keygen", "--output", identityFile)
+	output, err := chezmoilog.LogCmdCombinedOutput(cmd)
 	if err != nil {
-		return
+		return "", err
 	}
-	match := agePublicKeyRx.FindSubmatch(output)
+	match := ageRecipientRx.FindSubmatch(output)
 	if match == nil {
-		err = fmt.Errorf("public key not found in %q", output)
-		return
+		return "", fmt.Errorf("recipient not found in %q", output)
 	}
-	publicKey = string(match[1])
-	return
+	return string(match[1]), nil
 }
 
 // GPGGenerateKey generates GPG key in homeDir and returns the key and the
