@@ -12,6 +12,8 @@ import (
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/transport"
 	"github.com/go-git/go-git/v5/plumbing/transport/http"
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
@@ -86,6 +88,10 @@ var dotfilesRepoGuesses = []struct {
 	},
 }
 
+// A loggableGitCloneOptions is a git.CloneOptions that implements
+// github.com/rs/zerolog.LogObjectMarshaler.
+type loggableGitCloneOptions git.CloneOptions
+
 func (c *Config) newInitCmd() *cobra.Command {
 	initCmd := &cobra.Command{
 		Args:    cobra.MaximumNArgs(1),
@@ -128,7 +134,7 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	// If we're not in a working tree then init it or clone it.
-	gitDirAbsPath := c.WorkingTreeAbsPath.Join(".git")
+	gitDirAbsPath := c.WorkingTreeAbsPath.Join(git.GitDirName)
 	switch info, err := c.baseSystem.Stat(gitDirAbsPath); {
 	case err == nil && info.IsDir():
 	case err == nil && !info.IsDir():
@@ -143,8 +149,7 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 
 		if len(args) == 0 {
 			if useBuiltinGit {
-				isBare := false
-				if _, err = git.PlainInit(workingTreeRawPath.String(), isBare); err != nil {
+				if err := c.builtinGitInit(workingTreeRawPath); err != nil {
 					return err
 				}
 			} else if err := c.run(c.WorkingTreeAbsPath, c.Git.Command, []string{"init", "--quiet"}); err != nil {
@@ -153,33 +158,7 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 		} else {
 			username, dotfilesRepoURL := guessDotfilesRepoURL(args[0], c.init.ssh)
 			if useBuiltinGit {
-				var referenceName plumbing.ReferenceName
-				if c.init.branch != "" {
-					referenceName = plumbing.NewBranchReferenceName(c.init.branch)
-				}
-				cloneOptions := git.CloneOptions{
-					URL:               dotfilesRepoURL,
-					Depth:             c.init.depth,
-					ReferenceName:     referenceName,
-					RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
-				}
-				isBare := false
-				_, err = git.PlainClone(workingTreeRawPath.String(), isBare, &cloneOptions)
-				if errors.Is(err, transport.ErrAuthenticationRequired) {
-					var basicAuth http.BasicAuth
-					if basicAuth.Username, err = c.readLine(fmt.Sprintf("Username [default %q]? ", username)); err != nil {
-						return err
-					}
-					if basicAuth.Username == "" {
-						basicAuth.Username = username
-					}
-					if basicAuth.Password, err = c.readPassword("Password? "); err != nil {
-						return err
-					}
-					cloneOptions.Auth = &basicAuth
-					_, err = git.PlainClone(workingTreeRawPath.String(), isBare, &cloneOptions)
-				}
-				if err != nil {
+				if err := c.builtinGitClone(username, dotfilesRepoURL, workingTreeRawPath); err != nil {
 					return err
 				}
 			} else {
@@ -236,6 +215,100 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
+}
+
+// builtinGitClone clones a repo using the builtin git command.
+func (c *Config) builtinGitClone(username, url string, workingTreeRawPath chezmoi.AbsPath) error {
+	isBare := false
+	var referenceName plumbing.ReferenceName
+	if c.init.branch != "" {
+		referenceName = plumbing.NewBranchReferenceName(c.init.branch)
+	}
+	cloneOptions := git.CloneOptions{
+		URL:               url,
+		Depth:             c.init.depth,
+		ReferenceName:     referenceName,
+		RecurseSubmodules: git.DefaultSubmoduleRecursionDepth,
+	}
+
+	for {
+		_, err := git.PlainClone(workingTreeRawPath.String(), isBare, &cloneOptions)
+		log.Err(err).
+			Stringer("path", workingTreeRawPath).
+			Bool("isBare", isBare).
+			Object("o", loggableGitCloneOptions(cloneOptions)).
+			Msg("PlainClone")
+		if !errors.Is(err, transport.ErrAuthenticationRequired) {
+			return err
+		}
+
+		if _, err := fmt.Fprintf(c.stdout, "chezmoi: %s: %v\n", url, err); err != nil {
+			return err
+		}
+		var basicAuth http.BasicAuth
+		if basicAuth.Username, err = c.readLine(fmt.Sprintf("Username [default %q]? ", username)); err != nil {
+			return err
+		}
+		if basicAuth.Username == "" {
+			basicAuth.Username = username
+		}
+		if basicAuth.Password, err = c.readPassword("Password? "); err != nil {
+			return err
+		}
+		cloneOptions.Auth = &basicAuth
+	}
+}
+
+// builtinGitInit initializes a repo using the builtin git command.
+func (c *Config) builtinGitInit(workingTreeRawPath chezmoi.AbsPath) error {
+	isBare := false
+	_, err := git.PlainInit(workingTreeRawPath.String(), isBare)
+	log.Err(err).
+		Stringer("path", workingTreeRawPath).
+		Bool("isBare", isBare).
+		Msg("PlainInit")
+	return err
+}
+
+// MarshalZerologObject implements
+// github.com/rs/zerolog.LogObjectMarshaler.MarshalZerologObject.
+//
+// We cannot use zerolog's default object marshaler because it logs the auth
+// credentials.
+func (o loggableGitCloneOptions) MarshalZerologObject(e *zerolog.Event) {
+	if o.URL != "" {
+		e.Str("URL", o.URL)
+	}
+	if o.Auth != nil {
+		e.Stringer("Auth", o.Auth)
+	}
+	if o.RemoteName != "" {
+		e.Str("RemoteName", o.RemoteName)
+	}
+	if o.ReferenceName != "" {
+		e.Stringer("ReferenceName", o.ReferenceName)
+	}
+	if o.SingleBranch {
+		e.Bool("SingleBranch", o.SingleBranch)
+	}
+	if o.NoCheckout {
+		e.Bool("NoCheckout", o.NoCheckout)
+	}
+	if o.Depth != 0 {
+		e.Int("Depth", o.Depth)
+	}
+	if o.RecurseSubmodules != 0 {
+		e.Uint("RecurseSubmodules", uint(o.RecurseSubmodules))
+	}
+	if o.Tags != 0 {
+		e.Int("Tags", int(o.Tags))
+	}
+	if o.InsecureSkipTLS {
+		e.Bool("InsecureSkipTLS", o.InsecureSkipTLS)
+	}
+	if o.CABundle != nil {
+		e.Bytes("CABundle", o.CABundle)
+	}
 }
 
 // guessDotfilesRepoURL guesses the user's username and dotfile repo from arg.
