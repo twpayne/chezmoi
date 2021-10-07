@@ -46,11 +46,11 @@ func (c *Config) newUpdateCmd() *cobra.Command {
 
 func (c *Config) runUpdateCmd(cmd *cobra.Command, args []string) error {
 	if c.UseBuiltinGit.Value(c.useBuiltinGitAutoFunc) {
-		rawSourceAbsPath, err := c.baseSystem.RawPath(c.SourceDirAbsPath)
+		rawWorkingTreeAbsPath, err := c.baseSystem.RawPath(c.WorkingTreeAbsPath)
 		if err != nil {
 			return err
 		}
-		repo, err := git.PlainOpen(rawSourceAbsPath.String())
+		repo, err := git.PlainOpen(rawWorkingTreeAbsPath.String())
 		if err != nil {
 			return err
 		}

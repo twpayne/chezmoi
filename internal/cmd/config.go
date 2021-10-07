@@ -25,6 +25,7 @@ import (
 
 	"github.com/Masterminds/sprig/v3"
 	"github.com/coreos/go-semver/semver"
+	gogit "github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/format/diff"
 	"github.com/google/gops/agent"
 	"github.com/mitchellh/mapstructure"
@@ -1603,13 +1604,13 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		workingTreeAbsPath := c.SourceDirAbsPath
 	FOR:
 		for {
-			if info, err := c.baseSystem.Stat(workingTreeAbsPath.Join(".git")); err == nil && info.IsDir() {
+			if info, err := c.baseSystem.Stat(workingTreeAbsPath.Join(gogit.GitDirName)); err == nil && info.IsDir() {
 				c.WorkingTreeAbsPath = workingTreeAbsPath
 				break FOR
 			}
 			prevWorkingTreeDirAbsPath := workingTreeAbsPath
 			workingTreeAbsPath = workingTreeAbsPath.Dir()
-			if workingTreeAbsPath.Len() >= prevWorkingTreeDirAbsPath.Len() {
+			if workingTreeAbsPath == c.homeDirAbsPath || workingTreeAbsPath.Len() >= prevWorkingTreeDirAbsPath.Len() {
 				c.WorkingTreeAbsPath = c.SourceDirAbsPath
 				break FOR
 			}
