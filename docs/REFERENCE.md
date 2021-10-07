@@ -447,7 +447,7 @@ to as "attributes":
 | `executable_`| Add executable permissions to the target file.                                 |
 | `literal_`   | Stop parsing prefix attributes.                                                |
 | `modify_`    | Treat the contents as a script that modifies an existing file.                 |
-| `once_`      | Run script once.                                                               |
+| `once_`      | Only run the script if it has not been run before.                             |
 | `private_`   | Remove all group and world permissions from the target file or directory.      |
 | `readonly_`  | Remove all write permissions from the target file or directory.                |
 | `remove_`    | Remove the entry if it exists.                                                 |
@@ -557,8 +557,9 @@ whitespace, then the target is removed.
 Scripts are represented as regular files in the source state with prefix `run_`.
 The file's contents (after being interpreted as a template if it has a `.tmpl`
 suffix) are executed. Scripts are executed on every `chezmoi apply`, unless they
-have the `once_` attribute, in which case they are only executed when they are
-first found or when their contents have changed.
+have the `once_` attribute, in which case they are only executed if a script
+with the same contents has not been run before, for example if its contents has
+changed.
 
 Scripts with the `before_` attribute are executed before any files, directories,
 or symlinks are updated. Scripts with the `after_` attribute are executed after

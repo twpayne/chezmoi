@@ -1319,8 +1319,8 @@ In verbose mode, the script's contents will be printed before executing it. In
 dry-run mode, the script is not executed.
 
 Scripts are any file in the source directory with the prefix `run_`, and are
-executed in alphabetical order. Scripts that should only be run when their
-contents change have the prefix `run_once_`.
+executed in alphabetical order. Scripts that should only be run if they have not
+been run before have the prefix `run_once_`.
 
 Scripts break chezmoi's declarative approach, and as such should be used
 sparingly. Any script should be idempotent, even `run_once_` scripts.

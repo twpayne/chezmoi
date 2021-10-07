@@ -177,8 +177,9 @@ wraps an `Encryption` interface and logs the methods called.
 ## `run_once_` scripts
 
 The execution of `run_once_` scripts is recorded by storing the SHA256 of their
-contents in the persistent state. `run_once_` scripts are only run if they are
-new or if their contents have not changed.
+contents in the persistent state. `run_once_` scripts are only run if no
+`run_once_` script with the same contents has been run before, for example if
+the script's contents change.
 
 ---
 
