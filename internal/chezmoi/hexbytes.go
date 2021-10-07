@@ -7,6 +7,11 @@ import (
 // A HexBytes is a []byte which is marshaled as a hex string.
 type HexBytes []byte
 
+// Bytes returns h as a []byte.
+func (h HexBytes) Bytes() []byte {
+	return []byte(h)
+}
+
 // MarshalText implements encoding.TextMarshaler.MarshalText.
 func (h HexBytes) MarshalText() ([]byte, error) {
 	if len(h) == 0 {

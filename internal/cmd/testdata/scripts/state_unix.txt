@@ -11,8 +11,7 @@ exists $CHEZMOICONFIGDIR/chezmoistate.boltdb
 
 # test that the persistent state records that script was run
 chezmoi state dump --format=yaml
-stdout a8076d3d28d21e02012b20eaf7dbf75409a6277134439025f282e368e3305abf:
-stdout runAt:
+stdout ${HOME@R}/script:
 
 # test that chezmoi state reset removes the persistent state
 chezmoi --force state reset

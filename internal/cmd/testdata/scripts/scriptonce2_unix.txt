@@ -1,0 +1,22 @@
+[windows] skip 'UNIX only'
+
+# test that chezmoi apply runs scripts when their contents are reverted
+mkdir $CHEZMOISOURCEDIR
+cp golden/script-one.sh $CHEZMOISOURCEDIR/run_once_script.sh
+chezmoi apply
+stdout one
+cp golden/script-two.sh $CHEZMOISOURCEDIR/run_once_script.sh
+chezmoi apply
+stdout two
+cp golden/script-one.sh $CHEZMOISOURCEDIR/run_once_script.sh
+chezmoi apply
+stdout one
+
+-- golden/script-one.sh --
+#!/bin/sh
+
+echo one
+-- golden/script-two.sh --
+#!/bin/sh
+
+echo two

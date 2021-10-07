@@ -5,7 +5,6 @@ import (
 	"encoding/hex"
 	"io/fs"
 	"runtime"
-	"time"
 )
 
 // A TargetStateEntry represents the state of an entry in the target state.
@@ -50,12 +49,6 @@ type TargetStateSymlink struct {
 type targetStateRenameDir struct {
 	oldRelPath RelPath
 	newRelPath RelPath
-}
-
-// A scriptState records the state of a script that has been run.
-type scriptState struct {
-	Name  string    `json:"name" toml:"name" yaml:"name"`
-	RunAt time.Time `json:"runAt" toml:"runAt" yaml:"runAt"`
 }
 
 // Apply updates actualStateEntry to match t. It does not recurse.
@@ -197,28 +190,56 @@ func (t *TargetStateScript) Apply(system System, persistentState PersistentState
 	if err != nil {
 		return false, err
 	}
-	key := []byte(hex.EncodeToString(contentsSHA256))
+
+	// If the script has the once_ attribute, then determine if its contents
+	// have changed since the last time it was run.
+	key := actualStateEntry.Path().Bytes()
 	if t.once {
-		switch scriptState, err := persistentState.Get(scriptStateBucket, key); {
+		// First, look for an existing entry state with a SHA256 sum of the
+		// script's contents and stop if it is found.
+		switch entryStateBytes, err := persistentState.Get(EntryStateBucket, key); {
 		case err != nil:
 			return false, err
-		case scriptState != nil:
-			return false, nil
+		case entryStateBytes != nil:
+			var entryState EntryState
+			if err := stateFormat.Unmarshal(entryStateBytes, &entryState); err != nil {
+				return false, err
+			}
+			if bytes.Equal(entryState.ContentsSHA256.Bytes(), contentsSHA256) {
+				return false, nil
+			}
+		default:
+			// Second, look for a legacy entry in the script state bucket
+			// (created by versions of chezmoi <2.6.2).
+			legacyKey := []byte(hex.EncodeToString(contentsSHA256))
+			switch scriptState, err := persistentState.Get(scriptStateBucket, legacyKey); {
+			case err != nil:
+				return false, err
+			case scriptState != nil:
+				// If a legacy entry is found then silently add a new entry
+				// state to reflect the script's run once status.
+				return false, persistentStateSet(persistentState, EntryStateBucket, key, &EntryState{
+					Type:           EntryStateTypeScript,
+					ContentsSHA256: HexBytes(contentsSHA256),
+				})
+			}
 		}
 	}
+
 	contents, err := t.Contents()
 	if err != nil {
 		return false, err
 	}
-	runAt := time.Now().UTC()
+
 	if !isEmpty(contents) {
 		if err := system.RunScript(t.name, actualStateEntry.Path().Dir(), contents, t.interpreter); err != nil {
 			return false, err
 		}
 	}
-	return true, persistentStateSet(persistentState, scriptStateBucket, key, &scriptState{
-		Name:  string(t.name),
-		RunAt: runAt,
+
+	return true, persistentStateSet(persistentState, EntryStateBucket, key, &EntryState{
+		Type:           EntryStateTypeScript,
+		ContentsSHA256: HexBytes(contentsSHA256),
 	})
 }
 
