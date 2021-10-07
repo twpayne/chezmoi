@@ -241,20 +241,20 @@ func cmdMkAgeConfig(ts *testscript.TestScript, neg bool, args []string) {
 	symmetric := len(args) == 1 && args[0] == "-symmetric"
 	homeDir := ts.Getenv("HOME")
 	ts.Check(os.MkdirAll(homeDir, 0o777))
-	privateKeyFile := filepath.Join(homeDir, "key.txt")
-	publicKey, _, err := chezmoitest.AgeGenerateKey(ts.MkAbs(privateKeyFile))
+	identityFile := filepath.Join(homeDir, "key.txt")
+	recipient, err := chezmoitest.AgeGenerateKey(ts.MkAbs(identityFile))
 	ts.Check(err)
 	configFile := filepath.Join(homeDir, ".config", "chezmoi", "chezmoi.toml")
 	ts.Check(os.MkdirAll(filepath.Dir(configFile), 0o777))
 	lines := []string{
 		`encryption = "age"`,
 		`[age]`,
-		`    identity = ` + strconv.Quote(privateKeyFile),
+		`    identity = ` + strconv.Quote(identityFile),
 	}
 	if symmetric {
 		lines = append(lines, `    symmetric = true`)
 	} else {
-		lines = append(lines, `    recipient = `+strconv.Quote(publicKey))
+		lines = append(lines, `    recipient = `+strconv.Quote(recipient))
 	}
 	ts.Check(os.WriteFile(configFile, []byte(chezmoitest.JoinLines(lines...)), 0o666))
 }

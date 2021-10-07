@@ -178,6 +178,13 @@ func (e *AgeEncryption) builtinRecipients() ([]age.Recipient, error) {
 		}
 		recipients = append(recipients, parsedRecipient)
 	}
+	if !e.RecipientsFile.Empty() {
+		parsedRecipients, err := parseRecipientsFile(e.RecipientsFile)
+		if err != nil {
+			return nil, err
+		}
+		recipients = append(recipients, parsedRecipients...)
+	}
 	for _, recipientsFile := range e.RecipientsFiles {
 		parsedRecipients, err := parseRecipientsFile(recipientsFile)
 		if err != nil {
