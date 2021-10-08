@@ -153,12 +153,12 @@ func TestFileAttr(t *testing.T) {
 		Type       SourceFileTargetType
 		TargetName []string
 		Once       []bool
-		Order      []int
+		Order      []ScriptOrder
 	}{
 		Type:       SourceFileTypeScript,
 		TargetName: targetNames,
 		Once:       []bool{false, true},
-		Order:      []int{-1, 0, 1},
+		Order:      []ScriptOrder{ScriptOrderBefore, ScriptOrderDuring, ScriptOrderAfter},
 	}))
 	require.NoError(t, combinator.Generate(&fileAttrs, struct {
 		Type       SourceFileTargetType
