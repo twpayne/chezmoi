@@ -8,7 +8,7 @@ on:
     - v*
 env:
   AGE_VERSION: 1.0.0
-  GO_VERSION: 1.17.1
+  GO_VERSION: 1.17.2
   GOLANGCI_LINT_VERSION: 1.42.1
 jobs:
   test-archlinux:
