@@ -142,24 +142,24 @@ func (m boolModifier) modify(b bool) bool {
 }
 
 // modify returns the modified value of order.
-func (m orderModifier) modify(order int) int {
+func (m orderModifier) modify(order chezmoi.ScriptOrder) chezmoi.ScriptOrder {
 	switch m {
 	case orderModifierSetBefore:
-		return -1
+		return chezmoi.ScriptOrderBefore
 	case orderModifierClearBefore:
-		if order < 0 {
-			return 0
+		if order == chezmoi.ScriptOrderBefore {
+			return chezmoi.ScriptOrderDuring
 		}
 		return order
 	case orderModifierLeaveUnchanged:
 		return order
 	case orderModifierClearAfter:
-		if order > 0 {
-			return 0
+		if order == chezmoi.ScriptOrderAfter {
+			return chezmoi.ScriptOrderDuring
 		}
 		return order
 	case orderModifierSetAfter:
-		return 1
+		return chezmoi.ScriptOrderAfter
 	default:
 		panic(fmt.Sprintf("%d: unknown order modifier", m))
 	}

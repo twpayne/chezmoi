@@ -31,6 +31,16 @@ var sourceFileTypeStrs = map[SourceFileTargetType]string{
 	SourceFileTypeSymlink: "symlink",
 }
 
+// A ScriptOrder defines when a script should be executed.
+type ScriptOrder int
+
+// Script orders.
+const (
+	ScriptOrderBefore ScriptOrder = -1
+	ScriptOrderDuring ScriptOrder = 0
+	ScriptOrderAfter  ScriptOrder = 1
+)
+
 // DirAttr holds attributes parsed from a source directory name.
 type DirAttr struct {
 	TargetName string
@@ -47,7 +57,7 @@ type FileAttr struct {
 	Encrypted  bool
 	Executable bool
 	Once       bool
-	Order      int
+	Order      ScriptOrder
 	Private    bool
 	ReadOnly   bool
 	Template   bool
@@ -140,10 +150,10 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 		encrypted      = false
 		executable     = false
 		once           = false
+		order          = ScriptOrderDuring
 		private        = false
 		readOnly       = false
 		template       = false
-		order          = 0
 	)
 	switch {
 	case strings.HasPrefix(name, createPrefix):
@@ -178,10 +188,10 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 		switch {
 		case strings.HasPrefix(name, beforePrefix):
 			name = mustTrimPrefix(name, beforePrefix)
-			order = -1
+			order = ScriptOrderBefore
 		case strings.HasPrefix(name, afterPrefix):
 			name = mustTrimPrefix(name, afterPrefix)
-			order = 1
+			order = ScriptOrderAfter
 		}
 	case strings.HasPrefix(name, symlinkPrefix):
 		sourceFileType = SourceFileTypeSymlink
@@ -253,10 +263,10 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 		Encrypted:  encrypted,
 		Executable: executable,
 		Once:       once,
+		Order:      order,
 		Private:    private,
 		ReadOnly:   readOnly,
 		Template:   template,
-		Order:      order,
 	}
 }
 
@@ -269,7 +279,7 @@ func (fa FileAttr) MarshalZerologObject(e *zerolog.Event) {
 	e.Bool("Encrypted", fa.Encrypted)
 	e.Bool("Executable", fa.Executable)
 	e.Bool("Once", fa.Once)
-	e.Int("Order", fa.Order)
+	e.Int("Order", int(fa.Order))
 	e.Bool("Private", fa.Private)
 	e.Bool("ReadOnly", fa.ReadOnly)
 	e.Bool("Template", fa.Template)
@@ -328,9 +338,9 @@ func (fa FileAttr) SourceName(encryptedSuffix string) string {
 			sourceName += oncePrefix
 		}
 		switch fa.Order {
-		case -1:
+		case ScriptOrderBefore:
 			sourceName += beforePrefix
-		case 1:
+		case ScriptOrderAfter:
 			sourceName += afterPrefix
 		}
 	case SourceFileTypeSymlink:

@@ -12,7 +12,7 @@ import (
 type SourceStateEntry interface {
 	zerolog.LogObjectMarshaler
 	Evaluate() error
-	Order() int
+	Order() ScriptOrder
 	SourceRelPath() SourceRelPath
 	TargetStateEntry(destSystem System, destDirAbsPath AbsPath) (TargetStateEntry, error)
 }
@@ -59,8 +59,8 @@ func (s *SourceStateDir) MarshalZerologObject(e *zerolog.Event) {
 }
 
 // Order returns s's order.
-func (s *SourceStateDir) Order() int {
-	return 0
+func (s *SourceStateDir) Order() ScriptOrder {
+	return ScriptOrderDuring
 }
 
 // SourceRelPath returns s's source relative path.
@@ -98,7 +98,7 @@ func (s *SourceStateFile) MarshalZerologObject(e *zerolog.Event) {
 }
 
 // Order returns s's order.
-func (s *SourceStateFile) Order() int {
+func (s *SourceStateFile) Order() ScriptOrder {
 	return s.Attr.Order
 }
 
@@ -127,8 +127,8 @@ func (s *SourceStateRemove) MarshalZerologObject(e *zerolog.Event) {
 }
 
 // Order returns s's order.
-func (s *SourceStateRemove) Order() int {
-	return 0
+func (s *SourceStateRemove) Order() ScriptOrder {
+	return ScriptOrderDuring
 }
 
 // SourceRelPath returns s's source relative path.
@@ -154,8 +154,8 @@ func (s *SourceStateRenameDir) MarshalZerologObject(e *zerolog.Event) {
 }
 
 // Order returns s's order.
-func (s *SourceStateRenameDir) Order() int {
-	return -1
+func (s *SourceStateRenameDir) Order() ScriptOrder {
+	return ScriptOrderBefore
 }
 
 // SourceRelPath returns s's source relative path.
