@@ -151,13 +151,13 @@ func TestFileAttr(t *testing.T) {
 	}))
 	require.NoError(t, combinator.Generate(&fileAttrs, struct {
 		Type       SourceFileTargetType
+		Condition  []ScriptCondition
 		TargetName []string
-		Once       []bool
 		Order      []ScriptOrder
 	}{
 		Type:       SourceFileTypeScript,
+		Condition:  []ScriptCondition{ScriptConditionAlways, ScriptConditionOnce},
 		TargetName: targetNames,
-		Once:       []bool{false, true},
 		Order:      []ScriptOrder{ScriptOrderBefore, ScriptOrderDuring, ScriptOrderAfter},
 	}))
 	require.NoError(t, combinator.Generate(&fileAttrs, struct {
@@ -230,8 +230,8 @@ func TestFileAttrLiteral(t *testing.T) {
 			sourceName: "run_once_script",
 			fileAttr: FileAttr{
 				TargetName: "script",
+				Condition:  ScriptConditionOnce,
 				Type:       SourceFileTypeScript,
-				Once:       true,
 			},
 		},
 		{

@@ -41,6 +41,15 @@ const (
 	ScriptOrderAfter  ScriptOrder = 1
 )
 
+// A ScriptCondition defines under what conditions a script should be executed.
+type ScriptCondition string
+
+// Script conditions.
+const (
+	ScriptConditionAlways ScriptCondition = ""
+	ScriptConditionOnce   ScriptCondition = "once"
+)
+
 // DirAttr holds attributes parsed from a source directory name.
 type DirAttr struct {
 	TargetName string
@@ -53,10 +62,10 @@ type DirAttr struct {
 type FileAttr struct {
 	TargetName string
 	Type       SourceFileTargetType
+	Condition  ScriptCondition
 	Empty      bool
 	Encrypted  bool
 	Executable bool
-	Once       bool
 	Order      ScriptOrder
 	Private    bool
 	ReadOnly   bool
@@ -146,10 +155,10 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 	var (
 		sourceFileType = SourceFileTypeFile
 		name           = sourceName
+		condition      = ScriptConditionAlways
 		empty          = false
 		encrypted      = false
 		executable     = false
-		once           = false
 		order          = ScriptOrderDuring
 		private        = false
 		readOnly       = false
@@ -183,7 +192,7 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 		name = mustTrimPrefix(name, runPrefix)
 		if strings.HasPrefix(name, oncePrefix) {
 			name = mustTrimPrefix(name, oncePrefix)
-			once = true
+			condition = ScriptConditionOnce
 		}
 		switch {
 		case strings.HasPrefix(name, beforePrefix):
@@ -259,10 +268,10 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 	return FileAttr{
 		TargetName: name,
 		Type:       sourceFileType,
+		Condition:  condition,
 		Empty:      empty,
 		Encrypted:  encrypted,
 		Executable: executable,
-		Once:       once,
 		Order:      order,
 		Private:    private,
 		ReadOnly:   readOnly,
@@ -275,10 +284,10 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 func (fa FileAttr) MarshalZerologObject(e *zerolog.Event) {
 	e.Str("TargetName", fa.TargetName)
 	e.Str("Type", sourceFileTypeStrs[fa.Type])
+	e.Str("Condition", string(fa.Condition))
 	e.Bool("Empty", fa.Empty)
 	e.Bool("Encrypted", fa.Encrypted)
 	e.Bool("Executable", fa.Executable)
-	e.Bool("Once", fa.Once)
 	e.Int("Order", int(fa.Order))
 	e.Bool("Private", fa.Private)
 	e.Bool("ReadOnly", fa.ReadOnly)
@@ -334,7 +343,7 @@ func (fa FileAttr) SourceName(encryptedSuffix string) string {
 		sourceName = removePrefix
 	case SourceFileTypeScript:
 		sourceName = runPrefix
-		if fa.Once {
+		if fa.Condition == ScriptConditionOnce {
 			sourceName += oncePrefix
 		}
 		switch fa.Order {
