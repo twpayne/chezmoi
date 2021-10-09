@@ -1345,8 +1345,8 @@ func (s *SourceState) newScriptTargetStateEntryFunc(sourceRelPath SourceRelPath,
 		return &TargetStateScript{
 			lazyContents: newLazyContentsFunc(contentsFunc),
 			name:         targetRelPath,
+			condition:    fileAttr.Condition,
 			interpreter:  interpreter,
-			once:         fileAttr.Once,
 		}, nil
 	}
 }

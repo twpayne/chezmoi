@@ -18,6 +18,14 @@ const (
 	boolModifierClear          boolModifier = -1
 )
 
+type conditionModifier int
+
+const (
+	conditionModifierLeaveUnchanged conditionModifier = iota
+	conditionModifierClearOnce
+	conditionModifierSetOnce
+)
+
 type orderModifier int
 
 const (
@@ -29,11 +37,11 @@ const (
 )
 
 type attrModifier struct {
+	condition  conditionModifier
 	empty      boolModifier
 	encrypted  boolModifier
 	exact      boolModifier
 	executable boolModifier
-	once       boolModifier
 	order      orderModifier
 	private    boolModifier
 	readOnly   boolModifier
@@ -141,6 +149,20 @@ func (m boolModifier) modify(b bool) bool {
 	}
 }
 
+// modify returns the modified value of condition.
+func (m conditionModifier) modify(condition chezmoi.ScriptCondition) chezmoi.ScriptCondition {
+	switch m {
+	case conditionModifierLeaveUnchanged:
+		return condition
+	case conditionModifierClearOnce:
+		return chezmoi.ScriptConditionAlways
+	case conditionModifierSetOnce:
+		return chezmoi.ScriptConditionOnce
+	default:
+		panic(fmt.Sprintf("%d: unknown order modifier", m))
+	}
+}
+
 // modify returns the modified value of order.
 func (m orderModifier) modify(order chezmoi.ScriptOrder) chezmoi.ScriptOrder {
 	switch m {
@@ -217,7 +239,12 @@ func parseAttrModifier(s string) (*attrModifier, error) {
 		case "executable", "x":
 			am.executable = bm
 		case "once", "o":
-			am.once = bm
+			switch bm {
+			case boolModifierClear:
+				am.condition = conditionModifierClearOnce
+			case boolModifierSet:
+				am.condition = conditionModifierSetOnce
+			}
 		case "private", "p":
 			am.private = bm
 		case "readonly", "r":
@@ -278,7 +305,7 @@ func (am *attrModifier) modifyFileAttr(fileAttr chezmoi.FileAttr) chezmoi.FileAt
 		return chezmoi.FileAttr{
 			TargetName: fileAttr.TargetName,
 			Type:       chezmoi.SourceFileTypeScript,
-			Once:       am.once.modify(fileAttr.Once),
+			Condition:  am.condition.modify(fileAttr.Condition),
 			Order:      am.order.modify(fileAttr.Order),
 		}
 	case chezmoi.SourceFileTypeSymlink:

@@ -88,7 +88,7 @@ func TestParseAttrModifier(t *testing.T) {
 		{
 			s: "once",
 			expected: &attrModifier{
-				once: boolModifierSet,
+				condition: conditionModifierSetOnce,
 			},
 		},
 		{

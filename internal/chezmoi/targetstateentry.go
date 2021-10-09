@@ -37,7 +37,7 @@ type TargetStateScript struct {
 	*lazyContents
 	name        RelPath
 	interpreter *Interpreter
-	once        bool
+	condition   ScriptCondition
 }
 
 // A TargetStateSymlink represents the state of a symlink in the target state.
@@ -198,7 +198,7 @@ func (t *TargetStateScript) Apply(system System, persistentState PersistentState
 		return false, err
 	}
 	key := []byte(hex.EncodeToString(contentsSHA256))
-	if t.once {
+	if t.condition == ScriptConditionOnce {
 		switch scriptState, err := persistentState.Get(scriptStateBucket, key); {
 		case err != nil:
 			return false, err
@@ -242,7 +242,7 @@ func (t *TargetStateScript) Evaluate() error {
 
 // SkipApply implements TargetState.SkipApply.
 func (t *TargetStateScript) SkipApply(persistentState PersistentState) (bool, error) {
-	if !t.once {
+	if t.condition != ScriptConditionOnce {
 		return false, nil
 	}
 	contentsSHA256, err := t.ContentsSHA256()
