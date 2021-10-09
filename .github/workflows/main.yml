@@ -263,7 +263,7 @@ jobs:
     - name: Test
       run: |
         ( cd assets/docker && ./test.sh voidlinux )
-  generate:
+  check:
     runs-on: ubuntu-18.04
     steps:
     - name: Set up Go
@@ -283,26 +283,6 @@ jobs:
       run: |
         go generate
         git diff --exit-code
-  lint:
-    runs-on: ubuntu-18.04
-    steps:
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: ${{ env.GO_VERSION }}
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Cache Go modules
-      uses: actions/cache@v2
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
-    - name: Lint
-      uses: golangci/golangci-lint-action@v2
-      with:
-        version: v${{ env.GOLANGCI_LINT_VERSION }}
     - name: ShellCheck
       uses: ludeeus/action-shellcheck@1.1.0
       with:
@@ -313,10 +293,19 @@ jobs:
       run: |
         go install github.com/twpayne/findtypos@latest
         findtypos chezmoi .
+  lint:
+    runs-on: ubuntu-18.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Lint
+      uses: golangci/golangci-lint-action@v2
+      with:
+        version: v${{ env.GOLANGCI_LINT_VERSION }}
   release: # FIXME this should be merged into test-ubuntu above
     if: startsWith(github.ref, 'refs/tags/')
     needs:
-    - generate
+    - check
     - lint
     - test-debian-i386
     - test-fedora
