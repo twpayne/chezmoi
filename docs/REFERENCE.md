@@ -76,6 +76,7 @@ Manage your dotfiles across multiple machines, securely.
   * [`manage` *targets*](#manage-targets)
   * [`managed`](#managed)
   * [`merge` *target*...](#merge-target)
+  * [`merge-all` [*target*...]](#merge-all-target)
   * [`purge`](#purge)
   * [`remove` *targets*](#remove-targets)
   * [`re-add`](#re-add)
@@ -1488,6 +1489,19 @@ state, the source state, and the target state respectively. The default value of
 
 ```console
 $ chezmoi merge ~/.bashrc
+```
+
+---
+
+### `merge-all` [*target*...]
+
+Perform a three-way merge for file whose actual state does not match its target
+state. The merge is performed with `chezmoi merge`.
+
+#### `merge-all` examples
+
+```console
+$ chezmoi merge-all
 ```
 
 ---

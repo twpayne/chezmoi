@@ -133,6 +133,7 @@ type Config struct {
 	_import         importCmdConfig
 	init            initCmdConfig
 	managed         managedCmdConfig
+	mergeAll        mergeAllCmdConfig
 	purge           purgeCmdConfig
 	reAdd           reAddCmdConfig
 	remove          removeCmdConfig
@@ -335,6 +336,9 @@ func newConfig(options ...configOption) (*Config, error) {
 		managed: managedCmdConfig{
 			exclude: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypeDirs | chezmoi.EntryTypeFiles | chezmoi.EntryTypeSymlinks | chezmoi.EntryTypeEncrypted),
+		},
+		mergeAll: mergeAllCmdConfig{
+			recursive: true,
 		},
 		reAdd: reAddCmdConfig{
 			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
@@ -1237,6 +1241,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newInternalTestCmd(),
 		c.newManagedCmd(),
 		c.newMergeCmd(),
+		c.newMergeAllCmd(),
 		c.newPurgeCmd(),
 		c.newReAddCmd(),
 		c.newRemoveCmd(),
