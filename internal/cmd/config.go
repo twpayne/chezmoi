@@ -45,6 +45,11 @@ import (
 	"github.com/twpayne/chezmoi/v2/internal/git"
 )
 
+const (
+	logComponentKey         = "component"
+	logComponentValueSystem = "system"
+)
+
 type purgeOptions struct {
 	binary bool
 }
@@ -1471,7 +1476,8 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		chezmoi.RealSystemWithSafe(c.Safe),
 	)
 	if c.debug {
-		c.baseSystem = chezmoi.NewDebugSystem(c.baseSystem)
+		systemLogger := log.With().Str(logComponentKey, logComponentValueSystem).Logger()
+		c.baseSystem = chezmoi.NewDebugSystem(c.baseSystem, &systemLogger)
 	}
 
 	// Set up the persistent state.
