@@ -46,8 +46,9 @@ type ScriptCondition string
 
 // Script conditions.
 const (
-	ScriptConditionAlways ScriptCondition = ""
-	ScriptConditionOnce   ScriptCondition = "once"
+	ScriptConditionAlways   ScriptCondition = ""
+	ScriptConditionOnce     ScriptCondition = "once"
+	ScriptConditionOnChange ScriptCondition = "onchange"
 )
 
 // DirAttr holds attributes parsed from a source directory name.
@@ -190,9 +191,13 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 	case strings.HasPrefix(name, runPrefix):
 		sourceFileType = SourceFileTypeScript
 		name = mustTrimPrefix(name, runPrefix)
-		if strings.HasPrefix(name, oncePrefix) {
+		switch {
+		case strings.HasPrefix(name, oncePrefix):
 			name = mustTrimPrefix(name, oncePrefix)
 			condition = ScriptConditionOnce
+		case strings.HasPrefix(name, onChangePrefix):
+			name = mustTrimPrefix(name, onChangePrefix)
+			condition = ScriptConditionOnChange
 		}
 		switch {
 		case strings.HasPrefix(name, beforePrefix):
@@ -343,8 +348,11 @@ func (fa FileAttr) SourceName(encryptedSuffix string) string {
 		sourceName = removePrefix
 	case SourceFileTypeScript:
 		sourceName = runPrefix
-		if fa.Condition == ScriptConditionOnce {
+		switch fa.Condition {
+		case ScriptConditionOnce:
 			sourceName += oncePrefix
+		case ScriptConditionOnChange:
+			sourceName += onChangePrefix
 		}
 		switch fa.Order {
 		case ScriptOrderBefore:

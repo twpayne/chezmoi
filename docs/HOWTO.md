@@ -1320,10 +1320,12 @@ dry-run mode, the script is not executed.
 
 Scripts are any file in the source directory with the prefix `run_`, and are
 executed in alphabetical order. Scripts that should only be run if they have not
-been run before have the prefix `run_once_`.
+been run before have the prefix `run_once_`. Scripts that should be run whenever
+their contents change have the `run_onchange_` prefix.
 
 Scripts break chezmoi's declarative approach, and as such should be used
-sparingly. Any script should be idempotent, even `run_once_` scripts.
+sparingly. Any script should be idempotent, even `run_once_` and
+`run_onchange_` scripts.
 
 Scripts must be created manually in the source directory, typically by running
 `chezmoi cd` and then creating a file with a `run_` prefix. Scripts are executed

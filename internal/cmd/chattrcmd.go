@@ -24,6 +24,8 @@ const (
 	conditionModifierLeaveUnchanged conditionModifier = iota
 	conditionModifierClearOnce
 	conditionModifierSetOnce
+	conditionModifierClearOnChange
+	conditionModifierSetOnChange
 )
 
 type orderModifier int
@@ -57,6 +59,7 @@ func (c *Config) newChattrCmd() *cobra.Command {
 		"exact",
 		"executable", "x",
 		"once", "o",
+		"onchange",
 		"private", "p",
 		"readonly", "r",
 		"template", "t",
@@ -155,9 +158,19 @@ func (m conditionModifier) modify(condition chezmoi.ScriptCondition) chezmoi.Scr
 	case conditionModifierLeaveUnchanged:
 		return condition
 	case conditionModifierClearOnce:
-		return chezmoi.ScriptConditionAlways
+		if condition == chezmoi.ScriptConditionOnce {
+			return chezmoi.ScriptConditionAlways
+		}
+		return condition
 	case conditionModifierSetOnce:
 		return chezmoi.ScriptConditionOnce
+	case conditionModifierClearOnChange:
+		if condition == chezmoi.ScriptConditionOnChange {
+			return chezmoi.ScriptConditionAlways
+		}
+		return condition
+	case conditionModifierSetOnChange:
+		return chezmoi.ScriptConditionOnChange
 	default:
 		panic(fmt.Sprintf("%d: unknown order modifier", m))
 	}
@@ -244,6 +257,13 @@ func parseAttrModifier(s string) (*attrModifier, error) {
 				am.condition = conditionModifierClearOnce
 			case boolModifierSet:
 				am.condition = conditionModifierSetOnce
+			}
+		case "onchange":
+			switch bm {
+			case boolModifierClear:
+				am.condition = conditionModifierClearOnChange
+			case boolModifierSet:
+				am.condition = conditionModifierSetOnChange
 			}
 		case "private", "p":
 			am.private = bm
