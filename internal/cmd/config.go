@@ -47,6 +47,7 @@ import (
 
 const (
 	logComponentKey                  = "component"
+	logComponentValueEncryption      = "encryption"
 	logComponentValuePersistentState = "persistentState"
 	logComponentValueSystem          = "system"
 )
@@ -1575,7 +1576,8 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		return fmt.Errorf("%s: unknown encryption", c.Encryption)
 	}
 	if c.debug {
-		c.encryption = chezmoi.NewDebugEncryption(c.encryption)
+		encryptionLogger := log.With().Str(logComponentKey, logComponentValueEncryption).Logger()
+		c.encryption = chezmoi.NewDebugEncryption(c.encryption, &encryptionLogger)
 	}
 
 	// Create the config directory if needed.
