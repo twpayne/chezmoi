@@ -46,8 +46,9 @@ import (
 )
 
 const (
-	logComponentKey         = "component"
-	logComponentValueSystem = "system"
+	logComponentKey                  = "component"
+	logComponentValuePersistentState = "persistentState"
+	logComponentValueSystem          = "system"
 )
 
 type purgeOptions struct {
@@ -1525,7 +1526,8 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		c.persistentState = chezmoi.NullPersistentState{}
 	}
 	if c.debug && c.persistentState != nil {
-		c.persistentState = chezmoi.NewDebugPersistentState(c.persistentState)
+		persistentStateLogger := log.With().Str(logComponentKey, logComponentValuePersistentState).Logger()
+		c.persistentState = chezmoi.NewDebugPersistentState(c.persistentState, &persistentStateLogger)
 	}
 
 	// Set up the source and destination systems.
