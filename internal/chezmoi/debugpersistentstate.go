@@ -1,17 +1,20 @@
 package chezmoi
 
 import (
-	"github.com/rs/zerolog/log"
+	"github.com/rs/zerolog"
 )
 
 // A DebugPersistentState logs calls to a PersistentState.
 type DebugPersistentState struct {
+	logger          *zerolog.Logger
 	persistentState PersistentState
 }
 
-// NewDebugPersistentState returns a new debugPersistentState.
-func NewDebugPersistentState(persistentState PersistentState) *DebugPersistentState {
+// NewDebugPersistentState returns a new debugPersistentState that logs methods
+// on persistentState to logger.
+func NewDebugPersistentState(persistentState PersistentState, logger *zerolog.Logger) *DebugPersistentState {
 	return &DebugPersistentState{
+		logger:          logger,
 		persistentState: persistentState,
 	}
 }
@@ -19,7 +22,7 @@ func NewDebugPersistentState(persistentState PersistentState) *DebugPersistentSt
 // Close implements PersistentState.Close.
 func (s *DebugPersistentState) Close() error {
 	err := s.persistentState.Close()
-	log.Err(err).
+	s.logger.Err(err).
 		Msg("Close")
 	return err
 }
@@ -27,7 +30,7 @@ func (s *DebugPersistentState) Close() error {
 // CopyTo implements PersistentState.CopyTo.
 func (s *DebugPersistentState) CopyTo(p PersistentState) error {
 	err := s.persistentState.CopyTo(p)
-	log.Err(err).
+	s.logger.Err(err).
 		Msg("CopyTo")
 	return err
 }
@@ -35,7 +38,7 @@ func (s *DebugPersistentState) CopyTo(p PersistentState) error {
 // Data implements PersistentState.Data.
 func (s *DebugPersistentState) Data() (interface{}, error) {
 	data, err := s.persistentState.Data()
-	log.Err(err).
+	s.logger.Err(err).
 		Interface("data", data).
 		Msg("Data")
 	return data, err
@@ -44,7 +47,7 @@ func (s *DebugPersistentState) Data() (interface{}, error) {
 // Delete implements PersistentState.Delete.
 func (s *DebugPersistentState) Delete(bucket, key []byte) error {
 	err := s.persistentState.Delete(bucket, key)
-	log.Err(err).
+	s.logger.Err(err).
 		Bytes("bucket", bucket).
 		Bytes("key", key).
 		Msg("Delete")
@@ -55,14 +58,14 @@ func (s *DebugPersistentState) Delete(bucket, key []byte) error {
 func (s *DebugPersistentState) ForEach(bucket []byte, fn func(k, v []byte) error) error {
 	err := s.persistentState.ForEach(bucket, func(k, v []byte) error {
 		err := fn(k, v)
-		log.Err(err).
+		s.logger.Err(err).
 			Bytes("bucket", bucket).
 			Bytes("key", k).
 			Bytes("value", v).
 			Msg("ForEach")
 		return err
 	})
-	log.Err(err).
+	s.logger.Err(err).
 		Bytes("bucket", bucket).
 		Msg("ForEach")
 	return err
@@ -71,7 +74,7 @@ func (s *DebugPersistentState) ForEach(bucket []byte, fn func(k, v []byte) error
 // Get implements PersistentState.Get.
 func (s *DebugPersistentState) Get(bucket, key []byte) ([]byte, error) {
 	value, err := s.persistentState.Get(bucket, key)
-	log.Err(err).
+	s.logger.Err(err).
 		Bytes("bucket", bucket).
 		Bytes("key", key).
 		Bytes("value", value).
@@ -82,7 +85,7 @@ func (s *DebugPersistentState) Get(bucket, key []byte) ([]byte, error) {
 // Set implements PersistentState.Set.
 func (s *DebugPersistentState) Set(bucket, key, value []byte) error {
 	err := s.persistentState.Set(bucket, key, value)
-	log.Err(err).
+	s.logger.Err(err).
 		Bytes("bucket", bucket).
 		Bytes("key", key).
 		Bytes("value", value).
