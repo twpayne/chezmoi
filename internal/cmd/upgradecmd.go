@@ -24,7 +24,6 @@ import (
 
 	"github.com/coreos/go-semver/semver"
 	"github.com/google/go-github/v39/github"
-	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	vfs "github.com/twpayne/go-vfs/v4"
 	"golang.org/x/sys/unix"
@@ -189,7 +188,7 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 	// Execute the new version.
 	arg0 := path
 	argv := []string{arg0, "--version"}
-	log.Info().
+	c.logger.Info().
 		Str("arg0", arg0).
 		Strs("argv", argv).
 		Msg("exec")
@@ -230,7 +229,7 @@ func (c *Config) downloadURL(ctx context.Context, url string) ([]byte, error) {
 		return nil, err
 	}
 	resp, err := http.DefaultClient.Do(req)
-	log.Err(err).
+	c.logger.Err(err).
 		Str("method", req.Method).
 		Int("statusCode", resp.StatusCode).
 		Str("status", resp.Status).

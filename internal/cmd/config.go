@@ -49,6 +49,7 @@ const (
 	logComponentKey                  = "component"
 	logComponentValueEncryption      = "encryption"
 	logComponentValuePersistentState = "persistentState"
+	logComponentValueSourceState     = "sourceState"
 	logComponentValueSystem          = "system"
 )
 
@@ -155,6 +156,7 @@ type Config struct {
 	sourceSystem      chezmoi.System
 	destSystem        chezmoi.System
 	persistentState   chezmoi.PersistentState
+	logger            *zerolog.Logger
 
 	// Computed configuration.
 	homeDirAbsPath chezmoi.AbsPath
@@ -561,7 +563,7 @@ func (c *Config) close() error {
 	var err error
 	for _, tempDirAbsPath := range c.tempDirs {
 		err2 := os.RemoveAll(tempDirAbsPath.String())
-		log.Err(err2).
+		c.logger.Err(err2).
 			Stringer("tempDir", tempDirAbsPath).
 			Msg("RemoveAll")
 		err = multierr.Append(err, err2)
@@ -718,7 +720,7 @@ func (c *Config) defaultConfigFile(fileSystem vfs.Stater, bds *xdg.BaseDirectory
 // has changed since chezmoi last wrote it then it prompts the user for the
 // action to take.
 func (c *Config) defaultPreApplyFunc(targetRelPath chezmoi.RelPath, targetEntryState, lastWrittenEntryState, actualEntryState *chezmoi.EntryState) error {
-	log.Info().
+	c.logger.Info().
 		Stringer("targetRelPath", targetRelPath).
 		Object("targetEntryState", targetEntryState).
 		Object("lastWrittenEntryState", lastWrittenEntryState).
@@ -825,20 +827,20 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 			if rawGroup, err := user.LookupGroupId(currentUser.Gid); err == nil {
 				group = rawGroup.Name
 			} else {
-				log.Info().
+				c.logger.Info().
 					Str("gid", currentUser.Gid).
 					Err(err).
 					Msg("user.LookupGroupId")
 			}
 		}
 	} else {
-		log.Info().
+		c.logger.Info().
 			Err(err).
 			Msg("user.Current")
 		var ok bool
 		username, ok = os.LookupEnv("USER")
 		if !ok {
-			log.Info().
+			c.logger.Info().
 				Str("key", "USER").
 				Bool("ok", ok).
 				Msg("os.LookupEnv")
@@ -851,14 +853,14 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 	if rawHostname, err := os.Hostname(); err == nil {
 		hostname = strings.SplitN(rawHostname, ".", 2)[0]
 	} else {
-		log.Info().
+		c.logger.Info().
 			Err(err).
 			Msg("os.Hostname")
 	}
 
 	kernel, err := chezmoi.Kernel(c.fileSystem)
 	if err != nil {
-		log.Info().
+		c.logger.Info().
 			Err(err).
 			Msg("chezmoi.Kernel")
 	}
@@ -867,7 +869,7 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 	if rawOSRelease, err := chezmoi.OSRelease(c.baseSystem); err == nil {
 		osRelease = upperSnakeCaseToCamelCaseMap(rawOSRelease)
 	} else {
-		log.Info().
+		c.logger.Info().
 			Err(err).
 			Msg("chezmoi.OSRelease")
 	}
@@ -1322,6 +1324,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 
 // newSourceState returns a new SourceState with options.
 func (c *Config) newSourceState(ctx context.Context, options ...chezmoi.SourceStateOption) (*chezmoi.SourceState, error) {
+	sourceStateLogger := c.logger.With().Str(logComponentKey, logComponentValueSourceState).Logger()
 	s := chezmoi.NewSourceState(append([]chezmoi.SourceStateOption{
 		chezmoi.WithBaseSystem(c.baseSystem),
 		chezmoi.WithCacheDir(c.CacheDirAbsPath),
@@ -1329,6 +1332,7 @@ func (c *Config) newSourceState(ctx context.Context, options ...chezmoi.SourceSt
 		chezmoi.WithDestDir(c.DestDirAbsPath),
 		chezmoi.WithEncryption(c.encryption),
 		chezmoi.WithInterpreters(c.Interpreters),
+		chezmoi.WithLogger(&sourceStateLogger),
 		chezmoi.WithMode(c.Mode),
 		chezmoi.WithPriorityTemplateData(c.Data),
 		chezmoi.WithSourceDir(c.SourceDirAbsPath),
@@ -1466,9 +1470,10 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	} else {
 		zerolog.SetGlobalLevel(zerolog.Disabled)
 	}
+	c.logger = &log.Logger
 
 	// Log basic information.
-	log.Info().
+	c.logger.Info().
 		Object("version", c.versionInfo).
 		Strs("args", args).
 		Str("goVersion", runtime.Version()).
@@ -1478,7 +1483,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		chezmoi.RealSystemWithSafe(c.Safe),
 	)
 	if c.debug {
-		systemLogger := log.With().Str(logComponentKey, logComponentValueSystem).Logger()
+		systemLogger := c.logger.With().Str(logComponentKey, logComponentValueSystem).Logger()
 		c.baseSystem = chezmoi.NewDebugSystem(c.baseSystem, &systemLogger)
 	}
 
@@ -1527,7 +1532,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		c.persistentState = chezmoi.NullPersistentState{}
 	}
 	if c.debug && c.persistentState != nil {
-		persistentStateLogger := log.With().Str(logComponentKey, logComponentValuePersistentState).Logger()
+		persistentStateLogger := c.logger.With().Str(logComponentKey, logComponentValuePersistentState).Logger()
 		c.persistentState = chezmoi.NewDebugPersistentState(c.persistentState, &persistentStateLogger)
 	}
 
@@ -1576,7 +1581,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		return fmt.Errorf("%s: unknown encryption", c.Encryption)
 	}
 	if c.debug {
-		encryptionLogger := log.With().Str(logComponentKey, logComponentValueEncryption).Logger()
+		encryptionLogger := c.logger.With().Str(logComponentKey, logComponentValueEncryption).Logger()
 		c.encryption = chezmoi.NewDebugEncryption(c.encryption, &encryptionLogger)
 	}
 
@@ -1844,7 +1849,7 @@ func (c *Config) tempDir(key string) (chezmoi.AbsPath, error) {
 		return tempDirAbsPath, nil
 	}
 	tempDir, err := os.MkdirTemp("", key)
-	log.Err(err).
+	c.logger.Err(err).
 		Str("tempDir", tempDir).
 		Msg("MkdirTemp")
 	if err != nil {
