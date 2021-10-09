@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
@@ -43,7 +42,7 @@ func (c *Config) runStatusCmd(cmd *cobra.Command, args []string, sourceState *ch
 	builder := strings.Builder{}
 	dryRunSystem := chezmoi.NewDryRunSystem(c.destSystem)
 	statusCmdPreApplyFunc := func(targetRelPath chezmoi.RelPath, targetEntryState, lastWrittenEntryState, actualEntryState *chezmoi.EntryState) error {
-		log.Info().
+		c.logger.Info().
 			Stringer("targetRelPath", targetRelPath).
 			Object("targetEntryState", targetEntryState).
 			Object("lastWrittenEntryState", lastWrittenEntryState).

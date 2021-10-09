@@ -13,7 +13,6 @@ import (
 	"github.com/go-git/go-git/v5/plumbing/transport"
 	"github.com/go-git/go-git/v5/plumbing/transport/http"
 	"github.com/rs/zerolog"
-	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
@@ -233,7 +232,7 @@ func (c *Config) builtinGitClone(username, url string, workingTreeRawPath chezmo
 
 	for {
 		_, err := git.PlainClone(workingTreeRawPath.String(), isBare, &cloneOptions)
-		log.Err(err).
+		c.logger.Err(err).
 			Stringer("path", workingTreeRawPath).
 			Bool("isBare", isBare).
 			Object("o", loggableGitCloneOptions(cloneOptions)).
@@ -263,7 +262,7 @@ func (c *Config) builtinGitClone(username, url string, workingTreeRawPath chezmo
 func (c *Config) builtinGitInit(workingTreeRawPath chezmoi.AbsPath) error {
 	isBare := false
 	_, err := git.PlainInit(workingTreeRawPath.String(), isBare)
-	log.Err(err).
+	c.logger.Err(err).
 		Stringer("path", workingTreeRawPath).
 		Bool("isBare", isBare).
 		Msg("PlainInit")

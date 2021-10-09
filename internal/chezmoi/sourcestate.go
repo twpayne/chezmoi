@@ -24,6 +24,7 @@ import (
 	"time"
 
 	"github.com/coreos/go-semver/semver"
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	vfs "github.com/twpayne/go-vfs/v4"
 	"go.uber.org/multierr"
@@ -75,6 +76,7 @@ type SourceState struct {
 	encryption              Encryption
 	ignore                  *patternSet
 	interpreters            map[string]*Interpreter
+	logger                  *zerolog.Logger
 	minVersion              semver.Version
 	mode                    Mode
 	defaultTemplateDataFunc func() map[string]interface{}
@@ -123,6 +125,13 @@ func WithEncryption(encryption Encryption) SourceStateOption {
 func WithInterpreters(interpreters map[string]*Interpreter) SourceStateOption {
 	return func(s *SourceState) {
 		s.interpreters = interpreters
+	}
+}
+
+// WithLogger sets the logger.
+func WithLogger(logger *zerolog.Logger) SourceStateOption {
+	return func(s *SourceState) {
+		s.logger = logger
 	}
 }
 
@@ -193,6 +202,7 @@ func NewSourceState(options ...SourceStateOption) *SourceState {
 		umask:                Umask,
 		encryption:           NoEncryption{},
 		ignore:               newPatternSet(),
+		logger:               &log.Logger,
 		readTemplateData:     true,
 		priorityTemplateData: make(map[string]interface{}),
 		userTemplateData:     make(map[string]interface{}),
@@ -1104,7 +1114,7 @@ func (s *SourceState) getExternalDataRaw(ctx context.Context, externalRelPath Re
 		return nil, err
 	}
 	resp, err := http.DefaultClient.Do(req)
-	log.Err(err).
+	s.logger.Err(err).
 		Str("method", req.Method).
 		Int("statusCode", resp.StatusCode).
 		Str("status", resp.Status).
