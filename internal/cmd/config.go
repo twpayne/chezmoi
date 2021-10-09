@@ -740,7 +740,6 @@ func (c *Config) defaultPreApplyFunc(targetRelPath chezmoi.RelPath, targetEntryS
 		return nil
 	}
 
-	// LATER add merge option
 	var choices []string
 	actualContents := actualEntryState.Contents()
 	targetContents := targetEntryState.Contents()
