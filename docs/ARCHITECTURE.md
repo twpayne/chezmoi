@@ -9,7 +9,7 @@
 * [Path handling](#path-handling)
 * [Persistent state](#persistent-state)
 * [Encryption](#encryption)
-* [`run_once_` scripts](#run_once_-scripts)
+* [`run_once_` and `run_onchange_` scripts](#run_once_-and-run_onchange_-scripts)
 * [Testing](#testing)
 
 ---
@@ -174,12 +174,17 @@ wraps an `Encryption` interface and logs the methods called.
 
 ---
 
-## `run_once_` scripts
+## `run_once_` and `run_onchange_` scripts
 
-The execution of `run_once_` scripts is recorded by storing the SHA256 of their
-contents in the persistent state. `run_once_` scripts are only run if no
-`run_once_` script with the same contents has been run before, for example if
-the script's contents change.
+The execution of a `run_once_` script is recorded by storing the SHA256 of its
+contents in the `scriptState` bucket in the persistent state. On future
+invocations the script is only run if no matching contents SHA256 is found in
+the persistent state.
+
+The execution of a `run_onchange_` script is recorded by storing its target name
+in the `entryState` bucket along with its contents SHA256 sum. On future
+invocations the script is only run if its contents SHA256 sum has changed, and
+its contents SHA256 sum is then updated in the persistent state.
 
 ---
 

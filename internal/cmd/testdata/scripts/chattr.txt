@@ -79,9 +79,14 @@ chezmoi chattr -- after $HOME/script
 ! exists $CHEZMOISOURCEDIR/run_once_before_script
 exists $CHEZMOISOURCEDIR/run_once_after_script
 
-# test that chezmoi chattr -- -o removes the once attribute on a script
-chezmoi chattr -- -o $HOME/script
+# test that chezmoi chattr onchange sets the onchange attribute on a script and removes the only attribute
+chezmoi chattr -- onchange $HOME/script
 ! exists $CHEZMOISOURCEDIR/run_once_after_script
+exists $CHEZMOISOURCEDIR/run_onchange_after_script
+
+# test that chezmoi chattr -- -onchange removes the onchange attribute on a script
+chezmoi chattr -- -onchange $HOME/script
+! exists $CHEZMOISOURCEDIR/run_onchange_after_script
 exists $CHEZMOISOURCEDIR/run_after_script
 
 # test that chezmoi chattr -- -a removes the after attribute on a script

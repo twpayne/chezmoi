@@ -36,6 +36,7 @@ const (
 	literalPrefix    = "literal_"
 	modifyPrefix     = "modify_"
 	oncePrefix       = "once_"
+	onChangePrefix   = "onchange_"
 	privatePrefix    = "private_"
 	readOnlyPrefix   = "readonly_"
 	removePrefix     = "remove_"
