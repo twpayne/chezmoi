@@ -802,9 +802,10 @@ README.md
 
 *.txt   # ignore *.txt in the target directory
 */*.txt # ignore *.txt in subdirectories of the target directory
-backups/** # ignore backups folder in chezmoi directory and all its contents
         # but not in subdirectories of subdirectories;
         # so a/b/c.txt would *not* be ignored
+
+backups/   # ignore backups folder in chezmoi directory and all its contents
 backups/** # ignore all contents of backups folder in chezmoi directory
            # but not backups folder itself
 
