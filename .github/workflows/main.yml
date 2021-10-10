@@ -86,7 +86,7 @@ jobs:
     - name: Install age
       run: |
         cd $(mktemp -d)
-        curl -fsSL https://dl.filippo.io/age/v${AGE_VERSION}?for=darwin/amd64 | tar xzf -
+        curl -fsSL https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-darwin-amd64.tar.gz | tar xzf -
         sudo install -m 755 age/age /usr/local/bin
         sudo install -m 755 age/age-keygen /usr/local/bin
     - name: Test
@@ -135,7 +135,7 @@ jobs:
     - name: Install age
       run: |
         cd $(mktemp -d)
-        curl -fsSL https://dl.filippo.io/age/v${AGE_VERSION}?for=linux/amd64 | tar xzf -
+        curl -fsSL https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-linux-amd64.tar.gz | tar xzf -
         sudo install -m 755 age/age /usr/local/bin
         sudo install -m 755 age/age-keygen /usr/local/bin
     - name: Test (umask 022)
@@ -209,7 +209,7 @@ jobs:
     - name: Install age
       run: |
         cd $(mktemp -d)
-        curl -fsSL https://dl.filippo.io/age/v${AGE_VERSION}?for=linux/amd64 | tar xzf -
+        curl -fsSL https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-linux-amd64.tar.gz | tar xzf -
         sudo install -m 755 age/age /usr/local/bin
         sudo install -m 755 age/age-keygen /usr/local/bin
     - name: Test
