@@ -12,8 +12,16 @@ cmp stdout golden/script-one-state.json
 chezmoi apply
 ! stdout .
 
-# test that chezmoi apply runs onchange scripts when their contents are changed
+# test that chezmoi status does not print that it will run onchange scripts when their contents are not changed
+chezmoi status
+! stdout .
+
+# test that chezmoi status does print that it will run onchange scripts when their contents are changed
 cp golden/script-two.sh $CHEZMOISOURCEDIR/run_onchange_script.sh
+chezmoi status
+cmp stdout golden/status
+
+# test that chezmoi apply runs onchange scripts when their contents are changed
 chezmoi apply
 stdout two
 chezmoi state get --bucket=entryState --key=$HOME/script.sh
@@ -44,3 +52,5 @@ echo one
 #!/bin/sh
 
 echo two
+-- golden/status --
+ R script.sh

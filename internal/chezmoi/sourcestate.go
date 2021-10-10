@@ -485,7 +485,7 @@ func (s *SourceState) Apply(targetSystem, destSystem System, persistentState Per
 		return err
 	}
 
-	switch skip, err := targetStateEntry.SkipApply(persistentState); {
+	switch skip, err := targetStateEntry.SkipApply(persistentState, targetAbsPath); {
 	case err != nil:
 		return err
 	case skip:

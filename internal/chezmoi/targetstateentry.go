@@ -13,7 +13,7 @@ type TargetStateEntry interface {
 	Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry) (bool, error)
 	EntryState(umask fs.FileMode) (*EntryState, error)
 	Evaluate() error
-	SkipApply(persistentState PersistentState) (bool, error)
+	SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error)
 }
 
 // A TargetStateDir represents the state of a directory in the target state.
@@ -86,7 +86,7 @@ func (t *TargetStateDir) Evaluate() error {
 }
 
 // SkipApply implements TargetState.SkipApply.
-func (t *TargetStateDir) SkipApply(persistentState PersistentState) (bool, error) {
+func (t *TargetStateDir) SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error) {
 	return false, nil
 }
 
@@ -162,7 +162,7 @@ func (t *TargetStateFile) Perm(umask fs.FileMode) fs.FileMode {
 }
 
 // SkipApply implements TargetState.SkipApply.
-func (t *TargetStateFile) SkipApply(persistentState PersistentState) (bool, error) {
+func (t *TargetStateFile) SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error) {
 	return false, nil
 }
 
@@ -187,7 +187,7 @@ func (t *TargetStateRemove) Evaluate() error {
 }
 
 // SkipApply implements TargetState.SkipApply.
-func (t *TargetStateRemove) SkipApply(persistentState PersistentState) (bool, error) {
+func (t *TargetStateRemove) SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error) {
 	return false, nil
 }
 
@@ -270,23 +270,42 @@ func (t *TargetStateScript) Evaluate() error {
 }
 
 // SkipApply implements TargetState.SkipApply.
-func (t *TargetStateScript) SkipApply(persistentState PersistentState) (bool, error) {
-	if t.condition != ScriptConditionOnce {
+func (t *TargetStateScript) SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error) {
+	switch t.condition {
+	case ScriptConditionAlways:
 		return false, nil
+	case ScriptConditionOnce:
+		contentsSHA256, err := t.ContentsSHA256()
+		if err != nil {
+			return false, err
+		}
+		scriptStateKey := []byte(hex.EncodeToString(contentsSHA256))
+		switch scriptState, err := persistentState.Get(scriptStateBucket, scriptStateKey); {
+		case err != nil:
+			return false, err
+		case scriptState != nil:
+			return true, nil
+		}
+	case ScriptConditionOnChange:
+		entryStateKey := []byte(targetAbsPath.String())
+		switch entryStateBytes, err := persistentState.Get(EntryStateBucket, entryStateKey); {
+		case err != nil:
+			return false, err
+		case entryStateBytes != nil:
+			var entryState EntryState
+			if err := stateFormat.Unmarshal(entryStateBytes, &entryState); err != nil {
+				return false, err
+			}
+			contentsSHA256, err := t.ContentsSHA256()
+			if err != nil {
+				return false, err
+			}
+			if bytes.Equal(entryState.ContentsSHA256.Bytes(), contentsSHA256) {
+				return true, nil
+			}
+		}
 	}
-	contentsSHA256, err := t.ContentsSHA256()
-	if err != nil {
-		return false, err
-	}
-	key := []byte(hex.EncodeToString(contentsSHA256))
-	switch scriptState, err := persistentState.Get(scriptStateBucket, key); {
-	case err != nil:
-		return false, err
-	case scriptState != nil:
-		return true, nil
-	default:
-		return false, nil
-	}
+	return false, nil
 }
 
 // Apply updates actualStateEntry to match t.
@@ -349,7 +368,7 @@ func (t *TargetStateSymlink) Evaluate() error {
 }
 
 // SkipApply implements TargetState.SkipApply.
-func (t *TargetStateSymlink) SkipApply(persistentState PersistentState) (bool, error) {
+func (t *TargetStateSymlink) SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error) {
 	return false, nil
 }
 
@@ -370,6 +389,6 @@ func (t *targetStateRenameDir) Evaluate() error {
 }
 
 // SkipApply implements TargetState.SkipApply.
-func (t *targetStateRenameDir) SkipApply(persistentState PersistentState) (bool, error) {
+func (t *targetStateRenameDir) SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error) {
 	return false, nil
 }
