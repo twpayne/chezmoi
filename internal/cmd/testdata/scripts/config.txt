@@ -20,7 +20,7 @@ stdout 'sourceDir: .*/config/source'
 chezmoi data --config=$CHEZMOICONFIGDIR/chezmoi.yaml --format=yaml
 stdout 'sourceDir: .*/config2/source'
 
-[windows] skip 'remaining tests require /dev/stdin'
+[windows] stop 'remaining tests require /dev/stdin'
 
 # test that chezmoi can read the config from stdin
 stdin home2/user/.config/chezmoi/chezmoi.yaml
