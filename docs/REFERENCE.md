@@ -98,6 +98,8 @@ Manage your dotfiles across multiple machines, securely.
   * [`bitwarden` [*arg*...]](#bitwarden-arg)
   * [`bitwardenAttachment` *filename* *itemid*](#bitwardenattachment-filename-itemid)
   * [`bitwardenFields` [*arg*...]](#bitwardenfields-arg)
+  * [`decrypt` *ciphertext*](#decrypt-ciphertext)
+  * [`encrypt` *plaintext*](#encrypt-plaintext)
   * [`gitHubKeys` *user*](#githubkeys-user)
   * [`gopass` *gopass-name*](#gopass-gopass-name)
   * [`gopassRaw` *gopass-name*](#gopassraw-gopass-name)
@@ -1885,6 +1887,24 @@ the same arguments will only invoke `bw get` once.
 ```
 {{ (bitwardenFields "item" "<itemid>").token.value }}
 ```
+
+---
+
+### `decrypt` *ciphertext*
+
+`decrypt` decrypts *ciphertext* using chezmoi's configured encryption method.
+
+#### `decrypt` examples
+
+```
+{{ joinPath .chezmoi.sourceDir ".ignored-encrypted-file.age" | include | decrypt }}
+```
+
+---
+
+### `encrypt` *plaintext*
+
+`encrypt` encrypts *plaintext* using chezmoi's configured encryption method.
 
 ---
 

@@ -20,8 +20,7 @@ cp www/archive.tar.gz www/archive
 chezmoi apply --force --refresh-externals
 cmp $HOME/.dir/dir/file golden/dir/file
 
-# remaining tests require zip
-[!exec:zip] skip 'zip not found in $PATH'
+[!exec:zip] stop 'zip not found in $PATH'
 
 # test that chezmoi sniffs the format of zip files
 exec zip -r www/archive.zip archive
