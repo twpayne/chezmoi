@@ -7,6 +7,60 @@ exists $HOME/.file
 ! exists $HOME/README.md
 ! exists $HOME/.dir
 
+chhome home2/user
+
+# test that chezmoi manage lists all managed files
+chezmoi managed
+cmp stdout golden/managed-all
+
+# test that chezmoiignore ignores all files in a directory
+cp golden/.chezmoiignore-dir $CHEZMOISOURCEDIR/.chezmoiignore
+chezmoi managed
+cmp stdout golden/managed-ignore-dir
+
+# test that chezmoiignore ignores all files in a subdirectory
+cp golden/.chezmoiignore-dir-subdir $CHEZMOISOURCEDIR/.chezmoiignore
+chezmoi managed
+cmp stdout golden/managed-ignore-dir-subdir
+
+# test that chezmoiignore ignores all files matching a simple pattern
+cp golden/.chezmoiignore-star-slash-star-dot-txt $CHEZMOISOURCEDIR/.chezmoiignore
+chezmoi managed
+cmp stdout golden/managed-ignore-star-slash-star-dot-txt
+
+# test that chezmoiignore ignores all files matching a doublestar pattern
+cp golden/.chezmoiignore-star-star-slash-star-dot-txt $CHEZMOISOURCEDIR/.chezmoiignore
+chezmoi managed
+cmp stdout golden/managed-ignore-star-star-slash-star-dot-txt
+
+-- golden/.chezmoiignore-dir --
+.dir
+-- golden/.chezmoiignore-dir-subdir --
+.dir/subdir/
+-- golden/.chezmoiignore-star-slash-star-dot-txt --
+*/*.txt
+-- golden/.chezmoiignore-star-star-slash-star-dot-txt --
+**/*.txt
+-- golden/managed-all --
+.dir
+.dir/file.txt
+.dir/subdir
+.dir/subdir/file.txt
+.file.txt
+-- golden/managed-ignore-dir --
+.file.txt
+-- golden/managed-ignore-dir-subdir --
+.dir
+.dir/file.txt
+.file.txt
+-- golden/managed-ignore-star-slash-star-dot-txt --
+.dir
+.dir/subdir
+.dir/subdir/file.txt
+.file.txt
+-- golden/managed-ignore-star-star-slash-star-dot-txt --
+.dir
+.dir/subdir
 -- home/user/.local/share/chezmoi/.chezmoiignore --
 README.md
 .dir
@@ -15,3 +69,9 @@ README.md
 {{ end }}
 -- home/user/.local/share/chezmoi/README.md --
 # contents of README.md
+-- home2/user/.local/share/chezmoi/dot_file.txt --
+# contents of .file.txt
+-- home2/user/.local/share/chezmoi/dot_dir/file.txt --
+# contents of .dir/file.txt
+-- home2/user/.local/share/chezmoi/dot_dir/subdir/file.txt --
+# contents of .dir/subdir/file.txt
