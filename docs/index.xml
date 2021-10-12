@@ -47,7 +47,7 @@ If you&amp;rsquo;re already using a dotfile manager, but not chezmoi, then read 
       <guid>https://chezmoi.io/docs/contributing/</guid>
       <description>Contributing Guide #   Getting started #  chezmoi is written in Go and development happens on GitHub. The rest of this document assumes that you&amp;rsquo;ve checked out chezmoi locally.
 The Architecture Guide contains a high-level overview of chezmoi&amp;rsquo;s source code.
- Developing locally #  chezmoi requires Go 1.17 or later.
+ Developing locally #  chezmoi requires Go 1.16 or later.
 chezmoi is a standard Go project, using standard Go tooling, with a few extra tools. Ensure that these extra tools are installed with:</description>
     </item>
     
@@ -92,7 +92,7 @@ $ sh -c &amp;quot;$(wget -qO- git.io/chezmoi)&amp;quot; If you already have a do
       <description>Media #  Recommended article: Fedora Magazine: Take back your dotfiles with Chezmoi
 Recommended video: chezmoi: manage your dotfiles across multiple, diverse machines, securely
 Recommended podcast: Managing Dot Files and an Introduction to Chezmoi
-    Date Version Format Link     2021-09-18 2.1.2 Audio/text PBS 125 of X — Chezmoi on Multiple Computers   2021-09-06 2.2.0 Video chezmoi: Organize your dotfiles across multiple computers | Let&amp;rsquo;s Code   2021-09-06 2.</description>
+    Date Version Format Link     2021-09-18 2.1.2 Audio/text PBS 125 of X — Chezmoi on Multiple Computers   2021-09-14 2.2.0 Text Managing preference plists under Chezmoi   2021-09-06 2.</description>
     </item>
     
     <item>

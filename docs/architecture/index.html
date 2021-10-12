@@ -25,7 +25,7 @@ $ go doc -all -u github.com/twpayne/chezmoi/v2/internal/chezmoi You can also bro
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.0f3d2e4d019bfdfdf363073ec5607d29e10bb3c6d21480334a9820f55c941034.js" integrity="sha256-Dz0uTQGb/f3zYwc&#43;xWB9KeELs8bSFIAzSpgg9VyUEDQ=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.a55db1692b941b190101517c728ea9f3b0ac016a8f03826d9607cfe9f2b6ff31.js" integrity="sha256-pV2xaSuUGxkBAVF8co6p87CsAWqPA4JtlgfP6fK2/zE=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -133,7 +133,7 @@ https://github.com/alex-shpak/hugo-book
     <li><a href="#path-handling">Path handling</a></li>
     <li><a href="#persistent-state">Persistent state</a></li>
     <li><a href="#encryption">Encryption</a></li>
-    <li><a href="#run_once_-scripts"><code>run_once_</code> scripts</a></li>
+    <li><a href="#run_once_-and-run_onchange_-scripts"><code>run_once_</code> and <code>run_onchange_</code> scripts</a></li>
     <li><a href="#testing">Testing</a></li>
   </ul>
 </nav>
@@ -314,13 +314,18 @@ methods of encrypting and decrypting files and <code>[]byte</code>s. Implementat
 the <code>AGEEncryption</code> and <code>GPGEncryption</code> structs. A <code>DebugEncryption</code> struct
 wraps an <code>Encryption</code> interface and logs the methods called.</p>
 <hr>
-<h2 id="run_once_-scripts">
-  <code>run_once_</code> scripts
-  <a class="anchor" href="#run_once_-scripts">#</a>
+<h2 id="run_once_-and-run_onchange_-scripts">
+  <code>run_once_</code> and <code>run_onchange_</code> scripts
+  <a class="anchor" href="#run_once_-and-run_onchange_-scripts">#</a>
 </h2>
-<p>The execution of <code>run_once_</code> scripts is recorded by storing the SHA256 of their
-contents in the persistent state. <code>run_once_</code> scripts are only run if they are
-new or if their contents have not changed.</p>
+<p>The execution of a <code>run_once_</code> script is recorded by storing the SHA256 of its
+contents in the <code>scriptState</code> bucket in the persistent state. On future
+invocations the script is only run if no matching contents SHA256 is found in
+the persistent state.</p>
+<p>The execution of a <code>run_onchange_</code> script is recorded by storing its target name
+in the <code>entryState</code> bucket along with its contents SHA256 sum. On future
+invocations the script is only run if its contents SHA256 sum has changed, and
+its contents SHA256 sum is then updated in the persistent state.</p>
 <hr>
 <h2 id="testing">
   Testing
@@ -388,7 +393,7 @@ handling due to its path separator and lack of POSIX-style file permissions.</p>
     <li><a href="#path-handling">Path handling</a></li>
     <li><a href="#persistent-state">Persistent state</a></li>
     <li><a href="#encryption">Encryption</a></li>
-    <li><a href="#run_once_-scripts"><code>run_once_</code> scripts</a></li>
+    <li><a href="#run_once_-and-run_onchange_-scripts"><code>run_once_</code> and <code>run_onchange_</code> scripts</a></li>
     <li><a href="#testing">Testing</a></li>
   </ul>
 </nav>

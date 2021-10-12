@@ -23,7 +23,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.0f3d2e4d019bfdfdf363073ec5607d29e10bb3c6d21480334a9820f55c941034.js" integrity="sha256-Dz0uTQGb/f3zYwc&#43;xWB9KeELs8bSFIAzSpgg9VyUEDQ=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.a55db1692b941b190101517c728ea9f3b0ac016a8f03826d9607cfe9f2b6ff31.js" integrity="sha256-pV2xaSuUGxkBAVF8co6p87CsAWqPA4JtlgfP6fK2/zE=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -215,6 +215,7 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#manage-targets"><code>manage</code> <em>targets</em></a></li>
         <li><a href="#managed"><code>managed</code></a></li>
         <li><a href="#merge-target"><code>merge</code> <em>target</em>&hellip;</a></li>
+        <li><a href="#merge-all-target"><code>merge-all</code> [<em>target</em>&hellip;]</a></li>
         <li><a href="#purge"><code>purge</code></a></li>
         <li><a href="#remove-targets"><code>remove</code> <em>targets</em></a></li>
         <li><a href="#re-add"><code>re-add</code></a></li>
@@ -239,6 +240,8 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#bitwarden-arg"><code>bitwarden</code> [<em>arg</em>&hellip;]</a></li>
         <li><a href="#bitwardenattachment-filename-itemid"><code>bitwardenAttachment</code> <em>filename</em> <em>itemid</em></a></li>
         <li><a href="#bitwardenfields-arg"><code>bitwardenFields</code> [<em>arg</em>&hellip;]</a></li>
+        <li><a href="#decrypt-ciphertext"><code>decrypt</code> <em>ciphertext</em></a></li>
+        <li><a href="#encrypt-plaintext"><code>encrypt</code> <em>plaintext</em></a></li>
         <li><a href="#githubkeys-user"><code>gitHubKeys</code> <em>user</em></a></li>
         <li><a href="#gopass-gopass-name"><code>gopass</code> <em>gopass-name</em></a></li>
         <li><a href="#gopassraw-gopass-name"><code>gopassRaw</code> <em>gopass-name</em></a></li>
@@ -1041,7 +1044,11 @@ to as &ldquo;attributes&rdquo;:</p>
 </tr>
 <tr>
 <td><code>once_</code></td>
-<td>Run script once.</td>
+<td>Only run the script if it has not been run before.</td>
+</tr>
+<tr>
+<td><code>onchange_</code></td>
+<td>Only run the script if its contents have changed from the last time it was run.</td>
 </tr>
 <tr>
 <td><code>private_</code></td>
@@ -1128,7 +1135,7 @@ prefixes is important.</p>
 <tr>
 <td>Script</td>
 <td>File</td>
-<td><code>run_</code>, <code>once_</code>, <code>before_</code> or <code>after_</code></td>
+<td><code>run_</code>, <code>once_</code> or <code>onchange_</code>, <code>before_</code> or <code>after_</code></td>
 <td><code>.tmpl</code></td>
 </tr>
 <tr>
@@ -1223,9 +1230,12 @@ whitespace, then the target is removed.</p>
 </h3>
 <p>Scripts are represented as regular files in the source state with prefix <code>run_</code>.
 The file&rsquo;s contents (after being interpreted as a template if it has a <code>.tmpl</code>
-suffix) are executed. Scripts are executed on every <code>chezmoi apply</code>, unless they
-have the <code>once_</code> attribute, in which case they are only executed when they are
-first found or when their contents have changed.</p>
+suffix) are executed.</p>
+<p>Scripts are executed on every <code>chezmoi apply</code>, unless they have the <code>once_</code> or
+<code>onchange_</code> attribute. <code>run_once_</code> scripts are only executed if a script with
+the same contents has not been run before, for example if its contents has
+changed. <code>run_onchange_</code> scripts are executed whenever their contents change,
+even if a script with the same contents has run before.</p>
 <p>Scripts with the <code>before_</code> attribute are executed before any files, directories,
 or symlinks are updated. Scripts with the <code>after_</code> attribute are executed after
 all files, directories, and symlinks have been updated. Scripts without an
@@ -1512,9 +1522,10 @@ ignored on different machines.</p>
 
 *.txt   # ignore *.txt in the target directory
 */*.txt # ignore *.txt in subdirectories of the target directory
-backups/** # ignore backups folder in chezmoi directory and all its contents
         # but not in subdirectories of subdirectories;
         # so a/b/c.txt would *not* be ignored
+
+backups/   # ignore backups folder in chezmoi directory and all its contents
 backups/** # ignore all contents of backups folder in chezmoi directory
            # but not backups folder itself
 
@@ -2245,22 +2256,34 @@ $ chezmoi managed -i d,f
 <p>Perform a three-way merge between the destination state, the target state, and
 the source state for each <em>target</em>. The merge tool is defined by the
 <code>merge.command</code> configuration variable, and defaults to <code>vimdiff</code>. If multiple
-targets are specified the merge tool is invoked for each target. If the target
-state cannot be computed (for example if source is a template containing errors
-or an encrypted file that cannot be decrypted) a two-way merge is performed
-instead.</p>
-<p>The order of arguments to <code>merge.command</code> is controlled by <code>merge.args</code>. Each
-argument is interpreted as a template with the variables <code>.Destination</code>,
-<code>.Source</code>, and <code>.Target</code> available corresponding to the path of the file in the
-destination state, the source state, and the target state respectively. The
-default value of <code>merge.args</code> is <code>[&quot;{{ .Destination }}&quot;, &quot;{{ .Source }}&quot;, &quot;{{.Target }}&quot;]</code>. If <code>merge.args</code> does not contain any template arguments then
-<code>{{.Destination }}</code>, <code>{{ .Source }}</code>, and <code>{{ .Target }}</code> will be appended
-automatically.</p>
+targets are specified the merge tool is invoked separately and sequentially for
+each target. If the target state cannot be computed (for example if source is a
+template containing errors or an encrypted file that cannot be decrypted) a
+two-way merge is performed instead.</p>
+<p>The order of arguments to <code>merge.command</code> is set by <code>merge.args</code>. Each argument
+is interpreted as a template with the variables <code>.Destination</code>, <code>.Source</code>, and
+<code>.Target</code> available corresponding to the path of the file in the destination
+state, the source state, and the target state respectively. The default value of
+<code>merge.args</code> is <code>[&quot;{{ .Destination }}&quot;, &quot;{{ .Source }}&quot;, &quot;{{ .Target }}&quot;]</code>. If
+<code>merge.args</code> does not contain any template arguments then <code>{{ .Destination }}</code>,
+<code>{{ .Source }}</code>, and <code>{{ .Target }}</code> will be appended automatically.</p>
 <h4 id="merge-examples">
   <code>merge</code> examples
   <a class="anchor" href="#merge-examples">#</a>
 </h4>
 <pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi merge ~/.bashrc
+</code></pre><hr>
+<h3 id="merge-all-target">
+  <code>merge-all</code> [<em>target</em>&hellip;]
+  <a class="anchor" href="#merge-all-target">#</a>
+</h3>
+<p>Perform a three-way merge for file whose actual state does not match its target
+state. The merge is performed with <code>chezmoi merge</code>.</p>
+<h4 id="merge-all-examples">
+  <code>merge-all</code> examples
+  <a class="anchor" href="#merge-all-examples">#</a>
+</h4>
+<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi merge-all
 </code></pre><hr>
 <h3 id="purge">
   <code>purge</code>
@@ -2656,6 +2679,23 @@ the same arguments will only invoke <code>bw get</code> once.</p>
 </h4>
 <pre tabindex="0"><code>{{ (bitwardenFields &quot;item&quot; &quot;&lt;itemid&gt;&quot;).token.value }}
 </code></pre><hr>
+<h3 id="decrypt-ciphertext">
+  <code>decrypt</code> <em>ciphertext</em>
+  <a class="anchor" href="#decrypt-ciphertext">#</a>
+</h3>
+<p><code>decrypt</code> decrypts <em>ciphertext</em> using chezmoi&rsquo;s configured encryption method.</p>
+<h4 id="decrypt-examples">
+  <code>decrypt</code> examples
+  <a class="anchor" href="#decrypt-examples">#</a>
+</h4>
+<pre tabindex="0"><code>{{ joinPath .chezmoi.sourceDir &quot;.ignored-encrypted-file.age&quot; | include | decrypt }}
+</code></pre><hr>
+<h3 id="encrypt-plaintext">
+  <code>encrypt</code> <em>plaintext</em>
+  <a class="anchor" href="#encrypt-plaintext">#</a>
+</h3>
+<p><code>encrypt</code> encrypts <em>plaintext</em> using chezmoi&rsquo;s configured encryption method.</p>
+<hr>
 <h3 id="githubkeys-user">
   <code>gitHubKeys</code> <em>user</em>
   <a class="anchor" href="#githubkeys-user">#</a>
@@ -3340,6 +3380,7 @@ generating the initial config file.</p>
         <li><a href="#manage-targets"><code>manage</code> <em>targets</em></a></li>
         <li><a href="#managed"><code>managed</code></a></li>
         <li><a href="#merge-target"><code>merge</code> <em>target</em>&hellip;</a></li>
+        <li><a href="#merge-all-target"><code>merge-all</code> [<em>target</em>&hellip;]</a></li>
         <li><a href="#purge"><code>purge</code></a></li>
         <li><a href="#remove-targets"><code>remove</code> <em>targets</em></a></li>
         <li><a href="#re-add"><code>re-add</code></a></li>
@@ -3364,6 +3405,8 @@ generating the initial config file.</p>
         <li><a href="#bitwarden-arg"><code>bitwarden</code> [<em>arg</em>&hellip;]</a></li>
         <li><a href="#bitwardenattachment-filename-itemid"><code>bitwardenAttachment</code> <em>filename</em> <em>itemid</em></a></li>
         <li><a href="#bitwardenfields-arg"><code>bitwardenFields</code> [<em>arg</em>&hellip;]</a></li>
+        <li><a href="#decrypt-ciphertext"><code>decrypt</code> <em>ciphertext</em></a></li>
+        <li><a href="#encrypt-plaintext"><code>encrypt</code> <em>plaintext</em></a></li>
         <li><a href="#githubkeys-user"><code>gitHubKeys</code> <em>user</em></a></li>
         <li><a href="#gopass-gopass-name"><code>gopass</code> <em>gopass-name</em></a></li>
         <li><a href="#gopassraw-gopass-name"><code>gopassRaw</code> <em>gopass-name</em></a></li>
