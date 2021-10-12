@@ -932,7 +932,7 @@ func (s *SourceState) TemplateData() map[string]interface{} {
 
 // addExternal adds external source entries to s.
 func (s *SourceState) addExternal(sourceAbsPath AbsPath) error {
-	parentAbsPath, name := sourceAbsPath.Split()
+	parentAbsPath, _ := sourceAbsPath.Split()
 
 	parentRelPath, err := parentAbsPath.TrimDirPrefix(s.sourceDirAbsPath)
 	if err != nil {
@@ -941,8 +941,7 @@ func (s *SourceState) addExternal(sourceAbsPath AbsPath) error {
 	parentSourceRelPath := NewSourceRelDirPath(parentRelPath)
 	parentTargetSourceRelPath := parentSourceRelPath.TargetRelPath(s.encryption.EncryptedSuffix())
 
-	suffix := mustTrimPrefix(string(name), externalName+".")
-	format, ok := Formats[suffix]
+	format, ok := Formats[strings.TrimPrefix(sourceAbsPath.Ext(), ".")]
 	if !ok {
 		return fmt.Errorf("%s: unknown format", sourceAbsPath)
 	}
@@ -1002,9 +1001,7 @@ func (s *SourceState) addPatterns(patternSet *patternSet, sourceAbsPath AbsPath,
 
 // addTemplateData adds all template data in sourceAbsPath to s.
 func (s *SourceState) addTemplateData(sourceAbsPath AbsPath) error {
-	_, name := sourceAbsPath.Split()
-	suffix := mustTrimPrefix(string(name), dataName+".")
-	format, ok := Formats[suffix]
+	format, ok := Formats[strings.TrimPrefix(sourceAbsPath.Ext(), ".")]
 	if !ok {
 		return fmt.Errorf("%s: unknown format", sourceAbsPath)
 	}

@@ -49,6 +49,11 @@ func (p AbsPath) Empty() bool {
 	return p.absPath == ""
 }
 
+// Ext returns p's extension.
+func (p AbsPath) Ext() string {
+	return path.Ext(p.absPath)
+}
+
 // Join appends elems to p.
 func (p AbsPath) Join(elems ...RelPath) AbsPath {
 	elemStrs := make([]string, 0, len(elems)+1)
