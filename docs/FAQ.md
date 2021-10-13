@@ -60,6 +60,8 @@ There are four popular approaches:
 4. Edit the file in your home directory, and then either re-add it by running
    `chezmoi add $FILE` or `chezmoi re-add`. Note that `re-add` doesn't work with
    templates.
+5. Edit the file in your home directory, and then merge your changes with source
+   state by running `chezmoi merge $FILE`.
 
 ---
 
