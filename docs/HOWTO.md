@@ -779,6 +779,7 @@ you will be prompted again. However, you can avoid this with the following
 example template logic:
 
 ```
+{{- $email := "" -}}
 {{- if (hasKey . "email") -}}
 {{-   $email = .email -}}
 {{- else -}}
