@@ -779,8 +779,9 @@ you will be prompted again. However, you can avoid this with the following
 example template logic:
 
 ```
-{{- $email := get . "email" -}}
-{{- if not $email -}}
+{{- if (hasKey . "email") -}}
+{{-   $email = .email -}}
+{{- else -}}
 {{-   $email = promptString "email" -}}
 {{- end -}}
 
@@ -790,18 +791,6 @@ example template logic:
 
 This will cause chezmoi to first try to re-use the existing `$email` variable
 and fallback to `promptString` only if it is not set.
-
-For boolean variables you can use:
-
-```
-{{- $var := false -}}
-{{- if (hasKey . "var") -}}
-{{-   $var = get . "var" -}}
-{{- end -}}
-
-[data]
-    var = {{ $var }}
-```
 
 ---
 
