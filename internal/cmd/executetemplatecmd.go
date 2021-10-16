@@ -88,11 +88,23 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 					return 0
 				}
 			},
-			"promptString": func(prompt string) string {
-				if value, ok := c.executeTemplate.promptString[prompt]; ok {
-					return value
+			"promptString": func(prompt string, args ...string) string {
+				switch len(args) {
+				case 0:
+					if value, ok := c.executeTemplate.promptString[prompt]; ok {
+						return value
+					}
+					return prompt
+				case 1:
+					if value, ok := c.executeTemplate.promptString[prompt]; ok {
+						return value
+					}
+					return args[0]
+				default:
+					err := fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
+					returnTemplateError(err)
+					return ""
 				}
-				return prompt
 			},
 			"stdinIsATTY": func() bool {
 				return c.executeTemplate.stdinIsATTY

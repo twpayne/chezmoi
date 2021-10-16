@@ -64,6 +64,14 @@ stdout 1
 chezmoi execute-template --init --promptString email=user@example.com '{{ promptString "email" }}'
 stdout 'user@example.com'
 
+# test --init --promptString without a default value
+chezmoi execute-template --init '{{ promptString "value" }}'
+stdout value
+
+# test --init --promptString with a default value
+chezmoi execute-template --init '{{ promptString "value" "default" }}'
+stdout default
+
 -- golden/stdin.tmpl --
 {{ "stdin-template" }}
 -- home/user/.config/chezmoi/chezmoi.toml --

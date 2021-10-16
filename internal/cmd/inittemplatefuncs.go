@@ -65,13 +65,32 @@ func (c *Config) promptInt(field string, args ...int64) int64 {
 	}
 }
 
-func (c *Config) promptString(field string) string {
-	value, err := c.readLine(fmt.Sprintf("%s? ", field))
-	if err != nil {
+func (c *Config) promptString(prompt string, args ...string) string {
+	switch len(args) {
+	case 0:
+		value, err := c.readLine(prompt + "? ")
+		if err != nil {
+			returnTemplateError(err)
+			return ""
+		}
+		return strings.TrimSpace(value)
+	case 1:
+		defaultStr := strings.TrimSpace(args[0])
+		promptStr := prompt + " (default " + strconv.Quote(defaultStr) + ")? "
+		switch value, err := c.readLine(promptStr); {
+		case err != nil:
+			returnTemplateError(err)
+			return ""
+		case value == "":
+			return defaultStr
+		default:
+			return strings.TrimSpace(value)
+		}
+	default:
+		err := fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
 		returnTemplateError(err)
 		return ""
 	}
-	return strings.TrimSpace(value)
 }
 
 func (c *Config) stdinIsATTY() bool {
