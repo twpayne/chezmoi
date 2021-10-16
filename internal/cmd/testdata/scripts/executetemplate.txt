@@ -56,6 +56,10 @@ stdout 1
 ! chezmoi execute-template --promptInt value=error
 stderr 'invalid syntax'
 
+# test --init --promptInt with a default value
+chezmoi execute-template --init '{{ promptInt "value" 1 }}'
+stdout 1
+
 # test --init --promptString
 chezmoi execute-template --init --promptString email=user@example.com '{{ promptString "email" }}'
 stdout 'user@example.com'

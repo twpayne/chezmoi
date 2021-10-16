@@ -37,13 +37,32 @@ func (c *Config) promptBool(field string, args ...bool) bool {
 	}
 }
 
-func (c *Config) promptInt(field string) int64 {
-	value, err := strconv.ParseInt(c.promptString(field), 10, 64)
-	if err != nil {
+func (c *Config) promptInt(field string, args ...int64) int64 {
+	switch len(args) {
+	case 0:
+		value, err := strconv.ParseInt(c.promptString(field), 10, 64)
+		if err != nil {
+			returnTemplateError(err)
+			return 0
+		}
+		return value
+	case 1:
+		promptStr := field + " (default " + strconv.FormatInt(args[0], 10) + ")"
+		valueStr := c.promptString(promptStr)
+		if valueStr == "" {
+			return args[0]
+		}
+		value, err := strconv.ParseInt(valueStr, 10, 64)
+		if err != nil {
+			returnTemplateError(err)
+			return 0
+		}
+		return value
+	default:
+		err := fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
 		returnTemplateError(err)
 		return 0
 	}
-	return value
 }
 
 func (c *Config) promptString(field string) string {
