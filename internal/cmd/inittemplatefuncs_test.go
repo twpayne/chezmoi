@@ -151,3 +151,80 @@ func TestPromptInt(t *testing.T) {
 		})
 	}
 }
+
+func TestPromptString(t *testing.T) {
+	for _, tc := range []struct {
+		name              string
+		prompt            string
+		args              []string
+		stdinStr          string
+		expectedStdoutStr string
+		expected          string
+		expectedErr       bool
+	}{
+		{
+			name:              "response_without_default",
+			prompt:            "string",
+			stdinStr:          "one\n",
+			expectedStdoutStr: "string? ",
+			expected:          "one",
+		},
+		{
+			name:              "response_with_default",
+			prompt:            "string",
+			args:              []string{"one"},
+			stdinStr:          "two\n",
+			expectedStdoutStr: `string (default "one")? `,
+			expected:          "two",
+		},
+		{
+			name:              "response_with_space_with_default",
+			prompt:            "string",
+			args:              []string{"one"},
+			stdinStr:          " two \n",
+			expectedStdoutStr: `string (default "one")? `,
+			expected:          "two",
+		},
+		{
+			name:              "no_response_with_default_with_space",
+			prompt:            "string",
+			args:              []string{" one "},
+			stdinStr:          "\n",
+			expectedStdoutStr: `string (default "one")? `,
+			expected:          "one",
+		},
+		{
+			name:              "no_response_with_default",
+			prompt:            "string",
+			args:              []string{"one"},
+			stdinStr:          "\n",
+			expectedStdoutStr: `string (default "one")? `,
+			expected:          "one",
+		},
+		{
+			name:        "too_many_args",
+			prompt:      "bool",
+			args:        []string{"", ""},
+			stdinStr:    "\n",
+			expectedErr: true,
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			stdin := strings.NewReader(tc.stdinStr)
+			stdout := &strings.Builder{}
+			config, err := newConfig(
+				withStdin(stdin),
+				withStdout(stdout),
+			)
+			require.NoError(t, err)
+			if tc.expectedErr {
+				assert.Panics(t, func() {
+					config.promptString(tc.prompt, tc.args...)
+				})
+			} else {
+				assert.Equal(t, tc.expected, config.promptString(tc.prompt, tc.args...))
+				assert.Equal(t, tc.expectedStdoutStr, stdout.String())
+			}
+		})
+	}
+}

@@ -122,7 +122,7 @@ Manage your dotfiles across multiple machines, securely.
   * [`passRaw` *pass-name*](#passraw-pass-name)
   * [`promptBool` *prompt* [*default*]](#promptbool-prompt-default)
   * [`promptInt` *prompt* [*default*]](#promptint-prompt-default)
-  * [`promptString` *prompt*](#promptstring-prompt)
+  * [`promptString` *prompt* [*default*]](#promptstring-prompt-default)
   * [`secret` [*arg*...]](#secret-arg)
   * [`secretJSON` [*arg*...]](#secretjson-arg)
   * [`stat` *name*](#stat-name)
@@ -2380,10 +2380,11 @@ initial config file.
 
 ---
 
-### `promptString` *prompt*
+### `promptString` *prompt* [*default*]
 
 `promptString` prompts the user with *prompt* and returns the user's response
-with all leading and trailing spaces stripped. It is only available when
+with all leading and trailing spaces stripped. If *default* is passed and the
+user's response is empty then it returns *default*. It is only available when
 generating the initial config file.
 
 #### `promptString` examples
