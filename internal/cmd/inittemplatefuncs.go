@@ -9,13 +9,32 @@ import (
 	"golang.org/x/term"
 )
 
-func (c *Config) promptBool(field string) bool {
-	value, err := parseBool(c.promptString(field))
-	if err != nil {
+func (c *Config) promptBool(field string, args ...bool) bool {
+	switch len(args) {
+	case 0:
+		value, err := parseBool(c.promptString(field))
+		if err != nil {
+			returnTemplateError(err)
+			return false
+		}
+		return value
+	case 1:
+		promptStr := field + " (default " + strconv.FormatBool(args[0]) + ")"
+		valueStr := c.promptString(promptStr)
+		if valueStr == "" {
+			return args[0]
+		}
+		value, err := parseBool(valueStr)
+		if err != nil {
+			returnTemplateError(err)
+			return false
+		}
+		return value
+	default:
+		err := fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
 		returnTemplateError(err)
 		return false
 	}
-	return value
 }
 
 func (c *Config) promptInt(field string) int64 {

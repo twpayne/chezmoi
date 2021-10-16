@@ -120,7 +120,7 @@ Manage your dotfiles across multiple machines, securely.
   * [`output` *name* [*arg*...]](#output-name-arg)
   * [`pass` *pass-name*](#pass-pass-name)
   * [`passRaw` *pass-name*](#passraw-pass-name)
-  * [`promptBool` *prompt*](#promptbool-prompt)
+  * [`promptBool` *prompt* [*default*]](#promptbool-prompt-default)
   * [`promptInt` *prompt*](#promptint-prompt)
   * [`promptString` *prompt*](#promptstring-prompt)
   * [`secret` [*arg*...]](#secret-arg)
@@ -2357,10 +2357,11 @@ and the output is returned. The output from `pass` is cached so calling
 
 ---
 
-### `promptBool` *prompt*
+### `promptBool` *prompt* [*default*]
 
-`promptBool` prompts the user with *prompt* and returns the user's response with
-interpreted as a boolean. It is only available when generating the initial
+`promptBool` prompts the user with *prompt* and returns the user's response
+interpreted as a boolean. If *default* is passed the user's response is empty
+then it returns *default*. It is only available when generating the initial
 config file. The user's response is interpreted as follows (case insensitive):
 
 | Response                | Result  |
