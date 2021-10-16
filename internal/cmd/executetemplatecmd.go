@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"io"
 	"strconv"
 	"strings"
@@ -57,8 +58,20 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 	}
 	if c.executeTemplate.init {
 		chezmoi.RecursiveMerge(c.templateFuncs, map[string]interface{}{
-			"promptBool": func(prompt string) bool {
-				return promptBool[prompt]
+			"promptBool": func(prompt string, args ...bool) bool {
+				switch len(args) {
+				case 0:
+					return promptBool[prompt]
+				case 1:
+					if value, ok := promptBool[prompt]; ok {
+						return value
+					}
+					return args[0]
+				default:
+					err := fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
+					returnTemplateError(err)
+					return false
+				}
 			},
 			"promptInt": func(prompt string) int {
 				return c.executeTemplate.promptInt[prompt]

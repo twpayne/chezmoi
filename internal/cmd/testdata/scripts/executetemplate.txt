@@ -46,6 +46,10 @@ stdout true
 ! chezmoi execute-template --promptBool value=error
 stderr 'invalid syntax'
 
+# test --init --promptBool with a default value
+chezmoi execute-template --init '{{ promptBool "value" true }}'
+stdout true
+
 # test --init --promptInt
 chezmoi execute-template --init --promptInt value=1 '{{ promptInt "value" }}'
 stdout 1
