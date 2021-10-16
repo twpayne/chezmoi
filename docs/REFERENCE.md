@@ -121,7 +121,7 @@ Manage your dotfiles across multiple machines, securely.
   * [`pass` *pass-name*](#pass-pass-name)
   * [`passRaw` *pass-name*](#passraw-pass-name)
   * [`promptBool` *prompt* [*default*]](#promptbool-prompt-default)
-  * [`promptInt` *prompt*](#promptint-prompt)
+  * [`promptInt` *prompt* [*default*]](#promptint-prompt-default)
   * [`promptString` *prompt*](#promptstring-prompt)
   * [`secret` [*arg*...]](#secret-arg)
   * [`secretJSON` [*arg*...]](#secretjson-arg)
@@ -2371,11 +2371,12 @@ config file. The user's response is interpreted as follows (case insensitive):
 
 ---
 
-### `promptInt` *prompt*
+### `promptInt` *prompt* [*default*]
 
-`promptInt` prompts the user with *prompt* and returns the user's response with
-interpreted as an integer. It is only available when generating the initial
-config file.
+`promptInt` prompts the user with *prompt* and returns the user's response
+interpreted as an integer. If *default* is passed and the user's response is
+empty then it returns *default*. It is only available when generating the
+initial config file.
 
 ---
 
