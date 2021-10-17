@@ -641,9 +641,9 @@ func (s *SourceState) ExecuteTemplateData(name string, data []byte) ([]byte, err
 	return []byte(builder.String()), nil
 }
 
-// Ignored returns if targetRelPath is ignored.
-func (s *SourceState) Ignored(targetRelPath RelPath) bool {
-	return s.ignore.match(string(targetRelPath))
+// Ignore returns if targetRelPath should be ignored.
+func (s *SourceState) Ignore(targetRelPath RelPath) bool {
+	return s.ignore.match(targetRelPath.String())
 }
 
 // MinVersion returns the minimum version for which s is valid.
@@ -735,7 +735,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			}
 			n := 0
 			for _, match := range matches {
-				if !s.Ignored(RelPath(match)) {
+				if !s.Ignore(RelPath(match)) {
 					matches[n] = match
 					n++
 				}
@@ -767,7 +767,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		case info.IsDir():
 			da := parseDirAttr(sourceName.String())
 			targetRelPath := parentSourceRelPath.Dir().TargetRelPath(s.encryption.EncryptedSuffix()).Join(RelPath(da.TargetName))
-			if s.Ignored(targetRelPath) {
+			if s.Ignore(targetRelPath) {
 				return vfs.SkipDir
 			}
 			sourceStateEntry := s.newSourceStateDir(sourceRelPath, da)
@@ -776,7 +776,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		case info.Mode().IsRegular():
 			fa := parseFileAttr(sourceName.String(), s.encryption.EncryptedSuffix())
 			targetRelPath := parentSourceRelPath.Dir().TargetRelPath(s.encryption.EncryptedSuffix()).Join(RelPath(fa.TargetName))
-			if s.Ignored(targetRelPath) {
+			if s.Ignore(targetRelPath) {
 				return nil
 			}
 			var sourceStateEntry SourceStateEntry
@@ -802,7 +802,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		return externalRelPaths[i] < externalRelPaths[j]
 	})
 	for _, externalRelPath := range externalRelPaths {
-		if s.Ignored(externalRelPath) {
+		if s.Ignore(externalRelPath) {
 			continue
 		}
 		externalSourceStateEntries, err := s.readExternal(ctx, externalRelPath, s.externals[externalRelPath], options)
@@ -810,7 +810,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			return err
 		}
 		for targetRelPath, sourceStateEntries := range externalSourceStateEntries {
-			if s.Ignored(targetRelPath) {
+			if s.Ignore(targetRelPath) {
 				continue
 			}
 			allSourceStateEntries[targetRelPath] = append(allSourceStateEntries[targetRelPath], sourceStateEntries...)
@@ -819,7 +819,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 
 	// Remove all ignored targets.
 	for targetRelPath := range allSourceStateEntries {
-		if s.Ignored(targetRelPath) {
+		if s.Ignore(targetRelPath) {
 			delete(allSourceStateEntries, targetRelPath)
 		}
 	}
@@ -848,7 +848,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 				if _, ok := allSourceStateEntries[destEntryRelPath]; ok {
 					continue
 				}
-				if s.Ignored(destEntryRelPath) {
+				if s.Ignore(destEntryRelPath) {
 					continue
 				}
 				allSourceStateEntries[destEntryRelPath] = append(allSourceStateEntries[destEntryRelPath], &SourceStateRemove{
@@ -1628,7 +1628,7 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 		}
 		targetRelPath := externalRelPath.Join(RelPath(name))
 
-		if s.Ignored(targetRelPath) {
+		if s.Ignore(targetRelPath) {
 			return nil
 		}
 
