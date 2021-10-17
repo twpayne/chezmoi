@@ -7,6 +7,7 @@ import (
 	"sort"
 
 	"github.com/bmatcuk/doublestar/v4"
+	"github.com/rs/zerolog"
 	vfs "github.com/twpayne/go-vfs/v4"
 )
 
@@ -25,6 +26,16 @@ func newPatternSet() *patternSet {
 		includePatterns: NewStringSet(),
 		excludePatterns: NewStringSet(),
 	}
+}
+
+// MarshalZerologObject implements
+// github.com/rs/zerolog.LogObjectMarshaler.MarshalZerologObject.
+func (ps *patternSet) MarshalZerologObject(e *zerolog.Event) {
+	if ps == nil {
+		return
+	}
+	e.Strs("includePatterns", ps.includePatterns.Elements())
+	e.Strs("excludePatterns", ps.excludePatterns.Elements())
 }
 
 // add adds a pattern to ps.
