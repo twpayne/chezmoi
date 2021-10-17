@@ -38,6 +38,19 @@ chezmoi apply --force
 cmp $HOME/.dir/subdir/dir/file golden/dir/file
 [!windows] readlink $HOME/.dir/subdir/dir/symlink file
 
+chhome home6/user
+
+# test that .chezmoiignore applies to entries in externals
+chezmoi apply --force
+exists $HOME/.dir/dir/
+exists $HOME/.dir/dir/file
+! exists $HOME/.dir/dir/symlink
+
+chhome home7/user
+
+# test that .chezmoiignore applies to entire externals
+chezmoi apply --force
+
 -- archive/dir/file --
 # contents of dir/file
 -- golden/.file --
@@ -72,5 +85,19 @@ subdir:
     url: {{ env "HTTPD_URL" }}/archive.tar.gz
     exact: true
     stripComponents: 1
+-- home6/user/.local/share/chezmoi/.chezmoiexternal.yaml --
+.dir:
+    type: archive
+    url: {{ env "HTTPD_URL" }}/archive.tar.gz
+    exact: true
+    stripComponents: 1
+-- home6/user/.local/share/chezmoi/.chezmoiignore --
+.dir/dir/symlink
+-- home7/user/.local/share/chezmoi/.chezmoiexternal.yaml --
+.dir:
+    type: archive
+    url: {{ env "HTTPD_URL" }}/non-existent-archive.tar.gz
+-- home7/user/.local/share/chezmoi/.chezmoiignore --
+.dir
 -- www/.file --
 # contents of .file
