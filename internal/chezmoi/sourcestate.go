@@ -802,11 +802,17 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		return externalRelPaths[i] < externalRelPaths[j]
 	})
 	for _, externalRelPath := range externalRelPaths {
+		if s.Ignored(externalRelPath) {
+			continue
+		}
 		externalSourceStateEntries, err := s.readExternal(ctx, externalRelPath, s.externals[externalRelPath], options)
 		if err != nil {
 			return err
 		}
 		for targetRelPath, sourceStateEntries := range externalSourceStateEntries {
+			if s.Ignored(targetRelPath) {
+				continue
+			}
 			allSourceStateEntries[targetRelPath] = append(allSourceStateEntries[targetRelPath], sourceStateEntries...)
 		}
 	}
