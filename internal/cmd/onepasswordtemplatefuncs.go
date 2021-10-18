@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"os/exec"
 	"strings"
-
-	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
 type onepasswordConfig struct {
@@ -29,7 +27,7 @@ func (c *Config) onepasswordItem(args ...string) *onePasswordItem {
 	output := c.onepasswordOutput(onepasswordArgs)
 	var onepasswordItem onePasswordItem
 	if err := json.Unmarshal(output, &onepasswordItem); err != nil {
-		returnTemplateError(fmt.Errorf("%s %s: %w\n%s", c.Onepassword.Command, chezmoi.ShellQuoteArgs(onepasswordArgs), err, output))
+		returnTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(c.Onepassword.Command, onepasswordArgs), err, output))
 		return nil
 	}
 	return &onepasswordItem
@@ -78,7 +76,7 @@ func (c *Config) onepasswordOutput(args []string) []byte {
 	cmd.Stderr = stderr
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
-		returnTemplateError(fmt.Errorf("%s %s: %w: %s", name, chezmoi.ShellQuoteArgs(args), err, bytes.TrimSpace(stderr.Bytes())))
+		returnTemplateError(fmt.Errorf("%s: %w: %s", shellQuoteCommand(name, args), err, bytes.TrimSpace(stderr.Bytes())))
 		return nil
 	}
 
@@ -94,7 +92,7 @@ func (c *Config) onepasswordTemplateFunc(args ...string) map[string]interface{} 
 	output := c.onepasswordOutput(onepasswordArgs)
 	var data map[string]interface{}
 	if err := json.Unmarshal(output, &data); err != nil {
-		returnTemplateError(fmt.Errorf("%s %s: %w\n%s", c.Onepassword.Command, chezmoi.ShellQuoteArgs(onepasswordArgs), err, output))
+		returnTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(c.Onepassword.Command, onepasswordArgs), err, output))
 		return nil
 	}
 	return data

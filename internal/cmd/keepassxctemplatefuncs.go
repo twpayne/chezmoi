@@ -10,8 +10,6 @@ import (
 	"strings"
 
 	"github.com/coreos/go-semver/semver"
-
-	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
 // FIXME use chezmoi.AbsPath for keepassxcConfig.Database
@@ -57,7 +55,7 @@ func (c *Config) keepassxcAttributeTemplateFunc(entry, attribute string) string 
 	args = append(args, c.Keepassxc.Database, entry)
 	output, err := c.runKeepassxcCLICommand(name, args)
 	if err != nil {
-		returnTemplateError(fmt.Errorf("%s %s: %w", name, chezmoi.ShellQuoteArgs(args), err))
+		returnTemplateError(fmt.Errorf("%s: %w", shellQuoteCommand(name, args), err))
 		return ""
 	}
 	outputStr := strings.TrimSpace(string(output))
@@ -85,12 +83,12 @@ func (c *Config) keepassxcTemplateFunc(entry string) map[string]string {
 	args = append(args, c.Keepassxc.Database, entry)
 	output, err := c.runKeepassxcCLICommand(name, args)
 	if err != nil {
-		returnTemplateError(fmt.Errorf("%s %s: %w", name, chezmoi.ShellQuoteArgs(args), err))
+		returnTemplateError(fmt.Errorf("%s: %w", shellQuoteCommand(name, args), err))
 		return nil
 	}
 	data, err := parseKeyPassXCOutput(output)
 	if err != nil {
-		returnTemplateError(fmt.Errorf("%s %s: %w", name, chezmoi.ShellQuoteArgs(args), err))
+		returnTemplateError(fmt.Errorf("%s: %w", shellQuoteCommand(name, args), err))
 		return nil
 	}
 	if c.Keepassxc.cache == nil {
@@ -109,7 +107,7 @@ func (c *Config) keepassxcVersion() *semver.Version {
 	cmd := exec.Command(name, args...)
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
-		returnTemplateError(fmt.Errorf("%s %s: %w", name, chezmoi.ShellQuoteArgs(args), err))
+		returnTemplateError(fmt.Errorf("%s: %w", shellQuoteCommand(name, args), err))
 		return nil
 	}
 	c.Keepassxc.version, err = semver.NewVersion(string(bytes.TrimSpace(output)))

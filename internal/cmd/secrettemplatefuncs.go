@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"os/exec"
 	"strings"
-
-	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
 type secretConfig struct {
@@ -27,12 +25,12 @@ func (c *Config) secretJSONTemplateFunc(args ...string) interface{} {
 	cmd.Stderr = c.stderr
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
-		returnTemplateError(fmt.Errorf("%s %s: %w\n%s", name, chezmoi.ShellQuoteArgs(args), err, output))
+		returnTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(name, args), err, output))
 		return nil
 	}
 	var value interface{}
 	if err := json.Unmarshal(output, &value); err != nil {
-		returnTemplateError(fmt.Errorf("%s %s: %w\n%s", name, chezmoi.ShellQuoteArgs(args), err, output))
+		returnTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(name, args), err, output))
 		return nil
 	}
 	if c.Secret.jsonCache == nil {
@@ -53,7 +51,7 @@ func (c *Config) secretTemplateFunc(args ...string) string {
 	cmd.Stderr = c.stderr
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
-		returnTemplateError(fmt.Errorf("%s %s: %w\n%s", name, chezmoi.ShellQuoteArgs(args), err, output))
+		returnTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(name, args), err, output))
 		return ""
 	}
 	value := string(bytes.TrimSpace(output))

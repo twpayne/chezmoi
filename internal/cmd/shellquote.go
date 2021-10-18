@@ -1,4 +1,4 @@
-package chezmoi
+package cmd
 
 import (
 	"regexp"
@@ -9,8 +9,8 @@ import (
 // shell literal.
 var nonShellLiteralRx = regexp.MustCompile(`[^+\-./0-9=A-Z_a-z]`)
 
-// maybeShellQuote returns s quoted as a shell argument, if necessary.
-func maybeShellQuote(s string) string {
+// shellQuote returns s quoted as a shell argument, if necessary.
+func shellQuote(s string) string {
 	const (
 		backslash   = '\\'
 		singleQuote = '\''
@@ -53,11 +53,15 @@ func maybeShellQuote(s string) string {
 	}
 }
 
-// ShellQuoteArgs returns args shell quoted and joined into a single string.
-func ShellQuoteArgs(args []string) string {
-	shellQuotedArgs := make([]string, 0, len(args))
-	for _, arg := range args {
-		shellQuotedArgs = append(shellQuotedArgs, maybeShellQuote(arg))
+// shellQuoteCommand returns a string containing command and args shell quoted.
+func shellQuoteCommand(command string, args []string) string {
+	if len(args) == 0 {
+		return shellQuote(command)
 	}
-	return strings.Join(shellQuotedArgs, " ")
+	elems := make([]string, 0, 1+len(args))
+	elems = append(elems, shellQuote(command))
+	for _, arg := range args {
+		elems = append(elems, shellQuote(arg))
+	}
+	return strings.Join(elems, " ")
 }

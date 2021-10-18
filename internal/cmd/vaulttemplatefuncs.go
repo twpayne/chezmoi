@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"os/exec"
-
-	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
 type vaultConfig struct {
@@ -24,12 +22,12 @@ func (c *Config) vaultTemplateFunc(key string) interface{} {
 	cmd.Stderr = c.stderr
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
-		returnTemplateError(fmt.Errorf("%s %s: %w\n%s", name, chezmoi.ShellQuoteArgs(args), err, output))
+		returnTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(name, args), err, output))
 		return nil
 	}
 	var data interface{}
 	if err := json.Unmarshal(output, &data); err != nil {
-		returnTemplateError(fmt.Errorf("%s %s: %w\n%s", name, chezmoi.ShellQuoteArgs(args), err, output))
+		returnTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(name, args), err, output))
 		return nil
 	}
 	if c.Vault.cache == nil {
