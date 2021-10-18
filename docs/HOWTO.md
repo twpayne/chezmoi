@@ -15,6 +15,7 @@
   * [Manage a file's permissions, but not its contents](#manage-a-files-permissions-but-not-its-contents)
   * [Populate `~/.ssh/authorized_keys` with your public SSH keys from GitHub](#populate-sshauthorized_keys-with-your-public-ssh-keys-from-github)
 * [Integrate chezmoi with your editor](#integrate-chezmoi-with-your-editor)
+  * [Use your preferred editor with `chezmoi edit` and `chezmoi edit-config`](#use-your-preferred-editor-with-chezmoi-edit-and-chezmoi-edit-config)
   * [Configure VIM to run `chezmoi apply` whenever you save a dotfile](#configure-vim-to-run-chezmoi-apply-whenever-you-save-a-dotfile)
 * [Include dotfiles from elsewhere](#include-dotfiles-from-elsewhere)
   * [Include a subdirectory from another repository, like Oh My Zsh](#include-a-subdirectory-from-another-repository-like-oh-my-zsh)
@@ -337,6 +338,38 @@ GitHub username:
 ---
 
 ## Integrate chezmoi with your editor
+
+---
+
+### Use your preferred editor with `chezmoi edit` and `chezmoi edit-config`
+
+By default, chezmoi will use your preferred editor as defined by the `$VISUAL`
+or `$EDITOR` environment variables, falling back to a default editor depending
+on your operating system (`vi` on UNIX-like operating systems, `notepad.exe` on
+Windows).
+
+You can configure chezmoi to use your preferred editor by either setting the
+`$EDITOR` environment variable or setting the `edit.command` variable in your
+configuration file.
+
+The editor command must only return when you have finished editing the files.
+chezmoi will emit a warning if your editor command returns too quickly.
+
+In the specific case of using [VSCode](https://code.visualstudio.com/) or
+[Codium](https://vscodium.com/) as your editor, you must pass the `--wait` flag,
+for example, in your shell config:
+
+```console
+$ export EDITOR="code --wait"
+```
+
+Or in chezmoi's configuration file:
+
+```toml
+[edit]
+    command = "code"
+    args = ["--wait"]
+```
 
 ---
 
