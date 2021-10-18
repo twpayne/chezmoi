@@ -291,8 +291,9 @@ func newConfig(options ...configOption) (*Config, error) {
 			MaxWidth: 80,
 		},
 		Edit: editCmdConfig{
-			exclude: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypeDirs | chezmoi.EntryTypeFiles | chezmoi.EntryTypeSymlinks | chezmoi.EntryTypeEncrypted),
+			MinDuration: 1 * time.Second,
+			exclude:     chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
+			include:     chezmoi.NewEntryTypeSet(chezmoi.EntryTypeDirs | chezmoi.EntryTypeFiles | chezmoi.EntryTypeSymlinks | chezmoi.EntryTypeEncrypted),
 		},
 		Git: gitCmdConfig{
 			Command: "git",
@@ -980,10 +981,10 @@ func (c *Config) diffFile(path chezmoi.RelPath, fromData []byte, fromMode fs.Fil
 }
 
 // editor returns the path to the user's editor and any extra arguments.
-func (c *Config) editor() (string, []string) {
+func (c *Config) editor(args []string) (string, []string) {
 	// If the user has set and edit command then use it.
 	if c.Edit.Command != "" {
-		return c.Edit.Command, c.Edit.Args
+		return c.Edit.Command, append(c.Edit.Args, args...)
 	}
 
 	// Prefer $VISUAL over $EDITOR and fallback to the OS's default editor.
@@ -995,7 +996,7 @@ func (c *Config) editor() (string, []string) {
 
 	// If editor is found, return it.
 	if path, err := exec.LookPath(editor); err == nil {
-		return path, nil
+		return path, args
 	}
 
 	// Otherwise, if editor contains spaces, then assume that the first word is
@@ -1003,12 +1004,12 @@ func (c *Config) editor() (string, []string) {
 	components := whitespaceRx.Split(editor, -1)
 	if len(components) > 1 {
 		if path, err := exec.LookPath(components[0]); err == nil {
-			return path, components[1:]
+			return path, append(components[1:], args...)
 		}
 	}
 
 	// Fallback to editor only.
-	return editor, nil
+	return editor, args
 }
 
 // errorf writes an error to stderr.
@@ -1679,8 +1680,15 @@ func (c *Config) runEditor(args []string) error {
 	if err := c.persistentState.Close(); err != nil {
 		return err
 	}
-	editor, editorArgs := c.editor()
-	return c.run(chezmoi.EmptyAbsPath, editor, append(editorArgs, args...))
+	editor, editorArgs := c.editor(args)
+	start := time.Now()
+	err := c.run(chezmoi.EmptyAbsPath, editor, editorArgs)
+	if runtime.GOOS != "windows" && c.Edit.MinDuration != 0 {
+		if duration := time.Since(start); duration < c.Edit.MinDuration {
+			c.errorf("warning: %s: returned in less than %s\n", shellQuoteCommand(editor, editorArgs), c.Edit.MinDuration)
+		}
+	}
+	return err
 }
 
 // sourceAbsPaths returns the source absolute paths for each target path in
