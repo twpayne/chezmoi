@@ -369,6 +369,7 @@ The following configuration variables are available:
 |                | `pager`               | string   | *none*                   | Docs-specific pager                                    |
 | `edit`         | `args`                | []string | *none*                   | Extra args to edit command                             |
 |                | `command`             | string   | `$EDITOR` / `$VISUAL`    | Edit command                                           |
+|                | `minDuration`         | duration | `1s`                     | Minimum duration for edit command                      |
 | `secret`       | `command`             | string   | *none*                   | Generic secret command                                 |
 | `git`          | `autoAdd `            | bool     | `false`                  | Add changes to the source state after any change       |
 |                | `autoCommit`          | bool     | `false`                  | Commit changes to the source state after any change    |
@@ -1207,6 +1208,10 @@ is re-encrypted and replaces the original file in the source state.
 
 If the operating system supports hard links, then the edit command invokes the
 editor with filenames which match the target filename.
+
+chezmoi will emit a warning if the editor returns in less than
+`edit.minDuration` (default `1s`). To disable this warning, set
+`edit.minDuration` to `0`.
 
 #### `-a`, `--apply`
 

@@ -3,6 +3,7 @@ package cmd
 import (
 	"os"
 	"runtime"
+	"time"
 
 	"github.com/spf13/cobra"
 
@@ -10,12 +11,13 @@ import (
 )
 
 type editCmdConfig struct {
-	Command string   `mapstructure:"command"`
-	Args    []string `mapstructure:"args"`
-	apply   bool
-	exclude *chezmoi.EntryTypeSet
-	include *chezmoi.EntryTypeSet
-	init    bool
+	Command     string        `mapstructure:"command"`
+	Args        []string      `mapstructure:"args"`
+	MinDuration time.Duration `mapstructure:"minDuration"`
+	apply       bool
+	exclude     *chezmoi.EntryTypeSet
+	include     *chezmoi.EntryTypeSet
+	init        bool
 }
 
 func (c *Config) newEditCmd() *cobra.Command {

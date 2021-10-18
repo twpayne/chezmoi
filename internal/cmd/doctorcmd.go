@@ -129,7 +129,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	shell, _ := shell.CurrentUserShell()
-	editCommand, _ := c.editor()
+	editCommand, _ := c.editor(nil)
 	checks := []check{
 		&versionCheck{
 			versionInfo: c.versionInfo,
