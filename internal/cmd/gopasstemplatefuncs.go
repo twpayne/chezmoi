@@ -7,8 +7,6 @@ import (
 	"regexp"
 
 	"github.com/coreos/go-semver/semver"
-
-	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
 var (
@@ -55,7 +53,7 @@ func (c *Config) gopassRawTemplateFunc(id string) string {
 	args := []string{"show", id}
 	output, err := c.gopassOutput(args...)
 	if err != nil {
-		returnTemplateError(fmt.Errorf("%s %s: %w", c.Gopass.Command, chezmoi.ShellQuoteArgs(args), err))
+		returnTemplateError(fmt.Errorf("%s: %w", shellQuoteCommand(c.Gopass.Command, args), err))
 		return ""
 	}
 
@@ -83,7 +81,7 @@ func (c *Config) gopassTemplateFunc(id string) string {
 	args := []string{"show", "--password", id}
 	output, err := c.gopassOutput(args...)
 	if err != nil {
-		returnTemplateError(fmt.Errorf("%s %s: %w", c.Gopass.Command, chezmoi.ShellQuoteArgs(args), err))
+		returnTemplateError(fmt.Errorf("%s: %w", shellQuoteCommand(c.Gopass.Command, args), err))
 		return ""
 	}
 

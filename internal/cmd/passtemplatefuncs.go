@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"fmt"
 	"os/exec"
-
-	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
 type passConfig struct {
@@ -25,7 +23,7 @@ func (c *Config) passOutput(id string) []byte {
 	cmd.Stderr = c.stderr
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
-		returnTemplateError(fmt.Errorf("%s %s: %w", name, chezmoi.ShellQuoteArgs(args), err))
+		returnTemplateError(fmt.Errorf("%s: %w", shellQuoteCommand(name, args), err))
 		return nil
 	}
 
