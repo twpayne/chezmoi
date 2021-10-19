@@ -109,7 +109,7 @@ func (c *Config) doMerge(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi
 		return err
 	}
 
-	targetStateAbsPath := tempDirAbsPath.Join(chezmoi.RelPath(targetRelPath.Base()))
+	targetStateAbsPath := tempDirAbsPath.JoinStr(targetRelPath.Base())
 	if err := c.baseSystem.WriteFile(targetStateAbsPath, contents, 0o600); err != nil {
 		return err
 	}

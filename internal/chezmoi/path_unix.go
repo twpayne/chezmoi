@@ -38,7 +38,7 @@ func expandTilde(path string, homeDirAbsPath AbsPath) string {
 	case path == "~":
 		return homeDirAbsPath.String()
 	case strings.HasPrefix(path, "~/"):
-		return homeDirAbsPath.Join(RelPath(path[2:])).String()
+		return homeDirAbsPath.JoinStr(path[2:]).String()
 	default:
 		return path
 	}

@@ -54,14 +54,22 @@ func (p AbsPath) Ext() string {
 	return path.Ext(p.absPath)
 }
 
-// Join appends elems to p.
-func (p AbsPath) Join(elems ...RelPath) AbsPath {
-	elemStrs := make([]string, 0, len(elems)+1)
-	elemStrs = append(elemStrs, p.absPath)
-	for _, elem := range elems {
-		elemStrs = append(elemStrs, string(elem))
+// Join returns a new AbsPath with relPaths appended.
+func (p AbsPath) Join(relPaths ...RelPath) AbsPath {
+	relPathStrs := make([]string, 0, len(relPaths)+1)
+	relPathStrs = append(relPathStrs, p.absPath)
+	for _, relPath := range relPaths {
+		relPathStrs = append(relPathStrs, string(relPath))
 	}
-	return NewAbsPath(path.Join(elemStrs...))
+	return NewAbsPath(path.Join(relPathStrs...))
+}
+
+// JoinStr returns a new AbsPath with ss appended.
+func (p AbsPath) JoinStr(ss ...string) AbsPath {
+	strs := make([]string, 0, len(ss)+1)
+	strs = append(strs, p.absPath)
+	strs = append(strs, ss...)
+	return NewAbsPath(path.Join(strs...))
 }
 
 // Len returns the length of p.

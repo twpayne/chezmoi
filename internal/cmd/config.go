@@ -709,7 +709,7 @@ func (c *Config) defaultConfigFile(fileSystem vfs.Stater, bds *xdg.BaseDirectory
 			return chezmoi.EmptyAbsPath, err
 		}
 		for _, extension := range viper.SupportedExts {
-			configFileAbsPath := configDirAbsPath.Join("chezmoi", chezmoi.RelPath("chezmoi."+extension))
+			configFileAbsPath := configDirAbsPath.JoinStr("chezmoi", "chezmoi."+extension)
 			if _, err := fileSystem.Stat(configFileAbsPath.String()); err == nil {
 				return configFileAbsPath, nil
 			}
