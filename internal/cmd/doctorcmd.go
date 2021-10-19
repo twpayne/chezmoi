@@ -275,6 +275,9 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 	fmt.Fprint(resultWriter, "RESULT\tCHECK\tMESSAGE\n")
 	for _, check := range checks {
 		checkResult, message := check.Run(c.baseSystem)
+		if checkResult == checkResultSkipped {
+			continue
+		}
 		// Conceal the user's actual home directory in the message as the
 		// output of chezmoi doctor is often posted publicly and would otherwise
 		// reveal the user's username.
