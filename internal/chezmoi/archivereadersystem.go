@@ -57,8 +57,8 @@ type ArchiveReaderSystemOptions struct {
 }
 
 // NewArchiveReaderSystem returns a new ArchiveReaderSystem reading from data
-// and using path as a hint for the archive format.
-func NewArchiveReaderSystem(path string, data []byte, format ArchiveFormat, options ArchiveReaderSystemOptions) (*ArchiveReaderSystem, error) {
+// and using archiePath as a hint for the archive format.
+func NewArchiveReaderSystem(archivePath string, data []byte, format ArchiveFormat, options ArchiveReaderSystemOptions) (*ArchiveReaderSystem, error) {
 	s := &ArchiveReaderSystem{
 		fileInfos: make(map[AbsPath]fs.FileInfo),
 		contents:  make(map[AbsPath][]byte),
@@ -66,7 +66,7 @@ func NewArchiveReaderSystem(path string, data []byte, format ArchiveFormat, opti
 	}
 
 	if format == ArchiveFormatUnknown {
-		format = GuessArchiveFormat(path, data)
+		format = GuessArchiveFormat(archivePath, data)
 	}
 
 	if err := walkArchive(data, format, func(name string, info fs.FileInfo, r io.Reader, linkname string) error {
@@ -75,7 +75,7 @@ func NewArchiveReaderSystem(path string, data []byte, format ArchiveFormat, opti
 			if len(components) <= options.StripComponents {
 				return nil
 			}
-			name = strings.Join(components[options.StripComponents:], "/")
+			name = path.Join(components[options.StripComponents:]...)
 		}
 		if name == "" {
 			return nil
