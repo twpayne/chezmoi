@@ -202,6 +202,14 @@ func TestPromptString(t *testing.T) {
 			expected:          "one",
 		},
 		{
+			name:              "whitespace_response_with_default",
+			prompt:            "string",
+			args:              []string{"one"},
+			stdinStr:          " \r\n",
+			expectedStdoutStr: `string (default "one")? `,
+			expected:          "one",
+		},
+		{
 			name:        "too_many_args",
 			prompt:      "bool",
 			args:        []string{"", ""},
