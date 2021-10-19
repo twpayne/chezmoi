@@ -1646,7 +1646,7 @@ func (c *Config) readConfig() error {
 	return c.validateData()
 }
 
-// readLine reads a line from stdin.
+// readLine reads a line from stdin, trimming leading and trailing whitespace.
 func (c *Config) readLine(prompt string) (string, error) {
 	_, err := c.stdout.Write([]byte(prompt))
 	if err != nil {
@@ -1656,7 +1656,7 @@ func (c *Config) readLine(prompt string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	return strings.TrimSuffix(line, "\n"), nil
+	return strings.TrimSpace(line), nil
 }
 
 // run runs name with args in dir.
