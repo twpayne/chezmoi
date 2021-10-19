@@ -22,7 +22,7 @@ func (h HexBytes) MarshalText() ([]byte, error) {
 	return result, nil
 }
 
-// UnmarshalText implements encoding.TextMarshaler.UnmarshalText.
+// UnmarshalText implements encoding.TextUnmarshaler.UnmarshalText.
 func (h *HexBytes) UnmarshalText(text []byte) error {
 	if len(text) == 0 {
 		*h = nil
