@@ -1,6 +1,7 @@
 package chezmoi
 
 import (
+	"path"
 	"strings"
 )
 
@@ -82,5 +83,5 @@ func (p SourceRelPath) TargetRelPath(encryptedSuffix string) RelPath {
 		fileAttr := parseFileAttr(sourceNames[len(sourceNames)-1], encryptedSuffix)
 		relPathNames = append(relPathNames, fileAttr.TargetName)
 	}
-	return RelPath(strings.Join(relPathNames, "/"))
+	return RelPath(path.Join(relPathNames...))
 }

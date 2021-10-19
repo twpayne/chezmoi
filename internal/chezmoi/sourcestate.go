@@ -17,6 +17,7 @@ import (
 	"net/url"
 	"os"
 	"os/exec"
+	"path"
 	"runtime"
 	"sort"
 	"strings"
@@ -1590,9 +1591,9 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 	if err != nil {
 		return nil, fmt.Errorf("%s: %s: %w", externalRelPath, external.URL, err)
 	}
-	path := url.Path
+	urlPath := url.Path
 	if external.Encrypted {
-		path = strings.TrimSuffix(path, s.encryption.EncryptedSuffix())
+		urlPath = strings.TrimSuffix(urlPath, s.encryption.EncryptedSuffix())
 	}
 	sourceRelPath := NewSourceRelPath(RelPath(external.URL))
 	sourceStateEntries := map[RelPath][]SourceStateEntry{
@@ -1612,7 +1613,7 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 
 	format := external.Format
 	if format == ArchiveFormatUnknown {
-		format = GuessArchiveFormat(path, data)
+		format = GuessArchiveFormat(urlPath, data)
 	}
 
 	if err := walkArchive(data, format, func(name string, info fs.FileInfo, r io.Reader, linkname string) error {
@@ -1621,7 +1622,7 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 			if len(components) <= external.StripComponents {
 				return nil
 			}
-			name = strings.Join(components[external.StripComponents:], "/")
+			name = path.Join(components[external.StripComponents:]...)
 		}
 		if name == "" {
 			return nil
