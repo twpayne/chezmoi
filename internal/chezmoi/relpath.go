@@ -29,13 +29,21 @@ func (p RelPath) HasDirPrefix(dirPrefix RelPath) bool {
 }
 
 // Join appends elems to p.
-func (p RelPath) Join(elems ...RelPath) RelPath {
-	elemStrs := make([]string, 0, len(elems)+1)
-	elemStrs = append(elemStrs, string(p))
-	for _, elem := range elems {
-		elemStrs = append(elemStrs, string(elem))
+func (p RelPath) Join(relPaths ...RelPath) RelPath {
+	relPathStrs := make([]string, 0, len(relPaths)+1)
+	relPathStrs = append(relPathStrs, string(p))
+	for _, relPath := range relPaths {
+		relPathStrs = append(relPathStrs, string(relPath))
 	}
-	return RelPath(path.Join(elemStrs...))
+	return RelPath(path.Join(relPathStrs...))
+}
+
+// JoinStr returns a new RelPath with ss appended.
+func (p RelPath) JoinStr(ss ...string) RelPath {
+	strs := make([]string, 0, len(ss)+1)
+	strs = append(strs, string(p))
+	strs = append(strs, ss...)
+	return RelPath(path.Join(strs...))
 }
 
 // Split returns p's directory and path.

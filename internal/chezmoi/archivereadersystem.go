@@ -80,7 +80,7 @@ func NewArchiveReaderSystem(archivePath string, data []byte, format ArchiveForma
 		if name == "" {
 			return nil
 		}
-		nameAbsPath := options.RootAbsPath.Join(RelPath(name))
+		nameAbsPath := options.RootAbsPath.JoinStr(name)
 
 		s.fileInfos[nameAbsPath] = info
 		switch {

@@ -21,7 +21,7 @@ type GPGEncryption struct {
 func (e *GPGEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
 	var plaintext []byte
 	if err := withPrivateTempDir(func(tempDirAbsPath AbsPath) error {
-		ciphertextAbsPath := tempDirAbsPath.Join(RelPath("ciphertext" + e.EncryptedSuffix()))
+		ciphertextAbsPath := tempDirAbsPath.JoinStr("ciphertext" + e.EncryptedSuffix())
 		if err := os.WriteFile(ciphertextAbsPath.String(), ciphertext, 0o600); err != nil {
 			return err
 		}
@@ -44,7 +44,7 @@ func (e *GPGEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
 // DecryptToFile implements Encryption.DecryptToFile.
 func (e *GPGEncryption) DecryptToFile(plaintextFilename AbsPath, ciphertext []byte) error {
 	return withPrivateTempDir(func(tempDirAbsPath AbsPath) error {
-		ciphertextAbsPath := tempDirAbsPath.Join(RelPath("ciphertext" + e.EncryptedSuffix()))
+		ciphertextAbsPath := tempDirAbsPath.JoinStr("ciphertext" + e.EncryptedSuffix())
 		if err := os.WriteFile(ciphertextAbsPath.String(), ciphertext, 0o600); err != nil {
 			return err
 		}
@@ -61,7 +61,7 @@ func (e *GPGEncryption) Encrypt(plaintext []byte) ([]byte, error) {
 		if err := os.WriteFile(plaintextAbsPath.String(), plaintext, 0o600); err != nil {
 			return err
 		}
-		ciphertextAbsPath := tempDirAbsPath.Join(RelPath("ciphertext" + e.EncryptedSuffix()))
+		ciphertextAbsPath := tempDirAbsPath.JoinStr("ciphertext" + e.EncryptedSuffix())
 
 		args := e.encryptArgs(plaintextAbsPath, ciphertextAbsPath)
 		if err := e.run(args); err != nil {
@@ -81,7 +81,7 @@ func (e *GPGEncryption) Encrypt(plaintext []byte) ([]byte, error) {
 func (e *GPGEncryption) EncryptFile(plaintextFilename AbsPath) ([]byte, error) {
 	var ciphertext []byte
 	if err := withPrivateTempDir(func(tempDirAbsPath AbsPath) error {
-		ciphertextAbsPath := tempDirAbsPath.Join(RelPath("ciphertext" + e.EncryptedSuffix()))
+		ciphertextAbsPath := tempDirAbsPath.JoinStr("ciphertext" + e.EncryptedSuffix())
 
 		args := e.encryptArgs(plaintextFilename, ciphertextAbsPath)
 		if err := e.run(args); err != nil {

@@ -744,7 +744,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			targetParentRelPath := parentSourceRelPath.TargetRelPath(s.encryption.EncryptedSuffix())
 			matches = matches[:n]
 			for _, match := range matches {
-				targetRelPath := targetParentRelPath.Join(RelPath(match))
+				targetRelPath := targetParentRelPath.JoinStr(match)
 				sourceStateEntry := &SourceStateRemove{
 					targetRelPath: targetRelPath,
 				}
@@ -845,7 +845,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 				if name == "." || name == ".." {
 					continue
 				}
-				destEntryRelPath := targetRelPath.Join(RelPath(name))
+				destEntryRelPath := targetRelPath.JoinStr(name)
 				if _, ok := allSourceStateEntries[destEntryRelPath]; ok {
 					continue
 				}
@@ -995,7 +995,7 @@ func (s *SourceState) addPatterns(patternSet *patternSet, sourceAbsPath AbsPath,
 			include = false
 			text = mustTrimPrefix(text, "!")
 		}
-		pattern := string(dir.Join(RelPath(text)))
+		pattern := string(dir.JoinStr(text))
 		if err := patternSet.add(pattern, include); err != nil {
 			return fmt.Errorf("%s:%d: %w", sourceAbsPath, lineNumber, err)
 		}
@@ -1099,7 +1099,7 @@ func (s *SourceState) getExternalDataRaw(ctx context.Context, externalRelPath Re
 	now = now.UTC()
 
 	cacheKey := hex.EncodeToString(SHA256Sum([]byte(external.URL)))
-	cachedDataAbsPath := s.cacheDirAbsPath.Join("external", RelPath(cacheKey+"."+externalCacheFormat.Name()))
+	cachedDataAbsPath := s.cacheDirAbsPath.JoinStr("external", cacheKey+"."+externalCacheFormat.Name())
 	if options == nil || !options.RefreshExternals {
 		if data, err := s.system.ReadFile(cachedDataAbsPath); err == nil {
 			var externalCacheEntry externalCacheEntry
@@ -1627,7 +1627,7 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 		if name == "" {
 			return nil
 		}
-		targetRelPath := externalRelPath.Join(RelPath(name))
+		targetRelPath := externalRelPath.JoinStr(name)
 
 		if s.Ignore(targetRelPath) {
 			return nil
