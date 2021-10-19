@@ -69,7 +69,7 @@ func (p AbsPath) Len() int {
 	return len(p.absPath)
 }
 
-// MarshalText implements encoding.TextMarshaler.
+// MarshalText implements encoding.TextMarshaler.MarshalText.
 func (p AbsPath) MarshalText() ([]byte, error) {
 	return []byte(p.absPath), nil
 }
@@ -139,7 +139,7 @@ func (p AbsPath) Type() string {
 	return "path"
 }
 
-// UnmarshalText implements encoding.UnmarshalText.
+// UnmarshalText implements encoding.TextUnmarshaler.UnmarshalText.
 func (p *AbsPath) UnmarshalText(text []byte) error {
 	return p.Set(string(text))
 }
