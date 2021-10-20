@@ -1,8 +1,6 @@
 [windows] skip 'UNIX only'
 [!umask:022] skip
 
-[openbsd] exec sed -e 's:/$::g' -i golden/archive
-
 # test that scripts in subdirectories are run in the subdirectory
 chezmoi apply --force
 cmpenv stdout golden/apply
@@ -12,7 +10,8 @@ cmp stdout golden/dump
 
 chezmoi archive --gzip --output=archive.tar.gz
 exec tar -tzf archive.tar.gz
-cmp stdout golden/archive
+[!openbsd] cmp stdout golden/archive
+[openbsd] cmp stdout golden/archive-openbsd
 
 -- golden/apply --
 $HOME
@@ -24,6 +23,13 @@ anotherdir/
 dir/
 dir/script
 otherdir/
+anotherdir/script
+-- golden/archive-openbsd --
+otherdir/script
+anotherdir
+dir
+dir/script
+otherdir
 anotherdir/script
 -- golden/dump --
 {

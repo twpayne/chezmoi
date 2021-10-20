@@ -1,8 +1,6 @@
 [windows] skip 'UNIX only'
 [!umask:022] skip
 
-[openbsd] exec sed -e 's:/$::g' -i golden/archive
-
 chezmoi apply
 cmpenv stdout golden/apply
 
@@ -12,12 +10,16 @@ cmp stdout golden/dump
 
 chezmoi archive --output=archive.tar
 exec tar -tf archive.tar
-cmp stdout golden/archive
+[openbsd] cmp stdout golden/archive-openbsd
+[!openbsd] cmp stdout golden/archive
 
 -- golden/apply --
 $HOME${/}dir
 -- golden/archive --
 dir/
+dir/script
+-- golden/archive-openbsd --
+dir
 dir/script
 -- golden/dump --
 {
