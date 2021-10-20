@@ -429,8 +429,8 @@ github.com/stretchr/testify v1.7.0 h1:nwc3DEeHmmLAfoZucVR881uASk0Mfjw8xYJ99tb5Cc
 github.com/stretchr/testify v1.7.0/go.mod h1:6Fq8oRcR53rry900zMqJjRRixrwX3KX962/h/Wwjteg=
 github.com/subosito/gotenv v1.2.0 h1:Slr1R9HxAlEKefgq5jn9U+DnETlIUa6HfgEzj0g5d7s=
 github.com/subosito/gotenv v1.2.0/go.mod h1:N0PQaV/YGNqwC0u51sEeR/aUtSLEXKX9iv69rRypqCw=
-github.com/twpayne/go-shell v0.3.0 h1:nhDM9cQTqWwA0jGPOnqzsw8lke2jcKpvxDgnDO8Lq9o=
-github.com/twpayne/go-shell v0.3.0/go.mod h1:H/gzux0DOH5jsjQSHXs6rs2Onxy+V4j6ycZTOulC0l8=
+github.com/twpayne/go-shell v0.3.1 h1:JIC6cyDpG/p8mRnFUleH07roi90q0J9QC8PnvtmYLRo=
+github.com/twpayne/go-shell v0.3.1/go.mod h1:H/gzux0DOH5jsjQSHXs6rs2Onxy+V4j6ycZTOulC0l8=
 github.com/twpayne/go-vfs/v3 v3.0.0 h1:rMFBISZVhSowKeX1BxL8utM64V7CuUw9/rfekPdS7to=
 github.com/twpayne/go-vfs/v3 v3.0.0/go.mod h1:JKfJtOC57Wqo7xYxFRKSqdXwyj3AhfyRrDxSE/XiAVA=
 github.com/twpayne/go-vfs/v4 v4.0.0 h1:NMq6wg8GZlX7IsgRZw5j0RiT/Q4qXzCsuxYYdK3T70c=

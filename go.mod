@@ -32,7 +32,7 @@ require (
 	github.com/spf13/cobra v1.2.1
 	github.com/spf13/viper v1.9.0
 	github.com/stretchr/testify v1.7.0
-	github.com/twpayne/go-shell v0.3.0
+	github.com/twpayne/go-shell v0.3.1
 	github.com/twpayne/go-vfs/v4 v4.0.0
 	github.com/twpayne/go-xdg/v6 v6.0.0
 	github.com/xanzy/ssh-agent v0.3.1 // indirect
