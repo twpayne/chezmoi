@@ -219,7 +219,7 @@ Instead of using a symlink to redirect from the dotfile's location to the
 centralized directory, chezmoi generates the dotfile as a regular file in its
 final location from the contents of the centralized directory. This approach
 allows chezmoi to provide features that are not possible when using symlinks,
-for example having files that encrypted, executable, private, or templates.
+for example having files that are encrypted, executable, private, or templates.
 
 There's nothing special about dotfiles managed by chezmoi, whereas dotfiles
 managed with GNU Stow are special because they're actually symlinks to somewhere
