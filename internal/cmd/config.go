@@ -27,7 +27,6 @@ import (
 	"github.com/coreos/go-semver/semver"
 	gogit "github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/format/diff"
-	"github.com/google/gops/agent"
 	"github.com/mitchellh/mapstructure"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -85,7 +84,6 @@ type Config struct {
 	debug            bool
 	dryRun           bool
 	force            bool
-	gops             bool
 	homeDir          string
 	keepGoing        bool
 	noPager          bool
@@ -576,7 +574,6 @@ func (c *Config) close() error {
 		err = multierr.Append(err, err2)
 	}
 	pprof.StopCPUProfile()
-	agent.Close()
 	return err
 }
 
@@ -1194,7 +1191,6 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.BoolVar(&c.debug, "debug", c.debug, "Include debug information in output")
 	persistentFlags.BoolVarP(&c.dryRun, "dry-run", "n", c.dryRun, "Do not make any modifications to the destination directory")
 	persistentFlags.BoolVar(&c.force, "force", c.force, "Make all changes without prompting")
-	persistentFlags.BoolVar(&c.gops, "gops", c.gops, "Enable gops agent")
 	persistentFlags.BoolVarP(&c.keepGoing, "keep-going", "k", c.keepGoing, "Keep going as far as possible after an error")
 	persistentFlags.BoolVar(&c.noPager, "no-pager", c.noPager, "Do not use the pager")
 	persistentFlags.BoolVar(&c.noTTY, "no-tty", c.noTTY, "Do not attempt to get a TTY for reading passwords")
@@ -1208,7 +1204,6 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		rootCmd.MarkPersistentFlagFilename("cpu-profile"),
 		persistentFlags.MarkHidden("cpu-profile"),
 		rootCmd.MarkPersistentFlagDirname("destination"),
-		persistentFlags.MarkHidden("gops"),
 		rootCmd.MarkPersistentFlagFilename("output"),
 		persistentFlags.MarkHidden("safe"),
 		rootCmd.MarkPersistentFlagDirname("source"),
@@ -1373,13 +1368,6 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 			return err
 		}
 		if err := pprof.StartCPUProfile(f); err != nil {
-			return err
-		}
-	}
-
-	// Enable gops if configured.
-	if c.gops {
-		if err := agent.Listen(agent.Options{}); err != nil {
 			return err
 		}
 	}
