@@ -12,7 +12,7 @@ env:
   GOLANGCI_LINT_VERSION: 1.42.1
 jobs:
   test-archlinux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -20,7 +20,7 @@ jobs:
       run: |
         ( cd assets/docker && ./test.sh archlinux )
   test-debian-i386:
-    runs-on: macos-latest
+    runs-on: macos-10.15
     env:
       VAGRANT_BOX: debian11-i386
     steps:
@@ -37,7 +37,7 @@ jobs:
       run: |
         ( cd assets/vagrant && ./test.sh debian11-i386 )
   test-fedora:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -45,7 +45,7 @@ jobs:
       run: |
         ( cd assets/docker && ./test.sh fedora )
   test-freebsd:
-    runs-on: macos-latest
+    runs-on: macos-10.15
     env:
       VAGRANT_BOX: freebsd13
     steps:
@@ -62,7 +62,7 @@ jobs:
       run: |
         ( cd assets/vagrant && ./test.sh freebsd13 )
   test-macos:
-    runs-on: macos-latest
+    runs-on: macos-11
     steps:
     - name: Set up Go
       uses: actions/setup-go@v2
@@ -92,7 +92,7 @@ jobs:
     - name: Test
       run: go test -race ./...
   test-openbsd:
-    runs-on: macos-latest
+    runs-on: macos-10.15
     env:
       VAGRANT_BOX: openbsd6
     steps:
@@ -109,7 +109,7 @@ jobs:
       run: |
         ( cd assets/vagrant && ./test.sh openbsd6 )
   test-openindiana:
-    runs-on: macos-latest
+    runs-on: macos-10.15
     env:
       VAGRANT_BOX: openindiana
     steps:
@@ -237,7 +237,7 @@ jobs:
     - name: Test
       run: go test ./...
   test-windows:
-    runs-on: windows-latest
+    runs-on: windows-2019
     steps:
     - name: Set up Go
       uses: actions/setup-go@v2
@@ -278,7 +278,7 @@ jobs:
     - name: Test
       run: go test -race ./...
   test-voidlinux:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
     - name: Checkout
       uses: actions/checkout@v2
