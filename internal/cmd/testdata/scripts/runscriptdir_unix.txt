@@ -31,10 +31,10 @@ dir/script
   "dir/script": {
     "type": "script",
     "name": "dir/script",
-    "contents": "#!/bin/sh\n\necho $PWD\n"
+    "contents": "#!/bin/sh\n\npwd\n"
   }
 }
 -- home/user/.local/share/chezmoi/dir/run_script --
 #!/bin/sh
 
-echo $PWD
+pwd

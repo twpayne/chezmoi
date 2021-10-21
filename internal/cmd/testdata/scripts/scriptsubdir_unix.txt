@@ -41,7 +41,7 @@ anotherdir/script
   "anotherdir/script": {
     "type": "script",
     "name": "anotherdir/script",
-    "contents": "#!/bin/sh\n\necho $PWD\n"
+    "contents": "#!/bin/sh\n\npwd\n"
   },
   "dir": {
     "type": "dir",
@@ -51,7 +51,7 @@ anotherdir/script
   "dir/script": {
     "type": "script",
     "name": "dir/script",
-    "contents": "#!/bin/sh\n\necho $PWD\n"
+    "contents": "#!/bin/sh\n\npwd\n"
   },
   "otherdir": {
     "type": "dir",
@@ -61,18 +61,18 @@ anotherdir/script
   "otherdir/script": {
     "type": "script",
     "name": "otherdir/script",
-    "contents": "#!/bin/sh\n\necho $PWD\n"
+    "contents": "#!/bin/sh\n\npwd\n"
   }
 }
 -- home/user/.local/share/chezmoi/anotherdir/run_after_script --
 #!/bin/sh
 
-echo $PWD
+pwd
 -- home/user/.local/share/chezmoi/dir/run_script --
 #!/bin/sh
 
-echo $PWD
+pwd
 -- home/user/.local/share/chezmoi/otherdir/run_before_script --
 #!/bin/sh
 
-echo $PWD
+pwd

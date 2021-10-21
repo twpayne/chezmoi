@@ -668,7 +668,7 @@ func setup(env *testscript.Env) error {
 				Contents: []byte(chezmoitest.JoinLines(
 					`#!/bin/sh`,
 					``,
-					`echo $PWD >> '`+filepath.Join(env.WorkDir, "shell.log")+`'`,
+					`pwd >> '`+filepath.Join(env.WorkDir, "shell.log")+`'`,
 				)),
 			},
 		}
