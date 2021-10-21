@@ -135,7 +135,6 @@ func (s *EntryTypeSet) String() string {
 	if s == nil {
 		return "none"
 	}
-	//nolint:exhaustive
 	switch s.bits {
 	case EntryTypesAll:
 		return "all"

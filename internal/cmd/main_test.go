@@ -50,7 +50,6 @@ func init() {
 
 var umaskConditionRx = regexp.MustCompile(`\Aumask:([0-7]{3})\z`)
 
-//nolint:interfacer
 func TestMain(m *testing.M) {
 	os.Exit(testscript.RunMain(m, map[string]func() int{
 		"chezmoi": func() int {
