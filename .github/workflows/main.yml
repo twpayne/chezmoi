@@ -159,16 +159,6 @@ jobs:
         ./dist/chezmoi-cgo-glibc_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v2"
         ./dist/chezmoi-cgo-musl_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v2"
         ./dist/chezmoi-nocgo_linux_386/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v2"
-    - name: Upload artifact chezmoi-linux-amd64
-      uses: actions/upload-artifact@v2
-      with:
-        name: chezmoi-linux-amd64
-        path: dist/chezmoi-cgo-glibc_linux_amd64/chezmoi
-    - name: Upload artifact chezmoi-linux-musl-amd64
-      uses: actions/upload-artifact@v2
-      with:
-        name: chezmoi-linux-musl-amd64
-        path: dist/chezmoi-cgo-musl_linux_amd64/chezmoi
     - name: Upload artifact chezmoi-darwin-amd64
       uses: actions/upload-artifact@v2
       with:
@@ -179,6 +169,16 @@ jobs:
       with:
         name: chezmoi-darwin-arm64
         path: dist/chezmoi-nocgo_darwin_arm64/chezmoi
+    - name: Upload artifact chezmoi-linux-amd64
+      uses: actions/upload-artifact@v2
+      with:
+        name: chezmoi-linux-amd64
+        path: dist/chezmoi-cgo-glibc_linux_amd64/chezmoi
+    - name: Upload artifact chezmoi-linux-musl-amd64
+      uses: actions/upload-artifact@v2
+      with:
+        name: chezmoi-linux-musl-amd64
+        path: dist/chezmoi-cgo-musl_linux_amd64/chezmoi
     - name: Upload artifact chezmoi-windows-amd64.exe
       uses: actions/upload-artifact@v2
       with:
