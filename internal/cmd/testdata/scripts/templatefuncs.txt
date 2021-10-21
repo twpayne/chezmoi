@@ -40,7 +40,8 @@ stdout 2656FF1E876E9973
 
 # test that the output function returns an error if the command fails
 [!windows] ! chezmoi execute-template '{{ output "false" }}'
-[!windows] stderr 'error calling output: exit status 1'
+[!(windows||illumos)] stderr 'error calling output: exit status 1'
+[illumos] stderr 'error calling output: exit status 255'
 
 # test stat template function
 chezmoi execute-template '{{ (stat ".").isDir }}'

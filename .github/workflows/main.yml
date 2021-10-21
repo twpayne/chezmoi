@@ -108,6 +108,23 @@ jobs:
     - name: Test
       run: |
         ( cd assets/vagrant && ./test.sh openbsd6 )
+  test-openindiana:
+    runs-on: macos-latest
+    env:
+      VAGRANT_BOX: openindiana
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Cache Vagrant Boxes
+      uses: actions/cache@v2
+      with:
+        path: ~/.vagrant.d
+        key: ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-${{ hashFiles('assets/vagrant/*.Vagrantfile') }}
+        restore-keys: |
+          ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-
+    - name: Test
+      run: |
+        ( cd assets/vagrant && ./test.sh openindiana )
   test-ubuntu:
     runs-on: ubuntu-18.04
     steps:
@@ -169,6 +186,11 @@ jobs:
       with:
         name: chezmoi-darwin-arm64
         path: dist/chezmoi-nocgo_darwin_arm64/chezmoi
+    - name: Upload artifact chezmoi-illumos-amd64
+      uses: actions/upload-artifact@v2
+      with:
+        name: chezmoi-illumos-amd64
+        path: dist/chezmoi-nocgo_illumos_amd64/chezmoi
     - name: Upload artifact chezmoi-linux-amd64
       uses: actions/upload-artifact@v2
       with:

@@ -92,6 +92,7 @@ documentation, and shell completions.
 | OS         | Architectures                                       | Archive                                                        |
 | ---------- | --------------------------------------------------- | -------------------------------------------------------------- |
 | FreeBSD    | `amd64`, `arm`, `arm64`, `i386`                     | [`tar.gz`](https://github.com/twpayne/chezmoi/releases/latest) |
+| Illumos    | `amd64`                                             | [`tar.gz`](https://github.com/twpayne/chezmoi/releases/latest) |
 | Linux      | `amd64`, `arm`, `arm64`, `i386`, `ppc64`, `ppc64le` | [`tar.gz`](https://github.com/twpayne/chezmoi/releases/latest) |
 | macOS      | `amd64`, `arm64`                                    | [`tar.gz`](https://github.com/twpayne/chezmoi/releases/latest) |
 | OpenBSD    | `amd64`, `arm`, `arm64`, `i386`                     | [`tar.gz`](https://github.com/twpayne/chezmoi/releases/latest) |
