@@ -41,19 +41,19 @@ cmp stdout golden/archive
 script
 -- golden/diff --
 diff --git a/script b/script
-index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..4a10a731080ff0306ef247ca4557e1902ac3bc5d 100755
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..f9103e018df1bbc178e66b46d8f133f49c85225d 100755
 --- a/script
 +++ b/script
 @@ -0,0 +1,3 @@
 +#!/bin/sh
 +
-+echo $PWD
++pwd
 -- golden/dump.json --
 {
   "script": {
     "type": "script",
     "name": "script",
-    "contents": "#!/bin/sh\n\necho $PWD\n"
+    "contents": "#!/bin/sh\n\npwd\n"
   }
 }
 -- golden/managed --
@@ -61,10 +61,10 @@ script
 -- golden/script --
 #!/bin/sh
 
-echo $PWD
+pwd
 -- golden/status --
  R script
 -- home/user/.local/share/chezmoi/run_script --
 #!/bin/sh
 
-echo $PWD
+pwd
