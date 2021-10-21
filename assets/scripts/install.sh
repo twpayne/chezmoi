@@ -153,6 +153,7 @@ check_goos_goarch() {
 	openbsd/amd64) return 0 ;;
 	openbsd/arm) return 0 ;;
 	openbsd/arm64) return 0 ;;
+	solaris/amd64) return 0 ;;
 	windows/386) return 0 ;;
 	windows/amd64) return 0 ;;
 	windows/arm) return 0 ;;

@@ -45,6 +45,7 @@ builds:
   - darwin
   - freebsd
   - openbsd
+  - solaris
   - windows
   goarch:
   - 386

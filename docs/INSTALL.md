@@ -96,6 +96,7 @@ documentation, and shell completions.
 | Linux      | `amd64`, `arm`, `arm64`, `i386`, `ppc64`, `ppc64le` | [`tar.gz`](https://github.com/twpayne/chezmoi/releases/latest) |
 | macOS      | `amd64`, `arm64`                                    | [`tar.gz`](https://github.com/twpayne/chezmoi/releases/latest) |
 | OpenBSD    | `amd64`, `arm`, `arm64`, `i386`                     | [`tar.gz`](https://github.com/twpayne/chezmoi/releases/latest) |
+| Solaris    | `amd64`                                             | [`tar.gz`](https://github.com/twpayne/chezmoi/releases/latest) |
 | Windows    | `amd64`, `arm`, `i386`                              | [`zip`](https://github.com/twpayne/chezmoi/releases/latest)    |
 
 ---

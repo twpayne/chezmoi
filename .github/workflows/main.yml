@@ -201,6 +201,11 @@ jobs:
       with:
         name: chezmoi-linux-musl-amd64
         path: dist/chezmoi-cgo-musl_linux_amd64/chezmoi
+    - name: Upload artifact chezmoi-solaris-amd64
+      uses: actions/upload-artifact@v2
+      with:
+        name: chezmoi-solaris-amd64
+        path: dist/chezmoi-nocgo_solaris_amd64/chezmoi
     - name: Upload artifact chezmoi-windows-amd64.exe
       uses: actions/upload-artifact@v2
       with:
