@@ -114,6 +114,14 @@ get_goos() {
 	cygwin_nt*) goos="windows" ;;
 	mingw*) goos="windows" ;;
 	msys_nt*) goos="windows" ;;
+	sunos*)
+		kernel=$(uname -o | tr '[:upper:]' '[:lower:]')
+		case "${kernel}" in
+		illumos*) goos="illumos" ;;
+		solaris*) goos="solaris" ;;
+		*) goos="${os}" ;;
+		esac
+		;;
 	*) goos="${os}" ;;
 	esac
 	echo "${goos}"
@@ -127,6 +135,7 @@ get_goarch() {
 	armv*) goarch="arm" ;;
 	i386) goarch="i386" ;;
 	i686) goarch="i386" ;;
+	i86pc) goarch="amd64" ;;
 	x86) goarch="i386" ;;
 	x86_64) goarch="amd64" ;;
 	*) goarch="${arch}" ;;
