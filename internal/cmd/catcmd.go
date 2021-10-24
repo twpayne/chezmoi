@@ -54,7 +54,8 @@ func (c *Config) runCatCmd(cmd *cobra.Command, args []string, sourceState *chezm
 			if err != nil {
 				return fmt.Errorf("%s: %w", targetRelPath, err)
 			}
-			builder.WriteString(linkname + "\n")
+			builder.WriteString(linkname)
+			builder.WriteByte('\n')
 		default:
 			return fmt.Errorf("%s: not a file, script, or symlink", targetRelPath)
 		}

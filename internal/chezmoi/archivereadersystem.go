@@ -57,7 +57,7 @@ type ArchiveReaderSystemOptions struct {
 }
 
 // NewArchiveReaderSystem returns a new ArchiveReaderSystem reading from data
-// and using archiePath as a hint for the archive format.
+// and using archivePath as a hint for the archive format.
 func NewArchiveReaderSystem(archivePath string, data []byte, format ArchiveFormat, options ArchiveReaderSystemOptions) (*ArchiveReaderSystem, error) {
 	s := &ArchiveReaderSystem{
 		fileInfos: make(map[AbsPath]fs.FileInfo),
