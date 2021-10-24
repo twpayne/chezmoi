@@ -36,7 +36,8 @@ func (c *Config) runUnmanagedCmd(cmd *cobra.Command, args []string, sourceState 
 		_, managed := sourceState.Entry(targeRelPath)
 		ignored := sourceState.Ignore(targeRelPath)
 		if !managed && !ignored {
-			builder.WriteString(string(targeRelPath) + "\n")
+			builder.WriteString(targeRelPath.String())
+			builder.WriteByte('\n')
 		}
 		if info.IsDir() && (!managed || ignored) {
 			return vfs.SkipDir
