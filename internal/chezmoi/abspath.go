@@ -97,7 +97,7 @@ func (p *AbsPath) Set(s string) error {
 		p.absPath = ""
 		return nil
 	}
-	homeDirAbsPath, err := homeDirAbsPath()
+	homeDirAbsPath, err := HomeDirAbsPath()
 	if err != nil {
 		return err
 	}
@@ -152,6 +152,19 @@ func (p *AbsPath) UnmarshalText(text []byte) error {
 	return p.Set(string(text))
 }
 
+// HomeDirAbsPath returns the user's home directory as an AbsPath.
+func HomeDirAbsPath() (AbsPath, error) {
+	userHomeDir, err := os.UserHomeDir()
+	if err != nil {
+		return EmptyAbsPath, err
+	}
+	absPath, err := NormalizePath(userHomeDir)
+	if err != nil {
+		return EmptyAbsPath, err
+	}
+	return absPath, nil
+}
+
 // StringToAbsPathHookFunc is a github.com/mitchellh/mapstructure.DecodeHookFunc
 // that parses an AbsPath from a string.
 func StringToAbsPathHookFunc() mapstructure.DecodeHookFunc {
@@ -169,17 +182,4 @@ func StringToAbsPathHookFunc() mapstructure.DecodeHookFunc {
 		}
 		return absPath, nil
 	}
-}
-
-// homeDirAbsPath returns the user's home directory as an AbsPath.
-func homeDirAbsPath() (AbsPath, error) {
-	userHomeDir, err := os.UserHomeDir()
-	if err != nil {
-		return EmptyAbsPath, err
-	}
-	absPath, err := NormalizePath(userHomeDir)
-	if err != nil {
-		return EmptyAbsPath, err
-	}
-	return absPath, nil
 }
