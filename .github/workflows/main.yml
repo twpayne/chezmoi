@@ -318,8 +318,8 @@ jobs:
       run: go run ./internal/cmds/lint-whitespace
     - name: Typos
       run: |
-        go install github.com/twpayne/findtypos@latest
-        findtypos chezmoi .
+        go install github.com/twpayne/findtypos@v0.0.1
+        findtypos -format=github-actions chezmoi .
   lint:
     runs-on: ubuntu-18.04
     steps:
