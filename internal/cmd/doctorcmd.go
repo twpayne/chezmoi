@@ -195,7 +195,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			name:        "gpg-command",
 			binaryname:  c.GPG.Command,
 			versionArgs: []string{"--version"},
-			versionRx:   regexp.MustCompile(`^gpg\s+\(.*?\)\s+(\d+\.\d+\.\d+)`),
+			versionRx:   regexp.MustCompile(`(?m)^gpg\s+\(.*?\)\s+(\d+\.\d+\.\d+)`),
 			ifNotSet:    checkResultWarning,
 		},
 		&binaryCheck{
