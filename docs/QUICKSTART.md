@@ -104,24 +104,24 @@ $ chezmoi init https://github.com/username/dotfiles.git
 ```
 
 This will check out the repo and any submodules and optionally create a chezmoi
-config file for you. It won't make any changes to your home directory until you
-run:
+config file for you.
+
+Check what changes that chezmoi will make to your home directory by running:
 
 ```console
-$ chezmoi apply
+$ chezmoi diff
 ```
 
-If your dotfiles repo is `https://github.com/username/dotfiles.git` then the
-above two commands can be combined into just:
+If you are happy with the changes that chezmoi will make then run:
 
 ```console
-$ chezmoi init --apply username
+$ chezmoi apply -v
 ```
 
 On any machine, you can pull and apply the latest changes from your repo with:
 
 ```console
-$ chezmoi update
+$ chezmoi update -v
 ```
 
 ---
