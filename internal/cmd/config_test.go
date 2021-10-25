@@ -245,8 +245,8 @@ func withTestUser(t *testing.T, username string) configOption {
 		if err != nil {
 			panic(err)
 		}
-		config.CacheDirAbsPath = config.homeDirAbsPath.Join(".cache", "chezmoi")
-		config.SourceDirAbsPath = config.homeDirAbsPath.Join(".local", "share", "chezmoi")
+		config.CacheDirAbsPath = config.homeDirAbsPath.JoinString(".cache", "chezmoi")
+		config.SourceDirAbsPath = config.homeDirAbsPath.JoinString(".local", "share", "chezmoi")
 		config.DestDirAbsPath = config.homeDirAbsPath
 		config.Umask = 0o22
 		configHome := filepath.Join(config.homeDir, ".config")

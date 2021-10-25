@@ -133,7 +133,7 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	// If we're not in a working tree then init it or clone it.
-	gitDirAbsPath := c.WorkingTreeAbsPath.Join(git.GitDirName)
+	gitDirAbsPath := c.WorkingTreeAbsPath.JoinString(git.GitDirName)
 	switch info, err := c.baseSystem.Stat(gitDirAbsPath); {
 	case err == nil && info.IsDir():
 	case err == nil && !info.IsDir():

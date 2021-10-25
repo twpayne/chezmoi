@@ -69,7 +69,7 @@ func testEncryptionDecryptToFile(t *testing.T, encryption Encryption) {
 		require.NotEmpty(t, actualCiphertext)
 		assert.NotEqual(t, expectedPlaintext, actualCiphertext)
 
-		plaintextAbsPath := NewAbsPath(t.TempDir()).Join("plaintext")
+		plaintextAbsPath := NewAbsPath(t.TempDir()).JoinString("plaintext")
 
 		require.NoError(t, encryption.DecryptToFile(plaintextAbsPath, actualCiphertext))
 
@@ -102,7 +102,7 @@ func testEncryptionEncryptFile(t *testing.T, encryption Encryption) {
 	t.Run("EncryptFile", func(t *testing.T) {
 		expectedPlaintext := []byte("plaintext\n")
 
-		plaintextAbsPath := NewAbsPath(t.TempDir()).Join("plaintext")
+		plaintextAbsPath := NewAbsPath(t.TempDir()).JoinString("plaintext")
 		require.NoError(t, os.WriteFile(plaintextAbsPath.String(), expectedPlaintext, 0o666))
 
 		actualCiphertext, err := encryption.EncryptFile(plaintextAbsPath)

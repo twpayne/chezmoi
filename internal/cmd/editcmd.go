@@ -121,7 +121,7 @@ TARGETRELPATH:
 			// template then preserve the .tmpl suffix as a clue to the editor.
 			targetRelPath := sourceRelPath.TargetRelPath(c.encryption.EncryptedSuffix())
 			if sourceStateFile.Attr.Template {
-				targetRelPath += chezmoi.TemplateSuffix
+				targetRelPath = targetRelPath.AppendString(chezmoi.TemplateSuffix)
 			}
 			tempDirAbsPath, err := c.tempDir("chezmoi-edit")
 			if err != nil {

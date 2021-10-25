@@ -264,7 +264,7 @@ DESTABSPATH:
 
 		// Find the target's parent directory in the source state.
 		var parentSourceRelPath SourceRelPath
-		if targetParentRelPath := targetRelPath.Dir(); targetParentRelPath == "." {
+		if targetParentRelPath := targetRelPath.Dir(); targetParentRelPath == DotRelPath {
 			parentSourceRelPath = SourceRelPath{}
 		} else if parentEntry, ok := newSourceStateEntriesByTargetRelPath[targetParentRelPath]; ok {
 			parentSourceRelPath = parentEntry.SourceRelPath()
@@ -370,7 +370,7 @@ DESTABSPATH:
 	// Simulate removing a directory by creating SourceStateRemove entries for
 	// all existing source state entries that are in options.RemoveDir and not
 	// in the new source state.
-	if options.RemoveDir != "" {
+	if options.RemoveDir != EmptyRelPath {
 		for targetRelPath, sourceStateEntry := range s.entries {
 			if !targetRelPath.HasDirPrefix(options.RemoveDir) {
 				continue
@@ -736,7 +736,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			}
 			n := 0
 			for _, match := range matches {
-				if !s.Ignore(RelPath(match)) {
+				if !s.Ignore(NewRelPath(match)) {
 					matches[n] = match
 					n++
 				}
@@ -744,7 +744,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			targetParentRelPath := parentSourceRelPath.TargetRelPath(s.encryption.EncryptedSuffix())
 			matches = matches[:n]
 			for _, match := range matches {
-				targetRelPath := targetParentRelPath.JoinStr(match)
+				targetRelPath := targetParentRelPath.JoinString(match)
 				sourceStateEntry := &SourceStateRemove{
 					targetRelPath: targetRelPath,
 				}
@@ -767,7 +767,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			return nil
 		case info.IsDir():
 			da := parseDirAttr(sourceName.String())
-			targetRelPath := parentSourceRelPath.Dir().TargetRelPath(s.encryption.EncryptedSuffix()).Join(RelPath(da.TargetName))
+			targetRelPath := parentSourceRelPath.Dir().TargetRelPath(s.encryption.EncryptedSuffix()).JoinString(da.TargetName)
 			if s.Ignore(targetRelPath) {
 				return vfs.SkipDir
 			}
@@ -776,7 +776,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			return nil
 		case info.Mode().IsRegular():
 			fa := parseFileAttr(sourceName.String(), s.encryption.EncryptedSuffix())
-			targetRelPath := parentSourceRelPath.Dir().TargetRelPath(s.encryption.EncryptedSuffix()).Join(RelPath(fa.TargetName))
+			targetRelPath := parentSourceRelPath.Dir().TargetRelPath(s.encryption.EncryptedSuffix()).JoinString(fa.TargetName)
 			if s.Ignore(targetRelPath) {
 				return nil
 			}
@@ -795,13 +795,11 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 	}
 
 	// Read externals.
-	externalRelPaths := make([]RelPath, 0, len(s.externals))
+	externalRelPaths := make(RelPaths, 0, len(s.externals))
 	for externalRelPath := range s.externals {
 		externalRelPaths = append(externalRelPaths, externalRelPath)
 	}
-	sort.Slice(externalRelPaths, func(i, j int) bool {
-		return externalRelPaths[i] < externalRelPaths[j]
-	})
+	sort.Sort(externalRelPaths)
 	for _, externalRelPath := range externalRelPaths {
 		if s.Ignore(externalRelPath) {
 			continue
@@ -845,7 +843,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 				if name == "." || name == ".." {
 					continue
 				}
-				destEntryRelPath := targetRelPath.JoinStr(name)
+				destEntryRelPath := targetRelPath.JoinString(name)
 				if _, ok := allSourceStateEntries[destEntryRelPath]; ok {
 					continue
 				}
@@ -865,13 +863,11 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 
 	// Check for duplicate source entries with the same target name. Iterate
 	// over the target names in order so that any error is deterministic.
-	targetRelPaths := make([]RelPath, 0, len(allSourceStateEntries))
+	targetRelPaths := make(RelPaths, 0, len(allSourceStateEntries))
 	for targetRelPath := range allSourceStateEntries {
 		targetRelPaths = append(targetRelPaths, targetRelPath)
 	}
-	sort.Slice(targetRelPaths, func(i, j int) bool {
-		return targetRelPaths[i] < targetRelPaths[j]
-	})
+	sort.Sort(targetRelPaths)
 	var err error
 	for _, targetRelPath := range targetRelPaths {
 		sourceStateEntries := allSourceStateEntries[targetRelPath]
@@ -883,7 +879,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			sourceRelPaths = append(sourceRelPaths, sourceStateEntry.SourceRelPath())
 		}
 		sort.Slice(sourceRelPaths, func(i, j int) bool {
-			return sourceRelPaths[i].relPath < sourceRelPaths[j].relPath
+			return sourceRelPaths[i].Less(sourceRelPaths[j])
 		})
 		err = multierr.Append(err, &duplicateTargetError{
 			targetRelPath:  targetRelPath,
@@ -915,7 +911,7 @@ func (s *SourceState) TargetRelPaths() []RelPath {
 		case orderI < orderJ:
 			return true
 		case orderI == orderJ:
-			return targetRelPaths[i] < targetRelPaths[j]
+			return targetRelPaths[i].Less(targetRelPaths[j])
 		default:
 			return false
 		}
@@ -945,7 +941,7 @@ func (s *SourceState) addExternal(sourceAbsPath AbsPath) error {
 	if err != nil {
 		return err
 	}
-	parentSourceRelPath := NewSourceRelDirPath(parentRelPath)
+	parentSourceRelPath := NewSourceRelDirPath(parentRelPath.String())
 	parentTargetSourceRelPath := parentSourceRelPath.TargetRelPath(s.encryption.EncryptedSuffix())
 
 	format, ok := Formats[strings.TrimPrefix(sourceAbsPath.Ext(), ".")]
@@ -956,12 +952,12 @@ func (s *SourceState) addExternal(sourceAbsPath AbsPath) error {
 	if err != nil {
 		return fmt.Errorf("%s: %w", sourceAbsPath, err)
 	}
-	externals := make(map[RelPath]External)
+	externals := make(map[string]External)
 	if err := format.Unmarshal(data, &externals); err != nil {
 		return fmt.Errorf("%s: %w", sourceAbsPath, err)
 	}
-	for relPath, external := range externals {
-		targetRelPath := parentTargetSourceRelPath.Join(relPath)
+	for relPathStr, external := range externals {
+		targetRelPath := parentTargetSourceRelPath.JoinString(relPathStr)
 		if _, ok := s.externals[targetRelPath]; ok {
 			return fmt.Errorf("%s: duplicate externals", targetRelPath)
 		}
@@ -995,7 +991,7 @@ func (s *SourceState) addPatterns(patternSet *patternSet, sourceAbsPath AbsPath,
 			include = false
 			text = mustTrimPrefix(text, "!")
 		}
-		pattern := string(dir.JoinStr(text))
+		pattern := dir.JoinString(text).String()
 		if err := patternSet.add(pattern, include); err != nil {
 			return fmt.Errorf("%s:%d: %w", sourceAbsPath, lineNumber, err)
 		}
@@ -1036,7 +1032,7 @@ func (s *SourceState) addTemplatesDir(templatesDirAbsPath AbsPath) error {
 				return err
 			}
 			templateRelPath := templateAbsPath.MustTrimDirPrefix(templatesDirAbsPath)
-			name := string(templateRelPath)
+			name := templateRelPath.String()
 			tmpl, err := template.New(name).Option(s.templateOptions...).Funcs(s.templateFuncs).Parse(string(contents))
 			if err != nil {
 				return err
@@ -1099,7 +1095,7 @@ func (s *SourceState) getExternalDataRaw(ctx context.Context, externalRelPath Re
 	now = now.UTC()
 
 	cacheKey := hex.EncodeToString(SHA256Sum([]byte(external.URL)))
-	cachedDataAbsPath := s.cacheDirAbsPath.JoinStr("external", cacheKey+"."+externalCacheFormat.Name())
+	cachedDataAbsPath := s.cacheDirAbsPath.JoinString("external", cacheKey+"."+externalCacheFormat.Name())
 	if options == nil || !options.RefreshExternals {
 		if data, err := s.system.ReadFile(cachedDataAbsPath); err == nil {
 			var externalCacheEntry externalCacheEntry
@@ -1420,7 +1416,7 @@ func (s *SourceState) newSourceStateFile(sourceRelPath SourceRelPath, fileAttr F
 		if interpreter != nil {
 			// For modify scripts, the script extension is not considered part
 			// of the target name, so remove it.
-			targetRelPath = targetRelPath[:len(targetRelPath)-len(ext)-1]
+			targetRelPath = targetRelPath.Slice(0, targetRelPath.Len()-len(ext)-1)
 		}
 		targetStateEntryFunc = s.newModifyTargetStateEntryFunc(sourceRelPath, fileAttr, sourceLazyContents, interpreter)
 	case SourceFileTypeRemove:
@@ -1457,7 +1453,7 @@ func (s *SourceState) newSourceStateDirEntry(info fs.FileInfo, parentSourceRelPa
 		Private:    isPrivate(info),
 		ReadOnly:   isReadOnly(info),
 	}
-	sourceRelPath := parentSourceRelPath.Join(NewSourceRelDirPath(RelPath(dirAttr.SourceName())))
+	sourceRelPath := parentSourceRelPath.Join(NewSourceRelDirPath(dirAttr.SourceName()))
 	return &SourceStateDir{
 		Attr:          dirAttr,
 		sourceRelPath: sourceRelPath,
@@ -1508,7 +1504,7 @@ func (s *SourceState) newSourceStateFileEntryFromFile(actualStateFile *ActualSta
 		}
 	}
 	lazyContents := newLazyContents(contents)
-	sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(RelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix()))))
+	sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix())))
 	return &SourceStateFile{
 		Attr:          fileAttr,
 		sourceRelPath: sourceRelPath,
@@ -1555,7 +1551,7 @@ func (s *SourceState) newSourceStateFileEntryFromSymlink(actualStateSymlink *Act
 		Type:       SourceFileTypeSymlink,
 		Template:   template,
 	}
-	sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(RelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix()))))
+	sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix())))
 	return &SourceStateFile{
 		Attr:          fileAttr,
 		sourceRelPath: sourceRelPath,
@@ -1595,7 +1591,7 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 	if external.Encrypted {
 		urlPath = strings.TrimSuffix(urlPath, s.encryption.EncryptedSuffix())
 	}
-	sourceRelPath := NewSourceRelPath(RelPath(external.URL))
+	sourceRelPath := NewSourceRelPath(external.URL)
 	sourceStateEntries := map[RelPath][]SourceStateEntry{
 		externalRelPath: {
 			&SourceStateDir{
@@ -1627,7 +1623,7 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 		if name == "" {
 			return nil
 		}
-		targetRelPath := externalRelPath.JoinStr(name)
+		targetRelPath := externalRelPath.JoinString(name)
 
 		if s.Ignore(targetRelPath) {
 			return nil
@@ -1713,7 +1709,7 @@ func (s *SourceState) readExternalFile(ctx context.Context, externalRelPath RelP
 		perm:         fileAttr.perm() &^ s.umask,
 	}
 	sourceStateEntry := &SourceStateFile{
-		sourceRelPath:    NewSourceRelPath(RelPath(external.URL)),
+		sourceRelPath:    NewSourceRelPath(external.URL),
 		targetStateEntry: targetStateEntry,
 	}
 	return map[RelPath][]SourceStateEntry{

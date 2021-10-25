@@ -178,8 +178,10 @@ type configState struct {
 }
 
 var (
-	persistentStateFilename = chezmoi.RelPath("chezmoistate.boltdb")
-	configStateKey          = []byte("configState")
+	chezmoiRelPath             = chezmoi.NewRelPath("chezmoi")
+	persistentStateFileRelPath = chezmoi.NewRelPath("chezmoistate.boltdb")
+
+	configStateKey = []byte("configState")
 
 	defaultAgeEncryptionConfig = chezmoi.AgeEncryption{
 		Command: "age",
@@ -224,7 +226,7 @@ func newConfig(options ...configOption) (*Config, error) {
 
 	c := &Config{
 		// Global configuration, settable in the config file.
-		CacheDirAbsPath: chezmoi.NewAbsPath(bds.CacheHome).Join("chezmoi"),
+		CacheDirAbsPath: chezmoi.NewAbsPath(bds.CacheHome).Join(chezmoiRelPath),
 		Color: autoBool{
 			auto: true,
 		},
@@ -476,7 +478,7 @@ func (c *Config) applyArgs(ctx context.Context, targetSystem chezmoi.System, tar
 	if err != nil {
 		return err
 	}
-	if configTemplateRelPath != "" {
+	if configTemplateRelPath != chezmoi.EmptyRelPath {
 		currentConfigTemplateContentsSHA256 = chezmoi.SHA256Sum(configTemplateContents)
 	}
 	var previousConfigTemplateContentsSHA256 []byte
@@ -493,7 +495,7 @@ func (c *Config) applyArgs(ctx context.Context, targetSystem chezmoi.System, tar
 		bytes.Equal(currentConfigTemplateContentsSHA256, previousConfigTemplateContentsSHA256)
 	if !configTemplateContentsUnchanged {
 		if c.force {
-			if configTemplateRelPath == "" {
+			if configTemplateRelPath == chezmoi.EmptyRelPath {
 				if err := c.persistentState.Delete(chezmoi.ConfigStateBucket, configStateKey); err != nil {
 					return err
 				}
@@ -518,7 +520,7 @@ func (c *Config) applyArgs(ctx context.Context, targetSystem chezmoi.System, tar
 		return err
 	}
 
-	var targetRelPaths []chezmoi.RelPath
+	var targetRelPaths chezmoi.RelPaths
 	switch {
 	case len(args) == 0:
 		targetRelPaths = sourceState.TargetRelPaths()
@@ -610,7 +612,7 @@ func (c *Config) createAndReloadConfigFile() error {
 		return err
 	}
 	var configFileContents []byte
-	if configTemplateRelPath == "" {
+	if configTemplateRelPath == chezmoi.EmptyRelPath {
 		if err := c.persistentState.Delete(chezmoi.ConfigStateBucket, configStateKey); err != nil {
 			return err
 		}
@@ -633,7 +635,7 @@ func (c *Config) createAndReloadConfigFile() error {
 		// Write the config.
 		configPath := c.init.configPath
 		if c.init.configPath.Empty() {
-			configPath = chezmoi.NewAbsPath(c.bds.ConfigHome).Join("chezmoi").Join(configTemplateRelPath)
+			configPath = chezmoi.NewAbsPath(c.bds.ConfigHome).Join(chezmoiRelPath, configTemplateRelPath)
 		}
 		if err := chezmoi.MkdirAll(c.baseSystem, configPath.Dir(), 0o777); err != nil {
 			return err
@@ -654,7 +656,7 @@ func (c *Config) createAndReloadConfigFile() error {
 	}
 
 	// Reload config if it was created.
-	if configTemplateRelPath != "" {
+	if configTemplateRelPath != chezmoi.EmptyRelPath {
 		viper.SetConfigType(ext)
 		if err := viper.ReadConfig(bytes.NewBuffer(configFileContents)); err != nil {
 			return err
@@ -680,7 +682,7 @@ func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte) ([]byte
 		"writeToStdout": c.writeToStdout,
 	})
 
-	t, err := template.New(string(filename)).Funcs(funcMap).Parse(string(data))
+	t, err := template.New(filename.String()).Funcs(funcMap).Parse(string(data))
 	if err != nil {
 		return nil, err
 	}
@@ -706,7 +708,7 @@ func (c *Config) defaultConfigFile(fileSystem vfs.Stater, bds *xdg.BaseDirectory
 			return chezmoi.EmptyAbsPath, err
 		}
 		for _, extension := range viper.SupportedExts {
-			configFileAbsPath := configDirAbsPath.JoinStr("chezmoi", "chezmoi."+extension)
+			configFileAbsPath := configDirAbsPath.JoinString("chezmoi", "chezmoi."+extension)
 			if _, err := fileSystem.Stat(configFileAbsPath.String()); err == nil {
 				return configFileAbsPath, nil
 			}
@@ -717,7 +719,7 @@ func (c *Config) defaultConfigFile(fileSystem vfs.Stater, bds *xdg.BaseDirectory
 	if err != nil {
 		return chezmoi.EmptyAbsPath, err
 	}
-	return configHomeAbsPath.Join("chezmoi", "chezmoi.toml"), nil
+	return configHomeAbsPath.JoinString("chezmoi", "chezmoi.toml"), nil
 }
 
 // defaultPreApplyFunc is the default pre-apply function. If the target entry
@@ -783,7 +785,7 @@ func (c *Config) defaultSourceDir(fileSystem vfs.Stater, bds *xdg.BaseDirectoryS
 		if err != nil {
 			return chezmoi.EmptyAbsPath, err
 		}
-		sourceDirAbsPath := dataDirAbsPath.Join("chezmoi")
+		sourceDirAbsPath := dataDirAbsPath.Join(chezmoiRelPath)
 		if _, err := fileSystem.Stat(sourceDirAbsPath.String()); err == nil {
 			return sourceDirAbsPath, nil
 		}
@@ -793,7 +795,7 @@ func (c *Config) defaultSourceDir(fileSystem vfs.Stater, bds *xdg.BaseDirectoryS
 	if err != nil {
 		return chezmoi.EmptyAbsPath, err
 	}
-	return dataHomeAbsPath.Join("chezmoi"), nil
+	return dataHomeAbsPath.Join(chezmoiRelPath), nil
 }
 
 // defaultTemplateData returns the default template data.
@@ -1064,17 +1066,17 @@ func (c *Config) filterInput(args []string, f func([]byte) ([]byte, error)) erro
 // format, and contents of the first one that it finds.
 func (c *Config) findFirstConfigTemplate() (chezmoi.RelPath, string, []byte, error) {
 	for _, ext := range viper.SupportedExts {
-		filename := chezmoi.RelPath(chezmoi.Prefix + "." + ext + chezmoi.TemplateSuffix)
+		filename := chezmoi.NewRelPath(chezmoi.Prefix + "." + ext + chezmoi.TemplateSuffix)
 		contents, err := c.baseSystem.ReadFile(c.SourceDirAbsPath.Join(filename))
 		switch {
 		case errors.Is(err, fs.ErrNotExist):
 			continue
 		case err != nil:
-			return "", "", nil, err
+			return chezmoi.EmptyRelPath, "", nil, err
 		}
-		return chezmoi.RelPath("chezmoi." + ext), ext, contents, nil
+		return chezmoi.NewRelPath("chezmoi." + ext), ext, contents, nil
 	}
-	return "", "", nil, nil
+	return chezmoi.EmptyRelPath, "", nil, nil
 }
 
 // gitAutoAdd adds all changes to the git index and returns the new git status.
@@ -1550,7 +1552,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		workingTreeAbsPath := c.SourceDirAbsPath
 	FOR:
 		for {
-			if info, err := c.baseSystem.Stat(workingTreeAbsPath.Join(gogit.GitDirName)); err == nil && info.IsDir() {
+			if info, err := c.baseSystem.Stat(workingTreeAbsPath.JoinString(gogit.GitDirName)); err == nil && info.IsDir() {
 				c.WorkingTreeAbsPath = workingTreeAbsPath
 				break FOR
 			}
@@ -1581,14 +1583,14 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 // none are found.
 func (c *Config) persistentStateFile() (chezmoi.AbsPath, error) {
 	if !c.configFileAbsPath.Empty() {
-		return c.configFileAbsPath.Dir().Join(persistentStateFilename), nil
+		return c.configFileAbsPath.Dir().Join(persistentStateFileRelPath), nil
 	}
 	for _, configDir := range c.bds.ConfigDirs {
 		configDirAbsPath, err := chezmoi.NewAbsPathFromExtPath(configDir, c.homeDirAbsPath)
 		if err != nil {
 			return chezmoi.EmptyAbsPath, err
 		}
-		persistentStateFile := configDirAbsPath.Join("chezmoi", persistentStateFilename)
+		persistentStateFile := configDirAbsPath.Join(chezmoiRelPath, persistentStateFileRelPath)
 		if _, err := os.Stat(persistentStateFile.String()); err == nil {
 			return persistentStateFile, nil
 		}
@@ -1597,7 +1599,7 @@ func (c *Config) persistentStateFile() (chezmoi.AbsPath, error) {
 	if err != nil {
 		return chezmoi.EmptyAbsPath, err
 	}
-	return defaultConfigFileAbsPath.Dir().Join(persistentStateFilename), nil
+	return defaultConfigFileAbsPath.Dir().Join(persistentStateFileRelPath), nil
 }
 
 // promptChoice prompts the user for one of choices until a valid choice is made.
@@ -1702,9 +1704,9 @@ type targetRelPathsOptions struct {
 }
 
 // targetRelPaths returns the target relative paths for each target path in
-// args.
-func (c *Config) targetRelPaths(sourceState *chezmoi.SourceState, args []string, options targetRelPathsOptions) ([]chezmoi.RelPath, error) {
-	targetRelPaths := make([]chezmoi.RelPath, 0, len(args))
+// args. The returned paths are sorted and de-duplicated.
+func (c *Config) targetRelPaths(sourceState *chezmoi.SourceState, args []string, options targetRelPathsOptions) (chezmoi.RelPaths, error) {
+	targetRelPaths := make(chezmoi.RelPaths, 0, len(args))
 	for _, arg := range args {
 		argAbsPath, err := chezmoi.NewAbsPathFromExtPath(arg, c.homeDirAbsPath)
 		if err != nil {
@@ -1740,9 +1742,7 @@ func (c *Config) targetRelPaths(sourceState *chezmoi.SourceState, args []string,
 	}
 
 	// Sort and de-duplicate targetRelPaths in place.
-	sort.Slice(targetRelPaths, func(i, j int) bool {
-		return targetRelPaths[i] < targetRelPaths[j]
-	})
+	sort.Sort(targetRelPaths)
 	n := 1
 	for i := 1; i < len(targetRelPaths); i++ {
 		if targetRelPaths[i] != targetRelPaths[i-1] {

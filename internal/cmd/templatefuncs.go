@@ -28,7 +28,7 @@ func (c *Config) includeTemplateFunc(filename string) string {
 			panic(err)
 		}
 	} else {
-		absPath = c.SourceDirAbsPath.JoinStr(filename)
+		absPath = c.SourceDirAbsPath.JoinString(filename)
 	}
 	contents, err := c.fileSystem.ReadFile(absPath.String())
 	if err != nil {

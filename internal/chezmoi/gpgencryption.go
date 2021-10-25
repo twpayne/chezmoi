@@ -21,11 +21,11 @@ type GPGEncryption struct {
 func (e *GPGEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
 	var plaintext []byte
 	if err := withPrivateTempDir(func(tempDirAbsPath AbsPath) error {
-		ciphertextAbsPath := tempDirAbsPath.JoinStr("ciphertext" + e.EncryptedSuffix())
+		ciphertextAbsPath := tempDirAbsPath.JoinString("ciphertext" + e.EncryptedSuffix())
 		if err := os.WriteFile(ciphertextAbsPath.String(), ciphertext, 0o600); err != nil {
 			return err
 		}
-		plaintextAbsPath := tempDirAbsPath.Join("plaintext")
+		plaintextAbsPath := tempDirAbsPath.JoinString("plaintext")
 
 		args := e.decryptArgs(plaintextAbsPath, ciphertextAbsPath)
 		if err := e.run(args); err != nil {
@@ -44,7 +44,7 @@ func (e *GPGEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
 // DecryptToFile implements Encryption.DecryptToFile.
 func (e *GPGEncryption) DecryptToFile(plaintextFilename AbsPath, ciphertext []byte) error {
 	return withPrivateTempDir(func(tempDirAbsPath AbsPath) error {
-		ciphertextAbsPath := tempDirAbsPath.JoinStr("ciphertext" + e.EncryptedSuffix())
+		ciphertextAbsPath := tempDirAbsPath.JoinString("ciphertext" + e.EncryptedSuffix())
 		if err := os.WriteFile(ciphertextAbsPath.String(), ciphertext, 0o600); err != nil {
 			return err
 		}
@@ -57,11 +57,11 @@ func (e *GPGEncryption) DecryptToFile(plaintextFilename AbsPath, ciphertext []by
 func (e *GPGEncryption) Encrypt(plaintext []byte) ([]byte, error) {
 	var ciphertext []byte
 	if err := withPrivateTempDir(func(tempDirAbsPath AbsPath) error {
-		plaintextAbsPath := tempDirAbsPath.Join("plaintext")
+		plaintextAbsPath := tempDirAbsPath.JoinString("plaintext")
 		if err := os.WriteFile(plaintextAbsPath.String(), plaintext, 0o600); err != nil {
 			return err
 		}
-		ciphertextAbsPath := tempDirAbsPath.JoinStr("ciphertext" + e.EncryptedSuffix())
+		ciphertextAbsPath := tempDirAbsPath.JoinString("ciphertext" + e.EncryptedSuffix())
 
 		args := e.encryptArgs(plaintextAbsPath, ciphertextAbsPath)
 		if err := e.run(args); err != nil {
@@ -81,7 +81,7 @@ func (e *GPGEncryption) Encrypt(plaintext []byte) ([]byte, error) {
 func (e *GPGEncryption) EncryptFile(plaintextFilename AbsPath) ([]byte, error) {
 	var ciphertext []byte
 	if err := withPrivateTempDir(func(tempDirAbsPath AbsPath) error {
-		ciphertextAbsPath := tempDirAbsPath.JoinStr("ciphertext" + e.EncryptedSuffix())
+		ciphertextAbsPath := tempDirAbsPath.JoinString("ciphertext" + e.EncryptedSuffix())
 
 		args := e.encryptArgs(plaintextFilename, ciphertextAbsPath)
 		if err := e.run(args); err != nil {

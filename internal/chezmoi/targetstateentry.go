@@ -54,7 +54,7 @@ type targetStateRenameDir struct {
 
 // A scriptState records the state of a script that has been run.
 type scriptState struct {
-	Name  string    `json:"name" toml:"name" yaml:"name"`
+	Name  RelPath   `json:"name" toml:"name" yaml:"name"`
 	RunAt time.Time `json:"runAt" toml:"runAt" yaml:"runAt"`
 }
 
@@ -236,7 +236,7 @@ func (t *TargetStateScript) Apply(system System, persistentState PersistentState
 	}
 
 	if err := persistentStateSet(persistentState, scriptStateBucket, scriptStateKey, &scriptState{
-		Name:  string(t.name),
+		Name:  t.name,
 		RunAt: runAt,
 	}); err != nil {
 		return false, err

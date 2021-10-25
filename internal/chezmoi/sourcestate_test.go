@@ -791,7 +791,7 @@ func TestSourceStateRead(t *testing.T) {
 			},
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
-					"dir": &SourceStateDir{
+					NewRelPath("dir"): &SourceStateDir{
 						sourceRelPath: NewSourceRelDirPath("dir"),
 						Attr: DirAttr{
 							TargetName: "dir",
@@ -812,7 +812,7 @@ func TestSourceStateRead(t *testing.T) {
 			},
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
-					".file": &SourceStateFile{
+					NewRelPath(".file"): &SourceStateFile{
 						sourceRelPath: NewSourceRelPath("dot_file"),
 						Attr: FileAttr{
 							TargetName: ".file",
@@ -871,7 +871,7 @@ func TestSourceStateRead(t *testing.T) {
 			},
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
-					".file": &SourceStateFile{
+					NewRelPath(".file"): &SourceStateFile{
 						sourceRelPath: NewSourceRelPath("executable_dot_file"),
 						Attr: FileAttr{
 							TargetName: ".file",
@@ -897,7 +897,7 @@ func TestSourceStateRead(t *testing.T) {
 			},
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
-					"script": &SourceStateFile{
+					NewRelPath("script"): &SourceStateFile{
 						sourceRelPath: NewSourceRelPath("run_script"),
 						Attr: FileAttr{
 							TargetName: "script",
@@ -905,7 +905,7 @@ func TestSourceStateRead(t *testing.T) {
 						},
 						lazyContents: newLazyContents([]byte("# contents of .script\n")),
 						targetStateEntry: &TargetStateScript{
-							name:         "script",
+							name:         NewRelPath("script"),
 							lazyContents: newLazyContents([]byte("# contents of .script\n")),
 						},
 					},
@@ -921,7 +921,7 @@ func TestSourceStateRead(t *testing.T) {
 			},
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
-					"script": &SourceStateFile{
+					NewRelPath("script"): &SourceStateFile{
 						sourceRelPath: NewSourceRelPath("run_script"),
 						Attr: FileAttr{
 							TargetName: "script",
@@ -929,7 +929,7 @@ func TestSourceStateRead(t *testing.T) {
 						},
 						lazyContents: newLazyContents([]byte("# contents of script\n")),
 						targetStateEntry: &TargetStateScript{
-							name:         "script",
+							name:         NewRelPath("script"),
 							lazyContents: newLazyContents([]byte("# contents of script\n")),
 						},
 					},
@@ -945,7 +945,7 @@ func TestSourceStateRead(t *testing.T) {
 			},
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
-					".symlink": &SourceStateFile{
+					NewRelPath(".symlink"): &SourceStateFile{
 						sourceRelPath: NewSourceRelPath("symlink_dot_symlink"),
 						Attr: FileAttr{
 							TargetName: ".symlink",
@@ -970,7 +970,7 @@ func TestSourceStateRead(t *testing.T) {
 			},
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
-					"dir": &SourceStateDir{
+					NewRelPath("dir"): &SourceStateDir{
 						sourceRelPath: NewSourceRelDirPath("dir"),
 						Attr: DirAttr{
 							TargetName: "dir",
@@ -979,7 +979,7 @@ func TestSourceStateRead(t *testing.T) {
 							perm: 0o777 &^ chezmoitest.Umask,
 						},
 					},
-					"dir/file": &SourceStateFile{
+					NewRelPath("dir/file"): &SourceStateFile{
 						sourceRelPath: NewSourceRelPath("dir/file"),
 						Attr: FileAttr{
 							TargetName: "file",
@@ -1042,7 +1042,7 @@ func TestSourceStateRead(t *testing.T) {
 			},
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
-					"dir": &SourceStateDir{
+					NewRelPath("dir"): &SourceStateDir{
 						sourceRelPath: NewSourceRelDirPath("exact_dir"),
 						Attr: DirAttr{
 							TargetName: "dir",
@@ -1052,7 +1052,7 @@ func TestSourceStateRead(t *testing.T) {
 							perm: 0o777 &^ chezmoitest.Umask,
 						},
 					},
-					"dir/file1": &SourceStateFile{
+					NewRelPath("dir/file1"): &SourceStateFile{
 						sourceRelPath: NewSourceRelPath("exact_dir/file1"),
 						Attr: FileAttr{
 							TargetName: "file1",
@@ -1064,8 +1064,8 @@ func TestSourceStateRead(t *testing.T) {
 							lazyContents: newLazyContents([]byte("# contents of dir/file1\n")),
 						},
 					},
-					"dir/file2": &SourceStateRemove{
-						targetRelPath: "dir/file2",
+					NewRelPath("dir/file2"): &SourceStateRemove{
+						targetRelPath: NewRelPath("dir/file2"),
 					},
 				}),
 				withIgnore(
@@ -1085,8 +1085,8 @@ func TestSourceStateRead(t *testing.T) {
 			},
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
-					"file": &SourceStateRemove{
-						targetRelPath: "file",
+					NewRelPath("file"): &SourceStateRemove{
+						targetRelPath: NewRelPath("file"),
 					},
 				}),
 			),
@@ -1105,8 +1105,8 @@ func TestSourceStateRead(t *testing.T) {
 			},
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
-					"file1": &SourceStateRemove{
-						targetRelPath: "file1",
+					NewRelPath("file1"): &SourceStateRemove{
+						targetRelPath: NewRelPath("file1"),
 					},
 				}),
 				withIgnore(
@@ -1162,7 +1162,7 @@ func TestSourceStateRead(t *testing.T) {
 			},
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
-					"dir": &SourceStateDir{
+					NewRelPath("dir"): &SourceStateDir{
 						sourceRelPath: NewSourceRelDirPath("dir"),
 						Attr: DirAttr{
 							TargetName: "dir",
@@ -1245,7 +1245,7 @@ func TestSourceStateReadExternal(t *testing.T) {
 		expectedExternals map[RelPath]External
 	}{
 		{
-			name: "external",
+			name: "external_yaml",
 			root: map[string]interface{}{
 				"/home/user/.local/share/chezmoi": map[string]interface{}{
 					".chezmoiexternal.yaml": chezmoitest.JoinLines(
@@ -1256,7 +1256,25 @@ func TestSourceStateReadExternal(t *testing.T) {
 				},
 			},
 			expectedExternals: map[RelPath]External{
-				"file": {
+				NewRelPath("file"): {
+					Type: "file",
+					URL:  httpServer.URL + "/file",
+				},
+			},
+		},
+		{
+			name: "external_toml",
+			root: map[string]interface{}{
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
+					".chezmoiexternal.toml": chezmoitest.JoinLines(
+						`[file]`,
+						`    type = "file"`,
+						`    url = "`+httpServer.URL+`/file"`,
+					),
+				},
+			},
+			expectedExternals: map[RelPath]External{
+				NewRelPath("file"): {
 					Type: "file",
 					URL:  httpServer.URL + "/file",
 				},
@@ -1274,7 +1292,7 @@ func TestSourceStateReadExternal(t *testing.T) {
 				},
 			},
 			expectedExternals: map[RelPath]External{
-				".dir/file": {
+				NewRelPath(".dir/file"): {
 					Type: "file",
 					URL:  httpServer.URL + "/file",
 				},
@@ -1344,7 +1362,7 @@ func TestSourceStateReadExternalCache(t *testing.T) {
 			)
 			require.NoError(t, s.Read(ctx, readOptions))
 			assert.Equal(t, map[RelPath]External{
-				".dir": {
+				NewRelPath(".dir"): {
 					Type:          "archive",
 					URL:           httpServer.URL + "/archive.tar",
 					RefreshPeriod: 1 * time.Minute,
@@ -1392,15 +1410,15 @@ func TestSourceStateTargetRelPaths(t *testing.T) {
 				},
 			},
 			expectedTargetRelPaths: []RelPath{
-				"1before",
-				"2before",
-				"3before",
-				"1",
-				"2",
-				"3",
-				"1after",
-				"2after",
-				"3after",
+				NewRelPath("1before"),
+				NewRelPath("2before"),
+				NewRelPath("3before"),
+				NewRelPath("1"),
+				NewRelPath("2"),
+				NewRelPath("3"),
+				NewRelPath("1after"),
+				NewRelPath("2after"),
+				NewRelPath("3after"),
 			},
 		},
 	} {

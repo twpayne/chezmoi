@@ -38,7 +38,7 @@ type gitDiffFile struct {
 
 func (f *gitDiffFile) Hash() plumbing.Hash     { return f.hash }
 func (f *gitDiffFile) Mode() filemode.FileMode { return f.fileMode }
-func (f *gitDiffFile) Path() string            { return string(f.relPath) }
+func (f *gitDiffFile) Path() string            { return f.relPath.String() }
 
 // A gitDiffFilePatch implements the
 // github.com/go-git/go-git/v5/plumbing/format/diff.FilePatch interface.

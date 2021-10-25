@@ -59,13 +59,13 @@ func (p AbsPath) Join(relPaths ...RelPath) AbsPath {
 	relPathStrs := make([]string, 0, len(relPaths)+1)
 	relPathStrs = append(relPathStrs, p.absPath)
 	for _, relPath := range relPaths {
-		relPathStrs = append(relPathStrs, string(relPath))
+		relPathStrs = append(relPathStrs, relPath.String())
 	}
 	return NewAbsPath(path.Join(relPathStrs...))
 }
 
-// JoinStr returns a new AbsPath with ss appended.
-func (p AbsPath) JoinStr(ss ...string) AbsPath {
+// JoinString returns a new AbsPath with ss appended.
+func (p AbsPath) JoinString(ss ...string) AbsPath {
 	strs := make([]string, 0, len(ss)+1)
 	strs = append(strs, p.absPath)
 	strs = append(strs, ss...)
@@ -112,7 +112,7 @@ func (p *AbsPath) Set(s string) error {
 // Split returns p's directory and file.
 func (p AbsPath) Split() (AbsPath, RelPath) {
 	dir, file := path.Split(p.String())
-	return NewAbsPath(dir), RelPath(file)
+	return NewAbsPath(dir), NewRelPath(file)
 }
 
 func (p AbsPath) String() string {
@@ -127,19 +127,19 @@ func (p AbsPath) ToSlash() AbsPath {
 // TrimDirPrefix trims prefix from p.
 func (p AbsPath) TrimDirPrefix(dirPrefixAbsPath AbsPath) (RelPath, error) {
 	if p == dirPrefixAbsPath {
-		return "", nil
+		return EmptyRelPath, nil
 	}
 	dirAbsPath := dirPrefixAbsPath
 	if dirAbsPath.absPath != "/" {
 		dirAbsPath.absPath += "/"
 	}
 	if !strings.HasPrefix(p.absPath, dirAbsPath.absPath) {
-		return "", &notInAbsDirError{
+		return EmptyRelPath, &notInAbsDirError{
 			pathAbsPath: p,
 			dirAbsPath:  dirPrefixAbsPath,
 		}
 	}
-	return RelPath(p.absPath[len(dirAbsPath.absPath):]), nil
+	return NewRelPath(p.absPath[len(dirAbsPath.absPath):]), nil
 }
 
 // Type implements github.com/spf13/pflag.Value.Type.
