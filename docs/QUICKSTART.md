@@ -118,6 +118,20 @@ If you are happy with the changes that chezmoi will make then run:
 $ chezmoi apply -v
 ```
 
+If you are not happy with the changes to a file then either edit it with:
+
+```console
+$ chezmoi edit $FILE
+```
+
+Or, invoke a merge tool (by default `vimdiff`) to merge changes between the
+current contents of the file, the file in your working copy, and the computed
+contents of the file:
+
+```console
+$ chezmoi merge $FILE
+```
+
 On any machine, you can pull and apply the latest changes from your repo with:
 
 ```console
