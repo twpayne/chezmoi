@@ -17,7 +17,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.a55db1692b941b190101517c728ea9f3b0ac016a8f03826d9607cfe9f2b6ff31.js" integrity="sha256-pV2xaSuUGxkBAVF8co6p87CsAWqPA4JtlgfP6fK2/zE=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.32b7cbb5eb101695f2713bc923f5bdd8dd58ce8133dae31927f934d60863ae5c.js" integrity="sha256-MrfLtesQFpXycTvJI/W92N1YzoEz2uMZJ/k01ghjrlw=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -138,6 +138,7 @@ https://github.com/alex-shpak/hugo-book
     </li>
     <li><a href="#integrate-chezmoi-with-your-editor">Integrate chezmoi with your editor</a>
       <ul>
+        <li><a href="#use-your-preferred-editor-with-chezmoi-edit-and-chezmoi-edit-config">Use your preferred editor with <code>chezmoi edit</code> and <code>chezmoi edit-config</code></a></li>
         <li><a href="#configure-vim-to-run-chezmoi-apply-whenever-you-save-a-dotfile">Configure VIM to run <code>chezmoi apply</code> whenever you save a dotfile</a></li>
       </ul>
     </li>
@@ -430,6 +431,28 @@ GitHub username:</p>
   <a class="anchor" href="#integrate-chezmoi-with-your-editor">#</a>
 </h2>
 <hr>
+<h3 id="use-your-preferred-editor-with-chezmoi-edit-and-chezmoi-edit-config">
+  Use your preferred editor with <code>chezmoi edit</code> and <code>chezmoi edit-config</code>
+  <a class="anchor" href="#use-your-preferred-editor-with-chezmoi-edit-and-chezmoi-edit-config">#</a>
+</h3>
+<p>By default, chezmoi will use your preferred editor as defined by the <code>$VISUAL</code>
+or <code>$EDITOR</code> environment variables, falling back to a default editor depending
+on your operating system (<code>vi</code> on UNIX-like operating systems, <code>notepad.exe</code> on
+Windows).</p>
+<p>You can configure chezmoi to use your preferred editor by either setting the
+<code>$EDITOR</code> environment variable or setting the <code>edit.command</code> variable in your
+configuration file.</p>
+<p>The editor command must only return when you have finished editing the files.
+chezmoi will emit a warning if your editor command returns too quickly.</p>
+<p>In the specific case of using <a href="https://code.visualstudio.com/">VSCode</a> or
+<a href="https://vscodium.com/">Codium</a> as your editor, you must pass the <code>--wait</code> flag,
+for example, in your shell config:</p>
+<pre tabindex="0"><code class="language-console" data-lang="console">$ export EDITOR=&quot;code --wait&quot;
+</code></pre><p>Or in chezmoi&rsquo;s configuration file:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">edit</span>]
+    <span style="color:#a6e22e">command</span> = <span style="color:#e6db74">&#34;code&#34;</span>
+    <span style="color:#a6e22e">args</span> = [<span style="color:#e6db74">&#34;--wait&#34;</span>]
+</code></pre></div><hr>
 <h3 id="configure-vim-to-run-chezmoi-apply-whenever-you-save-a-dotfile">
   Configure VIM to run <code>chezmoi apply</code> whenever you save a dotfile
   <a class="anchor" href="#configure-vim-to-run-chezmoi-apply-whenever-you-save-a-dotfile">#</a>
@@ -724,8 +747,10 @@ config file by running:</p>
 </code></pre><p>If you are using any <code>prompt*</code> template functions in your config file template
 you will be prompted again. However, you can avoid this with the following
 example template logic:</p>
-<pre tabindex="0"><code>{{- $email := get . &quot;email&quot; -}}
-{{- if not $email -}}
+<pre tabindex="0"><code>{{- $email := &quot;&quot; -}}
+{{- if (hasKey . &quot;email&quot;) -}}
+{{-   $email = .email -}}
+{{- else -}}
 {{-   $email = promptString &quot;email&quot; -}}
 {{- end -}}
 
@@ -733,15 +758,7 @@ example template logic:</p>
     email = {{ $email | quote }}
 </code></pre><p>This will cause chezmoi to first try to re-use the existing <code>$email</code> variable
 and fallback to <code>promptString</code> only if it is not set.</p>
-<p>For boolean variables you can use:</p>
-<pre tabindex="0"><code>{{- $var := false -}}
-{{- if (hasKey . &quot;var&quot;) -}}
-{{-   $var = get . &quot;var&quot; -}}
-{{- end -}}
-
-[data]
-    var = {{ $var }}
-</code></pre><hr>
+<hr>
 <h3 id="handle-different-file-locations-on-different-systems-with-the-same-contents">
   Handle different file locations on different systems with the same contents
   <a class="anchor" href="#handle-different-file-locations-on-different-systems-with-the-same-contents">#</a>
@@ -1481,6 +1498,7 @@ so you can write scripts around chezmoi.</li>
     </li>
     <li><a href="#integrate-chezmoi-with-your-editor">Integrate chezmoi with your editor</a>
       <ul>
+        <li><a href="#use-your-preferred-editor-with-chezmoi-edit-and-chezmoi-edit-config">Use your preferred editor with <code>chezmoi edit</code> and <code>chezmoi edit-config</code></a></li>
         <li><a href="#configure-vim-to-run-chezmoi-apply-whenever-you-save-a-dotfile">Configure VIM to run <code>chezmoi apply</code> whenever you save a dotfile</a></li>
       </ul>
     </li>

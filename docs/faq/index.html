@@ -23,7 +23,7 @@ $ chezmoi doctor Anything ok is fine, anything warning is only a problem if you 
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.a55db1692b941b190101517c728ea9f3b0ac016a8f03826d9607cfe9f2b6ff31.js" integrity="sha256-pV2xaSuUGxkBAVF8co6p87CsAWqPA4JtlgfP6fK2/zE=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.32b7cbb5eb101695f2713bc923f5bdd8dd58ce8133dae31927f934d60863ae5c.js" integrity="sha256-MrfLtesQFpXycTvJI/W92N1YzoEz2uMZJ/k01ghjrlw=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -197,6 +197,8 @@ arguments to open the source directory.</li>
 <li>Edit the file in your home directory, and then either re-add it by running
 <code>chezmoi add $FILE</code> or <code>chezmoi re-add</code>. Note that <code>re-add</code> doesn&rsquo;t work with
 templates.</li>
+<li>Edit the file in your home directory, and then merge your changes with source
+state by running <code>chezmoi merge $FILE</code>.</li>
 </ol>
 <hr>
 <h2 id="do-i-have-to-use-chezmoi-edit-to-edit-my-dotfiles">
@@ -344,7 +346,7 @@ problem in a different way.</p>
 centralized directory, chezmoi generates the dotfile as a regular file in its
 final location from the contents of the centralized directory. This approach
 allows chezmoi to provide features that are not possible when using symlinks,
-for example having files that encrypted, executable, private, or templates.</p>
+for example having files that are encrypted, executable, private, or templates.</p>
 <p>There&rsquo;s nothing special about dotfiles managed by chezmoi, whereas dotfiles
 managed with GNU Stow are special because they&rsquo;re actually symlinks to somewhere
 else.</p>

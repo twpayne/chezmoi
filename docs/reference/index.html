@@ -23,7 +23,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.a55db1692b941b190101517c728ea9f3b0ac016a8f03826d9607cfe9f2b6ff31.js" integrity="sha256-pV2xaSuUGxkBAVF8co6p87CsAWqPA4JtlgfP6fK2/zE=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.32b7cbb5eb101695f2713bc923f5bdd8dd58ce8133dae31927f934d60863ae5c.js" integrity="sha256-MrfLtesQFpXycTvJI/W92N1YzoEz2uMZJ/k01ghjrlw=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -158,7 +158,6 @@ https://github.com/alex-shpak/hugo-book
       <ul>
         <li><a href="#--cpu-profile-filename"><code>--cpu-profile</code> <em>filename</em></a></li>
         <li><a href="#--debug"><code>--debug</code></a></li>
-        <li><a href="#--gops"><code>--gops</code></a></li>
       </ul>
     </li>
     <li><a href="#configuration-file">Configuration file</a>
@@ -262,9 +261,9 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#output-name-arg"><code>output</code> <em>name</em> [<em>arg</em>&hellip;]</a></li>
         <li><a href="#pass-pass-name"><code>pass</code> <em>pass-name</em></a></li>
         <li><a href="#passraw-pass-name"><code>passRaw</code> <em>pass-name</em></a></li>
-        <li><a href="#promptbool-prompt"><code>promptBool</code> <em>prompt</em></a></li>
-        <li><a href="#promptint-prompt"><code>promptInt</code> <em>prompt</em></a></li>
-        <li><a href="#promptstring-prompt"><code>promptString</code> <em>prompt</em></a></li>
+        <li><a href="#promptbool-prompt-default"><code>promptBool</code> <em>prompt</em> [<em>default</em>]</a></li>
+        <li><a href="#promptint-prompt-default"><code>promptInt</code> <em>prompt</em> [<em>default</em>]</a></li>
+        <li><a href="#promptstring-prompt-default"><code>promptString</code> <em>prompt</em> [<em>default</em>]</a></li>
         <li><a href="#secret-arg"><code>secret</code> [<em>arg</em>&hellip;]</a></li>
         <li><a href="#secretjson-arg"><code>secretJSON</code> [<em>arg</em>&hellip;]</a></li>
         <li><a href="#stat-name"><code>stat</code> <em>name</em></a></li>
@@ -497,11 +496,6 @@ scripts and <code>--exclude=encrypted</code> will exclude encrypted files.</p>
   <a class="anchor" href="#--debug">#</a>
 </h3>
 <p>Log information helpful for debugging.</p>
-<h3 id="--gops">
-  <code>--gops</code>
-  <a class="anchor" href="#--gops">#</a>
-</h3>
-<p>Enable the <a href="https://github.com/google/gops">gops</a> agent.</p>
 <hr>
 <h2 id="configuration-file">
   Configuration file
@@ -781,6 +775,13 @@ option.</p>
 <td>string</td>
 <td><code>$EDITOR</code> / <code>$VISUAL</code></td>
 <td>Edit command</td>
+</tr>
+<tr>
+<td></td>
+<td><code>minDuration</code></td>
+<td>duration</td>
+<td><code>1s</code></td>
+<td>Minimum duration for edit command</td>
 </tr>
 <tr>
 <td><code>secret</code></td>
@@ -1954,6 +1955,9 @@ invoked with the decrypted file. When the editor exits the edited decrypted file
 is re-encrypted and replaces the original file in the source state.</p>
 <p>If the operating system supports hard links, then the edit command invokes the
 editor with filenames which match the target filename.</p>
+<p>chezmoi will emit a warning if the editor returns in less than
+<code>edit.minDuration</code> (default <code>1s</code>). To disable this warning, set
+<code>edit.minDuration</code> to <code>0</code>.</p>
 <h4 id="-a---apply">
   <code>-a</code>, <code>--apply</code>
   <a class="anchor" href="#-a---apply">#</a>
@@ -3115,12 +3119,13 @@ using the pass CLI (<code>pass</code>). <em>pass-name</em> is passed to <code>pa
 and the output is returned. The output from <code>pass</code> is cached so calling
 <code>passRaw</code> multiple times with the same <em>pass-name</em> will only invoke <code>pass</code> once.</p>
 <hr>
-<h3 id="promptbool-prompt">
-  <code>promptBool</code> <em>prompt</em>
-  <a class="anchor" href="#promptbool-prompt">#</a>
+<h3 id="promptbool-prompt-default">
+  <code>promptBool</code> <em>prompt</em> [<em>default</em>]
+  <a class="anchor" href="#promptbool-prompt-default">#</a>
 </h3>
-<p><code>promptBool</code> prompts the user with <em>prompt</em> and returns the user&rsquo;s response with
-interpreted as a boolean. It is only available when generating the initial
+<p><code>promptBool</code> prompts the user with <em>prompt</em> and returns the user&rsquo;s response
+interpreted as a boolean. If <em>default</em> is passed the user&rsquo;s response is empty
+then it returns <em>default</em>. It is only available when generating the initial
 config file. The user&rsquo;s response is interpreted as follows (case insensitive):</p>
 <table>
 <thead>
@@ -3141,20 +3146,22 @@ config file. The user&rsquo;s response is interpreted as follows (case insensiti
 </tbody>
 </table>
 <hr>
-<h3 id="promptint-prompt">
-  <code>promptInt</code> <em>prompt</em>
-  <a class="anchor" href="#promptint-prompt">#</a>
+<h3 id="promptint-prompt-default">
+  <code>promptInt</code> <em>prompt</em> [<em>default</em>]
+  <a class="anchor" href="#promptint-prompt-default">#</a>
 </h3>
-<p><code>promptInt</code> prompts the user with <em>prompt</em> and returns the user&rsquo;s response with
-interpreted as an integer. It is only available when generating the initial
-config file.</p>
+<p><code>promptInt</code> prompts the user with <em>prompt</em> and returns the user&rsquo;s response
+interpreted as an integer. If <em>default</em> is passed and the user&rsquo;s response is
+empty then it returns <em>default</em>. It is only available when generating the
+initial config file.</p>
 <hr>
-<h3 id="promptstring-prompt">
-  <code>promptString</code> <em>prompt</em>
-  <a class="anchor" href="#promptstring-prompt">#</a>
+<h3 id="promptstring-prompt-default">
+  <code>promptString</code> <em>prompt</em> [<em>default</em>]
+  <a class="anchor" href="#promptstring-prompt-default">#</a>
 </h3>
 <p><code>promptString</code> prompts the user with <em>prompt</em> and returns the user&rsquo;s response
-with all leading and trailing spaces stripped. It is only available when
+with all leading and trailing spaces stripped. If <em>default</em> is passed and the
+user&rsquo;s response is empty then it returns <em>default</em>. It is only available when
 generating the initial config file.</p>
 <h4 id="promptstring-examples">
   <code>promptString</code> examples
@@ -3323,7 +3330,6 @@ generating the initial config file.</p>
       <ul>
         <li><a href="#--cpu-profile-filename"><code>--cpu-profile</code> <em>filename</em></a></li>
         <li><a href="#--debug"><code>--debug</code></a></li>
-        <li><a href="#--gops"><code>--gops</code></a></li>
       </ul>
     </li>
     <li><a href="#configuration-file">Configuration file</a>
@@ -3427,9 +3433,9 @@ generating the initial config file.</p>
         <li><a href="#output-name-arg"><code>output</code> <em>name</em> [<em>arg</em>&hellip;]</a></li>
         <li><a href="#pass-pass-name"><code>pass</code> <em>pass-name</em></a></li>
         <li><a href="#passraw-pass-name"><code>passRaw</code> <em>pass-name</em></a></li>
-        <li><a href="#promptbool-prompt"><code>promptBool</code> <em>prompt</em></a></li>
-        <li><a href="#promptint-prompt"><code>promptInt</code> <em>prompt</em></a></li>
-        <li><a href="#promptstring-prompt"><code>promptString</code> <em>prompt</em></a></li>
+        <li><a href="#promptbool-prompt-default"><code>promptBool</code> <em>prompt</em> [<em>default</em>]</a></li>
+        <li><a href="#promptint-prompt-default"><code>promptInt</code> <em>prompt</em> [<em>default</em>]</a></li>
+        <li><a href="#promptstring-prompt-default"><code>promptString</code> <em>prompt</em> [<em>default</em>]</a></li>
         <li><a href="#secret-arg"><code>secret</code> [<em>arg</em>&hellip;]</a></li>
         <li><a href="#secretjson-arg"><code>secretJSON</code> [<em>arg</em>&hellip;]</a></li>
         <li><a href="#stat-name"><code>stat</code> <em>name</em></a></li>
