@@ -27,6 +27,23 @@ jobs:
           - '**/*.go'
           - 'go.*'
           - 'internal/**'
+  codeql:
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+    runs-on: ubuntu-18.04
+    permissions:
+      security-events: write
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 1
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: go
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1
   test-archlinux:
     needs: changes
     if: needs.changes.outputs.code == 'true'
