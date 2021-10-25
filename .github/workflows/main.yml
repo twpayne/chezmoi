@@ -1,6 +1,8 @@
 name: main
 on:
   pull_request:
+    branches:
+    - master
   push:
     branches:
     - master
@@ -14,7 +16,7 @@ jobs:
   changes:
     runs-on: ubuntu-20.04
     outputs:
-      code: ${{ steps.filter.output.code }}
+      code: ${{ steps.filter.outputs.code }}
     steps:
     - name: Checkout
       uses: actions/checkout@v2
