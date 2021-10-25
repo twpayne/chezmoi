@@ -391,12 +391,16 @@ jobs:
     needs:
     - check
     - lint
+    - test-archlinux
     - test-debian-i386
     - test-fedora
     - test-freebsd
     - test-macos
     - test-openbsd
+    - test-openindiana
     - test-ubuntu
+    - test-ubuntu-go1-16
+    - test-voidlinux
     - test-windows
     runs-on: ubuntu-18.04
     steps:
