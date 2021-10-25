@@ -138,7 +138,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		&osArchCheck{},
 		&executableCheck{},
 		&configFileCheck{
-			basename: "chezmoi",
+			basename: chezmoiRelPath,
 			bds:      c.bds,
 			expected: c.configFileAbsPath,
 		},
@@ -361,7 +361,7 @@ func (c *configFileCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsP
 			return checkResultFailed, err.Error()
 		}
 		for _, extension := range viper.SupportedExts {
-			filenameAbsPath := configDirAbsPath.Join(c.basename, chezmoi.RelPath(c.basename.String()+"."+extension))
+			filenameAbsPath := configDirAbsPath.Join(c.basename, chezmoi.NewRelPath(c.basename.String()+"."+extension))
 			if _, err := system.Stat(filenameAbsPath); err == nil {
 				filenameAbsPaths[filenameAbsPath] = struct{}{}
 			}

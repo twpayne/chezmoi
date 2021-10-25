@@ -172,7 +172,7 @@ func (s *DebugSystem) RunIdempotentCmd(cmd *exec.Cmd) error {
 func (s *DebugSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
 	err := s.system.RunScript(scriptname, dir, data, interpreter)
 	s.logger.Err(err).
-		Str("scriptname", string(scriptname)).
+		Stringer("scriptname", scriptname).
 		Stringer("dir", dir).
 		Bytes("data", chezmoilog.Output(data, err)).
 		Object("interpreter", interpreter).

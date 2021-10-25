@@ -42,7 +42,7 @@ func expandTilde(path string, homeDirAbsPath AbsPath) string {
 	case path == "~":
 		return homeDirAbsPath.String()
 	case len(path) >= 2 && path[0] == '~' && isSlash(path[1]):
-		return homeDirAbsPath.JoinStr(path[2:]).String()
+		return homeDirAbsPath.JoinString(path[2:]).String()
 	default:
 		return path
 	}

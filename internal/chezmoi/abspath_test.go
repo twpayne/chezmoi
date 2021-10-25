@@ -30,7 +30,7 @@ func TestNewAbsPathFromExtPath(t *testing.T) {
 		{
 			name:     "file",
 			extPath:  "file",
-			expected: wdAbsPath.Join("file"),
+			expected: wdAbsPath.JoinString("file"),
 		},
 		{
 			name:     "tilde",
@@ -40,12 +40,12 @@ func TestNewAbsPathFromExtPath(t *testing.T) {
 		{
 			name:     "tilde_home_file",
 			extPath:  "~/file",
-			expected: homeDirAbsPath.Join("file"),
+			expected: homeDirAbsPath.JoinString("file"),
 		},
 		{
 			name:     "tilde_home_file_windows",
 			extPath:  `~\file`,
-			expected: homeDirAbsPath.Join("file"),
+			expected: homeDirAbsPath.JoinString("file"),
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {

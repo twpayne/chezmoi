@@ -12,17 +12,17 @@ type SourceRelPath struct {
 }
 
 // NewSourceRelDirPath returns a new SourceRelPath for a directory.
-func NewSourceRelDirPath(relPath RelPath) SourceRelPath {
+func NewSourceRelDirPath(relPath string) SourceRelPath {
 	return SourceRelPath{
-		relPath: relPath,
+		relPath: NewRelPath(relPath),
 		isDir:   true,
 	}
 }
 
 // NewSourceRelPath returns a new SourceRelPath.
-func NewSourceRelPath(relPath RelPath) SourceRelPath {
+func NewSourceRelPath(relPath string) SourceRelPath {
 	return SourceRelPath{
-		relPath: relPath,
+		relPath: NewRelPath(relPath),
 	}
 }
 
@@ -39,16 +39,21 @@ func (p SourceRelPath) Empty() bool {
 	return p == SourceRelPath{}
 }
 
-// Join appends elems to p.
-func (p SourceRelPath) Join(elems ...SourceRelPath) SourceRelPath {
-	elemRelPaths := make([]RelPath, 0, len(elems))
-	for _, elem := range elems {
-		elemRelPaths = append(elemRelPaths, elem.relPath)
+// Join appends sourceRelPaths to p.
+func (p SourceRelPath) Join(sourceRelPaths ...SourceRelPath) SourceRelPath {
+	relPaths := make([]RelPath, 0, len(sourceRelPaths))
+	for _, sourceRelPath := range sourceRelPaths {
+		relPaths = append(relPaths, sourceRelPath.relPath)
 	}
 	return SourceRelPath{
-		relPath: p.relPath.Join(elemRelPaths...),
-		isDir:   elems[len(elems)-1].isDir,
+		relPath: p.relPath.Join(relPaths...),
+		isDir:   sourceRelPaths[len(sourceRelPaths)-1].isDir,
 	}
+}
+
+// Less returns true if p is less than other.
+func (p SourceRelPath) Less(other SourceRelPath) bool {
+	return p.relPath.Less(other.relPath)
 }
 
 // RelPath returns p as a relative path.
@@ -59,29 +64,29 @@ func (p SourceRelPath) RelPath() RelPath {
 // Split returns the p's file and directory.
 func (p SourceRelPath) Split() (SourceRelPath, SourceRelPath) {
 	dir, file := p.relPath.Split()
-	return NewSourceRelDirPath(dir), NewSourceRelPath(file)
+	return NewSourceRelDirPath(dir.String()), NewSourceRelPath(file.String())
 }
 
 func (p SourceRelPath) String() string {
-	return string(p.relPath)
+	return p.relPath.String()
 }
 
 // TargetRelPath returns the relative path of p's target.
 func (p SourceRelPath) TargetRelPath(encryptedSuffix string) RelPath {
-	sourceNames := strings.Split(string(p.relPath), "/")
-	relPathNames := make([]string, 0, len(sourceNames))
+	sourceNames := strings.Split(p.relPath.String(), "/")
+	relPathStrs := make([]string, 0, len(sourceNames))
 	if p.isDir {
 		for _, sourceName := range sourceNames {
 			dirAttr := parseDirAttr(sourceName)
-			relPathNames = append(relPathNames, dirAttr.TargetName)
+			relPathStrs = append(relPathStrs, dirAttr.TargetName)
 		}
 	} else {
 		for _, sourceName := range sourceNames[:len(sourceNames)-1] {
 			dirAttr := parseDirAttr(sourceName)
-			relPathNames = append(relPathNames, dirAttr.TargetName)
+			relPathStrs = append(relPathStrs, dirAttr.TargetName)
 		}
 		fileAttr := parseFileAttr(sourceNames[len(sourceNames)-1], encryptedSuffix)
-		relPathNames = append(relPathNames, fileAttr.TargetName)
+		relPathStrs = append(relPathStrs, fileAttr.TargetName)
 	}
-	return RelPath(path.Join(relPathNames...))
+	return NewRelPath(path.Join(relPathStrs...))
 }

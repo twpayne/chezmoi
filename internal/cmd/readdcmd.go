@@ -41,13 +41,11 @@ func (c *Config) newReAddCmd() *cobra.Command {
 
 func (c *Config) runReAddCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
 	sourceStateEntries := sourceState.Entries()
-	destRelPaths := make([]chezmoi.RelPath, 0, len(sourceStateEntries))
+	destRelPaths := make(chezmoi.RelPaths, 0, len(sourceStateEntries))
 	for destRelPath := range sourceStateEntries {
 		destRelPaths = append(destRelPaths, destRelPath)
 	}
-	sort.Slice(destRelPaths, func(i, j int) bool {
-		return destRelPaths[i] < destRelPaths[j]
-	})
+	sort.Sort(destRelPaths)
 
 	for _, destRelPath := range destRelPaths {
 		sourceStateFile, ok := sourceStateEntries[destRelPath].(*chezmoi.SourceStateFile)

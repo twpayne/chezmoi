@@ -381,7 +381,7 @@ func (c *Config) upgradePackage(ctx context.Context, rr *github.RepositoryReleas
 			return err
 		}
 
-		packageFilename := tempDirAbsPath.JoinStr(releaseAsset.GetName())
+		packageFilename := tempDirAbsPath.JoinString(releaseAsset.GetName())
 		if err := c.baseSystem.WriteFile(packageFilename, data, 0o644); err != nil {
 			return err
 		}
