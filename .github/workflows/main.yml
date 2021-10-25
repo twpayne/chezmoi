@@ -11,7 +11,24 @@ env:
   GO_VERSION: 1.17.2
   GOLANGCI_LINT_VERSION: 1.42.1
 jobs:
+  changes:
+    runs-on: ubuntu-20.04
+    outputs:
+      go: ${{ steps.filter.output.go }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Check changes
+      id: filter
+      uses: dorny/paths-filter@v2
+      with:
+        filters: |
+          go:
+          - '**/*.go'
+          - 'go.*'
   test-archlinux:
+    needs: changes
+    if: needs.changes.outputs.go == 'true'
     runs-on: ubuntu-20.04
     steps:
     - name: Checkout
@@ -20,6 +37,8 @@ jobs:
       run: |
         ( cd assets/docker && ./test.sh archlinux )
   test-debian-i386:
+    needs: changes
+    if: needs.changes.outputs.go == 'true'
     runs-on: macos-10.15
     env:
       VAGRANT_BOX: debian11-i386
@@ -37,6 +56,8 @@ jobs:
       run: |
         ( cd assets/vagrant && ./test.sh debian11-i386 )
   test-fedora:
+    needs: changes
+    if: needs.changes.outputs.go == 'true'
     runs-on: ubuntu-20.04
     steps:
     - name: Checkout
@@ -45,6 +66,8 @@ jobs:
       run: |
         ( cd assets/docker && ./test.sh fedora )
   test-freebsd:
+    needs: changes
+    if: needs.changes.outputs.go == 'true'
     runs-on: macos-10.15
     env:
       VAGRANT_BOX: freebsd13
@@ -62,6 +85,8 @@ jobs:
       run: |
         ( cd assets/vagrant && ./test.sh freebsd13 )
   test-macos:
+    needs: changes
+    if: needs.changes.outputs.go == 'true'
     runs-on: macos-11
     steps:
     - name: Set up Go
@@ -90,8 +115,11 @@ jobs:
         sudo install -m 755 age/age /usr/local/bin
         sudo install -m 755 age/age-keygen /usr/local/bin
     - name: Test
-      run: go test -race ./...
+      run: |
+        go test -race ./...
   test-openbsd:
+    needs: changes
+    if: needs.changes.outputs.go == 'true'
     runs-on: macos-10.15
     env:
       VAGRANT_BOX: openbsd6
@@ -109,6 +137,8 @@ jobs:
       run: |
         ( cd assets/vagrant && ./test.sh openbsd6 )
   test-openindiana:
+    needs: changes
+    if: needs.changes.outputs.go == 'true'
     runs-on: macos-10.15
     env:
       VAGRANT_BOX: openindiana
@@ -126,12 +156,20 @@ jobs:
       run: |
         ( cd assets/vagrant && ./test.sh openindiana )
   test-ubuntu:
+    needs: changes
     runs-on: ubuntu-18.04
     steps:
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
         go-version: ${{ env.GO_VERSION }}
+    - name: Install age
+      if: needs.changes.outputs.go == 'true'
+      run: |
+        cd $(mktemp -d)
+        curl -fsSL https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-linux-amd64.tar.gz | tar xzf -
+        sudo install -m 755 age/age /usr/local/bin
+        sudo install -m 755 age/age-keygen /usr/local/bin
     - name: Checkout
       uses: actions/checkout@v2
       with:
@@ -149,26 +187,27 @@ jobs:
     - name: Run
       run: |
         go run . --version
-    - name: Install age
-      run: |
-        cd $(mktemp -d)
-        curl -fsSL https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-linux-amd64.tar.gz | tar xzf -
-        sudo install -m 755 age/age /usr/local/bin
-        sudo install -m 755 age/age-keygen /usr/local/bin
     - name: Test (umask 022)
-      run: go test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o022" -race ./...
+      if: needs.changes.outputs.go == 'true'
+      run: |
+        go test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o022" -race ./...
     - name: Test (umask 002)
-      run: go test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o002" -race ./...
+      if: needs.changes.outputs.go == 'true'
+      run: |
+        go test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o002" -race ./...
     - name: Install release dependencies
+      if: needs.changes.outputs.go == 'true'
       run: |
         sudo apt-get update
         sudo apt-get -yq --no-install-suggests --no-install-recommends install musl-tools snapcraft
     - name: Build release
+      if: needs.changes.outputs.go == 'true'
       uses: goreleaser/goreleaser-action@v2
       with:
         version: latest
         args: release --skip-publish --snapshot
     - name: Test release
+      if: needs.changes.outputs.go == 'true'
       run: |
         # verify that version information is embedded correctly
         file ./dist/chezmoi-cgo-glibc_linux_amd64/chezmoi | tee /dev/stderr | grep -q "dynamically linked"
@@ -177,41 +216,50 @@ jobs:
         ./dist/chezmoi-cgo-musl_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v2"
         ./dist/chezmoi-nocgo_linux_386/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v2"
     - name: Upload artifact chezmoi-darwin-amd64
+      if: needs.changes.outputs.go == 'true'
       uses: actions/upload-artifact@v2
       with:
         name: chezmoi-darwin-amd64
         path: dist/chezmoi-nocgo_darwin_amd64/chezmoi
     - name: Upload artifact chezmoi-darwin-arm64
+      if: needs.changes.outputs.go == 'true'
       uses: actions/upload-artifact@v2
       with:
         name: chezmoi-darwin-arm64
         path: dist/chezmoi-nocgo_darwin_arm64/chezmoi
     - name: Upload artifact chezmoi-illumos-amd64
+      if: needs.changes.outputs.go == 'true'
       uses: actions/upload-artifact@v2
       with:
         name: chezmoi-illumos-amd64
         path: dist/chezmoi-nocgo_illumos_amd64/chezmoi
     - name: Upload artifact chezmoi-linux-amd64
+      if: needs.changes.outputs.go == 'true'
       uses: actions/upload-artifact@v2
       with:
         name: chezmoi-linux-amd64
         path: dist/chezmoi-cgo-glibc_linux_amd64/chezmoi
     - name: Upload artifact chezmoi-linux-musl-amd64
+      if: needs.changes.outputs.go == 'true'
       uses: actions/upload-artifact@v2
       with:
         name: chezmoi-linux-musl-amd64
         path: dist/chezmoi-cgo-musl_linux_amd64/chezmoi
     - name: Upload artifact chezmoi-solaris-amd64
+      if: needs.changes.outputs.go == 'true'
       uses: actions/upload-artifact@v2
       with:
         name: chezmoi-solaris-amd64
         path: dist/chezmoi-nocgo_solaris_amd64/chezmoi
     - name: Upload artifact chezmoi-windows-amd64.exe
+      if: needs.changes.outputs.go == 'true'
       uses: actions/upload-artifact@v2
       with:
         name: chezmoi-windows-amd64.exe
         path: dist/chezmoi-nocgo_windows_amd64/chezmoi.exe
   test-ubuntu-go1-16:
+    needs: changes
+    if: needs.changes.outputs.go == 'true'
     runs-on: ubuntu-18.04
     steps:
     - name: Set up Go
@@ -240,8 +288,11 @@ jobs:
         sudo install -m 755 age/age /usr/local/bin
         sudo install -m 755 age/age-keygen /usr/local/bin
     - name: Test
-      run: go test ./...
+      run: |
+        go test ./...
   test-windows:
+    needs: changes
+    if: needs.changes.outputs.go == 'true'
     runs-on: windows-2019
     steps:
     - name: Set up Go
@@ -281,8 +332,11 @@ jobs:
         name: chocolatey.log
         path: C:/ProgramData/chocolatey/logs/chocolatey.log
     - name: Test
-      run: go test -race ./...
+      run: |
+        go test -race ./...
   test-voidlinux:
+    needs: changes
+    if: needs.changes.outputs.go == 'true'
     runs-on: ubuntu-20.04
     steps:
     - name: Checkout
@@ -315,12 +369,15 @@ jobs:
       with:
         ignore: completions
     - name: Whitespace
-      run: go run ./internal/cmds/lint-whitespace
+      run: |
+        go run ./internal/cmds/lint-whitespace
     - name: Typos
       run: |
         go install github.com/twpayne/findtypos@v0.0.1
         findtypos -format=github-actions chezmoi .
   lint:
+    needs: changes
+    if: needs.changes.outputs.go == 'true'
     runs-on: ubuntu-18.04
     steps:
     - name: Checkout
