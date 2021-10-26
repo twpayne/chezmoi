@@ -92,7 +92,7 @@ $ sh -c &amp;quot;$(wget -qO- git.io/chezmoi)&amp;quot; If you already have a do
       <description>Media #  Recommended article: Fedora Magazine: Take back your dotfiles with Chezmoi
 Recommended video: chezmoi: manage your dotfiles across multiple, diverse machines, securely
 Recommended podcast: Managing Dot Files and an Introduction to Chezmoi
-    Date Version Format Link     2021-09-18 2.1.2 Audio/text PBS 125 of X — Chezmoi on Multiple Computers   2021-09-14 2.2.0 Text Managing preference plists under Chezmoi   2021-09-06 2.</description>
+    Date Version Format Link     2021-10-26 2.7.3 Text (RU) Синхронизация системных настроек   2021-09-18 2.1.2 Audio/text PBS 125 of X — Chezmoi on Multiple Computers   2021-09-14 2.</description>
     </item>
     
     <item>
