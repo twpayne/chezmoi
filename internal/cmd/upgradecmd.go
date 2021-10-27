@@ -69,7 +69,7 @@ var (
 		packageTypeRPM: {
 			"amd64": "x86_64",
 			"386":   "i686",
-			"arm":   "armfp",
+			"arm":   "armhfp",
 			"arm64": "aarch64",
 		},
 	}
@@ -121,14 +121,14 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	releaseVersion, err := semver.NewVersion(strings.TrimPrefix(rr.GetName(), "v"))
+	version, err := semver.NewVersion(strings.TrimPrefix(rr.GetName(), "v"))
 	if err != nil {
 		return err
 	}
 
 	// If the upgrade is not forced, stop if we're already the latest version.
 	// Print a message and return no error so the command exits with success.
-	if !c.force && !c.version.LessThan(*releaseVersion) {
+	if !c.force && !c.version.LessThan(*version) {
 		fmt.Fprintf(c.stdout, "chezmoi: already at the latest version (%s)\n", c.version)
 		return nil
 	}
@@ -150,7 +150,7 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 	// Replace the executable with the updated version.
 	switch method {
 	case methodReplaceExecutable:
-		if err := c.replaceExecutable(ctx, executableAbsPath, releaseVersion, rr); err != nil {
+		if err := c.replaceExecutable(ctx, executableAbsPath, version, rr); err != nil {
 			return err
 		}
 	case methodSnapRefresh:
@@ -159,12 +159,12 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 		}
 	case methodUpgradePackage:
 		useSudo := false
-		if err := c.upgradePackage(ctx, rr, useSudo); err != nil {
+		if err := c.upgradePackage(ctx, version, rr, useSudo); err != nil {
 			return err
 		}
 	case methodSudoPrefix + methodUpgradePackage:
 		useSudo := true
-		if err := c.upgradePackage(ctx, rr, useSudo); err != nil {
+		if err := c.upgradePackage(ctx, version, rr, useSudo); err != nil {
 			return err
 		}
 	default:
@@ -272,6 +272,22 @@ func (c *Config) getLibc() (string, error) {
 	return "", errors.New("unable to determine libc")
 }
 
+func (c *Config) getPackageFilename(packageType string, version *semver.Version, os, arch string) (string, error) {
+	if archReplacement, ok := archReplacements[packageType][arch]; ok {
+		arch = archReplacement
+	}
+	switch packageType {
+	case packageTypeAPK:
+		return fmt.Sprintf("%s_%s_%s_%s.apk", c.upgrade.repo, version, os, arch), nil
+	case packageTypeDEB:
+		return fmt.Sprintf("%s_%s_%s_%s.deb", c.upgrade.repo, version, os, arch), nil
+	case packageTypeRPM:
+		return fmt.Sprintf("%s-%s-%s.rpm", c.upgrade.repo, version, arch), nil
+	default:
+		return "", fmt.Errorf("%s: unsupported package type", packageType)
+	}
+}
+
 func (c *Config) replaceExecutable(ctx context.Context, executableFilenameAbsPath chezmoi.AbsPath, releaseVersion *semver.Version, rr *github.RepositoryRelease) error {
 	goos := runtime.GOOS
 	if goos == "linux" && runtime.GOARCH == "amd64" {
@@ -324,7 +340,7 @@ func (c *Config) snapRefresh() error {
 	return c.run(chezmoi.EmptyAbsPath, "snap", []string{"refresh", c.upgrade.repo})
 }
 
-func (c *Config) upgradePackage(ctx context.Context, rr *github.RepositoryRelease, useSudo bool) error {
+func (c *Config) upgradePackage(ctx context.Context, version *semver.Version, rr *github.RepositoryRelease, useSudo bool) error {
 	switch runtime.GOOS {
 	case "darwin":
 		return c.run(chezmoi.EmptyAbsPath, "brew", []string{"upgrade", c.upgrade.repo})
@@ -333,10 +349,6 @@ func (c *Config) upgradePackage(ctx context.Context, rr *github.RepositoryReleas
 		packageType, err := getPackageType(c.baseSystem)
 		if err != nil {
 			return err
-		}
-		arch := runtime.GOARCH
-		if archReplacement, ok := archReplacements[packageType]; ok {
-			arch = archReplacement[arch]
 		}
 
 		// chezmoi does not build and distribute AUR packages, so instead rely
@@ -350,17 +362,14 @@ func (c *Config) upgradePackage(ctx context.Context, rr *github.RepositoryReleas
 			return c.run(chezmoi.EmptyAbsPath, args[0], args[1:])
 		}
 
-		// Find the corresponding release asset.
-		var releaseAsset *github.ReleaseAsset
-		suffix := arch + "." + packageType
-		for i, ra := range rr.Assets {
-			if strings.HasSuffix(ra.GetName(), suffix) {
-				releaseAsset = rr.Assets[i]
-				break
-			}
+		// Find the release asset.
+		packageFilename, err := c.getPackageFilename(packageType, version, runtime.GOOS, runtime.GOARCH)
+		if err != nil {
+			return err
 		}
+		releaseAsset := getReleaseAssetByName(rr, packageFilename)
 		if releaseAsset == nil {
-			return fmt.Errorf("cannot find release asset (arch=%q, packageType=%q)", arch, packageType)
+			return fmt.Errorf("%s: cannot find release asset", packageFilename)
 		}
 
 		// Create a temporary directory for the package.
@@ -377,8 +386,8 @@ func (c *Config) upgradePackage(ctx context.Context, rr *github.RepositoryReleas
 			return err
 		}
 
-		packageFilename := tempDirAbsPath.JoinString(releaseAsset.GetName())
-		if err := c.baseSystem.WriteFile(packageFilename, data, 0o644); err != nil {
+		packageAbsPath := tempDirAbsPath.JoinString(releaseAsset.GetName())
+		if err := c.baseSystem.WriteFile(packageAbsPath, data, 0o644); err != nil {
 			return err
 		}
 
@@ -389,11 +398,11 @@ func (c *Config) upgradePackage(ctx context.Context, rr *github.RepositoryReleas
 		}
 		switch packageType {
 		case packageTypeAPK:
-			args = append(args, "apk", "--allow-untrusted", packageFilename.String())
+			args = append(args, "apk", "--allow-untrusted", packageAbsPath.String())
 		case packageTypeDEB:
-			args = append(args, "dpkg", "-i", packageFilename.String())
+			args = append(args, "dpkg", "-i", packageAbsPath.String())
 		case packageTypeRPM:
-			args = append(args, "rpm", "-U", packageFilename.String())
+			args = append(args, "rpm", "-U", packageAbsPath.String())
 		}
 		return c.run(chezmoi.EmptyAbsPath, args[0], args[1:])
 	default:
