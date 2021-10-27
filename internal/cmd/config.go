@@ -365,6 +365,10 @@ func newConfig(options ...configOption) (*Config, error) {
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 			recursive: true,
 		},
+		upgrade: upgradeCmdConfig{
+			owner: "twpayne",
+			repo:  "chezmoi",
+		},
 		verify: verifyCmdConfig{
 			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll &^ chezmoi.EntryTypeScripts),
