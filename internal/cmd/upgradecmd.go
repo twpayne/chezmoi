@@ -86,10 +86,6 @@ type upgradeCmdConfig struct {
 }
 
 func (c *Config) newUpgradeCmd() *cobra.Command {
-	if runtime.GOOS == "windows" {
-		return nil
-	}
-
 	upgradeCmd := &cobra.Command{
 		Use:     "upgrade",
 		Short:   "Upgrade chezmoi to the latest released version",
@@ -103,9 +99,9 @@ func (c *Config) newUpgradeCmd() *cobra.Command {
 	}
 
 	flags := upgradeCmd.Flags()
-	flags.StringVar(&c.upgrade.method, "method", "", "Set upgrade method")
-	flags.StringVar(&c.upgrade.owner, "owner", "twpayne", "Set owner")
-	flags.StringVar(&c.upgrade.repo, "repo", "chezmoi", "Set repo")
+	flags.StringVar(&c.upgrade.method, "method", c.upgrade.method, "Set upgrade method")
+	flags.StringVar(&c.upgrade.owner, "owner", c.upgrade.owner, "Set owner")
+	flags.StringVar(&c.upgrade.repo, "repo", c.upgrade.repo, "Set repo")
 
 	return upgradeCmd
 }
@@ -172,7 +168,7 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 			return err
 		}
 	default:
-		return fmt.Errorf("%s: invalid --method value", method)
+		return fmt.Errorf("%s: invalid method", method)
 	}
 
 	// Find the executable. If we replaced the executable directly, then use
