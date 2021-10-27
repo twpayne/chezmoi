@@ -31,6 +31,7 @@ Manage your dotfiles across multiple machines, securely.
 * [Developer command line flags](#developer-command-line-flags)
   * [`--cpu-profile` *filename*](#--cpu-profile-filename)
   * [`--debug`](#--debug)
+  * [`--gops`](#--gops)
 * [Configuration file](#configuration-file)
   * [Variables](#variables)
   * [Examples](#examples)
@@ -301,6 +302,10 @@ Write a [Go CPU profile](https://blog.golang.org/pprof) to *filename*.
 ### `--debug`
 
 Log information helpful for debugging.
+
+### `--gops`
+
+Enable the [gops](https://github.com/google/gops) agent.
 
 ---
 
