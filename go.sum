@@ -540,6 +540,8 @@ github.com/twpayne/go-vfs/v3 v3.0.0 h1:rMFBISZVhSowKeX1BxL8utM64V7CuUw9/rfekPdS7
 github.com/twpayne/go-vfs/v3 v3.0.0/go.mod h1:JKfJtOC57Wqo7xYxFRKSqdXwyj3AhfyRrDxSE/XiAVA=
 github.com/twpayne/go-vfs/v4 v4.0.0 h1:NMq6wg8GZlX7IsgRZw5j0RiT/Q4qXzCsuxYYdK3T70c=
 github.com/twpayne/go-vfs/v4 v4.0.0/go.mod h1:05bOnh2SNnRsIp/ensn6WLeHSttxklPlQzi4JtTGofc=
+github.com/twpayne/go-vfs/v4 v4.1.0 h1:58tmzvh3AEKgqXlRZvlKn9HD6g1Q9T9bYdob0GhARrs=
+github.com/twpayne/go-vfs/v4 v4.1.0/go.mod h1:05bOnh2SNnRsIp/ensn6WLeHSttxklPlQzi4JtTGofc=
 github.com/twpayne/go-xdg/v6 v6.0.0 h1:kt2KGpflK5q8ZpkmQfX6kJphh6+oAWikf4LiAZxFT0Y=
 github.com/twpayne/go-xdg/v6 v6.0.0/go.mod h1:XlfiGBU0iBxudVRWh+SXF+I1Cfb7rMq1IFwOprG4Ts8=
 github.com/xanzy/ssh-agent v0.3.0/go.mod h1:3s9xbODqPuuhK9JV1R321M/FlMZSBvE5aY6eAcqrDh0=
@@ -780,6 +782,8 @@ golang.org/x/sys v0.0.0-20210823070655-63515b42dcdf/go.mod h1:oPkhp1MJrh7nUepCBc
 golang.org/x/sys v0.0.0-20210903071746-97244b99971b/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/sys v0.0.0-20211019181941-9d821ace8654 h1:id054HUawV2/6IGm2IV8KZQjqtwAOo2CYlOToYqa0d0=
 golang.org/x/sys v0.0.0-20211019181941-9d821ace8654/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
+golang.org/x/sys v0.0.0-20211025201205-69cdffdb9359 h1:2B5p2L5IfGiD7+b9BOoRMC6DgObAVZV+Fsp050NqXik=
+golang.org/x/sys v0.0.0-20211025201205-69cdffdb9359/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
 golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1/go.mod h1:bj7SfCRtBDWHUb9snDiAeCFNEtKQo2Wmx5Cou7ajbmo=
 golang.org/x/term v0.0.0-20210615171337-6886f2dfbf5b/go.mod h1:jbD1KX2456YbFQfuXm/mYQcufACuNUgVhRMnK/tPxf8=
 golang.org/x/term v0.0.0-20210927222741-03fcf44c2211 h1:JGgROgKl9N8DuW20oFS5gxc+lE67/N3FcwmBPMe7ArY=
