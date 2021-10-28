@@ -11,20 +11,17 @@ import (
 	vfs "github.com/twpayne/go-vfs/v4"
 )
 
-// A StringSet is a set of strings.
-type StringSet map[string]struct{}
-
 // An patternSet is a set of patterns.
 type patternSet struct {
-	includePatterns StringSet
-	excludePatterns StringSet
+	includePatterns stringSet
+	excludePatterns stringSet
 }
 
 // newPatternSet returns a new patternSet.
 func newPatternSet() *patternSet {
 	return &patternSet{
-		includePatterns: NewStringSet(),
-		excludePatterns: NewStringSet(),
+		includePatterns: newStringSet(),
+		excludePatterns: newStringSet(),
 	}
 }
 
@@ -34,8 +31,8 @@ func (ps *patternSet) MarshalZerologObject(e *zerolog.Event) {
 	if ps == nil {
 		return
 	}
-	e.Strs("includePatterns", ps.includePatterns.Elements())
-	e.Strs("excludePatterns", ps.excludePatterns.Elements())
+	e.Strs("includePatterns", ps.includePatterns.elements())
+	e.Strs("excludePatterns", ps.excludePatterns.elements())
 }
 
 // add adds a pattern to ps.
@@ -44,9 +41,9 @@ func (ps *patternSet) add(pattern string, include bool) error {
 		return fmt.Errorf("%s: invalid pattern", pattern)
 	}
 	if include {
-		ps.includePatterns.Add(pattern)
+		ps.includePatterns.add(pattern)
 	} else {
-		ps.excludePatterns.Add(pattern)
+		ps.excludePatterns.add(pattern)
 	}
 	return nil
 }
@@ -54,13 +51,13 @@ func (ps *patternSet) add(pattern string, include bool) error {
 // glob returns all matches in fileSystem.
 func (ps *patternSet) glob(fileSystem vfs.FS, prefix string) ([]string, error) {
 	// FIXME use AbsPath and RelPath
-	allMatches := NewStringSet()
+	allMatches := newStringSet()
 	for includePattern := range ps.includePatterns {
 		matches, err := doublestar.Glob(fileSystem, prefix+includePattern)
 		if err != nil {
 			return nil, err
 		}
-		allMatches.Add(matches...)
+		allMatches.add(matches...)
 	}
 	for match := range allMatches {
 		for excludePattern := range ps.excludePatterns {
@@ -69,11 +66,11 @@ func (ps *patternSet) glob(fileSystem vfs.FS, prefix string) ([]string, error) {
 				return nil, err
 			}
 			if exclude {
-				allMatches.Delete(match)
+				allMatches.remove(match)
 			}
 		}
 	}
-	matchesSlice := allMatches.Elements()
+	matchesSlice := allMatches.elements()
 	for i, match := range matchesSlice {
 		matchesSlice[i] = mustTrimPrefix(filepath.ToSlash(match), prefix)
 	}
@@ -94,47 +91,4 @@ func (ps *patternSet) match(name string) bool {
 		}
 	}
 	return false
-}
-
-// NewStringSet returns a new StringSet containing elements.
-func NewStringSet(elements ...string) StringSet {
-	s := make(StringSet)
-	s.Add(elements...)
-	return s
-}
-
-// Add adds elements to s.
-func (s StringSet) Add(elements ...string) {
-	for _, element := range elements {
-		s[element] = struct{}{}
-	}
-}
-
-// Contains returns true if s Contains element.
-func (s StringSet) Contains(element string) bool {
-	_, ok := s[element]
-	return ok
-}
-
-// Delete deletes element from s.
-func (s StringSet) Delete(element string) {
-	delete(s, element)
-}
-
-// Element returns an arbitrary element from s or the empty string if s is
-// empty.
-func (s StringSet) Element() string {
-	for element := range s {
-		return element
-	}
-	return ""
-}
-
-// Elements returns all the Elements of s.
-func (s StringSet) Elements() []string {
-	elements := make([]string, 0, len(s))
-	for element := range s {
-		elements = append(elements, element)
-	}
-	return elements
 }
