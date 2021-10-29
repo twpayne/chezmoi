@@ -6,6 +6,9 @@ chezmoi execute-template '{{ .chezmoi.arch }}'
 [ppc64] stdout ppc64
 [ppc64le] stdout ppc64le
 
+chezmoi execute-template '{{ index .chezmoi.args 1 }}'
+stdout execute-template
+
 chezmoi execute-template '{{ .chezmoi.homeDir }}'
 stdout ${HOME@R}
 

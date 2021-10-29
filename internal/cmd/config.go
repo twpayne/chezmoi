@@ -889,6 +889,7 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 	return map[string]interface{}{
 		"chezmoi": map[string]interface{}{
 			"arch":         runtime.GOARCH,
+			"args":         os.Args,
 			"fqdnHostname": fqdnHostname,
 			"group":        group,
 			"homeDir":      c.homeDir,
