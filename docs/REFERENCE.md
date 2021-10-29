@@ -1759,20 +1759,23 @@ For a full list of options, see
 
 chezmoi provides the following automatically-populated variables:
 
-| Variable                | Value                                                                                                                           |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `.chezmoi.arch`         | Architecture, e.g. `amd64`, `arm`, etc. as returned by [runtime.GOARCH](https://pkg.go.dev/runtime?tab=doc#pkg-constants).      |
-| `.chezmoi.fqdnHostname` | The fully-qualified domain name hostname of the machine chezmoi is running on.                                                  |
-| `.chezmoi.group`        | The group of the user running chezmoi.                                                                                          |
-| `.chezmoi.homeDir`      | The home directory of the user running chezmoi.                                                                                 |
-| `.chezmoi.hostname`     | The hostname of the machine chezmoi is running on, up to the first `.`.                                                         |
-| `.chezmoi.kernel`       | Contains information from `/proc/sys/kernel`. Linux only, useful for detecting specific kernels (i.e. Microsoft's WSL kernel).  |
-| `.chezmoi.os`           | Operating system, e.g. `darwin`, `linux`, etc. as returned by [runtime.GOOS](https://pkg.go.dev/runtime?tab=doc#pkg-constants). |
-| `.chezmoi.osRelease`    | The information from `/etc/os-release`, Linux only, run `chezmoi data` to see its output.                                       |
-| `.chezmoi.sourceDir`    | The source directory.                                                                                                           |
-| `.chezmoi.sourceFile`   | The path of the template relative to the source directory.                                                                      |
-| `.chezmoi.username`     | The username of the user running chezmoi.                                                                                       |
-| `.chezmoi.version`      | The version of chezmoi.                                                                                                         |
+| Variable                   | Type       | Value                                                                                                                           |
+| -------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `.chezmoi.arch`            | `string`   | Architecture, e.g. `amd64`, `arm`, etc. as returned by [runtime.GOARCH](https://pkg.go.dev/runtime?tab=doc#pkg-constants).      |
+| `.chezmoi.fqdnHostname`    | `string`   | The fully-qualified domain name hostname of the machine chezmoi is running on.                                                  |
+| `.chezmoi.group`           | `string`   | The group of the user running chezmoi.                                                                                          |
+| `.chezmoi.homeDir`         | `string`   | The home directory of the user running chezmoi.                                                                                 |
+| `.chezmoi.hostname`        | `string`   | The hostname of the machine chezmoi is running on, up to the first `.`.                                                         |
+| `.chezmoi.kernel`          | `string`   | Contains information from `/proc/sys/kernel`. Linux only, useful for detecting specific kernels (e.g. Microsoft's WSL kernel).  |
+| `.chezmoi.os`              | `string`   | Operating system, e.g. `darwin`, `linux`, etc. as returned by [runtime.GOOS](https://pkg.go.dev/runtime?tab=doc#pkg-constants). |
+| `.chezmoi.osRelease`       | `string`   | The information from `/etc/os-release`, Linux only, run `chezmoi data` to see its output.                                       |
+| `.chezmoi.sourceDir`       | `string`   | The source directory.                                                                                                           |
+| `.chezmoi.sourceFile`      | `string`   | The path of the template relative to the source directory.                                                                      |
+| `.chezmoi.username`        | `string`   | The username of the user running chezmoi.                                                                                       |
+| `.chezmoi.version.builtBy` | `string`   | The program that built the `chezmoi` executable, if set.                                                                        |
+| `.chezmoi.version.commit`  | `string`   | The git commit at which the `chezmoi` executable was built, if set.                                                             |
+| `.chezmoi.version.date`    | `string`   | The timestamp at which the `chezmoi` executable was built, if set.                                                              |
+| `.chezmoi.version.version` | `string`   | The version of chezmoi.                                                                                                         |
 
 Additional variables can be defined in the config file in the `data` section.
 Variable names must consist of a letter and be followed by zero or more letters
