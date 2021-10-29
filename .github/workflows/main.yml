@@ -27,11 +27,12 @@ jobs:
         filters: |
           code:
           - '**/*.go'
+          - '.github/workflows/**'
           - 'go.*'
           - 'internal/**'
   codeql:
     needs: changes
-    if: needs.changes.outputs.code == 'true'
+    if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-18.04
     permissions:
       security-events: write
@@ -48,7 +49,7 @@ jobs:
       uses: github/codeql-action/analyze@v1
   test-archlinux:
     needs: changes
-    if: needs.changes.outputs.code == 'true'
+    if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-20.04
     steps:
     - name: Checkout
@@ -58,7 +59,7 @@ jobs:
         ( cd assets/docker && ./test.sh archlinux )
   test-debian-i386:
     needs: changes
-    if: needs.changes.outputs.code == 'true'
+    if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: macos-10.15
     env:
       VAGRANT_BOX: debian11-i386
@@ -77,7 +78,7 @@ jobs:
         ( cd assets/vagrant && ./test.sh debian11-i386 )
   test-fedora:
     needs: changes
-    if: needs.changes.outputs.code == 'true'
+    if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-20.04
     steps:
     - name: Checkout
@@ -87,7 +88,7 @@ jobs:
         ( cd assets/docker && ./test.sh fedora )
   test-freebsd:
     needs: changes
-    if: needs.changes.outputs.code == 'true'
+    if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: macos-10.15
     env:
       VAGRANT_BOX: freebsd13
@@ -106,7 +107,7 @@ jobs:
         ( cd assets/vagrant && ./test.sh freebsd13 )
   test-macos:
     needs: changes
-    if: needs.changes.outputs.code == 'true'
+    if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: macos-11
     steps:
     - name: Set up Go
@@ -139,7 +140,7 @@ jobs:
         go test -race ./...
   test-openbsd:
     needs: changes
-    if: needs.changes.outputs.code == 'true'
+    if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: macos-10.15
     env:
       VAGRANT_BOX: openbsd6
@@ -158,7 +159,7 @@ jobs:
         ( cd assets/vagrant && ./test.sh openbsd6 )
   test-openindiana:
     needs: changes
-    if: needs.changes.outputs.code == 'true'
+    if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: macos-10.15
     env:
       VAGRANT_BOX: openindiana
@@ -184,7 +185,7 @@ jobs:
       with:
         go-version: ${{ env.GO_VERSION }}
     - name: Install age
-      if: needs.changes.outputs.code == 'true'
+      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       run: |
         cd $(mktemp -d)
         curl -fsSL https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-linux-amd64.tar.gz | tar xzf -
@@ -208,26 +209,26 @@ jobs:
       run: |
         go run . --version
     - name: Test (umask 022)
-      if: needs.changes.outputs.code == 'true'
+      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       run: |
         go test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o022" -race ./...
     - name: Test (umask 002)
-      if: needs.changes.outputs.code == 'true'
+      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       run: |
         go test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o002" -race ./...
     - name: Install release dependencies
-      if: needs.changes.outputs.code == 'true'
+      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       run: |
         sudo apt-get update
         sudo apt-get -yq --no-install-suggests --no-install-recommends install musl-tools snapcraft
     - name: Build release
-      if: needs.changes.outputs.code == 'true'
+      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       uses: goreleaser/goreleaser-action@v2
       with:
         version: latest
         args: release --skip-publish --snapshot
     - name: Test release
-      if: needs.changes.outputs.code == 'true'
+      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       run: |
         # verify that version information is embedded correctly
         file ./dist/chezmoi-cgo-glibc_linux_amd64/chezmoi | tee /dev/stderr | grep -q "dynamically linked"
@@ -236,50 +237,50 @@ jobs:
         ./dist/chezmoi-cgo-musl_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v2"
         ./dist/chezmoi-nocgo_linux_386/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v2"
     - name: Upload artifact chezmoi-darwin-amd64
-      if: needs.changes.outputs.code == 'true'
+      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       uses: actions/upload-artifact@v2
       with:
         name: chezmoi-darwin-amd64
         path: dist/chezmoi-nocgo_darwin_amd64/chezmoi
     - name: Upload artifact chezmoi-darwin-arm64
-      if: needs.changes.outputs.code == 'true'
+      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       uses: actions/upload-artifact@v2
       with:
         name: chezmoi-darwin-arm64
         path: dist/chezmoi-nocgo_darwin_arm64/chezmoi
     - name: Upload artifact chezmoi-illumos-amd64
-      if: needs.changes.outputs.code == 'true'
+      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       uses: actions/upload-artifact@v2
       with:
         name: chezmoi-illumos-amd64
         path: dist/chezmoi-nocgo_illumos_amd64/chezmoi
     - name: Upload artifact chezmoi-linux-amd64
-      if: needs.changes.outputs.code == 'true'
+      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       uses: actions/upload-artifact@v2
       with:
         name: chezmoi-linux-amd64
         path: dist/chezmoi-cgo-glibc_linux_amd64/chezmoi
     - name: Upload artifact chezmoi-linux-musl-amd64
-      if: needs.changes.outputs.code == 'true'
+      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       uses: actions/upload-artifact@v2
       with:
         name: chezmoi-linux-musl-amd64
         path: dist/chezmoi-cgo-musl_linux_amd64/chezmoi
     - name: Upload artifact chezmoi-solaris-amd64
-      if: needs.changes.outputs.code == 'true'
+      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       uses: actions/upload-artifact@v2
       with:
         name: chezmoi-solaris-amd64
         path: dist/chezmoi-nocgo_solaris_amd64/chezmoi
     - name: Upload artifact chezmoi-windows-amd64.exe
-      if: needs.changes.outputs.code == 'true'
+      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       uses: actions/upload-artifact@v2
       with:
         name: chezmoi-windows-amd64.exe
         path: dist/chezmoi-nocgo_windows_amd64/chezmoi.exe
   test-ubuntu-go1-16:
     needs: changes
-    if: needs.changes.outputs.code == 'true'
+    if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-18.04
     steps:
     - name: Set up Go
@@ -312,7 +313,7 @@ jobs:
         go test ./...
   test-windows:
     needs: changes
-    if: needs.changes.outputs.code == 'true'
+    if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: windows-2019
     steps:
     - name: Set up Go
@@ -356,7 +357,7 @@ jobs:
         go test -race ./...
   test-voidlinux:
     needs: changes
-    if: needs.changes.outputs.code == 'true'
+    if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-20.04
     steps:
     - name: Checkout
@@ -397,7 +398,7 @@ jobs:
         findtypos -format=github-actions chezmoi .
   lint:
     needs: changes
-    if: needs.changes.outputs.code == 'true'
+    if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-18.04
     steps:
     - name: Checkout
