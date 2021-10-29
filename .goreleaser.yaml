@@ -40,10 +40,10 @@ builds:
   env:
   - CGO_ENABLED=0
   goos:
-  - illumos
-  - linux
   - darwin
   - freebsd
+  - illumos
+  - linux
   - openbsd
   - solaris
   - windows
