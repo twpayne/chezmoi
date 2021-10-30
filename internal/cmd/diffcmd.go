@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+	"go.uber.org/multierr"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
@@ -42,28 +43,32 @@ func (c *Config) newDiffCmd() *cobra.Command {
 	return diffCmd
 }
 
-func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) error {
+func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) (err error) {
 	builder := strings.Builder{}
 	dryRunSystem := chezmoi.NewDryRunSystem(c.destSystem)
 	if c.Diff.useBuiltinDiff || c.Diff.Command == "" {
 		color := c.Color.Value(c.colorAutoFunc)
 		gitDiffSystem := chezmoi.NewGitDiffSystem(dryRunSystem, &builder, c.DestDirAbsPath, color)
-		if err := c.applyArgs(cmd.Context(), gitDiffSystem, c.DestDirAbsPath, args, applyArgsOptions{
+		if err = c.applyArgs(cmd.Context(), gitDiffSystem, c.DestDirAbsPath, args, applyArgsOptions{
 			include:   c.Diff.include.Sub(c.Diff.Exclude),
 			init:      c.Diff.init,
 			recursive: c.Diff.recursive,
 			umask:     c.Umask,
 		}); err != nil {
-			return err
+			return
 		}
-		return c.pageOutputString(builder.String(), c.Diff.Pager)
+		err = c.pageOutputString(builder.String(), c.Diff.Pager)
+		return
 	}
 	diffSystem := chezmoi.NewExternalDiffSystem(dryRunSystem, c.Diff.Command, c.Diff.Args, c.DestDirAbsPath)
-	defer diffSystem.Close()
-	return c.applyArgs(cmd.Context(), diffSystem, c.DestDirAbsPath, args, applyArgsOptions{
+	defer func() {
+		err = multierr.Append(err, diffSystem.Close())
+	}()
+	err = c.applyArgs(cmd.Context(), diffSystem, c.DestDirAbsPath, args, applyArgsOptions{
 		include:   c.Diff.include.Sub(c.Diff.Exclude),
 		init:      c.Diff.init,
 		recursive: c.Diff.recursive,
 		umask:     c.Umask,
 	})
+	return
 }

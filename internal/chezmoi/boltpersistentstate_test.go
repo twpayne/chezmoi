@@ -146,11 +146,15 @@ func TestBoltPersistentStateReadOnly(t *testing.T) {
 
 		b2, err := NewBoltPersistentState(system, path, BoltPersistentStateReadOnly)
 		require.NoError(t, err)
-		defer b2.Close()
+		defer func() {
+			assert.NoError(t, b2.Close())
+		}()
 
 		b3, err := NewBoltPersistentState(system, path, BoltPersistentStateReadOnly)
 		require.NoError(t, err)
-		defer b3.Close()
+		defer func() {
+			assert.NoError(t, b3.Close())
+		}()
 
 		actualValueB, err := b2.Get(bucket, key)
 		require.NoError(t, err)

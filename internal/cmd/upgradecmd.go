@@ -26,6 +26,7 @@ import (
 	"github.com/google/go-github/v39/github"
 	"github.com/spf13/cobra"
 	vfs "github.com/twpayne/go-vfs/v4"
+	"go.uber.org/multierr"
 	"golang.org/x/sys/unix"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
@@ -288,52 +289,57 @@ func (c *Config) getPackageFilename(packageType string, version *semver.Version,
 	}
 }
 
-func (c *Config) replaceExecutable(ctx context.Context, executableFilenameAbsPath chezmoi.AbsPath, releaseVersion *semver.Version, rr *github.RepositoryRelease) error {
+func (c *Config) replaceExecutable(ctx context.Context, executableFilenameAbsPath chezmoi.AbsPath, releaseVersion *semver.Version, rr *github.RepositoryRelease) (err error) {
 	goos := runtime.GOOS
 	if goos == "linux" && runtime.GOARCH == "amd64" {
-		libc, err := c.getLibc()
-		if err != nil {
-			return err
+		var libc string
+		if libc, err = c.getLibc(); err != nil {
+			return
 		}
 		goos += "-" + libc
 	}
 	name := fmt.Sprintf("%s_%s_%s_%s.tar.gz", c.upgrade.repo, releaseVersion, goos, runtime.GOARCH)
 	releaseAsset := getReleaseAssetByName(rr, name)
 	if releaseAsset == nil {
-		return fmt.Errorf("%s: cannot find release asset", name)
+		err = fmt.Errorf("%s: cannot find release asset", name)
+		return
 	}
 
-	data, err := c.downloadURL(ctx, releaseAsset.GetBrowserDownloadURL())
-	if err != nil {
+	var data []byte
+	if data, err = c.downloadURL(ctx, releaseAsset.GetBrowserDownloadURL()); err != nil {
 		return err
 	}
-	if err := c.verifyChecksum(ctx, rr, releaseAsset.GetName(), data); err != nil {
+	if err = c.verifyChecksum(ctx, rr, releaseAsset.GetName(), data); err != nil {
 		return err
 	}
 
 	// Extract the executable from the archive.
-	gzipReader, err := gzip.NewReader(bytes.NewReader(data))
-	if err != nil {
+	var gzipReader *gzip.Reader
+	if gzipReader, err = gzip.NewReader(bytes.NewReader(data)); err != nil {
 		return err
 	}
-	defer gzipReader.Close()
+	defer func() {
+		err = multierr.Append(err, gzipReader.Close())
+	}()
 	tarReader := tar.NewReader(gzipReader)
 	var executableData []byte
 FOR:
 	for {
-		switch header, err := tarReader.Next(); {
+		var header *tar.Header
+		switch header, err = tarReader.Next(); {
 		case err == nil && header.Name == c.upgrade.repo:
-			executableData, err = io.ReadAll(tarReader)
-			if err != nil {
-				return err
+			if executableData, err = io.ReadAll(tarReader); err != nil {
+				return
 			}
 			break FOR
 		case errors.Is(err, io.EOF):
-			return fmt.Errorf("%s: could not find header", c.upgrade.repo)
+			err = fmt.Errorf("%s: could not find header", c.upgrade.repo)
+			return
 		}
 	}
 
-	return c.baseSystem.WriteFile(executableFilenameAbsPath, executableData, 0o755)
+	err = c.baseSystem.WriteFile(executableFilenameAbsPath, executableData, 0o755)
+	return
 }
 
 func (c *Config) snapRefresh() error {

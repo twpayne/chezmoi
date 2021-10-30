@@ -3,12 +3,14 @@ package cmd
 import (
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"regexp"
 	"strings"
 
 	"github.com/charmbracelet/glamour"
 	"github.com/spf13/cobra"
+	"go.uber.org/multierr"
 	"golang.org/x/term"
 
 	"github.com/twpayne/chezmoi/v2/docs"
@@ -39,23 +41,23 @@ func (c *Config) newDocsCmd() *cobra.Command {
 	return docsCmd
 }
 
-func (c *Config) runDocsCmd(cmd *cobra.Command, args []string) error {
+func (c *Config) runDocsCmd(cmd *cobra.Command, args []string) (err error) {
 	filename := "REFERENCE.md"
 	if len(args) > 0 {
 		pattern := args[0]
-		re, err := regexp.Compile(strings.ToLower(pattern))
-		if err != nil {
-			return err
+		var re *regexp.Regexp
+		if re, err = regexp.Compile(strings.ToLower(pattern)); err != nil {
+			return
 		}
-		dirEntries, err := docs.FS.ReadDir(".")
-		if err != nil {
-			return err
+		var dirEntries []fs.DirEntry
+		if dirEntries, err = docs.FS.ReadDir("."); err != nil {
+			return
 		}
 		var filenames []string
 		for _, dirEntry := range dirEntries {
-			fileInfo, err := dirEntry.Info()
-			if err != nil {
-				return err
+			var fileInfo fs.FileInfo
+			if fileInfo, err = dirEntry.Info(); err != nil {
+				return
 			}
 			if fileInfo.Mode().Type() != 0 {
 				continue
@@ -66,47 +68,51 @@ func (c *Config) runDocsCmd(cmd *cobra.Command, args []string) error {
 		}
 		switch {
 		case len(filenames) == 0:
-			return fmt.Errorf("%s: no matching files", pattern)
+			err = fmt.Errorf("%s: no matching files", pattern)
+			return
 		case len(filenames) == 1:
 			filename = filenames[0]
 		default:
-			return fmt.Errorf("%s: ambiguous pattern, matches %s", pattern, strings.Join(filenames, ", "))
+			err = fmt.Errorf("%s: ambiguous pattern, matches %s", pattern, strings.Join(filenames, ", "))
+			return
 		}
 	}
 
-	file, err := docs.FS.Open(filename)
-	if err != nil {
-		return err
+	var file fs.File
+	if file, err = docs.FS.Open(filename); err != nil {
+		return
 	}
-	defer file.Close()
-	documentData, err := io.ReadAll(file)
-	if err != nil {
-		return err
+	defer func() {
+		err = multierr.Append(err, file.Close())
+	}()
+	var documentData []byte
+	if documentData, err = io.ReadAll(file); err != nil {
+		return
 	}
 
 	width := 80
 	if stdout, ok := c.stdout.(*os.File); ok && term.IsTerminal(int(stdout.Fd())) {
-		width, _, err = term.GetSize(int(stdout.Fd()))
-		if err != nil {
-			return err
+		if width, _, err = term.GetSize(int(stdout.Fd())); err != nil {
+			return
 		}
 	}
 	if c.Docs.MaxWidth != 0 && width > c.Docs.MaxWidth {
 		width = c.Docs.MaxWidth
 	}
 
-	termRenderer, err := glamour.NewTermRenderer(
+	var termRenderer *glamour.TermRenderer
+	if termRenderer, err = glamour.NewTermRenderer(
 		glamour.WithStyles(glamour.ASCIIStyleConfig),
 		glamour.WithWordWrap(width),
-	)
-	if err != nil {
+	); err != nil {
+		return
+	}
+
+	var renderedData []byte
+	if renderedData, err = termRenderer.RenderBytes(documentData); err != nil {
 		return err
 	}
 
-	renderedData, err := termRenderer.RenderBytes(documentData)
-	if err != nil {
-		return err
-	}
-
-	return c.pageOutputString(string(renderedData), c.Docs.Pager)
+	err = c.pageOutputString(string(renderedData), c.Docs.Pager)
+	return
 }

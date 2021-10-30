@@ -7,31 +7,34 @@ import (
 	"errors"
 	"os"
 
+	"go.uber.org/multierr"
 	"golang.org/x/term"
 )
 
 // readPassword reads a password.
-func (c *Config) readPassword(prompt string) (string, error) {
+func (c *Config) readPassword(prompt string) (password string, err error) {
 	if c.noTTY {
-		return c.readLine(prompt)
+		password, err = c.readLine(prompt)
+		return
 	}
 
-	tty, err := os.OpenFile("/dev/tty", os.O_RDWR, 0)
-	if err != nil {
-		return "", err
+	var tty *os.File
+	if tty, err = os.OpenFile("/dev/tty", os.O_RDWR, 0); err != nil {
+		return
 	}
 	defer func() {
-		_ = tty.Close()
+		err = multierr.Append(err, tty.Close())
 	}()
-	if _, err := tty.Write([]byte(prompt)); err != nil {
-		return "", err
+	if _, err = tty.Write([]byte(prompt)); err != nil {
+		return
 	}
-	password, err := term.ReadPassword(int(tty.Fd()))
-	if err != nil && !errors.Is(err, term.ErrPasteIndicator) {
-		return "", err
+	var passwordBytes []byte
+	if passwordBytes, err = term.ReadPassword(int(tty.Fd())); err != nil && !errors.Is(err, term.ErrPasteIndicator) {
+		return
 	}
-	if _, err := tty.Write([]byte{'\n'}); err != nil {
-		return "", err
+	if _, err = tty.Write([]byte{'\n'}); err != nil {
+		return
 	}
-	return string(password), nil
+	password = string(passwordBytes)
+	return
 }

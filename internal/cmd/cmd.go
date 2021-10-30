@@ -16,6 +16,7 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/spf13/cobra"
 	"go.etcd.io/bbolt"
+	"go.uber.org/multierr"
 
 	"github.com/twpayne/chezmoi/v2/docs"
 )
@@ -275,21 +276,22 @@ func mustLongHelp(command string) string {
 }
 
 // runMain runs chezmoi's main function.
-func runMain(versionInfo VersionInfo, args []string) error {
-	config, err := newConfig(
+func runMain(versionInfo VersionInfo, args []string) (err error) {
+	var config *Config
+	if config, err = newConfig(
 		withVersionInfo(versionInfo),
-	)
-	if err != nil {
+	); err != nil {
 		return err
 	}
-	defer config.close()
-	switch err := config.execute(args); {
-	case errors.Is(err, bbolt.ErrTimeout):
+	defer func() {
+		err = multierr.Append(err, config.close())
+	}()
+	err = config.execute(args)
+	if errors.Is(err, bbolt.ErrTimeout) {
 		// Translate bbolt timeout errors into a friendlier message. As the
 		// persistent state is opened lazily, this error could occur at any
 		// time, so it's easiest to intercept it here.
-		return errors.New("timeout obtaining persistent state lock, is another instance of chezmoi running?")
-	default:
-		return err
+		err = errors.New("timeout obtaining persistent state lock, is another instance of chezmoi running?")
 	}
+	return
 }

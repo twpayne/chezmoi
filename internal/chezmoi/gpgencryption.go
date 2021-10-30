@@ -5,6 +5,8 @@ import (
 	"os/exec"
 	"runtime"
 
+	"go.uber.org/multierr"
+
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )
 
@@ -140,17 +142,20 @@ func (e *GPGEncryption) run(args []string) error {
 }
 
 // withPrivateTempDir creates a private temporary and calls f.
-func withPrivateTempDir(f func(tempDirAbsPath AbsPath) error) error {
-	tempDir, err := os.MkdirTemp("", "chezmoi-encryption")
-	if err != nil {
-		return err
+func withPrivateTempDir(f func(tempDirAbsPath AbsPath) error) (err error) {
+	var tempDir string
+	if tempDir, err = os.MkdirTemp("", "chezmoi-encryption"); err != nil {
+		return
 	}
-	defer os.RemoveAll(tempDir)
+	defer func() {
+		err = multierr.Append(err, os.RemoveAll(tempDir))
+	}()
 	if runtime.GOOS != "windows" {
-		if err := os.Chmod(tempDir, 0o700); err != nil {
-			return err
+		if err = os.Chmod(tempDir, 0o700); err != nil {
+			return
 		}
 	}
 
-	return f(NewAbsPath(tempDir))
+	err = f(NewAbsPath(tempDir))
+	return
 }

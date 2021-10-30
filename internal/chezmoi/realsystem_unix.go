@@ -54,20 +54,22 @@ func (s *RealSystem) Readlink(name AbsPath) (string, error) {
 }
 
 // WriteFile implements System.WriteFile.
-func (s *RealSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error {
+func (s *RealSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) (err error) {
 	// Special case: if writing to the real filesystem in safe mode, use
 	// github.com/google/renameio.
 	if s.safe && s.fileSystem == vfs.OSFS {
 		dir := filename.Dir()
 		dev, ok := s.devCache[dir]
 		if !ok {
-			info, err := s.Stat(dir)
+			var info fs.FileInfo
+			info, err = s.Stat(dir)
 			if err != nil {
 				return err
 			}
 			statT, ok := info.Sys().(*syscall.Stat_t)
 			if !ok {
-				return errors.New("fs.FileInfo.Sys() cannot be converted to a *syscall.Stat_t")
+				err = errors.New("fs.FileInfo.Sys() cannot be converted to a *syscall.Stat_t")
+				return
 			}
 			dev = uint(statT.Dev)
 			s.devCache[dir] = dev
@@ -77,20 +79,21 @@ func (s *RealSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) 
 			tempDir = renameio.TempDir(dir.String())
 			s.tempDirCache[dev] = tempDir
 		}
-		t, err := renameio.TempFile(tempDir, filename.String())
-		if err != nil {
-			return err
+		var t *renameio.PendingFile
+		if t, err = renameio.TempFile(tempDir, filename.String()); err != nil {
+			return
 		}
 		defer func() {
-			_ = t.Cleanup()
+			err = multierr.Append(err, t.Cleanup())
 		}()
-		if err := t.Chmod(perm); err != nil {
-			return err
+		if err = t.Chmod(perm); err != nil {
+			return
 		}
-		if _, err := t.Write(data); err != nil {
-			return err
+		if _, err = t.Write(data); err != nil {
+			return
 		}
-		return t.CloseAtomicallyReplace()
+		err = t.CloseAtomicallyReplace()
+		return
 	}
 
 	return writeFile(s.fileSystem, filename, data, perm)
@@ -114,8 +117,8 @@ func (s *RealSystem) WriteSymlink(oldname string, newname AbsPath) error {
 // ensure permissions, so we use our own implementation.
 func writeFile(fileSystem vfs.FS, filename AbsPath, data []byte, perm fs.FileMode) (err error) {
 	// Create a new file, or truncate any existing one.
-	f, err := fileSystem.OpenFile(filename.String(), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, perm)
-	if err != nil {
+	var f *os.File
+	if f, err = fileSystem.OpenFile(filename.String(), os.O_WRONLY|os.O_CREATE|os.O_TRUNC, perm); err != nil {
 		return
 	}
 	defer func() {

@@ -1295,8 +1295,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(sourceRelPath SourceRelPath,
 
 			// Write the modifier to a temporary file.
 			var tempFile *os.File
-			tempFile, err = os.CreateTemp("", "*."+fileAttr.TargetName)
-			if err != nil {
+			if tempFile, err = os.CreateTemp("", "*."+fileAttr.TargetName); err != nil {
 				return
 			}
 			defer func() {
@@ -1317,7 +1316,8 @@ func (s *SourceState) newModifyTargetStateEntryFunc(sourceRelPath SourceRelPath,
 			cmd := interpreter.ExecCommand(tempFile.Name())
 			cmd.Stdin = bytes.NewReader(currentContents)
 			cmd.Stderr = os.Stderr
-			return destSystem.IdempotentCmdOutput(cmd)
+			contents, err = destSystem.IdempotentCmdOutput(cmd)
+			return
 		}
 		return &TargetStateFile{
 			lazyContents: newLazyContentsFunc(contentsFunc),
