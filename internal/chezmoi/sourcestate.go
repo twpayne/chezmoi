@@ -241,13 +241,11 @@ func (s *SourceState) Add(sourceSystem System, persistentState PersistentState, 
 		sourceRelPaths []SourceRelPath
 	}
 
-	destAbsPaths := make([]AbsPath, 0, len(destAbsPathInfos))
+	destAbsPaths := make(AbsPaths, 0, len(destAbsPathInfos))
 	for destAbsPath := range destAbsPathInfos {
 		destAbsPaths = append(destAbsPaths, destAbsPath)
 	}
-	sort.Slice(destAbsPaths, func(i, j int) bool {
-		return destAbsPaths[i].absPath < destAbsPaths[j].absPath
-	})
+	sort.Sort(destAbsPaths)
 
 	sourceUpdates := make([]sourceUpdate, 0, len(destAbsPathInfos))
 	newSourceStateEntries := make(map[SourceRelPath]SourceStateEntry)

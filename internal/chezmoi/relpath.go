@@ -19,9 +19,9 @@ type RelPath struct {
 // RelPaths is a slice of RelPaths that implements sort.Interface.
 type RelPaths []RelPath
 
-func (p RelPaths) Len() int           { return len(p) }
-func (p RelPaths) Less(i, j int) bool { return p[i].Less(p[j]) }
-func (p RelPaths) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
+func (ps RelPaths) Len() int           { return len(ps) }
+func (ps RelPaths) Less(i, j int) bool { return ps[i].Less(ps[j]) }
+func (ps RelPaths) Swap(i, j int)      { ps[i], ps[j] = ps[j], ps[i] }
 
 // NewRelPath returns a new RelPath.
 func NewRelPath(relPath string) RelPath {
@@ -31,7 +31,7 @@ func NewRelPath(relPath string) RelPath {
 }
 
 // AppendString appends s to p.
-func (p *RelPath) AppendString(s string) RelPath {
+func (p RelPath) AppendString(s string) RelPath {
 	return NewRelPath(p.relPath + s)
 }
 

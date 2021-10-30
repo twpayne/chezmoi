@@ -53,7 +53,7 @@ require (
 require (
 	github.com/Microsoft/go-winio v0.5.1 // indirect
 	github.com/godbus/dbus/v5 v5.0.5 // indirect
-	github.com/google/gops v0.3.22 // indirect
+	github.com/google/gops v0.3.22
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/shopspring/decimal v1.3.0 // indirect
 	github.com/stretchr/objx v0.3.0 // indirect
