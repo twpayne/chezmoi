@@ -1455,19 +1455,25 @@ func (s *SourceState) applyAll(targetSystem, destSystem System, persistentState 
 // without error.
 func requireEvaluateAll(t *testing.T, s *SourceState, destSystem System) {
 	t.Helper()
-	for _, targetRelPath := range s.TargetRelPaths() {
-		sourceStateEntry := s.entries[targetRelPath]
-		require.NoError(t, sourceStateEntry.Evaluate())
+	require.NoError(t, s.root.ForEach(EmptyRelPath, func(targetRelPath RelPath, sourceStateEntry SourceStateEntry) error {
+		if err := sourceStateEntry.Evaluate(); err != nil {
+			return err
+		}
 		destAbsPath := s.destDirAbsPath.Join(targetRelPath)
 		targetStateEntry, err := sourceStateEntry.TargetStateEntry(destSystem, destAbsPath)
-		require.NoError(t, err)
-		require.NoError(t, targetStateEntry.Evaluate())
-	}
+		if err != nil {
+			return err
+		}
+		return targetStateEntry.Evaluate()
+	}))
 }
 
 func withEntries(sourceEntries map[RelPath]SourceStateEntry) SourceStateOption {
 	return func(s *SourceState) {
-		s.entries = sourceEntries
+		s.root = sourceStateEntryTreeNode{}
+		for targetRelPath, sourceStateEntry := range sourceEntries {
+			s.root.Set(targetRelPath, sourceStateEntry)
+		}
 	}
 }
 

@@ -1737,7 +1737,7 @@ func (c *Config) targetRelPaths(sourceState *chezmoi.SourceState, args []string,
 			return nil, err
 		}
 		if options.mustBeInSourceState {
-			if _, ok := sourceState.Entry(targetRelPath); !ok {
+			if !sourceState.Contains(targetRelPath) {
 				return nil, fmt.Errorf("%s: not in source state", arg)
 			}
 		}
@@ -1775,10 +1775,11 @@ func (c *Config) targetRelPaths(sourceState *chezmoi.SourceState, args []string,
 func (c *Config) targetRelPathsBySourcePath(sourceState *chezmoi.SourceState, args []string) ([]chezmoi.RelPath, error) {
 	targetRelPaths := make([]chezmoi.RelPath, 0, len(args))
 	targetRelPathsBySourceRelPath := make(map[chezmoi.RelPath]chezmoi.RelPath)
-	for targetRelPath, sourceStateEntry := range sourceState.Entries() {
+	_ = sourceState.ForEach(func(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi.SourceStateEntry) error {
 		sourceRelPath := sourceStateEntry.SourceRelPath().RelPath()
 		targetRelPathsBySourceRelPath[sourceRelPath] = targetRelPath
-	}
+		return nil
+	})
 	for _, arg := range args {
 		argAbsPath, err := chezmoi.NewAbsPathFromExtPath(arg, c.homeDirAbsPath)
 		if err != nil {
