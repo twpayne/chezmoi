@@ -12,6 +12,7 @@ import (
 
 	"filippo.io/age"
 	"filippo.io/age/armor"
+	"go.uber.org/multierr"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )
@@ -248,22 +249,28 @@ func (e *AgeEncryption) identityArgs() []string {
 
 // parseIdentityFile parses the identities from indentityFile using the builtin
 // age.
-func parseIdentityFile(identityFile AbsPath) ([]age.Identity, error) {
-	file, err := os.Open(identityFile.String())
-	if err != nil {
-		return nil, err
+func parseIdentityFile(identityFile AbsPath) (identities []age.Identity, err error) {
+	var file *os.File
+	if file, err = os.Open(identityFile.String()); err != nil {
+		return
 	}
-	defer file.Close()
-	return age.ParseIdentities(file)
+	defer func() {
+		err = multierr.Append(err, file.Close())
+	}()
+	identities, err = age.ParseIdentities(file)
+	return
 }
 
 // parseRecipientFile parses the recipients from recipientFile using the builtin
 // age.
-func parseRecipientsFile(recipientsFile AbsPath) ([]age.Recipient, error) {
-	file, err := os.Open(recipientsFile.String())
-	if err != nil {
-		return nil, err
+func parseRecipientsFile(recipientsFile AbsPath) (recipients []age.Recipient, err error) {
+	var file *os.File
+	if file, err = os.Open(recipientsFile.String()); err != nil {
+		return
 	}
-	defer file.Close()
-	return age.ParseRecipients(file)
+	defer func() {
+		err = multierr.Append(err, file.Close())
+	}()
+	recipients, err = age.ParseRecipients(file)
+	return
 }

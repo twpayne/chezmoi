@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/pelletier/go-toml"
+	"go.uber.org/multierr"
 	"gopkg.in/yaml.v3"
 )
 
@@ -68,17 +69,20 @@ func (formatGzippedJSON) Name() string {
 }
 
 // Unmask implements Format.Unmarshal.
-func (formatGzippedJSON) Unmarshal(data []byte, value interface{}) error {
-	r, err := gzip.NewReader(bytes.NewReader(data))
-	if err != nil {
-		return err
+func (formatGzippedJSON) Unmarshal(data []byte, value interface{}) (err error) {
+	var r *gzip.Reader
+	if r, err = gzip.NewReader(bytes.NewReader(data)); err != nil {
+		return
 	}
-	defer r.Close()
+	defer func() {
+		err = multierr.Append(err, r.Close())
+	}()
 	jsonData, err := io.ReadAll(r)
 	if err != nil {
-		return err
+		return
 	}
-	return json.Unmarshal(jsonData, value)
+	err = json.Unmarshal(jsonData, value)
+	return
 }
 
 // Marshal implements Format.Marshal.

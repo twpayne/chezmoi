@@ -3,34 +3,38 @@ package cmd
 import (
 	"fmt"
 
+	"go.uber.org/multierr"
 	"golang.org/x/sys/windows"
 	"golang.org/x/term"
 )
 
 // readPassword reads a password.
-func (c *Config) readPassword(prompt string) (string, error) {
+func (c *Config) readPassword(prompt string) (password string, err error) {
 	if c.noTTY {
-		return c.readLine(prompt)
+		password, err = c.readLine(prompt)
+		return
 	}
 
-	name, err := windows.UTF16PtrFromString("CONIN$")
+	var name *uint16
+	name, err = windows.UTF16PtrFromString("CONIN$")
 	if err != nil {
-		return "", err
+		return
 	}
-	handle, err := windows.CreateFile(name, windows.GENERIC_READ|windows.GENERIC_WRITE, windows.FILE_SHARE_READ, nil, windows.OPEN_EXISTING, 0, 0)
-	if err != nil {
-		return "", err
+	var handle windows.Handle
+	if handle, err = windows.CreateFile(name, windows.GENERIC_READ|windows.GENERIC_WRITE, windows.FILE_SHARE_READ, nil, windows.OPEN_EXISTING, 0, 0); err != nil {
+		return
 	}
 	defer func() {
-		_ = windows.CloseHandle(handle)
+		err = multierr.Append(err, windows.CloseHandle(handle))
 	}()
 	//nolint:forbidigo
 	fmt.Print(prompt)
-	password, err := term.ReadPassword(int(handle))
-	if err != nil {
-		return "", err
+	var passwordBytes []byte
+	if passwordBytes, err = term.ReadPassword(int(handle)); err != nil {
+		return
 	}
 	//nolint:forbidigo
 	fmt.Println("")
-	return string(password), nil
+	password = string(passwordBytes)
+	return
 }
