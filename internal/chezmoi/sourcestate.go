@@ -67,7 +67,7 @@ var externalCacheFormat = formatGzippedJSON{}
 
 // A SourceState is a source state.
 type SourceState struct {
-	entries                 map[RelPath]SourceStateEntry
+	root                    sourceStateEntryTreeNode
 	baseSystem              System
 	system                  System
 	sourceDirAbsPath        AbsPath
@@ -199,7 +199,6 @@ type targetStateEntryFunc func(System, AbsPath) (TargetStateEntry, error)
 // NewSourceState creates a new source state with the given options.
 func NewSourceState(options ...SourceStateOption) *SourceState {
 	s := &SourceState{
-		entries:              make(map[RelPath]SourceStateEntry),
 		umask:                Umask,
 		encryption:           NoEncryption{},
 		ignore:               newPatternSet(),
@@ -268,7 +267,7 @@ DESTABSPATH:
 			parentSourceRelPath = SourceRelPath{}
 		} else if parentEntry, ok := newSourceStateEntriesByTargetRelPath[targetParentRelPath]; ok {
 			parentSourceRelPath = parentEntry.SourceRelPath()
-		} else if parentEntry, ok := s.entries[targetParentRelPath]; ok {
+		} else if parentEntry := s.root.Get(targetParentRelPath); parentEntry != nil {
 			parentSourceRelPath = parentEntry.SourceRelPath()
 		} else {
 			return fmt.Errorf("%s: parent directory not in source state", destAbsPath)
@@ -299,7 +298,7 @@ DESTABSPATH:
 			sourceRelPaths: []SourceRelPath{sourceEntryRelPath},
 		}
 
-		if oldSourceStateEntry, ok := s.entries[targetRelPath]; ok {
+		if oldSourceStateEntry := s.root.Get(targetRelPath); oldSourceStateEntry != nil {
 			oldSourceEntryRelPath := oldSourceStateEntry.SourceRelPath()
 			if !oldSourceEntryRelPath.Empty() && oldSourceEntryRelPath != sourceEntryRelPath {
 				if options.PreAddFunc != nil {
@@ -362,24 +361,24 @@ DESTABSPATH:
 		}
 	}
 
-	sourceEntries := make(map[RelPath]SourceStateEntry)
+	var sourceRoot sourceStateEntryTreeNode
 	for sourceRelPath, sourceStateEntry := range newSourceStateEntries {
-		sourceEntries[sourceRelPath.RelPath()] = sourceStateEntry
+		sourceRoot.Set(sourceRelPath.RelPath(), sourceStateEntry)
 	}
 
 	// Simulate removing a directory by creating SourceStateRemove entries for
 	// all existing source state entries that are in options.RemoveDir and not
 	// in the new source state.
 	if options.RemoveDir != EmptyRelPath {
-		for targetRelPath, sourceStateEntry := range s.entries {
+		_ = s.root.ForEach(EmptyRelPath, func(targetRelPath RelPath, sourceStateEntry SourceStateEntry) error {
 			if !targetRelPath.HasDirPrefix(options.RemoveDir) {
-				continue
+				return nil
 			}
 			if _, ok := newSourceStateEntriesByTargetRelPath[targetRelPath]; ok {
-				continue
+				return nil
 			}
 			sourceRelPath := sourceStateEntry.SourceRelPath()
-			sourceEntries[sourceRelPath.RelPath()] = &SourceStateRemove{}
+			sourceRoot.Set(sourceRelPath.RelPath(), &SourceStateRemove{})
 			update := sourceUpdate{
 				destAbsPath: s.destDirAbsPath.Join(targetRelPath),
 				entryState: &EntryState{
@@ -388,11 +387,12 @@ DESTABSPATH:
 				sourceRelPaths: []SourceRelPath{sourceRelPath},
 			}
 			sourceUpdates = append(sourceUpdates, update)
-		}
+			return nil
+		})
 	}
 
 	targetSourceState := &SourceState{
-		entries: sourceEntries,
+		root: sourceRoot,
 	}
 
 	for _, sourceUpdate := range sourceUpdates {
@@ -440,7 +440,7 @@ func (s *SourceState) AddDestAbsPathInfos(destAbsPathInfos map[AbsPath]fs.FileIn
 			return nil
 		}
 		parentRelPath := parentAbsPath.MustTrimDirPrefix(s.destDirAbsPath)
-		if _, ok := s.entries[parentRelPath]; ok {
+		if s.root.Get(parentRelPath) != nil {
 			return nil
 		}
 
@@ -461,7 +461,7 @@ type ApplyOptions struct {
 
 // Apply updates targetRelPath in targetDir in destSystem to match s.
 func (s *SourceState) Apply(targetSystem, destSystem System, persistentState PersistentState, targetDir AbsPath, targetRelPath RelPath, options ApplyOptions) error {
-	sourceStateEntry := s.entries[targetRelPath]
+	sourceStateEntry := s.root.Get(targetRelPath)
 
 	if !options.Include.IncludeEncrypted() {
 		if sourceStateFile, ok := sourceStateEntry.(*SourceStateFile); ok && sourceStateFile.Attr.Encrypted {
@@ -595,20 +595,14 @@ func (s *SourceState) Apply(targetSystem, destSystem System, persistentState Per
 	return persistentStateSet(persistentState, EntryStateBucket, targetAbsPath.Bytes(), targetEntryState)
 }
 
+// Contains returns the source state entry for targetRelPath.
+func (s *SourceState) Contains(targetRelPath RelPath) bool {
+	return s.root.Get(targetRelPath) != nil
+}
+
 // Encryption returns s's encryption.
 func (s *SourceState) Encryption() Encryption {
 	return s.encryption
-}
-
-// Entries returns s's source state entries.
-func (s *SourceState) Entries() map[RelPath]SourceStateEntry {
-	return s.entries
-}
-
-// Entry returns the source state entry for targetRelPath.
-func (s *SourceState) Entry(targetRelPath RelPath) (SourceStateEntry, bool) {
-	sourceStateEntry, ok := s.entries[targetRelPath]
-	return sourceStateEntry, ok
 }
 
 // ExecuteTemplateData returns the result of executing template data.
@@ -642,6 +636,13 @@ func (s *SourceState) ExecuteTemplateData(name string, data []byte) ([]byte, err
 	return []byte(builder.String()), nil
 }
 
+// ForEach calls f for each source state entry.
+func (s *SourceState) ForEach(f func(RelPath, SourceStateEntry) error) error {
+	return s.root.ForEach(EmptyRelPath, func(targetRelPath RelPath, entry SourceStateEntry) error {
+		return f(targetRelPath, entry)
+	})
+}
+
 // Ignore returns if targetRelPath should be ignored.
 func (s *SourceState) Ignore(targetRelPath RelPath) bool {
 	return s.ignore.match(targetRelPath.String())
@@ -655,8 +656,8 @@ func (s *SourceState) MinVersion() semver.Version {
 // MustEntry returns the source state entry associated with targetRelPath, and
 // panics if it does not exist.
 func (s *SourceState) MustEntry(targetRelPath RelPath) SourceStateEntry {
-	sourceStateEntry, ok := s.entries[targetRelPath]
-	if !ok {
+	sourceStateEntry := s.root.Get(targetRelPath)
+	if sourceStateEntry == nil {
 		panic(fmt.Sprintf("%s: not in source state", targetRelPath))
 	}
 	return sourceStateEntry
@@ -892,7 +893,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 
 	// Populate s.Entries with the unique source entry for each target.
 	for targetRelPath, sourceEntries := range allSourceStateEntries {
-		s.entries[targetRelPath] = sourceEntries[0]
+		s.root.Set(targetRelPath, sourceEntries[0])
 	}
 
 	return nil
@@ -900,13 +901,14 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 
 // TargetRelPaths returns all of s's target relative paths in order.
 func (s *SourceState) TargetRelPaths() []RelPath {
-	targetRelPaths := make([]RelPath, 0, len(s.entries))
-	for targetRelPath := range s.entries {
+	entries := s.root.Map()
+	targetRelPaths := make([]RelPath, 0, len(entries))
+	for targetRelPath := range entries {
 		targetRelPaths = append(targetRelPaths, targetRelPath)
 	}
 	sort.Slice(targetRelPaths, func(i, j int) bool {
-		orderI := s.entries[targetRelPaths[i]].Order()
-		orderJ := s.entries[targetRelPaths[j]].Order()
+		orderI := entries[targetRelPaths[i]].Order()
+		orderJ := entries[targetRelPaths[j]].Order()
 		switch {
 		case orderI < orderJ:
 			return true

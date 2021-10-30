@@ -45,6 +45,11 @@ func (p RelPath) Dir() RelPath {
 	return NewRelPath(path.Dir(p.relPath))
 }
 
+// Empty returns if p is empty.
+func (p RelPath) Empty() bool {
+	return p.relPath == ""
+}
+
 // Ext returns p's extension.
 func (p RelPath) Ext() string {
 	return path.Ext(p.relPath)
@@ -58,7 +63,9 @@ func (p RelPath) HasDirPrefix(dirPrefix RelPath) bool {
 // Join appends relPaths to p.
 func (p RelPath) Join(relPaths ...RelPath) RelPath {
 	relPathStrs := make([]string, 0, len(relPaths)+1)
-	relPathStrs = append(relPathStrs, p.relPath)
+	if p.relPath != "" {
+		relPathStrs = append(relPathStrs, p.relPath)
+	}
 	for _, relPath := range relPaths {
 		relPathStrs = append(relPathStrs, relPath.String())
 	}
@@ -97,6 +104,16 @@ func (p RelPath) Slice(begin, end int) RelPath {
 func (p RelPath) Split() (RelPath, RelPath) {
 	dir, file := path.Split(p.relPath)
 	return NewRelPath(dir), NewRelPath(file)
+}
+
+// SplitAll returns p's components.
+func (p RelPath) SplitAll() []RelPath {
+	components := strings.Split(p.relPath, "/")
+	relPaths := make([]RelPath, 0, len(components))
+	for _, component := range components {
+		relPaths = append(relPaths, NewRelPath(component))
+	}
+	return relPaths
 }
 
 func (p RelPath) String() string {

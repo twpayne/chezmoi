@@ -40,15 +40,17 @@ func (c *Config) newReAddCmd() *cobra.Command {
 }
 
 func (c *Config) runReAddCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
-	sourceStateEntries := sourceState.Entries()
-	destRelPaths := make(chezmoi.RelPaths, 0, len(sourceStateEntries))
-	for destRelPath := range sourceStateEntries {
-		destRelPaths = append(destRelPaths, destRelPath)
-	}
-	sort.Sort(destRelPaths)
+	var targetRelPaths chezmoi.RelPaths
+	sourceStateEntries := make(map[chezmoi.RelPath]chezmoi.SourceStateEntry)
+	_ = sourceState.ForEach(func(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi.SourceStateEntry) error {
+		targetRelPaths = append(targetRelPaths, targetRelPath)
+		sourceStateEntries[targetRelPath] = sourceStateEntry
+		return nil
+	})
+	sort.Sort(targetRelPaths)
 
-	for _, destRelPath := range destRelPaths {
-		sourceStateFile, ok := sourceStateEntries[destRelPath].(*chezmoi.SourceStateFile)
+	for _, targetRelPath := range targetRelPaths {
+		sourceStateFile, ok := sourceStateEntries[targetRelPath].(*chezmoi.SourceStateFile)
 		if !ok {
 			continue
 		}
@@ -59,7 +61,7 @@ func (c *Config) runReAddCmd(cmd *cobra.Command, args []string, sourceState *che
 			continue
 		}
 
-		destAbsPath := c.DestDirAbsPath.Join(destRelPath)
+		destAbsPath := c.DestDirAbsPath.Join(targetRelPath)
 		destAbsPathInfo, err := c.destSystem.Stat(destAbsPath)
 		actualState, err := chezmoi.NewActualStateEntry(c.destSystem, destAbsPath, destAbsPathInfo, err)
 		if err != nil {

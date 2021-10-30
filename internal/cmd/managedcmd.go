@@ -34,18 +34,18 @@ func (c *Config) newManagedCmd() *cobra.Command {
 
 func (c *Config) runManagedCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
 	include := c.managed.include.Sub(c.managed.exclude)
-	entries := sourceState.Entries()
-	targetRelPaths := make(chezmoi.RelPaths, 0, len(entries))
-	for targetRelPath, sourceStateEntry := range entries {
+	var targetRelPaths chezmoi.RelPaths
+	_ = sourceState.ForEach(func(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi.SourceStateEntry) error {
 		targetStateEntry, err := sourceStateEntry.TargetStateEntry(c.destSystem, c.DestDirAbsPath.Join(targetRelPath))
 		if err != nil {
 			return err
 		}
 		if !include.IncludeTargetStateEntry(targetStateEntry) {
-			continue
+			return nil
 		}
 		targetRelPaths = append(targetRelPaths, targetRelPath)
-	}
+		return nil
+	})
 
 	sort.Sort(targetRelPaths)
 	builder := strings.Builder{}

@@ -33,7 +33,7 @@ func (c *Config) runUnmanagedCmd(cmd *cobra.Command, args []string, sourceState 
 			return nil
 		}
 		targeRelPath := destAbsPath.MustTrimDirPrefix(c.DestDirAbsPath)
-		_, managed := sourceState.Entry(targeRelPath)
+		managed := sourceState.Contains(targeRelPath)
 		ignored := sourceState.Ignore(targeRelPath)
 		if !managed && !ignored {
 			builder.WriteString(targeRelPath.String())
