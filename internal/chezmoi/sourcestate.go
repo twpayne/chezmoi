@@ -894,6 +894,27 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		s.root.Set(targetRelPath, sourceEntries[0])
 	}
 
+	// Generate directory entries for any missing directories.
+	generatedDirEntries := make(map[RelPath]*SourceStateDir)
+	_ = s.root.ForEachNode(EmptyRelPath, func(targetRelPath RelPath, node *sourceStateEntryTreeNode) error {
+		if targetRelPath.Empty() {
+			return nil
+		}
+		if node.sourceStateEntry != nil {
+			return nil
+		}
+		var sourceRelPath SourceRelPath
+		_, targetNameRelPath := targetRelPath.Split()
+		sourceStateDir := s.newSourceStateDir(sourceRelPath, DirAttr{
+			TargetName: targetNameRelPath.String(),
+		})
+		generatedDirEntries[targetRelPath] = sourceStateDir
+		return nil
+	})
+	for targetRelPath, sourceStateDir := range generatedDirEntries {
+		s.root.Set(targetRelPath, sourceStateDir)
+	}
+
 	return nil
 }
 

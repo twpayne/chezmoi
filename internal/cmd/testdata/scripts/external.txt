@@ -51,6 +51,14 @@ chhome home7/user
 # test that .chezmoiignore applies to entire externals
 chezmoi apply --force
 
+chhome home8/user
+
+# test that parent directories are created if needed
+chezmoi apply --force
+cmp $HOME/.dir1/file golden/dir/file
+cmp $HOME/.dir2/dir2/file golden/dir/file
+cmp $HOME/.dir3/dir3/dir3/file golden/dir/file
+
 -- archive/dir/file --
 # contents of dir/file
 -- golden/.file --
@@ -99,5 +107,18 @@ subdir:
     url: {{ env "HTTPD_URL" }}/non-existent-archive.tar.gz
 -- home7/user/.local/share/chezmoi/.chezmoiignore --
 .dir
+-- home8/user/.local/share/chezmoi/.chezmoiexternal.toml --
+[".dir1"]
+    type = "archive"
+    url = "{{ env "HTTPD_URL" }}/archive.tar.gz"
+    stripComponents = 2
+[".dir2/dir2"]
+    type = "archive"
+    url = "{{ env "HTTPD_URL" }}/archive.tar.gz"
+    stripComponents = 2
+[".dir3/dir3/dir3"]
+    type = "archive"
+    url = "{{ env "HTTPD_URL" }}/archive.tar.gz"
+    stripComponents = 2
 -- www/.file --
 # contents of .file
