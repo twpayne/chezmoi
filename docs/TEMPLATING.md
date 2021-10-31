@@ -322,7 +322,8 @@ the `text/template` format that contains many helper functions. Take a look at
 their documentation for a list.
 
 chezmoi adds a few functions of its own as well. Take a look at the
-[`reference`](REFERENCE.md#template-functions) for complete list.
+[reference](https://github.com/twpayne/chezmoi/blob/master/docs/REFERENCE.md#template-functions)
+for complete list.
 
 ---
 
