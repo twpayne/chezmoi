@@ -803,7 +803,19 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		if s.Ignore(externalRelPath) {
 			continue
 		}
-		externalSourceStateEntries, err := s.readExternal(ctx, externalRelPath, s.externals[externalRelPath], options)
+		external := s.externals[externalRelPath]
+		parentRelPath, _ := externalRelPath.Split()
+		var parentSourceRelPath SourceRelPath
+		dirAttr := DirAttr{
+			Exact: external.Exact,
+		}
+		switch parentSourceStateEntry, err := s.root.MkdirAll(parentRelPath, dirAttr, external.URL, s.umask); {
+		case err != nil:
+			return err
+		case parentSourceStateEntry != nil:
+			parentSourceRelPath = parentSourceStateEntry.SourceRelPath()
+		}
+		externalSourceStateEntries, err := s.readExternal(ctx, externalRelPath, parentSourceRelPath, external, options)
 		if err != nil {
 			return err
 		}
@@ -874,6 +886,11 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			continue
 		}
 
+		// Allow duplicate equivalent source entries for directories.
+		if allEquivalentDirs(sourceStateEntries) {
+			continue
+		}
+
 		origins := make([]string, 0, len(sourceStateEntries))
 		for _, sourceStateEntry := range sourceStateEntries {
 			origins = append(origins, sourceStateEntry.Origin())
@@ -891,27 +908,6 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 	// Populate s.Entries with the unique source entry for each target.
 	for targetRelPath, sourceEntries := range allSourceStateEntries {
 		s.root.Set(targetRelPath, sourceEntries[0])
-	}
-
-	// Generate directory entries for any missing directories.
-	generatedDirEntries := make(map[RelPath]*SourceStateDir)
-	_ = s.root.ForEachNode(EmptyRelPath, func(targetRelPath RelPath, node *sourceStateEntryTreeNode) error {
-		if targetRelPath.Empty() {
-			return nil
-		}
-		if node.sourceStateEntry != nil {
-			return nil
-		}
-		var sourceRelPath SourceRelPath
-		_, targetNameRelPath := targetRelPath.Split()
-		sourceStateDir := s.newSourceStateDir(sourceRelPath, DirAttr{
-			TargetName: targetNameRelPath.String(),
-		})
-		generatedDirEntries[targetRelPath] = sourceStateDir
-		return nil
-	})
-	for targetRelPath, sourceStateDir := range generatedDirEntries {
-		s.root.Set(targetRelPath, sourceStateDir)
 	}
 
 	return nil
@@ -1588,12 +1584,12 @@ func (s *SourceState) newSourceStateFileEntryFromSymlink(actualStateSymlink *Act
 }
 
 // readExternal reads an external and returns its SourceStateEntries.
-func (s *SourceState) readExternal(ctx context.Context, externalRelPath RelPath, external External, options *ReadOptions) (map[RelPath][]SourceStateEntry, error) {
+func (s *SourceState) readExternal(ctx context.Context, externalRelPath RelPath, parentSourceRelPath SourceRelPath, external External, options *ReadOptions) (map[RelPath][]SourceStateEntry, error) {
 	switch external.Type {
 	case ExternalTypeArchive:
-		return s.readExternalArchive(ctx, externalRelPath, external, options)
+		return s.readExternalArchive(ctx, externalRelPath, parentSourceRelPath, external, options)
 	case ExternalTypeFile:
-		return s.readExternalFile(ctx, externalRelPath, external, options)
+		return s.readExternalFile(ctx, externalRelPath, parentSourceRelPath, external, options)
 	default:
 		return nil, fmt.Errorf("%s: unknown external type: %s", externalRelPath, external.Type)
 	}
@@ -1601,7 +1597,7 @@ func (s *SourceState) readExternal(ctx context.Context, externalRelPath RelPath,
 
 // readExternalArchive reads an external archive and returns its
 // SourceStateEntries.
-func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath RelPath, external External, options *ReadOptions) (map[RelPath][]SourceStateEntry, error) {
+func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath RelPath, parentSourceRelPath SourceRelPath, external External, options *ReadOptions) (map[RelPath][]SourceStateEntry, error) {
 	data, err := s.getExternalData(ctx, externalRelPath, external, options)
 	if err != nil {
 		return nil, err
@@ -1615,19 +1611,20 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 	if external.Encrypted {
 		urlPath = strings.TrimSuffix(urlPath, s.encryption.EncryptedSuffix())
 	}
-	sourceStateEntries := map[RelPath][]SourceStateEntry{
-		externalRelPath: {
-			&SourceStateDir{
-				Attr: DirAttr{
-					TargetName: externalRelPath.Base(),
-					Exact:      external.Exact,
-				},
-				origin: external.URL,
-				targetStateEntry: &TargetStateDir{
-					perm: 0o777 &^ s.umask,
-				},
-			},
+	dirAttr := DirAttr{
+		TargetName: externalRelPath.Base(),
+		Exact:      external.Exact,
+	}
+	sourceStateDir := &SourceStateDir{
+		Attr:          dirAttr,
+		origin:        external.URL,
+		sourceRelPath: parentSourceRelPath.Join(NewSourceRelPath(dirAttr.SourceName())),
+		targetStateEntry: &TargetStateDir{
+			perm: 0o777 &^ s.umask,
 		},
+	}
+	sourceStateEntries := map[RelPath][]SourceStateEntry{
+		externalRelPath: {sourceStateDir},
 	}
 
 	format := external.Format
@@ -1635,6 +1632,7 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 		format = GuessArchiveFormat(urlPath, data)
 	}
 
+	sourceRelPaths := make(map[RelPath]SourceRelPath)
 	if err := walkArchive(data, format, func(name string, info fs.FileInfo, r io.Reader, linkname string) error {
 		if external.StripComponents > 0 {
 			components := strings.Split(name, "/")
@@ -1652,20 +1650,25 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 			return nil
 		}
 
+		dirTargetRelPath, _ := targetRelPath.Split()
+		dirSourceRelPath := sourceRelPaths[dirTargetRelPath]
+
 		var sourceStateEntry SourceStateEntry
 		switch {
 		case info.IsDir():
 			targetStateEntry := &TargetStateDir{
 				perm: info.Mode().Perm() &^ s.umask,
 			}
+			dirAttr := DirAttr{
+				TargetName: info.Name(),
+				Exact:      external.Exact,
+				Private:    isPrivate(info),
+				ReadOnly:   isReadOnly(info),
+			}
 			sourceStateEntry = &SourceStateDir{
-				Attr: DirAttr{
-					TargetName: info.Name(),
-					Exact:      external.Exact,
-					Private:    isPrivate(info),
-					ReadOnly:   isReadOnly(info),
-				},
+				Attr:             dirAttr,
 				origin:           external.URL,
+				sourceRelPath:    parentSourceRelPath.Join(dirSourceRelPath, NewSourceRelPath(dirAttr.SourceName())),
 				targetStateEntry: targetStateEntry,
 			}
 		case info.Mode()&fs.ModeType == 0:
@@ -1691,18 +1694,21 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 				lazyContents:     lazyContents,
 				Attr:             fileAttr,
 				origin:           external.URL,
+				sourceRelPath:    parentSourceRelPath.Join(dirSourceRelPath, NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix()))),
 				targetStateEntry: targetStateEntry,
 			}
 		case info.Mode()&fs.ModeType == fs.ModeSymlink:
 			targetStateEntry := &TargetStateSymlink{
 				lazyLinkname: newLazyLinkname(linkname),
 			}
+			fileAttr := FileAttr{
+				TargetName: info.Name(),
+				Type:       SourceFileTypeSymlink,
+			}
 			sourceStateEntry = &SourceStateFile{
-				Attr: FileAttr{
-					TargetName: info.Name(),
-					Type:       SourceFileTypeSymlink,
-				},
+				Attr:             fileAttr,
 				origin:           external.URL,
+				sourceRelPath:    parentSourceRelPath.Join(dirSourceRelPath, NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix()))),
 				targetStateEntry: targetStateEntry,
 			}
 		default:
@@ -1718,7 +1724,7 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 }
 
 // readExternalFile reads an external file and returns its SourceStateEntries.
-func (s *SourceState) readExternalFile(ctx context.Context, externalRelPath RelPath, external External, options *ReadOptions) (map[RelPath][]SourceStateEntry, error) {
+func (s *SourceState) readExternalFile(ctx context.Context, externalRelPath RelPath, parentSourceRelPath SourceRelPath, external External, options *ReadOptions) (map[RelPath][]SourceStateEntry, error) {
 	lazyContents := newLazyContentsFunc(func() ([]byte, error) {
 		return s.getExternalData(ctx, externalRelPath, external, options)
 	})
@@ -1733,6 +1739,7 @@ func (s *SourceState) readExternalFile(ctx context.Context, externalRelPath RelP
 	}
 	sourceStateEntry := &SourceStateFile{
 		origin:           external.URL,
+		sourceRelPath:    parentSourceRelPath.Join(NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix()))),
 		targetStateEntry: targetStateEntry,
 	}
 	return map[RelPath][]SourceStateEntry{
@@ -1754,4 +1761,23 @@ func (s *SourceState) sourceStateEntry(actualStateEntry ActualStateEntry, destAb
 	default:
 		panic(fmt.Sprintf("%T: unsupported type", actualStateEntry))
 	}
+}
+
+// allEquivalentDirs returns if sourceStateEntries are all equivalent
+// directories.
+func allEquivalentDirs(sourceStateEntries []SourceStateEntry) bool {
+	sourceStateDir0, ok := sourceStateEntries[0].(*SourceStateDir)
+	if !ok {
+		return false
+	}
+	for _, sourceStateEntry := range sourceStateEntries[1:] {
+		sourceStateDir, ok := sourceStateEntry.(*SourceStateDir)
+		if !ok {
+			return false
+		}
+		if sourceStateDir0.Attr != sourceStateDir.Attr {
+			return false
+		}
+	}
+	return true
 }
