@@ -547,6 +547,72 @@ func TestSourceStateAdd(t *testing.T) {
 	}
 }
 
+func TestSourceStateAddInExternal(t *testing.T) {
+	buffer := &bytes.Buffer{}
+	tarWriterSystem := NewTARWriterSystem(buffer, tar.Header{})
+	require.NoError(t, tarWriterSystem.Mkdir(NewAbsPath("dir"), 0o777))
+	require.NoError(t, tarWriterSystem.WriteFile(NewAbsPath("dir/file"), []byte("# contents of dir/file\n"), 0o666))
+	require.NoError(t, tarWriterSystem.Close())
+	archiveData := buffer.Bytes()
+
+	httpServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		_, err := w.Write(archiveData)
+		require.NoError(t, err)
+	}))
+	defer httpServer.Close()
+
+	root := map[string]interface{}{
+		"/home/user": map[string]interface{}{
+			".dir/file2": "# contents of .dir/file2\n",
+			".local/share/chezmoi": map[string]interface{}{
+				".chezmoiexternal.toml": chezmoitest.JoinLines(
+					`[".dir"]`,
+					`    type = "archive"`,
+					`    url = "`+httpServer.URL+`/archive.tar"`,
+					`    stripComponents = 1`,
+				),
+				"dot_dir": &vfst.Dir{Perm: 0o777},
+			},
+		},
+	}
+
+	chezmoitest.WithTestFS(t, root, func(fileSystem vfs.FS) {
+		ctx := context.Background()
+		system := NewRealSystem(fileSystem)
+		persistentState := NewMockPersistentState()
+		s := NewSourceState(
+			WithBaseSystem(system),
+			WithCacheDir(NewAbsPath("/home/user/.cache/chezmoi")),
+			WithDestDir(NewAbsPath("/home/user")),
+			WithSourceDir(NewAbsPath("/home/user/.local/share/chezmoi")),
+			WithSystem(system),
+		)
+		require.NoError(t, s.Read(ctx, nil))
+
+		destAbsPath := NewAbsPath("/home/user/.dir/file2")
+		fileInfo, err := system.Stat(destAbsPath)
+		require.NoError(t, err)
+		destAbsPathInfos := map[AbsPath]fs.FileInfo{
+			destAbsPath: fileInfo,
+		}
+		require.NoError(t, s.Add(system, persistentState, system, destAbsPathInfos, &AddOptions{
+			Include: NewEntryTypeSet(EntryTypesAll),
+		}))
+
+		vfst.RunTests(t, fileSystem, "",
+			vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
+				vfst.TestIsDir,
+				vfst.TestModePerm(0o777&^chezmoitest.Umask),
+			),
+			vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/file2",
+				vfst.TestModeIsRegular,
+				vfst.TestModePerm(0o666&^chezmoitest.Umask),
+				vfst.TestContentsString("# contents of .dir/file2\n"),
+			),
+		)
+	})
+}
+
 func TestSourceStateApplyAll(t *testing.T) {
 	for _, tc := range []struct {
 		name               string

@@ -1,6 +1,10 @@
 package chezmoi
 
-import "sort"
+import (
+	"fmt"
+	"io/fs"
+	"sort"
+)
 
 // A sourceStateEntryTreeNode is a node in a tree of SourceStateEntries.
 type sourceStateEntryTreeNode struct {
@@ -79,6 +83,56 @@ func (n *sourceStateEntryTreeNode) Map() map[RelPath]SourceStateEntry {
 		return nil
 	})
 	return m
+}
+
+// MkdirAll creates SourceStateDirs for all components of targetRelPath if they
+// do not already exist and returns the SourceStateDir of relPath.
+func (n *sourceStateEntryTreeNode) MkdirAll(targetRelPath RelPath, dirAttr DirAttr, origin string, umask fs.FileMode) (*SourceStateDir, error) {
+	if targetRelPath == EmptyRelPath {
+		return nil, nil
+	}
+
+	node := n
+	var sourceRelPath SourceRelPath
+	componentRelPaths := targetRelPath.SplitAll()
+	var sourceStateDir *SourceStateDir
+	for i, componentRelPath := range componentRelPaths {
+		if node.children == nil {
+			node.children = make(map[RelPath]*sourceStateEntryTreeNode)
+		}
+		if child, ok := node.children[componentRelPath]; ok {
+			node = child
+		} else {
+			child = newSourceStateTreeNode()
+			node.children[componentRelPath] = child
+			node = child
+		}
+
+		switch {
+		case node.sourceStateEntry == nil:
+			attr := dirAttr
+			attr.TargetName = componentRelPath.String()
+			targetStateDir := &TargetStateDir{
+				perm: attr.perm() &^ umask,
+			}
+			sourceRelPath = sourceRelPath.Join(NewSourceRelPath(attr.SourceName()))
+			sourceStateDir = &SourceStateDir{
+				Attr:             attr,
+				origin:           origin,
+				sourceRelPath:    sourceRelPath,
+				targetStateEntry: targetStateDir,
+			}
+			node.sourceStateEntry = sourceStateDir
+		default:
+			var ok bool
+			sourceStateDir, ok = node.sourceStateEntry.(*SourceStateDir)
+			if !ok {
+				return nil, fmt.Errorf("%s: not a directory", componentRelPaths[0].Join(componentRelPaths[1:i+1]...))
+			}
+			sourceRelPath = sourceRelPath.Join(NewSourceRelPath(sourceStateDir.Attr.SourceName()))
+		}
+	}
+	return sourceStateDir, nil
 }
 
 // Set sets the SourceStateEntry at relPath to sourceStateEntry.

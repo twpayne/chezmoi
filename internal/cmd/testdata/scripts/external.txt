@@ -59,6 +59,11 @@ cmp $HOME/.dir1/file golden/dir/file
 cmp $HOME/.dir2/dir2/file golden/dir/file
 cmp $HOME/.dir3/dir3/dir3/file golden/dir/file
 
+chhome home9/user
+
+# test that duplicate equivalent directories are allowed
+chezmoi apply --force
+
 -- archive/dir/file --
 # contents of dir/file
 -- golden/.file --
@@ -120,5 +125,12 @@ subdir:
     type = "archive"
     url = "{{ env "HTTPD_URL" }}/archive.tar.gz"
     stripComponents = 2
+-- home9/user/.local/share/chezmoi/.chezmoiexternal.toml --
+[".dir"]
+    type = "archive"
+    url = "{{ env "HTTPD_URL" }}/archive.tar.gz"
+    stripComponents = 1
+-- home9/user/.local/share/chezmoi/dot_dir/file2 --
+# contents of .dir/file2
 -- www/.file --
 # contents of .file
