@@ -873,16 +873,15 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		if len(sourceStateEntries) == 1 {
 			continue
 		}
-		sourceRelPaths := make([]SourceRelPath, 0, len(sourceStateEntries))
+
+		origins := make([]string, 0, len(sourceStateEntries))
 		for _, sourceStateEntry := range sourceStateEntries {
-			sourceRelPaths = append(sourceRelPaths, sourceStateEntry.SourceRelPath())
+			origins = append(origins, sourceStateEntry.Origin())
 		}
-		sort.Slice(sourceRelPaths, func(i, j int) bool {
-			return sourceRelPaths[i].Less(sourceRelPaths[j])
-		})
+		sort.Strings(origins)
 		err = multierr.Append(err, &duplicateTargetError{
-			targetRelPath:  targetRelPath,
-			sourceRelPaths: sourceRelPaths,
+			targetRelPath: targetRelPath,
+			origins:       origins,
 		})
 	}
 	if err != nil {
@@ -1205,6 +1204,7 @@ func (s *SourceState) newSourceStateDir(sourceRelPath SourceRelPath, dirAttr Dir
 		perm: dirAttr.perm() &^ s.umask,
 	}
 	return &SourceStateDir{
+		origin:           sourceRelPath.String(),
 		sourceRelPath:    sourceRelPath,
 		Attr:             dirAttr,
 		targetStateEntry: targetStateDir,
@@ -1456,6 +1456,7 @@ func (s *SourceState) newSourceStateFile(sourceRelPath SourceRelPath, fileAttr F
 
 	return targetRelPath, &SourceStateFile{
 		lazyContents:         sourceLazyContents,
+		origin:               sourceRelPath.String(),
 		sourceRelPath:        sourceRelPath,
 		Attr:                 fileAttr,
 		targetStateEntryFunc: targetStateEntryFunc,
@@ -1477,6 +1478,7 @@ func (s *SourceState) newSourceStateDirEntry(info fs.FileInfo, parentSourceRelPa
 	sourceRelPath := parentSourceRelPath.Join(NewSourceRelDirPath(dirAttr.SourceName()))
 	return &SourceStateDir{
 		Attr:          dirAttr,
+		origin:        sourceRelPath.String(),
 		sourceRelPath: sourceRelPath,
 		targetStateEntry: &TargetStateDir{
 			perm: 0o777 &^ s.umask,
@@ -1528,6 +1530,7 @@ func (s *SourceState) newSourceStateFileEntryFromFile(actualStateFile *ActualSta
 	sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix())))
 	return &SourceStateFile{
 		Attr:          fileAttr,
+		origin:        sourceRelPath.String(),
 		sourceRelPath: sourceRelPath,
 		lazyContents:  lazyContents,
 		targetStateEntry: &TargetStateFile{
@@ -1612,7 +1615,6 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 	if external.Encrypted {
 		urlPath = strings.TrimSuffix(urlPath, s.encryption.EncryptedSuffix())
 	}
-	sourceRelPath := NewSourceRelPath(external.URL)
 	sourceStateEntries := map[RelPath][]SourceStateEntry{
 		externalRelPath: {
 			&SourceStateDir{
@@ -1620,7 +1622,7 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 					TargetName: externalRelPath.Base(),
 					Exact:      external.Exact,
 				},
-				sourceRelPath: sourceRelPath,
+				origin: external.URL,
 				targetStateEntry: &TargetStateDir{
 					perm: 0o777 &^ s.umask,
 				},
@@ -1663,7 +1665,7 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 					Private:    isPrivate(info),
 					ReadOnly:   isReadOnly(info),
 				},
-				sourceRelPath:    sourceRelPath,
+				origin:           external.URL,
 				targetStateEntry: targetStateEntry,
 			}
 		case info.Mode()&fs.ModeType == 0:
@@ -1688,7 +1690,7 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 			sourceStateEntry = &SourceStateFile{
 				lazyContents:     lazyContents,
 				Attr:             fileAttr,
-				sourceRelPath:    sourceRelPath,
+				origin:           external.URL,
 				targetStateEntry: targetStateEntry,
 			}
 		case info.Mode()&fs.ModeType == fs.ModeSymlink:
@@ -1700,7 +1702,7 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 					TargetName: info.Name(),
 					Type:       SourceFileTypeSymlink,
 				},
-				sourceRelPath:    sourceRelPath,
+				origin:           external.URL,
 				targetStateEntry: targetStateEntry,
 			}
 		default:
@@ -1730,7 +1732,7 @@ func (s *SourceState) readExternalFile(ctx context.Context, externalRelPath RelP
 		perm:         fileAttr.perm() &^ s.umask,
 	}
 	sourceStateEntry := &SourceStateFile{
-		sourceRelPath:    NewSourceRelPath(external.URL),
+		origin:           external.URL,
 		targetStateEntry: targetStateEntry,
 	}
 	return map[RelPath][]SourceStateEntry{

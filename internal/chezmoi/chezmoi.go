@@ -89,16 +89,12 @@ var modeTypeNames = map[fs.FileMode]string{
 }
 
 type duplicateTargetError struct {
-	targetRelPath  RelPath
-	sourceRelPaths []SourceRelPath
+	targetRelPath RelPath
+	origins       []string
 }
 
 func (e *duplicateTargetError) Error() string {
-	sourceRelPathStrs := make([]string, 0, len(e.sourceRelPaths))
-	for _, sourceRelPath := range e.sourceRelPaths {
-		sourceRelPathStrs = append(sourceRelPathStrs, sourceRelPath.String())
-	}
-	return fmt.Sprintf("%s: duplicate source state entries (%s)", e.targetRelPath, strings.Join(sourceRelPathStrs, ", "))
+	return fmt.Sprintf("%s: duplicate source state entries (%s)", e.targetRelPath, strings.Join(e.origins, ", "))
 }
 
 type notInAbsDirError struct {
