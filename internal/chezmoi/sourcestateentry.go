@@ -13,6 +13,7 @@ type SourceStateEntry interface {
 	zerolog.LogObjectMarshaler
 	Evaluate() error
 	Order() ScriptOrder
+	Origin() string
 	SourceRelPath() SourceRelPath
 	TargetStateEntry(destSystem System, destDirAbsPath AbsPath) (TargetStateEntry, error)
 }
@@ -20,6 +21,7 @@ type SourceStateEntry interface {
 // A SourceStateDir represents the state of a directory in the source state.
 type SourceStateDir struct {
 	Attr             DirAttr
+	origin           string
 	sourceRelPath    SourceRelPath
 	targetStateEntry TargetStateEntry
 }
@@ -28,6 +30,7 @@ type SourceStateDir struct {
 type SourceStateFile struct {
 	*lazyContents
 	Attr                 FileAttr
+	origin               string
 	sourceRelPath        SourceRelPath
 	targetStateEntryFunc targetStateEntryFunc
 	targetStateEntry     TargetStateEntry
@@ -61,6 +64,11 @@ func (s *SourceStateDir) MarshalZerologObject(e *zerolog.Event) {
 // Order returns s's order.
 func (s *SourceStateDir) Order() ScriptOrder {
 	return ScriptOrderDuring
+}
+
+// Origin returns s's origin.
+func (s *SourceStateDir) Origin() string {
+	return s.origin
 }
 
 // SourceRelPath returns s's source relative path.
@@ -102,6 +110,11 @@ func (s *SourceStateFile) Order() ScriptOrder {
 	return s.Attr.Order
 }
 
+// Origin returns s's origin.
+func (s *SourceStateFile) Origin() string {
+	return s.origin
+}
+
 // SourceRelPath returns s's source relative path.
 func (s *SourceStateFile) SourceRelPath() SourceRelPath {
 	return s.sourceRelPath
@@ -131,6 +144,11 @@ func (s *SourceStateRemove) Order() ScriptOrder {
 	return ScriptOrderDuring
 }
 
+// Origin returns s's origin.
+func (s *SourceStateRemove) Origin() string {
+	return ""
+}
+
 // SourceRelPath returns s's source relative path.
 func (s *SourceStateRemove) SourceRelPath() SourceRelPath {
 	return SourceRelPath{}
@@ -156,6 +174,11 @@ func (s *SourceStateRenameDir) MarshalZerologObject(e *zerolog.Event) {
 // Order returns s's order.
 func (s *SourceStateRenameDir) Order() ScriptOrder {
 	return ScriptOrderBefore
+}
+
+// Origin returns s's origin.
+func (s *SourceStateRenameDir) Origin() string {
+	return ""
 }
 
 // SourceRelPath returns s's source relative path.

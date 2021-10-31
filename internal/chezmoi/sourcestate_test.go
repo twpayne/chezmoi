@@ -792,6 +792,7 @@ func TestSourceStateRead(t *testing.T) {
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
 					NewRelPath("dir"): &SourceStateDir{
+						origin:        "dir",
 						sourceRelPath: NewSourceRelDirPath("dir"),
 						Attr: DirAttr{
 							TargetName: "dir",
@@ -813,6 +814,7 @@ func TestSourceStateRead(t *testing.T) {
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
 					NewRelPath(".file"): &SourceStateFile{
+						origin:        "dot_file",
 						sourceRelPath: NewSourceRelPath("dot_file"),
 						Attr: FileAttr{
 							TargetName: ".file",
@@ -872,6 +874,7 @@ func TestSourceStateRead(t *testing.T) {
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
 					NewRelPath(".file"): &SourceStateFile{
+						origin:        "executable_dot_file",
 						sourceRelPath: NewSourceRelPath("executable_dot_file"),
 						Attr: FileAttr{
 							TargetName: ".file",
@@ -898,6 +901,7 @@ func TestSourceStateRead(t *testing.T) {
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
 					NewRelPath("script"): &SourceStateFile{
+						origin:        "run_script",
 						sourceRelPath: NewSourceRelPath("run_script"),
 						Attr: FileAttr{
 							TargetName: "script",
@@ -922,6 +926,7 @@ func TestSourceStateRead(t *testing.T) {
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
 					NewRelPath("script"): &SourceStateFile{
+						origin:        "run_script",
 						sourceRelPath: NewSourceRelPath("run_script"),
 						Attr: FileAttr{
 							TargetName: "script",
@@ -946,6 +951,7 @@ func TestSourceStateRead(t *testing.T) {
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
 					NewRelPath(".symlink"): &SourceStateFile{
+						origin:        "symlink_dot_symlink",
 						sourceRelPath: NewSourceRelPath("symlink_dot_symlink"),
 						Attr: FileAttr{
 							TargetName: ".symlink",
@@ -971,6 +977,7 @@ func TestSourceStateRead(t *testing.T) {
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
 					NewRelPath("dir"): &SourceStateDir{
+						origin:        "dir",
 						sourceRelPath: NewSourceRelDirPath("dir"),
 						Attr: DirAttr{
 							TargetName: "dir",
@@ -980,6 +987,7 @@ func TestSourceStateRead(t *testing.T) {
 						},
 					},
 					NewRelPath("dir/file"): &SourceStateFile{
+						origin:        "dir/file",
 						sourceRelPath: NewSourceRelPath("dir/file"),
 						Attr: FileAttr{
 							TargetName: "file",
@@ -1043,6 +1051,7 @@ func TestSourceStateRead(t *testing.T) {
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
 					NewRelPath("dir"): &SourceStateDir{
+						origin:        "exact_dir",
 						sourceRelPath: NewSourceRelDirPath("exact_dir"),
 						Attr: DirAttr{
 							TargetName: "dir",
@@ -1053,6 +1062,7 @@ func TestSourceStateRead(t *testing.T) {
 						},
 					},
 					NewRelPath("dir/file1"): &SourceStateFile{
+						origin:        "exact_dir/file1",
 						sourceRelPath: NewSourceRelPath("exact_dir/file1"),
 						Attr: FileAttr{
 							TargetName: "file1",
@@ -1163,6 +1173,7 @@ func TestSourceStateRead(t *testing.T) {
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
 					NewRelPath("dir"): &SourceStateDir{
+						origin:        "dir",
 						sourceRelPath: NewSourceRelDirPath("dir"),
 						Attr: DirAttr{
 							TargetName: "dir",
