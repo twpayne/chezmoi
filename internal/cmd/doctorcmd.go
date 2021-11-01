@@ -7,7 +7,6 @@ import (
 	"io/fs"
 	"os"
 	"os/exec"
-	"path/filepath"
 	"regexp"
 	"runtime"
 	"sort"
@@ -467,11 +466,7 @@ func (c *suspiciousEntriesCheck) Run(system chezmoi.System, homeDirAbsPath chezm
 			return err
 		}
 		if chezmoi.SuspiciousSourceDirEntry(absPath.Base(), info) {
-			relPath, err := filepath.Rel(c.dirname.String(), absPath.String()) // FIXME add Rel to chezmoi.AbsPath
-			if err != nil {
-				return err
-			}
-			suspiciousEntries = append(suspiciousEntries, relPath)
+			suspiciousEntries = append(suspiciousEntries, absPath.String())
 		}
 		return nil
 	}); {
@@ -481,9 +476,9 @@ func (c *suspiciousEntriesCheck) Run(system chezmoi.System, homeDirAbsPath chezm
 		return checkResultError, err.Error()
 	}
 	if len(suspiciousEntries) > 0 {
-		return checkResultWarning, fmt.Sprintf("%s: %s", c.dirname, englishList(suspiciousEntries))
+		return checkResultWarning, englishList(suspiciousEntries)
 	}
-	return checkResultOK, fmt.Sprintf("%s: no suspicious entries", c.dirname)
+	return checkResultOK, "no suspicious entries"
 }
 
 func (c *umaskCheck) Name() string {
