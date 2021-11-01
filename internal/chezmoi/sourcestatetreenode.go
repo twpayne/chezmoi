@@ -87,7 +87,7 @@ func (n *sourceStateEntryTreeNode) Map() map[RelPath]SourceStateEntry {
 
 // MkdirAll creates SourceStateDirs for all components of targetRelPath if they
 // do not already exist and returns the SourceStateDir of relPath.
-func (n *sourceStateEntryTreeNode) MkdirAll(targetRelPath RelPath, dirAttr DirAttr, origin string, umask fs.FileMode) (*SourceStateDir, error) {
+func (n *sourceStateEntryTreeNode) MkdirAll(targetRelPath RelPath, origin string, umask fs.FileMode) (*SourceStateDir, error) {
 	if targetRelPath == EmptyRelPath {
 		return nil, nil
 	}
@@ -110,14 +110,15 @@ func (n *sourceStateEntryTreeNode) MkdirAll(targetRelPath RelPath, dirAttr DirAt
 
 		switch {
 		case node.sourceStateEntry == nil:
-			attr := dirAttr
-			attr.TargetName = componentRelPath.String()
-			targetStateDir := &TargetStateDir{
-				perm: attr.perm() &^ umask,
+			dirAttr := DirAttr{
+				TargetName: componentRelPath.String(),
 			}
-			sourceRelPath = sourceRelPath.Join(NewSourceRelPath(attr.SourceName()))
+			targetStateDir := &TargetStateDir{
+				perm: dirAttr.perm() &^ umask,
+			}
+			sourceRelPath = sourceRelPath.Join(NewSourceRelPath(dirAttr.SourceName()))
 			sourceStateDir = &SourceStateDir{
-				Attr:             attr,
+				Attr:             dirAttr,
 				origin:           origin,
 				sourceRelPath:    sourceRelPath,
 				targetStateEntry: targetStateDir,
