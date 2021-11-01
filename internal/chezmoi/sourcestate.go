@@ -806,10 +806,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		external := s.externals[externalRelPath]
 		parentRelPath, _ := externalRelPath.Split()
 		var parentSourceRelPath SourceRelPath
-		dirAttr := DirAttr{
-			Exact: external.Exact,
-		}
-		switch parentSourceStateEntry, err := s.root.MkdirAll(parentRelPath, dirAttr, external.URL, s.umask); {
+		switch parentSourceStateEntry, err := s.root.MkdirAll(parentRelPath, external.URL, s.umask); {
 		case err != nil:
 			return err
 		case parentSourceStateEntry != nil:
