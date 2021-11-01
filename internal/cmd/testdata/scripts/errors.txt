@@ -3,7 +3,7 @@ mksourcedir
 # test duplicate source state entry detection
 cp $CHEZMOISOURCEDIR/dot_file $CHEZMOISOURCEDIR/empty_dot_file
 ! chezmoi verify
-stderr 'duplicate source state entries'
+stderr 'inconsistent state'
 
 chhome home2/user
 
@@ -27,7 +27,7 @@ chhome home5/user
 
 # test duplicate script detection
 ! chezmoi verify
-stderr 'duplicate source state entries'
+stderr 'inconsistent state'
 
 # FIXME add more tests
 

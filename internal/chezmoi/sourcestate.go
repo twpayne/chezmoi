@@ -872,8 +872,8 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		}
 	}
 
-	// Check for duplicate source entries with the same target name. Iterate
-	// over the target names in order so that any error is deterministic.
+	// Check for inconsistent source entries. Iterate over the target names in
+	// order so that any error is deterministic.
 	targetRelPaths := make(RelPaths, 0, len(allSourceStateEntries))
 	for targetRelPath := range allSourceStateEntries {
 		targetRelPaths = append(targetRelPaths, targetRelPath)
@@ -896,7 +896,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			origins = append(origins, sourceStateEntry.Origin())
 		}
 		sort.Strings(origins)
-		err = multierr.Append(err, &duplicateTargetError{
+		err = multierr.Append(err, &inconsistentStateError{
 			targetRelPath: targetRelPath,
 			origins:       origins,
 		})
