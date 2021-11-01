@@ -9,7 +9,7 @@ chhome home2/user
 
 # test that chezmoi apply returns an error when there are multiple modify scripts for the same target
 ! chezmoi apply
-stderr 'duplicate source state entries'
+stderr 'inconsistent state'
 
 -- golden/modified --
 # modified

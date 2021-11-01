@@ -88,13 +88,13 @@ var modeTypeNames = map[fs.FileMode]string{
 	fs.ModeCharDevice: "char device",
 }
 
-type duplicateTargetError struct {
+type inconsistentStateError struct {
 	targetRelPath RelPath
 	origins       []string
 }
 
-func (e *duplicateTargetError) Error() string {
-	return fmt.Sprintf("%s: duplicate source state entries (%s)", e.targetRelPath, strings.Join(e.origins, ", "))
+func (e *inconsistentStateError) Error() string {
+	return fmt.Sprintf("%s: inconsistent state (%s)", e.targetRelPath, strings.Join(e.origins, ", "))
 }
 
 type notInAbsDirError struct {
