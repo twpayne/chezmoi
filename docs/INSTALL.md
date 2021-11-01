@@ -63,7 +63,7 @@ Install chezmoi with a single command.
 | NixOS Linux  | nix-env    | `nix-env -i chezmoi`                                                                        |
 | Void Linux   | xbps       | `xbps-install -S chezmoi`                                                                   |
 | macOS        | Homebrew   | `brew install chezmoi`                                                                      |
-| macOS        | MacPorts   | `sudo port install chezmoi`                                                                 |
+| macOS        | MacPorts   | `port install chezmoi`                                                                      |
 | Windows      | Scoop      | `scoop bucket add twpayne https://github.com/twpayne/scoop-bucket && scoop install chezmoi` |
 | Windows      | Chocolatey | `choco install chezmoi`                                                                     |
 | FreeBSD      | pkg        | `pkg install chezmoi`                                                                       |
