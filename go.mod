@@ -36,14 +36,14 @@ require (
 	github.com/twpayne/go-vfs/v4 v4.1.0
 	github.com/twpayne/go-xdg/v6 v6.0.0
 	github.com/xanzy/ssh-agent v0.3.1 // indirect
-	github.com/yuin/goldmark v1.4.1 // indirect
+	github.com/yuin/goldmark v1.4.2 // indirect
 	github.com/zalando/go-keyring v0.1.1
 	go.etcd.io/bbolt v1.3.6
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.7.0
-	golang.org/x/net v0.0.0-20211015210444-4f30a5c0130f // indirect
-	golang.org/x/oauth2 v0.0.0-20211005180243-6b3c2da341f1
-	golang.org/x/sys v0.0.0-20211025201205-69cdffdb9359
+	golang.org/x/net v0.0.0-20211029224645-99673261e6eb // indirect
+	golang.org/x/oauth2 v0.0.0-20211028175245-ba495a64dcb5
+	golang.org/x/sys v0.0.0-20211031064116-611d5d643895
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
@@ -52,10 +52,10 @@ require (
 
 require (
 	github.com/Microsoft/go-winio v0.5.1 // indirect
-	github.com/godbus/dbus/v5 v5.0.5 // indirect
+	github.com/godbus/dbus/v5 v5.0.6 // indirect
 	github.com/google/gops v0.3.22
 	github.com/mattn/go-isatty v0.0.14 // indirect
-	github.com/shopspring/decimal v1.3.0 // indirect
+	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/stretchr/objx v0.3.0 // indirect
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
 	golang.org/x/text v0.3.7 // indirect
