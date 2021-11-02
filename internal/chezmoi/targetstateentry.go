@@ -193,35 +193,17 @@ func (t *TargetStateRemove) SkipApply(persistentState PersistentState, targetAbs
 
 // Apply runs t.
 func (t *TargetStateScript) Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry) (bool, error) {
-	contentsSHA256, err := t.ContentsSHA256()
+	skipApply, err := t.SkipApply(persistentState, actualStateEntry.Path())
 	if err != nil {
 		return false, err
 	}
+	if skipApply {
+		return false, nil
+	}
 
-	scriptStateKey := []byte(hex.EncodeToString(contentsSHA256))
-	entryStateKey := actualStateEntry.Path().Bytes()
-	switch t.condition {
-	case ScriptConditionAlways:
-	case ScriptConditionOnce:
-		switch scriptState, err := persistentState.Get(scriptStateBucket, scriptStateKey); {
-		case err != nil:
-			return false, err
-		case scriptState != nil:
-			return false, nil
-		}
-	case ScriptConditionOnChange:
-		switch entryStateBytes, err := persistentState.Get(EntryStateBucket, entryStateKey); {
-		case err != nil:
-			return false, err
-		case entryStateBytes != nil:
-			var entryState EntryState
-			if err := stateFormat.Unmarshal(entryStateBytes, &entryState); err != nil {
-				return false, err
-			}
-			if bytes.Equal(entryState.ContentsSHA256.Bytes(), contentsSHA256) {
-				return false, nil
-			}
-		}
+	contentsSHA256, err := t.ContentsSHA256()
+	if err != nil {
+		return false, err
 	}
 
 	contents, err := t.Contents()
@@ -235,12 +217,15 @@ func (t *TargetStateScript) Apply(system System, persistentState PersistentState
 		}
 	}
 
+	scriptStateKey := []byte(hex.EncodeToString(contentsSHA256))
 	if err := persistentStateSet(persistentState, scriptStateBucket, scriptStateKey, &scriptState{
 		Name:  t.name,
 		RunAt: runAt,
 	}); err != nil {
 		return false, err
 	}
+
+	entryStateKey := actualStateEntry.Path().Bytes()
 	if err := persistentStateSet(persistentState, EntryStateBucket, entryStateKey, &EntryState{
 		Type:           EntryStateTypeScript,
 		ContentsSHA256: HexBytes(contentsSHA256),
