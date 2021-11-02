@@ -23,7 +23,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.709bc3c887c0de02a3b35c78d0b8ff48b4f52e227641c8621fe579c404d6420e.js" integrity="sha256-cJvDyIfA3gKjs1x40Lj/SLT1LiJ2QchiH&#43;V5xATWQg4=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.d7f45d7be6775f8158e327272279f9c85ba51c0b0332fa0054337cde157ea02b.js" integrity="sha256-1/Rde&#43;Z3X4FY4ycnInn5yFulHAsDMvoAVDN83hV&#43;oCs=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -158,6 +158,7 @@ https://github.com/alex-shpak/hugo-book
       <ul>
         <li><a href="#--cpu-profile-filename"><code>--cpu-profile</code> <em>filename</em></a></li>
         <li><a href="#--debug"><code>--debug</code></a></li>
+        <li><a href="#--gops"><code>--gops</code></a></li>
       </ul>
     </li>
     <li><a href="#configuration-file">Configuration file</a>
@@ -496,6 +497,11 @@ scripts and <code>--exclude=encrypted</code> will exclude encrypted files.</p>
   <a class="anchor" href="#--debug">#</a>
 </h3>
 <p>Log information helpful for debugging.</p>
+<h3 id="--gops">
+  <code>--gops</code>
+  <a class="anchor" href="#--gops">#</a>
+</h3>
+<p>Enable the <a href="https://github.com/google/gops">gops</a> agent.</p>
 <hr>
 <h2 id="configuration-file">
   Configuration file
@@ -2523,56 +2529,89 @@ overridden by setting a list of options in the configuration file, for example:<
 <thead>
 <tr>
 <th>Variable</th>
+<th>Type</th>
 <th>Value</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td><code>.chezmoi.arch</code></td>
+<td><code>string</code></td>
 <td>Architecture, e.g. <code>amd64</code>, <code>arm</code>, etc. as returned by <a href="https://pkg.go.dev/runtime?tab=doc#pkg-constants">runtime.GOARCH</a>.</td>
 </tr>
 <tr>
+<td><code>.chezmoi.args</code></td>
+<td><code>[]string</code></td>
+<td>The arguments passed to the <code>chezmoi</code> command, starting with the program command.</td>
+</tr>
+<tr>
 <td><code>.chezmoi.fqdnHostname</code></td>
+<td><code>string</code></td>
 <td>The fully-qualified domain name hostname of the machine chezmoi is running on.</td>
 </tr>
 <tr>
 <td><code>.chezmoi.group</code></td>
+<td><code>string</code></td>
 <td>The group of the user running chezmoi.</td>
 </tr>
 <tr>
 <td><code>.chezmoi.homeDir</code></td>
+<td><code>string</code></td>
 <td>The home directory of the user running chezmoi.</td>
 </tr>
 <tr>
 <td><code>.chezmoi.hostname</code></td>
+<td><code>string</code></td>
 <td>The hostname of the machine chezmoi is running on, up to the first <code>.</code>.</td>
 </tr>
 <tr>
 <td><code>.chezmoi.kernel</code></td>
-<td>Contains information from <code>/proc/sys/kernel</code>. Linux only, useful for detecting specific kernels (i.e. Microsoft&rsquo;s WSL kernel).</td>
+<td><code>string</code></td>
+<td>Contains information from <code>/proc/sys/kernel</code>. Linux only, useful for detecting specific kernels (e.g. Microsoft&rsquo;s WSL kernel).</td>
 </tr>
 <tr>
 <td><code>.chezmoi.os</code></td>
+<td><code>string</code></td>
 <td>Operating system, e.g. <code>darwin</code>, <code>linux</code>, etc. as returned by <a href="https://pkg.go.dev/runtime?tab=doc#pkg-constants">runtime.GOOS</a>.</td>
 </tr>
 <tr>
 <td><code>.chezmoi.osRelease</code></td>
+<td><code>string</code></td>
 <td>The information from <code>/etc/os-release</code>, Linux only, run <code>chezmoi data</code> to see its output.</td>
 </tr>
 <tr>
 <td><code>.chezmoi.sourceDir</code></td>
+<td><code>string</code></td>
 <td>The source directory.</td>
 </tr>
 <tr>
 <td><code>.chezmoi.sourceFile</code></td>
+<td><code>string</code></td>
 <td>The path of the template relative to the source directory.</td>
 </tr>
 <tr>
 <td><code>.chezmoi.username</code></td>
+<td><code>string</code></td>
 <td>The username of the user running chezmoi.</td>
 </tr>
 <tr>
-<td><code>.chezmoi.version</code></td>
+<td><code>.chezmoi.version.builtBy</code></td>
+<td><code>string</code></td>
+<td>The program that built the <code>chezmoi</code> executable, if set.</td>
+</tr>
+<tr>
+<td><code>.chezmoi.version.commit</code></td>
+<td><code>string</code></td>
+<td>The git commit at which the <code>chezmoi</code> executable was built, if set.</td>
+</tr>
+<tr>
+<td><code>.chezmoi.version.date</code></td>
+<td><code>string</code></td>
+<td>The timestamp at which the <code>chezmoi</code> executable was built, if set.</td>
+</tr>
+<tr>
+<td><code>.chezmoi.version.version</code></td>
+<td><code>string</code></td>
 <td>The version of chezmoi.</td>
 </tr>
 </tbody>
@@ -3330,6 +3369,7 @@ generating the initial config file.</p>
       <ul>
         <li><a href="#--cpu-profile-filename"><code>--cpu-profile</code> <em>filename</em></a></li>
         <li><a href="#--debug"><code>--debug</code></a></li>
+        <li><a href="#--gops"><code>--gops</code></a></li>
       </ul>
     </li>
     <li><a href="#configuration-file">Configuration file</a>
