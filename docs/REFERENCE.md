@@ -669,8 +669,8 @@ ignored by default, unless they are one of the special files listed here.
 ### `.chezmoi.<format>.tmpl`
 
 If a file called `.chezmoi.<format>.tmpl` exists then `chezmoi init` will use it
-to create an initial config file. *format* must be one of the the supported
-config file formats.
+to create an initial config file. `<format>` must be one of the the supported
+config file formats, e.g. `json`, `toml`, or `yaml`.
 
 #### `.chezmoi.<format>.tmpl` examples
 
@@ -727,6 +727,9 @@ MOVE_LEFT=h
 If a file called `.chezmoiexternal.<format>` exists in the source state, it is
 interpreted as a list of external files and archives to be included as if they
 were in the source state.
+
+`<format>` must be one of chezmoi's supported configuration file formats, e.g.
+`json`, `toml`, or `yaml`.
 
 `.chezmoiexternal.<format>` is interpreted as a template. This allows different
 externals to be included on different machines.
