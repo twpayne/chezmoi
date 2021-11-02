@@ -154,7 +154,12 @@ logins periodically expire. Create a new snapcraft login by running:
 $ snapcraft export-login --snaps=chezmoi --channels=stable,candidate,beta,edge --acls=package_upload -
 ```
 
-[brew](https://brew.sh/) formula must be updated manually with the command:
+[brew](https://brew.sh/) automation will automatically detect new releases of
+chezmoi within a few hours and open a pull request in
+[https://github.com/Homebrew/homebrew-core](github.com/Homebrew/homebrew-core)
+to bump the version.
+
+If needed, the pull request can be created with:
 
 ```console
 $ brew bump-formula-pr --tag=v1.2.3 chezmoi
