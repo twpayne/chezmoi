@@ -259,6 +259,10 @@ DESTABSPATH:
 		}
 		targetRelPath := destAbsPath.MustTrimDirPrefix(s.destDirAbsPath)
 
+		if s.Ignore(targetRelPath) {
+			continue
+		}
+
 		// Find the target's parent directory in the source state.
 		var parentSourceRelPath SourceRelPath
 		if targetParentRelPath := targetRelPath.Dir(); targetParentRelPath == DotRelPath {
