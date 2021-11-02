@@ -198,3 +198,4 @@ snapcrafts:
 
 source:
   enabled: true
+  prefix_template: '{{ .ProjectName }}-{{ .Version }}/'
