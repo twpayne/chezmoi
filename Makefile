@@ -2,7 +2,7 @@ GO?=go
 GOLANGCI_LINT_VERSION=$(shell grep GOLANGCI_LINT_VERSION: .github/workflows/main.yml | awk '{ print $$2 }')
 
 .PHONY: default
-default: run build test lint format
+default: run build-all test lint format
 
 .PHONY: install
 install:
@@ -12,7 +12,14 @@ install:
 		-X main.builtBy=source"
 
 .PHONY: build
-build: build-darwin build-freebsd build-linux build-windows
+build:
+	go build -ldflags "-X main.version=$(shell git describe --abbrev=0 --tags) \
+		-X main.commit=$(shell git rev-parse HEAD) \
+		-X main.date=$(shell date -u +%Y-%m-%dT%H:%M:%SZ) \
+		-X main.builtBy=source"
+
+.PHONY: build-all
+build-all: build-darwin build-freebsd build-linux build-windows
 
 .PHONY: build-darwin
 build-darwin:
