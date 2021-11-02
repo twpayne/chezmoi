@@ -42,6 +42,7 @@ Manage your dotfiles across multiple machines, securely.
   * [Symbolic links](#symbolic-links)
   * [Scripts](#scripts)
   * [`symlink` mode](#symlink-mode)
+* [Application order](#application-order)
 * [Special files and directories](#special-files-and-directories)
   * [`.chezmoi.<format>.tmpl`](#chezmoiformattmpl)
   * [`.chezmoidata.<format>`](#chezmoidataformat)
@@ -627,6 +628,34 @@ By default, chezmoi will create regular files and directories. Setting `mode =
 symlinks by default, i.e. `chezmoi apply` will make dotfiles symlinks to files
 in the source directory if the target is a regular file and is not
 encrypted, executable, private, or a template.
+
+---
+
+## Application order
+
+chezmoi is deterministic in its order of application. The order is:
+
+1. Read the source state.
+2. Read the destination state.
+3. Compute the target state.
+4. Run `run_before_` scripts in alphabetical order.
+5. Update entries in the target state (files, directories, scripts, symlinks,
+   etc.) in alphabetical order of their target name.
+6. Run `run_after_` scripts in alphabetical order.
+
+Target names are considered after all attributes are stripped. For example,
+given `create_alpha` and `modify_dot_beta` in the source state, `.beta` will be
+updated before `alpha` because `.beta` sorts before `alpha`.
+
+chezmoi assumes that the source or destination states are not modified while
+chezmoi is being executed. This assumption permits significant performance
+improvements, for example allowing chezmoi to only read files from the source
+and destination states if they are needed to compute the target state.
+
+chezmoi's behavior when the above assumptions are violated is undefined. For
+example, using a `run_before_` script to update files in the source or
+destination states violates the assumption that the source and destination
+states do not change while chezmoi is running.
 
 ---
 
