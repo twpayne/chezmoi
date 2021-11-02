@@ -57,5 +57,19 @@ chezmoi add $HOME${/}.dir
 ! exists $CHEZMOISOURCEDIR/dot_dir/.keep
 exists $CHEZMOISOURCEDIR/dot_dir/empty_subdir/.keep
 ! exists $CHEZMOISOURCEDIR/dot_dir/non_empty_subdir/.keep
+
+chhome home3/user
+
+# test that chezmoi add respects .chezmoiignore
+chezmoi add $HOME${/}.dir
+exists $CHEZMOISOURCEDIR/dot_dir/file
+! exists $CHEZMOISOURCEDIR/dot_dir/ignore
+
 -- home2/user/.dir/non_empty_subdir/file --
 # contents of .dir/non_empty_subdir/file
+-- home3/user/.local/share/chezmoi/.chezmoiignore --
+**/ignore
+-- home3/user/.dir/file --
+# contents of .dir/file
+-- home3/user/.dir/ignore --
+# contents of .dir/ignore
