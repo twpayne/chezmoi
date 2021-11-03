@@ -29,6 +29,8 @@ jobs:
           - '**/*.go'
           - '.github/workflows/**'
           - 'go.*'
+          - 'assets/docker/**'
+          - 'assets/vagrant/**'
           - 'internal/**'
   codeql:
     needs: changes
@@ -70,7 +72,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ~/.vagrant.d
-        key: ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-${{ hashFiles('assets/vagrant/*.Vagrantfile') }}
+        key: ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-${{ hashFiles('assets/vagrant/debian11-i386.Vagrantfile') }}
         restore-keys: |
           ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-
     - name: Test
@@ -99,7 +101,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ~/.vagrant.d
-        key: ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-${{ hashFiles('assets/vagrant/*.Vagrantfile') }}
+        key: ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-${{ hashFiles('assets/vagrant/freebsd13.Vagrantfile') }}
         restore-keys: |
           ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-
     - name: Test
@@ -151,7 +153,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ~/.vagrant.d
-        key: ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-${{ hashFiles('assets/vagrant/*.Vagrantfile') }}
+        key: ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-${{ hashFiles('assets/vagrant/openbsd6.Vagrantfile') }}
         restore-keys: |
           ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-
     - name: Test
@@ -170,7 +172,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: ~/.vagrant.d
-        key: ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-${{ hashFiles('assets/vagrant/*.Vagrantfile') }}
+        key: ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-${{ hashFiles('assets/vagrant/openindiana.Vagrantfile') }}
         restore-keys: |
           ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-
     - name: Test
