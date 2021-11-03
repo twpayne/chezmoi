@@ -551,7 +551,6 @@ func (c *Config) applyArgs(ctx context.Context, targetSystem chezmoi.System, tar
 		Umask:        options.umask,
 	}
 
-	//nolint:ifshort
 	keptGoingAfterErr := false
 	for _, targetRelPath := range targetRelPaths {
 		switch err := sourceState.Apply(targetSystem, c.destSystem, c.persistentState, targetDirAbsPath, targetRelPath, applyOptions); {
