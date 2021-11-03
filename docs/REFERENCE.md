@@ -57,7 +57,7 @@ Manage your dotfiles across multiple machines, securely.
   * [`archive`](#archive)
   * [`cat` *target*...](#cat-target)
   * [`cd`](#cd)
-  * [`chattr` *attributes* *target*...](#chattr-attributes-target)
+  * [`chattr` *modifier* *target*...](#chattr-modifier-target)
   * [`completion` *shell*](#completion-shell)
   * [`data`](#data)
   * [`decrypt` [*file*...]](#decrypt-file)
@@ -1058,30 +1058,44 @@ $ chezmoi cd
 
 ---
 
-### `chattr` *attributes* *target*...
+### `chattr` *modifier* *target*...
 
-Change the attributes of *target*s. *attributes* specifies which attributes to
-modify. Add attributes by specifying them or their abbreviations directly,
-optionally prefixed with a plus sign (`+`). Remove attributes by prefixing them
-or their attributes with the string `no` or a minus sign (`-`). The available
-attributes and their abbreviations are:
+Change the attributes and/or type of *target*s. *modifier* specifies what to
+modify.
 
-| Attribute    | Abbreviation |
-| ------------ | ------------ |
-| `after`      | `a`          |
-| `before`     | `b`          |
-| `empty`      | `e`          |
-| `encrypted`  | *none*       |
-| `exact`      | *none*       |
-| `executable` | `x`          |
-| `once`       | `o`          |
-| `private`    | `p`          |
-| `readonly`   | `r`          |
-| `template`   | `t`          |
+Add attributes by specifying them or their abbreviations directly, optionally
+prefixed with a plus sign (`+`). Remove attributes by prefixing them or their
+attributes with the string `no` or a minus sign (`-`). The available attribute
+modifiers and their abbreviations are:
 
-Multiple attributes modifications may be specified by separating them with a
-comma (`,`). If you use the `-`*attr* form then you must put *attributes* after
-a `--` to prevent chezmoi from interpreting `-`*attr as an option.
+| Attribute modifier | Abbreviation |
+| ------------------ | ------------ |
+| `after`            | `a`          |
+| `before`           | `b`          |
+| `empty`            | `e`          |
+| `encrypted`        | *none*       |
+| `exact`            | *none*       |
+| `executable`       | `x`          |
+| `once`             | `o`          |
+| `private`          | `p`          |
+| `readonly`         | `r`          |
+| `template`         | `t`          |
+
+The type of a target can be changed using a type modifier:
+
+| Type modifier |
+| ------------- |
+| `create`      |
+| `modify`      |
+| `script`      |
+| `symlink`     |
+
+The negative form of type modifiers, e.g. `nocreate`, changes the target to be a
+regular file if it is of that type, otherwise the type is left unchanged.
+
+Multiple modifications may be specified by separating them with a comma (`,`).
+If you use the `-`*modifier* form then you must put *modifier* after a `--` to
+prevent chezmoi from interpreting `-`*modifier* as an option.
 
 #### `chattr` examples
 
@@ -1090,6 +1104,7 @@ $ chezmoi chattr template ~/.bashrc
 $ chezmoi chattr noempty ~/.profile
 $ chezmoi chattr private,template ~/.netrc
 $ chezmoi chattr -- -x ~/.zshrc
+$ chezmoi chattr +create,+private ~/.kube/config
 ```
 
 ---

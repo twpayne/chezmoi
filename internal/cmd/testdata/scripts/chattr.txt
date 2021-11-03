@@ -21,6 +21,31 @@ chezmoi chattr -- -e,-p,r $HOME${/}.file
 ! exists $CHEZMOISOURCEDIR/private_dot_file.tmpl
 exists $CHEZMOISOURCEDIR/readonly_dot_file.tmpl
 
+# test that chezmoi chattr -- -r,-t removes the readonly and template attributes on a file
+chezmoi chattr -- -r,-t $HOME${/}.file
+! exists $CHEZMOISOURCEDIR/readonly_dot_file.tmpl
+exists $CHEZMOISOURCEDIR/dot_file
+
+# test that chezmoi chattr +create changes a file to be a create_ file
+chezmoi chattr +create $HOME${/}.file
+! exists $CHEZMOISOURCEDIR/dot_file
+exists $CHEZMOISOURCEDIR/create_dot_file
+
+# test that chezmoi chattr nomodify does not change a create_ file
+chezmoi chattr nomodify $HOME${/}.file
+! exists $CHEZMOISOURCEDIR/dot_file
+exists $CHEZMOISOURCEDIR/create_dot_file
+
+# test that chezmoi chattr modify,script,symlink changes a create_ file to a symlink_
+chezmoi chattr modify,script,symlink $HOME${/}.file
+! exists $CHEZMOISOURCEDIR/create_dot_file
+exists $CHEZMOISOURCEDIR/symlink_dot_file
+
+# test that chezmoi chattr -- -symlink changes a symlink_ to a regular file
+chezmoi chattr -- -symlink $HOME${/}.file
+! exists $CHEZMOISOURCEDIR/symlink_dot_file
+exists $CHEZMOISOURCEDIR/dot_file
+
 # test that chezmoi chattr nox removes the execute attribute on a file
 exists $CHEZMOISOURCEDIR/executable_dot_executable
 chezmoi chattr nox $HOME${/}.executable
