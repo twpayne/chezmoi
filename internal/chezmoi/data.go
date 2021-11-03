@@ -54,8 +54,8 @@ func Kernel(fileSystem vfs.FS) (map[string]interface{}, error) {
 // os-release specification.
 func OSRelease(system System) (map[string]interface{}, error) {
 	for _, filename := range []AbsPath{
-		NewAbsPath("/usr/lib/os-release"),
 		NewAbsPath("/etc/os-release"),
+		NewAbsPath("/usr/lib/os-release"),
 	} {
 		data, err := system.ReadFile(filename)
 		if errors.Is(err, fs.ErrNotExist) {
