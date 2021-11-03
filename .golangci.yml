@@ -1,7 +1,9 @@
 linters:
   enable:
   - asciicheck
+  - bidichk
   - bodyclose
+  - contextcheck
   - deadcode
   - depguard
   - dogsled
@@ -44,6 +46,7 @@ linters:
   - structcheck
   - stylecheck
   - tagliatelle
+  - tenv
   - thelper
   - typecheck
   - unconvert
@@ -69,10 +72,12 @@ linters:
   - maligned
   - nakedret
   - nestif
+  - nilnil
   - nlreturn
   - paralleltest
   - testpackage
   - tparallel
+  - varnamelen
   - wrapcheck
   - wsl
 
