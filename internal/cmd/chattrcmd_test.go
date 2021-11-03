@@ -10,114 +10,144 @@ import (
 func TestParseAttrModifier(t *testing.T) {
 	for _, tc := range []struct {
 		s           string
-		expected    *attrModifier
+		expected    *modifier
 		expectedErr bool
 	}{
 		{
 			s: "empty",
-			expected: &attrModifier{
+			expected: &modifier{
 				empty: boolModifierSet,
 			},
 		},
 		{
 			s: "+empty",
-			expected: &attrModifier{
+			expected: &modifier{
 				empty: boolModifierSet,
 			},
 		},
 		{
 			s: "-empty",
-			expected: &attrModifier{
+			expected: &modifier{
 				empty: boolModifierClear,
 			},
 		},
 		{
 			s: "noempty",
-			expected: &attrModifier{
+			expected: &modifier{
 				empty: boolModifierClear,
 			},
 		},
 		{
 			s: "e",
-			expected: &attrModifier{
+			expected: &modifier{
 				empty: boolModifierSet,
 			},
 		},
 		{
 			s: "encrypted",
-			expected: &attrModifier{
+			expected: &modifier{
 				encrypted: boolModifierSet,
 			},
 		},
 		{
 			s: "executable",
-			expected: &attrModifier{
+			expected: &modifier{
 				executable: boolModifierSet,
 			},
 		},
 		{
 			s: "x",
-			expected: &attrModifier{
+			expected: &modifier{
 				executable: boolModifierSet,
 			},
 		},
 		{
 			s: "b",
-			expected: &attrModifier{
+			expected: &modifier{
 				order: orderModifierSetBefore,
 			},
 		},
 		{
 			s: "-b",
-			expected: &attrModifier{
+			expected: &modifier{
 				order: orderModifierClearBefore,
 			},
 		},
 		{
 			s: "after",
-			expected: &attrModifier{
+			expected: &modifier{
 				order: orderModifierSetAfter,
 			},
 		},
 		{
 			s: "noafter",
-			expected: &attrModifier{
+			expected: &modifier{
 				order: orderModifierClearAfter,
 			},
 		},
 		{
 			s: "once",
-			expected: &attrModifier{
+			expected: &modifier{
 				condition: conditionModifierSetOnce,
 			},
 		},
 		{
 			s: "private",
-			expected: &attrModifier{
+			expected: &modifier{
 				private: boolModifierSet,
 			},
 		},
 		{
 			s: "p",
-			expected: &attrModifier{
+			expected: &modifier{
 				private: boolModifierSet,
 			},
 		},
 		{
 			s: "template",
-			expected: &attrModifier{
+			expected: &modifier{
 				template: boolModifierSet,
 			},
 		},
 		{
 			s: "t",
-			expected: &attrModifier{
+			expected: &modifier{
 				template: boolModifierSet,
 			},
 		},
 		{
+			s: "create",
+			expected: &modifier{
+				sourceFileType: sourceFileTypeModifierSetCreate,
+			},
+		},
+		{
+			s: "-create",
+			expected: &modifier{
+				sourceFileType: sourceFileTypeModifierClearCreate,
+			},
+		},
+		{
+			s: "modify",
+			expected: &modifier{
+				sourceFileType: sourceFileTypeModifierSetModify,
+			},
+		},
+		{
+			s: "-script",
+			expected: &modifier{
+				sourceFileType: sourceFileTypeModifierClearScript,
+			},
+		},
+		{
+			s: "+symlink",
+			expected: &modifier{
+				sourceFileType: sourceFileTypeModifierSetSymlink,
+			},
+		},
+		{
 			s: "empty,+executable,noprivate,-t",
-			expected: &attrModifier{
+			expected: &modifier{
 				empty:      boolModifierSet,
 				executable: boolModifierSet,
 				private:    boolModifierClear,
@@ -126,7 +156,7 @@ func TestParseAttrModifier(t *testing.T) {
 		},
 		{
 			s: " empty , -private, notemplate ",
-			expected: &attrModifier{
+			expected: &modifier{
 				empty:    boolModifierSet,
 				private:  boolModifierClear,
 				template: boolModifierClear,
@@ -134,7 +164,7 @@ func TestParseAttrModifier(t *testing.T) {
 		},
 		{
 			s: "p,,-t",
-			expected: &attrModifier{
+			expected: &modifier{
 				private:  boolModifierSet,
 				template: boolModifierClear,
 			},
@@ -145,7 +175,7 @@ func TestParseAttrModifier(t *testing.T) {
 		},
 	} {
 		t.Run(tc.s, func(t *testing.T) {
-			actual, err := parseAttrModifier(tc.s)
+			actual, err := parseModifier(tc.s)
 			if tc.expectedErr {
 				require.Error(t, err)
 			} else {
