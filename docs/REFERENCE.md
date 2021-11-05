@@ -92,6 +92,8 @@ Manage your dotfiles across multiple machines, securely.
   * [`upgrade`](#upgrade)
   * [`verify` [*target*...]](#verify-target)
 * [Editor configuration](#editor-configuration)
+* [pinentry configuration](#pinentry-configuration)
+  * [Example pinentry configuration](#example-pinentry-configuration)
 * [Umask configuration](#umask-configuration)
 * [Template execution](#template-execution)
 * [Template variables](#template-variables)
@@ -392,6 +394,9 @@ The following configuration variables are available:
 | `onepassword`  | `cache`               | bool     | `true`                   | Enable optional caching provided by `op`               |
 |                | `command`             | string   | `op`                     | 1Password CLI command                                  |
 | `pass`         | `command`             | string   | `pass`                   | Pass CLI command                                       |
+| `pinentry`     | `args`                | []string | *none*                   | Extra args to the pinentry command                     |
+|                | `command`             | string   | *none*                   | pinentry command                                       |
+|                | `options`             | []string | *see `pinentry` below*   | Extra options for pinentry                             |
 | `template`     | `options`             | []string | `["missingkey=error"]`   | Template options                                       |
 | `vault`        | `command`             | string   | `vault`                  | Vault CLI command                                      |
 
@@ -1752,6 +1757,32 @@ $ chezmoi verify ~/.bashrc
 The `edit` and `edit-config` commands use the editor specified by the `VISUAL`
 environment variable, the `$EDITOR` environment variable, or `vi`, whichever is
 specified first.
+
+---
+
+## pinentry configuration
+
+By default, chezmoi will request passwords from the terminal.
+
+If the `--no-tty` option is passed, then chezmoi will instead read passwords
+from the standard input.
+
+Otherwise, if the configuration variable `pinentry.command` is set then chezmoi
+will instead used the given command to read passwords, assuming that it follows
+the [Assuan protocol](https://www.gnupg.org/documentation/manuals/assuan.pdf)
+like [GnuPG's
+pinentry](https://www.gnupg.org/related_software/pinentry/index.html). The
+configuration variable `pinentry.args` specifies extra arguments to be passed to
+`pinentry.command` and the configuration variable `pinentry.options` specifies
+extra options to be set. The default `pinentry.options` is
+`["allow-external-password-cache"]`.
+
+### Example pinentry configuration
+
+```toml
+[pinentry]
+    command = "pinentry"
+```
 
 ---
 

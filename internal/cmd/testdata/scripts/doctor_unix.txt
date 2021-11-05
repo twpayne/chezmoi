@@ -9,6 +9,7 @@ chmod 755 bin/keepassxc
 chmod 755 bin/lpass
 chmod 755 bin/op
 chmod 755 bin/pass
+chmod 755 bin/pinentry
 chmod 755 bin/secret
 chmod 755 bin/vault
 chmod 755 bin/vimdiff
@@ -30,6 +31,7 @@ stdout '^ok\s+git-command\s+'
 stdout '^ok\s+merge-command\s+'
 stdout '^ok\s+age-command\s+'
 stdout '^ok\s+gpg-command\s+'
+stdout '^ok\s+pinentry-command\s+'
 stdout '^ok\s+1password-command\s+'
 stdout '^ok\s+bitwarden-command\s+'
 stdout '^ok\s+gopass-command\s+'
@@ -112,6 +114,14 @@ echo "=               Jason@zx2c4.com            ="
 echo "=                                          ="
 echo "=      http://www.passwordstore.org/       ="
 echo "============================================"
+-- bin/pinentry --
+#!/bin/sh
+
+echo "pinentry-curses (pinentry) 1.2.0"
+echo "Copyright (C) 2016 g10 Code GmbH"
+echo "License GPLv2+: GNU GPL version 2 or later <https://www.gnu.org/licenses/>"
+echo "This is free software: you are free to change and redistribute it."
+echo "There is NO WARRANTY, to the extent permitted by law."
 -- bin/secret --
 #!/bin/sh
 -- bin/vault --
@@ -121,9 +131,11 @@ echo "Vault v1.5.5 ('f5d1ddb3750e7c28e25036e1ef26a4c02379fc01+CHANGES')"
 -- bin/vimdiff --
 #!/bin/sh
 -- home/user/.config/chezmoi/chezmoi.toml --
-[secret]
-    command = "secret"
 [keepassxc]
     command = "keepassxc"
+[pinentry]
+    command = "pinentry"
+[secret]
+    command = "secret"
 -- home/user/.config/chezmoi/chezmoi.yaml --
 -- home3/user/.local/share/chezmoi/.chezmoisuspicious --

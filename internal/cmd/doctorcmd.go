@@ -198,6 +198,14 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotSet:    checkResultWarning,
 		},
 		&binaryCheck{
+			name:        "pinentry-command",
+			binaryname:  c.PINEntry.Command,
+			versionArgs: []string{"--version"},
+			versionRx:   regexp.MustCompile(`^\S+\s+\(pinentry\)\s+(\d+\.\d+\.\d+)`),
+			ifNotSet:    checkResultInfo,
+			ifNotExist:  checkResultWarning,
+		},
+		&binaryCheck{
 			name:        "1password-command",
 			binaryname:  c.Onepassword.Command,
 			ifNotSet:    checkResultWarning,
