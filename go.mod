@@ -26,7 +26,7 @@ require (
 	github.com/muesli/termenv v0.9.0 // indirect
 	github.com/pelletier/go-toml v1.9.4
 	github.com/rogpeppe/go-internal v1.8.0
-	github.com/rs/zerolog v1.25.0
+	github.com/rs/zerolog v1.26.0
 	github.com/sergi/go-diff v1.1.0
 	github.com/spf13/afero v1.6.0
 	github.com/spf13/cobra v1.2.1
@@ -57,6 +57,7 @@ require (
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
 	github.com/stretchr/objx v0.3.0 // indirect
+	github.com/twpayne/go-pinentry v0.0.2
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
 	golang.org/x/text v0.3.7 // indirect
 )

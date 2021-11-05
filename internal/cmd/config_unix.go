@@ -18,6 +18,10 @@ func (c *Config) readPassword(prompt string) (password string, err error) {
 		return
 	}
 
+	if c.PINEntry.Command != "" {
+		return c.readPINEntry(prompt)
+	}
+
 	var tty *os.File
 	if tty, err = os.OpenFile("/dev/tty", os.O_RDWR, 0); err != nil {
 		return

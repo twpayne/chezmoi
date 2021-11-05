@@ -71,6 +71,7 @@ type Config struct {
 	Interpreters       map[string]*chezmoi.Interpreter `mapstructure:"interpreters"`
 	Mode               chezmoi.Mode                    `mapstructure:"mode"`
 	Pager              string                          `mapstructure:"pager"`
+	PINEntry           pinEntryConfig                  `mapstructure:"pinentry"`
 	Safe               bool                            `mapstructure:"safe"`
 	SourceDirAbsPath   chezmoi.AbsPath                 `mapstructure:"sourceDir"`
 	Template           templateConfig                  `mapstructure:"template"`
@@ -234,7 +235,10 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		Interpreters: defaultInterpreters,
 		Pager:        os.Getenv("PAGER"),
-		Safe:         true,
+		PINEntry: pinEntryConfig{
+			Options: pinEntryDefaultOptions,
+		},
+		Safe: true,
 		Template: templateConfig{
 			Options: chezmoi.DefaultTemplateOptions,
 		},

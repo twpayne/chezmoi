@@ -15,6 +15,10 @@ func (c *Config) readPassword(prompt string) (password string, err error) {
 		return
 	}
 
+	if c.PINEntry.Command != "" {
+		return c.readPINEntry(prompt)
+	}
+
 	var name *uint16
 	name, err = windows.UTF16PtrFromString("CONIN$")
 	if err != nil {
