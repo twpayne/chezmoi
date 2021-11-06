@@ -736,9 +736,9 @@ externals to be included on different machines.
 
 Entries are indexed by target name relative to the directory of the
 `.chezmoiexternal.<format>` file, and must have a `type` and a `url` field.
-`type` can be either `file` or `archive`. All of the entries parent directories
-must be defined in the source state. chezmoi will not create parent directories
-automatically.
+`type` can be either `file` or `archive`. If the entry's parent directories do
+not already exist in the source state then chezmoi will create them as regular
+directories.
 
 Entries may have the following fields:
 
