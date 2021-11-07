@@ -1,5 +1,6 @@
 [!windows] chmod 755 bin/chezmoi-output-test
 [!windows] chmod 755 bin/generate-color-formats
+[!windows] chmod 755 bin/ioreg
 [windows] unix2dos bin/chezmoi-output-test.cmd
 
 # test ioreg template function
@@ -100,6 +101,17 @@ EOF
     echo "Usage: $0 <hex-color>"
     ;;
 esac
+-- bin/ioreg --
+#!/bin/sh
+
+echo '<?xml version="1.0" encoding="UTF-8"?>'
+echo '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">'
+echo '<plist version="1.0">'
+echo '<dict>'
+echo '        <key>IOKitBuildVersion</key>'
+echo '        <string>Darwin Kernel Version 21.1.0: Wed Oct 13 17:33:24 PDT 2021; root:xnu-8019.41.5~1/RELEASE_ARM64_T8101</string>'
+echo '</dict>'
+echo '</plist>'
 -- golden/expected --
 255
 -- golden/include-abspath --
