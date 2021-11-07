@@ -18,7 +18,7 @@ case "$*" in
 "--version")
     echo "2.5.4"
     ;;
-"show --show-protected secrets.kdbx example.com")
+"show --show-protected /secrets.kdbx example.com")
     cat <<EOF
 Title: example.com
 UserName: examplelogin
@@ -27,7 +27,7 @@ URL:
 Notes:
 EOF
     ;;
-"show --attributes host-name --quiet --show-protected secrets.kdbx example.com")
+"show --attributes host-name --quiet --show-protected /secrets.kdbx example.com")
     echo "example.com"
     ;;
 *)
@@ -38,13 +38,13 @@ esac
 @echo off
 IF "%*" == "--version" (
     echo 2.5.4
-) ELSE IF "%*" == "show --show-protected secrets.kdbx example.com" (
+) ELSE IF "%*" == "show --show-protected C:/secrets.kdbx example.com" (
     echo.Title: example.com
     echo.UserName: examplelogin
     echo.Password: examplepassword
     echo.URL:
     echo.Notes:
-) ELSE IF "%*" == "show --attributes host-name --quiet --show-protected secrets.kdbx example.com" (
+) ELSE IF "%*" == "show --attributes host-name --quiet --show-protected C:/secrets.kdbx example.com" (
     echo.example.com
 ) ELSE (
     echo keepass-test: invalid command: %*
@@ -55,4 +55,4 @@ fakepassword
 -- home/user/.config/chezmoi/chezmoi.toml --
 [keepassxc]
     command = "keepass-test"
-    database = "secrets.kdbx"
+    database = "/secrets.kdbx"

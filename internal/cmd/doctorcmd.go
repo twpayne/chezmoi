@@ -232,7 +232,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		&fileCheck{
 			name:       "keepassxc-db",
-			filename:   chezmoi.NewAbsPath(c.Keepassxc.Database),
+			filename:   c.Keepassxc.Database,
 			ifNotSet:   checkResultInfo,
 			ifNotExist: checkResultInfo,
 		},
