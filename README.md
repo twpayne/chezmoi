@@ -41,17 +41,17 @@ $ chezmoi update
 guide](docs/QUICKSTART.md). The [how-to guide](docs/HOWTO.md) covers most common
 tasks, and there's both documentation on [templating](docs/TEMPLATING.md) and
 [frequently asked questions](docs/FAQ.md) for specific questions. You can browse
-other people's dotfiles that use chezmoi [on
-GitHub](https://github.com/topics/chezmoi?o=desc&s=updated) and [on
-GitLab](https://gitlab.com/explore/projects?topic=chezmoi), and see how chezmoi
-[compares to other dotfile managers](docs/COMPARISON.md). For a full description
-of chezmoi, consult the [reference](docs/REFERENCE.md).
+other people's [dotfiles that use chezmoi on
+GitHub](https://github.com/topics/chezmoi?o=desc&s=updated) and [dotfiles that
+use chezmoi on GitLab](https://gitlab.com/explore/projects?topic=chezmoi), and
+see how chezmoi [compares to other dotfile managers](docs/COMPARISON.md). For a
+full description of chezmoi, consult the [reference](docs/REFERENCE.md).
 
 ---
 ## What does chezmoi do and why should I use it?
 
 chezmoi helps you manage your personal configuration files (dotfiles, like
-`~/.zshrc`) across multiple machines.
+`~/.gitconfig`) across multiple machines.
 
 chezmoi is helpful if you have spent time customizing the tools you use (e.g.
 shells, editors, and version control systems) and want to keep machines running
