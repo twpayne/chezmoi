@@ -25,7 +25,7 @@ $ go doc -all -u github.com/twpayne/chezmoi/v2/internal/chezmoi You can also bro
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.d7f45d7be6775f8158e327272279f9c85ba51c0b0332fa0054337cde157ea02b.js" integrity="sha256-1/Rde&#43;Z3X4FY4ycnInn5yFulHAsDMvoAVDN83hV&#43;oCs=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.7a1867804abcd7212a239579f737f4b31b7e2fdecd4f2d7662d8b7e935c4b69f.js" integrity="sha256-ehhngEq81yEqI5V59zf0sxt&#43;L97NTy12Yti36TXEtp8=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -160,8 +160,8 @@ https://github.com/alex-shpak/hugo-book
 interested in contributing to chezmoi.</p>
 <p>You can generate Go documentation for chezmoi&rsquo;s source code with <code>go doc</code>, for
 example:</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ go doc -all -u github.com/twpayne/chezmoi/v2/internal/chezmoi
-</code></pre><p>You can also <a href="https://pkg.go.dev/github.com/twpayne/chezmoi/v2">browse chezmoi&rsquo;s generated documentation
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ go doc -all -u github.com/twpayne/chezmoi/v2/internal/chezmoi
+</code></pre></div><p>You can also <a href="https://pkg.go.dev/github.com/twpayne/chezmoi/v2">browse chezmoi&rsquo;s generated documentation
 online</a> but this only includes
 exported symbols.</p>
 <hr>
@@ -338,8 +338,8 @@ framework. End-to-end tests use
 <a href="https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript"><code>github.com/rogpeppe/go-internal/testscript</code></a>
 with the test scripts themselves in <code>testdata/scripts</code>. You can run individual
 end-to-end tests with</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ go test ./internal/cmd -run=TestScript/&lt;name&gt;
-</code></pre><p>where <code>&lt;name&gt;</code> is the basename of file in <code>testdata/scripts</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ go test ./internal/cmd -run<span style="color:#f92672">=</span>TestScript/&lt;name&gt;
+</code></pre></div><p>where <code>&lt;name&gt;</code> is the basename of file in <code>testdata/scripts</code>.</p>
 <p>Tests should, if at all possible, run unmodified on all operating systems tested
 in CI (Linux, macOS, Windows, and FreeBSD). Windows will sometimes need special
 handling due to its path separator and lack of POSIX-style file permissions.</p>

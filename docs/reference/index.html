@@ -23,7 +23,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.d7f45d7be6775f8158e327272279f9c85ba51c0b0332fa0054337cde157ea02b.js" integrity="sha256-1/Rde&#43;Z3X4FY4ycnInn5yFulHAsDMvoAVDN83hV&#43;oCs=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.7a1867804abcd7212a239579f737f4b31b7e2fdecd4f2d7662d8b7e935c4b69f.js" integrity="sha256-ehhngEq81yEqI5V59zf0sxt&#43;L97NTy12Yti36TXEtp8=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -177,6 +177,7 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#symlink-mode"><code>symlink</code> mode</a></li>
       </ul>
     </li>
+    <li><a href="#application-order">Application order</a></li>
     <li><a href="#special-files-and-directories">Special files and directories</a>
       <ul>
         <li><a href="#chezmoiformattmpl"><code>.chezmoi.&lt;format&gt;.tmpl</code></a></li>
@@ -195,7 +196,7 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#archive"><code>archive</code></a></li>
         <li><a href="#cat-target"><code>cat</code> <em>target</em>&hellip;</a></li>
         <li><a href="#cd"><code>cd</code></a></li>
-        <li><a href="#chattr-attributes-target"><code>chattr</code> <em>attributes</em> <em>target</em>&hellip;</a></li>
+        <li><a href="#chattr-modifier-target"><code>chattr</code> <em>modifier</em> <em>target</em>&hellip;</a></li>
         <li><a href="#completion-shell"><code>completion</code> <em>shell</em></a></li>
         <li><a href="#data"><code>data</code></a></li>
         <li><a href="#decrypt-file"><code>decrypt</code> [<em>file</em>&hellip;]</a></li>
@@ -232,6 +233,11 @@ https://github.com/alex-shpak/hugo-book
       </ul>
     </li>
     <li><a href="#editor-configuration">Editor configuration</a></li>
+    <li><a href="#pinentry-configuration">pinentry configuration</a>
+      <ul>
+        <li><a href="#example-pinentry-configuration">Example pinentry configuration</a></li>
+      </ul>
+    </li>
     <li><a href="#umask-configuration">Umask configuration</a></li>
     <li><a href="#template-execution">Template execution</a></li>
     <li><a href="#template-variables">Template variables</a></li>
@@ -944,6 +950,27 @@ option.</p>
 <td>Pass CLI command</td>
 </tr>
 <tr>
+<td><code>pinentry</code></td>
+<td><code>args</code></td>
+<td>[]string</td>
+<td><em>none</em></td>
+<td>Extra args to the pinentry command</td>
+</tr>
+<tr>
+<td></td>
+<td><code>command</code></td>
+<td>string</td>
+<td><em>none</em></td>
+<td>pinentry command</td>
+</tr>
+<tr>
+<td></td>
+<td><code>options</code></td>
+<td>[]string</td>
+<td><em>see <code>pinentry</code> below</em></td>
+<td>Extra options for pinentry</td>
+</tr>
+<tr>
 <td><code>template</code></td>
 <td><code>options</code></td>
 <td>[]string</td>
@@ -1318,6 +1345,32 @@ symlinks by default, i.e. <code>chezmoi apply</code> will make dotfiles symlinks
 in the source directory if the target is a regular file and is not
 encrypted, executable, private, or a template.</p>
 <hr>
+<h2 id="application-order">
+  Application order
+  <a class="anchor" href="#application-order">#</a>
+</h2>
+<p>chezmoi is deterministic in its order of application. The order is:</p>
+<ol>
+<li>Read the source state.</li>
+<li>Read the destination state.</li>
+<li>Compute the target state.</li>
+<li>Run <code>run_before_</code> scripts in alphabetical order.</li>
+<li>Update entries in the target state (files, directories, scripts, symlinks,
+etc.) in alphabetical order of their target name.</li>
+<li>Run <code>run_after_</code> scripts in alphabetical order.</li>
+</ol>
+<p>Target names are considered after all attributes are stripped. For example,
+given <code>create_alpha</code> and <code>modify_dot_beta</code> in the source state, <code>.beta</code> will be
+updated before <code>alpha</code> because <code>.beta</code> sorts before <code>alpha</code>.</p>
+<p>chezmoi assumes that the source or destination states are not modified while
+chezmoi is being executed. This assumption permits significant performance
+improvements, for example allowing chezmoi to only read files from the source
+and destination states if they are needed to compute the target state.</p>
+<p>chezmoi&rsquo;s behavior when the above assumptions are violated is undefined. For
+example, using a <code>run_before_</code> script to update files in the source or
+destination states violates the assumption that the source and destination
+states do not change while chezmoi is running.</p>
+<hr>
 <h2 id="special-files-and-directories">
   Special files and directories
   <a class="anchor" href="#special-files-and-directories">#</a>
@@ -1330,8 +1383,8 @@ ignored by default, unless they are one of the special files listed here.</p>
   <a class="anchor" href="#chezmoiformattmpl">#</a>
 </h3>
 <p>If a file called <code>.chezmoi.&lt;format&gt;.tmpl</code> exists then <code>chezmoi init</code> will use it
-to create an initial config file. <em>format</em> must be one of the the supported
-config file formats.</p>
+to create an initial config file. <code>&lt;format&gt;</code> must be one of the the supported
+config file formats, e.g. <code>json</code>, <code>toml</code>, or <code>yaml</code>.</p>
 <h4 id="chezmoiformattmpl-examples">
   <code>.chezmoi.&lt;format&gt;.tmpl</code> examples
   <a class="anchor" href="#chezmoiformattmpl-examples">#</a>
@@ -1377,13 +1430,15 @@ MOVE_LEFT=h
 <p>If a file called <code>.chezmoiexternal.&lt;format&gt;</code> exists in the source state, it is
 interpreted as a list of external files and archives to be included as if they
 were in the source state.</p>
+<p><code>&lt;format&gt;</code> must be one of chezmoi&rsquo;s supported configuration file formats, e.g.
+<code>json</code>, <code>toml</code>, or <code>yaml</code>.</p>
 <p><code>.chezmoiexternal.&lt;format&gt;</code> is interpreted as a template. This allows different
 externals to be included on different machines.</p>
 <p>Entries are indexed by target name relative to the directory of the
 <code>.chezmoiexternal.&lt;format&gt;</code> file, and must have a <code>type</code> and a <code>url</code> field.
-<code>type</code> can be either <code>file</code> or <code>archive</code>. All of the entries parent directories
-must be defined in the source state. chezmoi will not create parent directories
-automatically.</p>
+<code>type</code> can be either <code>file</code> or <code>archive</code>. If the entry&rsquo;s parent directories do
+not already exist in the source state then chezmoi will create them as regular
+directories.</p>
 <p>Entries may have the following fields:</p>
 <table>
 <thead>
@@ -1660,11 +1715,11 @@ directory, create a symlink template with <code>.chezmoi.sourceDir</code> or
   <code>add</code> examples
   <a class="anchor" href="#add-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi add ~/.bashrc
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi add ~/.bashrc
 $ chezmoi add ~/.gitconfig --template
 $ chezmoi add ~/.vim --recursive
 $ chezmoi add ~/.oh-my-zsh --exact --recursive
-</code></pre><hr>
+</code></pre></div><hr>
 <h3 id="apply-target">
   <code>apply</code> [<em>target</em>&hellip;]
   <a class="anchor" href="#apply-target">#</a>
@@ -1688,10 +1743,10 @@ applying changes after editing.</p>
   <code>apply</code> examples
   <a class="anchor" href="#apply-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi apply
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi apply
 $ chezmoi apply --dry-run --verbose
 $ chezmoi apply ~/.bashrc
-</code></pre><hr>
+</code></pre></div><hr>
 <h3 id="archive">
   <code>archive</code>
   <a class="anchor" href="#archive">#</a>
@@ -1719,10 +1774,10 @@ the extension, otherwise the default is <code>tar</code>.</p>
   <code>archive</code> examples
   <a class="anchor" href="#archive-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi archive | tar tvf -
-$ chezmoi archive --output=dotfiles.tar.gz
-$ chezmoi archive --output=dotfiles.zip
-</code></pre><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi archive | tar tvf -
+$ chezmoi archive --output<span style="color:#f92672">=</span>dotfiles.tar.gz
+$ chezmoi archive --output<span style="color:#f92672">=</span>dotfiles.zip
+</code></pre></div><hr>
 <h3 id="cat-target">
   <code>cat</code> <em>target</em>&hellip;
   <a class="anchor" href="#cat-target">#</a>
@@ -1735,8 +1790,8 @@ written.</p>
   <code>cat</code> examples
   <a class="anchor" href="#cat-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi cat ~/.bashrc
-</code></pre><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi cat ~/.bashrc
+</code></pre></div><hr>
 <h3 id="cd">
   <code>cd</code>
   <a class="anchor" href="#cd">#</a>
@@ -1749,21 +1804,22 @@ to detect your shell and will finally fall back to an OS-specific default.</p>
   <code>cd</code> examples
   <a class="anchor" href="#cd-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi cd
-</code></pre><hr>
-<h3 id="chattr-attributes-target">
-  <code>chattr</code> <em>attributes</em> <em>target</em>&hellip;
-  <a class="anchor" href="#chattr-attributes-target">#</a>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi cd
+</code></pre></div><hr>
+<h3 id="chattr-modifier-target">
+  <code>chattr</code> <em>modifier</em> <em>target</em>&hellip;
+  <a class="anchor" href="#chattr-modifier-target">#</a>
 </h3>
-<p>Change the attributes of <em>target</em>s. <em>attributes</em> specifies which attributes to
-modify. Add attributes by specifying them or their abbreviations directly,
-optionally prefixed with a plus sign (<code>+</code>). Remove attributes by prefixing them
-or their attributes with the string <code>no</code> or a minus sign (<code>-</code>). The available
-attributes and their abbreviations are:</p>
+<p>Change the attributes and/or type of <em>target</em>s. <em>modifier</em> specifies what to
+modify.</p>
+<p>Add attributes by specifying them or their abbreviations directly, optionally
+prefixed with a plus sign (<code>+</code>). Remove attributes by prefixing them or their
+attributes with the string <code>no</code> or a minus sign (<code>-</code>). The available attribute
+modifiers and their abbreviations are:</p>
 <table>
 <thead>
 <tr>
-<th>Attribute</th>
+<th>Attribute modifier</th>
 <th>Abbreviation</th>
 </tr>
 </thead>
@@ -1810,18 +1866,43 @@ attributes and their abbreviations are:</p>
 </tr>
 </tbody>
 </table>
-<p>Multiple attributes modifications may be specified by separating them with a
-comma (<code>,</code>). If you use the <code>-</code><em>attr</em> form then you must put <em>attributes</em> after
-a <code>--</code> to prevent chezmoi from interpreting <code>-</code>*attr as an option.</p>
+<p>The type of a target can be changed using a type modifier:</p>
+<table>
+<thead>
+<tr>
+<th>Type modifier</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>create</code></td>
+</tr>
+<tr>
+<td><code>modify</code></td>
+</tr>
+<tr>
+<td><code>script</code></td>
+</tr>
+<tr>
+<td><code>symlink</code></td>
+</tr>
+</tbody>
+</table>
+<p>The negative form of type modifiers, e.g. <code>nocreate</code>, changes the target to be a
+regular file if it is of that type, otherwise the type is left unchanged.</p>
+<p>Multiple modifications may be specified by separating them with a comma (<code>,</code>).
+If you use the <code>-</code><em>modifier</em> form then you must put <em>modifier</em> after a <code>--</code> to
+prevent chezmoi from interpreting <code>-</code><em>modifier</em> as an option.</p>
 <h4 id="chattr-examples">
   <code>chattr</code> examples
   <a class="anchor" href="#chattr-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi chattr template ~/.bashrc
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi chattr template ~/.bashrc
 $ chezmoi chattr noempty ~/.profile
 $ chezmoi chattr private,template ~/.netrc
 $ chezmoi chattr -- -x ~/.zshrc
-</code></pre><hr>
+$ chezmoi chattr +create,+private ~/.kube/config
+</code></pre></div><hr>
 <h3 id="completion-shell">
   <code>completion</code> <em>shell</em>
   <a class="anchor" href="#completion-shell">#</a>
@@ -1832,9 +1913,9 @@ $ chezmoi chattr -- -x ~/.zshrc
   <code>completion</code> examples
   <a class="anchor" href="#completion-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi completion bash
-$ chezmoi completion fish --output=~/.config/fish/completions/chezmoi.fish
-</code></pre><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi completion bash
+$ chezmoi completion fish --output<span style="color:#f92672">=</span>~/.config/fish/completions/chezmoi.fish
+</code></pre></div><hr>
 <h3 id="data">
   <code>data</code>
   <a class="anchor" href="#data">#</a>
@@ -1849,9 +1930,9 @@ $ chezmoi completion fish --output=~/.config/fish/completions/chezmoi.fish
   <code>data</code> examples
   <a class="anchor" href="#data-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi data
-$ chezmoi data --format=yaml
-</code></pre><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi data
+$ chezmoi data --format<span style="color:#f92672">=</span>yaml
+</code></pre></div><hr>
 <h3 id="decrypt-file">
   <code>decrypt</code> [<em>file</em>&hellip;]
   <a class="anchor" href="#decrypt-file">#</a>
@@ -1888,9 +1969,9 @@ set.</p>
   <code>diff</code> examples
   <a class="anchor" href="#diff-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi diff
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi diff
 $ chezmoi diff ~/.bashrc
-</code></pre><hr>
+</code></pre></div><hr>
 <h3 id="docs-regexp">
   <code>docs</code> [<em>regexp</em>]
   <a class="anchor" href="#docs-regexp">#</a>
@@ -1906,10 +1987,10 @@ is case insensitive. If no pattern is given, print <code>REFERENCE.md</code>.</p
   <code>docs</code> examples
   <a class="anchor" href="#docs-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi docs
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi docs
 $ chezmoi docs faq
 $ chezmoi docs howto
-</code></pre><hr>
+</code></pre></div><hr>
 <h3 id="doctor">
   <code>doctor</code>
   <a class="anchor" href="#doctor">#</a>
@@ -1919,8 +2000,8 @@ $ chezmoi docs howto
   <code>doctor</code> examples
   <a class="anchor" href="#doctor-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi doctor
-</code></pre><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi doctor
+</code></pre></div><hr>
 <h3 id="dump-target">
   <code>dump</code> [<em>target</em>&hellip;]
   <a class="anchor" href="#dump-target">#</a>
@@ -1941,9 +2022,9 @@ target state.</p>
   <code>dump</code> examples
   <a class="anchor" href="#dump-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi dump ~/.bashrc
-$ chezmoi dump --format=yaml
-</code></pre><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi dump ~/.bashrc
+$ chezmoi dump --format<span style="color:#f92672">=</span>yaml
+</code></pre></div><hr>
 <h3 id="edit-target">
   <code>edit</code> [<em>target</em>&hellip;]
   <a class="anchor" href="#edit-target">#</a>
@@ -1973,10 +2054,10 @@ editor with filenames which match the target filename.</p>
   <code>edit</code> examples
   <a class="anchor" href="#edit-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi edit ~/.bashrc
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi edit ~/.bashrc
 $ chezmoi edit ~/.bashrc --apply
 $ chezmoi edit
-</code></pre><hr>
+</code></pre></div><hr>
 <h3 id="edit-config">
   <code>edit-config</code>
   <a class="anchor" href="#edit-config">#</a>
@@ -1986,8 +2067,8 @@ $ chezmoi edit
   <code>edit-config</code> examples
   <a class="anchor" href="#edit-config-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi edit-config
-</code></pre><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi edit-config
+</code></pre></div><hr>
 <h3 id="encrypt-file">
   <code>encrypt</code> [<em>file</em>&hellip;]
   <a class="anchor" href="#encrypt-file">#</a>
@@ -2042,11 +2123,11 @@ then it returns <em>prompt</em> unchanged.</p>
   <code>execute-template</code> examples
   <a class="anchor" href="#execute-template-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi execute-template '{{ .chezmoi.sourceDir }}'
-$ chezmoi execute-template '{{ .chezmoi.os }}' / '{{ .chezmoi.arch }}'
-$ echo '{{ .chezmoi | toJson }}' | chezmoi execute-template
-$ chezmoi execute-template --init --promptString email=me@home.org &lt; ~/.local/share/chezmoi/.chezmoi.toml.tmpl
-</code></pre><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi execute-template <span style="color:#e6db74">&#39;{{ .chezmoi.sourceDir }}&#39;</span>
+$ chezmoi execute-template <span style="color:#e6db74">&#39;{{ .chezmoi.os }}&#39;</span> / <span style="color:#e6db74">&#39;{{ .chezmoi.arch }}&#39;</span>
+$ echo <span style="color:#e6db74">&#39;{{ .chezmoi | toJson }}&#39;</span> | chezmoi execute-template
+$ chezmoi execute-template --init --promptString email<span style="color:#f92672">=</span>me@home.org &lt; ~/.local/share/chezmoi/.chezmoi.toml.tmpl
+</code></pre></div><hr>
 <h3 id="forget-targets">
   <code>forget</code> <em>targets</em>
   <a class="anchor" href="#forget-targets">#</a>
@@ -2056,8 +2137,8 @@ $ chezmoi execute-template --init --promptString email=me@home.org &lt; ~/.local
   <code>forget</code> examples
   <a class="anchor" href="#forget-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi forget ~/.bashrc
-</code></pre><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi forget ~/.bashrc
+</code></pre></div><hr>
 <h3 id="git-arg">
   <code>git</code> [<em>arg</em>&hellip;]
   <a class="anchor" href="#git-arg">#</a>
@@ -2069,10 +2150,10 @@ them.</p>
   <code>git</code> examples
   <a class="anchor" href="#git-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi git add .
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi git add .
 $ chezmoi git add dot_gitconfig
-$ chezmoi git -- commit -m &quot;Add .gitconfig&quot;
-</code></pre><hr>
+$ chezmoi git -- commit -m <span style="color:#e6db74">&#34;Add .gitconfig&#34;</span>
+</code></pre></div><hr>
 <h3 id="help-command">
   <code>help</code> [<em>command</em>&hellip;]
   <a class="anchor" href="#help-command">#</a>
@@ -2189,12 +2270,12 @@ temporary environments (e.g. Docker containers).</p>
   <code>init</code> examples
   <a class="anchor" href="#init-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi init user
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi init user
 $ chezmoi init user --apply
 $ chezmoi init user --apply --purge
 $ chezmoi init user/dots
 $ chezmoi init gitlab.com/user
-</code></pre><hr>
+</code></pre></div><hr>
 <h3 id="import-filename">
   <code>import</code> <em>filename</em>
   <a class="anchor" href="#import-filename">#</a>
@@ -2229,10 +2310,10 @@ want to set the <code>--destination</code>, <code>--exact</code>, and <code>--re
   <code>import</code> examples
   <a class="anchor" href="#import-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ curl -s -L -o ${TMPDIR}/oh-my-zsh-master.tar.gz https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz
-$ mkdir -p $(chezmoi source-path)/dot_oh-my-zsh
-$ chezmoi import --strip-components 1 --destination ~/.oh-my-zsh ${TMPDIR}/oh-my-zsh-master.tar.gz
-</code></pre><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ curl -s -L -o <span style="color:#e6db74">${</span>TMPDIR<span style="color:#e6db74">}</span>/oh-my-zsh-master.tar.gz https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz
+$ mkdir -p <span style="color:#66d9ef">$(</span>chezmoi source-path<span style="color:#66d9ef">)</span>/dot_oh-my-zsh
+$ chezmoi import --strip-components <span style="color:#ae81ff">1</span> --destination ~/.oh-my-zsh <span style="color:#e6db74">${</span>TMPDIR<span style="color:#e6db74">}</span>/oh-my-zsh-master.tar.gz
+</code></pre></div><hr>
 <h3 id="manage-targets">
   <code>manage</code> <em>targets</em>
   <a class="anchor" href="#manage-targets">#</a>
@@ -2253,12 +2334,12 @@ $ chezmoi import --strip-components 1 --destination ~/.oh-my-zsh ${TMPDIR}/oh-my
   <code>managed</code> examples
   <a class="anchor" href="#managed-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi managed
-$ chezmoi managed --include=files
-$ chezmoi managed --include=files,symlinks
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi managed
+$ chezmoi managed --include<span style="color:#f92672">=</span>files
+$ chezmoi managed --include<span style="color:#f92672">=</span>files,symlinks
 $ chezmoi managed -i d
 $ chezmoi managed -i d,f
-</code></pre><hr>
+</code></pre></div><hr>
 <h3 id="merge-target">
   <code>merge</code> <em>target</em>&hellip;
   <a class="anchor" href="#merge-target">#</a>
@@ -2281,8 +2362,8 @@ state, the source state, and the target state respectively. The default value of
   <code>merge</code> examples
   <a class="anchor" href="#merge-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi merge ~/.bashrc
-</code></pre><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi merge ~/.bashrc
+</code></pre></div><hr>
 <h3 id="merge-all-target">
   <code>merge-all</code> [<em>target</em>&hellip;]
   <a class="anchor" href="#merge-all-target">#</a>
@@ -2293,8 +2374,8 @@ state. The merge is performed with <code>chezmoi merge</code>.</p>
   <code>merge-all</code> examples
   <a class="anchor" href="#merge-all-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi merge-all
-</code></pre><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi merge-all
+</code></pre></div><hr>
 <h3 id="purge">
   <code>purge</code>
   <a class="anchor" href="#purge">#</a>
@@ -2310,9 +2391,9 @@ target state intact.</p>
   <code>purge</code> examples
   <a class="anchor" href="#purge-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi purge
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi purge
 $ chezmoi purge --force
-</code></pre><hr>
+</code></pre></div><hr>
 <h3 id="remove-targets">
   <code>remove</code> <em>targets</em>
   <a class="anchor" href="#remove-targets">#</a>
@@ -2334,8 +2415,8 @@ templates, and all entries that are not files are ignored.</p>
   <code>re-add</code> examples
   <a class="anchor" href="#re-add-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi re-add
-</code></pre><h3 id="rm-targets">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi re-add
+</code></pre></div><h3 id="rm-targets">
   <code>rm</code> <em>targets</em>
   <a class="anchor" href="#rm-targets">#</a>
 </h3>
@@ -2351,14 +2432,14 @@ manager. Normally you would use template functions to retrieve secrets. Note
 that if you want to pass flags to the secret manager&rsquo;s CLI you will need to
 separate them with <code>--</code> to prevent chezmoi from interpreting them.</p>
 <p>To get a full list of available commands run:</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi secret help
-</code></pre><h4 id="secret-examples">
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi secret help
+</code></pre></div><h4 id="secret-examples">
   <code>secret</code> examples
   <a class="anchor" href="#secret-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi secret keyring set --service=service --user=user --value=password
-$ chezmoi secret keyring get --service=service --user=user
-</code></pre><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi secret keyring set --service<span style="color:#f92672">=</span>service --user<span style="color:#f92672">=</span>user --value<span style="color:#f92672">=</span>password
+$ chezmoi secret keyring get --service<span style="color:#f92672">=</span>service --user<span style="color:#f92672">=</span>user
+</code></pre></div><hr>
 <h3 id="source-path-target">
   <code>source-path</code> [<em>target</em>&hellip;]
   <a class="anchor" href="#source-path-target">#</a>
@@ -2369,9 +2450,9 @@ print the source directory.</p>
   <code>source-path</code> examples
   <a class="anchor" href="#source-path-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi source-path
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi source-path
 $ chezmoi source-path ~/.bashrc
-</code></pre><hr>
+</code></pre></div><hr>
 <h3 id="state">
   <code>state</code>
   <a class="anchor" href="#state">#</a>
@@ -2381,13 +2462,13 @@ $ chezmoi source-path ~/.bashrc
   <code>state</code> examples
   <a class="anchor" href="#state-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi state data
-$ chezmoi state delete --bucket=bucket --key=key
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi state data
+$ chezmoi state delete --bucket<span style="color:#f92672">=</span>bucket --key<span style="color:#f92672">=</span>key
 $ chezmoi state dump
-$ chezmoi state get --bucket=bucket --key=key
-$ chezmoi state set --bucket=bucket --key=key --value=value
+$ chezmoi state get --bucket<span style="color:#f92672">=</span>bucket --key<span style="color:#f92672">=</span>key
+$ chezmoi state set --bucket<span style="color:#f92672">=</span>bucket --key<span style="color:#f92672">=</span>key --value<span style="color:#f92672">=</span>value
 $ chezmoi state reset
-</code></pre><hr>
+</code></pre></div><hr>
 <h3 id="status">
   <code>status</code>
   <a class="anchor" href="#status">#</a>
@@ -2406,8 +2487,8 @@ difference between the actual state and the target state.</p>
   <code>status</code> examples
   <a class="anchor" href="#status-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi status
-</code></pre><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi status
+</code></pre></div><hr>
 <h3 id="unmanage-target">
   <code>unmanage</code> <em>target</em>&hellip;
   <a class="anchor" href="#unmanage-target">#</a>
@@ -2422,8 +2503,8 @@ difference between the actual state and the target state.</p>
   <code>unmanaged</code> examples
   <a class="anchor" href="#unmanaged-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi unmanaged
-</code></pre><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi unmanaged
+</code></pre></div><hr>
 <h3 id="update">
   <code>update</code>
   <a class="anchor" href="#update">#</a>
@@ -2438,8 +2519,8 @@ difference between the actual state and the target state.</p>
   <code>update</code> examples
   <a class="anchor" href="#update-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi update
-</code></pre><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi update
+</code></pre></div><hr>
 <h3 id="upgrade">
   <code>upgrade</code>
   <a class="anchor" href="#upgrade">#</a>
@@ -2471,9 +2552,9 @@ no targets are specified then all targets are checked.</p>
   <code>verify</code> examples
   <a class="anchor" href="#verify-examples">#</a>
 </h4>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi verify
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi verify
 $ chezmoi verify ~/.bashrc
-</code></pre><hr>
+</code></pre></div><hr>
 <h2 id="editor-configuration">
   Editor configuration
   <a class="anchor" href="#editor-configuration">#</a>
@@ -2482,6 +2563,29 @@ $ chezmoi verify ~/.bashrc
 environment variable, the <code>$EDITOR</code> environment variable, or <code>vi</code>, whichever is
 specified first.</p>
 <hr>
+<h2 id="pinentry-configuration">
+  pinentry configuration
+  <a class="anchor" href="#pinentry-configuration">#</a>
+</h2>
+<p>By default, chezmoi will request passwords from the terminal.</p>
+<p>If the <code>--no-tty</code> option is passed, then chezmoi will instead read passwords
+from the standard input.</p>
+<p>Otherwise, if the configuration variable <code>pinentry.command</code> is set then chezmoi
+will instead used the given command to read passwords, assuming that it follows
+the <a href="https://www.gnupg.org/documentation/manuals/assuan.pdf">Assuan protocol</a>
+like <a href="https://www.gnupg.org/related_software/pinentry/index.html">GnuPG&rsquo;s
+pinentry</a>. The
+configuration variable <code>pinentry.args</code> specifies extra arguments to be passed to
+<code>pinentry.command</code> and the configuration variable <code>pinentry.options</code> specifies
+extra options to be set. The default <code>pinentry.options</code> is
+<code>[&quot;allow-external-password-cache&quot;]</code>.</p>
+<h3 id="example-pinentry-configuration">
+  Example pinentry configuration
+  <a class="anchor" href="#example-pinentry-configuration">#</a>
+</h3>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">pinentry</span>]
+    <span style="color:#a6e22e">command</span> = <span style="color:#e6db74">&#34;pinentry&#34;</span>
+</code></pre></div><hr>
 <h2 id="umask-configuration">
   Umask configuration
   <a class="anchor" href="#umask-configuration">#</a>
@@ -3117,8 +3221,8 @@ returned as a map indexed by each field&rsquo;s <code>n</code>. For example, giv
 </code></pre></div><p>The result of</p>
 <pre tabindex="0"><code>{{ (onepasswordItemFields &quot;abcdefghijklmnopqrstuvwxyz&quot;).exampleLabel.v }}
 </code></pre><p>is equivalent to calling</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ op get item abcdefghijklmnopqrstuvwxyz --fields exampleLabel
-</code></pre><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ op get item abcdefghijklmnopqrstuvwxyz --fields exampleLabel
+</code></pre></div><hr>
 <h3 id="output-name-arg">
   <code>output</code> <em>name</em> [<em>arg</em>&hellip;]
   <a class="anchor" href="#output-name-arg">#</a>
@@ -3388,6 +3492,7 @@ generating the initial config file.</p>
         <li><a href="#symlink-mode"><code>symlink</code> mode</a></li>
       </ul>
     </li>
+    <li><a href="#application-order">Application order</a></li>
     <li><a href="#special-files-and-directories">Special files and directories</a>
       <ul>
         <li><a href="#chezmoiformattmpl"><code>.chezmoi.&lt;format&gt;.tmpl</code></a></li>
@@ -3406,7 +3511,7 @@ generating the initial config file.</p>
         <li><a href="#archive"><code>archive</code></a></li>
         <li><a href="#cat-target"><code>cat</code> <em>target</em>&hellip;</a></li>
         <li><a href="#cd"><code>cd</code></a></li>
-        <li><a href="#chattr-attributes-target"><code>chattr</code> <em>attributes</em> <em>target</em>&hellip;</a></li>
+        <li><a href="#chattr-modifier-target"><code>chattr</code> <em>modifier</em> <em>target</em>&hellip;</a></li>
         <li><a href="#completion-shell"><code>completion</code> <em>shell</em></a></li>
         <li><a href="#data"><code>data</code></a></li>
         <li><a href="#decrypt-file"><code>decrypt</code> [<em>file</em>&hellip;]</a></li>
@@ -3443,6 +3548,11 @@ generating the initial config file.</p>
       </ul>
     </li>
     <li><a href="#editor-configuration">Editor configuration</a></li>
+    <li><a href="#pinentry-configuration">pinentry configuration</a>
+      <ul>
+        <li><a href="#example-pinentry-configuration">Example pinentry configuration</a></li>
+      </ul>
+    </li>
     <li><a href="#umask-configuration">Umask configuration</a></li>
     <li><a href="#template-execution">Template execution</a></li>
     <li><a href="#template-variables">Template variables</a></li>

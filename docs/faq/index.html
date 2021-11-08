@@ -23,7 +23,7 @@ $ chezmoi doctor Anything ok is fine, anything warning is only a problem if you 
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.d7f45d7be6775f8158e327272279f9c85ba51c0b0332fa0054337cde157ea02b.js" integrity="sha256-1/Rde&#43;Z3X4FY4ycnInn5yFulHAsDMvoAVDN83hV&#43;oCs=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.7a1867804abcd7212a239579f737f4b31b7e2fdecd4f2d7662d8b7e935c4b69f.js" integrity="sha256-ehhngEq81yEqI5V59zf0sxt&#43;L97NTy12Yti36TXEtp8=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -176,8 +176,8 @@ https://github.com/alex-shpak/hugo-book
   <a class="anchor" href="#how-can-i-quickly-check-for-problems-with-chezmoi-on-my-machine">#</a>
 </h2>
 <p>Run:</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi doctor
-</code></pre><p>Anything <code>ok</code> is fine, anything <code>warning</code> is only a problem if you want to use
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi doctor
+</code></pre></div><p>Anything <code>ok</code> is fine, anything <code>warning</code> is only a problem if you want to use
 the related feature, and anything <code>error</code> indicates a definite problem.</p>
 <hr>
 <h2 id="how-do-i-edit-my-dotfiles-with-chezmoi">
@@ -476,8 +476,8 @@ many systems, but not all. If your pager does not pass through ANSI color escape
 sequences then you will see monochrome diff output with uninterpreted ANSI color
 escape sequences.</p>
 <p>This can typically by fixed by setting the environment variable</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ export LESS=-R
-</code></pre><p>which instructs <code>less</code> to display &ldquo;raw&rdquo; control characters via the <code>-R</code> /
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ export LESS<span style="color:#f92672">=</span>-R
+</code></pre></div><p>which instructs <code>less</code> to display &ldquo;raw&rdquo; control characters via the <code>-R</code> /
 <code>--RAW-CONTROL-CHARS</code> option.</p>
 <p>You can also set the <code>pager</code> configuration variable in your config file, for
 example:</p>
@@ -495,11 +495,11 @@ pager.</p>
 <p>The <code>gpg.recipient</code> key should be ultimately trusted, otherwise encryption will
 fail because gpg will prompt for input, which chezmoi does not handle. You can
 check the trust level by running:</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ gpg --export-ownertrust
-</code></pre><p>The trust level for the recipient&rsquo;s key should be <code>6</code>. If it is not, you can
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ gpg --export-ownertrust
+</code></pre></div><p>The trust level for the recipient&rsquo;s key should be <code>6</code>. If it is not, you can
 change the trust level by running:</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ gpg --edit-key $recipient
-</code></pre><p>Enter <code>trust</code> at the prompt and chose <code>5 = I trust ultimately</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ gpg --edit-key $recipient
+</code></pre></div><p>Enter <code>trust</code> at the prompt and chose <code>5 = I trust ultimately</code>.</p>
 <hr>
 <h2 id="chezmoi-reports-chezmoi-user-lookup-userid-nnnnn-inputoutput-error">
   chezmoi reports <code>chezmoi: user: lookup userid NNNNN: input/output error</code>
@@ -534,8 +534,8 @@ lock include <code>diff</code>, <code>status</code>, and <code>verify</code>.</p
   <a class="anchor" href="#im-getting-errors-trying-to-build-chezmoi-from-source">#</a>
 </h2>
 <p>chezmoi requires Go version 1.16 or later. You can check the version of Go with:</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ go version
-</code></pre><p>If you try to build chezmoi with an earlier version of Go you will get the error:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ go version
+</code></pre></div><p>If you try to build chezmoi with an earlier version of Go you will get the error:</p>
 <pre tabindex="0"><code>package github.com/twpayne/chezmoi/v2: build constraints exclude all Go files in /home/twp/src/github.com/twpayne/chezmoi
 </code></pre><p>This is because chezmoi includes the build tag <code>go1.16</code> in <code>main.go</code>, which is
 only set on Go 1.16 or later.</p>

@@ -23,7 +23,7 @@ chezmoi is a standard Go project, using standard Go tooling, with a few extra to
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.d7f45d7be6775f8158e327272279f9c85ba51c0b0332fa0054337cde157ea02b.js" integrity="sha256-1/Rde&#43;Z3X4FY4ycnInn5yFulHAsDMvoAVDN83hV&#43;oCs=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.7a1867804abcd7212a239579f737f4b31b7e2fdecd4f2d7662d8b7e935c4b69f.js" integrity="sha256-ehhngEq81yEqI5V59zf0sxt&#43;L97NTy12Yti36TXEtp8=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -164,26 +164,26 @@ chezmoi&rsquo;s source code.</p>
 <p>chezmoi requires Go 1.16 or later.</p>
 <p>chezmoi is a standard Go project, using standard Go tooling, with a few extra
 tools. Ensure that these extra tools are installed with:</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ make ensure-tools
-</code></pre><p>Build chezmoi:</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ go build
-</code></pre><p>Run all tests:</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ go test ./...
-</code></pre><p>chezmoi&rsquo;s tests include integration tests with other software. If the other
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ make ensure-tools
+</code></pre></div><p>Build chezmoi:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ go build
+</code></pre></div><p>Run all tests:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ go test ./...
+</code></pre></div><p>chezmoi&rsquo;s tests include integration tests with other software. If the other
 software is not found in <code>$PATH</code> the tests will be skipped. Running the full set
 of tests requires <code>age</code>, <code>base64</code>, <code>bash</code>, <code>gpg</code>, <code>perl</code>, <code>python</code>, <code>ruby</code>,
 <code>sed</code>, <code>sha256sum</code>, <code>unzip</code>, and <code>zip</code>.</p>
 <p>Run chezmoi:</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ go run .
-</code></pre><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ go run .
+</code></pre></div><hr>
 <h2 id="generated-code">
   Generated code
   <a class="anchor" href="#generated-code">#</a>
 </h2>
 <p>chezmoi generates shell completions, the install script, and the website from a
 single source of truth. You must run</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ go generate
-</code></pre><p>if you change includes any of the following:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ go generate
+</code></pre></div><p>if you change includes any of the following:</p>
 <ul>
 <li>Adds or modifies a command.</li>
 <li>Adds or modifies a command&rsquo;s flags.</li>
@@ -252,21 +252,25 @@ specification</a>.</p>
 </h2>
 <p>Releases are managed with <a href="https://goreleaser.com/"><code>goreleaser</code></a>.</p>
 <p>To build a test release, without publishing, (Linux only) run:</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ make test-release
-</code></pre><p>Publish a new release by creating and pushing a tag, e.g.:</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ git tag v1.2.3
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ make test-release
+</code></pre></div><p>Publish a new release by creating and pushing a tag, e.g.:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ git tag v1.2.3
 $ git push --tags
-</code></pre><p>This triggers a <a href="https://github.com/twpayne/chezmoi/actions">GitHub Action</a> that
+</code></pre></div><p>This triggers a <a href="https://github.com/twpayne/chezmoi/actions">GitHub Action</a> that
 builds and publishes archives, packages, and snaps, and creates a new <a href="https://github.com/twpayne/chezmoi/releases">GitHub
 Release</a>.</p>
 <p>Publishing <a href="https://snapcraft.io/">Snaps</a> requires a <code>SNAPCRAFT_LOGIN</code>
 <a href="https://github.com/twpayne/chezmoi/settings/secrets/actions">repository
 secret</a>. Snapcraft
 logins periodically expire. Create a new snapcraft login by running:</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ snapcraft export-login --snaps=chezmoi --channels=stable,candidate,beta,edge --acls=package_upload -
-</code></pre><p><a href="https://brew.sh/">brew</a> formula must be updated manually with the command:</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ brew bump-formula-pr --tag=v1.2.3 chezmoi
-</code></pre><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ snapcraft export-login --snaps<span style="color:#f92672">=</span>chezmoi --channels<span style="color:#f92672">=</span>stable,candidate,beta,edge --acls<span style="color:#f92672">=</span>package_upload -
+</code></pre></div><p><a href="https://brew.sh/">brew</a> automation will automatically detect new releases of
+chezmoi within a few hours and open a pull request in
+<a href="github.com/Homebrew/homebrew-core">https://github.com/Homebrew/homebrew-core</a>
+to bump the version.</p>
+<p>If needed, the pull request can be created with:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ brew bump-formula-pr --tag<span style="color:#f92672">=</span>v1.2.3 chezmoi
+</code></pre></div><hr>
 <h2 id="packaging">
   Packaging
   <a class="anchor" href="#packaging">#</a>
@@ -329,17 +333,17 @@ and served with <a href="https://pages.github.com/">GitHub pages</a> from the <a
 branch</a> to GitHub.</p>
 <p>Before building the website, you must download the <a href="https://github.com/alex-shpak/hugo-book">Hugo Book
 Theme</a> by running:</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ git submodule update --init
-</code></pre><p>Test the website locally by running:</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ ( cd assets/chezmoi.io &amp;&amp; hugo serve )
-</code></pre><p>and visit http://localhost:1313/.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ git submodule update --init
+</code></pre></div><p>Test the website locally by running:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ <span style="color:#f92672">(</span> cd assets/chezmoi.io <span style="color:#f92672">&amp;&amp;</span> hugo serve <span style="color:#f92672">)</span>
+</code></pre></div><p>and visit http://localhost:1313/.</p>
 <p>To build the website in a temporary directory, run:</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ ( cd assets/chezmoi.io &amp;&amp; make )
-</code></pre><p>From here you can run</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ git show
-</code></pre><p>to show changes and</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ git push
-</code></pre><p>to push them. You can only push changes if you have write permissions to the
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ <span style="color:#f92672">(</span> cd assets/chezmoi.io <span style="color:#f92672">&amp;&amp;</span> make <span style="color:#f92672">)</span>
+</code></pre></div><p>From here you can run</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ git show
+</code></pre></div><p>to show changes and</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ git push
+</code></pre></div><p>to push them. You can only push changes if you have write permissions to the
 chezmoi GitHub repo.</p>
 <hr>
 </article>

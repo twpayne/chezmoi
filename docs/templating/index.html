@@ -21,7 +21,7 @@ When reading files from the source state, chezmoi interprets them as a template 
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.d7f45d7be6775f8158e327272279f9c85ba51c0b0332fa0054337cde157ea02b.js" integrity="sha256-1/Rde&#43;Z3X4FY4ycnInn5yFulHAsDMvoAVDN83hV&#43;oCs=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.7a1867804abcd7212a239579f737f4b31b7e2fdecd4f2d7662d8b7e935c4b69f.js" integrity="sha256-ehhngEq81yEqI5V59zf0sxt&#43;L97NTy12Yti36TXEtp8=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -196,8 +196,8 @@ if either of the following is true:</p>
   <a class="anchor" href="#template-data">#</a>
 </h2>
 <p>chezmoi provides a variety of template variables. For a full list, run</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi data
-</code></pre><p>These come from a variety of sources (later data overwrite earlier ones):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi data
+</code></pre></div><p>These come from a variety of sources (later data overwrite earlier ones):</p>
 <ul>
 <li>Variables populated by chezmoi are in <code>.chezmoi</code>, for example <code>.chezmoi.os</code>.</li>
 <li>Variables created by you in the <code>.chezmoidata.&lt;format&gt;</code> configuration file.
@@ -216,25 +216,25 @@ from password managers, environment variables, and the filesystem.</p>
 <ul>
 <li>When adding a file for the first time, pass the <code>--template</code> argument, for example:</li>
 </ul>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi add --template ~/.zshrc
-</code></pre><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi add --template ~/.zshrc
+</code></pre></div><ul>
 <li>When adding a file for the first time, you can pass the <code>--autotemplate</code>
 argument, which tells chezmoi to make the file as a template and automatically
 replace variables that chezmoi knows about, for example:</li>
 </ul>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi add --autotemplate ~/.zshrc
-</code></pre><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi add --autotemplate ~/.zshrc
+</code></pre></div><ul>
 <li>If a file is already managed by chezmoi, but is not a template, you can make
 it a template by running, for example:</li>
 </ul>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi chattr +template ~/.zshrc
-</code></pre><ul>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi chattr +template ~/.zshrc
+</code></pre></div><ul>
 <li>You can create a template manually in the source directory by giving it a
 <code>.tmpl</code> extension, for example:</li>
 </ul>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi cd
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi cd
 $ $EDITOR dot_zshrc.tmpl
-</code></pre><ul>
+</code></pre></div><ul>
 <li>
 <p>Templates in <code>.chezmoitemplates</code> must be created manually, for example:</p>
 <pre><code>chezmoi cd
@@ -250,13 +250,13 @@ $EDITOR mytemplate
   <a class="anchor" href="#editing-a-template-file">#</a>
 </h2>
 <p>The easiest way to edit a template is to use <code>chezmoi edit</code>, for example:</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi edit ~/.zshrc
-</code></pre><p>This will open the source file for <code>~/.zshrc</code> in <code>$EDITOR</code>. When you quit the
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi edit ~/.zshrc
+</code></pre></div><p>This will open the source file for <code>~/.zshrc</code> in <code>$EDITOR</code>. When you quit the
 editor, chezmoi will check the template syntax.</p>
 <p>If you want the changes you make to be immediately applied after you quit the
 editor, use the <code>--apply</code> option, for example:</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi edit --apply ~/.zshrc
-</code></pre><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi edit --apply ~/.zshrc
+</code></pre></div><hr>
 <h2 id="testing-templates">
   Testing templates
   <a class="anchor" href="#testing-templates">#</a>
@@ -264,12 +264,12 @@ editor, use the <code>--apply</code> option, for example:</p>
 <p>Templates can be tested with the <code>chezmoi execute-template</code> command which treats
 each of its arguments as a template and executes it. This can be useful for
 testing small fragments of templates, for example:</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi execute-template '{{ .chezmoi.hostname }}'
-</code></pre><p>If there are no arguments, <code>chezmoi execute-template</code> will read the template
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi execute-template <span style="color:#e6db74">&#39;{{ .chezmoi.hostname }}&#39;</span>
+</code></pre></div><p>If there are no arguments, <code>chezmoi execute-template</code> will read the template
 from the standard input. This can be useful for testing whole files, for example:</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi cd
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi cd
 $ chezmoi execute-template &lt; dot_zshrc.tmpl
-</code></pre><hr>
+</code></pre></div><hr>
 <h2 id="template-syntax">
   Template syntax
   <a class="anchor" href="#template-syntax">#</a>
@@ -318,11 +318,11 @@ these docs as well.</p>
 interpret any data coming from stdin or at the end of the command. It will then
 interpret all templates and output the result to stdout. For example with the
 command:</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi execute-template '{{ .chezmoi.os }}/{{ .chezmoi.arch }}'
-</code></pre><p>chezmoi will output the current OS and architecture to stdout.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi execute-template <span style="color:#e6db74">&#39;{{ .chezmoi.os }}/{{ .chezmoi.arch }}&#39;</span>
+</code></pre></div><p>chezmoi will output the current OS and architecture to stdout.</p>
 <p>You can also feed the contents of a file to this command by typing:</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ cat foo.txt | chezmoi execute-template
-</code></pre><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ cat foo.txt | chezmoi execute-template
+</code></pre></div><hr>
 <h2 id="simple-logic">
   Simple logic
   <a class="anchor" href="#simple-logic">#</a>
@@ -465,8 +465,8 @@ are currently on. A list of the variables defined by chezmoi can be found
 <a href="REFERENCE.md#template-variables">here</a>.</p>
 <p>There are, however more variables than that. To view the variables available on
 your system, execute:</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi data
-</code></pre><p>This outputs the variables in JSON format by default. To access the variable
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi data
+</code></pre></div><p>This outputs the variables in JSON format by default. To access the variable
 <code>chezmoi.kernel.osrelease</code> in a template, use</p>
 <pre tabindex="0"><code>{{ .chezmoi.kernel.osrelease }}
 </code></pre><p>This way you can also access the variables you defined yourself.</p>
@@ -512,7 +512,7 @@ directory <code>.chezmoitemplates</code> are interpreted as templates.</p>
 <pre tabindex="0"><code>{{- template &quot;alacritty&quot; 18 -}}
 </code></pre><p>Here we&rsquo;re calling the shared <code>alacritty</code> template with the font size as the
 <code>.</code> value passed in. You can test this with <code>chezmoi cat</code>:</p>
-<pre tabindex="0"><code class="language-console" data-lang="console">$ chezmoi cat ~/small-font.yml
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi cat ~/small-font.yml
 some: config
 fontsize: 12
 more: config
@@ -520,7 +520,7 @@ $ chezmoi cat ~/big-font.yml
 some: config
 fontsize: 18
 more: config
-</code></pre><hr>
+</code></pre></div><hr>
 <h3 id="passing-multiple-arguments">
   Passing multiple arguments
   <a class="anchor" href="#passing-multiple-arguments">#</a>
