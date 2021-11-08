@@ -1503,8 +1503,12 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		c.destSystem = chezmoi.NewDryRunSystem(c.destSystem)
 	}
 	if c.verbose {
-		c.sourceSystem = chezmoi.NewGitDiffSystem(c.sourceSystem, c.stdout, c.SourceDirAbsPath, color)
-		c.destSystem = chezmoi.NewGitDiffSystem(c.destSystem, c.stdout, c.DestDirAbsPath, color)
+		c.sourceSystem = chezmoi.NewGitDiffSystem(c.sourceSystem, c.stdout, c.SourceDirAbsPath, &chezmoi.GitDiffSystemOptions{
+			Color: color,
+		})
+		c.destSystem = chezmoi.NewGitDiffSystem(c.destSystem, c.stdout, c.DestDirAbsPath, &chezmoi.GitDiffSystemOptions{
+			Color: color,
+		})
 	}
 
 	// Set up encryption.
