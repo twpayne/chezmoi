@@ -1169,6 +1169,11 @@ respectively. The default value of `diff.args` is `["{{ .Destination }}", "{{
 .Target }}"]`. If `diff.args` does not contain any template arguments then `{{
 .Destination }}` and `{{ .Target }}` will be appended automatically.
 
+#### `--reverse`
+
+Reverse the direction of the diff, i.e. show the changes to the target required
+to match the destination.
+
 #### `--pager` *pager*
 
 Pager to use for output.

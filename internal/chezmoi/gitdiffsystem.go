@@ -18,20 +18,28 @@ import (
 type GitDiffSystem struct {
 	system         System
 	dirAbsPath     AbsPath
+	reverse        bool
 	unifiedEncoder *diff.UnifiedEncoder
+}
+
+// GetDiffSystemOptions are options for NewGitDiffSystem.
+type GitDiffSystemOptions struct {
+	Color   bool
+	Reverse bool
 }
 
 // NewGitDiffSystem returns a new GitDiffSystem. Output is written to w, the
 // dirAbsPath is stripped from paths, and color controls whether the output
 // contains ANSI color escape sequences.
-func NewGitDiffSystem(system System, w io.Writer, dirAbsPath AbsPath, color bool) *GitDiffSystem {
+func NewGitDiffSystem(system System, w io.Writer, dirAbsPath AbsPath, options *GitDiffSystemOptions) *GitDiffSystem {
 	unifiedEncoder := diff.NewUnifiedEncoder(w, diff.DefaultContextLines)
-	if color {
+	if options.Color {
 		unifiedEncoder.SetColor(diff.NewColorConfig())
 	}
 	return &GitDiffSystem{
 		system:         system,
 		dirAbsPath:     dirAbsPath,
+		reverse:        options.Reverse,
 		unifiedEncoder: unifiedEncoder,
 	}
 }
@@ -136,17 +144,21 @@ func (s *GitDiffSystem) Rename(oldpath, newpath AbsPath) error {
 	default:
 		fileMode = filemode.FileMode(fromFileInfo.Mode())
 	}
+	fromPath, toPath := s.trimPrefix(oldpath), s.trimPrefix(newpath)
+	if s.reverse {
+		fromPath, toPath = toPath, fromPath
+	}
 	if err := s.unifiedEncoder.Encode(&gitDiffPatch{
 		filePatches: []diff.FilePatch{
 			&gitDiffFilePatch{
 				from: &gitDiffFile{
 					fileMode: fileMode,
-					relPath:  s.trimPrefix(oldpath),
+					relPath:  fromPath,
 					hash:     hash,
 				},
 				to: &gitDiffFile{
 					fileMode: fileMode,
-					relPath:  s.trimPrefix(newpath),
+					relPath:  toPath,
 					hash:     hash,
 				},
 			},
@@ -170,7 +182,11 @@ func (s *GitDiffSystem) RunIdempotentCmd(cmd *exec.Cmd) error {
 // RunScript implements System.RunScript.
 func (s *GitDiffSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
 	mode := fs.FileMode(filemode.Executable)
-	diffPatch, err := DiffPatch(scriptname, nil, mode, data, mode)
+	fromData, toData := []byte(nil), data
+	if s.reverse {
+		fromData, toData = toData, fromData
+	}
+	diffPatch, err := DiffPatch(scriptname, fromData, mode, toData, mode)
 	if err != nil {
 		return err
 	}
@@ -237,6 +253,10 @@ func (s *GitDiffSystem) encodeDiff(absPath AbsPath, toData []byte, toMode fs.Fil
 		fromMode = fromInfo.Mode()
 	}
 
+	if s.reverse {
+		fromData, toData = toData, fromData
+		fromMode, toMode = toMode, fromMode
+	}
 	diffPatch, err := DiffPatch(s.trimPrefix(absPath), fromData, fromMode, toData, toMode)
 	if err != nil {
 		return err

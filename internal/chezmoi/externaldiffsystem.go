@@ -19,15 +19,22 @@ type ExternalDiffSystem struct {
 	args           []string
 	destDirAbsPath AbsPath
 	tempDirAbsPath AbsPath
+	reverse        bool
+}
+
+// ExternalDiffSystemOptions are options for NewExternalDiffSystem.
+type ExternalDiffSystemOptions struct {
+	Reverse bool
 }
 
 // NewExternalDiffSystem creates a new ExternalDiffSystem.
-func NewExternalDiffSystem(system System, command string, args []string, destDirAbsPath AbsPath) *ExternalDiffSystem {
+func NewExternalDiffSystem(system System, command string, args []string, destDirAbsPath AbsPath, options *ExternalDiffSystemOptions) *ExternalDiffSystem {
 	return &ExternalDiffSystem{
 		system:         system,
 		command:        command,
 		args:           args,
 		destDirAbsPath: destDirAbsPath,
+		reverse:        options.Reverse,
 	}
 }
 
@@ -183,6 +190,10 @@ func (s *ExternalDiffSystem) runDiffCommand(destAbsPath, targetAbsPath AbsPath) 
 	}{
 		Destination: destAbsPath.String(),
 		Target:      targetAbsPath.String(),
+	}
+
+	if s.reverse {
+		templateData.Destination, templateData.Target = templateData.Target, templateData.Destination
 	}
 
 	args := make([]string, 0, len(s.args))

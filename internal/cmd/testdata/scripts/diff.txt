@@ -22,6 +22,13 @@ chezmoi diff
 [windows] cmp stdout golden/modify-file-diff-windows
 chezmoi apply --force $HOME${/}.file
 
+# test chezmoi diff --reverse
+edit $HOME/.file
+chezmoi diff --reverse
+[!windows] cmp stdout golden/modify-file-diff-reverse-unix
+[windows] cmp stdout golden/modify-file-diff-reverse-windows
+chezmoi apply --force $HOME${/}.file
+
 # test that chezmoi diff generates a diff when a file is removed from the destination directory
 rm $HOME/.file
 chezmoi diff
@@ -90,6 +97,22 @@ index 5d2730a8850a2db479af83de87cc8345437aef06..8a52cb9ce9551221716a53786ad74104
 @@ -1,2 +1 @@
  # contents of .file
 -# edited
+-- golden/modify-file-diff-reverse-unix --
+diff --git a/.file b/.file
+index 8a52cb9ce9551221716a53786ad74104c5902362..5d2730a8850a2db479af83de87cc8345437aef06 100644
+--- a/.file
++++ b/.file
+@@ -1 +1,2 @@
+ # contents of .file
++# edited
+-- golden/modify-file-diff-reverse-windows --
+diff --git a/.file b/.file
+index 8a52cb9ce9551221716a53786ad74104c5902362..5d2730a8850a2db479af83de87cc8345437aef06 100666
+--- a/.file
++++ b/.file
+@@ -1 +1,2 @@
+ # contents of .file
++# edited
 -- golden/restore-file-diff-unix --
 diff --git a/.file b/.file
 new file mode 100644
