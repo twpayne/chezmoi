@@ -124,6 +124,14 @@ chezmoi chattr +executable,+private,+readonly,+template $HOME${/}.modify
 ! exists $CHEZMOISOURCEDIR/modify_dot_modify
 exists $CHEZMOISOURCEDIR/modify_private_readonly_executable_dot_modify.tmpl
 
+# test that chezmoi chattr --dry-run --verbose generates a diff when a file is renamed
+chezmoi chattr --dry-run --verbose +executable $HOME${/}.file
+cmp stdout golden/chattr-diff
+
+-- golden/chattr-diff --
+diff --git a/dot_file b/executable_dot_file
+rename from dot_file
+rename to executable_dot_file
 -- home/user/.local/share/chezmoi/run_script --
 #!/bin/sh
 -- home/user/.local/share/chezmoi/modify_dot_modify --
