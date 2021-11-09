@@ -151,14 +151,15 @@ type Config struct {
 	versionStr  string
 
 	// Configuration.
-	fileSystem        vfs.FS
-	bds               *xdg.BaseDirectorySpecification
-	configFileAbsPath chezmoi.AbsPath
-	baseSystem        chezmoi.System
-	sourceSystem      chezmoi.System
-	destSystem        chezmoi.System
-	persistentState   chezmoi.PersistentState
-	logger            *zerolog.Logger
+	fileSystem             vfs.FS
+	bds                    *xdg.BaseDirectorySpecification
+	configFileAbsPath      chezmoi.AbsPath
+	baseSystem             chezmoi.System
+	sourceSystem           chezmoi.System
+	destSystem             chezmoi.System
+	persistentStateAbsPath chezmoi.AbsPath
+	persistentState        chezmoi.PersistentState
+	logger                 *zerolog.Logger
 
 	// Computed configuration.
 	homeDirAbsPath chezmoi.AbsPath
@@ -1178,20 +1179,22 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.Var(&c.Color, "color", "Colorize output")
 	persistentFlags.VarP(&c.DestDirAbsPath, "destination", "D", "Set destination directory")
 	persistentFlags.Var(&c.Mode, "mode", "Mode")
+	persistentFlags.Var(&c.persistentStateAbsPath, "persistent-state", "Set persistent state file")
 	persistentFlags.BoolVar(&c.Safe, "safe", c.Safe, "Safely replace files and symlinks")
 	persistentFlags.VarP(&c.SourceDirAbsPath, "source", "S", "Set source directory")
 	persistentFlags.Var(&c.UseBuiltinAge, "use-builtin-age", "Use builtin age")
 	persistentFlags.Var(&c.UseBuiltinGit, "use-builtin-git", "Use builtin git")
 	persistentFlags.VarP(&c.WorkingTreeAbsPath, "working-tree", "W", "Set working tree directory")
 	for viperKey, key := range map[string]string{
-		"color":         "color",
-		"destDir":       "destination",
-		"mode":          "mode",
-		"safe":          "safe",
-		"sourceDir":     "source",
-		"useBuiltinAge": "use-builtin-age",
-		"useBuiltinGit": "use-builtin-git",
-		"workingTree":   "working-tree",
+		"color":           "color",
+		"destDir":         "destination",
+		"persistentState": "persistent-state",
+		"mode":            "mode",
+		"safe":            "safe",
+		"sourceDir":       "source",
+		"useBuiltinAge":   "use-builtin-age",
+		"useBuiltinGit":   "use-builtin-git",
+		"workingTree":     "working-tree",
 	} {
 		if err := viper.BindPFlag(viperKey, persistentFlags.Lookup(key)); err != nil {
 			return nil, err
@@ -1606,6 +1609,9 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 // returning the first persistent file found, and returning the default path if
 // none are found.
 func (c *Config) persistentStateFile() (chezmoi.AbsPath, error) {
+	if !c.persistentStateAbsPath.Empty() {
+		return c.persistentStateAbsPath, nil
+	}
 	if !c.configFileAbsPath.Empty() {
 		return c.configFileAbsPath.Dir().Join(persistentStateFileRelPath), nil
 	}

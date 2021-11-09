@@ -11,12 +11,22 @@ exists $CHEZMOICONFIGDIR/chezmoistate.boltdb
 
 # test that the persistent state records that script was run
 chezmoi state dump --format=yaml
-stdout a8076d3d28d21e02012b20eaf7dbf75409a6277134439025f282e368e3305abf:
+stdout 70396a619400b7f78dbb83ab8ddb76ffe0b8e31557e64bab2ca9677818a52135:
 stdout runAt:
 
 # test that chezmoi state reset removes the persistent state
 chezmoi --force state reset
 ! exists $CHEZMOICONFIGDIR/chezmoistate.boltdb
+
+# test that the --persistent-state option sets the persistent state file
+chezmoi apply --force
+stdout script
+chezmoi apply --force --persistent-state=$CHEZMOICONFIGDIR${/}chezmoistate2.boltdb
+exists $CHEZMOICONFIGDIR${/}chezmoistate2.boltdb
+stdout script
+chezmoi state dump --format=yaml --persistent-state=$CHEZMOICONFIGDIR${/}chezmoistate2.boltdb
+stdout 70396a619400b7f78dbb83ab8ddb76ffe0b8e31557e64bab2ca9677818a52135:
+stdout runAt:
 
 -- golden/dump --
 configState: {}
@@ -24,3 +34,5 @@ entryState: {}
 scriptState: {}
 -- home/user/.local/share/chezmoi/run_once_script --
 #!/bin/sh
+
+echo script
