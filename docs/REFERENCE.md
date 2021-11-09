@@ -16,6 +16,7 @@ Manage your dotfiles across multiple machines, securely.
   * [`--no-pager`](#--no-pager)
   * [`--no-tty`](#--no-tty)
   * [`-o`, `--output` *filename*](#-o---output-filename)
+  * [`--persistent-state` *filename*](#--persistent-state-filename)
   * [`-R`, `--refresh-externals`](#-r---refresh-externals)
   * [`-S`, `--source` *directory*](#-s---source-directory)
   * [`--use-builtin-age` *value*](#--use-builtin-age-value)
@@ -217,6 +218,12 @@ stdin.
 ### `-o`, `--output` *filename*
 
 Write the output to *filename* instead of stdout.
+
+### `--persistent-state` *filename*
+
+Read and write the persistent state from *filename*. By default, chezmoi stores
+its persistent state in `chezmoistate.boltdb` in the same directory as its
+configuration file.
 
 ### `-R`, `--refresh-externals`
 
