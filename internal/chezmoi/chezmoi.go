@@ -50,6 +50,7 @@ const (
 const (
 	Prefix = ".chezmoi"
 
+	RootName         = Prefix + "root"
 	dataName         = Prefix + "data"
 	externalName     = Prefix + "external"
 	ignoreName       = Prefix + "ignore"
@@ -69,6 +70,7 @@ var knownPrefixedFiles = newStringSet(
 	Prefix+".json"+TemplateSuffix,
 	Prefix+".toml"+TemplateSuffix,
 	Prefix+".yaml"+TemplateSuffix,
+	RootName,
 	dataName,
 	externalName+".json",
 	externalName+".toml",
