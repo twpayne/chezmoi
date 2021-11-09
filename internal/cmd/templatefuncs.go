@@ -25,7 +25,7 @@ func (c *Config) includeTemplateFunc(filename string) string {
 		var err error
 		absPath, err = chezmoi.NewAbsPathFromExtPath(filename, c.homeDirAbsPath)
 		if err != nil {
-			panic(err)
+			returnTemplateError(err)
 		}
 	} else {
 		absPath = c.SourceDirAbsPath.JoinString(filename)

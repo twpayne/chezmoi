@@ -104,7 +104,7 @@ func (c *Config) stdinIsATTY() bool {
 func (c *Config) writeToStdout(args ...string) string {
 	for _, arg := range args {
 		if _, err := c.stdout.Write([]byte(arg)); err != nil {
-			panic(err)
+			returnTemplateError(err)
 		}
 	}
 	return ""
