@@ -50,6 +50,7 @@ Manage your dotfiles across multiple machines, securely.
   * [`.chezmoiexternal.<format>`](#chezmoiexternalformat)
   * [`.chezmoiignore`](#chezmoiignore)
   * [`.chezmoiremove`](#chezmoiremove)
+  * [`.chezmoiroot`](#chezmoiroot)
   * [`.chezmoitemplates`](#chezmoitemplates)
   * [`.chezmoiversion`](#chezmoiversion)
 * [Commands](#commands)
@@ -872,6 +873,15 @@ backups/** # ignore all contents of backups folder in chezmoi directory
 If a file called `.chezmoiremove` exists in the source state then it is
 interpreted as a list of targets to remove. `.chezmoiremove` is interpreted as a
 template.
+
+---
+
+### `.chezmoiroot`
+
+If a file called `.chezmoiroot` exists in the root of the source directory then
+the source state is read from the directory specified in `.chezmoiroot`
+interpreted as a relative path to the source directory. `.chezmoiroot` is read
+before all other files in the source directory.
 
 ---
 

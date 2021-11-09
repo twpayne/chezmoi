@@ -1285,6 +1285,16 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 // newSourceState returns a new SourceState with options.
 func (c *Config) newSourceState(ctx context.Context, options ...chezmoi.SourceStateOption) (*chezmoi.SourceState, error) {
 	sourceStateLogger := c.logger.With().Str(logComponentKey, logComponentValueSourceState).Logger()
+
+	sourceDirAbsPath := c.SourceDirAbsPath
+	switch data, err := c.sourceSystem.ReadFile(c.SourceDirAbsPath.JoinString(chezmoi.RootName)); {
+	case errors.Is(err, fs.ErrNotExist):
+	case err != nil:
+		return nil, err
+	default:
+		sourceDirAbsPath = c.SourceDirAbsPath.JoinString(string(bytes.TrimSpace(data)))
+	}
+
 	s := chezmoi.NewSourceState(append([]chezmoi.SourceStateOption{
 		chezmoi.WithBaseSystem(c.baseSystem),
 		chezmoi.WithCacheDir(c.CacheDirAbsPath),
@@ -1295,7 +1305,7 @@ func (c *Config) newSourceState(ctx context.Context, options ...chezmoi.SourceSt
 		chezmoi.WithLogger(&sourceStateLogger),
 		chezmoi.WithMode(c.Mode),
 		chezmoi.WithPriorityTemplateData(c.Data),
-		chezmoi.WithSourceDir(c.SourceDirAbsPath),
+		chezmoi.WithSourceDir(sourceDirAbsPath),
 		chezmoi.WithSystem(c.sourceSystem),
 		chezmoi.WithTemplateFuncs(c.templateFuncs),
 		chezmoi.WithTemplateOptions(c.Template.Options),

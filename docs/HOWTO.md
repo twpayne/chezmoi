@@ -54,6 +54,7 @@
   * [Run a PowerShell script as admin on Windows](#run-a-powershell-script-as-admin-on-windows)
 * [Use chezmoi with GitHub Codespaces, Visual Studio Codespaces, or Visual Studio Code Remote - Containers](#use-chezmoi-with-github-codespaces-visual-studio-codespaces-or-visual-studio-code-remote---containers)
 * [Customize chezmoi](#customize-chezmoi)
+  * [Use a subdirectory of your dotfiles repo as the root of the source state](#use-a-subdirectory-of-your-dotfiles-repo-as-the-root-of-the-source-state)
   * [Don't show scripts in the diff output](#dont-show-scripts-in-the-diff-output)
   * [Customize the diff pager](#customize-the-diff-pager)
   * [Use a custom diff tool](#use-a-custom-diff-tool)
@@ -1599,6 +1600,37 @@ sudo apt install -y vim-gtk
 ---
 
 ## Customize chezmoi
+
+---
+
+### Use a subdirectory of your dotfiles repo as the root of the source state
+
+By default, chezmoi uses the root of your dotfiles repo as the root of the
+source state. If your source state contains many entries in its root, then your
+target directory (usually your home directory) will in turn be filled with many
+entries in its root as well. You can reduce the number of entries by keeping
+`.chezmoiignore` up to date, but this can become tiresome.
+
+Instead, you can specify that chezmoi should read the source state from a
+subdirectory of the source directory instead by creating a file called
+`.chezmoiroot` containing the relative path to this subdirectory.
+
+For example, if `.chezmoiroot` contains:
+
+```
+home
+```
+
+Then chezmoi will read the source state from the `home` subdirectory of your
+source directory, for example the desired state of `~/.gitconfig` will be read
+from `~/.local/share/chezmoi/home/dot_gitconfig` (instead of
+`~/.local/share/chezmoi/dot_gitconfig`).
+
+When migrating an existing chezmoi dotfiles repo to use `.chezmoiroot` you will
+need to move the relevant files in to the new root subdirectory manually. You do
+not need to move files that are ignored by chezmoi in all cases (i.e. are listed
+in `.chezmoiignore` when executed as a template on all machines), and you can
+afterwards remove their entries from `home/.chezmoiignore`.
 
 ---
 
