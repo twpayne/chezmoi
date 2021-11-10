@@ -99,6 +99,9 @@ type suspiciousEntriesCheck struct {
 // A umaskCheck checks the umask.
 type umaskCheck struct{}
 
+// A upgradeMethodCheck checks the upgrade method.
+type upgradeMethodCheck struct{}
+
 // A versionCheck checks the version information.
 type versionCheck struct {
 	versionInfo VersionInfo
@@ -136,6 +139,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		&osArchCheck{},
 		&executableCheck{},
+		&upgradeMethodCheck{},
 		&configFileCheck{
 			basename: chezmoiRelPath,
 			bds:      c.bds,
@@ -491,6 +495,25 @@ func (c *suspiciousEntriesCheck) Run(system chezmoi.System, homeDirAbsPath chezm
 
 func (c *umaskCheck) Name() string {
 	return "umask"
+}
+
+func (c *upgradeMethodCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
+	executable, err := os.Executable()
+	if err != nil {
+		return checkResultFailed, err.Error()
+	}
+	method, err := getUpgradeMethod(system.UnderlyingFS(), chezmoi.NewAbsPath(executable))
+	if err != nil {
+		return checkResultFailed, err.Error()
+	}
+	if method == "" {
+		return checkResultSkipped, ""
+	}
+	return checkResultOK, method
+}
+
+func (c *upgradeMethodCheck) Name() string {
+	return "upgrade-method"
 }
 
 func (c *versionCheck) Name() string {
