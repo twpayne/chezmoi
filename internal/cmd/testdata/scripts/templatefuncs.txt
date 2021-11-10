@@ -27,9 +27,13 @@ cmp stdout golden/include-relpath
 chezmoi execute-template '{{ joinPath "a" "b" }}'
 stdout a${/}b
 
-# test lookPath template function
+# test lookPath template function to find in PATH
 chezmoi execute-template '{{ lookPath "go" }}'
 stdout go$exe
+
+# test lookPath template function to check if file exists
+chezmoi execute-template '{{ lookPath "/non-existing-file" }}'
+! stdout .
 
 # test mozillaInstallHash template function
 chezmoi execute-template '{{ mozillaInstallHash "/Applications/Firefox.app/Contents/MacOS" }}'
