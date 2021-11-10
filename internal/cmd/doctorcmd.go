@@ -193,6 +193,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			versionArgs: []string{"-version"},
 			versionRx:   regexp.MustCompile(`v(\d+\.\d+\.\d+\S*)`),
 			ifNotSet:    checkResultWarning,
+			ifNotExist:  checkResultInfo,
 		},
 		&binaryCheck{
 			name:        "gpg-command",
@@ -200,6 +201,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			versionArgs: []string{"--version"},
 			versionRx:   regexp.MustCompile(`(?m)^gpg\s+\(.*?\)\s+(\d+\.\d+\.\d+)`),
 			ifNotSet:    checkResultWarning,
+			ifNotExist:  checkResultInfo,
 		},
 		&binaryCheck{
 			name:        "pinentry-command",
