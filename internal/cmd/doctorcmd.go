@@ -340,7 +340,7 @@ func (c *binaryCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath)
 	if c.versionRx != nil {
 		match := c.versionRx.FindSubmatch(versionBytes)
 		if len(match) != 2 {
-			return checkResultFailed, fmt.Sprintf("found %s, could not parse version from %s", pathAbsPath, bytes.TrimSpace(versionBytes))
+			return checkResultWarning, fmt.Sprintf("found %s, cannot parse version from %s", pathAbsPath, bytes.TrimSpace(versionBytes))
 		}
 		versionBytes = match[1]
 	}
