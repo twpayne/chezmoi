@@ -28,7 +28,7 @@ jobs:
           code:
           - '**/*.go'
           - '.github/workflows/**'
-          - 'go.*'
+          - 'Makefile'
           - 'assets/docker/**'
           - 'assets/vagrant/**'
           - 'internal/**'
