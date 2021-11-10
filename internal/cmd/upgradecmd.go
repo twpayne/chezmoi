@@ -33,10 +33,10 @@ import (
 )
 
 const (
-	methodReplaceExecutable = "replace-executable"
-	methodSnapRefresh       = "snap-refresh"
-	methodUpgradePackage    = "upgrade-package"
-	methodSudoPrefix        = "sudo-"
+	upgradeMethodReplaceExecutable = "replace-executable"
+	upgradeMethodSnapRefresh       = "snap-refresh"
+	upgradeMethodUpgradePackage    = "upgrade-package"
+	upgradeMethodSudoPrefix        = "sudo-"
 
 	libcTypeGlibc = "glibc"
 	libcTypeMusl  = "musl"
@@ -142,28 +142,34 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 	executableAbsPath := chezmoi.NewAbsPath(executable)
 	method := c.upgrade.method
 	if method == "" {
-		method, err = getMethod(c.fileSystem, executableAbsPath)
-		if err != nil {
+		switch method, err = getUpgradeMethod(c.fileSystem, executableAbsPath); {
+		case err != nil:
 			return err
+		case method == "":
+			return fmt.Errorf("%s/%s: cannot determine upgrade method for %s", runtime.GOOS, runtime.GOARCH, executableAbsPath)
 		}
 	}
+	c.logger.Info().
+		Str("executable", executable).
+		Str("method", method).
+		Msg("upgradeMethod")
 
 	// Replace the executable with the updated version.
 	switch method {
-	case methodReplaceExecutable:
+	case upgradeMethodReplaceExecutable:
 		if err := c.replaceExecutable(ctx, executableAbsPath, version, rr); err != nil {
 			return err
 		}
-	case methodSnapRefresh:
+	case upgradeMethodSnapRefresh:
 		if err := c.snapRefresh(); err != nil {
 			return err
 		}
-	case methodUpgradePackage:
+	case upgradeMethodUpgradePackage:
 		useSudo := false
 		if err := c.upgradePackage(ctx, version, rr, useSudo); err != nil {
 			return err
 		}
-	case methodSudoPrefix + methodUpgradePackage:
+	case upgradeMethodSudoPrefix + upgradeMethodUpgradePackage:
 		useSudo := true
 		if err := c.upgradePackage(ctx, version, rr, useSudo); err != nil {
 			return err
@@ -175,7 +181,7 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 	// Find the executable. If we replaced the executable directly, then use
 	// that, otherwise look in $PATH.
 	path := executable
-	if method != methodReplaceExecutable {
+	if method != upgradeMethodReplaceExecutable {
 		path, err = exec.LookPath(c.upgrade.repo)
 		if err != nil {
 			return err
@@ -432,9 +438,9 @@ func (c *Config) verifyChecksum(ctx context.Context, rr *github.RepositoryReleas
 	return nil
 }
 
-// getMethod attempts to determine the method by which chezmoi can be upgraded
-// by looking at how it was installed.
-func getMethod(fileSystem vfs.Stater, executableAbsPath chezmoi.AbsPath) (string, error) {
+// getUpgradeMethod attempts to determine the method by which chezmoi can be
+// upgraded by looking at how it was installed.
+func getUpgradeMethod(fileSystem vfs.Stater, executableAbsPath chezmoi.AbsPath) (string, error) {
 	// If the executable is in the user's home directory, then always use
 	// replace-executable.
 	userHomeDir, err := os.UserHomeDir()
@@ -444,7 +450,7 @@ func getMethod(fileSystem vfs.Stater, executableAbsPath chezmoi.AbsPath) (string
 	if executableInUserHomeDir, err := vfs.Contains(fileSystem, executableAbsPath.String(), userHomeDir); err != nil {
 		return "", err
 	} else if executableInUserHomeDir {
-		return methodReplaceExecutable, nil
+		return upgradeMethodReplaceExecutable, nil
 	}
 
 	// If the executable is in the system's temporary directory, then always use
@@ -452,17 +458,17 @@ func getMethod(fileSystem vfs.Stater, executableAbsPath chezmoi.AbsPath) (string
 	if executableIsInTempDir, err := vfs.Contains(fileSystem, executableAbsPath.String(), os.TempDir()); err != nil {
 		return "", err
 	} else if executableIsInTempDir {
-		return methodReplaceExecutable, nil
+		return upgradeMethodReplaceExecutable, nil
 	}
 
 	switch runtime.GOOS {
 	case "darwin":
-		return methodUpgradePackage, nil
+		return upgradeMethodUpgradePackage, nil
 	case "freebsd":
-		return methodReplaceExecutable, nil
+		return upgradeMethodReplaceExecutable, nil
 	case "linux":
 		if ok, _ := vfs.Contains(fileSystem, executableAbsPath.String(), "/snap"); ok {
-			return methodSnapRefresh, nil
+			return upgradeMethodSnapRefresh, nil
 		}
 
 		info, err := fileSystem.Stat(executableAbsPath.String())
@@ -474,22 +480,22 @@ func getMethod(fileSystem vfs.Stater, executableAbsPath chezmoi.AbsPath) (string
 		uid := os.Getuid()
 		switch int(executableStat.Uid) {
 		case 0:
-			method := methodUpgradePackage
+			method := upgradeMethodUpgradePackage
 			if uid != 0 {
 				if _, err := exec.LookPath("sudo"); err == nil {
-					method = methodSudoPrefix + method
+					method = upgradeMethodSudoPrefix + method
 				}
 			}
 			return method, nil
 		case uid:
-			return methodReplaceExecutable, nil
+			return upgradeMethodReplaceExecutable, nil
 		default:
 			return "", fmt.Errorf("%s: cannot upgrade executable owned by non-current non-root user", executableAbsPath)
 		}
 	case "openbsd":
-		return methodReplaceExecutable, nil
+		return upgradeMethodReplaceExecutable, nil
 	default:
-		return "", fmt.Errorf("%s: unsupported GOOS", runtime.GOOS)
+		return "", nil
 	}
 }
 
