@@ -74,17 +74,17 @@ lint: ensure-golangci-lint
 	${GO} run ./internal/cmds/lint-whitespace
 
 .PHONY: format
-format: ensure-gofumports
-	find . -name \*.go | xargs ./bin/gofumports -local github.com/twpayne/chezmoi -w
+format: ensure-gofumpt
+	find . -name \*.go | xargs ./bin/gofumpt -w
 
 .PHONY: ensure-tools
 ensure-tools: ensure-gofumports ensure-golangci-lint
 
-.PHONY: ensure-gofumports
+.PHONY: ensure-gofumpt
 ensure-gofumports:
-	if [ ! -x bin/gofumports ] ; then \
+	if [ ! -x bin/gofumpt ] ; then \
 		mkdir -p bin ; \
-		GOBIN=$(shell pwd)/bin ${GO} install mvdan.cc/gofumpt/gofumports@latest ; \
+		GOBIN=$(shell pwd)/bin ${GO} install mvdan.cc/gofumpt@v0.2.0 ; \
 	fi
 
 .PHONY: ensure-golangci-lint

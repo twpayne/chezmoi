@@ -1,7 +1,5 @@
-*.exe
 /.vagrant
-/bin/chezmoi
-/bin/gofumports
+/bin/gofumpt
 /bin/golangci-lint
 /chezmoi
 /chezmoi.exe
