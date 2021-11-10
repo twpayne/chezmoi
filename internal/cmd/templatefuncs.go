@@ -73,6 +73,8 @@ func (c *Config) lookPathTemplateFunc(file string) string {
 		return path
 	case errors.Is(err, exec.ErrNotFound):
 		return ""
+	case errors.Is(err, fs.ErrNotExist):
+		return ""
 	default:
 		returnTemplateError(err)
 		return ""
