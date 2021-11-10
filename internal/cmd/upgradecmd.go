@@ -33,6 +33,7 @@ import (
 )
 
 const (
+	upgradeMethodBrewUpgrade       = "brew-upgrade"
 	upgradeMethodReplaceExecutable = "replace-executable"
 	upgradeMethodSnapRefresh       = "snap-refresh"
 	upgradeMethodUpgradePackage    = "upgrade-package"
@@ -156,6 +157,10 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 
 	// Replace the executable with the updated version.
 	switch method {
+	case upgradeMethodBrewUpgrade:
+		if err := c.brewUpgrade(); err != nil {
+			return err
+		}
 	case upgradeMethodReplaceExecutable:
 		if err := c.replaceExecutable(ctx, executableAbsPath, version, rr); err != nil {
 			return err
@@ -200,6 +205,10 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 		err = unix.Exec(arg0, argv, os.Environ())
 	}
 	return err
+}
+
+func (c *Config) brewUpgrade() error {
+	return c.run(chezmoi.EmptyAbsPath, "brew", []string{"upgrade", c.upgrade.repo})
 }
 
 func (c *Config) getChecksums(ctx context.Context, rr *github.RepositoryRelease) (map[string][]byte, error) {
@@ -354,8 +363,6 @@ func (c *Config) snapRefresh() error {
 
 func (c *Config) upgradePackage(ctx context.Context, version *semver.Version, rr *github.RepositoryRelease, useSudo bool) error {
 	switch runtime.GOOS {
-	case "darwin":
-		return c.run(chezmoi.EmptyAbsPath, "brew", []string{"upgrade", c.upgrade.repo})
 	case "linux":
 		// Determine the package type and architecture.
 		packageType, err := getPackageType(c.baseSystem)
@@ -441,6 +448,13 @@ func (c *Config) verifyChecksum(ctx context.Context, rr *github.RepositoryReleas
 // getUpgradeMethod attempts to determine the method by which chezmoi can be
 // upgraded by looking at how it was installed.
 func getUpgradeMethod(fileSystem vfs.Stater, executableAbsPath chezmoi.AbsPath) (string, error) {
+	switch {
+	case runtime.GOOS == "darwin" && strings.Contains(executableAbsPath.String(), "/homebrew/"):
+		return upgradeMethodBrewUpgrade, nil
+	case runtime.GOOS == "linux" && strings.Contains(executableAbsPath.String(), "/.linuxbrew/"):
+		return upgradeMethodBrewUpgrade, nil
+	}
+
 	// If the executable is in the user's home directory, then always use
 	// replace-executable.
 	userHomeDir, err := os.UserHomeDir()
@@ -463,7 +477,7 @@ func getUpgradeMethod(fileSystem vfs.Stater, executableAbsPath chezmoi.AbsPath) 
 
 	switch runtime.GOOS {
 	case "darwin":
-		return upgradeMethodUpgradePackage, nil
+		return upgradeMethodReplaceExecutable, nil
 	case "freebsd":
 		return upgradeMethodReplaceExecutable, nil
 	case "linux":
