@@ -18,6 +18,7 @@ import (
 	"runtime"
 	"runtime/pprof"
 	"sort"
+	"strconv"
 	"strings"
 	"text/template"
 	"time"
@@ -1902,7 +1903,11 @@ func withVersionInfo(versionInfo VersionInfo) configOption {
 			versionElems = append(versionElems, "commit "+versionInfo.Commit)
 		}
 		if versionInfo.Date != "" {
-			versionElems = append(versionElems, "built at "+versionInfo.Date)
+			date := versionInfo.Date
+			if sec, err := strconv.ParseInt(date, 10, 64); err == nil {
+				date = time.Unix(sec, 0).UTC().Format(time.RFC3339)
+			}
+			versionElems = append(versionElems, "built at "+date)
 		}
 		if versionInfo.BuiltBy != "" {
 			versionElems = append(versionElems, "built by "+versionInfo.BuiltBy)

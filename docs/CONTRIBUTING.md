@@ -195,9 +195,11 @@ If you're packaging chezmoi for an operating system or distribution:
   `4d678ce6850c9d81c7ab2fe0d8f20c1547688b91`. The command `git rev-parse HEAD`
   will return a suitable value.
 
-  `$DATE` should be the date of the build in RFC3339 format, e.g.
-  `2019-11-23T18:29:25Z`. The command `date -u +%Y-%m-%dT%H:%M:%SZ` will return
-  a suitable value.
+  `$DATE` should be the date of the build as a UNIX timestamp or in RFC3339
+  format. The command `git show -s --format=%ct HEAD` returns the UNIX timestamp
+  of the last commit, e.g. `1636668628`. The command `date -u
+  +%Y-%m-%dT%H:%M:%SZ` returns the current time in RFC3339 format, e.g.
+  `2019-11-23T18:29:25Z`.
 
   `$BUILT_BY` should be a string indicating what system was used to build the
   binary. Typically it should be the name of your packaging system, e.g.

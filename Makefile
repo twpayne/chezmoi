@@ -8,14 +8,14 @@ default: run build-all test lint format
 install:
 	go install -ldflags "-X main.version=$(shell git describe --abbrev=0 --tags) \
 		-X main.commit=$(shell git rev-parse HEAD) \
-		-X main.date=$(shell date -u +%Y-%m-%dT%H:%M:%SZ) \
+		-X main.date=$(shell git show -s --format=%ct HEAD) \
 		-X main.builtBy=source"
 
 .PHONY: build
 build:
 	go build -ldflags "-X main.version=$(shell git describe --abbrev=0 --tags) \
 		-X main.commit=$(shell git rev-parse HEAD) \
-		-X main.date=$(shell date -u +%Y-%m-%dT%H:%M:%SZ) \
+		-X main.date=$(shell git show -s --format=%ct HEAD) \
 		-X main.builtBy=source"
 
 .PHONY: build-all
