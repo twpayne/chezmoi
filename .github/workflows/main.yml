@@ -409,6 +409,7 @@ jobs:
       uses: golangci/golangci-lint-action@v2
       with:
         version: v${{ env.GOLANGCI_LINT_VERSION }}
+        args: --timeout=5m
   release: # FIXME this should be merged into test-ubuntu above
     if: startsWith(github.ref, 'refs/tags/')
     needs:
