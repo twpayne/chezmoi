@@ -6,6 +6,7 @@
 * [Generated code](#generated-code)
 * [Contributing changes](#contributing-changes)
 * [Managing releases](#managing-releases)
+* [Building and installing with `make`](#building-and-installing-with-make)
 * [Packaging](#packaging)
 * [Updating the website](#updating-the-website)
 
@@ -26,12 +27,7 @@ chezmoi's source code.
 
 chezmoi requires Go 1.16 or later.
 
-chezmoi is a standard Go project, using standard Go tooling, with a few extra
-tools. Ensure that these extra tools are installed with:
-
-```console
-$ make ensure-tools
-```
+chezmoi is a standard Go project, using standard Go tooling.
 
 Build chezmoi:
 
@@ -54,6 +50,12 @@ Run chezmoi:
 
 ```console
 $ go run .
+```
+
+Run a set of smoketests, including cross-compilation, tests, and linting:
+
+```console
+$ make smoketest
 ```
 
 ---
@@ -164,6 +166,28 @@ If needed, the pull request can be created with:
 ```console
 $ brew bump-formula-pr --tag=v1.2.3 chezmoi
 ```
+
+---
+
+## Building and installing with `make`
+
+chezmoi can be built with GNU make, assuming you have the Go toolchain
+installed.
+
+Running `make` will build a `chezmoi` binary in the current directory for the
+host OS and architecture. To embed version information in the binary and control
+installation the following variables are available:
+
+| Variable    | Example                | Purpose                                         |
+| ----------- | ---------------------- | ----------------------------------------------- |
+| `$VERSION`  | `v2.0.0`               | Set version.                                    |
+| `$COMMIT`   | `3895680a`...          | Set the git commit at which the code was built. |
+| `$DATE`     | `2019-11-23T18:29:25Z` | The time of the build.                          |
+| `$BUILT_BY` | `homebrew`             | The packaging system performing the build.      |
+| `$PREFIX`   | `/usr`                 | Installation prefix.                            |
+| `$DESTDIR`  | `install-root`         | Fake installation root.                         |
+
+Running `make install` will install the `chezmoi` binary in `${DESTDIR}${PREFIX}/bin`.
 
 ---
 
