@@ -78,10 +78,10 @@ format: ensure-gofumpt
 	find . -name \*.go | xargs ./bin/gofumpt -w
 
 .PHONY: ensure-tools
-ensure-tools: ensure-gofumports ensure-golangci-lint
+ensure-tools: ensure-gofumpt ensure-golangci-lint
 
 .PHONY: ensure-gofumpt
-ensure-gofumports:
+ensure-gofumpt:
 	if [ ! -x bin/gofumpt ] ; then \
 		mkdir -p bin ; \
 		GOBIN=$(shell pwd)/bin ${GO} install mvdan.cc/gofumpt@v0.2.0 ; \

@@ -109,8 +109,8 @@ that:
   generate` and including any modified files in your commit.
 
 * The code is correctly formatted, according to
-  [`gofumports`](https://mvdan.cc/gofumpt/gofumports). You can ensure this by
-  running `make format`.
+  [`gofumpt`](https://mvdan.cc/gofumpt/). You can ensure this by running `make
+  format`.
 
 * The code passes [`golangci-lint`](https://github.com/golangci/golangci-lint).
   You can ensure this by running `make lint`.
