@@ -171,8 +171,10 @@ $ brew bump-formula-pr --tag=v1.2.3 chezmoi
 
 If you're packaging chezmoi for an operating system or distribution:
 
-* chezmoi has no build or install dependencies other than the standard Go
-  toolchain.
+* chezmoi has no build dependencies other than the standard Go toolchain.
+
+* chezmoi has no runtime dependencies, but is usually used with `git`, so many
+  packagers choose to make `git` an install dependency or recommended package.
 
 * Please set the version number, git commit, and build time in the binary. This
   greatly assists debugging when end users report problems or ask for help. You
