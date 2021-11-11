@@ -1,18 +1,46 @@
 GO?=go
 GOLANGCI_LINT_VERSION=$(shell grep GOLANGCI_LINT_VERSION: .github/workflows/main.yml | awk '{ print $$2 }')
+ifdef VERSION
+	GO_LDFLAGS+=-X main.version=${VERSION}
+endif
+ifdef COMMIT
+	GO_LDFLAGS+=-X main.commit=${COMMIT}
+endif
+ifdef DATE
+	GO_LDFLAGS+=-X main.date=${DATE}
+endif
+ifdef BUILT_BY
+	GO_LDFLAGS+=-X main.builtBy=${BUILT_BY}
+endif
+PREFIX?=/usr/local
 
 .PHONY: default
-default: run build-all test lint format
+default: build
+
+.PHONY: smoketest
+smoketest: run build-all test lint format
+
+.PHONY: build
+build:
+ifeq (${GO_LDFLAGS},)
+	go build . || ( rm -f chezmoi ; false )
+else
+	go build -ldflags "${GO_LDFLAGS}" . || ( rm -f chezmoi ; false )
+endif
 
 .PHONY: install
-install:
+install: build
+	install -m 755 chezmoi "${DESTDIR}${PREFIX}/bin"
+
+.PHONY: install-from-git-working-copy
+install-from-git-working-copy:
 	go install -ldflags "-X main.version=$(shell git describe --abbrev=0 --tags) \
 		-X main.commit=$(shell git rev-parse HEAD) \
 		-X main.date=$(shell git show -s --format=%ct HEAD) \
 		-X main.builtBy=source"
 
-.PHONY: build
-build:
+.PHONY: build-in-git-working-copy
+build-in-git-working-copy:
 	go build -ldflags "-X main.version=$(shell git describe --abbrev=0 --tags) \
 		-X main.commit=$(shell git rev-parse HEAD) \
 		-X main.date=$(shell git show -s --format=%ct HEAD) \
