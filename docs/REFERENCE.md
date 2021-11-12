@@ -451,25 +451,25 @@ names.
 The following prefixes and suffixes are special, and are collectively referred
 to as "attributes":
 
-| Prefix       | Effect                                                                          |
-| ------------ | ------------------------------------------------------------------------------- |
-| `after_`     | Run script after updating the destination.                                      |
-| `before_`    | Run script before updating the destination.                                     |
-| `create_`    | Ensure that the file exists, and create it with contents if it does not.        |
-| `dot_`       | Rename to use a leading dot, e.g. `dot_foo` becomes `.foo`.                     |
-| `empty_`     | Ensure the file exists, even if is empty. By default, empty files are removed.  |
-| `encrypted_` | Encrypt the file in the source state.                                           |
-| `exact_`     | Remove anything not managed by chezmoi.                                         |
-| `executable_`| Add executable permissions to the target file.                                  |
-| `literal_`   | Stop parsing prefix attributes.                                                 |
-| `modify_`    | Treat the contents as a script that modifies an existing file.                  |
-| `once_`      | Only run the script if it has not been run before.                              |
-| `onchange_`  | Only run the script if its contents have changed from the last time it was run. |
-| `private_`   | Remove all group and world permissions from the target file or directory.       |
-| `readonly_`  | Remove all write permissions from the target file or directory.                 |
-| `remove_`    | Remove the entry if it exists.                                                  |
-| `run_`       | Treat the contents as a script to run.                                          |
-| `symlink_`   | Create a symlink instead of a regular file.                                     |
+| Prefix        | Effect                                                                          |
+| ------------- | ------------------------------------------------------------------------------- |
+| `after_`      | Run script after updating the destination.                                      |
+| `before_`     | Run script before updating the destination.                                     |
+| `create_`     | Ensure that the file exists, and create it with contents if it does not.        |
+| `dot_`        | Rename to use a leading dot, e.g. `dot_foo` becomes `.foo`.                     |
+| `empty_`      | Ensure the file exists, even if is empty. By default, empty files are removed.  |
+| `encrypted_`  | Encrypt the file in the source state.                                           |
+| `exact_`      | Remove anything not managed by chezmoi.                                         |
+| `executable_` | Add executable permissions to the target file.                                  |
+| `literal_`    | Stop parsing prefix attributes.                                                 |
+| `modify_`     | Treat the contents as a script that modifies an existing file.                  |
+| `once_`       | Only run the script if it has not been run before.                              |
+| `onchange_`   | Only run the script if its contents have changed from the last time it was run. |
+| `private_`    | Remove all group and world permissions from the target file or directory.       |
+| `readonly_`   | Remove all write permissions from the target file or directory.                 |
+| `remove_`     | Remove the entry if it exists.                                                  |
+| `run_`        | Treat the contents as a script to run.                                          |
+| `symlink_`    | Create a symlink instead of a regular file.                                     |
 
 | Suffix     | Effect                                               |
 | ---------- | ---------------------------------------------------- |
@@ -1853,6 +1853,7 @@ chezmoi provides the following automatically-populated variables:
 | -------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
 | `.chezmoi.arch`            | `string`   | Architecture, e.g. `amd64`, `arm`, etc. as returned by [runtime.GOARCH](https://pkg.go.dev/runtime?tab=doc#pkg-constants).      |
 | `.chezmoi.args`            | `[]string` | The arguments passed to the `chezmoi` command, starting with the program command.                                               |
+| `.chezmoi.executable`      | `string`   | The path to the `chezmoi` executable, if available.                                                                             |
 | `.chezmoi.fqdnHostname`    | `string`   | The fully-qualified domain name hostname of the machine chezmoi is running on.                                                  |
 | `.chezmoi.group`           | `string`   | The group of the user running chezmoi.                                                                                          |
 | `.chezmoi.homeDir`         | `string`   | The home directory of the user running chezmoi.                                                                                 |
