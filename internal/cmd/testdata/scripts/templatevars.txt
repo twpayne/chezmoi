@@ -9,6 +9,9 @@ chezmoi execute-template '{{ .chezmoi.arch }}'
 chezmoi execute-template '{{ index .chezmoi.args 1 }}'
 stdout execute-template
 
+chezmoi execute-template '{{ .chezmoi.executable }}'
+stdout [\\/]chezmoi(.exe)?$
+
 chezmoi execute-template '{{ .chezmoi.homeDir }}'
 stdout ${HOME@R}
 

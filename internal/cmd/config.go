@@ -890,10 +890,13 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 			Msg("chezmoi.OSRelease")
 	}
 
+	executable, _ := os.Executable()
+
 	return map[string]interface{}{
 		"chezmoi": map[string]interface{}{
 			"arch":         runtime.GOARCH,
 			"args":         os.Args,
+			"executable":   executable,
 			"fqdnHostname": fqdnHostname,
 			"group":        group,
 			"homeDir":      c.homeDir,
