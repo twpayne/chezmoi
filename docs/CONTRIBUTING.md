@@ -62,8 +62,8 @@ $ make smoketest
 
 ## Generated code
 
-chezmoi generates shell completions, the install script, and the website from a
-single source of truth. You must run
+chezmoi generates the install script and the website from a single source of
+truth. You must run
 
 ```console
 $ go generate
@@ -71,8 +71,6 @@ $ go generate
 
 if you change includes any of the following:
 
-* Adds or modifies a command.
-* Adds or modifies a command's flags.
 * Adds or modifies the list of supported OSs and architectures.
 * Modifies the install script template.
 
