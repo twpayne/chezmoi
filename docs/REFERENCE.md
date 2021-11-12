@@ -352,7 +352,7 @@ The following configuration variables are available:
 |                | `sourceDir`           | string   | `~/.local/share/chezmoi` | Source directory                                       |
 |                | `pager`               | string   | `$PAGER`                 | Default pager                                          |
 |                | `umask`               | int      | *from system*            | Umask                                                  |
-|                | `useBuiltinAge`       | string   | `auto`                   | Use builtin git if `age` command is not found in $PATH |
+|                | `useBuiltinAge`       | string   | `auto`                   | Use builtin age if `age` command is not found in $PATH |
 |                | `useBuiltinGit`       | string   | `auto`                   | Use builtin git if `git` command is not found in $PATH |
 |                | `workingTree`         | string   | *source directory*       | git working tree directory                             |
 | `add`          | `templateSymlinks`    | bool     | `false`                  | Template symlinks to source and home dirs              |
