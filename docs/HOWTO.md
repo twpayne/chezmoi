@@ -58,6 +58,7 @@
   * [Customize the diff pager](#customize-the-diff-pager)
   * [Use a custom diff tool](#use-a-custom-diff-tool)
   * [Use a custom merge tool](#use-a-custom-merge-tool)
+  * [Use an HTTP or SOCKS5 proxy](#use-an-http-or-socks5-proxy)
 * [Migrating to chezmoi from another dotfile manager](#migrating-to-chezmoi-from-another-dotfile-manager)
   * [Migrate from a dotfile manager that uses symlinks](#migrate-from-a-dotfile-manager-that-uses-symlinks)
 * [Migrate away from chezmoi](#migrate-away-from-chezmoi)
@@ -1661,6 +1662,18 @@ state, source state, and target state respectively. For example, to use
 [merge]
     command = "nvim"
     args = ["-d", "{{ .Destination }}", "{{ .Source }}", "{{ .Target }}"]
+```
+
+---
+
+### Use an HTTP or SOCKS5 proxy
+
+chezmoi supports HTTP, HTTPS, and SOCKS5 proxies. Set the `HTTP_PROXY`,
+`HTTPS_PROXY`, and `NO_PROXY` environment variables, or their lowercase
+equivalents, for example:
+
+```console
+$ HTTP_PROXY=socks5://127.0.0.1:1080 chezmoi apply -R
 ```
 
 ---
