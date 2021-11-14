@@ -1626,6 +1626,8 @@ templates, and all entries that are not files are ignored.
 $ chezmoi re-add
 ```
 
+---
+
 ### `rm` *targets*
 
 `rm` is an alias for `remove`.
@@ -1710,6 +1712,8 @@ $ chezmoi status
 ### `unmanage` *target*...
 
 `unmanage` is an alias for `forget` for symmetry with `manage`.
+
+---
 
 ### `unmanaged`
 
