@@ -23,7 +23,7 @@ import (
 	"syscall"
 
 	"github.com/coreos/go-semver/semver"
-	"github.com/google/go-github/v39/github"
+	"github.com/google/go-github/v40/github"
 	"github.com/spf13/cobra"
 	vfs "github.com/twpayne/go-vfs/v4"
 	"go.uber.org/multierr"
