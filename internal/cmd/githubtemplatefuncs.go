@@ -11,6 +11,7 @@ import (
 type gitHubData struct {
 	keysCache          map[string][]*github.Key
 	latestReleaseCache map[string]map[string]*github.RepositoryRelease
+	repoCache          map[string]map[string]*github.Repository
 }
 
 func (c *Config) gitHubKeysTemplateFunc(user string) []*github.Key {
@@ -44,9 +45,11 @@ func (c *Config) gitHubKeysTemplateFunc(user string) []*github.Key {
 		c.gitHub.keysCache = make(map[string][]*github.Key)
 	}
 	c.gitHub.keysCache[user] = allKeys
+
 	return allKeys
 }
 
+//nolint:dupl
 func (c *Config) gitHubLatestReleaseTemplateFunc(userRepo string) *github.RepositoryRelease {
 	user, repo := parseGitHubUserRepo(userRepo)
 
@@ -74,6 +77,36 @@ func (c *Config) gitHubLatestReleaseTemplateFunc(userRepo string) *github.Reposi
 	c.gitHub.latestReleaseCache[user][repo] = release
 
 	return release
+}
+
+//nolint:dupl
+func (c *Config) gitHubRepoTemplateFunc(userRepo string) *github.Repository {
+	user, repo := parseGitHubUserRepo(userRepo)
+
+	if repository := c.gitHub.repoCache[user][repo]; repository != nil {
+		return repository
+	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	gitHubClient := newGitHubClient(ctx)
+
+	repository, _, err := gitHubClient.Repositories.Get(ctx, user, repo)
+	if err != nil {
+		returnTemplateError(err)
+		return nil
+	}
+
+	if c.gitHub.repoCache == nil {
+		c.gitHub.repoCache = make(map[string]map[string]*github.Repository)
+	}
+	if c.gitHub.repoCache[user] == nil {
+		c.gitHub.repoCache[user] = make(map[string]*github.Repository)
+	}
+	c.gitHub.repoCache[user][repo] = repository
+
+	return repository
 }
 
 func parseGitHubUserRepo(userRepo string) (string, string) {

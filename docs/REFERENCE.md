@@ -107,6 +107,7 @@ Manage your dotfiles across multiple machines, securely.
   * [`encrypt` *plaintext*](#encrypt-plaintext)
   * [`gitHubKeys` *user*](#githubkeys-user)
   * [`gitHubLatestRelease` *user-repo*](#githublatestrelease-user-repo)
+  * [`gitHubRepo` *user-repo*](#githubrepo-user-repo)
   * [`gopass` *gopass-name*](#gopass-gopass-name)
   * [`gopassRaw` *gopass-name*](#gopassraw-gopass-name)
   * [`include` *filename*](#include-filename)
@@ -2077,6 +2078,25 @@ Calls to `gitHubLatestRelease` are cached so calling `gitHubLatestRelease` with 
 
 ```
 {{ (gitHubLatestRelease "docker/compose").TagName }}
+```
+
+---
+
+### `gitHubRepo` *user-repo*
+
+`gitHubRepo` calls the GitHub API to retrieve information about the given
+*user-repo*, returning structured data as defined by the [GitHub Go API
+bindings](https://pkg.go.dev/github.com/google/go-github/v40/github#Repository).
+
+Calls to `gitHubRepo` are cached so calling `gitHubRepo` with the same
+*user-repo* will only result in one call to the GitHub API.
+
+`gitHubRepo` uses the same API request mechanism as `gitHubKeys`.
+
+#### `gitHubRepo` examples
+
+```
+{{ (gitHubRepo "ohmyzsh/ohmyzsh").DefaultBranch }}
 ```
 
 ---
