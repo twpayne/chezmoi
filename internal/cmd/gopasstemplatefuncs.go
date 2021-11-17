@@ -50,7 +50,7 @@ func (c *Config) gopassRawTemplateFunc(id string) string {
 		return string(output)
 	}
 
-	args := []string{"show", id}
+	args := []string{"show", "--noparsing", id}
 	output, err := c.gopassOutput(args...)
 	if err != nil {
 		returnTemplateError(fmt.Errorf("%s: %w", shellQuoteCommand(c.Gopass.Command, args), err))
