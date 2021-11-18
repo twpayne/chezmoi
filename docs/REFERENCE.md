@@ -106,6 +106,7 @@ Manage your dotfiles across multiple machines, securely.
   * [`decrypt` *ciphertext*](#decrypt-ciphertext)
   * [`encrypt` *plaintext*](#encrypt-plaintext)
   * [`gitHubKeys` *user*](#githubkeys-user)
+  * [`gitHubLatestRelease` *user-repo*](#githubkeys-user-repo)
   * [`gopass` *gopass-name*](#gopass-gopass-name)
   * [`gopassRaw` *gopass-name*](#gopassraw-gopass-name)
   * [`include` *filename*](#include-filename)
@@ -2044,7 +2045,7 @@ environment variables `$CHEZMOI_GITHUB_ACCESS_TOKEN`, `$GITHUB_ACCESS_TOKEN`, or
 the GitHub API request, with a higher rate limit (currently 5,000 requests per
 hour per user).
 
-In practice, GitHub API rate limits are high enough that you should never need
+In practice, GitHub API rate limits are high enough that you should rarely need
 to set a token, unless you are sharing a source IP address with many other
 GitHub users. If needed, the GitHub documentation describes how to [create a
 personal access
@@ -2056,6 +2057,26 @@ token](https://docs.github.com/en/github/authenticating-to-github/creating-a-per
 {{ range (gitHubKeys "user") }}
 {{- .Key }}
 {{ end }}
+```
+
+---
+
+### `gitHubLatestRelease` *user-repo*
+
+`gitHubLatestRelease` calls the GitHub API to retrieve the latest release about the given
+*user-repo*, returning structured data as defined by the [GitHub Go API
+bindings](https://pkg.go.dev/github.com/google/go-github/v40/github#RepositoryRelease).
+
+Calls to `gitHubLatestRelease` are cached so calling `gitHubLatestRelease` with the same
+*user-repo* will only result in one call to the GitHub API.
+
+
+`gitHubLatestRelease` uses the same API request mechanism as `gitHubKeys`.
+
+#### `gitHubLatestRelease` examples
+
+```
+{{ (gitHubLatestRelease "docker/compose").TagName }}
 ```
 
 ---
