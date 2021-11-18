@@ -403,6 +403,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"decrypt":                  c.decryptTemplateFunc,
 		"encrypt":                  c.encryptTemplateFunc,
 		"gitHubKeys":               c.gitHubKeysTemplateFunc,
+		"gitHubLatestRelease":      c.gitHubLatestReleaseTemplateFunc,
 		"gopass":                   c.gopassTemplateFunc,
 		"gopassRaw":                c.gopassRawTemplateFunc,
 		"include":                  c.includeTemplateFunc,
