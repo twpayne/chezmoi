@@ -55,7 +55,7 @@ func (e *AgeEncryption) DecryptToFile(plaintextAbsPath AbsPath, ciphertext []byt
 		if err != nil {
 			return err
 		}
-		return e.BaseSystem.WriteFile(plaintextAbsPath, plaintext, 0o644) // FIXME encrypted executables
+		return e.BaseSystem.WriteFile(plaintextAbsPath, plaintext, 0o644)
 	}
 
 	//nolint:gosec
