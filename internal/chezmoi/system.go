@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io/fs"
 	"os/exec"
+	"sort"
 
 	vfs "github.com/twpayne/go-vfs/v4"
 )
@@ -130,27 +131,101 @@ func MkdirAll(system System, absPath AbsPath, perm fs.FileMode) error {
 	}
 }
 
-// Walk walks rootAbsPath in system, alling walkFn for each file or directory in
+// Walk walks rootAbsPath in system, alling walkFunc for each file or directory in
 // the tree, including rootAbsPath.
 //
 // Walk does not follow symlinks.
-func Walk(system System, rootAbsPath AbsPath, walkFn func(absPath AbsPath, info fs.FileInfo, err error) error) error {
+func Walk(system System, rootAbsPath AbsPath, walkFunc func(absPath AbsPath, info fs.FileInfo, err error) error) error {
 	return vfs.Walk(system.UnderlyingFS(), rootAbsPath.String(), func(absPath string, info fs.FileInfo, err error) error {
-		return walkFn(NewAbsPath(absPath).ToSlash(), info, err)
+		return walkFunc(NewAbsPath(absPath).ToSlash(), info, err)
 	})
 }
 
-// WalkDir walks the file tree rooted at rootAbsPath in system, calling walkFn
-// for each file or directory in the tree, including rootAbsPath.
+// A WalkSourceDirFunc is a function called for every in a source directory.
+type WalkSourceDirFunc func(AbsPath, fs.FileInfo, error) error
+
+// WalkSourceDir walks the source directory rooted at sourceDirAbsPath in
+// system, calling walkFunc for each file or directory in the tree, including
+// sourceDirAbsPath.
 //
-// WalkDir does not follow symbolic links found in directories, but if
-// rootAbsPath itself is a symbolic link, its target will be walked.
-func WalkDir(system System, rootAbsPath AbsPath, walkFn func(absPath AbsPath, info fs.FileInfo, err error) error) error {
-	return fs.WalkDir(system.UnderlyingFS(), rootAbsPath.String(), func(path string, dirEntry fs.DirEntry, err error) error {
-		var info fs.FileInfo
-		if err == nil {
-			info, err = dirEntry.Info()
+// WalkSourceDir does not follow symbolic links found in directories, but if
+// sourceDirAbsPath itself is a symbolic link, its target will be walked.
+//
+// Directory entries .chezmoidata.<format> and .chezmoitemplates are visited
+// before all other entries. All other entries are visited in alphabetical
+// order.
+func WalkSourceDir(system System, sourceDirAbsPath AbsPath, walkFunc WalkSourceDirFunc) error {
+	info, err := system.Stat(sourceDirAbsPath)
+	if err != nil {
+		err = walkFunc(sourceDirAbsPath, nil, err)
+	} else {
+		err = walkSourceDir(system, sourceDirAbsPath, info, walkFunc)
+	}
+	if errors.Is(err, fs.SkipDir) {
+		return nil
+	}
+	return err
+}
+
+// sourceDirEntryOrder defines the order in which entries are visited in the
+// source directory. More negative values are visited first. Entries with the
+// same order are visited alphabetically. The default order is zero.
+var sourceDirEntryOrder = map[string]int{
+	".chezmoidata.json": -2,
+	".chezmoidata.toml": -2,
+	".chezmoidata.yaml": -2,
+	".chezmoitemplates": -1,
+}
+
+// walkSourceDir is a helper function for WalkSourceDir.
+func walkSourceDir(system System, name AbsPath, info fs.FileInfo, walkFunc WalkSourceDirFunc) error {
+	switch err := walkFunc(name, info, nil); {
+	case info.IsDir() && errors.Is(err, fs.SkipDir):
+		return nil
+	case err != nil:
+		return err
+	case !info.IsDir():
+		return nil
+	}
+
+	dirEntries, err := system.ReadDir(name)
+	if err != nil {
+		err = walkFunc(name, info, err)
+		if err != nil {
+			return err
 		}
-		return walkFn(NewAbsPath(path).ToSlash(), info, err)
+	}
+
+	sort.Slice(dirEntries, func(i, j int) bool {
+		nameI := dirEntries[i].Name()
+		nameJ := dirEntries[j].Name()
+		orderI := sourceDirEntryOrder[nameI]
+		orderJ := sourceDirEntryOrder[nameJ]
+		switch {
+		case orderI < orderJ:
+			return true
+		case orderI == orderJ:
+			return nameI < nameJ
+		default:
+			return false
+		}
 	})
+
+	for _, dirEntry := range dirEntries {
+		info, err := dirEntry.Info()
+		if err != nil {
+			err = walkFunc(name, nil, err)
+			if err != nil {
+				return err
+			}
+		}
+		if err := walkSourceDir(system, name.JoinString(dirEntry.Name()), info, walkFunc); err != nil {
+			if errors.Is(err, fs.SkipDir) {
+				break
+			}
+			return err
+		}
+	}
+
+	return nil
 }

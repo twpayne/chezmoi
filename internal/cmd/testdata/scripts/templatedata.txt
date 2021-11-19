@@ -10,5 +10,22 @@ stdout dot_file.tmpl
 [linux] chezmoi execute-template '{{ .chezmoi.kernel.ostype }}'
 [linux] stdout Linux
 
+chhome home2/user
+
+# test that .chezmoidata.<format> and .chezmoitemplates are available in .chezmoiignore
+chezmoi apply
+exists $HOME/.file1
+! exists $HOME/.file2
+
 -- home/user/.local/share/chezmoi/dot_file.tmpl --
 {{ .chezmoi.sourceFile }}
+-- home2/user/.local/share/chezmoi/.chezmoidata.toml --
+filename = ".file2"
+-- home2/user/.local/share/chezmoi/.chezmoitemplates/ignore --
+{{ .filename }}
+-- home2/user/.local/share/chezmoi/.chezmoiignore --
+{{ template "ignore" . }}
+-- home2/user/.local/share/chezmoi/dot_file1 --
+# contents of .file1
+-- home2/user/.local/share/chezmoi/dot_file2 --
+# contents of .file2

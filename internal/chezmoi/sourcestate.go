@@ -684,7 +684,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 
 	// Read all source entries.
 	allSourceStateEntries := make(map[RelPath][]SourceStateEntry)
-	if err := WalkDir(s.system, s.sourceDirAbsPath, func(sourceAbsPath AbsPath, info fs.FileInfo, err error) error {
+	if err := WalkSourceDir(s.system, s.sourceDirAbsPath, func(sourceAbsPath AbsPath, info fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -719,16 +719,8 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		case strings.HasPrefix(info.Name(), externalName):
 			return s.addExternal(sourceAbsPath)
 		case info.Name() == ignoreName:
-			// .chezmoiignore is interpreted as a template. we walk the
-			// filesystem in alphabetical order, so, luckily for us,
-			// .chezmoidata will be read before .chezmoiignore, so data in
-			// .chezmoidata is available to be used in .chezmoiignore. Unluckily
-			// for us, .chezmoitemplates will be read afterwards so partial
-			// templates will not be available in .chezmoiignore.
 			return s.addPatterns(s.ignore, sourceAbsPath, parentSourceRelPath)
 		case info.Name() == removeName:
-			// The comment about .chezmoiignore and templates applies to
-			// .chezmoiremove too.
 			removePatterns := newPatternSet()
 			if err := s.addPatterns(removePatterns, sourceAbsPath, sourceRelPath); err != nil {
 				return err
@@ -1039,7 +1031,7 @@ func (s *SourceState) addTemplateData(sourceAbsPath AbsPath) error {
 
 // addTemplatesDir adds all templates in templateDir to s.
 func (s *SourceState) addTemplatesDir(templatesDirAbsPath AbsPath) error {
-	return WalkDir(s.system, templatesDirAbsPath, func(templateAbsPath AbsPath, info fs.FileInfo, err error) error {
+	return WalkSourceDir(s.system, templatesDirAbsPath, func(templateAbsPath AbsPath, info fs.FileInfo, err error) error {
 		switch {
 		case err != nil:
 			return err
