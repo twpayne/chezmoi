@@ -116,7 +116,7 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 		return errors.New("cannot upgrade dev version to latest released version unless --force is set")
 	}
 
-	client := newGitHubClient(ctx)
+	client := newGitHubClient(ctx, nil)
 
 	// Get the latest release.
 	rr, _, err := client.Repositories.GetLatestRelease(ctx, c.upgrade.owner, c.upgrade.repo)

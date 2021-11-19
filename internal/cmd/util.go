@@ -72,19 +72,31 @@ func firstNonEmptyString(ss ...string) string {
 	return ""
 }
 
-// newGitHubClient returns a new github.Client configured with an access token,
-// if available.
-func newGitHubClient(ctx context.Context) *github.Client {
-	var httpClient *http.Client
+// RoundTripperFunc  is an adapter to allow the use of
+// ordinary functions as HTTP roundTripper. If fn is a function
+// with the appropriate signature, RoundTripperFunc(fn) is a
+// Handler that calls fn.
+type RoundTripperFunc func(*http.Request) (*http.Response, error)
+
+// RoundTrip calls fn(req).
+func (fn RoundTripperFunc) RoundTrip(req *http.Request) (*http.Response, error) {
+	return fn(req)
+}
+
+// newGitHubClient returns a new github.Client configured with an access token
+// and a http client, if available.
+func newGitHubClient(ctx context.Context, httpClient *http.Client) *github.Client {
 	for _, key := range []string{
 		"CHEZMOI_GITHUB_ACCESS_TOKEN",
 		"GITHUB_ACCESS_TOKEN",
 		"GITHUB_TOKEN",
 	} {
 		if accessToken := os.Getenv(key); accessToken != "" {
-			httpClient = oauth2.NewClient(ctx, oauth2.StaticTokenSource(&oauth2.Token{
-				AccessToken: accessToken,
-			}))
+			httpClient = oauth2.NewClient(
+				context.WithValue(ctx, oauth2.HTTPClient, httpClient),
+				oauth2.StaticTokenSource(&oauth2.Token{
+					AccessToken: accessToken,
+				}))
 			break
 		}
 	}
