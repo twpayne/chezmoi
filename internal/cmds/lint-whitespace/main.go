@@ -17,6 +17,7 @@ var (
 		regexp.MustCompile(`\.svg\z`),
 		regexp.MustCompile(`\A\.devcontainer/library-scripts\z`),
 		regexp.MustCompile(`\A\.git\z`),
+		regexp.MustCompile(`\A\.idea\z`),
 		regexp.MustCompile(`\A\.vagrant\z`),
 		regexp.MustCompile(`\A\.vscode/settings\.json\z`),
 		regexp.MustCompile(`\Aassets/chezmoi\.io/public\z`),
