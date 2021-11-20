@@ -106,7 +106,7 @@ Manage your dotfiles across multiple machines, securely.
   * [`decrypt` *ciphertext*](#decrypt-ciphertext)
   * [`encrypt` *plaintext*](#encrypt-plaintext)
   * [`gitHubKeys` *user*](#githubkeys-user)
-  * [`gitHubLatestRelease` *user-repo*](#githubkeys-user-repo)
+  * [`gitHubLatestRelease` *user-repo*](#githublatestrelease-user-repo)
   * [`gopass` *gopass-name*](#gopass-gopass-name)
   * [`gopassRaw` *gopass-name*](#gopassraw-gopass-name)
   * [`include` *filename*](#include-filename)
