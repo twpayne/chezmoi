@@ -19,14 +19,14 @@ import (
 func Kernel(fileSystem vfs.FS) (map[string]interface{}, error) {
 	const procSysKernel = "/proc/sys/kernel"
 
-	switch info, err := fileSystem.Stat(procSysKernel); {
+	switch fileInfo, err := fileSystem.Stat(procSysKernel); {
 	case errors.Is(err, fs.ErrNotExist):
 		return nil, nil
 	case errors.Is(err, fs.ErrPermission):
 		return nil, nil
 	case err != nil:
 		return nil, err
-	case !info.Mode().IsDir():
+	case !fileInfo.Mode().IsDir():
 		return nil, nil
 	}
 

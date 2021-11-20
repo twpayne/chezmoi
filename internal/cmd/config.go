@@ -945,29 +945,29 @@ func (c *Config) destAbsPathInfos(sourceState *chezmoi.SourceState, args []strin
 			return nil, err
 		}
 		if options.recursive {
-			if err := chezmoi.Walk(c.destSystem, destAbsPath, func(destAbsPath chezmoi.AbsPath, info fs.FileInfo, err error) error {
+			if err := chezmoi.Walk(c.destSystem, destAbsPath, func(destAbsPath chezmoi.AbsPath, fileInfo fs.FileInfo, err error) error {
 				switch {
 				case options.ignoreNotExist && errors.Is(err, fs.ErrNotExist):
 					return nil
 				case err != nil:
 					return err
 				}
-				if options.follow && info.Mode().Type() == fs.ModeSymlink {
-					info, err = c.destSystem.Stat(destAbsPath)
+				if options.follow && fileInfo.Mode().Type() == fs.ModeSymlink {
+					fileInfo, err = c.destSystem.Stat(destAbsPath)
 					if err != nil {
 						return err
 					}
 				}
-				return sourceState.AddDestAbsPathInfos(destAbsPathInfos, c.destSystem, destAbsPath, info)
+				return sourceState.AddDestAbsPathInfos(destAbsPathInfos, c.destSystem, destAbsPath, fileInfo)
 			}); err != nil {
 				return nil, err
 			}
 		} else {
-			var info fs.FileInfo
+			var fileInfo fs.FileInfo
 			if options.follow {
-				info, err = c.destSystem.Stat(destAbsPath)
+				fileInfo, err = c.destSystem.Stat(destAbsPath)
 			} else {
-				info, err = c.destSystem.Lstat(destAbsPath)
+				fileInfo, err = c.destSystem.Lstat(destAbsPath)
 			}
 			switch {
 			case options.ignoreNotExist && errors.Is(err, fs.ErrNotExist):
@@ -975,7 +975,7 @@ func (c *Config) destAbsPathInfos(sourceState *chezmoi.SourceState, args []strin
 			case err != nil:
 				return nil, err
 			}
-			if err := sourceState.AddDestAbsPathInfos(destAbsPathInfos, c.destSystem, destAbsPath, info); err != nil {
+			if err := sourceState.AddDestAbsPathInfos(destAbsPathInfos, c.destSystem, destAbsPath, fileInfo); err != nil {
 				return nil, err
 			}
 		}
@@ -1601,7 +1601,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		workingTreeAbsPath := c.SourceDirAbsPath
 	FOR:
 		for {
-			if info, err := c.baseSystem.Stat(workingTreeAbsPath.JoinString(gogit.GitDirName)); err == nil && info.IsDir() {
+			if fileInfo, err := c.baseSystem.Stat(workingTreeAbsPath.JoinString(gogit.GitDirName)); err == nil && fileInfo.IsDir() {
 				c.WorkingTreeAbsPath = workingTreeAbsPath
 				break FOR
 			}

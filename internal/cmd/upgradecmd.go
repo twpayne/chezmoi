@@ -485,12 +485,12 @@ func getUpgradeMethod(fileSystem vfs.Stater, executableAbsPath chezmoi.AbsPath) 
 			return upgradeMethodSnapRefresh, nil
 		}
 
-		info, err := fileSystem.Stat(executableAbsPath.String())
+		fileInfo, err := fileSystem.Stat(executableAbsPath.String())
 		if err != nil {
 			return "", err
 		}
 		//nolint:forcetypeassert
-		executableStat := info.Sys().(*syscall.Stat_t)
+		executableStat := fileInfo.Sys().(*syscall.Stat_t)
 		uid := os.Getuid()
 		switch int(executableStat.Uid) {
 		case 0:

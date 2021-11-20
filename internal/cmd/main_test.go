@@ -150,16 +150,16 @@ func cmdCmpMod(ts *testscript.TestScript, neg bool, args []string) {
 	if runtime.GOOS == "windows" {
 		return
 	}
-	info, err := os.Stat(args[1])
+	fileInfo, err := os.Stat(args[1])
 	if err != nil {
 		ts.Fatalf("%s: %v", args[1], err)
 	}
-	equal := info.Mode().Perm() == fs.FileMode(mode64)&^chezmoitest.Umask
+	equal := fileInfo.Mode().Perm() == fs.FileMode(mode64)&^chezmoitest.Umask
 	if neg && equal {
-		ts.Fatalf("%s unexpectedly has mode %03o", args[1], info.Mode().Perm())
+		ts.Fatalf("%s unexpectedly has mode %03o", args[1], fileInfo.Mode().Perm())
 	}
 	if !neg && !equal {
-		ts.Fatalf("%s has mode %03o, expected %03o", args[1], info.Mode().Perm(), fs.FileMode(mode64)&^chezmoitest.Umask)
+		ts.Fatalf("%s has mode %03o, expected %03o", args[1], fileInfo.Mode().Perm(), fs.FileMode(mode64)&^chezmoitest.Umask)
 	}
 }
 
@@ -199,11 +199,11 @@ func cmdHTTPD(ts *testscript.TestScript, neg bool, args []string) {
 func cmdIsSymlink(ts *testscript.TestScript, neg bool, args []string) {
 	for _, arg := range args {
 		filename := ts.MkAbs(arg)
-		info, err := os.Lstat(filename)
+		fileInfo, err := os.Lstat(filename)
 		if err != nil {
 			ts.Fatalf("%s: %v", arg, err)
 		}
-		switch isSymlink := info.Mode().Type() == fs.ModeSymlink; {
+		switch isSymlink := fileInfo.Mode().Type() == fs.ModeSymlink; {
 		case isSymlink && neg:
 			ts.Fatalf("%s is a symlink", arg)
 		case !isSymlink && !neg:

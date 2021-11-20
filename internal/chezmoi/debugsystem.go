@@ -78,11 +78,11 @@ func (s *DebugSystem) Link(oldpath, newpath AbsPath) error {
 
 // Lstat implements System.Lstat.
 func (s *DebugSystem) Lstat(name AbsPath) (fs.FileInfo, error) {
-	info, err := s.system.Lstat(name)
+	fileInfo, err := s.system.Lstat(name)
 	s.logger.Err(err).
 		Stringer("name", name).
 		Msg("Lstat")
-	return info, err
+	return fileInfo, err
 }
 
 // Mkdir implements System.Mkdir.
@@ -183,11 +183,11 @@ func (s *DebugSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, in
 
 // Stat implements System.Stat.
 func (s *DebugSystem) Stat(name AbsPath) (fs.FileInfo, error) {
-	info, err := s.system.Stat(name)
+	fileInfo, err := s.system.Stat(name)
 	s.logger.Err(err).
 		Stringer("name", name).
 		Msg("Stat")
-	return info, err
+	return fileInfo, err
 }
 
 // UnderlyingFS implements System.UnderlyingFS.

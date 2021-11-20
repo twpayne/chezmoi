@@ -39,7 +39,7 @@ func (e InvalidArchiveFormatError) Error() string {
 }
 
 // An walkArchiveFunc is called once for each entry in an archive.
-type walkArchiveFunc func(name string, info fs.FileInfo, r io.Reader, linkname string) error
+type walkArchiveFunc func(name string, fileInfo fs.FileInfo, r io.Reader, linkname string) error
 
 // A ArchiveReaderSystem a system constructed from reading an archive.
 type ArchiveReaderSystem struct {
@@ -69,7 +69,7 @@ func NewArchiveReaderSystem(archivePath string, data []byte, format ArchiveForma
 		format = GuessArchiveFormat(archivePath, data)
 	}
 
-	if err := walkArchive(data, format, func(name string, info fs.FileInfo, r io.Reader, linkname string) error {
+	if err := walkArchive(data, format, func(name string, fileInfo fs.FileInfo, r io.Reader, linkname string) error {
 		if options.StripComponents > 0 {
 			components := strings.Split(name, "/")
 			if len(components) <= options.StripComponents {
@@ -82,19 +82,19 @@ func NewArchiveReaderSystem(archivePath string, data []byte, format ArchiveForma
 		}
 		nameAbsPath := options.RootAbsPath.JoinString(name)
 
-		s.fileInfos[nameAbsPath] = info
+		s.fileInfos[nameAbsPath] = fileInfo
 		switch {
-		case info.IsDir():
-		case info.Mode()&fs.ModeType == 0:
+		case fileInfo.IsDir():
+		case fileInfo.Mode()&fs.ModeType == 0:
 			contents, err := io.ReadAll(r)
 			if err != nil {
 				return fmt.Errorf("%s: %w", name, err)
 			}
 			s.contents[nameAbsPath] = contents
-		case info.Mode()&fs.ModeType == fs.ModeSymlink:
+		case fileInfo.Mode()&fs.ModeType == fs.ModeSymlink:
 			s.linkname[nameAbsPath] = linkname
 		default:
-			return fmt.Errorf("%s: unsupported mode %o", name, info.Mode()&fs.ModeType)
+			return fmt.Errorf("%s: unsupported mode %o", name, fileInfo.Mode()&fs.ModeType)
 		}
 		return nil
 	}); err != nil {

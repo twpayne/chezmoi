@@ -72,17 +72,17 @@ func etcHostsFQDNHostname(fileSystem vfs.FS) (string, error) {
 	return "", s.Err()
 }
 
-// isExecutable returns if info is executable.
-func isExecutable(info fs.FileInfo) bool {
-	return info.Mode().Perm()&0o111 != 0
+// isExecutable returns if fileInfo is executable.
+func isExecutable(fileInfo fs.FileInfo) bool {
+	return fileInfo.Mode().Perm()&0o111 != 0
 }
 
-// isPrivate returns if info is private.
-func isPrivate(info fs.FileInfo) bool {
-	return info.Mode().Perm()&0o77 == 0
+// isPrivate returns if fileInfo is private.
+func isPrivate(fileInfo fs.FileInfo) bool {
+	return fileInfo.Mode().Perm()&0o77 == 0
 }
 
-// isReadOnly returns if info is read-only.
-func isReadOnly(info fs.FileInfo) bool {
-	return info.Mode().Perm()&0o222 == 0
+// isReadOnly returns if fileInfo is read-only.
+func isReadOnly(fileInfo fs.FileInfo) bool {
+	return fileInfo.Mode().Perm()&0o222 == 0
 }

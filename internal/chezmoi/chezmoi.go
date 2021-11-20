@@ -133,8 +133,8 @@ func SHA256Sum(data []byte) []byte {
 }
 
 // SuspiciousSourceDirEntry returns true if base is a suspicious dir entry.
-func SuspiciousSourceDirEntry(base string, info fs.FileInfo) bool {
-	switch info.Mode().Type() {
+func SuspiciousSourceDirEntry(base string, fileInfo fs.FileInfo) bool {
+	switch fileInfo.Mode().Type() {
 	case 0:
 		return strings.HasPrefix(base, Prefix) && !knownPrefixedFiles.contains(base)
 	case fs.ModeDir:
