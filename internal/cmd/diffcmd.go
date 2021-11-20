@@ -65,9 +65,11 @@ func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) (err error) {
 		err = c.pageOutputString(builder.String(), c.Diff.Pager)
 		return
 	}
-	diffSystem := chezmoi.NewExternalDiffSystem(dryRunSystem, c.Diff.Command, c.Diff.Args, c.DestDirAbsPath, &chezmoi.ExternalDiffSystemOptions{
-		Reverse: c.Diff.reverse,
-	})
+	diffSystem := chezmoi.NewExternalDiffSystem(
+		dryRunSystem, c.Diff.Command, c.Diff.Args, c.DestDirAbsPath, &chezmoi.ExternalDiffSystemOptions{
+			Reverse: c.Diff.reverse,
+		},
+	)
 	defer func() {
 		err = multierr.Append(err, diffSystem.Close())
 	}()

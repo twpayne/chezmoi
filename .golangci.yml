@@ -31,6 +31,7 @@ linters:
   - ifshort
   - importas
   - ineffassign
+  - lll
   - makezero
   - misspell
   - nilerr
@@ -68,7 +69,6 @@ linters:
   - godox
   - goheader
   - gomnd
-  - lll
   - maligned
   - nakedret
   - nestif
@@ -102,7 +102,9 @@ issues:
   - linters:
     - forbidigo
     - gosec
+    - lll
     path: ^internal/cmds/
   - linters:
     - gosec
+    - lll
     path: "_test\\.go$"

@@ -34,7 +34,9 @@ func (c *Config) newMergeAllCmd() *cobra.Command {
 func (c *Config) runMergeAllCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
 	var targetRelPaths []chezmoi.RelPath
 	dryRunSystem := chezmoi.NewDryRunSystem(c.destSystem)
-	preApplyFunc := func(targetRelPath chezmoi.RelPath, targetEntryState, lastWrittenEntryState, actualEntryState *chezmoi.EntryState) error {
+	preApplyFunc := func(
+		targetRelPath chezmoi.RelPath, targetEntryState, lastWrittenEntryState, actualEntryState *chezmoi.EntryState,
+	) error {
 		if !targetEntryState.Equivalent(actualEntryState) {
 			targetRelPaths = append(targetRelPaths, targetRelPath)
 		}

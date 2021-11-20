@@ -32,7 +32,8 @@ func (c *Config) runCatCmd(cmd *cobra.Command, args []string, sourceState *chezm
 
 	builder := strings.Builder{}
 	for _, targetRelPath := range targetRelPaths {
-		targetStateEntry, err := sourceState.MustEntry(targetRelPath).TargetStateEntry(c.destSystem, c.DestDirAbsPath.Join(targetRelPath))
+		sourceStateEntry := sourceState.MustEntry(targetRelPath)
+		targetStateEntry, err := sourceStateEntry.TargetStateEntry(c.destSystem, c.DestDirAbsPath.Join(targetRelPath))
 		if err != nil {
 			return fmt.Errorf("%s: %w", targetRelPath, err)
 		}

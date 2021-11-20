@@ -82,7 +82,7 @@ func (c *Config) doPurge(purgeOptions *purgeOptions) error {
 		}
 
 		if !c.force {
-			switch choice, err := c.promptChoice(fmt.Sprintf("Remove %s", absPath), yesNoAllQuit); {
+			switch choice, err := c.promptChoice(fmt.Sprintf("Remove %s", absPath), choicesYesNoAllQuit); {
 			case err != nil:
 				return err
 			case choice == "yes":

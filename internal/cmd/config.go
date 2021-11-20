@@ -181,7 +181,7 @@ type Config struct {
 type configOption func(*Config) error
 
 type configState struct {
-	ConfigTemplateContentsSHA256 chezmoi.HexBytes `json:"configTemplateContentsSHA256" yaml:"configTemplateContentsSHA256"` //nolint:tagliatelle
+	ConfigTemplateContentsSHA256 chezmoi.HexBytes `json:"configTemplateContentsSHA256" yaml:"configTemplateContentsSHA256"` //nolint:lll,tagliatelle
 }
 
 var (
@@ -306,7 +306,9 @@ func newConfig(options ...configOption) (*Config, error) {
 		Edit: editCmdConfig{
 			MinDuration: 1 * time.Second,
 			exclude:     chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			include:     chezmoi.NewEntryTypeSet(chezmoi.EntryTypeDirs | chezmoi.EntryTypeFiles | chezmoi.EntryTypeSymlinks | chezmoi.EntryTypeEncrypted),
+			include: chezmoi.NewEntryTypeSet(
+				chezmoi.EntryTypeDirs | chezmoi.EntryTypeFiles | chezmoi.EntryTypeSymlinks | chezmoi.EntryTypeEncrypted,
+			),
 		},
 		Git: gitCmdConfig{
 			Command: "git",
@@ -349,7 +351,9 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		managed: managedCmdConfig{
 			exclude: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypeDirs | chezmoi.EntryTypeFiles | chezmoi.EntryTypeSymlinks | chezmoi.EntryTypeEncrypted),
+			include: chezmoi.NewEntryTypeSet(
+				chezmoi.EntryTypeDirs | chezmoi.EntryTypeFiles | chezmoi.EntryTypeSymlinks | chezmoi.EntryTypeEncrypted,
+			),
 		},
 		mergeAll: mergeAllCmdConfig{
 			recursive: true,
@@ -485,7 +489,10 @@ type applyArgsOptions struct {
 // It checks config file freshness, reads the source state, and then applies the
 // source state for each target entry in args. If args is empty then the source
 // state is applied to all target entries.
-func (c *Config) applyArgs(ctx context.Context, targetSystem chezmoi.System, targetDirAbsPath chezmoi.AbsPath, args []string, options applyArgsOptions) error {
+func (c *Config) applyArgs(
+	ctx context.Context, targetSystem chezmoi.System, targetDirAbsPath chezmoi.AbsPath, args []string,
+	options applyArgsOptions,
+) error {
 	if options.init {
 		if err := c.createAndReloadConfigFile(); err != nil {
 			return err
@@ -510,7 +517,8 @@ func (c *Config) applyArgs(ctx context.Context, targetSystem chezmoi.System, tar
 		}
 		previousConfigTemplateContentsSHA256 = []byte(configState.ConfigTemplateContentsSHA256)
 	}
-	configTemplateContentsUnchanged := (currentConfigTemplateContentsSHA256 == nil && previousConfigTemplateContentsSHA256 == nil) ||
+	configTemplatesEmpty := currentConfigTemplateContentsSHA256 == nil && previousConfigTemplateContentsSHA256 == nil
+	configTemplateContentsUnchanged := configTemplatesEmpty ||
 		bytes.Equal(currentConfigTemplateContentsSHA256, previousConfigTemplateContentsSHA256)
 	if !configTemplateContentsUnchanged {
 		if c.force {
@@ -566,7 +574,9 @@ func (c *Config) applyArgs(ctx context.Context, targetSystem chezmoi.System, tar
 
 	keptGoingAfterErr := false
 	for _, targetRelPath := range targetRelPaths {
-		switch err := sourceState.Apply(targetSystem, c.destSystem, c.persistentState, targetDirAbsPath, targetRelPath, applyOptions); {
+		switch err := sourceState.Apply(
+			targetSystem, c.destSystem, c.persistentState, targetDirAbsPath, targetRelPath, applyOptions,
+		); {
 		case errors.Is(err, chezmoi.Skip):
 			continue
 		case err != nil && c.keepGoing:
@@ -719,7 +729,9 @@ func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte) ([]byte
 
 // defaultConfigFile returns the default config file according to the XDG Base
 // Directory Specification.
-func (c *Config) defaultConfigFile(fileSystem vfs.Stater, bds *xdg.BaseDirectorySpecification) (chezmoi.AbsPath, error) {
+func (c *Config) defaultConfigFile(
+	fileSystem vfs.Stater, bds *xdg.BaseDirectorySpecification,
+) (chezmoi.AbsPath, error) {
 	// Search XDG Base Directory Specification config directories first.
 	for _, configDir := range bds.ConfigDirs {
 		configDirAbsPath, err := chezmoi.NewAbsPathFromExtPath(configDir, c.homeDirAbsPath)
@@ -744,7 +756,9 @@ func (c *Config) defaultConfigFile(fileSystem vfs.Stater, bds *xdg.BaseDirectory
 // defaultPreApplyFunc is the default pre-apply function. If the target entry
 // has changed since chezmoi last wrote it then it prompts the user for the
 // action to take.
-func (c *Config) defaultPreApplyFunc(targetRelPath chezmoi.RelPath, targetEntryState, lastWrittenEntryState, actualEntryState *chezmoi.EntryState) error {
+func (c *Config) defaultPreApplyFunc(
+	targetRelPath chezmoi.RelPath, targetEntryState, lastWrittenEntryState, actualEntryState *chezmoi.EntryState,
+) error {
 	c.logger.Info().
 		Stringer("targetRelPath", targetRelPath).
 		Object("targetEntryState", targetEntryState).
@@ -765,6 +779,7 @@ func (c *Config) defaultPreApplyFunc(targetRelPath chezmoi.RelPath, targetEntryS
 		return nil
 	}
 
+	prompt := fmt.Sprintf("%s has changed since chezmoi last wrote it", targetRelPath)
 	var choices []string
 	actualContents := actualEntryState.Contents()
 	targetContents := targetEntryState.Contents()
@@ -773,11 +788,15 @@ func (c *Config) defaultPreApplyFunc(targetRelPath chezmoi.RelPath, targetEntryS
 	}
 	choices = append(choices, "overwrite", "all-overwrite", "skip", "quit")
 	for {
-		switch choice, err := c.promptChoice(fmt.Sprintf("%s has changed since chezmoi last wrote it", targetRelPath), choices); {
+		switch choice, err := c.promptChoice(prompt, choices); {
 		case err != nil:
 			return err
 		case choice == "diff":
-			if err := c.diffFile(targetRelPath, actualContents, actualEntryState.Mode, targetContents, targetEntryState.Mode); err != nil {
+			if err := c.diffFile(
+				targetRelPath,
+				actualContents, actualEntryState.Mode,
+				targetContents, targetEntryState.Mode,
+			); err != nil {
 				return err
 			}
 		case choice == "overwrite":
@@ -933,7 +952,9 @@ type destAbsPathInfosOptions struct {
 // destAbsPathInfos returns the os/fs.FileInfos for each destination entry in
 // args, recursing into subdirectories and following symlinks if configured in
 // options.
-func (c *Config) destAbsPathInfos(sourceState *chezmoi.SourceState, args []string, options destAbsPathInfosOptions) (map[chezmoi.AbsPath]fs.FileInfo, error) {
+func (c *Config) destAbsPathInfos(
+	sourceState *chezmoi.SourceState, args []string, options destAbsPathInfosOptions,
+) (map[chezmoi.AbsPath]fs.FileInfo, error) {
 	destAbsPathInfos := make(map[chezmoi.AbsPath]fs.FileInfo)
 	for _, arg := range args {
 		arg = filepath.Clean(arg)
@@ -945,7 +966,7 @@ func (c *Config) destAbsPathInfos(sourceState *chezmoi.SourceState, args []strin
 			return nil, err
 		}
 		if options.recursive {
-			if err := chezmoi.Walk(c.destSystem, destAbsPath, func(destAbsPath chezmoi.AbsPath, fileInfo fs.FileInfo, err error) error {
+			walkFunc := func(destAbsPath chezmoi.AbsPath, fileInfo fs.FileInfo, err error) error {
 				switch {
 				case options.ignoreNotExist && errors.Is(err, fs.ErrNotExist):
 					return nil
@@ -959,7 +980,8 @@ func (c *Config) destAbsPathInfos(sourceState *chezmoi.SourceState, args []strin
 					}
 				}
 				return sourceState.AddDestAbsPathInfos(destAbsPathInfos, c.destSystem, destAbsPath, fileInfo)
-			}); err != nil {
+			}
+			if err := chezmoi.Walk(c.destSystem, destAbsPath, walkFunc); err != nil {
 				return nil, err
 			}
 		} else {
@@ -985,7 +1007,11 @@ func (c *Config) destAbsPathInfos(sourceState *chezmoi.SourceState, args []strin
 
 // diffFile outputs the diff between fromData and fromMode and toData and toMode
 // at path.
-func (c *Config) diffFile(path chezmoi.RelPath, fromData []byte, fromMode fs.FileMode, toData []byte, toMode fs.FileMode) error {
+func (c *Config) diffFile(
+	path chezmoi.RelPath,
+	fromData []byte, fromMode fs.FileMode,
+	toData []byte, toMode fs.FileMode,
+) error {
 	builder := strings.Builder{}
 	unifiedEncoder := diff.NewUnifiedEncoder(&builder, diff.DefaultContextLines)
 	color := c.Color.Value(c.colorAutoFunc)
@@ -1145,7 +1171,9 @@ func (c *Config) gitAutoPush(status *git.Status) error {
 
 // makeRunEWithSourceState returns a function for
 // github.com/spf13/cobra.Command.RunE that includes reading the source state.
-func (c *Config) makeRunEWithSourceState(runE func(*cobra.Command, []string, *chezmoi.SourceState) error) func(*cobra.Command, []string) error {
+func (c *Config) makeRunEWithSourceState(
+	runE func(*cobra.Command, []string, *chezmoi.SourceState) error,
+) func(*cobra.Command, []string) error {
 	return func(cmd *cobra.Command, args []string) error {
 		sourceState, err := c.newSourceState(cmd.Context())
 		if err != nil {
@@ -1216,7 +1244,9 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.Var(&c.configFormat, "config-format", "Set config file format")
 	persistentFlags.Var(&c.cpuProfile, "cpu-profile", "Write a CPU profile to path")
 	persistentFlags.BoolVar(&c.debug, "debug", c.debug, "Include debug information in output")
-	persistentFlags.BoolVarP(&c.dryRun, "dry-run", "n", c.dryRun, "Do not make any modifications to the destination directory")
+	persistentFlags.BoolVarP(
+		&c.dryRun, "dry-run", "n", c.dryRun, "Do not make any modifications to the destination directory",
+	)
 	persistentFlags.BoolVar(&c.force, "force", c.force, "Make all changes without prompting")
 	persistentFlags.BoolVar(&c.gops, "gops", c.gops, "Enable gops agent")
 	persistentFlags.BoolVarP(&c.keepGoing, "keep-going", "k", c.keepGoing, "Keep going as far as possible after an error")
@@ -1290,7 +1320,9 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 }
 
 // newSourceState returns a new SourceState with options.
-func (c *Config) newSourceState(ctx context.Context, options ...chezmoi.SourceStateOption) (*chezmoi.SourceState, error) {
+func (c *Config) newSourceState(
+	ctx context.Context, options ...chezmoi.SourceStateOption,
+) (*chezmoi.SourceState, error) {
 	sourceStateLogger := c.logger.With().Str(logComponentKey, logComponentValueSourceState).Logger()
 
 	sourceDirAbsPath := c.SourceDirAbsPath
@@ -1474,7 +1506,9 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		if err != nil {
 			return err
 		}
-		c.persistentState, err = chezmoi.NewBoltPersistentState(c.baseSystem, persistentStateFileAbsPath, chezmoi.BoltPersistentStateReadOnly)
+		c.persistentState, err = chezmoi.NewBoltPersistentState(
+			c.baseSystem, persistentStateFileAbsPath, chezmoi.BoltPersistentStateReadOnly,
+		)
 		if err != nil {
 			return err
 		}
@@ -1485,7 +1519,9 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		if err != nil {
 			return err
 		}
-		persistentState, err := chezmoi.NewBoltPersistentState(c.baseSystem, persistentStateFileAbsPath, chezmoi.BoltPersistentStateReadOnly)
+		persistentState, err := chezmoi.NewBoltPersistentState(
+			c.baseSystem, persistentStateFileAbsPath, chezmoi.BoltPersistentStateReadOnly,
+		)
 		if err != nil {
 			return err
 		}
@@ -1502,7 +1538,9 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		if err != nil {
 			return err
 		}
-		c.persistentState, err = chezmoi.NewBoltPersistentState(c.baseSystem, persistentStateFileAbsPath, chezmoi.BoltPersistentStateReadWrite)
+		c.persistentState, err = chezmoi.NewBoltPersistentState(
+			c.baseSystem, persistentStateFileAbsPath, chezmoi.BoltPersistentStateReadWrite,
+		)
 		if err != nil {
 			return err
 		}
@@ -1601,7 +1639,8 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		workingTreeAbsPath := c.SourceDirAbsPath
 	FOR:
 		for {
-			if fileInfo, err := c.baseSystem.Stat(workingTreeAbsPath.JoinString(gogit.GitDirName)); err == nil && fileInfo.IsDir() {
+			gitDirAbsPath := workingTreeAbsPath.JoinString(gogit.GitDirName)
+			if fileInfo, err := c.baseSystem.Stat(gitDirAbsPath); err == nil && fileInfo.IsDir() {
 				c.WorkingTreeAbsPath = workingTreeAbsPath
 				break FOR
 			}
@@ -1757,7 +1796,9 @@ type targetRelPathsOptions struct {
 
 // targetRelPaths returns the target relative paths for each target path in
 // args. The returned paths are sorted and de-duplicated.
-func (c *Config) targetRelPaths(sourceState *chezmoi.SourceState, args []string, options targetRelPathsOptions) (chezmoi.RelPaths, error) {
+func (c *Config) targetRelPaths(
+	sourceState *chezmoi.SourceState, args []string, options targetRelPathsOptions,
+) (chezmoi.RelPaths, error) {
 	targetRelPaths := make(chezmoi.RelPaths, 0, len(args))
 	for _, arg := range args {
 		argAbsPath, err := chezmoi.NewAbsPathFromExtPath(arg, c.homeDirAbsPath)
@@ -1807,7 +1848,9 @@ func (c *Config) targetRelPaths(sourceState *chezmoi.SourceState, args []string,
 
 // targetRelPathsBySourcePath returns the target relative paths for each arg in
 // args.
-func (c *Config) targetRelPathsBySourcePath(sourceState *chezmoi.SourceState, args []string) ([]chezmoi.RelPath, error) {
+func (c *Config) targetRelPathsBySourcePath(
+	sourceState *chezmoi.SourceState, args []string,
+) ([]chezmoi.RelPath, error) {
 	targetRelPaths := make([]chezmoi.RelPath, 0, len(args))
 	targetRelPathsBySourceRelPath := make(map[chezmoi.RelPath]chezmoi.RelPath)
 	_ = sourceState.ForEach(func(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi.SourceStateEntry) error {

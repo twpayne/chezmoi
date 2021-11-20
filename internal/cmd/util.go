@@ -26,7 +26,7 @@ var (
 		"URL":  {},
 	}
 
-	yesNoAllQuit = []string{
+	choicesYesNoAllQuit = []string{
 		"yes",
 		"no",
 		"all",

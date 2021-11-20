@@ -243,7 +243,10 @@ type AddOptions struct {
 }
 
 // Add adds destAbsPathInfos to s.
-func (s *SourceState) Add(sourceSystem System, persistentState PersistentState, destSystem System, destAbsPathInfos map[AbsPath]fs.FileInfo, options *AddOptions) error {
+func (s *SourceState) Add(
+	sourceSystem System, persistentState PersistentState, destSystem System, destAbsPathInfos map[AbsPath]fs.FileInfo,
+	options *AddOptions,
+) error {
 	type sourceUpdate struct {
 		destAbsPath    AbsPath
 		entryState     *EntryState
@@ -289,7 +292,9 @@ DESTABSPATH:
 		if err != nil {
 			return err
 		}
-		newSourceStateEntry, err := s.sourceStateEntry(actualStateEntry, destAbsPath, destAbsPathInfo, parentSourceRelPath, options)
+		newSourceStateEntry, err := s.sourceStateEntry(
+			actualStateEntry, destAbsPath, destAbsPathInfo, parentSourceRelPath, options,
+		)
 		if err != nil {
 			return err
 		}
@@ -408,15 +413,21 @@ DESTABSPATH:
 
 	for _, sourceUpdate := range sourceUpdates {
 		for _, sourceRelPath := range sourceUpdate.sourceRelPaths {
-			if err := targetSourceState.Apply(sourceSystem, sourceSystem, NullPersistentState{}, s.sourceDirAbsPath, sourceRelPath.RelPath(), ApplyOptions{
-				Include: options.Include,
-				Umask:   s.umask,
-			}); err != nil {
+			err := targetSourceState.Apply(
+				sourceSystem, sourceSystem, NullPersistentState{}, s.sourceDirAbsPath, sourceRelPath.RelPath(),
+				ApplyOptions{
+					Include: options.Include,
+					Umask:   s.umask,
+				},
+			)
+			if err != nil {
 				return err
 			}
 		}
 		if !sourceUpdate.destAbsPath.Empty() {
-			if err := persistentStateSet(persistentState, EntryStateBucket, sourceUpdate.destAbsPath.Bytes(), sourceUpdate.entryState); err != nil {
+			if err := persistentStateSet(
+				persistentState, EntryStateBucket, sourceUpdate.destAbsPath.Bytes(), sourceUpdate.entryState,
+			); err != nil {
 				return err
 			}
 		}
@@ -427,7 +438,9 @@ DESTABSPATH:
 
 // AddDestAbsPathInfos adds an fs.FileInfo to destAbsPathInfos for destAbsPath
 // and any of its parents which are not already known.
-func (s *SourceState) AddDestAbsPathInfos(destAbsPathInfos map[AbsPath]fs.FileInfo, system System, destAbsPath AbsPath, fileInfo fs.FileInfo) error {
+func (s *SourceState) AddDestAbsPathInfos(
+	destAbsPathInfos map[AbsPath]fs.FileInfo, system System, destAbsPath AbsPath, fileInfo fs.FileInfo,
+) error {
 	for {
 		if _, err := destAbsPath.TrimDirPrefix(s.destDirAbsPath); err != nil {
 			return err
@@ -461,7 +474,9 @@ func (s *SourceState) AddDestAbsPathInfos(destAbsPathInfos map[AbsPath]fs.FileIn
 }
 
 // A PreApplyFunc is called before a target is applied.
-type PreApplyFunc func(targetRelPath RelPath, targetEntryState, lastWrittenEntryState, actualEntryState *EntryState) error
+type PreApplyFunc func(
+	targetRelPath RelPath, targetEntryState, lastWrittenEntryState, actualEntryState *EntryState,
+) error
 
 // ApplyOptions are options to SourceState.ApplyAll and SourceState.ApplyOne.
 type ApplyOptions struct {
@@ -471,7 +486,10 @@ type ApplyOptions struct {
 }
 
 // Apply updates targetRelPath in targetDir in destSystem to match s.
-func (s *SourceState) Apply(targetSystem, destSystem System, persistentState PersistentState, targetDir AbsPath, targetRelPath RelPath, options ApplyOptions) error {
+func (s *SourceState) Apply(
+	targetSystem, destSystem System, persistentState PersistentState, targetDir AbsPath, targetRelPath RelPath,
+	options ApplyOptions,
+) error {
 	sourceStateEntry := s.root.Get(targetRelPath)
 
 	if !options.Include.IncludeEncrypted() {
@@ -586,13 +604,15 @@ func (s *SourceState) Apply(targetSystem, destSystem System, persistentState Per
 		// respect to the last written state, we record the effect of the last
 		// apply as the last written state.
 		if targetEntryState.Equivalent(actualEntryState) && !lastWrittenEntryState.Equivalent(actualEntryState) {
-			if err := persistentStateSet(persistentState, EntryStateBucket, targetAbsPath.Bytes(), targetEntryState); err != nil {
+			err := persistentStateSet(persistentState, EntryStateBucket, targetAbsPath.Bytes(), targetEntryState)
+			if err != nil {
 				return err
 			}
 			lastWrittenEntryState = targetEntryState
 		}
 
-		if err := options.PreApplyFunc(targetRelPath, targetEntryState, lastWrittenEntryState, actualEntryState); err != nil {
+		err = options.PreApplyFunc(targetRelPath, targetEntryState, lastWrittenEntryState, actualEntryState)
+		if err != nil {
 			return err
 		}
 	}
@@ -693,7 +713,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 
 	// Read all source entries.
 	allSourceStateEntries := make(map[RelPath][]SourceStateEntry)
-	if err := WalkSourceDir(s.system, s.sourceDirAbsPath, func(sourceAbsPath AbsPath, fileInfo fs.FileInfo, err error) error {
+	walkFunc := func(sourceAbsPath AbsPath, fileInfo fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -794,7 +814,8 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 				mode:    fileInfo.Mode(),
 			}
 		}
-	}); err != nil {
+	}
+	if err := WalkSourceDir(s.system, s.sourceDirAbsPath, walkFunc); err != nil {
 		return err
 	}
 
@@ -1040,7 +1061,7 @@ func (s *SourceState) addTemplateData(sourceAbsPath AbsPath) error {
 
 // addTemplatesDir adds all templates in templateDir to s.
 func (s *SourceState) addTemplatesDir(templatesDirAbsPath AbsPath) error {
-	return WalkSourceDir(s.system, templatesDirAbsPath, func(templateAbsPath AbsPath, fileInfo fs.FileInfo, err error) error {
+	walkFunc := func(templateAbsPath AbsPath, fileInfo fs.FileInfo, err error) error {
 		switch {
 		case err != nil:
 			return err
@@ -1068,7 +1089,8 @@ func (s *SourceState) addTemplatesDir(templatesDirAbsPath AbsPath) error {
 				mode:    fileInfo.Mode(),
 			}
 		}
-	})
+	}
+	return WalkSourceDir(s.system, templatesDirAbsPath, walkFunc)
 }
 
 // addVersionFile reads a .chezmoiversion file from source path and updates s's
@@ -1100,7 +1122,9 @@ func (s *SourceState) executeTemplate(templateAbsPath AbsPath) ([]byte, error) {
 
 // getExternalDataRaw returns the raw data for external at externalRelPath,
 // possibly from the external cache.
-func (s *SourceState) getExternalDataRaw(ctx context.Context, externalRelPath RelPath, external External, options *ReadOptions) ([]byte, error) {
+func (s *SourceState) getExternalDataRaw(
+	ctx context.Context, externalRelPath RelPath, external External, options *ReadOptions,
+) ([]byte, error) {
 	var now time.Time
 	if options != nil && options.TimeNow != nil {
 		now = options.TimeNow()
@@ -1167,7 +1191,9 @@ func (s *SourceState) getExternalDataRaw(ctx context.Context, externalRelPath Re
 
 // getExternalDataRaw reads the external data for externalRelPath from
 // external.URL.
-func (s *SourceState) getExternalData(ctx context.Context, externalRelPath RelPath, external External, options *ReadOptions) ([]byte, error) {
+func (s *SourceState) getExternalData(
+	ctx context.Context, externalRelPath RelPath, external External, options *ReadOptions,
+) ([]byte, error) {
 	data, err := s.getExternalDataRaw(ctx, externalRelPath, external, options)
 	if err != nil {
 		return nil, err
@@ -1209,7 +1235,9 @@ func (s *SourceState) newSourceStateDir(sourceRelPath SourceRelPath, dirAttr Dir
 // newCreateTargetStateEntryFunc returns a targetStateEntryFunc that returns a
 // file with sourceLazyContents if the file does not already exist, or returns
 // the actual file's contents unchanged if the file already exists.
-func (s *SourceState) newCreateTargetStateEntryFunc(sourceRelPath SourceRelPath, fileAttr FileAttr, sourceLazyContents *lazyContents) targetStateEntryFunc {
+func (s *SourceState) newCreateTargetStateEntryFunc(
+	sourceRelPath SourceRelPath, fileAttr FileAttr, sourceLazyContents *lazyContents,
+) targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		var lazyContents *lazyContents
 		switch contents, err := destSystem.ReadFile(destAbsPath); {
@@ -1242,7 +1270,9 @@ func (s *SourceState) newCreateTargetStateEntryFunc(sourceRelPath SourceRelPath,
 
 // newFileTargetStateEntryFunc returns a targetStateEntryFunc that returns a
 // file with sourceLazyContents.
-func (s *SourceState) newFileTargetStateEntryFunc(sourceRelPath SourceRelPath, fileAttr FileAttr, sourceLazyContents *lazyContents) targetStateEntryFunc {
+func (s *SourceState) newFileTargetStateEntryFunc(
+	sourceRelPath SourceRelPath, fileAttr FileAttr, sourceLazyContents *lazyContents,
+) targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		if s.mode == ModeSymlink && !fileAttr.Encrypted && !fileAttr.Executable && !fileAttr.Private && !fileAttr.Template {
 			switch contents, err := sourceLazyContents.Contents(); {
@@ -1280,7 +1310,9 @@ func (s *SourceState) newFileTargetStateEntryFunc(sourceRelPath SourceRelPath, f
 
 // newModifyTargetStateEntryFunc returns a targetStateEntryFunc that returns a
 // file with the contents modified by running the sourceLazyContents script.
-func (s *SourceState) newModifyTargetStateEntryFunc(sourceRelPath SourceRelPath, fileAttr FileAttr, sourceLazyContents *lazyContents, interpreter *Interpreter) targetStateEntryFunc {
+func (s *SourceState) newModifyTargetStateEntryFunc(
+	sourceRelPath SourceRelPath, fileAttr FileAttr, sourceLazyContents *lazyContents, interpreter *Interpreter,
+) targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		contentsFunc := func() (contents []byte, err error) {
 			// Read the current contents of the target.
@@ -1345,7 +1377,9 @@ func (s *SourceState) newModifyTargetStateEntryFunc(sourceRelPath SourceRelPath,
 
 // newRemoveTargetStateEntryFunc returns a targetStateEntryFunc that removes a
 // target.
-func (s *SourceState) newRemoveTargetStateEntryFunc(sourceRelPath SourceRelPath, fileAttr FileAttr) targetStateEntryFunc {
+func (s *SourceState) newRemoveTargetStateEntryFunc(
+	sourceRelPath SourceRelPath, fileAttr FileAttr,
+) targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		return &TargetStateRemove{}, nil
 	}
@@ -1353,7 +1387,10 @@ func (s *SourceState) newRemoveTargetStateEntryFunc(sourceRelPath SourceRelPath,
 
 // newScriptTargetStateEntryFunc returns a targetStateEntryFunc that returns a
 // script with sourceLazyContents.
-func (s *SourceState) newScriptTargetStateEntryFunc(sourceRelPath SourceRelPath, fileAttr FileAttr, targetRelPath RelPath, sourceLazyContents *lazyContents, interpreter *Interpreter) targetStateEntryFunc {
+func (s *SourceState) newScriptTargetStateEntryFunc(
+	sourceRelPath SourceRelPath, fileAttr FileAttr, targetRelPath RelPath, sourceLazyContents *lazyContents,
+	interpreter *Interpreter,
+) targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		contentsFunc := func() ([]byte, error) {
 			contents, err := sourceLazyContents.Contents()
@@ -1379,7 +1416,9 @@ func (s *SourceState) newScriptTargetStateEntryFunc(sourceRelPath SourceRelPath,
 
 // newSymlinkTargetStateEntryFunc returns a targetStateEntryFunc that returns a
 // symlink with the linkname sourceLazyContents.
-func (s *SourceState) newSymlinkTargetStateEntryFunc(sourceRelPath SourceRelPath, fileAttr FileAttr, sourceLazyContents *lazyContents) targetStateEntryFunc {
+func (s *SourceState) newSymlinkTargetStateEntryFunc(
+	sourceRelPath SourceRelPath, fileAttr FileAttr, sourceLazyContents *lazyContents,
+) targetStateEntryFunc {
 	return func(destSystem System, destAbsPath AbsPath) (TargetStateEntry, error) {
 		linknameFunc := func() (string, error) {
 			linknameBytes, err := sourceLazyContents.Contents()
@@ -1403,7 +1442,9 @@ func (s *SourceState) newSymlinkTargetStateEntryFunc(sourceRelPath SourceRelPath
 
 // newSourceStateFile returns a possibly new target RalPath and a new
 // SourceStateFile.
-func (s *SourceState) newSourceStateFile(sourceRelPath SourceRelPath, fileAttr FileAttr, targetRelPath RelPath) (RelPath, *SourceStateFile) {
+func (s *SourceState) newSourceStateFile(
+	sourceRelPath SourceRelPath, fileAttr FileAttr, targetRelPath RelPath,
+) (RelPath, *SourceStateFile) {
 	sourceLazyContents := newLazyContentsFunc(func() ([]byte, error) {
 		contents, err := s.system.ReadFile(s.sourceDirAbsPath.Join(sourceRelPath.RelPath()))
 		if err != nil {
@@ -1442,7 +1483,9 @@ func (s *SourceState) newSourceStateFile(sourceRelPath SourceRelPath, fileAttr F
 		// interpreter to use.
 		ext := strings.ToLower(strings.TrimPrefix(targetRelPath.Ext(), "."))
 		interpreter := s.interpreters[ext]
-		targetStateEntryFunc = s.newScriptTargetStateEntryFunc(sourceRelPath, fileAttr, targetRelPath, sourceLazyContents, interpreter)
+		targetStateEntryFunc = s.newScriptTargetStateEntryFunc(
+			sourceRelPath, fileAttr, targetRelPath, sourceLazyContents, interpreter,
+		)
 	case SourceFileTypeSymlink:
 		targetStateEntryFunc = s.newSymlinkTargetStateEntryFunc(sourceRelPath, fileAttr, sourceLazyContents)
 	default:
@@ -1458,12 +1501,12 @@ func (s *SourceState) newSourceStateFile(sourceRelPath SourceRelPath, fileAttr F
 	}
 }
 
-// newSourceStateDirEntry returns a SourceStateEntry constructed from a
-// directory in s.
+// newSourceStateDirEntry returns a SourceStateEntry constructed from a directory in s.
 //
-// We return a SourceStateEntry rather than a *SourceStateDir to simplify nil
-// checks later.
-func (s *SourceState) newSourceStateDirEntry(fileInfo fs.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions) (SourceStateEntry, error) {
+// We return a SourceStateEntry rather than a *SourceStateDir to simplify nil checks later.
+func (s *SourceState) newSourceStateDirEntry(
+	fileInfo fs.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions,
+) (SourceStateEntry, error) {
 	dirAttr := DirAttr{
 		TargetName: fileInfo.Name(),
 		Exact:      options.Exact,
@@ -1486,7 +1529,9 @@ func (s *SourceState) newSourceStateDirEntry(fileInfo fs.FileInfo, parentSourceR
 //
 // We return a SourceStateEntry rather than a *SourceStateFile to simplify nil
 // checks later.
-func (s *SourceState) newSourceStateFileEntryFromFile(actualStateFile *ActualStateFile, fileInfo fs.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions) (SourceStateEntry, error) {
+func (s *SourceState) newSourceStateFileEntryFromFile(
+	actualStateFile *ActualStateFile, fileInfo fs.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions,
+) (SourceStateEntry, error) {
 	fileAttr := FileAttr{
 		TargetName: fileInfo.Name(),
 		Empty:      options.Empty,
@@ -1541,7 +1586,10 @@ func (s *SourceState) newSourceStateFileEntryFromFile(actualStateFile *ActualSta
 //
 // We return a SourceStateEntry rather than a *SourceStateFile to simplify nil
 // checks later.
-func (s *SourceState) newSourceStateFileEntryFromSymlink(actualStateSymlink *ActualStateSymlink, fileInfo fs.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions) (SourceStateEntry, error) {
+func (s *SourceState) newSourceStateFileEntryFromSymlink(
+	actualStateSymlink *ActualStateSymlink, fileInfo fs.FileInfo, parentSourceRelPath SourceRelPath,
+	options *AddOptions,
+) (SourceStateEntry, error) {
 	linkname, err := actualStateSymlink.Linkname()
 	if err != nil {
 		return nil, err
@@ -1583,7 +1631,10 @@ func (s *SourceState) newSourceStateFileEntryFromSymlink(actualStateSymlink *Act
 }
 
 // readExternal reads an external and returns its SourceStateEntries.
-func (s *SourceState) readExternal(ctx context.Context, externalRelPath RelPath, parentSourceRelPath SourceRelPath, external External, options *ReadOptions) (map[RelPath][]SourceStateEntry, error) {
+func (s *SourceState) readExternal(
+	ctx context.Context, externalRelPath RelPath, parentSourceRelPath SourceRelPath, external External,
+	options *ReadOptions,
+) (map[RelPath][]SourceStateEntry, error) {
 	switch external.Type {
 	case ExternalTypeArchive:
 		return s.readExternalArchive(ctx, externalRelPath, parentSourceRelPath, external, options)
@@ -1596,7 +1647,10 @@ func (s *SourceState) readExternal(ctx context.Context, externalRelPath RelPath,
 
 // readExternalArchive reads an external archive and returns its
 // SourceStateEntries.
-func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath RelPath, parentSourceRelPath SourceRelPath, external External, options *ReadOptions) (map[RelPath][]SourceStateEntry, error) {
+func (s *SourceState) readExternalArchive(
+	ctx context.Context, externalRelPath RelPath, parentSourceRelPath SourceRelPath, external External,
+	options *ReadOptions,
+) (map[RelPath][]SourceStateEntry, error) {
 	data, err := s.getExternalData(ctx, externalRelPath, external, options)
 	if err != nil {
 		return nil, err
@@ -1684,6 +1738,7 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 				Private:    isPrivate(fileInfo),
 				ReadOnly:   isReadOnly(fileInfo),
 			}
+			sourceRelPath := NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix()))
 			targetStateEntry := &TargetStateFile{
 				lazyContents: lazyContents,
 				empty:        fileAttr.Empty,
@@ -1693,21 +1748,22 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 				lazyContents:     lazyContents,
 				Attr:             fileAttr,
 				origin:           external.URL,
-				sourceRelPath:    parentSourceRelPath.Join(dirSourceRelPath, NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix()))),
+				sourceRelPath:    parentSourceRelPath.Join(dirSourceRelPath, sourceRelPath),
 				targetStateEntry: targetStateEntry,
 			}
 		case fileInfo.Mode()&fs.ModeType == fs.ModeSymlink:
-			targetStateEntry := &TargetStateSymlink{
-				lazyLinkname: newLazyLinkname(linkname),
-			}
 			fileAttr := FileAttr{
 				TargetName: fileInfo.Name(),
 				Type:       SourceFileTypeSymlink,
 			}
+			sourceRelPath := NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix()))
+			targetStateEntry := &TargetStateSymlink{
+				lazyLinkname: newLazyLinkname(linkname),
+			}
 			sourceStateEntry = &SourceStateFile{
 				Attr:             fileAttr,
 				origin:           external.URL,
-				sourceRelPath:    parentSourceRelPath.Join(dirSourceRelPath, NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix()))),
+				sourceRelPath:    parentSourceRelPath.Join(dirSourceRelPath, sourceRelPath),
 				targetStateEntry: targetStateEntry,
 			}
 		default:
@@ -1723,7 +1779,10 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 }
 
 // readExternalFile reads an external file and returns its SourceStateEntries.
-func (s *SourceState) readExternalFile(ctx context.Context, externalRelPath RelPath, parentSourceRelPath SourceRelPath, external External, options *ReadOptions) (map[RelPath][]SourceStateEntry, error) {
+func (s *SourceState) readExternalFile(
+	ctx context.Context, externalRelPath RelPath, parentSourceRelPath SourceRelPath, external External,
+	options *ReadOptions,
+) (map[RelPath][]SourceStateEntry, error) {
 	lazyContents := newLazyContentsFunc(func() ([]byte, error) {
 		return s.getExternalData(ctx, externalRelPath, external, options)
 	})
@@ -1747,7 +1806,10 @@ func (s *SourceState) readExternalFile(ctx context.Context, externalRelPath RelP
 }
 
 // sourceStateEntry returns a new SourceStateEntry based on actualStateEntry.
-func (s *SourceState) sourceStateEntry(actualStateEntry ActualStateEntry, destAbsPath AbsPath, fileInfo fs.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions) (SourceStateEntry, error) {
+func (s *SourceState) sourceStateEntry(
+	actualStateEntry ActualStateEntry, destAbsPath AbsPath, fileInfo fs.FileInfo, parentSourceRelPath SourceRelPath,
+	options *AddOptions,
+) (SourceStateEntry, error) {
 	switch actualStateEntry := actualStateEntry.(type) {
 	case *ActualStateAbsent:
 		return nil, fmt.Errorf("%s: not found", destAbsPath)

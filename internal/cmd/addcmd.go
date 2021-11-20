@@ -40,7 +40,7 @@ func (c *Config) newAddCmd() *cobra.Command {
 	}
 
 	flags := addCmd.Flags()
-	flags.BoolVarP(&c.Add.autoTemplate, "autotemplate", "a", c.Add.autoTemplate, "Generate the template when adding files as templates")
+	flags.BoolVarP(&c.Add.autoTemplate, "autotemplate", "a", c.Add.autoTemplate, "Generate the template when adding files as templates") //nolint:lll
 	flags.BoolVar(&c.Add.create, "create", c.Add.create, "Add files that should exist, irrespective of their contents")
 	flags.BoolVarP(&c.Add.empty, "empty", "e", c.Add.empty, "Add empty files")
 	flags.BoolVar(&c.Add.encrypt, "encrypt", c.Add.encrypt, "Encrypt files")
@@ -50,14 +50,16 @@ func (c *Config) newAddCmd() *cobra.Command {
 	flags.VarP(c.Add.include, "include", "i", "Include entry types")
 	flags.BoolVarP(&c.Add.recursive, "recursive", "r", c.Add.recursive, "Recurse into subdirectories")
 	flags.BoolVarP(&c.Add.template, "template", "T", c.Add.template, "Add files as templates")
-	flags.BoolVar(&c.Add.TemplateSymlinks, "template-symlinks", c.Add.TemplateSymlinks, "Add symlinks with target in source or home dirs as templates")
+	flags.BoolVar(&c.Add.TemplateSymlinks, "template-symlinks", c.Add.TemplateSymlinks, "Add symlinks with target in source or home dirs as templates") //nolint:lll
 
 	return addCmd
 }
 
 // defaultPreAddFunc prompts the user for confirmation if the adding the entry
 // would remove any of the encrypted, private, or template attributes.
-func (c *Config) defaultPreAddFunc(targetRelPath chezmoi.RelPath, newSourceStateEntry, oldSourceStateEntry chezmoi.SourceStateEntry) error {
+func (c *Config) defaultPreAddFunc(
+	targetRelPath chezmoi.RelPath, newSourceStateEntry, oldSourceStateEntry chezmoi.SourceStateEntry,
+) error {
 	if c.force {
 		return nil
 	}
@@ -82,9 +84,10 @@ func (c *Config) defaultPreAddFunc(targetRelPath chezmoi.RelPath, newSourceState
 		return nil
 	}
 	removedAttributesStr := englishListWithNoun(removedAttributes, "attribute", "")
+	prompt := fmt.Sprintf("adding %s would remove %s, continue", targetRelPath, removedAttributesStr)
 
 	for {
-		switch choice, err := c.promptChoice(fmt.Sprintf("adding %s would remove %s, continue", targetRelPath, removedAttributesStr), yesNoAllQuit); {
+		switch choice, err := c.promptChoice(prompt, choicesYesNoAllQuit); {
 		case err != nil:
 			return err
 		case choice == "all":

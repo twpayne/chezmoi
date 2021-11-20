@@ -16,7 +16,7 @@ var (
 	shortTitle = flag.String("shorttitle", "", "short title")
 	longTitle  = flag.String("longtitle", "", "long title")
 
-	replaceURLRegexp       = regexp.MustCompile(`https://github\.com/twpayne/chezmoi/blob/master/docs/[A-Z]+\.md`) // lgtm[go/regex/missing-regexp-anchor]
+	replaceURLRegexp       = regexp.MustCompile(`https://github\.com/twpayne/chezmoi/blob/master/docs/[A-Z]+\.md`)
 	nonStandardPageRenames = map[string]string{
 		"HOWTO":      "how-to",
 		"QUICKSTART": "quick-start",

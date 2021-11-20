@@ -25,7 +25,7 @@ func (c *Config) newUnmanagedCmd() *cobra.Command {
 
 func (c *Config) runUnmanagedCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
 	builder := strings.Builder{}
-	if err := chezmoi.WalkSourceDir(c.destSystem, c.DestDirAbsPath, func(destAbsPath chezmoi.AbsPath, fileInfo fs.FileInfo, err error) error {
+	walkFunc := func(destAbsPath chezmoi.AbsPath, fileInfo fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -43,7 +43,8 @@ func (c *Config) runUnmanagedCmd(cmd *cobra.Command, args []string, sourceState 
 			return vfs.SkipDir
 		}
 		return nil
-	}); err != nil {
+	}
+	if err := chezmoi.WalkSourceDir(c.destSystem, c.DestDirAbsPath, walkFunc); err != nil {
 		return err
 	}
 	return c.writeOutputString(builder.String())
