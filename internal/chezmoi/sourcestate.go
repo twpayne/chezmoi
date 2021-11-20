@@ -427,7 +427,7 @@ DESTABSPATH:
 
 // AddDestAbsPathInfos adds an fs.FileInfo to destAbsPathInfos for destAbsPath
 // and any of its parents which are not already known.
-func (s *SourceState) AddDestAbsPathInfos(destAbsPathInfos map[AbsPath]fs.FileInfo, system System, destAbsPath AbsPath, info fs.FileInfo) error {
+func (s *SourceState) AddDestAbsPathInfos(destAbsPathInfos map[AbsPath]fs.FileInfo, system System, destAbsPath AbsPath, fileInfo fs.FileInfo) error {
 	for {
 		if _, err := destAbsPath.TrimDirPrefix(s.destDirAbsPath); err != nil {
 			return err
@@ -437,14 +437,14 @@ func (s *SourceState) AddDestAbsPathInfos(destAbsPathInfos map[AbsPath]fs.FileIn
 			return nil
 		}
 
-		if info == nil {
+		if fileInfo == nil {
 			var err error
-			info, err = system.Lstat(destAbsPath)
+			fileInfo, err = system.Lstat(destAbsPath)
 			if err != nil {
 				return err
 			}
 		}
-		destAbsPathInfos[destAbsPath] = info
+		destAbsPathInfos[destAbsPath] = fileInfo
 
 		parentAbsPath := destAbsPath.Dir()
 		if parentAbsPath == s.destDirAbsPath {
@@ -456,7 +456,7 @@ func (s *SourceState) AddDestAbsPathInfos(destAbsPathInfos map[AbsPath]fs.FileIn
 		}
 
 		destAbsPath = parentAbsPath
-		info = nil
+		fileInfo = nil
 	}
 }
 
@@ -682,18 +682,18 @@ type ReadOptions struct {
 
 // Read reads the source state from the source directory.
 func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
-	switch info, err := s.system.Stat(s.sourceDirAbsPath); {
+	switch fileInfo, err := s.system.Stat(s.sourceDirAbsPath); {
 	case errors.Is(err, fs.ErrNotExist):
 		return nil
 	case err != nil:
 		return err
-	case !info.IsDir():
+	case !fileInfo.IsDir():
 		return fmt.Errorf("%s: not a directory", s.sourceDirAbsPath)
 	}
 
 	// Read all source entries.
 	allSourceStateEntries := make(map[RelPath][]SourceStateEntry)
-	if err := WalkSourceDir(s.system, s.sourceDirAbsPath, func(sourceAbsPath AbsPath, info fs.FileInfo, err error) error {
+	if err := WalkSourceDir(s.system, s.sourceDirAbsPath, func(sourceAbsPath AbsPath, fileInfo fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -702,34 +702,34 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		}
 		sourceRelPath := SourceRelPath{
 			relPath: sourceAbsPath.MustTrimDirPrefix(s.sourceDirAbsPath),
-			isDir:   info.IsDir(),
+			isDir:   fileInfo.IsDir(),
 		}
 
 		parentSourceRelPath, sourceName := sourceRelPath.Split()
 		// Follow symlinks in the source directory.
-		if info.Mode().Type() == fs.ModeSymlink {
+		if fileInfo.Mode().Type() == fs.ModeSymlink {
 			// Some programs (notably emacs) use invalid symlinks as lockfiles.
 			// To avoid following them and getting an ENOENT error, check first
 			// if this is an entry that we will ignore anyway.
-			if strings.HasPrefix(info.Name(), ignorePrefix) && !strings.HasPrefix(info.Name(), Prefix) {
+			if strings.HasPrefix(fileInfo.Name(), ignorePrefix) && !strings.HasPrefix(fileInfo.Name(), Prefix) {
 				return nil
 			}
-			info, err = s.system.Stat(s.sourceDirAbsPath.Join(sourceRelPath.RelPath()))
+			fileInfo, err = s.system.Stat(s.sourceDirAbsPath.Join(sourceRelPath.RelPath()))
 			if err != nil {
 				return err
 			}
 		}
 		switch {
-		case strings.HasPrefix(info.Name(), dataName):
+		case strings.HasPrefix(fileInfo.Name(), dataName):
 			if !s.readTemplateData {
 				return nil
 			}
 			return s.addTemplateData(sourceAbsPath)
-		case strings.HasPrefix(info.Name(), externalName):
+		case strings.HasPrefix(fileInfo.Name(), externalName):
 			return s.addExternal(sourceAbsPath)
-		case info.Name() == ignoreName:
+		case fileInfo.Name() == ignoreName:
 			return s.addPatterns(s.ignore, sourceAbsPath, parentSourceRelPath)
-		case info.Name() == removeName:
+		case fileInfo.Name() == removeName:
 			removePatterns := newPatternSet()
 			if err := s.addPatterns(removePatterns, sourceAbsPath, sourceRelPath); err != nil {
 				return err
@@ -755,21 +755,21 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 				allSourceStateEntries[targetRelPath] = append(allSourceStateEntries[targetRelPath], sourceStateEntry)
 			}
 			return nil
-		case info.Name() == templatesDirName:
+		case fileInfo.Name() == templatesDirName:
 			if err := s.addTemplatesDir(sourceAbsPath); err != nil {
 				return err
 			}
 			return vfs.SkipDir
-		case info.Name() == versionName:
+		case fileInfo.Name() == versionName:
 			return s.addVersionFile(sourceAbsPath)
-		case strings.HasPrefix(info.Name(), Prefix):
+		case strings.HasPrefix(fileInfo.Name(), Prefix):
 			fallthrough
-		case strings.HasPrefix(info.Name(), ignorePrefix):
-			if info.IsDir() {
+		case strings.HasPrefix(fileInfo.Name(), ignorePrefix):
+			if fileInfo.IsDir() {
 				return vfs.SkipDir
 			}
 			return nil
-		case info.IsDir():
+		case fileInfo.IsDir():
 			da := parseDirAttr(sourceName.String())
 			targetRelPath := parentSourceRelPath.Dir().TargetRelPath(s.encryption.EncryptedSuffix()).JoinString(da.TargetName)
 			if s.Ignore(targetRelPath) {
@@ -778,7 +778,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			sourceStateEntry := s.newSourceStateDir(sourceRelPath, da)
 			allSourceStateEntries[targetRelPath] = append(allSourceStateEntries[targetRelPath], sourceStateEntry)
 			return nil
-		case info.Mode().IsRegular():
+		case fileInfo.Mode().IsRegular():
 			fa := parseFileAttr(sourceName.String(), s.encryption.EncryptedSuffix())
 			targetRelPath := parentSourceRelPath.Dir().TargetRelPath(s.encryption.EncryptedSuffix()).JoinString(fa.TargetName)
 			if s.Ignore(targetRelPath) {
@@ -791,7 +791,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		default:
 			return &unsupportedFileTypeError{
 				absPath: sourceAbsPath,
-				mode:    info.Mode(),
+				mode:    fileInfo.Mode(),
 			}
 		}
 	}); err != nil {
@@ -849,10 +849,10 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			continue
 		}
 
-		switch infos, err := s.system.ReadDir(s.destDirAbsPath.Join(targetRelPath)); {
+		switch fileInfos, err := s.system.ReadDir(s.destDirAbsPath.Join(targetRelPath)); {
 		case err == nil:
-			for _, info := range infos {
-				name := info.Name()
+			for _, fileInfo := range fileInfos {
+				name := fileInfo.Name()
 				if name == "." || name == ".." {
 					continue
 				}
@@ -1040,11 +1040,11 @@ func (s *SourceState) addTemplateData(sourceAbsPath AbsPath) error {
 
 // addTemplatesDir adds all templates in templateDir to s.
 func (s *SourceState) addTemplatesDir(templatesDirAbsPath AbsPath) error {
-	return WalkSourceDir(s.system, templatesDirAbsPath, func(templateAbsPath AbsPath, info fs.FileInfo, err error) error {
+	return WalkSourceDir(s.system, templatesDirAbsPath, func(templateAbsPath AbsPath, fileInfo fs.FileInfo, err error) error {
 		switch {
 		case err != nil:
 			return err
-		case info.Mode().IsRegular():
+		case fileInfo.Mode().IsRegular():
 			contents, err := s.system.ReadFile(templateAbsPath)
 			if err != nil {
 				return err
@@ -1060,12 +1060,12 @@ func (s *SourceState) addTemplatesDir(templatesDirAbsPath AbsPath) error {
 			}
 			s.templates[name] = tmpl
 			return nil
-		case info.IsDir():
+		case fileInfo.IsDir():
 			return nil
 		default:
 			return &unsupportedFileTypeError{
 				absPath: templateAbsPath,
-				mode:    info.Mode(),
+				mode:    fileInfo.Mode(),
 			}
 		}
 	})
@@ -1463,12 +1463,12 @@ func (s *SourceState) newSourceStateFile(sourceRelPath SourceRelPath, fileAttr F
 //
 // We return a SourceStateEntry rather than a *SourceStateDir to simplify nil
 // checks later.
-func (s *SourceState) newSourceStateDirEntry(info fs.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions) (SourceStateEntry, error) {
+func (s *SourceState) newSourceStateDirEntry(fileInfo fs.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions) (SourceStateEntry, error) {
 	dirAttr := DirAttr{
-		TargetName: info.Name(),
+		TargetName: fileInfo.Name(),
 		Exact:      options.Exact,
-		Private:    isPrivate(info),
-		ReadOnly:   isReadOnly(info),
+		Private:    isPrivate(fileInfo),
+		ReadOnly:   isReadOnly(fileInfo),
 	}
 	sourceRelPath := parentSourceRelPath.Join(NewSourceRelDirPath(dirAttr.SourceName()))
 	return &SourceStateDir{
@@ -1486,14 +1486,14 @@ func (s *SourceState) newSourceStateDirEntry(info fs.FileInfo, parentSourceRelPa
 //
 // We return a SourceStateEntry rather than a *SourceStateFile to simplify nil
 // checks later.
-func (s *SourceState) newSourceStateFileEntryFromFile(actualStateFile *ActualStateFile, info fs.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions) (SourceStateEntry, error) {
+func (s *SourceState) newSourceStateFileEntryFromFile(actualStateFile *ActualStateFile, fileInfo fs.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions) (SourceStateEntry, error) {
 	fileAttr := FileAttr{
-		TargetName: info.Name(),
+		TargetName: fileInfo.Name(),
 		Empty:      options.Empty,
 		Encrypted:  options.Encrypt,
-		Executable: isExecutable(info),
-		Private:    isPrivate(info),
-		ReadOnly:   isReadOnly(info),
+		Executable: isExecutable(fileInfo),
+		Private:    isPrivate(fileInfo),
+		ReadOnly:   isReadOnly(fileInfo),
 		Template:   options.Template,
 	}
 	if options.Create {
@@ -1541,7 +1541,7 @@ func (s *SourceState) newSourceStateFileEntryFromFile(actualStateFile *ActualSta
 //
 // We return a SourceStateEntry rather than a *SourceStateFile to simplify nil
 // checks later.
-func (s *SourceState) newSourceStateFileEntryFromSymlink(actualStateSymlink *ActualStateSymlink, info fs.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions) (SourceStateEntry, error) {
+func (s *SourceState) newSourceStateFileEntryFromSymlink(actualStateSymlink *ActualStateSymlink, fileInfo fs.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions) (SourceStateEntry, error) {
 	linkname, err := actualStateSymlink.Linkname()
 	if err != nil {
 		return nil, err
@@ -1566,7 +1566,7 @@ func (s *SourceState) newSourceStateFileEntryFromSymlink(actualStateSymlink *Act
 	contents = append(contents, '\n')
 	lazyContents := newLazyContents(contents)
 	fileAttr := FileAttr{
-		TargetName: info.Name(),
+		TargetName: fileInfo.Name(),
 		Type:       SourceFileTypeSymlink,
 		Template:   template,
 	}
@@ -1632,7 +1632,7 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 	}
 
 	sourceRelPaths := make(map[RelPath]SourceRelPath)
-	if err := walkArchive(data, format, func(name string, info fs.FileInfo, r io.Reader, linkname string) error {
+	if err := walkArchive(data, format, func(name string, fileInfo fs.FileInfo, r io.Reader, linkname string) error {
 		if external.StripComponents > 0 {
 			components := strings.Split(name, "/")
 			if len(components) <= external.StripComponents {
@@ -1654,15 +1654,15 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 
 		var sourceStateEntry SourceStateEntry
 		switch {
-		case info.IsDir():
+		case fileInfo.IsDir():
 			targetStateEntry := &TargetStateDir{
-				perm: info.Mode().Perm() &^ s.umask,
+				perm: fileInfo.Mode().Perm() &^ s.umask,
 			}
 			dirAttr := DirAttr{
-				TargetName: info.Name(),
+				TargetName: fileInfo.Name(),
 				Exact:      external.Exact,
-				Private:    isPrivate(info),
-				ReadOnly:   isReadOnly(info),
+				Private:    isPrivate(fileInfo),
+				ReadOnly:   isReadOnly(fileInfo),
 			}
 			sourceStateEntry = &SourceStateDir{
 				Attr:             dirAttr,
@@ -1670,19 +1670,19 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 				sourceRelPath:    parentSourceRelPath.Join(dirSourceRelPath, NewSourceRelPath(dirAttr.SourceName())),
 				targetStateEntry: targetStateEntry,
 			}
-		case info.Mode()&fs.ModeType == 0:
+		case fileInfo.Mode()&fs.ModeType == 0:
 			contents, err := io.ReadAll(r)
 			if err != nil {
 				return fmt.Errorf("%s: %w", name, err)
 			}
 			lazyContents := newLazyContents(contents)
 			fileAttr := FileAttr{
-				TargetName: info.Name(),
+				TargetName: fileInfo.Name(),
 				Type:       SourceFileTypeFile,
-				Empty:      info.Size() == 0,
-				Executable: isExecutable(info),
-				Private:    isPrivate(info),
-				ReadOnly:   isReadOnly(info),
+				Empty:      fileInfo.Size() == 0,
+				Executable: isExecutable(fileInfo),
+				Private:    isPrivate(fileInfo),
+				ReadOnly:   isReadOnly(fileInfo),
 			}
 			targetStateEntry := &TargetStateFile{
 				lazyContents: lazyContents,
@@ -1696,12 +1696,12 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 				sourceRelPath:    parentSourceRelPath.Join(dirSourceRelPath, NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix()))),
 				targetStateEntry: targetStateEntry,
 			}
-		case info.Mode()&fs.ModeType == fs.ModeSymlink:
+		case fileInfo.Mode()&fs.ModeType == fs.ModeSymlink:
 			targetStateEntry := &TargetStateSymlink{
 				lazyLinkname: newLazyLinkname(linkname),
 			}
 			fileAttr := FileAttr{
-				TargetName: info.Name(),
+				TargetName: fileInfo.Name(),
 				Type:       SourceFileTypeSymlink,
 			}
 			sourceStateEntry = &SourceStateFile{
@@ -1711,7 +1711,7 @@ func (s *SourceState) readExternalArchive(ctx context.Context, externalRelPath R
 				targetStateEntry: targetStateEntry,
 			}
 		default:
-			return fmt.Errorf("%s: unsupported mode %o", name, info.Mode()&fs.ModeType)
+			return fmt.Errorf("%s: unsupported mode %o", name, fileInfo.Mode()&fs.ModeType)
 		}
 		sourceStateEntries[targetRelPath] = append(sourceStateEntries[targetRelPath], sourceStateEntry)
 		return nil
@@ -1747,16 +1747,16 @@ func (s *SourceState) readExternalFile(ctx context.Context, externalRelPath RelP
 }
 
 // sourceStateEntry returns a new SourceStateEntry based on actualStateEntry.
-func (s *SourceState) sourceStateEntry(actualStateEntry ActualStateEntry, destAbsPath AbsPath, info fs.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions) (SourceStateEntry, error) {
+func (s *SourceState) sourceStateEntry(actualStateEntry ActualStateEntry, destAbsPath AbsPath, fileInfo fs.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions) (SourceStateEntry, error) {
 	switch actualStateEntry := actualStateEntry.(type) {
 	case *ActualStateAbsent:
 		return nil, fmt.Errorf("%s: not found", destAbsPath)
 	case *ActualStateDir:
-		return s.newSourceStateDirEntry(info, parentSourceRelPath, options)
+		return s.newSourceStateDirEntry(fileInfo, parentSourceRelPath, options)
 	case *ActualStateFile:
-		return s.newSourceStateFileEntryFromFile(actualStateEntry, info, parentSourceRelPath, options)
+		return s.newSourceStateFileEntryFromFile(actualStateEntry, fileInfo, parentSourceRelPath, options)
 	case *ActualStateSymlink:
-		return s.newSourceStateFileEntryFromSymlink(actualStateEntry, info, parentSourceRelPath, options)
+		return s.newSourceStateFileEntryFromSymlink(actualStateEntry, fileInfo, parentSourceRelPath, options)
 	default:
 		panic(fmt.Sprintf("%T: unsupported type", actualStateEntry))
 	}

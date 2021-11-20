@@ -39,9 +39,9 @@ type ActualStateSymlink struct {
 
 // NewActualStateEntry returns a new ActualStateEntry populated with absPath
 // from system.
-func NewActualStateEntry(system System, absPath AbsPath, info fs.FileInfo, err error) (ActualStateEntry, error) {
-	if info == nil {
-		info, err = system.Lstat(absPath)
+func NewActualStateEntry(system System, absPath AbsPath, fileInfo fs.FileInfo, err error) (ActualStateEntry, error) {
+	if fileInfo == nil {
+		fileInfo, err = system.Lstat(absPath)
 	}
 	switch {
 	case errors.Is(err, fs.ErrNotExist):
@@ -51,11 +51,11 @@ func NewActualStateEntry(system System, absPath AbsPath, info fs.FileInfo, err e
 	case err != nil:
 		return nil, err
 	}
-	switch info.Mode().Type() {
+	switch fileInfo.Mode().Type() {
 	case 0:
 		return &ActualStateFile{
 			absPath: absPath,
-			perm:    info.Mode().Perm(),
+			perm:    fileInfo.Mode().Perm(),
 			lazyContents: newLazyContentsFunc(func() ([]byte, error) {
 				return system.ReadFile(absPath)
 			}),
@@ -63,7 +63,7 @@ func NewActualStateEntry(system System, absPath AbsPath, info fs.FileInfo, err e
 	case fs.ModeDir:
 		return &ActualStateDir{
 			absPath: absPath,
-			perm:    info.Mode().Perm(),
+			perm:    fileInfo.Mode().Perm(),
 		}, nil
 	case fs.ModeSymlink:
 		return &ActualStateSymlink{
@@ -79,7 +79,7 @@ func NewActualStateEntry(system System, absPath AbsPath, info fs.FileInfo, err e
 	default:
 		return nil, &unsupportedFileTypeError{
 			absPath: absPath,
-			mode:    info.Mode(),
+			mode:    fileInfo.Mode(),
 		}
 	}
 }

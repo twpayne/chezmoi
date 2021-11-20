@@ -61,12 +61,12 @@ func (s *RealSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) 
 		dir := filename.Dir()
 		dev, ok := s.devCache[dir]
 		if !ok {
-			var info fs.FileInfo
-			info, err = s.Stat(dir)
+			var fileInfo fs.FileInfo
+			fileInfo, err = s.Stat(dir)
 			if err != nil {
 				return err
 			}
-			statT, ok := info.Sys().(*syscall.Stat_t)
+			statT, ok := fileInfo.Sys().(*syscall.Stat_t)
 			if !ok {
 				err = errors.New("fs.FileInfo.Sys() cannot be converted to a *syscall.Stat_t")
 				return

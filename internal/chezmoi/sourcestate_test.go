@@ -1548,7 +1548,7 @@ func TestWalkSourceDir(t *testing.T) {
 	var actualAbsPaths []AbsPath
 	chezmoitest.WithTestFS(t, root, func(fileSystem vfs.FS) {
 		system := NewRealSystem(fileSystem)
-		require.NoError(t, WalkSourceDir(system, sourceDirAbsPath, func(absPath AbsPath, info fs.FileInfo, err error) error {
+		require.NoError(t, WalkSourceDir(system, sourceDirAbsPath, func(absPath AbsPath, fileInfo fs.FileInfo, err error) error {
 			if err != nil {
 				return err
 			}

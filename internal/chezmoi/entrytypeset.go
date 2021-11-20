@@ -58,14 +58,14 @@ func (s *EntryTypeSet) IncludeEncrypted() bool {
 	return s.bits&EntryTypeEncrypted != 0
 }
 
-// IncludeFileInfo returns true if the type of info is a member.
-func (s *EntryTypeSet) IncludeFileInfo(info fs.FileInfo) bool {
+// IncludeFileInfo returns true if the type of fileInfo is a member.
+func (s *EntryTypeSet) IncludeFileInfo(fileInfo fs.FileInfo) bool {
 	switch {
-	case info.IsDir():
+	case fileInfo.IsDir():
 		return s.bits&EntryTypeDirs != 0
-	case info.Mode().IsRegular():
+	case fileInfo.Mode().IsRegular():
 		return s.bits&EntryTypeFiles != 0
-	case info.Mode().Type() == fs.ModeSymlink:
+	case fileInfo.Mode().Type() == fs.ModeSymlink:
 		return s.bits&EntryTypeSymlinks != 0
 	default:
 		return false

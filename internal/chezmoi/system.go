@@ -104,11 +104,11 @@ func MkdirAll(system System, absPath AbsPath, perm fs.FileMode) error {
 		// between "path already exists and is already a directory" and "path
 		// already exists and is not a directory". Between the call to Mkdir and
 		// the call to Stat path might have changed.
-		info, statErr := system.Stat(absPath)
+		fileInfo, statErr := system.Stat(absPath)
 		if statErr != nil {
 			return statErr
 		}
-		if !info.IsDir() {
+		if !fileInfo.IsDir() {
 			return err
 		}
 		return nil
@@ -135,9 +135,9 @@ func MkdirAll(system System, absPath AbsPath, perm fs.FileMode) error {
 // the tree, including rootAbsPath.
 //
 // Walk does not follow symlinks.
-func Walk(system System, rootAbsPath AbsPath, walkFunc func(absPath AbsPath, info fs.FileInfo, err error) error) error {
-	return vfs.Walk(system.UnderlyingFS(), rootAbsPath.String(), func(absPath string, info fs.FileInfo, err error) error {
-		return walkFunc(NewAbsPath(absPath).ToSlash(), info, err)
+func Walk(system System, rootAbsPath AbsPath, walkFunc func(absPath AbsPath, fileInfo fs.FileInfo, err error) error) error {
+	return vfs.Walk(system.UnderlyingFS(), rootAbsPath.String(), func(absPath string, fileInfo fs.FileInfo, err error) error {
+		return walkFunc(NewAbsPath(absPath).ToSlash(), fileInfo, err)
 	})
 }
 
@@ -155,11 +155,11 @@ type WalkSourceDirFunc func(AbsPath, fs.FileInfo, error) error
 // before all other entries. All other entries are visited in alphabetical
 // order.
 func WalkSourceDir(system System, sourceDirAbsPath AbsPath, walkFunc WalkSourceDirFunc) error {
-	info, err := system.Stat(sourceDirAbsPath)
+	fileInfo, err := system.Stat(sourceDirAbsPath)
 	if err != nil {
 		err = walkFunc(sourceDirAbsPath, nil, err)
 	} else {
-		err = walkSourceDir(system, sourceDirAbsPath, info, walkFunc)
+		err = walkSourceDir(system, sourceDirAbsPath, fileInfo, walkFunc)
 	}
 	if errors.Is(err, fs.SkipDir) {
 		return nil
@@ -178,19 +178,19 @@ var sourceDirEntryOrder = map[string]int{
 }
 
 // walkSourceDir is a helper function for WalkSourceDir.
-func walkSourceDir(system System, name AbsPath, info fs.FileInfo, walkFunc WalkSourceDirFunc) error {
-	switch err := walkFunc(name, info, nil); {
-	case info.IsDir() && errors.Is(err, fs.SkipDir):
+func walkSourceDir(system System, name AbsPath, fileInfo fs.FileInfo, walkFunc WalkSourceDirFunc) error {
+	switch err := walkFunc(name, fileInfo, nil); {
+	case fileInfo.IsDir() && errors.Is(err, fs.SkipDir):
 		return nil
 	case err != nil:
 		return err
-	case !info.IsDir():
+	case !fileInfo.IsDir():
 		return nil
 	}
 
 	dirEntries, err := system.ReadDir(name)
 	if err != nil {
-		err = walkFunc(name, info, err)
+		err = walkFunc(name, fileInfo, err)
 		if err != nil {
 			return err
 		}
@@ -212,14 +212,14 @@ func walkSourceDir(system System, name AbsPath, info fs.FileInfo, walkFunc WalkS
 	})
 
 	for _, dirEntry := range dirEntries {
-		info, err := dirEntry.Info()
+		fileInfo, err := dirEntry.Info()
 		if err != nil {
 			err = walkFunc(name, nil, err)
 			if err != nil {
 				return err
 			}
 		}
-		if err := walkSourceDir(system, name.JoinString(dirEntry.Name()), info, walkFunc); err != nil {
+		if err := walkSourceDir(system, name.JoinString(dirEntry.Name()), fileInfo, walkFunc); err != nil {
 			if errors.Is(err, fs.SkipDir) {
 				break
 			}

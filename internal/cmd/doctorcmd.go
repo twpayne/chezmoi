@@ -475,11 +475,11 @@ func (c *suspiciousEntriesCheck) Name() string {
 func (c *suspiciousEntriesCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
 	// FIXME check that config file templates are in root
 	var suspiciousEntries []string
-	switch err := chezmoi.WalkSourceDir(system, c.dirname, func(absPath chezmoi.AbsPath, info fs.FileInfo, err error) error {
+	switch err := chezmoi.WalkSourceDir(system, c.dirname, func(absPath chezmoi.AbsPath, fileInfo fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
-		if chezmoi.SuspiciousSourceDirEntry(absPath.Base(), info) {
+		if chezmoi.SuspiciousSourceDirEntry(absPath.Base(), fileInfo) {
 			suspiciousEntries = append(suspiciousEntries, absPath.String())
 		}
 		return nil

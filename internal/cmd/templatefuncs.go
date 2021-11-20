@@ -102,15 +102,15 @@ func (c *Config) outputTemplateFunc(name string, args ...string) string {
 }
 
 func (c *Config) statTemplateFunc(name string) interface{} {
-	switch info, err := c.fileSystem.Stat(name); {
+	switch fileInfo, err := c.fileSystem.Stat(name); {
 	case err == nil:
 		return map[string]interface{}{
-			"name":    info.Name(),
-			"size":    info.Size(),
-			"mode":    int(info.Mode()),
-			"perm":    int(info.Mode().Perm()),
-			"modTime": info.ModTime().Unix(),
-			"isDir":   info.IsDir(),
+			"name":    fileInfo.Name(),
+			"size":    fileInfo.Size(),
+			"mode":    int(fileInfo.Mode()),
+			"perm":    int(fileInfo.Mode().Perm()),
+			"modTime": fileInfo.ModTime().Unix(),
+			"isDir":   fileInfo.IsDir(),
 		}
 	case errors.Is(err, fs.ErrNotExist):
 		return nil

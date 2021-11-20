@@ -142,8 +142,8 @@ func (s *RealSystem) getScriptWorkingDir(dir AbsPath) (string, error) {
 	// This should always terminate because dir will eventually become ".", i.e.
 	// the current directory.
 	for {
-		switch info, err := s.Stat(dir); {
-		case err == nil && info.IsDir():
+		switch fileInfo, err := s.Stat(dir); {
+		case err == nil && fileInfo.IsDir():
 			// dir exists and is a directory. Use it.
 			dirRawAbsPath, err := s.RawPath(dir)
 			if err != nil {

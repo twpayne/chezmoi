@@ -26,17 +26,17 @@ func FQDNHostname(fileSystem vfs.FS) string {
 }
 
 // isExecutable returns false on Windows.
-func isExecutable(info fs.FileInfo) bool {
+func isExecutable(fileInfo fs.FileInfo) bool {
 	return false
 }
 
 // isPrivate returns false on Windows.
-func isPrivate(info fs.FileInfo) bool {
+func isPrivate(fileInfo fs.FileInfo) bool {
 	return false
 }
 
 // isReadOnly returns false on Windows.
-func isReadOnly(info fs.FileInfo) bool {
+func isReadOnly(fileInfo fs.FileInfo) bool {
 	return false
 }
 
