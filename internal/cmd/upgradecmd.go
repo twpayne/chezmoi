@@ -240,7 +240,7 @@ func (c *Config) downloadURL(ctx context.Context, url string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := c.httpClient.Do(req)
 	c.logger.Err(err).
 		Str("method", req.Method).
 		Int("statusCode", resp.StatusCode).

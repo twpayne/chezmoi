@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"io"
 	"io/fs"
+	"net/http"
 	"os"
 	"os/exec"
 	"os/user"
@@ -160,6 +161,7 @@ type Config struct {
 	destSystem             chezmoi.System
 	persistentStateAbsPath chezmoi.AbsPath
 	persistentState        chezmoi.PersistentState
+	httpClient             *http.Client
 	logger                 *zerolog.Logger
 
 	// Computed configuration.
@@ -185,6 +187,7 @@ type configState struct {
 var (
 	chezmoiRelPath             = chezmoi.NewRelPath("chezmoi")
 	persistentStateFileRelPath = chezmoi.NewRelPath("chezmoistate.boltdb")
+	httpCacheDirRelPath        = chezmoi.NewRelPath("httpcache")
 
 	configStateKey = []byte("configState")
 
@@ -229,9 +232,11 @@ func newConfig(options ...configOption) (*Config, error) {
 		return nil, err
 	}
 
+	cacheDirAbsPath := chezmoi.NewAbsPath(bds.CacheHome).Join(chezmoiRelPath)
+
 	c := &Config{
 		// Global configuration, settable in the config file.
-		CacheDirAbsPath: chezmoi.NewAbsPath(bds.CacheHome).Join(chezmoiRelPath),
+		CacheDirAbsPath: cacheDirAbsPath,
 		Color: autoBool{
 			auto: true,
 		},
@@ -386,6 +391,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		// Configuration.
 		fileSystem: vfs.OSFS,
 		bds:        bds,
+		httpClient: newCacheHTTPClient(cacheDirAbsPath.Join(httpCacheDirRelPath)),
 
 		// Computed configuration.
 		homeDirAbsPath: homeDirAbsPath,
@@ -1302,6 +1308,7 @@ func (c *Config) newSourceState(ctx context.Context, options ...chezmoi.SourceSt
 		chezmoi.WithDefaultTemplateDataFunc(c.defaultTemplateData),
 		chezmoi.WithDestDir(c.DestDirAbsPath),
 		chezmoi.WithEncryption(c.encryption),
+		chezmoi.WithHTTPClient(c.httpClient),
 		chezmoi.WithInterpreters(c.Interpreters),
 		chezmoi.WithLogger(&sourceStateLogger),
 		chezmoi.WithMode(c.Mode),

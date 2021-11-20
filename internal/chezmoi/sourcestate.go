@@ -77,6 +77,7 @@ type SourceState struct {
 	encryption              Encryption
 	ignore                  *patternSet
 	interpreters            map[string]*Interpreter
+	httpClient              *http.Client
 	logger                  *zerolog.Logger
 	minVersion              semver.Version
 	mode                    Mode
@@ -119,6 +120,13 @@ func WithDestDir(destDirAbsPath AbsPath) SourceStateOption {
 func WithEncryption(encryption Encryption) SourceStateOption {
 	return func(s *SourceState) {
 		s.encryption = encryption
+	}
+}
+
+// WithHTTPClient sets the HTTP client.
+func WithHTTPClient(httpClient *http.Client) SourceStateOption {
+	return func(s *SourceState) {
+		s.httpClient = httpClient
 	}
 }
 
@@ -202,6 +210,7 @@ func NewSourceState(options ...SourceStateOption) *SourceState {
 		umask:                Umask,
 		encryption:           NoEncryption{},
 		ignore:               newPatternSet(),
+		httpClient:           http.DefaultClient,
 		logger:               &log.Logger,
 		readTemplateData:     true,
 		priorityTemplateData: make(map[string]interface{}),
@@ -1092,9 +1101,6 @@ func (s *SourceState) executeTemplate(templateAbsPath AbsPath) ([]byte, error) {
 // getExternalDataRaw returns the raw data for external at externalRelPath,
 // possibly from the external cache.
 func (s *SourceState) getExternalDataRaw(ctx context.Context, externalRelPath RelPath, external External, options *ReadOptions) ([]byte, error) {
-	// FIXME be more intelligent about HTTP caching, e.g. following RFC 7234,
-	// rather than blindly re-downloading each time
-
 	var now time.Time
 	if options != nil && options.TimeNow != nil {
 		now = options.TimeNow()
@@ -1122,7 +1128,7 @@ func (s *SourceState) getExternalDataRaw(ctx context.Context, externalRelPath Re
 	if err != nil {
 		return nil, err
 	}
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := s.httpClient.Do(req)
 	s.logger.Err(err).
 		Str("method", req.Method).
 		Int("statusCode", resp.StatusCode).
