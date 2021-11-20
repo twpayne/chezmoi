@@ -19,6 +19,7 @@ require (
 	github.com/google/gops v0.3.22
 	github.com/google/renameio/v2 v2.0.0
 	github.com/google/uuid v1.3.0 // indirect
+	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/kevinburke/ssh_config v1.1.0 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
@@ -29,6 +30,7 @@ require (
 	github.com/muesli/reflow v0.3.0 // indirect
 	github.com/muesli/termenv v0.9.0 // indirect
 	github.com/pelletier/go-toml v1.9.4
+	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
 	github.com/rogpeppe/go-internal v1.8.0
 	github.com/rs/zerolog v1.26.0
 	github.com/sergi/go-diff v1.1.0

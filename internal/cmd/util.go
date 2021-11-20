@@ -11,7 +11,11 @@ import (
 	"unicode"
 
 	"github.com/google/go-github/v40/github"
+	"github.com/gregjones/httpcache"
+	"github.com/gregjones/httpcache/diskcache"
 	"golang.org/x/oauth2"
+
+	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
 var (
@@ -70,6 +74,12 @@ func firstNonEmptyString(ss ...string) string {
 		}
 	}
 	return ""
+}
+
+// newCacheHTTPClient returns a new http.Client that will cache responses
+// according to the HTTP RFC.
+func newCacheHTTPClient(cacheDirAbsPath chezmoi.AbsPath) *http.Client {
+	return httpcache.NewTransport(diskcache.New(cacheDirAbsPath.String())).Client()
 }
 
 // newGitHubClient returns a new github.Client configured with an access token,
