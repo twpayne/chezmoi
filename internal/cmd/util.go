@@ -82,19 +82,20 @@ func newCacheHTTPClient(cacheDirAbsPath chezmoi.AbsPath) *http.Client {
 	return httpcache.NewTransport(diskcache.New(cacheDirAbsPath.String())).Client()
 }
 
-// newGitHubClient returns a new github.Client configured with an access token,
-// if available.
-func newGitHubClient(ctx context.Context) *github.Client {
-	var httpClient *http.Client
+// newGitHubClient returns a new github.Client configured with an access token
+// and a http client, if available.
+func newGitHubClient(ctx context.Context, httpClient *http.Client) *github.Client {
 	for _, key := range []string{
 		"CHEZMOI_GITHUB_ACCESS_TOKEN",
 		"GITHUB_ACCESS_TOKEN",
 		"GITHUB_TOKEN",
 	} {
 		if accessToken := os.Getenv(key); accessToken != "" {
-			httpClient = oauth2.NewClient(ctx, oauth2.StaticTokenSource(&oauth2.Token{
-				AccessToken: accessToken,
-			}))
+			httpClient = oauth2.NewClient(
+				context.WithValue(ctx, oauth2.HTTPClient, httpClient),
+				oauth2.StaticTokenSource(&oauth2.Token{
+					AccessToken: accessToken,
+				}))
 			break
 		}
 	}
