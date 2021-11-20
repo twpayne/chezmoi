@@ -29,7 +29,12 @@ const (
 	EntryTypeEncrypted
 
 	// EntryTypesAll is all entry types.
-	EntryTypesAll EntryTypeBits = EntryTypeDirs | EntryTypeFiles | EntryTypeRemove | EntryTypeScripts | EntryTypeSymlinks | EntryTypeEncrypted
+	EntryTypesAll EntryTypeBits = EntryTypeDirs |
+		EntryTypeFiles |
+		EntryTypeRemove |
+		EntryTypeScripts |
+		EntryTypeSymlinks |
+		EntryTypeEncrypted
 
 	// EntryTypesNone is no entry types.
 	EntryTypesNone EntryTypeBits = 0

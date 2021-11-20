@@ -304,7 +304,10 @@ func (c *Config) getPackageFilename(packageType string, version *semver.Version,
 	}
 }
 
-func (c *Config) replaceExecutable(ctx context.Context, executableFilenameAbsPath chezmoi.AbsPath, releaseVersion *semver.Version, rr *github.RepositoryRelease) (err error) {
+func (c *Config) replaceExecutable(
+	ctx context.Context, executableFilenameAbsPath chezmoi.AbsPath, releaseVersion *semver.Version,
+	rr *github.RepositoryRelease,
+) (err error) {
 	goos := runtime.GOOS
 	if goos == "linux" && runtime.GOARCH == "amd64" {
 		var libc string
@@ -361,7 +364,9 @@ func (c *Config) snapRefresh() error {
 	return c.run(chezmoi.EmptyAbsPath, "snap", []string{"refresh", c.upgrade.repo})
 }
 
-func (c *Config) upgradePackage(ctx context.Context, version *semver.Version, rr *github.RepositoryRelease, useSudo bool) error {
+func (c *Config) upgradePackage(
+	ctx context.Context, version *semver.Version, rr *github.RepositoryRelease, useSudo bool,
+) error {
 	switch runtime.GOOS {
 	case "linux":
 		// Determine the package type and architecture.
@@ -440,7 +445,9 @@ func (c *Config) verifyChecksum(ctx context.Context, rr *github.RepositoryReleas
 	}
 	checksum := sha256.Sum256(data)
 	if !bytes.Equal(checksum[:], expectedChecksum) {
-		return fmt.Errorf("%s: checksum failed (want %s, got %s)", name, hex.EncodeToString(expectedChecksum), hex.EncodeToString(checksum[:]))
+		return fmt.Errorf(
+			"%s: checksum failed (want %s, got %s)", name, hex.EncodeToString(expectedChecksum), hex.EncodeToString(checksum[:]),
+		)
 	}
 	return nil
 }
@@ -531,7 +538,8 @@ func getPackageType(system chezmoi.System) (string, error) {
 			}
 		}
 	}
-	return packageTypeNone, fmt.Errorf("could not determine package type (ID=%q, ID_LIKE=%q)", osRelease["ID"], osRelease["ID_LIKE"])
+	err = fmt.Errorf("could not determine package type (ID=%q, ID_LIKE=%q)", osRelease["ID"], osRelease["ID_LIKE"])
+	return packageTypeNone, err
 }
 
 // getReleaseAssetByName returns the release asset from rr with the given name.

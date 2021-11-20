@@ -49,7 +49,7 @@ func (c *Config) runRemoveCmd(cmd *cobra.Command, args []string, sourceState *ch
 		destAbsPath := c.DestDirAbsPath.Join(targetRelPath)
 		sourceAbsPath := c.SourceDirAbsPath.Join(sourceState.MustEntry(targetRelPath).SourceRelPath().RelPath())
 		if !c.force {
-			choice, err := c.promptChoice(fmt.Sprintf("Remove %s and %s", destAbsPath, sourceAbsPath), yesNoAllQuit)
+			choice, err := c.promptChoice(fmt.Sprintf("Remove %s and %s", destAbsPath, sourceAbsPath), choicesYesNoAllQuit)
 			if err != nil {
 				return err
 			}

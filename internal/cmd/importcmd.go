@@ -37,8 +37,8 @@ func (c *Config) newImportCmd() *cobra.Command {
 	flags.BoolVar(&c._import.exact, "exact", c._import.exact, "Set exact_ attribute on imported directories")
 	flags.VarP(c._import.exclude, "exclude", "x", "Exclude entry types")
 	flags.VarP(c._import.include, "include", "i", "Include entry types")
-	flags.BoolVarP(&c._import.removeDestination, "remove-destination", "r", c._import.removeDestination, "Remove destination before import")
-	flags.IntVar(&c._import.stripComponents, "strip-components", c._import.stripComponents, "Strip leading path components")
+	flags.BoolVarP(&c._import.removeDestination, "remove-destination", "r", c._import.removeDestination, "Remove destination before import") //nolint:lll
+	flags.IntVar(&c._import.stripComponents, "strip-components", c._import.stripComponents, "Strip leading path components")                 //nolint:lll
 
 	return importCmd
 }
@@ -66,10 +66,12 @@ func (c *Config) runImportCmd(cmd *cobra.Command, args []string, sourceState *ch
 			return err
 		}
 	}
-	archiveReaderSystem, err := chezmoi.NewArchiveReaderSystem(name, data, chezmoi.ArchiveFormatUnknown, chezmoi.ArchiveReaderSystemOptions{
-		RootAbsPath:     c._import.destination,
-		StripComponents: c._import.stripComponents,
-	})
+	archiveReaderSystem, err := chezmoi.NewArchiveReaderSystem(
+		name, data, chezmoi.ArchiveFormatUnknown, chezmoi.ArchiveReaderSystemOptions{
+			RootAbsPath:     c._import.destination,
+			StripComponents: c._import.stripComponents,
+		},
+	)
 	if err != nil {
 		return err
 	}
@@ -80,9 +82,11 @@ func (c *Config) runImportCmd(cmd *cobra.Command, args []string, sourceState *ch
 			return err
 		}
 	}
-	return sourceState.Add(c.sourceSystem, c.persistentState, archiveReaderSystem, archiveReaderSystem.FileInfos(), &chezmoi.AddOptions{
-		Exact:     c._import.exact,
-		Include:   c._import.include.Sub(c._import.exclude),
-		RemoveDir: removeDir,
-	})
+	return sourceState.Add(
+		c.sourceSystem, c.persistentState, archiveReaderSystem, archiveReaderSystem.FileInfos(), &chezmoi.AddOptions{
+			Exact:     c._import.exact,
+			Include:   c._import.include.Sub(c._import.exclude),
+			RemoveDir: removeDir,
+		},
+	)
 }

@@ -346,7 +346,8 @@ func (c *binaryCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath)
 	if c.versionRx != nil {
 		match := c.versionRx.FindSubmatch(versionBytes)
 		if len(match) != 2 {
-			return checkResultWarning, fmt.Sprintf("found %s, cannot parse version from %s", pathAbsPath, bytes.TrimSpace(versionBytes))
+			s := fmt.Sprintf("found %s, cannot parse version from %s", pathAbsPath, bytes.TrimSpace(versionBytes))
+			return checkResultWarning, s
 		}
 		versionBytes = match[1]
 	}
@@ -475,7 +476,7 @@ func (c *suspiciousEntriesCheck) Name() string {
 func (c *suspiciousEntriesCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
 	// FIXME check that config file templates are in root
 	var suspiciousEntries []string
-	switch err := chezmoi.WalkSourceDir(system, c.dirname, func(absPath chezmoi.AbsPath, fileInfo fs.FileInfo, err error) error {
+	walkFunc := func(absPath chezmoi.AbsPath, fileInfo fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -483,7 +484,8 @@ func (c *suspiciousEntriesCheck) Run(system chezmoi.System, homeDirAbsPath chezm
 			suspiciousEntries = append(suspiciousEntries, absPath.String())
 		}
 		return nil
-	}); {
+	}
+	switch err := chezmoi.WalkSourceDir(system, c.dirname, walkFunc); {
 	case errors.Is(err, fs.ErrNotExist):
 		return checkResultOK, fmt.Sprintf("%s: no such file or directory", c.dirname)
 	case err != nil:

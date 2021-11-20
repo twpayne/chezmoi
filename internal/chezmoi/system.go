@@ -131,18 +131,23 @@ func MkdirAll(system System, absPath AbsPath, perm fs.FileMode) error {
 	}
 }
 
+// A WalkFunc is called for every entry in a directory.
+type WalkFunc func(absPath AbsPath, fileInfo fs.FileInfo, err error) error
+
 // Walk walks rootAbsPath in system, alling walkFunc for each file or directory in
 // the tree, including rootAbsPath.
 //
 // Walk does not follow symlinks.
-func Walk(system System, rootAbsPath AbsPath, walkFunc func(absPath AbsPath, fileInfo fs.FileInfo, err error) error) error {
-	return vfs.Walk(system.UnderlyingFS(), rootAbsPath.String(), func(absPath string, fileInfo fs.FileInfo, err error) error {
+func Walk(system System, rootAbsPath AbsPath, walkFunc WalkFunc) error {
+	outerWalkFunc := func(absPath string, fileInfo fs.FileInfo, err error) error {
 		return walkFunc(NewAbsPath(absPath).ToSlash(), fileInfo, err)
-	})
+	}
+	return vfs.Walk(system.UnderlyingFS(), rootAbsPath.String(), outerWalkFunc)
 }
 
-// A WalkSourceDirFunc is a function called for every in a source directory.
-type WalkSourceDirFunc func(AbsPath, fs.FileInfo, error) error
+// A WalkSourceDirFunc is a function called for every entry in a source
+// directory.
+type WalkSourceDirFunc func(absPath AbsPath, fileInfo fs.FileInfo, err error) error
 
 // WalkSourceDir walks the source directory rooted at sourceDirAbsPath in
 // system, calling walkFunc for each file or directory in the tree, including

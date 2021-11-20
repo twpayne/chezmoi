@@ -59,7 +59,9 @@ type scriptState struct {
 }
 
 // Apply updates actualStateEntry to match t. It does not recurse.
-func (t *TargetStateDir) Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry) (bool, error) {
+func (t *TargetStateDir) Apply(
+	system System, persistentState PersistentState, actualStateEntry ActualStateEntry,
+) (bool, error) {
 	if actualStateDir, ok := actualStateEntry.(*ActualStateDir); ok {
 		if runtime.GOOS == "windows" || actualStateDir.perm == t.perm {
 			return false, nil
@@ -91,7 +93,9 @@ func (t *TargetStateDir) SkipApply(persistentState PersistentState, targetAbsPat
 }
 
 // Apply updates actualStateEntry to match t.
-func (t *TargetStateFile) Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry) (bool, error) {
+func (t *TargetStateFile) Apply(
+	system System, persistentState PersistentState, actualStateEntry ActualStateEntry,
+) (bool, error) {
 	contents, err := t.Contents()
 	if err != nil {
 		return false, err
@@ -167,7 +171,9 @@ func (t *TargetStateFile) SkipApply(persistentState PersistentState, targetAbsPa
 }
 
 // Apply updates actualStateEntry to match t.
-func (t *TargetStateRemove) Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry) (bool, error) {
+func (t *TargetStateRemove) Apply(
+	system System, persistentState PersistentState, actualStateEntry ActualStateEntry,
+) (bool, error) {
 	if _, ok := actualStateEntry.(*ActualStateAbsent); ok {
 		return false, nil
 	}
@@ -192,7 +198,9 @@ func (t *TargetStateRemove) SkipApply(persistentState PersistentState, targetAbs
 }
 
 // Apply runs t.
-func (t *TargetStateScript) Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry) (bool, error) {
+func (t *TargetStateScript) Apply(
+	system System, persistentState PersistentState, actualStateEntry ActualStateEntry,
+) (bool, error) {
 	skipApply, err := t.SkipApply(persistentState, actualStateEntry.Path())
 	if err != nil {
 		return false, err
@@ -294,7 +302,9 @@ func (t *TargetStateScript) SkipApply(persistentState PersistentState, targetAbs
 }
 
 // Apply updates actualStateEntry to match t.
-func (t *TargetStateSymlink) Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry) (bool, error) {
+func (t *TargetStateSymlink) Apply(
+	system System, persistentState PersistentState, actualStateEntry ActualStateEntry,
+) (bool, error) {
 	linkname, err := t.Linkname()
 	if err != nil {
 		return false, err
@@ -353,12 +363,16 @@ func (t *TargetStateSymlink) Evaluate() error {
 }
 
 // SkipApply implements TargetState.SkipApply.
-func (t *TargetStateSymlink) SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error) {
+func (t *TargetStateSymlink) SkipApply(
+	persistentState PersistentState, targetAbsPath AbsPath,
+) (bool, error) {
 	return false, nil
 }
 
 // Apply renames actualStateEntry.
-func (t *targetStateRenameDir) Apply(system System, persistentState PersistentState, actualStateEntry ActualStateEntry) (bool, error) {
+func (t *targetStateRenameDir) Apply(
+	system System, persistentState PersistentState, actualStateEntry ActualStateEntry,
+) (bool, error) {
 	dir := actualStateEntry.Path().Dir()
 	return true, system.Rename(dir.Join(t.oldRelPath), dir.Join(t.newRelPath))
 }

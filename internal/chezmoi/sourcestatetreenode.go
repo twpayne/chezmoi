@@ -54,7 +54,9 @@ func (n *sourceStateEntryTreeNode) ForEach(targetRelPath RelPath, f func(RelPath
 }
 
 // ForEachNode calls f for each node in the tree.
-func (n *sourceStateEntryTreeNode) ForEachNode(targetRelPath RelPath, f func(RelPath, *sourceStateEntryTreeNode) error) error {
+func (n *sourceStateEntryTreeNode) ForEachNode(
+	targetRelPath RelPath, f func(RelPath, *sourceStateEntryTreeNode) error,
+) error {
 	if err := f(targetRelPath, n); err != nil {
 		return err
 	}
@@ -87,7 +89,9 @@ func (n *sourceStateEntryTreeNode) Map() map[RelPath]SourceStateEntry {
 
 // MkdirAll creates SourceStateDirs for all components of targetRelPath if they
 // do not already exist and returns the SourceStateDir of relPath.
-func (n *sourceStateEntryTreeNode) MkdirAll(targetRelPath RelPath, origin string, umask fs.FileMode) (*SourceStateDir, error) {
+func (n *sourceStateEntryTreeNode) MkdirAll(
+	targetRelPath RelPath, origin string, umask fs.FileMode,
+) (*SourceStateDir, error) {
 	if targetRelPath == EmptyRelPath {
 		return nil, nil
 	}

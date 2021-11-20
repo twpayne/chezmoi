@@ -78,7 +78,9 @@ func extractVariables(data map[string]interface{}) []templateVariable {
 
 // extractVariablesHelper appends all template variables in data to variables
 // and returns variables. data is assumed to be rooted at parent.
-func extractVariablesHelper(variables []templateVariable, parent []string, data map[string]interface{}) []templateVariable {
+func extractVariablesHelper(
+	variables []templateVariable, parent []string, data map[string]interface{},
+) []templateVariable {
 	for name, value := range data {
 		switch value := value.(type) {
 		case string:

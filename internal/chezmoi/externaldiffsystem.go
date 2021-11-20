@@ -28,7 +28,9 @@ type ExternalDiffSystemOptions struct {
 }
 
 // NewExternalDiffSystem creates a new ExternalDiffSystem.
-func NewExternalDiffSystem(system System, command string, args []string, destDirAbsPath AbsPath, options *ExternalDiffSystemOptions) *ExternalDiffSystem {
+func NewExternalDiffSystem(
+	system System, command string, args []string, destDirAbsPath AbsPath, options *ExternalDiffSystemOptions,
+) *ExternalDiffSystem {
 	return &ExternalDiffSystem{
 		system:         system,
 		command:        command,

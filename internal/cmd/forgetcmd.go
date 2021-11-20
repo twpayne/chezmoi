@@ -37,7 +37,7 @@ func (c *Config) runForgetCmd(cmd *cobra.Command, args []string, sourceState *ch
 	for _, targetRelPath := range targetRelPaths {
 		sourceAbsPath := c.SourceDirAbsPath.Join(sourceState.MustEntry(targetRelPath).SourceRelPath().RelPath())
 		if !c.force {
-			choice, err := c.promptChoice(fmt.Sprintf("Remove %s", sourceAbsPath), yesNoAllQuit)
+			choice, err := c.promptChoice(fmt.Sprintf("Remove %s", sourceAbsPath), choicesYesNoAllQuit)
 			if err != nil {
 				return err
 			}
