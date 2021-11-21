@@ -17,7 +17,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.7a1867804abcd7212a239579f737f4b31b7e2fdecd4f2d7662d8b7e935c4b69f.js" integrity="sha256-ehhngEq81yEqI5V59zf0sxt&#43;L97NTy12Yti36TXEtp8=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.86ed723246b3dab7133c94ce5b61fdff1e9844cbb89f78a4df0501d192264931.js" integrity="sha256-hu1yMkaz2rcTPJTOW2H9/x6YRMu4n3ik3wUB0ZImSTE=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -198,10 +198,12 @@ https://github.com/alex-shpak/hugo-book
     <li><a href="#use-chezmoi-with-github-codespaces-visual-studio-codespaces-or-visual-studio-code-remote---containers">Use chezmoi with GitHub Codespaces, Visual Studio Codespaces, or Visual Studio Code Remote - Containers</a></li>
     <li><a href="#customize-chezmoi">Customize chezmoi</a>
       <ul>
+        <li><a href="#use-a-subdirectory-of-your-dotfiles-repo-as-the-root-of-the-source-state">Use a subdirectory of your dotfiles repo as the root of the source state</a></li>
         <li><a href="#dont-show-scripts-in-the-diff-output">Don&rsquo;t show scripts in the diff output</a></li>
         <li><a href="#customize-the-diff-pager">Customize the diff pager</a></li>
         <li><a href="#use-a-custom-diff-tool">Use a custom diff tool</a></li>
         <li><a href="#use-a-custom-merge-tool">Use a custom merge tool</a></li>
+        <li><a href="#use-an-http-or-socks5-proxy">Use an HTTP or SOCKS5 proxy</a></li>
       </ul>
     </li>
     <li><a href="#migrating-to-chezmoi-from-another-dotfile-manager">Migrating to chezmoi from another dotfile manager</a>
@@ -1345,6 +1347,30 @@ sudo apt install -y vim-gtk
   <a class="anchor" href="#customize-chezmoi">#</a>
 </h2>
 <hr>
+<h3 id="use-a-subdirectory-of-your-dotfiles-repo-as-the-root-of-the-source-state">
+  Use a subdirectory of your dotfiles repo as the root of the source state
+  <a class="anchor" href="#use-a-subdirectory-of-your-dotfiles-repo-as-the-root-of-the-source-state">#</a>
+</h3>
+<p>By default, chezmoi uses the root of your dotfiles repo as the root of the
+source state. If your source state contains many entries in its root, then your
+target directory (usually your home directory) will in turn be filled with many
+entries in its root as well. You can reduce the number of entries by keeping
+<code>.chezmoiignore</code> up to date, but this can become tiresome.</p>
+<p>Instead, you can specify that chezmoi should read the source state from a
+subdirectory of the source directory instead by creating a file called
+<code>.chezmoiroot</code> containing the relative path to this subdirectory.</p>
+<p>For example, if <code>.chezmoiroot</code> contains:</p>
+<pre tabindex="0"><code>home
+</code></pre><p>Then chezmoi will read the source state from the <code>home</code> subdirectory of your
+source directory, for example the desired state of <code>~/.gitconfig</code> will be read
+from <code>~/.local/share/chezmoi/home/dot_gitconfig</code> (instead of
+<code>~/.local/share/chezmoi/dot_gitconfig</code>).</p>
+<p>When migrating an existing chezmoi dotfiles repo to use <code>.chezmoiroot</code> you will
+need to move the relevant files in to the new root subdirectory manually. You do
+not need to move files that are ignored by chezmoi in all cases (i.e. are listed
+in <code>.chezmoiignore</code> when executed as a template on all machines), and you can
+afterwards remove their entries from <code>home/.chezmoiignore</code>.</p>
+<hr>
 <h3 id="dont-show-scripts-in-the-diff-output">
   Don&rsquo;t show scripts in the diff output
   <a class="anchor" href="#dont-show-scripts-in-the-diff-output">#</a>
@@ -1395,6 +1421,15 @@ state, source state, and target state respectively. For example, to use
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">merge</span>]
     <span style="color:#a6e22e">command</span> = <span style="color:#e6db74">&#34;nvim&#34;</span>
     <span style="color:#a6e22e">args</span> = [<span style="color:#e6db74">&#34;-d&#34;</span>, <span style="color:#e6db74">&#34;{{ .Destination }}&#34;</span>, <span style="color:#e6db74">&#34;{{ .Source }}&#34;</span>, <span style="color:#e6db74">&#34;{{ .Target }}&#34;</span>]
+</code></pre></div><hr>
+<h3 id="use-an-http-or-socks5-proxy">
+  Use an HTTP or SOCKS5 proxy
+  <a class="anchor" href="#use-an-http-or-socks5-proxy">#</a>
+</h3>
+<p>chezmoi supports HTTP, HTTPS, and SOCKS5 proxies. Set the <code>HTTP_PROXY</code>,
+<code>HTTPS_PROXY</code>, and <code>NO_PROXY</code> environment variables, or their lowercase
+equivalents, for example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ HTTP_PROXY<span style="color:#f92672">=</span>socks5://127.0.0.1:1080 chezmoi apply -R
 </code></pre></div><hr>
 <h2 id="migrating-to-chezmoi-from-another-dotfile-manager">
   Migrating to chezmoi from another dotfile manager
@@ -1558,10 +1593,12 @@ so you can write scripts around chezmoi.</li>
     <li><a href="#use-chezmoi-with-github-codespaces-visual-studio-codespaces-or-visual-studio-code-remote---containers">Use chezmoi with GitHub Codespaces, Visual Studio Codespaces, or Visual Studio Code Remote - Containers</a></li>
     <li><a href="#customize-chezmoi">Customize chezmoi</a>
       <ul>
+        <li><a href="#use-a-subdirectory-of-your-dotfiles-repo-as-the-root-of-the-source-state">Use a subdirectory of your dotfiles repo as the root of the source state</a></li>
         <li><a href="#dont-show-scripts-in-the-diff-output">Don&rsquo;t show scripts in the diff output</a></li>
         <li><a href="#customize-the-diff-pager">Customize the diff pager</a></li>
         <li><a href="#use-a-custom-diff-tool">Use a custom diff tool</a></li>
         <li><a href="#use-a-custom-merge-tool">Use a custom merge tool</a></li>
+        <li><a href="#use-an-http-or-socks5-proxy">Use an HTTP or SOCKS5 proxy</a></li>
       </ul>
     </li>
     <li><a href="#migrating-to-chezmoi-from-another-dotfile-manager">Migrating to chezmoi from another dotfile manager</a>

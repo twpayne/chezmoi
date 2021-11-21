@@ -6,13 +6,17 @@
 <meta name="description" content="Contributing Guide #   Getting started #  chezmoi is written in Go and development happens on GitHub. The rest of this document assumes that you&rsquo;ve checked out chezmoi locally.
 The Architecture Guide contains a high-level overview of chezmoi&rsquo;s source code.
  Developing locally #  chezmoi requires Go 1.16 or later.
-chezmoi is a standard Go project, using standard Go tooling, with a few extra tools. Ensure that these extra tools are installed with:">
+chezmoi is a standard Go project, using standard Go tooling.
+Build chezmoi:
+$ go build Run all tests:">
 <meta name="theme-color" content="#FFFFFF">
 <meta name="color-scheme" content="light dark"><meta property="og:title" content="Contributing" />
 <meta property="og:description" content="Contributing Guide #   Getting started #  chezmoi is written in Go and development happens on GitHub. The rest of this document assumes that you&rsquo;ve checked out chezmoi locally.
 The Architecture Guide contains a high-level overview of chezmoi&rsquo;s source code.
  Developing locally #  chezmoi requires Go 1.16 or later.
-chezmoi is a standard Go project, using standard Go tooling, with a few extra tools. Ensure that these extra tools are installed with:" />
+chezmoi is a standard Go project, using standard Go tooling.
+Build chezmoi:
+$ go build Run all tests:" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chezmoi.io/docs/contributing/" /><meta property="article:section" content="docs" />
 
@@ -23,7 +27,7 @@ chezmoi is a standard Go project, using standard Go tooling, with a few extra to
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.7a1867804abcd7212a239579f737f4b31b7e2fdecd4f2d7662d8b7e935c4b69f.js" integrity="sha256-ehhngEq81yEqI5V59zf0sxt&#43;L97NTy12Yti36TXEtp8=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.86ed723246b3dab7133c94ce5b61fdff1e9844cbb89f78a4df0501d192264931.js" integrity="sha256-hu1yMkaz2rcTPJTOW2H9/x6YRMu4n3ik3wUB0ZImSTE=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -128,6 +132,7 @@ https://github.com/alex-shpak/hugo-book
     <li><a href="#generated-code">Generated code</a></li>
     <li><a href="#contributing-changes">Contributing changes</a></li>
     <li><a href="#managing-releases">Managing releases</a></li>
+    <li><a href="#building-and-installing-with-make">Building and installing with <code>make</code></a></li>
     <li><a href="#packaging">Packaging</a></li>
     <li><a href="#updating-the-website">Updating the website</a></li>
   </ul>
@@ -162,10 +167,8 @@ chezmoi&rsquo;s source code.</p>
   <a class="anchor" href="#developing-locally">#</a>
 </h2>
 <p>chezmoi requires Go 1.16 or later.</p>
-<p>chezmoi is a standard Go project, using standard Go tooling, with a few extra
-tools. Ensure that these extra tools are installed with:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ make ensure-tools
-</code></pre></div><p>Build chezmoi:</p>
+<p>chezmoi is a standard Go project, using standard Go tooling.</p>
+<p>Build chezmoi:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ go build
 </code></pre></div><p>Run all tests:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ go test ./...
@@ -175,18 +178,18 @@ of tests requires <code>age</code>, <code>base64</code>, <code>bash</code>, <cod
 <code>sed</code>, <code>sha256sum</code>, <code>unzip</code>, and <code>zip</code>.</p>
 <p>Run chezmoi:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ go run .
+</code></pre></div><p>Run a set of smoketests, including cross-compilation, tests, and linting:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ make smoketest
 </code></pre></div><hr>
 <h2 id="generated-code">
   Generated code
   <a class="anchor" href="#generated-code">#</a>
 </h2>
-<p>chezmoi generates shell completions, the install script, and the website from a
-single source of truth. You must run</p>
+<p>chezmoi generates the install script and the website from a single source of
+truth. You must run</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ go generate
 </code></pre></div><p>if you change includes any of the following:</p>
 <ul>
-<li>Adds or modifies a command.</li>
-<li>Adds or modifies a command&rsquo;s flags.</li>
 <li>Adds or modifies the list of supported OSs and architectures.</li>
 <li>Modifies the install script template.</li>
 </ul>
@@ -227,8 +230,7 @@ entry in <code>docs/HOWTO.md</code> and a complete description in <code>docs/REF
 </li>
 <li>
 <p>The code is correctly formatted, according to
-<a href="https://mvdan.cc/gofumpt/gofumports"><code>gofumports</code></a>. You can ensure this by
-running <code>make format</code>.</p>
+<a href="https://mvdan.cc/gofumpt/"><code>gofumpt</code></a>. You can ensure this by running <code>make format</code>.</p>
 </li>
 <li>
 <p>The code passes <a href="https://github.com/golangci/golangci-lint"><code>golangci-lint</code></a>.
@@ -271,6 +273,58 @@ to bump the version.</p>
 <p>If needed, the pull request can be created with:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ brew bump-formula-pr --tag<span style="color:#f92672">=</span>v1.2.3 chezmoi
 </code></pre></div><hr>
+<h2 id="building-and-installing-with-make">
+  Building and installing with <code>make</code>
+  <a class="anchor" href="#building-and-installing-with-make">#</a>
+</h2>
+<p>chezmoi can be built with GNU make, assuming you have the Go toolchain
+installed.</p>
+<p>Running <code>make</code> will build a <code>chezmoi</code> binary in the current directory for the
+host OS and architecture. To embed version information in the binary and control
+installation the following variables are available:</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Example</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>$VERSION</code></td>
+<td><code>v2.0.0</code></td>
+<td>Set version.</td>
+</tr>
+<tr>
+<td><code>$COMMIT</code></td>
+<td><code>3895680a</code>&hellip;</td>
+<td>Set the git commit at which the code was built.</td>
+</tr>
+<tr>
+<td><code>$DATE</code></td>
+<td><code>2019-11-23T18:29:25Z</code></td>
+<td>The time of the build.</td>
+</tr>
+<tr>
+<td><code>$BUILT_BY</code></td>
+<td><code>homebrew</code></td>
+<td>The packaging system performing the build.</td>
+</tr>
+<tr>
+<td><code>$PREFIX</code></td>
+<td><code>/usr</code></td>
+<td>Installation prefix.</td>
+</tr>
+<tr>
+<td><code>$DESTDIR</code></td>
+<td><code>install-root</code></td>
+<td>Fake installation root.</td>
+</tr>
+</tbody>
+</table>
+<p>Running <code>make install</code> will install the <code>chezmoi</code> binary in <code>${DESTDIR}${PREFIX}/bin</code>.</p>
+<hr>
 <h2 id="packaging">
   Packaging
   <a class="anchor" href="#packaging">#</a>
@@ -278,8 +332,11 @@ to bump the version.</p>
 <p>If you&rsquo;re packaging chezmoi for an operating system or distribution:</p>
 <ul>
 <li>
-<p>chezmoi has no build or install dependencies other than the standard Go
-toolchain.</p>
+<p>chezmoi has no build dependencies other than the standard Go toolchain.</p>
+</li>
+<li>
+<p>chezmoi has no runtime dependencies, but is usually used with <code>git</code>, so many
+packagers choose to make <code>git</code> an install dependency or recommended package.</p>
 </li>
 <li>
 <p>Please set the version number, git commit, and build time in the binary. This
@@ -295,9 +352,10 @@ command <code>git describe --abbrev=0 --tags</code> will return a suitable value
 <p><code>$COMMIT</code> should be the full git commit hash at which chezmoi is built, e.g.
 <code>4d678ce6850c9d81c7ab2fe0d8f20c1547688b91</code>. The command <code>git rev-parse HEAD</code>
 will return a suitable value.</p>
-<p><code>$DATE</code> should be the date of the build in RFC3339 format, e.g.
-<code>2019-11-23T18:29:25Z</code>. The command <code>date -u +%Y-%m-%dT%H:%M:%SZ</code> will return
-a suitable value.</p>
+<p><code>$DATE</code> should be the date of the build as a UNIX timestamp or in RFC3339
+format. The command <code>git show -s --format=%ct HEAD</code> returns the UNIX timestamp
+of the last commit, e.g. <code>1636668628</code>. The command <code>date -u +%Y-%m-%dT%H:%M:%SZ</code> returns the current time in RFC3339 format, e.g.
+<code>2019-11-23T18:29:25Z</code>.</p>
 <p><code>$BUILT_BY</code> should be a string indicating what system was used to build the
 binary. Typically it should be the name of your packaging system, e.g.
 <code>homebrew</code>.</p>
@@ -392,6 +450,7 @@ chezmoi GitHub repo.</p>
     <li><a href="#generated-code">Generated code</a></li>
     <li><a href="#contributing-changes">Contributing changes</a></li>
     <li><a href="#managing-releases">Managing releases</a></li>
+    <li><a href="#building-and-installing-with-make">Building and installing with <code>make</code></a></li>
     <li><a href="#packaging">Packaging</a></li>
     <li><a href="#updating-the-website">Updating the website</a></li>
   </ul>

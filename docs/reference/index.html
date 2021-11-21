@@ -23,7 +23,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.7a1867804abcd7212a239579f737f4b31b7e2fdecd4f2d7662d8b7e935c4b69f.js" integrity="sha256-ehhngEq81yEqI5V59zf0sxt&#43;L97NTy12Yti36TXEtp8=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.86ed723246b3dab7133c94ce5b61fdff1e9844cbb89f78a4df0501d192264931.js" integrity="sha256-hu1yMkaz2rcTPJTOW2H9/x6YRMu4n3ik3wUB0ZImSTE=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -137,6 +137,7 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#--no-pager"><code>--no-pager</code></a></li>
         <li><a href="#--no-tty"><code>--no-tty</code></a></li>
         <li><a href="#-o---output-filename"><code>-o</code>, <code>--output</code> <em>filename</em></a></li>
+        <li><a href="#--persistent-state-filename"><code>--persistent-state</code> <em>filename</em></a></li>
         <li><a href="#-r---refresh-externals"><code>-R</code>, <code>--refresh-externals</code></a></li>
         <li><a href="#-s---source-directory"><code>-S</code>, <code>--source</code> <em>directory</em></a></li>
         <li><a href="#--use-builtin-age-value"><code>--use-builtin-age</code> <em>value</em></a></li>
@@ -185,6 +186,7 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#chezmoiexternalformat"><code>.chezmoiexternal.&lt;format&gt;</code></a></li>
         <li><a href="#chezmoiignore"><code>.chezmoiignore</code></a></li>
         <li><a href="#chezmoiremove"><code>.chezmoiremove</code></a></li>
+        <li><a href="#chezmoiroot"><code>.chezmoiroot</code></a></li>
         <li><a href="#chezmoitemplates"><code>.chezmoitemplates</code></a></li>
         <li><a href="#chezmoiversion"><code>.chezmoiversion</code></a></li>
       </ul>
@@ -249,6 +251,7 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#decrypt-ciphertext"><code>decrypt</code> <em>ciphertext</em></a></li>
         <li><a href="#encrypt-plaintext"><code>encrypt</code> <em>plaintext</em></a></li>
         <li><a href="#githubkeys-user"><code>gitHubKeys</code> <em>user</em></a></li>
+        <li><a href="#githublatestrelease-user-repo"><code>gitHubLatestRelease</code> <em>user-repo</em></a></li>
         <li><a href="#gopass-gopass-name"><code>gopass</code> <em>gopass-name</em></a></li>
         <li><a href="#gopassraw-gopass-name"><code>gopassRaw</code> <em>gopass-name</em></a></li>
         <li><a href="#include-filename"><code>include</code> <em>filename</em></a></li>
@@ -401,6 +404,13 @@ stdin.</p>
   <a class="anchor" href="#-o---output-filename">#</a>
 </h3>
 <p>Write the output to <em>filename</em> instead of stdout.</p>
+<h3 id="--persistent-state-filename">
+  <code>--persistent-state</code> <em>filename</em>
+  <a class="anchor" href="#--persistent-state-filename">#</a>
+</h3>
+<p>Read and write the persistent state from <em>filename</em>. By default, chezmoi stores
+its persistent state in <code>chezmoistate.boltdb</code> in the same directory as its
+configuration file.</p>
 <h3 id="-r---refresh-externals">
   <code>-R</code>, <code>--refresh-externals</code>
   <a class="anchor" href="#-r---refresh-externals">#</a>
@@ -611,7 +621,7 @@ option.</p>
 <td><code>useBuiltinAge</code></td>
 <td>string</td>
 <td><code>auto</code></td>
-<td>Use builtin git if <code>age</code> command is not found in $PATH</td>
+<td>Use builtin age if <code>age</code> command is not found in $PATH</td>
 </tr>
 <tr>
 <td></td>
@@ -1376,7 +1386,9 @@ states do not change while chezmoi is running.</p>
   <a class="anchor" href="#special-files-and-directories">#</a>
 </h2>
 <p>All files and directories in the source state whose name begins with <code>.</code> are
-ignored by default, unless they are one of the special files listed here.</p>
+ignored by default, unless they are one of the special files listed here.
+<code>.chezmoidata.&lt;format&gt;</code> and <code>.chezmoitemplates</code> are read before all other files
+so that they can be used in templates.</p>
 <hr>
 <h3 id="chezmoiformattmpl">
   <code>.chezmoi.&lt;format&gt;.tmpl</code>
@@ -1607,6 +1619,15 @@ backups/** # ignore all contents of backups folder in chezmoi directory
 <p>If a file called <code>.chezmoiremove</code> exists in the source state then it is
 interpreted as a list of targets to remove. <code>.chezmoiremove</code> is interpreted as a
 template.</p>
+<hr>
+<h3 id="chezmoiroot">
+  <code>.chezmoiroot</code>
+  <a class="anchor" href="#chezmoiroot">#</a>
+</h3>
+<p>If a file called <code>.chezmoiroot</code> exists in the root of the source directory then
+the source state is read from the directory specified in <code>.chezmoiroot</code>
+interpreted as a relative path to the source directory. <code>.chezmoiroot</code> is read
+before all other files in the source directory.</p>
 <hr>
 <h3 id="chezmoitemplates">
   <code>.chezmoitemplates</code>
@@ -1954,6 +1975,12 @@ differences with <code>diff.args</code> passed as arguments. Each element of <co
 interpreted as a template with the variables <code>.Destination</code> and <code>.Target</code>
 available corresponding to the path of the file in the source and target state
 respectively. The default value of <code>diff.args</code> is <code>[&quot;{{ .Destination }}&quot;, &quot;{{ .Target }}&quot;]</code>. If <code>diff.args</code> does not contain any template arguments then <code>{{ .Destination }}</code> and <code>{{ .Target }}</code> will be appended automatically.</p>
+<h4 id="--reverse">
+  <code>--reverse</code>
+  <a class="anchor" href="#--reverse">#</a>
+</h4>
+<p>Reverse the direction of the diff, i.e. show the changes to the target required
+to match the destination.</p>
 <h4 id="--pager-pager">
   <code>--pager</code> <em>pager</em>
   <a class="anchor" href="#--pager-pager">#</a>
@@ -2416,7 +2443,8 @@ templates, and all entries that are not files are ignored.</p>
   <a class="anchor" href="#re-add-examples">#</a>
 </h4>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi re-add
-</code></pre></div><h3 id="rm-targets">
+</code></pre></div><hr>
+<h3 id="rm-targets">
   <code>rm</code> <em>targets</em>
   <a class="anchor" href="#rm-targets">#</a>
 </h3>
@@ -2494,6 +2522,7 @@ difference between the actual state and the target state.</p>
   <a class="anchor" href="#unmanage-target">#</a>
 </h3>
 <p><code>unmanage</code> is an alias for <code>forget</code> for symmetry with <code>manage</code>.</p>
+<hr>
 <h3 id="unmanaged">
   <code>unmanaged</code>
   <a class="anchor" href="#unmanaged">#</a>
@@ -2647,6 +2676,11 @@ overridden by setting a list of options in the configuration file, for example:<
 <td><code>.chezmoi.args</code></td>
 <td><code>[]string</code></td>
 <td>The arguments passed to the <code>chezmoi</code> command, starting with the program command.</td>
+</tr>
+<tr>
+<td><code>.chezmoi.executable</code></td>
+<td><code>string</code></td>
+<td>The path to the <code>chezmoi</code> executable, if available.</td>
 </tr>
 <tr>
 <td><code>.chezmoi.fqdnHostname</code></td>
@@ -2863,7 +2897,7 @@ environment variables <code>$CHEZMOI_GITHUB_ACCESS_TOKEN</code>, <code>$GITHUB_A
 <code>$GITHUB_TOKEN</code> are found, then the first one found will be used to authenticate
 the GitHub API request, with a higher rate limit (currently 5,000 requests per
 hour per user).</p>
-<p>In practice, GitHub API rate limits are high enough that you should never need
+<p>In practice, GitHub API rate limits are high enough that you should rarely need
 to set a token, unless you are sharing a source IP address with many other
 GitHub users. If needed, the GitHub documentation describes how to <a href="https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token">create a
 personal access
@@ -2875,6 +2909,22 @@ token</a>.</p>
 <pre tabindex="0"><code>{{ range (gitHubKeys &quot;user&quot;) }}
 {{- .Key }}
 {{ end }}
+</code></pre><hr>
+<h3 id="githublatestrelease-user-repo">
+  <code>gitHubLatestRelease</code> <em>user-repo</em>
+  <a class="anchor" href="#githublatestrelease-user-repo">#</a>
+</h3>
+<p><code>gitHubLatestRelease</code> calls the GitHub API to retrieve the latest release about the given
+<em>user-repo</em>, returning structured data as defined by the <a href="https://pkg.go.dev/github.com/google/go-github/v40/github#RepositoryRelease">GitHub Go API
+bindings</a>.</p>
+<p>Calls to <code>gitHubLatestRelease</code> are cached so calling <code>gitHubLatestRelease</code> with the same
+<em>user-repo</em> will only result in one call to the GitHub API.</p>
+<p><code>gitHubLatestRelease</code> uses the same API request mechanism as <code>gitHubKeys</code>.</p>
+<h4 id="githublatestrelease-examples">
+  <code>gitHubLatestRelease</code> examples
+  <a class="anchor" href="#githublatestrelease-examples">#</a>
+</h4>
+<pre tabindex="0"><code>{{ (gitHubLatestRelease &quot;docker/compose&quot;).TagName }}
 </code></pre><hr>
 <h3 id="gopass-gopass-name">
   <code>gopass</code> <em>gopass-name</em>
@@ -2895,11 +2945,10 @@ once.</p>
   <code>gopassRaw</code> <em>gopass-name</em>
   <a class="anchor" href="#gopassraw-gopass-name">#</a>
 </h3>
-<p><code>gopass</code> returns passwords stored in <a href="https://www.gopass.pw/">gopass</a> using the
-gopass CLI (<code>gopass</code>). <em>gopass-name</em> is passed to <code>gopass show &lt;gopass-name&gt;</code>
-and  output of <code>gopass</code> is returned. The output from <code>gopassRaw</code> is cached so
-calling <code>gopassRaw</code> multiple times with the same <em>gopass-name</em> will only invoke
-<code>gopass</code> once.</p>
+<p><code>gopass</code> returns raw passwords stored in <a href="https://www.gopass.pw/">gopass</a> using
+the gopass CLI (<code>gopass</code>). <em>gopass-name</em> is passed to <code>gopass show --noparsing &lt;gopass-name&gt;</code> and the output is returned. The output from <code>gopassRaw</code> is cached
+so calling <code>gopassRaw</code> multiple times with the same <em>gopass-name</em> will only
+invoke <code>gopass</code> once.</p>
 <hr>
 <h3 id="include-filename">
   <code>include</code> <em>filename</em>
@@ -3452,6 +3501,7 @@ generating the initial config file.</p>
         <li><a href="#--no-pager"><code>--no-pager</code></a></li>
         <li><a href="#--no-tty"><code>--no-tty</code></a></li>
         <li><a href="#-o---output-filename"><code>-o</code>, <code>--output</code> <em>filename</em></a></li>
+        <li><a href="#--persistent-state-filename"><code>--persistent-state</code> <em>filename</em></a></li>
         <li><a href="#-r---refresh-externals"><code>-R</code>, <code>--refresh-externals</code></a></li>
         <li><a href="#-s---source-directory"><code>-S</code>, <code>--source</code> <em>directory</em></a></li>
         <li><a href="#--use-builtin-age-value"><code>--use-builtin-age</code> <em>value</em></a></li>
@@ -3500,6 +3550,7 @@ generating the initial config file.</p>
         <li><a href="#chezmoiexternalformat"><code>.chezmoiexternal.&lt;format&gt;</code></a></li>
         <li><a href="#chezmoiignore"><code>.chezmoiignore</code></a></li>
         <li><a href="#chezmoiremove"><code>.chezmoiremove</code></a></li>
+        <li><a href="#chezmoiroot"><code>.chezmoiroot</code></a></li>
         <li><a href="#chezmoitemplates"><code>.chezmoitemplates</code></a></li>
         <li><a href="#chezmoiversion"><code>.chezmoiversion</code></a></li>
       </ul>
@@ -3564,6 +3615,7 @@ generating the initial config file.</p>
         <li><a href="#decrypt-ciphertext"><code>decrypt</code> <em>ciphertext</em></a></li>
         <li><a href="#encrypt-plaintext"><code>encrypt</code> <em>plaintext</em></a></li>
         <li><a href="#githubkeys-user"><code>gitHubKeys</code> <em>user</em></a></li>
+        <li><a href="#githublatestrelease-user-repo"><code>gitHubLatestRelease</code> <em>user-repo</em></a></li>
         <li><a href="#gopass-gopass-name"><code>gopass</code> <em>gopass-name</em></a></li>
         <li><a href="#gopassraw-gopass-name"><code>gopassRaw</code> <em>gopass-name</em></a></li>
         <li><a href="#include-filename"><code>include</code> <em>filename</em></a></li>
