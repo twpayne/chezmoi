@@ -437,6 +437,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"secret":                   c.secretTemplateFunc,
 		"secretJSON":               c.secretJSONTemplateFunc,
 		"stat":                     c.statTemplateFunc,
+		"toYaml":                   c.toYamlTemplateFunc,
 		"vault":                    c.vaultTemplateFunc,
 	} {
 		c.addTemplateFunc(key, value)

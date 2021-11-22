@@ -59,6 +59,10 @@ stdout arg
 # test that the output template function fails if the command fails
 ! chezmoi execute-template '{{ output "false" }}'
 
+# test toYaml
+chezmoi execute-template '{{ dict "key" "value" | toYaml }}'
+stdout '^key: value$'
+
 # test writeToStdout
 chezmoi execute-template --init '{{ writeToStdout "string" }}'
 stdout string
