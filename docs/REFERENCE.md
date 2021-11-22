@@ -133,6 +133,7 @@ Manage your dotfiles across multiple machines, securely.
   * [`secretJSON` [*arg*...]](#secretjson-arg)
   * [`stat` *name*](#stat-name)
   * [`stdinIsATTY`](#stdinisatty)
+  * [`toYaml` *value*](#toyaml-value)
   * [`vault` *key*](#vault-key)
   * [`writeToStdout` *string*...](#writetostdout-string)
 
@@ -2589,6 +2590,18 @@ used.
 {{ else }}
 {{   $email = "user@example.com" }}
 {{ end }}
+```
+
+---
+
+### `toYaml` *value*
+
+`toYaml` returns the YAML representation of *value*.
+
+#### `toYaml` examples
+
+```
+{{ dict "key" "value" | toYaml }}
 ```
 
 ---

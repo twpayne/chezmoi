@@ -120,6 +120,15 @@ func (c *Config) statTemplateFunc(name string) interface{} {
 	}
 }
 
+func (c *Config) toYamlTemplateFunc(data interface{}) string {
+	yaml, err := chezmoi.FormatYAML.Marshal(data)
+	if err != nil {
+		returnTemplateError(err)
+		return ""
+	}
+	return string(yaml)
+}
+
 func returnTemplateError(err error) {
 	panic(err)
 }
