@@ -1,11 +1,13 @@
 [!exec:zip] skip 'zip not found in $PATH'
-exec zip -r www/archive.zip archive
+symlink archive/dir/symlink -> file
+exec zip -r --symlinks www/archive.zip archive
 
 httpd www
 
 # test that chezmoi reads external zip archives from .chezmoiexternal.json
 chezmoi apply --force
 cmp $HOME/.dir/dir/file golden/dir/file
+issymlink $HOME/.dir/dir/symlink
 
 -- archive/dir/file --
 # contents of dir/file

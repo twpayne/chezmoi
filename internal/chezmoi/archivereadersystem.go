@@ -257,7 +257,19 @@ func walkArchiveZip(r io.ReaderAt, size int64, f walkArchiveFunc) error {
 		if strings.HasPrefix(name, "../") {
 			return fmt.Errorf("%s: invalid filename", zipFile.Name)
 		}
-		err = f(name, zipFile.FileInfo(), zipFileReader, "")
+		switch fileInfo := zipFile.FileInfo(); fileInfo.Mode() & fs.ModeType {
+		case 0:
+			err = f(name, fileInfo, zipFileReader, "")
+		case fs.ModeDir:
+			err = f(name, fileInfo, nil, "")
+		case fs.ModeSymlink:
+			var linknameBytes []byte
+			linknameBytes, err = io.ReadAll(zipFileReader)
+			if err != nil {
+				return err
+			}
+			err = f(name, fileInfo, nil, string(linknameBytes))
+		}
 		zipFileReader.Close()
 		if err != nil {
 			return err
