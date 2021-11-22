@@ -30,6 +30,8 @@ import (
 	gogit "github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/format/diff"
 	"github.com/google/gops/agent"
+	"github.com/gregjones/httpcache"
+	"github.com/gregjones/httpcache/diskcache"
 	"github.com/mitchellh/mapstructure"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -395,7 +397,6 @@ func newConfig(options ...configOption) (*Config, error) {
 		// Configuration.
 		fileSystem: vfs.OSFS,
 		bds:        bds,
-		httpClient: newCacheHTTPClient(cacheDirAbsPath.Join(httpCacheDirRelPath)),
 
 		// Computed configuration.
 		homeDirAbsPath: homeDirAbsPath,
@@ -1129,6 +1130,22 @@ func (c *Config) findFirstConfigTemplate() (chezmoi.RelPath, string, []byte, err
 	return chezmoi.EmptyRelPath, "", nil, nil
 }
 
+func (c *Config) getHTTPClient() (*http.Client, error) {
+	if c.httpClient != nil {
+		return c.httpClient, nil
+	}
+
+	httpCacheBasePath, err := c.baseSystem.RawPath(c.CacheDirAbsPath.Join(httpCacheDirRelPath))
+	if err != nil {
+		return nil, err
+	}
+	httpCache := diskcache.New(httpCacheBasePath.String())
+	httpTransport := httpcache.NewTransport(httpCache)
+	c.httpClient = httpTransport.Client()
+
+	return c.httpClient, nil
+}
+
 // gitAutoAdd adds all changes to the git index and returns the new git status.
 func (c *Config) gitAutoAdd() (*git.Status, error) {
 	if err := c.run(c.WorkingTreeAbsPath, c.Git.Command, []string{"add", "."}); err != nil {
@@ -1324,6 +1341,11 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 func (c *Config) newSourceState(
 	ctx context.Context, options ...chezmoi.SourceStateOption,
 ) (*chezmoi.SourceState, error) {
+	httpClient, err := c.getHTTPClient()
+	if err != nil {
+		return nil, err
+	}
+
 	sourceStateLogger := c.logger.With().Str(logComponentKey, logComponentValueSourceState).Logger()
 
 	sourceDirAbsPath := c.SourceDirAbsPath
@@ -1341,7 +1363,7 @@ func (c *Config) newSourceState(
 		chezmoi.WithDefaultTemplateDataFunc(c.defaultTemplateData),
 		chezmoi.WithDestDir(c.DestDirAbsPath),
 		chezmoi.WithEncryption(c.encryption),
-		chezmoi.WithHTTPClient(c.httpClient),
+		chezmoi.WithHTTPClient(httpClient),
 		chezmoi.WithInterpreters(c.Interpreters),
 		chezmoi.WithLogger(&sourceStateLogger),
 		chezmoi.WithMode(c.Mode),

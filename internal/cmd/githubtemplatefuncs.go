@@ -21,7 +21,12 @@ func (c *Config) gitHubKeysTemplateFunc(user string) []*github.Key {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	gitHubClient := newGitHubClient(ctx, c.httpClient)
+	httpClient, err := c.getHTTPClient()
+	if err != nil {
+		returnTemplateError(err)
+		return nil
+	}
+	gitHubClient := newGitHubClient(ctx, httpClient)
 
 	var allKeys []*github.Key
 	opts := &github.ListOptions{
@@ -57,7 +62,12 @@ func (c *Config) gitHubLatestReleaseTemplateFunc(userRepo string) *github.Reposi
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	gitHubClient := newGitHubClient(ctx, c.httpClient)
+	httpClient, err := c.getHTTPClient()
+	if err != nil {
+		returnTemplateError(err)
+		return nil
+	}
+	gitHubClient := newGitHubClient(ctx, httpClient)
 
 	release, _, err := gitHubClient.Repositories.GetLatestRelease(ctx, user, repo)
 	if err != nil {
