@@ -1153,12 +1153,19 @@ func (s *SourceState) getExternalDataRaw(
 		return nil, err
 	}
 	resp, err := s.httpClient.Do(req)
-	s.logger.Err(err).
-		Str("method", req.Method).
-		Int("statusCode", resp.StatusCode).
-		Str("status", resp.Status).
-		Stringer("url", req.URL).
-		Msg("HTTP")
+	if resp != nil {
+		s.logger.Err(err).
+			Str("method", req.Method).
+			Int("statusCode", resp.StatusCode).
+			Str("status", resp.Status).
+			Stringer("url", req.URL).
+			Msg("HTTP")
+	} else {
+		s.logger.Err(err).
+			Str("method", req.Method).
+			Stringer("url", req.URL).
+			Msg("HTTP")
+	}
 	if err != nil {
 		return nil, err
 	}
