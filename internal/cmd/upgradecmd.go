@@ -241,12 +241,19 @@ func (c *Config) downloadURL(ctx context.Context, url string) ([]byte, error) {
 		return nil, err
 	}
 	resp, err := c.httpClient.Do(req)
-	c.logger.Err(err).
-		Str("method", req.Method).
-		Int("statusCode", resp.StatusCode).
-		Str("status", resp.Status).
-		Stringer("url", req.URL).
-		Msg("HTTP")
+	if resp != nil {
+		c.logger.Err(err).
+			Str("method", req.Method).
+			Int("statusCode", resp.StatusCode).
+			Str("status", resp.Status).
+			Stringer("url", req.URL).
+			Msg("HTTP")
+	} else {
+		c.logger.Err(err).
+			Str("method", req.Method).
+			Stringer("url", req.URL).
+			Msg("HTTP")
+	}
 	if err != nil {
 		return nil, err
 	}
