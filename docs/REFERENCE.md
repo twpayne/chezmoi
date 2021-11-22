@@ -326,12 +326,10 @@ Enable the [gops](https://github.com/google/gops) agent.
 
 chezmoi searches for its configuration file according to the [XDG Base Directory
 Specification](https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html)
-and supports all formats supported by
-[`github.com/spf13/viper`](https://github.com/spf13/viper), namely
-[JSON](https://www.json.org/json-en.html),
-[TOML](https://github.com/toml-lang/toml), [YAML](https://yaml.org/), macOS
-property file format, and [HCL](https://github.com/hashicorp/hcl). The basename
-of the config file is `chezmoi`, and the first config file found is used.
+and supports [JSON](https://www.json.org/json-en.html),
+[TOML](https://github.com/toml-lang/toml), and [YAML](https://yaml.org/). The
+basename of the config file is `chezmoi`, and the first config file found is
+used.
 
 In most installations, the config file will be read from
 `~/.config/chezmoi/chezmoi.<format>`, where `<format>` is one of `json`, `toml`,
