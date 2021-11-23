@@ -105,6 +105,7 @@ Manage your dotfiles across multiple machines, securely.
   * [`bitwardenFields` [*arg*...]](#bitwardenfields-arg)
   * [`decrypt` *ciphertext*](#decrypt-ciphertext)
   * [`encrypt` *plaintext*](#encrypt-plaintext)
+  * [`execTemplate` *string* *data*](#exectemplate-string-data)
   * [`gitHubKeys` *user*](#githubkeys-user)
   * [`gitHubLatestRelease` *user-repo*](#githublatestrelease-user-repo)
   * [`gopass` *gopass-name*](#gopass-gopass-name)
@@ -2020,6 +2021,21 @@ the same arguments will only invoke `bw get` once.
 ### `encrypt` *plaintext*
 
 `encrypt` encrypts *plaintext* using chezmoi's configured encryption method.
+
+---
+
+### `execTemplate` *string* *data*
+
+`execTemplate` executes the defined *string* template using *data* as parameter
+and returns a string with the result. This allows the result of a template to be
+captured in a variable, or piped to another function (which is not possible by
+using the built-in `template` directive).
+
+#### `execTemplate` examples
+
+```
+{{ define "test" }}{{ . }}{{ end }}{{ $var := execTemplate "test" "123" }}{{ $var }}
+```
 
 ---
 

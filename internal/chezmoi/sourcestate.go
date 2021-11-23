@@ -188,6 +188,7 @@ func WithDefaultTemplateDataFunc(defaultTemplateDataFunc func() map[string]inter
 
 // WithTemplateFuncs sets the template functions.
 func WithTemplateFuncs(templateFuncs template.FuncMap) SourceStateOption {
+	templateFuncs["execTemplate"] = execTemplateTemplateFunc
 	return func(s *SourceState) {
 		s.templateFuncs = templateFuncs
 	}
@@ -636,9 +637,18 @@ func (s *SourceState) Encryption() Encryption {
 	return s.encryption
 }
 
+var tmpl *template.Template
+
+func execTemplateTemplateFunc(name string, data interface{}) (string, error) {
+	buf := &bytes.Buffer{}
+	err := tmpl.ExecuteTemplate(buf, name, data)
+	return buf.String(), err
+}
+
 // ExecuteTemplateData returns the result of executing template data.
 func (s *SourceState) ExecuteTemplateData(name string, data []byte) ([]byte, error) {
-	tmpl, err := template.New(name).
+	var err error
+	tmpl, err = template.New(name).
 		Option(s.templateOptions...).
 		Funcs(s.templateFuncs).
 		Parse(string(data))
