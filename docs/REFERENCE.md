@@ -105,6 +105,7 @@ Manage your dotfiles across multiple machines, securely.
   * [`bitwardenFields` [*arg*...]](#bitwardenfields-arg)
   * [`decrypt` *ciphertext*](#decrypt-ciphertext)
   * [`encrypt` *plaintext*](#encrypt-plaintext)
+  * [`fromYaml` *yamltext*](#fromyaml-yamltext)
   * [`gitHubKeys` *user*](#githubkeys-user)
   * [`gitHubLatestRelease` *user-repo*](#githublatestrelease-user-repo)
   * [`gopass` *gopass-name*](#gopass-gopass-name)
@@ -2020,6 +2021,18 @@ the same arguments will only invoke `bw get` once.
 ### `encrypt` *plaintext*
 
 `encrypt` encrypts *plaintext* using chezmoi's configured encryption method.
+
+---
+
+### `fromYaml` *yamltext*
+
+`fromYaml` returns the parsed value of *yamltext*.
+
+#### `fromYaml` examples
+
+```
+{{ (fromYaml "key1: value\nkey2: value").key2 }}
+```
 
 ---
 
