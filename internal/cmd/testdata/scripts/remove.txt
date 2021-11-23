@@ -29,8 +29,24 @@ chezmoi apply
 ! exists $HOME/.file
 ! exists $HOME/.dir
 
+chhome home3/user
+
+# test that chezmoi apply with .chezmoiremove with star works on destination dir with trailing slash
+exists $HOME/.star-file
+exists $HOME/.star-dir
+chezmoi apply --destination=$HOME/
+! exists $HOME/.star-file
+! exists $HOME/.star-dir
+
 -- home2/user/.dir/.keep --
 -- home2/user/.file --
 # contents of .file
 -- home2/user/.local/share/chezmoi/remove_dot_file --
 -- home2/user/.local/share/chezmoi/remove_dot_dir --
+
+-- home3/user/.star-dir/.keep --
+-- home3/user/.star-file --
+# contents of .star-file
+-- home3/user/.local/share/chezmoi/.chezmoiremove --
+.*-dir/
+.*-file

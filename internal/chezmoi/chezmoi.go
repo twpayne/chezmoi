@@ -179,3 +179,11 @@ func mustTrimSuffix(s, suffix string) string {
 	}
 	return s[:len(s)-len(suffix)]
 }
+
+// ensureSuffix adds suffix to s if s is not suffixed by suffix.
+func ensureSuffix(s, suffix string) string {
+	if strings.HasSuffix(s, suffix) {
+		return s
+	}
+	return s + suffix
+}

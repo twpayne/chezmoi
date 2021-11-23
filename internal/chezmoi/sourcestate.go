@@ -754,7 +754,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			if err := s.addPatterns(removePatterns, sourceAbsPath, sourceRelPath); err != nil {
 				return err
 			}
-			matches, err := removePatterns.glob(s.system.UnderlyingFS(), s.destDirAbsPath.String()+"/")
+			matches, err := removePatterns.glob(s.system.UnderlyingFS(), ensureSuffix(s.destDirAbsPath.String(), "/"))
 			if err != nil {
 				return err
 			}
