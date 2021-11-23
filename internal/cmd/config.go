@@ -83,21 +83,22 @@ type Config struct {
 	WorkingTreeAbsPath chezmoi.AbsPath                 `mapstructure:"workingTree"`
 
 	// Global configuration, not settable in the config file.
-	configFormat     readDataFormat
-	cpuProfile       chezmoi.AbsPath
-	debug            bool
-	dryRun           bool
-	force            bool
-	gops             bool
-	homeDir          string
-	keepGoing        bool
-	noPager          bool
-	noTTY            bool
-	outputAbsPath    chezmoi.AbsPath
-	refreshExternals bool
-	sourcePath       bool
-	verbose          bool
-	templateFuncs    template.FuncMap
+	configFormat         readDataFormat
+	cpuProfile           chezmoi.AbsPath
+	debug                bool
+	dryRun               bool
+	force                bool
+	gops                 bool
+	homeDir              string
+	keepGoing            bool
+	noPager              bool
+	noTTY                bool
+	outputAbsPath        chezmoi.AbsPath
+	refreshExternals     bool
+	sourcePath           bool
+	verbose              bool
+	templateFuncBuilders map[string]func(*template.Template) interface{}
+	templateFuncs        template.FuncMap
 
 	// Password manager configurations, settable in the config file.
 	Bitwarden   bitwardenConfig   `mapstructure:"bitwarden"`
@@ -258,8 +259,9 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 
 		// Global configuration, not settable in the config file.
-		homeDir:       userHomeDir,
-		templateFuncs: sprig.TxtFuncMap(),
+		homeDir:              userHomeDir,
+		templateFuncBuilders: make(map[string]func(*template.Template) interface{}),
+		templateFuncs:        sprig.TxtFuncMap(),
 
 		// Password manager configurations, settable in the config file.
 		Bitwarden: bitwardenConfig{
@@ -407,6 +409,12 @@ func newConfig(options ...configOption) (*Config, error) {
 		stderr: os.Stderr,
 	}
 
+	for key, value := range map[string]func(*template.Template) interface{}{
+		"execTemplate": c.execTemplateTemplateFuncBuilder,
+	} {
+		c.addTemplateFuncBuilder(key, value)
+	}
+
 	for key, value := range map[string]interface{}{
 		"bitwarden":                c.bitwardenTemplateFunc,
 		"bitwardenAttachment":      c.bitwardenAttachmentTemplateFunc,
@@ -475,6 +483,16 @@ func (c *Config) addTemplateFunc(key string, value interface{}) {
 		panic(fmt.Sprintf("%s: already defined", key))
 	}
 	c.templateFuncs[key] = value
+}
+
+// addTemplateFuncBuilder adds the template function builder with the key key
+// and value value to c. It panics if there is already an existing template function
+// builder with the same key.
+func (c *Config) addTemplateFuncBuilder(key string, value func(tmpl *template.Template) interface{}) {
+	if _, ok := c.templateFuncBuilders[key]; ok {
+		panic(fmt.Sprintf("%s: already defined", key))
+	}
+	c.templateFuncBuilders[key] = value
 }
 
 type applyArgsOptions struct {
@@ -1348,6 +1366,7 @@ func (c *Config) newSourceState(
 		chezmoi.WithPriorityTemplateData(c.Data),
 		chezmoi.WithSourceDir(sourceDirAbsPath),
 		chezmoi.WithSystem(c.sourceSystem),
+		chezmoi.WithTemplateFuncBuilders(c.templateFuncBuilders),
 		chezmoi.WithTemplateFuncs(c.templateFuncs),
 		chezmoi.WithTemplateOptions(c.Template.Options),
 	}, options...)...)

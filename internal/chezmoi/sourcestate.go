@@ -86,6 +86,7 @@ type SourceState struct {
 	userTemplateData        map[string]interface{}
 	priorityTemplateData    map[string]interface{}
 	templateData            map[string]interface{}
+	templateFuncBuilders    map[string]func(tmpl *template.Template) interface{}
 	templateFuncs           template.FuncMap
 	templateOptions         []string
 	templates               map[string]*template.Template
@@ -183,6 +184,15 @@ func WithSystem(system System) SourceStateOption {
 func WithDefaultTemplateDataFunc(defaultTemplateDataFunc func() map[string]interface{}) SourceStateOption {
 	return func(s *SourceState) {
 		s.defaultTemplateDataFunc = defaultTemplateDataFunc
+	}
+}
+
+// WithTemplateFuncBuilders sets the template function builders.
+func WithTemplateFuncBuilders(
+	templateFuncBuilders map[string]func(tmpl *template.Template) interface{},
+) SourceStateOption {
+	return func(s *SourceState) {
+		s.templateFuncBuilders = templateFuncBuilders
 	}
 }
 
@@ -636,12 +646,24 @@ func (s *SourceState) Encryption() Encryption {
 	return s.encryption
 }
 
+// newTemplate returns the parsed template.Template.
+func (s *SourceState) newTemplate(name, text string) (*template.Template, error) {
+	tmpl := template.New(name)
+	for name, templateFuncBuilder := range s.templateFuncBuilders {
+		s.templateFuncs[name] = templateFuncBuilder(tmpl)
+	}
+	tmpl, err := tmpl.Option(s.templateOptions...).
+		Funcs(s.templateFuncs).
+		Parse(text)
+	if err != nil {
+		return nil, err
+	}
+	return tmpl, nil
+}
+
 // ExecuteTemplateData returns the result of executing template data.
 func (s *SourceState) ExecuteTemplateData(name string, data []byte) ([]byte, error) {
-	tmpl, err := template.New(name).
-		Option(s.templateOptions...).
-		Funcs(s.templateFuncs).
-		Parse(string(data))
+	tmpl, err := s.newTemplate(name, string(data))
 	if err != nil {
 		return nil, err
 	}
@@ -1072,7 +1094,7 @@ func (s *SourceState) addTemplatesDir(templatesDirAbsPath AbsPath) error {
 			}
 			templateRelPath := templateAbsPath.MustTrimDirPrefix(templatesDirAbsPath)
 			name := templateRelPath.String()
-			tmpl, err := template.New(name).Option(s.templateOptions...).Funcs(s.templateFuncs).Parse(string(contents))
+			tmpl, err := s.newTemplate(name, string(contents))
 			if err != nil {
 				return err
 			}

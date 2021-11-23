@@ -63,6 +63,10 @@ stdout arg
 chezmoi execute-template '{{ dict "key" "value" | toYaml }}'
 stdout '^key: value$'
 
+# test execTemplate
+chezmoi execute-template '{{ define "test" }}{{ . }}{{ end }}{{ $var := execTemplate "test" "123" }}{{ $var }}'
+stdout '^123$'
+
 # test writeToStdout
 chezmoi execute-template --init '{{ writeToStdout "string" }}'
 stdout string

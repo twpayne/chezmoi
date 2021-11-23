@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"io/fs"
@@ -8,6 +9,7 @@ import (
 	"path"
 	"path/filepath"
 	"runtime"
+	"text/template"
 
 	"github.com/bradenhilton/mozillainstallhash"
 	"howett.net/plist"
@@ -17,6 +19,14 @@ import (
 
 type ioregData struct {
 	value map[string]interface{}
+}
+
+func (c *Config) execTemplateTemplateFuncBuilder(tmpl *template.Template) interface{} {
+	return func(name string, data interface{}) (string, error) {
+		buf := &bytes.Buffer{}
+		err := tmpl.ExecuteTemplate(buf, name, data)
+		return buf.String(), err
+	}
 }
 
 func (c *Config) includeTemplateFunc(filename string) string {
