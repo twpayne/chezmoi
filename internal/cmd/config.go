@@ -82,6 +82,7 @@ type Config struct {
 	Umask              fs.FileMode                     `mapstructure:"umask"`
 	UseBuiltinAge      autoBool                        `mapstructure:"useBuiltinAge"`
 	UseBuiltinGit      autoBool                        `mapstructure:"useBuiltinGit"`
+	Verbose            bool                            `mapstructure:"verbose"`
 	WorkingTreeAbsPath chezmoi.AbsPath                 `mapstructure:"workingTree"`
 
 	// Global configuration, not settable in the config file.
@@ -98,7 +99,6 @@ type Config struct {
 	outputAbsPath    chezmoi.AbsPath
 	refreshExternals bool
 	sourcePath       bool
-	verbose          bool
 	templateFuncs    template.FuncMap
 
 	// Password manager configurations, settable in the config file.
@@ -1242,6 +1242,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.VarP(&c.SourceDirAbsPath, "source", "S", "Set source directory")
 	persistentFlags.Var(&c.UseBuiltinAge, "use-builtin-age", "Use builtin age")
 	persistentFlags.Var(&c.UseBuiltinGit, "use-builtin-git", "Use builtin git")
+	persistentFlags.BoolVarP(&c.Verbose, "verbose", "v", c.Verbose, "Make output more verbose")
 	persistentFlags.VarP(&c.WorkingTreeAbsPath, "working-tree", "W", "Set working tree directory")
 	for viperKey, key := range map[string]string{
 		"color":           "color",
@@ -1252,6 +1253,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		"sourceDir":       "source",
 		"useBuiltinAge":   "use-builtin-age",
 		"useBuiltinGit":   "use-builtin-git",
+		"verbose":         "verbose",
 		"workingTree":     "working-tree",
 	} {
 		if err := viper.BindPFlag(viperKey, persistentFlags.Lookup(key)); err != nil {
@@ -1274,7 +1276,6 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.VarP(&c.outputAbsPath, "output", "o", "Write output to path instead of stdout")
 	persistentFlags.BoolVarP(&c.refreshExternals, "refresh-externals", "R", c.refreshExternals, "Refresh external cache")
 	persistentFlags.BoolVar(&c.sourcePath, "source-path", c.sourcePath, "Specify targets by source path")
-	persistentFlags.BoolVarP(&c.verbose, "verbose", "v", c.verbose, "Make output more verbose")
 
 	for _, err := range []error{
 		rootCmd.MarkPersistentFlagFilename("config"),
@@ -1589,7 +1590,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		c.sourceSystem = chezmoi.NewDryRunSystem(c.sourceSystem)
 		c.destSystem = chezmoi.NewDryRunSystem(c.destSystem)
 	}
-	if c.verbose {
+	if c.Verbose {
 		c.sourceSystem = chezmoi.NewGitDiffSystem(c.sourceSystem, c.stdout, c.SourceDirAbsPath, &chezmoi.GitDiffSystemOptions{
 			Color: color,
 		})
