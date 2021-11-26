@@ -20,6 +20,7 @@ exec git -C $HOME/repo commit -m 'Initial commit'
 
 # test that chezmoi init uses .chezmoiroot
 chezmoi init --apply file://$HOME/repo
+exists $CHEZMOICONFIGDIR/chezmoi.toml
 cmp $HOME/.file golden/.file
 
 -- golden/.file --
@@ -32,5 +33,6 @@ home
 # contents of .file
 -- home2/user/repo/.chezmoiroot --
 home
+-- home2/user/repo/home/.chezmoi.toml.tmpl --
 -- home2/user/repo/home/dot_file --
 # contents of .file

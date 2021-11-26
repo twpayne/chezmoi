@@ -1117,9 +1117,14 @@ func (c *Config) filterInput(args []string, f func([]byte) ([]byte, error)) erro
 // findFirstConfigTemplate searches for a config template, returning the path,
 // format, and contents of the first one that it finds.
 func (c *Config) findFirstConfigTemplate() (chezmoi.RelPath, string, []byte, error) {
+	sourceDirAbsPath, err := c.sourceDirAbsPath()
+	if err != nil {
+		return chezmoi.EmptyRelPath, "", nil, err
+	}
+
 	for _, ext := range viper.SupportedExts {
 		filename := chezmoi.NewRelPath(chezmoi.Prefix + "." + ext + chezmoi.TemplateSuffix)
-		contents, err := c.baseSystem.ReadFile(c.SourceDirAbsPath.Join(filename))
+		contents, err := c.baseSystem.ReadFile(sourceDirAbsPath.Join(filename))
 		switch {
 		case errors.Is(err, fs.ErrNotExist):
 			continue
@@ -1350,13 +1355,9 @@ func (c *Config) newSourceState(
 
 	sourceStateLogger := c.logger.With().Str(logComponentKey, logComponentValueSourceState).Logger()
 
-	sourceDirAbsPath := c.SourceDirAbsPath
-	switch data, err := c.sourceSystem.ReadFile(c.SourceDirAbsPath.JoinString(chezmoi.RootName)); {
-	case errors.Is(err, fs.ErrNotExist):
-	case err != nil:
+	sourceDirAbsPath, err := c.sourceDirAbsPath()
+	if err != nil {
 		return nil, err
-	default:
-		sourceDirAbsPath = c.SourceDirAbsPath.JoinString(string(bytes.TrimSpace(data)))
 	}
 
 	s := chezmoi.NewSourceState(append([]chezmoi.SourceStateOption{
@@ -1812,6 +1813,19 @@ func (c *Config) sourceAbsPaths(sourceState *chezmoi.SourceState, args []string)
 		sourceAbsPaths = append(sourceAbsPaths, sourceAbsPath)
 	}
 	return sourceAbsPaths, nil
+}
+
+// sourceDirAbsPath returns the source directory, using .chezmoiroot if it
+// exists.
+func (c *Config) sourceDirAbsPath() (chezmoi.AbsPath, error) {
+	switch data, err := c.sourceSystem.ReadFile(c.SourceDirAbsPath.JoinString(chezmoi.RootName)); {
+	case errors.Is(err, fs.ErrNotExist):
+		return c.SourceDirAbsPath, nil
+	case err != nil:
+		return chezmoi.EmptyAbsPath, err
+	default:
+		return c.SourceDirAbsPath.JoinString(string(bytes.TrimSpace(data))), nil
+	}
 }
 
 type targetRelPathsOptions struct {
