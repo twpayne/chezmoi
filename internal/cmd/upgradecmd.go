@@ -17,13 +17,13 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"path"
 	"regexp"
 	"runtime"
 	"strings"
 	"syscall"
 
 	"github.com/coreos/go-semver/semver"
-	"github.com/google/go-github/v40/github"
 	"github.com/spf13/cobra"
 	vfs "github.com/twpayne/go-vfs/v4"
 	"go.uber.org/multierr"
@@ -116,21 +116,38 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 		return errors.New("cannot upgrade dev version to latest released version unless --force is set")
 	}
 
+	// Get the latest release.
+	url := fmt.Sprintf("https://github.com/%s/%s/releases/latest", c.upgrade.owner, c.upgrade.repo)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		panic(err)
+	}
+
 	httpClient, err := c.getHTTPClient()
 	if err != nil {
 		return err
 	}
-	client := newGitHubClient(ctx, httpClient)
 
-	// Get the latest release.
-	rr, _, err := client.Repositories.GetLatestRelease(ctx, c.upgrade.owner, c.upgrade.repo)
+	httpClient.CheckRedirect = func(req *http.Request, via []*http.Request) error {
+		return errors.New("Redirect")
+	}
+
+	var tagName string
+	response, err := httpClient.Do(req)
+	if err == nil {
+		if response.StatusCode == http.StatusFound { //status code 302
+			tagName = path.Base(fmt.Sprint(response.Location()))
+		}
+	} else {
+		panic(err)
+	}
+
+	version, err := semver.NewVersion(strings.TrimPrefix(tagName, "v"))
 	if err != nil {
 		return err
 	}
-	version, err := semver.NewVersion(strings.TrimPrefix(rr.GetName(), "v"))
-	if err != nil {
-		return err
-	}
+
+	downloadBaseUrl := fmt.Sprintf("https://github.com/%s/%s/releases/download/%s", c.upgrade.owner, c.upgrade.repo, tagName)
 
 	// If the upgrade is not forced, stop if we're already the latest version.
 	// Print a message and return no error so the command exits with success.
@@ -166,7 +183,7 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 			return err
 		}
 	case upgradeMethodReplaceExecutable:
-		if err := c.replaceExecutable(ctx, executableAbsPath, version, rr); err != nil {
+		if err := c.replaceExecutable(ctx, executableAbsPath, version, downloadBaseUrl); err != nil {
 			return err
 		}
 	case upgradeMethodSnapRefresh:
@@ -175,12 +192,12 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 		}
 	case upgradeMethodUpgradePackage:
 		useSudo := false
-		if err := c.upgradePackage(ctx, version, rr, useSudo); err != nil {
+		if err := c.upgradePackage(ctx, version, downloadBaseUrl, useSudo); err != nil {
 			return err
 		}
 	case upgradeMethodSudoPrefix + upgradeMethodUpgradePackage:
 		useSudo := true
-		if err := c.upgradePackage(ctx, version, rr, useSudo); err != nil {
+		if err := c.upgradePackage(ctx, version, downloadBaseUrl, useSudo); err != nil {
 			return err
 		}
 	default:
@@ -215,14 +232,11 @@ func (c *Config) brewUpgrade() error {
 	return c.run(chezmoi.EmptyAbsPath, "brew", []string{"upgrade", c.upgrade.repo})
 }
 
-func (c *Config) getChecksums(ctx context.Context, rr *github.RepositoryRelease) (map[string][]byte, error) {
-	name := fmt.Sprintf("%s_%s_checksums.txt", c.upgrade.repo, strings.TrimPrefix(rr.GetTagName(), "v"))
-	releaseAsset := getReleaseAssetByName(rr, name)
-	if releaseAsset == nil {
-		return nil, fmt.Errorf("%s: cannot find release asset", name)
-	}
+func (c *Config) getChecksums(ctx context.Context, downloadBaseUrl string, version *semver.Version) (map[string][]byte, error) {
+	name := fmt.Sprintf("%s_%s_checksums.txt", c.upgrade.repo, version)
+	releaseAsset := getReleaseAssetByName(downloadBaseUrl, name)
 
-	data, err := c.downloadURL(ctx, releaseAsset.GetBrowserDownloadURL())
+	data, err := c.downloadURL(ctx, releaseAsset)
 	if err != nil {
 		return nil, err
 	}
@@ -321,7 +335,7 @@ func (c *Config) getPackageFilename(packageType string, version *semver.Version,
 
 func (c *Config) replaceExecutable(
 	ctx context.Context, executableFilenameAbsPath chezmoi.AbsPath, releaseVersion *semver.Version,
-	rr *github.RepositoryRelease,
+	downloadBaseUrl string,
 ) (err error) {
 	goos := runtime.GOOS
 	if goos == "linux" && runtime.GOARCH == "amd64" {
@@ -332,17 +346,13 @@ func (c *Config) replaceExecutable(
 		goos += "-" + libc
 	}
 	name := fmt.Sprintf("%s_%s_%s_%s.tar.gz", c.upgrade.repo, releaseVersion, goos, runtime.GOARCH)
-	releaseAsset := getReleaseAssetByName(rr, name)
-	if releaseAsset == nil {
-		err = fmt.Errorf("%s: cannot find release asset", name)
-		return
-	}
+	releaseAsset := getReleaseAssetByName(downloadBaseUrl, name)
 
 	var data []byte
-	if data, err = c.downloadURL(ctx, releaseAsset.GetBrowserDownloadURL()); err != nil {
+	if data, err = c.downloadURL(ctx, releaseAsset); err != nil {
 		return err
 	}
-	if err = c.verifyChecksum(ctx, rr, releaseAsset.GetName(), data); err != nil {
+	if err = c.verifyChecksum(ctx, downloadBaseUrl, releaseVersion, name, data); err != nil {
 		return err
 	}
 
@@ -380,7 +390,7 @@ func (c *Config) snapRefresh() error {
 }
 
 func (c *Config) upgradePackage(
-	ctx context.Context, version *semver.Version, rr *github.RepositoryRelease, useSudo bool,
+	ctx context.Context, version *semver.Version, downloadBaseUrl string, useSudo bool,
 ) error {
 	switch runtime.GOOS {
 	case "linux":
@@ -406,10 +416,7 @@ func (c *Config) upgradePackage(
 		if err != nil {
 			return err
 		}
-		releaseAsset := getReleaseAssetByName(rr, packageFilename)
-		if releaseAsset == nil {
-			return fmt.Errorf("%s: cannot find release asset", packageFilename)
-		}
+		releaseAsset := getReleaseAssetByName(downloadBaseUrl, packageFilename)
 
 		// Create a temporary directory for the package.
 		tempDirAbsPath, err := c.tempDir("chezmoi")
@@ -417,15 +424,15 @@ func (c *Config) upgradePackage(
 			return err
 		}
 
-		data, err := c.downloadURL(ctx, releaseAsset.GetBrowserDownloadURL())
+		data, err := c.downloadURL(ctx, releaseAsset)
 		if err != nil {
 			return err
 		}
-		if err := c.verifyChecksum(ctx, rr, releaseAsset.GetName(), data); err != nil {
+		if err := c.verifyChecksum(ctx, downloadBaseUrl, version, packageFilename, data); err != nil {
 			return err
 		}
 
-		packageAbsPath := tempDirAbsPath.JoinString(releaseAsset.GetName())
+		packageAbsPath := tempDirAbsPath.JoinString(packageFilename)
 		if err := c.baseSystem.WriteFile(packageAbsPath, data, 0o644); err != nil {
 			return err
 		}
@@ -449,8 +456,8 @@ func (c *Config) upgradePackage(
 	}
 }
 
-func (c *Config) verifyChecksum(ctx context.Context, rr *github.RepositoryRelease, name string, data []byte) error {
-	checksums, err := c.getChecksums(ctx, rr)
+func (c *Config) verifyChecksum(ctx context.Context, downloadBaseUrl string, version *semver.Version, name string, data []byte) error {
+	checksums, err := c.getChecksums(ctx, downloadBaseUrl, version)
 	if err != nil {
 		return err
 	}
@@ -557,12 +564,7 @@ func getPackageType(system chezmoi.System) (string, error) {
 	return packageTypeNone, err
 }
 
-// getReleaseAssetByName returns the release asset from rr with the given name.
-func getReleaseAssetByName(rr *github.RepositoryRelease, name string) *github.ReleaseAsset {
-	for i, ra := range rr.Assets {
-		if ra.GetName() == name {
-			return rr.Assets[i]
-		}
-	}
-	return nil
+// getReleaseAssetByName returns the release asset from downloadBaseUrl with the given name.
+func getReleaseAssetByName(downloadBaseUrl string, name string) string {
+	return fmt.Sprintf("%s/%s", downloadBaseUrl, name)
 }
