@@ -356,6 +356,7 @@ The following configuration variables are available:
 |                | `umask`               | int      | *from system*            | Umask                                                  |
 |                | `useBuiltinAge`       | string   | `auto`                   | Use builtin age if `age` command is not found in $PATH |
 |                | `useBuiltinGit`       | string   | `auto`                   | Use builtin git if `git` command is not found in $PATH |
+|                | `verbose`             | bool     | `false`                  | Make output more verbose                               |
 |                | `workingTree`         | string   | *source directory*       | git working tree directory                             |
 | `add`          | `templateSymlinks`    | bool     | `false`                  | Template symlinks to source and home dirs              |
 | `age`          | `args`                | []string | *none*                   | Extra args to age CLI command                          |
