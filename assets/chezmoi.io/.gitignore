@@ -1,3 +1,4 @@
+.hugo_build.lock
 /content/docs
 !/content/docs/menu
 /public
