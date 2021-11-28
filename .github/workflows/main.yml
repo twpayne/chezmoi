@@ -31,6 +31,7 @@ jobs:
           - 'Makefile'
           - 'assets/docker/**'
           - 'assets/vagrant/**'
+          - 'go.*'
           - 'internal/**'
   codeql:
     needs: changes
