@@ -306,6 +306,7 @@ func newConfig(options ...configOption) (*Config, error) {
 			MaxWidth: 80,
 		},
 		Edit: editCmdConfig{
+			Hardlink:    true,
 			MinDuration: 1 * time.Second,
 			exclude:     chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			include: chezmoi.NewEntryTypeSet(
