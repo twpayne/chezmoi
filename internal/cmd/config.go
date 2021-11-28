@@ -373,6 +373,9 @@ func newConfig(options ...configOption) (*Config, error) {
 			dump: stateDumpCmdConfig{
 				format: defaultWriteDataFormat,
 			},
+			getBucket: stateGetBucketCmdConfig{
+				format: defaultWriteDataFormat,
+			},
 		},
 		status: statusCmdConfig{
 			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),

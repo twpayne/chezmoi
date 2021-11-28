@@ -26,33 +26,8 @@ type PersistentState interface {
 	Set(bucket, key, value []byte) error
 }
 
-// PersistentStateData returns the structured data in s.
-func PersistentStateData(s PersistentState) (interface{}, error) {
-	configStateData, err := persistentStateBucketData(s, ConfigStateBucket)
-	if err != nil {
-		return nil, err
-	}
-	entryStateData, err := persistentStateBucketData(s, EntryStateBucket)
-	if err != nil {
-		return nil, err
-	}
-	scriptStateData, err := persistentStateBucketData(s, scriptStateBucket)
-	if err != nil {
-		return nil, err
-	}
-	return struct {
-		ConfigState interface{} `json:"configState" toml:"configState" yaml:"configState"`
-		EntryState  interface{} `json:"entryState" toml:"entryState" yaml:"entryState"`
-		ScriptState interface{} `json:"scriptState" toml:"scriptState" yaml:"scriptState"`
-	}{
-		ConfigState: configStateData,
-		EntryState:  entryStateData,
-		ScriptState: scriptStateData,
-	}, nil
-}
-
-// persistentStateBucketData returns the state data in bucket in s.
-func persistentStateBucketData(s PersistentState, bucket []byte) (map[string]interface{}, error) {
+// PersistentStateBucketData returns the state data in bucket in s.
+func PersistentStateBucketData(s PersistentState, bucket []byte) (map[string]interface{}, error) {
 	result := make(map[string]interface{})
 	if err := s.ForEach(bucket, func(k, v []byte) error {
 		var value map[string]interface{}
@@ -65,6 +40,31 @@ func persistentStateBucketData(s PersistentState, bucket []byte) (map[string]int
 		return nil, err
 	}
 	return result, nil
+}
+
+// PersistentStateData returns the structured data in s.
+func PersistentStateData(s PersistentState) (interface{}, error) {
+	configStateData, err := PersistentStateBucketData(s, ConfigStateBucket)
+	if err != nil {
+		return nil, err
+	}
+	entryStateData, err := PersistentStateBucketData(s, EntryStateBucket)
+	if err != nil {
+		return nil, err
+	}
+	scriptStateData, err := PersistentStateBucketData(s, scriptStateBucket)
+	if err != nil {
+		return nil, err
+	}
+	return struct {
+		ConfigState interface{} `json:"configState" toml:"configState" yaml:"configState"`
+		EntryState  interface{} `json:"entryState" toml:"entryState" yaml:"entryState"`
+		ScriptState interface{} `json:"scriptState" toml:"scriptState" yaml:"scriptState"`
+	}{
+		ConfigState: configStateData,
+		EntryState:  entryStateData,
+		ScriptState: scriptStateData,
+	}, nil
 }
 
 // persistentStateGet gets the value associated with key in bucket in s, if it exists.
