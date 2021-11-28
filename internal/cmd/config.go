@@ -1593,10 +1593,12 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	}
 	if c.Verbose {
 		c.sourceSystem = chezmoi.NewGitDiffSystem(c.sourceSystem, c.stdout, c.SourceDirAbsPath, &chezmoi.GitDiffSystemOptions{
-			Color: color,
+			Color:   color,
+			Include: c.Diff.include.Sub(c.Diff.Exclude),
 		})
 		c.destSystem = chezmoi.NewGitDiffSystem(c.destSystem, c.stdout, c.DestDirAbsPath, &chezmoi.GitDiffSystemOptions{
-			Color: color,
+			Color:   color,
+			Include: c.Diff.include.Sub(c.Diff.Exclude),
 		})
 	}
 

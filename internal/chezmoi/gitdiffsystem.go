@@ -18,6 +18,7 @@ import (
 type GitDiffSystem struct {
 	system         System
 	dirAbsPath     AbsPath
+	include        *EntryTypeSet
 	reverse        bool
 	unifiedEncoder *diff.UnifiedEncoder
 }
@@ -25,6 +26,7 @@ type GitDiffSystem struct {
 // GetDiffSystemOptions are options for NewGitDiffSystem.
 type GitDiffSystemOptions struct {
 	Color   bool
+	Include *EntryTypeSet
 	Reverse bool
 }
 
@@ -39,6 +41,7 @@ func NewGitDiffSystem(system System, w io.Writer, dirAbsPath AbsPath, options *G
 	return &GitDiffSystem{
 		system:         system,
 		dirAbsPath:     dirAbsPath,
+		include:        options.Include,
 		reverse:        options.Reverse,
 		unifiedEncoder: unifiedEncoder,
 	}
@@ -50,16 +53,18 @@ func (s *GitDiffSystem) Chmod(name AbsPath, mode fs.FileMode) error {
 	if err != nil {
 		return err
 	}
-	toMode := fromInfo.Mode().Type() | mode
-	var toData []byte
-	if fromInfo.Mode().IsRegular() {
-		toData, err = s.ReadFile(name)
-		if err != nil {
+	if s.include.IncludeFileInfo(fromInfo) {
+		toMode := fromInfo.Mode().Type() | mode
+		var toData []byte
+		if fromInfo.Mode().IsRegular() {
+			toData, err = s.ReadFile(name)
+			if err != nil {
+				return err
+			}
+		}
+		if err := s.encodeDiff(name, toData, toMode); err != nil {
 			return err
 		}
-	}
-	if err := s.encodeDiff(name, toData, toMode); err != nil {
-		return err
 	}
 	return s.system.Chmod(name, mode)
 }
@@ -92,8 +97,10 @@ func (s *GitDiffSystem) Lstat(name AbsPath) (fs.FileInfo, error) {
 
 // Mkdir implements System.Mkdir.
 func (s *GitDiffSystem) Mkdir(name AbsPath, perm fs.FileMode) error {
-	if err := s.encodeDiff(name, nil, fs.ModeDir|perm); err != nil {
-		return err
+	if s.include.Include(EntryTypeDirs) {
+		if err := s.encodeDiff(name, nil, fs.ModeDir|perm); err != nil {
+			return err
+		}
 	}
 	return s.system.Mkdir(name, perm)
 }
@@ -120,51 +127,57 @@ func (s *GitDiffSystem) Readlink(name AbsPath) (string, error) {
 
 // RemoveAll implements System.RemoveAll.
 func (s *GitDiffSystem) RemoveAll(name AbsPath) error {
-	if err := s.encodeDiff(name, nil, 0); err != nil {
-		return err
+	if s.include.Include(EntryTypeRemove) {
+		if err := s.encodeDiff(name, nil, 0); err != nil {
+			return err
+		}
 	}
 	return s.system.RemoveAll(name)
 }
 
 // Rename implements System.Rename.
 func (s *GitDiffSystem) Rename(oldpath, newpath AbsPath) error {
-	var fileMode filemode.FileMode
-	var hash plumbing.Hash
-	switch fromFileInfo, err := s.Stat(oldpath); {
-	case err != nil:
+	fromFileInfo, err := s.Stat(oldpath)
+	if err != nil {
 		return err
-	case fromFileInfo.Mode().IsDir():
-		hash = plumbing.ZeroHash // LATER be more intelligent here
-	case fromFileInfo.Mode().IsRegular():
-		data, err := s.system.ReadFile(oldpath)
-		if err != nil {
-			return err
+	}
+	if s.include.IncludeFileInfo(fromFileInfo) {
+		var fileMode filemode.FileMode
+		var hash plumbing.Hash
+		switch {
+		case fromFileInfo.Mode().IsDir():
+			hash = plumbing.ZeroHash // LATER be more intelligent here
+		case fromFileInfo.Mode().IsRegular():
+			data, err := s.system.ReadFile(oldpath)
+			if err != nil {
+				return err
+			}
+			hash = plumbing.ComputeHash(plumbing.BlobObject, data)
+		default:
+			fileMode = filemode.FileMode(fromFileInfo.Mode())
 		}
-		hash = plumbing.ComputeHash(plumbing.BlobObject, data)
-	default:
-		fileMode = filemode.FileMode(fromFileInfo.Mode())
-	}
-	fromPath, toPath := s.trimPrefix(oldpath), s.trimPrefix(newpath)
-	if s.reverse {
-		fromPath, toPath = toPath, fromPath
-	}
-	if err := s.unifiedEncoder.Encode(&gitDiffPatch{
-		filePatches: []diff.FilePatch{
-			&gitDiffFilePatch{
-				from: &gitDiffFile{
-					fileMode: fileMode,
-					relPath:  fromPath,
-					hash:     hash,
-				},
-				to: &gitDiffFile{
-					fileMode: fileMode,
-					relPath:  toPath,
-					hash:     hash,
+		fromPath, toPath := s.trimPrefix(oldpath), s.trimPrefix(newpath)
+		if s.reverse {
+			fromPath, toPath = toPath, fromPath
+		}
+		if err := s.unifiedEncoder.Encode(&gitDiffPatch{
+			filePatches: []diff.FilePatch{
+				&gitDiffFilePatch{
+					from: &gitDiffFile{
+						fileMode: fileMode,
+						relPath:  fromPath,
+						hash:     hash,
+					},
+					to: &gitDiffFile{
+						fileMode: fileMode,
+						relPath:  toPath,
+						hash:     hash,
+					},
 				},
 			},
-		},
-	}); err != nil {
-		return err
+		}); err != nil {
+			return err
+		}
 	}
 	return s.system.Rename(oldpath, newpath)
 }
@@ -181,17 +194,19 @@ func (s *GitDiffSystem) RunIdempotentCmd(cmd *exec.Cmd) error {
 
 // RunScript implements System.RunScript.
 func (s *GitDiffSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
-	mode := fs.FileMode(filemode.Executable)
-	fromData, toData := []byte(nil), data
-	if s.reverse {
-		fromData, toData = toData, fromData
-	}
-	diffPatch, err := DiffPatch(scriptname, fromData, mode, toData, mode)
-	if err != nil {
-		return err
-	}
-	if err := s.unifiedEncoder.Encode(diffPatch); err != nil {
-		return err
+	if s.include.Include(EntryTypeScripts) {
+		mode := fs.FileMode(filemode.Executable)
+		fromData, toData := []byte(nil), data
+		if s.reverse {
+			fromData, toData = toData, fromData
+		}
+		diffPatch, err := DiffPatch(scriptname, fromData, mode, toData, mode)
+		if err != nil {
+			return err
+		}
+		if err := s.unifiedEncoder.Encode(diffPatch); err != nil {
+			return err
+		}
 	}
 	return s.system.RunScript(scriptname, dir, data, interpreter)
 }
@@ -208,21 +223,25 @@ func (s *GitDiffSystem) UnderlyingFS() vfs.FS {
 
 // WriteFile implements System.WriteFile.
 func (s *GitDiffSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error {
-	if err := s.encodeDiff(filename, data, perm); err != nil {
-		return err
+	if s.include.Include(EntryTypeFiles) {
+		if err := s.encodeDiff(filename, data, perm); err != nil {
+			return err
+		}
 	}
 	return s.system.WriteFile(filename, data, perm)
 }
 
 // WriteSymlink implements System.WriteSymlink.
 func (s *GitDiffSystem) WriteSymlink(oldname string, newname AbsPath) error {
-	toData := append([]byte(normalizeLinkname(oldname)), '\n')
-	toMode := fs.ModeSymlink
-	if runtime.GOOS == "windows" {
-		toMode |= 0o666
-	}
-	if err := s.encodeDiff(newname, toData, toMode); err != nil {
-		return err
+	if s.include.Include(EntryTypeSymlinks) {
+		toData := append([]byte(normalizeLinkname(oldname)), '\n')
+		toMode := fs.ModeSymlink
+		if runtime.GOOS == "windows" {
+			toMode |= 0o666
+		}
+		if err := s.encodeDiff(newname, toData, toMode); err != nil {
+			return err
+		}
 	}
 	return s.system.WriteSymlink(oldname, newname)
 }

@@ -58,6 +58,11 @@ func NewEntryTypeSet(bits EntryTypeBits) *EntryTypeSet {
 	}
 }
 
+// Include returns if s includes b.
+func (s *EntryTypeSet) Include(b EntryTypeBits) bool {
+	return s.bits&b != 0
+}
+
 // IncludeEncrypted returns true if s includes encrypted files.
 func (s *EntryTypeSet) IncludeEncrypted() bool {
 	return s.bits&EntryTypeEncrypted != 0

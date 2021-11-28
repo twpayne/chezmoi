@@ -52,6 +52,7 @@ func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) (err error) {
 		color := c.Color.Value(c.colorAutoFunc)
 		gitDiffSystem := chezmoi.NewGitDiffSystem(dryRunSystem, &builder, c.DestDirAbsPath, &chezmoi.GitDiffSystemOptions{
 			Color:   color,
+			Include: c.Diff.include.Sub(c.Diff.Exclude),
 			Reverse: c.Diff.reverse,
 		})
 		if err = c.applyArgs(cmd.Context(), gitDiffSystem, c.DestDirAbsPath, args, applyArgsOptions{
