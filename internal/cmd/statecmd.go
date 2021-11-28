@@ -16,6 +16,7 @@ type stateCmdConfig struct {
 	deleteBucket stateDeleteBucketCmdConfig
 	dump         stateDumpCmdConfig
 	get          stateGetCmdConfig
+	getBucket    stateGetBucketCmdConfig
 	set          stateSetCmdConfig
 }
 
@@ -39,6 +40,11 @@ type stateDumpCmdConfig struct {
 type stateGetCmdConfig struct {
 	bucket string
 	key    string
+}
+
+type stateGetBucketCmdConfig struct {
+	bucket string
+	format writeDataFormat
 }
 
 type stateSetCmdConfig struct {
@@ -124,6 +130,20 @@ func (c *Config) newStateCmd() *cobra.Command {
 	stateGetPersistentFlags.StringVar(&c.state.get.key, "key", c.state.get.key, "key")
 	stateCmd.AddCommand(stateGetCmd)
 
+	stateGetBucketCmd := &cobra.Command{
+		Use:   "get-bucket",
+		Short: "Get a bucket from the persistent state",
+		Args:  cobra.NoArgs,
+		RunE:  c.runStateGetBucketCmd,
+		Annotations: map[string]string{
+			persistentStateMode: persistentStateModeReadOnly,
+		},
+	}
+	stateGetBucketPersistentFlags := stateGetBucketCmd.PersistentFlags()
+	stateGetBucketPersistentFlags.StringVar(&c.state.getBucket.bucket, "bucket", c.state.getBucket.bucket, "bucket")
+	stateGetBucketPersistentFlags.VarP(&c.state.getBucket.format, "format", "f", "format")
+	stateCmd.AddCommand(stateGetBucketCmd)
+
 	stateResetCmd := &cobra.Command{
 		Use:   "reset",
 		Short: "Reset the persistent state",
@@ -183,6 +203,14 @@ func (c *Config) runStateGetCmd(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	return c.writeOutput(value)
+}
+
+func (c *Config) runStateGetBucketCmd(cmd *cobra.Command, args []string) error {
+	data, err := chezmoi.PersistentStateBucketData(c.persistentState, []byte(c.state.getBucket.bucket))
+	if err != nil {
+		return err
+	}
+	return c.marshal(c.state.getBucket.format, data)
 }
 
 func (c *Config) runStateResetCmd(cmd *cobra.Command, args []string) error {
