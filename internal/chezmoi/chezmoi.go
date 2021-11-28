@@ -55,6 +55,7 @@ const (
 	externalName     = Prefix + "external"
 	ignoreName       = Prefix + "ignore"
 	removeName       = Prefix + "remove"
+	scriptsDirName   = Prefix + "scripts"
 	templatesDirName = Prefix + "templates"
 	versionName      = Prefix + "version"
 )

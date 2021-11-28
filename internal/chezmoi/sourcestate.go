@@ -777,6 +777,15 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 				allSourceStateEntries[targetRelPath] = append(allSourceStateEntries[targetRelPath], sourceStateEntry)
 			}
 			return nil
+		case fileInfo.Name() == scriptsDirName:
+			scriptsDirSourceStateEntries, err := s.readScriptsDir(sourceAbsPath)
+			if err != nil {
+				return err
+			}
+			for relPath, scriptSourceStateEntries := range scriptsDirSourceStateEntries {
+				allSourceStateEntries[relPath] = append(allSourceStateEntries[relPath], scriptSourceStateEntries...)
+			}
+			return vfs.SkipDir
 		case fileInfo.Name() == templatesDirName:
 			if err := s.addTemplatesDir(sourceAbsPath); err != nil {
 				return err
@@ -1061,7 +1070,7 @@ func (s *SourceState) addTemplateData(sourceAbsPath AbsPath) error {
 	return nil
 }
 
-// addTemplatesDir adds all templates in templateDir to s.
+// addTemplatesDir adds all templates in templatesDirAbsPath to s.
 func (s *SourceState) addTemplatesDir(templatesDirAbsPath AbsPath) error {
 	walkFunc := func(templateAbsPath AbsPath, fileInfo fs.FileInfo, err error) error {
 		switch {
@@ -1812,6 +1821,75 @@ func (s *SourceState) readExternalFile(
 	return map[RelPath][]SourceStateEntry{
 		externalRelPath: {sourceStateEntry},
 	}, nil
+}
+
+// readScriptsDir reads all scripts in scriptsDirAbsPath.
+func (s *SourceState) readScriptsDir(scriptsDirAbsPath AbsPath) (map[RelPath][]SourceStateEntry, error) {
+	allSourceStateEntries := make(map[RelPath][]SourceStateEntry)
+	walkFunc := func(sourceAbsPath AbsPath, fileInfo fs.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if sourceAbsPath == scriptsDirAbsPath {
+			return nil
+		}
+
+		// Follow symlinks in the source directory.
+		if fileInfo.Mode().Type() == fs.ModeSymlink {
+			// Some programs (notably emacs) use invalid symlinks as lockfiles.
+			// To avoid following them and getting an ENOENT error, check first
+			// if this is an entry that we will ignore anyway.
+			if strings.HasPrefix(fileInfo.Name(), ignorePrefix) && !strings.HasPrefix(fileInfo.Name(), Prefix) {
+				return nil
+			}
+			fileInfo, err = s.system.Stat(sourceAbsPath)
+			if err != nil {
+				return err
+			}
+		}
+
+		sourceRelPath := SourceRelPath{
+			relPath: sourceAbsPath.MustTrimDirPrefix(s.sourceDirAbsPath),
+			isDir:   fileInfo.IsDir(),
+		}
+		parentSourceRelPath, sourceName := sourceRelPath.Split()
+
+		switch {
+		case err != nil:
+			return err
+		case strings.HasPrefix(fileInfo.Name(), Prefix):
+			return fmt.Errorf("%s: not allowed in .chezmoiscripts directory", sourceAbsPath)
+		case strings.HasPrefix(fileInfo.Name(), ignorePrefix):
+			if fileInfo.IsDir() {
+				return vfs.SkipDir
+			}
+			return nil
+		case fileInfo.IsDir():
+			return nil
+		case fileInfo.Mode().IsRegular():
+			fa := parseFileAttr(sourceName.String(), s.encryption.EncryptedSuffix())
+			if fa.Type != SourceFileTypeScript {
+				return fmt.Errorf("%s: not a script", sourceAbsPath)
+			}
+			targetRelPath := parentSourceRelPath.Dir().TargetRelPath(s.encryption.EncryptedSuffix()).JoinString(fa.TargetName)
+			if s.Ignore(targetRelPath) {
+				return nil
+			}
+			var sourceStateEntry SourceStateEntry
+			targetRelPath, sourceStateEntry = s.newSourceStateFile(sourceRelPath, fa, targetRelPath)
+			allSourceStateEntries[targetRelPath] = append(allSourceStateEntries[targetRelPath], sourceStateEntry)
+			return nil
+		default:
+			return &unsupportedFileTypeError{
+				absPath: sourceAbsPath,
+				mode:    fileInfo.Mode(),
+			}
+		}
+	}
+	if err := WalkSourceDir(s.system, scriptsDirAbsPath, walkFunc); err != nil {
+		return nil, err
+	}
+	return allSourceStateEntries, nil
 }
 
 // sourceStateEntry returns a new SourceStateEntry based on actualStateEntry.
