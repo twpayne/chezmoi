@@ -15,6 +15,7 @@ require (
 	github.com/danieljoos/wincred v1.1.2 // indirect
 	github.com/go-git/go-git/v5 v5.4.2
 	github.com/godbus/dbus/v5 v5.0.6 // indirect
+	github.com/google/btree v1.0.1 // indirect
 	github.com/google/go-github/v40 v40.0.0
 	github.com/google/gops v0.3.22
 	github.com/google/renameio/v2 v2.0.0
@@ -51,15 +52,15 @@ require (
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.7.0
 	golang.org/x/crypto v0.0.0-20211117183948-ae814b36b871 // indirect
-	golang.org/x/net v0.0.0-20211118161319-6a13c67c3ce4 // indirect
+	golang.org/x/net v0.0.0-20211123203042-d83791d6bcd9 // indirect
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
-	golang.org/x/sys v0.0.0-20211117180635-dee7805ff2e1
+	golang.org/x/sys v0.0.0-20211124211545-fe61309f8881
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211
 	golang.org/x/text v0.3.7 // indirect
-	gopkg.in/ini.v1 v1.64.0 // indirect
+	gopkg.in/ini.v1 v1.65.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
-	howett.net/plist v0.0.0-20201203080718-1454fab16a06
+	howett.net/plist v1.0.0
 )
 
 exclude github.com/sergi/go-diff v1.2.0 // Produces incorrect diffs
