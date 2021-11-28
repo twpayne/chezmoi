@@ -13,6 +13,7 @@ import (
 type editCmdConfig struct {
 	Command     string        `mapstructure:"command"`
 	Args        []string      `mapstructure:"args"`
+	Hardlink    bool          `mapstructure:"hardlink"`
 	MinDuration time.Duration `mapstructure:"minDuration"`
 	apply       bool
 	exclude     *chezmoi.EntryTypeSet
@@ -39,6 +40,7 @@ func (c *Config) newEditCmd() *cobra.Command {
 	flags := editCmd.Flags()
 	flags.BoolVarP(&c.Edit.apply, "apply", "a", c.Edit.apply, "Apply after editing")
 	flags.VarP(c.Edit.exclude, "exclude", "x", "Exclude entry types")
+	flags.BoolVar(&c.Edit.Hardlink, "hardlink", c.Edit.Hardlink, "Invoke editor with a hardlink to the source file")
 	flags.VarP(c.Edit.include, "include", "i", "Include entry types")
 	flags.BoolVar(&c.Edit.init, "init", c.update.init, "Recreate config file from template")
 
@@ -110,7 +112,7 @@ TARGETRELPATH:
 			}
 			transparentlyDecryptedFiles = append(transparentlyDecryptedFiles, transparentlyDecryptedFile)
 			editorArgs = append(editorArgs, decryptedAbsPath.String())
-		case ok && runtime.GOOS != "windows":
+		case ok && c.Edit.Hardlink && runtime.GOOS != "windows":
 			// If the operating system supports hard links and the file is not
 			// encrypted, then create a hard link to the file in the source
 			// directory in the temporary edit directory. This means that the

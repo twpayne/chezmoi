@@ -381,6 +381,7 @@ The following configuration variables are available:
 |                | `pager`               | string   | *none*                   | Docs-specific pager                                    |
 | `edit`         | `args`                | []string | *none*                   | Extra args to edit command                             |
 |                | `command`             | string   | `$EDITOR` / `$VISUAL`    | Edit command                                           |
+|                | `hardlink`            | bool     | `true`                   | Invoke editor with a hardlink to the source file       |
 |                | `minDuration`         | duration | `1s`                     | Minimum duration for edit command                      |
 | `secret`       | `command`             | string   | *none*                   | Generic secret command                                 |
 | `git`          | `autoAdd `            | bool     | `false`                  | Add changes to the source state after any change       |
@@ -1284,7 +1285,9 @@ invoked with the decrypted file. When the editor exits the edited decrypted file
 is re-encrypted and replaces the original file in the source state.
 
 If the operating system supports hard links, then the edit command invokes the
-editor with filenames which match the target filename.
+editor with filenames which match the target filename, unless the
+`edit.hardlink` configuration variable is set to `false` the `--hardlink=false`
+command line flag is set.
 
 chezmoi will emit a warning if the editor returns in less than
 `edit.minDuration` (default `1s`). To disable this warning, set
@@ -1294,6 +1297,11 @@ chezmoi will emit a warning if the editor returns in less than
 
 Apply target immediately after editing. Ignored if there are no targets.
 
+#### `--hardlink` *bool*
+
+Invoke the editor with a hard link to the source file with a name matching the
+target filename. This can help the editor determine the type of the file
+correctly. This is the default.
 #### `edit` examples
 
 ```console
