@@ -111,6 +111,20 @@ func (b *BoltPersistentState) Delete(bucket, key []byte) error {
 	})
 }
 
+// DeleteBucket deletes the bucket.
+func (b *BoltPersistentState) DeleteBucket(bucket []byte) error {
+	if b.empty {
+		return nil
+	}
+	if err := b.open(); err != nil {
+		return err
+	}
+
+	return b.db.Update(func(tx *bbolt.Tx) error {
+		return tx.DeleteBucket(bucket)
+	})
+}
+
 // Data returns all the data in b.
 func (b *BoltPersistentState) Data() (interface{}, error) {
 	if b.empty {

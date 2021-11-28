@@ -54,6 +54,15 @@ func (s *DebugPersistentState) Delete(bucket, key []byte) error {
 	return err
 }
 
+// DeleteBucket implements PersistentState.DeleteBucket.
+func (s *DebugPersistentState) DeleteBucket(bucket []byte) error {
+	err := s.persistentState.DeleteBucket(bucket)
+	s.logger.Err(err).
+		Bytes("bucket", bucket).
+		Msg("DeleteBucket")
+	return err
+}
+
 // ForEach implements PersistentState.ForEach.
 func (s *DebugPersistentState) ForEach(bucket []byte, fn func(k, v []byte) error) error {
 	err := s.persistentState.ForEach(bucket, func(k, v []byte) error {

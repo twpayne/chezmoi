@@ -11,11 +11,12 @@ import (
 )
 
 type stateCmdConfig struct {
-	data   stateDataCmdConfig
-	delete stateDeleteCmdConfig
-	dump   stateDumpCmdConfig
-	get    stateGetCmdConfig
-	set    stateSetCmdConfig
+	data         stateDataCmdConfig
+	delete       stateDeleteCmdConfig
+	deleteBucket stateDeleteBucketCmdConfig
+	dump         stateDumpCmdConfig
+	get          stateGetCmdConfig
+	set          stateSetCmdConfig
 }
 
 type stateDataCmdConfig struct {
@@ -25,6 +26,10 @@ type stateDataCmdConfig struct {
 type stateDeleteCmdConfig struct {
 	bucket string
 	key    string
+}
+
+type stateDeleteBucketCmdConfig struct {
+	bucket string
 }
 
 type stateDumpCmdConfig struct {
@@ -76,6 +81,21 @@ func (c *Config) newStateCmd() *cobra.Command {
 	stateDeletePersistentFlags.StringVar(&c.state.delete.bucket, "bucket", c.state.delete.bucket, "bucket")
 	stateDeletePersistentFlags.StringVar(&c.state.delete.key, "key", c.state.delete.key, "key")
 	stateCmd.AddCommand(stateDeleteCmd)
+
+	stateDeleteBucketCmd := &cobra.Command{
+		Use:   "delete-bucket",
+		Short: "Delete a bucket from the persistent state",
+		Args:  cobra.NoArgs,
+		RunE:  c.runStateDeleteBucketCmd,
+		Annotations: map[string]string{
+			persistentStateMode: persistentStateModeReadWrite,
+		},
+	}
+	stateDeleteBucketPersistentFlags := stateDeleteBucketCmd.PersistentFlags()
+	stateDeleteBucketPersistentFlags.StringVar(
+		&c.state.deleteBucket.bucket, "bucket", c.state.deleteBucket.bucket, "bucket",
+	)
+	stateCmd.AddCommand(stateDeleteBucketCmd)
 
 	stateDumpCmd := &cobra.Command{
 		Use:   "dump",
@@ -143,6 +163,10 @@ func (c *Config) runStateDataCmd(cmd *cobra.Command, args []string) error {
 
 func (c *Config) runStateDeleteCmd(cmd *cobra.Command, args []string) error {
 	return c.persistentState.Delete([]byte(c.state.delete.bucket), []byte(c.state.delete.key))
+}
+
+func (c *Config) runStateDeleteBucketCmd(cmd *cobra.Command, args []string) error {
+	return c.persistentState.DeleteBucket([]byte(c.state.deleteBucket.bucket))
 }
 
 func (c *Config) runStateDumpCmd(cmd *cobra.Command, args []string) error {
