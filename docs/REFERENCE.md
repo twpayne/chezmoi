@@ -375,7 +375,7 @@ The following configuration variables are available:
 |                | `command`             | string   | *none*                   | Shell to run in `cd` command                           |
 | `diff`         | `args`                | []string | *see `diff` below*       | Extra args to external diff command                    |
 |                | `command`             | string   | *none*                   | External diff command                                  |
-|                | `exclude`             | []string | *none*                   | Entry types to exclude from diff                       |
+|                | `exclude`             | []string | *none*                   | Entry types to exclude from diffs                      |
 |                | `pager`               | string   | *none*                   | Diff-specific pager                                    |
 | `docs`         | `maxWidth`            | int      | 80                       | Maximum width of output                                |
 |                | `pager`               | string   | *none*                   | Docs-specific pager                                    |
