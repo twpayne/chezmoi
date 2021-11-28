@@ -44,6 +44,12 @@ func (s *MockPersistentState) Delete(bucket, key []byte) error {
 	return nil
 }
 
+// DeleteBucket implements PersistentState.DeleteBucket.
+func (s *MockPersistentState) DeleteBucket(bucket []byte) error {
+	delete(s.buckets, string(bucket))
+	return nil
+}
+
 // ForEach implements PersistentState.ForEach.
 func (s *MockPersistentState) ForEach(bucket []byte, fn func(k, v []byte) error) error {
 	for k, v := range s.buckets[string(bucket)] {

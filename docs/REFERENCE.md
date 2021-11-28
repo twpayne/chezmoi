@@ -1692,6 +1692,7 @@ Manipulate the persistent state.
 ```console
 $ chezmoi state data
 $ chezmoi state delete --bucket=bucket --key=key
+$ chezmoi state delete-bucket --bucket=bucket
 $ chezmoi state dump
 $ chezmoi state get --bucket=bucket --key=key
 $ chezmoi state set --bucket=bucket --key=key --value=value

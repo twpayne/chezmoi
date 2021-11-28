@@ -47,6 +47,7 @@
   * [Understand how scripts work](#understand-how-scripts-work)
   * [Install packages with scripts](#install-packages-with-scripts)
   * [Run a script when the contents of another file changes](#run-a-script-when-the-contents-of-another-file-changes)
+  * [Clear the state of `run_once_` scripts](#clear-the-state-of-run_once_-scripts)
 * [Use chezmoi on macOS](#use-chezmoi-on-macos)
   * [Use `brew bundle` to manage your brews and casks](#use-brew-bundle-to-manage-your-brews-and-casks)
 * [Use chezmoi on Windows](#use-chezmoi-on-windows)
@@ -1429,6 +1430,18 @@ change.
 
 In this example you should also add `dconf.ini` to `.chezmoiignore` so chezmoi
 does not create `dconf.ini` in your home directory.
+
+---
+
+### Clear the state of `run_once_` scripts
+
+chezmoi stores whether and when `run_once_` scripts have been run in the
+`scriptState` bucket of its persistent state. To clear the state of `run_once_`
+scripts, run:
+
+```console
+$ chezmoi delete-bucket --bucket=scriptState
+```
 
 ---
 

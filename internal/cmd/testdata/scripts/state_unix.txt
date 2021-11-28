@@ -14,6 +14,11 @@ chezmoi state dump --format=yaml
 stdout 70396a619400b7f78dbb83ab8ddb76ffe0b8e31557e64bab2ca9677818a52135:
 stdout runAt:
 
+# test that chezmoi delete-bucket deletes a bucket
+chezmoi state delete-bucket --bucket=scriptState
+chezmoi state dump --format=yaml
+! stdout runAt:
+
 # test that chezmoi state reset removes the persistent state
 chezmoi --force state reset
 ! exists $CHEZMOICONFIGDIR/chezmoistate.boltdb

@@ -16,6 +16,9 @@ func (NullPersistentState) Data() (interface{}, error) { return nil, nil }
 // Delete does nothing.
 func (NullPersistentState) Delete(bucket, key []byte) error { return nil }
 
+// DeleteBucket does nothing.
+func (NullPersistentState) DeleteBucket(bucket []byte) error { return nil }
+
 // ForEach does nothing.
 func (NullPersistentState) ForEach(bucket []byte, fn func(k, v []byte) error) error { return nil }
 
