@@ -19,14 +19,13 @@ type ioregData struct {
 	value map[string]interface{}
 }
 
-func (c *Config) fromYamlTemplateFunc(str string) interface{} {
-	var result interface{}
-
-	if err := chezmoi.FormatYAML.Unmarshal([]byte(str), &result); err != nil {
+func (c *Config) fromYamlTemplateFunc(s string) interface{} {
+	var data interface{}
+	if err := chezmoi.FormatYAML.Unmarshal([]byte(s), &data); err != nil {
 		returnTemplateError(err)
 		return nil
 	}
-	return result
+	return data
 }
 
 func (c *Config) includeTemplateFunc(filename string) string {

@@ -1302,6 +1302,7 @@ Apply target immediately after editing. Ignored if there are no targets.
 Invoke the editor with a hard link to the source file with a name matching the
 target filename. This can help the editor determine the type of the file
 correctly. This is the default.
+
 #### `edit` examples
 
 ```console
