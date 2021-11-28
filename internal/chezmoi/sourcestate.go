@@ -720,12 +720,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		if sourceAbsPath == s.sourceDirAbsPath {
 			return nil
 		}
-		sourceRelPath := SourceRelPath{
-			relPath: sourceAbsPath.MustTrimDirPrefix(s.sourceDirAbsPath),
-			isDir:   fileInfo.IsDir(),
-		}
 
-		parentSourceRelPath, sourceName := sourceRelPath.Split()
 		// Follow symlinks in the source directory.
 		if fileInfo.Mode().Type() == fs.ModeSymlink {
 			// Some programs (notably emacs) use invalid symlinks as lockfiles.
@@ -734,11 +729,18 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			if strings.HasPrefix(fileInfo.Name(), ignorePrefix) && !strings.HasPrefix(fileInfo.Name(), Prefix) {
 				return nil
 			}
-			fileInfo, err = s.system.Stat(s.sourceDirAbsPath.Join(sourceRelPath.RelPath()))
+			fileInfo, err = s.system.Stat(sourceAbsPath)
 			if err != nil {
 				return err
 			}
 		}
+
+		sourceRelPath := SourceRelPath{
+			relPath: sourceAbsPath.MustTrimDirPrefix(s.sourceDirAbsPath),
+			isDir:   fileInfo.IsDir(),
+		}
+		parentSourceRelPath, sourceName := sourceRelPath.Split()
+
 		switch {
 		case strings.HasPrefix(fileInfo.Name(), dataName):
 			if !s.readTemplateData {
