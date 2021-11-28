@@ -50,6 +50,16 @@ jobs:
         languages: go
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
+  test-alpine:
+    needs: changes
+    if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Test
+      run: |
+        ( cd assets/docker && ./test.sh alpine )
   test-archlinux:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
@@ -416,6 +426,7 @@ jobs:
     needs:
     - check
     - lint
+    - test-alpine
     - test-archlinux
     - test-debian-i386
     - test-fedora

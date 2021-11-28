@@ -78,7 +78,7 @@ test:
 
 .PHONY: test-docker
 test-docker:
-	( cd assets/docker && ./test.sh archlinux fedora voidlinux )
+	( cd assets/docker && ./test.sh alpine archlinux fedora voidlinux )
 
 .PHONY: test-vagrant
 test-vagrant:
