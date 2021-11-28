@@ -17,7 +17,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.86ed723246b3dab7133c94ce5b61fdff1e9844cbb89f78a4df0501d192264931.js" integrity="sha256-hu1yMkaz2rcTPJTOW2H9/x6YRMu4n3ik3wUB0ZImSTE=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.18d55b65d69764ed7583e7799ea8066a0796ecf5c8a3ed03d444e539327dcc5a.js" integrity="sha256-GNVbZdaXZO11g&#43;d5nqgGageW7PXIo&#43;0D1ETlOTJ9zFo=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -182,6 +182,7 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#understand-how-scripts-work">Understand how scripts work</a></li>
         <li><a href="#install-packages-with-scripts">Install packages with scripts</a></li>
         <li><a href="#run-a-script-when-the-contents-of-another-file-changes">Run a script when the contents of another file changes</a></li>
+        <li><a href="#clear-the-state-of-run_once_-scripts">Clear the state of <code>run_once_</code> scripts</a></li>
       </ul>
     </li>
     <li><a href="#use-chezmoi-on-macos">Use chezmoi on macOS</a>
@@ -1202,6 +1203,15 @@ change.</p>
 <p>In this example you should also add <code>dconf.ini</code> to <code>.chezmoiignore</code> so chezmoi
 does not create <code>dconf.ini</code> in your home directory.</p>
 <hr>
+<h3 id="clear-the-state-of-run_once_-scripts">
+  Clear the state of <code>run_once_</code> scripts
+  <a class="anchor" href="#clear-the-state-of-run_once_-scripts">#</a>
+</h3>
+<p>chezmoi stores whether and when <code>run_once_</code> scripts have been run in the
+<code>scriptState</code> bucket of its persistent state. To clear the state of <code>run_once_</code>
+scripts, run:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi delete-bucket --bucket<span style="color:#f92672">=</span>scriptState
+</code></pre></div><hr>
 <h2 id="use-chezmoi-on-macos">
   Use chezmoi on macOS
   <a class="anchor" href="#use-chezmoi-on-macos">#</a>
@@ -1577,6 +1587,7 @@ so you can write scripts around chezmoi.</li>
         <li><a href="#understand-how-scripts-work">Understand how scripts work</a></li>
         <li><a href="#install-packages-with-scripts">Install packages with scripts</a></li>
         <li><a href="#run-a-script-when-the-contents-of-another-file-changes">Run a script when the contents of another file changes</a></li>
+        <li><a href="#clear-the-state-of-run_once_-scripts">Clear the state of <code>run_once_</code> scripts</a></li>
       </ul>
     </li>
     <li><a href="#use-chezmoi-on-macos">Use chezmoi on macOS</a>

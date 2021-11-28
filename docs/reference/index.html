@@ -23,7 +23,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.86ed723246b3dab7133c94ce5b61fdff1e9844cbb89f78a4df0501d192264931.js" integrity="sha256-hu1yMkaz2rcTPJTOW2H9/x6YRMu4n3ik3wUB0ZImSTE=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.18d55b65d69764ed7583e7799ea8066a0796ecf5c8a3ed03d444e539327dcc5a.js" integrity="sha256-GNVbZdaXZO11g&#43;d5nqgGageW7PXIo&#43;0D1ETlOTJ9zFo=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -187,6 +187,7 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#chezmoiignore"><code>.chezmoiignore</code></a></li>
         <li><a href="#chezmoiremove"><code>.chezmoiremove</code></a></li>
         <li><a href="#chezmoiroot"><code>.chezmoiroot</code></a></li>
+        <li><a href="#chezmoiscripts"><code>.chezmoiscripts</code></a></li>
         <li><a href="#chezmoitemplates"><code>.chezmoitemplates</code></a></li>
         <li><a href="#chezmoiversion"><code>.chezmoiversion</code></a></li>
       </ul>
@@ -250,6 +251,7 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#bitwardenfields-arg"><code>bitwardenFields</code> [<em>arg</em>&hellip;]</a></li>
         <li><a href="#decrypt-ciphertext"><code>decrypt</code> <em>ciphertext</em></a></li>
         <li><a href="#encrypt-plaintext"><code>encrypt</code> <em>plaintext</em></a></li>
+        <li><a href="#fromyaml-yamltext"><code>fromYaml</code> <em>yamltext</em></a></li>
         <li><a href="#githubkeys-user"><code>gitHubKeys</code> <em>user</em></a></li>
         <li><a href="#githublatestrelease-user-repo"><code>gitHubLatestRelease</code> <em>user-repo</em></a></li>
         <li><a href="#gopass-gopass-name"><code>gopass</code> <em>gopass-name</em></a></li>
@@ -278,6 +280,7 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#secretjson-arg"><code>secretJSON</code> [<em>arg</em>&hellip;]</a></li>
         <li><a href="#stat-name"><code>stat</code> <em>name</em></a></li>
         <li><a href="#stdinisatty"><code>stdinIsATTY</code></a></li>
+        <li><a href="#toyaml-value"><code>toYaml</code> <em>value</em></a></li>
         <li><a href="#vault-key"><code>vault</code> <em>key</em></a></li>
         <li><a href="#writetostdout-string"><code>writeToStdout</code> <em>string</em>&hellip;</a></li>
       </ul>
@@ -525,12 +528,10 @@ scripts and <code>--exclude=encrypted</code> will exclude encrypted files.</p>
 </h2>
 <p>chezmoi searches for its configuration file according to the <a href="https://standards.freedesktop.org/basedir-spec/basedir-spec-latest.html">XDG Base Directory
 Specification</a>
-and supports all formats supported by
-<a href="https://github.com/spf13/viper"><code>github.com/spf13/viper</code></a>, namely
-<a href="https://www.json.org/json-en.html">JSON</a>,
-<a href="https://github.com/toml-lang/toml">TOML</a>, <a href="https://yaml.org/">YAML</a>, macOS
-property file format, and <a href="https://github.com/hashicorp/hcl">HCL</a>. The basename
-of the config file is <code>chezmoi</code>, and the first config file found is used.</p>
+and supports <a href="https://www.json.org/json-en.html">JSON</a>,
+<a href="https://github.com/toml-lang/toml">TOML</a>, and <a href="https://yaml.org/">YAML</a>. The
+basename of the config file is <code>chezmoi</code>, and the first config file found is
+used.</p>
 <p>In most installations, the config file will be read from
 <code>~/.config/chezmoi/chezmoi.&lt;format&gt;</code>, where <code>&lt;format&gt;</code> is one of <code>json</code>, <code>toml</code>,
 or <code>yaml</code>. The config file can be set explicitly with the <code>--config</code> command
@@ -629,6 +630,13 @@ option.</p>
 <td>string</td>
 <td><code>auto</code></td>
 <td>Use builtin git if <code>git</code> command is not found in $PATH</td>
+</tr>
+<tr>
+<td></td>
+<td><code>verbose</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Make output more verbose</td>
 </tr>
 <tr>
 <td></td>
@@ -761,7 +769,7 @@ option.</p>
 <td><code>exclude</code></td>
 <td>[]string</td>
 <td><em>none</em></td>
-<td>Entry types to exclude from diff</td>
+<td>Entry types to exclude from diffs</td>
 </tr>
 <tr>
 <td></td>
@@ -797,6 +805,13 @@ option.</p>
 <td>string</td>
 <td><code>$EDITOR</code> / <code>$VISUAL</code></td>
 <td>Edit command</td>
+</tr>
+<tr>
+<td></td>
+<td><code>hardlink</code></td>
+<td>bool</td>
+<td><code>true</code></td>
+<td>Invoke editor with a hardlink to the source file</td>
 </tr>
 <tr>
 <td></td>
@@ -1629,6 +1644,14 @@ the source state is read from the directory specified in <code>.chezmoiroot</cod
 interpreted as a relative path to the source directory. <code>.chezmoiroot</code> is read
 before all other files in the source directory.</p>
 <hr>
+<h3 id="chezmoiscripts">
+  <code>.chezmoiscripts</code>
+  <a class="anchor" href="#chezmoiscripts">#</a>
+</h3>
+<p>If a directory called <code>.chezmoiscripts</code> exists in the root of the source
+directory then any scripts in it are executed as normal scripts without creating
+a corresponding directory in the target state.</p>
+<hr>
 <h3 id="chezmoitemplates">
   <code>.chezmoitemplates</code>
   <a class="anchor" href="#chezmoitemplates">#</a>
@@ -2068,7 +2091,9 @@ passed to the editor with the <code>editor.args</code> configuration variable.</
 invoked with the decrypted file. When the editor exits the edited decrypted file
 is re-encrypted and replaces the original file in the source state.</p>
 <p>If the operating system supports hard links, then the edit command invokes the
-editor with filenames which match the target filename.</p>
+editor with filenames which match the target filename, unless the
+<code>edit.hardlink</code> configuration variable is set to <code>false</code> the <code>--hardlink=false</code>
+command line flag is set.</p>
 <p>chezmoi will emit a warning if the editor returns in less than
 <code>edit.minDuration</code> (default <code>1s</code>). To disable this warning, set
 <code>edit.minDuration</code> to <code>0</code>.</p>
@@ -2077,6 +2102,13 @@ editor with filenames which match the target filename.</p>
   <a class="anchor" href="#-a---apply">#</a>
 </h4>
 <p>Apply target immediately after editing. Ignored if there are no targets.</p>
+<h4 id="--hardlink-bool">
+  <code>--hardlink</code> <em>bool</em>
+  <a class="anchor" href="#--hardlink-bool">#</a>
+</h4>
+<p>Invoke the editor with a hard link to the source file with a name matching the
+target filename. This can help the editor determine the type of the file
+correctly. This is the default.</p>
 <h4 id="edit-examples">
   <code>edit</code> examples
   <a class="anchor" href="#edit-examples">#</a>
@@ -2492,8 +2524,10 @@ $ chezmoi source-path ~/.bashrc
 </h4>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi state data
 $ chezmoi state delete --bucket<span style="color:#f92672">=</span>bucket --key<span style="color:#f92672">=</span>key
+$ chezmoi state delete-bucket --bucket<span style="color:#f92672">=</span>bucket
 $ chezmoi state dump
 $ chezmoi state get --bucket<span style="color:#f92672">=</span>bucket --key<span style="color:#f92672">=</span>key
+$ chezmoi state get-bucket --bucket<span style="color:#f92672">=</span>bucket
 $ chezmoi state set --bucket<span style="color:#f92672">=</span>bucket --key<span style="color:#f92672">=</span>key --value<span style="color:#f92672">=</span>value
 $ chezmoi state reset
 </code></pre></div><hr>
@@ -2877,6 +2911,17 @@ the same arguments will only invoke <code>bw get</code> once.</p>
 </h3>
 <p><code>encrypt</code> encrypts <em>plaintext</em> using chezmoi&rsquo;s configured encryption method.</p>
 <hr>
+<h3 id="fromyaml-yamltext">
+  <code>fromYaml</code> <em>yamltext</em>
+  <a class="anchor" href="#fromyaml-yamltext">#</a>
+</h3>
+<p><code>fromYaml</code> returns the parsed value of <em>yamltext</em>.</p>
+<h4 id="fromyaml-examples">
+  <code>fromYaml</code> examples
+  <a class="anchor" href="#fromyaml-examples">#</a>
+</h4>
+<pre tabindex="0"><code>{{ (fromYaml &quot;key1: value\nkey2: value&quot;).key2 }}
+</code></pre><hr>
 <h3 id="githubkeys-user">
   <code>gitHubKeys</code> <em>user</em>
   <a class="anchor" href="#githubkeys-user">#</a>
@@ -3420,6 +3465,17 @@ used.</p>
 {{   $email = &quot;user@example.com&quot; }}
 {{ end }}
 </code></pre><hr>
+<h3 id="toyaml-value">
+  <code>toYaml</code> <em>value</em>
+  <a class="anchor" href="#toyaml-value">#</a>
+</h3>
+<p><code>toYaml</code> returns the YAML representation of <em>value</em>.</p>
+<h4 id="toyaml-examples">
+  <code>toYaml</code> examples
+  <a class="anchor" href="#toyaml-examples">#</a>
+</h4>
+<pre tabindex="0"><code>{{ dict &quot;key&quot; &quot;value&quot; | toYaml }}
+</code></pre><hr>
 <h3 id="vault-key">
   <code>vault</code> <em>key</em>
   <a class="anchor" href="#vault-key">#</a>
@@ -3551,6 +3607,7 @@ generating the initial config file.</p>
         <li><a href="#chezmoiignore"><code>.chezmoiignore</code></a></li>
         <li><a href="#chezmoiremove"><code>.chezmoiremove</code></a></li>
         <li><a href="#chezmoiroot"><code>.chezmoiroot</code></a></li>
+        <li><a href="#chezmoiscripts"><code>.chezmoiscripts</code></a></li>
         <li><a href="#chezmoitemplates"><code>.chezmoitemplates</code></a></li>
         <li><a href="#chezmoiversion"><code>.chezmoiversion</code></a></li>
       </ul>
@@ -3614,6 +3671,7 @@ generating the initial config file.</p>
         <li><a href="#bitwardenfields-arg"><code>bitwardenFields</code> [<em>arg</em>&hellip;]</a></li>
         <li><a href="#decrypt-ciphertext"><code>decrypt</code> <em>ciphertext</em></a></li>
         <li><a href="#encrypt-plaintext"><code>encrypt</code> <em>plaintext</em></a></li>
+        <li><a href="#fromyaml-yamltext"><code>fromYaml</code> <em>yamltext</em></a></li>
         <li><a href="#githubkeys-user"><code>gitHubKeys</code> <em>user</em></a></li>
         <li><a href="#githublatestrelease-user-repo"><code>gitHubLatestRelease</code> <em>user-repo</em></a></li>
         <li><a href="#gopass-gopass-name"><code>gopass</code> <em>gopass-name</em></a></li>
@@ -3642,6 +3700,7 @@ generating the initial config file.</p>
         <li><a href="#secretjson-arg"><code>secretJSON</code> [<em>arg</em>&hellip;]</a></li>
         <li><a href="#stat-name"><code>stat</code> <em>name</em></a></li>
         <li><a href="#stdinisatty"><code>stdinIsATTY</code></a></li>
+        <li><a href="#toyaml-value"><code>toYaml</code> <em>value</em></a></li>
         <li><a href="#vault-key"><code>vault</code> <em>key</em></a></li>
         <li><a href="#writetostdout-string"><code>writeToStdout</code> <em>string</em>&hellip;</a></li>
       </ul>
