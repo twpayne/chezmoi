@@ -51,6 +51,7 @@ Manage your dotfiles across multiple machines, securely.
   * [`.chezmoiignore`](#chezmoiignore)
   * [`.chezmoiremove`](#chezmoiremove)
   * [`.chezmoiroot`](#chezmoiroot)
+  * [`.chezmoiscripts`](#chezmoiscripts)
   * [`.chezmoitemplates`](#chezmoitemplates)
   * [`.chezmoiversion`](#chezmoiversion)
 * [Commands](#commands)
@@ -887,6 +888,14 @@ If a file called `.chezmoiroot` exists in the root of the source directory then
 the source state is read from the directory specified in `.chezmoiroot`
 interpreted as a relative path to the source directory. `.chezmoiroot` is read
 before all other files in the source directory.
+
+---
+
+### `.chezmoiscripts`
+
+If a directory called `.chezmoiscripts` exists in the root of the source
+directory then any scripts in it are executed as normal scripts without creating
+a corresponding directory in the target state.
 
 ---
 
