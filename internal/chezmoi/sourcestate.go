@@ -1713,7 +1713,7 @@ func (s *SourceState) readExternalArchive(
 	}
 
 	sourceRelPaths := make(map[RelPath]SourceRelPath)
-	if err := walkArchive(data, format, func(name string, fileInfo fs.FileInfo, r io.Reader, linkname string) error {
+	if err := WalkArchive(data, format, func(name string, fileInfo fs.FileInfo, r io.Reader, linkname string) error {
 		if external.StripComponents > 0 {
 			components := strings.Split(name, "/")
 			if len(components) <= external.StripComponents {
