@@ -77,6 +77,7 @@ func firstNonEmptyString(ss ...string) string {
 func newGitHubClient(ctx context.Context, httpClient *http.Client) *github.Client {
 	for _, key := range []string{
 		"CHEZMOI_GITHUB_ACCESS_TOKEN",
+		"CHEZMOI_GITHUB_TOKEN",
 		"GITHUB_ACCESS_TOKEN",
 		"GITHUB_TOKEN",
 	} {
