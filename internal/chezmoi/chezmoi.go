@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"fmt"
+	"io"
 	"io/fs"
 	"path/filepath"
 	"regexp"
@@ -14,6 +15,9 @@ import (
 var (
 	// DefaultTemplateOptions are the default template options.
 	DefaultTemplateOptions = []string{"missingkey=error"}
+
+	// Break indicates that a walk should be stopped.
+	Break = io.EOF
 
 	// Skip indicates that entry should be skipped.
 	Skip = filepath.SkipDir
