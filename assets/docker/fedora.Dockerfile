@@ -3,4 +3,5 @@ FROM fedora:latest
 RUN dnf update -y && \
     dnf install -y bzip2 git gnupg golang
 
-ENTRYPOINT ( cd /chezmoi && go test ./... )
+COPY assets/docker/entrypoint.sh /entrypoint.sh
+ENTRYPOINT /entrypoint.sh
