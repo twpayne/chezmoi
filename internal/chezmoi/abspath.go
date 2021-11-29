@@ -36,6 +36,11 @@ func NewAbsPath(absPath string) AbsPath {
 	}
 }
 
+// Append appends s to p.
+func (p AbsPath) Append(s string) AbsPath {
+	return NewAbsPath(p.absPath + s)
+}
+
 // Base returns p's basename.
 func (p AbsPath) Base() string {
 	return path.Base(p.absPath)

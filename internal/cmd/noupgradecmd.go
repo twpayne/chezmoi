@@ -1,5 +1,5 @@
-//go:build noupgrade || windows
-// +build noupgrade windows
+//go:build noupgrade
+// +build noupgrade
 
 package cmd
 
