@@ -930,6 +930,7 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 		"chezmoi": map[string]interface{}{
 			"arch":         runtime.GOARCH,
 			"args":         os.Args,
+			"configFile":   c.configFileAbsPath.String(),
 			"executable":   executable,
 			"fqdnHostname": fqdnHostname,
 			"group":        group,
