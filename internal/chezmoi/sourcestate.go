@@ -144,6 +144,15 @@ func WithLogger(logger *zerolog.Logger) SourceStateOption {
 	}
 }
 
+// WithMinVersion sets the minimum version.
+func WithMinVersion(minVersion *semver.Version) SourceStateOption {
+	return func(s *SourceState) {
+		if minVersion != nil && s.minVersion.LessThan(*minVersion) {
+			s.minVersion = *minVersion
+		}
+	}
+}
+
 // WithMode sets the mode.
 func WithMode(mode Mode) SourceStateOption {
 	return func(s *SourceState) {
@@ -791,7 +800,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 				return err
 			}
 			return vfs.SkipDir
-		case fileInfo.Name() == versionName:
+		case fileInfo.Name() == VersionName:
 			return s.addVersionFile(sourceAbsPath)
 		case strings.HasPrefix(fileInfo.Name(), Prefix):
 			fallthrough

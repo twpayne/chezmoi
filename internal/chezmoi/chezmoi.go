@@ -51,13 +51,13 @@ const (
 	Prefix = ".chezmoi"
 
 	RootName         = Prefix + "root"
+	VersionName      = Prefix + "version"
 	dataName         = Prefix + "data"
 	externalName     = Prefix + "external"
 	ignoreName       = Prefix + "ignore"
 	removeName       = Prefix + "remove"
 	scriptsDirName   = Prefix + "scripts"
 	templatesDirName = Prefix + "templates"
-	versionName      = Prefix + "version"
 )
 
 var (
@@ -80,7 +80,7 @@ var knownPrefixedFiles = newStringSet(
 	externalName+".yaml",
 	ignoreName,
 	removeName,
-	versionName,
+	VersionName,
 )
 
 var modeTypeNames = map[fs.FileMode]string{

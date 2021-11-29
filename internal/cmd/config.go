@@ -1360,6 +1360,19 @@ func (c *Config) newSourceState(
 
 	sourceStateLogger := c.logger.With().Str(logComponentKey, logComponentValueSourceState).Logger()
 
+	versionAbsPath := c.SourceDirAbsPath.JoinString(chezmoi.VersionName)
+	var minVersion *semver.Version
+	switch data, err := c.baseSystem.ReadFile(versionAbsPath); {
+	case errors.Is(err, fs.ErrNotExist):
+	case err != nil:
+		return nil, err
+	default:
+		minVersion, err = semver.NewVersion(strings.TrimSpace(string(data)))
+		if err != nil {
+			return nil, fmt.Errorf("%s: %w", versionAbsPath, err)
+		}
+	}
+
 	sourceDirAbsPath, err := c.sourceDirAbsPath()
 	if err != nil {
 		return nil, err
@@ -1374,6 +1387,7 @@ func (c *Config) newSourceState(
 		chezmoi.WithHTTPClient(httpClient),
 		chezmoi.WithInterpreters(c.Interpreters),
 		chezmoi.WithLogger(&sourceStateLogger),
+		chezmoi.WithMinVersion(minVersion),
 		chezmoi.WithMode(c.Mode),
 		chezmoi.WithPriorityTemplateData(c.Data),
 		chezmoi.WithSourceDir(sourceDirAbsPath),
