@@ -1373,7 +1373,7 @@ func (c *Config) newSourceState(
 		}
 	}
 
-	sourceDirAbsPath, err := c.sourceDirAbsPath()
+	c.SourceDirAbsPath, err = c.sourceDirAbsPath()
 	if err != nil {
 		return nil, err
 	}
@@ -1390,7 +1390,7 @@ func (c *Config) newSourceState(
 		chezmoi.WithMinVersion(minVersion),
 		chezmoi.WithMode(c.Mode),
 		chezmoi.WithPriorityTemplateData(c.Data),
-		chezmoi.WithSourceDir(sourceDirAbsPath),
+		chezmoi.WithSourceDir(c.SourceDirAbsPath),
 		chezmoi.WithSystem(c.sourceSystem),
 		chezmoi.WithTemplateFuncs(c.templateFuncs),
 		chezmoi.WithTemplateOptions(c.Template.Options),

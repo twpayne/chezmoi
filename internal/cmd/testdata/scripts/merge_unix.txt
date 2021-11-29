@@ -24,6 +24,12 @@ chhome home3/user
 chezmoi merge $HOME${/}.file
 stdout ^arg\s+${HOME@R}/\.file\s+${CHEZMOISOURCEDIR@R}/dot_file\s+${WORK@R}/.*/\.file$
 
+chhome home4/user
+
+# test that chezmoi merge respects .chezmoiroot
+chezmoi merge $HOME${/}.file
+stdout ^${HOME@R}/\.file\s+${CHEZMOISOURCEDIR@R}/home/dot_file\s+${WORK@R}/.*/\.file$
+
 -- home/user/.config/chezmoi/chezmoi.toml --
 [merge]
     command = "echo"
@@ -43,4 +49,13 @@ stdout ^arg\s+${HOME@R}/\.file\s+${CHEZMOISOURCEDIR@R}/dot_file\s+${WORK@R}/.*/\
     command = "echo"
     args = ["arg"]
 -- home3/user/.local/share/chezmoi/dot_file --
+# source
+-- home4/user/.config/chezmoi/chezmoi.yaml --
+merge:
+    command: "echo"
+-- home4/user/.file --
+# destination
+-- home4/user/.local/share/chezmoi/.chezmoiroot --
+home
+-- home4/user/.local/share/chezmoi/home/dot_file --
 # source
