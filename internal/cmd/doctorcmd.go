@@ -87,6 +87,9 @@ type fileCheck struct {
 	ifNotExist checkResult
 }
 
+// A goVersionCheck checks the Go version.
+type goVersionCheck struct{}
+
 // An osArchCheck checks that runtime.GOOS and runtime.GOARCH are supported.
 type osArchCheck struct{}
 
@@ -138,6 +141,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			versionStr:  c.versionStr,
 		},
 		&osArchCheck{},
+		&goVersionCheck{},
 		&executableCheck{},
 		&upgradeMethodCheck{},
 		&configFileCheck{
@@ -449,6 +453,14 @@ func (c *fileCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (
 	default:
 		return checkResultOK, fmt.Sprintf("%s is a file", c.filename)
 	}
+}
+
+func (goVersionCheck) Name() string {
+	return "go-version"
+}
+
+func (goVersionCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
+	return checkResultOK, fmt.Sprintf("%s (%s)", runtime.Version(), runtime.Compiler)
 }
 
 func (osArchCheck) Name() string {
