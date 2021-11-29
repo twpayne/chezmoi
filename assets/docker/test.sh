@@ -10,5 +10,5 @@ for distribution in "$@"; do
         exit 1
     fi
     image="$(docker build . -f "assets/docker/${distribution}.Dockerfile" -q)"
-    docker run --rm --volume "${PWD}:/chezmoi" "${image}"
+    docker run --env "CHEZMOI_GITHUB_TOKEN=${CHEZMOI_GITHUB_TOKEN-}" --rm --volume "${PWD}:/chezmoi" "${image}"
 done

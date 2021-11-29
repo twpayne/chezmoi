@@ -48,7 +48,10 @@ func init() {
 	}
 }
 
-var umaskConditionRx = regexp.MustCompile(`\Aumask:([0-7]{3})\z`)
+var (
+	envConditionRx   = regexp.MustCompile(`\Aenv:(\w+)\z`)
+	umaskConditionRx = regexp.MustCompile(`\Aumask:([0-7]{3})\z`)
+)
 
 func TestMain(m *testing.M) {
 	os.Exit(testscript.RunMain(m, map[string]func() int{
@@ -88,6 +91,9 @@ func TestScript(t *testing.T) {
 		Condition: func(cond string) (bool, error) {
 			if result, valid := goosCondition(cond); valid {
 				return result, nil
+			}
+			if m := envConditionRx.FindStringSubmatch(cond); m != nil {
+				return os.Getenv(m[1]) != "", nil
 			}
 			if m := umaskConditionRx.FindStringSubmatch(cond); m != nil {
 				umask, _ := strconv.ParseInt(m[1], 8, 64)
@@ -609,6 +615,7 @@ func setup(env *testscript.Env) error {
 	env.Setenv("PATH", prependDirToPath(binDir, env.Getenv("PATH")))
 	env.Setenv("CHEZMOICONFIGDIR", path.Join(absSlashHomeDir, ".config", "chezmoi"))
 	env.Setenv("CHEZMOISOURCEDIR", path.Join(absSlashHomeDir, ".local", "share", "chezmoi"))
+	env.Setenv("CHEZMOI_GITHUB_TOKEN", os.Getenv("CHEZMOI_GITHUB_TOKEN"))
 
 	switch runtime.GOOS {
 	case "windows":
