@@ -23,6 +23,12 @@ chezmoi forget --force $HOME${/}.file
 chezmoi state get --bucket=entryState --key=$WORK/home/user/.file
 ! stdout .
 
+chhome home2/user
+
+# test that chezmoi forget forgets a file when .chezmoiroot is used
+chezmoi forget --force $HOME${/}.file
+! exists $CHEZMOISOURCEDIR/home/dot_file
+
 -- golden/state-get-dir.json --
 {
   "type": "dir",
@@ -34,3 +40,7 @@ chezmoi state get --bucket=entryState --key=$WORK/home/user/.file
   "mode": 420,
   "contentsSHA256": "634a4dd193c7b3b926d2e08026aa81a416fd41cec52854863b974af422495663"
 }
+-- home2/user/.local/share/chezmoi/.chezmoiroot --
+home
+-- home2/user/.local/share/chezmoi/home/dot_file --
+# contents of .file
