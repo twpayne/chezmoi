@@ -1906,6 +1906,7 @@ chezmoi provides the following automatically-populated variables:
 | `.chezmoi.version.commit`  | `string`   | The git commit at which the `chezmoi` executable was built, if set.                                                             |
 | `.chezmoi.version.date`    | `string`   | The timestamp at which the `chezmoi` executable was built, if set.                                                              |
 | `.chezmoi.version.version` | `string`   | The version of chezmoi.                                                                                                         |
+| `.chezmoi.workingTree`     | `string`   | The working tree of the source directory.                                                                                       |
 
 Additional variables can be defined in the config file in the `data` section.
 Variable names must consist of a letter and be followed by zero or more letters

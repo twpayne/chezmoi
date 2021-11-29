@@ -946,6 +946,7 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 				"date":    c.versionInfo.Date,
 				"version": c.versionInfo.Version,
 			},
+			"workingTree": c.WorkingTreeAbsPath.String(),
 		},
 	}
 }
