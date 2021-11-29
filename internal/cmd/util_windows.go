@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"io"
+	"io/fs"
 	"os"
 
 	"golang.org/x/sys/windows"
@@ -43,4 +44,8 @@ func enableVirtualTerminalProcessing(w io.Writer) error {
 		return nil // Ignore error in the case that fd is not a terminal.
 	}
 	return windows.SetConsoleMode(windows.Handle(file.Fd()), dwMode|windows.ENABLE_VIRTUAL_TERMINAL_PROCESSING)
+}
+
+func fileInfoUID(fs.FileInfo) int {
+	return 0
 }
