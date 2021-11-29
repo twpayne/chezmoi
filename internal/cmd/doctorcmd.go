@@ -191,7 +191,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			name:        "age-command",
 			binaryname:  c.Age.Command,
 			versionArgs: []string{"-version"},
-			versionRx:   regexp.MustCompile(`v(\d+\.\d+\.\d+\S*)`),
+			versionRx:   regexp.MustCompile(`(\d+\.\d+\.\d+\S*)`),
 			ifNotSet:    checkResultWarning,
 			ifNotExist:  checkResultInfo,
 		},
