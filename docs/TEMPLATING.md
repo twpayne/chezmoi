@@ -249,26 +249,26 @@ in the result.
 
 ### Boolean functions
 
-| Function | Return value                                              |
-| -------- | --------------------------------------------------------- |
-| `eq`     | Returns true if the first argument is equal to any of the other arguments. |
-| `not`    | Returns the boolean negation of its single argument. |
-| `and`    | Returns the boolean AND of its arguments by returning the first empty argument or the last argument, that is, `and x y` behaves as `if x then y else x`. All the arguments are evaluated. |
-| `or`     | Returns the boolean OR of its arguments by returning the first non-empty argument or the last argument, that is, `or x y` behaves as `if x then x else y` All the arguments are evaluated. |
+| Function | Return value                                                                                                                                                                              |
+| -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `eq`     | Returns true if the first argument is equal to any of the other arguments                                                                                                                 |
+| `not`    | Returns the boolean negation of its single argument                                                                                                                                       |
+| `and`    | Returns the boolean AND of its arguments by returning the first empty argument or the last argument, that is, `and x y` behaves as `if x then y else x`. All the arguments are evaluated  |
+| `or`     | Returns the boolean OR of its arguments by returning the first non-empty argument or the last argument, that is, `or x y` behaves as `if x then x else y` All the arguments are evaluated |
 
 ---
 
 ### Integer functions
 
-| Function | Return value                                |
-| -------- | ------------------------------------------- |
-| `len`    | Returns the integer length of its argument. |
-| `eq`     | Returns the boolean truth of arg1 == arg2.  |
-| `ne`     | Returns the boolean truth of arg1 != arg2.  |
-| `lt`     | Returns the boolean truth of arg1 < arg2.   |
-| `le`     | Returns the boolean truth of arg1 <= arg2.  |
-| `gt`     | Returns the boolean truth of arg1 > arg2.   |
-| `ge`     | Returns the boolean truth of arg1 >= arg2.  |
+| Function | Return value                               |
+| -------- | ------------------------------------------ |
+| `len`    | Returns the integer length of its argument |
+| `eq`     | Returns the boolean truth of arg1 == arg2  |
+| `ne`     | Returns the boolean truth of arg1 != arg2  |
+| `lt`     | Returns the boolean truth of arg1 < arg2   |
+| `le`     | Returns the boolean truth of arg1 <= arg2  |
+| `gt`     | Returns the boolean truth of arg1 > arg2   |
+| `ge`     | Returns the boolean truth of arg1 >= arg2  |
 
 ---
 
