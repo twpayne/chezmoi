@@ -1216,15 +1216,7 @@ func TestSourceStateRead(t *testing.T) {
 					".chezmoiversion": "1.2.3\n",
 				},
 			},
-			expectedSourceState: NewSourceState(
-				withMinVersion(
-					semver.Version{
-						Major: 1,
-						Minor: 2,
-						Patch: 3,
-					},
-				),
-			),
+			expectedSourceState: NewSourceState(),
 		},
 		{
 			name: "chezmoiversion_multiple",
@@ -1236,27 +1228,7 @@ func TestSourceStateRead(t *testing.T) {
 					},
 				},
 			},
-			expectedSourceState: NewSourceState(
-				withEntries(map[RelPath]SourceStateEntry{
-					NewRelPath("dir"): &SourceStateDir{
-						origin:        "dir",
-						sourceRelPath: NewSourceRelDirPath("dir"),
-						Attr: DirAttr{
-							TargetName: "dir",
-						},
-						targetStateEntry: &TargetStateDir{
-							perm: 0o777 &^ chezmoitest.Umask,
-						},
-					},
-				}),
-				withMinVersion(
-					semver.Version{
-						Major: 2,
-						Minor: 3,
-						Patch: 4,
-					},
-				),
-			),
+			expectedError: "source state requires version 2.3.4 or later, chezmoi is version 1.2.3",
 		},
 		{
 			name: "ignore_dir",
@@ -1288,6 +1260,11 @@ func TestSourceStateRead(t *testing.T) {
 					WithDestDir(NewAbsPath("/home/user")),
 					WithSourceDir(NewAbsPath("/home/user/.local/share/chezmoi")),
 					WithSystem(system),
+					WithVersion(semver.Version{
+						Major: 1,
+						Minor: 2,
+						Patch: 3,
+					}),
 				)
 				err := s.Read(ctx, nil)
 				if tc.expectedError != "" {
@@ -1303,6 +1280,7 @@ func TestSourceStateRead(t *testing.T) {
 				s.baseSystem = nil
 				s.system = nil
 				s.templateData = nil
+				s.version = semver.Version{}
 				assert.Equal(t, tc.expectedSourceState, s)
 			})
 		})
@@ -1533,6 +1511,7 @@ func TestWalkSourceDir(t *testing.T) {
 	}
 	expectedAbsPaths := []AbsPath{
 		sourceDirAbsPath,
+		sourceDirAbsPath.JoinString(".chezmoiversion"),
 		sourceDirAbsPath.JoinString(".chezmoidata.json"),
 		sourceDirAbsPath.JoinString(".chezmoidata.toml"),
 		sourceDirAbsPath.JoinString(".chezmoidata.yaml"),
@@ -1541,7 +1520,6 @@ func TestWalkSourceDir(t *testing.T) {
 		sourceDirAbsPath.JoinString(".chezmoiexternal.yaml"),
 		sourceDirAbsPath.JoinString(".chezmoiignore"),
 		sourceDirAbsPath.JoinString(".chezmoiremove"),
-		sourceDirAbsPath.JoinString(".chezmoiversion"),
 		sourceDirAbsPath.JoinString("dot_file"),
 	}
 
@@ -1601,12 +1579,6 @@ func withEntries(sourceEntries map[RelPath]SourceStateEntry) SourceStateOption {
 func withIgnore(ignore *patternSet) SourceStateOption {
 	return func(s *SourceState) {
 		s.ignore = ignore
-	}
-}
-
-func withMinVersion(minVersion semver.Version) SourceStateOption {
-	return func(s *SourceState) {
-		s.minVersion = minVersion
 	}
 }
 
