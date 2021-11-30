@@ -79,7 +79,7 @@ type SourceState struct {
 	interpreters            map[string]*Interpreter
 	httpClient              *http.Client
 	logger                  *zerolog.Logger
-	minVersion              semver.Version
+	version                 semver.Version
 	mode                    Mode
 	defaultTemplateDataFunc func() map[string]interface{}
 	readTemplateData        bool
@@ -144,15 +144,6 @@ func WithLogger(logger *zerolog.Logger) SourceStateOption {
 	}
 }
 
-// WithMinVersion sets the minimum version.
-func WithMinVersion(minVersion *semver.Version) SourceStateOption {
-	return func(s *SourceState) {
-		if minVersion != nil && s.minVersion.LessThan(*minVersion) {
-			s.minVersion = *minVersion
-		}
-	}
-}
-
 // WithMode sets the mode.
 func WithMode(mode Mode) SourceStateOption {
 	return func(s *SourceState) {
@@ -206,6 +197,13 @@ func WithTemplateFuncs(templateFuncs template.FuncMap) SourceStateOption {
 func WithTemplateOptions(templateOptions []string) SourceStateOption {
 	return func(s *SourceState) {
 		s.templateOptions = templateOptions
+	}
+}
+
+// WithVersion sets the version.
+func WithVersion(version semver.Version) SourceStateOption {
+	return func(s *SourceState) {
+		s.version = version
 	}
 }
 
@@ -688,11 +686,6 @@ func (s *SourceState) Ignore(targetRelPath RelPath) bool {
 	return s.ignore.match(targetRelPath.String())
 }
 
-// MinVersion returns the minimum version for which s is valid.
-func (s *SourceState) MinVersion() semver.Version {
-	return s.minVersion
-}
-
 // MustEntry returns the source state entry associated with targetRelPath, and
 // panics if it does not exist.
 func (s *SourceState) MustEntry(targetRelPath RelPath) SourceStateEntry {
@@ -801,7 +794,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			}
 			return vfs.SkipDir
 		case fileInfo.Name() == VersionName:
-			return s.addVersionFile(sourceAbsPath)
+			return s.readVersionFile(sourceAbsPath)
 		case strings.HasPrefix(fileInfo.Name(), Prefix):
 			fallthrough
 		case strings.HasPrefix(fileInfo.Name(), ignorePrefix):
@@ -1111,24 +1104,6 @@ func (s *SourceState) addTemplatesDir(templatesDirAbsPath AbsPath) error {
 		}
 	}
 	return WalkSourceDir(s.system, templatesDirAbsPath, walkFunc)
-}
-
-// addVersionFile reads a .chezmoiversion file from source path and updates s's
-// minimum version if it contains a more recent version than the current minimum
-// version.
-func (s *SourceState) addVersionFile(sourceAbsPath AbsPath) error {
-	data, err := s.system.ReadFile(sourceAbsPath)
-	if err != nil {
-		return err
-	}
-	version, err := semver.NewVersion(strings.TrimSpace(string(data)))
-	if err != nil {
-		return err
-	}
-	if s.minVersion.LessThan(*version) {
-		s.minVersion = *version
-	}
-	return nil
 }
 
 // executeTemplate executes the template at path and returns the result.
@@ -1899,6 +1874,26 @@ func (s *SourceState) readScriptsDir(scriptsDirAbsPath AbsPath) (map[RelPath][]S
 		return nil, err
 	}
 	return allSourceStateEntries, nil
+}
+
+// readVersionFile reads a .chezmoiversion file from sourceAbsPath and returns
+// an error if the version is newer that s's version.
+func (s *SourceState) readVersionFile(sourceAbsPath AbsPath) error {
+	data, err := s.system.ReadFile(sourceAbsPath)
+	if err != nil {
+		return err
+	}
+	version, err := semver.NewVersion(strings.TrimSpace(string(data)))
+	if err != nil {
+		return err
+	}
+	if s.version.LessThan(*version) {
+		return &TooOldError{
+			Have: s.version,
+			Need: *version,
+		}
+	}
+	return nil
 }
 
 // sourceStateEntry returns a new SourceStateEntry based on actualStateEntry.

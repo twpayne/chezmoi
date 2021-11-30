@@ -9,6 +9,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/coreos/go-semver/semver"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	vfs "github.com/twpayne/go-vfs/v4"
@@ -41,6 +42,11 @@ func TestZIPWriterSystem(t *testing.T) {
 			WithBaseSystem(system),
 			WithSourceDir(NewAbsPath("/home/user/.local/share/chezmoi")),
 			WithSystem(system),
+			WithVersion(semver.Version{
+				Major: 1,
+				Minor: 2,
+				Patch: 3,
+			}),
 		)
 		require.NoError(t, s.Read(ctx, nil))
 		requireEvaluateAll(t, s, system)

@@ -110,7 +110,8 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	if c.version == nil && !c.force {
+	var zeroVersion semver.Version
+	if c.version == zeroVersion && !c.force {
 		return errors.New("cannot upgrade dev version to latest released version unless --force is set")
 	}
 

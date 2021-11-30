@@ -150,7 +150,7 @@ type Config struct {
 	verify          verifyCmdConfig
 
 	// Version information.
-	version     *semver.Version
+	version     semver.Version
 	versionInfo VersionInfo
 	versionStr  string
 
@@ -1362,15 +1362,21 @@ func (c *Config) newSourceState(
 	sourceStateLogger := c.logger.With().Str(logComponentKey, logComponentValueSourceState).Logger()
 
 	versionAbsPath := c.SourceDirAbsPath.JoinString(chezmoi.VersionName)
-	var minVersion *semver.Version
 	switch data, err := c.baseSystem.ReadFile(versionAbsPath); {
 	case errors.Is(err, fs.ErrNotExist):
 	case err != nil:
 		return nil, err
 	default:
-		minVersion, err = semver.NewVersion(strings.TrimSpace(string(data)))
+		minVersion, err := semver.NewVersion(strings.TrimSpace(string(data)))
 		if err != nil {
 			return nil, fmt.Errorf("%s: %w", versionAbsPath, err)
+		}
+		var zeroVersion semver.Version
+		if c.version != zeroVersion && c.version.LessThan(*minVersion) {
+			return nil, &chezmoi.TooOldError{
+				Need: *minVersion,
+				Have: c.version,
+			}
 		}
 	}
 
@@ -1388,23 +1394,19 @@ func (c *Config) newSourceState(
 		chezmoi.WithHTTPClient(httpClient),
 		chezmoi.WithInterpreters(c.Interpreters),
 		chezmoi.WithLogger(&sourceStateLogger),
-		chezmoi.WithMinVersion(minVersion),
 		chezmoi.WithMode(c.Mode),
 		chezmoi.WithPriorityTemplateData(c.Data),
 		chezmoi.WithSourceDir(c.SourceDirAbsPath),
 		chezmoi.WithSystem(c.sourceSystem),
 		chezmoi.WithTemplateFuncs(c.templateFuncs),
 		chezmoi.WithTemplateOptions(c.Template.Options),
+		chezmoi.WithVersion(c.version),
 	}, options...)...)
 
 	if err := s.Read(ctx, &chezmoi.ReadOptions{
 		RefreshExternals: c.refreshExternals,
 	}); err != nil {
 		return nil, err
-	}
-
-	if minVersion := s.MinVersion(); c.version != nil && !isDevVersion(c.version) && c.version.LessThan(minVersion) {
-		return nil, fmt.Errorf("source state requires version %s or later, chezmoi is version %s", minVersion, c.version)
 	}
 
 	return s, nil
@@ -2000,12 +2002,6 @@ func (c *Config) writeOutputString(data string) error {
 	return c.writeOutput([]byte(data))
 }
 
-// isDevVersion returns true if version is a development version (i.e. that the
-// major, minor, and patch version numbers are all zero).
-func isDevVersion(v *semver.Version) bool {
-	return v.Major == 0 && v.Minor == 0 && v.Patch == 0
-}
-
 // withVersionInfo sets the version information.
 func withVersionInfo(versionInfo VersionInfo) configOption {
 	return func(c *Config) error {
@@ -2034,7 +2030,9 @@ func withVersionInfo(versionInfo VersionInfo) configOption {
 		if versionInfo.BuiltBy != "" {
 			versionElems = append(versionElems, "built by "+versionInfo.BuiltBy)
 		}
-		c.version = version
+		if version != nil {
+			c.version = *version
+		}
 		c.versionInfo = versionInfo
 		c.versionStr = strings.Join(versionElems, ", ")
 		return nil

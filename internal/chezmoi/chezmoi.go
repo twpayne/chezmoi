@@ -10,6 +10,8 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+
+	"github.com/coreos/go-semver/semver"
 )
 
 var (
@@ -95,6 +97,17 @@ var modeTypeNames = map[fs.FileMode]string{
 	fs.ModeSocket:     "socket",
 	fs.ModeDevice:     "device",
 	fs.ModeCharDevice: "char device",
+}
+
+// A TooOldErrror is returned when the source state requires a newer version of
+// chezmoi.
+type TooOldError struct {
+	Have semver.Version
+	Need semver.Version
+}
+
+func (e *TooOldError) Error() string {
+	return fmt.Sprintf("source state requires version %s or later, chezmoi is version %s", e.Need, e.Have)
 }
 
 type inconsistentStateError struct {
