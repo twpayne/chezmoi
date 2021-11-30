@@ -456,30 +456,30 @@ names.
 The following prefixes and suffixes are special, and are collectively referred
 to as "attributes":
 
-| Prefix        | Effect                                                                          |
-| ------------- | ------------------------------------------------------------------------------- |
-| `after_`      | Run script after updating the destination.                                      |
-| `before_`     | Run script before updating the destination.                                     |
-| `create_`     | Ensure that the file exists, and create it with contents if it does not.        |
-| `dot_`        | Rename to use a leading dot, e.g. `dot_foo` becomes `.foo`.                     |
-| `empty_`      | Ensure the file exists, even if is empty. By default, empty files are removed.  |
-| `encrypted_`  | Encrypt the file in the source state.                                           |
-| `exact_`      | Remove anything not managed by chezmoi.                                         |
-| `executable_` | Add executable permissions to the target file.                                  |
-| `literal_`    | Stop parsing prefix attributes.                                                 |
-| `modify_`     | Treat the contents as a script that modifies an existing file.                  |
-| `once_`       | Only run the script if it has not been run before.                              |
-| `onchange_`   | Only run the script if its contents have changed from the last time it was run. |
-| `private_`    | Remove all group and world permissions from the target file or directory.       |
-| `readonly_`   | Remove all write permissions from the target file or directory.                 |
-| `remove_`     | Remove the entry if it exists.                                                  |
-| `run_`        | Treat the contents as a script to run.                                          |
-| `symlink_`    | Create a symlink instead of a regular file.                                     |
+| Prefix        | Effect                                                                         |
+| ------------- | ------------------------------------------------------------------------------ |
+| `after_`      | Run script after updating the destination                                      |
+| `before_`     | Run script before updating the destination                                     |
+| `create_`     | Ensure that the file exists, and create it with contents if it does not        |
+| `dot_`        | Rename to use a leading dot, e.g. `dot_foo` becomes `.foo`                     |
+| `empty_`      | Ensure the file exists, even if is empty. By default, empty files are removed  |
+| `encrypted_`  | Encrypt the file in the source state                                           |
+| `exact_`      | Remove anything not managed by chezmoi                                         |
+| `executable_` | Add executable permissions to the target file                                  |
+| `literal_`    | Stop parsing prefix attributes                                                 |
+| `modify_`     | Treat the contents as a script that modifies an existing file                  |
+| `once_`       | Only run the script if it has not been run before                              |
+| `onchange_`   | Only run the script if its contents have changed from the last time it was run |
+| `private_`    | Remove all group and world permissions from the target file or directory       |
+| `readonly_`   | Remove all write permissions from the target file or directory                 |
+| `remove_`     | Remove the entry if it exists                                                  |
+| `run_`        | Treat the contents as a script to run                                          |
+| `symlink_`    | Create a symlink instead of a regular file                                     |
 
-| Suffix     | Effect                                               |
-| ---------- | ---------------------------------------------------- |
-| `.literal` | Stop parsing suffix attributes.                      |
-| `.tmpl`    | Treat the contents of the source file as a template. |
+| Suffix     | Effect                                              |
+| ---------- | --------------------------------------------------- |
+| `.literal` | Stop parsing suffix attributes                      |
+| `.tmpl`    | Treat the contents of the source file as a template |
 
 Different target types allow different prefixes and suffixes. The order of
 prefixes is important.
@@ -1887,27 +1887,27 @@ For a full list of options, see
 
 chezmoi provides the following automatically-populated variables:
 
-| Variable                   | Type       | Value                                                                                                                           |
-| -------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| `.chezmoi.arch`            | `string`   | Architecture, e.g. `amd64`, `arm`, etc. as returned by [runtime.GOARCH](https://pkg.go.dev/runtime?tab=doc#pkg-constants).      |
-| `.chezmoi.args`            | `[]string` | The arguments passed to the `chezmoi` command, starting with the program command.                                               |
-| `.chezmoi.configFile`      | `string`   | The path to the configuration file used by chezmoi, if any.                                                                     |
-| `.chezmoi.executable`      | `string`   | The path to the `chezmoi` executable, if available.                                                                             |
-| `.chezmoi.fqdnHostname`    | `string`   | The fully-qualified domain name hostname of the machine chezmoi is running on.                                                  |
-| `.chezmoi.group`           | `string`   | The group of the user running chezmoi.                                                                                          |
-| `.chezmoi.homeDir`         | `string`   | The home directory of the user running chezmoi.                                                                                 |
-| `.chezmoi.hostname`        | `string`   | The hostname of the machine chezmoi is running on, up to the first `.`.                                                         |
-| `.chezmoi.kernel`          | `string`   | Contains information from `/proc/sys/kernel`. Linux only, useful for detecting specific kernels (e.g. Microsoft's WSL kernel).  |
-| `.chezmoi.os`              | `string`   | Operating system, e.g. `darwin`, `linux`, etc. as returned by [runtime.GOOS](https://pkg.go.dev/runtime?tab=doc#pkg-constants). |
-| `.chezmoi.osRelease`       | `string`   | The information from `/etc/os-release`, Linux only, run `chezmoi data` to see its output.                                       |
-| `.chezmoi.sourceDir`       | `string`   | The source directory.                                                                                                           |
-| `.chezmoi.sourceFile`      | `string`   | The path of the template relative to the source directory.                                                                      |
-| `.chezmoi.username`        | `string`   | The username of the user running chezmoi.                                                                                       |
-| `.chezmoi.version.builtBy` | `string`   | The program that built the `chezmoi` executable, if set.                                                                        |
-| `.chezmoi.version.commit`  | `string`   | The git commit at which the `chezmoi` executable was built, if set.                                                             |
-| `.chezmoi.version.date`    | `string`   | The timestamp at which the `chezmoi` executable was built, if set.                                                              |
-| `.chezmoi.version.version` | `string`   | The version of chezmoi.                                                                                                         |
-| `.chezmoi.workingTree`     | `string`   | The working tree of the source directory.                                                                                       |
+| Variable                   | Type       | Value                                                                                                                          |
+| -------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `.chezmoi.arch`            | `string`   | Architecture, e.g. `amd64`, `arm`, etc. as returned by [runtime.GOARCH](https://pkg.go.dev/runtime?tab=doc#pkg-constants)      |
+| `.chezmoi.args`            | `[]string` | The arguments passed to the `chezmoi` command, starting with the program command                                               |
+| `.chezmoi.configFile`      | `string`   | The path to the configuration file used by chezmoi, if any                                                                     |
+| `.chezmoi.executable`      | `string`   | The path to the `chezmoi` executable, if available                                                                             |
+| `.chezmoi.fqdnHostname`    | `string`   | The fully-qualified domain name hostname of the machine chezmoi is running on                                                  |
+| `.chezmoi.group`           | `string`   | The group of the user running chezmoi                                                                                          |
+| `.chezmoi.homeDir`         | `string`   | The home directory of the user running chezmoi                                                                                 |
+| `.chezmoi.hostname`        | `string`   | The hostname of the machine chezmoi is running on, up to the first `.`                                                         |
+| `.chezmoi.kernel`          | `string`   | Contains information from `/proc/sys/kernel`. Linux only, useful for detecting specific kernels (e.g. Microsoft's WSL kernel)  |
+| `.chezmoi.os`              | `string`   | Operating system, e.g. `darwin`, `linux`, etc. as returned by [runtime.GOOS](https://pkg.go.dev/runtime?tab=doc#pkg-constants) |
+| `.chezmoi.osRelease`       | `string`   | The information from `/etc/os-release`, Linux only, run `chezmoi data` to see its output                                       |
+| `.chezmoi.sourceDir`       | `string`   | The source directory                                                                                                           |
+| `.chezmoi.sourceFile`      | `string`   | The path of the template relative to the source directory                                                                      |
+| `.chezmoi.username`        | `string`   | The username of the user running chezmoi                                                                                       |
+| `.chezmoi.version.builtBy` | `string`   | The program that built the `chezmoi` executable, if set                                                                        |
+| `.chezmoi.version.commit`  | `string`   | The git commit at which the `chezmoi` executable was built, if set                                                             |
+| `.chezmoi.version.date`    | `string`   | The timestamp at which the `chezmoi` executable was built, if set                                                              |
+| `.chezmoi.version.version` | `string`   | The version of chezmoi                                                                                                         |
+| `.chezmoi.workingTree`     | `string`   | The working tree of the source directory                                                                                       |
 
 Additional variables can be defined in the config file in the `data` section.
 Variable names must consist of a letter and be followed by zero or more letters
