@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Comparison Guide #   Comparison table #      chezmoi dotbot rcm homesick vcsh yadm bare git     Distribution Single binary Python package Multiple files Ruby gem Single script or package Single script -   Install method Many git submodule Many Ruby gem Many Many Manual   Non-root install on bare system 🟢 🟠 🟠 🟠 🟢 🟢 🟢   Windows support 🟢 🔴 🔴 🔴 🔴 🔴 🟢   Bootstrap requirements None Python, git Perl, git Ruby, git sh, git git git   Source repos Single Single Multiple Single Multiple Single Single   dotfiles are&hellip; Files Symlinks Files Symlinks Files Files Files   Config file Optional Required Optional None None None Optional   Private files 🟢 🔴 🔴 🔴 🔴 🔴 🔴   Show differences without applying 🟢 🔴 🔴 🔴 🟢 🟢 🟢   Whole file encryption 🟢 🔴 🔴 🔴 🔴 🟢 🔴   Password manager integration 🟢 🔴 🔴 🔴 🔴 🔴 🔴   Machine-to-machine file differences Templates Alternative files Alternative files Alternative files Branches Templates 🟠   Custom variables in templates 🟢 🔴 🔴 🔴 🔴 🔴 🔴   Executable files 🟢 🟢 🟢 🟢 🟢 🔴 🟢   File creation with initial contents 🟢 🔴 🔴 🔴 🟢 🔴 🔴   Externals 🟢 🔴 🔴 🔴 🔴 🔴 🔴   Manage partial files 🟢 🔴 🔴 🔴 🟠 🔴 🟠   File removal 🟢 🔴 🔴 🔴 🟢 🔴 🔴   Directory creation 🟢 🟢 🟢 🔴 🟢 🔴 🟢   Run scripts 🟢 🟢 🟢 🔴 🟢 🔴 🔴   Run once scripts 🟢 🔴 🔴 🔴 🟢 🔴 🔴   Machine-to-machine symlink differences 🟢 🔴 🔴 🔴 🟠 🟢 🟠   Shell completion 🟢 🔴 🔴 🔴 🟢 🟢 🟢   Archive import 🟢 🔴 🔴 🔴 🟢 🔴 🟢   Archive export 🟢 🔴 🔴 🔴 🟢 🔴 🟢   Implementation language Go Python Perl Ruby POSIX Shell Bash C    🟢 Supported 🟠 Possible with significant manual effort 🔴 Not supported">
+<meta name="description" content="Comparison Guide #   Comparison table #      chezmoi dotbot rcm homesick vcsh yadm bare git     Distribution Single binary Python package Multiple files Ruby gem Single script or package Single script -   Install method Many git submodule Many Ruby gem Many Many Manual   Non-root install on bare system ✅ ⁉️ ⁉️ ⁉️ ✅ ✅ ✅   Windows support ✅ ❌ ❌ ❌ ❌ ❌ ✅   Bootstrap requirements None Python, git Perl, git Ruby, git sh, git git git   Source repos Single Single Multiple Single Multiple Single Single   dotfiles are&hellip; Files Symlinks Files Symlinks Files Files Files   Config file Optional Required Optional None None None Optional   Private files ✅ ❌ ❌ ❌ ❌ ❌ ❌   Show differences without applying ✅ ❌ ❌ ❌ ✅ ✅ ✅   Whole file encryption ✅ ❌ ❌ ❌ ❌ ✅ ❌   Password manager integration ✅ ❌ ❌ ❌ ❌ ❌ ❌   Machine-to-machine file differences Templates Alternative files Alternative files Alternative files Branches Templates ⁉️   Custom variables in templates ✅ ❌ ❌ ❌ ❌ ❌ ❌   Executable files ✅ ✅ ✅ ✅ ✅ ❌ ✅   File creation with initial contents ✅ ❌ ❌ ❌ ✅ ❌ ❌   Externals ✅ ❌ ❌ ❌ ❌ ❌ ❌   Manage partial files ✅ ❌ ❌ ❌ ⁉️ ❌ ⁉️   File removal ✅ ❌ ❌ ❌ ✅ ❌ ❌   Directory creation ✅ ✅ ✅ ❌ ✅ ❌ ✅   Run scripts ✅ ✅ ✅ ❌ ✅ ❌ ❌   Run once scripts ✅ ❌ ❌ ❌ ✅ ❌ ❌   Machine-to-machine symlink differences ✅ ❌ ❌ ❌ ⁉️ ✅ ⁉️   Shell completion ✅ ❌ ❌ ❌ ✅ ✅ ✅   Archive import ✅ ❌ ❌ ❌ ✅ ❌ ✅   Archive export ✅ ❌ ❌ ❌ ✅ ❌ ✅   Implementation language Go Python Perl Ruby POSIX Shell Bash C    ✅ Supported, ⁉️ Possible with significant manual effort, ❌ Not supported">
 <meta name="theme-color" content="#FFFFFF">
 <meta name="color-scheme" content="light dark"><meta property="og:title" content="Comparison" />
-<meta property="og:description" content="Comparison Guide #   Comparison table #      chezmoi dotbot rcm homesick vcsh yadm bare git     Distribution Single binary Python package Multiple files Ruby gem Single script or package Single script -   Install method Many git submodule Many Ruby gem Many Many Manual   Non-root install on bare system 🟢 🟠 🟠 🟠 🟢 🟢 🟢   Windows support 🟢 🔴 🔴 🔴 🔴 🔴 🟢   Bootstrap requirements None Python, git Perl, git Ruby, git sh, git git git   Source repos Single Single Multiple Single Multiple Single Single   dotfiles are&hellip; Files Symlinks Files Symlinks Files Files Files   Config file Optional Required Optional None None None Optional   Private files 🟢 🔴 🔴 🔴 🔴 🔴 🔴   Show differences without applying 🟢 🔴 🔴 🔴 🟢 🟢 🟢   Whole file encryption 🟢 🔴 🔴 🔴 🔴 🟢 🔴   Password manager integration 🟢 🔴 🔴 🔴 🔴 🔴 🔴   Machine-to-machine file differences Templates Alternative files Alternative files Alternative files Branches Templates 🟠   Custom variables in templates 🟢 🔴 🔴 🔴 🔴 🔴 🔴   Executable files 🟢 🟢 🟢 🟢 🟢 🔴 🟢   File creation with initial contents 🟢 🔴 🔴 🔴 🟢 🔴 🔴   Externals 🟢 🔴 🔴 🔴 🔴 🔴 🔴   Manage partial files 🟢 🔴 🔴 🔴 🟠 🔴 🟠   File removal 🟢 🔴 🔴 🔴 🟢 🔴 🔴   Directory creation 🟢 🟢 🟢 🔴 🟢 🔴 🟢   Run scripts 🟢 🟢 🟢 🔴 🟢 🔴 🔴   Run once scripts 🟢 🔴 🔴 🔴 🟢 🔴 🔴   Machine-to-machine symlink differences 🟢 🔴 🔴 🔴 🟠 🟢 🟠   Shell completion 🟢 🔴 🔴 🔴 🟢 🟢 🟢   Archive import 🟢 🔴 🔴 🔴 🟢 🔴 🟢   Archive export 🟢 🔴 🔴 🔴 🟢 🔴 🟢   Implementation language Go Python Perl Ruby POSIX Shell Bash C    🟢 Supported 🟠 Possible with significant manual effort 🔴 Not supported" />
+<meta property="og:description" content="Comparison Guide #   Comparison table #      chezmoi dotbot rcm homesick vcsh yadm bare git     Distribution Single binary Python package Multiple files Ruby gem Single script or package Single script -   Install method Many git submodule Many Ruby gem Many Many Manual   Non-root install on bare system ✅ ⁉️ ⁉️ ⁉️ ✅ ✅ ✅   Windows support ✅ ❌ ❌ ❌ ❌ ❌ ✅   Bootstrap requirements None Python, git Perl, git Ruby, git sh, git git git   Source repos Single Single Multiple Single Multiple Single Single   dotfiles are&hellip; Files Symlinks Files Symlinks Files Files Files   Config file Optional Required Optional None None None Optional   Private files ✅ ❌ ❌ ❌ ❌ ❌ ❌   Show differences without applying ✅ ❌ ❌ ❌ ✅ ✅ ✅   Whole file encryption ✅ ❌ ❌ ❌ ❌ ✅ ❌   Password manager integration ✅ ❌ ❌ ❌ ❌ ❌ ❌   Machine-to-machine file differences Templates Alternative files Alternative files Alternative files Branches Templates ⁉️   Custom variables in templates ✅ ❌ ❌ ❌ ❌ ❌ ❌   Executable files ✅ ✅ ✅ ✅ ✅ ❌ ✅   File creation with initial contents ✅ ❌ ❌ ❌ ✅ ❌ ❌   Externals ✅ ❌ ❌ ❌ ❌ ❌ ❌   Manage partial files ✅ ❌ ❌ ❌ ⁉️ ❌ ⁉️   File removal ✅ ❌ ❌ ❌ ✅ ❌ ❌   Directory creation ✅ ✅ ✅ ❌ ✅ ❌ ✅   Run scripts ✅ ✅ ✅ ❌ ✅ ❌ ❌   Run once scripts ✅ ❌ ❌ ❌ ✅ ❌ ❌   Machine-to-machine symlink differences ✅ ❌ ❌ ❌ ⁉️ ✅ ⁉️   Shell completion ✅ ❌ ❌ ❌ ✅ ✅ ✅   Archive import ✅ ❌ ❌ ❌ ✅ ❌ ✅   Archive export ✅ ❌ ❌ ❌ ✅ ❌ ✅   Implementation language Go Python Perl Ruby POSIX Shell Bash C    ✅ Supported, ⁉️ Possible with significant manual effort, ❌ Not supported" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chezmoi.io/docs/comparison/" /><meta property="article:section" content="docs" />
 
@@ -17,7 +17,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.18d55b65d69764ed7583e7799ea8066a0796ecf5c8a3ed03d444e539327dcc5a.js" integrity="sha256-GNVbZdaXZO11g&#43;d5nqgGageW7PXIo&#43;0D1ETlOTJ9zFo=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.4b7d32df98da608663f8c37841872bbff5b58e72c25c4af1c55244ae1ae5f6d8.js" integrity="sha256-S30y35jaYIZj&#43;MN4QYcrv/W1jnLCXErxxVJErhrl9tg=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -184,23 +184,23 @@ https://github.com/alex-shpak/hugo-book
 </tr>
 <tr>
 <td>Non-root install on bare system</td>
-<td>🟢</td>
-<td>🟠</td>
-<td>🟠</td>
-<td>🟠</td>
-<td>🟢</td>
-<td>🟢</td>
-<td>🟢</td>
+<td>✅</td>
+<td>⁉️</td>
+<td>⁉️</td>
+<td>⁉️</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
 </tr>
 <tr>
 <td>Windows support</td>
-<td>🟢</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🟢</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
 </tr>
 <tr>
 <td>Bootstrap requirements</td>
@@ -244,43 +244,43 @@ https://github.com/alex-shpak/hugo-book
 </tr>
 <tr>
 <td>Private files</td>
-<td>🟢</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🔴</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
 </tr>
 <tr>
 <td>Show differences without applying</td>
-<td>🟢</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🟢</td>
-<td>🟢</td>
-<td>🟢</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
 </tr>
 <tr>
 <td>Whole file encryption</td>
-<td>🟢</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🟢</td>
-<td>🔴</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
 </tr>
 <tr>
 <td>Password manager integration</td>
-<td>🟢</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🔴</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
 </tr>
 <tr>
 <td>Machine-to-machine file differences</td>
@@ -290,137 +290,137 @@ https://github.com/alex-shpak/hugo-book
 <td>Alternative files</td>
 <td>Branches</td>
 <td>Templates</td>
-<td>🟠</td>
+<td>⁉️</td>
 </tr>
 <tr>
 <td>Custom variables in templates</td>
-<td>🟢</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🔴</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
 </tr>
 <tr>
 <td>Executable files</td>
-<td>🟢</td>
-<td>🟢</td>
-<td>🟢</td>
-<td>🟢</td>
-<td>🟢</td>
-<td>🔴</td>
-<td>🟢</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
 </tr>
 <tr>
 <td>File creation with initial contents</td>
-<td>🟢</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🟢</td>
-<td>🔴</td>
-<td>🔴</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
 </tr>
 <tr>
 <td>Externals</td>
-<td>🟢</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🔴</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
 </tr>
 <tr>
 <td>Manage partial files</td>
-<td>🟢</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🟠</td>
-<td>🔴</td>
-<td>🟠</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>⁉️</td>
+<td>❌</td>
+<td>⁉️</td>
 </tr>
 <tr>
 <td>File removal</td>
-<td>🟢</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🟢</td>
-<td>🔴</td>
-<td>🔴</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
 </tr>
 <tr>
 <td>Directory creation</td>
-<td>🟢</td>
-<td>🟢</td>
-<td>🟢</td>
-<td>🔴</td>
-<td>🟢</td>
-<td>🔴</td>
-<td>🟢</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
 </tr>
 <tr>
 <td>Run scripts</td>
-<td>🟢</td>
-<td>🟢</td>
-<td>🟢</td>
-<td>🔴</td>
-<td>🟢</td>
-<td>🔴</td>
-<td>🔴</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
 </tr>
 <tr>
 <td>Run once scripts</td>
-<td>🟢</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🟢</td>
-<td>🔴</td>
-<td>🔴</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
 </tr>
 <tr>
 <td>Machine-to-machine symlink differences</td>
-<td>🟢</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🟠</td>
-<td>🟢</td>
-<td>🟠</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>⁉️</td>
+<td>✅</td>
+<td>⁉️</td>
 </tr>
 <tr>
 <td>Shell completion</td>
-<td>🟢</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🟢</td>
-<td>🟢</td>
-<td>🟢</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
 </tr>
 <tr>
 <td>Archive import</td>
-<td>🟢</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🟢</td>
-<td>🔴</td>
-<td>🟢</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
 </tr>
 <tr>
 <td>Archive export</td>
-<td>🟢</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🔴</td>
-<td>🟢</td>
-<td>🔴</td>
-<td>🟢</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
 </tr>
 <tr>
 <td>Implementation language</td>
@@ -434,7 +434,7 @@ https://github.com/alex-shpak/hugo-book
 </tr>
 </tbody>
 </table>
-<p>🟢 Supported 🟠 Possible with significant manual effort 🔴 Not supported</p>
+<p>✅ Supported, ⁉️  Possible with significant manual effort, ❌ Not supported</p>
 <p>For more comparisons, visit <a href="https://dotfiles.github.io/">dotfiles.github.io</a>.</p>
 <hr>
 <h2 id="why-should-i-use-a-dotfile-manager">

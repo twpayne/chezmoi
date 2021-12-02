@@ -23,7 +23,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.18d55b65d69764ed7583e7799ea8066a0796ecf5c8a3ed03d444e539327dcc5a.js" integrity="sha256-GNVbZdaXZO11g&#43;d5nqgGageW7PXIo&#43;0D1ETlOTJ9zFo=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.4b7d32df98da608663f8c37841872bbff5b58e72c25c4af1c55244ae1ae5f6d8.js" integrity="sha256-S30y35jaYIZj&#43;MN4QYcrv/W1jnLCXErxxVJErhrl9tg=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -1063,71 +1063,71 @@ to as &ldquo;attributes&rdquo;:</p>
 <tbody>
 <tr>
 <td><code>after_</code></td>
-<td>Run script after updating the destination.</td>
+<td>Run script after updating the destination</td>
 </tr>
 <tr>
 <td><code>before_</code></td>
-<td>Run script before updating the destination.</td>
+<td>Run script before updating the destination</td>
 </tr>
 <tr>
 <td><code>create_</code></td>
-<td>Ensure that the file exists, and create it with contents if it does not.</td>
+<td>Ensure that the file exists, and create it with contents if it does not</td>
 </tr>
 <tr>
 <td><code>dot_</code></td>
-<td>Rename to use a leading dot, e.g. <code>dot_foo</code> becomes <code>.foo</code>.</td>
+<td>Rename to use a leading dot, e.g. <code>dot_foo</code> becomes <code>.foo</code></td>
 </tr>
 <tr>
 <td><code>empty_</code></td>
-<td>Ensure the file exists, even if is empty. By default, empty files are removed.</td>
+<td>Ensure the file exists, even if is empty. By default, empty files are removed</td>
 </tr>
 <tr>
 <td><code>encrypted_</code></td>
-<td>Encrypt the file in the source state.</td>
+<td>Encrypt the file in the source state</td>
 </tr>
 <tr>
 <td><code>exact_</code></td>
-<td>Remove anything not managed by chezmoi.</td>
+<td>Remove anything not managed by chezmoi</td>
 </tr>
 <tr>
 <td><code>executable_</code></td>
-<td>Add executable permissions to the target file.</td>
+<td>Add executable permissions to the target file</td>
 </tr>
 <tr>
 <td><code>literal_</code></td>
-<td>Stop parsing prefix attributes.</td>
+<td>Stop parsing prefix attributes</td>
 </tr>
 <tr>
 <td><code>modify_</code></td>
-<td>Treat the contents as a script that modifies an existing file.</td>
+<td>Treat the contents as a script that modifies an existing file</td>
 </tr>
 <tr>
 <td><code>once_</code></td>
-<td>Only run the script if it has not been run before.</td>
+<td>Only run the script if it has not been run before</td>
 </tr>
 <tr>
 <td><code>onchange_</code></td>
-<td>Only run the script if its contents have changed from the last time it was run.</td>
+<td>Only run the script if its contents have changed from the last time it was run</td>
 </tr>
 <tr>
 <td><code>private_</code></td>
-<td>Remove all group and world permissions from the target file or directory.</td>
+<td>Remove all group and world permissions from the target file or directory</td>
 </tr>
 <tr>
 <td><code>readonly_</code></td>
-<td>Remove all write permissions from the target file or directory.</td>
+<td>Remove all write permissions from the target file or directory</td>
 </tr>
 <tr>
 <td><code>remove_</code></td>
-<td>Remove the entry if it exists.</td>
+<td>Remove the entry if it exists</td>
 </tr>
 <tr>
 <td><code>run_</code></td>
-<td>Treat the contents as a script to run.</td>
+<td>Treat the contents as a script to run</td>
 </tr>
 <tr>
 <td><code>symlink_</code></td>
-<td>Create a symlink instead of a regular file.</td>
+<td>Create a symlink instead of a regular file</td>
 </tr>
 </tbody>
 </table>
@@ -1141,11 +1141,11 @@ to as &ldquo;attributes&rdquo;:</p>
 <tbody>
 <tr>
 <td><code>.literal</code></td>
-<td>Stop parsing suffix attributes.</td>
+<td>Stop parsing suffix attributes</td>
 </tr>
 <tr>
 <td><code>.tmpl</code></td>
-<td>Treat the contents of the source file as a template.</td>
+<td>Treat the contents of the source file as a template</td>
 </tr>
 </tbody>
 </table>
@@ -2592,10 +2592,10 @@ difference between the actual state and the target state.</p>
 will call the GitHub API to determine if there is a new version of chezmoi
 available, and if so, download and attempt to install it in the same way as
 chezmoi was previously installed.</p>
-<p>If the any of the <code>$CHEZMOI_GITHUB_ACCESS_TOKEN</code>, <code>$GITHUB_ACCESS_TOKEN</code>, or
-<code>$GITHUB_TOKEN</code> environment variables are set, then the first value found will
-be used to authenticate requests to the GitHub API, otherwise unauthenticated
-requests are used which are subject to stricter <a href="https://developer.github.com/v3/#rate-limiting">rate
+<p>If the any of the <code>$CHEZMOI_GITHUB_ACCESS_TOKEN</code>, <code>$CHEZMOI_GITHUB_TOKEN</code>,
+<code>$GITHUB_ACCESS_TOKEN</code>, or <code>$GITHUB_TOKEN</code> environment variables are set, then
+the first value found will be used to authenticate requests to the GitHub API,
+otherwise unauthenticated requests are used which are subject to stricter <a href="https://developer.github.com/v3/#rate-limiting">rate
 limiting</a>. Unauthenticated
 requests should be sufficient for most cases.</p>
 <hr>
@@ -2704,87 +2704,97 @@ overridden by setting a list of options in the configuration file, for example:<
 <tr>
 <td><code>.chezmoi.arch</code></td>
 <td><code>string</code></td>
-<td>Architecture, e.g. <code>amd64</code>, <code>arm</code>, etc. as returned by <a href="https://pkg.go.dev/runtime?tab=doc#pkg-constants">runtime.GOARCH</a>.</td>
+<td>Architecture, e.g. <code>amd64</code>, <code>arm</code>, etc. as returned by <a href="https://pkg.go.dev/runtime?tab=doc#pkg-constants">runtime.GOARCH</a></td>
 </tr>
 <tr>
 <td><code>.chezmoi.args</code></td>
 <td><code>[]string</code></td>
-<td>The arguments passed to the <code>chezmoi</code> command, starting with the program command.</td>
+<td>The arguments passed to the <code>chezmoi</code> command, starting with the program command</td>
+</tr>
+<tr>
+<td><code>.chezmoi.configFile</code></td>
+<td><code>string</code></td>
+<td>The path to the configuration file used by chezmoi, if any</td>
 </tr>
 <tr>
 <td><code>.chezmoi.executable</code></td>
 <td><code>string</code></td>
-<td>The path to the <code>chezmoi</code> executable, if available.</td>
+<td>The path to the <code>chezmoi</code> executable, if available</td>
 </tr>
 <tr>
 <td><code>.chezmoi.fqdnHostname</code></td>
 <td><code>string</code></td>
-<td>The fully-qualified domain name hostname of the machine chezmoi is running on.</td>
+<td>The fully-qualified domain name hostname of the machine chezmoi is running on</td>
 </tr>
 <tr>
 <td><code>.chezmoi.group</code></td>
 <td><code>string</code></td>
-<td>The group of the user running chezmoi.</td>
+<td>The group of the user running chezmoi</td>
 </tr>
 <tr>
 <td><code>.chezmoi.homeDir</code></td>
 <td><code>string</code></td>
-<td>The home directory of the user running chezmoi.</td>
+<td>The home directory of the user running chezmoi</td>
 </tr>
 <tr>
 <td><code>.chezmoi.hostname</code></td>
 <td><code>string</code></td>
-<td>The hostname of the machine chezmoi is running on, up to the first <code>.</code>.</td>
+<td>The hostname of the machine chezmoi is running on, up to the first <code>.</code></td>
 </tr>
 <tr>
 <td><code>.chezmoi.kernel</code></td>
 <td><code>string</code></td>
-<td>Contains information from <code>/proc/sys/kernel</code>. Linux only, useful for detecting specific kernels (e.g. Microsoft&rsquo;s WSL kernel).</td>
+<td>Contains information from <code>/proc/sys/kernel</code>. Linux only, useful for detecting specific kernels (e.g. Microsoft&rsquo;s WSL kernel)</td>
 </tr>
 <tr>
 <td><code>.chezmoi.os</code></td>
 <td><code>string</code></td>
-<td>Operating system, e.g. <code>darwin</code>, <code>linux</code>, etc. as returned by <a href="https://pkg.go.dev/runtime?tab=doc#pkg-constants">runtime.GOOS</a>.</td>
+<td>Operating system, e.g. <code>darwin</code>, <code>linux</code>, etc. as returned by <a href="https://pkg.go.dev/runtime?tab=doc#pkg-constants">runtime.GOOS</a></td>
 </tr>
 <tr>
 <td><code>.chezmoi.osRelease</code></td>
 <td><code>string</code></td>
-<td>The information from <code>/etc/os-release</code>, Linux only, run <code>chezmoi data</code> to see its output.</td>
+<td>The information from <code>/etc/os-release</code>, Linux only, run <code>chezmoi data</code> to see its output</td>
 </tr>
 <tr>
 <td><code>.chezmoi.sourceDir</code></td>
 <td><code>string</code></td>
-<td>The source directory.</td>
+<td>The source directory</td>
 </tr>
 <tr>
 <td><code>.chezmoi.sourceFile</code></td>
 <td><code>string</code></td>
-<td>The path of the template relative to the source directory.</td>
+<td>The path of the template relative to the source directory</td>
 </tr>
 <tr>
 <td><code>.chezmoi.username</code></td>
 <td><code>string</code></td>
-<td>The username of the user running chezmoi.</td>
+<td>The username of the user running chezmoi</td>
 </tr>
 <tr>
 <td><code>.chezmoi.version.builtBy</code></td>
 <td><code>string</code></td>
-<td>The program that built the <code>chezmoi</code> executable, if set.</td>
+<td>The program that built the <code>chezmoi</code> executable, if set</td>
 </tr>
 <tr>
 <td><code>.chezmoi.version.commit</code></td>
 <td><code>string</code></td>
-<td>The git commit at which the <code>chezmoi</code> executable was built, if set.</td>
+<td>The git commit at which the <code>chezmoi</code> executable was built, if set</td>
 </tr>
 <tr>
 <td><code>.chezmoi.version.date</code></td>
 <td><code>string</code></td>
-<td>The timestamp at which the <code>chezmoi</code> executable was built, if set.</td>
+<td>The timestamp at which the <code>chezmoi</code> executable was built, if set</td>
 </tr>
 <tr>
 <td><code>.chezmoi.version.version</code></td>
 <td><code>string</code></td>
-<td>The version of chezmoi.</td>
+<td>The version of chezmoi</td>
+</tr>
+<tr>
+<td><code>.chezmoi.workingTree</code></td>
+<td><code>string</code></td>
+<td>The working tree of the source directory</td>
 </tr>
 </tbody>
 </table>
