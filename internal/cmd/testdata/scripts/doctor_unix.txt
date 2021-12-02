@@ -138,4 +138,5 @@ echo "Vault v1.5.5 ('f5d1ddb3750e7c28e25036e1ef26a4c02379fc01+CHANGES')"
 [secret]
     command = "secret"
 -- home/user/.config/chezmoi/chezmoi.yaml --
+-- home/user/.local/share/chezmoi/.chezmoiscripts/.keep --
 -- home3/user/.local/share/chezmoi/.chezmoisuspicious --
