@@ -89,6 +89,12 @@ var knownPrefixedFiles = newStringSet(
 	VersionName,
 )
 
+// knownPrefixedDirs is a set of known dirnames with the .chezmoi prefix.
+var knownPrefixedDirs = newStringSet(
+	scriptsDirName,
+	templatesDirName,
+)
+
 var modeTypeNames = map[fs.FileMode]string{
 	0:                 "file",
 	fs.ModeDir:        "dir",
@@ -158,7 +164,7 @@ func SuspiciousSourceDirEntry(base string, fileInfo fs.FileInfo) bool {
 	case 0:
 		return strings.HasPrefix(base, Prefix) && !knownPrefixedFiles.contains(base)
 	case fs.ModeDir:
-		return strings.HasPrefix(base, Prefix) && base != templatesDirName
+		return strings.HasPrefix(base, Prefix) && !knownPrefixedDirs.contains(base)
 	case fs.ModeSymlink:
 		return strings.HasPrefix(base, Prefix)
 	default:
