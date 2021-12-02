@@ -1887,7 +1887,8 @@ func (s *SourceState) readVersionFile(sourceAbsPath AbsPath) error {
 	if err != nil {
 		return err
 	}
-	if s.version.LessThan(*version) {
+	var zeroVersion semver.Version
+	if s.version != zeroVersion && s.version.LessThan(*version) {
 		return &TooOldError{
 			Have: s.version,
 			Need: *version,
