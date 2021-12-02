@@ -1,3 +1,3 @@
 # Code of Conduct
 
-Please read the [Go Community Code of Conduct](https://golang.org/conduct).
+[Contributor Covenant Code Of Conduct](https://www.contributor-covenant.org/version/2/1/code_of_conduct/).
