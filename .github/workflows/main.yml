@@ -10,7 +10,7 @@ on:
     - v*
 env:
   AGE_VERSION: 1.0.0
-  GO_VERSION: 1.17.3
+  GO_VERSION: 1.17.4
   GOLANGCI_LINT_VERSION: 1.43.0
 jobs:
   changes:
