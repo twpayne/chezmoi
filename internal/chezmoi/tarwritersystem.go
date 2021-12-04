@@ -6,29 +6,29 @@ import (
 	"io/fs"
 )
 
-// A TARWriterSystem is a System that writes to a TAR archive.
-type TARWriterSystem struct {
+// A TarWriterSystem is a System that writes to a tar archive.
+type TarWriterSystem struct {
 	emptySystemMixin
 	noUpdateSystemMixin
 	tarWriter      *tar.Writer
 	headerTemplate tar.Header
 }
 
-// NewTARWriterSystem returns a new TARWriterSystem that writes a TAR file to w.
-func NewTARWriterSystem(w io.Writer, headerTemplate tar.Header) *TARWriterSystem {
-	return &TARWriterSystem{
+// NewTarWriterSystem returns a new TarWriterSystem that writes a tar file to w.
+func NewTarWriterSystem(w io.Writer, headerTemplate tar.Header) *TarWriterSystem {
+	return &TarWriterSystem{
 		tarWriter:      tar.NewWriter(w),
 		headerTemplate: headerTemplate,
 	}
 }
 
 // Close closes m.
-func (s *TARWriterSystem) Close() error {
+func (s *TarWriterSystem) Close() error {
 	return s.tarWriter.Close()
 }
 
 // Mkdir implements System.Mkdir.
-func (s *TARWriterSystem) Mkdir(name AbsPath, perm fs.FileMode) error {
+func (s *TarWriterSystem) Mkdir(name AbsPath, perm fs.FileMode) error {
 	header := s.headerTemplate
 	header.Typeflag = tar.TypeDir
 	header.Name = name.String() + "/"
@@ -37,12 +37,12 @@ func (s *TARWriterSystem) Mkdir(name AbsPath, perm fs.FileMode) error {
 }
 
 // RunScript implements System.RunScript.
-func (s *TARWriterSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
+func (s *TarWriterSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
 	return s.WriteFile(NewAbsPath(scriptname.String()), data, 0o700)
 }
 
 // WriteFile implements System.WriteFile.
-func (s *TARWriterSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error {
+func (s *TarWriterSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error {
 	header := s.headerTemplate
 	header.Typeflag = tar.TypeReg
 	header.Name = filename.String()
@@ -56,7 +56,7 @@ func (s *TARWriterSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileM
 }
 
 // WriteSymlink implements System.WriteSymlink.
-func (s *TARWriterSystem) WriteSymlink(oldname string, newname AbsPath) error {
+func (s *TarWriterSystem) WriteSymlink(oldname string, newname AbsPath) error {
 	header := s.headerTemplate
 	header.Typeflag = tar.TypeSymlink
 	header.Name = newname.String()

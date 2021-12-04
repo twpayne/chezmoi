@@ -66,7 +66,7 @@ func (c *Config) runArchiveCmd(cmd *cobra.Command, args []string) error {
 	}
 	switch format {
 	case chezmoi.ArchiveFormatTar, chezmoi.ArchiveFormatTarGz, chezmoi.ArchiveFormatTgz:
-		archiveSystem = chezmoi.NewTARWriterSystem(&output, tarHeaderTemplate())
+		archiveSystem = chezmoi.NewTarWriterSystem(&output, tarHeaderTemplate())
 	case chezmoi.ArchiveFormatZip:
 		archiveSystem = chezmoi.NewZIPWriterSystem(&output, time.Now().UTC())
 	default:

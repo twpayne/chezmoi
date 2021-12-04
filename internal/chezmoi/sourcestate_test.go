@@ -549,7 +549,7 @@ func TestSourceStateAdd(t *testing.T) {
 
 func TestSourceStateAddInExternal(t *testing.T) {
 	buffer := &bytes.Buffer{}
-	tarWriterSystem := NewTARWriterSystem(buffer, tar.Header{})
+	tarWriterSystem := NewTarWriterSystem(buffer, tar.Header{})
 	require.NoError(t, tarWriterSystem.Mkdir(NewAbsPath("dir"), 0o777))
 	require.NoError(t, tarWriterSystem.WriteFile(NewAbsPath("dir/file"), []byte("# contents of dir/file\n"), 0o666))
 	require.NoError(t, tarWriterSystem.Close())
@@ -1374,7 +1374,7 @@ func TestSourceStateReadExternal(t *testing.T) {
 
 func TestSourceStateReadExternalCache(t *testing.T) {
 	buffer := &bytes.Buffer{}
-	tarWriterSystem := NewTARWriterSystem(buffer, tar.Header{})
+	tarWriterSystem := NewTarWriterSystem(buffer, tar.Header{})
 	require.NoError(t, tarWriterSystem.WriteFile(NewAbsPath("file"), []byte("# contents of file\n"), 0o666))
 	require.NoError(t, tarWriterSystem.Close())
 	archiveData := buffer.Bytes()
