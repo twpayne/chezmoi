@@ -9,16 +9,16 @@ chezmoi state set --bucket=bucket --key=key --value=value
 chezmoi state get --bucket=bucket --key=key
 stdout value
 chezmoi state data --format=yaml
-cmp stdout golden/data
+cmp stdout golden/data.yaml
 
 # test that chezmoi state delete deletes a value
 chezmoi state delete --bucket=bucket --key=key
 ! stdout .
 chezmoi state data --format=yaml
-cmp stdout golden/data-after-delete
+cmp stdout golden/data-after-delete.yaml
 
--- golden/data --
+-- golden/data.yaml --
 bucket:
     key: value
--- golden/data-after-delete --
+-- golden/data-after-delete.yaml --
 bucket: {}

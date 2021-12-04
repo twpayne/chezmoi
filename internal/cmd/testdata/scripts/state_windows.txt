@@ -2,7 +2,7 @@
 
 # test that the persistent state is only created on demand
 chezmoi state dump --format=yaml
-cmp stdout golden/dump
+cmp stdout golden/dump.yaml
 ! exists $CHEZMOICONFIGDIR/chezmoistate.boltdb
 
 # test that chezmoi apply updates the persistent state
@@ -18,7 +18,7 @@ stdout runAt:
 chezmoi --force state reset
 ! exists $CHEZMOICONFIGDIR/chezmoistate.boltdb
 
--- golden/dump --
+-- golden/dump.yaml --
 configState: {}
 entryState: {}
 scriptState: {}

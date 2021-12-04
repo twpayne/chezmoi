@@ -1,12 +1,12 @@
 [windows] skip 'UNIX only'
 
 # test that chezmoi apply runs scripts in the correct order
-symlink home/user/.local/share/chezmoi/run_before_00-before -> .script
-symlink home/user/.local/share/chezmoi/run_before_99-before -> .script
-symlink home/user/.local/share/chezmoi/run_00 -> .script
-symlink home/user/.local/share/chezmoi/run_99 -> .script
-symlink home/user/.local/share/chezmoi/run_after_00-after -> .script
-symlink home/user/.local/share/chezmoi/run_after_99-after -> .script
+symlink home/user/.local/share/chezmoi/run_before_00-before -> .script.sh
+symlink home/user/.local/share/chezmoi/run_before_99-before -> .script.sh
+symlink home/user/.local/share/chezmoi/run_00 -> .script.sh
+symlink home/user/.local/share/chezmoi/run_99 -> .script.sh
+symlink home/user/.local/share/chezmoi/run_after_00-after -> .script.sh
+symlink home/user/.local/share/chezmoi/run_after_99-after -> .script.sh
 chezmoi apply --force
 cmp stdout golden/apply
 
@@ -17,7 +17,7 @@ cmp stdout golden/apply
 99
 00-after
 99-after
--- home/user/.local/share/chezmoi/.script --
+-- home/user/.local/share/chezmoi/.script.sh --
 #!/bin/sh
 
 basename=$(basename $0)

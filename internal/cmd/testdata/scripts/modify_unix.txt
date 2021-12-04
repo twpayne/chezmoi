@@ -11,7 +11,7 @@ cmp home/user/.modify golden/.modify
 
 # test that chezmoi diff prints the diff without modifying the file
 chezmoi diff
-cmp stdout golden/diff
+cmp stdout golden/diff.diff
 cmp home/user/.modify golden/.modify
 
 # test that chezmoi archive includes the modified file
@@ -69,7 +69,7 @@ end
 beginning
 middle
 end
--- golden/diff --
+-- golden/diff.diff --
 diff --git a/.modify b/.modify
 index f91830d4ecd80adfe9a6aea9dca579397aa86921..6b6d41aae5e8d64a54afd8b8ad5a38a3de1e1e35 100644
 --- a/.modify

@@ -90,34 +90,34 @@ chezmoi chattr -- -t $HOME${/}.symlink
 exists $CHEZMOISOURCEDIR/symlink_dot_symlink
 
 # test that chezmoi chattr -- before sets the before attribute on a script
-chezmoi chattr -- before $HOME/script
-! exists $CHEZMOISOURCEDIR/run_script
-exists $CHEZMOISOURCEDIR/run_before_script
+chezmoi chattr -- before $HOME/script.sh
+! exists $CHEZMOISOURCEDIR/run_script.sh
+exists $CHEZMOISOURCEDIR/run_before_script.sh
 
 # test that chezmoi chattr -- once sets the once attribute on a script
-chezmoi chattr -- once $HOME/script
-! exists $CHEZMOISOURCEDIR/run_before_script
-exists $CHEZMOISOURCEDIR/run_once_before_script
+chezmoi chattr -- once $HOME/script.sh
+! exists $CHEZMOISOURCEDIR/run_before_script.sh
+exists $CHEZMOISOURCEDIR/run_once_before_script.sh
 
 # test that chezmoi chattr -- after sets the after attribute on a script and removes the before attribute
-chezmoi chattr -- after $HOME/script
-! exists $CHEZMOISOURCEDIR/run_once_before_script
-exists $CHEZMOISOURCEDIR/run_once_after_script
+chezmoi chattr -- after $HOME/script.sh
+! exists $CHEZMOISOURCEDIR/run_once_before_script.sh
+exists $CHEZMOISOURCEDIR/run_once_after_script.sh
 
 # test that chezmoi chattr onchange sets the onchange attribute on a script and removes the only attribute
-chezmoi chattr -- onchange $HOME/script
-! exists $CHEZMOISOURCEDIR/run_once_after_script
-exists $CHEZMOISOURCEDIR/run_onchange_after_script
+chezmoi chattr -- onchange $HOME/script.sh
+! exists $CHEZMOISOURCEDIR/run_once_after_script.sh
+exists $CHEZMOISOURCEDIR/run_onchange_after_script.sh
 
 # test that chezmoi chattr -- -onchange removes the onchange attribute on a script
-chezmoi chattr -- -onchange $HOME/script
-! exists $CHEZMOISOURCEDIR/run_onchange_after_script
-exists $CHEZMOISOURCEDIR/run_after_script
+chezmoi chattr -- -onchange $HOME/script.sh
+! exists $CHEZMOISOURCEDIR/run_onchange_after_script.sh
+exists $CHEZMOISOURCEDIR/run_after_script.sh
 
 # test that chezmoi chattr -- -a removes the after attribute on a script
-chezmoi chattr -- -a $HOME/script
-! exists $CHEZMOISOURCEDIR/run_after_script
-exists $CHEZMOISOURCEDIR/run_script
+chezmoi chattr -- -a $HOME/script.sh
+! exists $CHEZMOISOURCEDIR/run_after_script.sh
+exists $CHEZMOISOURCEDIR/run_script.sh
 
 # test that chezmoi chattr +executable,+private,+readonly,+template sets the attributes on a modify script
 chezmoi chattr +executable,+private,+readonly,+template $HOME${/}.modify
@@ -132,10 +132,9 @@ cmp stdout golden/chattr-diff
 diff --git a/dot_file b/executable_dot_file
 rename from dot_file
 rename to executable_dot_file
--- home/user/.local/share/chezmoi/run_script --
+-- home/user/.local/share/chezmoi/run_script.sh --
 #!/bin/sh
 -- home/user/.local/share/chezmoi/modify_dot_modify --
 #!/bin/sh
 
 cat
-
