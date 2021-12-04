@@ -8,7 +8,7 @@ chezmoi apply --force
 cmpenv stdout golden/apply
 
 chezmoi dump
-cmp stdout golden/dump
+cmp stdout golden/dump.json
 
 chezmoi archive --gzip --output=archive.tar.gz
 exec tar -tzf archive.tar.gz
@@ -25,7 +25,7 @@ dir/
 dir/script.cmd
 otherdir/
 anotherdir/script.cmd
--- golden/dump --
+-- golden/dump.json --
 {
   "anotherdir": {
     "type": "dir",

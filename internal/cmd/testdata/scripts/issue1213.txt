@@ -19,7 +19,7 @@ cmp $HOME/.file golden/.file
 
 -- golden/.chezmoi.toml.tmpl --
 [data.me.github]
-  username = "user"
+    username = "user"
 -- golden/.file --
 username = "user"
 -- golden/dot_file.tmpl --

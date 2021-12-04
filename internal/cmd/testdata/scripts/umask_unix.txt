@@ -18,12 +18,12 @@ chezmoi verify
 
 # test that chezmoi ignores incorrect permissions in the persistent state if the actual file permissions match and updates the persistent state
 chezmoi state get --bucket=entryState --key=$HOME/.file
-cmp stdout golden/state-file-get
+cmp stdout golden/state-file-get.json
 chezmoi state set --bucket=entryState --key=$HOME/.file --value={"type":"file","mode":436,"contentsSHA256":"634a4dd193c7b3b926d2e08026aa81a416fd41cec52854863b974af422495663"}
 chezmoi apply --verbose
 ! stdout .
 chezmoi state get --bucket=entryState --key=$HOME/.file
-cmp stdout golden/state-file-get
+cmp stdout golden/state-file-get.json
 
 # test that chezmoi ignores incorrect permissions in the persistent state if the actual dir permissions match and updates the persistent state
 # chezmoi state get --bucket=entryState --key=$HOME/.dir # FIXME understand why un-commenting this and the next line causes the test to fail
@@ -32,18 +32,18 @@ chezmoi state set --bucket=entryState --key=$HOME/.dir --value={"type":"dir","mo
 chezmoi apply --verbose
 ! stdout .
 chezmoi state get --bucket=entryState --key=$HOME/.dir
-cmp stdout golden/state-dir-get
+cmp stdout golden/state-dir-get.json
 
 -- golden/diff --
 diff --git a/.file b/.file
 old mode 100777
 new mode 100644
--- golden/state-dir-get --
+-- golden/state-dir-get.json --
 {
   "type": "dir",
   "mode": 2147484141
 }
--- golden/state-file-get --
+-- golden/state-file-get.json --
 {
   "type": "file",
   "mode": 420,
