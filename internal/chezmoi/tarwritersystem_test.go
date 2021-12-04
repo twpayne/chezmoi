@@ -15,9 +15,9 @@ import (
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
 
-var _ System = &TARWriterSystem{}
+var _ System = &TarWriterSystem{}
 
-func TestTARWriterSystem(t *testing.T) {
+func TestTarWriterSystem(t *testing.T) {
 	chezmoitest.WithTestFS(t, map[string]interface{}{
 		"/home/user/.local/share/chezmoi": map[string]interface{}{
 			".chezmoiignore":  "README.md\n",
@@ -50,7 +50,7 @@ func TestTARWriterSystem(t *testing.T) {
 		requireEvaluateAll(t, s, system)
 
 		b := &bytes.Buffer{}
-		tarWriterSystem := NewTARWriterSystem(b, tar.Header{})
+		tarWriterSystem := NewTarWriterSystem(b, tar.Header{})
 		persistentState := NewMockPersistentState()
 		require.NoError(t, s.applyAll(tarWriterSystem, system, persistentState, EmptyAbsPath, ApplyOptions{
 			Include: NewEntryTypeSet(EntryTypesAll),

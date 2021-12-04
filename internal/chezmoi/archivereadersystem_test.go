@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestArchiveReaderSystemTAR(t *testing.T) {
+func TestArchiveReaderSystemTar(t *testing.T) {
 	buffer := &bytes.Buffer{}
 	tarWriter := tar.NewWriter(buffer)
 	assert.NoError(t, tarWriter.WriteHeader(&tar.Header{
