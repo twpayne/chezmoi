@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"fmt"
 	"io/fs"
 	"net/http"
 	"net/http/httptest"
@@ -19,8 +20,101 @@ import (
 	vfs "github.com/twpayne/go-vfs/v4"
 	"github.com/twpayne/go-vfs/v4/vfst"
 
+	"github.com/twpayne/chezmoi/v2/internal/archive"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
+
+func TestArchiveGitIgnorePatterns(t *testing.T) {
+	data, err := archive.NewTar(map[string]interface{}{
+		".gitignore": chezmoitest.JoinLines(
+			"# comment",
+			"*.ignore",
+			"/*.ignorehere",
+		),
+		"dir": map[string]interface{}{
+			".gitignore": chezmoitest.JoinLines(
+				"*.ignore",
+				"/*.ignorehere",
+			),
+		},
+	})
+	require.NoError(t, err)
+
+	expectedPatternSet := newPatternSet()
+	assert.NoError(t, expectedPatternSet.add("**/*.ignore", true))
+	assert.NoError(t, expectedPatternSet.add("/*.ignorehere", true))
+	assert.NoError(t, expectedPatternSet.add("dir/**/*.ignore", true))
+	assert.NoError(t, expectedPatternSet.add("dir/*.ignorehere", true))
+
+	actualPatternSet, err := archiveGitIgnorePatterns(data, ArchiveFormatTar)
+	require.NoError(t, err)
+	assert.Equal(t, expectedPatternSet, actualPatternSet)
+}
+
+func TestIgnorePatternFromGitIgnorePattern(t *testing.T) {
+	for _, tc := range []struct {
+		dir             string
+		pattern         string
+		expectedPattern string
+		expectedInclude bool
+	}{
+		{
+			dir:             ".",
+			pattern:         "*.ignore",
+			expectedPattern: "**/*.ignore",
+			expectedInclude: true,
+		},
+		{
+			dir:             ".",
+			pattern:         "/*.ignore",
+			expectedPattern: "/*.ignore",
+			expectedInclude: true,
+		},
+		{
+			dir:             ".",
+			pattern:         "!*.ignore",
+			expectedPattern: "**/*.ignore",
+			expectedInclude: false,
+		},
+		{
+			dir:             ".",
+			pattern:         "!/*.ignore",
+			expectedPattern: "/*.ignore",
+			expectedInclude: false,
+		},
+		{
+			dir:             "dir",
+			pattern:         "*.ignore",
+			expectedPattern: "dir/**/*.ignore",
+			expectedInclude: true,
+		},
+		{
+			dir:             "dir",
+			pattern:         "/*.ignore",
+			expectedPattern: "dir/*.ignore",
+			expectedInclude: true,
+		},
+		{
+			dir:             "dir",
+			pattern:         "!*.ignore",
+			expectedPattern: "dir/**/*.ignore",
+			expectedInclude: false,
+		},
+		{
+			dir:             "dir",
+			pattern:         "!/*.ignore",
+			expectedPattern: "dir/*.ignore",
+			expectedInclude: false,
+		},
+	} {
+		name := fmt.Sprintf("ignorePatternFromGitIgnorePattern(%q, %q)", tc.dir, tc.pattern)
+		t.Run(name, func(t *testing.T) {
+			actualPattern, actualInclude := ignorePatternFromGitIgnorePattern(tc.dir, tc.pattern)
+			assert.Equal(t, tc.expectedPattern, actualPattern)
+			assert.Equal(t, tc.expectedInclude, actualInclude)
+		})
+	}
+}
 
 func TestSourceStateAdd(t *testing.T) {
 	for _, tc := range []struct {

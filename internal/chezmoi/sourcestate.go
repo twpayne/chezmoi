@@ -38,8 +38,9 @@ type ExternalType string
 
 // ExternalTypes.
 const (
-	ExternalTypeArchive ExternalType = "archive"
-	ExternalTypeFile    ExternalType = "file"
+	ExternalTypeArchive    ExternalType = "archive"
+	ExternalTypeFile       ExternalType = "file"
+	ExternalTypeGitArchive ExternalType = "git-archive"
 )
 
 // An External is an external source.
@@ -1648,7 +1649,7 @@ func (s *SourceState) readExternal(
 	options *ReadOptions,
 ) (map[RelPath][]SourceStateEntry, error) {
 	switch external.Type {
-	case ExternalTypeArchive:
+	case ExternalTypeArchive, ExternalTypeGitArchive:
 		return s.readExternalArchive(ctx, externalRelPath, parentSourceRelPath, external, options)
 	case ExternalTypeFile:
 		return s.readExternalFile(ctx, externalRelPath, parentSourceRelPath, external, options)
@@ -1697,10 +1698,19 @@ func (s *SourceState) readExternalArchive(
 		format = GuessArchiveFormat(urlPath, data)
 	}
 
+	if external.Type == ExternalTypeGitArchive {
+		patternSet, err := archiveGitIgnorePatterns(data, format)
+		if err != nil {
+			return nil, err
+		}
+		s.ignore.mergeWithPrefixAndStripComponents(patternSet, externalRelPath.String()+"/", external.StripComponents)
+	}
+
 	sourceRelPaths := make(map[RelPath]SourceRelPath)
 	if err := WalkArchive(data, format, func(name string, fileInfo fs.FileInfo, r io.Reader, linkname string) error {
+		components := strings.Split(name, "/")
+
 		if external.StripComponents > 0 {
-			components := strings.Split(name, "/")
 			if len(components) <= external.StripComponents {
 				return nil
 			}
@@ -1712,6 +1722,9 @@ func (s *SourceState) readExternalArchive(
 		targetRelPath := externalRelPath.JoinString(name)
 
 		if s.Ignore(targetRelPath) {
+			if fileInfo.IsDir() {
+				return Skip
+			}
 			return nil
 		}
 
@@ -1943,4 +1956,55 @@ func allEquivalentDirs(sourceStateEntries []SourceStateEntry) bool {
 		}
 	}
 	return true
+}
+
+// archiveGitIgnorePatterns returns a patternSet that matches all .gitignore
+// patterns in the archive in data.
+func archiveGitIgnorePatterns(data []byte, format ArchiveFormat) (*patternSet, error) {
+	patternSet := newPatternSet()
+	walkFunc := func(name string, fileInfo fs.FileInfo, r io.Reader, linkname string) error {
+		if !fileInfo.Mode().IsRegular() || fileInfo.Name() != ".gitignore" {
+			return nil
+		}
+		scanner := bufio.NewScanner(r)
+		for scanner.Scan() {
+			text := strings.TrimSpace(scanner.Text())
+			if strings.HasPrefix(text, "#") {
+				continue
+			}
+			pattern, include := ignorePatternFromGitIgnorePattern(path.Dir(name), text)
+			if err := patternSet.add(pattern, include); err != nil {
+				return err
+			}
+		}
+		if err := scanner.Err(); err != nil {
+			return err
+		}
+		return nil
+	}
+	if err := WalkArchive(data, format, walkFunc); err != nil {
+		return nil, err
+	}
+	return patternSet, nil
+}
+
+// ignorePatternFromGitIgnorePattern converts the .gitignore pattern in dir to a
+// .chezmoiignore pattern in dir.
+func ignorePatternFromGitIgnorePattern(dir, pattern string) (string, bool) {
+	include := true
+	if strings.HasPrefix(pattern, "!") {
+		include = false
+		pattern = pattern[1:]
+	}
+	switch {
+	case strings.HasPrefix(pattern, "/"):
+		if dir != "." {
+			pattern = dir + "/" + pattern[1:]
+		}
+	case dir == ".":
+		pattern = "**/" + pattern
+	default:
+		pattern = dir + "/**/" + pattern
+	}
+	return pattern, include
 }

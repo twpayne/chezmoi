@@ -1,0 +1,26 @@
+exec tar czf www/archive.tar.gz archive
+
+httpd www
+
+# test that chezmoi reads external git-archives from .chezmoiexternal.yaml
+chezmoi apply --force --verbose
+cmp $HOME/.dir/file golden/file
+! exists $HOME/.dir/.ignore
+exists $HOME/.dir/existing.ignore
+
+-- archive/.gitignore --
+*.ignore
+-- archive/dir/file --
+# contents of file
+-- archive/dir/archive.ignore --
+# contents of archive.ignore
+-- golden/file --
+# contents of file
+-- home/user/.dir/existing.ignore --
+-- home/user/.local/share/chezmoi/.chezmoiexternal.yaml --
+.dir:
+    type: git-archive
+    url: "{{ env "HTTPD_URL" }}/archive.tar.gz"
+    exact: true
+    stripComponents: 2
+-- www/.keep --

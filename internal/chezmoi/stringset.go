@@ -1,5 +1,7 @@
 package chezmoi
 
+import "strings"
+
 // A stringSet is a set of strings.
 type stringSet map[string]struct{}
 
@@ -30,6 +32,19 @@ func (s stringSet) elements() []string {
 		elements = append(elements, element)
 	}
 	return elements
+}
+
+// mergeWithPrefixAndStripComponents merges the elements of other into s with
+// prefix and a number of components stripped.
+func (s stringSet) mergeWithPrefixAndStripComponents(other stringSet, prefix string, stripComponents int) {
+	for pattern := range other {
+		components := strings.Split(pattern, "/")
+		if len(components) <= stripComponents {
+			continue
+		}
+		strippedComponentPattern := prefix + strings.Join(components[stripComponents:], "/")
+		s[strippedComponentPattern] = struct{}{}
+	}
 }
 
 // remove removes an element from s.

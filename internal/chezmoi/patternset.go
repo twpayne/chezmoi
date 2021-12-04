@@ -92,3 +92,10 @@ func (ps *patternSet) match(name string) bool {
 	}
 	return false
 }
+
+// mergeWithPrefixAndStripComponents merges the elements of other into ps with
+// prefix and a number of components stripped.
+func (ps *patternSet) mergeWithPrefixAndStripComponents(other *patternSet, prefix string, stripComponents int) {
+	ps.includePatterns.mergeWithPrefixAndStripComponents(other.includePatterns, prefix, stripComponents)
+	ps.excludePatterns.mergeWithPrefixAndStripComponents(other.excludePatterns, prefix, stripComponents)
+}

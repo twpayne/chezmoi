@@ -405,19 +405,19 @@ plugin](https://github.com/zsh-users/zsh-syntax-highlighting), and
 
 ```toml
 [".oh-my-zsh"]
-    type = "archive"
+    type = "git-archive"
     url = "https://github.com/ohmyzsh/ohmyzsh/archive/master.tar.gz"
     exact = true
     stripComponents = 1
     refreshPeriod = "168h"
 [".oh-my-zsh/custom/plugins/zsh-syntax-highlighting"]
-    type = "archive"
+    type = "git-archive"
     url = "https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz"
     exact = true
     stripComponents = 1
     refreshPeriod = "168h"
 [".oh-my-zsh/custom/themes/powerlevel10k"]
-    type = "archive"
+    type = "git-archive"
     url = "https://github.com/romkatv/powerlevel10k/archive/v1.15.0.tar.gz"
     exact = true
     stripComponents = 1
