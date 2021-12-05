@@ -1,42 +1,28 @@
 package chezmoi
 
 import (
-	"archive/tar"
-	"bytes"
 	"errors"
 	"io/fs"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/twpayne/chezmoi/v2/internal/archive"
 )
 
 func TestArchiveReaderSystemTar(t *testing.T) {
-	buffer := &bytes.Buffer{}
-	tarWriter := tar.NewWriter(buffer)
-	assert.NoError(t, tarWriter.WriteHeader(&tar.Header{
-		Typeflag: tar.TypeDir,
-		Name:     "dir/",
-		Mode:     0o777,
-	}))
-	data := []byte("# contents of dir/file\n")
-	assert.NoError(t, tarWriter.WriteHeader(&tar.Header{
-		Typeflag: tar.TypeReg,
-		Name:     "dir/file",
-		Size:     int64(len(data)),
-		Mode:     0o666,
-	}))
-	_, err := tarWriter.Write(data)
-	assert.NoError(t, err)
-	linkname := "file"
-	assert.NoError(t, tarWriter.WriteHeader(&tar.Header{
-		Typeflag: tar.TypeSymlink,
-		Name:     "dir/symlink",
-		Linkname: linkname,
-	}))
-	require.NoError(t, tarWriter.Close())
+	data, err := archive.NewTar(map[string]interface{}{
+		"dir": map[string]interface{}{
+			"file": "# contents of dir/file\n",
+			"symlink": &archive.Symlink{
+				Target: "file",
+			},
+		},
+	})
+	require.NoError(t, err)
 
-	archiveReaderSystem, err := NewArchiveReaderSystem("archive.tar", buffer.Bytes(), ArchiveFormatTar, ArchiveReaderSystemOptions{
+	archiveReaderSystem, err := NewArchiveReaderSystem("archive.tar", data, ArchiveFormatTar, ArchiveReaderSystemOptions{
 		RootAbsPath:     NewAbsPath("/home/user"),
 		StripComponents: 1,
 	})
@@ -53,7 +39,7 @@ func TestArchiveReaderSystemTar(t *testing.T) {
 		{
 			absPath:      NewAbsPath("/home/user/file"),
 			readlinkErr:  fs.ErrInvalid,
-			readFileData: data,
+			readFileData: []byte("# contents of dir/file\n"),
 		},
 		{
 			absPath:     NewAbsPath("/home/user/notexist"),
