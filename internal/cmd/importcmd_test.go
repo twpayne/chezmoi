@@ -1,48 +1,30 @@
 package cmd
 
 import (
-	"archive/tar"
 	"bytes"
 	"strings"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/twpayne/go-vfs/v4"
 	"github.com/twpayne/go-vfs/v4/vfst"
 
+	"github.com/twpayne/chezmoi/v2/internal/archive"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 )
 
 func TestImportCmd(t *testing.T) {
-	buffer := &bytes.Buffer{}
-	tarWriter := tar.NewWriter(buffer)
-	assert.NoError(t, tarWriter.WriteHeader(&tar.Header{
-		Typeflag: tar.TypeDir,
-		Name:     "archive/",
-		Mode:     0o777,
-	}))
-	assert.NoError(t, tarWriter.WriteHeader(&tar.Header{
-		Typeflag: tar.TypeDir,
-		Name:     "archive/.dir/",
-		Mode:     0o777,
-	}))
-	data := []byte("# contents of archive/.dir/.file\n")
-	assert.NoError(t, tarWriter.WriteHeader(&tar.Header{
-		Typeflag: tar.TypeReg,
-		Name:     "archive/.dir/.file",
-		Size:     int64(len(data)),
-		Mode:     0o666,
-	}))
-	_, err := tarWriter.Write(data)
-	assert.NoError(t, err)
-	linkname := ".file"
-	assert.NoError(t, tarWriter.WriteHeader(&tar.Header{
-		Typeflag: tar.TypeSymlink,
-		Name:     "archive/.dir/.symlink",
-		Linkname: linkname,
-	}))
-	require.NoError(t, tarWriter.Close())
+	data, err := archive.NewTar(map[string]interface{}{
+		"archive": map[string]interface{}{
+			".dir": map[string]interface{}{
+				".file": "# contents of archive/.dir/.file\n",
+				".symlink": &archive.Symlink{
+					Target: ".file",
+				},
+			},
+		},
+	})
+	require.NoError(t, err)
 
 	for _, tc := range []struct {
 		args      []string
@@ -158,7 +140,7 @@ func TestImportCmd(t *testing.T) {
 				if tc.extraRoot != nil {
 					require.NoError(t, vfst.NewBuilder().Build(fileSystem, tc.extraRoot))
 				}
-				config := newTestConfig(t, fileSystem, withStdin(bytes.NewReader(buffer.Bytes())))
+				config := newTestConfig(t, fileSystem, withStdin(bytes.NewReader(data)))
 				require.NoError(t, config.execute(append([]string{"import"}, tc.args...)))
 				vfst.RunTests(t, fileSystem, "", tc.tests...)
 			})
