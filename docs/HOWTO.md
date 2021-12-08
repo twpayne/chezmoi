@@ -469,7 +469,7 @@ to include
 [`plug.vim`](https://github.com/junegunn/vim-plug/blob/master/plug.vim) from
 [`github.com/junegunn/vim-plug`](https://github.com/junegunn/vim-plug) in
 `~/.vim/autoload/plug.vim` put the following in
-`~/.local/share/chezmoi/.chezmoiexternals.toml`:
+`~/.local/share/chezmoi/.chezmoiexternal.toml`:
 
 ```toml
 [".vim/autoload/plug.vim"]
