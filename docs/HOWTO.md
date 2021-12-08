@@ -1440,7 +1440,7 @@ chezmoi stores whether and when `run_once_` scripts have been run in the
 scripts, run:
 
 ```console
-$ chezmoi delete-bucket --bucket=scriptState
+$ chezmoi state delete-bucket --bucket=scriptState
 ```
 
 ---
