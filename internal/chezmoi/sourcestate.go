@@ -82,6 +82,7 @@ type SourceState struct {
 	version                 semver.Version
 	mode                    Mode
 	defaultTemplateDataFunc func() map[string]interface{}
+	controlOnly             bool
 	readTemplateData        bool
 	userTemplateData        map[string]interface{}
 	priorityTemplateData    map[string]interface{}
@@ -106,6 +107,13 @@ func WithBaseSystem(baseSystem System) SourceStateOption {
 func WithCacheDir(cacheDirAbsPath AbsPath) SourceStateOption {
 	return func(s *SourceState) {
 		s.cacheDirAbsPath = cacheDirAbsPath
+	}
+}
+
+// WithControlOnly sets whether only control plane information should be read.
+func WithControlOnly(controlOnly bool) SourceStateOption {
+	return func(s *SourceState) {
+		s.controlOnly = controlOnly
 	}
 }
 
@@ -802,6 +810,8 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 				return vfs.SkipDir
 			}
 			return nil
+		case s.controlOnly:
+			return nil
 		case fileInfo.IsDir():
 			da := parseDirAttr(sourceName.String())
 			targetRelPath := parentSourceRelPath.Dir().TargetRelPath(s.encryption.EncryptedSuffix()).JoinString(da.TargetName)
@@ -830,6 +840,10 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 	}
 	if err := WalkSourceDir(s.system, s.sourceDirAbsPath, walkFunc); err != nil {
 		return err
+	}
+
+	if s.controlOnly {
+		return nil
 	}
 
 	// Read externals.
