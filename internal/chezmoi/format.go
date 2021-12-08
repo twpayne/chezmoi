@@ -133,3 +133,12 @@ func (formatTOML) Name() string {
 func (formatYAML) Unmarshal(data []byte, value interface{}) error {
 	return yaml.Unmarshal(data, value)
 }
+
+func isPrefixDotFormat(name, prefix string) bool {
+	for _, format := range Formats {
+		if name == prefix+"."+format.Name() {
+			return true
+		}
+	}
+	return false
+}

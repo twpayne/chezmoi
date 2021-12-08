@@ -744,12 +744,12 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		parentSourceRelPath, sourceName := sourceRelPath.Split()
 
 		switch {
-		case strings.HasPrefix(fileInfo.Name(), dataName):
+		case isPrefixDotFormat(fileInfo.Name(), dataName):
 			if !s.readTemplateData {
 				return nil
 			}
 			return s.addTemplateData(sourceAbsPath)
-		case strings.HasPrefix(fileInfo.Name(), externalName):
+		case isPrefixDotFormat(fileInfo.Name(), externalName):
 			return s.addExternal(sourceAbsPath)
 		case fileInfo.Name() == ignoreName:
 			return s.addPatterns(s.ignore, sourceAbsPath, parentSourceRelPath)
