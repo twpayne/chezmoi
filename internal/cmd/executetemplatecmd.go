@@ -39,7 +39,9 @@ func (c *Config) newExecuteTemplateCmd() *cobra.Command {
 }
 
 func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error {
-	var options []chezmoi.SourceStateOption
+	options := []chezmoi.SourceStateOption{
+		chezmoi.WithControlOnly(true),
+	}
 	if c.executeTemplate.init {
 		options = append(options, chezmoi.WithReadTemplateData(false))
 	}
