@@ -11,6 +11,11 @@ stdout stdin-template
 chezmoi execute-template '{{ template "partial" }}'
 stdout 'hello world'
 
+# test that symlinks are supported in .chezmoitemplates
+symlink $CHEZMOISOURCEDIR/.chezmoitemplates/symlink -> partial
+chezmoi execute-template '{{ template "symlink" }}'
+stdout 'hello world'
+
 # FIXME merge the following tests into a single test
 
 chezmoi execute-template '{{ .last.config }}'
