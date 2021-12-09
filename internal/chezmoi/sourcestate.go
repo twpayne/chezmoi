@@ -1089,6 +1089,9 @@ func (s *SourceState) addTemplateData(sourceAbsPath AbsPath) error {
 // addTemplatesDir adds all templates in templatesDirAbsPath to s.
 func (s *SourceState) addTemplatesDir(templatesDirAbsPath AbsPath) error {
 	walkFunc := func(templateAbsPath AbsPath, fileInfo fs.FileInfo, err error) error {
+		if err == nil && fileInfo.Mode().Type() == fs.ModeSymlink {
+			fileInfo, err = s.system.Stat(templateAbsPath)
+		}
 		switch {
 		case err != nil:
 			return err
