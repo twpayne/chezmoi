@@ -251,6 +251,15 @@ If you're packaging chezmoi for an operating system or distribution:
 and served with [GitHub pages](https://pages.github.com/) from the [`gh-pages`
 branch](https://github.com/twpayne/chezmoi/tree/gh-pages) to GitHub.
 
+chezmoi requires the extended version of Hugo which includes Sass/SCSS support.
+You can verify your Hugo version by looking for `extended` in the output of
+`hugo version`, for example:
+
+```console
+$ hugo version
+hugo v0.90.0+extended darwin/arm64 BuildDate=unknown
+```
+
 Before building the website, you must download the [Hugo Book
 Theme](https://github.com/alex-shpak/hugo-book) by running:
 
