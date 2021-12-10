@@ -331,7 +331,7 @@ for complete list.
 
 chezmoi defines a few useful templates variables that depend on the system you
 are currently on. A list of the variables defined by chezmoi can be found
-[here](REFERENCE.md#template-variables).
+[here](https://github.com/twpayne/chezmoi/blob/master/docs/REFERENCE.md#template-variables).
 
 There are, however more variables than that. To view the variables available on
 your system, execute:
