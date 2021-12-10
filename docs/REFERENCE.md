@@ -5,6 +5,7 @@ Manage your dotfiles across multiple machines, securely.
 <!--- toc --->
 * [Concepts](#concepts)
 * [Global command line flags](#global-command-line-flags)
+  * [`--cache` *directory*](#--cache-directory)
   * [`--color` *value*](#--color-value)
   * [`-c`, `--config` *filename*](#-c---config-filename)
   * [`--config-format` `json`|`toml`|`yaml`](#--config-format-jsontomlyaml)
@@ -173,6 +174,10 @@ destination directory, where:
 ## Global command line flags
 
 Command line flags override any values set in the configuration file.
+
+### `--cache` *directory*
+
+Use *directory* as the cache directory.
 
 ### `--color` *value*
 
@@ -1891,6 +1896,7 @@ chezmoi provides the following automatically-populated variables:
 | -------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------ |
 | `.chezmoi.arch`            | `string`   | Architecture, e.g. `amd64`, `arm`, etc. as returned by [runtime.GOARCH](https://pkg.go.dev/runtime?tab=doc#pkg-constants)      |
 | `.chezmoi.args`            | `[]string` | The arguments passed to the `chezmoi` command, starting with the program command                                               |
+| `.chezmoi.cacheDir`        | `string`   | The cache directory                                                                                                            |
 | `.chezmoi.configFile`      | `string`   | The path to the configuration file used by chezmoi, if any                                                                     |
 | `.chezmoi.executable`      | `string`   | The path to the `chezmoi` executable, if available                                                                             |
 | `.chezmoi.fqdnHostname`    | `string`   | The fully-qualified domain name hostname of the machine chezmoi is running on                                                  |
