@@ -930,6 +930,7 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 		"chezmoi": map[string]interface{}{
 			"arch":         runtime.GOARCH,
 			"args":         os.Args,
+			"cacheDir":     c.CacheDirAbsPath.String(),
 			"configFile":   c.configFileAbsPath.String(),
 			"executable":   executable,
 			"fqdnHostname": fqdnHostname,
@@ -1245,6 +1246,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 
 	persistentFlags := rootCmd.PersistentFlags()
 
+	persistentFlags.Var(&c.CacheDirAbsPath, "cache", "Set cache directory")
 	persistentFlags.Var(&c.Color, "color", "Colorize output")
 	persistentFlags.VarP(&c.DestDirAbsPath, "destination", "D", "Set destination directory")
 	persistentFlags.Var(&c.Mode, "mode", "Mode")
@@ -1256,6 +1258,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.BoolVarP(&c.Verbose, "verbose", "v", c.Verbose, "Make output more verbose")
 	persistentFlags.VarP(&c.WorkingTreeAbsPath, "working-tree", "W", "Set working tree directory")
 	for viperKey, key := range map[string]string{
+		"cacheDir":        "cache",
 		"color":           "color",
 		"destDir":         "destination",
 		"persistentState": "persistent-state",

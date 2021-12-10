@@ -20,6 +20,10 @@ stdout 'sourceDir: .*/config/source'
 chezmoi data --config=$CHEZMOICONFIGDIR/chezmoi.yaml --format=yaml
 stdout 'sourceDir: .*/config2/source'
 
+# test that the cache directory can be set
+chezmoi data --cache=/flag/cache --format=yaml
+stdout 'cacheDir: .*/flag/cache'
+
 [windows] stop 'remaining tests require /dev/stdin'
 
 # test that chezmoi can read the config from stdin
