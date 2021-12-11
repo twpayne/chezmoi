@@ -1454,8 +1454,8 @@ configuration file is created using that file as a template.
 
 Then, if the `--apply` flag is passed, `chezmoi apply` is run.
 
-Then, if the `--purge` flag is passed, chezmoi will remove the source directory
-and its config directory.
+Then, if the `--purge` flag is passed, chezmoi will remove its source, config,
+and cache directories.
 
 Finally, if the `--purge-binary` is passed, chezmoi will attempt to remove its
 own binary.
