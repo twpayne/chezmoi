@@ -106,6 +106,7 @@ func LogCmdCombinedOutput(cmd *exec.Cmd) ([]byte, error) {
 		EmbedObject(OSExecExitErrorLogObject{Err: err}).
 		Bytes("combinedOutput", Output(combinedOutput, err)).
 		Stringer("duration", time.Since(start)).
+		Int("size", len(combinedOutput)).
 		Msg("CombinedOutput")
 	return combinedOutput, err
 }
@@ -119,6 +120,7 @@ func LogCmdOutput(cmd *exec.Cmd) ([]byte, error) {
 		EmbedObject(OSExecExitErrorLogObject{Err: err}).
 		Stringer("duration", time.Since(start)).
 		Bytes("output", Output(output, err)).
+		Int("size", len(output)).
 		Msg("Output")
 	return output, err
 }

@@ -1170,6 +1170,7 @@ func (s *SourceState) getExternalDataRaw(
 		s.logger.Err(err).
 			Stringer("duration", time.Since(start)).
 			Str("method", req.Method).
+			Int64("size", resp.ContentLength).
 			Int("statusCode", resp.StatusCode).
 			Str("status", resp.Status).
 			Stringer("url", req.URL).
@@ -1178,6 +1179,7 @@ func (s *SourceState) getExternalDataRaw(
 		s.logger.Err(err).
 			Stringer("duration", time.Since(start)).
 			Str("method", req.Method).
+			Int64("size", resp.ContentLength).
 			Stringer("url", req.URL).
 			Msg("HTTP")
 	}
