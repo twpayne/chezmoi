@@ -115,6 +115,7 @@ func (s *DebugSystem) ReadFile(name AbsPath) ([]byte, error) {
 	s.logger.Err(err).
 		Stringer("name", name).
 		Bytes("data", chezmoilog.Output(data, err)).
+		Int("size", len(data)).
 		Msg("ReadFile")
 	return data, err
 }
@@ -202,6 +203,7 @@ func (s *DebugSystem) WriteFile(name AbsPath, data []byte, perm fs.FileMode) err
 		Stringer("name", name).
 		Bytes("data", chezmoilog.Output(data, err)).
 		Int("perm", int(perm)).
+		Int("size", len(data)).
 		Msg("WriteFile")
 	return err
 }

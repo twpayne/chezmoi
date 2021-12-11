@@ -252,6 +252,7 @@ func (c *Config) downloadURL(ctx context.Context, url string) ([]byte, error) {
 		c.logger.Err(err).
 			Stringer("duration", time.Since(start)).
 			Str("method", req.Method).
+			Int64("size", resp.ContentLength).
 			Int("statusCode", resp.StatusCode).
 			Str("status", resp.Status).
 			Stringer("url", req.URL).
@@ -260,6 +261,7 @@ func (c *Config) downloadURL(ctx context.Context, url string) ([]byte, error) {
 		c.logger.Err(err).
 			Stringer("duration", time.Since(start)).
 			Str("method", req.Method).
+			Int64("size", resp.ContentLength).
 			Stringer("url", req.URL).
 			Msg("HTTP")
 	}
