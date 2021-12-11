@@ -29,6 +29,8 @@ import (
 	"github.com/rs/zerolog/log"
 	vfs "github.com/twpayne/go-vfs/v4"
 	"go.uber.org/multierr"
+
+	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )
 
 // An ExternalType is a type of external source.
@@ -1164,25 +1166,7 @@ func (s *SourceState) getExternalDataRaw(
 	if err != nil {
 		return nil, err
 	}
-	start := time.Now()
-	resp, err := s.httpClient.Do(req)
-	if resp != nil {
-		s.logger.Err(err).
-			Stringer("duration", time.Since(start)).
-			Str("method", req.Method).
-			Int64("size", resp.ContentLength).
-			Int("statusCode", resp.StatusCode).
-			Str("status", resp.Status).
-			Stringer("url", req.URL).
-			Msg("HTTP")
-	} else {
-		s.logger.Err(err).
-			Stringer("duration", time.Since(start)).
-			Str("method", req.Method).
-			Int64("size", resp.ContentLength).
-			Stringer("url", req.URL).
-			Msg("HTTP")
-	}
+	resp, err := chezmoilog.LogHTTPRequest(s.logger, s.httpClient, req)
 	if err != nil {
 		return nil, err
 	}

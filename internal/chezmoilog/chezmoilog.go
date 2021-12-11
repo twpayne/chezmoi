@@ -3,6 +3,7 @@ package chezmoilog
 
 import (
 	"errors"
+	"net/http"
 	"os"
 	"os/exec"
 	"time"
@@ -95,6 +96,31 @@ func FirstFewBytes(data []byte) []byte {
 		data = append(data, '.', '.', '.')
 	}
 	return data
+}
+
+// LogHTTPRequest calls httpClient.Do, logs the result to logger, and returns
+// the result.
+func LogHTTPRequest(logger *zerolog.Logger, client *http.Client, req *http.Request) (*http.Response, error) {
+	start := time.Now()
+	resp, err := client.Do(req)
+	if resp != nil {
+		logger.Err(err).
+			Stringer("duration", time.Since(start)).
+			Str("method", req.Method).
+			Int64("size", resp.ContentLength).
+			Int("statusCode", resp.StatusCode).
+			Str("status", resp.Status).
+			Stringer("url", req.URL).
+			Msg("HTTPRequest")
+	} else {
+		logger.Err(err).
+			Stringer("duration", time.Since(start)).
+			Str("method", req.Method).
+			Int64("size", resp.ContentLength).
+			Stringer("url", req.URL).
+			Msg("HTTPRequest")
+	}
+	return resp, err
 }
 
 // LogCmdCombinedOutput calls cmd.CombinedOutput, logs the result, and returns the result.

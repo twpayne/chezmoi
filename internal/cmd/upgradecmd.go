@@ -19,7 +19,6 @@ import (
 	"regexp"
 	"runtime"
 	"strings"
-	"time"
 
 	"github.com/coreos/go-semver/semver"
 	"github.com/google/go-github/v40/github"
@@ -27,6 +26,7 @@ import (
 	vfs "github.com/twpayne/go-vfs/v4"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )
 
 const (
@@ -246,25 +246,7 @@ func (c *Config) downloadURL(ctx context.Context, url string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	start := time.Now()
-	resp, err := httpClient.Do(req)
-	if resp != nil {
-		c.logger.Err(err).
-			Stringer("duration", time.Since(start)).
-			Str("method", req.Method).
-			Int64("size", resp.ContentLength).
-			Int("statusCode", resp.StatusCode).
-			Str("status", resp.Status).
-			Stringer("url", req.URL).
-			Msg("HTTP")
-	} else {
-		c.logger.Err(err).
-			Stringer("duration", time.Since(start)).
-			Str("method", req.Method).
-			Int64("size", resp.ContentLength).
-			Stringer("url", req.URL).
-			Msg("HTTP")
-	}
+	resp, err := chezmoilog.LogHTTPRequest(c.logger, httpClient, req)
 	if err != nil {
 		return nil, err
 	}
