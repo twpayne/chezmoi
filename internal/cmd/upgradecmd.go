@@ -19,6 +19,7 @@ import (
 	"regexp"
 	"runtime"
 	"strings"
+	"time"
 
 	"github.com/coreos/go-semver/semver"
 	"github.com/google/go-github/v40/github"
@@ -245,9 +246,11 @@ func (c *Config) downloadURL(ctx context.Context, url string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+	start := time.Now()
 	resp, err := httpClient.Do(req)
 	if resp != nil {
 		c.logger.Err(err).
+			Stringer("duration", time.Since(start)).
 			Str("method", req.Method).
 			Int("statusCode", resp.StatusCode).
 			Str("status", resp.Status).
@@ -255,6 +258,7 @@ func (c *Config) downloadURL(ctx context.Context, url string) ([]byte, error) {
 			Msg("HTTP")
 	} else {
 		c.logger.Err(err).
+			Stringer("duration", time.Since(start)).
 			Str("method", req.Method).
 			Stringer("url", req.URL).
 			Msg("HTTP")
