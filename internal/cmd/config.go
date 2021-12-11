@@ -1536,7 +1536,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	// Log basic information.
 	c.logger.Info().
 		Object("version", c.versionInfo).
-		Strs("args", args).
+		Strs("args", os.Args).
 		Str("goVersion", runtime.Version()).
 		Msg("persistentPreRunRootE")
 
