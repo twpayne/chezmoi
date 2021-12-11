@@ -5,6 +5,7 @@ import (
 	"errors"
 	"os"
 	"os/exec"
+	"time"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
@@ -98,21 +99,25 @@ func FirstFewBytes(data []byte) []byte {
 
 // LogCmdCombinedOutput calls cmd.CombinedOutput, logs the result, and returns the result.
 func LogCmdCombinedOutput(cmd *exec.Cmd) ([]byte, error) {
+	start := time.Now()
 	combinedOutput, err := cmd.CombinedOutput()
 	log.Err(err).
 		EmbedObject(OSExecCmdLogObject{Cmd: cmd}).
 		EmbedObject(OSExecExitErrorLogObject{Err: err}).
 		Bytes("combinedOutput", Output(combinedOutput, err)).
+		Stringer("duration", time.Since(start)).
 		Msg("CombinedOutput")
 	return combinedOutput, err
 }
 
 // LogCmdOutput calls cmd.Output, logs the result, and returns the result.
 func LogCmdOutput(cmd *exec.Cmd) ([]byte, error) {
+	start := time.Now()
 	output, err := cmd.Output()
 	log.Err(err).
 		EmbedObject(OSExecCmdLogObject{Cmd: cmd}).
 		EmbedObject(OSExecExitErrorLogObject{Err: err}).
+		Stringer("duration", time.Since(start)).
 		Bytes("output", Output(output, err)).
 		Msg("Output")
 	return output, err
@@ -120,10 +125,12 @@ func LogCmdOutput(cmd *exec.Cmd) ([]byte, error) {
 
 // LogCmdRun calls cmd.Run, logs the result, and returns the result.
 func LogCmdRun(cmd *exec.Cmd) error {
+	start := time.Now()
 	err := cmd.Run()
 	log.Err(err).
 		EmbedObject(OSExecCmdLogObject{Cmd: cmd}).
 		EmbedObject(OSExecExitErrorLogObject{Err: err}).
+		Stringer("duration", time.Since(start)).
 		Msg("Run")
 	return err
 }

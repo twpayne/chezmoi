@@ -1164,9 +1164,11 @@ func (s *SourceState) getExternalDataRaw(
 	if err != nil {
 		return nil, err
 	}
+	start := time.Now()
 	resp, err := s.httpClient.Do(req)
 	if resp != nil {
 		s.logger.Err(err).
+			Stringer("duration", time.Since(start)).
 			Str("method", req.Method).
 			Int("statusCode", resp.StatusCode).
 			Str("status", resp.Status).
@@ -1174,6 +1176,7 @@ func (s *SourceState) getExternalDataRaw(
 			Msg("HTTP")
 	} else {
 		s.logger.Err(err).
+			Stringer("duration", time.Since(start)).
 			Str("method", req.Method).
 			Stringer("url", req.URL).
 			Msg("HTTP")
