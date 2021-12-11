@@ -6,6 +6,7 @@ import (
 	"io/fs"
 	"os"
 	"regexp"
+	"sort"
 	"strings"
 
 	"github.com/charmbracelet/glamour"
@@ -23,12 +24,13 @@ type docsCmdConfig struct {
 
 func (c *Config) newDocsCmd() *cobra.Command {
 	docsCmd := &cobra.Command{
-		Use:     "docs [regexp]",
-		Short:   "Print documentation",
-		Long:    mustLongHelp("docs"),
-		Example: example("docs"),
-		Args:    cobra.MaximumNArgs(1),
-		RunE:    c.runDocsCmd,
+		Use:               "docs [regexp]",
+		Short:             "Print documentation",
+		Long:              mustLongHelp("docs"),
+		ValidArgsFunction: c.docsCmdValidArgs,
+		Example:           example("docs"),
+		Args:              cobra.MaximumNArgs(1),
+		RunE:              c.runDocsCmd,
 		Annotations: map[string]string{
 			doesNotRequireValidConfig: "true",
 		},
@@ -39,6 +41,31 @@ func (c *Config) newDocsCmd() *cobra.Command {
 	flags.StringVar(&c.Docs.Pager, "pager", c.Docs.Pager, "Set pager")
 
 	return docsCmd
+}
+
+// docsCmdValidArgs returns the completions for the docs command.
+func (c *Config) docsCmdValidArgs(
+	cmd *cobra.Command, args []string, toComplete string,
+) ([]string, cobra.ShellCompDirective) {
+	var completions []string
+	if err := fs.WalkDir(docs.FS, ".", func(path string, dirEntry fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+		if dirEntry.IsDir() {
+			return nil
+		}
+		completion := strings.ToLower(path)
+		if strings.HasPrefix(completion, toComplete) {
+			completions = append(completions, completion)
+		}
+		return nil
+	}); err != nil {
+		cobra.CompErrorln(err.Error())
+		return nil, cobra.ShellCompDirectiveError
+	}
+	sort.Strings(completions)
+	return completions, cobra.ShellCompDirectiveNoFileComp
 }
 
 func (c *Config) runDocsCmd(cmd *cobra.Command, args []string) (err error) {

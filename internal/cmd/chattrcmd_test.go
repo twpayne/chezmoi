@@ -1,11 +1,61 @@
 package cmd
 
 import (
+	"fmt"
 	"testing"
 
+	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
+
+func TestChattrCmdValidArgs(t *testing.T) {
+	for _, tc := range []struct {
+		args                       []string
+		toComplete                 string
+		expectedCompletions        []string
+		expectedShellCompDirective cobra.ShellCompDirective
+	}{
+		{
+			toComplete:                 "a",
+			expectedCompletions:        []string{"after"},
+			expectedShellCompDirective: cobra.ShellCompDirectiveNoFileComp,
+		},
+		{
+			toComplete:                 "e",
+			expectedCompletions:        []string{"empty", "encrypted", "exact", "executable"},
+			expectedShellCompDirective: cobra.ShellCompDirectiveNoFileComp,
+		},
+		{
+			toComplete:                 "-c",
+			expectedCompletions:        []string{"-create"},
+			expectedShellCompDirective: cobra.ShellCompDirectiveNoFileComp,
+		},
+		{
+			toComplete:                 "+o",
+			expectedCompletions:        []string{"+once", "+onchange"},
+			expectedShellCompDirective: cobra.ShellCompDirectiveNoFileComp,
+		},
+		{
+			toComplete:                 "nop",
+			expectedCompletions:        []string{"noprivate"},
+			expectedShellCompDirective: cobra.ShellCompDirectiveNoFileComp,
+		},
+		{
+			toComplete:                 "empty,s",
+			expectedCompletions:        []string{"empty,script", "empty,symlink"},
+			expectedShellCompDirective: cobra.ShellCompDirectiveNoFileComp,
+		},
+	} {
+		name := fmt.Sprintf("chattrValidArgs(_, %+v, %q)", tc.args, tc.toComplete)
+		t.Run(name, func(t *testing.T) {
+			c := &Config{}
+			actualCompletions, actualShellCompDirective := c.chattrCmdValidArgs(&cobra.Command{}, tc.args, tc.toComplete)
+			assert.Equal(t, tc.expectedCompletions, actualCompletions)
+			assert.Equal(t, tc.expectedShellCompDirective, actualShellCompDirective)
+		})
+	}
+}
 
 func TestParseAttrModifier(t *testing.T) {
 	for _, tc := range []struct {

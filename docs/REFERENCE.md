@@ -58,7 +58,7 @@ Manage your dotfiles across multiple machines, securely.
 * [Commands](#commands)
   * [`add` *target*...](#add-target)
   * [`apply` [*target*...]](#apply-target)
-  * [`archive`](#archive)
+  * [`archive` [*target*....]](#archive-target)
   * [`cat` *target*...](#cat-target)
   * [`cd`](#cd)
   * [`chattr` *modifier* *target*...](#chattr-modifier-target)
@@ -73,19 +73,19 @@ Manage your dotfiles across multiple machines, securely.
   * [`edit-config`](#edit-config)
   * [`encrypt` [*file*...]](#encrypt-file)
   * [`execute-template` [*template*...]](#execute-template-template)
-  * [`forget` *targets*](#forget-targets)
+  * [`forget` *target*...](#forget-target)
   * [`git` [*arg*...]](#git-arg)
   * [`help` [*command*...]](#help-command)
   * [`init` [*repo*]](#init-repo)
   * [`import` *filename*](#import-filename)
-  * [`manage` *targets*](#manage-targets)
+  * [`manage` *target*...](#manage-target)
   * [`managed`](#managed)
   * [`merge` *target*...](#merge-target)
-  * [`merge-all` [*target*...]](#merge-all-target)
+  * [`merge-all`](#merge-all)
   * [`purge`](#purge)
-  * [`remove` *targets*](#remove-targets)
+  * [`remove` *target*...](#remove-target)
   * [`re-add`](#re-add)
-  * [`rm` *targets*](#rm-targets)
+  * [`rm` *target*...](#rm-target)
   * [`secret`](#secret)
   * [`source-path` [*target*...]](#source-path-target)
   * [`state`](#state)
@@ -970,7 +970,7 @@ Set the `empty` attribute on added files.
 
 #### `-f`, `--force`
 
-Add *targets*, even if doing so would cause a source template to be overwritten.
+Add *target*s, even if doing so would cause a source template to be overwritten.
 
 #### `--follow`
 
@@ -1040,10 +1040,10 @@ $ chezmoi apply ~/.bashrc
 
 ---
 
-### `archive`
+### `archive` [*target*....]
 
-Generate an archive of the target state. This can be piped into `tar` to inspect
-the target state.
+Generate an archive of the target state, or only the targets specified. This can
+be piped into `tar` to inspect the target state.
 
 #### `-f`, `--format` `tar`|`tar.gz`|`tgz`|`zip`
 
@@ -1071,7 +1071,7 @@ $ chezmoi archive --output=dotfiles.zip
 
 ### `cat` *target*...
 
-Write the target contents of *target*s to stdout. *targets* must be files,
+Write the target contents of *target*s to stdout. *target*s must be files,
 scripts, or symlinks. For files, the target file contents are written. For
 scripts, the script's contents are written. For symlinks, the target target is
 written.
@@ -1394,9 +1394,9 @@ $ chezmoi execute-template --init --promptString email=me@home.org < ~/.local/sh
 
 ---
 
-### `forget` *targets*
+### `forget` *target*...
 
-Remove *targets* from the source state, i.e. stop managing them.
+Remove *target*s from the source state, i.e. stop managing them.
 
 #### `forget` examples
 
@@ -1549,7 +1549,7 @@ $ chezmoi import --strip-components 1 --destination ~/.oh-my-zsh ${TMPDIR}/oh-my
 
 ---
 
-### `manage` *targets*
+### `manage` *target*...
 
 `manage` is an alias for `add` for symmetry with `unmanage`.
 
@@ -1601,7 +1601,7 @@ $ chezmoi merge ~/.bashrc
 
 ---
 
-### `merge-all` [*target*...]
+### `merge-all`
 
 Perform a three-way merge for file whose actual state does not match its target
 state. The merge is performed with `chezmoi merge`.
@@ -1632,9 +1632,9 @@ $ chezmoi purge --force
 
 ---
 
-### `remove` *targets*
+### `remove` *target*...
 
-Remove *targets* from both the source state and the destination directory.
+Remove *target*s from both the source state and the destination directory.
 
 #### `-f`, `--force`
 
@@ -1655,7 +1655,7 @@ $ chezmoi re-add
 
 ---
 
-### `rm` *targets*
+### `rm` *target*...
 
 `rm` is an alias for `remove`.
 

@@ -16,11 +16,12 @@ type dumpCmdConfig struct {
 
 func (c *Config) newDumpCmd() *cobra.Command {
 	dumpCmd := &cobra.Command{
-		Use:     "dump [target]...",
-		Short:   "Generate a dump of the target state",
-		Long:    mustLongHelp("dump"),
-		Example: example("dump"),
-		RunE:    c.runDumpCmd,
+		Use:               "dump [target]...",
+		Short:             "Generate a dump of the target state",
+		Long:              mustLongHelp("dump"),
+		Example:           example("dump"),
+		ValidArgsFunction: c.targetValidArgs,
+		RunE:              c.runDumpCmd,
 		Annotations: map[string]string{
 			persistentStateMode: persistentStateModeEmpty,
 		},

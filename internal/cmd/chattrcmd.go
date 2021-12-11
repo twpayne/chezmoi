@@ -66,42 +66,69 @@ type modifier struct {
 }
 
 func (c *Config) newChattrCmd() *cobra.Command {
-	attrs := []string{
-		"after", "a",
-		"before", "b",
-		"create",
-		"empty", "e",
-		"encrypted",
-		"exact",
-		"executable", "x",
-		"modify",
-		"once", "o",
-		"onchange",
-		"private", "p",
-		"readonly", "r",
-		"script",
-		"symlink",
-		"template", "t",
-	}
-	validArgs := make([]string, 0, 4*len(attrs))
-	for _, attribute := range attrs {
-		validArgs = append(validArgs, attribute, "-"+attribute, "+"+attribute, "no"+attribute)
-	}
-
 	chattrCmd := &cobra.Command{
-		Use:       "chattr attributes target...",
-		Short:     "Change the attributes of a target in the source state",
-		Long:      mustLongHelp("chattr"),
-		Example:   example("chattr"),
-		Args:      cobra.MinimumNArgs(2),
-		ValidArgs: validArgs,
-		RunE:      c.makeRunEWithSourceState(c.runChattrCmd),
+		Use:               "chattr attributes target...",
+		Short:             "Change the attributes of a target in the source state",
+		Long:              mustLongHelp("chattr"),
+		Example:           example("chattr"),
+		Args:              cobra.MinimumNArgs(2),
+		ValidArgsFunction: c.chattrCmdValidArgs,
+		RunE:              c.makeRunEWithSourceState(c.runChattrCmd),
 		Annotations: map[string]string{
 			modifiesSourceDirectory: "true",
 		},
 	}
 
 	return chattrCmd
+}
+
+// chattrCmdValidArgs returns the completions for the chattr command.
+func (c *Config) chattrCmdValidArgs(
+	cmd *cobra.Command, args []string, toComplete string,
+) ([]string, cobra.ShellCompDirective) {
+	switch len(args) {
+	case 0:
+		prefixes := []string{"", "-", "+", "no"}
+		attributes := []string{
+			"after",
+			"before",
+			"create",
+			"empty",
+			"encrypted",
+			"exact",
+			"executable",
+			"modify",
+			"once",
+			"onchange",
+			"private",
+			"readonly",
+			"script",
+			"symlink",
+			"template",
+		}
+		validModifiers := make([]string, 0, len(prefixes)*len(attributes))
+		for _, prefix := range prefixes {
+			for _, attribute := range attributes {
+				modifier := prefix + attribute
+				validModifiers = append(validModifiers, modifier)
+			}
+		}
+
+		modifiers := strings.Split(toComplete, ",")
+		modifierToComplete := modifiers[len(modifiers)-1]
+		completionPrefix := toComplete[:len(toComplete)-len(modifierToComplete)]
+		var completions []string
+		for _, modifier := range validModifiers {
+			if strings.HasPrefix(modifier, modifierToComplete) {
+				completion := completionPrefix + modifier
+				completions = append(completions, completion)
+			}
+		}
+
+		return completions, cobra.ShellCompDirectiveNoFileComp
+	default:
+		return c.targetValidArgs(cmd, args, toComplete)
+	}
 }
 
 func (c *Config) runChattrCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {

@@ -11,12 +11,13 @@ import (
 
 func (c *Config) newCatCmd() *cobra.Command {
 	catCmd := &cobra.Command{
-		Use:     "cat target...",
-		Short:   "Print the target contents of a file, script, or symlink",
-		Long:    mustLongHelp("cat"),
-		Example: example("cat"),
-		Args:    cobra.MinimumNArgs(1),
-		RunE:    c.makeRunEWithSourceState(c.runCatCmd),
+		Use:               "cat target...",
+		Short:             "Print the target contents of a file, script, or symlink",
+		Long:              mustLongHelp("cat"),
+		Example:           example("cat"),
+		ValidArgsFunction: c.targetValidArgs,
+		Args:              cobra.MinimumNArgs(1),
+		RunE:              c.makeRunEWithSourceState(c.runCatCmd),
 	}
 
 	return catCmd

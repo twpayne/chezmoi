@@ -1,11 +1,15 @@
+# test that chezmoi completion bash generates bash completions
 chezmoi completion bash
 stdout '# bash completion V2 for chezmoi'
 
+# test that chezmoi completion fish generates fish completions
 chezmoi completion fish
 stdout '# fish completion for chezmoi'
 
+# test that chezmoi completion powershell generates powershell completions
 chezmoi completion powershell
 stdout 'Register-ArgumentCompleter'
 
+# test that chezmoi completion zsh generates zsh completions
 chezmoi completion zsh
 stdout '#compdef _chezmoi chezmoi'

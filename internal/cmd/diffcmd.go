@@ -23,11 +23,12 @@ type diffCmdConfig struct {
 
 func (c *Config) newDiffCmd() *cobra.Command {
 	diffCmd := &cobra.Command{
-		Use:     "diff [target]...",
-		Short:   "Print the diff between the target state and the destination state",
-		Long:    mustLongHelp("diff"),
-		Example: example("diff"),
-		RunE:    c.runDiffCmd,
+		Use:               "diff [target]...",
+		Short:             "Print the diff between the target state and the destination state",
+		Long:              mustLongHelp("diff"),
+		Example:           example("diff"),
+		ValidArgsFunction: c.targetValidArgs,
+		RunE:              c.runDiffCmd,
 		Annotations: map[string]string{
 			persistentStateMode: persistentStateModeReadMockWrite,
 		},

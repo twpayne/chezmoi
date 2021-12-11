@@ -16,13 +16,14 @@ type removeCmdConfig struct {
 
 func (c *Config) newRemoveCmd() *cobra.Command {
 	removeCmd := &cobra.Command{
-		Use:     "remove target...",
-		Aliases: []string{"rm"},
-		Short:   "Remove a target from the source state and the destination directory",
-		Long:    mustLongHelp("remove"),
-		Example: example("remove"),
-		Args:    cobra.MinimumNArgs(1),
-		RunE:    c.makeRunEWithSourceState(c.runRemoveCmd),
+		Use:               "remove target...",
+		Aliases:           []string{"rm"},
+		Short:             "Remove a target from the source state and the destination directory",
+		Long:              mustLongHelp("remove"),
+		Example:           example("remove"),
+		ValidArgsFunction: c.targetValidArgs,
+		Args:              cobra.MinimumNArgs(1),
+		RunE:              c.makeRunEWithSourceState(c.runRemoveCmd),
 		Annotations: map[string]string{
 			modifiesDestinationDirectory: "true",
 			modifiesSourceDirectory:      "true",

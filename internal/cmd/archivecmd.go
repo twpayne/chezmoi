@@ -24,11 +24,12 @@ type archiveCmdConfig struct {
 
 func (c *Config) newArchiveCmd() *cobra.Command {
 	archiveCmd := &cobra.Command{
-		Use:     "archive [target]...",
-		Short:   "Generate a tar archive of the target state",
-		Long:    mustLongHelp("archive"),
-		Example: example("archive"),
-		RunE:    c.runArchiveCmd,
+		Use:               "archive [target]...",
+		Short:             "Generate a tar archive of the target state",
+		Long:              mustLongHelp("archive"),
+		Example:           example("archive"),
+		ValidArgsFunction: c.targetValidArgs,
+		RunE:              c.runArchiveCmd,
 		Annotations: map[string]string{
 			persistentStateMode: persistentStateModeEmpty,
 		},
