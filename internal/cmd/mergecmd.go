@@ -20,12 +20,13 @@ type mergeCmdConfig struct {
 
 func (c *Config) newMergeCmd() *cobra.Command {
 	mergeCmd := &cobra.Command{
-		Use:     "merge target...",
-		Args:    cobra.MinimumNArgs(1),
-		Short:   "Perform a three-way merge between the destination state, the source state, and the target state",
-		Long:    mustLongHelp("merge"),
-		Example: example("merge"),
-		RunE:    c.makeRunEWithSourceState(c.runMergeCmd),
+		Use:               "merge target...",
+		Args:              cobra.MinimumNArgs(1),
+		Short:             "Perform a three-way merge between the destination state, the source state, and the target state",
+		Long:              mustLongHelp("merge"),
+		Example:           example("merge"),
+		ValidArgsFunction: c.targetValidArgs,
+		RunE:              c.makeRunEWithSourceState(c.runMergeCmd),
 		Annotations: map[string]string{
 			modifiesSourceDirectory: "true",
 			requiresSourceDirectory: "true",

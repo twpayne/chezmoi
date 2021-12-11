@@ -18,11 +18,12 @@ type statusCmdConfig struct {
 
 func (c *Config) newStatusCmd() *cobra.Command {
 	statusCmd := &cobra.Command{
-		Use:     "status [target]...",
-		Short:   "Show the status of targets",
-		Long:    mustLongHelp("status"),
-		Example: example("status"),
-		RunE:    c.makeRunEWithSourceState(c.runStatusCmd),
+		Use:               "status [target]...",
+		Short:             "Show the status of targets",
+		Long:              mustLongHelp("status"),
+		Example:           example("status"),
+		ValidArgsFunction: c.targetValidArgs,
+		RunE:              c.makeRunEWithSourceState(c.runStatusCmd),
 		Annotations: map[string]string{
 			modifiesDestinationDirectory: "true",
 			persistentStateMode:          persistentStateModeReadMockWrite,

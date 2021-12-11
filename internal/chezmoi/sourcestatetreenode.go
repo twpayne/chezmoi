@@ -1,6 +1,7 @@
 package chezmoi
 
 import (
+	"errors"
 	"fmt"
 	"io/fs"
 	"sort"
@@ -57,7 +58,10 @@ func (n *sourceStateEntryTreeNode) ForEach(targetRelPath RelPath, f func(RelPath
 func (n *sourceStateEntryTreeNode) ForEachNode(
 	targetRelPath RelPath, f func(RelPath, *sourceStateEntryTreeNode) error,
 ) error {
-	if err := f(targetRelPath, n); err != nil {
+	switch err := f(targetRelPath, n); {
+	case errors.Is(err, Skip):
+		return nil
+	case err != nil:
 		return err
 	}
 

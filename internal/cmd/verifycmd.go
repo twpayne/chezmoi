@@ -15,11 +15,12 @@ type verifyCmdConfig struct {
 
 func (c *Config) newVerifyCmd() *cobra.Command {
 	verifyCmd := &cobra.Command{
-		Use:     "verify [target]...",
-		Short:   "Exit with success if the destination state matches the target state, fail otherwise",
-		Long:    mustLongHelp("verify"),
-		Example: example("verify"),
-		RunE:    c.runVerifyCmd,
+		Use:               "verify [target]...",
+		Short:             "Exit with success if the destination state matches the target state, fail otherwise",
+		Long:              mustLongHelp("verify"),
+		Example:           example("verify"),
+		ValidArgsFunction: c.targetValidArgs,
+		RunE:              c.runVerifyCmd,
 		Annotations: map[string]string{
 			persistentStateMode: persistentStateModeReadMockWrite,
 		},

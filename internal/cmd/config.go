@@ -1942,6 +1942,34 @@ func (c *Config) targetRelPathsBySourcePath(
 	return targetRelPaths, nil
 }
 
+// targetValidArgs returns completions for targets.
+func (c *Config) targetValidArgs(
+	cmd *cobra.Command, args []string, toComplete string,
+) ([]string, cobra.ShellCompDirective) {
+	toCompleteAbsPath, err := chezmoi.NewAbsPathFromExtPath(toComplete, c.homeDirAbsPath)
+	if err != nil {
+		cobra.CompErrorln(err.Error())
+		return nil, cobra.ShellCompDirectiveError
+	}
+	sourceState, err := c.newSourceState(cmd.Context())
+	if err != nil {
+		cobra.CompErrorln(err.Error())
+		return nil, cobra.ShellCompDirectiveError
+	}
+	var completions []string
+	if err := sourceState.ForEach(func(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi.SourceStateEntry) error {
+		completion := c.DestDirAbsPath.Join(targetRelPath).String()
+		if strings.HasPrefix(completion, toCompleteAbsPath.String()) {
+			completions = append(completions, completion)
+		}
+		return nil
+	}); err != nil {
+		cobra.CompErrorln(err.Error())
+		return nil, cobra.ShellCompDirectiveError
+	}
+	return completions, cobra.ShellCompDirectiveNoFileComp
+}
+
 // tempDir returns the temporary directory for the given key, creating it if
 // needed.
 func (c *Config) tempDir(key string) (chezmoi.AbsPath, error) {

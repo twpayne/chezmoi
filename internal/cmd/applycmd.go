@@ -15,11 +15,12 @@ type applyCmdConfig struct {
 
 func (c *Config) newApplyCmd() *cobra.Command {
 	applyCmd := &cobra.Command{
-		Use:     "apply [target]...",
-		Short:   "Update the destination directory to match the target state",
-		Long:    mustLongHelp("apply"),
-		Example: example("apply"),
-		RunE:    c.runApplyCmd,
+		Use:               "apply [target]...",
+		Short:             "Update the destination directory to match the target state",
+		Long:              mustLongHelp("apply"),
+		Example:           example("apply"),
+		ValidArgsFunction: c.targetValidArgs,
+		RunE:              c.runApplyCmd,
 		Annotations: map[string]string{
 			modifiesDestinationDirectory: "true",
 			persistentStateMode:          persistentStateModeReadWrite,

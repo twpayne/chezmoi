@@ -23,11 +23,12 @@ type editCmdConfig struct {
 
 func (c *Config) newEditCmd() *cobra.Command {
 	editCmd := &cobra.Command{
-		Use:     "edit targets...",
-		Short:   "Edit the source state of a target",
-		Long:    mustLongHelp("edit"),
-		Example: example("edit"),
-		RunE:    c.makeRunEWithSourceState(c.runEditCmd),
+		Use:               "edit targets...",
+		Short:             "Edit the source state of a target",
+		Long:              mustLongHelp("edit"),
+		Example:           example("edit"),
+		ValidArgsFunction: c.targetValidArgs,
+		RunE:              c.makeRunEWithSourceState(c.runEditCmd),
 		Annotations: map[string]string{
 			modifiesDestinationDirectory: "true",
 			modifiesSourceDirectory:      "true",

@@ -18,12 +18,13 @@ type reAddCmdConfig struct {
 
 func (c *Config) newReAddCmd() *cobra.Command {
 	reAddCmd := &cobra.Command{
-		Use:     "re-add [targets...]",
-		Short:   "Re-add modified files",
-		Long:    mustLongHelp("re-add"),
-		Example: example("re-add"),
-		Args:    cobra.ArbitraryArgs,
-		RunE:    c.makeRunEWithSourceState(c.runReAddCmd),
+		Use:               "re-add [targets...]",
+		Short:             "Re-add modified files",
+		Long:              mustLongHelp("re-add"),
+		Example:           example("re-add"),
+		ValidArgsFunction: c.targetValidArgs,
+		Args:              cobra.ArbitraryArgs,
+		RunE:              c.makeRunEWithSourceState(c.runReAddCmd),
 		Annotations: map[string]string{
 			modifiesSourceDirectory: "true",
 			persistentStateMode:     persistentStateModeReadWrite,
