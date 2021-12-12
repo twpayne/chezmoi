@@ -1897,7 +1897,7 @@ chezmoi provides the following automatically-populated variables:
 | `.chezmoi.arch`            | `string`   | Architecture, e.g. `amd64`, `arm`, etc. as returned by [runtime.GOARCH](https://pkg.go.dev/runtime?tab=doc#pkg-constants)      |
 | `.chezmoi.args`            | `[]string` | The arguments passed to the `chezmoi` command, starting with the program command                                               |
 | `.chezmoi.cacheDir`        | `string`   | The cache directory                                                                                                            |
-| `.chezmoi.configFile`      | `string`   | The path to the configuration file used by chezmoi, if any                                                                     |
+| `.chezmoi.configFile`      | `string`   | The path to the configuration file used by chezmoi                                                                             |
 | `.chezmoi.executable`      | `string`   | The path to the `chezmoi` executable, if available                                                                             |
 | `.chezmoi.fqdnHostname`    | `string`   | The fully-qualified domain name hostname of the machine chezmoi is running on                                                  |
 | `.chezmoi.group`           | `string`   | The group of the user running chezmoi                                                                                          |
