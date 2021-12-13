@@ -115,8 +115,8 @@ func (c *Config) newInitCmd() *cobra.Command {
 	flags.IntVarP(&c.init.depth, "depth", "d", c.init.depth, "Create a shallow clone")
 	flags.VarP(c.init.exclude, "exclude", "x", "Exclude entry types")
 	flags.BoolVar(&c.init.oneShot, "one-shot", c.init.oneShot, "Run in one-shot mode")
-	flags.BoolVarP(&c.init.purge, "purge", "p", c.init.purge, "Purge config and source directories after running")
-	flags.BoolVarP(&c.init.purgeBinary, "purge-binary", "P", c.init.purgeBinary, "Purge chezmoi binary after running")
+	flags.BoolVarP(&c.init.purge, "purge", "p", c.init.purge, "Remove the cache, config, and source directories after applying")
+	flags.BoolVarP(&c.init.purgeBinary, "purge-binary", "P", c.init.purgeBinary, "Attempt to remove the chezmoi binary after applying")
 	flags.StringVar(&c.init.branch, "branch", c.init.branch, "Set initial branch to checkout")
 	flags.BoolVar(&c.init.ssh, "ssh", false, "Use ssh instead of https when guessing dotfile repo URL")
 
@@ -130,6 +130,11 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 		c.init.depth = 1
 		c.init.purge = true
 		c.init.purgeBinary = true
+	}
+
+	skipClone := false
+	if len(args) == 0 {
+		skipClone = true
 	}
 
 	// If we're not in a working tree then init it or clone it.
@@ -146,7 +151,7 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 
 		useBuiltinGit := c.UseBuiltinGit.Value(c.useBuiltinGitAutoFunc)
 
-		if len(args) == 0 {
+		if skipClone {
 			if useBuiltinGit {
 				if err := c.builtinGitInit(workingTreeRawPath); err != nil {
 					return err
@@ -208,6 +213,7 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 	if c.init.purge {
 		if err := c.doPurge(&purgeOptions{
 			binary: runtime.GOOS != "windows" && c.init.purgeBinary,
+			source: !skipClone,
 		}); err != nil {
 			return err
 		}

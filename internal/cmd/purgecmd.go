@@ -51,6 +51,11 @@ func (c *Config) doPurge(purgeOptions *purgeOptions) error {
 		}
 	}
 
+	purgeSource := true
+	if purgeOptions != nil && !purgeOptions.source {
+		purgeSource = false
+	}
+
 	persistentStateFileAbsPath, err := c.persistentStateFile()
 	if err != nil {
 		return err
@@ -60,9 +65,12 @@ func (c *Config) doPurge(purgeOptions *purgeOptions) error {
 		c.configFileAbsPath.Dir(),
 		c.configFileAbsPath,
 		persistentStateFileAbsPath,
-		c.WorkingTreeAbsPath,
-		c.SourceDirAbsPath,
 	}
+
+	if purgeSource {
+		absPaths = append(absPaths, c.WorkingTreeAbsPath, c.SourceDirAbsPath)
+	}
+
 	if purgeOptions != nil && purgeOptions.binary {
 		executable, err := os.Executable()
 		// Special case: do not purge the binary if it is a test binary created

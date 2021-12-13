@@ -1491,7 +1491,7 @@ temporary environments (e.g. Docker containers).
 
 #### `--purge`
 
-Remove the source and config directories after applying.
+Remove the cache, config, and source directories after applying.
 
 #### `--purge-binary`
 

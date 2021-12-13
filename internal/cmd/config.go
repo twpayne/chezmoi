@@ -59,6 +59,7 @@ const (
 
 type purgeOptions struct {
 	binary bool
+	source bool
 }
 
 type templateConfig struct {
