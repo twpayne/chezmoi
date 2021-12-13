@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Changes #   Overview #  This document describes what&rsquo;s new in chezmoi v2 for chezmoi v1 users.
+If you&rsquo;re not using a dotfile manager, then read why you should you use a dotfile manager and then install chezmoi and follow the quick-start guide.
+If you&rsquo;re already using a dotfile manager, but not chezmoi, then read about how chezmoi compares to other dotfile managers first and then install chezmoi, follow the quick-start guide, and read the how-to guide to quickly discover chezmoi&rsquo;s functionality.">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="Changes" />
+<meta property="og:description" content="Changes #   Overview #  This document describes what&rsquo;s new in chezmoi v2 for chezmoi v1 users.
+If you&rsquo;re not using a dotfile manager, then read why you should you use a dotfile manager and then install chezmoi and follow the quick-start guide.
+If you&rsquo;re already using a dotfile manager, but not chezmoi, then read about how chezmoi compares to other dotfile managers first and then install chezmoi, follow the quick-start guide, and read the how-to guide to quickly discover chezmoi&rsquo;s functionality." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chezmoi.io/docs/changes/" /><meta property="article:section" content="docs" />
+
+
+
+<title>Changes | chezmoi.io</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.f45df80f079fabd47e6dafd034d87d755ed6d0354f4a5220aba76b684a05ba8f.js" integrity="sha256-9F34Dwefq9R&#43;ba/QNNh9dV7W0DVPSlIgq6draEoFuo8=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><img src="/logo-144px.svg" alt="Logo" /><span>chezmoi.io</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  <ul>
+<li><a href="/docs/install/">Install</a></li>
+<li><a href="/docs/quick-start/">Quick Start</a></li>
+<li><a href="/docs/how-to/">How-To</a></li>
+<li><a href="/docs/templating/">Templating</a></li>
+<li><a href="/docs/faq/">FAQ</a></li>
+<li><a href="/docs/changes/"class=active>Changes</a></li>
+<li><a href="/docs/reference/">Reference</a></li>
+<li><a href="/docs/media/">Media</a></li>
+<li><a href="/docs/comparison/">Comparison</a></li>
+<li><a href="/docs/contributing/">Contributing</a></li>
+<li><a href="/docs/architecture/">Architecture</a></li>
+<li><a href="/docs/related/">Related Software</a></li>
+<li><a href="/docs/security/">Security</a></li>
+<li><a href="https://github.com/twpayne/chezmoi">GitHub</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>Changes</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#version-2">Version 2</a>
+      <ul>
+        <li><a href="#new-features-in-version-2">New features in version 2</a></li>
+        <li><a href="#changes-from-version-1">Changes from version 1</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h1 id="changes">
+  Changes
+  <a class="anchor" href="#changes">#</a>
+</h1>
+<hr>
+<h2 id="overview">
+  Overview
+  <a class="anchor" href="#overview">#</a>
+</h2>
+<p>This document describes what&rsquo;s new in chezmoi v2 for chezmoi v1 users.</p>
+<p>If you&rsquo;re not using a dotfile manager, then read <a href="/docs/comparison/#why-should-i-use-a-dotfile-manager">why you should you use a
+dotfile
+manager</a>
+and then <a href="/docs/install/">install
+chezmoi</a> and
+follow the <a href="/docs/quick-start/">quick-start
+guide</a>.</p>
+<p>If you&rsquo;re already using a dotfile manager, but not chezmoi, then read about <a href="/docs/comparison/">how
+chezmoi compares to other dotfile
+managers</a>
+first and then <a href="/docs/install/">install
+chezmoi</a>, follow
+the <a href="/docs/quick-start/">quick-start
+guide</a>, and
+read the <a href="/docs/how-to/">how-to
+guide</a> to quickly
+discover chezmoi&rsquo;s functionality.</p>
+<hr>
+<h2 id="version-2">
+  Version 2
+  <a class="anchor" href="#version-2">#</a>
+</h2>
+<p>chezmoi version 2 brings many new features and fixes a few corner-case bugs.
+Very few, if any, changes should be required to your source directory,
+templates, or config file.</p>
+<hr>
+<h3 id="new-features-in-version-2">
+  New features in version 2
+  <a class="anchor" href="#new-features-in-version-2">#</a>
+</h3>
+<ul>
+<li>The new <code>chezmoi status</code> command shows you a concise list of differences, much
+like <code>git status</code>.</li>
+<li>The <code>chezmoi apply</code> command prompts you if a file has been modified by
+something other than chezmoi since chezmoi last wrote it, keeping you in full
+control of your changes, wherever you make them.</li>
+<li>The <code>chezmoi init</code> command will try to guess your dotfile repository if you
+give it a short argument. For example, <code>chezmoi init username</code> is the
+equivalent of <code>chezmoi init https://github.com/username/dotfiles.git</code>.</li>
+<li>chezmoi includes a builtin <code>git</code> command which it will use if it cannot find
+<code>git</code> in your <code>$PATH</code>. This means that you don&rsquo;t even have to install <code>git</code> to
+setup your dotfiles on a new machine.</li>
+<li>chezmoi detects when your config file template has changed and prompts you to
+re-run <code>chezmoi init</code> if needed.</li>
+<li>The new <code>create_</code> attribute allows you to create a file with initial content,
+but not have it overwritten by <code>chezmoi apply</code>.</li>
+<li>The new <code>modify_</code> attribute allows you to modify an existing file with a
+script, so you can use chezmoi to manage parts, but not all, of a file.</li>
+<li>The new script attributes <code>before_</code> and <code>after_</code> control when scripts are run
+relative to when your files are updated.</li>
+<li>The new <code>--exclude</code> option allows you to control what types of target will be
+updated. For example <code>chezmoi apply --exclude=scripts</code> will cause chezmoi to
+apply everything except scripts and <code>chezmoi init --apply --exclude=encrypted</code>
+will exclude encrypted files.</li>
+<li>The new <code>--keep-going</code> option causes chezmoi to keep going as far as possible
+rather than stopping at the first error it encounters.</li>
+<li>The new <code>--no-tty</code> option stops chezmoi from opening a TTY to read input
+(including passwords) and instead reads them from stdin.</li>
+<li>The new <code>--source-path</code> option allows you to specify targets by source path,
+which you can use in an on-save editor hook to automatically run <code>chezmoi apply</code> when you edit a dotfile in your source state.</li>
+<li>The new <code>gitHubKeys</code> template function allows you to populate your
+<code>~/.ssh/authorized_keys</code> from your public SSH keys on GitHub.</li>
+<li>The <code>promptBool</code> function now also recognizes <code>y</code>, <code>yes</code>, <code>on</code>, <code>n</code>, <code>no</code>, and
+<code>off</code> as boolean values.</li>
+<li>The <code>chezmoi archive</code> command now includes scripts in the generated archive,
+and can generate <code>.zip</code> files.</li>
+<li>The new <code>edit.command</code> and <code>edit.args</code> configuration variables give you more
+control over the command invoked by <code>chezmoi edit</code>.</li>
+<li>The <code>chezmoi init</code> command has a new <code>--one-shot</code> option which does a shallow
+clone of your dotfiles repo, runs <code>chezmoi apply</code>, and then removes your
+source and configuration directories. It&rsquo;s the fastest way to set up your
+dotfiles on a ephemeral machine and then remove all traces of chezmoi.</li>
+<li>Standard template variables are set on a best-effort basis. If errors are
+encountered, chezmoi leaves the variable unset rather than terminating with
+the error.</li>
+<li>The new <code>.chezmoi.version</code> template variable contains the version of chezmoi.
+You can compare versions using <a href="https://masterminds.github.io/sprig/semver.html">version comparison
+functions</a>.</li>
+<li>The new <code>.chezmoi.fqdnHostname</code> template variables contains the
+fully-qualified domain name of the machine, if it can be determined.</li>
+<li>You can now encrypt whole files with <a href="https://age-encryption.org">age</a>.</li>
+</ul>
+<hr>
+<h3 id="changes-from-version-1">
+  Changes from version 1
+  <a class="anchor" href="#changes-from-version-1">#</a>
+</h3>
+<p>chezmoi version 2 includes a few minor changes from version 1, mainly to enable
+the new functionality and for consistency:</p>
+<ul>
+<li>chezmoi uses a different format to persist its state. Specifically, this means
+that all your <code>run_once_</code> scripts will be run again the first time you run
+<code>chezmoi apply</code>.</li>
+<li><code>chezmoi add</code>, and many other commands, are now recursive by default.</li>
+<li><code>chezmoi apply</code> will warn if a file in the destination directory has been
+modified since chezmoi last wrote it. To force overwriting, pass the <code>--force</code>
+option.</li>
+<li><code>chezmoi edit</code> no longer supports the <code>--prompt</code> option.</li>
+<li>The only diff format is now <code>git</code>. The <code>diff.format</code> configuration variable is
+ignored.</li>
+<li>Diffs include the contents of scripts that would be run.</li>
+<li>Mercurial support has been removed.</li>
+<li>The <code>chezmoi source</code> command has been removed, use <code>chezmoi git</code> instead.</li>
+<li>The <code>sourceVCS</code> configuration group has been renamed to <code>git</code>.</li>
+<li>The order of files for a three-way merge passed to <code>merge.command</code> is now
+actual file, target state, source state.</li>
+<li>The <code>chezmoi keyring</code> command has been moved to <code>chezmoi secret keyring</code>.</li>
+<li>The <code>genericSecret</code> configuration group has been renamed to <code>secret</code>.</li>
+<li>The <code>chezmoi chattr</code> command uses <code>encrypted</code> instead of <code>encrypt</code> as the
+attribute for encrypted files.</li>
+<li>The gpg recipient is configured with the <code>gpg.recipient</code> configuration
+variable, <code>gpgRecipient</code> is no longer used.</li>
+<li>The structure of data output by <code>chezmoi dump</code> has changed.</li>
+<li>The <code>.chezmoi.homedir</code> template variable has been replaced with
+<code>.chezmoi.homeDir</code>. For compatibility, <code>.chezmoi.homedir</code> will continue to be
+supported until version 2.1.</li>
+<li>The <code>.chezmoi.fullHostname</code> template variable has been removed, as it did not
+contain the full hostname. Use <code>.chezmoi.fqdnHostname</code> (UNIX only) instead.</li>
+</ul>
+<hr>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#overview">Overview</a></li>
+    <li><a href="#version-2">Version 2</a>
+      <ul>
+        <li><a href="#new-features-in-version-2">New features in version 2</a></li>
+        <li><a href="#changes-from-version-1">Changes from version 1</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

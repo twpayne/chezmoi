@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Comparison Guide #   Comparison table #      chezmoi dotbot rcm homesick vcsh yadm bare git     Distribution Single binary Python package Multiple files Ruby gem Single script or package Single script -   Install method Many git submodule Many Ruby gem Many Many Manual   Non-root install on bare system ✅ ⁉️ ⁉️ ⁉️ ✅ ✅ ✅   Windows support ✅ ❌ ❌ ❌ ❌ ❌ ✅   Bootstrap requirements None Python, git Perl, git Ruby, git sh, git git git   Source repos Single Single Multiple Single Multiple Single Single   dotfiles are&hellip; Files Symlinks Files Symlinks Files Files Files   Config file Optional Required Optional None None None Optional   Private files ✅ ❌ ❌ ❌ ❌ ❌ ❌   Show differences without applying ✅ ❌ ❌ ❌ ✅ ✅ ✅   Whole file encryption ✅ ❌ ❌ ❌ ❌ ✅ ❌   Password manager integration ✅ ❌ ❌ ❌ ❌ ❌ ❌   Machine-to-machine file differences Templates Alternative files Alternative files Alternative files Branches Templates ⁉️   Custom variables in templates ✅ ❌ ❌ ❌ ❌ ❌ ❌   Executable files ✅ ✅ ✅ ✅ ✅ ❌ ✅   File creation with initial contents ✅ ❌ ❌ ❌ ✅ ❌ ❌   Externals ✅ ❌ ❌ ❌ ❌ ❌ ❌   Manage partial files ✅ ❌ ❌ ❌ ⁉️ ❌ ⁉️   File removal ✅ ❌ ❌ ❌ ✅ ❌ ❌   Directory creation ✅ ✅ ✅ ❌ ✅ ❌ ✅   Run scripts ✅ ✅ ✅ ❌ ✅ ❌ ❌   Run once scripts ✅ ❌ ❌ ❌ ✅ ❌ ❌   Machine-to-machine symlink differences ✅ ❌ ❌ ❌ ⁉️ ✅ ⁉️   Shell completion ✅ ❌ ❌ ❌ ✅ ✅ ✅   Archive import ✅ ❌ ❌ ❌ ✅ ❌ ✅   Archive export ✅ ❌ ❌ ❌ ✅ ❌ ✅   Implementation language Go Python Perl Ruby POSIX Shell Bash C    ✅ Supported, ⁉️ Possible with significant manual effort, ❌ Not supported">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="Comparison" />
+<meta property="og:description" content="Comparison Guide #   Comparison table #      chezmoi dotbot rcm homesick vcsh yadm bare git     Distribution Single binary Python package Multiple files Ruby gem Single script or package Single script -   Install method Many git submodule Many Ruby gem Many Many Manual   Non-root install on bare system ✅ ⁉️ ⁉️ ⁉️ ✅ ✅ ✅   Windows support ✅ ❌ ❌ ❌ ❌ ❌ ✅   Bootstrap requirements None Python, git Perl, git Ruby, git sh, git git git   Source repos Single Single Multiple Single Multiple Single Single   dotfiles are&hellip; Files Symlinks Files Symlinks Files Files Files   Config file Optional Required Optional None None None Optional   Private files ✅ ❌ ❌ ❌ ❌ ❌ ❌   Show differences without applying ✅ ❌ ❌ ❌ ✅ ✅ ✅   Whole file encryption ✅ ❌ ❌ ❌ ❌ ✅ ❌   Password manager integration ✅ ❌ ❌ ❌ ❌ ❌ ❌   Machine-to-machine file differences Templates Alternative files Alternative files Alternative files Branches Templates ⁉️   Custom variables in templates ✅ ❌ ❌ ❌ ❌ ❌ ❌   Executable files ✅ ✅ ✅ ✅ ✅ ❌ ✅   File creation with initial contents ✅ ❌ ❌ ❌ ✅ ❌ ❌   Externals ✅ ❌ ❌ ❌ ❌ ❌ ❌   Manage partial files ✅ ❌ ❌ ❌ ⁉️ ❌ ⁉️   File removal ✅ ❌ ❌ ❌ ✅ ❌ ❌   Directory creation ✅ ✅ ✅ ❌ ✅ ❌ ✅   Run scripts ✅ ✅ ✅ ❌ ✅ ❌ ❌   Run once scripts ✅ ❌ ❌ ❌ ✅ ❌ ❌   Machine-to-machine symlink differences ✅ ❌ ❌ ❌ ⁉️ ✅ ⁉️   Shell completion ✅ ❌ ❌ ❌ ✅ ✅ ✅   Archive import ✅ ❌ ❌ ❌ ✅ ❌ ✅   Archive export ✅ ❌ ❌ ❌ ✅ ❌ ✅   Implementation language Go Python Perl Ruby POSIX Shell Bash C    ✅ Supported, ⁉️ Possible with significant manual effort, ❌ Not supported" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chezmoi.io/docs/comparison/" /><meta property="article:section" content="docs" />
+
+
+
+<title>Comparison | chezmoi.io</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.f45df80f079fabd47e6dafd034d87d755ed6d0354f4a5220aba76b684a05ba8f.js" integrity="sha256-9F34Dwefq9R&#43;ba/QNNh9dV7W0DVPSlIgq6draEoFuo8=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><img src="/logo-144px.svg" alt="Logo" /><span>chezmoi.io</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  <ul>
+<li><a href="/docs/install/">Install</a></li>
+<li><a href="/docs/quick-start/">Quick Start</a></li>
+<li><a href="/docs/how-to/">How-To</a></li>
+<li><a href="/docs/templating/">Templating</a></li>
+<li><a href="/docs/faq/">FAQ</a></li>
+<li><a href="/docs/changes/">Changes</a></li>
+<li><a href="/docs/reference/">Reference</a></li>
+<li><a href="/docs/media/">Media</a></li>
+<li><a href="/docs/comparison/"class=active>Comparison</a></li>
+<li><a href="/docs/contributing/">Contributing</a></li>
+<li><a href="/docs/architecture/">Architecture</a></li>
+<li><a href="/docs/related/">Related Software</a></li>
+<li><a href="/docs/security/">Security</a></li>
+<li><a href="https://github.com/twpayne/chezmoi">GitHub</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>Comparison</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#comparison-table">Comparison table</a></li>
+    <li><a href="#why-should-i-use-a-dotfile-manager">Why should I use a dotfile manager?</a></li>
+    <li><a href="#i-already-have-a-system-to-manage-my-dotfiles-why-should-i-use-chezmoi">I already have a system to manage my dotfiles, why should I use chezmoi?</a>
+      <ul>
+        <li><a href="#coping-with-differences-between-machines-requires-extra-effort">Coping with differences between machines requires extra effort</a></li>
+        <li><a href="#you-have-to-keep-your-dotfiles-repo-private">You have to keep your dotfiles repo private</a></li>
+        <li><a href="#you-have-to-maintain-your-own-tool">You have to maintain your own tool</a></li>
+        <li><a href="#setting-up-your-dotfiles-requires-more-than-one-short-command">Setting up your dotfiles requires more than one short command</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h1 id="comparison-guide">
+  Comparison Guide
+  <a class="anchor" href="#comparison-guide">#</a>
+</h1>
+<hr>
+<h2 id="comparison-table">
+  Comparison table
+  <a class="anchor" href="#comparison-table">#</a>
+</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><a href="https://chezmoi.io/">chezmoi</a></th>
+<th><a href="https://github.com/anishathalye/dotbot">dotbot</a></th>
+<th><a href="https://github.com/thoughtbot/rcm">rcm</a></th>
+<th><a href="https://github.com/technicalpickles/homesick">homesick</a></th>
+<th><a href="https://github.com/RichiH/vcsh">vcsh</a></th>
+<th><a href="https://yadm.io/">yadm</a></th>
+<th><a href="https://www.atlassian.com/git/tutorials/dotfiles" title="bare git">bare git</a></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Distribution</td>
+<td>Single binary</td>
+<td>Python package</td>
+<td>Multiple files</td>
+<td>Ruby gem</td>
+<td>Single script or package</td>
+<td>Single script</td>
+<td>-</td>
+</tr>
+<tr>
+<td>Install method</td>
+<td>Many</td>
+<td>git submodule</td>
+<td>Many</td>
+<td>Ruby gem</td>
+<td>Many</td>
+<td>Many</td>
+<td>Manual</td>
+</tr>
+<tr>
+<td>Non-root install on bare system</td>
+<td>✅</td>
+<td>⁉️</td>
+<td>⁉️</td>
+<td>⁉️</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Windows support</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Bootstrap requirements</td>
+<td>None</td>
+<td>Python, git</td>
+<td>Perl, git</td>
+<td>Ruby, git</td>
+<td>sh, git</td>
+<td>git</td>
+<td>git</td>
+</tr>
+<tr>
+<td>Source repos</td>
+<td>Single</td>
+<td>Single</td>
+<td>Multiple</td>
+<td>Single</td>
+<td>Multiple</td>
+<td>Single</td>
+<td>Single</td>
+</tr>
+<tr>
+<td>dotfiles are&hellip;</td>
+<td>Files</td>
+<td>Symlinks</td>
+<td>Files</td>
+<td>Symlinks</td>
+<td>Files</td>
+<td>Files</td>
+<td>Files</td>
+</tr>
+<tr>
+<td>Config file</td>
+<td>Optional</td>
+<td>Required</td>
+<td>Optional</td>
+<td>None</td>
+<td>None</td>
+<td>None</td>
+<td>Optional</td>
+</tr>
+<tr>
+<td>Private files</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Show differences without applying</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Whole file encryption</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Password manager integration</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Machine-to-machine file differences</td>
+<td>Templates</td>
+<td>Alternative files</td>
+<td>Alternative files</td>
+<td>Alternative files</td>
+<td>Branches</td>
+<td>Templates</td>
+<td>⁉️</td>
+</tr>
+<tr>
+<td>Custom variables in templates</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Executable files</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>File creation with initial contents</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Externals</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Manage partial files</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>⁉️</td>
+<td>❌</td>
+<td>⁉️</td>
+</tr>
+<tr>
+<td>File removal</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Directory creation</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Run scripts</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Run once scripts</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Machine-to-machine symlink differences</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>⁉️</td>
+<td>✅</td>
+<td>⁉️</td>
+</tr>
+<tr>
+<td>Shell completion</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Archive import</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Archive export</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+</tr>
+<tr>
+<td>Implementation language</td>
+<td>Go</td>
+<td>Python</td>
+<td>Perl</td>
+<td>Ruby</td>
+<td>POSIX Shell</td>
+<td>Bash</td>
+<td>C</td>
+</tr>
+</tbody>
+</table>
+<p>✅ Supported, ⁉️  Possible with significant manual effort, ❌ Not supported</p>
+<p>For more comparisons, visit <a href="https://dotfiles.github.io/">dotfiles.github.io</a>.</p>
+<hr>
+<h2 id="why-should-i-use-a-dotfile-manager">
+  Why should I use a dotfile manager?
+  <a class="anchor" href="#why-should-i-use-a-dotfile-manager">#</a>
+</h2>
+<p>Dotfile managers give you the combined benefit of a consistent environment
+everywhere with an undo command and a restore from backup.</p>
+<p>As the core of our development environments become increasingly standardized
+(e.g. git or Mercurial interfaces to version control at both home and work), and
+we further customize them (with shell configs like
+<a href="https://github.com/romkatv/powerlevel10k">powerlevel10k</a>), at the same time we
+increasingly work in ephemeral environments like Docker containers and <a href="https://github.com/features/codespaces">GitHub
+Codespaces</a>.</p>
+<p>chezmoi helps you bring your personal configuration to every environment that
+you&rsquo;re working in. In the same way that nobody would use an editor without an
+undo command, or develop software without a version control system, chezmoi
+brings the investment that you have made in mastering your tools to every
+environment that you work in.</p>
+<hr>
+<h2 id="i-already-have-a-system-to-manage-my-dotfiles-why-should-i-use-chezmoi">
+  I already have a system to manage my dotfiles, why should I use chezmoi?
+  <a class="anchor" href="#i-already-have-a-system-to-manage-my-dotfiles-why-should-i-use-chezmoi">#</a>
+</h2>
+<blockquote>
+<p>Regular reminder that chezmoi is the best dotfile manager utility I&rsquo;ve used
+and you can too</p>
+<p>— <a href="https://twitter.com/mbbroberg/status/1355644967625125892">@mbbroberg</a></p>
+</blockquote>
+<p>If you&rsquo;re using any of the following methods:</p>
+<ul>
+<li>A custom shell script.</li>
+<li>An existing dotfile manager like
+<a href="https://github.com/anishathalye/dotbot">dotbot</a>,
+<a href="https://github.com/thoughtbot/rcm">rcm</a>,
+<a href="https://github.com/technicalpickles/homesick">homesick</a>,
+<a href="https://github.com/RichiH/vcsh">vcsh</a>,
+<a href="https://yadm.io/">yadm</a>, or <a href="https://www.gnu.org/software/stow/">GNU Stow</a>.</li>
+<li>A <a href="https://www.atlassian.com/git/tutorials/dotfiles">bare git repo</a>.</li>
+</ul>
+<p>Then you&rsquo;ve probably run into at least one of the following problems.</p>
+<hr>
+<h3 id="coping-with-differences-between-machines-requires-extra-effort">
+  Coping with differences between machines requires extra effort
+  <a class="anchor" href="#coping-with-differences-between-machines-requires-extra-effort">#</a>
+</h3>
+<p>If you want to synchronize your dotfiles across multiple operating systems or
+distributions, then you may need to manually perform extra steps to cope with
+differences from machine to machine. You might need to run different commands on
+different machines, maintain separate per-machine files or branches (with the
+associated hassle of merging, rebasing, or copying each change), or hope that
+your custom logic handles the differences correctly.</p>
+<p>chezmoi uses a single source of truth (a single branch) and a single command
+that works on every machine. Individual files can be templates to handle machine
+to machine differences, if needed.</p>
+<hr>
+<h3 id="you-have-to-keep-your-dotfiles-repo-private">
+  You have to keep your dotfiles repo private
+  <a class="anchor" href="#you-have-to-keep-your-dotfiles-repo-private">#</a>
+</h3>
+<blockquote>
+<p>And regarding dotfiles, I saw that. It&rsquo;s only public dotfiles repos so I have
+to evaluate my dotfiles history to be sure. I have secrets scanning and more,
+but it was easier to keep it private for security, I&rsquo;m ok mostly though. I&rsquo;m
+using chezmoi and it&rsquo;s easier now</p>
+<p>— <a href="https://twitter.com/sheldon_hull/status/1308139570597371907">@sheldon_hull</a></p>
+</blockquote>
+<p>If your system stores secrets in plain text, then you must be very careful about
+where you clone your dotfiles. If you clone them on your work machine then
+anyone with access to your work machine (e.g. your IT department) will have
+access to your home secrets. If you clone it on your home machine then you risk
+leaking work secrets.</p>
+<p>With chezmoi you can store secrets in your password manager or encrypt them, and
+even store passwords in different ways on different machines. You can clone your
+dotfiles repository anywhere, and even make your dotfiles repo public, without
+leaving personal secrets on your work machine or work secrets on your personal
+machine.</p>
+<hr>
+<h3 id="you-have-to-maintain-your-own-tool">
+  You have to maintain your own tool
+  <a class="anchor" href="#you-have-to-maintain-your-own-tool">#</a>
+</h3>
+<blockquote>
+<p>I&rsquo;ve offloaded my dotfiles deployment from a homespun shell script to chezmoi.
+I&rsquo;m quite happy with this decision.</p>
+<p>— <a href="https://twitter.com/gotgenes/status/1251008845163319297">@gotgenes</a></p>
+</blockquote>
+<blockquote>
+<p>I discovered chezmoi and it&rsquo;s pretty cool, just migrated my old custom
+multi-machine sync dotfile setup and it&rsquo;s so much simpler now</p>
+<p>in case you&rsquo;re wondering I have written 0 code</p>
+<p>— <a href="https://twitter.com/buritica/status/1361062902451630089">@buritica</a></p>
+</blockquote>
+<p>If your system was written by you for your personal use, then it probably has
+the functionality that you needed when you wrote it. If you need more
+functionality then you have to implement it yourself.</p>
+<p>chezmoi includes a huge range of battle-tested functionality out-of-the-box,
+including dry-run and diff modes, script execution, conflict resolution, Windows
+support, and much, much more. chezmoi is <a href="https://github.com/twpayne/chezmoi/stargazers">used by thousands of
+people</a> and has a rich suite of
+both unit and integration tests. When you hit the limits of your existing
+dotfile management system, chezmoi already has a tried-and-tested solution ready
+for you to use.</p>
+<hr>
+<h3 id="setting-up-your-dotfiles-requires-more-than-one-short-command">
+  Setting up your dotfiles requires more than one short command
+  <a class="anchor" href="#setting-up-your-dotfiles-requires-more-than-one-short-command">#</a>
+</h3>
+<p>If your system is written in a scripting language like Python, Perl, or Ruby,
+then you also need to install a compatible version of that language&rsquo;s runtime
+before you can use your system.</p>
+<p>chezmoi is distributed as a single stand-alone statically-linked binary with no
+dependencies that you can simply copy onto your machine and run. You don&rsquo;t even
+need git installed. chezmoi provides one-line installs, pre-built binaries,
+packages for Linux and BSD distributions, Homebrew formulae, Scoop and
+Chocolatey support on Windows, and a initial config file generation mechanism to
+make installing your dotfiles on a new machine as painless as possible.</p>
+<hr>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#comparison-table">Comparison table</a></li>
+    <li><a href="#why-should-i-use-a-dotfile-manager">Why should I use a dotfile manager?</a></li>
+    <li><a href="#i-already-have-a-system-to-manage-my-dotfiles-why-should-i-use-chezmoi">I already have a system to manage my dotfiles, why should I use chezmoi?</a>
+      <ul>
+        <li><a href="#coping-with-differences-between-machines-requires-extra-effort">Coping with differences between machines requires extra effort</a></li>
+        <li><a href="#you-have-to-keep-your-dotfiles-repo-private">You have to keep your dotfiles repo private</a></li>
+        <li><a href="#you-have-to-maintain-your-own-tool">You have to maintain your own tool</a></li>
+        <li><a href="#setting-up-your-dotfiles-requires-more-than-one-short-command">Setting up your dotfiles requires more than one short command</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+

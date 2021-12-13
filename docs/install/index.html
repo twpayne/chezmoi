@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Install Guide #   One-line binary install #  Install the correct binary for your operating system and architecture in ./bin with a single command:
+$ sh -c &#34;$(curl -fsLS git.io/chezmoi)&#34; Or, if you have wget instead of curl:
+$ sh -c &#34;$(wget -qO- git.io/chezmoi)&#34; If you already have a dotfiles repo using chezmoi on GitHub at https://github.com/&lt;github-username&gt;/dotfiles then you can install chezmoi and your dotfiles with the single command:">
+<meta name="theme-color" content="#FFFFFF">
+<meta name="color-scheme" content="light dark"><meta property="og:title" content="Install" />
+<meta property="og:description" content="Install Guide #   One-line binary install #  Install the correct binary for your operating system and architecture in ./bin with a single command:
+$ sh -c &#34;$(curl -fsLS git.io/chezmoi)&#34; Or, if you have wget instead of curl:
+$ sh -c &#34;$(wget -qO- git.io/chezmoi)&#34; If you already have a dotfiles repo using chezmoi on GitHub at https://github.com/&lt;github-username&gt;/dotfiles then you can install chezmoi and your dotfiles with the single command:" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://chezmoi.io/docs/install/" /><meta property="article:section" content="docs" />
+
+
+
+<title>Install | chezmoi.io</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/favicon.png" type="image/x-icon">
+<link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
+  <script defer src="/flexsearch.min.js"></script>
+  <script defer src="/en.search.min.f45df80f079fabd47e6dafd034d87d755ed6d0354f4a5220aba76b684a05ba8f.js" integrity="sha256-9F34Dwefq9R&#43;ba/QNNh9dV7W0DVPSlIgq6draEoFuo8=" crossorigin="anonymous"></script>
+<!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+  
+</head>
+<body dir="ltr">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    <aside class="book-menu">
+      <div class="book-menu-content">
+        
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><img src="/logo-144px.svg" alt="Logo" /><span>chezmoi.io</span>
+  </a>
+</h2>
+
+
+<div class="book-search">
+  <input type="text" id="book-search-input" placeholder="Search" aria-label="Search" maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+  <ul>
+<li><a href="/docs/install/"class=active>Install</a></li>
+<li><a href="/docs/quick-start/">Quick Start</a></li>
+<li><a href="/docs/how-to/">How-To</a></li>
+<li><a href="/docs/templating/">Templating</a></li>
+<li><a href="/docs/faq/">FAQ</a></li>
+<li><a href="/docs/changes/">Changes</a></li>
+<li><a href="/docs/reference/">Reference</a></li>
+<li><a href="/docs/media/">Media</a></li>
+<li><a href="/docs/comparison/">Comparison</a></li>
+<li><a href="/docs/contributing/">Contributing</a></li>
+<li><a href="/docs/architecture/">Architecture</a></li>
+<li><a href="/docs/related/">Related Software</a></li>
+<li><a href="/docs/security/">Security</a></li>
+<li><a href="https://github.com/twpayne/chezmoi">GitHub</a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var a=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(b){localStorage.setItem("menu.scrollTop",a.scrollTop)}),a.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+ 
+      </div>
+    </aside>
+
+    <div class="book-page">
+      <header class="book-header">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/svg/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <strong>Install</strong>
+
+  <label for="toc-control">
+    
+    <img src="/svg/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden clearfix">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#one-line-binary-install">One-line binary install</a></li>
+    <li><a href="#one-line-package-install">One-line package install</a></li>
+    <li><a href="#pre-built-linux-packages">Pre-built Linux packages</a></li>
+    <li><a href="#pre-built-binaries">Pre-built binaries</a></li>
+    <li><a href="#all-pre-built-linux-packages-and-binaries">All pre-built Linux packages and binaries</a></li>
+    <li><a href="#from-source">From source</a></li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown"><h1 id="install-guide">
+  Install Guide
+  <a class="anchor" href="#install-guide">#</a>
+</h1>
+<hr>
+<h2 id="one-line-binary-install">
+  One-line binary install
+  <a class="anchor" href="#one-line-binary-install">#</a>
+</h2>
+<p>Install the correct binary for your operating system and architecture in <code>./bin</code>
+with a single command:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ sh -c <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>curl -fsLS git.io/chezmoi<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</code></pre></div><p>Or, if you have <code>wget</code> instead of <code>curl</code>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ sh -c <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>wget -qO- git.io/chezmoi<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+</code></pre></div><p>If you already have a dotfiles repo using chezmoi on GitHub at
+<code>https://github.com/&lt;github-username&gt;/dotfiles</code> then you can install chezmoi and
+your dotfiles with the single command:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ sh -c <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>curl -fsLS git.io/chezmoi<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> -- init --apply &lt;github-username&gt;
+</code></pre></div><p>Or on systems with Powershell, you can use one of the following command:</p>
+<pre tabindex="0"><code># To install in ./bin
+(iwr -UseBasicParsing https://git.io/chezmoi.ps1).Content | powershell -c -
+
+# To install in another location
+'$params = &quot;-BinDir ~/other&quot;', (iwr https://git.io/chezmoi.ps1).Content | powershell -c -
+
+# For information about other options, run
+'$params = &quot;-?&quot;', (iwr https://git.io/chezmoi.ps1).Content | powershell -c -
+</code></pre><hr>
+<h2 id="one-line-package-install">
+  One-line package install
+  <a class="anchor" href="#one-line-package-install">#</a>
+</h2>
+<p>Install chezmoi with a single command.</p>
+<table>
+<thead>
+<tr>
+<th>OS</th>
+<th>Method</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Linux</td>
+<td>snap</td>
+<td><code>snap install chezmoi --classic</code></td>
+</tr>
+<tr>
+<td>Linux</td>
+<td>Linuxbrew</td>
+<td><code>brew install chezmoi</code></td>
+</tr>
+<tr>
+<td>Alpine Linux</td>
+<td>apk</td>
+<td><code>apk add chezmoi</code></td>
+</tr>
+<tr>
+<td>Arch Linux</td>
+<td>pacman</td>
+<td><code>pacman -S chezmoi</code></td>
+</tr>
+<tr>
+<td>Guix Linux</td>
+<td>guix</td>
+<td><code>guix install chezmoi</code></td>
+</tr>
+<tr>
+<td>OpenIndiana</td>
+<td>pkg</td>
+<td><code>pkg install application/chezmoi</code></td>
+</tr>
+<tr>
+<td>NixOS Linux</td>
+<td>nix-env</td>
+<td><code>nix-env -i chezmoi</code></td>
+</tr>
+<tr>
+<td>Void Linux</td>
+<td>xbps</td>
+<td><code>xbps-install -S chezmoi</code></td>
+</tr>
+<tr>
+<td>macOS</td>
+<td>Homebrew</td>
+<td><code>brew install chezmoi</code></td>
+</tr>
+<tr>
+<td>macOS</td>
+<td>MacPorts</td>
+<td><code>port install chezmoi</code></td>
+</tr>
+<tr>
+<td>Windows</td>
+<td>Scoop</td>
+<td><code>scoop bucket add twpayne https://github.com/twpayne/scoop-bucket &amp;&amp; scoop install chezmoi</code></td>
+</tr>
+<tr>
+<td>Windows</td>
+<td>Chocolatey</td>
+<td><code>choco install chezmoi</code></td>
+</tr>
+<tr>
+<td>FreeBSD</td>
+<td>pkg</td>
+<td><code>pkg install chezmoi</code></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="pre-built-linux-packages">
+  Pre-built Linux packages
+  <a class="anchor" href="#pre-built-linux-packages">#</a>
+</h2>
+<p>Download a package for your operating system and architecture and install it
+with your package manager.</p>
+<table>
+<thead>
+<tr>
+<th>Distribution</th>
+<th>Architectures</th>
+<th>Package</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Alpine</td>
+<td><code>386</code>, <code>amd64</code>, <code>arm64</code>, <code>arm</code>, <code>ppc64</code>, <code>ppc64le</code></td>
+<td><a href="https://github.com/twpayne/chezmoi/releases/latest"><code>apk</code></a></td>
+</tr>
+<tr>
+<td>Debian</td>
+<td><code>amd64</code>, <code>arm64</code>, <code>armel</code>, <code>i386</code>, <code>ppc64</code>, <code>ppc64le</code></td>
+<td><a href="https://github.com/twpayne/chezmoi/releases/latest"><code>deb</code></a></td>
+</tr>
+<tr>
+<td>RedHat</td>
+<td><code>aarch64</code>, <code>armhfp</code>, <code>i686</code>, <code>ppc64</code>, <code>ppc64le</code>, <code>x86_64</code></td>
+<td><a href="https://github.com/twpayne/chezmoi/releases/latest"><code>rpm</code></a></td>
+</tr>
+<tr>
+<td>OpenSUSE</td>
+<td><code>aarch64</code>, <code>armhfp</code>, <code>i686</code>, <code>ppc64</code>, <code>ppc64le</code>, <code>x86_64</code></td>
+<td><a href="https://github.com/twpayne/chezmoi/releases/latest"><code>rpm</code></a></td>
+</tr>
+<tr>
+<td>Ubuntu</td>
+<td><code>amd64</code>, <code>arm64</code>, <code>armel</code>, <code>i386</code>, <code>ppc64</code>, <code>ppc64le</code></td>
+<td><a href="https://github.com/twpayne/chezmoi/releases/latest"><code>deb</code></a></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="pre-built-binaries">
+  Pre-built binaries
+  <a class="anchor" href="#pre-built-binaries">#</a>
+</h2>
+<p>Download an archive for your operating system containing a pre-built binary,
+documentation, and shell completions.</p>
+<table>
+<thead>
+<tr>
+<th>OS</th>
+<th>Architectures</th>
+<th>Archive</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FreeBSD</td>
+<td><code>amd64</code>, <code>arm</code>, <code>arm64</code>, <code>i386</code></td>
+<td><a href="https://github.com/twpayne/chezmoi/releases/latest"><code>tar.gz</code></a></td>
+</tr>
+<tr>
+<td>Illumos</td>
+<td><code>amd64</code></td>
+<td><a href="https://github.com/twpayne/chezmoi/releases/latest"><code>tar.gz</code></a></td>
+</tr>
+<tr>
+<td>Linux</td>
+<td><code>amd64</code>, <code>arm</code>, <code>arm64</code>, <code>i386</code>, <code>ppc64</code>, <code>ppc64le</code></td>
+<td><a href="https://github.com/twpayne/chezmoi/releases/latest"><code>tar.gz</code></a></td>
+</tr>
+<tr>
+<td>macOS</td>
+<td><code>amd64</code>, <code>arm64</code></td>
+<td><a href="https://github.com/twpayne/chezmoi/releases/latest"><code>tar.gz</code></a></td>
+</tr>
+<tr>
+<td>OpenBSD</td>
+<td><code>amd64</code>, <code>arm</code>, <code>arm64</code>, <code>i386</code></td>
+<td><a href="https://github.com/twpayne/chezmoi/releases/latest"><code>tar.gz</code></a></td>
+</tr>
+<tr>
+<td>Solaris</td>
+<td><code>amd64</code></td>
+<td><a href="https://github.com/twpayne/chezmoi/releases/latest"><code>tar.gz</code></a></td>
+</tr>
+<tr>
+<td>Windows</td>
+<td><code>amd64</code>, <code>arm</code>, <code>i386</code></td>
+<td><a href="https://github.com/twpayne/chezmoi/releases/latest"><code>zip</code></a></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="all-pre-built-linux-packages-and-binaries">
+  All pre-built Linux packages and binaries
+  <a class="anchor" href="#all-pre-built-linux-packages-and-binaries">#</a>
+</h2>
+<p>All pre-built binaries and packages can be found on the <a href="https://github.com/twpayne/chezmoi/releases/latest">chezmoi GitHub releases
+page</a>.</p>
+<hr>
+<h2 id="from-source">
+  From source
+  <a class="anchor" href="#from-source">#</a>
+</h2>
+<p>Download, build, and install chezmoi for your system:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ git clone https://github.com/twpayne/chezmoi.git
+$ cd chezmoi
+$ make install
+</code></pre></div><p>Building chezmoi requires Go 1.16 or later.</p>
+<hr>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+
+
+
+
+</div>
+
+
+
+  <script>(function(){function a(c){const a=window.getSelection(),b=document.createRange();b.selectNodeContents(c),a.removeAllRanges(),a.addRange(b)}document.querySelectorAll("pre code").forEach(b=>{b.addEventListener("click",function(c){a(b.parentElement),navigator.clipboard&&navigator.clipboard.writeText(b.parentElement.textContent)})})})()</script>
+
+
+ 
+        
+      </footer>
+
+      
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+    <aside class="book-toc">
+      <div class="book-toc-content">
+        
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#one-line-binary-install">One-line binary install</a></li>
+    <li><a href="#one-line-package-install">One-line package install</a></li>
+    <li><a href="#pre-built-linux-packages">Pre-built Linux packages</a></li>
+    <li><a href="#pre-built-binaries">Pre-built binaries</a></li>
+    <li><a href="#all-pre-built-linux-packages-and-binaries">All pre-built Linux packages and binaries</a></li>
+    <li><a href="#from-source">From source</a></li>
+  </ul>
+</nav>
+
+
+ 
+      </div>
+    </aside>
+    
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
