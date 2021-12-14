@@ -19,6 +19,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/rogpeppe/go-internal/imports"
 	"github.com/rogpeppe/go-internal/testscript"
 	"github.com/twpayne/go-vfs/v4"
 	"github.com/twpayne/go-vfs/v4/vfst"
@@ -26,27 +27,6 @@ import (
 	"github.com/twpayne/chezmoi/v2/internal/chezmoitest"
 	"github.com/twpayne/chezmoi/v2/internal/cmd"
 )
-
-// FIXME remove the following when
-// https://github.com/rogpeppe/go-internal/pull/147 is merged.
-const (
-	goosList   = "aix android darwin dragonfly freebsd hurd illumos ios js linux nacl netbsd openbsd plan9 solaris windows zos "
-	goarchList = "386 amd64 amd64p32 arm armbe arm64 arm64be loong64 mips mipsle mips64 mips64le mips64p32 mips64p32le ppc ppc64 ppc64le riscv riscv64 s390 s390x sparc sparc64 wasm "
-)
-
-var (
-	KnownOS   = make(map[string]bool)
-	KnownArch = make(map[string]bool)
-)
-
-func init() {
-	for _, v := range strings.Fields(goosList) {
-		KnownOS[v] = true
-	}
-	for _, v := range strings.Fields(goarchList) {
-		KnownArch[v] = true
-	}
-}
 
 var (
 	envConditionRx   = regexp.MustCompile(`\Aenv:(\w+)\z`)
@@ -543,20 +523,6 @@ func cmdUNIX2DOS(ts *testscript.TestScript, neg bool, args []string) {
 // goosCondition evaluates cond as a logical OR of GOARCHes or GOOSes enclosed
 // in parentheses, returning true if any of them match.
 func goosCondition(cond string) (result, valid bool) {
-	// FIXME remove the following two if statements when
-	// https://github.com/rogpeppe/go-internal/pull/147 is merged, and use
-	// github.com/rogpeppe/go-internal/imports.Known{Arch,OS} instead
-	if _, ok := KnownArch[cond]; ok {
-		result = runtime.GOARCH == cond
-		valid = true
-		return
-	}
-	if _, ok := KnownOS[cond]; ok {
-		result = runtime.GOOS == cond
-		valid = true
-		return
-	}
-
 	// Interpret the condition as a logical OR of terms in parantheses.
 	if !strings.HasPrefix(cond, "(") || !strings.HasSuffix(cond, ")") {
 		result = false
@@ -570,8 +536,8 @@ func goosCondition(cond string) (result, valid bool) {
 	// If any of the terms are neither known GOOSes nor GOARCHes then reject the
 	// condition as invalid.
 	for _, term := range terms {
-		if _, ok := KnownOS[term]; !ok {
-			if _, ok := KnownArch[term]; !ok {
+		if _, ok := imports.KnownOS[term]; !ok {
+			if _, ok := imports.KnownArch[term]; !ok {
 				valid = false
 				return
 			}
@@ -590,7 +556,7 @@ func goosCondition(cond string) (result, valid bool) {
 		}
 	}
 
-	// Otherwise, the condtion is false.
+	// Otherwise, the condition is false.
 	result = false
 	return
 }
