@@ -6,8 +6,14 @@ import (
 )
 
 type secretKeyringCmdConfig struct {
-	get secretKeyringGetCmdConfig
-	set secretKeyringSetCmdConfig
+	delete secretKeyringDeleteCmdConfig
+	get    secretKeyringGetCmdConfig
+	set    secretKeyringSetCmdConfig
+}
+
+type secretKeyringDeleteCmdConfig struct {
+	service string
+	user    string
 }
 
 type secretKeyringGetCmdConfig struct {
@@ -27,6 +33,18 @@ func (c *Config) newSecretKeyringCmd() *cobra.Command {
 		Args:  cobra.NoArgs,
 		Short: "Interact with keyring",
 	}
+
+	keyringDeleteCmd := &cobra.Command{
+		Use:   "delete",
+		Args:  cobra.NoArgs,
+		Short: "Delete a value from keyring",
+		RunE:  c.runKeyringDeleteCmdE,
+	}
+	secretKeyringDeletePersistentFlags := keyringDeleteCmd.PersistentFlags()
+	secretKeyringDeletePersistentFlags.StringVar(&c.secretKeyring.get.service, "service", "", "service")
+	secretKeyringDeletePersistentFlags.StringVar(&c.secretKeyring.get.user, "user", "", "user")
+	markPersistentFlagsRequired(keyringDeleteCmd, "service", "user")
+	keyringCmd.AddCommand(keyringDeleteCmd)
 
 	keyringGetCmd := &cobra.Command{
 		Use:   "get",
@@ -54,6 +72,10 @@ func (c *Config) newSecretKeyringCmd() *cobra.Command {
 	keyringCmd.AddCommand(keyringSetCmd)
 
 	return keyringCmd
+}
+
+func (c *Config) runKeyringDeleteCmdE(cmd *cobra.Command, args []string) error {
+	return keyring.Delete(c.secretKeyring.delete.service, c.secretKeyring.delete.user)
 }
 
 func (c *Config) runKeyringGetCmdE(cmd *cobra.Command, args []string) error {
