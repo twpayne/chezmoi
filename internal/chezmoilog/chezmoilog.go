@@ -116,7 +116,6 @@ func LogHTTPRequest(logger *zerolog.Logger, client *http.Client, req *http.Reque
 		logger.Err(err).
 			Stringer("duration", time.Since(start)).
 			Str("method", req.Method).
-			Int64("size", resp.ContentLength).
 			Stringer("url", req.URL).
 			Msg("HTTPRequest")
 	}
