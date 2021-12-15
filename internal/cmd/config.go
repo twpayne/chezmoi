@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"go/build"
 	"io"
 	"io/fs"
 	"net/http"
@@ -448,8 +449,11 @@ func newConfig(options ...configOption) (*Config, error) {
 	} {
 		c.addTemplateFunc(key, value)
 	}
-	if goVersionAtLeast(&semver.Version{Major: 1, Minor: 17}) {
-		c.addTemplateFunc("exit", c.exitTemplateFunc)
+	for _, releaseTag := range build.Default.ReleaseTags {
+		if releaseTag == "go1.17" {
+			c.addTemplateFunc("exit", c.exitTemplateFunc)
+			break
+		}
 	}
 
 	for _, option := range options {
