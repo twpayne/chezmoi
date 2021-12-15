@@ -19,6 +19,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/coreos/go-semver/semver"
 	"github.com/rogpeppe/go-internal/imports"
 	"github.com/rogpeppe/go-internal/testscript"
 	"github.com/twpayne/go-vfs/v4"
@@ -30,6 +31,7 @@ import (
 
 var (
 	envConditionRx   = regexp.MustCompile(`\Aenv:(\w+)\z`)
+	goConditionRx    = regexp.MustCompile(`\Ago:(\d+)\.(\d+)(?:\.(\d+))?\z`)
 	umaskConditionRx = regexp.MustCompile(`\Aumask:([0-7]{3})\z`)
 )
 
@@ -69,6 +71,9 @@ func TestScript(t *testing.T) {
 			"unix2dos":       cmdUNIX2DOS,
 		},
 		Condition: func(cond string) (bool, error) {
+			if result, valid := goCondition(cond); valid {
+				return result, nil
+			}
 			if result, valid := goosCondition(cond); valid {
 				return result, nil
 			}
@@ -518,6 +523,27 @@ func cmdUNIX2DOS(ts *testscript.TestScript, neg bool, args []string) {
 			ts.Fatalf("%s: %v", filename, err)
 		}
 	}
+}
+
+// goCondition evaluates cond as a Go version.
+func goCondition(cond string) (result, value bool) {
+	m := goConditionRx.FindStringSubmatch(cond)
+	if m == nil {
+		return false, false
+	}
+	major, _ := strconv.ParseInt(m[1], 10, 64)
+	minor, _ := strconv.ParseInt(m[2], 10, 64)
+	patch, _ := strconv.ParseInt(m[3], 10, 64)
+	minVersion := &semver.Version{
+		Major: major,
+		Minor: minor,
+		Patch: patch,
+	}
+	goVersion, err := cmd.ParseGoVersion(runtime.Version())
+	if err != nil {
+		return true, true
+	}
+	return !goVersion.LessThan(*minVersion), true
 }
 
 // goosCondition evaluates cond as a logical OR of GOARCHes or GOOSes enclosed
