@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"os"
 	"regexp"
-	"runtime"
 	"strconv"
 	"strings"
 	"unicode"
@@ -89,14 +88,6 @@ func firstNonEmptyString(ss ...string) string {
 		}
 	}
 	return ""
-}
-
-func goVersionAtLeast(minVersion *semver.Version) bool {
-	goVersion, err := ParseGoVersion(runtime.Version())
-	if err != nil {
-		return true
-	}
-	return !goVersion.LessThan(*minVersion)
 }
 
 // newGitHubClient returns a new github.Client configured with an access token
