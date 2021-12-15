@@ -96,7 +96,7 @@ func (c *Config) defaultPreAddFunc(
 		case choice == "no":
 			return chezmoi.Skip
 		case choice == "quit":
-			return ExitCodeError(1)
+			return chezmoi.ExitCodeError(1)
 		case choice == "yes":
 			return nil
 		default:

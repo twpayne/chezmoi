@@ -107,6 +107,7 @@ Manage your dotfiles across multiple machines, securely.
   * [`bitwardenFields` [*arg*...]](#bitwardenfields-arg)
   * [`decrypt` *ciphertext*](#decrypt-ciphertext)
   * [`encrypt` *plaintext*](#encrypt-plaintext)
+  * [`exit` *code*](#exit-code)
   * [`fromYaml` *yamltext*](#fromyaml-yamltext)
   * [`gitHubKeys` *user*](#githubkeys-user)
   * [`gitHubLatestRelease` *user-repo*](#githublatestrelease-user-repo)
@@ -2051,6 +2052,13 @@ the same arguments will only invoke `bw get` once.
 ### `encrypt` *plaintext*
 
 `encrypt` encrypts *plaintext* using chezmoi's configured encryption method.
+
+---
+
+### `exit` *code*
+
+`exit` stops template execution and causes chezmoi to exit with *code*. `exit`
+is only available when chezmoi is built with Go 1.17 or later.
 
 ---
 

@@ -52,6 +52,10 @@ stdout 2656FF1E876E9973
 chezmoi execute-template '{{ (stat ".").isDir }}'
 stdout true
 
+# test exit template function
+[go:1.17] chezmoi execute-template '{{ exit 0 }}'
+[go:1.17] ! chezmoi execute-template '{{ exit 1 }}'
+
 # test that the output template function returns a command's output
 chezmoi execute-template '{{ output "chezmoi-output-test" "arg" | trim }}'
 stdout arg

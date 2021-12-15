@@ -19,6 +19,7 @@ import (
 	"go.uber.org/multierr"
 
 	"github.com/twpayne/chezmoi/v2/docs"
+	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
 // Command annotations.
@@ -55,12 +56,6 @@ var (
 
 	helps map[string]*help
 )
-
-// An ExitCodeError indicates the the main program should exit with the given
-// code.
-type ExitCodeError int
-
-func (e ExitCodeError) Error() string { return "" }
 
 // A VersionInfo contains a version.
 type VersionInfo struct {
@@ -101,7 +96,7 @@ func Main(versionInfo VersionInfo, args []string) int {
 		if s := err.Error(); s != "" {
 			fmt.Fprintf(os.Stderr, "chezmoi: %s\n", s)
 		}
-		errExitCode := ExitCodeError(1)
+		errExitCode := chezmoi.ExitCodeError(1)
 		_ = errors.As(err, &errExitCode)
 		return int(errExitCode)
 	}
