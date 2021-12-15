@@ -4,6 +4,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/coreos/go-semver/semver"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -107,6 +108,28 @@ func TestEnglishListWithNoun(t *testing.T) {
 	} {
 		actual := englishListWithNoun(tc.ss, tc.singular, tc.plural)
 		assert.Equal(t, tc.expected, actual)
+	}
+}
+
+func TestParseGoVersion(t *testing.T) {
+	for _, tc := range []struct {
+		goVersion string
+		expected  *semver.Version
+	}{
+		{
+			goVersion: "go1.17",
+			expected:  semver.Must(semver.NewVersion("1.17.0")),
+		},
+		{
+			goVersion: "go1.17.5",
+			expected:  semver.Must(semver.NewVersion("1.17.5")),
+		},
+	} {
+		t.Run(tc.goVersion, func(t *testing.T) {
+			actual, err := ParseGoVersion(tc.goVersion)
+			assert.NoError(t, err)
+			assert.Equal(t, tc.expected, actual)
+		})
 	}
 }
 

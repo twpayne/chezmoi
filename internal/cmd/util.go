@@ -6,15 +6,19 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"runtime"
 	"strconv"
 	"strings"
 	"unicode"
 
+	"github.com/coreos/go-semver/semver"
 	"github.com/google/go-github/v41/github"
 	"golang.org/x/oauth2"
 )
 
 var (
+	goVersionRx = regexp.MustCompile(`\Ago(\d+)(?:\.(\d+)(?:\.(\d+))?)?\z`)
+
 	wellKnownAbbreviations = map[string]struct{}{
 		"ANSI": {},
 		"CPE":  {},
@@ -29,6 +33,21 @@ var (
 		"quit",
 	}
 )
+
+func ParseGoVersion(goVersion string) (*semver.Version, error) {
+	m := goVersionRx.FindStringSubmatch(goVersion)
+	if m == nil {
+		return nil, fmt.Errorf("%s: invalid Go version", goVersion)
+	}
+	major, _ := strconv.ParseInt(m[1], 10, 64)
+	minor, _ := strconv.ParseInt(m[2], 10, 64)
+	patch, _ := strconv.ParseInt(m[3], 10, 64)
+	return &semver.Version{
+		Major: major,
+		Minor: minor,
+		Patch: patch,
+	}, nil
+}
 
 // englishList returns ss formatted as a list, including an Oxford comma.
 func englishList(ss []string) string {
@@ -70,6 +89,14 @@ func firstNonEmptyString(ss ...string) string {
 		}
 	}
 	return ""
+}
+
+func goVersionAtLeast(minVersion *semver.Version) bool {
+	goVersion, err := ParseGoVersion(runtime.Version())
+	if err != nil {
+		return true
+	}
+	return !goVersion.LessThan(*minVersion)
 }
 
 // newGitHubClient returns a new github.Client configured with an access token
