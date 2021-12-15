@@ -448,6 +448,9 @@ func newConfig(options ...configOption) (*Config, error) {
 	} {
 		c.addTemplateFunc(key, value)
 	}
+	if goVersionAtLeast(&semver.Version{Major: 1, Minor: 17}) {
+		c.addTemplateFunc("exit", c.exitTemplateFunc)
+	}
 
 	for _, option := range options {
 		if err := option(c); err != nil {
@@ -594,7 +597,7 @@ func (c *Config) applyArgs(
 		}
 	}
 	if keptGoingAfterErr {
-		return ExitCodeError(1)
+		return chezmoi.ExitCodeError(1)
 	}
 
 	return nil
@@ -814,7 +817,7 @@ func (c *Config) defaultPreApplyFunc(
 		case choice == "skip":
 			return chezmoi.Skip
 		case choice == "quit":
-			return ExitCodeError(1)
+			return chezmoi.ExitCodeError(1)
 		default:
 			return nil
 		}
