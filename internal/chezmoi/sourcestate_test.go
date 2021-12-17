@@ -1141,6 +1141,7 @@ func TestSourceStateRead(t *testing.T) {
 						},
 					},
 					NewRelPath("dir/file2"): &SourceStateRemove{
+						sourceRelPath: NewSourceRelDirPath("exact_dir"),
 						targetRelPath: NewRelPath("dir/file2"),
 					},
 				}),
@@ -1162,6 +1163,7 @@ func TestSourceStateRead(t *testing.T) {
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
 					NewRelPath("file"): &SourceStateRemove{
+						sourceRelPath: NewSourceRelPath(".chezmoiremove"),
 						targetRelPath: NewRelPath("file"),
 					},
 				}),
@@ -1182,6 +1184,7 @@ func TestSourceStateRead(t *testing.T) {
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
 					NewRelPath("file1"): &SourceStateRemove{
+						sourceRelPath: NewSourceRelPath(".chezmoiremove"),
 						targetRelPath: NewRelPath("file1"),
 					},
 				}),

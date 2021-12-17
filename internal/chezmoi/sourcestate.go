@@ -411,7 +411,10 @@ DESTABSPATH:
 				return nil
 			}
 			sourceRelPath := sourceStateEntry.SourceRelPath()
-			sourceRoot.Set(sourceRelPath.RelPath(), &SourceStateRemove{})
+			sourceRoot.Set(sourceRelPath.RelPath(), &SourceStateRemove{
+				sourceRelPath: sourceRelPath,
+				targetRelPath: targetRelPath,
+			})
 			update := sourceUpdate{
 				destAbsPath: s.destDirAbsPath.Join(targetRelPath),
 				entryState: &EntryState{
@@ -784,6 +787,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			for _, match := range matches {
 				targetRelPath := targetParentRelPath.JoinString(match)
 				sourceStateEntry := &SourceStateRemove{
+					sourceRelPath: sourceRelPath,
 					targetRelPath: targetRelPath,
 				}
 				allSourceStateEntries[targetRelPath] = append(allSourceStateEntries[targetRelPath], sourceStateEntry)
@@ -892,7 +896,8 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			continue
 		}
 
-		switch sourceStateDir, ok := sourceStateEntries[0].(*SourceStateDir); {
+		sourceStateDir, ok := sourceStateEntries[0].(*SourceStateDir)
+		switch {
 		case !ok:
 			continue
 		case !sourceStateDir.Attr.Exact:
@@ -914,6 +919,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 					continue
 				}
 				allSourceStateEntries[destEntryRelPath] = append(allSourceStateEntries[destEntryRelPath], &SourceStateRemove{
+					sourceRelPath: sourceStateDir.sourceRelPath,
 					targetRelPath: destEntryRelPath,
 				})
 			}
