@@ -35,7 +35,30 @@ mkdir $HOME/.dir
 chezmoi add $HOME${/}.dir/
 ! exists $CHEZMOISOURCEDIR/dot_dir/dot_dir
 
+chhome home3/user
+
+# test that chezmoi reports an inconsistent state error when a file should be both removed and present
+! chezmoi apply
+stderr 'chezmoi: \.file: inconsistent state \(\.chezmoiremove, dot_file\)'
+
+skip 'FIXME make the following test pass'
+chhome home4/user
+
+# test that chezmoi reports an inconsistent state error when a file should be both removed and present, even if the file is not already present
+! chezmoi apply
+stderr 'chezmoi: \.file: inconsistent state \(\.chezmoiremove, dot_file\)'
+
 -- golden/.file --
 # contents of .file
 -- home2/user/.local/share/chezmoi/dot_file --
+# contents of .file
+-- home3/user/.file --
+# contents of .file
+-- home3/user/.local/share/chezmoi/.chezmoiremove --
+.file
+-- home3/user/.local/share/chezmoi/dot_file --
+# contents of .file
+-- home4/user/.local/share/chezmoi/.chezmoiremove --
+.file
+-- home4/user/.local/share/chezmoi/dot_file --
 # contents of .file

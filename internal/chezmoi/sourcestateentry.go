@@ -39,6 +39,7 @@ type SourceStateFile struct {
 
 // A SourceStateRemove represents that an entry should be removed.
 type SourceStateRemove struct {
+	sourceRelPath SourceRelPath
 	targetRelPath RelPath
 }
 
@@ -146,7 +147,7 @@ func (s *SourceStateRemove) Order() ScriptOrder {
 
 // Origin returns s's origin.
 func (s *SourceStateRemove) Origin() string {
-	return ""
+	return s.sourceRelPath.String()
 }
 
 // SourceRelPath returns s's source relative path.
