@@ -1,5 +1,6 @@
 GO?=go
-GOLANGCI_LINT_VERSION=$(shell grep GOLANGCI_LINT_VERSION: .github/workflows/main.yml | awk '{ print $$2 }')
+GOFUMPT_VERSION=$(shell awk '/GOFUMPT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
+GOLANGCI_LINT_VERSION=$(shell awk '/GOLANGCI_LINT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 ifdef VERSION
 	GO_LDFLAGS+=-X main.version=${VERSION}
 endif
@@ -103,16 +104,16 @@ lint: ensure-golangci-lint
 
 .PHONY: format
 format: ensure-gofumpt
-	find . -name \*.go | xargs ./bin/gofumpt -w
+	find . -name \*.go | xargs ./bin/gofumpt -extra -w
 
 .PHONY: ensure-tools
 ensure-tools: ensure-gofumpt ensure-golangci-lint
 
 .PHONY: ensure-gofumpt
 ensure-gofumpt:
-	if [ ! -x bin/gofumpt ] ; then \
+	if [ ! -x bin/gofumpt ] || ( ./bin/gofumpt --version | grep -Fqv "v${GOFUMPT_VERSION}" ) ; then \
 		mkdir -p bin ; \
-		GOBIN=$(shell pwd)/bin ${GO} install mvdan.cc/gofumpt@v0.2.0 ; \
+		GOBIN=$(shell pwd)/bin ${GO} install "mvdan.cc/gofumpt@v${GOFUMPT_VERSION}" ; \
 	fi
 
 .PHONY: ensure-golangci-lint
