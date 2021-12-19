@@ -8,16 +8,8 @@
 [darwin] stdout 'Darwin Kernel Version'
 
 # test include template function with absolute path
-#
-# this test is disabled on Windows because the backslashes in Windows paths are
-# interpreted as a escape characters in the string constant, which breaks the
-# test
-#
-# FIXME fix this test on Windows
-[!windows] exec echo {{ "$HOME/.include" }}
-[!windows] stdin stdout
-[!windows] chezmoi execute-template
-[!windows] cmpenv stdout golden/include-abspath
+chezmoi execute-template '{{ joinPath (env "HOME") ".include" | include }}'
+cmp stdout golden/include-abspath
 
 # test include template function with relative paths
 chezmoi execute-template '{{ include ".include" }}'
@@ -131,10 +123,10 @@ echo '</plist>'
 -- golden/expected --
 255
 -- golden/include-abspath --
-$HOME/.include
+# contents of .include
 -- golden/include-relpath --
 # contents of .local/share/chezmoi/.include
 -- home/user/.include --
-# contents of $HOME/.include
+# contents of .include
 -- home/user/.local/share/chezmoi/.include --
 # contents of .local/share/chezmoi/.include
