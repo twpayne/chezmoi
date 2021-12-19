@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/fs"
 	"os/exec"
-	"path"
 	"path/filepath"
 	"runtime"
 
@@ -35,7 +34,7 @@ func (c *Config) fromYamlTemplateFunc(s string) interface{} {
 
 func (c *Config) includeTemplateFunc(filename string) string {
 	var absPath chezmoi.AbsPath
-	if path.IsAbs(filename) {
+	if filepath.IsAbs(filename) {
 		var err error
 		absPath, err = chezmoi.NewAbsPathFromExtPath(filename, c.homeDirAbsPath)
 		if err != nil {
