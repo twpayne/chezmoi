@@ -9,17 +9,20 @@ import (
 // slashes, performing tilde expansion, making the path absolute, and converting
 // the volume name to uppercase.
 func NewAbsPathFromExtPath(extPath string, homeDirAbsPath AbsPath) (AbsPath, error) {
-	slashTildePath := filepath.ToSlash(expandTilde(extPath, homeDirAbsPath))
-	if filepath.IsAbs(slashTildePath) {
-		return NewAbsPath(volumeNameToUpper(slashTildePath)), nil
+	switch {
+	case extPath == "~":
+		return homeDirAbsPath, nil
+	case len(extPath) >= 2 && extPath[0] == '~' && isSlash(extPath[1]):
+		return homeDirAbsPath.JoinString(filepath.ToSlash(extPath[2:])), nil
+	case filepath.IsAbs(extPath):
+		return NewAbsPath(volumeNameToUpper(extPath)).ToSlash(), nil
+	default:
+		extPath, err := filepath.Abs(extPath)
+		if err != nil {
+			return EmptyAbsPath, err
+		}
+		return NewAbsPath(volumeNameToUpper(extPath)).ToSlash(), nil
 	}
-	tildeAbsPath, err := filepath.Abs(slashTildePath)
-	if err != nil {
-		return EmptyAbsPath, err
-	}
-	// filepath.Abs on Windows converts forward slashes to backslashes so we
-	// have to call filepath.ToSlash again.
-	return NewAbsPath(filepath.ToSlash(volumeNameToUpper(tildeAbsPath))), nil
 }
 
 // NormalizePath returns path normalized. On Windows, normalized paths are
@@ -34,18 +37,6 @@ func NormalizePath(path string) (AbsPath, error) {
 		path = strings.ToUpper(path[:n]) + path[n:]
 	}
 	return NewAbsPath(path).ToSlash(), nil
-}
-
-// expandTilde expands a leading tilde in path.
-func expandTilde(path string, homeDirAbsPath AbsPath) string {
-	switch {
-	case path == "~":
-		return homeDirAbsPath.String()
-	case len(path) >= 2 && path[0] == '~' && isSlash(path[1]):
-		return homeDirAbsPath.JoinString(path[2:]).String()
-	default:
-		return path
-	}
 }
 
 // normalizeLinkname returns linkname normalized. On Windows, backslashes are

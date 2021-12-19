@@ -11,15 +11,20 @@ import (
 // NewAbsPathFromExtPath returns a new AbsPath by converting extPath to use
 // slashes, performing tilde expansion, and making the path absolute.
 func NewAbsPathFromExtPath(extPath string, homeDirAbsPath AbsPath) (AbsPath, error) {
-	tildeSlashPath := expandTilde(filepath.ToSlash(extPath), homeDirAbsPath)
-	if filepath.IsAbs(tildeSlashPath) {
-		return NewAbsPath(tildeSlashPath), nil
+	switch {
+	case extPath == "~":
+		return homeDirAbsPath, nil
+	case strings.HasPrefix(extPath, "~/"):
+		return homeDirAbsPath.JoinString(extPath[2:]), nil
+	case filepath.IsAbs(extPath):
+		return NewAbsPath(extPath), nil
+	default:
+		absPath, err := filepath.Abs(extPath)
+		if err != nil {
+			return EmptyAbsPath, err
+		}
+		return NewAbsPath(absPath), nil
 	}
-	slashPathAbsPath, err := filepath.Abs(tildeSlashPath)
-	if err != nil {
-		return EmptyAbsPath, err
-	}
-	return NewAbsPath(slashPathAbsPath), nil
 }
 
 // NormalizePath returns path normalized. On non-Windows systems, normalized
@@ -30,18 +35,6 @@ func NormalizePath(path string) (AbsPath, error) {
 		return EmptyAbsPath, err
 	}
 	return NewAbsPath(absPath), nil
-}
-
-// expandTilde expands a leading tilde in path.
-func expandTilde(path string, homeDirAbsPath AbsPath) string {
-	switch {
-	case path == "~":
-		return homeDirAbsPath.String()
-	case strings.HasPrefix(path, "~/"):
-		return homeDirAbsPath.JoinString(path[2:]).String()
-	default:
-		return path
-	}
 }
 
 // normalizeLinkname returns linkname normalized. On non-Windows systems, it
