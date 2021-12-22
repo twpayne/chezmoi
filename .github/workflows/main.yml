@@ -28,6 +28,8 @@ jobs:
         filters: |
           code:
           - '**/*.go'
+          - '**/*.ps1'
+          - '**/*.tmpl'
           - '.github/workflows/**'
           - 'Makefile'
           - 'assets/docker/**'
@@ -152,6 +154,11 @@ jobs:
     - name: Test
       run: |
         go test -race ./...
+    - name: Test install.sh
+      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+      run: |
+        sh assets/scripts/install.sh
+        bin/chezmoi --version
   test-openbsd:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
@@ -230,6 +237,11 @@ jobs:
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       run: |
         go test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o002" -race ./...
+    - name: Test install.sh
+      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+      run: |
+        sh assets/scripts/install.sh
+        bin/chezmoi --version
     - name: Install release dependencies
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       run: |
@@ -363,6 +375,12 @@ jobs:
     - name: Test
       run: |
         go test -race ./...
+    - name: Test install.ps1
+      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+      run: |
+        powershell -c assets/scripts/install.ps1
+        sh assets/scripts/install.sh
+        bin/chezmoi --version
   test-voidlinux:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
