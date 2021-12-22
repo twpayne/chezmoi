@@ -65,9 +65,13 @@ main() {
 		FORMAT=zip
 		;;
 	esac
+	case "${GOARCH}" in
+	386) arch=i386 ;;
+	*) arch="${GOARCH}" ;;
+	esac
 
 	# download tarball
-	NAME="chezmoi_${VERSION}_${GOOS}${GOOS_EXTRA}_${GOARCH}"
+	NAME="chezmoi_${VERSION}_${GOOS}${GOOS_EXTRA}_${arch}"
 	TARBALL="${NAME}.${FORMAT}"
 	TARBALL_URL="${GITHUB_DOWNLOAD}/${TAG}/${TARBALL}"
 	http_download "${tmpdir}/${TARBALL}" "${TARBALL_URL}" || exit 1
@@ -132,13 +136,12 @@ get_goos() {
 get_goarch() {
 	arch=$(uname -m)
 	case "${arch}" in
-	386) goarch="i386" ;;
 	aarch64) goarch="arm64" ;;
 	armv*) goarch="arm" ;;
-	i386) goarch="i386" ;;
-	i686) goarch="i386" ;;
+	i386) goarch="386" ;;
+	i686) goarch="386" ;;
 	i86pc) goarch="amd64" ;;
-	x86) goarch="i386" ;;
+	x86) goarch="386" ;;
 	x86_64) goarch="amd64" ;;
 	*) goarch="${arch}" ;;
 	esac
