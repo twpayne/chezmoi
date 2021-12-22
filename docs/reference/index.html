@@ -23,7 +23,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.f45df80f079fabd47e6dafd034d87d755ed6d0354f4a5220aba76b684a05ba8f.js" integrity="sha256-9F34Dwefq9R&#43;ba/QNNh9dV7W0DVPSlIgq6draEoFuo8=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.be21fbf76c15f0a85e07ef96fb305677369990e48c28fbfe4f699509037d5914.js" integrity="sha256-viH792wV8KheB&#43;&#43;W&#43;zBWdzaZkOSMKPv&#43;T2mVCQN9WRQ=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -252,6 +252,7 @@ https://github.com/alex-shpak/hugo-book
         <li><a href="#bitwardenfields-arg"><code>bitwardenFields</code> [<em>arg</em>&hellip;]</a></li>
         <li><a href="#decrypt-ciphertext"><code>decrypt</code> <em>ciphertext</em></a></li>
         <li><a href="#encrypt-plaintext"><code>encrypt</code> <em>plaintext</em></a></li>
+        <li><a href="#exit-code"><code>exit</code> <em>code</em></a></li>
         <li><a href="#fromyaml-yamltext"><code>fromYaml</code> <em>yamltext</em></a></li>
         <li><a href="#githubkeys-user"><code>gitHubKeys</code> <em>user</em></a></li>
         <li><a href="#githublatestrelease-user-repo"><code>gitHubLatestRelease</code> <em>user-repo</em></a></li>
@@ -2402,8 +2403,8 @@ $ chezmoi import --strip-components <span style="color:#ae81ff">1</span> --desti
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi managed
 $ chezmoi managed --include<span style="color:#f92672">=</span>files
 $ chezmoi managed --include<span style="color:#f92672">=</span>files,symlinks
-$ chezmoi managed -i d
-$ chezmoi managed -i d,f
+$ chezmoi managed -i dirs
+$ chezmoi managed -i dirs,files
 </code></pre></div><hr>
 <h3 id="merge-target">
   <code>merge</code> <em>target</em>&hellip;
@@ -2505,6 +2506,7 @@ separate them with <code>--</code> to prevent chezmoi from interpreting them.</p
 </h4>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ chezmoi secret keyring set --service<span style="color:#f92672">=</span>service --user<span style="color:#f92672">=</span>user --value<span style="color:#f92672">=</span>password
 $ chezmoi secret keyring get --service<span style="color:#f92672">=</span>service --user<span style="color:#f92672">=</span>user
+$ chezmoi secret keyring delete --service<span style="color:#f92672">=</span>service --user<span style="color:#f92672">=</span>user
 </code></pre></div><hr>
 <h3 id="source-path-target">
   <code>source-path</code> [<em>target</em>&hellip;]
@@ -2931,6 +2933,13 @@ the same arguments will only invoke <code>bw get</code> once.</p>
   <a class="anchor" href="#encrypt-plaintext">#</a>
 </h3>
 <p><code>encrypt</code> encrypts <em>plaintext</em> using chezmoi&rsquo;s configured encryption method.</p>
+<hr>
+<h3 id="exit-code">
+  <code>exit</code> <em>code</em>
+  <a class="anchor" href="#exit-code">#</a>
+</h3>
+<p><code>exit</code> stops template execution and causes chezmoi to exit with <em>code</em>. <code>exit</code>
+is only available when chezmoi is built with Go 1.17 or later.</p>
 <hr>
 <h3 id="fromyaml-yamltext">
   <code>fromYaml</code> <em>yamltext</em>
@@ -3693,6 +3702,7 @@ generating the initial config file.</p>
         <li><a href="#bitwardenfields-arg"><code>bitwardenFields</code> [<em>arg</em>&hellip;]</a></li>
         <li><a href="#decrypt-ciphertext"><code>decrypt</code> <em>ciphertext</em></a></li>
         <li><a href="#encrypt-plaintext"><code>encrypt</code> <em>plaintext</em></a></li>
+        <li><a href="#exit-code"><code>exit</code> <em>code</em></a></li>
         <li><a href="#fromyaml-yamltext"><code>fromYaml</code> <em>yamltext</em></a></li>
         <li><a href="#githubkeys-user"><code>gitHubKeys</code> <em>user</em></a></li>
         <li><a href="#githublatestrelease-user-repo"><code>gitHubLatestRelease</code> <em>user-repo</em></a></li>

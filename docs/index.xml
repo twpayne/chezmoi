@@ -94,7 +94,7 @@ $ sh -c &amp;#34;$(wget -qO- git.io/chezmoi)&amp;#34; If you already have a dotf
       <description>Media #  Recommended article: Fedora Magazine: Take back your dotfiles with Chezmoi
 Recommended video: chezmoi: manage your dotfiles across multiple, diverse machines, securely
 Recommended podcast: Managing Dot Files and an Introduction to Chezmoi
-    Date Version Format Link     2021-12-04 2.9.2 Text Advanced features of Chezmoi   2021-11-27 2.8.0 Video (TH) Command ไร 2021-11-27 : ย้าย dotfiles ไป chezmoi   2021-11-26 2.</description>
+    Date Version Format Link     2021-12-20 2.9.3 Text How chezmoi Implements Cross-Platform CI   2021-12-08 2.9.3 Video How Go makes chezmoi possible   2021-12-04 2.9.2 Text Advanced features of Chezmoi   2021-11-27 2.</description>
     </item>
     
     <item>
