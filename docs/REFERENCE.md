@@ -1570,8 +1570,8 @@ Only include entries of type *types*.
 $ chezmoi managed
 $ chezmoi managed --include=files
 $ chezmoi managed --include=files,symlinks
-$ chezmoi managed -i d
-$ chezmoi managed -i d,f
+$ chezmoi managed -i dirs
+$ chezmoi managed -i dirs,files
 ```
 
 ---
