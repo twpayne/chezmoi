@@ -67,6 +67,7 @@ Install chezmoi with a single command.
 | Windows      | Scoop      | `scoop bucket add twpayne https://github.com/twpayne/scoop-bucket && scoop install chezmoi` |
 | Windows      | Chocolatey | `choco install chezmoi`                                                                     |
 | FreeBSD      | pkg        | `pkg install chezmoi`                                                                       |
+| *multiple*   | asdf       | `asdf plugin add chezmoi && asdf install chezmoi <version>`                                 |
 
 ---
 

@@ -3,6 +3,7 @@
 <!--- toc --->
 * [`github.com/alker0/chezmoi.vim`](#githubcomalker0chezmoivim)
 * [`github.com/hussainweb/ansible-role-chezmoi`](#githubcomhussainwebansible-role-chezmoi)
+* [`github.com/joke/asdf-chezmoi`](#githubcomjokeasdf-chezmoi)
 * [`github.com/tcaxle/drapeau`](#githubcomtcaxledrapeau)
 * [`github.com/tuh8888/chezmoi.el`](#githubcomtuh8888chezmoiel)
 * [`github.com/Lilja/vim-chezmoi`](#githubcomliljavim-chezmoi)
@@ -19,6 +20,12 @@ Works with both `chezmoi edit` and editing files directly.
 ## [`github.com/hussainweb/ansible-role-chezmoi`](https://github.com/hussainweb/ansible-role-chezmoi)
 
 Installs chezmoi on Ubuntu and Debian servers.
+
+---
+
+## [`github.com/joke/asdf-chezmoi`](https://github.com/joke/asdf-chezmoi)
+
+chezmoi plugin for asdf version manager.
 
 ---
 
