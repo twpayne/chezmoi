@@ -354,12 +354,6 @@ jobs:
         $env:PATH = "C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\ProgramData\chocolatey\bin"
         [Environment]::SetEnvironmentVariable("Path", $env:PATH, "Machine")
         choco install --no-progress --yes age.portable
-    - name: Install gpg4win
-      run: |
-        $env:PATH = "C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\ProgramData\chocolatey\bin"
-        [Environment]::SetEnvironmentVariable("Path", $env:PATH, "Machine")
-        choco install --no-progress --yes gpg4win
-        echo "C:\Program Files (x86)\GnuPG\bin" >> $env:GITHUB_PATH
     - name: Upload chocolatey log
       if: failure()
       uses: actions/upload-artifact@v2
