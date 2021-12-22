@@ -8,4 +8,9 @@ go get "golang.org/dl/go${GO_VERSION}"
 "${HOME}/go/bin/go${GO_VERSION}" download
 export PATH="${HOME}/sdk/go${GO_VERSION}/bin:${PATH}"
 
-( cd /chezmoi && go test ./... )
+cd /chezmoi
+
+go test ./...
+
+sh assets/scripts/install.sh
+bin/chezmoi --version
