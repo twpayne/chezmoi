@@ -1,6 +1,7 @@
 package chezmoi
 
 import (
+	"runtime"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -9,6 +10,9 @@ import (
 )
 
 func TestGPGEncryption(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("skipping gpg tests on Windows")
+	}
 	command := lookPathOrSkip(t, "gpg")
 
 	tempDir := t.TempDir()

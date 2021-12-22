@@ -1,3 +1,4 @@
+[windows] skip 'skipping gpg tests on Windows'
 [!exec:gpg] skip 'gpg not found in $PATH'
 
 mkgpgconfig
