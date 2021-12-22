@@ -83,7 +83,9 @@ main() {
 	(cd "${tmpdir}" && untar "${TARBALL}")
 
 	# install binary
-	test ! -d "${BINDIR}" && install -d "${BINDIR}"
+	if [ ! -d "${BINDIR}" ]; then
+		install -d "${BINDIR}"
+	fi
 	BINARY="chezmoi${BINSUFFIX}"
 	install "${tmpdir}/${BINARY}" "${BINDIR}/"
 	log_info "installed ${BINDIR}/${BINARY}"
@@ -212,7 +214,9 @@ real_tag() {
 		log_err "real_tag error determining real tag of GitHub release ${tag}"
 		return 1
 	fi
-	test -z "${real_tag}" && return 1
+	if [ -z "${real_tag}" ]; then
+		return 1
+	fi
 	log_debug "found tag ${real_tag} for ${tag}"
 	echo "${real_tag}"
 }
