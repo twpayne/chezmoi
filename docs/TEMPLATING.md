@@ -21,6 +21,7 @@
   * [Passing multiple arguments](#passing-multiple-arguments)
 * [Useful templates](#useful-templates)
   * [Determine whether the current machine is a laptop or desktop](#determine-whether-the-current-machine-is-a-laptop-or-desktop)
+  * [Determine the hostname of a macOS machine](#determine-the-hostname-of-a-macos-machine)
 
 ---
 
@@ -501,3 +502,12 @@ The following template sets the `$chassisType` variable to `"desktop"` or
 ```
 
 ---
+
+### Determine the hostname of a macOS machine
+
+The result of the command `hostname` on macOS depends on the network that the
+machine is connected to. For a stable result, use the `scutil` command:
+
+```
+{{ $computerName := output "scutil" "--get" "ComputerName" | trim }}
+```
