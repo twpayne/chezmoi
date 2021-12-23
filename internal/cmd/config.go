@@ -440,6 +440,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"onepasswordItemFields":    c.onepasswordItemFieldsTemplateFunc,
 		"output":                   c.outputTemplateFunc,
 		"pass":                     c.passTemplateFunc,
+		"passFields":               c.passFieldsTemplateFunc,
 		"passRaw":                  c.passRawTemplateFunc,
 		"secret":                   c.secretTemplateFunc,
 		"secretJSON":               c.secretJSONTemplateFunc,
