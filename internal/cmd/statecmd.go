@@ -98,9 +98,7 @@ func (c *Config) newStateCmd() *cobra.Command {
 		},
 	}
 	stateDeleteBucketPersistentFlags := stateDeleteBucketCmd.PersistentFlags()
-	stateDeleteBucketPersistentFlags.StringVar(
-		&c.state.deleteBucket.bucket, "bucket", c.state.deleteBucket.bucket, "bucket",
-	)
+	stateDeleteBucketPersistentFlags.StringVar(&c.state.deleteBucket.bucket, "bucket", c.state.deleteBucket.bucket, "bucket") //nolint:lll
 	stateCmd.AddCommand(stateDeleteBucketCmd)
 
 	stateDumpCmd := &cobra.Command{
