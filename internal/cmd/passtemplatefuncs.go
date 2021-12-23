@@ -1,9 +1,10 @@
 package cmd
 
 import (
-	"bytes"
 	"fmt"
 	"os/exec"
+
+	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
 type passConfig struct {
@@ -36,10 +37,7 @@ func (c *Config) passOutput(id string) []byte {
 }
 
 func (c *Config) passTemplateFunc(id string) string {
-	output := c.passOutput(id)
-	if index := bytes.IndexByte(output, '\n'); index != -1 {
-		return string(output[:index])
-	}
+	output, _, _ := chezmoi.CutBytes(c.passOutput(id), []byte{'\n'})
 	return string(output)
 }
 

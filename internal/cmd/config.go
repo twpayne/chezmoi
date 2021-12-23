@@ -908,7 +908,7 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 
 	var hostname string
 	if rawHostname, err := os.Hostname(); err == nil {
-		hostname = strings.SplitN(rawHostname, ".", 2)[0]
+		hostname, _, _ = chezmoi.CutString(rawHostname, "=")
 	} else {
 		c.logger.Info().
 			Err(err).
