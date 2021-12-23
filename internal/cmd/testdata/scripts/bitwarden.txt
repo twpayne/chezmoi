@@ -1,17 +1,18 @@
 [!windows] chmod 755 bin/bw
 [windows] unix2dos bin/bw.cmd
+[windows] unix2dos golden/bitwarden-attachment
 
 # test bitwarden template function
 chezmoi execute-template '{{ (bitwarden "item" "example.com").login.password }}'
-stdout password-value
+stdout ^password-value$
 
 # test bitwardenFields template function
 chezmoi execute-template '{{ (bitwardenFields "item" "example.com").Hidden.value }}'
-stdout hidden-value
+stdout ^hidden-value$
 
 # test bitwardenAttachment template function
 chezmoi execute-template '{{ (bitwardenAttachment "filename" "item-id") }}'
-stdout hidden-file-value
+cmp stdout golden/bitwarden-attachment
 
 -- bin/bw --
 #!/bin/sh
@@ -95,9 +96,11 @@ IF "%*" == "get item example.com" (
     echo.  "revisionDate": "2020-10-28T00:21:02.690Z"
     echo.}
 ) ELSE IF "%*" == "get attachment filename --itemid item-id --raw" (
-    echo. hidden-file-value
+    echo.hidden-file-value
 ) ELSE (
     echo Invalid command: $*
     echo "See --help for a list of available commands."
     exit /b 1
 )
+-- golden/bitwarden-attachment --
+hidden-file-value

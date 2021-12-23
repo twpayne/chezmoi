@@ -3,7 +3,7 @@
 
 # test lastpass template function
 chezmoi execute-template '{{ (index (lastpass "example.com") 0).password }}'
-stdout examplepassword
+stdout ^examplepassword$
 
 # test lastpass version check
 chmod 755 $WORK/bin2/lpass
