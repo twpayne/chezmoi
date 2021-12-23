@@ -2,6 +2,10 @@ package cmd
 
 import "github.com/spf13/cobra"
 
+type secretCmdConfig struct {
+	keyring secretKeyringCmdConfig
+}
+
 func (c *Config) newSecretCmd() *cobra.Command {
 	secretCmd := &cobra.Command{
 		Use:     "secret",

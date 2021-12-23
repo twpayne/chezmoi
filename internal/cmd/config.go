@@ -143,7 +143,7 @@ type Config struct {
 	purge           purgeCmdConfig
 	reAdd           reAddCmdConfig
 	remove          removeCmdConfig
-	secretKeyring   secretKeyringCmdConfig
+	secret          secretCmdConfig
 	state           stateCmdConfig
 	status          statusCmdConfig
 	update          updateCmdConfig
