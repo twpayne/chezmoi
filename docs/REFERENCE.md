@@ -129,6 +129,7 @@ Manage your dotfiles across multiple machines, securely.
   * [`onepasswordItemFields` *uuid* [*vault-uuid* [*account-name*]]](#onepassworditemfields-uuid-vault-uuid-account-name)
   * [`output` *name* [*arg*...]](#output-name-arg)
   * [`pass` *pass-name*](#pass-pass-name)
+  * [`passFields` *pass-name*](#passfields-pass-name)
   * [`passRaw` *pass-name*](#passraw-pass-name)
   * [`promptBool` *prompt* [*default*]](#promptbool-prompt-default)
   * [`promptInt` *prompt* [*default*]](#promptint-prompt-default)
@@ -2531,6 +2532,37 @@ the same *pass-name* will only invoke `pass` once.
 
 ```
 {{ pass "<pass-name>" }}
+```
+
+---
+
+### `passFields` *pass-name*
+
+`passFields` returns structured data stored in
+[pass](https://www.passwordstore.org) using the pass CLI (`pass`). *pass-name*
+is passed to `pass show <pass-name>` and the output is parsed as colon-separated
+key-value pairs, one per line. The return value is a map of keys to values. For
+example, given the output from `pass`:
+
+```
+GitHub
+login: username
+password: secret
+```
+
+the return value will be a map:
+
+```json
+{
+    "login": "username",
+    "password": "secret"
+}
+```
+
+#### `passFields` examples
+
+```
+{{ (passFields "GitHub").password }}
 ```
 
 ---
