@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestPromptBool(t *testing.T) {
+func TestPromptBoolInitTemplateFunc(t *testing.T) {
 	for _, tc := range []struct {
 		name              string
 		prompt            string
@@ -70,17 +70,17 @@ func TestPromptBool(t *testing.T) {
 			require.NoError(t, err)
 			if tc.expectedErr {
 				assert.Panics(t, func() {
-					config.promptBool(tc.prompt, tc.args...)
+					config.promptBoolInitTemplateFunc(tc.prompt, tc.args...)
 				})
 			} else {
-				assert.Equal(t, tc.expected, config.promptBool(tc.prompt, tc.args...))
+				assert.Equal(t, tc.expected, config.promptBoolInitTemplateFunc(tc.prompt, tc.args...))
 				assert.Equal(t, tc.expectedStdoutStr, stdout.String())
 			}
 		})
 	}
 }
 
-func TestPromptInt(t *testing.T) {
+func TestPromptIntInitTemplateFunc(t *testing.T) {
 	for _, tc := range []struct {
 		name              string
 		prompt            string
@@ -142,17 +142,17 @@ func TestPromptInt(t *testing.T) {
 			require.NoError(t, err)
 			if tc.expectedErr {
 				assert.Panics(t, func() {
-					config.promptInt(tc.prompt, tc.args...)
+					config.promptIntInitTemplateFunc(tc.prompt, tc.args...)
 				})
 			} else {
-				assert.Equal(t, tc.expected, config.promptInt(tc.prompt, tc.args...))
+				assert.Equal(t, tc.expected, config.promptIntInitTemplateFunc(tc.prompt, tc.args...))
 				assert.Equal(t, tc.expectedStdoutStr, stdout.String())
 			}
 		})
 	}
 }
 
-func TestPromptString(t *testing.T) {
+func TestPromptStringInitTemplateFunc(t *testing.T) {
 	for _, tc := range []struct {
 		name              string
 		prompt            string
@@ -227,10 +227,10 @@ func TestPromptString(t *testing.T) {
 			require.NoError(t, err)
 			if tc.expectedErr {
 				assert.Panics(t, func() {
-					config.promptString(tc.prompt, tc.args...)
+					config.promptStringInitTemplateFunc(tc.prompt, tc.args...)
 				})
 			} else {
-				assert.Equal(t, tc.expected, config.promptString(tc.prompt, tc.args...))
+				assert.Equal(t, tc.expected, config.promptStringInitTemplateFunc(tc.prompt, tc.args...))
 				assert.Equal(t, tc.expectedStdoutStr, stdout.String())
 			}
 		})

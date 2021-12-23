@@ -7,12 +7,19 @@ import (
 	"strings"
 
 	"golang.org/x/term"
+
+	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
-func (c *Config) promptBool(field string, args ...bool) bool {
+func (c *Config) exitInitTemplateFunc(code int) string {
+	returnTemplateError(chezmoi.ExitCodeError(code))
+	return ""
+}
+
+func (c *Config) promptBoolInitTemplateFunc(field string, args ...bool) bool {
 	switch len(args) {
 	case 0:
-		value, err := parseBool(c.promptString(field))
+		value, err := parseBool(c.promptStringInitTemplateFunc(field))
 		if err != nil {
 			returnTemplateError(err)
 			return false
@@ -20,7 +27,7 @@ func (c *Config) promptBool(field string, args ...bool) bool {
 		return value
 	case 1:
 		promptStr := field + " (default " + strconv.FormatBool(args[0]) + ")"
-		valueStr := c.promptString(promptStr)
+		valueStr := c.promptStringInitTemplateFunc(promptStr)
 		if valueStr == "" {
 			return args[0]
 		}
@@ -37,10 +44,10 @@ func (c *Config) promptBool(field string, args ...bool) bool {
 	}
 }
 
-func (c *Config) promptInt(field string, args ...int64) int64 {
+func (c *Config) promptIntInitTemplateFunc(field string, args ...int64) int64 {
 	switch len(args) {
 	case 0:
-		value, err := strconv.ParseInt(c.promptString(field), 10, 64)
+		value, err := strconv.ParseInt(c.promptStringInitTemplateFunc(field), 10, 64)
 		if err != nil {
 			returnTemplateError(err)
 			return 0
@@ -48,7 +55,7 @@ func (c *Config) promptInt(field string, args ...int64) int64 {
 		return value
 	case 1:
 		promptStr := field + " (default " + strconv.FormatInt(args[0], 10) + ")"
-		valueStr := c.promptString(promptStr)
+		valueStr := c.promptStringInitTemplateFunc(promptStr)
 		if valueStr == "" {
 			return args[0]
 		}
@@ -65,7 +72,7 @@ func (c *Config) promptInt(field string, args ...int64) int64 {
 	}
 }
 
-func (c *Config) promptString(prompt string, args ...string) string {
+func (c *Config) promptStringInitTemplateFunc(prompt string, args ...string) string {
 	switch len(args) {
 	case 0:
 		value, err := c.readLine(prompt + "? ")
@@ -93,7 +100,7 @@ func (c *Config) promptString(prompt string, args ...string) string {
 	}
 }
 
-func (c *Config) stdinIsATTY() bool {
+func (c *Config) stdinIsATTYInitTemplateFunc() bool {
 	file, ok := c.stdin.(*os.File)
 	if !ok {
 		return false

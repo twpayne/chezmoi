@@ -449,12 +449,6 @@ func newConfig(options ...configOption) (*Config, error) {
 	} {
 		c.addTemplateFunc(key, value)
 	}
-	for _, releaseTag := range build.Default.ReleaseTags {
-		if releaseTag == "go1.17" {
-			c.addTemplateFunc("exit", c.exitTemplateFunc)
-			break
-		}
-	}
 
 	for _, option := range options {
 		if err := option(c); err != nil {
@@ -717,13 +711,20 @@ func (c *Config) createAndReloadConfigFile() error {
 func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte) ([]byte, error) {
 	funcMap := make(template.FuncMap)
 	chezmoi.RecursiveMerge(funcMap, c.templateFuncs)
-	chezmoi.RecursiveMerge(funcMap, map[string]interface{}{
-		"promptBool":    c.promptBool,
-		"promptInt":     c.promptInt,
-		"promptString":  c.promptString,
-		"stdinIsATTY":   c.stdinIsATTY,
+	initTemplateFuncs := map[string]interface{}{
+		"promptBool":    c.promptBoolInitTemplateFunc,
+		"promptInt":     c.promptIntInitTemplateFunc,
+		"promptString":  c.promptStringInitTemplateFunc,
+		"stdinIsATTY":   c.stdinIsATTYInitTemplateFunc,
 		"writeToStdout": c.writeToStdout,
-	})
+	}
+	for _, releaseTag := range build.Default.ReleaseTags {
+		if releaseTag == "go1.17" {
+			initTemplateFuncs["exit"] = c.exitInitTemplateFunc
+			break
+		}
+	}
+	chezmoi.RecursiveMerge(funcMap, initTemplateFuncs)
 
 	t, err := template.New(filename.String()).Funcs(funcMap).Parse(string(data))
 	if err != nil {
