@@ -18,11 +18,6 @@ type ioregData struct {
 	value map[string]interface{}
 }
 
-func (c *Config) exitTemplateFunc(code int) string {
-	returnTemplateError(chezmoi.ExitCodeError(code))
-	return ""
-}
-
 func (c *Config) fromYamlTemplateFunc(s string) interface{} {
 	var data interface{}
 	if err := chezmoi.FormatYAML.Unmarshal([]byte(s), &data); err != nil {

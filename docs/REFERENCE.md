@@ -2058,7 +2058,8 @@ the same arguments will only invoke `bw get` once.
 ### `exit` *code*
 
 `exit` stops template execution and causes chezmoi to exit with *code*. `exit`
-is only available when chezmoi is built with Go 1.17 or later.
+is only available when chezmoi is built with Go 1.17 or later and when
+generating the initial config file
 
 ---
 

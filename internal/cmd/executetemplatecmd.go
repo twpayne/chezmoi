@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"go/build"
 	"io"
 	"strconv"
 	"strings"
@@ -59,7 +60,7 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 		promptBool[key] = value
 	}
 	if c.executeTemplate.init {
-		chezmoi.RecursiveMerge(c.templateFuncs, map[string]interface{}{
+		initTemplateFuncs := map[string]interface{}{
 			"promptBool": func(prompt string, args ...bool) bool {
 				switch len(args) {
 				case 0:
@@ -112,7 +113,14 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 				return c.executeTemplate.stdinIsATTY
 			},
 			"writeToStdout": c.writeToStdout,
-		})
+		}
+		for _, releaseTag := range build.Default.ReleaseTags {
+			if releaseTag == "go1.17" {
+				initTemplateFuncs["exit"] = c.exitInitTemplateFunc
+				break
+			}
+		}
+		chezmoi.RecursiveMerge(c.templateFuncs, initTemplateFuncs)
 	}
 
 	if len(args) == 0 {
