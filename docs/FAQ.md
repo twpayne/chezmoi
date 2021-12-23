@@ -69,35 +69,43 @@ There are four popular approaches:
 ## Do I have to use `chezmoi edit` to edit my dotfiles?
 
 No. `chezmoi edit` is a convenience command that has a couple of useful
-features, but you don't have to use it. You can also run `chezmoi cd` and then
-just edit the files in the source state directly. After saving an edited file
-you can run `chezmoi diff` to check what effect the changes would have, and run
-`chezmoi apply` if you're happy with them.
+features, but you don't have to use it.
+
+You can also run `chezmoi cd` and then just edit the files in the source state
+directly. After saving an edited file you can run `chezmoi diff` to check what
+effect the changes would have, and run `chezmoi apply` if you're happy with
+them. If there are inconsistencies that you want to keep, then `chezmoi
+merge-all` will help you resolve any differences.
 
 `chezmoi edit` provides the following useful features:
-* It opens the correct file in the source state for you with a filename matching
-  the target filename, so your editor's syntax highlighting will work and you
-  don't have to know anything about source state attributes.
+* The arguments to `chezmoi edit` are the files in their target location, so you
+  don't have to think about source state attributes and your editor's syntax
+  highlighting will work.
 * If the dotfile is encrypted in the source state, then `chezmoi edit` will
   decrypt it to a private directory, open that file in your `$EDITOR`, and then
-  re-encrypt the file when you quit your editor. That makes encryption more
-  transparent to the user. With the `--diff` and `--apply` options you can see
-  what would change and apply those changes without having to run `chezmoi diff`
-  or `chezmoi apply`. Note also that the arguments to `chezmoi edit` are the
-  files in their target location.
+  re-encrypt the file when you quit your editor. That makes encryption
+  transparent.
+* With the `--diff` and `--apply` options you can see what would change and
+  apply those changes without having to run `chezmoi diff` or `chezmoi apply`.
+
+If you chose to edit files in the source state and you're using VIM then then
+[`github.com/alker0/chezmoi.vim`](https://github.com/alker0/chezmoi.vim) gives
+you syntax highlighting, however you edit your files.
 
 ---
 
 ## Why do I get a blank buffer when running `chezmoi edit`?
 
-The problem here is that your editor is forking, detaching, and terminating the
-original process, which chezmoi cannot distinguish from the editor terminating
-normally.
+What's happening here is that your editor is forking, detaching, and terminating
+the original process, which chezmoi cannot distinguish from the editor
+terminating normally.
 
 You have two options:
-1. Configure your editor command to remain in the foreground by passing the `-f`
-   flag to `mvim`, e.g. by setting the `edit.flags` configuration variable to
-   `["-f"]`, or by setting the `EDITOR` environment variable to `mvim -f`.
+1. Configure your editor command to remain in the foreground. For `vim`, this
+   means passing the `-f` flag, e.g. by setting the `edit.flags` configuration
+   variable to `["-f"]`, or by setting the `EDITOR` environment variable to
+   include the `-f` flag, e.g. `export EDITOR="mvim -f"`. For VSCode, pass the
+   `--wait` flag.
 2. Set the `edit.hardlink` configuration variable to `false`.
 
 ---
