@@ -1053,9 +1053,7 @@ func (s *SourceState) addPatterns(patternSet *patternSet, sourceAbsPath AbsPath,
 	for scanner.Scan() {
 		lineNumber++
 		text := scanner.Text()
-		if index := strings.IndexRune(text, '#'); index != -1 {
-			text = text[:index]
-		}
+		text, _, _ = CutString(text, "#")
 		text = strings.TrimSpace(text)
 		if text == "" {
 			continue

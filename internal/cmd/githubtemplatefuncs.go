@@ -3,9 +3,10 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"strings"
 
 	"github.com/google/go-github/v41/github"
+
+	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
 type gitHubData struct {
@@ -87,11 +88,10 @@ func (c *Config) gitHubLatestReleaseTemplateFunc(userRepo string) *github.Reposi
 }
 
 func parseGitHubUserRepo(userRepo string) (string, string) {
-	fields := strings.SplitN(userRepo, "/", 2)
-	if len(fields) != 2 || fields[0] == "" || fields[1] == "" {
+	user, repo, ok := chezmoi.CutString(userRepo, "/")
+	if !ok {
 		returnTemplateError(fmt.Errorf("%s: not a user/repo", userRepo))
 		return "", ""
 	}
-	user, repo := fields[0], fields[1]
 	return user, repo
 }

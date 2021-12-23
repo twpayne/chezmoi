@@ -41,9 +41,7 @@ func etcHostnameFQDNHostname(fileSystem vfs.FS) (string, error) {
 	s := bufio.NewScanner(bytes.NewReader(contents))
 	for s.Scan() {
 		text := s.Text()
-		if index := strings.IndexByte(text, '#'); index != -1 {
-			text = text[:index]
-		}
+		text, _, _ = CutString(text, "#")
 		if hostname := strings.TrimSpace(text); hostname != "" {
 			return hostname, nil
 		}
@@ -61,9 +59,7 @@ func etcHostsFQDNHostname(fileSystem vfs.FS) (string, error) {
 	for s.Scan() {
 		text := s.Text()
 		text = strings.TrimSpace(text)
-		if index := strings.IndexByte(text, '#'); index != -1 {
-			text = text[:index]
-		}
+		text, _, _ = CutString(text, "#")
 		fields := whitespaceRx.Split(text, -1)
 		if len(fields) >= 2 && fields[0] == "127.0.1.1" {
 			return fields[1], nil

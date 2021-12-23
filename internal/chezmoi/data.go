@@ -94,13 +94,11 @@ func parseOSRelease(r io.Reader) (map[string]interface{}, error) {
 		if len(token) == 0 || token[0] == '#' {
 			continue
 		}
-		fields := strings.SplitN(token, "=", 2)
-		if len(fields) != 2 {
+		key, value, ok := CutString(token, "=")
+		if !ok {
 			return nil, fmt.Errorf("%s: parse error", token)
 		}
-		key := fields[0]
-		value := maybeUnquote(fields[1])
-		result[key] = value
+		result[key] = maybeUnquote(value)
 	}
 	return result, s.Err()
 }

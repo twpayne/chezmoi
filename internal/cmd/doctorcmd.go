@@ -357,7 +357,7 @@ func (c *binaryCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath)
 	}
 	version, err := semver.NewVersion(string(versionBytes))
 	if err != nil {
-		return checkResultFailed, fmt.Sprintf("version %s: %s", versionBytes, err)
+		return checkResultFailed, err.Error()
 	}
 
 	if c.minVersion != nil && version.LessThan(*c.minVersion) {
