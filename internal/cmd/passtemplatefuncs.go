@@ -35,8 +35,23 @@ func (c *Config) passOutput(id string) []byte {
 	return output
 }
 
-func (c *Config) passTemplateFunc(id string) string {
+func (c *Config) passTemplateFunc(id string, fields ...string) string {
 	output := c.passOutput(id)
+
+	if len(fields) > 0 {
+		// Search fields in the form of "field: value"
+		for _, field := range fields {
+			for _, line := range bytes.Split(output, []byte("\n")) {
+				if bytes.HasPrefix(line, append([]byte(field), ':')) {
+					return string(bytes.TrimSpace(bytes.TrimPrefix(line, append([]byte(field), ':'))))
+				}
+			}
+		}
+
+		returnTemplateError(fmt.Errorf("found none of the fields in pass entry"))
+		return ""
+	}
+
 	if index := bytes.IndexByte(output, '\n'); index != -1 {
 		return string(output[:index])
 	}
