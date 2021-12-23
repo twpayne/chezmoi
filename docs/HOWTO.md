@@ -1129,6 +1129,24 @@ The first line of the output of `pass show <pass-name>` is available as the
 {{ pass "<pass-name>" }}
 ```
 
+If fields are passed to the function, the first one found in the `pass` entry
+will be returned. If no fields have been found, an error is raised.
+This is useful to get data from entries compatible with
+[Browserpass](https://github.com/browserpass/browserpass-extension#organizing-password-store)
+
+Example:
+
+```
+{{ pass "<pass-name" "user" "login" }}
+```
+
+Will return `myusername` in the following `<pass-name>` entry:
+
+```
+mypassword
+login: myusername
+```
+
 ---
 
 ### Use Vault
