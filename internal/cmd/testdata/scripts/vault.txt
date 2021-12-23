@@ -3,7 +3,7 @@
 
 # test vault template function
 chezmoi execute-template '{{ (vault "secret/examplesecret").data.data.password }}'
-stdout examplepassword
+stdout ^examplepassword$
 
 -- bin/vault --
 #!/bin/sh

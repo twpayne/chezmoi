@@ -1,13 +1,14 @@
 [!windows] chmod 755 bin/gopass
 [windows] unix2dos bin/gopass.cmd
+[windows] unix2dos golden/gopass-raw
 
 # test gopass template function
 chezmoi execute-template '{{ gopass "misc/example.com" }}'
-stdout examplepassword
+stdout ^examplepassword$
 
 # test gopass template function
 chezmoi execute-template '{{ gopassRaw "misc/example.com" }}'
-stdout 'Secret: misc/example\.com'
+cmp stdout golden/gopass-raw
 
 -- bin/gopass --
 #!/bin/sh
@@ -34,10 +35,10 @@ esac
 IF "%*" == "--version" (
     echo "gopass 1.10.1 go1.15 windows amd64"
 ) ELSE IF "%*" == "show --noparsing misc/example.com" (
-    echo "Secret: misc/example.com"
-    echo
-    echo "examplepassword"
-    echo "key: value"
+    echo.Secret: misc/example.com
+    echo.
+    echo.examplepassword
+    echo.key: value
 ) ELSE IF "%*" == "show --password misc/example.com" (
     echo | set /p=examplepassword
     exit /b 0
@@ -45,3 +46,8 @@ IF "%*" == "--version" (
     echo gopass: invalid command: %*
     exit /b 1
 )
+-- golden/gopass-raw --
+Secret: misc/example.com
+
+examplepassword
+key: value
