@@ -337,6 +337,43 @@ jobs:
     - name: Test
       run: |
         go test ./...
+  test-ubuntu-go1-18:
+    needs: changes
+    if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+    runs-on: ubuntu-18.04
+    steps:
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.x
+    - name: Install Go 1.18beta1
+      run: |
+        go install golang.org/dl/go1.18beta1@latest
+        go1.18beta1 download
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Cache Go modules
+      uses: actions/cache@v2
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-ubuntu-go-1-18-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-ubuntu-go-1-18-
+    - name: Build
+      run: |
+        go1.18beta1 build ./...
+    - name: Run
+      run: |
+        go1.18beta1 run . --version
+    - name: Install age
+      run: |
+        cd $(mktemp -d)
+        curl -fsSL https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-linux-amd64.tar.gz | tar xzf -
+        sudo install -m 755 age/age /usr/local/bin
+        sudo install -m 755 age/age-keygen /usr/local/bin
+    - name: Test
+      run: |
+        go1.18beta1 test ./...
   test-windows:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
