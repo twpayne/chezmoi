@@ -4,6 +4,7 @@
 * [How can I quickly check for problems with chezmoi on my machine?](#how-can-i-quickly-check-for-problems-with-chezmoi-on-my-machine)
 * [How do I edit my dotfiles with chezmoi?](#how-do-i-edit-my-dotfiles-with-chezmoi)
 * [Do I have to use `chezmoi edit` to edit my dotfiles?](#do-i-have-to-use-chezmoi-edit-to-edit-my-dotfiles)
+* [Why do I get a blank buffer when running `chezmoi edit`?](#why-do-i-get-a-blank-buffer-when-running-chezmoi-edit)
 * [What are the consequences of "bare" modifications to the target files? If my `.zshrc` is managed by chezmoi and I edit `~/.zshrc` without using `chezmoi edit`, what happens?](#what-are-the-consequences-of-bare-modifications-to-the-target-files-if-my-zshrc-is-managed-by-chezmoi-and-i-edit-zshrc-without-using-chezmoi-edit-what-happens)
 * [How can I tell what dotfiles in my home directory aren't managed by chezmoi? Is there an easy way to have chezmoi manage a subset of them?](#how-can-i-tell-what-dotfiles-in-my-home-directory-arent-managed-by-chezmoi-is-there-an-easy-way-to-have-chezmoi-manage-a-subset-of-them)
 * [How can I tell what dotfiles in my home directory are currently managed by chezmoi?](#how-can-i-tell-what-dotfiles-in-my-home-directory-are-currently-managed-by-chezmoi)
@@ -84,6 +85,20 @@ you can run `chezmoi diff` to check what effect the changes would have, and run
   what would change and apply those changes without having to run `chezmoi diff`
   or `chezmoi apply`. Note also that the arguments to `chezmoi edit` are the
   files in their target location.
+
+---
+
+## Why do I get a blank buffer when running `chezmoi edit`?
+
+The problem here is that your editor is forking, detaching, and terminating the
+original process, which chezmoi cannot distinguish from the editor terminating
+normally.
+
+You have two options:
+1. Configure your editor command to remain in the foreground by passing the `-f`
+   flag to `mvim`, e.g. by setting the `edit.flags` configuration variable to
+   `["-f"]`, or by setting the `EDITOR` environment variable to `mvim -f`.
+2. Set the `edit.hardlink` configuration variable to `false`.
 
 ---
 
