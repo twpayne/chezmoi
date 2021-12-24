@@ -18,10 +18,7 @@ import (
 	"github.com/twpayne/chezmoi/v2/internal/chezmoilog"
 )
 
-var (
-	ageRecipientRx                    = regexp.MustCompile(`(?m)^Public key: ([0-9a-z]+)\s*$`)
-	gpgKeyMarkedAsUltimatelyTrustedRx = regexp.MustCompile(`(?m)^gpg: key ([0-9A-F]+) marked as ultimately trusted\s*$`)
-)
+var ageRecipientRx = regexp.MustCompile(`(?m)^Public key: ([0-9a-z]+)\s*$`)
 
 // AgeGenerateKey generates an identity in identityFile and returns the
 // recipient.
@@ -41,6 +38,7 @@ func AgeGenerateKey(identityFile string) (string, error) {
 // GPGGenerateKey generates GPG key in homeDir and returns the key and the
 // passphrase.
 func GPGGenerateKey(command, homeDir string) (key, passphrase string, err error) {
+	key = "chezmoi-test-gpg-key"
 	//nolint:gosec
 	passphrase = "chezmoi-test-gpg-passphrase"
 	cmd := exec.Command(
@@ -50,17 +48,10 @@ func GPGGenerateKey(command, homeDir string) (key, passphrase string, err error)
 		"--no-tty",
 		"--passphrase", passphrase,
 		"--pinentry-mode", "loopback",
-		"--quick-generate-key", "chezmoi-test-gpg-key",
+		"--quick-generate-key", key,
 	)
-	output, err := chezmoilog.LogCmdCombinedOutput(cmd)
-	if err != nil {
-		return "", "", err
-	}
-	submatch := gpgKeyMarkedAsUltimatelyTrustedRx.FindSubmatch(output)
-	if submatch == nil {
-		return "", "", fmt.Errorf("key not found in %q", output)
-	}
-	return string(submatch[1]), passphrase, nil
+	err = chezmoilog.LogCmdRun(cmd)
+	return
 }
 
 // HomeDir returns the home directory.
