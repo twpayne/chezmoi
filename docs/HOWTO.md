@@ -944,6 +944,26 @@ instructs the template language to remove any whitespace before and after the
 substitution. This removes any trailing newline added by your editor when saving
 the template.
 
+#### 1Password sign-in prompt
+
+chezmoi will verify the availability and validity of a session token in the
+current environment. If it is missing or expired, you will be interactively
+prompted to sign-in again.
+
+In the past chezmoi used to simply exit with an error when no valid session was
+available. If you'd like to restore that behavior, set the following option in
+your configuration file (`chezmoi.toml`):
+
+```toml
+[onepassword]
+    prompt = false
+```
+
+**A session token verified or acquired interactively will be passed to the
+1Password CLI through a command-line parameter, which could be visible to other
+users of the same system. You should disable the prompt on shared machines for
+improved security.**
+
 ---
 
 ### Use Bitwarden

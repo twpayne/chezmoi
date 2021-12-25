@@ -412,6 +412,7 @@ The following configuration variables are available:
 |                | `command`             | string   | `vimdiff`                | 3-way merge command                                    |
 | `onepassword`  | `cache`               | bool     | `true`                   | Enable optional caching provided by `op`               |
 |                | `command`             | string   | `op`                     | 1Password CLI command                                  |
+|                | `prompt`              | bool     | `true`                   | Prompt for sign-in when no valid session is available  |
 | `pass`         | `command`             | string   | `pass`                   | Pass CLI command                                       |
 | `pinentry`     | `args`                | []string | *none*                   | Extra args to the pinentry command                     |
 |                | `command`             | string   | *none*                   | pinentry command                                       |
@@ -2340,7 +2341,9 @@ same *uuid* will only invoke `op` once.  If the optional *vault-uuid* is
 supplied, it will be passed along to the `op get` call, which can significantly
 improve performance. If the optional *account-name* is supplied, it will be
 passed along to the `op get` call, which will help it look in the right account,
-in case you have multiple accounts (eg. personal and work accounts).
+in case you have multiple accounts (eg. personal and work accounts). If there is
+no valid session in the environment, by default you will be interactively
+prompted to sign in.
 
 #### `onepassword` examples
 
@@ -2364,7 +2367,8 @@ multiple times with the same *uuid* will only invoke `op` once.  If the optional
 can significantly improve performance. If the optional *account-name* is
 supplied, it will be passed along to the `op get` call, which will help it look
 in the right account, in case you have multiple accounts (eg. personal and work
-accounts).
+accounts). If there is no valid session in the environment, by default you will
+be interactively prompted to sign in.
 
 #### `onepasswordDocument` examples
 
@@ -2384,7 +2388,9 @@ accounts).
 CLI](https://support.1password.com/command-line-getting-started/) (`op`). *uuid*
 is passed to `op get item <uuid>`, the output from `op` is parsed as JSON, and
 elements of `details.fields` are returned as a map indexed by each field's
-`designation`. For example, give the output from `op`:
+`designation`. If there is no valid session in the environment, by default you
+will be interactively prompted to sign in. For example, give the output from
+`op`:
 
 ```json
 {
@@ -2453,8 +2459,9 @@ accounts).
 CLI](https://support.1password.com/command-line-getting-started/) (`op`). *uuid*
 is passed to `op get item <uuid>`, the output from `op` is parsed as JSON, and
 each element of `details.sections` are iterated over and any `fields` are
-returned as a map indexed by each field's `n`. For example, give the output from
-`op`:
+returned as a map indexed by each field's `n`. If there is no valid session in
+the environment, by default you will be interactively prompted to sign in. For
+example, give the output from `op`:
 
 ```json
 {

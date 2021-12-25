@@ -279,6 +279,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		Onepassword: onepasswordConfig{
 			Command: "op",
+			Prompt:  true,
 		},
 		Pass: passConfig{
 			Command: "pass",

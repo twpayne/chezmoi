@@ -4,13 +4,18 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"os"
 	"os/exec"
 	"strings"
+
+	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
 type onepasswordConfig struct {
-	Command     string
-	outputCache map[string][]byte
+	Command       string
+	Prompt        bool
+	outputCache   map[string][]byte
+	sessionTokens map[string]string
 }
 
 type onePasswordItem struct {
@@ -23,8 +28,9 @@ type onePasswordItem struct {
 }
 
 func (c *Config) onepasswordItem(args ...string) *onePasswordItem {
+	sessionToken := c.onepasswordGetOrRefreshSession(args)
 	onepasswordArgs := getOnepasswordArgs([]string{"get", "item"}, args)
-	output := c.onepasswordOutput(onepasswordArgs)
+	output := c.onepasswordOutput(onepasswordArgs, sessionToken)
 	var onepasswordItem onePasswordItem
 	if err := json.Unmarshal(output, &onepasswordItem); err != nil {
 		returnTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(c.Onepassword.Command, onepasswordArgs), err, output))
@@ -58,19 +64,26 @@ func (c *Config) onepasswordItemFieldsTemplateFunc(args ...string) map[string]in
 }
 
 func (c *Config) onepasswordDocumentTemplateFunc(args ...string) string {
+	sessionToken := c.onepasswordGetOrRefreshSession(args)
 	onepasswordArgs := getOnepasswordArgs([]string{"get", "document"}, args)
-	output := c.onepasswordOutput(onepasswordArgs)
+	output := c.onepasswordOutput(onepasswordArgs, sessionToken)
 	return string(output)
 }
 
-func (c *Config) onepasswordOutput(args []string) []byte {
+func (c *Config) onepasswordOutput(args []string, sessionToken string) []byte {
 	key := strings.Join(args, "\x00")
 	if output, ok := c.Onepassword.outputCache[key]; ok {
 		return output
 	}
 
+	var secretArgs []string
+	if sessionToken != "" {
+		secretArgs = []string{"--session", sessionToken}
+	}
+
 	name := c.Onepassword.Command
-	cmd := exec.Command(name, args...)
+	// Append the session token here, so it is not logged by accident.
+	cmd := exec.Command(name, append(secretArgs, args...)...)
 	cmd.Stdin = c.stdin
 	stderr := &bytes.Buffer{}
 	cmd.Stderr = stderr
@@ -88,8 +101,9 @@ func (c *Config) onepasswordOutput(args []string) []byte {
 }
 
 func (c *Config) onepasswordTemplateFunc(args ...string) map[string]interface{} {
+	sessionToken := c.onepasswordGetOrRefreshSession(args)
 	onepasswordArgs := getOnepasswordArgs([]string{"get", "item"}, args)
-	output := c.onepasswordOutput(onepasswordArgs)
+	output := c.onepasswordOutput(onepasswordArgs, sessionToken)
 	var data map[string]interface{}
 	if err := json.Unmarshal(output, &data); err != nil {
 		returnTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(c.Onepassword.Command, onepasswordArgs), err, output))
@@ -110,5 +124,84 @@ func getOnepasswordArgs(baseArgs, args []string) []string {
 	if len(args) > 2 {
 		baseArgs = append(baseArgs, "--account", args[2])
 	}
+
 	return baseArgs
+}
+
+// refreshSession will return the current session token if the token within the
+// environment is still valid. Otherwise it will ask the user to sign in and get
+// the new token. If `sessioncheck` is disabled, it returns an empty string.
+func (c *Config) onepasswordGetOrRefreshSession(callerArgs []string) string {
+	if !c.Onepassword.Prompt {
+		return ""
+	}
+
+	var account string
+	if len(callerArgs) > 2 {
+		account = callerArgs[2]
+	}
+
+	// Check if there's already a valid token cached in this run for this
+	// account.
+	token, ok := c.Onepassword.sessionTokens[account]
+	if ok {
+		return token
+	}
+
+	var args []string
+	if account == "" {
+		// If no account has been given then look for any session tokens in the
+		// environment.
+		token = onepasswordInferSessionToken()
+		args = []string{"signin", "--raw"}
+	} else {
+		token = os.Getenv("OP_SESSION_" + account)
+		args = []string{"signin", account, "--raw"}
+	}
+
+	// Do not specify an empty session string if no session tokens were found.
+	var secretArgs []string
+	if token != "" {
+		secretArgs = []string{"--session", token}
+	}
+
+	name := c.Onepassword.Command
+	// Append the session token here, so it is not logged by accident.
+	cmd := exec.Command(name, append(secretArgs, args...)...)
+	cmd.Stdin = c.stdin
+	stderr := &bytes.Buffer{}
+	cmd.Stderr = stderr
+	output, err := cmd.Output()
+	if err != nil {
+		returnTemplateError(fmt.Errorf("%s: %w: %s",
+			shellQuoteCommand(c.Onepassword.Command, args), err, bytes.TrimSpace(stderr.Bytes())))
+		return ""
+	}
+	token = strings.TrimSpace(string(output))
+
+	// Cache the session token in memory, so we don't try to refresh it again
+	// for this run for this account.
+	if c.Onepassword.sessionTokens == nil {
+		c.Onepassword.sessionTokens = make(map[string]string)
+	}
+	c.Onepassword.sessionTokens[account] = token
+
+	return token
+}
+
+// onepasswordInferSessionToken will look for any session tokens in the
+// environment and if it finds exactly one then it will return it.
+func onepasswordInferSessionToken() string {
+	var token string
+	for _, env := range os.Environ() {
+		key, value, found := chezmoi.CutString(env, "=")
+		if found && strings.HasPrefix(key, "OP_SESSION_") {
+			if token != "" {
+				// This is the second session we find. Let's bail.
+				return ""
+			}
+			token = value
+		}
+	}
+	return token
 }
