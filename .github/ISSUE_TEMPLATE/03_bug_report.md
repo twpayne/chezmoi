@@ -26,9 +26,13 @@ $ chezmoi --verbose <your-command>
 
 ## Output of `chezmoi doctor`
 
+<details>
+
 ```console
 $ chezmoi doctor
 ```
+
+</details>
 
 ## Additional context
 
