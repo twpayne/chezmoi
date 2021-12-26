@@ -40,7 +40,7 @@
 | Executable files                       | ✅            | ✅                | ✅                | ✅                | ✅                       | ✅            | ✅         |
 | File creation with initial contents    | ✅            | ❌                | ❌                | ❌                | ✅                       | ❌            | ❌         |
 | Externals                              | ✅            | ❌                | ❌                | ❌                | ❌                       | ❌            | ❌         |
-| Manage partial files                   | ✅            | ❌                | ❌                | ❌                | ⁉️                        | ❌            | ⁉️          |
+| Manage partial files                   | ✅            | ❌                | ❌                | ❌                | ⁉️                        | ✅            | ⁉️          |
 | File removal                           | ✅            | ❌                | ❌                | ❌                | ✅                       | ❌            | ❌         |
 | Directory creation                     | ✅            | ✅                | ✅                | ❌                | ✅                       | ❌            | ✅         |
 | Run scripts                            | ✅            | ✅                | ✅                | ❌                | ✅                       | ❌            | ❌         |
