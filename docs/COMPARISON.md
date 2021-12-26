@@ -22,7 +22,7 @@
 [bare git]: https://www.atlassian.com/git/tutorials/dotfiles "bare git"
 
 |                                        | [chezmoi]     | [dotbot]          | [rcm]             | [homesick]        | [vcsh]                   | [yadm]                       | [bare git] |
-| -------------------------------------- | ------------- | ----------------- | ----------------- | ----------------- | ------------------------ | -------------                | ---------- |
+| -------------------------------------- | ------------- | ----------------- | ----------------- | ----------------- | ------------------------ | ---------------------------- | ---------- |
 | Distribution                           | Single binary | Python package    | Multiple files    | Ruby gem          | Single script or package | Single script                | -          |
 | Install method                         | Many          | git submodule     | Many              | Ruby gem          | Many                     | Many                         | Manual     |
 | Non-root install on bare system        | ✅            | ⁉️                 | ⁉️                 | ⁉️                 | ✅                       | ✅                           | ✅         |
@@ -35,7 +35,7 @@
 | Show differences without applying      | ✅            | ❌                | ❌                | ❌                | ✅                       | ✅                           | ✅         |
 | Whole file encryption                  | ✅            | ❌                | ❌                | ❌                | ❌                       | ✅                           | ❌         |
 | Password manager integration           | ✅            | ❌                | ❌                | ❌                | ❌                       | ❌                           | ❌         |
-| Machine-to-machine file differences    | Templates     | Alternative files | Alternative files | Alternative files | Branches                 | Alternative files, Templates | ⁉️          |
+| Machine-to-machine file differences    | Templates     | Alternative files | Alternative files | Alternative files | Branches                 | Alternative files, templates | ⁉️          |
 | Custom variables in templates          | ✅            | ❌                | ❌                | ❌                | ❌                       | ❌                           | ❌         |
 | Executable files                       | ✅            | ✅                | ✅                | ✅                | ✅                       | ✅                           | ✅         |
 | File creation with initial contents    | ✅            | ❌                | ❌                | ❌                | ✅                       | ❌                           | ❌         |
