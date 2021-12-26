@@ -31,7 +31,7 @@
 | Source repos                           | Single        | Single            | Multiple          | Single            | Multiple                 | Single        | Single     |
 | dotfiles are...                        | Files         | Symlinks          | Files             | Symlinks          | Files                    | Files         | Files      |
 | Config file                            | Optional      | Required          | Optional          | None              | None                     | Optional      | Optional   |
-| Private files                          | ✅            | ❌                | ❌                | ❌                | ❌                       | ❌            | ❌         |
+| Private files                          | ✅            | ❌                | ❌                | ❌                | ❌                       | ✅            | ❌         |
 | Show differences without applying      | ✅            | ❌                | ❌                | ❌                | ✅                       | ✅            | ✅         |
 | Whole file encryption                  | ✅            | ❌                | ❌                | ❌                | ❌                       | ✅            | ❌         |
 | Password manager integration           | ✅            | ❌                | ❌                | ❌                | ❌                       | ❌            | ❌         |
