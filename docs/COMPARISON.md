@@ -41,7 +41,7 @@
 | File creation with initial contents    | ✅            | ❌                | ❌                | ❌                | ✅                       | ❌            | ❌         |
 | Externals                              | ✅            | ❌                | ❌                | ❌                | ❌                       | ❌            | ❌         |
 | Manage partial files                   | ✅            | ❌                | ❌                | ❌                | ⁉️                        | ✅            | ⁉️          |
-| File removal                           | ✅            | ❌                | ❌                | ❌                | ✅                       | ❌            | ❌         |
+| File removal                           | ✅            | ❌                | ❌                | ❌                | ✅                       | ✅            | ❌         |
 | Directory creation                     | ✅            | ✅                | ✅                | ❌                | ✅                       | ❌            | ✅         |
 | Run scripts                            | ✅            | ✅                | ✅                | ❌                | ✅                       | ❌            | ❌         |
 | Run once scripts                       | ✅            | ❌                | ❌                | ❌                | ✅                       | ❌            | ❌         |
