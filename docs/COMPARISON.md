@@ -42,7 +42,7 @@
 | Externals                              | ✅            | ❌                | ❌                | ❌                | ❌                       | ❌            | ❌         |
 | Manage partial files                   | ✅            | ❌                | ❌                | ❌                | ⁉️                        | ✅            | ⁉️          |
 | File removal                           | ✅            | ❌                | ❌                | ❌                | ✅                       | ✅            | ❌         |
-| Directory creation                     | ✅            | ✅                | ✅                | ❌                | ✅                       | ❌            | ✅         |
+| Directory creation                     | ✅            | ✅                | ✅                | ❌                | ✅                       | ✅            | ✅         |
 | Run scripts                            | ✅            | ✅                | ✅                | ❌                | ✅                       | ❌            | ❌         |
 | Run once scripts                       | ✅            | ❌                | ❌                | ❌                | ✅                       | ❌            | ❌         |
 | Machine-to-machine symlink differences | ✅            | ❌                | ❌                | ❌                | ⁉️                        | ✅            | ⁉️          |
