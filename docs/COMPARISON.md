@@ -35,7 +35,7 @@
 | Show differences without applying      | ✅            | ❌                | ❌                | ❌                | ✅                       | ✅            | ✅         |
 | Whole file encryption                  | ✅            | ❌                | ❌                | ❌                | ❌                       | ✅            | ❌         |
 | Password manager integration           | ✅            | ❌                | ❌                | ❌                | ❌                       | ❌            | ❌         |
-| Machine-to-machine file differences    | Templates     | Alternative files | Alternative files | Alternative files | Branches                 | Templates     | ⁉️          |
+| Machine-to-machine file differences    | Templates     | Alternative files | Alternative files | Alternative files | Branches                 | Alternative files, Templates     | ⁉️          |
 | Custom variables in templates          | ✅            | ❌                | ❌                | ❌                | ❌                       | ❌            | ❌         |
 | Executable files                       | ✅            | ✅                | ✅                | ✅                | ✅                       | ❌            | ✅         |
 | File creation with initial contents    | ✅            | ❌                | ❌                | ❌                | ✅                       | ❌            | ❌         |
