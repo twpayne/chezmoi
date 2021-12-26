@@ -43,8 +43,8 @@
 | Manage partial files                   | ✅            | ❌                | ❌                | ❌                | ⁉️                        | ✅            | ⁉️          |
 | File removal                           | ✅            | ❌                | ❌                | ❌                | ✅                       | ✅            | ❌         |
 | Directory creation                     | ✅            | ✅                | ✅                | ❌                | ✅                       | ✅            | ✅         |
-| Run scripts                            | ✅            | ✅                | ✅                | ❌                | ✅                       | ❌            | ❌         |
-| Run once scripts                       | ✅            | ❌                | ❌                | ❌                | ✅                       | ❌            | ❌         |
+| Run scripts                            | ✅            | ✅                | ✅                | ❌                | ✅                       | ✅            | ❌         |
+| Run once scripts                       | ✅            | ❌                | ❌                | ❌                | ✅                       | ✅            | ❌         |
 | Machine-to-machine symlink differences | ✅            | ❌                | ❌                | ❌                | ⁉️                        | ✅            | ⁉️          |
 | Shell completion                       | ✅            | ❌                | ❌                | ❌                | ✅                       | ✅            | ✅         |
 | Archive import                         | ✅            | ❌                | ❌                | ❌                | ✅                       | ❌            | ✅         |
