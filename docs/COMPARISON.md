@@ -26,7 +26,7 @@
 | Distribution                           | Single binary | Python package    | Multiple files    | Ruby gem          | Single script or package | Single script | -          |
 | Install method                         | Many          | git submodule     | Many              | Ruby gem          | Many                     | Many          | Manual     |
 | Non-root install on bare system        | ✅            | ⁉️                 | ⁉️                 | ⁉️                 | ✅                       | ✅            | ✅         |
-| Windows support                        | ✅            | ❌                | ❌                | ❌                | ❌                       | ❌            | ✅         |
+| Windows support                        | ✅            | ❌                | ❌                | ❌                | ❌                       | ✅            | ✅         |
 | Bootstrap requirements                 | None          | Python, git       | Perl, git         | Ruby, git         | sh, git                  | git           | git        |
 | Source repos                           | Single        | Single            | Multiple          | Single            | Multiple                 | Single        | Single     |
 | dotfiles are...                        | Files         | Symlinks          | Files             | Symlinks          | Files                    | Files         | Files      |
