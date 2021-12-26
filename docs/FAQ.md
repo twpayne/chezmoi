@@ -20,6 +20,7 @@
 * [Can I change how chezmoi's source state is represented on disk?](#can-i-change-how-chezmois-source-state-is-represented-on-disk)
   * [The output of `chezmoi diff` is broken and does not contain color. What could be wrong?](#the-output-of-chezmoi-diff-is-broken-and-does-not-contain-color-what-could-be-wrong)
 * [gpg encryption fails. What could be wrong?](#gpg-encryption-fails-what-could-be-wrong)
+* [Why does the builtin `age` command not support passphrases, symmetric encryption, or SSH keys?](#why-does-the-builtin-age-command-not-support-passphrases-symmetric-encryption-or-ssh-keys)
 * [chezmoi reports `chezmoi: user: lookup userid NNNNN: input/output error`](#chezmoi-reports-chezmoi-user-lookup-userid-nnnnn-inputoutput-error)
 * [chezmoi reports `chezmoi: timeout` or `chezmoi: timeout obtaining persistent state lock`](#chezmoi-reports-chezmoi-timeout-or-chezmoi-timeout-obtaining-persistent-state-lock)
 * [I'm getting errors trying to build chezmoi from source](#im-getting-errors-trying-to-build-chezmoi-from-source)
@@ -433,6 +434,26 @@ $ gpg --edit-key $recipient
 ```
 
 Enter `trust` at the prompt and chose `5 = I trust ultimately`.
+
+---
+
+## Why does the builtin `age` command not support passphrases, symmetric encryption, or SSH keys?
+
+Passphrases are not supported because chezmoi needs to decrypt files regularly,
+e.g. when running a `chezmoi diff` or a `chezmoi status` command, not just when
+running `chezmoi apply`. Prompting for a passphrase each time would quickly
+become tiresome.
+
+Symmetric encryption may be supported in the future. Please [open an
+issue](https://github.com/twpayne/chezmoi/issues/new?assignees=&labels=enhancement&template=02_feature_request.md&title=)
+if you want this.
+
+SSH keys are not supported as the author of age [explicitly recommends not using
+them](https://pkg.go.dev/filippo.io/age#hdr-Key_management):
+
+> When integrating age into a new system, it's recommended that you only support
+> X25519 keys, and not SSH keys. The latter are supported for manual encryption
+> operations.
 
 ---
 
