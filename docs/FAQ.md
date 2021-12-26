@@ -585,7 +585,12 @@ directory.
 
 "chezmoi" splits to "chez moi" and pronounced /ʃeɪ mwa/ (shay-moi) meaning "at
 my house" in French. It's seven letters long, which is an appropriate length for
-a command that is only run occasionally.
+a command that is only run occasionally. If you prefer a shorter command, add an
+alias to your shell configuration, for example:
+
+```sh
+alias cz=chezmoi
+```
 
 ---
 
