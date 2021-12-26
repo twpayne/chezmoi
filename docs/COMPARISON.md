@@ -30,7 +30,7 @@
 | Bootstrap requirements                 | None          | Python, git       | Perl, git         | Ruby, git         | sh, git                  | git           | git        |
 | Source repos                           | Single        | Single            | Multiple          | Single            | Multiple                 | Single        | Single     |
 | dotfiles are...                        | Files         | Symlinks          | Files             | Symlinks          | Files                    | Files         | Files      |
-| Config file                            | Optional      | Required          | Optional          | None              | None                     | None          | Optional   |
+| Config file                            | Optional      | Required          | Optional          | None              | None                     | Optional      | Optional   |
 | Private files                          | ✅            | ❌                | ❌                | ❌                | ❌                       | ❌            | ❌         |
 | Show differences without applying      | ✅            | ❌                | ❌                | ❌                | ✅                       | ✅            | ✅         |
 | Whole file encryption                  | ✅            | ❌                | ❌                | ❌                | ❌                       | ✅            | ❌         |
