@@ -60,7 +60,7 @@ Install chezmoi with a single command.
 | Arch Linux   | pacman     | `pacman -S chezmoi`                                                                         |
 | Guix Linux   | guix       | `guix install chezmoi`                                                                      |
 | OpenIndiana  | pkg        | `pkg install application/chezmoi`                                                           |
-| NixOS Linux  | nix-env    | `nix-env -i chezmoi`                                                                        |
+| Nix / NixOS  | nix-env    | `nix-env -i chezmoi`                                                                        |
 | Void Linux   | xbps       | `xbps-install -S chezmoi`                                                                   |
 | macOS        | Homebrew   | `brew install chezmoi`                                                                      |
 | macOS        | MacPorts   | `port install chezmoi`                                                                      |
