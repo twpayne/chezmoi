@@ -970,6 +970,10 @@ ones. This implies the `--template` option.
 
 Set the `empty` attribute on added files.
 
+#### `--encrypt`
+
+Encrypt files using the defined encryption method.
+
 #### `-f`, `--force`
 
 Add *target*s, even if doing so would cause a source template to be overwritten.
@@ -1010,6 +1014,7 @@ directory, create a symlink template with `.chezmoi.sourceDir` or
 ```console
 $ chezmoi add ~/.bashrc
 $ chezmoi add ~/.gitconfig --template
+$ chezmoi add ~/.ssh/id_rsa --encrypt
 $ chezmoi add ~/.vim --recursive
 $ chezmoi add ~/.oh-my-zsh --exact --recursive
 ```
