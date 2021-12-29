@@ -970,6 +970,25 @@ ones. This implies the `--template` option.
 
 Set the `empty` attribute on added files.
 
+#### `--encrypt`
+
+Use this flag to add files which need to be encrypted, example:
+
+```
+$ chezmoi add --encrypt ~/.ssh/id_rsa
+```
+
+Chezmoi will add the file and encypt it with the encryption and recipients as set
+in your chezmoi config file. Your chezmoi config file may specify the encryption 
+for example like this:
+
+```
+encryption = "age"
+[age]
+    identity = "/home/user/key.txt"
+    recipient = "age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p"
+```
+
 #### `-f`, `--force`
 
 Add *target*s, even if doing so would cause a source template to be overwritten.
