@@ -979,7 +979,7 @@ $ chezmoi add --encrypt ~/.ssh/id_rsa
 ```
 
 Chezmoi will add the file and encypt it with the encryption and recipients as set
-in your chezmoi config file. Your chezmoi config file may specify the encryption 
+in your chezmoi config file. Your chezmoi config file may specify the encryption
 for example like this:
 
 ```
