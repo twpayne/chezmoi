@@ -13,6 +13,7 @@ import (
 
 type onepasswordConfig struct {
 	Command       string
+	Prompt        bool
 	outputCache   map[string][]byte
 	sessionTokens map[string]string
 }
@@ -129,7 +130,12 @@ func getOnepasswordArgs(baseArgs, args []string) []string {
 
 // refreshSession will return the current session token if the token within the environment is still valid.
 // Otherwise it will ask the user to sign in and get the new token.
+// If `sessioncheck` is disabled, it returns an empty string.
 func (c *Config) onepasswordGetOrRefreshSession(callerArgs []string) string {
+	if !c.Onepassword.Prompt {
+		return ""
+	}
+
 	var account string
 	if len(callerArgs) > 2 {
 		account = callerArgs[2]
