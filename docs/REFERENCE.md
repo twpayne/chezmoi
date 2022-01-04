@@ -500,7 +500,7 @@ prefixes is important.
 | Modify file   | File        | `modify_`, `encrypted_`, `private_`, `readonly_`, `executable_`, `dot_` | `.tmpl`          |
 | Remove        | File        | `remove_`, `dot_`                                                       | *none*           |
 | Script        | File        | `run_`, `once_` or `onchange_`, `before_` or `after_`                   | `.tmpl`          |
-| Symbolic link | File        | `symlink_`, `dot_`,                                                     | `.tmpl`          |
+| Symbolic link | File        | `symlink_`, `dot_`                                                      | `.tmpl`          |
 
 The `literal_` prefix and `.literal` suffix can appear anywhere and stop
 attribute parsing. This permits filenames that would otherwise conflict with
