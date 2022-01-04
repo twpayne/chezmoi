@@ -2,7 +2,7 @@
 
 set -eufo pipefail
 
-GO_VERSION=$(grep GO_VERSION: /chezmoi/.github/workflows/main.yml | awk '{ print $2 }' )
+GO_VERSION=$(awk '/GO_VERSION:/ { print $2 }' /chezmoi/.github/workflows/main.yml)
 
 go get "golang.org/dl/go${GO_VERSION}"
 "${HOME}/go/bin/go${GO_VERSION}" download
