@@ -1380,7 +1380,7 @@ func (c *Config) newSourceState(
 	default:
 		minVersion, err := semver.NewVersion(strings.TrimSpace(string(data)))
 		if err != nil {
-			return nil, fmt.Errorf("%s: %w", versionAbsPath, err)
+			return nil, fmt.Errorf("%s: %q: %w", versionAbsPath, data, err)
 		}
 		var zeroVersion semver.Version
 		if c.version != zeroVersion && c.version.LessThan(*minVersion) {

@@ -1895,7 +1895,7 @@ func (s *SourceState) readVersionFile(sourceAbsPath AbsPath) error {
 	}
 	version, err := semver.NewVersion(strings.TrimSpace(string(data)))
 	if err != nil {
-		return err
+		return fmt.Errorf("%s: %q: %w", sourceAbsPath, data, err)
 	}
 	var zeroVersion semver.Version
 	if s.version != zeroVersion && s.version.LessThan(*version) {
