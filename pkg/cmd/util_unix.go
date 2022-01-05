@@ -21,5 +21,6 @@ func enableVirtualTerminalProcessing(w io.Writer) error {
 }
 
 func fileInfoUID(info fs.FileInfo) int {
+	//nolint:forcetypeassert
 	return int(info.Sys().(*syscall.Stat_t).Uid)
 }

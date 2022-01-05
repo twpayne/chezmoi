@@ -5,11 +5,13 @@ linters:
   - bodyclose
   - contextcheck
   - deadcode
+  - decorder
   - depguard
   - dogsled
   - dupl
   - durationcheck
   - errcheck
+  - errchkjson
   - errname
   - errorlint
   - exportloopref
@@ -31,6 +33,7 @@ linters:
   - ifshort
   - importas
   - ineffassign
+  - ireturn
   - lll
   - makezero
   - misspell
@@ -69,6 +72,7 @@ linters:
   - godox
   - goheader
   - gomnd
+  - maintidx
   - maligned
   - nakedret
   - nestif
@@ -91,6 +95,20 @@ linters-settings:
     extra-rules: true
   goimports:
     local-prefixes: github.com/twpayne/chezmoi
+  ireturn:
+    allow:
+    - anon
+    - empty
+    - error
+    - github.com/go-git/go-git/v5/plumbing/format/diff\.File
+    - github.com/go-git/go-git/v5/plumbing/format/diff\.Patch
+    - github.com/mitchellh/mapstructure\.DecodeHookFunc
+    - github.com/twpayne/chezmoi/v2/pkg/chezmoi\.ActualStateEntry
+    - github.com/twpayne/chezmoi/v2/pkg/chezmoi\.Encryption
+    - github.com/twpayne/chezmoi/v2/pkg/chezmoi\.SourceStateEntry
+    - github.com/twpayne/chezmoi/v2/pkg/chezmoi\.TargetStateEntry
+    - github.com/twpayne/go-vfs/v4\.FS
+    - stdlib
   misspell:
     locale: US
 
