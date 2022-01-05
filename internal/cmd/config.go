@@ -1950,7 +1950,7 @@ func (c *Config) targetRelPathsBySourcePath(
 	return targetRelPaths, nil
 }
 
-// targetValidArgs returns completions for targets.
+// targetValidArgs returns target completions for toComplete given args.
 func (c *Config) targetValidArgs(
 	cmd *cobra.Command, args []string, toComplete string,
 ) ([]string, cobra.ShellCompDirective) {
@@ -1959,11 +1959,13 @@ func (c *Config) targetValidArgs(
 		cobra.CompErrorln(err.Error())
 		return nil, cobra.ShellCompDirectiveError
 	}
+
 	sourceState, err := c.newSourceState(cmd.Context())
 	if err != nil {
 		cobra.CompErrorln(err.Error())
 		return nil, cobra.ShellCompDirectiveError
 	}
+
 	var completions []string
 	if err := sourceState.ForEach(func(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi.SourceStateEntry) error {
 		completion := c.DestDirAbsPath.Join(targetRelPath).String()
@@ -1975,6 +1977,18 @@ func (c *Config) targetValidArgs(
 		cobra.CompErrorln(err.Error())
 		return nil, cobra.ShellCompDirectiveError
 	}
+
+	if !filepath.IsAbs(toComplete) {
+		wd, err := os.Getwd()
+		if err != nil {
+			cobra.CompErrorln(err.Error())
+			return nil, cobra.ShellCompDirectiveError
+		}
+		for i, completion := range completions {
+			completions[i] = strings.TrimPrefix(completion, wd+"/")
+		}
+	}
+
 	return completions, cobra.ShellCompDirectiveNoFileComp
 }
 

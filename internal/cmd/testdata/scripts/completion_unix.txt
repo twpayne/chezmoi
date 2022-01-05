@@ -4,9 +4,15 @@
 chezmoi __complete cat $HOME
 cmpenv stdout golden/complete-target-home
 
-# test chezmoi cat completion of matching targets in a directory
+# test chezmoi cat completion of matching absolute targets
 chezmoi __complete cat $HOME/.f
 cmpenv stdout golden/complete-target-home-dot-f
+
+# test chezmoi cat completion of matching relative targets
+cd $HOME
+chezmoi __complete cat .f
+cmpenv stdout $WORK/golden/complete-dot-f-in-home
+cd $WORK
 
 # test chezmoi chattr completion of attributes
 chezmoi __complete chattr p
@@ -31,6 +37,9 @@ related.md
 $HOME/.dir
 $HOME/.dir/file
 $HOME/.file
+:4
+-- golden/complete-dot-f-in-home --
+.file
 :4
 -- golden/complete-target-home-dot-f --
 $HOME/.file
