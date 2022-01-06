@@ -21,7 +21,7 @@ When reading files from the source state, chezmoi interprets them as a template 
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.be21fbf76c15f0a85e07ef96fb305677369990e48c28fbfe4f699509037d5914.js" integrity="sha256-viH792wV8KheB&#43;&#43;W&#43;zBWdzaZkOSMKPv&#43;T2mVCQN9WRQ=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.640d2a020649249a3cb51a61ac3c317b04cc303781b89688ee7930006ef29c39.js" integrity="sha256-ZA0qAgZJJJo8tRphrDwxewTMMDeBuJaI7nkwAG7ynDk=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -154,6 +154,7 @@ https://github.com/alex-shpak/hugo-book
     <li><a href="#useful-templates">Useful templates</a>
       <ul>
         <li><a href="#determine-whether-the-current-machine-is-a-laptop-or-desktop">Determine whether the current machine is a laptop or desktop</a></li>
+        <li><a href="#determine-the-hostname-of-a-macos-machine">Determine the hostname of a macOS machine</a></li>
       </ul>
     </li>
   </ul>
@@ -583,7 +584,14 @@ it with a dictionary, for example <code>.local/share/chezmoi/small-font.yml.tmpl
 {{-   $chassisType = (output &quot;powershell.exe&quot; &quot;-noprofile&quot; &quot;-command&quot; &quot;if (Get-WmiObject -Class win32_battery -ComputerName localhost) { echo laptop } else { echo desktop }&quot;) }}
 {{- end }}
 </code></pre><hr>
-</article>
+<h3 id="determine-the-hostname-of-a-macos-machine">
+  Determine the hostname of a macOS machine
+  <a class="anchor" href="#determine-the-hostname-of-a-macos-machine">#</a>
+</h3>
+<p>The result of the command <code>hostname</code> on macOS depends on the network that the
+machine is connected to. For a stable result, use the <code>scutil</code> command:</p>
+<pre tabindex="0"><code>{{ $computerName := output &quot;scutil&quot; &quot;--get&quot; &quot;ComputerName&quot; | trim }}
+</code></pre></article>
  
       
 
@@ -657,6 +665,7 @@ it with a dictionary, for example <code>.local/share/chezmoi/small-font.yml.tmpl
     <li><a href="#useful-templates">Useful templates</a>
       <ul>
         <li><a href="#determine-whether-the-current-machine-is-a-laptop-or-desktop">Determine whether the current machine is a laptop or desktop</a></li>
+        <li><a href="#determine-the-hostname-of-a-macos-machine">Determine the hostname of a macOS machine</a></li>
       </ul>
     </li>
   </ul>

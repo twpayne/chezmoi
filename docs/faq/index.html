@@ -23,7 +23,7 @@ $ chezmoi doctor Anything ok is fine, anything warning is only a problem if you 
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.be21fbf76c15f0a85e07ef96fb305677369990e48c28fbfe4f699509037d5914.js" integrity="sha256-viH792wV8KheB&#43;&#43;W&#43;zBWdzaZkOSMKPv&#43;T2mVCQN9WRQ=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.640d2a020649249a3cb51a61ac3c317b04cc303781b89688ee7930006ef29c39.js" integrity="sha256-ZA0qAgZJJJo8tRphrDwxewTMMDeBuJaI7nkwAG7ynDk=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -126,6 +126,7 @@ https://github.com/alex-shpak/hugo-book
     <li><a href="#how-can-i-quickly-check-for-problems-with-chezmoi-on-my-machine">How can I quickly check for problems with chezmoi on my machine?</a></li>
     <li><a href="#how-do-i-edit-my-dotfiles-with-chezmoi">How do I edit my dotfiles with chezmoi?</a></li>
     <li><a href="#do-i-have-to-use-chezmoi-edit-to-edit-my-dotfiles">Do I have to use <code>chezmoi edit</code> to edit my dotfiles?</a></li>
+    <li><a href="#why-do-i-get-a-blank-buffer-when-running-chezmoi-edit">Why do I get a blank buffer when running <code>chezmoi edit</code>?</a></li>
     <li><a href="#what-are-the-consequences-of-bare-modifications-to-the-target-files-if-my-zshrc-is-managed-by-chezmoi-and-i-edit-zshrc-without-using-chezmoi-edit-what-happens">What are the consequences of &ldquo;bare&rdquo; modifications to the target files? If my <code>.zshrc</code> is managed by chezmoi and I edit <code>~/.zshrc</code> without using <code>chezmoi edit</code>, what happens?</a></li>
     <li><a href="#how-can-i-tell-what-dotfiles-in-my-home-directory-arent-managed-by-chezmoi-is-there-an-easy-way-to-have-chezmoi-manage-a-subset-of-them">How can I tell what dotfiles in my home directory aren&rsquo;t managed by chezmoi? Is there an easy way to have chezmoi manage a subset of them?</a></li>
     <li><a href="#how-can-i-tell-what-dotfiles-in-my-home-directory-are-currently-managed-by-chezmoi">How can I tell what dotfiles in my home directory are currently managed by chezmoi?</a></li>
@@ -144,6 +145,7 @@ https://github.com/alex-shpak/hugo-book
       </ul>
     </li>
     <li><a href="#gpg-encryption-fails-what-could-be-wrong">gpg encryption fails. What could be wrong?</a></li>
+    <li><a href="#why-does-the-builtin-age-command-not-support-passphrases-symmetric-encryption-or-ssh-keys">Why does the builtin <code>age</code> command not support passphrases, symmetric encryption, or SSH keys?</a></li>
     <li><a href="#chezmoi-reports-chezmoi-user-lookup-userid-nnnnn-inputoutput-error">chezmoi reports <code>chezmoi: user: lookup userid NNNNN: input/output error</code></a></li>
     <li><a href="#chezmoi-reports-chezmoi-timeout-or-chezmoi-timeout-obtaining-persistent-state-lock">chezmoi reports <code>chezmoi: timeout</code> or <code>chezmoi: timeout obtaining persistent state lock</code></a></li>
     <li><a href="#im-getting-errors-trying-to-build-chezmoi-from-source">I&rsquo;m getting errors trying to build chezmoi from source</a></li>
@@ -206,23 +208,43 @@ state by running <code>chezmoi merge $FILE</code>.</li>
   <a class="anchor" href="#do-i-have-to-use-chezmoi-edit-to-edit-my-dotfiles">#</a>
 </h2>
 <p>No. <code>chezmoi edit</code> is a convenience command that has a couple of useful
-features, but you don&rsquo;t have to use it. You can also run <code>chezmoi cd</code> and then
-just edit the files in the source state directly. After saving an edited file
-you can run <code>chezmoi diff</code> to check what effect the changes would have, and run
-<code>chezmoi apply</code> if you&rsquo;re happy with them.</p>
+features, but you don&rsquo;t have to use it.</p>
+<p>You can also run <code>chezmoi cd</code> and then just edit the files in the source state
+directly. After saving an edited file you can run <code>chezmoi diff</code> to check what
+effect the changes would have, and run <code>chezmoi apply</code> if you&rsquo;re happy with
+them. If there are inconsistencies that you want to keep, then <code>chezmoi merge-all</code> will help you resolve any differences.</p>
 <p><code>chezmoi edit</code> provides the following useful features:</p>
 <ul>
-<li>It opens the correct file in the source state for you with a filename matching
-the target filename, so your editor&rsquo;s syntax highlighting will work and you
-don&rsquo;t have to know anything about source state attributes.</li>
+<li>The arguments to <code>chezmoi edit</code> are the files in their target location, so you
+don&rsquo;t have to think about source state attributes and your editor&rsquo;s syntax
+highlighting will work.</li>
 <li>If the dotfile is encrypted in the source state, then <code>chezmoi edit</code> will
 decrypt it to a private directory, open that file in your <code>$EDITOR</code>, and then
-re-encrypt the file when you quit your editor. That makes encryption more
-transparent to the user. With the <code>--diff</code> and <code>--apply</code> options you can see
-what would change and apply those changes without having to run <code>chezmoi diff</code>
-or <code>chezmoi apply</code>. Note also that the arguments to <code>chezmoi edit</code> are the
-files in their target location.</li>
+re-encrypt the file when you quit your editor. That makes encryption
+transparent.</li>
+<li>With the <code>--diff</code> and <code>--apply</code> options you can see what would change and
+apply those changes without having to run <code>chezmoi diff</code> or <code>chezmoi apply</code>.</li>
 </ul>
+<p>If you chose to edit files in the source state and you&rsquo;re using VIM then then
+<a href="https://github.com/alker0/chezmoi.vim"><code>github.com/alker0/chezmoi.vim</code></a> gives
+you syntax highlighting, however you edit your files.</p>
+<hr>
+<h2 id="why-do-i-get-a-blank-buffer-when-running-chezmoi-edit">
+  Why do I get a blank buffer when running <code>chezmoi edit</code>?
+  <a class="anchor" href="#why-do-i-get-a-blank-buffer-when-running-chezmoi-edit">#</a>
+</h2>
+<p>What&rsquo;s happening here is that your editor is forking, detaching, and terminating
+the original process, which chezmoi cannot distinguish from the editor
+terminating normally.</p>
+<p>You have two options:</p>
+<ol>
+<li>Configure your editor command to remain in the foreground. For <code>vim</code>, this
+means passing the <code>-f</code> flag, e.g. by setting the <code>edit.flags</code> configuration
+variable to <code>[&quot;-f&quot;]</code>, or by setting the <code>EDITOR</code> environment variable to
+include the <code>-f</code> flag, e.g. <code>export EDITOR=&quot;mvim -f&quot;</code>. For VSCode, pass the
+<code>--wait</code> flag.</li>
+<li>Set the <code>edit.hardlink</code> configuration variable to <code>false</code>.</li>
+</ol>
 <hr>
 <h2 id="what-are-the-consequences-of-bare-modifications-to-the-target-files-if-my-zshrc-is-managed-by-chezmoi-and-i-edit-zshrc-without-using-chezmoi-edit-what-happens">
   What are the consequences of &ldquo;bare&rdquo; modifications to the target files? If my <code>.zshrc</code> is managed by chezmoi and I edit <code>~/.zshrc</code> without using <code>chezmoi edit</code>, what happens?
@@ -501,6 +523,25 @@ change the trust level by running:</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ gpg --edit-key $recipient
 </code></pre></div><p>Enter <code>trust</code> at the prompt and chose <code>5 = I trust ultimately</code>.</p>
 <hr>
+<h2 id="why-does-the-builtin-age-command-not-support-passphrases-symmetric-encryption-or-ssh-keys">
+  Why does the builtin <code>age</code> command not support passphrases, symmetric encryption, or SSH keys?
+  <a class="anchor" href="#why-does-the-builtin-age-command-not-support-passphrases-symmetric-encryption-or-ssh-keys">#</a>
+</h2>
+<p>Passphrases are not supported because chezmoi needs to decrypt files regularly,
+e.g. when running a <code>chezmoi diff</code> or a <code>chezmoi status</code> command, not just when
+running <code>chezmoi apply</code>. Prompting for a passphrase each time would quickly
+become tiresome.</p>
+<p>Symmetric encryption may be supported in the future. Please <a href="https://github.com/twpayne/chezmoi/issues/new?assignees=&amp;labels=enhancement&amp;template=02_feature_request.md&amp;title=">open an
+issue</a>
+if you want this.</p>
+<p>SSH keys are not supported as the author of age <a href="https://pkg.go.dev/filippo.io/age#hdr-Key_management">explicitly recommends not using
+them</a>:</p>
+<blockquote>
+<p>When integrating age into a new system, it&rsquo;s recommended that you only support
+X25519 keys, and not SSH keys. The latter are supported for manual encryption
+operations.</p>
+</blockquote>
+<hr>
 <h2 id="chezmoi-reports-chezmoi-user-lookup-userid-nnnnn-inputoutput-error">
   chezmoi reports <code>chezmoi: user: lookup userid NNNNN: input/output error</code>
   <a class="anchor" href="#chezmoi-reports-chezmoi-user-lookup-userid-nnnnn-inputoutput-error">#</a>
@@ -612,8 +653,10 @@ directory.</p>
 </h2>
 <p>&ldquo;chezmoi&rdquo; splits to &ldquo;chez moi&rdquo; and pronounced /ʃeɪ mwa/ (shay-moi) meaning &ldquo;at
 my house&rdquo; in French. It&rsquo;s seven letters long, which is an appropriate length for
-a command that is only run occasionally.</p>
-<hr>
+a command that is only run occasionally. If you prefer a shorter command, add an
+alias to your shell configuration, for example:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">alias cz<span style="color:#f92672">=</span>chezmoi
+</code></pre></div><hr>
 <h2 id="what-other-questions-have-been-asked-about-chezmoi">
   What other questions have been asked about chezmoi?
   <a class="anchor" href="#what-other-questions-have-been-asked-about-chezmoi">#</a>
@@ -690,6 +733,7 @@ chezmoi better. Thank you :)</p>
     <li><a href="#how-can-i-quickly-check-for-problems-with-chezmoi-on-my-machine">How can I quickly check for problems with chezmoi on my machine?</a></li>
     <li><a href="#how-do-i-edit-my-dotfiles-with-chezmoi">How do I edit my dotfiles with chezmoi?</a></li>
     <li><a href="#do-i-have-to-use-chezmoi-edit-to-edit-my-dotfiles">Do I have to use <code>chezmoi edit</code> to edit my dotfiles?</a></li>
+    <li><a href="#why-do-i-get-a-blank-buffer-when-running-chezmoi-edit">Why do I get a blank buffer when running <code>chezmoi edit</code>?</a></li>
     <li><a href="#what-are-the-consequences-of-bare-modifications-to-the-target-files-if-my-zshrc-is-managed-by-chezmoi-and-i-edit-zshrc-without-using-chezmoi-edit-what-happens">What are the consequences of &ldquo;bare&rdquo; modifications to the target files? If my <code>.zshrc</code> is managed by chezmoi and I edit <code>~/.zshrc</code> without using <code>chezmoi edit</code>, what happens?</a></li>
     <li><a href="#how-can-i-tell-what-dotfiles-in-my-home-directory-arent-managed-by-chezmoi-is-there-an-easy-way-to-have-chezmoi-manage-a-subset-of-them">How can I tell what dotfiles in my home directory aren&rsquo;t managed by chezmoi? Is there an easy way to have chezmoi manage a subset of them?</a></li>
     <li><a href="#how-can-i-tell-what-dotfiles-in-my-home-directory-are-currently-managed-by-chezmoi">How can I tell what dotfiles in my home directory are currently managed by chezmoi?</a></li>
@@ -708,6 +752,7 @@ chezmoi better. Thank you :)</p>
       </ul>
     </li>
     <li><a href="#gpg-encryption-fails-what-could-be-wrong">gpg encryption fails. What could be wrong?</a></li>
+    <li><a href="#why-does-the-builtin-age-command-not-support-passphrases-symmetric-encryption-or-ssh-keys">Why does the builtin <code>age</code> command not support passphrases, symmetric encryption, or SSH keys?</a></li>
     <li><a href="#chezmoi-reports-chezmoi-user-lookup-userid-nnnnn-inputoutput-error">chezmoi reports <code>chezmoi: user: lookup userid NNNNN: input/output error</code></a></li>
     <li><a href="#chezmoi-reports-chezmoi-timeout-or-chezmoi-timeout-obtaining-persistent-state-lock">chezmoi reports <code>chezmoi: timeout</code> or <code>chezmoi: timeout obtaining persistent state lock</code></a></li>
     <li><a href="#im-getting-errors-trying-to-build-chezmoi-from-source">I&rsquo;m getting errors trying to build chezmoi from source</a></li>

@@ -17,7 +17,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.be21fbf76c15f0a85e07ef96fb305677369990e48c28fbfe4f699509037d5914.js" integrity="sha256-viH792wV8KheB&#43;&#43;W&#43;zBWdzaZkOSMKPv&#43;T2mVCQN9WRQ=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.640d2a020649249a3cb51a61ac3c317b04cc303781b89688ee7930006ef29c39.js" integrity="sha256-ZA0qAgZJJJo8tRphrDwxewTMMDeBuJaI7nkwAG7ynDk=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -843,6 +843,22 @@ function, for example:</p>
 instructs the template language to remove any whitespace before and after the
 substitution. This removes any trailing newline added by your editor when saving
 the template.</p>
+<h4 id="1password-sign-in-prompt">
+  1Password sign-in prompt
+  <a class="anchor" href="#1password-sign-in-prompt">#</a>
+</h4>
+<p>chezmoi will verify the availability and validity of a session token in the
+current environment. If it is missing or expired, you will be interactively
+prompted to sign-in again.</p>
+<p>In the past chezmoi used to simply exit with an error when no valid session was
+available. If you&rsquo;d like to restore that behavior, set the following option in
+your configuration file (<code>chezmoi.toml</code>):</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-toml" data-lang="toml">[<span style="color:#a6e22e">onepassword</span>]
+    <span style="color:#a6e22e">prompt</span> = <span style="color:#66d9ef">false</span>
+</code></pre></div><p><strong>A session token verified or acquired interactively will be passed to the
+1Password CLI through a command-line parameter, which could be visible to other
+users of the same system. You should disable the prompt on shared machines for
+improved security.</strong></p>
 <hr>
 <h3 id="use-bitwarden">
   Use Bitwarden
