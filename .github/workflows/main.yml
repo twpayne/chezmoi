@@ -398,17 +398,6 @@ jobs:
     - name: Run
       run: |
         go run . --version
-    - name: Install age
-      run: |
-        $env:PATH = "C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\ProgramData\chocolatey\bin"
-        [Environment]::SetEnvironmentVariable("Path", $env:PATH, "Machine")
-        choco install --no-progress --yes age.portable
-    - name: Upload chocolatey log
-      if: failure()
-      uses: actions/upload-artifact@v2
-      with:
-        name: chocolatey.log
-        path: C:/ProgramData/chocolatey/logs/chocolatey.log
     - name: Test
       run: |
         go test -race ./...
