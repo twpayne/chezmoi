@@ -34,7 +34,7 @@ reference.md
 related.md
 :4
 -- golden/complete-target-home --
-$HOME/.dir
+$HOME/.dir/
 $HOME/.dir/file
 $HOME/.file
 :4
