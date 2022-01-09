@@ -1969,6 +1969,9 @@ func (c *Config) targetValidArgs(
 	var completions []string
 	if err := sourceState.ForEach(func(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi.SourceStateEntry) error {
 		completion := c.DestDirAbsPath.Join(targetRelPath).String()
+		if _, ok := sourceStateEntry.(*chezmoi.SourceStateDir); ok {
+			completion += "/"
+		}
 		if strings.HasPrefix(completion, toCompleteAbsPath.String()) {
 			completions = append(completions, completion)
 		}
