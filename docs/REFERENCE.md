@@ -381,6 +381,7 @@ The following configuration variables are available:
 | `bitwarden`    | `command`             | string   | `bw`                     | Bitwarden CLI command                                  |
 | `cd`           | `args`                | []string | *none*                   | Extra args to shell in `cd` command                    |
 |                | `command`             | string   | *none*                   | Shell to run in `cd` command                           |
+| `completion`   | `custom`              | bool     | `false`                  | Enable custom shell completions                        |
 | `diff`         | `args`                | []string | *see `diff` below*       | Extra args to external diff command                    |
 |                | `command`             | string   | *none*                   | External diff command                                  |
 |                | `exclude`             | []string | *none*                   | Entry types to exclude from diffs                      |

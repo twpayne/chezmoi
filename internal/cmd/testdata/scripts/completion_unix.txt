@@ -44,6 +44,9 @@ $HOME/.file
 -- golden/complete-target-home-dot-f --
 $HOME/.file
 :4
+-- home/user/.config/chezmoi/chezmoi.toml --
+[completion]
+    custom = true
 -- home/user/.local/share/chezmoi/dot_dir/file --
 # contents of .dir/file
 -- home/user/.local/share/chezmoi/dot_file --

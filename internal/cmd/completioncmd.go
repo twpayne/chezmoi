@@ -7,6 +7,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
+type completionCmdConfig struct {
+	Custom bool `mapstructure:"custom"`
+}
+
 func (c *Config) newCompletionCmd() *cobra.Command {
 	completionCmd := &cobra.Command{
 		Use:       "completion shell",

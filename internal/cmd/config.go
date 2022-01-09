@@ -122,13 +122,14 @@ type Config struct {
 	keyring keyringData
 
 	// Command configurations, settable in the config file.
-	Add   addCmdConfig   `mapstructure:"add"`
-	CD    cdCmdConfig    `mapstructure:"cd"`
-	Diff  diffCmdConfig  `mapstructure:"diff"`
-	Docs  docsCmdConfig  `mapstructure:"docs"`
-	Edit  editCmdConfig  `mapstructure:"edit"`
-	Git   gitCmdConfig   `mapstructure:"git"`
-	Merge mergeCmdConfig `mapstructure:"merge"`
+	Add        addCmdConfig        `mapstructure:"add"`
+	CD         cdCmdConfig         `mapstructure:"cd"`
+	Completion completionCmdConfig `mapstructure:"completion"`
+	Diff       diffCmdConfig       `mapstructure:"diff"`
+	Docs       docsCmdConfig       `mapstructure:"docs"`
+	Edit       editCmdConfig       `mapstructure:"edit"`
+	Git        gitCmdConfig        `mapstructure:"git"`
+	Merge      mergeCmdConfig      `mapstructure:"merge"`
 
 	// Command configurations, not settable in the config file.
 	apply           applyCmdConfig
@@ -1954,6 +1955,10 @@ func (c *Config) targetRelPathsBySourcePath(
 func (c *Config) targetValidArgs(
 	cmd *cobra.Command, args []string, toComplete string,
 ) ([]string, cobra.ShellCompDirective) {
+	if !c.Completion.Custom {
+		return nil, cobra.ShellCompDirectiveDefault
+	}
+
 	toCompleteAbsPath, err := chezmoi.NewAbsPathFromExtPath(toComplete, c.homeDirAbsPath)
 	if err != nil {
 		cobra.CompErrorln(err.Error())
