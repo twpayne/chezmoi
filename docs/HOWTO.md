@@ -128,8 +128,8 @@ with the repo, for example when pulling or pushing changes. chezmoi itself does
 not store any credentials, but instead relies on your local git configuration
 for these operations.
 
-When using a private repo on GitHub, when prompted for a password you will need
-to enter a [GitHub personal access
+When using a private repo on GitHub without `--ssh`, when prompted for a
+password you will need to enter a [GitHub personal access
 token](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token).
 For more information on these changes, read the [GitHub blog post on Token
 authentication requirements for Git
