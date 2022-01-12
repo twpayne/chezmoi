@@ -18,6 +18,7 @@ type managedCmdConfig struct {
 func (c *Config) newManagedCmd() *cobra.Command {
 	managedCmd := &cobra.Command{
 		Use:     "managed",
+		Aliases: []string{"list"},
 		Short:   "List the managed entries in the destination directory",
 		Long:    mustLongHelp("managed"),
 		Example: example("managed"),

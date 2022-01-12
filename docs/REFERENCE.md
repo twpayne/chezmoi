@@ -78,6 +78,7 @@ Manage your dotfiles across multiple machines, securely.
   * [`help` [*command*...]](#help-command)
   * [`init` [*repo*]](#init-repo)
   * [`import` *filename*](#import-filename)
+  * [`list`](#list)
   * [`manage` *target*...](#manage-target)
   * [`managed`](#managed)
   * [`merge` *target*...](#merge-target)
@@ -1555,6 +1556,10 @@ $ curl -s -L -o ${TMPDIR}/oh-my-zsh-master.tar.gz https://github.com/ohmyzsh/ohm
 $ mkdir -p $(chezmoi source-path)/dot_oh-my-zsh
 $ chezmoi import --strip-components 1 --destination ~/.oh-my-zsh ${TMPDIR}/oh-my-zsh-master.tar.gz
 ```
+
+### `list`
+
+`list` is an alias for `managed`.
 
 ---
 
