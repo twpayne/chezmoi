@@ -18,7 +18,7 @@
 * [Why doesn't chezmoi use symlinks like GNU Stow?](#why-doesnt-chezmoi-use-symlinks-like-gnu-stow)
 * [What are the limitations of chezmoi's symlink mode?](#what-are-the-limitations-of-chezmois-symlink-mode)
 * [Can I change how chezmoi's source state is represented on disk?](#can-i-change-how-chezmois-source-state-is-represented-on-disk)
-  * [The output of `chezmoi diff` is broken and does not contain color. What could be wrong?](#the-output-of-chezmoi-diff-is-broken-and-does-not-contain-color-what-could-be-wrong)
+* [The output of `chezmoi diff` is broken and does not contain color. What could be wrong?](#the-output-of-chezmoi-diff-is-broken-and-does-not-contain-color-what-could-be-wrong)
 * [gpg encryption fails. What could be wrong?](#gpg-encryption-fails-what-could-be-wrong)
 * [Why does the builtin `age` command not support passphrases, symmetric encryption, or SSH keys?](#why-does-the-builtin-age-command-not-support-passphrases-symmetric-encryption-or-ssh-keys)
 * [chezmoi reports `chezmoi: user: lookup userid NNNNN: input/output error`](#chezmoi-reports-chezmoi-user-lookup-userid-nnnnn-inputoutput-error)
@@ -383,7 +383,7 @@ but must meet the following criteria, in order of importance:
 
 ---
 
-### The output of `chezmoi diff` is broken and does not contain color. What could be wrong?
+## The output of `chezmoi diff` is broken and does not contain color. What could be wrong?
 
 By default, chezmoi's diff output includes ANSI color escape sequences (e.g.
 `ESC[37m`) and is piped into your pager (by default `less`). chezmoi assumes
