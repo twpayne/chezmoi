@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/google/go-github/v41/github"
+	"github.com/google/go-github/v42/github"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
