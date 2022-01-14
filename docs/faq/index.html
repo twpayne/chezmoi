@@ -23,7 +23,7 @@ $ chezmoi doctor Anything ok is fine, anything warning is only a problem if you 
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.640d2a020649249a3cb51a61ac3c317b04cc303781b89688ee7930006ef29c39.js" integrity="sha256-ZA0qAgZJJJo8tRphrDwxewTMMDeBuJaI7nkwAG7ynDk=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.9ebb544bf0a4c52282a9a29ec4b6b28afac120adc371c0fab66817bf72cf134d.js" integrity="sha256-nrtUS/CkxSKCqaKexLayivrBIK3DccD6tmgXv3LPE00=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -139,11 +139,8 @@ https://github.com/alex-shpak/hugo-book
     <li><a href="#why-does-chezmoi-cd-spawn-a-shell-instead-of-just-changing-directory">Why does <code>chezmoi cd</code> spawn a shell instead of just changing directory?</a></li>
     <li><a href="#why-doesnt-chezmoi-use-symlinks-like-gnu-stow">Why doesn&rsquo;t chezmoi use symlinks like GNU Stow?</a></li>
     <li><a href="#what-are-the-limitations-of-chezmois-symlink-mode">What are the limitations of chezmoi&rsquo;s symlink mode?</a></li>
-    <li><a href="#can-i-change-how-chezmois-source-state-is-represented-on-disk">Can I change how chezmoi&rsquo;s source state is represented on disk?</a>
-      <ul>
-        <li><a href="#the-output-of-chezmoi-diff-is-broken-and-does-not-contain-color-what-could-be-wrong">The output of <code>chezmoi diff</code> is broken and does not contain color. What could be wrong?</a></li>
-      </ul>
-    </li>
+    <li><a href="#can-i-change-how-chezmois-source-state-is-represented-on-disk">Can I change how chezmoi&rsquo;s source state is represented on disk?</a></li>
+    <li><a href="#the-output-of-chezmoi-diff-is-broken-and-does-not-contain-color-what-could-be-wrong">The output of <code>chezmoi diff</code> is broken and does not contain color. What could be wrong?</a></li>
     <li><a href="#gpg-encryption-fails-what-could-be-wrong">gpg encryption fails. What could be wrong?</a></li>
     <li><a href="#why-does-the-builtin-age-command-not-support-passphrases-symmetric-encryption-or-ssh-keys">Why does the builtin <code>age</code> command not support passphrases, symmetric encryption, or SSH keys?</a></li>
     <li><a href="#chezmoi-reports-chezmoi-user-lookup-userid-nnnnn-inputoutput-error">chezmoi reports <code>chezmoi: user: lookup userid NNNNN: input/output error</code></a></li>
@@ -487,10 +484,10 @@ and filesystem.</li>
 implementation.</li>
 </ol>
 <hr>
-<h3 id="the-output-of-chezmoi-diff-is-broken-and-does-not-contain-color-what-could-be-wrong">
+<h2 id="the-output-of-chezmoi-diff-is-broken-and-does-not-contain-color-what-could-be-wrong">
   The output of <code>chezmoi diff</code> is broken and does not contain color. What could be wrong?
   <a class="anchor" href="#the-output-of-chezmoi-diff-is-broken-and-does-not-contain-color-what-could-be-wrong">#</a>
-</h3>
+</h2>
 <p>By default, chezmoi&rsquo;s diff output includes ANSI color escape sequences (e.g.
 <code>ESC[37m</code>) and is piped into your pager (by default <code>less</code>). chezmoi assumes
 that your pager passes through the ANSI color escape sequences, as configured on
@@ -746,11 +743,8 @@ chezmoi better. Thank you :)</p>
     <li><a href="#why-does-chezmoi-cd-spawn-a-shell-instead-of-just-changing-directory">Why does <code>chezmoi cd</code> spawn a shell instead of just changing directory?</a></li>
     <li><a href="#why-doesnt-chezmoi-use-symlinks-like-gnu-stow">Why doesn&rsquo;t chezmoi use symlinks like GNU Stow?</a></li>
     <li><a href="#what-are-the-limitations-of-chezmois-symlink-mode">What are the limitations of chezmoi&rsquo;s symlink mode?</a></li>
-    <li><a href="#can-i-change-how-chezmois-source-state-is-represented-on-disk">Can I change how chezmoi&rsquo;s source state is represented on disk?</a>
-      <ul>
-        <li><a href="#the-output-of-chezmoi-diff-is-broken-and-does-not-contain-color-what-could-be-wrong">The output of <code>chezmoi diff</code> is broken and does not contain color. What could be wrong?</a></li>
-      </ul>
-    </li>
+    <li><a href="#can-i-change-how-chezmois-source-state-is-represented-on-disk">Can I change how chezmoi&rsquo;s source state is represented on disk?</a></li>
+    <li><a href="#the-output-of-chezmoi-diff-is-broken-and-does-not-contain-color-what-could-be-wrong">The output of <code>chezmoi diff</code> is broken and does not contain color. What could be wrong?</a></li>
     <li><a href="#gpg-encryption-fails-what-could-be-wrong">gpg encryption fails. What could be wrong?</a></li>
     <li><a href="#why-does-the-builtin-age-command-not-support-passphrases-symmetric-encryption-or-ssh-keys">Why does the builtin <code>age</code> command not support passphrases, symmetric encryption, or SSH keys?</a></li>
     <li><a href="#chezmoi-reports-chezmoi-user-lookup-userid-nnnnn-inputoutput-error">chezmoi reports <code>chezmoi: user: lookup userid NNNNN: input/output error</code></a></li>
