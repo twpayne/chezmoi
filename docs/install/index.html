@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Install Guide #   One-line binary install #  Install the correct binary for your operating system and architecture in ./bin with a single command:
-$ sh -c &#34;$(curl -fsLS git.io/chezmoi)&#34; Or, if you have wget instead of curl:
-$ sh -c &#34;$(wget -qO- git.io/chezmoi)&#34; If you already have a dotfiles repo using chezmoi on GitHub at https://github.com/&lt;github-username&gt;/dotfiles then you can install chezmoi and your dotfiles with the single command:">
+$ sh -c &#34;$(curl -fsLS chezmoi.io/get)&#34; Or, if you have wget instead of curl:
+$ sh -c &#34;$(wget -qO- chezmoi.io/get)&#34; If you already have a dotfiles repo using chezmoi on GitHub at https://github.com/&lt;github-username&gt;/dotfiles then you can install chezmoi and your dotfiles with the single command:">
 <meta name="theme-color" content="#FFFFFF">
 <meta name="color-scheme" content="light dark"><meta property="og:title" content="Install" />
 <meta property="og:description" content="Install Guide #   One-line binary install #  Install the correct binary for your operating system and architecture in ./bin with a single command:
-$ sh -c &#34;$(curl -fsLS git.io/chezmoi)&#34; Or, if you have wget instead of curl:
-$ sh -c &#34;$(wget -qO- git.io/chezmoi)&#34; If you already have a dotfiles repo using chezmoi on GitHub at https://github.com/&lt;github-username&gt;/dotfiles then you can install chezmoi and your dotfiles with the single command:" />
+$ sh -c &#34;$(curl -fsLS chezmoi.io/get)&#34; Or, if you have wget instead of curl:
+$ sh -c &#34;$(wget -qO- chezmoi.io/get)&#34; If you already have a dotfiles repo using chezmoi on GitHub at https://github.com/&lt;github-username&gt;/dotfiles then you can install chezmoi and your dotfiles with the single command:" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://chezmoi.io/docs/install/" /><meta property="article:section" content="docs" />
 
@@ -21,7 +21,7 @@ $ sh -c &#34;$(wget -qO- git.io/chezmoi)&#34; If you already have a dotfiles rep
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.9ebb544bf0a4c52282a9a29ec4b6b28afac120adc371c0fab66817bf72cf134d.js" integrity="sha256-nrtUS/CkxSKCqaKexLayivrBIK3DccD6tmgXv3LPE00=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.decff7115d83a47e2514520e203cd472ce3f01abb357848b8e4aa1afa364520a.js" integrity="sha256-3s/3EV2DpH4lFFIOIDzUcs4/AauzV4SLjkqhr6NkUgo=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -150,23 +150,16 @@ https://github.com/alex-shpak/hugo-book
 </h2>
 <p>Install the correct binary for your operating system and architecture in <code>./bin</code>
 with a single command:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ sh -c <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>curl -fsLS git.io/chezmoi<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ sh -c <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>curl -fsLS chezmoi.io/get<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
 </code></pre></div><p>Or, if you have <code>wget</code> instead of <code>curl</code>:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ sh -c <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>wget -qO- git.io/chezmoi<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ sh -c <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>wget -qO- chezmoi.io/get<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span>
 </code></pre></div><p>If you already have a dotfiles repo using chezmoi on GitHub at
 <code>https://github.com/&lt;github-username&gt;/dotfiles</code> then you can install chezmoi and
 your dotfiles with the single command:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ sh -c <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>curl -fsLS git.io/chezmoi<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> -- init --apply &lt;github-username&gt;
-</code></pre></div><p>Or on systems with Powershell, you can use one of the following command:</p>
-<pre tabindex="0"><code># To install in ./bin
-(iwr -UseBasicParsing https://git.io/chezmoi.ps1).Content | powershell -c -
-
-# To install in another location
-'$params = &quot;-BinDir ~/other&quot;', (iwr https://git.io/chezmoi.ps1).Content | powershell -c -
-
-# For information about other options, run
-'$params = &quot;-?&quot;', (iwr https://git.io/chezmoi.ps1).Content | powershell -c -
-</code></pre><hr>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ sh -c <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>curl -fsLS chezmoi.io/get<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> -- init --apply &lt;github-username&gt;
+</code></pre></div><p>On systems with Powershell, use:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-powershell" data-lang="powershell">(iwr -UseBasicParsing https<span style="color:#960050;background-color:#1e0010">:</span>//chezmoi.io/get.ps1).Content | powershell -c -
+</code></pre></div><hr>
 <h2 id="one-line-package-install">
   One-line package install
   <a class="anchor" href="#one-line-package-install">#</a>

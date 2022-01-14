@@ -81,8 +81,8 @@ $ chezmoi doctor Anything ok is fine, anything warning is only a problem if you 
       
       <guid>https://chezmoi.io/docs/install/</guid>
       <description>Install Guide #   One-line binary install #  Install the correct binary for your operating system and architecture in ./bin with a single command:
-$ sh -c &amp;#34;$(curl -fsLS git.io/chezmoi)&amp;#34; Or, if you have wget instead of curl:
-$ sh -c &amp;#34;$(wget -qO- git.io/chezmoi)&amp;#34; If you already have a dotfiles repo using chezmoi on GitHub at https://github.com/&amp;lt;github-username&amp;gt;/dotfiles then you can install chezmoi and your dotfiles with the single command:</description>
+$ sh -c &amp;#34;$(curl -fsLS chezmoi.io/get)&amp;#34; Or, if you have wget instead of curl:
+$ sh -c &amp;#34;$(wget -qO- chezmoi.io/get)&amp;#34; If you already have a dotfiles repo using chezmoi on GitHub at https://github.com/&amp;lt;github-username&amp;gt;/dotfiles then you can install chezmoi and your dotfiles with the single command:</description>
     </item>
     
     <item>

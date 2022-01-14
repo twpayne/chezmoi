@@ -17,7 +17,7 @@
 <link rel="icon" href="/favicon.png" type="image/x-icon">
 <link rel="stylesheet" href="/book.min.46181bc93375ba932026e753b37c40e6ff8bb16a9ef770c78bcc663e4577b1ba.css" integrity="sha256-RhgbyTN1upMgJudTs3xA5v&#43;LsWqe93DHi8xmPkV3sbo=" crossorigin="anonymous">
   <script defer src="/flexsearch.min.js"></script>
-  <script defer src="/en.search.min.9ebb544bf0a4c52282a9a29ec4b6b28afac120adc371c0fab66817bf72cf134d.js" integrity="sha256-nrtUS/CkxSKCqaKexLayivrBIK3DccD6tmgXv3LPE00=" crossorigin="anonymous"></script>
+  <script defer src="/en.search.min.decff7115d83a47e2514520e203cd472ce3f01abb357848b8e4aa1afa364520a.js" integrity="sha256-3s/3EV2DpH4lFFIOIDzUcs4/AauzV4SLjkqhr6NkUgo=" crossorigin="anonymous"></script>
 <!--
 Made with Book Theme
 https://github.com/alex-shpak/hugo-book
@@ -328,14 +328,14 @@ arguments to the newly installed chezmoi binary. If your dotfiles repo is
 <code>github.com/&lt;github-username&gt;/dotfiles</code> then installing chezmoi, running
 <code>chezmoi init</code>, and running <code>chezmoi apply</code> can be done in a single line of
 shell:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ sh -c <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>curl -fsLS git.io/chezmoi<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> -- init --apply &lt;github-username&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ sh -c <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>curl -fsLS chezmoi.io/get<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> -- init --apply &lt;github-username&gt;
 </code></pre></div><p>If your dotfiles repo has a different name to <code>dotfiles</code>, or if you host your
 dotfiles on a different service, then see the <a href="/docs/reference/#init-repo">reference manual for <code>chezmoi init</code></a>.</p>
 <p>For setting up transitory environments (e.g. short-lived Linux containers) you
 can install chezmoi, install your dotfiles, and then remove all traces of
 chezmoi, including the source directory and chezmoi&rsquo;s configuration directory,
 with a single command:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ sh -c <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>curl -fsLS git.io/chezmoi<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> -- init --one-shot &lt;github-username&gt;
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-console" data-lang="console">$ sh -c <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>curl -fsLS chezmoi.io/get<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> -- init --one-shot &lt;github-username&gt;
 </code></pre></div><hr>
 <h2 id="manage-different-types-of-file">
   Manage different types of file
@@ -1336,9 +1336,9 @@ set -e <span style="color:#75715e"># -e: exit on error</span>
   bin_dir<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$HOME<span style="color:#e6db74">/.local/bin&#34;</span>
   chezmoi<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span>$bin_dir<span style="color:#e6db74">/chezmoi&#34;</span>
   <span style="color:#66d9ef">if</span> <span style="color:#f92672">[</span> <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>command -v curl<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
-    sh -c <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>curl -fsLS https://git.io/chezmoi<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> -- -b <span style="color:#e6db74">&#34;</span>$bin_dir<span style="color:#e6db74">&#34;</span>
+    sh -c <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>curl -fsLS https://chezmoi.io/get<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> -- -b <span style="color:#e6db74">&#34;</span>$bin_dir<span style="color:#e6db74">&#34;</span>
   <span style="color:#66d9ef">elif</span> <span style="color:#f92672">[</span> <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>command -v wget<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> <span style="color:#f92672">]</span>; <span style="color:#66d9ef">then</span>
-    sh -c <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>wget -qO- https://git.io/chezmoi<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> -- -b <span style="color:#e6db74">&#34;</span>$bin_dir<span style="color:#e6db74">&#34;</span>
+    sh -c <span style="color:#e6db74">&#34;</span><span style="color:#66d9ef">$(</span>wget -qO- https://chezmoi.io/get<span style="color:#66d9ef">)</span><span style="color:#e6db74">&#34;</span> -- -b <span style="color:#e6db74">&#34;</span>$bin_dir<span style="color:#e6db74">&#34;</span>
   <span style="color:#66d9ef">else</span>
     echo <span style="color:#e6db74">&#34;To install chezmoi, you must have curl or wget installed.&#34;</span> &gt;&amp;<span style="color:#ae81ff">2</span>
     exit <span style="color:#ae81ff">1</span>
