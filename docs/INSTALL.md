@@ -16,13 +16,13 @@ Install the correct binary for your operating system and architecture in `./bin`
 with a single command:
 
 ```console
-$ sh -c "$(curl -fsLS git.io/chezmoi)"
+$ sh -c "$(curl -fsLS chezmoi.io/get)"
 ```
 
 Or, if you have `wget` instead of `curl`:
 
 ```console
-$ sh -c "$(wget -qO- git.io/chezmoi)"
+$ sh -c "$(wget -qO- chezmoi.io/get)"
 ```
 
 If you already have a dotfiles repo using chezmoi on GitHub at
@@ -30,20 +30,20 @@ If you already have a dotfiles repo using chezmoi on GitHub at
 your dotfiles with the single command:
 
 ```console
-$ sh -c "$(curl -fsLS git.io/chezmoi)" -- init --apply <github-username>
+$ sh -c "$(curl -fsLS chezmoi.io/get)" -- init --apply <github-username>
 ```
 
 Or on systems with Powershell, you can use one of the following command:
 
 ```
 # To install in ./bin
-(iwr -UseBasicParsing https://git.io/chezmoi.ps1).Content | powershell -c -
+(iwr -UseBasicParsing https://chezmoi.io/get.ps1).Content | powershell -c -
 
 # To install in another location
-'$params = "-BinDir ~/other"', (iwr https://git.io/chezmoi.ps1).Content | powershell -c -
+'$params = "-BinDir ~/other"', (iwr https://chezmoi.io/get.ps1).Content | powershell -c -
 
 # For information about other options, run
-'$params = "-?"', (iwr https://git.io/chezmoi.ps1).Content | powershell -c -
+'$params = "-?"', (iwr https://chezmoi.io/get.ps1).Content | powershell -c -
 ```
 
 ---

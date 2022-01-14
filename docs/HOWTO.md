@@ -205,7 +205,7 @@ arguments to the newly installed chezmoi binary. If your dotfiles repo is
 shell:
 
 ```console
-$ sh -c "$(curl -fsLS git.io/chezmoi)" -- init --apply <github-username>
+$ sh -c "$(curl -fsLS chezmoi.io/get)" -- init --apply <github-username>
 ```
 
 If your dotfiles repo has a different name to `dotfiles`, or if you host your
@@ -218,7 +218,7 @@ chezmoi, including the source directory and chezmoi's configuration directory,
 with a single command:
 
 ```console
-$ sh -c "$(curl -fsLS git.io/chezmoi)" -- init --one-shot <github-username>
+$ sh -c "$(curl -fsLS chezmoi.io/get)" -- init --one-shot <github-username>
 ```
 
 ---
@@ -1589,9 +1589,9 @@ if [ ! "$(command -v chezmoi)" ]; then
   bin_dir="$HOME/.local/bin"
   chezmoi="$bin_dir/chezmoi"
   if [ "$(command -v curl)" ]; then
-    sh -c "$(curl -fsLS https://git.io/chezmoi)" -- -b "$bin_dir"
+    sh -c "$(curl -fsLS https://chezmoi.io/get)" -- -b "$bin_dir"
   elif [ "$(command -v wget)" ]; then
-    sh -c "$(wget -qO- https://git.io/chezmoi)" -- -b "$bin_dir"
+    sh -c "$(wget -qO- https://chezmoi.io/get)" -- -b "$bin_dir"
   else
     echo "To install chezmoi, you must have curl or wget installed." >&2
     exit 1
