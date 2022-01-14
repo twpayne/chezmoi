@@ -20,6 +20,7 @@ var (
 		regexp.MustCompile(`\A\.idea\z`),
 		regexp.MustCompile(`\A\.vagrant\z`),
 		regexp.MustCompile(`\A\.vscode/settings\.json\z`),
+		regexp.MustCompile(`\Aassets/chezmoi\.io/content/get\.ps1\z`),
 		regexp.MustCompile(`\Aassets/chezmoi\.io/public\z`),
 		regexp.MustCompile(`\Aassets/chezmoi\.io/resources\z`),
 		regexp.MustCompile(`\Aassets/chezmoi\.io/themes/book\z`),
