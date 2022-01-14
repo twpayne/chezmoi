@@ -1,13 +1,13 @@
 .PHONY: website
-website: content-docs
+website: content
 	./make-gh-pages.sh
 
 .PHONY: serve
-serve:
+serve: content
 	hugo serve
 
-.PHONY: content-docs
-content-docs: \
+.PHONY: content
+content: \
 	content/docs/architecture.md \
 	content/docs/changes.md \
 	content/docs/comparison.md \
@@ -20,7 +20,9 @@ content-docs: \
 	content/docs/reference.md \
 	content/docs/related.md \
 	content/docs/security.md \
-	content/docs/templating.md
+	content/docs/templating.md \
+	content/get \
+	content/get.ps1
 
 content/docs/architecture.md: ../../docs/ARCHITECTURE.md ../../internal/cmds/generate-chezmoi.io-content-docs/main.go Makefile
 	go run ../../internal/cmds/generate-chezmoi.io-content-docs -shorttitle="Architecture" -longtitle="Architecture" < $< > $@ || ( rm -f $@ ; false )
@@ -60,3 +62,9 @@ content/docs/security.md: ../../docs/SECURITY.md ../../internal/cmds/generate-ch
 
 content/docs/templating.md: ../../docs/TEMPLATING.md ../../internal/cmds/generate-chezmoi.io-content-docs/main.go Makefile
 	go run ../../internal/cmds/generate-chezmoi.io-content-docs -shorttitle="Templating" -longtitle="Templating Guide" < $< > $@ || ( rm -f $@ ; false )
+
+content/get: ../scripts/install.sh
+	cp $< $@ || ( rm -f $@ ; false )
+
+content/get.ps1: ../scripts/install.ps1
+	cp $< $@ || ( rm -f $@ ; false )

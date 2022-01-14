@@ -1,5 +1,7 @@
 /.hugo_build.lock
 /content/docs
 !/content/docs/menu
+/content/get
+/content/get.ps1
 /public
 /resources
