@@ -26,9 +26,6 @@ mkhomedir
 ! chezmoi add $HOME${/}.file
 stderr 'not in'
 
-# test that chezmoi docs does not return an error if the source directory is not in the working tree
-chezmoi docs
-
 -- golden/.file --
 # contents of .file
 -- home/user/.config/chezmoi/chezmoi.toml --

@@ -126,7 +126,6 @@ type Config struct {
 	CD         cdCmdConfig         `mapstructure:"cd"`
 	Completion completionCmdConfig `mapstructure:"completion"`
 	Diff       diffCmdConfig       `mapstructure:"diff"`
-	Docs       docsCmdConfig       `mapstructure:"docs"`
 	Edit       editCmdConfig       `mapstructure:"edit"`
 	Git        gitCmdConfig        `mapstructure:"git"`
 	Merge      mergeCmdConfig      `mapstructure:"merge"`
@@ -304,9 +303,6 @@ func newConfig(options ...configOption) (*Config, error) {
 		Diff: diffCmdConfig{
 			Exclude: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
-		},
-		Docs: docsCmdConfig{
-			MaxWidth: 80,
 		},
 		Edit: editCmdConfig{
 			Hardlink:    true,
@@ -1327,7 +1323,6 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newDataCmd(),
 		c.newDecryptCommand(),
 		c.newDiffCmd(),
-		c.newDocsCmd(),
 		c.newDoctorCmd(),
 		c.newDumpCmd(),
 		c.newEditCmd(),
