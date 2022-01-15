@@ -77,7 +77,6 @@ archives:
   - LICENSE
   - README.md
   - completions/*
-  - docs/*
   replacements:
     386: i386
   format_overrides:
@@ -90,7 +89,6 @@ archives:
   - LICENSE
   - README.md
   - completions/*
-  - docs/*
   name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}-glibc_{{ .Arch }}"
 - id: musl
   builds:
@@ -99,7 +97,6 @@ archives:
   - LICENSE
   - README.md
   - completions/*
-  - docs/*
   name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}-musl_{{ .Arch }}"
 
 changelog:
