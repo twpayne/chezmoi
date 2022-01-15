@@ -22,16 +22,8 @@ cmp stdout golden/complete-attribute-p
 chezmoi __complete cat private $HOME
 cmpenv stdout golden/complete-target-home
 
-# test chezmoi docs completion of documents
-chezmoi __complete docs re
-cmp stdout golden/complete-docs-re
-
 -- golden/complete-attribute-p --
 private
-:4
--- golden/complete-docs-re --
-reference.md
-related.md
 :4
 -- golden/complete-target-home --
 $HOME/.dir/
