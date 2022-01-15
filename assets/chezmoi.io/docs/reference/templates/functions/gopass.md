@@ -1,0 +1,14 @@
+# `gopass` *gopass-name*
+
+`gopass` returns passwords stored in [gopass](https://www.gopass.pw/) using the
+gopass CLI (`gopass`). *gopass-name* is passed to `gopass show --password
+<gopass-name>` and the first line of the output of `gopass` is returned with the
+trailing newline stripped. The output from `gopass` is cached so calling
+`gopass` multiple times with the same *gopass-name* will only invoke `gopass`
+once.
+
+!!! example
+
+    ```
+    {{ gopass "<pass-name>" }}
+    ```

@@ -1,0 +1,3 @@
+# `rm` *target*...
+
+`rm` is an alias for `remove`.

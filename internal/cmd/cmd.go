@@ -2,11 +2,8 @@
 package cmd
 
 import (
-	"bufio"
-	"bytes"
 	"errors"
 	"fmt"
-	"io"
 	"os"
 	"regexp"
 	"strconv"
@@ -18,7 +15,7 @@ import (
 	"go.etcd.io/bbolt"
 	"go.uber.org/multierr"
 
-	"github.com/twpayne/chezmoi/v2/docs"
+	"github.com/twpayne/chezmoi/v2/assets/chezmoi.io/docs/reference/commands"
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
@@ -46,15 +43,9 @@ const (
 var (
 	noArgs = []string(nil)
 
-	commandsRx       = regexp.MustCompile(`^## Commands`)
-	commandRx        = regexp.MustCompile("^### `(\\S+)`")
-	exampleRx        = regexp.MustCompile("^#### `.+` examples")
-	optionRx         = regexp.MustCompile("^#### `(-\\w|--\\w+)`")
-	endOfCommandsRx  = regexp.MustCompile("^## ")
-	horizontalRuleRx = regexp.MustCompile(`^---`)
-	trailingSpaceRx  = regexp.MustCompile(` +\n`)
+	trailingSpaceRx = regexp.MustCompile(` +\n`)
 
-	helps map[string]*help
+	helps = make(map[string]*help)
 )
 
 // A VersionInfo contains a version.
@@ -66,18 +57,53 @@ type VersionInfo struct {
 }
 
 type help struct {
-	long    string
-	example string
+	longHelp string
+	example  string
 }
 
 func init() {
-	reference, err := docs.FS.ReadFile("REFERENCE.md")
+	dirEntries, err := commands.FS.ReadDir(".")
 	if err != nil {
 		panic(err)
 	}
-	helps, err = extractHelps(bytes.NewReader(reference))
+
+	longHelpStyleConfig := glamour.ASCIIStyleConfig
+	longHelpStyleConfig.Code.StylePrimitive.BlockPrefix = ""
+	longHelpStyleConfig.Code.StylePrimitive.BlockSuffix = ""
+	longHelpStyleConfig.Emph.BlockPrefix = ""
+	longHelpStyleConfig.Emph.BlockSuffix = ""
+	longHelpStyleConfig.H2.Prefix = ""
+	longHelpTermRenderer, err := glamour.NewTermRenderer(
+		glamour.WithStyles(longHelpStyleConfig),
+		glamour.WithWordWrap(80),
+	)
 	if err != nil {
 		panic(err)
+	}
+
+	exampleStyleConfig := glamour.ASCIIStyleConfig
+	exampleStyleConfig.Code.StylePrimitive.BlockPrefix = ""
+	exampleStyleConfig.Code.StylePrimitive.BlockSuffix = ""
+	exampleStyleConfig.Document.Margin = nil
+	exampleTermRenderer, err := glamour.NewTermRenderer(
+		glamour.WithStyles(exampleStyleConfig),
+		glamour.WithWordWrap(80),
+	)
+	if err != nil {
+		panic(err)
+	}
+
+	for _, dirEntry := range dirEntries {
+		command := strings.TrimSuffix(dirEntry.Name(), ".md")
+		data, err := commands.FS.ReadFile(dirEntry.Name())
+		if err != nil {
+			panic(err)
+		}
+		help, err := extractHelp(command, data, longHelpTermRenderer, exampleTermRenderer)
+		if err != nil {
+			panic(err)
+		}
+		helps[command] = help
 	}
 }
 
@@ -126,129 +152,78 @@ func example(command string) string {
 }
 
 // extractHelps returns the helps parse from r.
-func extractHelps(r io.Reader) (map[string]*help, error) {
-	longStyleConfig := glamour.ASCIIStyleConfig
-	longStyleConfig.Code.StylePrimitive.BlockPrefix = ""
-	longStyleConfig.Code.StylePrimitive.BlockSuffix = ""
-	longStyleConfig.Emph.BlockPrefix = ""
-	longStyleConfig.Emph.BlockSuffix = ""
-	longStyleConfig.H4.Prefix = ""
-	longTermRenderer, err := glamour.NewTermRenderer(
-		glamour.WithStyles(longStyleConfig),
-		glamour.WithWordWrap(80),
-	)
-	if err != nil {
-		return nil, err
-	}
-
-	examplesStyleConfig := glamour.ASCIIStyleConfig
-	examplesStyleConfig.Document.Margin = nil
-	examplesTermRenderer, err := glamour.NewTermRenderer(
-		glamour.WithStyles(examplesStyleConfig),
-		glamour.WithWordWrap(80),
-	)
-	if err != nil {
-		return nil, err
-	}
-
+func extractHelp(
+	command string, data []byte, longHelpTermRenderer, exampleTermRenderer *glamour.TermRenderer,
+) (*help, error) {
 	type stateType int
 	const (
-		stateFindCommands stateType = iota
-		stateFindFirstCommand
-		stateInCommand
-		stateFindExample
+		stateReadTitle stateType = iota
+		stateInLongHelp
+		stateInOptions
 		stateInExample
+		stateInAdmonition
 	)
 
-	var (
-		state   = stateFindCommands
-		builder = &strings.Builder{}
-		h       *help
-	)
-
-	saveAndReset := func() error {
-		var termRenderer *glamour.TermRenderer
+	state := stateReadTitle
+	var longHelpLines []string
+	var exampleLines []string
+	for _, line := range strings.Split(string(data), "\n") {
 		switch state {
-		case stateInCommand, stateFindExample:
-			termRenderer = longTermRenderer
-		case stateInExample:
-			termRenderer = examplesTermRenderer
-		default:
-			panic(fmt.Sprintf("%d: invalid state", state))
-		}
-		s, err := termRenderer.Render(builder.String())
-		if err != nil {
-			return err
-		}
-		s = trailingSpaceRx.ReplaceAllString(s, "\n")
-		s = strings.Trim(s, "\n")
-		switch state {
-		case stateInCommand, stateFindExample:
-			h.long = "Description:\n" + s
-		case stateInExample:
-			h.example = s
-		default:
-			panic(fmt.Sprintf("%d: invalid state", state))
-		}
-		builder.Reset()
-		return nil
-	}
-
-	helps := make(map[string]*help)
-	s := bufio.NewScanner(r)
-FOR:
-	for s.Scan() {
-		switch state {
-		case stateFindCommands:
-			if commandsRx.MatchString(s.Text()) {
-				state = stateFindFirstCommand
+		case stateReadTitle:
+			titleRx, err := regexp.Compile("# `" + command + "`")
+			if err != nil {
+				return nil, err
 			}
-		case stateFindFirstCommand:
-			if m := commandRx.FindStringSubmatch(s.Text()); m != nil {
-				h = &help{}
-				helps[m[1]] = h
-				state = stateInCommand
+			if titleRx.MatchString(line) {
+				state = stateInLongHelp
 			}
-		case stateInCommand, stateFindExample, stateInExample:
-			switch m := commandRx.FindStringSubmatch(s.Text()); {
-			case m != nil:
-				if err := saveAndReset(); err != nil {
-					return nil, err
-				}
-				h = &help{}
-				helps[m[1]] = h
-				state = stateInCommand
-			case optionRx.MatchString(s.Text()):
-				state = stateFindExample
-			case exampleRx.MatchString(s.Text()):
-				if err := saveAndReset(); err != nil {
-					return nil, err
-				}
+		case stateInLongHelp:
+			switch {
+			case strings.HasPrefix(line, "## "):
+				state = stateInOptions
+			case line == "!!! example":
 				state = stateInExample
-			case endOfCommandsRx.MatchString(s.Text()):
-				if err := saveAndReset(); err != nil {
-					return nil, err
-				}
-				break FOR
-			case horizontalRuleRx.MatchString(s.Text()):
-				if err := saveAndReset(); err != nil {
-					return nil, err
-				}
-				state = stateFindFirstCommand
-			case state != stateFindExample:
-				if _, err := builder.WriteString(s.Text()); err != nil {
-					return nil, err
-				}
-				if err := builder.WriteByte('\n'); err != nil {
-					return nil, err
-				}
+			case strings.HasPrefix(line, "!!!"):
+				state = stateInAdmonition
+			default:
+				longHelpLines = append(longHelpLines, line)
+			}
+		case stateInOptions:
+			if line == "!!! example" {
+				state = stateInExample
+			}
+		case stateInExample:
+			exampleLines = append(exampleLines, strings.TrimPrefix(line, "    "))
+		case stateInAdmonition:
+			if line == "!!! example" {
+				state = stateInExample
 			}
 		}
 	}
-	if err := s.Err(); err != nil {
+
+	longHelp, err := renderLines(longHelpLines, longHelpTermRenderer)
+	if err != nil {
 		return nil, err
 	}
-	return helps, nil
+	example, err := renderLines(exampleLines, exampleTermRenderer)
+	if err != nil {
+		return nil, err
+	}
+	return &help{
+		longHelp: "Description:\n" + longHelp,
+		example:  example,
+	}, nil
+}
+
+// renderLines renders lines, trimming extraneous whitespace.
+func renderLines(lines []string, termRenderer *glamour.TermRenderer) (string, error) {
+	renderedLines, err := termRenderer.Render(strings.Join(lines, "\n"))
+	if err != nil {
+		return "", err
+	}
+	renderedLines = trailingSpaceRx.ReplaceAllString(renderedLines, "\n")
+	renderedLines = strings.Trim(renderedLines, "\n")
+	return renderedLines, nil
 }
 
 // markPersistentFlagsRequired marks all of flags as required for cmd.
@@ -267,7 +242,7 @@ func mustLongHelp(command string) string {
 	if !ok {
 		panic(fmt.Sprintf("missing long help for command %s", command))
 	}
-	return help.long
+	return help.longHelp
 }
 
 // runMain runs chezmoi's main function.

@@ -3,7 +3,6 @@ name: Bug report
 about: Report a bug
 title: ''
 assignees: ''
-
 ---
 
 ## Describe the bug
