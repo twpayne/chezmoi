@@ -80,7 +80,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../../.." title="chezmoi" class="md-header__button md-logo" aria-label="chezmoi" data-md-component="logo">
       
-  <img src="../../../logo-144px.svg" alt="logo">
+  <img src="../../../logo.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -270,7 +270,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href="../../.." title="chezmoi" class="md-nav__button md-logo" aria-label="chezmoi" data-md-component="logo">
       
-  <img src="../../../logo-144px.svg" alt="logo">
+  <img src="../../../logo.svg" alt="logo">
 
     </a>
     chezmoi
@@ -3542,9 +3542,12 @@
 
 
 <h1 id="git-arg"><code>git</code> [<em>arg</em>...]</h1>
-<p>Run <code>git</code> <em>arg</em>s in the working tree (typically the source directory). Note
-that flags in <em>arguments</em> must occur after <code>--</code> to prevent chezmoi from
-interpreting them.</p>
+<p>Run <code>git</code> <em>args</em> in the working tree (typically the source directory).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Flags in <em>args</em> must occur after <code>--</code> to prevent chezmoi from interpreting
+them.</p>
+</div>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi git add .

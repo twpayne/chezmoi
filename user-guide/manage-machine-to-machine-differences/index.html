@@ -80,7 +80,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="chezmoi" class="md-header__button md-logo" aria-label="chezmoi" data-md-component="logo">
       
-  <img src="../../logo-144px.svg" alt="logo">
+  <img src="../../logo.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -270,7 +270,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="chezmoi" class="md-nav__button md-logo" aria-label="chezmoi" data-md-component="logo">
       
-  <img src="../../logo-144px.svg" alt="logo">
+  <img src="../../logo.svg" alt="logo">
 
     </a>
     chezmoi
@@ -3676,8 +3676,12 @@ machine to machine. For example, for your home machine:</p>
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[data]</span><span class="w"></span>
 <span class="w">    </span><span class="n">email</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;me@home.org&quot;</span><span class="w"></span>
 </code></pre></div>
-<p>Note that all variable names will be converted to lowercase. This is due to a
-feature of a library used by chezmoi.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>All variable names will be converted to lowercase. This is due to a feature
+of a library used by chezmoi. See <a href="https://github.com/twpayne/chezmoi/issues/463">this GitHub
+issue</a> for more information.</p>
+</div>
 <p>If you intend to store private data (e.g. access tokens) in
 <code>~/.config/chezmoi/chezmoi.toml</code>, make sure it has permissions <code>0600</code>.</p>
 <p>If you prefer, you can use any format supported by

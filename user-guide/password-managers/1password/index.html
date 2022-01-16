@@ -80,7 +80,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../../.." title="chezmoi" class="md-header__button md-logo" aria-label="chezmoi" data-md-component="logo">
       
-  <img src="../../../logo-144px.svg" alt="logo">
+  <img src="../../../logo.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -270,7 +270,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href="../../.." title="chezmoi" class="md-nav__button md-logo" aria-label="chezmoi" data-md-component="logo">
       
-  <img src="../../../logo-144px.svg" alt="logo">
+  <img src="../../../logo.svg" alt="logo">
 
     </a>
     chezmoi
@@ -3614,10 +3614,13 @@ function, for example:</p>
 <p>Documents can be retrieved with:</p>
 <div class="highlight"><pre><span></span><code>{{- onepasswordDocument &quot;uuid&quot; -}}
 </code></pre></div>
-<p>Note the extra <code>-</code> after the opening <code>{{</code> and before the closing <code>}}</code>. This
-instructs the template language to remove any whitespace before and after the
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The extra <code>-</code> after the opening <code>{{</code> and before the closing <code>}}</code> instructs
+the template language to remove any whitespace before and after the
 substitution. This removes any trailing newline added by your editor when
 saving the template.</p>
+</div>
 <h2 id="1password-sign-in-prompt">1Password sign-in prompt</h2>
 <p>chezmoi will verify the availability and validity of a session token in the
 current environment. If it is missing or expired, you will be interactively
@@ -3630,10 +3633,9 @@ your configuration file:</p>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>A session token verified or acquired interactively will be passed to the
-1Password CLI through a command-line parameter, which could be visible to
-other users of the same system. You should disable the prompt on shared
-machines for improved security.</p>
+<p>Do not use the prompt on shared machines. A session token verified or
+acquired interactively will be passed to the 1Password CLI through a
+command-line parameter, which is visible to other users of the same system.</p>
 </div>
 
               

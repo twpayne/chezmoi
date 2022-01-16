@@ -80,7 +80,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../../.." title="chezmoi" class="md-header__button md-logo" aria-label="chezmoi" data-md-component="logo">
       
-  <img src="../../../logo-144px.svg" alt="logo">
+  <img src="../../../logo.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -270,7 +270,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href="../../.." title="chezmoi" class="md-nav__button md-logo" aria-label="chezmoi" data-md-component="logo">
       
-  <img src="../../../logo-144px.svg" alt="logo">
+  <img src="../../../logo.svg" alt="logo">
 
     </a>
     chezmoi
@@ -3630,9 +3630,12 @@ cask &quot;google-chrome&quot;
 EOF
 {{ end -}}
 </code></pre></div>
-<p>Note that the <code>Brewfile</code> is embedded directly in the script with a bash here
-document. chezmoi will run this script whenever its contents change, i.e. when
-you add or remove brews or casks.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code>Brewfile</code> is embedded directly in the script with a bash here
+document. chezmoi will run this script whenever its contents change, i.e.
+when you add or remove brews or casks.</p>
+</div>
 <h3 id="determine-the-hostname">Determine the hostname</h3>
 <p>The result of the command <code>hostname</code> on macOS depends on the network that the
 machine is connected to. For a stable result, use the <code>scutil</code> command:</p>

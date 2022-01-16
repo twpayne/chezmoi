@@ -80,7 +80,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../../.." title="chezmoi" class="md-header__button md-logo" aria-label="chezmoi" data-md-component="logo">
       
-  <img src="../../../logo-144px.svg" alt="logo">
+  <img src="../../../logo.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -270,7 +270,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href="../../.." title="chezmoi" class="md-nav__button md-logo" aria-label="chezmoi" data-md-component="logo">
       
-  <img src="../../../logo-144px.svg" alt="logo">
+  <img src="../../../logo.svg" alt="logo">
 
     </a>
     chezmoi
@@ -3759,6 +3759,14 @@ instead of the symlink itself.</p>
 <p>When adding symlink to an absolute path in the source directory or destination
 directory, create a symlink template with <code>.chezmoi.sourceDir</code> or
 <code>.chezmoi.homeDir</code>. This is useful for creating portable absolute symlinks.</p>
+<div class="admonition bug">
+<p class="admonition-title">Bug</p>
+<p><code>chezmoi add</code> will fail if the entry being added is in a directory
+implicitly created by an
+<a href="/reference/special-files-and-directories/chezmoiexternal-format/">external</a>.
+See <a href="https://github.com/twpayne/chezmoi/issues/1574">this GitHub issue</a> for
+details.</p>
+</div>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi add ~/.bashrc

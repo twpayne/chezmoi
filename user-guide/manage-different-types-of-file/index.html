@@ -80,7 +80,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="chezmoi" class="md-header__button md-logo" aria-label="chezmoi" data-md-component="logo">
       
-  <img src="../../logo-144px.svg" alt="logo">
+  <img src="../../logo.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -270,7 +270,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="chezmoi" class="md-nav__button md-logo" aria-label="chezmoi" data-md-component="logo">
       
-  <img src="../../logo-144px.svg" alt="logo">
+  <img src="../../logo.svg" alt="logo">
 
     </a>
     chezmoi
@@ -3688,9 +3688,13 @@ parts of a file.</p>
 <p>Firstly, a <code>modify_</code> script receives the current contents of the file on the
 standard input and chezmoi reads the target contents of the file from the
 script's standard output. This can be used to change parts of a file, for
-example using <code>sed</code>. Note that if the file does not exist then the standard
-input to the <code>modify_</code> script will be empty and it is the script's
-responsibility to write a complete file to the standard output.</p>
+example using <code>sed</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the file does not exist then the standard input to the <code>modify_</code> script
+will be empty and it is the script's responsibility to write a complete
+file to the standard output.</p>
+</div>
 <p>Secondly, if only a small part of the file changes then consider using a
 template to re-generate the full contents of the file from the current state.
 For example, Kubernetes configurations include a current context that can be

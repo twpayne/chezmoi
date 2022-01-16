@@ -80,7 +80,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../../.." title="chezmoi" class="md-header__button md-logo" aria-label="chezmoi" data-md-component="logo">
       
-  <img src="../../../logo-144px.svg" alt="logo">
+  <img src="../../../logo.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -270,7 +270,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href="../../.." title="chezmoi" class="md-nav__button md-logo" aria-label="chezmoi" data-md-component="logo">
       
-  <img src="../../../logo-144px.svg" alt="logo">
+  <img src="../../../logo.svg" alt="logo">
 
     </a>
     chezmoi
@@ -3689,19 +3689,32 @@
 <h2 id="how-do-i-edit-my-dotfiles-with-chezmoi">How do I edit my dotfiles with chezmoi?</h2>
 <p>There are four popular approaches:</p>
 <ol>
-<li>Use <code>chezmoi edit $FILE</code>. This will open the source file for <code>$FILE</code> in your
+<li>
+<p>Use <code>chezmoi edit $FILE</code>. This will open the source file for <code>$FILE</code> in your
    editor, including . For extra ease, use <code>chezmoi edit --apply $FILE</code> to apply
-   the changes when you quit your editor.</li>
-<li>Use <code>chezmoi cd</code> and edit the files in the source directory directly. Run
+   the changes when you quit your editor.</p>
+</li>
+<li>
+<p>Use <code>chezmoi cd</code> and edit the files in the source directory directly. Run
    <code>chezmoi diff</code> to see what changes would be made, and <code>chezmoi apply</code> to make
-   the changes.</li>
-<li>If your editor supports opening directories, run <code>chezmoi edit</code> with no
-   arguments to open the source directory.</li>
-<li>Edit the file in your home directory, and then either re-add it by running
-   <code>chezmoi add $FILE</code> or <code>chezmoi re-add</code>. Note that <code>re-add</code> doesn't work with
-   templates.</li>
-<li>Edit the file in your home directory, and then merge your changes with source
-   state by running <code>chezmoi merge $FILE</code>.</li>
+   the changes.</p>
+</li>
+<li>
+<p>If your editor supports opening directories, run <code>chezmoi edit</code> with no
+   arguments to open the source directory.</p>
+</li>
+<li>
+<p>Edit the file in your home directory, and then either re-add it by running
+   <code>chezmoi add $FILE</code> or <code>chezmoi re-add</code>.</p>
+</li>
+<li>
+<p>Edit the file in your home directory, and then merge your changes with source
+   state by running <code>chezmoi merge $FILE</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code>re-add</code> doesn't work with templates.</p>
+</div>
+</li>
 </ol>
 <h2 id="what-are-the-consequences-of-bare-modifications-to-the-target-files-if-my-zshrc-is-managed-by-chezmoi-and-i-edit-zshrc-without-using-chezmoi-edit-what-happens">What are the consequences of "bare" modifications to the target files? If my <code>.zshrc</code> is managed by chezmoi and I edit <code>~/.zshrc</code> without using <code>chezmoi edit</code>, what happens?</h2>
 <p>Until you run <code>chezmoi apply</code> your modified <code>~/.zshrc</code> will remain in place.

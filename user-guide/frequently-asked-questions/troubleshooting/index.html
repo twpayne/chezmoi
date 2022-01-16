@@ -80,7 +80,7 @@
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../../.." title="chezmoi" class="md-header__button md-logo" aria-label="chezmoi" data-md-component="logo">
       
-  <img src="../../../logo-144px.svg" alt="logo">
+  <img src="../../../logo.svg" alt="logo">
 
     </a>
     <label class="md-header__button md-icon" for="__drawer">
@@ -270,7 +270,7 @@
   <label class="md-nav__title" for="__drawer">
     <a href="../../.." title="chezmoi" class="md-nav__button md-logo" aria-label="chezmoi" data-md-component="logo">
       
-  <img src="../../../logo-144px.svg" alt="logo">
+  <img src="../../../logo.svg" alt="logo">
 
     </a>
     chezmoi
@@ -3704,12 +3704,15 @@ that files and directories are group writeable by default.</p>
 in your configuration file, for example:</p>
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="n">umask</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="n">o022</span><span class="w"></span>
 </code></pre></div>
-<p>Note that this will apply to all files and directories that chezmoi manages and
-will ensure that none of them are group writeable. It is not currently possible
-to control group write permissions for individual files or directories. Please
-<a href="https://github.com/twpayne/chezmoi/issues/new?assignees=&amp;labels=enhancement&amp;template=02_feature_request.md&amp;title=">open an issue on
-GitHub</a>
-if you need this.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+</div>
+<p>This will apply to all files and directories that chezmoi manages and will
+   ensure that none of them are group writeable. It is not currently possible
+   to control group write permissions for individual files or directories.
+   Please <a href="https://github.com/twpayne/chezmoi/issues/new?assignees=&amp;labels=enhancement&amp;template=02_feature_request.md&amp;title=">open an issue on
+   GitHub</a>
+   if you need this.</p>
 <h2 id="chezmoi-reports-chezmoi-user-lookup-userid-nnnnn-inputoutput-error">chezmoi reports <code>chezmoi: user: lookup userid NNNNN: input/output error</code></h2>
 <p>This is likely because the chezmoi binary you are using was statically compiled
 with <a href="https://musl.libc.org/">musl</a> and the machine you are running on uses
