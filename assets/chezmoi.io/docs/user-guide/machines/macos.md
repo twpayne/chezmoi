@@ -20,9 +20,11 @@ EOF
 {{ end -}}
 ```
 
-Note that the `Brewfile` is embedded directly in the script with a bash here
-document. chezmoi will run this script whenever its contents change, i.e. when
-you add or remove brews or casks.
+!!! note
+
+    The `Brewfile` is embedded directly in the script with a bash here
+    document. chezmoi will run this script whenever its contents change, i.e.
+    when you add or remove brews or casks.
 
 ### Determine the hostname
 

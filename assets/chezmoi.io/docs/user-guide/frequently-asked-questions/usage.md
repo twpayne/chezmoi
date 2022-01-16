@@ -7,16 +7,23 @@ There are four popular approaches:
 1. Use `chezmoi edit $FILE`. This will open the source file for `$FILE` in your
    editor, including . For extra ease, use `chezmoi edit --apply $FILE` to apply
    the changes when you quit your editor.
+
 2. Use `chezmoi cd` and edit the files in the source directory directly. Run
    `chezmoi diff` to see what changes would be made, and `chezmoi apply` to make
    the changes.
+
 3. If your editor supports opening directories, run `chezmoi edit` with no
    arguments to open the source directory.
+
 4. Edit the file in your home directory, and then either re-add it by running
-   `chezmoi add $FILE` or `chezmoi re-add`. Note that `re-add` doesn't work with
-   templates.
+   `chezmoi add $FILE` or `chezmoi re-add`.
+
 5. Edit the file in your home directory, and then merge your changes with source
    state by running `chezmoi merge $FILE`.
+
+    !!! note
+
+        `re-add` doesn't work with templates.
 
 ## What are the consequences of "bare" modifications to the target files? If my `.zshrc` is managed by chezmoi and I edit `~/.zshrc` without using `chezmoi edit`, what happens?
 

@@ -100,10 +100,12 @@ $ mkdir -p $(chezmoi source-path)/dot_oh-my-zsh
 $ chezmoi import --strip-components 1 --destination ~/.oh-my-zsh ${TMPDIR}/oh-my-zsh-master.tar.gz
 ```
 
-Note that this only updates the source state. You will need to run
+!!! note
 
-```console
-$ chezmoi apply
-```
+    This only updates the source state. You will need to run:
 
-to update your destination directory.
+    ```console
+    $ chezmoi apply
+    ```
+
+    to update your destination directory.
