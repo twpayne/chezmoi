@@ -9,7 +9,7 @@ edit_uri: edit/master/assets/chezmoi.io/docs/
 
 theme:
   name: material
-  logo: logo-144px.svg
+  logo: logo.svg
   language: en
   features:
   - navigation.expand
