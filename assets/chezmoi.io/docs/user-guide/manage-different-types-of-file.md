@@ -48,9 +48,13 @@ parts of a file.
 Firstly, a `modify_` script receives the current contents of the file on the
 standard input and chezmoi reads the target contents of the file from the
 script's standard output. This can be used to change parts of a file, for
-example using `sed`. Note that if the file does not exist then the standard
-input to the `modify_` script will be empty and it is the script's
-responsibility to write a complete file to the standard output.
+example using `sed`.
+
+!!! note
+
+    If the file does not exist then the standard input to the `modify_` script
+    will be empty and it is the script's responsibility to write a complete
+    file to the standard output.
 
 Secondly, if only a small part of the file changes then consider using a
 template to re-generate the full contents of the file from the current state.

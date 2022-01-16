@@ -69,12 +69,14 @@ in your configuration file, for example:
 umask = 0o022
 ```
 
-Note that this will apply to all files and directories that chezmoi manages and
-will ensure that none of them are group writeable. It is not currently possible
-to control group write permissions for individual files or directories. Please
-[open an issue on
-GitHub](https://github.com/twpayne/chezmoi/issues/new?assignees=&labels=enhancement&template=02_feature_request.md&title=)
-if you need this.
+!!! note
+
+   This will apply to all files and directories that chezmoi manages and will
+   ensure that none of them are group writeable. It is not currently possible
+   to control group write permissions for individual files or directories.
+   Please [open an issue on
+   GitHub](https://github.com/twpayne/chezmoi/issues/new?assignees=&labels=enhancement&template=02_feature_request.md&title=)
+   if you need this.
 
 ## chezmoi reports `chezmoi: user: lookup userid NNNNN: input/output error`
 

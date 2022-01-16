@@ -104,8 +104,12 @@ The default script interpreters are:
 | `.rb`     | `ruby`       | *none*    |
 
 Script interpreters can be added or overridden with the
-`interpreters.`*extension* section in the configuration file. Note that the
-leading `.` is dropped from *extension*.
+`interpreters.`*extension* section in the configuration file.
+
+!!! note
+
+    The leading `.` is dropped from *extension*, for example to specify the
+    interpreter for `.pl` files you configure `interpreters.pl`.
 
 !!! example
 

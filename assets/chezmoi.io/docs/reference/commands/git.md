@@ -1,8 +1,11 @@
 # `git` [*arg*...]
 
-Run `git` *arg*s in the working tree (typically the source directory). Note
-that flags in *arguments* must occur after `--` to prevent chezmoi from
-interpreting them.
+Run `git` *args* in the working tree (typically the source directory).
+
+!!! note
+
+    Flags in *args* must occur after `--` to prevent chezmoi from interpreting
+    them.
 
 !!! example
 

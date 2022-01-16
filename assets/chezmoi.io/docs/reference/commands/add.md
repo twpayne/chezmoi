@@ -54,6 +54,14 @@ When adding symlink to an absolute path in the source directory or destination
 directory, create a symlink template with `.chezmoi.sourceDir` or
 `.chezmoi.homeDir`. This is useful for creating portable absolute symlinks.
 
+!!! bug
+
+    `chezmoi add` will fail if the entry being added is in a directory
+    implicitly created by an
+    [external](/reference/special-files-and-directories/chezmoiexternal-format/).
+    See [this GitHub issue](https://github.com/twpayne/chezmoi/issues/1574) for
+    details.
+
 !!! example
 
     ```console

@@ -33,8 +33,11 @@ machine to machine. For example, for your home machine:
     email = "me@home.org"
 ```
 
-Note that all variable names will be converted to lowercase. This is due to a
-feature of a library used by chezmoi.
+!!! note
+
+    All variable names will be converted to lowercase. This is due to a feature
+    of a library used by chezmoi. See [this GitHub
+    issue](https://github.com/twpayne/chezmoi/issues/463) for more information.
 
 If you intend to store private data (e.g. access tokens) in
 `~/.config/chezmoi/chezmoi.toml`, make sure it has permissions `0600`.

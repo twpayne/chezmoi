@@ -42,10 +42,12 @@ Documents can be retrieved with:
 {{- onepasswordDocument "uuid" -}}
 ```
 
-Note the extra `-` after the opening `{{` and before the closing `}}`. This
-instructs the template language to remove any whitespace before and after the
-substitution. This removes any trailing newline added by your editor when
-saving the template.
+!!! note
+
+    The extra `-` after the opening `{{` and before the closing `}}` instructs
+    the template language to remove any whitespace before and after the
+    substitution. This removes any trailing newline added by your editor when
+    saving the template.
 
 ## 1Password sign-in prompt
 
@@ -64,7 +66,6 @@ your configuration file:
 
 !!! warning
 
-    A session token verified or acquired interactively will be passed to the
-    1Password CLI through a command-line parameter, which could be visible to
-    other users of the same system. You should disable the prompt on shared
-    machines for improved security.
+    Do not use the prompt on shared machines. A session token verified or
+    acquired interactively will be passed to the 1Password CLI through a
+    command-line parameter, which is visible to other users of the same system.
