@@ -6,19 +6,25 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"regexp"
 	"strings"
+
+	"github.com/coreos/go-semver/semver"
 
 	"github.com/twpayne/chezmoi/v2/internal/chezmoi"
 )
 
+const onePasswordVersionRegexp string = `^(\d+\.\d+\.\d+(?:\-beta\.\d+)?)` //nolint:gosec
+
 type onepasswordConfig struct {
 	Command       string
 	Prompt        bool
+	majorVersion  int64
 	outputCache   map[string][]byte
 	sessionTokens map[string]string
 }
 
-type onePasswordItem struct {
+type onePassword1Item struct {
 	Details struct {
 		Fields   []map[string]interface{} `json:"fields"`
 		Sections []struct {
@@ -27,11 +33,43 @@ type onePasswordItem struct {
 	} `json:"details"`
 }
 
-func (c *Config) onepasswordItem(args ...string) *onePasswordItem {
+type onePassword2Item struct {
+	Fields []map[string]interface{} `json:"fields"`
+}
+
+func (c *Config) onepasswordMajorVersion() int64 {
+	if c.Onepassword.majorVersion > 0 {
+		return c.Onepassword.majorVersion
+	}
+
+	args := []string{"--version"}
+	output := c.onepasswordOutput(args, "")
+
+	match := regexp.MustCompile(onePasswordVersionRegexp).FindSubmatch(output)
+	if len(match) != 2 {
+		returnTemplateError(fmt.Errorf("%s: %w\n%s",
+			shellQuoteCommand(c.Onepassword.Command, args),
+			fmt.Errorf("cannot parse version"), output))
+	}
+
+	versionBytes := match[1]
+	version, err := semver.NewVersion(string(versionBytes))
+	if err != nil {
+		returnTemplateError(fmt.Errorf("%s: %w\n%s",
+			shellQuoteCommand(c.Onepassword.Command, args),
+			fmt.Errorf("cannot parse version: %w", err), output))
+	}
+
+	c.Onepassword.majorVersion = version.Major
+
+	return version.Major
+}
+
+func (c *Config) onepassword1Item(args ...string) *onePassword1Item {
 	sessionToken := c.onepasswordGetOrRefreshSession(args)
 	onepasswordArgs := getOnepasswordArgs([]string{"get", "item"}, args)
 	output := c.onepasswordOutput(onepasswordArgs, sessionToken)
-	var onepasswordItem onePasswordItem
+	var onepasswordItem onePassword1Item
 	if err := json.Unmarshal(output, &onepasswordItem); err != nil {
 		returnTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(c.Onepassword.Command, onepasswordArgs), err, output))
 		return nil
@@ -39,8 +77,20 @@ func (c *Config) onepasswordItem(args ...string) *onePasswordItem {
 	return &onepasswordItem
 }
 
-func (c *Config) onepasswordDetailsFieldsTemplateFunc(args ...string) map[string]interface{} {
-	onepasswordItem := c.onepasswordItem(args...)
+func (c *Config) onepassword2Item(args ...string) *onePassword2Item {
+	sessionToken := c.onepasswordGetOrRefreshSession(args)
+	onepasswordArgs := getOnepasswordArgs([]string{"item", "get", "--format", "json"}, args)
+	output := c.onepasswordOutput(onepasswordArgs, sessionToken)
+	var onePasswordItem onePassword2Item
+	if err := json.Unmarshal(output, &onePasswordItem); err != nil {
+		returnTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(c.Onepassword.Command, onepasswordArgs), err, output))
+		return nil
+	}
+	return &onePasswordItem
+}
+
+func (c *Config) onepassword1DetailsFieldsTemplateFunc(args ...string) map[string]interface{} {
+	onepasswordItem := c.onepassword1Item(args...)
 	result := make(map[string]interface{})
 	for _, field := range onepasswordItem.Details.Fields {
 		if designation, ok := field["designation"].(string); ok {
@@ -50,8 +100,34 @@ func (c *Config) onepasswordDetailsFieldsTemplateFunc(args ...string) map[string
 	return result
 }
 
-func (c *Config) onepasswordItemFieldsTemplateFunc(args ...string) map[string]interface{} {
-	onepasswordItem := c.onepasswordItem(args...)
+func (c *Config) onepassword2DetailsFieldsTemplateFunc(args ...string) map[string]interface{} {
+	onepasswordItem := c.onepassword2Item(args...)
+	result := make(map[string]interface{})
+	for _, field := range onepasswordItem.Fields {
+		if _, ok := field["section"]; ok {
+			continue
+		}
+		if label, ok := field["label"].(string); ok {
+			result[label] = field
+		}
+	}
+	return result
+}
+
+func (c *Config) onepasswordDetailsFieldsTemplateFunc(args ...string) map[string]interface{} {
+	switch c.onepasswordMajorVersion() {
+	case 1:
+		return c.onepassword1DetailsFieldsTemplateFunc(args...)
+	case 2:
+		return c.onepassword2DetailsFieldsTemplateFunc(args...)
+	default:
+		returnTemplateError(fmt.Errorf("1Password CLI version %d is not supported", c.onepasswordMajorVersion()))
+		return nil
+	}
+}
+
+func (c *Config) onepassword1ItemFieldsTemplateFunc(args ...string) map[string]interface{} {
+	onepasswordItem := c.onepassword1Item(args...)
 	result := make(map[string]interface{})
 	for _, section := range onepasswordItem.Details.Sections {
 		for _, field := range section.Fields {
@@ -63,9 +139,42 @@ func (c *Config) onepasswordItemFieldsTemplateFunc(args ...string) map[string]in
 	return result
 }
 
+func (c *Config) onepassword2ItemFieldsTemplateFunc(args ...string) map[string]interface{} {
+	onepasswordItem := c.onepassword2Item(args...)
+	result := make(map[string]interface{})
+	for _, field := range onepasswordItem.Fields {
+		if _, ok := field["section"]; !ok {
+			continue
+		}
+		if label, ok := field["label"].(string); ok {
+			result[label] = field
+		}
+	}
+	return result
+}
+
+func (c *Config) onepasswordItemFieldsTemplateFunc(args ...string) map[string]interface{} {
+	switch c.onepasswordMajorVersion() {
+	case 1:
+		return c.onepassword1ItemFieldsTemplateFunc(args...)
+	case 2:
+		return c.onepassword2ItemFieldsTemplateFunc(args...)
+	default:
+		returnTemplateError(fmt.Errorf("1Password CLI version %d is not supported", c.onepasswordMajorVersion()))
+		return nil
+	}
+}
+
 func (c *Config) onepasswordDocumentTemplateFunc(args ...string) string {
+	var cmdArgs []string
+	if c.onepasswordMajorVersion() == 1 {
+		cmdArgs = []string{"get", "document"}
+	} else {
+		cmdArgs = []string{"document", "get", "--format", "json"}
+	}
+
 	sessionToken := c.onepasswordGetOrRefreshSession(args)
-	onepasswordArgs := getOnepasswordArgs([]string{"get", "document"}, args)
+	onepasswordArgs := getOnepasswordArgs(cmdArgs, args)
 	output := c.onepasswordOutput(onepasswordArgs, sessionToken)
 	return string(output)
 }
@@ -101,8 +210,20 @@ func (c *Config) onepasswordOutput(args []string, sessionToken string) []byte {
 }
 
 func (c *Config) onepasswordTemplateFunc(args ...string) map[string]interface{} {
+	var cmdArgs []string
+	switch c.onepasswordMajorVersion() {
+	case 1:
+		cmdArgs = []string{"get", "item"}
+		break //nolint:gosimple
+	case 2:
+		cmdArgs = []string{"item", "get", "--format", "json"}
+		break //nolint:gosimple
+	default:
+		returnTemplateError(fmt.Errorf("1Password CLI version %d is not supported", c.onepasswordMajorVersion()))
+	}
+
 	sessionToken := c.onepasswordGetOrRefreshSession(args)
-	onepasswordArgs := getOnepasswordArgs([]string{"get", "item"}, args)
+	onepasswordArgs := getOnepasswordArgs(cmdArgs, args)
 	output := c.onepasswordOutput(onepasswordArgs, sessionToken)
 	var data map[string]interface{}
 	if err := json.Unmarshal(output, &data); err != nil {
