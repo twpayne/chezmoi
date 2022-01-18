@@ -188,7 +188,7 @@ on any variable. For example, if you want `~/.bashrc` to be different on Linux
 and macOS you would create a file in the source state called `dot_bashrc.tmpl`
 containing:
 
-``` title="~/.local/share/chezmoi/.chezmoiignore"
+``` title="~/.local/share/chezmoi/dot_bashrc.tmpl"
 {{ if eq .chezmoi.os "darwin" -}}
 # macOS .bashrc contents
 {{ else if eq .chezmoi.os "linux" -}}
