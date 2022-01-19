@@ -1862,7 +1862,7 @@ func (s *SourceState) readScriptsDir(scriptsDirAbsPath AbsPath) (map[RelPath][]S
 		case err != nil:
 			return err
 		case strings.HasPrefix(fileInfo.Name(), Prefix):
-			return fmt.Errorf("%s: not allowed in .chezmoiscripts directory", sourceAbsPath)
+			return fmt.Errorf("%s: not allowed in %s directory", sourceAbsPath, scriptsDirName)
 		case strings.HasPrefix(fileInfo.Name(), ignorePrefix):
 			if fileInfo.IsDir() {
 				return vfs.SkipDir

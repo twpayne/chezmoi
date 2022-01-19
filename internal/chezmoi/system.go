@@ -176,11 +176,11 @@ func WalkSourceDir(system System, sourceDirAbsPath AbsPath, walkFunc WalkSourceD
 // source directory. More negative values are visited first. Entries with the
 // same order are visited alphabetically. The default order is zero.
 var sourceDirEntryOrder = map[string]int{
-	".chezmoiversion":   -3,
-	".chezmoidata.json": -2,
-	".chezmoidata.toml": -2,
-	".chezmoidata.yaml": -2,
-	".chezmoitemplates": -1,
+	VersionName:        -3,
+	dataName + ".json": -2,
+	dataName + ".toml": -2,
+	dataName + ".yaml": -2,
+	templatesDirName:   -1,
 }
 
 // walkSourceDir is a helper function for WalkSourceDir.
