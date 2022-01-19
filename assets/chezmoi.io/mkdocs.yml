@@ -29,7 +29,6 @@ nav:
   - Comparison table: comparison-table.md
   - Migrating from another dotfile manager: migrating-from-another-dotfile-manager.md
 - User guide:
-  - user-guide/index.md
   - Setup: user-guide/setup.md
   - Daily operations: user-guide/daily-operations.md
   - Manage different types of file: user-guide/manage-different-types-of-file.md
@@ -38,7 +37,6 @@ nav:
   - Use scripts to perform actions: user-guide/use-scripts-to-perform-actions.md
   - Templating: user-guide/templating.md
   - Tools:
-    - user-guide/tools/index.md
     - Editor: user-guide/tools/editor.md
     - Diff: user-guide/tools/diff.md
     - Merge: user-guide/tools/merge.md
@@ -68,7 +66,6 @@ nav:
     - Customize your source directory: user-guide/advanced/customize-your-source-directory.md
     - Migrate away from chezmoi: user-guide/advanced/migrate-away-from-chezmoi.md
   - Frequently asked questions:
-    - user-guide/frequently-asked-questions/index.md
     - Usage: user-guide/frequently-asked-questions/usage.md
     - Troubleshooting: user-guide/frequently-asked-questions/troubleshooting.md
     - Design: user-guide/frequently-asked-questions/design.md
@@ -102,7 +99,6 @@ nav:
     - .chezmoitemplates: reference/special-files-and-directories/chezmoitemplates.md
     - .chezmoiversion: reference/special-files-and-directories/chezmoiversion.md
   - Commands:
-    - reference/commands/index.md
     - add: reference/commands/add.md
     - apply: reference/commands/apply.md
     - archive: reference/commands/archive.md
@@ -216,8 +212,8 @@ plugins:
       # redirect links from previous Hugo-generated website
       docs/architecture.md: developer/architecture.md
       docs/comparison.md: comparison-table.md
-      docs/faq.md: user-guide/frequently-asked-questions/index.md
-      docs/how-to.md: user-guide/index.md
+      docs/faq.md: user-guide/frequently-asked-questions/design.md
+      docs/how-to.md: user-guide/setup.md
       docs/install.md: install.md
       docs/media.md: links/articles-podcasts-and-videos.md
       docs/quick-start.md: quick-start.md
