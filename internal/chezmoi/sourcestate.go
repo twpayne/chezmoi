@@ -1095,12 +1095,22 @@ func (s *SourceState) addTemplateData(sourceAbsPath AbsPath) error {
 // addTemplatesDir adds all templates in templatesDirAbsPath to s.
 func (s *SourceState) addTemplatesDir(templatesDirAbsPath AbsPath) error {
 	walkFunc := func(templateAbsPath AbsPath, fileInfo fs.FileInfo, err error) error {
+		if templateAbsPath == templatesDirAbsPath {
+			return nil
+		}
 		if err == nil && fileInfo.Mode().Type() == fs.ModeSymlink {
 			fileInfo, err = s.system.Stat(templateAbsPath)
 		}
 		switch {
 		case err != nil:
 			return err
+		case strings.HasPrefix(fileInfo.Name(), Prefix):
+			return fmt.Errorf("%s: not allowed in %s directory", templatesDirName, templateAbsPath)
+		case strings.HasPrefix(fileInfo.Name(), "."):
+			if fileInfo.IsDir() {
+				return vfs.SkipDir
+			}
+			return nil
 		case fileInfo.Mode().IsRegular():
 			contents, err := s.system.ReadFile(templateAbsPath)
 			if err != nil {
