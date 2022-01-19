@@ -101,5 +101,7 @@ last:
     format: ".chezmoidata.yaml"
     global: ".chezmoidata.yaml"
     yaml: ".chezmoidata.yaml"
+-- home/user/.local/share/chezmoi/.chezmoitemplates/.ignore --
+{{ "invalid template"
 -- home/user/.local/share/chezmoi/.chezmoitemplates/partial --
 {{ cat "hello" "world" }}
