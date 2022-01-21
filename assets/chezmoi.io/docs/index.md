@@ -17,8 +17,8 @@ $ chezmoi update
 ## Getting started
 
 [Install chezmoi](/install/) then read the [quick start guide](/quick-start/).
-The [user guide](/user-guide/) covers most common tasks. For a full description
-of chezmoi, consult the [reference](/reference/).
+The [user guide](/user-guide/setup/) covers most common tasks. For a full
+description of chezmoi, consult the [reference](/reference/).
 
 ## Considering using chezmoi?
 

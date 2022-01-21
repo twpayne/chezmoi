@@ -136,5 +136,5 @@ $ chezmoi help
 chezmoi has much more functionality. Good starting points are reading [articles
 about chezmoi](/links/articles-podcasts-and-videos/) adding more dotfiles, and
 using templates to manage files that vary from machine to machine and retrieve
-secrets from your password manager. Read the [user guide](/user-guide/) to
-explore.
+secrets from your password manager. Read the [user guide](/user-guide/setup/)
+to explore.
