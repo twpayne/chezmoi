@@ -124,7 +124,7 @@ Install chezmoi with your package manager with a single command:
     === "Scoop"
 
         ```
-        scoop bucket add twpayne https://github.com/twpayne/scoop-bucket && scoop install chezmoi
+        scoop install chezmoi
         ```
 
 === "FreeBSD"

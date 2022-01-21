@@ -47,3 +47,8 @@ that builds and publishes archives, packages, and snaps, and creates a new
     ```console
     $ brew bump-formula-pr --tag=v1.2.3 chezmoi
     ```
+
+!!! note
+
+    chezmoi is in [Scoop](https://scoop.sh/)'s Main bucket. Scoop's automation
+    will automatically detect new releases within a few hours.
