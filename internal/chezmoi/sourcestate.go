@@ -84,7 +84,7 @@ type SourceState struct {
 	version                 semver.Version
 	mode                    Mode
 	defaultTemplateDataFunc func() map[string]interface{}
-	controlOnly             bool
+	templateDataOnly        bool
 	readTemplateData        bool
 	userTemplateData        map[string]interface{}
 	priorityTemplateData    map[string]interface{}
@@ -109,13 +109,6 @@ func WithBaseSystem(baseSystem System) SourceStateOption {
 func WithCacheDir(cacheDirAbsPath AbsPath) SourceStateOption {
 	return func(s *SourceState) {
 		s.cacheDirAbsPath = cacheDirAbsPath
-	}
-}
-
-// WithControlOnly sets whether only control plane information should be read.
-func WithControlOnly(controlOnly bool) SourceStateOption {
-	return func(s *SourceState) {
-		s.controlOnly = controlOnly
 	}
 }
 
@@ -193,6 +186,13 @@ func WithSystem(system System) SourceStateOption {
 func WithDefaultTemplateDataFunc(defaultTemplateDataFunc func() map[string]interface{}) SourceStateOption {
 	return func(s *SourceState) {
 		s.defaultTemplateDataFunc = defaultTemplateDataFunc
+	}
+}
+
+// WithTemplateDataOnly sets whether only template data should be read.
+func WithTemplateDataOnly(templateDataOnly bool) SourceStateOption {
+	return func(s *SourceState) {
+		s.templateDataOnly = templateDataOnly
 	}
 }
 
@@ -762,6 +762,13 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 				return nil
 			}
 			return s.addTemplateData(sourceAbsPath)
+		case fileInfo.Name() == templatesDirName:
+			if err := s.addTemplatesDir(sourceAbsPath); err != nil {
+				return err
+			}
+			return vfs.SkipDir
+		case s.templateDataOnly:
+			return nil
 		case isPrefixDotFormat(fileInfo.Name(), externalName):
 			return s.addExternal(sourceAbsPath)
 		case fileInfo.Name() == ignoreName:
@@ -802,11 +809,6 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 				allSourceStateEntries[relPath] = append(allSourceStateEntries[relPath], scriptSourceStateEntries...)
 			}
 			return vfs.SkipDir
-		case fileInfo.Name() == templatesDirName:
-			if err := s.addTemplatesDir(sourceAbsPath); err != nil {
-				return err
-			}
-			return vfs.SkipDir
 		case fileInfo.Name() == VersionName:
 			return s.readVersionFile(sourceAbsPath)
 		case strings.HasPrefix(fileInfo.Name(), Prefix):
@@ -815,8 +817,6 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			if fileInfo.IsDir() {
 				return vfs.SkipDir
 			}
-			return nil
-		case s.controlOnly:
 			return nil
 		case fileInfo.IsDir():
 			da := parseDirAttr(sourceName.String())
@@ -848,7 +848,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		return err
 	}
 
-	if s.controlOnly {
+	if s.templateDataOnly {
 		return nil
 	}
 

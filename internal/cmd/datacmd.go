@@ -17,7 +17,7 @@ func (c *Config) newDataCmd() *cobra.Command {
 		Long:    mustLongHelp("data"),
 		Example: example("data"),
 		Args:    cobra.NoArgs,
-		RunE:    c.makeRunEWithSourceState(c.runDataCmd),
+		RunE:    c.runDataCmd,
 	}
 
 	persistentFlags := dataCmd.PersistentFlags()
@@ -26,6 +26,12 @@ func (c *Config) newDataCmd() *cobra.Command {
 	return dataCmd
 }
 
-func (c *Config) runDataCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
+func (c *Config) runDataCmd(cmd *cobra.Command, args []string) error {
+	sourceState, err := c.newSourceState(cmd.Context(),
+		chezmoi.WithTemplateDataOnly(true),
+	)
+	if err != nil {
+		return err
+	}
 	return c.marshal(c.data.format, sourceState.TemplateData())
 }
