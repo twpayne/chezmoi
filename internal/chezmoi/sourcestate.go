@@ -112,6 +112,13 @@ func WithCacheDir(cacheDirAbsPath AbsPath) SourceStateOption {
 	}
 }
 
+// WithDefaultTemplateDataFunc sets the default template data function.
+func WithDefaultTemplateDataFunc(defaultTemplateDataFunc func() map[string]interface{}) SourceStateOption {
+	return func(s *SourceState) {
+		s.defaultTemplateDataFunc = defaultTemplateDataFunc
+	}
+}
+
 // WithDestDir sets the destination directory.
 func WithDestDir(destDirAbsPath AbsPath) SourceStateOption {
 	return func(s *SourceState) {
@@ -179,13 +186,6 @@ func WithSourceDir(sourceDirAbsPath AbsPath) SourceStateOption {
 func WithSystem(system System) SourceStateOption {
 	return func(s *SourceState) {
 		s.system = system
-	}
-}
-
-// WithDefaultTemplateDataFunc sets the default template data function.
-func WithDefaultTemplateDataFunc(defaultTemplateDataFunc func() map[string]interface{}) SourceStateOption {
-	return func(s *SourceState) {
-		s.defaultTemplateDataFunc = defaultTemplateDataFunc
 	}
 }
 
