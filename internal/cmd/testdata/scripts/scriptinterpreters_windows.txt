@@ -39,6 +39,6 @@ Write-Host 'Hello from PowerShell'
 -- home3/user/.local/share/chezmoi/run_python_script.py --
 #!/usr/bin/env python
 
-# this should never be executed as the interpreter is overriden with
+# this should never be executed as the interpreter is overridden with
 # fake-python.bat in the config file
 fail()
