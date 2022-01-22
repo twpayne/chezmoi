@@ -1,6 +1,6 @@
 # LastPass
 
-chezmoi includes support for [LastPass](https://lastpass.com) using the
+chezmoi includes support for [LastPass](https://lastpass.com/) using the
 [LastPass CLI](https://lastpass.github.io/lastpass-cli/lpass.1.html) to expose
 data as a template function.
 

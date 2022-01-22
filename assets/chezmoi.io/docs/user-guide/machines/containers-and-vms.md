@@ -3,8 +3,8 @@
 You can use chezmoi to manage your dotfiles in [GitHub
 Codespaces](https://docs.github.com/en/github/developing-online-with-codespaces/personalizing-codespaces-for-your-account),
 [Visual Studio
-Codespaces](https://docs.microsoft.com/en/visualstudio/codespaces/reference/personalizing),
-and [Visual Studio Code Remote -
+Codespaces](https://code.visualstudio.com/docs/remote/codespaces), and [Visual
+Studio Code Remote -
 Containers](https://code.visualstudio.com/docs/remote/containers#_personalizing-with-dotfile-repositories).
 
 For a quick start, you can clone the [`chezmoi/dotfiles`

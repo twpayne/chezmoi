@@ -39,7 +39,7 @@ that builds and publishes archives, packages, and snaps, and creates a new
 
     [brew](https://brew.sh/) automation will automatically detect new releases
     of chezmoi within a few hours and open a pull request in
-    [https://github.com/Homebrew/homebrew-core](github.com/Homebrew/homebrew-core)
+    [github.com/Homebrew/homebrew-core](https://github.com/Homebrew/homebrew-core)
     to bump the version.
 
     If needed, the pull request can be created with:

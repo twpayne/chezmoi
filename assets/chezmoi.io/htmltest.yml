@@ -1,0 +1,15 @@
+IgnoreDirectoryMissingTrailingSlash: true
+IgnoreDirs:
+- overrides
+IgnoreInternalEmptyHash: true
+IgnoreURLs:
+- http://127\.0\.0\.1:8000/
+- https://blog\.lazkani\.io/
+- https://computingforgeeks\.com/
+- https://fonts\.gstatic\.com
+- https://github\.com/twpayne/chezmoi/
+- https://johnmathews\.eu/
+- https://johnmathews\.is/
+- https://lastpass\.com/
+- https://www\.jx0\.uk/
+- https://www\.vaultproject\.io/

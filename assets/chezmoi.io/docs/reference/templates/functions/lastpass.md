@@ -1,6 +1,6 @@
 # `lastpass` *id*
 
-`lastpass` returns structured data from [LastPass](https://lastpass.com) using
+`lastpass` returns structured data from [LastPass](https://lastpass.com/) using
 the [LastPass CLI](https://lastpass.github.io/lastpass-cli/lpass.1.html)
 (`lpass`). *id* is passed to `lpass show --json <id>` and the output from
 `lpass` is parsed as JSON. In addition, the `note` field, if present, is
