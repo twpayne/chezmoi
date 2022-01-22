@@ -43,13 +43,6 @@ type SourceStateRemove struct {
 	targetRelPath RelPath
 }
 
-// A SourceStateRenameDir represents the renaming of a directory in the source
-// state.
-type SourceStateRenameDir struct {
-	oldSourceRelPath SourceRelPath
-	newSourceRelPath SourceRelPath
-}
-
 // Evaluate evaluates s and returns any error.
 func (s *SourceStateDir) Evaluate() error {
 	return nil
@@ -158,39 +151,4 @@ func (s *SourceStateRemove) SourceRelPath() SourceRelPath {
 // TargetStateEntry returns s's target state entry.
 func (s *SourceStateRemove) TargetStateEntry(destSystem System, destDirAbsPath AbsPath) (TargetStateEntry, error) {
 	return &TargetStateRemove{}, nil
-}
-
-// Evaluate evaluates s and returns any error.
-func (s *SourceStateRenameDir) Evaluate() error {
-	return nil
-}
-
-// MarshalZerologObject implements
-// github.com/rs/zerolog.LogObjectMarshaler.MarshalZerologObject.
-func (s *SourceStateRenameDir) MarshalZerologObject(e *zerolog.Event) {
-	e.Stringer("oldSourceRelPath", s.oldSourceRelPath)
-	e.Stringer("newSourceRelPath", s.newSourceRelPath)
-}
-
-// Order returns s's order.
-func (s *SourceStateRenameDir) Order() ScriptOrder {
-	return ScriptOrderBefore
-}
-
-// Origin returns s's origin.
-func (s *SourceStateRenameDir) Origin() string {
-	return ""
-}
-
-// SourceRelPath returns s's source relative path.
-func (s *SourceStateRenameDir) SourceRelPath() SourceRelPath {
-	return s.newSourceRelPath
-}
-
-// TargetStateEntry returns s's target state entry.
-func (s *SourceStateRenameDir) TargetStateEntry(destSystem System, destDirAbsPath AbsPath) (TargetStateEntry, error) {
-	return &targetStateRenameDir{
-		oldRelPath: s.oldSourceRelPath.RelPath(),
-		newRelPath: s.newSourceRelPath.RelPath(),
-	}, nil
 }

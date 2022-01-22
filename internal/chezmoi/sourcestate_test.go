@@ -61,7 +61,7 @@ func TestSourceStateAdd(t *testing.T) {
 			},
 			extraRoot: map[string]interface{}{
 				"/home/user": map[string]interface{}{
-					".local/share/chezmoi/exact_dot_dir/file": "# contents of file\n",
+					".local/share/chezmoi/exact_dot_dir/file": "# contents of .dir/file\n",
 				},
 			},
 			tests: []interface{}{
@@ -75,7 +75,7 @@ func TestSourceStateAdd(t *testing.T) {
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/file",
 					vfst.TestModeIsRegular,
 					vfst.TestModePerm(0o666&^chezmoitest.Umask),
-					vfst.TestContentsString("# contents of file\n"),
+					vfst.TestContentsString("# contents of .dir/file\n"),
 				),
 			},
 		},

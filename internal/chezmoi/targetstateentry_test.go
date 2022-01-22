@@ -136,10 +136,6 @@ func targetStateTest(t *testing.T, ts TargetStateEntry) []vfst.PathTest {
 			vfst.TestContents(expectedContents),
 			vfst.TestModePerm(ts.perm &^ chezmoitest.Umask),
 		}
-	case *targetStateRenameDir:
-		return []vfst.PathTest{
-			vfst.TestDoesNotExist,
-		}
 	case *TargetStateScript:
 		return nil
 	case *TargetStateSymlink:

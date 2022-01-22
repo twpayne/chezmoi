@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"runtime"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -258,4 +259,20 @@ func TestAddCmd(t *testing.T) {
 			})
 		})
 	}
+}
+
+func TestAddCmdChmod(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("skipping UNIX test on Windows")
+	}
+
+	chezmoitest.WithTestFS(t, map[string]interface{}{
+		"/home/user": map[string]interface{}{
+			".dir/subdir/file": "# contents of .dir/subdir/file\n",
+		},
+	}, func(fileSystem vfs.FS) {
+		require.NoError(t, newTestConfig(t, fileSystem).execute([]string{"add", "/home/user/.dir"}))
+		require.NoError(t, fileSystem.Chmod("/home/user/.dir/subdir", 0o700))
+		require.NoError(t, newTestConfig(t, fileSystem).execute([]string{"add", "--force", "/home/user/.dir"}))
+	})
 }
