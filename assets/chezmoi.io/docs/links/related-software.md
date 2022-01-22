@@ -15,7 +15,7 @@ chezmoi plugin for asdf version manager.
 
 ## [`github.com/tcaxle/drapeau`](https://github.com/tcaxle/drapeau)
 
-An add-on to synchronise your colorschemes across systems and allow easy
+An add-on to synchronize your colorschemes across systems and allow easy
 colorscheme switching using chezmoi templates.
 
 ## [`github.com/tuh8888/chezmoi.el`](https://github.com/tuh8888/chezmoi.el)
