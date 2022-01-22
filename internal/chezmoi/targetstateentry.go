@@ -45,13 +45,6 @@ type TargetStateSymlink struct {
 	*lazyLinkname
 }
 
-// A targetStateRenameDir represents the renaming of a directory in the target
-// state.
-type targetStateRenameDir struct {
-	oldRelPath RelPath
-	newRelPath RelPath
-}
-
 // A scriptState records the state of a script that has been run.
 type scriptState struct {
 	Name  RelPath   `json:"name" toml:"name" yaml:"name"`
@@ -366,28 +359,5 @@ func (t *TargetStateSymlink) Evaluate() error {
 func (t *TargetStateSymlink) SkipApply(
 	persistentState PersistentState, targetAbsPath AbsPath,
 ) (bool, error) {
-	return false, nil
-}
-
-// Apply renames actualStateEntry.
-func (t *targetStateRenameDir) Apply(
-	system System, persistentState PersistentState, actualStateEntry ActualStateEntry,
-) (bool, error) {
-	dir := actualStateEntry.Path().Dir()
-	return true, system.Rename(dir.Join(t.oldRelPath), dir.Join(t.newRelPath))
-}
-
-// EntryState returns t's entry state.
-func (t *targetStateRenameDir) EntryState(umask fs.FileMode) (*EntryState, error) {
-	return nil, nil
-}
-
-// Evaluate does nothing.
-func (t *targetStateRenameDir) Evaluate() error {
-	return nil
-}
-
-// SkipApply implements TargetState.SkipApply.
-func (t *targetStateRenameDir) SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error) {
 	return false, nil
 }

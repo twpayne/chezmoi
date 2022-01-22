@@ -280,6 +280,7 @@ func (s *SourceState) Add(
 	newSourceStateEntries := make(map[SourceRelPath]SourceStateEntry)
 	newSourceStateEntriesByTargetRelPath := make(map[RelPath]SourceStateEntry)
 	nonEmptyDirs := make(map[SourceRelPath]struct{})
+	dirRenames := make(map[AbsPath]AbsPath)
 DESTABSPATH:
 	for _, destAbsPath := range destAbsPaths {
 		destAbsPathInfo := destAbsPathInfos[destAbsPath]
@@ -345,18 +346,19 @@ DESTABSPATH:
 
 				// If both the new and old source state entries are directories
 				// but the name has changed, rename to avoid losing the
-				// directory's contents. Otherwise, remove the old.
+				// directory's contents.
 				_, newIsDir := newSourceStateEntry.(*SourceStateDir)
 				_, oldIsDir := oldSourceStateEntry.(*SourceStateDir)
 				if newIsDir && oldIsDir {
-					newSourceStateEntry = &SourceStateRenameDir{
-						oldSourceRelPath: oldSourceEntryRelPath,
-						newSourceRelPath: sourceEntryRelPath,
-					}
-				} else {
-					newSourceStateEntries[oldSourceEntryRelPath] = &SourceStateRemove{}
-					update.sourceRelPaths = append(update.sourceRelPaths, oldSourceEntryRelPath)
+					oldSourceAbsPath := s.sourceDirAbsPath.Join(oldSourceEntryRelPath.RelPath())
+					newSourceAbsPath := s.sourceDirAbsPath.Join(sourceEntryRelPath.RelPath())
+					dirRenames[oldSourceAbsPath] = newSourceAbsPath
+					continue DESTABSPATH
 				}
+
+				//  Otherwise, remove the old entry.
+				newSourceStateEntries[oldSourceEntryRelPath] = &SourceStateRemove{}
+				update.sourceRelPaths = append(update.sourceRelPaths, oldSourceEntryRelPath)
 			}
 		}
 
@@ -450,6 +452,23 @@ DESTABSPATH:
 			); err != nil {
 				return err
 			}
+		}
+	}
+
+	// Rename directories last because updates assume that directory names have
+	// not changed. Rename directories in reverse order so children are renamed
+	// before their parents.
+	oldDirAbsPaths := make([]AbsPath, 0, len(dirRenames))
+	for oldDirAbsPath := range dirRenames {
+		oldDirAbsPaths = append(oldDirAbsPaths, oldDirAbsPath)
+	}
+	sort.Slice(oldDirAbsPaths, func(i, j int) bool {
+		return oldDirAbsPaths[j].Less(oldDirAbsPaths[i])
+	})
+	for _, oldDirAbsPath := range oldDirAbsPaths {
+		newDirAbsPath := dirRenames[oldDirAbsPath]
+		if err := sourceSystem.Rename(oldDirAbsPath, newDirAbsPath); err != nil {
+			return err
 		}
 	}
 

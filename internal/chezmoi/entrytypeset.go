@@ -95,8 +95,6 @@ func (s *EntryTypeSet) IncludeTargetStateEntry(targetStateEntry TargetStateEntry
 		return s.bits&EntryTypeScripts != 0
 	case *TargetStateSymlink:
 		return s.bits&EntryTypeSymlinks != 0
-	case *targetStateRenameDir:
-		return s.bits&EntryTypeDirs != 0
 	default:
 		return false
 	}
