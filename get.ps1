@@ -248,7 +248,7 @@ function Install-Chezmoi {
     )
 
     # some sub-functions (ie, get_goarch, likely others) require fetching of
-    # non-existent properites to not error
+    # non-existent properties to not error
     Set-StrictMode -off
 
     # $BinDir = Resolve-Path $BinDir
