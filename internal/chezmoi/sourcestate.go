@@ -356,7 +356,7 @@ DESTABSPATH:
 					continue DESTABSPATH
 				}
 
-				//  Otherwise, remove the old entry.
+				// Otherwise, remove the old entry.
 				newSourceStateEntries[oldSourceEntryRelPath] = &SourceStateRemove{}
 				update.sourceRelPaths = append(update.sourceRelPaths, oldSourceEntryRelPath)
 			}
