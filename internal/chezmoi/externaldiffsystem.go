@@ -109,7 +109,9 @@ func (s *ExternalDiffSystem) Readlink(name AbsPath) (string, error) {
 
 // RemoveAll implements System.RemoveAll.
 func (s *ExternalDiffSystem) RemoveAll(name AbsPath) error {
-	// FIXME generate suitable inputs for s.command
+	if err := s.runDiffCommand(name, devNullAbsPath); err != nil {
+		return err
+	}
 	return s.system.RemoveAll(name)
 }
 
