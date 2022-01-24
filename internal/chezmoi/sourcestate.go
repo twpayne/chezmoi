@@ -70,6 +70,7 @@ var externalCacheFormat = formatGzippedJSON{}
 // A SourceState is a source state.
 type SourceState struct {
 	root                    sourceStateEntryTreeNode
+	removeDirs              map[RelPath]struct{}
 	baseSystem              System
 	system                  System
 	sourceDirAbsPath        AbsPath
@@ -224,6 +225,7 @@ type targetStateEntryFunc func(System, AbsPath) (TargetStateEntry, error)
 // NewSourceState creates a new source state with the given options.
 func NewSourceState(options ...SourceStateOption) *SourceState {
 	s := &SourceState{
+		removeDirs:           make(map[RelPath]struct{}),
 		umask:                Umask,
 		encryption:           NoEncryption{},
 		ignore:               newPatternSet(),
@@ -524,9 +526,9 @@ type ApplyOptions struct {
 	Umask        fs.FileMode
 }
 
-// Apply updates targetRelPath in targetDir in destSystem to match s.
+// Apply updates targetRelPath in targetDirAbsPath in destSystem to match s.
 func (s *SourceState) Apply(
-	targetSystem, destSystem System, persistentState PersistentState, targetDir AbsPath, targetRelPath RelPath,
+	targetSystem, destSystem System, persistentState PersistentState, targetDirAbsPath AbsPath, targetRelPath RelPath,
 	options ApplyOptions,
 ) error {
 	sourceStateEntry := s.root.Get(targetRelPath)
@@ -547,7 +549,7 @@ func (s *SourceState) Apply(
 		return nil
 	}
 
-	targetAbsPath := targetDir.Join(targetRelPath)
+	targetAbsPath := targetDirAbsPath.Join(targetRelPath)
 
 	targetEntryState, err := targetStateEntry.EntryState(options.Umask)
 	if err != nil {
@@ -728,6 +730,46 @@ func (s *SourceState) MustEntry(targetRelPath RelPath) SourceStateEntry {
 	return sourceStateEntry
 }
 
+// PostApply performs all updates required after s.Apply.
+func (s *SourceState) PostApply(targetSystem System, targetDirAbsPath AbsPath, targetRelPaths RelPaths) error {
+	// Remove empty directories with the remove_ attribute. This assumes that
+	// targetRelPaths is already sorted and iterates in reverse order so that
+	// children are removed before their parents.
+TARGET:
+	for i := len(targetRelPaths) - 1; i >= 0; i-- {
+		targetRelPath := targetRelPaths[i]
+		if _, ok := s.removeDirs[targetRelPath]; !ok {
+			continue
+		}
+
+		// Ensure that we are attempting to remove a directory, not any other entry type.
+		targetAbsPath := targetDirAbsPath.Join(targetRelPath)
+		switch fileInfo, err := targetSystem.Stat(targetAbsPath); {
+		case errors.Is(err, fs.ErrNotExist):
+			continue TARGET
+		case err != nil:
+			return err
+		case !fileInfo.IsDir():
+			return fmt.Errorf("%s: not a directory", targetAbsPath)
+		}
+
+		// Attempt to remove the directory, but ignore any "not exist" or "not
+		// empty" errors.
+		switch err := targetSystem.Remove(targetAbsPath); {
+		case err == nil:
+			// Do nothing.
+		case errors.Is(err, fs.ErrExist):
+			// Do nothing.
+		case errors.Is(err, fs.ErrNotExist):
+			// Do nothing.
+		default:
+			return err
+		}
+	}
+
+	return nil
+}
+
 // ReadOptions are options to SourceState.Read.
 type ReadOptions struct {
 	RefreshExternals bool
@@ -843,8 +885,11 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			if s.Ignore(targetRelPath) {
 				return vfs.SkipDir
 			}
-			sourceStateEntry := s.newSourceStateDir(sourceRelPath, da)
-			allSourceStateEntries[targetRelPath] = append(allSourceStateEntries[targetRelPath], sourceStateEntry)
+			sourceStateDir := s.newSourceStateDir(sourceRelPath, da)
+			allSourceStateEntries[targetRelPath] = append(allSourceStateEntries[targetRelPath], sourceStateDir)
+			if sourceStateDir.Attr.Remove {
+				s.removeDirs[targetRelPath] = struct{}{}
+			}
 			return nil
 		case fileInfo.Mode().IsRegular():
 			fa := parseFileAttr(sourceName.String(), s.encryption.EncryptedSuffix())

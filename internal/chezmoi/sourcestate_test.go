@@ -1540,10 +1540,12 @@ func TestWalkSourceDir(t *testing.T) {
 	assert.Equal(t, expectedAbsPaths, actualAbsPaths)
 }
 
-// applyAll updates targetDir in targetSystem to match s.
-func (s *SourceState) applyAll(targetSystem, destSystem System, persistentState PersistentState, targetDir AbsPath, options ApplyOptions) error {
+// applyAll updates targetDirAbsPath in targetSystem to match s.
+func (s *SourceState) applyAll(
+	targetSystem, destSystem System, persistentState PersistentState, targetDirAbsPath AbsPath, options ApplyOptions,
+) error {
 	for _, targetRelPath := range s.TargetRelPaths() {
-		switch err := s.Apply(targetSystem, destSystem, persistentState, targetDir, targetRelPath, options); {
+		switch err := s.Apply(targetSystem, destSystem, persistentState, targetDirAbsPath, targetRelPath, options); {
 		case errors.Is(err, Skip):
 			continue
 		case err != nil:

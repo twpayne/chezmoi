@@ -15,6 +15,7 @@ func TestDirAttr(t *testing.T) {
 		Exact      []bool
 		Private    []bool
 		ReadOnly   []bool
+		Remove     []bool
 	}{
 		TargetName: []string{
 			".dir",
@@ -32,6 +33,7 @@ func TestDirAttr(t *testing.T) {
 		Exact:    []bool{false, true},
 		Private:  []bool{false, true},
 		ReadOnly: []bool{false, true},
+		Remove:   []bool{false, true},
 	}
 	var dirAttrs []DirAttr
 	require.NoError(t, combinator.Generate(&dirAttrs, testData))

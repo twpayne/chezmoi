@@ -66,6 +66,11 @@ func (s *RealSystem) ReadFile(name AbsPath) ([]byte, error) {
 	return s.fileSystem.ReadFile(name.String())
 }
 
+// Remove implements System.Remove.
+func (s *RealSystem) Remove(name AbsPath) error {
+	return s.fileSystem.Remove(name.String())
+}
+
 // RemoveAll implements System.RemoveAll.
 func (s *RealSystem) RemoveAll(name AbsPath) error {
 	return s.fileSystem.RemoveAll(name.String())

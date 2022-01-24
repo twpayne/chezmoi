@@ -593,6 +593,15 @@ func (c *Config) applyArgs(
 			return err
 		}
 	}
+
+	switch err := sourceState.PostApply(targetSystem, targetDirAbsPath, targetRelPaths); {
+	case err != nil && c.keepGoing:
+		c.errorf("%v\n", err)
+		keptGoingAfterErr = true
+	case err != nil:
+		return err
+	}
+
 	if keptGoingAfterErr {
 		return chezmoi.ExitCodeError(1)
 	}

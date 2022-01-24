@@ -27,7 +27,7 @@ to as "attributes":
 | `onchange_`   | Only run the script if its contents have changed from the last time it was run |
 | `private_`    | Remove all group and world permissions from the target file or directory       |
 | `readonly_`   | Remove all write permissions from the target file or directory                 |
-| `remove_`     | Remove the entry if it exists                                                  |
+| `remove_`     | Remove the file or symlink if it exists or the directory if it is empty        |
 | `run_`        | Treat the contents as a script to run                                          |
 | `symlink_`    | Create a symlink instead of a regular file                                     |
 
@@ -41,7 +41,7 @@ prefixes is important.
 
 | Target type   | Source type | Allowed prefixes in order                                               | Allowed suffixes |
 | ------------- | ----------- | ----------------------------------------------------------------------- | ---------------- |
-| Directory     | Directory   | `exact_`, `private_`, `readonly_`, `dot_`                               | *none*           |
+| Directory     | Directory   | `remove_`, `exact_`, `private_`, `readonly_`, `dot_`                    | *none*           |
 | Regular file  | File        | `encrypted_`, `private_`, `executable_`, `dot_`                         | `.tmpl`          |
 | Create file   | File        | `create_`, `encrypted_`, `private_`, `readonly_`, `executable_`, `dot_` | `.tmpl`          |
 | Modify file   | File        | `modify_`, `encrypted_`, `private_`, `readonly_`, `executable_`, `dot_` | `.tmpl`          |
