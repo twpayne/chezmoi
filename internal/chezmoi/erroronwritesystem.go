@@ -77,6 +77,11 @@ func (s *ErrorOnWriteSystem) Readlink(name AbsPath) (string, error) {
 	return s.system.Readlink(name)
 }
 
+// Remove implements System.Remove.
+func (s *ErrorOnWriteSystem) Remove(AbsPath) error {
+	return s.err
+}
+
 // RemoveAll implements System.RemoveAll.
 func (s *ErrorOnWriteSystem) RemoveAll(AbsPath) error {
 	return s.err

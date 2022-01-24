@@ -85,6 +85,12 @@ func (s *DryRunSystem) Readlink(name AbsPath) (string, error) {
 	return s.system.Readlink(name)
 }
 
+// Remove implements System.Remove.
+func (s *DryRunSystem) Remove(AbsPath) error {
+	s.setModified()
+	return nil
+}
+
 // RemoveAll implements System.RemoveAll.
 func (s *DryRunSystem) RemoveAll(AbsPath) error {
 	s.setModified()

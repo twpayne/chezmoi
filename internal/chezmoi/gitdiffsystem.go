@@ -125,6 +125,14 @@ func (s *GitDiffSystem) Readlink(name AbsPath) (string, error) {
 	return s.system.Readlink(name)
 }
 
+// Remove implements System.Remove.
+func (s *GitDiffSystem) Remove(name AbsPath) error {
+	if err := s.encodeDiff(name, nil, 0); err != nil {
+		return err
+	}
+	return s.system.Remove(name)
+}
+
 // RemoveAll implements System.RemoveAll.
 func (s *GitDiffSystem) RemoveAll(name AbsPath) error {
 	if s.include.Include(EntryTypeRemove) {

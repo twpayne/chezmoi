@@ -62,6 +62,7 @@ type modifier struct {
 	order          orderModifier
 	private        boolModifier
 	readOnly       boolModifier
+	remove         boolModifier
 	template       boolModifier
 }
 
@@ -102,6 +103,7 @@ func (c *Config) chattrCmdValidArgs(
 			"onchange",
 			"private",
 			"readonly",
+			"remove",
 			"script",
 			"symlink",
 			"template",
@@ -367,6 +369,8 @@ func parseModifier(s string) (*modifier, error) {
 			m.private = bm
 		case "readonly", "r":
 			m.readOnly = bm
+		case "remove":
+			m.remove = bm
 		case "script":
 			switch bm {
 			case boolModifierClear:
@@ -397,6 +401,7 @@ func (m *modifier) modifyDirAttr(dirAttr chezmoi.DirAttr) chezmoi.DirAttr {
 		Exact:      m.exact.modify(dirAttr.Exact),
 		Private:    m.private.modify(dirAttr.Private),
 		ReadOnly:   m.readOnly.modify(dirAttr.ReadOnly),
+		Remove:     m.remove.modify(dirAttr.Remove),
 	}
 }
 

@@ -19,6 +19,7 @@ modifiers and their abbreviations are:
 | `once`             | `o`          |
 | `private`          | `p`          |
 | `readonly`         | `r`          |
+| `remove`           | *none*       |
 | `template`         | `t`          |
 
 The type of a target can be changed using a type modifier:

@@ -130,6 +130,15 @@ func (s *DebugSystem) Readlink(name AbsPath) (string, error) {
 	return linkname, err
 }
 
+// Remove implements System.Remove.
+func (s *DebugSystem) Remove(name AbsPath) error {
+	err := s.system.Remove(name)
+	s.logger.Err(err).
+		Stringer("name", name).
+		Msg("Remove")
+	return err
+}
+
 // RemoveAll implements System.RemoveAll.
 func (s *DebugSystem) RemoveAll(name AbsPath) error {
 	err := s.system.RemoveAll(name)

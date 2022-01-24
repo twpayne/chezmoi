@@ -23,6 +23,7 @@ type System interface {
 	ReadDir(name AbsPath) ([]fs.DirEntry, error)
 	ReadFile(name AbsPath) ([]byte, error)
 	Readlink(name AbsPath) (string, error)
+	Remove(name AbsPath) error
 	RemoveAll(name AbsPath) error
 	Rename(oldpath, newpath AbsPath) error
 	RunCmd(cmd *exec.Cmd) error
@@ -61,6 +62,10 @@ func (noUpdateSystemMixin) Link(oldname, newname AbsPath) error {
 }
 
 func (noUpdateSystemMixin) Mkdir(name AbsPath, perm fs.FileMode) error {
+	panic("update to no update system")
+}
+
+func (noUpdateSystemMixin) Remove(name AbsPath) error {
 	panic("update to no update system")
 }
 

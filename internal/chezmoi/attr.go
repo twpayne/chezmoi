@@ -57,6 +57,7 @@ type DirAttr struct {
 	Exact      bool
 	Private    bool
 	ReadOnly   bool
+	Remove     bool
 }
 
 // A FileAttr holds attributes parsed from a source file name.
@@ -80,7 +81,12 @@ func parseDirAttr(sourceName string) DirAttr {
 		exact    = false
 		private  = false
 		readOnly = false
+		remove   = false
 	)
+	if strings.HasPrefix(name, removePrefix) {
+		name = mustTrimPrefix(name, removePrefix)
+		remove = true
+	}
 	if strings.HasPrefix(name, exactPrefix) {
 		name = mustTrimPrefix(name, exactPrefix)
 		exact = true
@@ -104,6 +110,7 @@ func parseDirAttr(sourceName string) DirAttr {
 		Exact:      exact,
 		Private:    private,
 		ReadOnly:   readOnly,
+		Remove:     remove,
 	}
 }
 
@@ -119,6 +126,9 @@ func (da DirAttr) MarshalZerologObject(e *zerolog.Event) {
 // SourceName returns da's source name.
 func (da DirAttr) SourceName() string {
 	sourceName := ""
+	if da.Remove {
+		sourceName += removePrefix
+	}
 	if da.Exact {
 		sourceName += exactPrefix
 	}
