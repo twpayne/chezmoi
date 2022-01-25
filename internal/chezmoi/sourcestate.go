@@ -79,6 +79,7 @@ type SourceState struct {
 	umask                   fs.FileMode
 	encryption              Encryption
 	ignore                  *patternSet
+	remove                  *patternSet
 	interpreters            map[string]*Interpreter
 	httpClient              *http.Client
 	logger                  *zerolog.Logger
@@ -229,6 +230,7 @@ func NewSourceState(options ...SourceStateOption) *SourceState {
 		umask:                Umask,
 		encryption:           NoEncryption{},
 		ignore:               newPatternSet(),
+		remove:               newPatternSet(),
 		httpClient:           http.DefaultClient,
 		logger:               &log.Logger,
 		readTemplateData:     true,
@@ -835,32 +837,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		case fileInfo.Name() == ignoreName:
 			return s.addPatterns(s.ignore, sourceAbsPath, parentSourceRelPath)
 		case fileInfo.Name() == removeName:
-			removePatterns := newPatternSet()
-			if err := s.addPatterns(removePatterns, sourceAbsPath, sourceRelPath); err != nil {
-				return err
-			}
-			matches, err := removePatterns.glob(s.system.UnderlyingFS(), ensureSuffix(s.destDirAbsPath.String(), "/"))
-			if err != nil {
-				return err
-			}
-			n := 0
-			for _, match := range matches {
-				if !s.Ignore(NewRelPath(match)) {
-					matches[n] = match
-					n++
-				}
-			}
-			targetParentRelPath := parentSourceRelPath.TargetRelPath(s.encryption.EncryptedSuffix())
-			matches = matches[:n]
-			for _, match := range matches {
-				targetRelPath := targetParentRelPath.JoinString(match)
-				sourceStateEntry := &SourceStateRemove{
-					sourceRelPath: sourceRelPath,
-					targetRelPath: targetRelPath,
-				}
-				allSourceStateEntries[targetRelPath] = append(allSourceStateEntries[targetRelPath], sourceStateEntry)
-			}
-			return nil
+			return s.addPatterns(s.remove, sourceAbsPath, parentSourceRelPath)
 		case fileInfo.Name() == scriptsDirName:
 			scriptsDirSourceStateEntries, err := s.readScriptsDir(sourceAbsPath)
 			if err != nil {
@@ -954,6 +931,23 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		}
 	}
 
+	// Generate SourceStateRemoves for existing targets.
+	matches, err := s.remove.glob(s.system.UnderlyingFS(), ensureSuffix(s.destDirAbsPath.String(), "/"))
+	if err != nil {
+		return err
+	}
+	for _, match := range matches {
+		if s.Ignore(NewRelPath(match)) {
+			continue
+		}
+		targetRelPath := NewRelPath(match)
+		sourceStateEntry := &SourceStateRemove{
+			sourceRelPath: NewSourceRelPath(".chezmoiremove"),
+			targetRelPath: targetRelPath,
+		}
+		allSourceStateEntries[targetRelPath] = append(allSourceStateEntries[targetRelPath], sourceStateEntry)
+	}
+
 	// Generate SourceStateRemoves for exact directories.
 	for targetRelPath, sourceStateEntries := range allSourceStateEntries {
 		if len(sourceStateEntries) != 1 {
@@ -1001,7 +995,6 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		targetRelPaths = append(targetRelPaths, targetRelPath)
 	}
 	sort.Sort(targetRelPaths)
-	var err error
 	for _, targetRelPath := range targetRelPaths {
 		sourceStateEntries := allSourceStateEntries[targetRelPath]
 		if len(sourceStateEntries) == 1 {

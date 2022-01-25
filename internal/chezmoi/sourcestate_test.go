@@ -1167,6 +1167,11 @@ func TestSourceStateRead(t *testing.T) {
 						targetRelPath: NewRelPath("file"),
 					},
 				}),
+				withRemove(
+					mustNewPatternSet(t, map[string]bool{
+						"file": true,
+					}),
+				),
 			),
 		},
 		{
@@ -1191,6 +1196,54 @@ func TestSourceStateRead(t *testing.T) {
 				withIgnore(
 					mustNewPatternSet(t, map[string]bool{
 						"file2": true,
+					}),
+				),
+				withRemove(
+					mustNewPatternSet(t, map[string]bool{
+						"file*": true,
+					}),
+				),
+			),
+		},
+		{
+			name: "chezmoiremove_and_ignore_in_subdir",
+			root: map[string]interface{}{
+				"/home/user": map[string]interface{}{
+					"dir": map[string]interface{}{
+						"file1": "",
+						"file2": "",
+					},
+				},
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
+					"dir/.chezmoiignore": "file2\n",
+					"dir/.chezmoiremove": "file*\n",
+				},
+			},
+			expectedSourceState: NewSourceState(
+				withEntries(map[RelPath]SourceStateEntry{
+					NewRelPath("dir"): &SourceStateDir{
+						origin:        "dir",
+						sourceRelPath: NewSourceRelDirPath("dir"),
+						Attr: DirAttr{
+							TargetName: "dir",
+						},
+						targetStateEntry: &TargetStateDir{
+							perm: 0o777 &^ chezmoitest.Umask,
+						},
+					},
+					NewRelPath("dir/file1"): &SourceStateRemove{
+						sourceRelPath: NewSourceRelPath(".chezmoiremove"),
+						targetRelPath: NewRelPath("dir/file1"),
+					},
+				}),
+				withIgnore(
+					mustNewPatternSet(t, map[string]bool{
+						"dir/file2": true,
+					}),
+				),
+				withRemove(
+					mustNewPatternSet(t, map[string]bool{
+						"dir/file*": true,
 					}),
 				),
 			),
@@ -1584,6 +1637,12 @@ func withEntries(sourceEntries map[RelPath]SourceStateEntry) SourceStateOption {
 func withIgnore(ignore *patternSet) SourceStateOption {
 	return func(s *SourceState) {
 		s.ignore = ignore
+	}
+}
+
+func withRemove(remove *patternSet) SourceStateOption {
+	return func(s *SourceState) {
+		s.remove = remove
 	}
 }
 
