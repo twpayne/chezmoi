@@ -170,9 +170,9 @@ func WalkSourceDir(system System, sourceDirAbsPath AbsPath, walkFunc WalkSourceD
 		err = walkFunc(sourceDirAbsPath, nil, err)
 	} else {
 		err = walkSourceDir(system, sourceDirAbsPath, fileInfo, walkFunc)
-	}
-	if errors.Is(err, fs.SkipDir) {
-		return nil
+		if errors.Is(err, fs.SkipDir) {
+			err = nil
+		}
 	}
 	return err
 }
@@ -231,10 +231,9 @@ func walkSourceDir(system System, name AbsPath, fileInfo fs.FileInfo, walkFunc W
 			}
 		}
 		if err := walkSourceDir(system, name.JoinString(dirEntry.Name()), fileInfo, walkFunc); err != nil {
-			if errors.Is(err, fs.SkipDir) {
-				break
+			if !errors.Is(err, fs.SkipDir) {
+				return err
 			}
-			return err
 		}
 	}
 
