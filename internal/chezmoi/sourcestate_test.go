@@ -1549,50 +1549,6 @@ func TestSourceStateTargetRelPaths(t *testing.T) {
 	}
 }
 
-func TestWalkSourceDir(t *testing.T) {
-	sourceDirAbsPath := NewAbsPath("/home/user/.local/share/chezmoi")
-	root := map[string]interface{}{
-		sourceDirAbsPath.String(): map[string]interface{}{
-			".chezmoi.toml.tmpl":    "",
-			".chezmoidata.json":     "",
-			".chezmoidata.toml":     "",
-			".chezmoidata.yaml":     "",
-			".chezmoiexternal.yaml": "",
-			".chezmoiignore":        "",
-			".chezmoiremove":        "",
-			".chezmoitemplates":     &vfst.Dir{Perm: 0o777},
-			".chezmoiversion":       "",
-			"dot_file":              "",
-		},
-	}
-	expectedAbsPaths := []AbsPath{
-		sourceDirAbsPath,
-		sourceDirAbsPath.JoinString(".chezmoiversion"),
-		sourceDirAbsPath.JoinString(".chezmoidata.json"),
-		sourceDirAbsPath.JoinString(".chezmoidata.toml"),
-		sourceDirAbsPath.JoinString(".chezmoidata.yaml"),
-		sourceDirAbsPath.JoinString(".chezmoitemplates"),
-		sourceDirAbsPath.JoinString(".chezmoi.toml.tmpl"),
-		sourceDirAbsPath.JoinString(".chezmoiexternal.yaml"),
-		sourceDirAbsPath.JoinString(".chezmoiignore"),
-		sourceDirAbsPath.JoinString(".chezmoiremove"),
-		sourceDirAbsPath.JoinString("dot_file"),
-	}
-
-	var actualAbsPaths []AbsPath
-	chezmoitest.WithTestFS(t, root, func(fileSystem vfs.FS) {
-		system := NewRealSystem(fileSystem)
-		require.NoError(t, WalkSourceDir(system, sourceDirAbsPath, func(absPath AbsPath, fileInfo fs.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
-			actualAbsPaths = append(actualAbsPaths, absPath)
-			return nil
-		}))
-	})
-	assert.Equal(t, expectedAbsPaths, actualAbsPaths)
-}
-
 // applyAll updates targetDirAbsPath in targetSystem to match s.
 func (s *SourceState) applyAll(
 	targetSystem, destSystem System, persistentState PersistentState, targetDirAbsPath AbsPath, options ApplyOptions,

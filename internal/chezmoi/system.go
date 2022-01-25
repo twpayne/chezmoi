@@ -1,12 +1,15 @@
 package chezmoi
 
 import (
+	"context"
 	"errors"
 	"io/fs"
 	"os/exec"
 	"sort"
+	"strings"
 
 	vfs "github.com/twpayne/go-vfs/v4"
+	"golang.org/x/sync/errgroup"
 )
 
 // A System reads from and writes to a filesystem, executes idempotent commands,
@@ -154,6 +157,10 @@ func Walk(system System, rootAbsPath AbsPath, walkFunc WalkFunc) error {
 // directory.
 type WalkSourceDirFunc func(absPath AbsPath, fileInfo fs.FileInfo, err error) error
 
+// A concurrentWalkSourceDirFunc is a function called concurrently for every
+// entry in a source directory.
+type concurrentWalkSourceDirFunc func(ctx context.Context, absPath AbsPath, fileInfo fs.FileInfo, err error) error
+
 // WalkSourceDir walks the source directory rooted at sourceDirAbsPath in
 // system, calling walkFunc for each file or directory in the tree, including
 // sourceDirAbsPath.
@@ -207,20 +214,7 @@ func walkSourceDir(system System, name AbsPath, fileInfo fs.FileInfo, walkFunc W
 		}
 	}
 
-	sort.Slice(dirEntries, func(i, j int) bool {
-		nameI := dirEntries[i].Name()
-		nameJ := dirEntries[j].Name()
-		orderI := sourceDirEntryOrder[nameI]
-		orderJ := sourceDirEntryOrder[nameJ]
-		switch {
-		case orderI < orderJ:
-			return true
-		case orderI == orderJ:
-			return nameI < nameJ
-		default:
-			return false
-		}
-	})
+	sortSourceDirEntries(dirEntries)
 
 	for _, dirEntry := range dirEntries {
 		fileInfo, err := dirEntry.Info()
@@ -238,4 +232,72 @@ func walkSourceDir(system System, name AbsPath, fileInfo fs.FileInfo, walkFunc W
 	}
 
 	return nil
+}
+
+func concurrentWalkSourceDir(
+	ctx context.Context, system System, dirAbsPath AbsPath, walkFunc concurrentWalkSourceDirFunc,
+) error {
+	dirEntries, err := system.ReadDir(dirAbsPath)
+	if err != nil {
+		return walkFunc(ctx, dirAbsPath, nil, err)
+	}
+	sortSourceDirEntries(dirEntries)
+
+	// Walk all control plane entries in order.
+	visitDirEntry := func(dirEntry fs.DirEntry) error {
+		absPath := dirAbsPath.Join(NewRelPath(dirEntry.Name()))
+		fileInfo, err := dirEntry.Info()
+		if err != nil {
+			return walkFunc(ctx, absPath, nil, err)
+		}
+		switch err := walkFunc(ctx, absPath, fileInfo, nil); {
+		case fileInfo.IsDir() && errors.Is(err, fs.SkipDir):
+			return nil
+		case err != nil:
+			return err
+		case fileInfo.IsDir():
+			return concurrentWalkSourceDir(ctx, system, absPath, walkFunc)
+		default:
+			return nil
+		}
+	}
+	i := 0
+	for ; i < len(dirEntries); i++ {
+		dirEntry := dirEntries[i]
+		if !strings.HasPrefix(dirEntry.Name(), ".") {
+			break
+		}
+		if err := visitDirEntry(dirEntry); err != nil {
+			return err
+		}
+	}
+
+	// Walk all remaining entries concurrently.
+	visitDirEntryFunc := func(dirEntry fs.DirEntry) func() error {
+		return func() error {
+			return visitDirEntry(dirEntry)
+		}
+	}
+	group, ctx := errgroup.WithContext(ctx)
+	for _, dirEntry := range dirEntries[i:] {
+		group.Go(visitDirEntryFunc(dirEntry))
+	}
+	return group.Wait()
+}
+
+func sortSourceDirEntries(dirEntries []fs.DirEntry) {
+	sort.Slice(dirEntries, func(i, j int) bool {
+		nameI := dirEntries[i].Name()
+		nameJ := dirEntries[j].Name()
+		orderI := sourceDirEntryOrder[nameI]
+		orderJ := sourceDirEntryOrder[nameJ]
+		switch {
+		case orderI < orderJ:
+			return true
+		case orderI == orderJ:
+			return nameI < nameJ
+		default:
+			return false
+		}
+	})
 }

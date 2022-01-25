@@ -21,6 +21,7 @@ import (
 	"runtime"
 	"sort"
 	"strings"
+	"sync"
 	"text/template"
 	"time"
 
@@ -69,6 +70,7 @@ var externalCacheFormat = formatGzippedJSON{}
 
 // A SourceState is a source state.
 type SourceState struct {
+	sync.Mutex
 	root                    sourceStateEntryTreeNode
 	removeDirs              map[RelPath]struct{}
 	baseSystem              System
@@ -237,6 +239,7 @@ func NewSourceState(options ...SourceStateOption) *SourceState {
 		priorityTemplateData: make(map[string]interface{}),
 		userTemplateData:     make(map[string]interface{}),
 		templateOptions:      DefaultTemplateOptions,
+		templates:            make(map[string]*template.Template),
 		externals:            make(map[RelPath]External),
 	}
 	for _, option := range options {
@@ -790,8 +793,14 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 	}
 
 	// Read all source entries.
+	var allSourceStateEntriesLock sync.Mutex
 	allSourceStateEntries := make(map[RelPath][]SourceStateEntry)
-	walkFunc := func(sourceAbsPath AbsPath, fileInfo fs.FileInfo, err error) error {
+	addSourceStateEntries := func(relPath RelPath, sourceStateEntries ...SourceStateEntry) {
+		allSourceStateEntriesLock.Lock()
+		allSourceStateEntries[relPath] = append(allSourceStateEntries[relPath], sourceStateEntries...)
+		allSourceStateEntriesLock.Unlock()
+	}
+	walkFunc := func(ctx context.Context, sourceAbsPath AbsPath, fileInfo fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -826,7 +835,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			}
 			return s.addTemplateData(sourceAbsPath)
 		case fileInfo.Name() == templatesDirName:
-			if err := s.addTemplatesDir(sourceAbsPath); err != nil {
+			if err := s.addTemplatesDir(ctx, sourceAbsPath); err != nil {
 				return err
 			}
 			return vfs.SkipDir
@@ -839,12 +848,12 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		case fileInfo.Name() == removeName:
 			return s.addPatterns(s.remove, sourceAbsPath, parentSourceRelPath)
 		case fileInfo.Name() == scriptsDirName:
-			scriptsDirSourceStateEntries, err := s.readScriptsDir(sourceAbsPath)
+			scriptsDirSourceStateEntries, err := s.readScriptsDir(ctx, sourceAbsPath)
 			if err != nil {
 				return err
 			}
 			for relPath, scriptSourceStateEntries := range scriptsDirSourceStateEntries {
-				allSourceStateEntries[relPath] = append(allSourceStateEntries[relPath], scriptSourceStateEntries...)
+				addSourceStateEntries(relPath, scriptSourceStateEntries...)
 			}
 			return vfs.SkipDir
 		case fileInfo.Name() == VersionName:
@@ -863,9 +872,11 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 				return vfs.SkipDir
 			}
 			sourceStateDir := s.newSourceStateDir(sourceRelPath, da)
-			allSourceStateEntries[targetRelPath] = append(allSourceStateEntries[targetRelPath], sourceStateDir)
+			addSourceStateEntries(targetRelPath, sourceStateDir)
 			if sourceStateDir.Attr.Remove {
+				s.Lock()
 				s.removeDirs[targetRelPath] = struct{}{}
+				s.Unlock()
 			}
 			return nil
 		case fileInfo.Mode().IsRegular():
@@ -876,7 +887,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			}
 			var sourceStateEntry SourceStateEntry
 			targetRelPath, sourceStateEntry = s.newSourceStateFile(sourceRelPath, fa, targetRelPath)
-			allSourceStateEntries[targetRelPath] = append(allSourceStateEntries[targetRelPath], sourceStateEntry)
+			addSourceStateEntries(targetRelPath, sourceStateEntry)
 			return nil
 		default:
 			return &unsupportedFileTypeError{
@@ -885,7 +896,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			}
 		}
 	}
-	if err := WalkSourceDir(s.system, s.sourceDirAbsPath, walkFunc); err != nil {
+	if err := concurrentWalkSourceDir(ctx, s.system, s.sourceDirAbsPath, walkFunc); err != nil {
 		return err
 	}
 
@@ -1087,6 +1098,8 @@ func (s *SourceState) addExternal(sourceAbsPath AbsPath) error {
 	if err := format.Unmarshal(data, &externals); err != nil {
 		return fmt.Errorf("%s: %w", sourceAbsPath, err)
 	}
+	s.Lock()
+	defer s.Unlock()
 	for relPathStr, external := range externals {
 		targetRelPath := parentTargetSourceRelPath.JoinString(relPathStr)
 		if _, ok := s.externals[targetRelPath]; ok {
@@ -1145,13 +1158,15 @@ func (s *SourceState) addTemplateData(sourceAbsPath AbsPath) error {
 	if err := format.Unmarshal(data, &templateData); err != nil {
 		return fmt.Errorf("%s: %w", sourceAbsPath, err)
 	}
+	s.Lock()
 	RecursiveMerge(s.userTemplateData, templateData)
+	s.Unlock()
 	return nil
 }
 
 // addTemplatesDir adds all templates in templatesDirAbsPath to s.
-func (s *SourceState) addTemplatesDir(templatesDirAbsPath AbsPath) error {
-	walkFunc := func(templateAbsPath AbsPath, fileInfo fs.FileInfo, err error) error {
+func (s *SourceState) addTemplatesDir(ctx context.Context, templatesDirAbsPath AbsPath) error {
+	walkFunc := func(ctx context.Context, templateAbsPath AbsPath, fileInfo fs.FileInfo, err error) error {
 		if templateAbsPath == templatesDirAbsPath {
 			return nil
 		}
@@ -1179,10 +1194,9 @@ func (s *SourceState) addTemplatesDir(templatesDirAbsPath AbsPath) error {
 			if err != nil {
 				return err
 			}
-			if s.templates == nil {
-				s.templates = make(map[string]*template.Template)
-			}
+			s.Lock()
 			s.templates[name] = tmpl
+			s.Unlock()
 			return nil
 		case fileInfo.IsDir():
 			return nil
@@ -1193,7 +1207,7 @@ func (s *SourceState) addTemplatesDir(templatesDirAbsPath AbsPath) error {
 			}
 		}
 	}
-	return WalkSourceDir(s.system, templatesDirAbsPath, walkFunc)
+	return concurrentWalkSourceDir(ctx, s.system, templatesDirAbsPath, walkFunc)
 }
 
 // executeTemplate executes the template at path and returns the result.
@@ -1885,9 +1899,17 @@ func (s *SourceState) readExternalFile(
 }
 
 // readScriptsDir reads all scripts in scriptsDirAbsPath.
-func (s *SourceState) readScriptsDir(scriptsDirAbsPath AbsPath) (map[RelPath][]SourceStateEntry, error) {
+func (s *SourceState) readScriptsDir(
+	ctx context.Context, scriptsDirAbsPath AbsPath,
+) (map[RelPath][]SourceStateEntry, error) {
+	var allSourceStateEntriesLock sync.Mutex
 	allSourceStateEntries := make(map[RelPath][]SourceStateEntry)
-	walkFunc := func(sourceAbsPath AbsPath, fileInfo fs.FileInfo, err error) error {
+	addSourceStateEntry := func(relPath RelPath, sourceStateEntry SourceStateEntry) {
+		allSourceStateEntriesLock.Lock()
+		allSourceStateEntries[relPath] = append(allSourceStateEntries[relPath], sourceStateEntry)
+		allSourceStateEntriesLock.Unlock()
+	}
+	walkFunc := func(ctx context.Context, sourceAbsPath AbsPath, fileInfo fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -1938,7 +1960,7 @@ func (s *SourceState) readScriptsDir(scriptsDirAbsPath AbsPath) (map[RelPath][]S
 			}
 			var sourceStateEntry SourceStateEntry
 			targetRelPath, sourceStateEntry = s.newSourceStateFile(sourceRelPath, fa, targetRelPath)
-			allSourceStateEntries[targetRelPath] = append(allSourceStateEntries[targetRelPath], sourceStateEntry)
+			addSourceStateEntry(targetRelPath, sourceStateEntry)
 			return nil
 		default:
 			return &unsupportedFileTypeError{
@@ -1947,7 +1969,7 @@ func (s *SourceState) readScriptsDir(scriptsDirAbsPath AbsPath) (map[RelPath][]S
 			}
 		}
 	}
-	if err := WalkSourceDir(s.system, scriptsDirAbsPath, walkFunc); err != nil {
+	if err := concurrentWalkSourceDir(ctx, s.system, scriptsDirAbsPath, walkFunc); err != nil {
 		return nil, err
 	}
 	return allSourceStateEntries, nil

@@ -5,6 +5,7 @@ import (
 	"path"
 	"path/filepath"
 	"sort"
+	"sync"
 
 	"github.com/bmatcuk/doublestar/v4"
 	"github.com/rs/zerolog"
@@ -13,6 +14,7 @@ import (
 
 // An patternSet is a set of patterns.
 type patternSet struct {
+	sync.Mutex
 	includePatterns stringSet
 	excludePatterns stringSet
 }
@@ -40,6 +42,8 @@ func (ps *patternSet) add(pattern string, include bool) error {
 	if ok := doublestar.ValidatePattern(pattern); !ok {
 		return fmt.Errorf("%s: invalid pattern", pattern)
 	}
+	ps.Lock()
+	defer ps.Unlock()
 	if include {
 		ps.includePatterns.add(pattern)
 	} else {
