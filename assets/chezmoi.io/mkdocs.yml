@@ -192,6 +192,7 @@ nav:
   - Packaging: developer/packaging.md
   - Security: developer/security.md
   - Architecture: developer/architecture.md
+  - Building on top of chezmoi: developer/building-on-top-of-chezmoi.md
 - Links:
   - Articles, podcasts, and videos: links/articles-podcasts-and-videos.md
   - Dotfile repos using chezmoi: links/dotfile-repos-using-chezmoi.md
