@@ -35,7 +35,7 @@ jobs:
           - 'assets/docker/**'
           - 'assets/vagrant/**'
           - 'go.*'
-          - 'internal/**'
+          - 'pkg/**'
   codeql:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
@@ -255,11 +255,11 @@ jobs:
     - name: Test (umask 022)
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       run: |
-        go test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o022" -race ./...
+        go test -ldflags="-X github.com/twpayne/chezmoi/pkg/chezmoitest.umaskStr=0o022" -race ./...
     - name: Test (umask 002)
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       run: |
-        go test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o002" -race ./...
+        go test -ldflags="-X github.com/twpayne/chezmoi/pkg/chezmoitest.umaskStr=0o002" -race ./...
     - name: Test install.sh
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       run: |
@@ -466,7 +466,7 @@ jobs:
         ignore: completions
     - name: Whitespace
       run: |
-        go run ./internal/cmds/lint-whitespace
+        go run ./pkg/cmds/lint-whitespace
     - name: Typos
       run: |
         go install github.com/twpayne/findtypos@v0.0.1

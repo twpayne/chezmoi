@@ -7,23 +7,22 @@ You can generate Go documentation for chezmoi's source code with `go doc`, for
 example:
 
 ```console
-$ go doc -all -u github.com/twpayne/chezmoi/v2/internal/chezmoi
+$ go doc -all -u github.com/twpayne/chezmoi/v2/pkg/chezmoi
 ```
 
 You can also [browse chezmoi's generated documentation
-online](https://pkg.go.dev/github.com/twpayne/chezmoi/v2) but this only
-includes exported symbols.
+online](https://pkg.go.dev/github.com/twpayne/chezmoi/v2).
 
 ## Directory structure
 
 The important directories in chezmoi are:
 
-| Directory                        | Contents                                                                                                                                                                                         |
-| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `assets/chezmoi.io/docs/`        | The documentation single source of truth. Help text, examples, and the [chezmoi.io](https://chezmoi.io) website are generated from the files in this directory, particularly `docs/reference.md` |
-| `internal/chezmoi/`              | chezmoi's core functionality                                                                                                                                                                     |
-| `internal/cmd/`                  | Code for the `chezmoi` command                                                                                                                                                                   |
-| `internal/cmd/testdata/scripts/` | High-level tests of chezmoi's commands using [`testscript`](https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript)                                                                       |
+| Directory                   | Contents                                                                                                                                                       |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `assets/chezmoi.io/docs/`   | The documentation single source of truth. Help text, examples, and the [chezmoi.io](https://chezmoi.io) website are generated from the files in this directory |
+| `pkg/chezmoi/`              | chezmoi's core functionality                                                                                                                                   |
+| `pkg/cmd/`                  | Code for the `chezmoi` command                                                                                                                                 |
+| `pkg/cmd/testdata/scripts/` | High-level tests of chezmoi's commands using [`testscript`](https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript)
 
 ## Key concepts
 
@@ -37,7 +36,7 @@ represented directly in chezmoi's code.
 chezmoi uses the generic term *entry* to describe something that it manages.
 Entries can be files, directories, symlinks, scripts, amongst other things.
 
-## `internal/chezmoi/` directory
+## `pkg/chezmoi/` directory
 
 All of chezmoi's interaction with the operating system is abstracted through
 the `System` interface. A `System` includes functionality to read and write
@@ -100,10 +99,10 @@ its persistent state. chezmoi can then detect if a third party has updated a
 target since chezmoi last wrote it by comparing the actual state entry in the
 target state with the entry state in the persistent state.
 
-## `internal/cmd/` directory
+## `pkg/cmd/` directory
 
-`internal/cmd/*cmd.go` contains the code for each individual command and
-`internal/cmd/*templatefuncs.go` contain the template functions.
+`pkg/cmd/*cmd.go` contains the code for each individual command and
+`pkg/cmd/*templatefuncs.go` contain the template functions.
 
 Commands are defined as methods on the `Config` struct. The `Config` struct is
 large, containing all configuration values read from the config file, command
@@ -164,12 +163,12 @@ integration tests use the
 [`github.com/stretchr/testify`](https://pkg.go.dev/github.com/stretchr/testify)
 framework. End-to-end tests use
 [`github.com/rogpeppe/go-internal/testscript`](https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript)
-with the test scripts themselves in `internal/cmd/testdata/scripts/*.txt`.
+with the test scripts themselves in `pkg/cmd/testdata/scripts/*.txt`.
 
 You can run individual end-to-end tests with
 
 ```console
-$ go test ./internal/cmd -run=TestScript/<name>
+$ go test ./pkg/cmd -run=TestScript/<name>
 ```
 
 where `<name>` is the basename of file without the `.txt` extension.
