@@ -74,8 +74,8 @@ run:
 
 .PHONY: test
 test:
-	${GO} test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o022" ./...
-	${GO} test -ldflags="-X github.com/twpayne/chezmoi/internal/chezmoitest.umaskStr=0o002" ./...
+	${GO} test -ldflags="-X github.com/twpayne/chezmoi/pkg/chezmoitest.umaskStr=0o022" ./...
+	${GO} test -ldflags="-X github.com/twpayne/chezmoi/pkg/chezmoitest.umaskStr=0o002" ./...
 
 .PHONY: test-docker
 test-docker:
@@ -100,7 +100,7 @@ generate:
 .PHONY: lint
 lint: ensure-golangci-lint
 	./bin/golangci-lint run
-	${GO} run ./internal/cmds/lint-whitespace
+	${GO} run ./pkg/cmds/lint-whitespace
 
 .PHONY: format
 format: ensure-gofumpt

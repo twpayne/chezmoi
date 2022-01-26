@@ -103,7 +103,7 @@ issues:
     - forbidigo
     - gosec
     - lll
-    path: ^internal/cmds/
+    path: ^pkg/cmds/
   - linters:
     - gosec
     - lll
