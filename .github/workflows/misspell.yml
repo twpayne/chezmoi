@@ -17,4 +17,4 @@ jobs:
       - name: misspell
         uses: reviewdog/action-misspell@v1
         with:
-          locale: "US"
+          locale: US
