@@ -11,7 +11,11 @@ import (
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
 )
 
-func (c *umaskCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
+func (umaskCheck) Name() string {
+	return "umask"
+}
+
+func (umaskCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
 	umask := unix.Umask(0)
 	unix.Umask(umask)
 	result := checkResultOK

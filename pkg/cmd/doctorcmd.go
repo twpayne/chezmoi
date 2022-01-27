@@ -140,10 +140,10 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			versionInfo: c.versionInfo,
 			versionStr:  c.versionStr,
 		},
-		&osArchCheck{},
-		&goVersionCheck{},
-		&executableCheck{},
-		&upgradeMethodCheck{},
+		osArchCheck{},
+		goVersionCheck{},
+		executableCheck{},
+		upgradeMethodCheck{},
 		&configFileCheck{
 			basename: chezmoiRelPath,
 			bds:      c.bds,
@@ -176,7 +176,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotSet:   checkResultWarning,
 			ifNotExist: checkResultWarning,
 		},
-		&umaskCheck{},
+		umaskCheck{},
 		&binaryCheck{
 			name:        "git-command",
 			binaryname:  c.Git.Command,
@@ -420,11 +420,11 @@ func (c *dirCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (c
 	return checkResultOK, fmt.Sprintf("%s is a directory", c.dirname)
 }
 
-func (c *executableCheck) Name() string {
+func (executableCheck) Name() string {
 	return "executable"
 }
 
-func (c *executableCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
+func (executableCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
 	executable, err := os.Executable()
 	if err != nil {
 		return checkResultError, err.Error()
@@ -509,11 +509,11 @@ func (c *suspiciousEntriesCheck) Run(system chezmoi.System, homeDirAbsPath chezm
 	return checkResultOK, "no suspicious entries"
 }
 
-func (c *umaskCheck) Name() string {
-	return "umask"
+func (upgradeMethodCheck) Name() string {
+	return "upgrade-method"
 }
 
-func (c *upgradeMethodCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
+func (upgradeMethodCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
 	executable, err := os.Executable()
 	if err != nil {
 		return checkResultFailed, err.Error()
@@ -526,10 +526,6 @@ func (c *upgradeMethodCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.A
 		return checkResultSkipped, ""
 	}
 	return checkResultOK, method
-}
-
-func (c *upgradeMethodCheck) Name() string {
-	return "upgrade-method"
 }
 
 func (c *versionCheck) Name() string {
