@@ -93,17 +93,14 @@ type goVersionCheck struct{}
 // An osArchCheck checks that runtime.GOOS and runtime.GOARCH are supported.
 type osArchCheck struct{}
 
+// A skippedCheck is a check that is skipped.
+type skippedCheck struct{}
+
 // A suspiciousEntriesCheck checks that a source directory does not contain any
 // suspicious files.
 type suspiciousEntriesCheck struct {
 	dirname chezmoi.AbsPath
 }
-
-// A umaskCheck checks the umask.
-type umaskCheck struct{}
-
-// A unameCheck checks uname.
-type unameCheck struct{}
 
 // A upgradeMethodCheck checks the upgrade method.
 type upgradeMethodCheck struct{}
@@ -483,6 +480,14 @@ func (osArchCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (c
 		}
 	}
 	return checkResultOK, strings.Join(fields, " ")
+}
+
+func (skippedCheck) Name() string {
+	return "skipped"
+}
+
+func (skippedCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
+	return checkResultSkipped, ""
 }
 
 func (c *suspiciousEntriesCheck) Name() string {
