@@ -22,6 +22,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"sync"
 	"text/template"
 	"time"
 	"unicode"
@@ -68,6 +69,8 @@ type templateConfig struct {
 
 // A Config represents a configuration.
 type Config struct {
+	userMu sync.Mutex
+
 	// Global configuration, settable in the config file.
 	CacheDirAbsPath    chezmoi.AbsPath                 `mapstructure:"cacheDir"`
 	Color              autoBool                        `mapstructure:"color"`
@@ -164,6 +167,7 @@ type Config struct {
 	destSystem             chezmoi.System
 	persistentStateAbsPath chezmoi.AbsPath
 	persistentState        chezmoi.PersistentState
+	httpClientMu           sync.Mutex
 	httpClient             *http.Client
 	logger                 *zerolog.Logger
 
@@ -809,6 +813,10 @@ func (c *Config) defaultPreApplyFunc(
 	if actualContents != nil || targetContents != nil {
 		choices = append(choices, "diff")
 	}
+
+	c.userMu.Lock()
+	defer c.userMu.Unlock()
+
 	choices = append(choices, "overwrite", "all-overwrite", "skip", "quit")
 	for {
 		switch choice, err := c.promptChoice(prompt, choices); {
@@ -1160,6 +1168,9 @@ func (c *Config) findFirstConfigTemplate() (chezmoi.RelPath, string, []byte, err
 }
 
 func (c *Config) getHTTPClient() (*http.Client, error) {
+	c.httpClientMu.Lock()
+	defer c.httpClientMu.Unlock()
+
 	if c.httpClient != nil {
 		return c.httpClient, nil
 	}

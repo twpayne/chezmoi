@@ -86,6 +86,9 @@ func (c *Config) defaultPreAddFunc(
 	removedAttributesStr := englishListWithNoun(removedAttributes, "attribute", "")
 	prompt := fmt.Sprintf("adding %s would remove %s, continue", targetRelPath, removedAttributesStr)
 
+	c.userMu.Lock()
+	defer c.userMu.Unlock()
+
 	for {
 		switch choice, err := c.promptChoice(prompt, choicesYesNoAllQuit); {
 		case err != nil:
