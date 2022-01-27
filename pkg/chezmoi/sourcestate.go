@@ -793,12 +793,12 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 	}
 
 	// Read all source entries.
-	var allSourceStateEntriesLock sync.Mutex
+	var allSourceStateEntriesMu sync.Mutex
 	allSourceStateEntries := make(map[RelPath][]SourceStateEntry)
 	addSourceStateEntries := func(relPath RelPath, sourceStateEntries ...SourceStateEntry) {
-		allSourceStateEntriesLock.Lock()
+		allSourceStateEntriesMu.Lock()
 		allSourceStateEntries[relPath] = append(allSourceStateEntries[relPath], sourceStateEntries...)
-		allSourceStateEntriesLock.Unlock()
+		allSourceStateEntriesMu.Unlock()
 	}
 	walkFunc := func(ctx context.Context, sourceAbsPath AbsPath, fileInfo fs.FileInfo, err error) error {
 		if err != nil {
