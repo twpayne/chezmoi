@@ -4,7 +4,10 @@
 package cmd
 
 import (
+	"bytes"
 	"fmt"
+	"os/exec"
+	"runtime"
 
 	"golang.org/x/sys/unix"
 
@@ -23,4 +26,20 @@ func (umaskCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (ch
 		result = checkResultWarning
 	}
 	return result, fmt.Sprintf("%03o", umask)
+}
+
+func (unameCheck) Name() string {
+	return "uname"
+}
+
+func (unameCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
+	if runtime.GOOS == "windows" {
+		return checkResultSkipped, ""
+	}
+	cmd := exec.Command("uname", "-a")
+	data, err := system.IdempotentCmdOutput(cmd)
+	if err != nil {
+		return checkResultFailed, err.Error()
+	}
+	return checkResultOK, string(bytes.TrimSpace(data))
 }

@@ -9,3 +9,11 @@ func (umaskCheck) Name() string {
 func (umaskCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
 	return checkResultSkipped, ""
 }
+
+func (unameCheck) Name() string {
+	return "uname"
+}
+
+func (unameCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
+	return checkResultSkipped, ""
+}
