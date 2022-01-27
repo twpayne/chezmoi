@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"sync"
 
 	"github.com/zalando/go-keyring"
 )
@@ -12,10 +13,14 @@ type keyringKey struct {
 }
 
 type keyringData struct {
+	sync.Mutex
 	cache map[keyringKey]string
 }
 
 func (c *Config) keyringTemplateFunc(service, user string) string {
+	c.keyring.Lock()
+	defer c.keyring.Unlock()
+
 	key := keyringKey{
 		service: service,
 		user:    user,

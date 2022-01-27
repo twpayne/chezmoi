@@ -3,6 +3,7 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"sync"
 
 	"github.com/google/go-github/v42/github"
 
@@ -10,11 +11,15 @@ import (
 )
 
 type gitHubData struct {
+	sync.Mutex
 	keysCache          map[string][]*github.Key
 	latestReleaseCache map[string]map[string]*github.RepositoryRelease
 }
 
 func (c *Config) gitHubKeysTemplateFunc(user string) []*github.Key {
+	c.gitHub.Lock()
+	defer c.gitHub.Unlock()
+
 	if keys, ok := c.gitHub.keysCache[user]; ok {
 		return keys
 	}
@@ -54,6 +59,9 @@ func (c *Config) gitHubKeysTemplateFunc(user string) []*github.Key {
 }
 
 func (c *Config) gitHubLatestReleaseTemplateFunc(userRepo string) *github.RepositoryRelease {
+	c.gitHub.Lock()
+	defer c.gitHub.Unlock()
+
 	user, repo := parseGitHubUserRepo(userRepo)
 
 	if release := c.gitHub.latestReleaseCache[user][repo]; release != nil {

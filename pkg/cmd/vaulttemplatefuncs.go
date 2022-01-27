@@ -4,14 +4,19 @@ import (
 	"encoding/json"
 	"fmt"
 	"os/exec"
+	"sync"
 )
 
 type vaultConfig struct {
+	sync.Mutex
 	Command string
 	cache   map[string]interface{}
 }
 
 func (c *Config) vaultTemplateFunc(key string) interface{} {
+	c.Vault.Lock()
+	defer c.Vault.Unlock()
+
 	if data, ok := c.Vault.cache[key]; ok {
 		return data
 	}

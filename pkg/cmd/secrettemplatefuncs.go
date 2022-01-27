@@ -6,15 +6,20 @@ import (
 	"fmt"
 	"os/exec"
 	"strings"
+	"sync"
 )
 
 type secretConfig struct {
+	sync.Mutex
 	Command   string
 	cache     map[string]string
 	jsonCache map[string]interface{}
 }
 
 func (c *Config) secretJSONTemplateFunc(args ...string) interface{} {
+	c.Secret.Lock()
+	defer c.Secret.Unlock()
+
 	key := strings.Join(args, "\x00")
 	if value, ok := c.Secret.jsonCache[key]; ok {
 		return value
@@ -41,6 +46,9 @@ func (c *Config) secretJSONTemplateFunc(args ...string) interface{} {
 }
 
 func (c *Config) secretTemplateFunc(args ...string) string {
+	c.Secret.Lock()
+	defer c.Secret.Unlock()
+
 	key := strings.Join(args, "\x00")
 	if value, ok := c.Secret.cache[key]; ok {
 		return value

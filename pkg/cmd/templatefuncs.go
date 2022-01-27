@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"sync"
 
 	"github.com/bradenhilton/mozillainstallhash"
 	"howett.net/plist"
@@ -15,6 +16,7 @@ import (
 )
 
 type ioregData struct {
+	sync.Mutex
 	value map[string]interface{}
 }
 
@@ -47,6 +49,9 @@ func (c *Config) includeTemplateFunc(filename string) string {
 }
 
 func (c *Config) ioregTemplateFunc() map[string]interface{} {
+	c.ioregData.Lock()
+	defer c.ioregData.Unlock()
+
 	if runtime.GOOS != "darwin" {
 		return nil
 	}

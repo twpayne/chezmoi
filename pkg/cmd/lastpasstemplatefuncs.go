@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"regexp"
 	"strings"
+	"sync"
 	"unicode"
 
 	"github.com/coreos/go-semver/semver"
@@ -24,6 +25,7 @@ var (
 )
 
 type lastpassConfig struct {
+	sync.Mutex
 	Command   string
 	versionOK bool
 	cache     map[string][]map[string]interface{}
@@ -41,7 +43,7 @@ func (c *Config) lastpassOutput(args ...string) ([]byte, error) {
 	return output, nil
 }
 
-func (c *Config) lastpassRawTemplateFunc(id string) []map[string]interface{} {
+func (c *Config) lastpassRaw(id string) []map[string]interface{} {
 	if !c.Lastpass.versionOK {
 		if err := c.lastpassVersionCheck(); err != nil {
 			returnTemplateError(err)
@@ -73,8 +75,18 @@ func (c *Config) lastpassRawTemplateFunc(id string) []map[string]interface{} {
 	return data
 }
 
+func (c *Config) lastpassRawTemplateFunc(id string) []map[string]interface{} {
+	c.Lastpass.Lock()
+	defer c.Lastpass.Unlock()
+
+	return c.lastpassRaw(id)
+}
+
 func (c *Config) lastpassTemplateFunc(id string) []map[string]interface{} {
-	data := c.lastpassRawTemplateFunc(id)
+	c.Lastpass.Lock()
+	defer c.Lastpass.Unlock()
+
+	data := c.lastpassRaw(id)
 	for _, d := range data {
 		if note, ok := d["note"].(string); ok {
 			d["note"] = lastpassParseNote(note)

@@ -13,6 +13,9 @@ import (
 
 // readPassword reads a password.
 func (c *Config) readPassword(prompt string) (password string, err error) {
+	c.userMu.Lock()
+	defer c.userMu.Unlock()
+
 	if c.noTTY {
 		password, err = c.readLine(prompt)
 		return

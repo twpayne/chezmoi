@@ -5,14 +5,19 @@ import (
 	"fmt"
 	"os/exec"
 	"strings"
+	"sync"
 )
 
 type bitwardenConfig struct {
+	sync.Mutex
 	Command     string
 	outputCache map[string][]byte
 }
 
 func (c *Config) bitwardenFieldsTemplateFunc(args ...string) map[string]interface{} {
+	c.Bitwarden.Lock()
+	defer c.Bitwarden.Unlock()
+
 	output := c.bitwardenOutput(args)
 	var data struct {
 		Fields []map[string]interface{} `json:"fields"`
@@ -55,6 +60,9 @@ func (c *Config) bitwardenOutput(args []string) []byte {
 }
 
 func (c *Config) bitwardenTemplateFunc(args ...string) map[string]interface{} {
+	c.Bitwarden.Lock()
+	defer c.Bitwarden.Unlock()
+
 	output := c.bitwardenOutput(args)
 	var data map[string]interface{}
 	if err := json.Unmarshal(output, &data); err != nil {
@@ -65,5 +73,8 @@ func (c *Config) bitwardenTemplateFunc(args ...string) map[string]interface{} {
 }
 
 func (c *Config) bitwardenAttachmentTemplateFunc(name, itemid string) string {
+	c.Bitwarden.Lock()
+	defer c.Bitwarden.Unlock()
+
 	return string(c.bitwardenOutput([]string{"attachment", name, "--itemid", itemid, "--raw"}))
 }

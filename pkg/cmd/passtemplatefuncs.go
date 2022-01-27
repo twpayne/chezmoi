@@ -4,11 +4,13 @@ import (
 	"bytes"
 	"fmt"
 	"os/exec"
+	"sync"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
 )
 
 type passConfig struct {
+	sync.Mutex
 	Command string
 	cache   map[string][]byte
 }
@@ -38,11 +40,17 @@ func (c *Config) passOutput(id string) []byte {
 }
 
 func (c *Config) passTemplateFunc(id string) string {
+	c.Pass.Lock()
+	defer c.Pass.Unlock()
+
 	output, _, _ := chezmoi.CutBytes(c.passOutput(id), []byte{'\n'})
 	return string(bytes.TrimSpace(output))
 }
 
 func (c *Config) passFieldsTemplateFunc(id string) map[string]string {
+	c.Pass.Lock()
+	defer c.Pass.Unlock()
+
 	output := c.passOutput(id)
 	result := make(map[string]string)
 	for _, line := range bytes.Split(output, []byte{'\n'}) {
@@ -54,5 +62,8 @@ func (c *Config) passFieldsTemplateFunc(id string) map[string]string {
 }
 
 func (c *Config) passRawTemplateFunc(id string) string {
+	c.Pass.Lock()
+	defer c.Pass.Unlock()
+
 	return string(c.passOutput(id))
 }

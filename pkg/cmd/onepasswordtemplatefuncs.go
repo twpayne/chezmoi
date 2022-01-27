@@ -7,11 +7,13 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"sync"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
 )
 
 type onepasswordConfig struct {
+	sync.Mutex
 	Command       string
 	Prompt        bool
 	outputCache   map[string][]byte
@@ -40,6 +42,9 @@ func (c *Config) onepasswordItem(args ...string) *onePasswordItem {
 }
 
 func (c *Config) onepasswordDetailsFieldsTemplateFunc(args ...string) map[string]interface{} {
+	c.Onepassword.Lock()
+	defer c.Onepassword.Unlock()
+
 	onepasswordItem := c.onepasswordItem(args...)
 	result := make(map[string]interface{})
 	for _, field := range onepasswordItem.Details.Fields {
@@ -51,6 +56,9 @@ func (c *Config) onepasswordDetailsFieldsTemplateFunc(args ...string) map[string
 }
 
 func (c *Config) onepasswordItemFieldsTemplateFunc(args ...string) map[string]interface{} {
+	c.Onepassword.Lock()
+	defer c.Onepassword.Unlock()
+
 	onepasswordItem := c.onepasswordItem(args...)
 	result := make(map[string]interface{})
 	for _, section := range onepasswordItem.Details.Sections {
@@ -64,6 +72,9 @@ func (c *Config) onepasswordItemFieldsTemplateFunc(args ...string) map[string]in
 }
 
 func (c *Config) onepasswordDocumentTemplateFunc(args ...string) string {
+	c.Onepassword.Lock()
+	defer c.Onepassword.Unlock()
+
 	sessionToken := c.onepasswordGetOrRefreshSession(args)
 	onepasswordArgs := getOnepasswordArgs([]string{"get", "document"}, args)
 	output := c.onepasswordOutput(onepasswordArgs, sessionToken)
@@ -101,6 +112,9 @@ func (c *Config) onepasswordOutput(args []string, sessionToken string) []byte {
 }
 
 func (c *Config) onepasswordTemplateFunc(args ...string) map[string]interface{} {
+	c.Onepassword.Lock()
+	defer c.Onepassword.Unlock()
+
 	sessionToken := c.onepasswordGetOrRefreshSession(args)
 	onepasswordArgs := getOnepasswordArgs([]string{"get", "item"}, args)
 	output := c.onepasswordOutput(onepasswordArgs, sessionToken)

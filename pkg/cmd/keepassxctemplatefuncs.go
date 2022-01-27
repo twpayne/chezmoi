@@ -8,6 +8,7 @@ import (
 	"os/exec"
 	"regexp"
 	"strings"
+	"sync"
 
 	"github.com/coreos/go-semver/semver"
 
@@ -20,6 +21,7 @@ type keepassxcAttributeCacheKey struct {
 }
 
 type keepassxcConfig struct {
+	sync.Mutex
 	Command        string
 	Database       chezmoi.AbsPath
 	Args           []string
@@ -35,6 +37,9 @@ var (
 )
 
 func (c *Config) keepassxcAttributeTemplateFunc(entry, attribute string) string {
+	c.Keepassxc.Lock()
+	defer c.Keepassxc.Unlock()
+
 	key := keepassxcAttributeCacheKey{
 		entry:     entry,
 		attribute: attribute,
@@ -67,6 +72,9 @@ func (c *Config) keepassxcAttributeTemplateFunc(entry, attribute string) string 
 }
 
 func (c *Config) keepassxcTemplateFunc(entry string) map[string]string {
+	c.Keepassxc.Lock()
+	defer c.Keepassxc.Unlock()
+
 	if data, ok := c.Keepassxc.cache[entry]; ok {
 		return data
 	}

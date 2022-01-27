@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os/exec"
 	"regexp"
+	"sync"
 
 	"github.com/coreos/go-semver/semver"
 
@@ -20,6 +21,7 @@ var (
 )
 
 type gopassConfig struct {
+	sync.Mutex
 	Command   string
 	versionOK bool
 	cache     map[string]string
@@ -39,6 +41,9 @@ func (c *Config) gopassOutput(args ...string) ([]byte, error) {
 }
 
 func (c *Config) gopassRawTemplateFunc(id string) string {
+	c.Gopass.Lock()
+	defer c.Gopass.Unlock()
+
 	if !c.Gopass.versionOK {
 		if err := c.gopassVersionCheck(); err != nil {
 			returnTemplateError(err)
@@ -67,6 +72,9 @@ func (c *Config) gopassRawTemplateFunc(id string) string {
 }
 
 func (c *Config) gopassTemplateFunc(id string) string {
+	c.Gopass.Lock()
+	defer c.Gopass.Unlock()
+
 	if !c.Gopass.versionOK {
 		if err := c.gopassVersionCheck(); err != nil {
 			returnTemplateError(err)
