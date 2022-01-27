@@ -15,8 +15,9 @@ import (
 )
 
 type (
-	umaskCheck struct{}
-	unameCheck struct{}
+	systeminfoCheck struct{ skippedCheck }
+	umaskCheck      struct{}
+	unameCheck      struct{}
 )
 
 func (umaskCheck) Name() string {

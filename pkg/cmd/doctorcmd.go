@@ -142,6 +142,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		osArchCheck{},
 		unameCheck{},
+		systeminfoCheck{},
 		goVersionCheck{},
 		executableCheck{},
 		upgradeMethodCheck{},

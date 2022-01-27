@@ -21,6 +21,7 @@ mksourcedir
 chezmoi doctor
 stdout '^ok\s+version\s+'
 stdout '^ok\s+os-arch\s+'
+! stdout '^\S+\s+systeminfo\s+'
 stdout '^ok\s+uname\s+'
 stdout '^warning\s+config-file\s+.*multiple config files'
 stdout '^ok\s+source-dir\s+'
