@@ -2,7 +2,7 @@
 
 ## How do I edit my dotfiles with chezmoi?
 
-There are four popular approaches:
+There are five popular approaches:
 
 1. Use `chezmoi edit $FILE`. This will open the source file for `$FILE` in your
    editor, including . For extra ease, use `chezmoi edit --apply $FILE` to apply
