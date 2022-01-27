@@ -248,7 +248,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		Color: autoBool{
 			auto: true,
 		},
-		Concurrency:  1,
+		Concurrency:  0, // FIXME bring on the breakage!
 		Interpreters: defaultInterpreters,
 		Pager:        os.Getenv("PAGER"),
 		PINEntry: pinEntryConfig{
