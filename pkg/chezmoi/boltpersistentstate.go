@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io/fs"
 	"os"
+	"sync"
 	"time"
 
 	"go.etcd.io/bbolt"
@@ -20,6 +21,7 @@ const (
 
 // A BoltPersistentState is a state persisted with bolt.
 type BoltPersistentState struct {
+	sync.Mutex
 	system  System
 	empty   bool
 	path    AbsPath
@@ -65,6 +67,9 @@ func NewBoltPersistentState(system System, path AbsPath, mode BoltPersistentStat
 
 // Close closes b.
 func (b *BoltPersistentState) Close() error {
+	b.Lock()
+	defer b.Unlock()
+
 	if b.db != nil {
 		if err := b.db.Close(); err != nil {
 			return err
@@ -76,10 +81,7 @@ func (b *BoltPersistentState) Close() error {
 
 // CopyTo copies b to p.
 func (b *BoltPersistentState) CopyTo(p PersistentState) error {
-	if b.empty {
-		return nil
-	}
-	if err := b.open(); err != nil {
+	if empty, err := b.openIfNotEmpty(); empty || err != nil {
 		return err
 	}
 
@@ -95,10 +97,7 @@ func (b *BoltPersistentState) CopyTo(p PersistentState) error {
 // Delete deletes the value associate with key in bucket. If bucket or key does
 // not exist then Delete does nothing.
 func (b *BoltPersistentState) Delete(bucket, key []byte) error {
-	if b.empty {
-		return nil
-	}
-	if err := b.open(); err != nil {
+	if empty, err := b.openIfNotEmpty(); empty || err != nil {
 		return err
 	}
 
@@ -113,10 +112,7 @@ func (b *BoltPersistentState) Delete(bucket, key []byte) error {
 
 // DeleteBucket deletes the bucket.
 func (b *BoltPersistentState) DeleteBucket(bucket []byte) error {
-	if b.empty {
-		return nil
-	}
-	if err := b.open(); err != nil {
+	if empty, err := b.openIfNotEmpty(); empty || err != nil {
 		return err
 	}
 
@@ -127,10 +123,7 @@ func (b *BoltPersistentState) DeleteBucket(bucket []byte) error {
 
 // Data returns all the data in b.
 func (b *BoltPersistentState) Data() (interface{}, error) {
-	if b.empty {
-		return nil, nil
-	}
-	if err := b.open(); err != nil {
+	if empty, err := b.openIfNotEmpty(); empty || err != nil {
 		return nil, err
 	}
 
@@ -157,10 +150,7 @@ func (b *BoltPersistentState) Data() (interface{}, error) {
 
 // ForEach calls fn for each key, value pair in bucket.
 func (b *BoltPersistentState) ForEach(bucket []byte, fn func(k, v []byte) error) error {
-	if b.empty {
-		return nil
-	}
-	if err := b.open(); err != nil {
+	if empty, err := b.openIfNotEmpty(); empty || err != nil {
 		return err
 	}
 
@@ -177,10 +167,7 @@ func (b *BoltPersistentState) ForEach(bucket []byte, fn func(k, v []byte) error)
 
 // Get returns the value associated with key in bucket.
 func (b *BoltPersistentState) Get(bucket, key []byte) ([]byte, error) {
-	if b.empty {
-		return nil, nil
-	}
-	if err := b.open(); err != nil {
+	if empty, err := b.openIfNotEmpty(); empty || err != nil {
 		return nil, err
 	}
 
@@ -201,7 +188,10 @@ func (b *BoltPersistentState) Get(bucket, key []byte) ([]byte, error) {
 // Set sets the value associated with key in bucket. bucket will be created if
 // it does not already exist.
 func (b *BoltPersistentState) Set(bucket, key, value []byte) error {
-	if err := b.open(); err != nil {
+	b.Lock()
+	err := b.open()
+	b.Unlock()
+	if err != nil {
 		return err
 	}
 
@@ -212,6 +202,16 @@ func (b *BoltPersistentState) Set(bucket, key, value []byte) error {
 		}
 		return b.Put(key, value)
 	})
+}
+
+func (b *BoltPersistentState) openIfNotEmpty() (bool, error) {
+	b.Lock()
+	defer b.Unlock()
+
+	if b.empty {
+		return true, nil
+	}
+	return false, b.open()
 }
 
 // open opens b's database if it is not already open, creating it if needed.

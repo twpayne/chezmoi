@@ -1,7 +1,10 @@
 package chezmoi
 
+import "sync"
+
 // A MockPersistentState is a mock persistent state.
 type MockPersistentState struct {
+	sync.Mutex
 	buckets map[string]map[string][]byte
 }
 
@@ -19,6 +22,9 @@ func (s *MockPersistentState) Close() error {
 
 // CopyTo implements PersistentState.CopyTo.
 func (s *MockPersistentState) CopyTo(p PersistentState) error {
+	s.Lock()
+	defer s.Unlock()
+
 	for bucket, bucketMap := range s.buckets {
 		for key, value := range bucketMap {
 			if err := p.Set([]byte(bucket), []byte(key), value); err != nil {
@@ -36,6 +42,9 @@ func (s *MockPersistentState) Data() (interface{}, error) {
 
 // Delete implements PersistentState.Delete.
 func (s *MockPersistentState) Delete(bucket, key []byte) error {
+	s.Lock()
+	defer s.Unlock()
+
 	bucketMap, ok := s.buckets[string(bucket)]
 	if !ok {
 		return nil
@@ -46,12 +55,18 @@ func (s *MockPersistentState) Delete(bucket, key []byte) error {
 
 // DeleteBucket implements PersistentState.DeleteBucket.
 func (s *MockPersistentState) DeleteBucket(bucket []byte) error {
+	s.Lock()
+	defer s.Unlock()
+
 	delete(s.buckets, string(bucket))
 	return nil
 }
 
 // ForEach implements PersistentState.ForEach.
 func (s *MockPersistentState) ForEach(bucket []byte, fn func(k, v []byte) error) error {
+	s.Lock()
+	defer s.Unlock()
+
 	for k, v := range s.buckets[string(bucket)] {
 		if err := fn([]byte(k), v); err != nil {
 			return err
@@ -62,6 +77,9 @@ func (s *MockPersistentState) ForEach(bucket []byte, fn func(k, v []byte) error)
 
 // Get implements PersistentState.Get.
 func (s *MockPersistentState) Get(bucket, key []byte) ([]byte, error) {
+	s.Lock()
+	defer s.Unlock()
+
 	bucketMap, ok := s.buckets[string(bucket)]
 	if !ok {
 		return nil, nil
@@ -71,6 +89,9 @@ func (s *MockPersistentState) Get(bucket, key []byte) ([]byte, error) {
 
 // Set implements PersistentState.Set.
 func (s *MockPersistentState) Set(bucket, key, value []byte) error {
+	s.Lock()
+	defer s.Unlock()
+
 	bucketMap, ok := s.buckets[string(bucket)]
 	if !ok {
 		bucketMap = make(map[string][]byte)
