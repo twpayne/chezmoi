@@ -102,6 +102,9 @@ type suspiciousEntriesCheck struct {
 // A umaskCheck checks the umask.
 type umaskCheck struct{}
 
+// A unameCheck checks uname.
+type unameCheck struct{}
+
 // A upgradeMethodCheck checks the upgrade method.
 type upgradeMethodCheck struct{}
 
@@ -141,6 +144,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			versionStr:  c.versionStr,
 		},
 		osArchCheck{},
+		unameCheck{},
 		goVersionCheck{},
 		executableCheck{},
 		upgradeMethodCheck{},
