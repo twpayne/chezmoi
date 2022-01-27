@@ -2,7 +2,7 @@
 [!umask:022] skip
 
 # test that scripts in subdirectories are run in the subdirectory
-chezmoi apply --force
+chezmoi apply --concurrency=1 --force
 cmpenv stdout golden/apply
 
 chezmoi dump

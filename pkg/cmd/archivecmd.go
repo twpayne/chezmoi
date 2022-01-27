@@ -74,9 +74,10 @@ func (c *Config) runArchiveCmd(cmd *cobra.Command, args []string) error {
 		return chezmoi.InvalidArchiveFormatError(format)
 	}
 	if err := c.applyArgs(cmd.Context(), archiveSystem, chezmoi.EmptyAbsPath, args, applyArgsOptions{
-		include:   c.archive.include.Sub(c.archive.exclude),
-		init:      c.archive.init,
-		recursive: c.archive.recursive,
+		concurrency: 1,
+		include:     c.archive.include.Sub(c.archive.exclude),
+		init:        c.archive.init,
+		recursive:   c.archive.recursive,
 	}); err != nil {
 		return err
 	}

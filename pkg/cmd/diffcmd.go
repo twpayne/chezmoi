@@ -57,10 +57,11 @@ func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) (err error) {
 			Reverse: c.Diff.reverse,
 		})
 		if err = c.applyArgs(cmd.Context(), gitDiffSystem, c.DestDirAbsPath, args, applyArgsOptions{
-			include:   c.Diff.include.Sub(c.Diff.Exclude),
-			init:      c.Diff.init,
-			recursive: c.Diff.recursive,
-			umask:     c.Umask,
+			concurrency: 1,
+			include:     c.Diff.include.Sub(c.Diff.Exclude),
+			init:        c.Diff.init,
+			recursive:   c.Diff.recursive,
+			umask:       c.Umask,
 		}); err != nil {
 			return
 		}

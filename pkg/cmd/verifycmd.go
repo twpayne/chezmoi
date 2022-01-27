@@ -38,9 +38,10 @@ func (c *Config) newVerifyCmd() *cobra.Command {
 func (c *Config) runVerifyCmd(cmd *cobra.Command, args []string) error {
 	errorOnWriteSystem := chezmoi.NewErrorOnWriteSystem(c.destSystem, chezmoi.ExitCodeError(1))
 	return c.applyArgs(cmd.Context(), errorOnWriteSystem, c.DestDirAbsPath, args, applyArgsOptions{
-		include:   c.verify.include.Sub(c.verify.exclude),
-		init:      c.verify.init,
-		recursive: c.verify.recursive,
-		umask:     c.Umask,
+		concurrency: c.Concurrency,
+		include:     c.verify.include.Sub(c.verify.exclude),
+		init:        c.verify.init,
+		recursive:   c.verify.recursive,
+		umask:       c.Umask,
 	})
 }

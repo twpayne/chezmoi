@@ -4,13 +4,13 @@ mkhomedir
 ! chezmoi diff
 
 # test that chezmoi apply without --keep-going fails but still writes the first file
-! chezmoi apply --force
+! chezmoi apply --concurrency=1 --force
 cmp $HOME/1ok golden/1ok
 ! exists $HOME/2error
 ! exists $HOME/3ok
 
 # test that chezmoi apply with --keep-going writes all files that it can without errors
-! chezmoi apply --force --keep-going
+! chezmoi apply --concurrency=1 --force --keep-going
 cmp $HOME/1ok golden/1ok
 ! exists $HOME/2error
 cmp $HOME/3ok golden/3ok

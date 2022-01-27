@@ -69,6 +69,7 @@ func (c *Config) runStatusCmd(cmd *cobra.Command, args []string, sourceState *ch
 		return chezmoi.Skip
 	}
 	if err := c.applyArgs(cmd.Context(), dryRunSystem, c.DestDirAbsPath, args, applyArgsOptions{
+		concurrency:  1,
 		include:      c.status.include.Sub(c.status.exclude),
 		init:         c.status.init,
 		recursive:    c.status.recursive,

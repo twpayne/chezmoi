@@ -74,6 +74,7 @@ type Config struct {
 	// Global configuration, settable in the config file.
 	CacheDirAbsPath    chezmoi.AbsPath                 `mapstructure:"cacheDir"`
 	Color              autoBool                        `mapstructure:"color"`
+	Concurrency        int                             `mapstructure:"concurrency"`
 	Data               map[string]interface{}          `mapstructure:"data"`
 	DestDirAbsPath     chezmoi.AbsPath                 `mapstructure:"destDir"`
 	Interpreters       map[string]*chezmoi.Interpreter `mapstructure:"interpreters"`
@@ -247,6 +248,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		Color: autoBool{
 			auto: true,
 		},
+		Concurrency:  1,
 		Interpreters: defaultInterpreters,
 		Pager:        os.Getenv("PAGER"),
 		PINEntry: pinEntryConfig{
@@ -488,6 +490,7 @@ func (c *Config) addTemplateFunc(key string, value interface{}) {
 }
 
 type applyArgsOptions struct {
+	concurrency  int
 	include      *chezmoi.EntryTypeSet
 	init         bool
 	exclude      *chezmoi.EntryTypeSet
@@ -583,17 +586,34 @@ func (c *Config) applyArgs(
 		Umask:        options.umask,
 	}
 
+	var keptGoingAfterErrMu sync.Mutex // FIXME use a flag?
 	keptGoingAfterErr := false
-	for _, targetRelPath := range targetRelPaths {
+	visitTargetRelPathFunc := func(targetRelPath chezmoi.RelPath) error {
 		switch err := sourceState.Apply(
 			targetSystem, c.destSystem, c.persistentState, targetDirAbsPath, targetRelPath, applyOptions,
 		); {
-		case errors.Is(err, chezmoi.Skip):
-			continue
+		case errors.Is(err, chezmoi.Skip): // FIXME is this needed?
+			// continue
+			return nil // FIXME check this
 		case err != nil && c.keepGoing:
 			c.errorf("%v\n", err)
+			keptGoingAfterErrMu.Lock()
 			keptGoingAfterErr = true
-		case err != nil:
+			keptGoingAfterErrMu.Unlock()
+			return nil
+		default:
+			return err
+		}
+	}
+	if options.concurrency == 1 {
+		for _, targetRelPath := range targetRelPaths {
+			if err := visitTargetRelPathFunc(targetRelPath); err != nil {
+				return err
+			}
+		}
+	} else {
+		concurrentTree := chezmoi.NewConcurrentTree(targetRelPaths)
+		if err := concurrentTree.WalkChildren(ctx, chezmoi.EmptyRelPath, visitTargetRelPathFunc); err != nil {
 			return err
 		}
 	}
@@ -1275,6 +1295,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 
 	persistentFlags.Var(&c.CacheDirAbsPath, "cache", "Set cache directory")
 	persistentFlags.Var(&c.Color, "color", "Colorize output")
+	persistentFlags.IntVar(&c.Concurrency, "concurrency", c.Concurrency, "concurrency")
 	persistentFlags.VarP(&c.DestDirAbsPath, "destination", "D", "Set destination directory")
 	persistentFlags.Var(&c.Mode, "mode", "Mode")
 	persistentFlags.Var(&c.persistentStateAbsPath, "persistent-state", "Set persistent state file")
@@ -1287,6 +1308,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	for viperKey, key := range map[string]string{
 		"cacheDir":        "cache",
 		"color":           "color",
+		"concurrency":     "concurrency",
 		"destDir":         "destination",
 		"persistentState": "persistent-state",
 		"mode":            "mode",

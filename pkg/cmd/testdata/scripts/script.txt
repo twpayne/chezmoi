@@ -4,7 +4,7 @@
 [windows] unix2dos golden/stdout
 
 # test that chezmoi apply uses python and ruby from $PATH instead of the system Python and Ruby
-chezmoi apply
+chezmoi apply --concurrency=1
 cmp stdout golden/stdout
 
 -- bin/perl --
