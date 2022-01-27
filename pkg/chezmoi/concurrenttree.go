@@ -35,6 +35,11 @@ func (n ConcurrentTree) WalkChildren(ctx context.Context, relPath RelPath, f fun
 		return nil
 	}
 	group, ctx := errgroup.WithContext(ctx)
+	// FIXME IAMHERE
+	// the idea is that we visit entries within the directory in a deterministic order
+	// so we sort on component (or targetRelPath, which I think is already the case) and then call f
+	// the complexity comes from handling run_before_/run_after_ scripts, and by the time we're here we've lost the before/after information
+	// need to maintain it somehow
 	for childRelPathComponent, child := range n {
 		childRelPath := relPath.Join(childRelPathComponent)
 		child := child
