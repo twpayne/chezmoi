@@ -17,7 +17,8 @@ jobs:
     steps:
       - uses: dessant/lock-threads@v3
         with:
-          issue-inactive-days: '7'
-          issue-lock-reason: 'resolved'
-          process-only: 'issues'
+          issue-lock-reason: resolved
+          issue-inactive-days: 7
+          pr-lock-reason: resolved
+          pr-inactive-days: 7
           log-output: true
