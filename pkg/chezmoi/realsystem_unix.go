@@ -7,6 +7,7 @@ import (
 	"errors"
 	"io/fs"
 	"os"
+	"sync"
 	"syscall"
 
 	"github.com/google/renameio/v2"
@@ -16,6 +17,7 @@ import (
 
 // An RealSystem is a System that writes to a filesystem and executes scripts.
 type RealSystem struct {
+	sync.Mutex
 	fileSystem   vfs.FS
 	safe         bool
 	devCache     map[AbsPath]uint // devCache maps directories to device numbers.
@@ -58,6 +60,9 @@ func (s *RealSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) 
 	// Special case: if writing to the real filesystem in safe mode, use
 	// github.com/google/renameio.
 	if s.safe && s.fileSystem == vfs.OSFS {
+		s.Lock()
+		defer s.Unlock()
+
 		dir := filename.Dir()
 		dev, ok := s.devCache[dir]
 		if !ok {

@@ -2,6 +2,7 @@ package chezmoi
 
 import (
 	"io/fs"
+	"sync"
 
 	vfs "github.com/twpayne/go-vfs/v4"
 )
@@ -19,6 +20,7 @@ const (
 
 // A DumpSystem is a System that writes to a data file.
 type DumpSystem struct {
+	sync.Mutex
 	emptySystemMixin
 	noUpdateSystemMixin
 	data map[string]interface{}
@@ -68,6 +70,9 @@ func (s *DumpSystem) Data() interface{} {
 
 // Mkdir implements System.Mkdir.
 func (s *DumpSystem) Mkdir(dirname AbsPath, perm fs.FileMode) error {
+	s.Lock()
+	defer s.Unlock()
+
 	if _, exists := s.data[dirname.String()]; exists {
 		return fs.ErrExist
 	}
@@ -81,6 +86,9 @@ func (s *DumpSystem) Mkdir(dirname AbsPath, perm fs.FileMode) error {
 
 // RunScript implements System.RunScript.
 func (s *DumpSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
+	s.Lock()
+	defer s.Unlock()
+
 	scriptnameStr := scriptname.String()
 	if _, exists := s.data[scriptnameStr]; exists {
 		return fs.ErrExist
@@ -104,6 +112,9 @@ func (s *DumpSystem) UnderlyingFS() vfs.FS {
 
 // WriteFile implements System.WriteFile.
 func (s *DumpSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error {
+	s.Lock()
+	defer s.Unlock()
+
 	filenameStr := filename.String()
 	if _, exists := s.data[filenameStr]; exists {
 		return fs.ErrExist
@@ -119,6 +130,9 @@ func (s *DumpSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) 
 
 // WriteSymlink implements System.WriteSymlink.
 func (s *DumpSystem) WriteSymlink(oldname string, newname AbsPath) error {
+	s.Lock()
+	defer s.Unlock()
+
 	newnameStr := newname.String()
 	if _, exists := s.data[newnameStr]; exists {
 		return fs.ErrExist
