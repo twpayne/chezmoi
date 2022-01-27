@@ -14,6 +14,11 @@ import (
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
 )
 
+type (
+	umaskCheck struct{}
+	unameCheck struct{}
+)
+
 func (umaskCheck) Name() string {
 	return "umask"
 }
