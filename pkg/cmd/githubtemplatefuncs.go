@@ -24,7 +24,7 @@ func (c *Config) gitHubKeysTemplateFunc(user string) []*github.Key {
 
 	httpClient, err := c.getHTTPClient()
 	if err != nil {
-		returnTemplateError(err)
+		raiseTemplateError(err)
 		return nil
 	}
 	gitHubClient := newGitHubClient(ctx, httpClient)
@@ -36,7 +36,7 @@ func (c *Config) gitHubKeysTemplateFunc(user string) []*github.Key {
 	for {
 		keys, resp, err := gitHubClient.Users.ListKeys(ctx, user, opts)
 		if err != nil {
-			returnTemplateError(err)
+			raiseTemplateError(err)
 			return nil
 		}
 		allKeys = append(allKeys, keys...)
@@ -56,7 +56,7 @@ func (c *Config) gitHubKeysTemplateFunc(user string) []*github.Key {
 func (c *Config) gitHubLatestReleaseTemplateFunc(userRepo string) *github.RepositoryRelease {
 	user, repo, ok := chezmoi.CutString(userRepo, "/")
 	if !ok {
-		returnTemplateError(fmt.Errorf("%s: not a user/repo", userRepo))
+		raiseTemplateError(fmt.Errorf("%s: not a user/repo", userRepo))
 		return nil
 	}
 
@@ -69,14 +69,14 @@ func (c *Config) gitHubLatestReleaseTemplateFunc(userRepo string) *github.Reposi
 
 	httpClient, err := c.getHTTPClient()
 	if err != nil {
-		returnTemplateError(err)
+		raiseTemplateError(err)
 		return nil
 	}
 	gitHubClient := newGitHubClient(ctx, httpClient)
 
 	release, _, err := gitHubClient.Repositories.GetLatestRelease(ctx, user, repo)
 	if err != nil {
-		returnTemplateError(err)
+		raiseTemplateError(err)
 		return nil
 	}
 

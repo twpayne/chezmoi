@@ -16,7 +16,7 @@ type passConfig struct {
 func (c *Config) passTemplateFunc(id string) string {
 	output, err := c.passOutput(id)
 	if err != nil {
-		returnTemplateError(err)
+		raiseTemplateError(err)
 		return ""
 	}
 	firstLine, _, _ := chezmoi.CutBytes(output, []byte{'\n'})
@@ -26,7 +26,7 @@ func (c *Config) passTemplateFunc(id string) string {
 func (c *Config) passFieldsTemplateFunc(id string) map[string]string {
 	output, err := c.passOutput(id)
 	if err != nil {
-		returnTemplateError(err)
+		raiseTemplateError(err)
 		return nil
 	}
 
@@ -42,7 +42,7 @@ func (c *Config) passFieldsTemplateFunc(id string) map[string]string {
 func (c *Config) passRawTemplateFunc(id string) string {
 	output, err := c.passOutput(id)
 	if err != nil {
-		returnTemplateError(err)
+		raiseTemplateError(err)
 		return ""
 	}
 	return string(output)

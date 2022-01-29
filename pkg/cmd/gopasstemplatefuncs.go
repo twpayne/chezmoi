@@ -29,7 +29,7 @@ type gopassConfig struct {
 func (c *Config) gopassTemplateFunc(id string) string {
 	if !c.Gopass.versionOK {
 		if err := c.gopassVersionCheck(); err != nil {
-			returnTemplateError(err)
+			raiseTemplateError(err)
 			return ""
 		}
 		c.Gopass.versionOK = true
@@ -42,7 +42,7 @@ func (c *Config) gopassTemplateFunc(id string) string {
 	args := []string{"show", "--password", id}
 	output, err := c.gopassOutput(args...)
 	if err != nil {
-		returnTemplateError(fmt.Errorf("%s: %w", shellQuoteCommand(c.Gopass.Command, args), err))
+		raiseTemplateError(fmt.Errorf("%s: %w", shellQuoteCommand(c.Gopass.Command, args), err))
 		return ""
 	}
 
@@ -60,7 +60,7 @@ func (c *Config) gopassTemplateFunc(id string) string {
 func (c *Config) gopassRawTemplateFunc(id string) string {
 	if !c.Gopass.versionOK {
 		if err := c.gopassVersionCheck(); err != nil {
-			returnTemplateError(err)
+			raiseTemplateError(err)
 			return ""
 		}
 		c.Gopass.versionOK = true
@@ -73,7 +73,7 @@ func (c *Config) gopassRawTemplateFunc(id string) string {
 	args := []string{"show", "--noparsing", id}
 	output, err := c.gopassOutput(args...)
 	if err != nil {
-		returnTemplateError(fmt.Errorf("%s: %w", shellQuoteCommand(c.Gopass.Command, args), err))
+		raiseTemplateError(fmt.Errorf("%s: %w", shellQuoteCommand(c.Gopass.Command, args), err))
 		return ""
 	}
 

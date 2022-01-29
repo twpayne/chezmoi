@@ -72,7 +72,7 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 					return args[0]
 				default:
 					err := fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
-					returnTemplateError(err)
+					raiseTemplateError(err)
 					return false
 				}
 			},
@@ -87,7 +87,7 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 					return args[0]
 				default:
 					err := fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
-					returnTemplateError(err)
+					raiseTemplateError(err)
 					return 0
 				}
 			},
@@ -105,7 +105,7 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 					return args[0]
 				default:
 					err := fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
-					returnTemplateError(err)
+					raiseTemplateError(err)
 					return ""
 				}
 			},

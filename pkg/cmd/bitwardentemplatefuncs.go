@@ -15,7 +15,7 @@ type bitwardenConfig struct {
 func (c *Config) bitwardenAttachmentTemplateFunc(name, itemid string) string {
 	output, err := c.bitwardenOutput([]string{"attachment", name, "--itemid", itemid, "--raw"})
 	if err != nil {
-		returnTemplateError(err)
+		raiseTemplateError(err)
 		return ""
 	}
 	return string(output)
@@ -24,14 +24,14 @@ func (c *Config) bitwardenAttachmentTemplateFunc(name, itemid string) string {
 func (c *Config) bitwardenFieldsTemplateFunc(args ...string) map[string]interface{} {
 	output, err := c.bitwardenOutput(args)
 	if err != nil {
-		returnTemplateError(err)
+		raiseTemplateError(err)
 		return nil
 	}
 	var data struct {
 		Fields []map[string]interface{} `json:"fields"`
 	}
 	if err := json.Unmarshal(output, &data); err != nil {
-		returnTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(c.Bitwarden.Command, args), err, output))
+		raiseTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(c.Bitwarden.Command, args), err, output))
 		return nil
 	}
 	result := make(map[string]interface{})
@@ -46,12 +46,12 @@ func (c *Config) bitwardenFieldsTemplateFunc(args ...string) map[string]interfac
 func (c *Config) bitwardenTemplateFunc(args ...string) map[string]interface{} {
 	output, err := c.bitwardenOutput(args)
 	if err != nil {
-		returnTemplateError(err)
+		raiseTemplateError(err)
 		return nil
 	}
 	var data map[string]interface{}
 	if err := json.Unmarshal(output, &data); err != nil {
-		returnTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(c.Bitwarden.Command, args), err, output))
+		raiseTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(c.Bitwarden.Command, args), err, output))
 		return nil
 	}
 	return data
