@@ -851,7 +851,6 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		case fileInfo.Name() == removeName:
 			return s.addPatterns(s.remove, sourceAbsPath, parentSourceRelPath)
 		case fileInfo.Name() == scriptsDirName:
-			fmt.Println("reading .chezmoiscripts")
 			scriptsDirSourceStateEntries, err := s.readScriptsDir(ctx, sourceAbsPath)
 			if err != nil {
 				return err
@@ -1914,7 +1913,6 @@ func (s *SourceState) readScriptsDir(
 		allSourceStateEntriesLock.Unlock()
 	}
 	walkFunc := func(ctx context.Context, sourceAbsPath AbsPath, fileInfo fs.FileInfo, err error) error {
-		fmt.Printf("scriptsDirAbsPath=%s sourceAbsPath=%s\n", scriptsDirAbsPath, sourceAbsPath) // FIXME remove
 		if err != nil {
 			return err
 		}

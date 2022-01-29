@@ -1946,13 +1946,6 @@ func (c *Config) targetRelPaths(
 		return nil, nil
 	}
 
-	// FIXME remove
-	for _, targetRelPath := range targetRelPaths {
-		if targetRelPath.String() == ".chezmoiscripts" {
-			panic("found .chezmoiscripts")
-		}
-	}
-
 	// Sort and de-duplicate targetRelPaths in place.
 	sort.Sort(targetRelPaths)
 	n := 1
