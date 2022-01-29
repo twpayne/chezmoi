@@ -1,15 +1,17 @@
 package cmd
 
 import (
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoitest"
 )
 
-func Test_lastpassParseNote(t *testing.T) {
-	for _, tc := range []struct {
+func TestLastpassParseNote(t *testing.T) {
+	for i, tc := range []struct {
 		note     string
 		expected map[string]string
 	}{
@@ -52,6 +54,10 @@ func Test_lastpassParseNote(t *testing.T) {
 			},
 		},
 	} {
-		assert.Equal(t, tc.expected, lastpassParseNote(tc.note))
+		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			actual, err := lastpassParseNote(tc.note)
+			require.NoError(t, err)
+			assert.Equal(t, tc.expected, actual)
+		})
 	}
 }

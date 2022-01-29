@@ -29,6 +29,62 @@ type lastpassConfig struct {
 	cache     map[string][]map[string]interface{}
 }
 
+func (c *Config) lastpassTemplateFunc(id string) []map[string]interface{} {
+	data, err := c.lastpassData(id)
+	if err != nil {
+		returnTemplateError(err)
+		return nil
+	}
+	for _, d := range data {
+		if note, ok := d["note"].(string); ok {
+			d["note"], err = lastpassParseNote(note)
+			if err != nil {
+				returnTemplateError(err)
+				return nil
+			}
+		}
+	}
+	return data
+}
+
+func (c *Config) lastpassRawTemplateFunc(id string) []map[string]interface{} {
+	data, err := c.lastpassData(id)
+	if err != nil {
+		returnTemplateError(err)
+		return nil
+	}
+	return data
+}
+
+func (c *Config) lastpassData(id string) ([]map[string]interface{}, error) {
+	if !c.Lastpass.versionOK {
+		if err := c.lastpassVersionCheck(); err != nil {
+			return nil, err
+		}
+		c.Lastpass.versionOK = true
+	}
+
+	if data, ok := c.Lastpass.cache[id]; ok {
+		return data, nil
+	}
+
+	output, err := c.lastpassOutput("show", "--json", id)
+	if err != nil {
+		return nil, err
+	}
+
+	var data []map[string]interface{}
+	if err := json.Unmarshal(output, &data); err != nil {
+		return nil, fmt.Errorf("%s: parse error: %w", output, err)
+	}
+
+	if c.Lastpass.cache == nil {
+		c.Lastpass.cache = make(map[string][]map[string]interface{})
+	}
+	c.Lastpass.cache[id] = data
+	return data, nil
+}
+
 func (c *Config) lastpassOutput(args ...string) ([]byte, error) {
 	name := c.Lastpass.Command
 	cmd := exec.Command(name, args...)
@@ -39,48 +95,6 @@ func (c *Config) lastpassOutput(args ...string) ([]byte, error) {
 		return nil, err
 	}
 	return output, nil
-}
-
-func (c *Config) lastpassRawTemplateFunc(id string) []map[string]interface{} {
-	if !c.Lastpass.versionOK {
-		if err := c.lastpassVersionCheck(); err != nil {
-			returnTemplateError(err)
-			return nil
-		}
-		c.Lastpass.versionOK = true
-	}
-
-	if data, ok := c.Lastpass.cache[id]; ok {
-		return data
-	}
-
-	output, err := c.lastpassOutput("show", "--json", id)
-	if err != nil {
-		returnTemplateError(err)
-		return nil
-	}
-
-	var data []map[string]interface{}
-	if err := json.Unmarshal(output, &data); err != nil {
-		returnTemplateError(fmt.Errorf("%s: parse error: %w", output, err))
-		return nil
-	}
-
-	if c.Lastpass.cache == nil {
-		c.Lastpass.cache = make(map[string][]map[string]interface{})
-	}
-	c.Lastpass.cache[id] = data
-	return data
-}
-
-func (c *Config) lastpassTemplateFunc(id string) []map[string]interface{} {
-	data := c.lastpassRawTemplateFunc(id)
-	for _, d := range data {
-		if note, ok := d["note"].(string); ok {
-			d["note"] = lastpassParseNote(note)
-		}
-	}
-	return data
 }
 
 func (c *Config) lastpassVersionCheck() error {
@@ -102,7 +116,7 @@ func (c *Config) lastpassVersionCheck() error {
 	return nil
 }
 
-func lastpassParseNote(note string) map[string]string {
+func lastpassParseNote(note string) (map[string]string, error) {
 	result := make(map[string]string)
 	s := bufio.NewScanner(bytes.NewBufferString(note))
 	key := ""
@@ -119,8 +133,7 @@ func lastpassParseNote(note string) map[string]string {
 		}
 	}
 	if err := s.Err(); err != nil {
-		returnTemplateError(err)
-		return nil
+		return nil, err
 	}
-	return result
+	return result, nil
 }
