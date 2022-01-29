@@ -64,11 +64,14 @@ func (n concurrentTreeNode) walkChildren(ctx context.Context, relPath RelPath, f
 		return nil
 	}
 	group, ctx := errgroup.WithContext(ctx)
-	// FIXME IAMHERE
-	// the idea is that we visit entries within the directory in a deterministic order
-	// so we sort on component (or targetRelPath, which I think is already the case) and then call f
-	// the complexity comes from handling run_before_/run_after_ scripts, and by the time we're here we've lost the before/after information
-	// need to maintain it somehow
+	// FIXME IAMHERE the idea is that we visit entries within the directory in a
+	// deterministic order so we sort on component (or targetRelPath, which I
+	// think is already the case) and then call f the complexity comes from
+	// handling run_before_/run_after_ scripts, and by the time we're here we've
+	// lost the before/after information need to maintain it somehow
+	//
+	// FIXME add a PreAppply method to SourceState to run before_ scripts and
+	// run after_ scripts in SourceState.PostApply
 	for childRelPathComponent, child := range n {
 		childRelPath := relPath.Join(childRelPathComponent)
 		child := child
