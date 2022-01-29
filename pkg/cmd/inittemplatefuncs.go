@@ -112,6 +112,7 @@ func (c *Config) writeToStdout(args ...string) string {
 	for _, arg := range args {
 		if _, err := c.stdout.Write([]byte(arg)); err != nil {
 			returnTemplateError(err)
+			return ""
 		}
 	}
 	return ""
