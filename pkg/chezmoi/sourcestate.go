@@ -1,5 +1,6 @@
 package chezmoi
 
+// FIXME concurrently download externals using ConcurrentTree
 // FIXME implement externals in chezmoi source state format
 // FIXME implement external git repos
 // FIXME implement include and exclude entry type sets for externals
