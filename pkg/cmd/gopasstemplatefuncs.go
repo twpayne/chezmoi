@@ -26,16 +26,35 @@ type gopassConfig struct {
 	rawCache  map[string][]byte
 }
 
-func (c *Config) gopassOutput(args ...string) ([]byte, error) {
-	name := c.Gopass.Command
-	cmd := exec.Command(name, args...)
-	cmd.Stdin = c.stdin
-	cmd.Stderr = c.stderr
-	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
-	if err != nil {
-		return nil, err
+func (c *Config) gopassTemplateFunc(id string) string {
+	if !c.Gopass.versionOK {
+		if err := c.gopassVersionCheck(); err != nil {
+			returnTemplateError(err)
+			return ""
+		}
+		c.Gopass.versionOK = true
 	}
-	return output, nil
+
+	if password, ok := c.Gopass.cache[id]; ok {
+		return password
+	}
+
+	args := []string{"show", "--password", id}
+	output, err := c.gopassOutput(args...)
+	if err != nil {
+		returnTemplateError(fmt.Errorf("%s: %w", shellQuoteCommand(c.Gopass.Command, args), err))
+		return ""
+	}
+
+	passwordBytes, _, _ := chezmoi.CutBytes(output, []byte{'\n'})
+	password := string(passwordBytes)
+
+	if c.Gopass.cache == nil {
+		c.Gopass.cache = make(map[string]string)
+	}
+	c.Gopass.cache[id] = password
+
+	return password
 }
 
 func (c *Config) gopassRawTemplateFunc(id string) string {
@@ -66,35 +85,16 @@ func (c *Config) gopassRawTemplateFunc(id string) string {
 	return string(output)
 }
 
-func (c *Config) gopassTemplateFunc(id string) string {
-	if !c.Gopass.versionOK {
-		if err := c.gopassVersionCheck(); err != nil {
-			returnTemplateError(err)
-			return ""
-		}
-		c.Gopass.versionOK = true
-	}
-
-	if password, ok := c.Gopass.cache[id]; ok {
-		return password
-	}
-
-	args := []string{"show", "--password", id}
-	output, err := c.gopassOutput(args...)
+func (c *Config) gopassOutput(args ...string) ([]byte, error) {
+	name := c.Gopass.Command
+	cmd := exec.Command(name, args...)
+	cmd.Stdin = c.stdin
+	cmd.Stderr = c.stderr
+	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
-		returnTemplateError(fmt.Errorf("%s: %w", shellQuoteCommand(c.Gopass.Command, args), err))
-		return ""
+		return nil, err
 	}
-
-	passwordBytes, _, _ := chezmoi.CutBytes(output, []byte{'\n'})
-	password := string(passwordBytes)
-
-	if c.Gopass.cache == nil {
-		c.Gopass.cache = make(map[string]string)
-	}
-	c.Gopass.cache[id] = password
-
-	return password
+	return output, nil
 }
 
 func (c *Config) gopassVersionCheck() error {
