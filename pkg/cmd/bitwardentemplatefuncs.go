@@ -12,8 +12,21 @@ type bitwardenConfig struct {
 	outputCache map[string][]byte
 }
 
+func (c *Config) bitwardenAttachmentTemplateFunc(name, itemid string) string {
+	output, err := c.bitwardenOutput([]string{"attachment", name, "--itemid", itemid, "--raw"})
+	if err != nil {
+		returnTemplateError(err)
+		return ""
+	}
+	return string(output)
+}
+
 func (c *Config) bitwardenFieldsTemplateFunc(args ...string) map[string]interface{} {
-	output := c.bitwardenOutput(args)
+	output, err := c.bitwardenOutput(args)
+	if err != nil {
+		returnTemplateError(err)
+		return nil
+	}
 	var data struct {
 		Fields []map[string]interface{} `json:"fields"`
 	}
@@ -30,10 +43,24 @@ func (c *Config) bitwardenFieldsTemplateFunc(args ...string) map[string]interfac
 	return result
 }
 
-func (c *Config) bitwardenOutput(args []string) []byte {
+func (c *Config) bitwardenTemplateFunc(args ...string) map[string]interface{} {
+	output, err := c.bitwardenOutput(args)
+	if err != nil {
+		returnTemplateError(err)
+		return nil
+	}
+	var data map[string]interface{}
+	if err := json.Unmarshal(output, &data); err != nil {
+		returnTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(c.Bitwarden.Command, args), err, output))
+		return nil
+	}
+	return data
+}
+
+func (c *Config) bitwardenOutput(args []string) ([]byte, error) {
 	key := strings.Join(args, "\x00")
 	if data, ok := c.Bitwarden.outputCache[key]; ok {
-		return data
+		return data, nil
 	}
 
 	name := c.Bitwarden.Command
@@ -43,27 +70,12 @@ func (c *Config) bitwardenOutput(args []string) []byte {
 	cmd.Stderr = c.stderr
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
-		returnTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(name, args), err, output))
-		return nil
+		return nil, fmt.Errorf("%s: %w\n%s", shellQuoteCommand(name, args), err, output)
 	}
 
 	if c.Bitwarden.outputCache == nil {
 		c.Bitwarden.outputCache = make(map[string][]byte)
 	}
 	c.Bitwarden.outputCache[key] = output
-	return output
-}
-
-func (c *Config) bitwardenTemplateFunc(args ...string) map[string]interface{} {
-	output := c.bitwardenOutput(args)
-	var data map[string]interface{}
-	if err := json.Unmarshal(output, &data); err != nil {
-		returnTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(c.Bitwarden.Command, args), err, output))
-		return nil
-	}
-	return data
-}
-
-func (c *Config) bitwardenAttachmentTemplateFunc(name, itemid string) string {
-	return string(c.bitwardenOutput([]string{"attachment", name, "--itemid", itemid, "--raw"}))
+	return output, nil
 }
