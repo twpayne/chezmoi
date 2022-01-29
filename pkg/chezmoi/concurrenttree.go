@@ -2,7 +2,9 @@ package chezmoi
 
 import (
 	"context"
+	"fmt"
 	"sort"
+	"strings"
 
 	"golang.org/x/sync/errgroup"
 )
@@ -16,6 +18,10 @@ func NewConcurrentTree(relPaths RelPaths) ConcurrentTree {
 	sort.Sort(relPaths)
 	root := make(ConcurrentTree)
 	for _, relPath := range relPaths {
+		// FIXME remove
+		if strings.Contains(relPath.String(), ".chezmoiscripts") {
+			panic(fmt.Sprintf("found .chezmoiscripts at %s", relPath))
+		}
 		root.add(relPath.SplitAll())
 	}
 	return root
