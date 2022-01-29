@@ -21,7 +21,7 @@ type ioregData struct {
 func (c *Config) fromYamlTemplateFunc(s string) interface{} {
 	var data interface{}
 	if err := chezmoi.FormatYAML.Unmarshal([]byte(s), &data); err != nil {
-		returnTemplateError(err)
+		raiseTemplateError(err)
 		return nil
 	}
 	return data
@@ -33,14 +33,14 @@ func (c *Config) includeTemplateFunc(filename string) string {
 		var err error
 		absPath, err = chezmoi.NewAbsPathFromExtPath(filename, c.homeDirAbsPath)
 		if err != nil {
-			returnTemplateError(err)
+			raiseTemplateError(err)
 		}
 	} else {
 		absPath = c.SourceDirAbsPath.JoinString(filename)
 	}
 	contents, err := c.fileSystem.ReadFile(absPath.String())
 	if err != nil {
-		returnTemplateError(err)
+		raiseTemplateError(err)
 		return ""
 	}
 	return string(contents)
@@ -58,13 +58,13 @@ func (c *Config) ioregTemplateFunc() map[string]interface{} {
 	cmd := exec.Command("ioreg", "-a", "-l")
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
-		returnTemplateError(fmt.Errorf("ioreg: %w", err))
+		raiseTemplateError(fmt.Errorf("ioreg: %w", err))
 		return nil
 	}
 
 	var value map[string]interface{}
 	if _, err := plist.Unmarshal(output, &value); err != nil {
-		returnTemplateError(fmt.Errorf("ioreg: %w", err))
+		raiseTemplateError(fmt.Errorf("ioreg: %w", err))
 		return nil
 	}
 	c.ioregData.value = value
@@ -84,7 +84,7 @@ func (c *Config) lookPathTemplateFunc(file string) string {
 	case errors.Is(err, fs.ErrNotExist):
 		return ""
 	default:
-		returnTemplateError(err)
+		raiseTemplateError(err)
 		return ""
 	}
 }
@@ -92,7 +92,7 @@ func (c *Config) lookPathTemplateFunc(file string) string {
 func (c *Config) mozillaInstallHashTemplateFunc(path string) string {
 	mozillaInstallHash, err := mozillainstallhash.MozillaInstallHash(path)
 	if err != nil {
-		returnTemplateError(err)
+		raiseTemplateError(err)
 		return ""
 	}
 	return mozillaInstallHash
@@ -101,7 +101,7 @@ func (c *Config) mozillaInstallHashTemplateFunc(path string) string {
 func (c *Config) outputTemplateFunc(name string, args ...string) string {
 	output, err := c.baseSystem.IdempotentCmdOutput(exec.Command(name, args...))
 	if err != nil {
-		returnTemplateError(err)
+		raiseTemplateError(err)
 		return ""
 	}
 	// FIXME we should be able to return output directly, but
@@ -123,7 +123,7 @@ func (c *Config) statTemplateFunc(name string) interface{} {
 	case errors.Is(err, fs.ErrNotExist):
 		return nil
 	default:
-		returnTemplateError(err)
+		raiseTemplateError(err)
 		return nil
 	}
 }
@@ -131,12 +131,12 @@ func (c *Config) statTemplateFunc(name string) interface{} {
 func (c *Config) toYamlTemplateFunc(data interface{}) string {
 	yaml, err := chezmoi.FormatYAML.Marshal(data)
 	if err != nil {
-		returnTemplateError(err)
+		raiseTemplateError(err)
 		return ""
 	}
 	return string(yaml)
 }
 
-func returnTemplateError(err error) {
+func raiseTemplateError(err error) {
 	panic(err)
 }

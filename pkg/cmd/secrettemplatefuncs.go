@@ -26,7 +26,7 @@ func (c *Config) secretTemplateFunc(args ...string) string {
 	cmd.Stderr = c.stderr
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
-		returnTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(name, args), err, output))
+		raiseTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(name, args), err, output))
 		return ""
 	}
 
@@ -51,13 +51,13 @@ func (c *Config) secretJSONTemplateFunc(args ...string) interface{} {
 	cmd.Stderr = c.stderr
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
-		returnTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(name, args), err, output))
+		raiseTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(name, args), err, output))
 		return nil
 	}
 
 	var value interface{}
 	if err := json.Unmarshal(output, &value); err != nil {
-		returnTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(name, args), err, output))
+		raiseTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(name, args), err, output))
 		return nil
 	}
 

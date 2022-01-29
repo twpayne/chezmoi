@@ -23,13 +23,13 @@ func (c *Config) vaultTemplateFunc(key string) interface{} {
 	cmd.Stderr = c.stderr
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
-		returnTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(name, args), err, output))
+		raiseTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(name, args), err, output))
 		return nil
 	}
 
 	var data interface{}
 	if err := json.Unmarshal(output, &data); err != nil {
-		returnTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(name, args), err, output))
+		raiseTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(name, args), err, output))
 		return nil
 	}
 

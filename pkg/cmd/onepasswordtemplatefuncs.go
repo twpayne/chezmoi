@@ -30,25 +30,25 @@ type onePasswordItem struct {
 func (c *Config) onepasswordTemplateFunc(args ...string) map[string]interface{} {
 	sessionToken, err := c.onepasswordGetOrRefreshSessionToken(args)
 	if err != nil {
-		returnTemplateError(err)
+		raiseTemplateError(err)
 		return nil
 	}
 
 	onepasswordArgs, err := onepasswordArgs([]string{"get", "item"}, args)
 	if err != nil {
-		returnTemplateError(err)
+		raiseTemplateError(err)
 		return nil
 	}
 
 	output, err := c.onepasswordOutput(onepasswordArgs, sessionToken)
 	if err != nil {
-		returnTemplateError(err)
+		raiseTemplateError(err)
 		return nil
 	}
 
 	var data map[string]interface{}
 	if err := json.Unmarshal(output, &data); err != nil {
-		returnTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(c.Onepassword.Command, onepasswordArgs), err, output))
+		raiseTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(c.Onepassword.Command, onepasswordArgs), err, output))
 		return nil
 	}
 	return data
@@ -57,7 +57,7 @@ func (c *Config) onepasswordTemplateFunc(args ...string) map[string]interface{} 
 func (c *Config) onepasswordDetailsFieldsTemplateFunc(args ...string) map[string]interface{} {
 	onepasswordItem, err := c.onepasswordItem(args...)
 	if err != nil {
-		returnTemplateError(err)
+		raiseTemplateError(err)
 		return nil
 	}
 
@@ -73,19 +73,19 @@ func (c *Config) onepasswordDetailsFieldsTemplateFunc(args ...string) map[string
 func (c *Config) onepasswordDocumentTemplateFunc(args ...string) string {
 	sessionToken, err := c.onepasswordGetOrRefreshSessionToken(args)
 	if err != nil {
-		returnTemplateError(err)
+		raiseTemplateError(err)
 		return ""
 	}
 
 	onepasswordArgs, err := onepasswordArgs([]string{"get", "document"}, args)
 	if err != nil {
-		returnTemplateError(err)
+		raiseTemplateError(err)
 		return ""
 	}
 
 	output, err := c.onepasswordOutput(onepasswordArgs, sessionToken)
 	if err != nil {
-		returnTemplateError(err)
+		raiseTemplateError(err)
 		return ""
 	}
 	return string(output)
@@ -94,7 +94,7 @@ func (c *Config) onepasswordDocumentTemplateFunc(args ...string) string {
 func (c *Config) onepasswordItemFieldsTemplateFunc(args ...string) map[string]interface{} {
 	onepasswordItem, err := c.onepasswordItem(args...)
 	if err != nil {
-		returnTemplateError(err)
+		raiseTemplateError(err)
 		return nil
 	}
 

@@ -39,7 +39,7 @@ func (c *Config) keepassxcTemplateFunc(entry string) map[string]string {
 	}
 
 	if c.Keepassxc.Database.Empty() {
-		returnTemplateError(errors.New("keepassxc.database not set"))
+		raiseTemplateError(errors.New("keepassxc.database not set"))
 		return nil
 	}
 
@@ -47,7 +47,7 @@ func (c *Config) keepassxcTemplateFunc(entry string) map[string]string {
 	args := []string{"show"}
 	version, err := c.keepassxcVersion()
 	if err != nil {
-		returnTemplateError(err)
+		raiseTemplateError(err)
 		return nil
 	}
 	if version.Compare(keepassxcNeedShowProtectedArgVersion) >= 0 {
@@ -57,13 +57,13 @@ func (c *Config) keepassxcTemplateFunc(entry string) map[string]string {
 	args = append(args, c.Keepassxc.Database.String(), entry)
 	output, err := c.keepassxcOutput(name, args)
 	if err != nil {
-		returnTemplateError(fmt.Errorf("%s: %w", shellQuoteCommand(name, args), err))
+		raiseTemplateError(fmt.Errorf("%s: %w", shellQuoteCommand(name, args), err))
 		return nil
 	}
 
 	data, err := keypassxcParseOutput(output)
 	if err != nil {
-		returnTemplateError(fmt.Errorf("%s: %w", shellQuoteCommand(name, args), err))
+		raiseTemplateError(fmt.Errorf("%s: %w", shellQuoteCommand(name, args), err))
 		return nil
 	}
 
@@ -85,7 +85,7 @@ func (c *Config) keepassxcAttributeTemplateFunc(entry, attribute string) string 
 	}
 
 	if c.Keepassxc.Database.Empty() {
-		returnTemplateError(errors.New("keepassxc.database not set"))
+		raiseTemplateError(errors.New("keepassxc.database not set"))
 		return ""
 	}
 
@@ -93,7 +93,7 @@ func (c *Config) keepassxcAttributeTemplateFunc(entry, attribute string) string 
 	args := []string{"show", "--attributes", attribute, "--quiet"}
 	version, err := c.keepassxcVersion()
 	if err != nil {
-		returnTemplateError(err)
+		raiseTemplateError(err)
 		return ""
 	}
 	if version.Compare(keepassxcNeedShowProtectedArgVersion) >= 0 {
@@ -103,7 +103,7 @@ func (c *Config) keepassxcAttributeTemplateFunc(entry, attribute string) string 
 	args = append(args, c.Keepassxc.Database.String(), entry)
 	output, err := c.keepassxcOutput(name, args)
 	if err != nil {
-		returnTemplateError(fmt.Errorf("%s: %w", shellQuoteCommand(name, args), err))
+		raiseTemplateError(fmt.Errorf("%s: %w", shellQuoteCommand(name, args), err))
 		return ""
 	}
 
@@ -153,6 +153,7 @@ func (c *Config) keepassxcVersion() (*semver.Version, error) {
 	if c.Keepassxc.version != nil {
 		return c.Keepassxc.version, nil
 	}
+
 	name := c.Keepassxc.Command
 	args := []string{"--version"}
 	cmd := exec.Command(name, args...)
@@ -160,6 +161,7 @@ func (c *Config) keepassxcVersion() (*semver.Version, error) {
 	if err != nil {
 		return nil, fmt.Errorf("%s: %w", shellQuoteCommand(name, args), err)
 	}
+
 	c.Keepassxc.version, err = semver.NewVersion(string(bytes.TrimSpace(output)))
 	if err != nil {
 		return nil, fmt.Errorf("cannot parse version %s: %w", output, err)
