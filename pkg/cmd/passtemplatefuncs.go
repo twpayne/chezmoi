@@ -13,37 +13,23 @@ type passConfig struct {
 	cache   map[string][]byte
 }
 
-func (c *Config) passOutput(id string) []byte {
-	if output, ok := c.Pass.cache[id]; ok {
-		return output
-	}
-
-	name := c.Pass.Command
-	args := []string{"show", id}
-	cmd := exec.Command(name, args...)
-	cmd.Stdin = c.stdin
-	cmd.Stderr = c.stderr
-	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
-	if err != nil {
-		returnTemplateError(fmt.Errorf("%s: %w", shellQuoteCommand(name, args), err))
-		return nil
-	}
-
-	if c.Pass.cache == nil {
-		c.Pass.cache = make(map[string][]byte)
-	}
-	c.Pass.cache[id] = output
-
-	return output
-}
-
 func (c *Config) passTemplateFunc(id string) string {
-	output, _, _ := chezmoi.CutBytes(c.passOutput(id), []byte{'\n'})
-	return string(bytes.TrimSpace(output))
+	output, err := c.passOutput(id)
+	if err != nil {
+		returnTemplateError(err)
+		return ""
+	}
+	firstLine, _, _ := chezmoi.CutBytes(output, []byte{'\n'})
+	return string(bytes.TrimSpace(firstLine))
 }
 
 func (c *Config) passFieldsTemplateFunc(id string) map[string]string {
-	output := c.passOutput(id)
+	output, err := c.passOutput(id)
+	if err != nil {
+		returnTemplateError(err)
+		return nil
+	}
+
 	result := make(map[string]string)
 	for _, line := range bytes.Split(output, []byte{'\n'}) {
 		if key, value, ok := chezmoi.CutBytes(line, []byte{':'}); ok {
@@ -54,5 +40,33 @@ func (c *Config) passFieldsTemplateFunc(id string) map[string]string {
 }
 
 func (c *Config) passRawTemplateFunc(id string) string {
-	return string(c.passOutput(id))
+	output, err := c.passOutput(id)
+	if err != nil {
+		returnTemplateError(err)
+		return ""
+	}
+	return string(output)
+}
+
+func (c *Config) passOutput(id string) ([]byte, error) {
+	if output, ok := c.Pass.cache[id]; ok {
+		return output, nil
+	}
+
+	name := c.Pass.Command
+	args := []string{"show", id}
+	cmd := exec.Command(name, args...)
+	cmd.Stdin = c.stdin
+	cmd.Stderr = c.stderr
+	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", shellQuoteCommand(name, args), err)
+	}
+
+	if c.Pass.cache == nil {
+		c.Pass.cache = make(map[string][]byte)
+	}
+	c.Pass.cache[id] = output
+
+	return output, nil
 }
