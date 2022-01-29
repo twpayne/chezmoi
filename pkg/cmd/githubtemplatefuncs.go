@@ -54,7 +54,11 @@ func (c *Config) gitHubKeysTemplateFunc(user string) []*github.Key {
 }
 
 func (c *Config) gitHubLatestReleaseTemplateFunc(userRepo string) *github.RepositoryRelease {
-	user, repo := parseGitHubUserRepo(userRepo)
+	user, repo, ok := chezmoi.CutString(userRepo, "/")
+	if !ok {
+		returnTemplateError(fmt.Errorf("%s: not a user/repo", userRepo))
+		return nil
+	}
 
 	if release := c.gitHub.latestReleaseCache[user][repo]; release != nil {
 		return release
@@ -85,13 +89,4 @@ func (c *Config) gitHubLatestReleaseTemplateFunc(userRepo string) *github.Reposi
 	c.gitHub.latestReleaseCache[user][repo] = release
 
 	return release
-}
-
-func parseGitHubUserRepo(userRepo string) (string, string) {
-	user, repo, ok := chezmoi.CutString(userRepo, "/")
-	if !ok {
-		returnTemplateError(fmt.Errorf("%s: not a user/repo", userRepo))
-		return "", ""
-	}
-	return user, repo
 }
