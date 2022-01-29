@@ -613,6 +613,7 @@ func (c *Config) applyArgs(
 		}
 	} else {
 		concurrentTree := chezmoi.NewConcurrentTree(targetRelPaths)
+		fmt.Println("concurrent walk")
 		if err := concurrentTree.WalkChildren(ctx, chezmoi.EmptyRelPath, visitTargetRelPathFunc); err != nil {
 			return err
 		}
