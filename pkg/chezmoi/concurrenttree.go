@@ -2,41 +2,64 @@ package chezmoi
 
 import (
 	"context"
-	"fmt"
 	"sort"
-	"strings"
 
 	"golang.org/x/sync/errgroup"
 )
 
-// A ConcurrentTree is a tree that can be walked concurrently, with parents
+// A concurrentTreeNode is a tree that can be walked concurrently, with parents
 // always visited before their children.
-type ConcurrentTree map[RelPath]ConcurrentTree
+type concurrentTreeNode map[RelPath]concurrentTreeNode
+
+type ConcurrentTree struct {
+	relPathSet relPathSet
+	root       concurrentTreeNode
+}
 
 // NewConcurrentTree returns a new ConcurrentTree from relPaths.
-func NewConcurrentTree(relPaths RelPaths) ConcurrentTree {
+func NewConcurrentTree(relPaths RelPaths) *ConcurrentTree {
 	sort.Sort(relPaths)
-	root := make(ConcurrentTree)
+	root := make(concurrentTreeNode)
 	for _, relPath := range relPaths {
-		// FIXME remove
-		if strings.Contains(relPath.String(), ".chezmoiscripts") {
-			panic(fmt.Sprintf("found .chezmoiscripts at %s", relPath))
-		}
 		root.add(relPath.SplitAll())
 	}
-	return root
+	return &ConcurrentTree{
+		relPathSet: newRelPathSet(relPaths),
+		root:       root,
+	}
+}
+
+func (t *ConcurrentTree) WalkChildren(ctx context.Context, relPath RelPath, f func(RelPath) error) error {
+	return t.root.walkChildren(ctx, relPath, func(relPath RelPath) error {
+		if !t.relPathSet.contains(relPath) {
+			return nil
+		}
+		return f(relPath)
+	})
+}
+
+// add adds the RelPath composed of relPathComponents to n.
+func (n concurrentTreeNode) add(relPathComponents []RelPath) {
+	child, ok := n[relPathComponents[0]]
+	if !ok {
+		child = make(concurrentTreeNode)
+		n[relPathComponents[0]] = child
+	}
+	if len(relPathComponents) > 1 {
+		child.add(relPathComponents[1:])
+	}
 }
 
 // Walk walks n concurrently.
-func (n ConcurrentTree) Walk(ctx context.Context, relPath RelPath, f func(RelPath) error) error {
+func (n concurrentTreeNode) walk(ctx context.Context, relPath RelPath, f func(RelPath) error) error {
 	if err := f(relPath); err != nil {
 		return err
 	}
-	return n.WalkChildren(ctx, relPath, f)
+	return n.walkChildren(ctx, relPath, f)
 }
 
 // WalkChildren walks n's children concurrently.
-func (n ConcurrentTree) WalkChildren(ctx context.Context, relPath RelPath, f func(RelPath) error) error {
+func (n concurrentTreeNode) walkChildren(ctx context.Context, relPath RelPath, f func(RelPath) error) error {
 	if len(n) == 0 {
 		return nil
 	}
@@ -50,21 +73,9 @@ func (n ConcurrentTree) WalkChildren(ctx context.Context, relPath RelPath, f fun
 		childRelPath := relPath.Join(childRelPathComponent)
 		child := child
 		walkChildFunc := func() error {
-			return child.Walk(ctx, childRelPath, f)
+			return child.walk(ctx, childRelPath, f)
 		}
 		group.Go(walkChildFunc)
 	}
 	return group.Wait()
-}
-
-// add adds the RelPath composed of relPathComponents to n.
-func (n ConcurrentTree) add(relPathComponents []RelPath) {
-	child, ok := n[relPathComponents[0]]
-	if !ok {
-		child = make(ConcurrentTree)
-		n[relPathComponents[0]] = child
-	}
-	if len(relPathComponents) > 1 {
-		child.add(relPathComponents[1:])
-	}
 }

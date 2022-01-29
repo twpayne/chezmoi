@@ -15,18 +15,22 @@ import (
 func TestNewConcurrentTree(t *testing.T) {
 	for i, tc := range []struct {
 		relPaths RelPaths
-		expected ConcurrentTree
+		expected *ConcurrentTree
 	}{
 		{
 			relPaths: nil,
-			expected: ConcurrentTree{},
+			expected: &ConcurrentTree{
+				root: concurrentTreeNode{},
+			},
 		},
 		{
 			relPaths: RelPaths{
 				NewRelPath("dir"),
 			},
-			expected: ConcurrentTree{
-				NewRelPath("dir"): ConcurrentTree{},
+			expected: &ConcurrentTree{
+				root: concurrentTreeNode{
+					NewRelPath("dir"): concurrentTreeNode{},
+				},
 			},
 		},
 		{
@@ -34,9 +38,11 @@ func TestNewConcurrentTree(t *testing.T) {
 				NewRelPath("dir"),
 				NewRelPath("dir/file"),
 			},
-			expected: ConcurrentTree{
-				NewRelPath("dir"): ConcurrentTree{
-					NewRelPath("file"): ConcurrentTree{},
+			expected: &ConcurrentTree{
+				root: concurrentTreeNode{
+					NewRelPath("dir"): concurrentTreeNode{
+						NewRelPath("file"): concurrentTreeNode{},
+					},
 				},
 			},
 		},
@@ -47,11 +53,13 @@ func TestNewConcurrentTree(t *testing.T) {
 				NewRelPath("dir/subdir"),
 				NewRelPath("dir/subdir/file"),
 			},
-			expected: ConcurrentTree{
-				NewRelPath("dir"): ConcurrentTree{
-					NewRelPath("file"): ConcurrentTree{},
-					NewRelPath("subdir"): ConcurrentTree{
-						NewRelPath("file"): ConcurrentTree{},
+			expected: &ConcurrentTree{
+				root: concurrentTreeNode{
+					NewRelPath("dir"): concurrentTreeNode{
+						NewRelPath("file"): concurrentTreeNode{},
+						NewRelPath("subdir"): concurrentTreeNode{
+							NewRelPath("file"): concurrentTreeNode{},
+						},
 					},
 				},
 			},
@@ -64,19 +72,22 @@ func TestNewConcurrentTree(t *testing.T) {
 				NewRelPath("dir/subdir/file"),
 				NewRelPath("file"),
 			},
-			expected: ConcurrentTree{
-				NewRelPath("dir"): ConcurrentTree{
-					NewRelPath("file"): ConcurrentTree{},
-					NewRelPath("subdir"): ConcurrentTree{
-						NewRelPath("file"): ConcurrentTree{},
+			expected: &ConcurrentTree{
+				root: concurrentTreeNode{
+					NewRelPath("dir"): concurrentTreeNode{
+						NewRelPath("file"): concurrentTreeNode{},
+						NewRelPath("subdir"): concurrentTreeNode{
+							NewRelPath("file"): concurrentTreeNode{},
+						},
 					},
+					NewRelPath("file"): concurrentTreeNode{},
 				},
-				NewRelPath("file"): ConcurrentTree{},
 			},
 		},
 	} {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			actual := NewConcurrentTree(tc.relPaths)
+			tc.expected.relPathSet = newRelPathSet(tc.relPaths)
 			require.Equal(t, tc.expected, actual)
 			ctx := context.Background()
 			var visitedRelPathMu sync.Mutex
@@ -94,17 +105,9 @@ func TestNewConcurrentTree(t *testing.T) {
 }
 
 func TestConcurrentTreeWalkChildren(t *testing.T) {
-	t.Skip("FIXME")
-	// FIXME this test currently fails because concurrentTreeNode.walk visits
-	// all intermediate directories. It should only visit entries in the initial
-	// relPaths.
-	//
-	// FIXME quick hack: store the original set of RelPaths passed to
-	// NewConcurrentTree (e.g. in a stringSet) and then only call the visit
-	// function if the relPath is in the original RelPaths
 	for i, tc := range []struct {
 		relPaths RelPaths
-		expected ConcurrentTree
+		expected concurrentTreeNode
 	}{
 		{
 			relPaths: RelPaths{
