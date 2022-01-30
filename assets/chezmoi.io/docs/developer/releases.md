@@ -4,7 +4,14 @@ Releases are managed with [`goreleaser`](https://goreleaser.com/).
 
 ## Testing
 
-To build a test release, without publishing, (Linux only) run:
+To build a test release, without publishing, (Ubuntu Linux only) first ensure
+that the `musl-tools` and `snapcraft` packages are installed:
+
+```console
+$ sudo apt-get install musl-tools snapcraft
+```
+
+Then run:
 
 ```console
 $ make test-release
