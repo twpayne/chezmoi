@@ -5,7 +5,7 @@
 //go:generate go run . completion fish -o completions/chezmoi.fish
 //go:generate go run . completion powershell -o completions/chezmoi.ps1
 //go:generate go run . completion zsh -o completions/chezmoi.zsh
-//go:generate go run ./pkg/cmds/generate-install.sh -o assets/scripts/install.sh
+//go:generate go run ./internal/cmds/generate-install.sh -o assets/scripts/install.sh
 
 package main
 

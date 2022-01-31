@@ -100,7 +100,7 @@ generate:
 .PHONY: lint
 lint: ensure-golangci-lint
 	./bin/golangci-lint run
-	${GO} run ./pkg/cmds/lint-whitespace
+	${GO} run ./internal/cmds/lint-whitespace
 
 .PHONY: format
 format: ensure-gofumpt

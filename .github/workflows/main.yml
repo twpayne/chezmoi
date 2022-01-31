@@ -466,7 +466,7 @@ jobs:
         ignore: completions
     - name: Whitespace
       run: |
-        go run ./pkg/cmds/lint-whitespace
+        go run ./internal/cmds/lint-whitespace
     - name: Typos
       run: |
         go install github.com/twpayne/findtypos@v0.0.1
