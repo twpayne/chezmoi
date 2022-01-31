@@ -121,7 +121,7 @@ issues:
     - forbidigo
     - gosec
     - lll
-    path: ^pkg/cmds/
+    path: ^internal/cmds/
   - linters:
     - gosec
     - lll

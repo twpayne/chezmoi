@@ -113,7 +113,7 @@ func run() error {
 	})
 
 	// Generate install.sh.
-	installShTemplate, err := template.ParseFiles("pkg/cmds/generate-install.sh/install.sh.tmpl")
+	installShTemplate, err := template.ParseFiles("internal/cmds/generate-install.sh/install.sh.tmpl")
 	if err != nil {
 		return err
 	}
