@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"encoding/json"
-	"fmt"
 	"os/exec"
 	"strings"
 )
@@ -31,7 +30,7 @@ func (c *Config) bitwardenFieldsTemplateFunc(args ...string) map[string]interfac
 		Fields []map[string]interface{} `json:"fields"`
 	}
 	if err := json.Unmarshal(output, &data); err != nil {
-		raiseTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(c.Bitwarden.Command, args), err, output))
+		raiseTemplateError(newParseCmdOutputError(c.Bitwarden.Command, args, output, err))
 		return nil
 	}
 	result := make(map[string]interface{})
@@ -51,7 +50,7 @@ func (c *Config) bitwardenTemplateFunc(args ...string) map[string]interface{} {
 	}
 	var data map[string]interface{}
 	if err := json.Unmarshal(output, &data); err != nil {
-		raiseTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(c.Bitwarden.Command, args), err, output))
+		raiseTemplateError(newParseCmdOutputError(c.Bitwarden.Command, args, output, err))
 		return nil
 	}
 	return data
@@ -70,7 +69,7 @@ func (c *Config) bitwardenOutput(args []string) ([]byte, error) {
 	cmd.Stderr = c.stderr
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w\n%s", shellQuoteCommand(name, args), err, output)
+		return nil, newCmdOutputError(cmd, output, err)
 	}
 
 	if c.Bitwarden.outputCache == nil {

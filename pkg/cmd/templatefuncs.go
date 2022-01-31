@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"errors"
-	"fmt"
 	"io/fs"
 	"os/exec"
 	"path/filepath"
@@ -55,16 +54,18 @@ func (c *Config) ioregTemplateFunc() map[string]interface{} {
 		return c.ioregData.value
 	}
 
-	cmd := exec.Command("ioreg", "-a", "-l")
+	command := "ioreg"
+	args := []string{"-a", "-l"}
+	cmd := exec.Command(command, args...)
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
-		raiseTemplateError(fmt.Errorf("ioreg: %w", err))
+		raiseTemplateError(newCmdOutputError(cmd, output, err))
 		return nil
 	}
 
 	var value map[string]interface{}
 	if _, err := plist.Unmarshal(output, &value); err != nil {
-		raiseTemplateError(fmt.Errorf("ioreg: %w", err))
+		raiseTemplateError(newParseCmdOutputError(command, args, output, err))
 		return nil
 	}
 	c.ioregData.value = value
@@ -99,9 +100,10 @@ func (c *Config) mozillaInstallHashTemplateFunc(path string) string {
 }
 
 func (c *Config) outputTemplateFunc(name string, args ...string) string {
-	output, err := c.baseSystem.IdempotentCmdOutput(exec.Command(name, args...))
+	cmd := exec.Command(name, args...)
+	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
-		raiseTemplateError(err)
+		raiseTemplateError(newCmdOutputError(cmd, output, err))
 		return ""
 	}
 	// FIXME we should be able to return output directly, but

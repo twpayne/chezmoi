@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"encoding/json"
-	"fmt"
 	"os/exec"
 )
 
@@ -16,20 +15,20 @@ func (c *Config) vaultTemplateFunc(key string) interface{} {
 		return data
 	}
 
-	name := c.Vault.Command
 	args := []string{"kv", "get", "-format=json", key}
-	cmd := exec.Command(name, args...)
+	//nolint:gosec
+	cmd := exec.Command(c.Vault.Command, args...)
 	cmd.Stdin = c.stdin
 	cmd.Stderr = c.stderr
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
-		raiseTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(name, args), err, output))
+		raiseTemplateError(newCmdOutputError(cmd, output, err))
 		return nil
 	}
 
 	var data interface{}
 	if err := json.Unmarshal(output, &data); err != nil {
-		raiseTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(name, args), err, output))
+		raiseTemplateError(newParseCmdOutputError(c.Vault.Command, args, output, err))
 		return nil
 	}
 
