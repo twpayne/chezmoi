@@ -69,3 +69,15 @@ your configuration file:
     Do not use the prompt on shared machines. A session token verified or
     acquired interactively will be passed to the 1Password CLI through a
     command-line parameter, which is visible to other users of the same system.
+
+!!! info
+
+    If you're using [1Password CLI 2.0](https://developer.1password.com/), then
+    the structure of the data returned by the `onepassword`,
+    `onepasswordDetailsFields`, and `onePasswordItemFiles` template functions
+    will be different and you will need to update your templates.
+
+    !!! warning
+
+    The structure of the data returned will not be finalized until 1Password
+    CLI 2.0 is released.
