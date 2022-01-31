@@ -12,6 +12,8 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+const few = 64
+
 // An OSExecCmdLogObject wraps an *os/exec.Cmd and adds
 // github.com/rs/zerolog.LogObjectMarshaler functionality.
 type OSExecCmdLogObject struct {
@@ -90,7 +92,6 @@ func (p OSProcessStateLogObject) MarshalZerologObject(event *zerolog.Event) {
 
 // FirstFewBytes returns the first few bytes of data in a human-readable form.
 func FirstFewBytes(data []byte) []byte {
-	const few = 64
 	if len(data) > few {
 		data = append([]byte{}, data[:few]...)
 		data = append(data, '.', '.', '.')
