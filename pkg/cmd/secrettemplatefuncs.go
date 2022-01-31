@@ -3,7 +3,6 @@ package cmd
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"os/exec"
 	"strings"
 )
@@ -20,13 +19,13 @@ func (c *Config) secretTemplateFunc(args ...string) string {
 		return value
 	}
 
-	name := c.Secret.Command
-	cmd := exec.Command(name, args...)
+	//nolint:gosec
+	cmd := exec.Command(c.Secret.Command, args...)
 	cmd.Stdin = c.stdin
 	cmd.Stderr = c.stderr
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
-		raiseTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(name, args), err, output))
+		raiseTemplateError(newCmdOutputError(cmd, output, err))
 		return ""
 	}
 
@@ -45,19 +44,19 @@ func (c *Config) secretJSONTemplateFunc(args ...string) interface{} {
 		return value
 	}
 
-	name := c.Secret.Command
-	cmd := exec.Command(name, args...)
+	//nolint:gosec
+	cmd := exec.Command(c.Secret.Command, args...)
 	cmd.Stdin = c.stdin
 	cmd.Stderr = c.stderr
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
-		raiseTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(name, args), err, output))
+		raiseTemplateError(newCmdOutputError(cmd, output, err))
 		return nil
 	}
 
 	var value interface{}
 	if err := json.Unmarshal(output, &value); err != nil {
-		raiseTemplateError(fmt.Errorf("%s: %w\n%s", shellQuoteCommand(name, args), err, output))
+		raiseTemplateError(newParseCmdOutputError(c.Secret.Command, args, output, err))
 		return nil
 	}
 

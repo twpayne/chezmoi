@@ -42,7 +42,7 @@ func (c *Config) gopassTemplateFunc(id string) string {
 	args := []string{"show", "--password", id}
 	output, err := c.gopassOutput(args...)
 	if err != nil {
-		raiseTemplateError(fmt.Errorf("%s: %w", shellQuoteCommand(c.Gopass.Command, args), err))
+		raiseTemplateError(err)
 		return ""
 	}
 
@@ -73,7 +73,7 @@ func (c *Config) gopassRawTemplateFunc(id string) string {
 	args := []string{"show", "--noparsing", id}
 	output, err := c.gopassOutput(args...)
 	if err != nil {
-		raiseTemplateError(fmt.Errorf("%s: %w", shellQuoteCommand(c.Gopass.Command, args), err))
+		raiseTemplateError(err)
 		return ""
 	}
 
@@ -92,7 +92,7 @@ func (c *Config) gopassOutput(args ...string) ([]byte, error) {
 	cmd.Stderr = c.stderr
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
-		return nil, err
+		return nil, newCmdOutputError(cmd, output, err)
 	}
 	return output, nil
 }

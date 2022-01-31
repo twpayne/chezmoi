@@ -43,7 +43,6 @@ func (c *Config) keepassxcTemplateFunc(entry string) map[string]string {
 		return nil
 	}
 
-	name := c.Keepassxc.Command
 	args := []string{"show"}
 	version, err := c.keepassxcVersion()
 	if err != nil {
@@ -55,15 +54,15 @@ func (c *Config) keepassxcTemplateFunc(entry string) map[string]string {
 	}
 	args = append(args, c.Keepassxc.Args...)
 	args = append(args, c.Keepassxc.Database.String(), entry)
-	output, err := c.keepassxcOutput(name, args)
+	output, err := c.keepassxcOutput(c.Keepassxc.Command, args)
 	if err != nil {
-		raiseTemplateError(fmt.Errorf("%s: %w", shellQuoteCommand(name, args), err))
+		raiseTemplateError(err)
 		return nil
 	}
 
 	data, err := keypassxcParseOutput(output)
 	if err != nil {
-		raiseTemplateError(fmt.Errorf("%s: %w", shellQuoteCommand(name, args), err))
+		raiseTemplateError(newParseCmdOutputError(c.Keepassxc.Command, args, output, err))
 		return nil
 	}
 
@@ -89,7 +88,6 @@ func (c *Config) keepassxcAttributeTemplateFunc(entry, attribute string) string 
 		return ""
 	}
 
-	name := c.Keepassxc.Command
 	args := []string{"show", "--attributes", attribute, "--quiet"}
 	version, err := c.keepassxcVersion()
 	if err != nil {
@@ -101,9 +99,9 @@ func (c *Config) keepassxcAttributeTemplateFunc(entry, attribute string) string 
 	}
 	args = append(args, c.Keepassxc.Args...)
 	args = append(args, c.Keepassxc.Database.String(), entry)
-	output, err := c.keepassxcOutput(name, args)
+	output, err := c.keepassxcOutput(c.Keepassxc.Command, args)
 	if err != nil {
-		raiseTemplateError(fmt.Errorf("%s: %w", shellQuoteCommand(name, args), err))
+		raiseTemplateError(err)
 		return ""
 	}
 
@@ -127,7 +125,11 @@ func (c *Config) keepassxcOutput(name string, args []string) ([]byte, error) {
 	cmd := exec.Command(name, args...)
 	cmd.Stdin = bytes.NewBufferString(c.Keepassxc.password + "\n")
 	cmd.Stderr = c.stderr
-	return c.baseSystem.IdempotentCmdOutput(cmd)
+	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
+	if err != nil {
+		return nil, newCmdOutputError(cmd, output, err)
+	}
+	return output, nil
 }
 
 func keypassxcParseOutput(output []byte) (map[string]string, error) {
@@ -159,7 +161,7 @@ func (c *Config) keepassxcVersion() (*semver.Version, error) {
 	cmd := exec.Command(name, args...)
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", shellQuoteCommand(name, args), err)
+		return nil, newCmdOutputError(cmd, output, err)
 	}
 
 	c.Keepassxc.version, err = semver.NewVersion(string(bytes.TrimSpace(output)))

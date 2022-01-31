@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"bytes"
-	"fmt"
 	"os/exec"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
@@ -53,14 +52,14 @@ func (c *Config) passOutput(id string) ([]byte, error) {
 		return output, nil
 	}
 
-	name := c.Pass.Command
 	args := []string{"show", id}
-	cmd := exec.Command(name, args...)
+	//nolint:gosec
+	cmd := exec.Command(c.Pass.Command, args...)
 	cmd.Stdin = c.stdin
 	cmd.Stderr = c.stderr
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
-		return nil, fmt.Errorf("%s: %w", shellQuoteCommand(name, args), err)
+		return nil, newCmdOutputError(cmd, output, err)
 	}
 
 	if c.Pass.cache == nil {
