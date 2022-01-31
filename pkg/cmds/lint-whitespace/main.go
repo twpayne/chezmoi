@@ -29,17 +29,14 @@ var (
 	trailingWhitespaceRx = regexp.MustCompile(`\s+\z`)
 )
 
-func lintFile(filename string) error {
-	data, err := os.ReadFile(filename)
-	if err != nil {
-		return err
-	}
-
+func lintData(filename string, data []byte) error {
 	if !strings.HasPrefix(http.DetectContentType(data), "text/") {
 		return nil
 	}
 
 	lines := bytes.Split(data, []byte{'\n'})
+
+	var err error
 
 	for i, line := range lines {
 		switch {
@@ -55,6 +52,14 @@ func lintFile(filename string) error {
 	}
 
 	return err
+}
+
+func lintFile(filename string) error {
+	data, err := os.ReadFile(filename)
+	if err != nil {
+		return err
+	}
+	return lintData(filename, data)
 }
 
 func run() error {
