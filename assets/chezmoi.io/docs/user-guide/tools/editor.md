@@ -37,3 +37,9 @@ Put the following in your `.vimrc`:
 ```vim title="~/.vimrc"
 autocmd BufWritePost ~/.local/share/chezmoi/* ! chezmoi apply --source-path "%"
 ```
+
+## Use chezmoi with emacs
+
+[`github.com/tuh8888/chezmoi.el`](https://github.com/tuh8888/chezmoi.el)
+provides convenience functions for interacting with chezmoi from emacs, and is
+available in [MELPA](https://melpa.org/#/chezmoi).
