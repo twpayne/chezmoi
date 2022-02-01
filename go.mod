@@ -9,7 +9,7 @@ require (
 	github.com/ProtonMail/go-crypto v0.0.0-20220113124808-70ae35bab23f // indirect
 	github.com/bmatcuk/doublestar/v4 v4.0.2
 	github.com/bradenhilton/mozillainstallhash v1.0.0
-	github.com/charmbracelet/glamour v0.4.0
+	github.com/charmbracelet/glamour v0.5.0
 	github.com/coreos/go-semver v0.3.0
 	github.com/danieljoos/wincred v1.1.2 // indirect
 	github.com/go-git/go-git/v5 v5.4.2
@@ -25,6 +25,7 @@ require (
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/mapstructure v1.4.3
 	github.com/muesli/combinator v0.3.0
+	github.com/muesli/termenv v0.11.0 // indirect
 	github.com/pelletier/go-toml v1.9.4
 	github.com/peterbourgon/diskv v2.0.1+incompatible // indirect
 	github.com/rogpeppe/go-internal v1.8.1
@@ -45,12 +46,13 @@ require (
 	go.etcd.io/bbolt v1.3.6
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.7.0
-	golang.org/x/crypto v0.0.0-20220112180741-5e0467b6c7ce // indirect
-	golang.org/x/net v0.0.0-20220111093109-d55c255bac03 // indirect
+	golang.org/x/crypto v0.0.0-20220131195533-30dcbda58838 // indirect
+	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd // indirect
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
-	golang.org/x/sys v0.0.0-20220111092808-5a964db01320
+	golang.org/x/sys v0.0.0-20220128215802-99c3d69c2c27
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211
+	gopkg.in/ini.v1 v1.66.3 // indirect
 	gopkg.in/yaml.v2 v2.4.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 	howett.net/plist v1.0.0
