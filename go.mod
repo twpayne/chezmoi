@@ -9,7 +9,7 @@ require (
 	github.com/ProtonMail/go-crypto v0.0.0-20220113124808-70ae35bab23f // indirect
 	github.com/bmatcuk/doublestar/v4 v4.0.2
 	github.com/bradenhilton/mozillainstallhash v1.0.0
-	github.com/charmbracelet/glamour v0.4.0
+	github.com/charmbracelet/glamour v0.5.0
 	github.com/coreos/go-semver v0.3.0
 	github.com/danieljoos/wincred v1.1.2 // indirect
 	github.com/go-git/go-git/v5 v5.4.2
