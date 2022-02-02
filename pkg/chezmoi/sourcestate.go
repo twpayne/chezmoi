@@ -92,7 +92,6 @@ type SourceState struct {
 	readTemplateData        bool
 	userTemplateData        map[string]interface{}
 	priorityTemplateData    map[string]interface{}
-	templateData            map[string]interface{}
 	templateFuncs           template.FuncMap
 	templateOptions         []string
 	templates               map[string]*template.Template
@@ -703,7 +702,6 @@ func (s *SourceState) ExecuteTemplateData(name string, data []byte) ([]byte, err
 	templateData := s.TemplateData()
 	if chezmoiTemplateData, ok := templateData["chezmoi"].(map[string]interface{}); ok {
 		chezmoiTemplateData["sourceFile"] = name
-		defer delete(chezmoiTemplateData, "sourceFile")
 	}
 
 	builder := strings.Builder{}
@@ -722,6 +720,8 @@ func (s *SourceState) ForEach(f func(RelPath, SourceStateEntry) error) error {
 
 // Ignore returns if targetRelPath should be ignored.
 func (s *SourceState) Ignore(targetRelPath RelPath) bool {
+	s.Lock()
+	defer s.Unlock()
 	return s.ignore.match(targetRelPath.String())
 }
 
@@ -1061,18 +1061,18 @@ func (s *SourceState) TargetRelPaths() []RelPath {
 	return targetRelPaths
 }
 
-// TemplateData returns s's template data.
+// TemplateData returns a copy of s's template data.
 func (s *SourceState) TemplateData() map[string]interface{} {
-	if s.templateData == nil {
-		s.templateData = make(map[string]interface{})
-		if s.defaultTemplateDataFunc != nil {
-			RecursiveMerge(s.templateData, s.defaultTemplateDataFunc())
-			s.defaultTemplateDataFunc = nil
-		}
-		RecursiveMerge(s.templateData, s.userTemplateData)
-		RecursiveMerge(s.templateData, s.priorityTemplateData)
+	s.Lock()
+	defer s.Unlock()
+	templateData := make(map[string]interface{})
+	if s.defaultTemplateDataFunc != nil {
+		RecursiveMerge(templateData, s.defaultTemplateDataFunc())
+		s.defaultTemplateDataFunc = nil
 	}
-	return s.templateData
+	RecursiveMerge(templateData, s.userTemplateData)
+	RecursiveMerge(templateData, s.priorityTemplateData)
+	return templateData
 }
 
 // addExternal adds external source entries to s.
@@ -1117,6 +1117,10 @@ func (s *SourceState) addPatterns(patternSet *patternSet, sourceAbsPath AbsPath,
 	if err != nil {
 		return err
 	}
+
+	s.Lock()
+	defer s.Unlock()
+
 	dir := sourceRelPath.Dir().TargetRelPath("")
 	scanner := bufio.NewScanner(bytes.NewReader(data))
 	lineNumber := 0
