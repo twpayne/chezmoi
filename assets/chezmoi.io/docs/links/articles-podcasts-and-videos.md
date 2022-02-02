@@ -14,6 +14,7 @@
 
 | Date       | Version | Format      | Link                                                                                                                                                                                                                |
 | ---------- | ------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2022-02-02 | 2.11.0  | Text (FR)   | [Controler ses dotfiles en environnement éphémère](https://blog.wescale.fr/2022/02/02/controler-ses-dotfiles-en-environnement-ephemere-2/)                                                                          |
 | 2022-02-01 | 2.10.1  | Text (JP)   | [chezmoi で dotfiles を手軽に柔軟にセキュアに管理する](https://zenn.dev/ryo_kawamata/articles/introduce-chezmoi)                                                                                                    |
 | 2022-01-26 | 2.10.1  | Text (JP)   | [chezmoi で dotfiles を管理する](https://blog.zoncoen.net/2022/01/26/chezmoi/)                                                                                                                                      |
 | 2022-01-12 | 2.9.5   | Text (IT)   | [Come funzionano i miei Mac](https://correntedebole.com/come-funzionano-i-miei-mac/)                                                                                                                                |
