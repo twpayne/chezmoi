@@ -14,3 +14,4 @@ def on_post_build(config, **kwargs):
     # remove non-website files
     os.remove(os.path.join(site_dir, 'hooks.py'))
     os.remove(os.path.join(site_dir, 'reference/commands/commands.go'))
+    os.remove(os.path.join(site_dir, 'reference/commands/commands_test.go'))
