@@ -92,6 +92,7 @@ type SourceState struct {
 	readTemplateData        bool
 	userTemplateData        map[string]interface{}
 	priorityTemplateData    map[string]interface{}
+	templateData            map[string]interface{}
 	templateFuncs           template.FuncMap
 	templateOptions         []string
 	templates               map[string]*template.Template
@@ -702,6 +703,7 @@ func (s *SourceState) ExecuteTemplateData(name string, data []byte) ([]byte, err
 	templateData := s.TemplateData()
 	if chezmoiTemplateData, ok := templateData["chezmoi"].(map[string]interface{}); ok {
 		chezmoiTemplateData["sourceFile"] = name
+		defer delete(chezmoiTemplateData, "sourceFile")
 	}
 
 	builder := strings.Builder{}
@@ -800,7 +802,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		allSourceStateEntries[relPath] = append(allSourceStateEntries[relPath], sourceStateEntries...)
 		allSourceStateEntriesMu.Unlock()
 	}
-	walkFunc := func(ctx context.Context, sourceAbsPath AbsPath, fileInfo fs.FileInfo, err error) error {
+	walkFunc := func(sourceAbsPath AbsPath, fileInfo fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
@@ -896,7 +898,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			}
 		}
 	}
-	if err := concurrentWalkSourceDir(ctx, s.system, s.sourceDirAbsPath, walkFunc); err != nil {
+	if err := WalkSourceDir(s.system, s.sourceDirAbsPath, walkFunc); err != nil {
 		return err
 	}
 
@@ -1061,18 +1063,18 @@ func (s *SourceState) TargetRelPaths() []RelPath {
 	return targetRelPaths
 }
 
-// TemplateData returns a copy of s's template data.
+// TemplateData returns s's template data.
 func (s *SourceState) TemplateData() map[string]interface{} {
-	s.Lock()
-	defer s.Unlock()
-	templateData := make(map[string]interface{})
-	if s.defaultTemplateDataFunc != nil {
-		RecursiveMerge(templateData, s.defaultTemplateDataFunc())
-		s.defaultTemplateDataFunc = nil
+	if s.templateData == nil {
+		s.templateData = make(map[string]interface{})
+		if s.defaultTemplateDataFunc != nil {
+			RecursiveMerge(s.templateData, s.defaultTemplateDataFunc())
+			s.defaultTemplateDataFunc = nil
+		}
+		RecursiveMerge(s.templateData, s.userTemplateData)
+		RecursiveMerge(s.templateData, s.priorityTemplateData)
 	}
-	RecursiveMerge(templateData, s.userTemplateData)
-	RecursiveMerge(templateData, s.priorityTemplateData)
-	return templateData
+	return s.templateData
 }
 
 // addExternal adds external source entries to s.
