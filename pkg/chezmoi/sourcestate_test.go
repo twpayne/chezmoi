@@ -1335,6 +1335,7 @@ func TestSourceStateRead(t *testing.T) {
 				requireEvaluateAll(t, tc.expectedSourceState, system)
 				s.baseSystem = nil
 				s.system = nil
+				s.templateData = nil
 				s.version = semver.Version{}
 				assert.Equal(t, tc.expectedSourceState, s)
 			})
