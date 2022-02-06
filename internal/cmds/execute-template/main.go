@@ -2,21 +2,44 @@ package main
 
 import (
 	"bytes"
+	"context"
 	"flag"
 	"fmt"
+	"net/http"
 	"os"
 	"path"
+	"strings"
 	"text/template"
 
 	"github.com/Masterminds/sprig/v3"
 	"github.com/google/renameio/v2/maybe"
 	"gopkg.in/yaml.v3"
+
+	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
 )
 
 var (
 	templateDataFilename = flag.String("data", "", "data filename")
 	outputFilename       = flag.String("output", "", "output filename")
 )
+
+func gitHubLatestRelease(userRepo string) string {
+	user, repo, ok := chezmoi.CutString(userRepo, "/")
+	if !ok {
+		panic(fmt.Errorf("%s: not a user/repo", userRepo))
+	}
+
+	ctx := context.Background()
+
+	client := chezmoi.NewGitHubClient(ctx, http.DefaultClient)
+
+	rr, _, err := client.Repositories.GetLatestRelease(ctx, user, repo)
+	if err != nil {
+		panic(err)
+	}
+
+	return strings.TrimPrefix(rr.GetName(), "v")
+}
 
 func run() error {
 	flag.Parse()
@@ -38,7 +61,9 @@ func run() error {
 
 	templateName := path.Base(flag.Arg(0))
 	buffer := &bytes.Buffer{}
-	tmpl, err := template.New(templateName).Funcs(sprig.TxtFuncMap()).ParseFiles(flag.Args()...)
+	funcMap := sprig.TxtFuncMap()
+	funcMap["gitHubLatestRelease"] = gitHubLatestRelease
+	tmpl, err := template.New(templateName).Funcs(funcMap).ParseFiles(flag.Args()...)
 	if err != nil {
 		return err
 	}

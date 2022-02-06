@@ -120,7 +120,7 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	client := newGitHubClient(ctx, httpClient)
+	client := chezmoi.NewGitHubClient(ctx, httpClient)
 
 	// Get the latest release.
 	rr, _, err := client.Repositories.GetLatestRelease(ctx, c.upgrade.owner, c.upgrade.repo)
