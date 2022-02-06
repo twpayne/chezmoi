@@ -27,7 +27,7 @@ func (c *Config) gitHubKeysTemplateFunc(user string) []*github.Key {
 		raiseTemplateError(err)
 		return nil
 	}
-	gitHubClient := newGitHubClient(ctx, httpClient)
+	gitHubClient := chezmoi.NewGitHubClient(ctx, httpClient)
 
 	var allKeys []*github.Key
 	opts := &github.ListOptions{
@@ -72,7 +72,7 @@ func (c *Config) gitHubLatestReleaseTemplateFunc(userRepo string) *github.Reposi
 		raiseTemplateError(err)
 		return nil
 	}
-	gitHubClient := newGitHubClient(ctx, httpClient)
+	gitHubClient := chezmoi.NewGitHubClient(ctx, httpClient)
 
 	release, _, err := gitHubClient.Repositories.GetLatestRelease(ctx, user, repo)
 	if err != nil {
