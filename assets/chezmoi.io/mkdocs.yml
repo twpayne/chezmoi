@@ -224,4 +224,6 @@ plugins:
       docs/templating.md: user-guide/templating.md
 - mkdocs-simple-hooks:
     hooks:
+      on_pre_build: "docs.hooks:on_pre_build"
+      on_files: "docs.hooks:on_files"
       on_post_build: "docs.hooks:on_post_build"
