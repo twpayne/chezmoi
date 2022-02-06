@@ -11,6 +11,7 @@ non_website_paths = [
 ]
 
 templates = [
+    "install.md",
     "links/articles-podcasts-and-videos.md",
 ]
 

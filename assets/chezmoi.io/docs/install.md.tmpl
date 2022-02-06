@@ -1,0 +1,220 @@
+{{- $version := gitHubLatestRelease "twpayne/chezmoi" -}}
+# Install
+
+The latest version of chezmoi is {{ $version }}.
+
+## One-line binary install
+
+Install the correct binary for your operating system and architecture in `./bin`
+with a single command:
+
+=== "curl"
+
+    ```sh
+    sh -c "$(curl -fsLS chezmoi.io/get)"
+    ```
+
+=== "wget"
+
+    ```sh
+    sh -c "$(wget -qO- chezmoi.io/get)"
+    ```
+
+=== "PowerShell"
+
+    ```powershell
+    (iwr -UseBasicParsing https://chezmoi.io/get.ps1).Content | powershell -c -
+    ```
+
+!!! hint
+
+    If you already have a dotfiles repo using chezmoi on GitHub at
+    `https://github.com/<github-username>/dotfiles` then you can install
+    chezmoi and your dotfiles with the single command:
+
+    ```sh
+    sh -c "$(curl -fsLS chezmoi.io/get)" -- init --apply <github-username>
+    ```
+
+## One-line package install
+
+Install chezmoi with your package manager with a single command:
+
+=== "Linux"
+
+    === "snap"
+
+        ```sh
+        snap install chezmoi --classic
+        ```
+
+    === "Linuxbrew"
+
+        ```sh
+        brew install chezmoi
+        ```
+
+    === "asdf"
+
+        ```sh
+        asdf plugin add chezmoi && asdf install chezmoi {{ $version }}
+        ```
+
+    === "Alpine"
+
+        ```sh
+        apk add chezmoi
+        ```
+
+    === "Arch"
+
+        ```sh
+        pacman -S chezmoi
+        ```
+
+    === "Guix"
+
+        ```sh
+        guix install chezmoi
+        ```
+
+    === "Nix / NixOS"
+
+        ```sh
+        nix-env -i chezmoi
+        ```
+
+    === "Void"
+
+        ```sh
+        xbps-install -S chezmoi
+        ```
+
+=== "macOS"
+
+    === "Homebrew"
+
+        ```sh
+        brew install chezmoi
+        ```
+
+    === "MacPorts"
+
+        ```sh
+        port install chezmoi
+        ```
+
+    === "Nix"
+
+        ```sh
+        nix-env -i chezmoi
+        ```
+
+    === "asdf"
+
+        ```sh
+        asdf plugin add chezmoi && asdf install chezmoi {{ $version }}
+        ```
+
+=== "Windows"
+
+    === "Chocolately"
+
+        ```
+        choco install chezmoi
+        ```
+
+    === "Scoop"
+
+        ```
+        scoop install chezmoi
+        ```
+
+=== "FreeBSD"
+
+    ```sh
+    pkg install chezmoi
+    ```
+
+=== "OpenIndiana"
+
+    ```sh
+    pkg install application/chezmoi
+    ```
+
+## Download a pre-built Linux package
+
+Download a package for your distribution and architecture.
+
+=== "deb"
+
+{{ range $index, $arch := list "amd64" "arm64" "armel" "i386" "ppc64" "ppc64le" }}
+    [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_linux_{{ $arch }}.deb)
+{{- end }}
+
+=== "rpm"
+
+{{ range $index, $arch := list "aarch64" "armhfp" "i686" "ppc64" "ppc64le" "x86_64" }}
+    [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi-{{ $version }}-{{ $arch }}.rpm)
+{{- end }}
+
+=== "apk"
+
+{{ range $index, $arch := list "386" "amd64" "arm" "arm64" "ppc64" "ppc64le" }}
+    [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_linux_{{ $arch }}.apk)
+{{- end }}
+
+## Download a pre-built binary
+
+Download an archive for your operating system and architecture containing a
+pre-built binary and shell completions.
+
+=== "Linux"
+
+{{ range $index, $arch := list "amd64" "arm" "arm64" "i386" "ppc64" "ppc64le" }}
+    [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_linux_{{ $arch }}.tar.gz)
+{{- end }}
+    [`amd64` (glibc)](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_linux-glibc_amd64.tar.gz)
+    [`amd64` (musl)](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_linux-musl_amd64.tar.gz)
+
+=== "macOS"
+
+{{ range $index, $arch := list "amd64" "arm64" }}
+    [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_darwin_{{ $arch }}.tar.gz)
+{{- end }}
+
+=== "Windows"
+
+{{ range $index, $arch := list "amd64" "arm" "arm64" "i386" }}
+    [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_windows_{{ $arch }}.zip)
+{{- end }}
+
+=== "FreeBSD"
+
+{{ range $index, $arch := list "amd64" "arm" "arm64" "i386" }}
+    [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_freebsd_{{ $arch }}.tar.gz)
+{{- end }}
+
+=== "OpenBSD"
+
+{{ range $index, $arch := list "amd64" "arm" "arm64" "i386" }}
+    [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_openbsd_{{ $arch }}.tar.gz)
+{{- end }}
+
+=== "Illumos"
+
+    [`amd64`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_illumos_amd64.tar.gz)
+
+=== "Solaris"
+
+    [`amd64`](https://github.com/twpayne/chezmoi/releases/download/v2.11.2/chezmoi_{{ $version }}_solaris_amd64.tar.gz)
+
+## Install from source
+
+Download, build, and install chezmoi for your system with Go 1.16 or later:
+
+```console
+$ git clone https://github.com/twpayne/chezmoi.git
+$ cd chezmoi
+$ make install
+```
