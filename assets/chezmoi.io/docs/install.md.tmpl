@@ -148,19 +148,19 @@ Download a package for your distribution and architecture.
 
 === "deb"
 
-{{ range $index, $arch := list "amd64" "arm64" "armel" "i386" "ppc64" "ppc64le" }}
+{{ range $arch := list "amd64" "arm64" "armel" "i386" "ppc64" "ppc64le" }}
     [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_linux_{{ $arch }}.deb)
 {{- end }}
 
 === "rpm"
 
-{{ range $index, $arch := list "aarch64" "armhfp" "i686" "ppc64" "ppc64le" "x86_64" }}
+{{ range $arch := list "aarch64" "armhfp" "i686" "ppc64" "ppc64le" "x86_64" }}
     [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi-{{ $version }}-{{ $arch }}.rpm)
 {{- end }}
 
 === "apk"
 
-{{ range $index, $arch := list "386" "amd64" "arm" "arm64" "ppc64" "ppc64le" }}
+{{ range $arch := list "386" "amd64" "arm" "arm64" "ppc64" "ppc64le" }}
     [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_linux_{{ $arch }}.apk)
 {{- end }}
 
@@ -171,7 +171,7 @@ pre-built binary and shell completions.
 
 === "Linux"
 
-{{ range $index, $arch := list "amd64" "arm" "arm64" "i386" "ppc64" "ppc64le" }}
+{{ range $arch := list "amd64" "arm" "arm64" "i386" "ppc64" "ppc64le" }}
     [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_linux_{{ $arch }}.tar.gz)
 {{- end }}
     [`amd64` (glibc)](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_linux-glibc_amd64.tar.gz)
@@ -179,25 +179,25 @@ pre-built binary and shell completions.
 
 === "macOS"
 
-{{ range $index, $arch := list "amd64" "arm64" }}
+{{ range $arch := list "amd64" "arm64" }}
     [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_darwin_{{ $arch }}.tar.gz)
 {{- end }}
 
 === "Windows"
 
-{{ range $index, $arch := list "amd64" "arm" "arm64" "i386" }}
+{{ range $arch := list "amd64" "arm" "arm64" "i386" }}
     [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_windows_{{ $arch }}.zip)
 {{- end }}
 
 === "FreeBSD"
 
-{{ range $index, $arch := list "amd64" "arm" "arm64" "i386" }}
+{{ range $arch := list "amd64" "arm" "arm64" "i386" }}
     [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_freebsd_{{ $arch }}.tar.gz)
 {{- end }}
 
 === "OpenBSD"
 
-{{ range $index, $arch := list "amd64" "arm" "arm64" "i386" }}
+{{ range $arch := list "amd64" "arm" "arm64" "i386" }}
     [`{{ $arch }}`](https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_openbsd_{{ $arch }}.tar.gz)
 {{- end }}
 
