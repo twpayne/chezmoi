@@ -19,6 +19,18 @@ func TestGuessDotfilesRepoURL(t *testing.T) {
 			expectedSSHRepoURL:  "git@github.com:user/dotfiles.git",
 		},
 		{
+			arg:                  "codeberg.org/user",
+			expectedHTTPRepoURL:  "https://codeberg.org/user/dotfiles.git",
+			expectedHTTPUsername: "user",
+			expectedSSHRepoURL:   "git@codeberg.org:user/dotfiles.git",
+		},
+		{
+			arg:                  "codeberg.org/user/dots",
+			expectedHTTPRepoURL:  "https://codeberg.org/user/dots.git",
+			expectedHTTPUsername: "user",
+			expectedSSHRepoURL:   "git@codeberg.org:user/dots.git",
+		},
+		{
 			arg:                  "gitlab.com/user",
 			expectedHTTPRepoURL:  "https://gitlab.com/user/dotfiles.git",
 			expectedHTTPUsername: "user",

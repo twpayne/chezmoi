@@ -85,6 +85,20 @@ var dotfilesRepoGuesses = []struct {
 		httpUsernameGuessRepl: "$1",
 		sshRepoGuessRepl:      "git@git.sr.ht:~$1/$2",
 	},
+	/*
+		{
+			rx:                    regexp.MustCompile(`\Acodeberg\.org/([-0-9A-Za-z]+)\z`),
+			httpRepoGuessRepl:     "https://codeberg.org/$1/dotfiles.git",
+			httpUsernameGuessRepl: "$1",
+			sshRepoGuessRepl:      "git@codeberg.org:$1/dotfiles.git",
+		},
+		{
+			rx:                    regexp.MustCompile(`\Acodeberg\.org/([-0-9A-Za-z]+)/([-0-9A-Za-z]+)\z`),
+			httpRepoGuessRepl:     "https://codeberg.org/$1/$2.git",
+			httpUsernameGuessRepl: "$1",
+			sshRepoGuessRepl:      "git@codeberg.org:$1/$2.git",
+		},
+	*/
 }
 
 // A loggableGitCloneOptions is a git.CloneOptions that implements
