@@ -1284,7 +1284,7 @@ func TestSourceStateRead(t *testing.T) {
 					},
 				},
 			},
-			expectedError: "source state requires version 2.3.4 or later, chezmoi is version 1.2.3",
+			expectedError: "source state requires chezmoi version 2.3.4 or later, chezmoi is version 1.2.3",
 		},
 		{
 			name: "ignore_dir",

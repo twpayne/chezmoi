@@ -21,14 +21,6 @@ const (
 	withoutSessionToken withSessionTokenType = false
 )
 
-type unsupportedVersionError struct {
-	version *semver.Version
-}
-
-func (e unsupportedVersionError) Error() string {
-	return fmt.Sprintf("%s: unsupported version", e.version)
-}
-
 var onepasswordVersionRx = regexp.MustCompile(`^(\d+\.\d+\.\d+\S*)`)
 
 type onepasswordConfig struct {
@@ -74,7 +66,7 @@ func (c *Config) onepasswordTemplateFunc(userArgs ...string) map[string]interfac
 	case version.Major >= 2:
 		baseArgs = []string{"item", "get", "--format", "json"}
 	default:
-		panic(unsupportedVersionError{
+		panic(&unsupportedVersionError{
 			version: version,
 		})
 	}
@@ -135,7 +127,7 @@ func (c *Config) onepasswordDetailsFieldsTemplateFunc(userArgs ...string) map[st
 		return result
 
 	default:
-		panic(unsupportedVersionError{
+		panic(&unsupportedVersionError{
 			version: version,
 		})
 	}
@@ -154,7 +146,7 @@ func (c *Config) onepasswordDocumentTemplateFunc(userArgs ...string) string {
 	case version.Major >= 2:
 		baseArgs = []string{"document", "get"}
 	default:
-		panic(unsupportedVersionError{
+		panic(&unsupportedVersionError{
 			version: version,
 		})
 	}
@@ -212,7 +204,7 @@ func (c *Config) onepasswordItemFieldsTemplateFunc(userArgs ...string) map[strin
 		return result
 
 	default:
-		panic(unsupportedVersionError{
+		panic(&unsupportedVersionError{
 			version: version,
 		})
 	}
@@ -367,13 +359,18 @@ func (c *Config) onepasswordVersion() (*semver.Version, error) {
 
 	m := onepasswordVersionRx.FindSubmatch(output)
 	if m == nil {
-		c.Onepassword.versionErr = fmt.Errorf("%q: cannot extract version", bytes.TrimSpace(output))
+		c.Onepassword.versionErr = &extractVersionError{
+			output: output,
+		}
 		return nil, c.Onepassword.versionErr
 	}
 
 	version, err := semver.NewVersion(string(m[1]))
 	if err != nil {
-		c.Onepassword.versionErr = fmt.Errorf("%q: cannot parse version: %w", m[1], err)
+		c.Onepassword.versionErr = &parseVersionError{
+			output: m[1],
+			err:    err,
+		}
 		return nil, c.Onepassword.versionErr
 	}
 

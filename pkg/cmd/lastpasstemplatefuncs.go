@@ -101,14 +101,19 @@ func (c *Config) lastpassVersionCheck() error {
 	}
 	m := lastpassVersionRx.FindSubmatch(output)
 	if m == nil {
-		return fmt.Errorf("%s: could not extract version", output)
+		return &extractVersionError{
+			output: output,
+		}
 	}
 	version, err := semver.NewVersion(string(m[1]))
 	if err != nil {
 		return err
 	}
 	if version.LessThan(lastpassMinVersion) {
-		return fmt.Errorf("version %s found, need version %s or later", version, lastpassMinVersion)
+		return &versionTooOldError{
+			have: version,
+			need: &lastpassMinVersion,
+		}
 	}
 	return nil
 }
