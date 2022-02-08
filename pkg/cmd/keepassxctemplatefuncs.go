@@ -39,15 +39,13 @@ func (c *Config) keepassxcTemplateFunc(entry string) map[string]string {
 	}
 
 	if c.Keepassxc.Database.Empty() {
-		raiseTemplateError(errors.New("keepassxc.database not set"))
-		return nil
+		panic(errors.New("keepassxc.database not set"))
 	}
 
 	args := []string{"show"}
 	version, err := c.keepassxcVersion()
 	if err != nil {
-		raiseTemplateError(err)
-		return nil
+		panic(err)
 	}
 	if version.Compare(keepassxcNeedShowProtectedArgVersion) >= 0 {
 		args = append(args, "--show-protected")
@@ -56,14 +54,12 @@ func (c *Config) keepassxcTemplateFunc(entry string) map[string]string {
 	args = append(args, c.Keepassxc.Database.String(), entry)
 	output, err := c.keepassxcOutput(c.Keepassxc.Command, args)
 	if err != nil {
-		raiseTemplateError(err)
-		return nil
+		panic(err)
 	}
 
 	data, err := keypassxcParseOutput(output)
 	if err != nil {
-		raiseTemplateError(newParseCmdOutputError(c.Keepassxc.Command, args, output, err))
-		return nil
+		panic(newParseCmdOutputError(c.Keepassxc.Command, args, output, err))
 	}
 
 	if c.Keepassxc.cache == nil {
@@ -84,15 +80,13 @@ func (c *Config) keepassxcAttributeTemplateFunc(entry, attribute string) string 
 	}
 
 	if c.Keepassxc.Database.Empty() {
-		raiseTemplateError(errors.New("keepassxc.database not set"))
-		return ""
+		panic(errors.New("keepassxc.database not set"))
 	}
 
 	args := []string{"show", "--attributes", attribute, "--quiet"}
 	version, err := c.keepassxcVersion()
 	if err != nil {
-		raiseTemplateError(err)
-		return ""
+		panic(err)
 	}
 	if version.Compare(keepassxcNeedShowProtectedArgVersion) >= 0 {
 		args = append(args, "--show-protected")
@@ -101,8 +95,7 @@ func (c *Config) keepassxcAttributeTemplateFunc(entry, attribute string) string 
 	args = append(args, c.Keepassxc.Database.String(), entry)
 	output, err := c.keepassxcOutput(c.Keepassxc.Command, args)
 	if err != nil {
-		raiseTemplateError(err)
-		return ""
+		panic(err)
 	}
 
 	outputStr := string(bytes.TrimSpace(output))

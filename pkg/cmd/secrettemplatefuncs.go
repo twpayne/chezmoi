@@ -25,8 +25,7 @@ func (c *Config) secretTemplateFunc(args ...string) string {
 	cmd.Stderr = c.stderr
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
-		raiseTemplateError(newCmdOutputError(cmd, output, err))
-		return ""
+		panic(newCmdOutputError(cmd, output, err))
 	}
 
 	value := string(bytes.TrimSpace(output))
@@ -50,14 +49,12 @@ func (c *Config) secretJSONTemplateFunc(args ...string) interface{} {
 	cmd.Stderr = c.stderr
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
-		raiseTemplateError(newCmdOutputError(cmd, output, err))
-		return nil
+		panic(newCmdOutputError(cmd, output, err))
 	}
 
 	var value interface{}
 	if err := json.Unmarshal(output, &value); err != nil {
-		raiseTemplateError(newParseCmdOutputError(c.Secret.Command, args, output, err))
-		return nil
+		panic(newParseCmdOutputError(c.Secret.Command, args, output, err))
 	}
 
 	if c.Secret.jsonCache == nil {

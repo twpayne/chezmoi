@@ -29,8 +29,7 @@ type gopassConfig struct {
 func (c *Config) gopassTemplateFunc(id string) string {
 	if !c.Gopass.versionOK {
 		if err := c.gopassVersionCheck(); err != nil {
-			raiseTemplateError(err)
-			return ""
+			panic(err)
 		}
 		c.Gopass.versionOK = true
 	}
@@ -42,8 +41,7 @@ func (c *Config) gopassTemplateFunc(id string) string {
 	args := []string{"show", "--password", id}
 	output, err := c.gopassOutput(args...)
 	if err != nil {
-		raiseTemplateError(err)
-		return ""
+		panic(err)
 	}
 
 	passwordBytes, _, _ := chezmoi.CutBytes(output, []byte{'\n'})
@@ -60,8 +58,7 @@ func (c *Config) gopassTemplateFunc(id string) string {
 func (c *Config) gopassRawTemplateFunc(id string) string {
 	if !c.Gopass.versionOK {
 		if err := c.gopassVersionCheck(); err != nil {
-			raiseTemplateError(err)
-			return ""
+			panic(err)
 		}
 		c.Gopass.versionOK = true
 	}
@@ -73,8 +70,7 @@ func (c *Config) gopassRawTemplateFunc(id string) string {
 	args := []string{"show", "--noparsing", id}
 	output, err := c.gopassOutput(args...)
 	if err != nil {
-		raiseTemplateError(err)
-		return ""
+		panic(err)
 	}
 
 	if c.Gopass.rawCache == nil {

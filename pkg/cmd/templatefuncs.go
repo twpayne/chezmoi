@@ -20,8 +20,7 @@ type ioregData struct {
 func (c *Config) fromYamlTemplateFunc(s string) interface{} {
 	var data interface{}
 	if err := chezmoi.FormatYAML.Unmarshal([]byte(s), &data); err != nil {
-		raiseTemplateError(err)
-		return nil
+		panic(err)
 	}
 	return data
 }
@@ -32,15 +31,14 @@ func (c *Config) includeTemplateFunc(filename string) string {
 		var err error
 		absPath, err = chezmoi.NewAbsPathFromExtPath(filename, c.homeDirAbsPath)
 		if err != nil {
-			raiseTemplateError(err)
+			panic(err)
 		}
 	} else {
 		absPath = c.SourceDirAbsPath.JoinString(filename)
 	}
 	contents, err := c.fileSystem.ReadFile(absPath.String())
 	if err != nil {
-		raiseTemplateError(err)
-		return ""
+		panic(err)
 	}
 	return string(contents)
 }
@@ -59,14 +57,12 @@ func (c *Config) ioregTemplateFunc() map[string]interface{} {
 	cmd := exec.Command(command, args...)
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
-		raiseTemplateError(newCmdOutputError(cmd, output, err))
-		return nil
+		panic(newCmdOutputError(cmd, output, err))
 	}
 
 	var value map[string]interface{}
 	if _, err := plist.Unmarshal(output, &value); err != nil {
-		raiseTemplateError(newParseCmdOutputError(command, args, output, err))
-		return nil
+		panic(newParseCmdOutputError(command, args, output, err))
 	}
 	c.ioregData.value = value
 	return value
@@ -85,16 +81,14 @@ func (c *Config) lookPathTemplateFunc(file string) string {
 	case errors.Is(err, fs.ErrNotExist):
 		return ""
 	default:
-		raiseTemplateError(err)
-		return ""
+		panic(err)
 	}
 }
 
 func (c *Config) mozillaInstallHashTemplateFunc(path string) string {
 	mozillaInstallHash, err := mozillainstallhash.MozillaInstallHash(path)
 	if err != nil {
-		raiseTemplateError(err)
-		return ""
+		panic(err)
 	}
 	return mozillaInstallHash
 }
@@ -103,8 +97,7 @@ func (c *Config) outputTemplateFunc(name string, args ...string) string {
 	cmd := exec.Command(name, args...)
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
-		raiseTemplateError(newCmdOutputError(cmd, output, err))
-		return ""
+		panic(newCmdOutputError(cmd, output, err))
 	}
 	// FIXME we should be able to return output directly, but
 	// github.com/Masterminds/sprig's trim function only accepts strings
@@ -125,20 +118,14 @@ func (c *Config) statTemplateFunc(name string) interface{} {
 	case errors.Is(err, fs.ErrNotExist):
 		return nil
 	default:
-		raiseTemplateError(err)
-		return nil
+		panic(err)
 	}
 }
 
 func (c *Config) toYamlTemplateFunc(data interface{}) string {
 	yaml, err := chezmoi.FormatYAML.Marshal(data)
 	if err != nil {
-		raiseTemplateError(err)
-		return ""
+		panic(err)
 	}
 	return string(yaml)
-}
-
-func raiseTemplateError(err error) {
-	panic(err)
 }
