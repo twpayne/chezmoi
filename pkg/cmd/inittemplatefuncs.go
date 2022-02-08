@@ -12,8 +12,7 @@ import (
 )
 
 func (c *Config) exitInitTemplateFunc(code int) string {
-	raiseTemplateError(chezmoi.ExitCodeError(code))
-	return ""
+	panic(chezmoi.ExitCodeError(code))
 }
 
 func (c *Config) promptBoolInitTemplateFunc(field string, args ...bool) bool {
@@ -21,8 +20,7 @@ func (c *Config) promptBoolInitTemplateFunc(field string, args ...bool) bool {
 	case 0:
 		value, err := parseBool(c.promptStringInitTemplateFunc(field))
 		if err != nil {
-			raiseTemplateError(err)
-			return false
+			panic(err)
 		}
 		return value
 	case 1:
@@ -33,14 +31,12 @@ func (c *Config) promptBoolInitTemplateFunc(field string, args ...bool) bool {
 		}
 		value, err := parseBool(valueStr)
 		if err != nil {
-			raiseTemplateError(err)
-			return false
+			panic(err)
 		}
 		return value
 	default:
 		err := fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
-		raiseTemplateError(err)
-		return false
+		panic(err)
 	}
 }
 
@@ -49,8 +45,7 @@ func (c *Config) promptIntInitTemplateFunc(field string, args ...int64) int64 {
 	case 0:
 		value, err := strconv.ParseInt(c.promptStringInitTemplateFunc(field), 10, 64)
 		if err != nil {
-			raiseTemplateError(err)
-			return 0
+			panic(err)
 		}
 		return value
 	case 1:
@@ -61,14 +56,12 @@ func (c *Config) promptIntInitTemplateFunc(field string, args ...int64) int64 {
 		}
 		value, err := strconv.ParseInt(valueStr, 10, 64)
 		if err != nil {
-			raiseTemplateError(err)
-			return 0
+			panic(err)
 		}
 		return value
 	default:
 		err := fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
-		raiseTemplateError(err)
-		return 0
+		panic(err)
 	}
 }
 
@@ -77,8 +70,7 @@ func (c *Config) promptStringInitTemplateFunc(prompt string, args ...string) str
 	case 0:
 		value, err := c.readLine(prompt + "? ")
 		if err != nil {
-			raiseTemplateError(err)
-			return ""
+			panic(err)
 		}
 		return strings.TrimSpace(value)
 	case 1:
@@ -86,8 +78,7 @@ func (c *Config) promptStringInitTemplateFunc(prompt string, args ...string) str
 		promptStr := prompt + " (default " + strconv.Quote(defaultStr) + ")? "
 		switch value, err := c.readLine(promptStr); {
 		case err != nil:
-			raiseTemplateError(err)
-			return ""
+			panic(err)
 		case value == "":
 			return defaultStr
 		default:
@@ -95,8 +86,7 @@ func (c *Config) promptStringInitTemplateFunc(prompt string, args ...string) str
 		}
 	default:
 		err := fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
-		raiseTemplateError(err)
-		return ""
+		panic(err)
 	}
 }
 
@@ -111,8 +101,7 @@ func (c *Config) stdinIsATTYInitTemplateFunc() bool {
 func (c *Config) writeToStdout(args ...string) string {
 	for _, arg := range args {
 		if _, err := c.stdout.Write([]byte(arg)); err != nil {
-			raiseTemplateError(err)
-			return ""
+			panic(err)
 		}
 	}
 	return ""

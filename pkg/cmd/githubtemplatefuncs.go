@@ -24,8 +24,7 @@ func (c *Config) gitHubKeysTemplateFunc(user string) []*github.Key {
 
 	httpClient, err := c.getHTTPClient()
 	if err != nil {
-		raiseTemplateError(err)
-		return nil
+		panic(err)
 	}
 	gitHubClient := chezmoi.NewGitHubClient(ctx, httpClient)
 
@@ -36,8 +35,7 @@ func (c *Config) gitHubKeysTemplateFunc(user string) []*github.Key {
 	for {
 		keys, resp, err := gitHubClient.Users.ListKeys(ctx, user, opts)
 		if err != nil {
-			raiseTemplateError(err)
-			return nil
+			panic(err)
 		}
 		allKeys = append(allKeys, keys...)
 		if resp.NextPage == 0 {
@@ -56,8 +54,7 @@ func (c *Config) gitHubKeysTemplateFunc(user string) []*github.Key {
 func (c *Config) gitHubLatestReleaseTemplateFunc(userRepo string) *github.RepositoryRelease {
 	user, repo, ok := chezmoi.CutString(userRepo, "/")
 	if !ok {
-		raiseTemplateError(fmt.Errorf("%s: not a user/repo", userRepo))
-		return nil
+		panic(fmt.Errorf("%s: not a user/repo", userRepo))
 	}
 
 	if release := c.gitHub.latestReleaseCache[user][repo]; release != nil {
@@ -69,15 +66,13 @@ func (c *Config) gitHubLatestReleaseTemplateFunc(userRepo string) *github.Reposi
 
 	httpClient, err := c.getHTTPClient()
 	if err != nil {
-		raiseTemplateError(err)
-		return nil
+		panic(err)
 	}
 	gitHubClient := chezmoi.NewGitHubClient(ctx, httpClient)
 
 	release, _, err := gitHubClient.Repositories.GetLatestRelease(ctx, user, repo)
 	if err != nil {
-		raiseTemplateError(err)
-		return nil
+		panic(err)
 	}
 
 	if c.gitHub.latestReleaseCache == nil {

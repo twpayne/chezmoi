@@ -64,8 +64,7 @@ type onepasswordItemV2 struct {
 func (c *Config) onepasswordTemplateFunc(userArgs ...string) map[string]interface{} {
 	version, err := c.onepasswordVersion()
 	if err != nil {
-		raiseTemplateError(err)
-		return nil
+		panic(err)
 	}
 
 	var baseArgs []string
@@ -75,28 +74,24 @@ func (c *Config) onepasswordTemplateFunc(userArgs ...string) map[string]interfac
 	case version.Major >= 2:
 		baseArgs = []string{"item", "get", "--format", "json"}
 	default:
-		raiseTemplateError(unsupportedVersionError{
+		panic(unsupportedVersionError{
 			version: version,
 		})
-		return nil
 	}
 
 	args, err := newOnepasswordArgs(baseArgs, userArgs)
 	if err != nil {
-		raiseTemplateError(err)
-		return nil
+		panic(err)
 	}
 
 	output, err := c.onepasswordOutput(args, withSessionToken)
 	if err != nil {
-		raiseTemplateError(err)
-		return nil
+		panic(err)
 	}
 
 	var data map[string]interface{}
 	if err := json.Unmarshal(output, &data); err != nil {
-		raiseTemplateError(newParseCmdOutputError(c.Onepassword.Command, args.args, output, err))
-		return nil
+		panic(newParseCmdOutputError(c.Onepassword.Command, args.args, output, err))
 	}
 	return data
 }
@@ -104,16 +99,14 @@ func (c *Config) onepasswordTemplateFunc(userArgs ...string) map[string]interfac
 func (c *Config) onepasswordDetailsFieldsTemplateFunc(userArgs ...string) map[string]interface{} {
 	version, err := c.onepasswordVersion()
 	if err != nil {
-		raiseTemplateError(err)
-		return nil
+		panic(err)
 	}
 
 	switch {
 	case version.Major == 1:
 		item, err := c.onepasswordItemV1(userArgs)
 		if err != nil {
-			raiseTemplateError(err)
-			return nil
+			panic(err)
 		}
 
 		result := make(map[string]interface{})
@@ -127,8 +120,7 @@ func (c *Config) onepasswordDetailsFieldsTemplateFunc(userArgs ...string) map[st
 	case version.Major >= 2:
 		item, err := c.onepasswordItemV2(userArgs)
 		if err != nil {
-			raiseTemplateError(err)
-			return nil
+			panic(err)
 		}
 
 		result := make(map[string]interface{})
@@ -143,18 +135,16 @@ func (c *Config) onepasswordDetailsFieldsTemplateFunc(userArgs ...string) map[st
 		return result
 
 	default:
-		raiseTemplateError(unsupportedVersionError{
+		panic(unsupportedVersionError{
 			version: version,
 		})
-		return nil
 	}
 }
 
 func (c *Config) onepasswordDocumentTemplateFunc(userArgs ...string) string {
 	version, err := c.onepasswordVersion()
 	if err != nil {
-		raiseTemplateError(err)
-		return ""
+		panic(err)
 	}
 
 	var baseArgs []string
@@ -164,22 +154,19 @@ func (c *Config) onepasswordDocumentTemplateFunc(userArgs ...string) string {
 	case version.Major >= 2:
 		baseArgs = []string{"document", "get"}
 	default:
-		raiseTemplateError(unsupportedVersionError{
+		panic(unsupportedVersionError{
 			version: version,
 		})
-		return ""
 	}
 
 	args, err := newOnepasswordArgs(baseArgs, userArgs)
 	if err != nil {
-		raiseTemplateError(err)
-		return ""
+		panic(err)
 	}
 
 	output, err := c.onepasswordOutput(args, withSessionToken)
 	if err != nil {
-		raiseTemplateError(err)
-		return ""
+		panic(err)
 	}
 	return string(output)
 }
@@ -187,16 +174,14 @@ func (c *Config) onepasswordDocumentTemplateFunc(userArgs ...string) string {
 func (c *Config) onepasswordItemFieldsTemplateFunc(userArgs ...string) map[string]interface{} {
 	version, err := c.onepasswordVersion()
 	if err != nil {
-		raiseTemplateError(err)
-		return nil
+		panic(err)
 	}
 
 	switch {
 	case version.Major == 1:
 		item, err := c.onepasswordItemV1(userArgs)
 		if err != nil {
-			raiseTemplateError(err)
-			return nil
+			panic(err)
 		}
 
 		result := make(map[string]interface{})
@@ -212,8 +197,7 @@ func (c *Config) onepasswordItemFieldsTemplateFunc(userArgs ...string) map[strin
 	case version.Major >= 2:
 		item, err := c.onepasswordItemV2(userArgs)
 		if err != nil {
-			raiseTemplateError(err)
-			return nil
+			panic(err)
 		}
 
 		result := make(map[string]interface{})
@@ -228,10 +212,9 @@ func (c *Config) onepasswordItemFieldsTemplateFunc(userArgs ...string) map[strin
 		return result
 
 	default:
-		raiseTemplateError(unsupportedVersionError{
+		panic(unsupportedVersionError{
 			version: version,
 		})
-		return nil
 	}
 }
 

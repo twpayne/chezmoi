@@ -32,15 +32,13 @@ type lastpassConfig struct {
 func (c *Config) lastpassTemplateFunc(id string) []map[string]interface{} {
 	data, err := c.lastpassData(id)
 	if err != nil {
-		raiseTemplateError(err)
-		return nil
+		panic(err)
 	}
 	for _, d := range data {
 		if note, ok := d["note"].(string); ok {
 			d["note"], err = lastpassParseNote(note)
 			if err != nil {
-				raiseTemplateError(err)
-				return nil
+				panic(err)
 			}
 		}
 	}
@@ -50,8 +48,7 @@ func (c *Config) lastpassTemplateFunc(id string) []map[string]interface{} {
 func (c *Config) lastpassRawTemplateFunc(id string) []map[string]interface{} {
 	data, err := c.lastpassData(id)
 	if err != nil {
-		raiseTemplateError(err)
-		return nil
+		panic(err)
 	}
 	return data
 }

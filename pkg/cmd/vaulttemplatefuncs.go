@@ -22,14 +22,12 @@ func (c *Config) vaultTemplateFunc(key string) interface{} {
 	cmd.Stderr = c.stderr
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
-		raiseTemplateError(newCmdOutputError(cmd, output, err))
-		return nil
+		panic(newCmdOutputError(cmd, output, err))
 	}
 
 	var data interface{}
 	if err := json.Unmarshal(output, &data); err != nil {
-		raiseTemplateError(newParseCmdOutputError(c.Vault.Command, args, output, err))
-		return nil
+		panic(newParseCmdOutputError(c.Vault.Command, args, output, err))
 	}
 
 	if c.Vault.cache == nil {

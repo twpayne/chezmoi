@@ -72,8 +72,7 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 					return args[0]
 				default:
 					err := fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
-					raiseTemplateError(err)
-					return false
+					panic(err)
 				}
 			},
 			"promptInt": func(prompt string, args ...int) int {
@@ -87,8 +86,7 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 					return args[0]
 				default:
 					err := fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
-					raiseTemplateError(err)
-					return 0
+					panic(err)
 				}
 			},
 			"promptString": func(prompt string, args ...string) string {
@@ -105,8 +103,7 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 					return args[0]
 				default:
 					err := fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
-					raiseTemplateError(err)
-					return ""
+					panic(err)
 				}
 			},
 			"stdinIsATTY": func() bool {
