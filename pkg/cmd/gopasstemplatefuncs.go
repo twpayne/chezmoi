@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"os/exec"
 	"regexp"
 
@@ -100,14 +99,19 @@ func (c *Config) gopassVersionCheck() error {
 	}
 	m := gopassVersionRx.FindSubmatch(output)
 	if m == nil {
-		return fmt.Errorf("%s: could not extract version", output)
+		return &extractVersionError{
+			output: output,
+		}
 	}
 	version, err := semver.NewVersion(string(m[1]))
 	if err != nil {
 		return err
 	}
 	if version.LessThan(gopassMinVersion) {
-		return fmt.Errorf("version %s found, need version %s or later", version, gopassMinVersion)
+		return &versionTooOldError{
+			have: version,
+			need: &gopassMinVersion,
+		}
 	}
 	return nil
 }

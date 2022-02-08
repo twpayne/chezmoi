@@ -21,12 +21,12 @@ chhome home4/user
 
 # test that chezmoi checks .chezmoiversion
 ! chezmoi verify
-stderr 'source state requires version'
+stderr 'source state requires chezmoi version'
 
 chhome home5/user
 # test that chezmoi checks .chezmoiversion when .chezmoiroot is used
 ! chezmoi verify
-stderr 'source state requires version'
+stderr 'source state requires chezmoi version'
 
 chhome home6/user
 
