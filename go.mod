@@ -22,6 +22,7 @@ require (
 	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/kevinburke/ssh_config v1.1.0 // indirect
+	github.com/microcosm-cc/bluemonday v1.0.18 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/mapstructure v1.4.3
 	github.com/muesli/combinator v0.3.0
@@ -32,7 +33,7 @@ require (
 	github.com/rs/zerolog v1.26.1
 	github.com/sergi/go-diff v1.1.0
 	github.com/shopspring/decimal v1.3.1 // indirect
-	github.com/spf13/afero v1.8.0
+	github.com/spf13/afero v1.8.1
 	github.com/spf13/cobra v1.3.0
 	github.com/spf13/viper v1.10.1
 	github.com/stretchr/objx v0.3.0 // indirect
@@ -42,15 +43,16 @@ require (
 	github.com/twpayne/go-vfs/v4 v4.1.0
 	github.com/twpayne/go-xdg/v6 v6.0.0
 	github.com/xanzy/ssh-agent v0.3.1 // indirect
+	github.com/yuin/goldmark v1.4.5 // indirect
 	github.com/zalando/go-keyring v0.1.1
 	go.etcd.io/bbolt v1.3.6
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.7.0
-	golang.org/x/crypto v0.0.0-20220131195533-30dcbda58838 // indirect
+	golang.org/x/crypto v0.0.0-20220209195652-db638375bc3a // indirect
 	golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd // indirect
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
-	golang.org/x/sys v0.0.0-20220128215802-99c3d69c2c27
+	golang.org/x/sys v0.0.0-20220209214540-3681064d5158
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211
 	gopkg.in/ini.v1 v1.66.3 // indirect
 	gopkg.in/yaml.v2 v2.4.0
