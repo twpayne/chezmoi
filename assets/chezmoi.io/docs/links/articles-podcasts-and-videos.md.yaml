@@ -184,6 +184,10 @@ articles:
   format: Audio/text
   title: 'PBS 125 of X — Chezmoi on Multiple Computers'
   url: 'https://pbs.bartificer.net/pbs125'
+- date: '2021-10-25'
+  version: '2.7.3'
+  title: 'Share credentials across machines using chezmoi and bitwarden'
+  url: 'https://medium.com/@josemrivera/share-credentials-across-machines-using-chezmoi-and-bitwarden-4069dcb6e367'
 - date: '2021-10-26'
   version: '2.7.3'
   lang: "RU"
@@ -248,3 +252,7 @@ articles:
   lang: 'FR'
   title: 'Controler ses dotfiles en environnement éphémère'
   url: 'https://blog.wescale.fr/2022/02/02/controler-ses-dotfiles-en-environnement-ephemere-2/'
+- date: '2022-02-12'
+  version: '2.11.2'
+  title: 'How To Manage Dotfiles With Chezmoi'
+  url: 'https://betterprogramming.pub/how-to-manage-dotfiles-with-chezmoi-53cadb36b226'
