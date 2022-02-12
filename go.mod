@@ -42,6 +42,7 @@ require (
 	github.com/twpayne/go-shell v0.3.1
 	github.com/twpayne/go-vfs/v4 v4.1.0
 	github.com/twpayne/go-xdg/v6 v6.0.0
+	github.com/ulikunitz/xz v0.5.10
 	github.com/xanzy/ssh-agent v0.3.1 // indirect
 	github.com/yuin/goldmark v1.4.5 // indirect
 	github.com/zalando/go-keyring v0.1.1
