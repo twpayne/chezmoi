@@ -67,6 +67,7 @@ nav:
     - Migrate away from chezmoi: user-guide/advanced/migrate-away-from-chezmoi.md
   - Frequently asked questions:
     - Usage: user-guide/frequently-asked-questions/usage.md
+    - Encryption: user-guide/frequently-asked-questions/encryption.md
     - Troubleshooting: user-guide/frequently-asked-questions/troubleshooting.md
     - Design: user-guide/frequently-asked-questions/design.md
     - General: user-guide/frequently-asked-questions/general.md
