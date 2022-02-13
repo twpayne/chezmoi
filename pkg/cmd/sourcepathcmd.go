@@ -12,7 +12,7 @@ import (
 func (c *Config) newSourcePathCmd() *cobra.Command {
 	sourcePathCmd := &cobra.Command{
 		Use:               "source-path [target]...",
-		Short:             "Print the path of a target in the source state",
+		Short:             "Print the source path of a target",
 		Long:              mustLongHelp("source-path"),
 		Example:           example("source-path"),
 		ValidArgsFunction: c.targetValidArgs,
