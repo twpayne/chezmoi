@@ -133,6 +133,7 @@ nav:
     - source-path: reference/commands/source-path.md
     - state: reference/commands/state.md
     - status: reference/commands/status.md
+    - target-path: reference/commands/target-path.md
     - unmanage: reference/commands/unmanage.md
     - unmanaged: reference/commands/unmanaged.md
     - update: reference/commands/update.md

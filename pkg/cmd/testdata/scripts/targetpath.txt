@@ -1,0 +1,25 @@
+[windows] skip 'test requires path separator to be forward slash'
+mksourcedir
+
+# test that chezmoi target-path without arguments prints the target directory
+chezmoi target-path
+stdout ^${HOME@R}$
+
+# test that chezmoi target-path prints the target path of a directory
+chezmoi target-path $CHEZMOISOURCEDIR/dot_dir/exact_subdir
+stdout ^${HOME@R}/.dir/subdir$
+
+# test that chezmoi target-path prints the target path of a file
+chezmoi target-path $CHEZMOISOURCEDIR/dot_dir/exact_subdir/file
+stdout ^${HOME@R}/.dir/subdir/file$
+
+# test that chezmoi target-path prints the target path of a script
+chezmoi target-path $CHEZMOISOURCEDIR/run_script
+stdout ^${HOME@R}/script$
+
+# test that chezmoi target-path prints the target path of a symlink
+chezmoi target-path $CHEZMOISOURCEDIR/symlink_dot_symlink
+stdout ^${HOME@R}/.symlink$
+
+-- home/user/.local/share/chezmoi/run_script --
+#!/bin/sh
