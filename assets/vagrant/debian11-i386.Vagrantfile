@@ -5,7 +5,7 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder ".", "/chezmoi", type: "rsync"
   config.vm.provision "shell", inline: <<-SHELL
     DEBIAN_FRONTEND=noninteractive apt-get update
-    DEBIAN_FRONTEND=noninteractive apt-get install -y age gpg golang unzip zip
+    DEBIAN_FRONTEND=noninteractive apt-get install -y age gpg golang unzip xz-utils zip
   SHELL
   config.vm.provision "file", source: "assets/vagrant/debian11-i386.test-chezmoi.sh", destination: "test-chezmoi.sh"
 end
