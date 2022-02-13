@@ -1353,6 +1353,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newSourcePathCmd(),
 		c.newStateCmd(),
 		c.newStatusCmd(),
+		c.newTargetPathCmd(),
 		c.newUnmanagedCmd(),
 		c.newUpdateCmd(),
 		c.newUpgradeCmd(),
