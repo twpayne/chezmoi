@@ -26,9 +26,10 @@ const (
 	ArchiveFormatTar     ArchiveFormat = "tar"
 	ArchiveFormatTarBz2  ArchiveFormat = "tar.bz2"
 	ArchiveFormatTarGz   ArchiveFormat = "tar.gz"
+	ArchiveFormatTarXz   ArchiveFormat = "tar.xz"
 	ArchiveFormatTbz2    ArchiveFormat = "tbz2"
 	ArchiveFormatTgz     ArchiveFormat = "tgz"
-	ArchiveFormatXZ      ArchiveFormat = "xz"
+	ArchiveFormatTxz     ArchiveFormat = "txz"
 	ArchiveFormatZip     ArchiveFormat = "zip"
 )
 
@@ -69,8 +70,8 @@ func GuessArchiveFormat(path string, data []byte) ArchiveFormat {
 		return ArchiveFormatTarBz2
 	case strings.HasSuffix(pathLower, ".tar.gz") || strings.HasSuffix(pathLower, ".tgz"):
 		return ArchiveFormatTarGz
-	case strings.HasSuffix(pathLower, ".xz"):
-		return ArchiveFormatXZ
+	case strings.HasSuffix(pathLower, ".tar.xz") || strings.HasSuffix(pathLower, ".txz"):
+		return ArchiveFormatTarXz
 	case strings.HasSuffix(pathLower, ".zip"):
 		return ArchiveFormatZip
 	}
@@ -80,8 +81,8 @@ func GuessArchiveFormat(path string, data []byte) ArchiveFormat {
 		return ArchiveFormatTarGz
 	case len(data) >= 4 && bytes.Equal(data[:4], []byte{'P', 'K', 0x03, 0x04}):
 		return ArchiveFormatZip
-	case len(data) >= xz.HeaderLen && bytes.Equal(data[:6], []byte{0xfd, '7', 'z', 'X', 'Z', 0x00}):
-		return ArchiveFormatXZ
+	case len(data) >= xz.HeaderLen && xz.ValidHeader(data):
+		return ArchiveFormatTarXz
 	case isTarArchive(bytes.NewReader(data)):
 		return ArchiveFormatTar
 	case isTarArchive(bzip2.NewReader(bytes.NewReader(data))):
@@ -107,7 +108,7 @@ func WalkArchive(data []byte, format ArchiveFormat, f WalkArchiveFunc) error {
 		if err != nil {
 			return err
 		}
-	case ArchiveFormatXZ:
+	case ArchiveFormatTarXz, ArchiveFormatTxz:
 		var err error
 		r, err = xz.NewReader(r)
 		if err != nil {
