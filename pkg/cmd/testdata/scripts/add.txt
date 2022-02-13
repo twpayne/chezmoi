@@ -14,8 +14,8 @@ chezmoi add $HOME${/}.dir/file
 cmp $CHEZMOISOURCEDIR/dot_dir/file golden/dot_dir/file
 
 # test adding a subdirectory
-chezmoi add $HOME${/}.dir/subdir
-cmp $CHEZMOISOURCEDIR/dot_dir/subdir/file golden/dot_dir/subdir/file
+chezmoi add --exact $HOME${/}.dir/subdir
+cmp $CHEZMOISOURCEDIR/dot_dir/exact_subdir/file golden/dot_dir/exact_subdir/file
 
 # test adding an empty file without --empty
 chezmoi add $HOME${/}.empty

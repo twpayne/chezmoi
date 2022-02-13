@@ -9,6 +9,6 @@ edit $HOME/.dir/subdir/file
 chezmoi re-add
 grep '# edited' $CHEZMOISOURCEDIR/dot_file
 grep '# edited' $CHEZMOISOURCEDIR/dot_dir/file
-grep '# edited' $CHEZMOISOURCEDIR/dot_dir/subdir/file
+grep '# edited' $CHEZMOISOURCEDIR/dot_dir/exact_subdir/file
 chezmoi diff
 ! stdout .

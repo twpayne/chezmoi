@@ -409,7 +409,7 @@ func cmdMkSourceDir(ts *testscript.TestScript, neg bool, args []string) {
 			"create_dot_create": "# contents of .create\n",
 			"dot_dir": map[string]interface{}{
 				"file": "# contents of .dir/file\n",
-				"subdir": map[string]interface{}{
+				"exact_subdir": map[string]interface{}{
 					"file": "# contents of .dir/subdir/file\n",
 				},
 			},
