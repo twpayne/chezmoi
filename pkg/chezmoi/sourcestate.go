@@ -22,6 +22,7 @@ import (
 	"sort"
 	"strings"
 	"sync"
+	"syscall"
 	"text/template"
 	"time"
 
@@ -995,6 +996,8 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 				})
 			}
 		case errors.Is(err, fs.ErrNotExist):
+			// Do nothing.
+		case errors.Is(err, syscall.ENOTDIR):
 			// Do nothing.
 		default:
 			return err

@@ -2,21 +2,28 @@ mkhomedir golden
 mkhomedir
 mksourcedir
 
-# test replace directory with file
+# test that chezmoi apply replaces a directory with a file
 rm $HOME/.file
 mkdir $HOME/.file
 chezmoi apply --force
 cmp $HOME/.file golden/.file
 
-# test replace file with directory
+# test that chezmoi apply replaces a file with a directory
 rm $HOME/.dir
 mkfile $HOME/.dir
 chezmoi apply --force
 cmp $HOME/.dir/file golden/.dir/file
 cmp $HOME/.dir/subdir/file golden/.dir/subdir/file
 
-# test replace file with symlink
+# test that chezmoi apply replaces a file with a symlink
 rm $HOME/.symlink
 mkfile $HOME/.symlink
 chezmoi apply --force
 cmp $HOME/.symlink golden/.symlink
+
+# test that chezmoi apply replaces a symlink with a directory
+rm $HOME/.dir/subdir
+symlink $HOME/.dir/subdir -> .file
+chezmoi apply --force
+cmp $HOME/.dir/file golden/.dir/file
+cmp $HOME/.dir/subdir/file golden/.dir/subdir/file
