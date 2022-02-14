@@ -255,4 +255,4 @@ articles:
 - date: '2022-02-12'
   version: '2.11.2'
   title: 'How To Manage Dotfiles With Chezmoi'
-  url: 'https://betterprogramming.pub/how-to-manage-dotfiles-with-chezmoi-53cadb36b226'
+  url: 'https://jerrynsh.com/how-to-manage-dotfiles-with-chezmoi/'
