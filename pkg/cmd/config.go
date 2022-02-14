@@ -709,6 +709,9 @@ func (c *Config) createAndReloadConfigFile() error {
 		if err := viper.Unmarshal(c, viperDecodeConfigOptions...); err != nil {
 			return err
 		}
+		if err := c.setEncryption(); err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -1641,35 +1644,8 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		})
 	}
 
-	// Set up encryption.
-	switch c.Encryption {
-	case "age":
-		// Only use builtin age encryption if age encryption is explicitly
-		// specified. Otherwise, chezmoi would fall back to using age encryption
-		// (rather than no encryption) if age is not in $PATH, which leads to
-		// error messages from the builtin age instead of error messages about
-		// encryption not being configured.
-		c.Age.UseBuiltin = c.UseBuiltinAge.Value(c.useBuiltinAgeAutoFunc)
-		c.encryption = &c.Age
-	case "gpg":
-		c.encryption = &c.GPG
-	case "":
-		// Detect encryption if any non-default configuration is set, preferring
-		// gpg for backwards compatibility.
-		switch {
-		case !reflect.DeepEqual(c.GPG, defaultGPGEncryptionConfig):
-			c.encryption = &c.GPG
-		case !reflect.DeepEqual(c.Age, defaultAgeEncryptionConfig):
-			c.encryption = &c.Age
-		default:
-			c.encryption = chezmoi.NoEncryption{}
-		}
-	default:
-		return fmt.Errorf("%s: unknown encryption", c.Encryption)
-	}
-	if c.debug {
-		encryptionLogger := c.logger.With().Str(logComponentKey, logComponentValueEncryption).Logger()
-		c.encryption = chezmoi.NewDebugEncryption(c.encryption, &encryptionLogger)
+	if err := c.setEncryption(); err != nil {
+		return err
 	}
 
 	// Create the config directory if needed.
@@ -1837,6 +1813,42 @@ func (c *Config) runEditor(args []string) error {
 		}
 	}
 	return err
+}
+
+// setEncryption configures c's encryption.
+func (c *Config) setEncryption() error {
+	switch c.Encryption {
+	case "age":
+		// Only use builtin age encryption if age encryption is explicitly
+		// specified. Otherwise, chezmoi would fall back to using age encryption
+		// (rather than no encryption) if age is not in $PATH, which leads to
+		// error messages from the builtin age instead of error messages about
+		// encryption not being configured.
+		c.Age.UseBuiltin = c.UseBuiltinAge.Value(c.useBuiltinAgeAutoFunc)
+		c.encryption = &c.Age
+	case "gpg":
+		c.encryption = &c.GPG
+	case "":
+		// Detect encryption if any non-default configuration is set, preferring
+		// gpg for backwards compatibility.
+		switch {
+		case !reflect.DeepEqual(c.GPG, defaultGPGEncryptionConfig):
+			c.encryption = &c.GPG
+		case !reflect.DeepEqual(c.Age, defaultAgeEncryptionConfig):
+			c.encryption = &c.Age
+		default:
+			c.encryption = chezmoi.NoEncryption{}
+		}
+	default:
+		return fmt.Errorf("%s: unknown encryption", c.Encryption)
+	}
+
+	if c.debug {
+		encryptionLogger := c.logger.With().Str(logComponentKey, logComponentValueEncryption).Logger()
+		c.encryption = chezmoi.NewDebugEncryption(c.encryption, &encryptionLogger)
+	}
+
+	return nil
 }
 
 // sourceAbsPaths returns the source absolute paths for each target path in
