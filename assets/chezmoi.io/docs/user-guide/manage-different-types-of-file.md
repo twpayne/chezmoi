@@ -143,7 +143,7 @@ populating your `~/.ssh/authorized_keys`. Put the following in your
 GitHub username:
 
 ```
-{{ range (gitHubKeys "username") -}}
+{{ range gitHubKeys "username" -}}
 {{   .Key }}
 {{ end -}}
 ```

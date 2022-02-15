@@ -10,7 +10,7 @@ source directory called `run_once_before_install-packages-darwin.sh.tmpl`
 containing:
 
 ```
-{{- if (eq .chezmoi.os "darwin") -}}
+{{- if eq .chezmoi.os "darwin" -}}
 #!/bin/bash
 
 brew bundle --no-lock --file=/dev/stdin <<EOF
@@ -26,9 +26,9 @@ EOF
     document. chezmoi will run this script whenever its contents change, i.e.
     when you add or remove brews or casks.
 
-### Determine the hostname
+## Determine the hostname
 
-The result of the command `hostname` on macOS depends on the network that the
+The result of the `hostname` command on macOS depends on the network that the
 machine is connected to. For a stable result, use the `scutil` command:
 
 ```

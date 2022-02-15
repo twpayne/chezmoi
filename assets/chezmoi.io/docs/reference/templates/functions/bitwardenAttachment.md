@@ -11,5 +11,5 @@ only invoke `bw` once.
 !!! example
 
     ```
-    {{- (bitwardenAttachment "<filename>" "<itemid>") -}}
+    {{- bitwardenAttachment "<filename>" "<itemid>" -}}
     ```

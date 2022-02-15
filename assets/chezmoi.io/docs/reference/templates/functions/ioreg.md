@@ -11,7 +11,7 @@ will only execute the `ioreg -a -l` command once.
 !!! example
 
     ```
-    {{ if (eq .chezmoi.os "darwin") }}
-    {{ $serialNumber := index ioreg "IORegistryEntryChildren" 0 "IOPlatformSerialNumber" }}
+    {{ if (q .chezmoi.os "darwin" }}
+    {{   $serialNumber := index ioreg "IORegistryEntryChildren" 0 "IOPlatformSerialNumber" }}
     {{ end }}
     ```

@@ -133,9 +133,9 @@ Conditional expressions can be written using `if`, `else if`, `else`, and `end`,
 for example:
 
 ```
-{{ if (eq .chezmoi.os "darwin") }}
+{{ if eq .chezmoi.os "darwin" }}
 # darwin
-{{ else if (eq .chezmoi.os "linux" ) }}
+{{ else if eq .chezmoi.os "linux" }}
 # linux
 {{ else }}
 # other operating system
