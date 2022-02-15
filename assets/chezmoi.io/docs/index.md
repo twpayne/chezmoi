@@ -22,9 +22,9 @@ description of chezmoi, consult the [reference](/reference/).
 
 ## Considering using chezmoi?
 
-You can browse other people's [dotfiles that use chezmoi on
-GitHub](https://github.com/topics/chezmoi?o=desc&s=updated) and [dotfiles that
-use chezmoi on GitLab](https://gitlab.com/explore/projects?topic=chezmoi),
-[read articles, listen to podcasts, and watch videos about
+You can browse other people's dotfiles that use chezmoi [on
+GitHub](https://github.com/topics/chezmoi?o=desc&s=updated) and [on
+GitLab](https://gitlab.com/explore/projects?topic=chezmoi), [read articles,
+listen to podcasts, and watch videos about
 chezmoi](/links/articles-podcasts-and-videos/) and see [how chezmoi compares to
 other dotfile managers](/comparison-table/).
