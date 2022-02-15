@@ -213,7 +213,11 @@ markdown_extensions:
 
 plugins:
 - mermaid2
-- search
+- mkdocs-simple-hooks:
+    hooks:
+      on_pre_build: "docs.hooks:on_pre_build"
+      on_files: "docs.hooks:on_files"
+      on_post_build: "docs.hooks:on_post_build"
 - redirects:
     redirect_maps:
       # redirect links from previous Hugo-generated website
@@ -228,8 +232,4 @@ plugins:
       docs/related.md: links/related-software.md
       docs/security.md: developer/security.md
       docs/templating.md: user-guide/templating.md
-- mkdocs-simple-hooks:
-    hooks:
-      on_pre_build: "docs.hooks:on_pre_build"
-      on_files: "docs.hooks:on_files"
-      on_post_build: "docs.hooks:on_post_build"
+- search
