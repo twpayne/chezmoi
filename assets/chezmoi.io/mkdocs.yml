@@ -40,7 +40,6 @@ nav:
     - Editor: user-guide/tools/editor.md
     - Diff: user-guide/tools/diff.md
     - Merge: user-guide/tools/merge.md
-    - Pager: user-guide/tools/pager.md
     - HTTP or SOCKS5 proxy: user-guide/tools/http-or-socks5-proxy.md
   - Password managers:
     - user-guide/password-managers/index.md

@@ -16,10 +16,9 @@ chezmoi with:
 $ chezmoi init
 ```
 
-This will create a new git repository in `~/.local/share/chezmoi` where chezmoi
-will store its source state. By default, chezmoi only modifies files in the
-working copy. It is your responsibility to commit and push changes, but chezmoi
-can automate this for you if you want.
+This will create a new git local repository in `~/.local/share/chezmoi` where
+chezmoi will store its source state. By default, chezmoi only modifies files in
+the working copy.
 
 Manage your first file with chezmoi:
 
@@ -71,6 +70,11 @@ $ git remote add origin git@github.com:username/dotfiles.git
 $ git branch -M main
 $ git push -u origin main
 ```
+
+!!! hint
+
+    chezmoi can be configured to automatically add, commit, and push changes to
+    your repo.
 
 chezmoi can also be used with [GitLab](https://gitlab.com), or
 [BitBucket](https://bitbucket.org), [Source Hut](https://sr.ht/), or any other

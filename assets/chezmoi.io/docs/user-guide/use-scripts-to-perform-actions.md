@@ -68,9 +68,9 @@ This will install `ripgrep` on both Debian/Ubuntu Linux systems and macOS.
 
 chezmoi's `run_` scripts are run every time you run `chezmoi apply`, whereas
 `run_once_` scripts are run only when their contents have changed, after
-executing them as templates. You use this to cause a `run_once_` script to run
-when the contents of another file has changed by including a checksum of the
-other file's contents in the script.
+executing them as templates. You can use this to cause a `run_once_` script to
+run when the contents of another file has changed by including a checksum of
+the other file's contents in the script.
 
 For example, if your [dconf](https://wiki.gnome.org/Projects/dconf) settings
 are stored in `dconf.ini` in your source directory then you can make `chezmoi
