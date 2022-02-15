@@ -10,6 +10,15 @@ $ chezmoi update
 
 This runs `git pull --rebase` in your source directory and then `chezmoi apply`.
 
+```mermaid
+sequenceDiagram
+    participant H as home directory
+    participant W as working copy
+    participant L as local repo
+    participant R as remote repo
+    R->>H: chezmoi update
+```
+
 ## Pull the latest changes from your repo and see what would change, without actually applying the changes
 
 Run:
@@ -29,6 +38,17 @@ $ chezmoi apply
 ```
 
 to apply them.
+
+```mermaid
+sequenceDiagram
+    participant H as home directory
+    participant W as working copy
+    participant L as local repo
+    participant R as remote repo
+    R->>W: chezmoi git pull
+    W-->>H: chezmoi diff
+    W->>H: chezmoi apply
+```
 
 ## Automatically commit and push changes to your repo
 
@@ -52,6 +72,16 @@ not pushed.
 Be careful when using `autoPush`. If your dotfiles repo is public and you
 accidentally add a secret in plain text, that secret will be pushed to your
 public repo.
+
+```mermaid
+sequenceDiagram
+    participant H as home directory
+    participant W as working copy
+    participant L as local repo
+    participant R as remote repo
+    W->>L: autoCommit
+    W->>R: autoPush
+```
 
 ## Install chezmoi and your dotfiles on a new machine with a single command
 

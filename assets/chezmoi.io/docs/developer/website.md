@@ -8,7 +8,7 @@ the [`gh-pages` branch](https://github.com/twpayne/chezmoi/tree/gh-pages).
 Install Material for MkDocs and the required plugins with:
 
 ```console
-$ pip install mkdocs-material mkdocs-redirects mkdocs-simple-hooks
+$ pip install mkdocs-material mkdocs-mermaid2-plugin mkdocs-redirects mkdocs-simple-hooks
 ```
 
 Test the website locally by running:

@@ -203,11 +203,16 @@ markdown_extensions:
 - admonition
 - meta
 - pymdownx.details
-- pymdownx.superfences
+- pymdownx.superfences:
+    custom_fences:
+    - name: mermaid
+      class: mermaid
+      format: !!python/name:mermaid2.fence_mermaid
 - pymdownx.tabbed:
     alternate_style: true
 
 plugins:
+- mermaid2
 - search
 - redirects:
     redirect_maps:

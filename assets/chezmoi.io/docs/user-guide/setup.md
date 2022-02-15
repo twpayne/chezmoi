@@ -40,6 +40,20 @@ The above commands can be combined into a single init, checkout, and apply:
 $ chezmoi init --apply --verbose https://github.com/username/dotfiles.git
 ```
 
+These commands are summarized this sequence diagram:
+
+```mermaid
+sequenceDiagram
+    participant H as home directory
+    participant W as working copy
+    participant L as local repo
+    participant R as remote repo
+    R->>W: chezmoi init &lt;repo&gt;
+    W-->>H: chezmoi diff
+    W->>H: chezmoi apply
+    R->>H: chezmoi init --apply &lt;repo&gt;
+```
+
 ## Use a private repo to store your dotfiles
 
 chezmoi supports storing your dotfiles in both public and private repos.
