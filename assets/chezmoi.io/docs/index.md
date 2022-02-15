@@ -14,6 +14,7 @@ Updating your dotfiles on any machine is a single command:
 ```console
 $ chezmoi update
 ```
+
 ## Getting started
 
 [Install chezmoi](/install/) then read the [quick start guide](/quick-start/).

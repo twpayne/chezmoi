@@ -12,6 +12,7 @@ them. If there are inconsistencies that you want to keep, then `chezmoi
 merge-all` will help you resolve any differences.
 
 `chezmoi edit` provides the following useful features:
+
 * The arguments to `chezmoi edit` are the files in their target location, so you
   don't have to think about source state attributes and your editor's syntax
   highlighting will work.
@@ -23,6 +24,9 @@ merge-all` will help you resolve any differences.
 
 * With the `--diff` and `--apply` options you can see what would change and
   apply those changes without having to run `chezmoi diff` or `chezmoi apply`.
+
+* If you have configured git auto commits or git auto pushes then `chezmoi edit`
+  will create commits and push them for you.
 
 If you chose to edit files in the source state and you're using VIM then then
 [`github.com/alker0/chezmoi.vim`](https://github.com/alker0/chezmoi.vim) gives
@@ -48,7 +52,7 @@ final location from the contents of the centralized directory. This approach
 allows chezmoi to provide features that are not possible when using symlinks,
 for example having files that are encrypted, executable, private, or templates.
 
-There's nothing special about dotfiles managed by chezmoi, whereas dotfiles
+There is nothing special about dotfiles managed by chezmoi, whereas dotfiles
 managed with GNU Stow are special because they're actually symlinks to
 somewhere else.
 
@@ -121,7 +125,7 @@ contents, for example to know when the source file is a template or if the
 file's contents are encrypted. By storing this metadata in the filename, the
 metadata is unambiguously associated with a single file and adding, updating,
 or removing a single file touches only a single file in the source state.
-Changes to the metadata (e.g. `chezmoi chattr +template *target*`) are simple
+Changes to the metadata (e.g. `chezmoi chattr +template <target>`) are simple
 file renames and isolated to the affected file.
 
 If chezmoi were to, say, use a common configuration file listing which files
@@ -154,7 +158,8 @@ However, this also means that dotfiles that in the same directory in the target
 state must be in the same directory in the source state. In particular, every
 entry managed by chezmoi in the root of your home directory has a corresponding
 entry in the root of your source directory, which can mean that you end up with
-a lot of entries in the root of your source directory.
+a lot of entries in the root of your source directory. This can be mitigated by
+using `.chezmoiroot` file.
 
 If chezmoi were to permit, say, multiple separate source directories (so you
 could, say, put `dot_bashrc` in a `bash/` subdirectory, and `dot_vimrc` in a
@@ -205,7 +210,7 @@ chezmoi's source directory.
 ## Why not use Ansible/Chef/Puppet/Salt, or similar to manage my dotfiles instead?
 
 Whole system management tools are more than capable of managing your dotfiles,
-but are large systems that entail several disadvantages. Compared to whole
+but they are large systems that entail several disadvantages. Compared to whole
 system management tools, chezmoi offers:
 
 * Small, focused feature set designed for dotfiles. There's simply less to learn
@@ -224,8 +229,8 @@ containers to FreeBSD-based virtual machines in the cloud.
 
 ## Can I use chezmoi to manage files outside my home directory?
 
-In practice, yes, you can, but this is strongly discouraged beyond using your
-system's package manager to install the packages you need.
+In practice, yes, you can, but this usage is strongly discouraged beyond using
+your system's package manager to install the packages you need.
 
 chezmoi is designed to operate on your home directory, and is explicitly not a
 full system configuration management tool. That said, there are some ways to
