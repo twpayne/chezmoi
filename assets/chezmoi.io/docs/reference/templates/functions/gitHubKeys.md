@@ -31,7 +31,7 @@ token](https://docs.github.com/en/github/authenticating-to-github/creating-a-per
 !!! example
 
     ```
-    {{ range (gitHubKeys "user") }}
+    {{ range gitHubKeys "user" }}
     {{- .Key }}
     {{ end }}
     ```

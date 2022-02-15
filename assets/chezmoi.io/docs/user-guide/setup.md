@@ -119,7 +119,7 @@ example template logic:
 
 ```
 {{- $email := "" -}}
-{{- if (hasKey . "email") -}}
+{{- if hasKey . "email" -}}
 {{-   $email = .email -}}
 {{- else -}}
 {{-   $email = promptString "email" -}}

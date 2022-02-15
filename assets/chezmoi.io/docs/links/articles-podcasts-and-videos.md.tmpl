@@ -14,7 +14,7 @@
 
 | Date | Version | Format | Link |
 | ---- | ------- | ------ | ---- |
-{{- range (mustReverse .articles) }}
+{{- range mustReverse .articles }}
 {{-   $format := index . "format" | default "Text" }}
 {{-   $lang := index . "lang" | default "EN" }}
 {{-   if ne $lang "EN" }}
