@@ -86,6 +86,26 @@ Finally, exit the shell in the source directory to return to where you were:
 $ exit
 ```
 
+These commands are summarized this sequence diagram:
+
+```mermaid
+sequenceDiagram
+    participant H as home directory
+    participant W as working copy
+    participant L as local repo
+    participant R as remote repo
+    H->>L: chezmoi init
+    H->>W: chezmoi add &lt;file&gt;
+    W->>W: chezmoi edit &lt;file&gt;
+    W-->>H: chezmoi diff
+    W->>H: chezmoi apply
+    H-->>W: chezmoi cd
+    W->>L: git add
+    W->>L: git commit
+    L->>R: git push
+    L-->>H: exit
+```
+
 ## Using chezmoi across multiple machines
 
 On a second machine, initialize chezmoi with your dotfiles repo:
@@ -127,6 +147,48 @@ On any machine, you can pull and apply the latest changes from your repo with:
 
 ```console
 $ chezmoi update -v
+```
+
+Alternatively, you can install your dotfiles on new machine with a single
+command:
+
+```console
+$ chezmoi init --apply https://github.com/username/dotfiles.git
+```
+
+These commands are summarized in the this sequence diagram:
+
+```mermaid
+sequenceDiagram
+    participant H as home directory
+    participant W as working copy
+    participant L as local repo
+    participant R as remote repo
+    R->>W: chezmoi init &lt;repo&gt;
+    W-->>H: chezmoi diff
+    W->>H: chezmoi apply
+    W->>W: chezmoi edit &lt;file&gt;
+    W->>W: chezmoi merge &lt;file&gt;
+    R->>H: chezmoi update
+```
+
+## Set up a new machine with a single command
+
+You can install your dotfiles on new machine with a single command:
+
+```console
+$ chezmoi init --apply https://github.com/username/dotfiles.git
+```
+
+This command is summarized in the this sequence diagram:
+
+```mermaid
+sequenceDiagram
+    participant H as home directory
+    participant W as working copy
+    participant L as local repo
+    participant R as remote repo
+    R->>H: chezmoi init --apply &lt;repo&gt;
 ```
 
 ## Next steps
