@@ -7,10 +7,10 @@
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="Manage your dotfiles across multiple machines, securely." name="description"/>
 <meta content="Tom Payne" name="author"/>
-<link href="https://chezmoi.io/reference/commands/chattr/" rel="canonical"/>
+<link href="https://chezmoi.io/reference/commands/target-path/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
 <meta content="mkdocs-1.2.3, mkdocs-material-8.1.9" name="generator"/>
-<title>chattr - chezmoi</title>
+<title>target-path - chezmoi</title>
 <link href="../../../assets/stylesheets/main.2b4465f4.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.e6a45f82.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -23,7 +23,7 @@
 <input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
 <label class="md-overlay" for="__drawer"></label>
 <div data-md-component="skip">
-<a class="md-skip" href="#chattr-modifier-target">
+<a class="md-skip" href="#target-path-source-path">
           Skip to content
         </a>
 </div>
@@ -47,7 +47,7 @@
 <div class="md-header__topic" data-md-component="header-topic">
 <span class="md-ellipsis">
             
-              chattr
+              target-path
             
           </span>
 </div>
@@ -673,9 +673,8 @@
         cd
       </a>
 </li>
-<li class="md-nav__item md-nav__item--active">
-<input class="md-nav__toggle md-toggle" data-md-toggle="toc" id="__toc" type="checkbox"/>
-<a class="md-nav__link md-nav__link--active" href="./">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../chattr/">
         chattr
       </a>
 </li>
@@ -819,8 +818,9 @@
         status
       </a>
 </li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../target-path/">
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" data-md-toggle="toc" id="__toc" type="checkbox"/>
+<a class="md-nav__link md-nav__link--active" href="./">
         target-path
       </a>
 </li>
@@ -1199,104 +1199,16 @@
 </div>
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
-<a class="md-content__button md-icon" href="https://github.com/twpayne/chezmoi/edit/master/assets/chezmoi.io/docs/reference/commands/chattr.md" title="Edit this page">
+<a class="md-content__button md-icon" href="https://github.com/twpayne/chezmoi/edit/master/assets/chezmoi.io/docs/reference/commands/target-path.md" title="Edit this page">
 <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"></path></svg>
 </a>
-<h1 id="chattr-modifier-target"><code>chattr</code> <em>modifier</em> <em>target</em>...</h1>
-<p>Change the attributes and/or type of <em>target</em>s. <em>modifier</em> specifies what to
-modify.</p>
-<p>Add attributes by specifying them or their abbreviations directly, optionally
-prefixed with a plus sign (<code>+</code>). Remove attributes by prefixing them or their
-attributes with the string <code>no</code> or a minus sign (<code>-</code>). The available attribute
-modifiers and their abbreviations are:</p>
-<table>
-<thead>
-<tr>
-<th>Attribute modifier</th>
-<th>Abbreviation</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>after</code></td>
-<td><code>a</code></td>
-</tr>
-<tr>
-<td><code>before</code></td>
-<td><code>b</code></td>
-</tr>
-<tr>
-<td><code>empty</code></td>
-<td><code>e</code></td>
-</tr>
-<tr>
-<td><code>encrypted</code></td>
-<td><em>none</em></td>
-</tr>
-<tr>
-<td><code>exact</code></td>
-<td><em>none</em></td>
-</tr>
-<tr>
-<td><code>executable</code></td>
-<td><code>x</code></td>
-</tr>
-<tr>
-<td><code>once</code></td>
-<td><code>o</code></td>
-</tr>
-<tr>
-<td><code>private</code></td>
-<td><code>p</code></td>
-</tr>
-<tr>
-<td><code>readonly</code></td>
-<td><code>r</code></td>
-</tr>
-<tr>
-<td><code>remove</code></td>
-<td><em>none</em></td>
-</tr>
-<tr>
-<td><code>template</code></td>
-<td><code>t</code></td>
-</tr>
-</tbody>
-</table>
-<p>The type of a target can be changed using a type modifier:</p>
-<table>
-<thead>
-<tr>
-<th>Type modifier</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><code>create</code></td>
-</tr>
-<tr>
-<td><code>modify</code></td>
-</tr>
-<tr>
-<td><code>script</code></td>
-</tr>
-<tr>
-<td><code>symlink</code></td>
-</tr>
-</tbody>
-</table>
-<p>The negative form of type modifiers, e.g. <code>nocreate</code>, changes the target to be
-a regular file if it is of that type, otherwise the type is left unchanged.</p>
-<p>Multiple modifications may be specified by separating them with a comma (<code>,</code>).
-If you use the <code>-</code><em>modifier</em> form then you must put <em>modifier</em> after a <code>--</code> to
-prevent chezmoi from interpreting <code>-</code><em>modifier</em> as an option.</p>
+<h1 id="target-path-source-path"><code>target-path</code> [<em>source-path</em>...]</h1>
+<p>Print the target path of each source path. If no source paths are specified then
+print the target directory.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi chattr template ~/.bashrc
-<span class="gp">$ </span>chezmoi chattr noempty ~/.profile
-<span class="gp">$ </span>chezmoi chattr private,template ~/.netrc
-<span class="gp">$ </span>chezmoi chattr -- -x ~/.zshrc
-<span class="gp">$ </span>chezmoi chattr +create,+private ~/.kube/config
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>chezmoi target-path
+<span class="gp">$ </span>chezmoi target-path ~/.local/share/chezmoi/dot_zshrc
 </code></pre></div>
 </div>
 </article>
@@ -1309,7 +1221,7 @@ prevent chezmoi from interpreting <code>-</code><em>modifier</em> as an option.<
 </main>
 <footer class="md-footer">
 <nav aria-label="Footer" class="md-footer__inner md-grid">
-<a aria-label="Previous: cd" class="md-footer__link md-footer__link--prev" href="../cd/" rel="prev">
+<a aria-label="Previous: status" class="md-footer__link md-footer__link--prev" href="../status/" rel="prev">
 <div class="md-footer__button md-icon">
 <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"></path></svg>
 </div>
@@ -1318,17 +1230,17 @@ prevent chezmoi from interpreting <code>-</code><em>modifier</em> as an option.<
 <span class="md-footer__direction">
                 Previous
               </span>
-              cd
+              status
             </div>
 </div>
 </a>
-<a aria-label="Next: completion" class="md-footer__link md-footer__link--next" href="../completion/" rel="next">
+<a aria-label="Next: unmanage" class="md-footer__link md-footer__link--next" href="../unmanage/" rel="next">
 <div class="md-footer__title">
 <div class="md-ellipsis">
 <span class="md-footer__direction">
                 Next
               </span>
-              completion
+              unmanage
             </div>
 </div>
 <div class="md-footer__button md-icon">
