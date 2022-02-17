@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"os/exec"
+
 	"github.com/spf13/cobra"
 	"github.com/twpayne/go-shell"
 )
@@ -30,9 +32,36 @@ func (c *Config) newCDCmd() *cobra.Command {
 }
 
 func (c *Config) runCDCmd(cmd *cobra.Command, args []string) error {
+	shellCommand, shellArgs := c.shell()
+	return c.run(c.WorkingTreeAbsPath, shellCommand, shellArgs)
+}
+
+func (c *Config) shell() (string, []string) {
 	shellCommand := c.CD.Command
-	if shellCommand == "" {
-		shellCommand, _ = shell.CurrentUserShell()
+	shellArgs := c.CD.Args
+
+	// If the user has set a shell command then use it.
+	if shellCommand != "" {
+		return shellCommand, shellArgs
 	}
-	return c.run(c.WorkingTreeAbsPath, shellCommand, c.CD.Args)
+
+	// Determine the user's shell.
+	shellCommand, _ = shell.CurrentUserShell()
+
+	// If the shell is found, return it.
+	if path, err := exec.LookPath(shellCommand); err == nil {
+		return path, shellArgs
+	}
+
+	// Otherwise, if the shell contains spaces, then assume that the first word
+	// is the editor and the rest are arguments.
+	components := whitespaceRx.Split(shellCommand, -1)
+	if len(components) > 1 {
+		if path, err := exec.LookPath(components[0]); err == nil {
+			return path, append(components[1:], shellArgs...)
+		}
+	}
+
+	// Fallback to shell command only.
+	return shellCommand, shellArgs
 }

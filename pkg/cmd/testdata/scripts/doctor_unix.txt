@@ -11,6 +11,7 @@ chmod 755 bin/op
 chmod 755 bin/pass
 chmod 755 bin/pinentry
 chmod 755 bin/secret
+chmod 755 bin/shell
 chmod 755 bin/vault
 chmod 755 bin/vimdiff
 
@@ -125,6 +126,8 @@ echo "License GPLv2+: GNU GPL version 2 or later <https://www.gnu.org/licenses/>
 echo "This is free software: you are free to change and redistribute it."
 echo "There is NO WARRANTY, to the extent permitted by law."
 -- bin/secret --
+#!/bin/sh
+-- bin/shell --
 #!/bin/sh
 -- bin/vault --
 #!/bin/sh
