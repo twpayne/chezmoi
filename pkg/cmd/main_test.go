@@ -646,16 +646,6 @@ func setup(env *testscript.Env) error {
 					`done`,
 				)),
 			},
-			// shell is a non-interactive script that appends the directory in
-			// which it was launched to $WORK/shell.log.
-			"shell": &vfst.File{
-				Perm: 0o755,
-				Contents: []byte(chezmoitest.JoinLines(
-					`#!/bin/sh`,
-					``,
-					`pwd >> '`+filepath.Join(env.WorkDir, "shell.log")+`'`,
-				)),
-			},
 		}
 	}
 

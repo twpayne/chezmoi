@@ -1,5 +1,7 @@
 [windows] skip 'UNIX only'
 
+chmod 755 bin/shell
+
 # test chezmoi cd creates source directory if needed
 chezmoi cd
 exists $CHEZMOISOURCEDIR
@@ -9,15 +11,23 @@ grep -count=1 ${CHEZMOISOURCEDIR@R} shell.log
 chezmoi cd
 grep -count=2 ${CHEZMOISOURCEDIR@R} shell.log
 
-[!exec:bash] stop 'remaining tests require bash in $PATH'
+# test that chezmoi cd works when $SHELL environment variable contains spaces
+env SHELL='shell arg1'
+chezmoi cd
+stdout '^shell arg1$'
 
 chhome home2/user
 
-# test chezmoi cd with command with args
+# test chezmoi cd with shell command set in config file overrides $SHELL environment variable
 chezmoi cd
-stdout version
+stdout '^shell arg2$'
 
+-- bin/shell --
+#!/bin/sh
+
+pwd >> $WORK/shell.log
+echo shell $*
 -- home2/user/.config/chezmoi/chezmoi.toml --
 [cd]
-    command = "bash"
-    args = ["--version"]
+    command = "shell"
+    args = ["arg2"]
