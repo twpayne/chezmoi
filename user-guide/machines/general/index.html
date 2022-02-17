@@ -404,6 +404,11 @@
 </nav>
 </li>
 <li class="md-nav__item">
+<a class="md-nav__link" href="../linux/">
+        Linux
+      </a>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="../macos/">
         macOS
       </a>
@@ -1235,15 +1240,15 @@
 <p>The following template sets the <code>$chassisType</code> variable to <code>"desktop"</code> or
 <code>"laptop"</code> on macOS, Linux, and Windows.</p>
 <div class="highlight"><pre><span></span><code>{{- $chassisType := "desktop" }}
-{{- if (eq .chezmoi.os "darwin") }}
+{{- if eq .chezmoi.os "darwin" }}
 {{-   if contains "MacBook" (output "sysctl" "-n" "hw.model") }}
 {{-     $chassisType = "laptop" }}
 {{-   else }}
 {{-     $chassisType = "desktop" }}
 {{-   end }}
-{{- else if (eq .chezmoi.os "linux") }}
+{{- else if eq .chezmoi.os "linux" }}
 {{-   $chassisType = (output "hostnamectl" "--json=short" | mustFromJson).Chassis }}
-{{- else if (eq .chezmoi.os "windows") }}
+{{- else if eq .chezmoi.os "windows" }}
 {{-   $chassisType = (output "powershell.exe" "-noprofile" "-command" "if (Get-WmiObject -Class win32_battery -ComputerName localhost) { echo laptop } else { echo desktop }") }}
 {{- end }}
 </code></pre></div>
@@ -1270,13 +1275,13 @@
             </div>
 </div>
 </a>
-<a aria-label="Next: macOS" class="md-footer__link md-footer__link--next" href="../macos/" rel="next">
+<a aria-label="Next: Linux" class="md-footer__link md-footer__link--next" href="../linux/" rel="next">
 <div class="md-footer__title">
 <div class="md-ellipsis">
 <span class="md-footer__direction">
                 Next
               </span>
-              macOS
+              Linux
             </div>
 </div>
 <div class="md-footer__button md-icon">
