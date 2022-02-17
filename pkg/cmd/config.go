@@ -1059,26 +1059,29 @@ func (c *Config) diffFile(
 
 // editor returns the path to the user's editor and any extra arguments.
 func (c *Config) editor(args []string) (string, []string) {
-	// If the user has set and edit command then use it.
-	if c.Edit.Command != "" {
-		return c.Edit.Command, append(c.Edit.Args, args...)
+	editCommand := c.Edit.Command
+	editArgs := c.Edit.Args
+
+	// If the user has set an edit command then use it.
+	if editCommand != "" {
+		return editCommand, append(editArgs, args...)
 	}
 
 	// Prefer $VISUAL over $EDITOR and fallback to the OS's default editor.
-	editor := firstNonEmptyString(
+	editCommand = firstNonEmptyString(
 		os.Getenv("VISUAL"),
 		os.Getenv("EDITOR"),
 		defaultEditor,
 	)
 
 	// If editor is found, return it.
-	if path, err := exec.LookPath(editor); err == nil {
+	if path, err := exec.LookPath(editCommand); err == nil {
 		return path, args
 	}
 
 	// Otherwise, if editor contains spaces, then assume that the first word is
 	// the editor and the rest are arguments.
-	components := whitespaceRx.Split(editor, -1)
+	components := whitespaceRx.Split(editCommand, -1)
 	if len(components) > 1 {
 		if path, err := exec.LookPath(components[0]); err == nil {
 			return path, append(components[1:], args...)
@@ -1086,7 +1089,7 @@ func (c *Config) editor(args []string) (string, []string) {
 	}
 
 	// Fallback to editor only.
-	return editor, args
+	return editCommand, args
 }
 
 // errorf writes an error to stderr.
