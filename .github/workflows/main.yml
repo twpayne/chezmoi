@@ -369,10 +369,10 @@ jobs:
       uses: actions/setup-go@v2
       with:
         go-version: 1.x
-    - name: Install Go 1.18beta2
+    - name: Install Go 1.18rc1
       run: |
-        go install golang.org/dl/go1.18beta2@latest
-        go1.18beta2 download
+        go install golang.org/dl/go1.18rc1@latest
+        go1.18rc1 download
     - name: Checkout
       uses: actions/checkout@v2
     - name: Cache Go modules
@@ -384,10 +384,10 @@ jobs:
           ${{ runner.os }}-ubuntu-go-1-18-
     - name: Build
       run: |
-        go1.18beta2 build ./...
+        go1.18rc1 build ./...
     - name: Run
       run: |
-        go1.18beta2 run . --version
+        go1.18rc1 run . --version
     - name: Install age
       run: |
         cd $(mktemp -d)
@@ -396,7 +396,7 @@ jobs:
         sudo install -m 755 age/age-keygen /usr/local/bin
     - name: Test
       run: |
-        go1.18beta2 test ./...
+        go1.18rc1 test ./...
   test-windows:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
