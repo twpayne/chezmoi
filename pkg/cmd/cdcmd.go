@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"os/exec"
-
 	"github.com/spf13/cobra"
 	"github.com/twpayne/go-shell"
 )
@@ -40,28 +38,10 @@ func (c *Config) cdCommand() (string, []string) {
 	cdCommand := c.CD.Command
 	cdArgs := c.CD.Args
 
-	// If the user has set a cd command then use it.
 	if cdCommand != "" {
 		return cdCommand, cdArgs
 	}
 
-	// Determine the user's shell.
 	cdCommand, _ = shell.CurrentUserShell()
-
-	// If the shell is found, return it.
-	if path, err := exec.LookPath(cdCommand); err == nil {
-		return path, cdArgs
-	}
-
-	// Otherwise, if the shell contains spaces, then assume that the first word
-	// is the editor and the rest are arguments.
-	components := whitespaceRx.Split(cdCommand, -1)
-	if len(components) > 1 {
-		if path, err := exec.LookPath(components[0]); err == nil {
-			return path, append(components[1:], cdArgs...)
-		}
-	}
-
-	// Fallback to shell command only.
-	return cdCommand, cdArgs
+	return parseCommand(cdCommand, cdArgs)
 }
