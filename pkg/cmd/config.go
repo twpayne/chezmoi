@@ -1074,22 +1074,7 @@ func (c *Config) editor(args []string) (string, []string) {
 		defaultEditor,
 	)
 
-	// If editor is found, return it.
-	if path, err := exec.LookPath(editCommand); err == nil {
-		return path, args
-	}
-
-	// Otherwise, if editor contains spaces, then assume that the first word is
-	// the editor and the rest are arguments.
-	components := whitespaceRx.Split(editCommand, -1)
-	if len(components) > 1 {
-		if path, err := exec.LookPath(components[0]); err == nil {
-			return path, append(components[1:], args...)
-		}
-	}
-
-	// Fallback to editor only.
-	return editCommand, args
+	return parseCommand(editCommand, append(editArgs, args...))
 }
 
 // errorf writes an error to stderr.
@@ -1491,8 +1476,9 @@ func (c *Config) pageOutputString(output, cmdPager string) error {
 	// it directly.
 	var pagerCmd *exec.Cmd
 	if strings.IndexFunc(pager, unicode.IsSpace) != -1 {
-		shell, _ := shell.CurrentUserShell()
-		pagerCmd = exec.Command(shell, "-c", pager)
+		shellCommand, _ := shell.CurrentUserShell()
+		shellCommand, shellArgs := parseCommand(shellCommand, []string{"-c", pager})
+		pagerCmd = exec.Command(shellCommand, shellArgs...)
 	} else {
 		pagerCmd = exec.Command(pager)
 	}
@@ -2093,6 +2079,25 @@ func (c *Config) writeOutput(data []byte) error {
 // writeOutputString writes data to the configured output.
 func (c *Config) writeOutputString(data string) error {
 	return c.writeOutput([]byte(data))
+}
+
+func parseCommand(command string, args []string) (string, []string) {
+	// If command is found, then return it.
+	if path, err := exec.LookPath(command); err == nil {
+		return path, args
+	}
+
+	// Otherwise, if the command contains spaces, then assume that the first word
+	// is the editor and the rest are arguments.
+	components := whitespaceRx.Split(command, -1)
+	if len(components) > 1 {
+		if path, err := exec.LookPath(components[0]); err == nil {
+			return path, append(components[1:], args...)
+		}
+	}
+
+	// Fallback to the command only.
+	return command, args
 }
 
 // withVersionInfo sets the version information.
