@@ -177,6 +177,12 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotSet:   checkResultWarning,
 			ifNotExist: checkResultWarning,
 		},
+		&binaryCheck{
+			name:       "diff-command",
+			binaryname: c.Diff.Command,
+			ifNotSet:   checkResultInfo,
+			ifNotExist: checkResultWarning,
+		},
 		umaskCheck{},
 		&binaryCheck{
 			name:        "git-command",
