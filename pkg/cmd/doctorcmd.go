@@ -16,7 +16,6 @@ import (
 	"github.com/coreos/go-semver/semver"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/twpayne/go-shell"
 	"github.com/twpayne/go-xdg/v6"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
@@ -133,7 +132,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	shell, _ := shell.CurrentUserShell()
+	shellCommand, _ := c.shell()
 	editCommand, _ := c.editor(nil)
 	checks := []check{
 		&versionCheck{
@@ -168,7 +167,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		},
 		&binaryCheck{
 			name:       "shell",
-			binaryname: shell,
+			binaryname: shellCommand,
 			ifNotSet:   checkResultError,
 			ifNotExist: checkResultError,
 		},
