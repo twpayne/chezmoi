@@ -16,6 +16,7 @@ import (
 	"github.com/coreos/go-semver/semver"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/twpayne/go-shell"
 	"github.com/twpayne/go-xdg/v6"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
@@ -132,6 +133,8 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+	shellCommand, _ := shell.CurrentUserShell()
+	shellCommand, _ = parseCommand(shellCommand, nil)
 	cdCommand, _ := c.cdCommand()
 	editCommand, _ := c.editor(nil)
 	checks := []check{
@@ -164,6 +167,12 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		&dirCheck{
 			name:    "dest-dir",
 			dirname: c.DestDirAbsPath,
+		},
+		&binaryCheck{
+			name:       "shell-command",
+			binaryname: shellCommand,
+			ifNotSet:   checkResultError,
+			ifNotExist: checkResultError,
 		},
 		&binaryCheck{
 			name:       "cd-command",
