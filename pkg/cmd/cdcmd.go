@@ -32,36 +32,36 @@ func (c *Config) newCDCmd() *cobra.Command {
 }
 
 func (c *Config) runCDCmd(cmd *cobra.Command, args []string) error {
-	shellCommand, shellArgs := c.shell()
-	return c.run(c.WorkingTreeAbsPath, shellCommand, shellArgs)
+	cdCommand, cdArgs := c.cdCommand()
+	return c.run(c.WorkingTreeAbsPath, cdCommand, cdArgs)
 }
 
-func (c *Config) shell() (string, []string) {
-	shellCommand := c.CD.Command
-	shellArgs := c.CD.Args
+func (c *Config) cdCommand() (string, []string) {
+	cdCommand := c.CD.Command
+	cdArgs := c.CD.Args
 
-	// If the user has set a shell command then use it.
-	if shellCommand != "" {
-		return shellCommand, shellArgs
+	// If the user has set a cd command then use it.
+	if cdCommand != "" {
+		return cdCommand, cdArgs
 	}
 
 	// Determine the user's shell.
-	shellCommand, _ = shell.CurrentUserShell()
+	cdCommand, _ = shell.CurrentUserShell()
 
 	// If the shell is found, return it.
-	if path, err := exec.LookPath(shellCommand); err == nil {
-		return path, shellArgs
+	if path, err := exec.LookPath(cdCommand); err == nil {
+		return path, cdArgs
 	}
 
 	// Otherwise, if the shell contains spaces, then assume that the first word
 	// is the editor and the rest are arguments.
-	components := whitespaceRx.Split(shellCommand, -1)
+	components := whitespaceRx.Split(cdCommand, -1)
 	if len(components) > 1 {
 		if path, err := exec.LookPath(components[0]); err == nil {
-			return path, append(components[1:], shellArgs...)
+			return path, append(components[1:], cdArgs...)
 		}
 	}
 
 	// Fallback to shell command only.
-	return shellCommand, shellArgs
+	return cdCommand, cdArgs
 }
