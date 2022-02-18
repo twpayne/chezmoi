@@ -132,7 +132,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	shellCommand, _ := c.shell()
+	cdCommand, _ := c.cdCommand()
 	editCommand, _ := c.editor(nil)
 	checks := []check{
 		&versionCheck{
@@ -166,8 +166,8 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			dirname: c.DestDirAbsPath,
 		},
 		&binaryCheck{
-			name:       "shell",
-			binaryname: shellCommand,
+			name:       "cd-command",
+			binaryname: cdCommand,
 			ifNotSet:   checkResultError,
 			ifNotExist: checkResultError,
 		},
