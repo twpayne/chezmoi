@@ -19,9 +19,9 @@ func (c *Config) newGitCmd() *cobra.Command {
 		Example: example("git"),
 		RunE:    c.runGitCmd,
 		Annotations: map[string]string{
-			requiresSourceDirectory: "true",
-			requiresWorkingTree:     "true",
-			runsCommands:            "true",
+			createSourceDirectoryIfNeeded: "true",
+			requiresWorkingTree:           "true",
+			runsCommands:                  "true",
 		},
 	}
 

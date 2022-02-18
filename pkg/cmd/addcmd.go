@@ -32,10 +32,10 @@ func (c *Config) newAddCmd() *cobra.Command {
 		Args:    cobra.MinimumNArgs(1),
 		RunE:    c.makeRunEWithSourceState(c.runAddCmd),
 		Annotations: map[string]string{
-			modifiesSourceDirectory: "true",
-			persistentStateMode:     persistentStateModeReadWrite,
-			requiresSourceDirectory: "true",
-			requiresWorkingTree:     "true",
+			createSourceDirectoryIfNeeded: "true",
+			modifiesSourceDirectory:       "true",
+			persistentStateMode:           persistentStateModeReadWrite,
+			requiresWorkingTree:           "true",
 		},
 	}
 

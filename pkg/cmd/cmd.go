@@ -21,15 +21,16 @@ import (
 
 // Command annotations.
 const (
-	doesNotRequireValidConfig    = "chezmoi_does_not_require_valid_config"
-	modifiesConfigFile           = "chezmoi_modifies_config_file"
-	modifiesDestinationDirectory = "chezmoi_modifies_destination_directory"
-	modifiesSourceDirectory      = "chezmoi_modifies_source_directory"
-	persistentStateMode          = "chezmoi_persistent_state_mode"
-	requiresConfigDirectory      = "chezmoi_requires_config_directory"
-	requiresSourceDirectory      = "chezmoi_requires_source_directory"
-	requiresWorkingTree          = "chezmoi_requires_working_tree"
-	runsCommands                 = "chezmoi_runs_commands"
+	createSourceDirectoryIfNeeded = "chezmoi_create_source_directory_if_needed"
+	doesNotRequireValidConfig     = "chezmoi_does_not_require_valid_config"
+	modifiesConfigFile            = "chezmoi_modifies_config_file"
+	modifiesDestinationDirectory  = "chezmoi_modifies_destination_directory"
+	modifiesSourceDirectory       = "chezmoi_modifies_source_directory"
+	persistentStateMode           = "chezmoi_persistent_state_mode"
+	requiresConfigDirectory       = "chezmoi_requires_config_directory"
+	requiresSourceDirectory       = "chezmoi_requires_source_directory"
+	requiresWorkingTree           = "chezmoi_requires_working_tree"
+	runsCommands                  = "chezmoi_runs_commands"
 )
 
 // Persistent state modes.

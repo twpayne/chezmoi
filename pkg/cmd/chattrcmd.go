@@ -77,6 +77,7 @@ func (c *Config) newChattrCmd() *cobra.Command {
 		RunE:              c.makeRunEWithSourceState(c.runChattrCmd),
 		Annotations: map[string]string{
 			modifiesSourceDirectory: "true",
+			requiresSourceDirectory: "true",
 		},
 	}
 
