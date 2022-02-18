@@ -18,6 +18,9 @@ func (c *Config) newCatCmd() *cobra.Command {
 		ValidArgsFunction: c.targetValidArgs,
 		Args:              cobra.MinimumNArgs(1),
 		RunE:              c.makeRunEWithSourceState(c.runCatCmd),
+		Annotations: map[string]string{
+			requiresSourceDirectory: "true",
+		},
 	}
 
 	return catCmd

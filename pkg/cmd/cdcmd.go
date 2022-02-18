@@ -21,10 +21,10 @@ func (c *Config) newCDCmd() *cobra.Command {
 		RunE:    c.runCDCmd,
 		Args:    cobra.NoArgs,
 		Annotations: map[string]string{
-			doesNotRequireValidConfig: "true",
-			requiresSourceDirectory:   "true",
-			requiresWorkingTree:       "true",
-			runsCommands:              "true",
+			createSourceDirectoryIfNeeded: "true",
+			doesNotRequireValidConfig:     "true",
+			requiresWorkingTree:           "true",
+			runsCommands:                  "true",
 		},
 	}
 

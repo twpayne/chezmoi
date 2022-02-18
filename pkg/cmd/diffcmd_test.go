@@ -90,7 +90,7 @@ func TestDiffCmd(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, map[string]interface{}{
-				"/home/user": &vfst.Dir{Perm: 0o777 &^ chezmoitest.Umask},
+				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0o777 &^ chezmoitest.Umask},
 			}, func(fileSystem vfs.FS) {
 				if tc.extraRoot != nil {
 					require.NoError(t, vfst.NewBuilder().Build(fileSystem, tc.extraRoot))

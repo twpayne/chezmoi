@@ -30,7 +30,8 @@ func (c *Config) newDiffCmd() *cobra.Command {
 		ValidArgsFunction: c.targetValidArgs,
 		RunE:              c.runDiffCmd,
 		Annotations: map[string]string{
-			persistentStateMode: persistentStateModeReadMockWrite,
+			persistentStateMode:     persistentStateModeReadMockWrite,
+			requiresSourceDirectory: "true",
 		},
 	}
 

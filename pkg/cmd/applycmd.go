@@ -24,6 +24,7 @@ func (c *Config) newApplyCmd() *cobra.Command {
 		Annotations: map[string]string{
 			modifiesDestinationDirectory: "true",
 			persistentStateMode:          persistentStateModeReadWrite,
+			requiresSourceDirectory:      "true",
 		},
 	}
 

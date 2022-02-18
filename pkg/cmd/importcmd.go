@@ -26,9 +26,9 @@ func (c *Config) newImportCmd() *cobra.Command {
 		Args:    cobra.MaximumNArgs(1),
 		RunE:    c.makeRunEWithSourceState(c.runImportCmd),
 		Annotations: map[string]string{
-			modifiesSourceDirectory: "true",
-			persistentStateMode:     persistentStateModeReadWrite,
-			requiresSourceDirectory: "true",
+			createSourceDirectoryIfNeeded: "true",
+			modifiesSourceDirectory:       "true",
+			persistentStateMode:           persistentStateModeReadWrite,
 		},
 	}
 

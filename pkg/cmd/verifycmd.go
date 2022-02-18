@@ -22,7 +22,8 @@ func (c *Config) newVerifyCmd() *cobra.Command {
 		ValidArgsFunction: c.targetValidArgs,
 		RunE:              c.runVerifyCmd,
 		Annotations: map[string]string{
-			persistentStateMode: persistentStateModeReadMockWrite,
+			persistentStateMode:     persistentStateModeReadMockWrite,
+			requiresSourceDirectory: "true",
 		},
 	}
 

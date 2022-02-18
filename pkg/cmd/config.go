@@ -1659,8 +1659,20 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	}
 
 	// Create the source directory if needed.
-	if boolAnnotation(cmd, requiresSourceDirectory) {
+	if boolAnnotation(cmd, createSourceDirectoryIfNeeded) {
 		if err := chezmoi.MkdirAll(c.baseSystem, c.SourceDirAbsPath, 0o777); err != nil {
+			return err
+		}
+	}
+
+	// Verify that the source directory exists and is a directory, if needed.
+	if boolAnnotation(cmd, requiresSourceDirectory) {
+		switch fileInfo, err := c.baseSystem.Stat(c.SourceDirAbsPath); {
+		case err == nil && fileInfo.IsDir():
+			// Do nothing.
+		case err == nil:
+			return fmt.Errorf("%s: not a directory", c.SourceDirAbsPath)
+		case err != nil:
 			return err
 		}
 	}

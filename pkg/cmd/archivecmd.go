@@ -31,7 +31,8 @@ func (c *Config) newArchiveCmd() *cobra.Command {
 		ValidArgsFunction: c.targetValidArgs,
 		RunE:              c.runArchiveCmd,
 		Annotations: map[string]string{
-			persistentStateMode: persistentStateModeEmpty,
+			persistentStateMode:     persistentStateModeEmpty,
+			requiresSourceDirectory: "true",
 		},
 	}
 
