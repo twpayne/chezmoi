@@ -91,6 +91,11 @@ linters-settings:
     - ^fmt\.Print.*$
     - ^ioutil\..*$
     - ^os\.(DirEntry|FileInfo|FileMode|Is.*|Mode.*)$
+  gci:
+    sections:
+    - standard
+    - default
+    - prefix(github.com/twpayne/chezmoi)
   gofumpt:
     extra-rules: true
   goimports:
