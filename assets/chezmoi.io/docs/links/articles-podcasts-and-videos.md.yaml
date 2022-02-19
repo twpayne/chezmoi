@@ -256,3 +256,8 @@ articles:
   version: '2.11.2'
   title: 'How To Manage Dotfiles With Chezmoi'
   url: 'https://jerrynsh.com/how-to-manage-dotfiles-with-chezmoi/'
+- date: '2022-02-17'
+  version: '2.12.0'
+  title: 'Qué son y cómo gestionar archivos dotfiles con chezmoi'
+  lang: 'ES'
+  url: 'https://picodotdev.github.io/blog-bitix/2022/02/que-son-y-como-gestionar-archivos-dotfiles-con-chezmoi/'
