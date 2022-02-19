@@ -1,38 +1,24 @@
 # `.chezmoidata.<format>`
 
 If a file called `.chezmoidata.<format>` exists in the source state, it is
-interpreted as a datasource available in most templates.
+interpreted as template data.
 
 !!! example
 
-    If `.chezmoidata.toml` contains the following (and no variable is
-    overwritten in later stages):
+    If `.chezmoidata.toml` contains the following:
 
     ```toml title="~/.local/share/chezmoi/.chezmoidata.toml"
-    editor = "nvim"
-    [directions]
-      up = "k"
-      down = "j"
-      right = "l"
-      left = "h"
+    fontSize = 12
     ```
 
-    Then the following template:
+    Then the `.fontSize` variable is available in templates, e.g.
 
     ```
-    EDITOR={{ .editor }}
-    MOVE_UP={{ .directions.up }}
-    MOVE_DOWN={{ .directions.down }}
-    MOVE_RIGHT={{ .directions.right }}
-    MOVE_LEFT={{ .directions.left }}
+    FONT_SIZE={{ .fontSize }}
     ```
 
     Will result in:
 
     ```
-    EDITOR=nvim
-    MOVE_UP=k
-    MOVE_DOWN=j
-    MOVE_RIGHT=l
-    MOVE_LEFT=h
+    FONT_SIZE=12
     ```
