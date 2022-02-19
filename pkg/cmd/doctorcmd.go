@@ -50,6 +50,13 @@ var checkResultStr = map[checkResult]string{
 	checkResultFailed:  "failed",
 }
 
+// An argsCheck checks that arguments for a binary.
+type argsCheck struct {
+	name    string
+	command string
+	args    []string
+}
+
 // A binaryCheck checks that a binary called name is installed and optionally at
 // least version minVersion.
 type binaryCheck struct {
@@ -134,9 +141,9 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		return err
 	}
 	shellCommand, _ := shell.CurrentUserShell()
-	shellCommand, _ = parseCommand(shellCommand, nil)
-	cdCommand, _ := c.cdCommand()
-	editCommand, _ := c.editor(nil)
+	shellCommand, shellArgs := parseCommand(shellCommand, nil)
+	cdCommand, cdArgs := c.cdCommand()
+	editCommand, editArgs := c.editor(nil)
 	checks := []check{
 		&versionCheck{
 			versionInfo: c.versionInfo,
@@ -174,17 +181,32 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotSet:   checkResultError,
 			ifNotExist: checkResultError,
 		},
+		&argsCheck{
+			name:    "shell-args",
+			command: shellCommand,
+			args:    shellArgs,
+		},
 		&binaryCheck{
 			name:       "cd-command",
 			binaryname: cdCommand,
 			ifNotSet:   checkResultError,
 			ifNotExist: checkResultError,
 		},
+		&argsCheck{
+			name:    "cd-args",
+			command: cdCommand,
+			args:    cdArgs,
+		},
 		&binaryCheck{
 			name:       "edit-command",
 			binaryname: editCommand,
 			ifNotSet:   checkResultWarning,
 			ifNotExist: checkResultWarning,
+		},
+		&argsCheck{
+			name:    "edit-args",
+			command: editCommand,
+			args:    editArgs,
 		},
 		&binaryCheck{
 			name:       "diff-command",
@@ -327,6 +349,14 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
+}
+
+func (c *argsCheck) Name() string {
+	return c.name
+}
+
+func (c *argsCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
+	return checkResultOK, shellQuoteCommand(c.command, c.args)
 }
 
 func (c *binaryCheck) Name() string {
