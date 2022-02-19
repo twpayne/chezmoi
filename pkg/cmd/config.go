@@ -388,8 +388,8 @@ func newConfig(options ...configOption) (*Config, error) {
 			recursive: true,
 		},
 		upgrade: upgradeCmdConfig{
-			owner: "twpayne",
-			repo:  "chezmoi",
+			owner: gitHubOwner,
+			repo:  gitHubRepo,
 		},
 		verify: verifyCmdConfig{
 			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),

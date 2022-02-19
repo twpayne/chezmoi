@@ -2,9 +2,11 @@ package cmd
 
 import (
 	"bytes"
+	"context"
 	"errors"
 	"fmt"
 	"io/fs"
+	"net/http"
 	"os"
 	"os/exec"
 	"regexp"
@@ -97,6 +99,15 @@ type fileCheck struct {
 // A goVersionCheck checks the Go version.
 type goVersionCheck struct{}
 
+// A latestVersionCheck checks the latest version.
+type latestVersionCheck struct {
+	httpClient    *http.Client
+	httpClientErr error
+	owner         string
+	repo          string
+	version       semver.Version
+}
+
 // An osArchCheck checks that runtime.GOOS and runtime.GOARCH are supported.
 type osArchCheck struct{}
 
@@ -140,6 +151,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
+	httpClient, httpClientErr := c.getHTTPClient()
 	shellCommand, _ := shell.CurrentUserShell()
 	shellCommand, shellArgs := parseCommand(shellCommand, nil)
 	cdCommand, cdArgs := c.cdCommand()
@@ -148,6 +160,13 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 		&versionCheck{
 			versionInfo: c.versionInfo,
 			versionStr:  c.versionStr,
+		},
+		&latestVersionCheck{
+			httpClient:    httpClient,
+			httpClientErr: httpClientErr,
+			owner:         gitHubOwner,
+			repo:          gitHubRepo,
+			version:       c.version,
 		},
 		osArchCheck{},
 		unameCheck{},
@@ -507,6 +526,35 @@ func (goVersionCheck) Name() string {
 
 func (goVersionCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
 	return checkResultOK, fmt.Sprintf("%s (%s)", runtime.Version(), runtime.Compiler)
+}
+
+func (c *latestVersionCheck) Name() string {
+	return "latest-version"
+}
+
+func (c *latestVersionCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
+	if c.httpClientErr != nil {
+		return checkResultError, c.httpClientErr.Error()
+	}
+
+	ctx := context.Background()
+
+	gitHubClient := chezmoi.NewGitHubClient(ctx, c.httpClient)
+	rr, _, err := gitHubClient.Repositories.GetLatestRelease(ctx, c.owner, c.repo)
+	if err != nil {
+		return checkResultError, err.Error()
+	}
+
+	version, err := semver.NewVersion(strings.TrimPrefix(rr.GetName(), "v"))
+	if err != nil {
+		return checkResultError, err.Error()
+	}
+
+	checkResult := checkResultOK
+	if c.version.LessThan(*version) {
+		checkResult = checkResultWarning
+	}
+	return checkResult, "v" + version.String()
 }
 
 func (osArchCheck) Name() string {

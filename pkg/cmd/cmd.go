@@ -19,6 +19,12 @@ import (
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
 )
 
+// GitHub owner and repo for chezmoi itself.
+const (
+	gitHubOwner = "twpayne"
+	gitHubRepo  = "chezmoi"
+)
+
 // Command annotations.
 const (
 	createSourceDirectoryIfNeeded = "chezmoi_create_source_directory_if_needed"

@@ -21,6 +21,7 @@ mksourcedir
 # test that chezmoi doctor behaves as expected
 chezmoi doctor
 stdout '^ok\s+version\s+'
+stdout '^warning\s+latest-version\s+'
 stdout '^ok\s+os-arch\s+'
 ! stdout '^\S+\s+systeminfo\s+'
 stdout '^ok\s+uname\s+'
