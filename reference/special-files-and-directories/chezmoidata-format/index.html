@@ -1209,31 +1209,17 @@
 </a>
 <h1 id="chezmoidataformat"><code>.chezmoidata.&lt;format&gt;</code></h1>
 <p>If a file called <code>.chezmoidata.&lt;format&gt;</code> exists in the source state, it is
-interpreted as a datasource available in most templates.</p>
+interpreted as template data.</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
-<p>If <code>.chezmoidata.toml</code> contains the following (and no variable is
-overwritten in later stages):</p>
-<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoidata.toml</span><pre><span></span><code><span class="n">editor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"nvim"</span><span class="w"></span>
-<span class="k">[directions]</span><span class="w"></span>
-<span class="w">  </span><span class="n">up</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"k"</span><span class="w"></span>
-<span class="w">  </span><span class="n">down</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"j"</span><span class="w"></span>
-<span class="w">  </span><span class="n">right</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"l"</span><span class="w"></span>
-<span class="w">  </span><span class="n">left</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"h"</span><span class="w"></span>
+<p>If <code>.chezmoidata.toml</code> contains the following:</p>
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoidata.toml</span><pre><span></span><code><span class="n">fontSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">12</span><span class="w"></span>
 </code></pre></div>
-<p>Then the following template:</p>
-<div class="highlight"><pre><span></span><code>EDITOR={{ .editor }}
-MOVE_UP={{ .directions.up }}
-MOVE_DOWN={{ .directions.down }}
-MOVE_RIGHT={{ .directions.right }}
-MOVE_LEFT={{ .directions.left }}
+<p>Then the <code>.fontSize</code> variable is available in templates, e.g.</p>
+<div class="highlight"><pre><span></span><code>FONT_SIZE={{ .fontSize }}
 </code></pre></div>
 <p>Will result in:</p>
-<div class="highlight"><pre><span></span><code>EDITOR=nvim
-MOVE_UP=k
-MOVE_DOWN=j
-MOVE_RIGHT=l
-MOVE_LEFT=h
+<div class="highlight"><pre><span></span><code>FONT_SIZE=12
 </code></pre></div>
 </div>
 </article>
