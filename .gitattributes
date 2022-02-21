@@ -1,5 +1,5 @@
 * -text
 
 # Make GitHub language breakdown more accurate, see https://github.com/github/linguist
-*.gen.go linguist-generated
+assets/scripts/install.sh linguist-generated
 completions/* linguist-generated
