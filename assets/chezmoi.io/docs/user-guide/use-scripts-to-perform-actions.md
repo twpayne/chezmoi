@@ -19,14 +19,34 @@ sparingly. Any script should be idempotent, even `run_once_` and
 `run_onchange_` scripts.
 
 Scripts must be created manually in the source directory, typically by running
-`chezmoi cd` and then creating a file with a `run_` prefix. Scripts are
-executed directly using `exec` and must include a shebang line or be executable
-binaries. There is no need to set the executable bit on the script.
+`chezmoi cd` and then creating a file with a `run_` prefix. There is no need to
+set the executable bit on the script, as chezmoi will set the executable bit
+before executing the script.
 
 Scripts with the suffix `.tmpl` are treated as templates, with the usual
 template variables available. If, after executing the template, the result is
 only whitespace or an empty string, then the script is not executed. This is
 useful for disabling scripts.
+
+When chezmoi executes a script, it first generates the script contents in a
+file in a temporary directory with the executable bit set, and then executes
+the contents with `exec(3)`. Consequently, the script's contents must either
+include a `#!` line or be an executable binary.
+
+!!! note
+
+    By default, `chezmoi diff` will print the contents of scripts that would be
+    run by `chezmoi apply`. To exclude scripts from the output of `chezmoi
+    diff`, set `diff.exclude` in your configuration file, for example:
+
+    ```toml title="~/.config/chezmoi/chezmoi.toml"
+    [diff]
+        exclude = ["scripts"]
+    ```
+
+    Similarly, `chezmoi status` will print the names of the scripts that it
+    will execute with the status `R`. This can similarly disabled by setting
+    `status.exclude` to `["scripts"]` in your configuration file.
 
 ## Install packages with scripts
 
