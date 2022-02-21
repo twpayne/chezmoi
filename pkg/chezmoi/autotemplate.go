@@ -84,10 +84,11 @@ func extractVariablesHelper(
 	for name, value := range data {
 		switch value := value.(type) {
 		case string:
-			variables = append(variables, templateVariable{
+			variable := templateVariable{
 				name:  strings.Join(append(parent, name), "."),
 				value: value,
-			})
+			}
+			variables = append(variables, variable)
 		case map[string]interface{}:
 			variables = extractVariablesHelper(variables, append(parent, name), value)
 		}

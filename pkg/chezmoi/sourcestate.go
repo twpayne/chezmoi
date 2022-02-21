@@ -990,10 +990,11 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 				if s.Ignore(destEntryRelPath) {
 					continue
 				}
-				allSourceStateEntries[destEntryRelPath] = append(allSourceStateEntries[destEntryRelPath], &SourceStateRemove{
+				sourceStateRemove := &SourceStateRemove{
 					sourceRelPath: sourceStateDir.sourceRelPath,
 					targetRelPath: destEntryRelPath,
-				})
+				}
+				allSourceStateEntries[destEntryRelPath] = append(allSourceStateEntries[destEntryRelPath], sourceStateRemove)
 			}
 		case errors.Is(err, fs.ErrNotExist):
 			// Do nothing.
