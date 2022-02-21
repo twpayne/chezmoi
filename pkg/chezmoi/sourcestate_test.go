@@ -1368,8 +1368,9 @@ func TestSourceStateReadExternal(t *testing.T) {
 			},
 			expectedExternals: map[RelPath]External{
 				NewRelPath("file"): {
-					Type: "file",
-					URL:  httpServer.URL + "/file",
+					Type:   "file",
+					URL:    httpServer.URL + "/file",
+					origin: "/home/user/.local/share/chezmoi/.chezmoiexternal.yaml",
 				},
 			},
 		},
@@ -1386,8 +1387,9 @@ func TestSourceStateReadExternal(t *testing.T) {
 			},
 			expectedExternals: map[RelPath]External{
 				NewRelPath("file"): {
-					Type: "file",
-					URL:  httpServer.URL + "/file",
+					Type:   "file",
+					URL:    httpServer.URL + "/file",
+					origin: "/home/user/.local/share/chezmoi/.chezmoiexternal.toml",
 				},
 			},
 		},
@@ -1404,8 +1406,9 @@ func TestSourceStateReadExternal(t *testing.T) {
 			},
 			expectedExternals: map[RelPath]External{
 				NewRelPath(".dir/file"): {
-					Type: "file",
-					URL:  httpServer.URL + "/file",
+					Type:   "file",
+					URL:    httpServer.URL + "/file",
+					origin: "/home/user/.local/share/chezmoi/dot_dir/.chezmoiexternal.yaml",
 				},
 			},
 		},
@@ -1477,6 +1480,7 @@ func TestSourceStateReadExternalCache(t *testing.T) {
 					Type:          "archive",
 					URL:           httpServer.URL + "/archive.tar",
 					RefreshPeriod: 1 * time.Minute,
+					origin:        "/home/user/.local/share/chezmoi/.chezmoiexternal.yaml",
 				},
 			}, s.externals)
 		}

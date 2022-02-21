@@ -58,6 +58,7 @@ type External struct {
 	RefreshPeriod   time.Duration `json:"refreshPeriod" toml:"refreshPeriod" yaml:"refreshPeriod"`
 	StripComponents int           `json:"stripComponents" toml:"stripComponents" yaml:"stripComponents"`
 	URL             string        `json:"url" toml:"url" yaml:"url"`
+	origin          string
 }
 
 // A externalCacheEntry is an external cache entry.
@@ -1111,6 +1112,7 @@ func (s *SourceState) addExternal(sourceAbsPath AbsPath) error {
 		if _, ok := s.externals[targetRelPath]; ok {
 			return fmt.Errorf("%s: duplicate externals", targetRelPath)
 		}
+		external.origin = sourceAbsPath.String()
 		s.externals[targetRelPath] = external
 	}
 	return nil
