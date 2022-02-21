@@ -1280,13 +1280,29 @@ whenever their contents change have the <code>run_onchange_</code> prefix.</p>
 sparingly. Any script should be idempotent, even <code>run_once_</code> and
 <code>run_onchange_</code> scripts.</p>
 <p>Scripts must be created manually in the source directory, typically by running
-<code>chezmoi cd</code> and then creating a file with a <code>run_</code> prefix. Scripts are
-executed directly using <code>exec</code> and must include a shebang line or be executable
-binaries. There is no need to set the executable bit on the script.</p>
+<code>chezmoi cd</code> and then creating a file with a <code>run_</code> prefix. There is no need to
+set the executable bit on the script, as chezmoi will set the executable bit
+before executing the script.</p>
 <p>Scripts with the suffix <code>.tmpl</code> are treated as templates, with the usual
 template variables available. If, after executing the template, the result is
 only whitespace or an empty string, then the script is not executed. This is
 useful for disabling scripts.</p>
+<p>When chezmoi executes a script, it first generates the script contents in a
+file in a temporary directory with the executable bit set, and then executes
+the contents with <code>exec(3)</code>. Consequently, the script's contents must either
+include a <code>#!</code> line or be an executable binary.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default, <code>chezmoi diff</code> will print the contents of scripts that would be
+run by <code>chezmoi apply</code>. To exclude scripts from the output of <code>chezmoi
+diff</code>, set <code>diff.exclude</code> in your configuration file, for example:</p>
+<div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[diff]</span><span class="w"></span>
+<span class="w">    </span><span class="n">exclude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">"scripts"</span><span class="p">]</span><span class="w"></span>
+</code></pre></div>
+<p>Similarly, <code>chezmoi status</code> will print the names of the scripts that it
+will execute with the status <code>R</code>. This can similarly disabled by setting
+<code>status.exclude</code> to <code>["scripts"]</code> in your configuration file.</p>
+</div>
 <h2 id="install-packages-with-scripts">Install packages with scripts</h2>
 <p>Change to the source directory and create a file called
 <code>run_once_install-packages.sh</code>:</p>
