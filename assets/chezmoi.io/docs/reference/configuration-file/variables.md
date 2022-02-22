@@ -67,5 +67,6 @@ The following configuration variables are available:
 | `pinentry`     | `args`                | []string | *none*                   | Extra args to the pinentry command                     |
 |                | `command`             | string   | *none*                   | pinentry command                                       |
 |                | `options`             | []string | *see `pinentry` below*   | Extra options for pinentry                             |
+| `status`       | `exclude`             | []string | *none*                   | Entry types to exclude from status                     |
 | `template`     | `options`             | []string | `["missingkey=error"]`   | Template options                                       |
 | `vault`        | `command`             | string   | `vault`                  | Vault CLI command                                      |
