@@ -24,22 +24,22 @@ articles:
   url: 'https://fedoramagazine.org/take-back-your-dotfiles-with-chezmoi/'
 - date: '2020-04-17'
   version: '1.7.17'
-  lang: "CN"
+  lang: 'CN'
   title: '用 Chezmoi 取回你的点文件'
   url: 'https://blog.csdn.net/F8qG7f9YD02Pe/article/details/105548429'
 - date: '2020-04-16'
   version: '1.7.19'
-  lang: "FR"
+  lang: 'FR'
   title: 'Chezmoi, visite guidée'
   url: 'https://blog.wescale.fr/2020/04/16/chezmoi-visite-guidee/'
 - date: '2020-04-19'
   version: '1.7.19'
-  lang: "FR"
+  lang: 'FR'
   title: 'Git & dotfiles : versionner ses fichiers de configuration'
   url: 'https://www.armandphilippot.com/dotfiles-git-fichiers-configuration/'
 - date: '2020-04-20'
   version: '1.8.0'
-  lang: "FR"
+  lang: 'FR'
   title: 'Gestion des dotfiles et des secrets avec chezmoi'
   url: 'https://blog.arkey.fr/2020/04/01/manage_dotfiles_with_chezmoi.fr/'
 - date: '2020-04-27'
@@ -93,9 +93,9 @@ articles:
   url: 'https://www.moncefbelyamani.com/automating-the-setup-of-a-new-mac-with-all-your-apps-preferences-and-development-tools/'
 - date: '2021-01-29'
   version: '1.8.10'
-  lang: "CN"
-  title: "用 Chezmoi 管理配置文件"
-  url: "https://axionl.me/p/%E5%BD%92%E6%A1%A3-%E7%94%A8-chezmoi-%E7%AE%A1%E7%90%86%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/"
+  lang: 'CN'
+  title: '用 Chezmoi 管理配置文件'
+  url: 'https://axionl.me/p/%E5%BD%92%E6%A1%A3-%E7%94%A8-chezmoi-%E7%AE%A1%E7%90%86%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/'
 - date: '2021-02-06'
   version: '1.8.10'
   format: Video
@@ -103,12 +103,12 @@ articles:
   url: 'https://fosdem.org/2021/schedule/event/chezmoi/'
 - date: '2021-02-07'
   version: '1.8.10'
-  lang: "JP"
+  lang: 'JP'
   title: 'chezmoi始めた'
   url: 'https://joe-noh.hatenablog.com/entry/2021/02/07/215733'
 - date: '2021-02-17'
   version: '1.8.11'
-  lang: "JP"
+  lang: 'JP'
   title: 'chezmoi で dotfiles を手軽に柔軟にセキュアに管理する'
   url: 'https://zenn.dev/ryo_kawamata/articles/introduce-chezmoi'
 - date: '2021-04-01'
@@ -117,7 +117,7 @@ articles:
   url: 'https://johnmathews.is/chezmoi.html'
 - date: '2021-04-08'
   version: '2.0.9'
-  lang: "FR"
+  lang: 'FR'
   title: 'Bienvenue chez moi'
   url: 'https://blogduyax.madyanne.fr/2021/bienvenue-chez-moi/'
 - date: '2021-05-10'
@@ -134,7 +134,7 @@ articles:
   url: 'https://jonathanbartlett.co.uk/2021/05/14/a-brief-history-of-my-dotfiles.html'
 - date: '2021-07-15'
   version: '2.1.2'
-  lang: "CN"
+  lang: 'CN'
   title: '使用Chezmoi管理配置文件'
   url: 'https://marvinsblog.net/post/2021-07-15-chezmoi-intro/'
 - date: '2021-07-23'
@@ -144,7 +144,7 @@ articles:
   url: 'https://www.podfeet.com/blog/2021/07/ccatp-693/'
 - date: '2021-08-04'
   version: '2.1.2'
-  lang: "PT"
+  lang: 'PT'
   title: 'Como instalar o Chezmoi, um gerenciador de dotfiles, no Ubuntu, Linux Mint, Fedora, Debian'
   url: 'https://sempreupdate.com.br/como-instalar-o-chezmoi-um-gerenciador-de-dotfiles-no-ubuntu-linux-mint-fedora-debian/'
 - date: '2021-08-08'
@@ -190,7 +190,7 @@ articles:
   url: 'https://medium.com/@josemrivera/share-credentials-across-machines-using-chezmoi-and-bitwarden-4069dcb6e367'
 - date: '2021-10-26'
   version: '2.7.3'
-  lang: "RU"
+  lang: 'RU'
   title: 'Синхронизация системных настроек'
   url: 'https://habr.com/en/post/585578/'
 - date: '2021-11-23'
@@ -204,7 +204,7 @@ articles:
 - date: '2021-11-27'
   version: '2.8.0'
   format: 'Video'
-  lang: "TH"
+  lang: 'TH'
   title: 'Command ไร 2021-11-27 : ย้าย dotfiles ไป chezmoi'
   url: 'https://www.youtube.com/watch?v=8ybNfCfnF2Y'
 - date: '2021-12-01'
@@ -234,17 +234,17 @@ articles:
   url: 'https://www.wazaterm.com/blog/advent-calendar-2021/use-chezmoi-to-guarantee-idempotency-of-terminal'
 - date: '2022-01-12'
   version: '2.9.5'
-  lang: "IT"
+  lang: 'IT'
   title: 'Come funzionano i miei Mac'
   url: 'https://correntedebole.com/come-funzionano-i-miei-mac/'
 - date: '2022-01-26'
   version: '2.10.1'
-  lang: "JP"
+  lang: 'JP'
   title: 'chezmoi で dotfiles を管理する'
   url: 'https://blog.zoncoen.net/2022/01/26/chezmoi/'
 - date: '2022-02-01'
   version: '2.10.1'
-  lang: "JP"
+  lang: 'JP'
   title: 'chezmoi で dotfiles を手軽に柔軟にセキュアに管理する'
   url: 'https://zenn.dev/ryo_kawamata/articles/introduce-chezmoi'
 - date: '2022-02-02'
