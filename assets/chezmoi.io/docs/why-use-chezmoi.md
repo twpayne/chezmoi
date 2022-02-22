@@ -6,8 +6,8 @@ Dotfile managers give you the combined benefit of a consistent environment
 everywhere with an undo command and a restore from backup.
 
 As the core of our development environments become increasingly standardized
-(e.g. using git at both home and work), and we further customize them with our,
-at the same time we increasingly work in ephemeral environments like Docker
+(e.g. using git at both home and work), and we further customize them, at the
+same time we increasingly work in ephemeral environments like Docker
 containers, virtual machines, and GitHub Codespaces.
 
 In the same way that nobody would use an editor without an undo command, or
