@@ -27,6 +27,7 @@ const (
 	EntryTypeScripts
 	EntryTypeSymlinks
 	EntryTypeEncrypted
+	EntryTypeExternals
 
 	// EntryTypesAll is all entry types.
 	EntryTypesAll EntryTypeBits = EntryTypeDirs |
@@ -34,7 +35,8 @@ const (
 		EntryTypeRemove |
 		EntryTypeScripts |
 		EntryTypeSymlinks |
-		EntryTypeEncrypted
+		EntryTypeEncrypted |
+		EntryTypeExternals
 
 	// EntryTypesNone is no entry types.
 	EntryTypesNone EntryTypeBits = 0
@@ -49,6 +51,7 @@ var entryTypeBits = map[string]EntryTypeBits{
 	"scripts":   EntryTypeScripts,
 	"symlinks":  EntryTypeSymlinks,
 	"encrypted": EntryTypeEncrypted,
+	"externals": EntryTypeExternals,
 }
 
 // NewEntryTypeSet returns a new IncludeSet.
@@ -66,6 +69,11 @@ func (s *EntryTypeSet) Include(b EntryTypeBits) bool {
 // IncludeEncrypted returns true if s includes encrypted files.
 func (s *EntryTypeSet) IncludeEncrypted() bool {
 	return s.bits&EntryTypeEncrypted != 0
+}
+
+// IncludeExternals returns true if s includes encrypted files.
+func (s *EntryTypeSet) IncludeExternals() bool {
+	return s.bits&EntryTypeExternals != 0
 }
 
 // IncludeFileInfo returns true if the type of fileInfo is a member.
@@ -156,6 +164,8 @@ func (s *EntryTypeSet) String() string {
 		"remove",
 		"scripts",
 		"symlinks",
+		"encrypted",
+		"externals",
 	} {
 		if s.bits&(1<<i) != 0 {
 			elements = append(elements, element)

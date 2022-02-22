@@ -3,6 +3,14 @@ exec tar czf www/archive.tar.gz archive
 
 httpd www
 
+# test that chezmoi diff includes external files by default
+chezmoi diff
+stdout '^diff --git a/\.file b/\.file$'
+
+# test that chezmoi diff --exclude=externals excludes diffs from external files
+chezmoi diff --exclude=externals
+! stdout '^diff --git a/\.file b/\.file$'
+
 # test that chezmoi reads external files from .chezmoiexternal.toml
 chezmoi apply --force
 cmp $HOME/.file golden/.file
@@ -16,6 +24,14 @@ cmp $HOME/.file golden/.file
 [!windows] cmpmod 777 $HOME/.file
 
 chhome home3/user
+
+# test that chezmoi diff includes external archives by default
+chezmoi diff
+stdout '^diff --git a/\.dir/dir/file b/\.dir/dir/file$'
+
+# test that chezmoi diff --exclude=externals excludes diffs from external archives
+chezmoi diff --exclude=externals
+! stdout '^diff --git a/\.dir/dir/file b/\.dir/dir/file$'
 
 # test that chezmoi reads external archives from .chezmoiexternal.yaml
 chezmoi apply --force
