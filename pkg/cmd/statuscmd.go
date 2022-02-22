@@ -10,7 +10,7 @@ import (
 )
 
 type statusCmdConfig struct {
-	exclude   *chezmoi.EntryTypeSet
+	Exclude   *chezmoi.EntryTypeSet `mapstructure:"exclude"`
 	include   *chezmoi.EntryTypeSet
 	init      bool
 	recursive bool
@@ -32,10 +32,10 @@ func (c *Config) newStatusCmd() *cobra.Command {
 	}
 
 	flags := statusCmd.Flags()
-	flags.VarP(c.status.exclude, "exclude", "x", "Exclude entry types")
-	flags.VarP(c.status.include, "include", "i", "Include entry types")
-	flags.BoolVar(&c.status.init, "init", c.update.init, "Recreate config file from template")
-	flags.BoolVarP(&c.status.recursive, "recursive", "r", c.status.recursive, "Recurse into subdirectories")
+	flags.VarP(c.Status.Exclude, "exclude", "x", "Exclude entry types")
+	flags.VarP(c.Status.include, "include", "i", "Include entry types")
+	flags.BoolVar(&c.Status.init, "init", c.update.init, "Recreate config file from template")
+	flags.BoolVarP(&c.Status.recursive, "recursive", "r", c.Status.recursive, "Recurse into subdirectories")
 
 	return statusCmd
 }
@@ -70,9 +70,9 @@ func (c *Config) runStatusCmd(cmd *cobra.Command, args []string, sourceState *ch
 		return chezmoi.Skip
 	}
 	if err := c.applyArgs(cmd.Context(), dryRunSystem, c.DestDirAbsPath, args, applyArgsOptions{
-		include:      c.status.include.Sub(c.status.exclude),
-		init:         c.status.init,
-		recursive:    c.status.recursive,
+		include:      c.Status.include.Sub(c.Status.Exclude),
+		init:         c.Status.init,
+		recursive:    c.Status.recursive,
 		umask:        c.Umask,
 		preApplyFunc: preApplyFunc,
 	}); err != nil {

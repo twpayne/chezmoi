@@ -129,6 +129,7 @@ type Config struct {
 	Edit       editCmdConfig       `mapstructure:"edit"`
 	Git        gitCmdConfig        `mapstructure:"git"`
 	Merge      mergeCmdConfig      `mapstructure:"merge"`
+	Status     statusCmdConfig     `mapstructure:"status"`
 
 	// Command configurations, not settable in the config file.
 	apply           applyCmdConfig
@@ -145,7 +146,6 @@ type Config struct {
 	remove          removeCmdConfig
 	secret          secretCmdConfig
 	state           stateCmdConfig
-	status          statusCmdConfig
 	update          updateCmdConfig
 	upgrade         upgradeCmdConfig
 	verify          verifyCmdConfig
@@ -376,8 +376,8 @@ func newConfig(options ...configOption) (*Config, error) {
 				format: defaultWriteDataFormat,
 			},
 		},
-		status: statusCmdConfig{
-			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
+		Status: statusCmdConfig{
+			Exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 			recursive: true,
 		},
