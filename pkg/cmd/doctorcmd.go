@@ -16,6 +16,7 @@ import (
 	"text/tabwriter"
 
 	"github.com/coreos/go-semver/semver"
+	"github.com/google/go-github/v42/github"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/twpayne/go-shell"
@@ -29,12 +30,12 @@ import (
 type checkResult int
 
 const (
+	checkResultFailed  checkResult = -2 // The check could not be completed.
 	checkResultSkipped checkResult = -1 // The check was skipped.
 	checkResultOK      checkResult = 0  // The check completed and did not find any problems.
 	checkResultInfo    checkResult = 1  // The check completed and found something interesting, but not a problem.
 	checkResultWarning checkResult = 2  // The check completed and found something that might indicate a problem.
 	checkResultError   checkResult = 3  // The check completed and found a definite problem.
-	checkResultFailed  checkResult = 4  // The check could not be completed.
 )
 
 // A check is an individual check.
@@ -44,12 +45,12 @@ type check interface {
 }
 
 var checkResultStr = map[checkResult]string{
+	checkResultFailed:  "failed",
 	checkResultSkipped: "skipped",
 	checkResultOK:      "ok",
 	checkResultInfo:    "info",
 	checkResultWarning: "warning",
 	checkResultError:   "error",
-	checkResultFailed:  "failed",
 }
 
 // An argsCheck checks that arguments for a binary.
@@ -534,15 +535,24 @@ func (c *latestVersionCheck) Name() string {
 
 func (c *latestVersionCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
 	if c.httpClientErr != nil {
-		return checkResultError, c.httpClientErr.Error()
+		return checkResultFailed, c.httpClientErr.Error()
 	}
 
 	ctx := context.Background()
 
 	gitHubClient := chezmoi.NewGitHubClient(ctx, c.httpClient)
 	rr, _, err := gitHubClient.Repositories.GetLatestRelease(ctx, c.owner, c.repo)
-	if err != nil {
-		return checkResultError, err.Error()
+	var rateLimitErr *github.RateLimitError
+	var abuseRateLimitErr *github.AbuseRateLimitError
+	switch {
+	case err == nil:
+		// Do nothing.
+	case errors.As(err, &rateLimitErr):
+		return checkResultFailed, "GitHub rate limit exceeded"
+	case errors.As(err, &abuseRateLimitErr):
+		return checkResultFailed, "GitHub abuse rate limit exceeded"
+	default:
+		return checkResultFailed, err.Error()
 	}
 
 	version, err := semver.NewVersion(strings.TrimPrefix(rr.GetName(), "v"))
