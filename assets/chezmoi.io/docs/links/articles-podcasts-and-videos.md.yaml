@@ -261,3 +261,8 @@ articles:
   title: 'Qué son y cómo gestionar archivos dotfiles con chezmoi'
   lang: 'ES'
   url: 'https://picodotdev.github.io/blog-bitix/2022/02/que-son-y-como-gestionar-archivos-dotfiles-con-chezmoi/'
+- date: '2022-02-22'
+  version: '2.12.1'
+  title: 'chezmoi を使って VSCode devcontainer 対応 dotfiles を作る'
+  lang: 'JP'
+  url: 'https://www.mizdra.net/entry/2022/02/22/022109'
