@@ -130,6 +130,7 @@ type Config struct {
 	Git        gitCmdConfig        `mapstructure:"git"`
 	Merge      mergeCmdConfig      `mapstructure:"merge"`
 	Status     statusCmdConfig     `mapstructure:"status"`
+	Verify     verifyCmdConfig     `mapstructure:"verify"`
 
 	// Command configurations, not settable in the config file.
 	apply           applyCmdConfig
@@ -148,7 +149,6 @@ type Config struct {
 	state           stateCmdConfig
 	update          updateCmdConfig
 	upgrade         upgradeCmdConfig
-	verify          verifyCmdConfig
 
 	// Version information.
 	version     semver.Version
@@ -391,8 +391,8 @@ func newConfig(options ...configOption) (*Config, error) {
 			owner: gitHubOwner,
 			repo:  gitHubRepo,
 		},
-		verify: verifyCmdConfig{
-			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
+		Verify: verifyCmdConfig{
+			Exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll &^ chezmoi.EntryTypeScripts),
 			recursive: true,
 		},
