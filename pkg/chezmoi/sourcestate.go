@@ -546,6 +546,10 @@ func (s *SourceState) Apply(
 		}
 	}
 
+	if !options.Include.IncludeExternals() && sourceStateEntry.External() {
+		return nil
+	}
+
 	destAbsPath := s.destDirAbsPath.Join(targetRelPath)
 	targetStateEntry, err := sourceStateEntry.TargetStateEntry(destSystem, destAbsPath)
 	if err != nil {
@@ -1775,6 +1779,7 @@ func (s *SourceState) readExternalArchive(
 	}
 	sourceStateDir := &SourceStateDir{
 		Attr:          dirAttr,
+		external:      true,
 		origin:        external.URL,
 		sourceRelPath: parentSourceRelPath.Join(NewSourceRelPath(dirAttr.SourceName())),
 		targetStateEntry: &TargetStateDir{
@@ -1825,6 +1830,7 @@ func (s *SourceState) readExternalArchive(
 			}
 			sourceStateEntry = &SourceStateDir{
 				Attr:             dirAttr,
+				external:         true,
 				origin:           external.URL,
 				sourceRelPath:    parentSourceRelPath.Join(dirSourceRelPath, NewSourceRelPath(dirAttr.SourceName())),
 				targetStateEntry: targetStateEntry,
@@ -1852,6 +1858,7 @@ func (s *SourceState) readExternalArchive(
 			sourceStateEntry = &SourceStateFile{
 				lazyContents:     lazyContents,
 				Attr:             fileAttr,
+				external:         true,
 				origin:           external.URL,
 				sourceRelPath:    parentSourceRelPath.Join(dirSourceRelPath, sourceRelPath),
 				targetStateEntry: targetStateEntry,
@@ -1867,6 +1874,7 @@ func (s *SourceState) readExternalArchive(
 			}
 			sourceStateEntry = &SourceStateFile{
 				Attr:             fileAttr,
+				external:         true,
 				origin:           external.URL,
 				sourceRelPath:    parentSourceRelPath.Join(dirSourceRelPath, sourceRelPath),
 				targetStateEntry: targetStateEntry,
@@ -1901,6 +1909,7 @@ func (s *SourceState) readExternalFile(
 		perm:         fileAttr.perm() &^ s.umask,
 	}
 	sourceStateEntry := &SourceStateFile{
+		external:         true,
 		origin:           external.URL,
 		sourceRelPath:    parentSourceRelPath.Join(NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix()))),
 		targetStateEntry: targetStateEntry,

@@ -31,7 +31,7 @@ func TestIncludeMaskSet(t *testing.T) {
 		},
 		{
 			s:        "all,noscripts",
-			expected: NewEntryTypeSet(EntryTypeDirs | EntryTypeFiles | EntryTypeRemove | EntryTypeSymlinks | EntryTypeEncrypted),
+			expected: NewEntryTypeSet(EntryTypeDirs | EntryTypeFiles | EntryTypeRemove | EntryTypeSymlinks | EntryTypeEncrypted | EntryTypeExternals),
 		},
 		{
 			s:        "noscripts",
@@ -91,6 +91,14 @@ func TestIncludeMaskStringSlice(t *testing.T) {
 		{
 			bits:     EntryTypeSymlinks,
 			expected: "symlinks",
+		},
+		{
+			bits:     EntryTypeEncrypted,
+			expected: "encrypted",
+		},
+		{
+			bits:     EntryTypeExternals,
+			expected: "externals",
 		},
 		{
 			bits:     EntryTypesNone,

@@ -27,6 +27,11 @@ for example:
     exclude = ["scripts"]
 ```
 
+## Don't show externals in the diff output
+
+To exclude diffs from externals, either pass the `--exclude=externals` flag or
+set `diff.exclude` to `["externals"]` in your config file.
+
 ## Customize the diff pager
 
 You can change the diff format, and/or pipe the output into a pager of your

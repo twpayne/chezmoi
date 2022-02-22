@@ -30,8 +30,8 @@ Recurse into subdirectories, `true` by default.
 ## `-x`, `--exclude` *types*
 
 Exclude target state entries of type *types*. *types* is a comma-separated list
-of target states (`all`, `dirs`, `files`, `remove`, `scripts`, `symlinks`, and
-`encrypted`).
+of target states (`all`, `dirs`, `files`, `remove`, `scripts`, `symlinks`,
+`encrypted`, and `externals`).
 
 !!! example
 

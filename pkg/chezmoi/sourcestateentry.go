@@ -12,6 +12,7 @@ import (
 type SourceStateEntry interface {
 	zerolog.LogObjectMarshaler
 	Evaluate() error
+	External() bool
 	Order() ScriptOrder
 	Origin() string
 	SourceRelPath() SourceRelPath
@@ -21,6 +22,7 @@ type SourceStateEntry interface {
 // A SourceStateDir represents the state of a directory in the source state.
 type SourceStateDir struct {
 	Attr             DirAttr
+	external         bool
 	origin           string
 	sourceRelPath    SourceRelPath
 	targetStateEntry TargetStateEntry
@@ -30,6 +32,7 @@ type SourceStateDir struct {
 type SourceStateFile struct {
 	*lazyContents
 	Attr                 FileAttr
+	external             bool
 	origin               string
 	sourceRelPath        SourceRelPath
 	targetStateEntryFunc targetStateEntryFunc
@@ -46,6 +49,11 @@ type SourceStateRemove struct {
 // Evaluate evaluates s and returns any error.
 func (s *SourceStateDir) Evaluate() error {
 	return nil
+}
+
+// External returns if s is from an external.
+func (s *SourceStateDir) External() bool {
+	return s.external
 }
 
 // MarshalZerologObject implements
@@ -79,6 +87,11 @@ func (s *SourceStateDir) TargetStateEntry(destSystem System, destDirAbsPath AbsP
 func (s *SourceStateFile) Evaluate() error {
 	_, err := s.ContentsSHA256()
 	return err
+}
+
+// External returns if s is from an external.
+func (s *SourceStateFile) External() bool {
+	return s.external
 }
 
 // MarshalZerologObject implements
@@ -126,6 +139,11 @@ func (s *SourceStateFile) TargetStateEntry(destSystem System, destDirAbsPath Abs
 // Evaluate evaluates s and returns any error.
 func (s *SourceStateRemove) Evaluate() error {
 	return nil
+}
+
+// External returns if s is from an external.
+func (s *SourceStateRemove) External() bool {
+	return false
 }
 
 // MarshalZerologObject implements zerolog.LogObjectMarshaler.
