@@ -7,7 +7,7 @@ import (
 )
 
 type verifyCmdConfig struct {
-	exclude   *chezmoi.EntryTypeSet
+	Exclude   *chezmoi.EntryTypeSet
 	include   *chezmoi.EntryTypeSet
 	init      bool
 	recursive bool
@@ -28,10 +28,10 @@ func (c *Config) newVerifyCmd() *cobra.Command {
 	}
 
 	flags := verifyCmd.Flags()
-	flags.VarP(c.verify.exclude, "exclude", "x", "Exclude entry types")
-	flags.VarP(c.verify.include, "include", "i", "Include entry types")
-	flags.BoolVar(&c.verify.init, "init", c.update.init, "Recreate config file from template")
-	flags.BoolVarP(&c.verify.recursive, "recursive", "r", c.verify.recursive, "Recurse into subdirectories")
+	flags.VarP(c.Verify.Exclude, "exclude", "x", "Exclude entry types")
+	flags.VarP(c.Verify.include, "include", "i", "Include entry types")
+	flags.BoolVar(&c.Verify.init, "init", c.update.init, "Recreate config file from template")
+	flags.BoolVarP(&c.Verify.recursive, "recursive", "r", c.Verify.recursive, "Recurse into subdirectories")
 
 	return verifyCmd
 }
@@ -39,9 +39,9 @@ func (c *Config) newVerifyCmd() *cobra.Command {
 func (c *Config) runVerifyCmd(cmd *cobra.Command, args []string) error {
 	errorOnWriteSystem := chezmoi.NewErrorOnWriteSystem(c.destSystem, chezmoi.ExitCodeError(1))
 	return c.applyArgs(cmd.Context(), errorOnWriteSystem, c.DestDirAbsPath, args, applyArgsOptions{
-		include:   c.verify.include.Sub(c.verify.exclude),
-		init:      c.verify.init,
-		recursive: c.verify.recursive,
+		include:   c.Verify.include.Sub(c.Verify.Exclude),
+		init:      c.Verify.init,
+		recursive: c.Verify.recursive,
 		umask:     c.Umask,
 	})
 }

@@ -70,3 +70,4 @@ The following configuration variables are available:
 | `status`       | `exclude`             | []string | *none*                   | Entry types to exclude from status                     |
 | `template`     | `options`             | []string | `["missingkey=error"]`   | Template options                                       |
 | `vault`        | `command`             | string   | `vault`                  | Vault CLI command                                      |
+| `verify`       | `exclude`             | []string | *none*                   | Entry types to exclude from verify                     |
