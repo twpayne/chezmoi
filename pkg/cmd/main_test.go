@@ -31,6 +31,7 @@ import (
 
 var (
 	envConditionRx   = regexp.MustCompile(`\Aenv:(\w+)\z`)
+	envVarRx         = regexp.MustCompile(`\$\w+`)
 	umaskConditionRx = regexp.MustCompile(`\Aumask:([0-7]{3})\z`)
 )
 
@@ -55,6 +56,7 @@ func TestScript(t *testing.T) {
 			"chhome":         cmdChHome,
 			"cmpmod":         cmdCmpMod,
 			"edit":           cmdEdit,
+			"expandenv":      cmdExpandEnv,
 			"httpd":          cmdHTTPD,
 			"issymlink":      cmdIsSymlink,
 			"mkfile":         cmdMkFile,
@@ -175,6 +177,32 @@ func cmdEdit(ts *testscript.TestScript, neg bool, args []string) {
 		data = append(data, []byte("# edited\n")...)
 		if err := os.WriteFile(filename, data, 0o666); err != nil {
 			ts.Fatalf("edit: %v", err)
+		}
+	}
+}
+
+// cmdExpandEnv expands environment variables in the given paths.
+func cmdExpandEnv(ts *testscript.TestScript, neg bool, args []string) {
+	if neg {
+		ts.Fatalf("unsupported: ! expandenv")
+	}
+	if len(args) == 0 {
+		ts.Fatalf("usage: expandenv paths...")
+	}
+	for _, arg := range args {
+		filename := ts.MkAbs(arg)
+		data, err := os.ReadFile(filename)
+		if err != nil {
+			ts.Fatalf("%s: %v", filename, err)
+		}
+		data = envVarRx.ReplaceAllFunc(data, func(key []byte) []byte {
+			if value := ts.Getenv(string(bytes.TrimPrefix(key, []byte{'$'}))); value != "" {
+				return []byte(value)
+			}
+			return key
+		})
+		if err := os.WriteFile(filename, data, 0o666); err != nil {
+			ts.Fatalf("%s: %v", filename, err)
 		}
 	}
 }

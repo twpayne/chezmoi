@@ -11,6 +11,10 @@ var (
 	// scripts.
 	scriptStateBucket = []byte("scriptState")
 
+	// modifyDirWithCmdStateBucket is the bucket for recording the state of
+	// commands that modify directories.
+	modifyDirWithCmdStateBucket = []byte("gitRepoExternalState")
+
 	stateFormat = formatJSON{}
 )
 
