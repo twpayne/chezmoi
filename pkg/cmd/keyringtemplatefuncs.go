@@ -1,3 +1,6 @@
+//go:build !freebsd || (freebsd && cgo)
+// +build !freebsd freebsd,cgo
+
 package cmd
 
 import (

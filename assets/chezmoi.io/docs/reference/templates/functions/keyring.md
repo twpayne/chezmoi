@@ -8,6 +8,7 @@ user's keyring.
 | macOS   | Keychain                    |
 | Linux   | GNOME Keyring               |
 | Windows | Windows Credentials Manager |
+| FreeBSD | GNOME Keyring               |
 
 !!! example
 
@@ -16,3 +17,10 @@ user's keyring.
         user = {{ .github.user | quote }}
         token = {{ keyring "github" .github.user | quote }}
     ```
+
+!!! warning
+
+    On FreeBSD, the `keyring` template function is only available if chezmoi
+    was compiled with cgo enabled. The official release binaries of chezmoi are
+    **not** compiled with cgo enabled, and `keyring` will always return an
+    empty string.
