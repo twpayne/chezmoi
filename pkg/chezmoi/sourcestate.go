@@ -41,6 +41,7 @@ type ExternalType string
 const (
 	ExternalTypeArchive ExternalType = "archive"
 	ExternalTypeFile    ExternalType = "file"
+	ExternalTypeGitRepo ExternalType = "git-repo"
 )
 
 // An External is an external source.
@@ -49,11 +50,17 @@ type External struct {
 	Encrypted  bool         `json:"encrypted" toml:"encrypted" yaml:"encrypted"`
 	Exact      bool         `json:"exact" toml:"exact" yaml:"exact"`
 	Executable bool         `json:"executable" toml:"executable" yaml:"executable"`
-	Filter     struct {
+	Clone      struct {
+		Args []string `json:"args" toml:"args" yaml:"args"`
+	} `json:"clone" toml:"clone" yaml:"clone"`
+	Filter struct {
 		Command string   `json:"command" toml:"command" yaml:"command"`
 		Args    []string `json:"args" toml:"args" yaml:"args"`
 	} `json:"filter" toml:"filter" yaml:"filter"`
-	Format          ArchiveFormat `json:"format" toml:"format" yaml:"format"`
+	Format ArchiveFormat `json:"format" toml:"format" yaml:"format"`
+	Pull   struct {
+		Args []string `json:"args" toml:"args" yaml:"args"`
+	} `json:"pull" toml:"pull" yaml:"pull"`
 	RefreshPeriod   time.Duration `json:"refreshPeriod" toml:"refreshPeriod" yaml:"refreshPeriod"`
 	StripComponents int           `json:"stripComponents" toml:"stripComponents" yaml:"stripComponents"`
 	URL             string        `json:"url" toml:"url" yaml:"url"`
@@ -1009,6 +1016,51 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		}
 	}
 
+	// Generate SourceStateCommands for git-repo externals.
+	var gitRepoExternalRelPaths RelPaths
+	for externalRelPath, external := range s.externals {
+		if external.Type == ExternalTypeGitRepo {
+			gitRepoExternalRelPaths = append(gitRepoExternalRelPaths, externalRelPath)
+		}
+	}
+	sort.Sort(gitRepoExternalRelPaths)
+	for _, externalRelPath := range gitRepoExternalRelPaths {
+		external := s.externals[externalRelPath]
+		destAbsPath := s.destDirAbsPath.Join(externalRelPath)
+		switch _, err := s.system.Lstat(destAbsPath); {
+		case errors.Is(err, fs.ErrNotExist):
+			// FIXME add support for using builtin git
+			args := []string{"clone"}
+			args = append(args, external.Clone.Args...)
+			args = append(args, external.URL, destAbsPath.String())
+			cmd := exec.Command("git", args...)
+			sourceStateCommand := &SourceStateCommand{
+				cmd:           cmd,
+				external:      true,
+				origin:        external.origin,
+				forceRefresh:  options.RefreshExternals,
+				refreshPeriod: external.RefreshPeriod,
+			}
+			allSourceStateEntries[externalRelPath] = append(allSourceStateEntries[externalRelPath], sourceStateCommand)
+		case err != nil:
+			return err
+		default:
+			// FIXME add support for using builtin git
+			args := []string{"pull"}
+			args = append(args, external.Pull.Args...)
+			cmd := exec.Command("git", args...)
+			cmd.Dir = destAbsPath.String()
+			sourceStateCommand := &SourceStateCommand{
+				cmd:           cmd,
+				external:      true,
+				origin:        external.origin,
+				forceRefresh:  options.RefreshExternals,
+				refreshPeriod: external.RefreshPeriod,
+			}
+			allSourceStateEntries[externalRelPath] = append(allSourceStateEntries[externalRelPath], sourceStateCommand)
+		}
+	}
+
 	// Check for inconsistent source entries. Iterate over the target names in
 	// order so that any error is deterministic.
 	targetRelPaths := make(RelPaths, 0, len(allSourceStateEntries))
@@ -1748,6 +1800,8 @@ func (s *SourceState) readExternal(
 		return s.readExternalArchive(ctx, externalRelPath, parentSourceRelPath, external, options)
 	case ExternalTypeFile:
 		return s.readExternalFile(ctx, externalRelPath, parentSourceRelPath, external, options)
+	case ExternalTypeGitRepo:
+		return nil, nil
 	default:
 		return nil, fmt.Errorf("%s: unknown external type: %s", externalRelPath, external.Type)
 	}

@@ -5,6 +5,8 @@ import (
 	"strings"
 )
 
+var emptySourceRelPath SourceRelPath
+
 // A SourceRelPath is a relative path to an entry in the source state.
 type SourceRelPath struct {
 	relPath RelPath

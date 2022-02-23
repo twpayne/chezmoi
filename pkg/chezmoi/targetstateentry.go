@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/hex"
 	"io/fs"
+	"os/exec"
 	"runtime"
 	"time"
 )
@@ -14,6 +15,14 @@ type TargetStateEntry interface {
 	EntryState(umask fs.FileMode) (*EntryState, error)
 	Evaluate() error
 	SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error)
+}
+
+// A TargetStateModifyDirWithCmd represents running a command that modifies
+// a directory.
+type TargetStateModifyDirWithCmd struct {
+	cmd           *exec.Cmd
+	forceRefresh  bool
+	refreshPeriod time.Duration
 }
 
 // A TargetStateDir represents the state of a directory in the target state.
@@ -45,10 +54,80 @@ type TargetStateSymlink struct {
 	*lazyLinkname
 }
 
+// A modifyDirWithCmdState records the state of a directory modified by a
+// command.
+type modifyDirWithCmdState struct {
+	Name  AbsPath   `json:"name" toml:"name" yaml:"name"`
+	RunAt time.Time `json:"runAt" toml:"runAt" yaml:"runAt"`
+}
+
 // A scriptState records the state of a script that has been run.
 type scriptState struct {
 	Name  RelPath   `json:"name" toml:"name" yaml:"name"`
 	RunAt time.Time `json:"runAt" toml:"runAt" yaml:"runAt"`
+}
+
+// Apply updates actualStateEntry to match t.
+func (t *TargetStateModifyDirWithCmd) Apply(
+	system System, persistentState PersistentState, actualStateEntry ActualStateEntry,
+) (bool, error) {
+	if _, ok := actualStateEntry.(*ActualStateDir); !ok {
+		if err := actualStateEntry.Remove(system); err != nil {
+			return false, err
+		}
+	}
+
+	runAt := time.Now().UTC()
+	if err := system.RunCmd(t.cmd); err != nil {
+		return false, err
+	}
+
+	modifyDirWithCmdStateKey := []byte(actualStateEntry.Path().String())
+	if err := persistentStateSet(
+		persistentState, modifyDirWithCmdStateBucket, modifyDirWithCmdStateKey, &modifyDirWithCmdState{
+			Name:  actualStateEntry.Path(),
+			RunAt: runAt,
+		}); err != nil {
+		return false, err
+	}
+
+	return true, nil
+}
+
+// EntryState returns t's entry state.
+func (t *TargetStateModifyDirWithCmd) EntryState(umask fs.FileMode) (*EntryState, error) {
+	return &EntryState{
+		Type: EntryStateTypeDir,
+		Mode: fs.ModeDir | 0o777&^umask,
+	}, nil
+}
+
+// Evaluate evaluates t.
+func (t *TargetStateModifyDirWithCmd) Evaluate() error {
+	return nil
+}
+
+// SkipApply implements TargetState.SkipApply.
+func (t *TargetStateModifyDirWithCmd) SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error) {
+	if t.forceRefresh {
+		return false, nil
+	}
+	modifyDirWithCmdKey := []byte(targetAbsPath.String())
+	switch modifyDirWithCmdStateBytes, err := persistentState.Get(modifyDirWithCmdStateBucket, modifyDirWithCmdKey); {
+	case err != nil:
+		return false, err
+	case modifyDirWithCmdStateBytes == nil:
+		return false, nil
+	default:
+		var modifyDirWithCmdState modifyDirWithCmdState
+		if err := stateFormat.Unmarshal(modifyDirWithCmdStateBytes, &modifyDirWithCmdState); err != nil {
+			return false, err
+		}
+		if t.refreshPeriod == 0 {
+			return true, nil
+		}
+		return time.Since(modifyDirWithCmdState.RunAt) < t.refreshPeriod, nil
+	}
 }
 
 // Apply updates actualStateEntry to match t. It does not recurse.

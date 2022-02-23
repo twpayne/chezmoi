@@ -87,6 +87,50 @@ to include
     refreshPeriod = "168h"
 ```
 
+## Include a subdirectory from a git repository
+
+You can configure chezmoi to keep a git repository up to date in a subdirectory
+by using the external type `git-repo`, for example:
+
+```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
+[".vim/pack/alker0/chezmoi.vim"]
+    type = "git-repo"
+    url = "https://github.com/alker0/chezmoi.vim.git"
+    refreshPeriod = "168h"
+```
+
+If the directory does not exist then chezmoi will run `git clone` to clone it.
+If the directory does exist then chezmoi will run `git pull` to pull the latest
+changes, but not more often than every `refreshPeriod`. In the above example
+the `refreshPeriod` is `168h` which is one week. The default `refreshPeriod` is
+zero, which disables refreshes. You can force a refresh (i.e. force a `git
+pull`) by passing the `--refresh-externals`/`-R` flag to `chezmoi apply`.
+
+You can customize the arguments to `git clone` and `git pull` by setting the
+`<dir>.clone.args` and `<dir>.pull.args` variables in
+`.chezmoiexternal.<format>`, for example:
+
+```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
+[".vim/pack/alker0/chezmoi.vim"]
+    type = "git-repo"
+    url = "https://github.com/alker0/chezmoi.vim.git"
+    refreshPeriod = "168h"
+    [".vim/pack/alker0/chezmoi.vim".pull]
+        args = ["--ff-only"]
+```
+
+!!! note
+
+    chezmoi's support for `git-repo` externals is limited to running `git
+    clone` and/or `git pull` in a directory. The contents of `git-repo`
+    externals are not manifested in commands like `chezmoi archive` or `chezmoi
+    dump`.
+
+!!! note
+
+    chezmoi's support for `git-repo` externals currently requires `git` to be
+    in your `$PATH`.
+
 ## Import archives
 
 It is occasionally useful to import entire archives of configuration into your

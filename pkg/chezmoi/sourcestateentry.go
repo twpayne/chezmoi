@@ -2,6 +2,8 @@ package chezmoi
 
 import (
 	"encoding/hex"
+	"os/exec"
+	"time"
 
 	"github.com/rs/zerolog"
 
@@ -17,6 +19,15 @@ type SourceStateEntry interface {
 	Origin() string
 	SourceRelPath() SourceRelPath
 	TargetStateEntry(destSystem System, destDirAbsPath AbsPath) (TargetStateEntry, error)
+}
+
+// A SourceStateCommand represents a command that should be run.
+type SourceStateCommand struct {
+	cmd           *exec.Cmd
+	external      bool
+	origin        string
+	forceRefresh  bool
+	refreshPeriod time.Duration
 }
 
 // A SourceStateDir represents the state of a directory in the source state.
@@ -44,6 +55,47 @@ type SourceStateFile struct {
 type SourceStateRemove struct {
 	sourceRelPath SourceRelPath
 	targetRelPath RelPath
+}
+
+// Evaluate evaluates s and returns any error.
+func (s *SourceStateCommand) Evaluate() error {
+	return nil
+}
+
+// External returns if s is from an external.
+func (s *SourceStateCommand) External() bool {
+	return s.external
+}
+
+// MarshalZerologObject implements
+// github.com/rs/zerolog.LogObjectMarshaler.MarshalZerologObject.
+func (s *SourceStateCommand) MarshalZerologObject(e *zerolog.Event) {
+	e.EmbedObject(chezmoilog.OSExecCmdLogObject{Cmd: s.cmd})
+	e.Str("origin", s.origin)
+}
+
+// Order returns s's order.
+func (s *SourceStateCommand) Order() ScriptOrder {
+	return ScriptOrderDuring
+}
+
+// Origin returns s's origin.
+func (s *SourceStateCommand) Origin() string {
+	return s.origin
+}
+
+// SourceRelPath returns s's source relative path.
+func (s *SourceStateCommand) SourceRelPath() SourceRelPath {
+	return emptySourceRelPath
+}
+
+// TargetStateEntry returns s's target state entry.
+func (s *SourceStateCommand) TargetStateEntry(destSystem System, destDirAbsPath AbsPath) (TargetStateEntry, error) {
+	return &TargetStateModifyDirWithCmd{
+		cmd:           s.cmd,
+		forceRefresh:  s.forceRefresh,
+		refreshPeriod: s.refreshPeriod,
+	}, nil
 }
 
 // Evaluate evaluates s and returns any error.
