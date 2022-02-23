@@ -103,7 +103,7 @@ sequenceDiagram
     W->>L: git add
     W->>L: git commit
     L->>R: git push
-    L-->>H: exit
+    W-->>H: exit
 ```
 
 ## Using chezmoi across multiple machines
