@@ -24,3 +24,10 @@ manager. Normally you would use chezmoi's existing template functions to retriev
     $ chezmoi secret keyring get --service=service --user=user
     $ chezmoi secret keyring delete --service=service --user=user
     ```
+
+!!! warning
+
+    On FreeBSD, the `secret keyring` command is only available if chezmoi was
+    compiled with cgo enabled. The official release binaries of chezmoi are
+    **not** compiled with cgo enabled, and `secret keyring` command is not
+    available.

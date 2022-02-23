@@ -15,7 +15,9 @@ func (c *Config) newSecretCmd() *cobra.Command {
 		Example: example("secret"),
 	}
 
-	secretCmd.AddCommand(c.newSecretKeyringCmd())
+	if secretKeyringCmd := c.newSecretKeyringCmd(); secretKeyringCmd != nil {
+		secretCmd.AddCommand(secretKeyringCmd)
+	}
 
 	return secretCmd
 }
