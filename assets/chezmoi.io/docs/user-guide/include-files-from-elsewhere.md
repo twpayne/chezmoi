@@ -131,6 +131,28 @@ You can customize the arguments to `git clone` and `git pull` by setting the
     chezmoi's support for `git-repo` externals currently requires `git` to be
     in your `$PATH`.
 
+## Extract a single file from an archive
+
+You can extract a single file from an archive using the
+`<entry>.filter.command` and `<entry>.filter.args` variables in
+`.chezmoiexternal.<format>`, for example:
+
+```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
+{{ ageVersion := "1.0.0" -}}
+[".local/bin/age"]
+    type = "file"
+    url = "https://github.com/FiloSottile/age/releases/download/v{{ $ageVersion }}/age-v{{ $ageVersion }}-{{ .chezmoi.os }}-{{ .chezmoi.arch }}.tar.gz"
+    executable = true
+    refreshPeriod = "168h"
+    [".local/bin/age".filter]
+        command = "tar"
+        args = ["--extract", "--file", "/dev/stdin", "--gzip", "--to-stdout", "age/age"]
+```
+
+This will extract the single archive member `age/age` from the given URL (which
+is computed for the current OS and architecture) to the target
+`./local/bin/age` and set its executable bit.
+
 ## Import archives
 
 It is occasionally useful to import entire archives of configuration into your
