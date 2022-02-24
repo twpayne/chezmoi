@@ -32,7 +32,7 @@ nav:
   - Setup: user-guide/setup.md
   - Daily operations: user-guide/daily-operations.md
   - Manage different types of file: user-guide/manage-different-types-of-file.md
-  - Include dotfiles from elsewhere: user-guide/include-dotfiles-from-elsewhere.md
+  - Include files from elsewhere: user-guide/include-files-from-elsewhere.md
   - Manage machine-to-machine differences: user-guide/manage-machine-to-machine-differences.md
   - Use scripts to perform actions: user-guide/use-scripts-to-perform-actions.md
   - Templating: user-guide/templating.md
