@@ -1,6 +1,6 @@
 # Include dotfiles from elsewhere
 
-## Include a subdirectory from another repository, like Oh My Zsh
+## Include a subdirectory from a URL
 
 To include a subdirectory from another repository, e.g. [Oh My
 Zsh](https://github.com/ohmyzsh/ohmyzsh), you cannot use git submodules because
@@ -70,7 +70,7 @@ When using Oh My Zsh, make sure you disable auto-updates by setting
 `~/.oh-my-zsh` directory to drift out of sync with chezmoi's source state. To
 update Oh My Zsh and its plugins, refresh the downloaded archives.
 
-## Include a single file from another repository
+## Include a single file from a URL
 
 Including single files uses the same mechanism as including a subdirectory
 above, except with the external type `file` instead of `archive`. For example,
