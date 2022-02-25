@@ -53,29 +53,6 @@ jobs:
         languages: go
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v1
-  concurrency-hammer:
-    # run the full chezmoi test suite multiple times with Go's race detector
-    # enabled in the hope that this will catch concurrency issues
-    needs: changes
-    if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-    runs-on: ubuntu-latest
-    steps:
-    - name: Set up Go
-      uses: actions/setup-go@v2
-      with:
-        go-version: ${{ env.GO_VERSION }}
-    - name: Checkout
-      uses: actions/checkout@v2
-    - name: Cache Go modules
-      uses: actions/cache@v2
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-concurrency-hammer-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-concurrency-hammer-
-    - name: Test
-      run: |
-        go test -count=4 -race ./...
   test-alpine:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
@@ -507,7 +484,6 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/')
     needs:
     - check
-    - concurrency-hammer
     - lint
     - test-alpine
     - test-archlinux
