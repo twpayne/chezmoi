@@ -225,8 +225,8 @@
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../user-guide/include-dotfiles-from-elsewhere/">
-        Include dotfiles from elsewhere
+<a class="md-nav__link" href="../../../user-guide/include-files-from-elsewhere/">
+        Include files from elsewhere
       </a>
 </li>
 <li class="md-nav__item">
@@ -1217,9 +1217,9 @@ were in the source state.</p>
 externals to be included on different machines.</p>
 <p>Entries are indexed by target name relative to the directory of the
 <code>.chezmoiexternal.&lt;format&gt;</code> file, and must have a <code>type</code> and a <code>url</code> field.
-<code>type</code> can be either <code>file</code> or <code>archive</code>. If the entry's parent directories do
-not already exist in the source state then chezmoi will create them as regular
-directories.</p>
+<code>type</code> can be either <code>file</code>, <code>archive</code>, or <code>git-repo</code>. If the entry's parent
+directories do not already exist in the source state then chezmoi will create
+them as regular directories.</p>
 <p>Entries may have the following fields:</p>
 <table>
 <thead>
@@ -1235,7 +1235,13 @@ directories.</p>
 <td><code>type</code></td>
 <td>string</td>
 <td><em>none</em></td>
-<td>External type (<code>file</code> or <code>archive</code>)</td>
+<td>External type (<code>file</code>, <code>archive</code>, or <code>git-repo</code>)</td>
+</tr>
+<tr>
+<td><code>clone.args</code></td>
+<td>[]string</td>
+<td><em>none</em></td>
+<td>Extra args to <code>git clone</code></td>
 </tr>
 <tr>
 <td><code>encrypted</code></td>
@@ -1274,6 +1280,12 @@ directories.</p>
 <td>Format of archive</td>
 </tr>
 <tr>
+<td><code>pull.args</code></td>
+<td>[]string</td>
+<td><em>none</em></td>
+<td>Extra args to <code>git pull</code></td>
+</tr>
+<tr>
 <td><code>refreshPeriod</code></td>
 <td>duration</td>
 <td><code>0</code></td>
@@ -1310,12 +1322,16 @@ members of archive. The optional string field <code>format</code> sets the archi
 The supported archive formats are <code>tar</code>, <code>tar.gz</code>, <code>tgz</code>, <code>tar.bz2</code>, <code>tbz2</code>,
 <code>xz</code>, and <code>zip</code>. If <code>format</code> is not specified then chezmoi will guess the format
 using firstly the path of the URL and secondly its contents.</p>
-<p>By default, chezmoi will cache downloaded URLs. The optional duration
-<code>refreshPeriod</code> field specifies how often chezmoi will re-download the URL. The
-default is zero meaning that chezmoi will never re-download unless forced. To
-force chezmoi to re-download URLs, pass the <code>-R</code>/<code>--refresh-externals</code> flag.
-Suitable refresh periods include one day (<code>24h</code>), one week (<code>168h</code>), or four
-weeks (<code>672h</code>).</p>
+<p>If <code>type</code> is <code>git-repo</code> then chezmoi will run <code>git clone &lt;url&gt; &lt;target-name&gt;</code>
+with the optional <code>clone.args</code> if the target does not exist. If the target
+exists, then chezmoi will run <code>git pull</code> with the optional <code>pull.args</code> to
+update the target.</p>
+<p>For <code>file</code> and <code>archive</code> externals, chezmoi will cache downloaded URLs. The
+optional duration <code>refreshPeriod</code> field specifies how often chezmoi will
+re-download the URL. The default is zero meaning that chezmoi will never
+re-download unless forced. To force chezmoi to re-download URLs, pass the
+<code>-R</code>/<code>--refresh-externals</code> flag. Suitable refresh periods include one day
+(<code>24h</code>), one week (<code>168h</code>), or four weeks (<code>672h</code>).</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoiexternal.toml</span><pre><span></span><code><span class="k">[".vim/autoload/plug.vim"]</span><span class="w"></span>

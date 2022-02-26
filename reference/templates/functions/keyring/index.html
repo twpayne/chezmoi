@@ -225,8 +225,8 @@
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../../../user-guide/include-dotfiles-from-elsewhere/">
-        Include dotfiles from elsewhere
+<a class="md-nav__link" href="../../../../user-guide/include-files-from-elsewhere/">
+        Include files from elsewhere
       </a>
 </li>
 <li class="md-nav__item">
@@ -1230,6 +1230,10 @@ user's keyring.</p>
 <td>Windows</td>
 <td>Windows Credentials Manager</td>
 </tr>
+<tr>
+<td>FreeBSD</td>
+<td>GNOME Keyring</td>
+</tr>
 </tbody>
 </table>
 <div class="admonition example">
@@ -1238,6 +1242,13 @@ user's keyring.</p>
     user = {{ .github.user | quote }}
     token = {{ keyring "github" .github.user | quote }}
 </code></pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>On FreeBSD, the <code>keyring</code> template function is only available if chezmoi
+was compiled with cgo enabled. The official release binaries of chezmoi are
+<strong>not</strong> compiled with cgo enabled, and <code>keyring</code> will always return an
+empty string.</p>
 </div>
 </article>
 </div>

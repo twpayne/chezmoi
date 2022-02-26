@@ -225,8 +225,8 @@
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../include-dotfiles-from-elsewhere/">
-        Include dotfiles from elsewhere
+<a class="md-nav__link" href="../../include-files-from-elsewhere/">
+        Include files from elsewhere
       </a>
 </li>
 <li class="md-nav__item">
@@ -284,6 +284,11 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="#dont-show-scripts-in-the-diff-output">
     Don't show scripts in the diff output
+  </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#dont-show-externals-in-the-diff-output">
+    Don't show externals in the diff output
   </a>
 </li>
 <li class="md-nav__item">
@@ -1241,6 +1246,11 @@
   </a>
 </li>
 <li class="md-nav__item">
+<a class="md-nav__link" href="#dont-show-externals-in-the-diff-output">
+    Don't show externals in the diff output
+  </a>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="#customize-the-diff-pager">
     Customize the diff pager
   </a>
@@ -1275,6 +1285,9 @@ for example:</p>
 <div class="highlight"><span class="filename">~/.config/chezmoi/chezmoi.toml</span><pre><span></span><code><span class="k">[diff]</span><span class="w"></span>
 <span class="w">    </span><span class="n">exclude</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">"scripts"</span><span class="p">]</span><span class="w"></span>
 </code></pre></div>
+<h2 id="dont-show-externals-in-the-diff-output">Don't show externals in the diff output</h2>
+<p>To exclude diffs from externals, either pass the <code>--exclude=externals</code> flag or
+set <code>diff.exclude</code> to <code>["externals"]</code> in your config file.</p>
 <h2 id="customize-the-diff-pager">Customize the diff pager</h2>
 <p>You can change the diff format, and/or pipe the output into a pager of your
 choice by setting <code>diff.pager</code> configuration variable. For example, to use
