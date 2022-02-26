@@ -72,6 +72,13 @@ build-windows:
 run:
 	${GO} run . --version
 
+.PHONY: test-all
+test-all: test test-release rm-dist test-docker test-vagrant
+
+.PHONY: rm-dist
+rm-dist:
+	rm -rf dist
+
 .PHONY: test
 test:
 	${GO} test -ldflags="-X github.com/twpayne/chezmoi/pkg/chezmoitest.umaskStr=0o022" ./...
