@@ -8,12 +8,12 @@
 set -e
 
 BINDIR=${BINDIR:-./bin}
-GITHUB_USER=${GITHUB_USER:-twpayne}
+CHEZMOI_USER_REPO=${CHEZMOI_USER_REPO:-twpayne/chezmoi}
 TAGARG=latest
 LOG_LEVEL=2
 EXECARGS=
 
-GITHUB_DOWNLOAD=https://github.com/${GITHUB_USER}/chezmoi/releases/download
+GITHUB_DOWNLOAD=https://github.com/${CHEZMOI_USER_REPO}/releases/download
 
 tmpdir=$(mktemp -d)
 trap 'rm -rf ${tmpdir}' EXIT
@@ -207,7 +207,7 @@ get_libc() {
 real_tag() {
 	tag=$1
 	log_debug "checking GitHub for tag ${tag}"
-	release_url="https://github.com/${GITHUB_USER}/chezmoi/releases/${tag}"
+	release_url="https://github.com/${CHEZMOI_USER_REPO}/releases/${tag}"
 	json=$(http_get "${release_url}" "Accept: application/json")
 	if [ -z "${json}" ]; then
 		log_err "real_tag error retrieving GitHub release ${tag}"
