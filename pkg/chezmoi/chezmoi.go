@@ -95,6 +95,15 @@ var knownPrefixedDirs = newStringSet(
 	templatesDirName,
 )
 
+// knownTargetFiles is a set of known target files that should not be managed
+// directly.
+var knownTargetFiles = newStringSet(
+	"chezmoi.json",
+	"chezmoi.toml",
+	"chezmoi.yaml",
+	"chezmoistate.boltdb",
+)
+
 var modeTypeNames = map[fs.FileMode]string{
 	0:                 "file",
 	fs.ModeDir:        "dir",
@@ -112,10 +121,18 @@ func SHA256Sum(data []byte) []byte {
 }
 
 // SuspiciousSourceDirEntry returns true if base is a suspicious dir entry.
-func SuspiciousSourceDirEntry(base string, fileInfo fs.FileInfo) bool {
+func SuspiciousSourceDirEntry(base string, fileInfo fs.FileInfo, encryptedSuffixes []string) bool {
 	switch fileInfo.Mode().Type() {
 	case 0:
-		return strings.HasPrefix(base, Prefix) && !knownPrefixedFiles.contains(base)
+		if strings.HasPrefix(base, Prefix) && !knownPrefixedFiles.contains(base) {
+			return true
+		}
+		for _, encryptedSuffix := range encryptedSuffixes {
+			if fileAttr := parseFileAttr(fileInfo.Name(), encryptedSuffix); knownTargetFiles.contains(fileAttr.TargetName) {
+				return true
+			}
+		}
+		return false
 	case fs.ModeDir:
 		return strings.HasPrefix(base, Prefix) && !knownPrefixedDirs.contains(base)
 	case fs.ModeSymlink:

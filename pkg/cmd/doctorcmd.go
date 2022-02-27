@@ -598,13 +598,18 @@ func (c *suspiciousEntriesCheck) Name() string {
 }
 
 func (c *suspiciousEntriesCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
+	// FIXME include user-defined suffixes from age and gpg configs
+	encryptedSuffixes := []string{
+		defaultAgeEncryptionConfig.Suffix,
+		defaultGPGEncryptionConfig.Suffix,
+	}
 	// FIXME check that config file templates are in root
 	var suspiciousEntries []string
 	walkFunc := func(absPath chezmoi.AbsPath, fileInfo fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
-		if chezmoi.SuspiciousSourceDirEntry(absPath.Base(), fileInfo) {
+		if chezmoi.SuspiciousSourceDirEntry(absPath.Base(), fileInfo, encryptedSuffixes) {
 			suspiciousEntries = append(suspiciousEntries, absPath.String())
 		}
 		return nil

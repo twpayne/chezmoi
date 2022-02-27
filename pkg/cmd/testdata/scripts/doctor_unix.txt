@@ -27,7 +27,7 @@ stdout '^ok\s+os-arch\s+'
 stdout '^ok\s+uname\s+'
 stdout '^warning\s+config-file\s+.*multiple config files'
 stdout '^ok\s+source-dir\s+'
-stdout '^ok\s+suspicious-entries\s+'
+stdout '^warning\s+suspicious-entries\s+'
 stdout '^ok\s+dest-dir\s+'
 stdout '^ok\s+shell-command\s+'
 stdout '^ok\s+shell-args\s+'
@@ -151,4 +151,5 @@ echo "Vault v1.5.5 ('f5d1ddb3750e7c28e25036e1ef26a4c02379fc01+CHANGES')"
 -- home/user/.local/share/chezmoi/.chezmoidata.json --
 -- home/user/.local/share/chezmoi/.chezmoiexternal.toml --
 -- home/user/.local/share/chezmoi/.chezmoiscripts/.keep --
+-- home/user/.local/share/chezmoi/dot_config/chezmoi/chezmoi.toml.tmpl --
 -- home3/user/.local/share/chezmoi/.chezmoisuspicious --
