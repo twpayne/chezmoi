@@ -1,9 +1,9 @@
 [!windows] chmod 755 bin/perl
-[!windows] chmod 755 bin/python
+[!windows] chmod 755 bin/python3
 [!windows] chmod 755 bin/ruby
 [windows] unix2dos golden/stdout
 
-# test that chezmoi apply uses python and ruby from $PATH instead of the system Python and Ruby
+# test that chezmoi apply uses python3 and ruby from $PATH instead of the system Python and Ruby
 chezmoi apply
 cmp stdout golden/stdout
 
@@ -13,11 +13,11 @@ cmp stdout golden/stdout
 echo "Hello from fake Perl"
 -- bin/perl.bat --
 @echo Hello from fake Perl
--- bin/python --
+-- bin/python3 --
 #!/bin/sh
 
 echo "Hello from fake Python"
--- bin/python.bat --
+-- bin/python3.bat --
 @echo Hello from fake Python
 -- bin/ruby --
 #!/bin/sh
@@ -34,7 +34,7 @@ Hello from fake Ruby
 
 print("Hello from Perl\n")
 -- home/user/.local/share/chezmoi/run_python_script.py --
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 print("Hello from Python\n")
 -- home/user/.local/share/chezmoi/run_ruby_script.rb --

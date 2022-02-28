@@ -1,7 +1,7 @@
 [!windows] skip 'Windows only'
-[!exec:python] skip 'python not found in %PATH%'
+[!exec:python3] skip 'python3 not found in %PATH%'
 
-# test that chezmoi apply modifies a file with python
+# test that chezmoi apply modifies a file with python3
 chezmoi apply
 unix2dos golden/modified
 cmp $HOME/.file golden/modified

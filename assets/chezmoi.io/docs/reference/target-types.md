@@ -99,7 +99,7 @@ The default script interpreters are:
 | Extension | Command      | Arguments |
 | --------- | ------------ | --------- |
 | `.pl`     | `perl`       | *none*    |
-| `.py`     | `python`     | *none*    |
+| `.py`     | `python3`    | *none*    |
 | `.ps1`    | `powershell` | `-NoLogo` |
 | `.rb`     | `ruby`       | *none*    |
 
@@ -113,12 +113,12 @@ Script interpreters can be added or overridden with the
 
 !!! example
 
-    To change the Python interpreter to `C:\Python39\python.exe` and add a
+    To change the Python interpreter to `C:\Python39\python3.exe` and add a
     Tcl/Tk interpreter, include the following in your config file:
 
     ```toml title="~/.config/chezmoi/chezmoi.toml"
     [interpreters.py]
-        command = 'C:\Python39\python.exe'
+        command = 'C:\Python39\python3.exe'
     [interpreters.tcl]
         command = "tclsh"
     ```
