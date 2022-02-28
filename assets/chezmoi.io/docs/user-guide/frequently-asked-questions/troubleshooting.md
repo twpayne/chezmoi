@@ -107,3 +107,20 @@ Commands that take a write lock include `add`, `apply`, `edit`, `forget`,
 `import`, `init`, `state`, `unmanage`, and `update`. Commands that take a read
 lock include `diff`, `status`, and `verify`.
 
+## chezmoi reports `chezmoi: fork/exec /tmp/XXXXXXXXXX.XX: permission denied` when executing a script
+
+This error occurs when your temporary directory is mounted with the `noexec`
+option.
+
+As chezmoi scripts can be templates, encrypted, or both, chezmoi needs to write
+the final script's contents to a file so that it can be executed by the
+operating system. By default, chezmoi will use `$TMPDIR` for this.
+
+You can change the temporary directory into which chezmoi writes and executes
+scripts with the `scriptTempDir` configuration variable. For example, to use a
+subdirectory of your home directory you can use:
+
+```toml title="~/.config/chezmoi/chezmoi.toml"
+scriptTempDir = "~/tmp"
+```
+

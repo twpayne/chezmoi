@@ -93,9 +93,20 @@ func (s *RealSystem) RunIdempotentCmd(cmd *exec.Cmd) error {
 
 // RunScript implements System.RunScript.
 func (s *RealSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) (err error) {
+	// Create the script temporary directory, if needed.
+	s.createScriptTempDirOnce.Do(func() {
+		if !s.scriptTempDir.Empty() {
+			err = os.MkdirAll(s.scriptTempDir.String(), 0o700)
+		}
+	})
+	if err != nil {
+		return err
+	}
+
 	// Write the temporary script file. Put the randomness at the front of the
 	// filename to preserve any file extension for Windows scripts.
-	f, err := os.CreateTemp("", "*."+scriptname.Base())
+	var f *os.File
+	f, err = os.CreateTemp(s.scriptTempDir.String(), "*."+scriptname.Base())
 	if err != nil {
 		return
 	}

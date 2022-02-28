@@ -4,13 +4,16 @@ import (
 	"errors"
 	"io/fs"
 	"path/filepath"
+	"sync"
 
 	vfs "github.com/twpayne/go-vfs/v4"
 )
 
 // An RealSystem is a System that writes to a filesystem and executes scripts.
 type RealSystem struct {
-	fileSystem vfs.FS
+	fileSystem              vfs.FS
+	createScriptTempDirOnce sync.Once
+	scriptTempDir           AbsPath
 }
 
 // RealSystemWithSafe sets the safe flag of the RealSystem. On Windows it does
@@ -18,6 +21,11 @@ type RealSystem struct {
 // https://github.com/google/renameio/issues/1 and
 // https://github.com/golang/go/issues/22397#issuecomment-498856679.
 func RealSystemWithSafe(safe bool) RealSystemOption {
+	return func(s *RealSystem) {}
+}
+
+// RealSystemWithScriptTempDir sets the script temporary directory of the RealSystem.
+func RealSystemWithScriptTempDir(scriptTempDir AbsPath) RealSystemOption {
 	return func(s *RealSystem) {}
 }
 

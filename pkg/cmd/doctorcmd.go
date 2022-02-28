@@ -1,5 +1,7 @@
 package cmd
 
+// FIXME add check for $TMPDIR mount options (specifically noexec)
+
 import (
 	"bytes"
 	"context"
