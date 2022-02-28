@@ -7,6 +7,7 @@ import (
 	"errors"
 	"io/fs"
 	"os"
+	"sync"
 	"syscall"
 
 	"github.com/google/renameio/v2"
@@ -16,16 +17,25 @@ import (
 
 // An RealSystem is a System that writes to a filesystem and executes scripts.
 type RealSystem struct {
-	fileSystem   vfs.FS
-	safe         bool
-	devCache     map[AbsPath]uint // devCache maps directories to device numbers.
-	tempDirCache map[uint]string  // tempDirCache maps device numbers to renameio temporary directories.
+	fileSystem              vfs.FS
+	safe                    bool
+	createScriptTempDirOnce sync.Once
+	scriptTempDir           AbsPath
+	devCache                map[AbsPath]uint // devCache maps directories to device numbers.
+	tempDirCache            map[uint]string  // tempDirCache maps device numbers to renameio temporary directories.
 }
 
 // RealSystemWithSafe sets the safe flag of the RealSystem.
 func RealSystemWithSafe(safe bool) RealSystemOption {
 	return func(s *RealSystem) {
 		s.safe = safe
+	}
+}
+
+// RealSystemWithScriptTempDir sets the script temporary directory of the RealSystem.
+func RealSystemWithScriptTempDir(scriptTempDir AbsPath) RealSystemOption {
+	return func(s *RealSystem) {
+		s.scriptTempDir = scriptTempDir
 	}
 }
 

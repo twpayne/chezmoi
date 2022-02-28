@@ -10,6 +10,7 @@ The following configuration variables are available:
 |                | `encryption`          | string   | *none*                   | Encryption tool, either `age` or `gpg`                 |
 |                | `format`              | string   | `json`                   | Format for data output, either `json` or `yaml`        |
 |                | `mode`                | string   | `file`                   | Mode in target dir, either `file` or `symlink`         |
+|                | `scriptTempDir`       | string   | *none*                   | Temporary directory for scripts                        |s
 |                | `sourceDir`           | string   | `~/.local/share/chezmoi` | Source directory                                       |
 |                | `pager`               | string   | `$PAGER`                 | Default pager                                          |
 |                | `umask`               | int      | *from system*            | Umask                                                  |

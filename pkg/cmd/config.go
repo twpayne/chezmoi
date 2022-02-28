@@ -78,6 +78,7 @@ type Config struct {
 	Pager              string                          `mapstructure:"pager"`
 	PINEntry           pinEntryConfig                  `mapstructure:"pinentry"`
 	Safe               bool                            `mapstructure:"safe"`
+	ScriptTempDir      chezmoi.AbsPath                 `mapstructure:"scriptTempDir"`
 	SourceDirAbsPath   chezmoi.AbsPath                 `mapstructure:"sourceDir"`
 	Template           templateConfig                  `mapstructure:"template"`
 	Umask              fs.FileMode                     `mapstructure:"umask"`
@@ -1548,6 +1549,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 
 	c.baseSystem = chezmoi.NewRealSystem(c.fileSystem,
 		chezmoi.RealSystemWithSafe(c.Safe),
+		chezmoi.RealSystemWithScriptTempDir(c.ScriptTempDir),
 	)
 	if c.debug {
 		systemLogger := c.logger.With().Str(logComponentKey, logComponentValueSystem).Logger()
