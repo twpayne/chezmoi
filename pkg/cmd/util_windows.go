@@ -25,7 +25,7 @@ var defaultInterpreters = map[string]*chezmoi.Interpreter{
 		Args:    []string{"-NoLogo"},
 	},
 	"py": {
-		Command: "python",
+		Command: "python3",
 	},
 	"rb": {
 		Command: "ruby",

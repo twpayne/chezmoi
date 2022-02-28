@@ -18,7 +18,7 @@ chezmoi apply
 unix2dos golden/stdout3 # normalize line endings before comparison
 cmp stdout golden/stdout3
 
--- bin/fake-python.bat --
+-- bin/fake-python3.bat --
 @echo Hello from fake Python
 -- golden/stdout --
 Hello from Batch (.bat)
@@ -35,10 +35,10 @@ Hello from fake Python
 Write-Host 'Hello from PowerShell'
 -- home3/user/.config/chezmoi/chezmoi.toml --
 [interpreters.py]
-    command = "fake-python"
+    command = "fake-python3"
 -- home3/user/.local/share/chezmoi/run_python_script.py --
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # this should never be executed as the interpreter is overridden with
-# fake-python.bat in the config file
+# fake-python3.bat in the config file
 fail()
