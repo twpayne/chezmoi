@@ -437,8 +437,11 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-18.04
     steps:
+    - uses: actions/setup-go@v2
+      with:
+        go-version: ${{ env.GO_VERSION }}
     - uses: actions/checkout@v2
-    - uses: golangci/golangci-lint-action@v2
+    - uses: golangci/golangci-lint-action@v3.1.0
       with:
         version: v${{ env.GOLANGCI_LINT_VERSION }}
         args: --timeout=5m
