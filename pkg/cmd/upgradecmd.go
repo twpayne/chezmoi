@@ -195,7 +195,7 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 	// that, otherwise look in $PATH.
 	path := c.upgrade.executable
 	if method != upgradeMethodReplaceExecutable {
-		path, err = exec.LookPath(c.upgrade.repo)
+		path, err = chezmoi.LookPath(c.upgrade.repo)
 		if err != nil {
 			return err
 		}
@@ -520,7 +520,7 @@ func getUpgradeMethod(fileSystem vfs.Stater, executableAbsPath chezmoi.AbsPath) 
 		case 0:
 			method := upgradeMethodUpgradePackage
 			if uid != 0 {
-				if _, err := exec.LookPath("sudo"); err == nil {
+				if _, err := chezmoi.LookPath("sudo"); err == nil {
 					method = upgradeMethodSudoPrefix + method
 				}
 			}

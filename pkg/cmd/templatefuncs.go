@@ -73,7 +73,7 @@ func (c *Config) joinPathTemplateFunc(elem ...string) string {
 }
 
 func (c *Config) lookPathTemplateFunc(file string) string {
-	switch path, err := exec.LookPath(file); {
+	switch path, err := chezmoi.LookPath(file); {
 	case err == nil:
 		return path
 	case errors.Is(err, exec.ErrNotFound):

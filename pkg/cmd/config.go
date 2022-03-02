@@ -2045,7 +2045,7 @@ func (c *Config) tempDir(key string) (chezmoi.AbsPath, error) {
 
 // useBuiltinAgeAutoFunc detects whether the builtin age should be used.
 func (c *Config) useBuiltinAgeAutoFunc() bool {
-	if _, err := exec.LookPath(c.Age.Command); err == nil {
+	if _, err := chezmoi.LookPath(c.Age.Command); err == nil {
 		return false
 	}
 	return true
@@ -2058,7 +2058,7 @@ func (c *Config) useBuiltinGitAutoFunc() bool {
 	if runtime.GOOS == "solaris" {
 		return false
 	}
-	if _, err := exec.LookPath(c.Git.Command); err == nil {
+	if _, err := chezmoi.LookPath(c.Git.Command); err == nil {
 		return false
 	}
 	return true
@@ -2085,7 +2085,7 @@ func (c *Config) writeOutputString(data string) error {
 
 func parseCommand(command string, args []string) (string, []string) {
 	// If command is found, then return it.
-	if path, err := exec.LookPath(command); err == nil {
+	if path, err := chezmoi.LookPath(command); err == nil {
 		return path, args
 	}
 
@@ -2093,7 +2093,7 @@ func parseCommand(command string, args []string) (string, []string) {
 	// is the editor and the rest are arguments.
 	components := whitespaceRx.Split(command, -1)
 	if len(components) > 1 {
-		if path, err := exec.LookPath(components[0]); err == nil {
+		if path, err := chezmoi.LookPath(components[0]); err == nil {
 			return path, append(components[1:], args...)
 		}
 	}

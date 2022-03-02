@@ -51,7 +51,7 @@ func (e *xorEncryption) xorWithKey(input []byte) []byte {
 
 func lookPathOrSkip(t *testing.T, file string) string {
 	t.Helper()
-	command, err := exec.LookPath(file)
+	command, err := LookPath(file)
 	if errors.Is(err, exec.ErrNotFound) {
 		t.Skipf("%s not found in $PATH", file)
 	}
