@@ -86,6 +86,11 @@ commands. *value* can be `on`, `off`, `auto`, or any boolean-like value
 recognized by `parseBool`. The default is `auto` which will only use the
 builtin git if `git.command` cannot be found in `$PATH`.
 
+!!! info
+
+    chezmoi's builtin git has only supports the HTTP and HTTPS transports and
+    does not support `git-repo` externals.
+
 ## `-v`, `--verbose`
 
 Set verbose mode. In verbose mode, chezmoi prints the changes that it is making
