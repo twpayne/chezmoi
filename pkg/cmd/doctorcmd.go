@@ -391,7 +391,7 @@ func (c *binaryCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath)
 	}
 
 	var pathAbsPath chezmoi.AbsPath
-	switch path, err := exec.LookPath(c.binaryname); {
+	switch path, err := chezmoi.LookPath(c.binaryname); {
 	case errors.Is(err, exec.ErrNotFound):
 		return c.ifNotExist, fmt.Sprintf("%s not found in $PATH", c.binaryname)
 	case err != nil:

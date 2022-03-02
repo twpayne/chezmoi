@@ -10,7 +10,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"os"
-	"os/exec"
 	"path"
 	"path/filepath"
 	"regexp"
@@ -25,6 +24,7 @@ import (
 	"github.com/twpayne/go-vfs/v4"
 	"github.com/twpayne/go-vfs/v4/vfst"
 
+	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoitest"
 	"github.com/twpayne/chezmoi/v2/pkg/cmd"
 )
@@ -345,7 +345,7 @@ func cmdMkGPGConfig(ts *testscript.TestScript, neg bool, args []string) {
 		ts.Check(os.Chmod(gpgHomeDir, 0o700))
 	}
 
-	command, err := exec.LookPath("gpg")
+	command, err := chezmoi.LookPath("gpg")
 	ts.Check(err)
 
 	key, passphrase, err := chezmoitest.GPGGenerateKey(command, gpgHomeDir)
