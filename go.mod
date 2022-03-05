@@ -13,8 +13,9 @@ require (
 	github.com/coreos/go-semver v0.3.0
 	github.com/danieljoos/wincred v1.1.2 // indirect
 	github.com/go-git/go-git/v5 v5.4.2
+	github.com/godbus/dbus/v5 v5.1.0 // indirect
 	github.com/google/btree v1.0.1 // indirect
-	github.com/google/go-github/v42 v42.0.0
+	github.com/google/go-github/v43 v43.0.0
 	github.com/google/gops v0.3.22
 	github.com/google/renameio/v2 v2.0.0
 	github.com/google/uuid v1.3.0 // indirect
@@ -44,7 +45,7 @@ require (
 	github.com/twpayne/go-xdg/v6 v6.0.0
 	github.com/ulikunitz/xz v0.5.10
 	github.com/xanzy/ssh-agent v0.3.1 // indirect
-	github.com/yuin/goldmark v1.4.7 // indirect
+	github.com/yuin/goldmark v1.4.8 // indirect
 	github.com/zalando/go-keyring v0.2.0
 	go.etcd.io/bbolt v1.3.6
 	go.uber.org/atomic v1.9.0 // indirect
@@ -53,7 +54,7 @@ require (
 	golang.org/x/net v0.0.0-20220225172249-27dd8689420f // indirect
 	golang.org/x/oauth2 v0.0.0-20220223155221-ee480838109b
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
-	golang.org/x/sys v0.0.0-20220224120231-95c6836cb0e7
+	golang.org/x/sys v0.0.0-20220227234510-4e6760a101f9
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211
 	gopkg.in/ini.v1 v1.66.4 // indirect
 	gopkg.in/yaml.v2 v2.4.0
