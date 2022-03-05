@@ -266,3 +266,7 @@ articles:
   title: 'chezmoi を使って VSCode devcontainer 対応 dotfiles を作る'
   lang: 'JP'
   url: 'https://www.mizdra.net/entry/2022/02/22/022109'
+- date: '2022-03-03'
+  version: '2.13.0'
+  title: 'Local Environment-as-Code: Is It Possible Yet?'
+  url: 'https://thenewstack.io/local-environment-as-code-is-it-possible-yet/'
