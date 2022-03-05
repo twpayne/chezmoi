@@ -9,9 +9,9 @@
 <meta content="Tom Payne" name="author"/>
 <link href="https://chezmoi.io/reference/command-line-flags/global/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.2.3, mkdocs-material-8.1.9" name="generator"/>
+<meta content="mkdocs-1.2.3, mkdocs-material-8.1.7" name="generator"/>
 <title>Global - chezmoi</title>
-<link href="../../../assets/stylesheets/main.2b4465f4.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.cd566b2a.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.e6a45f82.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&amp;display=fallback" rel="stylesheet"/>
@@ -1477,6 +1477,11 @@ or the use of SSH keys.</p>
 commands. <em>value</em> can be <code>on</code>, <code>off</code>, <code>auto</code>, or any boolean-like value
 recognized by <code>parseBool</code>. The default is <code>auto</code> which will only use the
 builtin git if <code>git.command</code> cannot be found in <code>$PATH</code>.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>chezmoi's builtin git has only supports the HTTP and HTTPS transports and
+does not support <code>git-repo</code> externals.</p>
+</div>
 <h2 id="-v-verbose"><code>-v</code>, <code>--verbose</code></h2>
 <p>Set verbose mode. In verbose mode, chezmoi prints the changes that it is making
 as approximate shell commands, and any differences in files between the target
@@ -1546,6 +1551,6 @@ contains a <code>.git</code> directory.</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.22074ed6.min.js"}</script>
-<script src="../../../assets/javascripts/bundle.960e086b.min.js"></script>
+<script src="../../../assets/javascripts/bundle.01de222e.min.js"></script>
 </body>
 </html>
