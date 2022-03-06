@@ -110,6 +110,17 @@ changelog:
     - Merge branch
 
 checksum:
+  extra_files:
+  - glob: ./dist/chezmoi-nocgo_darwin_amd64/chezmoi
+    name_template: chezmoi-darwin-amd64
+  - glob: ./dist/chezmoi-nocgo_darwin_arm64/chezmoi
+    name_template: chezmoi-darwin-arm64
+  - glob: ./dist/chezmoi-cgo-glibc_linux_amd64/chezmoi
+    name_template: chezmoi-linux-amd64
+  - glob: ./dist/chezmoi-cgo-musl_linux_amd64/chezmoi
+    name_template: chezmoi-linux-amd64-musl
+  - glob: ./dist/chezmoi-nocgo_windows_amd64/chezmoi.exe
+    name_template: chezmoi-windows-amd64.exe
 
 nfpms:
 - builds:
@@ -167,6 +178,17 @@ nfpms:
   bindir: /usr/bin
 
 release:
+  extra_files:
+  - glob: ./dist/chezmoi-nocgo_darwin_amd64/chezmoi
+    name_template: chezmoi-darwin-amd64
+  - glob: ./dist/chezmoi-nocgo_darwin_arm64/chezmoi
+    name_template: chezmoi-darwin-arm64
+  - glob: ./dist/chezmoi-cgo-glibc_linux_amd64/chezmoi
+    name_template: chezmoi-linux-amd64
+  - glob: ./dist/chezmoi-cgo-musl_linux_amd64/chezmoi
+    name_template: chezmoi-linux-amd64-musl
+  - glob: ./dist/chezmoi-nocgo_windows_amd64/chezmoi.exe
+    name_template: chezmoi-windows-amd64.exe
 
 scoop:
   bucket:
