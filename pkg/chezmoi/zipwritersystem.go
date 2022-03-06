@@ -47,34 +47,34 @@ func (s *ZIPWriterSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte
 
 // WriteFile implements System.WriteFile.
 func (s *ZIPWriterSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error {
-	fh := zip.FileHeader{
+	fileHeader := zip.FileHeader{
 		Name:               filename.String(),
 		Method:             zip.Deflate,
 		Modified:           s.modified,
 		UncompressedSize64: uint64(len(data)),
 	}
-	fh.SetMode(perm)
-	fw, err := s.zipWriter.CreateHeader(&fh)
+	fileHeader.SetMode(perm)
+	fileWriter, err := s.zipWriter.CreateHeader(&fileHeader)
 	if err != nil {
 		return err
 	}
-	_, err = fw.Write(data)
+	_, err = fileWriter.Write(data)
 	return err
 }
 
 // WriteSymlink implements System.WriteSymlink.
 func (s *ZIPWriterSystem) WriteSymlink(oldname string, newname AbsPath) error {
 	data := []byte(oldname)
-	fh := zip.FileHeader{
+	fileHeader := zip.FileHeader{
 		Name:               newname.String(),
 		Modified:           s.modified,
 		UncompressedSize64: uint64(len(data)),
 	}
-	fh.SetMode(fs.ModeSymlink)
-	fw, err := s.zipWriter.CreateHeader(&fh)
+	fileHeader.SetMode(fs.ModeSymlink)
+	fileWriter, err := s.zipWriter.CreateHeader(&fileHeader)
 	if err != nil {
 		return err
 	}
-	_, err = fw.Write(data)
+	_, err = fileWriter.Write(data)
 	return err
 }
