@@ -1,4 +1,4 @@
-package archive
+package archivetest
 
 import (
 	"archive/zip"

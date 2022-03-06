@@ -9,16 +9,16 @@ import (
 	"github.com/twpayne/go-vfs/v4"
 	"github.com/twpayne/go-vfs/v4/vfst"
 
-	"github.com/twpayne/chezmoi/v2/pkg/archive"
+	"github.com/twpayne/chezmoi/v2/pkg/archivetest"
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoitest"
 )
 
 func TestImportCmd(t *testing.T) {
-	data, err := archive.NewTar(map[string]interface{}{
+	data, err := archivetest.NewTar(map[string]interface{}{
 		"archive": map[string]interface{}{
 			".dir": map[string]interface{}{
 				".file": "# contents of archive/.dir/.file\n",
-				".symlink": &archive.Symlink{
+				".symlink": &archivetest.Symlink{
 					Target: ".file",
 				},
 			},
