@@ -1,7 +1,6 @@
 package chezmoi
 
 // FIXME implement externals in chezmoi source state format
-// FIXME implement external git repos
 
 import (
 	"bufio"
