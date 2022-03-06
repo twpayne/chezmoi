@@ -1,4 +1,4 @@
-package archive
+package archivetest
 
 import (
 	"io/fs"

@@ -8,14 +8,14 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/twpayne/chezmoi/v2/pkg/archive"
+	"github.com/twpayne/chezmoi/v2/pkg/archivetest"
 )
 
 func TestArchiveReaderSystemTar(t *testing.T) {
-	data, err := archive.NewTar(map[string]interface{}{
+	data, err := archivetest.NewTar(map[string]interface{}{
 		"dir": map[string]interface{}{
 			"file": "# contents of dir/file\n",
-			"symlink": &archive.Symlink{
+			"symlink": &archivetest.Symlink{
 				Target: "file",
 			},
 		},
