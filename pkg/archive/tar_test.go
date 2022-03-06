@@ -9,9 +9,24 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestNewTarFile(t *testing.T) {
+func TestNewTar(t *testing.T) {
 	data, err := NewTar(map[string]interface{}{
-		"file": "# contents of .file\n",
+		"dir": map[string]interface{}{
+			"file1": "# contents of dir/file1\n",
+			"file2": []byte("# contents of dir/file2\n"),
+			"subdir": &Dir{
+				Perm: 0o700,
+				Entries: map[string]interface{}{
+					"file": &File{
+						Perm:     0o777,
+						Contents: []byte("# contents of dir/subdir/file\n"),
+					},
+					"symlink": &Symlink{
+						Target: "file",
+					},
+				},
+			},
+		},
 	})
 	require.NoError(t, err)
 
@@ -19,8 +34,40 @@ func TestNewTarFile(t *testing.T) {
 
 	header, err := tarReader.Next()
 	require.NoError(t, err)
-	assert.Equal(t, int(tar.TypeReg), int(header.Typeflag))
-	assert.Equal(t, "file", header.Name)
-	assert.Equal(t, len("# contents of .file\n"), int(header.Size))
-	assert.Equal(t, 0o666, int(header.Mode))
+	assert.Equal(t, byte(tar.TypeDir), header.Typeflag)
+	assert.Equal(t, "dir/", header.Name)
+	assert.Equal(t, int64(0o777), header.Mode)
+
+	header, err = tarReader.Next()
+	require.NoError(t, err)
+	assert.Equal(t, byte(tar.TypeReg), header.Typeflag)
+	assert.Equal(t, "dir/file1", header.Name)
+	assert.Equal(t, int64(len("# contents of dir/file1\n")), header.Size)
+	assert.Equal(t, int64(0o666), header.Mode)
+
+	header, err = tarReader.Next()
+	require.NoError(t, err)
+	assert.Equal(t, byte(tar.TypeReg), header.Typeflag)
+	assert.Equal(t, "dir/file2", header.Name)
+	assert.Equal(t, int64(len("# contents of dir/file2\n")), header.Size)
+	assert.Equal(t, int64(0o666), header.Mode)
+
+	header, err = tarReader.Next()
+	require.NoError(t, err)
+	assert.Equal(t, byte(tar.TypeDir), header.Typeflag)
+	assert.Equal(t, "dir/subdir/", header.Name)
+	assert.Equal(t, int64(0o700), header.Mode)
+
+	header, err = tarReader.Next()
+	require.NoError(t, err)
+	assert.Equal(t, byte(tar.TypeReg), header.Typeflag)
+	assert.Equal(t, "dir/subdir/file", header.Name)
+	assert.Equal(t, int64(len("# contents of dir/subdir/file\n")), header.Size)
+	assert.Equal(t, 0o777, int(header.Mode))
+
+	header, err = tarReader.Next()
+	require.NoError(t, err)
+	assert.Equal(t, byte(tar.TypeSymlink), header.Typeflag)
+	assert.Equal(t, "dir/subdir/symlink", header.Name)
+	assert.Equal(t, "file", header.Linkname)
 }

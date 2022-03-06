@@ -1,6 +1,9 @@
 package archive
 
-import "io/fs"
+import (
+	"io/fs"
+	"sort"
+)
 
 // A Dir represents a directory.
 type Dir struct {
@@ -17,4 +20,13 @@ type File struct {
 // A Symlink represents a symlink.
 type Symlink struct {
 	Target string
+}
+
+func sortedKeys(m map[string]interface{}) []string {
+	keys := make([]string, 0, len(m))
+	for key := range m {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+	return keys
 }

@@ -4,19 +4,13 @@ import (
 	"archive/tar"
 	"bytes"
 	"fmt"
-	"sort"
 )
 
 // NewTar returns the bytes of a new tar archive containing root.
 func NewTar(root map[string]interface{}) ([]byte, error) {
 	buffer := &bytes.Buffer{}
 	tarWriter := tar.NewWriter(buffer)
-	keys := make([]string, 0, len(root))
-	for key := range root {
-		keys = append(keys, key)
-	}
-	sort.Strings(keys)
-	for _, key := range keys {
+	for _, key := range sortedKeys(root) {
 		if err := tarAddEntry(tarWriter, key, root[key]); err != nil {
 			return nil, err
 		}
@@ -50,8 +44,8 @@ func tarAddEntry(w *tar.Writer, name string, entry interface{}) error {
 		}); err != nil {
 			return err
 		}
-		for key, value := range entry {
-			if err := tarAddEntry(w, name+"/"+key, value); err != nil {
+		for _, key := range sortedKeys(entry) {
+			if err := tarAddEntry(w, name+"/"+key, entry[key]); err != nil {
 				return err
 			}
 		}
@@ -77,8 +71,8 @@ func tarAddEntry(w *tar.Writer, name string, entry interface{}) error {
 		}); err != nil {
 			return err
 		}
-		for key, value := range entry.Entries {
-			if err := tarAddEntry(w, name+"/"+key, value); err != nil {
+		for _, key := range sortedKeys(entry.Entries) {
+			if err := tarAddEntry(w, name+"/"+key, entry.Entries[key]); err != nil {
 				return err
 			}
 		}
