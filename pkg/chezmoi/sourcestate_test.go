@@ -1077,8 +1077,8 @@ func TestSourceStateRead(t *testing.T) {
 			},
 			expectedSourceState: NewSourceState(
 				withIgnore(
-					mustNewPatternSet(t, map[string]bool{
-						"README.md": true,
+					mustNewPatternSet(t, map[string]patternSetIncludeType{
+						"README.md": patternSetInclude,
 					}),
 				),
 			),
@@ -1093,8 +1093,8 @@ func TestSourceStateRead(t *testing.T) {
 			},
 			expectedSourceState: NewSourceState(
 				withIgnore(
-					mustNewPatternSet(t, map[string]bool{
-						"README.md": true,
+					mustNewPatternSet(t, map[string]patternSetIncludeType{
+						"README.md": patternSetInclude,
 					}),
 				),
 			),
@@ -1146,8 +1146,8 @@ func TestSourceStateRead(t *testing.T) {
 					},
 				}),
 				withIgnore(
-					mustNewPatternSet(t, map[string]bool{
-						"dir/file3": true,
+					mustNewPatternSet(t, map[string]patternSetIncludeType{
+						"dir/file3": patternSetInclude,
 					}),
 				),
 			),
@@ -1168,8 +1168,8 @@ func TestSourceStateRead(t *testing.T) {
 					},
 				}),
 				withRemove(
-					mustNewPatternSet(t, map[string]bool{
-						"file": true,
+					mustNewPatternSet(t, map[string]patternSetIncludeType{
+						"file": patternSetInclude,
 					}),
 				),
 			),
@@ -1194,13 +1194,13 @@ func TestSourceStateRead(t *testing.T) {
 					},
 				}),
 				withIgnore(
-					mustNewPatternSet(t, map[string]bool{
-						"file2": true,
+					mustNewPatternSet(t, map[string]patternSetIncludeType{
+						"file2": patternSetInclude,
 					}),
 				),
 				withRemove(
-					mustNewPatternSet(t, map[string]bool{
-						"file*": true,
+					mustNewPatternSet(t, map[string]patternSetIncludeType{
+						"file*": patternSetInclude,
 					}),
 				),
 			),
@@ -1237,13 +1237,13 @@ func TestSourceStateRead(t *testing.T) {
 					},
 				}),
 				withIgnore(
-					mustNewPatternSet(t, map[string]bool{
-						"dir/file2": true,
+					mustNewPatternSet(t, map[string]patternSetIncludeType{
+						"dir/file2": patternSetInclude,
 					}),
 				),
 				withRemove(
-					mustNewPatternSet(t, map[string]bool{
-						"dir/file*": true,
+					mustNewPatternSet(t, map[string]patternSetIncludeType{
+						"dir/file*": patternSetInclude,
 					}),
 				),
 			),

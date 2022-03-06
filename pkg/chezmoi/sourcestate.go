@@ -736,7 +736,7 @@ func (s *SourceState) ForEach(f func(RelPath, SourceStateEntry) error) error {
 func (s *SourceState) Ignore(targetRelPath RelPath) bool {
 	s.Lock()
 	defer s.Unlock()
-	return s.ignore.match(targetRelPath.String())
+	return s.ignore.match(targetRelPath.String()) == patternSetMatchInclude
 }
 
 // MustEntry returns the source state entry associated with targetRelPath, and
@@ -1195,9 +1195,9 @@ func (s *SourceState) addPatterns(patternSet *patternSet, sourceAbsPath AbsPath,
 		if text == "" {
 			continue
 		}
-		include := true
+		include := patternSetInclude
 		if strings.HasPrefix(text, "!") {
-			include = false
+			include = patternSetExclude
 			text = mustTrimPrefix(text, "!")
 		}
 		pattern := dir.JoinString(text).String()
