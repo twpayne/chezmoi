@@ -14,57 +14,57 @@ func TestPatternSet(t *testing.T) {
 	for _, tc := range []struct {
 		name          string
 		ps            *patternSet
-		expectMatches map[string]bool
+		expectMatches map[string]patternSetMatchType
 	}{
 		{
 			name: "empty",
 			ps:   newPatternSet(),
-			expectMatches: map[string]bool{
-				"foo": false,
+			expectMatches: map[string]patternSetMatchType{
+				"foo": patternSetMatchUnknown,
 			},
 		},
 		{
 			name: "exact",
-			ps: mustNewPatternSet(t, map[string]bool{
-				"foo": true,
+			ps: mustNewPatternSet(t, map[string]patternSetIncludeType{
+				"foo": patternSetInclude,
 			}),
-			expectMatches: map[string]bool{
-				"foo": true,
-				"bar": false,
+			expectMatches: map[string]patternSetMatchType{
+				"foo": patternSetMatchInclude,
+				"bar": patternSetMatchExclude,
 			},
 		},
 		{
 			name: "wildcard",
-			ps: mustNewPatternSet(t, map[string]bool{
-				"b*": true,
+			ps: mustNewPatternSet(t, map[string]patternSetIncludeType{
+				"b*": patternSetInclude,
 			}),
-			expectMatches: map[string]bool{
-				"foo": false,
-				"bar": true,
-				"baz": true,
+			expectMatches: map[string]patternSetMatchType{
+				"foo": patternSetMatchExclude,
+				"bar": patternSetMatchInclude,
+				"baz": patternSetMatchInclude,
 			},
 		},
 		{
 			name: "exclude",
-			ps: mustNewPatternSet(t, map[string]bool{
-				"b*":  true,
-				"baz": false,
+			ps: mustNewPatternSet(t, map[string]patternSetIncludeType{
+				"b*":  patternSetInclude,
+				"baz": patternSetExclude,
 			}),
-			expectMatches: map[string]bool{
-				"foo": false,
-				"bar": true,
-				"baz": false,
+			expectMatches: map[string]patternSetMatchType{
+				"foo": patternSetMatchUnknown,
+				"bar": patternSetMatchInclude,
+				"baz": patternSetMatchExclude,
 			},
 		},
 		{
 			name: "doublestar",
-			ps: mustNewPatternSet(t, map[string]bool{
-				"**/foo": true,
+			ps: mustNewPatternSet(t, map[string]patternSetIncludeType{
+				"**/foo": patternSetInclude,
 			}),
-			expectMatches: map[string]bool{
-				"foo":         true,
-				"bar/foo":     true,
-				"baz/bar/foo": true,
+			expectMatches: map[string]patternSetMatchType{
+				"foo":         patternSetMatchInclude,
+				"bar/foo":     patternSetMatchInclude,
+				"baz/bar/foo": patternSetMatchInclude,
 			},
 		},
 	} {
@@ -91,8 +91,8 @@ func TestPatternSetGlob(t *testing.T) {
 		},
 		{
 			name: "simple",
-			ps: mustNewPatternSet(t, map[string]bool{
-				"/f*": true,
+			ps: mustNewPatternSet(t, map[string]patternSetIncludeType{
+				"/f*": patternSetInclude,
 			}),
 			root: map[string]interface{}{
 				"foo": "",
@@ -103,9 +103,9 @@ func TestPatternSetGlob(t *testing.T) {
 		},
 		{
 			name: "include_exclude",
-			ps: mustNewPatternSet(t, map[string]bool{
-				"/b*": true,
-				"/*z": false,
+			ps: mustNewPatternSet(t, map[string]patternSetIncludeType{
+				"/b*": patternSetInclude,
+				"/*z": patternSetExclude,
 			}),
 			root: map[string]interface{}{
 				"bar": "",
@@ -117,8 +117,8 @@ func TestPatternSetGlob(t *testing.T) {
 		},
 		{
 			name: "doublestar",
-			ps: mustNewPatternSet(t, map[string]bool{
-				"/**/f*": true,
+			ps: mustNewPatternSet(t, map[string]patternSetIncludeType{
+				"/**/f*": patternSetInclude,
 			}),
 			root: map[string]interface{}{
 				"dir1/dir2/foo": "",
@@ -138,7 +138,7 @@ func TestPatternSetGlob(t *testing.T) {
 	}
 }
 
-func mustNewPatternSet(t *testing.T, patterns map[string]bool) *patternSet {
+func mustNewPatternSet(t *testing.T, patterns map[string]patternSetIncludeType) *patternSet {
 	t.Helper()
 	ps := newPatternSet()
 	for pattern, include := range patterns {

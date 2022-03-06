@@ -5,16 +5,29 @@ import (
 	"path"
 	"path/filepath"
 	"sort"
-	"sync"
 
 	"github.com/bmatcuk/doublestar/v4"
 	"github.com/rs/zerolog"
 	vfs "github.com/twpayne/go-vfs/v4"
 )
 
+type patternSetIncludeType bool
+
+const (
+	patternSetInclude patternSetIncludeType = true
+	patternSetExclude patternSetIncludeType = false
+)
+
+type patternSetMatchType int
+
+const (
+	patternSetMatchInclude patternSetMatchType = 1
+	patternSetMatchUnknown patternSetMatchType = 0
+	patternSetMatchExclude patternSetMatchType = -1
+)
+
 // An patternSet is a set of patterns.
 type patternSet struct {
-	sync.Mutex
 	includePatterns stringSet
 	excludePatterns stringSet
 }
@@ -38,15 +51,14 @@ func (ps *patternSet) MarshalZerologObject(e *zerolog.Event) {
 }
 
 // add adds a pattern to ps.
-func (ps *patternSet) add(pattern string, include bool) error {
+func (ps *patternSet) add(pattern string, include patternSetIncludeType) error {
 	if ok := doublestar.ValidatePattern(pattern); !ok {
 		return fmt.Errorf("%s: invalid pattern", pattern)
 	}
-	ps.Lock()
-	defer ps.Unlock()
-	if include {
+	switch include {
+	case patternSetInclude:
 		ps.includePatterns.add(pattern)
-	} else {
+	case patternSetExclude:
 		ps.excludePatterns.add(pattern)
 	}
 	return nil
@@ -54,7 +66,6 @@ func (ps *patternSet) add(pattern string, include bool) error {
 
 // glob returns all matches in fileSystem.
 func (ps *patternSet) glob(fileSystem vfs.FS, prefix string) ([]string, error) {
-	// FIXME use AbsPath and RelPath
 	allMatches := newStringSet()
 	for includePattern := range ps.includePatterns {
 		matches, err := doublestar.Glob(fileSystem, prefix+includePattern)
@@ -82,17 +93,32 @@ func (ps *patternSet) glob(fileSystem vfs.FS, prefix string) ([]string, error) {
 	return matchesSlice, nil
 }
 
-// match returns if name matches any pattern in ps.
-func (ps *patternSet) match(name string) bool {
+// match returns if name matches ps.
+func (ps *patternSet) match(name string) patternSetMatchType {
+	// If name is explicitly excluded, then return exclude.
 	for pattern := range ps.excludePatterns {
 		if ok, _ := doublestar.Match(pattern, name); ok {
-			return false
+			return patternSetMatchExclude
 		}
 	}
+
+	// If name is explicitly included, then return include.
 	for pattern := range ps.includePatterns {
 		if ok, _ := doublestar.Match(pattern, name); ok {
-			return true
+			return patternSetMatchInclude
 		}
 	}
-	return false
+
+	// If name did not match any include or exclude patterns...
+	switch {
+	case len(ps.includePatterns) > 0 && len(ps.excludePatterns) == 0:
+		// ...only include patterns were specified, so exclude by default.
+		return patternSetMatchExclude
+	case len(ps.includePatterns) == 0 && len(ps.excludePatterns) > 0:
+		// ...only exclude patterns were specified, so include by default.
+		return patternSetMatchInclude
+	default:
+		// ...both include and exclude were specified, so return unknown.
+		return patternSetMatchUnknown
+	}
 }
