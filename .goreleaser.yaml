@@ -48,7 +48,7 @@ builds:
   - solaris
   - windows
   goarch:
-  - 386
+  - "386"
   - amd64
   - arm
   - arm64
@@ -65,7 +65,7 @@ builds:
   - '-X main.builtBy=goreleaser'
   ignore:
   - goos: darwin
-    goarch: 386
+    goarch: "386"
   - goos: linux
     goarch: amd64
 
@@ -190,6 +190,7 @@ snapcrafts:
   confinement: classic
   apps:
     chezmoi:
+      command: chezmoi
       completer: completions/chezmoi-completion.bash
 
 source:
