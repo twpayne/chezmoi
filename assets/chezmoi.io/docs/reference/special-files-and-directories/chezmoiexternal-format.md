@@ -24,10 +24,12 @@ Entries may have the following fields:
 | `clone.args`      | []string | *none*        | Extra args to `git clone`                                     |
 | `encrypted`       | bool     | `false`       | Whether the external is encrypted                             |
 | `exact`           | bool     | `false`       | Add `exact_` attribute to directories in archive              |
+| `exclude`         | []string | *none*        | Patterns to exclude from archive                              |
 | `executable`      | bool     | `false`       | Add `executable_` attribute to file                           |
 | `filter.command`  | string   | *none*        | Command to filter contents                                    |
 | `filter.args`     | []string | *none*        | Extra args to command to filter contents                      |
 | `format`          | string   | *autodetect*  | Format of archive                                             |
+| `include`         | []string | *none*        | Patterns to include from archive                              |
 | `pull.args`       | []string | *none*        | Extra args to `git pull`                                      |
 | `refreshPeriod`   | duration | `0`           | Refresh period                                                |
 | `stripComponents` | int      | `0`           | Number of leading directory components to strip from archives |
@@ -53,6 +55,24 @@ members of archive. The optional string field `format` sets the archive format.
 The supported archive formats are `tar`, `tar.gz`, `tgz`, `tar.bz2`, `tbz2`,
 `xz`, and `zip`. If `format` is not specified then chezmoi will guess the format
 using firstly the path of the URL and secondly its contents.
+
+The optional `include` and `exclude` fields are lists of patterns specify which
+archive members to include or exclude respectively. Patterns match paths in the
+archive, not the target state. chezmoi uses the following algorithm to
+determine whether an archive member is included:
+
+1. If the archive member name matches any `exclude` pattern, then the archive
+   member is excluded.
+2. Otherwise, if the archive member name matches any `include` pattern, then
+   the archive member is included.
+3. Otherwise, if only `include` patterns were specified then the archive member
+   is excluded.
+4. Otherwise, if only `exclude` patterns were specified then the archive member
+   is included.
+5. Otherwise, the archive member is included.o
+
+Excluded archive members do not generate source state entries, and, if they are
+directories, all of their children are also excluded.
 
 If `type` is `git-repo` then chezmoi will run `git clone <url> <target-name>`
 with the optional `clone.args` if the target does not exist. If the target
@@ -90,4 +110,10 @@ re-download unless forced. To force chezmoi to re-download URLs, pass the
         url = "https://github.com/romkatv/powerlevel10k/archive/v1.15.0.tar.gz"
         exact = true
         stripComponents = 1
+    ["www/adminer/plugins"]
+        type = "archive"
+        url = "https://api.github.com/repos/vrana/adminer/tarball"
+        refreshPeriod = "744h"
+        stripComponents = 2
+        include = ["*", "*/plugins", "*/plugins/**"]
     ```
