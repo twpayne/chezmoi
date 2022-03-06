@@ -130,6 +130,8 @@ func isTarArchive(r io.Reader) bool {
 // walkArchiveTar walks over all the entries in a tar archive.
 func walkArchiveTar(r io.Reader, f WalkArchiveFunc) error {
 	tarReader := tar.NewReader(r)
+	var skippedDirPrefixes []string
+HEADER:
 	for {
 		header, err := tarReader.Next()
 		switch {
@@ -138,10 +140,17 @@ func walkArchiveTar(r io.Reader, f WalkArchiveFunc) error {
 		case err != nil:
 			return err
 		}
+		for _, skippedDirPrefix := range skippedDirPrefixes {
+			if strings.HasPrefix(header.Name, skippedDirPrefix) {
+				continue HEADER
+			}
+		}
 		name := strings.TrimSuffix(header.Name, "/")
 		switch header.Typeflag {
 		case tar.TypeDir, tar.TypeReg:
 			switch err := f(name, header.FileInfo(), tarReader, ""); {
+			case errors.Is(err, fs.SkipDir):
+				skippedDirPrefixes = append(skippedDirPrefixes, header.Name)
 			case errors.Is(err, Break):
 				return nil
 			case err != nil:
@@ -167,6 +176,8 @@ func walkArchiveZip(r io.ReaderAt, size int64, f WalkArchiveFunc) error {
 	if err != nil {
 		return err
 	}
+	var skippedDirPrefixes []string
+FILE:
 	for _, zipFile := range zipReader.File {
 		zipFileReader, err := zipFile.Open()
 		if err != nil {
@@ -175,6 +186,11 @@ func walkArchiveZip(r io.ReaderAt, size int64, f WalkArchiveFunc) error {
 		name := path.Clean(zipFile.Name)
 		if strings.HasPrefix(name, "../") || strings.Contains(name, "/../") {
 			return fmt.Errorf("%s: invalid filename", zipFile.Name)
+		}
+		for _, skippedDirPrefix := range skippedDirPrefixes {
+			if strings.HasPrefix(zipFile.Name, skippedDirPrefix) {
+				continue FILE
+			}
 		}
 		switch fileInfo := zipFile.FileInfo(); fileInfo.Mode() & fs.ModeType {
 		case 0:
@@ -191,6 +207,8 @@ func walkArchiveZip(r io.ReaderAt, size int64, f WalkArchiveFunc) error {
 		}
 		zipFileReader.Close()
 		switch {
+		case errors.Is(err, fs.SkipDir):
+			skippedDirPrefixes = append(skippedDirPrefixes, zipFile.Name+"/")
 		case errors.Is(err, Break):
 			return nil
 		case err != nil:
