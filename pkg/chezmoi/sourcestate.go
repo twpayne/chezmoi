@@ -52,12 +52,14 @@ type External struct {
 	Clone      struct {
 		Args []string `json:"args" toml:"args" yaml:"args"`
 	} `json:"clone" toml:"clone" yaml:"clone"`
-	Filter struct {
+	Exclude []string `json:"exclude" toml:"exclude" yaml:"exclude"`
+	Filter  struct {
 		Command string   `json:"command" toml:"command" yaml:"command"`
 		Args    []string `json:"args" toml:"args" yaml:"args"`
 	} `json:"filter" toml:"filter" yaml:"filter"`
-	Format ArchiveFormat `json:"format" toml:"format" yaml:"format"`
-	Pull   struct {
+	Format  ArchiveFormat `json:"format" toml:"format" yaml:"format"`
+	Include []string      `json:"include" toml:"include" yaml:"include"`
+	Pull    struct {
 		Args []string `json:"args" toml:"args" yaml:"args"`
 	} `json:"pull" toml:"pull" yaml:"pull"`
 	RefreshPeriod   time.Duration `json:"refreshPeriod" toml:"refreshPeriod" yaml:"refreshPeriod"`
@@ -1847,8 +1849,30 @@ func (s *SourceState) readExternalArchive(
 		format = GuessArchiveFormat(urlPath, data)
 	}
 
+	patternSet := newPatternSet()
+	for _, includePattern := range external.Include {
+		if err := patternSet.add(includePattern, patternSetInclude); err != nil {
+			return nil, err
+		}
+	}
+	for _, excludePattern := range external.Exclude {
+		if err := patternSet.add(excludePattern, patternSetExclude); err != nil {
+			return nil, err
+		}
+	}
+
 	sourceRelPaths := make(map[RelPath]SourceRelPath)
 	if err := WalkArchive(data, format, func(name string, fileInfo fs.FileInfo, r io.Reader, linkname string) error {
+		// Perform matching against the name before stripping any components,
+		// otherwise it is not possible to differentiate between
+		// identically-named files at the same level.
+		if patternSet.match(name) == patternSetMatchExclude {
+			if fileInfo.IsDir() {
+				return fs.SkipDir
+			}
+			return nil
+		}
+
 		if external.StripComponents > 0 {
 			components := strings.Split(name, "/")
 			if len(components) <= external.StripComponents {
