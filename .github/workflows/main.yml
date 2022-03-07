@@ -280,7 +280,7 @@ jobs:
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       uses: actions/upload-artifact@v2
       with:
-        name: chezmoi-linux-musl-amd64
+        name: chezmoi-linux-amd64-musl
         path: dist/chezmoi-cgo-musl_linux_amd64/chezmoi
     - name: upload-artifact-chezmoi-solaris-amd64
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
