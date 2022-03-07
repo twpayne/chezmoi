@@ -264,12 +264,6 @@ jobs:
       with:
         name: chezmoi-darwin-arm64
         path: dist/chezmoi-nocgo_darwin_arm64/chezmoi
-    - name: upload-artifact-chezmoi-illumos-amd64
-      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@v2
-      with:
-        name: chezmoi-illumos-amd64
-        path: dist/chezmoi-nocgo_illumos_amd64/chezmoi
     - name: upload-artifact-chezmoi-linux-amd64
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       uses: actions/upload-artifact@v2
@@ -282,12 +276,6 @@ jobs:
       with:
         name: chezmoi-linux-amd64-musl
         path: dist/chezmoi-cgo-musl_linux_amd64/chezmoi
-    - name: upload-artifact-chezmoi-solaris-amd64
-      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@v2
-      with:
-        name: chezmoi-solaris-amd64
-        path: dist/chezmoi-nocgo_solaris_amd64/chezmoi
     - name: upload-artifact-chezmoi-windows-amd64.exe
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       uses: actions/upload-artifact@v2
