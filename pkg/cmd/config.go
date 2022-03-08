@@ -66,10 +66,10 @@ type templateConfig struct {
 	Options []string `mapstructure:"options"`
 }
 
-// A Config represents a configuration.
-type Config struct {
-	// Global configuration, settable in the config file.
-	CacheDirAbsPath    chezmoi.AbsPath                 `mapstructure:"cacheDir"`
+// ConfigFile contains all data settable in the config file.
+type ConfigFile struct {
+	// Global configuration.
+	CacheDirAbsPath    chezmoi.AbsPath                 `json:"cacheDir" mapstructure:"cacheDir"`
 	Color              autoBool                        `mapstructure:"color"`
 	Data               map[string]interface{}          `mapstructure:"data"`
 	DestDirAbsPath     chezmoi.AbsPath                 `mapstructure:"destDir"`
@@ -87,7 +87,38 @@ type Config struct {
 	Verbose            bool                            `mapstructure:"verbose"`
 	WorkingTreeAbsPath chezmoi.AbsPath                 `mapstructure:"workingTree"`
 
-	// Global configuration, not settable in the config file.
+	// Password manager configurations.
+	Bitwarden   bitwardenConfig   `mapstructure:"bitwarden"`
+	Gopass      gopassConfig      `mapstructure:"gopass"`
+	Keepassxc   keepassxcConfig   `mapstructure:"keepassxc"`
+	Lastpass    lastpassConfig    `mapstructure:"lastpass"`
+	Onepassword onepasswordConfig `mapstructure:"onepassword"`
+	Pass        passConfig        `mapstructure:"pass"`
+	Secret      secretConfig      `mapstructure:"secret"`
+	Vault       vaultConfig       `mapstructure:"vault"`
+
+	// Encryption configurations.
+	Encryption string                `json:"encryption" mapstructure:"encryption"`
+	Age        chezmoi.AgeEncryption `json:"age" mapstructure:"age"`
+	GPG        chezmoi.GPGEncryption `json:"gpg" mapstructure:"gpg"`
+
+	// Command configurations.
+	Add        addCmdConfig        `mapstructure:"add"`
+	CD         cdCmdConfig         `mapstructure:"cd"`
+	Completion completionCmdConfig `mapstructure:"completion"`
+	Diff       diffCmdConfig       `mapstructure:"diff"`
+	Edit       editCmdConfig       `mapstructure:"edit"`
+	Git        gitCmdConfig        `mapstructure:"git"`
+	Merge      mergeCmdConfig      `mapstructure:"merge"`
+	Status     statusCmdConfig     `mapstructure:"status"`
+	Verify     verifyCmdConfig     `mapstructure:"verify"`
+}
+
+// A Config represents a configuration.
+type Config struct {
+	ConfigFile
+
+	// Global configuration.
 	configFormat     readDataFormat
 	cpuProfile       chezmoi.AbsPath
 	debug            bool
@@ -103,35 +134,9 @@ type Config struct {
 	sourcePath       bool
 	templateFuncs    template.FuncMap
 
-	// Password manager configurations, settable in the config file.
-	Bitwarden   bitwardenConfig   `mapstructure:"bitwarden"`
-	Gopass      gopassConfig      `mapstructure:"gopass"`
-	Keepassxc   keepassxcConfig   `mapstructure:"keepassxc"`
-	Lastpass    lastpassConfig    `mapstructure:"lastpass"`
-	Onepassword onepasswordConfig `mapstructure:"onepassword"`
-	Pass        passConfig        `mapstructure:"pass"`
-	Secret      secretConfig      `mapstructure:"secret"`
-	Vault       vaultConfig       `mapstructure:"vault"`
-
-	// Encryption configurations, settable in the config file.
-	Encryption string                `mapstructure:"encryption"`
-	Age        chezmoi.AgeEncryption `mapstructure:"age"`
-	GPG        chezmoi.GPGEncryption `mapstructure:"gpg"`
-
 	// Password manager data.
 	gitHub  gitHubData
 	keyring keyringData
-
-	// Command configurations, settable in the config file.
-	Add        addCmdConfig        `mapstructure:"add"`
-	CD         cdCmdConfig         `mapstructure:"cd"`
-	Completion completionCmdConfig `mapstructure:"completion"`
-	Diff       diffCmdConfig       `mapstructure:"diff"`
-	Edit       editCmdConfig       `mapstructure:"edit"`
-	Git        gitCmdConfig        `mapstructure:"git"`
-	Merge      mergeCmdConfig      `mapstructure:"merge"`
-	Status     statusCmdConfig     `mapstructure:"status"`
-	Verify     verifyCmdConfig     `mapstructure:"verify"`
 
 	// Command configurations, not settable in the config file.
 	apply           applyCmdConfig
@@ -238,8 +243,8 @@ func newConfig(options ...configOption) (*Config, error) {
 
 	cacheDirAbsPath := chezmoi.NewAbsPath(bds.CacheHome).Join(chezmoiRelPath)
 
-	c := &Config{
-		// Global configuration, settable in the config file.
+	configFile := ConfigFile{
+		// Global configuration.
 		CacheDirAbsPath: cacheDirAbsPath,
 		Color: autoBool{
 			auto: true,
@@ -261,11 +266,7 @@ func newConfig(options ...configOption) (*Config, error) {
 			auto: true,
 		},
 
-		// Global configuration, not settable in the config file.
-		homeDir:       userHomeDir,
-		templateFuncs: sprig.TxtFuncMap(),
-
-		// Password manager configurations, settable in the config file.
+		// Password manager configurations.
 		Bitwarden: bitwardenConfig{
 			Command: "bw",
 		},
@@ -289,13 +290,11 @@ func newConfig(options ...configOption) (*Config, error) {
 			Command: "vault",
 		},
 
-		// Encryption configurations, settable in the config file.
+		// Encryption configurations.
 		Age: defaultAgeEncryptionConfig,
 		GPG: defaultGPGEncryptionConfig,
 
-		// Password manager data.
-
-		// Command configurations, settable in the config file.
+		// Command configurations.
 		Add: addCmdConfig{
 			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
@@ -319,6 +318,26 @@ func newConfig(options ...configOption) (*Config, error) {
 		Merge: mergeCmdConfig{
 			Command: "vimdiff",
 		},
+		Status: statusCmdConfig{
+			Exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
+			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
+			recursive: true,
+		},
+		Verify: verifyCmdConfig{
+			Exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
+			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll &^ chezmoi.EntryTypeScripts),
+			recursive: true,
+		},
+	}
+
+	c := &Config{
+		ConfigFile: configFile,
+
+		// Global configuration.
+		homeDir:       userHomeDir,
+		templateFuncs: sprig.TxtFuncMap(),
+
+		// Password manager data.
 
 		// Command configurations, not settable in the config file.
 		apply: applyCmdConfig{
@@ -377,11 +396,6 @@ func newConfig(options ...configOption) (*Config, error) {
 				format: defaultWriteDataFormat,
 			},
 		},
-		Status: statusCmdConfig{
-			Exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
-			recursive: true,
-		},
 		update: updateCmdConfig{
 			apply:     true,
 			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
@@ -391,11 +405,6 @@ func newConfig(options ...configOption) (*Config, error) {
 		upgrade: upgradeCmdConfig{
 			owner: gitHubOwner,
 			repo:  gitHubRepo,
-		},
-		Verify: verifyCmdConfig{
-			Exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll &^ chezmoi.EntryTypeScripts),
-			recursive: true,
 		},
 
 		// Configuration.
@@ -707,7 +716,7 @@ func (c *Config) createAndReloadConfigFile() error {
 		if err := viper.ReadConfig(bytes.NewBuffer(configFileContents)); err != nil {
 			return err
 		}
-		if err := viper.Unmarshal(c, viperDecodeConfigOptions...); err != nil {
+		if err := viper.Unmarshal(&c.ConfigFile, viperDecodeConfigOptions...); err != nil {
 			return err
 		}
 		if err := c.setEncryption(); err != nil {
@@ -1768,7 +1777,7 @@ func (c *Config) readConfig() error {
 	case err != nil:
 		return err
 	}
-	if err := viper.Unmarshal(c, viperDecodeConfigOptions...); err != nil {
+	if err := viper.Unmarshal(&c.ConfigFile, viperDecodeConfigOptions...); err != nil {
 		return err
 	}
 	return c.validateData()

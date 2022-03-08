@@ -25,14 +25,16 @@ func TestOnepasswordTemplateFuncV1(t *testing.T) {
 	for i, tc := range onepasswordTestCases(t) {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			c := &Config{
+				ConfigFile: ConfigFile{
+					Onepassword: onepasswordConfig{
+						Command:     "op",
+						Prompt:      tc.Prompt,
+						environFunc: tc.EnvironFunc,
+					},
+				},
 				baseSystem: &testSystem{
 					System:     chezmoi.NullSystem{},
 					outputFunc: onepasswordV1OutputFunc,
-				},
-				Onepassword: onepasswordConfig{
-					Command:     "op",
-					Prompt:      tc.Prompt,
-					environFunc: tc.EnvironFunc,
 				},
 			}
 
@@ -64,14 +66,16 @@ func TestOnepasswordTemplateFuncV2(t *testing.T) {
 	for i, tc := range onepasswordTestCases(t) {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			c := &Config{
+				ConfigFile: ConfigFile{
+					Onepassword: onepasswordConfig{
+						Command:     "op",
+						Prompt:      tc.Prompt,
+						environFunc: tc.EnvironFunc,
+					},
+				},
 				baseSystem: &testSystem{
 					System:     chezmoi.NullSystem{},
 					outputFunc: onepasswordV2OutputFunc,
-				},
-				Onepassword: onepasswordConfig{
-					Command:     "op",
-					Prompt:      tc.Prompt,
-					environFunc: tc.EnvironFunc,
 				},
 			}
 
