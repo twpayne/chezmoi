@@ -27,8 +27,9 @@ $ git push --tags
 ```
 
 This triggers a [GitHub Action](https://github.com/twpayne/chezmoi/actions)
-that builds and publishes archives, packages, and snaps, and creates a new
-[GitHub Release](https://github.com/twpayne/chezmoi/releases).
+that builds and publishes archives, packages, and snaps, creates a new [GitHub
+Release](https://github.com/twpayne/chezmoi/releases), and deploys the
+[website](https://chezmoi.io).
 
 !!! note
 
