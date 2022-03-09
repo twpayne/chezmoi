@@ -5,6 +5,8 @@ from mkdocs import utils
 from mkdocs.structure.files import File
 
 non_website_paths = [
+    "docs.go",
+    "docs_test.go",
     "hooks.py",
     "reference/commands/commands.go",
     "reference/commands/commands_test.go",
