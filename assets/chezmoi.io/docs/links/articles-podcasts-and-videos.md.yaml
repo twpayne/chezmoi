@@ -1,7 +1,6 @@
 articles:
 - date: '2019-01-10'
   version: '0.0.11'
-  format: 'Text'
   title: 'Linux Fu: The kitchen sync'
   url: 'https://hackaday.com/2019/01/10/linux-fu-the-kitchen-sync/'
 - date: '2019-11-20'
@@ -266,3 +265,8 @@ articles:
   version: '2.13.0'
   title: 'Local Environment-as-Code: Is It Possible Yet?'
   url: 'https://thenewstack.io/local-environment-as-code-is-it-possible-yet/'
+- date: '2022-03-11'
+  version: '2.14.0'
+  format: Audio
+  title: 'The Real Python Podcast: Episode 101: Tools for Setting Up Python on a New Machine'
+  url: 'https://realpython.com/podcasts/rpp/101/#t=3368'
