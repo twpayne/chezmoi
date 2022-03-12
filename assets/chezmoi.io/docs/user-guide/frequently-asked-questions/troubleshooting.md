@@ -42,19 +42,56 @@ control characters. Alternatively, you can use the `--color=false` option to
 chezmoi to disable colors or the `--no-pager` option to chezmoi to disable the
 pager.
 
-## Why do I get a blank buffer when running `chezmoi edit`?
+## Why do I get a blank buffer or empty file when running `chezmoi edit`?
 
-What's happening here is that your editor is forking, detaching, and terminating
-the original process, which chezmoi cannot distinguish from the editor
-terminating normally.
+In this case, `chezmoi edit` typically prints a warning like:
 
-You have two options:
-1. Configure your editor command to remain in the foreground. For `vim`, this
-   means passing the `-f` flag, e.g. by setting the `edit.flags` configuration
-   variable to `["-f"]`, or by setting the `EDITOR` environment variable to
-   include the `-f` flag, e.g. `export EDITOR="mvim -f"`. For VSCode, pass the
-   `--wait` flag.
-2. Set the `edit.hardlink` configuration variable to `false`.
+```
+chezmoi: warning: $EDITOR $TMPDIR/$FILENAME: returned in less than 1s
+```
+
+`chezmoi edit` performs a bit of magic to improve the experience of editing
+files in the source state by invoking your editor with filenames in a temporary
+directory that look like filenames in your home directory. What's happening
+here is that your editor command is exiting immediately, so chezmoi thinks
+you've finished editing and so removes the temporary directory, but actually
+your editor command has forked a edit process in the background, and that edit
+process opens a now non-existent file.
+
+To fix this you have to configure your editor command to remain in the
+foreground until you have finished editing the file, so chezmoi knows when to
+remove the temporary directory.
+
+=== "VIM"
+
+    Pass the `-f` flag, e.g. by setting the `edit.flags` configuration variable
+    to `["-f"]`, or by setting the `EDITOR` environment variable to include the
+    `-f` flag, e.g. `export EDITOR="vim -f"`.
+
+=== "VSCode"
+
+    Pass the `--wait` flag, e.g. by setting the `edit.flags` configuration
+    variable to `["--wait"]` or by setting the `EDITOR` environment variable to
+    include the `--wait` flag, e.g. `export EDITOR="code --wait"`.
+
+The "bit of magic" that `chezmoi edit` performs includes:
+
+* `chezmoi edit` makes the filename opened by your editor more closely match
+  the target filename, which can help your editor choose the correct syntax
+  highlighting. For example, if you run `chezmoi edit ~/.zshrc`, your editor is
+  be opened with `$TMPDIR/.zshrc` but you'll actually be editing
+  `~/.local/share/chezmoi/dot_zshrc` . Under the hood, chezmoi creates a
+  hardlink in a temporary directory to the file in your source directory, so
+  even though your editor thinks it's editing `.zshrc`, it is really editing
+  `dot_zshrc` in your source directory.
+
+* If the source file is encrypted then `chezmoi edit` transparently decrypts
+  and re-encrypts the file for you. Specifically, chezmoi decrypts the file
+  into a private temporary directory and open your editor with the decrypted
+  file, and re-encrypts the file when you exit your editor.
+
+* If the source file is a template, then `chezmoi edit` preserves the `.tmpl`
+  extension.
 
 ## chezmoi makes `~/.ssh/config` group writeable. How do I stop this?
 
