@@ -38,6 +38,7 @@ The following configuration variables are available:
 |                | `command`             | string   | *none*                   | External diff command                                  |
 |                | `exclude`             | []string | *none*                   | Entry types to exclude from diffs                      |
 |                | `pager`               | string   | *none*                   | Diff-specific pager                                    |
+|                | `reverse`             | bool     | `false`                  | Reverse order of arguments to diff                     |
 | `edit`         | `args`                | []string | *none*                   | Extra args to edit command                             |
 |                | `command`             | string   | `$EDITOR` / `$VISUAL`    | Edit command                                           |
 |                | `hardlink`            | bool     | `true`                   | Invoke editor with a hardlink to the source file       |
