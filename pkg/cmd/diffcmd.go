@@ -47,6 +47,36 @@ func (c *Config) newDiffCmd() *cobra.Command {
 	return diffCmd
 }
 
+// overrideReverseFromArgs overrides reverse arg in config.
+func (c *Config) overrideReverseFromArgs() bool {
+	// if the reverse is already true - forward as is
+	if c.Diff.reverse {
+		return true
+	}
+
+	for _, arg := range c.Diff.Args {
+		// skip non-template args
+		if !(strings.HasPrefix(arg, "{{") && strings.HasSuffix(arg, "}}")) {
+			continue
+		}
+
+		// '{{ .Arg }}' -> '.Arg'
+		r := strings.NewReplacer("{{", "", "}}", "")
+		arg = strings.TrimSpace(r.Replace(arg))
+
+		if arg == ".Target" {
+			// if '{{ .Target }}' first - we have the reverse order
+			return true
+		} else if arg == ".Destination" {
+			// if '{{ .Destination }}' first - order as-is
+			return false
+		}
+	}
+
+	// '{{ .Target}}' or '{{ .Destination }}' is not found
+	return false
+}
+
 func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) (err error) {
 	builder := strings.Builder{}
 	dryRunSystem := chezmoi.NewDryRunSystem(c.destSystem)
@@ -55,7 +85,7 @@ func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) (err error) {
 		gitDiffSystem := chezmoi.NewGitDiffSystem(dryRunSystem, &builder, c.DestDirAbsPath, &chezmoi.GitDiffSystemOptions{
 			Color:   color,
 			Include: c.Diff.include.Sub(c.Diff.Exclude),
-			Reverse: c.Diff.reverse,
+			Reverse: c.overrideReverseFromArgs(),
 		})
 		if err = c.applyArgs(cmd.Context(), gitDiffSystem, c.DestDirAbsPath, args, applyArgsOptions{
 			include:   c.Diff.include.Sub(c.Diff.Exclude),
