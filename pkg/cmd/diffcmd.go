@@ -14,10 +14,10 @@ type diffCmdConfig struct {
 	Args           []string              `mapstructure:"args"`
 	Exclude        *chezmoi.EntryTypeSet `mapstructure:"exclude"`
 	Pager          string                `mapstructure:"pager"`
+	Reverse        bool                  `mapstructure:"reverse"`
 	include        *chezmoi.EntryTypeSet
 	init           bool
 	recursive      bool
-	reverse        bool
 	useBuiltinDiff bool
 }
 
@@ -40,7 +40,7 @@ func (c *Config) newDiffCmd() *cobra.Command {
 	flags.VarP(c.Diff.include, "include", "i", "Include entry types")
 	flags.BoolVar(&c.Diff.init, "init", c.update.init, "Recreate config file from template")
 	flags.BoolVarP(&c.Diff.recursive, "recursive", "r", c.Diff.recursive, "Recurse into subdirectories")
-	flags.BoolVar(&c.Diff.reverse, "reverse", c.Diff.reverse, "Reverse the direction of the diff")
+	flags.BoolVar(&c.Diff.Reverse, "reverse", c.Diff.Reverse, "Reverse the direction of the diff")
 	flags.StringVar(&c.Diff.Pager, "pager", c.Diff.Pager, "Set pager")
 	flags.BoolVarP(&c.Diff.useBuiltinDiff, "use-builtin-diff", "", c.Diff.useBuiltinDiff, "Use the builtin diff")
 
@@ -55,7 +55,7 @@ func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) (err error) {
 		gitDiffSystem := chezmoi.NewGitDiffSystem(dryRunSystem, &builder, c.DestDirAbsPath, &chezmoi.GitDiffSystemOptions{
 			Color:   color,
 			Include: c.Diff.include.Sub(c.Diff.Exclude),
-			Reverse: c.Diff.reverse,
+			Reverse: c.Diff.Reverse,
 		})
 		if err = c.applyArgs(cmd.Context(), gitDiffSystem, c.DestDirAbsPath, args, applyArgsOptions{
 			include:   c.Diff.include.Sub(c.Diff.Exclude),
@@ -70,7 +70,7 @@ func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) (err error) {
 	}
 	diffSystem := chezmoi.NewExternalDiffSystem(
 		dryRunSystem, c.Diff.Command, c.Diff.Args, c.DestDirAbsPath, &chezmoi.ExternalDiffSystemOptions{
-			Reverse: c.Diff.reverse,
+			Reverse: c.Diff.Reverse,
 		},
 	)
 	defer func() {
