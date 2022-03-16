@@ -34,27 +34,27 @@ require (
 	github.com/rs/zerolog v1.26.1
 	github.com/sergi/go-diff v1.1.0
 	github.com/shopspring/decimal v1.3.1 // indirect
-	github.com/spf13/afero v1.8.1
-	github.com/spf13/cobra v1.3.0
+	github.com/spf13/afero v1.8.2
+	github.com/spf13/cobra v1.4.0
 	github.com/spf13/viper v1.10.1
 	github.com/stretchr/objx v0.3.0 // indirect
-	github.com/stretchr/testify v1.7.0
+	github.com/stretchr/testify v1.7.1
 	github.com/twpayne/go-pinentry v0.2.0
 	github.com/twpayne/go-shell v0.3.1
 	github.com/twpayne/go-vfs/v4 v4.1.0
 	github.com/twpayne/go-xdg/v6 v6.0.0
 	github.com/ulikunitz/xz v0.5.10
 	github.com/xanzy/ssh-agent v0.3.1 // indirect
-	github.com/yuin/goldmark v1.4.8 // indirect
+	github.com/yuin/goldmark v1.4.10 // indirect
 	github.com/zalando/go-keyring v0.2.0
 	go.etcd.io/bbolt v1.3.6
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.8.0
-	golang.org/x/crypto v0.0.0-20220214200702-86341886e292 // indirect
+	golang.org/x/crypto v0.0.0-20220315160706-3147a52a75dd // indirect
 	golang.org/x/net v0.0.0-20220225172249-27dd8689420f // indirect
-	golang.org/x/oauth2 v0.0.0-20220223155221-ee480838109b
+	golang.org/x/oauth2 v0.0.0-20220309155454-6242fa91716a
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
-	golang.org/x/sys v0.0.0-20220227234510-4e6760a101f9
+	golang.org/x/sys v0.0.0-20220315194320-039c03cc5b86
 	golang.org/x/term v0.0.0-20210927222741-03fcf44c2211
 	gopkg.in/ini.v1 v1.66.4 // indirect
 	gopkg.in/yaml.v2 v2.4.0
