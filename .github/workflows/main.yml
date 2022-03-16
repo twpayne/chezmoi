@@ -10,7 +10,7 @@ on:
     - v*
 env:
   AGE_VERSION: 1.0.0
-  GO_VERSION: 1.17.8
+  GO_VERSION: 1.18
   GOFUMPT_VERSION: 0.3.0
   GOLANGCI_LINT_VERSION: 1.44.2
 jobs:
@@ -324,31 +324,27 @@ jobs:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
       run: |
         go test ./...
-  test-ubuntu-go1-18:
+  test-ubuntu-go1-17:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/setup-go@v2
       with:
-        go-version: 1.x
-    - name: install-go-1.18rc1
-      run: |
-        go install golang.org/dl/go1.18rc1@latest
-        go1.18rc1 download
+        go-version: 1.17.x
     - uses: actions/checkout@v2
     - uses: actions/cache@v2
       with:
         path: ~/go/pkg/mod
-        key: ${{ runner.os }}-ubuntu-go-1-18-${{ hashFiles('**/go.sum') }}
+        key: ${{ runner.os }}-ubuntu-go-1-17-${{ hashFiles('**/go.sum') }}
         restore-keys: |
-          ${{ runner.os }}-ubuntu-go-1-18-
+          ${{ runner.os }}-ubuntu-go-1-17-
     - name: build
       run: |
-        go1.18rc1 build ./...
+        go build ./...
     - name: run
       run: |
-        go1.18rc1 run . --version
+        go run . --version
     - name: install-age
       run: |
         cd $(mktemp -d)
@@ -359,7 +355,7 @@ jobs:
       env:
         CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
       run: |
-        go1.18rc1 test ./...
+        go test ./...
   test-windows:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
@@ -437,7 +433,7 @@ jobs:
     steps:
     - uses: actions/setup-go@v2
       with:
-        go-version: ${{ env.GO_VERSION }}
+        go-version: 1.17.8 # FIXME use ${{ env.GO_VERSION }} when golangci-lint for Go 1.18 is released
     - uses: actions/checkout@v2
     - uses: golangci/golangci-lint-action@v3.1.0
       with:
@@ -459,6 +455,7 @@ jobs:
     - test-openindiana
     - test-ubuntu
     - test-ubuntu-go1-16
+    - test-ubuntu-go1-17
     - test-voidlinux
     - test-windows
     runs-on: ubuntu-18.04
