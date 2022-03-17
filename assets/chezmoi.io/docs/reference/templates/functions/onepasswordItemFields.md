@@ -67,12 +67,7 @@ in the environment, by default you will be interactively prompted to sign in.
 
 !!! info
 
-    If you're using [1Password CLI 2.0](https://developer.1password.com/), then
-    the structure of the data returned by the `onepasswordDetailsFields`
-    template function will be different and you will need to update your
-    templates.
-
-    !!! warning
-
-    The structure of the data returned will not be finalized until 1Password
-    CLI 2.0 is released.
+    If you're using [1Password CLI
+    2.0](https://developer.1password.com/docs/cli/), then the structure of the
+    data returned by the `onepasswordDetailsFields` template function will be
+    different and you will need to update your templates.

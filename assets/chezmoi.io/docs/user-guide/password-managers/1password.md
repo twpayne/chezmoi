@@ -72,12 +72,8 @@ your configuration file:
 
 !!! info
 
-    If you're using [1Password CLI 2.0](https://developer.1password.com/), then
-    the structure of the data returned by the `onepassword`,
-    `onepasswordDetailsFields`, and `onePasswordItemFiles` template functions
-    will be different and you will need to update your templates.
-
-    !!! warning
-
-    The structure of the data returned will not be finalized until 1Password
-    CLI 2.0 is released.
+    If you're using [1Password CLI
+    2.0](https://developer.1password.com/docs/cli/), then the structure of the
+    data returned by the `onepassword`, `onepasswordDetailsFields`, and
+    `onePasswordItemFiles` template functions will be different and you will
+    need to update your templates.
