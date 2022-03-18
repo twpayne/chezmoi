@@ -101,7 +101,7 @@ the following script as `run_once_dconf-load.sh.tmpl`:
 #!/bin/bash
 
 # dconf.ini hash: {{ include "dconf.ini" | sha256sum }}
-dconf load / {{ joinPath .chezmoi.sourceDir "dconf.ini" | quote }}
+dconf load / < {{ joinPath .chezmoi.sourceDir "dconf.ini" | quote }}
 ```
 
 As the SHA256 sum of `dconf.ini` is included in a comment in the script, the
