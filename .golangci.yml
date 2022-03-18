@@ -98,6 +98,8 @@ linters-settings:
     - prefix(github.com/twpayne/chezmoi)
   gofumpt:
     extra-rules: true
+    lang-version: "1.16"
+    module-path: github.com/twpayne/chezmoi
   goimports:
     local-prefixes: github.com/twpayne/chezmoi
   ireturn:
