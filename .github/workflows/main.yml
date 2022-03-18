@@ -12,7 +12,7 @@ env:
   AGE_VERSION: 1.0.0
   GO_VERSION: 1.18
   GOFUMPT_VERSION: 0.3.0
-  GOLANGCI_LINT_VERSION: 1.44.2
+  GOLANGCI_LINT_VERSION: 1.45.0
 jobs:
   build-website:
     runs-on: ubuntu-latest
@@ -433,7 +433,7 @@ jobs:
     steps:
     - uses: actions/setup-go@v2
       with:
-        go-version: 1.17.8 # FIXME use ${{ env.GO_VERSION }} when golangci-lint for Go 1.18 is released
+        go-version: ${{ env.GO_VERSION }}
     - uses: actions/checkout@v2
     - uses: golangci/golangci-lint-action@v3.1.0
       with:
