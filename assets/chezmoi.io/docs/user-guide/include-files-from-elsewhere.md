@@ -5,9 +5,8 @@
 To include a subdirectory from another repository, e.g. [Oh My
 Zsh](https://github.com/ohmyzsh/ohmyzsh), you cannot use git submodules because
 chezmoi uses its own format for the source state and Oh My Zsh is not
-distributed in this format. Instead, you can use the
-`.chezmoiexternal.<format>` to tell chezmoi to import dotfiles from an external
-source.
+distributed in this format. Instead, you can use the `.chezmoiexternal.$FORMAT`
+to tell chezmoi to import dotfiles from an external source.
 
 For example, to import Oh My Zsh, the [zsh-syntax-highlighting
 plugin](https://github.com/zsh-users/zsh-syntax-highlighting), and
@@ -107,8 +106,8 @@ zero, which disables refreshes. You can force a refresh (i.e. force a `git
 pull`) by passing the `--refresh-externals`/`-R` flag to `chezmoi apply`.
 
 You can customize the arguments to `git clone` and `git pull` by setting the
-`<dir>.clone.args` and `<dir>.pull.args` variables in
-`.chezmoiexternal.<format>`, for example:
+`$DIR.clone.args` and `$DIR.pull.args` variables in `.chezmoiexternal.$FORMAT`,
+for example:
 
 ```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
 [".vim/pack/alker0/chezmoi.vim"]
@@ -133,9 +132,8 @@ You can customize the arguments to `git clone` and `git pull` by setting the
 
 ## Extract a single file from an archive
 
-You can extract a single file from an archive using the
-`<entry>.filter.command` and `<entry>.filter.args` variables in
-`.chezmoiexternal.<format>`, for example:
+You can extract a single file from an archive using the `$ENTRY.filter.command`
+and `$ENTRY.filter.args` variables in `.chezmoiexternal.$FORMAT`, for example:
 
 ```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
 {{ ageVersion := "1.0.0" -}}

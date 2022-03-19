@@ -7,7 +7,7 @@ FreeBSD), and Windows Credentials Manager (on Windows) via the
 Set values with:
 
 ```console
-$ chezmoi secret keyring set --service=<service> --user=<user>
+$ chezmoi secret keyring set --service=$SERVICE --user=$USER
 Value: xxxxxxxx
 ```
 
@@ -17,7 +17,7 @@ takes the service and user as arguments.
 For example, save a GitHub access token in keyring with:
 
 ```console
-$ chezmoi secret keyring set --service=github --user=<github-username>
+$ chezmoi secret keyring set --service=github --user=$GITHUB_USERNAME
 Value: xxxxxxxx
 ```
 
@@ -32,5 +32,5 @@ and then include it in your `~/.gitconfig` file with:
 You can query the keyring from the command line:
 
 ```console
-$ chezmoi secret keyring get --service=github --user=<github-username>
+$ chezmoi secret keyring get --service=github --user=$GITHUB_USERNAME
 ```

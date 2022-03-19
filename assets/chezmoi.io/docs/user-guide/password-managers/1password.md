@@ -7,18 +7,18 @@ expose data as a template function.
 Log in and get a session using:
 
 ```console
-$ eval $(op signin <subdomain>.1password.com <email>)
+$ eval $(op signin $SUBDOMAIN.1password.com $EMAIL)
 ```
 
-The output of `op get item <uuid>` is available as the `onepassword` template
+The output of `op get item $UUID` is available as the `onepassword` template
 function. chezmoi parses the JSON output and returns it as structured data. For
-example, if the output of `op get item "<uuid>"` is:
+example, if the output of `op get item $UUID` is:
 
 ```json
 {
-    "uuid": "<uuid>",
+    "uuid": "$UUID",
     "details": {
-        "password": "xxx"
+        "password": "$PASSWORD"
     }
 }
 ```
@@ -26,20 +26,20 @@ example, if the output of `op get item "<uuid>"` is:
 Then you can access `details.password` with the syntax:
 
 ```
-{{ (onepassword "<uuid>").details.password }}
+{{ (onepassword "$UUID").details.password }}
 ```
 
 Login details fields can be retrieved with the `onepasswordDetailsFields`
 function, for example:
 
 ```
-{{- (onepasswordDetailsFields "uuid").password.value }}
+{{- (onepasswordDetailsFields "$UUID").password.value }}
 ```
 
 Documents can be retrieved with:
 
 ```
-{{- onepasswordDocument "uuid" -}}
+{{- onepasswordDocument "$UUID" -}}
 ```
 
 !!! note
@@ -68,7 +68,7 @@ your configuration file:
 
     Do not use the prompt on shared machines. A session token verified or
     acquired interactively will be passed to the 1Password CLI through a
-    command-line parameter, which is visible to other users of the same system.
+    command line parameter, which is visible to other users of the same system.
 
 !!! info
 

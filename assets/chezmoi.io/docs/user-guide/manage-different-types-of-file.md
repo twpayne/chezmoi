@@ -139,11 +139,10 @@ in the source state instead.
 
 chezmoi can retrieve your public SSH keys from GitHub, which can be useful for
 populating your `~/.ssh/authorized_keys`. Put the following in your
-`~/.local/share/chezmoi/dot_ssh/authorized_keys.tmpl`, where `username` is your
-GitHub username:
+`~/.local/share/chezmoi/dot_ssh/authorized_keys.tmpl`:
 
 ```
-{{ range gitHubKeys "username" -}}
+{{ range gitHubKeys "$GITHUB_USERNAME" -}}
 {{   .Key }}
 {{ end -}}
 ```

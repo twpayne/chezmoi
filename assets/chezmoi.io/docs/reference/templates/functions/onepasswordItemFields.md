@@ -3,7 +3,7 @@
 `onepasswordItemFields` returns structured data from
 [1Password](https://1password.com/) using the [1Password
 CLI](https://support.1password.com/command-line-getting-started/) (`op`).
-*uuid* is passed to `op get item <uuid>`, the output from `op` is parsed as
+*uuid* is passed to `op get item $UUID`, the output from `op` is parsed as
 JSON, and each element of `details.sections` are iterated over and any `fields`
 are returned as a map indexed by each field's `n`. If there is no valid session
 in the environment, by default you will be interactively prompted to sign in.
@@ -28,7 +28,7 @@ in the environment, by default you will be interactively prompted to sign in.
 
     ```json
     {
-      "uuid": "<uuid>",
+      "uuid": "$UUID",
       "details": {
         "sections": [
           {

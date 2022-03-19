@@ -17,8 +17,8 @@ First, if the source directory is not already contain a repository, then if
 *repo* is given it is checked out into the source directory, otherwise a new
 repository is initialized in the source directory.
 
-Second, if a file called `.chezmoi.<format>.tmpl` exists, where `<format>` is
-one of the supported file formats (e.g. `json`, `toml`, or `yaml`) then a new
+Second, if a file called `.chezmoi.$FORMAT.tmpl` exists, where `$FORMAT` is one
+of the supported file formats (e.g. `json`, `toml`, or `yaml`) then a new
 configuration file is created using that file as a template.
 
 Then, if the `--apply` flag is passed, `chezmoi apply` is run.

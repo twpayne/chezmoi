@@ -29,11 +29,11 @@ with a single command:
 !!! hint
 
     If you already have a dotfiles repo using chezmoi on GitHub at
-    `https://github.com/<github-username>/dotfiles` then you can install
+    `https://github.com/$GITHUB_USERNAME/dotfiles` then you can install
     chezmoi and your dotfiles with the single command:
 
     ```sh
-    sh -c "$(curl -fsLS chezmoi.io/get)" -- init --apply <github-username>
+    sh -c "$(curl -fsLS chezmoi.io/get)" -- init --apply $GITHUB_USERNAME
     ```
 
 ## One-line package install

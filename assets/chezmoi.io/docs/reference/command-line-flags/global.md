@@ -63,7 +63,7 @@ configuration file.
 
 ## `-R`, `--refresh-externals`
 
-Refresh externals cache. See `.chezmoiexternal.<format>`.
+Refresh externals cache. See `.chezmoiexternal.$FORMAT`.
 
 ## `-S`, `--source` *directory*
 

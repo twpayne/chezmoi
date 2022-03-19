@@ -8,9 +8,9 @@
 
 ## Daily commands
 
-* [`chezmoi add <file>`](/reference/commands/add/) adds `<file>`from your home directory to the source directory.
+* [`chezmoi add $FILE`](/reference/commands/add/) adds `$FILE`from your home directory to the source directory.
 
-* [`chezmoi edit <file>`](/reference/commands/edit/) opens your editor with the file in the source directory that corresponds to `<file>`.
+* [`chezmoi edit $FILE`](/reference/commands/edit/) opens your editor with the file in the source directory that corresponds to `$FILE`.
 
 * [`chezmoi status`](/reference/commands/status/) gives a quick summary of what files would change if you ran `chezmoi apply`.
 
@@ -18,7 +18,7 @@
 
 * [`chezmoi apply`](/reference/commands/apply/) updates your dotfiles from the source directory.
 
-* [`chezmoi edit --apply <file>`](/reference/commands/edit/) is like `chezmoi edit <file>` but also runs `chezmoi apply <file>` afterwards.
+* [`chezmoi edit --apply $FILE`](/reference/commands/edit/) is like `chezmoi edit $FILE` but also runs `chezmoi apply $FILE` afterwards.
 
 * [`chezmoi cd`](/reference/commands/cd/) opens a subshell in the source directory.
 
@@ -39,9 +39,9 @@ sequenceDiagram
 
 ## Using chezmoi across multiple machines
 
-* [`chezmoi init <github-username>`](/reference/commands/init/) clones your dotfiles from GitHub into the source directory.
+* [`chezmoi init $GITHUB_USERNAME`](/reference/commands/init/) clones your dotfiles from GitHub into the source directory.
 
-* [`chezmoi init --apply <github-username>`](/reference/commands/init/) clones your dotfiles from GitHub into the source directory and runs `chezmoi apply`.
+* [`chezmoi init --apply $GITHUB_USERNAME`](/reference/commands/init/) clones your dotfiles from GitHub into the source directory and runs `chezmoi apply`.
 
 * [`chezmoi update`](/reference/commands/update/) pulls the latest changes from your remote repo and runs `chezmoi apply`.
 
@@ -64,10 +64,10 @@ sequenceDiagram
 
 * [`chezmoi data`](/reference/commands/data/) prints the available template data.
 
-* [`chezmoi add --template <file>`](/reference/commands/add/) adds `<file>` as a template.
+* [`chezmoi add --template $FILE`](/reference/commands/add/) adds `$FILE` as a template.
 
-* [`chezmoi chattr +template <file>`](/reference/commands/chattr/) makes an existing file a template.
+* [`chezmoi chattr +template $FILE`](/reference/commands/chattr/) makes an existing file a template.
 
-* [`chezmoi cat <file>`](/reference/commands/cat/) prints the target contents of `<file>`, without changing `<file>`.
+* [`chezmoi cat $FILE`](/reference/commands/cat/) prints the target contents of `$FILE`, without changing `$FILE`.
 
 * [`chezmoi execute-template`](/reference/commands/execute-template/) is useful for testing and debugging templates.

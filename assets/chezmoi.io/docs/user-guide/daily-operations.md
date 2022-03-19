@@ -87,12 +87,12 @@ sequenceDiagram
 
 chezmoi's install script can run `chezmoi init` for you by passing extra
 arguments to the newly installed chezmoi binary. If your dotfiles repo is
-`github.com/<github-username>/dotfiles` then installing chezmoi, running
+`github.com/$GITHUB_USERNAME/dotfiles` then installing chezmoi, running
 `chezmoi init`, and running `chezmoi apply` can be done in a single line of
 shell:
 
 ```console
-$ sh -c "$(curl -fsLS chezmoi.io/get)" -- init --apply <github-username>
+$ sh -c "$(curl -fsLS chezmoi.io/get)" -- init --apply $GITHUB_USERNAME
 ```
 
 If your dotfiles repo has a different name to `dotfiles`, or if you host your
@@ -105,5 +105,5 @@ chezmoi, including the source directory and chezmoi's configuration directory,
 with a single command:
 
 ```console
-$ sh -c "$(curl -fsLS chezmoi.io/get)" -- init --one-shot <github-username>
+$ sh -c "$(curl -fsLS chezmoi.io/get)" -- init --one-shot $GITHUB_USERNAME
 ```

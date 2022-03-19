@@ -9,7 +9,7 @@ The vault CLI needs to be correctly configured on your machine, e.g. the
 Verify that this is the case by running:
 
 ```console
-$ vault kv get -format=json <key>
+$ vault kv get -format=json $KEY
 ```
 
 The structured data from `vault kv get -format=json` is available as the
@@ -17,5 +17,5 @@ The structured data from `vault kv get -format=json` is available as the
 `text/template` language to extract the data you want. For example:
 
 ```
-{{ (vault "<key>").data.data.password }}
+{{ (vault "$KEY").data.data.password }}
 ```

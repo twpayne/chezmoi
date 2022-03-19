@@ -1,17 +1,17 @@
-# `.chezmoiexternal.<format>`
+# `.chezmoiexternal.$FORMAT`
 
-If a file called `.chezmoiexternal.<format>` exists in the source state, it is
+If a file called `.chezmoiexternal.$FORMAT` exists in the source state, it is
 interpreted as a list of external files and archives to be included as if they
 were in the source state.
 
-`<format>` must be one of chezmoi's supported configuration file formats, e.g.
+`$FORMAT` must be one of chezmoi's supported configuration file formats, e.g.
 `json`, `toml`, or `yaml`.
 
-`.chezmoiexternal.<format>` is interpreted as a template. This allows different
+`.chezmoiexternal.$FORMAT` is interpreted as a template. This allows different
 externals to be included on different machines.
 
 Entries are indexed by target name relative to the directory of the
-`.chezmoiexternal.<format>` file, and must have a `type` and a `url` field.
+`.chezmoiexternal.$FORMAT` file, and must have a `type` and a `url` field.
 `type` can be either `file`, `archive`, or `git-repo`. If the entry's parent
 directories do not already exist in the source state then chezmoi will create
 them as regular directories.
@@ -74,7 +74,7 @@ determine whether an archive member is included:
 Excluded archive members do not generate source state entries, and, if they are
 directories, all of their children are also excluded.
 
-If `type` is `git-repo` then chezmoi will run `git clone <url> <target-name>`
+If `type` is `git-repo` then chezmoi will run `git clone $URL $TARGET_NAME`
 with the optional `clone.args` if the target does not exist. If the target
 exists, then chezmoi will run `git pull` with the optional `pull.args` to
 update the target.

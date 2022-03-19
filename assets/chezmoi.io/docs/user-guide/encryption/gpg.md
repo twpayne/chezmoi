@@ -18,7 +18,7 @@ encryption = "gpg"
 chezmoi will encrypt files:
 
 ```sh
-gpg --armor --recipient <recipient> --encrypt
+gpg --armor --recipient $RECIPIENT --encrypt
 ```
 
 and store the encrypted file in the source state. The file will automatically
@@ -38,7 +38,7 @@ be decrypted when generating the target state.
     can change the trust level by running:
 
     ```console
-    $ gpg --edit-key <recipient>
+    $ gpg --edit-key $RECIPIENT
     ```
 
     Enter `trust` at the prompt and chose `5 = I trust ultimately`.
