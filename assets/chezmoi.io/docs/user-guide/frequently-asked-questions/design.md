@@ -103,17 +103,21 @@ entries might not be usable with symlinks.
 In symlink mode, running `chezmoi add` does not immediately replace the targets
 with a symlink. You must run `chezmoi apply` to create the symlinks.
 
-## Can I change how chezmoi's source state is represented on disk?
+## Why does chezmoi use weird filenames?
 
-There are a number of criticisms of how chezmoi's source state is represented
-on disk:
+There are a number of criticisms of how chezmoi uses filenames:
 
-1. Not all possible file permissions can be represented.
-2. The long source file names are weird and verbose.
+1. The long source file names are weird and verbose.
+2. Not all possible file permissions can be represented.
 3. Everything is in a single directory, which can end up containing many
    entries.
 
-chezmoi's source state representation is a deliberate, practical compromise.
+chezmoi's decision to store metadata in filenames is a deliberate, practical,
+compromise.
+
+Firstly, almost all programs store metadata in filenames: the filename's
+extension. chezmoi extends this to storing metadata in attributes in the
+filename's prefix as well.
 
 The `dot_` attribute makes it transparent which dotfiles are managed by chezmoi
 and which files are ignored by chezmoi. chezmoi ignores all files and
