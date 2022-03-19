@@ -29,6 +29,7 @@ nav:
   - Comparison table: comparison-table.md
   - Migrating from another dotfile manager: migrating-from-another-dotfile-manager.md
 - User guide:
+  - Command overview: user-guide/command-overview.md
   - Setup: user-guide/setup.md
   - Daily operations: user-guide/daily-operations.md
   - Manage different types of file: user-guide/manage-different-types-of-file.md
