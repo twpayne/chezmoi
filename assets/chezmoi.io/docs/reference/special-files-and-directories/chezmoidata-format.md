@@ -1,6 +1,6 @@
-# `.chezmoidata.<format>`
+# `.chezmoidata.$FORMAT`
 
-If a file called `.chezmoidata.<format>` exists in the source state, it is
+If a file called `.chezmoidata.$FORMAT` exists in the source state, it is
 interpreted as template data.
 
 !!! example

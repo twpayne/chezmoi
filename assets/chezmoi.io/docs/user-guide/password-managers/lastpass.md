@@ -7,16 +7,16 @@ data as a template function.
 Log in to LastPass using:
 
 ```console
-$ lpass login <lastpass-username>
+$ lpass login $LASTPASS_USERNAME
 ```
 
 Check that `lpass` is working correctly by showing password data:
 
 ``` console
-$ lpass show --json <lastpass-entry-id>
+$ lpass show --json $LASTPASS_ENTRY_ID
 ```
 
-where `<lastpass-entry-id>` is a [LastPass Entry
+where `$LASTPASS_ENTRY_ID` is a [LastPass Entry
 Specification](https://lastpass.github.io/lastpass-cli/lpass.1.html#_entry_specification).
 
 The structured data from `lpass show --json id` is available as the `lastpass`

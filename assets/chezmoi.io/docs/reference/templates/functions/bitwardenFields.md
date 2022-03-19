@@ -12,7 +12,7 @@ the same arguments will only invoke `bw get` once.
 !!! example
 
     ```
-    {{ (bitwardenFields "item" "<itemid>").token.value }}
+    {{ (bitwardenFields "item" "$ITEMID").token.value }}
     ```
 
 !!! example

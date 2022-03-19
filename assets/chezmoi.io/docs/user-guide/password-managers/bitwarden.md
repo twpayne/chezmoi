@@ -7,7 +7,7 @@ function.
 Log in to Bitwarden using:
 
 ```console
-$ bw login <bitwarden-email>
+$ bw login $BITWARDEN_EMAIL
 ```
 
 Unlock your Bitwarden vault:

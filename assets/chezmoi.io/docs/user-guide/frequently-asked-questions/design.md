@@ -125,7 +125,7 @@ contents, for example to know when the source file is a template or if the
 file's contents are encrypted. By storing this metadata in the filename, the
 metadata is unambiguously associated with a single file and adding, updating,
 or removing a single file touches only a single file in the source state.
-Changes to the metadata (e.g. `chezmoi chattr +template <target>`) are simple
+Changes to the metadata (e.g. `chezmoi chattr +template $TARGET`) are simple
 file renames and isolated to the affected file.
 
 If chezmoi were to, say, use a common configuration file listing which files
@@ -244,8 +244,8 @@ that is run every time you run `chezmoi apply`, to, for example:
 
 * Copy a file managed by chezmoi inside your home directory to the target file.
 
-* Execute a template with `chezmoi execute-template --output=filename template`
-  where `filename` is outside the target directory.
+* Execute a template with `chezmoi execute-template --output=$FILENAME
+  template` where `$FILENAME` is outside the target directory.
 
 chezmoi executes all scripts as the user executing chezmoi, so you may need to
 add extra privilege elevation commands like `sudo` or `PowerShell start -verb

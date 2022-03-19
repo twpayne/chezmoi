@@ -10,6 +10,6 @@ will only invoke `bw` once.
 !!! example
 
     ```
-    username = {{ bitwarden "item" "<itemid>".login.username }}
-    password = {{ bitwarden "item" "<itemid>".login.password }}
+    username = {{ (bitwarden "item" "$ITEMID").login.username }}
+    password = {{ (bitwarden "item" "$ITEMID").login.password }}
     ```

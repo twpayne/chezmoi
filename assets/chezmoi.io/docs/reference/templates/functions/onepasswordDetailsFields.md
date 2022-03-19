@@ -3,7 +3,7 @@
 `onepasswordDetailsFields` returns structured data from
 [1Password](https://1password.com/) using the [1Password
 CLI](https://support.1password.com/command-line-getting-started/) (`op`).
-*uuid* is passed to `op get item <uuid>`, the output from `op` is parsed as
+*uuid* is passed to `op get item $UUID`, the output from `op` is parsed as
 JSON, and elements of `details.fields` are returned as a map indexed by each
 field's `designation`. If there is no valid session in the environment, by
 default you will be interactively prompted to sign in.
@@ -19,10 +19,10 @@ accounts).
 !!! example
 
     ```
-    {{ (onepasswordDetailsFields "<uuid>").password.value }}
-    {{ (onepasswordDetailsFields "<uuid>" "<vault-uuid>").password.value }}
-    {{ (onepasswordDetailsFields "<uuid>" "<vault-uuid>" "<account-name>").password.value }}
-    {{ (onepasswordDetailsFields "<uuid>" "" "<account-name>").password.value }}
+    {{ (onepasswordDetailsFields "$UUID").password.value }}
+    {{ (onepasswordDetailsFields "$UUID" "$VAULT_UUID").password.value }}
+    {{ (onepasswordDetailsFields "$UUID" "$VAULT_UUID" "$ACCOUNT_NAME").password.value }}
+    {{ (onepasswordDetailsFields "$UUID" "" "$ACCOUNT_NAME").password.value }}
     ```
 
 !!! example
@@ -31,7 +31,7 @@ accounts).
 
     ```json
     {
-        "uuid": "<uuid>",
+        "uuid": "$UUID",
         "details": {
             "fields": [
                 {

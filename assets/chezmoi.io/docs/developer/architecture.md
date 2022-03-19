@@ -163,15 +163,13 @@ integration tests use the
 [`github.com/stretchr/testify`](https://pkg.go.dev/github.com/stretchr/testify)
 framework. End-to-end tests use
 [`github.com/rogpeppe/go-internal/testscript`](https://pkg.go.dev/github.com/rogpeppe/go-internal/testscript)
-with the test scripts themselves in `pkg/cmd/testdata/scripts/*.txt`.
+with the test scripts themselves in `pkg/cmd/testdata/scripts/$TEST_NAME.txt`.
 
 You can run individual end-to-end tests with
 
 ```console
-$ go test ./pkg/cmd -run=TestScript/<name>
+$ go test ./pkg/cmd -run=TestScript/$TEST_NAME
 ```
-
-where `<name>` is the basename of file without the `.txt` extension.
 
 Tests should, if at all possible, run unmodified on all operating systems
 tested in CI (Linux, macOS, Windows, and FreeBSD). Windows will sometimes need

@@ -79,8 +79,8 @@ operations](https://github.blog/2020-12-15-token-authentication-requirements-for
 ## Create a config file on a new machine automatically
 
 `chezmoi init` can also create a config file automatically, if one does not
-already exist. If your repo contains a file called `.chezmoi.<format>.tmpl`
-where *format* is one of the supported config file formats (e.g. `json`,
+already exist. If your repo contains a file called `.chezmoi.$FORMAT.tmpl`
+where `$FORMAT` is one of the supported config file formats (e.g. `json`,
 `toml`, or `yaml`) then `chezmoi init` will execute that template to generate
 your initial config file.
 
