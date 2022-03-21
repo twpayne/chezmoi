@@ -19,5 +19,26 @@ by default you will be interactively prompted to sign in.
     {{- onepasswordDocument "$UUID" -}}
     {{- onepasswordDocument "$UUID" "$VAULT_UUID" -}}
     {{- onepasswordDocument "$UUID" "$VAULT_UUID" "$ACCOUNT_NAME" -}}
+    ```
+
+    If using 1Password 1.0, then *vault-uuid* is optional.
+
+    ```
     {{- onepasswordDocument "$UUID" "" "$ACCOUNT_NAME" -}}
     ```
+
+!!! info
+
+    If you're using [1Password CLI 2.0](https://developer.1password.com/), there
+    are changes to be aware of.
+
+    !!! warning
+
+    Neither *vault-uuid* nor *account-name* may be empty strings if specified.
+    Older versions of 1Password CLI would ignore empty strings for arguments.
+
+    !!! warning
+
+    Unless using biometric authentication, or when using without prompting, it
+    is recommended that instead of *account-name*, the UUID of the account is
+    used. This can be shown with `op account list`.
