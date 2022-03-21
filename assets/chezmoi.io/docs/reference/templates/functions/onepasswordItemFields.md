@@ -67,7 +67,22 @@ in the environment, by default you will be interactively prompted to sign in.
 
 !!! info
 
-    If you're using [1Password CLI
-    2.0](https://developer.1password.com/docs/cli/), then the structure of the
-    data returned by the `onepasswordDetailsFields` template function will be
-    different and you will need to update your templates.
+    If you're using [1Password CLI 2.0](https://developer.1password.com/), there
+    are changes to be aware of.
+
+    !!! warning
+
+    The structure of the data returned by the `onepasswordItemFields` template
+    function will be different and you will need to update your templates. The
+    structure has not yet been finalized.
+
+    !!! warning
+
+    Neither *vault-uuid* nor *account-name* may be empty strings if specified.
+    Older versions of 1Password CLI would ignore empty strings for arguments.
+
+    !!! warning
+
+    Unless using biometric authentication, or when using without prompting, it
+    is recommended that instead of *account-name*, the UUID of the account is
+    used. This can be shown with `op account list`.

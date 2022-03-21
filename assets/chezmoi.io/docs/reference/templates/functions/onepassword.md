@@ -19,11 +19,32 @@ be interactively prompted to sign in.
     {{ (onepassword "$UUID").details.password }}
     {{ (onepassword "$UUID" "$VAULT_UUID").details.password }}
     {{ (onepassword "$UUID" "$VAULT_UUID" "$ACCOUNT_NAME").details.password }}
+    ```
+
+    If using 1Password 1.0, then *vault-uuid* is optional.
+
+    ```
     {{ (onepassword "$UUID" "" "$ACCOUNT_NAME").details.password }}
     ```
 
 !!! info
 
-    If you're using [1Password CLI 2.0](https://developer.1password.com/), then
-    the structure of the data returned by the `onepassword` template function
-    will be different and you will need to update your templates.
+    If you're using [1Password CLI 2.0](https://developer.1password.com/), there
+    are changes to be aware of.
+
+    !!! warning
+
+    The structure of the data returned by the `onepassword` template function
+    will be different and you will need to update your templates. The structure
+    has not yet been finalized.
+
+    !!! warning
+
+    Neither *vault-uuid* nor *account-name* may be empty strings if specified.
+    Older versions of 1Password CLI would ignore empty strings for arguments.
+
+    !!! warning
+
+    Unless using biometric authentication, or when using without prompting, it
+    is recommended that instead of *account-name*, the UUID of the account is
+    used. This can be shown with `op account list`.
