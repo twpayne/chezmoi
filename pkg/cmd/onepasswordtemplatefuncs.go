@@ -398,11 +398,11 @@ func newOnepasswordArgs(baseArgs, userArgs []string) (*onepasswordArgs, error) {
 	}
 	a.item = userArgs[0]
 	a.args = append(a.args, a.item)
-	if len(userArgs) > 1 {
+	if len(userArgs) > 1 && userArgs[1] != "" {
 		a.vault = userArgs[1]
 		a.args = append(a.args, "--vault", a.vault)
 	}
-	if len(userArgs) > 2 {
+	if len(userArgs) > 2 && userArgs[2] != "" {
 		a.account = userArgs[2]
 		a.args = append(a.args, "--account", a.account)
 	}

@@ -2,49 +2,76 @@
 
 `onepassword` returns structured data from [1Password](https://1password.com/)
 using the [1Password
-CLI](https://support.1password.com/command-line-getting-started/) (`op`).
-*uuid* is passed to `op get item $UUID` and the output from `op` is parsed as
-JSON. The output from `op` is cached so calling `onepassword` multiple times
-with the same *uuid* will only invoke `op` once.  If the optional *vault-uuid*
-is supplied, it will be passed along to the `op get` call, which can
-significantly improve performance. If the optional *account-name* is supplied,
-it will be passed along to the `op get` call, which will help it look in the
-right account, in case you have multiple accounts (eg. personal and work
-accounts). If there is no valid session in the environment, by default you will
-be interactively prompted to sign in.
+CLI](https://support.1password.com/command-line-getting-started/) (`op`). *uuid*
+is passed to `op item get $UUID --format json` and the output from `op`. The
+output from `op` is cached so calling `onepassword` multiple times with the same
+*uuid* will only invoke `op` once. If the optional *vault-uuid* is supplied, it
+will be passed along to the `op item get` call, which can significantly improve
+performance. If the optional *account-name* is supplied, it will be passed along
+to the `op item get` call, which will help it look in the right account, in case
+you have multiple accounts (e.g., personal and work accounts).
+
+If there is no valid session in the environment, by default you will be
+interactively prompted to sign in.
 
 !!! example
 
     ```
-    {{ (onepassword "$UUID").details.password }}
-    {{ (onepassword "$UUID" "$VAULT_UUID").details.password }}
-    {{ (onepassword "$UUID" "$VAULT_UUID" "$ACCOUNT_NAME").details.password }}
+    {{ (onepassword "$UUID").fields[1].value }}
+    {{ (onepassword "$UUID" "$VAULT_UUID").fields[1].value }}
+    {{ (onepassword "$UUID" "$VAULT_UUID" "$ACCOUNT_NAME").fields[1].value }}
+    {{ (onepassword "$UUID" "" "$ACCOUNT_NAME").fields[1].value }}
     ```
 
-    If using 1Password 1.0, then *vault-uuid* is optional.
+    A more robust way to get a password field would be something like:
 
     ```
-    {{ (onepassword "$UUID" "" "$ACCOUNT_NAME").details.password }}
+    {{ range (onepassword "$UUID").fields -}}
+    {{- if and (eq .label "password") (eq .purpose "PASSWORD") }}{{ .value }}{{ end -}}
+    {{- end }}
     ```
+
+    ??? info
+
+        For 1Password CLI 1.x.
+
+        ```
+        {{ (onepassword "$UUID").details.password }}
+        {{ (onepassword "$UUID" "$VAULT_UUID").details.password }}
+        {{ (onepassword "$UUID" "$VAULT_UUID" "$ACCOUNT_NAME").details.password }}
+        {{ (onepassword "$UUID" "" "$ACCOUNT_NAME").details.password }}
+        ```
+
+!!! danger
+
+    When using [1Password CLI 2.0](https://developer.1password.com/), note that
+    the structure of the data returned by the `onepassword` template function
+    is different and your templates will need updating.
+
+    You may wish to use `onepasswordDetailsFields` or `onepasswordItemFields`
+    instead of this function, as `onepassword` returns fields as a list of
+    objects. However, this function may return values that are inaccessible from
+    the other functions. Testing the output of this function is recommended:
+
+    ```console
+    chezmoi execute-template "{{- onepassword \"$UUID\" | toJson -}}" | jq .
+    ```
+
+!!! warning
+
+    When using 1Password CLI 2.0, there may be an issue with pre-authenticating
+    `op` because the environment variable used to store the session key has
+    changed from `OP_SESSION_account` to `OP_SESSION_accountUUID`. Instead of
+    using *account-name*, it is recommended that you use the *account-uuid*.
+    This can be found using `op account list`.
+
+    This issue does not exist when using biometric authentication and 1Password
+    8, or if you allow chezmoi to prompt you for 1Password authentication
+    (`1password.prompt = true`).
 
 !!! info
 
-    If you're using [1Password CLI 2.0](https://developer.1password.com/), there
-    are changes to be aware of.
-
-    !!! warning
-
-    The structure of the data returned by the `onepassword` template function
-    will be different and you will need to update your templates. The structure
-    has not yet been finalized.
-
-    !!! warning
-
-    Neither *vault-uuid* nor *account-name* may be empty strings if specified.
-    Older versions of 1Password CLI would ignore empty strings for arguments.
-
-    !!! warning
-
-    Unless using biometric authentication, or when using without prompting, it
-    is recommended that instead of *account-name*, the UUID of the account is
-    used. This can be shown with `op account list`.
+    In earlier versions of chezmoi, if *vault-uuid* or *account-name* were
+    empty strings, they would be added to the resulting `op` command-line
+    (`--vault ''`). This causes errors in 1Password CLI 2.0, so those arguments
+    will no longer be added.
