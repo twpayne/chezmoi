@@ -4,36 +4,140 @@ chezmoi includes support for [1Password](https://1password.com/) using the
 [1Password CLI](https://support.1password.com/command-line-getting-started/) to
 expose data as a template function.
 
+!!! note
+
+    [1Password CLI 2.0](https://developer.1password.com/) has been released.
+    Examples will be shown using the changed details for this version and
+    examples for 1Password CLI 1.x will follow.
+
 Log in and get a session using:
 
 ```console
-$ eval $(op signin $SUBDOMAIN.1password.com $EMAIL)
+# For 1Password 2.x. Neither step is necessary with biometric authentication.
+$ op account add --address $SUBDOMAIN.1password.com --email $EMAIL
+$ eval $(op signin --account $SUBDOMAIN)
 ```
 
-The output of `op get item $UUID` is available as the `onepassword` template
-function. chezmoi parses the JSON output and returns it as structured data. For
-example, if the output of `op get item $UUID` is:
+??? info
+
+    ```console
+    # For 1Password 1.x
+    $ eval $(op signin $SUBDOMAIN.1password.com $EMAIL)
+    ```
+
+The output of `op item get $UUID--format json` (`op get item $UUID`) is
+available as the `onepassword` template function. chezmoi parses the JSON output
+and returns it as structured data. For example, if the output is:
 
 ```json
 {
-    "uuid": "$UUID",
-    "details": {
-        "password": "$PASSWORD"
+  "id": "$UUID",
+  "title": "$TITLE",
+  "version": 2,
+  "vault": {
+    "id": "$vaultUUID"
+  },
+  "category": "LOGIN",
+  "last_edited_by": "$userUUID",
+  "created_at": "2010-08-23T13:18:43Z",
+  "updated_at": "2014-07-20T04:40:11Z",
+  "fields": [
+    {
+      "id": "username",
+      "type": "STRING",
+      "purpose": "USERNAME",
+      "label": "username",
+      "value": "$USERNAME"
+    },
+    {
+      "id": "password",
+      "type": "CONCEALED",
+      "purpose": "PASSWORD",
+      "label": "password",
+      "value": "$PASSWORD",
+      "password_details": {
+        "strength": "FANTASTIC",
+        "history": []
+      }
     }
+  ],
+  "urls": [
+    {
+      "primary": true,
+      "href": "$URL"
+    }
+  ]
 }
 ```
 
-Then you can access `details.password` with the syntax:
+Then you can access the password field with the syntax
 
 ```
-{{ (onepassword "$UUID").details.password }}
+{{ (onepassword "$UUID").fields[1].value }}
 ```
 
-Login details fields can be retrieved with the `onepasswordDetailsFields`
-function, for example:
+or:
+
+```
+{{ range (onepassword "$UUID").fields -}}
+{{- if and (eq .label "password") (eq .purpose "PASSWORD") }}{{ .value }}{{ end -}}
+{{- end }}
+```
+
+??? info
+
+    1Password CLI 1.x returns a simpler structure:
+
+    ```json
+    {
+      "uuid": "$UUID",
+      "details": {
+        "password": "$PASSWORD"
+      }
+    }
+    ```
+
+    This allows for the syntax:
+
+    ```
+    {{ (onepassword "$UUID").details.password }}
+    ```
+
+`onepasswordDetailsFields` returns a reworked version of the structure that
+allows the fields to be queried by key:
+
+```json
+{
+  "password": {
+    "id": "password",
+    "label": "password",
+    "password_details": {
+      "history": [],
+      "strength": "FANTASTIC"
+    },
+    "purpose": "PASSWORD",
+    "type": "CONCEALED",
+    "value": "$PASSWORD"
+  },
+  "username": {
+    "id": "username",
+    "label": "username",
+    "purpose": "USERNAME",
+    "type": "STRING",
+    "value": "$USERNAME"
+  }
+}
+```
 
 ```
 {{- (onepasswordDetailsFields "$UUID").password.value }}
+```
+
+Additional fields may be obtained with `onePasswordItemFields`; not all objects
+in 1Password have item fields, so it is worth testing before using:
+
+```console
+chezmoi execute-template "{{- onepasswordItemFields \"$UUID\" | toJson -}}" | jq .
 ```
 
 Documents can be retrieved with:
@@ -64,16 +168,16 @@ your configuration file:
     prompt = false
 ```
 
-!!! warning
+!!! danger
 
     Do not use the prompt on shared machines. A session token verified or
-    acquired interactively will be passed to the 1Password CLI through a
-    command line parameter, which is visible to other users of the same system.
+    acquired interactively will be passed to the 1Password CLI through a command
+    line parameter, which is visible to other users of the same system.
 
 !!! info
 
     If you're using [1Password CLI
     2.0](https://developer.1password.com/docs/cli/), then the structure of the
     data returned by the `onepassword`, `onepasswordDetailsFields`, and
-    `onePasswordItemFiles` template functions will be different and you will
-    need to update your templates.
+    `onePasswordItemFiles` template functions is different and templates will
+    need to be updated.
