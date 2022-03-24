@@ -6,7 +6,7 @@ expose data as a template function.
 
 !!! note
 
-    The[1Password CLI 2.0](https://developer.1password.com/) has been released.
+    The [1Password CLI 2.0](https://developer.1password.com/) has been released.
     Examples will be shown using the changed details for this version and
     examples for 1Password CLI 1.x will follow.
 
