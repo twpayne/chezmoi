@@ -13,7 +13,7 @@ times with the same *uuid* will only invoke `op` once. If the optional
 *vault-uuid* is supplied, it will be passed along to the `op get` call, which
 can significantly improve performance. If the optional *account-name* is
 supplied, it will be passed along to the `op get` call, which will help it look
-in the right account, in case you have multiple accounts (e.g., personal and
+in the right account, in case you have multiple accounts (e.g. personal and
 work accounts).
 
 !!! example
@@ -81,7 +81,7 @@ work accounts).
     function is recommended:
 
     ```console
-    chezmoi execute-template "{{- onepasswordDetailsFields \"$UUID\" | toJson -}}" | jq .
+    $ chezmoi execute-template "{{ onepasswordDetailsFields \"$UUID\" | toJson }}" | jq .
     ```
 
 !!! warning
@@ -92,13 +92,6 @@ work accounts).
     using *account-name*, it is recommended that you use the *account-uuid*.
     This can be found using `op account list`.
 
-    This issue does not exist when using biometric authentication and 1Password
+    This issue does not occur when using biometric authentication and 1Password
     8, or if you allow chezmoi to prompt you for 1Password authentication
     (`1password.prompt = true`).
-
-!!! info
-
-    In earlier versions of chezmoi, if *vault-uuid* or *account-name* were
-    empty strings, they would be added to the resulting `op` command-line
-    (`--vault ''`). This causes errors in 1Password CLI 2.0, so those arguments
-    will no longer be added.

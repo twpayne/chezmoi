@@ -6,22 +6,24 @@ expose data as a template function.
 
 !!! note
 
-    [1Password CLI 2.0](https://developer.1password.com/) has been released.
+    The[1Password CLI 2.0](https://developer.1password.com/) has been released.
     Examples will be shown using the changed details for this version and
     examples for 1Password CLI 1.x will follow.
 
 Log in and get a session using:
 
 ```console
-# For 1Password 2.x. Neither step is necessary with biometric authentication.
 $ op account add --address $SUBDOMAIN.1password.com --email $EMAIL
 $ eval $(op signin --account $SUBDOMAIN)
 ```
 
-??? info
+This is not necessary if you are using biometric authentication.
+
+!!! info
+
+    For 1Password CLI 1.x, use:
 
     ```console
-    # For 1Password 1.x
     $ eval $(op signin $SUBDOMAIN.1password.com $EMAIL)
     ```
 
@@ -80,11 +82,13 @@ or:
 
 ```
 {{ range (onepassword "$UUID").fields -}}
-{{- if and (eq .label "password") (eq .purpose "PASSWORD") }}{{ .value }}{{ end -}}
-{{- end }}
+{{   if and (eq .label "password") (eq .purpose "PASSWORD") -}}
+{{     .value -}}
+{{   end -}}
+{{ end }}
 ```
 
-??? info
+!!! info
 
     1Password CLI 1.x returns a simpler structure:
 
@@ -134,10 +138,10 @@ allows the fields to be queried by key:
 ```
 
 Additional fields may be obtained with `onePasswordItemFields`; not all objects
-in 1Password have item fields, so it is worth testing before using:
+in 1Password have item fields. This can be tested with:
 
 ```console
-chezmoi execute-template "{{- onepasswordItemFields \"$UUID\" | toJson -}}" | jq .
+$ chezmoi execute-template "{{ onepasswordItemFields \"$UUID\" | toJson }}" | jq .
 ```
 
 Documents can be retrieved with:
@@ -153,15 +157,15 @@ Documents can be retrieved with:
     substitution. This removes any trailing newline added by your editor when
     saving the template.
 
-## 1Password sign-in prompt
+## Sign-in prompt
 
 chezmoi will verify the availability and validity of a session token in the
 current environment. If it is missing or expired, you will be interactively
 prompted to sign-in again.
 
 In the past chezmoi used to simply exit with an error when no valid session was
-available. If you'd like to restore that behavior, set the following option in
-your configuration file:
+available. If you'd like to restore this behavior, set the the
+`onepassword.prompt` configuration variable to `false`, for example:
 
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [onepassword]
@@ -171,13 +175,5 @@ your configuration file:
 !!! danger
 
     Do not use the prompt on shared machines. A session token verified or
-    acquired interactively will be passed to the 1Password CLI through a command
-    line parameter, which is visible to other users of the same system.
-
-!!! info
-
-    If you're using [1Password CLI
-    2.0](https://developer.1password.com/docs/cli/), then the structure of the
-    data returned by the `onepassword`, `onepasswordDetailsFields`, and
-    `onePasswordItemFiles` template functions is different and templates will
-    need to be updated.
+    acquired interactively will be passed to the 1Password CLI through a
+    command line parameter, which is visible to other users of the same system.

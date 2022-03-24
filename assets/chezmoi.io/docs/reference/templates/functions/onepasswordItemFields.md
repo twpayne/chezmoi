@@ -1,8 +1,8 @@
-# `onepasswordItemFields` _uuid_ [_vault-uuid_ [*account-name*]]
+# `onepasswordItemFields` *uuid* [*vault-uuid* [*account-name*]]
 
 `onepasswordItemFields` returns structured data from
 [1Password](https://1password.com/) using the [1Password
-CLI](https://support.1password.com/command-line-getting-started/) (`op`). _uuid_
+CLI](https://support.1password.com/command-line-getting-started/) (`op`). *uuid*
 is passed to `op item get $UUID --format json`, the output from `op` is parsed
 as JSON, and each element of `details.sections` are iterated over and any
 `fields` are returned as a map indexed by each field's `n`.
@@ -26,7 +26,7 @@ interactively prompted to sign in.
     $ op item get abcdefghijklmnopqrstuvwxyz --fields exampleLabel
     ```
 
-    ??? info
+    !!! info
 
         For 1Password CLI 1.x.
 
@@ -85,7 +85,7 @@ interactively prompted to sign in.
     }
     ```
 
-    ??? info
+    !!! info
 
         For 1Password CLI 1.x, the output is this:
 
@@ -139,7 +139,7 @@ interactively prompted to sign in.
     this function is recommended:
 
     ```console
-    chezmoi execute-template "{{- onepasswordItemFields \"$UUID\" | toJson -}}" | jq .
+    $ chezmoi execute-template "{{ onepasswordItemFields \"$UUID\" | toJson }}" | jq .
     ```
 
 !!! warning
@@ -150,13 +150,6 @@ interactively prompted to sign in.
     using *account-name*, it is recommended that you use the *account-uuid*.
     This can be found using `op account list`.
 
-    This issue does not exist when using biometric authentication and 1Password
+    This issue does not occur when using biometric authentication and 1Password
     8, or if you allow chezmoi to prompt you for 1Password authentication
     (`1password.prompt = true`).
-
-!!! info
-
-    In earlier versions of chezmoi, if *vault-uuid* or *account-name* were
-    empty strings, they would be added to the resulting `op` command-line
-    (`--vault ''`). This causes errors in 1Password CLI 2.0, so those arguments
-    will no longer be added.
