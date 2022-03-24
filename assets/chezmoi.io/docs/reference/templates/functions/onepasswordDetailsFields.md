@@ -2,11 +2,16 @@
 
 `onepasswordDetailsFields` returns structured data from
 [1Password](https://1password.com/) using the [1Password
-CLI](https://support.1password.com/command-line-getting-started/) (`op`). *uuid*
-is passed to `op get item $UUID`, the output from `op` is parsed as JSON, and
-elements of `details.fields` are returned as a map indexed by each field's
-`designation`. If there is no valid session in the environment, by default you
-will be interactively prompted to sign in.
+CLI](https://support.1password.com/command-line-getting-started/) (`op`).
+*uuid* is passed to `op get item $UUID`, the output from `op` is parsed as
+JSON, and elements of `details.fields` are returned as a map indexed by each
+field's `id` (if set) or `label` (if set and `id` is not present). If there is
+no valid session in the environment, by default you will be interactively
+prompted to sign in.
+
+!!! info
+
+    For 1Password CLI 1.x, the map is indexed by each field's `designation`.
 
 The output from `op` is cached so calling `onepasswordDetailsFields` multiple
 times with the same *uuid* will only invoke `op` once. If the optional
