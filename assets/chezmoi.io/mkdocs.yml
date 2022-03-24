@@ -162,6 +162,7 @@ nav:
       - ioreg: reference/templates/functions/ioreg.md
       - joinPath: reference/templates/functions/joinPath.md
       - keepassxc: reference/templates/functions/keepassxc.md
+      - keepassxcAttachment: reference/templates/functions/keepassxcAttachment.md
       - keepassxcAttribute: reference/templates/functions/keepassxcAttribute.md
       - keyring: reference/templates/functions/keyring.md
       - lastpass: reference/templates/functions/lastpass.md

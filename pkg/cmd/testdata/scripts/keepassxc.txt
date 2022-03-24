@@ -1,6 +1,11 @@
 [!windows] chmod 755 bin/keepass-test
 [windows] unix2dos bin/keepass-test.cmd
 
+# test keepassxcAttachment template function
+stdin $HOME/input
+chezmoi execute-template --no-tty '{{ keepassxcAttachment "example.com" "attachment" }}'
+stdout '# contents of attachment'
+
 # test keepassxcAttribute template function
 stdin $HOME/input
 chezmoi execute-template --no-tty '{{ keepassxcAttribute "example.com" "host-name" }}'
@@ -17,6 +22,9 @@ stdout examplelogin/examplepassword$
 case "$*" in
 "--version")
     echo "2.5.4"
+    ;;
+"attachment-export --stdout /secrets.kdbx example.com attachment")
+    echo "# contents of attachment"
     ;;
 "show --show-protected /secrets.kdbx example.com")
     cat <<EOF
@@ -38,6 +46,8 @@ esac
 @echo off
 IF "%*" == "--version" (
     echo 2.5.4
+) ELSE IF "%*" == "attachment-export --stdout C:/secrets.kdbx example.com attachment" (
+    echo.# contents of attachment
 ) ELSE IF "%*" == "show --show-protected C:/secrets.kdbx example.com" (
     echo.Title: example.com
     echo.UserName: examplelogin

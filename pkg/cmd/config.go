@@ -436,6 +436,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"ioreg":                    c.ioregTemplateFunc,
 		"joinPath":                 c.joinPathTemplateFunc,
 		"keepassxc":                c.keepassxcTemplateFunc,
+		"keepassxcAttachment":      c.keepassxcAttachmentTemplateFunc,
 		"keepassxcAttribute":       c.keepassxcAttributeTemplateFunc,
 		"keyring":                  c.keyringTemplateFunc,
 		"lastpass":                 c.lastpassTemplateFunc,

@@ -19,13 +19,14 @@ type keepassxcAttributeCacheKey struct {
 }
 
 type keepassxcConfig struct {
-	Command        string
-	Database       chezmoi.AbsPath
-	Args           []string
-	version        *semver.Version
-	cache          map[string]map[string]string
-	attributeCache map[keepassxcAttributeCacheKey]string
-	password       string
+	Command         string
+	Database        chezmoi.AbsPath
+	Args            []string
+	version         *semver.Version
+	cache           map[string]map[string]string
+	attachmentCache map[string]map[string]string
+	attributeCache  map[keepassxcAttributeCacheKey]string
+	password        string
 }
 
 var (
@@ -33,13 +34,26 @@ var (
 	keepassxcNeedShowProtectedArgVersion = semver.Version{Major: 2, Minor: 5, Patch: 1}
 )
 
-func (c *Config) keepassxcTemplateFunc(entry string) map[string]string {
-	if data, ok := c.Keepassxc.cache[entry]; ok {
+func (c *Config) keepassxcAttachmentTemplateFunc(entry, name string) string {
+	if data, ok := c.Keepassxc.attachmentCache[entry][name]; ok {
 		return data
 	}
 
-	if c.Keepassxc.Database.Empty() {
-		panic(errors.New("keepassxc.database not set"))
+	args := []string{"attachment-export", "--stdout"}
+	args = append(args, c.Keepassxc.Args...)
+	args = append(args, c.Keepassxc.Database.String(), entry, name)
+
+	output, err := c.keepassxcOutput(c.Keepassxc.Command, args)
+	if err != nil {
+		panic(err)
+	}
+
+	return string(output)
+}
+
+func (c *Config) keepassxcTemplateFunc(entry string) map[string]string {
+	if data, ok := c.Keepassxc.cache[entry]; ok {
+		return data
 	}
 
 	args := []string{"show"}
@@ -79,10 +93,6 @@ func (c *Config) keepassxcAttributeTemplateFunc(entry, attribute string) string 
 		return data
 	}
 
-	if c.Keepassxc.Database.Empty() {
-		panic(errors.New("keepassxc.database not set"))
-	}
-
 	args := []string{"show", "--attributes", attribute, "--quiet"}
 	version, err := c.keepassxcVersion()
 	if err != nil {
@@ -108,6 +118,10 @@ func (c *Config) keepassxcAttributeTemplateFunc(entry, attribute string) string 
 }
 
 func (c *Config) keepassxcOutput(name string, args []string) ([]byte, error) {
+	if c.Keepassxc.Database.Empty() {
+		panic(errors.New("keepassxc.database not set"))
+	}
+
 	if c.Keepassxc.password == "" {
 		password, err := c.readPassword(fmt.Sprintf("Insert password to unlock %s: ", c.Keepassxc.Database))
 		if err != nil {
