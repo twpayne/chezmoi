@@ -270,3 +270,7 @@ articles:
   format: Audio
   title: 'The Real Python Podcast: Episode 101: Tools for Setting Up Python on a New Machine'
   url: 'https://realpython.com/podcasts/rpp/101/#t=3368'
+- date: '2022-03-13'
+  version: '2.14.0'
+  title: 'Tools I love: Chezmoi'
+  url: 'https://messmore.org/post/chezmoi/'
