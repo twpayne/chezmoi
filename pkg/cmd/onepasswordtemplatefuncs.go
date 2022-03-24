@@ -248,12 +248,14 @@ func (c *Config) onepasswordGetOrRefreshSessionToken(args *onepasswordArgs) (str
 		sessionToken = os.Getenv("OP_SESSION_" + args.account)
 
 		switch {
-		case c.Onepassword.version.Major < 2:
+		case c.Onepassword.version.Major == 1:
 			commandArgs = []string{"signin", args.account, "--raw"}
-		case c.Onepassword.version.Major < 3:
+		case c.Onepassword.version.Major >= 2:
 			commandArgs = []string{"signin", "--account", args.account, "--raw"}
 		default:
-			return "", fmt.Errorf("unsupported version of op, got %s", c.Onepassword.version.String())
+			panic(&unsupportedVersionError{
+				version: c.Onepassword.version,
+			})
 		}
 	}
 
