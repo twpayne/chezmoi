@@ -1097,6 +1097,9 @@ func TestSourceStateRead(t *testing.T) {
 						"README.md": patternSetInclude,
 					}),
 				),
+				withIgnoredRelPathStrs(
+					"README.md",
+				),
 			),
 		},
 		{
@@ -1150,6 +1153,9 @@ func TestSourceStateRead(t *testing.T) {
 						"dir/file3": patternSetInclude,
 					}),
 				),
+				withIgnoredRelPathStrs(
+					"dir/file3",
+				),
 			),
 		},
 		{
@@ -1198,6 +1204,9 @@ func TestSourceStateRead(t *testing.T) {
 						"file2": patternSetInclude,
 					}),
 				),
+				withIgnoredRelPathStrs(
+					"file2",
+				),
 				withRemove(
 					mustNewPatternSet(t, map[string]patternSetIncludeType{
 						"file*": patternSetInclude,
@@ -1240,6 +1249,9 @@ func TestSourceStateRead(t *testing.T) {
 					mustNewPatternSet(t, map[string]patternSetIncludeType{
 						"dir/file2": patternSetInclude,
 					}),
+				),
+				withIgnoredRelPathStrs(
+					"dir/file2",
 				),
 				withRemove(
 					mustNewPatternSet(t, map[string]patternSetIncludeType{
@@ -1597,6 +1609,14 @@ func withEntries(sourceEntries map[RelPath]SourceStateEntry) SourceStateOption {
 func withIgnore(ignore *patternSet) SourceStateOption {
 	return func(s *SourceState) {
 		s.ignore = ignore
+	}
+}
+
+func withIgnoredRelPathStrs(relPathStrs ...string) SourceStateOption {
+	return func(s *SourceState) {
+		for _, relPathStr := range relPathStrs {
+			s.ignoredRelPaths[NewRelPath(relPathStr)] = struct{}{}
+		}
 	}
 }
 

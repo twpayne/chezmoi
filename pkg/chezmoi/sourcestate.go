@@ -106,6 +106,7 @@ type SourceState struct {
 	templateOptions         []string
 	templates               map[string]*template.Template
 	externals               map[RelPath]External
+	ignoredRelPaths         map[RelPath]struct{}
 }
 
 // A SourceStateOption sets an option on a source state.
@@ -250,6 +251,7 @@ func NewSourceState(options ...SourceStateOption) *SourceState {
 		templateOptions:      DefaultTemplateOptions,
 		templates:            make(map[string]*template.Template),
 		externals:            make(map[RelPath]External),
+		ignoredRelPaths:      make(map[RelPath]struct{}),
 	}
 	for _, option := range options {
 		option(s)
@@ -306,6 +308,7 @@ DESTABSPATH:
 		targetRelPath := destAbsPath.MustTrimDirPrefix(s.destDirAbsPath)
 
 		if s.Ignore(targetRelPath) {
+			s.ignoredRelPaths[targetRelPath] = struct{}{}
 			continue
 		}
 
@@ -740,6 +743,16 @@ func (s *SourceState) Ignore(targetRelPath RelPath) bool {
 	return s.ignore.match(targetRelPath.String()) == patternSetMatchInclude
 }
 
+// Ignored returns all ignored RelPaths.
+func (s *SourceState) Ignored() RelPaths {
+	relPaths := make(RelPaths, 0, len(s.ignoredRelPaths))
+	for relPath := range s.ignoredRelPaths {
+		relPaths = append(relPaths, relPath)
+	}
+	sort.Sort(relPaths)
+	return relPaths
+}
+
 // MustEntry returns the source state entry associated with targetRelPath, and
 // panics if it does not exist.
 func (s *SourceState) MustEntry(targetRelPath RelPath) SourceStateEntry {
@@ -884,6 +897,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			da := parseDirAttr(sourceName.String())
 			targetRelPath := parentSourceRelPath.Dir().TargetRelPath(s.encryption.EncryptedSuffix()).JoinString(da.TargetName)
 			if s.Ignore(targetRelPath) {
+				s.ignoredRelPaths[targetRelPath] = struct{}{}
 				return vfs.SkipDir
 			}
 			sourceStateDir := s.newSourceStateDir(sourceRelPath, da)
@@ -898,6 +912,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			fa := parseFileAttr(sourceName.String(), s.encryption.EncryptedSuffix())
 			targetRelPath := parentSourceRelPath.Dir().TargetRelPath(s.encryption.EncryptedSuffix()).JoinString(fa.TargetName)
 			if s.Ignore(targetRelPath) {
+				s.ignoredRelPaths[targetRelPath] = struct{}{}
 				return nil
 			}
 			var sourceStateEntry SourceStateEntry
@@ -927,6 +942,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 	sort.Sort(externalRelPaths)
 	for _, externalRelPath := range externalRelPaths {
 		if s.Ignore(externalRelPath) {
+			s.ignoredRelPaths[externalRelPath] = struct{}{}
 			continue
 		}
 		external := s.externals[externalRelPath]
@@ -944,6 +960,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		}
 		for targetRelPath, sourceStateEntries := range externalSourceStateEntries {
 			if s.Ignore(targetRelPath) {
+				s.ignoredRelPaths[targetRelPath] = struct{}{}
 				continue
 			}
 			allSourceStateEntries[targetRelPath] = append(allSourceStateEntries[targetRelPath], sourceStateEntries...)
@@ -953,6 +970,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 	// Remove all ignored targets.
 	for targetRelPath := range allSourceStateEntries {
 		if s.Ignore(targetRelPath) {
+			s.ignoredRelPaths[targetRelPath] = struct{}{}
 			delete(allSourceStateEntries, targetRelPath)
 		}
 	}
@@ -963,10 +981,11 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		return err
 	}
 	for _, match := range matches {
-		if s.Ignore(NewRelPath(match)) {
+		targetRelPath := NewRelPath(match)
+		if s.Ignore(targetRelPath) {
+			s.ignoredRelPaths[targetRelPath] = struct{}{}
 			continue
 		}
-		targetRelPath := NewRelPath(match)
 		sourceStateEntry := &SourceStateRemove{
 			sourceRelPath: NewSourceRelPath(".chezmoiremove"),
 			targetRelPath: targetRelPath,
@@ -1000,6 +1019,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 					continue
 				}
 				if s.Ignore(destEntryRelPath) {
+					s.ignoredRelPaths[destEntryRelPath] = struct{}{}
 					continue
 				}
 				sourceStateRemove := &SourceStateRemove{
@@ -1886,6 +1906,7 @@ func (s *SourceState) readExternalArchive(
 		targetRelPath := externalRelPath.JoinString(name)
 
 		if s.Ignore(targetRelPath) {
+			s.ignoredRelPaths[targetRelPath] = struct{}{}
 			return nil
 		}
 
@@ -2053,6 +2074,7 @@ func (s *SourceState) readScriptsDir(
 			}
 			targetRelPath := parentSourceRelPath.Dir().TargetRelPath(s.encryption.EncryptedSuffix()).JoinString(fa.TargetName)
 			if s.Ignore(targetRelPath) {
+				s.ignoredRelPaths[targetRelPath] = struct{}{}
 				return nil
 			}
 			var sourceStateEntry SourceStateEntry

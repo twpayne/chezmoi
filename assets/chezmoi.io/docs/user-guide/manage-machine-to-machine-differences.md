@@ -152,6 +152,12 @@ f*
 
 will ignore all files beginning with an `f` except `foo`.
 
+You can see what files chezmoi ignores with the command
+
+```console
+$ chezmoi ignored
+```
+
 ## Handle different file locations on different systems with the same contents
 
 If you want to have the same file contents in different locations on different

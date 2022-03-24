@@ -25,7 +25,7 @@ func (c *Config) runTargetPathCmd(cmd *cobra.Command, args []string) error {
 		return c.writeOutputString(c.DestDirAbsPath.String() + "\n")
 	}
 
-	var sb strings.Builder
+	builder := strings.Builder{}
 
 	for _, arg := range args {
 		argAbsPath, err := chezmoi.NewAbsPathFromExtPath(arg, c.homeDirAbsPath)
@@ -50,19 +50,19 @@ func (c *Config) runTargetPathCmd(cmd *cobra.Command, args []string) error {
 
 		targetRelPath := sourceRelPath.TargetRelPath(c.encryption.EncryptedSuffix())
 
-		if _, err := sb.WriteString(c.DestDirAbsPath.String()); err != nil {
+		if _, err := builder.WriteString(c.DestDirAbsPath.String()); err != nil {
 			return err
 		}
-		if err := sb.WriteByte('/'); err != nil {
+		if err := builder.WriteByte('/'); err != nil {
 			return err
 		}
-		if _, err := sb.WriteString(targetRelPath.String()); err != nil {
+		if _, err := builder.WriteString(targetRelPath.String()); err != nil {
 			return err
 		}
-		if err := sb.WriteByte('\n'); err != nil {
+		if err := builder.WriteByte('\n'); err != nil {
 			return err
 		}
 	}
 
-	return c.writeOutputString(sb.String())
+	return c.writeOutputString(builder.String())
 }
