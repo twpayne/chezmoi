@@ -7,6 +7,10 @@ exists $HOME/.file
 ! exists $HOME/README.md
 ! exists $HOME/.dir
 
+# test that chezmoi ignored lists the ignored entries
+chezmoi ignored
+cmp stdout golden/ignored
+
 chhome home2/user
 
 # test that chezmoi manage lists all managed files
@@ -41,6 +45,9 @@ cmp stdout golden/managed-ignore-star-star-slash-star-dot-txt
 */*.txt
 -- golden/.chezmoiignore-star-star-slash-star-dot-txt --
 **/*.txt
+-- golden/ignored --
+.dir
+README.md
 -- golden/managed-all --
 .dir
 .dir/file.txt
