@@ -120,8 +120,13 @@ func (c *Config) onepasswordDetailsFieldsTemplateFunc(userArgs ...string) map[st
 			if _, ok := field["section"]; ok {
 				continue
 			}
-			if label, ok := field["label"].(string); ok {
+			if id, ok := field["id"].(string); ok && id != "" {
+				result[id] = field
+				continue
+			}
+			if label, ok := field["label"].(string); ok && label != "" {
 				result[label] = field
+				continue
 			}
 		}
 		return result
