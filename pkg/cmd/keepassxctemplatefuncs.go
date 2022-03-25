@@ -30,7 +30,7 @@ type keepassxcConfig struct {
 }
 
 var (
-	keepassxcPairRx                      = regexp.MustCompile(`^([^:]+):\s*(.*)$`)
+	keepassxcPairRx                      = regexp.MustCompile(`^([A-Z]\w*):\s*(.*)$`)
 	keepassxcNeedShowProtectedArgVersion = semver.Version{Major: 2, Minor: 5, Patch: 1}
 )
 
@@ -71,7 +71,7 @@ func (c *Config) keepassxcTemplateFunc(entry string) map[string]string {
 		panic(err)
 	}
 
-	data, err := keypassxcParseOutput(output)
+	data, err := keepassxcParseOutput(output)
 	if err != nil {
 		panic(newParseCmdOutputError(c.Keepassxc.Command, args, output, err))
 	}
@@ -139,18 +139,18 @@ func (c *Config) keepassxcOutput(name string, args []string) ([]byte, error) {
 	return output, nil
 }
 
-func keypassxcParseOutput(output []byte) (map[string]string, error) {
+func keepassxcParseOutput(output []byte) (map[string]string, error) {
 	data := make(map[string]string)
 	s := bufio.NewScanner(bytes.NewReader(output))
+	var key string
 	for i := 0; s.Scan(); i++ {
-		if i == 0 {
-			continue
+		switch match := keepassxcPairRx.FindStringSubmatch(s.Text()); {
+		case match != nil:
+			key = match[1]
+			data[key] = match[2]
+		case match == nil && key != "":
+			data[key] += "\n" + s.Text()
 		}
-		match := keepassxcPairRx.FindStringSubmatch(s.Text())
-		if match == nil {
-			return nil, fmt.Errorf("%s: parse error", s.Text())
-		}
-		data[match[1]] = match[2]
 	}
 	if err := s.Err(); err != nil {
 		return nil, err
