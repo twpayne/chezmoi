@@ -23,10 +23,10 @@ case "$*" in
 "--version")
     echo "2.5.4"
     ;;
-"attachment-export --stdout /secrets.kdbx example.com attachment")
+"attachment-export --stdout --quiet /secrets.kdbx example.com attachment")
     echo "# contents of attachment"
     ;;
-"show --show-protected /secrets.kdbx example.com")
+"show --quiet --show-protected /secrets.kdbx example.com")
     cat <<EOF
 Title: example.com
 UserName: examplelogin
@@ -46,9 +46,9 @@ esac
 @echo off
 IF "%*" == "--version" (
     echo 2.5.4
-) ELSE IF "%*" == "attachment-export --stdout C:/secrets.kdbx example.com attachment" (
+) ELSE IF "%*" == "attachment-export --stdout --quiet C:/secrets.kdbx example.com attachment" (
     echo.# contents of attachment
-) ELSE IF "%*" == "show --show-protected C:/secrets.kdbx example.com" (
+) ELSE IF "%*" == "show --quiet --show-protected C:/secrets.kdbx example.com" (
     echo.Title: example.com
     echo.UserName: examplelogin
     echo.Password: examplepassword
