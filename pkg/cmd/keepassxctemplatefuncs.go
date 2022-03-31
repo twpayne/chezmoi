@@ -39,7 +39,7 @@ func (c *Config) keepassxcAttachmentTemplateFunc(entry, name string) string {
 		return data
 	}
 
-	args := []string{"attachment-export", "--stdout"}
+	args := []string{"attachment-export", "--stdout", "--quiet"}
 	args = append(args, c.Keepassxc.Args...)
 	args = append(args, c.Keepassxc.Database.String(), entry, name)
 
@@ -56,11 +56,11 @@ func (c *Config) keepassxcTemplateFunc(entry string) map[string]string {
 		return data
 	}
 
-	args := []string{"show"}
 	version, err := c.keepassxcVersion()
 	if err != nil {
 		panic(err)
 	}
+	args := []string{"show", "--quiet"}
 	if version.Compare(keepassxcNeedShowProtectedArgVersion) >= 0 {
 		args = append(args, "--show-protected")
 	}
