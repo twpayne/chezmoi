@@ -162,23 +162,6 @@ jobs:
       run: |
         sh assets/scripts/install.sh
         bin/chezmoi --version
-  test-openbsd:
-    needs: changes
-    if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-    runs-on: macos-10.15
-    env:
-      VAGRANT_BOX: openbsd6
-    steps:
-    - uses: actions/checkout@v3
-    - uses: actions/cache@v3.0.1
-      with:
-        path: ~/.vagrant.d
-        key: ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-${{ hashFiles('assets/vagrant/openbsd6.Vagrantfile') }}
-        restore-keys: |
-          ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-
-    - name: test
-      run: |
-        ( cd assets/vagrant && ./test.sh openbsd6 )
   test-openindiana:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
@@ -292,38 +275,6 @@ jobs:
       with:
         name: chezmoi-windows-amd64.exe
         path: dist/chezmoi-nocgo_windows_amd64/chezmoi.exe
-  test-ubuntu-go1-16:
-    needs: changes
-    if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-    runs-on: ubuntu-18.04
-    steps:
-    - uses: actions/setup-go@v2
-      with:
-        go-version: 1.16.x
-    - uses: actions/checkout@v3
-    - uses: actions/cache@v3.0.1
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-ubuntu-go-1-16-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-ubuntu-go-1-16-
-    - name: build
-      run: |
-        go build ./...
-    - name: run
-      run: |
-        go run . --version
-    - name: install-age
-      run: |
-        cd $(mktemp -d)
-        curl -fsSL https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-linux-amd64.tar.gz | tar xzf -
-        sudo install -m 755 age/age /usr/local/bin
-        sudo install -m 755 age/age-keygen /usr/local/bin
-    - name: test
-      env:
-        CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
-      run: |
-        go test ./...
   test-ubuntu-go1-17:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
@@ -451,10 +402,8 @@ jobs:
     - test-fedora
     - test-freebsd
     - test-macos
-    - test-openbsd
     - test-openindiana
     - test-ubuntu
-    - test-ubuntu-go1-16
     - test-ubuntu-go1-17
     - test-voidlinux
     - test-windows
