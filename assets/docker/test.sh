@@ -4,6 +4,7 @@ set -eufo pipefail
 
 cd ../..
 for distribution in "$@"; do
+    echo ${distribution}
     dockerfile="assets/docker/${distribution}.Dockerfile"
     if [ ! -f "${dockerfile}" ]; then
         echo "${dockerfile} not found"

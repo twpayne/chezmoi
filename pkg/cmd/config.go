@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"go/build"
 	"io"
 	"io/fs"
 	"net/http"
@@ -734,17 +733,12 @@ func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte) ([]byte
 	funcMap := make(template.FuncMap)
 	chezmoi.RecursiveMerge(funcMap, c.templateFuncs)
 	initTemplateFuncs := map[string]interface{}{
+		"exit":          c.exitInitTemplateFunc,
 		"promptBool":    c.promptBoolInitTemplateFunc,
 		"promptInt":     c.promptIntInitTemplateFunc,
 		"promptString":  c.promptStringInitTemplateFunc,
 		"stdinIsATTY":   c.stdinIsATTYInitTemplateFunc,
 		"writeToStdout": c.writeToStdout,
-	}
-	for _, releaseTag := range build.Default.ReleaseTags {
-		if releaseTag == "go1.17" {
-			initTemplateFuncs["exit"] = c.exitInitTemplateFunc
-			break
-		}
 	}
 	chezmoi.RecursiveMerge(funcMap, initTemplateFuncs)
 

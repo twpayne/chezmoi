@@ -2,9 +2,11 @@
 
 set -euf
 
+GO=${GO:-go}
+
 cd /chezmoi
-go run . doctor || true
-go test ./...
+${GO} run . doctor || true
+${GO} test ./...
 
 sh assets/scripts/install.sh
 bin/chezmoi --version
