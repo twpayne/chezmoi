@@ -380,9 +380,8 @@ func newConfig(options ...configOption) (*Config, error) {
 			recursive: true,
 		},
 		reAdd: reAddCmdConfig{
-			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
-			recursive: true,
+			exclude: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
+			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 		},
 		state: stateCmdConfig{
 			data: stateDataCmdConfig{
