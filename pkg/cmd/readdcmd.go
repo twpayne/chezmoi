@@ -11,19 +11,18 @@ import (
 )
 
 type reAddCmdConfig struct {
-	exclude   *chezmoi.EntryTypeSet
-	include   *chezmoi.EntryTypeSet
-	recursive bool
+	exclude *chezmoi.EntryTypeSet
+	include *chezmoi.EntryTypeSet
 }
 
 func (c *Config) newReAddCmd() *cobra.Command {
 	reAddCmd := &cobra.Command{
-		Use:               "re-add [targets...]",
+		Use:               "re-add",
 		Short:             "Re-add modified files",
 		Long:              mustLongHelp("re-add"),
 		Example:           example("re-add"),
 		ValidArgsFunction: c.targetValidArgs,
-		Args:              cobra.ArbitraryArgs,
+		Args:              cobra.NoArgs,
 		RunE:              c.makeRunEWithSourceState(c.runReAddCmd),
 		Annotations: map[string]string{
 			modifiesSourceDirectory: "true",
@@ -35,7 +34,6 @@ func (c *Config) newReAddCmd() *cobra.Command {
 	flags := reAddCmd.Flags()
 	flags.VarP(c.reAdd.exclude, "exclude", "x", "Exclude entry types")
 	flags.VarP(c.reAdd.include, "include", "i", "Include entry types")
-	flags.BoolVarP(&c.reAdd.recursive, "recursive", "r", c.reAdd.recursive, "Recurse into subdirectories")
 
 	return reAddCmd
 }
