@@ -41,6 +41,7 @@ jobs:
           - '.github/workflows/**'
           - 'Makefile'
           - 'assets/docker/**'
+          - 'assets/scripts/**'
           - 'assets/vagrant/**'
           - 'go.*'
           - 'pkg/**'
@@ -158,7 +159,6 @@ jobs:
       run: |
         go test -race ./...
     - name: test-install.sh
-      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       run: |
         sh assets/scripts/install.sh
         bin/chezmoi --version
@@ -223,6 +223,7 @@ jobs:
     - name: test-install.sh
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       run: |
+        rm -f bin/chezmoi
         sh assets/scripts/install.sh
         bin/chezmoi --version
     - name: install-release-dependencies
@@ -334,11 +335,20 @@ jobs:
       run: |
         go test -race ./...
     - name: test-install.ps1
-      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       run: |
+        if (Test-Path -Path bin/chezmoi.exe) { Remove-Item -Force bin/chezmoi.exe }
         powershell -c assets/scripts/install.ps1
-        sh assets/scripts/install.sh
-        bin/chezmoi --version
+        bin/chezmoi.exe --version
+    - name: test-install-irm
+      run: |
+        if (Test-Path -Path bin/chezmoi.exe) { Remove-Item -Force bin/chezmoi.exe }
+        (irm -useb https://chezmoi.io/get.ps1) | powershell -c -
+        bin/chezmoi.exe --version
+    - name: test-install-iwr
+      run: |
+        if (Test-Path -Path bin/chezmoi.exe) { Remove-Item -Force bin/chezmoi.exe }
+        (iwr -useb https://chezmoi.io/get.ps1).ToString() | powershell -c -
+        bin/chezmoi.exe --version
   test-voidlinux:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
