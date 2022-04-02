@@ -142,8 +142,8 @@ func MkdirAll(system System, absPath AbsPath, perm fs.FileMode) error {
 // A WalkFunc is called for every entry in a directory.
 type WalkFunc func(absPath AbsPath, fileInfo fs.FileInfo, err error) error
 
-// Walk walks rootAbsPath in system, alling walkFunc for each file or directory in
-// the tree, including rootAbsPath.
+// Walk walks rootAbsPath in system, calling walkFunc for each file or directory
+// in the tree, including rootAbsPath.
 //
 // Walk does not follow symlinks.
 func Walk(system System, rootAbsPath AbsPath, walkFunc WalkFunc) error {
@@ -152,10 +152,6 @@ func Walk(system System, rootAbsPath AbsPath, walkFunc WalkFunc) error {
 	}
 	return vfs.Walk(system.UnderlyingFS(), rootAbsPath.String(), outerWalkFunc)
 }
-
-// A WalkSourceDirFunc is a function called for every entry in a source
-// directory.
-type WalkSourceDirFunc func(absPath AbsPath, fileInfo fs.FileInfo, err error) error
 
 // A concurrentWalkSourceDirFunc is a function called concurrently for every
 // entry in a source directory.
@@ -171,7 +167,7 @@ type concurrentWalkSourceDirFunc func(ctx context.Context, absPath AbsPath, file
 // Directory entries .chezmoidata.<format> and .chezmoitemplates are visited
 // before all other entries. All other entries are visited in alphabetical
 // order.
-func WalkSourceDir(system System, sourceDirAbsPath AbsPath, walkFunc WalkSourceDirFunc) error {
+func WalkSourceDir(system System, sourceDirAbsPath AbsPath, walkFunc WalkFunc) error {
 	fileInfo, err := system.Stat(sourceDirAbsPath)
 	if err != nil {
 		err = walkFunc(sourceDirAbsPath, nil, err)
@@ -196,7 +192,7 @@ var sourceDirEntryOrder = map[string]int{
 }
 
 // walkSourceDir is a helper function for WalkSourceDir.
-func walkSourceDir(system System, name AbsPath, fileInfo fs.FileInfo, walkFunc WalkSourceDirFunc) error {
+func walkSourceDir(system System, name AbsPath, fileInfo fs.FileInfo, walkFunc WalkFunc) error {
 	switch err := walkFunc(name, fileInfo, nil); {
 	case fileInfo.IsDir() && errors.Is(err, fs.SkipDir):
 		return nil
