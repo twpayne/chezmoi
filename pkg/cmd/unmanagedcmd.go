@@ -44,7 +44,7 @@ func (c *Config) runUnmanagedCmd(cmd *cobra.Command, args []string, sourceState 
 		}
 		return nil
 	}
-	if err := chezmoi.WalkSourceDir(c.destSystem, c.DestDirAbsPath, walkFunc); err != nil {
+	if err := chezmoi.Walk(c.destSystem, c.DestDirAbsPath, walkFunc); err != nil {
 		return err
 	}
 	return c.writeOutputString(builder.String())
