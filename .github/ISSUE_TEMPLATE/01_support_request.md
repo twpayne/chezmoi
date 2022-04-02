@@ -23,7 +23,7 @@ Describe what you have tried so far.
 ## Output of any commands you've tried with `--verbose` flag
 
 ```console
-$ chezmoi --verbose <your-command>
+$ chezmoi --verbose $COMMAND
 ```
 
 ## Output of `chezmoi doctor`

@@ -20,7 +20,7 @@ A clear and concise description of what you expected to happen.
 ## Output of command with the `--verbose` flag
 
 ```console
-$ chezmoi --verbose <your-command>
+$ chezmoi --verbose $COMMAND
 ```
 
 ## Output of `chezmoi doctor`
