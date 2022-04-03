@@ -151,8 +151,6 @@ nav:
       - decrypt: reference/templates/functions/decrypt.md
       - encrypt: reference/templates/functions/encrypt.md
       - fromYaml: reference/templates/functions/fromYaml.md
-      - gitHubKeys: reference/templates/functions/gitHubKeys.md
-      - gitHubLatestRelease: reference/templates/functions/gitHubLatestRelease.md
       - include: reference/templates/functions/include.md
       - ioreg: reference/templates/functions/ioreg.md
       - joinPath: reference/templates/functions/joinPath.md
@@ -161,6 +159,10 @@ nav:
       - output: reference/templates/functions/output.md
       - stat: reference/templates/functions/stat.md
       - toYaml: reference/templates/functions/toYaml.md
+    - GitHub functions:
+      - reference/templates/github-functions/index.md
+      - gitHubKeys: reference/templates/github-functions/gitHubKeys.md
+      - gitHubLatestRelease: reference/templates/github-functions/gitHubLatestRelease.md
     - Init functions:
       - reference/templates/init-functions/index.md
       - exit: reference/templates/init-functions/exit.md

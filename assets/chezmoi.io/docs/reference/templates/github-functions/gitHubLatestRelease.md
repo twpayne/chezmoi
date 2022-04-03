@@ -8,8 +8,6 @@ bindings](https://pkg.go.dev/github.com/google/go-github/v41/github#RepositoryRe
 Calls to `gitHubLatestRelease` are cached so calling `gitHubLatestRelease` with
 the same *user-repo* will only result in one call to the GitHub API.
 
-`gitHubLatestRelease` uses the same API request mechanism as `gitHubKeys`.
-
 !!! example
 
     ```
