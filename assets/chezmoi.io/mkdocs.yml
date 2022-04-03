@@ -153,7 +153,6 @@ nav:
       - bitwardenFields: reference/templates/functions/bitwardenFields.md
       - decrypt: reference/templates/functions/decrypt.md
       - encrypt: reference/templates/functions/encrypt.md
-      - exit: reference/templates/functions/exit.md
       - fromYaml: reference/templates/functions/fromYaml.md
       - gitHubKeys: reference/templates/functions/gitHubKeys.md
       - gitHubLatestRelease: reference/templates/functions/gitHubLatestRelease.md
@@ -178,16 +177,19 @@ nav:
       - pass: reference/templates/functions/pass.md
       - passFields: reference/templates/functions/passFields.md
       - passRaw: reference/templates/functions/passRaw.md
-      - promptBool: reference/templates/functions/promptBool.md
-      - promptInt: reference/templates/functions/promptInt.md
-      - promptString: reference/templates/functions/promptString.md
       - secret: reference/templates/functions/secret.md
       - secretJSON: reference/templates/functions/secretJSON.md
       - stat: reference/templates/functions/stat.md
-      - stdinIsATTY: reference/templates/functions/stdinIsATTY.md
       - toYaml: reference/templates/functions/toYaml.md
       - vault: reference/templates/functions/vault.md
-      - writeToStdout: reference/templates/functions/writeToStdout.md
+    - Init Functions:
+      - reference/templates/init-functions/index.md
+      - exit: reference/templates/init-functions/exit.md
+      - promptBool: reference/templates/init-functions/promptBool.md
+      - promptInt: reference/templates/init-functions/promptInt.md
+      - promptString: reference/templates/init-functions/promptString.md
+      - stdinIsATTY: reference/templates/init-functions/stdinIsATTY.md
+      - writeToStdout: reference/templates/init-functions/writeToStdout.md
 - Developer:
   - Developing locally: developer/developing-locally.md
   - Contributing changes: developer/contributing-changes.md
