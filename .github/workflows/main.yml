@@ -162,23 +162,6 @@ jobs:
       run: |
         sh assets/scripts/install.sh
         bin/chezmoi --version
-  test-openindiana:
-    needs: changes
-    if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-    runs-on: macos-10.15
-    env:
-      VAGRANT_BOX: openindiana
-    steps:
-    - uses: actions/checkout@v3
-    - uses: actions/cache@v3.0.1
-      with:
-        path: ~/.vagrant.d
-        key: ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-${{ hashFiles('assets/vagrant/openindiana.Vagrantfile') }}
-        restore-keys: |
-          ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-
-    - name: test
-      run: |
-        ( cd assets/vagrant && ./test.sh openindiana )
   test-ubuntu:
     needs: changes
     runs-on: ubuntu-18.04
@@ -412,7 +395,6 @@ jobs:
     - test-fedora
     - test-freebsd
     - test-macos
-    - test-openindiana
     - test-ubuntu
     - test-ubuntu-go1-17
     - test-voidlinux
