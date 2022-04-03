@@ -53,7 +53,7 @@ func (p AbsPath) Bytes() []byte {
 
 // Dir returns p's directory.
 func (p AbsPath) Dir() AbsPath {
-	return NewAbsPath(path.Dir(p.absPath))
+	return NewAbsPath(filepath.Dir(p.absPath)).ToSlash()
 }
 
 // Empty returns if p is empty.
@@ -147,7 +147,7 @@ func (p AbsPath) TrimDirPrefix(dirPrefixAbsPath AbsPath) (RelPath, error) {
 		return EmptyRelPath, nil
 	}
 	dirAbsPath := dirPrefixAbsPath
-	if dirAbsPath.absPath != "/" {
+	if !strings.HasSuffix(dirAbsPath.absPath, "/") {
 		dirAbsPath.absPath += "/"
 	}
 	if !strings.HasPrefix(p.absPath, dirAbsPath.absPath) {
