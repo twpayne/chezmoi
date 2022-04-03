@@ -45,30 +45,30 @@ interactively prompted to sign in.
 
     ```json
     {
-      "id": "$UUID",
-      "title": "$TITLE",
-      "version": 1,
-      "vault": {
-        "id": "$vaultUUID"
-      },
-      "category": "LOGIN",
-      "last_edited_by": "userUUID",
-      "created_at": "2022-01-12T16:29:26Z",
-      "updated_at": "2022-01-12T16:29:26Z",
-      "sections": [
-        {
-          "id": "$sectionID",
-          "label": "Related Items"
-        }
-      ],
-      "fields": [
-        {
-          "id": "nerlnqbfzdm5q5g6ydsgdqgdw4",
-          "type": "STRING",
-          "label": "exampleLabel",
-          "value": "exampleValue"
-        }
-      ],
+        "id": "$UUID",
+        "title": "$TITLE",
+        "version": 1,
+        "vault": {
+            "id": "$vaultUUID"
+        },
+        "category": "LOGIN",
+        "last_edited_by": "userUUID",
+        "created_at": "2022-01-12T16:29:26Z",
+        "updated_at": "2022-01-12T16:29:26Z",
+        "sections": [
+            {
+                "id": "$sectionID",
+                "label": "Related Items"
+            }
+        ],
+        "fields": [
+            {
+                "id": "nerlnqbfzdm5q5g6ydsgdqgdw4",
+                "type": "STRING",
+                "label": "exampleLabel",
+                "value": "exampleValue"
+            }
+        ],
     }
     ```
 
@@ -91,27 +91,27 @@ interactively prompted to sign in.
 
         ```json
         {
-          "uuid": "$UUID",
-          "details": {
-            "sections": [
-              {
-                "name": "linked items",
-                "title": "Related Items"
-              },
-              {
-                "fields": [
-                  {
-                    "k": "string",
-                    "n": "D4328E0846D2461E8E455D7A07B93397",
-                    "t": "exampleLabel",
-                    "v": "exampleValue"
-                  }
-                ],
-                "name": "Section_20E0BD380789477D8904F830BFE8A121",
-                "title": ""
-              }
-            ]
-          },
+            "uuid": "$UUID",
+            "details": {
+                "sections": [
+                    {
+                        "name": "linked items",
+                        "title": "Related Items"
+                    },
+                    {
+                        "fields": [
+                            {
+                                "k": "string",
+                                "n": "D4328E0846D2461E8E455D7A07B93397",
+                                "t": "exampleLabel",
+                                "v": "exampleValue"
+                            }
+                          ],
+                        "name": "Section_20E0BD380789477D8904F830BFE8A121",
+                        "title": ""
+                    }
+                ]
+            },
         }
         ```
 
@@ -128,7 +128,7 @@ interactively prompted to sign in.
         }
         ```
 
-!!! info
+!!! warning
 
     When using [1Password CLI 2.0](https://developer.1password.com/), note that
     the structure of the data returned by the `onepasswordItemFields` template
@@ -141,15 +141,3 @@ interactively prompted to sign in.
     ```console
     $ chezmoi execute-template "{{ onepasswordItemFields \"$UUID\" | toJson }}" | jq .
     ```
-
-!!! warning
-
-    When using 1Password CLI 2.0, there may be an issue with pre-authenticating
-    `op` because the environment variable used to store the session key has
-    changed from `OP_SESSION_account` to `OP_SESSION_accountUUID`. Instead of
-    using *account-name*, it is recommended that you use the *account-uuid*.
-    This can be found using `op account list`.
-
-    This issue does not occur when using biometric authentication and 1Password
-    8, or if you allow chezmoi to prompt you for 1Password authentication
-    (`1password.prompt = true`).

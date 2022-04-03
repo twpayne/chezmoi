@@ -21,16 +21,3 @@ will be interactively prompted to sign in.
     {{- onepasswordDocument "$UUID" "$VAULT_UUID" "$ACCOUNT_NAME" -}}
     {{- onepasswordDocument "$UUID" "" "$ACCOUNT_NAME" -}}
     ```
-
-!!! warning
-
-    When you're using [1Password CLI 2.0](https://developer.1password.com/),
-    there may be an issue with pre-authenticated usage of `op`. The environment
-    variable used to store the session key has changed from `OP_SESSION_account`
-    to `OP_SESSION_accountUUID`. Instead of using *account-name*, it is
-    recommended that you use the *account-uuid*. This can be found using `op
-    account list`.
-
-    This issue does not occur when using biometric authentication and 1Password
-    8, or if you allow chezmoi to prompt you for 1Password authentication
-    (`1password.prompt = true`).
