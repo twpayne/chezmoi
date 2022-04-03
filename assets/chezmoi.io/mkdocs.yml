@@ -148,41 +148,20 @@ nav:
     - Variables: reference/templates/variables.md
     - Functions:
       - reference/templates/functions/index.md
-      - bitwarden: reference/templates/functions/bitwarden.md
-      - bitwardenAttachment: reference/templates/functions/bitwardenAttachment.md
-      - bitwardenFields: reference/templates/functions/bitwardenFields.md
       - decrypt: reference/templates/functions/decrypt.md
       - encrypt: reference/templates/functions/encrypt.md
       - fromYaml: reference/templates/functions/fromYaml.md
       - gitHubKeys: reference/templates/functions/gitHubKeys.md
       - gitHubLatestRelease: reference/templates/functions/gitHubLatestRelease.md
-      - gopass: reference/templates/functions/gopass.md
-      - gopassRaw: reference/templates/functions/gopassRaw.md
       - include: reference/templates/functions/include.md
       - ioreg: reference/templates/functions/ioreg.md
       - joinPath: reference/templates/functions/joinPath.md
-      - keepassxc: reference/templates/functions/keepassxc.md
-      - keepassxcAttachment: reference/templates/functions/keepassxcAttachment.md
-      - keepassxcAttribute: reference/templates/functions/keepassxcAttribute.md
-      - keyring: reference/templates/functions/keyring.md
-      - lastpass: reference/templates/functions/lastpass.md
-      - lastpassRaw: reference/templates/functions/lastpassRaw.md
       - lookPath: reference/templates/functions/lookPath.md
       - mozillaInstallHash: reference/templates/functions/mozillaInstallHash.md
-      - onepassword: reference/templates/functions/onepassword.md
-      - onepasswordDocument: reference/templates/functions/onepasswordDocument.md
-      - onepasswordDetailsFields: reference/templates/functions/onepasswordDetailsFields.md
-      - onepasswordItemFields: reference/templates/functions/onepasswordItemFields.md
       - output: reference/templates/functions/output.md
-      - pass: reference/templates/functions/pass.md
-      - passFields: reference/templates/functions/passFields.md
-      - passRaw: reference/templates/functions/passRaw.md
-      - secret: reference/templates/functions/secret.md
-      - secretJSON: reference/templates/functions/secretJSON.md
       - stat: reference/templates/functions/stat.md
       - toYaml: reference/templates/functions/toYaml.md
-      - vault: reference/templates/functions/vault.md
-    - Init Functions:
+    - Init functions:
       - reference/templates/init-functions/index.md
       - exit: reference/templates/init-functions/exit.md
       - promptBool: reference/templates/init-functions/promptBool.md
@@ -190,6 +169,43 @@ nav:
       - promptString: reference/templates/init-functions/promptString.md
       - stdinIsATTY: reference/templates/init-functions/stdinIsATTY.md
       - writeToStdout: reference/templates/init-functions/writeToStdout.md
+    - 1Password functions:
+      - reference/templates/1password-functions/index.md
+      - onepassword: reference/templates/1password-functions/onepassword.md
+      - onepasswordDocument: reference/templates/1password-functions/onepasswordDocument.md
+      - onepasswordDetailsFields: reference/templates/1password-functions/onepasswordDetailsFields.md
+      - onepasswordItemFields: reference/templates/1password-functions/onepasswordItemFields.md
+    - Bitwarden functions:
+      - reference/templates/bitwarden-functions/index.md
+      - bitwarden: reference/templates/bitwarden-functions/bitwarden.md
+      - bitwardenAttachment: reference/templates/bitwarden-functions/bitwardenAttachment.md
+      - bitwardenFields: reference/templates/bitwarden-functions/bitwardenFields.md
+    - gopass functions:
+      - reference/templates/gopass-functions/index.md
+      - gopass: reference/templates/gopass-functions/gopass.md
+      - gopassRaw: reference/templates/gopass-functions/gopassRaw.md
+    - KeePassXC functions:
+      - reference/templates/keepassxc-functions/index.md
+      - keepassxc: reference/templates/keepassxc-functions/keepassxc.md
+      - keepassxcAttachment: reference/templates/keepassxc-functions/keepassxcAttachment.md
+      - keepassxcAttribute: reference/templates/keepassxc-functions/keepassxcAttribute.md
+    - Keyring functions:
+      - keyring: reference/templates/keyring-functions/keyring.md
+    - LastPass functions:
+      - reference/templates/lastpass-functions/index.md
+      - lastpass: reference/templates/lastpass-functions/lastpass.md
+      - lastpassRaw: reference/templates/lastpass-functions/lastpassRaw.md
+    - pass functions:
+      - reference/templates/pass-functions/index.md
+      - pass: reference/templates/pass-functions/pass.md
+      - passFields: reference/templates/pass-functions/passFields.md
+      - passRaw: reference/templates/pass-functions/passRaw.md
+    - Vault functions:
+      - vault: reference/templates/vault-functions/vault.md
+    - Generic secret functions:
+      - reference/templates/secret-functions/index.md
+      - secret: reference/templates/secret-functions/secret.md
+      - secretJSON: reference/templates/secret-functions/secretJSON.md
 - Developer:
   - Developing locally: developer/developing-locally.md
   - Contributing changes: developer/contributing-changes.md
