@@ -181,6 +181,24 @@ jobs:
       - name: test
         run: |
           ( cd assets/vagrant && ./test.sh openbsd7 )
+  test-openindiana:
+    needs: changes
+    if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+    runs-on: macos-10.15
+    env:
+      VAGRANT_BOX: openindiana
+    steps:
+      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0 # pin@v3.0.1
+        with:
+          path: ~/.vagrant.d
+          key: ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-${{
+            hashFiles('assets/vagrant/openbsd7.Vagrantfile') }}
+          restore-keys: |
+            ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-
+      - name: test
+        run: |
+          ( cd assets/vagrant && ./test.sh openindiana )
   test-ubuntu:
     needs: changes
     runs-on: ubuntu-18.04
@@ -415,6 +433,7 @@ jobs:
       - test-freebsd
       - test-macos
       - test-openbsd
+      - test-openindiana
       - test-ubuntu
       - test-ubuntu-go1-17
       - test-voidlinux
