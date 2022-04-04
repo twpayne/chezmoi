@@ -211,6 +211,7 @@ snapcrafts:
   publish: true
   grade: stable
   confinement: classic
+  license: MIT
   apps:
     chezmoi:
       command: chezmoi
