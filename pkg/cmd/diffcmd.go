@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"go.uber.org/multierr"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
 )
@@ -48,39 +47,26 @@ func (c *Config) newDiffCmd() *cobra.Command {
 }
 
 func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) (err error) {
-	builder := strings.Builder{}
+	builder := &strings.Builder{}
 	dryRunSystem := chezmoi.NewDryRunSystem(c.destSystem)
-	if c.Diff.useBuiltinDiff || c.Diff.Command == "" {
-		color := c.Color.Value(c.colorAutoFunc)
-		gitDiffSystem := chezmoi.NewGitDiffSystem(dryRunSystem, &builder, c.DestDirAbsPath, &chezmoi.GitDiffSystemOptions{
-			Color:   color,
-			Include: c.Diff.include.Sub(c.Diff.Exclude),
-			Reverse: c.Diff.Reverse,
-		})
-		if err = c.applyArgs(cmd.Context(), gitDiffSystem, c.DestDirAbsPath, args, applyArgsOptions{
-			include:   c.Diff.include.Sub(c.Diff.Exclude),
-			init:      c.Diff.init,
-			recursive: c.Diff.recursive,
-			umask:     c.Umask,
-		}); err != nil {
-			return
-		}
-		err = c.pageOutputString(builder.String(), c.Diff.Pager)
-		return
-	}
-	diffSystem := chezmoi.NewExternalDiffSystem(
-		dryRunSystem, c.Diff.Command, c.Diff.Args, c.DestDirAbsPath, &chezmoi.ExternalDiffSystemOptions{
-			Reverse: c.Diff.Reverse,
-		},
-	)
-	defer func() {
-		err = multierr.Append(err, diffSystem.Close())
-	}()
-	err = c.applyArgs(cmd.Context(), diffSystem, c.DestDirAbsPath, args, applyArgsOptions{
+	diffSystem := c.newDiffSystem(dryRunSystem, builder, c.DestDirAbsPath)
+	if err = c.applyArgs(cmd.Context(), diffSystem, c.DestDirAbsPath, args, applyArgsOptions{
 		include:   c.Diff.include.Sub(c.Diff.Exclude),
 		init:      c.Diff.init,
 		recursive: c.Diff.recursive,
 		umask:     c.Umask,
-	})
+	}); err != nil {
+		return
+	}
+	if err = c.pageOutputString(builder.String(), c.Diff.Pager); err != nil {
+		return
+	}
+	if closer, ok := diffSystem.(interface {
+		Close() error
+	}); ok {
+		if err = closer.Close(); err != nil {
+			return
+		}
+	}
 	return
 }

@@ -1364,6 +1364,23 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	return rootCmd, nil
 }
 
+// newDiffSystem returns a system that logs all changes to s to w using
+// diff.command if set or the builtin git diff otherwise.
+func (c *Config) newDiffSystem(s chezmoi.System, w io.Writer, dirAbsPath chezmoi.AbsPath) chezmoi.System {
+	if c.Diff.useBuiltinDiff || c.Diff.Command == "" {
+		options := &chezmoi.GitDiffSystemOptions{
+			Color:   c.Color.Value(c.colorAutoFunc),
+			Include: c.Diff.include.Sub(c.Diff.Exclude),
+			Reverse: c.Diff.Reverse,
+		}
+		return chezmoi.NewGitDiffSystem(s, w, dirAbsPath, options)
+	}
+	options := &chezmoi.ExternalDiffSystemOptions{
+		Reverse: c.Diff.Reverse,
+	}
+	return chezmoi.NewExternalDiffSystem(s, c.Diff.Command, c.Diff.Args, c.DestDirAbsPath, options)
+}
+
 // newSourceState returns a new SourceState with options.
 func (c *Config) newSourceState(
 	ctx context.Context, options ...chezmoi.SourceStateOption,
@@ -1630,14 +1647,8 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		c.destSystem = chezmoi.NewDryRunSystem(c.destSystem)
 	}
 	if c.Verbose {
-		c.sourceSystem = chezmoi.NewGitDiffSystem(c.sourceSystem, c.stdout, c.SourceDirAbsPath, &chezmoi.GitDiffSystemOptions{
-			Color:   color,
-			Include: c.Diff.include.Sub(c.Diff.Exclude),
-		})
-		c.destSystem = chezmoi.NewGitDiffSystem(c.destSystem, c.stdout, c.DestDirAbsPath, &chezmoi.GitDiffSystemOptions{
-			Color:   color,
-			Include: c.Diff.include.Sub(c.Diff.Exclude),
-		})
+		c.sourceSystem = c.newDiffSystem(c.sourceSystem, c.stdout, c.SourceDirAbsPath)
+		c.destSystem = c.newDiffSystem(c.destSystem, c.stdout, c.DestDirAbsPath)
 	}
 
 	if err := c.setEncryption(); err != nil {
