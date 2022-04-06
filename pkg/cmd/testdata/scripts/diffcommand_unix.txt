@@ -12,10 +12,18 @@ cmp stdout golden/diff.diff
 chezmoi diff --reverse
 stdout ^${WORK@R}/.*/\.file\s+${HOME@R}/\.file$
 
+# test that chezmoi apply --verbose uses diff.command
+chezmoi apply --verbose
+stdout ^${HOME@R}/\.file\s+${WORK@R}/.*/\.file$
+
 chhome home2/user
 
 # test that chezmoi diff appends the destination and target paths if diff.args does not contain any templates
 chezmoi diff
+stdout ^arg\s+${HOME@R}/\.file\s+${WORK@R}/.*/\.file$
+
+# test that chezmoi apply --verbose uses diff.command
+chezmoi apply --verbose
 stdout ^arg\s+${HOME@R}/\.file\s+${WORK@R}/.*/\.file$
 
 -- golden/diff.diff --

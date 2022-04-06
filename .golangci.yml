@@ -113,6 +113,7 @@ linters-settings:
     - github.com/twpayne/chezmoi/v2/pkg/chezmoi\.ActualStateEntry
     - github.com/twpayne/chezmoi/v2/pkg/chezmoi\.Encryption
     - github.com/twpayne/chezmoi/v2/pkg/chezmoi\.SourceStateEntry
+    - github.com/twpayne/chezmoi/v2/pkg/chezmoi\.System
     - github.com/twpayne/chezmoi/v2/pkg/chezmoi\.TargetStateEntry
     - github.com/twpayne/go-vfs/v4\.FS
     - stdlib
