@@ -12,6 +12,21 @@ rm $CHEZMOISOURCEDIR/dot_file
 chezmoi unmanaged
 cmp stdout golden/unmanaged-dir-file
 
+# test chezmoi unmanaged with arguments
+chezmoi unmanaged $HOME${/}.dir $HOME${/}.file
+cmp stdout golden/unmanaged-with-args
+
+# test chezmoi unmanaged, with child of unmanaged dir as argument
+chezmoi unmanaged $HOME${/}.dir/subdir
+cmp stdout golden/unmanaged-inside-unmanaged
+
+# test chezmoi unmanaged with managed arguments
+chezmoi unmanaged $HOME${/}.create $HOME${/}.file
+cmp stdout golden/unmanaged-with-some-managed
+
+# test that chezmoi unmanaged with absent paths should fail
+! chezmoi unmanaged $HOME${/}absent-path
+
 -- golden/unmanaged --
 .local
 -- golden/unmanaged-dir --
@@ -21,3 +36,10 @@ cmp stdout golden/unmanaged-dir-file
 .dir
 .file
 .local
+-- golden/unmanaged-with-args --
+.dir
+.file
+-- golden/unmanaged-inside-unmanaged --
+.dir/subdir
+-- golden/unmanaged-with-some-managed --
+.file
