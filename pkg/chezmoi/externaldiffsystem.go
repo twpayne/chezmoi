@@ -1,6 +1,7 @@
 package chezmoi
 
 import (
+	"bytes"
 	"errors"
 	"io/fs"
 	"os"
@@ -10,6 +11,7 @@ import (
 	"text/template"
 
 	vfs "github.com/twpayne/go-vfs/v4"
+	"go.uber.org/multierr"
 )
 
 // An ExternalDiffSystem is a DiffSystem that uses an external diff tool.
@@ -249,5 +251,29 @@ func (s *ExternalDiffSystem) runDiffCommand(destAbsPath, targetAbsPath AbsPath) 
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	return s.system.RunIdempotentCmd(cmd)
+	err := s.system.RunIdempotentCmd(cmd)
+
+	// Swallow exit status 1 errors if the files differ as diff commands
+	// traditionally exit with code 1 in this case.
+	var exitError *exec.ExitError
+	if errors.As(err, &exitError) && exitError.ProcessState.ExitCode() == 1 {
+		destData, err2 := s.ReadFile(destAbsPath)
+		switch {
+		case errors.Is(err2, fs.ErrNotExist):
+			// Do nothing.
+		case err2 != nil:
+			return multierr.Append(err, err2)
+		}
+		targetData, err2 := s.ReadFile(targetAbsPath)
+		switch {
+		case errors.Is(err2, fs.ErrNotExist):
+			// Do nothing.
+		case err2 != nil:
+			return multierr.Append(err, err2)
+		}
+		if !bytes.Equal(destData, targetData) {
+			return nil
+		}
+	}
+	return err
 }
