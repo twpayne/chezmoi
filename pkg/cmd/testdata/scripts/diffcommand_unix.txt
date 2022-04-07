@@ -26,6 +26,17 @@ stdout ^arg\s+${HOME@R}/\.file\s+${WORK@R}/.*/\.file$
 chezmoi apply --verbose
 stdout ^arg\s+${HOME@R}/\.file\s+${WORK@R}/.*/\.file$
 
+chhome home3/user
+
+# test that chezmoi diff ignores exit code 1 from diff.command if the files differ
+chezmoi diff
+
+chhome home4/user
+
+# test that chezmoi diff does not ignore exit code 2 from diff.command
+! chezmoi diff
+stderr 'exit status 2'
+
 -- golden/diff.diff --
 diff --git a/.file b/.file
 index bd729e8ee3cc005444c67dc77eed60016886b5e0..b508963510528ab709627ec448026a10a64c72ef 100644
@@ -46,4 +57,15 @@ index bd729e8ee3cc005444c67dc77eed60016886b5e0..b508963510528ab709627ec448026a10
     command = "echo"
     args = ["arg"]
 -- home2/user/.local/share/chezmoi/dot_file --
-# source
+# contents of .file
+-- home3/user/.config/chezmoi/chezmoi.toml --
+[diff]
+    command = "false"
+-- home3/user/.local/share/chezmoi/dot_file --
+# target contents of .file
+-- home4/user/.config/chezmoi/chezmoi.toml --
+[diff]
+    command = "sh"
+    args = ["-c", "exit 2"]
+-- home4/user/.local/share/chezmoi/dot_file --
+# target contents of .file
