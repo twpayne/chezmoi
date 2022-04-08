@@ -86,7 +86,7 @@ your initial config file.
 
 Specifically, if you have `.chezmoi.toml.tmpl` that looks like this:
 
-``` title="~/.config/chezmoi/chezmoi.toml"
+``` title="~/.local/share/chezmoi/.chezmoi.toml.tmpl"
 {{- $email := promptString "email" -}}
 
 [data]
