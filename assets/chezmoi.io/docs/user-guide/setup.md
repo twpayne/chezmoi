@@ -1,5 +1,22 @@
 # Setup
 
+## Understand chezmoi's files and directories
+
+chezmoi generates your dotfiles for your local machine. It combines two main
+sources of data:
+
+The *source directory*, `~/.local/share/chezmoi`, is common to all your
+machines, and is a clone of your dotfiles repo. Each file that chezmoi manages
+has a corresponding file in the source directory.
+
+The *config file*, typically `~/.config/chezmoi/chezmoi.toml` (although you can
+use JSON or YAML if you prefer), is specific to the local machine.
+
+Files whose contents are the same on all of your machines are copied verbatim
+from the source directory. Files which vary from machine to machine are executed
+as templates, typically using data from the local machine's config file to tune
+the final contents specific to the local machine.
+
 ## Use a hosted repo to manage your dotfiles across multiple machines
 
 chezmoi relies on your version control system and hosted repo to share changes
