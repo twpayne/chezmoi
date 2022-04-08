@@ -343,13 +343,14 @@ more: config
 Notice the file name doesn't have to end in `.tmpl`, as all files in the
 directory `.chezmoitemplates` are interpreted as templates.
 
-Create other files using the template `.local/share/chezmoi/small-font.yml.tmpl`
+Create other files using the template
+`~/.local/share/chezmoi/small-font.yml.tmpl`
 
 ```
 {{- template "alacritty" 12 -}}
 ```
 
-`.local/share/chezmoi/big-font.yml.tmpl`
+`~/.local/share/chezmoi/big-font.yml.tmpl`
 
 ```
 {{- template "alacritty" 18 -}}
@@ -378,7 +379,7 @@ arguments to the template, you can do it in two ways.
 
 This method is useful if you want to use the same template arguments multiple
 times, because you don't specify the arguments every time. Instead you specify
-them in the file `.config/chezmoi/chezmoi.toml`:
+them in the file `~/.config/chezmoi/chezmoi.toml`:
 
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [data.alacritty.big]
@@ -389,7 +390,7 @@ them in the file `.config/chezmoi/chezmoi.toml`:
     font = "DejaVu Sans Mono"
 ```
 
-Use the variables in `.local/share/chezmoi/.chezmoitemplates/alacritty`:
+Use the variables in `~/.local/share/chezmoi/.chezmoitemplates/alacritty`:
 
 ``` title="~/.local/share/chezmoi/.chezmoitemplates/alacritty"
 some: config
@@ -398,7 +399,7 @@ font: {{ .font }}
 more: config
 ```
 
-And connect them with `.local/share/chezmoi/small-font.yml.tmpl`:
+And connect them with `~/.local/share/chezmoi/small-font.yml.tmpl`:
 
 ``` title="~/.local/share/chezmoi/small-font.yml.tmpl"
 {{- template "alacritty" .alacritty.small -}}
@@ -410,7 +411,7 @@ the config file on every machine, but a feature will be added to avoid this.
 #### By passing a dictionary
 
 Using the same alacritty configuration as above, you can pass the arguments to
-it with a dictionary, for example `.local/share/chezmoi/small-font.yml.tmpl`:
+it with a dictionary, for example `~/.local/share/chezmoi/small-font.yml.tmpl`:
 
 ``` title="~/.local/share/chezmoi/small-font.yml.tmpl"
 {{- template "alacritty" dict "fontsize" 12 "font" "DejaVu Sans Mono" -}}
