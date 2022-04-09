@@ -25,6 +25,7 @@ stdout ^arg\s+${HOME@R}/\.file\s+${WORK@R}/.*/\.file$
 # test that chezmoi apply --verbose uses diff.command
 chezmoi apply --verbose
 stdout ^arg\s+${HOME@R}/\.file\s+${WORK@R}/.*/\.file$
+exists $HOME/.file
 
 chhome home3/user
 

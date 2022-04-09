@@ -174,7 +174,10 @@ func (s *ExternalDiffSystem) WriteFile(filename AbsPath, data []byte, perm fs.Fi
 	if err := os.WriteFile(targetAbsPath.String(), data, perm); err != nil {
 		return err
 	}
-	return s.runDiffCommand(filename, targetAbsPath)
+	if err := s.runDiffCommand(filename, targetAbsPath); err != nil {
+		return err
+	}
+	return s.system.WriteFile(filename, data, perm)
 }
 
 // WriteSymlink implements System.WriteSymlink.
