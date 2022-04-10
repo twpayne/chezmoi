@@ -25,3 +25,12 @@ called `private-key`, its value is available as:
 ```
 {{ keepassxcAttribute "SSH Key" "private-key" }}
 ```
+
+!!! info
+
+    The KeepassXC CLI does not currently support any persistent login, which
+    means that you will have to enter your password every time you run chezmoi.
+
+    Support for non-password authentication methods (e.g. YubiKey) is currently
+    poor. For more information, see [this GitHub
+    issue](https://github.com/twpayne/chezmoi/issues/2002).
