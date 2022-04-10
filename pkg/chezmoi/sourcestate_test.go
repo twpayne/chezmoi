@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	"fmt"
 	"io/fs"
 	"net/http"
 	"net/http/httptest"
@@ -1443,6 +1444,42 @@ func TestSourceStateReadExternal(t *testing.T) {
 	}
 }
 
+func TestSourceStateReadScriptsConcurrent(t *testing.T) {
+	for _, tc := range []struct {
+		name string
+		root interface{}
+	}{
+		{
+			name: "with_ignore",
+			root: map[string]interface{}{
+				"/home/user/.local/share/chezmoi": map[string]interface{}{
+					".chezmoiignore": ".chezmoiscripts/linux/**\n",
+					".chezmoiscripts": map[string]interface{}{
+						"linux":  manyScripts(1000),
+						"darwin": manyScripts(1000),
+					},
+				},
+			},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
+				ctx := context.Background()
+				system := NewRealSystem(fileSystem)
+				s := NewSourceState(
+					WithBaseSystem(system),
+					WithCacheDir(NewAbsPath("/home/user/.cache/chezmoi")),
+					WithDestDir(NewAbsPath("/home/user")),
+					WithSourceDir(NewAbsPath("/home/user/.local/share/chezmoi")),
+					WithSystem(system),
+				)
+
+				require.NoError(t, s.Read(ctx, nil))
+			})
+		})
+	}
+}
+
 func TestSourceStateReadExternalCache(t *testing.T) {
 	buffer := &bytes.Buffer{}
 	tarWriterSystem := NewTarWriterSystem(buffer, tar.Header{})
@@ -1637,4 +1674,12 @@ func withTemplates(templates map[string]*template.Template) SourceStateOption {
 	return func(s *SourceState) {
 		s.templates = templates
 	}
+}
+
+func manyScripts(amount int) map[string]interface{} {
+	scripts := map[string]interface{}{}
+	for i := 0; i < amount; i++ {
+		scripts[fmt.Sprintf("run_onchange_before_%d.sh", i)] = ""
+	}
+	return scripts
 }
