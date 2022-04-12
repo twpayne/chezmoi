@@ -77,6 +77,12 @@ cmp $CHEZMOISOURCEDIR/dot_file golden/dot_file
 chezmoi add --force $HOME/.file
 cmp $CHEZMOISOURCEDIR/dot_file golden/edited_dot_file
 
+chhome home5/user
+
+# test that chezmoi add creates parent directories as needed
+chezmoi add $HOME/.dir/subdir/file
+exists $CHEZMOISOURCEDIR/dot_dir/subdir/file
+
 -- golden/edited_dot_file --
 # contents of .file
 # edited
@@ -90,3 +96,5 @@ cmp $CHEZMOISOURCEDIR/dot_file golden/edited_dot_file
 # contents of .dir/ignore
 -- home4/user/.file --
 # contents of .file
+-- home5/user/.dir/subdir/file --
+# contents of .dir/subdir/file
