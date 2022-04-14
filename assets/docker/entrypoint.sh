@@ -2,6 +2,8 @@
 
 set -euf
 
+git config --global --add safe.directory /chezmoi
+
 GO=${GO:-go}
 
 cd /chezmoi

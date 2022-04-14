@@ -2,6 +2,8 @@
 
 set -eufo pipefail
 
+git config --global --add safe.directory /chezmoi
+
 GO_VERSION=$(awk '/GO_VERSION:/ { print $2 }' /chezmoi/.github/workflows/main.yml)
 
 go get "golang.org/dl/go${GO_VERSION}"
