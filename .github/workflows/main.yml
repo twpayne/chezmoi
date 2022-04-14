@@ -2,12 +2,12 @@ name: main
 on:
   pull_request:
     branches:
-    - master
+      - master
   push:
     branches:
-    - master
+      - master
     tags:
-    - v*
+      - v*
 env:
   AGE_VERSION: 1.0.0
   GO_VERSION: 1.18.1
@@ -17,34 +17,33 @@ jobs:
   build-website:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: install-website-dependencies
-      run: |
-        pip3 install mkdocs-material mkdocs-mermaid2-plugin mkdocs-redirects mkdocs-simple-hooks
-    - name: build-website
-      run:
-        ( cd assets/chezmoi.io && mkdocs build )
+      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - name: install-website-dependencies
+        run: |
+          pip3 install mkdocs-material mkdocs-mermaid2-plugin mkdocs-redirects mkdocs-simple-hooks
+      - name: build-website
+        run: ( cd assets/chezmoi.io && mkdocs build )
   changes:
     runs-on: ubuntu-20.04
     outputs:
       code: ${{ steps.filter.outputs.code }}
     steps:
-    - uses: actions/checkout@v3
-    - id: filter
-      uses: dorny/paths-filter@v2
-      with:
-        filters: |
-          code:
-          - '**/*.go'
-          - '**/*.ps1'
-          - '**/*.tmpl'
-          - '.github/workflows/**'
-          - 'Makefile'
-          - 'assets/docker/**'
-          - 'assets/scripts/**'
-          - 'assets/vagrant/**'
-          - 'go.*'
-          - 'pkg/**'
+      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - id: filter
+        uses: dorny/paths-filter@b2feaf19c27470162a626bd6fa8438ae5b263721 # pin@v2
+        with:
+          filters: |
+            code:
+            - '**/*.go'
+            - '**/*.ps1'
+            - '**/*.tmpl'
+            - '.github/workflows/**'
+            - 'Makefile'
+            - 'assets/docker/**'
+            - 'assets/scripts/**'
+            - 'assets/vagrant/**'
+            - 'go.*'
+            - 'pkg/**'
   codeql:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
@@ -52,35 +51,35 @@ jobs:
     permissions:
       security-events: write
     steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 1
-    - uses: github/codeql-action/init@v1
-      with:
-        languages: go
-    - uses: github/codeql-action/analyze@v1
+      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+        with:
+          fetch-depth: 1
+      - uses: github/codeql-action/init@e2cc7cc006b87d43538b16d71752753e7b85224d # pin@v1
+        with:
+          languages: go
+      - uses: github/codeql-action/analyze@e2cc7cc006b87d43538b16d71752753e7b85224d # pin@v1
   test-alpine:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v3
-    - name: test
-      env:
-        CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
-      run: |
-        ( cd assets/docker && ./test.sh alpine )
+      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - name: test
+        env:
+          CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
+        run: |
+          ( cd assets/docker && ./test.sh alpine )
   test-archlinux:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v3
-    - name: test
-      env:
-        CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
-      run: |
-        ( cd assets/docker && ./test.sh archlinux )
+      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - name: test
+        env:
+          CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
+        run: |
+          ( cd assets/docker && ./test.sh archlinux )
   test-debian-i386:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
@@ -88,27 +87,28 @@ jobs:
     env:
       VAGRANT_BOX: debian11-i386
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/cache@v3.0.1
-      with:
-        path: ~/.vagrant.d
-        key: ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-${{ hashFiles('assets/vagrant/debian11-i386.Vagrantfile') }}
-        restore-keys: |
-          ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-
-    - name: test
-      run: |
-        ( cd assets/vagrant && ./test.sh debian11-i386 )
+      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0 # pin@v3.0.1
+        with:
+          path: ~/.vagrant.d
+          key: ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-${{
+            hashFiles('assets/vagrant/debian11-i386.Vagrantfile') }}
+          restore-keys: |
+            ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-
+      - name: test
+        run: |
+          ( cd assets/vagrant && ./test.sh debian11-i386 )
   test-fedora:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v3
-    - name: test
-      env:
-        CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
-      run: |
-        ( cd assets/docker && ./test.sh fedora )
+      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - name: test
+        env:
+          CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
+        run: |
+          ( cd assets/docker && ./test.sh fedora )
   test-freebsd:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
@@ -116,332 +116,332 @@ jobs:
     env:
       VAGRANT_BOX: freebsd13
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/cache@v3.0.1
-      with:
-        path: ~/.vagrant.d
-        key: ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-${{ hashFiles('assets/vagrant/freebsd13.Vagrantfile') }}
-        restore-keys: |
-          ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-
-    - name: test
-      run: |
-        ( cd assets/vagrant && ./test.sh freebsd13 )
+      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0 # pin@v3.0.1
+        with:
+          path: ~/.vagrant.d
+          key: ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-${{
+            hashFiles('assets/vagrant/freebsd13.Vagrantfile') }}
+          restore-keys: |
+            ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-
+      - name: test
+        run: |
+          ( cd assets/vagrant && ./test.sh freebsd13 )
   test-macos:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: macos-11
     steps:
-    - uses: actions/setup-go@v2
-      with:
-        go-version: ${{ env.GO_VERSION }}
-    - uses: actions/checkout@v3
-    - uses: actions/cache@v3.0.1
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
-    - name: build
-      run: |
-        go build ./...
-    - name: run
-      run: |
-        go run . --version
-    - name: install-age
-      run: |
-        cd $(mktemp -d)
-        curl -fsSL https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-darwin-amd64.tar.gz | tar xzf -
-        sudo install -m 755 age/age /usr/local/bin
-        sudo install -m 755 age/age-keygen /usr/local/bin
-    - name: test
-      env:
-        CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
-      run: |
-        go test -race ./...
-    - name: test-install.sh
-      run: |
-        sh assets/scripts/install.sh
-        bin/chezmoi --version
+      - uses: actions/setup-go@bfdd3570ce990073878bf10f6b2d79082de49492 # pin@v2
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0 # pin@v3.0.1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: build
+        run: |
+          go build ./...
+      - name: run
+        run: |
+          go run . --version
+      - name: install-age
+        run: |
+          cd $(mktemp -d)
+          curl -fsSL https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-darwin-amd64.tar.gz | tar xzf -
+          sudo install -m 755 age/age /usr/local/bin
+          sudo install -m 755 age/age-keygen /usr/local/bin
+      - name: test
+        env:
+          CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
+        run: |
+          go test -race ./...
+      - name: test-install.sh
+        run: |
+          sh assets/scripts/install.sh
+          bin/chezmoi --version
   test-ubuntu:
     needs: changes
     runs-on: ubuntu-18.04
     steps:
-    - uses: actions/setup-go@v2
-      with:
-        go-version: ${{ env.GO_VERSION }}
-    - name: install-age
-      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      run: |
-        cd $(mktemp -d)
-        curl -fsSL https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-linux-amd64.tar.gz | tar xzf -
-        sudo install -m 755 age/age /usr/local/bin
-        sudo install -m 755 age/age-keygen /usr/local/bin
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-    - uses: actions/cache@v3.0.1
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
-    - name: build
-      run: |
-        go build ./...
-    - name: run
-      run: |
-        go run . --version
-    - name: test-umask-022
-      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      env:
-        CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
-      run: |
-        go test -ldflags="-X github.com/twpayne/chezmoi/pkg/chezmoitest.umaskStr=0o022" -race ./...
-    - name: test-umask-002
-      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      env:
-        CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
-      run: |
-        go test -ldflags="-X github.com/twpayne/chezmoi/pkg/chezmoitest.umaskStr=0o002" -race ./...
-    - name: test-install.sh
-      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      run: |
-        rm -f bin/chezmoi
-        sh assets/scripts/install.sh
-        bin/chezmoi --version
-    - name: install-release-dependencies
-      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      run: |
-        sudo apt-get update
-        sudo apt-get -yq --no-install-suggests --no-install-recommends install musl-tools snapcraft
-    - name: build-release
-      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: goreleaser/goreleaser-action@v2
-      with:
-        version: latest
-        args: release --skip-publish --snapshot
-    - name: test-release
-      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      run: |
-        # verify that version information is embedded correctly
-        file ./dist/chezmoi-cgo-glibc_linux_amd64/chezmoi | tee /dev/stderr | grep -q "dynamically linked"
-        file ./dist/chezmoi-cgo-musl_linux_amd64/chezmoi | tee /dev/stderr | grep -q "statically linked"
-        ./dist/chezmoi-cgo-glibc_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v2"
-        ./dist/chezmoi-cgo-musl_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v2"
-        ./dist/chezmoi-nocgo_linux_386/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v2"
-    - name: upload-artifact-chezmoi-darwin-amd64
-      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@v2
-      with:
-        name: chezmoi-darwin-amd64
-        path: dist/chezmoi-nocgo_darwin_amd64/chezmoi
-    - name: upload-artifact-chezmoi-darwin-arm64
-      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@v2
-      with:
-        name: chezmoi-darwin-arm64
-        path: dist/chezmoi-nocgo_darwin_arm64/chezmoi
-    - name: upload-artifact-chezmoi-linux-amd64
-      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@v2
-      with:
-        name: chezmoi-linux-amd64
-        path: dist/chezmoi-cgo-glibc_linux_amd64/chezmoi
-    - name: upload-artifact-chezmoi-linux-musl-amd64
-      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@v2
-      with:
-        name: chezmoi-linux-amd64-musl
-        path: dist/chezmoi-cgo-musl_linux_amd64/chezmoi
-    - name: upload-artifact-chezmoi-windows-amd64.exe
-      if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-      uses: actions/upload-artifact@v2
-      with:
-        name: chezmoi-windows-amd64.exe
-        path: dist/chezmoi-nocgo_windows_amd64/chezmoi.exe
+      - uses: actions/setup-go@bfdd3570ce990073878bf10f6b2d79082de49492 # pin@v2
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - name: install-age
+        if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+        run: |
+          cd $(mktemp -d)
+          curl -fsSL https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-linux-amd64.tar.gz | tar xzf -
+          sudo install -m 755 age/age /usr/local/bin
+          sudo install -m 755 age/age-keygen /usr/local/bin
+      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0 # pin@v3.0.1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: build
+        run: |
+          go build ./...
+      - name: run
+        run: |
+          go run . --version
+      - name: test-umask-022
+        if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+        env:
+          CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
+        run: |
+          go test -ldflags="-X github.com/twpayne/chezmoi/pkg/chezmoitest.umaskStr=0o022" -race ./...
+      - name: test-umask-002
+        if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+        env:
+          CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
+        run: |
+          go test -ldflags="-X github.com/twpayne/chezmoi/pkg/chezmoitest.umaskStr=0o002" -race ./...
+      - name: test-install.sh
+        if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+        run: |
+          rm -f bin/chezmoi
+          sh assets/scripts/install.sh
+          bin/chezmoi --version
+      - name: install-release-dependencies
+        if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get -yq --no-install-suggests --no-install-recommends install musl-tools snapcraft
+      - name: build-release
+        if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+        uses: goreleaser/goreleaser-action@b953231f81b8dfd023c58e0854a721e35037f28b # pin@v2
+        with:
+          version: latest
+          args: release --skip-publish --snapshot
+      - name: test-release
+        if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+        run: |
+          # verify that version information is embedded correctly
+          file ./dist/chezmoi-cgo-glibc_linux_amd64/chezmoi | tee /dev/stderr | grep -q "dynamically linked"
+          file ./dist/chezmoi-cgo-musl_linux_amd64/chezmoi | tee /dev/stderr | grep -q "statically linked"
+          ./dist/chezmoi-cgo-glibc_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v2"
+          ./dist/chezmoi-cgo-musl_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v2"
+          ./dist/chezmoi-nocgo_linux_386/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v2"
+      - name: upload-artifact-chezmoi-darwin-amd64
+        if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+        uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # pin@v2
+        with:
+          name: chezmoi-darwin-amd64
+          path: dist/chezmoi-nocgo_darwin_amd64/chezmoi
+      - name: upload-artifact-chezmoi-darwin-arm64
+        if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+        uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # pin@v2
+        with:
+          name: chezmoi-darwin-arm64
+          path: dist/chezmoi-nocgo_darwin_arm64/chezmoi
+      - name: upload-artifact-chezmoi-linux-amd64
+        if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+        uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # pin@v2
+        with:
+          name: chezmoi-linux-amd64
+          path: dist/chezmoi-cgo-glibc_linux_amd64/chezmoi
+      - name: upload-artifact-chezmoi-linux-musl-amd64
+        if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+        uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # pin@v2
+        with:
+          name: chezmoi-linux-amd64-musl
+          path: dist/chezmoi-cgo-musl_linux_amd64/chezmoi
+      - name: upload-artifact-chezmoi-windows-amd64.exe
+        if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+        uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # pin@v2
+        with:
+          name: chezmoi-windows-amd64.exe
+          path: dist/chezmoi-nocgo_windows_amd64/chezmoi.exe
   test-ubuntu-go1-17:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-18.04
     steps:
-    - uses: actions/setup-go@v2
-      with:
-        go-version: 1.17.x
-    - uses: actions/checkout@v3
-    - uses: actions/cache@v3.0.1
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-ubuntu-go-1-17-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-ubuntu-go-1-17-
-    - name: build
-      run: |
-        go build ./...
-    - name: run
-      run: |
-        go run . --version
-    - name: install-age
-      run: |
-        cd $(mktemp -d)
-        curl -fsSL https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-linux-amd64.tar.gz | tar xzf -
-        sudo install -m 755 age/age /usr/local/bin
-        sudo install -m 755 age/age-keygen /usr/local/bin
-    - name: test
-      env:
-        CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
-      run: |
-        go test ./...
+      - uses: actions/setup-go@bfdd3570ce990073878bf10f6b2d79082de49492 # pin@v2
+        with:
+          go-version: 1.17.x
+      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0 # pin@v3.0.1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-ubuntu-go-1-17-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-ubuntu-go-1-17-
+      - name: build
+        run: |
+          go build ./...
+      - name: run
+        run: |
+          go run . --version
+      - name: install-age
+        run: |
+          cd $(mktemp -d)
+          curl -fsSL https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-linux-amd64.tar.gz | tar xzf -
+          sudo install -m 755 age/age /usr/local/bin
+          sudo install -m 755 age/age-keygen /usr/local/bin
+      - name: test
+        env:
+          CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
+        run: |
+          go test ./...
   test-windows:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: windows-2019
     steps:
-    - uses: actions/setup-go@v2
-      with:
-        go-version: ${{ env.GO_VERSION }}
-    - uses: actions/checkout@v3
-    - uses: actions/cache@v3.0.1
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
-    - name: build
-      run: |
-        go build ./...
-    - name: run
-      run: |
-        go run . --version
-    - name: test
-      env:
-        CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
-      run: |
-        go test -race ./...
-    - name: test-install.ps1
-      run: |
-        if (Test-Path -Path bin/chezmoi.exe) { Remove-Item -Force bin/chezmoi.exe }
-        powershell -c assets/scripts/install.ps1
-        bin/chezmoi.exe --version
-    - name: test-install-irm
-      run: |
-        if (Test-Path -Path bin/chezmoi.exe) { Remove-Item -Force bin/chezmoi.exe }
-        (irm -useb https://chezmoi.io/get.ps1) | powershell -c -
-        bin/chezmoi.exe --version
-    - name: test-install-iwr
-      run: |
-        if (Test-Path -Path bin/chezmoi.exe) { Remove-Item -Force bin/chezmoi.exe }
-        (iwr -useb https://chezmoi.io/get.ps1).ToString() | powershell -c -
-        bin/chezmoi.exe --version
+      - uses: actions/setup-go@bfdd3570ce990073878bf10f6b2d79082de49492 # pin@v2
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0 # pin@v3.0.1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: build
+        run: |
+          go build ./...
+      - name: run
+        run: |
+          go run . --version
+      - name: test
+        env:
+          CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
+        run: |
+          go test -race ./...
+      - name: test-install.ps1
+        run: |
+          if (Test-Path -Path bin/chezmoi.exe) { Remove-Item -Force bin/chezmoi.exe }
+          powershell -c assets/scripts/install.ps1
+          bin/chezmoi.exe --version
+      - name: test-install-irm
+        run: |
+          if (Test-Path -Path bin/chezmoi.exe) { Remove-Item -Force bin/chezmoi.exe }
+          (irm -useb https://chezmoi.io/get.ps1) | powershell -c -
+          bin/chezmoi.exe --version
+      - name: test-install-iwr
+        run: |
+          if (Test-Path -Path bin/chezmoi.exe) { Remove-Item -Force bin/chezmoi.exe }
+          (iwr -useb https://chezmoi.io/get.ps1).ToString() | powershell -c -
+          bin/chezmoi.exe --version
   test-voidlinux:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v3
-    - name: test
-      env:
-        CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
-      run: |
-        ( cd assets/docker && ./test.sh voidlinux )
+      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - name: test
+        env:
+          CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
+        run: |
+          ( cd assets/docker && ./test.sh voidlinux )
   check:
     runs-on: ubuntu-18.04
     steps:
-    - uses: actions/setup-go@v2
-      with:
-        go-version: ${{ env.GO_VERSION }}
-    - uses: actions/checkout@v3
-    - uses: actions/cache@v3.0.1
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
-    - name: generate
-      run: |
-        go generate
-        git diff --exit-code
-    - uses: ludeeus/action-shellcheck@1.1.0
-      with:
-        ignore: completions
-    - name: lint-whitespace
-      run: |
-        go run ./internal/cmds/lint-whitespace
-    - name: findtypos
-      run: |
-        go install github.com/twpayne/findtypos@v0.0.1
-        findtypos -format=github-actions chezmoi .
+      - uses: actions/setup-go@bfdd3570ce990073878bf10f6b2d79082de49492 # pin@v2
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0 # pin@v3.0.1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: generate
+        run: |
+          go generate
+          git diff --exit-code
+      - uses: ludeeus/action-shellcheck@94e0aab03ca135d11a35e5bfc14e6746dc56e7e9 # pin@1.1.0
+        with:
+          ignore: completions
+      - name: lint-whitespace
+        run: |
+          go run ./internal/cmds/lint-whitespace
+      - name: findtypos
+        run: |
+          go install github.com/twpayne/findtypos@v0.0.1
+          findtypos -format=github-actions chezmoi .
   lint:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-18.04
     steps:
-    - uses: actions/setup-go@v2
-      with:
-        go-version: ${{ env.GO_VERSION }}
-    - uses: actions/checkout@v3
-    - uses: golangci/golangci-lint-action@v3.1.0
-      with:
-        version: v${{ env.GOLANGCI_LINT_VERSION }}
-        args: --timeout=5m
+      - uses: actions/setup-go@bfdd3570ce990073878bf10f6b2d79082de49492 # pin@v2
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - uses: golangci/golangci-lint-action@b517f99ae23d86ecc4c0dec08dcf48d2336abc29 # pin@v3.1.0
+        with:
+          version: v${{ env.GOLANGCI_LINT_VERSION }}
+          args: --timeout=5m
   release: # FIXME this should be merged into test-ubuntu above
     if: startsWith(github.ref, 'refs/tags/')
     needs:
-    - build-website
-    - check
-    - lint
-    - test-alpine
-    - test-archlinux
-    - test-debian-i386
-    - test-fedora
-    - test-freebsd
-    - test-macos
-    - test-ubuntu
-    - test-ubuntu-go1-17
-    - test-voidlinux
-    - test-windows
+      - build-website
+      - check
+      - lint
+      - test-alpine
+      - test-archlinux
+      - test-debian-i386
+      - test-fedora
+      - test-freebsd
+      - test-macos
+      - test-ubuntu
+      - test-ubuntu-go1-17
+      - test-voidlinux
+      - test-windows
     runs-on: ubuntu-18.04
     steps:
-    - name: install-build-dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get -yq --no-install-suggests --no-install-recommends install musl-tools snapcraft
-    - uses: actions/setup-go@v2
-      with:
-        go-version: ${{ env.GO_VERSION }}
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-    - uses: actions/cache@v3.0.1
-      with:
-        path: ~/go/pkg/mod
-        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-        restore-keys: |
-          ${{ runner.os }}-go-
-    - name: snapcraft-login
-      env:
-        SNAPCRAFT_LOGIN: ${{ secrets.SNAPCRAFT_LOGIN }}
-      run: |
-        snapcraft login --with <(echo "$SNAPCRAFT_LOGIN" | base64 -d)
-    - uses: goreleaser/goreleaser-action@v2
-      with:
-        version: latest
-        args: release
-      env:
-        GITHUB_TOKEN: ${{ secrets.GORELEASER_GITHUB_TOKEN }}
-    # The following is needed because chezmoi upgrade and
-    # assets/scripts/install.sh have inconsistently looked for
-    # chezmoi_${VERSION}_checksums.txt and checksums.txt. To ensure
-    # compatibility with all versions, upload checksums.txt as well.
-    - name: upload-checksums.txt
-      run: |
-        VERSION=${GITHUB_REF##*/v}
-        cp dist/chezmoi_${VERSION}_checksums.txt dist/checksums.txt
-        gh release upload v${VERSION} dist/checksums.txt
-      env:
-        GITHUB_TOKEN: ${{ secrets.GORELEASER_GITHUB_TOKEN }}
-    - name: install-website-dependencies
-      run: |
-        pip3 install mkdocs-material mkdocs-mermaid2-plugin mkdocs-redirects mkdocs-simple-hooks
-    - name: deploy-website
-      run:
-        ( cd assets/chezmoi.io && mkdocs build && mkdocs gh-deploy )
+      - name: install-build-dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get -yq --no-install-suggests --no-install-recommends install musl-tools snapcraft
+      - uses: actions/setup-go@bfdd3570ce990073878bf10f6b2d79082de49492 # pin@v2
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+        with:
+          fetch-depth: 0
+      - uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0 # pin@v3.0.1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - name: snapcraft-login
+        env:
+          SNAPCRAFT_LOGIN: ${{ secrets.SNAPCRAFT_LOGIN }}
+        run: |
+          snapcraft login --with <(echo "$SNAPCRAFT_LOGIN" | base64 -d)
+      - uses: goreleaser/goreleaser-action@b953231f81b8dfd023c58e0854a721e35037f28b # pin@v2
+        with:
+          version: latest
+          args: release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GORELEASER_GITHUB_TOKEN }}
+      # The following is needed because chezmoi upgrade and
+      # assets/scripts/install.sh have inconsistently looked for
+      # chezmoi_${VERSION}_checksums.txt and checksums.txt. To ensure
+      # compatibility with all versions, upload checksums.txt as well.
+      - name: upload-checksums.txt
+        run: |
+          VERSION=${GITHUB_REF##*/v}
+          cp dist/chezmoi_${VERSION}_checksums.txt dist/checksums.txt
+          gh release upload v${VERSION} dist/checksums.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GORELEASER_GITHUB_TOKEN }}
+      - name: install-website-dependencies
+        run: |
+          pip3 install mkdocs-material mkdocs-mermaid2-plugin mkdocs-redirects mkdocs-simple-hooks
+      - name: deploy-website
+        run: ( cd assets/chezmoi.io && mkdocs build && mkdocs gh-deploy )

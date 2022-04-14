@@ -3,18 +3,18 @@ name: misspell
 on:
   push:
     branches:
-    - master
+      - master
     tags:
-    - v*
-  pull_request:
+      - v*
+  pull_request: null
 
 jobs:
   misspell:
     name: spellcheck
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
       - name: misspell
-        uses: reviewdog/action-misspell@v1
+        uses: reviewdog/action-misspell@3347037502cd60235723196fe0084fd1c11ff33a # pin@v1
         with:
           locale: US
