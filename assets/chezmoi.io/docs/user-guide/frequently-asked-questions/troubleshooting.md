@@ -161,3 +161,39 @@ subdirectory of your home directory you can use:
 scriptTempDir = "~/tmp"
 ```
 
+## chezmoi reports `chezmoi: mkdir xxxxx: no such file or directory` when trying to manage file or directory
+
+This error occurs when you try to add directory/file to be managed via chezmoi
+but the same directory is managed via `.chezmoiexternal`
+
+A workaround can be applied in a such case via manually creating import directory
+in chezmoi home directory (ideally `.local/share/chezmoi`) and create `.keep`
+file.
+
+for example, `.chezmoiexternal` has below configuration,
+
+```toml
+[".config/nvim"]
+  type = "git-repo"
+  url = "https://github.com/NvChad/NvChad.git"
+  refreshPeriod = "168h"
+  [".config/nvim".pull]
+    args = ["--ff-only"]
+```
+
+Now `chezmoi add ~/.config/direnv/direnvrc` will raise error as below:
+
+```sh
+chezmoi: mkdir /home/<user>/.local/share/chezmoi/dot_config/direnv: no such file or directory
+```
+
+But workaround can be applied as below,
+
+```sh
+$ chezmoi cd
+$ mkdir -p dot_config/
+$ touch dot_config/.keep
+```
+
+Now once that done `chezmoi add ~/.config/direnv/direnvrc` should work. For
+reference see this [issue](https://github.com/twpayne/chezmoi/issues/2006)
