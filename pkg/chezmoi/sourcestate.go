@@ -1051,6 +1051,9 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			args = append(args, external.Clone.Args...)
 			args = append(args, external.URL, destAbsPath.String())
 			cmd := exec.Command("git", args...)
+			cmd.Stdin = os.Stdin
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
 			sourceStateCommand := &SourceStateCommand{
 				cmd:           cmd,
 				external:      true,
@@ -1067,6 +1070,9 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			args = append(args, external.Pull.Args...)
 			cmd := exec.Command("git", args...)
 			cmd.Dir = destAbsPath.String()
+			cmd.Stdin = os.Stdin
+			cmd.Stdout = os.Stdout
+			cmd.Stderr = os.Stderr
 			sourceStateCommand := &SourceStateCommand{
 				cmd:           cmd,
 				external:      true,
