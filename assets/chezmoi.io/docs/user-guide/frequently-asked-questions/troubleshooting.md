@@ -197,3 +197,20 @@ $ touch dot_config/.keep
 
 Now once that done `chezmoi add ~/.config/direnv/direnvrc` should work. For
 reference see [this issue](https://github.com/twpayne/chezmoi/issues/2006)
+
+## chezmoi reports `fork/exec ...: no such file or directory` when running scripts on Termux
+
+You are likely using a hardcoded script interpreter in the shebang line of your
+scripts, e.g.
+
+```bash
+#!/bin/bash
+```
+
+`/bin/bash` does not exist on Termux. You must update the shebang line to point
+to the actual bash interpreter. The easiest way to do this is make the script a
+template and use the `lookPath` template function, for example:
+
+```
+#!{{ lookPath "bash" }}
+```
