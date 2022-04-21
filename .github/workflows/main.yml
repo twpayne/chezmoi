@@ -225,17 +225,17 @@ jobs:
         if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
         run: |
           # verify that version information is embedded correctly
-          file ./dist/chezmoi-cgo-glibc_linux_amd64/chezmoi | tee /dev/stderr | grep -q "dynamically linked"
-          file ./dist/chezmoi-cgo-musl_linux_amd64/chezmoi | tee /dev/stderr | grep -q "statically linked"
-          ./dist/chezmoi-cgo-glibc_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v2"
-          ./dist/chezmoi-cgo-musl_linux_amd64/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v2"
+          file ./dist/chezmoi-cgo-glibc_linux_amd64_v1/chezmoi | tee /dev/stderr | grep -q "dynamically linked"
+          file ./dist/chezmoi-cgo-musl_linux_amd64_v1/chezmoi | tee /dev/stderr | grep -q "statically linked"
+          ./dist/chezmoi-cgo-glibc_linux_amd64_v1/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v2"
+          ./dist/chezmoi-cgo-musl_linux_amd64_v1/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v2"
           ./dist/chezmoi-nocgo_linux_386/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v2"
       - name: upload-artifact-chezmoi-darwin-amd64
         if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
         uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # pin@v2
         with:
           name: chezmoi-darwin-amd64
-          path: dist/chezmoi-nocgo_darwin_amd64/chezmoi
+          path: dist/chezmoi-nocgo_darwin_amd64_v1/chezmoi
       - name: upload-artifact-chezmoi-darwin-arm64
         if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
         uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # pin@v2
@@ -247,19 +247,19 @@ jobs:
         uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # pin@v2
         with:
           name: chezmoi-linux-amd64
-          path: dist/chezmoi-cgo-glibc_linux_amd64/chezmoi
+          path: dist/chezmoi-cgo-glibc_linux_amd64_v1/chezmoi
       - name: upload-artifact-chezmoi-linux-musl-amd64
         if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
         uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # pin@v2
         with:
           name: chezmoi-linux-amd64-musl
-          path: dist/chezmoi-cgo-musl_linux_amd64/chezmoi
+          path: dist/chezmoi-cgo-musl_linux_amd64_v1/chezmoi
       - name: upload-artifact-chezmoi-windows-amd64.exe
         if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
         uses: actions/upload-artifact@82c141cc518b40d92cc801eee768e7aafc9c2fa2 # pin@v2
         with:
           name: chezmoi-windows-amd64.exe
-          path: dist/chezmoi-nocgo_windows_amd64/chezmoi.exe
+          path: dist/chezmoi-nocgo_windows_amd64_v1/chezmoi.exe
   test-ubuntu-go1-17:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
