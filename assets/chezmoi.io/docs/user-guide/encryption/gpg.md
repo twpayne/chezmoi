@@ -58,3 +58,28 @@ chezmoi will encrypt files:
 ```sh
 gpg --armor --symmetric
 ```
+
+## Encrypting files with a passphrase
+
+If you want to encrypt your files with a passphrase, but don't mind the
+passphrase being stored in plaintext on your machines, then you can use the
+following configuration:
+
+``` title="~/.local/share/chezmoi/.chezmoi.toml.tmpl"
+{{ $passphrase := "" -}}
+{{ if hasKey . "passphrase" -}}
+{{   $passphrase = .passphrase -}}
+{{ else -}}
+{{   $passphrase = promptString "passphrase" -}}
+{{ end -}}
+
+encryption = "gpg"
+[data]
+    passphrase = {{ $passphrase | quote }}
+[gpg]
+    symmetric = true
+    args = ["--batch", "--passphrase", {{ $passphrase | quote }}, "--no-symkey-cache"]
+```
+
+This will prompt you for the passphrase the first time you run `chezmoi init` on
+a new machine, and then remember the passphrase in your configuration file.
