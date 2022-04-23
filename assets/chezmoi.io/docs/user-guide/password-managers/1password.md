@@ -75,7 +75,7 @@ and returns it as structured data. For example, if the output is:
 Then you can access the password field with the syntax
 
 ```
-{{ (onepassword "$UUID").fields[1].value }}
+{{ (index (onepassword "$UUID").fields 1).value }}
 ```
 
 or:
