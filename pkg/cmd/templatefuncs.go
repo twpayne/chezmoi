@@ -3,10 +3,12 @@ package cmd
 import (
 	"errors"
 	"io/fs"
+	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
 
+	"github.com/bmatcuk/doublestar/v4"
 	"github.com/bradenhilton/mozillainstallhash"
 	"howett.net/plist"
 
@@ -23,6 +25,33 @@ func (c *Config) fromYamlTemplateFunc(s string) interface{} {
 		panic(err)
 	}
 	return data
+}
+
+func (c *Config) globTemplateFunc(pattern string) []string {
+	wd, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	defer func() {
+		value := recover()
+		err := os.Chdir(wd)
+		if value != nil {
+			panic(value)
+		}
+		if err != nil {
+			panic(err)
+		}
+	}()
+
+	if err := os.Chdir(c.DestDirAbsPath.String()); err != nil {
+		panic(err)
+	}
+
+	matches, err := doublestar.Glob(c.fileSystem, pattern)
+	if err != nil {
+		panic(err)
+	}
+	return matches
 }
 
 func (c *Config) includeTemplateFunc(filename string) string {

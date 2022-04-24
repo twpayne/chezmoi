@@ -428,6 +428,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"fromYaml":                 c.fromYamlTemplateFunc,
 		"gitHubKeys":               c.gitHubKeysTemplateFunc,
 		"gitHubLatestRelease":      c.gitHubLatestReleaseTemplateFunc,
+		"glob":                     c.globTemplateFunc,
 		"gopass":                   c.gopassTemplateFunc,
 		"gopassRaw":                c.gopassRawTemplateFunc,
 		"include":                  c.includeTemplateFunc,

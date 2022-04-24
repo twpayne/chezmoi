@@ -3,6 +3,10 @@
 [!windows] chmod 755 bin/ioreg
 [windows] unix2dos bin/chezmoi-output-test.cmd
 
+# test glob template function
+chezmoi execute-template '{{ glob "*.txt" | join "\n" }}{{ "\n" }}'
+cmp stdout golden/glob
+
 # test ioreg template function
 [darwin] chezmoi execute-template '{{ index ioreg "IOKitBuildVersion" }}'
 [darwin] stdout 'Darwin Kernel Version'
@@ -122,6 +126,9 @@ echo '</dict>'
 echo '</plist>'
 -- golden/expected --
 255
+-- golden/glob --
+file1.txt
+file2.txt
 -- golden/include-abspath --
 # contents of .include
 -- golden/include-relpath --
@@ -130,3 +137,5 @@ echo '</plist>'
 # contents of .include
 -- home/user/.local/share/chezmoi/.include --
 # contents of .local/share/chezmoi/.include
+-- home/user/file1.txt --
+-- home/user/file2.txt --
