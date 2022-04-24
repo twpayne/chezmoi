@@ -151,6 +151,7 @@ nav:
       - decrypt: reference/templates/functions/decrypt.md
       - encrypt: reference/templates/functions/encrypt.md
       - fromYaml: reference/templates/functions/fromYaml.md
+      - glob: reference/templates/functions/glob.md
       - include: reference/templates/functions/include.md
       - ioreg: reference/templates/functions/ioreg.md
       - joinPath: reference/templates/functions/joinPath.md
