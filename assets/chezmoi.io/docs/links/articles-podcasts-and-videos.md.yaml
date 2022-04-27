@@ -274,3 +274,12 @@ articles:
   version: '2.14.0'
   title: 'Tools I love: Chezmoi'
   url: 'https://messmore.org/post/chezmoi/'
+- date: '2022-04-25'
+  version: '2.15.1'
+  title: 'Easily moving Linux installs'
+  url: 'https://christitus.com/chezmoi/'
+- date: '2022-04-27'
+  version: '2.15.1'
+  format: Video
+  title: 'Easily moving Linux installs'
+  url: 'https://www.youtube.com/watch?v=x6063EuxfEA'
