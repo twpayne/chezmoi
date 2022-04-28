@@ -940,12 +940,18 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 	}
 
 	var osRelease map[string]interface{}
-	if rawOSRelease, err := chezmoi.OSRelease(c.baseSystem); err == nil {
-		osRelease = upperSnakeCaseToCamelCaseMap(rawOSRelease)
-	} else {
-		c.logger.Info().
-			Err(err).
-			Msg("chezmoi.OSRelease")
+	switch runtime.GOOS {
+	case "openbsd", "windows":
+		// Don't populate osRelease on OSes where /etc/os-release does not
+		// exist.
+	default:
+		if rawOSRelease, err := chezmoi.OSRelease(c.baseSystem); err == nil {
+			osRelease = upperSnakeCaseToCamelCaseMap(rawOSRelease)
+		} else {
+			c.logger.Info().
+				Err(err).
+				Msg("chezmoi.OSRelease")
+		}
 	}
 
 	executable, _ := os.Executable()
