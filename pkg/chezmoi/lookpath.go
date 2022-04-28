@@ -5,29 +5,25 @@ import (
 	"sync"
 )
 
-type lookPathCacheValue struct {
-	path string
-	err  error
-}
-
 var (
 	lookPathCacheMutex sync.Mutex
-	lookPathCache      = make(map[string]lookPathCacheValue)
+	lookPathCache      = make(map[string]string)
 )
 
-// LookPath is like os/exec.LookPath except that results are cached.
+// LookPath is like os/exec.LookPath except that the first positive result is
+// cached.
 func LookPath(file string) (string, error) {
 	lookPathCacheMutex.Lock()
 	defer lookPathCacheMutex.Unlock()
 
-	if result, ok := lookPathCache[file]; ok {
-		return result.path, result.err
+	if path, ok := lookPathCache[file]; ok {
+		return path, nil
 	}
 
 	path, err := exec.LookPath(file)
-	lookPathCache[file] = lookPathCacheValue{
-		path: path,
-		err:  err,
+	if err == nil {
+		lookPathCache[file] = path
 	}
+
 	return path, err
 }
