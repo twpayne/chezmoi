@@ -333,17 +333,6 @@ jobs:
           if (Test-Path -Path bin/chezmoi.exe) { Remove-Item -Force bin/chezmoi.exe }
           (iwr -useb https://chezmoi.io/get.ps1).ToString() | powershell -c -
           bin/chezmoi.exe --version
-  test-voidlinux:
-    needs: changes
-    if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
-      - name: test
-        env:
-          CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
-        run: |
-          ( cd assets/docker && ./test.sh voidlinux )
   check:
     runs-on: ubuntu-18.04
     steps:
@@ -398,7 +387,6 @@ jobs:
       - test-macos
       - test-ubuntu
       - test-ubuntu-go1-17
-      - test-voidlinux
       - test-windows
     runs-on: ubuntu-18.04
     steps:
