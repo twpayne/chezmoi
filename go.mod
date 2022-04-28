@@ -14,9 +14,9 @@ require (
 	github.com/google/gops v0.3.22
 	github.com/google/renameio/v2 v2.0.0
 	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79
-	github.com/mitchellh/mapstructure v1.4.3
+	github.com/mitchellh/mapstructure v1.5.0
 	github.com/muesli/combinator v0.3.0
-	github.com/pelletier/go-toml v1.9.4
+	github.com/pelletier/go-toml v1.9.5
 	github.com/rogpeppe/go-internal v1.8.1
 	github.com/rs/zerolog v1.26.1
 	github.com/sergi/go-diff v1.1.0
@@ -34,7 +34,7 @@ require (
 	go.uber.org/multierr v1.8.0
 	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
-	golang.org/x/sys v0.0.0-20220412211240-33da011f77ad
+	golang.org/x/sys v0.0.0-20220422013727-9388b58f7150
 	golang.org/x/term v0.0.0-20220411215600-e5f449aeb171
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 	howett.net/plist v1.0.0
