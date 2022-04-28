@@ -12,7 +12,7 @@ exec git commit --message 'initial commit'
 cd $WORK
 
 # test that chezmoi apply clones the git repo
-chezmoi apply --debug
+chezmoi apply
 cmp $HOME/.dir/.file golden/.file
 
 chhome home2/user
@@ -20,7 +20,7 @@ mkgitconfig
 expandenv $WORK/home2/user/.local/share/chezmoi/.chezmoiexternal.toml
 
 # test that chezmoi apply clones the git repo
-chezmoi apply --debug
+chezmoi apply
 cmp $HOME/.dir/.file golden/.file
 
 # update the git repo
