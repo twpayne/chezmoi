@@ -90,7 +90,7 @@ test-docker:
 
 .PHONY: test-vagrant
 test-vagrant:
-	( cd assets/vagrant && ./test.sh debian11-i386 freebsd13 )
+	( cd assets/vagrant && ./test.sh debian11-i386 freebsd13 openbsd7 )
 
 .PHONY: coverage-html
 coverage-html: coverage
