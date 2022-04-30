@@ -2,8 +2,9 @@
 
 Manage your dotfiles across multiple diverse machines, securely.
 
-With chezmoi, you can install chezmoi and your dotfiles on a new, empty machine
-with a single command:
+With chezmoi, pronounced /ʃeɪ mwa/ (shay-moi), you can install chezmoi and your
+dotfiles from your GitHub dotfiles repo on a new, empty machine with a single
+command:
 
 ```console
 $ sh -c "$(curl -fsLS chezmoi.io/get)" -- init --apply $GITHUB_USERNAME
