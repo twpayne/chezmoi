@@ -35,7 +35,9 @@ that:
   You can ensure this by running `make lint`.
 
 * The commit messages follow the [conventional commits
-  specification](https://www.conventionalcommits.org/en/v1.0.0/).
+  specification](https://www.conventionalcommits.org/en/v1.0.0/). chezmoi's
+  release notes are generated directly from the commit messages. For trivial or
+  user-invisible changes, please use the prefix `chore:`.
 
 * Commits are logically separate, with no merge or "fixup" commits.
 
