@@ -28,7 +28,7 @@ merge-all` will help you resolve any differences.
 * If you have configured git auto commits or git auto pushes then `chezmoi edit`
   will create commits and push them for you.
 
-If you chose to edit files in the source state and you're using VIM then then
+If you chose to edit files in the source state and you're using VIM then
 [`github.com/alker0/chezmoi.vim`](https://github.com/alker0/chezmoi.vim) gives
 you syntax highlighting, however you edit your files.
 
