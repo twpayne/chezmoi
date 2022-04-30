@@ -19,7 +19,7 @@ merge-all` will help you resolve any differences.
 
 * If the dotfile is encrypted in the source state, then `chezmoi edit` will
   decrypt it to a private directory, open that file in your `$EDITOR`, and then
-  re-encrypt the file when you quit your editor. That makes encryption
+  re-encrypt the file when you quit your editor. This makes encryption
   transparent.
 
 * With the `--diff` and `--apply` options you can see what would change and
@@ -35,9 +35,9 @@ you syntax highlighting, however you edit your files.
 ## Why doesn't chezmoi use symlinks like GNU Stow?
 
 Symlinks are first class citizens in chezmoi: chezmoi supports creating them,
-updating them, removing them, and even more advanced features not found
-elsewhere like having the same symlink point to different targets on different
-machines by using a template.
+updating them, removing them, and even more advanced features not found in other
+dotfile managers like having the same symlink point to different targets on
+different machines by using a template.
 
 With chezmoi, you only use a symlink where you really need a symlink, in
 contrast to some other dotfile managers (e.g. GNU Stow) which require the use
@@ -52,9 +52,9 @@ final location from the contents of the centralized directory. This approach
 allows chezmoi to provide features that are not possible when using symlinks,
 for example having files that are encrypted, executable, private, or templates.
 
-There is nothing special about dotfiles managed by chezmoi, whereas dotfiles
-managed with GNU Stow are special because they're actually symlinks to
-somewhere else.
+There is nothing special about dotfiles managed by chezmoi whereas dotfiles
+managed with GNU Stow are special because they're actually symlinks to somewhere
+else.
 
 The only advantage to using GNU Stow-style symlinks is that changes that you
 make to the dotfile's contents in the centralized directory are immediately
@@ -63,10 +63,8 @@ visible, whereas chezmoi currently requires you to run `chezmoi apply` or
 too, see [#752](https://github.com/twpayne/chezmoi/issues/752).
 
 If you really want to use symlinks, then chezmoi provides a [symlink
-mode](/reference/target-types/#symlink-mode) which uses symlinks where
-possible.
-
-You can configure chezmoi to work like GNU Stow and have it create a set of
+mode](/reference/target-types/#symlink-mode) which uses symlinks where possible.
+This configures chezmoi to work like GNU Stow and have it create a set of
 symlinks back to a central directory, but this currently requires a bit of
 manual work (as described in
 [#167](https://github.com/twpayne/chezmoi/issues/167)). chezmoi might get some
@@ -116,7 +114,7 @@ chezmoi's decision to store metadata in filenames is a deliberate, practical,
 compromise.
 
 Firstly, almost all programs store metadata in filenames: the filename's
-extension. chezmoi extends this to storing metadata in attributes in the
+extension. chezmoi extends the filename to storing metadata in attributes in the
 filename's prefix as well.
 
 The `dot_` attribute makes it transparent which dotfiles are managed by chezmoi
