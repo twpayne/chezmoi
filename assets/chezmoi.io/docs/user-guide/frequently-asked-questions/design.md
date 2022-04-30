@@ -138,7 +138,7 @@ to the common configuration file. Automating updates to configuration files
 requires a round trip (read config file, update config, write config) and it is
 not always possible preserve comments and formatting.
 
-chezmoi's attributes of `executable_`, `private_`, and `readonly_` allow a the
+chezmoi's attributes of `executable_`, `private_`, and `readonly_` allow the
 file permissions `0o644`, `0o755`, `0o600`, `0o700`, `0o444`, `0o555`, `0o400`,
 and `0o500` to be represented. Directories can only have permissions `0o755`,
 `0o700`, or `0o500`. In practice, these cover all permissions typically used
