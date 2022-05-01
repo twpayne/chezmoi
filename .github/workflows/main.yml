@@ -88,7 +88,7 @@ jobs:
       VAGRANT_BOX: debian11-i386
     steps:
       - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
-      - uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0 # pin@v3.0.1
+      - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09 # pin@v3.0.1
         with:
           path: ~/.vagrant.d
           key: ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-${{
@@ -117,7 +117,7 @@ jobs:
       VAGRANT_BOX: freebsd13
     steps:
       - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
-      - uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0 # pin@v3.0.1
+      - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09 # pin@v3.0.1
         with:
           path: ~/.vagrant.d
           key: ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-${{
@@ -136,7 +136,7 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION }}
       - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
-      - uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0 # pin@v3.0.1
+      - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09 # pin@v3.0.1
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
@@ -171,7 +171,7 @@ jobs:
       VAGRANT_BOX: openbsd7
     steps:
       - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
-      - uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0 # pin@v3.0.1
+      - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09 # pin@v3.0.1
         with:
           path: ~/.vagrant.d
           key: ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-${{
@@ -198,7 +198,7 @@ jobs:
       - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
         with:
           fetch-depth: 0
-      - uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0 # pin@v3.0.1
+      - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09 # pin@v3.0.1
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
@@ -287,7 +287,7 @@ jobs:
         with:
           go-version: 1.17.x
       - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
-      - uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0 # pin@v3.0.1
+      - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09 # pin@v3.0.1
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-ubuntu-go-1-17-${{ hashFiles('**/go.sum') }}
@@ -319,7 +319,7 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION }}
       - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
-      - uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0 # pin@v3.0.1
+      - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09 # pin@v3.0.1
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
@@ -369,7 +369,7 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION }}
       - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
-      - uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0 # pin@v3.0.1
+      - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09 # pin@v3.0.1
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
@@ -431,7 +431,7 @@ jobs:
       - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
         with:
           fetch-depth: 0
-      - uses: actions/cache@136d96b4aee02b1f0de3ba493b1d47135042d9c0 # pin@v3.0.1
+      - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09 # pin@v3.0.1
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
