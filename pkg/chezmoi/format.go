@@ -74,9 +74,7 @@ func (formatGzippedJSON) Unmarshal(data []byte, value interface{}) (err error) {
 	if r, err = gzip.NewReader(bytes.NewReader(data)); err != nil {
 		return
 	}
-	defer func() {
-		err = multierr.Append(err, r.Close())
-	}()
+	defer multierr.AppendInvoke(&err, multierr.Close(r))
 	jsonData, err := io.ReadAll(r)
 	if err != nil {
 		return

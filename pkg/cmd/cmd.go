@@ -260,9 +260,7 @@ func runMain(versionInfo VersionInfo, args []string) (err error) {
 	); err != nil {
 		return err
 	}
-	defer func() {
-		err = multierr.Append(err, config.close())
-	}()
+	defer multierr.AppendInvoke(&err, multierr.Close(config))
 	err = config.execute(args)
 	if errors.Is(err, bbolt.ErrTimeout) {
 		// Translate bbolt timeout errors into a friendlier message. As the

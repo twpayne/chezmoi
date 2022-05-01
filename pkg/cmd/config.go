@@ -483,6 +483,21 @@ func newConfig(options ...configOption) (*Config, error) {
 	return c, nil
 }
 
+// Close closes resources associated with c.
+func (c *Config) Close() error {
+	var err error
+	for _, tempDirAbsPath := range c.tempDirs {
+		err2 := os.RemoveAll(tempDirAbsPath.String())
+		c.logger.Err(err2).
+			Stringer("tempDir", tempDirAbsPath).
+			Msg("RemoveAll")
+		err = multierr.Append(err, err2)
+	}
+	pprof.StopCPUProfile()
+	agent.Close()
+	return err
+}
+
 // addTemplateFunc adds the template function with the key key and value value
 // to c. It panics if there is already an existing template function with the
 // same key.
@@ -617,21 +632,6 @@ func (c *Config) applyArgs(
 	}
 
 	return nil
-}
-
-// close closes resources associated with c.
-func (c *Config) close() error {
-	var err error
-	for _, tempDirAbsPath := range c.tempDirs {
-		err2 := os.RemoveAll(tempDirAbsPath.String())
-		c.logger.Err(err2).
-			Stringer("tempDir", tempDirAbsPath).
-			Msg("RemoveAll")
-		err = multierr.Append(err, err2)
-	}
-	pprof.StopCPUProfile()
-	agent.Close()
-	return err
 }
 
 // cmdOutput returns the of running the command name with args in dirAbsPath.

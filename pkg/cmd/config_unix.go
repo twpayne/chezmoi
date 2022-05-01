@@ -26,9 +26,7 @@ func (c *Config) readPassword(prompt string) (password string, err error) {
 	if tty, err = os.OpenFile("/dev/tty", os.O_RDWR, 0); err != nil {
 		return
 	}
-	defer func() {
-		err = multierr.Append(err, tty.Close())
-	}()
+	defer multierr.AppendInvoke(&err, multierr.Close(tty))
 	if _, err = tty.Write([]byte(prompt)); err != nil {
 		return
 	}
