@@ -84,17 +84,14 @@ jobs:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: macos-10.15
-    env:
-      VAGRANT_BOX: debian11-i386
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
       - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09
         with:
           path: ~/.vagrant.d
-          key: ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-${{
-            hashFiles('assets/vagrant/debian11-i386.Vagrantfile') }}
+          key: ${{ runner.os }}-vagrant-debian-i386-${{ hashFiles('assets/vagrant/debian11-i386.Vagrantfile') }}
           restore-keys: |
-            ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-
+            ${{ runner.os }}-vagrant-debian-i386-
       - name: test
         run: |
           ( cd assets/vagrant && ./test.sh debian11-i386 )
@@ -113,17 +110,14 @@ jobs:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: macos-10.15
-    env:
-      VAGRANT_BOX: freebsd13
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
       - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09
         with:
           path: ~/.vagrant.d
-          key: ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-${{
-            hashFiles('assets/vagrant/freebsd13.Vagrantfile') }}
+          key: ${{ runner.os }}-vagrant-freebsd13-${{ hashFiles('assets/vagrant/freebsd13.Vagrantfile') }}
           restore-keys: |
-            ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-
+            ${{ runner.os }}-vagrant-freebsd13-
       - name: test
         run: |
           ( cd assets/vagrant && ./test.sh freebsd13 )
@@ -167,17 +161,14 @@ jobs:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: macos-10.15
-    env:
-      VAGRANT_BOX: openbsd7
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
       - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09
         with:
           path: ~/.vagrant.d
-          key: ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-${{
-            hashFiles('assets/vagrant/openbsd7.Vagrantfile') }}
+          key: ${{ runner.os }}-vagrant-openbsd7-${{ hashFiles('assets/vagrant/openbsd7.Vagrantfile') }}
           restore-keys: |
-            ${{ runner.os }}-vagrant-${{ env.VAGRANT_BOX }}-
+            ${{ runner.os }}-vagrant-openbsd7-
       - name: test
         run: |
           ( cd assets/vagrant && ./test.sh openbsd7 )
