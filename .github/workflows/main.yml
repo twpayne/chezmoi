@@ -17,7 +17,7 @@ jobs:
   build-website:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # pin@v3
       - name: install-website-dependencies
         run: |
           pip3 install mkdocs-material mkdocs-mermaid2-plugin mkdocs-redirects mkdocs-simple-hooks
@@ -28,7 +28,7 @@ jobs:
     outputs:
       code: ${{ steps.filter.outputs.code }}
     steps:
-      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # pin@v3
       - id: filter
         uses: dorny/paths-filter@b2feaf19c27470162a626bd6fa8438ae5b263721 # pin@v2
         with:
@@ -51,7 +51,7 @@ jobs:
     permissions:
       security-events: write
     steps:
-      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # pin@v3
         with:
           fetch-depth: 1
       - uses: github/codeql-action/init@e2cc7cc006b87d43538b16d71752753e7b85224d # pin@v1
@@ -63,7 +63,7 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # pin@v3
       - name: test
         env:
           CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
@@ -74,7 +74,7 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # pin@v3
       - name: test
         env:
           CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
@@ -87,7 +87,7 @@ jobs:
     env:
       VAGRANT_BOX: debian11-i386
     steps:
-      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # pin@v3
       - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09 # pin@v3.0.1
         with:
           path: ~/.vagrant.d
@@ -103,7 +103,7 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # pin@v3
       - name: test
         env:
           CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
@@ -116,7 +116,7 @@ jobs:
     env:
       VAGRANT_BOX: freebsd13
     steps:
-      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # pin@v3
       - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09 # pin@v3.0.1
         with:
           path: ~/.vagrant.d
@@ -135,7 +135,7 @@ jobs:
       - uses: actions/setup-go@f6164bd8c8acb4a71fb2791a8b6c4024ff038dab # pin@v2
         with:
           go-version: ${{ env.GO_VERSION }}
-      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # pin@v3
       - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09 # pin@v3.0.1
         with:
           path: ~/go/pkg/mod
@@ -170,7 +170,7 @@ jobs:
     env:
       VAGRANT_BOX: openbsd7
     steps:
-      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # pin@v3
       - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09 # pin@v3.0.1
         with:
           path: ~/.vagrant.d
@@ -195,7 +195,7 @@ jobs:
           curl -fsSL https://github.com/FiloSottile/age/releases/download/v${AGE_VERSION}/age-v${AGE_VERSION}-linux-amd64.tar.gz | tar xzf -
           sudo install -m 755 age/age /usr/local/bin
           sudo install -m 755 age/age-keygen /usr/local/bin
-      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # pin@v3
         with:
           fetch-depth: 0
       - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09 # pin@v3.0.1
@@ -286,7 +286,7 @@ jobs:
       - uses: actions/setup-go@f6164bd8c8acb4a71fb2791a8b6c4024ff038dab # pin@v2
         with:
           go-version: 1.17.x
-      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # pin@v3
       - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09 # pin@v3.0.1
         with:
           path: ~/go/pkg/mod
@@ -318,7 +318,7 @@ jobs:
       - uses: actions/setup-go@f6164bd8c8acb4a71fb2791a8b6c4024ff038dab # pin@v2
         with:
           go-version: ${{ env.GO_VERSION }}
-      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # pin@v3
       - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09 # pin@v3.0.1
         with:
           path: ~/go/pkg/mod
@@ -356,7 +356,7 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # pin@v3
       - name: test
         env:
           CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
@@ -368,7 +368,7 @@ jobs:
       - uses: actions/setup-go@f6164bd8c8acb4a71fb2791a8b6c4024ff038dab # pin@v2
         with:
           go-version: ${{ env.GO_VERSION }}
-      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # pin@v3
       - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09 # pin@v3.0.1
         with:
           path: ~/go/pkg/mod
@@ -397,7 +397,7 @@ jobs:
       - uses: actions/setup-go@f6164bd8c8acb4a71fb2791a8b6c4024ff038dab # pin@v2
         with:
           go-version: ${{ env.GO_VERSION }}
-      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # pin@v3
       - uses: golangci/golangci-lint-action@b517f99ae23d86ecc4c0dec08dcf48d2336abc29 # pin@v3.1.0
         with:
           version: v${{ env.GOLANGCI_LINT_VERSION }}
@@ -428,7 +428,7 @@ jobs:
       - uses: actions/setup-go@f6164bd8c8acb4a71fb2791a8b6c4024ff038dab # pin@v2
         with:
           go-version: ${{ env.GO_VERSION }}
-      - uses: actions/checkout@dcd71f646680f2efd8db4afa5ad64fdcba30e748 # pin@v3
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b # pin@v3
         with:
           fetch-depth: 0
       - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09 # pin@v3.0.1
