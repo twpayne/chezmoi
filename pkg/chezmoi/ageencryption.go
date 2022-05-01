@@ -254,9 +254,7 @@ func parseIdentityFile(identityFile AbsPath) (identities []age.Identity, err err
 	if file, err = os.Open(identityFile.String()); err != nil {
 		return
 	}
-	defer func() {
-		err = multierr.Append(err, file.Close())
-	}()
+	defer multierr.AppendInvoke(&err, multierr.Close(file))
 	identities, err = age.ParseIdentities(file)
 	return
 }
@@ -268,9 +266,7 @@ func parseRecipientsFile(recipientsFile AbsPath) (recipients []age.Recipient, er
 	if file, err = os.Open(recipientsFile.String()); err != nil {
 		return
 	}
-	defer func() {
-		err = multierr.Append(err, file.Close())
-	}()
+	defer multierr.AppendInvoke(&err, multierr.Close(file))
 	recipients, err = age.ParseRecipients(file)
 	return
 }

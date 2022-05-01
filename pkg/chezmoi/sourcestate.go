@@ -1538,7 +1538,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 				}
 			}
 			_, err = tempFile.Write(modifierContents)
-			err = multierr.Append(err, tempFile.Close())
+			multierr.AppendInvoke(&err, multierr.Close(tempFile))
 			if err != nil {
 				return
 			}

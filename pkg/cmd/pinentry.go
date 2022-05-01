@@ -28,9 +28,7 @@ func (c *Config) readPINEntry(prompt string) (pin string, err error) {
 	if err != nil {
 		return
 	}
-	defer func() {
-		err = multierr.Append(err, client.Close())
-	}()
+	defer multierr.AppendInvoke(&err, multierr.Close(client))
 
 	pin, _, err = client.GetPIN()
 	return
