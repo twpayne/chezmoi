@@ -50,6 +50,21 @@ standard input and chezmoi reads the target contents of the file from the
 script's standard output. This can be used to change parts of a file, for
 example using `sed`.
 
+!!! hint
+
+    If you need random access to the file to modify it, then you can write
+    standard input to a temporary file, modify the temporary file, and then
+    write the temporary file to the standard output, for example:
+
+    ```sh
+    #!/bin/sh
+    tempfile="$(mktemp)"
+    trap 'rm -rf "${tempfile}"' EXIT
+    cat > "${tempfile}"
+    # modify ${tempfile}
+    cat "${tempfile}"
+    ```
+
 !!! note
 
     If the file does not exist then the standard input to the `modify_` script
