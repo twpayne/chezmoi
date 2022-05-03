@@ -5,7 +5,6 @@ enum LogLevel {
     Critical = 0
 }
 
-$old_eap = $ErrorActionPreference
 $ErrorActionPreference = 'Stop' # throw an exception if anything bad happens
 
 # If the environment isn't correct for running this script, try to give people
