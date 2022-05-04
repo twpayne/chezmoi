@@ -1,9 +1,11 @@
 # `init` [*repo*]
 
 Setup the source directory, generate the config file, and optionally update the
-destination directory to match the target state. *repo* is expanded to a full
-git repo URL, using HTTPS by default, or SSH if the `--ssh` option is
-specified, according to the following patterns:
+destination directory to match the target state.
+
+By default, if *repo* is given, chezmoi will guess the full git repo URL, using
+HTTPS by default, or SSH if the `--ssh` option is specified, according to the
+following patterns:
 
 | Pattern            | HTTPS Repo                             | SSH repo                           |
 | ------------------ | -------------------------------------- | ---------------------------------- |
@@ -12,6 +14,8 @@ specified, according to the following patterns:
 | `site/user/repo`   | `https://site/user/repo.git`           | `git@site:user/repo.git`           |
 | `~sr.ht/user`      | `https://git.sr.ht/~user/dotfiles`     | `git@git.sr.ht:~user/dotfiles.git` |
 | `~sr.ht/user/repo` | `https://git.sr.ht/~user/repo`         | `git@git.sr.ht:~/user/repo.git`    |
+
+To disable git repo URL guessing pass the `--guess-repo-url=false` option.
 
 First, if the source directory is not already contain a repository, then if
 *repo* is given it is checked out into the source directory, otherwise a new
@@ -50,6 +54,10 @@ existing template data.
 ## `--depth` *depth*
 
 Clone the repo with depth *depth*.
+
+## `--guess-repo-url` *bool*
+
+Guess the repo URL from the *repo* argument. This defaults to `true`.
 
 ## `--one-shot`
 

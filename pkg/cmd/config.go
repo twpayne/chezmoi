@@ -367,8 +367,9 @@ func newConfig(options ...configOption) (*Config, error) {
 			include:     chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 		},
 		init: initCmdConfig{
-			data:    true,
-			exclude: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
+			data:         true,
+			exclude:      chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
+			guessRepoURL: true,
 		},
 		managed: managedCmdConfig{
 			exclude: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),

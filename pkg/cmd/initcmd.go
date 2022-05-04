@@ -19,16 +19,17 @@ import (
 )
 
 type initCmdConfig struct {
-	apply       bool
-	branch      string
-	configPath  chezmoi.AbsPath
-	data        bool
-	depth       int
-	exclude     *chezmoi.EntryTypeSet
-	oneShot     bool
-	purge       bool
-	purgeBinary bool
-	ssh         bool
+	apply        bool
+	branch       string
+	configPath   chezmoi.AbsPath
+	data         bool
+	depth        int
+	exclude      *chezmoi.EntryTypeSet
+	guessRepoURL bool
+	oneShot      bool
+	purge        bool
+	purgeBinary  bool
+	ssh          bool
 }
 
 var dotfilesRepoGuesses = []struct {
@@ -110,14 +111,15 @@ func (c *Config) newInitCmd() *cobra.Command {
 
 	flags := initCmd.Flags()
 	flags.BoolVarP(&c.init.apply, "apply", "a", c.init.apply, "update destination directory")
+	flags.StringVar(&c.init.branch, "branch", c.init.branch, "Set initial branch to checkout")
 	flags.VarP(&c.init.configPath, "config-path", "C", "Path to write generated config file")
 	flags.BoolVar(&c.init.data, "data", c.init.data, "Include existing template data")
 	flags.IntVarP(&c.init.depth, "depth", "d", c.init.depth, "Create a shallow clone")
 	flags.VarP(c.init.exclude, "exclude", "x", "Exclude entry types")
+	flags.BoolVarP(&c.init.guessRepoURL, "guess-repo-url", "g", c.init.guessRepoURL, "Guess the repo URL")
 	flags.BoolVar(&c.init.oneShot, "one-shot", c.init.oneShot, "Run in one-shot mode")
 	flags.BoolVarP(&c.init.purge, "purge", "p", c.init.purge, "Purge config and source directories after running")
 	flags.BoolVarP(&c.init.purgeBinary, "purge-binary", "P", c.init.purgeBinary, "Purge chezmoi binary after running")
-	flags.StringVar(&c.init.branch, "branch", c.init.branch, "Set initial branch to checkout")
 	flags.BoolVar(&c.init.ssh, "ssh", false, "Use ssh instead of https when guessing dotfile repo URL")
 
 	return initCmd
@@ -155,7 +157,12 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 				return err
 			}
 		} else {
-			username, dotfilesRepoURL := guessDotfilesRepoURL(args[0], c.init.ssh)
+			var username, dotfilesRepoURL string
+			if c.init.guessRepoURL {
+				username, dotfilesRepoURL = guessDotfilesRepoURL(args[0], c.init.ssh)
+			} else {
+				dotfilesRepoURL = args[0]
+			}
 			if useBuiltinGit {
 				if err := c.builtinGitClone(username, dotfilesRepoURL, workingTreeRawPath); err != nil {
 					return err
