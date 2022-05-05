@@ -1,0 +1,8 @@
+# test that chezmoi apply does not return an error if a file is in .chezmoiignore is not present in the target directory
+chezmoi apply
+exists $HOME/.file
+
+-- home/user/.local/share/chezmoi/.chezmoiignore --
+notexist
+-- home/user/.local/share/chezmoi/dot_file --
+# contents of .file
