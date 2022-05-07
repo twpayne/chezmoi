@@ -1889,7 +1889,10 @@ func (s *SourceState) readExternalArchive(
 		// otherwise it is not possible to differentiate between
 		// identically-named files at the same level.
 		if patternSet.match(name) == patternSetMatchExclude {
-			if fileInfo.IsDir() {
+			// In case that `name` is a directory tree which matched an explicit
+			// exclude pattern, return fs.SkipDir to exclude not just the
+			// directory itself but also everything it contains (recursively).
+			if fileInfo.IsDir() && len(patternSet.excludePatterns) > 0 {
 				return fs.SkipDir
 			}
 			return nil
