@@ -69,6 +69,27 @@ When using Oh My Zsh, make sure you disable auto-updates by setting
 `~/.oh-my-zsh` directory to drift out of sync with chezmoi's source state. To
 update Oh My Zsh and its plugins, refresh the downloaded archives.
 
+## Include a subdirectory with selected files from a URL
+
+Use `include` pattern filters to include only selected files from an archive
+URL.
+
+For example, to import just the required source files of the
+[zsh-syntax-highlighting
+plugin](https://github.com/zsh-users/zsh-syntax-highlighting) in the example
+above, add in `include` filter to the `zsh-syntax-highlighting` section as shown
+below:
+
+```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
+[".oh-my-zsh/custom/plugins/zsh-syntax-highlighting"]
+    type = "archive"
+    url = "https://github.com/zsh-users/zsh-syntax-highlighting/archive/master.tar.gz"
+    exact = true
+    stripComponents = 1
+    refreshPeriod = "168h"
+    include = ["*/*.zsh", "*/.version", "*/.revision-hash", "*/highlighters/**"]
+```
+
 ## Include a single file from a URL
 
 Including single files uses the same mechanism as including a subdirectory

@@ -116,5 +116,5 @@ re-download unless forced. To force chezmoi to re-download URLs, pass the
         url = "https://api.github.com/repos/vrana/adminer/tarball"
         refreshPeriod = "744h"
         stripComponents = 2
-        include = ["*", "*/plugins", "*/plugins/**"]
+        include = ["*/plugins/**"]
     ```
