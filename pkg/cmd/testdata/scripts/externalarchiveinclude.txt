@@ -27,6 +27,12 @@ chhome home4/user
 chezmoi managed
 cmp stdout golden/managed4
 
+chhome home5/user
+
+# test that chezmoi can include selected files in sub-directories
+chezmoi managed
+cmp stdout golden/managed5
+
 -- archive/dir/subdir1/file1 --
 # contents of dir/subdir1/file1
 -- archive/dir/subdir1/file2 --
@@ -75,6 +81,10 @@ cmp stdout golden/managed4
 .dir/file1
 .dir/symlink1
 .dir/symlink2
+-- golden/managed5 --
+.dir
+.dir/dir/subdir2/file1
+.dir/dir/subdir2/file2
 -- home/user/.local/share/chezmoi/.chezmoiexternal.toml --
 [".dir"]
     type = "archive"
@@ -99,3 +109,9 @@ cmp stdout golden/managed4
     stripComponents = 1
     include = ["*/dir", "*/dir/**"]
     exclude = ["**/file2"]
+-- home5/user/.local/share/chezmoi/.chezmoiexternal.toml --
+[".dir"]
+    type = "archive"
+    url = "{{ env "HTTPD_URL" }}/archive.tar.gz"
+    stripComponents = 1
+    include = ["*/dir/subdir2/*"]

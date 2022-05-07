@@ -62,7 +62,8 @@ archive, not the target state. chezmoi uses the following algorithm to
 determine whether an archive member is included:
 
 1. If the archive member name matches any `exclude` pattern, then the archive
-   member is excluded.
+   member is excluded. In addition, if the archive member is a directory, then
+   all contained files and sub-directories will be excluded, too (recursively).
 2. Otherwise, if the archive member name matches any `include` pattern, then
    the archive member is included.
 3. Otherwise, if only `include` patterns were specified then the archive member
