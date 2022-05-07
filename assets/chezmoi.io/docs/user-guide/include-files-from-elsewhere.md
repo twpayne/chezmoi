@@ -1,5 +1,9 @@
 # Include dotfiles from elsewhere
 
+The sections below contain examples of how to use `.chezmoiexternal.toml` to
+include files from external sources. For more details, check the [reference
+manual](/reference/special-files-and-directories/chezmoiexternal-format/) .
+
 ## Include a subdirectory from a URL
 
 To include a subdirectory from another repository, e.g. [Oh My

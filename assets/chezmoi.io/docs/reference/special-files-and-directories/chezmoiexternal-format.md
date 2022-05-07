@@ -118,3 +118,6 @@ re-download unless forced. To force chezmoi to re-download URLs, pass the
         stripComponents = 2
         include = ["*/plugins/**"]
     ```
+
+    Some more examples can be found in the
+    [user guide](/user-guide/include-files-from-elsewhere/).
