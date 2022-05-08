@@ -9,9 +9,9 @@
 <meta content="Tom Payne" name="author"/>
 <link href="https://chezmoi.io/reference/commands/init/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.2.3, mkdocs-material-8.1.7" name="generator"/>
+<meta content="mkdocs-1.2.3, mkdocs-material-8.1.9" name="generator"/>
 <title>init - chezmoi</title>
-<link href="../../../assets/stylesheets/main.cd566b2a.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.2b4465f4.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.e6a45f82.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&amp;display=fallback" rel="stylesheet"/>
@@ -799,6 +799,11 @@
   </a>
 </li>
 <li class="md-nav__item">
+<a class="md-nav__link" href="#-guess-repo-url-bool">
+    --guess-repo-url bool
+  </a>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="#-one-shot">
     --one-shot
   </a>
@@ -1504,6 +1509,11 @@
   </a>
 </li>
 <li class="md-nav__item">
+<a class="md-nav__link" href="#-guess-repo-url-bool">
+    --guess-repo-url bool
+  </a>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="#-one-shot">
     --one-shot
   </a>
@@ -1535,9 +1545,10 @@
 </a>
 <h1 id="init-repo"><code>init</code> [<em>repo</em>]</h1>
 <p>Setup the source directory, generate the config file, and optionally update the
-destination directory to match the target state. <em>repo</em> is expanded to a full
-git repo URL, using HTTPS by default, or SSH if the <code>--ssh</code> option is
-specified, according to the following patterns:</p>
+destination directory to match the target state.</p>
+<p>By default, if <em>repo</em> is given, chezmoi will guess the full git repo URL, using
+HTTPS by default, or SSH if the <code>--ssh</code> option is specified, according to the
+following patterns:</p>
 <table>
 <thead>
 <tr>
@@ -1574,6 +1585,7 @@ specified, according to the following patterns:</p>
 </tr>
 </tbody>
 </table>
+<p>To disable git repo URL guessing pass the <code>--guess-repo-url=false</code> option.</p>
 <p>First, if the source directory is not already contain a repository, then if
 <em>repo</em> is given it is checked out into the source directory, otherwise a new
 repository is initialized in the source directory.</p>
@@ -1597,6 +1609,8 @@ own binary.</p>
 existing template data.</p>
 <h2 id="-depth-depth"><code>--depth</code> <em>depth</em></h2>
 <p>Clone the repo with depth <em>depth</em>.</p>
+<h2 id="-guess-repo-url-bool"><code>--guess-repo-url</code> <em>bool</em></h2>
+<p>Guess the repo URL from the <em>repo</em> argument. This defaults to <code>true</code>.</p>
 <h2 id="-one-shot"><code>--one-shot</code></h2>
 <p><code>--one-shot</code> is the equivalent of <code>--apply</code>, <code>--depth=1</code>, <code>--force</code>, <code>--purge</code>,
 and <code>--purge-binary</code>. It attempts to install your dotfiles with chezmoi and
@@ -1676,6 +1690,6 @@ up temporary environments (e.g. Docker containers).</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.22074ed6.min.js"}</script>
-<script src="../../../assets/javascripts/bundle.01de222e.min.js"></script>
+<script src="../../../assets/javascripts/bundle.960e086b.min.js"></script>
 </body>
 </html>
