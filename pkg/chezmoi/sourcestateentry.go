@@ -3,7 +3,6 @@ package chezmoi
 import (
 	"encoding/hex"
 	"os/exec"
-	"time"
 
 	"github.com/rs/zerolog"
 
@@ -27,7 +26,7 @@ type SourceStateCommand struct {
 	external      bool
 	origin        string
 	forceRefresh  bool
-	refreshPeriod time.Duration
+	refreshPeriod Duration
 }
 
 // A SourceStateDir represents the state of a directory in the source state.

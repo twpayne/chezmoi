@@ -22,7 +22,7 @@ type TargetStateEntry interface {
 type TargetStateModifyDirWithCmd struct {
 	cmd           *exec.Cmd
 	forceRefresh  bool
-	refreshPeriod time.Duration
+	refreshPeriod Duration
 }
 
 // A TargetStateDir represents the state of a directory in the target state.
@@ -126,7 +126,7 @@ func (t *TargetStateModifyDirWithCmd) SkipApply(persistentState PersistentState,
 		if t.refreshPeriod == 0 {
 			return true, nil
 		}
-		return time.Since(modifyDirWithCmdState.RunAt) < t.refreshPeriod, nil
+		return time.Since(modifyDirWithCmdState.RunAt) < time.Duration(t.refreshPeriod), nil
 	}
 }
 

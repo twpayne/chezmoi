@@ -7,7 +7,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/pelletier/go-toml" // FIXME upgrade to v2 when https://github.com/pelletier/go-toml/issues/767 is fixed
+	"github.com/pelletier/go-toml/v2"
 	"go.uber.org/multierr"
 	"gopkg.in/yaml.v3"
 )

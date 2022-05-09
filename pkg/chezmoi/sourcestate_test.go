@@ -1528,7 +1528,7 @@ func TestSourceStateReadExternalCache(t *testing.T) {
 				NewRelPath(".dir"): {
 					Type:          "archive",
 					URL:           httpServer.URL + "/archive.tar",
-					RefreshPeriod: 1 * time.Minute,
+					RefreshPeriod: Duration(1 * time.Minute),
 					origin:        "/home/user/.local/share/chezmoi/.chezmoiexternal.yaml",
 				},
 			}, s.externals)

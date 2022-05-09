@@ -62,9 +62,9 @@ type External struct {
 	Pull    struct {
 		Args []string `json:"args" toml:"args" yaml:"args"`
 	} `json:"pull" toml:"pull" yaml:"pull"`
-	RefreshPeriod   time.Duration `json:"refreshPeriod" toml:"refreshPeriod" yaml:"refreshPeriod"`
-	StripComponents int           `json:"stripComponents" toml:"stripComponents" yaml:"stripComponents"`
-	URL             string        `json:"url" toml:"url" yaml:"url"`
+	RefreshPeriod   Duration `json:"refreshPeriod" toml:"refreshPeriod" yaml:"refreshPeriod"`
+	StripComponents int      `json:"stripComponents" toml:"stripComponents" yaml:"stripComponents"`
+	URL             string   `json:"url" toml:"url" yaml:"url"`
 	origin          string
 }
 
@@ -1329,7 +1329,7 @@ func (s *SourceState) getExternalDataRaw(
 			var externalCacheEntry externalCacheEntry
 			if err := externalCacheFormat.Unmarshal(data, &externalCacheEntry); err == nil {
 				if externalCacheEntry.URL == external.URL {
-					if external.RefreshPeriod == 0 || externalCacheEntry.Time.Add(external.RefreshPeriod).After(now) {
+					if external.RefreshPeriod == 0 || externalCacheEntry.Time.Add(time.Duration(external.RefreshPeriod)).After(now) {
 						return externalCacheEntry.Data, nil
 					}
 				}
