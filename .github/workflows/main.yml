@@ -15,7 +15,7 @@ env:
   GOLANGCI_LINT_VERSION: 1.46.0
 jobs:
   build-website:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
       - name: install-website-dependencies
@@ -410,7 +410,7 @@ jobs:
       - test-ubuntu-go1-17
       - test-voidlinux
       - test-windows
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
       - name: install-build-dependencies
         run: |
