@@ -14,6 +14,7 @@ linters:
   - errchkjson
   - errname
   - errorlint
+  - execinquery
   - exportloopref
   - forbidigo
   - forcetypeassert
@@ -40,6 +41,7 @@ linters:
   - nilerr
   - noctx
   - nolintlint
+  - nosprintfhostport
   - prealloc
   - predeclared
   - promlinter
@@ -63,6 +65,7 @@ linters:
   - cyclop
   - exhaustive
   - exhaustivestruct
+  - exhaustruct
   - funlen
   - gochecknoglobals
   - gochecknoinits
@@ -78,6 +81,7 @@ linters:
   - nestif
   - nilnil
   - nlreturn
+  - nonamedreturns
   - paralleltest
   - testpackage
   - tparallel
