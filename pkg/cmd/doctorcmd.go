@@ -308,6 +308,14 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			versionArgs: []string{"--version"},
 			versionRx:   regexp.MustCompile(`^(\d+\.\d+\.\d+)`),
 		},
+		&binaryCheck{
+			name:        "keeper-command",
+			binaryname:  c.Keeper.Command,
+			ifNotSet:    checkResultWarning,
+			ifNotExist:  checkResultInfo,
+			versionArgs: []string{"version"},
+			versionRx:   regexp.MustCompile(`^Commander\s+Version:\s+(\d+\.\d+\.\d+)`),
+		},
 		&fileCheck{
 			name:       "keepassxc-db",
 			filename:   c.Keepassxc.Database,

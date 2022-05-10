@@ -49,6 +49,7 @@ nav:
     - gopass: user-guide/password-managers/gopass.md
     - KeePassXC: user-guide/password-managers/keepassxc.md
     - Keychain and Windows Credentials Manager: user-guide/password-managers/keychain-and-windows-credentials-manager.md
+    - Keeper: user-guide/password-managers/keeper.md
     - LastPass: user-guide/password-managers/lastpass.md
     - pass: user-guide/password-managers/pass.md
     - Vault: user-guide/password-managers/vault.md
@@ -192,6 +193,11 @@ nav:
       - keepassxc: reference/templates/keepassxc-functions/keepassxc.md
       - keepassxcAttachment: reference/templates/keepassxc-functions/keepassxcAttachment.md
       - keepassxcAttribute: reference/templates/keepassxc-functions/keepassxcAttribute.md
+    - Keeper functions:
+      - reference/templates/keeper-functions/index.md
+      - keeper: reference/templates/keeper-functions/keeper.md
+      - keeperDataFields: reference/templates/keeper-functions/keeperDataFields.md
+      - keeperFindPassword: reference/templates/keeper-functions/keeperFindPassword.md
     - Keyring functions:
       - keyring: reference/templates/keyring-functions/keyring.md
     - LastPass functions:

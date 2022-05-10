@@ -90,6 +90,7 @@ type ConfigFile struct {
 	Bitwarden   bitwardenConfig   `mapstructure:"bitwarden"`
 	Gopass      gopassConfig      `mapstructure:"gopass"`
 	Keepassxc   keepassxcConfig   `mapstructure:"keepassxc"`
+	Keeper      keeperConfig      `mapstructure:"keeper"`
 	Lastpass    lastpassConfig    `mapstructure:"lastpass"`
 	Onepassword onepasswordConfig `mapstructure:"onepassword"`
 	Pass        passConfig        `mapstructure:"pass"`
@@ -275,6 +276,9 @@ func newConfig(options ...configOption) (*Config, error) {
 		Keepassxc: keepassxcConfig{
 			Command: "keepassxc-cli",
 		},
+		Keeper: keeperConfig{
+			Command: "keeper",
+		},
 		Lastpass: lastpassConfig{
 			Command: "lpass",
 		},
@@ -438,6 +442,9 @@ func newConfig(options ...configOption) (*Config, error) {
 		"keepassxc":                c.keepassxcTemplateFunc,
 		"keepassxcAttachment":      c.keepassxcAttachmentTemplateFunc,
 		"keepassxcAttribute":       c.keepassxcAttributeTemplateFunc,
+		"keeper":                   c.keeperTemplateFunction,
+		"keeperDataFields":         c.keeperDataFieldsTemplateFunction,
+		"keeperFindPassword":       c.keeperFindPasswordTemplateFunc,
 		"keyring":                  c.keyringTemplateFunc,
 		"lastpass":                 c.lastpassTemplateFunc,
 		"lastpassRaw":              c.lastpassRawTemplateFunc,

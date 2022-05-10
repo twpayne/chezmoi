@@ -59,6 +59,8 @@ The following configuration variables are available:
 | `keepassxc`    | `args`                | []string | *none*                   | Extra args to KeePassXC CLI command                    |
 |                | `command`             | string   | `keepassxc-cli`          | KeePassXC CLI command                                  |
 |                | `database`            | string   | *none*                   | KeePassXC database                                     |
+| `keeper`       | `args`                | []string | *none*                   | Extra args to Keeper CLI command                       |
+|                | `command`             | string   | `keeper`                 | Keeper CLI command                                     |
 | `lastpass`     | `command`             | string   | `lpass`                  | Lastpass CLI command                                   |
 | `merge`        | `args`                | []string | *see `merge` below*      | Args to 3-way merge command                            |
 |                | `command`             | string   | `vimdiff`                | 3-way merge command                                    |

@@ -44,10 +44,10 @@ in a git repo under your control. You can write the configuration file in the
 format of your choice. chezmoi can retrieve secrets from
 [1Password](https://1password.com/), [Bitwarden](https://bitwarden.com/),
 [gopass](https://www.gopass.pw/), [KeePassXC](https://keepassxc.org/),
-[LastPass](https://lastpass.com/), [pass](https://www.passwordstore.org/),
-[Vault](https://www.vaultproject.io/), Keychain,
-[Keyring](https://wiki.gnome.org/Projects/GnomeKeyring), or any command-line
-utility of your choice. You can encrypt individual files with
+[Keeper](https://www.keepersecurity.com/), [LastPass](https://lastpass.com/),
+[pass](https://www.passwordstore.org/), [Vault](https://www.vaultproject.io/),
+Keychain, [Keyring](https://wiki.gnome.org/Projects/GnomeKeyring), or any
+command-line utility of your choice. You can encrypt individual files with
 [GnuPG](https://www.gnupg.org) or [age](https://age-encryption.org). You can
 checkout your dotfiles repo on as many machines as you want without revealing
 any secrets to anyone.
