@@ -14,4 +14,5 @@ way:
 | HashiCorp Vault | `vault`          | `{{ secretJSON "kv" "get" "-format=json" "$ID" }}` |
 | LastPass        | `lpass`          | `{{ secretJSON "show" "--json" "$ID" }}`           |
 | KeePassXC       | `keepassxc-cli`  | Not possible (interactive command only)            |
+| Keeper          | `keeper`         | `{{ secretJSON "get" "--format=json" "$ID" }}`     |
 | pass            | `pass`           | `{{ secret "show" "$ID" }}`                        |

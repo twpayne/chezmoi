@@ -1,0 +1,6 @@
+# `keeper` *uid*
+
+`keeper` returns structured data retreived from
+[Keeper](https://www.keepersecurity.com/) using the [Commander
+CLI](https://docs.keeper.io/secrets-manager/commander-cli). *uid* is passed to
+`keeper get --format=json` and the output is parsed as JSON.

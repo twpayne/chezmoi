@@ -6,6 +6,7 @@ chmod 755 bin/git
 chmod 755 bin/gopass
 chmod 755 bin/gpg
 chmod 755 bin/keepassxc
+chmod 755 bin/keeper
 chmod 755 bin/lpass
 chmod 755 bin/op
 chmod 755 bin/pass
@@ -45,6 +46,7 @@ stdout '^ok\s+bitwarden-command\s+'
 stdout '^ok\s+gopass-command\s+'
 stdout '^ok\s+keepassxc-command\s+'
 stdout '^info\s+keepassxc-db\s+'
+stdout '^ok\s+keeper-command\s+'
 stdout '^ok\s+lastpass-command\s+'
 stdout '^ok\s+pass-command\s+'
 stdout '^ok\s+vault-command\s+'
@@ -101,6 +103,10 @@ echo "Compression: Uncompressed, ZIP, ZLIB, BZIP2"
 #!/bin/sh
 
 echo "2.5.4"
+-- bin/keeper --
+#!/bin/sh
+
+echo "Commander Version: 16.6.4 (Current version)"
 -- bin/lpass --
 #!/bin/sh
 

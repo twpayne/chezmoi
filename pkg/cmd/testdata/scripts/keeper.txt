@@ -1,0 +1,117 @@
+[!windows] chmod 755 bin/keeper
+[windows] unix2dos bin/keeper.cmd
+
+# test keeper template function
+chezmoi execute-template '{{ (keeper "QOahgRH_dSTvSvhRBqzCzQ").record_uid }}'
+stdout '^QOahgRH_dSTvSvhRBqzCzQ$'
+
+# test keeperDataFields template function
+chezmoi execute-template '{{ index (keeperDataFields "QOahgRH_dSTvSvhRBqzCzQ").password 0 }}'
+stdout ^mypassword$
+
+# test keeperFindPassword template function
+chezmoi execute-template '{{ keeperFindPassword "Example" }}'
+stdout ^mypassword$
+
+-- bin/keeper --
+#!/bin/sh
+
+case "$*" in
+"get --format=json QOahgRH_dSTvSvhRBqzCzQ --config /path/to/config.json")
+    cat <<EOF
+{
+  "record_uid": "QOahgRH_dSTvSvhRBqzCzQ",
+  "data": {
+    "title": "Example",
+    "type": "login",
+    "fields": [
+      {
+        "type": "login",
+        "value": [
+          "mylogin"
+        ]
+      },
+      {
+        "type": "password",
+        "value": [
+          "mypassword"
+        ]
+      },
+      {
+        "type": "url",
+        "value": []
+      },
+      {
+        "type": "fileRef",
+        "value": []
+      },
+      {
+        "type": "oneTimeCode",
+        "value": []
+      }
+    ],
+    "custom": []
+  }
+}
+EOF
+    ;;
+"find-password Example --config /path/to/config.json")
+    echo "mypassword"
+    ;;
+*)
+    cat <<EOF
+Commands:
+  search                           ... Search the vault. Can use a regular expression.
+
+Type 'command -h' to display help on command
+EOF
+esac
+-- bin/keeper.cmd --
+@echo off
+IF "%*" == "get --format=json QOahgRH_dSTvSvhRBqzCzQ --config /path/to/config.json" (
+    echo.{
+    echo.  "record_uid": "QOahgRH_dSTvSvhRBqzCzQ",
+    echo.  "data": {
+    echo.    "title": "Example",
+    echo.    "type": "login",
+    echo.    "fields": [
+    echo.      {
+    echo.        "type": "login",
+    echo.        "value": [
+    echo.          "mylogin"
+    echo.        ]
+    echo.      },
+    echo.      {
+    echo.        "type": "password",
+    echo.        "value": [
+    echo.          "mypassword"
+    echo.        ]
+    echo.      },
+    echo.      {
+    echo.        "type": "url",
+    echo.        "value": []
+    echo.      },
+    echo.      {
+    echo.        "type": "fileRef",
+    echo.        "value": []
+    echo.      },
+    echo.      {
+    echo.        "type": "oneTimeCode",
+    echo.        "value": []
+    echo.      }
+    echo.    ],
+    echo.    "custom": []
+    echo.  }
+    echo.}
+) ELSE IF "%*" == "find-password Example --config /path/to/config.json" (
+    echo.mypassword
+    ;;
+) ELSE (
+    echo.Commands:
+    echo.  search                           ... Search the vault. Can use a regular expression.
+    echo.
+    echo.Type 'command -h' to display help on command
+)
+-- home/user/.config/chezmoi/chezmoi.toml --
+[keeper]
+    args = ["--config", "/path/to/config.json"]
