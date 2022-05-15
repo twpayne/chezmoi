@@ -162,6 +162,8 @@ check_goos_goarch() {
 	linux/amd64) return 0 ;;
 	linux/arm) return 0 ;;
 	linux/arm64) return 0 ;;
+	linux/mips64) return 0 ;;
+	linux/mips64le) return 0 ;;
 	linux/ppc64) return 0 ;;
 	linux/ppc64le) return 0 ;;
 	linux/s390x) return 0 ;;
@@ -169,6 +171,7 @@ check_goos_goarch() {
 	openbsd/amd64) return 0 ;;
 	openbsd/arm) return 0 ;;
 	openbsd/arm64) return 0 ;;
+	openbsd/mips64) return 0 ;;
 	solaris/amd64) return 0 ;;
 	windows/386) return 0 ;;
 	windows/amd64) return 0 ;;
