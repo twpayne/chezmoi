@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"os"
 	"os/exec"
 	"regexp"
 	"strings"
@@ -85,8 +86,8 @@ func (c *Config) lastpassData(id string) ([]map[string]interface{}, error) {
 func (c *Config) lastpassOutput(args ...string) ([]byte, error) {
 	name := c.Lastpass.Command
 	cmd := exec.Command(name, args...)
-	cmd.Stdin = c.stdin
-	cmd.Stderr = c.stderr
+	cmd.Stdin = os.Stdin
+	cmd.Stderr = os.Stderr
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
 		return nil, err

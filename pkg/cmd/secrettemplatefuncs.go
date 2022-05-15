@@ -3,6 +3,7 @@ package cmd
 import (
 	"bytes"
 	"encoding/json"
+	"os"
 	"os/exec"
 	"strings"
 )
@@ -21,8 +22,8 @@ func (c *Config) secretTemplateFunc(args ...string) string {
 
 	//nolint:gosec
 	cmd := exec.Command(c.Secret.Command, args...)
-	cmd.Stdin = c.stdin
-	cmd.Stderr = c.stderr
+	cmd.Stdin = os.Stdin
+	cmd.Stderr = os.Stderr
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
 		panic(newCmdOutputError(cmd, output, err))
@@ -45,8 +46,8 @@ func (c *Config) secretJSONTemplateFunc(args ...string) interface{} {
 
 	//nolint:gosec
 	cmd := exec.Command(c.Secret.Command, args...)
-	cmd.Stdin = c.stdin
-	cmd.Stderr = c.stderr
+	cmd.Stdin = os.Stdin
+	cmd.Stderr = os.Stderr
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
 		panic(newCmdOutputError(cmd, output, err))

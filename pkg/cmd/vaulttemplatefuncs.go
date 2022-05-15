@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"encoding/json"
+	"os"
 	"os/exec"
 )
 
@@ -18,8 +19,8 @@ func (c *Config) vaultTemplateFunc(key string) interface{} {
 	args := []string{"kv", "get", "-format=json", key}
 	//nolint:gosec
 	cmd := exec.Command(c.Vault.Command, args...)
-	cmd.Stdin = c.stdin
-	cmd.Stderr = c.stderr
+	cmd.Stdin = os.Stdin
+	cmd.Stderr = os.Stderr
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
 		panic(newCmdOutputError(cmd, output, err))

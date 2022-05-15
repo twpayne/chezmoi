@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"os"
 	"os/exec"
 	"regexp"
 
@@ -83,8 +84,8 @@ func (c *Config) gopassRawTemplateFunc(id string) string {
 func (c *Config) gopassOutput(args ...string) ([]byte, error) {
 	name := c.Gopass.Command
 	cmd := exec.Command(name, args...)
-	cmd.Stdin = c.stdin
-	cmd.Stderr = c.stderr
+	cmd.Stdin = os.Stdin
+	cmd.Stderr = os.Stderr
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
 		return nil, newCmdOutputError(cmd, output, err)
