@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bytes"
+	"os"
 	"os/exec"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
@@ -52,8 +53,8 @@ func (c *Config) passOutput(id string) ([]byte, error) {
 	args := []string{"show", id}
 	//nolint:gosec
 	cmd := exec.Command(c.Pass.Command, args...)
-	cmd.Stdin = c.stdin
-	cmd.Stderr = c.stderr
+	cmd.Stdin = os.Stdin
+	cmd.Stderr = os.Stderr
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
 		return nil, newCmdOutputError(cmd, output, err)

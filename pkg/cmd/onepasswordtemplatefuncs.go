@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -270,9 +269,8 @@ func (c *Config) onepasswordGetOrRefreshSessionToken(args *onepasswordArgs) (str
 
 	//nolint:gosec
 	cmd := exec.Command(c.Onepassword.Command, commandArgs...)
-	cmd.Stdin = c.stdin
-	stderr := &bytes.Buffer{}
-	cmd.Stderr = stderr
+	cmd.Stdin = os.Stdin
+	cmd.Stderr = os.Stderr
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
 		return "", newCmdOutputError(cmd, output, err)
@@ -344,9 +342,8 @@ func (c *Config) onepasswordOutput(args *onepasswordArgs, withSessionToken withS
 
 	//nolint:gosec
 	cmd := exec.Command(c.Onepassword.Command, commandArgs...)
-	cmd.Stdin = c.stdin
-	stderr := &bytes.Buffer{}
-	cmd.Stderr = stderr
+	cmd.Stdin = os.Stdin
+	cmd.Stderr = os.Stderr
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
 		return nil, newCmdOutputError(cmd, output, err)

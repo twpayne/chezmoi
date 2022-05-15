@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"encoding/json"
+	"os"
 	"os/exec"
 	"strings"
 )
@@ -60,8 +61,8 @@ func (c *Config) bitwardenOutput(args []string) ([]byte, error) {
 	name := c.Bitwarden.Command
 	args = append([]string{"get"}, args...)
 	cmd := exec.Command(name, args...)
-	cmd.Stdin = c.stdin
-	cmd.Stderr = c.stderr
+	cmd.Stdin = os.Stdin
+	cmd.Stderr = os.Stderr
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
 		return nil, newCmdOutputError(cmd, output, err)

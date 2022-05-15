@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"os"
 	"os/exec"
 	"regexp"
 
@@ -131,7 +132,7 @@ func (c *Config) keepassxcOutput(name string, args []string) ([]byte, error) {
 	}
 	cmd := exec.Command(name, args...)
 	cmd.Stdin = bytes.NewBufferString(c.Keepassxc.password + "\n")
-	cmd.Stderr = c.stderr
+	cmd.Stderr = os.Stderr
 	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
 	if err != nil {
 		return nil, newCmdOutputError(cmd, output, err)
