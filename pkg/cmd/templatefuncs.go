@@ -47,7 +47,7 @@ func (c *Config) globTemplateFunc(pattern string) []string {
 		panic(err)
 	}
 
-	matches, err := doublestar.Glob(c.fileSystem, pattern)
+	matches, err := doublestar.Glob(c.fileSystem, filepath.ToSlash(pattern))
 	if err != nil {
 		panic(err)
 	}
