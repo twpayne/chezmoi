@@ -5,6 +5,7 @@ import (
 	"io/fs"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"runtime"
 
 	"github.com/bmatcuk/doublestar/v4"
@@ -19,7 +20,7 @@ type RealSystemOption func(*RealSystem)
 
 // Glob implements System.Glob.
 func (s *RealSystem) Glob(pattern string) ([]string, error) {
-	return doublestar.Glob(s.UnderlyingFS(), pattern)
+	return doublestar.Glob(s.UnderlyingFS(), filepath.ToSlash(pattern))
 }
 
 // IdempotentCmdCombinedOutput implements System.IdempotentCmdCombinedOutput.

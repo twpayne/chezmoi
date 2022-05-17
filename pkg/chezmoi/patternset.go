@@ -68,7 +68,7 @@ func (ps *patternSet) add(pattern string, include patternSetIncludeType) error {
 func (ps *patternSet) glob(fileSystem vfs.FS, prefix string) ([]string, error) {
 	allMatches := newStringSet()
 	for includePattern := range ps.includePatterns {
-		matches, err := doublestar.Glob(fileSystem, prefix+includePattern)
+		matches, err := doublestar.Glob(fileSystem, filepath.ToSlash(prefix+includePattern))
 		if err != nil {
 			return nil, err
 		}
