@@ -14,6 +14,7 @@ linters:
   - errchkjson
   - errname
   - errorlint
+  - execinquery
   - exportloopref
   - forbidigo
   - forcetypeassert
@@ -62,7 +63,6 @@ linters:
   - whitespace
   disable:
   - cyclop
-  - execinquery
   - exhaustive
   - exhaustivestruct
   - exhaustruct

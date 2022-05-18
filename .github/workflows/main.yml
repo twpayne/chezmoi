@@ -12,7 +12,7 @@ env:
   AGE_VERSION: 1.0.0
   GO_VERSION: 1.18.2
   GOFUMPT_VERSION: 0.3.1
-  GOLANGCI_LINT_VERSION: 1.46.1
+  GOLANGCI_LINT_VERSION: 1.46.2
 jobs:
   build-website:
     runs-on: ubuntu-20.04
