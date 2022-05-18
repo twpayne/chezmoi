@@ -10,13 +10,13 @@ require (
 	github.com/charmbracelet/glamour v0.5.0
 	github.com/coreos/go-semver v0.3.0
 	github.com/go-git/go-git/v5 v5.4.2
-	github.com/google/go-github/v44 v44.0.0
+	github.com/google/go-github/v44 v44.1.0
 	github.com/google/gops v0.3.23
 	github.com/google/renameio/v2 v2.0.0
 	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/muesli/combinator v0.3.0
-	github.com/pelletier/go-toml/v2 v2.0.0
+	github.com/pelletier/go-toml/v2 v2.0.1
 	github.com/rogpeppe/go-internal v1.8.1
 	github.com/rs/zerolog v1.26.1
 	github.com/sergi/go-diff v1.1.0
@@ -33,10 +33,10 @@ require (
 	go.etcd.io/bbolt v1.3.6
 	go.uber.org/multierr v1.8.0
 	golang.org/x/oauth2 v0.0.0-20220411215720-9780585627b5
-	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
-	golang.org/x/sys v0.0.0-20220503163025-988cb79eb6c6
+	golang.org/x/sync v0.0.0-20220513210516-0976fa681c29
+	golang.org/x/sys v0.0.0-20220517195934-5e4e11fc645e
 	golang.org/x/term v0.0.0-20220411215600-e5f449aeb171
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
+	gopkg.in/yaml.v3 v3.0.0-20220512140231-539c8e751b99
 	howett.net/plist v1.0.0
 )
 
@@ -44,7 +44,7 @@ require (
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver/v3 v3.1.1 // indirect
 	github.com/Microsoft/go-winio v0.5.2 // indirect
-	github.com/ProtonMail/go-crypto v0.0.0-20220407094043-a94812496cf5 // indirect
+	github.com/ProtonMail/go-crypto v0.0.0-20220517143526-88bb52951d5b // indirect
 	github.com/acomagu/bufpipe v1.0.3 // indirect
 	github.com/alecthomas/chroma v0.10.0 // indirect
 	github.com/alessio/shellescape v1.4.1 // indirect
@@ -87,7 +87,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
-	github.com/spf13/cast v1.4.1 // indirect
+	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/stretchr/objx v0.3.0 // indirect
@@ -96,8 +96,8 @@ require (
 	github.com/yuin/goldmark v1.4.12 // indirect
 	github.com/yuin/goldmark-emoji v1.0.1 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
-	golang.org/x/crypto v0.0.0-20220507011949-2cf3adece122 // indirect
-	golang.org/x/net v0.0.0-20220425223048-2871e0cb64e4 // indirect
+	golang.org/x/crypto v0.0.0-20220518034528-6f7dac969898 // indirect
+	golang.org/x/net v0.0.0-20220517181318-183a9ca12b87 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.28.0 // indirect
