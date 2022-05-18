@@ -16,6 +16,12 @@ func (e invalidModeError) Error() string {
 	return "invalid mode: " + string(e)
 }
 
+// ModeFlagCompletionFunc is a function that completes the value of mode flags.
+var ModeFlagCompletionFunc = FlagCompletionFunc([]string{
+	string(ModeFile),
+	string(ModeSymlink),
+})
+
 // Set implements github.com/spf13/flag.Value.Set.
 func (m *Mode) Set(s string) error {
 	switch Mode(s) {

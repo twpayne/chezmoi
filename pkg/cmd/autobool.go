@@ -7,12 +7,22 @@ import (
 	"strings"
 
 	"github.com/mitchellh/mapstructure"
+
+	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
 )
 
 type autoBool struct {
 	auto  bool
 	value bool
 }
+
+// autoBoolFlagCompletionFunc is a function that completes the value of autoBool
+// flags.
+var autoBoolFlagCompletionFunc = chezmoi.FlagCompletionFunc([]string{
+	"1", "t", "T", "true", "TRUE", "True",
+	"0", "f", "F", "false", "FALSE", "False",
+	"auto", "AUTO", "Auto",
+})
 
 // Set implements github.com/spf13/pflag.Value.Set.
 func (b *autoBool) Set(s string) error {
