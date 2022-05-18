@@ -3,6 +3,8 @@ package cmd
 import (
 	"errors"
 	"strings"
+
+	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
 )
 
 // A readDataFormat is a format that chezmoi uses for reading (JSON, TOML, or
@@ -27,6 +29,17 @@ const (
 
 	defaultWriteDataFormat = writeDataFormatJSON
 )
+
+var readDataFormatFlagCompletionFunc = chezmoi.FlagCompletionFunc([]string{
+	string(readDataFormatJSON),
+	string(readDataFormatTOML),
+	string(readDataFormatYAML),
+})
+
+var writeDataFormatFlagCompletionFunc = chezmoi.FlagCompletionFunc([]string{
+	string(writeDataFormatJSON),
+	string(writeDataFormatYAML),
+})
 
 // Set implements github.com/spf13/pflag.Value.Set.
 func (f *readDataFormat) Set(s string) error {

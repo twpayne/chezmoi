@@ -1324,6 +1324,11 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		rootCmd.MarkPersistentFlagFilename("output"),
 		persistentFlags.MarkHidden("safe"),
 		rootCmd.MarkPersistentFlagDirname("source"),
+		rootCmd.RegisterFlagCompletionFunc("color", autoBoolFlagCompletionFunc),
+		rootCmd.RegisterFlagCompletionFunc("config-format", readDataFormatFlagCompletionFunc),
+		rootCmd.RegisterFlagCompletionFunc("mode", chezmoi.ModeFlagCompletionFunc),
+		rootCmd.RegisterFlagCompletionFunc("use-builtin-age", autoBoolFlagCompletionFunc),
+		rootCmd.RegisterFlagCompletionFunc("use-builtin-git", autoBoolFlagCompletionFunc),
 	} {
 		if err != nil {
 			return nil, err

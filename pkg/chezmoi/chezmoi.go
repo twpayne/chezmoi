@@ -10,6 +10,8 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+
+	"github.com/spf13/cobra"
 )
 
 var (
@@ -112,6 +114,21 @@ var modeTypeNames = map[fs.FileMode]string{
 	fs.ModeSocket:     "socket",
 	fs.ModeDevice:     "device",
 	fs.ModeCharDevice: "char device",
+}
+
+// FlagCompletionFunc returns a flag completion function.
+func FlagCompletionFunc(allCompletions []string) func(*cobra.Command, []string, string) (
+	[]string, cobra.ShellCompDirective,
+) {
+	return func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		var completions []string
+		for _, completion := range allCompletions {
+			if strings.HasPrefix(completion, toComplete) {
+				completions = append(completions, completion)
+			}
+		}
+		return completions, cobra.ShellCompDirectiveNoFileComp
+	}
 }
 
 // SHA256Sum returns the SHA256 sum of data.

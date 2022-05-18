@@ -112,6 +112,9 @@ func (c *Config) newStateCmd() *cobra.Command {
 	}
 	stateDumpPersistentFlags := stateDumpCmd.PersistentFlags()
 	stateDumpPersistentFlags.VarP(&c.state.dump.format, "format", "f", "format")
+	if err := stateDumpCmd.RegisterFlagCompletionFunc("format", writeDataFormatFlagCompletionFunc); err != nil {
+		panic(err)
+	}
 	stateCmd.AddCommand(stateDumpCmd)
 
 	stateGetCmd := &cobra.Command{
@@ -140,6 +143,9 @@ func (c *Config) newStateCmd() *cobra.Command {
 	stateGetBucketPersistentFlags := stateGetBucketCmd.PersistentFlags()
 	stateGetBucketPersistentFlags.StringVar(&c.state.getBucket.bucket, "bucket", c.state.getBucket.bucket, "bucket")
 	stateGetBucketPersistentFlags.VarP(&c.state.getBucket.format, "format", "f", "format")
+	if err := stateGetBucketCmd.RegisterFlagCompletionFunc("format", writeDataFormatFlagCompletionFunc); err != nil {
+		panic(err)
+	}
 	stateCmd.AddCommand(stateGetBucketCmd)
 
 	stateResetCmd := &cobra.Command{

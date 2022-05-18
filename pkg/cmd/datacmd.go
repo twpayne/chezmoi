@@ -22,6 +22,9 @@ func (c *Config) newDataCmd() *cobra.Command {
 
 	persistentFlags := dataCmd.PersistentFlags()
 	persistentFlags.VarP(&c.data.format, "format", "f", "format")
+	if err := dataCmd.RegisterFlagCompletionFunc("format", writeDataFormatFlagCompletionFunc); err != nil {
+		panic(err)
+	}
 
 	return dataCmd
 }
