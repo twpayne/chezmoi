@@ -12,4 +12,4 @@ stdout 'Register-ArgumentCompleter'
 
 # test that chezmoi completion zsh generates zsh completions
 chezmoi completion zsh
-stdout '#compdef _chezmoi chezmoi'
+stdout '#compdef chezmoi'
