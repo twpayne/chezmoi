@@ -1,4 +1,4 @@
-#compdef _chezmoi chezmoi
+#compdef chezmoi
 
 # zsh completion for chezmoi                              -*- shell-script -*-
 
