@@ -10,6 +10,7 @@ chezmoi provides the following automatically-populated variables:
 | `.chezmoi.configFile`      | string   | The path to the configuration file used by chezmoi                                                                             |
 | `.chezmoi.executable`      | string   | The path to the `chezmoi` executable, if available                                                                             |
 | `.chezmoi.fqdnHostname`    | string   | The fully-qualified domain name hostname of the machine chezmoi is running on                                                  |
+| `.chezmoi.gid`             | string   | The primary group ID                                                                                                           |
 | `.chezmoi.group`           | string   | The group of the user running chezmoi                                                                                          |
 | `.chezmoi.homeDir`         | string   | The home directory of the user running chezmoi                                                                                 |
 | `.chezmoi.hostname`        | string   | The hostname of the machine chezmoi is running on, up to the first `.`                                                         |
@@ -18,6 +19,7 @@ chezmoi provides the following automatically-populated variables:
 | `.chezmoi.osRelease`       | string   | The information from `/etc/os-release`, Linux only, run `chezmoi data` to see its output                                       |
 | `.chezmoi.sourceDir`       | string   | The source directory                                                                                                           |
 | `.chezmoi.sourceFile`      | string   | The path of the template relative to the source directory                                                                      |
+| `.chezmoi.uid`             | string   | The user ID                                                                                                                    |
 | `.chezmoi.username`        | string   | The username of the user running chezmoi                                                                                       |
 | `.chezmoi.version.builtBy` | string   | The program that built the `chezmoi` executable, if set                                                                        |
 | `.chezmoi.version.commit`  | string   | The git commit at which the `chezmoi` executable was built, if set                                                             |
