@@ -902,8 +902,10 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 	// determined. Unset variables will trigger template errors if used,
 	// alerting the user to the problem and allowing them to find alternative
 	// solutions.
-	var username, group string
+	var gid, group, uid, username string
 	if currentUser, err := user.Current(); err == nil {
+		gid = currentUser.Gid
+		uid = currentUser.Uid
 		username = currentUser.Username
 		if runtime.GOOS != "windows" {
 			if rawGroup, err := user.LookupGroupId(currentUser.Gid); err == nil {
@@ -972,6 +974,7 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 			"configFile":   c.configFileAbsPath.String(),
 			"executable":   executable,
 			"fqdnHostname": fqdnHostname,
+			"gid":          gid,
 			"group":        group,
 			"homeDir":      c.homeDir,
 			"hostname":     hostname,
@@ -979,6 +982,7 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 			"os":           runtime.GOOS,
 			"osRelease":    osRelease,
 			"sourceDir":    c.SourceDirAbsPath.String(),
+			"uid":          uid,
 			"username":     username,
 			"version": map[string]interface{}{
 				"builtBy": c.versionInfo.BuiltBy,
