@@ -156,9 +156,9 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 	}
 	httpClient, httpClientErr := c.getHTTPClient()
 	shellCommand, _ := shell.CurrentUserShell()
-	shellCommand, shellArgs := parseCommand(shellCommand, nil)
-	cdCommand, cdArgs := c.cdCommand()
-	editCommand, editArgs := c.editor(nil)
+	shellCommand, shellArgs, _ := parseCommand(shellCommand, nil)
+	cdCommand, cdArgs, _ := c.cdCommand()
+	editCommand, editArgs, _ := c.editor(nil)
 	checks := []check{
 		&versionCheck{
 			versionInfo: c.versionInfo,

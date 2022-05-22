@@ -5,6 +5,7 @@ import (
 	"io/fs"
 	"path/filepath"
 	"runtime"
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -26,6 +27,48 @@ func TestAddTemplateFuncPanic(t *testing.T) {
 			config.addTemplateFunc("func", nil)
 		})
 	})
+}
+
+func TestParseCommand(t *testing.T) {
+	for i, tc := range []struct {
+		command         string
+		args            []string
+		expectedCommand string
+		expectedArgs    []string
+		expectedErr     bool
+	}{
+		{
+			command:         "chezmoi-editor",
+			expectedCommand: "chezmoi-editor",
+		},
+		{
+			command:         `chezmoi-editor -f --nomru -c "au VimLeave * !open -a Terminal"`,
+			expectedCommand: "chezmoi-editor",
+			expectedArgs:    []string{"-f", "--nomru", "-c", "au VimLeave * !open -a Terminal"},
+		},
+		{
+			command:         `"chezmoi editor" $CHEZMOI_TEST_VAR`,
+			args:            []string{"extra-arg"},
+			expectedCommand: "chezmoi editor",
+			expectedArgs:    []string{"chezmoi-test-value", "extra-arg"},
+		},
+		{
+			command:     `"chezmoi editor`,
+			expectedErr: true,
+		},
+	} {
+		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			t.Setenv("CHEZMOI_TEST_VAR", "chezmoi-test-value")
+			actualCommand, actualArgs, err := parseCommand(tc.command, tc.args)
+			if tc.expectedErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, tc.expectedCommand, actualCommand)
+				assert.Equal(t, tc.expectedArgs, actualArgs)
+			}
+		})
+	}
 }
 
 func TestParseConfig(t *testing.T) {

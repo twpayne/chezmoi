@@ -30,16 +30,19 @@ func (c *Config) newCDCmd() *cobra.Command {
 }
 
 func (c *Config) runCDCmd(cmd *cobra.Command, args []string) error {
-	cdCommand, cdArgs := c.cdCommand()
+	cdCommand, cdArgs, err := c.cdCommand()
+	if err != nil {
+		return err
+	}
 	return c.run(c.WorkingTreeAbsPath, cdCommand, cdArgs)
 }
 
-func (c *Config) cdCommand() (string, []string) {
+func (c *Config) cdCommand() (string, []string, error) {
 	cdCommand := c.CD.Command
 	cdArgs := c.CD.Args
 
 	if cdCommand != "" {
-		return cdCommand, cdArgs
+		return cdCommand, cdArgs, nil
 	}
 
 	cdCommand, _ = shell.CurrentUserShell()
