@@ -32,7 +32,7 @@ unchanged.
 Files with the `modify_` prefix are treated as scripts that modify an existing
 file. The contents of the existing file (which maybe empty if the existing file
 does not exist or is empty) are passed to the script's standard input, and the
-new contents are read from the scripts standard output.
+new contents are read from the script's standard output.
 
 ### Remove entry
 
