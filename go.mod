@@ -38,6 +38,7 @@ require (
 	golang.org/x/term v0.0.0-20220411215600-e5f449aeb171
 	gopkg.in/yaml.v3 v3.0.0-20220512140231-539c8e751b99
 	howett.net/plist v1.0.0
+	mvdan.cc/sh/v3 v3.5.0
 )
 
 require (

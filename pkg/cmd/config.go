@@ -43,6 +43,8 @@ import (
 	"github.com/twpayne/go-xdg/v6"
 	"go.uber.org/multierr"
 	"golang.org/x/term"
+	"mvdan.cc/sh/v3/expand"
+	"mvdan.cc/sh/v3/syntax"
 
 	"github.com/twpayne/chezmoi/v2/assets/templates"
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
@@ -1081,13 +1083,13 @@ func (c *Config) diffFile(
 }
 
 // editor returns the path to the user's editor and any extra arguments.
-func (c *Config) editor(args []string) (string, []string) {
+func (c *Config) editor(args []string) (string, []string, error) {
 	editCommand := c.Edit.Command
 	editArgs := c.Edit.Args
 
 	// If the user has set an edit command then use it.
 	if editCommand != "" {
-		return editCommand, append(editArgs, args...)
+		return editCommand, append(editArgs, args...), nil
 	}
 
 	// Prefer $VISUAL over $EDITOR and fallback to the OS's default editor.
@@ -1524,7 +1526,10 @@ func (c *Config) pageOutputString(output, cmdPager string) error {
 	var pagerCmd *exec.Cmd
 	if strings.IndexFunc(pager, unicode.IsSpace) != -1 {
 		shellCommand, _ := shell.CurrentUserShell()
-		shellCommand, shellArgs := parseCommand(shellCommand, []string{"-c", pager})
+		shellCommand, shellArgs, err := parseCommand(shellCommand, []string{"-c", pager})
+		if err != nil {
+			return err
+		}
 		pagerCmd = exec.Command(shellCommand, shellArgs...)
 	} else {
 		pagerCmd = exec.Command(pager)
@@ -1847,9 +1852,12 @@ func (c *Config) runEditor(args []string) error {
 	if err := c.persistentState.Close(); err != nil {
 		return err
 	}
-	editor, editorArgs := c.editor(args)
+	editor, editorArgs, err := c.editor(args)
+	if err != nil {
+		return err
+	}
 	start := time.Now()
-	err := c.run(chezmoi.EmptyAbsPath, editor, editorArgs)
+	err = c.run(chezmoi.EmptyAbsPath, editor, editorArgs)
 	if runtime.GOOS != "windows" && c.Edit.MinDuration != 0 {
 		if duration := time.Since(start); duration < c.Edit.MinDuration {
 			c.errorf("warning: %s: returned in less than %s\n", shellQuoteCommand(editor, editorArgs), c.Edit.MinDuration)
@@ -2123,23 +2131,32 @@ func (c *Config) writeOutputString(data string) error {
 	return c.writeOutput([]byte(data))
 }
 
-func parseCommand(command string, args []string) (string, []string) {
+func parseCommand(command string, args []string) (string, []string, error) {
 	// If command is found, then return it.
 	if path, err := chezmoi.LookPath(command); err == nil {
-		return path, args
+		return path, args, nil
 	}
 
-	// Otherwise, if the command contains spaces, then assume that the first word
-	// is the editor and the rest are arguments.
-	components := whitespaceRx.Split(command, -1)
-	if len(components) > 1 {
-		if path, err := chezmoi.LookPath(components[0]); err == nil {
-			return path, append(components[1:], args...)
+	// Otherwise, if the command contains spaces, parse it as a shell command.
+	if whitespaceRx.MatchString(command) {
+		var words []*syntax.Word
+		if err := syntax.NewParser().Words(strings.NewReader(command), func(word *syntax.Word) bool {
+			words = append(words, word)
+			return true
+		}); err != nil {
+			return "", nil, err
 		}
+		fields, err := expand.Fields(&expand.Config{
+			Env: expand.FuncEnviron(os.Getenv),
+		}, words...)
+		if err != nil {
+			return "", nil, err
+		}
+		return fields[0], append(fields[1:], args...), nil
 	}
 
 	// Fallback to the command only.
-	return command, args
+	return command, args, nil
 }
 
 // withVersionInfo sets the version information.
