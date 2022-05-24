@@ -25,7 +25,22 @@ chezmoi provides the following automatically-populated variables:
 | `.chezmoi.version.commit`  | string   | The git commit at which the `chezmoi` executable was built, if set                                                             |
 | `.chezmoi.version.date`    | string   | The timestamp at which the `chezmoi` executable was built, if set                                                              |
 | `.chezmoi.version.version` | string   | The version of chezmoi                                                                                                         |
+| `.chezmoi.windowsVersion`  | object   | Windows version information, if running on Windows                                                                             |
 | `.chezmoi.workingTree`     | string   | The working tree of the source directory                                                                                       |
+
+`.chezmoi.windowsVersion` contains the following keys populated from the
+registry key `Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows
+NT\CurrentVersion`.
+
+| Key                         | Type    |
+| --------------------------- | ------- |
+| `currentBuild`              | string  |
+| `currentMajorVersionNumber` | integer |
+| `currentMinorVersionNumber` | integer |
+| `currentVersion`            | string  |
+| `displayVersion`            | string  |
+| `editionID`                 | string  |
+| `productName`               | string  |
 
 Additional variables can be defined in the config file in the `data` section.
 Variable names must consist of a letter and be followed by zero or more letters

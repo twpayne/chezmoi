@@ -40,3 +40,7 @@ func (c *Config) readPassword(prompt string) (password string, err error) {
 	password = string(passwordBytes)
 	return
 }
+
+func (c *Config) windowsVersion() (map[string]interface{}, error) {
+	return nil, nil
+}
