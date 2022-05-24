@@ -968,6 +968,8 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 
 	executable, _ := os.Executable()
 
+	windowsVersion, _ := c.windowsVersion()
+
 	return map[string]interface{}{
 		"chezmoi": map[string]interface{}{
 			"arch":         runtime.GOARCH,
@@ -992,7 +994,8 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 				"date":    c.versionInfo.Date,
 				"version": c.versionInfo.Version,
 			},
-			"workingTree": c.WorkingTreeAbsPath.String(),
+			"windowsVersion": windowsVersion,
+			"workingTree":    c.WorkingTreeAbsPath.String(),
 		},
 	}
 }
