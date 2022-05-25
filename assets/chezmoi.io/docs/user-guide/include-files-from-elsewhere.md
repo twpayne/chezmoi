@@ -161,7 +161,7 @@ You can extract a single file from an archive using the `$ENTRY.filter.command`
 and `$ENTRY.filter.args` variables in `.chezmoiexternal.$FORMAT`, for example:
 
 ```toml title="~/.local/share/chezmoi/.chezmoiexternal.toml"
-{{ ageVersion := "1.0.0" -}}
+{{ $ageVersion := "1.0.0" -}}
 [".local/bin/age"]
     type = "file"
     url = "https://github.com/FiloSottile/age/releases/download/v{{ $ageVersion }}/age-v{{ $ageVersion }}-{{ .chezmoi.os }}-{{ .chezmoi.arch }}.tar.gz"
