@@ -4320,6 +4320,11 @@
 <td>The fully-qualified domain name hostname of the machine chezmoi is running on</td>
 </tr>
 <tr>
+<td><code>.chezmoi.gid</code></td>
+<td>string</td>
+<td>The primary group ID</td>
+</tr>
+<tr>
 <td><code>.chezmoi.group</code></td>
 <td>string</td>
 <td>The group of the user running chezmoi</td>
@@ -4360,6 +4365,11 @@
 <td>The path of the template relative to the source directory</td>
 </tr>
 <tr>
+<td><code>.chezmoi.uid</code></td>
+<td>string</td>
+<td>The user ID</td>
+</tr>
+<tr>
 <td><code>.chezmoi.username</code></td>
 <td>string</td>
 <td>The username of the user running chezmoi</td>
@@ -4385,9 +4395,55 @@
 <td>The version of chezmoi</td>
 </tr>
 <tr>
+<td><code>.chezmoi.windowsVersion</code></td>
+<td>object</td>
+<td>Windows version information, if running on Windows</td>
+</tr>
+<tr>
 <td><code>.chezmoi.workingTree</code></td>
 <td>string</td>
 <td>The working tree of the source directory</td>
+</tr>
+</tbody>
+</table>
+<p><code>.chezmoi.windowsVersion</code> contains the following keys populated from the
+registry key <code>Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows
+NT\CurrentVersion</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Type</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>currentBuild</code></td>
+<td>string</td>
+</tr>
+<tr>
+<td><code>currentMajorVersionNumber</code></td>
+<td>integer</td>
+</tr>
+<tr>
+<td><code>currentMinorVersionNumber</code></td>
+<td>integer</td>
+</tr>
+<tr>
+<td><code>currentVersion</code></td>
+<td>string</td>
+</tr>
+<tr>
+<td><code>displayVersion</code></td>
+<td>string</td>
+</tr>
+<tr>
+<td><code>editionID</code></td>
+<td>string</td>
+</tr>
+<tr>
+<td><code>productName</code></td>
+<td>string</td>
 </tr>
 </tbody>
 </table>
