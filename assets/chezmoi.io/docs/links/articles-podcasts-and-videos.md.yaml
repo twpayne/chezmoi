@@ -283,3 +283,8 @@ articles:
   format: Video
   title: 'Easily moving Linux installs'
   url: 'https://www.youtube.com/watch?v=x6063EuxfEA'
+- date: '2022-05-27'
+  version: '2.17.0'
+  format: Audio
+  title: "Fédérer une communauté technique autour d'un projet Open Source"
+  url: 'https://www.podcastics.com/podcast/episode/federer-une-communaute-technique-autour-dun-projet-open-source-131694/'
