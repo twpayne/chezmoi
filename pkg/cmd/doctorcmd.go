@@ -18,7 +18,7 @@ import (
 	"text/tabwriter"
 
 	"github.com/coreos/go-semver/semver"
-	"github.com/google/go-github/v44/github"
+	"github.com/google/go-github/v45/github"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/twpayne/go-shell"
