@@ -73,7 +73,7 @@ chhome home8/user
 # test that chezmoi init fails if the generated config is not valid
 mkgitconfig
 ! chezmoi init
-stderr 'parsing error'
+stderr 'While parsing config:'
 ! exists .config/chezmoi
 
 chhome home/user
