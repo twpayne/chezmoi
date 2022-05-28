@@ -1,6 +1,8 @@
-FROM ghcr.io/void-linux/void-linux:20211130rc01-full-x86_64
+FROM ghcr.io/void-linux/void-linux:20220211rc01-full-x86_64
 
 RUN \
+    xbps-install --sync --update --yes ; \
+    xbps-install --update --yes xbps && \
     xbps-install --sync --update --yes && \
     xbps-install --yes age curl gcc git go unzip zip
 
