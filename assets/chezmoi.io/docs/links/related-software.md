@@ -29,3 +29,9 @@ chezmoi plugin for asdf version manager.
 
 An add-on to synchronize your colorschemes across systems and allow easy
 colorscheme switching using chezmoi templates.
+
+### [`github.com/VorpalBlade/chezmoi_modify_manager`](https://github.com/VorpalBlade/chezmoi_modify_manager)
+
+An add-on to deal with config files that contain a mix of settings and
+transient state, such as with GUI program settings files also containing
+recently used files and window positions.

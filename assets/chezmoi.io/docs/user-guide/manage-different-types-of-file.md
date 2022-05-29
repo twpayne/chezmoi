@@ -80,6 +80,15 @@ substituted with:
 current-context: {{ output "kubectl" "config" "current-context" | trim }}
 ```
 
+!!! hint
+
+    For managing ini files with a mix of settings and state (such as recently
+    used files or window positions), there is a third party tool called
+    `chezmoi_modify_manager` that builds upon `modify_` scripts. See
+    [related software](../links/related-software.md#githubcomvorpalbladechezmoi_modify_manager)
+    for more information.
+
+
 ## Manage a file's permissions, but not its contents
 
 chezmoi's `create_` attributes allows you to tell chezmoi to create a file if
