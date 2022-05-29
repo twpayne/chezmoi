@@ -77,15 +77,11 @@ func (s *DumpSystem) Data() interface{} {
 
 // Mkdir implements System.Mkdir.
 func (s *DumpSystem) Mkdir(dirname AbsPath, perm fs.FileMode) error {
-	if _, exists := s.data[dirname.String()]; exists {
-		return fs.ErrExist
-	}
-	s.data[dirname.String()] = &dirData{
+	return s.setData(dirname.String(), &dirData{
 		Type: dataTypeDir,
 		Name: dirname,
 		Perm: perm,
-	}
-	return nil
+	})
 }
 
 // RunCmd implements System.RunCmd.
@@ -93,20 +89,16 @@ func (s *DumpSystem) RunCmd(cmd *exec.Cmd) error {
 	if cmd.Dir == "" {
 		return nil
 	}
-	s.data[cmd.Dir] = &commandData{
+	return s.setData(cmd.Dir, &commandData{
 		Type: dataTypeCommand,
 		Path: cmd.Path,
 		Args: cmd.Args,
-	}
-	return nil
+	})
 }
 
 // RunScript implements System.RunScript.
 func (s *DumpSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
 	scriptnameStr := scriptname.String()
-	if _, exists := s.data[scriptnameStr]; exists {
-		return fs.ErrExist
-	}
 	scriptData := &scriptData{
 		Type:     dataTypeScript,
 		Name:     NewAbsPath(scriptnameStr),
@@ -115,8 +107,7 @@ func (s *DumpSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, int
 	if !interpreter.None() {
 		scriptData.Interpreter = interpreter
 	}
-	s.data[scriptnameStr] = scriptData
-	return nil
+	return s.setData(scriptnameStr, scriptData)
 }
 
 // UnderlyingFS implements System.UnderlyingFS.
@@ -126,29 +117,27 @@ func (s *DumpSystem) UnderlyingFS() vfs.FS {
 
 // WriteFile implements System.WriteFile.
 func (s *DumpSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error {
-	filenameStr := filename.String()
-	if _, exists := s.data[filenameStr]; exists {
-		return fs.ErrExist
-	}
-	s.data[filenameStr] = &fileData{
+	return s.setData(filename.String(), &fileData{
 		Type:     dataTypeFile,
 		Name:     filename,
 		Contents: string(data),
 		Perm:     perm,
-	}
-	return nil
+	})
 }
 
 // WriteSymlink implements System.WriteSymlink.
 func (s *DumpSystem) WriteSymlink(oldname string, newname AbsPath) error {
-	newnameStr := newname.String()
-	if _, exists := s.data[newnameStr]; exists {
-		return fs.ErrExist
-	}
-	s.data[newnameStr] = &symlinkData{
+	return s.setData(newname.String(), &symlinkData{
 		Type:     dataTypeSymlink,
 		Name:     newname,
 		Linkname: oldname,
+	})
+}
+
+func (s *DumpSystem) setData(key string, value interface{}) error {
+	if _, ok := s.data[key]; ok {
+		return fs.ErrExist
 	}
+	s.data[key] = value
 	return nil
 }
