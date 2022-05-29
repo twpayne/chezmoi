@@ -45,6 +45,10 @@ chhome home2/user
 chezmoi apply
 ! grep '# edited' $HOME/.dir/.file
 
+# test that chezmoi dump prints the git command
+chezmoi dump --format=yaml
+stdout 'type: command'
+
 -- golden/.file --
 # contents of .file
 -- home/user/.local/share/chezmoi/.chezmoiexternal.toml --
