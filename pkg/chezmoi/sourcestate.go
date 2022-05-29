@@ -70,9 +70,9 @@ type External struct {
 
 // A externalCacheEntry is an external cache entry.
 type externalCacheEntry struct {
-	URL  string    `json:"url" toml:"url" time:"url"`
-	Time time.Time `json:"time" toml:"time" yaml:"time"`
-	Data []byte    `json:"data" toml:"data" yaml:"data"`
+	URL  string    `json:"url" time:"url"`
+	Time time.Time `json:"time" yaml:"time"`
+	Data []byte    `json:"data" yaml:"data"`
 }
 
 var externalCacheFormat = formatGzippedJSON{}

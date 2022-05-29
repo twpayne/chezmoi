@@ -28,39 +28,39 @@ type DumpSystem struct {
 
 // A commandData contains data about a command.
 type commandData struct {
-	Type dataType `json:"type" toml:"type" yaml:"type"`
-	Path string   `json:"path" toml:"path" yaml:"path"`
-	Args []string `json:"args" toml:"args" yaml:"args"`
+	Type dataType `json:"type" yaml:"type"`
+	Path string   `json:"path" yaml:"path"`
+	Args []string `json:"args" yaml:"args"`
 }
 
 // A dirData contains data about a directory.
 type dirData struct {
-	Type dataType    `json:"type" toml:"type" yaml:"type"`
-	Name AbsPath     `json:"name" toml:"name" yaml:"name"`
-	Perm fs.FileMode `json:"perm" toml:"perm" yaml:"perm"`
+	Type dataType    `json:"type" yaml:"type"`
+	Name AbsPath     `json:"name" yaml:"name"`
+	Perm fs.FileMode `json:"perm" yaml:"perm"`
 }
 
 // A fileData contains data about a file.
 type fileData struct {
-	Type     dataType    `json:"type" toml:"type" yaml:"type"`
-	Name     AbsPath     `json:"name" toml:"name" yaml:"name"`
-	Contents string      `json:"contents" toml:"contents" yaml:"contents"`
-	Perm     fs.FileMode `json:"perm" toml:"perm" yaml:"perm"`
+	Type     dataType    `json:"type" yaml:"type"`
+	Name     AbsPath     `json:"name" yaml:"name"`
+	Contents string      `json:"contents" yaml:"contents"`
+	Perm     fs.FileMode `json:"perm" yaml:"perm"`
 }
 
 // A scriptData contains data about a script.
 type scriptData struct {
-	Type        dataType     `json:"type" toml:"type" yaml:"type"`
-	Name        AbsPath      `json:"name" toml:"name" yaml:"name"`
-	Contents    string       `json:"contents" toml:"contents" yaml:"contents"`
-	Interpreter *Interpreter `json:"interpreter,omitempty" toml:"interpreter,omitempty" yaml:"interpreter,omitempty"`
+	Type        dataType     `json:"type" yaml:"type"`
+	Name        AbsPath      `json:"name" yaml:"name"`
+	Contents    string       `json:"contents" yaml:"contents"`
+	Interpreter *Interpreter `json:"interpreter,omitempty" yaml:"interpreter,omitempty"`
 }
 
 // A symlinkData contains data about a symlink.
 type symlinkData struct {
-	Type     dataType `json:"type" toml:"type" yaml:"type"`
-	Name     AbsPath  `json:"name" toml:"name" yaml:"name"`
-	Linkname string   `json:"linkname" toml:"linkname" yaml:"linkname"`
+	Type     dataType `json:"type" yaml:"type"`
+	Name     AbsPath  `json:"name" yaml:"name"`
+	Linkname string   `json:"linkname" yaml:"linkname"`
 }
 
 // NewDumpSystem returns a new DumpSystem that accumulates data.

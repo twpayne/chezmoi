@@ -61,9 +61,9 @@ func PersistentStateData(s PersistentState) (interface{}, error) {
 		return nil, err
 	}
 	return struct {
-		ConfigState interface{} `json:"configState" toml:"configState" yaml:"configState"`
-		EntryState  interface{} `json:"entryState" toml:"entryState" yaml:"entryState"`
-		ScriptState interface{} `json:"scriptState" toml:"scriptState" yaml:"scriptState"`
+		ConfigState interface{} `json:"configState" yaml:"configState"`
+		EntryState  interface{} `json:"entryState" yaml:"entryState"`
+		ScriptState interface{} `json:"scriptState" yaml:"scriptState"`
 	}{
 		ConfigState: configStateData,
 		EntryState:  entryStateData,

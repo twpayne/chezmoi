@@ -57,14 +57,14 @@ type TargetStateSymlink struct {
 // A modifyDirWithCmdState records the state of a directory modified by a
 // command.
 type modifyDirWithCmdState struct {
-	Name  AbsPath   `json:"name" toml:"name" yaml:"name"`
-	RunAt time.Time `json:"runAt" toml:"runAt" yaml:"runAt"`
+	Name  AbsPath   `json:"name" yaml:"name"`
+	RunAt time.Time `json:"runAt" yaml:"runAt"`
 }
 
 // A scriptState records the state of a script that has been run.
 type scriptState struct {
-	Name  RelPath   `json:"name" toml:"name" yaml:"name"`
-	RunAt time.Time `json:"runAt" toml:"runAt" yaml:"runAt"`
+	Name  RelPath   `json:"name" yaml:"name"`
+	RunAt time.Time `json:"runAt" yaml:"runAt"`
 }
 
 // Apply updates actualStateEntry to match t.
