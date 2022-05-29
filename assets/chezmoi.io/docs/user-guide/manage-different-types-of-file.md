@@ -97,7 +97,7 @@ from the `executable_`, `private_`, and `readonly_` attributes. This can be
 used to control a file's permissions without altering its contents.
 
 For example, if you want to ensure that `~/.kube/config` always has permissions
-600 then if you create an empty file called `dot_kube/private_dot_config` in
+600 then if you create an empty file called `dot_kube/private_config` in
 your source state, chezmoi will ensure `~/.kube/config`'s permissions are 0600
 when you run `chezmoi apply` without changing its contents.
 
