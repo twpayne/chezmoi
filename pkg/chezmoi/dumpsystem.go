@@ -2,6 +2,7 @@ package chezmoi
 
 import (
 	"io/fs"
+	"os/exec"
 
 	vfs "github.com/twpayne/go-vfs/v4"
 )
@@ -11,6 +12,7 @@ type dataType string
 
 // dataTypes.
 const (
+	dataTypeCommand dataType = "command"
 	dataTypeDir     dataType = "dir"
 	dataTypeFile    dataType = "file"
 	dataTypeScript  dataType = "script"
@@ -22,6 +24,13 @@ type DumpSystem struct {
 	emptySystemMixin
 	noUpdateSystemMixin
 	data map[string]interface{}
+}
+
+// A commandData contains data about a command.
+type commandData struct {
+	Type dataType `json:"type" toml:"type" yaml:"type"`
+	Path string   `json:"path" toml:"path" yaml:"path"`
+	Args []string `json:"args" toml:"args" yaml:"args"`
 }
 
 // A dirData contains data about a directory.
@@ -75,6 +84,19 @@ func (s *DumpSystem) Mkdir(dirname AbsPath, perm fs.FileMode) error {
 		Type: dataTypeDir,
 		Name: dirname,
 		Perm: perm,
+	}
+	return nil
+}
+
+// RunCmd implements System.RunCmd.
+func (s *DumpSystem) RunCmd(cmd *exec.Cmd) error {
+	if cmd.Dir == "" {
+		return nil
+	}
+	s.data[cmd.Dir] = &commandData{
+		Type: dataTypeCommand,
+		Path: cmd.Path,
+		Args: cmd.Args,
 	}
 	return nil
 }
