@@ -23,7 +23,7 @@ func (c *Config) newDumpCmd() *cobra.Command {
 		ValidArgsFunction: c.targetValidArgs,
 		RunE:              c.runDumpCmd,
 		Annotations: map[string]string{
-			persistentStateMode:     persistentStateModeEmpty,
+			persistentStateMode:     persistentStateModeReadMockWrite,
 			requiresSourceDirectory: "true",
 		},
 	}
