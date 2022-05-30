@@ -98,7 +98,7 @@ coverage-html: coverage
 
 .PHONY: coverage
 coverage:
-	${GO} test -coverprofile=coverage.out -coverpkg=./... ./...
+	${GO} test -coverprofile=coverage.out -coverpkg=github.com/twpayne/chezmoi/... ./...
 
 .PHONY: generate
 generate:
