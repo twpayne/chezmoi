@@ -127,7 +127,7 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: macos-11
     steps:
-      - uses: actions/setup-go@f6164bd8c8acb4a71fb2791a8b6c4024ff038dab
+      - uses: actions/setup-go@b22fbbc2921299758641fab08929b4ac52b32923
         with:
           go-version: ${{ env.GO_VERSION }}
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -177,7 +177,7 @@ jobs:
     needs: changes
     runs-on: ubuntu-18.04
     steps:
-      - uses: actions/setup-go@f6164bd8c8acb4a71fb2791a8b6c4024ff038dab
+      - uses: actions/setup-go@b22fbbc2921299758641fab08929b4ac52b32923
         with:
           go-version: ${{ env.GO_VERSION }}
       - name: install-age
@@ -280,7 +280,7 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-18.04
     steps:
-      - uses: actions/setup-go@f6164bd8c8acb4a71fb2791a8b6c4024ff038dab
+      - uses: actions/setup-go@b22fbbc2921299758641fab08929b4ac52b32923
         with:
           go-version: 1.17.x
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -312,7 +312,7 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: windows-2019
     steps:
-      - uses: actions/setup-go@f6164bd8c8acb4a71fb2791a8b6c4024ff038dab
+      - uses: actions/setup-go@b22fbbc2921299758641fab08929b4ac52b32923
         with:
           go-version: ${{ env.GO_VERSION }}
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -362,7 +362,7 @@ jobs:
   check:
     runs-on: ubuntu-18.04
     steps:
-      - uses: actions/setup-go@f6164bd8c8acb4a71fb2791a8b6c4024ff038dab
+      - uses: actions/setup-go@b22fbbc2921299758641fab08929b4ac52b32923
         with:
           go-version: ${{ env.GO_VERSION }}
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -391,7 +391,7 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-18.04
     steps:
-      - uses: actions/setup-go@f6164bd8c8acb4a71fb2791a8b6c4024ff038dab
+      - uses: actions/setup-go@b22fbbc2921299758641fab08929b4ac52b32923
         with:
           go-version: ${{ env.GO_VERSION }}
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
@@ -422,7 +422,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get -yq --no-install-suggests --no-install-recommends install musl-tools snapcraft
-      - uses: actions/setup-go@f6164bd8c8acb4a71fb2791a8b6c4024ff038dab
+      - uses: actions/setup-go@b22fbbc2921299758641fab08929b4ac52b32923
         with:
           go-version: ${{ env.GO_VERSION }}
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
