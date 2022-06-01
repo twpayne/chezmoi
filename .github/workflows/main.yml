@@ -86,7 +86,7 @@ jobs:
     runs-on: macos-10.15
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-      - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09
+      - uses: actions/cache@30f413bfed0a2bc738fdfd409e5a9e96b24545fd
         with:
           path: ~/.vagrant.d
           key: ${{ runner.os }}-vagrant-debian-i386-${{ hashFiles('assets/vagrant/debian11-i386.Vagrantfile') }}
@@ -112,7 +112,7 @@ jobs:
     runs-on: macos-10.15
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-      - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09
+      - uses: actions/cache@30f413bfed0a2bc738fdfd409e5a9e96b24545fd
         with:
           path: ~/.vagrant.d
           key: ${{ runner.os }}-vagrant-freebsd13-${{ hashFiles('assets/vagrant/freebsd13.Vagrantfile') }}
@@ -130,7 +130,7 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION }}
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-      - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09
+      - uses: actions/cache@30f413bfed0a2bc738fdfd409e5a9e96b24545fd
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
@@ -163,7 +163,7 @@ jobs:
     runs-on: macos-10.15
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-      - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09
+      - uses: actions/cache@30f413bfed0a2bc738fdfd409e5a9e96b24545fd
         with:
           path: ~/.vagrant.d
           key: ${{ runner.os }}-vagrant-openbsd7-${{ hashFiles('assets/vagrant/openbsd7.Vagrantfile') }}
@@ -189,7 +189,7 @@ jobs:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
         with:
           fetch-depth: 0
-      - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09
+      - uses: actions/cache@30f413bfed0a2bc738fdfd409e5a9e96b24545fd
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
@@ -278,7 +278,7 @@ jobs:
         with:
           go-version: 1.17.x
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-      - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09
+      - uses: actions/cache@30f413bfed0a2bc738fdfd409e5a9e96b24545fd
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-ubuntu-go-1-17-${{ hashFiles('**/go.sum') }}
@@ -310,7 +310,7 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION }}
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-      - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09
+      - uses: actions/cache@30f413bfed0a2bc738fdfd409e5a9e96b24545fd
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
@@ -360,7 +360,7 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION }}
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-      - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09
+      - uses: actions/cache@30f413bfed0a2bc738fdfd409e5a9e96b24545fd
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
@@ -389,7 +389,7 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION }}
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-      - uses: golangci/golangci-lint-action@b517f99ae23d86ecc4c0dec08dcf48d2336abc29
+      - uses: golangci/golangci-lint-action@537aa1903e5d359d0b27dbc19ddd22c5087f3fbc
         with:
           version: v${{ env.GOLANGCI_LINT_VERSION }}
           args: --timeout=5m
@@ -422,7 +422,7 @@ jobs:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
         with:
           fetch-depth: 0
-      - uses: actions/cache@48af2dc4a9e8278b89d7fa154b955c30c6aaab09
+      - uses: actions/cache@30f413bfed0a2bc738fdfd409e5a9e96b24545fd
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
