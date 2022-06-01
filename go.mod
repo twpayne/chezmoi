@@ -36,7 +36,7 @@ require (
 	golang.org/x/sync v0.0.0-20220513210516-0976fa681c29
 	golang.org/x/sys v0.0.0-20220520151302-bc2c85ada10a
 	golang.org/x/term v0.0.0-20220526004731-065cf7ba2467
-	gopkg.in/yaml.v3 v3.0.0
+	gopkg.in/yaml.v3 v3.0.1
 	howett.net/plist v1.0.0
 	mvdan.cc/sh/v3 v3.5.1
 )
