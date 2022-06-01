@@ -48,6 +48,7 @@ import (
 
 	"github.com/twpayne/chezmoi/v2/assets/templates"
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
+	"github.com/twpayne/chezmoi/v2/pkg/chezmoilog"
 	"github.com/twpayne/chezmoi/v2/pkg/git"
 )
 
@@ -1540,7 +1541,7 @@ func (c *Config) pageOutputString(output, cmdPager string) error {
 	pagerCmd.Stdin = bytes.NewBufferString(output)
 	pagerCmd.Stdout = c.stdout
 	pagerCmd.Stderr = c.stderr
-	return pagerCmd.Run()
+	return chezmoilog.LogCmdRun(pagerCmd)
 }
 
 // persistentPreRunRootE performs pre-run actions for the root command.
