@@ -13,6 +13,7 @@ env:
   GO_VERSION: 1.18.3
   GOFUMPT_VERSION: 0.3.1
   GOLANGCI_LINT_VERSION: 1.46.2
+  TPARSE_VERSION: 0.10.3
 jobs:
   build-website:
     runs-on: ubuntu-20.04
@@ -201,18 +202,23 @@ jobs:
       - name: run
         run: |
           go run . --version
+      - name: install-tparse
+        run: |
+          curl -fsLO https://github.com/mfridman/tparse/releases/download/v${TPARSE_VERSION}/tparse_linux_x86_64
+          chmod a+x tparse_linux_x86_64
+          sudo mv tparse_linux_x86_64 /usr/local/bin/tparse
       - name: test-umask-022
         if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
         env:
           CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
         run: |
-          go test -ldflags="-X github.com/twpayne/chezmoi/pkg/chezmoitest.umaskStr=0o022" -race ./...
+          go test -cover -json -ldflags="-X github.com/twpayne/chezmoi/pkg/chezmoitest.umaskStr=0o022" -race ./... | tparse
       - name: test-umask-002
         if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
         env:
           CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
         run: |
-          go test -ldflags="-X github.com/twpayne/chezmoi/pkg/chezmoitest.umaskStr=0o002" -race ./...
+          go test -cover -json -ldflags="-X github.com/twpayne/chezmoi/pkg/chezmoitest.umaskStr=0o002" -race ./... | tparse
       - name: test-install.sh
         if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
         run: |
