@@ -292,3 +292,7 @@ articles:
   format: Audio
   title: "Fédérer une communauté technique autour d'un projet Open Source"
   url: 'https://www.podcastics.com/podcast/episode/federer-une-communaute-technique-autour-dun-projet-open-source-131694/'
+- date: '2022-06-02'
+  version: '2.17.2'
+  title: 'Local Env as Code: Is it possible yet'
+  url: https://www.cncf.io/blog/2022/06/02/local-env-as-code-is-it-possible-yet/
