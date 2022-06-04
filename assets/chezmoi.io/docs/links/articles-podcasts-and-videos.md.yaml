@@ -283,6 +283,10 @@ articles:
   format: Video
   title: 'Easily moving Linux installs'
   url: 'https://www.youtube.com/watch?v=x6063EuxfEA'
+- date: '2022-05-16'
+  version: '2.16.0'
+  title: 'Chezmoi for DotFiles'
+  url: https://www.spatacoli.com/blog/2022/05/chezmoi-for-dotfiles/
 - date: '2022-05-27'
   version: '2.17.0'
   format: Audio
