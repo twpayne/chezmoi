@@ -93,7 +93,7 @@ main() {
 		install -d "${BINDIR}"
 	fi
 	BINARY="chezmoi${BINSUFFIX}"
-	install -t "${BINDIR}/" "${tmpdir}/${BINARY}"
+	install -- "${tmpdir}/${BINARY}" "${BINDIR}/"
 	log_info "installed ${BINDIR}/${BINARY}"
 
 	if [ -n "${1+n}" ]; then
