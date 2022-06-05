@@ -12,13 +12,11 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
-// A System reads from and writes to a filesystem, executes idempotent commands,
-// runs scripts, and persists state.
+// A System reads from and writes to a filesystem, runs scripts, and persists
+// state.
 type System interface {
 	Chmod(name AbsPath, mode fs.FileMode) error
 	Glob(pattern string) ([]string, error)
-	IdempotentCmdCombinedOutput(cmd *exec.Cmd) ([]byte, error)
-	IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error)
 	Link(oldname, newname AbsPath) error
 	Lstat(filename AbsPath) (fs.FileInfo, error)
 	Mkdir(name AbsPath, perm fs.FileMode) error
@@ -30,7 +28,6 @@ type System interface {
 	RemoveAll(name AbsPath) error
 	Rename(oldpath, newpath AbsPath) error
 	RunCmd(cmd *exec.Cmd) error
-	RunIdempotentCmd(cmd *exec.Cmd) error
 	RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error
 	Stat(name AbsPath) (fs.FileInfo, error)
 	UnderlyingFS() vfs.FS
@@ -41,17 +38,14 @@ type System interface {
 // A emptySystemMixin simulates an empty system.
 type emptySystemMixin struct{}
 
-func (emptySystemMixin) Glob(pattern string) ([]string, error)                     { return nil, nil }
-func (emptySystemMixin) IdempotentCmdCombinedOutput(cmd *exec.Cmd) ([]byte, error) { return nil, nil }
-func (emptySystemMixin) IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error)         { return nil, nil }
-func (emptySystemMixin) Lstat(name AbsPath) (fs.FileInfo, error)                   { return nil, fs.ErrNotExist }
-func (emptySystemMixin) RawPath(path AbsPath) (AbsPath, error)                     { return path, nil }
-func (emptySystemMixin) ReadDir(name AbsPath) ([]fs.DirEntry, error)               { return nil, fs.ErrNotExist }
-func (emptySystemMixin) ReadFile(name AbsPath) ([]byte, error)                     { return nil, fs.ErrNotExist }
-func (emptySystemMixin) Readlink(name AbsPath) (string, error)                     { return "", fs.ErrNotExist }
-func (emptySystemMixin) RunIdempotentCmd(cmd *exec.Cmd) error                      { return nil }
-func (emptySystemMixin) Stat(name AbsPath) (fs.FileInfo, error)                    { return nil, fs.ErrNotExist }
-func (emptySystemMixin) UnderlyingFS() vfs.FS                                      { return nil }
+func (emptySystemMixin) Glob(pattern string) ([]string, error)       { return nil, nil }
+func (emptySystemMixin) Lstat(name AbsPath) (fs.FileInfo, error)     { return nil, fs.ErrNotExist }
+func (emptySystemMixin) RawPath(path AbsPath) (AbsPath, error)       { return path, nil }
+func (emptySystemMixin) ReadDir(name AbsPath) ([]fs.DirEntry, error) { return nil, fs.ErrNotExist }
+func (emptySystemMixin) ReadFile(name AbsPath) ([]byte, error)       { return nil, fs.ErrNotExist }
+func (emptySystemMixin) Readlink(name AbsPath) (string, error)       { return "", fs.ErrNotExist }
+func (emptySystemMixin) Stat(name AbsPath) (fs.FileInfo, error)      { return nil, fs.ErrNotExist }
+func (emptySystemMixin) UnderlyingFS() vfs.FS                        { return nil }
 
 // A noUpdateSystemMixin panics on any update.
 type noUpdateSystemMixin struct{}

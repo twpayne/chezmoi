@@ -13,6 +13,7 @@ import (
 	"howett.net/plist"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
+	"github.com/twpayne/chezmoi/v2/pkg/chezmoilog"
 )
 
 type ioregData struct {
@@ -84,7 +85,8 @@ func (c *Config) ioregTemplateFunc() map[string]interface{} {
 	command := "ioreg"
 	args := []string{"-a", "-l"}
 	cmd := exec.Command(command, args...)
-	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
+	cmd.Stderr = os.Stderr
+	output, err := chezmoilog.LogCmdOutput(cmd)
 	if err != nil {
 		panic(newCmdOutputError(cmd, output, err))
 	}
@@ -124,7 +126,8 @@ func (c *Config) mozillaInstallHashTemplateFunc(path string) string {
 
 func (c *Config) outputTemplateFunc(name string, args ...string) string {
 	cmd := exec.Command(name, args...)
-	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
+	cmd.Stderr = os.Stderr
+	output, err := chezmoilog.LogCmdOutput(cmd)
 	if err != nil {
 		panic(newCmdOutputError(cmd, output, err))
 	}

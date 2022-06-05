@@ -12,6 +12,7 @@ import (
 	"golang.org/x/sys/unix"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
+	"github.com/twpayne/chezmoi/v2/pkg/chezmoilog"
 )
 
 type (
@@ -43,7 +44,7 @@ func (unameCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (ch
 		return checkResultSkipped, ""
 	}
 	cmd := exec.Command("uname", "-a")
-	data, err := system.IdempotentCmdOutput(cmd)
+	data, err := chezmoilog.LogCmdOutput(cmd)
 	if err != nil {
 		return checkResultFailed, err.Error()
 	}

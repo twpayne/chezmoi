@@ -6,6 +6,8 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+
+	"github.com/twpayne/chezmoi/v2/pkg/chezmoilog"
 )
 
 type secretConfig struct {
@@ -24,7 +26,7 @@ func (c *Config) secretTemplateFunc(args ...string) string {
 	cmd := exec.Command(c.Secret.Command, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
-	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
+	output, err := chezmoilog.LogCmdOutput(cmd)
 	if err != nil {
 		panic(newCmdOutputError(cmd, output, err))
 	}
@@ -48,7 +50,7 @@ func (c *Config) secretJSONTemplateFunc(args ...string) interface{} {
 	cmd := exec.Command(c.Secret.Command, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
-	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
+	output, err := chezmoilog.LogCmdOutput(cmd)
 	if err != nil {
 		panic(newCmdOutputError(cmd, output, err))
 	}

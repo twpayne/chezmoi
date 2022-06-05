@@ -206,7 +206,7 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 	chezmoiVersionCmd.Stdin = os.Stdin
 	chezmoiVersionCmd.Stdout = os.Stdout
 	chezmoiVersionCmd.Stderr = os.Stderr
-	return c.baseSystem.RunIdempotentCmd(chezmoiVersionCmd)
+	return chezmoilog.LogCmdRun(chezmoiVersionCmd)
 }
 
 func (c *Config) brewUpgrade() error {
@@ -270,7 +270,7 @@ func (c *Config) getLibc() (string, error) {
 	// writes to stdout and exits with code 0. On musl libc systems it writes to
 	// stderr and exits with code 1.
 	lddCmd := exec.Command("ldd", "--version")
-	switch output, _ := c.baseSystem.IdempotentCmdCombinedOutput(lddCmd); {
+	switch output, _ := chezmoilog.LogCmdCombinedOutput(lddCmd); {
 	case libcTypeGlibcRx.Match(output):
 		return libcTypeGlibc, nil
 	case libcTypeMuslRx.Match(output):
@@ -279,7 +279,7 @@ func (c *Config) getLibc() (string, error) {
 
 	// Second, try getconf GNU_LIBC_VERSION.
 	getconfCmd := exec.Command("getconf", "GNU_LIBC_VERSION")
-	if output, _ := c.baseSystem.IdempotentCmdOutput(getconfCmd); libcTypeGlibcRx.Match(output) {
+	if output, _ := chezmoilog.LogCmdCombinedOutput(getconfCmd); libcTypeGlibcRx.Match(output) {
 		return libcTypeGlibc, nil
 	}
 

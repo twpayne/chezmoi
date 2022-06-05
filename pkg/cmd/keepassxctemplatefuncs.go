@@ -12,6 +12,7 @@ import (
 	"github.com/coreos/go-semver/semver"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
+	"github.com/twpayne/chezmoi/v2/pkg/chezmoilog"
 )
 
 type keepassxcAttributeCacheKey struct {
@@ -133,7 +134,7 @@ func (c *Config) keepassxcOutput(name string, args []string) ([]byte, error) {
 	cmd := exec.Command(name, args...)
 	cmd.Stdin = bytes.NewBufferString(c.Keepassxc.password + "\n")
 	cmd.Stderr = os.Stderr
-	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
+	output, err := chezmoilog.LogCmdOutput(cmd)
 	if err != nil {
 		return nil, newCmdOutputError(cmd, output, err)
 	}
@@ -167,7 +168,7 @@ func (c *Config) keepassxcVersion() (*semver.Version, error) {
 	name := c.Keepassxc.Command
 	args := []string{"--version"}
 	cmd := exec.Command(name, args...)
-	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
+	output, err := chezmoilog.LogCmdOutput(cmd)
 	if err != nil {
 		return nil, newCmdOutputError(cmd, output, err)
 	}

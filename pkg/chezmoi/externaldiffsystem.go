@@ -12,6 +12,8 @@ import (
 
 	vfs "github.com/twpayne/go-vfs/v4"
 	"go.uber.org/multierr"
+
+	"github.com/twpayne/chezmoi/v2/pkg/chezmoilog"
 )
 
 // An ExternalDiffSystem is a DiffSystem that uses an external diff tool.
@@ -61,16 +63,6 @@ func (s *ExternalDiffSystem) Chmod(name AbsPath, mode fs.FileMode) error {
 // Glob implements System.Glob.
 func (s *ExternalDiffSystem) Glob(pattern string) ([]string, error) {
 	return s.system.Glob(pattern)
-}
-
-// IdempotentCmdCombinedOutput implements System.IdempotentCmdCombinedOutput.
-func (s *ExternalDiffSystem) IdempotentCmdCombinedOutput(cmd *exec.Cmd) ([]byte, error) {
-	return s.system.IdempotentCmdCombinedOutput(cmd)
-}
-
-// IdempotentCmdOutput implements System.IdempotentCmdOutput.
-func (s *ExternalDiffSystem) IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error) {
-	return s.system.IdempotentCmdOutput(cmd)
 }
 
 // Link implements System.Link.
@@ -134,11 +126,6 @@ func (s *ExternalDiffSystem) Rename(oldpath, newpath AbsPath) error {
 // RunCmd implements System.RunCmd.
 func (s *ExternalDiffSystem) RunCmd(cmd *exec.Cmd) error {
 	return s.system.RunCmd(cmd)
-}
-
-// RunIdempotentCmd implements System.RunIdempotentCmd.
-func (s *ExternalDiffSystem) RunIdempotentCmd(cmd *exec.Cmd) error {
-	return s.system.RunIdempotentCmd(cmd)
 }
 
 // RunScript implements System.RunScript.
@@ -254,7 +241,7 @@ func (s *ExternalDiffSystem) runDiffCommand(destAbsPath, targetAbsPath AbsPath) 
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
-	err := s.system.RunIdempotentCmd(cmd)
+	err := chezmoilog.LogCmdRun(cmd)
 
 	// Swallow exit status 1 errors if the files differ as diff commands
 	// traditionally exit with code 1 in this case.

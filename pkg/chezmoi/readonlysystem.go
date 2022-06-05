@@ -2,7 +2,6 @@ package chezmoi
 
 import (
 	"io/fs"
-	"os/exec"
 
 	vfs "github.com/twpayne/go-vfs/v4"
 )
@@ -23,16 +22,6 @@ func NewReadOnlySystem(system System) *ReadOnlySystem {
 // Glob implements System.Glob.
 func (s *ReadOnlySystem) Glob(pattern string) ([]string, error) {
 	return s.system.Glob(pattern)
-}
-
-// IdempotentCmdCombinedOutput implements System.IdempotentCmdCombinedOutput.
-func (s *ReadOnlySystem) IdempotentCmdCombinedOutput(cmd *exec.Cmd) ([]byte, error) {
-	return s.system.IdempotentCmdCombinedOutput(cmd)
-}
-
-// IdempotentCmdOutput implements System.IdempotentCmdOutput.
-func (s *ReadOnlySystem) IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error) {
-	return s.system.IdempotentCmdOutput(cmd)
 }
 
 // Lstat implements System.Lstat.
@@ -58,11 +47,6 @@ func (s *ReadOnlySystem) ReadFile(name AbsPath) ([]byte, error) {
 // Readlink implements System.Readlink.
 func (s *ReadOnlySystem) Readlink(name AbsPath) (string, error) {
 	return s.system.Readlink(name)
-}
-
-// RunIdempotentCmd implements System.RunIdempotentCmd.
-func (s *ReadOnlySystem) RunIdempotentCmd(cmd *exec.Cmd) error {
-	return s.system.RunIdempotentCmd(cmd)
 }
 
 // Stat implements System.Stat.
