@@ -19,7 +19,7 @@ var (
 		regexp.MustCompile(`\A\.git\z`),
 		regexp.MustCompile(`\A\.idea\z`),
 		regexp.MustCompile(`\A\.vagrant\z`),
-		regexp.MustCompile(`\A\.vscode/settings\.json\z`),
+		regexp.MustCompile(`\A\.vscode\z`),
 		regexp.MustCompile(`\Aassets/chezmoi\.io/site\z`),
 		regexp.MustCompile(`\Aassets/scripts/install\.ps1\z`),
 		regexp.MustCompile(`\Acompletions/chezmoi\.ps1\z`),
