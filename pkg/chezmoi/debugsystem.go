@@ -44,28 +44,6 @@ func (s *DebugSystem) Glob(name string) ([]string, error) {
 	return matches, err
 }
 
-// IdempotentCmdCombinedOutput implements System.IdempotentCmdCombinedOutput.
-func (s *DebugSystem) IdempotentCmdCombinedOutput(cmd *exec.Cmd) ([]byte, error) {
-	output, err := s.system.IdempotentCmdCombinedOutput(cmd)
-	s.logger.Err(err).
-		EmbedObject(chezmoilog.OSExecCmdLogObject{Cmd: cmd}).
-		Bytes("output", chezmoilog.Output(output, err)).
-		EmbedObject(chezmoilog.OSExecExitErrorLogObject{Err: err}).
-		Msg("IdempotentCmdCombinedOutput")
-	return output, err
-}
-
-// IdempotentCmdOutput implements System.IdempotentCmdOutput.
-func (s *DebugSystem) IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error) {
-	output, err := s.system.IdempotentCmdOutput(cmd)
-	s.logger.Err(err).
-		EmbedObject(chezmoilog.OSExecCmdLogObject{Cmd: cmd}).
-		Bytes("output", chezmoilog.Output(output, err)).
-		EmbedObject(chezmoilog.OSExecExitErrorLogObject{Err: err}).
-		Msg("IdempotentCmdOutput")
-	return output, err
-}
-
 // Link implements System.Link.
 func (s *DebugSystem) Link(oldpath, newpath AbsPath) error {
 	err := s.system.Link(oldpath, newpath)
@@ -165,16 +143,6 @@ func (s *DebugSystem) RunCmd(cmd *exec.Cmd) error {
 		EmbedObject(chezmoilog.OSExecCmdLogObject{Cmd: cmd}).
 		EmbedObject(chezmoilog.OSExecExitErrorLogObject{Err: err}).
 		Msg("RunCmd")
-	return err
-}
-
-// RunIdempotentCmd implements System.RunIdempotentCmd.
-func (s *DebugSystem) RunIdempotentCmd(cmd *exec.Cmd) error {
-	err := s.system.RunIdempotentCmd(cmd)
-	s.logger.Err(err).
-		EmbedObject(chezmoilog.OSExecCmdLogObject{Cmd: cmd}).
-		EmbedObject(chezmoilog.OSExecExitErrorLogObject{Err: err}).
-		Msg("RunIdempotentCmd")
 	return err
 }
 

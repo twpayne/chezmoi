@@ -648,6 +648,7 @@ func (c *Config) applyArgs(
 // cmdOutput returns the of running the command name with args in dirAbsPath.
 func (c *Config) cmdOutput(dirAbsPath chezmoi.AbsPath, name string, args []string) ([]byte, error) {
 	cmd := exec.Command(name, args...)
+	cmd.Stderr = os.Stderr
 	if !dirAbsPath.Empty() {
 		dirRawAbsPath, err := c.baseSystem.RawPath(dirAbsPath)
 		if err != nil {
@@ -655,7 +656,7 @@ func (c *Config) cmdOutput(dirAbsPath chezmoi.AbsPath, name string, args []strin
 		}
 		cmd.Dir = dirRawAbsPath.String()
 	}
-	return c.baseSystem.IdempotentCmdOutput(cmd)
+	return chezmoilog.LogCmdOutput(cmd)
 }
 
 // colorAutoFunc detects whether color should be used.

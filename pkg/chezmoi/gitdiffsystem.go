@@ -74,16 +74,6 @@ func (s *GitDiffSystem) Glob(pattern string) ([]string, error) {
 	return s.system.Glob(pattern)
 }
 
-// IdempotentCmdCombinedOutput implements System.IdempotentCmdCombinedOutput.
-func (s *GitDiffSystem) IdempotentCmdCombinedOutput(cmd *exec.Cmd) ([]byte, error) {
-	return s.system.IdempotentCmdCombinedOutput(cmd)
-}
-
-// IdempotentCmdOutput implements System.IdempotentCmdOutput.
-func (s *GitDiffSystem) IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error) {
-	return s.system.IdempotentCmdOutput(cmd)
-}
-
 // Link implements System.Link.
 func (s *GitDiffSystem) Link(oldname, newname AbsPath) error {
 	// LATER generate a diff
@@ -193,11 +183,6 @@ func (s *GitDiffSystem) Rename(oldpath, newpath AbsPath) error {
 // RunCmd implements System.RunCmd.
 func (s *GitDiffSystem) RunCmd(cmd *exec.Cmd) error {
 	return s.system.RunCmd(cmd)
-}
-
-// RunIdempotentCmd implements System.RunIdempotentCmd.
-func (s *GitDiffSystem) RunIdempotentCmd(cmd *exec.Cmd) error {
-	return s.system.RunIdempotentCmd(cmd)
 }
 
 // RunScript implements System.RunScript.

@@ -6,6 +6,8 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+
+	"github.com/twpayne/chezmoi/v2/pkg/chezmoilog"
 )
 
 type keeperConfig struct {
@@ -68,7 +70,7 @@ func (c *Config) keeperOutput(args []string) ([]byte, error) {
 	cmd := exec.Command(name, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
-	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
+	output, err := chezmoilog.LogCmdOutput(cmd)
 	if err != nil {
 		return nil, newCmdOutputError(cmd, output, err)
 	}

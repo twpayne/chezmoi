@@ -12,6 +12,8 @@ import (
 	"unicode"
 
 	"github.com/coreos/go-semver/semver"
+
+	"github.com/twpayne/chezmoi/v2/pkg/chezmoilog"
 )
 
 var (
@@ -88,7 +90,7 @@ func (c *Config) lastpassOutput(args ...string) ([]byte, error) {
 	cmd := exec.Command(name, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
-	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
+	output, err := chezmoilog.LogCmdOutput(cmd)
 	if err != nil {
 		return nil, err
 	}
