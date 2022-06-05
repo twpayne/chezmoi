@@ -6,6 +6,7 @@ import (
 	"os/exec"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
+	"github.com/twpayne/chezmoi/v2/pkg/chezmoilog"
 )
 
 type passConfig struct {
@@ -55,7 +56,7 @@ func (c *Config) passOutput(id string) ([]byte, error) {
 	cmd := exec.Command(c.Pass.Command, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
-	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
+	output, err := chezmoilog.LogCmdOutput(cmd)
 	if err != nil {
 		return nil, newCmdOutputError(cmd, output, err)
 	}

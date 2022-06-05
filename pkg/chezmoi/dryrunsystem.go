@@ -32,16 +32,6 @@ func (s *DryRunSystem) Glob(pattern string) ([]string, error) {
 	return s.system.Glob(pattern)
 }
 
-// IdempotentCmdCombinedOutput implements System.IdempotentCmdCombinedOutput.
-func (s *DryRunSystem) IdempotentCmdCombinedOutput(cmd *exec.Cmd) ([]byte, error) {
-	return s.system.IdempotentCmdCombinedOutput(cmd)
-}
-
-// IdempotentCmdOutput implements System.IdempotentCmdOutput.
-func (s *DryRunSystem) IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error) {
-	return s.system.IdempotentCmdOutput(cmd)
-}
-
 // Link implements System.Link.
 func (s *DryRunSystem) Link(oldname, newname AbsPath) error {
 	s.setModified()
@@ -107,11 +97,6 @@ func (s *DryRunSystem) Rename(oldpath, newpath AbsPath) error {
 func (s *DryRunSystem) RunCmd(cmd *exec.Cmd) error {
 	s.setModified()
 	return nil
-}
-
-// RunIdempotentCmd implements System.RunIdempotentCmd.
-func (s *DryRunSystem) RunIdempotentCmd(cmd *exec.Cmd) error {
-	return s.system.RunIdempotentCmd(cmd)
 }
 
 // RunScript implements System.RunScript.

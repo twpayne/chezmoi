@@ -23,16 +23,6 @@ func (s *RealSystem) Glob(pattern string) ([]string, error) {
 	return doublestar.Glob(s.UnderlyingFS(), filepath.ToSlash(pattern))
 }
 
-// IdempotentCmdCombinedOutput implements System.IdempotentCmdCombinedOutput.
-func (s *RealSystem) IdempotentCmdCombinedOutput(cmd *exec.Cmd) ([]byte, error) {
-	return chezmoilog.LogCmdCombinedOutput(cmd)
-}
-
-// IdempotentCmdOutput implements System.IdempotentCmdOutput.
-func (s *RealSystem) IdempotentCmdOutput(cmd *exec.Cmd) ([]byte, error) {
-	return chezmoilog.LogCmdOutput(cmd)
-}
-
 // Link implements System.Link.
 func (s *RealSystem) Link(oldname, newname AbsPath) error {
 	return s.fileSystem.Link(oldname.String(), newname.String())
@@ -84,11 +74,6 @@ func (s *RealSystem) Rename(oldpath, newpath AbsPath) error {
 
 // RunCmd implements System.RunCmd.
 func (s *RealSystem) RunCmd(cmd *exec.Cmd) error {
-	return chezmoilog.LogCmdRun(cmd)
-}
-
-// RunIdempotentCmd implements System.RunIdempotentCmd.
-func (s *RealSystem) RunIdempotentCmd(cmd *exec.Cmd) error {
 	return chezmoilog.LogCmdRun(cmd)
 }
 

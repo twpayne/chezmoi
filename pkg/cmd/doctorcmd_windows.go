@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
+	"github.com/twpayne/chezmoi/v2/pkg/chezmoilog"
 )
 
 type (
@@ -22,7 +23,7 @@ func (systeminfoCheck) Name() string {
 
 func (systeminfoCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
 	cmd := exec.Command("systeminfo")
-	data, err := system.IdempotentCmdOutput(cmd)
+	data, err := chezmoilog.LogCmdOutput(cmd)
 	if err != nil {
 		return checkResultFailed, err.Error()
 	}

@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"os"
 	"os/exec"
+
+	"github.com/twpayne/chezmoi/v2/pkg/chezmoilog"
 )
 
 type vaultConfig struct {
@@ -21,7 +23,7 @@ func (c *Config) vaultTemplateFunc(key string) interface{} {
 	cmd := exec.Command(c.Vault.Command, args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
-	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
+	output, err := chezmoilog.LogCmdOutput(cmd)
 	if err != nil {
 		panic(newCmdOutputError(cmd, output, err))
 	}

@@ -1393,7 +1393,8 @@ func (s *SourceState) getExternalData(
 		//nolint:gosec
 		cmd := exec.Command(external.Filter.Command, external.Filter.Args...)
 		cmd.Stdin = bytes.NewReader(data)
-		data, err = s.system.IdempotentCmdOutput(cmd)
+		cmd.Stderr = os.Stderr
+		data, err = chezmoilog.LogCmdOutput(cmd)
 		if err != nil {
 			return nil, fmt.Errorf("%s: %s: %w", externalRelPath, external.URL, err)
 		}
@@ -1547,7 +1548,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 			cmd := interpreter.ExecCommand(tempFile.Name())
 			cmd.Stdin = bytes.NewReader(currentContents)
 			cmd.Stderr = os.Stderr
-			contents, err = destSystem.IdempotentCmdOutput(cmd)
+			contents, err = chezmoilog.LogCmdOutput(cmd)
 			return
 		}
 		return &TargetStateFile{
