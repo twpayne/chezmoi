@@ -89,6 +89,7 @@ nav:
     - Variables: reference/configuration-file/variables.md
     - Editor: reference/configuration-file/editor.md
     - pinentry: reference/configuration-file/pinentry.md
+    - textconv: reference/configuration-file/textconv.md
     - umask: reference/configuration-file/umask.md
   - Special files and directories:
     - reference/special-files-and-directories/index.md

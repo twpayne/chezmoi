@@ -13,6 +13,9 @@ import (
 	vfs "github.com/twpayne/go-vfs/v4"
 )
 
+// A TextConvFunc converts the contents of a file into a more human-readable form.
+type TextConvFunc func(AbsPath, []byte) ([]byte, error)
+
 // A GitDiffSystem wraps a System and logs all of the actions executed as a git
 // diff.
 type GitDiffSystem struct {
@@ -20,14 +23,16 @@ type GitDiffSystem struct {
 	dirAbsPath     AbsPath
 	include        *EntryTypeSet
 	reverse        bool
+	textConvFunc   TextConvFunc
 	unifiedEncoder *diff.UnifiedEncoder
 }
 
 // GetDiffSystemOptions are options for NewGitDiffSystem.
 type GitDiffSystemOptions struct {
-	Color   bool
-	Include *EntryTypeSet
-	Reverse bool
+	Color        bool
+	Include      *EntryTypeSet
+	Reverse      bool
+	TextConvFunc TextConvFunc
 }
 
 // NewGitDiffSystem returns a new GitDiffSystem. Output is written to w, the
@@ -43,6 +48,7 @@ func NewGitDiffSystem(system System, w io.Writer, dirAbsPath AbsPath, options *G
 		dirAbsPath:     dirAbsPath,
 		include:        options.Include,
 		reverse:        options.Reverse,
+		textConvFunc:   options.TextConvFunc,
 		unifiedEncoder: unifiedEncoder,
 	}
 }
@@ -253,6 +259,12 @@ func (s *GitDiffSystem) encodeDiff(absPath AbsPath, toData []byte, toMode fs.Fil
 		if err != nil {
 			return err
 		}
+		if s.textConvFunc != nil {
+			fromData, err = s.textConvFunc(absPath, fromData)
+			if err != nil {
+				return err
+			}
+		}
 		fromMode = fromInfo.Mode()
 	case fromInfo.Mode().Type() == fs.ModeSymlink:
 		fromDataStr, err := s.system.Readlink(absPath)
@@ -263,6 +275,14 @@ func (s *GitDiffSystem) encodeDiff(absPath AbsPath, toData []byte, toMode fs.Fil
 		fromMode = fromInfo.Mode()
 	default:
 		fromMode = fromInfo.Mode()
+	}
+
+	if s.textConvFunc != nil {
+		var err error
+		toData, err = s.textConvFunc(absPath, toData)
+		if err != nil {
+			return err
+		}
 	}
 
 	if s.reverse {

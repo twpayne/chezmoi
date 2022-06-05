@@ -83,6 +83,7 @@ type ConfigFile struct {
 	ScriptTempDir      chezmoi.AbsPath                 `mapstructure:"scriptTempDir"`
 	SourceDirAbsPath   chezmoi.AbsPath                 `mapstructure:"sourceDir"`
 	Template           templateConfig                  `mapstructure:"template"`
+	TextConv           textConv                        `mapstructure:"textConv"`
 	Umask              fs.FileMode                     `mapstructure:"umask"`
 	UseBuiltinAge      autoBool                        `mapstructure:"useBuiltinAge"`
 	UseBuiltinGit      autoBool                        `mapstructure:"useBuiltinGit"`
@@ -1400,9 +1401,10 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 func (c *Config) newDiffSystem(s chezmoi.System, w io.Writer, dirAbsPath chezmoi.AbsPath) chezmoi.System {
 	if c.Diff.useBuiltinDiff || c.Diff.Command == "" {
 		options := &chezmoi.GitDiffSystemOptions{
-			Color:   c.Color.Value(c.colorAutoFunc),
-			Include: c.Diff.include.Sub(c.Diff.Exclude),
-			Reverse: c.Diff.Reverse,
+			Color:        c.Color.Value(c.colorAutoFunc),
+			Include:      c.Diff.include.Sub(c.Diff.Exclude),
+			Reverse:      c.Diff.Reverse,
+			TextConvFunc: c.TextConv.convert,
 		}
 		return chezmoi.NewGitDiffSystem(s, w, dirAbsPath, options)
 	}
