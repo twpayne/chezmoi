@@ -73,5 +73,6 @@ The following configuration variables are available:
 |                | `options`             | []string | *see `pinentry` below*   | Extra options for pinentry                             |
 | `status`       | `exclude`             | []string | *none*                   | Entry types to exclude from status                     |
 | `template`     | `options`             | []string | `["missingkey=error"]`   | Template options                                       |
+| `textconv`     |                       | []object | *none*                   | See section on "textconv"                              |
 | `vault`        | `command`             | string   | `vault`                  | Vault CLI command                                      |
 | `verify`       | `exclude`             | []string | *none*                   | Entry types to exclude from verify                     |

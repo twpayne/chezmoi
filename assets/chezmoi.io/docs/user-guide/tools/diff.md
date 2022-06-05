@@ -45,3 +45,56 @@ choice by setting `diff.pager` configuration variable. For example, to use
 
 The pager can be disabled using the `--no-pager` flag or by setting `diff.pager`
 to an empty string.
+
+## Show human-friendly diffs for binary files
+
+Similar to git, chezmoi includes a "textconv" feature that can transform file
+contents before passing them to the diff program. This is primarily useful for
+generating human-readable diffs of binary files.
+
+For example, to show diffs of macOS `.plist` files, add the following to your
+configuration file:
+
+=== "JSON"
+
+    ```json title="~/.config/chezmoi/chezmoi.json"
+    {
+        "textconv": [
+            "pattern": "**/*.plist",
+            "command": "plutil",
+            "args": [
+                "-convert",
+                "xml1",
+                "-o",
+                "-",
+                "-"
+            ]
+        ]
+    }
+    ```
+
+=== "TOML"
+
+    ```toml title="~/.config/chezmoi/chezmoi.toml"
+    [[textconv]]
+    pattern = "**/*.plist"
+    command = "plutil"
+    args = ["-convert", "xml1", "-o", "-", "-"]
+    ```
+
+=== "YAML"
+
+    ```yaml title="~/.config/chezmoi/chezmoi.yaml"
+    textconv:
+    - pattern: "**/*.plist"
+      command: "plutil"
+      args:
+      - "-convert"
+      - "xml1"
+      - "-o"
+      - "-",
+      - "-"
+    ```
+
+This will pipe all `.plist` files through `plutil -convert xml1 -o - -` before
+showing differences.
