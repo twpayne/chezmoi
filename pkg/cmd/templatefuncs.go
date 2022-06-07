@@ -2,11 +2,13 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
 	"io/fs"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"strconv"
 
 	"github.com/bmatcuk/doublestar/v4"
 	"github.com/bradenhilton/mozillainstallhash"
@@ -134,6 +136,27 @@ func (c *Config) outputTemplateFunc(name string, args ...string) string {
 	// FIXME we should be able to return output directly, but
 	// github.com/Masterminds/sprig's trim function only accepts strings
 	return string(output)
+}
+
+func (c *Config) quoteListTemplateFunc(list []interface{}) []string {
+	result := make([]string, 0, len(list))
+	for _, elem := range list {
+		var elemStr string
+		switch elem := elem.(type) {
+		case []byte:
+			elemStr = string(elem)
+		case string:
+			elemStr = elem
+		case error:
+			elemStr = elem.Error()
+		case fmt.Stringer:
+			elemStr = elem.String()
+		default:
+			elemStr = fmt.Sprintf("%v", elem)
+		}
+		result = append(result, strconv.Quote(elemStr))
+	}
+	return result
 }
 
 func (c *Config) statTemplateFunc(name string) interface{} {
