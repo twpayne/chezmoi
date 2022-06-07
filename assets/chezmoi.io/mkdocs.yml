@@ -160,6 +160,7 @@ nav:
       - lookPath: reference/templates/functions/lookPath.md
       - mozillaInstallHash: reference/templates/functions/mozillaInstallHash.md
       - output: reference/templates/functions/output.md
+      - quoteList: reference/templates/functions/quoteList.md
       - stat: reference/templates/functions/stat.md
       - toYaml: reference/templates/functions/toYaml.md
     - GitHub functions:
