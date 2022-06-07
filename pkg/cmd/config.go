@@ -462,6 +462,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"pass":                     c.passTemplateFunc,
 		"passFields":               c.passFieldsTemplateFunc,
 		"passRaw":                  c.passRawTemplateFunc,
+		"quoteList":                c.quoteListTemplateFunc,
 		"secret":                   c.secretTemplateFunc,
 		"secretJSON":               c.secretJSONTemplateFunc,
 		"stat":                     c.statTemplateFunc,
