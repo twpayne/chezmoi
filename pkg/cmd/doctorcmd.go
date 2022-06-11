@@ -16,6 +16,7 @@ import (
 	"sort"
 	"strings"
 	"text/tabwriter"
+	"time"
 
 	"github.com/coreos/go-semver/semver"
 	"github.com/google/go-github/v45/github"
@@ -474,7 +475,12 @@ func (c *configFileCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsP
 		if _, err := system.ReadFile(filenameAbsPath); err != nil {
 			return checkResultError, fmt.Sprintf("%s: %v", filenameAbsPath, err)
 		}
-		return checkResultOK, filenameAbsPath.String()
+		fileInfo, err := system.Stat(filenameAbsPath)
+		if err != nil {
+			return checkResultError, fmt.Sprintf("%s: %v", filenameAbsPath, err)
+		}
+		message := fmt.Sprintf("%s, last modified %s", filenameAbsPath.String(), fileInfo.ModTime().Format(time.RFC3339))
+		return checkResultOK, message
 	default:
 		filenameStrs := make([]string, 0, len(filenameAbsPaths))
 		for filenameAbsPath := range filenameAbsPaths {
