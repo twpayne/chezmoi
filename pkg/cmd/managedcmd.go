@@ -17,12 +17,12 @@ type managedCmdConfig struct {
 
 func (c *Config) newManagedCmd() *cobra.Command {
 	managedCmd := &cobra.Command{
-		Use:     "managed",
+		Use:     "managed [paths]...",
 		Aliases: []string{"list"},
 		Short:   "List the managed entries in the destination directory",
 		Long:    mustLongHelp("managed"),
 		Example: example("managed"),
-		Args:    cobra.NoArgs,
+		Args:    cobra.ArbitraryArgs,
 		RunE:    c.makeRunEWithSourceState(c.runManagedCmd),
 	}
 
@@ -35,6 +35,22 @@ func (c *Config) newManagedCmd() *cobra.Command {
 
 func (c *Config) runManagedCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
 	include := c.managed.include.Sub(c.managed.exclude)
+
+	// Build queued paths. When no arguments, start from root; otherwise start
+	// from arguments.
+	paths := []chezmoi.RelPath{}
+	if len(args) != 0 {
+		for _, arg := range args {
+			if p, err := chezmoi.NormalizePath(arg); err != nil {
+				return err
+			} else if p, err := p.TrimDirPrefix(c.DestDirAbsPath); err != nil {
+				return err
+			} else {
+				paths = append(paths, p)
+			}
+		}
+	}
+
 	var targetRelPaths chezmoi.RelPaths
 	_ = sourceState.ForEach(func(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi.SourceStateEntry) error {
 		targetStateEntry, err := sourceStateEntry.TargetStateEntry(c.destSystem, c.DestDirAbsPath.Join(targetRelPath))
@@ -44,6 +60,21 @@ func (c *Config) runManagedCmd(cmd *cobra.Command, args []string, sourceState *c
 		if !include.IncludeTargetStateEntry(targetStateEntry) {
 			return nil
 		}
+
+		// when specified arguments, only include paths under these arguments
+		if len(paths) != 0 {
+			included := false
+			for _, path := range paths {
+				if targetRelPath.HasDirPrefix(path) || targetRelPath.String() == path.String() {
+					included = true
+					break
+				}
+			}
+			if !included {
+				return nil
+			}
+		}
+
 		targetRelPaths = append(targetRelPaths, targetRelPath)
 		return nil
 	})
