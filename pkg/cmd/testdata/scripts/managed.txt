@@ -24,6 +24,22 @@ cmp stdout golden/managed-symlinks
 chezmoi managed --exclude=files
 cmp stdout golden/managed-except-files
 
+# test chezmoi managed with arguments
+chezmoi managed $HOME${/}.dir $HOME${/}.create
+cmp stdout golden/managed-with-args
+
+# test chezmoi managed with child of managed dir as argument
+chezmoi managed $HOME${/}.dir/subdir
+cmp stdout golden/managed-in-managed
+
+# test chezmoi managed --exclude=dir with arguments
+chezmoi managed --exclude=dirs $HOME${/}.dir $HOME${/}.create
+cmp stdout golden/managed-with-nodir-args
+
+# test chezmoi managed with absent arguments
+chezmoi managed $HOME${/}.dir $HOME${/}.non-exist
+cmp stdout golden/managed-with-absent-args
+
 chhome home2/user
 
 # test that chezmoi managed does not evaluate templates
@@ -84,6 +100,24 @@ cmp stdout golden/managed2
 .symlink
 .template
 script
+-- golden/managed-with-args --
+.create
+.dir
+.dir/file
+.dir/subdir
+.dir/subdir/file
+-- golden/managed-in-managed --
+.dir/subdir
+.dir/subdir/file
+-- golden/managed-with-nodir-args --
+.create
+.dir/file
+.dir/subdir/file
+-- golden/managed-with-absent-args --
+.dir
+.dir/file
+.dir/subdir
+.dir/subdir/file
 -- home/user/.local/share/chezmoi/.chezmoiremove --
 .remove
 -- home2/user/.local/share/chezmoi/create_dot_create.tmpl --
