@@ -36,6 +36,15 @@ with a single command:
     sh -c "$(curl -fsLS chezmoi.io/get)" -- init --apply $GITHUB_USERNAME
     ```
 
+!!! hint
+
+    To install the chezmoi binary in a different directory, use the `-b` option,
+    for example:
+
+    ```sh
+    sh -c "$(curl -fsLS chezmoi.io/get)" -- -b $HOME/.local/bin
+    ```
+
 ## One-line package install
 
 Install chezmoi with your package manager with a single command:
