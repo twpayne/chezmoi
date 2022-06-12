@@ -1023,7 +1023,7 @@ func (c *Config) destAbsPathInfos(
 		if err != nil {
 			return nil, err
 		}
-		if _, err := destAbsPath.TrimDirPrefix(c.DestDirAbsPath); err != nil {
+		if _, err := c.targetRelPath(destAbsPath); err != nil {
 			return nil, err
 		}
 		if options.recursive {
@@ -1940,6 +1940,15 @@ func (c *Config) sourceDirAbsPath() (chezmoi.AbsPath, error) {
 	}
 }
 
+func (c *Config) targetRelPath(absPath chezmoi.AbsPath) (chezmoi.RelPath, error) {
+	relPath, err := absPath.TrimDirPrefix(c.DestDirAbsPath)
+	var notInAbsDirError *chezmoi.NotInAbsDirError
+	if errors.As(err, &notInAbsDirError) {
+		return chezmoi.EmptyRelPath, fmt.Errorf("%s: not in destination directory (%s)", absPath, c.DestDirAbsPath)
+	}
+	return relPath, err
+}
+
 type targetRelPathsOptions struct {
 	mustBeInSourceState bool
 	recursive           bool
@@ -1956,7 +1965,7 @@ func (c *Config) targetRelPaths(
 		if err != nil {
 			return nil, err
 		}
-		targetRelPath, err := argAbsPath.TrimDirPrefix(c.DestDirAbsPath)
+		targetRelPath, err := c.targetRelPath(argAbsPath)
 		if err != nil {
 			return nil, err
 		}
