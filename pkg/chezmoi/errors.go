@@ -36,12 +36,12 @@ func (e *inconsistentStateError) Error() string {
 	return fmt.Sprintf("%s: inconsistent state (%s)", e.targetRelPath, strings.Join(e.origins, ", "))
 }
 
-type notInAbsDirError struct {
+type NotInAbsDirError struct {
 	pathAbsPath AbsPath
 	dirAbsPath  AbsPath
 }
 
-func (e *notInAbsDirError) Error() string {
+func (e *NotInAbsDirError) Error() string {
 	return fmt.Sprintf("%s: not in %s", e.pathAbsPath, e.dirAbsPath)
 }
 
