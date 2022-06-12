@@ -30,7 +30,10 @@ merge-all` will help you resolve any differences.
 
 If you chose to edit files in the source state and you're using VIM then
 [`github.com/alker0/chezmoi.vim`](https://github.com/alker0/chezmoi.vim) gives
-you syntax highlighting, however you edit your files.
+you syntax highlighting, however you edit your files. Besides using the
+plugin, you can use modeline to tell VIM the correct filetype. For example,
+put `# vim: filetype=zsh` at the top of `dot_zshrc`, and VIM will treat
+`dot_zshrc` as zsh file.
 
 ## Why doesn't chezmoi use symlinks like GNU Stow?
 
