@@ -37,6 +37,13 @@ $ chezmoi edit ~/.bashrc
 This will open `~/.local/share/chezmoi/dot_bashrc` in your `$EDITOR`. Make some
 changes and save the file.
 
+!!! hint
+
+    You don't have to use `chezmoi edit` to edit your dotfiles. See [this FAQ
+    entry](/user-guide/frequently-asked-questions/usage/#how-do-i-edit-my-dotfiles-with-chezmoi)
+    for more details.
+
+
 See what changes chezmoi would make:
 
 ```console
