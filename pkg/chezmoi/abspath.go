@@ -151,7 +151,7 @@ func (p AbsPath) TrimDirPrefix(dirPrefixAbsPath AbsPath) (RelPath, error) {
 		dirAbsPath.absPath += "/"
 	}
 	if !strings.HasPrefix(p.absPath, dirAbsPath.absPath) {
-		return EmptyRelPath, &notInAbsDirError{
+		return EmptyRelPath, &NotInAbsDirError{
 			pathAbsPath: p,
 			dirAbsPath:  dirPrefixAbsPath,
 		}

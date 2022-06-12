@@ -23,7 +23,7 @@ stderr 'not a file, script, or symlink'
 
 # test that chezmoi cat does not print files outside the destination directory
 ! chezmoi cat ${/}etc${/}passwd
-stderr 'not in'
+stderr 'not in destination directory'
 
 # test that chezmoi cat uses relative paths
 mkdir $HOME/.dir
