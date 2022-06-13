@@ -293,11 +293,11 @@ articles:
   title: "Fédérer une communauté technique autour d'un projet Open Source"
   url: 'https://www.podcastics.com/podcast/episode/federer-une-communaute-technique-autour-dun-projet-open-source-131694/'
 - date: '2022-06-02'
-  version: '2.17.2'
+  version: '2.17.1'
   title: 'Local Env as Code: Is it possible yet'
   url: https://www.cncf.io/blog/2022/06/02/local-env-as-code-is-it-possible-yet/
 - date: '2022-06-11'
-  version: '2.17.2'
+  version: '2.17.1'
   title: 'chezmoi で Linux と macOS 両方で使える dotfiles を作る'
   lang: 'JP'
   url: https://www.docswell.com/s/iosiftakakura/K2EXM5-2022-06-11-chezmoi
