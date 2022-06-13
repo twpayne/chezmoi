@@ -211,3 +211,23 @@ func TestApplyCmd(t *testing.T) {
 		})
 	}
 }
+
+func TestIssue2132(t *testing.T) {
+	chezmoitest.WithTestFS(t, map[string]interface{}{
+		"/home/user/.local/share/chezmoi/remove_dot_dir/non_existent_file": "",
+	}, func(fileSystem vfs.FS) {
+		config := newTestConfig(t, fileSystem)
+		require.NoError(t, config.execute(append([]string{"apply"})))
+		vfst.RunTests(t, fileSystem, "",
+			vfst.TestPath("/home/user/.dir",
+				vfst.TestDoesNotExist,
+			),
+		)
+		require.NoError(t, config.execute(append([]string{"apply"})))
+		vfst.RunTests(t, fileSystem, "",
+			vfst.TestPath("/home/user/.dir",
+				vfst.TestDoesNotExist,
+			),
+		)
+	})
+}
