@@ -27,6 +27,7 @@ import (
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoilog"
+	"github.com/twpayne/chezmoi/v2/pkg/git"
 )
 
 // A checkResult is the result of a check.
@@ -39,6 +40,16 @@ const (
 	checkResultInfo    checkResult = 1  // The check completed and found something interesting, but not a problem.
 	checkResultWarning checkResult = 2  // The check completed and found something that might indicate a problem.
 	checkResultError   checkResult = 3  // The check completed and found a definite problem.
+)
+
+// A gitStatus is the status of a git working copy.
+type gitStatus string
+
+const (
+	gitStatusNotAWorkingCopy gitStatus = ""
+	gitStatusClean           gitStatus = "clean"
+	gitStatusDirty           gitStatus = "dirty"
+	gitStatusError           gitStatus = "error"
 )
 
 // A check is an individual check.
@@ -496,10 +507,45 @@ func (c *dirCheck) Name() string {
 }
 
 func (c *dirCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
-	if _, err := system.ReadDir(c.dirname); err != nil {
+	dirEntries, err := system.ReadDir(c.dirname)
+	if err != nil {
 		return checkResultError, err.Error()
 	}
-	return checkResultOK, fmt.Sprintf("%s is a directory", c.dirname)
+
+	gitStatus := gitStatusNotAWorkingCopy
+	for _, dirEntry := range dirEntries {
+		if dirEntry.Name() != ".git" {
+			continue
+		}
+		//nolint:gosec
+		cmd := exec.Command("git", "-C", c.dirname.String(), "status", "--porcelain=v2")
+		output, err := cmd.Output()
+		if err != nil {
+			gitStatus = gitStatusError
+			break
+		}
+		switch status, err := git.ParseStatusPorcelainV2(output); {
+		case err != nil:
+			gitStatus = gitStatusError
+		case status.Empty():
+			gitStatus = gitStatusClean
+		default:
+			gitStatus = gitStatusDirty
+		}
+		break
+	}
+	switch gitStatus {
+	case gitStatusNotAWorkingCopy:
+		return checkResultOK, fmt.Sprintf("%s is a directory", c.dirname)
+	case gitStatusClean:
+		return checkResultOK, fmt.Sprintf("%s is a git working tree (clean)", c.dirname)
+	case gitStatusDirty:
+		return checkResultWarning, fmt.Sprintf("%s is a git working tree (dirty)", c.dirname)
+	case gitStatusError:
+		return checkResultError, fmt.Sprintf("%s is a git working tree (error)", c.dirname)
+	default:
+		panic(fmt.Sprintf("%s: unknown git status", gitStatus))
+	}
 }
 
 func (executableCheck) Name() string {
