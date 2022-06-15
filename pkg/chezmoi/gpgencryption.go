@@ -12,11 +12,12 @@ import (
 
 // A GPGEncryption uses gpg for encryption and decryption. See https://gnupg.org/.
 type GPGEncryption struct {
-	Command   string
-	Args      []string
-	Recipient string
-	Symmetric bool
-	Suffix    string
+	Command    string
+	Args       []string
+	Recipient  string
+	Recipients []string
+	Symmetric  bool
+	Suffix     string
 }
 
 // Decrypt implements Encyrption.Decrypt.
@@ -120,8 +121,13 @@ func (e *GPGEncryption) encryptArgs(plaintextFilename, ciphertextFilename AbsPat
 	}
 	if e.Symmetric {
 		args = append(args, "--symmetric")
-	} else if e.Recipient != "" {
-		args = append(args, "--recipient", e.Recipient)
+	} else {
+		if e.Recipient != "" {
+			args = append(args, "--recipient", e.Recipient)
+		}
+		for _, recipient := range e.Recipients {
+			args = append(args, "--recipient", recipient)
+		}
 	}
 	args = append(args, e.Args...)
 	if !e.Symmetric {
