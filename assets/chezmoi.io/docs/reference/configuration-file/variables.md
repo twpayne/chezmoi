@@ -52,6 +52,7 @@ The following configuration variables are available:
 | `gpg`          | `args`                | []string | *none*                   | Extra args to GPG CLI command                          |
 |                | `command`             | string   | `gpg`                    | GPG CLI command                                        |
 |                | `recipient`           | string   | *none*                   | GPG recipient                                          |
+|                | `recipients`          | []string | *none*                   | GPG recipients                                         |
 |                | `suffix`              | string   | `.asc`                   | Suffix appended to GPG-encrypted files                 |
 |                | `symmetric`           | bool     | `false`                  | Use symmetric GPG encryption                           |
 | `interpreters` | *extension*`.args`    | []string | *none*                   | See section on "Scripts on Windows"                    |
