@@ -11,6 +11,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/require"
 	"github.com/twpayne/go-vfs/v4"
 	"github.com/twpayne/go-vfs/v4/vfst"
@@ -38,7 +39,8 @@ func AgeGenerateKey(identityFile string) (string, error) {
 // GPGGenerateKey generates GPG key in homeDir and returns the key and the
 // passphrase.
 func GPGGenerateKey(command, homeDir string) (key, passphrase string, err error) {
-	key = "chezmoi-test-gpg-key"
+	// Append a random string (in the form of a UUID) to ensure unique key identifiers during multi-recipient tests
+	key = fmt.Sprintf("chezmoi-test-gpg-key_%s", uuid.New())
 	//nolint:gosec
 	passphrase = "chezmoi-test-gpg-passphrase"
 	cmd := exec.Command(
