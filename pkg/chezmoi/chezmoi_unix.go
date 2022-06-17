@@ -65,7 +65,9 @@ func etcMynameFQDNHostname(fileSystem vfs.FS) (string, error) {
 	s := bufio.NewScanner(bytes.NewReader(contents))
 	for s.Scan() {
 		text := s.Text()
-		text, _, _ = CutString(text, "#")
+		if strings.HasPrefix(text, "#") {
+			continue
+		}
 		if hostname := strings.TrimSpace(text); hostname != "" {
 			return hostname, nil
 		}
