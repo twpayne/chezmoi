@@ -136,6 +136,12 @@ func TestAutoTemplate(t *testing.T) {
 			},
 			expected: "a",
 		},
+		{
+			name:                 "markers",
+			contentsStr:          "{{}}",
+			expected:             `{{ "{{}}" }}`,
+			expectedReplacements: true,
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			actualTemplate, actualReplacements := autoTemplate([]byte(tc.contentsStr), tc.data)

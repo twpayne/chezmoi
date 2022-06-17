@@ -1,6 +1,7 @@
 package chezmoi
 
 import (
+	"regexp"
 	"sort"
 	"strings"
 )
@@ -11,6 +12,8 @@ type templateVariable struct {
 	name  string
 	value string
 }
+
+var templateMarkerRx = regexp.MustCompile(`[{}]{2,}`)
 
 // byValueLength implements sort.Interface for a slice of templateVariables,
 // sorting by value length.
@@ -29,20 +32,32 @@ func (b byValueLength) Less(i, j int) bool {
 }
 func (b byValueLength) Swap(i, j int) { b[i], b[j] = b[j], b[i] }
 
-// autoTemplate converts contents into a template by replacing values in data
-// with their keys. It returns the template and if any replacements were made.
+// autoTemplate converts contents into a template by escaping template markers
+// and replacing values in data with their keys. It returns the template and if
+// any replacements were made.
 func autoTemplate(contents []byte, data map[string]interface{}) ([]byte, bool) {
+	contentsStr := string(contents)
+	replacements := false
+
+	// Replace template markers.
+	replacedTemplateMarkersStr := templateMarkerRx.ReplaceAllString(contentsStr, `{{ "$0" }}`)
+	if replacedTemplateMarkersStr != contentsStr {
+		contentsStr = replacedTemplateMarkersStr
+		replacements = true
+	}
+
+	// Replace variables.
+	//
 	// This naive approach will generate incorrect templates if the variable
 	// names match variable values. The algorithm here is probably O(N^2), we
 	// can do better.
 	variables := extractVariables(data)
 	sort.Sort(sort.Reverse(byValueLength(variables)))
-	contentsStr := string(contents)
-	replacements := false
 	for _, variable := range variables {
 		if variable.value == "" {
 			continue
 		}
+
 		index := strings.Index(contentsStr, variable.value)
 		for index != -1 && index != len(contentsStr) {
 			if !inWord(contentsStr, index) && !inWord(contentsStr, index+len(variable.value)) {
@@ -57,6 +72,7 @@ func autoTemplate(contents []byte, data map[string]interface{}) ([]byte, bool) {
 				// progress.
 				index++
 			}
+
 			// Look for the next occurrence of variable.value.
 			j := strings.Index(contentsStr[index:], variable.value)
 			if j == -1 {
@@ -68,6 +84,7 @@ func autoTemplate(contents []byte, data map[string]interface{}) ([]byte, bool) {
 			}
 		}
 	}
+
 	return []byte(contentsStr), replacements
 }
 

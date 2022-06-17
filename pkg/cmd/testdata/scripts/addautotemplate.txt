@@ -11,16 +11,24 @@ cmp $CHEZMOISOURCEDIR/symlink_dot_symlink.tmpl golden/symlink_dot_symlink.tmpl
 chezmoi add --autotemplate $HOME${/}.file
 cmp $CHEZMOISOURCEDIR/dot_file golden/dot_file
 
+# test that chezmoi add --autotemplate escapes brackets
+chezmoi add --autotemplate $HOME${/}.vimrc
+cmp $CHEZMOISOURCEDIR/dot_vimrc.tmpl golden/dot_vimrc.tmpl
+
 -- golden/dot_file --
 # contents of .file
 -- golden/dot_template.tmpl --
 key = {{ .variable }}
 -- golden/symlink_dot_symlink.tmpl --
 .target-{{ .variable }}
+-- golden/dot_vimrc.tmpl --
+set foldmarker={{ "{{" }},{{ "}}" }}
 -- home/user/.config/chezmoi/chezmoi.toml --
 [data]
     variable = "value"
 -- home/user/.file --
 # contents of .file
+-- home/user/.vimrc --
+set foldmarker={{,}}
 -- home/user/.template --
 key = value
