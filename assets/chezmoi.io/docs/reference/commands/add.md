@@ -6,9 +6,11 @@ destination directory.
 
 ## `--autotemplate`
 
-Automatically generate a template by replacing strings with variable names from
-the `data` section of the config file. Longer substitutions occur before
-shorter ones. This implies the `--template` option.
+Automatically generate a template by replacing strings that match variable
+values from the `data` section of the config file with their respective config
+names as a template string. Longer substitutions occur before shorter ones.
+This implies the `--template` option.
+```
 
 ## `-e`, `--empty`
 
