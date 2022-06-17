@@ -4,6 +4,7 @@
 package chezmoi
 
 import (
+	"runtime"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -16,6 +17,7 @@ import (
 func TestFQDNHostname(t *testing.T) {
 	for _, tc := range []struct {
 		name     string
+		goos     string
 		root     interface{}
 		expected string
 	}{
@@ -81,8 +83,23 @@ func TestFQDNHostname(t *testing.T) {
 			},
 			expected: "hostname.example.com",
 		},
+		{
+			name: "etc_myname",
+			goos: "openbsd",
+			root: map[string]interface{}{
+				"/etc/myname": chezmoitest.JoinLines(
+					"# comment",
+					"",
+					"hostname.example.com",
+				),
+			},
+			expected: "hostname.example.com",
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
+			if tc.goos != "" && runtime.GOOS != tc.goos {
+				t.Skipf("skipping %s test on %s", tc.goos, runtime.GOOS)
+			}
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {
 				assert.Equal(t, tc.expected, FQDNHostname(fileSystem))
 			})
