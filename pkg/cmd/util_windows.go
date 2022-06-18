@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"io"
 	"io/fs"
 	"os"
@@ -43,7 +44,10 @@ func enableVirtualTerminalProcessing(w io.Writer) error {
 	if err := windows.GetConsoleMode(windows.Handle(file.Fd()), &dwMode); err != nil {
 		return nil // Ignore error in the case that fd is not a terminal.
 	}
-	return windows.SetConsoleMode(windows.Handle(file.Fd()), dwMode|windows.ENABLE_VIRTUAL_TERMINAL_PROCESSING)
+	if err := windows.SetConsoleMode(windows.Handle(file.Fd()), dwMode|windows.ENABLE_VIRTUAL_TERMINAL_PROCESSING); err != nil {
+		return fmt.Errorf("windows.SetConsoleMode: %w", err)
+	}
+	return nil
 }
 
 func fileInfoUID(fs.FileInfo) int {

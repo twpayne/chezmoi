@@ -24,10 +24,12 @@ func (c *Config) readPassword(prompt string) (password string, err error) {
 	var name *uint16
 	name, err = windows.UTF16PtrFromString("CONIN$")
 	if err != nil {
+		err = fmt.Errorf("windows.UTF16PtrFromString: %w", err)
 		return
 	}
 	var handle windows.Handle
 	if handle, err = windows.CreateFile(name, windows.GENERIC_READ|windows.GENERIC_WRITE, windows.FILE_SHARE_READ, nil, windows.OPEN_EXISTING, 0, 0); err != nil {
+		err = fmt.Errorf("windows.CreateFile: %w", err)
 		return
 	}
 	defer func() {
@@ -48,7 +50,7 @@ func (c *Config) readPassword(prompt string) (password string, err error) {
 func (c *Config) windowsVersion() (map[string]interface{}, error) {
 	registryKey, err := registry.OpenKey(registry.LOCAL_MACHINE, `SOFTWARE\Microsoft\Windows NT\CurrentVersion`, registry.QUERY_VALUE)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("registry.OpenKey: %w", err)
 	}
 	windowsVersion := make(map[string]interface{})
 	for _, name := range []string{
