@@ -12,7 +12,6 @@ type addCmdConfig struct {
 	TemplateSymlinks bool `mapstructure:"templateSymlinks"`
 	autoTemplate     bool
 	create           bool
-	empty            bool
 	encrypt          bool
 	exact            bool
 	exclude          *chezmoi.EntryTypeSet
@@ -43,7 +42,6 @@ func (c *Config) newAddCmd() *cobra.Command {
 	flags := addCmd.Flags()
 	flags.BoolVarP(&c.Add.autoTemplate, "autotemplate", "a", c.Add.autoTemplate, "Generate the template when adding files as templates") //nolint:lll
 	flags.BoolVar(&c.Add.create, "create", c.Add.create, "Add files that should exist, irrespective of their contents")
-	flags.BoolVarP(&c.Add.empty, "empty", "e", c.Add.empty, "Add empty files")
 	flags.BoolVar(&c.Add.encrypt, "encrypt", c.Add.encrypt, "Encrypt files")
 	flags.BoolVar(&c.Add.exact, "exact", c.Add.exact, "Add directories exactly")
 	flags.VarP(c.Add.exclude, "exclude", "x", "Exclude entry types")
@@ -144,7 +142,6 @@ func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezm
 	return sourceState.Add(c.sourceSystem, c.persistentState, c.destSystem, destAbsPathInfos, &chezmoi.AddOptions{
 		AutoTemplate:     c.Add.autoTemplate,
 		Create:           c.Add.create,
-		Empty:            c.Add.empty,
 		Encrypt:          c.Add.encrypt,
 		EncryptedSuffix:  c.encryption.EncryptedSuffix(),
 		Exact:            c.Add.exact,

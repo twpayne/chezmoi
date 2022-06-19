@@ -223,7 +223,6 @@ func TestSourceStateAdd(t *testing.T) {
 				NewAbsPath("/home/user/.empty"),
 			},
 			addOptions: AddOptions{
-				Empty:   true,
 				Include: NewEntryTypeSet(EntryTypesAll),
 			},
 			tests: []interface{}{
