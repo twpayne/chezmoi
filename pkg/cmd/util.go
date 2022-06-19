@@ -6,13 +6,9 @@ import (
 	"strconv"
 	"strings"
 	"unicode"
-
-	"github.com/coreos/go-semver/semver"
 )
 
 var (
-	goVersionRx = regexp.MustCompile(`\Ago(\d+)(?:\.(\d+)(?:\.(\d+))?)?\z`)
-
 	wellKnownAbbreviations = map[string]struct{}{
 		"ANSI": {},
 		"CPE":  {},
@@ -27,21 +23,6 @@ var (
 		"quit",
 	}
 )
-
-func ParseGoVersion(goVersion string) (*semver.Version, error) {
-	m := goVersionRx.FindStringSubmatch(goVersion)
-	if m == nil {
-		return nil, fmt.Errorf("%s: invalid Go version", goVersion)
-	}
-	major, _ := strconv.ParseInt(m[1], 10, 64)
-	minor, _ := strconv.ParseInt(m[2], 10, 64)
-	patch, _ := strconv.ParseInt(m[3], 10, 64)
-	return &semver.Version{
-		Major: major,
-		Minor: minor,
-		Patch: patch,
-	}, nil
-}
 
 // englishList returns ss formatted as a list, including an Oxford comma.
 func englishList(ss []string) string {
