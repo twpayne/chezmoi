@@ -1,6 +1,6 @@
 # `.chezmoiexternal.$FORMAT`
 
-If a file called `.chezmoiexternal.$FORMAT` exists in the source state, it is
+If a file called `.chezmoiexternal.$FORMAT` exists in the source state(either `~/.local/share/chezmoi` or directory defined inside `.chezmoiroot`), it is
 interpreted as a list of external files and archives to be included as if they
 were in the source state.
 
