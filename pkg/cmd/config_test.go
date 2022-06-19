@@ -219,6 +219,9 @@ func newTestConfig(t *testing.T, fileSystem vfs.FS, options ...configOption) *Co
 			withTestFS(fileSystem),
 			withTestUser(t, "user"),
 			withUmask(chezmoitest.Umask),
+			withVersionInfo(VersionInfo{
+				Version: "2.0.0",
+			}),
 		}, options...)...,
 	)
 	require.NoError(t, err)
