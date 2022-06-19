@@ -123,7 +123,7 @@ func (c *Config) defaulReplaceFunc(
 		case choice == "no":
 			return chezmoi.Skip
 		case choice == "quit":
-			return chezmoi.ExitCodeError(1)
+			return chezmoi.ExitCodeError(0)
 		case choice == "yes":
 			return nil
 		default:
