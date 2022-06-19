@@ -647,6 +647,30 @@ func (c *Config) applyArgs(
 	return nil
 }
 
+// checkVersion checks that chezmoi is at least the required version for the
+// source state.
+func (c *Config) checkVersion() error {
+	versionAbsPath := c.SourceDirAbsPath.JoinString(chezmoi.VersionName)
+	switch data, err := c.baseSystem.ReadFile(versionAbsPath); {
+	case errors.Is(err, fs.ErrNotExist):
+	case err != nil:
+		return err
+	default:
+		minVersion, err := semver.NewVersion(strings.TrimSpace(string(data)))
+		if err != nil {
+			return fmt.Errorf("%s: %q: %w", versionAbsPath, data, err)
+		}
+		var zeroVersion semver.Version
+		if c.version != zeroVersion && c.version.LessThan(*minVersion) {
+			return &chezmoi.TooOldError{
+				Need: *minVersion,
+				Have: c.version,
+			}
+		}
+	}
+	return nil
+}
+
 // cmdOutput returns the of running the command name with args in dirAbsPath.
 func (c *Config) cmdOutput(dirAbsPath chezmoi.AbsPath, name string, args []string) ([]byte, error) {
 	cmd := exec.Command(name, args...)
@@ -1419,31 +1443,16 @@ func (c *Config) newDiffSystem(s chezmoi.System, w io.Writer, dirAbsPath chezmoi
 func (c *Config) newSourceState(
 	ctx context.Context, options ...chezmoi.SourceStateOption,
 ) (*chezmoi.SourceState, error) {
+	if err := c.checkVersion(); err != nil {
+		return nil, err
+	}
+
 	httpClient, err := c.getHTTPClient()
 	if err != nil {
 		return nil, err
 	}
 
 	sourceStateLogger := c.logger.With().Str(logComponentKey, logComponentValueSourceState).Logger()
-
-	versionAbsPath := c.SourceDirAbsPath.JoinString(chezmoi.VersionName)
-	switch data, err := c.baseSystem.ReadFile(versionAbsPath); {
-	case errors.Is(err, fs.ErrNotExist):
-	case err != nil:
-		return nil, err
-	default:
-		minVersion, err := semver.NewVersion(strings.TrimSpace(string(data)))
-		if err != nil {
-			return nil, fmt.Errorf("%s: %q: %w", versionAbsPath, data, err)
-		}
-		var zeroVersion semver.Version
-		if c.version != zeroVersion && c.version.LessThan(*minVersion) {
-			return nil, &chezmoi.TooOldError{
-				Need: *minVersion,
-				Have: c.version,
-			}
-		}
-	}
 
 	c.SourceDirAbsPath, err = c.sourceDirAbsPath()
 	if err != nil {

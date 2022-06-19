@@ -4,6 +4,11 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"github.com/twpayne/go-vfs/v4"
+
+	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
+	"github.com/twpayne/chezmoi/v2/pkg/chezmoitest"
 )
 
 func TestGuessDotfilesRepoURL(t *testing.T) {
@@ -103,4 +108,19 @@ func TestGuessDotfilesRepoURL(t *testing.T) {
 			assert.Equal(t, tc.expectedSSHRepoURL, actualSSHRepoURL, "SSHRepoURL")
 		})
 	}
+}
+
+func TestIssue2137(t *testing.T) {
+	chezmoitest.WithTestFS(t, map[string]interface{}{
+		"/home/user/.local/share/chezmoi": map[string]interface{}{
+			".chezmoiversion": "3.0.0",
+			".git": map[string]interface{}{
+				".keep": nil,
+			},
+		},
+	}, func(fileSystem vfs.FS) {
+		err := newTestConfig(t, fileSystem).execute([]string{"init"})
+		tooOldError := &chezmoi.TooOldError{}
+		require.ErrorAs(t, err, &tooOldError)
+	})
 }
