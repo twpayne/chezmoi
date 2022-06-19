@@ -876,9 +876,9 @@ func (c *Config) defaultPreApplyFunc(
 		case choice == "skip":
 			return chezmoi.Skip
 		case choice == "quit":
-			return chezmoi.ExitCodeError(1)
+			return chezmoi.ExitCodeError(0)
 		default:
-			return nil
+			panic(fmt.Sprintf("%s: unexpected choice", choice))
 		}
 	}
 }
