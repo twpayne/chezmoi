@@ -80,7 +80,7 @@ The "bit of magic" that `chezmoi edit` performs includes:
   the target filename, which can help your editor choose the correct syntax
   highlighting. For example, if you run `chezmoi edit ~/.zshrc`, your editor is
   be opened with `$TMPDIR/.zshrc` but you'll actually be editing
-  `~/.local/share/chezmoi/dot_zshrc` . Under the hood, chezmoi creates a
+  `~/.local/share/chezmoi/dot_zshrc`. Under the hood, chezmoi creates a
   hardlink in a temporary directory to the file in your source directory, so
   even though your editor thinks it's editing `.zshrc`, it is really editing
   `dot_zshrc` in your source directory.
