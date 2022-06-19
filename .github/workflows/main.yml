@@ -403,11 +403,6 @@ jobs:
         with:
           cache: true
           go-version: ${{ env.GO_VERSION }}
-      - name: snapcraft-login
-        env:
-          SNAPCRAFT_LOGIN: ${{ secrets.SNAPCRAFT_LOGIN }}
-        run: |
-          snapcraft login --with <(echo "$SNAPCRAFT_LOGIN" | base64 -d)
       - uses: goreleaser/goreleaser-action@68acf3b1adf004ac9c2f0a4259e85c5f66e99bef
         with:
           version: latest
