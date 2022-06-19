@@ -33,15 +33,9 @@ Release](https://github.com/twpayne/chezmoi/releases), and deploys the
 
 !!! note
 
-    Publishing [Snaps](https://snapcraft.io/) requires a `SNAPCRAFT_LOGIN`
-    [repository
+    Publishing [Snaps](https://snapcraft.io/) requires a
+    `SNAPCRAFT_LOGIN_CREDENTIALS` [repository
     secret](https://github.com/twpayne/chezmoi/settings/secrets/actions).
-    Snapcraft logins periodically expire. Create a new snapcraft login by
-    running:
-
-    ```console
-    $ snapcraft export-login --snaps=chezmoi --channels=stable,candidate,beta,edge --acls=package_upload -
-    ```
 
 !!! note
 
