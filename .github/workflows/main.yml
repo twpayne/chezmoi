@@ -273,6 +273,7 @@ jobs:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
       - uses: actions/setup-go@b22fbbc2921299758641fab08929b4ac52b32923
         with:
+          cache: true
           go-version: 1.17.x
       - uses: actions/cache@30f413bfed0a2bc738fdfd409e5a9e96b24545fd
         with:
@@ -305,6 +306,7 @@ jobs:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
       - uses: actions/setup-go@b22fbbc2921299758641fab08929b4ac52b32923
         with:
+          cache: true
           go-version: ${{ env.GO_VERSION }}
       - uses: actions/cache@30f413bfed0a2bc738fdfd409e5a9e96b24545fd
         with:
@@ -365,10 +367,11 @@ jobs:
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
     runs-on: ubuntu-18.04
     steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
       - uses: actions/setup-go@b22fbbc2921299758641fab08929b4ac52b32923
         with:
+          cache: true
           go-version: ${{ env.GO_VERSION }}
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
       - uses: golangci/golangci-lint-action@537aa1903e5d359d0b27dbc19ddd22c5087f3fbc
         with:
           version: v${{ env.GOLANGCI_LINT_VERSION }}
