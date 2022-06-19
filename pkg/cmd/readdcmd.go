@@ -96,7 +96,6 @@ func (c *Config) runReAddCmd(cmd *cobra.Command, args []string, sourceState *che
 			destAbsPath: destAbsPathInfo,
 		}
 		if err := sourceState.Add(c.sourceSystem, c.persistentState, c.destSystem, destAbsPathInfos, &chezmoi.AddOptions{
-			Empty:           sourceStateFile.Attr.Empty,
 			Encrypt:         sourceStateFile.Attr.Encrypted,
 			EncryptedSuffix: c.encryption.EncryptedSuffix(),
 			Include:         c.reAdd.include.Sub(c.reAdd.exclude),

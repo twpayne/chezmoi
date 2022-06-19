@@ -269,7 +269,6 @@ type ReplaceFunc func(targetRelPath RelPath, newSourceStateEntry, oldSourceState
 type AddOptions struct {
 	AutoTemplate     bool          // Automatically create templates, if possible.
 	Create           bool          // Add create_ entries instead of normal entries.
-	Empty            bool          // Add the empty_ attribute to added files.
 	Encrypt          bool          // Encrypt files.
 	EncryptedSuffix  string        // Suffix for encrypted files.
 	Exact            bool          // Add the exact_ attribute to added directories.
@@ -1731,7 +1730,6 @@ func (s *SourceState) newSourceStateFileEntryFromFile(
 ) (SourceStateEntry, error) {
 	fileAttr := FileAttr{
 		TargetName: fileInfo.Name(),
-		Empty:      options.Empty,
 		Encrypted:  options.Encrypt,
 		Executable: isExecutable(fileInfo),
 		Private:    isPrivate(fileInfo),
@@ -1754,8 +1752,8 @@ func (s *SourceState) newSourceStateFileEntryFromFile(
 			fileAttr.Template = true
 		}
 	}
-	if len(contents) == 0 && !options.Empty {
-		return nil, nil
+	if len(contents) == 0 {
+		fileAttr.Empty = true
 	}
 	if options.Encrypt {
 		contents, err = s.encryption.Encrypt(contents)
@@ -1772,7 +1770,7 @@ func (s *SourceState) newSourceStateFileEntryFromFile(
 		lazyContents:  lazyContents,
 		targetStateEntry: &TargetStateFile{
 			lazyContents: lazyContents,
-			empty:        options.Empty,
+			empty:        len(contents) == 0,
 			perm:         0o666 &^ s.umask,
 		},
 	}, nil
