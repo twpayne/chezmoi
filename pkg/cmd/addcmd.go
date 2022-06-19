@@ -18,6 +18,7 @@ type addCmdConfig struct {
 	exclude          *chezmoi.EntryTypeSet
 	follow           bool
 	include          *chezmoi.EntryTypeSet
+	prompt           bool
 	recursive        bool
 	template         bool
 }
@@ -48,6 +49,7 @@ func (c *Config) newAddCmd() *cobra.Command {
 	flags.VarP(c.Add.exclude, "exclude", "x", "Exclude entry types")
 	flags.BoolVarP(&c.Add.follow, "follow", "f", c.Add.follow, "Add symlink targets instead of symlinks")
 	flags.VarP(c.Add.include, "include", "i", "Include entry types")
+	flags.BoolVarP(&c.Add.prompt, "prompt", "p", c.Add.prompt, "Prompt before adding each entry")
 	flags.BoolVarP(&c.Add.recursive, "recursive", "r", c.Add.recursive, "Recurse into subdirectories")
 	flags.BoolVarP(&c.Add.template, "template", "T", c.Add.template, "Add files as templates")
 	flags.BoolVar(&c.Add.TemplateSymlinks, "template-symlinks", c.Add.TemplateSymlinks, "Add symlinks with target in source or home dirs as templates") //nolint:lll
@@ -55,9 +57,34 @@ func (c *Config) newAddCmd() *cobra.Command {
 	return addCmd
 }
 
-// defaultPreAddFunc prompts the user for confirmation if the adding the entry
+func (c *Config) defaultPreAddFunc(targetRelPath chezmoi.RelPath) error {
+	if !c.Add.prompt {
+		return nil
+	}
+
+	prompt := fmt.Sprintf("add %s", c.SourceDirAbsPath.Join(targetRelPath))
+	for {
+		switch choice, err := c.promptChoice(prompt, choicesYesNoAllQuit); {
+		case err != nil:
+			return err
+		case choice == "all":
+			c.Add.prompt = false
+			return nil
+		case choice == "no":
+			return chezmoi.Skip
+		case choice == "quit":
+			return chezmoi.ExitCodeError(0)
+		case choice == "yes":
+			return nil
+		default:
+			panic(fmt.Sprintf("%s: unexpected choice", choice))
+		}
+	}
+}
+
+// defaulReplaceFunc prompts the user for confirmation if the adding the entry
 // would remove any of the encrypted, private, or template attributes.
-func (c *Config) defaultPreAddFunc(
+func (c *Config) defaulReplaceFunc(
 	targetRelPath chezmoi.RelPath, newSourceStateEntry, oldSourceStateEntry chezmoi.SourceStateEntry,
 ) error {
 	if c.force {
@@ -100,7 +127,7 @@ func (c *Config) defaultPreAddFunc(
 		case choice == "yes":
 			return nil
 		default:
-			return nil
+			panic(fmt.Sprintf("%s: unexpected choice", choice))
 		}
 	}
 }
@@ -123,6 +150,7 @@ func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezm
 		Exact:            c.Add.exact,
 		Include:          c.Add.include.Sub(c.Add.exclude),
 		PreAddFunc:       c.defaultPreAddFunc,
+		ReplaceFunc:      c.defaulReplaceFunc,
 		Template:         c.Add.template,
 		TemplateSymlinks: c.Add.TemplateSymlinks,
 	})

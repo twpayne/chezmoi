@@ -260,7 +260,10 @@ func NewSourceState(options ...SourceStateOption) *SourceState {
 }
 
 // A PreAddFunc is called before a new source state entry is added.
-type PreAddFunc func(targetRelPath RelPath, newSourceStateEntry, oldSourceStateEntry SourceStateEntry) error
+type PreAddFunc func(targetRelPath RelPath) error
+
+// A ReplaceFunc is called before a source state entry is replaced.
+type ReplaceFunc func(targetRelPath RelPath, newSourceStateEntry, oldSourceStateEntry SourceStateEntry) error
 
 // AddOptions are options to SourceState.Add.
 type AddOptions struct {
@@ -271,8 +274,9 @@ type AddOptions struct {
 	EncryptedSuffix  string        // Suffix for encrypted files.
 	Exact            bool          // Add the exact_ attribute to added directories.
 	Include          *EntryTypeSet // Only add types in this set.
-	PreAddFunc       PreAddFunc    // Function to be called before the source entry is added.
+	PreAddFunc       PreAddFunc    // Function to be called before a source entry is added.
 	RemoveDir        RelPath       // Directory to remove before adding.
+	ReplaceFunc      ReplaceFunc   // Function to be called before a source entry is replaced.
 	Template         bool          // Add the .tmpl attribute to added files.
 	TemplateSymlinks bool          // Add symlinks with targets in the source or home directories as templates.
 }
@@ -338,6 +342,15 @@ DESTABSPATH:
 			continue
 		}
 
+		if options.PreAddFunc != nil {
+			switch err := options.PreAddFunc(targetRelPath); {
+			case errors.Is(err, Skip):
+				continue DESTABSPATH
+			case err != nil:
+				return err
+			}
+		}
+
 		sourceEntryRelPath := newSourceStateEntry.SourceRelPath()
 
 		entryState, err := actualStateEntry.EntryState()
@@ -353,8 +366,8 @@ DESTABSPATH:
 		if oldSourceStateEntry := s.root.Get(targetRelPath); oldSourceStateEntry != nil {
 			oldSourceEntryRelPath := oldSourceStateEntry.SourceRelPath()
 			if !oldSourceEntryRelPath.Empty() && oldSourceEntryRelPath != sourceEntryRelPath {
-				if options.PreAddFunc != nil {
-					switch err := options.PreAddFunc(targetRelPath, newSourceStateEntry, oldSourceStateEntry); {
+				if options.ReplaceFunc != nil {
+					switch err := options.ReplaceFunc(targetRelPath, newSourceStateEntry, oldSourceStateEntry); {
 					case errors.Is(err, Skip):
 						continue DESTABSPATH
 					case err != nil:
