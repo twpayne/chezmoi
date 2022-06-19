@@ -195,6 +195,10 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	if err := c.checkVersion(); err != nil {
+		return err
+	}
+
 	if err := c.createAndReloadConfigFile(); err != nil {
 		return err
 	}
