@@ -158,20 +158,6 @@ func TestAddCmd(t *testing.T) {
 			args: []string{"~/.empty"},
 			tests: []interface{}{
 				vfst.TestPath("/home/user/.local/share/chezmoi/empty_dot_empty",
-					vfst.TestDoesNotExist,
-				),
-			},
-		},
-		{
-			name: "empty_with_--empty",
-			root: map[string]interface{}{
-				"/home/user": map[string]interface{}{
-					".empty": "",
-				},
-			},
-			args: []string{"--empty", "~/.empty"},
-			tests: []interface{}{
-				vfst.TestPath("/home/user/.local/share/chezmoi/empty_dot_empty",
 					vfst.TestModeIsRegular,
 					vfst.TestModePerm(0o666&^chezmoitest.Umask),
 					vfst.TestContents(nil),

@@ -17,13 +17,9 @@ cmp $CHEZMOISOURCEDIR/dot_dir/file golden/dot_dir/file
 chezmoi add --exact $HOME${/}.dir/subdir
 cmp $CHEZMOISOURCEDIR/dot_dir/exact_subdir/file golden/dot_dir/exact_subdir/file
 
-# test adding an empty file without --empty
+# test adding an empty file
 chezmoi add $HOME${/}.empty
-! exists $CHEZMOISOURCEDIR/dot_empty
-
-# test adding an empty file with --empty
-chezmoi add --empty $HOME${/}.empty
-cmp $CHEZMOISOURCEDIR/empty_dot_empty golden/empty_dot_empty
+exists $CHEZMOISOURCEDIR/empty_dot_empty
 
 # test adding an executable file
 chezmoi add $HOME${/}.executable

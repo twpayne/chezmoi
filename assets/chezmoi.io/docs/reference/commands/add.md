@@ -12,10 +12,6 @@ names as a template string. Longer substitutions occur before shorter ones.
 This implies the `--template` option.
 ```
 
-## `-e`, `--empty`
-
-Set the `empty` attribute on added files.
-
 ## `--encrypt`
 
 Encrypt files using the defined encryption method.
