@@ -5,10 +5,10 @@ Releases are managed with [`goreleaser`](https://goreleaser.com/).
 ## Testing
 
 To build a test release, without publishing, (Ubuntu Linux only) first ensure
-that the `musl-tools` and `snapcraft` packages are installed:
+that the `musl-tools` packages is installed:
 
 ```console
-$ sudo apt-get install musl-tools snapcraft
+$ sudo apt-get install musl-tools
 ```
 
 Then run:
@@ -26,16 +26,10 @@ $ git tag v1.2.3
 $ git push --tags
 ```
 
-This triggers a [GitHub Action](https://github.com/twpayne/chezmoi/actions)
-that builds and publishes archives, packages, and snaps, creates a new [GitHub
+This triggers a [GitHub Action](https://github.com/twpayne/chezmoi/actions) that
+builds and publishes archives, packages, creates a new [GitHub
 Release](https://github.com/twpayne/chezmoi/releases), and deploys the
 [website](https://chezmoi.io).
-
-!!! note
-
-    Publishing [Snaps](https://snapcraft.io/) requires a
-    `SNAPCRAFT_LOGIN_CREDENTIALS` [repository
-    secret](https://github.com/twpayne/chezmoi/settings/secrets/actions).
 
 !!! note
 

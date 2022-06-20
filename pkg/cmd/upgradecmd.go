@@ -32,7 +32,6 @@ import (
 const (
 	upgradeMethodBrewUpgrade       = "brew-upgrade"
 	upgradeMethodReplaceExecutable = "replace-executable"
-	upgradeMethodSnapRefresh       = "snap-refresh"
 	upgradeMethodUpgradePackage    = "upgrade-package"
 	upgradeMethodSudoPrefix        = "sudo-"
 
@@ -171,10 +170,6 @@ func (c *Config) runUpgradeCmd(cmd *cobra.Command, args []string) error {
 		}
 	case upgradeMethodReplaceExecutable:
 		if err := c.replaceExecutable(ctx, executableAbsPath, version, rr); err != nil {
-			return err
-		}
-	case upgradeMethodSnapRefresh:
-		if err := c.snapRefresh(); err != nil {
 			return err
 		}
 	case upgradeMethodUpgradePackage:
@@ -376,10 +371,6 @@ func (c *Config) replaceExecutable(
 	return
 }
 
-func (c *Config) snapRefresh() error {
-	return c.run(chezmoi.EmptyAbsPath, "snap", []string{"refresh", c.upgrade.repo})
-}
-
 func (c *Config) upgradePackage(
 	ctx context.Context, version *semver.Version, rr *github.RepositoryRelease, useSudo bool,
 ) error {
@@ -508,9 +499,6 @@ func getUpgradeMethod(fileSystem vfs.Stater, executableAbsPath chezmoi.AbsPath) 
 	case "freebsd":
 		return upgradeMethodReplaceExecutable, nil
 	case "linux":
-		if ok, _ := vfs.Contains(fileSystem, executableAbsPath.String(), "/snap"); ok {
-			return upgradeMethodSnapRefresh, nil
-		}
 		fileInfo, err := fileSystem.Stat(executableAbsPath.String())
 		if err != nil {
 			return "", err
