@@ -1,3 +1,4 @@
+[windows] skip 'windows line endings confuse cmp and diff'
 [!exec:unzip] skip 'unzip not found in $PATH'
 
 mksourcedir
