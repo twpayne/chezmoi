@@ -398,6 +398,8 @@ jobs:
           sudo apt-get update
           sudo apt-get -yq --no-install-suggests --no-install-recommends install musl-tools snapcraft
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          fetch-depth: 0
       - uses: actions/setup-go@b22fbbc2921299758641fab08929b4ac52b32923
         with:
           cache: true
