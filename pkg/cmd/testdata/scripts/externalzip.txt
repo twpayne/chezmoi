@@ -1,3 +1,4 @@
+[windows] skip 'zip may not support the --symlinks option'
 [!exec:zip] skip 'zip not found in $PATH'
 symlink archive/dir/symlink -> file
 exec zip -r --symlinks www/archive.zip archive
