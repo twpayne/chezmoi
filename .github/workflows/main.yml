@@ -15,15 +15,6 @@ env:
   GOLANGCI_LINT_VERSION: 1.46.2
   TPARSE_VERSION: 0.10.3
 jobs:
-  build-website:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-      - name: install-website-dependencies
-        run: |
-          pip3 install mkdocs-material mkdocs-mermaid2-plugin mkdocs-redirects mkdocs-simple-hooks
-      - name: build-website
-        run: ( cd assets/chezmoi.io && mkdocs build )
   changes:
     runs-on: ubuntu-20.04
     outputs:
@@ -298,6 +289,14 @@ jobs:
           CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
         run: |
           go test ./...
+  test-website:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - name: install-website-dependencies
+        run: pip3 install mkdocs-material mkdocs-mermaid2-plugin mkdocs-redirects mkdocs-simple-hooks
+      - name: build-website
+        run: ( cd assets/chezmoi.io && mkdocs build )
   test-windows:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
@@ -379,7 +378,6 @@ jobs:
   release: # FIXME this should be merged into test-ubuntu above
     if: startsWith(github.ref, 'refs/tags/')
     needs:
-      - build-website
       - check
       - lint
       - test-alpine
@@ -391,6 +389,7 @@ jobs:
       - test-openbsd
       - test-ubuntu
       - test-ubuntu-go1-17
+      - test-website
       - test-windows
     runs-on: ubuntu-20.04
     steps:
@@ -420,8 +419,12 @@ jobs:
           gh release upload v${VERSION} dist/checksums.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GORELEASER_GITHUB_TOKEN }}
+  deploy-website:
+    runs-on: ubuntu-20.04
+    needs:
+      - release
+    steps:
       - name: install-website-dependencies
-        run: |
-          pip3 install mkdocs-material mkdocs-mermaid2-plugin mkdocs-redirects mkdocs-simple-hooks
+        run: pip3 install mkdocs-material mkdocs-mermaid2-plugin mkdocs-redirects mkdocs-simple-hooks
       - name: deploy-website
-        run: ( cd assets/chezmoi.io && mkdocs build && mkdocs gh-deploy )
+        run: ( cd assets/chezmoi.io && mkdocs gh-deploy )
