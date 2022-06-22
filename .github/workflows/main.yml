@@ -209,8 +209,8 @@ jobs:
       - name: install-release-dependencies
         if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
         run: |
-          sudo apt-get update
-          sudo apt-get -yq --no-install-suggests --no-install-recommends install musl-tools snapcraft
+          sudo apt-get --quiet update
+          sudo apt-get --no-install-suggests --no-install-recommends --quiet --yes install musl-tools snapcraft
       - name: build-release
         if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
         uses: goreleaser/goreleaser-action@68acf3b1adf004ac9c2f0a4259e85c5f66e99bef
@@ -391,12 +391,18 @@ jobs:
       - test-ubuntu-go1-17
       - test-website
       - test-windows
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
     steps:
       - name: install-build-dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get -yq --no-install-suggests --no-install-recommends install musl-tools snapcraft
+          sudo apt-get --quiet update
+          sudo apt-get --no-install-suggests --no-install-recommends --quiet --yes install musl-tools snapcraft
+          sudo snap install --classic snapcraft
+          sudo apt-get --quiet remove snapcraft
+      - name: check-snapcraft-credentials
+        run: snapcraft whoami
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
         with:
           fetch-depth: 0
@@ -410,6 +416,7 @@ jobs:
           args: release
         env:
           GITHUB_TOKEN: ${{ secrets.GORELEASER_GITHUB_TOKEN }}
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
       # The following is needed because chezmoi upgrade and
       # assets/scripts/install.sh have inconsistently looked for
       # chezmoi_${VERSION}_checksums.txt and checksums.txt. To ensure
