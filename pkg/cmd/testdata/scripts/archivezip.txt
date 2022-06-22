@@ -4,6 +4,7 @@ mksourcedir
 
 chezmoi archive --format=zip --output=archive.zip
 exec unzip -t archive.zip
+[windows] unix2dos golden/archive
 [!freebsd] cmp stdout golden/archive # FIXME whitespace output of unzip is different on FreeBSD
 
 -- golden/archive --
