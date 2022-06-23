@@ -43,7 +43,6 @@ The following configuration variables are available:
 |                | `command`             | string   | `$EDITOR` / `$VISUAL`    | Edit command                                           |
 |                | `hardlink`            | bool     | `true`                   | Invoke editor with a hardlink to the source file       |
 |                | `minDuration`         | duration | `1s`                     | Minimum duration for edit command                      |
-| `secret`       | `command`             | string   | *none*                   | Generic secret command                                 |
 | `git`          | `autoAdd `            | bool     | `false`                  | Add changes to the source state after any change       |
 |                | `autoCommit`          | bool     | `false`                  | Commit changes to the source state after any change    |
 |                | `autoPush`            | bool     | `false`                  | Push changes to the source state after any change      |
@@ -72,6 +71,7 @@ The following configuration variables are available:
 | `pinentry`     | `args`                | []string | *none*                   | Extra args to the pinentry command                     |
 |                | `command`             | string   | *none*                   | pinentry command                                       |
 |                | `options`             | []string | *see `pinentry` below*   | Extra options for pinentry                             |
+| `secret`       | `command`             | string   | *none*                   | Generic secret command                                 |
 | `status`       | `exclude`             | []string | *none*                   | Entry types to exclude from status                     |
 | `template`     | `options`             | []string | `["missingkey=error"]`   | Template options                                       |
 | `textconv`     |                       | []object | *none*                   | See section on "textconv"                              |
