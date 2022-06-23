@@ -18,7 +18,8 @@ function __chezmoi_perform_completion
     __chezmoi_debug "args: $args"
     __chezmoi_debug "last arg: $lastArg"
 
-    set -l requestComp "$args[1] __complete $args[2..-1] $lastArg"
+    # Disable ActiveHelp which is not supported for fish shell
+    set -l requestComp "CHEZMOI_ACTIVE_HELP=0 $args[1] __complete $args[2..-1] $lastArg"
 
     __chezmoi_debug "Calling $requestComp"
     set -l results (eval $requestComp 2> /dev/null)
