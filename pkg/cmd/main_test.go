@@ -261,7 +261,7 @@ func cmdMkFile(ts *testscript.TestScript, neg bool, args []string) {
 		case !errors.Is(err, fs.ErrNotExist):
 			ts.Fatalf("%s: %v", arg, err)
 		}
-		if err := os.WriteFile(filename, nil, perm); err != nil {
+		if err := writeNewFile(filename, nil, perm); err != nil {
 			ts.Fatalf("%s: %v", arg, err)
 		}
 	}
@@ -293,7 +293,7 @@ func cmdMkAgeConfig(ts *testscript.TestScript, neg bool, args []string) {
 	} else {
 		lines = append(lines, `    recipient = `+strconv.Quote(recipient))
 	}
-	ts.Check(os.WriteFile(configFile, []byte(chezmoitest.JoinLines(lines...)), 0o666))
+	ts.Check(writeNewFile(configFile, []byte(chezmoitest.JoinLines(lines...)), 0o666))
 }
 
 // cmdMkGitConfig makes a .gitconfig file in the home directory.
@@ -309,7 +309,7 @@ func cmdMkGitConfig(ts *testscript.TestScript, neg bool, args []string) {
 		path = ts.MkAbs(args[0])
 	}
 	ts.Check(os.MkdirAll(filepath.Dir(path), 0o777))
-	ts.Check(os.WriteFile(path, []byte(chezmoitest.JoinLines(
+	ts.Check(writeNewFile(path, []byte(chezmoitest.JoinLines(
 		`[core]`,
 		`    autocrlf = false`,
 		`[init]`,
@@ -368,7 +368,7 @@ func cmdMkGPGConfig(ts *testscript.TestScript, neg bool, args []string) {
 	} else {
 		lines = append(lines, `    recipient = "`+key+`"`)
 	}
-	ts.Check(os.WriteFile(configFile, []byte(chezmoitest.JoinLines(lines...)), 0o666))
+	ts.Check(writeNewFile(configFile, []byte(chezmoitest.JoinLines(lines...)), 0o666))
 }
 
 // cmdMkHomeDir makes and populates a home directory.
@@ -696,4 +696,15 @@ func unix2DOS(data []byte) ([]byte, error) {
 		return nil, err
 	}
 	return []byte(builder.String()), nil
+}
+
+func writeNewFile(filename string, data []byte, perm fs.FileMode) error {
+	switch _, err := os.Lstat(filename); {
+	case err == nil:
+		return fmt.Errorf("%s: %w", filename, fs.ErrExist)
+	case errors.Is(err, fs.ErrNotExist):
+		return os.WriteFile(filename, data, perm)
+	default:
+		return err
+	}
 }
