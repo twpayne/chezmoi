@@ -1514,8 +1514,8 @@
 <p>Releases are managed with <a href="https://goreleaser.com/"><code>goreleaser</code></a>.</p>
 <h2 id="testing">Testing</h2>
 <p>To build a test release, without publishing, (Ubuntu Linux only) first ensure
-that the <code>musl-tools</code> packages is installed:</p>
-<div class="highlight"><pre><span></span><code><span class="gp">$ </span>sudo apt-get install musl-tools
+that the <code>musl-tools</code> and <code>snapcraft</code> packages are installed:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>sudo apt-get install musl-tools snapcraft
 </code></pre></div>
 <p>Then run:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>make test-release
@@ -1525,10 +1525,20 @@ that the <code>musl-tools</code> packages is installed:</p>
 <div class="highlight"><pre><span></span><code><span class="gp">$ </span>git tag v1.2.3
 <span class="gp">$ </span>git push --tags
 </code></pre></div>
-<p>This triggers a <a href="https://github.com/twpayne/chezmoi/actions">GitHub Action</a> that
-builds and publishes archives, packages, creates a new <a href="https://github.com/twpayne/chezmoi/releases">GitHub
+<p>This triggers a <a href="https://github.com/twpayne/chezmoi/actions">GitHub Action</a>
+that builds and publishes archives, packages, and snaps, creates a new <a href="https://github.com/twpayne/chezmoi/releases">GitHub
 Release</a>, and deploys the
 <a href="https://chezmoi.io">website</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Publishing <a href="https://snapcraft.io/">Snaps</a> requires a
+<code>SNAPCRAFT_STORE_CREDENTIALS</code> <a href="https://github.com/twpayne/chezmoi/settings/secrets/actions">repository
+secret</a>.</p>
+<p>Snapcraft store credentials periodically expire. Create new snapcraft store
+credentials by running:</p>
+<div class="highlight"><pre><span></span><code><span class="gp">$ </span>snapcraft export-login --snaps<span class="o">=</span>chezmoi --channels<span class="o">=</span>stable,candidate,beta,edge --acls<span class="o">=</span>package_upload -
+</code></pre></div>
+</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><a href="https://brew.sh/">brew</a> automation will automatically detect new releases

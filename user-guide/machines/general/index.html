@@ -415,6 +415,11 @@
     Determine whether the current machine is a laptop or desktop
   </a>
 </li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#determine-how-many-cpu-cores-and-threads-the-current-machine-has">
+    Determine how many CPU cores and threads the current machine has
+  </a>
+</li>
 </ul>
 </nav>
 </li>
@@ -1490,6 +1495,11 @@
     Determine whether the current machine is a laptop or desktop
   </a>
 </li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="#determine-how-many-cpu-cores-and-threads-the-current-machine-has">
+    Determine how many CPU cores and threads the current machine has
+  </a>
+</li>
 </ul>
 </nav>
 </div>
@@ -1517,6 +1527,36 @@
 {{-   $chassisType = (output "powershell.exe" "-NoProfile" "-NonInteractive" "-Command" "if ((Get-CimInstance -Class Win32_Battery | Measure-Object).Count -gt 0) { Write-Output 'laptop' } else { Write-Output 'desktop' }") | trim }}
 {{- end }}
 </code></pre></div>
+<h2 id="determine-how-many-cpu-cores-and-threads-the-current-machine-has">Determine how many CPU cores and threads the current machine has</h2>
+<p>The following template sets the <code>$cpuCores</code> and <code>$cpuThreads</code> variables to the
+number of CPU cores and threads on the current machine respectively on
+macOS, Linux and Windows.</p>
+<div class="highlight"><pre><span></span><code>{{- $cpuCores := 1 }}
+{{- $cpuThreads := 1 }}
+{{- if eq .chezmoi.os "darwin" }}
+{{-   $cpuCores = (output "sysctl" "-n" "hw.physicalcpu_max") | trim | atoi }}
+{{-   $cpuThreads = (output "sysctl" "-n" "hw.logicalcpu_max") | trim | atoi }}
+{{- else if eq .chezmoi.os "linux" }}
+{{-   $cpuCores = (output "sh" "-c" "lscpu --online --parse | grep --invert-match '^#' | sort --field-separator=',' --key='2,4' --unique | wc --lines") | trim | atoi }}
+{{-   $cpuThreads = (output "sh" "-c" "lscpu --online --parse | grep --invert-match '^#' | wc --lines") | trim | atoi }}
+{{- else if eq .chezmoi.os "windows" }}
+{{-   $cpuCores = (output "powershell.exe" "-NoProfile" "-NonInteractive" "-Command" "(Get-CimInstance -ClassName 'Win32_Processor').NumberOfCores") | trim | atoi }}
+{{-   $cpuThreads = (output "powershell.exe" "-NoProfile" "-NonInteractive" "-Command" "(Get-CimInstance -ClassName 'Win32_Processor').NumberOfLogicalProcessors") | trim | atoi }}
+{{- end }}
+</code></pre></div>
+<div class="admonition example">
+<p class="admonition-title">Example</p>
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/.chezmoi.toml.tmpl</span><pre><span></span><code>[data.cpu]
+cores = {{ $cpuCores }}
+threads = {{ $cpuThreads }}
+</code></pre></div>
+<div class="highlight"><span class="filename">~/.local/share/chezmoi/is_hyperthreaded.txt.tmpl</span><pre><span></span><code>{{- if gt .cpu.threads .cpu.cores -}}
+Hyperthreaded!
+{{- else -}}
+Not hyperthreaded!
+{{- end -}}
+</code></pre></div>
+</div>
 </article>
 </div>
 </div>
