@@ -94,7 +94,7 @@ func (n *sourceStateEntryTreeNode) Map() map[RelPath]SourceStateEntry {
 // MkdirAll creates SourceStateDirs for all components of targetRelPath if they
 // do not already exist and returns the SourceStateDir of relPath.
 func (n *sourceStateEntryTreeNode) MkdirAll(
-	targetRelPath RelPath, origin string, umask fs.FileMode,
+	targetRelPath RelPath, origin SourceStateOrigin, umask fs.FileMode,
 ) (*SourceStateDir, error) {
 	if targetRelPath == EmptyRelPath {
 		return nil, nil
