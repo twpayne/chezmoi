@@ -11,6 +11,7 @@ type ActualStateEntry interface {
 	EntryState() (*EntryState, error)
 	Path() AbsPath
 	Remove(system System) error
+	OriginString() string
 }
 
 // A ActualStateAbsent represents the absence of an entry in the filesystem.
@@ -101,6 +102,11 @@ func (s *ActualStateAbsent) Remove(system System) error {
 	return nil
 }
 
+// Origin returns s's origin.
+func (s *ActualStateAbsent) OriginString() string {
+	return s.absPath.String()
+}
+
 // EntryState returns s's entry state.
 func (s *ActualStateDir) EntryState() (*EntryState, error) {
 	return &EntryState{
@@ -117,6 +123,11 @@ func (s *ActualStateDir) Path() AbsPath {
 // Remove removes s.
 func (s *ActualStateDir) Remove(system System) error {
 	return system.RemoveAll(s.absPath)
+}
+
+// Origin returns s's origin.
+func (s *ActualStateDir) OriginString() string {
+	return s.absPath.String()
 }
 
 // EntryState returns s's entry state.
@@ -152,6 +163,11 @@ func (s *ActualStateFile) Remove(system System) error {
 	return system.RemoveAll(s.absPath)
 }
 
+// Origin returns s's origin.
+func (s *ActualStateFile) OriginString() string {
+	return s.absPath.String()
+}
+
 // EntryState returns s's entry state.
 func (s *ActualStateSymlink) EntryState() (*EntryState, error) {
 	linkname, err := s.Linkname()
@@ -177,4 +193,9 @@ func (s *ActualStateSymlink) Path() AbsPath {
 // Remove removes s.
 func (s *ActualStateSymlink) Remove(system System) error {
 	return system.RemoveAll(s.absPath)
+}
+
+// Origin returns s's origin.
+func (s *ActualStateSymlink) OriginString() string {
+	return s.absPath.String()
 }

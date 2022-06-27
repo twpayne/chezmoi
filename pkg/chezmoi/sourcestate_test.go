@@ -858,7 +858,7 @@ func TestSourceStateRead(t *testing.T) {
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
 					NewRelPath("dir"): &SourceStateDir{
-						origin:        "dir",
+						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/dir")),
 						sourceRelPath: NewSourceRelDirPath("dir"),
 						Attr: DirAttr{
 							TargetName: "dir",
@@ -880,7 +880,7 @@ func TestSourceStateRead(t *testing.T) {
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
 					NewRelPath(".file"): &SourceStateFile{
-						origin:        "dot_file",
+						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/dot_file")),
 						sourceRelPath: NewSourceRelPath("dot_file"),
 						Attr: FileAttr{
 							TargetName: ".file",
@@ -903,7 +903,7 @@ func TestSourceStateRead(t *testing.T) {
 					"dot_file.tmpl": "# contents of .file\n",
 				},
 			},
-			expectedError: ".file: inconsistent state (dot_file, dot_file.tmpl)",
+			expectedError: ".file: inconsistent state (/home/user/.local/share/chezmoi/dot_file, /home/user/.local/share/chezmoi/dot_file.tmpl)",
 		},
 		{
 			name: "duplicate_target_dir",
@@ -917,7 +917,7 @@ func TestSourceStateRead(t *testing.T) {
 					},
 				},
 			},
-			expectedError: "dir: inconsistent state (dir, exact_dir)",
+			expectedError: "dir: inconsistent state (/home/user/.local/share/chezmoi/dir, /home/user/.local/share/chezmoi/exact_dir)",
 		},
 		{
 			name: "duplicate_target_script",
@@ -927,7 +927,7 @@ func TestSourceStateRead(t *testing.T) {
 					"run_once_script": "#!/bin/sh\n",
 				},
 			},
-			expectedError: "script: inconsistent state (run_once_script, run_script)",
+			expectedError: "script: inconsistent state (/home/user/.local/share/chezmoi/run_once_script, /home/user/.local/share/chezmoi/run_script)",
 		},
 		{
 			name: "symlink_with_attr",
@@ -940,7 +940,7 @@ func TestSourceStateRead(t *testing.T) {
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
 					NewRelPath(".file"): &SourceStateFile{
-						origin:        "executable_dot_file",
+						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/executable_dot_file")),
 						sourceRelPath: NewSourceRelPath("executable_dot_file"),
 						Attr: FileAttr{
 							TargetName: ".file",
@@ -967,7 +967,7 @@ func TestSourceStateRead(t *testing.T) {
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
 					NewRelPath("script"): &SourceStateFile{
-						origin:        "run_script",
+						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/run_script")),
 						sourceRelPath: NewSourceRelPath("run_script"),
 						Attr: FileAttr{
 							TargetName: "script",
@@ -992,7 +992,7 @@ func TestSourceStateRead(t *testing.T) {
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
 					NewRelPath("script"): &SourceStateFile{
-						origin:        "run_script",
+						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/run_script")),
 						sourceRelPath: NewSourceRelPath("run_script"),
 						Attr: FileAttr{
 							TargetName: "script",
@@ -1017,7 +1017,7 @@ func TestSourceStateRead(t *testing.T) {
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
 					NewRelPath(".symlink"): &SourceStateFile{
-						origin:        "symlink_dot_symlink",
+						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/symlink_dot_symlink")),
 						sourceRelPath: NewSourceRelPath("symlink_dot_symlink"),
 						Attr: FileAttr{
 							TargetName: ".symlink",
@@ -1043,7 +1043,7 @@ func TestSourceStateRead(t *testing.T) {
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
 					NewRelPath("dir"): &SourceStateDir{
-						origin:        "dir",
+						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/dir")),
 						sourceRelPath: NewSourceRelDirPath("dir"),
 						Attr: DirAttr{
 							TargetName: "dir",
@@ -1053,7 +1053,7 @@ func TestSourceStateRead(t *testing.T) {
 						},
 					},
 					NewRelPath("dir/file"): &SourceStateFile{
-						origin:        "dir/file",
+						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/dir/file")),
 						sourceRelPath: NewSourceRelPath("dir/file"),
 						Attr: FileAttr{
 							TargetName: "file",
@@ -1120,7 +1120,7 @@ func TestSourceStateRead(t *testing.T) {
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
 					NewRelPath("dir"): &SourceStateDir{
-						origin:        "exact_dir",
+						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/exact_dir")),
 						sourceRelPath: NewSourceRelDirPath("exact_dir"),
 						Attr: DirAttr{
 							TargetName: "dir",
@@ -1131,7 +1131,7 @@ func TestSourceStateRead(t *testing.T) {
 						},
 					},
 					NewRelPath("dir/file1"): &SourceStateFile{
-						origin:        "exact_dir/file1",
+						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/exact_dir/file1")),
 						sourceRelPath: NewSourceRelPath("exact_dir/file1"),
 						Attr: FileAttr{
 							TargetName: "file1",
@@ -1144,6 +1144,7 @@ func TestSourceStateRead(t *testing.T) {
 						},
 					},
 					NewRelPath("dir/file2"): &SourceStateRemove{
+						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/exact_dir")),
 						sourceRelPath: NewSourceRelDirPath("exact_dir"),
 						targetRelPath: NewRelPath("dir/file2"),
 					},
@@ -1169,6 +1170,7 @@ func TestSourceStateRead(t *testing.T) {
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
 					NewRelPath("file"): &SourceStateRemove{
+						origin:        SourceStateOriginRemove{},
 						sourceRelPath: NewSourceRelPath(".chezmoiremove"),
 						targetRelPath: NewRelPath("file"),
 					},
@@ -1195,6 +1197,7 @@ func TestSourceStateRead(t *testing.T) {
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
 					NewRelPath("file1"): &SourceStateRemove{
+						origin:        SourceStateOriginRemove{},
 						sourceRelPath: NewSourceRelPath(".chezmoiremove"),
 						targetRelPath: NewRelPath("file1"),
 					},
@@ -1231,7 +1234,7 @@ func TestSourceStateRead(t *testing.T) {
 			expectedSourceState: NewSourceState(
 				withEntries(map[RelPath]SourceStateEntry{
 					NewRelPath("dir"): &SourceStateDir{
-						origin:        "dir",
+						origin:        SourceStateOriginAbsPath(NewAbsPath("/home/user/.local/share/chezmoi/dir")),
 						sourceRelPath: NewSourceRelDirPath("dir"),
 						Attr: DirAttr{
 							TargetName: "dir",
@@ -1241,6 +1244,7 @@ func TestSourceStateRead(t *testing.T) {
 						},
 					},
 					NewRelPath("dir/file1"): &SourceStateRemove{
+						origin:        SourceStateOriginRemove{},
 						sourceRelPath: NewSourceRelPath(".chezmoiremove"),
 						targetRelPath: NewRelPath("dir/file1"),
 					},
@@ -1365,7 +1369,7 @@ func TestSourceStateReadExternal(t *testing.T) {
 	for _, tc := range []struct {
 		name              string
 		root              interface{}
-		expectedExternals map[RelPath]External
+		expectedExternals map[RelPath]*External
 	}{
 		{
 			name: "external_yaml",
@@ -1378,11 +1382,11 @@ func TestSourceStateReadExternal(t *testing.T) {
 					),
 				},
 			},
-			expectedExternals: map[RelPath]External{
+			expectedExternals: map[RelPath]*External{
 				NewRelPath("file"): {
-					Type:   "file",
-					URL:    httpServer.URL + "/file",
-					origin: "/home/user/.local/share/chezmoi/.chezmoiexternal.yaml",
+					Type:          "file",
+					URL:           httpServer.URL + "/file",
+					sourceAbsPath: NewAbsPath("/home/user/.local/share/chezmoi/.chezmoiexternal.yaml"),
 				},
 			},
 		},
@@ -1397,11 +1401,11 @@ func TestSourceStateReadExternal(t *testing.T) {
 					),
 				},
 			},
-			expectedExternals: map[RelPath]External{
+			expectedExternals: map[RelPath]*External{
 				NewRelPath("file"): {
-					Type:   "file",
-					URL:    httpServer.URL + "/file",
-					origin: "/home/user/.local/share/chezmoi/.chezmoiexternal.toml",
+					Type:          "file",
+					URL:           httpServer.URL + "/file",
+					sourceAbsPath: NewAbsPath("/home/user/.local/share/chezmoi/.chezmoiexternal.toml"),
 				},
 			},
 		},
@@ -1416,11 +1420,11 @@ func TestSourceStateReadExternal(t *testing.T) {
 					),
 				},
 			},
-			expectedExternals: map[RelPath]External{
+			expectedExternals: map[RelPath]*External{
 				NewRelPath(".dir/file"): {
-					Type:   "file",
-					URL:    httpServer.URL + "/file",
-					origin: "/home/user/.local/share/chezmoi/dot_dir/.chezmoiexternal.yaml",
+					Type:          "file",
+					URL:           httpServer.URL + "/file",
+					sourceAbsPath: NewAbsPath("/home/user/.local/share/chezmoi/dot_dir/.chezmoiexternal.yaml"),
 				},
 			},
 		},
@@ -1523,12 +1527,12 @@ func TestSourceStateReadExternalCache(t *testing.T) {
 				WithSystem(system),
 			)
 			require.NoError(t, s.Read(ctx, readOptions))
-			assert.Equal(t, map[RelPath]External{
+			assert.Equal(t, map[RelPath]*External{
 				NewRelPath(".dir"): {
 					Type:          "archive",
 					URL:           httpServer.URL + "/archive.tar",
 					RefreshPeriod: Duration(1 * time.Minute),
-					origin:        "/home/user/.local/share/chezmoi/.chezmoiexternal.yaml",
+					sourceAbsPath: NewAbsPath("/home/user/.local/share/chezmoi/.chezmoiexternal.yaml"),
 				},
 			}, s.externals)
 		}
