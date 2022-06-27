@@ -9,13 +9,21 @@ import (
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoilog"
 )
 
+// A SourceStateOrigin represents the origin of a source state.
+type SourceStateOrigin interface {
+	Path() AbsPath
+	OriginString() string
+}
+
+// A SourceStateOriginAbsPath is an absolute path.
+type SourceStateOriginAbsPath AbsPath
+
 // A SourceStateEntry represents the state of an entry in the source state.
 type SourceStateEntry interface {
 	zerolog.LogObjectMarshaler
 	Evaluate() error
-	External() bool
 	Order() ScriptOrder
-	Origin() string
+	Origin() SourceStateOrigin
 	SourceRelPath() SourceRelPath
 	TargetStateEntry(destSystem System, destDirAbsPath AbsPath) (TargetStateEntry, error)
 }
@@ -23,8 +31,7 @@ type SourceStateEntry interface {
 // A SourceStateCommand represents a command that should be run.
 type SourceStateCommand struct {
 	cmd           *exec.Cmd
-	external      bool
-	origin        string
+	origin        SourceStateOrigin
 	forceRefresh  bool
 	refreshPeriod Duration
 }
@@ -32,8 +39,7 @@ type SourceStateCommand struct {
 // A SourceStateDir represents the state of a directory in the source state.
 type SourceStateDir struct {
 	Attr             DirAttr
-	external         bool
-	origin           string
+	origin           SourceStateOrigin
 	sourceRelPath    SourceRelPath
 	targetStateEntry TargetStateEntry
 }
@@ -42,8 +48,7 @@ type SourceStateDir struct {
 type SourceStateFile struct {
 	*lazyContents
 	Attr                 FileAttr
-	external             bool
-	origin               string
+	origin               SourceStateOrigin
 	sourceRelPath        SourceRelPath
 	targetStateEntryFunc targetStateEntryFunc
 	targetStateEntry     TargetStateEntry
@@ -52,25 +57,29 @@ type SourceStateFile struct {
 
 // A SourceStateRemove represents that an entry should be removed.
 type SourceStateRemove struct {
+	origin        SourceStateOrigin
 	sourceRelPath SourceRelPath
 	targetRelPath RelPath
 }
+
+// A SourceStateOriginRemove is used for removes. The source of the remove is
+// not currently tracked. The remove could come from an exact_ directory, a
+// non-empty_ file with emoty contents, or one of many patterns in many
+// .chezmoiignore files.
+//
+// FIXME Remove this when the sources of all removes are tracked.
+type SourceStateOriginRemove struct{}
 
 // Evaluate evaluates s and returns any error.
 func (s *SourceStateCommand) Evaluate() error {
 	return nil
 }
 
-// External returns if s is from an external.
-func (s *SourceStateCommand) External() bool {
-	return s.external
-}
-
 // MarshalZerologObject implements
 // github.com/rs/zerolog.LogObjectMarshaler.MarshalZerologObject.
 func (s *SourceStateCommand) MarshalZerologObject(e *zerolog.Event) {
 	e.EmbedObject(chezmoilog.OSExecCmdLogObject{Cmd: s.cmd})
-	e.Str("origin", s.origin)
+	e.Str("origin", s.origin.OriginString())
 }
 
 // Order returns s's order.
@@ -79,7 +88,7 @@ func (s *SourceStateCommand) Order() ScriptOrder {
 }
 
 // Origin returns s's origin.
-func (s *SourceStateCommand) Origin() string {
+func (s *SourceStateCommand) Origin() SourceStateOrigin {
 	return s.origin
 }
 
@@ -102,11 +111,6 @@ func (s *SourceStateDir) Evaluate() error {
 	return nil
 }
 
-// External returns if s is from an external.
-func (s *SourceStateDir) External() bool {
-	return s.external
-}
-
 // MarshalZerologObject implements
 // github.com/rs/zerolog.LogObjectMarshaler.MarshalZerologObject.
 func (s *SourceStateDir) MarshalZerologObject(e *zerolog.Event) {
@@ -120,7 +124,7 @@ func (s *SourceStateDir) Order() ScriptOrder {
 }
 
 // Origin returns s's origin.
-func (s *SourceStateDir) Origin() string {
+func (s *SourceStateDir) Origin() SourceStateOrigin {
 	return s.origin
 }
 
@@ -138,11 +142,6 @@ func (s *SourceStateDir) TargetStateEntry(destSystem System, destDirAbsPath AbsP
 func (s *SourceStateFile) Evaluate() error {
 	_, err := s.ContentsSHA256()
 	return err
-}
-
-// External returns if s is from an external.
-func (s *SourceStateFile) External() bool {
-	return s.external
 }
 
 // MarshalZerologObject implements
@@ -169,7 +168,7 @@ func (s *SourceStateFile) Order() ScriptOrder {
 }
 
 // Origin returns s's origin.
-func (s *SourceStateFile) Origin() string {
+func (s *SourceStateFile) Origin() SourceStateOrigin {
 	return s.origin
 }
 
@@ -192,11 +191,6 @@ func (s *SourceStateRemove) Evaluate() error {
 	return nil
 }
 
-// External returns if s is from an external.
-func (s *SourceStateRemove) External() bool {
-	return false
-}
-
 // MarshalZerologObject implements zerolog.LogObjectMarshaler.
 func (s *SourceStateRemove) MarshalZerologObject(e *zerolog.Event) {
 	e.Stringer("targetRelPath", s.targetRelPath)
@@ -208,8 +202,8 @@ func (s *SourceStateRemove) Order() ScriptOrder {
 }
 
 // Origin returns s's origin.
-func (s *SourceStateRemove) Origin() string {
-	return s.sourceRelPath.String()
+func (s *SourceStateRemove) Origin() SourceStateOrigin {
+	return s.origin
 }
 
 // SourceRelPath returns s's source relative path.
@@ -220,4 +214,24 @@ func (s *SourceStateRemove) SourceRelPath() SourceRelPath {
 // TargetStateEntry returns s's target state entry.
 func (s *SourceStateRemove) TargetStateEntry(destSystem System, destDirAbsPath AbsPath) (TargetStateEntry, error) {
 	return &TargetStateRemove{}, nil
+}
+
+// Path returns s's path.
+func (s SourceStateOriginAbsPath) Path() AbsPath {
+	return AbsPath(s)
+}
+
+// Origin returns s's origin.
+func (s SourceStateOriginAbsPath) OriginString() string {
+	return AbsPath(s).String()
+}
+
+// Path returns s's path.
+func (s SourceStateOriginRemove) Path() AbsPath {
+	return EmptyAbsPath
+}
+
+// Origin returns s's origin.
+func (s SourceStateOriginRemove) OriginString() string {
+	return "remove"
 }

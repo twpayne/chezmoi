@@ -65,7 +65,7 @@ type External struct {
 	RefreshPeriod   Duration `json:"refreshPeriod" toml:"refreshPeriod" yaml:"refreshPeriod"`
 	StripComponents int      `json:"stripComponents" toml:"stripComponents" yaml:"stripComponents"`
 	URL             string   `json:"url" toml:"url" yaml:"url"`
-	origin          string
+	sourceAbsPath   AbsPath
 }
 
 // A externalCacheEntry is an external cache entry.
@@ -105,7 +105,7 @@ type SourceState struct {
 	templateFuncs           template.FuncMap
 	templateOptions         []string
 	templates               map[string]*template.Template
-	externals               map[RelPath]External
+	externals               map[RelPath]*External
 	ignoredRelPaths         map[RelPath]struct{}
 }
 
@@ -250,7 +250,7 @@ func NewSourceState(options ...SourceStateOption) *SourceState {
 		userTemplateData:     make(map[string]interface{}),
 		templateOptions:      DefaultTemplateOptions,
 		templates:            make(map[string]*template.Template),
-		externals:            make(map[RelPath]External),
+		externals:            make(map[RelPath]*External),
 		ignoredRelPaths:      make(map[RelPath]struct{}),
 	}
 	for _, option := range options {
@@ -387,7 +387,9 @@ DESTABSPATH:
 				}
 
 				// Otherwise, remove the old entry.
-				newSourceStateEntries[oldSourceEntryRelPath] = &SourceStateRemove{}
+				newSourceStateEntries[oldSourceEntryRelPath] = &SourceStateRemove{
+					origin: SourceStateOriginRemove{},
+				}
 				update.sourceRelPaths = append(update.sourceRelPaths, oldSourceEntryRelPath)
 			}
 		}
@@ -567,8 +569,10 @@ func (s *SourceState) Apply(
 		}
 	}
 
-	if !options.Include.IncludeExternals() && sourceStateEntry.External() {
-		return nil
+	if !options.Include.IncludeExternals() {
+		if _, ok := sourceStateEntry.Origin().(*External); ok {
+			return nil
+		}
 	}
 
 	destAbsPath := s.destDirAbsPath.Join(targetRelPath)
@@ -914,7 +918,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			if s.Ignore(targetRelPath) {
 				return vfs.SkipDir
 			}
-			sourceStateDir := s.newSourceStateDir(sourceRelPath, da)
+			sourceStateDir := s.newSourceStateDir(sourceAbsPath, sourceRelPath, da)
 			addSourceStateEntries(targetRelPath, sourceStateDir)
 			if sourceStateDir.Attr.Remove {
 				s.Lock()
@@ -929,7 +933,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 				return nil
 			}
 			var sourceStateEntry SourceStateEntry
-			targetRelPath, sourceStateEntry = s.newSourceStateFile(sourceRelPath, fa, targetRelPath)
+			targetRelPath, sourceStateEntry = s.newSourceStateFile(sourceAbsPath, sourceRelPath, fa, targetRelPath)
 			addSourceStateEntries(targetRelPath, sourceStateEntry)
 			return nil
 		default:
@@ -960,7 +964,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 		external := s.externals[externalRelPath]
 		parentRelPath, _ := externalRelPath.Split()
 		var parentSourceRelPath SourceRelPath
-		switch parentSourceStateEntry, err := s.root.MkdirAll(parentRelPath, external.URL, s.umask); {
+		switch parentSourceStateEntry, err := s.root.MkdirAll(parentRelPath, external, s.umask); {
 		case err != nil:
 			return err
 		case parentSourceStateEntry != nil:
@@ -996,6 +1000,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			continue
 		}
 		sourceStateEntry := &SourceStateRemove{
+			origin:        SourceStateOriginRemove{},
 			sourceRelPath: NewSourceRelPath(".chezmoiremove"),
 			targetRelPath: targetRelPath,
 		}
@@ -1031,6 +1036,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 					continue
 				}
 				sourceStateRemove := &SourceStateRemove{
+					origin:        sourceStateDir.Origin(),
 					sourceRelPath: sourceStateDir.sourceRelPath,
 					targetRelPath: destEntryRelPath,
 				}
@@ -1068,8 +1074,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			cmd.Stderr = os.Stderr
 			sourceStateCommand := &SourceStateCommand{
 				cmd:           cmd,
-				external:      true,
-				origin:        external.origin,
+				origin:        external,
 				forceRefresh:  options.RefreshExternals,
 				refreshPeriod: external.RefreshPeriod,
 			}
@@ -1087,8 +1092,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			cmd.Stderr = os.Stderr
 			sourceStateCommand := &SourceStateCommand{
 				cmd:           cmd,
-				external:      true,
-				origin:        external.origin,
+				origin:        external,
 				forceRefresh:  options.RefreshExternals,
 				refreshPeriod: external.RefreshPeriod,
 			}
@@ -1116,7 +1120,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 
 		origins := make([]string, 0, len(sourceStateEntries))
 		for _, sourceStateEntry := range sourceStateEntries {
-			origins = append(origins, sourceStateEntry.Origin())
+			origins = append(origins, sourceStateEntry.Origin().OriginString())
 		}
 		sort.Strings(origins)
 		err = multierr.Append(err, &inconsistentStateError{
@@ -1191,7 +1195,7 @@ func (s *SourceState) addExternal(sourceAbsPath AbsPath) error {
 	if err != nil {
 		return fmt.Errorf("%s: %w", sourceAbsPath, err)
 	}
-	externals := make(map[string]External)
+	externals := make(map[string]*External)
 	if err := format.Unmarshal(data, &externals); err != nil {
 		return fmt.Errorf("%s: %w", sourceAbsPath, err)
 	}
@@ -1202,7 +1206,7 @@ func (s *SourceState) addExternal(sourceAbsPath AbsPath) error {
 		if _, ok := s.externals[targetRelPath]; ok {
 			return fmt.Errorf("%s: duplicate externals", targetRelPath)
 		}
-		external.origin = sourceAbsPath.String()
+		external.sourceAbsPath = sourceAbsPath
 		s.externals[targetRelPath] = external
 	}
 	return nil
@@ -1324,7 +1328,7 @@ func (s *SourceState) executeTemplate(templateAbsPath AbsPath) ([]byte, error) {
 // getExternalDataRaw returns the raw data for external at externalRelPath,
 // possibly from the external cache.
 func (s *SourceState) getExternalDataRaw(
-	ctx context.Context, externalRelPath RelPath, external External, options *ReadOptions,
+	ctx context.Context, externalRelPath RelPath, external *External, options *ReadOptions,
 ) ([]byte, error) {
 	var now time.Time
 	if options != nil && options.TimeNow != nil {
@@ -1387,7 +1391,7 @@ func (s *SourceState) getExternalDataRaw(
 // getExternalDataRaw reads the external data for externalRelPath from
 // external.URL.
 func (s *SourceState) getExternalData(
-	ctx context.Context, externalRelPath RelPath, external External, options *ReadOptions,
+	ctx context.Context, externalRelPath RelPath, external *External, options *ReadOptions,
 ) ([]byte, error) {
 	data, err := s.getExternalDataRaw(ctx, externalRelPath, external, options)
 	if err != nil {
@@ -1416,12 +1420,12 @@ func (s *SourceState) getExternalData(
 }
 
 // newSourceStateDir returns a new SourceStateDir.
-func (s *SourceState) newSourceStateDir(sourceRelPath SourceRelPath, dirAttr DirAttr) *SourceStateDir {
+func (s *SourceState) newSourceStateDir(absPath AbsPath, sourceRelPath SourceRelPath, dirAttr DirAttr) *SourceStateDir {
 	targetStateDir := &TargetStateDir{
 		perm: dirAttr.perm() &^ s.umask,
 	}
 	return &SourceStateDir{
-		origin:           sourceRelPath.String(),
+		origin:           SourceStateOriginAbsPath(absPath),
 		sourceRelPath:    sourceRelPath,
 		Attr:             dirAttr,
 		targetStateEntry: targetStateDir,
@@ -1639,7 +1643,7 @@ func (s *SourceState) newSymlinkTargetStateEntryFunc(
 // newSourceStateFile returns a possibly new target RalPath and a new
 // SourceStateFile.
 func (s *SourceState) newSourceStateFile(
-	sourceRelPath SourceRelPath, fileAttr FileAttr, targetRelPath RelPath,
+	absPath AbsPath, sourceRelPath SourceRelPath, fileAttr FileAttr, targetRelPath RelPath,
 ) (RelPath, *SourceStateFile) {
 	sourceLazyContents := newLazyContentsFunc(func() ([]byte, error) {
 		contents, err := s.system.ReadFile(s.sourceDirAbsPath.Join(sourceRelPath.RelPath()))
@@ -1690,7 +1694,7 @@ func (s *SourceState) newSourceStateFile(
 
 	return targetRelPath, &SourceStateFile{
 		lazyContents:         sourceLazyContents,
-		origin:               sourceRelPath.String(),
+		origin:               SourceStateOriginAbsPath(absPath),
 		sourceRelPath:        sourceRelPath,
 		Attr:                 fileAttr,
 		targetStateEntryFunc: targetStateEntryFunc,
@@ -1701,7 +1705,7 @@ func (s *SourceState) newSourceStateFile(
 //
 // We return a SourceStateEntry rather than a *SourceStateDir to simplify nil checks later.
 func (s *SourceState) newSourceStateDirEntry(
-	fileInfo fs.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions,
+	actualStateDir *ActualStateDir, fileInfo fs.FileInfo, parentSourceRelPath SourceRelPath, options *AddOptions,
 ) (SourceStateEntry, error) {
 	dirAttr := DirAttr{
 		TargetName: fileInfo.Name(),
@@ -1712,7 +1716,7 @@ func (s *SourceState) newSourceStateDirEntry(
 	sourceRelPath := parentSourceRelPath.Join(NewSourceRelDirPath(dirAttr.SourceName()))
 	return &SourceStateDir{
 		Attr:          dirAttr,
-		origin:        sourceRelPath.String(),
+		origin:        actualStateDir,
 		sourceRelPath: sourceRelPath,
 		targetStateEntry: &TargetStateDir{
 			perm: 0o777 &^ s.umask,
@@ -1765,7 +1769,7 @@ func (s *SourceState) newSourceStateFileEntryFromFile(
 	sourceRelPath := parentSourceRelPath.Join(NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix())))
 	return &SourceStateFile{
 		Attr:          fileAttr,
-		origin:        sourceRelPath.String(),
+		origin:        actualStateFile,
 		sourceRelPath: sourceRelPath,
 		lazyContents:  lazyContents,
 		targetStateEntry: &TargetStateFile{
@@ -1827,7 +1831,7 @@ func (s *SourceState) newSourceStateFileEntryFromSymlink(
 
 // readExternal reads an external and returns its SourceStateEntries.
 func (s *SourceState) readExternal(
-	ctx context.Context, externalRelPath RelPath, parentSourceRelPath SourceRelPath, external External,
+	ctx context.Context, externalRelPath RelPath, parentSourceRelPath SourceRelPath, external *External,
 	options *ReadOptions,
 ) (map[RelPath][]SourceStateEntry, error) {
 	switch external.Type {
@@ -1845,7 +1849,7 @@ func (s *SourceState) readExternal(
 // readExternalArchive reads an external archive and returns its
 // SourceStateEntries.
 func (s *SourceState) readExternalArchive(
-	ctx context.Context, externalRelPath RelPath, parentSourceRelPath SourceRelPath, external External,
+	ctx context.Context, externalRelPath RelPath, parentSourceRelPath SourceRelPath, external *External,
 	options *ReadOptions,
 ) (map[RelPath][]SourceStateEntry, error) {
 	data, err := s.getExternalData(ctx, externalRelPath, external, options)
@@ -1867,8 +1871,7 @@ func (s *SourceState) readExternalArchive(
 	}
 	sourceStateDir := &SourceStateDir{
 		Attr:          dirAttr,
-		external:      true,
-		origin:        external.URL,
+		origin:        external,
 		sourceRelPath: parentSourceRelPath.Join(NewSourceRelPath(dirAttr.SourceName())),
 		targetStateEntry: &TargetStateDir{
 			perm: 0o777 &^ s.umask,
@@ -1943,8 +1946,7 @@ func (s *SourceState) readExternalArchive(
 			}
 			sourceStateEntry = &SourceStateDir{
 				Attr:             dirAttr,
-				external:         true,
-				origin:           external.URL,
+				origin:           external,
 				sourceRelPath:    parentSourceRelPath.Join(dirSourceRelPath, NewSourceRelPath(dirAttr.SourceName())),
 				targetStateEntry: targetStateEntry,
 			}
@@ -1971,8 +1973,7 @@ func (s *SourceState) readExternalArchive(
 			sourceStateEntry = &SourceStateFile{
 				lazyContents:     lazyContents,
 				Attr:             fileAttr,
-				external:         true,
-				origin:           external.URL,
+				origin:           external,
 				sourceRelPath:    parentSourceRelPath.Join(dirSourceRelPath, sourceRelPath),
 				targetStateEntry: targetStateEntry,
 			}
@@ -1987,8 +1988,7 @@ func (s *SourceState) readExternalArchive(
 			}
 			sourceStateEntry = &SourceStateFile{
 				Attr:             fileAttr,
-				external:         true,
-				origin:           external.URL,
+				origin:           external,
 				sourceRelPath:    parentSourceRelPath.Join(dirSourceRelPath, sourceRelPath),
 				targetStateEntry: targetStateEntry,
 			}
@@ -2006,7 +2006,7 @@ func (s *SourceState) readExternalArchive(
 
 // readExternalFile reads an external file and returns its SourceStateEntries.
 func (s *SourceState) readExternalFile(
-	ctx context.Context, externalRelPath RelPath, parentSourceRelPath SourceRelPath, external External,
+	ctx context.Context, externalRelPath RelPath, parentSourceRelPath SourceRelPath, external *External,
 	options *ReadOptions,
 ) (map[RelPath][]SourceStateEntry, error) {
 	lazyContents := newLazyContentsFunc(func() ([]byte, error) {
@@ -2022,8 +2022,7 @@ func (s *SourceState) readExternalFile(
 		perm:         fileAttr.perm() &^ s.umask,
 	}
 	sourceStateEntry := &SourceStateFile{
-		external:         true,
-		origin:           external.URL,
+		origin:           external,
 		sourceRelPath:    parentSourceRelPath.Join(NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix()))),
 		targetStateEntry: targetStateEntry,
 	}
@@ -2093,7 +2092,7 @@ func (s *SourceState) readScriptsDir(
 				return nil
 			}
 			var sourceStateEntry SourceStateEntry
-			targetRelPath, sourceStateEntry = s.newSourceStateFile(sourceRelPath, fa, targetRelPath)
+			targetRelPath, sourceStateEntry = s.newSourceStateFile(sourceAbsPath, sourceRelPath, fa, targetRelPath)
 			addSourceStateEntry(targetRelPath, sourceStateEntry)
 			return nil
 		default:
@@ -2139,7 +2138,7 @@ func (s *SourceState) sourceStateEntry(
 	case *ActualStateAbsent:
 		return nil, fmt.Errorf("%s: not found", destAbsPath)
 	case *ActualStateDir:
-		return s.newSourceStateDirEntry(fileInfo, parentSourceRelPath, options)
+		return s.newSourceStateDirEntry(actualStateEntry, fileInfo, parentSourceRelPath, options)
 	case *ActualStateFile:
 		return s.newSourceStateFileEntryFromFile(actualStateEntry, fileInfo, parentSourceRelPath, options)
 	case *ActualStateSymlink:
@@ -2147,6 +2146,14 @@ func (s *SourceState) sourceStateEntry(
 	default:
 		panic(fmt.Sprintf("%T: unsupported type", actualStateEntry))
 	}
+}
+
+func (e *External) Path() AbsPath {
+	return e.sourceAbsPath
+}
+
+func (e *External) OriginString() string {
+	return e.URL + " defined in " + e.sourceAbsPath.String()
 }
 
 // allEquivalentDirs returns if sourceStateEntries are all equivalent
