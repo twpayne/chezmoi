@@ -31,7 +31,8 @@ endif
 
 .PHONY: install
 install: build
-	install -m 755 chezmoi "${DESTDIR}${PREFIX}/bin"
+	mkdir -p "${DESTDIR}${PREFIX}/bin"
+	install -m 755 --target-directory "${DESTDIR}${PREFIX}/bin" chezmoi
 
 .PHONY: install-from-git-working-copy
 install-from-git-working-copy:
