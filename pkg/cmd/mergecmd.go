@@ -79,6 +79,9 @@ func (c *Config) doMerge(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi
 			if plaintext, err = sourceStateFile.Contents(); err != nil {
 				return
 			}
+			if err = chezmoi.MkdirAll(c.baseSystem, plaintextAbsPath.Dir(), 0o700); err != nil {
+				return
+			}
 			if err = c.baseSystem.WriteFile(plaintextAbsPath, plaintext, 0o600); err != nil {
 				return
 			}
