@@ -83,3 +83,14 @@ encryption = "gpg"
 
 This will prompt you for the passphrase the first time you run `chezmoi init` on
 a new machine, and then remember the passphrase in your configuration file.
+
+## Muting gpg output
+
+Since gpg sends some info messages to stderr instead of stdout, you will see some output even if you redirect stdout to to `/dev/null`.
+
+You can mute this by adding `"--quiet"` to the `gpg.args` key in your configuration:
+
+``` title="~/.local/share/chezmoi/.chezmoi.toml.tmpl"
+[gpg]
+    args = ["--quiet"]
+```
