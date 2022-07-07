@@ -92,7 +92,7 @@ arguments to the newly installed chezmoi binary. If your dotfiles repo is
 shell:
 
 ```console
-$ sh -c "$(curl -fsLS chezmoi.io/get)" -- init --apply $GITHUB_USERNAME
+$ sh -c "$(curl -fsLS https://chezmoi.io/get)" -- init --apply $GITHUB_USERNAME
 ```
 
 If your dotfiles repo has a different name to `dotfiles`, or if you host your
@@ -105,5 +105,5 @@ chezmoi, including the source directory and chezmoi's configuration directory,
 with a single command:
 
 ```console
-$ sh -c "$(curl -fsLS chezmoi.io/get)" -- init --one-shot $GITHUB_USERNAME
+$ sh -c "$(curl -fsLS https://chezmoi.io/get)" -- init --one-shot $GITHUB_USERNAME
 ```
