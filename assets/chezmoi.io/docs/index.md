@@ -7,7 +7,7 @@ dotfiles from your GitHub dotfiles repo on a new, empty machine with a single
 command:
 
 ```console
-$ sh -c "$(curl -fsLS chezmoi.io/get)" -- init --apply $GITHUB_USERNAME
+$ sh -c "$(curl -fsLS https://chezmoi.io/get)" -- init --apply $GITHUB_USERNAME
 ```
 
 Updating your dotfiles on any machine is a single command:
