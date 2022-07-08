@@ -156,58 +156,6 @@ func TestUpperSnakeCaseToCamelCase(t *testing.T) {
 	}
 }
 
-func TestValidateKeys(t *testing.T) {
-	for _, tc := range []struct {
-		data        interface{}
-		expectedErr bool
-	}{
-		{
-			data:        nil,
-			expectedErr: false,
-		},
-		{
-			data: map[string]interface{}{
-				"foo":                    "bar",
-				"a":                      0,
-				"_x9":                    false,
-				"ThisVariableIsExported": nil,
-				"αβ":                     "",
-			},
-			expectedErr: false,
-		},
-		{
-			data: map[string]interface{}{
-				"foo-foo": "bar",
-			},
-			expectedErr: true,
-		},
-		{
-			data: map[string]interface{}{
-				"foo": map[string]interface{}{
-					"bar-bar": "baz",
-				},
-			},
-			expectedErr: true,
-		},
-		{
-			data: map[string]interface{}{
-				"foo": []interface{}{
-					map[string]interface{}{
-						"bar-bar": "baz",
-					},
-				},
-			},
-			expectedErr: true,
-		},
-	} {
-		if tc.expectedErr {
-			assert.Error(t, validateKeys(tc.data, identifierRx))
-		} else {
-			assert.NoError(t, validateKeys(tc.data, identifierRx))
-		}
-	}
-}
-
 func newTestConfig(t *testing.T, fileSystem vfs.FS, options ...configOption) *Config {
 	t.Helper()
 	system := chezmoi.NewRealSystem(fileSystem)

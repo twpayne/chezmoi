@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-	"regexp"
 	"strconv"
 	"strings"
 	"unicode"
@@ -146,26 +144,4 @@ func upperSnakeCaseToCamelCaseMap(m map[string]interface{}) map[string]interface
 		result[upperSnakeCaseToCamelCase(k)] = v
 	}
 	return result
-}
-
-// validateKeys ensures that all keys in data match re.
-func validateKeys(data interface{}, re *regexp.Regexp) error {
-	switch data := data.(type) {
-	case map[string]interface{}:
-		for key, value := range data {
-			if !re.MatchString(key) {
-				return fmt.Errorf("%s: invalid key", key)
-			}
-			if err := validateKeys(value, re); err != nil {
-				return err
-			}
-		}
-	case []interface{}:
-		for _, value := range data {
-			if err := validateKeys(value, re); err != nil {
-				return err
-			}
-		}
-	}
-	return nil
 }
