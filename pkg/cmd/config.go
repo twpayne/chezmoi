@@ -213,7 +213,6 @@ var (
 		Suffix:  ".asc",
 	}
 
-	identifierRx = regexp.MustCompile(`\A[\pL_][\pL\p{Nd}_]*\z`)
 	whitespaceRx = regexp.MustCompile(`\s+`)
 
 	viperDecodeConfigOptions = []viper.DecoderConfigOption{
@@ -1832,7 +1831,7 @@ func (c *Config) readConfig() error {
 	if err := viper.Unmarshal(&c.ConfigFile, viperDecodeConfigOptions...); err != nil {
 		return err
 	}
-	return c.validateData()
+	return nil
 }
 
 // readLine reads a line from stdin, trimming leading and trailing whitespace.
@@ -2136,11 +2135,6 @@ func (c *Config) useBuiltinGitAutoFunc() bool {
 		return false
 	}
 	return true
-}
-
-// validateData valides that the config data does not contain any invalid keys.
-func (c *Config) validateData() error {
-	return validateKeys(c.Data, identifierRx)
 }
 
 // writeOutput writes data to the configured output.
