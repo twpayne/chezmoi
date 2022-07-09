@@ -13,7 +13,7 @@ env:
   GO_VERSION: 1.18.3
   GOFUMPT_VERSION: 0.3.1
   GOLANGCI_LINT_VERSION: 1.46.2
-  TPARSE_VERSION: 0.10.3
+  TPARSE_VERSION: 0.11.0
 jobs:
   changes:
     runs-on: ubuntu-20.04
