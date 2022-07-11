@@ -1,0 +1,48 @@
+[!windows] chmod 755 bin/ph-test
+[windows] unix2dos bin/ph-test.cmd
+
+# test passhole template function and that password is only requested once
+stdin $HOME/input
+chezmoi execute-template --no-tty '{{ (ph "example.com").UserName }}/{{ (ph "example.com").Password }}'
+stdout exampleusername/examplepassword
+
+-- bin/ph-test --
+#!/bin/sh
+case "$*" in
+"--version")
+    echo "1.9.7"
+    ;;
+"--config /passhole.ini show --field username example.com")
+    echo "exampleusername"
+    ;;
+"--config /passhole.ini show --field password example.com")
+    echo examplepassword
+    ;;
+*)
+    echo "ph-test: invalid command: $*"
+    exit 1
+esac
+-- bin/ph-test.cmd --
+@echo off
+IF "%*" == "--version" (
+    echo 1.9.7
+) ELSE IF "%*" == "--config /passhole.ini show --field username example.com" (
+    echo exampleusername
+) ELSE IF "%*" == "--config /passhole.ini show --field password example.com" (
+    echo examplepassword
+) ELSE (
+    echo ph-test: invalid command: %*
+    exit /b 1
+)
+-- passhole.ini --
+[passhole]
+default: True
+database: /example.kdbx
+keyfile: /fakekeyfile
+cache: /.cache/passhole_cache
+-- home/user/input --
+fakepassword
+-- home/user/.config/chezmoi/chezmoi.toml --
+[passhole]
+    command = "ph-test"
+    config = "/passhole.ini"

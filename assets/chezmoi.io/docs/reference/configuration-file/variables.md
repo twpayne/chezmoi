@@ -70,6 +70,11 @@ The following configuration variables are available:
 |                     | `command`             | string   | `op`                     | 1Password CLI command                                  |
 |                     | `prompt`              | bool     | `true`                   | Prompt for sign-in when no valid session is available  |
 | `pass`              | `command`             | string   | `pass`                   | Pass CLI command                                       |
+| `passhole`          | `args`                | []string | *none*                   | Extra args to Passhole CLI command                     |
+|                     | `command`             | string   | `ph`                     | Passhole CLI command                                   |
+|                     | `config`              | string   | `~/.config/passhole.ini` | Passhole config file                                   |
+|                     | `database`            | string   | *none*                   | KeePass database                                       |
+|                     | `keyfile`             | string   | *none*                   | KeePass database's decrypt key file                    |
 | `pinentry`          | `args`                | []string | *none*                   | Extra args to the pinentry command                     |
 |                     | `command`             | string   | *none*                   | pinentry command                                       |
 |                     | `options`             | []string | *see `pinentry` below*   | Extra options for pinentry                             |
