@@ -99,6 +99,7 @@ type ConfigFile struct {
 	Lastpass          lastpassConfig          `mapstructure:"lastpass"`
 	Onepassword       onepasswordConfig       `mapstructure:"onepassword"`
 	Pass              passConfig              `mapstructure:"pass"`
+	Passhole          passholeConfig          `mapstructure:"passhole"`
 	Secret            secretConfig            `mapstructure:"secret"`
 	Vault             vaultConfig             `mapstructure:"vault"`
 
@@ -295,6 +296,9 @@ func newConfig(options ...configOption) (*Config, error) {
 		Pass: passConfig{
 			Command: "pass",
 		},
+		Passhole: passholeConfig{
+			Command: "ph",
+		},
 		Vault: vaultConfig{
 			Command: "vault",
 		},
@@ -457,6 +461,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"keeper":                   c.keeperTemplateFunction,
 		"keeperDataFields":         c.keeperDataFieldsTemplateFunction,
 		"keeperFindPassword":       c.keeperFindPasswordTemplateFunc,
+		"ph":                       c.passholeTemplateFunction,
 		"keyring":                  c.keyringTemplateFunc,
 		"lastpass":                 c.lastpassTemplateFunc,
 		"lastpassRaw":              c.lastpassRawTemplateFunc,

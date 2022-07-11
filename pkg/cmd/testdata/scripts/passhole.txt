@@ -1,0 +1,88 @@
+[!windows] chmod 755 bin/ph
+[windows] unix2dos bin/ph.cmd
+
+# test passhole template function with database and keyfile
+stdin $HOME/input
+exec chezmoi execute-template --no-tty '{{ (ph "example.com").UserName }}/{{ (ph "example.com").Password }}'
+stdout exampleusername/examplepassword
+
+# test passhole template function with database and keyfile and no password
+exec chezmoi execute-template --no-tty '{{ (ph "example.com").UserName }}/{{ (ph "example.com").Password }}'
+stdout exampleusername/examplepassword
+
+-- bin/ph --
+#!/bin/sh
+case "$*" in
+"--version")
+    echo "1.9.7"
+    ;;
+"--database /example.kdbx show --field username example.com")
+    echo "exampleusername"
+    ;;
+"--database /example.kdbx --keyfile /fakekeyfile show --field username example.com")
+    echo "exampleusername"
+    ;;
+"--no-cache --database /example.kdbx --keyfile /fakekeyfile show --field username example.com")
+    echo "exampleusername"
+    ;;
+"--no-password --no-cache --database /example.kdbx show --field username example.com")
+    echo "exampleusername"
+    ;;
+"--no-password --no-cache --database /example.kdbx --keyfile /fakekeyfile show --field username example.com")
+    echo "exampleusername"
+    ;;
+"--database /example.kdbx show --field password example.com")
+    echo examplepassword
+    ;;
+"--database /example.kdbx --keyfile /fakekeyfile show --field password example.com")
+    echo examplepassword
+    ;;
+"--no-cache --database /example.kdbx --keyfile /fakekeyfile show --field password example.com")
+    echo examplepassword
+    ;;
+"--no-password --no-cache --database /example.kdbx show --field password example.com")
+    echo "examplepassword"
+    ;;
+"--no-password --no-cache --database /example.kdbx --keyfile /fakekeyfile show --field password example.com")
+    echo examplepassword
+    ;;
+*)
+    echo "ph-test: invalid command: $*"
+    exit 1
+esac
+-- bin/ph.cmd --
+@echo off
+IF "%*" == "--version" (
+    echo 1.9.7
+) ELSE IF "%*" == "--database /example.kdbx show --field username example.com" (
+    echo exampleusername
+) ELSE IF "%*" == "--database /example.kdbx --keyfile /fakekeyfile show --field username example.com" (
+    echo exampleusername
+) ELSE IF "%*" == "--no-cache --database /example.kdbx --keyfile /fakekeyfile show --field username example.com" (
+    echo exampleusername
+) ELSE IF "%*" == "--no-password --no-cache --database /example.kdbx show --field username example.com" (
+    echo exampleusername
+) ELSE IF "%*" == "--no-password --no-cache --database /example.kdbx --keyfile /fakekeyfile show --field username example.com" (
+    echo exampleusername
+) ELSE IF "%*" == "--database /example.kdbx show --field password example.com" (
+    echo examplepassword
+) ELSE IF "%*" == "--database /example.kdbx --keyfile /fakekeyfile show --field password example.com" (
+    echo examplepassword
+) ELSE IF "%*" == "--no-cache --database /example.kdbx --keyfile /fakekeyfile show --field password example.com" (
+    echo examplepassword
+) ELSE IF "%*" == "--no-password --no-cache --database /example.kdbx show --field password example.com" (
+    echo exampleusername
+) ELSE IF "%*" == "--no-password --no-cache --database /example.kdbx --keyfile /fakekeyfile show --field password example.com" (
+    echo examplepassword
+) ELSE (
+    echo ph-test: invalid command: %*
+    exit /b 1
+)
+-- home/user/input --
+fakepassword
+-- home/user/.config/chezmoi/chezmoi.toml --
+[passhole]
+    database = "/example.kdbx"
+    keyfile = "/fakekeyfile"
+    nocache = true
+    nopassword = true
