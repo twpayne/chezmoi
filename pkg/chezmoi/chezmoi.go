@@ -2,16 +2,20 @@
 package chezmoi
 
 import (
+	"bufio"
 	"bytes"
 	"crypto/sha256"
 	"fmt"
 	"io"
 	"io/fs"
+	"os"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"strings"
 
 	"github.com/spf13/cobra"
+	vfs "github.com/twpayne/go-vfs/v4"
 )
 
 var (
@@ -72,6 +76,8 @@ var (
 		`\A(after|before|create|dot|empty|encrypted|executable|literal|modify|once|private|readonly|remove|run|symlink)_`,
 	)
 	fileSuffixRegexp = regexp.MustCompile(`\.(literal|tmpl)\z`)
+
+	whitespaceRx = regexp.MustCompile(`\s+`)
 )
 
 // knownPrefixedFiles is a set of known filenames with the .chezmoi prefix.
@@ -116,6 +122,36 @@ var modeTypeNames = map[fs.FileMode]string{
 	fs.ModeCharDevice: "char device",
 }
 
+// FQDNHostname returns the FQDN hostname.
+func FQDNHostname(fileSystem vfs.FS) (string, error) {
+	// First, try os.Hostname. If it returns something that looks like a FQDN
+	// hostname, or we're on Windows, return it.
+	osHostname, err := os.Hostname()
+	if runtime.GOOS == "windows" || (err == nil && strings.Contains(osHostname, ".")) {
+		return osHostname, err
+	}
+
+	// Otherwise, if we're on OpenBSD, try /etc/myname.
+	if runtime.GOOS == "openbsd" {
+		if fqdnHostname, err := etcMynameFQDNHostname(fileSystem); err == nil && fqdnHostname != "" {
+			return fqdnHostname, nil
+		}
+	}
+
+	// Otherwise, try /etc/hosts.
+	if fqdnHostname, err := etcHostsFQDNHostname(fileSystem); err == nil && fqdnHostname != "" {
+		return fqdnHostname, nil
+	}
+
+	// Otherwise, try /etc/hostname.
+	if fqdnHostname, err := etcHostnameFQDNHostname(fileSystem); err == nil && fqdnHostname != "" {
+		return fqdnHostname, nil
+	}
+
+	// Finally, fall back to whatever os.Hostname returned.
+	return osHostname, err
+}
+
 // FlagCompletionFunc returns a flag completion function.
 func FlagCompletionFunc(allCompletions []string) func(*cobra.Command, []string, string) (
 	[]string, cobra.ShellCompDirective,
@@ -157,6 +193,62 @@ func SuspiciousSourceDirEntry(base string, fileInfo fs.FileInfo, encryptedSuffix
 	default:
 		return true
 	}
+}
+
+// etcHostnameFQDNHostname returns the FQDN hostname from parsing /etc/hostname.
+func etcHostnameFQDNHostname(fileSystem vfs.FS) (string, error) {
+	contents, err := fileSystem.ReadFile("/etc/hostname")
+	if err != nil {
+		return "", err
+	}
+	s := bufio.NewScanner(bytes.NewReader(contents))
+	for s.Scan() {
+		text := s.Text()
+		text, _, _ = CutString(text, "#")
+		if hostname := strings.TrimSpace(text); hostname != "" {
+			return hostname, nil
+		}
+	}
+	return "", s.Err()
+}
+
+// etcMynameFQDNHostname returns the FQDN hostname from parsing /etc/myname.
+// See OpenBSD's myname(5) for details on this file.
+func etcMynameFQDNHostname(fileSystem vfs.FS) (string, error) {
+	contents, err := fileSystem.ReadFile("/etc/myname")
+	if err != nil {
+		return "", err
+	}
+	s := bufio.NewScanner(bytes.NewReader(contents))
+	for s.Scan() {
+		text := s.Text()
+		if strings.HasPrefix(text, "#") {
+			continue
+		}
+		if hostname := strings.TrimSpace(text); hostname != "" {
+			return hostname, nil
+		}
+	}
+	return "", s.Err()
+}
+
+// etcHostsFQDNHostname returns the FQDN hostname from parsing /etc/hosts.
+func etcHostsFQDNHostname(fileSystem vfs.FS) (string, error) {
+	contents, err := fileSystem.ReadFile("/etc/hosts")
+	if err != nil {
+		return "", err
+	}
+	s := bufio.NewScanner(bytes.NewReader(contents))
+	for s.Scan() {
+		text := s.Text()
+		text = strings.TrimSpace(text)
+		text, _, _ = CutString(text, "#")
+		fields := whitespaceRx.Split(text, -1)
+		if len(fields) >= 2 && fields[0] == "127.0.1.1" {
+			return fields[1], nil
+		}
+	}
+	return "", s.Err()
 }
 
 // isEmpty returns true if data is empty after trimming whitespace from both
