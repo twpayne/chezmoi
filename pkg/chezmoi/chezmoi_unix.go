@@ -4,94 +4,14 @@
 package chezmoi
 
 import (
-	"bufio"
-	"bytes"
 	"io/fs"
-	"regexp"
-	"runtime"
-	"strings"
 
-	vfs "github.com/twpayne/go-vfs/v4"
 	"golang.org/x/sys/unix"
 )
-
-var whitespaceRx = regexp.MustCompile(`\s+`)
 
 func init() {
 	Umask = fs.FileMode(unix.Umask(0))
 	unix.Umask(int(Umask))
-}
-
-// FQDNHostname returns the FQDN hostname, if it can be determined.
-func FQDNHostname(fileSystem vfs.FS) string {
-	if fqdnHostname, err := etcHostsFQDNHostname(fileSystem); err == nil && fqdnHostname != "" {
-		return fqdnHostname
-	}
-	if runtime.GOOS == "openbsd" {
-		if fqdnHostname, err := etcMynameFQDNHostname(fileSystem); err == nil && fqdnHostname != "" {
-			return fqdnHostname
-		}
-	}
-	if fqdnHostname, err := etcHostnameFQDNHostname(fileSystem); err == nil && fqdnHostname != "" {
-		return fqdnHostname
-	}
-	return ""
-}
-
-// etcHostnameFQDNHostname returns the FQDN hostname from parsing /etc/hostname.
-func etcHostnameFQDNHostname(fileSystem vfs.FS) (string, error) {
-	contents, err := fileSystem.ReadFile("/etc/hostname")
-	if err != nil {
-		return "", err
-	}
-	s := bufio.NewScanner(bytes.NewReader(contents))
-	for s.Scan() {
-		text := s.Text()
-		text, _, _ = CutString(text, "#")
-		if hostname := strings.TrimSpace(text); hostname != "" {
-			return hostname, nil
-		}
-	}
-	return "", s.Err()
-}
-
-// etcMynameFQDNHostname returns the FQDN hostname from parsing /etc/myname.
-// See OpenBSD's myname(5) for details on this file.
-func etcMynameFQDNHostname(fileSystem vfs.FS) (string, error) {
-	contents, err := fileSystem.ReadFile("/etc/myname")
-	if err != nil {
-		return "", err
-	}
-	s := bufio.NewScanner(bytes.NewReader(contents))
-	for s.Scan() {
-		text := s.Text()
-		if strings.HasPrefix(text, "#") {
-			continue
-		}
-		if hostname := strings.TrimSpace(text); hostname != "" {
-			return hostname, nil
-		}
-	}
-	return "", s.Err()
-}
-
-// etcHostsFQDNHostname returns the FQDN hostname from parsing /etc/hosts.
-func etcHostsFQDNHostname(fileSystem vfs.FS) (string, error) {
-	contents, err := fileSystem.ReadFile("/etc/hosts")
-	if err != nil {
-		return "", err
-	}
-	s := bufio.NewScanner(bytes.NewReader(contents))
-	for s.Scan() {
-		text := s.Text()
-		text = strings.TrimSpace(text)
-		text, _, _ = CutString(text, "#")
-		fields := whitespaceRx.Split(text, -1)
-		if len(fields) >= 2 && fields[0] == "127.0.1.1" {
-			return fields[1], nil
-		}
-	}
-	return "", s.Err()
 }
 
 // isExecutable returns if fileInfo is executable.

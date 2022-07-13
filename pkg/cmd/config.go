@@ -960,16 +960,13 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 		}
 	}
 
-	fqdnHostname := chezmoi.FQDNHostname(c.fileSystem)
-
-	var hostname string
-	if rawHostname, err := os.Hostname(); err == nil {
-		hostname, _, _ = chezmoi.CutString(rawHostname, ".")
-	} else {
+	fqdnHostname, err := chezmoi.FQDNHostname(c.fileSystem)
+	if err != nil {
 		c.logger.Info().
 			Err(err).
-			Msg("os.Hostname")
+			Msg("chezmoi.FQDNHostname")
 	}
+	hostname, _, _ := chezmoi.CutString(fqdnHostname, ".")
 
 	kernel, err := chezmoi.Kernel(c.fileSystem)
 	if err != nil {
