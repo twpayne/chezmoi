@@ -71,12 +71,11 @@ const (
 )
 
 var (
-	dirPrefixRegexp  = regexp.MustCompile(`\A(dot|exact|literal|readonly|private)_`)
-	filePrefixRegexp = regexp.MustCompile(
+	dirPrefixRx  = regexp.MustCompile(`\A(dot|exact|literal|readonly|private)_`)
+	filePrefixRx = regexp.MustCompile(
 		`\A(after|before|create|dot|empty|encrypted|executable|literal|modify|once|private|readonly|remove|run|symlink)_`,
 	)
-	fileSuffixRegexp = regexp.MustCompile(`\.(literal|tmpl)\z`)
-
+	fileSuffixRx = regexp.MustCompile(`\.(literal|tmpl)\z`)
 	whitespaceRx = regexp.MustCompile(`\s+`)
 )
 
