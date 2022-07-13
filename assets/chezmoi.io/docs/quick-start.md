@@ -45,7 +45,6 @@ changes and save the file.
     entry](/user-guide/frequently-asked-questions/usage/#how-do-i-edit-my-dotfiles-with-chezmoi)
     for more details.
 
-
 See what changes chezmoi would make:
 
 ```console
