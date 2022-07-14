@@ -59,6 +59,14 @@ stdout arg
 # test that the output template function fails if the command fails
 ! chezmoi execute-template '{{ output "false" }}'
 
+# test fromToml template function
+chezmoi execute-template '{{ (fromToml "[section]\nkey = \"value\"").section.key }}'
+stdout '^value$'
+
+# test toToml template function
+chezmoi execute-template '{{ dict "key" "value" | toToml }}'
+stdout '^key = .value.$'
+
 # test fromYaml
 chezmoi execute-template '{{ (fromYaml "key1: value1\nkey2: value2").key2 }}'
 stdout '^value2$'
