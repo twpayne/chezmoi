@@ -433,6 +433,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"bitwardenFields":          c.bitwardenFieldsTemplateFunc,
 		"decrypt":                  c.decryptTemplateFunc,
 		"encrypt":                  c.encryptTemplateFunc,
+		"fromToml":                 c.fromTomlTemplateFunc,
 		"fromYaml":                 c.fromYamlTemplateFunc,
 		"gitHubKeys":               c.gitHubKeysTemplateFunc,
 		"gitHubLatestRelease":      c.gitHubLatestReleaseTemplateFunc,
@@ -465,6 +466,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"secret":                   c.secretTemplateFunc,
 		"secretJSON":               c.secretJSONTemplateFunc,
 		"stat":                     c.statTemplateFunc,
+		"toToml":                   c.toTomlTemplateFunc,
 		"toYaml":                   c.toYamlTemplateFunc,
 		"vault":                    c.vaultTemplateFunc,
 	} {

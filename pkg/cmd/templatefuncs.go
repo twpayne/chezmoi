@@ -22,6 +22,14 @@ type ioregData struct {
 	value map[string]interface{}
 }
 
+func (c *Config) fromTomlTemplateFunc(s string) interface{} {
+	var data interface{}
+	if err := chezmoi.FormatTOML.Unmarshal([]byte(s), &data); err != nil {
+		panic(err)
+	}
+	return data
+}
+
 func (c *Config) fromYamlTemplateFunc(s string) interface{} {
 	var data interface{}
 	if err := chezmoi.FormatYAML.Unmarshal([]byte(s), &data); err != nil {
@@ -175,6 +183,14 @@ func (c *Config) statTemplateFunc(name string) interface{} {
 	default:
 		panic(err)
 	}
+}
+
+func (c *Config) toTomlTemplateFunc(data interface{}) string {
+	toml, err := chezmoi.FormatTOML.Marshal(data)
+	if err != nil {
+		panic(err)
+	}
+	return string(toml)
 }
 
 func (c *Config) toYamlTemplateFunc(data interface{}) string {
