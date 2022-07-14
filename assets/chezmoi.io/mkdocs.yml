@@ -45,6 +45,7 @@ nav:
   - Password managers:
     - user-guide/password-managers/index.md
     - 1Password: user-guide/password-managers/1password.md
+    - AWS Secrets Manager: user-guide/password-managers/aws-secrets-manager.md
     - Bitwarden: user-guide/password-managers/bitwarden.md
     - gopass: user-guide/password-managers/gopass.md
     - KeePassXC: user-guide/password-managers/keepassxc.md
@@ -183,6 +184,10 @@ nav:
       - onepasswordDocument: reference/templates/1password-functions/onepasswordDocument.md
       - onepasswordDetailsFields: reference/templates/1password-functions/onepasswordDetailsFields.md
       - onepasswordItemFields: reference/templates/1password-functions/onepasswordItemFields.md
+    - AWS Secrets Manager functions:
+      - reference/templates/aws-secrets-manager-functions/index.md
+      - awsSecretsManager: reference/templates/aws-secrets-manager-functions/awsSecretsManager.md
+      - awsSecretsManagerRaw: reference/templates/aws-secrets-manager-functions/awsSecretsManagerRaw.md
     - Bitwarden functions:
       - reference/templates/bitwarden-functions/index.md
       - bitwarden: reference/templates/bitwarden-functions/bitwarden.md
