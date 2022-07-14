@@ -152,6 +152,7 @@ nav:
       - reference/templates/functions/index.md
       - decrypt: reference/templates/functions/decrypt.md
       - encrypt: reference/templates/functions/encrypt.md
+      - fromToml: reference/templates/functions/fromToml.md
       - fromYaml: reference/templates/functions/fromYaml.md
       - glob: reference/templates/functions/glob.md
       - include: reference/templates/functions/include.md
@@ -162,6 +163,7 @@ nav:
       - output: reference/templates/functions/output.md
       - quoteList: reference/templates/functions/quoteList.md
       - stat: reference/templates/functions/stat.md
+      - toToml: reference/templates/functions/toToml.md
       - toYaml: reference/templates/functions/toYaml.md
     - GitHub functions:
       - reference/templates/github-functions/index.md
