@@ -91,15 +91,16 @@ type ConfigFile struct {
 	WorkingTreeAbsPath chezmoi.AbsPath                 `mapstructure:"workingTree"`
 
 	// Password manager configurations.
-	Bitwarden   bitwardenConfig   `mapstructure:"bitwarden"`
-	Gopass      gopassConfig      `mapstructure:"gopass"`
-	Keepassxc   keepassxcConfig   `mapstructure:"keepassxc"`
-	Keeper      keeperConfig      `mapstructure:"keeper"`
-	Lastpass    lastpassConfig    `mapstructure:"lastpass"`
-	Onepassword onepasswordConfig `mapstructure:"onepassword"`
-	Pass        passConfig        `mapstructure:"pass"`
-	Secret      secretConfig      `mapstructure:"secret"`
-	Vault       vaultConfig       `mapstructure:"vault"`
+	AwsSecretsManager awsSecretsManagerConfig `mapstructure:"awsSecretsManager"`
+	Bitwarden         bitwardenConfig         `mapstructure:"bitwarden"`
+	Gopass            gopassConfig            `mapstructure:"gopass"`
+	Keepassxc         keepassxcConfig         `mapstructure:"keepassxc"`
+	Keeper            keeperConfig            `mapstructure:"keeper"`
+	Lastpass          lastpassConfig          `mapstructure:"lastpass"`
+	Onepassword       onepasswordConfig       `mapstructure:"onepassword"`
+	Pass              passConfig              `mapstructure:"pass"`
+	Secret            secretConfig            `mapstructure:"secret"`
+	Vault             vaultConfig             `mapstructure:"vault"`
 
 	// Encryption configurations.
 	Encryption string                `json:"encryption" mapstructure:"encryption"`
@@ -428,6 +429,8 @@ func newConfig(options ...configOption) (*Config, error) {
 	}
 
 	for key, value := range map[string]interface{}{
+		"awsSecretsManager":        c.awsSecretsManagerTemplateFunc,
+		"awsSecretsManagerRaw":     c.awsSecretsManagerRawTemplateFunc,
 		"bitwarden":                c.bitwardenTemplateFunc,
 		"bitwardenAttachment":      c.bitwardenAttachmentTemplateFunc,
 		"bitwardenFields":          c.bitwardenFieldsTemplateFunc,
