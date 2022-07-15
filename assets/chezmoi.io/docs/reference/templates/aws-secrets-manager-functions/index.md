@@ -5,4 +5,4 @@ using the [`GetSecretValue`](https://docs.aws.amazon.com/secretsmanager/latest/a
 API.
 
 The profile and region are pulled from the standard environment variables and shared config files but can be
-overriden by setting `awsSecretsManager.profile` and `awsSecretsManager.region` configuration variables respectively.
+overridden by setting `awsSecretsManager.profile` and `awsSecretsManager.region` configuration variables respectively.

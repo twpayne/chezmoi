@@ -91,7 +91,7 @@ type ConfigFile struct {
 	WorkingTreeAbsPath chezmoi.AbsPath                 `mapstructure:"workingTree"`
 
 	// Password manager configurations.
-	AwsSecretsManager awsSecretsManagerConfig `mapstructure:"awsSecretsManager"`
+	AWSSecretsManager awsSecretsManagerConfig `mapstructure:"awsSecretsManager"`
 	Bitwarden         bitwardenConfig         `mapstructure:"bitwarden"`
 	Gopass            gopassConfig            `mapstructure:"gopass"`
 	Keepassxc         keepassxcConfig         `mapstructure:"keepassxc"`

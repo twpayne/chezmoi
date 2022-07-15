@@ -20,16 +20,16 @@ type awsSecretsManagerConfig struct {
 }
 
 func (c *Config) awsSecretsManagerRawTemplateFunc(arn string) string {
-	if secret, ok := c.AwsSecretsManager.cache[arn]; ok {
+	if secret, ok := c.AWSSecretsManager.cache[arn]; ok {
 		return secret
 	}
 
-	if c.AwsSecretsManager.svc == nil {
+	if c.AWSSecretsManager.svc == nil {
 		var opts []func(*config.LoadOptions) error
-		if region := c.AwsSecretsManager.Region; len(region) > 0 {
+		if region := c.AWSSecretsManager.Region; len(region) > 0 {
 			opts = append(opts, config.WithRegion(region))
 		}
-		if profile := c.AwsSecretsManager.Profile; len(profile) > 0 {
+		if profile := c.AWSSecretsManager.Profile; len(profile) > 0 {
 			opts = append(opts, config.WithSharedConfigProfile(profile))
 		}
 
@@ -40,10 +40,10 @@ func (c *Config) awsSecretsManagerRawTemplateFunc(arn string) string {
 			panic(err)
 		}
 
-		c.AwsSecretsManager.svc = secretsmanager.NewFromConfig(cfg)
+		c.AWSSecretsManager.svc = secretsmanager.NewFromConfig(cfg)
 	}
 
-	result, err := c.AwsSecretsManager.svc.GetSecretValue(context.Background(), &secretsmanager.GetSecretValueInput{
+	result, err := c.AWSSecretsManager.svc.GetSecretValue(context.Background(), &secretsmanager.GetSecretValueInput{
 		SecretId: aws.String(arn),
 	})
 	if err != nil {
@@ -63,16 +63,16 @@ func (c *Config) awsSecretsManagerRawTemplateFunc(arn string) string {
 		secret = string(decodedBinarySecretBytes[:length])
 	}
 
-	if c.AwsSecretsManager.cache == nil {
-		c.AwsSecretsManager.cache = make(map[string]string)
+	if c.AWSSecretsManager.cache == nil {
+		c.AWSSecretsManager.cache = make(map[string]string)
 	}
 
-	c.AwsSecretsManager.cache[arn] = secret
+	c.AWSSecretsManager.cache[arn] = secret
 	return secret
 }
 
 func (c *Config) awsSecretsManagerTemplateFunc(arn string) map[string]interface{} {
-	if secret, ok := c.AwsSecretsManager.jsonCache[arn]; ok {
+	if secret, ok := c.AWSSecretsManager.jsonCache[arn]; ok {
 		return secret
 	}
 
@@ -83,10 +83,10 @@ func (c *Config) awsSecretsManagerTemplateFunc(arn string) map[string]interface{
 		panic(err)
 	}
 
-	if c.AwsSecretsManager.jsonCache == nil {
-		c.AwsSecretsManager.jsonCache = make(map[string]map[string]interface{})
+	if c.AWSSecretsManager.jsonCache == nil {
+		c.AWSSecretsManager.jsonCache = make(map[string]map[string]interface{})
 	}
 
-	c.AwsSecretsManager.jsonCache[arn] = data
+	c.AWSSecretsManager.jsonCache[arn] = data
 	return data
 }
