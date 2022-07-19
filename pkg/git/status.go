@@ -131,7 +131,9 @@ func (e ParseError) Error() string {
 }
 
 // ParseStatusPorcelainV2 parses the output of
-//   git status --ignored --porcelain=v2
+//
+//	git status --ignored --porcelain=v2
+//
 // See https://git-scm.com/docs/git-status.
 func ParseStatusPorcelainV2(output []byte) (*Status, error) {
 	status := &Status{}
