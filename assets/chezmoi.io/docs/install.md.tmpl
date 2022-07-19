@@ -3,48 +3,6 @@
 
 The latest version of chezmoi is {{ $version }}.
 
-## One-line binary install
-
-Install the correct binary for your operating system and architecture in `./bin`
-with a single command:
-
-=== "curl"
-
-    ```sh
-    sh -c "$(curl -fsLS https://chezmoi.io/get)"
-    ```
-
-=== "wget"
-
-    ```sh
-    sh -c "$(wget -qO- https://chezmoi.io/get)"
-    ```
-
-=== "PowerShell"
-
-    ```powershell
-    (irm -useb https://chezmoi.io/get.ps1) | powershell -c -
-    ```
-
-!!! hint
-
-    If you already have a dotfiles repo using chezmoi on GitHub at
-    `https://github.com/$GITHUB_USERNAME/dotfiles` then you can install
-    chezmoi and your dotfiles with the single command:
-
-    ```sh
-    sh -c "$(curl -fsLS https://chezmoi.io/get)" -- init --apply $GITHUB_USERNAME
-    ```
-
-!!! hint
-
-    To install the chezmoi binary in a different directory, use the `-b` option,
-    for example:
-
-    ```sh
-    sh -c "$(curl -fsLS https://chezmoi.io/get)" -- -b $HOME/.local/bin
-    ```
-
 ## One-line package install
 
 Install chezmoi with your package manager with a single command:
@@ -155,6 +113,48 @@ Install chezmoi with your package manager with a single command:
 
     ```sh
     pkg install application/chezmoi
+    ```
+
+## One-line binary install
+
+Install the correct binary for your operating system and architecture in `./bin`
+with a single command:
+
+=== "curl"
+
+    ```sh
+    sh -c "$(curl -fsLS https://chezmoi.io/get)"
+    ```
+
+=== "wget"
+
+    ```sh
+    sh -c "$(wget -qO- https://chezmoi.io/get)"
+    ```
+
+=== "PowerShell"
+
+    ```powershell
+    (irm -useb https://chezmoi.io/get.ps1) | powershell -c -
+    ```
+
+!!! hint
+
+    If you already have a dotfiles repo using chezmoi on GitHub at
+    `https://github.com/$GITHUB_USERNAME/dotfiles` then you can install
+    chezmoi and your dotfiles with the single command:
+
+    ```sh
+    sh -c "$(curl -fsLS https://chezmoi.io/get)" -- init --apply $GITHUB_USERNAME
+    ```
+
+!!! hint
+
+    To install the chezmoi binary in a different directory, use the `-b` option,
+    for example:
+
+    ```sh
+    sh -c "$(curl -fsLS https://chezmoi.io/get)" -- -b $HOME/.local/bin
     ```
 
 ## Download a pre-built Linux package
