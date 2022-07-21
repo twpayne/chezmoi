@@ -136,6 +136,7 @@ nav:
     - encrypt: reference/commands/encrypt.md
     - execute-template: reference/commands/execute-template.md
     - forget: reference/commands/forget.md
+    - generate: reference/commands/generate.md
     - git: reference/commands/git.md
     - help: reference/commands/help.md
     - init: reference/commands/init.md
