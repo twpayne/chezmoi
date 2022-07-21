@@ -44,46 +44,23 @@ This sets the `codespaces` template variable, so you don't have to repeat `(env
 "CODESPACES")` in your templates. It also sets the `sourceDir` configuration to
 the `--source` argument passed in `chezmoi init`.
 
-Second, create an `install.sh` script that installs chezmoi and your dotfiles:
+Second, create an `install.sh` script that installs chezmoi and your dotfiles
+and add it to `.chezmoiignore` and your dotfiles repo:
 
-```sh
-#!/bin/sh
-
-set -e # -e: exit on error
-
-if [ ! "$(command -v chezmoi)" ]; then
-  bin_dir="$HOME/.local/bin"
-  chezmoi="$bin_dir/chezmoi"
-  if [ "$(command -v curl)" ]; then
-    sh -c "$(curl -fsLS https://chezmoi.io/get)" -- -b "$bin_dir"
-  elif [ "$(command -v wget)" ]; then
-    sh -c "$(wget -qO- https://chezmoi.io/get)" -- -b "$bin_dir"
-  else
-    echo "To install chezmoi, you must have curl or wget installed." >&2
-    exit 1
-  fi
-else
-  chezmoi=chezmoi
-fi
-
-# POSIX way to get script's dir: https://stackoverflow.com/a/29834779/12156188
-script_dir="$(cd -P -- "$(dirname -- "$(command -v -- "$0")")" && pwd -P)"
-# exec: replace current process with chezmoi init
-exec "$chezmoi" init --apply "--source=$script_dir"
+```console
+$ chezmoi generate install.sh > install.sh
+$ chmod a+x install.sh
+$ echo install.sh >> .chezmoiignore
+$ git add install.sh .chezmoiignore
+$ git commit -m "Add install.sh"
 ```
 
-Ensure that this file is executable (`chmod a+x install.sh`), and add
-`install.sh` to your `.chezmoiignore` file.
-
-It installs the latest version of chezmoi in `~/.local/bin` if needed, and then
-`chezmoi init ...` invokes chezmoi to create its configuration file and
-initialize your dotfiles. `--apply` tells chezmoi to apply the changes
+The generated script installs the latest version of chezmoi in `~/.local/bin` if
+needed, and then `chezmoi init ...` invokes chezmoi to create its configuration
+file and initialize your dotfiles. `--apply` tells chezmoi to apply the changes
 immediately, and `--source=...` tells chezmoi where to find the cloned
 `dotfiles` repo, which in this case is the same folder in which the script is
 running from.
-
-If you do not use a chezmoi configuration file template you can use `chezmoi
-apply --source=$HOME/dotfiles` instead of `chezmoi init ...` in `install.sh`.
 
 Finally, modify any of your templates to use the `codespaces` variable if
 needed. For example, to install `vim-gtk` on Linux but not in Codespaces, your
