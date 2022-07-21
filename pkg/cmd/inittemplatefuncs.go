@@ -15,17 +15,17 @@ func (c *Config) exitInitTemplateFunc(code int) string {
 	panic(chezmoi.ExitCodeError(code))
 }
 
-func (c *Config) promptBoolInitTemplateFunc(field string, args ...bool) bool {
+func (c *Config) promptBoolInitTemplateFunc(prompt string, args ...bool) bool {
 	switch len(args) {
 	case 0:
-		value, err := parseBool(c.promptStringInitTemplateFunc(field))
+		value, err := parseBool(c.promptStringInitTemplateFunc(prompt))
 		if err != nil {
 			panic(err)
 		}
 		return value
 	case 1:
-		promptStr := field + " (default " + strconv.FormatBool(args[0]) + ")"
-		valueStr := c.promptStringInitTemplateFunc(promptStr)
+		prompt += " (default " + strconv.FormatBool(args[0]) + ")"
+		valueStr := c.promptStringInitTemplateFunc(prompt)
 		if valueStr == "" {
 			return args[0]
 		}
@@ -40,16 +40,16 @@ func (c *Config) promptBoolInitTemplateFunc(field string, args ...bool) bool {
 	}
 }
 
-func (c *Config) promptIntInitTemplateFunc(field string, args ...int64) int64 {
+func (c *Config) promptIntInitTemplateFunc(prompt string, args ...int64) int64 {
 	switch len(args) {
 	case 0:
-		value, err := strconv.ParseInt(c.promptStringInitTemplateFunc(field), 10, 64)
+		value, err := strconv.ParseInt(c.promptStringInitTemplateFunc(prompt), 10, 64)
 		if err != nil {
 			panic(err)
 		}
 		return value
 	case 1:
-		promptStr := field + " (default " + strconv.FormatInt(args[0], 10) + ")"
+		promptStr := prompt + " (default " + strconv.FormatInt(args[0], 10) + ")"
 		valueStr := c.promptStringInitTemplateFunc(promptStr)
 		if valueStr == "" {
 			return args[0]
