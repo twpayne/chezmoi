@@ -104,14 +104,15 @@ your initial config file.
 Specifically, if you have `.chezmoi.toml.tmpl` that looks like this:
 
 ``` title="~/.local/share/chezmoi/.chezmoi.toml.tmpl"
-{{- $email := promptString "email" -}}
+{{- $email := promptStringOnce . "email" "Email address" -}}
 
 [data]
     email = {{ $email | quote }}
 ```
 
 Then `chezmoi init` will create an initial `chezmoi.toml` using this template.
-`promptString` is a special function that prompts the user (you) for a value.
+`promptStringOnce` is a special function that prompts the user (you) for a value
+if it is not already set in your `data`.
 
 To test this template, use `chezmoi execute-template` with the `--init` and
 `--promptString` flags, for example:
@@ -135,16 +136,11 @@ you will be prompted again. However, you can avoid this with the following
 example template logic:
 
 ```
-{{- $email := "" -}}
-{{- if hasKey . "email" -}}
-{{-   $email = .email -}}
-{{- else -}}
-{{-   $email = promptString "email" -}}
-{{- end -}}
+{{- $email := promptStringOnce . "email" "Email address" -}}
 
 [data]
     email = {{ $email | quote }}
 ```
 
-This will cause chezmoi to first try to re-use the existing `$email` variable
-and fallback to `promptString` only if it is not set.
+This will cause chezmoi use the `email` variable from your `data` and fallback
+to `promptString` only if it is not set.
