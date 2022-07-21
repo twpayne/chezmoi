@@ -182,9 +182,10 @@ type Config struct {
 	homeDirAbsPath chezmoi.AbsPath
 	encryption     chezmoi.Encryption
 
-	stdin  io.Reader
-	stdout io.Writer
-	stderr io.Writer
+	stdin       io.Reader
+	stdout      io.Writer
+	stderr      io.Writer
+	bufioReader *bufio.Reader
 
 	tempDirs map[string]chezmoi.AbsPath
 
@@ -1842,7 +1843,10 @@ func (c *Config) readLine(prompt string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	line, err := bufio.NewReader(c.stdin).ReadString('\n')
+	if c.bufioReader == nil {
+		c.bufioReader = bufio.NewReader(c.stdin)
+	}
+	line, err := c.bufioReader.ReadString('\n')
 	if err != nil {
 		return "", err
 	}
