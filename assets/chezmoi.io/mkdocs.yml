@@ -174,8 +174,11 @@ nav:
       - reference/templates/init-functions/index.md
       - exit: reference/templates/init-functions/exit.md
       - promptBool: reference/templates/init-functions/promptBool.md
+      - promptBoolOnce: reference/templates/init-functions/promptBoolOnce.md
       - promptInt: reference/templates/init-functions/promptInt.md
+      - promptIntOnce: reference/templates/init-functions/promptIntOnce.md
       - promptString: reference/templates/init-functions/promptString.md
+      - promptStringOnce: reference/templates/init-functions/promptStringOnce.md
       - stdinIsATTY: reference/templates/init-functions/stdinIsATTY.md
       - writeToStdout: reference/templates/init-functions/writeToStdout.md
     - 1Password functions:
