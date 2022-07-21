@@ -66,12 +66,7 @@ passphrase being stored in plaintext on your machines, then you can use the
 following configuration:
 
 ``` title="~/.local/share/chezmoi/.chezmoi.toml.tmpl"
-{{ $passphrase := "" -}}
-{{ if hasKey . "passphrase" -}}
-{{   $passphrase = .passphrase -}}
-{{ else -}}
-{{   $passphrase = promptString "passphrase" -}}
-{{ end -}}
+{{ $passphrase := promptStringOnce "." "passphrase" "passphrase" -}}
 
 encryption = "gpg"
 [data]

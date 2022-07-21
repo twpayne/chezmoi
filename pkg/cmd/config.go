@@ -776,12 +776,15 @@ func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte) ([]byte
 	funcMap := make(template.FuncMap)
 	chezmoi.RecursiveMerge(funcMap, c.templateFuncs)
 	initTemplateFuncs := map[string]interface{}{
-		"exit":          c.exitInitTemplateFunc,
-		"promptBool":    c.promptBoolInitTemplateFunc,
-		"promptInt":     c.promptIntInitTemplateFunc,
-		"promptString":  c.promptStringInitTemplateFunc,
-		"stdinIsATTY":   c.stdinIsATTYInitTemplateFunc,
-		"writeToStdout": c.writeToStdout,
+		"exit":             c.exitInitTemplateFunc,
+		"promptBool":       c.promptBoolInitTemplateFunc,
+		"promptBoolOnce":   c.promptBoolOnceInitTemplateFunc,
+		"promptInt":        c.promptIntInitTemplateFunc,
+		"promptIntOnce":    c.promptIntOnceInitTemplateFunc,
+		"promptString":     c.promptStringInitTemplateFunc,
+		"promptStringOnce": c.promptStringOnceInitTemplateFunc,
+		"stdinIsATTY":      c.stdinIsATTYInitTemplateFunc,
+		"writeToStdout":    c.writeToStdout,
 	}
 	chezmoi.RecursiveMerge(funcMap, initTemplateFuncs)
 

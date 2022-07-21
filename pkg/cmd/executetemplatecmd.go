@@ -59,58 +59,97 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 		promptBool[key] = value
 	}
 	if c.executeTemplate.init {
-		initTemplateFuncs := map[string]interface{}{
-			"exit": c.exitInitTemplateFunc,
-			"promptBool": func(prompt string, args ...bool) bool {
-				switch len(args) {
-				case 0:
-					return promptBool[prompt]
-				case 1:
-					if value, ok := promptBool[prompt]; ok {
-						return value
-					}
-					return args[0]
-				default:
-					err := fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
-					panic(err)
+		promptBoolInitTemplateFunc := func(prompt string, args ...bool) bool {
+			switch len(args) {
+			case 0:
+				return promptBool[prompt]
+			case 1:
+				if value, ok := promptBool[prompt]; ok {
+					return value
 				}
-			},
-			"promptInt": func(prompt string, args ...int) int {
-				switch len(args) {
-				case 0:
-					return c.executeTemplate.promptInt[prompt]
-				case 1:
-					if value, ok := c.executeTemplate.promptInt[prompt]; ok {
-						return value
-					}
-					return args[0]
-				default:
-					err := fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
-					panic(err)
-				}
-			},
-			"promptString": func(prompt string, args ...string) string {
-				switch len(args) {
-				case 0:
-					if value, ok := c.executeTemplate.promptString[prompt]; ok {
-						return value
-					}
-					return prompt
-				case 1:
-					if value, ok := c.executeTemplate.promptString[prompt]; ok {
-						return value
-					}
-					return args[0]
-				default:
-					err := fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
-					panic(err)
-				}
-			},
-			"stdinIsATTY": func() bool {
-				return c.executeTemplate.stdinIsATTY
-			},
-			"writeToStdout": c.writeToStdout,
+				return args[0]
+			default:
+				err := fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
+				panic(err)
+			}
 		}
+
+		promptBoolOnceInitTemplateFunc := func(m map[string]interface{}, key, field string, args ...bool) bool {
+			if value, ok := m[key]; ok {
+				if boolValue, ok := value.(bool); ok {
+					return boolValue
+				}
+			}
+			return promptBoolInitTemplateFunc(field, args...)
+		}
+
+		promptIntInitTemplateFunc := func(prompt string, args ...int64) int64 {
+			switch len(args) {
+			case 0:
+				return int64(c.executeTemplate.promptInt[prompt])
+			case 1:
+				if value, ok := c.executeTemplate.promptInt[prompt]; ok {
+					return int64(value)
+				}
+				return args[0]
+			default:
+				err := fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
+				panic(err)
+			}
+		}
+
+		promptIntOnceInitTemplateFunc := func(m map[string]interface{}, key, field string, args ...int64) int64 {
+			if value, ok := m[key]; ok {
+				if intValue, ok := value.(int64); ok {
+					return intValue
+				}
+			}
+			return promptIntInitTemplateFunc(field, args...)
+		}
+
+		promptStringInitTemplateFunc := func(prompt string, args ...string) string {
+			switch len(args) {
+			case 0:
+				if value, ok := c.executeTemplate.promptString[prompt]; ok {
+					return value
+				}
+				return prompt
+			case 1:
+				if value, ok := c.executeTemplate.promptString[prompt]; ok {
+					return value
+				}
+				return args[0]
+			default:
+				err := fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
+				panic(err)
+			}
+		}
+
+		promptStringOnceInitTemplateFunc := func(m map[string]interface{}, key, field string, args ...string) string {
+			if value, ok := m[key]; ok {
+				if stringValue, ok := value.(string); ok {
+					return stringValue
+				}
+			}
+			return promptStringInitTemplateFunc(field, args...)
+		}
+
+		stdinIsATTYInitTemplateFunc := func() bool {
+			return c.executeTemplate.stdinIsATTY
+		}
+
+		initTemplateFuncs := map[string]interface{}{
+			"exit":             c.exitInitTemplateFunc,
+			"promptBool":       promptBoolInitTemplateFunc,
+			"promptBoolOnce":   promptBoolOnceInitTemplateFunc,
+			"promptInt":        promptIntInitTemplateFunc,
+			"promptIntOnce":    promptIntOnceInitTemplateFunc,
+			"promptString":     promptStringInitTemplateFunc,
+			"promptStringOnce": promptStringOnceInitTemplateFunc,
+			"stdinIsATTY":      stdinIsATTYInitTemplateFunc,
+			"writeToStdout":    c.writeToStdout,
+		}
+
 		chezmoi.RecursiveMerge(c.templateFuncs, initTemplateFuncs)
 	}
 

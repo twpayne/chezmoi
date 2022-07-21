@@ -48,10 +48,6 @@ stdout 2656FF1E876E9973
 chezmoi execute-template '{{ (stat ".").isDir }}'
 stdout true
 
-# test exit template function
-chezmoi execute-template --init '{{ exit 0 }}'
-! chezmoi execute-template --init '{{ exit 1 }}'
-
 # test that the output template function returns a command's output
 chezmoi execute-template '{{ output "chezmoi-output-test" "arg" | trim }}'
 stdout arg
@@ -67,17 +63,13 @@ stdout '^value$'
 chezmoi execute-template '{{ dict "key" "value" | toToml }}'
 stdout '^key = .value.$'
 
-# test fromYaml
+# test fromYaml template function
 chezmoi execute-template '{{ (fromYaml "key1: value1\nkey2: value2").key2 }}'
 stdout '^value2$'
 
-# test toYaml
+# test toYaml template function
 chezmoi execute-template '{{ dict "key" "value" | toYaml }}'
 stdout '^key: value$'
-
-# test writeToStdout
-chezmoi execute-template --init '{{ writeToStdout "string" }}'
-stdout string
 
 -- bin/chezmoi-output-test --
 #!/bin/sh
