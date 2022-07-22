@@ -72,21 +72,6 @@ jobs:
           CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
         run: |
           ( cd assets/docker && ./test.sh archlinux )
-  test-debian-i386:
-    needs: changes
-    if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-    runs-on: macos-10.15
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-      - uses: actions/cache@c3f1317a9e7b1ef106c153ac8c0f00fed3ddbc0d
-        with:
-          path: ~/.vagrant.d
-          key: ${{ runner.os }}-vagrant-debian-i386-${{ hashFiles('assets/vagrant/debian11-i386.Vagrantfile') }}
-          restore-keys: |
-            ${{ runner.os }}-vagrant-debian-i386-
-      - name: test
-        run: |
-          ( cd assets/vagrant && ./test.sh debian11-i386 )
   test-fedora:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
@@ -98,21 +83,6 @@ jobs:
           CHEZMOI_GITHUB_TOKEN: ${{ secrets.CHEZMOI_GITHUB_TOKEN }}
         run: |
           ( cd assets/docker && ./test.sh fedora )
-  test-freebsd:
-    needs: changes
-    if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-    runs-on: macos-10.15
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-      - uses: actions/cache@c3f1317a9e7b1ef106c153ac8c0f00fed3ddbc0d
-        with:
-          path: ~/.vagrant.d
-          key: ${{ runner.os }}-vagrant-freebsd13-${{ hashFiles('assets/vagrant/freebsd13.Vagrantfile') }}
-          restore-keys: |
-            ${{ runner.os }}-vagrant-freebsd13-
-      - name: test
-        run: |
-          ( cd assets/vagrant && ./test.sh freebsd13 )
   test-macos:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
@@ -144,21 +114,6 @@ jobs:
         run: |
           sh assets/scripts/install.sh
           bin/chezmoi --version
-  test-openbsd:
-    needs: changes
-    if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-    runs-on: macos-10.15
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-      - uses: actions/cache@c3f1317a9e7b1ef106c153ac8c0f00fed3ddbc0d
-        with:
-          path: ~/.vagrant.d
-          key: ${{ runner.os }}-vagrant-openbsd7-${{ hashFiles('assets/vagrant/openbsd7.Vagrantfile') }}
-          restore-keys: |
-            ${{ runner.os }}-vagrant-openbsd7-
-      - name: test
-        run: |
-          ( cd assets/vagrant && ./test.sh openbsd7 )
   test-ubuntu:
     needs: changes
     runs-on: ubuntu-18.04
@@ -382,11 +337,8 @@ jobs:
       - lint
       - test-alpine
       - test-archlinux
-      - test-debian-i386
       - test-fedora
-      - test-freebsd
       - test-macos
-      - test-openbsd
       - test-ubuntu
       - test-ubuntu-go1-17
       - test-website
