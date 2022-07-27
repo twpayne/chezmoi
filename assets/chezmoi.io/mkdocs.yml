@@ -180,6 +180,7 @@ nav:
       - mozillaInstallHash: reference/templates/functions/mozillaInstallHash.md
       - output: reference/templates/functions/output.md
       - quoteList: reference/templates/functions/quoteList.md
+      - replaceAllRegex: reference/templates/functions/replaceAllRegex.md
       - stat: reference/templates/functions/stat.md
       - toToml: reference/templates/functions/toToml.md
       - toYaml: reference/templates/functions/toYaml.md
