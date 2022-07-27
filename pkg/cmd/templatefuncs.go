@@ -174,6 +174,10 @@ func (c *Config) quoteListTemplateFunc(list []interface{}) []string {
 	return result
 }
 
+func (c *Config) replaceAllRegexTemplateFunc(expr, repl, s string) string {
+	return regexp.MustCompile(expr).ReplaceAllString(s, repl)
+}
+
 func (c *Config) statTemplateFunc(name string) interface{} {
 	switch fileInfo, err := c.fileSystem.Stat(name); {
 	case err == nil:
