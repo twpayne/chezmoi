@@ -27,6 +27,25 @@ This is not necessary if you are using biometric authentication.
     $ eval $(op signin $SUBDOMAIN.1password.com $EMAIL)
     ```
 
+The output of `op read $URL` is available as the `onepasswordRead` template
+function, for example:
+
+```
+{{ onepasswordRead "op://app-prod/db/password" }}
+```
+
+returns the output of
+
+```console
+$ op read op://app-prod/db/password
+```
+
+Documents can be retrieved with:
+
+```
+{{- onepasswordDocument "$UUID" -}}
+```
+
 The output of `op item get $UUID--format json` (`op get item $UUID`) is
 available as the `onepassword` template function. chezmoi parses the JSON output
 and returns it as structured data. For example, if the output is:
@@ -142,12 +161,6 @@ in 1Password have item fields. This can be tested with:
 
 ```console
 $ chezmoi execute-template "{{ onepasswordItemFields \"$UUID\" | toJson }}" | jq .
-```
-
-Documents can be retrieved with:
-
-```
-{{- onepasswordDocument "$UUID" -}}
 ```
 
 !!! note
