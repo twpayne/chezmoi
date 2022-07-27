@@ -49,6 +49,10 @@ stdout 2656FF1E876E9973
 [!(windows||illumos)] stderr 'error calling output: .*/false: exit status 1'
 [illumos] stderr 'error calling output: .*/false: exit status 255'
 
+# test replaceAllRegex template function
+chezmoi execute-template '{{ "foo bar baz" | replaceAllRegex "ba" "BA" }}'
+stdout 'foo BAr BAz'
+
 # test stat template function
 chezmoi execute-template '{{ (stat ".").isDir }}'
 stdout true
