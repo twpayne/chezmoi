@@ -358,6 +358,26 @@ func (c *Config) onepasswordOutput(args *onepasswordArgs, withSessionToken withS
 	return output, nil
 }
 
+func (c *Config) onepasswordReadTemplateFunc(url string, args ...string) string {
+	onepasswordArgs := &onepasswordArgs{
+		args: []string{"read", url},
+	}
+	switch len(args) {
+	case 0:
+		// Do nothing.
+	case 1:
+		onepasswordArgs.args = append(onepasswordArgs.args, "--account", args[0])
+	default:
+		panic(fmt.Errorf("expected 1 or 2 arguments, got %d", len(args)))
+	}
+
+	output, err := c.onepasswordOutput(onepasswordArgs, withSessionToken)
+	if err != nil {
+		panic(err)
+	}
+	return string(output)
+}
+
 func (c *Config) onepasswordVersion() (*semver.Version, error) {
 	if c.Onepassword.version != nil || c.Onepassword.versionErr != nil {
 		return c.Onepassword.version, c.Onepassword.versionErr

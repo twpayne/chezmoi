@@ -203,6 +203,7 @@ nav:
       - onepasswordDocument: reference/templates/1password-functions/onepasswordDocument.md
       - onepasswordDetailsFields: reference/templates/1password-functions/onepasswordDetailsFields.md
       - onepasswordItemFields: reference/templates/1password-functions/onepasswordItemFields.md
+      - onepasswordRead: reference/templates/1password-functions/onepasswordRead.md
     - AWS Secrets Manager functions:
       - reference/templates/aws-secrets-manager-functions/index.md
       - awsSecretsManager: reference/templates/aws-secrets-manager-functions/awsSecretsManager.md
