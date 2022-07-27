@@ -435,6 +435,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"bitwarden":                c.bitwardenTemplateFunc,
 		"bitwardenAttachment":      c.bitwardenAttachmentTemplateFunc,
 		"bitwardenFields":          c.bitwardenFieldsTemplateFunc,
+		"comment":                  c.commentTemplateFunc,
 		"decrypt":                  c.decryptTemplateFunc,
 		"encrypt":                  c.encryptTemplateFunc,
 		"fromToml":                 c.fromTomlTemplateFunc,

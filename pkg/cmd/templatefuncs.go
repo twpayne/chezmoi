@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"runtime"
 	"strconv"
 
@@ -20,6 +21,12 @@ import (
 
 type ioregData struct {
 	value map[string]interface{}
+}
+
+var startOfLineRx = regexp.MustCompile(`(?m)^`)
+
+func (c *Config) commentTemplateFunc(prefix, s string) string {
+	return startOfLineRx.ReplaceAllString(s, prefix)
 }
 
 func (c *Config) fromTomlTemplateFunc(s string) interface{} {

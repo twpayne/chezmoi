@@ -167,6 +167,7 @@ nav:
     - Variables: reference/templates/variables.md
     - Functions:
       - reference/templates/functions/index.md
+      - comment: reference/templates/functions/comment.md
       - decrypt: reference/templates/functions/decrypt.md
       - encrypt: reference/templates/functions/encrypt.md
       - fromToml: reference/templates/functions/fromToml.md
