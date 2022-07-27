@@ -3,6 +3,11 @@
 [!windows] chmod 755 bin/ioreg
 [windows] unix2dos bin/chezmoi-output-test.cmd
 
+# test comment template function
+chezmoi execute-template '{{ "line1\nline2" | comment "# " }}'
+rmfinalnewline golden/comment
+cmp stdout golden/comment
+
 # test glob template function
 chezmoi execute-template '{{ glob "*.txt" | join "\n" }}{{ "\n" }}'
 cmp stdout golden/glob
@@ -124,6 +129,9 @@ echo '        <key>IOKitBuildVersion</key>'
 echo '        <string>Darwin Kernel Version 21.1.0: Wed Oct 13 17:33:24 PDT 2021; root:xnu-8019.41.5~1/RELEASE_ARM64_T8101</string>'
 echo '</dict>'
 echo '</plist>'
+-- golden/comment --
+# line1
+# line2
 -- golden/expected --
 255
 -- golden/glob --
