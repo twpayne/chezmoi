@@ -19,17 +19,18 @@ import (
 )
 
 type initCmdConfig struct {
-	apply        bool
-	branch       string
-	configPath   chezmoi.AbsPath
-	data         bool
-	depth        int
-	exclude      *chezmoi.EntryTypeSet
-	guessRepoURL bool
-	oneShot      bool
-	purge        bool
-	purgeBinary  bool
-	ssh          bool
+	apply           bool
+	branch          string
+	configPath      chezmoi.AbsPath
+	data            bool
+	depth           int
+	exclude         *chezmoi.EntryTypeSet
+	guessRepoURL    bool
+	oneShot         bool
+	forcePromptOnce bool
+	purge           bool
+	purgeBinary     bool
+	ssh             bool
 }
 
 var dotfilesRepoGuesses = []struct {
@@ -116,6 +117,7 @@ func (c *Config) newInitCmd() *cobra.Command {
 	flags.BoolVar(&c.init.data, "data", c.init.data, "Include existing template data")
 	flags.IntVarP(&c.init.depth, "depth", "d", c.init.depth, "Create a shallow clone")
 	flags.VarP(c.init.exclude, "exclude", "x", "Exclude entry types")
+	flags.BoolVar(&c.init.forcePromptOnce, "prompt", c.init.forcePromptOnce, "Force prompt*Once template functions to prompt") //nolint:lll
 	flags.BoolVarP(&c.init.guessRepoURL, "guess-repo-url", "g", c.init.guessRepoURL, "Guess the repo URL")
 	flags.BoolVar(&c.init.oneShot, "one-shot", c.init.oneShot, "Run in one-shot mode")
 	flags.BoolVarP(&c.init.purge, "purge", "p", c.init.purge, "Purge config and source directories after running")
