@@ -55,6 +55,10 @@ existing template data.
 
 Clone the repo with depth *depth*.
 
+## `--prompt`
+
+Force the `prompt*Once` template functions to prompt.
+
 ## `--guess-repo-url` *bool*
 
 Guess the repo URL from the *repo* argument. This defaults to `true`.

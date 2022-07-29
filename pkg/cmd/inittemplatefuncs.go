@@ -45,9 +45,11 @@ func (c *Config) promptBoolOnceInitTemplateFunc(m map[string]interface{}, key, p
 		err := fmt.Errorf("want 2 or 3 arguments, got %d", len(args)+2)
 		panic(err)
 	}
-	if value, ok := m[key]; ok {
-		if boolValue, ok := value.(bool); ok {
-			return boolValue
+	if !c.init.forcePromptOnce {
+		if value, ok := m[key]; ok {
+			if boolValue, ok := value.(bool); ok {
+				return boolValue
+			}
 		}
 	}
 	return c.promptBoolInitTemplateFunc(prompt, args...)
@@ -83,9 +85,11 @@ func (c *Config) promptIntOnceInitTemplateFunc(m map[string]interface{}, key, pr
 		err := fmt.Errorf("want 2 or 3 arguments, got %d", len(args)+2)
 		panic(err)
 	}
-	if value, ok := m[key]; ok {
-		if intValue, ok := value.(int64); ok {
-			return intValue
+	if !c.init.forcePromptOnce {
+		if value, ok := m[key]; ok {
+			if intValue, ok := value.(int64); ok {
+				return intValue
+			}
 		}
 	}
 	return c.promptIntInitTemplateFunc(prompt, args...)
@@ -121,9 +125,11 @@ func (c *Config) promptStringOnceInitTemplateFunc(m map[string]interface{}, key,
 		err := fmt.Errorf("want 2 or 3 arguments, got %d", len(args)+2)
 		panic(err)
 	}
-	if value, ok := m[key]; ok {
-		if stringValue, ok := value.(string); ok {
-			return stringValue
+	if !c.init.forcePromptOnce {
+		if value, ok := m[key]; ok {
+			if stringValue, ok := value.(string); ok {
+				return stringValue
+			}
 		}
 	}
 	return c.promptStringInitTemplateFunc(prompt, args...)
