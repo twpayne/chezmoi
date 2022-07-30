@@ -110,7 +110,7 @@ func (c *Config) newInitCmd() *cobra.Command {
 	}
 
 	flags := initCmd.Flags()
-	flags.BoolVarP(&c.init.apply, "apply", "a", c.init.apply, "update destination directory")
+	flags.BoolVarP(&c.init.apply, "apply", "a", c.init.apply, "Update destination directory")
 	flags.StringVar(&c.init.branch, "branch", c.init.branch, "Set initial branch to checkout")
 	flags.VarP(&c.init.configPath, "config-path", "C", "Path to write generated config file")
 	flags.BoolVar(&c.init.data, "data", c.init.data, "Include existing template data")
