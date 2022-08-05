@@ -31,7 +31,6 @@ linters:
   - gosec
   - gosimple
   - govet
-  - ifshort
   - importas
   - ineffassign
   - ireturn
@@ -46,7 +45,10 @@ linters:
   - predeclared
   - promlinter
   - revive
+  - rowserrcheck
+  - sqlclosecheck
   - staticcheck
+  - structcheck
   - stylecheck
   - tagliatelle
   - tenv
@@ -56,6 +58,7 @@ linters:
   - unparam
   - unused
   - varcheck
+  - wastedassign
   - whitespace
   disable:
   - asasalint
@@ -81,13 +84,9 @@ linters:
   - nonamedreturns
   - nosnakecase
   - paralleltest
-  - rowserrcheck # https://github.com/golangci/golangci-lint/issues/2649
-  - sqlclosecheck # https://github.com/golangci/golangci-lint/issues/2649
-  - structcheck # https://github.com/golangci/golangci-lint/issues/2649
   - testpackage
   - tparallel
   - varnamelen
-  - wastedassign # https://github.com/golangci/golangci-lint/issues/2649
   - wrapcheck
   - wsl
 
