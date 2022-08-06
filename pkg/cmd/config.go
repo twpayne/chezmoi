@@ -131,6 +131,7 @@ type Config struct {
 	force            bool
 	gops             bool
 	homeDir          string
+	interactive      bool
 	keepGoing        bool
 	noPager          bool
 	noTTY            bool
@@ -847,11 +848,52 @@ func (c *Config) defaultPreApplyFunc(
 		Msg("defaultPreApplyFunc")
 
 	switch {
+	case c.force:
+		return nil
+	case targetEntryState.Equivalent(actualEntryState):
+		return nil
+	}
+
+	if c.interactive {
+		prompt := fmt.Sprintf("Apply %s", targetRelPath)
+		actualContents := actualEntryState.Contents()
+		var choices []string
+		targetContents := targetEntryState.Contents()
+		if actualContents != nil || targetContents != nil {
+			choices = append(choices, "diff")
+		}
+		choices = append(choices, choicesYesNoAllQuit...)
+		for {
+			switch choice, err := c.promptChoice(prompt, choices); {
+			case err != nil:
+				return err
+			case choice == "diff":
+				if err := c.diffFile(
+					targetRelPath,
+					actualContents, actualEntryState.Mode,
+					targetContents, targetEntryState.Mode,
+				); err != nil {
+					return err
+				}
+			case choice == "yes":
+				return nil
+			case choice == "no":
+				return chezmoi.Skip
+			case choice == "all":
+				c.interactive = false
+				return nil
+			case choice == "quit":
+				return chezmoi.ExitCodeError(0)
+			default:
+				panic(fmt.Sprintf("%s: unexpected choice", choice))
+			}
+		}
+	}
+
+	switch {
 	case targetEntryState.Overwrite():
 		return nil
 	case targetEntryState.Type == chezmoi.EntryStateTypeScript:
-		return nil
-	case c.force:
 		return nil
 	case lastWrittenEntryState == nil:
 		return nil
@@ -1353,6 +1395,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.BoolVarP(&c.dryRun, "dry-run", "n", c.dryRun, "Do not make any modifications to the destination directory") //nolint:lll
 	persistentFlags.BoolVar(&c.force, "force", c.force, "Make all changes without prompting")
 	persistentFlags.BoolVar(&c.gops, "gops", c.gops, "Enable gops agent")
+	persistentFlags.BoolVar(&c.interactive, "interactive", c.interactive, "Prompt for all changes")
 	persistentFlags.BoolVarP(&c.keepGoing, "keep-going", "k", c.keepGoing, "Keep going as far as possible after an error")
 	persistentFlags.BoolVar(&c.noPager, "no-pager", c.noPager, "Do not use the pager")
 	persistentFlags.BoolVar(&c.noTTY, "no-tty", c.noTTY, "Do not attempt to get a TTY for reading passwords")
