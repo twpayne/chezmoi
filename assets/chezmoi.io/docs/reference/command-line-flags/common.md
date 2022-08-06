@@ -23,6 +23,10 @@ with a `no`.
 Regenerate and reread the config file from the config file template before
 computing the target state.
 
+## `--interactive`
+
+Prompt before applying each target.
+
 ## `-r`, `--recursive`
 
 Recurse into subdirectories, `true` by default.
