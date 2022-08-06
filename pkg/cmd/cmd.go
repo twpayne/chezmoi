@@ -126,12 +126,12 @@ func (v VersionInfo) MarshalZerologObject(e *zerolog.Event) {
 // Main runs chezmoi and returns an exit code.
 func Main(versionInfo VersionInfo, args []string) int {
 	if err := runMain(versionInfo, args); err != nil {
-		if s := err.Error(); s != "" {
-			fmt.Fprintf(os.Stderr, "chezmoi: %s\n", s)
+		var errExitCode chezmoi.ExitCodeError
+		if errors.As(err, &errExitCode) {
+			return int(errExitCode)
 		}
-		errExitCode := chezmoi.ExitCodeError(1)
-		_ = errors.As(err, &errExitCode)
-		return int(errExitCode)
+		fmt.Fprintf(os.Stderr, "chezmoi: %v\n", err)
+		return 1
 	}
 	return 0
 }
