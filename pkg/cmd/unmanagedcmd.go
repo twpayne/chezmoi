@@ -13,7 +13,7 @@ import (
 
 func (c *Config) newUnmanagedCmd() *cobra.Command {
 	unmanagedCmd := &cobra.Command{
-		Use:     "unmanaged [paths]...",
+		Use:     "unmanaged [path]...",
 		Short:   "List the unmanaged files in the destination directory",
 		Long:    mustLongHelp("unmanaged"),
 		Example: example("unmanaged"),
@@ -25,8 +25,25 @@ func (c *Config) newUnmanagedCmd() *cobra.Command {
 }
 
 func (c *Config) runUnmanagedCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
-	// the set of discovered, unmanaged items
-	unmanaged := map[string]bool{}
+	var absPaths chezmoi.AbsPaths
+	if len(args) == 0 {
+		absPaths = append(absPaths, c.DestDirAbsPath)
+	} else {
+		argsAbsPaths := make(map[chezmoi.AbsPath]struct{})
+		for _, arg := range args {
+			argAbsPath, err := chezmoi.NormalizePath(arg)
+			if err != nil {
+				return err
+			}
+			argsAbsPaths[argAbsPath] = struct{}{}
+		}
+		for argAbsPath := range argsAbsPaths {
+			absPaths = append(absPaths, argAbsPath)
+		}
+		sort.Sort(absPaths)
+	}
+
+	unmanagedRelPaths := make(map[chezmoi.RelPath]struct{})
 	walkFunc := func(destAbsPath chezmoi.AbsPath, fileInfo fs.FileInfo, err error) error {
 		if err != nil {
 			return err
@@ -41,51 +58,27 @@ func (c *Config) runUnmanagedCmd(cmd *cobra.Command, args []string, sourceState 
 		managed := sourceState.Contains(targetRelPath)
 		ignored := sourceState.Ignore(targetRelPath)
 		if !managed && !ignored {
-			unmanaged[targetRelPath.String()] = true
+			unmanagedRelPaths[targetRelPath] = struct{}{}
 		}
 		if fileInfo.IsDir() && (!managed || ignored) {
 			return vfs.SkipDir
 		}
 		return nil
 	}
-
-	// Build queued paths. When no arguments, start from root; otherwise start
-	// from arguments.	The paths are deduplicated and sorted.
-	paths := make([]chezmoi.AbsPath, 0, len(args)) // (lsttype, size, capacity)
-	if len(args) == 0 {
-		paths = append(paths, c.DestDirAbsPath)
-	} else {
-		qPaths := make(map[chezmoi.AbsPath]bool, len(args)) // (map, capacity)
-		for _, arg := range args {
-			p, err := chezmoi.NormalizePath(arg)
-			if err != nil {
-				return err
-			}
-			qPaths[p] = true
-		}
-		for path := range qPaths {
-			paths = append(paths, path)
-		}
-		sort.Slice(paths,
-			func(i, j int) bool { return paths[i].Less(paths[j]) })
-	}
-
-	for _, path := range paths {
-		if err := chezmoi.Walk(c.destSystem, path, walkFunc); err != nil {
+	for _, absPath := range absPaths {
+		if err := chezmoi.Walk(c.destSystem, absPath, walkFunc); err != nil {
 			return err
 		}
 	}
 
-	// collect the keys and sort
 	builder := strings.Builder{}
-	unmPaths := make([]string, 0, len(unmanaged))
-	for path := range unmanaged {
-		unmPaths = append(unmPaths, path)
+	var sortedRelPaths chezmoi.RelPaths
+	for relPath := range unmanagedRelPaths {
+		sortedRelPaths = append(sortedRelPaths, relPath)
 	}
-	sort.Strings(unmPaths)
-
-	for _, path := range unmPaths {
-		builder.WriteString(path)
+	sort.Sort(sortedRelPaths)
+	for _, relPath := range sortedRelPaths {
+		builder.WriteString(relPath.String())
 		builder.WriteByte('\n')
 	}
 	return c.writeOutputString(builder.String())

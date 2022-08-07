@@ -1,9 +1,9 @@
-# `unmanaged` [*target*...]
+# `unmanaged` [*path*...]
 
-List all unmanaged files in *target*s.  When no *target*s are supplied, list all
+List all unmanaged files in *path*s. When no *path*s are supplied, list all
 unmanaged files in the destination directory.
 
-It is an error to supply *target*s that are not found on the filesystem.
+It is an error to supply *path*s that are not found on the filesystem.
 
 !!! example
 
