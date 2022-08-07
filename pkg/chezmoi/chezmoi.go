@@ -80,7 +80,7 @@ var (
 )
 
 // knownPrefixedFiles is a set of known filenames with the .chezmoi prefix.
-var knownPrefixedFiles = newStringSet(
+var knownPrefixedFiles = newSet(
 	Prefix+".json"+TemplateSuffix,
 	Prefix+".toml"+TemplateSuffix,
 	Prefix+".yaml"+TemplateSuffix,
@@ -97,14 +97,14 @@ var knownPrefixedFiles = newStringSet(
 )
 
 // knownPrefixedDirs is a set of known dirnames with the .chezmoi prefix.
-var knownPrefixedDirs = newStringSet(
+var knownPrefixedDirs = newSet(
 	scriptsDirName,
 	templatesDirName,
 )
 
 // knownTargetFiles is a set of known target files that should not be managed
 // directly.
-var knownTargetFiles = newStringSet(
+var knownTargetFiles = newSet(
 	"chezmoi.json",
 	"chezmoi.toml",
 	"chezmoi.yaml",
