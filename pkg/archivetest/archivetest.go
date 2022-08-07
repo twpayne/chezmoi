@@ -2,7 +2,10 @@ package archivetest
 
 import (
 	"io/fs"
-	"sort"
+
+	"golang.org/x/exp/constraints"
+	"golang.org/x/exp/maps"
+	"golang.org/x/exp/slices"
 )
 
 // A Dir represents a directory.
@@ -22,11 +25,8 @@ type Symlink struct {
 	Target string
 }
 
-func sortedKeys(m map[string]any) []string {
-	keys := make([]string, 0, len(m))
-	for key := range m {
-		keys = append(keys, key)
-	}
-	sort.Strings(keys)
+func sortedKeys[K constraints.Ordered, V any](m map[K]V) []K {
+	keys := maps.Keys(m)
+	slices.Sort(keys)
 	return keys
 }
