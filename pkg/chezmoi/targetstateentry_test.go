@@ -3,7 +3,6 @@ package chezmoi
 import (
 	"fmt"
 	"io/fs"
-	"sort"
 	"testing"
 
 	"github.com/muesli/combinator"
@@ -67,24 +66,12 @@ func TestTargetStateEntryApply(t *testing.T) {
 		},
 	}
 
-	targetStateKeys := make([]string, 0, len(targetStates))
-	for targetStateKey := range targetStates {
-		targetStateKeys = append(targetStateKeys, targetStateKey)
-	}
-	sort.Strings(targetStateKeys)
-
-	actualDestDirStateKeys := make([]string, 0, len(actualStates))
-	for actualDestDirStateKey := range actualStates {
-		actualDestDirStateKeys = append(actualDestDirStateKeys, actualDestDirStateKey)
-	}
-	sort.Strings(actualDestDirStateKeys)
-
 	testData := struct {
 		TargetStateKey        []string
 		ActualDestDirStateKey []string
 	}{
-		TargetStateKey:        targetStateKeys,
-		ActualDestDirStateKey: actualDestDirStateKeys,
+		TargetStateKey:        sortedKeys(targetStates),
+		ActualDestDirStateKey: sortedKeys(actualStates),
 	}
 	var testCases []struct {
 		TargetStateKey        string

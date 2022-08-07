@@ -7,6 +7,7 @@ import (
 
 	"github.com/spf13/cobra"
 	vfs "github.com/twpayne/go-vfs/v4"
+	"golang.org/x/exp/maps"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
 )
@@ -72,10 +73,7 @@ func (c *Config) runUnmanagedCmd(cmd *cobra.Command, args []string, sourceState 
 	}
 
 	builder := strings.Builder{}
-	var sortedRelPaths chezmoi.RelPaths
-	for relPath := range unmanagedRelPaths {
-		sortedRelPaths = append(sortedRelPaths, relPath)
-	}
+	sortedRelPaths := chezmoi.RelPaths(maps.Keys(unmanagedRelPaths))
 	sort.Sort(sortedRelPaths)
 	for _, relPath := range sortedRelPaths {
 		builder.WriteString(relPath.String())

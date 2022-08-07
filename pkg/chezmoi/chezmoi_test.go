@@ -9,6 +9,9 @@ import (
 	"github.com/rs/zerolog/pkgerrors"
 	"github.com/stretchr/testify/assert"
 	"github.com/twpayne/go-vfs/v4"
+	"golang.org/x/exp/constraints"
+	"golang.org/x/exp/maps"
+	"golang.org/x/exp/slices"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoitest"
 )
@@ -104,4 +107,10 @@ func TestEtcHostsFQDNHostname(t *testing.T) {
 			})
 		})
 	}
+}
+
+func sortedKeys[K constraints.Ordered, V any](m map[K]V) []K {
+	keys := maps.Keys(m)
+	slices.Sort(keys)
+	return keys
 }
