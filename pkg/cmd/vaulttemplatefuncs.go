@@ -10,10 +10,10 @@ import (
 
 type vaultConfig struct {
 	Command string
-	cache   map[string]interface{}
+	cache   map[string]any
 }
 
-func (c *Config) vaultTemplateFunc(key string) interface{} {
+func (c *Config) vaultTemplateFunc(key string) any {
 	if data, ok := c.Vault.cache[key]; ok {
 		return data
 	}
@@ -28,13 +28,13 @@ func (c *Config) vaultTemplateFunc(key string) interface{} {
 		panic(newCmdOutputError(cmd, output, err))
 	}
 
-	var data interface{}
+	var data any
 	if err := json.Unmarshal(output, &data); err != nil {
 		panic(newParseCmdOutputError(c.Vault.Command, args, output, err))
 	}
 
 	if c.Vault.cache == nil {
-		c.Vault.cache = make(map[string]interface{})
+		c.Vault.cache = make(map[string]any)
 	}
 	c.Vault.cache[key] = data
 

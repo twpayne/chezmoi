@@ -96,12 +96,12 @@ type SourceState struct {
 	logger                  *zerolog.Logger
 	version                 semver.Version
 	mode                    Mode
-	defaultTemplateDataFunc func() map[string]interface{}
+	defaultTemplateDataFunc func() map[string]any
 	templateDataOnly        bool
 	readTemplateData        bool
-	userTemplateData        map[string]interface{}
-	priorityTemplateData    map[string]interface{}
-	templateData            map[string]interface{}
+	userTemplateData        map[string]any
+	priorityTemplateData    map[string]any
+	templateData            map[string]any
 	templateFuncs           template.FuncMap
 	templateOptions         []string
 	templates               map[string]*template.Template
@@ -127,7 +127,7 @@ func WithCacheDir(cacheDirAbsPath AbsPath) SourceStateOption {
 }
 
 // WithDefaultTemplateDataFunc sets the default template data function.
-func WithDefaultTemplateDataFunc(defaultTemplateDataFunc func() map[string]interface{}) SourceStateOption {
+func WithDefaultTemplateDataFunc(defaultTemplateDataFunc func() map[string]any) SourceStateOption {
 	return func(s *SourceState) {
 		s.defaultTemplateDataFunc = defaultTemplateDataFunc
 	}
@@ -176,7 +176,7 @@ func WithMode(mode Mode) SourceStateOption {
 }
 
 // WithPriorityTemplateData adds priority template data.
-func WithPriorityTemplateData(priorityTemplateData map[string]interface{}) SourceStateOption {
+func WithPriorityTemplateData(priorityTemplateData map[string]any) SourceStateOption {
 	return func(s *SourceState) {
 		RecursiveMerge(s.priorityTemplateData, priorityTemplateData)
 	}
@@ -246,8 +246,8 @@ func NewSourceState(options ...SourceStateOption) *SourceState {
 		httpClient:           http.DefaultClient,
 		logger:               &log.Logger,
 		readTemplateData:     true,
-		priorityTemplateData: make(map[string]interface{}),
-		userTemplateData:     make(map[string]interface{}),
+		priorityTemplateData: make(map[string]any),
+		userTemplateData:     make(map[string]any),
 		templateOptions:      DefaultTemplateOptions,
 		templates:            make(map[string]*template.Template),
 		externals:            make(map[RelPath]*External),
@@ -732,7 +732,7 @@ func (s *SourceState) ExecuteTemplateData(name string, data []byte) ([]byte, err
 
 	// Temporarily set .chezmoi.sourceFile to the name of the template.
 	templateData := s.TemplateData()
-	if chezmoiTemplateData, ok := templateData["chezmoi"].(map[string]interface{}); ok {
+	if chezmoiTemplateData, ok := templateData["chezmoi"].(map[string]any); ok {
 		chezmoiTemplateData["sourceFile"] = name
 		defer delete(chezmoiTemplateData, "sourceFile")
 	}
@@ -1163,9 +1163,9 @@ func (s *SourceState) TargetRelPaths() []RelPath {
 }
 
 // TemplateData returns s's template data.
-func (s *SourceState) TemplateData() map[string]interface{} {
+func (s *SourceState) TemplateData() map[string]any {
 	if s.templateData == nil {
-		s.templateData = make(map[string]interface{})
+		s.templateData = make(map[string]any)
 		if s.defaultTemplateDataFunc != nil {
 			RecursiveMerge(s.templateData, s.defaultTemplateDataFunc())
 			s.defaultTemplateDataFunc = nil
@@ -1260,7 +1260,7 @@ func (s *SourceState) addTemplateData(sourceAbsPath AbsPath) error {
 	if err != nil {
 		return fmt.Errorf("%s: %w", sourceAbsPath, err)
 	}
-	var templateData map[string]interface{}
+	var templateData map[string]any
 	if err := format.Unmarshal(data, &templateData); err != nil {
 		return fmt.Errorf("%s: %w", sourceAbsPath, err)
 	}

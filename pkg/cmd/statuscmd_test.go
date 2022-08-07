@@ -15,21 +15,21 @@ import (
 func TestStatusCmd(t *testing.T) {
 	for _, tc := range []struct {
 		name           string
-		root           interface{}
+		root           any
 		args           []string
-		postApplyTests []interface{}
+		postApplyTests []any
 		stdoutStr      string
 	}{
 		{
 			name: "add_file",
-			root: map[string]interface{}{
+			root: map[string]any{
 				"/home/user/.local/share/chezmoi/dot_bashrc": "# contents of .bashrc\n",
 			},
 			args: []string{"~/.bashrc"},
 			stdoutStr: chezmoitest.JoinLines(
 				` A .bashrc`,
 			),
-			postApplyTests: []interface{}{
+			postApplyTests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_bashrc",
 					vfst.TestModeIsRegular,
 					vfst.TestModePerm(0o666&^chezmoitest.Umask),
@@ -39,12 +39,12 @@ func TestStatusCmd(t *testing.T) {
 		},
 		{
 			name: "update_symlink",
-			root: map[string]interface{}{
+			root: map[string]any{
 				"/home/user/.symlink": &vfst.Symlink{Target: "old-target"},
 				"/home/user/.local/share/chezmoi/symlink_dot_symlink": "new-target\n",
 			},
 			args: []string{"~/.symlink"},
-			postApplyTests: []interface{}{
+			postApplyTests: []any{
 				vfst.TestPath("/home/user/.symlink",
 					vfst.TestSymlinkTarget("new-target"),
 				),

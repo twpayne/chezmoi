@@ -132,7 +132,7 @@ func TestParseConfig(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			chezmoitest.WithTestFS(t, map[string]interface{}{
+			chezmoitest.WithTestFS(t, map[string]any{
 				"/home/user/.config/chezmoi/" + tc.filename: tc.contents,
 			}, func(fileSystem vfs.FS) {
 				c := newTestConfig(t, fileSystem)

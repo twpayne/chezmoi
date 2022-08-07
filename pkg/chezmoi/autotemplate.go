@@ -35,7 +35,7 @@ func (b byValueLength) Swap(i, j int) { b[i], b[j] = b[j], b[i] }
 // autoTemplate converts contents into a template by escaping template markers
 // and replacing values in data with their keys. It returns the template and if
 // any replacements were made.
-func autoTemplate(contents []byte, data map[string]interface{}) ([]byte, bool) {
+func autoTemplate(contents []byte, data map[string]any) ([]byte, bool) {
 	contentsStr := string(contents)
 	replacements := false
 
@@ -89,14 +89,14 @@ func autoTemplate(contents []byte, data map[string]interface{}) ([]byte, bool) {
 }
 
 // extractVariables extracts all template variables from data.
-func extractVariables(data map[string]interface{}) []templateVariable {
+func extractVariables(data map[string]any) []templateVariable {
 	return extractVariablesHelper(nil /* variables */, nil /* parent */, data)
 }
 
 // extractVariablesHelper appends all template variables in data to variables
 // and returns variables. data is assumed to be rooted at parent.
 func extractVariablesHelper(
-	variables []templateVariable, parent []string, data map[string]interface{},
+	variables []templateVariable, parent []string, data map[string]any,
 ) []templateVariable {
 	for name, value := range data {
 		switch value := value.(type) {
@@ -106,7 +106,7 @@ func extractVariablesHelper(
 				value: value,
 			}
 			variables = append(variables, variable)
-		case map[string]interface{}:
+		case map[string]any:
 			variables = extractVariablesHelper(variables, append(parent, name), value)
 		}
 	}

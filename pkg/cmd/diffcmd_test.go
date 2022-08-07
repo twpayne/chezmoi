@@ -18,7 +18,7 @@ func TestDiffCmd(t *testing.T) {
 	}
 	for _, tc := range []struct {
 		name      string
-		extraRoot interface{}
+		extraRoot any
 		args      []string
 		stdoutStr string
 	}{
@@ -27,8 +27,8 @@ func TestDiffCmd(t *testing.T) {
 		},
 		{
 			name: "file",
-			extraRoot: map[string]interface{}{
-				"/home/user/.local/share/chezmoi": map[string]interface{}{
+			extraRoot: map[string]any{
+				"/home/user/.local/share/chezmoi": map[string]any{
 					"dot_file": "# contents of .file\n",
 				},
 			},
@@ -44,8 +44,8 @@ func TestDiffCmd(t *testing.T) {
 		},
 		{
 			name: "simple_exclude_files",
-			extraRoot: map[string]interface{}{
-				"/home/user/.local/share/chezmoi": map[string]interface{}{
+			extraRoot: map[string]any{
+				"/home/user/.local/share/chezmoi": map[string]any{
 					"dot_file":            "# contents of .file\n",
 					"symlink_dot_symlink": ".file\n",
 				},
@@ -65,13 +65,13 @@ func TestDiffCmd(t *testing.T) {
 		},
 		{
 			name: "simple_exclude_files_with_config",
-			extraRoot: map[string]interface{}{
-				"/home/user": map[string]interface{}{
+			extraRoot: map[string]any{
+				"/home/user": map[string]any{
 					".config/chezmoi/chezmoi.toml": chezmoitest.JoinLines(
 						`[diff]`,
 						`  exclude = ["files"]`,
 					),
-					".local/share/chezmoi": map[string]interface{}{
+					".local/share/chezmoi": map[string]any{
 						"dot_file":            "# contents of .file\n",
 						"symlink_dot_symlink": ".file\n",
 					},
@@ -89,7 +89,7 @@ func TestDiffCmd(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			chezmoitest.WithTestFS(t, map[string]interface{}{
+			chezmoitest.WithTestFS(t, map[string]any{
 				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0o777 &^ chezmoitest.Umask},
 			}, func(fileSystem vfs.FS) {
 				if tc.extraRoot != nil {

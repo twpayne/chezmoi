@@ -195,11 +195,11 @@ func (s *EntryTypeSet) Type() string {
 // github.com/mitchellh/mapstructure.DecodeHookFunc that parses an EntryTypeSet
 // from a []string.
 func StringSliceToEntryTypeSetHookFunc() mapstructure.DecodeHookFunc {
-	return func(from, to reflect.Type, data interface{}) (interface{}, error) {
+	return func(from, to reflect.Type, data any) (any, error) {
 		if to != reflect.TypeOf(EntryTypeSet{}) {
 			return data, nil
 		}
-		sl, ok := data.([]interface{})
+		sl, ok := data.([]any)
 		if !ok {
 			return nil, fmt.Errorf("expected a []string, got a %T", data)
 		}

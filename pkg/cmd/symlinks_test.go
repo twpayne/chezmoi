@@ -14,17 +14,17 @@ import (
 func TestSymlinks(t *testing.T) {
 	for _, tc := range []struct {
 		name      string
-		extraRoot interface{}
+		extraRoot any
 		args      []string
-		tests     []interface{}
+		tests     []any
 	}{
 		{
 			name: "symlink_forward_slash_unix",
-			extraRoot: map[string]interface{}{
+			extraRoot: map[string]any{
 				"/home/user/.local/share/chezmoi/symlink_dot_symlink": ".dir/file",
 			},
 			args: []string{"~/.symlink"},
-			tests: []interface{}{
+			tests: []any{
 				vfst.TestPath("/home/user/.symlink",
 					vfst.TestModeType(fs.ModeSymlink),
 					vfst.TestSymlinkTarget(".dir/file"),
@@ -33,11 +33,11 @@ func TestSymlinks(t *testing.T) {
 		},
 		{
 			name: "symlink_forward_slash_windows",
-			extraRoot: map[string]interface{}{
+			extraRoot: map[string]any{
 				"/home/user/.local/share/chezmoi/symlink_dot_symlink": ".dir/file",
 			},
 			args: []string{"~/.symlink"},
-			tests: []interface{}{
+			tests: []any{
 				vfst.TestPath("/home/user/.symlink",
 					vfst.TestModeType(fs.ModeSymlink),
 					vfst.TestSymlinkTarget(".dir\\file"),
@@ -46,11 +46,11 @@ func TestSymlinks(t *testing.T) {
 		},
 		{
 			name: "symlink_backward_slash_windows",
-			extraRoot: map[string]interface{}{
+			extraRoot: map[string]any{
 				"/home/user/.local/share/chezmoi/symlink_dot_symlink": ".dir\\file",
 			},
 			args: []string{"~/.symlink"},
-			tests: []interface{}{
+			tests: []any{
 				vfst.TestPath("/home/user/.symlink",
 					vfst.TestModeType(fs.ModeSymlink),
 					vfst.TestSymlinkTarget(".dir\\file"),
@@ -59,11 +59,11 @@ func TestSymlinks(t *testing.T) {
 		},
 		{
 			name: "symlink_mixed_slash_windows",
-			extraRoot: map[string]interface{}{
+			extraRoot: map[string]any{
 				"/home/user/.local/share/chezmoi/symlink_dot_symlink": ".dir/subdir\\file",
 			},
 			args: []string{"~/.symlink"},
-			tests: []interface{}{
+			tests: []any{
 				vfst.TestPath("/home/user/.symlink",
 					vfst.TestModeType(fs.ModeSymlink),
 					vfst.TestSymlinkTarget(".dir\\subdir\\file"),

@@ -37,7 +37,7 @@ func TestTargetStateEntryApply(t *testing.T) {
 		},
 	}
 
-	actualStates := map[string]map[string]interface{}{
+	actualStates := map[string]map[string]any{
 		"dir": {
 			"/home/user/target": &vfst.Dir{Perm: 0o777},
 		},
@@ -57,7 +57,7 @@ func TestTargetStateEntryApply(t *testing.T) {
 			"/home/user": &vfst.Dir{Perm: 0o777},
 		},
 		"symlink": {
-			"/home/user": map[string]interface{}{
+			"/home/user": map[string]any{
 				"symlink-target": "",
 				"target":         &vfst.Symlink{Target: "symlink-target"},
 			},

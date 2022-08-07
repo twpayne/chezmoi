@@ -13,7 +13,7 @@ import (
 type secretConfig struct {
 	Command   string
 	cache     map[string]string
-	jsonCache map[string]interface{}
+	jsonCache map[string]any
 }
 
 func (c *Config) secretTemplateFunc(args ...string) string {
@@ -40,7 +40,7 @@ func (c *Config) secretTemplateFunc(args ...string) string {
 	return value
 }
 
-func (c *Config) secretJSONTemplateFunc(args ...string) interface{} {
+func (c *Config) secretJSONTemplateFunc(args ...string) any {
 	key := strings.Join(args, "\x00")
 	if value, ok := c.Secret.jsonCache[key]; ok {
 		return value
@@ -55,13 +55,13 @@ func (c *Config) secretJSONTemplateFunc(args ...string) interface{} {
 		panic(newCmdOutputError(cmd, output, err))
 	}
 
-	var value interface{}
+	var value any
 	if err := json.Unmarshal(output, &value); err != nil {
 		panic(newParseCmdOutputError(c.Secret.Command, args, output, err))
 	}
 
 	if c.Secret.jsonCache == nil {
-		c.Secret.jsonCache = make(map[string]interface{})
+		c.Secret.jsonCache = make(map[string]any)
 	}
 	c.Secret.jsonCache[key] = value
 

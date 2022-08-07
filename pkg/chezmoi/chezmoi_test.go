@@ -24,13 +24,13 @@ func init() {
 func TestEtcHostsFQDNHostname(t *testing.T) {
 	for _, tc := range []struct {
 		name     string
-		root     interface{}
+		root     any
 		f        func(vfs.FS) (string, error)
 		expected string
 	}{
 		{
 			name: "etc_hosts",
-			root: map[string]interface{}{
+			root: map[string]any{
 				"/etc/hosts": chezmoitest.JoinLines(
 					`# The following lines are desirable for IPv4 capable hosts`,
 					`127.0.0.1       localhost`,
@@ -53,7 +53,7 @@ func TestEtcHostsFQDNHostname(t *testing.T) {
 		},
 		{
 			name: "etc_hosts_whitespace_and_comments",
-			root: map[string]interface{}{
+			root: map[string]any{
 				"/etc/hosts": chezmoitest.JoinLines(
 					" \t127.0.1.1 \tthishost.mydomain.org# comment",
 				),
@@ -63,7 +63,7 @@ func TestEtcHostsFQDNHostname(t *testing.T) {
 		},
 		{
 			name: "etc_hosts_missing_canonical_hostname",
-			root: map[string]interface{}{
+			root: map[string]any{
 				"/etc/hosts": chezmoitest.JoinLines(
 					`127.0.1.1`,
 					`127.0.1.1 thishost.mydomain.org`,
@@ -74,7 +74,7 @@ func TestEtcHostsFQDNHostname(t *testing.T) {
 		},
 		{
 			name: "etc_hostname",
-			root: map[string]interface{}{
+			root: map[string]any{
 				"/etc/hostname": chezmoitest.JoinLines(
 					`# comment`,
 					` hostname.example.com # comment`,
@@ -85,7 +85,7 @@ func TestEtcHostsFQDNHostname(t *testing.T) {
 		},
 		{
 			name: "etc_myname",
-			root: map[string]interface{}{
+			root: map[string]any{
 				"/etc/myname": chezmoitest.JoinLines(
 					"# comment",
 					"",

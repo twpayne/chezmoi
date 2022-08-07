@@ -15,8 +15,8 @@ import (
 var _ System = &RealSystem{}
 
 func TestRealSystemGlob(t *testing.T) {
-	chezmoitest.WithTestFS(t, map[string]interface{}{
-		"/home/user": map[string]interface{}{
+	chezmoitest.WithTestFS(t, map[string]any{
+		"/home/user": map[string]any{
 			"bar":            "",
 			"baz":            "",
 			"foo":            "",

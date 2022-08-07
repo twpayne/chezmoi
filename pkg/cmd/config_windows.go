@@ -47,12 +47,12 @@ func (c *Config) readPassword(prompt string) (password string, err error) {
 	return
 }
 
-func (c *Config) windowsVersion() (map[string]interface{}, error) {
+func (c *Config) windowsVersion() (map[string]any, error) {
 	registryKey, err := registry.OpenKey(registry.LOCAL_MACHINE, `SOFTWARE\Microsoft\Windows NT\CurrentVersion`, registry.QUERY_VALUE)
 	if err != nil {
 		return nil, fmt.Errorf("registry.OpenKey: %w", err)
 	}
-	windowsVersion := make(map[string]interface{})
+	windowsVersion := make(map[string]any)
 	for _, name := range []string{
 		"CurrentBuild",
 		"CurrentVersion",

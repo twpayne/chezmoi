@@ -16,19 +16,19 @@ type keeperConfig struct {
 	outputCache map[string][]byte
 }
 
-func (c *Config) keeperTemplateFunction(record string) map[string]interface{} {
+func (c *Config) keeperTemplateFunction(record string) map[string]any {
 	output, err := c.keeperOutput([]string{"get", "--format=json", record})
 	if err != nil {
 		panic(err)
 	}
-	var result map[string]interface{}
+	var result map[string]any
 	if err := json.Unmarshal(output, &result); err != nil {
 		panic(err)
 	}
 	return result
 }
 
-func (c *Config) keeperDataFieldsTemplateFunction(record string) map[string]interface{} {
+func (c *Config) keeperDataFieldsTemplateFunction(record string) map[string]any {
 	output, err := c.keeperOutput([]string{"get", "--format=json", record})
 	if err != nil {
 		panic(err)
@@ -36,15 +36,15 @@ func (c *Config) keeperDataFieldsTemplateFunction(record string) map[string]inte
 	var data struct {
 		Data struct {
 			Fields []struct {
-				Type  string      `json:"type"`
-				Value interface{} `json:"value"`
+				Type  string `json:"type"`
+				Value any    `json:"value"`
 			} `json:"fields"`
 		} `json:"data"`
 	}
 	if err := json.Unmarshal(output, &data); err != nil {
 		panic(err)
 	}
-	result := make(map[string]interface{})
+	result := make(map[string]any)
 	for _, field := range data.Data.Fields {
 		result[field.Type] = field.Value
 	}

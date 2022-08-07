@@ -8,39 +8,39 @@ import (
 
 func TestRecursiveMerge(t *testing.T) {
 	for _, tc := range []struct {
-		dest         map[string]interface{}
-		source       map[string]interface{}
-		expectedDest map[string]interface{}
+		dest         map[string]any
+		source       map[string]any
+		expectedDest map[string]any
 	}{
 		{
-			dest:         map[string]interface{}{},
+			dest:         map[string]any{},
 			source:       nil,
-			expectedDest: map[string]interface{}{},
+			expectedDest: map[string]any{},
 		},
 		{
-			dest: map[string]interface{}{
+			dest: map[string]any{
 				"a": 1,
 				"b": 2,
-				"c": map[string]interface{}{
+				"c": map[string]any{
 					"d": 4,
 					"e": 5,
 				},
-				"f": map[string]interface{}{
+				"f": map[string]any{
 					"g": 6,
 				},
 			},
-			source: map[string]interface{}{
+			source: map[string]any{
 				"b": 20,
-				"c": map[string]interface{}{
+				"c": map[string]any{
 					"e": 50,
 					"f": 60,
 				},
 				"f": 60,
 			},
-			expectedDest: map[string]interface{}{
+			expectedDest: map[string]any{
 				"a": 1,
 				"b": 20,
-				"c": map[string]interface{}{
+				"c": map[string]any{
 					"d": 4,
 					"e": 50,
 					"f": 60,
@@ -55,12 +55,12 @@ func TestRecursiveMerge(t *testing.T) {
 }
 
 func TestRecursiveMergeCopies(t *testing.T) {
-	original := map[string]interface{}{
+	original := map[string]any{
 		"key": "initialValue",
 	}
-	dest := make(map[string]interface{})
+	dest := make(map[string]any)
 	RecursiveMerge(dest, original)
-	RecursiveMerge(dest, map[string]interface{}{
+	RecursiveMerge(dest, map[string]any{
 		"key": "mergedValue",
 	})
 	assert.Equal(t, "mergedValue", dest["key"])

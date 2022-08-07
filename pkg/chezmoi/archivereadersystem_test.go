@@ -12,8 +12,8 @@ import (
 )
 
 func TestArchiveReaderSystemTar(t *testing.T) {
-	data, err := archivetest.NewTar(map[string]interface{}{
-		"dir": map[string]interface{}{
+	data, err := archivetest.NewTar(map[string]any{
+		"dir": map[string]any{
 			"file": "# contents of dir/file\n",
 			"symlink": &archivetest.Symlink{
 				Target: "file",

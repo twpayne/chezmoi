@@ -14,9 +14,9 @@ import (
 )
 
 func TestImportCmd(t *testing.T) {
-	data, err := archivetest.NewTar(map[string]interface{}{
-		"archive": map[string]interface{}{
-			".dir": map[string]interface{}{
+	data, err := archivetest.NewTar(map[string]any{
+		"archive": map[string]any{
+			".dir": map[string]any{
 				".file": "# contents of archive/.dir/.file\n",
 				".symlink": &archivetest.Symlink{
 					Target: ".file",
@@ -28,14 +28,14 @@ func TestImportCmd(t *testing.T) {
 
 	for _, tc := range []struct {
 		args      []string
-		extraRoot interface{}
-		tests     []interface{}
+		extraRoot any
+		tests     []any
 	}{
 		{
 			args: []string{
 				"--strip-components=1",
 			},
-			tests: []interface{}{
+			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
 					vfst.TestIsDir,
 					vfst.TestModePerm(0o777&^chezmoitest.Umask),
@@ -57,10 +57,10 @@ func TestImportCmd(t *testing.T) {
 				"--destination=~/dir",
 				"--strip-components=1",
 			},
-			extraRoot: map[string]interface{}{
+			extraRoot: map[string]any{
 				"/home/user/.local/share/chezmoi/dir": &vfst.Dir{Perm: 0o777},
 			},
-			tests: []interface{}{
+			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dir/dot_dir",
 					vfst.TestIsDir,
 					vfst.TestModePerm(0o777&^chezmoitest.Umask),
@@ -83,10 +83,10 @@ func TestImportCmd(t *testing.T) {
 				"--remove-destination",
 				"--strip-components=1",
 			},
-			extraRoot: map[string]interface{}{
+			extraRoot: map[string]any{
 				"/home/user/.local/share/chezmoi/dir/file": "# contents of dir/file\n",
 			},
-			tests: []interface{}{
+			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dir/dot_dir",
 					vfst.TestIsDir,
 					vfst.TestModePerm(0o777&^chezmoitest.Umask),
@@ -112,10 +112,10 @@ func TestImportCmd(t *testing.T) {
 				"--exact",
 				"--strip-components=1",
 			},
-			extraRoot: map[string]interface{}{
+			extraRoot: map[string]any{
 				"/home/user/.local/share/chezmoi/dir": &vfst.Dir{Perm: 0o777},
 			},
-			tests: []interface{}{
+			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dir/exact_dot_dir",
 					vfst.TestIsDir,
 					vfst.TestModePerm(0o777&^chezmoitest.Umask),
@@ -134,7 +134,7 @@ func TestImportCmd(t *testing.T) {
 		},
 	} {
 		t.Run(strings.Join(tc.args, "_"), func(t *testing.T) {
-			chezmoitest.WithTestFS(t, map[string]interface{}{
+			chezmoitest.WithTestFS(t, map[string]any{
 				"/home/user": &vfst.Dir{Perm: 0o777},
 			}, func(fileSystem vfs.FS) {
 				if tc.extraRoot != nil {

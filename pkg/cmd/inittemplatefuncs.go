@@ -40,7 +40,7 @@ func (c *Config) promptBoolInitTemplateFunc(prompt string, args ...bool) bool {
 	}
 }
 
-func (c *Config) promptBoolOnceInitTemplateFunc(m map[string]interface{}, key, prompt string, args ...bool) bool {
+func (c *Config) promptBoolOnceInitTemplateFunc(m map[string]any, key, prompt string, args ...bool) bool {
 	if len(args) > 1 {
 		err := fmt.Errorf("want 2 or 3 arguments, got %d", len(args)+2)
 		panic(err)
@@ -80,7 +80,7 @@ func (c *Config) promptIntInitTemplateFunc(prompt string, args ...int64) int64 {
 	}
 }
 
-func (c *Config) promptIntOnceInitTemplateFunc(m map[string]interface{}, key, prompt string, args ...int64) int64 {
+func (c *Config) promptIntOnceInitTemplateFunc(m map[string]any, key, prompt string, args ...int64) int64 {
 	if len(args) > 1 {
 		err := fmt.Errorf("want 2 or 3 arguments, got %d", len(args)+2)
 		panic(err)
@@ -120,7 +120,7 @@ func (c *Config) promptStringInitTemplateFunc(prompt string, args ...string) str
 	}
 }
 
-func (c *Config) promptStringOnceInitTemplateFunc(m map[string]interface{}, key, prompt string, args ...string) string {
+func (c *Config) promptStringOnceInitTemplateFunc(m map[string]any, key, prompt string, args ...string) string {
 	if len(args) > 1 {
 		err := fmt.Errorf("want 2 or 3 arguments, got %d", len(args)+2)
 		panic(err)

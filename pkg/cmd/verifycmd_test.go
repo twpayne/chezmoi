@@ -13,12 +13,12 @@ import (
 func TestVerifyCmd(t *testing.T) {
 	for _, tc := range []struct {
 		name        string
-		root        interface{}
+		root        any
 		expectedErr error
 	}{
 		{
 			name: "empty",
-			root: map[string]interface{}{
+			root: map[string]any{
 				"/home/user/.local/share/chezmoi": &vfst.Dir{
 					Perm: 0o777 &^ chezmoitest.Umask,
 				},
@@ -26,8 +26,8 @@ func TestVerifyCmd(t *testing.T) {
 		},
 		{
 			name: "file",
-			root: map[string]interface{}{
-				"/home/user": map[string]interface{}{
+			root: map[string]any{
+				"/home/user": map[string]any{
 					".bashrc": &vfst.File{
 						Contents: []byte("# contents of .bashrc\n"),
 						Perm:     0o666 &^ chezmoitest.Umask,

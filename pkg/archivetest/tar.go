@@ -7,7 +7,7 @@ import (
 )
 
 // NewTar returns the bytes of a new tar archive containing root.
-func NewTar(root map[string]interface{}) ([]byte, error) {
+func NewTar(root map[string]any) ([]byte, error) {
 	buffer := &bytes.Buffer{}
 	tarWriter := tar.NewWriter(buffer)
 	for _, key := range sortedKeys(root) {
@@ -21,7 +21,7 @@ func NewTar(root map[string]interface{}) ([]byte, error) {
 	return buffer.Bytes(), nil
 }
 
-func tarAddEntry(w *tar.Writer, name string, entry interface{}) error {
+func tarAddEntry(w *tar.Writer, name string, entry any) error {
 	switch entry := entry.(type) {
 	case []byte:
 		if err := w.WriteHeader(&tar.Header{
@@ -36,7 +36,7 @@ func tarAddEntry(w *tar.Writer, name string, entry interface{}) error {
 			return err
 		}
 
-	case map[string]interface{}:
+	case map[string]any:
 		if err := w.WriteHeader(&tar.Header{
 			Typeflag: tar.TypeDir,
 			Name:     name + "/",

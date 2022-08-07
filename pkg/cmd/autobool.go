@@ -64,7 +64,7 @@ func (b *autoBool) Value(autoFunc func() bool) bool {
 // github.com/mitchellh/mapstructure.DecodeHookFunc that parses an autoBool from
 // a bool or string.
 func StringOrBoolToAutoBoolHookFunc() mapstructure.DecodeHookFunc {
-	return func(from, to reflect.Type, data interface{}) (interface{}, error) {
+	return func(from, to reflect.Type, data any) (any, error) {
 		if to != reflect.TypeOf(autoBool{}) {
 			return data, nil
 		}

@@ -185,7 +185,7 @@ func HomeDirAbsPath() (AbsPath, error) {
 // StringToAbsPathHookFunc is a github.com/mitchellh/mapstructure.DecodeHookFunc
 // that parses an AbsPath from a string.
 func StringToAbsPathHookFunc() mapstructure.DecodeHookFunc {
-	return func(from, to reflect.Type, data interface{}) (interface{}, error) {
+	return func(from, to reflect.Type, data any) (any, error) {
 		if to != reflect.TypeOf(EmptyAbsPath) {
 			return data, nil
 		}
