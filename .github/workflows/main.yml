@@ -175,21 +175,6 @@ jobs:
         run: |
           sh assets/scripts/install.sh
           bin/chezmoi --version
-  test-openbsd:
-    needs: changes
-    if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-    runs-on: macos-12
-    steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-      - uses: actions/cache@0865c47f36e68161719c5b124609996bb5c40129
-        with:
-          path: ~/.vagrant.d
-          key: ${{ runner.os }}-vagrant-openbsd7-${{ hashFiles('assets/vagrant/openbsd7.Vagrantfile') }}
-          restore-keys: |
-            ${{ runner.os }}-vagrant-openbsd7-
-      - name: test
-        run: |
-          ( cd assets/vagrant && ./test.sh openbsd7 )
   test-ubuntu:
     needs: changes
     runs-on: ubuntu-18.04
@@ -385,7 +370,6 @@ jobs:
       - test-freebsd
       - test-legacy-go
       - test-macos
-      - test-openbsd
       - test-ubuntu
       - test-website
       - test-windows
