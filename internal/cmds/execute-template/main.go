@@ -24,7 +24,7 @@ var (
 )
 
 func gitHubLatestRelease(userRepo string) string {
-	user, repo, ok := chezmoi.CutString(userRepo, "/")
+	user, repo, ok := strings.Cut(userRepo, "/")
 	if !ok {
 		panic(fmt.Errorf("%s: not a user/repo", userRepo))
 	}

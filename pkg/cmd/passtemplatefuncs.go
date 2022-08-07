@@ -5,7 +5,6 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoilog"
 )
 
@@ -19,7 +18,7 @@ func (c *Config) passTemplateFunc(id string) string {
 	if err != nil {
 		panic(err)
 	}
-	firstLine, _, _ := chezmoi.CutBytes(output, []byte{'\n'})
+	firstLine, _, _ := bytes.Cut(output, []byte{'\n'})
 	return string(bytes.TrimSpace(firstLine))
 }
 
@@ -31,7 +30,7 @@ func (c *Config) passFieldsTemplateFunc(id string) map[string]string {
 
 	result := make(map[string]string)
 	for _, line := range bytes.Split(output, []byte{'\n'}) {
-		if key, value, ok := chezmoi.CutBytes(line, []byte{':'}); ok {
+		if key, value, ok := bytes.Cut(line, []byte{':'}); ok {
 			result[string(bytes.TrimSpace(key))] = string(bytes.TrimSpace(value))
 		}
 	}

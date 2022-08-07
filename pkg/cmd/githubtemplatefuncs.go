@@ -3,6 +3,7 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/google/go-github/v45/github"
 
@@ -52,7 +53,7 @@ func (c *Config) gitHubKeysTemplateFunc(user string) []*github.Key {
 }
 
 func (c *Config) gitHubLatestReleaseTemplateFunc(userRepo string) *github.RepositoryRelease {
-	user, repo, ok := chezmoi.CutString(userRepo, "/")
+	user, repo, ok := strings.Cut(userRepo, "/")
 	if !ok {
 		panic(fmt.Errorf("%s: not a user/repo", userRepo))
 	}
