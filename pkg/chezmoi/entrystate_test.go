@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io/fs"
 	"runtime"
-	"sort"
 	"testing"
 
 	"github.com/muesli/combinator"
@@ -78,11 +77,7 @@ func TestEntryStateEquivalent(t *testing.T) {
 		"symlink_symlink_copy":  true,
 	}
 
-	entryStateKeys := make([]string, 0, len(entryStates))
-	for entryStateKey := range entryStates {
-		entryStateKeys = append(entryStateKeys, entryStateKey)
-	}
-	sort.Strings(entryStateKeys)
+	entryStateKeys := sortedKeys(entryStates)
 
 	testData := struct {
 		EntryState1Key []string
