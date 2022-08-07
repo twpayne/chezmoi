@@ -94,7 +94,7 @@ func parseOSRelease(r io.Reader) (map[string]interface{}, error) {
 		if len(token) == 0 || token[0] == '#' {
 			continue
 		}
-		key, value, ok := CutString(token, "=")
+		key, value, ok := strings.Cut(token, "=")
 		if !ok {
 			return nil, fmt.Errorf("%s: parse error", token)
 		}

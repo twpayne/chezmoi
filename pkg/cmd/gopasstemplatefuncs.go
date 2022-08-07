@@ -1,13 +1,13 @@
 package cmd
 
 import (
+	"bytes"
 	"os"
 	"os/exec"
 	"regexp"
 
 	"github.com/coreos/go-semver/semver"
 
-	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoilog"
 )
 
@@ -45,7 +45,7 @@ func (c *Config) gopassTemplateFunc(id string) string {
 		panic(err)
 	}
 
-	passwordBytes, _, _ := chezmoi.CutBytes(output, []byte{'\n'})
+	passwordBytes, _, _ := bytes.Cut(output, []byte{'\n'})
 	password := string(passwordBytes)
 
 	if c.Gopass.cache == nil {
