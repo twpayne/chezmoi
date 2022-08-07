@@ -7,7 +7,7 @@ import (
 	"io/fs"
 )
 
-func NewZip(root map[string]interface{}) ([]byte, error) {
+func NewZip(root map[string]any) ([]byte, error) {
 	buffer := &bytes.Buffer{}
 	zipWriter := zip.NewWriter(buffer)
 	for _, key := range sortedKeys(root) {
@@ -21,11 +21,11 @@ func NewZip(root map[string]interface{}) ([]byte, error) {
 	return buffer.Bytes(), nil
 }
 
-func zipAddEntry(w *zip.Writer, name string, entry interface{}) error {
+func zipAddEntry(w *zip.Writer, name string, entry any) error {
 	switch entry := entry.(type) {
 	case []byte:
 		return zipAddEntryFile(w, name, entry, 0o666)
-	case map[string]interface{}:
+	case map[string]any:
 		return zipAddEntryDir(w, name, 0o777, entry)
 	case string:
 		return zipAddEntryFile(w, name, []byte(entry), 0o666)
@@ -40,7 +40,7 @@ func zipAddEntry(w *zip.Writer, name string, entry interface{}) error {
 	}
 }
 
-func zipAddEntryDir(w *zip.Writer, name string, perm fs.FileMode, entries map[string]interface{}) error {
+func zipAddEntryDir(w *zip.Writer, name string, perm fs.FileMode, entries map[string]any) error {
 	fileHeader := zip.FileHeader{
 		Name: name,
 	}

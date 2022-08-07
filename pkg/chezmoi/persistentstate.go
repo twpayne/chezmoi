@@ -22,7 +22,7 @@ var (
 type PersistentState interface {
 	Close() error
 	CopyTo(s PersistentState) error
-	Data() (interface{}, error)
+	Data() (any, error)
 	Delete(bucket, key []byte) error
 	DeleteBucket(bucket []byte) error
 	ForEach(bucket []byte, fn func(k, v []byte) error) error
@@ -31,10 +31,10 @@ type PersistentState interface {
 }
 
 // PersistentStateBucketData returns the state data in bucket in s.
-func PersistentStateBucketData(s PersistentState, bucket []byte) (map[string]interface{}, error) {
-	result := make(map[string]interface{})
+func PersistentStateBucketData(s PersistentState, bucket []byte) (map[string]any, error) {
+	result := make(map[string]any)
 	if err := s.ForEach(bucket, func(k, v []byte) error {
-		var value map[string]interface{}
+		var value map[string]any
 		if err := stateFormat.Unmarshal(v, &value); err != nil {
 			return err
 		}
@@ -47,7 +47,7 @@ func PersistentStateBucketData(s PersistentState, bucket []byte) (map[string]int
 }
 
 // PersistentStateData returns the structured data in s.
-func PersistentStateData(s PersistentState) (interface{}, error) {
+func PersistentStateData(s PersistentState) (any, error) {
 	configStateData, err := PersistentStateBucketData(s, ConfigStateBucket)
 	if err != nil {
 		return nil, err
@@ -61,9 +61,9 @@ func PersistentStateData(s PersistentState) (interface{}, error) {
 		return nil, err
 	}
 	return struct {
-		ConfigState interface{} `json:"configState" yaml:"configState"`
-		EntryState  interface{} `json:"entryState" yaml:"entryState"`
-		ScriptState interface{} `json:"scriptState" yaml:"scriptState"`
+		ConfigState any `json:"configState" yaml:"configState"`
+		EntryState  any `json:"entryState" yaml:"entryState"`
+		ScriptState any `json:"scriptState" yaml:"scriptState"`
 	}{
 		ConfigState: configStateData,
 		EntryState:  entryStateData,
@@ -72,7 +72,7 @@ func PersistentStateData(s PersistentState) (interface{}, error) {
 }
 
 // persistentStateGet gets the value associated with key in bucket in s, if it exists.
-func persistentStateGet(s PersistentState, bucket, key []byte, value interface{}) (bool, error) {
+func persistentStateGet(s PersistentState, bucket, key []byte, value any) (bool, error) {
 	data, err := s.Get(bucket, key)
 	if err != nil {
 		return false, err
@@ -87,7 +87,7 @@ func persistentStateGet(s PersistentState, bucket, key []byte, value interface{}
 }
 
 // persistentStateSet sets the value associated with key in bucket in s.
-func persistentStateSet(s PersistentState, bucket, key []byte, value interface{}) error {
+func persistentStateSet(s PersistentState, bucket, key []byte, value any) error {
 	data, err := stateFormat.Marshal(value)
 	if err != nil {
 		return err

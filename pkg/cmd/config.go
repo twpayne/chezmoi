@@ -73,7 +73,7 @@ type ConfigFile struct {
 	// Global configuration.
 	CacheDirAbsPath    chezmoi.AbsPath                 `json:"cacheDir" mapstructure:"cacheDir"`
 	Color              autoBool                        `mapstructure:"color"`
-	Data               map[string]interface{}          `mapstructure:"data"`
+	Data               map[string]any                  `mapstructure:"data"`
 	DestDirAbsPath     chezmoi.AbsPath                 `mapstructure:"destDir"`
 	Interpreters       map[string]*chezmoi.Interpreter `mapstructure:"interpreters"`
 	Mode               chezmoi.Mode                    `mapstructure:"mode"`
@@ -430,7 +430,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		stderr: os.Stderr,
 	}
 
-	for key, value := range map[string]interface{}{
+	for key, value := range map[string]any{
 		"awsSecretsManager":        c.awsSecretsManagerTemplateFunc,
 		"awsSecretsManagerRaw":     c.awsSecretsManagerRawTemplateFunc,
 		"bitwarden":                c.bitwardenTemplateFunc,
@@ -523,7 +523,7 @@ func (c *Config) Close() error {
 // addTemplateFunc adds the template function with the key key and value value
 // to c. It panics if there is already an existing template function with the
 // same key.
-func (c *Config) addTemplateFunc(key string, value interface{}) {
+func (c *Config) addTemplateFunc(key string, value any) {
 	if _, ok := c.templateFuncs[key]; ok {
 		panic(fmt.Sprintf("%s: already defined", key))
 	}
@@ -779,7 +779,7 @@ func (c *Config) createAndReloadConfigFile() error {
 func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte) ([]byte, error) {
 	funcMap := make(template.FuncMap)
 	chezmoi.RecursiveMerge(funcMap, c.templateFuncs)
-	initTemplateFuncs := map[string]interface{}{
+	initTemplateFuncs := map[string]any{
 		"exit":             c.exitInitTemplateFunc,
 		"promptBool":       c.promptBoolInitTemplateFunc,
 		"promptBoolOnce":   c.promptBoolOnceInitTemplateFunc,
@@ -959,7 +959,7 @@ func (c *Config) defaultSourceDir(fileSystem vfs.Stater, bds *xdg.BaseDirectoryS
 }
 
 // defaultTemplateData returns the default template data.
-func (c *Config) defaultTemplateData() map[string]interface{} {
+func (c *Config) defaultTemplateData() map[string]any {
 	// Determine the user's username and group, if possible.
 	//
 	// user.Current and user.LookupGroupId in Go's standard library are
@@ -1029,7 +1029,7 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 			Msg("chezmoi.Kernel")
 	}
 
-	var osRelease map[string]interface{}
+	var osRelease map[string]any
 	switch runtime.GOOS {
 	case "openbsd", "windows":
 		// Don't populate osRelease on OSes where /etc/os-release does not
@@ -1048,8 +1048,8 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 
 	windowsVersion, _ := c.windowsVersion()
 
-	return map[string]interface{}{
-		"chezmoi": map[string]interface{}{
+	return map[string]any{
+		"chezmoi": map[string]any{
 			"arch":         runtime.GOARCH,
 			"args":         os.Args,
 			"cacheDir":     c.CacheDirAbsPath.String(),
@@ -1066,7 +1066,7 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 			"sourceDir":    c.SourceDirAbsPath.String(),
 			"uid":          uid,
 			"username":     username,
-			"version": map[string]interface{}{
+			"version": map[string]any{
 				"builtBy": c.versionInfo.BuiltBy,
 				"commit":  c.versionInfo.Commit,
 				"date":    c.versionInfo.Date,
@@ -1184,7 +1184,7 @@ func (c *Config) editor(args []string) (string, []string, error) {
 }
 
 // errorf writes an error to stderr.
-func (c *Config) errorf(format string, args ...interface{}) {
+func (c *Config) errorf(format string, args ...any) {
 	fmt.Fprintf(c.stderr, "chezmoi: "+format, args...)
 }
 
@@ -1328,7 +1328,7 @@ func (c *Config) makeRunEWithSourceState(
 }
 
 // marshal formats data in dataFormat and writes it to the standard output.
-func (c *Config) marshal(dataFormat writeDataFormat, data interface{}) error {
+func (c *Config) marshal(dataFormat writeDataFormat, data any) error {
 	var format chezmoi.Format
 	switch dataFormat {
 	case writeDataFormatJSON:

@@ -22,18 +22,18 @@ func (c *Config) bitwardenAttachmentTemplateFunc(name, itemid string) string {
 	return string(output)
 }
 
-func (c *Config) bitwardenFieldsTemplateFunc(args ...string) map[string]interface{} {
+func (c *Config) bitwardenFieldsTemplateFunc(args ...string) map[string]any {
 	output, err := c.bitwardenOutput(args)
 	if err != nil {
 		panic(err)
 	}
 	var data struct {
-		Fields []map[string]interface{} `json:"fields"`
+		Fields []map[string]any `json:"fields"`
 	}
 	if err := json.Unmarshal(output, &data); err != nil {
 		panic(newParseCmdOutputError(c.Bitwarden.Command, args, output, err))
 	}
-	result := make(map[string]interface{})
+	result := make(map[string]any)
 	for _, field := range data.Fields {
 		if name, ok := field["name"].(string); ok {
 			result[name] = field
@@ -42,12 +42,12 @@ func (c *Config) bitwardenFieldsTemplateFunc(args ...string) map[string]interfac
 	return result
 }
 
-func (c *Config) bitwardenTemplateFunc(args ...string) map[string]interface{} {
+func (c *Config) bitwardenTemplateFunc(args ...string) map[string]any {
 	output, err := c.bitwardenOutput(args)
 	if err != nil {
 		panic(err)
 	}
-	var data map[string]interface{}
+	var data map[string]any
 	if err := json.Unmarshal(output, &data); err != nil {
 		panic(newParseCmdOutputError(c.Bitwarden.Command, args, output, err))
 	}

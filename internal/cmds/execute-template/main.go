@@ -44,7 +44,7 @@ func gitHubLatestRelease(userRepo string) string {
 func run() error {
 	flag.Parse()
 
-	var templateData interface{}
+	var templateData any
 	if *templateDataFilename != "" {
 		dataBytes, err := os.ReadFile(*templateDataFilename)
 		if err != nil {

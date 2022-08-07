@@ -18,7 +18,7 @@ func TestFormatRoundTrip(t *testing.T) {
 		Bool   bool
 		Bytes  []byte
 		Int    int
-		Object map[string]interface{}
+		Object map[string]any
 		String string
 	}
 
@@ -33,7 +33,7 @@ func TestFormatRoundTrip(t *testing.T) {
 				Bool:  true,
 				Bytes: []byte("bytes"),
 				Int:   1,
-				Object: map[string]interface{}{
+				Object: map[string]any{
 					"key": "value",
 				},
 				String: "string",

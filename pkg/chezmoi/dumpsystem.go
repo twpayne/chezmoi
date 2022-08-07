@@ -23,7 +23,7 @@ const (
 type DumpSystem struct {
 	emptySystemMixin
 	noUpdateSystemMixin
-	data map[string]interface{}
+	data map[string]any
 }
 
 // A commandData contains data about a command.
@@ -66,12 +66,12 @@ type symlinkData struct {
 // NewDumpSystem returns a new DumpSystem that accumulates data.
 func NewDumpSystem() *DumpSystem {
 	return &DumpSystem{
-		data: make(map[string]interface{}),
+		data: make(map[string]any),
 	}
 }
 
 // Data returns s's data.
-func (s *DumpSystem) Data() interface{} {
+func (s *DumpSystem) Data() any {
 	return s.data
 }
 
@@ -134,7 +134,7 @@ func (s *DumpSystem) WriteSymlink(oldname string, newname AbsPath) error {
 	})
 }
 
-func (s *DumpSystem) setData(key string, value interface{}) error {
+func (s *DumpSystem) setData(key string, value any) error {
 	if _, ok := s.data[key]; ok {
 		return fs.ErrExist
 	}

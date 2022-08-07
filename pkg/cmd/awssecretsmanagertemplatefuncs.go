@@ -16,7 +16,7 @@ type awsSecretsManagerConfig struct {
 
 	svc       *secretsmanager.Client
 	cache     map[string]string
-	jsonCache map[string]map[string]interface{}
+	jsonCache map[string]map[string]any
 }
 
 func (c *Config) awsSecretsManagerRawTemplateFunc(arn string) string {
@@ -71,20 +71,20 @@ func (c *Config) awsSecretsManagerRawTemplateFunc(arn string) string {
 	return secret
 }
 
-func (c *Config) awsSecretsManagerTemplateFunc(arn string) map[string]interface{} {
+func (c *Config) awsSecretsManagerTemplateFunc(arn string) map[string]any {
 	if secret, ok := c.AWSSecretsManager.jsonCache[arn]; ok {
 		return secret
 	}
 
 	raw := c.awsSecretsManagerRawTemplateFunc(arn)
 
-	var data map[string]interface{}
+	var data map[string]any
 	if err := json.Unmarshal([]byte(raw), &data); err != nil {
 		panic(err)
 	}
 
 	if c.AWSSecretsManager.jsonCache == nil {
-		c.AWSSecretsManager.jsonCache = make(map[string]map[string]interface{})
+		c.AWSSecretsManager.jsonCache = make(map[string]map[string]any)
 	}
 
 	c.AWSSecretsManager.jsonCache[arn] = data

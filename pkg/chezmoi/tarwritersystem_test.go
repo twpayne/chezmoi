@@ -18,16 +18,16 @@ import (
 var _ System = &TarWriterSystem{}
 
 func TestTarWriterSystem(t *testing.T) {
-	chezmoitest.WithTestFS(t, map[string]interface{}{
-		"/home/user/.local/share/chezmoi": map[string]interface{}{
+	chezmoitest.WithTestFS(t, map[string]any{
+		"/home/user/.local/share/chezmoi": map[string]any{
 			".chezmoiignore":  "README.md\n",
 			".chezmoiremove":  "*.txt\n",
 			".chezmoiversion": "1.2.3\n",
-			".chezmoitemplates": map[string]interface{}{
+			".chezmoitemplates": map[string]any{
 				"template": "# contents of .chezmoitemplates/template\n",
 			},
 			"README.md": "",
-			"dot_dir": map[string]interface{}{
+			"dot_dir": map[string]any{
 				"file": "# contents of .dir/file\n",
 			},
 			"run_script":      "# contents of script\n",

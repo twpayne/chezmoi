@@ -80,7 +80,7 @@ func TestPatternSetGlob(t *testing.T) {
 	for _, tc := range []struct {
 		name            string
 		ps              *patternSet
-		root            interface{}
+		root            any
 		expectedMatches []string
 	}{
 		{
@@ -94,7 +94,7 @@ func TestPatternSetGlob(t *testing.T) {
 			ps: mustNewPatternSet(t, map[string]patternSetIncludeType{
 				"/f*": patternSetInclude,
 			}),
-			root: map[string]interface{}{
+			root: map[string]any{
 				"foo": "",
 			},
 			expectedMatches: []string{
@@ -107,7 +107,7 @@ func TestPatternSetGlob(t *testing.T) {
 				"/b*": patternSetInclude,
 				"/*z": patternSetExclude,
 			}),
-			root: map[string]interface{}{
+			root: map[string]any{
 				"bar": "",
 				"baz": "",
 			},
@@ -120,7 +120,7 @@ func TestPatternSetGlob(t *testing.T) {
 			ps: mustNewPatternSet(t, map[string]patternSetIncludeType{
 				"/**/f*": patternSetInclude,
 			}),
-			root: map[string]interface{}{
+			root: map[string]any{
 				"dir1/dir2/foo": "",
 			},
 			expectedMatches: []string{

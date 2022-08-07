@@ -17,8 +17,8 @@ import (
 
 func TestConcurrentWalkSourceDir(t *testing.T) {
 	sourceDirAbsPath := NewAbsPath("/home/user/.local/share/chezmoi")
-	root := map[string]interface{}{
-		sourceDirAbsPath.String(): map[string]interface{}{
+	root := map[string]any{
+		sourceDirAbsPath.String(): map[string]any{
 			".chezmoiversion": "# contents of .chezmoiversion\n",
 			"dot_dir/file":    "# contents of .dir/file\n",
 		},
@@ -48,8 +48,8 @@ func TestConcurrentWalkSourceDir(t *testing.T) {
 
 func TestWalkSourceDir(t *testing.T) {
 	sourceDirAbsPath := NewAbsPath("/home/user/.local/share/chezmoi")
-	root := map[string]interface{}{
-		sourceDirAbsPath.String(): map[string]interface{}{
+	root := map[string]any{
+		sourceDirAbsPath.String(): map[string]any{
 			".chezmoi.toml.tmpl":    "",
 			".chezmoidata.json":     "",
 			".chezmoidata.toml":     "",

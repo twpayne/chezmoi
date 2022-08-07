@@ -74,7 +74,7 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 			}
 		}
 
-		promptBoolOnceInitTemplateFunc := func(m map[string]interface{}, key, field string, args ...bool) bool {
+		promptBoolOnceInitTemplateFunc := func(m map[string]any, key, field string, args ...bool) bool {
 			if value, ok := m[key]; ok {
 				if boolValue, ok := value.(bool); ok {
 					return boolValue
@@ -98,7 +98,7 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 			}
 		}
 
-		promptIntOnceInitTemplateFunc := func(m map[string]interface{}, key, field string, args ...int64) int64 {
+		promptIntOnceInitTemplateFunc := func(m map[string]any, key, field string, args ...int64) int64 {
 			if value, ok := m[key]; ok {
 				if intValue, ok := value.(int64); ok {
 					return intValue
@@ -125,7 +125,7 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 			}
 		}
 
-		promptStringOnceInitTemplateFunc := func(m map[string]interface{}, key, field string, args ...string) string {
+		promptStringOnceInitTemplateFunc := func(m map[string]any, key, field string, args ...string) string {
 			if value, ok := m[key]; ok {
 				if stringValue, ok := value.(string); ok {
 					return stringValue
@@ -138,7 +138,7 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 			return c.executeTemplate.stdinIsATTY
 		}
 
-		initTemplateFuncs := map[string]interface{}{
+		initTemplateFuncs := map[string]any{
 			"exit":             c.exitInitTemplateFunc,
 			"promptBool":       promptBoolInitTemplateFunc,
 			"promptBoolOnce":   promptBoolOnceInitTemplateFunc,

@@ -14,7 +14,7 @@ import (
 func TestWalkArchive(t *testing.T) {
 	for _, tc := range []struct {
 		name          string
-		dataFunc      func(map[string]interface{}) ([]byte, error)
+		dataFunc      func(map[string]any) ([]byte, error)
 		archiveFormat ArchiveFormat
 	}{
 		{
@@ -29,23 +29,23 @@ func TestWalkArchive(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			root := map[string]interface{}{
-				"dir1": map[string]interface{}{
-					"subdir1": map[string]interface{}{
+			root := map[string]any{
+				"dir1": map[string]any{
+					"subdir1": map[string]any{
 						"file1": "",
 						"file2": "",
 					},
-					"subdir2": map[string]interface{}{
+					"subdir2": map[string]any{
 						"file1": "",
 						"file2": "",
 					},
 				},
-				"dir2": map[string]interface{}{
-					"subdir1": map[string]interface{}{
+				"dir2": map[string]any{
+					"subdir1": map[string]any{
 						"file1": "",
 						"file2": "",
 					},
-					"subdir2": map[string]interface{}{
+					"subdir2": map[string]any{
 						"file1": "",
 						"file2": "",
 					},

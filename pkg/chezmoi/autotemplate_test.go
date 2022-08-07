@@ -10,14 +10,14 @@ func TestAutoTemplate(t *testing.T) {
 	for _, tc := range []struct {
 		name                 string
 		contentsStr          string
-		data                 map[string]interface{}
+		data                 map[string]any
 		expected             string
 		expectedReplacements bool
 	}{
 		{
 			name:        "simple",
 			contentsStr: "email = you@example.com\n",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"email": "you@example.com",
 			},
 			expected:             "email = {{ .email }}\n",
@@ -26,7 +26,7 @@ func TestAutoTemplate(t *testing.T) {
 		{
 			name:        "longest_first",
 			contentsStr: "name = John Smith\nfirstName = John\n",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"name":      "John Smith",
 				"firstName": "John",
 			},
@@ -38,7 +38,7 @@ func TestAutoTemplate(t *testing.T) {
 		{
 			name:        "alphabetical_first",
 			contentsStr: "name = John Smith\n",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"alpha": "John Smith",
 				"beta":  "John Smith",
 				"gamma": "John Smith",
@@ -49,8 +49,8 @@ func TestAutoTemplate(t *testing.T) {
 		{
 			name:        "nested_values",
 			contentsStr: "email = you@example.com\n",
-			data: map[string]interface{}{
-				"personal": map[string]interface{}{
+			data: map[string]any{
+				"personal": map[string]any{
 					"email": "you@example.com",
 				},
 			},
@@ -60,7 +60,7 @@ func TestAutoTemplate(t *testing.T) {
 		{
 			name:        "only_replace_words",
 			contentsStr: "darwinian evolution",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"os": "darwin",
 			},
 			expected: "darwinian evolution", // not "{{ .os }}ian evolution"
@@ -68,7 +68,7 @@ func TestAutoTemplate(t *testing.T) {
 		{
 			name:        "longest_match_first",
 			contentsStr: "/home/user",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"homeDir": "/home/user",
 			},
 			expected:             "{{ .homeDir }}",
@@ -77,7 +77,7 @@ func TestAutoTemplate(t *testing.T) {
 		{
 			name:        "longest_match_first_prefix",
 			contentsStr: "HOME=/home/user",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"homeDir": "/home/user",
 			},
 			expected:             "HOME={{ .homeDir }}",
@@ -86,7 +86,7 @@ func TestAutoTemplate(t *testing.T) {
 		{
 			name:        "longest_match_first_suffix",
 			contentsStr: "/home/user/something",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"homeDir": "/home/user",
 			},
 			expected:             "{{ .homeDir }}/something",
@@ -95,7 +95,7 @@ func TestAutoTemplate(t *testing.T) {
 		{
 			name:        "longest_match_first_prefix_and_suffix",
 			contentsStr: "HOME=/home/user/something",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"homeDir": "/home/user",
 			},
 			expected:             "HOME={{ .homeDir }}/something",
@@ -104,7 +104,7 @@ func TestAutoTemplate(t *testing.T) {
 		{
 			name:        "words_only",
 			contentsStr: "aaa aa a aa aaa aa a aa aaa",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"alpha": "a",
 			},
 			expected:             "aaa aa {{ .alpha }} aa aaa aa {{ .alpha }} aa aaa",
@@ -113,7 +113,7 @@ func TestAutoTemplate(t *testing.T) {
 		{
 			name:        "words_only_2",
 			contentsStr: "aaa aa a aa aaa aa a aa aaa",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"alpha": "aa",
 			},
 			expected:             "aaa {{ .alpha }} a {{ .alpha }} aaa {{ .alpha }} a {{ .alpha }} aaa",
@@ -122,7 +122,7 @@ func TestAutoTemplate(t *testing.T) {
 		{
 			name:        "words_only_3",
 			contentsStr: "aaa aa a aa aaa aa a aa aaa",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"alpha": "aaa",
 			},
 			expected:             "{{ .alpha }} aa a aa {{ .alpha }} aa a aa {{ .alpha }}",
@@ -131,7 +131,7 @@ func TestAutoTemplate(t *testing.T) {
 		{
 			name:        "skip_empty",
 			contentsStr: "a",
-			data: map[string]interface{}{
+			data: map[string]any{
 				"empty": "",
 			},
 			expected: "a",

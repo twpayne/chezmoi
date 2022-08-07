@@ -386,12 +386,12 @@ func cmdMkHomeDir(ts *testscript.TestScript, neg bool, args []string) {
 	workDir := ts.Getenv("WORK")
 	relPath, err := filepath.Rel(workDir, path)
 	ts.Check(err)
-	if err := vfst.NewBuilder().Build(vfs.NewPathFS(vfs.OSFS, workDir), map[string]interface{}{
-		relPath: map[string]interface{}{
+	if err := vfst.NewBuilder().Build(vfs.NewPathFS(vfs.OSFS, workDir), map[string]any{
+		relPath: map[string]any{
 			".create": "# contents of .create\n",
-			".dir": map[string]interface{}{
+			".dir": map[string]any{
 				"file": "# contents of .dir/file\n",
-				"subdir": map[string]interface{}{
+				"subdir": map[string]any{
 					"file": "# contents of .dir/subdir/file\n",
 				},
 			},
@@ -432,12 +432,12 @@ func cmdMkSourceDir(ts *testscript.TestScript, neg bool, args []string) {
 	workDir := ts.Getenv("WORK")
 	relPath, err := filepath.Rel(workDir, sourceDir)
 	ts.Check(err)
-	err = vfst.NewBuilder().Build(vfs.NewPathFS(vfs.OSFS, workDir), map[string]interface{}{
-		relPath: map[string]interface{}{
+	err = vfst.NewBuilder().Build(vfs.NewPathFS(vfs.OSFS, workDir), map[string]any{
+		relPath: map[string]any{
 			"create_dot_create": "# contents of .create\n",
-			"dot_dir": map[string]interface{}{
+			"dot_dir": map[string]any{
 				"file": "# contents of .dir/file\n",
-				"exact_subdir": map[string]interface{}{
+				"exact_subdir": map[string]any{
 					"file": "# contents of .dir/subdir/file\n",
 				},
 			},
@@ -634,10 +634,10 @@ func setup(env *testscript.Env) error {
 		env.Setenv("SHELL", filepath.Join(binDir, "shell"))
 	}
 
-	root := make(map[string]interface{})
+	root := make(map[string]any)
 	switch runtime.GOOS {
 	case "windows":
-		root["/bin"] = map[string]interface{}{
+		root["/bin"] = map[string]any{
 			// editor.cmd is a non-interactive script that appends "# edited\n"
 			// to the end of each file and creates an empty .edited file in each
 			// directory.
@@ -656,7 +656,7 @@ func setup(env *testscript.Env) error {
 			},
 		}
 	default:
-		root["/bin"] = map[string]interface{}{
+		root["/bin"] = map[string]any{
 			// editor is a non-interactive script that appends "# edited\n" to
 			// the end of each file and creates an empty .edited file in each
 			// directory.

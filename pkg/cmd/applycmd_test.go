@@ -15,13 +15,13 @@ import (
 func TestApplyCmd(t *testing.T) {
 	for _, tc := range []struct {
 		name      string
-		extraRoot interface{}
+		extraRoot any
 		args      []string
-		tests     []interface{}
+		tests     []any
 	}{
 		{
 			name: "all",
-			tests: []interface{}{
+			tests: []any{
 				vfst.TestPath("/home/user/.create",
 					vfst.TestModeIsRegular,
 					vfst.TestModePerm(0o666&^chezmoitest.Umask),
@@ -82,7 +82,7 @@ func TestApplyCmd(t *testing.T) {
 		{
 			name: "all_with_--dry-run",
 			args: []string{"--dry-run"},
-			tests: []interface{}{
+			tests: []any{
 				vfst.TestPath("/home/user/.create",
 					vfst.TestDoesNotExist,
 				),
@@ -115,7 +115,7 @@ func TestApplyCmd(t *testing.T) {
 		{
 			name: "dir",
 			args: []string{"~/.dir"},
-			tests: []interface{}{
+			tests: []any{
 				vfst.TestPath("/home/user/.dir",
 					vfst.TestIsDir,
 					vfst.TestModePerm(0o777&^chezmoitest.Umask),
@@ -139,7 +139,7 @@ func TestApplyCmd(t *testing.T) {
 		{
 			name: "dir_with_--recursive=false",
 			args: []string{"~/.dir", "--recursive=false"},
-			tests: []interface{}{
+			tests: []any{
 				vfst.TestPath("/home/user/.dir",
 					vfst.TestIsDir,
 					vfst.TestModePerm(0o777&^chezmoitest.Umask),
@@ -155,10 +155,10 @@ func TestApplyCmd(t *testing.T) {
 		{
 			name: "create",
 			args: []string{"~/.create"},
-			extraRoot: map[string]interface{}{
+			extraRoot: map[string]any{
 				"/home/user/.create": "# existing contents of .create\n",
 			},
-			tests: []interface{}{
+			tests: []any{
 				vfst.TestPath("/home/user/.create",
 					vfst.TestModeIsRegular,
 					vfst.TestModePerm(0o666&^chezmoitest.Umask),
@@ -168,23 +168,23 @@ func TestApplyCmd(t *testing.T) {
 		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
-			chezmoitest.WithTestFS(t, map[string]interface{}{
-				"/home/user": map[string]interface{}{
-					".config": map[string]interface{}{
-						"chezmoi": map[string]interface{}{
+			chezmoitest.WithTestFS(t, map[string]any{
+				"/home/user": map[string]any{
+					".config": map[string]any{
+						"chezmoi": map[string]any{
 							"chezmoi.toml": chezmoitest.JoinLines(
 								`[data]`,
 								`  variable = "value"`,
 							),
 						},
 					},
-					".local": map[string]interface{}{
-						"share": map[string]interface{}{
-							"chezmoi": map[string]interface{}{
+					".local": map[string]any{
+						"share": map[string]any{
+							"chezmoi": map[string]any{
 								"create_dot_create": "# contents of .create\n",
-								"dot_dir": map[string]interface{}{
+								"dot_dir": map[string]any{
 									"file": "# contents of .dir/file\n",
-									"subdir": map[string]interface{}{
+									"subdir": map[string]any{
 										"file": "# contents of .dir/subdir/file\n",
 									},
 								},
