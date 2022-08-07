@@ -14,19 +14,19 @@ import (
 func TestAddCmd(t *testing.T) {
 	for _, tc := range []struct {
 		name  string
-		root  interface{}
+		root  any
 		args  []string
-		tests []interface{}
+		tests []any
 	}{
 		{
 			name: "dir",
-			root: map[string]interface{}{
-				"/home/user": map[string]interface{}{
+			root: map[string]any{
+				"/home/user": map[string]any{
 					".dir": &vfst.Dir{Perm: 0o777},
 				},
 			},
 			args: []string{"~/.dir"},
-			tests: []interface{}{
+			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
 					vfst.TestIsDir,
 					vfst.TestModePerm(0o777&^chezmoitest.Umask),
@@ -39,18 +39,18 @@ func TestAddCmd(t *testing.T) {
 		},
 		{
 			name: "dir_with_file",
-			root: map[string]interface{}{
-				"/home/user": map[string]interface{}{
+			root: map[string]any{
+				"/home/user": map[string]any{
 					".dir": &vfst.Dir{
 						Perm: 0o777,
-						Entries: map[string]interface{}{
+						Entries: map[string]any{
 							"file": "# contents of .dir/file\n",
 						},
 					},
 				},
 			},
 			args: []string{"~/.dir"},
-			tests: []interface{}{
+			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
 					vfst.TestIsDir,
 					vfst.TestModePerm(0o777&^chezmoitest.Umask),
@@ -67,18 +67,18 @@ func TestAddCmd(t *testing.T) {
 		},
 		{
 			name: "dir_with_file_with_--recursive=false",
-			root: map[string]interface{}{
-				"/home/user": map[string]interface{}{
+			root: map[string]any{
+				"/home/user": map[string]any{
 					".dir": &vfst.Dir{
 						Perm: 0o777,
-						Entries: map[string]interface{}{
+						Entries: map[string]any{
 							"file": "# contents of .dir/file\n",
 						},
 					},
 				},
 			},
 			args: []string{"~/.dir", "--recursive=false"},
-			tests: []interface{}{
+			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
 					vfst.TestIsDir,
 					vfst.TestModePerm(0o777&^chezmoitest.Umask),
@@ -94,18 +94,18 @@ func TestAddCmd(t *testing.T) {
 		},
 		{
 			name: "dir_private_unix",
-			root: map[string]interface{}{
-				"/home/user": map[string]interface{}{
+			root: map[string]any{
+				"/home/user": map[string]any{
 					".dir": &vfst.Dir{
 						Perm: 0o700,
-						Entries: map[string]interface{}{
+						Entries: map[string]any{
 							"file": "# contents of .dir/file\n",
 						},
 					},
 				},
 			},
 			args: []string{"~/.dir"},
-			tests: []interface{}{
+			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/private_dot_dir",
 					vfst.TestIsDir,
 					vfst.TestModePerm(0o777&^chezmoitest.Umask),
@@ -122,18 +122,18 @@ func TestAddCmd(t *testing.T) {
 		},
 		{
 			name: "dir_file_private_unix",
-			root: map[string]interface{}{
-				"/home/user": map[string]interface{}{
+			root: map[string]any{
+				"/home/user": map[string]any{
 					".dir": &vfst.Dir{
 						Perm: 0o700,
-						Entries: map[string]interface{}{
+						Entries: map[string]any{
 							"file": "# contents of .dir/file\n",
 						},
 					},
 				},
 			},
 			args: []string{"~/.dir/file"},
-			tests: []interface{}{
+			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/private_dot_dir",
 					vfst.TestIsDir,
 					vfst.TestModePerm(0o777&^chezmoitest.Umask),
@@ -150,13 +150,13 @@ func TestAddCmd(t *testing.T) {
 		},
 		{
 			name: "empty",
-			root: map[string]interface{}{
-				"/home/user": map[string]interface{}{
+			root: map[string]any{
+				"/home/user": map[string]any{
 					".empty": "",
 				},
 			},
 			args: []string{"~/.empty"},
-			tests: []interface{}{
+			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/empty_dot_empty",
 					vfst.TestModeIsRegular,
 					vfst.TestModePerm(0o666&^chezmoitest.Umask),
@@ -166,8 +166,8 @@ func TestAddCmd(t *testing.T) {
 		},
 		{
 			name: "executable_unix",
-			root: map[string]interface{}{
-				"/home/user": map[string]interface{}{
+			root: map[string]any{
+				"/home/user": map[string]any{
 					".executable": &vfst.File{
 						Perm:     0o777,
 						Contents: []byte("#!/bin/sh\n"),
@@ -175,7 +175,7 @@ func TestAddCmd(t *testing.T) {
 				},
 			},
 			args: []string{"~/.executable"},
-			tests: []interface{}{
+			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/executable_dot_executable",
 					vfst.TestModeIsRegular,
 					vfst.TestModePerm(0o666&^chezmoitest.Umask),
@@ -185,13 +185,13 @@ func TestAddCmd(t *testing.T) {
 		},
 		{
 			name: "file",
-			root: map[string]interface{}{
-				"/home/user": map[string]interface{}{
+			root: map[string]any{
+				"/home/user": map[string]any{
 					".file": "# contents of .file\n",
 				},
 			},
 			args: []string{"~/.file"},
-			tests: []interface{}{
+			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_file",
 					vfst.TestModeIsRegular,
 					vfst.TestModePerm(0o666&^chezmoitest.Umask),
@@ -201,15 +201,15 @@ func TestAddCmd(t *testing.T) {
 		},
 		{
 			name: "symlink",
-			root: map[string]interface{}{
-				"/home/user": map[string]interface{}{
+			root: map[string]any{
+				"/home/user": map[string]any{
 					".symlink": &vfst.Symlink{
 						Target: ".dir/subdir/file",
 					},
 				},
 			},
 			args: []string{"~/.symlink"},
-			tests: []interface{}{
+			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/symlink_dot_symlink",
 					vfst.TestModeIsRegular,
 					vfst.TestModePerm(0o666&^chezmoitest.Umask),
@@ -219,8 +219,8 @@ func TestAddCmd(t *testing.T) {
 		},
 		{
 			name: "symlink_with_--follow",
-			root: map[string]interface{}{
-				"/home/user": map[string]interface{}{
+			root: map[string]any{
+				"/home/user": map[string]any{
 					".file": "# contents of .file\n",
 					".symlink": &vfst.Symlink{
 						Target: ".file",
@@ -228,7 +228,7 @@ func TestAddCmd(t *testing.T) {
 				},
 			},
 			args: []string{"--follow", "~/.symlink"},
-			tests: []interface{}{
+			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_symlink",
 					vfst.TestModeIsRegular,
 					vfst.TestModePerm(0o666&^chezmoitest.Umask),
@@ -252,8 +252,8 @@ func TestAddCmdChmod(t *testing.T) {
 		t.Skip("skipping UNIX test on Windows")
 	}
 
-	chezmoitest.WithTestFS(t, map[string]interface{}{
-		"/home/user": map[string]interface{}{
+	chezmoitest.WithTestFS(t, map[string]any{
+		"/home/user": map[string]any{
 			".dir/subdir/file": "# contents of .dir/subdir/file\n",
 		},
 	}, func(fileSystem vfs.FS) {

@@ -29,10 +29,10 @@ var (
 type lastpassConfig struct {
 	Command   string
 	versionOK bool
-	cache     map[string][]map[string]interface{}
+	cache     map[string][]map[string]any
 }
 
-func (c *Config) lastpassTemplateFunc(id string) []map[string]interface{} {
+func (c *Config) lastpassTemplateFunc(id string) []map[string]any {
 	data, err := c.lastpassData(id)
 	if err != nil {
 		panic(err)
@@ -48,7 +48,7 @@ func (c *Config) lastpassTemplateFunc(id string) []map[string]interface{} {
 	return data
 }
 
-func (c *Config) lastpassRawTemplateFunc(id string) []map[string]interface{} {
+func (c *Config) lastpassRawTemplateFunc(id string) []map[string]any {
 	data, err := c.lastpassData(id)
 	if err != nil {
 		panic(err)
@@ -56,7 +56,7 @@ func (c *Config) lastpassRawTemplateFunc(id string) []map[string]interface{} {
 	return data
 }
 
-func (c *Config) lastpassData(id string) ([]map[string]interface{}, error) {
+func (c *Config) lastpassData(id string) ([]map[string]any, error) {
 	if !c.Lastpass.versionOK {
 		if err := c.lastpassVersionCheck(); err != nil {
 			return nil, err
@@ -73,13 +73,13 @@ func (c *Config) lastpassData(id string) ([]map[string]interface{}, error) {
 		return nil, err
 	}
 
-	var data []map[string]interface{}
+	var data []map[string]any
 	if err := json.Unmarshal(output, &data); err != nil {
 		return nil, fmt.Errorf("%s: parse error: %w", output, err)
 	}
 
 	if c.Lastpass.cache == nil {
-		c.Lastpass.cache = make(map[string][]map[string]interface{})
+		c.Lastpass.cache = make(map[string][]map[string]any)
 	}
 	c.Lastpass.cache[id] = data
 	return data, nil

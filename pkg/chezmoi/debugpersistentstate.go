@@ -36,7 +36,7 @@ func (s *DebugPersistentState) CopyTo(p PersistentState) error {
 }
 
 // Data implements PersistentState.Data.
-func (s *DebugPersistentState) Data() (interface{}, error) {
+func (s *DebugPersistentState) Data() (any, error) {
 	data, err := s.persistentState.Data()
 	s.logger.Err(err).
 		Interface("data", data).

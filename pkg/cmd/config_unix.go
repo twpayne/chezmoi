@@ -41,6 +41,6 @@ func (c *Config) readPassword(prompt string) (password string, err error) {
 	return
 }
 
-func (c *Config) windowsVersion() (map[string]interface{}, error) {
+func (c *Config) windowsVersion() (map[string]any, error) {
 	return nil, nil
 }

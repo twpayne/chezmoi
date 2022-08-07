@@ -11,7 +11,7 @@ import (
 func TestQuoteListTemplateFunc(t *testing.T) {
 	c, err := newConfig()
 	require.NoError(t, err)
-	actual := c.quoteListTemplateFunc([]interface{}{
+	actual := c.quoteListTemplateFunc([]any{
 		[]byte{65},
 		"b",
 		errors.New("error"),

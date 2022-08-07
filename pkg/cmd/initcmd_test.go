@@ -111,10 +111,10 @@ func TestGuessDotfilesRepoURL(t *testing.T) {
 }
 
 func TestIssue2137(t *testing.T) {
-	chezmoitest.WithTestFS(t, map[string]interface{}{
-		"/home/user/.local/share/chezmoi": map[string]interface{}{
+	chezmoitest.WithTestFS(t, map[string]any{
+		"/home/user/.local/share/chezmoi": map[string]any{
 			".chezmoiversion": "3.0.0",
-			".git": map[string]interface{}{
+			".git": map[string]any{
 				".keep": nil,
 			},
 		},

@@ -30,7 +30,7 @@ func (s *MockPersistentState) CopyTo(p PersistentState) error {
 }
 
 // Data implements PersistentState.Data.
-func (s *MockPersistentState) Data() (interface{}, error) {
+func (s *MockPersistentState) Data() (any, error) {
 	return s.buckets, nil
 }
 

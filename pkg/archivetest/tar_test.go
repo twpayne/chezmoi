@@ -10,13 +10,13 @@ import (
 )
 
 func TestNewTar(t *testing.T) {
-	data, err := NewTar(map[string]interface{}{
-		"dir": map[string]interface{}{
+	data, err := NewTar(map[string]any{
+		"dir": map[string]any{
 			"file1": "# contents of dir/file1\n",
 			"file2": []byte("# contents of dir/file2\n"),
 			"subdir": &Dir{
 				Perm: 0o700,
-				Entries: map[string]interface{}{
+				Entries: map[string]any{
 					"file": &File{
 						Perm:     0o777,
 						Contents: []byte("# contents of dir/subdir/file\n"),

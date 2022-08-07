@@ -16,7 +16,7 @@ import (
 )
 
 // Kernel returns the kernel information parsed from /proc/sys/kernel.
-func Kernel(fileSystem vfs.FS) (map[string]interface{}, error) {
+func Kernel(fileSystem vfs.FS) (map[string]any, error) {
 	const procSysKernel = "/proc/sys/kernel"
 
 	switch fileInfo, err := fileSystem.Stat(procSysKernel); {
@@ -30,7 +30,7 @@ func Kernel(fileSystem vfs.FS) (map[string]interface{}, error) {
 		return nil, nil
 	}
 
-	kernel := make(map[string]interface{})
+	kernel := make(map[string]any)
 	for _, filename := range []string{
 		"osrelease",
 		"ostype",
@@ -52,7 +52,7 @@ func Kernel(fileSystem vfs.FS) (map[string]interface{}, error) {
 
 // OSRelease returns the operating system identification data as defined by the
 // os-release specification.
-func OSRelease(system System) (map[string]interface{}, error) {
+func OSRelease(system System) (map[string]any, error) {
 	for _, filename := range []AbsPath{
 		NewAbsPath("/etc/os-release"),
 		NewAbsPath("/usr/lib/os-release"),
@@ -84,8 +84,8 @@ func maybeUnquote(s string) string {
 
 // parseOSRelease parses operating system identification data from r as defined
 // by the os-release specification.
-func parseOSRelease(r io.Reader) (map[string]interface{}, error) {
-	result := make(map[string]interface{})
+func parseOSRelease(r io.Reader) (map[string]any, error) {
+	result := make(map[string]any)
 	s := bufio.NewScanner(r)
 	for s.Scan() {
 		// Trim all leading whitespace, but not necessarily trailing whitespace.

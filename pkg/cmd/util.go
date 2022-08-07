@@ -138,8 +138,8 @@ func uniqueAbbreviations(values []string) map[string]string {
 
 // upperSnakeCaseToCamelCaseKeys returns m with all keys converted from
 // UPPER_SNAKE_CASE to camelCase.
-func upperSnakeCaseToCamelCaseMap(m map[string]interface{}) map[string]interface{} {
-	result := make(map[string]interface{})
+func upperSnakeCaseToCamelCaseMap(m map[string]any) map[string]any {
+	result := make(map[string]any)
 	for k, v := range m {
 		result[upperSnakeCaseToCamelCase(k)] = v
 	}

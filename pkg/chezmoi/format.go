@@ -21,9 +21,9 @@ var (
 
 // A Format is a serialization format.
 type Format interface {
-	Marshal(value interface{}) ([]byte, error)
+	Marshal(value any) ([]byte, error)
 	Name() string
-	Unmarshal(data []byte, value interface{}) error
+	Unmarshal(data []byte, value any) error
 }
 
 // A formatGzippedJSON implements the gzipped JSON serialization format.
@@ -46,7 +46,7 @@ var Formats = map[string]Format{
 }
 
 // Marshal implements Format.Marshal.
-func (formatGzippedJSON) Marshal(value interface{}) ([]byte, error) {
+func (formatGzippedJSON) Marshal(value any) ([]byte, error) {
 	jsonData, err := json.Marshal(value)
 	if err != nil {
 		return nil, err
@@ -69,7 +69,7 @@ func (formatGzippedJSON) Name() string {
 }
 
 // Unmask implements Format.Unmarshal.
-func (formatGzippedJSON) Unmarshal(data []byte, value interface{}) (err error) {
+func (formatGzippedJSON) Unmarshal(data []byte, value any) (err error) {
 	var r *gzip.Reader
 	if r, err = gzip.NewReader(bytes.NewReader(data)); err != nil {
 		return
@@ -84,7 +84,7 @@ func (formatGzippedJSON) Unmarshal(data []byte, value interface{}) (err error) {
 }
 
 // Marshal implements Format.Marshal.
-func (formatJSON) Marshal(value interface{}) ([]byte, error) {
+func (formatJSON) Marshal(value any) ([]byte, error) {
 	data, err := json.MarshalIndent(value, "", "  ")
 	if err != nil {
 		return nil, err
@@ -98,12 +98,12 @@ func (formatJSON) Name() string {
 }
 
 // Unmarshal implements Format.Unmarshal.
-func (formatJSON) Unmarshal(data []byte, value interface{}) error {
+func (formatJSON) Unmarshal(data []byte, value any) error {
 	return json.Unmarshal(data, value)
 }
 
 // Marshal implements Format.Marshal.
-func (formatTOML) Marshal(value interface{}) ([]byte, error) {
+func (formatTOML) Marshal(value any) ([]byte, error) {
 	return toml.Marshal(value)
 }
 
@@ -113,12 +113,12 @@ func (formatYAML) Name() string {
 }
 
 // Unmarshal implements Format.Unmarshal.
-func (formatTOML) Unmarshal(data []byte, value interface{}) error {
+func (formatTOML) Unmarshal(data []byte, value any) error {
 	return toml.Unmarshal(data, value)
 }
 
 // Marshal implements Format.Marshal.
-func (formatYAML) Marshal(value interface{}) ([]byte, error) {
+func (formatYAML) Marshal(value any) ([]byte, error) {
 	return yaml.Marshal(value)
 }
 
@@ -128,7 +128,7 @@ func (formatTOML) Name() string {
 }
 
 // Unmarshal implements Format.Unmarshal.
-func (formatYAML) Unmarshal(data []byte, value interface{}) error {
+func (formatYAML) Unmarshal(data []byte, value any) error {
 	return yaml.Unmarshal(data, value)
 }
 

@@ -81,7 +81,7 @@ func SkipUnlessGOOS(t *testing.T, name string) {
 }
 
 // WithTestFS calls f with a test filesystem populated with root.
-func WithTestFS(t *testing.T, root interface{}, f func(vfs.FS)) {
+func WithTestFS(t *testing.T, root any, f func(vfs.FS)) {
 	t.Helper()
 	fileSystem, cleanup, err := vfst.NewTestFS(root, vfst.BuilderUmask(Umask))
 	require.NoError(t, err)

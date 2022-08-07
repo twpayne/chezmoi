@@ -15,11 +15,11 @@ import (
 func TestDataCmd(t *testing.T) {
 	for _, tc := range []struct {
 		format chezmoi.Format
-		root   map[string]interface{}
+		root   map[string]any
 	}{
 		{
 			format: chezmoi.FormatJSON,
-			root: map[string]interface{}{
+			root: map[string]any{
 				"/home/user/.config/chezmoi/chezmoi.json": chezmoitest.JoinLines(
 					`{`,
 					`  "sourceDir": "/tmp/source",`,
@@ -32,7 +32,7 @@ func TestDataCmd(t *testing.T) {
 		},
 		{
 			format: chezmoi.FormatYAML,
-			root: map[string]interface{}{
+			root: map[string]any{
 				"/home/user/.config/chezmoi/chezmoi.yaml": chezmoitest.JoinLines(
 					`sourceDir: /tmp/source`,
 					`data:`,
