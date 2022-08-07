@@ -1020,7 +1020,7 @@ func (c *Config) defaultTemplateData() map[string]interface{} {
 			Err(err).
 			Msg("chezmoi.FQDNHostname")
 	}
-	hostname, _, _ := chezmoi.CutString(fqdnHostname, ".")
+	hostname, _, _ := strings.Cut(fqdnHostname, ".")
 
 	kernel, err := chezmoi.Kernel(c.fileSystem)
 	if err != nil {

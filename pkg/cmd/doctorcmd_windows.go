@@ -31,7 +31,7 @@ func (systeminfoCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath
 	var osName, osVersion string
 	s := bufio.NewScanner(bytes.NewReader(data))
 	for s.Scan() {
-		switch key, value, found := chezmoi.CutString(s.Text(), ":"); {
+		switch key, value, found := strings.Cut(s.Text(), ":"); {
 		case !found:
 			// Do nothing.
 		case key == "OS Name":

@@ -10,7 +10,6 @@ import (
 
 	"github.com/coreos/go-semver/semver"
 
-	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoilog"
 )
 
@@ -439,7 +438,7 @@ func newOnepasswordArgs(baseArgs, userArgs []string) (*onepasswordArgs, error) {
 func onepasswordUniqueSessionToken(environ []string) string {
 	var token string
 	for _, env := range environ {
-		key, value, found := chezmoi.CutString(env, "=")
+		key, value, found := strings.Cut(env, "=")
 		if found && strings.HasPrefix(key, "OP_SESSION_") {
 			if token != "" {
 				return ""
