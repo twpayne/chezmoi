@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io/fs"
 	"sort"
+
+	"golang.org/x/exp/maps"
 )
 
 // A sourceStateEntryTreeNode is a node in a tree of SourceStateEntries.
@@ -65,11 +67,7 @@ func (n *sourceStateEntryTreeNode) ForEachNode(
 		return err
 	}
 
-	childrenByRelPath := make(RelPaths, 0, len(n.children))
-	for childRelPath := range n.children {
-		childrenByRelPath = append(childrenByRelPath, childRelPath)
-	}
-
+	childrenByRelPath := RelPaths(maps.Keys(n.children))
 	sort.Sort(childrenByRelPath)
 	for _, childRelPath := range childrenByRelPath {
 		child := n.children[childRelPath]

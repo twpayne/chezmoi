@@ -29,6 +29,7 @@ import (
 	"github.com/rs/zerolog/log"
 	vfs "github.com/twpayne/go-vfs/v4"
 	"go.uber.org/multierr"
+	"golang.org/x/exp/maps"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoilog"
 )
@@ -291,10 +292,7 @@ func (s *SourceState) Add(
 		sourceRelPaths []SourceRelPath
 	}
 
-	destAbsPaths := make(AbsPaths, 0, len(destAbsPathInfos))
-	for destAbsPath := range destAbsPathInfos {
-		destAbsPaths = append(destAbsPaths, destAbsPath)
-	}
+	destAbsPaths := AbsPaths(maps.Keys(destAbsPathInfos))
 	sort.Sort(destAbsPaths)
 
 	sourceUpdates := make([]sourceUpdate, 0, len(destAbsPathInfos))
