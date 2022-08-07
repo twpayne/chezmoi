@@ -856,8 +856,8 @@ func (c *Config) defaultPreApplyFunc(
 
 	if c.interactive {
 		prompt := fmt.Sprintf("Apply %s", targetRelPath)
-		actualContents := actualEntryState.Contents()
 		var choices []string
+		actualContents := actualEntryState.Contents()
 		targetContents := targetEntryState.Contents()
 		if actualContents != nil || targetContents != nil {
 			choices = append(choices, "diff")
