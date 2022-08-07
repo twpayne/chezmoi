@@ -1,4 +1,4 @@
-ARG VARIANT=dev-1.17
+ARG VARIANT=dev-1.18
 FROM mcr.microsoft.com/vscode/devcontainers/go:${VARIANT}
 
 # [Optional] Uncomment this section to install additional OS packages.
