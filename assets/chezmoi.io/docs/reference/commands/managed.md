@@ -1,7 +1,7 @@
-# `managed` [*target*...]
+# `managed` [*path*...]
 
-List all managed entries in the destination directory under all *target*s in
-alphabetical order.  When no *target*s are supplied, list all managed entries in
+List all managed entries in the destination directory under all *path*s in
+alphabetical order. When no *path*s are supplied, list all managed entries in
 the destination directory in alphabetical order.
 
 ## `-i`, `--include` *types*
