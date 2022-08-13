@@ -13,6 +13,7 @@ import (
 
 	"github.com/bmatcuk/doublestar/v4"
 	"github.com/bradenhilton/mozillainstallhash"
+	"gopkg.in/ini.v1"
 	"howett.net/plist"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
@@ -27,6 +28,14 @@ var startOfLineRx = regexp.MustCompile(`(?m)^`)
 
 func (c *Config) commentTemplateFunc(prefix, s string) string {
 	return startOfLineRx.ReplaceAllString(s, prefix)
+}
+
+func (c *Config) fromIniTemplateFunc(s string) map[string]any {
+	file, err := ini.Load([]byte(s))
+	if err != nil {
+		panic(err)
+	}
+	return iniFileToMap(file)
 }
 
 func (c *Config) fromTomlTemplateFunc(s string) any {
@@ -210,4 +219,23 @@ func (c *Config) toYamlTemplateFunc(data any) string {
 		panic(err)
 	}
 	return string(yaml)
+}
+
+func iniFileToMap(file *ini.File) map[string]any {
+	m := make(map[string]any)
+	for _, section := range file.Sections() {
+		m[section.Name()] = iniSectionToMap(section)
+	}
+	return m
+}
+
+func iniSectionToMap(section *ini.Section) map[string]any {
+	m := make(map[string]any)
+	for _, s := range section.ChildSections() {
+		m[s.Name()] = iniSectionToMap(s)
+	}
+	for _, k := range section.Keys() {
+		m[k.Name()] = k.Value()
+	}
+	return m
 }
