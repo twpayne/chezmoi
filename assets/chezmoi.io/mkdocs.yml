@@ -170,6 +170,7 @@ nav:
       - comment: reference/templates/functions/comment.md
       - decrypt: reference/templates/functions/decrypt.md
       - encrypt: reference/templates/functions/encrypt.md
+      - fromIni: reference/templates/functions/fromIni.md
       - fromToml: reference/templates/functions/fromToml.md
       - fromYaml: reference/templates/functions/fromYaml.md
       - glob: reference/templates/functions/glob.md

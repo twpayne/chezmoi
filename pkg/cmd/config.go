@@ -439,6 +439,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"comment":                  c.commentTemplateFunc,
 		"decrypt":                  c.decryptTemplateFunc,
 		"encrypt":                  c.encryptTemplateFunc,
+		"fromIni":                  c.fromIniTemplateFunc,
 		"fromToml":                 c.fromTomlTemplateFunc,
 		"fromYaml":                 c.fromYamlTemplateFunc,
 		"gitHubKeys":               c.gitHubKeysTemplateFunc,
