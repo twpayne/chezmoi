@@ -212,6 +212,16 @@ chezmoi-cd() {
 Typing `chezmoi-cd` will then change the directory of your current shell to
 chezmoi's source directory.
 
+## Why are the `prompt*` functions only available in config file templates?
+
+chezmoi regularly needs to execute templates to determine the target contents
+of files. For example, templates are executed for the `apply`, `diff`, and
+`status` commands, amongst many others. Having to interactively respond each
+time would quickly become tiresome. Therefore, chezmoi only provides these
+functions when generating a config file from a config file template (e.g. when
+you run `chezmoi init` or `chezmoi --init apply`).
+
+
 ## Why not use Ansible/Chef/Puppet/Salt, or similar to manage my dotfiles instead?
 
 Whole system management tools are more than capable of managing your dotfiles,
