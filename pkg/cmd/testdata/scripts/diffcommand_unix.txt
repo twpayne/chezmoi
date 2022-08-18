@@ -57,8 +57,10 @@ index bd729e8ee3cc005444c67dc77eed60016886b5e0..b508963510528ab709627ec448026a10
 [diff]
     command = "echo"
     args = ["arg"]
+-- home2/user/.file --
+# destination contents of .file
 -- home2/user/.local/share/chezmoi/dot_file --
-# contents of .file
+# target contents of .file
 -- home3/user/.config/chezmoi/chezmoi.toml --
 [diff]
     command = "false"
