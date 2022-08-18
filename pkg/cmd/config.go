@@ -1487,6 +1487,7 @@ func (c *Config) newDiffSystem(s chezmoi.System, w io.Writer, dirAbsPath chezmoi
 		return chezmoi.NewGitDiffSystem(s, w, dirAbsPath, options)
 	}
 	options := &chezmoi.ExternalDiffSystemOptions{
+		Include: c.Diff.include.Sub(c.Diff.Exclude),
 		Reverse: c.Diff.Reverse,
 	}
 	return chezmoi.NewExternalDiffSystem(s, c.Diff.Command, c.Diff.Args, c.DestDirAbsPath, options)
