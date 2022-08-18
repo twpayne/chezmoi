@@ -189,6 +189,7 @@ nav:
       - reference/templates/github-functions/index.md
       - gitHubKeys: reference/templates/github-functions/gitHubKeys.md
       - gitHubLatestRelease: reference/templates/github-functions/gitHubLatestRelease.md
+      - gitHubLatestTag: reference/templates/github-functions/gitHubLatestTag.md
     - Init functions:
       - reference/templates/init-functions/index.md
       - exit: reference/templates/init-functions/exit.md
