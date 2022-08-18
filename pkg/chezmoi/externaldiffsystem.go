@@ -23,11 +23,13 @@ type ExternalDiffSystem struct {
 	args           []string
 	destDirAbsPath AbsPath
 	tempDirAbsPath AbsPath
+	include        *EntryTypeSet
 	reverse        bool
 }
 
 // ExternalDiffSystemOptions are options for NewExternalDiffSystem.
 type ExternalDiffSystemOptions struct {
+	Include *EntryTypeSet
 	Reverse bool
 }
 
@@ -40,6 +42,7 @@ func NewExternalDiffSystem(
 		command:        command,
 		args:           args,
 		destDirAbsPath: destDirAbsPath,
+		include:        options.Include,
 		reverse:        options.Reverse,
 	}
 }
@@ -57,6 +60,7 @@ func (s *ExternalDiffSystem) Close() error {
 
 // Chmod implements System.Chmod.
 func (s *ExternalDiffSystem) Chmod(name AbsPath, mode fs.FileMode) error {
+	// FIXME generate suitable inputs for s.command
 	return s.system.Chmod(name, mode)
 }
 
@@ -78,6 +82,23 @@ func (s *ExternalDiffSystem) Lstat(name AbsPath) (fs.FileInfo, error) {
 
 // Mkdir implements System.Mkdir.
 func (s *ExternalDiffSystem) Mkdir(name AbsPath, perm fs.FileMode) error {
+	if s.include.Include(EntryTypeDirs) {
+		targetRelPath, err := name.TrimDirPrefix(s.destDirAbsPath)
+		if err != nil {
+			return err
+		}
+		tempDirAbsPath, err := s.tempDir()
+		if err != nil {
+			return err
+		}
+		targetAbsPath := tempDirAbsPath.Join(targetRelPath)
+		if err := os.MkdirAll(targetAbsPath.String(), perm); err != nil {
+			return err
+		}
+		if err := s.runDiffCommand(devNullAbsPath, targetAbsPath); err != nil {
+			return err
+		}
+	}
 	return s.system.Mkdir(name, perm)
 }
 
@@ -103,16 +124,20 @@ func (s *ExternalDiffSystem) Readlink(name AbsPath) (string, error) {
 
 // Remove implements System.Remove.
 func (s *ExternalDiffSystem) Remove(name AbsPath) error {
-	if err := s.runDiffCommand(name, devNullAbsPath); err != nil {
-		return err
+	if s.include.Include(EntryTypeRemove) {
+		if err := s.runDiffCommand(name, devNullAbsPath); err != nil {
+			return err
+		}
 	}
 	return s.system.Remove(name)
 }
 
 // RemoveAll implements System.RemoveAll.
 func (s *ExternalDiffSystem) RemoveAll(name AbsPath) error {
-	if err := s.runDiffCommand(name, devNullAbsPath); err != nil {
-		return err
+	if s.include.Include(EntryTypeRemove) {
+		if err := s.runDiffCommand(name, devNullAbsPath); err != nil {
+			return err
+		}
 	}
 	return s.system.RemoveAll(name)
 }
@@ -130,7 +155,23 @@ func (s *ExternalDiffSystem) RunCmd(cmd *exec.Cmd) error {
 
 // RunScript implements System.RunScript.
 func (s *ExternalDiffSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
-	// FIXME generate suitable inputs for s.command
+	if s.include.Include(EntryTypeScripts) {
+		tempDirAbsPath, err := s.tempDir()
+		if err != nil {
+			return err
+		}
+		targetAbsPath := tempDirAbsPath.Join(scriptname)
+		if err := os.MkdirAll(targetAbsPath.Dir().String(), 0o700); err != nil {
+			return err
+		}
+		//nolint:gosec
+		if err := os.WriteFile(targetAbsPath.String(), data, 0o700); err != nil {
+			return err
+		}
+		if err := s.runDiffCommand(devNullAbsPath, targetAbsPath); err != nil {
+			return err
+		}
+	}
 	return s.system.RunScript(scriptname, dir, data, interpreter)
 }
 
@@ -146,23 +187,37 @@ func (s *ExternalDiffSystem) UnderlyingFS() vfs.FS {
 
 // WriteFile implements System.WriteFile.
 func (s *ExternalDiffSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error {
-	targetRelPath, err := filename.TrimDirPrefix(s.destDirAbsPath)
-	if err != nil {
-		return err
-	}
-	tempDirAbsPath, err := s.tempDir()
-	if err != nil {
-		return err
-	}
-	targetAbsPath := tempDirAbsPath.Join(targetRelPath)
-	if err := os.MkdirAll(targetAbsPath.Dir().String(), 0o700); err != nil {
-		return err
-	}
-	if err := os.WriteFile(targetAbsPath.String(), data, perm); err != nil {
-		return err
-	}
-	if err := s.runDiffCommand(filename, targetAbsPath); err != nil {
-		return err
+	if s.include.Include(EntryTypeFiles) {
+		// If filename does not exist, replace it with /dev/null to avoid
+		// passing the name of a non-existent file to the external diff command.
+		destAbsPath := filename
+		switch _, err := os.Stat(destAbsPath.String()); {
+		case errors.Is(err, fs.ErrNotExist):
+			destAbsPath = devNullAbsPath
+		case err != nil:
+			return err
+		}
+
+		// Write the target contents to a file in a temporary directory.
+		targetRelPath, err := filename.TrimDirPrefix(s.destDirAbsPath)
+		if err != nil {
+			return err
+		}
+		tempDirAbsPath, err := s.tempDir()
+		if err != nil {
+			return err
+		}
+		targetAbsPath := tempDirAbsPath.Join(targetRelPath)
+		if err := os.MkdirAll(targetAbsPath.Dir().String(), 0o700); err != nil {
+			return err
+		}
+		if err := os.WriteFile(targetAbsPath.String(), data, perm); err != nil {
+			return err
+		}
+
+		if err := s.runDiffCommand(destAbsPath, targetAbsPath); err != nil {
+			return err
+		}
 	}
 	return s.system.WriteFile(filename, data, perm)
 }
