@@ -43,7 +43,7 @@ func (c *Config) newEditCmd() *cobra.Command {
 	flags.VarP(c.Edit.exclude, "exclude", "x", "Exclude entry types")
 	flags.BoolVar(&c.Edit.Hardlink, "hardlink", c.Edit.Hardlink, "Invoke editor with a hardlink to the source file")
 	flags.VarP(c.Edit.include, "include", "i", "Include entry types")
-	flags.BoolVar(&c.Edit.init, "init", c.update.init, "Recreate config file from template")
+	flags.BoolVar(&c.Edit.init, "init", c.Edit.init, "Recreate config file from template")
 
 	return editCmd
 }
