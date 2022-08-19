@@ -45,6 +45,7 @@ The following configuration variables are available:
 |                     | `command`             | string   | `$EDITOR` / `$VISUAL`    | Edit command                                           |
 |                     | `hardlink`            | bool     | `true`                   | Invoke editor with a hardlink to the source file       |
 |                     | `minDuration`         | duration | `1s`                     | Minimum duration for edit command                      |
+|                     | `watch`               | bool     | `false`                  | Automatically apply changes when files are saved       |
 | `git`               | `autoAdd `            | bool     | `false`                  | Add changes to the source state after any change       |
 |                     | `autoCommit`          | bool     | `false`                  | Commit changes to the source state after any change    |
 |                     | `autoPush`            | bool     | `false`                  | Push changes to the source state after any change      |

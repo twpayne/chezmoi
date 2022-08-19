@@ -22,6 +22,22 @@ Invoke the editor with a hard link to the source file with a name matching the
 target filename. This can help the editor determine the type of the file
 correctly. This is the default.
 
+## `--watch`
+
+Automatically apply changes when files are saved.
+
+!!! warning
+
+    `--watch` is a beta feature with limitations. Known limitations include:
+
+    * Only works when `chezmoi edit` is invoked with arguments (i.e.
+      argument-free `chezmoi edit` is not supported).
+    * All edited files are applied when any file is saved.
+    * Only the edited files are watched, not any dependent files (e.g.
+      `.chezmoitemplates` and `include`d files in templates are not watched).
+    * Only works on operating systems supported by
+      [fsnotify](https://github.com/fsnotify/fsnotify).
+
 !!! example
 
     ```console
