@@ -16,16 +16,29 @@ func (c *Config) exitInitTemplateFunc(code int) string {
 }
 
 func (c *Config) promptBoolInitTemplateFunc(prompt string, args ...bool) bool {
+	if len(args) > 1 {
+		err := fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
+		panic(err)
+	}
+
+	if valueStr, ok := c.init.promptBool[prompt]; ok {
+		value, err := parseBool(valueStr)
+		if err != nil {
+			panic(err)
+		}
+		return value
+	}
+
 	switch len(args) {
 	case 0:
-		value, err := parseBool(c.promptStringInitTemplateFunc(prompt))
+		value, err := parseBool(c.promptString(prompt))
 		if err != nil {
 			panic(err)
 		}
 		return value
 	case 1:
 		prompt += " (default " + strconv.FormatBool(args[0]) + ")"
-		valueStr := c.promptStringInitTemplateFunc(prompt)
+		valueStr := c.promptString(prompt)
 		if valueStr == "" {
 			return args[0]
 		}
@@ -35,8 +48,7 @@ func (c *Config) promptBoolInitTemplateFunc(prompt string, args ...bool) bool {
 		}
 		return value
 	default:
-		err := fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
-		panic(err)
+		panic("unreachable")
 	}
 }
 
@@ -45,6 +57,7 @@ func (c *Config) promptBoolOnceInitTemplateFunc(m map[string]any, key, prompt st
 		err := fmt.Errorf("want 2 or 3 arguments, got %d", len(args)+2)
 		panic(err)
 	}
+
 	if !c.init.forcePromptOnce {
 		if value, ok := m[key]; ok {
 			if boolValue, ok := value.(bool); ok {
@@ -52,20 +65,30 @@ func (c *Config) promptBoolOnceInitTemplateFunc(m map[string]any, key, prompt st
 			}
 		}
 	}
+
 	return c.promptBoolInitTemplateFunc(prompt, args...)
 }
 
 func (c *Config) promptIntInitTemplateFunc(prompt string, args ...int64) int64 {
+	if len(args) > 1 {
+		err := fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
+		panic(err)
+	}
+
+	if value, ok := c.init.promptInt[prompt]; ok {
+		return int64(value)
+	}
+
 	switch len(args) {
 	case 0:
-		value, err := strconv.ParseInt(c.promptStringInitTemplateFunc(prompt), 10, 64)
+		value, err := strconv.ParseInt(c.promptString(prompt), 10, 64)
 		if err != nil {
 			panic(err)
 		}
 		return value
 	case 1:
 		promptStr := prompt + " (default " + strconv.FormatInt(args[0], 10) + ")"
-		valueStr := c.promptStringInitTemplateFunc(promptStr)
+		valueStr := c.promptString(promptStr)
 		if valueStr == "" {
 			return args[0]
 		}
@@ -75,8 +98,7 @@ func (c *Config) promptIntInitTemplateFunc(prompt string, args ...int64) int64 {
 		}
 		return value
 	default:
-		err := fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
-		panic(err)
+		panic("unreachable")
 	}
 }
 
@@ -85,6 +107,7 @@ func (c *Config) promptIntOnceInitTemplateFunc(m map[string]any, key, prompt str
 		err := fmt.Errorf("want 2 or 3 arguments, got %d", len(args)+2)
 		panic(err)
 	}
+
 	if !c.init.forcePromptOnce {
 		if value, ok := m[key]; ok {
 			if intValue, ok := value.(int64); ok {
@@ -92,10 +115,41 @@ func (c *Config) promptIntOnceInitTemplateFunc(m map[string]any, key, prompt str
 			}
 		}
 	}
+
 	return c.promptIntInitTemplateFunc(prompt, args...)
 }
 
 func (c *Config) promptStringInitTemplateFunc(prompt string, args ...string) string {
+	if len(args) > 1 {
+		err := fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
+		panic(err)
+	}
+
+	if value, ok := c.init.promptString[prompt]; ok {
+		return value
+	}
+
+	return c.promptString(prompt, args...)
+}
+
+func (c *Config) promptStringOnceInitTemplateFunc(m map[string]any, key, prompt string, args ...string) string {
+	if len(args) > 1 {
+		err := fmt.Errorf("want 2 or 3 arguments, got %d", len(args)+2)
+		panic(err)
+	}
+
+	if !c.init.forcePromptOnce {
+		if value, ok := m[key]; ok {
+			if stringValue, ok := value.(string); ok {
+				return stringValue
+			}
+		}
+	}
+
+	return c.promptStringInitTemplateFunc(prompt, args...)
+}
+
+func (c *Config) promptString(prompt string, args ...string) string {
 	switch len(args) {
 	case 0:
 		value, err := c.readLine(prompt + "? ")
@@ -115,24 +169,9 @@ func (c *Config) promptStringInitTemplateFunc(prompt string, args ...string) str
 			return strings.TrimSpace(value)
 		}
 	default:
-		err := fmt.Errorf("want 1 or 2 arguments, got %d", len(args)+1)
+		err := fmt.Errorf("want 0 or 1 arguments, got %d", len(args))
 		panic(err)
 	}
-}
-
-func (c *Config) promptStringOnceInitTemplateFunc(m map[string]any, key, prompt string, args ...string) string {
-	if len(args) > 1 {
-		err := fmt.Errorf("want 2 or 3 arguments, got %d", len(args)+2)
-		panic(err)
-	}
-	if !c.init.forcePromptOnce {
-		if value, ok := m[key]; ok {
-			if stringValue, ok := value.(string); ok {
-				return stringValue
-			}
-		}
-	}
-	return c.promptStringInitTemplateFunc(prompt, args...)
 }
 
 func (c *Config) stdinIsATTYInitTemplateFunc() bool {
