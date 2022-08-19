@@ -6,7 +6,8 @@ There are five popular approaches:
 
 1. Use `chezmoi edit $FILE`. This will open the source file for `$FILE` in your
    editor, including . For extra ease, use `chezmoi edit --apply $FILE` to apply
-   the changes when you quit your editor.
+   the changes when you quit your editor, and `chezmoi edit --watch $FILE` to
+   apply the changes whenever you save the file.
 
 2. Use `chezmoi cd` and edit the files in the source directory directly. Run
    `chezmoi diff` to see what changes would be made, and `chezmoi apply` to make

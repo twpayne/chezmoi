@@ -5,6 +5,7 @@ import (
 	"runtime"
 	"time"
 
+	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/cobra"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
@@ -15,6 +16,7 @@ type editCmdConfig struct {
 	Args        []string      `mapstructure:"args"`
 	Hardlink    bool          `mapstructure:"hardlink"`
 	MinDuration time.Duration `mapstructure:"minDuration"`
+	Watch       bool          `mapstructure:"watch"`
 	apply       bool
 	exclude     *chezmoi.EntryTypeSet
 	include     *chezmoi.EntryTypeSet
@@ -44,6 +46,7 @@ func (c *Config) newEditCmd() *cobra.Command {
 	flags.BoolVar(&c.Edit.Hardlink, "hardlink", c.Edit.Hardlink, "Invoke editor with a hardlink to the source file")
 	flags.VarP(c.Edit.include, "include", "i", "Include entry types")
 	flags.BoolVar(&c.Edit.init, "init", c.Edit.init, "Recreate config file from template")
+	flags.BoolVar(&c.Edit.Watch, "watch", c.Edit.Watch, "Apply on save")
 
 	return editCmd
 }
@@ -156,30 +159,77 @@ TARGETRELPATH:
 		}
 	}
 
+	postEditFunc := func() error {
+		for _, transparentlyDecryptedFile := range transparentlyDecryptedFiles {
+			contents, err := c.encryption.EncryptFile(transparentlyDecryptedFile.decryptedAbsPath)
+			if err != nil {
+				return err
+			}
+			if err := c.baseSystem.WriteFile(transparentlyDecryptedFile.sourceAbsPath, contents, 0o666); err != nil {
+				return err
+			}
+		}
+
+		if c.Edit.apply || c.Edit.Watch {
+			if err := c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, args, applyArgsOptions{
+				include:      c.Edit.include,
+				init:         c.Edit.init,
+				recursive:    false,
+				umask:        c.Umask,
+				preApplyFunc: c.defaultPreApplyFunc,
+			}); err != nil {
+				return err
+			}
+		}
+
+		return nil
+	}
+
+	if c.Edit.Watch {
+		watcher, err := fsnotify.NewWatcher()
+		if err != nil {
+			return err
+		}
+		defer watcher.Close()
+
+		for _, editorArg := range editorArgs {
+			if err := watcher.Add(editorArg); err != nil {
+				return err
+			}
+		}
+
+		go func() {
+			for {
+				select {
+				case event, ok := <-watcher.Events:
+					if !ok {
+						return
+					}
+					c.logger.Debug().
+						Stringer("Op", event.Op).
+						Str("Name", event.Name).
+						Msg("watcher.Events")
+					err := postEditFunc()
+					c.logger.Err(err).
+						Msg("postEditFunc")
+				case _, ok := <-watcher.Errors:
+					if !ok {
+						return
+					}
+					c.logger.Error().
+						Err(err).
+						Msg("watcher.Errors")
+				}
+			}
+		}()
+	}
+
 	if err := c.runEditor(editorArgs); err != nil {
 		return err
 	}
 
-	for _, transparentlyDecryptedFile := range transparentlyDecryptedFiles {
-		contents, err := c.encryption.EncryptFile(transparentlyDecryptedFile.decryptedAbsPath)
-		if err != nil {
-			return err
-		}
-		if err := c.baseSystem.WriteFile(transparentlyDecryptedFile.sourceAbsPath, contents, 0o666); err != nil {
-			return err
-		}
-	}
-
-	if c.Edit.apply {
-		if err := c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, args, applyArgsOptions{
-			include:      c.Edit.include,
-			init:         c.Edit.init,
-			recursive:    false,
-			umask:        c.Umask,
-			preApplyFunc: c.defaultPreApplyFunc,
-		}); err != nil {
-			return err
-		}
+	if err := postEditFunc(); err != nil {
+		return err
 	}
 
 	return nil
