@@ -108,12 +108,23 @@ exec git init $HOME/.local/share
 chezmoi init
 ! exists $CHEZMOISOURCEDIR/.git
 
+chhome home12/user
+
+# test chezmoi init --prompt*
+chezmoi init --promptBool bool=true --promptInt int=1 --promptString bool=string
+cmp $CHEZMOICONFIGDIR/chezmoi.yaml golden/chezmoi.yaml
+
 -- golden/chezmoi.toml --
 [data]
     email = "firstname.lastname@company.com"
 -- golden/chezmoi.toml-no-data --
 [data]
     email = "me@home.org"
+-- golden/chezmoi.yaml --
+data:
+  bool: true
+  int: 1
+  string: string
 -- home4/user/.config/chezmoi/chezmoi.toml --
 -- home5/user/dotfiles/.git/.keep --
 -- home5/user/dotfiles/.chezmoi.toml.tmpl --
@@ -133,3 +144,8 @@ chezmoi init
 -- home8/user/.local/share/chezmoi/.chezmoi.toml.tmpl --
 [diff]
 exclude: ["scripts"]
+-- home12/user/.local/share/chezmoi/.chezmoi.yaml.tmpl --
+data:
+  bool: {{ promptBool "bool" }}
+  int: {{ promptInt "int" }}
+  string: {{ promptString "bool" }}
