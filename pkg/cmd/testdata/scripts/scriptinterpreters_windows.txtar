@@ -1,0 +1,44 @@
+[!windows] skip 'Windows only'
+
+# test that chezmoi apply runs Batch scripts
+exec chezmoi apply
+unix2dos golden/stdout # normalize line endings before comparison
+cmp stdout golden/stdout
+
+chhome home2/user
+
+# test that chezmoi apply runs PowerShell scripts
+exec chezmoi apply
+cmp stdout golden/stdout2 # PowerShell already uses UNIX line endings
+
+chhome home3/user
+
+# test that interpreters can be overridden
+exec chezmoi apply
+unix2dos golden/stdout3 # normalize line endings before comparison
+cmp stdout golden/stdout3
+
+-- bin/fake-python3.bat --
+@echo Hello from fake Python
+-- golden/stdout --
+Hello from Batch (.bat)
+Hello from Batch (.cmd)
+-- golden/stdout2 --
+Hello from PowerShell
+-- golden/stdout3 --
+Hello from fake Python
+-- home/user/.local/share/chezmoi/run_batch_script.bat --
+@echo Hello from Batch (.bat)
+-- home/user/.local/share/chezmoi/run_cmd_script.cmd --
+@echo Hello from Batch (.cmd)
+-- home2/user/.local/share/chezmoi/run_powershell_script.ps1 --
+Write-Host 'Hello from PowerShell'
+-- home3/user/.config/chezmoi/chezmoi.toml --
+[interpreters.py]
+    command = "fake-python3"
+-- home3/user/.local/share/chezmoi/run_python_script.py --
+#!/usr/bin/env python3
+
+# this should never be executed as the interpreter is overridden with
+# fake-python3.bat in the config file
+fail()

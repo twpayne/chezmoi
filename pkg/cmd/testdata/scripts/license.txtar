@@ -1,0 +1,3 @@
+# test that chezmoi license prints chezmoi's license
+exec chezmoi license
+stdout 'The MIT License'

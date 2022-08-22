@@ -1,0 +1,132 @@
+mksourcedir
+
+# test chezmoi managed
+exec chezmoi managed
+cmp stdout golden/managed
+
+# test chezmoi managed --include=all
+exec chezmoi managed --include=all
+cmp stdout golden/managed-all
+
+# test chezmoi managed --include=dirs
+exec chezmoi managed --include=dirs
+cmp stdout golden/managed-dirs
+
+# test chezmoi managed --include=files
+exec chezmoi managed --include=files
+cmp stdout golden/managed-files
+
+# test chezmoi managed --include=symlinks
+exec chezmoi managed --include=symlinks
+cmp stdout golden/managed-symlinks
+
+# test chezmoi managed --exclude=files
+exec chezmoi managed --exclude=files
+cmp stdout golden/managed-except-files
+
+# test chezmoi managed with arguments
+exec chezmoi managed $HOME${/}.dir $HOME${/}.create
+cmp stdout golden/managed-with-args
+
+# test chezmoi managed with child of managed dir as argument
+exec chezmoi managed $HOME${/}.dir/subdir
+cmp stdout golden/managed-in-managed
+
+# test chezmoi managed --exclude=dir with arguments
+exec chezmoi managed --exclude=dirs $HOME${/}.dir $HOME${/}.create
+cmp stdout golden/managed-with-nodir-args
+
+# test chezmoi managed with absent arguments
+exec chezmoi managed $HOME${/}.dir $HOME${/}.non-exist
+cmp stdout golden/managed-with-absent-args
+
+chhome home2/user
+
+# test that chezmoi managed does not evaluate templates
+exec chezmoi managed --include=all
+cmp stdout golden/managed2
+
+-- golden/managed --
+.create
+.dir
+.dir/file
+.dir/subdir
+.dir/subdir/file
+.empty
+.executable
+.file
+.private
+.readonly
+.remove
+.symlink
+.template
+-- golden/managed-all --
+.create
+.dir
+.dir/file
+.dir/subdir
+.dir/subdir/file
+.empty
+.executable
+.file
+.private
+.readonly
+.remove
+.symlink
+.template
+-- golden/managed-dirs --
+.dir
+.dir/subdir
+-- golden/managed-files --
+.create
+.dir/file
+.dir/subdir/file
+.empty
+.executable
+.file
+.private
+.readonly
+.remove
+.template
+-- golden/managed-symlinks --
+.symlink
+-- golden/managed-except-files --
+.dir
+.dir/subdir
+.symlink
+-- golden/managed2 --
+.create
+.file
+.symlink
+.template
+script
+-- golden/managed-with-args --
+.create
+.dir
+.dir/file
+.dir/subdir
+.dir/subdir/file
+-- golden/managed-in-managed --
+.dir/subdir
+.dir/subdir/file
+-- golden/managed-with-nodir-args --
+.create
+.dir/file
+.dir/subdir/file
+-- golden/managed-with-absent-args --
+.dir
+.dir/file
+.dir/subdir
+.dir/subdir/file
+-- home/user/.local/share/chezmoi/.chezmoiremove --
+.remove
+-- home2/user/.local/share/chezmoi/create_dot_create.tmpl --
+{{ fail "Template should not be executed }}
+-- home2/user/.local/share/chezmoi/dot_template.tmpl --
+{{ fail "Template should not be executed }}
+-- home2/user/.local/share/chezmoi/modify_dot_file.tmpl --
+{{ fail "Template should not be executed }}
+-- home2/user/.local/share/chezmoi/symlink_dot_symlink.tmpl --
+{{ fail "Template should not be executed }}
+-- home2/user/.local/share/chezmoi/run_script.tmpl --
+{{ fail "Template should not be executed }}

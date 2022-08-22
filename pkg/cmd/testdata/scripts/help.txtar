@@ -1,0 +1,5 @@
+exec chezmoi help
+stdout 'Manage your dotfiles across multiple diverse machines, securely'
+
+exec chezmoi help add
+stdout 'Add targets to the source state\.'

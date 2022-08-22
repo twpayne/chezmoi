@@ -1,0 +1,20 @@
+[windows] skip 'UNIX only'
+
+mkhomedir golden
+mkhomedir
+mksourcedir
+
+# test change file mode
+chmod 777 $HOME/.file
+exec chezmoi apply --force
+cmpmod 666 $HOME/.file
+
+# test change executable file mode
+chmod 666 $HOME/.executable
+exec chezmoi apply --force
+cmpmod 777 $HOME/.executable
+
+# test change directory mode
+chmod 700 $HOME/.dir
+exec chezmoi apply --force
+cmpmod 777 $HOME/.dir

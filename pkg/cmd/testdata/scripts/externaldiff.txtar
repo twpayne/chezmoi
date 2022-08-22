@@ -1,0 +1,36 @@
+[windows] skip 'UNIX only'
+
+# test that chezmoi diff invokes the external diff command for scripts
+exec chezmoi diff
+stdout '# contents of script'
+
+# test that chezmoi diff excludes scripts if configured
+appendline ${CHEZMOICONFIGDIR}/chezmoi.toml '    exclude = ["scripts"]'
+exec chezmoi diff
+! stdout '# contents of script'
+
+chhome home2/user
+
+# test that chezmoi diff does not pass non-existent filenames to external diff command
+exec chezmoi diff
+
+chhome home3/user
+
+# test that chezmoi diff passes /dev/null and directory names when creating directories
+exec chezmoi diff
+stdout ^/dev/null\s${WORK@R}/.*/\.dir$
+
+-- home/user/.config/chezmoi/chezmoi.toml --
+[diff]
+    command = "cat"
+-- home/user/.local/share/chezmoi/run_script --
+# contents of script
+-- home2/user/.config/chezmoi/chezmoi.yaml --
+diff:
+  command: cat
+-- home2/user/.local/share/chezmoi/dot_file --
+# contents of .file
+-- home3/user/.config/chezmoi/chezmoi.toml --
+[diff]
+    command = "echo"
+-- home3/user/.local/share/chezmoi/dot_dir/.keep --

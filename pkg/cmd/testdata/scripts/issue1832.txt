@@ -1,9 +1,0 @@
-[windows] skip 'UNIX only'
-
-# test that chezmoi add succeeds when changing the permissions of an intermediate directory
-chezmoi add $HOME/.config/fish/config
-chmod 700 $HOME/.config
-chezmoi add --force $HOME/.config
-
--- home/user/.config/fish/config --
-# contents of .config/fish/config

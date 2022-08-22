@@ -1,0 +1,19 @@
+[!exec:base64] skip 'base64 not found in $PATH'
+
+httpd www
+
+# test that chezmoi filters external files
+exec chezmoi cat $HOME${/}.file
+cmp stdout golden/.file
+
+-- golden/.file --
+# contents of .file
+-- home/user/.local/share/chezmoi/.chezmoiexternal.yaml --
+.file:
+    type: file
+    url: "{{ env "HTTPD_URL" }}/file.base64"
+    filter:
+        command: base64
+        args: ["-d"]
+-- www/file.base64 --
+IyBjb250ZW50cyBvZiAuZmlsZQo=

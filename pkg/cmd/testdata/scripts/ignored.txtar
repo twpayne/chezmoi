@@ -1,0 +1,16 @@
+mksourcedir
+
+# test that chezmoi ignored prints the list of ignored paths
+exec chezmoi ignored
+cmp stdout golden/ignored
+
+-- golden/ignored --
+.dir/file
+.dir/subdir
+.readonly
+.template
+-- home/user/.local/share/chezmoi/.chezmoiignore --
+.dir/subdir
+.read*
+**/file
+.template

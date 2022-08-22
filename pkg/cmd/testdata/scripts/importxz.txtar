@@ -1,0 +1,13 @@
+[(openbsd||windows)] skip 'tar does not support XZ compression'
+[!exec:xz] skip 'xz not found in $PATH'
+exec tar cJf archive.tar.xz archive
+
+# test that chezmoi import imports a tar.xz archive
+exec chezmoi import --destination=$HOME${/}.dir --strip-components=1 archive.tar.xz
+cmp $CHEZMOISOURCEDIR/dot_dir/dir/file golden/dot_dir/dir/file
+
+-- archive/dir/file --
+# contents of dir/file
+-- golden/dot_dir/dir/file --
+# contents of dir/file
+-- home/user/.local/share/chezmoi/dot_dir/.keep --

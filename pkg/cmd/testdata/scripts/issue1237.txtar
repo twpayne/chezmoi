@@ -1,0 +1,13 @@
+# test that chezmoi add does not add ignored directories
+exec chezmoi add ~/.config
+exec chezmoi managed
+cmp stdout golden/managed
+exists $CHEZMOISOURCEDIR/dot_config/.keep
+
+-- golden/managed --
+.config
+-- home/user/.config/Bitwarden CLI/file --
+# contents of .config/Bitwarden CLI/file
+-- home/user/.local/share/chezmoi/.chezmoiignore --
+.config/Bitwarden CLI
+.config/Bitwarden CLI/**

@@ -1,0 +1,25 @@
+[windows] skip 'zip may not support the --symlinks option'
+[!exec:zip] skip 'zip not found in $PATH'
+symlink archive/dir/symlink -> file
+exec zip -r --symlinks www/archive.zip archive
+
+httpd www
+
+# test that chezmoi reads external zip archives from .chezmoiexternal.json
+exec chezmoi apply --force
+cmp $HOME/.dir/dir/file golden/dir/file
+issymlink $HOME/.dir/dir/symlink
+
+-- archive/dir/file --
+# contents of dir/file
+-- golden/dir/file --
+# contents of dir/file
+-- home/user/.local/share/chezmoi/.chezmoiexternal.json --
+{
+    ".dir": {
+        "type": "archive",
+        "url": "{{ env "HTTPD_URL" }}/archive.zip",
+        "stripComponents": 1
+    }
+}
+-- www/.keep --

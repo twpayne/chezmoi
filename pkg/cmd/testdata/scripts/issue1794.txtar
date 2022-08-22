@@ -1,0 +1,22 @@
+[!exec:age] skip 'age not found in $PATH'
+
+mkageconfig
+mkgitconfig
+
+# create a dotfile repo with a config file template and an encrypted file
+exec chezmoi init
+cp $CHEZMOICONFIGDIR/chezmoi.toml $CHEZMOISOURCEDIR/.chezmoi.toml.tmpl
+exec chezmoi add --encrypt $HOME/.file
+exec chezmoi git add .
+exec chezmoi git commit -- --message 'Initial commit'
+
+chhome home2/user
+
+# test that chezmoi init --apply uses the configured encryption from the template
+exec chezmoi init --apply file://$WORK/home/user/.local/share/chezmoi
+cmp $HOME/.file golden/.file
+
+-- golden/.file --
+# contents of .file
+-- home/user/.file --
+# contents of .file
