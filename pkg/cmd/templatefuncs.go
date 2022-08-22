@@ -3,6 +3,7 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"io"
 	"io/fs"
 	"os"
 	"os/exec"
@@ -10,9 +11,13 @@ import (
 	"regexp"
 	"runtime"
 	"strconv"
+	"strings"
 
 	"github.com/bmatcuk/doublestar/v4"
 	"github.com/bradenhilton/mozillainstallhash"
+	"golang.org/x/exp/constraints"
+	"golang.org/x/exp/maps"
+	"golang.org/x/exp/slices"
 	"gopkg.in/ini.v1"
 	"howett.net/plist"
 
@@ -205,6 +210,14 @@ func (c *Config) statTemplateFunc(name string) any {
 	}
 }
 
+func (c *Config) toIniTemplateFunc(data map[string]interface{}) string {
+	var builder strings.Builder
+	if err := writeIniMap(&builder, data, ""); err != nil {
+		panic(err)
+	}
+	return builder.String()
+}
+
 func (c *Config) toTomlTemplateFunc(data any) string {
 	toml, err := chezmoi.FormatTOML.Marshal(data)
 	if err != nil {
@@ -238,4 +251,51 @@ func iniSectionToMap(section *ini.Section) map[string]any {
 		m[k.Name()] = k.Value()
 	}
 	return m
+}
+
+func writeIniMap(w io.Writer, data map[string]any, sectionPrefix string) error {
+	// Write keys in order and accumulate subsections.
+	type subsection struct {
+		key   string
+		value map[string]any
+	}
+	var subsections []subsection
+	for _, key := range sortedKeys(data) {
+		switch value := data[key].(type) {
+		case bool:
+			fmt.Fprintf(w, "%s = %t\n", key, value)
+		case float32, float64:
+			fmt.Fprintf(w, "%s = %f\n", key, value)
+		case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, uintptr:
+			fmt.Fprintf(w, "%s = %d\n", key, value)
+		case map[string]any:
+			subsection := subsection{
+				key:   key,
+				value: value,
+			}
+			subsections = append(subsections, subsection)
+		case string:
+			fmt.Fprintf(w, "%s = %q\n", key, value)
+		default:
+			return fmt.Errorf("%s%s: %T: unsupported type", sectionPrefix, key, value)
+		}
+	}
+
+	// Write subsections in order.
+	for _, subsection := range subsections {
+		if _, err := fmt.Fprintf(w, "\n[%s%s]\n", sectionPrefix, subsection.key); err != nil {
+			return err
+		}
+		if err := writeIniMap(w, subsection.value, sectionPrefix+subsection.key+"."); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func sortedKeys[K constraints.Ordered, V any](m map[K]V) []K {
+	keys := maps.Keys(m)
+	slices.Sort(keys)
+	return keys
 }
