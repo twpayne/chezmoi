@@ -122,3 +122,6 @@ require (
 )
 
 exclude github.com/sergi/go-diff v1.2.0 // Produces incorrect diffs
+
+// FIXME remove when https://github.com/bmatcuk/doublestar/pull/69 is merged and released
+replace github.com/bmatcuk/doublestar/v4 v4.2.0 => github.com/twpayne/doublestar/v4 v4.0.0-20220822143754-0ea4707e8a88

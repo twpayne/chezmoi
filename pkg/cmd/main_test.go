@@ -59,6 +59,7 @@ func TestScript(t *testing.T) {
 			"expandenv":      cmdExpandEnv,
 			"httpd":          cmdHTTPD,
 			"issymlink":      cmdIsSymlink,
+			"lexists":        cmdLExists,
 			"mkfile":         cmdMkFile,
 			"mkageconfig":    cmdMkAgeConfig,
 			"mkgitconfig":    cmdMkGitConfig,
@@ -222,7 +223,7 @@ func cmdHTTPD(ts *testscript.TestScript, neg bool, args []string) {
 	ts.Setenv("HTTPD_URL", server.URL)
 }
 
-// cmdIsSymlink returns true if all of its arguments are symlinks.
+// cmdIsSymlink succeeds if all of its arguments are symlinks.
 func cmdIsSymlink(ts *testscript.TestScript, neg bool, args []string) {
 	for _, arg := range args {
 		filename := ts.MkAbs(arg)
@@ -235,6 +236,23 @@ func cmdIsSymlink(ts *testscript.TestScript, neg bool, args []string) {
 			ts.Fatalf("%s is a symlink", arg)
 		case !isSymlink && !neg:
 			ts.Fatalf("%s is not a symlink", arg)
+		}
+	}
+}
+
+// cmdLExists succeeds if all if its arguments exist, without following symlinks.
+func cmdLExists(ts *testscript.TestScript, neg bool, args []string) {
+	if len(args) == 0 {
+		ts.Fatalf("usage: exists file...")
+	}
+
+	for _, arg := range args {
+		filename := ts.MkAbs(arg)
+		switch _, err := os.Lstat(filename); {
+		case err == nil && neg:
+			ts.Fatalf("%s unexpectedly exists", filename)
+		case errors.Is(err, fs.ErrNotExist) && !neg:
+			ts.Fatalf("%s does not exist", filename)
 		}
 	}
 }
