@@ -1,0 +1,3 @@
+# test that chezmoi generate install.sh generates a shell script
+exec chezmoi generate install.sh
+stdout '#!/bin/sh'

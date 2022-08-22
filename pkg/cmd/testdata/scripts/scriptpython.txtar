@@ -1,0 +1,9 @@
+[!exec:python3] skip 'python3 not found in $PATH'
+
+exec chezmoi apply
+stdout 'Hello from Python'
+
+-- home/user/.local/share/chezmoi/run_script.py --
+#!/usr/bin/env python3
+
+print("Hello from Python\n")

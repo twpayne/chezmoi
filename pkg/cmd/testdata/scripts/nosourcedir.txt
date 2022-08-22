@@ -1,4 +1,0 @@
-# test that chezmoi apply returns an error if the source directory does not exist
-! chezmoi apply
-[!windows] stderr 'no such file or directory'
-[windows] stderr 'The system cannot find the path specified'

@@ -1,0 +1,23 @@
+[!exec:age] skip 'age not found in $PATH'
+
+mkageconfig
+mksourcedir
+
+httpd www
+
+# test that chezmoi apply --debug writes logs
+exec chezmoi encrypt --output=$CHEZMOISOURCEDIR/encrypted_dot_encrypted.asc
+exec chezmoi apply --debug
+stderr component=encryption
+stderr component=persistentState
+stderr component=sourceState
+stderr component=system
+
+-- golden/.encrypted --
+# contents of .encrypted
+-- home/user/.local/share/chezmoi/.chezmoiexternal.yaml --
+.external:
+    type: file
+    url: {{ env "HTTPD_URL" }}/.external
+-- www/.external --
+# contents of .external

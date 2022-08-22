@@ -1,9 +1,0 @@
-[!exec:perl] skip 'perl not found in $PATH'
-
-chezmoi apply
-stdout 'Hello from Perl'
-
--- home/user/.local/share/chezmoi/run_script.pl --
-#!/usr/bin/env perl
-
-print("Hello from Perl\n")

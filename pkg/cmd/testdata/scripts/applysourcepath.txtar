@@ -1,0 +1,15 @@
+mksourcedir
+
+# test that chezmoi apply --source-path only applies the target
+exec chezmoi apply --source-path $CHEZMOISOURCEDIR/dot_file
+! exists $HOME/.empty
+exists $HOME/.file
+exec chezmoi apply --source-path $CHEZMOISOURCEDIR/empty_dot_empty
+exists $HOME/.empty
+
+# test that chezmoi apply --source-path ignores other modified files
+edit $HOME/.file
+exec chezmoi status
+stdout 'MM \.file'
+exec chezmoi apply --source-path $CHEZMOISOURCEDIR/executable_dot_executable
+exists $HOME/.executable

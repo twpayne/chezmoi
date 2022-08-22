@@ -95,7 +95,8 @@ func TestScript(t *testing.T) {
 			}
 			return false, fmt.Errorf("%s: unknown condition", cond)
 		},
-		Setup: setup,
+		RequireExplicitExec: true,
+		Setup:               setup,
 	})
 }
 

@@ -1,0 +1,9 @@
+[!exec:ruby] skip 'ruby not found in $PATH'
+
+exec chezmoi apply
+stdout 'Hello from Ruby'
+
+-- home/user/.local/share/chezmoi/run_script.rb --
+#!/usr/bin/env ruby
+
+print "Hello from Ruby\n"

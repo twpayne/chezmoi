@@ -1,0 +1,57 @@
+# test that chezmoi completion bash generates bash completions
+exec chezmoi completion bash
+stdout '# bash completion V2 for chezmoi'
+
+# test that chezmoi completion fish generates fish completions
+exec chezmoi completion fish
+stdout '# fish completion for chezmoi'
+
+# test that chezmoi completion powershell generates powershell completions
+exec chezmoi completion powershell
+stdout 'Register-ArgumentCompleter'
+
+# test that chezmoi completion zsh generates zsh completions
+exec chezmoi completion zsh
+stdout '#compdef chezmoi'
+
+# test that --use-builtin flags are completed
+exec chezmoi __complete --use-builtin
+cmp stdout golden/use-builtin-flags
+
+# test that autoBool values are completed
+exec chezmoi __complete --color t
+cmp stdout golden/auto-bool-t
+
+# test that mode values are completed
+exec chezmoi __complete --mode ''
+cmp stdout golden/mode
+
+# test that write --format values are completed
+exec chezmoi __complete state dump --format ''
+cmp stdout golden/write-data
+
+# test that write --format values are completed
+exec chezmoi __complete data --format ''
+cmp stdout golden/write-data
+
+-- golden/auto-bool-t --
+t
+true
+:4
+-- golden/mode --
+file
+symlink
+:4
+-- golden/use-builtin-flags --
+--use-builtin-age	Use builtin age
+--use-builtin-git	Use builtin git
+:4
+-- golden/read-data --
+json
+toml
+yaml
+:4
+-- golden/write-data --
+json
+yaml
+:4

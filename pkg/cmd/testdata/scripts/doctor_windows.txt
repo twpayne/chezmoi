@@ -1,7 +1,0 @@
-[!windows] skip 'Windows only'
-
-mksourcedir
-
-# test chezmoi doctor
-chezmoi doctor
-stdout '^ok\s+systeminfo\s+'

@@ -1,0 +1,14 @@
+mkhomedir
+mksourcedir
+
+# test that chezmoi re-add adds all modified files
+exec chezmoi apply --force
+edit $HOME/.file
+edit $HOME/.dir/file
+edit $HOME/.dir/subdir/file
+exec chezmoi re-add
+grep '# edited' $CHEZMOISOURCEDIR/dot_file
+grep '# edited' $CHEZMOISOURCEDIR/dot_dir/file
+grep '# edited' $CHEZMOISOURCEDIR/dot_dir/exact_subdir/file
+exec chezmoi diff
+! stdout .

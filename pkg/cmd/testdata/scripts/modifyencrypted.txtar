@@ -1,0 +1,38 @@
+[windows] skip 'UNIX only'
+[!exec:age] skip 'age not found in $PATH'
+
+# test that chezmoi applies encrypted modify scripts
+mkageconfig
+cp golden/.modify $HOME
+mkdir $CHEZMOISOURCEDIR
+exec chezmoi encrypt --output=$CHEZMOISOURCEDIR${/}modify_encrypted_dot_modify.age golden/modify.sh
+grep '-----BEGIN AGE ENCRYPTED FILE-----' $CHEZMOISOURCEDIR/modify_encrypted_dot_modify.age
+exec chezmoi apply --force
+cmp $HOME/.modify golden/.modify-modified
+
+chhome home2/user
+
+# test that chezmoi applies encrypted template modify scripts
+mkageconfig
+cp golden/.modify $HOME
+mkdir $CHEZMOISOURCEDIR
+exec chezmoi encrypt --output=$CHEZMOISOURCEDIR${/}modify_encrypted_dot_modify.tmpl.age golden/modify.sh.tmpl
+grep '-----BEGIN AGE ENCRYPTED FILE-----' $CHEZMOISOURCEDIR/modify_encrypted_dot_modify.tmpl.age
+exec chezmoi apply --force
+cmp $HOME/.modify golden/.modify-modified
+
+-- golden/.modify --
+# contents of .modify
+-- golden/.modify-modified --
+# contents of .modify
+# modified
+-- golden/modify.sh --
+#!/bin/sh
+
+cat
+echo "# modified"
+-- golden/modify.sh.tmpl --
+#!/bin/sh
+
+cat
+echo {{ "# modified" | quote }}

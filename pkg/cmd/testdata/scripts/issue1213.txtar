@@ -1,0 +1,26 @@
+[!exec:git] skip 'git not found in $PATH'
+
+mkgitconfig
+
+# create a repo
+exec chezmoi init
+exists $CHEZMOISOURCEDIR/.git
+cp golden/.chezmoi.toml.tmpl $CHEZMOISOURCEDIR
+cp golden/dot_file.tmpl $CHEZMOISOURCEDIR
+exec chezmoi git add .
+exec chezmoi git commit -- --message 'Initial commit'
+
+chhome home2/user
+
+# test that chezmoi init --apply makes config template data available
+mkgitconfig
+exec chezmoi init --apply file://$WORK/home/user/.local/share/chezmoi
+cmp $HOME/.file golden/.file
+
+-- golden/.chezmoi.toml.tmpl --
+[data.me.github]
+    username = "user"
+-- golden/.file --
+username = "user"
+-- golden/dot_file.tmpl --
+username = {{ .me.github.username | quote }}

@@ -1,0 +1,38 @@
+# test that chezmoi apply removes a symlink if the target is empty
+symlink $HOME/.empty -> .file
+exec chezmoi apply $HOME${/}.empty
+! exists $HOME/.empty
+
+# test that chezmoi apply evaluates symlink templates
+exec chezmoi apply $HOME${/}.template
+cmp $HOME/.template $HOME/.file
+
+# test that chezmoi add --template-symlinks replaces absolute symlinks, pointing to files inside home, with templates
+symlink $HOME/.symlink_absolute -> $HOME/.dir/subdir/file
+exec chezmoi add --template-symlinks $HOME${/}.symlink_absolute
+cmp $CHEZMOISOURCEDIR/symlink_dot_symlink_absolute.tmpl golden/symlink_dot_symlink_absolute.tmpl
+
+# test that chezmoi add --template-symlinks replaces absolute symlinks, pointing to files inside the source directory, with templates
+symlink $HOME/.symlink_source -> $CHEZMOISOURCEDIR/.dir/subdir/file
+exec chezmoi add --template-symlinks $HOME${/}.symlink_source
+cmp $CHEZMOISOURCEDIR/symlink_dot_symlink_source.tmpl golden/symlink_dot_symlink_source.tmpl
+
+chhome home2/user
+
+# test that chezmoi add reads add.templateSymlinks from the config file
+symlink $HOME/.symlink_absolute -> $HOME/.dir/subdir/file
+exec chezmoi add --template-symlinks $HOME${/}.symlink_absolute
+cmp $CHEZMOISOURCEDIR/symlink_dot_symlink_absolute.tmpl golden/symlink_dot_symlink_absolute.tmpl
+
+-- golden/symlink_dot_symlink_absolute.tmpl --
+{{ .chezmoi.homeDir }}/.dir/subdir/file
+-- golden/symlink_dot_symlink_source.tmpl --
+{{ .chezmoi.sourceDir }}/.dir/subdir/file
+-- home/user/.file --
+# contents of .file
+-- home/user/.local/share/chezmoi/symlink_dot_empty --
+-- home/user/.local/share/chezmoi/symlink_dot_template.tmpl --
+{{ ".file" }}
+-- home2/user/.config/chezmoi/chezmoi.toml --
+[add]
+    templateSymlinks = true

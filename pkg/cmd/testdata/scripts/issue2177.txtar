@@ -1,0 +1,8 @@
+# test that chezmoi forget prints a warning when asked to forget externals
+exec chezmoi forget $HOME${/}.external
+stderr 'cannot forget entry from external https://github\.com/user/repo\.git defined in .*/home/user/\.local/share/chezmoi/\.chezmoiexternal\.toml'
+
+-- home/user/.local/share/chezmoi/.chezmoiexternal.toml --
+[".external"]
+   type = "git-repo"
+   url = "https://github.com/user/repo.git"

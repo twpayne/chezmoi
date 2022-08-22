@@ -1,0 +1,6 @@
+mkhomedir
+mksourcedir
+
+symlink $CHEZMOISOURCEDIR/dot_file2 -> dot_file
+exec chezmoi apply --force
+cmp $HOME/.file2 $HOME/.file

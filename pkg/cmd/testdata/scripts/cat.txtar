@@ -1,0 +1,32 @@
+mkhomedir golden
+mksourcedir
+
+# test that chezmoi cat prints an empty file
+exec chezmoi cat $HOME${/}.empty
+cmp stdout golden/.empty
+
+# test that chezmoi cat prints a file
+exec chezmoi cat $HOME${/}.file
+cmp stdout golden/.file
+
+# test that chezmoi cat prints a symlink
+exec chezmoi cat $HOME${/}.symlink
+stdout '\.dir/subdir/file'
+
+# test that chezmoi cat prints a template
+exec chezmoi cat $HOME${/}.template
+cmp stdout golden/.template
+
+# test that chezmoi cat does not print directories
+! exec chezmoi cat $HOME${/}.dir
+stderr 'not a file, script, or symlink'
+
+# test that chezmoi cat does not print files outside the destination directory
+! exec chezmoi cat ${/}etc${/}passwd
+stderr 'not in destination directory'
+
+# test that chezmoi cat uses relative paths
+mkdir $HOME/.dir
+cd $HOME/.dir
+exec chezmoi cat file
+cmp stdout $WORK/golden/.dir/file

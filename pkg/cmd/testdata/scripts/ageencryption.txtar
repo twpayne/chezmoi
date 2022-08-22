@@ -1,0 +1,60 @@
+[!exec:age] skip 'age not found in $PATH'
+
+mkhomedir
+mkageconfig
+
+# test that chezmoi add --encrypt encrypts
+cp golden/.encrypted $HOME
+exec chezmoi add --encrypt $HOME${/}.encrypted
+exists $CHEZMOISOURCEDIR/encrypted_dot_encrypted.age
+grep '-----BEGIN AGE ENCRYPTED FILE-----' $CHEZMOISOURCEDIR/encrypted_dot_encrypted.age
+cp $CHEZMOISOURCEDIR/encrypted_dot_encrypted.age golden
+
+# test that chezmoi apply decrypts
+rm $HOME/.encrypted
+exec chezmoi apply --force
+cmp golden/.encrypted $HOME/.encrypted
+
+# test that chezmoi apply --exclude=encrypted does not apply encrypted files
+rm $HOME/.encrypted
+exec chezmoi apply --exclude=encrypted --force
+! exists $HOME/.encrypted
+exec chezmoi apply --force
+cmp $HOME/.encrypted golden/.encrypted
+
+# test that chezmoi detects age encryption if age is configured but encryption = "age" is not set
+removeline $CHEZMOICONFIGDIR/chezmoi.toml 'encryption = "age"'
+exec chezmoi cat $HOME${/}.encrypted
+cmp stdout golden/.encrypted
+
+# test that chezmoi decrypt decrypts stdin
+stdin $CHEZMOISOURCEDIR${/}encrypted_dot_encrypted.age
+exec chezmoi decrypt
+cmp stdout golden/.encrypted
+
+# test that chezmoi decrypt decrypts a file
+exec chezmoi decrypt $CHEZMOISOURCEDIR${/}encrypted_dot_encrypted.age
+cmp stdout golden/.encrypted
+
+# test chezmoi encrypt/chezmoi decrypt round trip
+exec chezmoi encrypt golden/.encrypted
+stdout '-----BEGIN AGE ENCRYPTED FILE-----'
+stdin stdout
+exec chezmoi decrypt
+cmp stdout golden/.encrypted
+
+# test that chezmoi --use-builtin-age=true decrypt decrypts a file encrypted by age
+exec chezmoi --use-builtin-age=true decrypt $CHEZMOISOURCEDIR${/}encrypted_dot_encrypted.age
+cmp stdout golden/.encrypted
+
+# test that chezmoi --use-builtin-age=true encrypts a file than age then decrypts
+exec chezmoi --use-builtin-age=true --output=$WORK${/}encrypted.age encrypt golden/.encrypted
+exec chezmoi --use-builtin-age=false decrypt $WORK${/}encrypted.age
+cmp stdout golden/.encrypted
+
+# test that chezmoi edit --apply transparently decrypts and re-encrypts
+exec chezmoi edit --apply --force $HOME${/}.encrypted
+grep '# edited' $HOME/.encrypted
+
+-- golden/.encrypted --
+# contents of .encrypted

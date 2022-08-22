@@ -1,0 +1,27 @@
+# test that chezmoi apply removes empty directories, but not non-empty directories, or non-existent directories
+mkdir $HOME/.empty_dir
+exec chezmoi apply
+exists $HOME/.dir
+! exists $HOME/.empty_dir
+
+chhome home2/user
+
+# test that chezmoi apply will remove a directory even if it is actually a file
+exec chezmoi apply
+! exists $HOME/.dir
+
+chhome home3/user
+
+# test that chezmoi apply removes empty directories recursively
+mkdir $HOME/.dir/subdir
+exec chezmoi apply
+! exists $HOME/.dir
+
+-- home/user/.dir/file --
+-- home/user/.local/share/chezmoi/remove_dot_dir/.keep --
+-- home/user/.local/share/chezmoi/remove_dot_empty_dir/.keep --
+-- home/user/.local/share/chezmoi/remove_dot_non_existent_dir/.keep --
+-- home2/user/.dir --
+# contents of .dir
+-- home2/user/.local/share/chezmoi/remove_dot_dir/.keep --
+-- home3/user/.local/share/chezmoi/remove_dot_dir/remove_subdir/.keep --

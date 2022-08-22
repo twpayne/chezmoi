@@ -1,0 +1,9 @@
+# test that chezmoi ignores emacs symbolic link locks
+symlink 'home/user/.local/share/chezmoi/.#lock' -> invalid
+exec chezmoi apply
+cmp $HOME/.file golden/.file
+
+-- golden/.file --
+# contents of .file
+-- home/user/.local/share/chezmoi/dot_file --
+# contents of .file

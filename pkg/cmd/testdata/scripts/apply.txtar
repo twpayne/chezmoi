@@ -1,0 +1,71 @@
+mkhomedir golden
+mksourcedir
+
+# test that chezmoi apply --dry-run does not create any files
+exec chezmoi apply --dry-run --force
+! exists $HOME/.create
+! exists $HOME/.dir
+! exists $HOME/.dir/file
+! exists $HOME/.dir/subdir
+! exists $HOME/.dir/subdir/file
+! exists $HOME/.empty
+! exists $HOME/.executable
+! exists $HOME/.file
+! exists $HOME/.private
+! exists $HOME/.remove
+! exists $HOME/.template
+
+# test that chezmoi apply file creates a single file only
+exec chezmoi apply --force $HOME${/}.file
+! exists $HOME/.create
+! exists $HOME/.dir
+! exists $HOME/.dir/file
+! exists $HOME/.dir/subdir
+! exists $HOME/.dir/subdir/file
+! exists $HOME/.empty
+! exists $HOME/.executable
+exists $HOME/.file
+! exists $HOME/.private
+! exists $HOME/.remove
+! exists $HOME/.template
+
+# test that chezmoi apply dir --recursive=false creates only the directory
+exec chezmoi apply --force --recursive=false $HOME${/}.dir
+exists $HOME/.dir
+! exists $HOME/.dir/file
+! exists $HOME/.dir/subdir
+! exists $HOME/.dir/subdir/file
+
+# test that chezmoi apply dir creates all files in the directory
+exec chezmoi apply --force $HOME${/}.dir
+exists $HOME/.dir
+exists $HOME/.dir/file
+exists $HOME/.dir/subdir
+exists $HOME/.dir/subdir/file
+
+# test that chezmoi apply creates all files
+exec chezmoi apply --force
+exists $HOME/.create
+exists $HOME/.dir
+exists $HOME/.dir/file
+exists $HOME/.dir/subdir
+exists $HOME/.dir/subdir/file
+exists $HOME/.empty
+exists $HOME/.executable
+exists $HOME/.file
+exists $HOME/.private
+! exists $HOME/.remove
+exists $HOME/.template
+
+# test apply after edit
+edit $CHEZMOISOURCEDIR/dot_file
+exec chezmoi apply --force
+cmp $HOME/.file $CHEZMOISOURCEDIR/dot_file
+
+# test that chezmoi apply --source-path applies a file based on its source path
+edit $CHEZMOISOURCEDIR/dot_file
+exec chezmoi apply --force --source-path $CHEZMOISOURCEDIR/dot_file
+grep -count=2 '# edited' $HOME/.file
+
+# test that chezmoi apply --source-path fails when called with a targetDirAbsPath
+! exec chezmoi apply --force --source-path $HOME${/}.file
