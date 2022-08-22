@@ -24,7 +24,6 @@ linters:
   - gofmt
   - gofumpt
   - goimports
-  - gomoddirectives
   - gomodguard
   - goprintffuncname
   - gosec
@@ -71,6 +70,7 @@ linters:
   - godox
   - goheader
   - gomnd
+  - gomoddirectives
   - maintidx
   - maligned
   - nakedret
