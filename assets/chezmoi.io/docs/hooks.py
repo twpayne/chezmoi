@@ -15,6 +15,7 @@ non_website_paths = [
 templates = [
     "install.md",
     "links/articles-podcasts-and-videos.md",
+    "reference/configuration-file/variables.md",
 ]
 
 def on_pre_build(config, **kwargs):
