@@ -29,7 +29,7 @@ the field you want. For example, to extract the `password` field from first the
 githubPassword = {{ (index (lastpass "GitHub") 0).password | quote }}
 ```
 
-chezmoi automatically parses the `note` value of the Lastpass entry as
+chezmoi automatically parses the `note` value of the LastPass entry as
 colon-separated key-value pairs, so, for example, you can extract a private SSH
 key like this:
 

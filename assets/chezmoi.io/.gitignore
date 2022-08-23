@@ -1,6 +1,7 @@
 __pycache__
 /docs/install.md
 /docs/links/articles-podcasts-and-videos.md
+/docs/reference/configuration-file/variables.md
 /site
 
 /.venv

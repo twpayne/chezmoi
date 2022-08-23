@@ -1,0 +1,33 @@
+# Variables
+
+The following configuration variables are available:
+
+| Section | Variable | Type | Default value | Description |
+| ------- | -------- | ---- | ------------- | ----------- |
+{{ $lastSectionValue := "" -}}
+{{ range $sectionName, $variables := .sections -}}
+{{   $sectionValue := "" -}}
+{{   if $sectionName -}}
+{{     $sectionValue = printf "`%s`" $sectionName -}}
+{{   else -}}
+{{     $sectionValue = "Top level" -}}
+{{   end -}}
+{{   range $variableName, $variable := $variables -}}
+{{     if eq $sectionValue $lastSectionValue -}}
+{{       $sectionValue = "" -}}
+{{     else -}}
+{{       $lastSectionValue = $sectionValue -}}
+{{     end -}}
+{{     with $variable -}}
+{{       $nameValue := $variableName -}}
+{{       if regexMatch "\\A\\w+\\z" $nameValue -}}
+{{         $nameValue = printf "`%s`" $nameValue -}}
+{{       end -}}
+{{       $defaultValue := "*none*" -}}
+{{       if eq .type "bool" -}}
+{{         $defaultValue = "`false`" -}}
+{{       end -}}
+| {{ $sectionValue }} | {{ $nameValue }} | {{ .type | default "string" }} | {{ .default | default $defaultValue }} | {{ .description }} |
+{{     end -}}
+{{   end -}}
+{{ end }}
