@@ -1,0 +1,10 @@
+# test that sourceDir has the correct value in chezmoi init with .chezmoiroot
+exec chezmoi init
+cmpenv $CHEZMOICONFIGDIR/chezmoi.yaml golden/chezmoi.yaml
+
+-- golden/chezmoi.yaml --
+sourceDir: $CHEZMOISOURCEDIR/home
+-- home/user/.local/share/chezmoi/.chezmoiroot --
+home
+-- home/user/.local/share/chezmoi/home/.chezmoi.yaml.tmpl --
+sourceDir: {{ .chezmoi.sourceDir }}

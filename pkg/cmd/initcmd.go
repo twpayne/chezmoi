@@ -207,6 +207,12 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	var err error
+	c.SourceDirAbsPath, err = c.sourceDirAbsPath()
+	if err != nil {
+		return err
+	}
+
 	if err := c.createAndReloadConfigFile(); err != nil {
 		return err
 	}
