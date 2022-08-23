@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"runtime"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -122,5 +123,24 @@ func TestIssue2137(t *testing.T) {
 		err := newTestConfig(t, fileSystem).execute([]string{"init"})
 		tooOldError := &chezmoi.TooOldError{}
 		require.ErrorAs(t, err, &tooOldError)
+	})
+}
+
+func TestIssue2283(t *testing.T) {
+	if runtime.GOOS == "windows" {
+		t.Skip("skipping UNIX test on Windows")
+	}
+	chezmoitest.WithTestFS(t, map[string]any{
+		"/home/user/.local/share/chezmoi": map[string]any{
+			".chezmoiroot": "home",
+			"home": map[string]any{
+				".chezmoi.yaml.tmpl": "sourceDir: {{ .chezmoi.sourceDir }}\n",
+			},
+		},
+	}, func(fileSystem vfs.FS) {
+		require.NoError(t, newTestConfig(t, fileSystem).execute([]string{"init"}))
+		data, err := fileSystem.ReadFile("/home/user/.config/chezmoi/chezmoi.yaml")
+		require.NoError(t, err)
+		assert.Equal(t, "sourceDir: /home/user/.local/share/chezmoi/home\n", string(data))
 	})
 }
