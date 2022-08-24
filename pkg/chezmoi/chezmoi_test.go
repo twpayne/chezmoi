@@ -21,7 +21,7 @@ func init() {
 		Out:     os.Stderr,
 		NoColor: true,
 	})
-	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
+	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack //nolint:reassign
 }
 
 func TestEtcHostsFQDNHostname(t *testing.T) {
