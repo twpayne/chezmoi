@@ -9,9 +9,9 @@
 <meta content="Tom Payne" name="author"/>
 <link href="https://chezmoi.io/reference/commands/execute-template/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.2.3, mkdocs-material-8.1.9" name="generator"/>
+<meta content="mkdocs-1.2.3, mkdocs-material-8.1.7" name="generator"/>
 <title>execute-template - chezmoi</title>
-<link href="../../../assets/stylesheets/main.2b4465f4.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.cd566b2a.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.e6a45f82.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&amp;display=fallback" rel="stylesheet"/>
@@ -454,6 +454,11 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="../../../user-guide/advanced/customize-your-source-directory/">
         Customize your source directory
+      </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../user-guide/advanced/use-chezmoi-with-watchman/">
+        Use chezmoi with Watchman
       </a>
 </li>
 <li class="md-nav__item">
@@ -994,6 +999,11 @@
       </a>
 </li>
 <li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/functions/fromIni/">
+        fromIni
+      </a>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="../../templates/functions/fromToml/">
         fromToml
       </a>
@@ -1054,6 +1064,11 @@
       </a>
 </li>
 <li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/functions/toIni/">
+        toIni
+      </a>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="../../templates/functions/toToml/">
         toToml
       </a>
@@ -1088,6 +1103,11 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="../../templates/github-functions/gitHubLatestRelease/">
         gitHubLatestRelease
+      </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/github-functions/gitHubLatestTag/">
+        gitHubLatestTag
       </a>
 </li>
 </ul>
@@ -1636,20 +1656,20 @@ specified, the template is read from stdin.</p>
 <h2 id="-init-i"><code>--init</code>, <code>-i</code></h2>
 <p>Include simulated functions only available during <code>chezmoi init</code>.</p>
 <h2 id="-promptbool-pairs"><code>--promptBool</code> <em>pairs</em></h2>
-<p>Simulate the <code>promptBool</code> function with a function that returns values from
-<em>pairs</em>. <em>pairs</em> is a comma-separated list of <em>prompt</em><code>=</code><em>value</em> pairs. If
+<p>Simulate the <code>promptBool</code> template function with a function that returns values
+from <em>pairs</em>. <em>pairs</em> is a comma-separated list of <em>prompt</em><code>=</code><em>value</em> pairs. If
 <code>promptBool</code> is called with a <em>prompt</em> that does not match any of <em>pairs</em>, then
 it returns false.</p>
 <h2 id="-promptint-pairs"><code>--promptInt</code> <em>pairs</em></h2>
-<p>Simulate the <code>promptInt</code> function with a function that returns values from
-<em>pairs</em>. <em>pairs</em> is a comma-separated list of <em>prompt</em><code>=</code><em>value</em> pairs. If
+<p>Simulate the <code>promptInt</code> template function with a function that returns values
+from <em>pairs</em>. <em>pairs</em> is a comma-separated list of <em>prompt</em><code>=</code><em>value</em> pairs. If
 <code>promptInt</code> is called with a <em>prompt</em> that does not match any of <em>pairs</em>, then
 it returns zero.</p>
 <h2 id="-promptstring-p-pairs"><code>--promptString</code>, <code>-p</code> <em>pairs</em></h2>
-<p>Simulate the <code>promptString</code> function with a function that returns values from
-<em>pairs</em>. <em>pairs</em> is a comma-separated list of <em>prompt</em><code>=</code><em>value</em> pairs. If
-<code>promptString</code> is called with a <em>prompt</em> that does not match any of <em>pairs</em>,
-then it returns <em>prompt</em> unchanged.</p>
+<p>Simulate the <code>promptString</code> template function with a function that returns
+values from <em>pairs</em>. <em>pairs</em> is a comma-separated list of <em>prompt</em><code>=</code><em>value</em>
+pairs. If <code>promptString</code> is called with a <em>prompt</em> that does not match any of
+<em>pairs</em>, then it returns <em>prompt</em> unchanged.</p>
 <h2 id="-stdinisatty-bool"><code>--stdinisatty</code> <em>bool</em></h2>
 <p>Simulate the <code>stdinIsATTY</code> function by returning <em>bool</em>.</p>
 <div class="admonition example">
@@ -1718,6 +1738,6 @@ then it returns <em>prompt</em> unchanged.</p>
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.22074ed6.min.js"}</script>
-<script src="../../../assets/javascripts/bundle.960e086b.min.js"></script>
+<script src="../../../assets/javascripts/bundle.01de222e.min.js"></script>
 </body>
 </html>

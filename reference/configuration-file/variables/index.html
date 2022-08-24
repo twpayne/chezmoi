@@ -9,9 +9,9 @@
 <meta content="Tom Payne" name="author"/>
 <link href="https://chezmoi.io/reference/configuration-file/variables/" rel="canonical"/>
 <link href="../../../assets/images/favicon.png" rel="icon"/>
-<meta content="mkdocs-1.2.3, mkdocs-material-8.1.9" name="generator"/>
+<meta content="mkdocs-1.2.3, mkdocs-material-8.1.7" name="generator"/>
 <title>Variables - chezmoi</title>
-<link href="../../../assets/stylesheets/main.2b4465f4.min.css" rel="stylesheet"/>
+<link href="../../../assets/stylesheets/main.cd566b2a.min.css" rel="stylesheet"/>
 <link href="../../../assets/stylesheets/palette.e6a45f82.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&amp;display=fallback" rel="stylesheet"/>
@@ -454,6 +454,11 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="../../../user-guide/advanced/customize-your-source-directory/">
         Customize your source directory
+      </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../../user-guide/advanced/use-chezmoi-with-watchman/">
+        Use chezmoi with Watchman
       </a>
 </li>
 <li class="md-nav__item">
@@ -957,6 +962,11 @@
       </a>
 </li>
 <li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/functions/fromIni/">
+        fromIni
+      </a>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="../../templates/functions/fromToml/">
         fromToml
       </a>
@@ -1017,6 +1027,11 @@
       </a>
 </li>
 <li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/functions/toIni/">
+        toIni
+      </a>
+</li>
+<li class="md-nav__item">
 <a class="md-nav__link" href="../../templates/functions/toToml/">
         toToml
       </a>
@@ -1051,6 +1066,11 @@
 <li class="md-nav__item">
 <a class="md-nav__link" href="../../templates/github-functions/gitHubLatestRelease/">
         gitHubLatestRelease
+      </a>
+</li>
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../templates/github-functions/gitHubLatestTag/">
+        gitHubLatestTag
       </a>
 </li>
 </ul>
@@ -1599,7 +1619,7 @@
 <td><code>encryption</code></td>
 <td>string</td>
 <td><em>none</em></td>
-<td>Encryption tool, either <code>age</code> or <code>gpg</code></td>
+<td>Encryption type, either <code>age</code> or <code>gpg</code></td>
 </tr>
 <tr>
 <td></td>
@@ -1617,6 +1637,13 @@
 </tr>
 <tr>
 <td></td>
+<td><code>pager</code></td>
+<td>string</td>
+<td><code>$PAGER</code></td>
+<td>Default pager CLI command</td>
+</tr>
+<tr>
+<td></td>
 <td><code>scriptTempDir</code></td>
 <td>string</td>
 <td><em>none</em></td>
@@ -1631,13 +1658,6 @@
 </tr>
 <tr>
 <td></td>
-<td><code>pager</code></td>
-<td>string</td>
-<td><code>$PAGER</code></td>
-<td>Default pager</td>
-</tr>
-<tr>
-<td></td>
 <td><code>umask</code></td>
 <td>int</td>
 <td><em>from system</em></td>
@@ -1648,14 +1668,14 @@
 <td><code>useBuiltinAge</code></td>
 <td>string</td>
 <td><code>auto</code></td>
-<td>Use builtin age if <code>age</code> command is not found in $PATH</td>
+<td>Use builtin age if <code>age</code> command is not found in <code>$PATH</code></td>
 </tr>
 <tr>
 <td></td>
 <td><code>useBuiltinGit</code></td>
 <td>string</td>
 <td><code>auto</code></td>
-<td>Use builtin git if <code>git</code> command is not found in $PATH</td>
+<td>Use builtin git if <code>git</code> command is not found in <code>$PATH</code></td>
 </tr>
 <tr>
 <td></td>
@@ -1694,17 +1714,17 @@
 </tr>
 <tr>
 <td></td>
-<td><code>identity</code></td>
-<td>string</td>
-<td><em>none</em></td>
-<td>age identity file</td>
-</tr>
-<tr>
-<td></td>
 <td><code>identities</code></td>
 <td>[]string</td>
 <td><em>none</em></td>
 <td>age identity files</td>
+</tr>
+<tr>
+<td></td>
+<td><code>identity</code></td>
+<td>string</td>
+<td><em>none</em></td>
+<td>age identity file</td>
 </tr>
 <tr>
 <td></td>
@@ -1722,24 +1742,24 @@
 </tr>
 <tr>
 <td></td>
+<td><code>recipientFile</code></td>
+<td>string</td>
+<td><em>none</em></td>
+<td>age recipient file</td>
+</tr>
+<tr>
+<td></td>
+<td><code>recipientFiles</code></td>
+<td>[]string</td>
+<td><em>none</em></td>
+<td>age recipient files</td>
+</tr>
+<tr>
+<td></td>
 <td><code>recipients</code></td>
 <td>[]string</td>
 <td><em>none</em></td>
 <td>age recipients</td>
-</tr>
-<tr>
-<td></td>
-<td><code>recipientsFile</code></td>
-<td>[]string</td>
-<td><em>none</em></td>
-<td>age recipients file</td>
-</tr>
-<tr>
-<td></td>
-<td><code>recipientsFiles</code></td>
-<td>[]string</td>
-<td><em>none</em></td>
-<td>age recipients files</td>
 </tr>
 <tr>
 <td></td>
@@ -1760,14 +1780,14 @@
 <td><code>profile</code></td>
 <td>string</td>
 <td><em>none</em></td>
-<td>The AWS shared profile name</td>
+<td>AWS shared profile name</td>
 </tr>
 <tr>
 <td></td>
 <td><code>region</code></td>
 <td>string</td>
 <td><em>none</em></td>
-<td>The AWS region</td>
+<td>AWS region</td>
 </tr>
 <tr>
 <td><code>bitwarden</code></td>
@@ -1861,6 +1881,13 @@
 <td>Minimum duration for edit command</td>
 </tr>
 <tr>
+<td></td>
+<td><code>watch</code></td>
+<td>bool</td>
+<td><code>false</code></td>
+<td>Automatically apply changes when files are saved</td>
+</tr>
+<tr>
 <td><code>git</code></td>
 <td><code>autoAdd</code></td>
 <td>bool</td>
@@ -1886,7 +1913,7 @@
 <td><code>command</code></td>
 <td>string</td>
 <td><code>git</code></td>
-<td>Source version control system</td>
+<td>git CLI command</td>
 </tr>
 <tr>
 <td><code>gopass</code></td>
@@ -1939,14 +1966,14 @@
 </tr>
 <tr>
 <td><code>interpreters</code></td>
-<td><em>extension</em><code>.args</code></td>
+<td><em>extension</em>.<code>args</code></td>
 <td>[]string</td>
 <td><em>none</em></td>
 <td>See section on "Scripts on Windows"</td>
 </tr>
 <tr>
 <td></td>
-<td><em>extension</em><code>.command</code></td>
+<td><em>extension</em>.<code>command</code></td>
 <td>string</td>
 <td><em>special</em></td>
 <td>See section on "Scripts on Windows"</td>
@@ -1991,21 +2018,21 @@
 <td><code>command</code></td>
 <td>string</td>
 <td><code>lpass</code></td>
-<td>Lastpass CLI command</td>
+<td>LastPass CLI command</td>
 </tr>
 <tr>
 <td><code>merge</code></td>
 <td><code>args</code></td>
 <td>[]string</td>
 <td><em>see <code>merge</code> below</em></td>
-<td>Args to 3-way merge command</td>
+<td>Extra args to three-way merge CLI command</td>
 </tr>
 <tr>
 <td></td>
 <td><code>command</code></td>
 <td>string</td>
-<td><code>vimdiff</code></td>
-<td>3-way merge command</td>
+<td><em>none</em></td>
+<td>Three-way merge CLI command</td>
 </tr>
 <tr>
 <td><code>onepassword</code></td>
@@ -2040,14 +2067,14 @@
 <td><code>args</code></td>
 <td>[]string</td>
 <td><em>none</em></td>
-<td>Extra args to the pinentry command</td>
+<td>Extra args to pinentry CLI command</td>
 </tr>
 <tr>
 <td></td>
 <td><code>command</code></td>
 <td>string</td>
 <td><em>none</em></td>
-<td>pinentry command</td>
+<td>pinentry CLI command</td>
 </tr>
 <tr>
 <td></td>
@@ -2061,7 +2088,7 @@
 <td><code>command</code></td>
 <td>string</td>
 <td><em>none</em></td>
-<td>Generic secret command</td>
+<td>Generic secret CLI command</td>
 </tr>
 <tr>
 <td><code>status</code></td>
@@ -2158,6 +2185,6 @@
 <div class="md-dialog__inner md-typeset"></div>
 </div>
 <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../../assets/javascripts/workers/search.22074ed6.min.js"}</script>
-<script src="../../../assets/javascripts/bundle.960e086b.min.js"></script>
+<script src="../../../assets/javascripts/bundle.01de222e.min.js"></script>
 </body>
 </html>
