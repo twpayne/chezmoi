@@ -17,7 +17,7 @@ type editCmdConfig struct {
 	Hardlink    bool          `mapstructure:"hardlink"`
 	MinDuration time.Duration `mapstructure:"minDuration"`
 	Watch       bool          `mapstructure:"watch"`
-	apply       bool
+	Apply       bool          `mapstructure:"apply"`
 	exclude     *chezmoi.EntryTypeSet
 	include     *chezmoi.EntryTypeSet
 	init        bool
@@ -41,7 +41,7 @@ func (c *Config) newEditCmd() *cobra.Command {
 	}
 
 	flags := editCmd.Flags()
-	flags.BoolVarP(&c.Edit.apply, "apply", "a", c.Edit.apply, "Apply after editing")
+	flags.BoolVarP(&c.Edit.Apply, "apply", "a", c.Edit.Apply, "Apply after editing")
 	flags.VarP(c.Edit.exclude, "exclude", "x", "Exclude entry types")
 	flags.BoolVar(&c.Edit.Hardlink, "hardlink", c.Edit.Hardlink, "Invoke editor with a hardlink to the source file")
 	flags.VarP(c.Edit.include, "include", "i", "Include entry types")
@@ -56,7 +56,7 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string, sourceState *chez
 		if err := c.runEditor([]string{c.WorkingTreeAbsPath.String()}); err != nil {
 			return err
 		}
-		if c.Edit.apply {
+		if c.Edit.Apply {
 			if err := c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, noArgs, applyArgsOptions{
 				include:      c.Edit.include.Sub(c.Edit.exclude),
 				init:         c.Edit.init,
@@ -170,7 +170,7 @@ TARGETRELPATH:
 			}
 		}
 
-		if c.Edit.apply || c.Edit.Watch {
+		if c.Edit.Apply || c.Edit.Watch {
 			if err := c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, args, applyArgsOptions{
 				include:      c.Edit.include,
 				init:         c.Edit.init,
