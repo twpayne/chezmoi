@@ -3,7 +3,7 @@ linters:
   - asciicheck
   - bidichk
   - bodyclose
-  - deadcode
+  - contextcheck
   - decorder
   - depguard
   - dogsled
@@ -31,8 +31,10 @@ linters:
   - govet
   - importas
   - ineffassign
+  - interfacebloat
   - ireturn
   - lll
+  - logrlint
   - makezero
   - misspell
   - nilerr
@@ -42,6 +44,7 @@ linters:
   - prealloc
   - predeclared
   - promlinter
+  - reassign
   - revive
   - staticcheck
   - stylecheck
@@ -52,11 +55,9 @@ linters:
   - unconvert
   - unparam
   - unused
-  - varcheck
   - whitespace
   disable:
   - asasalint
-  - contextcheck # https://github.com/golangci/golangci-lint/issues/2649
   - cyclop
   - exhaustive
   - exhaustivestruct
