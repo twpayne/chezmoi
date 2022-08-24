@@ -111,6 +111,9 @@ sections:
       type: "bool"
       description: "Reverse order of arguments to diff"
   edit:
+    apply:
+      type: "bool"
+      description: "Apply changes on exit"
     args:
       type: "[]string"
       description: "Extra args to edit command"
