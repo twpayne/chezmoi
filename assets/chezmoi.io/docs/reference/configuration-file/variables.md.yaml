@@ -227,6 +227,9 @@ sections:
       default: "*see `pinentry` below*"
       description: "Extra options for pinentry"
   secret:
+    args:
+      type: "[]string"
+      description: "Extra args to secret CLI command"
     command:
       description: "Generic secret CLI command"
   status:
