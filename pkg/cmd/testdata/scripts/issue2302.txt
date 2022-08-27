@@ -1,0 +1,10 @@
+[windows] skip 'UNIX only'
+
+# test that chezmoi does not panic if an external uses an absolute path
+! exec chezmoi diff
+stderr 'path is not relative'
+
+-- home/user/.local/share/chezmoi/.chezmoiexternal.toml --
+["/home/user/.dir"]
+    type = "archive"
+    url = "https://example.com/example.tar.gz"
