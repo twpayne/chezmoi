@@ -10,6 +10,7 @@ import (
 	"github.com/mitchellh/go-homedir"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
+	"github.com/twpayne/chezmoi/v2/pkg/chezmoilog"
 )
 
 type passholeConfig struct {
@@ -113,7 +114,7 @@ func (c *Config) passholeOutput(args []string) (string, error) {
 		cmd.Stdin = bytes.NewBufferString(c.Passhole.password + "\n")
 	}
 	cmd.Stderr = os.Stderr
-	output, err := c.baseSystem.IdempotentCmdOutput(cmd)
+	output, err := chezmoilog.LogCmdOutput(cmd)
 	if err != nil {
 		return "", newCmdOutputError(cmd, output, err)
 	}
