@@ -1,0 +1,117 @@
+symlink archive/symlink1 -> file1
+symlink archive/symlink2 -> file2
+mkdir www
+exec tar czf www/archive.tar.gz archive
+
+httpd www
+
+# test that chezmoi includes all files by default
+exec chezmoi managed
+cmp stdout golden/managed
+
+chhome home2/user
+
+# test that chezmoi can include only certain files by default
+exec chezmoi managed
+cmp stdout golden/managed2
+
+chhome home3/user
+
+# test that chezmoi can exclude only certain files by default
+exec chezmoi managed
+cmp stdout golden/managed3
+
+chhome home4/user
+
+# test that chezmoi can include and exclude files
+exec chezmoi managed
+cmp stdout golden/managed4
+
+chhome home5/user
+
+# test that chezmoi can include selected files in sub-directories
+exec chezmoi managed
+cmp stdout golden/managed5
+
+-- archive/dir/subdir1/file1 --
+# contents of dir/subdir1/file1
+-- archive/dir/subdir1/file2 --
+# contents of dir/subdir1/file2
+-- archive/dir/subdir2/file1 --
+# contents of dir/subdir2/file1
+-- archive/dir/subdir2/file2 --
+# contents of dir/subdir2/file2
+-- archive/file1 --
+# contents of file1
+-- archive/file2 --
+# contents of file2
+-- golden/managed --
+.dir
+.dir/dir
+.dir/dir/subdir1
+.dir/dir/subdir1/file1
+.dir/dir/subdir1/file2
+.dir/dir/subdir2
+.dir/dir/subdir2/file1
+.dir/dir/subdir2/file2
+.dir/file1
+.dir/file2
+.dir/symlink1
+.dir/symlink2
+-- golden/managed2 --
+.dir
+.dir/dir
+.dir/dir/subdir1
+.dir/dir/subdir1/file1
+.dir/dir/subdir1/file2
+-- golden/managed3 --
+.dir
+.dir/dir
+.dir/dir/subdir1
+.dir/dir/subdir1/file1
+.dir/file1
+.dir/symlink1
+-- golden/managed4 --
+.dir
+.dir/dir
+.dir/dir/subdir1
+.dir/dir/subdir1/file1
+.dir/dir/subdir2
+.dir/dir/subdir2/file1
+.dir/file1
+.dir/symlink1
+.dir/symlink2
+-- golden/managed5 --
+.dir
+.dir/dir/subdir2/file1
+.dir/dir/subdir2/file2
+-- home/user/.local/share/chezmoi/.chezmoiexternal.toml --
+[".dir"]
+    type = "archive"
+    url = "{{ env "HTTPD_URL" }}/archive.tar.gz"
+    stripComponents = 1
+-- home2/user/.local/share/chezmoi/.chezmoiexternal.toml --
+[".dir"]
+    type = "archive"
+    url = "{{ env "HTTPD_URL" }}/archive.tar.gz"
+    stripComponents = 1
+    include = ["*", "*/dir", "*/dir/subdir1", "*/dir/subdir1/**"]
+-- home3/user/.local/share/chezmoi/.chezmoiexternal.toml --
+[".dir"]
+    type = "archive"
+    url = "{{ env "HTTPD_URL" }}/archive.tar.gz"
+    stripComponents = 1
+    exclude = ["**/*2"]
+-- home4/user/.local/share/chezmoi/.chezmoiexternal.toml --
+[".dir"]
+    type = "archive"
+    url = "{{ env "HTTPD_URL" }}/archive.tar.gz"
+    stripComponents = 1
+    include = ["*/dir", "*/dir/**"]
+    exclude = ["**/file2"]
+-- home5/user/.local/share/chezmoi/.chezmoiexternal.toml --
+[".dir"]
+    type = "archive"
+    url = "{{ env "HTTPD_URL" }}/archive.tar.gz"
+    stripComponents = 1
+    include = ["*/dir/subdir2/*"]

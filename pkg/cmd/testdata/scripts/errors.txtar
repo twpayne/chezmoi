@@ -1,0 +1,52 @@
+mksourcedir
+
+# test duplicate source state entry detection
+cp $CHEZMOISOURCEDIR/dot_file $CHEZMOISOURCEDIR/empty_dot_file
+! exec chezmoi verify
+stderr 'inconsistent state'
+
+chhome home2/user
+
+# test invalid config
+! exec chezmoi verify
+stderr 'invalid config'
+
+chhome home3/user
+
+# test source directory is not a directory
+! exec chezmoi verify
+stderr 'not a directory'
+
+chhome home4/user
+
+# test that chezmoi checks .chezmoiversion
+! exec chezmoi verify
+stderr 'source state requires chezmoi version'
+
+chhome home5/user
+# test that chezmoi checks .chezmoiversion when .chezmoiroot is used
+! exec chezmoi verify
+stderr 'source state requires chezmoi version'
+
+chhome home6/user
+
+# test duplicate script detection
+! exec chezmoi verify
+stderr 'inconsistent state'
+
+# FIXME add more tests
+
+-- home2/user/.config/chezmoi/chezmoi.json --
+{
+-- home3/user/.local/share/chezmoi --
+# contents of .local/share/chezmoi
+-- home4/user/.local/share/chezmoi/.chezmoiversion --
+3.0.0
+-- home5/user/.local/share/chezmoi/.chezmoiversion --
+3.0.0
+-- home5/user/.local/share/chezmoi/.chezmoiroot --
+home
+-- home6/user/.local/share/chezmoi/run_install_packages --
+# contents of install_packages
+-- home6/user/.local/share/chezmoi/run_once_install_packages --
+# contents of install_packages

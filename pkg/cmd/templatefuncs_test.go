@@ -47,6 +47,126 @@ func TestFromIniTemplateFunc(t *testing.T) {
 	}
 }
 
+func TestToIniTemplateFunc(t *testing.T) {
+	for i, tc := range []struct {
+		data     map[string]any
+		expected string
+	}{
+		{
+			data: map[string]any{
+				"bool":   true,
+				"float":  1.0,
+				"int":    1,
+				"string": "string",
+			},
+			expected: chezmoitest.JoinLines(
+				`bool = true`,
+				`float = 1.000000`,
+				`int = 1`,
+				`string = "string"`,
+			),
+		},
+		{
+			data: map[string]any{
+				"key": "value",
+				"section": map[string]any{
+					"subKey": "subValue",
+				},
+			},
+			expected: chezmoitest.JoinLines(
+				`key = "value"`,
+				``,
+				`[section]`,
+				`subKey = "subValue"`,
+			),
+		},
+		{
+			data: map[string]any{
+				"section": map[string]any{
+					"subsection": map[string]any{
+						"subSubKey": "subSubValue",
+					},
+				},
+			},
+			expected: chezmoitest.JoinLines(
+				``,
+				`[section]`,
+				``,
+				`[section.subsection]`,
+				`subSubKey = "subSubValue"`,
+			),
+		},
+		{
+			data: map[string]any{
+				"key": "value",
+				"section": map[string]any{
+					"subKey": "subValue",
+					"subsection": map[string]any{
+						"subSubKey": "subSubValue",
+					},
+				},
+			},
+			expected: chezmoitest.JoinLines(
+				`key = "value"`,
+				``,
+				`[section]`,
+				`subKey = "subValue"`,
+				``,
+				`[section.subsection]`,
+				`subSubKey = "subSubValue"`,
+			),
+		},
+		{
+			data: map[string]any{
+				"section1": map[string]any{
+					"subKey1": "subValue1",
+					"subsection1a": map[string]any{
+						"subSubKey1a": "subSubValue1a",
+					},
+					"subsection1b": map[string]any{
+						"subSubKey1b": "subSubValue1b",
+					},
+				},
+				"section2": map[string]any{
+					"subKey2": "subValue2",
+					"subsection2a": map[string]any{
+						"subSubKey2a": "subSubValue2a",
+					},
+					"subsection2b": map[string]any{
+						"subSubKey2b": "subSubValue2b",
+					},
+				},
+			},
+			expected: chezmoitest.JoinLines(
+				``,
+				`[section1]`,
+				`subKey1 = "subValue1"`,
+				``,
+				`[section1.subsection1a]`,
+				`subSubKey1a = "subSubValue1a"`,
+				``,
+				`[section1.subsection1b]`,
+				`subSubKey1b = "subSubValue1b"`,
+				``,
+				`[section2]`,
+				`subKey2 = "subValue2"`,
+				``,
+				`[section2.subsection2a]`,
+				`subSubKey2a = "subSubValue2a"`,
+				``,
+				`[section2.subsection2b]`,
+				`subSubKey2b = "subSubValue2b"`,
+			),
+		},
+	} {
+		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			c := &Config{}
+			actual := c.toIniTemplateFunc(tc.data)
+			assert.Equal(t, tc.expected, actual)
+		})
+	}
+}
+
 func TestQuoteListTemplateFunc(t *testing.T) {
 	c, err := newConfig()
 	require.NoError(t, err)

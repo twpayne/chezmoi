@@ -59,6 +59,27 @@ Clone the repo with depth *depth*.
 
 Force the `prompt*Once` template functions to prompt.
 
+## `--promptBool` *pairs*
+
+Populate the `promptBool` template function with values from *pairs*. *pairs* is
+a comma-separated list of *prompt*`=`*value* pairs. If `promptBool` is called
+with a *prompt* that does not match any of *pairs*, then it prompts the user for
+a value.
+
+## `--promptInt` *pairs*
+
+Populate the `promptInt` template function with values from *pairs*. *pairs* is
+a comma-separated list of *prompt*`=`*value* pairs. If `prompInt` is called
+with a *prompt* that does not match any of *pairs*, then it prompts the user for
+a value.
+
+## `--promptString` *pairs*
+
+Populate the `promptString` template function with values from *pairs*. *pairs* is
+a comma-separated list of *prompt*`=`*value* pairs. If `promptString` is called
+with a *prompt* that does not match any of *pairs*, then it prompts the user for
+a value.
+
 ## `--guess-repo-url` *bool*
 
 Guess the repo URL from the *repo* argument. This defaults to `true`.

@@ -1,0 +1,8 @@
+[!env:CHEZMOI_GITHUB_TOKEN] skip '$CHEZMOI_GITHUB_TOKEN not set'
+
+# test that chezmoi upgrade succeeds
+exec chezmoi upgrade --executable=$WORK${/}chezmoi$exe --method=replace-executable
+exec $WORK/chezmoi$exe --version
+
+-- chezmoi --
+-- chezmoi.exe --

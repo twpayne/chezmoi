@@ -1,0 +1,21 @@
+[windows] skip 'UNIX only'
+[!exec:age] skip 'age not found in $PATH'
+
+mkageconfig
+appendline $CHEZMOICONFIGDIR/chezmoi.toml '[merge]'
+appendline $CHEZMOICONFIGDIR/chezmoi.toml '    command = "cat"'
+
+# test that chezmoi merge works on files encrypted with age
+exec chezmoi add --encrypt $HOME${/}.dir/file
+exists $CHEZMOISOURCEDIR/dot_dir/encrypted_file.age
+edit $HOME${/}.dir/file
+exec chezmoi merge $HOME${/}.dir/file
+cmp stdout golden/merge
+
+-- golden/merge --
+# contents of .dir/file
+# edited
+# contents of .dir/file
+# contents of .dir/file
+-- home/user/.dir/file --
+# contents of .dir/file

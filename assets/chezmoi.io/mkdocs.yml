@@ -83,6 +83,7 @@ nav:
     - Containers and VMs: user-guide/machines/containers-and-vms.md
   - Advanced:
     - Customize your source directory: user-guide/advanced/customize-your-source-directory.md
+    - Use chezmoi with Watchman: user-guide/advanced/use-chezmoi-with-watchman.md
     - Migrate away from chezmoi: user-guide/advanced/migrate-away-from-chezmoi.md
   - Frequently asked questions:
     - Usage: user-guide/frequently-asked-questions/usage.md
@@ -184,6 +185,7 @@ nav:
       - quoteList: reference/templates/functions/quoteList.md
       - replaceAllRegex: reference/templates/functions/replaceAllRegex.md
       - stat: reference/templates/functions/stat.md
+      - toIni: reference/templates/functions/toIni.md
       - toToml: reference/templates/functions/toToml.md
       - toYaml: reference/templates/functions/toYaml.md
     - GitHub functions:

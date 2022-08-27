@@ -1,0 +1,45 @@
+[windows] skip 'skipping gpg tests on Windows'
+[!exec:gpg] skip 'gpg not found in $PATH'
+
+mkgpgconfig
+
+# use chezmoi's encryption to encrypt a file and an archive
+exec tar czf $HOME/archive.tar.gz archive
+exec chezmoi add --encrypt $HOME${/}.file $HOME${/}archive.tar.gz
+mkdir www
+cp $CHEZMOISOURCEDIR/encrypted_dot_file.asc www/.file.asc
+cp $CHEZMOISOURCEDIR/encrypted_archive.tar.gz.asc www/archive.tar.gz.asc
+
+httpd www
+
+chhome home2/user
+
+# test that chezmoi reads encrypted external files and archives
+mkdir $CHEZMOICONFIGDIR
+cp home/user/.config/chezmoi/chezmoi.toml $CHEZMOICONFIGDIR
+exec chezmoi apply --force
+cmp $HOME/.file golden/.file
+cmp $HOME/.dir/file golden/dir/file
+
+-- archive/dir/file --
+# contents of dir/file
+-- golden/.file --
+# contents of .file
+-- golden/dir/file --
+# contents of dir/file
+-- home/user/.file --
+# contents of .file
+-- home2/user/.local/share/chezmoi/.chezmoiexternal.json --
+{
+    ".file": {
+        "type": "file",
+        "url": "{{ env "HTTPD_URL" }}/.file.asc",
+        "encrypted": true
+    },
+    ".dir": {
+        "type": "archive",
+        "url": "{{ env "HTTPD_URL" }}/archive.tar.gz.asc",
+        "encrypted": true,
+        "stripComponents": 2
+    }
+}

@@ -28,6 +28,9 @@ type initCmdConfig struct {
 	guessRepoURL    bool
 	oneShot         bool
 	forcePromptOnce bool
+	promptBool      map[string]string
+	promptInt       map[string]int
+	promptString    map[string]string
 	purge           bool
 	purgeBinary     bool
 	ssh             bool
@@ -120,6 +123,9 @@ func (c *Config) newInitCmd() *cobra.Command {
 	flags.BoolVar(&c.init.forcePromptOnce, "prompt", c.init.forcePromptOnce, "Force prompt*Once template functions to prompt") //nolint:lll
 	flags.BoolVarP(&c.init.guessRepoURL, "guess-repo-url", "g", c.init.guessRepoURL, "Guess the repo URL")
 	flags.BoolVar(&c.init.oneShot, "one-shot", c.init.oneShot, "Run in one-shot mode")
+	flags.StringToStringVar(&c.init.promptBool, "promptBool", c.init.promptBool, "Populate promptBool")
+	flags.StringToIntVar(&c.init.promptInt, "promptInt", c.init.promptInt, "Populate promptInt")
+	flags.StringToStringVar(&c.init.promptString, "promptString", c.init.promptString, "Populate promptString")
 	flags.BoolVarP(&c.init.purge, "purge", "p", c.init.purge, "Purge config and source directories after running")
 	flags.BoolVarP(&c.init.purgeBinary, "purge-binary", "P", c.init.purgeBinary, "Purge chezmoi binary after running")
 	flags.BoolVar(&c.init.ssh, "ssh", false, "Use ssh instead of https when guessing dotfile repo URL")
@@ -198,6 +204,12 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	if err := c.checkVersion(); err != nil {
+		return err
+	}
+
+	var err error
+	c.SourceDirAbsPath, err = c.sourceDirAbsPath()
+	if err != nil {
 		return err
 	}
 

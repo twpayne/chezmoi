@@ -14,6 +14,8 @@ import (
 
 // A System reads from and writes to a filesystem, runs scripts, and persists
 // state.
+//
+//nolint:interfacebloat
 type System interface {
 	Chmod(name AbsPath, mode fs.FileMode) error
 	Glob(pattern string) ([]string, error)

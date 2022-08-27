@@ -1,0 +1,43 @@
+# test that chezmoi apply creates a file from a template
+mkdir $CHEZMOISOURCEDIR
+cp golden/create_dot_create.tmpl $CHEZMOISOURCEDIR
+exec chezmoi apply --force
+cmp $HOME/.create golden/.create
+
+[windows] skip 'UNIX only'
+[!exec:age] skip 'age not found in $PATH'
+
+chhome home2/user
+
+# test that chezmoi apply creates encrypted create_ targets
+mkageconfig
+mkdir $CHEZMOISOURCEDIR
+exec chezmoi encrypt --output=$CHEZMOISOURCEDIR/create_encrypted_dot_create.age golden/.create
+grep '-----BEGIN AGE ENCRYPTED FILE-----' $CHEZMOISOURCEDIR/create_encrypted_dot_create.age
+exec chezmoi apply --force
+cmp $HOME/.create golden/.create
+
+chhome home3/user
+
+# test that chezmoi apply creates encrypted template create_ targets
+mkageconfig
+mkdir $CHEZMOISOURCEDIR
+exec chezmoi encrypt --output=$CHEZMOISOURCEDIR/create_encrypted_dot_create.tmpl.age golden/create_dot_create.tmpl
+grep '-----BEGIN AGE ENCRYPTED FILE-----' $CHEZMOISOURCEDIR/create_encrypted_dot_create.tmpl.age
+exec chezmoi apply --force
+cmp $HOME/.create golden/.create
+
+chhome home4/user
+
+# test that chezmoi manage does not execute template create_ targets
+exec chezmoi managed
+cmp stdout golden/managed
+
+-- golden/.create --
+# contents of .create
+-- golden/create_dot_create.tmpl --
+{{ "# contents of .create" }}
+-- golden/managed --
+.create
+-- home4/user/.local/share/chezmoi/create_dot_create.tmpl --
+{{ fail "Template should not be executed }}

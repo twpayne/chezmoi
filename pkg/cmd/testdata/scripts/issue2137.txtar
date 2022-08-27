@@ -1,0 +1,11 @@
+# test that chezmoi apply fails if .chezmoiversion requires a more recent version
+! exec chezmoi apply
+stderr 'source state requires chezmoi version 3\.0\.0 or later'
+
+# test that chezmoi init fails if .chezmoiversion requires a more recent version
+! exec chezmoi init
+stderr 'source state requires chezmoi version 3\.0\.0 or later'
+
+-- home/user/.local/share/chezmoi/.chezmoiversion --
+3.0.0
+-- home/user/.local/share/chezmoi/.git/.keep --

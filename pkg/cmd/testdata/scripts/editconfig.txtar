@@ -1,0 +1,30 @@
+# test that edit-config creates a config file if needed
+exec chezmoi edit-config
+grep -count=1 '# edited' $CHEZMOICONFIGDIR/chezmoi.toml
+
+# test that edit-config edits an existing config file
+exec chezmoi edit-config
+grep -count=2 '# edited' $CHEZMOICONFIGDIR/chezmoi.toml
+
+chhome home2/user
+
+# test that edit-config edits an existing YAML config file
+exec chezmoi edit-config
+grep -count=1 '# edited' $CHEZMOICONFIGDIR/chezmoi.yaml
+! stderr warning
+
+chhome home3/user
+
+# test that edit-config reports a warning if the config is no longer valid
+exec chezmoi edit-config
+stderr warning
+! stderr 'returned in less than'
+grep -count=1 '# edited' $CHEZMOICONFIGDIR/chezmoi.json
+
+-- home2/user/.config/chezmoi/chezmoi.yaml --
+data:
+    email: "user@example.com"
+edit:
+    minDuration: 0
+-- home3/user/.config/chezmoi/chezmoi.json --
+{"data":{"email":"user@example.com"},"edit":{"minDuration":"0"}}

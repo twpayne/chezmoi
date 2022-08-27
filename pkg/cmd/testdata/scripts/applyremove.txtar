@@ -1,0 +1,27 @@
+# test that chezmoi apply --dry-run does not remove entries
+exec chezmoi apply --dry-run --force
+exists $HOME/.dir/file
+exists $HOME/.file1
+exists $HOME/.file2
+
+# test that chezmoi apply file removes only file
+exec chezmoi apply --force $HOME${/}.file1
+exists $HOME/.dir/file
+! exists $HOME/.file1
+exists $HOME/.file2
+
+# test that chezmoi apply removes all entries
+exec chezmoi apply --force
+! exists $HOME/.dir/file
+! exists $HOME/.file1
+! exists $HOME/.file2
+
+-- home/user/.dir/file --
+# contents of .dir/file
+-- home/user/.file1 --
+# contents of .file1
+-- home/user/.file2 --
+# contents of .file2
+-- home/user/.local/share/chezmoi/.chezmoiremove --
+.dir
+.file*

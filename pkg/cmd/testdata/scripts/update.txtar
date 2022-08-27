@@ -1,0 +1,62 @@
+[!exec:git] skip 'git not found in $PATH'
+
+mkgitconfig
+mkhomedir golden
+mkhomedir
+
+exec git init --bare $WORK/dotfiles.git
+
+exec chezmoi init file://$WORK/dotfiles.git
+
+# create a commit
+exec chezmoi add $HOME${/}.file
+exec chezmoi git add dot_file
+exec chezmoi git commit -- --message 'Add dot_file'
+exec chezmoi git push
+
+chhome home2/user
+
+# test that chezmoi init --apply inits and applies
+mkgitconfig
+exec chezmoi init --apply --force file://$WORK/dotfiles.git
+cmp $HOME/.file golden/.file
+
+chhome home/user
+
+# create and push a new commit
+edit $CHEZMOISOURCEDIR/dot_file
+exec chezmoi git -- add dot_file
+exec chezmoi git -- commit -m 'Update dot_file'
+exec chezmoi git -- push
+
+chhome home2/user
+
+# test chezmoi update
+exec chezmoi update
+grep -count=1 '# edited' $HOME/.file
+
+chhome home/user
+
+# create and push a new commit
+edit $CHEZMOISOURCEDIR/dot_file
+exec chezmoi git -- add dot_file
+exec chezmoi git -- commit -m 'Update dot_file'
+exec chezmoi git -- push
+
+chhome home2/user
+
+# test chezmoi update --apply=false
+exec chezmoi update --apply=false
+grep -count=1 '# edited' $HOME/.file
+exec chezmoi apply --force
+grep -count=2 '# edited' $HOME/.file
+
+# test chezmoi update --init
+cp golden/.chezmoi.toml.tmpl $CHEZMOISOURCEDIR
+exec chezmoi update --init
+exec chezmoi execute-template '{{ .key }}'
+stdout value
+
+-- golden/.chezmoi.toml.tmpl --
+[data]
+    key = "value"

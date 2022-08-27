@@ -1,0 +1,12 @@
+[!exec:zip] skip 'zip not found in $PATH'
+exec zip -r archive.zip archive
+
+# test that chezmoi import imports a zip archive
+exec chezmoi import --destination=$HOME${/}.dir --strip-components=1 archive.zip
+cmp $CHEZMOISOURCEDIR/dot_dir/dir/file golden/dot_dir/dir/file
+
+-- archive/dir/file --
+# contents of dir/file
+-- golden/dot_dir/dir/file --
+# contents of dir/file
+-- home/user/.local/share/chezmoi/dot_dir/.keep --

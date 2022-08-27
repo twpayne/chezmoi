@@ -1,0 +1,57 @@
+[windows] skip 'UNIX only'
+[!umask:022] skip
+
+chmod 777 $HOME/.file
+
+# test that chezmoi diff prints a diff when a file's permissions are different
+exec chezmoi diff
+cmp stdout golden/diff
+
+# test that chezmoi verify fails when a file's permissions are different
+! exec chezmoi verify
+
+# test that chezmoi apply updates file permissions
+exec chezmoi apply --force
+exec chezmoi diff
+! stdout .
+exec chezmoi verify
+
+# test that chezmoi ignores incorrect permissions in the persistent state if the actual file permissions match and updates the persistent state
+exec chezmoi state get --bucket=entryState --key=$HOME/.file
+cmp stdout golden/state-file-get.json
+exec chezmoi state set --bucket=entryState --key=$HOME/.file --value={"type":"file","mode":436,"contentsSHA256":"634a4dd193c7b3b926d2e08026aa81a416fd41cec52854863b974af422495663"}
+exec chezmoi apply --verbose
+! stdout .
+exec chezmoi state get --bucket=entryState --key=$HOME/.file
+cmp stdout golden/state-file-get.json
+
+# test that chezmoi ignores incorrect permissions in the persistent state if the actual dir permissions match and updates the persistent state
+# chezmoi state get --bucket=entryState --key=$HOME/.dir # FIXME understand why un-commenting this and the next line causes the test to fail
+# cmp stdout golden/state-dir-get
+exec chezmoi state set --bucket=entryState --key=$HOME/.dir --value={"type":"dir","mode":509}
+exec chezmoi apply --verbose
+! stdout .
+exec chezmoi state get --bucket=entryState --key=$HOME/.dir
+cmp stdout golden/state-dir-get.json
+
+-- golden/diff --
+diff --git a/.file b/.file
+old mode 100777
+new mode 100644
+-- golden/state-dir-get.json --
+{
+  "type": "dir",
+  "mode": 2147484141
+}
+-- golden/state-file-get.json --
+{
+  "type": "file",
+  "mode": 420,
+  "contentsSHA256": "634a4dd193c7b3b926d2e08026aa81a416fd41cec52854863b974af422495663"
+}
+-- home/user/.dir/.keep --
+-- home/user/.file --
+# contents of .file
+-- home/user/.local/share/chezmoi/dot_dir/.keep --
+-- home/user/.local/share/chezmoi/dot_file --
+# contents of .file

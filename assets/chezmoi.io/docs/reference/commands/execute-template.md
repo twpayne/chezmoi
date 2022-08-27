@@ -11,24 +11,24 @@ Include simulated functions only available during `chezmoi init`.
 
 ## `--promptBool` *pairs*
 
-Simulate the `promptBool` function with a function that returns values from
-*pairs*. *pairs* is a comma-separated list of *prompt*`=`*value* pairs. If
+Simulate the `promptBool` template function with a function that returns values
+from *pairs*. *pairs* is a comma-separated list of *prompt*`=`*value* pairs. If
 `promptBool` is called with a *prompt* that does not match any of *pairs*, then
 it returns false.
 
 ## `--promptInt` *pairs*
 
-Simulate the `promptInt` function with a function that returns values from
-*pairs*. *pairs* is a comma-separated list of *prompt*`=`*value* pairs. If
+Simulate the `promptInt` template function with a function that returns values
+from *pairs*. *pairs* is a comma-separated list of *prompt*`=`*value* pairs. If
 `promptInt` is called with a *prompt* that does not match any of *pairs*, then
 it returns zero.
 
 ## `--promptString`, `-p` *pairs*
 
-Simulate the `promptString` function with a function that returns values from
-*pairs*. *pairs* is a comma-separated list of *prompt*`=`*value* pairs. If
-`promptString` is called with a *prompt* that does not match any of *pairs*,
-then it returns *prompt* unchanged.
+Simulate the `promptString` template function with a function that returns
+values from *pairs*. *pairs* is a comma-separated list of *prompt*`=`*value*
+pairs. If `promptString` is called with a *prompt* that does not match any of
+*pairs*, then it returns *prompt* unchanged.
 
 ## `--stdinisatty` *bool*
 

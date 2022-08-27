@@ -6,12 +6,13 @@ require (
 	filippo.io/age v1.0.0
 	github.com/Masterminds/sprig/v3 v3.2.2
 	github.com/aws/aws-sdk-go-v2 v1.16.11
-	github.com/aws/aws-sdk-go-v2/config v1.16.1
-	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.15.17
+	github.com/aws/aws-sdk-go-v2/config v1.17.1
+	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.15.18
 	github.com/bmatcuk/doublestar/v4 v4.2.0
 	github.com/bradenhilton/mozillainstallhash v1.0.0
 	github.com/charmbracelet/glamour v0.5.0
 	github.com/coreos/go-semver v0.3.0
+	github.com/fsnotify/fsnotify v1.5.4
 	github.com/go-git/go-git/v5 v5.4.2
 	github.com/google/go-github/v45 v45.2.0
 	github.com/google/gops v0.3.25
@@ -19,8 +20,8 @@ require (
 	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/muesli/combinator v0.3.0
-	github.com/pelletier/go-toml/v2 v2.0.2
-	github.com/rogpeppe/go-internal v1.8.1
+	github.com/pelletier/go-toml/v2 v2.0.3
+	github.com/rogpeppe/go-internal v1.9.0
 	github.com/rs/zerolog v1.27.0
 	github.com/sergi/go-diff v1.1.0
 	github.com/spf13/afero v1.9.2
@@ -37,9 +38,10 @@ require (
 	go.uber.org/multierr v1.8.0
 	golang.org/x/exp v0.0.0-20220722155223-a9213eeb770e
 	golang.org/x/oauth2 v0.0.0-20220808172628-8227340efae7
-	golang.org/x/sync v0.0.0-20220722155255-886fb9371eb4
-	golang.org/x/sys v0.0.0-20220811171246-fbc7d0a398ab
+	golang.org/x/sync v0.0.0-20220819030929-7fc1605a5dde
+	golang.org/x/sys v0.0.0-20220818161305-2296e01440c6
 	golang.org/x/term v0.0.0-20220722155259-a9ba230a4035
+	gopkg.in/ini.v1 v1.67.0
 	gopkg.in/yaml.v3 v3.0.1
 	howett.net/plist v1.0.0
 	mvdan.cc/sh/v3 v3.5.1
@@ -49,17 +51,17 @@ require (
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver/v3 v3.1.1 // indirect
 	github.com/Microsoft/go-winio v0.5.2 // indirect
-	github.com/ProtonMail/go-crypto v0.0.0-20220812102039-7f02a4f046af // indirect
+	github.com/ProtonMail/go-crypto v0.0.0-20220819155348-b76dceea2ffa // indirect
 	github.com/acomagu/bufpipe v1.0.3 // indirect
 	github.com/alecthomas/chroma v0.10.0 // indirect
 	github.com/alessio/shellescape v1.4.1 // indirect
-	github.com/aws/aws-sdk-go-v2/credentials v1.12.13 // indirect
+	github.com/aws/aws-sdk-go-v2/credentials v1.12.14 // indirect
 	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.12.12 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.18 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.12 // indirect
 	github.com/aws/aws-sdk-go-v2/internal/ini v1.3.19 // indirect
 	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.9.12 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sso v1.11.16 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sso v1.11.17 // indirect
 	github.com/aws/aws-sdk-go-v2/service/sts v1.16.13 // indirect
 	github.com/aws/smithy-go v1.12.1 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
@@ -69,7 +71,6 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dlclark/regexp2 v1.7.0 // indirect
 	github.com/emirpasic/gods v1.18.1 // indirect
-	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/go-git/gcfg v1.5.0 // indirect
 	github.com/go-git/go-billy/v5 v5.3.1 // indirect
 	github.com/godbus/dbus/v5 v5.1.0 // indirect
@@ -86,8 +87,8 @@ require (
 	github.com/kevinburke/ssh_config v1.2.0 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
 	github.com/magiconair/properties v1.8.6 // indirect
-	github.com/mattn/go-colorable v0.1.12 // indirect
-	github.com/mattn/go-isatty v0.0.14 // indirect
+	github.com/mattn/go-colorable v0.1.13 // indirect
+	github.com/mattn/go-isatty v0.0.16 // indirect
 	github.com/mattn/go-runewidth v0.0.13 // indirect
 	github.com/microcosm-cc/bluemonday v1.0.19 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
@@ -111,15 +112,16 @@ require (
 	github.com/yuin/goldmark v1.4.13 // indirect
 	github.com/yuin/goldmark-emoji v1.0.1 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
-	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa // indirect
-	golang.org/x/net v0.0.0-20220811182439-13a9a731de15 // indirect
+	golang.org/x/crypto v0.0.0-20220817201139-bc19a97f63c8 // indirect
+	golang.org/x/net v0.0.0-20220812174116-3211cb980234 // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
-	gopkg.in/errgo.v2 v2.1.0 // indirect
-	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
 
 exclude github.com/sergi/go-diff v1.2.0 // Produces incorrect diffs
+
+// FIXME remove when https://github.com/bmatcuk/doublestar/pull/69 is merged and released
+replace github.com/bmatcuk/doublestar/v4 v4.2.0 => github.com/twpayne/doublestar/v4 v4.0.0-20220822143754-0ea4707e8a88

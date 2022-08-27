@@ -1,0 +1,74 @@
+[windows] skip 'UNIX only'
+
+# test that chezmoi diff invokes diff.command when configured
+exec chezmoi diff
+stdout ^${HOME@R}/\.file\s+${WORK@R}/.*/\.file$
+
+# test that chezmoi diff --use-builtin-diff uses the builtin diff even if diff.command is configured
+exec chezmoi diff --use-builtin-diff
+cmp stdout golden/diff.diff
+
+# test that chezmoi diff --reverse reverses the order of arguments
+exec chezmoi diff --reverse
+stdout ^${WORK@R}/.*/\.file\s+${HOME@R}/\.file$
+
+# test that chezmoi apply --verbose uses diff.command
+exec chezmoi apply --verbose
+stdout ^${HOME@R}/\.file\s+${WORK@R}/.*/\.file$
+
+chhome home2/user
+
+# test that chezmoi diff appends the destination and target paths if diff.args does not contain any templates
+exec chezmoi diff
+stdout ^arg\s+${HOME@R}/\.file\s+${WORK@R}/.*/\.file$
+
+# test that chezmoi apply --verbose uses diff.command
+exec chezmoi apply --verbose
+stdout ^arg\s+${HOME@R}/\.file\s+${WORK@R}/.*/\.file$
+exists $HOME/.file
+
+chhome home3/user
+
+# test that chezmoi diff ignores exit code 1 from diff.command if the files differ
+exec chezmoi diff
+
+chhome home4/user
+
+# test that chezmoi diff does not ignore exit code 2 from diff.command
+! exec chezmoi diff
+stderr 'exit status 2'
+
+-- golden/diff.diff --
+diff --git a/.file b/.file
+index bd729e8ee3cc005444c67dc77eed60016886b5e0..b508963510528ab709627ec448026a10a64c72ef 100644
+--- a/.file
++++ b/.file
+@@ -1 +1 @@
+-# destination contents of .file
++# target contents of .file
+-- home/user/.config/chezmoi/chezmoi.toml --
+[diff]
+    command = "echo"
+-- home/user/.file --
+# destination contents of .file
+-- home/user/.local/share/chezmoi/dot_file --
+# target contents of .file
+-- home2/user/.config/chezmoi/chezmoi.toml --
+[diff]
+    command = "echo"
+    args = ["arg"]
+-- home2/user/.file --
+# destination contents of .file
+-- home2/user/.local/share/chezmoi/dot_file --
+# target contents of .file
+-- home3/user/.config/chezmoi/chezmoi.toml --
+[diff]
+    command = "false"
+-- home3/user/.local/share/chezmoi/dot_file --
+# target contents of .file
+-- home4/user/.config/chezmoi/chezmoi.toml --
+[diff]
+    command = "sh"
+    args = ["-c", "exit 2"]
+-- home4/user/.local/share/chezmoi/dot_file --
+# target contents of .file

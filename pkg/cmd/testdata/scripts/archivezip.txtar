@@ -1,0 +1,24 @@
+[windows] skip 'windows line endings confuse cmp and diff'
+[!exec:unzip] skip 'unzip not found in $PATH'
+
+mksourcedir
+
+exec chezmoi archive --format=zip --output=archive.zip
+exec unzip -t archive.zip
+[!freebsd] cmp stdout golden/archive # FIXME whitespace output of unzip is different on FreeBSD
+
+-- golden/archive --
+Archive:  archive.zip
+    testing: .create                  OK
+    testing: .dir                     OK
+    testing: .dir/file                OK
+    testing: .dir/subdir              OK
+    testing: .dir/subdir/file         OK
+    testing: .empty                   OK
+    testing: .executable              OK
+    testing: .file                    OK
+    testing: .private                 OK
+    testing: .readonly                OK
+    testing: .symlink                 OK
+    testing: .template                OK
+No errors detected in compressed data of archive.zip.
