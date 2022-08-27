@@ -243,7 +243,11 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 
 // builtinGitClone clones a repo using the builtin git command.
 func (c *Config) builtinGitClone(username, url string, workingTreeRawPath chezmoi.AbsPath) error {
-	if c.init.ssh {
+	endpoint, err := transport.NewEndpoint(url)
+	if err != nil {
+		return err
+	}
+	if c.init.ssh || endpoint.Protocol == "ssh" {
 		return errors.New("builtin git does not support cloning repos over ssh, please install git")
 	}
 
