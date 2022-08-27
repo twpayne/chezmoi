@@ -16,6 +16,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"path/filepath"
 	"runtime"
 	"sort"
 	"strings"
@@ -1199,8 +1200,11 @@ func (s *SourceState) addExternal(sourceAbsPath AbsPath) error {
 	}
 	s.Lock()
 	defer s.Unlock()
-	for relPathStr, external := range externals {
-		targetRelPath := parentTargetSourceRelPath.JoinString(relPathStr)
+	for path, external := range externals {
+		if filepath.IsAbs(path) {
+			return fmt.Errorf("%s: %s: path is not relative", sourceAbsPath, path)
+		}
+		targetRelPath := parentTargetSourceRelPath.JoinString(path)
 		if _, ok := s.externals[targetRelPath]; ok {
 			return fmt.Errorf("%s: duplicate externals", targetRelPath)
 		}
