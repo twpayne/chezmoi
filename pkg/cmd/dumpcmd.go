@@ -8,7 +8,6 @@ import (
 
 type dumpCmdConfig struct {
 	exclude   *chezmoi.EntryTypeSet
-	format    writeDataFormat
 	include   *chezmoi.EntryTypeSet
 	init      bool
 	recursive bool
@@ -30,10 +29,13 @@ func (c *Config) newDumpCmd() *cobra.Command {
 
 	flags := dumpCmd.Flags()
 	flags.VarP(c.dump.exclude, "exclude", "x", "Exclude entry types")
-	flags.VarP(&c.dump.format, "format", "f", "Set output format")
+	flags.VarP(&c.Format, "format", "f", "Output format")
 	flags.VarP(c.dump.include, "include", "i", "Include entry types")
 	flags.BoolVar(&c.dump.init, "init", c.update.init, "Recreate config file from template")
 	flags.BoolVarP(&c.dump.recursive, "recursive", "r", c.dump.recursive, "Recurse into subdirectories")
+	if err := dumpCmd.RegisterFlagCompletionFunc("format", writeDataFormatFlagCompletionFunc); err != nil {
+		panic(err)
+	}
 
 	return dumpCmd
 }
@@ -48,5 +50,5 @@ func (c *Config) runDumpCmd(cmd *cobra.Command, args []string) error {
 	}); err != nil {
 		return err
 	}
-	return c.marshal(c.dump.format, dumpSystem.Data())
+	return c.marshal(c.Format, dumpSystem.Data())
 }

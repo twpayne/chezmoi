@@ -71,9 +71,10 @@ type templateConfig struct {
 // ConfigFile contains all data settable in the config file.
 type ConfigFile struct {
 	// Global configuration.
-	CacheDirAbsPath    chezmoi.AbsPath                 `json:"cacheDir" mapstructure:"cacheDir"`
+	CacheDirAbsPath    chezmoi.AbsPath                 `mapstructure:"cacheDir"`
 	Color              autoBool                        `mapstructure:"color"`
 	Data               map[string]any                  `mapstructure:"data"`
+	Format             writeDataFormat                 `mapstructure:"format"`
 	DestDirAbsPath     chezmoi.AbsPath                 `mapstructure:"destDir"`
 	Interpreters       map[string]*chezmoi.Interpreter `mapstructure:"interpreters"`
 	Mode               chezmoi.Mode                    `mapstructure:"mode"`
@@ -147,7 +148,6 @@ type Config struct {
 	// Command configurations, not settable in the config file.
 	apply           applyCmdConfig
 	archive         archiveCmdConfig
-	data            dataCmdConfig
 	dump            dumpCmdConfig
 	executeTemplate executeTemplateCmdConfig
 	_import         importCmdConfig
@@ -321,6 +321,7 @@ func newConfig(options ...configOption) (*Config, error) {
 				chezmoi.EntryTypeDirs | chezmoi.EntryTypeFiles | chezmoi.EntryTypeSymlinks | chezmoi.EntryTypeEncrypted,
 			),
 		},
+		Format: defaultWriteDataFormat,
 		Git: gitCmdConfig{
 			Command: "git",
 		},
@@ -359,12 +360,8 @@ func newConfig(options ...configOption) (*Config, error) {
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 			recursive: true,
 		},
-		data: dataCmdConfig{
-			format: defaultWriteDataFormat,
-		},
 		dump: dumpCmdConfig{
 			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			format:    defaultWriteDataFormat,
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 			recursive: true,
 		},
@@ -393,17 +390,6 @@ func newConfig(options ...configOption) (*Config, error) {
 		reAdd: reAddCmdConfig{
 			exclude: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
-		},
-		state: stateCmdConfig{
-			data: stateDataCmdConfig{
-				format: defaultWriteDataFormat,
-			},
-			dump: stateDumpCmdConfig{
-				format: defaultWriteDataFormat,
-			},
-			getBucket: stateGetBucketCmdConfig{
-				format: defaultWriteDataFormat,
-			},
 		},
 		update: updateCmdConfig{
 			apply:     true,
