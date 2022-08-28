@@ -11,17 +11,11 @@ import (
 )
 
 type stateCmdConfig struct {
-	data         stateDataCmdConfig
 	delete       stateDeleteCmdConfig
 	deleteBucket stateDeleteBucketCmdConfig
-	dump         stateDumpCmdConfig
 	get          stateGetCmdConfig
 	getBucket    stateGetBucketCmdConfig
 	set          stateSetCmdConfig
-}
-
-type stateDataCmdConfig struct {
-	format writeDataFormat
 }
 
 type stateDeleteCmdConfig struct {
@@ -33,10 +27,6 @@ type stateDeleteBucketCmdConfig struct {
 	bucket string
 }
 
-type stateDumpCmdConfig struct {
-	format writeDataFormat
-}
-
 type stateGetCmdConfig struct {
 	bucket string
 	key    string
@@ -44,7 +34,6 @@ type stateGetCmdConfig struct {
 
 type stateGetBucketCmdConfig struct {
 	bucket string
-	format writeDataFormat
 }
 
 type stateSetCmdConfig struct {
@@ -71,7 +60,10 @@ func (c *Config) newStateCmd() *cobra.Command {
 		},
 	}
 	stateDataPersistentFlags := stateDataCmd.PersistentFlags()
-	stateDataPersistentFlags.VarP(&c.state.data.format, "format", "f", "format")
+	stateDataPersistentFlags.VarP(&c.Format, "format", "f", "Output format")
+	if err := stateDataCmd.RegisterFlagCompletionFunc("format", writeDataFormatFlagCompletionFunc); err != nil {
+		panic(err)
+	}
 	stateCmd.AddCommand(stateDataCmd)
 
 	stateDeleteCmd := &cobra.Command{
@@ -84,8 +76,8 @@ func (c *Config) newStateCmd() *cobra.Command {
 		},
 	}
 	stateDeletePersistentFlags := stateDeleteCmd.PersistentFlags()
-	stateDeletePersistentFlags.StringVar(&c.state.delete.bucket, "bucket", c.state.delete.bucket, "bucket")
-	stateDeletePersistentFlags.StringVar(&c.state.delete.key, "key", c.state.delete.key, "key")
+	stateDeletePersistentFlags.StringVar(&c.state.delete.bucket, "bucket", c.state.delete.bucket, "Bucket")
+	stateDeletePersistentFlags.StringVar(&c.state.delete.key, "key", c.state.delete.key, "Key")
 	stateCmd.AddCommand(stateDeleteCmd)
 
 	stateDeleteBucketCmd := &cobra.Command{
@@ -98,7 +90,7 @@ func (c *Config) newStateCmd() *cobra.Command {
 		},
 	}
 	stateDeleteBucketPersistentFlags := stateDeleteBucketCmd.PersistentFlags()
-	stateDeleteBucketPersistentFlags.StringVar(&c.state.deleteBucket.bucket, "bucket", c.state.deleteBucket.bucket, "bucket") //nolint:lll
+	stateDeleteBucketPersistentFlags.StringVar(&c.state.deleteBucket.bucket, "bucket", c.state.deleteBucket.bucket, "Bucket") //nolint:lll
 	stateCmd.AddCommand(stateDeleteBucketCmd)
 
 	stateDumpCmd := &cobra.Command{
@@ -111,7 +103,7 @@ func (c *Config) newStateCmd() *cobra.Command {
 		},
 	}
 	stateDumpPersistentFlags := stateDumpCmd.PersistentFlags()
-	stateDumpPersistentFlags.VarP(&c.state.dump.format, "format", "f", "format")
+	stateDumpPersistentFlags.VarP(&c.Format, "format", "f", "Output format")
 	if err := stateDumpCmd.RegisterFlagCompletionFunc("format", writeDataFormatFlagCompletionFunc); err != nil {
 		panic(err)
 	}
@@ -127,8 +119,8 @@ func (c *Config) newStateCmd() *cobra.Command {
 		},
 	}
 	stateGetPersistentFlags := stateGetCmd.PersistentFlags()
-	stateGetPersistentFlags.StringVar(&c.state.get.bucket, "bucket", c.state.get.bucket, "bucket")
-	stateGetPersistentFlags.StringVar(&c.state.get.key, "key", c.state.get.key, "key")
+	stateGetPersistentFlags.StringVar(&c.state.get.bucket, "bucket", c.state.get.bucket, "Bucket")
+	stateGetPersistentFlags.StringVar(&c.state.get.key, "key", c.state.get.key, "Key")
 	stateCmd.AddCommand(stateGetCmd)
 
 	stateGetBucketCmd := &cobra.Command{
@@ -142,7 +134,7 @@ func (c *Config) newStateCmd() *cobra.Command {
 	}
 	stateGetBucketPersistentFlags := stateGetBucketCmd.PersistentFlags()
 	stateGetBucketPersistentFlags.StringVar(&c.state.getBucket.bucket, "bucket", c.state.getBucket.bucket, "bucket")
-	stateGetBucketPersistentFlags.VarP(&c.state.getBucket.format, "format", "f", "format")
+	stateGetBucketPersistentFlags.VarP(&c.Format, "format", "f", "Output format")
 	if err := stateGetBucketCmd.RegisterFlagCompletionFunc("format", writeDataFormatFlagCompletionFunc); err != nil {
 		panic(err)
 	}
@@ -169,9 +161,9 @@ func (c *Config) newStateCmd() *cobra.Command {
 		},
 	}
 	stateSetPersistentFlags := stateSetCmd.PersistentFlags()
-	stateSetPersistentFlags.StringVar(&c.state.set.bucket, "bucket", c.state.set.bucket, "bucket")
-	stateSetPersistentFlags.StringVar(&c.state.set.key, "key", c.state.set.key, "key")
-	stateSetPersistentFlags.StringVar(&c.state.set.value, "value", c.state.set.value, "value")
+	stateSetPersistentFlags.StringVar(&c.state.set.bucket, "bucket", c.state.set.bucket, "Bucket")
+	stateSetPersistentFlags.StringVar(&c.state.set.key, "key", c.state.set.key, "Key")
+	stateSetPersistentFlags.StringVar(&c.state.set.value, "value", c.state.set.value, "Value")
 	stateCmd.AddCommand(stateSetCmd)
 
 	return stateCmd
@@ -182,7 +174,7 @@ func (c *Config) runStateDataCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	return c.marshal(c.state.data.format, data)
+	return c.marshal(c.Format, data)
 }
 
 func (c *Config) runStateDeleteCmd(cmd *cobra.Command, args []string) error {
@@ -198,7 +190,7 @@ func (c *Config) runStateDumpCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	return c.marshal(c.state.dump.format, data)
+	return c.marshal(c.Format, data)
 }
 
 func (c *Config) runStateGetCmd(cmd *cobra.Command, args []string) error {
@@ -214,7 +206,7 @@ func (c *Config) runStateGetBucketCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	return c.marshal(c.state.getBucket.format, data)
+	return c.marshal(c.Format, data)
 }
 
 func (c *Config) runStateResetCmd(cmd *cobra.Command, args []string) error {

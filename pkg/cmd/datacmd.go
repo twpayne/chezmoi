@@ -6,10 +6,6 @@ import (
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
 )
 
-type dataCmdConfig struct {
-	format writeDataFormat
-}
-
 func (c *Config) newDataCmd() *cobra.Command {
 	dataCmd := &cobra.Command{
 		Use:     "data",
@@ -21,7 +17,7 @@ func (c *Config) newDataCmd() *cobra.Command {
 	}
 
 	persistentFlags := dataCmd.PersistentFlags()
-	persistentFlags.VarP(&c.data.format, "format", "f", "format")
+	persistentFlags.VarP(&c.Format, "format", "f", "Output format")
 	if err := dataCmd.RegisterFlagCompletionFunc("format", writeDataFormatFlagCompletionFunc); err != nil {
 		panic(err)
 	}
@@ -36,5 +32,5 @@ func (c *Config) runDataCmd(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	return c.marshal(c.data.format, sourceState.TemplateData())
+	return c.marshal(c.Format, sourceState.TemplateData())
 }
