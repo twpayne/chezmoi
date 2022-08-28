@@ -20,9 +20,9 @@ require (
 	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/muesli/combinator v0.3.0
-	github.com/pelletier/go-toml/v2 v2.0.3
+	github.com/pelletier/go-toml/v2 v2.0.5
 	github.com/rogpeppe/go-internal v1.9.0
-	github.com/rs/zerolog v1.27.0
+	github.com/rs/zerolog v1.28.0
 	github.com/sergi/go-diff v1.1.0
 	github.com/spf13/afero v1.9.2
 	github.com/spf13/cobra v1.5.0
@@ -36,10 +36,10 @@ require (
 	github.com/zalando/go-keyring v0.2.1
 	go.etcd.io/bbolt v1.3.6
 	go.uber.org/multierr v1.8.0
-	golang.org/x/exp v0.0.0-20220722155223-a9213eeb770e
-	golang.org/x/oauth2 v0.0.0-20220808172628-8227340efae7
+	golang.org/x/exp v0.0.0-20220827204233-334a2380cb91
+	golang.org/x/oauth2 v0.0.0-20220822191816-0ebed06d0094
 	golang.org/x/sync v0.0.0-20220819030929-7fc1605a5dde
-	golang.org/x/sys v0.0.0-20220818161305-2296e01440c6
+	golang.org/x/sys v0.0.0-20220825204002-c680a09ffe64
 	golang.org/x/term v0.0.0-20220722155259-a9ba230a4035
 	gopkg.in/ini.v1 v1.67.0
 	gopkg.in/yaml.v3 v3.0.1
@@ -51,7 +51,7 @@ require (
 	github.com/Masterminds/goutils v1.1.1 // indirect
 	github.com/Masterminds/semver/v3 v3.1.1 // indirect
 	github.com/Microsoft/go-winio v0.5.2 // indirect
-	github.com/ProtonMail/go-crypto v0.0.0-20220819155348-b76dceea2ffa // indirect
+	github.com/ProtonMail/go-crypto v0.0.0-20220824120805-4b6e5c587895 // indirect
 	github.com/acomagu/bufpipe v1.0.3 // indirect
 	github.com/alecthomas/chroma v0.10.0 // indirect
 	github.com/alessio/shellescape v1.4.1 // indirect
@@ -107,13 +107,13 @@ require (
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
-	github.com/subosito/gotenv v1.4.0 // indirect
-	github.com/xanzy/ssh-agent v0.3.1 // indirect
+	github.com/subosito/gotenv v1.4.1 // indirect
+	github.com/xanzy/ssh-agent v0.3.2 // indirect
 	github.com/yuin/goldmark v1.4.13 // indirect
 	github.com/yuin/goldmark-emoji v1.0.1 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
-	golang.org/x/crypto v0.0.0-20220817201139-bc19a97f63c8 // indirect
-	golang.org/x/net v0.0.0-20220812174116-3211cb980234 // indirect
+	golang.org/x/crypto v0.0.0-20220826181053-bd7e27e6170d // indirect
+	golang.org/x/net v0.0.0-20220826154423-83b083e8dc8b // indirect
 	golang.org/x/text v0.3.7 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.28.1 // indirect
