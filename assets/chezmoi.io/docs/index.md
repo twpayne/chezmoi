@@ -10,6 +10,9 @@ command:
 $ sh -c "$(curl -fsLS https://chezmoi.io/get)" -- init --apply $GITHUB_USERNAME
 ```
 
+As well as `curl | sh` installation, you can [install chezmoi with your favorite
+package manager](/install/).
+
 Updating your dotfiles on any machine is a single command:
 
 ```console
