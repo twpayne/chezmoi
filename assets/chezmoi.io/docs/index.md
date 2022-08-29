@@ -13,6 +13,12 @@ $ sh -c "$(curl -fsLS https://chezmoi.io/get)" -- init --apply $GITHUB_USERNAME
 As well as `curl | sh` installation, you can [install chezmoi with your favorite
 package manager](/install/).
 
+chezmoi provides many features beyond symlinking dotfiles or using a bare git
+repo including: dotfile templates (to handle small differences between
+machines), password manager support (to store your secrets securely), importing
+files from archives (great for shell and editor plugins), full file encryption
+(using gpg or age), and running scripts (to handle everything else).
+
 Updating your dotfiles on any machine is a single command:
 
 ```console
