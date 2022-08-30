@@ -280,7 +280,11 @@ markdown_extensions:
     alternate_style: true
 
 plugins:
-- mermaid2
+- mermaid2:
+    arguments:
+      # test if its __palette_1 (dark) or __palette_2 (light)
+      theme: |
+        ^(JSON.parse(__md_get("__palette").index == 1)) ? 'dark' : 'light'
 - mkdocs-simple-hooks:
     hooks:
       on_pre_build: "docs.hooks:on_pre_build"
@@ -301,3 +305,6 @@ plugins:
       docs/security.md: developer/security.md
       docs/templating.md: user-guide/templating.md
 - search
+
+extra_javascript:
+- extra/refresh_on_toggle_dark_light.js
