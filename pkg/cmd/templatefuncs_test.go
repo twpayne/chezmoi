@@ -63,7 +63,21 @@ func TestToIniTemplateFunc(t *testing.T) {
 				`bool = true`,
 				`float = 1.000000`,
 				`int = 1`,
-				`string = "string"`,
+				`string = string`,
+			),
+		},
+		{
+			data: map[string]any{
+				"bool":   "true",
+				"float":  "1.0",
+				"int":    "1",
+				"string": "string string",
+			},
+			expected: chezmoitest.JoinLines(
+				`bool = "true"`,
+				`float = "1.0"`,
+				`int = "1"`,
+				`string = "string string"`,
 			),
 		},
 		{
@@ -74,10 +88,10 @@ func TestToIniTemplateFunc(t *testing.T) {
 				},
 			},
 			expected: chezmoitest.JoinLines(
-				`key = "value"`,
+				`key = value`,
 				``,
 				`[section]`,
-				`subKey = "subValue"`,
+				`subKey = subValue`,
 			),
 		},
 		{
@@ -93,7 +107,7 @@ func TestToIniTemplateFunc(t *testing.T) {
 				`[section]`,
 				``,
 				`[section.subsection]`,
-				`subSubKey = "subSubValue"`,
+				`subSubKey = subSubValue`,
 			),
 		},
 		{
@@ -107,13 +121,13 @@ func TestToIniTemplateFunc(t *testing.T) {
 				},
 			},
 			expected: chezmoitest.JoinLines(
-				`key = "value"`,
+				`key = value`,
 				``,
 				`[section]`,
-				`subKey = "subValue"`,
+				`subKey = subValue`,
 				``,
 				`[section.subsection]`,
-				`subSubKey = "subSubValue"`,
+				`subSubKey = subSubValue`,
 			),
 		},
 		{
@@ -140,22 +154,22 @@ func TestToIniTemplateFunc(t *testing.T) {
 			expected: chezmoitest.JoinLines(
 				``,
 				`[section1]`,
-				`subKey1 = "subValue1"`,
+				`subKey1 = subValue1`,
 				``,
 				`[section1.subsection1a]`,
-				`subSubKey1a = "subSubValue1a"`,
+				`subSubKey1a = subSubValue1a`,
 				``,
 				`[section1.subsection1b]`,
-				`subSubKey1b = "subSubValue1b"`,
+				`subSubKey1b = subSubValue1b`,
 				``,
 				`[section2]`,
-				`subKey2 = "subValue2"`,
+				`subKey2 = subValue2`,
 				``,
 				`[section2.subsection2a]`,
-				`subSubKey2a = "subSubValue2a"`,
+				`subSubKey2a = subSubValue2a`,
 				``,
 				`[section2.subsection2b]`,
-				`subSubKey2b = "subSubValue2b"`,
+				`subSubKey2b = subSubValue2b`,
 			),
 		},
 	} {
@@ -163,6 +177,42 @@ func TestToIniTemplateFunc(t *testing.T) {
 			c := &Config{}
 			actual := c.toIniTemplateFunc(tc.data)
 			assert.Equal(t, tc.expected, actual)
+		})
+	}
+}
+
+func TestNeedsQuote(t *testing.T) {
+	for i, tc := range []struct {
+		s        string
+		expected bool
+	}{
+		{
+			s:        "",
+			expected: true,
+		},
+		{
+			s:        "\\",
+			expected: true,
+		},
+		{
+			s:        "\a",
+			expected: true,
+		},
+		{
+			s:        "abc",
+			expected: false,
+		},
+		{
+			s:        "true",
+			expected: true,
+		},
+		{
+			s:        "1",
+			expected: true,
+		},
+	} {
+		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			assert.Equal(t, tc.expected, needsQuote(tc.s))
 		})
 	}
 }
