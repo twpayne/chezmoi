@@ -100,6 +100,7 @@ type ConfigFile struct {
 	Lastpass          lastpassConfig          `mapstructure:"lastpass"`
 	Onepassword       onepasswordConfig       `mapstructure:"onepassword"`
 	Pass              passConfig              `mapstructure:"pass"`
+	Passhole          passholeConfig          `mapstructure:"passhole"`
 	Secret            secretConfig            `mapstructure:"secret"`
 	Vault             vaultConfig             `mapstructure:"vault"`
 
@@ -295,6 +296,10 @@ func newConfig(options ...configOption) (*Config, error) {
 		Pass: passConfig{
 			Command: "pass",
 		},
+		Passhole: passholeConfig{
+			Command: "ph",
+			Prompt:  true,
+		},
 		Vault: vaultConfig{
 			Command: "vault",
 		},
@@ -458,6 +463,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"pass":                     c.passTemplateFunc,
 		"passFields":               c.passFieldsTemplateFunc,
 		"passRaw":                  c.passRawTemplateFunc,
+		"passhole":                 c.passholeTemplateFunc,
 		"quoteList":                c.quoteListTemplateFunc,
 		"replaceAllRegex":          c.replaceAllRegexTemplateFunc,
 		"secret":                   c.secretTemplateFunc,

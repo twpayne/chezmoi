@@ -352,6 +352,15 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			versionRx:   regexp.MustCompile(`(?m)=\s*v(\d+\.\d+\.\d+)`),
 		},
 		&binaryCheck{
+			name:        "passhole-command",
+			binaryname:  c.Passhole.Command,
+			ifNotSet:    checkResultWarning,
+			ifNotExist:  checkResultInfo,
+			versionArgs: []string{"--version"},
+			versionRx:   regexp.MustCompile(`^(\d+\.\d+\.\d+)`),
+			minVersion:  &passholeMinVersion,
+		},
+		&binaryCheck{
 			name:        "vault-command",
 			binaryname:  c.Vault.Command,
 			ifNotSet:    checkResultWarning,
