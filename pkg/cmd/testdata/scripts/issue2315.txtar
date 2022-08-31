@@ -1,0 +1,21 @@
+[windows] skip 'UNIX only'
+
+# Test that chezmoi init runs run_before_ scripts before executing templates
+env PATH=$PATH:$HOME/bin
+exec chezmoi init --apply
+cmp $HOME/.file golden/.file
+
+-- golden/.file --
+output
+-- golden/binary.sh --
+#!/bin/sh
+
+echo output
+-- home/user/.local/share/chezmoi/run_before_install-binary.sh --
+#!/bin/sh
+
+cp $WORK/golden/binary.sh $HOME/bin
+chmod a+x $HOME/bin/binary.sh
+-- home/user/.local/share/chezmoi/dot_file.tmpl --
+{{ output "binary.sh" -}}
+-- home/user/bin/.keep --
