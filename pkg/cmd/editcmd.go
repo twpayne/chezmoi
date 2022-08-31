@@ -174,7 +174,7 @@ TARGETRELPATH:
 			if err := c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, args, applyArgsOptions{
 				include:      c.Edit.include,
 				init:         c.Edit.init,
-				recursive:    false,
+				recursive:    true,
 				umask:        c.Umask,
 				preApplyFunc: c.defaultPreApplyFunc,
 			}); err != nil {
@@ -193,6 +193,7 @@ TARGETRELPATH:
 		defer watcher.Close()
 
 		for _, editorArg := range editorArgs {
+			// FIXME watch directories recursively
 			if err := watcher.Add(editorArg); err != nil {
 				return err
 			}

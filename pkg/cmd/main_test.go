@@ -666,6 +666,7 @@ func setup(env *testscript.Env) error {
 					`:loop`,
 					`IF EXIST %~s1\NUL (`,
 					`	copy /y NUL "%~1\.edited" >NUL`,
+					// FIXME recursively edit all files if in a directory
 					`) ELSE (`,
 					`	echo # edited >> "%~1"`,
 					`)`,
@@ -677,8 +678,7 @@ func setup(env *testscript.Env) error {
 	default:
 		root["/bin"] = map[string]any{
 			// editor is a non-interactive script that appends "# edited\n" to
-			// the end of each file and creates an empty .edited file in each
-			// directory.
+			// the end of each file.
 			"editor": &vfst.File{
 				Perm: 0o755,
 				Contents: []byte(chezmoitest.JoinLines(
@@ -687,6 +687,9 @@ func setup(env *testscript.Env) error {
 					`for name in $*; do`,
 					`    if [ -d $name ]; then`,
 					`        touch $name/.edited`,
+					`        for filename in $(find $name -type f); do`,
+					`            echo "# edited" >> $filename`,
+					`        done`,
 					`    else`,
 					`        echo "# edited" >> $name`,
 					`    fi`,

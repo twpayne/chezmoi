@@ -1,0 +1,13 @@
+[windows] skip 'UNIX only' # FIXME
+
+# test that chezmoi edit --apply applies changes to a directory
+exec chezmoi edit --apply $HOME/.dir
+grep '# edited' $HOME/.dir/file
+
+-- home/user/.dir/file --
+# contents of .dir/file
+-- home/user/.config/chezmoi/chezmoi.toml --
+[edit]
+    minDuration = 0
+-- home/user/.local/share/chezmoi/dot_dir/file --
+# contents of .dir/file
