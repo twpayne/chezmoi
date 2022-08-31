@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"go/build"
 	"io/fs"
 	"net/http"
 	"net/http/httptest"
@@ -73,17 +72,6 @@ func TestScript(t *testing.T) {
 			"unix2dos":       cmdUNIX2DOS,
 		},
 		Condition: func(cond string) (bool, error) {
-			// FIXME remove the following statement when
-			// https://github.com/rogpeppe/go-internal/pull/150 is released.
-			if strings.HasPrefix(cond, "build:") {
-				tag := strings.TrimPrefix(cond, "build:")
-				for _, releaseTag := range build.Default.ReleaseTags {
-					if releaseTag == tag {
-						return true, nil
-					}
-				}
-				return false, nil
-			}
 			if result, valid := goosCondition(cond); valid {
 				return result, nil
 			}
