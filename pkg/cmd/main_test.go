@@ -570,7 +570,7 @@ func cmdUNIX2DOS(ts *testscript.TestScript, neg bool, args []string) {
 // goosCondition evaluates cond as a logical OR of GOARCHes or GOOSes enclosed
 // in parentheses, returning true if any of them match.
 func goosCondition(cond string) (result, valid bool) {
-	// Interpret the condition as a logical OR of terms in parantheses.
+	// Interpret the condition as a logical OR of terms in parentheses.
 	if !strings.HasPrefix(cond, "(") || !strings.HasSuffix(cond, ")") {
 		result = false
 		valid = false
