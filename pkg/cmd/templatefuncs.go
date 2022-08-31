@@ -29,7 +29,12 @@ type ioregData struct {
 	value map[string]any
 }
 
-var startOfLineRx = regexp.MustCompile(`(?m)^`)
+var (
+	// needsQuoteRx matches any string that contains non-printable characters,
+	// double quotes, or a backslash.
+	needsQuoteRx  = regexp.MustCompile(`[^\x21\x23-\x5b\x5d-\x7e]`)
+	startOfLineRx = regexp.MustCompile(`(?m)^`)
+)
 
 func (c *Config) commentTemplateFunc(prefix, s string) string {
 	return startOfLineRx.ReplaceAllString(s, prefix)
@@ -275,7 +280,11 @@ func writeIniMap(w io.Writer, data map[string]any, sectionPrefix string) error {
 			}
 			subsections = append(subsections, subsection)
 		case string:
-			fmt.Fprintf(w, "%s = %q\n", key, value)
+			if needsQuote(value) {
+				fmt.Fprintf(w, "%s = %q\n", key, value)
+			} else {
+				fmt.Fprintf(w, "%s = %s\n", key, value)
+			}
 		default:
 			return fmt.Errorf("%s%s: %T: unsupported type", sectionPrefix, key, value)
 		}
@@ -292,6 +301,22 @@ func writeIniMap(w io.Writer, data map[string]any, sectionPrefix string) error {
 	}
 
 	return nil
+}
+
+func needsQuote(s string) bool {
+	if s == "" {
+		return true
+	}
+	if needsQuoteRx.MatchString(s) {
+		return true
+	}
+	if _, err := strconv.ParseBool(s); err == nil {
+		return true
+	}
+	if _, err := strconv.ParseFloat(s, 64); err == nil {
+		return true
+	}
+	return false
 }
 
 func sortedKeys[K constraints.Ordered, V any](m map[K]V) []K {

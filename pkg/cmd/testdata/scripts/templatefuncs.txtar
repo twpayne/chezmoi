@@ -150,10 +150,10 @@ file2.txt
 -- golden/include-relpath --
 # contents of .local/share/chezmoi/.include
 -- golden/toIni --
-key = "value"
+key = value
 
 [section]
-subkey = "subvalue"
+subkey = subvalue
 -- home/user/.include --
 # contents of .include
 -- home/user/.local/share/chezmoi/.include --
