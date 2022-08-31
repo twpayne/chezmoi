@@ -68,6 +68,7 @@ nav:
     - Keeper: user-guide/password-managers/keeper.md
     - LastPass: user-guide/password-managers/lastpass.md
     - pass: user-guide/password-managers/pass.md
+    - passhole: user-guide/password-managers/passhole.md
     - Vault: user-guide/password-managers/vault.md
     - Custom: user-guide/password-managers/custom.md
   - Encryption:
@@ -245,6 +246,9 @@ nav:
       - pass: reference/templates/pass-functions/pass.md
       - passFields: reference/templates/pass-functions/passFields.md
       - passRaw: reference/templates/pass-functions/passRaw.md
+    - Passhole functions:
+      - reference/templates/passhole-functions/index.md
+      - passhole: reference/templates/passhole-functions/passhole.md
     - Vault functions:
       - vault: reference/templates/vault-functions/vault.md
     - Generic secret functions:
