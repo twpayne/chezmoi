@@ -435,6 +435,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"gopass":                   c.gopassTemplateFunc,
 		"gopassRaw":                c.gopassRawTemplateFunc,
 		"include":                  c.includeTemplateFunc,
+		"includeTemplate":          c.includeTemplateTemplateFunc,
 		"ioreg":                    c.ioregTemplateFunc,
 		"joinPath":                 c.joinPathTemplateFunc,
 		"keepassxc":                c.keepassxcTemplateFunc,

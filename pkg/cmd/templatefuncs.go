@@ -12,6 +12,7 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
+	"text/template"
 
 	"github.com/bmatcuk/doublestar/v4"
 	"github.com/bradenhilton/mozillainstallhash"
@@ -87,21 +88,39 @@ func (c *Config) globTemplateFunc(pattern string) []string {
 }
 
 func (c *Config) includeTemplateFunc(filename string) string {
-	var absPath chezmoi.AbsPath
-	if filepath.IsAbs(filename) {
-		var err error
-		absPath, err = chezmoi.NewAbsPathFromExtPath(filename, c.homeDirAbsPath)
-		if err != nil {
-			panic(err)
-		}
-	} else {
-		absPath = c.SourceDirAbsPath.JoinString(filename)
-	}
-	contents, err := c.fileSystem.ReadFile(absPath.String())
+	contents, err := c.readFile(filename)
 	if err != nil {
 		panic(err)
 	}
 	return string(contents)
+}
+
+func (c *Config) includeTemplateTemplateFunc(filename string, args ...any) string {
+	var data any
+	switch len(args) {
+	case 0:
+		// Do nothing.
+	case 1:
+		data = args[0]
+	default:
+		panic(fmt.Errorf("expected 0 or 1 arguments, got %d", len(args)))
+	}
+
+	contents, err := c.readFile(filename)
+	if err != nil {
+		panic(err)
+	}
+
+	tmpl, err := template.New(filename).Funcs(c.templateFuncs).Parse(string(contents))
+	if err != nil {
+		panic(err)
+	}
+
+	var builder strings.Builder
+	if err := tmpl.Execute(&builder, data); err != nil {
+		panic(err)
+	}
+	return builder.String()
 }
 
 func (c *Config) ioregTemplateFunc() map[string]any {
@@ -186,6 +205,20 @@ func (c *Config) quoteListTemplateFunc(list []any) []string {
 		result = append(result, strconv.Quote(elemStr))
 	}
 	return result
+}
+
+func (c *Config) readFile(filename string) ([]byte, error) {
+	var absPath chezmoi.AbsPath
+	if filepath.IsAbs(filename) {
+		var err error
+		absPath, err = chezmoi.NewAbsPathFromExtPath(filename, c.homeDirAbsPath)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		absPath = c.SourceDirAbsPath.JoinString(filename)
+	}
+	return c.fileSystem.ReadFile(absPath.String())
 }
 
 func (c *Config) replaceAllRegexTemplateFunc(expr, repl, s string) string {
