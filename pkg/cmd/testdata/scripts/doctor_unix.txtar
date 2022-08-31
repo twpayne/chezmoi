@@ -10,6 +10,7 @@ chmod 755 bin/keeper
 chmod 755 bin/lpass
 chmod 755 bin/op
 chmod 755 bin/pass
+chmod 755 bin/ph
 chmod 755 bin/pinentry
 chmod 755 bin/secret
 chmod 755 bin/shell
@@ -47,6 +48,7 @@ stdout '^ok\s+gopass-command\s+'
 stdout '^ok\s+keepassxc-command\s+'
 stdout '^info\s+keepassxc-db\s+'
 stdout '^ok\s+keeper-command\s+'
+stdout '^ok\s+passhole-command\s+'
 stdout '^ok\s+lastpass-command\s+'
 stdout '^ok\s+pass-command\s+'
 stdout '^ok\s+vault-command\s+'
@@ -128,6 +130,10 @@ echo "=               Jason@zx2c4.com            ="
 echo "=                                          ="
 echo "=      http://www.passwordstore.org/       ="
 echo "============================================"
+-- bin/ph --
+#!/bin/sh
+
+echo 1.10.0
 -- bin/pinentry --
 #!/bin/sh
 

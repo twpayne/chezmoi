@@ -16,3 +16,4 @@ way:
 | KeePassXC       | `keepassxc-cli`  | Not possible (interactive command only)            |
 | Keeper          | `keeper`         | `{{ secretJSON "get" "--format=json" "$ID" }}`     |
 | pass            | `pass`           | `{{ secret "show" "$ID" }}`                        |
+| passhole        | `ph`             | `{{ secret "$ID" "password" }}`                    |
