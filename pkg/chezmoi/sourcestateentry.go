@@ -67,7 +67,7 @@ type SourceStateRemove struct {
 // non-empty_ file with empty contents, or one of many patterns in many
 // .chezmoiignore files.
 //
-// FIXME Remove this when the sources of all removes are tracked.
+// FIXME remove this when the sources of all removes are tracked.
 type SourceStateOriginRemove struct{}
 
 // Evaluate evaluates s and returns any error.
