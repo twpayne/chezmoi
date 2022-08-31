@@ -16,7 +16,7 @@ type keeperConfig struct {
 	outputCache map[string][]byte
 }
 
-func (c *Config) keeperTemplateFunction(record string) map[string]any {
+func (c *Config) keeperTemplateFunc(record string) map[string]any {
 	output, err := c.keeperOutput([]string{"get", "--format=json", record})
 	if err != nil {
 		panic(err)
@@ -28,7 +28,7 @@ func (c *Config) keeperTemplateFunction(record string) map[string]any {
 	return result
 }
 
-func (c *Config) keeperDataFieldsTemplateFunction(record string) map[string]any {
+func (c *Config) keeperDataFieldsTemplateFunc(record string) map[string]any {
 	output, err := c.keeperOutput([]string{"get", "--format=json", record})
 	if err != nil {
 		panic(err)
