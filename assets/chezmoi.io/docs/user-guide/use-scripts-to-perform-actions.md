@@ -18,6 +18,11 @@ Scripts break chezmoi's declarative approach, and as such should be used
 sparingly. Any script should be idempotent, even `run_once_` and
 `run_onchange_` scripts.
 
+Scripts are normally run while chezmoi updates your dotfiles. To configure
+scripts to run before or after your dotfiles are updated use the `before_` and
+`after_` attributes respectively, e.g.
+`run_once_before_install-password-manager.sh`.
+
 Scripts must be created manually in the source directory, typically by running
 `chezmoi cd` and then creating a file with a `run_` prefix. There is no need to
 set the executable bit on the script, as chezmoi will set the executable bit
