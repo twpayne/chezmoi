@@ -30,7 +30,7 @@ func (e *cmdOutputError) Error() string {
 	return fmt.Sprintf("%s: %v\n%s", shellQuoteCommand(e.path, e.args[1:]), e.err, e.output)
 }
 
-func (e *cmdOutputError) Unrwap() error {
+func (e *cmdOutputError) Unwrap() error {
 	return e.err
 }
 

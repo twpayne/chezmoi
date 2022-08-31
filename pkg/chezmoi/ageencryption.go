@@ -35,7 +35,7 @@ type AgeEncryption struct {
 	Symmetric       bool
 }
 
-// Decrypt implements Encyrption.Decrypt.
+// Decrypt implements Encryption.Decrypt.
 func (e *AgeEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
 	if e.UseBuiltin {
 		return e.builtinDecrypt(ciphertext)
@@ -247,7 +247,7 @@ func (e *AgeEncryption) identityArgs() []string {
 	return args
 }
 
-// parseIdentityFile parses the identities from indentityFile using the builtin
+// parseIdentityFile parses the identities from identityFile using the builtin
 // age.
 func parseIdentityFile(identityFile AbsPath) (identities []age.Identity, err error) {
 	var file *os.File

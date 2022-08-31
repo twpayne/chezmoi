@@ -16,7 +16,7 @@ func (e ExitCodeError) Error() string {
 	return fmt.Sprintf("exit status %d", int(e))
 }
 
-// A TooOldErrror is returned when the source state requires a newer version of
+// A TooOldError is returned when the source state requires a newer version of
 // chezmoi.
 type TooOldError struct {
 	Have semver.Version

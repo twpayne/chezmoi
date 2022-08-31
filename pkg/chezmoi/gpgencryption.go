@@ -20,7 +20,7 @@ type GPGEncryption struct {
 	Suffix     string
 }
 
-// Decrypt implements Encyrption.Decrypt.
+// Decrypt implements Encryption.Decrypt.
 func (e *GPGEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
 	var plaintext []byte
 	if err := withPrivateTempDir(func(tempDirAbsPath AbsPath) error {

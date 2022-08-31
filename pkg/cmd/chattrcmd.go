@@ -287,7 +287,7 @@ func (m sourceFileTypeModifier) modify(sourceFileType chezmoi.SourceFileTargetTy
 	}
 }
 
-// parseModifier parses the attrMmodifier from s.
+// parseModifier parses the modifier from s.
 func parseModifier(s string) (*modifier, error) {
 	m := &modifier{}
 	for _, modifierStr := range strings.Split(s, ",") {

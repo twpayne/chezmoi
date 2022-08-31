@@ -42,7 +42,7 @@ func TestArchiveReaderSystemTar(t *testing.T) {
 			readFileData: []byte("# contents of dir/file\n"),
 		},
 		{
-			absPath:     NewAbsPath("/home/user/notexist"),
+			absPath:     NewAbsPath("/home/user/not-exist"),
 			readlinkErr: fs.ErrNotExist,
 			lstatErr:    fs.ErrNotExist,
 			readFileErr: fs.ErrNotExist,

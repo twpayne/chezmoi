@@ -1694,14 +1694,14 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		if err != nil {
 			return err
 		}
-		dryRunPeristentState := chezmoi.NewMockPersistentState()
-		if err := persistentState.CopyTo(dryRunPeristentState); err != nil {
+		dryRunPersistentState := chezmoi.NewMockPersistentState()
+		if err := persistentState.CopyTo(dryRunPersistentState); err != nil {
 			return err
 		}
 		if err := persistentState.Close(); err != nil {
 			return err
 		}
-		c.persistentState = dryRunPeristentState
+		c.persistentState = dryRunPersistentState
 	case cmd.Annotations[persistentStateMode] == persistentStateModeReadWrite:
 		persistentStateFileAbsPath, err := c.persistentStateFile()
 		if err != nil {
@@ -2170,7 +2170,7 @@ func (c *Config) useBuiltinAgeAutoFunc() bool {
 	return true
 }
 
-// useBuiltinGitAutoFunc detects whether the builitin git should be used.
+// useBuiltinGitAutoFunc detects whether the builtin git should be used.
 func (c *Config) useBuiltinGitAutoFunc() bool {
 	// useBuiltinGit is false by default on Solaris as it uses the unavailable
 	// flock function.

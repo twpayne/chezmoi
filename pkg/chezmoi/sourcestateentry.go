@@ -64,7 +64,7 @@ type SourceStateRemove struct {
 
 // A SourceStateOriginRemove is used for removes. The source of the remove is
 // not currently tracked. The remove could come from an exact_ directory, a
-// non-empty_ file with emoty contents, or one of many patterns in many
+// non-empty_ file with empty contents, or one of many patterns in many
 // .chezmoiignore files.
 //
 // FIXME Remove this when the sources of all removes are tracked.

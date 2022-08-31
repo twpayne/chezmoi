@@ -80,9 +80,9 @@ func (c *Config) defaultPreAddFunc(targetRelPath chezmoi.RelPath) error {
 	}
 }
 
-// defaulReplaceFunc prompts the user for confirmation if the adding the entry
+// defaultReplaceFunc prompts the user for confirmation if the adding the entry
 // would remove any of the encrypted, private, or template attributes.
-func (c *Config) defaulReplaceFunc(
+func (c *Config) defaultReplaceFunc(
 	targetRelPath chezmoi.RelPath, newSourceStateEntry, oldSourceStateEntry chezmoi.SourceStateEntry,
 ) error {
 	if c.force {
@@ -147,7 +147,7 @@ func (c *Config) runAddCmd(cmd *cobra.Command, args []string, sourceState *chezm
 		Exact:            c.Add.exact,
 		Include:          c.Add.include.Sub(c.Add.exclude),
 		PreAddFunc:       c.defaultPreAddFunc,
-		ReplaceFunc:      c.defaulReplaceFunc,
+		ReplaceFunc:      c.defaultReplaceFunc,
 		Template:         c.Add.template,
 		TemplateSymlinks: c.Add.TemplateSymlinks,
 	})
