@@ -80,3 +80,12 @@ You have several options:
 `chezmoi merge` will open a merge tool to resolve differences between the source
 state, target state, and destination state. Copy the changes you want to keep in
 to the source state.
+
+## Can I store/share my shell history with chezmoi?
+
+Not easily. chezmoi's only shared state between machines is your git repo, and
+creating a commit every time a command is entered would quickly become
+cumbersome.
+
+Instead, consider using a tool like [atuin](https://github.com/ellie/atuin). You
+can use chezmoi to install and configure atuin on new machines.
