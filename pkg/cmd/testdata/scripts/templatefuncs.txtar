@@ -24,6 +24,10 @@ cmp stdout golden/include-abspath
 exec chezmoi execute-template '{{ include ".include" }}'
 cmp stdout golden/include-relpath
 
+# test includeTemplate template function
+exec chezmoi execute-template '{{ includeTemplate ".template" "data" }}'
+stdout ^data$
+
 # test joinPath template function
 exec chezmoi execute-template '{{ joinPath "a" "b" }}'
 stdout a${/}b
@@ -158,5 +162,7 @@ subkey = "subvalue"
 # contents of .include
 -- home/user/.local/share/chezmoi/.include --
 # contents of .local/share/chezmoi/.include
+-- home/user/.local/share/chezmoi/.template --
+{{ . }}
 -- home/user/file1.txt --
 -- home/user/file2.txt --
