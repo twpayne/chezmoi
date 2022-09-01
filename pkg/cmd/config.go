@@ -41,6 +41,7 @@ import (
 	"github.com/twpayne/go-shell"
 	"github.com/twpayne/go-vfs/v4"
 	"github.com/twpayne/go-xdg/v6"
+	cobracompletefig "github.com/withfig/autocomplete-tools/integrations/cobra"
 	"go.uber.org/multierr"
 	"golang.org/x/term"
 	"mvdan.cc/sh/v3/expand"
@@ -1454,6 +1455,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newUpdateCmd(),
 		c.newUpgradeCmd(),
 		c.newVerifyCmd(),
+		cobracompletefig.CreateCompletionSpecCommand(),
 	} {
 		if cmd != nil {
 			rootCmd.AddCommand(cmd)
