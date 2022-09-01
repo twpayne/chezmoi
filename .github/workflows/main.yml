@@ -232,7 +232,7 @@ jobs:
         uses: goreleaser/goreleaser-action@ff11ca24a9b39f2d36796d1fbd7a4e39c182630a
         with:
           version: latest
-          args: release --skip-publish --snapshot
+          args: release --skip-publish --snapshot --timeout=1h
       - name: test-release
         if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
         run: |
@@ -395,7 +395,7 @@ jobs:
       - uses: goreleaser/goreleaser-action@ff11ca24a9b39f2d36796d1fbd7a4e39c182630a
         with:
           version: latest
-          args: release
+          args: release --timeout=1h
         env:
           GITHUB_TOKEN: ${{ secrets.GORELEASER_GITHUB_TOKEN }}
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
