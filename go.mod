@@ -34,7 +34,7 @@ require (
 	github.com/twpayne/go-xdg/v6 v6.0.0
 	github.com/ulikunitz/xz v0.5.10
 	github.com/zalando/go-keyring v0.2.1
-	go.etcd.io/bbolt v1.3.6
+	go.etcd.io/bbolt v1.3.7-0.20220226045046-fd5535f71f48
 	go.uber.org/multierr v1.8.0
 	golang.org/x/exp v0.0.0-20220827204233-334a2380cb91
 	golang.org/x/oauth2 v0.0.0-20220822191816-0ebed06d0094

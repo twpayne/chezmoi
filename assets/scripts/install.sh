@@ -160,6 +160,7 @@ check_goos_goarch() {
 	linux/amd64) return 0 ;;
 	linux/arm) return 0 ;;
 	linux/arm64) return 0 ;;
+	linux/loong64) return 0 ;;
 	linux/mips64) return 0 ;;
 	linux/mips64le) return 0 ;;
 	linux/ppc64) return 0 ;;
