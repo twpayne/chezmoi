@@ -7,10 +7,10 @@
 <meta content="width=device-width,initial-scale=1" name="viewport"/>
 <meta content="Manage your dotfiles across multiple machines, securely." name="description"/>
 <meta content="Tom Payne" name="author"/>
-<link href="https://chezmoi.io/reference/templates/pass-functions/passRaw/" rel="canonical"/>
+<link href="https://chezmoi.io/reference/templates/functions/includeTemplate/" rel="canonical"/>
 <link href="../../../../assets/images/favicon.png" rel="icon"/>
 <meta content="mkdocs-1.2.3, mkdocs-material-8.1.7" name="generator"/>
-<title>passRaw - chezmoi</title>
+<title>includeTemplate - chezmoi</title>
 <link href="../../../../assets/stylesheets/main.cd566b2a.min.css" rel="stylesheet"/>
 <link href="../../../../assets/stylesheets/palette.e6a45f82.min.css" rel="stylesheet"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
@@ -24,7 +24,7 @@
 <input autocomplete="off" class="md-toggle" data-md-toggle="search" id="__search" type="checkbox"/>
 <label class="md-overlay" for="__drawer"></label>
 <div data-md-component="skip">
-<a class="md-skip" href="#passraw-pass-name">
+<a class="md-skip" href="#includetemplate-filename-data">
           Skip to content
         </a>
 </div>
@@ -48,7 +48,7 @@
 <div class="md-header__topic" data-md-component="header-topic">
 <span class="md-ellipsis">
             
-              passRaw
+              includeTemplate
             
           </span>
 </div>
@@ -931,10 +931,10 @@
         Variables
       </a>
 </li>
-<li class="md-nav__item md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_3_10_3" id="__nav_3_10_3" type="checkbox"/>
+<li class="md-nav__item md-nav__item--active md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_10_3" id="__nav_3_10_3" type="checkbox"/>
 <div class="md-nav__link md-nav__link--index">
-<a href="../../functions/">Functions</a>
+<a href="../">Functions</a>
 <label for="__nav_3_10_3">
 <span class="md-nav__icon md-icon"></span>
 </label>
@@ -946,102 +946,103 @@
         </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../functions/comment/">
+<a class="md-nav__link" href="../comment/">
         comment
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../functions/decrypt/">
+<a class="md-nav__link" href="../decrypt/">
         decrypt
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../functions/encrypt/">
+<a class="md-nav__link" href="../encrypt/">
         encrypt
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../functions/fromIni/">
+<a class="md-nav__link" href="../fromIni/">
         fromIni
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../functions/fromToml/">
+<a class="md-nav__link" href="../fromToml/">
         fromToml
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../functions/fromYaml/">
+<a class="md-nav__link" href="../fromYaml/">
         fromYaml
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../functions/glob/">
+<a class="md-nav__link" href="../glob/">
         glob
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../functions/include/">
+<a class="md-nav__link" href="../include/">
         include
       </a>
 </li>
-<li class="md-nav__item">
-<a class="md-nav__link" href="../../functions/includeTemplate/">
+<li class="md-nav__item md-nav__item--active">
+<input class="md-nav__toggle md-toggle" data-md-toggle="toc" id="__toc" type="checkbox"/>
+<a class="md-nav__link md-nav__link--active" href="./">
         includeTemplate
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../functions/ioreg/">
+<a class="md-nav__link" href="../ioreg/">
         ioreg
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../functions/joinPath/">
+<a class="md-nav__link" href="../joinPath/">
         joinPath
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../functions/lookPath/">
+<a class="md-nav__link" href="../lookPath/">
         lookPath
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../functions/mozillaInstallHash/">
+<a class="md-nav__link" href="../mozillaInstallHash/">
         mozillaInstallHash
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../functions/output/">
+<a class="md-nav__link" href="../output/">
         output
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../functions/quoteList/">
+<a class="md-nav__link" href="../quoteList/">
         quoteList
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../functions/replaceAllRegex/">
+<a class="md-nav__link" href="../replaceAllRegex/">
         replaceAllRegex
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../functions/stat/">
+<a class="md-nav__link" href="../stat/">
         stat
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../functions/toIni/">
+<a class="md-nav__link" href="../toIni/">
         toIni
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../functions/toToml/">
+<a class="md-nav__link" href="../toToml/">
         toToml
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../../functions/toYaml/">
+<a class="md-nav__link" href="../toYaml/">
         toYaml
       </a>
 </li>
@@ -1381,10 +1382,10 @@
 </ul>
 </nav>
 </li>
-<li class="md-nav__item md-nav__item--active md-nav__item--nested">
-<input checked="" class="md-nav__toggle md-toggle" data-md-toggle="__nav_3_10_14" id="__nav_3_10_14" type="checkbox"/>
+<li class="md-nav__item md-nav__item--nested">
+<input checked="" class="md-nav__toggle md-toggle" data-md-state="indeterminate" data-md-toggle="__nav_3_10_14" id="__nav_3_10_14" type="checkbox"/>
 <div class="md-nav__link md-nav__link--index">
-<a href="../">pass functions</a>
+<a href="../../pass-functions/">pass functions</a>
 <label for="__nav_3_10_14">
 <span class="md-nav__icon md-icon"></span>
 </label>
@@ -1396,18 +1397,17 @@
         </label>
 <ul class="md-nav__list" data-md-scrollfix="">
 <li class="md-nav__item">
-<a class="md-nav__link" href="../pass/">
+<a class="md-nav__link" href="../../pass-functions/pass/">
         pass
       </a>
 </li>
 <li class="md-nav__item">
-<a class="md-nav__link" href="../passFields/">
+<a class="md-nav__link" href="../../pass-functions/passFields/">
         passFields
       </a>
 </li>
-<li class="md-nav__item md-nav__item--active">
-<input class="md-nav__toggle md-toggle" data-md-toggle="toc" id="__toc" type="checkbox"/>
-<a class="md-nav__link md-nav__link--active" href="./">
+<li class="md-nav__item">
+<a class="md-nav__link" href="../../pass-functions/passRaw/">
         passRaw
       </a>
 </li>
@@ -1582,15 +1582,13 @@
 </div>
 <div class="md-content" data-md-component="content">
 <article class="md-content__inner md-typeset">
-<a class="md-content__button md-icon" href="https://github.com/twpayne/chezmoi/edit/master/assets/chezmoi.io/docs/reference/templates/pass-functions/passRaw.md" title="Edit this page">
+<a class="md-content__button md-icon" href="https://github.com/twpayne/chezmoi/edit/master/assets/chezmoi.io/docs/reference/templates/functions/includeTemplate.md" title="Edit this page">
 <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20.71 7.04c.39-.39.39-1.04 0-1.41l-2.34-2.34c-.37-.39-1.02-.39-1.41 0l-1.84 1.83 3.75 3.75M3 17.25V21h3.75L17.81 9.93l-3.75-3.75L3 17.25z"></path></svg>
 </a>
-<h1 id="passraw-pass-name"><code>passRaw</code> <em>pass-name</em></h1>
-<p><code>passRaw</code> returns passwords stored in <a href="https://www.passwordstore.org/">pass</a>
-using the pass CLI (<code>pass</code>). <em>pass-name</em> is passed to <code>pass show $PASS_NAME</code>
-and the output is returned. The output from <code>pass</code> is cached so calling
-<code>passRaw</code> multiple times with the same <em>pass-name</em> will only invoke <code>pass</code>
-once.</p>
+<h1 id="includetemplate-filename-data"><code>includeTemplate</code> <em>filename</em> [<em>data</em>]</h1>
+<p><code>includeTemplate</code> returns the result of executing the contents of <em>filename</em>
+with the optional <em>data</em>. Relative paths are interpreted relative to the source
+directory.</p>
 </article>
 </div>
 </div>
@@ -1601,7 +1599,7 @@ once.</p>
 </main>
 <footer class="md-footer">
 <nav aria-label="Footer" class="md-footer__inner md-grid">
-<a aria-label="Previous: passFields" class="md-footer__link md-footer__link--prev" href="../passFields/" rel="prev">
+<a aria-label="Previous: include" class="md-footer__link md-footer__link--prev" href="../include/" rel="prev">
 <div class="md-footer__button md-icon">
 <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"></path></svg>
 </div>
@@ -1610,17 +1608,17 @@ once.</p>
 <span class="md-footer__direction">
                 Previous
               </span>
-              passFields
+              include
             </div>
 </div>
 </a>
-<a aria-label="Next: vault" class="md-footer__link md-footer__link--next" href="../../vault-functions/vault/" rel="next">
+<a aria-label="Next: ioreg" class="md-footer__link md-footer__link--next" href="../ioreg/" rel="next">
 <div class="md-footer__title">
 <div class="md-ellipsis">
 <span class="md-footer__direction">
                 Next
               </span>
-              vault
+              ioreg
             </div>
 </div>
 <div class="md-footer__button md-icon">
