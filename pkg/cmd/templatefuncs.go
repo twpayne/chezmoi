@@ -30,15 +30,41 @@ type ioregData struct {
 	value map[string]any
 }
 
-var (
-	// needsQuoteRx matches any string that contains non-printable characters,
-	// double quotes, or a backslash.
-	needsQuoteRx  = regexp.MustCompile(`[^\x21\x23-\x5b\x5d-\x7e]`)
-	startOfLineRx = regexp.MustCompile(`(?m)^`)
-)
+// needsQuoteRx matches any string that contains non-printable characters,
+// double quotes, or a backslash.
+var needsQuoteRx = regexp.MustCompile(`[^\x21\x23-\x5b\x5d-\x7e]`)
 
 func (c *Config) commentTemplateFunc(prefix, s string) string {
-	return startOfLineRx.ReplaceAllString(s, prefix)
+	type stateType int
+	const (
+		startOfLine stateType = iota
+		inLine
+	)
+
+	state := startOfLine
+	var builder strings.Builder
+	for _, r := range s {
+		switch state {
+		case startOfLine:
+			if _, err := builder.WriteString(prefix); err != nil {
+				panic(err)
+			}
+			if _, err := builder.WriteRune(r); err != nil {
+				panic(err)
+			}
+			if r != '\n' {
+				state = inLine
+			}
+		case inLine:
+			if _, err := builder.WriteRune(r); err != nil {
+				panic(err)
+			}
+			if r == '\n' {
+				state = startOfLine
+			}
+		}
+	}
+	return builder.String()
 }
 
 func (c *Config) fromIniTemplateFunc(s string) map[string]any {
