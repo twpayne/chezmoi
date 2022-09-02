@@ -93,7 +93,8 @@ func (c *Config) globTemplateFunc(pattern string) []string {
 }
 
 func (c *Config) includeTemplateFunc(filename string) string {
-	contents, err := c.readFile(filename)
+	searchDirAbsPaths := []chezmoi.AbsPath{c.SourceDirAbsPath}
+	contents, err := c.readFile(filename, searchDirAbsPaths)
 	if err != nil {
 		panic(err)
 	}
@@ -111,7 +112,11 @@ func (c *Config) includeTemplateTemplateFunc(filename string, args ...any) strin
 		panic(fmt.Errorf("expected 0 or 1 arguments, got %d", len(args)))
 	}
 
-	contents, err := c.readFile(filename)
+	searchDirAbsPaths := []chezmoi.AbsPath{
+		c.SourceDirAbsPath.JoinString(chezmoi.TemplatesDirName),
+		c.SourceDirAbsPath,
+	}
+	contents, err := c.readFile(filename, searchDirAbsPaths)
 	if err != nil {
 		panic(err)
 	}
@@ -212,18 +217,24 @@ func (c *Config) quoteListTemplateFunc(list []any) []string {
 	return result
 }
 
-func (c *Config) readFile(filename string) ([]byte, error) {
-	var absPath chezmoi.AbsPath
+func (c *Config) readFile(filename string, searchDirAbsPaths []chezmoi.AbsPath) ([]byte, error) {
 	if filepath.IsAbs(filename) {
-		var err error
-		absPath, err = chezmoi.NewAbsPathFromExtPath(filename, c.homeDirAbsPath)
+		absPath, err := chezmoi.NewAbsPathFromExtPath(filename, c.homeDirAbsPath)
 		if err != nil {
 			return nil, err
 		}
-	} else {
-		absPath = c.SourceDirAbsPath.JoinString(filename)
+		return c.fileSystem.ReadFile(absPath.String())
 	}
-	return c.fileSystem.ReadFile(absPath.String())
+
+	var data []byte
+	var err error
+	for _, searchDir := range searchDirAbsPaths {
+		data, err = c.fileSystem.ReadFile(searchDir.JoinString(filename).String())
+		if !errors.Is(err, fs.ErrNotExist) {
+			return data, err
+		}
+	}
+	return data, err
 }
 
 func (c *Config) replaceAllRegexTemplateFunc(expr, repl, s string) string {

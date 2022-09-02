@@ -184,7 +184,7 @@ var sourceDirEntryOrder = map[string]int{
 	dataName + ".json": -2,
 	dataName + ".toml": -2,
 	dataName + ".yaml": -2,
-	templatesDirName:   -1,
+	TemplatesDirName:   -1,
 }
 
 // walkSourceDir is a helper function for WalkSourceDir.

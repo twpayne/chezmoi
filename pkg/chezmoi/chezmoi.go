@@ -61,13 +61,13 @@ const (
 	Prefix = ".chezmoi"
 
 	RootName         = Prefix + "root"
+	TemplatesDirName = Prefix + "templates"
 	VersionName      = Prefix + "version"
 	dataName         = Prefix + "data"
 	externalName     = Prefix + "external"
 	ignoreName       = Prefix + "ignore"
 	removeName       = Prefix + "remove"
 	scriptsDirName   = Prefix + "scripts"
-	templatesDirName = Prefix + "templates"
 )
 
 var (
@@ -99,7 +99,7 @@ var knownPrefixedFiles = newSet(
 // knownPrefixedDirs is a set of known dirnames with the .chezmoi prefix.
 var knownPrefixedDirs = newSet(
 	scriptsDirName,
-	templatesDirName,
+	TemplatesDirName,
 )
 
 // knownTargetFiles is a set of known target files that should not be managed
