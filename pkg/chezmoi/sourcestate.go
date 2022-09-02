@@ -880,7 +880,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 				return nil
 			}
 			return s.addTemplateData(sourceAbsPath)
-		case fileInfo.Name() == templatesDirName:
+		case fileInfo.Name() == TemplatesDirName:
 			if err := s.addTemplatesDir(ctx, sourceAbsPath); err != nil {
 				return err
 			}
@@ -1285,7 +1285,7 @@ func (s *SourceState) addTemplatesDir(ctx context.Context, templatesDirAbsPath A
 		case err != nil:
 			return err
 		case strings.HasPrefix(fileInfo.Name(), Prefix):
-			return fmt.Errorf("%s: not allowed in %s directory", templatesDirName, templateAbsPath)
+			return fmt.Errorf("%s: not allowed in %s directory", TemplatesDirName, templateAbsPath)
 		case strings.HasPrefix(fileInfo.Name(), "."):
 			if fileInfo.IsDir() {
 				return vfs.SkipDir
