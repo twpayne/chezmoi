@@ -12,6 +12,48 @@ import (
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoitest"
 )
 
+func TestCommentTemplateFunc(t *testing.T) {
+	prefix := "# "
+	for i, tc := range []struct {
+		s        string
+		expected string
+	}{
+		{
+			s:        "",
+			expected: "",
+		},
+		{
+			s:        "line",
+			expected: "# line",
+		},
+		{
+			s:        "\n",
+			expected: "# \n",
+		},
+		{
+			s:        "\n\n",
+			expected: "# \n# \n",
+		},
+		{
+			s:        "line1\nline2",
+			expected: "# line1\n# line2",
+		},
+		{
+			s:        "line1\nline2\n",
+			expected: "# line1\n# line2\n",
+		},
+		{
+			s:        "line1\n\nline3\n",
+			expected: "# line1\n# \n# line3\n",
+		},
+	} {
+		t.Run(strconv.Itoa(i), func(t *testing.T) {
+			c := &Config{}
+			assert.Equal(t, tc.expected, c.commentTemplateFunc(prefix, tc.s))
+		})
+	}
+}
+
 func TestFromIniTemplateFunc(t *testing.T) {
 	for i, tc := range []struct {
 		text     string
