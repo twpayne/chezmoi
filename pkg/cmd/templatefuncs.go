@@ -14,7 +14,6 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/bmatcuk/doublestar/v4"
 	"github.com/bradenhilton/mozillainstallhash"
 	"golang.org/x/exp/constraints"
 	"golang.org/x/exp/maps"
@@ -111,7 +110,7 @@ func (c *Config) globTemplateFunc(pattern string) []string {
 		panic(err)
 	}
 
-	matches, err := doublestar.Glob(c.fileSystem, filepath.ToSlash(pattern))
+	matches, err := chezmoi.Glob(c.fileSystem, filepath.ToSlash(pattern))
 	if err != nil {
 		panic(err)
 	}

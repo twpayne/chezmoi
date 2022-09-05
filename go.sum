@@ -103,6 +103,8 @@ github.com/aws/smithy-go v1.13.1 h1:q09BdpUiaqpothcv393ACfWJJHzlzjB5HaNL1XHKmoQ=
 github.com/aws/smithy-go v1.13.1/go.mod h1:Tg+OJXh4MB2R/uN61Ko2f6hTZwB/ZYGOtib8J3gBHzA=
 github.com/aymerick/douceur v0.2.0 h1:Mv+mAeH1Q+n9Fr+oyamOlAkUNPWPlA8PPGR0QAaYuPk=
 github.com/aymerick/douceur v0.2.0/go.mod h1:wlT5vV2O3h55X9m7iVYN0TBM0NH/MmbLnd30/FjWUq4=
+github.com/bmatcuk/doublestar/v4 v4.2.0 h1:Qu+u9wR3Vd89LnlLMHvnZ5coJMWKQamqdz9/p5GNthA=
+github.com/bmatcuk/doublestar/v4 v4.2.0/go.mod h1:xBQ8jztBU6kakFMg+8WGxn0c6z1fTSPVIjEY1Wr7jzc=
 github.com/bradenhilton/cityhash v1.0.0 h1:1QauDCwfxwIGwO2jBTJdEBqXgfCusAgQOSgdl4RsTMI=
 github.com/bradenhilton/cityhash v1.0.0/go.mod h1:Wmb8yW1egA9ulrsRX4mxfYx5zq4nBWOCZ+j63oK6uz8=
 github.com/bradenhilton/mozillainstallhash v1.0.0 h1:QL9byVGb4FrVOI7MubnME3uPNj5R78tqYQPlxuBmXMw=
@@ -449,8 +451,6 @@ github.com/tklauser/go-sysconf v0.3.10 h1:IJ1AZGZRWbY8T5Vfk04D9WOA5WSejdflXxP03O
 github.com/tklauser/go-sysconf v0.3.10/go.mod h1:C8XykCvCb+Gn0oNCWPIlcb0RuglQTYaQ2hGm7jmxEFk=
 github.com/tklauser/numcpus v0.4.0 h1:E53Dm1HjH1/R2/aoCtXtPgzmElmn51aOkhCFSuZq//o=
 github.com/tklauser/numcpus v0.4.0/go.mod h1:1+UI3pD8NW14VMwdgJNJ1ESk2UnwhAnz5hMwiKKqXCQ=
-github.com/twpayne/doublestar/v4 v4.0.0-20220822143754-0ea4707e8a88 h1:rc9w60CQOt0rQz+SqjNU6Bk2QqMPuK7f9iop1UbIW60=
-github.com/twpayne/doublestar/v4 v4.0.0-20220822143754-0ea4707e8a88/go.mod h1:xBQ8jztBU6kakFMg+8WGxn0c6z1fTSPVIjEY1Wr7jzc=
 github.com/twpayne/go-pinentry v0.2.0 h1:hS5NEJiilop9xP9pBX/1NYduzDlGGMdg1KamTBTrOWw=
 github.com/twpayne/go-pinentry v0.2.0/go.mod h1:r6buhMwARxnnL0VRBqfd1tE6Fadk1kfP00GRMutEspY=
 github.com/twpayne/go-shell v0.3.1 h1:JIC6cyDpG/p8mRnFUleH07roi90q0J9QC8PnvtmYLRo=

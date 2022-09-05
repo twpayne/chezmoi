@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 	"runtime"
 
-	"github.com/bmatcuk/doublestar/v4"
 	vfs "github.com/twpayne/go-vfs/v4"
 	"go.uber.org/multierr"
 
@@ -20,7 +19,7 @@ type RealSystemOption func(*RealSystem)
 
 // Glob implements System.Glob.
 func (s *RealSystem) Glob(pattern string) ([]string, error) {
-	return doublestar.Glob(s.UnderlyingFS(), filepath.ToSlash(pattern))
+	return Glob(s.UnderlyingFS(), filepath.ToSlash(pattern))
 }
 
 // Link implements System.Link.
