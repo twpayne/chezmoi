@@ -110,10 +110,10 @@ func (e *AgeEncryption) builtinDecrypt(ciphertext []byte) ([]byte, error) {
 		return nil, err
 	}
 	buffer := &bytes.Buffer{}
-	if _, err = io.Copy(buffer, r); err != nil {
+	if _, err := io.Copy(buffer, r); err != nil {
 		return nil, err
 	}
-	return buffer.Bytes(), err
+	return buffer.Bytes(), nil
 }
 
 // builtinEncrypt encrypts ciphertext using the builtin age.
@@ -124,14 +124,14 @@ func (e *AgeEncryption) builtinEncrypt(plaintext []byte) ([]byte, error) {
 	}
 	output := &bytes.Buffer{}
 	armorWriter := armor.NewWriter(output)
-	writer, err := age.Encrypt(armorWriter, recipients...)
+	writeCloser, err := age.Encrypt(armorWriter, recipients...)
 	if err != nil {
 		return nil, err
 	}
-	if _, err := io.Copy(writer, bytes.NewReader(plaintext)); err != nil {
+	if _, err := io.Copy(writeCloser, bytes.NewReader(plaintext)); err != nil {
 		return nil, err
 	}
-	if err := writer.Close(); err != nil {
+	if err := writeCloser.Close(); err != nil {
 		return nil, err
 	}
 	if err := armorWriter.Close(); err != nil {
