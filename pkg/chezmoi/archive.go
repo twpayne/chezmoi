@@ -33,13 +33,13 @@ const (
 	ArchiveFormatZip     ArchiveFormat = "zip"
 )
 
-type InvalidArchiveFormatError string
+type UnknownArchiveFormatError string
 
-func (e InvalidArchiveFormatError) Error() string {
-	if e == InvalidArchiveFormatError(ArchiveFormatUnknown) {
-		return "invalid archive format"
+func (e UnknownArchiveFormatError) Error() string {
+	if e == UnknownArchiveFormatError(ArchiveFormatUnknown) {
+		return "unknown archive format"
 	}
-	return fmt.Sprintf("%s: invalid archive format", string(e))
+	return fmt.Sprintf("%s: unknown archive format", string(e))
 }
 
 // An WalkArchiveFunc is called once for each entry in an archive.
@@ -97,25 +97,30 @@ func WalkArchive(data []byte, format ArchiveFormat, f WalkArchiveFunc) error {
 	if format == ArchiveFormatZip {
 		return walkArchiveZip(bytes.NewReader(data), int64(len(data)), f)
 	}
+	// r will read bytes in tar format.
 	var r io.Reader = bytes.NewReader(data)
 	switch format {
 	case ArchiveFormatTar:
+		// Already in tar format, do nothing.
 	case ArchiveFormatTarBz2, ArchiveFormatTbz2:
+		// Decompress with bzip2.
 		r = bzip2.NewReader(r)
 	case ArchiveFormatTarGz, ArchiveFormatTgz:
+		// Decompress with gzip.
 		var err error
 		r, err = gzip.NewReader(r)
 		if err != nil {
 			return err
 		}
 	case ArchiveFormatTarXz, ArchiveFormatTxz:
+		// Decompress with xz.
 		var err error
 		r, err = xz.NewReader(r)
 		if err != nil {
 			return err
 		}
 	default:
-		return InvalidArchiveFormatError(format)
+		return UnknownArchiveFormatError(format)
 	}
 	return walkArchiveTar(r, f)
 }
@@ -164,6 +169,7 @@ HEADER:
 				return err
 			}
 		case tar.TypeXGlobalHeader:
+			// Do nothing.
 		default:
 			return fmt.Errorf("%s: unsupported typeflag '%c'", header.Name, header.Typeflag)
 		}
@@ -183,15 +189,18 @@ FILE:
 		if err != nil {
 			return err
 		}
+
 		name := path.Clean(zipFile.Name)
 		if strings.HasPrefix(name, "../") || strings.Contains(name, "/../") {
 			return fmt.Errorf("%s: invalid filename", zipFile.Name)
 		}
+
 		for _, skippedDirPrefix := range skippedDirPrefixes {
 			if strings.HasPrefix(zipFile.Name, skippedDirPrefix) {
 				continue FILE
 			}
 		}
+
 		switch fileInfo := zipFile.FileInfo(); fileInfo.Mode() & fs.ModeType {
 		case 0:
 			err = f(name, fileInfo, zipFileReader, "")
@@ -205,7 +214,9 @@ FILE:
 			}
 			err = f(name, fileInfo, nil, string(linknameBytes))
 		}
-		zipFileReader.Close()
+
+		err2 := zipFileReader.Close()
+
 		switch {
 		case errors.Is(err, fs.SkipDir):
 			skippedDirPrefixes = append(skippedDirPrefixes, zipFile.Name+"/")
@@ -213,6 +224,10 @@ FILE:
 			return nil
 		case err != nil:
 			return err
+		}
+
+		if err2 != nil {
+			return err2
 		}
 	}
 	return nil

@@ -72,7 +72,7 @@ func (c *Config) runArchiveCmd(cmd *cobra.Command, args []string) error {
 	case chezmoi.ArchiveFormatZip:
 		archiveSystem = chezmoi.NewZIPWriterSystem(&output, time.Now().UTC())
 	default:
-		return chezmoi.InvalidArchiveFormatError(format)
+		return chezmoi.UnknownArchiveFormatError(format)
 	}
 	if err := c.applyArgs(cmd.Context(), archiveSystem, chezmoi.EmptyAbsPath, args, applyArgsOptions{
 		include:   c.archive.include.Sub(c.archive.exclude),
