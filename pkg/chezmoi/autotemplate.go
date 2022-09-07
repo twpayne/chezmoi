@@ -13,24 +13,7 @@ type templateVariable struct {
 	value string
 }
 
-var templateMarkerRx = regexp.MustCompile(`[{}]{2,}`)
-
-// byValueLength implements sort.Interface for a slice of templateVariables,
-// sorting by value length.
-type byValueLength []templateVariable
-
-func (b byValueLength) Len() int { return len(b) }
-func (b byValueLength) Less(i, j int) bool {
-	switch {
-	case len(b[i].value) < len(b[j].value): // First sort by value length.
-		return true
-	case len(b[i].value) == len(b[j].value):
-		return b[i].name > b[j].name // Second sort by value name.
-	default:
-		return false
-	}
-}
-func (b byValueLength) Swap(i, j int) { b[i], b[j] = b[j], b[i] }
+var templateMarkerRx = regexp.MustCompile(`\{{2,}|\}{2,}`)
 
 // autoTemplate converts contents into a template by escaping template markers
 // and replacing values in data with their keys. It returns the template and if
@@ -52,7 +35,20 @@ func autoTemplate(contents []byte, data map[string]any) ([]byte, bool) {
 	// names match variable values. The algorithm here is probably O(N^2), we
 	// can do better.
 	variables := extractVariables(data)
-	sort.Sort(sort.Reverse(byValueLength(variables)))
+	sort.Slice(variables, func(i, j int) bool {
+		valueI := variables[i].value
+		valueJ := variables[j].value
+		switch {
+		case len(valueI) > len(valueJ): // First sort by value length.
+			return true
+		case len(valueI) == len(valueJ): // Second sort by value name.
+			nameI := variables[i].name
+			nameJ := variables[j].name
+			return nameI < nameJ
+		default:
+			return false
+		}
+	})
 	for _, variable := range variables {
 		if variable.value == "" {
 			continue

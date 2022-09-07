@@ -139,7 +139,7 @@ func TestAutoTemplate(t *testing.T) {
 		{
 			name:                 "markers",
 			contentsStr:          "{{}}",
-			expected:             `{{ "{{}}" }}`,
+			expected:             `{{ "{{" }}{{ "}}" }}`,
 			expectedReplacements: true,
 		},
 	} {
