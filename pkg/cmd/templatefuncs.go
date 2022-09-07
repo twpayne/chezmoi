@@ -284,7 +284,7 @@ func (c *Config) statTemplateFunc(name string) any {
 	}
 }
 
-func (c *Config) toIniTemplateFunc(data map[string]interface{}) string {
+func (c *Config) toIniTemplateFunc(data map[string]any) string {
 	var builder strings.Builder
 	if err := writeIniMap(&builder, data, ""); err != nil {
 		panic(err)
