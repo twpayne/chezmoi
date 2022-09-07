@@ -54,6 +54,7 @@ func NewArchiveReaderSystem(
 		s.fileInfos[nameAbsPath] = fileInfo
 		switch {
 		case fileInfo.IsDir():
+			// Do nothing.
 		case fileInfo.Mode()&fs.ModeType == 0:
 			contents, err := io.ReadAll(r)
 			if err != nil {
