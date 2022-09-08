@@ -252,6 +252,7 @@ func (s *GitDiffSystem) encodeDiff(absPath AbsPath, toData []byte, toMode fs.Fil
 	var fromMode fs.FileMode
 	switch fromInfo, err := s.system.Lstat(absPath); {
 	case errors.Is(err, fs.ErrNotExist):
+		// Leave fromData and fromMode at their zero values.
 	case err != nil:
 		return err
 	case fromInfo.Mode().IsRegular():
@@ -289,10 +290,12 @@ func (s *GitDiffSystem) encodeDiff(absPath AbsPath, toData []byte, toMode fs.Fil
 		fromData, toData = toData, fromData
 		fromMode, toMode = toMode, fromMode
 	}
+
 	diffPatch, err := DiffPatch(s.trimPrefix(absPath), fromData, fromMode, toData, toMode)
 	if err != nil {
 		return err
 	}
+
 	return s.unifiedEncoder.Encode(diffPatch)
 }
 
