@@ -122,5 +122,3 @@ require (
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
-
-exclude github.com/sergi/go-diff v1.2.0 // Produces incorrect diffs
