@@ -98,7 +98,7 @@ func (s *EntryTypeSet) IncludeTargetStateEntry(targetStateEntry TargetStateEntry
 	case *TargetStateFile:
 		return s.bits&EntryTypeFiles != 0
 	case *TargetStateModifyDirWithCmd:
-		return s.bits&EntryTypeScripts != 0
+		return s.bits&EntryTypeDirs != 0
 	case *TargetStateRemove:
 		return s.bits&EntryTypeRemove != 0
 	case *TargetStateScript:
