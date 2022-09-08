@@ -4,6 +4,10 @@
 mkgitconfig
 expandenv $WORK/home/user/.local/share/chezmoi/.chezmoiexternal.toml
 
+# test that chezmoi managed lists the directory
+exec chezmoi managed
+stdout ^\.dir$
+
 # create a git repo
 cd $WORK/repo
 exec git init
