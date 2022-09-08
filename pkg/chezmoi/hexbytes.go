@@ -29,8 +29,7 @@ func (h *HexBytes) UnmarshalText(text []byte) error {
 		return nil
 	}
 	result := make([]byte, hex.DecodedLen(len(text)))
-	_, err := hex.Decode(result, text)
-	if err != nil {
+	if _, err := hex.Decode(result, text); err != nil {
 		return err
 	}
 	*h = result
