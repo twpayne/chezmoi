@@ -137,7 +137,7 @@ func writeFile(fileSystem vfs.FS, filename AbsPath, data []byte, perm fs.FileMod
 
 	// Set permissions after truncation but before writing any data, in case the
 	// file contained private data before, but before writing the new contents,
-	// in case the contents contain private data after.
+	// in case the new contents contain private data after.
 	if err = f.Chmod(perm); err != nil {
 		return
 	}
