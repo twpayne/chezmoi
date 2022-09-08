@@ -177,7 +177,6 @@ nav:
       - glob: reference/templates/functions/glob.md
       - include: reference/templates/functions/include.md
       - includeTemplate: reference/templates/functions/includeTemplate.md
-      - ioreg: reference/templates/functions/ioreg.md
       - joinPath: reference/templates/functions/joinPath.md
       - lookPath: reference/templates/functions/lookPath.md
       - mozillaInstallHash: reference/templates/functions/mozillaInstallHash.md
