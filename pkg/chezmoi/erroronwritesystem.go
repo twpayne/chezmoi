@@ -14,7 +14,8 @@ type ErrorOnWriteSystem struct {
 	err    error
 }
 
-// NewErrorOnWriteSystem returns a new ErrorOnWriteSystem that wraps fs.
+// NewErrorOnWriteSystem returns a new ErrorOnWriteSystem that wraps fs and
+// returns err on any write operation.
 func NewErrorOnWriteSystem(system System, err error) *ErrorOnWriteSystem {
 	return &ErrorOnWriteSystem{
 		system: system,
