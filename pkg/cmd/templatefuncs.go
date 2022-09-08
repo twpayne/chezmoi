@@ -9,7 +9,6 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
-	"runtime"
 	"strconv"
 	"strings"
 	"text/template"
@@ -19,15 +18,10 @@ import (
 	"golang.org/x/exp/maps"
 	"golang.org/x/exp/slices"
 	"gopkg.in/ini.v1"
-	"howett.net/plist"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoilog"
 )
-
-type ioregData struct {
-	value map[string]any
-}
 
 // needsQuoteRx matches any string that contains non-printable characters,
 // double quotes, or a backslash.
@@ -156,32 +150,6 @@ func (c *Config) includeTemplateTemplateFunc(filename string, args ...any) strin
 		panic(err)
 	}
 	return builder.String()
-}
-
-func (c *Config) ioregTemplateFunc() map[string]any {
-	if runtime.GOOS != "darwin" {
-		return nil
-	}
-
-	if c.ioregData.value != nil {
-		return c.ioregData.value
-	}
-
-	command := "ioreg"
-	args := []string{"-a", "-l"}
-	cmd := exec.Command(command, args...)
-	cmd.Stderr = os.Stderr
-	output, err := chezmoilog.LogCmdOutput(cmd)
-	if err != nil {
-		panic(newCmdOutputError(cmd, output, err))
-	}
-
-	var value map[string]any
-	if _, err := plist.Unmarshal(output, &value); err != nil {
-		panic(newParseCmdOutputError(command, args, output, err))
-	}
-	c.ioregData.value = value
-	return value
 }
 
 func (c *Config) joinPathTemplateFunc(elem ...string) string {

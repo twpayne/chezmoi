@@ -190,8 +190,6 @@ type Config struct {
 	bufioReader *bufio.Reader
 
 	tempDirs map[string]chezmoi.AbsPath
-
-	ioregData ioregData
 }
 
 // A configOption sets and option on a Config.
@@ -437,7 +435,6 @@ func newConfig(options ...configOption) (*Config, error) {
 		"gopassRaw":                c.gopassRawTemplateFunc,
 		"include":                  c.includeTemplateFunc,
 		"includeTemplate":          c.includeTemplateTemplateFunc,
-		"ioreg":                    c.ioregTemplateFunc,
 		"joinPath":                 c.joinPathTemplateFunc,
 		"keepassxc":                c.keepassxcTemplateFunc,
 		"keepassxcAttachment":      c.keepassxcAttachmentTemplateFunc,
