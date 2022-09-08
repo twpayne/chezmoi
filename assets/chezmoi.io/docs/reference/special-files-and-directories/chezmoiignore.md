@@ -35,7 +35,7 @@ be ignored on different machines.
     .company-directory # note that the pattern is not dot_company-directory
     {{- end }}
 
-    {{- if ne .email "me@home.org }}
+    {{- if ne .email "me@home.org" }}
     .personal-file
     {{- end }}
     ```
