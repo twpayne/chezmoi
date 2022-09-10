@@ -12,5 +12,5 @@ state, source state, and target state respectively. For example, to use
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [merge]
     command = "nvim"
-    args = ["-d", "{{ .Destination }}", "{{ .Source }}", "{{ .Target }}"]
+    args = ["-d"]
 ```
