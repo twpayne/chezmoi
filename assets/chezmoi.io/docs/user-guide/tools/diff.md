@@ -15,6 +15,12 @@ specify:
     args = ["--diff", "{{ .Destination }}", "{{ .Target }}"]
 ```
 
+!!! hint
+
+    If you generate your config file from a config file template, then you'll
+    need to escape the `{{` and `}}` in your config file template so that they
+    appear in your generated config file.
+
 ## Don't show scripts in the diff output
 
 By default, `chezmoi diff` will show all changes, including the contents of
