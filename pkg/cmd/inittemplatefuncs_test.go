@@ -64,6 +64,7 @@ func TestPromptBoolInitTemplateFunc(t *testing.T) {
 			stdin := strings.NewReader(tc.stdinStr)
 			stdout := &strings.Builder{}
 			config, err := newConfig(
+				withNoTTY(true),
 				withStdin(stdin),
 				withStdout(stdout),
 			)
@@ -136,6 +137,7 @@ func TestPromptIntInitTemplateFunc(t *testing.T) {
 			stdin := strings.NewReader(tc.stdinStr)
 			stdout := &strings.Builder{}
 			config, err := newConfig(
+				withNoTTY(true),
 				withStdin(stdin),
 				withStdout(stdout),
 			)
@@ -221,6 +223,7 @@ func TestPromptStringInitTemplateFunc(t *testing.T) {
 			stdin := strings.NewReader(tc.stdinStr)
 			stdout := &strings.Builder{}
 			config, err := newConfig(
+				withNoTTY(true),
 				withStdin(stdin),
 				withStdout(stdout),
 			)
