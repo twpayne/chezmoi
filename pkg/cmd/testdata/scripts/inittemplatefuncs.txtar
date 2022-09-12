@@ -20,7 +20,7 @@ stdout string
 
 # test prompt*Once functions without existing data
 stdin golden/input
-exec chezmoi init
+exec chezmoi init --no-tty
 cmp ${CHEZMOICONFIGDIR}/chezmoi.toml golden/chezmoi.toml
 
 chhome home2/user

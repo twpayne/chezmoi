@@ -190,6 +190,13 @@ func withDestSystem(destSystem chezmoi.System) configOption {
 	}
 }
 
+func withNoTTY(noTTY bool) configOption {
+	return func(c *Config) error {
+		c.noTTY = noTTY
+		return nil
+	}
+}
+
 func withSourceSystem(sourceSystem chezmoi.System) configOption {
 	return func(c *Config) error {
 		c.sourceSystem = sourceSystem
