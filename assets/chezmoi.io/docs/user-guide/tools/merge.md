@@ -14,3 +14,9 @@ state, source state, and target state respectively. For example, to use
     command = "nvim"
     args = ["-d", "{{ .Destination }}", "{{ .Source }}", "{{ .Target }}"]
 ```
+
+!!! hint
+
+    If you generate your config file from a config file template, then you'll
+    need to escape the `{{` and `}}` in your config file template so that they
+    appear in your generated config file.
