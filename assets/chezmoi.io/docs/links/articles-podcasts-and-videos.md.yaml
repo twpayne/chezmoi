@@ -301,3 +301,8 @@ articles:
   title: 'chezmoi で Linux と macOS 両方で使える dotfiles を作る'
   lang: 'JP'
   url: https://www.docswell.com/s/iosiftakakura/K2EXM5-2022-06-11-chezmoi
+- date: '2022-09-13'
+  version: '2.22.1'
+  title: 'Using chezmoi to automate dotfiles / config files (+ my bashrc)'
+  format: Video
+  url: https://www.youtube.com/watch?v=id5UKYuX4-A
