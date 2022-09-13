@@ -5,8 +5,6 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-
-	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
 )
 
 func (c *Config) newSourcePathCmd() *cobra.Command {
@@ -16,15 +14,20 @@ func (c *Config) newSourcePathCmd() *cobra.Command {
 		Long:              mustLongHelp("source-path"),
 		Example:           example("source-path"),
 		ValidArgsFunction: c.targetValidArgs,
-		RunE:              c.makeRunEWithSourceState(c.runSourcePathCmd),
+		RunE:              c.runSourcePathCmd,
 	}
 
 	return sourcePathCmd
 }
 
-func (c *Config) runSourcePathCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
+func (c *Config) runSourcePathCmd(cmd *cobra.Command, args []string) error {
 	if len(args) == 0 {
 		return c.writeOutputString(c.SourceDirAbsPath.String() + "\n")
+	}
+
+	sourceState, err := c.newSourceState(cmd.Context())
+	if err != nil {
+		return err
 	}
 
 	sourceAbsPaths, err := c.sourceAbsPaths(sourceState, args)

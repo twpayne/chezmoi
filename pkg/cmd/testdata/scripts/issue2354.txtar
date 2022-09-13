@@ -1,0 +1,6 @@
+# test that chezmoi source-path does not read the source state if not needed
+exec chezmoi source-path
+stdout ${CHEZMOISOURCEDIR@R}
+
+-- home/user/.local/share/chezmoi/.chezmoiexternal.json --
+invalid JSON file
