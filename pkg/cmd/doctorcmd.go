@@ -209,17 +209,7 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			name:    "dest-dir",
 			dirname: c.DestDirAbsPath,
 		},
-		&binaryCheck{
-			name:       "shell-command",
-			binaryname: shellCommand,
-			ifNotSet:   checkResultError,
-			ifNotExist: checkResultError,
-		},
-		&argsCheck{
-			name:    "shell-args",
-			command: shellCommand,
-			args:    shellArgs,
-		},
+		umaskCheck{},
 		&binaryCheck{
 			name:       "cd-command",
 			binaryname: cdCommand,
@@ -230,6 +220,12 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			name:    "cd-args",
 			command: cdCommand,
 			args:    cdArgs,
+		},
+		&binaryCheck{
+			name:       "diff-command",
+			binaryname: c.Diff.Command,
+			ifNotSet:   checkResultInfo,
+			ifNotExist: checkResultWarning,
 		},
 		&binaryCheck{
 			name:       "edit-command",
@@ -243,13 +239,6 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			args:    editArgs,
 		},
 		&binaryCheck{
-			name:       "diff-command",
-			binaryname: c.Diff.Command,
-			ifNotSet:   checkResultInfo,
-			ifNotExist: checkResultWarning,
-		},
-		umaskCheck{},
-		&binaryCheck{
 			name:        "git-command",
 			binaryname:  c.Git.Command,
 			ifNotSet:    checkResultWarning,
@@ -262,6 +251,17 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			binaryname: c.Merge.Command,
 			ifNotSet:   checkResultWarning,
 			ifNotExist: checkResultWarning,
+		},
+		&binaryCheck{
+			name:       "shell-command",
+			binaryname: shellCommand,
+			ifNotSet:   checkResultError,
+			ifNotExist: checkResultError,
+		},
+		&argsCheck{
+			name:    "shell-args",
+			command: shellCommand,
+			args:    shellArgs,
 		},
 		&binaryCheck{
 			name:        "age-command",
@@ -320,6 +320,12 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			versionArgs: []string{"--version"},
 			versionRx:   regexp.MustCompile(`^(\d+\.\d+\.\d+)`),
 		},
+		&fileCheck{
+			name:       "keepassxc-db",
+			filename:   c.Keepassxc.Database,
+			ifNotSet:   checkResultInfo,
+			ifNotExist: checkResultInfo,
+		},
 		&binaryCheck{
 			name:        "keeper-command",
 			binaryname:  c.Keeper.Command,
@@ -327,12 +333,6 @@ func (c *Config) runDoctorCmd(cmd *cobra.Command, args []string) error {
 			ifNotExist:  checkResultInfo,
 			versionArgs: []string{"version"},
 			versionRx:   regexp.MustCompile(`^Commander\s+Version:\s+(\d+\.\d+\.\d+)`),
-		},
-		&fileCheck{
-			name:       "keepassxc-db",
-			filename:   c.Keepassxc.Database,
-			ifNotSet:   checkResultInfo,
-			ifNotExist: checkResultInfo,
 		},
 		&binaryCheck{
 			name:        "lastpass-command",
