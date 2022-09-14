@@ -123,4 +123,4 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
 
-exclude github.com/sergi/go-diff v1.2.0 // Produces incorrect diffs
+exclude github.com/sergi/go-diff v1.2.0 // https://github.com/sergi/go-diff/issues/123
