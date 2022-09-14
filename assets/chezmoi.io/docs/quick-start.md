@@ -74,7 +74,7 @@ $ git commit -m "Initial commit"
 and then push your repo:
 
 ```console
-$ git remote add origin git@github.com:username/dotfiles.git
+$ git remote add origin https://github.com/username/dotfiles.git
 $ git branch -M main
 $ git push -u origin main
 ```
