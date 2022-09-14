@@ -20,6 +20,11 @@ var (
 		"all",
 		"quit",
 	}
+	choicesYesNoQuit = []string{
+		"yes",
+		"no",
+		"quit",
+	}
 )
 
 // englishList returns ss formatted as a list, including an Oxford comma.
