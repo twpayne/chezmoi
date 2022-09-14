@@ -278,7 +278,7 @@ func (c *Config) builtinGitClone(username, url string, workingTreeRawPath chezmo
 			return err
 		}
 		var basicAuth http.BasicAuth
-		if basicAuth.Username, err = c.readLine(fmt.Sprintf("Username [default %q]? ", username)); err != nil {
+		if basicAuth.Username, err = c.readString("Username? ", &username); err != nil {
 			return err
 		}
 		if basicAuth.Username == "" {

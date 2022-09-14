@@ -113,6 +113,8 @@ linters-settings:
     - anon
     - empty
     - error
+    - github.com/charmbracelet/bubbletea\.Model
+    - github.com/charmbracelet/bubbletea\.Msg
     - github.com/go-git/go-git/v5/plumbing/format/diff\.File
     - github.com/go-git/go-git/v5/plumbing/format/diff\.Patch
     - github.com/mitchellh/mapstructure\.DecodeHookFunc

@@ -3,8 +3,6 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"strconv"
-	"strings"
 
 	"golang.org/x/term"
 
@@ -29,27 +27,11 @@ func (c *Config) promptBoolInitTemplateFunc(prompt string, args ...bool) bool {
 		return value
 	}
 
-	switch len(args) {
-	case 0:
-		value, err := chezmoi.ParseBool(c.promptString(prompt))
-		if err != nil {
-			panic(err)
-		}
-		return value
-	case 1:
-		prompt += " (default " + strconv.FormatBool(args[0]) + ")"
-		valueStr := c.promptString(prompt)
-		if valueStr == "" {
-			return args[0]
-		}
-		value, err := chezmoi.ParseBool(valueStr)
-		if err != nil {
-			panic(err)
-		}
-		return value
-	default:
-		panic("unreachable")
+	value, err := c.promptBool(prompt, args...)
+	if err != nil {
+		panic(err)
 	}
+	return value
 }
 
 func (c *Config) promptBoolOnceInitTemplateFunc(m map[string]any, key, prompt string, args ...bool) bool {
@@ -79,27 +61,11 @@ func (c *Config) promptIntInitTemplateFunc(prompt string, args ...int64) int64 {
 		return int64(value)
 	}
 
-	switch len(args) {
-	case 0:
-		value, err := strconv.ParseInt(c.promptString(prompt), 10, 64)
-		if err != nil {
-			panic(err)
-		}
-		return value
-	case 1:
-		promptStr := prompt + " (default " + strconv.FormatInt(args[0], 10) + ")"
-		valueStr := c.promptString(promptStr)
-		if valueStr == "" {
-			return args[0]
-		}
-		value, err := strconv.ParseInt(valueStr, 10, 64)
-		if err != nil {
-			panic(err)
-		}
-		return value
-	default:
-		panic("unreachable")
+	value, err := c.promptInt(prompt, args...)
+	if err != nil {
+		panic(err)
 	}
+	return value
 }
 
 func (c *Config) promptIntOnceInitTemplateFunc(m map[string]any, key, prompt string, args ...int64) int64 {
@@ -129,7 +95,11 @@ func (c *Config) promptStringInitTemplateFunc(prompt string, args ...string) str
 		return value
 	}
 
-	return c.promptString(prompt, args...)
+	value, err := c.promptString(prompt, args...)
+	if err != nil {
+		panic(err)
+	}
+	return value
 }
 
 func (c *Config) promptStringOnceInitTemplateFunc(m map[string]any, key, prompt string, args ...string) string {
@@ -147,31 +117,6 @@ func (c *Config) promptStringOnceInitTemplateFunc(m map[string]any, key, prompt 
 	}
 
 	return c.promptStringInitTemplateFunc(prompt, args...)
-}
-
-func (c *Config) promptString(prompt string, args ...string) string {
-	switch len(args) {
-	case 0:
-		value, err := c.readLine(prompt + "? ")
-		if err != nil {
-			panic(err)
-		}
-		return strings.TrimSpace(value)
-	case 1:
-		defaultStr := strings.TrimSpace(args[0])
-		promptStr := prompt + " (default " + strconv.Quote(defaultStr) + ")? "
-		switch value, err := c.readLine(promptStr); {
-		case err != nil:
-			panic(err)
-		case value == "":
-			return defaultStr
-		default:
-			return strings.TrimSpace(value)
-		}
-	default:
-		err := fmt.Errorf("want 0 or 1 arguments, got %d", len(args))
-		panic(err)
-	}
 }
 
 func (c *Config) stdinIsATTYInitTemplateFunc() bool {
