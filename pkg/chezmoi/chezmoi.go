@@ -194,6 +194,28 @@ func SuspiciousSourceDirEntry(base string, fileInfo fs.FileInfo, encryptedSuffix
 	}
 }
 
+// UniqueAbbreviations returns a map of unique abbreviations of values to
+// values. Values always map to themselves.
+func UniqueAbbreviations(values []string) map[string]string {
+	abbreviations := make(map[string][]string)
+	for _, value := range values {
+		for i := 1; i <= len(value); i++ {
+			abbreviation := value[:i]
+			abbreviations[abbreviation] = append(abbreviations[abbreviation], value)
+		}
+	}
+	uniqueAbbreviations := make(map[string]string)
+	for abbreviation, values := range abbreviations {
+		if len(values) == 1 {
+			uniqueAbbreviations[abbreviation] = values[0]
+		}
+	}
+	for _, value := range values {
+		uniqueAbbreviations[value] = value
+	}
+	return uniqueAbbreviations
+}
+
 // etcHostnameFQDNHostname returns the FQDN hostname from parsing /etc/hostname.
 func etcHostnameFQDNHostname(fileSystem vfs.FS) (string, error) {
 	contents, err := fileSystem.ReadFile("/etc/hostname")

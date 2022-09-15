@@ -1855,7 +1855,7 @@ func (c *Config) persistentStateFile() (chezmoi.AbsPath, error) {
 // promptChoice prompts the user for one of choices until a valid choice is made.
 func (c *Config) promptChoice(prompt string, choices []string) (string, error) {
 	promptWithChoices := fmt.Sprintf("%s [%s]? ", prompt, strings.Join(choices, ","))
-	abbreviations := uniqueAbbreviations(choices)
+	abbreviations := chezmoi.UniqueAbbreviations(choices)
 	for {
 		line, err := c.readLine(promptWithChoices)
 		if err != nil {
