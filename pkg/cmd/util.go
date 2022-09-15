@@ -119,28 +119,6 @@ func upperSnakeCaseToCamelCase(s string) string {
 	return strings.Join(words, "")
 }
 
-// uniqueAbbreviations returns a map of unique abbreviations of values to
-// values. Values always map to themselves.
-func uniqueAbbreviations(values []string) map[string]string {
-	abbreviations := make(map[string][]string)
-	for _, value := range values {
-		for i := 1; i <= len(value); i++ {
-			abbreviation := value[:i]
-			abbreviations[abbreviation] = append(abbreviations[abbreviation], value)
-		}
-	}
-	uniqueAbbreviations := make(map[string]string)
-	for abbreviation, values := range abbreviations {
-		if len(values) == 1 {
-			uniqueAbbreviations[abbreviation] = values[0]
-		}
-	}
-	for _, value := range values {
-		uniqueAbbreviations[value] = value
-	}
-	return uniqueAbbreviations
-}
-
 // upperSnakeCaseToCamelCaseKeys returns m with all keys converted from
 // UPPER_SNAKE_CASE to camelCase.
 func upperSnakeCaseToCamelCaseMap(m map[string]any) map[string]any {
