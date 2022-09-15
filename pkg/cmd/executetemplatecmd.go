@@ -52,7 +52,7 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 
 	promptBool := make(map[string]bool)
 	for key, valueStr := range c.executeTemplate.promptBool {
-		value, err := parseBool(valueStr)
+		value, err := chezmoi.ParseBool(valueStr)
 		if err != nil {
 			return err
 		}

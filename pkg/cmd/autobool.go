@@ -32,7 +32,7 @@ func (b *autoBool) Set(s string) error {
 	}
 	b.auto = false
 	var err error
-	b.value, err = parseBool(s)
+	b.value, err = chezmoi.ParseBool(s)
 	if err != nil {
 		return err
 	}

@@ -22,7 +22,7 @@ func (c *Config) promptBoolInitTemplateFunc(prompt string, args ...bool) bool {
 	}
 
 	if valueStr, ok := c.init.promptBool[prompt]; ok {
-		value, err := parseBool(valueStr)
+		value, err := chezmoi.ParseBool(valueStr)
 		if err != nil {
 			panic(err)
 		}
@@ -31,7 +31,7 @@ func (c *Config) promptBoolInitTemplateFunc(prompt string, args ...bool) bool {
 
 	switch len(args) {
 	case 0:
-		value, err := parseBool(c.promptString(prompt))
+		value, err := chezmoi.ParseBool(c.promptString(prompt))
 		if err != nil {
 			panic(err)
 		}
@@ -42,7 +42,7 @@ func (c *Config) promptBoolInitTemplateFunc(prompt string, args ...bool) bool {
 		if valueStr == "" {
 			return args[0]
 		}
-		value, err := parseBool(valueStr)
+		value, err := chezmoi.ParseBool(valueStr)
 		if err != nil {
 			panic(err)
 		}
