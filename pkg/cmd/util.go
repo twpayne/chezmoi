@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"strconv"
 	"strings"
 	"unicode"
 )
@@ -73,19 +72,6 @@ func firstNonEmptyString(ss ...string) string {
 func isWellKnownAbbreviation(word string) bool {
 	_, ok := wellKnownAbbreviations[word]
 	return ok
-}
-
-// parseBool is like strconv.ParseBool but also accepts on, ON, y, Y, yes, YES,
-// n, N, no, NO, off, and OFF.
-func parseBool(str string) (bool, error) {
-	switch strings.ToLower(strings.TrimSpace(str)) {
-	case "n", "no", "off":
-		return false, nil
-	case "on", "y", "yes":
-		return true, nil
-	default:
-		return strconv.ParseBool(str)
-	}
 }
 
 // pluralize returns the English plural form of singular.

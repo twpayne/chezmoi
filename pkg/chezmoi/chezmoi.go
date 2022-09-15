@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"runtime"
+	"strconv"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -163,6 +164,19 @@ func FlagCompletionFunc(allCompletions []string) func(*cobra.Command, []string, 
 			}
 		}
 		return completions, cobra.ShellCompDirectiveNoFileComp
+	}
+}
+
+// ParseBool is like strconv.ParseBool but also accepts on, ON, y, Y, yes, YES,
+// n, N, no, NO, off, and OFF.
+func ParseBool(str string) (bool, error) {
+	switch strings.ToLower(strings.TrimSpace(str)) {
+	case "n", "no", "off":
+		return false, nil
+	case "on", "y", "yes":
+		return true, nil
+	default:
+		return strconv.ParseBool(str)
 	}
 }
 
