@@ -4,6 +4,7 @@ import (
 	"archive/zip"
 	"io"
 	"io/fs"
+	"os/exec"
 	"time"
 )
 
@@ -38,6 +39,11 @@ func (s *ZIPWriterSystem) Mkdir(name AbsPath, perm fs.FileMode) error {
 	fileHeader.SetMode(fs.ModeDir | perm)
 	_, err := s.zipWriter.CreateHeader(&fileHeader)
 	return err
+}
+
+// RunCmd implements System.RunCmd.
+func (s *ZIPWriterSystem) RunCmd(cmd *exec.Cmd) error {
+	return nil
 }
 
 // RunScript implements System.RunScript.

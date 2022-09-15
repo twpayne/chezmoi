@@ -19,6 +19,12 @@ cd $WORK
 exec chezmoi apply
 cmp $HOME/.dir/.file golden/.file
 
+# test that chezmoi archive --format=tar creates an archive
+exec chezmoi archive --format=tar
+
+# test that chezmoi archive --format=zip creates an archive
+exec chezmoi archive --format=zip
+
 chhome home2/user
 mkgitconfig
 expandenv $WORK/home2/user/.local/share/chezmoi/.chezmoiexternal.toml
