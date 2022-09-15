@@ -4,6 +4,7 @@ import (
 	"archive/tar"
 	"io"
 	"io/fs"
+	"os/exec"
 )
 
 // A TarWriterSystem is a System that writes to a tar archive.
@@ -34,6 +35,11 @@ func (s *TarWriterSystem) Mkdir(name AbsPath, perm fs.FileMode) error {
 	header.Name = name.String() + "/"
 	header.Mode = int64(perm)
 	return s.tarWriter.WriteHeader(&header)
+}
+
+// RunCmd implements System.RunCmd.
+func (s *TarWriterSystem) RunCmd(cmd *exec.Cmd) error {
+	return nil
 }
 
 // RunScript implements System.RunScript.
