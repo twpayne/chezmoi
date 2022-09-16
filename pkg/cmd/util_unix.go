@@ -15,9 +15,9 @@ const defaultEditor = "vi"
 
 var defaultInterpreters = make(map[string]*chezmoi.Interpreter)
 
-// enableVirtualTerminalProcessing does nothing.
-func enableVirtualTerminalProcessing(w io.Writer) error {
-	return nil
+// enableVirtualTerminalProcessing does nothing on non-Windows systems.
+func enableVirtualTerminalProcessing(w io.Writer) (func() error, error) {
+	return nil, nil
 }
 
 func fileInfoUID(info fs.FileInfo) int {

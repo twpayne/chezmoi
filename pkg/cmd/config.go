@@ -193,6 +193,8 @@ type Config struct {
 	tempDirs map[string]chezmoi.AbsPath
 
 	ioregData ioregData
+
+	restoreWindowsConsole func() error
 }
 
 // A configOption sets and option on a Config.
@@ -1578,6 +1580,12 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 		}
 	}
 
+	if c.restoreWindowsConsole != nil {
+		if err := c.restoreWindowsConsole(); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -1628,6 +1636,14 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		}
 	}
 
+	if runtime.GOOS == "windows" {
+		var err error
+		c.restoreWindowsConsole, err = enableVirtualTerminalProcessing(c.stdout)
+		if err != nil {
+			return err
+		}
+	}
+
 	// Read the config file.
 	if err := c.readConfig(); err != nil {
 		if !boolAnnotation(cmd, doesNotRequireValidConfig) {
@@ -1636,19 +1652,11 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		c.errorf("warning: %s: %v\n", c.configFileAbsPath, err)
 	}
 
-	// Determine whether color should be used.
-	color := c.Color.Value(c.colorAutoFunc)
-	if color {
-		if err := enableVirtualTerminalProcessing(c.stdout); err != nil {
-			return err
-		}
-	}
-
 	// Configure the logger.
 	log.Logger = log.Output(zerolog.NewConsoleWriter(
 		func(w *zerolog.ConsoleWriter) {
 			w.Out = c.stderr
-			w.NoColor = !color
+			w.NoColor = !c.Color.Value(c.colorAutoFunc)
 			w.TimeFormat = time.RFC3339
 		},
 	))
