@@ -33,21 +33,35 @@ var defaultInterpreters = map[string]*chezmoi.Interpreter{
 	},
 }
 
-// enableVirtualTerminalProcessing enables virtual terminal processing. See
+// enableVirtualTerminalProcessing enables virtual terminal processing on
+// Windows systems. See
 // https://docs.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences.
-func enableVirtualTerminalProcessing(w io.Writer) error {
+// It returns a function that restores the console to the previous state.
+func enableVirtualTerminalProcessing(w io.Writer) (func() error, error) {
 	file, ok := w.(*os.File)
 	if !ok {
-		return nil
+		return nil, nil
 	}
+
 	var dwMode uint32
 	if err := windows.GetConsoleMode(windows.Handle(file.Fd()), &dwMode); err != nil {
-		return nil // Ignore error in the case that fd is not a terminal.
+		// Ignore error in the case that fd is not a terminal.
+		return nil, nil
 	}
+
+	if dwMode&windows.ENABLE_VIRTUAL_TERMINAL_PROCESSING == windows.ENABLE_VIRTUAL_TERMINAL_PROCESSING {
+		// If virtual terminal processing is already enabled, then there is
+		// nothing to do.
+		return nil, nil
+	}
+
 	if err := windows.SetConsoleMode(windows.Handle(file.Fd()), dwMode|windows.ENABLE_VIRTUAL_TERMINAL_PROCESSING); err != nil {
-		return fmt.Errorf("windows.SetConsoleMode: %w", err)
+		return nil, fmt.Errorf("windows.SetConsoleMode: %w", err)
 	}
-	return nil
+
+	return func() error {
+		return windows.SetConsoleMode(windows.Handle(file.Fd()), dwMode)
+	}, nil
 }
 
 func fileInfoUID(fs.FileInfo) int {
