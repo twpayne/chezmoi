@@ -61,9 +61,9 @@ else.
 
 The only advantage to using GNU Stow-style symlinks is that changes that you
 make to the dotfile's contents in the centralized directory are immediately
-visible, whereas chezmoi currently requires you to run `chezmoi apply` or
-`chezmoi edit --apply`. chezmoi will likely get an alternative solution to this
-too, see [#752](https://github.com/twpayne/chezmoi/issues/752).
+visible whenever you save them, whereas chezmoi currently requires you to pass
+the `--watch` flag to `chezmoi edit` or set `edit.watch` to `true` in your
+configuration file.
 
 If you really want to use symlinks, then chezmoi provides a [symlink
 mode](/reference/target-types/#symlink-mode) which uses symlinks where possible.
