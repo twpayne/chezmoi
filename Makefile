@@ -143,7 +143,3 @@ test-release:
 		--skip-publish \
 		--snapshot \
 		${GORELEASER_FLAGS}
-
-.PHONY: update-devcontainer
-update-devcontainer:
-	rm -rf .devcontainer && mkdir .devcontainer && curl -sfL https://github.com/microsoft/vscode-dev-containers/archive/master.tar.gz | tar -xzf - -C .devcontainer --strip-components=4 vscode-dev-containers-master/containers/go/.devcontainer

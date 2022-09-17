@@ -15,7 +15,6 @@ import (
 var (
 	ignoreRxs = []*regexp.Regexp{
 		regexp.MustCompile(`\.svg\z`),
-		regexp.MustCompile(`\A\.devcontainer/library-scripts\z`),
 		regexp.MustCompile(`\A\.git\z`),
 		regexp.MustCompile(`\A\.idea\z`),
 		regexp.MustCompile(`\A\.vagrant\z`),
