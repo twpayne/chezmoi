@@ -2175,7 +2175,8 @@ func (c *Config) writeOutput(data []byte) error {
 		_, err := c.stdout.Write(data)
 		return err
 	}
-	return c.baseSystem.WriteFile(c.outputAbsPath, data, 0o666)
+	//nolint:gosec
+	return os.WriteFile(c.outputAbsPath.String(), data, 0o666)
 }
 
 // writeOutputString writes data to the configured output.
