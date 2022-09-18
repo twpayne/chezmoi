@@ -71,6 +71,7 @@ require (
 	github.com/aws/smithy-go v1.13.2 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/bradenhilton/cityhash v1.0.0 // indirect
+	github.com/charmbracelet/harmonica v0.2.0 // indirect
 	github.com/charmbracelet/lipgloss v0.5.0 // indirect
 	github.com/cloudflare/circl v1.2.0 // indirect
 	github.com/containerd/console v1.0.3 // indirect

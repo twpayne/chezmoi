@@ -81,6 +81,7 @@ type ConfigFile struct {
 	Mode               chezmoi.Mode                    `mapstructure:"mode"`
 	Pager              string                          `mapstructure:"pager"`
 	PINEntry           pinEntryConfig                  `mapstructure:"pinentry"`
+	Progress           bool                            `mapstructure:"progress"`
 	Safe               bool                            `mapstructure:"safe"`
 	ScriptTempDir      chezmoi.AbsPath                 `mapstructure:"scriptTempDir"`
 	SourceDirAbsPath   chezmoi.AbsPath                 `mapstructure:"sourceDir"`
@@ -1363,6 +1364,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.VarP(&c.DestDirAbsPath, "destination", "D", "Set destination directory")
 	persistentFlags.Var(&c.Mode, "mode", "Mode")
 	persistentFlags.Var(&c.persistentStateAbsPath, "persistent-state", "Set persistent state file")
+	persistentFlags.BoolVar(&c.Progress, "progress", c.Progress, "Display progress bars")
 	persistentFlags.BoolVar(&c.Safe, "safe", c.Safe, "Safely replace files and symlinks")
 	persistentFlags.VarP(&c.SourceDirAbsPath, "source", "S", "Set source directory")
 	persistentFlags.Var(&c.UseBuiltinAge, "use-builtin-age", "Use builtin age")
@@ -1374,6 +1376,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		"color":           "color",
 		"destDir":         "destination",
 		"persistentState": "persistent-state",
+		"progress":        "progress",
 		"mode":            "mode",
 		"safe":            "safe",
 		"sourceDir":       "source",
@@ -1532,6 +1535,7 @@ func (c *Config) newSourceState(
 
 	if err := s.Read(ctx, &chezmoi.ReadOptions{
 		RefreshExternals: c.refreshExternals,
+		ReadHTTPResponse: c.readHTTPResponse,
 	}); err != nil {
 		return nil, err
 	}
