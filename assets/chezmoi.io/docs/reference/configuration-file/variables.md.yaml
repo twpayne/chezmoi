@@ -20,6 +20,9 @@ sections:
     pager:
       default: "`$PAGER`"
       description: "Default pager CLI command"
+    progress:
+      type: "bool"
+      description: "Display progress bars"
     scriptTempDir:
       description: "Temporary directory for scripts"
     sourceDir:
