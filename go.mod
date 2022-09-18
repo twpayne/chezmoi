@@ -5,9 +5,9 @@ go 1.18
 require (
 	filippo.io/age v1.0.0
 	github.com/Masterminds/sprig/v3 v3.2.2
-	github.com/aws/aws-sdk-go-v2 v1.16.14
-	github.com/aws/aws-sdk-go-v2/config v1.17.5
-	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.15.22
+	github.com/aws/aws-sdk-go-v2 v1.16.15
+	github.com/aws/aws-sdk-go-v2/config v1.17.6
+	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.16.0
 	github.com/bmatcuk/doublestar/v4 v4.2.0
 	github.com/bradenhilton/mozillainstallhash v1.0.0
 	github.com/charmbracelet/bubbles v0.14.0
@@ -39,10 +39,10 @@ require (
 	github.com/zalando/go-keyring v0.2.1
 	go.etcd.io/bbolt v1.3.7-0.20220226045046-fd5535f71f48
 	go.uber.org/multierr v1.8.0
-	golang.org/x/exp v0.0.0-20220909182711-5c715a9e8561
+	golang.org/x/exp v0.0.0-20220916125017-b168a2c6b86b
 	golang.org/x/oauth2 v0.0.0-20220909003341-f21342109be1
 	golang.org/x/sync v0.0.0-20220907140024-f12130a52804
-	golang.org/x/sys v0.0.0-20220909162455-aba9fc2a8ff2
+	golang.org/x/sys v0.0.0-20220915200043-7b5979e65e41
 	golang.org/x/term v0.0.0-20220722155259-a9ba230a4035
 	gopkg.in/ini.v1 v1.67.0
 	gopkg.in/yaml.v3 v3.0.1
@@ -59,20 +59,20 @@ require (
 	github.com/alecthomas/chroma v0.10.0 // indirect
 	github.com/alessio/shellescape v1.4.1 // indirect
 	github.com/atotto/clipboard v0.1.4 // indirect
-	github.com/aws/aws-sdk-go-v2/credentials v1.12.18 // indirect
-	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.12.15 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.21 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.15 // indirect
-	github.com/aws/aws-sdk-go-v2/internal/ini v1.3.22 // indirect
-	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.9.15 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sso v1.11.21 // indirect
-	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.13.3 // indirect
-	github.com/aws/aws-sdk-go-v2/service/sts v1.16.17 // indirect
-	github.com/aws/smithy-go v1.13.2 // indirect
+	github.com/aws/aws-sdk-go-v2/credentials v1.12.19 // indirect
+	github.com/aws/aws-sdk-go-v2/feature/ec2/imds v1.12.16 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/configsources v1.1.22 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/endpoints/v2 v2.4.16 // indirect
+	github.com/aws/aws-sdk-go-v2/internal/ini v1.3.23 // indirect
+	github.com/aws/aws-sdk-go-v2/service/internal/presigned-url v1.9.16 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sso v1.11.22 // indirect
+	github.com/aws/aws-sdk-go-v2/service/ssooidc v1.13.4 // indirect
+	github.com/aws/aws-sdk-go-v2/service/sts v1.16.18 // indirect
+	github.com/aws/smithy-go v1.13.3 // indirect
 	github.com/aymerick/douceur v0.2.0 // indirect
 	github.com/bradenhilton/cityhash v1.0.0 // indirect
 	github.com/charmbracelet/harmonica v0.2.0 // indirect
-	github.com/charmbracelet/lipgloss v0.5.0 // indirect
+	github.com/charmbracelet/lipgloss v0.6.0 // indirect
 	github.com/cloudflare/circl v1.2.0 // indirect
 	github.com/containerd/console v1.0.3 // indirect
 	github.com/danieljoos/wincred v1.1.2 // indirect
@@ -103,7 +103,7 @@ require (
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
-	github.com/muesli/ansi v0.0.0-20211018074035-2e021307bc4b // indirect
+	github.com/muesli/ansi v0.0.0-20211031195517-c9f0611b6c70 // indirect
 	github.com/muesli/cancelreader v0.2.2 // indirect
 	github.com/muesli/reflow v0.3.0 // indirect
 	github.com/muesli/termenv v0.12.0 // indirect
