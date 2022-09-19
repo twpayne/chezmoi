@@ -20,7 +20,7 @@ to as "attributes":
 | `empty_`      | Ensure the file exists, even if is empty. By default, empty files are removed       |
 | `encrypted_`  | Encrypt the file in the source state                                                |
 | `exact_`      | Remove anything not managed by chezmoi                                              |
-| `executable_` | Add executable permissions to the     target file                                   |
+| `executable_` | Add executable permissions to the target file                                       |
 | `literal_`    | Stop parsing prefix attributes                                                      |
 | `modify_`     | Treat the contents as a script that modifies an existing file                       |
 | `once_`       | Only run the script if its contents have not been run before                        |
