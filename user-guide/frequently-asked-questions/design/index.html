@@ -789,6 +789,8 @@
         
           
         
+          
+        
       
       
         
@@ -931,6 +933,20 @@
     <li class="md-nav__item">
       <a href="../../password-managers/pass/" class="md-nav__link">
         pass
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../password-managers/passhole/" class="md-nav__link">
+        passhole
       </a>
     </li>
   
@@ -2801,6 +2817,8 @@
         
           
         
+          
+        
       
       
         
@@ -4300,16 +4318,79 @@
       
         
           
+            
+          
+        
+          
         
       
       
-        <label class="md-nav__link" for="__nav_3_10_15">
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../../reference/templates/passhole-functions/">Passhole functions</a>
+          
+            <label for="__nav_3_10_15">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Passhole functions" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_10_15">
+          <span class="md-nav__icon md-icon"></span>
+          Passhole functions
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/passhole-functions/passhole/" class="md-nav__link">
+        passhole
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_16" type="checkbox" id="__nav_3_10_16" checked>
+      
+      
+      
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_3_10_16">
           Vault functions
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Vault functions" data-md-level="3">
-        <label class="md-nav__title" for="__nav_3_10_15">
+        <label class="md-nav__title" for="__nav_3_10_16">
           <span class="md-nav__icon md-icon"></span>
           Vault functions
         </label>
@@ -4345,7 +4426,7 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_16" type="checkbox" id="__nav_3_10_16" checked>
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_17" type="checkbox" id="__nav_3_10_17" checked>
       
       
       
@@ -4365,14 +4446,14 @@
         <div class="md-nav__link md-nav__link--index ">
           <a href="../../../reference/templates/secret-functions/">Generic secret functions</a>
           
-            <label for="__nav_3_10_16">
+            <label for="__nav_3_10_17">
               <span class="md-nav__icon md-icon"></span>
             </label>
           
         </div>
       
       <nav class="md-nav" aria-label="Generic secret functions" data-md-level="3">
-        <label class="md-nav__title" for="__nav_3_10_16">
+        <label class="md-nav__title" for="__nav_3_10_17">
           <span class="md-nav__icon md-icon"></span>
           Generic secret functions
         </label>
@@ -4902,9 +4983,9 @@ managed with GNU Stow are special because they're actually symlinks to somewhere
 else.</p>
 <p>The only advantage to using GNU Stow-style symlinks is that changes that you
 make to the dotfile's contents in the centralized directory are immediately
-visible, whereas chezmoi currently requires you to run <code>chezmoi apply</code> or
-<code>chezmoi edit --apply</code>. chezmoi will likely get an alternative solution to this
-too, see <a href="https://github.com/twpayne/chezmoi/issues/752">#752</a>.</p>
+visible whenever you save them, whereas chezmoi currently requires you to pass
+the <code>--watch</code> flag to <code>chezmoi edit</code> or set <code>edit.watch</code> to <code>true</code> in your
+configuration file.</p>
 <p>If you really want to use symlinks, then chezmoi provides a <a href="/reference/target-types/#symlink-mode">symlink
 mode</a> which uses symlinks where possible.
 This configures chezmoi to work like GNU Stow and have it create a set of

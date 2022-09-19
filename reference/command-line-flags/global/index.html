@@ -787,6 +787,8 @@
         
           
         
+          
+        
       
       
         
@@ -929,6 +931,20 @@
     <li class="md-nav__item">
       <a href="../../../user-guide/password-managers/pass/" class="md-nav__link">
         pass
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../user-guide/password-managers/passhole/" class="md-nav__link">
+        passhole
       </a>
     </li>
   
@@ -1670,6 +1686,13 @@
         <li class="md-nav__item">
   <a href="#-persistent-state-filename" class="md-nav__link">
     --persistent-state filename
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#-progress" class="md-nav__link">
+    --progress
   </a>
   
 </li>
@@ -2832,6 +2855,8 @@
         
           
             
+          
+        
           
         
           
@@ -4363,16 +4388,79 @@
       
         
           
+            
+          
+        
+          
         
       
       
-        <label class="md-nav__link" for="__nav_3_10_15">
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../templates/passhole-functions/">Passhole functions</a>
+          
+            <label for="__nav_3_10_15">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Passhole functions" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_10_15">
+          <span class="md-nav__icon md-icon"></span>
+          Passhole functions
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/passhole-functions/passhole/" class="md-nav__link">
+        passhole
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_16" type="checkbox" id="__nav_3_10_16" checked>
+      
+      
+      
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_3_10_16">
           Vault functions
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Vault functions" data-md-level="3">
-        <label class="md-nav__title" for="__nav_3_10_15">
+        <label class="md-nav__title" for="__nav_3_10_16">
           <span class="md-nav__icon md-icon"></span>
           Vault functions
         </label>
@@ -4408,7 +4496,7 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_16" type="checkbox" id="__nav_3_10_16" checked>
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_17" type="checkbox" id="__nav_3_10_17" checked>
       
       
       
@@ -4428,14 +4516,14 @@
         <div class="md-nav__link md-nav__link--index ">
           <a href="../../templates/secret-functions/">Generic secret functions</a>
           
-            <label for="__nav_3_10_16">
+            <label for="__nav_3_10_17">
               <span class="md-nav__icon md-icon"></span>
             </label>
           
         </div>
       
       <nav class="md-nav" aria-label="Generic secret functions" data-md-level="3">
-        <label class="md-nav__title" for="__nav_3_10_16">
+        <label class="md-nav__title" for="__nav_3_10_17">
           <span class="md-nav__icon md-icon"></span>
           Generic secret functions
         </label>
@@ -4904,6 +4992,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#-progress" class="md-nav__link">
+    --progress
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#-r-refresh-externals" class="md-nav__link">
     -R, --refresh-externals
   </a>
@@ -4975,7 +5070,7 @@
 <p>Use <em>directory</em> as the cache directory.</p>
 <h2 id="-color-value"><code>--color</code> <em>value</em></h2>
 <p>Colorize diffs, <em>value</em> can be <code>on</code>, <code>off</code>, <code>auto</code>, or any boolean-like value
-recognized by <code>parseBool</code>. The default is <code>auto</code> which will colorize diffs only
+recognized by <code>promptBool</code>. The default is <code>auto</code> which will colorize diffs only
 if the the environment variable <code>$NO_COLOR</code> is not set and stdout is a terminal.</p>
 <h2 id="-c-config-filename"><code>-c</code>, <code>--config</code> <em>filename</em></h2>
 <p>Read the configuration from <em>filename</em>.</p>
@@ -5006,21 +5101,23 @@ from stdin.</p>
 <p>Read and write the persistent state from <em>filename</em>. By default, chezmoi stores
 its persistent state in <code>chezmoistate.boltdb</code> in the same directory as its
 configuration file.</p>
+<h2 id="-progress"><code>--progress</code></h2>
+<p>Show progress when downloading externals.</p>
 <h2 id="-r-refresh-externals"><code>-R</code>, <code>--refresh-externals</code></h2>
 <p>Refresh externals cache. See <code>.chezmoiexternal.$FORMAT</code>.</p>
 <h2 id="-s-source-directory"><code>-S</code>, <code>--source</code> <em>directory</em></h2>
 <p>Use <em>directory</em> as the source directory.</p>
 <h2 id="-use-builtin-age-value"><code>--use-builtin-age</code> <em>value</em></h2>
-<p>Use chezmoi's builtin <a href="https://age-encryption.org">age encryption</a> instead of
-an external <code>age</code> command. <em>value</em> can be <code>on</code>, <code>off</code>, <code>auto</code>, or any
-boolean-like value recognized by <code>parseBool</code>. The default is <code>auto</code> which will
-only use the builtin age if <code>age.command</code> cannot be found in <code>$PATH</code>.</p>
+<p>Use chezmoi's builtin <a href="https://age-encryption.org">age encryption</a> instead of an
+external <code>age</code> command. <em>value</em> can be <code>on</code>, <code>off</code>, <code>auto</code>, or any boolean-like
+value recognized by <code>promptBool</code>. The default is <code>auto</code> which will only use the
+builtin age if <code>age.command</code> cannot be found in <code>$PATH</code>.</p>
 <p>The builtin <code>age</code> command does not support passphrases, symmetric encryption,
 or the use of SSH keys.</p>
 <h2 id="-use-builtin-git-value"><code>--use-builtin-git</code> <em>value</em></h2>
 <p>Use chezmoi's builtin git instead of <code>git.command</code> for the <code>init</code> and <code>update</code>
 commands. <em>value</em> can be <code>on</code>, <code>off</code>, <code>auto</code>, or any boolean-like value
-recognized by <code>parseBool</code>. The default is <code>auto</code> which will only use the
+recognized by <code>promptBool</code>. The default is <code>auto</code> which will only use the
 builtin git if <code>git.command</code> cannot be found in <code>$PATH</code>.</p>
 <div class="admonition info">
 <p class="admonition-title">Info</p>

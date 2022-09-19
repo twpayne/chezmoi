@@ -832,6 +832,8 @@
         
           
         
+          
+        
       
       
         
@@ -974,6 +976,20 @@
     <li class="md-nav__item">
       <a href="../../password-managers/pass/" class="md-nav__link">
         pass
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../password-managers/passhole/" class="md-nav__link">
+        passhole
       </a>
     </li>
   
@@ -2731,6 +2747,8 @@
         
           
         
+          
+        
       
       
         
@@ -4230,16 +4248,79 @@
       
         
           
+            
+          
+        
+          
         
       
       
-        <label class="md-nav__link" for="__nav_3_10_15">
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../../reference/templates/passhole-functions/">Passhole functions</a>
+          
+            <label for="__nav_3_10_15">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Passhole functions" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_10_15">
+          <span class="md-nav__icon md-icon"></span>
+          Passhole functions
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/passhole-functions/passhole/" class="md-nav__link">
+        passhole
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_16" type="checkbox" id="__nav_3_10_16" checked>
+      
+      
+      
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_3_10_16">
           Vault functions
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Vault functions" data-md-level="3">
-        <label class="md-nav__title" for="__nav_3_10_15">
+        <label class="md-nav__title" for="__nav_3_10_16">
           <span class="md-nav__icon md-icon"></span>
           Vault functions
         </label>
@@ -4275,7 +4356,7 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_16" type="checkbox" id="__nav_3_10_16" checked>
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_17" type="checkbox" id="__nav_3_10_17" checked>
       
       
       
@@ -4295,14 +4376,14 @@
         <div class="md-nav__link md-nav__link--index ">
           <a href="../../../reference/templates/secret-functions/">Generic secret functions</a>
           
-            <label for="__nav_3_10_16">
+            <label for="__nav_3_10_17">
               <span class="md-nav__icon md-icon"></span>
             </label>
           
         </div>
       
       <nav class="md-nav" aria-label="Generic secret functions" data-md-level="3">
-        <label class="md-nav__title" for="__nav_3_10_16">
+        <label class="md-nav__title" for="__nav_3_10_17">
           <span class="md-nav__icon md-icon"></span>
           Generic secret functions
         </label>
@@ -4716,6 +4797,12 @@ state, source state, and target state respectively. For example, to use
 <span class="w">    </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;nvim&quot;</span><span class="w"></span>
 <span class="w">    </span><span class="n">args</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;-d&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;{{ .Destination }}&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;{{ .Source }}&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;{{ .Target }}&quot;</span><span class="p">]</span><span class="w"></span>
 </code></pre></div>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>If you generate your config file from a config file template, then you'll
+need to escape the <code>{{</code> and <code>}}</code> in your config file template so that they
+appear in your generated config file.</p>
+</div>
 
 
 

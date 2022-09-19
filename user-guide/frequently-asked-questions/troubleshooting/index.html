@@ -789,6 +789,8 @@
         
           
         
+          
+        
       
       
         
@@ -931,6 +933,20 @@
     <li class="md-nav__item">
       <a href="../../password-managers/pass/" class="md-nav__link">
         pass
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../password-managers/passhole/" class="md-nav__link">
+        passhole
       </a>
     </li>
   
@@ -1367,6 +1383,13 @@
         <li class="md-nav__item">
   <a href="#how-can-i-quickly-check-for-problems-with-chezmoi-on-my-machine" class="md-nav__link">
     How can I quickly check for problems with chezmoi on my machine?
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#a-specific-command-is-not-behaving-as-i-expect-how-can-i-debug-it" class="md-nav__link">
+    A specific command is not behaving as I expect. How can I debug it?
   </a>
   
 </li>
@@ -2755,6 +2778,8 @@
         
           
             
+          
+        
           
         
           
@@ -4286,16 +4311,79 @@
       
         
           
+            
+          
+        
+          
         
       
       
-        <label class="md-nav__link" for="__nav_3_10_15">
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../../../reference/templates/passhole-functions/">Passhole functions</a>
+          
+            <label for="__nav_3_10_15">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Passhole functions" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_10_15">
+          <span class="md-nav__icon md-icon"></span>
+          Passhole functions
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../reference/templates/passhole-functions/passhole/" class="md-nav__link">
+        passhole
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_16" type="checkbox" id="__nav_3_10_16" checked>
+      
+      
+      
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_3_10_16">
           Vault functions
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Vault functions" data-md-level="3">
-        <label class="md-nav__title" for="__nav_3_10_15">
+        <label class="md-nav__title" for="__nav_3_10_16">
           <span class="md-nav__icon md-icon"></span>
           Vault functions
         </label>
@@ -4331,7 +4419,7 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_16" type="checkbox" id="__nav_3_10_16" checked>
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_17" type="checkbox" id="__nav_3_10_17" checked>
       
       
       
@@ -4351,14 +4439,14 @@
         <div class="md-nav__link md-nav__link--index ">
           <a href="../../../reference/templates/secret-functions/">Generic secret functions</a>
           
-            <label for="__nav_3_10_16">
+            <label for="__nav_3_10_17">
               <span class="md-nav__icon md-icon"></span>
             </label>
           
         </div>
       
       <nav class="md-nav" aria-label="Generic secret functions" data-md-level="3">
-        <label class="md-nav__title" for="__nav_3_10_16">
+        <label class="md-nav__title" for="__nav_3_10_17">
           <span class="md-nav__icon md-icon"></span>
           Generic secret functions
         </label>
@@ -4743,6 +4831,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#a-specific-command-is-not-behaving-as-i-expect-how-can-i-debug-it" class="md-nav__link">
+    A specific command is not behaving as I expect. How can I debug it?
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#the-output-of-chezmoi-diff-is-broken-and-does-not-contain-color-what-could-be-wrong" class="md-nav__link">
     The output of chezmoi diff is broken and does not contain color. What could be wrong?
   </a>
@@ -4823,6 +4918,10 @@
 </code></pre></div>
 <p>Anything <code>ok</code> is fine, anything <code>warning</code> is only a problem if you want to use
 the related feature, and anything <code>error</code> indicates a definite problem.</p>
+<h2 id="a-specific-command-is-not-behaving-as-i-expect-how-can-i-debug-it">A specific command is not behaving as I expect. How can I debug it?</h2>
+<p>The <code>--verbose</code> flag makes chezmoi to print extra information about what it
+is doing.</p>
+<p>The <code>--debug</code> flag makes chezmoi print very detailed step by step information.</p>
 <h2 id="the-output-of-chezmoi-diff-is-broken-and-does-not-contain-color-what-could-be-wrong">The output of <code>chezmoi diff</code> is broken and does not contain color. What could be wrong?</h2>
 <p>By default, chezmoi's diff output includes ANSI color escape sequences (e.g.
 <code>ESC[37m</code>) and is piped into your pager (by default <code>less</code>). chezmoi assumes

@@ -858,6 +858,8 @@
         
           
         
+          
+        
       
       
         
@@ -1000,6 +1002,20 @@
     <li class="md-nav__item">
       <a href="../user-guide/password-managers/pass/" class="md-nav__link">
         pass
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user-guide/password-managers/passhole/" class="md-nav__link">
+        passhole
       </a>
     </li>
   
@@ -2757,6 +2773,8 @@
         
           
         
+          
+        
       
       
         
@@ -4256,16 +4274,79 @@
       
         
           
+            
+          
+        
+          
         
       
       
-        <label class="md-nav__link" for="__nav_3_10_15">
+        
+        
+        <div class="md-nav__link md-nav__link--index ">
+          <a href="../reference/templates/passhole-functions/">Passhole functions</a>
+          
+            <label for="__nav_3_10_15">
+              <span class="md-nav__icon md-icon"></span>
+            </label>
+          
+        </div>
+      
+      <nav class="md-nav" aria-label="Passhole functions" data-md-level="3">
+        <label class="md-nav__title" for="__nav_3_10_15">
+          <span class="md-nav__icon md-icon"></span>
+          Passhole functions
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/templates/passhole-functions/passhole/" class="md-nav__link">
+        passhole
+      </a>
+    </li>
+  
+
+            
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_16" type="checkbox" id="__nav_3_10_16" checked>
+      
+      
+      
+        
+          
+        
+      
+      
+        <label class="md-nav__link" for="__nav_3_10_16">
           Vault functions
           <span class="md-nav__icon md-icon"></span>
         </label>
       
       <nav class="md-nav" aria-label="Vault functions" data-md-level="3">
-        <label class="md-nav__title" for="__nav_3_10_15">
+        <label class="md-nav__title" for="__nav_3_10_16">
           <span class="md-nav__icon md-icon"></span>
           Vault functions
         </label>
@@ -4301,7 +4382,7 @@
     <li class="md-nav__item md-nav__item--nested">
       
       
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_16" type="checkbox" id="__nav_3_10_16" checked>
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" data-md-toggle="__nav_3_10_17" type="checkbox" id="__nav_3_10_17" checked>
       
       
       
@@ -4321,14 +4402,14 @@
         <div class="md-nav__link md-nav__link--index ">
           <a href="../reference/templates/secret-functions/">Generic secret functions</a>
           
-            <label for="__nav_3_10_16">
+            <label for="__nav_3_10_17">
               <span class="md-nav__icon md-icon"></span>
             </label>
           
         </div>
       
       <nav class="md-nav" aria-label="Generic secret functions" data-md-level="3">
-        <label class="md-nav__title" for="__nav_3_10_16">
+        <label class="md-nav__title" for="__nav_3_10_17">
           <span class="md-nav__icon md-icon"></span>
           Generic secret functions
         </label>
@@ -4759,7 +4840,7 @@
 
 
 <h1 id="install">Install</h1>
-<p>The latest version of chezmoi is 2.22.1.</p>
+<p>The latest version of chezmoi is 2.23.0.</p>
 <h2 id="one-line-package-install">One-line package install</h2>
 <p>Install chezmoi with your package manager with a single command:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:5"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><input id="__tabbed_1_5" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Linux</label><label for="__tabbed_1_2">macOS</label><label for="__tabbed_1_3">Windows</label><label for="__tabbed_1_4">FreeBSD</label><label for="__tabbed_1_5">OpenIndiana</label></div>
@@ -4776,7 +4857,7 @@
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>asdf plugin add chezmoi <span class="o">&amp;&amp;</span> asdf install chezmoi <span class="m">2</span>.22.1
+<div class="highlight"><pre><span></span><code>asdf plugin add chezmoi <span class="o">&amp;&amp;</span> asdf install chezmoi <span class="m">2</span>.23.0
 </code></pre></div>
 </div>
 <div class="tabbed-block">
@@ -4818,7 +4899,7 @@
 </code></pre></div>
 </div>
 <div class="tabbed-block">
-<div class="highlight"><pre><span></span><code>asdf plugin add chezmoi <span class="o">&amp;&amp;</span> asdf install chezmoi <span class="m">2</span>.22.1
+<div class="highlight"><pre><span></span><code>asdf plugin add chezmoi <span class="o">&amp;&amp;</span> asdf install chezmoi <span class="m">2</span>.23.0
 </code></pre></div>
 </div>
 </div>
@@ -4889,40 +4970,40 @@ for example:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="6:3"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><input id="__tabbed_6_3" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">deb</label><label for="__tabbed_6_2">rpm</label><label for="__tabbed_6_3">apk</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<p><a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_amd64.deb"><code>amd64</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_arm64.deb"><code>arm64</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_armel.deb"><code>armel</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_i386.deb"><code>i386</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_mips64.deb"><code>mips64</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_mips64le.deb"><code>mips64le</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_ppc64.deb"><code>ppc64</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_ppc64le.deb"><code>ppc64le</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_riscv64.deb"><code>riscv64</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_s390x.deb"><code>s390x</code></a></p>
+<p><a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_amd64.deb"><code>amd64</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_arm64.deb"><code>arm64</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_armel.deb"><code>armel</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_i386.deb"><code>i386</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_mips64.deb"><code>mips64</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_mips64le.deb"><code>mips64le</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_ppc64.deb"><code>ppc64</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_ppc64le.deb"><code>ppc64le</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_riscv64.deb"><code>riscv64</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_s390x.deb"><code>s390x</code></a></p>
 </div>
 <div class="tabbed-block">
-<p><a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi-2.22.1-aarch64.rpm"><code>aarch64</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi-2.22.1-armhfp.rpm"><code>armhfp</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi-2.22.1-i686.rpm"><code>i686</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi-2.22.1-mips64.rpm"><code>mips64</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi-2.22.1-mips64le.rpm"><code>mips64le</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi-2.22.1-ppc64.rpm"><code>ppc64</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi-2.22.1-ppc64le.rpm"><code>ppc64le</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi-2.22.1-s390x.rpm"><code>s390x</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi-2.22.1-riscv64.rpm"><code>riscv64</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi-2.22.1-x86_64.rpm"><code>x86_64</code></a></p>
+<p><a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi-2.23.0-aarch64.rpm"><code>aarch64</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi-2.23.0-armhfp.rpm"><code>armhfp</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi-2.23.0-i686.rpm"><code>i686</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi-2.23.0-mips64.rpm"><code>mips64</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi-2.23.0-mips64le.rpm"><code>mips64le</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi-2.23.0-ppc64.rpm"><code>ppc64</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi-2.23.0-ppc64le.rpm"><code>ppc64le</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi-2.23.0-s390x.rpm"><code>s390x</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi-2.23.0-riscv64.rpm"><code>riscv64</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi-2.23.0-x86_64.rpm"><code>x86_64</code></a></p>
 </div>
 <div class="tabbed-block">
-<p><a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_386.apk"><code>386</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_amd64.apk"><code>amd64</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_arm.apk"><code>arm</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_arm64.apk"><code>arm64</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_mips64.apk"><code>mips64</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_mips64le.apk"><code>mips64le</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_ppc64.apk"><code>ppc64</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_ppc64le.apk"><code>ppc64le</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_riscv64.apk"><code>riscv64</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_s390x.apk"><code>s390x</code></a></p>
+<p><a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_386.apk"><code>386</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_amd64.apk"><code>amd64</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_arm.apk"><code>arm</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_arm64.apk"><code>arm64</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_mips64.apk"><code>mips64</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_mips64le.apk"><code>mips64le</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_ppc64.apk"><code>ppc64</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_ppc64le.apk"><code>ppc64le</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_riscv64.apk"><code>riscv64</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_s390x.apk"><code>s390x</code></a></p>
 </div>
 </div>
 </div>
@@ -4932,47 +5013,47 @@ pre-built binary and shell completions.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="7:7"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><input id="__tabbed_7_3" name="__tabbed_7" type="radio" /><input id="__tabbed_7_4" name="__tabbed_7" type="radio" /><input id="__tabbed_7_5" name="__tabbed_7" type="radio" /><input id="__tabbed_7_6" name="__tabbed_7" type="radio" /><input id="__tabbed_7_7" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Linux</label><label for="__tabbed_7_2">macOS</label><label for="__tabbed_7_3">Windows</label><label for="__tabbed_7_4">FreeBSD</label><label for="__tabbed_7_5">OpenBSD</label><label for="__tabbed_7_6">Illumos</label><label for="__tabbed_7_7">Solaris</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<p><a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_amd64.tar.gz"><code>amd64</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_arm.tar.gz"><code>arm</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_arm64.tar.gz"><code>arm64</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_i386.tar.gz"><code>i386</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_loong64.tar.gz"><code>loong64</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_mips64.tar.gz"><code>mips64</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_mips64le.tar.gz"><code>mips64le</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_ppc64.tar.gz"><code>ppc64</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_ppc64le.tar.gz"><code>ppc64le</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_riscv64.tar.gz"><code>riscv64</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux_s390x.tar.gz"><code>s390x</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux-glibc_amd64.tar.gz"><code>amd64</code> (glibc)</a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_linux-musl_amd64.tar.gz"><code>amd64</code> (musl)</a></p>
+<p><a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_amd64.tar.gz"><code>amd64</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_arm.tar.gz"><code>arm</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_arm64.tar.gz"><code>arm64</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_i386.tar.gz"><code>i386</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_loong64.tar.gz"><code>loong64</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_mips64.tar.gz"><code>mips64</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_mips64le.tar.gz"><code>mips64le</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_ppc64.tar.gz"><code>ppc64</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_ppc64le.tar.gz"><code>ppc64le</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_riscv64.tar.gz"><code>riscv64</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux_s390x.tar.gz"><code>s390x</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux-glibc_amd64.tar.gz"><code>amd64</code> (glibc)</a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_linux-musl_amd64.tar.gz"><code>amd64</code> (musl)</a></p>
 </div>
 <div class="tabbed-block">
-<p><a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_darwin_amd64.tar.gz"><code>amd64</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_darwin_arm64.tar.gz"><code>arm64</code></a></p>
+<p><a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_darwin_amd64.tar.gz"><code>amd64</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_darwin_arm64.tar.gz"><code>arm64</code></a></p>
 </div>
 <div class="tabbed-block">
-<p><a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_windows_amd64.zip"><code>amd64</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_windows_arm.zip"><code>arm</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_windows_arm64.zip"><code>arm64</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_windows_i386.zip"><code>i386</code></a></p>
+<p><a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_windows_amd64.zip"><code>amd64</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_windows_arm.zip"><code>arm</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_windows_arm64.zip"><code>arm64</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_windows_i386.zip"><code>i386</code></a></p>
 </div>
 <div class="tabbed-block">
-<p><a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_freebsd_amd64.tar.gz"><code>amd64</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_freebsd_arm.tar.gz"><code>arm</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_freebsd_arm64.tar.gz"><code>arm64</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_freebsd_i386.tar.gz"><code>i386</code></a></p>
+<p><a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_freebsd_amd64.tar.gz"><code>amd64</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_freebsd_arm.tar.gz"><code>arm</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_freebsd_arm64.tar.gz"><code>arm64</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_freebsd_i386.tar.gz"><code>i386</code></a></p>
 </div>
 <div class="tabbed-block">
-<p><a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_openbsd_amd64.tar.gz"><code>amd64</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_openbsd_arm.tar.gz"><code>arm</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_openbsd_arm64.tar.gz"><code>arm64</code></a>
-<a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_openbsd_i386.tar.gz"><code>i386</code></a></p>
+<p><a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_openbsd_amd64.tar.gz"><code>amd64</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_openbsd_arm.tar.gz"><code>arm</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_openbsd_arm64.tar.gz"><code>arm64</code></a>
+<a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_openbsd_i386.tar.gz"><code>i386</code></a></p>
 </div>
 <div class="tabbed-block">
-<p><a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_illumos_amd64.tar.gz"><code>amd64</code></a></p>
+<p><a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_illumos_amd64.tar.gz"><code>amd64</code></a></p>
 </div>
 <div class="tabbed-block">
-<p><a href="https://github.com/twpayne/chezmoi/releases/download/v2.22.1/chezmoi_2.22.1_solaris_amd64.tar.gz"><code>amd64</code></a></p>
+<p><a href="https://github.com/twpayne/chezmoi/releases/download/v2.23.0/chezmoi_2.23.0_solaris_amd64.tar.gz"><code>amd64</code></a></p>
 </div>
 </div>
 </div>
