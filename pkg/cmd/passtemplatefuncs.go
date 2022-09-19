@@ -51,8 +51,7 @@ func (c *Config) passOutput(id string) ([]byte, error) {
 	}
 
 	args := []string{"show", id}
-	//nolint:gosec
-	cmd := exec.Command(c.Pass.Command, args...)
+	cmd := exec.Command(c.Pass.Command, args...) //nolint:gosec
 	cmd.Stdin = os.Stdin
 	cmd.Stderr = os.Stderr
 	output, err := chezmoilog.LogCmdOutput(cmd)

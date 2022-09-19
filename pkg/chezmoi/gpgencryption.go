@@ -139,8 +139,7 @@ func (e *GPGEncryption) encryptArgs(plaintextFilename, ciphertextFilename AbsPat
 
 // run runs the command with args.
 func (e *GPGEncryption) run(args []string) error {
-	//nolint:gosec
-	cmd := exec.Command(e.Command, args...)
+	cmd := exec.Command(e.Command, args...) //nolint:gosec
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
