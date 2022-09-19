@@ -17,8 +17,7 @@ func (i *Interpreter) ExecCommand(name string) *exec.Cmd {
 	if i.None() {
 		return exec.Command(name)
 	}
-	//nolint:gosec
-	return exec.Command(i.Command, append(i.Args, name)...)
+	return exec.Command(i.Command, append(i.Args, name)...) //nolint:gosec
 }
 
 // None returns if i represents no interpreter.

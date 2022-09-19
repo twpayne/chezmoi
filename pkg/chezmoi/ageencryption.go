@@ -41,8 +41,7 @@ func (e *AgeEncryption) Decrypt(ciphertext []byte) ([]byte, error) {
 		return e.builtinDecrypt(ciphertext)
 	}
 
-	//nolint:gosec
-	cmd := exec.Command(e.Command, append(e.decryptArgs(), e.Args...)...)
+	cmd := exec.Command(e.Command, append(e.decryptArgs(), e.Args...)...) //nolint:gosec
 	cmd.Stdin = bytes.NewReader(ciphertext)
 	cmd.Stderr = os.Stderr
 	return chezmoilog.LogCmdOutput(cmd)
@@ -58,8 +57,8 @@ func (e *AgeEncryption) DecryptToFile(plaintextAbsPath AbsPath, ciphertext []byt
 		return e.BaseSystem.WriteFile(plaintextAbsPath, plaintext, 0o644)
 	}
 
-	//nolint:gosec
-	cmd := exec.Command(e.Command, append(append(e.decryptArgs(), "--output", plaintextAbsPath.String()), e.Args...)...)
+	args := append(append(e.decryptArgs(), "--output", plaintextAbsPath.String()), e.Args...)
+	cmd := exec.Command(e.Command, args...) //nolint:gosec
 	cmd.Stdin = bytes.NewReader(ciphertext)
 	cmd.Stderr = os.Stderr
 	return chezmoilog.LogCmdRun(cmd)
@@ -71,8 +70,7 @@ func (e *AgeEncryption) Encrypt(plaintext []byte) ([]byte, error) {
 		return e.builtinEncrypt(plaintext)
 	}
 
-	//nolint:gosec
-	cmd := exec.Command(e.Command, append(e.encryptArgs(), e.Args...)...)
+	cmd := exec.Command(e.Command, append(e.encryptArgs(), e.Args...)...) //nolint:gosec
 	cmd.Stdin = bytes.NewReader(plaintext)
 	cmd.Stderr = os.Stderr
 	return chezmoilog.LogCmdOutput(cmd)
@@ -88,8 +86,7 @@ func (e *AgeEncryption) EncryptFile(plaintextAbsPath AbsPath) ([]byte, error) {
 		return e.builtinEncrypt(plaintext)
 	}
 
-	//nolint:gosec
-	cmd := exec.Command(e.Command, append(append(e.encryptArgs(), e.Args...), plaintextAbsPath.String())...)
+	cmd := exec.Command(e.Command, append(append(e.encryptArgs(), e.Args...), plaintextAbsPath.String())...) //nolint:gosec
 	cmd.Stderr = os.Stderr
 	return chezmoilog.LogCmdOutput(cmd)
 }

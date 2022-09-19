@@ -13,8 +13,7 @@ var keyTypes = map[tea.KeyType]struct{}{
 	tea.KeyEsc:   {},
 }
 
-//nolint:ireturn,nolintlint
-func makeKeyMsg(r rune) tea.Msg {
+func makeKeyMsg(r rune) tea.Msg { //nolint:ireturn,nolintlint
 	key := tea.Key{
 		Type:  tea.KeyRunes,
 		Runes: []rune{r},
@@ -27,8 +26,7 @@ func makeKeyMsg(r rune) tea.Msg {
 	return tea.KeyMsg(key)
 }
 
-//nolint:ireturn,nolintlint
-func makeKeyMsgs(s string) []tea.Msg {
+func makeKeyMsgs(s string) []tea.Msg { //nolint:ireturn,nolintlint
 	msgs := make([]tea.Msg, 0, len(s))
 	for _, r := range s {
 		msgs = append(msgs, makeKeyMsg(r))
@@ -36,8 +34,7 @@ func makeKeyMsgs(s string) []tea.Msg {
 	return msgs
 }
 
-//nolint:ireturn,nolintlint
-func testRunModelWithInput[M tea.Model](t *testing.T, model M, input string) M {
+func testRunModelWithInput[M tea.Model](t *testing.T, model M, input string) M { //nolint:ireturn,nolintlint
 	t.Helper()
 	for _, msg := range makeKeyMsgs(input) {
 		m, _ := model.Update(msg)

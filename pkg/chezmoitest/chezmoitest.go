@@ -39,8 +39,7 @@ func AgeGenerateKey(identityFile string) (string, error) {
 // passphrase.
 func GPGGenerateKey(command, homeDir string) (key, passphrase string, err error) {
 	key = "chezmoi-test-gpg-key"
-	//nolint:gosec
-	passphrase = "chezmoi-test-gpg-passphrase"
+	passphrase = "chezmoi-test-gpg-passphrase" //nolint:gosec
 	cmd := exec.Command(
 		command,
 		"--batch",
