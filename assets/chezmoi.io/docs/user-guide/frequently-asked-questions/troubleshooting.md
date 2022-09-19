@@ -11,6 +11,13 @@ $ chezmoi doctor
 Anything `ok` is fine, anything `warning` is only a problem if you want to use
 the related feature, and anything `error` indicates a definite problem.
 
+## A specific command is not behaving as I expect. How can I debug it?
+
+The `--verbose` flag makes chezmoi to print extra information about what it
+is doing.
+
+The `--debug` flag makes chezmoi print very detailed step by step information.
+
 ## The output of `chezmoi diff` is broken and does not contain color. What could be wrong?
 
 By default, chezmoi's diff output includes ANSI color escape sequences (e.g.
