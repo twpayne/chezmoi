@@ -191,13 +191,6 @@ but must meet the following criteria, in order of importance:
 4. Not add significant extra complexity to the user interface or underlying
    implementation.
 
-## Why does chezmoi convert all my template variables to lowercase?
-
-This is due to a feature in
-[`github.com/spf13/viper`](https://github.com/spf13/viper), the library that
-chezmoi uses to read its configuration file. For more information see [this
-GitHub issue](https://github.com/twpayne/chezmoi/issues/463).
-
 ## Why does `chezmoi cd` spawn a shell instead of just changing directory?
 
 `chezmoi cd` spawns a shell because it is not possible for a program to change

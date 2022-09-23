@@ -73,7 +73,7 @@ chhome home8/user
 # test that chezmoi init fails if the generated config is not valid
 mkgitconfig
 ! exec chezmoi init
-stderr 'While parsing config:'
+stderr '\.chezmoi\.toml\.tmpl: toml: expected character ='
 ! exists .config/chezmoi
 
 chhome home/user
@@ -114,6 +114,16 @@ chhome home12/user
 exec chezmoi init --promptBool bool=true --promptInt int=1 --promptString bool=string
 cmp $CHEZMOICONFIGDIR/chezmoi.yaml golden/chezmoi.yaml
 
+chhome home13/user
+
+# test that chezmoi init creates a config file with a .yml extension
+exec chezmoi init
+exists $CHEZMOICONFIGDIR/chezmoi.yml
+
+# test that chezmoi reads a config file with a .yml extension
+exec chezmoi execute-template '{{ .key }}'
+stdout ^value$
+
 -- golden/chezmoi.toml --
 [data]
     email = "firstname.lastname@company.com"
@@ -149,3 +159,6 @@ data:
   bool: {{ promptBool "bool" }}
   int: {{ promptInt "int" }}
   string: {{ promptString "bool" }}
+-- home13/user/.local/share/chezmoi/.chezmoi.yml.tmpl --
+data:
+    key: value

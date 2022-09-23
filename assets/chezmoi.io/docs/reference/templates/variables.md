@@ -45,8 +45,3 @@ NT\CurrentVersion`.
 Additional variables can be defined in the config file in the `data` section.
 Variable names must consist of a letter and be followed by zero or more letters
 and/or digits.
-
-!!! hint
-
-    Until [#463](https://github.com/twpayne/chezmoi/issues/463) is resolved, custom
-    data fields from the `data` section appear as all lowercase strings.

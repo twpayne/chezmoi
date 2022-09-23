@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"compress/gzip"
 	"encoding/json"
+	"fmt"
 	"io"
 	"strings"
 
@@ -38,12 +39,24 @@ type formatTOML struct{}
 // A formatYAML implements the YAML serialization format.
 type formatYAML struct{}
 
-// Formats is a map of all Formats by name.
-var Formats = map[string]Format{
-	"json": FormatJSON,
-	"toml": FormatTOML,
-	"yaml": FormatYAML,
-}
+var (
+	// FormatsByName is a map of all FormatsByName by name.
+	FormatsByName = map[string]Format{
+		"json": FormatJSON,
+		"toml": FormatTOML,
+		"yaml": FormatYAML,
+	}
+
+	// Formats is a map of all Formats by extension.
+	FormatsByExtension = map[string]Format{
+		"json": FormatJSON,
+		"toml": FormatTOML,
+		"yaml": FormatYAML,
+		"yml":  FormatYAML,
+	}
+
+	FormatExtensions = sortedKeys(FormatsByExtension)
+)
 
 // Marshal implements Format.Marshal.
 func (formatGzippedJSON) Marshal(value any) ([]byte, error) {
@@ -132,9 +145,27 @@ func (formatYAML) Unmarshal(data []byte, value any) error {
 	return yaml.Unmarshal(data, value)
 }
 
+// FormatFromAbsPath returns the expected format of absPath.
+func FormatFromAbsPath(absPath AbsPath) (Format, error) {
+	format, err := formatFromExtension(absPath.Ext())
+	if err != nil {
+		return nil, fmt.Errorf("%s: %w", absPath, err)
+	}
+	return format, nil
+}
+
+// formatFromExtension returns the expected format of absPath.
+func formatFromExtension(extension string) (Format, error) {
+	format, ok := FormatsByExtension[strings.TrimPrefix(extension, ".")]
+	if !ok {
+		return nil, fmt.Errorf("%s: unknown format", extension)
+	}
+	return format, nil
+}
+
 func isPrefixDotFormat(name, prefix string) bool {
-	for _, format := range Formats {
-		if name == prefix+"."+format.Name() {
+	for extension := range FormatsByExtension {
+		if name == prefix+"."+extension {
 			return true
 		}
 	}

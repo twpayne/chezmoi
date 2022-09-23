@@ -56,6 +56,11 @@ func (f *readDataFormat) Set(s string) error {
 	return nil
 }
 
+// Format returns f's format.
+func (f readDataFormat) Format() chezmoi.Format {
+	return chezmoi.FormatsByName[string(f)]
+}
+
 // String implements github.com/spf13/pflag.Value.String.
 func (f readDataFormat) String() string {
 	return string(f)
@@ -64,6 +69,11 @@ func (f readDataFormat) String() string {
 // Type implements github.com/spf13/pflag.Value.Type.
 func (f readDataFormat) Type() string {
 	return "json|toml|yaml"
+}
+
+// Format returns f's format.
+func (f writeDataFormat) Format() chezmoi.Format {
+	return chezmoi.FormatsByName[string(f)]
 }
 
 // Set implements github.com/spf13/pflag.Value.Set.
