@@ -1047,7 +1047,7 @@ func (c *Config) defaultTemplateData() map[string]any {
 
 	executable, _ := os.Executable()
 
-	windowsVersion, _ := c.windowsVersion()
+	windowsVersion, _ := windowsVersion()
 
 	return map[string]any{
 		"chezmoi": map[string]any{
