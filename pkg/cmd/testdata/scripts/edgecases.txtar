@@ -47,8 +47,16 @@ chhome home4/user
 ! exec chezmoi status
 ! stderr 'not allowed in \.chezmoitemplates directory'
 
+# test that chezmoi data returns an error if an unknown read format is specified
+! exec chezmoi init --config-format=yml
+stderr 'invalid or unsupported data format'
+
+# test that chezmoi data returns an error if an unknown write format is specified
+! exec chezmoi data --format=yml
+stderr 'invalid or unsupported data format'
+
 skip 'FIXME make the following test pass'
-chhome home5/user
+chhome home6/user
 
 # test that chezmoi reports an inconsistent state error when a file should be both removed and present, even if the file is not already present
 ! exec chezmoi apply
@@ -67,5 +75,5 @@ stderr 'chezmoi: \.file: inconsistent state
 -- home4/user/.local/share/chezmoi/.chezmoitemplates/.chezmoiignore --
 -- home5/user/.local/share/chezmoi/.chezmoiremove --
 .file
--- home5/user/.local/share/chezmoi/dot_file --
+-- home6/user/.local/share/chezmoi/dot_file --
 # contents of .file

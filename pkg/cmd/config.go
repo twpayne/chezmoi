@@ -36,9 +36,8 @@ import (
 	"github.com/muesli/termenv"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
+	"github.com/spf13/pflag"
 	"github.com/twpayne/go-shell"
 	"github.com/twpayne/go-vfs/v4"
 	"github.com/twpayne/go-xdg/v6"
@@ -223,18 +222,6 @@ var (
 	}
 
 	whitespaceRx = regexp.MustCompile(`\s+`)
-
-	viperDecodeConfigOptions = []viper.DecoderConfigOption{
-		viper.DecodeHook(
-			mapstructure.ComposeDecodeHookFunc(
-				mapstructure.StringToTimeDurationHookFunc(),
-				mapstructure.StringToSliceHookFunc(","),
-				chezmoi.StringSliceToEntryTypeSetHookFunc(),
-				chezmoi.StringToAbsPathHookFunc(),
-				StringOrBoolToAutoBoolHookFunc(),
-			),
-		),
-	}
 )
 
 // newConfig creates a new Config with the given options.
@@ -253,113 +240,14 @@ func newConfig(options ...configOption) (*Config, error) {
 		return nil, err
 	}
 
-	cacheDirAbsPath := chezmoi.NewAbsPath(bds.CacheHome).Join(chezmoiRelPath)
-
-	configFile := ConfigFile{
-		// Global configuration.
-		CacheDirAbsPath: cacheDirAbsPath,
-		Color: autoBool{
-			auto: true,
-		},
-		Interpreters: defaultInterpreters,
-		Pager:        os.Getenv("PAGER"),
-		PINEntry: pinEntryConfig{
-			Options: pinEntryDefaultOptions,
-		},
-		Safe: true,
-		Template: templateConfig{
-			Options: chezmoi.DefaultTemplateOptions,
-		},
-		Umask: chezmoi.Umask,
-		UseBuiltinAge: autoBool{
-			auto: true,
-		},
-		UseBuiltinGit: autoBool{
-			auto: true,
-		},
-
-		// Password manager configurations.
-		Bitwarden: bitwardenConfig{
-			Command: "bw",
-		},
-		Gopass: gopassConfig{
-			Command: "gopass",
-		},
-		Keepassxc: keepassxcConfig{
-			Command: "keepassxc-cli",
-		},
-		Keeper: keeperConfig{
-			Command: "keeper",
-		},
-		Lastpass: lastpassConfig{
-			Command: "lpass",
-		},
-		Onepassword: onepasswordConfig{
-			Command: "op",
-			Prompt:  true,
-		},
-		Pass: passConfig{
-			Command: "pass",
-		},
-		Passhole: passholeConfig{
-			Command: "ph",
-			Prompt:  true,
-		},
-		Vault: vaultConfig{
-			Command: "vault",
-		},
-
-		// Encryption configurations.
-		Age: defaultAgeEncryptionConfig,
-		GPG: defaultGPGEncryptionConfig,
-
-		// Command configurations.
-		Add: addCmdConfig{
-			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
-			recursive: true,
-		},
-		Diff: diffCmdConfig{
-			Exclude: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
-		},
-		Edit: editCmdConfig{
-			Hardlink:    true,
-			MinDuration: 1 * time.Second,
-			exclude:     chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			include: chezmoi.NewEntryTypeSet(
-				chezmoi.EntryTypeDirs | chezmoi.EntryTypeFiles | chezmoi.EntryTypeSymlinks | chezmoi.EntryTypeEncrypted,
-			),
-		},
-		Format: defaultWriteDataFormat,
-		Git: gitCmdConfig{
-			Command: "git",
-		},
-		Merge: mergeCmdConfig{
-			Command: "vimdiff",
-		},
-		Status: statusCmdConfig{
-			Exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
-			recursive: true,
-		},
-		Verify: verifyCmdConfig{
-			Exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll &^ chezmoi.EntryTypeScripts),
-			recursive: true,
-		},
-	}
-
 	c := &Config{
-		ConfigFile: configFile,
+		ConfigFile: newConfigFile(bds),
 
 		// Global configuration.
 		homeDir:       userHomeDir,
 		templateFuncs: sprig.TxtFuncMap(),
 
-		// Password manager data.
-
-		// Command configurations, not settable in the config file.
+		// Command configurations.
 		apply: applyCmdConfig{
 			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
@@ -555,12 +443,12 @@ func (c *Config) applyArgs(
 	}
 
 	var currentConfigTemplateContentsSHA256 []byte
-	configTemplateRelPath, _, configTemplateContents, err := c.findFirstConfigTemplate()
+	configTemplate, err := c.findFirstConfigTemplate()
 	if err != nil {
 		return err
 	}
-	if configTemplateRelPath != chezmoi.EmptyRelPath {
-		currentConfigTemplateContentsSHA256 = chezmoi.SHA256Sum(configTemplateContents)
+	if configTemplate != nil {
+		currentConfigTemplateContentsSHA256 = chezmoi.SHA256Sum(configTemplate.contents)
 	}
 	var previousConfigTemplateContentsSHA256 []byte
 	if configStateData, err := c.persistentState.Get(chezmoi.ConfigStateBucket, configStateKey); err != nil {
@@ -577,7 +465,7 @@ func (c *Config) applyArgs(
 		bytes.Equal(currentConfigTemplateContentsSHA256, previousConfigTemplateContentsSHA256)
 	if !configTemplateContentsUnchanged {
 		if c.force {
-			if configTemplateRelPath == chezmoi.EmptyRelPath {
+			if configTemplate == nil {
 				if err := c.persistentState.Delete(chezmoi.ConfigStateBucket, configStateKey); err != nil {
 					return err
 				}
@@ -710,66 +598,57 @@ func (c *Config) colorAutoFunc() bool {
 // template and reloads it.
 func (c *Config) createAndReloadConfigFile() error {
 	// Find config template, execute it, and create config file.
-	configTemplateRelPath, ext, configTemplateContents, err := c.findFirstConfigTemplate()
+	configTemplate, err := c.findFirstConfigTemplate()
 	if err != nil {
 		return err
 	}
-	var configFileContents []byte
-	if configTemplateRelPath == chezmoi.EmptyRelPath {
+
+	if configTemplate == nil {
 		if err := c.persistentState.Delete(chezmoi.ConfigStateBucket, configStateKey); err != nil {
 			return err
 		}
-	} else {
-		configFileContents, err = c.createConfigFile(configTemplateRelPath, configTemplateContents)
-		if err != nil {
-			return err
-		}
-
-		// Validate the config.
-		v := viper.New()
-		v.SetConfigType(ext)
-		if err := v.ReadConfig(bytes.NewBuffer(configFileContents)); err != nil {
-			return err
-		}
-		if err := v.Unmarshal(&Config{}, viperDecodeConfigOptions...); err != nil {
-			return err
-		}
-
-		// Write the config.
-		configPath := c.init.configPath
-		if c.init.configPath.Empty() {
-			configPath = chezmoi.NewAbsPath(c.bds.ConfigHome).Join(chezmoiRelPath, configTemplateRelPath)
-		}
-		if err := chezmoi.MkdirAll(c.baseSystem, configPath.Dir(), 0o777); err != nil {
-			return err
-		}
-		if err := c.baseSystem.WriteFile(configPath, configFileContents, 0o600); err != nil {
-			return err
-		}
-
-		configStateValue, err := json.Marshal(configState{
-			ConfigTemplateContentsSHA256: chezmoi.HexBytes(chezmoi.SHA256Sum(configTemplateContents)),
-		})
-		if err != nil {
-			return err
-		}
-		if err := c.persistentState.Set(chezmoi.ConfigStateBucket, configStateKey, configStateValue); err != nil {
-			return err
-		}
+		return nil
 	}
 
-	// Reload config if it was created.
-	if configTemplateRelPath != chezmoi.EmptyRelPath {
-		viper.SetConfigType(ext)
-		if err := viper.ReadConfig(bytes.NewBuffer(configFileContents)); err != nil {
-			return err
-		}
-		if err := viper.Unmarshal(&c.ConfigFile, viperDecodeConfigOptions...); err != nil {
-			return err
-		}
-		if err := c.setEncryption(); err != nil {
-			return err
-		}
+	configFileContents, err := c.createConfigFile(configTemplate.targetRelPath, configTemplate.contents)
+	if err != nil {
+		return err
+	}
+
+	// Validate the configMap.
+	var configFile ConfigFile
+	if err := c.decodeConfigBytes(configTemplate.format, configFileContents, &configFile); err != nil {
+		return fmt.Errorf("%s: %w", configTemplate.sourceAbsPath, err)
+	}
+
+	// Write the config.
+	configPath := c.init.configPath
+	if c.init.configPath.Empty() {
+		configPath = chezmoi.NewAbsPath(c.bds.ConfigHome).Join(chezmoiRelPath, configTemplate.targetRelPath)
+	}
+	if err := chezmoi.MkdirAll(c.baseSystem, configPath.Dir(), 0o777); err != nil {
+		return err
+	}
+	if err := c.baseSystem.WriteFile(configPath, configFileContents, 0o600); err != nil {
+		return err
+	}
+
+	configStateValue, err := json.Marshal(configState{
+		ConfigTemplateContentsSHA256: chezmoi.HexBytes(chezmoi.SHA256Sum(configTemplate.contents)),
+	})
+	if err != nil {
+		return err
+	}
+	if err := c.persistentState.Set(chezmoi.ConfigStateBucket, configStateKey, configStateValue); err != nil {
+		return err
+	}
+
+	// Reload the config.
+	if err := c.decodeConfigBytes(configTemplate.format, configFileContents, &c.ConfigFile); err != nil {
+		return fmt.Errorf("%s: %w", configTemplate.sourceAbsPath, err)
+	}
+	if err := c.setEncryption(); err != nil {
+		return err
 	}
 
 	return nil
@@ -820,7 +699,7 @@ func (c *Config) defaultConfigFile(
 		if err != nil {
 			return chezmoi.EmptyAbsPath, err
 		}
-		for _, extension := range viper.SupportedExts {
+		for _, extension := range chezmoi.FormatExtensions {
 			configFileAbsPath := configDirAbsPath.JoinString("chezmoi", "chezmoi."+extension)
 			if _, err := fileSystem.Stat(configFileAbsPath.String()); err == nil {
 				return configFileAbsPath, nil
@@ -833,6 +712,62 @@ func (c *Config) defaultConfigFile(
 		return chezmoi.EmptyAbsPath, err
 	}
 	return configHomeAbsPath.JoinString("chezmoi", "chezmoi.toml"), nil
+}
+
+// decodeConfigBytes decodes data in format into configFile.
+func (c *Config) decodeConfigBytes(format chezmoi.Format, data []byte, configFile *ConfigFile) error {
+	var configMap map[string]any
+	if err := format.Unmarshal(data, &configMap); err != nil {
+		return err
+	}
+	return c.decodeConfigMap(configMap, configFile)
+}
+
+// decodeConfigFile decodes the config file at configFileAbsPath into
+// configFile.
+func (c *Config) decodeConfigFile(configFileAbsPath chezmoi.AbsPath, configFile *ConfigFile) error {
+	var format chezmoi.Format
+	if c.configFormat == "" {
+		var err error
+		format, err = chezmoi.FormatFromAbsPath(configFileAbsPath)
+		if err != nil {
+			return err
+		}
+	} else {
+		format = c.configFormat.Format()
+	}
+
+	configFileContents, err := c.fileSystem.ReadFile(configFileAbsPath.String())
+	if err != nil {
+		return fmt.Errorf("%s: %w", configFileAbsPath, err)
+	}
+
+	if err := c.decodeConfigBytes(format, configFileContents, configFile); err != nil {
+		return fmt.Errorf("%s: %w", configFileAbsPath, err)
+	}
+
+	return nil
+}
+
+// decodeConfigMap decodes configMap into configFile.
+func (c *Config) decodeConfigMap(configMap map[string]any, configFile *ConfigFile) error {
+	decoder, err := mapstructure.NewDecoder(&mapstructure.DecoderConfig{
+		DecodeHook: mapstructure.ComposeDecodeHookFunc(
+			mapstructure.StringToTimeDurationHookFunc(),
+			mapstructure.StringToSliceHookFunc(","),
+			chezmoi.StringSliceToEntryTypeSetHookFunc(),
+			chezmoi.StringToAbsPathHookFunc(),
+			StringOrBoolToAutoBoolHookFunc(),
+		),
+		Result: configFile,
+	})
+	if err != nil {
+		return err
+	}
+	if err := decoder.Decode(configMap); err != nil {
+		return err
+	}
+	return nil
 }
 
 // defaultPreApplyFunc is the default pre-apply function. If the target entry
@@ -1235,26 +1170,39 @@ func (c *Config) filterInput(args []string, f func([]byte) ([]byte, error)) erro
 	return nil
 }
 
+type configTemplate struct {
+	sourceAbsPath chezmoi.AbsPath
+	format        chezmoi.Format
+	targetRelPath chezmoi.RelPath
+	contents      []byte
+}
+
 // findFirstConfigTemplate searches for a config template, returning the path,
 // format, and contents of the first one that it finds.
-func (c *Config) findFirstConfigTemplate() (chezmoi.RelPath, string, []byte, error) {
+func (c *Config) findFirstConfigTemplate() (*configTemplate, error) {
 	sourceDirAbsPath, err := c.sourceDirAbsPath()
 	if err != nil {
-		return chezmoi.EmptyRelPath, "", nil, err
+		return nil, err
 	}
 
-	for _, ext := range viper.SupportedExts {
-		filename := chezmoi.NewRelPath(chezmoi.Prefix + "." + ext + chezmoi.TemplateSuffix)
-		contents, err := c.baseSystem.ReadFile(sourceDirAbsPath.Join(filename))
+	for _, extension := range chezmoi.FormatExtensions {
+		relPath := chezmoi.NewRelPath(chezmoi.Prefix + "." + extension + chezmoi.TemplateSuffix)
+		absPath := sourceDirAbsPath.Join(relPath)
+		contents, err := c.baseSystem.ReadFile(absPath)
 		switch {
 		case errors.Is(err, fs.ErrNotExist):
 			continue
 		case err != nil:
-			return chezmoi.EmptyRelPath, "", nil, err
+			return nil, err
 		}
-		return chezmoi.NewRelPath("chezmoi." + ext), ext, contents, nil
+		return &configTemplate{
+			targetRelPath: chezmoi.NewRelPath("chezmoi." + extension),
+			format:        chezmoi.FormatsByExtension[extension],
+			sourceAbsPath: absPath,
+			contents:      contents,
+		}, nil
 	}
-	return chezmoi.EmptyRelPath, "", nil, nil
+	return nil, nil
 }
 
 func (c *Config) getHTTPClient() (*http.Client, error) {
@@ -1330,16 +1278,7 @@ func (c *Config) makeRunEWithSourceState(
 
 // marshal formats data in dataFormat and writes it to the standard output.
 func (c *Config) marshal(dataFormat writeDataFormat, data any) error {
-	var format chezmoi.Format
-	switch dataFormat {
-	case writeDataFormatJSON:
-		format = chezmoi.FormatJSON
-	case writeDataFormatYAML:
-		format = chezmoi.FormatYAML
-	default:
-		return fmt.Errorf("%s: unknown format", dataFormat)
-	}
-	marshaledData, err := format.Marshal(data)
+	marshaledData, err := dataFormat.Format().Marshal(data)
 	if err != nil {
 		return err
 	}
@@ -1372,24 +1311,6 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.Var(&c.UseBuiltinGit, "use-builtin-git", "Use builtin git")
 	persistentFlags.BoolVarP(&c.Verbose, "verbose", "v", c.Verbose, "Make output more verbose")
 	persistentFlags.VarP(&c.WorkingTreeAbsPath, "working-tree", "W", "Set working tree directory")
-	for viperKey, key := range map[string]string{
-		"cacheDir":        "cache",
-		"color":           "color",
-		"destDir":         "destination",
-		"persistentState": "persistent-state",
-		"progress":        "progress",
-		"mode":            "mode",
-		"safe":            "safe",
-		"sourceDir":       "source",
-		"useBuiltinAge":   "use-builtin-age",
-		"useBuiltinGit":   "use-builtin-git",
-		"verbose":         "verbose",
-		"workingTree":     "working-tree",
-	} {
-		if err := viper.BindPFlag(viperKey, persistentFlags.Lookup(key)); err != nil {
-			return nil, err
-		}
-	}
 
 	persistentFlags.VarP(&c.configFileAbsPath, "config", "c", "Set config file")
 	persistentFlags.Var(&c.configFormat, "config-format", "Set config file format")
@@ -1551,13 +1472,22 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 	}
 
 	if boolAnnotation(cmd, modifiesConfigFile) {
-		// Warn the user of any errors reading the config file.
-		v := viper.New()
-		v.SetFs(afero.FromIOFS{FS: c.fileSystem})
-		v.SetConfigFile(c.configFileAbsPath.String())
-		err := v.ReadInConfig()
-		if err == nil {
-			err = v.Unmarshal(&Config{}, viperDecodeConfigOptions...)
+		configFileContents, err := c.baseSystem.ReadFile(c.configFileAbsPath)
+		switch {
+		case errors.Is(err, fs.ErrNotExist):
+			err = nil
+		case err != nil:
+			// err is already set, do nothing.
+		default:
+			var format chezmoi.Format
+			if format, err = chezmoi.FormatFromAbsPath(c.configFileAbsPath); err == nil {
+				var config map[string]any
+				if err = format.Unmarshal(configFileContents, &config); err != nil {
+					// err is already set, do nothing.
+				} else {
+					err = c.decodeConfigMap(config, &ConfigFile{})
+				}
+			}
 		}
 		if err != nil {
 			c.errorf("warning: %s: %v\n", c.configFileAbsPath, err)
@@ -1649,12 +1579,33 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		}
 	}
 
+	// Save flags that were set on the command line. Skip some types as
+	// spf13/pflag does not round trip them correctly.
+	changedFlags := make(map[pflag.Value]string)
+	brokenFlagTypes := map[string]bool{
+		"stringToInt":    true,
+		"stringToInt64":  true,
+		"stringToString": true,
+	}
+	cmd.Flags().VisitAll(func(flag *pflag.Flag) {
+		if flag.Changed && !brokenFlagTypes[flag.Value.Type()] {
+			changedFlags[flag.Value] = flag.Value.String()
+		}
+	})
+
 	// Read the config file.
 	if err := c.readConfig(); err != nil {
 		if !boolAnnotation(cmd, doesNotRequireValidConfig) {
 			return fmt.Errorf("invalid config: %s: %w", c.configFileAbsPath, err)
 		}
 		c.errorf("warning: %s: %v\n", c.configFileAbsPath, err)
+	}
+
+	// Restore flags that were set on the command line.
+	for value, original := range changedFlags {
+		if err := value.Set(original); err != nil {
+			return err
+		}
 	}
 
 	// Configure the logger.
@@ -1867,21 +1818,12 @@ func (c *Config) persistentStateFile() (chezmoi.AbsPath, error) {
 
 // readConfig reads the config file, if it exists.
 func (c *Config) readConfig() error {
-	viper.SetConfigFile(c.configFileAbsPath.String())
-	if c.configFormat != "" {
-		viper.SetConfigType(c.configFormat.String())
-	}
-	viper.SetFs(afero.FromIOFS{FS: c.fileSystem})
-	switch err := viper.ReadInConfig(); {
+	switch err := c.decodeConfigFile(c.configFileAbsPath, &c.ConfigFile); {
 	case errors.Is(err, fs.ErrNotExist):
 		return nil
-	case err != nil:
+	default:
 		return err
 	}
-	if err := viper.Unmarshal(&c.ConfigFile, viperDecodeConfigOptions...); err != nil {
-		return err
-	}
-	return nil
 }
 
 // run runs name with args in dir.
@@ -2186,6 +2128,103 @@ func (c *Config) writeOutput(data []byte) error {
 // writeOutputString writes data to the configured output.
 func (c *Config) writeOutputString(data string) error {
 	return c.writeOutput([]byte(data))
+}
+
+func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
+	return ConfigFile{
+		// Global configuration.
+		CacheDirAbsPath: chezmoi.NewAbsPath(bds.CacheHome).Join(chezmoiRelPath),
+		Color: autoBool{
+			auto: true,
+		},
+		Interpreters: defaultInterpreters,
+		Pager:        os.Getenv("PAGER"),
+		PINEntry: pinEntryConfig{
+			Options: pinEntryDefaultOptions,
+		},
+		Safe: true,
+		Template: templateConfig{
+			Options: chezmoi.DefaultTemplateOptions,
+		},
+		Umask: chezmoi.Umask,
+		UseBuiltinAge: autoBool{
+			auto: true,
+		},
+		UseBuiltinGit: autoBool{
+			auto: true,
+		},
+
+		// Password manager configurations.
+		Bitwarden: bitwardenConfig{
+			Command: "bw",
+		},
+		Gopass: gopassConfig{
+			Command: "gopass",
+		},
+		Keepassxc: keepassxcConfig{
+			Command: "keepassxc-cli",
+		},
+		Keeper: keeperConfig{
+			Command: "keeper",
+		},
+		Lastpass: lastpassConfig{
+			Command: "lpass",
+		},
+		Onepassword: onepasswordConfig{
+			Command: "op",
+			Prompt:  true,
+		},
+		Pass: passConfig{
+			Command: "pass",
+		},
+		Passhole: passholeConfig{
+			Command: "ph",
+			Prompt:  true,
+		},
+		Vault: vaultConfig{
+			Command: "vault",
+		},
+
+		// Encryption configurations.
+		Age: defaultAgeEncryptionConfig,
+		GPG: defaultGPGEncryptionConfig,
+
+		// Command configurations.
+		Add: addCmdConfig{
+			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
+			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
+			recursive: true,
+		},
+		Diff: diffCmdConfig{
+			Exclude: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
+			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
+		},
+		Edit: editCmdConfig{
+			Hardlink:    true,
+			MinDuration: 1 * time.Second,
+			exclude:     chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
+			include: chezmoi.NewEntryTypeSet(
+				chezmoi.EntryTypeDirs | chezmoi.EntryTypeFiles | chezmoi.EntryTypeSymlinks | chezmoi.EntryTypeEncrypted,
+			),
+		},
+		Format: defaultWriteDataFormat,
+		Git: gitCmdConfig{
+			Command: "git",
+		},
+		Merge: mergeCmdConfig{
+			Command: "vimdiff",
+		},
+		Status: statusCmdConfig{
+			Exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
+			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
+			recursive: true,
+		},
+		Verify: verifyCmdConfig{
+			Exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
+			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll &^ chezmoi.EntryTypeScripts),
+			recursive: true,
+		},
+	}
 }
 
 func parseCommand(command string, args []string) (string, []string, error) {

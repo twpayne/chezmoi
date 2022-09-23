@@ -113,18 +113,19 @@ linters-settings:
     - anon
     - empty
     - error
-    - github.com/charmbracelet/bubbletea\.Model
-    - github.com/charmbracelet/bubbletea\.Msg
-    - github.com/go-git/go-git/v5/plumbing/format/diff\.File
-    - github.com/go-git/go-git/v5/plumbing/format/diff\.Patch
-    - github.com/mitchellh/mapstructure\.DecodeHookFunc
-    - github.com/twpayne/chezmoi/v2/pkg/chezmoi\.ActualStateEntry
-    - github.com/twpayne/chezmoi/v2/pkg/chezmoi\.Encryption
-    - github.com/twpayne/chezmoi/v2/pkg/chezmoi\.SourceStateOrigin
-    - github.com/twpayne/chezmoi/v2/pkg/chezmoi\.SourceStateEntry
-    - github.com/twpayne/chezmoi/v2/pkg/chezmoi\.System
-    - github.com/twpayne/chezmoi/v2/pkg/chezmoi\.TargetStateEntry
-    - github.com/twpayne/go-vfs/v4\.FS
+    - github\.com/charmbracelet/bubbletea\.Model
+    - github\.com/charmbracelet/bubbletea\.Msg
+    - github\.com/go-git/go-git/v5/plumbing/format/diff\.File
+    - github\.com/go-git/go-git/v5/plumbing/format/diff\.Patch
+    - github\.com/mitchellh/mapstructure\.DecodeHookFunc
+    - github\.com/twpayne/chezmoi/v2/pkg/chezmoi\.ActualStateEntry
+    - github\.com/twpayne/chezmoi/v2/pkg/chezmoi\.Encryption
+    - github\.com/twpayne/chezmoi/v2/pkg/chezmoi\.Format
+    - github\.com/twpayne/chezmoi/v2/pkg/chezmoi\.SourceStateOrigin
+    - github\.com/twpayne/chezmoi/v2/pkg/chezmoi\.SourceStateEntry
+    - github\.com/twpayne/chezmoi/v2/pkg/chezmoi\.System
+    - github\.com/twpayne/chezmoi/v2/pkg/chezmoi\.TargetStateEntry
+    - github\.com/twpayne/go-vfs/v4\.FS
     - stdlib
   misspell:
     locale: US

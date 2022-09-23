@@ -17,6 +17,9 @@ import (
 
 	"github.com/spf13/cobra"
 	vfs "github.com/twpayne/go-vfs/v4"
+	"golang.org/x/exp/constraints"
+	"golang.org/x/exp/maps"
+	"golang.org/x/exp/slices"
 )
 
 var (
@@ -316,6 +319,13 @@ func mustTrimSuffix(s, suffix string) string {
 		panic(fmt.Sprintf("%s: not suffixed by %s", s, suffix))
 	}
 	return s[:len(s)-len(suffix)]
+}
+
+// sortedKeys returns the keys of V in order.
+func sortedKeys[K constraints.Ordered, V any](m map[K]V) []K {
+	keys := maps.Keys(m)
+	slices.Sort(keys)
+	return keys
 }
 
 // ensureSuffix adds suffix to s if s is not suffixed by suffix.

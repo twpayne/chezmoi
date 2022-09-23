@@ -1,17 +1,17 @@
 # test that chezmoi data includes data set in config file
 exec chezmoi data
 stdout '"chezmoi":'
-stdout '"uniquekey": "uniqueValue"' # viper downcases uniqueKey
+stdout '"uniqueKey": "uniqueValue"'
 
 # test that chezmoi data --format=json includes data set in config file
 exec chezmoi data --format=json
 stdout '"chezmoi":'
-stdout '"uniquekey": "uniqueValue"'
+stdout '"uniqueKey": "uniqueValue"'
 
 # test that chezmoi data --format=yaml includes data set in config file
 exec chezmoi data --format=yaml
 stdout 'chezmoi:'
-stdout 'uniquekey: uniqueValue'
+stdout 'uniqueKey: uniqueValue'
 
 -- home/user/.config/chezmoi/chezmoi.toml --
 [data]

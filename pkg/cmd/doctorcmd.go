@@ -21,7 +21,6 @@ import (
 	"github.com/coreos/go-semver/semver"
 	"github.com/google/go-github/v45/github"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"github.com/twpayne/go-shell"
 	"github.com/twpayne/go-xdg/v6"
 
@@ -474,7 +473,7 @@ func (c *configFileCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsP
 		if err != nil {
 			return checkResultFailed, err.Error()
 		}
-		for _, extension := range viper.SupportedExts {
+		for _, extension := range chezmoi.FormatExtensions {
 			filenameAbsPath := configDirAbsPath.Join(c.basename, chezmoi.NewRelPath(c.basename.String()+"."+extension))
 			if _, err := system.Stat(filenameAbsPath); err == nil {
 				filenameAbsPaths[filenameAbsPath] = struct{}{}

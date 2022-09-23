@@ -1133,9 +1133,9 @@ func (s *SourceState) addExternal(sourceAbsPath AbsPath) error {
 	parentSourceRelPath := NewSourceRelDirPath(parentRelPath.String())
 	parentTargetSourceRelPath := parentSourceRelPath.TargetRelPath(s.encryption.EncryptedSuffix())
 
-	format, ok := Formats[strings.TrimPrefix(sourceAbsPath.Ext(), ".")]
-	if !ok {
-		return fmt.Errorf("%s: unknown format", sourceAbsPath)
+	format, err := FormatFromAbsPath(sourceAbsPath)
+	if err != nil {
+		return err
 	}
 	data, err := s.executeTemplate(sourceAbsPath)
 	if err != nil {
@@ -1201,9 +1201,9 @@ func (s *SourceState) addPatterns(patternSet *patternSet, sourceAbsPath AbsPath,
 
 // addTemplateData adds all template data in sourceAbsPath to s.
 func (s *SourceState) addTemplateData(sourceAbsPath AbsPath) error {
-	format, ok := Formats[strings.TrimPrefix(sourceAbsPath.Ext(), ".")]
-	if !ok {
-		return fmt.Errorf("%s: unknown format", sourceAbsPath)
+	format, err := FormatFromAbsPath(sourceAbsPath)
+	if err != nil {
+		return err
 	}
 	data, err := s.system.ReadFile(sourceAbsPath)
 	if err != nil {
@@ -1621,12 +1621,12 @@ func (s *SourceState) newSourceStateFile(
 	case SourceFileTypeModify:
 		// If the target has an extension, determine if it indicates an
 		// interpreter to use.
-		ext := strings.ToLower(strings.TrimPrefix(targetRelPath.Ext(), "."))
-		interpreter := s.interpreters[ext]
+		extension := strings.ToLower(strings.TrimPrefix(targetRelPath.Ext(), "."))
+		interpreter := s.interpreters[extension]
 		if interpreter != nil {
 			// For modify scripts, the script extension is not considered part
 			// of the target name, so remove it.
-			targetRelPath = targetRelPath.Slice(0, targetRelPath.Len()-len(ext)-1)
+			targetRelPath = targetRelPath.Slice(0, targetRelPath.Len()-len(extension)-1)
 		}
 		targetStateEntryFunc = s.newModifyTargetStateEntryFunc(sourceRelPath, fileAttr, sourceLazyContents, interpreter)
 	case SourceFileTypeRemove:
@@ -1634,8 +1634,8 @@ func (s *SourceState) newSourceStateFile(
 	case SourceFileTypeScript:
 		// If the script has an extension, determine if it indicates an
 		// interpreter to use.
-		ext := strings.ToLower(strings.TrimPrefix(targetRelPath.Ext(), "."))
-		interpreter := s.interpreters[ext]
+		extension := strings.ToLower(strings.TrimPrefix(targetRelPath.Ext(), "."))
+		interpreter := s.interpreters[extension]
 		targetStateEntryFunc = s.newScriptTargetStateEntryFunc(
 			sourceRelPath, fileAttr, targetRelPath, sourceLazyContents, interpreter,
 		)

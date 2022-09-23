@@ -33,19 +33,12 @@ machine to machine. For example, for your home machine:
     email = "me@home.org"
 ```
 
-!!! note
-
-    All variable names will be converted to lowercase. This is due to a feature
-    of a library used by chezmoi. See [this GitHub
-    issue](https://github.com/twpayne/chezmoi/issues/463) for more information.
-
 If you intend to store private data (e.g. access tokens) in
 `~/.config/chezmoi/chezmoi.toml`, make sure it has permissions `0600`.
 
-If you prefer, you can use any format supported by
-[Viper](https://github.com/spf13/viper) for your configuration file. This
-includes JSON, YAML, and TOML. Variable names must start with a letter and be
-followed by zero or more letters or digits.
+If you prefer, you can use JSON or YAML for your configuration file. Variable
+names must start with a letter and be followed by zero or more letters or
+digits.
 
 Then, add `~/.gitconfig` to chezmoi using the `--autotemplate` flag to turn it
 into a template and automatically detect variables from the `data` section of
