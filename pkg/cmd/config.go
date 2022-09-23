@@ -33,6 +33,7 @@ import (
 	"github.com/gregjones/httpcache"
 	"github.com/gregjones/httpcache/diskcache"
 	"github.com/mitchellh/mapstructure"
+	"github.com/muesli/termenv"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/afero"
@@ -1642,7 +1643,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 
 	if runtime.GOOS == "windows" {
 		var err error
-		c.restoreWindowsConsole, err = enableVirtualTerminalProcessing(c.stdout)
+		c.restoreWindowsConsole, err = termenv.EnableVirtualTerminalProcessing(termenv.DefaultOutput())
 		if err != nil {
 			return err
 		}
