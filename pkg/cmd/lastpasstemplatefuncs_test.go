@@ -22,9 +22,15 @@ func TestLastpassParseNote(t *testing.T) {
 			},
 		},
 		{
-			note: "Foo:bar\nbaz\n",
+			note: chezmoitest.JoinLines(
+				"Foo:bar",
+				"baz",
+			),
 			expected: map[string]string{
-				"foo": "bar\nbaz\n",
+				"foo": chezmoitest.JoinLines(
+					"bar",
+					"baz",
+				),
 			},
 		},
 		{

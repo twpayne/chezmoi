@@ -23,7 +23,7 @@ share your public dotfile repo then [tag it with
 If you write an article or give a talk on chezmoi please inform the author
 (e.g. by [opening an
 issue](https://github.com/twpayne/chezmoi/issues/new/choose)) so it can be
-added to chezmoi's [aricles, podcasts, and videos page](/links/articles-podcasts-and-videos/).
+added to chezmoi's [articles, podcasts, and videos page](/links/articles-podcasts-and-videos/).
 
 [Contributions are very welcome](/developer/contributing-changes/) and every [bug report, support
 request, and feature
