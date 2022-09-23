@@ -1,0 +1,6 @@
+# test that chezmoi source-path with no arguments respects .chezmoiroot
+exec chezmoi source-path
+stdout ${CHEZMOISOURCEDIR@R}/home
+
+-- home/user/.local/share/chezmoi/.chezmoiroot --
+home
