@@ -109,6 +109,7 @@ nav:
     - pinentry: reference/configuration-file/pinentry.md
     - textconv: reference/configuration-file/textconv.md
     - umask: reference/configuration-file/umask.md
+    - Warnings: reference/configuration-file/warnings.md
   - Special files and directories:
     - reference/special-files-and-directories/index.md
     - .chezmoi.&lt;format&gt;.tmpl: reference/special-files-and-directories/chezmoi-format-tmpl.md

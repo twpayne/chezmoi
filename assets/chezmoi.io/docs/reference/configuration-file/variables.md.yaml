@@ -267,3 +267,7 @@ sections:
     exclude:
       type: "[]string"
       description: "Entry types to exclude from verify"
+  warnings:
+    "":
+      type: "object"
+      description: "See section on \"Warnings\""

@@ -69,6 +69,10 @@ type templateConfig struct {
 	Options []string `mapstructure:"options"`
 }
 
+type warningsConfig struct {
+	ConfigFileTemplateHasChanged bool `mapstructure:"configFileTemplateHasChanged"`
+}
+
 // ConfigFile contains all data settable in the config file.
 type ConfigFile struct {
 	// Global configuration.
@@ -91,6 +95,7 @@ type ConfigFile struct {
 	UseBuiltinAge      autoBool                        `mapstructure:"useBuiltinAge"`
 	UseBuiltinGit      autoBool                        `mapstructure:"useBuiltinGit"`
 	Verbose            bool                            `mapstructure:"verbose"`
+	Warnings           warningsConfig                  `mapstructure:"warnings"`
 	WorkingTreeAbsPath chezmoi.AbsPath                 `mapstructure:"workingTree"`
 
 	// Password manager configurations.
@@ -480,7 +485,7 @@ func (c *Config) applyArgs(
 					return err
 				}
 			}
-		} else {
+		} else if c.Warnings.ConfigFileTemplateHasChanged {
 			c.errorf("warning: config file template has changed, run chezmoi init to regenerate config file\n")
 		}
 	}
@@ -2152,6 +2157,9 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		},
 		UseBuiltinGit: autoBool{
 			auto: true,
+		},
+		Warnings: warningsConfig{
+			ConfigFileTemplateHasChanged: true,
 		},
 
 		// Password manager configurations.

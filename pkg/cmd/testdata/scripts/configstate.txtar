@@ -14,6 +14,13 @@ cp golden/.chezmoi.toml.tmpl $CHEZMOISOURCEDIR/.chezmoi.toml.tmpl
 exec chezmoi apply
 stderr 'warning: config file template has changed'
 
+# test that chezmoi apply does not print the warning if it is suppressed
+appendline $CHEZMOICONFIGDIR/chezmoi.toml '[warnings]'
+appendline $CHEZMOICONFIGDIR/chezmoi.toml '  configFileTemplateHasChanged = false'
+exec chezmoi apply
+! stderr .
+cp golden/chezmoi.toml $CHEZMOICONFIGDIR
+
 # test that chezmoi init re-generates the config file
 exec chezmoi init
 cmp $CHEZMOICONFIGDIR/chezmoi.toml golden/chezmoi.toml
