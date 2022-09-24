@@ -3,6 +3,7 @@ package chezmoi
 import (
 	"io/fs"
 	"os/exec"
+	"time"
 
 	"github.com/rs/zerolog"
 	vfs "github.com/twpayne/go-vfs/v4"
@@ -22,6 +23,17 @@ func NewDebugSystem(system System, logger *zerolog.Logger) *DebugSystem {
 		logger: logger,
 		system: system,
 	}
+}
+
+// Chtimes implements System.Chtimes.
+func (s *DebugSystem) Chtimes(name AbsPath, atime, mtime time.Time) error {
+	err := s.system.Chtimes(name, atime, mtime)
+	s.logger.Err(err).
+		Stringer("name", name).
+		Time("atime", atime).
+		Time("mtime", mtime).
+		Msg("Chtimes")
+	return err
 }
 
 // Chmod implements System.Chmod.

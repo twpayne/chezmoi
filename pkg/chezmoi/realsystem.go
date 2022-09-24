@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"runtime"
+	"time"
 
 	vfs "github.com/twpayne/go-vfs/v4"
 	"go.uber.org/multierr"
@@ -16,6 +17,11 @@ import (
 
 // A RealSystemOption sets an option on a RealSystem.
 type RealSystemOption func(*RealSystem)
+
+// Chtimes implements System.Chtimes.
+func (s *RealSystem) Chtimes(name AbsPath, atime, mtime time.Time) error {
+	return s.fileSystem.Chtimes(name.String(), atime, mtime)
+}
 
 // Glob implements System.Glob.
 func (s *RealSystem) Glob(pattern string) ([]string, error) {

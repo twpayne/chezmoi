@@ -3,6 +3,7 @@ package chezmoi
 import (
 	"io/fs"
 	"os/exec"
+	"time"
 
 	vfs "github.com/twpayne/go-vfs/v4"
 )
@@ -25,6 +26,11 @@ func NewErrorOnWriteSystem(system System, err error) *ErrorOnWriteSystem {
 
 // Chmod implements System.Chmod.
 func (s *ErrorOnWriteSystem) Chmod(name AbsPath, mode fs.FileMode) error {
+	return s.err
+}
+
+// Chtimes implements System.Chtimes.
+func (s *ErrorOnWriteSystem) Chtimes(name AbsPath, atime, mtime time.Time) error {
 	return s.err
 }
 

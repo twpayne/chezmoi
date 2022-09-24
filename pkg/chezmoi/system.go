@@ -7,6 +7,7 @@ import (
 	"os/exec"
 	"sort"
 	"strings"
+	"time"
 
 	vfs "github.com/twpayne/go-vfs/v4"
 	"golang.org/x/sync/errgroup"
@@ -16,6 +17,7 @@ import (
 // state.
 type System interface { //nolint:interfacebloat
 	Chmod(name AbsPath, mode fs.FileMode) error
+	Chtimes(name AbsPath, atime, mtime time.Time) error
 	Glob(pattern string) ([]string, error)
 	Link(oldname, newname AbsPath) error
 	Lstat(filename AbsPath) (fs.FileInfo, error)
@@ -51,6 +53,10 @@ func (emptySystemMixin) UnderlyingFS() vfs.FS                        { return ni
 type noUpdateSystemMixin struct{}
 
 func (noUpdateSystemMixin) Chmod(name AbsPath, perm fs.FileMode) error {
+	panic("update to no update system")
+}
+
+func (noUpdateSystemMixin) Chtimes(name AbsPath, atime, mtime time.Time) error {
 	panic("update to no update system")
 }
 

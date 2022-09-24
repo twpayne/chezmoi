@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 	"text/template"
+	"time"
 
 	vfs "github.com/twpayne/go-vfs/v4"
 	"go.uber.org/multierr"
@@ -62,6 +63,11 @@ func (s *ExternalDiffSystem) Close() error {
 func (s *ExternalDiffSystem) Chmod(name AbsPath, mode fs.FileMode) error {
 	// FIXME generate suitable inputs for s.command
 	return s.system.Chmod(name, mode)
+}
+
+// Chtimes implements System.Chtimes.
+func (s *ExternalDiffSystem) Chtimes(name AbsPath, atime, mtime time.Time) error {
+	return s.system.Chtimes(name, atime, mtime)
 }
 
 // Glob implements System.Glob.
