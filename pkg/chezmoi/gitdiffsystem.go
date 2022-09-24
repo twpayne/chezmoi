@@ -6,6 +6,7 @@ import (
 	"io/fs"
 	"os/exec"
 	"runtime"
+	"time"
 
 	"github.com/go-git/go-git/v5/plumbing"
 	"github.com/go-git/go-git/v5/plumbing/filemode"
@@ -73,6 +74,11 @@ func (s *GitDiffSystem) Chmod(name AbsPath, mode fs.FileMode) error {
 		}
 	}
 	return s.system.Chmod(name, mode)
+}
+
+// Chtimes implements system.Chtimes.
+func (s *GitDiffSystem) Chtimes(name AbsPath, atime, mtime time.Time) error {
+	return s.system.Chtimes(name, atime, mtime)
 }
 
 // Glob implements System.Glob.

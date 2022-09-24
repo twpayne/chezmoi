@@ -3,6 +3,7 @@ package chezmoi
 import (
 	"io/fs"
 	"os/exec"
+	"time"
 
 	vfs "github.com/twpayne/go-vfs/v4"
 )
@@ -23,6 +24,12 @@ func NewDryRunSystem(system System) *DryRunSystem {
 
 // Chmod implements System.Chmod.
 func (s *DryRunSystem) Chmod(name AbsPath, mode fs.FileMode) error {
+	s.setModified()
+	return nil
+}
+
+// Chtimes implements System.Chtimes.
+func (s *DryRunSystem) Chtimes(name AbsPath, atime, mtime time.Time) error {
 	s.setModified()
 	return nil
 }
