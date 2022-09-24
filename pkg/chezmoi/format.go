@@ -1,15 +1,11 @@
 package chezmoi
 
 import (
-	"bytes"
-	"compress/gzip"
 	"encoding/json"
 	"fmt"
-	"io"
 	"strings"
 
 	"github.com/pelletier/go-toml/v2"
-	"go.uber.org/multierr"
 	"gopkg.in/yaml.v3"
 )
 
@@ -26,9 +22,6 @@ type Format interface {
 	Name() string
 	Unmarshal(data []byte, value any) error
 }
-
-// A formatGzippedJSON implements the gzipped JSON serialization format.
-type formatGzippedJSON struct{}
 
 // A formatJSON implements the JSON serialization format.
 type formatJSON struct{}
@@ -57,44 +50,6 @@ var (
 
 	FormatExtensions = sortedKeys(FormatsByExtension)
 )
-
-// Marshal implements Format.Marshal.
-func (formatGzippedJSON) Marshal(value any) ([]byte, error) {
-	jsonData, err := json.Marshal(value)
-	if err != nil {
-		return nil, err
-	}
-	builder := &strings.Builder{}
-	builder.Grow(len(jsonData))
-	gzipWriter := gzip.NewWriter(builder)
-	if _, err := gzipWriter.Write(jsonData); err != nil {
-		return nil, err
-	}
-	if err := gzipWriter.Close(); err != nil {
-		return nil, err
-	}
-	return []byte(builder.String()), nil
-}
-
-// Name implements Format.Name.
-func (formatGzippedJSON) Name() string {
-	return "json.gz"
-}
-
-// Unmask implements Format.Unmarshal.
-func (formatGzippedJSON) Unmarshal(data []byte, value any) (err error) {
-	var r *gzip.Reader
-	if r, err = gzip.NewReader(bytes.NewReader(data)); err != nil {
-		return
-	}
-	defer multierr.AppendInvoke(&err, multierr.Close(r))
-	jsonData, err := io.ReadAll(r)
-	if err != nil {
-		return
-	}
-	err = json.Unmarshal(jsonData, value)
-	return
-}
 
 // Marshal implements Format.Marshal.
 func (formatJSON) Marshal(value any) ([]byte, error) {
