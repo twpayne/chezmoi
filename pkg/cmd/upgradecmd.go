@@ -252,7 +252,7 @@ func (c *Config) downloadURL(ctx context.Context, url string) ([]byte, error) {
 	}
 	if resp.StatusCode != http.StatusOK {
 		_ = resp.Body.Close()
-		return nil, fmt.Errorf("%s: got a non-200 OK response: %d %s", url, resp.StatusCode, resp.Status)
+		return nil, fmt.Errorf("%s: %s", url, resp.Status)
 	}
 	data, err := io.ReadAll(resp.Body)
 	if err != nil {
