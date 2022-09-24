@@ -24,7 +24,6 @@ func TestFormatRoundTrip(t *testing.T) {
 	}
 
 	for _, format := range []Format{
-		formatGzippedJSON{},
 		formatJSON{},
 		formatTOML{},
 		formatYAML{},

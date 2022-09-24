@@ -70,15 +70,6 @@ type External struct {
 	sourceAbsPath   AbsPath
 }
 
-// A externalCacheEntry is an external cache entry.
-type externalCacheEntry struct {
-	URL  string    `json:"url" time:"url"`
-	Time time.Time `json:"time" yaml:"time"`
-	Data []byte    `json:"data" yaml:"data"`
-}
-
-var externalCacheFormat = formatGzippedJSON{}
-
 // A SourceState is a source state.
 type SourceState struct {
 	sync.Mutex
@@ -1288,15 +1279,12 @@ func (s *SourceState) getExternalDataRaw(
 	now = now.UTC()
 
 	cacheKey := hex.EncodeToString(SHA256Sum([]byte(external.URL)))
-	cachedDataAbsPath := s.cacheDirAbsPath.JoinString("external", cacheKey+"."+externalCacheFormat.Name())
+	cachedDataAbsPath := s.cacheDirAbsPath.JoinString("external", cacheKey)
 	if options == nil || !options.RefreshExternals {
-		if data, err := s.system.ReadFile(cachedDataAbsPath); err == nil {
-			var externalCacheEntry externalCacheEntry
-			if err := externalCacheFormat.Unmarshal(data, &externalCacheEntry); err == nil {
-				if externalCacheEntry.URL == external.URL {
-					if external.RefreshPeriod == 0 || externalCacheEntry.Time.Add(time.Duration(external.RefreshPeriod)).After(now) {
-						return externalCacheEntry.Data, nil
-					}
+		if fileInfo, err := s.baseSystem.Stat(cachedDataAbsPath); err == nil {
+			if external.RefreshPeriod == 0 || fileInfo.ModTime().Add(time.Duration(external.RefreshPeriod)).After(now) {
+				if data, err := s.baseSystem.ReadFile(cachedDataAbsPath); err == nil {
+					return data, nil
 				}
 			}
 		}
@@ -1324,18 +1312,13 @@ func (s *SourceState) getExternalDataRaw(
 		return nil, fmt.Errorf("%s: %s: %s", externalRelPath, external.URL, resp.Status)
 	}
 
-	cachedExternalData, err := externalCacheFormat.Marshal(&externalCacheEntry{
-		URL:  external.URL,
-		Time: now,
-		Data: data,
-	})
-	if err != nil {
-		return nil, err
-	}
 	if err := MkdirAll(s.baseSystem, cachedDataAbsPath.Dir(), 0o700); err != nil {
 		return nil, err
 	}
-	if err := s.baseSystem.WriteFile(cachedDataAbsPath, cachedExternalData, 0o600); err != nil {
+	if err := s.baseSystem.WriteFile(cachedDataAbsPath, data, 0o600); err != nil {
+		return nil, err
+	}
+	if err := s.baseSystem.Chtimes(cachedDataAbsPath, now, now); err != nil {
 		return nil, err
 	}
 
