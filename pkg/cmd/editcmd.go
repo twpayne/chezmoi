@@ -30,7 +30,7 @@ func (c *Config) newEditCmd() *cobra.Command {
 		Long:              mustLongHelp("edit"),
 		Example:           example("edit"),
 		ValidArgsFunction: c.targetValidArgs,
-		RunE:              c.makeRunEWithSourceState(c.runEditCmd),
+		RunE:              c.runEditCmd,
 		Annotations: map[string]string{
 			modifiesDestinationDirectory: "true",
 			modifiesSourceDirectory:      "true",
@@ -51,7 +51,7 @@ func (c *Config) newEditCmd() *cobra.Command {
 	return editCmd
 }
 
-func (c *Config) runEditCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
+func (c *Config) runEditCmd(cmd *cobra.Command, args []string) error {
 	if len(args) == 0 {
 		if err := c.runEditor([]string{c.WorkingTreeAbsPath.String()}); err != nil {
 			return err
@@ -68,6 +68,11 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string, sourceState *chez
 			}
 		}
 		return nil
+	}
+
+	sourceState, err := c.newSourceState(cmd.Context())
+	if err != nil {
+		return err
 	}
 
 	targetRelPaths, err := c.targetRelPaths(sourceState, args, targetRelPathsOptions{
