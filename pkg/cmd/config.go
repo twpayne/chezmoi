@@ -190,6 +190,8 @@ type Config struct {
 	// Computed configuration.
 	homeDirAbsPath chezmoi.AbsPath
 	encryption     chezmoi.Encryption
+	sourceState    *chezmoi.SourceState
+	sourceStateErr error
 
 	stdin       io.Reader
 	stdout      io.Writer
@@ -490,7 +492,7 @@ func (c *Config) applyArgs(
 		}
 	}
 
-	sourceState, err := c.newSourceState(ctx)
+	sourceState, err := c.getSourceState(ctx)
 	if err != nil {
 		return err
 	}
@@ -1226,6 +1228,14 @@ func (c *Config) getHTTPClient() (*http.Client, error) {
 	return c.httpClient, nil
 }
 
+func (c *Config) getSourceState(ctx context.Context) (*chezmoi.SourceState, error) {
+	if c.sourceState != nil || c.sourceStateErr != nil {
+		return c.sourceState, c.sourceStateErr
+	}
+	c.sourceState, c.sourceStateErr = c.newSourceState(ctx)
+	return c.sourceState, c.sourceStateErr
+}
+
 // gitAutoAdd adds all changes to the git index and returns the new git status.
 func (c *Config) gitAutoAdd() (*git.Status, error) {
 	if err := c.run(c.WorkingTreeAbsPath, c.Git.Command, []string{"add", "."}); err != nil {
@@ -1273,7 +1283,7 @@ func (c *Config) makeRunEWithSourceState(
 	runE func(*cobra.Command, []string, *chezmoi.SourceState) error,
 ) func(*cobra.Command, []string) error {
 	return func(cmd *cobra.Command, args []string) error {
-		sourceState, err := c.newSourceState(cmd.Context())
+		sourceState, err := c.getSourceState(cmd.Context())
 		if err != nil {
 			return err
 		}
@@ -1442,7 +1452,7 @@ func (c *Config) newSourceState(
 		return nil, err
 	}
 
-	s := chezmoi.NewSourceState(append([]chezmoi.SourceStateOption{
+	sourceState := chezmoi.NewSourceState(append([]chezmoi.SourceStateOption{
 		chezmoi.WithBaseSystem(c.baseSystem),
 		chezmoi.WithCacheDir(c.CacheDirAbsPath),
 		chezmoi.WithDefaultTemplateDataFunc(c.defaultTemplateData),
@@ -1460,14 +1470,14 @@ func (c *Config) newSourceState(
 		chezmoi.WithVersion(c.version),
 	}, options...)...)
 
-	if err := s.Read(ctx, &chezmoi.ReadOptions{
+	if err := sourceState.Read(ctx, &chezmoi.ReadOptions{
 		RefreshExternals: c.refreshExternals,
 		ReadHTTPResponse: c.readHTTPResponse,
 	}); err != nil {
 		return nil, err
 	}
 
-	return s, nil
+	return sourceState, nil
 }
 
 // persistentPostRunRootE performs post-run actions for the root command.
@@ -2042,7 +2052,7 @@ func (c *Config) targetValidArgs(
 		return nil, cobra.ShellCompDirectiveError
 	}
 
-	sourceState, err := c.newSourceState(cmd.Context())
+	sourceState, err := c.getSourceState(cmd.Context())
 	if err != nil {
 		cobra.CompErrorln(err.Error())
 		return nil, cobra.ShellCompDirectiveError

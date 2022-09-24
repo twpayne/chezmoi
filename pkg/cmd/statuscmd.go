@@ -23,7 +23,7 @@ func (c *Config) newStatusCmd() *cobra.Command {
 		Long:              mustLongHelp("status"),
 		Example:           example("status"),
 		ValidArgsFunction: c.targetValidArgs,
-		RunE:              c.makeRunEWithSourceState(c.runStatusCmd),
+		RunE:              c.runStatusCmd,
 		Annotations: map[string]string{
 			modifiesDestinationDirectory: "true",
 			persistentStateMode:          persistentStateModeReadMockWrite,
@@ -40,7 +40,7 @@ func (c *Config) newStatusCmd() *cobra.Command {
 	return statusCmd
 }
 
-func (c *Config) runStatusCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
+func (c *Config) runStatusCmd(cmd *cobra.Command, args []string) error {
 	builder := strings.Builder{}
 	dryRunSystem := chezmoi.NewDryRunSystem(c.destSystem)
 	preApplyFunc := func(

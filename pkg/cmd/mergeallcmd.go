@@ -17,7 +17,7 @@ func (c *Config) newMergeAllCmd() *cobra.Command {
 		Short:   "Perform a three-way merge for each modified file",
 		Long:    mustLongHelp("merge-all"),
 		Example: example("merge-all"),
-		RunE:    c.makeRunEWithSourceState(c.runMergeAllCmd),
+		RunE:    c.runMergeAllCmd,
 		Annotations: map[string]string{
 			modifiesSourceDirectory: "true",
 			requiresSourceDirectory: "true",
@@ -31,7 +31,7 @@ func (c *Config) newMergeAllCmd() *cobra.Command {
 	return mergeAllCmd
 }
 
-func (c *Config) runMergeAllCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
+func (c *Config) runMergeAllCmd(cmd *cobra.Command, args []string) error {
 	var targetRelPaths []chezmoi.RelPath
 	dryRunSystem := chezmoi.NewDryRunSystem(c.destSystem)
 	preApplyFunc := func(
@@ -49,6 +49,11 @@ func (c *Config) runMergeAllCmd(cmd *cobra.Command, args []string, sourceState *
 		umask:        c.Umask,
 		preApplyFunc: preApplyFunc,
 	}); err != nil {
+		return err
+	}
+
+	sourceState, err := c.getSourceState(cmd.Context())
+	if err != nil {
 		return err
 	}
 
