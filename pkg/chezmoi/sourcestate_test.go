@@ -1499,11 +1499,6 @@ func TestSourceStateReadExternalCache(t *testing.T) {
 	defer httpServer.Close()
 
 	now := time.Now()
-	readOptions := &ReadOptions{
-		TimeNow: func() time.Time {
-			return now
-		},
-	}
 
 	chezmoitest.WithTestFS(t, map[string]any{
 		"/home/user/.local/share/chezmoi": map[string]any{
@@ -1518,7 +1513,7 @@ func TestSourceStateReadExternalCache(t *testing.T) {
 		ctx := context.Background()
 		system := NewRealSystem(fileSystem)
 
-		readSourceState := func() {
+		readSourceState := func(refreshExternals RefreshExternals) {
 			s := NewSourceState(
 				WithBaseSystem(system),
 				WithCacheDir(NewAbsPath("/home/user/.cache/chezmoi")),
@@ -1526,7 +1521,12 @@ func TestSourceStateReadExternalCache(t *testing.T) {
 				WithSourceDir(NewAbsPath("/home/user/.local/share/chezmoi")),
 				WithSystem(system),
 			)
-			require.NoError(t, s.Read(ctx, readOptions))
+			require.NoError(t, s.Read(ctx, &ReadOptions{
+				RefreshExternals: refreshExternals,
+				TimeNow: func() time.Time {
+					return now
+				},
+			}))
 			assert.Equal(t, map[RelPath]*External{
 				NewRelPath(".dir"): {
 					Type:          "archive",
@@ -1537,16 +1537,24 @@ func TestSourceStateReadExternalCache(t *testing.T) {
 			}, s.externals)
 		}
 
-		readSourceState()
+		readSourceState(RefreshExternalsAuto)
 		assert.Equal(t, 1, httpRequests)
 
 		now = now.Add(10 * time.Second)
-		readSourceState()
+		readSourceState(RefreshExternalsAuto)
 		assert.Equal(t, 1, httpRequests)
 
 		now = now.Add(1 * time.Minute)
-		readSourceState()
+		readSourceState(RefreshExternalsAuto)
 		assert.Equal(t, 2, httpRequests)
+
+		now = now.Add(10 * time.Second)
+		readSourceState(RefreshExternalsAlways)
+		assert.Equal(t, 3, httpRequests)
+
+		now = now.Add(5 * time.Minute)
+		readSourceState(RefreshExternalsNever)
+		assert.Equal(t, 3, httpRequests)
 	})
 }
 

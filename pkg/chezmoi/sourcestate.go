@@ -761,7 +761,7 @@ TARGET:
 // ReadOptions are options to SourceState.Read.
 type ReadOptions struct {
 	ReadHTTPResponse func(*http.Response) ([]byte, error)
-	RefreshExternals bool
+	RefreshExternals RefreshExternals
 	TimeNow          func() time.Time
 }
 
@@ -1012,7 +1012,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			sourceStateCommand := &SourceStateCommand{
 				cmd:           cmd,
 				origin:        external,
-				forceRefresh:  options.RefreshExternals,
+				forceRefresh:  options.RefreshExternals == RefreshExternalsAlways,
 				refreshPeriod: external.RefreshPeriod,
 			}
 			allSourceStateEntries[externalRelPath] = append(allSourceStateEntries[externalRelPath], sourceStateCommand)
@@ -1030,7 +1030,7 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 			sourceStateCommand := &SourceStateCommand{
 				cmd:           cmd,
 				origin:        external,
-				forceRefresh:  options.RefreshExternals,
+				forceRefresh:  options.RefreshExternals == RefreshExternalsAlways,
 				refreshPeriod: external.RefreshPeriod,
 			}
 			allSourceStateEntries[externalRelPath] = append(allSourceStateEntries[externalRelPath], sourceStateCommand)
@@ -1278,15 +1278,29 @@ func (s *SourceState) getExternalDataRaw(
 	}
 	now = now.UTC()
 
+	refreshExternals := RefreshExternalsAuto
+	if options != nil {
+		refreshExternals = options.RefreshExternals
+	}
 	cacheKey := hex.EncodeToString(SHA256Sum([]byte(external.URL)))
 	cachedDataAbsPath := s.cacheDirAbsPath.JoinString("external", cacheKey)
-	if options == nil || !options.RefreshExternals {
+	switch refreshExternals {
+	case RefreshExternalsAlways:
+		// Never use the cache.
+	case RefreshExternalsAuto:
+		// Use the cache, if available and within the refresh period.
 		if fileInfo, err := s.baseSystem.Stat(cachedDataAbsPath); err == nil {
 			if external.RefreshPeriod == 0 || fileInfo.ModTime().Add(time.Duration(external.RefreshPeriod)).After(now) {
 				if data, err := s.baseSystem.ReadFile(cachedDataAbsPath); err == nil {
 					return data, nil
 				}
 			}
+		}
+	case RefreshExternalsNever:
+		// Always use the cache, if available, irrespective of the refresh
+		// period.
+		if data, err := s.baseSystem.ReadFile(cachedDataAbsPath); err == nil {
+			return data, nil
 		}
 	}
 
