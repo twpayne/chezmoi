@@ -145,7 +145,7 @@ type Config struct {
 	noPager          bool
 	noTTY            bool
 	outputAbsPath    chezmoi.AbsPath
-	refreshExternals bool
+	refreshExternals chezmoi.RefreshExternals
 	sourcePath       bool
 	templateFuncs    template.FuncMap
 
@@ -1339,7 +1339,8 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.BoolVar(&c.noPager, "no-pager", c.noPager, "Do not use the pager")
 	persistentFlags.BoolVar(&c.noTTY, "no-tty", c.noTTY, "Do not attempt to get a TTY for reading passwords")
 	persistentFlags.VarP(&c.outputAbsPath, "output", "o", "Write output to path instead of stdout")
-	persistentFlags.BoolVarP(&c.refreshExternals, "refresh-externals", "R", c.refreshExternals, "Refresh external cache")
+	persistentFlags.VarP(&c.refreshExternals, "refresh-externals", "R", "Refresh external cache")
+	persistentFlags.Lookup("refresh-externals").NoOptDefVal = chezmoi.RefreshExternalsAlways.String()
 	persistentFlags.BoolVar(&c.sourcePath, "source-path", c.sourcePath, "Specify targets by source path")
 
 	for _, err := range []error{
@@ -1354,6 +1355,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		rootCmd.RegisterFlagCompletionFunc("color", autoBoolFlagCompletionFunc),
 		rootCmd.RegisterFlagCompletionFunc("config-format", readDataFormatFlagCompletionFunc),
 		rootCmd.RegisterFlagCompletionFunc("mode", chezmoi.ModeFlagCompletionFunc),
+		rootCmd.RegisterFlagCompletionFunc("refresh-externals", chezmoi.RefreshExternalsFlagCompletionFunc),
 		rootCmd.RegisterFlagCompletionFunc("use-builtin-age", autoBoolFlagCompletionFunc),
 		rootCmd.RegisterFlagCompletionFunc("use-builtin-git", autoBoolFlagCompletionFunc),
 	} {

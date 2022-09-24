@@ -41,7 +41,7 @@ cd $WORK
 
 chhome home/user
 
-# test that chezmoi apply does not pull from the git repo when refreshDuration is zero
+# test that chezmoi apply does not pull from the git repo when refreshPeriod is zero
 exec chezmoi apply
 ! grep '# edited' $HOME/.dir/.file
 

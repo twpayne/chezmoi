@@ -65,9 +65,20 @@ configuration file.
 
 Show progress when downloading externals.
 
-## `-R`, `--refresh-externals`
+## `-R`, `--refresh-externals` [*value*]
 
-Refresh externals cache. See `.chezmoiexternal.$FORMAT`.
+Control the refresh of the externals cache. *value* can be any of `always`,
+`auto`, or `never` and defaults to `always` if no *value* is specified. If no
+`--refresh-externals` flag is specified then chezmoi defaults to `auto`.
+
+`always` (or any truthy value as accepted by `parseBool`) causes chezmoi to
+re-download externals.
+
+`auto` means only re-download externals that have not been downloaded within
+their refresh periods.
+
+`never` (or any other falsey value accepted by `parseBool`) means only download
+if no cached external is available.
 
 ## `-S`, `--source` *directory*
 
