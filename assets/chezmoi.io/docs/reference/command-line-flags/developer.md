@@ -9,7 +9,3 @@ Write a [Go CPU profile](https://blog.golang.org/pprof) to *filename*.
 ## `--debug`
 
 Log information helpful for debugging.
-
-## `--gops`
-
-Enable the [gops](https://github.com/google/gops) agent.
