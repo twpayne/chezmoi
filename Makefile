@@ -109,10 +109,12 @@ generate:
 lint: ensure-golangci-lint
 	./bin/golangci-lint run
 	${GO} run ./internal/cmds/lint-whitespace
+	find . -name \*.txtar | xargs ${GO} run ./internal/cmds/lint-txtar
 
 .PHONY: format
 format: ensure-gofumpt
 	find . -name \*.go | xargs ./bin/gofumpt -extra -w
+	find . -name \*.txtar | xargs ${GO} run ./internal/cmds/lint-txtar -w
 
 .PHONY: ensure-tools
 ensure-tools: ensure-gofumpt ensure-golangci-lint
