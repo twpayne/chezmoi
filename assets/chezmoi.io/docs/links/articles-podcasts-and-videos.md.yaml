@@ -306,3 +306,8 @@ articles:
   title: 'Using chezmoi to automate dotfiles / config files (+ my bashrc)'
   format: Video
   url: https://www.youtube.com/watch?v=id5UKYuX4-A
+- date: '2022-09-13'
+  version: '2.22.1'
+  title: 'Come installare Chezmoi: gestisci in modo sicuro i dotfile su più macchine'
+  lang: 'IT'
+  url: https://grayguide.net/it/come-installare-chezmoi-gestisci-in-modo-sicuro-i-dotfile-su-piu-macchine
