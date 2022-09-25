@@ -164,10 +164,10 @@ key = value
 subkey = subvalue
 -- home/user/.include --
 # contents of .include
--- home/user/.local/share/chezmoi/.include --
-# contents of .local/share/chezmoi/.include
 -- home/user/.local/share/chezmoi/.chezmoitemplates/template --
 {{ . }}
+-- home/user/.local/share/chezmoi/.include --
+# contents of .local/share/chezmoi/.include
 -- home/user/.local/share/chezmoi/.template --
 {{ . }}
 -- home/user/.local/share/chezmoi/template --

@@ -76,9 +76,9 @@ README.md
 {{ end }}
 -- home/user/.local/share/chezmoi/README.md --
 # contents of README.md
--- home2/user/.local/share/chezmoi/dot_file.txt --
-# contents of .file.txt
 -- home2/user/.local/share/chezmoi/dot_dir/file.txt --
 # contents of .dir/file.txt
 -- home2/user/.local/share/chezmoi/dot_dir/subdir/file.txt --
 # contents of .dir/subdir/file.txt
+-- home2/user/.local/share/chezmoi/dot_file.txt --
+# contents of .file.txt

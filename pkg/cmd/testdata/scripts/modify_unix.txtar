@@ -85,15 +85,15 @@ index f91830d4ecd80adfe9a6aea9dca579397aa86921..6b6d41aae5e8d64a54afd8b8ad5a38a3
 sed 's/middle/modified-middle/g'
 -- home2/user/.file --
 # contents of .file
--- home2/user/.local/share/chezmoi/modify_dot_not_exist --
-#!/bin/sh
-
-cat
 -- home2/user/.local/share/chezmoi/modify_dot_error --
 #!/bin/sh
 
 echo error >2
 exit 1
+-- home2/user/.local/share/chezmoi/modify_dot_not_exist --
+#!/bin/sh
+
+cat
 -- home2/user/.local/share/chezmoi/modify_private_executable_dot_file --
 #!/bin/sh
 
@@ -102,11 +102,11 @@ cat
 beginning
 middle
 end
--- home4/user/.modify --
-beginning
-middle
-end
 -- home4/user/.local/share/chezmoi/modify_dot_modify.tmpl --
 #!/bin/sh
 
 {{ "sed 's/middle/modified-middle/g'" }}
+-- home4/user/.modify --
+beginning
+middle
+end

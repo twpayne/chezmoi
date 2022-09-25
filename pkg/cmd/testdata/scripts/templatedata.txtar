@@ -31,10 +31,10 @@ stdout ok
 {{ .chezmoi.sourceFile }}
 -- home2/user/.local/share/chezmoi/.chezmoidata.toml --
 filename = ".file2"
--- home2/user/.local/share/chezmoi/.chezmoitemplates/ignore --
-{{ .filename }}
 -- home2/user/.local/share/chezmoi/.chezmoiignore --
 {{ template "ignore" . }}
+-- home2/user/.local/share/chezmoi/.chezmoitemplates/ignore --
+{{ .filename }}
 -- home2/user/.local/share/chezmoi/dot_file1 --
 # contents of .file1
 -- home2/user/.local/share/chezmoi/dot_file2 --
@@ -43,11 +43,11 @@ filename = ".file2"
 {{ "invalid template"
 -- home3/user/.local/share/chezmoi/.chezmoidata.yaml --
 message: ok
--- home3/user/.local/share/chezmoi/.chezmoitemplates/template --
-{{ .message }}
 -- home3/user/.local/share/chezmoi/.chezmoiexternal.toml --
 {{ "invalid template"
 -- home3/user/.local/share/chezmoi/.chezmoiignore --
 {{ "invalid template"
 -- home3/user/.local/share/chezmoi/.chezmoiremove --
 {{ "invalid template"
+-- home3/user/.local/share/chezmoi/.chezmoitemplates/template --
+{{ .message }}

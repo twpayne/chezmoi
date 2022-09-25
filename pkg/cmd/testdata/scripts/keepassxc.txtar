@@ -60,9 +60,9 @@ IF "%*" == "--version" (
     echo keepass-test: invalid command: %*
     exit /b 1
 )
--- home/user/input --
-fakepassword
 -- home/user/.config/chezmoi/chezmoi.toml --
 [keepassxc]
     command = "keepass-test"
     database = "/secrets.kdbx"
+-- home/user/input --
+fakepassword

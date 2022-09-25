@@ -39,15 +39,15 @@ cmp stdout golden/script-one-state.json
   "type": "script",
   "contentsSHA256": "a07f0271151ee0271ed379ebbddc5ef49d0f625417c8fe23254179e56f98d2df"
 }
+-- golden/script-one.sh --
+#!/bin/sh
+
+echo one
 -- golden/script-two-state.json --
 {
   "type": "script",
   "contentsSHA256": "7c8d714586cecf4f0ffb735ad10334df98428bc5282c0d0a6b78f5c074365159"
 }
--- golden/script-one.sh --
-#!/bin/sh
-
-echo one
 -- golden/script-two.sh --
 #!/bin/sh
 

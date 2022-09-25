@@ -78,11 +78,11 @@ cmp $CHEZMOISOURCEDIR/dot_file golden/edited_dot_file
 # edited
 -- home2/user/.dir/non_empty_subdir/file --
 # contents of .dir/non_empty_subdir/file
--- home3/user/.local/share/chezmoi/.chezmoiignore --
-**/ignore
 -- home3/user/.dir/file --
 # contents of .dir/file
 -- home3/user/.dir/ignore --
 # contents of .dir/ignore
+-- home3/user/.local/share/chezmoi/.chezmoiignore --
+**/ignore
 -- home4/user/.file --
 # contents of .file

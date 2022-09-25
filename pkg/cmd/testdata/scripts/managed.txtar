@@ -77,6 +77,10 @@ cmp stdout golden/managed2
 -- golden/managed-dirs --
 .dir
 .dir/subdir
+-- golden/managed-except-files --
+.dir
+.dir/subdir
+.symlink
 -- golden/managed-files --
 .create
 .dir/file
@@ -88,36 +92,32 @@ cmp stdout golden/managed2
 .readonly
 .remove
 .template
+-- golden/managed-in-managed --
+.dir/subdir
+.dir/subdir/file
 -- golden/managed-symlinks --
 .symlink
--- golden/managed-except-files --
+-- golden/managed-with-absent-args --
 .dir
+.dir/file
 .dir/subdir
-.symlink
--- golden/managed2 --
-.create
-.file
-.symlink
-.template
-script
+.dir/subdir/file
 -- golden/managed-with-args --
 .create
 .dir
 .dir/file
 .dir/subdir
 .dir/subdir/file
--- golden/managed-in-managed --
-.dir/subdir
-.dir/subdir/file
 -- golden/managed-with-nodir-args --
 .create
 .dir/file
 .dir/subdir/file
--- golden/managed-with-absent-args --
-.dir
-.dir/file
-.dir/subdir
-.dir/subdir/file
+-- golden/managed2 --
+.create
+.file
+.symlink
+.template
+script
 -- home/user/.local/share/chezmoi/.chezmoiremove --
 .remove
 -- home2/user/.local/share/chezmoi/create_dot_create.tmpl --
@@ -126,7 +126,7 @@ script
 {{ fail "Template should not be executed }}
 -- home2/user/.local/share/chezmoi/modify_dot_file.tmpl --
 {{ fail "Template should not be executed }}
--- home2/user/.local/share/chezmoi/symlink_dot_symlink.tmpl --
-{{ fail "Template should not be executed }}
 -- home2/user/.local/share/chezmoi/run_script.tmpl --
+{{ fail "Template should not be executed }}
+-- home2/user/.local/share/chezmoi/symlink_dot_symlink.tmpl --
 {{ fail "Template should not be executed }}

@@ -135,25 +135,6 @@ data:
   bool: true
   int: 1
   string: string
--- home4/user/.config/chezmoi/chezmoi.toml --
--- home5/user/dotfiles/.git/.keep --
--- home5/user/dotfiles/.chezmoi.toml.tmpl --
-[data]
-    email = "me@home.org"
--- home7/user/.config/chezmoi/chezmoi.toml --
-[data]
-    email = "firstname.lastname@company.com"
--- home7/user/.local/share/chezmoi/.git/.keep --
--- home7/user/.local/share/chezmoi/.chezmoi.toml.tmpl --
-{{- $email := get . "email" -}}
-{{- if not $email -}}
-{{-   $email = "me@home.org" -}}
-{{- end -}}
-[data]
-    email = {{ $email | quote }}
--- home8/user/.local/share/chezmoi/.chezmoi.toml.tmpl --
-[diff]
-exclude: ["scripts"]
 -- home12/user/.local/share/chezmoi/.chezmoi.yaml.tmpl --
 data:
   bool: {{ promptBool "bool" }}
@@ -162,3 +143,22 @@ data:
 -- home13/user/.local/share/chezmoi/.chezmoi.yml.tmpl --
 data:
     key: value
+-- home4/user/.config/chezmoi/chezmoi.toml --
+-- home5/user/dotfiles/.chezmoi.toml.tmpl --
+[data]
+    email = "me@home.org"
+-- home5/user/dotfiles/.git/.keep --
+-- home7/user/.config/chezmoi/chezmoi.toml --
+[data]
+    email = "firstname.lastname@company.com"
+-- home7/user/.local/share/chezmoi/.chezmoi.toml.tmpl --
+{{- $email := get . "email" -}}
+{{- if not $email -}}
+{{-   $email = "me@home.org" -}}
+{{- end -}}
+[data]
+    email = {{ $email | quote }}
+-- home7/user/.local/share/chezmoi/.git/.keep --
+-- home8/user/.local/share/chezmoi/.chezmoi.toml.tmpl --
+[diff]
+exclude: ["scripts"]

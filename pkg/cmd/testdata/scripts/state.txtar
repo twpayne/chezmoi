@@ -17,8 +17,8 @@ exec chezmoi state delete --bucket=bucket --key=key
 exec chezmoi state data --format=yaml
 cmp stdout golden/data-after-delete.yaml
 
+-- golden/data-after-delete.yaml --
+bucket: {}
 -- golden/data.yaml --
 bucket:
     key: value
--- golden/data-after-delete.yaml --
-bucket: {}

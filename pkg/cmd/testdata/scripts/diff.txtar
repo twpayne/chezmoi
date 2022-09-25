@@ -81,22 +81,16 @@ index 0000000000000000000000000000000000000000..06e05235fdd12fd5c367b6d629fef945
 +++ b/.newfile
 @@ -0,0 +1 @@
 +# contents of .newfile
--- golden/modify-file-diff-unix.diff --
+-- golden/chmod-dir-diff.diff --
+diff --git a/.dir b/.dir
+old mode 40700
+new mode 40755
+-- golden/chmod-file-diff.diff --
 diff --git a/.file b/.file
-index 5d2730a8850a2db479af83de87cc8345437aef06..8a52cb9ce9551221716a53786ad74104c5902362 100644
---- a/.file
-+++ b/.file
-@@ -1,2 +1 @@
- # contents of .file
--# edited
--- golden/modify-file-diff-windows.diff --
-diff --git a/.file b/.file
-index 5d2730a8850a2db479af83de87cc8345437aef06..8a52cb9ce9551221716a53786ad74104c5902362 100666
---- a/.file
-+++ b/.file
-@@ -1,2 +1 @@
- # contents of .file
--# edited
+old mode 100777
+new mode 100644
+-- golden/dot_newfile --
+# contents of .newfile
 -- golden/modify-file-diff-reverse-unix.diff --
 diff --git a/.file b/.file
 index 8a52cb9ce9551221716a53786ad74104c5902362..5d2730a8850a2db479af83de87cc8345437aef06 100644
@@ -113,6 +107,34 @@ index 8a52cb9ce9551221716a53786ad74104c5902362..5d2730a8850a2db479af83de87cc8345
 @@ -1 +1,2 @@
  # contents of .file
 +# edited
+-- golden/modify-file-diff-unix.diff --
+diff --git a/.file b/.file
+index 5d2730a8850a2db479af83de87cc8345437aef06..8a52cb9ce9551221716a53786ad74104c5902362 100644
+--- a/.file
++++ b/.file
+@@ -1,2 +1 @@
+ # contents of .file
+-# edited
+-- golden/modify-file-diff-windows.diff --
+diff --git a/.file b/.file
+index 5d2730a8850a2db479af83de87cc8345437aef06..8a52cb9ce9551221716a53786ad74104c5902362 100666
+--- a/.file
++++ b/.file
+@@ -1,2 +1 @@
+ # contents of .file
+-# edited
+-- golden/restore-dir-diff-unix.diff --
+diff --git a/.dir b/.dir
+new file mode 40755
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+--- /dev/null
++++ b/.dir
+-- golden/restore-dir-diff-windows.diff --
+diff --git a/.dir b/.dir
+new file mode 40777
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+--- /dev/null
++++ b/.dir
 -- golden/restore-file-diff-unix.diff --
 diff --git a/.file b/.file
 new file mode 100644
@@ -129,18 +151,6 @@ index 0000000000000000000000000000000000000000..8a52cb9ce9551221716a53786ad74104
 +++ b/.file
 @@ -0,0 +1 @@
 +# contents of .file
--- golden/restore-dir-diff-unix.diff --
-diff --git a/.dir b/.dir
-new file mode 40755
-index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
---- /dev/null
-+++ b/.dir
--- golden/restore-dir-diff-windows.diff --
-diff --git a/.dir b/.dir
-new file mode 40777
-index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
---- /dev/null
-+++ b/.dir
 -- golden/symlink-file-diff-unix.diff --
 diff --git a/.symlink b/.symlink
 deleted file mode 100644
@@ -158,15 +168,3 @@ index 8a52cb9ce9551221716a53786ad74104c5902362..9b91fdbb83798a67fbbc5cc4f120c3f7
 @@ -1 +1 @@
 -# contents of .file
 +.dir/subdir/file
--- golden/dot_newfile --
-# contents of .newfile
--- golden/chmod-file-diff.diff --
-diff --git a/.file b/.file
-old mode 100777
-new mode 100644
--- golden/chmod-dir-diff.diff --
-diff --git a/.dir b/.dir
-old mode 40700
-new mode 40755
--- golden/dot_newfile --
-# contents of .newfile

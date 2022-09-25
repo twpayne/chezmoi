@@ -9,10 +9,10 @@ edit $HOME/.file
 exec chezmoi merge-all
 stdout ^${HOME@R}/\.file\s+${CHEZMOISOURCEDIR@R}/dot_file\.tmpl\s+${WORK@R}/.*/\.file$
 
--- home/user/.file --
-# contents of .file
 -- home/user/.config/chezmoi/chezmoi.toml --
 [merge]
     command = "echo"
+-- home/user/.file --
+# contents of .file
 -- home/user/.local/share/chezmoi/dot_file.tmpl --
 {{ "# contents of .file" }}

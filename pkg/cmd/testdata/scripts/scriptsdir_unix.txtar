@@ -35,6 +35,6 @@ echo script
 
 echo script in subdir
 -- home2/user/.local/share/chezmoi/.chezmoiscripts/dot_file --
--- home3/user/.local/share/chezmoi/.chezmoiscripts/run_script.sh --
 -- home3/user/.local/share/chezmoi/.chezmoiscripts/run_once_script.sh --
+-- home3/user/.local/share/chezmoi/.chezmoiscripts/run_script.sh --
 -- home4/user/.local/share/chezmoi/.chezmoiscripts/.chezmoiignore --

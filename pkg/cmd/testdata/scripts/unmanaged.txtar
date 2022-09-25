@@ -36,10 +36,10 @@ cmp stdout golden/unmanaged-with-some-managed
 .dir
 .file
 .local
+-- golden/unmanaged-inside-unmanaged --
+.dir/subdir
 -- golden/unmanaged-with-args --
 .dir
 .file
--- golden/unmanaged-inside-unmanaged --
-.dir/subdir
 -- golden/unmanaged-with-some-managed --
 .file
