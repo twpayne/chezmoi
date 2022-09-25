@@ -42,10 +42,10 @@ stderr 'inconsistent state'
 # contents of .local/share/chezmoi
 -- home4/user/.local/share/chezmoi/.chezmoiversion --
 3.0.0
--- home5/user/.local/share/chezmoi/.chezmoiversion --
-3.0.0
 -- home5/user/.local/share/chezmoi/.chezmoiroot --
 home
+-- home5/user/.local/share/chezmoi/.chezmoiversion --
+3.0.0
 -- home6/user/.local/share/chezmoi/run_install_packages --
 # contents of install_packages
 -- home6/user/.local/share/chezmoi/run_once_install_packages --

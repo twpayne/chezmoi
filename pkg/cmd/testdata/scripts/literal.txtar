@@ -11,16 +11,6 @@ cmp $HOME/run_script golden/run_script
 cmp $HOME/symlink_symlink golden/symlink_symlink
 cmp $HOME/template.tmpl golden/template.tmpl
 
--- home/user/dot_file --
-# contents of dot_file
--- home/user/run_script --
-#!/bin/sh
-
-echo contents of run_script
--- home/user/symlink_symlink --
-# contents of symlink_symlink
--- home/user/template.tmpl --
-# contents of template.tmpl
 -- golden/dot_file --
 # contents of dot_file
 -- golden/run_script --
@@ -30,4 +20,14 @@ echo contents of run_script
 -- golden/symlink_symlink --
 # contents of symlink_symlink
 -- golden/template.tmpl --
+# contents of template.tmpl
+-- home/user/dot_file --
+# contents of dot_file
+-- home/user/run_script --
+#!/bin/sh
+
+echo contents of run_script
+-- home/user/symlink_symlink --
+# contents of symlink_symlink
+-- home/user/template.tmpl --
 # contents of template.tmpl

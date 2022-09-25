@@ -11,11 +11,11 @@ output
 #!/bin/sh
 
 echo output
+-- home/user/.local/share/chezmoi/dot_file.tmpl --
+{{ output "binary.sh" -}}
 -- home/user/.local/share/chezmoi/run_before_install-binary.sh --
 #!/bin/sh
 
 cp $WORK/golden/binary.sh $HOME/bin
 chmod a+x $HOME/bin/binary.sh
--- home/user/.local/share/chezmoi/dot_file.tmpl --
-{{ output "binary.sh" -}}
 -- home/user/bin/.keep --

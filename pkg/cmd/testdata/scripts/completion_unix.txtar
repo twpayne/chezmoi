@@ -25,13 +25,13 @@ cmpenv stdout golden/complete-target-home
 -- golden/complete-attribute-p --
 private
 :4
+-- golden/complete-dot-f-in-home --
+.file
+:4
 -- golden/complete-target-home --
 $HOME/.dir/
 $HOME/.dir/file
 $HOME/.file
-:4
--- golden/complete-dot-f-in-home --
-.file
 :4
 -- golden/complete-target-home-dot-f --
 $HOME/.file

@@ -35,12 +35,12 @@ cmp stdout golden/edited-target
 echo "# edited" >> $2
 -- golden/destination --
 destination
+-- golden/edited-target --
+target
+# edited
 -- golden/expected --
 destination
 {{ "target" }}
 target
 -- golden/source --
 {{ "target" }}
--- golden/edited-target --
-target
-# edited

@@ -19,16 +19,16 @@ cmp $CHEZMOISOURCEDIR/dot_vimrc.tmpl golden/dot_vimrc.tmpl
 # contents of .file
 -- golden/dot_template.tmpl --
 key = {{ .variable }}
--- golden/symlink_dot_symlink.tmpl --
-.target-{{ .variable }}
 -- golden/dot_vimrc.tmpl --
 set foldmarker={{ "{{" }},{{ "}}" }}
+-- golden/symlink_dot_symlink.tmpl --
+.target-{{ .variable }}
 -- home/user/.config/chezmoi/chezmoi.toml --
 [data]
     variable = "value"
 -- home/user/.file --
 # contents of .file
--- home/user/.vimrc --
-set foldmarker={{,}}
 -- home/user/.template --
 key = value
+-- home/user/.vimrc --
+set foldmarker={{,}}

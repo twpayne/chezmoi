@@ -41,12 +41,12 @@ exec chezmoi apply --destination=$HOME/
 -- home2/user/.dir/.keep --
 -- home2/user/.file --
 # contents of .file
--- home2/user/.local/share/chezmoi/remove_dot_file --
 -- home2/user/.local/share/chezmoi/remove_dot_dir --
 
--- home3/user/.star-dir/.keep --
--- home3/user/.star-file --
-# contents of .star-file
+-- home2/user/.local/share/chezmoi/remove_dot_file --
 -- home3/user/.local/share/chezmoi/.chezmoiremove --
 .*-dir/
 .*-file
+-- home3/user/.star-dir/.keep --
+-- home3/user/.star-file --
+# contents of .star-file

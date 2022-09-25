@@ -17,6 +17,48 @@ cmp stdout golden/dump-dir-non-recursive.json
 ! exec chezmoi dump $HOME${/}.inputrc
 stderr 'not in source state'
 
+-- golden/dump-dir-non-recursive.json --
+{
+  ".dir": {
+    "type": "dir",
+    "name": ".dir",
+    "perm": 493
+  }
+}
+-- golden/dump-dir.json --
+{
+  ".dir": {
+    "type": "dir",
+    "name": ".dir",
+    "perm": 493
+  },
+  ".dir/file": {
+    "type": "file",
+    "name": ".dir/file",
+    "contents": "# contents of .dir/file\n",
+    "perm": 420
+  },
+  ".dir/subdir": {
+    "type": "dir",
+    "name": ".dir/subdir",
+    "perm": 493
+  },
+  ".dir/subdir/file": {
+    "type": "file",
+    "name": ".dir/subdir/file",
+    "contents": "# contents of .dir/subdir/file\n",
+    "perm": 420
+  }
+}
+-- golden/dump-file.json --
+{
+  ".file": {
+    "type": "file",
+    "name": ".file",
+    "contents": "# contents of .file\n",
+    "perm": 420
+  }
+}
 -- golden/dump.json --
 {
   ".create": {
@@ -87,47 +129,5 @@ stderr 'not in source state'
     "name": ".template",
     "contents": "key = value\n",
     "perm": 420
-  }
-}
--- golden/dump-file.json --
-{
-  ".file": {
-    "type": "file",
-    "name": ".file",
-    "contents": "# contents of .file\n",
-    "perm": 420
-  }
-}
--- golden/dump-dir.json --
-{
-  ".dir": {
-    "type": "dir",
-    "name": ".dir",
-    "perm": 493
-  },
-  ".dir/file": {
-    "type": "file",
-    "name": ".dir/file",
-    "contents": "# contents of .dir/file\n",
-    "perm": 420
-  },
-  ".dir/subdir": {
-    "type": "dir",
-    "name": ".dir/subdir",
-    "perm": 493
-  },
-  ".dir/subdir/file": {
-    "type": "file",
-    "name": ".dir/subdir/file",
-    "contents": "# contents of .dir/subdir/file\n",
-    "perm": 420
-  }
-}
--- golden/dump-dir-non-recursive.json --
-{
-  ".dir": {
-    "type": "dir",
-    "name": ".dir",
-    "perm": 493
   }
 }

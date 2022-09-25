@@ -42,14 +42,14 @@ true
 file
 symlink
 :4
--- golden/use-builtin-flags --
---use-builtin-age	Use builtin age
---use-builtin-git	Use builtin git
-:4
 -- golden/read-data --
 json
 toml
 yaml
+:4
+-- golden/use-builtin-flags --
+--use-builtin-age	Use builtin age
+--use-builtin-git	Use builtin git
 :4
 -- golden/write-data --
 json

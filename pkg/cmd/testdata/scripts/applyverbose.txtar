@@ -9,17 +9,17 @@ chhome home2/user
 exec chezmoi apply --dry-run --force --verbose
 ! stdout .
 
--- golden/apply.diff --
+-- golden/apply-windows.diff --
 diff --git a/.file b/.file
-new file mode 100644
+new file mode 100666
 index 0000000000000000000000000000000000000000..8a52cb9ce9551221716a53786ad74104c5902362
 --- /dev/null
 +++ b/.file
 @@ -0,0 +1 @@
 +# contents of .file
--- golden/apply-windows.diff --
+-- golden/apply.diff --
 diff --git a/.file b/.file
-new file mode 100666
+new file mode 100644
 index 0000000000000000000000000000000000000000..8a52cb9ce9551221716a53786ad74104c5902362
 --- /dev/null
 +++ b/.file

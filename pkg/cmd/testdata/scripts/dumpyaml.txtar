@@ -8,27 +8,19 @@ cmp stdout golden/dump.yaml
 exec chezmoi dump --exclude=dirs --format=yaml
 cmp stdout golden/dump-except-dirs.yaml
 
--- golden/dump.yaml --
+-- golden/dump-except-dirs.yaml --
 .create:
     type: file
     name: .create
     contents: |
         # contents of .create
     perm: 420
-.dir:
-    type: dir
-    name: .dir
-    perm: 493
 .dir/file:
     type: file
     name: .dir/file
     contents: |
         # contents of .dir/file
     perm: 420
-.dir/subdir:
-    type: dir
-    name: .dir/subdir
-    perm: 493
 .dir/subdir/file:
     type: file
     name: .dir/subdir/file
@@ -74,19 +66,27 @@ cmp stdout golden/dump-except-dirs.yaml
     contents: |
         key = value
     perm: 420
--- golden/dump-except-dirs.yaml --
+-- golden/dump.yaml --
 .create:
     type: file
     name: .create
     contents: |
         # contents of .create
     perm: 420
+.dir:
+    type: dir
+    name: .dir
+    perm: 493
 .dir/file:
     type: file
     name: .dir/file
     contents: |
         # contents of .dir/file
     perm: 420
+.dir/subdir:
+    type: dir
+    name: .dir/subdir
+    perm: 493
 .dir/subdir/file:
     type: file
     name: .dir/subdir/file
