@@ -191,6 +191,86 @@ but must meet the following criteria, in order of importance:
 4. Not add significant extra complexity to the user interface or underlying
    implementation.
 
+## Can chezmoi support multiple sources or multiple source states?
+
+With some dotfile managers, dotfiles can be distributed across multiple
+directories or even multiple repos. For example, the user might have one
+directory per application, or separate repos for home and work configurations,
+or even separate git submodules for different applications. These can be
+considered multiple sources of truth for the target state. This, however, comes
+with complications:
+
+1. Multiple sources of truth complicate the user interface. When running
+   `chezmoi add $FILE`, which source should `$FILE` be added to?
+
+2. Multiple sources of truth do not compose easily if target files overlap. For
+   example, if you have two sources, both of which need to set an environment
+   variable in `.bashrc`, how do you handle this when both, only one, or
+   neither source might be activated? What if the sources are mutually
+   exclusive, e.g. if the VIM source and the Emacs source both want to set the
+   `$EDITOR` environment variable?
+
+3. Multiple sources of truth are not always independent. Related to the
+   previous point, consider a source that adds an applications's configuration
+   files and shell completions. Should the shell completions be part of the
+   applications's source or of the shell's source?
+
+chezmoi instead makes the opinionated choice to use a single source of truth,
+i.e. a single branch in a single git repo. Using a single source of truth
+avoids the inherent complexity and ambiguity of multiple sources.
+
+chezmoi provides mechanisms like templates (for minor differences),
+`.chezmoiignore` (for controlling the presence or otherwise of complete files
+and directories), and password manager integration (so secrets never need to be
+stored in a repo) handle machine-to-machine differences. Externals make it easy
+to pull in dotfiles from third-party sources.
+
+That said, if you are keen to use multiple sources of truth with chezmoi, you
+have a number of options with some scripting around chezmoi.
+
+Firstly, you can run `chezmoi apply` with different arguments to the `--config`
+and `--source` flags which will apply to the same destination. So that you only
+have to type one command you can wrap this in a shell function, for example:
+
+```bash
+chezmoi-apply() {
+    chezmoi apply --config ~/.config/chezmoi-home/chezmoi.toml \
+                  --source ~/.local/share/chezmoi-home && \
+    chezmoi apply --config ~/.config/chezmoi-work/chezmoi.toml \
+                  --source ~/.local/share/chezmoi-work
+}
+```
+
+If you want to generate multiple configuration files with `chezmoi init` then
+you will need the `--config-path` flag. For more advanced use, use the
+`--destination`, `--cache`, and `--persistent-state` flags.
+
+Secondly, you can assemble a single source state from multiple sources and then
+use `chezmoi apply`. For example, if you have multiple source states in
+subdirectories of `~/.dotfiles`:
+
+```bash
+#!/bin/bash
+
+# create a combined source state in a temporary directory
+combined_source="$(mktemp -d)"
+
+# remove the temporary source state on exit
+trap 'rm -rf -- "${combined_source}"' INT TERM
+
+# copy files from multiple sources into the temporary source state
+for source in $HOME/.dotfiles/*; do
+    cp -r "${source}"/* "${combined_source}"
+done
+
+# apply the temporary source state
+chezmoi apply --source "${combined_source}"
+```
+
+Thirdly, you can use a `run_` script to invoke a second instance of chezmoi,
+[as used by
+@felipecrs](https://github.com/felipecrs/dotfiles/blob/8a7840efdeff1a45069f47e5b2e558dc9812712d/home/.chezmoiscripts/run_after_20-run-rootmoi.sh.tmpl).
+
 ## Why does `chezmoi cd` spawn a shell instead of just changing directory?
 
 `chezmoi cd` spawns a shell because it is not possible for a program to change
