@@ -51,7 +51,7 @@ func tidyTxtar(archiveFilename string) error {
 
 	if *write {
 		slices.SortFunc(archive.Files, sortFilesFunc)
-		return os.WriteFile(archiveFilename, txtar.Format(archive), 0o600)
+		return os.WriteFile(archiveFilename, txtar.Format(archive), 0o666)
 	}
 
 	return fmt.Errorf("%s: files are not sorted", archiveFilename)
