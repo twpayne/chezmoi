@@ -347,6 +347,10 @@ jobs:
         run: |
           go install github.com/twpayne/findtypos@v0.0.1
           findtypos -format=github-actions chezmoi .
+      - name: actionlint
+        run: |
+          go install github.com/rhysd/actionlint/cmd/actionlint@d81f1c3eabf0458bbd85ef88ec3d0db6bde12c50
+          actionlint
   lint:
     needs: changes
     if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
