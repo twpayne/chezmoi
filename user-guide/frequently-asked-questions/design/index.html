@@ -1425,6 +1425,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#can-chezmoi-support-multiple-sources-or-multiple-source-states" class="md-nav__link">
+    Can chezmoi support multiple sources or multiple source states?
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#why-does-chezmoi-cd-spawn-a-shell-instead-of-just-changing-directory" class="md-nav__link">
     Why does chezmoi cd spawn a shell instead of just changing directory?
   </a>
@@ -4870,6 +4877,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#can-chezmoi-support-multiple-sources-or-multiple-source-states" class="md-nav__link">
+    Can chezmoi support multiple sources or multiple source states?
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#why-does-chezmoi-cd-spawn-a-shell-instead-of-just-changing-directory" class="md-nav__link">
     Why does chezmoi cd spawn a shell instead of just changing directory?
   </a>
@@ -5097,6 +5111,78 @@ but must meet the following criteria, in order of importance:</p>
 <li>Not add significant extra complexity to the user interface or underlying
    implementation.</li>
 </ol>
+<h2 id="can-chezmoi-support-multiple-sources-or-multiple-source-states">Can chezmoi support multiple sources or multiple source states?</h2>
+<p>With some dotfile managers, dotfiles can be distributed across multiple
+directories or even multiple repos. For example, the user might have one
+directory per application, or separate repos for home and work configurations,
+or even separate git submodules for different applications. These can be
+considered multiple sources of truth for the target state. This, however, comes
+with complications:</p>
+<ol>
+<li>
+<p>Multiple sources of truth complicate the user interface. When running
+   <code>chezmoi add $FILE</code>, which source should <code>$FILE</code> be added to?</p>
+</li>
+<li>
+<p>Multiple sources of truth do not compose easily if target files overlap. For
+   example, if you have two sources, both of which need to set an environment
+   variable in <code>.bashrc</code>, how do you handle this when both, only one, or
+   neither source might be activated? What if the sources are mutually
+   exclusive, e.g. if the VIM source and the Emacs source both want to set the
+   <code>$EDITOR</code> environment variable?</p>
+</li>
+<li>
+<p>Multiple sources of truth are not always independent. Related to the
+   previous point, consider a source that adds an applications's configuration
+   files and shell completions. Should the shell completions be part of the
+   applications's source or of the shell's source?</p>
+</li>
+</ol>
+<p>chezmoi instead makes the opinionated choice to use a single source of truth,
+i.e. a single branch in a single git repo. Using a single source of truth
+avoids the inherent complexity and ambiguity of multiple sources.</p>
+<p>chezmoi provides mechanisms like templates (for minor differences),
+<code>.chezmoiignore</code> (for controlling the presence or otherwise of complete files
+and directories), and password manager integration (so secrets never need to be
+stored in a repo) handle machine-to-machine differences. Externals make it easy
+to pull in dotfiles from third-party sources.</p>
+<p>That said, if you are keen to use multiple sources of truth with chezmoi, you
+have a number of options with some scripting around chezmoi.</p>
+<p>Firstly, you can run <code>chezmoi apply</code> with different arguments to the <code>--config</code>
+and <code>--source</code> flags which will apply to the same destination. So that you only
+have to type one command you can wrap this in a shell function, for example:</p>
+<div class="highlight"><pre><span></span><code>chezmoi-apply<span class="o">()</span> <span class="o">{</span>
+    chezmoi apply --config ~/.config/chezmoi-home/chezmoi.toml <span class="se">\</span>
+                  --source ~/.local/share/chezmoi-home <span class="o">&amp;&amp;</span> <span class="se">\</span>
+    chezmoi apply --config ~/.config/chezmoi-work/chezmoi.toml <span class="se">\</span>
+                  --source ~/.local/share/chezmoi-work
+<span class="o">}</span>
+</code></pre></div>
+<p>If you want to generate multiple configuration files with <code>chezmoi init</code> then
+you will need the <code>--config-path</code> flag. For more advanced use, use the
+<code>--destination</code>, <code>--cache</code>, and <code>--persistent-state</code> flags.</p>
+<p>Secondly, you can assemble a single source state from multiple sources and then
+use <code>chezmoi apply</code>. For example, if you have multiple source states in
+subdirectories of <code>~/.dotfiles</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="ch">#!/bin/bash</span>
+
+<span class="c1"># create a combined source state in a temporary directory</span>
+<span class="nv">combined_source</span><span class="o">=</span><span class="s2">&quot;</span><span class="k">$(</span>mktemp -d<span class="k">)</span><span class="s2">&quot;</span>
+
+<span class="c1"># remove the temporary source state on exit</span>
+<span class="nb">trap</span> <span class="s1">&#39;rm -rf -- &quot;${combined_source}&quot;&#39;</span> INT TERM
+
+<span class="c1"># copy files from multiple sources into the temporary source state</span>
+<span class="k">for</span> <span class="nb">source</span> <span class="k">in</span> <span class="nv">$HOME</span>/.dotfiles/*<span class="p">;</span> <span class="k">do</span>
+    cp -r <span class="s2">&quot;</span><span class="si">${</span><span class="nv">source</span><span class="si">}</span><span class="s2">&quot;</span>/* <span class="s2">&quot;</span><span class="si">${</span><span class="nv">combined_source</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="k">done</span>
+
+<span class="c1"># apply the temporary source state</span>
+chezmoi apply --source <span class="s2">&quot;</span><span class="si">${</span><span class="nv">combined_source</span><span class="si">}</span><span class="s2">&quot;</span>
+</code></pre></div>
+<p>Thirdly, you can use a <code>run_</code> script to invoke a second instance of chezmoi,
+<a href="https://github.com/felipecrs/dotfiles/blob/8a7840efdeff1a45069f47e5b2e558dc9812712d/home/.chezmoiscripts/run_after_20-run-rootmoi.sh.tmpl">as used by
+@felipecrs</a>.</p>
 <h2 id="why-does-chezmoi-cd-spawn-a-shell-instead-of-just-changing-directory">Why does <code>chezmoi cd</code> spawn a shell instead of just changing directory?</h2>
 <p><code>chezmoi cd</code> spawns a shell because it is not possible for a program to change
 the working directory of its parent process. You can add a shell function instead:</p>
