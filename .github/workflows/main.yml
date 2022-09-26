@@ -175,6 +175,56 @@ jobs:
         run: |
           sh assets/scripts/install.sh
           bin/chezmoi --version
+  test-release:
+    needs: changes
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+      - uses: actions/setup-go@268d8c0ca0432bb2cf416faae41297df9d262d7f
+        with:
+          cache: true
+          go-version: ${{ env.GO_VERSION }}
+      - name: install-release-dependencies
+        if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+        run: |
+          sudo apt-get --quiet update
+          sudo apt-get --no-install-suggests --no-install-recommends --quiet --yes install musl-tools snapcraft
+      - name: build-release
+        if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+        uses: goreleaser/goreleaser-action@ff11ca24a9b39f2d36796d1fbd7a4e39c182630a
+        with:
+          version: latest
+          args: release --skip-publish --snapshot --timeout=1h
+      - name: upload-artifact-chezmoi-darwin-amd64
+        if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8
+        with:
+          name: chezmoi-darwin-amd64
+          path: dist/chezmoi-nocgo_darwin_amd64_v1/chezmoi
+      - name: upload-artifact-chezmoi-darwin-arm64
+        if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8
+        with:
+          name: chezmoi-darwin-arm64
+          path: dist/chezmoi-nocgo_darwin_arm64/chezmoi
+      - name: upload-artifact-chezmoi-linux-amd64
+        if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8
+        with:
+          name: chezmoi-linux-amd64
+          path: dist/chezmoi-cgo-glibc_linux_amd64_v1/chezmoi
+      - name: upload-artifact-chezmoi-linux-musl-amd64
+        if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8
+        with:
+          name: chezmoi-linux-amd64-musl
+          path: dist/chezmoi-cgo-musl_linux_amd64_v1/chezmoi
+      - name: upload-artifact-chezmoi-windows-amd64.exe
+        if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
+        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8
+        with:
+          name: chezmoi-windows-amd64.exe
+          path: dist/chezmoi-nocgo_windows_amd64_v1/chezmoi.exe
   test-ubuntu:
     needs: changes
     runs-on: ubuntu-18.04
@@ -222,56 +272,6 @@ jobs:
           rm -f bin/chezmoi
           sh assets/scripts/install.sh
           bin/chezmoi --version
-      - name: install-release-dependencies
-        if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-        run: |
-          sudo apt-get --quiet update
-          sudo apt-get --no-install-suggests --no-install-recommends --quiet --yes install musl-tools snapcraft
-      - name: build-release
-        if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-        uses: goreleaser/goreleaser-action@ff11ca24a9b39f2d36796d1fbd7a4e39c182630a
-        with:
-          version: latest
-          args: release --skip-publish --snapshot --timeout=1h
-      - name: test-release
-        if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-        run: |
-          # verify that version information is embedded correctly
-          file ./dist/chezmoi-cgo-glibc_linux_amd64_v1/chezmoi | tee /dev/stderr | grep -q "dynamically linked"
-          file ./dist/chezmoi-cgo-musl_linux_amd64_v1/chezmoi | tee /dev/stderr | grep -q "statically linked"
-          ./dist/chezmoi-cgo-glibc_linux_amd64_v1/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v2"
-          ./dist/chezmoi-cgo-musl_linux_amd64_v1/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v2"
-          ./dist/chezmoi-nocgo_linux_386/chezmoi --version | tee /dev/stderr | grep -q "chezmoi version v2"
-      - name: upload-artifact-chezmoi-darwin-amd64
-        if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8
-        with:
-          name: chezmoi-darwin-amd64
-          path: dist/chezmoi-nocgo_darwin_amd64_v1/chezmoi
-      - name: upload-artifact-chezmoi-darwin-arm64
-        if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8
-        with:
-          name: chezmoi-darwin-arm64
-          path: dist/chezmoi-nocgo_darwin_arm64/chezmoi
-      - name: upload-artifact-chezmoi-linux-amd64
-        if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8
-        with:
-          name: chezmoi-linux-amd64
-          path: dist/chezmoi-cgo-glibc_linux_amd64_v1/chezmoi
-      - name: upload-artifact-chezmoi-linux-musl-amd64
-        if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8
-        with:
-          name: chezmoi-linux-amd64-musl
-          path: dist/chezmoi-cgo-musl_linux_amd64_v1/chezmoi
-      - name: upload-artifact-chezmoi-windows-amd64.exe
-        if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
-        uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8
-        with:
-          name: chezmoi-windows-amd64.exe
-          path: dist/chezmoi-nocgo_windows_amd64_v1/chezmoi.exe
   test-website:
     runs-on: ubuntu-20.04
     steps:
@@ -361,7 +361,7 @@ jobs:
         with:
           version: v${{ env.GOLANGCI_LINT_VERSION }}
           args: --timeout=5m
-  release: # FIXME this should be merged into test-ubuntu above
+  release: # FIXME this should be merged into test-release above
     if: startsWith(github.ref, 'refs/tags/')
     needs:
       - check
@@ -373,6 +373,7 @@ jobs:
       - test-freebsd
       - test-legacy-go
       - test-macos
+      - test-release
       - test-ubuntu
       - test-website
       - test-windows
