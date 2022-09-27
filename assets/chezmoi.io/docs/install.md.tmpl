@@ -230,3 +230,56 @@ $ git clone https://github.com/twpayne/chezmoi.git
 $ cd chezmoi
 $ make install-from-git-working-copy
 ```
+
+## Verify your download
+
+chezmoi's release process signs the SHA256 checksums of [all released
+assets](https://github.com/twpayne/chezmoi/releases/tag/v{{ $version }}) with
+[cosign](https://github.com/SigStore/cosign).
+
+To verify an asset that you have downloaded:
+
+Download the [checksum
+file](https://github.com/twpayne/chezmoi/releases/download/v{{ $version
+}}/chezmoi_{{ $version }}_checksums.txt), [checksum file
+signature](https://github.com/twpayne/chezmoi/releases/download/v{{ $version
+}}/chezmoi_{{ $version }}_checksums.txt.sig), and [public signing
+key](https://github.com/twpayne/chezmoi/releases/download/v{{ $version
+}}/chezmoi_cosign.pub).
+
+   ```console
+   $ curl --location --remote-name-all \
+          https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_checksums.txt \
+          https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_{{ $version }}_checksums.txt.sig \
+          https://github.com/twpayne/chezmoi/releases/download/v{{ $version }}/chezmoi_cosign.pub
+   ```
+
+Verify the signature of the checksum file with cosign.
+
+   ```console
+   $ cosign verify-blob --key=chezmoi_cosign.pub \
+                        --signature=chezmoi_{{ $version }}_checksums.txt.sig \
+                        chezmoi_{{ $version }}_checksums.txt
+   ```
+
+!!! important
+
+    cosign should print `Verified OK`
+
+Verify the that the SHA256 sum of your downloads match the SHA256 sum in the
+verified checksum file. All your downloads must be in the current directory.
+
+=== "Linux"
+
+    ```console
+    $ sha256sum --check chezmoi_{{ $version }}_checksums.txt --ignore-missing
+    ```
+
+=== "macOS"
+
+    ```console
+    $ shasum --algorithm 256 --check chezmoi_{{ $version }}_checksums.txt --ignore-missing
+    ```
+
+For more information on chezmoi's release signing process, see the [developer
+documentation on chezmoi's releases](/developer/releases/).

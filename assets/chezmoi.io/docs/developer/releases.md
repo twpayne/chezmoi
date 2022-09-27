@@ -61,3 +61,33 @@ Release](https://github.com/twpayne/chezmoi/releases), and deploys the
 
     chezmoi is in [Scoop](https://scoop.sh/)'s Main bucket. Scoop's automation
     will automatically detect new releases within a few hours.
+
+## Signing
+
+chezmoi uses [GoReleaser's support for
+signing](https://goreleaser.com/customization/sign/) to sign the checksums of
+its release assets with [cosign](https://github.com/sigstore/cosign).
+
+Details:
+
+* The cosign private key was generated with cosign v1.12.1 on a private
+  recently-installed Ubuntu 22.04.1 system with a single user and all available
+  updates applied.
+
+* The private key uses a long (more than 32 character) password generated
+  locally by a password manager.
+
+* The password-protected private key is stored in chezmoi's public GitHub repo.
+
+* The private key's password is stored as a [GitHub Actions
+  secret](https://docs.github.com/en/actions/security-guides/encrypted-secrets)
+  and only available to the `release` step of `release` job of the `main`
+  workflow.
+
+* The cosign public key is included in the release assets and also uploaded to
+  [`https://chezmoi.io/cosign.pub`](https://chezmoi.io/cosign.pub). Since
+  [`https://chezmoi.io`](https://chezmoi.io) is served by [GitHub
+  pages](https://pages.github.com/), it probably has equivalent security to
+  [chezmoi's GitHub Releases
+  page](https://github.com/twpayne/chezmoi/releases), which is also managed by
+  GitHub.

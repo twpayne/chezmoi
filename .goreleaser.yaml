@@ -184,6 +184,8 @@ nfpms:
 
 release:
   extra_files:
+  - glob: ./assets/cosign/cosign.pub
+    name_template: chezmoi_cosign.pub
   - glob: ./dist/chezmoi-nocgo_darwin_amd64_v1/chezmoi
     name_template: chezmoi-darwin-amd64
   - glob: ./dist/chezmoi-nocgo_darwin_arm64/chezmoi
@@ -205,6 +207,16 @@ scoop:
   homepage: "https://chezmoi.io"
   description: "Manage your dotfiles across multiple diverse machines, securely."
   license: MIT
+
+signs:
+- cmd: cosign
+  stdin: '{{ .Env.COSIGN_PWD }}'
+  args:
+  - sign-blob
+  - '--key=assets/cosign/cosign.key'
+  - '--output-signature=${signature}'
+  - '${artifact}'
+  artifacts: checksum
 
 snapcrafts:
 - builds:
