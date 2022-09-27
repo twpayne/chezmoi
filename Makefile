@@ -143,5 +143,6 @@ test-release:
 	goreleaser release \
 		--rm-dist \
 		--skip-publish \
+		--skip-sign \
 		--snapshot \
 		${GORELEASER_FLAGS}
