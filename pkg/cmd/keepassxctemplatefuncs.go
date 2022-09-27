@@ -33,10 +33,19 @@ type keepassxcConfig struct {
 
 var (
 	keepassxcPairRx                      = regexp.MustCompile(`^([A-Z]\w*):\s*(.*)$`)
+	keepassxcHasAttachmentExportVersion  = semver.Version{Major: 2, Minor: 7, Patch: 0}
 	keepassxcNeedShowProtectedArgVersion = semver.Version{Major: 2, Minor: 5, Patch: 1}
 )
 
 func (c *Config) keepassxcAttachmentTemplateFunc(entry, name string) string {
+	version, err := c.keepassxcVersion()
+	if err != nil {
+		panic(err)
+	}
+	if version.Compare(keepassxcHasAttachmentExportVersion) < 0 {
+		panic(fmt.Sprintf("keepassxc-cli version %s required, found %s", keepassxcHasAttachmentExportVersion, version))
+	}
+
 	if data, ok := c.Keepassxc.attachmentCache[entry][name]; ok {
 		return data
 	}

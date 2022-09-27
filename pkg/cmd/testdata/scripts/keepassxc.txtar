@@ -21,7 +21,7 @@ stdout examplelogin/examplepassword$
 
 case "$*" in
 "--version")
-    echo "2.5.4"
+    echo "2.7.0"
     ;;
 "attachment-export --stdout --quiet /secrets.kdbx example.com attachment")
     echo "# contents of attachment"
@@ -45,7 +45,7 @@ esac
 -- bin/keepass-test.cmd --
 @echo off
 IF "%*" == "--version" (
-    echo 2.5.4
+    echo 2.7.0
 ) ELSE IF "%*" == "attachment-export --stdout --quiet C:/secrets.kdbx example.com attachment" (
     echo.# contents of attachment
 ) ELSE IF "%*" == "show --quiet --show-protected C:/secrets.kdbx example.com" (
