@@ -71,7 +71,7 @@ func (s *EntryTypeSet) IncludeEncrypted() bool {
 	return s.bits&EntryTypeEncrypted != 0
 }
 
-// IncludeExternals returns true if s includes encrypted files.
+// IncludeExternals returns true if s includes externals files.
 func (s *EntryTypeSet) IncludeExternals() bool {
 	return s.bits&EntryTypeExternals != 0
 }
