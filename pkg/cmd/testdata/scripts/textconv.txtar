@@ -2,8 +2,13 @@
 [!exec:tr] skip 'tr not found in $PATH'
 
 # test that chezmoi diff uses textconv
-exec chezmoi --debug diff
+exec chezmoi diff
 cmp stdout golden/diff
+
+# test that chezmoi apply uses textconv
+exec chezmoi apply --verbose
+cmp stdout golden/diff
+cmp $HOME/file.txt golden/file.txt
 
 -- golden/diff --
 diff --git a/file.txt b/file.txt
@@ -13,6 +18,8 @@ index b0ebb2af412bf3812b0bf8c5d7b950feb8a701be..4d977287915d918f15ef3df13146c1fa
 @@ -1 +1 @@
 -# PREVIOUS CONTENTS OF FILE.TXT
 +# CONTENTS OF FILE.TXT
+-- golden/file.txt --
+# contents of file.txt
 -- home/user/.config/chezmoi/chezmoi.yaml --
 textconv:
 - pattern: '**/*.txt'
