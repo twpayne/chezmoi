@@ -1095,14 +1095,14 @@ func (c *Config) diffFile(
 	}
 	if fromMode.IsRegular() {
 		var err error
-		fromData, err = c.TextConv.convert(chezmoi.EmptyAbsPath.Join(path), fromData)
+		fromData, err = c.TextConv.convert(path.String(), fromData)
 		if err != nil {
 			return err
 		}
 	}
 	if toMode.IsRegular() {
 		var err error
-		toData, err = c.TextConv.convert(chezmoi.EmptyAbsPath.Join(path), toData)
+		toData, err = c.TextConv.convert(path.String(), toData)
 		if err != nil {
 			return err
 		}

@@ -7,7 +7,6 @@ import (
 
 	"github.com/bmatcuk/doublestar/v4"
 
-	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoilog"
 )
 
@@ -19,10 +18,10 @@ type textConvElement struct {
 
 type textConv []*textConvElement
 
-func (t textConv) convert(absPath chezmoi.AbsPath, data []byte) ([]byte, error) {
+func (t textConv) convert(path string, data []byte) ([]byte, error) {
 	var longestPatternElement *textConvElement
 	for _, command := range t {
-		ok, err := doublestar.Match(command.Pattern, absPath.String())
+		ok, err := doublestar.Match(command.Pattern, path)
 		if err != nil {
 			return nil, err
 		}
