@@ -1093,6 +1093,20 @@ func (c *Config) diffFile(
 	if color {
 		unifiedEncoder.SetColor(diff.NewColorConfig())
 	}
+	if fromMode.IsRegular() {
+		var err error
+		fromData, err = c.TextConv.convert(chezmoi.EmptyAbsPath.Join(path), fromData)
+		if err != nil {
+			return err
+		}
+	}
+	if toMode.IsRegular() {
+		var err error
+		toData, err = c.TextConv.convert(chezmoi.EmptyAbsPath.Join(path), toData)
+		if err != nil {
+			return err
+		}
+	}
 	diffPatch, err := chezmoi.DiffPatch(path, fromData, fromMode, toData, toMode)
 	if err != nil {
 		return err
