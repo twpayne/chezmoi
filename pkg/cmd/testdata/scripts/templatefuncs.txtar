@@ -8,6 +8,10 @@ exec chezmoi execute-template '{{ "line1\nline2" | comment "# " }}'
 rmfinalnewline golden/comment
 cmp stdout golden/comment
 
+# test eqFold template function
+exec chezmoi execute-template '{{ eqFold "foo" "Foo" "FOO" }}'
+stdout '^true$'
+
 # test glob template function
 exec chezmoi execute-template '{{ glob "*.txt" | join "\n" }}{{ "\n" }}'
 cmp stdout golden/glob
