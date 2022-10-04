@@ -988,6 +988,15 @@ func (c *Config) defaultTemplateData() map[string]any {
 
 	windowsVersion, _ := windowsVersion()
 
+	os.Setenv("CHEZMOI_ARCH", runtime.GOARCH)
+	os.Setenv("CHEZMOI_CACHE_DIR", c.CacheDirAbsPath.String())
+	os.Setenv("CHEZMOI_CONFIG_FILE", c.configFileAbsPath.String())
+	os.Setenv("CHEZMOI_HOME_DIR", c.homeDir)
+	os.Setenv("CHEZMOI_OS", runtime.GOOS)
+	os.Setenv("CHEZMOI_SOURCE_DIR", c.SourceDirAbsPath.String())
+	os.Setenv("CHEZMOI_VERSION", c.versionInfo.Version)
+	os.Setenv("CHEZMOI_WORKING_TREE", c.WorkingTreeAbsPath.String())
+
 	return map[string]any{
 		"chezmoi": map[string]any{
 			"arch":         runtime.GOARCH,
