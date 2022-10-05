@@ -8,6 +8,7 @@ linters:
   - depguard
   - dogsled
   - dupl
+  - dupword
   - durationcheck
   - errcheck
   - errchkjson
@@ -34,7 +35,7 @@ linters:
   - interfacebloat
   - ireturn
   - lll
-  - logrlint
+  - loggercheck
   - makezero
   - misspell
   - nilerr
@@ -49,6 +50,7 @@ linters:
   - staticcheck
   - stylecheck
   - tagliatelle
+  - testableexamples
   - tenv
   - thelper
   - typecheck

@@ -113,7 +113,7 @@ func TestToIniTemplateFunc(t *testing.T) {
 				"bool":   "true",
 				"float":  "1.0",
 				"int":    "1",
-				"string": "string string",
+				"string": "string string", //nolint:dupword
 			},
 			expected: chezmoitest.JoinLines(
 				`bool = "true"`,

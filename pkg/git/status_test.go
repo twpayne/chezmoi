@@ -21,7 +21,7 @@ func TestParseStatusPorcelainV2(t *testing.T) {
 		},
 		{
 			name:      "added",
-			outputStr: "1 A. N... 000000 100644 100644 0000000000000000000000000000000000000000 cea5c3500651a923bacd80f960dd20f04f71d509 main.go\n",
+			outputStr: "1 A. N... 000000 100644 100644 0000000000000000000000000000000000000000 cea5c3500651a923bacd80f960dd20f04f71d509 main.go\n", //nolint:dupword
 			expectedStatus: &Status{
 				Ordinary: []OrdinaryStatus{
 					{
@@ -40,7 +40,7 @@ func TestParseStatusPorcelainV2(t *testing.T) {
 		},
 		{
 			name:      "removed",
-			outputStr: "1 D. N... 100644 000000 000000 cea5c3500651a923bacd80f960dd20f04f71d509 0000000000000000000000000000000000000000 main.go\n",
+			outputStr: "1 D. N... 100644 000000 000000 cea5c3500651a923bacd80f960dd20f04f71d509 0000000000000000000000000000000000000000 main.go\n", //nolint:dupword
 			expectedStatus: &Status{
 				Ordinary: []OrdinaryStatus{
 					{
@@ -59,7 +59,7 @@ func TestParseStatusPorcelainV2(t *testing.T) {
 		},
 		{
 			name:      "update",
-			outputStr: "1 .M N... 100644 100644 100644 353dbbb3c29a80fb44d4e26dac111739d25294db 353dbbb3c29a80fb44d4e26dac111739d25294db cmd/git.go\n",
+			outputStr: "1 .M N... 100644 100644 100644 353dbbb3c29a80fb44d4e26dac111739d25294db 353dbbb3c29a80fb44d4e26dac111739d25294db cmd/git.go\n", //nolint:dupword
 			expectedStatus: &Status{
 				Ordinary: []OrdinaryStatus{
 					{
@@ -78,7 +78,7 @@ func TestParseStatusPorcelainV2(t *testing.T) {
 		},
 		{
 			name:      "renamed",
-			outputStr: "2 R. N... 100644 100644 100644 9d06c86ecba40e1c695e69b55a40843df6a79cef 9d06c86ecba40e1c695e69b55a40843df6a79cef R100 chezmoi_rename.go\tchezmoi.go\n",
+			outputStr: "2 R. N... 100644 100644 100644 9d06c86ecba40e1c695e69b55a40843df6a79cef 9d06c86ecba40e1c695e69b55a40843df6a79cef R100 chezmoi_rename.go\tchezmoi.go\n", //nolint:dupword
 			expectedStatus: &Status{
 				RenamedOrCopied: []RenamedOrCopiedStatus{
 					{
@@ -100,7 +100,7 @@ func TestParseStatusPorcelainV2(t *testing.T) {
 		},
 		{
 			name:      "renamed_2",
-			outputStr: "2 R. N... 100644 100644 100644 ddbd961d7e4db2bb6615a9e8ce86364fa65e732d ddbd961d7e4db2bb6615a9e8ce86364fa65e732d R100 dot_config/chezmoi/private_chezmoi.toml\tdot_config/chezmoi/chezmoi.toml",
+			outputStr: "2 R. N... 100644 100644 100644 ddbd961d7e4db2bb6615a9e8ce86364fa65e732d ddbd961d7e4db2bb6615a9e8ce86364fa65e732d R100 dot_config/chezmoi/private_chezmoi.toml\tdot_config/chezmoi/chezmoi.toml", //nolint:dupword
 			expectedStatus: &Status{
 				RenamedOrCopied: []RenamedOrCopiedStatus{
 					{
@@ -122,7 +122,7 @@ func TestParseStatusPorcelainV2(t *testing.T) {
 		},
 		{
 			name:      "modified_2",
-			outputStr: "1 .M N... 100644 100644 100644 5716ca5987cbf97d6bb54920bea6adde242d87e6 5716ca5987cbf97d6bb54920bea6adde242d87e6 foo\n",
+			outputStr: "1 .M N... 100644 100644 100644 5716ca5987cbf97d6bb54920bea6adde242d87e6 5716ca5987cbf97d6bb54920bea6adde242d87e6 foo\n", //nolint:dupword
 			expectedStatus: &Status{
 				Ordinary: []OrdinaryStatus{
 					{
@@ -141,7 +141,7 @@ func TestParseStatusPorcelainV2(t *testing.T) {
 		},
 		{
 			name:      "unmerged",
-			outputStr: "u UU N... 100644 100644 100644 100644 78981922613b2afb6025042ff6bd878ac1994e85 0f7bc766052a5a0ee28a393d51d2370f96d8ceb8 422c2b7ab3b3c668038da977e4e93a5fc623169c README.md\n",
+			outputStr: "u UU N... 100644 100644 100644 100644 78981922613b2afb6025042ff6bd878ac1994e85 0f7bc766052a5a0ee28a393d51d2370f96d8ceb8 422c2b7ab3b3c668038da977e4e93a5fc623169c README.md\n", //nolint:dupword
 			expectedStatus: &Status{
 				Unmerged: []UnmergedStatus{
 					{
