@@ -85,6 +85,9 @@ directory that exists and is a directory.
     A script in `~/.local/share/chezmoi/dir/run_script` will be run with a working
     directory of `~/dir`.
 
+The `scriptEnv` configuration variable specifies extra environment variables
+when running the script.
+
 ### Scripts on Windows
 
 <!-- FIXME: some of the following needs to be moved to the how-to -->

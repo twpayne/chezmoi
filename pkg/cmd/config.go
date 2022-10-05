@@ -86,6 +86,7 @@ type ConfigFile struct {
 	PINEntry           pinEntryConfig                  `mapstructure:"pinentry"`
 	Progress           bool                            `mapstructure:"progress"`
 	Safe               bool                            `mapstructure:"safe"`
+	ScriptEnv          map[string]string               `mapstructure:"scriptEnv"`
 	ScriptTempDir      chezmoi.AbsPath                 `mapstructure:"scriptTempDir"`
 	SourceDirAbsPath   chezmoi.AbsPath                 `mapstructure:"sourceDir"`
 	Template           templateConfig                  `mapstructure:"template"`
@@ -1647,7 +1648,13 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		Str("goVersion", runtime.Version()).
 		Msg("persistentPreRunRootE")
 
+	scriptEnv := os.Environ()
+	for key, value := range c.ScriptEnv {
+		scriptEnv = append(scriptEnv, key+"="+value)
+	}
+
 	c.baseSystem = chezmoi.NewRealSystem(c.fileSystem,
+		chezmoi.RealSystemWithScriptEnv(scriptEnv),
 		chezmoi.RealSystemWithSafe(c.Safe),
 		chezmoi.RealSystemWithScriptTempDir(c.ScriptTempDir),
 	)

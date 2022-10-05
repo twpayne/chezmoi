@@ -18,6 +18,13 @@ import (
 // A RealSystemOption sets an option on a RealSystem.
 type RealSystemOption func(*RealSystem)
 
+// RealSystemWithScriptEnv sets the environment.
+func RealSystemWithScriptEnv(scriptEnv []string) RealSystemOption {
+	return func(s *RealSystem) {
+		s.scriptEnv = scriptEnv
+	}
+}
+
 // Chtimes implements System.Chtimes.
 func (s *RealSystem) Chtimes(name AbsPath, atime, mtime time.Time) error {
 	return s.fileSystem.Chtimes(name.String(), atime, mtime)
@@ -123,6 +130,7 @@ func (s *RealSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, int
 	if err != nil {
 		return err
 	}
+	cmd.Env = s.scriptEnv
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr

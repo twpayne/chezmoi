@@ -38,6 +38,15 @@ file in a temporary directory with the executable bit set, and then executes
 the contents with `exec(3)`. Consequently, the script's contents must either
 include a `#!` line or be an executable binary.
 
+You can set extra environment variables for your scripts in the `scriptEnv`
+section of your config file. For example, to set the `$MY_VAR` environment
+variable to `my_value`, specify:
+
+```toml title="~/.config/chezmoi/chezmoi.toml"
+[scriptEnv]
+    MY_VAR = "my_value"
+```
+
 !!! note
 
     By default, `chezmoi diff` will print the contents of scripts that would be

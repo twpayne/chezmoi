@@ -23,6 +23,9 @@ sections:
     progress:
       type: "bool"
       description: "Display progress bars"
+    scriptEnv:
+      type: "object"
+      description: "Extra environment variables for scripts"
     scriptTempDir:
       description: "Temporary directory for scripts"
     sourceDir:
