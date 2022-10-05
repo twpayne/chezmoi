@@ -13,6 +13,7 @@ import (
 type RealSystem struct {
 	fileSystem              vfs.FS
 	createScriptTempDirOnce sync.Once
+	scriptEnv               []string
 	scriptTempDir           AbsPath
 }
 
@@ -31,9 +32,13 @@ func RealSystemWithScriptTempDir(scriptTempDir AbsPath) RealSystemOption {
 
 // NewRealSystem returns a System that acts on fs.
 func NewRealSystem(fileSystem vfs.FS, options ...RealSystemOption) *RealSystem {
-	return &RealSystem{
+	s := &RealSystem{
 		fileSystem: fileSystem,
 	}
+	for _, option := range options {
+		option(s)
+	}
+	return s
 }
 
 // Chmod implements System.Chmod.

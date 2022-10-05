@@ -1,0 +1,15 @@
+[!exec:python3] skip 'python3 not found in $PATH'
+
+# test that chezmoi sets environment variables for scripts
+exec chezmoi apply
+stdout VALUE
+
+-- home/user/.config/chezmoi/chezmoi.toml --
+[scriptEnv]
+    VARIABLE = "VALUE"
+-- home/user/.local/share/chezmoi/run_print-variable.py --
+#!/usr/bin/env python3
+
+import os
+
+print(os.getenv("VARIABLE"))
