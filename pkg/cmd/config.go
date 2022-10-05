@@ -1661,6 +1661,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	c.baseSystem = chezmoi.NewRealSystem(c.fileSystem,
 		chezmoi.RealSystemWithSafe(c.Safe),
 		chezmoi.RealSystemWithScriptTempDir(c.ScriptTempDir),
+		chezmoi.RealSystemWithEnv(c.defaultTemplateData()),
 	)
 	if c.debug {
 		systemLogger := c.logger.With().Str(logComponentKey, logComponentValueSystem).Logger()

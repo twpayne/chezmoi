@@ -126,6 +126,7 @@ func (s *RealSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, int
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
+	cmd.Env = s.env
 
 	return s.RunCmd(cmd)
 }

@@ -5,6 +5,7 @@ package chezmoi
 
 import (
 	"errors"
+	"fmt"
 	"io/fs"
 	"os"
 	"sync"
@@ -23,6 +24,7 @@ type RealSystem struct {
 	scriptTempDir           AbsPath
 	devCache                map[AbsPath]uint // devCache maps directories to device numbers.
 	tempDirCache            map[uint]string  // tempDirCache maps device numbers to renameio temporary directories.
+	env                     []string
 }
 
 // RealSystemWithSafe sets the safe flag of the RealSystem.
@@ -36,6 +38,29 @@ func RealSystemWithSafe(safe bool) RealSystemOption {
 func RealSystemWithScriptTempDir(scriptTempDir AbsPath) RealSystemOption {
 	return func(s *RealSystem) {
 		s.scriptTempDir = scriptTempDir
+	}
+}
+
+func RealSystemWithEnv(data map[string]any) RealSystemOption {
+	return func(s *RealSystem) {
+		config := data["chezmoi"].(map[string]any)
+		version := config["version"].(map[string]any)
+
+		env := os.Environ()
+		env = append(env,
+			fmt.Sprintf("CHEZMOI_ARCH=%s", config["arch"].(string)),
+			fmt.Sprintf("CHEZMOI_CACHE_DIR=%s", config["cacheDir"].(string)),
+			fmt.Sprintf("CHEZMOI_CONFIG_FILE=%s", config["configFile"]),
+			fmt.Sprintf("CHEZMOI_HOME_DIR=%s", config["homeDir"].(string)),
+			fmt.Sprintf("CHEZMOI_OS=%s", config["os"].(string)),
+			fmt.Sprintf("CHEZMOI_SOURCE_DIR=%s", config["sourceDir"].(string)),
+			fmt.Sprintf("CHEZMOI_VERSION=%s", version["version"].(string)),
+			fmt.Sprintf("CHEZMOI_VERSION_BUILT_BY=%s", version["builtBy"].(string)),
+			fmt.Sprintf("CHEZMOI_VERSION_COMMIT=%s", version["commit"].(string)),
+			fmt.Sprintf("CHEZMOI_VERSION_DATE=%s", version["date"].(string)),
+			fmt.Sprintf("CHEZMOI_WORKING_TREE=%s", config["workingTree"].(string)),
+		)
+		s.env = env
 	}
 }
 
