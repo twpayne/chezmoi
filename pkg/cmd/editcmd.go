@@ -48,6 +48,8 @@ func (c *Config) newEditCmd() *cobra.Command {
 	flags.BoolVar(&c.Edit.init, "init", c.Edit.init, "Recreate config file from template")
 	flags.BoolVar(&c.Edit.Watch, "watch", c.Edit.Watch, "Apply on save")
 
+	registerExcludeIncludeFlagCompletionFuncs(editCmd)
+
 	return editCmd
 }
 

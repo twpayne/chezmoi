@@ -33,6 +33,8 @@ func (c *Config) newVerifyCmd() *cobra.Command {
 	flags.BoolVar(&c.Verify.init, "init", c.update.init, "Recreate config file from template")
 	flags.BoolVarP(&c.Verify.recursive, "recursive", "r", c.Verify.recursive, "Recurse into subdirectories")
 
+	registerExcludeIncludeFlagCompletionFuncs(verifyCmd)
+
 	return verifyCmd
 }
 

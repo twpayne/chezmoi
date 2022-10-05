@@ -30,6 +30,8 @@ func (c *Config) newManagedCmd() *cobra.Command {
 	flags.VarP(c.managed.exclude, "exclude", "x", "Exclude entry types")
 	flags.VarP(c.managed.include, "include", "i", "Include entry types")
 
+	registerExcludeIncludeFlagCompletionFuncs(managedCmd)
+
 	return managedCmd
 }
 

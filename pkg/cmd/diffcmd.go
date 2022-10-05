@@ -43,6 +43,8 @@ func (c *Config) newDiffCmd() *cobra.Command {
 	flags.StringVar(&c.Diff.Pager, "pager", c.Diff.Pager, "Set pager")
 	flags.BoolVarP(&c.Diff.useBuiltinDiff, "use-builtin-diff", "", c.Diff.useBuiltinDiff, "Use the builtin diff")
 
+	registerExcludeIncludeFlagCompletionFuncs(diffCmd)
+
 	return diffCmd
 }
 

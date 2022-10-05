@@ -3,6 +3,7 @@ package chezmoi
 import (
 	"testing"
 
+	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -111,6 +112,40 @@ func TestIncludeMaskStringSlice(t *testing.T) {
 	} {
 		t.Run(tc.expected, func(t *testing.T) {
 			assert.Equal(t, tc.expected, NewEntryTypeSet(tc.bits).String())
+		})
+	}
+}
+
+func TestEntryTypeSetFlagCompletionFunc(t *testing.T) {
+	for _, tc := range []struct {
+		toComplete          string
+		expectedCompletions []string
+	}{
+		{
+			toComplete: "a",
+			expectedCompletions: []string{
+				"all",
+			},
+		},
+		{
+			toComplete: "e",
+			expectedCompletions: []string{
+				"encrypted",
+				"externals",
+			},
+		},
+		{
+			toComplete: "all,nos",
+			expectedCompletions: []string{
+				"all,noscripts",
+				"all,nosymlinks",
+			},
+		},
+	} {
+		t.Run(tc.toComplete, func(t *testing.T) {
+			completions, shellCompDirective := EntryTypeSetFlagCompletionFunc(nil, nil, tc.toComplete)
+			assert.Equal(t, tc.expectedCompletions, completions)
+			assert.Equal(t, cobra.ShellCompDirectiveNoSpace|cobra.ShellCompDirectiveNoFileComp, shellCompDirective)
 		})
 	}
 }

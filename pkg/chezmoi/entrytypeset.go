@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/mitchellh/mapstructure"
+	"github.com/spf13/cobra"
 )
 
 // An EntryTypeSet is a set of entry types. It parses and prints as a
@@ -42,17 +43,38 @@ const (
 	EntryTypesNone EntryTypeBits = 0
 )
 
-// entryTypeBits is a map from human-readable strings to EntryTypeBits.
-var entryTypeBits = map[string]EntryTypeBits{
-	"all":       EntryTypesAll,
-	"dirs":      EntryTypeDirs,
-	"files":     EntryTypeFiles,
-	"remove":    EntryTypeRemove,
-	"scripts":   EntryTypeScripts,
-	"symlinks":  EntryTypeSymlinks,
-	"encrypted": EntryTypeEncrypted,
-	"externals": EntryTypeExternals,
-}
+var (
+	// entryTypeBits is a map from human-readable strings to EntryTypeBits.
+	entryTypeBits = map[string]EntryTypeBits{
+		"all":       EntryTypesAll,
+		"dirs":      EntryTypeDirs,
+		"files":     EntryTypeFiles,
+		"remove":    EntryTypeRemove,
+		"scripts":   EntryTypeScripts,
+		"symlinks":  EntryTypeSymlinks,
+		"encrypted": EntryTypeEncrypted,
+		"externals": EntryTypeExternals,
+	}
+
+	entryTypeCompletions = []string{
+		"all",
+		"dirs",
+		"encrypted",
+		"externals",
+		"files",
+		"nodirs",
+		"noencrypted",
+		"noexternals",
+		"nofiles",
+		"none",
+		"noremove",
+		"noscripts",
+		"nosymlinks",
+		"remove",
+		"scripts",
+		"symlinks",
+	}
+)
 
 // NewEntryTypeSet returns a new IncludeSet.
 func NewEntryTypeSet(bits EntryTypeBits) *EntryTypeSet {
@@ -217,4 +239,23 @@ func StringSliceToEntryTypeSetHookFunc() mapstructure.DecodeHookFunc {
 		}
 		return s, nil
 	}
+}
+
+// EntryTypeSetFlagCompletionFunc completes EntryTypeSet flags.
+func EntryTypeSetFlagCompletionFunc(
+	cmd *cobra.Command, args []string, toComplete string,
+) ([]string, cobra.ShellCompDirective) {
+	var completions []string
+	entryTypes := strings.Split(toComplete, ",")
+	lastEntryType := entryTypes[len(entryTypes)-1]
+	var prefix string
+	if len(entryTypes) > 0 {
+		prefix = toComplete[:len(toComplete)-len(lastEntryType)]
+	}
+	for _, completion := range entryTypeCompletions {
+		if strings.HasPrefix(completion, lastEntryType) {
+			completions = append(completions, prefix+completion)
+		}
+	}
+	return completions, cobra.ShellCompDirectiveNoSpace | cobra.ShellCompDirectiveNoFileComp
 }

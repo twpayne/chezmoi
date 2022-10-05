@@ -40,6 +40,8 @@ func (c *Config) newImportCmd() *cobra.Command {
 	flags.BoolVarP(&c._import.removeDestination, "remove-destination", "r", c._import.removeDestination, "Remove destination before import") //nolint:lll
 	flags.IntVar(&c._import.stripComponents, "strip-components", c._import.stripComponents, "Strip leading path components")                 //nolint:lll
 
+	registerExcludeIncludeFlagCompletionFuncs(importCmd)
+
 	return importCmd
 }
 

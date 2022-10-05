@@ -1353,7 +1353,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 	persistentFlags.Lookup("refresh-externals").NoOptDefVal = chezmoi.RefreshExternalsAlways.String()
 	persistentFlags.BoolVar(&c.sourcePath, "source-path", c.sourcePath, "Specify targets by source path")
 
-	for _, err := range []error{
+	if err := multierr.Combine(
 		rootCmd.MarkPersistentFlagFilename("config"),
 		rootCmd.MarkPersistentFlagFilename("cpu-profile"),
 		persistentFlags.MarkHidden("cpu-profile"),
@@ -1367,10 +1367,8 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		rootCmd.RegisterFlagCompletionFunc("refresh-externals", chezmoi.RefreshExternalsFlagCompletionFunc),
 		rootCmd.RegisterFlagCompletionFunc("use-builtin-age", autoBoolFlagCompletionFunc),
 		rootCmd.RegisterFlagCompletionFunc("use-builtin-git", autoBoolFlagCompletionFunc),
-	} {
-		if err != nil {
-			return nil, err
-		}
+	); err != nil {
+		return nil, err
 	}
 
 	rootCmd.SetHelpCommand(c.newHelpCmd())

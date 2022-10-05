@@ -52,6 +52,8 @@ func (c *Config) newAddCmd() *cobra.Command {
 	flags.BoolVarP(&c.Add.template, "template", "T", c.Add.template, "Add files as templates")
 	flags.BoolVar(&c.Add.TemplateSymlinks, "template-symlinks", c.Add.TemplateSymlinks, "Add symlinks with target in source or home dirs as templates") //nolint:lll
 
+	registerExcludeIncludeFlagCompletionFuncs(addCmd)
+
 	return addCmd
 }
 
