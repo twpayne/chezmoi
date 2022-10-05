@@ -21,12 +21,12 @@ import (
 	"github.com/coreos/go-semver/semver"
 	"github.com/google/go-github/v45/github"
 	"github.com/spf13/cobra"
-	"github.com/twpayne/go-shell"
 	"github.com/twpayne/go-xdg/v6"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoilog"
 	"github.com/twpayne/chezmoi/v2/pkg/git"
+	"github.com/twpayne/chezmoi/v2/pkg/shell"
 )
 
 // A checkResult is the result of a check.
