@@ -269,7 +269,7 @@ func (s *ExternalDiffSystem) runDiffCommand(destAbsPath, targetAbsPath AbsPath) 
 	// option replaced all arguments to the diff command.
 	//
 	// Work around this by looking for any templates in diff.args. An arg is
-	// considered a template if, after execution as as template, it is not equal
+	// considered a template if, after execution as a template, it is not equal
 	// to the original arg.
 	anyTemplateArgs := false
 	for i, arg := range s.args {

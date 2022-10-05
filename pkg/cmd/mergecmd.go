@@ -144,7 +144,7 @@ func (c *Config) doMerge(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi
 	// merge.args config option replaced all arguments to the merge command.
 	//
 	// Work around this by looking for any templates in merge.args. An arg
-	// is considered a template if, after execution as as template, it is
+	// is considered a template if, after execution as a template, it is
 	// not equal to the original arg.
 	anyTemplateArgs := false
 	for i, arg := range c.Merge.Args {

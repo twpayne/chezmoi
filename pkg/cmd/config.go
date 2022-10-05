@@ -413,7 +413,7 @@ func (c *Config) Close() error {
 	return err
 }
 
-// addTemplateFunc adds the template function with the key key and value value
+// addTemplateFunc adds the template function with the given key and value
 // to c. It panics if there is already an existing template function with the
 // same key.
 func (c *Config) addTemplateFunc(key string, value any) {

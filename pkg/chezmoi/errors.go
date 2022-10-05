@@ -8,7 +8,7 @@ import (
 	"github.com/coreos/go-semver/semver"
 )
 
-// An ExitCodeError indicates the the main program should exit with the given
+// An ExitCodeError indicates the main program should exit with the given
 // code.
 type ExitCodeError int
 
