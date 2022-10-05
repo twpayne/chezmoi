@@ -35,6 +35,8 @@ func (c *Config) newReAddCmd() *cobra.Command {
 	flags.VarP(c.reAdd.exclude, "exclude", "x", "Exclude entry types")
 	flags.VarP(c.reAdd.include, "include", "i", "Include entry types")
 
+	registerExcludeIncludeFlagCompletionFuncs(reAddCmd)
+
 	return reAddCmd
 }
 

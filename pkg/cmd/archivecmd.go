@@ -44,6 +44,8 @@ func (c *Config) newArchiveCmd() *cobra.Command {
 	flags.BoolVar(&c.archive.init, "init", c.update.init, "Recreate config file from template")
 	flags.BoolVarP(&c.archive.recursive, "recursive", "r", c.archive.recursive, "Recurse into subdirectories")
 
+	registerExcludeIncludeFlagCompletionFuncs(archiveCmd)
+
 	return archiveCmd
 }
 

@@ -37,6 +37,8 @@ func (c *Config) newStatusCmd() *cobra.Command {
 	flags.BoolVar(&c.Status.init, "init", c.update.init, "Recreate config file from template")
 	flags.BoolVarP(&c.Status.recursive, "recursive", "r", c.Status.recursive, "Recurse into subdirectories")
 
+	registerExcludeIncludeFlagCompletionFuncs(statusCmd)
+
 	return statusCmd
 }
 

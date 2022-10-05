@@ -1,5 +1,9 @@
 [windows] skip 'UNIX only'
 
+# test chezmoi --include completion
+exec chezmoi __complete apply --include=d
+cmp stdout golden/complete-apply-include-d
+
 # test chezmoi cat completion of targets in a directory
 exec chezmoi __complete cat $HOME
 cmpenv stdout golden/complete-target-home
@@ -22,6 +26,9 @@ cmp stdout golden/complete-attribute-p
 exec chezmoi __complete cat private $HOME
 cmpenv stdout golden/complete-target-home
 
+-- golden/complete-apply-include-d --
+dirs
+:6
 -- golden/complete-attribute-p --
 private
 :4

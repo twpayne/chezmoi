@@ -37,6 +37,8 @@ func (c *Config) newDumpCmd() *cobra.Command {
 		panic(err)
 	}
 
+	registerExcludeIncludeFlagCompletionFuncs(dumpCmd)
+
 	return dumpCmd
 }
 
