@@ -271,8 +271,6 @@ github.com/stretchr/testify v1.8.0 h1:pSgiaMZlXftHpm5L7V1+rVB+AZJydKsMxsQBIJw4PK
 github.com/stretchr/testify v1.8.0/go.mod h1:yNjHg4UonilssWZ8iaSj1OCr/vHnekPRkoO+kdMU+MU=
 github.com/twpayne/go-pinentry v0.2.0 h1:hS5NEJiilop9xP9pBX/1NYduzDlGGMdg1KamTBTrOWw=
 github.com/twpayne/go-pinentry v0.2.0/go.mod h1:r6buhMwARxnnL0VRBqfd1tE6Fadk1kfP00GRMutEspY=
-github.com/twpayne/go-shell v0.3.1 h1:JIC6cyDpG/p8mRnFUleH07roi90q0J9QC8PnvtmYLRo=
-github.com/twpayne/go-shell v0.3.1/go.mod h1:H/gzux0DOH5jsjQSHXs6rs2Onxy+V4j6ycZTOulC0l8=
 github.com/twpayne/go-vfs/v3 v3.0.0 h1:rMFBISZVhSowKeX1BxL8utM64V7CuUw9/rfekPdS7to=
 github.com/twpayne/go-vfs/v3 v3.0.0/go.mod h1:JKfJtOC57Wqo7xYxFRKSqdXwyj3AhfyRrDxSE/XiAVA=
 github.com/twpayne/go-vfs/v4 v4.1.0 h1:58tmzvh3AEKgqXlRZvlKn9HD6g1Q9T9bYdob0GhARrs=

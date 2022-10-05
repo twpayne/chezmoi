@@ -37,7 +37,6 @@ import (
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
-	"github.com/twpayne/go-shell"
 	"github.com/twpayne/go-vfs/v4"
 	"github.com/twpayne/go-xdg/v6"
 	cobracompletefig "github.com/withfig/autocomplete-tools/integrations/cobra"
@@ -50,6 +49,7 @@ import (
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoi"
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoilog"
 	"github.com/twpayne/chezmoi/v2/pkg/git"
+	"github.com/twpayne/chezmoi/v2/pkg/shell"
 )
 
 const (

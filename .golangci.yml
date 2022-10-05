@@ -146,3 +146,6 @@ issues:
     - gosec
     - lll
     path: "_test\\.go$"
+  - linters:
+    - lll
+    path: ^pkg/shell/shellcgo\.go$
