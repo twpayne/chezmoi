@@ -2,16 +2,50 @@
 
 The `onepassword*` template functions return structured data from
 [1Password](https://1password.com/) using the [1Password
-CLI](https://support.1password.com/command-line-getting-started/) (`op`).
+CLI](https://developer.1password.com/docs/cli) (`op`).
 
 !!! warning
 
-    When using 1Password CLI 2.0, there may be an issue with pre-authenticating
-    `op` because the environment variable used to store the session key has
-    changed from `OP_SESSION_account` to `OP_SESSION_accountUUID`. Instead of
-    using *account-name*, it is recommended that you use the *account-uuid*.
-    This can be found using `op account list`.
+    When using 1Password CLI v2 with biometric authentication, account shorthand
+    names are not available. In order to assist with this, chezmoi supports
+    multiple derived values from `op account list` that can be changed into the
+    appropriate 1Password *account-uuid*.
 
-    This issue does not occur when using biometric authentication and 1Password
-    8, or if you allow chezmoi to prompt you for 1Password authentication
-    (`1password.prompt = true`).
+    ### Example
+
+    If `op account list --format=json` returns the following structure:
+
+    ```json
+    [
+      {
+        "url": "account1.1password.ca",
+        "email": "my@email.com",
+        "user_uuid": "some-user-uuid",
+        "account_uuid": "some-account-uuid"
+      }
+    ]
+    ```
+
+    The following values can be used in the `account` parameter and the value
+    `some-account-uuid` will be passed as the `--account` parameter to `op`.
+
+    - `some-account-uuid`
+    - `some-user-uuid`
+    - `account1.1password.ca`
+    - `account1`
+    - `my@email.com`
+    - `my`
+    - `my@account1.1password.ca`
+    - `my@account1`
+
+    If there are multiple accounts and _any_ value exists more than once, that
+    value will be removed from the account mapping. That is, if you are signed
+    into `my@email.com` and `your@email.com` for `account1.1password.ca`, then
+    `account1.1password.ca` will not be a valid lookup value, but `my@account1`,
+    `my@account1.1password.ca`, `your@account1`, and
+    `your@account1.1password.ca` would all be valid lookups.
+
+!!! warning
+
+    Support for 1Password CLI v1 will be removed with the next major release of
+    chezmoi.
