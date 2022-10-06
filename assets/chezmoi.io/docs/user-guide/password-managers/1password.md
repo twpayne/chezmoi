@@ -187,6 +187,6 @@ available. If you'd like to restore this behavior, set the the
 
 !!! danger
 
-    Do not use the prompt on shared machines. A session token verified or
-    acquired interactively will be passed to the 1Password CLI through a
-    command line parameter, which is visible to other users of the same system.
+    Do not use prompt on shared machines. A session token verified or acquired
+    interactively will be passed to the 1Password CLI through a command line
+    parameter, which is visible to other users of the same system.

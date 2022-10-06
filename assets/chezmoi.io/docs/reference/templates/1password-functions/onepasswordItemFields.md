@@ -1,8 +1,8 @@
-# `onepasswordItemFields` *uuid* [*vault-uuid* [*account-name*]]
+# `onepasswordItemFields` _uuid_ [_vault-uuid_ [*account-name*]]
 
 `onepasswordItemFields` returns structured data from
 [1Password](https://1password.com/) using the [1Password
-CLI](https://support.1password.com/command-line-getting-started/) (`op`). *uuid*
+CLI](https://support.1password.com/command-line-getting-started/) (`op`). _uuid_
 is passed to `op item get $UUID --format json`, the output from `op` is parsed
 as JSON, and each element of `details.sections` are iterated over and any
 `fields` are returned as a map indexed by each field's `n`.
@@ -39,6 +39,7 @@ interactively prompted to sign in.
         ```console
         $ op get item abcdefghijklmnopqrstuvwxyz --fields exampleLabel
         ```
+
 !!! example
 
     Given the output from `op`:
@@ -130,13 +131,13 @@ interactively prompted to sign in.
 
 !!! warning
 
-    When using [1Password CLI 2.0](https://developer.1password.com/), note that
-    the structure of the data returned by the `onepasswordItemFields` template
-    function is different and your templates will need updating.
+    When using [1Password CLI 2.0](https://developer.1password.com/docs/cli),
+    note that the structure of the data returned by the `onepasswordItemFields`
+    template function is different and your templates will need updating.
 
-    You may wish to use `onepassword` or `onepasswordDetailsFields` instead of
-    this function, as it may not return expected values. Testing the output of
-    this function is recommended:
+    You may wish to use `onepassword`, `onepasswordDetailsFields`, or
+    `onepasswordRead` instead of this function, as it may not return expected
+    values. Testing the output of this function is recommended:
 
     ```console
     $ chezmoi execute-template "{{ onepasswordItemFields \"$UUID\" | toJson }}" | jq .

@@ -22,6 +22,14 @@ const (
 
 var onepasswordVersionRx = regexp.MustCompile(`^(\d+\.\d+\.\d+\S*)`)
 
+type onepasswordAccount struct {
+	URL         string `json:"url"`
+	Email       string `json:"email"`
+	UserUUID    string `json:"user_uuid"`    //nolint:tagliatelle
+	AccountUUID string `json:"account_uuid"` //nolint:tagliatelle
+	Shorthand   string `json:"shorthand"`
+}
+
 type onepasswordConfig struct {
 	Command       string
 	Prompt        bool
@@ -30,6 +38,8 @@ type onepasswordConfig struct {
 	environFunc   func() []string
 	outputCache   map[string][]byte
 	sessionTokens map[string]string
+	accountMap    map[string]string
+	accountMapErr error
 }
 
 type onepasswordArgs struct {
@@ -70,7 +80,7 @@ func (c *Config) onepasswordTemplateFunc(userArgs ...string) map[string]any {
 		})
 	}
 
-	args, err := newOnepasswordArgs(baseArgs, userArgs)
+	args, err := c.newOnepasswordArgs(baseArgs, userArgs)
 	if err != nil {
 		panic(err)
 	}
@@ -155,7 +165,7 @@ func (c *Config) onepasswordDocumentTemplateFunc(userArgs ...string) string {
 		})
 	}
 
-	args, err := newOnepasswordArgs(baseArgs, userArgs)
+	args, err := c.newOnepasswordArgs(baseArgs, userArgs)
 	if err != nil {
 		panic(err)
 	}
@@ -287,7 +297,7 @@ func (c *Config) onepasswordGetOrRefreshSessionToken(args *onepasswordArgs) (str
 }
 
 func (c *Config) onepasswordItemV1(userArgs []string) (*onepasswordItemV1, error) {
-	args, err := newOnepasswordArgs([]string{"get", "item"}, userArgs)
+	args, err := c.newOnepasswordArgs([]string{"get", "item"}, userArgs)
 	if err != nil {
 		return nil, err
 	}
@@ -305,7 +315,7 @@ func (c *Config) onepasswordItemV1(userArgs []string) (*onepasswordItemV1, error
 }
 
 func (c *Config) onepasswordItemV2(userArgs []string) (*onepasswordItemV2, error) {
-	args, err := newOnepasswordArgs([]string{"item", "get", "--format", "json"}, userArgs)
+	args, err := c.newOnepasswordArgs([]string{"item", "get", "--format", "json"}, userArgs)
 	if err != nil {
 		return nil, err
 	}
@@ -359,11 +369,12 @@ func (c *Config) onepasswordReadTemplateFunc(url string, args ...string) string 
 	onepasswordArgs := &onepasswordArgs{
 		args: []string{"read", url},
 	}
+
 	switch len(args) {
 	case 0:
 		// Do nothing.
 	case 1:
-		onepasswordArgs.args = append(onepasswordArgs.args, "--account", args[0])
+		onepasswordArgs.args = append(onepasswordArgs.args, "--account", c.onepasswordAccount(args[0]))
 	default:
 		panic(fmt.Errorf("expected 1 or 2 arguments, got %d", len(args)))
 	}
@@ -373,6 +384,165 @@ func (c *Config) onepasswordReadTemplateFunc(url string, args ...string) string 
 		panic(err)
 	}
 	return string(output)
+}
+
+func (c *Config) onepasswordAccount(key string) string {
+	version, err := c.onepasswordVersion()
+	if err != nil {
+		panic(err)
+	}
+
+	// Account listing does not affect version 1
+	if version.Major == 1 {
+		return key
+	}
+
+	accounts, err := c.onepasswordAccounts()
+	if err != nil {
+		panic(err)
+	}
+
+	if account, exists := accounts[key]; exists {
+		return account
+	}
+
+	panic(fmt.Errorf("no 1Password account found matching %s", key))
+}
+
+// Shorthand names have been removed from 1Password CLI v2 when biometric
+// authentication is used. Mostly, this does not matter. However, this function
+// builds a better set of aliases that can be used in the `"account" field`.
+// The following values returned from `op account list` will always be mapped
+// to the AccountUUID during the actual call.
+//
+// Given the following values:
+//
+// ```json
+// [
+//
+//	{
+//	  "url": "account1.1password.ca",
+//	  "email": "my@email.com",
+//	  "user_uuid": "some-user-uuid",
+//	  "account_uuid": "some-account-uuid"
+//	}
+//
+// ]
+// ```
+//
+// The following values can be used in the `account` parameter and the value
+// `some-account-uuid` will be passed as the `--account` parameter to `op`.
+//
+// - `some-account-uuid`
+// - `some-user-uuid`
+// - `account1.1password.ca`
+// - `account1`
+// - `my@email.com`
+// - `my`
+// - `my@account1.1password.ca`
+// - `my@account1`
+//
+// If there are multiple accounts and *any* value exists more than once, that
+// value will be removed from the account mapping. That is, if you are signed
+// into `my@email.com` and `your@email.com` for `account1.1password.ca`, then
+// `account1.1password.ca` will not be a valid lookup value, but `my@account1`,
+// `my@account1.1password.ca`, `your@account1`, and
+// `your@account1.1password.ca` would all be valid lookups.
+func (c *Config) onepasswordAccounts() (map[string]string, error) {
+	if c.Onepassword.accountMap != nil || c.Onepassword.accountMapErr != nil {
+		return c.Onepassword.accountMap, c.Onepassword.accountMapErr
+	}
+
+	if version, err := c.onepasswordVersion(); err != nil {
+		if version.Major == 1 {
+			return make(map[string]string), nil
+		}
+	}
+
+	args := &onepasswordArgs{
+		args: []string{"account", "list", "--format=json"},
+	}
+
+	output, err := c.onepasswordOutput(args, withoutSessionToken)
+	if err != nil {
+		c.Onepassword.accountMapErr = err
+		return nil, c.Onepassword.accountMapErr
+	}
+
+	var data []onepasswordAccount
+
+	if err := json.Unmarshal(output, &data); err != nil {
+		c.Onepassword.accountMapErr = err
+		return nil, c.Onepassword.accountMapErr
+	}
+
+	collisions := make(map[string]bool)
+	result := make(map[string]string)
+
+	for _, account := range data {
+		result[account.UserUUID] = account.AccountUUID
+		result[account.AccountUUID] = account.AccountUUID
+
+		if _, exists := result[account.URL]; exists {
+			collisions[account.URL] = true
+		} else {
+			result[account.URL] = account.AccountUUID
+		}
+
+		parts := strings.SplitN(account.URL, ".", 2)
+		accountName := parts[0]
+
+		parts = strings.SplitN(account.Email, "@", 2)
+		emailName := parts[0]
+
+		userAccountName := emailName + "@" + accountName
+		userAccountURL := emailName + "@" + account.URL
+
+		if _, exists := result[accountName]; exists {
+			collisions[accountName] = true
+		} else {
+			result[accountName] = account.AccountUUID
+		}
+
+		if _, exists := result[account.Email]; exists {
+			collisions[account.Email] = true
+		} else {
+			result[account.Email] = account.AccountUUID
+		}
+
+		if _, exists := result[emailName]; exists {
+			collisions[emailName] = true
+		} else {
+			result[emailName] = account.AccountUUID
+		}
+
+		if _, exists := result[userAccountName]; exists {
+			collisions[userAccountName] = true
+		} else {
+			result[userAccountName] = account.AccountUUID
+		}
+
+		if _, exists := result[userAccountURL]; exists {
+			collisions[userAccountURL] = true
+		} else {
+			result[userAccountURL] = account.AccountUUID
+		}
+
+		if account.Shorthand != "" {
+			if _, exists := result[account.Shorthand]; exists {
+				collisions[account.Shorthand] = true
+			} else {
+				result[account.Shorthand] = account.AccountUUID
+			}
+		}
+	}
+
+	for k := range collisions {
+		delete(result, k)
+	}
+
+	c.Onepassword.accountMap = result
+	return c.Onepassword.accountMap, c.Onepassword.accountMapErr
 }
 
 func (c *Config) onepasswordVersion() (*semver.Version, error) {
@@ -410,7 +580,7 @@ func (c *Config) onepasswordVersion() (*semver.Version, error) {
 	return c.Onepassword.version, c.Onepassword.versionErr
 }
 
-func newOnepasswordArgs(baseArgs, userArgs []string) (*onepasswordArgs, error) {
+func (c *Config) newOnepasswordArgs(baseArgs, userArgs []string) (*onepasswordArgs, error) {
 	if len(userArgs) < 1 || 3 < len(userArgs) {
 		return nil, fmt.Errorf("expected 1, 2, or 3 arguments, got %d", len(userArgs))
 	}
@@ -418,14 +588,17 @@ func newOnepasswordArgs(baseArgs, userArgs []string) (*onepasswordArgs, error) {
 	a := &onepasswordArgs{
 		args: baseArgs,
 	}
+
 	a.item = userArgs[0]
 	a.args = append(a.args, a.item)
+
 	if len(userArgs) > 1 && userArgs[1] != "" {
 		a.vault = userArgs[1]
 		a.args = append(a.args, "--vault", a.vault)
 	}
+
 	if len(userArgs) > 2 && userArgs[2] != "" {
-		a.account = userArgs[2]
+		a.account = c.onepasswordAccount(userArgs[2])
 		a.args = append(a.args, "--account", a.account)
 	}
 	return a, nil
