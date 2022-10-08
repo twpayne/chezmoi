@@ -187,10 +187,12 @@ type Config struct {
 	logger                 *zerolog.Logger
 
 	// Computed configuration.
-	homeDirAbsPath chezmoi.AbsPath
-	encryption     chezmoi.Encryption
-	sourceState    *chezmoi.SourceState
-	sourceStateErr error
+	homeDirAbsPath      chezmoi.AbsPath
+	encryption          chezmoi.Encryption
+	sourceDirAbsPath    chezmoi.AbsPath
+	sourceDirAbsPathErr error
+	sourceState         *chezmoi.SourceState
+	sourceStateErr      error
 
 	stdin       io.Reader
 	stdout      io.Writer
@@ -1200,7 +1202,7 @@ type configTemplate struct {
 // findFirstConfigTemplate searches for a config template, returning the path,
 // format, and contents of the first one that it finds.
 func (c *Config) findFirstConfigTemplate() (*configTemplate, error) {
-	sourceDirAbsPath, err := c.sourceDirAbsPath()
+	sourceDirAbsPath, err := c.getSourceDirAbsPath()
 	if err != nil {
 		return nil, err
 	}
@@ -1239,6 +1241,25 @@ func (c *Config) getHTTPClient() (*http.Client, error) {
 	c.httpClient = httpTransport.Client()
 
 	return c.httpClient, nil
+}
+
+// getSourceDirAbsPath returns the source directory, using .chezmoiroot if it
+// exists.
+func (c *Config) getSourceDirAbsPath() (chezmoi.AbsPath, error) {
+	if !c.sourceDirAbsPath.Empty() || c.sourceDirAbsPathErr != nil {
+		return c.sourceDirAbsPath, c.sourceDirAbsPathErr
+	}
+
+	switch data, err := c.sourceSystem.ReadFile(c.SourceDirAbsPath.JoinString(chezmoi.RootName)); {
+	case errors.Is(err, fs.ErrNotExist):
+		c.sourceDirAbsPath = c.SourceDirAbsPath
+	case err != nil:
+		c.sourceDirAbsPathErr = err
+	default:
+		c.sourceDirAbsPath = c.SourceDirAbsPath.JoinString(string(bytes.TrimSpace(data)))
+	}
+
+	return c.sourceDirAbsPath, c.sourceDirAbsPathErr
 }
 
 func (c *Config) getSourceState(ctx context.Context) (*chezmoi.SourceState, error) {
@@ -1458,7 +1479,7 @@ func (c *Config) newSourceState(
 
 	sourceStateLogger := c.logger.With().Str(logComponentKey, logComponentValueSourceState).Logger()
 
-	c.SourceDirAbsPath, err = c.sourceDirAbsPath()
+	c.SourceDirAbsPath, err = c.getSourceDirAbsPath()
 	if err != nil {
 		return nil, err
 	}
@@ -1937,19 +1958,6 @@ func (c *Config) sourceAbsPaths(sourceState *chezmoi.SourceState, args []string)
 		sourceAbsPaths = append(sourceAbsPaths, sourceAbsPath)
 	}
 	return sourceAbsPaths, nil
-}
-
-// sourceDirAbsPath returns the source directory, using .chezmoiroot if it
-// exists.
-func (c *Config) sourceDirAbsPath() (chezmoi.AbsPath, error) {
-	switch data, err := c.sourceSystem.ReadFile(c.SourceDirAbsPath.JoinString(chezmoi.RootName)); {
-	case errors.Is(err, fs.ErrNotExist):
-		return c.SourceDirAbsPath, nil
-	case err != nil:
-		return chezmoi.EmptyAbsPath, err
-	default:
-		return c.SourceDirAbsPath.JoinString(string(bytes.TrimSpace(data))), nil
-	}
 }
 
 func (c *Config) targetRelPath(absPath chezmoi.AbsPath) (chezmoi.RelPath, error) {

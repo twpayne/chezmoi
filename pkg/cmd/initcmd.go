@@ -208,7 +208,7 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 	}
 
 	var err error
-	c.SourceDirAbsPath, err = c.sourceDirAbsPath()
+	c.SourceDirAbsPath, err = c.getSourceDirAbsPath()
 	if err != nil {
 		return err
 	}
