@@ -539,7 +539,7 @@ func getUpgradeMethod(fileSystem vfs.Stater, executableAbsPath chezmoi.AbsPath) 
 
 // getPackageType returns the distributions package type based on is OS release.
 func getPackageType(system chezmoi.System) (string, error) {
-	osRelease, err := chezmoi.OSRelease(system)
+	osRelease, err := chezmoi.OSRelease(system.UnderlyingFS())
 	if err != nil {
 		return packageTypeNone, err
 	}

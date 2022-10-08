@@ -641,7 +641,7 @@ func (osArchCheck) Name() string {
 
 func (osArchCheck) Run(system chezmoi.System, homeDirAbsPath chezmoi.AbsPath) (checkResult, string) {
 	fields := []string{runtime.GOOS + "/" + runtime.GOARCH}
-	if osRelease, err := chezmoi.OSRelease(system); err == nil {
+	if osRelease, err := chezmoi.OSRelease(system.UnderlyingFS()); err == nil {
 		if name, ok := osRelease["NAME"].(string); ok {
 			if version, ok := osRelease["VERSION"].(string); ok {
 				fields = append(fields, "("+name+" "+version+")")

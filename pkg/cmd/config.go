@@ -195,6 +195,7 @@ type Config struct {
 	sourceDirAbsPathErr error
 	sourceState         *chezmoi.SourceState
 	sourceStateErr      error
+	templateData        *templateData
 
 	stdin       io.Reader
 	stdout      io.Writer
@@ -206,6 +207,28 @@ type Config struct {
 	ioregData ioregData
 
 	restoreWindowsConsole func() error
+}
+
+type templateData struct {
+	Arch           string          `json:"arch"`
+	Args           []string        `json:"args"`
+	CacheDir       chezmoi.AbsPath `json:"cacheDir"`
+	ConfigFile     chezmoi.AbsPath `json:"configFile"`
+	Executable     chezmoi.AbsPath `json:"executable"`
+	FQDNHostname   string          `json:"fqdnHostname"`
+	GID            string          `json:"gid"`
+	Group          string          `json:"group"`
+	HomeDir        chezmoi.AbsPath `json:"homeDir"`
+	Hostname       string          `json:"hostname"`
+	Kernel         map[string]any  `json:"kernel"`
+	OS             string          `json:"os"`
+	OSRelease      map[string]any  `json:"osRelease"`
+	SourceDir      chezmoi.AbsPath `json:"sourceDir"`
+	UID            string          `json:"uid"`
+	Username       string          `json:"username"`
+	Version        map[string]any  `json:"version"`
+	WindowsVersion map[string]any  `json:"windowsVersion"`
+	WorkingTree    chezmoi.AbsPath `json:"workingTree"`
 }
 
 // A configOption sets and option on a Config.
@@ -685,7 +708,7 @@ func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte) ([]byte
 	}
 
 	builder := strings.Builder{}
-	templateData := c.defaultTemplateData()
+	templateData := c.getTemplateDataMap()
 	if c.init.data {
 		chezmoi.RecursiveMerge(templateData, c.Data)
 	}
@@ -930,126 +953,6 @@ func (c *Config) defaultSourceDir(fileSystem vfs.Stater, bds *xdg.BaseDirectoryS
 	return dataHomeAbsPath.Join(chezmoiRelPath), nil
 }
 
-// defaultTemplateData returns the default template data.
-func (c *Config) defaultTemplateData() map[string]any {
-	// Determine the user's username and group, if possible.
-	//
-	// user.Current and user.LookupGroupId in Go's standard library are
-	// generally unreliable, so work around errors if possible, or ignore them.
-	//
-	// If CGO is disabled, then the Go standard library falls back to parsing
-	// /etc/passwd and /etc/group, which will return incorrect results without
-	// error if the system uses an alternative password database such as NIS or
-	// LDAP.
-	//
-	// If CGO is enabled then user.Current and user.LookupGroupId will use the
-	// underlying libc functions, namely getpwuid_r and getgrnam_r. If linked
-	// with glibc this will return the correct result. If linked with musl then
-	// they will use musl's implementation which, like Go's non-CGO
-	// implementation, also only parses /etc/passwd and /etc/group and so also
-	// returns incorrect results without error if NIS or LDAP are being used.
-	//
-	// On Windows, the user's group ID returned by user.Current() is an SID and
-	// no further useful lookup is possible with Go's standard library.
-	//
-	// Since neither the username nor the group are likely widely used in
-	// templates, leave these variables unset if their values cannot be
-	// determined. Unset variables will trigger template errors if used,
-	// alerting the user to the problem and allowing them to find alternative
-	// solutions.
-	var gid, group, uid, username string
-	if currentUser, err := user.Current(); err == nil {
-		gid = currentUser.Gid
-		uid = currentUser.Uid
-		username = currentUser.Username
-		if runtime.GOOS != "windows" {
-			if rawGroup, err := user.LookupGroupId(currentUser.Gid); err == nil {
-				group = rawGroup.Name
-			} else {
-				c.logger.Info().
-					Str("gid", currentUser.Gid).
-					Err(err).
-					Msg("user.LookupGroupId")
-			}
-		}
-	} else {
-		c.logger.Info().
-			Err(err).
-			Msg("user.Current")
-		var ok bool
-		username, ok = os.LookupEnv("USER")
-		if !ok {
-			c.logger.Info().
-				Str("key", "USER").
-				Bool("ok", ok).
-				Msg("os.LookupEnv")
-		}
-	}
-
-	fqdnHostname, err := chezmoi.FQDNHostname(c.fileSystem)
-	if err != nil {
-		c.logger.Info().
-			Err(err).
-			Msg("chezmoi.FQDNHostname")
-	}
-	hostname, _, _ := strings.Cut(fqdnHostname, ".")
-
-	kernel, err := chezmoi.Kernel(c.fileSystem)
-	if err != nil {
-		c.logger.Info().
-			Err(err).
-			Msg("chezmoi.Kernel")
-	}
-
-	var osRelease map[string]any
-	switch runtime.GOOS {
-	case "openbsd", "windows":
-		// Don't populate osRelease on OSes where /etc/os-release does not
-		// exist.
-	default:
-		if rawOSRelease, err := chezmoi.OSRelease(c.baseSystem); err == nil {
-			osRelease = upperSnakeCaseToCamelCaseMap(rawOSRelease)
-		} else {
-			c.logger.Info().
-				Err(err).
-				Msg("chezmoi.OSRelease")
-		}
-	}
-
-	executable, _ := os.Executable()
-
-	windowsVersion, _ := windowsVersion()
-
-	return map[string]any{
-		"chezmoi": map[string]any{
-			"arch":         runtime.GOARCH,
-			"args":         os.Args,
-			"cacheDir":     c.CacheDirAbsPath.String(),
-			"configFile":   c.configFileAbsPath.String(),
-			"executable":   executable,
-			"fqdnHostname": fqdnHostname,
-			"gid":          gid,
-			"group":        group,
-			"homeDir":      c.homeDir,
-			"hostname":     hostname,
-			"kernel":       kernel,
-			"os":           runtime.GOOS,
-			"osRelease":    osRelease,
-			"sourceDir":    c.SourceDirAbsPath.String(),
-			"uid":          uid,
-			"username":     username,
-			"version": map[string]any{
-				"builtBy": c.versionInfo.BuiltBy,
-				"commit":  c.versionInfo.Commit,
-				"date":    c.versionInfo.Date,
-				"version": c.versionInfo.Version,
-			},
-			"windowsVersion": windowsVersion,
-			"workingTree":    c.WorkingTreeAbsPath.String(),
-		},
-	}
-}
-
 type destAbsPathInfosOptions struct {
 	follow         bool
 	ignoreNotExist bool
@@ -1231,7 +1134,7 @@ type configTemplate struct {
 // format, and contents. It returns an error if multiple config file templates
 // are found.
 func (c *Config) findConfigTemplate() (*configTemplate, error) {
-	sourceDirAbsPath, err := c.getSourceDirAbsPath()
+	sourceDirAbsPath, err := c.getSourceDirAbsPath(nil)
 	if err != nil {
 		return nil, err
 	}
@@ -1300,11 +1203,17 @@ func (c *Config) getHTTPClient() (*http.Client, error) {
 	return c.httpClient, nil
 }
 
+type getSourceDirAbsPathOptions struct {
+	refresh bool
+}
+
 // getSourceDirAbsPath returns the source directory, using .chezmoiroot if it
 // exists.
-func (c *Config) getSourceDirAbsPath() (chezmoi.AbsPath, error) {
-	if !c.sourceDirAbsPath.Empty() || c.sourceDirAbsPathErr != nil {
-		return c.sourceDirAbsPath, c.sourceDirAbsPathErr
+func (c *Config) getSourceDirAbsPath(options *getSourceDirAbsPathOptions) (chezmoi.AbsPath, error) {
+	if options == nil || !options.refresh {
+		if !c.sourceDirAbsPath.Empty() || c.sourceDirAbsPathErr != nil {
+			return c.sourceDirAbsPath, c.sourceDirAbsPathErr
+		}
 	}
 
 	switch data, err := c.sourceSystem.ReadFile(c.SourceDirAbsPath.JoinString(chezmoi.RootName)); {
@@ -1325,6 +1234,31 @@ func (c *Config) getSourceState(ctx context.Context) (*chezmoi.SourceState, erro
 	}
 	c.sourceState, c.sourceStateErr = c.newSourceState(ctx)
 	return c.sourceState, c.sourceStateErr
+}
+
+// getTemplateData returns the default template data.
+func (c *Config) getTemplateData() *templateData {
+	if c.templateData == nil {
+		c.templateData = c.newTemplateData()
+	}
+	return c.templateData
+}
+
+// getTemplateDataMao returns the template data as a map.
+func (c *Config) getTemplateDataMap() map[string]any {
+	templateData := c.getTemplateData()
+	// FIXME round-tripping via JSON is a horrible hack
+	data, err := json.Marshal(templateData)
+	if err != nil {
+		panic(err)
+	}
+	var templateDataMap map[string]any
+	if err := json.Unmarshal(data, &templateDataMap); err != nil {
+		panic(err)
+	}
+	return map[string]any{
+		"chezmoi": templateDataMap,
+	}
 }
 
 // gitAutoAdd adds all changes to the git index and returns the new git status.
@@ -1540,7 +1474,7 @@ func (c *Config) newSourceState(
 
 	sourceStateLogger := c.logger.With().Str(logComponentKey, logComponentValueSourceState).Logger()
 
-	c.SourceDirAbsPath, err = c.getSourceDirAbsPath()
+	c.SourceDirAbsPath, err = c.getSourceDirAbsPath(nil)
 	if err != nil {
 		return nil, err
 	}
@@ -1548,7 +1482,7 @@ func (c *Config) newSourceState(
 	sourceState := chezmoi.NewSourceState(append([]chezmoi.SourceStateOption{
 		chezmoi.WithBaseSystem(c.baseSystem),
 		chezmoi.WithCacheDir(c.CacheDirAbsPath),
-		chezmoi.WithDefaultTemplateDataFunc(c.defaultTemplateData),
+		chezmoi.WithDefaultTemplateDataFunc(c.getTemplateDataMap),
 		chezmoi.WithDestDir(c.DestDirAbsPath),
 		chezmoi.WithEncryption(c.encryption),
 		chezmoi.WithHTTPClient(httpClient),
@@ -1736,17 +1670,11 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		Strs("args", os.Args).
 		Str("goVersion", runtime.Version()).
 		Msg("persistentPreRunRootE")
-
-	scriptEnv := os.Environ()
-	for key, value := range c.ScriptEnv {
-		scriptEnv = append(scriptEnv, key+"="+value)
-	}
-
-	c.baseSystem = chezmoi.NewRealSystem(c.fileSystem,
-		chezmoi.RealSystemWithScriptEnv(scriptEnv),
+	realSystem := chezmoi.NewRealSystem(c.fileSystem,
 		chezmoi.RealSystemWithSafe(c.Safe),
 		chezmoi.RealSystemWithScriptTempDir(c.ScriptTempDir),
 	)
+	c.baseSystem = realSystem
 	if c.debug {
 		systemLogger := c.logger.With().Str(logComponentKey, logComponentValueSystem).Logger()
 		c.baseSystem = chezmoi.NewDebugSystem(c.baseSystem, &systemLogger)
@@ -1899,6 +1827,44 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		}
 	}
 
+	scriptEnv := os.Environ()
+	templateData := c.getTemplateData()
+	for key, value := range map[string]string{
+		"ARCH":          templateData.Arch,
+		"ARGS":          strings.Join(templateData.Args, " "),
+		"CACHE_DIR":     templateData.CacheDir.String(),
+		"CONFIG_FILE":   templateData.ConfigFile.String(),
+		"EXECUTABLE":    templateData.Executable.String(),
+		"FQDN_HOSTNAME": templateData.FQDNHostname,
+		"GID":           templateData.GID,
+		"GROUP":         templateData.Group,
+		"HOME_DIR":      templateData.HomeDir.String(),
+		"HOSTNAME":      templateData.Hostname,
+		"OS":            templateData.OS,
+		"SOURCE_DIR":    templateData.SourceDir.String(),
+		"UID":           templateData.UID,
+		"USERNAME":      templateData.Username,
+		"WORKING_TREE":  templateData.WorkingTree.String(),
+	} {
+		scriptEnv = append(scriptEnv, "CHEZMOI_"+key+"="+value)
+	}
+	for groupKey, group := range map[string]map[string]any{
+		"KERNEL":          templateData.Kernel,
+		"OS_RELEASE":      templateData.OSRelease,
+		"VERSION":         templateData.Version,
+		"WINDOWS_VERSION": templateData.WindowsVersion,
+	} {
+		for key, value := range group {
+			upperSnakeCaseKey := camelCaseToUpperSnakeCase(key)
+			valueStr := fmt.Sprintf("%s", value)
+			scriptEnv = append(scriptEnv, "CHEZMOI_"+groupKey+"_"+upperSnakeCaseKey+"="+valueStr)
+		}
+	}
+	for key, value := range c.ScriptEnv {
+		scriptEnv = append(scriptEnv, key+"="+value)
+	}
+	realSystem.SetScriptEnv(scriptEnv)
+
 	return nil
 }
 
@@ -1927,6 +1893,123 @@ func (c *Config) persistentStateFile() (chezmoi.AbsPath, error) {
 		return chezmoi.EmptyAbsPath, err
 	}
 	return defaultConfigFileAbsPath.Dir().Join(persistentStateFileRelPath), nil
+}
+
+func (c *Config) newTemplateData() *templateData {
+	// Determine the user's username and group, if possible.
+	//
+	// user.Current and user.LookupGroupId in Go's standard library are
+	// generally unreliable, so work around errors if possible, or ignore them.
+	//
+	// If CGO is disabled, then the Go standard library falls back to parsing
+	// /etc/passwd and /etc/group, which will return incorrect results without
+	// error if the system uses an alternative password database such as NIS or
+	// LDAP.
+	//
+	// If CGO is enabled then user.Current and user.LookupGroupId will use the
+	// underlying libc functions, namely getpwuid_r and getgrnam_r. If linked
+	// with glibc this will return the correct result. If linked with musl then
+	// they will use musl's implementation which, like Go's non-CGO
+	// implementation, also only parses /etc/passwd and /etc/group and so also
+	// returns incorrect results without error if NIS or LDAP are being used.
+	//
+	// On Windows, the user's group ID returned by user.Current() is an SID and
+	// no further useful lookup is possible with Go's standard library.
+	//
+	// Since neither the username nor the group are likely widely used in
+	// templates, leave these variables unset if their values cannot be
+	// determined. Unset variables will trigger template errors if used,
+	// alerting the user to the problem and allowing them to find alternative
+	// solutions.
+	var gid, group, uid, username string
+	if currentUser, err := user.Current(); err == nil {
+		gid = currentUser.Gid
+		uid = currentUser.Uid
+		username = currentUser.Username
+		if runtime.GOOS != "windows" {
+			if rawGroup, err := user.LookupGroupId(currentUser.Gid); err == nil {
+				group = rawGroup.Name
+			} else {
+				c.logger.Info().
+					Str("gid", currentUser.Gid).
+					Err(err).
+					Msg("user.LookupGroupId")
+			}
+		}
+	} else {
+		c.logger.Info().
+			Err(err).
+			Msg("user.Current")
+		var ok bool
+		username, ok = os.LookupEnv("USER")
+		if !ok {
+			c.logger.Info().
+				Str("key", "USER").
+				Bool("ok", ok).
+				Msg("os.LookupEnv")
+		}
+	}
+
+	fqdnHostname, err := chezmoi.FQDNHostname(c.fileSystem)
+	if err != nil {
+		c.logger.Info().
+			Err(err).
+			Msg("chezmoi.FQDNHostname")
+	}
+	hostname, _, _ := strings.Cut(fqdnHostname, ".")
+
+	kernel, err := chezmoi.Kernel(c.fileSystem)
+	if err != nil {
+		c.logger.Info().
+			Err(err).
+			Msg("chezmoi.Kernel")
+	}
+
+	var osRelease map[string]any
+	switch runtime.GOOS {
+	case "openbsd", "windows":
+		// Don't populate osRelease on OSes where /etc/os-release does not
+		// exist.
+	default:
+		if rawOSRelease, err := chezmoi.OSRelease(c.fileSystem); err == nil {
+			osRelease = upperSnakeCaseToCamelCaseMap(rawOSRelease)
+		} else {
+			c.logger.Info().
+				Err(err).
+				Msg("chezmoi.OSRelease")
+		}
+	}
+
+	executable, _ := os.Executable()
+	windowsVersion, _ := windowsVersion()
+	sourceDirAbsPath, _ := c.getSourceDirAbsPath(nil)
+
+	return &templateData{
+		Arch:         runtime.GOARCH,
+		Args:         os.Args,
+		CacheDir:     c.CacheDirAbsPath,
+		ConfigFile:   c.configFileAbsPath,
+		Executable:   chezmoi.NewAbsPath(executable),
+		FQDNHostname: fqdnHostname,
+		GID:          gid,
+		Group:        group,
+		HomeDir:      c.homeDirAbsPath,
+		Hostname:     hostname,
+		Kernel:       kernel,
+		OS:           runtime.GOOS,
+		OSRelease:    osRelease,
+		SourceDir:    sourceDirAbsPath,
+		UID:          uid,
+		Username:     username,
+		Version: map[string]any{
+			"builtBy": c.versionInfo.BuiltBy,
+			"commit":  c.versionInfo.Commit,
+			"date":    c.versionInfo.Date,
+			"version": c.versionInfo.Version,
+		},
+		WindowsVersion: windowsVersion,
+		WorkingTree:    c.WorkingTreeAbsPath,
+	}
 }
 
 // readConfig reads the config file, if it exists.

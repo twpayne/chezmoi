@@ -26,6 +26,35 @@ var (
 	}
 )
 
+// camelCaseToUpperSnakeCase converts a string in camelCase to UPPER_SNAKE_CASE.
+func camelCaseToUpperSnakeCase(s string) string {
+	if s == "" {
+		return ""
+	}
+
+	runes := []rune(s)
+	var wordBoundaries []int
+	for i, r := range runes[1:] {
+		if unicode.IsLower(runes[i]) && unicode.IsUpper(r) {
+			wordBoundaries = append(wordBoundaries, i+1)
+		}
+	}
+
+	if len(wordBoundaries) == 0 {
+		return strings.ToUpper(s)
+	}
+
+	wordBoundaries = append(wordBoundaries, len(runes))
+	words := make([]string, 0, len(wordBoundaries))
+	prevWordBoundary := 0
+	for _, wordBoundary := range wordBoundaries {
+		word := string(runes[prevWordBoundary:wordBoundary])
+		words = append(words, strings.ToUpper(word))
+		prevWordBoundary = wordBoundary
+	}
+	return strings.Join(words, "_")
+}
+
 // englishList returns ss formatted as a list, including an Oxford comma.
 func englishList(ss []string) string {
 	switch n := len(ss); n {
@@ -107,8 +136,8 @@ func upperSnakeCaseToCamelCase(s string) string {
 
 // upperSnakeCaseToCamelCaseKeys returns m with all keys converted from
 // UPPER_SNAKE_CASE to camelCase.
-func upperSnakeCaseToCamelCaseMap(m map[string]any) map[string]any {
-	result := make(map[string]any)
+func upperSnakeCaseToCamelCaseMap[V any](m map[string]V) map[string]V {
+	result := make(map[string]V)
 	for k, v := range m {
 		result[upperSnakeCaseToCamelCase(k)] = v
 	}

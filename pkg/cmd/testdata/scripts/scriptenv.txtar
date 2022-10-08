@@ -1,15 +1,22 @@
-[!exec:python3] skip 'python3 not found in $PATH'
+[windows] skip 'UNIX only'
 
 # test that chezmoi sets environment variables for scripts
 exec chezmoi apply
-stdout VALUE
+stdout ^WORK=${WORK@R}$
+[darwin] stdout ^CHEZMOI_OS=darwin$
+[linux] stdout ^CHEZMOI_OS=linux$
+stdout ^CHEZMOI_SOURCE_DIR=${CHEZMOISOURCEDIR@R}/home$
+stdout ^SCRIPTENV_KEY=SCRIPTENV_VALUE$
 
 -- home/user/.config/chezmoi/chezmoi.toml --
 [scriptEnv]
-    VARIABLE = "VALUE"
--- home/user/.local/share/chezmoi/run_print-variable.py --
-#!/usr/bin/env python3
+    SCRIPTENV_KEY = "SCRIPTENV_VALUE"
+-- home/user/.local/share/chezmoi/.chezmoiroot --
+home
+-- home/user/.local/share/chezmoi/home/run_print-variable.sh --
+#!/bin/sh
 
-import os
-
-print(os.getenv("VARIABLE"))
+echo "WORK=${WORK}"
+echo "CHEZMOI_OS=${CHEZMOI_OS}"
+echo "CHEZMOI_SOURCE_DIR=${CHEZMOI_SOURCE_DIR}"
+echo "SCRIPTENV_KEY=${SCRIPTENV_KEY}"

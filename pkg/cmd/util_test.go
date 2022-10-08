@@ -6,6 +6,35 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestCamelCaseToUpperSnakeCase(t *testing.T) {
+	for _, tc := range []struct {
+		s        string
+		expected string
+	}{
+		{
+			"",
+			"",
+		},
+		{
+			"camel",
+			"CAMEL",
+		},
+		{
+			"camelCase",
+			"CAMEL_CASE",
+		},
+		{
+			"bugReportURL",
+			"BUG_REPORT_URL",
+		},
+	} {
+		t.Run(tc.s, func(t *testing.T) {
+			actual := camelCaseToUpperSnakeCase(tc.s)
+			assert.Equal(t, tc.expected, actual)
+		})
+	}
+}
+
 func TestEnglishList(t *testing.T) {
 	for _, tc := range []struct {
 		ss       []string
