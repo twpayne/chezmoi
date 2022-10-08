@@ -22,7 +22,7 @@ func (c *Config) newSourcePathCmd() *cobra.Command {
 
 func (c *Config) runSourcePathCmd(cmd *cobra.Command, args []string) error {
 	if len(args) == 0 {
-		sourceDirAbsPath, err := c.getSourceDirAbsPath()
+		sourceDirAbsPath, err := c.getSourceDirAbsPath(nil)
 		if err != nil {
 			return err
 		}

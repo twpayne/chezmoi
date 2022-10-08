@@ -52,12 +52,12 @@ func Kernel(fileSystem vfs.FS) (map[string]any, error) {
 
 // OSRelease returns the operating system identification data as defined by the
 // os-release specification.
-func OSRelease(system System) (map[string]any, error) {
-	for _, filename := range []AbsPath{
-		NewAbsPath("/etc/os-release"),
-		NewAbsPath("/usr/lib/os-release"),
+func OSRelease(fileSystem vfs.FS) (map[string]any, error) {
+	for _, filename := range []string{
+		"/etc/os-release",
+		"/usr/lib/os-release",
 	} {
-		data, err := system.ReadFile(filename)
+		data, err := fileSystem.ReadFile(filename)
 		if errors.Is(err, fs.ErrNotExist) {
 			continue
 		} else if err != nil {
