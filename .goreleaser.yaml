@@ -105,14 +105,7 @@ archives:
   name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}-musl_{{ .Arch }}"
 
 changelog:
-  sort: asc
-  filters:
-    exclude:
-    - "^chore:"
-    - "^chore\\(deps\\):"
-    - "^test:"
-    - Merge pull request
-    - Merge branch
+  use: github-native
 
 checksum:
   extra_files:
