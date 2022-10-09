@@ -698,19 +698,32 @@ func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte) ([]byte
 
 // defaultConfigFile returns the default config file according to the XDG Base
 // Directory Specification.
-func (c *Config) defaultConfigFile(
-	fileSystem vfs.Stater, bds *xdg.BaseDirectorySpecification,
-) (chezmoi.AbsPath, error) {
+func (c *Config) defaultConfigFile(fileSystem vfs.FS, bds *xdg.BaseDirectorySpecification) (chezmoi.AbsPath, error) {
 	// Search XDG Base Directory Specification config directories first.
+CONFIG_DIR:
 	for _, configDir := range bds.ConfigDirs {
 		configDirAbsPath, err := chezmoi.NewAbsPathFromExtPath(configDir, c.homeDirAbsPath)
 		if err != nil {
 			return chezmoi.EmptyAbsPath, err
 		}
+
+		dirEntries, err := fileSystem.ReadDir(configDirAbsPath.JoinString("chezmoi").String())
+		switch {
+		case errors.Is(err, fs.ErrNotExist):
+			continue CONFIG_DIR
+		case err != nil:
+			return chezmoi.EmptyAbsPath, err
+		}
+
+		dirEntryNames := make(map[string]struct{}, len(dirEntries))
+		for _, dirEntry := range dirEntries {
+			dirEntryNames[dirEntry.Name()] = struct{}{}
+		}
+
 		for _, extension := range chezmoi.FormatExtensions {
-			configFileAbsPath := configDirAbsPath.JoinString("chezmoi", "chezmoi."+extension)
-			if _, err := fileSystem.Stat(configFileAbsPath.String()); err == nil {
-				return configFileAbsPath, nil
+			name := "chezmoi." + extension
+			if _, ok := dirEntryNames[name]; ok {
+				return configDirAbsPath.JoinString("chezmoi", name), nil
 			}
 		}
 	}
@@ -1207,14 +1220,27 @@ func (c *Config) findFirstConfigTemplate() (*configTemplate, error) {
 		return nil, err
 	}
 
+	dirEntries, err := c.baseSystem.ReadDir(sourceDirAbsPath)
+	switch {
+	case errors.Is(err, fs.ErrNotExist):
+		return nil, nil
+	case err != nil:
+		return nil, err
+	}
+
+	dirEntryNames := make(map[chezmoi.RelPath]struct{}, len(dirEntries))
+	for _, dirEntry := range dirEntries {
+		dirEntryNames[chezmoi.NewRelPath(dirEntry.Name())] = struct{}{}
+	}
+
 	for _, extension := range chezmoi.FormatExtensions {
 		relPath := chezmoi.NewRelPath(chezmoi.Prefix + "." + extension + chezmoi.TemplateSuffix)
+		if _, ok := dirEntryNames[relPath]; !ok {
+			continue
+		}
 		absPath := sourceDirAbsPath.Join(relPath)
 		contents, err := c.baseSystem.ReadFile(absPath)
-		switch {
-		case errors.Is(err, fs.ErrNotExist):
-			continue
-		case err != nil:
+		if err != nil {
 			return nil, err
 		}
 		return &configTemplate{
