@@ -1,13 +1,13 @@
 {{- range .Ordinary -}}
-{{ if and (eq .X 'A') (eq .Y '.') -}}Add {{ .Path }}
-{{ else if and (eq .X 'D') (eq .Y '.') -}}Remove {{ .Path }}
-{{ else if and (eq .X 'M') (eq .Y '.') -}}Update {{ .Path }}
+{{ if and (eq .X 'A') (eq .Y '.') -}}Add {{ .Path | targetRelPath }}
+{{ else if and (eq .X 'D') (eq .Y '.') -}}Remove {{ .Path | targetRelPath }}
+{{ else if and (eq .X 'M') (eq .Y '.') -}}Update {{ .Path | targetRelPath }}
 {{ else }}{{with (printf "unsupported XY: %q" (printf "%c%c" .X .Y)) }}{{ fail . }}{{ end }}
 {{ end }}
 {{- end -}}
 
 {{- range .RenamedOrCopied -}}
-{{ if and (eq .X 'R') (eq .Y '.') }}Rename {{ .OrigPath }} to {{ .Path }}
+{{ if and (eq .X 'R') (eq .Y '.') }}Change attributes of {{ .Path | targetRelPath }}
 {{ else }}{{with (printf "unsupported XY: %q" (printf "%c%c" .X .Y)) }}{{ fail . }}{{ end }}
 {{ end }}
 {{- end -}}
