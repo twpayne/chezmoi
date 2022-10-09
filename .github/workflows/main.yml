@@ -428,3 +428,4 @@ jobs:
           destination-github-username: chezmoi
           destination-repository-name: get.chezmoi.io
           target-branch: gh-pages
+          commit-message: 'chore: Update from ORIGIN_COMMIT'
