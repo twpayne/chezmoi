@@ -416,6 +416,21 @@ jobs:
           gh release upload v${VERSION} dist/checksums.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GORELEASER_GITHUB_TOKEN }}
+  deploy-website:
+    needs:
+      - release
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
+        with:
+          fetch-depth: 0
+      - name: prepare-chezmoi.io
+        run: |
+          pip3 install mkdocs-material mkdocs-mermaid2-plugin mkdocs-redirects mkdocs-simple-hooks
+          ( cd assets/chezmoi.io && mkdocs build )
+      - name: push-chezmoi.io
+        run: |
+          ( cd assets/chezmoi.io && mkdocs gh-deploy )
       - name: prepare-get.chezmoi.io
         run: |
           cp assets/scripts/install.sh assets/get.chezmoi.io/index.html
