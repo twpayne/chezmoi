@@ -416,3 +416,15 @@ jobs:
           gh release upload v${VERSION} dist/checksums.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GORELEASER_GITHUB_TOKEN }}
+      - name: prepare-get.chezmoi.io
+        run: |
+          cp assets/scripts/install.sh assets/get.chezmoi.io/index.html
+      - name: push-get.chezmoi.io
+        uses: cpina/github-action-push-to-another-repository@9e487f29582587eeb4837c0552c886bb0644b6b9
+        env:
+          SSH_DEPLOY_KEY: ${{ secrets.GET_CHEZMOI_IO_SSH_DEPLOY_KEY }}
+        with:
+          source-directory: assets/get.chezmoi.io
+          destination-github-username: chezmoi
+          destination-repository-name: get.chezmoi.io
+          target-branch: gh-pages
