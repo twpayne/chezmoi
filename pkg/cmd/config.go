@@ -41,6 +41,7 @@ import (
 	"github.com/twpayne/go-xdg/v6"
 	cobracompletefig "github.com/withfig/autocomplete-tools/integrations/cobra"
 	"go.uber.org/multierr"
+	"golang.org/x/exp/maps"
 	"golang.org/x/term"
 	"mvdan.cc/sh/v3/expand"
 	"mvdan.cc/sh/v3/syntax"
@@ -1318,7 +1319,11 @@ func (c *Config) gitAutoCommit(status *git.Status) error {
 	if err != nil {
 		return err
 	}
-	commitMessageTmpl, err := template.New("commit_message").Funcs(c.templateFuncs).Parse(string(commitMessageTemplate))
+	funcMap := maps.Clone(sprig.TxtFuncMap())
+	funcMap["targetRelPath"] = func(source string) string {
+		return chezmoi.NewSourceRelPath(source).TargetRelPath(c.encryption.EncryptedSuffix()).String()
+	}
+	commitMessageTmpl, err := template.New("commit_message").Funcs(funcMap).Parse(string(commitMessageTemplate))
 	if err != nil {
 		return err
 	}
