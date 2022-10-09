@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"runtime/debug"
 	"strconv"
 	"strings"
 
@@ -265,6 +266,33 @@ func mustLongHelp(command string) string {
 
 // runMain runs chezmoi's main function.
 func runMain(versionInfo VersionInfo, args []string) (err error) {
+	if versionInfo.Commit == "" || versionInfo.Date == "" {
+		if buildInfo, ok := debug.ReadBuildInfo(); ok {
+			var vcs, vcsRevision, vcsTime, vcsModified string
+			for _, setting := range buildInfo.Settings {
+				switch setting.Key {
+				case "vcs":
+					vcs = setting.Value
+				case "vcs.revision":
+					vcsRevision = setting.Value
+				case "vcs.time":
+					vcsTime = setting.Value
+				case "vcs.modified":
+					vcsModified = setting.Value
+				}
+			}
+			if versionInfo.Commit == "" && vcs == "git" {
+				versionInfo.Commit = vcsRevision
+				if modified, err := strconv.ParseBool(vcsModified); err == nil && modified {
+					versionInfo.Commit += " (modified)"
+				}
+			}
+			if versionInfo.Date == "" {
+				versionInfo.Date = vcsTime
+			}
+		}
+	}
+
 	var config *Config
 	if config, err = newConfig(
 		withVersionInfo(versionInfo),
