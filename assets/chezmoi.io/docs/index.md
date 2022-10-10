@@ -7,7 +7,7 @@ dotfiles from your GitHub dotfiles repo on a new, empty machine with a single
 command:
 
 ```console
-$ sh -c "$(curl -fsLS https://chezmoi.io/get)" -- init --apply $GITHUB_USERNAME
+$ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply $GITHUB_USERNAME
 ```
 
 As well as `curl | sh` installation, you can [install chezmoi with your favorite

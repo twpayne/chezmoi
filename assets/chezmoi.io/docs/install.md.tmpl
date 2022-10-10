@@ -126,13 +126,13 @@ with a single command:
 === "curl"
 
     ```sh
-    sh -c "$(curl -fsLS https://chezmoi.io/get)"
+    sh -c "$(curl -fsLS get.chezmoi.io)"
     ```
 
 === "wget"
 
     ```sh
-    sh -c "$(wget -qO- https://chezmoi.io/get)"
+    sh -c "$(wget -qO- get.chezmoi.io)"
     ```
 
 === "PowerShell"
@@ -148,7 +148,7 @@ with a single command:
     chezmoi and your dotfiles with the single command:
 
     ```sh
-    sh -c "$(curl -fsLS https://chezmoi.io/get)" -- init --apply $GITHUB_USERNAME
+    sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply $GITHUB_USERNAME
     ```
 
 !!! hint
@@ -157,7 +157,7 @@ with a single command:
     for example:
 
     ```sh
-    sh -c "$(curl -fsLS https://chezmoi.io/get)" -- -b $HOME/.local/bin
+    sh -c "$(curl -fsLS get.chezmoi.io)" -- -b $HOME/.local/bin
     ```
 
 ## Download a pre-built Linux package
