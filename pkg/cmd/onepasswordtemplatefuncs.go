@@ -409,45 +409,7 @@ func (c *Config) onepasswordAccount(key string) string {
 	panic(fmt.Errorf("no 1Password account found matching %s", key))
 }
 
-// Shorthand names have been removed from 1Password CLI v2 when biometric
-// authentication is used. Mostly, this does not matter. However, this function
-// builds a better set of aliases that can be used in the `"account" field`.
-// The following values returned from `op account list` will always be mapped
-// to the AccountUUID during the actual call.
-//
-// Given the following values:
-//
-// ```json
-// [
-//
-//	{
-//	  "url": "account1.1password.ca",
-//	  "email": "my@email.com",
-//	  "user_uuid": "some-user-uuid",
-//	  "account_uuid": "some-account-uuid"
-//	}
-//
-// ]
-// ```
-//
-// The following values can be used in the `account` parameter and the value
-// `some-account-uuid` will be passed as the `--account` parameter to `op`.
-//
-// - `some-account-uuid`
-// - `some-user-uuid`
-// - `account1.1password.ca`
-// - `account1`
-// - `my@email.com`
-// - `my`
-// - `my@account1.1password.ca`
-// - `my@account1`
-//
-// If there are multiple accounts and *any* value exists more than once, that
-// value will be removed from the account mapping. That is, if you are signed
-// into `my@email.com` and `your@email.com` for `account1.1password.ca`, then
-// `account1.1password.ca` will not be a valid lookup value, but `my@account1`,
-// `my@account1.1password.ca`, `your@account1`, and
-// `your@account1.1password.ca` would all be valid lookups.
+// onepasswordAccounts returns a map of keys to unique account UUIDs.
 func (c *Config) onepasswordAccounts() (map[string]string, error) {
 	if c.Onepassword.accountMap != nil || c.Onepassword.accountMapErr != nil {
 		return c.Onepassword.accountMap, c.Onepassword.accountMapErr
@@ -469,79 +431,13 @@ func (c *Config) onepasswordAccounts() (map[string]string, error) {
 		return nil, c.Onepassword.accountMapErr
 	}
 
-	var data []onepasswordAccount
-
-	if err := json.Unmarshal(output, &data); err != nil {
+	var accounts []onepasswordAccount
+	if err := json.Unmarshal(output, &accounts); err != nil {
 		c.Onepassword.accountMapErr = err
 		return nil, c.Onepassword.accountMapErr
 	}
 
-	collisions := make(map[string]bool)
-	result := make(map[string]string)
-
-	for _, account := range data {
-		result[account.UserUUID] = account.AccountUUID
-		result[account.AccountUUID] = account.AccountUUID
-
-		if _, exists := result[account.URL]; exists {
-			collisions[account.URL] = true
-		} else {
-			result[account.URL] = account.AccountUUID
-		}
-
-		parts := strings.SplitN(account.URL, ".", 2)
-		accountName := parts[0]
-
-		parts = strings.SplitN(account.Email, "@", 2)
-		emailName := parts[0]
-
-		userAccountName := emailName + "@" + accountName
-		userAccountURL := emailName + "@" + account.URL
-
-		if _, exists := result[accountName]; exists {
-			collisions[accountName] = true
-		} else {
-			result[accountName] = account.AccountUUID
-		}
-
-		if _, exists := result[account.Email]; exists {
-			collisions[account.Email] = true
-		} else {
-			result[account.Email] = account.AccountUUID
-		}
-
-		if _, exists := result[emailName]; exists {
-			collisions[emailName] = true
-		} else {
-			result[emailName] = account.AccountUUID
-		}
-
-		if _, exists := result[userAccountName]; exists {
-			collisions[userAccountName] = true
-		} else {
-			result[userAccountName] = account.AccountUUID
-		}
-
-		if _, exists := result[userAccountURL]; exists {
-			collisions[userAccountURL] = true
-		} else {
-			result[userAccountURL] = account.AccountUUID
-		}
-
-		if account.Shorthand != "" {
-			if _, exists := result[account.Shorthand]; exists {
-				collisions[account.Shorthand] = true
-			} else {
-				result[account.Shorthand] = account.AccountUUID
-			}
-		}
-	}
-
-	for k := range collisions {
-		delete(result, k)
-	}
-
-	c.Onepassword.accountMap = result
+	c.Onepassword.accountMap = onepasswordAccountMap(accounts)
 	return c.Onepassword.accountMap, c.Onepassword.accountMapErr
 }
 
@@ -602,6 +498,49 @@ func (c *Config) newOnepasswordArgs(baseArgs, userArgs []string) (*onepasswordAr
 		a.args = append(a.args, "--account", a.account)
 	}
 	return a, nil
+}
+
+// onepasswordAccountMap returns a map of unique IDs to account UUIDs.
+func onepasswordAccountMap(accounts []onepasswordAccount) map[string]string {
+	// Build a map of keys to account UUIDs.
+	accountsMap := make(map[string][]string)
+	for _, account := range accounts {
+		keys := []string{
+			account.URL,
+			account.Email,
+			account.UserUUID,
+			account.AccountUUID,
+			account.Shorthand,
+		}
+
+		accountName, _, accountNameOk := strings.Cut(account.URL, ".")
+		if accountNameOk {
+			keys = append(keys, accountName)
+		}
+
+		emailName, _, emailNameOk := strings.Cut(account.Email, "@")
+		if emailNameOk {
+			keys = append(keys, emailName, emailName+"@"+account.URL)
+		}
+
+		if accountNameOk && emailNameOk {
+			keys = append(keys, emailName+"@"+accountName)
+		}
+
+		for _, key := range keys {
+			accountsMap[key] = append(accountsMap[key], account.AccountUUID)
+		}
+	}
+
+	// Select unique, non-empty keys.
+	accountMap := make(map[string]string)
+	for key, values := range accountsMap {
+		if key != "" && len(values) == 1 {
+			accountMap[key] = values[0]
+		}
+	}
+
+	return accountMap
 }
 
 // onepasswordUniqueSessionToken will look for any session tokens in the
