@@ -315,12 +315,12 @@ jobs:
       - name: test-install-irm
         run: |
           if (Test-Path -Path bin/chezmoi.exe) { Remove-Item -Force bin/chezmoi.exe }
-          (irm -useb https://chezmoi.io/get.ps1) | powershell -c -
+          (irm -useb https://get.chezmoi.io/ps1) | powershell -c -
           bin/chezmoi.exe --version
       - name: test-install-iwr
         run: |
           if (Test-Path -Path bin/chezmoi.exe) { Remove-Item -Force bin/chezmoi.exe }
-          (iwr -useb https://chezmoi.io/get.ps1).ToString() | powershell -c -
+          (iwr -useb https://get.chezmoi.io/ps1).ToString() | powershell -c -
           bin/chezmoi.exe --version
   check:
     runs-on: ubuntu-18.04
