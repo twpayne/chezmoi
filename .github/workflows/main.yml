@@ -434,6 +434,7 @@ jobs:
       - name: prepare-get.chezmoi.io
         run: |
           cp assets/scripts/install.sh assets/get.chezmoi.io/index.html
+          cp assets/scripts/install.ps1 assets/get.chezmoi.io/ps1
           cp LICENSE assets/get.chezmoi.io/LICENSE
       - name: push-get.chezmoi.io
         uses: cpina/github-action-push-to-another-repository@9e487f29582587eeb4837c0552c886bb0644b6b9
