@@ -227,8 +227,8 @@ function unpack-file {
     You can specify a particular git tag using the -Tag option.
 
     Examples:
-    '$params = "-BinDir ~/bindir"', (iwr https://chezmoi.io/get.ps1).Content | powershell -c -
-    '$params = "-Tag v1.8.10"', (iwr https://chezmoi.io/get.ps1).Content | powershell -c -
+    '$params = "-BinDir ~/bindir"', (iwr https://get.chezmoi.io/ps1).Content | powershell -c -
+    '$params = "-Tag v1.8.10"', (iwr https://get.chezmoi.io/ps1).Content | powershell -c -
 #>
 function Install-Chezmoi {
     [CmdletBinding(PositionalBinding=$false)]
