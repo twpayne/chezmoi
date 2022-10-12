@@ -19,7 +19,7 @@ PREFIX?=/usr/local
 default: build
 
 .PHONY: smoketest
-smoketest: run build-all test lint format
+smoketest: run build-all test lint shellcheck format
 
 .PHONY: build
 build:
@@ -137,6 +137,10 @@ release:
 	goreleaser release \
 		--rm-dist \
 		${GORELEASER_FLAGS}
+
+.PHONY: shellcheck
+shellcheck:
+	find . -type f -name \*.sh | xargs shellcheck
 
 .PHONY: test-release
 test-release:
