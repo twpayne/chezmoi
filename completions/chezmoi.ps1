@@ -10,7 +10,7 @@ filter __chezmoi_escapeStringWithSpecialChars {
     $_ -replace '\s|#|@|\$|;|,|''|\{|\}|\(|\)|"|`|\||<|>|&','`$&'
 }
 
-Register-ArgumentCompleter -CommandName 'chezmoi' -ScriptBlock {
+[scriptblock]$__chezmoiCompleterBlock = {
     param(
             $WordToComplete,
             $CommandAst,
@@ -226,3 +226,5 @@ Register-ArgumentCompleter -CommandName 'chezmoi' -ScriptBlock {
 
     }
 }
+
+Register-ArgumentCompleter -CommandName 'chezmoi' -ScriptBlock $__chezmoiCompleterBlock
