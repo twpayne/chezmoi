@@ -1,0 +1,20 @@
+[!exec:age] skip 'age not found in $PATH'
+
+mkageconfig
+
+# test that chezmoi add --encrypted encrypts a file
+exec chezmoi add --encrypt $HOME${/}.file
+grep '-----BEGIN AGE ENCRYPTED FILE-----' $CHEZMOISOURCEDIR/encrypted_dot_file.age
+
+# test that chezmoi chattr noencrypted decrypts the file in the source state
+exec chezmoi chattr noencrypted $HOME${/}.file
+! exists $CHEZMOISOURCEDIR/encrypted_dot_file.age
+cmp $CHEZMOISOURCEDIR/dot_file $HOME/.file
+
+# test that chezmoi chattr encrypted encrypts the file in the source state
+exec chezmoi chattr encrypted $HOME${/}.file
+! exists $CHEZMOISOURCEDIR/dot_file
+grep '-----BEGIN AGE ENCRYPTED FILE-----' $CHEZMOISOURCEDIR/encrypted_dot_file.age
+
+-- home/user/.file --
+# contents of .file

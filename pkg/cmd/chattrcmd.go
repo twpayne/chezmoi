@@ -171,12 +171,41 @@ func (c *Config) runChattrCmd(cmd *cobra.Command, args []string, sourceState *ch
 				}
 			}
 		case *chezmoi.SourceStateFile:
-			// FIXME encrypted attribute changes
-			// FIXME when changing encrypted attribute add new file before removing old one
-			relPath := m.modifyFileAttr(sourceStateEntry.Attr).SourceName(encryptedSuffix)
-			if newBaseNameRelPath := chezmoi.NewRelPath(relPath); newBaseNameRelPath != fileRelPath {
-				oldSourceAbsPath := c.SourceDirAbsPath.Join(parentRelPath, fileRelPath)
-				newSourceAbsPath := c.SourceDirAbsPath.Join(parentRelPath, newBaseNameRelPath)
+			newAttr := m.modifyFileAttr(sourceStateEntry.Attr)
+			newBaseNameRelPath := chezmoi.NewRelPath(newAttr.SourceName(encryptedSuffix))
+			oldSourceAbsPath := c.SourceDirAbsPath.Join(parentRelPath, fileRelPath)
+			newSourceAbsPath := c.SourceDirAbsPath.Join(parentRelPath, newBaseNameRelPath)
+			switch encryptedBefore, encryptedAfter := sourceStateEntry.Attr.Encrypted, newAttr.Encrypted; {
+			case encryptedBefore && !encryptedAfter:
+				// Write the plaintext and then remove the ciphertext.
+				plaintext, err := sourceStateEntry.Contents()
+				if err != nil {
+					return err
+				}
+				if err := c.sourceSystem.WriteFile(newSourceAbsPath, plaintext, 0o666&^c.Umask); err != nil {
+					return err
+				}
+				if err := c.sourceSystem.Remove(oldSourceAbsPath); err != nil {
+					return err
+				}
+			case !encryptedBefore && encryptedAfter:
+				// Write the ciphertext and then remove the plaintext.
+				plaintext, err := sourceStateEntry.Contents()
+				if err != nil {
+					return err
+				}
+				ciphertext, err := sourceState.Encryption().Encrypt(plaintext)
+				if err != nil {
+					return err
+				}
+				if err := c.sourceSystem.WriteFile(newSourceAbsPath, ciphertext, 0o666&^c.Umask); err != nil {
+					return err
+				}
+				if err := c.sourceSystem.Remove(oldSourceAbsPath); err != nil {
+					return err
+				}
+			case newBaseNameRelPath != fileRelPath:
+				// Contents have not changed so a rename is sufficient.
 				if err := c.sourceSystem.Rename(oldSourceAbsPath, newSourceAbsPath); err != nil {
 					return err
 				}
