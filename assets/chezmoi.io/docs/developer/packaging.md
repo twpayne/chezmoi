@@ -31,8 +31,13 @@ optional and will be stripped, so you can pass the git tag in directly.
 
 !!! hint
 
-    The command `git rev-parse HEAD` will return a suitable value for
-    `$COMMIT`.
+    The `assets/scripts/generate-commit.sh` script will return a suitable value
+    for `$COMMIT`.
+
+!!! hint
+
+    The source archive contains a file called `COMMIT` containing the commit
+    hash.
 
 `$DATE` should be the date of the build as a UNIX timestamp or in RFC3339
 format.

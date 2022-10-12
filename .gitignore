@@ -1,4 +1,5 @@
 /.vagrant
+/COMMIT
 /bin/chezmoi
 /bin/gofumpt
 /bin/golangci-lint
