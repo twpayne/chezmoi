@@ -27,7 +27,7 @@ stdout '^\w+\s+latest-version\s+'
 stdout '^ok\s+os-arch\s+'
 ! stdout '^\S+\s+systeminfo\s+'
 stdout '^ok\s+uname\s+'
-stdout '^warning\s+config-file\s+.*multiple config files'
+stdout '^ok\s+config-file\s+'
 stdout '^ok\s+source-dir\s+'
 stdout '^warning\s+suspicious-entries\s+'
 stdout '^ok\s+dest-dir\s+'
@@ -67,6 +67,13 @@ chhome home3/user
 # test that chezmoi doctor warns about suspicious entries
 exec chezmoi doctor
 stdout '^warning\s+suspicious-entries\s+'
+
+chhome home4/user
+
+# test that chezmoi doctor does not print a warning about multiple config files
+! exec chezmoi doctor
+stdout '^warning\s+config-file\s+.*multiple config files'
+! stderr .
 
 -- bin/age --
 #!/bin/sh
@@ -159,9 +166,10 @@ echo "Vault v1.5.5 ('f5d1ddb3750e7c28e25036e1ef26a4c02379fc01+CHANGES')"
     command = "pinentry"
 [secret]
     command = "secret"
--- home/user/.config/chezmoi/chezmoi.yaml --
 -- home/user/.local/share/chezmoi/.chezmoidata.json --
 -- home/user/.local/share/chezmoi/.chezmoiexternal.toml --
 -- home/user/.local/share/chezmoi/.chezmoiscripts/.keep --
 -- home/user/.local/share/chezmoi/dot_config/chezmoi/chezmoi.toml.tmpl --
 -- home3/user/.local/share/chezmoi/.chezmoisuspicious --
+-- home4/user/.config/chezmoi/chezmoi.json --
+-- home4/user/.config/chezmoi/chezmoi.yaml --

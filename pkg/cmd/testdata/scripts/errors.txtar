@@ -40,6 +40,12 @@ chhome home7/user
 ! exec chezmoi init
 stderr 'multiple config file templates'
 
+chhome home8/user
+
+# test that chezmoi verify returns an error if there are multiple config files
+! exec chezmoi verify
+stderr 'multiple config files'
+
 # FIXME add more tests
 
 -- home2/user/.config/chezmoi/chezmoi.json --
@@ -58,3 +64,6 @@ home
 # contents of install_packages
 -- home7/user/.local/share/chezmoi/.chezmoi.json.tmpl --
 -- home7/user/.local/share/chezmoi/.chezmoi.toml.tmpl --
+-- home8/user/.config/chezmoi/chezmoi.json --
+-- home8/user/.config/chezmoi/chezmoi.toml --
+-- home8/user/.local/share/chezmoi/.keep --
