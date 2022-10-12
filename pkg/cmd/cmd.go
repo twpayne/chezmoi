@@ -284,7 +284,7 @@ func runMain(versionInfo VersionInfo, args []string) (err error) {
 			if versionInfo.Commit == "" && vcs == "git" {
 				versionInfo.Commit = vcsRevision
 				if modified, err := strconv.ParseBool(vcsModified); err == nil && modified {
-					versionInfo.Commit += " (modified)"
+					versionInfo.Commit += "-dirty"
 				}
 			}
 			if versionInfo.Date == "" {

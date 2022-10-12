@@ -2,6 +2,7 @@ project_name: chezmoi
 
 before:
   hooks:
+  - assets/scripts/generate-commit.sh -o COMMIT
   - go mod download all
 
 builds:
@@ -229,3 +230,5 @@ snapcrafts:
 source:
   enabled: true
   prefix_template: '{{ .ProjectName }}-{{ .Version }}/'
+  files:
+  - COMMIT
