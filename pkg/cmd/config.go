@@ -452,7 +452,7 @@ func (c *Config) applyArgs(
 	}
 
 	var currentConfigTemplateContentsSHA256 []byte
-	configTemplate, err := c.findFirstConfigTemplate()
+	configTemplate, err := c.findConfigTemplate()
 	if err != nil {
 		return err
 	}
@@ -607,7 +607,7 @@ func (c *Config) colorAutoFunc() bool {
 // template and reloads it.
 func (c *Config) createAndReloadConfigFile() error {
 	// Find config template, execute it, and create config file.
-	configTemplate, err := c.findFirstConfigTemplate()
+	configTemplate, err := c.findConfigTemplate()
 	if err != nil {
 		return err
 	}
@@ -1213,9 +1213,10 @@ type configTemplate struct {
 	contents      []byte
 }
 
-// findFirstConfigTemplate searches for a config template, returning the path,
-// format, and contents of the first one that it finds.
-func (c *Config) findFirstConfigTemplate() (*configTemplate, error) {
+// findConfigTemplate searches for a config template, returning the path,
+// format, and contents. It returns an error if multiple config file templates
+// are found.
+func (c *Config) findConfigTemplate() (*configTemplate, error) {
 	sourceDirAbsPath, err := c.getSourceDirAbsPath()
 	if err != nil {
 		return nil, err
@@ -1234,6 +1235,7 @@ func (c *Config) findFirstConfigTemplate() (*configTemplate, error) {
 		dirEntryNames[chezmoi.NewRelPath(dirEntry.Name())] = struct{}{}
 	}
 
+	var configTemplates []*configTemplate //nolint:prealloc
 	for _, extension := range chezmoi.FormatExtensions {
 		relPath := chezmoi.NewRelPath(chezmoi.Prefix + "." + extension + chezmoi.TemplateSuffix)
 		if _, ok := dirEntryNames[relPath]; !ok {
@@ -1244,14 +1246,28 @@ func (c *Config) findFirstConfigTemplate() (*configTemplate, error) {
 		if err != nil {
 			return nil, err
 		}
-		return &configTemplate{
+		configTemplate := &configTemplate{
 			targetRelPath: chezmoi.NewRelPath("chezmoi." + extension),
 			format:        chezmoi.FormatsByExtension[extension],
 			sourceAbsPath: absPath,
 			contents:      contents,
-		}, nil
+		}
+		configTemplates = append(configTemplates, configTemplate)
 	}
-	return nil, nil
+
+	switch len(configTemplates) {
+	case 0:
+		return nil, nil
+	case 1:
+		return configTemplates[0], nil
+	default:
+		sourceAbsPathStrs := make([]string, 0, len(configTemplates))
+		for _, configTemplate := range configTemplates {
+			sourceAbsPathStr := configTemplate.sourceAbsPath.String()
+			sourceAbsPathStrs = append(sourceAbsPathStrs, sourceAbsPathStr)
+		}
+		return nil, fmt.Errorf("multiple config file templates: %s ", englishList(sourceAbsPathStrs))
+	}
 }
 
 func (c *Config) getHTTPClient() (*http.Client, error) {

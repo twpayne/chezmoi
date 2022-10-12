@@ -34,6 +34,12 @@ chhome home6/user
 ! exec chezmoi verify
 stderr 'inconsistent state'
 
+chhome home7/user
+
+# test that chezmoi init returns an error if there are multiple config file templates
+! exec chezmoi init
+stderr 'multiple config file templates'
+
 # FIXME add more tests
 
 -- home2/user/.config/chezmoi/chezmoi.json --
@@ -50,3 +56,5 @@ home
 # contents of install_packages
 -- home6/user/.local/share/chezmoi/run_once_install_packages --
 # contents of install_packages
+-- home7/user/.local/share/chezmoi/.chezmoi.json.tmpl --
+-- home7/user/.local/share/chezmoi/.chezmoi.toml.tmpl --
