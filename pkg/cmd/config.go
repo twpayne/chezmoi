@@ -179,6 +179,7 @@ type Config struct {
 	fileSystem             vfs.FS
 	bds                    *xdg.BaseDirectorySpecification
 	configFileAbsPath      chezmoi.AbsPath
+	configFileAbsPathErr   error
 	baseSystem             chezmoi.System
 	sourceSystem           chezmoi.System
 	destSystem             chezmoi.System
@@ -390,10 +391,7 @@ func newConfig(options ...configOption) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
-	c.configFileAbsPath, err = c.defaultConfigFile(c.fileSystem, c.bds)
-	if err != nil {
-		return nil, err
-	}
+	c.configFileAbsPath, c.configFileAbsPathErr = c.defaultConfigFile(c.fileSystem, c.bds)
 	c.SourceDirAbsPath, err = c.defaultSourceDir(c.fileSystem, c.bds)
 	if err != nil {
 		return nil, err
@@ -721,13 +719,29 @@ CONFIG_DIR:
 			dirEntryNames[dirEntry.Name()] = struct{}{}
 		}
 
+		var names []string
 		for _, extension := range chezmoi.FormatExtensions {
 			name := "chezmoi." + extension
 			if _, ok := dirEntryNames[name]; ok {
-				return configDirAbsPath.JoinString("chezmoi", name), nil
+				names = append(names, name)
 			}
 		}
+
+		switch len(names) {
+		case 0:
+			// Do nothing.
+		case 1:
+			return configDirAbsPath.JoinString("chezmoi", names[0]), nil
+		default:
+			configFileAbsPathStrs := make([]string, 0, len(names))
+			for _, name := range names {
+				configFileAbsPathStr := configDirAbsPath.JoinString("chezmoi", name)
+				configFileAbsPathStrs = append(configFileAbsPathStrs, configFileAbsPathStr.String())
+			}
+			return chezmoi.EmptyAbsPath, fmt.Errorf("multiple config files: %s", englishList(configFileAbsPathStrs))
+		}
 	}
+
 	// Fallback to XDG Base Directory Specification default.
 	configHomeAbsPath, err := chezmoi.NewAbsPathFromExtPath(bds.ConfigHome, c.homeDirAbsPath)
 	if err != nil {
@@ -1681,11 +1695,17 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	})
 
 	// Read the config file.
-	if err := c.readConfig(); err != nil {
-		if !boolAnnotation(cmd, doesNotRequireValidConfig) {
+	if boolAnnotation(cmd, doesNotRequireValidConfig) {
+		if c.configFileAbsPathErr == nil {
+			_ = c.readConfig()
+		}
+	} else {
+		if c.configFileAbsPathErr != nil {
+			return c.configFileAbsPathErr
+		}
+		if err := c.readConfig(); err != nil {
 			return fmt.Errorf("invalid config: %s: %w", c.configFileAbsPath, err)
 		}
-		c.errorf("warning: %s: %v\n", c.configFileAbsPath, err)
 	}
 
 	// Restore flags that were set on the command line.

@@ -17,7 +17,7 @@ exec chezmoi data --format=yaml
 stdout 'sourceDir: .*/config/source'
 
 # test that the config file can be set
-exec chezmoi data --config=$CHEZMOICONFIGDIR/chezmoi.yaml --format=yaml
+exec chezmoi data --config=$HOME/.chezmoi.yaml --format=yaml
 stdout 'sourceDir: .*/config2/source'
 
 # test that the cache directory can be set
@@ -27,13 +27,13 @@ stdout 'cacheDir: .*/flag/cache'
 [windows] stop 'remaining tests require /dev/stdin'
 
 # test that chezmoi can read the config from stdin
-stdin home2/user/.config/chezmoi/chezmoi.yaml
+stdin home2/user/.chezmoi.yaml
 exec chezmoi data --config=/dev/stdin --config-format=yaml --format=yaml
 stdout 'sourceDir: .*/config2/source'
 
+-- home2/user/.chezmoi.yaml --
+color: auto
+sourceDir: /config2/source
 -- home2/user/.config/chezmoi/chezmoi.toml --
 color = "auto"
 sourceDir = "/config/source"
--- home2/user/.config/chezmoi/chezmoi.yaml --
-color: auto
-sourceDir: /config2/source
