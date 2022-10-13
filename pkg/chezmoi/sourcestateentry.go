@@ -9,6 +9,12 @@ import (
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoilog"
 )
 
+// A SourceAttr contains attributes of the source.
+type SourceAttr struct {
+	Encrypted bool
+	External  bool
+}
+
 // A SourceStateOrigin represents the origin of a source state.
 type SourceStateOrigin interface {
 	Path() AbsPath
@@ -34,6 +40,7 @@ type SourceStateCommand struct {
 	origin        SourceStateOrigin
 	forceRefresh  bool
 	refreshPeriod Duration
+	sourceAttr    SourceAttr
 }
 
 // A SourceStateDir represents the state of a directory in the source state.
@@ -103,6 +110,7 @@ func (s *SourceStateCommand) TargetStateEntry(destSystem System, destDirAbsPath 
 		cmd:           s.cmd,
 		forceRefresh:  s.forceRefresh,
 		refreshPeriod: s.refreshPeriod,
+		sourceAttr:    s.sourceAttr,
 	}, nil
 }
 

@@ -1,0 +1,44 @@
+symlink archive/dir/symlink -> file
+exec tar czf www/archive.tar.gz archive
+
+httpd www
+
+# test that chezmoi managed lists all targets
+exec chezmoi managed
+cmp stdout golden/managed
+
+# test that chezmoi managed --include=encrypted lists encrypted files only
+exec chezmoi managed --include=encrypted
+cmp stdout golden/managed-encrypted
+
+# test that chezmoi managed --include=externals lists external targets only
+exec chezmoi managed --include=externals
+cmp stdout golden/managed-externals
+
+-- archive/dir/file --
+# contents of dir/file
+-- golden/managed --
+.dir
+.dir/dir
+.dir/dir/file
+.dir/dir/symlink
+.encrypted
+.file
+-- golden/managed-encrypted --
+.encrypted
+-- golden/managed-externals --
+.dir
+.dir/dir
+.dir/dir/file
+.dir/dir/symlink
+-- home/user/.config/chezmoi/chezmoi.toml --
+encryption = "gpg"
+-- home/user/.local/share/chezmoi/.chezmoiexternal.yaml --
+.dir:
+    type: archive
+    url: {{ env "HTTPD_URL" }}/archive.tar.gz
+    stripComponents: 1
+-- home/user/.local/share/chezmoi/dot_file --
+-- home/user/.local/share/chezmoi/encrypted_dot_encrypted.asc --
+-- www/.file --
+# contents of .file
