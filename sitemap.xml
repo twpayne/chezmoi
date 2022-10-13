@@ -11,6 +11,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://chezmoi.io/install/</loc>
+         <lastmod>2022-10-13</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://chezmoi.io/license/</loc>
          <lastmod>2022-10-13</lastmod>
          <changefreq>daily</changefreq>
@@ -82,6 +87,11 @@
     </url>
     <url>
          <loc>https://chezmoi.io/developer/website/</loc>
+         <lastmod>2022-10-13</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://chezmoi.io/links/articles-podcasts-and-videos/</loc>
          <lastmod>2022-10-13</lastmod>
          <changefreq>daily</changefreq>
     </url>
@@ -377,6 +387,11 @@
     </url>
     <url>
          <loc>https://chezmoi.io/reference/configuration-file/umask/</loc>
+         <lastmod>2022-10-13</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://chezmoi.io/reference/configuration-file/variables/</loc>
          <lastmod>2022-10-13</lastmod>
          <changefreq>daily</changefreq>
     </url>
