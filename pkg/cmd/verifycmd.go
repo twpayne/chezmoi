@@ -7,7 +7,7 @@ import (
 )
 
 type verifyCmdConfig struct {
-	Exclude   *chezmoi.EntryTypeSet
+	Exclude   *chezmoi.EntryTypeSet `mapstructure:"exclude"`
 	include   *chezmoi.EntryTypeSet
 	init      bool
 	recursive bool
