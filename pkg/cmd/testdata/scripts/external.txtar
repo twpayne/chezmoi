@@ -25,6 +25,10 @@ cmp $HOME/.file golden/.file
 
 chhome home3/user
 
+# test that chezmoi managed --include=externals lists external targets
+exec chezmoi managed --include=externals
+cmp stdout golden/managed
+
 # test that chezmoi diff includes external archives by default
 exec chezmoi diff
 stdout '^diff --git a/\.dir/dir/file b/\.dir/dir/file$'
@@ -86,6 +90,11 @@ exec chezmoi apply --force
 # contents of .file
 -- golden/dir/file --
 # contents of dir/file
+-- golden/managed --
+.dir
+.dir/dir
+.dir/dir/file
+.dir/dir/symlink
 -- home/user/.local/share/chezmoi/.chezmoiexternal.toml --
 [".file"]
     type = "file"

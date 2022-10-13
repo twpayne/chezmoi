@@ -1014,6 +1014,9 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 				origin:        external,
 				forceRefresh:  options.RefreshExternals == RefreshExternalsAlways,
 				refreshPeriod: external.RefreshPeriod,
+				sourceAttr: SourceAttr{
+					External: true,
+				},
 			}
 			allSourceStateEntries[externalRelPath] = append(allSourceStateEntries[externalRelPath], sourceStateCommand)
 		case err != nil:
@@ -1032,6 +1035,9 @@ func (s *SourceState) Read(ctx context.Context, options *ReadOptions) error {
 				origin:        external,
 				forceRefresh:  options.RefreshExternals == RefreshExternalsAlways,
 				refreshPeriod: external.RefreshPeriod,
+				sourceAttr: SourceAttr{
+					External: true,
+				},
 			}
 			allSourceStateEntries[externalRelPath] = append(allSourceStateEntries[externalRelPath], sourceStateCommand)
 		}
@@ -1414,6 +1420,9 @@ func (s *SourceState) newCreateTargetStateEntryFunc(
 			lazyContents: lazyContents,
 			empty:        true,
 			perm:         fileAttr.perm() &^ s.umask,
+			sourceAttr: SourceAttr{
+				Encrypted: fileAttr.Encrypted,
+			},
 		}, nil
 	}
 }
@@ -1454,6 +1463,9 @@ func (s *SourceState) newFileTargetStateEntryFunc(
 			lazyContents: newLazyContentsFunc(contentsFunc),
 			empty:        fileAttr.Empty,
 			perm:         fileAttr.perm() &^ s.umask,
+			sourceAttr: SourceAttr{
+				Encrypted: fileAttr.Encrypted,
+			},
 		}, nil
 	}
 }
@@ -1825,6 +1837,9 @@ func (s *SourceState) readExternalArchive(
 		sourceRelPath: parentSourceRelPath.Join(NewSourceRelPath(dirAttr.SourceName())),
 		targetStateEntry: &TargetStateDir{
 			perm: 0o777 &^ s.umask,
+			sourceAttr: SourceAttr{
+				External: true,
+			},
 		},
 	}
 	sourceStateEntries := map[RelPath][]SourceStateEntry{
@@ -1887,6 +1902,9 @@ func (s *SourceState) readExternalArchive(
 		case fileInfo.IsDir():
 			targetStateEntry := &TargetStateDir{
 				perm: fileInfo.Mode().Perm() &^ s.umask,
+				sourceAttr: SourceAttr{
+					External: true,
+				},
 			}
 			dirAttr := DirAttr{
 				TargetName: fileInfo.Name(),
@@ -1919,6 +1937,9 @@ func (s *SourceState) readExternalArchive(
 				lazyContents: lazyContents,
 				empty:        fileAttr.Empty,
 				perm:         fileAttr.perm() &^ s.umask,
+				sourceAttr: SourceAttr{
+					External: true,
+				},
 			}
 			sourceStateEntry = &SourceStateFile{
 				lazyContents:     lazyContents,
@@ -1935,6 +1956,9 @@ func (s *SourceState) readExternalArchive(
 			sourceRelPath := NewSourceRelPath(fileAttr.SourceName(s.encryption.EncryptedSuffix()))
 			targetStateEntry := &TargetStateSymlink{
 				lazyLinkname: newLazyLinkname(linkname),
+				sourceAttr: SourceAttr{
+					External: true,
+				},
 			}
 			sourceStateEntry = &SourceStateFile{
 				Attr:             fileAttr,
@@ -1970,6 +1994,9 @@ func (s *SourceState) readExternalFile(
 		lazyContents: lazyContents,
 		empty:        fileAttr.Empty,
 		perm:         fileAttr.perm() &^ s.umask,
+		sourceAttr: SourceAttr{
+			External: true,
+		},
 	}
 	sourceStateEntry := &SourceStateFile{
 		origin:           external,

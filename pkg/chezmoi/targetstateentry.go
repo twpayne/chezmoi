@@ -15,6 +15,7 @@ type TargetStateEntry interface {
 	EntryState(umask fs.FileMode) (*EntryState, error)
 	Evaluate() error
 	SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error)
+	SourceAttr() SourceAttr
 }
 
 // A TargetStateModifyDirWithCmd represents running a command that modifies
@@ -23,19 +24,22 @@ type TargetStateModifyDirWithCmd struct {
 	cmd           *exec.Cmd
 	forceRefresh  bool
 	refreshPeriod Duration
+	sourceAttr    SourceAttr
 }
 
 // A TargetStateDir represents the state of a directory in the target state.
 type TargetStateDir struct {
-	perm fs.FileMode
+	perm       fs.FileMode
+	sourceAttr SourceAttr
 }
 
 // A TargetStateFile represents the state of a file in the target state.
 type TargetStateFile struct {
 	*lazyContents
-	empty     bool
-	overwrite bool
-	perm      fs.FileMode
+	empty      bool
+	overwrite  bool
+	perm       fs.FileMode
+	sourceAttr SourceAttr
 }
 
 // A TargetStateRemove represents the absence of an entry in the target state.
@@ -47,11 +51,13 @@ type TargetStateScript struct {
 	name        RelPath
 	interpreter *Interpreter
 	condition   ScriptCondition
+	sourceAttr  SourceAttr
 }
 
 // A TargetStateSymlink represents the state of a symlink in the target state.
 type TargetStateSymlink struct {
 	*lazyLinkname
+	sourceAttr SourceAttr
 }
 
 // A modifyDirWithCmdState records the state of a directory modified by a
@@ -130,6 +136,11 @@ func (t *TargetStateModifyDirWithCmd) SkipApply(persistentState PersistentState,
 	}
 }
 
+// SourceAttr implements TargetStateEntry.SourceAttr.
+func (t *TargetStateModifyDirWithCmd) SourceAttr() SourceAttr {
+	return t.sourceAttr
+}
+
 // Apply updates actualStateEntry to match t. It does not recurse.
 func (t *TargetStateDir) Apply(
 	system System, persistentState PersistentState, actualStateEntry ActualStateEntry,
@@ -162,6 +173,11 @@ func (t *TargetStateDir) Evaluate() error {
 // SkipApply implements TargetState.SkipApply.
 func (t *TargetStateDir) SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error) {
 	return false, nil
+}
+
+// SourceAttr implements TargetStateEntry.SourceAttr.
+func (t *TargetStateDir) SourceAttr() SourceAttr {
+	return t.sourceAttr
 }
 
 // Apply updates actualStateEntry to match t.
@@ -242,6 +258,11 @@ func (t *TargetStateFile) SkipApply(persistentState PersistentState, targetAbsPa
 	return false, nil
 }
 
+// SourceAttr implements TargetStateEntry.SourceAttr.
+func (t *TargetStateFile) SourceAttr() SourceAttr {
+	return t.sourceAttr
+}
+
 // Apply updates actualStateEntry to match t.
 func (t *TargetStateRemove) Apply(
 	system System, persistentState PersistentState, actualStateEntry ActualStateEntry,
@@ -267,6 +288,11 @@ func (t *TargetStateRemove) Evaluate() error {
 // SkipApply implements TargetStateEntry.SkipApply.
 func (t *TargetStateRemove) SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error) {
 	return false, nil
+}
+
+// SourceAttr implements TargetStateEntry.SourceAttr.
+func (t *TargetStateRemove) SourceAttr() SourceAttr {
+	return SourceAttr{}
 }
 
 // Apply runs t.
@@ -373,6 +399,11 @@ func (t *TargetStateScript) SkipApply(persistentState PersistentState, targetAbs
 	return false, nil
 }
 
+// SourceAttr implements TargetStateEntry.SourceAttr.
+func (t *TargetStateScript) SourceAttr() SourceAttr {
+	return t.sourceAttr
+}
+
 // Apply updates actualStateEntry to match t.
 func (t *TargetStateSymlink) Apply(
 	system System, persistentState PersistentState, actualStateEntry ActualStateEntry,
@@ -439,4 +470,9 @@ func (t *TargetStateSymlink) SkipApply(
 	persistentState PersistentState, targetAbsPath AbsPath,
 ) (bool, error) {
 	return false, nil
+}
+
+// SourceAttr implements TargetStateEntry.SourceAttr.
+func (t *TargetStateSymlink) SourceAttr() SourceAttr {
+	return t.sourceAttr
 }

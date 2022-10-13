@@ -114,6 +114,14 @@ func (s *EntryTypeSet) IncludeFileInfo(fileInfo fs.FileInfo) bool {
 
 // IncludeTargetStateEntry returns true if type of targetStateEntry is a member.
 func (s *EntryTypeSet) IncludeTargetStateEntry(targetStateEntry TargetStateEntry) bool {
+	if s.IncludeEncrypted() && targetStateEntry.SourceAttr().Encrypted {
+		return true
+	}
+
+	if s.IncludeExternals() && targetStateEntry.SourceAttr().External {
+		return true
+	}
+
 	switch targetStateEntry.(type) {
 	case *TargetStateDir:
 		return s.bits&EntryTypeDirs != 0
