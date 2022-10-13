@@ -107,7 +107,7 @@ func (t *TargetStateModifyDirWithCmd) Evaluate() error {
 	return nil
 }
 
-// SkipApply implements TargetState.SkipApply.
+// SkipApply implements TargetStateEntry.SkipApply.
 func (t *TargetStateModifyDirWithCmd) SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error) {
 	if t.forceRefresh {
 		return false, nil
@@ -237,7 +237,7 @@ func (t *TargetStateFile) Perm(umask fs.FileMode) fs.FileMode {
 	return t.perm &^ umask
 }
 
-// SkipApply implements TargetState.SkipApply.
+// SkipApply implements TargetStateEntry.SkipApply.
 func (t *TargetStateFile) SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error) {
 	return false, nil
 }
@@ -264,7 +264,7 @@ func (t *TargetStateRemove) Evaluate() error {
 	return nil
 }
 
-// SkipApply implements TargetState.SkipApply.
+// SkipApply implements TargetStateEntry.SkipApply.
 func (t *TargetStateRemove) SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error) {
 	return false, nil
 }
@@ -334,7 +334,7 @@ func (t *TargetStateScript) Evaluate() error {
 	return err
 }
 
-// SkipApply implements TargetState.SkipApply.
+// SkipApply implements TargetStateEntry.SkipApply.
 func (t *TargetStateScript) SkipApply(persistentState PersistentState, targetAbsPath AbsPath) (bool, error) {
 	switch t.condition {
 	case ScriptConditionAlways:
@@ -434,7 +434,7 @@ func (t *TargetStateSymlink) Evaluate() error {
 	return err
 }
 
-// SkipApply implements TargetState.SkipApply.
+// SkipApply implements TargetStateEntry.SkipApply.
 func (t *TargetStateSymlink) SkipApply(
 	persistentState PersistentState, targetAbsPath AbsPath,
 ) (bool, error) {
