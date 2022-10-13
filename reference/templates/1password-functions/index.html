@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://chezmoi.io/reference/templates/1password-functions/">
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.3.1, mkdocs-material-8.5.3">
+      <meta name="generator" content="mkdocs-1.4.0, mkdocs-material-8.5.6">
     
     
       
@@ -23,7 +23,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.7a952b86.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.20d9efc8.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.cbb835fc.min.css">
@@ -270,7 +270,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../../links/articles-podcasts-and-videos/" class="md-tabs__link">
+      <a href="../../../links/articles-podcasts-and-videos.md" class="md-tabs__link">
         Links
       </a>
     </li>
@@ -392,7 +392,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../install/" class="md-nav__link">
+      <a href="../../../install.md" class="md-nav__link">
         Install
       </a>
     </li>
@@ -1669,7 +1669,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../configuration-file/variables/" class="md-nav__link">
+      <a href="../../configuration-file/variables.md" class="md-nav__link">
         Variables
       </a>
     </li>
@@ -2820,6 +2820,8 @@
         
           
         
+          
+        
       
       
         
@@ -3074,6 +3076,20 @@
     <li class="md-nav__item">
       <a href="../functions/stat/" class="md-nav__link">
         stat
+      </a>
+    </li>
+  
+
+            
+          
+            
+              
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../functions/eqFold/" class="md-nav__link">
+        eqFold
       </a>
     </li>
   
@@ -4656,7 +4672,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../links/articles-podcasts-and-videos/" class="md-nav__link">
+      <a href="../../../links/articles-podcasts-and-videos.md" class="md-nav__link">
         Articles, podcasts, and videos
       </a>
     </li>
@@ -4733,6 +4749,21 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -4753,18 +4784,48 @@
 
 <h1 id="1password-functions">1Password functions</h1>
 <p>The <code>onepassword*</code> template functions return structured data from
-<a href="https://1password.com/">1Password</a> using the <a href="https://support.1password.com/command-line-getting-started/">1Password
+<a href="https://1password.com/">1Password</a> using the <a href="https://developer.1password.com/docs/cli">1Password
 CLI</a> (<code>op</code>).</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>When using 1Password CLI 2.0, there may be an issue with pre-authenticating
-<code>op</code> because the environment variable used to store the session key has
-changed from <code>OP_SESSION_account</code> to <code>OP_SESSION_accountUUID</code>. Instead of
-using <em>account-name</em>, it is recommended that you use the <em>account-uuid</em>.
-This can be found using <code>op account list</code>.</p>
-<p>This issue does not occur when using biometric authentication and 1Password
-8, or if you allow chezmoi to prompt you for 1Password authentication
-(<code>1password.prompt = true</code>).</p>
+<p>When using 1Password CLI v2 with biometric authentication, account shorthand
+names are not available. In order to assist with this, chezmoi supports
+multiple derived values from <code>op account list</code> that can be changed into the
+appropriate 1Password <em>account-uuid</em>.</p>
+<h3 id="example">Example</h3>
+<p>If <code>op account list --format=json</code> returns the following structure:</p>
+<div class="highlight"><pre><span></span><code><span class="p">[</span><span class="w"></span>
+<span class="w">  </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;account1.1password.ca&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my@email.com&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;user_uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;some-user-uuid&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">&quot;account_uuid&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;some-account-uuid&quot;</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">]</span><span class="w"></span>
+</code></pre></div>
+<p>The following values can be used in the <code>account</code> parameter and the value
+<code>some-account-uuid</code> will be passed as the <code>--account</code> parameter to <code>op</code>.</p>
+<ul>
+<li><code>some-account-uuid</code></li>
+<li><code>some-user-uuid</code></li>
+<li><code>account1.1password.ca</code></li>
+<li><code>account1</code></li>
+<li><code>my@email.com</code></li>
+<li><code>my</code></li>
+<li><code>my@account1.1password.ca</code></li>
+<li><code>my@account1</code></li>
+</ul>
+<p>If there are multiple accounts and <em>any</em> value exists more than once, that
+value will be removed from the account mapping. That is, if you are signed
+into <code>my@email.com</code> and <code>your@email.com</code> for <code>account1.1password.ca</code>, then
+<code>account1.1password.ca</code> will not be a valid lookup value, but <code>my@account1</code>,
+<code>my@account1.1password.ca</code>, <code>your@account1</code>, and
+<code>your@account1.1password.ca</code> would all be valid lookups.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Support for 1Password CLI v1 will be removed with the next major release of
+chezmoi.</p>
 </div>
 
 
@@ -4851,7 +4912,7 @@ This can be found using <code>op account list</code>.</p>
     <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.expand", "navigation.indexes", "navigation.sections", "navigation.tabs", "navigation.top", "navigation.tracking"], "search": "../../../assets/javascripts/workers/search.5bf1dace.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version.title": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.37e9125f.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.078830c0.min.js"></script>
       
         <script src="../../../extra/refresh_on_toggle_dark_light.js"></script>
       
