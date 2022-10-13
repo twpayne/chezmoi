@@ -8,13 +8,13 @@ jobs:
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
       - name: go-version
+        id: go-version
         run: |
-          # FIXME it should be possible to use a step output instead of an environment variable
-          echo GO_VERSION="$(awk '/GO_VERSION:/ { print $2 }' .github/workflows/main.yml)" >> ${GITHUB_ENV}
+          echo go-version="$(awk '/GO_VERSION:/ { print $2 }' .github/workflows/main.yml)" >> ${GITHUB_OUTPUT}
       - uses: actions/setup-go@268d8c0ca0432bb2cf416faae41297df9d262d7f
         with:
           cache: true
-          go-version: ${{ env.GO_VERSION }}
+          go-version: ${{ steps.go-version.outputs.go-version }}
       - name: install
         run: |
           go install golang.org/x/vuln/cmd/govulncheck@latest
