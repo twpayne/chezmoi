@@ -13,6 +13,7 @@ import (
 type SourceAttr struct {
 	Encrypted bool
 	External  bool
+	Template  bool
 }
 
 // A SourceStateOrigin represents the origin of a source state.

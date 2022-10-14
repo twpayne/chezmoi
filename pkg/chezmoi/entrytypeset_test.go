@@ -32,7 +32,7 @@ func TestIncludeMaskSet(t *testing.T) {
 		},
 		{
 			s:        "all,noscripts",
-			expected: NewEntryTypeSet(EntryTypeDirs | EntryTypeFiles | EntryTypeRemove | EntryTypeSymlinks | EntryTypeEncrypted | EntryTypeExternals),
+			expected: NewEntryTypeSet(EntryTypeDirs | EntryTypeFiles | EntryTypeRemove | EntryTypeSymlinks | EntryTypeEncrypted | EntryTypeExternals | EntryTypeTemplates),
 		},
 		{
 			s:        "noscripts",
