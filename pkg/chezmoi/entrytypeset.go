@@ -29,6 +29,7 @@ const (
 	EntryTypeSymlinks
 	EntryTypeEncrypted
 	EntryTypeExternals
+	EntryTypeTemplates
 
 	// EntryTypesAll is all entry types.
 	EntryTypesAll EntryTypeBits = EntryTypeDirs |
@@ -37,7 +38,8 @@ const (
 		EntryTypeScripts |
 		EntryTypeSymlinks |
 		EntryTypeEncrypted |
-		EntryTypeExternals
+		EntryTypeExternals |
+		EntryTypeTemplates
 
 	// EntryTypesNone is no entry types.
 	EntryTypesNone EntryTypeBits = 0
@@ -54,6 +56,7 @@ var (
 		"symlinks":  EntryTypeSymlinks,
 		"encrypted": EntryTypeEncrypted,
 		"externals": EntryTypeExternals,
+		"templates": EntryTypeTemplates,
 	}
 
 	entryTypeCompletions = []string{
@@ -70,9 +73,11 @@ var (
 		"noremove",
 		"noscripts",
 		"nosymlinks",
+		"notemplates",
 		"remove",
 		"scripts",
 		"symlinks",
+		"templates",
 	}
 )
 
@@ -98,6 +103,11 @@ func (s *EntryTypeSet) IncludeExternals() bool {
 	return s.bits&EntryTypeExternals != 0
 }
 
+// IncludeTemplates returns true if s includes templates.
+func (s *EntryTypeSet) IncludeTemplates() bool {
+	return s.bits&EntryTypeTemplates != 0
+}
+
 // IncludeFileInfo returns true if the type of fileInfo is a member.
 func (s *EntryTypeSet) IncludeFileInfo(fileInfo fs.FileInfo) bool {
 	switch {
@@ -118,6 +128,8 @@ func (s *EntryTypeSet) IncludeTargetStateEntry(targetStateEntry TargetStateEntry
 	case s.IncludeEncrypted() && sourceAttr.Encrypted:
 		return true
 	case s.IncludeExternals() && sourceAttr.External:
+		return true
+	case s.IncludeTemplates() && sourceAttr.Template:
 		return true
 	}
 
@@ -197,6 +209,7 @@ func (s *EntryTypeSet) String() string {
 		"symlinks",
 		"encrypted",
 		"externals",
+		"templates",
 	} {
 		if s.bits&(1<<i) != 0 {
 			elements = append(elements, element)

@@ -20,9 +20,17 @@ cmp stdout golden/managed-files
 exec chezmoi managed --include=symlinks
 cmp stdout golden/managed-symlinks
 
+# test chezmoi managed --include=templates
+exec chezmoi managed --include=templates
+cmp stdout golden/managed-templates
+
 # test chezmoi managed --exclude=files
 exec chezmoi managed --exclude=files
 cmp stdout golden/managed-except-files
+
+# test chezmoi managed --exclude=files,templates
+exec chezmoi managed --exclude=files,templates
+cmp stdout golden/managed-except-files-and-templates
 
 # test chezmoi managed with arguments
 exec chezmoi managed $HOME${/}.dir $HOME${/}.create
@@ -81,6 +89,24 @@ cmp stdout golden/managed2
 .dir
 .dir/subdir
 .symlink
+.template
+-- golden/managed-except-files-and-templates --
+.dir
+.dir/subdir
+.symlink
+-- golden/managed-except-templates --
+.create
+.dir
+.dir/file
+.dir/subdir
+.dir/subdir/file
+.empty
+.executable
+.file
+.private
+.readonly
+.remove
+.symlink
 -- golden/managed-files --
 .create
 .dir/file
@@ -97,6 +123,8 @@ cmp stdout golden/managed2
 .dir/subdir/file
 -- golden/managed-symlinks --
 .symlink
+-- golden/managed-templates --
+.template
 -- golden/managed-with-absent-args --
 .dir
 .dir/file

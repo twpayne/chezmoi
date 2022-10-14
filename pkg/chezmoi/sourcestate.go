@@ -1422,6 +1422,7 @@ func (s *SourceState) newCreateTargetStateEntryFunc(
 			perm:         fileAttr.perm() &^ s.umask,
 			sourceAttr: SourceAttr{
 				Encrypted: fileAttr.Encrypted,
+				Template:  fileAttr.Template,
 			},
 		}, nil
 	}
@@ -1443,6 +1444,9 @@ func (s *SourceState) newFileTargetStateEntryFunc(
 				linkname := normalizeLinkname(s.sourceDirAbsPath.Join(sourceRelPath.RelPath()).String())
 				return &TargetStateSymlink{
 					lazyLinkname: newLazyLinkname(linkname),
+					sourceAttr: SourceAttr{
+						Template: fileAttr.Template,
+					},
 				}, nil
 			}
 		}
@@ -1465,6 +1469,7 @@ func (s *SourceState) newFileTargetStateEntryFunc(
 			perm:         fileAttr.perm() &^ s.umask,
 			sourceAttr: SourceAttr{
 				Encrypted: fileAttr.Encrypted,
+				Template:  fileAttr.Template,
 			},
 		}, nil
 	}
