@@ -100,6 +100,7 @@ type SourceState struct {
 	templates               map[string]*template.Template
 	externals               map[RelPath]*External
 	ignoredRelPaths         map[RelPath]struct{}
+	delims                  map[string]*Delims
 }
 
 // A SourceStateOption sets an option on a source state.
@@ -123,6 +124,13 @@ func WithCacheDir(cacheDirAbsPath AbsPath) SourceStateOption {
 func WithDefaultTemplateDataFunc(defaultTemplateDataFunc func() map[string]any) SourceStateOption {
 	return func(s *SourceState) {
 		s.defaultTemplateDataFunc = defaultTemplateDataFunc
+	}
+}
+
+// WithDelims sets the template delimiters.
+func WithDelims(delims map[string]*Delims) SourceStateOption {
+	return func(s *SourceState) {
+		s.delims = delims
 	}
 }
 
@@ -651,8 +659,20 @@ func (s *SourceState) Encryption() Encryption {
 
 // ExecuteTemplateData returns the result of executing template data.
 func (s *SourceState) ExecuteTemplateData(name string, data []byte) ([]byte, error) {
+	leftDelim := "{{"
+	rightDelim := "}}"
+	extension := strings.TrimPrefix(path.Ext(strings.TrimSuffix(name, ".tmpl")), ".")
+	delims := s.delims[extension]
+	if len(delims.Left) > 0 {
+		leftDelim = delims.Left
+	}
+	if len(delims.Right) > 0 {
+		rightDelim = delims.Right
+	}
+
 	tmpl, err := template.New(name).
 		Option(s.templateOptions...).
+		Delims(leftDelim, rightDelim).
 		Funcs(s.templateFuncs).
 		Parse(string(data))
 	if err != nil {

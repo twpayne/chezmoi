@@ -79,6 +79,7 @@ type ConfigFile struct {
 	CacheDirAbsPath    chezmoi.AbsPath                 `mapstructure:"cacheDir"`
 	Color              autoBool                        `mapstructure:"color"`
 	Data               map[string]any                  `mapstructure:"data"`
+	Delims             map[string]*chezmoi.Delims      `mapstructure:"delims"`
 	Format             writeDataFormat                 `mapstructure:"format"`
 	DestDirAbsPath     chezmoi.AbsPath                 `mapstructure:"destDir"`
 	Interpreters       map[string]*chezmoi.Interpreter `mapstructure:"interpreters"`
@@ -1483,6 +1484,7 @@ func (c *Config) newSourceState(
 		chezmoi.WithBaseSystem(c.baseSystem),
 		chezmoi.WithCacheDir(c.CacheDirAbsPath),
 		chezmoi.WithDefaultTemplateDataFunc(c.getTemplateDataMap),
+		chezmoi.WithDelims(c.Delims),
 		chezmoi.WithDestDir(c.DestDirAbsPath),
 		chezmoi.WithEncryption(c.encryption),
 		chezmoi.WithHTTPClient(httpClient),
