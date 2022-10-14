@@ -311,9 +311,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		managed: managedCmdConfig{
 			exclude: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			include: chezmoi.NewEntryTypeSet(
-				chezmoi.EntryTypeDirs | chezmoi.EntryTypeFiles | chezmoi.EntryTypeSymlinks | chezmoi.EntryTypeEncrypted,
-			),
+			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll &^ (chezmoi.EntryTypeRemove | chezmoi.EntryTypeScripts)),
 		},
 		mergeAll: mergeAllCmdConfig{
 			recursive: true,

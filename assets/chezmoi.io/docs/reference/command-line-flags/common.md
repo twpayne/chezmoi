@@ -10,8 +10,8 @@ Set the output format.
 
 Only operate on target state entries of type *types*. *types* is a
 comma-separated list of target states (`all`, `dirs`, `files`, `remove`,
-`scripts`, `symlinks`, and `encrypted`) and can be excluded by preceding them
-with a `no`.
+`scripts`, `symlinks`) and/or source attributes (`encrypted`, `externals`) and
+can be excluded by preceding them with a `no`.
 
 !!! example
 
