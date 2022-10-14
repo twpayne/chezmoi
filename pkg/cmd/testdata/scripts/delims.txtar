@@ -1,0 +1,34 @@
+# test that template delimiters can be configured in chezmoi's config
+exec chezmoi apply
+cmp $HOME/test-delims.sh golden/expected.sh
+
+chhome home2/user
+
+# test that template delimiters are inherited in nested templates
+exec chezmoi apply
+cmp $HOME/test-delims-inherited.sh golden/expected.sh
+
+-- golden/expected.sh --
+#!/bin/sh
+
+echo "hello world"
+-- home/user/.config/chezmoi/chezmoi.toml --
+[delims.sh]
+    left = "#{{"
+-- home/user/.local/share/chezmoi/test-delims.sh.tmpl --
+#!/bin/sh
+
+#{{ template "echo" -}}
+-- home/user/.local/share/chezmoi/.chezmoitemplates/echo --
+echo "hello world"
+-- home2/user/.config/chezmoi/chezmoi.toml --
+[delims.sh]
+    left = "#{{"
+-- home2/user/.local/share/chezmoi/test-delims-inherited.sh.tmpl --
+#!/bin/sh
+
+#{{ template "test-delims-inherited.sh" -}}
+-- home2/user/.local/share/chezmoi/.chezmoitemplates/test-delims-inherited.sh --
+#{{ template "echo" -}}
+-- home2/user/.local/share/chezmoi/.chezmoitemplates/echo --
+echo "hello world"
