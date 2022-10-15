@@ -1574,7 +1574,10 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 				return
 			}
 			if fileAttr.Template {
-				modifierContents, err = s.ExecuteTemplateData(ExecuteTemplateDataParams{Name: sourceRelPath.String(), Data: modifierContents})
+				modifierContents, err = s.ExecuteTemplateData(ExecuteTemplateDataParams{
+					Name: sourceRelPath.String(),
+					Data: modifierContents,
+				})
 				if err != nil {
 					return
 				}
@@ -1671,7 +1674,10 @@ func (s *SourceState) newSymlinkTargetStateEntryFunc(
 				return "", err
 			}
 			if fileAttr.Template {
-				linknameBytes, err = s.ExecuteTemplateData(ExecuteTemplateDataParams{Name: sourceRelPath.String(), Data: linknameBytes})
+				linknameBytes, err = s.ExecuteTemplateData(ExecuteTemplateDataParams{
+					Name: sourceRelPath.String(),
+					Data: linknameBytes,
+				})
 				if err != nil {
 					return "", err
 				}

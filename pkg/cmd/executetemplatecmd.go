@@ -36,8 +36,18 @@ func (c *Config) newExecuteTemplateCmd() *cobra.Command {
 	flags.StringToIntVar(&c.executeTemplate.promptInt, "promptInt", c.executeTemplate.promptInt, "Simulate promptInt")
 	flags.StringToStringVarP(&c.executeTemplate.promptString, "promptString", "p", c.executeTemplate.promptString, "Simulate promptString") //nolint:lll
 	flags.BoolVar(&c.executeTemplate.stdinIsATTY, "stdinisatty", c.executeTemplate.stdinIsATTY, "Simulate stdinIsATTY")
-	flags.StringVar(&c.executeTemplate.leftDelimiter, "left-delimiter", c.executeTemplate.leftDelimiter, "Specify the left delimiter")
-	flags.StringVar(&c.executeTemplate.rightDelimiter, "right-delimiter", c.executeTemplate.rightDelimiter, "Specify the right delimiter")
+	flags.StringVar(
+		&c.executeTemplate.leftDelimiter,
+		"left-delimiter",
+		c.executeTemplate.leftDelimiter,
+		"Specify the left delimiter",
+	)
+	flags.StringVar(
+		&c.executeTemplate.rightDelimiter,
+		"right-delimiter",
+		c.executeTemplate.rightDelimiter,
+		"Specify the right delimiter",
+	)
 
 	return executeTemplateCmd
 }
@@ -169,7 +179,11 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 		if err != nil {
 			return err
 		}
-		output, err := sourceState.ExecuteTemplateData(chezmoi.ExecuteTemplateDataParams{Name: "stdin", Data: data, Directives: &directives})
+		output, err := sourceState.ExecuteTemplateData(chezmoi.ExecuteTemplateDataParams{
+			Name:       "stdin",
+			Data:       data,
+			Directives: &directives,
+		})
 		if err != nil {
 			return err
 		}
@@ -178,7 +192,11 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 
 	output := strings.Builder{}
 	for i, arg := range args {
-		result, err := sourceState.ExecuteTemplateData(chezmoi.ExecuteTemplateDataParams{Name: "arg" + strconv.Itoa(i+1), Data: []byte(arg), Directives: &directives})
+		result, err := sourceState.ExecuteTemplateData(chezmoi.ExecuteTemplateDataParams{
+			Name:       "arg" + strconv.Itoa(i+1),
+			Data:       []byte(arg),
+			Directives: &directives,
+		})
 		if err != nil {
 			return err
 		}
