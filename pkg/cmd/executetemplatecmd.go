@@ -36,8 +36,8 @@ func (c *Config) newExecuteTemplateCmd() *cobra.Command {
 	flags.StringToIntVar(&c.executeTemplate.promptInt, "promptInt", c.executeTemplate.promptInt, "Simulate promptInt")
 	flags.StringToStringVarP(&c.executeTemplate.promptString, "promptString", "p", c.executeTemplate.promptString, "Simulate promptString") //nolint:lll
 	flags.BoolVar(&c.executeTemplate.stdinIsATTY, "stdinisatty", c.executeTemplate.stdinIsATTY, "Simulate stdinIsATTY")
-	flags.StringVar(&c.executeTemplate.leftDelimiter, "left", c.executeTemplate.leftDelimiter, "Specify the left delimiter")
-	flags.StringVar(&c.executeTemplate.rightDelimiter, "right", c.executeTemplate.rightDelimiter, "Specify the right delimiter")
+	flags.StringVar(&c.executeTemplate.leftDelimiter, "left-delimiter", c.executeTemplate.leftDelimiter, "Specify the left delimiter")
+	flags.StringVar(&c.executeTemplate.rightDelimiter, "right-delimiter", c.executeTemplate.rightDelimiter, "Specify the right delimiter")
 
 	return executeTemplateCmd
 }

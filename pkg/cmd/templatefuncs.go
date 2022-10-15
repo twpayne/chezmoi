@@ -158,7 +158,17 @@ func (c *Config) includeTemplateTemplateFunc(filename string, args ...any) strin
 		panic(err)
 	}
 
-	tmpl, err := template.New(filename).Funcs(c.templateFuncs).Parse(string(contents))
+	params, err := chezmoi.ExtractTemplateDirectives(chezmoi.ExecuteTemplateDataParams{Name: filename, Data: contents})
+	if err != nil {
+		panic(err)
+	}
+
+	contents = params.Data
+
+	tmpl, err := template.New(filename).
+		Funcs(c.templateFuncs).
+		Delims(params.Directives.Delimiters.Left, params.Directives.Delimiters.Right).
+		Parse(string(contents))
 	if err != nil {
 		panic(err)
 	}

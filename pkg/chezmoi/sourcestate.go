@@ -1311,15 +1311,16 @@ func (s *SourceState) addTemplatesDir(ctx context.Context, templatesDirAbsPath A
 				return err
 			}
 
-			params, err := ExtractTemplateDirectives(ExecuteTemplateDataParams{Data: contents})
+			templateRelPath := templateAbsPath.MustTrimDirPrefix(templatesDirAbsPath)
+			name := templateRelPath.String()
+
+			params, err := ExtractTemplateDirectives(ExecuteTemplateDataParams{Name: name, Data: contents})
 			if err != nil {
 				return err
 			}
 
 			contents = params.Data
 
-			templateRelPath := templateAbsPath.MustTrimDirPrefix(templatesDirAbsPath)
-			name := templateRelPath.String()
 			tmpl, err := template.New(name).
 				Option(s.templateOptions...).
 				Funcs(s.templateFuncs).
