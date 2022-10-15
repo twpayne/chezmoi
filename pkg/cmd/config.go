@@ -1484,7 +1484,6 @@ func (c *Config) newSourceState(
 		chezmoi.WithBaseSystem(c.baseSystem),
 		chezmoi.WithCacheDir(c.CacheDirAbsPath),
 		chezmoi.WithDefaultTemplateDataFunc(c.getTemplateDataMap),
-		chezmoi.WithDelims(c.Delims),
 		chezmoi.WithDestDir(c.DestDirAbsPath),
 		chezmoi.WithEncryption(c.encryption),
 		chezmoi.WithHTTPClient(httpClient),

@@ -12,23 +12,20 @@ cmp $HOME/test-delims-inherited.sh golden/expected.sh
 #!/bin/sh
 
 echo "hello world"
--- home/user/.config/chezmoi/chezmoi.toml --
-[delims.sh]
-    left = "#{{"
 -- home/user/.local/share/chezmoi/.chezmoitemplates/echo --
 echo "hello world"
 -- home/user/.local/share/chezmoi/test-delims.sh.tmpl --
 #!/bin/sh
+# chezmoi:set-file-delimiters left=#[[ right=]]
 
-#{{ template "echo" -}}
--- home2/user/.config/chezmoi/chezmoi.toml --
-[delims.sh]
-    left = "#{{"
+#[[ template "echo" -]]
 -- home2/user/.local/share/chezmoi/.chezmoitemplates/echo --
 echo "hello world"
 -- home2/user/.local/share/chezmoi/.chezmoitemplates/test-delims-inherited.sh --
-#{{ template "echo" -}}
+# chezmoi:set-file-delimiters left=#[[ right=]]
+#[[ template "echo" -]]
 -- home2/user/.local/share/chezmoi/test-delims-inherited.sh.tmpl --
 #!/bin/sh
+# chezmoi:set-file-delimiters left=#[[ right=]]
 
-#{{ template "test-delims-inherited.sh" -}}
+#[[ template "test-delims-inherited.sh" -]]

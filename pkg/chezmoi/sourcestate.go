@@ -70,6 +70,20 @@ type External struct {
 	sourceAbsPath   AbsPath
 }
 
+type TemplateDelimiters struct {
+	Left, Right string
+}
+
+type TemplateDirectives struct {
+	Delimiters TemplateDelimiters
+}
+
+type ExecuteTemplateDataParams struct {
+	Name       string
+	Data       []byte
+	Directives *TemplateDirectives
+}
+
 // A SourceState is a source state.
 type SourceState struct {
 	sync.Mutex
@@ -100,11 +114,56 @@ type SourceState struct {
 	templates               map[string]*template.Template
 	externals               map[RelPath]*External
 	ignoredRelPaths         map[RelPath]struct{}
-	delims                  map[string]*Delims
 }
 
 // A SourceStateOption sets an option on a source state.
 type SourceStateOption func(*SourceState)
+
+func ExtractTemplateDirectives(params ExecuteTemplateDataParams) (ExecuteTemplateDataParams, error) {
+	// If a directives value has already been provided, skip processing.
+	if params.Directives != nil {
+		return params, nil
+	}
+
+	getValue := func(s string) string {
+		v := strings.Split(s, "=")
+		if len(v) > 1 {
+			return v[1]
+		}
+
+		return ""
+	}
+
+	directives := TemplateDirectives{}
+
+	separator := []byte("\n")
+	lines := bytes.Split(params.Data, separator)
+	newLines := make([]string, 0, len(lines))
+
+	for _, line := range lines {
+		line := string(line)
+
+		// # chezmoi:set-file-delimiters left=#{{ right=}}
+
+		if strings.Contains(line, "chezmoi:set-file-delimiters") {
+			for _, part := range strings.Fields(line) {
+				switch {
+				case strings.Contains(part, "left="):
+					directives.Delimiters.Left = getValue(part)
+				case strings.Contains(part, "right="):
+					directives.Delimiters.Right = getValue(part)
+				}
+			}
+		} else {
+			newLines = append(newLines, line)
+		}
+	}
+
+	params.Data = []byte(strings.Join(newLines, "\n"))
+	params.Directives = &directives
+
+	return params, nil
+}
 
 // WithBaseSystem sets the base system.
 func WithBaseSystem(baseSystem System) SourceStateOption {
@@ -124,13 +183,6 @@ func WithCacheDir(cacheDirAbsPath AbsPath) SourceStateOption {
 func WithDefaultTemplateDataFunc(defaultTemplateDataFunc func() map[string]any) SourceStateOption {
 	return func(s *SourceState) {
 		s.defaultTemplateDataFunc = defaultTemplateDataFunc
-	}
-}
-
-// WithDelims sets the template delimiters.
-func WithDelims(delims map[string]*Delims) SourceStateOption {
-	return func(s *SourceState) {
-		s.delims = delims
 	}
 }
 
@@ -658,21 +710,19 @@ func (s *SourceState) Encryption() Encryption {
 }
 
 // ExecuteTemplateData returns the result of executing template data.
-func (s *SourceState) ExecuteTemplateData(name string, data []byte) ([]byte, error) {
-	leftDelim := "{{"
-	rightDelim := "}}"
-	extension := strings.TrimPrefix(path.Ext(strings.TrimSuffix(name, ".tmpl")), ".")
-	delims := s.delims[extension]
-	if len(delims.Left) > 0 {
-		leftDelim = delims.Left
+func (s *SourceState) ExecuteTemplateData(params ExecuteTemplateDataParams) ([]byte, error) {
+	params, err := ExtractTemplateDirectives(params)
+	if err != nil {
+		return nil, err
 	}
-	if len(delims.Right) > 0 {
-		rightDelim = delims.Right
-	}
+
+	// func (s *SourceState) ExecuteTemplateData(name string, data []byte) ([]byte, error) {
+	name := params.Name
+	data := params.Data
 
 	tmpl, err := template.New(name).
 		Option(s.templateOptions...).
-		Delims(leftDelim, rightDelim).
+		Delims(params.Directives.Delimiters.Left, params.Directives.Delimiters.Right).
 		Funcs(s.templateFuncs).
 		Parse(string(data))
 	if err != nil {
@@ -1260,9 +1310,21 @@ func (s *SourceState) addTemplatesDir(ctx context.Context, templatesDirAbsPath A
 			if err != nil {
 				return err
 			}
+
+			params, err := ExtractTemplateDirectives(ExecuteTemplateDataParams{Data: contents})
+			if err != nil {
+				return err
+			}
+
+			contents = params.Data
+
 			templateRelPath := templateAbsPath.MustTrimDirPrefix(templatesDirAbsPath)
 			name := templateRelPath.String()
-			tmpl, err := template.New(name).Option(s.templateOptions...).Funcs(s.templateFuncs).Parse(string(contents))
+			tmpl, err := template.New(name).
+				Option(s.templateOptions...).
+				Funcs(s.templateFuncs).
+				Delims(params.Directives.Delimiters.Left, params.Directives.Delimiters.Right).
+				Parse(string(contents))
 			if err != nil {
 				return err
 			}
@@ -1288,7 +1350,7 @@ func (s *SourceState) executeTemplate(templateAbsPath AbsPath) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	return s.ExecuteTemplateData(templateAbsPath.String(), data)
+	return s.ExecuteTemplateData(ExecuteTemplateDataParams{Name: templateAbsPath.String(), Data: data})
 }
 
 // getExternalDataRaw returns the raw data for external at externalRelPath,
@@ -1426,7 +1488,7 @@ func (s *SourceState) newCreateTargetStateEntryFunc(
 					return nil, err
 				}
 				if fileAttr.Template {
-					contents, err = s.ExecuteTemplateData(sourceRelPath.String(), contents)
+					contents, err = s.ExecuteTemplateData(ExecuteTemplateDataParams{Name: sourceRelPath.String(), Data: contents})
 					if err != nil {
 						return nil, err
 					}
@@ -1472,7 +1534,7 @@ func (s *SourceState) newFileTargetStateEntryFunc(
 				return nil, err
 			}
 			if fileAttr.Template {
-				contents, err = s.ExecuteTemplateData(sourceRelPath.String(), contents)
+				contents, err = s.ExecuteTemplateData(ExecuteTemplateDataParams{Name: sourceRelPath.String(), Data: contents})
 				if err != nil {
 					return nil, err
 				}
@@ -1511,7 +1573,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 				return
 			}
 			if fileAttr.Template {
-				modifierContents, err = s.ExecuteTemplateData(sourceRelPath.String(), modifierContents)
+				modifierContents, err = s.ExecuteTemplateData(ExecuteTemplateDataParams{Name: sourceRelPath.String(), Data: modifierContents})
 				if err != nil {
 					return
 				}
@@ -1580,7 +1642,7 @@ func (s *SourceState) newScriptTargetStateEntryFunc(
 				return nil, err
 			}
 			if fileAttr.Template {
-				contents, err = s.ExecuteTemplateData(sourceRelPath.String(), contents)
+				contents, err = s.ExecuteTemplateData(ExecuteTemplateDataParams{Name: sourceRelPath.String(), Data: contents})
 				if err != nil {
 					return nil, err
 				}
@@ -1608,7 +1670,7 @@ func (s *SourceState) newSymlinkTargetStateEntryFunc(
 				return "", err
 			}
 			if fileAttr.Template {
-				linknameBytes, err = s.ExecuteTemplateData(sourceRelPath.String(), linknameBytes)
+				linknameBytes, err = s.ExecuteTemplateData(ExecuteTemplateDataParams{Name: sourceRelPath.String(), Data: linknameBytes})
 				if err != nil {
 					return "", err
 				}

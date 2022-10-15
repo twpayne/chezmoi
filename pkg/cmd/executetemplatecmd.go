@@ -12,11 +12,13 @@ import (
 )
 
 type executeTemplateCmdConfig struct {
-	init         bool
-	promptBool   map[string]string
-	promptInt    map[string]int
-	promptString map[string]string
-	stdinIsATTY  bool
+	init           bool
+	promptBool     map[string]string
+	promptInt      map[string]int
+	promptString   map[string]string
+	stdinIsATTY    bool
+	leftDelimiter  string
+	rightDelimiter string
 }
 
 func (c *Config) newExecuteTemplateCmd() *cobra.Command {
@@ -34,6 +36,8 @@ func (c *Config) newExecuteTemplateCmd() *cobra.Command {
 	flags.StringToIntVar(&c.executeTemplate.promptInt, "promptInt", c.executeTemplate.promptInt, "Simulate promptInt")
 	flags.StringToStringVarP(&c.executeTemplate.promptString, "promptString", "p", c.executeTemplate.promptString, "Simulate promptString") //nolint:lll
 	flags.BoolVar(&c.executeTemplate.stdinIsATTY, "stdinisatty", c.executeTemplate.stdinIsATTY, "Simulate stdinIsATTY")
+	flags.StringVar(&c.executeTemplate.leftDelimiter, "left", c.executeTemplate.leftDelimiter, "Specify the left delimiter")
+	flags.StringVar(&c.executeTemplate.rightDelimiter, "right", c.executeTemplate.rightDelimiter, "Specify the right delimiter")
 
 	return executeTemplateCmd
 }
@@ -153,12 +157,19 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 		chezmoi.RecursiveMerge(c.templateFuncs, initTemplateFuncs)
 	}
 
+	directives := chezmoi.TemplateDirectives{
+		Delimiters: chezmoi.TemplateDelimiters{
+			Left:  c.executeTemplate.leftDelimiter,
+			Right: c.executeTemplate.rightDelimiter,
+		},
+	}
+
 	if len(args) == 0 {
 		data, err := io.ReadAll(c.stdin)
 		if err != nil {
 			return err
 		}
-		output, err := sourceState.ExecuteTemplateData("stdin", data)
+		output, err := sourceState.ExecuteTemplateData(chezmoi.ExecuteTemplateDataParams{Name: "stdin", Data: data, Directives: &directives})
 		if err != nil {
 			return err
 		}
@@ -167,7 +178,7 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 
 	output := strings.Builder{}
 	for i, arg := range args {
-		result, err := sourceState.ExecuteTemplateData("arg"+strconv.Itoa(i+1), []byte(arg))
+		result, err := sourceState.ExecuteTemplateData(chezmoi.ExecuteTemplateDataParams{Name: "arg" + strconv.Itoa(i+1), Data: []byte(arg), Directives: &directives})
 		if err != nil {
 			return err
 		}
