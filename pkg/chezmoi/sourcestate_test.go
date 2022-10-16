@@ -1613,6 +1613,115 @@ func TestSourceStateTargetRelPaths(t *testing.T) {
 	}
 }
 
+func TestTemplateOptionsParseDirective(t *testing.T) {
+	for _, tc := range []struct {
+		name            string
+		dataStr         string
+		expected        TemplateOptions
+		expectedDataStr string
+	}{
+		{
+			name: "empty",
+		},
+		{
+			name:    "unquoted",
+			dataStr: "chezmoi:template:left-delimiter=[[ right-delimiter=]]",
+			expected: TemplateOptions{
+				LeftDelimiter:  "[[",
+				RightDelimiter: "]]",
+			},
+		},
+		{
+			name:    "quoted",
+			dataStr: `chezmoi:template:left-delimiter="# {{" right-delimiter="}}"`,
+			expected: TemplateOptions{
+				LeftDelimiter:  "# {{",
+				RightDelimiter: "}}",
+			},
+		},
+		{
+			name:    "left_only",
+			dataStr: "chezmoi:template:left-delimiter=[[",
+			expected: TemplateOptions{
+				LeftDelimiter: "[[",
+			},
+		},
+		{
+			name:    "left_quoted_only",
+			dataStr: `chezmoi:template:left-delimiter="# [["`,
+			expected: TemplateOptions{
+				LeftDelimiter: "# [[",
+			},
+		},
+		{
+			name:    "right_quoted_only",
+			dataStr: `chezmoi:template:right-delimiter="]]"`,
+			expected: TemplateOptions{
+				RightDelimiter: "]]",
+			},
+		},
+		{
+			name:    "line_with_leading_data",
+			dataStr: "# chezmoi:template:left-delimiter=[[ right-delimiter=]]",
+			expected: TemplateOptions{
+				LeftDelimiter:  "[[",
+				RightDelimiter: "]]",
+			},
+		},
+		{
+			name: "line_before",
+			dataStr: chezmoitest.JoinLines(
+				"# before",
+				"# chezmoi:template:left-delimiter=[[ right-delimiter=]]",
+			),
+			expected: TemplateOptions{
+				LeftDelimiter:  "[[",
+				RightDelimiter: "]]",
+			},
+			expectedDataStr: chezmoitest.JoinLines(
+				"# before",
+			),
+		},
+		{
+			name: "line_after",
+			dataStr: chezmoitest.JoinLines(
+				"# chezmoi:template:left-delimiter=[[ right-delimiter=]]",
+				"# after",
+			),
+			expected: TemplateOptions{
+				LeftDelimiter:  "[[",
+				RightDelimiter: "]]",
+			},
+			expectedDataStr: chezmoitest.JoinLines(
+				"# after",
+			),
+		},
+		{
+			name: "line_before_and_after",
+			dataStr: chezmoitest.JoinLines(
+				"# before",
+				"# chezmoi:template:left-delimiter=[[ right-delimiter=]]",
+				"# after",
+			),
+			expected: TemplateOptions{
+				LeftDelimiter:  "[[",
+				RightDelimiter: "]]",
+			},
+			expectedDataStr: chezmoitest.JoinLines(
+				"# before",
+				"# after",
+			),
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			var actual TemplateOptions
+			actualData := actual.parseDirective([]byte(tc.dataStr))
+			assert.Equal(t, tc.expected, actual)
+			assert.Equal(t, tc.expectedDataStr, string(actualData))
+		})
+	}
+}
+
 // applyAll updates targetDirAbsPath in targetSystem to match s.
 func (s *SourceState) applyAll(
 	targetSystem, destSystem System, persistentState PersistentState, targetDirAbsPath AbsPath, options ApplyOptions,

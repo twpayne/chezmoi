@@ -1,0 +1,13 @@
+# test --left-delimiter and --right-delimiter flags to chezmoi execute-template
+exec chezmoi execute-template --left-delimiter=[[ --right-delimiter=]] '[[ "ok" ]]'
+stdout ^ok$
+
+# test that template delimiters can be set in files
+exec chezmoi cat $HOME${/}template
+cmp stdout golden/template
+
+-- golden/template --
+ok
+-- home/user/.local/share/chezmoi/template.tmpl --
+# chezmoi:template:left-delimiter=[[ right-delimiter=]]
+[[ "ok" ]]

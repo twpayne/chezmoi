@@ -12,11 +12,12 @@ import (
 )
 
 type executeTemplateCmdConfig struct {
-	init         bool
-	promptBool   map[string]string
-	promptInt    map[string]int
-	promptString map[string]string
-	stdinIsATTY  bool
+	init            bool
+	promptBool      map[string]string
+	promptInt       map[string]int
+	promptString    map[string]string
+	stdinIsATTY     bool
+	templateOptions chezmoi.TemplateOptions
 }
 
 func (c *Config) newExecuteTemplateCmd() *cobra.Command {
@@ -34,6 +35,8 @@ func (c *Config) newExecuteTemplateCmd() *cobra.Command {
 	flags.StringToIntVar(&c.executeTemplate.promptInt, "promptInt", c.executeTemplate.promptInt, "Simulate promptInt")
 	flags.StringToStringVarP(&c.executeTemplate.promptString, "promptString", "p", c.executeTemplate.promptString, "Simulate promptString") //nolint:lll
 	flags.BoolVar(&c.executeTemplate.stdinIsATTY, "stdinisatty", c.executeTemplate.stdinIsATTY, "Simulate stdinIsATTY")
+	flags.StringVar(&c.executeTemplate.templateOptions.LeftDelimiter, "left-delimiter", c.executeTemplate.templateOptions.LeftDelimiter, "Set left template delimiter")     //nolint:lll
+	flags.StringVar(&c.executeTemplate.templateOptions.RightDelimiter, "right-delimiter", c.executeTemplate.templateOptions.RightDelimiter, "Set right template delimiter") //nolint:lll
 
 	return executeTemplateCmd
 }
@@ -158,7 +161,11 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 		if err != nil {
 			return err
 		}
-		output, err := sourceState.ExecuteTemplateData("stdin", data)
+		output, err := sourceState.ExecuteTemplateData(chezmoi.ExecuteTemplateDataOptions{
+			Name:            "stdin",
+			Data:            data,
+			TemplateOptions: c.executeTemplate.templateOptions,
+		})
 		if err != nil {
 			return err
 		}
@@ -167,7 +174,11 @@ func (c *Config) runExecuteTemplateCmd(cmd *cobra.Command, args []string) error 
 
 	output := strings.Builder{}
 	for i, arg := range args {
-		result, err := sourceState.ExecuteTemplateData("arg"+strconv.Itoa(i+1), []byte(arg))
+		result, err := sourceState.ExecuteTemplateData(chezmoi.ExecuteTemplateDataOptions{
+			Name:            "arg" + strconv.Itoa(i+1),
+			Data:            []byte(arg),
+			TemplateOptions: c.executeTemplate.templateOptions,
+		})
 		if err != nil {
 			return err
 		}

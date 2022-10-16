@@ -9,6 +9,10 @@ specified, the template is read from stdin.
 
 Include simulated functions only available during `chezmoi init`.
 
+## `--left-delimiter` *delimiter*
+
+Set the left template delimiter.
+
 ## `--promptBool` *pairs*
 
 Simulate the `promptBool` template function with a function that returns values
@@ -29,6 +33,10 @@ Simulate the `promptString` template function with a function that returns
 values from *pairs*. *pairs* is a comma-separated list of *prompt*`=`*value*
 pairs. If `promptString` is called with a *prompt* that does not match any of
 *pairs*, then it returns *prompt* unchanged.
+
+## `--right-delimiter` *delimiter*
+
+Set the right template delimiter.
 
 ## `--stdinisatty` *bool*
 
