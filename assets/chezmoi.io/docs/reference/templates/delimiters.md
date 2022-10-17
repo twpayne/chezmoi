@@ -11,9 +11,9 @@ Then the delimiters `$LEFT` and `$RIGHT` are used instead. Either or both of
 is empty then the default delimiter (`{{` and `}}` respectively) is set
 instead.
 
-chezmoi will remove the line containing the `chezmoi:template:` directive to
-avoid parse errors from the delimiters. Only the first encountered directive is
-considered.
+chezmoi will remove the line containing `chezmoi:template:` directives to
+avoid parse errors from the delimiters. If multiple directives are present in a
+file, later directives override earlier ones.
 
 The delimiters are specific to the file in which they appear and are not
 inherited by templates called from the file.

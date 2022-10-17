@@ -46,8 +46,9 @@ const (
 	ExternalTypeGitRepo ExternalType = "git-repo"
 )
 
-var templateDirectiveRx = regexp.MustCompile(
-	`(?m)^.*?chezmoi:template:(?:left-delimiter=(".*?"|\S*)\s*)?(?:right-delimiter=(".*?"|\S*))?.*(\r?\n)?`,
+var (
+	templateDirectiveRx             = regexp.MustCompile(`(?m)^.*?chezmoi:template:(.*)$(?:\r?\n)?`)
+	templateDirectiveKeyValuePairRx = regexp.MustCompile(`\s*(\S+)=("(?:[^"]|\\")*"|\S+)`)
 )
 
 type TemplateOptions struct {
@@ -669,7 +670,7 @@ type ExecuteTemplateDataOptions struct {
 // ExecuteTemplateData returns the result of executing template data.
 func (s *SourceState) ExecuteTemplateData(options ExecuteTemplateDataOptions) ([]byte, error) {
 	templateOptions := options.TemplateOptions
-	data := templateOptions.parseDirective(options.Data)
+	data := templateOptions.parseDirectives(options.Data)
 	tmpl, err := template.New(options.Name).
 		Option(s.templateOptions...).
 		Funcs(s.templateFuncs).
@@ -2176,23 +2177,41 @@ func (e *External) OriginString() string {
 	return e.URL + " defined in " + e.sourceAbsPath.String()
 }
 
-// parseDirective updates o by parsing a template directive in data and returns
-// data with the line containing the directive removed. The line is removed so
-// that the specified delimiters do not break template parsing.
-func (o *TemplateOptions) parseDirective(data []byte) []byte {
-	match := templateDirectiveRx.FindSubmatchIndex(data)
-	if match == nil {
+// parseDirectives updates o by parsing all template directives in data and
+// returns data with the lines containing directives removed. The lines are
+// removed so that the specified delimiters do not break template parsing.
+func (o *TemplateOptions) parseDirectives(data []byte) []byte {
+	matches := templateDirectiveRx.FindAllSubmatchIndex(data, -1)
+	if matches == nil {
 		return data
 	}
 
-	if match[2] != -1 {
-		o.LeftDelimiter = maybeUnquote(string(data[match[2]:match[3]]))
-	}
-	if match[4] != -1 {
-		o.RightDelimiter = maybeUnquote(string(data[match[4]:match[5]]))
+	// Parse options from directives.
+	for _, match := range matches {
+		keyValuePairMatches := templateDirectiveKeyValuePairRx.FindAllSubmatch(data[match[2]:match[3]], -1)
+		for _, keyValuePairMatch := range keyValuePairMatches {
+			key := string(keyValuePairMatch[1])
+			value := maybeUnquote(string(keyValuePairMatch[2]))
+			switch key {
+			case "left-delimiter":
+				o.LeftDelimiter = value
+			case "right-delimiter":
+				o.RightDelimiter = value
+			}
+		}
 	}
 
-	return bytes.Join([][]byte{data[:match[0]], data[match[1]:]}, nil)
+	// Remove lines containing directives.
+	slices := make([][]byte, 0, len(matches)+1)
+	for i, match := range matches {
+		if i == 0 {
+			slices = append(slices, data[:match[0]])
+		} else {
+			slices = append(slices, data[matches[i-1][1]:match[0]])
+		}
+	}
+	slices = append(slices, data[matches[len(matches)-1][1]:])
+	return bytes.Join(slices, nil)
 }
 
 // allEquivalentDirs returns if sourceStateEntries are all equivalent

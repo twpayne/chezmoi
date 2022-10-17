@@ -1613,7 +1613,7 @@ func TestSourceStateTargetRelPaths(t *testing.T) {
 	}
 }
 
-func TestTemplateOptionsParseDirective(t *testing.T) {
+func TestTemplateOptionsParseDirectives(t *testing.T) {
 	for _, tc := range []struct {
 		name            string
 		dataStr         string
@@ -1712,10 +1712,40 @@ func TestTemplateOptionsParseDirective(t *testing.T) {
 				"# after",
 			),
 		},
+		{
+			name: "multiple_lines",
+			dataStr: chezmoitest.JoinLines(
+				"# before",
+				"# chezmoi:template:left-delimiter=<<",
+				"# during",
+				"# chezmoi:template:left-delimiter=[[",
+				"# chezmoi:template:right-delimiter=]]",
+				"# after",
+			),
+			expected: TemplateOptions{
+				LeftDelimiter:  "[[",
+				RightDelimiter: "]]",
+			},
+			expectedDataStr: chezmoitest.JoinLines(
+				"# before",
+				"# during",
+				"# after",
+			),
+		},
+		{
+			name: "duplicate_directives",
+			dataStr: chezmoitest.JoinLines(
+				"# chezmoi:template:left-delimiter=<<",
+				"# chezmoi:template:left-delimiter=[[",
+			),
+			expected: TemplateOptions{
+				LeftDelimiter: "[[",
+			},
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			var actual TemplateOptions
-			actualData := actual.parseDirective([]byte(tc.dataStr))
+			actualData := actual.parseDirectives([]byte(tc.dataStr))
 			assert.Equal(t, tc.expected, actual)
 			assert.Equal(t, tc.expectedDataStr, string(actualData))
 		})
