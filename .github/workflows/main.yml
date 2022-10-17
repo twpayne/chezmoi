@@ -78,7 +78,7 @@ jobs:
     runs-on: macos-12
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-      - uses: actions/cache@ac8075791e805656e71b4ba23325ace9e3421120
+      - uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7
         with:
           path: ~/.vagrant.d
           key: ${{ runner.os }}-vagrant-debian-i386-${{ hashFiles('assets/vagrant/debian11-i386.Vagrantfile') }}
@@ -104,7 +104,7 @@ jobs:
     runs-on: macos-12
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b
-      - uses: actions/cache@ac8075791e805656e71b4ba23325ace9e3421120
+      - uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7
         with:
           path: ~/.vagrant.d
           key: ${{ runner.os }}-vagrant-freebsd13-${{ hashFiles('assets/vagrant/freebsd13.Vagrantfile') }}
@@ -290,7 +290,7 @@ jobs:
         with:
           cache: true
           go-version: ${{ env.GO_VERSION }}
-      - uses: actions/cache@ac8075791e805656e71b4ba23325ace9e3421120
+      - uses: actions/cache@9b0c1fce7a93df8e3bb8926b0d6e9d89e92f20a7
         with:
           path: ~/go/pkg/mod
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
