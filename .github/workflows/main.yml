@@ -396,7 +396,7 @@ jobs:
         with:
           cache: true
           go-version: ${{ env.GO_VERSION }}
-      - uses: sigstore/cosign-installer@ced07f21fb1da67979f539bbc6304c16c0677e76
+      - uses: sigstore/cosign-installer@7cc35d7fdbe70d4278a0c96779081e6fac665f88
       - uses: goreleaser/goreleaser-action@ff11ca24a9b39f2d36796d1fbd7a4e39c182630a
         with:
           version: latest
