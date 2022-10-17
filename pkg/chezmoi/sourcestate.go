@@ -54,6 +54,7 @@ var (
 type TemplateOptions struct {
 	LeftDelimiter  string
 	RightDelimiter string
+	Options        []string
 }
 
 // An External is an external source.
@@ -670,9 +671,10 @@ type ExecuteTemplateDataOptions struct {
 // ExecuteTemplateData returns the result of executing template data.
 func (s *SourceState) ExecuteTemplateData(options ExecuteTemplateDataOptions) ([]byte, error) {
 	templateOptions := options.TemplateOptions
+	templateOptions.Options = append([]string(nil), s.templateOptions...)
 	data := templateOptions.parseDirectives(options.Data)
 	tmpl, err := template.New(options.Name).
-		Option(s.templateOptions...).
+		Option(templateOptions.Options...).
 		Funcs(s.templateFuncs).
 		Delims(templateOptions.LeftDelimiter, templateOptions.RightDelimiter).
 		Parse(string(data))
@@ -2179,7 +2181,7 @@ func (e *External) OriginString() string {
 
 // parseDirectives updates o by parsing all template directives in data and
 // returns data with the lines containing directives removed. The lines are
-// removed so that the specified delimiters do not break template parsing.
+// removed so that any delimiters do not break template parsing.
 func (o *TemplateOptions) parseDirectives(data []byte) []byte {
 	matches := templateDirectiveRx.FindAllSubmatchIndex(data, -1)
 	if matches == nil {
@@ -2197,6 +2199,8 @@ func (o *TemplateOptions) parseDirectives(data []byte) []byte {
 				o.LeftDelimiter = value
 			case "right-delimiter":
 				o.RightDelimiter = value
+			case "missing-key":
+				o.Options = append(o.Options, "missingkey="+value)
 			}
 		}
 	}
