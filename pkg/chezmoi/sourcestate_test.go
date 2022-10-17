@@ -1742,6 +1742,13 @@ func TestTemplateOptionsParseDirectives(t *testing.T) {
 				LeftDelimiter: "[[",
 			},
 		},
+		{
+			name:    "missing_key",
+			dataStr: "chezmoi:template:missing-key=zero",
+			expected: TemplateOptions{
+				Options: []string{"missingkey=zero"},
+			},
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			var actual TemplateOptions

@@ -168,7 +168,7 @@ nav:
       - Templates:
           - reference/templates/index.md
           - Variables: reference/templates/variables.md
-          - Delimiters: reference/templates/delimiters.md
+          - Directives: reference/templates/directives.md
           - Functions:
               - reference/templates/functions/index.md
               - comment: reference/templates/functions/comment.md

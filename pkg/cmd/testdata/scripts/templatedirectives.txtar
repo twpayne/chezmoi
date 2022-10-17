@@ -7,7 +7,8 @@ exec chezmoi cat $HOME${/}template
 cmp stdout golden/template
 
 -- golden/template --
-ok
+<no value>
 -- home/user/.local/share/chezmoi/template.tmpl --
 # chezmoi:template:left-delimiter=[[ right-delimiter=]]
-[[ "ok" ]]
+# chezmoi:template:missing-key=default
+[[ .MissingKey ]]
