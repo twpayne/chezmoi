@@ -2183,14 +2183,14 @@ func (e *External) OriginString() string {
 // returns data with the lines containing directives removed. The lines are
 // removed so that any delimiters do not break template parsing.
 func (o *TemplateOptions) parseDirectives(data []byte) []byte {
-	matches := templateDirectiveRx.FindAllSubmatchIndex(data, -1)
-	if matches == nil {
+	directiveMatches := templateDirectiveRx.FindAllSubmatchIndex(data, -1)
+	if directiveMatches == nil {
 		return data
 	}
 
 	// Parse options from directives.
-	for _, match := range matches {
-		keyValuePairMatches := templateDirectiveKeyValuePairRx.FindAllSubmatch(data[match[2]:match[3]], -1)
+	for _, directiveMatch := range directiveMatches {
+		keyValuePairMatches := templateDirectiveKeyValuePairRx.FindAllSubmatch(data[directiveMatch[2]:directiveMatch[3]], -1)
 		for _, keyValuePairMatch := range keyValuePairMatches {
 			key := string(keyValuePairMatch[1])
 			value := maybeUnquote(string(keyValuePairMatch[2]))
@@ -2206,15 +2206,12 @@ func (o *TemplateOptions) parseDirectives(data []byte) []byte {
 	}
 
 	// Remove lines containing directives.
-	slices := make([][]byte, 0, len(matches)+1)
-	for i, match := range matches {
-		if i == 0 {
-			slices = append(slices, data[:match[0]])
-		} else {
-			slices = append(slices, data[matches[i-1][1]:match[0]])
-		}
+	slices := make([][]byte, 0, len(directiveMatches)+1)
+	slices = append(slices, data[:directiveMatches[0][0]])
+	for i, directiveMatch := range directiveMatches[1:] {
+		slices = append(slices, data[directiveMatches[i][1]:directiveMatch[0]])
 	}
-	slices = append(slices, data[matches[len(matches)-1][1]:])
+	slices = append(slices, data[directiveMatches[len(directiveMatches)-1][1]:])
 	return bytes.Join(slices, nil)
 }
 
