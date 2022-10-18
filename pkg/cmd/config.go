@@ -2391,7 +2391,7 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 				chezmoi.EntryTypeDirs | chezmoi.EntryTypeFiles | chezmoi.EntryTypeSymlinks | chezmoi.EntryTypeEncrypted,
 			),
 		},
-		Format: defaultWriteDataFormat,
+		Format: writeDataFormatJSON,
 		Git: gitCmdConfig{
 			Command: "git",
 		},
