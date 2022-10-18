@@ -132,6 +132,7 @@ func TestFileAttr(t *testing.T) {
 	require.NoError(t, combinator.Generate(&fileAttrs, struct {
 		Type       SourceFileTargetType
 		TargetName []string
+		Encrypted  []bool
 		Executable []bool
 		Private    []bool
 		ReadOnly   []bool
@@ -139,6 +140,7 @@ func TestFileAttr(t *testing.T) {
 	}{
 		Type:       SourceFileTypeModify,
 		TargetName: targetNames,
+		Encrypted:  []bool{false, true},
 		Executable: []bool{false, true},
 		Private:    []bool{false, true},
 		ReadOnly:   []bool{false, true},
