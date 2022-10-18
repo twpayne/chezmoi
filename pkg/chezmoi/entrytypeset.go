@@ -59,6 +59,8 @@ var (
 		"templates": EntryTypeTemplates,
 	}
 
+	entryTypeStrings = sortedKeys(entryTypeBits)
+
 	entryTypeCompletions = []string{
 		"all",
 		"dirs",
@@ -200,22 +202,14 @@ func (s *EntryTypeSet) String() string {
 	case EntryTypesNone:
 		return "none"
 	}
-	var elements []string
-	for i, element := range []string{
-		"dirs",
-		"files",
-		"remove",
-		"scripts",
-		"symlinks",
-		"encrypted",
-		"externals",
-		"templates",
-	} {
-		if s.bits&(1<<i) != 0 {
-			elements = append(elements, element)
+	var entryTypeStrs []string
+	for _, entryTypeStr := range entryTypeStrings {
+		bits := entryTypeBits[entryTypeStr]
+		if s.bits&bits == bits {
+			entryTypeStrs = append(entryTypeStrs, entryTypeStr)
 		}
 	}
-	return strings.Join(elements, ",")
+	return strings.Join(entryTypeStrs, ",")
 }
 
 // Sub returns a copy of s with the elements of other removed.
