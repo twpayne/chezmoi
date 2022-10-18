@@ -345,6 +345,9 @@ func (fa FileAttr) SourceName(encryptedSuffix string) string {
 		}
 	case SourceFileTypeModify:
 		sourceName = modifyPrefix
+		if fa.Encrypted {
+			sourceName += encryptedPrefix
+		}
 		if fa.Private {
 			sourceName += privatePrefix
 		}
