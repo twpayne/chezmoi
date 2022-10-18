@@ -26,8 +26,6 @@ const (
 
 	writeDataFormatJSON writeDataFormat = "json"
 	writeDataFormatYAML writeDataFormat = "yaml"
-
-	defaultWriteDataFormat = writeDataFormatJSON
 )
 
 var readDataFormatFlagCompletionFunc = chezmoi.FlagCompletionFunc([]string{
