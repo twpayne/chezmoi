@@ -22,7 +22,7 @@ type TextConvFunc func(string, []byte) ([]byte, error)
 type GitDiffSystem struct {
 	system         System
 	dirAbsPath     AbsPath
-	include        *EntryTypeSet
+	filter         *EntryTypeFilter
 	reverse        bool
 	textConvFunc   TextConvFunc
 	unifiedEncoder *diff.UnifiedEncoder
@@ -31,7 +31,7 @@ type GitDiffSystem struct {
 // GetDiffSystemOptions are options for NewGitDiffSystem.
 type GitDiffSystemOptions struct {
 	Color        bool
-	Include      *EntryTypeSet
+	Filter       *EntryTypeFilter
 	Reverse      bool
 	TextConvFunc TextConvFunc
 }
@@ -47,7 +47,7 @@ func NewGitDiffSystem(system System, w io.Writer, dirAbsPath AbsPath, options *G
 	return &GitDiffSystem{
 		system:         system,
 		dirAbsPath:     dirAbsPath,
-		include:        options.Include,
+		filter:         options.Filter,
 		reverse:        options.Reverse,
 		textConvFunc:   options.TextConvFunc,
 		unifiedEncoder: unifiedEncoder,
@@ -60,7 +60,7 @@ func (s *GitDiffSystem) Chmod(name AbsPath, mode fs.FileMode) error {
 	if err != nil {
 		return err
 	}
-	if s.include.IncludeFileInfo(fromInfo) {
+	if s.filter.IncludeFileInfo(fromInfo) {
 		toMode := fromInfo.Mode().Type() | mode
 		var toData []byte
 		if fromInfo.Mode().IsRegular() {
@@ -99,7 +99,7 @@ func (s *GitDiffSystem) Lstat(name AbsPath) (fs.FileInfo, error) {
 
 // Mkdir implements System.Mkdir.
 func (s *GitDiffSystem) Mkdir(name AbsPath, perm fs.FileMode) error {
-	if s.include.Include(EntryTypeDirs) {
+	if s.filter.IncludeEntryTypeBits(EntryTypeDirs) {
 		if err := s.encodeDiff(name, nil, fs.ModeDir|perm); err != nil {
 			return err
 		}
@@ -137,7 +137,7 @@ func (s *GitDiffSystem) Remove(name AbsPath) error {
 
 // RemoveAll implements System.RemoveAll.
 func (s *GitDiffSystem) RemoveAll(name AbsPath) error {
-	if s.include.Include(EntryTypeRemove) {
+	if s.filter.IncludeEntryTypeBits(EntryTypeRemove) {
 		if err := s.encodeDiff(name, nil, 0); err != nil {
 			return err
 		}
@@ -151,7 +151,7 @@ func (s *GitDiffSystem) Rename(oldpath, newpath AbsPath) error {
 	if err != nil {
 		return err
 	}
-	if s.include.IncludeFileInfo(fromFileInfo) {
+	if s.filter.IncludeFileInfo(fromFileInfo) {
 		var fileMode filemode.FileMode
 		var hash plumbing.Hash
 		switch {
@@ -199,7 +199,7 @@ func (s *GitDiffSystem) RunCmd(cmd *exec.Cmd) error {
 
 // RunScript implements System.RunScript.
 func (s *GitDiffSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
-	if s.include.Include(EntryTypeScripts) {
+	if s.filter.IncludeEntryTypeBits(EntryTypeScripts) {
 		mode := fs.FileMode(filemode.Executable)
 		fromData, toData := []byte(nil), data
 		if s.reverse {
@@ -228,7 +228,7 @@ func (s *GitDiffSystem) UnderlyingFS() vfs.FS {
 
 // WriteFile implements System.WriteFile.
 func (s *GitDiffSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error {
-	if s.include.Include(EntryTypeFiles) {
+	if s.filter.IncludeEntryTypeBits(EntryTypeFiles) {
 		if err := s.encodeDiff(filename, data, perm); err != nil {
 			return err
 		}
@@ -238,7 +238,7 @@ func (s *GitDiffSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMod
 
 // WriteSymlink implements System.WriteSymlink.
 func (s *GitDiffSystem) WriteSymlink(oldname string, newname AbsPath) error {
-	if s.include.Include(EntryTypeSymlinks) {
+	if s.filter.IncludeEntryTypeBits(EntryTypeSymlinks) {
 		toData := append([]byte(normalizeLinkname(oldname)), '\n')
 		toMode := fs.ModeSymlink
 		if runtime.GOOS == "windows" {

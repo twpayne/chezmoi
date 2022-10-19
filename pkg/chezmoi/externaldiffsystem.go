@@ -24,13 +24,13 @@ type ExternalDiffSystem struct {
 	args           []string
 	destDirAbsPath AbsPath
 	tempDirAbsPath AbsPath
-	include        *EntryTypeSet
+	filter         *EntryTypeFilter
 	reverse        bool
 }
 
 // ExternalDiffSystemOptions are options for NewExternalDiffSystem.
 type ExternalDiffSystemOptions struct {
-	Include *EntryTypeSet
+	Filter  *EntryTypeFilter
 	Reverse bool
 }
 
@@ -43,7 +43,7 @@ func NewExternalDiffSystem(
 		command:        command,
 		args:           args,
 		destDirAbsPath: destDirAbsPath,
-		include:        options.Include,
+		filter:         options.Filter,
 		reverse:        options.Reverse,
 	}
 }
@@ -88,7 +88,7 @@ func (s *ExternalDiffSystem) Lstat(name AbsPath) (fs.FileInfo, error) {
 
 // Mkdir implements System.Mkdir.
 func (s *ExternalDiffSystem) Mkdir(name AbsPath, perm fs.FileMode) error {
-	if s.include.Include(EntryTypeDirs) {
+	if s.filter.IncludeEntryTypeBits(EntryTypeDirs) {
 		targetRelPath, err := name.TrimDirPrefix(s.destDirAbsPath)
 		if err != nil {
 			return err
@@ -130,7 +130,7 @@ func (s *ExternalDiffSystem) Readlink(name AbsPath) (string, error) {
 
 // Remove implements System.Remove.
 func (s *ExternalDiffSystem) Remove(name AbsPath) error {
-	if s.include.Include(EntryTypeRemove) {
+	if s.filter.IncludeEntryTypeBits(EntryTypeRemove) {
 		if err := s.runDiffCommand(name, devNullAbsPath); err != nil {
 			return err
 		}
@@ -140,7 +140,7 @@ func (s *ExternalDiffSystem) Remove(name AbsPath) error {
 
 // RemoveAll implements System.RemoveAll.
 func (s *ExternalDiffSystem) RemoveAll(name AbsPath) error {
-	if s.include.Include(EntryTypeRemove) {
+	if s.filter.IncludeEntryTypeBits(EntryTypeRemove) {
 		if err := s.runDiffCommand(name, devNullAbsPath); err != nil {
 			return err
 		}
@@ -161,7 +161,7 @@ func (s *ExternalDiffSystem) RunCmd(cmd *exec.Cmd) error {
 
 // RunScript implements System.RunScript.
 func (s *ExternalDiffSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
-	if s.include.Include(EntryTypeScripts) {
+	if s.filter.IncludeEntryTypeBits(EntryTypeScripts) {
 		tempDirAbsPath, err := s.tempDir()
 		if err != nil {
 			return err
@@ -192,7 +192,7 @@ func (s *ExternalDiffSystem) UnderlyingFS() vfs.FS {
 
 // WriteFile implements System.WriteFile.
 func (s *ExternalDiffSystem) WriteFile(filename AbsPath, data []byte, perm fs.FileMode) error {
-	if s.include.Include(EntryTypeFiles) {
+	if s.filter.IncludeEntryTypeBits(EntryTypeFiles) {
 		// If filename does not exist, replace it with /dev/null to avoid
 		// passing the name of a non-existent file to the external diff command.
 		destAbsPath := filename

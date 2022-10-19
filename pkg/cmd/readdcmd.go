@@ -11,8 +11,7 @@ import (
 )
 
 type reAddCmdConfig struct {
-	exclude *chezmoi.EntryTypeSet
-	include *chezmoi.EntryTypeSet
+	filter *chezmoi.EntryTypeFilter
 }
 
 func (c *Config) newReAddCmd() *cobra.Command {
@@ -32,8 +31,8 @@ func (c *Config) newReAddCmd() *cobra.Command {
 	}
 
 	flags := reAddCmd.Flags()
-	flags.VarP(c.reAdd.exclude, "exclude", "x", "Exclude entry types")
-	flags.VarP(c.reAdd.include, "include", "i", "Include entry types")
+	flags.VarP(c.reAdd.filter.Exclude, "exclude", "x", "Exclude entry types")
+	flags.VarP(c.reAdd.filter.Include, "include", "i", "Include entry types")
 
 	registerExcludeIncludeFlagCompletionFuncs(reAddCmd)
 
@@ -100,7 +99,7 @@ func (c *Config) runReAddCmd(cmd *cobra.Command, args []string, sourceState *che
 		if err := sourceState.Add(c.sourceSystem, c.persistentState, c.destSystem, destAbsPathInfos, &chezmoi.AddOptions{
 			Encrypt:         sourceStateFile.Attr.Encrypted,
 			EncryptedSuffix: c.encryption.EncryptedSuffix(),
-			Include:         c.reAdd.include.Sub(c.reAdd.exclude),
+			Filter:          c.reAdd.filter,
 		}); err != nil {
 			return err
 		}

@@ -11,8 +11,7 @@ import (
 )
 
 type managedCmdConfig struct {
-	exclude *chezmoi.EntryTypeSet
-	include *chezmoi.EntryTypeSet
+	filter *chezmoi.EntryTypeFilter
 }
 
 func (c *Config) newManagedCmd() *cobra.Command {
@@ -27,8 +26,8 @@ func (c *Config) newManagedCmd() *cobra.Command {
 	}
 
 	flags := managedCmd.Flags()
-	flags.VarP(c.managed.exclude, "exclude", "x", "Exclude entry types")
-	flags.VarP(c.managed.include, "include", "i", "Include entry types")
+	flags.VarP(c.managed.filter.Exclude, "exclude", "x", "Exclude entry types")
+	flags.VarP(c.managed.filter.Include, "include", "i", "Include entry types")
 
 	registerExcludeIncludeFlagCompletionFuncs(managedCmd)
 
@@ -36,8 +35,6 @@ func (c *Config) newManagedCmd() *cobra.Command {
 }
 
 func (c *Config) runManagedCmd(cmd *cobra.Command, args []string, sourceState *chezmoi.SourceState) error {
-	include := c.managed.include.Sub(c.managed.exclude)
-
 	// Build queued relPaths. When there are no arguments, start from root,
 	// otherwise start from arguments.
 	var relPaths chezmoi.RelPaths
@@ -53,11 +50,15 @@ func (c *Config) runManagedCmd(cmd *cobra.Command, args []string, sourceState *c
 
 	var targetRelPaths chezmoi.RelPaths
 	_ = sourceState.ForEach(func(targetRelPath chezmoi.RelPath, sourceStateEntry chezmoi.SourceStateEntry) error {
+		if !c.managed.filter.IncludeSourceStateEntry(sourceStateEntry) {
+			return nil
+		}
+
 		targetStateEntry, err := sourceStateEntry.TargetStateEntry(c.destSystem, c.DestDirAbsPath.Join(targetRelPath))
 		if err != nil {
 			return err
 		}
-		if !include.IncludeTargetStateEntry(targetStateEntry) {
+		if !c.managed.filter.IncludeTargetStateEntry(targetStateEntry) {
 			return nil
 		}
 

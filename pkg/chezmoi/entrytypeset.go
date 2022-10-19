@@ -90,28 +90,18 @@ func NewEntryTypeSet(bits EntryTypeBits) *EntryTypeSet {
 	}
 }
 
-// Include returns if s includes b.
-func (s *EntryTypeSet) Include(b EntryTypeBits) bool {
+// ContainsEntryTypeBits returns if s includes b.
+func (s *EntryTypeSet) ContainsEntryTypeBits(b EntryTypeBits) bool {
 	return s.bits&b != 0
 }
 
-// IncludeEncrypted returns true if s includes encrypted files.
-func (s *EntryTypeSet) IncludeEncrypted() bool {
-	return s.bits&EntryTypeEncrypted != 0
+// Bits returns s's bits.
+func (s *EntryTypeSet) Bits() EntryTypeBits {
+	return s.bits
 }
 
-// IncludeExternals returns true if s includes externals files.
-func (s *EntryTypeSet) IncludeExternals() bool {
-	return s.bits&EntryTypeExternals != 0
-}
-
-// IncludeTemplates returns true if s includes templates.
-func (s *EntryTypeSet) IncludeTemplates() bool {
-	return s.bits&EntryTypeTemplates != 0
-}
-
-// IncludeFileInfo returns true if the type of fileInfo is a member.
-func (s *EntryTypeSet) IncludeFileInfo(fileInfo fs.FileInfo) bool {
+// ContainsFileInfo returns true if fileInfo is a member.
+func (s *EntryTypeSet) ContainsFileInfo(fileInfo fs.FileInfo) bool {
 	switch {
 	case fileInfo.IsDir():
 		return s.bits&EntryTypeDirs != 0
@@ -124,32 +114,129 @@ func (s *EntryTypeSet) IncludeFileInfo(fileInfo fs.FileInfo) bool {
 	}
 }
 
-// IncludeTargetStateEntry returns true if type of targetStateEntry is a member.
-func (s *EntryTypeSet) IncludeTargetStateEntry(targetStateEntry TargetStateEntry) bool {
-	switch sourceAttr := targetStateEntry.SourceAttr(); {
-	case s.IncludeEncrypted() && sourceAttr.Encrypted:
-		return true
-	case s.IncludeExternals() && sourceAttr.External:
-		return true
-	case s.IncludeTemplates() && sourceAttr.Template:
-		return true
+// ContainsSourceStateEntry returns true if sourceStateEntry is a member.
+func (s *EntryTypeSet) ContainsSourceStateEntry(sourceStateEntry SourceStateEntry) bool {
+	switch sourceStateEntry := sourceStateEntry.(type) {
+	case *SourceStateCommand:
+		switch {
+		case s.bits&EntryTypeDirs != 0:
+			return true
+		case s.bits&EntryTypeExternals != 0 && !sourceStateEntry.origin.Path().Empty():
+			return true
+		default:
+			return false
+		}
+	case *SourceStateDir:
+		switch {
+		case s.bits&EntryTypeDirs != 0:
+			return true
+		case s.bits&EntryTypeExternals != 0 && !sourceStateEntry.origin.Path().Empty():
+			return true
+		default:
+			return false
+		}
+	case *SourceStateFile:
+		switch sourceAttr := sourceStateEntry.Attr; {
+		case s.bits&EntryTypeFiles != 0 && sourceAttr.Type == SourceFileTypeCreate:
+			return true
+		case s.bits&EntryTypeFiles != 0 && sourceAttr.Type == SourceFileTypeFile:
+			return true
+		case s.bits&EntryTypeFiles != 0 && sourceAttr.Type == SourceFileTypeModify:
+			return true
+		case s.bits&EntryTypeRemove != 0 && sourceAttr.Type == SourceFileTypeRemove:
+			return true
+		case s.bits&EntryTypeScripts != 0 && sourceAttr.Type == SourceFileTypeScript:
+			return true
+		case s.bits&EntryTypeSymlinks != 0 && sourceAttr.Type == SourceFileTypeSymlink:
+			return true
+		case s.bits&EntryTypeEncrypted != 0 && sourceAttr.Encrypted:
+			return true
+		case s.bits&EntryTypeExternals != 0 && !sourceStateEntry.origin.Path().Empty():
+			return true
+		case s.bits&EntryTypeTemplates != 0 && sourceAttr.Template:
+			return true
+		default:
+			return false
+		}
+	case *SourceStateRemove:
+		switch {
+		case s.bits&EntryTypeRemove != 0:
+			return true
+		case s.bits&EntryTypeExternals != 0 && !sourceStateEntry.origin.Path().Empty():
+			return true
+		default:
+			return false
+		}
+	default:
+		panic(fmt.Sprintf("%T: unsupported type", sourceStateEntry))
 	}
+}
 
+// ContainsTargetStateEntry returns true if targetStateEntry is a member.
+func (s *EntryTypeSet) ContainsTargetStateEntry(targetStateEntry TargetStateEntry) bool {
+	sourceAttr := targetStateEntry.SourceAttr()
 	switch targetStateEntry.(type) {
 	case *TargetStateDir:
-		return s.bits&EntryTypeDirs != 0
+		switch {
+		case s.bits&EntryTypeDirs != 0:
+			return true
+		case s.bits&EntryTypeEncrypted != 0 && sourceAttr.Encrypted:
+			return true
+		case s.bits&EntryTypeExternals != 0 && sourceAttr.External:
+			return true
+		default:
+			return false
+		}
 	case *TargetStateFile:
-		return s.bits&EntryTypeFiles != 0
+		switch {
+		case s.bits&EntryTypeFiles != 0:
+			return true
+		case s.bits&EntryTypeEncrypted != 0 && sourceAttr.Encrypted:
+			return true
+		case s.bits&EntryTypeExternals != 0 && sourceAttr.External:
+			return true
+		case s.bits&EntryTypeTemplates != 0 && sourceAttr.Template:
+			return true
+		default:
+			return false
+		}
 	case *TargetStateModifyDirWithCmd:
-		return s.bits&EntryTypeDirs != 0
+		switch {
+		case s.bits&EntryTypeDirs != 0:
+			return true
+		case s.bits&EntryTypeExternals != 0 && sourceAttr.External:
+			return true
+		default:
+			return false
+		}
 	case *TargetStateRemove:
 		return s.bits&EntryTypeRemove != 0
 	case *TargetStateScript:
-		return s.bits&EntryTypeScripts != 0
+		switch {
+		case s.bits&EntryTypeScripts != 0:
+			return true
+		case s.bits&EntryTypeEncrypted != 0 && sourceAttr.Encrypted:
+			return true
+		case s.bits&EntryTypeTemplates != 0 && sourceAttr.Template:
+			return true
+		default:
+			return false
+		}
 	case *TargetStateSymlink:
-		return s.bits&EntryTypeSymlinks != 0
+		switch {
+		case s.bits&EntryTypeSymlinks != 0:
+			return true
+		case s.bits&EntryTypeEncrypted != 0 && sourceAttr.Encrypted:
+			return true
+		case s.bits&EntryTypeExternals != 0 && sourceAttr.External:
+			return true
+		case s.bits&EntryTypeTemplates != 0 && sourceAttr.Template:
+			return true
+		default:
+			return false
+		}
 	default:
-		return false
+		panic(fmt.Sprintf("%T: unsupported type", targetStateEntry))
 	}
 }
 
@@ -210,16 +297,6 @@ func (s *EntryTypeSet) String() string {
 		}
 	}
 	return strings.Join(entryTypeStrs, ",")
-}
-
-// Sub returns a copy of s with the elements of other removed.
-func (s *EntryTypeSet) Sub(other *EntryTypeSet) *EntryTypeSet {
-	if other == nil {
-		return s
-	}
-	return &EntryTypeSet{
-		bits: (s.bits &^ other.bits) & EntryTypesAll,
-	}
 }
 
 // Type implements github.com/spf13/pflag.Value.Type.

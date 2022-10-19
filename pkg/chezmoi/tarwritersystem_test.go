@@ -53,7 +53,7 @@ func TestTarWriterSystem(t *testing.T) {
 		tarWriterSystem := NewTarWriterSystem(b, tar.Header{})
 		persistentState := NewMockPersistentState()
 		require.NoError(t, s.applyAll(tarWriterSystem, system, persistentState, EmptyAbsPath, ApplyOptions{
-			Include: NewEntryTypeSet(EntryTypesAll),
+			Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 		}))
 		require.NoError(t, tarWriterSystem.Close())
 

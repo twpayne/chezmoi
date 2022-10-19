@@ -18,8 +18,7 @@ type editCmdConfig struct {
 	MinDuration time.Duration `mapstructure:"minDuration"`
 	Watch       bool          `mapstructure:"watch"`
 	Apply       bool          `mapstructure:"apply"`
-	exclude     *chezmoi.EntryTypeSet
-	include     *chezmoi.EntryTypeSet
+	filter      *chezmoi.EntryTypeFilter
 	init        bool
 }
 
@@ -42,9 +41,9 @@ func (c *Config) newEditCmd() *cobra.Command {
 
 	flags := editCmd.Flags()
 	flags.BoolVarP(&c.Edit.Apply, "apply", "a", c.Edit.Apply, "Apply after editing")
-	flags.VarP(c.Edit.exclude, "exclude", "x", "Exclude entry types")
+	flags.VarP(c.Edit.filter.Exclude, "exclude", "x", "Exclude entry types")
 	flags.BoolVar(&c.Edit.Hardlink, "hardlink", c.Edit.Hardlink, "Invoke editor with a hardlink to the source file")
-	flags.VarP(c.Edit.include, "include", "i", "Include entry types")
+	flags.VarP(c.Edit.filter.Include, "include", "i", "Include entry types")
 	flags.BoolVar(&c.Edit.init, "init", c.Edit.init, "Recreate config file from template")
 	flags.BoolVar(&c.Edit.Watch, "watch", c.Edit.Watch, "Apply on save")
 
@@ -60,7 +59,7 @@ func (c *Config) runEditCmd(cmd *cobra.Command, args []string) error {
 		}
 		if c.Edit.Apply {
 			if err := c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, noArgs, applyArgsOptions{
-				include:      c.Edit.include.Sub(c.Edit.exclude),
+				filter:       c.Edit.filter,
 				init:         c.Edit.init,
 				recursive:    true,
 				umask:        c.Umask,
@@ -179,7 +178,7 @@ TARGETRELPATH:
 
 		if c.Edit.Apply || c.Edit.Watch {
 			if err := c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, args, applyArgsOptions{
-				include:      c.Edit.include,
+				filter:       c.Edit.filter,
 				init:         c.Edit.init,
 				recursive:    true,
 				umask:        c.Umask,

@@ -11,8 +11,7 @@ import (
 
 type updateCmdConfig struct {
 	apply     bool
-	exclude   *chezmoi.EntryTypeSet
-	include   *chezmoi.EntryTypeSet
+	filter    *chezmoi.EntryTypeFilter
 	init      bool
 	recursive bool
 }
@@ -36,8 +35,8 @@ func (c *Config) newUpdateCmd() *cobra.Command {
 
 	flags := updateCmd.Flags()
 	flags.BoolVarP(&c.update.apply, "apply", "a", c.update.apply, "Apply after pulling")
-	flags.VarP(c.update.exclude, "exclude", "x", "Exclude entry types")
-	flags.VarP(c.update.include, "include", "i", "Include entry types")
+	flags.VarP(c.update.filter.Exclude, "exclude", "x", "Exclude entry types")
+	flags.VarP(c.update.filter.Include, "include", "i", "Include entry types")
 	flags.BoolVar(&c.update.init, "init", c.update.init, "Recreate config file from template")
 	flags.BoolVarP(&c.update.recursive, "recursive", "r", c.update.recursive, "Recurse into subdirectories")
 
@@ -78,7 +77,7 @@ func (c *Config) runUpdateCmd(cmd *cobra.Command, args []string) error {
 
 	if c.update.apply {
 		if err := c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, args, applyArgsOptions{
-			include:      c.update.include.Sub(c.update.exclude),
+			filter:       c.update.filter,
 			init:         c.update.init,
 			recursive:    c.update.recursive,
 			umask:        c.Umask,

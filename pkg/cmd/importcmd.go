@@ -9,10 +9,9 @@ import (
 )
 
 type importCmdConfig struct {
-	exclude           *chezmoi.EntryTypeSet
 	destination       chezmoi.AbsPath
 	exact             bool
-	include           *chezmoi.EntryTypeSet
+	filter            *chezmoi.EntryTypeFilter
 	removeDestination bool
 	stripComponents   int
 }
@@ -35,8 +34,8 @@ func (c *Config) newImportCmd() *cobra.Command {
 	flags := importCmd.Flags()
 	flags.VarP(&c._import.destination, "destination", "d", "Set destination prefix")
 	flags.BoolVar(&c._import.exact, "exact", c._import.exact, "Set exact_ attribute on imported directories")
-	flags.VarP(c._import.exclude, "exclude", "x", "Exclude entry types")
-	flags.VarP(c._import.include, "include", "i", "Include entry types")
+	flags.VarP(c._import.filter.Exclude, "exclude", "x", "Exclude entry types")
+	flags.VarP(c._import.filter.Include, "include", "i", "Include entry types")
 	flags.BoolVarP(&c._import.removeDestination, "remove-destination", "r", c._import.removeDestination, "Remove destination before import") //nolint:lll
 	flags.IntVar(&c._import.stripComponents, "strip-components", c._import.stripComponents, "Strip leading path components")                 //nolint:lll
 
@@ -87,7 +86,7 @@ func (c *Config) runImportCmd(cmd *cobra.Command, args []string, sourceState *ch
 	return sourceState.Add(
 		c.sourceSystem, c.persistentState, archiveReaderSystem, archiveReaderSystem.FileInfos(), &chezmoi.AddOptions{
 			Exact:     c._import.exact,
-			Include:   c._import.include.Sub(c._import.exclude),
+			Filter:    c._import.filter,
 			RemoveDir: removeDir,
 		},
 	)

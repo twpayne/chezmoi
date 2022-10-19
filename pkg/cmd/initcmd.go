@@ -24,7 +24,7 @@ type initCmdConfig struct {
 	configPath      chezmoi.AbsPath
 	data            bool
 	depth           int
-	exclude         *chezmoi.EntryTypeSet
+	filter          *chezmoi.EntryTypeFilter
 	guessRepoURL    bool
 	oneShot         bool
 	forcePromptOnce bool
@@ -119,9 +119,10 @@ func (c *Config) newInitCmd() *cobra.Command {
 	flags.VarP(&c.init.configPath, "config-path", "C", "Path to write generated config file")
 	flags.BoolVar(&c.init.data, "data", c.init.data, "Include existing template data")
 	flags.IntVarP(&c.init.depth, "depth", "d", c.init.depth, "Create a shallow clone")
-	flags.VarP(c.init.exclude, "exclude", "x", "Exclude entry types")
+	flags.VarP(c.init.filter.Exclude, "exclude", "x", "Exclude entry types")
 	flags.BoolVar(&c.init.forcePromptOnce, "prompt", c.init.forcePromptOnce, "Force prompt*Once template functions to prompt") //nolint:lll
 	flags.BoolVarP(&c.init.guessRepoURL, "guess-repo-url", "g", c.init.guessRepoURL, "Guess the repo URL")
+	flags.VarP(c.init.filter.Include, "include", "i", "Include entry types")
 	flags.BoolVar(&c.init.oneShot, "one-shot", c.init.oneShot, "Run in one-shot mode")
 	flags.StringToStringVar(&c.init.promptBool, "promptBool", c.init.promptBool, "Populate promptBool")
 	flags.StringToIntVar(&c.init.promptInt, "promptInt", c.init.promptInt, "Populate promptInt")
@@ -222,7 +223,7 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 	// Apply.
 	if c.init.apply {
 		if err := c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, noArgs, applyArgsOptions{
-			include:      chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll).Sub(c.init.exclude),
+			filter:       c.init.filter,
 			recursive:    false,
 			umask:        c.Umask,
 			preApplyFunc: c.defaultPreApplyFunc,
