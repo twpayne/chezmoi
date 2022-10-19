@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"go.etcd.io/bbolt"
+	"golang.org/x/exp/slices"
 )
 
 // A BoltPersistentStateMode is a mode for opening a PersistentState.
@@ -86,7 +87,7 @@ func (b *BoltPersistentState) CopyTo(p PersistentState) error {
 	return b.db.View(func(tx *bbolt.Tx) error {
 		return tx.ForEach(func(bucket []byte, b *bbolt.Bucket) error {
 			return b.ForEach(func(key, value []byte) error {
-				return p.Set(copyByteSlice(bucket), copyByteSlice(key), copyByteSlice(value))
+				return p.Set(slices.Clone(bucket), slices.Clone(key), slices.Clone(value))
 			})
 		})
 	})
@@ -170,7 +171,7 @@ func (b *BoltPersistentState) ForEach(bucket []byte, fn func(k, v []byte) error)
 			return nil
 		}
 		return b.ForEach(func(k, v []byte) error {
-			return fn(copyByteSlice(k), copyByteSlice(v))
+			return fn(slices.Clone(k), slices.Clone(v))
 		})
 	})
 }
@@ -190,7 +191,7 @@ func (b *BoltPersistentState) Get(bucket, key []byte) ([]byte, error) {
 		if b == nil {
 			return nil
 		}
-		value = copyByteSlice(b.Get(key))
+		value = slices.Clone(b.Get(key))
 		return nil
 	}); err != nil {
 		return nil, err
@@ -229,14 +230,4 @@ func (b *BoltPersistentState) open() error {
 	b.empty = false
 	b.db = db
 	return nil
-}
-
-// copyByteSlice returns a copy of value.
-func copyByteSlice(value []byte) []byte {
-	if value == nil {
-		return nil
-	}
-	result := make([]byte, len(value))
-	copy(result, value)
-	return result
 }
