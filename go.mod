@@ -16,7 +16,7 @@ require (
 	github.com/coreos/go-semver v0.3.0
 	github.com/fsnotify/fsnotify v1.6.0
 	github.com/go-git/go-git/v5 v5.4.2
-	github.com/google/go-github/v47 v47.1.0
+	github.com/google/go-github/v48 v48.0.0
 	github.com/google/renameio/v2 v2.0.0
 	github.com/gregjones/httpcache v0.0.0-20190611155906-901d90724c79
 	github.com/mitchellh/mapstructure v1.5.0
@@ -37,11 +37,11 @@ require (
 	github.com/zalando/go-keyring v0.2.1
 	go.etcd.io/bbolt v1.3.7-0.20220226045046-fd5535f71f48
 	go.uber.org/multierr v1.8.0
-	golang.org/x/exp v0.0.0-20221012211006-4de253d81b95
-	golang.org/x/oauth2 v0.0.0-20221014153046-6fdb5e3db783
+	golang.org/x/exp v0.0.0-20221019170559-20944726eadf
+	golang.org/x/oauth2 v0.1.0
 	golang.org/x/sync v0.1.0
 	golang.org/x/sys v0.1.0
-	golang.org/x/term v0.0.0-20221017184919-83659145692c
+	golang.org/x/term v0.1.0
 	gopkg.in/ini.v1 v1.67.0
 	gopkg.in/yaml.v3 v3.0.1
 	howett.net/plist v1.0.0
@@ -115,9 +115,9 @@ require (
 	github.com/yuin/goldmark v1.5.2 // indirect
 	github.com/yuin/goldmark-emoji v1.0.1 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
-	golang.org/x/crypto v0.0.0-20221012134737-56aed061732a // indirect
-	golang.org/x/mod v0.6.0-dev.0.20220419223038-86c51ed26bb4 // indirect
-	golang.org/x/net v0.0.0-20221017152216-f25eb7ecb193 // indirect
+	golang.org/x/crypto v0.1.0 // indirect
+	golang.org/x/mod v0.6.0 // indirect
+	golang.org/x/net v0.1.0 // indirect
 	golang.org/x/text v0.4.0 // indirect
 	golang.org/x/tools v0.1.12 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
