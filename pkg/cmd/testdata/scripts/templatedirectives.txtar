@@ -7,8 +7,11 @@ exec chezmoi cat $HOME${/}template
 cmp stdout golden/template
 
 -- golden/template --
-<no value>
+<no value>(nested)
+-- home/user/.local/share/chezmoi/.chezmoitemplates/nested --
+# chezmoi:template:left-delimiter=(( right-delimiter=))
+((- . -))
 -- home/user/.local/share/chezmoi/template.tmpl --
 # chezmoi:template:left-delimiter=[[ right-delimiter=]]
 # chezmoi:template:missing-key=default
-[[ .MissingKey ]]
+[[ .MissingKey ]]([[ template "nested" "nested" ]])

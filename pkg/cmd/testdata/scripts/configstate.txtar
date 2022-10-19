@@ -52,12 +52,13 @@ exec chezmoi diff
 ! stderr .
 
 -- golden/.chezmoi.toml.tmpl --
-{{ $email := get . "email" -}}
-{{ if not $email -}}
-{{   $email = promptString "email" -}}
-{{ end -}}
+# chezmoi:template:left-delimiter="((" right-delimiter="))"
+(( $email := get . "email" -))
+(( if not $email -))
+((   $email = promptString "email" -))
+(( end -))
 [data]
-    email = {{ $email | quote }}
+    email = (( $email | quote ))
 -- golden/chezmoi.toml --
 [data]
     email = "me@home.org"
