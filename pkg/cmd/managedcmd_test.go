@@ -60,7 +60,7 @@ func TestManagedCmd(t *testing.T) {
 				"/home/user/.local/share/chezmoi/run_script.tmpl": "{{ fail \"Template should not be executed\" }}\n",
 			},
 			args: []string{
-				"--include", "scripts",
+				"--include", "always,scripts",
 			},
 			expectedOutput: chezmoitest.JoinLines(
 				"script",

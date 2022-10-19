@@ -242,6 +242,7 @@ func TestFileAttrLiteral(t *testing.T) {
 			sourceName: "run_literal_once_script",
 			fileAttr: FileAttr{
 				TargetName: "once_script",
+				Condition:  ScriptConditionAlways,
 				Type:       SourceFileTypeScript,
 			},
 		},

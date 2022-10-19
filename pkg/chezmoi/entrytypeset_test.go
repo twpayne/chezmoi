@@ -125,6 +125,7 @@ func TestEntryTypeSetFlagCompletionFunc(t *testing.T) {
 			toComplete: "a",
 			expectedCompletions: []string{
 				"all",
+				"always",
 			},
 		},
 		{

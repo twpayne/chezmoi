@@ -11,18 +11,19 @@ Set the output format.
 Include target state entries of type *types*. *types* is a comma-separated list
 of types:
 
-| Type        | Description           |
-| ----------- | --------------------- |
-| `all`       | All entries (default) |
-| `none`      | No entries            |
-| `dirs`      | Directories           |
-| `files`     | Files                 |
-| `remove`    | Removes               |
-| `scripts`   | Scripts               |
-| `symlinks`  | Symbolic links        |
-| `encrypted` | Encrypted entries     |
-| `externals` | External entries      |
-| `templates` | Templates             |
+| Type        | Description                 |
+| ----------- | --------------------------- |
+| `all`       | All entries (default)       |
+| `none`      | No entries                  |
+| `dirs`      | Directories                 |
+| `files`     | Files                       |
+| `remove`    | Removes                     |
+| `scripts`   | Scripts                     |
+| `symlinks`  | Symbolic links              |
+| `always`    | Scripts that are always run |
+| `encrypted` | Encrypted entries           |
+| `externals` | External entries            |
+| `templates` | Templates                   |
 
 Types can be preceded with `no` to remove them.
 

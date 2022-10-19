@@ -972,11 +972,16 @@ func TestSourceStateRead(t *testing.T) {
 						Attr: FileAttr{
 							TargetName: "script",
 							Type:       SourceFileTypeScript,
+							Condition:  ScriptConditionAlways,
 						},
 						lazyContents: newLazyContents([]byte("# contents of .script\n")),
 						targetStateEntry: &TargetStateScript{
 							name:         NewRelPath("script"),
 							lazyContents: newLazyContents([]byte("# contents of .script\n")),
+							condition:    ScriptConditionAlways,
+							sourceAttr: SourceAttr{
+								Condition: ScriptConditionAlways,
+							},
 						},
 					},
 				}),
@@ -997,11 +1002,16 @@ func TestSourceStateRead(t *testing.T) {
 						Attr: FileAttr{
 							TargetName: "script",
 							Type:       SourceFileTypeScript,
+							Condition:  ScriptConditionAlways,
 						},
 						lazyContents: newLazyContents([]byte("# contents of script\n")),
 						targetStateEntry: &TargetStateScript{
 							name:         NewRelPath("script"),
 							lazyContents: newLazyContents([]byte("# contents of script\n")),
+							condition:    ScriptConditionAlways,
+							sourceAttr: SourceAttr{
+								Condition: ScriptConditionAlways,
+							},
 						},
 					},
 				}),
