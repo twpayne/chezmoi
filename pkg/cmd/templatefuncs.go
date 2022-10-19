@@ -12,7 +12,6 @@ import (
 	"runtime"
 	"strconv"
 	"strings"
-	"text/template"
 
 	"github.com/bradenhilton/mozillainstallhash"
 	"golang.org/x/exp/constraints"
@@ -158,7 +157,7 @@ func (c *Config) includeTemplateTemplateFunc(filename string, args ...any) strin
 		panic(err)
 	}
 
-	tmpl, err := template.New(filename).Funcs(c.templateFuncs).Parse(string(contents))
+	tmpl, err := chezmoi.NewConfiguredTemplate(filename, contents, c.templateFuncs)
 	if err != nil {
 		panic(err)
 	}

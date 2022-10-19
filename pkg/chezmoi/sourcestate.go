@@ -664,12 +664,8 @@ type ExecuteTemplateDataOptions struct {
 func (s *SourceState) ExecuteTemplateData(options ExecuteTemplateDataOptions) ([]byte, error) {
 	templateOptions := options.TemplateOptions
 	templateOptions.Options = append([]string(nil), s.templateOptions...)
-	data := templateOptions.parseDirectives(options.Data)
-	tmpl, err := template.New(options.Name).
-		Option(templateOptions.Options...).
-		Funcs(s.templateFuncs).
-		Delims(templateOptions.LeftDelimiter, templateOptions.RightDelimiter).
-		Parse(string(data))
+
+	tmpl, err := NewConfiguredTemplate(options.Name, options.Data, s.templateFuncs, templateOptions)
 	if err != nil {
 		return nil, err
 	}
@@ -1257,7 +1253,13 @@ func (s *SourceState) addTemplatesDir(ctx context.Context, templatesDirAbsPath A
 			}
 			templateRelPath := templateAbsPath.MustTrimDirPrefix(templatesDirAbsPath)
 			name := templateRelPath.String()
-			tmpl, err := template.New(name).Option(s.templateOptions...).Funcs(s.templateFuncs).Parse(string(contents))
+
+			tmpl, err := NewConfiguredTemplate(
+				name,
+				contents,
+				s.templateFuncs,
+				TemplateOptions{Options: append([]string(nil), s.templateOptions...)},
+			)
 			if err != nil {
 				return err
 			}
@@ -2174,6 +2176,29 @@ func (e *External) OriginString() string {
 	return e.URL + " defined in " + e.sourceAbsPath.String()
 }
 
+func NewConfiguredTemplate(
+	name string,
+	data []byte,
+	funcs template.FuncMap,
+	options ...TemplateOptions,
+) (*template.Template, error) {
+	var o TemplateOptions
+
+	if len(options) > 0 {
+		o = options[0]
+	} else {
+		o = TemplateOptions{}
+	}
+
+	contents := o.parseDirectives(data)
+
+	return template.New(name).
+		Option(o.Options...).
+		Delims(o.LeftDelimiter, o.RightDelimiter).
+		Funcs(funcs).
+		Parse(string(contents))
+}
+
 // parseDirectives updates o by parsing all template directives in data and
 // returns data with the lines containing directives removed. The lines are
 // removed so that any delimiters do not break template parsing.
@@ -2207,6 +2232,7 @@ func (o *TemplateOptions) parseDirectives(data []byte) []byte {
 		slices = append(slices, data[directiveMatches[i][1]:directiveMatch[0]])
 	}
 	slices = append(slices, data[directiveMatches[len(directiveMatches)-1][1]:])
+
 	return bytes.Join(slices, nil)
 }
 

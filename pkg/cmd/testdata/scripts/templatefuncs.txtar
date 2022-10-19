@@ -173,7 +173,8 @@ subkey = subvalue
 -- home/user/.local/share/chezmoi/.include --
 # contents of .local/share/chezmoi/.include
 -- home/user/.local/share/chezmoi/.template --
-{{ . }}
+chezmoi:template:left-delimiter=[[ right-delimiter=]]
+[[ . ]]
 -- home/user/.local/share/chezmoi/template --
 -- home/user/file1.txt --
 -- home/user/file2.txt --
