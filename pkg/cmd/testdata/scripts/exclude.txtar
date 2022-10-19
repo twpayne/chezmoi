@@ -15,9 +15,24 @@ exec chezmoi diff
 [!windows] cmp stdout golden/diff-no-scripts.diff
 [windows] cmp stdout golden/diff-no-scripts-windows.diff
 
+chhome home2/user
+
+# test that chezmoi diff --exclude=always excludes scripts that are always run
+exec chezmoi diff --exclude=always
+cmp stdout golden/diff-exclude-always.diff
+
 -- golden/chezmoi.toml --
 [diff]
     exclude = ["scripts"]
+-- golden/diff-exclude-always.diff --
+diff --git a/script-once.sh b/script-once.sh
+index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..d7dff6100cefc930f4161600c12b6f7ea37b7d3a 100755
+--- a/script-once.sh
++++ b/script-once.sh
+@@ -0,0 +1,3 @@
++#!/bin/sh
++
++echo once
 -- golden/diff-no-scripts-windows.diff --
 diff --git a/.file b/.file
 new file mode 100666
@@ -72,3 +87,11 @@ index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..3747a7ba08ee591c41b7c518e430d280
 #!/bin/sh
 
 echo $*
+-- home2/user/.local/share/chezmoi/run_once_script-once.sh --
+#!/bin/sh
+
+echo once
+-- home2/user/.local/share/chezmoi/run_script-always.sh --
+#!/bin/sh
+
+echo always

@@ -1607,6 +1607,9 @@ func (s *SourceState) newScriptTargetStateEntryFunc(
 			name:         targetRelPath,
 			condition:    fileAttr.Condition,
 			interpreter:  interpreter,
+			sourceAttr: SourceAttr{
+				Condition: fileAttr.Condition,
+			},
 		}, nil
 	}
 }

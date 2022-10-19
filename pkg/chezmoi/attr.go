@@ -46,7 +46,8 @@ type ScriptCondition string
 
 // Script conditions.
 const (
-	ScriptConditionAlways   ScriptCondition = ""
+	ScriptConditionNone     ScriptCondition = ""
+	ScriptConditionAlways   ScriptCondition = "always"
 	ScriptConditionOnce     ScriptCondition = "once"
 	ScriptConditionOnChange ScriptCondition = "onchange"
 )
@@ -166,7 +167,7 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 	var (
 		sourceFileType = SourceFileTypeFile
 		name           = sourceName
-		condition      = ScriptConditionAlways
+		condition      = ScriptConditionNone
 		empty          = false
 		encrypted      = false
 		executable     = false
@@ -208,6 +209,8 @@ func parseFileAttr(sourceName, encryptedSuffix string) FileAttr {
 		case strings.HasPrefix(name, onChangePrefix):
 			name = mustTrimPrefix(name, onChangePrefix)
 			condition = ScriptConditionOnChange
+		default:
+			condition = ScriptConditionAlways
 		}
 		switch {
 		case strings.HasPrefix(name, beforePrefix):

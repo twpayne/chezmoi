@@ -30,6 +30,7 @@ const (
 	EntryTypeEncrypted
 	EntryTypeExternals
 	EntryTypeTemplates
+	EntryTypeAlways
 
 	// EntryTypesAll is all entry types.
 	EntryTypesAll EntryTypeBits = EntryTypeDirs |
@@ -39,7 +40,8 @@ const (
 		EntryTypeSymlinks |
 		EntryTypeEncrypted |
 		EntryTypeExternals |
-		EntryTypeTemplates
+		EntryTypeTemplates |
+		EntryTypeAlways
 
 	// EntryTypesNone is no entry types.
 	EntryTypesNone EntryTypeBits = 0
@@ -49,6 +51,7 @@ var (
 	// entryTypeBits is a map from human-readable strings to EntryTypeBits.
 	entryTypeBits = map[string]EntryTypeBits{
 		"all":       EntryTypesAll,
+		"always":    EntryTypeAlways,
 		"dirs":      EntryTypeDirs,
 		"files":     EntryTypeFiles,
 		"remove":    EntryTypeRemove,
@@ -63,10 +66,12 @@ var (
 
 	entryTypeCompletions = []string{
 		"all",
+		"always",
 		"dirs",
 		"encrypted",
 		"externals",
 		"files",
+		"noalways",
 		"nodirs",
 		"noencrypted",
 		"noexternals",
@@ -149,6 +154,8 @@ func (s *EntryTypeSet) ContainsSourceStateEntry(sourceStateEntry SourceStateEntr
 			return true
 		case s.bits&EntryTypeSymlinks != 0 && sourceAttr.Type == SourceFileTypeSymlink:
 			return true
+		case s.bits&EntryTypeAlways != 0 && sourceAttr.Condition == ScriptConditionAlways:
+			return true
 		case s.bits&EntryTypeEncrypted != 0 && sourceAttr.Encrypted:
 			return true
 		case s.bits&EntryTypeExternals != 0 && !sourceStateEntry.origin.Path().Empty():
@@ -218,6 +225,8 @@ func (s *EntryTypeSet) ContainsTargetStateEntry(targetStateEntry TargetStateEntr
 		case s.bits&EntryTypeEncrypted != 0 && sourceAttr.Encrypted:
 			return true
 		case s.bits&EntryTypeTemplates != 0 && sourceAttr.Template:
+			return true
+		case s.bits&EntryTypeAlways != 0 && sourceAttr.Condition == ScriptConditionAlways:
 			return true
 		default:
 			return false

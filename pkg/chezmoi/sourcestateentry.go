@@ -11,6 +11,7 @@ import (
 
 // A SourceAttr contains attributes of the source.
 type SourceAttr struct {
+	Condition ScriptCondition
 	Encrypted bool
 	External  bool
 	Template  bool
