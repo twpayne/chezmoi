@@ -37,7 +37,7 @@ func TestSourceStateAdd(t *testing.T) {
 				NewAbsPath("/home/user/.dir"),
 			},
 			addOptions: AddOptions{
-				Include: NewEntryTypeSet(EntryTypesAll),
+				Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 			},
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
@@ -58,7 +58,7 @@ func TestSourceStateAdd(t *testing.T) {
 				NewAbsPath("/home/user/.dir"),
 			},
 			addOptions: AddOptions{
-				Include: NewEntryTypeSet(EntryTypesAll),
+				Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 			},
 			extraRoot: map[string]any{
 				"/home/user": map[string]any{
@@ -86,7 +86,7 @@ func TestSourceStateAdd(t *testing.T) {
 				NewAbsPath("/home/user/.dir/file"),
 			},
 			addOptions: AddOptions{
-				Include: NewEntryTypeSet(EntryTypesAll),
+				Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 			},
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
@@ -106,7 +106,7 @@ func TestSourceStateAdd(t *testing.T) {
 				NewAbsPath("/home/user/.dir/file"),
 			},
 			addOptions: AddOptions{
-				Include: NewEntryTypeSet(EntryTypesAll),
+				Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 			},
 			extraRoot: map[string]any{
 				"/home/user/.local/share/chezmoi/dot_dir": &vfst.Dir{Perm: 0o777},
@@ -124,7 +124,7 @@ func TestSourceStateAdd(t *testing.T) {
 				NewAbsPath("/home/user/.dir/subdir"),
 			},
 			addOptions: AddOptions{
-				Include: NewEntryTypeSet(EntryTypesAll),
+				Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 			},
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
@@ -146,7 +146,7 @@ func TestSourceStateAdd(t *testing.T) {
 				NewAbsPath("/home/user/.dir/subdir/file"),
 			},
 			addOptions: AddOptions{
-				Include: NewEntryTypeSet(EntryTypesAll),
+				Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 			},
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
@@ -173,7 +173,7 @@ func TestSourceStateAdd(t *testing.T) {
 				NewAbsPath("/home/user/.dir/subdir/file"),
 			},
 			addOptions: AddOptions{
-				Include: NewEntryTypeSet(EntryTypesAll),
+				Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 			},
 			extraRoot: map[string]any{
 				"/home/user/.local/share/chezmoi/dot_dir/subdir": &vfst.Dir{Perm: 0o777},
@@ -191,7 +191,7 @@ func TestSourceStateAdd(t *testing.T) {
 				NewAbsPath("/home/user/.readonly_dir"),
 			},
 			addOptions: AddOptions{
-				Include: NewEntryTypeSet(EntryTypesAll),
+				Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 			},
 			extraRoot: map[string]any{
 				"/home/user/.readonly_dir": &vfst.Dir{Perm: 0o555},
@@ -209,7 +209,7 @@ func TestSourceStateAdd(t *testing.T) {
 				NewAbsPath("/home/user/.empty"),
 			},
 			addOptions: AddOptions{
-				Include: NewEntryTypeSet(EntryTypesAll),
+				Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 			},
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_empty",
@@ -223,7 +223,7 @@ func TestSourceStateAdd(t *testing.T) {
 				NewAbsPath("/home/user/.empty"),
 			},
 			addOptions: AddOptions{
-				Include: NewEntryTypeSet(EntryTypesAll),
+				Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 			},
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/empty_dot_empty",
@@ -239,7 +239,7 @@ func TestSourceStateAdd(t *testing.T) {
 				NewAbsPath("/home/user/.executable"),
 			},
 			addOptions: AddOptions{
-				Include: NewEntryTypeSet(EntryTypesAll),
+				Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 			},
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/executable_dot_executable",
@@ -255,7 +255,7 @@ func TestSourceStateAdd(t *testing.T) {
 				NewAbsPath("/home/user/.executable"),
 			},
 			addOptions: AddOptions{
-				Include: NewEntryTypeSet(EntryTypesAll),
+				Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 			},
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_executable",
@@ -271,8 +271,8 @@ func TestSourceStateAdd(t *testing.T) {
 				NewAbsPath("/home/user/.create"),
 			},
 			addOptions: AddOptions{
-				Create:  true,
-				Include: NewEntryTypeSet(EntryTypesAll),
+				Create: true,
+				Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 			},
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/create_dot_create",
@@ -288,7 +288,7 @@ func TestSourceStateAdd(t *testing.T) {
 				NewAbsPath("/home/user/.file"),
 			},
 			addOptions: AddOptions{
-				Include: NewEntryTypeSet(EntryTypesAll),
+				Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 			},
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_file",
@@ -304,7 +304,7 @@ func TestSourceStateAdd(t *testing.T) {
 				NewAbsPath("/home/user/.file"),
 			},
 			addOptions: AddOptions{
-				Include: NewEntryTypeSet(EntryTypesAll),
+				Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 			},
 			extraRoot: map[string]any{
 				"/home/user/.local/share/chezmoi/executable_dot_file": "# contents of .file\n",
@@ -326,7 +326,7 @@ func TestSourceStateAdd(t *testing.T) {
 				NewAbsPath("/home/user/.file"),
 			},
 			addOptions: AddOptions{
-				Include: NewEntryTypeSet(EntryTypesAll),
+				Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 			},
 			extraRoot: map[string]any{
 				"/home/user/.local/share/chezmoi/dot_file": "# old contents of .file\n",
@@ -345,7 +345,7 @@ func TestSourceStateAdd(t *testing.T) {
 				NewAbsPath("/home/user/.private"),
 			},
 			addOptions: AddOptions{
-				Include: NewEntryTypeSet(EntryTypesAll),
+				Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 			},
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/private_dot_private",
@@ -361,7 +361,7 @@ func TestSourceStateAdd(t *testing.T) {
 				NewAbsPath("/home/user/.private"),
 			},
 			addOptions: AddOptions{
-				Include: NewEntryTypeSet(EntryTypesAll),
+				Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 			},
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_private",
@@ -377,7 +377,7 @@ func TestSourceStateAdd(t *testing.T) {
 				NewAbsPath("/home/user/.readonly"),
 			},
 			addOptions: AddOptions{
-				Include: NewEntryTypeSet(EntryTypesAll),
+				Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 			},
 			extraRoot: map[string]any{
 				"/home/user/.readonly": &vfst.File{
@@ -399,7 +399,7 @@ func TestSourceStateAdd(t *testing.T) {
 				NewAbsPath("/home/user/.symlink"),
 			},
 			addOptions: AddOptions{
-				Include: NewEntryTypeSet(EntryTypesAll),
+				Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 			},
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/symlink_dot_symlink",
@@ -414,7 +414,7 @@ func TestSourceStateAdd(t *testing.T) {
 				NewAbsPath("/home/user/.symlink_windows"),
 			},
 			addOptions: AddOptions{
-				Include: NewEntryTypeSet(EntryTypesAll),
+				Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 			},
 			extraRoot: map[string]any{
 				"/home/user": map[string]any{
@@ -435,7 +435,7 @@ func TestSourceStateAdd(t *testing.T) {
 			},
 			addOptions: AddOptions{
 				AutoTemplate: true,
-				Include:      NewEntryTypeSet(EntryTypesAll),
+				Filter:       NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 			},
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_template.tmpl",
@@ -452,7 +452,7 @@ func TestSourceStateAdd(t *testing.T) {
 				NewAbsPath("/home/user/.dir/file"),
 			},
 			addOptions: AddOptions{
-				Include: NewEntryTypeSet(EntryTypesAll),
+				Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 			},
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
@@ -472,7 +472,7 @@ func TestSourceStateAdd(t *testing.T) {
 				NewAbsPath("/home/user/.dir/subdir/file"),
 			},
 			addOptions: AddOptions{
-				Include: NewEntryTypeSet(EntryTypesAll),
+				Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 			},
 			extraRoot: map[string]any{
 				"/home/user/.local/share/chezmoi/dot_dir/exact_subdir": &vfst.Dir{Perm: 0o777},
@@ -596,7 +596,7 @@ func TestSourceStateAddInExternal(t *testing.T) {
 			destAbsPath: fileInfo,
 		}
 		require.NoError(t, s.Add(system, persistentState, system, destAbsPathInfos, &AddOptions{
-			Include: NewEntryTypeSet(EntryTypesAll),
+			Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 		}))
 
 		vfst.RunTests(t, fileSystem, "",
@@ -822,8 +822,8 @@ func TestSourceStateApplyAll(t *testing.T) {
 				require.NoError(t, s.Read(ctx, nil))
 				requireEvaluateAll(t, s, system)
 				require.NoError(t, s.applyAll(system, system, persistentState, NewAbsPath("/home/user"), ApplyOptions{
-					Include: NewEntryTypeSet(EntryTypesAll),
-					Umask:   chezmoitest.Umask,
+					Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
+					Umask:  chezmoitest.Umask,
 				}))
 
 				vfst.RunTests(t, fileSystem, "", tc.tests...)

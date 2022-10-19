@@ -43,7 +43,7 @@ func (c *Config) runMergeAllCmd(cmd *cobra.Command, args []string) error {
 		return chezmoi.Skip
 	}
 	if err := c.applyArgs(cmd.Context(), dryRunSystem, c.DestDirAbsPath, args, applyArgsOptions{
-		include:      chezmoi.NewEntryTypeSet(chezmoi.EntryTypeFiles),
+		filter:       chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 		init:         c.mergeAll.init,
 		recursive:    c.mergeAll.recursive,
 		umask:        c.Umask,

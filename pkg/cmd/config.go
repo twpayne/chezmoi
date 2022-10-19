@@ -282,18 +282,15 @@ func newConfig(options ...configOption) (*Config, error) {
 
 		// Command configurations.
 		apply: applyCmdConfig{
-			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
+			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 			recursive: true,
 		},
 		archive: archiveCmdConfig{
-			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
+			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 			recursive: true,
 		},
 		dump: dumpCmdConfig{
-			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
+			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 			recursive: true,
 		},
 		executeTemplate: executeTemplateCmdConfig{
@@ -301,29 +298,25 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		_import: importCmdConfig{
 			destination: homeDirAbsPath,
-			exclude:     chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			include:     chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
+			filter:      chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 		},
 		init: initCmdConfig{
 			data:         true,
-			exclude:      chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
+			filter:       chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 			guessRepoURL: true,
 		},
 		managed: managedCmdConfig{
-			exclude: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll &^ (chezmoi.EntryTypeRemove | chezmoi.EntryTypeScripts)),
+			filter: chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 		},
 		mergeAll: mergeAllCmdConfig{
 			recursive: true,
 		},
 		reAdd: reAddCmdConfig{
-			exclude: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
+			filter: chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 		},
 		update: updateCmdConfig{
 			apply:     true,
-			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
+			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 			recursive: true,
 		},
 		upgrade: upgradeCmdConfig{
@@ -448,9 +441,8 @@ func (c *Config) addTemplateFunc(key string, value any) {
 }
 
 type applyArgsOptions struct {
-	include      *chezmoi.EntryTypeSet
+	filter       *chezmoi.EntryTypeFilter
 	init         bool
-	exclude      *chezmoi.EntryTypeSet
 	recursive    bool
 	umask        fs.FileMode
 	preApplyFunc chezmoi.PreApplyFunc
@@ -538,7 +530,7 @@ func (c *Config) applyArgs(
 	}
 
 	applyOptions := chezmoi.ApplyOptions{
-		Include:      options.include.Sub(options.exclude),
+		Filter:       options.filter,
 		PreApplyFunc: options.preApplyFunc,
 		Umask:        options.umask,
 	}
@@ -1444,14 +1436,14 @@ func (c *Config) newDiffSystem(s chezmoi.System, w io.Writer, dirAbsPath chezmoi
 	if c.Diff.useBuiltinDiff || c.Diff.Command == "" {
 		options := &chezmoi.GitDiffSystemOptions{
 			Color:        c.Color.Value(c.colorAutoFunc),
-			Include:      c.Diff.include.Sub(c.Diff.Exclude),
+			Filter:       chezmoi.NewEntryTypeFilter(c.Diff.include.Bits(), c.Diff.Exclude.Bits()),
 			Reverse:      c.Diff.Reverse,
 			TextConvFunc: c.TextConv.convert,
 		}
 		return chezmoi.NewGitDiffSystem(s, w, dirAbsPath, options)
 	}
 	options := &chezmoi.ExternalDiffSystemOptions{
-		Include: c.Diff.include.Sub(c.Diff.Exclude),
+		Filter:  chezmoi.NewEntryTypeFilter(c.Diff.include.Bits(), c.Diff.Exclude.Bits()),
 		Reverse: c.Diff.Reverse,
 	}
 	return chezmoi.NewExternalDiffSystem(s, c.Diff.Command, c.Diff.Args, c.DestDirAbsPath, options)
@@ -2375,8 +2367,7 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 
 		// Command configurations.
 		Add: addCmdConfig{
-			exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
+			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 			recursive: true,
 		},
 		Diff: diffCmdConfig{
@@ -2386,10 +2377,7 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		Edit: editCmdConfig{
 			Hardlink:    true,
 			MinDuration: 1 * time.Second,
-			exclude:     chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			include: chezmoi.NewEntryTypeSet(
-				chezmoi.EntryTypeDirs | chezmoi.EntryTypeFiles | chezmoi.EntryTypeSymlinks | chezmoi.EntryTypeEncrypted,
-			),
+			filter:      chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 		},
 		Format: writeDataFormatJSON,
 		Git: gitCmdConfig{
@@ -2405,7 +2393,7 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 		},
 		Verify: verifyCmdConfig{
 			Exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll &^ chezmoi.EntryTypeScripts),
+			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 			recursive: true,
 		},
 	}

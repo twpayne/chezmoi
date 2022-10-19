@@ -53,7 +53,7 @@ func (c *Config) runDiffCmd(cmd *cobra.Command, args []string) (err error) {
 	dryRunSystem := chezmoi.NewDryRunSystem(c.destSystem)
 	diffSystem := c.newDiffSystem(dryRunSystem, builder, c.DestDirAbsPath)
 	if err = c.applyArgs(cmd.Context(), diffSystem, c.DestDirAbsPath, args, applyArgsOptions{
-		include:   c.Diff.include.Sub(c.Diff.Exclude),
+		filter:    chezmoi.NewEntryTypeFilter(c.Diff.include.Bits(), c.Diff.Exclude.Bits()),
 		init:      c.Diff.init,
 		recursive: c.Diff.recursive,
 		umask:     c.Umask,

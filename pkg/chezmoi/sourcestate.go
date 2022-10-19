@@ -272,17 +272,17 @@ type ReplaceFunc func(targetRelPath RelPath, newSourceStateEntry, oldSourceState
 
 // AddOptions are options to SourceState.Add.
 type AddOptions struct {
-	AutoTemplate     bool          // Automatically create templates, if possible.
-	Create           bool          // Add create_ entries instead of normal entries.
-	Encrypt          bool          // Encrypt files.
-	EncryptedSuffix  string        // Suffix for encrypted files.
-	Exact            bool          // Add the exact_ attribute to added directories.
-	Include          *EntryTypeSet // Only add types in this set.
-	PreAddFunc       PreAddFunc    // Function to be called before a source entry is added.
-	RemoveDir        RelPath       // Directory to remove before adding.
-	ReplaceFunc      ReplaceFunc   // Function to be called before a source entry is replaced.
-	Template         bool          // Add the .tmpl attribute to added files.
-	TemplateSymlinks bool          // Add symlinks with targets in the source or home directories as templates.
+	AutoTemplate     bool             // Automatically create templates, if possible.
+	Create           bool             // Add create_ entries instead of normal entries.
+	Encrypt          bool             // Encrypt files.
+	EncryptedSuffix  string           // Suffix for encrypted files.
+	Exact            bool             // Add the exact_ attribute to added directories.
+	Filter           *EntryTypeFilter // Entry type filter.
+	PreAddFunc       PreAddFunc       // Function to be called before a source entry is added.
+	RemoveDir        RelPath          // Directory to remove before adding.
+	ReplaceFunc      ReplaceFunc      // Function to be called before a source entry is replaced.
+	Template         bool             // Add the .tmpl attribute to added files.
+	TemplateSymlinks bool             // Add symlinks with targets in the source or home directories as templates.
 }
 
 // Add adds destAbsPathInfos to s.
@@ -307,7 +307,7 @@ func (s *SourceState) Add(
 DESTABSPATH:
 	for _, destAbsPath := range destAbsPaths {
 		destAbsPathInfo := destAbsPathInfos[destAbsPath]
-		if !options.Include.IncludeFileInfo(destAbsPathInfo) {
+		if !options.Filter.IncludeFileInfo(destAbsPathInfo) {
 			continue
 		}
 		targetRelPath := destAbsPath.MustTrimDirPrefix(s.destDirAbsPath)
@@ -472,8 +472,8 @@ DESTABSPATH:
 			err := targetSourceState.Apply(
 				sourceSystem, sourceSystem, NullPersistentState{}, s.sourceDirAbsPath, sourceRelPath.RelPath(),
 				ApplyOptions{
-					Include: options.Include,
-					Umask:   s.umask,
+					Filter: options.Filter,
+					Umask:  s.umask,
 				},
 			)
 			if err != nil {
@@ -553,7 +553,7 @@ type PreApplyFunc func(
 
 // ApplyOptions are options to SourceState.ApplyAll and SourceState.ApplyOne.
 type ApplyOptions struct {
-	Include      *EntryTypeSet
+	Filter       *EntryTypeFilter
 	PreApplyFunc PreApplyFunc
 	Umask        fs.FileMode
 }
@@ -565,16 +565,8 @@ func (s *SourceState) Apply(
 ) error {
 	sourceStateEntry := s.root.Get(targetRelPath)
 
-	if !options.Include.IncludeEncrypted() {
-		if sourceStateFile, ok := sourceStateEntry.(*SourceStateFile); ok && sourceStateFile.Attr.Encrypted {
-			return nil
-		}
-	}
-
-	if !options.Include.IncludeExternals() {
-		if _, ok := sourceStateEntry.Origin().(*External); ok {
-			return nil
-		}
+	if !options.Filter.IncludeSourceStateEntry(sourceStateEntry) {
+		return nil
 	}
 
 	destAbsPath := s.destDirAbsPath.Join(targetRelPath)
@@ -583,7 +575,7 @@ func (s *SourceState) Apply(
 		return err
 	}
 
-	if options.Include != nil && !options.Include.IncludeTargetStateEntry(targetStateEntry) {
+	if !options.Filter.IncludeTargetStateEntry(targetStateEntry) {
 		return nil
 	}
 

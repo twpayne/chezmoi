@@ -89,7 +89,6 @@ cmp stdout golden/managed2
 .dir
 .dir/subdir
 .symlink
-.template
 -- golden/managed-except-files-and-templates --
 .dir
 .dir/subdir

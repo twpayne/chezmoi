@@ -55,7 +55,7 @@ func TestZIPWriterSystem(t *testing.T) {
 		zipWriterSystem := NewZIPWriterSystem(b, time.Now().UTC())
 		persistentState := NewMockPersistentState()
 		require.NoError(t, s.applyAll(zipWriterSystem, system, persistentState, EmptyAbsPath, ApplyOptions{
-			Include: NewEntryTypeSet(EntryTypesAll),
+			Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 		}))
 		require.NoError(t, zipWriterSystem.Close())
 

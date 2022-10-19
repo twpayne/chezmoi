@@ -75,6 +75,19 @@ func TestManagedCmd(t *testing.T) {
 				".symlink",
 			),
 		},
+		{
+			name: "external_git_repo",
+			root: map[string]any{
+				"/home/user/.local/share/chezmoi/.chezmoiexternal.toml": chezmoitest.JoinLines(
+					`[".dir"]`,
+					`    type = "git-repo"`,
+					`    url = "https://github.com/example/example.git"`,
+				),
+			},
+			expectedOutput: chezmoitest.JoinLines(
+				".dir",
+			),
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			chezmoitest.WithTestFS(t, tc.root, func(fileSystem vfs.FS) {

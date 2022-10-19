@@ -32,7 +32,7 @@ func TestIncludeMaskSet(t *testing.T) {
 		},
 		{
 			s:        "all,noscripts",
-			expected: NewEntryTypeSet(EntryTypeDirs | EntryTypeFiles | EntryTypeRemove | EntryTypeSymlinks | EntryTypeEncrypted | EntryTypeExternals | EntryTypeTemplates),
+			expected: NewEntryTypeSet(EntryTypesAll &^ EntryTypeScripts),
 		},
 		{
 			s:        "noscripts",
@@ -132,6 +132,12 @@ func TestEntryTypeSetFlagCompletionFunc(t *testing.T) {
 			expectedCompletions: []string{
 				"encrypted",
 				"externals",
+			},
+		},
+		{
+			toComplete: "t",
+			expectedCompletions: []string{
+				"templates",
 			},
 		},
 		{

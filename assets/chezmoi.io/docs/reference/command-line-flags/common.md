@@ -8,15 +8,29 @@ Set the output format.
 
 ## `-i`, `--include` *types*
 
-Only operate on target state entries of type *types*. *types* is a
-comma-separated list of target states (`all`, `dirs`, `files`, `remove`,
-`scripts`, `symlinks`) and/or source attributes (`encrypted`, `externals`,
-`templates`) and can be excluded by preceding them with a `no`.
+Include target state entries of type *types*. *types* is a comma-separated list
+of types:
+
+| Type        | Description           |
+| ----------- | --------------------- |
+| `all`       | All entries (default) |
+| `none`      | No entries            |
+| `dirs`      | Directories           |
+| `files`     | Files                 |
+| `remove`    | Removes               |
+| `scripts`   | Scripts               |
+| `symlinks`  | Symbolic links        |
+| `encrypted` | Encrypted entries     |
+| `externals` | External entries      |
+| `templates` | Templates             |
+
+Types can be preceded with `no` to remove them.
+
+Types can be explicitly excluded with the `--exclude` flag.
 
 !!! example
 
-    `--include=dirs,files` will cause the command to apply to directories and
-    files only.
+    `--include=all,noencrypted` specifies all entries except encrypted files.
 
 ## `--init`
 
@@ -33,9 +47,8 @@ Recurse into subdirectories, `true` by default.
 
 ## `-x`, `--exclude` *types*
 
-Exclude target state entries of type *types*. *types* is a comma-separated list
-of target states (`all`, `dirs`, `files`, `remove`, `scripts`, `symlinks`)
-and/or source attributes (`encrypted`, `externals`, `templates`).
+Exclude target state entries of type *types*. *types* is defined as in the
+`--include` flag and defaults to `none`.
 
 !!! example
 

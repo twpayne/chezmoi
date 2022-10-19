@@ -49,7 +49,7 @@ func TestDumpSystem(t *testing.T) {
 		dumpSystem := NewDumpSystem()
 		persistentState := NewMockPersistentState()
 		require.NoError(t, s.applyAll(dumpSystem, system, persistentState, EmptyAbsPath, ApplyOptions{
-			Include: NewEntryTypeSet(EntryTypesAll),
+			Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 		}))
 		expectedData := map[string]any{
 			".dir": &dirData{

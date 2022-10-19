@@ -72,7 +72,7 @@ func (c *Config) runStatusCmd(cmd *cobra.Command, args []string) error {
 		return chezmoi.Skip
 	}
 	if err := c.applyArgs(cmd.Context(), dryRunSystem, c.DestDirAbsPath, args, applyArgsOptions{
-		include:      c.Status.include.Sub(c.Status.Exclude),
+		filter:       chezmoi.NewEntryTypeFilter(c.Status.include.Bits(), c.Status.Exclude.Bits()),
 		init:         c.Status.init,
 		recursive:    c.Status.recursive,
 		umask:        c.Umask,
