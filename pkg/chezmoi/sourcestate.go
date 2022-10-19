@@ -665,7 +665,7 @@ func (s *SourceState) ExecuteTemplateData(options ExecuteTemplateDataOptions) ([
 	templateOptions := options.TemplateOptions
 	templateOptions.Options = append([]string(nil), s.templateOptions...)
 
-	tmpl, err := NewConfiguredTemplate(options.Name, options.Data, s.templateFuncs, templateOptions)
+	tmpl, err := ParseTemplate(options.Name, options.Data, s.templateFuncs, templateOptions)
 	if err != nil {
 		return nil, err
 	}
@@ -1254,7 +1254,7 @@ func (s *SourceState) addTemplatesDir(ctx context.Context, templatesDirAbsPath A
 			templateRelPath := templateAbsPath.MustTrimDirPrefix(templatesDirAbsPath)
 			name := templateRelPath.String()
 
-			tmpl, err := NewConfiguredTemplate(
+			tmpl, err := ParseTemplate(
 				name,
 				contents,
 				s.templateFuncs,
@@ -2176,25 +2176,15 @@ func (e *External) OriginString() string {
 	return e.URL + " defined in " + e.sourceAbsPath.String()
 }
 
-func NewConfiguredTemplate(
-	name string,
-	data []byte,
-	funcs template.FuncMap,
-	options ...TemplateOptions,
+// ParseTemplate parses a template named name from data with the given funcs and
+// templateOptions.
+func ParseTemplate(
+	name string, data []byte, funcs template.FuncMap, templateOptions TemplateOptions,
 ) (*template.Template, error) {
-	var o TemplateOptions
-
-	if len(options) > 0 {
-		o = options[0]
-	} else {
-		o = TemplateOptions{}
-	}
-
-	contents := o.parseDirectives(data)
-
+	contents := templateOptions.parseDirectives(data)
 	return template.New(name).
-		Option(o.Options...).
-		Delims(o.LeftDelimiter, o.RightDelimiter).
+		Option(templateOptions.Options...).
+		Delims(templateOptions.LeftDelimiter, templateOptions.RightDelimiter).
 		Funcs(funcs).
 		Parse(string(contents))
 }

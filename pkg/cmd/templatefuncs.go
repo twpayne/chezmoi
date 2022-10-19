@@ -157,7 +157,10 @@ func (c *Config) includeTemplateTemplateFunc(filename string, args ...any) strin
 		panic(err)
 	}
 
-	tmpl, err := chezmoi.NewConfiguredTemplate(filename, contents, c.templateFuncs)
+	templateOptions := chezmoi.TemplateOptions{
+		Options: append([]string(nil), c.Template.Options...),
+	}
+	tmpl, err := chezmoi.ParseTemplate(filename, contents, c.templateFuncs, templateOptions)
 	if err != nil {
 		panic(err)
 	}

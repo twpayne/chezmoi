@@ -692,7 +692,9 @@ func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte) ([]byte
 	}
 	chezmoi.RecursiveMerge(funcMap, initTemplateFuncs)
 
-	t, err := chezmoi.NewConfiguredTemplate(filename.String(), data, funcMap)
+	t, err := chezmoi.ParseTemplate(filename.String(), data, funcMap, chezmoi.TemplateOptions{
+		Options: append([]string(nil), c.Template.Options...),
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -1277,7 +1279,10 @@ func (c *Config) gitAutoCommit(status *git.Status) error {
 	funcMap["targetRelPath"] = func(source string) string {
 		return chezmoi.NewSourceRelPath(source).TargetRelPath(c.encryption.EncryptedSuffix()).String()
 	}
-	commitMessageTmpl, err := chezmoi.NewConfiguredTemplate("commit_message", commitMessageTemplate, funcMap)
+	templateOptions := chezmoi.TemplateOptions{
+		Options: append([]string(nil), c.Template.Options...),
+	}
+	commitMessageTmpl, err := chezmoi.ParseTemplate("commit_message", commitMessageTemplate, funcMap, templateOptions)
 	if err != nil {
 		return err
 	}
