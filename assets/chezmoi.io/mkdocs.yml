@@ -258,6 +258,7 @@ nav:
               - reference/templates/secret-functions/index.md
               - secret: reference/templates/secret-functions/secret.md
               - secretJSON: reference/templates/secret-functions/secretJSON.md
+      - Release history: reference/release-history.md
   - Developer:
       - Developing locally: developer/developing-locally.md
       - Contributing changes: developer/contributing-changes.md

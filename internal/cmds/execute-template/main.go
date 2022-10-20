@@ -8,10 +8,12 @@ import (
 	"net/http"
 	"os"
 	"path"
+	"regexp"
 	"strings"
 	"text/template"
 
 	"github.com/Masterminds/sprig/v3"
+	"github.com/google/go-github/v48/github"
 	"github.com/google/renameio/v2/maybe"
 	"gopkg.in/yaml.v3"
 
@@ -23,22 +25,54 @@ var (
 	outputFilename       = flag.String("output", "", "output filename")
 )
 
-func gitHubLatestRelease(userRepo string) string {
-	user, repo, ok := strings.Cut(userRepo, "/")
+type gitHubClient struct {
+	ctx    context.Context
+	client *github.Client
+}
+
+func newGitHubClient(ctx context.Context) *gitHubClient {
+	return &gitHubClient{
+		ctx:    ctx,
+		client: chezmoi.NewGitHubClient(ctx, http.DefaultClient),
+	}
+}
+
+func (c *gitHubClient) gitHubListReleases(ownerRepo string) []*github.RepositoryRelease {
+	owner, repo, ok := strings.Cut(ownerRepo, "/")
 	if !ok {
-		panic(fmt.Errorf("%s: not a user/repo", userRepo))
+		panic(fmt.Errorf("%s: not a owner/repo", ownerRepo))
 	}
 
-	ctx := context.Background()
+	var allRepositoryReleases []*github.RepositoryRelease
+	opts := &github.ListOptions{
+		PerPage: 100,
+	}
+	for {
+		repositoryReleases, resp, err := c.client.Repositories.ListReleases(c.ctx, owner, repo, opts)
+		if err != nil {
+			panic(err)
+		}
+		allRepositoryReleases = append(allRepositoryReleases, repositoryReleases...)
+		if resp.NextPage == 0 {
+			break
+		}
+		opts.Page = resp.NextPage
+	}
+	return allRepositoryReleases
+}
 
-	client := chezmoi.NewGitHubClient(ctx, http.DefaultClient)
+func (c *gitHubClient) gitHubLatestRelease(ownerRepo string) *github.RepositoryRelease {
+	owner, repo, ok := strings.Cut(ownerRepo, "/")
+	if !ok {
+		panic(fmt.Errorf("%s: not a owner/repo", ownerRepo))
+	}
 
-	rr, _, err := client.Repositories.GetLatestRelease(ctx, user, repo)
+	rr, _, err := c.client.Repositories.GetLatestRelease(c.ctx, owner, repo)
 	if err != nil {
 		panic(err)
 	}
 
-	return strings.TrimPrefix(rr.GetName(), "v")
+	return rr
 }
 
 func run() error {
@@ -62,7 +96,15 @@ func run() error {
 	templateName := path.Base(flag.Arg(0))
 	buffer := &bytes.Buffer{}
 	funcMap := sprig.TxtFuncMap()
-	funcMap["gitHubLatestRelease"] = gitHubLatestRelease
+	gitHubClient := newGitHubClient(context.Background())
+	funcMap["gitHubLatestRelease"] = gitHubClient.gitHubLatestRelease
+	funcMap["gitHubListReleases"] = gitHubClient.gitHubListReleases
+	funcMap["gitHubTimestampFormat"] = func(layout string, timestamp github.Timestamp) string {
+		return timestamp.Format(layout)
+	}
+	funcMap["replaceAllRegex"] = func(expr, repl, s string) string {
+		return regexp.MustCompile(expr).ReplaceAllString(s, repl)
+	}
 	tmpl, err := template.New(templateName).Funcs(funcMap).ParseFiles(flag.Args()...)
 	if err != nil {
 		return err

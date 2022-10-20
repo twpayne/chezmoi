@@ -1,4 +1,5 @@
 import os
+import os.path
 import subprocess
 
 from mkdocs import utils
@@ -13,18 +14,24 @@ non_website_paths = [
 ]
 
 templates = [
+    "index.md",
     "install.md",
     "links/articles-podcasts-and-videos.md",
     "reference/configuration-file/variables.md",
+    "reference/release-history.md",
 ]
 
 def on_pre_build(config, **kwargs):
     docs_dir = config['docs_dir']
     for src_path in templates:
-        output = docs_dir + "/" + src_path
-        template = output + '.tmpl'
-        data = output + '.yaml'
-        subprocess.run(['go', 'run', '../../internal/cmds/execute-template', '-data', data, '-output', output, template])
+        output_path = docs_dir + "/" + src_path
+        template_path = output_path + '.tmpl'
+        data_path = output_path + '.yaml'
+        args = ['go', 'run', '../../internal/cmds/execute-template']
+        if os.path.exists(data_path):
+            args += ['-data', data_path]
+        args += ['-output', output_path, template_path]
+        subprocess.run(args)
 
 def on_files(files, config, **kwargs):
     # remove non-website files
@@ -34,7 +41,9 @@ def on_files(files, config, **kwargs):
     # remove templates and data
     for src_path in templates:
         files.remove(files.get_file_from_path(src_path + '.tmpl'))
-        files.remove(files.get_file_from_path(src_path + '.yaml'))
+        data_path = src_path + '.yaml'
+        if data_path in files:
+            files.remove(files.get_file_from_path(data_path))
 
     return files
 
