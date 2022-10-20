@@ -38,6 +38,8 @@ file in a temporary directory with the executable bit set, and then executes
 the contents with `exec(3)`. Consequently, the script's contents must either
 include a `#!` line or be an executable binary.
 
+## Set environment variables
+
 You can set extra environment variables for your scripts in the `scriptEnv`
 section of your config file. For example, to set the `$MY_VAR` environment
 variable to `my_value`, specify:

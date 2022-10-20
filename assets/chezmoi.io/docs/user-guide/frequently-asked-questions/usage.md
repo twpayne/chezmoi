@@ -89,3 +89,29 @@ cumbersome.
 
 Instead, consider using a tool like [atuin](https://github.com/ellie/atuin). You
 can use chezmoi to install and configure atuin on new machines.
+
+## How do I install pre-requisites for templates?
+
+If you have a template that depends on some other tool, like `curl`, you may need
+to install it before chezmoi renders the template.
+
+To do so, use a `run_before` script that is **not** a template. Something like:
+
+```bash title="run_before_00-install-pre-requisites.sh"
+#!/bin/bash
+
+set -eu
+
+# Install curl if it's not already installed
+if ! command -v curl >/dev/null; then
+  sudo apt update
+  sudo apt install -y curl
+fi
+```
+
+Chezmoi will make sure to execute it before templating other files.
+
+!!! tip
+
+    You can [use `scriptEnv` to inject data into your scripts through environment
+    variables](../../user-guide/use-scripts-to-perform-actions.md#set-environment-variables).
