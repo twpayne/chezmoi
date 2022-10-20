@@ -1,6 +1,11 @@
+{{- $latestRelease := gitHubLatestRelease "twpayne/chezmoi" -}}
+{{- $version := $latestRelease.Name | trimPrefix "v" -}}
 # chezmoi
 
 Manage your dotfiles across multiple diverse machines, securely.
+
+The latest version of chezmoi is {{ $version }} ([release notes]({{
+$latestRelease.HTMLURL }}), [release history](/reference/release-history)).
 
 chezmoi helps you manage your personal configuration files (dotfiles, like
 `~/.gitconfig`) across multiple machines.
