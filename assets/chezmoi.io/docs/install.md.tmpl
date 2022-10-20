@@ -1,7 +1,9 @@
-{{- $version := gitHubLatestRelease "twpayne/chezmoi" -}}
+{{- $latestRelease := gitHubLatestRelease "twpayne/chezmoi" -}}
+{{- $version := $latestRelease.Name | trimPrefix "v" -}}
 # Install
 
-The latest version of chezmoi is {{ $version }}.
+The latest version of chezmoi is {{ $version }} ([release notes]({{
+$latestRelease.HTMLURL }}), [release history](/reference/release-history)).
 
 ## One-line package install
 
