@@ -126,6 +126,17 @@ Script interpreters can be added or overridden with the
         command = "tclsh"
     ```
 
+!!! note
+
+    If you intend to use PowerShell Core (`pwsh.exe`) as the `.ps1`
+    interpreter, include the following in your config file:
+
+    ```toml title="~/.confg/chezmoi/chezmoi.toml"
+    [interpreters.ps1]
+        command = "pwsh"
+        args = ["-NoLogo"]
+    ```
+
 If the script in the source state is a template (with a `.tmpl` extension), then
 chezmoi will strip the `.tmpl` extension and use the next remaining extension to
 determine the interpreter to use.
