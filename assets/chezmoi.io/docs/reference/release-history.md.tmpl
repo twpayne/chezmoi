@@ -1,0 +1,17 @@
+# Release history
+{{- range $release := gitHubListReleases "twpayne/chezmoi" }}
+
+## [{{ $release.Name | trimPrefix "v" }}]({{ $release.HTMLURL }}) ({{ $release.PublishedAt | gitHubTimestampFormat "2006-01-02" }})
+
+{{ $release.Body
+   | replaceAllRegex "(?m)^## What's Changed$" ""
+   | replaceAllRegex "(?m)^## Changelog\\r?$" ""
+   | replaceAllRegex "(https://github\\.com/twpayne/chezmoi/compare/(\\S+))" "[`$2`]($1)"
+   | replaceAllRegex "@(\\S+)" "[**$0**](https://github.com/$1)"
+   | replaceAllRegex "pull request #(\\d+)" "pull request https://github.com/twpayne/chezmoi/pull/$1"
+   | replaceAllRegex "\\(#(\\d+)[)]" "(https://github.com/twpayne/chezmoi/pull/$1)"
+   | replaceAllRegex "(https://github\\.com/twpayne/chezmoi/pull/(\\d+))" "[#$2]($1)"
+   | replaceAllRegex "(?m)^([0-9a-f]{7,})" "* $1"
+   | replaceAllRegex "(?m)^\\* ([0-9a-f]{7,})" "* [`$1`](https://github.com/twpayne/chezmoi/commit/$1)"
+}}
+{{- end }}
