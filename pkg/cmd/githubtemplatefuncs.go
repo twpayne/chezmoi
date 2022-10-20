@@ -54,8 +54,8 @@ func (c *Config) gitHubKeysTemplateFunc(user string) []*github.Key {
 	return allKeys
 }
 
-func (c *Config) gitHubLatestReleaseTemplateFunc(userRepo string) *github.RepositoryRelease {
-	owner, repo, err := gitHubSplitOwnerRepo(userRepo)
+func (c *Config) gitHubLatestReleaseTemplateFunc(ownerRepo string) *github.RepositoryRelease {
+	owner, repo, err := gitHubSplitOwnerRepo(ownerRepo)
 	if err != nil {
 		panic(err)
 	}
