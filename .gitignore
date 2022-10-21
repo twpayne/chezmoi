@@ -3,7 +3,10 @@
 /bin/chezmoi
 /bin/gofumpt
 /bin/golangci-lint
+/bin/goversioninfo
 /chezmoi
 /chezmoi.exe
 /coverage.out
 /dist
+/resource_windows_*.syso
+/versioninfo.json

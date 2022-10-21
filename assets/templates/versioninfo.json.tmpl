@@ -1,0 +1,34 @@
+{{- $name := "chezmoi" -}}
+{{- $filename := printf "%s.exe" $name -}}
+
+{{- /* Get the current year using the Magical Reference Date format */ -}}
+{{- $currentYear := now | date "2006" -}}
+
+{{- $commitHash := output "git" "rev-parse" "HEAD" | trim -}}
+{{- if ne "" (output "git" "diff" "--stat" | trim) -}}
+{{-   $commitHash = printf "%s-dirty" $commitHash -}}
+{{- end -}}
+
+{{- $version := semver (output "git" "describe" "--abbrev=0" "--tags" | trim) -}}
+{{- $versionDict := (dict
+    "Major" $version.Major
+    "Minor" $version.Minor
+    "Patch" $version.Patch
+    "Build" 0)
+-}}
+
+{{- dict
+    "FixedFileInfo" (dict
+        "FileVersion" $versionDict
+        "ProductVersion" $versionDict)
+    "StringFileInfo" (dict
+        "Comments" (printf "commit: %s" $commitHash)
+        "FileDescription" "Manage your dotfiles across multiple diverse machines, securely."
+        "FileVersion" $version.Original
+        "InternalName" $filename
+        "LegalCopyright" (printf "Copyright (c) 2018-%s Tom Payne" $currentYear)
+        "OriginalFilename" $filename
+        "ProductName" $name
+        "ProductVersion" $version.Original)
+    | toPrettyJson
+-}}

@@ -13,6 +13,7 @@ env:
   GO_VERSION: 1.19.2
   GOFUMPT_VERSION: 0.4.0
   GOLANGCI_LINT_VERSION: 1.50.1
+  GOVERSIONINFO_VERSION: 1.4.0
   TPARSE_VERSION: 0.11.1
 jobs:
   changes:
@@ -180,6 +181,8 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
+        with:
+          fetch-depth: 0
       - uses: actions/setup-go@268d8c0ca0432bb2cf416faae41297df9d262d7f
         with:
           cache: true
@@ -189,6 +192,9 @@ jobs:
         run: |
           sudo apt-get --quiet update
           sudo apt-get --no-install-suggests --no-install-recommends --quiet --yes install musl-tools snapcraft
+          go install github.com/josephspurrier/goversioninfo/cmd/goversioninfo@v${{ env.GOVERSIONINFO_VERSION }}
+          go run ./internal/cmds/execute-template -output ./versioninfo.json ./assets/templates/versioninfo.json.tmpl
+          goversioninfo -platform-specific
       - name: build-release
         if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
         uses: goreleaser/goreleaser-action@ff11ca24a9b39f2d36796d1fbd7a4e39c182630a
@@ -385,6 +391,9 @@ jobs:
           sudo apt-get --no-install-suggests --no-install-recommends --quiet --yes install musl-tools snapcraft
           sudo snap install --classic snapcraft
           sudo apt-get --quiet remove snapcraft
+          go install github.com/josephspurrier/goversioninfo/cmd/goversioninfo@v${{ env.GOVERSIONINFO_VERSION }}
+          go run ./internal/cmds/execute-template -output ./versioninfo.json ./assets/templates/versioninfo.json.tmpl
+          goversioninfo -platform-specific
       - name: check-snapcraft-credentials
         run: snapcraft whoami
         env:

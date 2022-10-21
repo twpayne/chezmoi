@@ -1,6 +1,7 @@
 GO?=go
 GOFUMPT_VERSION=$(shell awk '/GOFUMPT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 GOLANGCI_LINT_VERSION=$(shell awk '/GOLANGCI_LINT_VERSION:/ { print $$2 }' .github/workflows/main.yml)
+GOVERSIONINFO_VERSION=$(shell awk '/GOVERSIONINFO_VERSION:/ { print $$2 }' .github/workflows/main.yml)
 ifdef VERSION
 	GO_LDFLAGS+=-X main.version=${VERSION}
 endif
@@ -66,7 +67,7 @@ build-linux:
 	GOOS=linux GOARCH=amd64 ${GO} build -tags=noupgrade -o /dev/null .
 
 .PHONY: build-windows
-build-windows:
+build-windows: create-syso
 	GOOS=windows GOARCH=amd64 ${GO} build -o /dev/null .
 
 .PHONY: run
@@ -116,8 +117,13 @@ format: ensure-gofumpt
 	find . -name \*.go | xargs ./bin/gofumpt -extra -w
 	find . -name \*.txtar | xargs ${GO} run ./internal/cmds/lint-txtar -w
 
+.PHONY: create-syso
+create-syso: ensure-goversioninfo
+	${GO} run ./internal/cmds/execute-template -output ./versioninfo.json ./assets/templates/versioninfo.json.tmpl
+	goversioninfo -platform-specific
+
 .PHONY: ensure-tools
-ensure-tools: ensure-gofumpt ensure-golangci-lint
+ensure-tools: ensure-gofumpt ensure-golangci-lint ensure-goversioninfo
 
 .PHONY: ensure-gofumpt
 ensure-gofumpt:
@@ -130,6 +136,12 @@ ensure-gofumpt:
 ensure-golangci-lint:
 	if [ ! -x bin/golangci-lint ] || ( ./bin/golangci-lint version | grep -Fqv "version ${GOLANGCI_LINT_VERSION}" ) ; then \
 		curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- v${GOLANGCI_LINT_VERSION} ; \
+	fi
+
+.PHONY: ensure-goversioninfo
+ensure-goversioninfo:
+	if [ ! -x bin/goversioninfo ] ; then \
+		GOBIN=$(shell pwd)/bin ${GO} install "github.com/josephspurrier/goversioninfo/cmd/goversioninfo@v${GOVERSIONINFO_VERSION}" ; \
 	fi
 
 .PHONY: release
