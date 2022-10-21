@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"os/exec"
 	"path"
 	"regexp"
 	"strings"
@@ -101,6 +102,17 @@ func run() error {
 	funcMap["gitHubListReleases"] = gitHubClient.gitHubListReleases
 	funcMap["gitHubTimestampFormat"] = func(layout string, timestamp github.Timestamp) string {
 		return timestamp.Format(layout)
+	}
+	// FIXME we should use chezmoi's template functions if/when needed,
+	// for now we use a bespoke output function
+	funcMap["output"] = func(name string, args ...string) string {
+		out, err := exec.Command(name, args...).Output()
+		if err != nil {
+			panic(err)
+		}
+		// FIXME we should be able to return output directly, but
+		// github.com/Masterminds/sprig's trim function only accepts strings
+		return string(out)
 	}
 	funcMap["replaceAllRegex"] = func(expr, repl, s string) string {
 		return regexp.MustCompile(expr).ReplaceAllString(s, repl)
