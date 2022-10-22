@@ -231,7 +231,7 @@ func (s SourceStateOriginAbsPath) Path() AbsPath {
 	return AbsPath(s)
 }
 
-// Origin returns s's origin.
+// OriginString returns s's origin.
 func (s SourceStateOriginAbsPath) OriginString() string {
 	return AbsPath(s).String()
 }
@@ -241,7 +241,7 @@ func (s SourceStateOriginRemove) Path() AbsPath {
 	return EmptyAbsPath
 }
 
-// Origin returns s's origin.
+// OriginString returns s's origin.
 func (s SourceStateOriginRemove) OriginString() string {
 	return "remove"
 }

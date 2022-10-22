@@ -19,7 +19,7 @@ func NewEntryTypeFilter(includeEntryTypeBits, excludeEntryTypeBits EntryTypeBits
 	}
 }
 
-// IncludeEntryTypes returns if entryTypeBits is included.
+// IncludeEntryTypeBits returns if entryTypeBits is included.
 func (f *EntryTypeFilter) IncludeEntryTypeBits(entryTypeBits EntryTypeBits) bool {
 	return f.Include.ContainsEntryTypeBits(entryTypeBits) && !f.Exclude.ContainsEntryTypeBits(entryTypeBits)
 }
