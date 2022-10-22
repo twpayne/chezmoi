@@ -102,7 +102,7 @@ func (s *ActualStateAbsent) Remove(system System) error {
 	return nil
 }
 
-// Origin returns s's origin.
+// OriginString returns s's origin.
 func (s *ActualStateAbsent) OriginString() string {
 	return s.absPath.String()
 }
@@ -125,7 +125,7 @@ func (s *ActualStateDir) Remove(system System) error {
 	return system.RemoveAll(s.absPath)
 }
 
-// Origin returns s's origin.
+// OriginString returns s's origin.
 func (s *ActualStateDir) OriginString() string {
 	return s.absPath.String()
 }
@@ -163,7 +163,7 @@ func (s *ActualStateFile) Remove(system System) error {
 	return system.RemoveAll(s.absPath)
 }
 
-// Origin returns s's origin.
+// OriginString returns s's origin.
 func (s *ActualStateFile) OriginString() string {
 	return s.absPath.String()
 }
@@ -195,7 +195,7 @@ func (s *ActualStateSymlink) Remove(system System) error {
 	return system.RemoveAll(s.absPath)
 }
 
-// Origin returns s's origin.
+// OriginString returns s's origin.
 func (s *ActualStateSymlink) OriginString() string {
 	return s.absPath.String()
 }

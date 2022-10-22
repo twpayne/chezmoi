@@ -28,7 +28,7 @@ type GitDiffSystem struct {
 	unifiedEncoder *diff.UnifiedEncoder
 }
 
-// GetDiffSystemOptions are options for NewGitDiffSystem.
+// GitDiffSystemOptions are options for NewGitDiffSystem.
 type GitDiffSystemOptions struct {
 	Color        bool
 	Filter       *EntryTypeFilter

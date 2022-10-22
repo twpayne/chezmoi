@@ -40,7 +40,7 @@ var (
 		"yaml": FormatYAML,
 	}
 
-	// Formats is a map of all Formats by extension.
+	// FormatsByExtension is a map of all Formats by extension.
 	FormatsByExtension = map[string]Format{
 		"json": FormatJSON,
 		"toml": FormatTOML,
