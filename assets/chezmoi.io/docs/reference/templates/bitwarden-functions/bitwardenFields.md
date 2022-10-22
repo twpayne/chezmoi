@@ -2,7 +2,7 @@
 
 `bitwardenFields` returns structured data retrieved from
 [Bitwarden](https://bitwarden.com) using the [Bitwarden
-CLI](https://github.com/bitwarden/cli) (`bw`). *arg*s are passed to `bw get`
+CLI](https://bitwarden.com/help/cli) (`bw`). *arg*s are passed to `bw get`
 unchanged, the output from `bw get` is parsed as JSON, and elements of `fields`
 are returned as a map indexed by each field's `name`.
 

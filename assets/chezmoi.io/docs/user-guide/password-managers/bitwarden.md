@@ -1,7 +1,7 @@
 # Bitwarden
 
 chezmoi includes support for [Bitwarden](https://bitwarden.com/) using the
-[Bitwarden CLI](https://github.com/bitwarden/cli) to expose data as a template
+[Bitwarden CLI](https://bitwarden.com/help/cli) to expose data as a template
 function.
 
 Log in to Bitwarden using:
