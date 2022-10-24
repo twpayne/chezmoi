@@ -90,7 +90,7 @@ func (t *TargetStateModifyDirWithCmd) Apply(
 
 	modifyDirWithCmdStateKey := []byte(actualStateEntry.Path().String())
 	if err := persistentStateSet(
-		persistentState, modifyDirWithCmdStateBucket, modifyDirWithCmdStateKey, &modifyDirWithCmdState{
+		persistentState, gitRepoExternalState, modifyDirWithCmdStateKey, &modifyDirWithCmdState{
 			Name:  actualStateEntry.Path(),
 			RunAt: runAt,
 		}); err != nil {
@@ -119,7 +119,7 @@ func (t *TargetStateModifyDirWithCmd) SkipApply(persistentState PersistentState,
 		return false, nil
 	}
 	modifyDirWithCmdKey := []byte(targetAbsPath.String())
-	switch modifyDirWithCmdStateBytes, err := persistentState.Get(modifyDirWithCmdStateBucket, modifyDirWithCmdKey); {
+	switch modifyDirWithCmdStateBytes, err := persistentState.Get(gitRepoExternalState, modifyDirWithCmdKey); {
 	case err != nil:
 		return false, err
 	case modifyDirWithCmdStateBytes == nil:

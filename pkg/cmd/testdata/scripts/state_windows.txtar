@@ -21,6 +21,7 @@ exec chezmoi --force state reset
 -- golden/dump.yaml --
 configState: {}
 entryState: {}
+gitRepoExternalState: {}
 scriptState: {}
 -- home/user/.local/share/chezmoi/run_once_script.cmd --
 :: don't need to actually do anything
