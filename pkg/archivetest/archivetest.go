@@ -1,3 +1,4 @@
+// Package archivetest provides useful functions for testing archives.
 package archivetest
 
 import (
