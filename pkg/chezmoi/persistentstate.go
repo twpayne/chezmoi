@@ -7,13 +7,13 @@ var (
 	// EntryStateBucket is the bucket for recording the entry states.
 	EntryStateBucket = []byte("entryState")
 
+	// gitRepoExternalState is the bucket for recording the state of commands
+	// that modify directories.
+	gitRepoExternalState = []byte("gitRepoExternalState")
+
 	// scriptStateBucket is the bucket for recording the state of run once
 	// scripts.
 	scriptStateBucket = []byte("scriptState")
-
-	// modifyDirWithCmdStateBucket is the bucket for recording the state of
-	// commands that modify directories.
-	modifyDirWithCmdStateBucket = []byte("gitRepoExternalState")
 
 	stateFormat = formatJSON{}
 )
@@ -56,18 +56,24 @@ func PersistentStateData(s PersistentState) (any, error) {
 	if err != nil {
 		return nil, err
 	}
+	gitRepoExternalData, err := PersistentStateBucketData(s, gitRepoExternalState)
+	if err != nil {
+		return nil, err
+	}
 	scriptStateData, err := PersistentStateBucketData(s, scriptStateBucket)
 	if err != nil {
 		return nil, err
 	}
 	return struct {
-		ConfigState any `json:"configState" yaml:"configState"`
-		EntryState  any `json:"entryState" yaml:"entryState"`
-		ScriptState any `json:"scriptState" yaml:"scriptState"`
+		ConfigState         any `json:"configState" yaml:"configState"`
+		EntryState          any `json:"entryState" yaml:"entryState"`
+		GitRepoExternalData any `json:"gitRepoExternalState" yaml:"gitRepoExternalState"`
+		ScriptState         any `json:"scriptState" yaml:"scriptState"`
 	}{
-		ConfigState: configStateData,
-		EntryState:  entryStateData,
-		ScriptState: scriptStateData,
+		ConfigState:         configStateData,
+		EntryState:          entryStateData,
+		GitRepoExternalData: gitRepoExternalData,
+		ScriptState:         scriptStateData,
 	}, nil
 }
 
