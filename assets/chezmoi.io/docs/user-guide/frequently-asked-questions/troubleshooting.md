@@ -205,6 +205,34 @@ $ touch dot_config/.keep
 Now once that done `chezmoi add ~/.config/direnv/direnvrc` should work. For
 reference see [this issue](https://github.com/twpayne/chezmoi/issues/2006)
 
+## chezmoi reports `read /dev/stdin: permission denied` or `write /dev/stdout: permission denied` when I redirect standard input or standard output
+
+This error occurs when you [installed chezmoi with
+snap](https://snapcraft.io/chezmoi) and is caused by a long-standing [bug in
+snap](https://bugs.launchpad.net/ubuntu/+source/snapd/+bug/1849753).
+
+This is not a bug in chezmoi and there is nothing that chezmoi can do about
+this. However, there are two workarounds:
+
+Firstly, you can use alternatives to shell redirection. For standard input:
+
+    ```console
+    $ chezmoi $COMMAND <$FILENAME       # fails
+    $ cat $FILENAME | chezmoi $COMMAND  # succeeds
+    ```
+
+For standard output:
+
+    ```console
+    $ chezmoi $COMMAND >$FILENAME                  # fails
+    $ chezmoi $COMMAND -o $FILENAME                # succeeds
+    $ chezmoi $COMMAND --output=$FILENAME          # succeeds
+    $ chezmoi $COMMAND | tee $FILENAME >/dev/null  # succeeds
+    ```
+
+Secondly, you can install chezmoi with any of the [many supported install
+methods](/install/) instead of snap.
+
 ## chezmoi reports `fork/exec ...: no such file or directory` when running scripts on Termux
 
 You are likely using a hardcoded script interpreter in the shebang line of your
