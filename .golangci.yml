@@ -134,7 +134,6 @@ linters-settings:
   stylecheck:
     checks:
     - all
-    - -ST1000
 
 issues:
   include:

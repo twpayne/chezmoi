@@ -1,3 +1,4 @@
+// Package docs contains chezmoi's documentation.
 package docs
 
 import _ "embed"
