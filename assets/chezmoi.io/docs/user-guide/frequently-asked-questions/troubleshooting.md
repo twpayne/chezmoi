@@ -216,19 +216,19 @@ this. However, there are two workarounds:
 
 Firstly, you can use alternatives to shell redirection. For standard input:
 
-    ```console
-    $ chezmoi $COMMAND <$FILENAME       # fails
-    $ cat $FILENAME | chezmoi $COMMAND  # succeeds
-    ```
+```console
+$ chezmoi $COMMAND <$FILENAME       # fails
+$ cat $FILENAME | chezmoi $COMMAND  # succeeds
+```
 
 For standard output:
 
-    ```console
-    $ chezmoi $COMMAND >$FILENAME                  # fails
-    $ chezmoi $COMMAND -o $FILENAME                # succeeds
-    $ chezmoi $COMMAND --output=$FILENAME          # succeeds
-    $ chezmoi $COMMAND | tee $FILENAME >/dev/null  # succeeds
-    ```
+```console
+$ chezmoi $COMMAND >$FILENAME                  # fails
+$ chezmoi $COMMAND -o $FILENAME                # succeeds
+$ chezmoi $COMMAND --output=$FILENAME          # succeeds
+$ chezmoi $COMMAND | tee $FILENAME >/dev/null  # succeeds
+```
 
 Secondly, you can install chezmoi with any of the [many supported install
 methods](/install/) instead of snap.

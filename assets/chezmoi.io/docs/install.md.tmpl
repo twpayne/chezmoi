@@ -11,24 +11,6 @@ Install chezmoi with your package manager with a single command:
 
 === "Linux"
 
-    === "snap"
-
-        ```sh
-        snap install chezmoi --classic
-        ```
-
-    === "Linuxbrew"
-
-        ```sh
-        brew install chezmoi
-        ```
-
-    === "asdf"
-
-        ```sh
-        asdf plugin add chezmoi && asdf install chezmoi {{ $version }}
-        ```
-
     === "Alpine"
 
         ```sh
@@ -41,7 +23,7 @@ Install chezmoi with your package manager with a single command:
         pacman -S chezmoi
         ```
 
-    === "Nix / NixOS"
+    === "NixOS"
 
         ```sh
         nix-env -i chezmoi
@@ -85,12 +67,6 @@ Install chezmoi with your package manager with a single command:
         nix-env -i chezmoi
         ```
 
-    === "asdf"
-
-        ```sh
-        asdf plugin add chezmoi && asdf install chezmoi {{ $version }}
-        ```
-
 === "Windows"
 
     === "Chocolatey"
@@ -115,6 +91,32 @@ Install chezmoi with your package manager with a single command:
 
     ```sh
     pkg install application/chezmoi
+    ```
+
+chezmoi is available in many cross-platform package managers:
+
+=== "asdf"
+
+    ```sh
+    asdf plugin add chezmoi && asdf install chezmoi {{ $version }}
+    ```
+
+=== "Linuxbrew"
+
+    ```sh
+    brew install chezmoi
+    ```
+
+=== "Nix"
+
+    ```sh
+    nix-env -i chezmoi
+    ```
+
+=== "snap"
+
+    ```sh
+    snap install chezmoi --classic
     ```
 
 For more packages, see [chezmoi on
