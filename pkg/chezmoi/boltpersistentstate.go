@@ -220,7 +220,7 @@ func (b *BoltPersistentState) open() error {
 	if b.db != nil {
 		return nil
 	}
-	if err := MkdirAll(b.system, b.path.Dir(), 0o777); err != nil {
+	if err := MkdirAll(b.system, b.path.Dir(), fs.ModePerm); err != nil {
 		return err
 	}
 	db, err := bbolt.Open(b.path.String(), 0o600, &b.options)

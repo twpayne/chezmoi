@@ -4,6 +4,7 @@ import (
 	"archive/tar"
 	"bytes"
 	"fmt"
+	"io/fs"
 )
 
 // NewTar returns the bytes of a new tar archive containing root.
@@ -40,7 +41,7 @@ func tarAddEntry(w *tar.Writer, name string, entry any) error {
 		if err := w.WriteHeader(&tar.Header{
 			Typeflag: tar.TypeDir,
 			Name:     name + "/",
-			Mode:     0o777,
+			Mode:     int64(fs.ModePerm),
 		}); err != nil {
 			return err
 		}

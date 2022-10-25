@@ -16,7 +16,7 @@ import (
 func TestTargetStateEntryApply(t *testing.T) {
 	targetStates := map[string]TargetStateEntry{
 		"dir": &TargetStateDir{
-			perm: 0o777 &^ chezmoitest.Umask,
+			perm: fs.ModePerm &^ chezmoitest.Umask,
 		},
 		"file": &TargetStateFile{
 			perm:         0o666 &^ chezmoitest.Umask,
@@ -27,7 +27,7 @@ func TestTargetStateEntryApply(t *testing.T) {
 			empty: true,
 		},
 		"file_executable": &TargetStateFile{
-			perm:         0o777 &^ chezmoitest.Umask,
+			perm:         fs.ModePerm &^ chezmoitest.Umask,
 			lazyContents: newLazyContents([]byte("#!/bin/sh\n")),
 		},
 		"remove": &TargetStateRemove{},
@@ -38,7 +38,7 @@ func TestTargetStateEntryApply(t *testing.T) {
 
 	actualStates := map[string]map[string]any{
 		"dir": {
-			"/home/user/target": &vfst.Dir{Perm: 0o777},
+			"/home/user/target": &vfst.Dir{Perm: fs.ModePerm},
 		},
 		"file": {
 			"/home/user/target": "# contents of file",
@@ -48,12 +48,12 @@ func TestTargetStateEntryApply(t *testing.T) {
 		},
 		"file_executable": {
 			"/home/user/target": &vfst.File{
-				Perm:     0o777,
+				Perm:     fs.ModePerm,
 				Contents: []byte("!/bin/sh\n"),
 			},
 		},
 		"remove": {
-			"/home/user": &vfst.Dir{Perm: 0o777},
+			"/home/user": &vfst.Dir{Perm: fs.ModePerm},
 		},
 		"symlink": {
 			"/home/user": map[string]any{

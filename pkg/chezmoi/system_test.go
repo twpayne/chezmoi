@@ -57,7 +57,7 @@ func TestWalkSourceDir(t *testing.T) {
 			".chezmoiexternal.yaml": "",
 			".chezmoiignore":        "",
 			".chezmoiremove":        "",
-			".chezmoitemplates":     &vfst.Dir{Perm: 0o777},
+			".chezmoitemplates":     &vfst.Dir{Perm: fs.ModePerm},
 			".chezmoiversion":       "",
 			"dot_file":              "",
 		},

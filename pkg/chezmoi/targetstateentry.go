@@ -104,7 +104,7 @@ func (t *TargetStateModifyDirWithCmd) Apply(
 func (t *TargetStateModifyDirWithCmd) EntryState(umask fs.FileMode) (*EntryState, error) {
 	return &EntryState{
 		Type: EntryStateTypeDir,
-		Mode: fs.ModeDir | 0o777&^umask,
+		Mode: fs.ModeDir | fs.ModePerm&^umask,
 	}, nil
 }
 

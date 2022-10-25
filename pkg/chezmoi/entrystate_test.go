@@ -15,11 +15,11 @@ func TestEntryStateEquivalent(t *testing.T) {
 	entryStates := map[string]*EntryState{
 		"dir1": {
 			Type: EntryStateTypeDir,
-			Mode: fs.ModeDir | 0o777,
+			Mode: fs.ModeDir | fs.ModePerm,
 		},
 		"dir1_copy": {
 			Type: EntryStateTypeDir,
-			Mode: fs.ModeDir | 0o777,
+			Mode: fs.ModeDir | fs.ModePerm,
 		},
 		"dir_private": {
 			Type: EntryStateTypeDir,

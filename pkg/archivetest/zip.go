@@ -26,7 +26,7 @@ func zipAddEntry(w *zip.Writer, name string, entry any) error {
 	case []byte:
 		return zipAddEntryFile(w, name, entry, 0o666)
 	case map[string]any:
-		return zipAddEntryDir(w, name, 0o777, entry)
+		return zipAddEntryDir(w, name, fs.ModePerm, entry)
 	case string:
 		return zipAddEntryFile(w, name, []byte(entry), 0o666)
 	case *Dir:

@@ -42,7 +42,7 @@ func TestSourceStateAdd(t *testing.T) {
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^chezmoitest.Umask),
+					vfst.TestModePerm(fs.ModePerm&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/file",
 					vfst.TestDoesNotExist,
@@ -71,7 +71,7 @@ func TestSourceStateAdd(t *testing.T) {
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^chezmoitest.Umask),
+					vfst.TestModePerm(fs.ModePerm&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/file",
 					vfst.TestModeIsRegular,
@@ -91,7 +91,7 @@ func TestSourceStateAdd(t *testing.T) {
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^chezmoitest.Umask),
+					vfst.TestModePerm(fs.ModePerm&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/file",
 					vfst.TestModeIsRegular,
@@ -109,7 +109,7 @@ func TestSourceStateAdd(t *testing.T) {
 				Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 			},
 			extraRoot: map[string]any{
-				"/home/user/.local/share/chezmoi/dot_dir": &vfst.Dir{Perm: 0o777},
+				"/home/user/.local/share/chezmoi/dot_dir": &vfst.Dir{Perm: fs.ModePerm},
 			},
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/file",
@@ -129,11 +129,11 @@ func TestSourceStateAdd(t *testing.T) {
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^chezmoitest.Umask),
+					vfst.TestModePerm(fs.ModePerm&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/subdir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^chezmoitest.Umask),
+					vfst.TestModePerm(fs.ModePerm&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/subdir/file",
 					vfst.TestDoesNotExist,
@@ -151,14 +151,14 @@ func TestSourceStateAdd(t *testing.T) {
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^chezmoitest.Umask),
+					vfst.TestModePerm(fs.ModePerm&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/file",
 					vfst.TestDoesNotExist,
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/subdir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^chezmoitest.Umask),
+					vfst.TestModePerm(fs.ModePerm&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/subdir/file",
 					vfst.TestModeIsRegular,
@@ -176,7 +176,7 @@ func TestSourceStateAdd(t *testing.T) {
 				Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 			},
 			extraRoot: map[string]any{
-				"/home/user/.local/share/chezmoi/dot_dir/subdir": &vfst.Dir{Perm: 0o777},
+				"/home/user/.local/share/chezmoi/dot_dir/subdir": &vfst.Dir{Perm: fs.ModePerm},
 			},
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/subdir/file",
@@ -199,7 +199,7 @@ func TestSourceStateAdd(t *testing.T) {
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/readonly_dot_readonly_dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^chezmoitest.Umask),
+					vfst.TestModePerm(fs.ModePerm&^chezmoitest.Umask),
 				),
 			},
 		},
@@ -457,7 +457,7 @@ func TestSourceStateAdd(t *testing.T) {
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^chezmoitest.Umask),
+					vfst.TestModePerm(fs.ModePerm&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/file",
 					vfst.TestModeIsRegular,
@@ -475,7 +475,7 @@ func TestSourceStateAdd(t *testing.T) {
 				Filter: NewEntryTypeFilter(EntryTypesAll, EntryTypesNone),
 			},
 			extraRoot: map[string]any{
-				"/home/user/.local/share/chezmoi/dot_dir/exact_subdir": &vfst.Dir{Perm: 0o777},
+				"/home/user/.local/share/chezmoi/dot_dir/exact_subdir": &vfst.Dir{Perm: fs.ModePerm},
 			},
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/exact_subdir/file",
@@ -499,13 +499,13 @@ func TestSourceStateAdd(t *testing.T) {
 					},
 					".empty": "",
 					".executable": &vfst.File{
-						Perm:     0o777,
+						Perm:     fs.ModePerm,
 						Contents: []byte("# contents of .executable\n"),
 					},
 					".file": "# contents of .file\n",
 					".local": map[string]any{
 						"share": map[string]any{
-							"chezmoi": &vfst.Dir{Perm: 0o777},
+							"chezmoi": &vfst.Dir{Perm: fs.ModePerm},
 						},
 					},
 					".private": &vfst.File{
@@ -550,7 +550,7 @@ func TestSourceStateAdd(t *testing.T) {
 func TestSourceStateAddInExternal(t *testing.T) {
 	buffer := &bytes.Buffer{}
 	tarWriterSystem := NewTarWriterSystem(buffer, tar.Header{})
-	require.NoError(t, tarWriterSystem.Mkdir(NewAbsPath("dir"), 0o777))
+	require.NoError(t, tarWriterSystem.Mkdir(NewAbsPath("dir"), fs.ModePerm))
 	require.NoError(t, tarWriterSystem.WriteFile(NewAbsPath("dir/file"), []byte("# contents of dir/file\n"), 0o666))
 	require.NoError(t, tarWriterSystem.Close())
 	archiveData := buffer.Bytes()
@@ -571,7 +571,7 @@ func TestSourceStateAddInExternal(t *testing.T) {
 					`    url = "`+httpServer.URL+`/archive.tar"`,
 					`    stripComponents = 1`,
 				),
-				"dot_dir": &vfst.Dir{Perm: 0o777},
+				"dot_dir": &vfst.Dir{Perm: fs.ModePerm},
 			},
 		},
 	}
@@ -602,7 +602,7 @@ func TestSourceStateAddInExternal(t *testing.T) {
 		vfst.RunTests(t, fileSystem, "",
 			vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
 				vfst.TestIsDir,
-				vfst.TestModePerm(0o777&^chezmoitest.Umask),
+				vfst.TestModePerm(fs.ModePerm&^chezmoitest.Umask),
 			),
 			vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/file2",
 				vfst.TestModeIsRegular,
@@ -624,7 +624,7 @@ func TestSourceStateApplyAll(t *testing.T) {
 			name: "empty",
 			root: map[string]any{
 				"/home/user": map[string]any{
-					".local/share/chezmoi": &vfst.Dir{Perm: 0o777},
+					".local/share/chezmoi": &vfst.Dir{Perm: fs.ModePerm},
 				},
 			},
 		},
@@ -633,14 +633,14 @@ func TestSourceStateApplyAll(t *testing.T) {
 			root: map[string]any{
 				"/home/user": map[string]any{
 					".local/share/chezmoi": map[string]any{
-						"dot_dir": &vfst.Dir{Perm: 0o777},
+						"dot_dir": &vfst.Dir{Perm: fs.ModePerm},
 					},
 				},
 			},
 			tests: []any{
 				vfst.TestPath("/home/user/.dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^chezmoitest.Umask),
+					vfst.TestModePerm(fs.ModePerm&^chezmoitest.Umask),
 				),
 			},
 		},
@@ -652,14 +652,14 @@ func TestSourceStateApplyAll(t *testing.T) {
 						"file": "# contents of .dir/file\n",
 					},
 					".local/share/chezmoi": map[string]any{
-						"exact_dot_dir": &vfst.Dir{Perm: 0o777},
+						"exact_dot_dir": &vfst.Dir{Perm: fs.ModePerm},
 					},
 				},
 			},
 			tests: []any{
 				vfst.TestPath("/home/user/.dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^chezmoitest.Umask),
+					vfst.TestModePerm(fs.ModePerm&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.dir/file",
 					vfst.TestDoesNotExist,
@@ -842,7 +842,7 @@ func TestSourceStateRead(t *testing.T) {
 		{
 			name: "empty",
 			root: map[string]any{
-				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: 0o777},
+				"/home/user/.local/share/chezmoi": &vfst.Dir{Perm: fs.ModePerm},
 			},
 			expectedSourceState: NewSourceState(),
 		},
@@ -851,7 +851,7 @@ func TestSourceStateRead(t *testing.T) {
 			root: map[string]any{
 				"/home/user/.local/share/chezmoi": map[string]any{
 					"dir": &vfst.Dir{
-						Perm: 0o777 &^ chezmoitest.Umask,
+						Perm: fs.ModePerm &^ chezmoitest.Umask,
 					},
 				},
 			},
@@ -864,7 +864,7 @@ func TestSourceStateRead(t *testing.T) {
 							TargetName: "dir",
 						},
 						targetStateEntry: &TargetStateDir{
-							perm: 0o777 &^ chezmoitest.Umask,
+							perm: fs.ModePerm &^ chezmoitest.Umask,
 						},
 					},
 				}),
@@ -910,10 +910,10 @@ func TestSourceStateRead(t *testing.T) {
 			root: map[string]any{
 				"/home/user/.local/share/chezmoi": map[string]any{
 					"dir": &vfst.Dir{
-						Perm: 0o777 &^ chezmoitest.Umask,
+						Perm: fs.ModePerm &^ chezmoitest.Umask,
 					},
 					"exact_dir": &vfst.Dir{
-						Perm: 0o777 &^ chezmoitest.Umask,
+						Perm: fs.ModePerm &^ chezmoitest.Umask,
 					},
 				},
 			},
@@ -949,7 +949,7 @@ func TestSourceStateRead(t *testing.T) {
 						},
 						lazyContents: newLazyContents([]byte("# contents of .file\n")),
 						targetStateEntry: &TargetStateFile{
-							perm:         0o777 &^ chezmoitest.Umask,
+							perm:         fs.ModePerm &^ chezmoitest.Umask,
 							lazyContents: newLazyContents([]byte("# contents of .file\n")),
 						},
 					},
@@ -1059,7 +1059,7 @@ func TestSourceStateRead(t *testing.T) {
 							TargetName: "dir",
 						},
 						targetStateEntry: &TargetStateDir{
-							perm: 0o777 &^ chezmoitest.Umask,
+							perm: fs.ModePerm &^ chezmoitest.Umask,
 						},
 					},
 					NewRelPath("dir/file"): &SourceStateFile{
@@ -1137,7 +1137,7 @@ func TestSourceStateRead(t *testing.T) {
 							Exact:      true,
 						},
 						targetStateEntry: &TargetStateDir{
-							perm: 0o777 &^ chezmoitest.Umask,
+							perm: fs.ModePerm &^ chezmoitest.Umask,
 						},
 					},
 					NewRelPath("dir/file1"): &SourceStateFile{
@@ -1250,7 +1250,7 @@ func TestSourceStateRead(t *testing.T) {
 							TargetName: "dir",
 						},
 						targetStateEntry: &TargetStateDir{
-							perm: 0o777 &^ chezmoitest.Umask,
+							perm: fs.ModePerm &^ chezmoitest.Umask,
 						},
 					},
 					NewRelPath("dir/file1"): &SourceStateRemove{

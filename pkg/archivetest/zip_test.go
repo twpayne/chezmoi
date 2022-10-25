@@ -19,7 +19,7 @@ func TestNewZip(t *testing.T) {
 				Perm: 0o700,
 				Entries: map[string]any{
 					"file": &File{
-						Perm:     0o777,
+						Perm:     fs.ModePerm,
 						Contents: []byte("# contents of dir/subdir/file\n"),
 					},
 					"symlink": &Symlink{
@@ -45,7 +45,7 @@ func TestNewZip(t *testing.T) {
 	zipFile := nextFile()
 	assert.Equal(t, "dir", zipFile.Name)
 	assert.Equal(t, fs.ModeDir, zipFile.FileInfo().Mode().Type())
-	assert.Equal(t, fs.FileMode(0o777), zipFile.FileInfo().Mode().Perm())
+	assert.Equal(t, fs.ModePerm, zipFile.FileInfo().Mode().Perm())
 
 	zipFile = nextFile()
 	assert.Equal(t, "dir/file1", zipFile.Name)
@@ -67,7 +67,7 @@ func TestNewZip(t *testing.T) {
 	zipFile = nextFile()
 	assert.Equal(t, "dir/subdir/file", zipFile.Name)
 	assert.Equal(t, fs.FileMode(0), zipFile.FileInfo().Mode().Type())
-	assert.Equal(t, fs.FileMode(0o777), zipFile.FileInfo().Mode().Perm())
+	assert.Equal(t, fs.ModePerm, zipFile.FileInfo().Mode().Perm())
 	assert.Equal(t, uint64(len("# contents of dir/subdir/file\n")), zipFile.UncompressedSize64)
 
 	zipFile = nextFile()

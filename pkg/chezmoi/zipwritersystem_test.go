@@ -69,7 +69,7 @@ func TestZIPWriterSystem(t *testing.T) {
 		}{
 			{
 				name: ".dir",
-				mode: (fs.ModeDir | 0o777) &^ chezmoitest.Umask,
+				mode: (fs.ModeDir | fs.ModePerm) &^ chezmoitest.Umask,
 			},
 			{
 				name:     ".dir/file",

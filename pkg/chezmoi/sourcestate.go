@@ -1724,7 +1724,7 @@ func (s *SourceState) newSourceStateDirEntry(
 		origin:        actualStateDir,
 		sourceRelPath: sourceRelPath,
 		targetStateEntry: &TargetStateDir{
-			perm: 0o777 &^ s.umask,
+			perm: fs.ModePerm &^ s.umask,
 		},
 	}, nil
 }
@@ -1879,7 +1879,7 @@ func (s *SourceState) readExternalArchive(
 		origin:        external,
 		sourceRelPath: parentSourceRelPath.Join(NewSourceRelPath(dirAttr.SourceName())),
 		targetStateEntry: &TargetStateDir{
-			perm: 0o777 &^ s.umask,
+			perm: fs.ModePerm &^ s.umask,
 			sourceAttr: SourceAttr{
 				External: true,
 			},

@@ -152,7 +152,7 @@ func (da DirAttr) SourceName() string {
 
 // perm returns da's file mode.
 func (da DirAttr) perm() fs.FileMode {
-	perm := fs.FileMode(0o777)
+	perm := fs.ModePerm
 	if da.Private {
 		perm &^= 0o77
 	}

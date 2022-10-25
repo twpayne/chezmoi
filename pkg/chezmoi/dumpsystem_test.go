@@ -2,6 +2,7 @@ package chezmoi
 
 import (
 	"context"
+	"io/fs"
 	"testing"
 
 	"github.com/coreos/go-semver/semver"
@@ -55,7 +56,7 @@ func TestDumpSystem(t *testing.T) {
 			".dir": &dirData{
 				Type: dataTypeDir,
 				Name: NewAbsPath(".dir"),
-				Perm: 0o777 &^ chezmoitest.Umask,
+				Perm: fs.ModePerm &^ chezmoitest.Umask,
 			},
 			".dir/file": &fileData{
 				Type:     dataTypeFile,
