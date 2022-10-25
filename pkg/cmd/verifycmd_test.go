@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"io/fs"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -20,7 +21,7 @@ func TestVerifyCmd(t *testing.T) {
 			name: "empty",
 			root: map[string]any{
 				"/home/user/.local/share/chezmoi": &vfst.Dir{
-					Perm: 0o777 &^ chezmoitest.Umask,
+					Perm: fs.ModePerm &^ chezmoitest.Umask,
 				},
 			},
 		},

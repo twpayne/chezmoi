@@ -646,7 +646,7 @@ func (c *Config) createAndReloadConfigFile() error {
 	if c.init.configPath.Empty() {
 		configPath = chezmoi.NewAbsPath(c.bds.ConfigHome).Join(chezmoiRelPath, configTemplate.targetRelPath)
 	}
-	if err := chezmoi.MkdirAll(c.baseSystem, configPath.Dir(), 0o777); err != nil {
+	if err := chezmoi.MkdirAll(c.baseSystem, configPath.Dir(), fs.ModePerm); err != nil {
 		return err
 	}
 	if err := c.baseSystem.WriteFile(configPath, configFileContents, 0o600); err != nil {
@@ -1754,14 +1754,14 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 
 	// Create the config directory if needed.
 	if boolAnnotation(cmd, requiresConfigDirectory) {
-		if err := chezmoi.MkdirAll(c.baseSystem, c.configFileAbsPath.Dir(), 0o777); err != nil {
+		if err := chezmoi.MkdirAll(c.baseSystem, c.configFileAbsPath.Dir(), fs.ModePerm); err != nil {
 			return err
 		}
 	}
 
 	// Create the source directory if needed.
 	if boolAnnotation(cmd, createSourceDirectoryIfNeeded) {
-		if err := chezmoi.MkdirAll(c.baseSystem, c.SourceDirAbsPath, 0o777); err != nil {
+		if err := chezmoi.MkdirAll(c.baseSystem, c.SourceDirAbsPath, fs.ModePerm); err != nil {
 			return err
 		}
 	}
@@ -1817,7 +1817,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		if _, err := c.SourceDirAbsPath.TrimDirPrefix(c.WorkingTreeAbsPath); err != nil {
 			return err
 		}
-		if err := chezmoi.MkdirAll(c.baseSystem, c.WorkingTreeAbsPath, 0o777); err != nil {
+		if err := chezmoi.MkdirAll(c.baseSystem, c.WorkingTreeAbsPath, fs.ModePerm); err != nil {
 			return err
 		}
 	}

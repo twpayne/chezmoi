@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"bytes"
+	"io/fs"
 	"strings"
 	"testing"
 
@@ -38,7 +39,7 @@ func TestImportCmd(t *testing.T) {
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^chezmoitest.Umask),
+					vfst.TestModePerm(fs.ModePerm&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/dot_file",
 					vfst.TestModeIsRegular,
@@ -58,12 +59,12 @@ func TestImportCmd(t *testing.T) {
 				"--strip-components=1",
 			},
 			extraRoot: map[string]any{
-				"/home/user/.local/share/chezmoi/dir": &vfst.Dir{Perm: 0o777},
+				"/home/user/.local/share/chezmoi/dir": &vfst.Dir{Perm: fs.ModePerm},
 			},
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dir/dot_dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^chezmoitest.Umask),
+					vfst.TestModePerm(fs.ModePerm&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dir/dot_dir/dot_file",
 					vfst.TestModeIsRegular,
@@ -89,7 +90,7 @@ func TestImportCmd(t *testing.T) {
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dir/dot_dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^chezmoitest.Umask),
+					vfst.TestModePerm(fs.ModePerm&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dir/file",
 					vfst.TestDoesNotExist,
@@ -113,12 +114,12 @@ func TestImportCmd(t *testing.T) {
 				"--strip-components=1",
 			},
 			extraRoot: map[string]any{
-				"/home/user/.local/share/chezmoi/dir": &vfst.Dir{Perm: 0o777},
+				"/home/user/.local/share/chezmoi/dir": &vfst.Dir{Perm: fs.ModePerm},
 			},
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dir/exact_dot_dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^chezmoitest.Umask),
+					vfst.TestModePerm(fs.ModePerm&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dir/exact_dot_dir/dot_file",
 					vfst.TestModeIsRegular,
@@ -135,7 +136,7 @@ func TestImportCmd(t *testing.T) {
 	} {
 		t.Run(strings.Join(tc.args, "_"), func(t *testing.T) {
 			chezmoitest.WithTestFS(t, map[string]any{
-				"/home/user": &vfst.Dir{Perm: 0o777},
+				"/home/user": &vfst.Dir{Perm: fs.ModePerm},
 			}, func(fileSystem vfs.FS) {
 				if tc.extraRoot != nil {
 					require.NoError(t, vfst.NewBuilder().Build(fileSystem, tc.extraRoot))

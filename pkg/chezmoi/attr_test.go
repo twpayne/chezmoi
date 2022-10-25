@@ -307,7 +307,7 @@ func TestFileAttrPerm(t *testing.T) {
 			fileAttr: FileAttr{
 				Executable: true,
 			},
-			expected: 0o777,
+			expected: fs.ModePerm,
 		},
 		{
 			fileAttr: FileAttr{

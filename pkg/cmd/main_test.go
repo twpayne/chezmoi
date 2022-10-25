@@ -119,7 +119,7 @@ func cmdChHome(ts *testscript.TestScript, neg bool, args []string) {
 		chezmoiConfigDir = path.Join(homeDir, ".config", "chezmoi")
 		chezmoiSourceDir = path.Join(homeDir, ".local", "share", "chezmoi")
 	)
-	ts.Check(os.MkdirAll(homeDir, 0o777))
+	ts.Check(os.MkdirAll(homeDir, fs.ModePerm))
 	ts.Setenv("HOME", homeDir)
 	ts.Setenv("CHEZMOICONFIGDIR", chezmoiConfigDir)
 	ts.Setenv("CHEZMOISOURCEDIR", chezmoiSourceDir)
@@ -284,12 +284,12 @@ func cmdMkAgeConfig(ts *testscript.TestScript, neg bool, args []string) {
 	}
 	symmetric := len(args) == 1 && args[0] == "-symmetric"
 	homeDir := ts.Getenv("HOME")
-	ts.Check(os.MkdirAll(homeDir, 0o777))
+	ts.Check(os.MkdirAll(homeDir, fs.ModePerm))
 	identityFile := filepath.Join(homeDir, "key.txt")
 	recipient, err := chezmoitest.AgeGenerateKey(ts.MkAbs(identityFile))
 	ts.Check(err)
 	configFile := filepath.Join(homeDir, ".config", "chezmoi", "chezmoi.toml")
-	ts.Check(os.MkdirAll(filepath.Dir(configFile), 0o777))
+	ts.Check(os.MkdirAll(filepath.Dir(configFile), fs.ModePerm))
 	lines := []string{
 		`encryption = "age"`,
 		`[age]`,
@@ -315,7 +315,7 @@ func cmdMkGitConfig(ts *testscript.TestScript, neg bool, args []string) {
 	if len(args) > 0 {
 		path = ts.MkAbs(args[0])
 	}
-	ts.Check(os.MkdirAll(filepath.Dir(path), 0o777))
+	ts.Check(os.MkdirAll(filepath.Dir(path), fs.ModePerm))
 	ts.Check(writeNewFile(path, []byte(chezmoitest.JoinLines(
 		`[core]`,
 		`    autocrlf = false`,
@@ -359,7 +359,7 @@ func cmdMkGPGConfig(ts *testscript.TestScript, neg bool, args []string) {
 	ts.Check(err)
 
 	configFile := filepath.Join(ts.Getenv("HOME"), ".config", "chezmoi", "chezmoi.toml")
-	ts.Check(os.MkdirAll(filepath.Dir(configFile), 0o777))
+	ts.Check(os.MkdirAll(filepath.Dir(configFile), fs.ModePerm))
 	lines := []string{
 		`encryption = "gpg"`,
 		`[gpg]`,
@@ -404,7 +404,7 @@ func cmdMkHomeDir(ts *testscript.TestScript, neg bool, args []string) {
 			},
 			".empty": "",
 			".executable": &vfst.File{
-				Perm:     0o777,
+				Perm:     fs.ModePerm,
 				Contents: []byte("# contents of .executable\n"),
 			},
 			".file": "# contents of .file\n",

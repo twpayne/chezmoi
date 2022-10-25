@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"context"
 	"io"
+	"io/fs"
 	"testing"
 
 	"github.com/coreos/go-semver/semver"
@@ -68,7 +69,7 @@ func TestTarWriterSystem(t *testing.T) {
 			{
 				expectedTypeflag: tar.TypeDir,
 				expectedName:     ".dir/",
-				expectedMode:     0o777 &^ int64(chezmoitest.Umask),
+				expectedMode:     int64(fs.ModePerm &^ chezmoitest.Umask),
 			},
 			{
 				expectedTypeflag: tar.TypeReg,

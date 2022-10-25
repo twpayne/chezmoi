@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"io/fs"
 	"runtime"
 	"testing"
 
@@ -22,14 +23,14 @@ func TestAddCmd(t *testing.T) {
 			name: "dir",
 			root: map[string]any{
 				"/home/user": map[string]any{
-					".dir": &vfst.Dir{Perm: 0o777},
+					".dir": &vfst.Dir{Perm: fs.ModePerm},
 				},
 			},
 			args: []string{"~/.dir"},
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^chezmoitest.Umask),
+					vfst.TestModePerm(fs.ModePerm&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/.keep",
 					vfst.TestContents(nil),
@@ -42,7 +43,7 @@ func TestAddCmd(t *testing.T) {
 			root: map[string]any{
 				"/home/user": map[string]any{
 					".dir": &vfst.Dir{
-						Perm: 0o777,
+						Perm: fs.ModePerm,
 						Entries: map[string]any{
 							"file": "# contents of .dir/file\n",
 						},
@@ -53,7 +54,7 @@ func TestAddCmd(t *testing.T) {
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^chezmoitest.Umask),
+					vfst.TestModePerm(fs.ModePerm&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/.keep",
 					vfst.TestDoesNotExist,
@@ -70,7 +71,7 @@ func TestAddCmd(t *testing.T) {
 			root: map[string]any{
 				"/home/user": map[string]any{
 					".dir": &vfst.Dir{
-						Perm: 0o777,
+						Perm: fs.ModePerm,
 						Entries: map[string]any{
 							"file": "# contents of .dir/file\n",
 						},
@@ -81,7 +82,7 @@ func TestAddCmd(t *testing.T) {
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^chezmoitest.Umask),
+					vfst.TestModePerm(fs.ModePerm&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/dot_dir/.keep",
 					vfst.TestContents(nil),
@@ -108,7 +109,7 @@ func TestAddCmd(t *testing.T) {
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/private_dot_dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^chezmoitest.Umask),
+					vfst.TestModePerm(fs.ModePerm&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/private_dot_dir/.keep",
 					vfst.TestDoesNotExist,
@@ -136,7 +137,7 @@ func TestAddCmd(t *testing.T) {
 			tests: []any{
 				vfst.TestPath("/home/user/.local/share/chezmoi/private_dot_dir",
 					vfst.TestIsDir,
-					vfst.TestModePerm(0o777&^chezmoitest.Umask),
+					vfst.TestModePerm(fs.ModePerm&^chezmoitest.Umask),
 				),
 				vfst.TestPath("/home/user/.local/share/chezmoi/private_dot_dir/.keep",
 					vfst.TestDoesNotExist,
@@ -169,7 +170,7 @@ func TestAddCmd(t *testing.T) {
 			root: map[string]any{
 				"/home/user": map[string]any{
 					".executable": &vfst.File{
-						Perm:     0o777,
+						Perm:     fs.ModePerm,
 						Contents: []byte("#!/bin/sh\n"),
 					},
 				},

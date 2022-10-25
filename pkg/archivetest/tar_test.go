@@ -3,6 +3,7 @@ package archivetest
 import (
 	"archive/tar"
 	"bytes"
+	"io/fs"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -18,7 +19,7 @@ func TestNewTar(t *testing.T) {
 				Perm: 0o700,
 				Entries: map[string]any{
 					"file": &File{
-						Perm:     0o777,
+						Perm:     fs.ModePerm,
 						Contents: []byte("# contents of dir/subdir/file\n"),
 					},
 					"symlink": &Symlink{
@@ -36,7 +37,7 @@ func TestNewTar(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, byte(tar.TypeDir), header.Typeflag)
 	assert.Equal(t, "dir/", header.Name)
-	assert.Equal(t, int64(0o777), header.Mode)
+	assert.Equal(t, int64(fs.ModePerm), header.Mode)
 
 	header, err = tarReader.Next()
 	require.NoError(t, err)
@@ -63,7 +64,7 @@ func TestNewTar(t *testing.T) {
 	assert.Equal(t, byte(tar.TypeReg), header.Typeflag)
 	assert.Equal(t, "dir/subdir/file", header.Name)
 	assert.Equal(t, int64(len("# contents of dir/subdir/file\n")), header.Size)
-	assert.Equal(t, 0o777, int(header.Mode))
+	assert.Equal(t, int64(fs.ModePerm), header.Mode)
 
 	header, err = tarReader.Next()
 	require.NoError(t, err)
