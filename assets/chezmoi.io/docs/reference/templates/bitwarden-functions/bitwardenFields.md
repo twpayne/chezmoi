@@ -31,14 +31,14 @@ the same arguments will only invoke `bw get` once.
         "favorite": false,
         "fields": [
             {
-                "name": "text",
-                "value": "text-value",
-                "type": 0
-            },
-            {
                 "name": "hidden",
                 "value": "hidden-value",
                 "type": 1
+            },
+            {
+                "name": "token",
+                "value": "token-value",
+                "type": 0
             }
         ],
         "login": {
