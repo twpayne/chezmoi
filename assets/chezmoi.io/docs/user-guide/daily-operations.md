@@ -8,7 +8,8 @@ You can pull the changes from your repo and apply them in a single command:
 $ chezmoi update
 ```
 
-This runs `git pull --rebase` in your source directory and then `chezmoi apply`.
+This runs `git pull --autostash --rebase` in your source directory and then
+`chezmoi apply`.
 
 ```mermaid
 sequenceDiagram
@@ -24,10 +25,10 @@ sequenceDiagram
 Run:
 
 ```console
-$ chezmoi git pull -- --rebase && chezmoi diff
+$ chezmoi git pull -- --autostash --rebase && chezmoi diff
 ```
 
-This runs `git pull --rebase` in your source directory and `chezmoi
+This runs `git pull --autostash --rebase` in your source directory and `chezmoi
 diff` then shows the difference between the target state computed from your
 source directory and the actual state.
 
