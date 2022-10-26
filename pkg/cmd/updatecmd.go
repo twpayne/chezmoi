@@ -67,6 +67,7 @@ func (c *Config) runUpdateCmd(cmd *cobra.Command, args []string) error {
 	} else {
 		args := []string{
 			"pull",
+			"--autostash",
 			"--rebase",
 			"--recurse-submodules",
 		}
