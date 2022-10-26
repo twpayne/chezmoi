@@ -8,7 +8,7 @@ from a single source of truth. You must run
 $ go generate
 ```
 
-if you change includes any of the following:
+if your change includes any of the following:
 
 * Modifications to the install script template.
 
