@@ -223,7 +223,7 @@ jobs:
         if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
         uses: actions/upload-artifact@3cea5372237819ed00197afe530f5a7ea3e805c8
         with:
-          name: chezmoi-windows-amd64.exe
+          name: chezmoi-windows-amd64
           path: dist/chezmoi-nocgo_windows_amd64_v1/chezmoi.exe
   test-ubuntu:
     needs: changes
