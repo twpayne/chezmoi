@@ -3,6 +3,7 @@ package chezmoi
 import (
 	"bytes"
 	"encoding/hex"
+	"fmt"
 	"io/fs"
 	"os/exec"
 	"runtime"
@@ -85,7 +86,7 @@ func (t *TargetStateModifyDirWithCmd) Apply(
 
 	runAt := time.Now().UTC()
 	if err := system.RunCmd(t.cmd); err != nil {
-		return false, err
+		return false, fmt.Errorf("%s: %w", actualStateEntry.Path(), err)
 	}
 
 	modifyDirWithCmdStateKey := []byte(actualStateEntry.Path().String())
