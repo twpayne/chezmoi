@@ -8,7 +8,7 @@ Use *directory* as the cache directory.
 
 Colorize diffs, *value* can be `on`, `off`, `auto`, or any boolean-like value
 recognized by `promptBool`. The default is `auto` which will colorize diffs only
-if the the environment variable `$NO_COLOR` is not set and stdout is a terminal.
+if the environment variable `$NO_COLOR` is not set and stdout is a terminal.
 
 ## `-c`, `--config` *filename*
 

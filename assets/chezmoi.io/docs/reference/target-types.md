@@ -13,7 +13,7 @@ performs actions in ASCII order of their target name.
 
 Files are represented by regular files in the source state. The `encrypted_`
 attribute determines whether the file in the source state is encrypted. The
-`executable_` attribute will set the executable bits in the the target state,
+`executable_` attribute will set the executable bits in the target state,
 and the `private_` attribute will clear all group and world permissions. The
 `readonly_` attribute will clear all write permission bits in the target state.
 Files with the `.tmpl` suffix will be interpreted as templates. If the target

@@ -177,8 +177,8 @@ current environment. If it is missing or expired, you will be interactively
 prompted to sign-in again.
 
 In the past chezmoi used to simply exit with an error when no valid session was
-available. If you'd like to restore this behavior, set the the
-`onepassword.prompt` configuration variable to `false`, for example:
+available. If you'd like to restore this behavior, set the `onepassword.prompt`
+configuration variable to `false`, for example:
 
 ```toml title="~/.config/chezmoi/chezmoi.toml"
 [onepassword]

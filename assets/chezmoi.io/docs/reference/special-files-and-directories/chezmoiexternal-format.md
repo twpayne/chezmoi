@@ -40,7 +40,7 @@ The optional boolean `encrypted` field specifies whether the file or archive is
 encrypted.
 
 If optional string `filter.command` and array of strings `filter.args` are
-specified, the the file or archive is filtered by piping it into the command's
+specified, the file or archive is filtered by piping it into the command's
 standard input and reading the command's standard output.
 
 If `type` is `file` then the target is a file with the contents of `url`. The

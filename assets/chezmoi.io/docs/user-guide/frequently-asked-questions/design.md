@@ -79,7 +79,7 @@ better than just having the correct dotfile contents.
 ## What are the limitations of chezmoi's symlink mode?
 
 In symlink mode chezmoi replaces targets with symlinks to the source directory
-if the the target is a regular file and is not encrypted, executable, private,
+if the target is a regular file and is not encrypted, executable, private,
 or a template.
 
 Symlinks cannot be used for encrypted files because the source state contains
