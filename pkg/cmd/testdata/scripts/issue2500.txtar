@@ -1,0 +1,24 @@
+[!windows] chmod 755 bin/git
+[windows] skip 'UNIX only'
+
+# test that the error message returned when git fails to update an external includes the target path
+exec chezmoi apply
+! exec chezmoi apply --force --refresh-externals
+stderr ${HOME@R}/\.dir:\x20exit\x20status\x201
+
+-- bin/git --
+#!/bin/sh
+
+case "$1" in
+clone)
+    mkdir -p $3/.git
+    echo "clone ok"
+    ;;
+*)
+    echo "unknown command $*"
+    exit 1
+esac
+-- home/user/.local/share/chezmoi/.chezmoiexternal.toml --
+[".dir"]
+    type = "git-repo"
+    url = "https://github.com/owner/repo"
