@@ -374,7 +374,8 @@ func (c *Config) onepasswordReadTemplateFunc(url string, args ...string) string 
 	case 0:
 		// Do nothing.
 	case 1:
-		onepasswordArgs.args = append(onepasswordArgs.args, "--account", c.onepasswordAccount(args[0]))
+		onepasswordArgs.account = c.onepasswordAccount(args[0])
+		onepasswordArgs.args = append(onepasswordArgs.args, "--account", onepasswordArgs.account)
 	default:
 		panic(fmt.Errorf("expected 1 or 2 arguments, got %d", len(args)))
 	}
