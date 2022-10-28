@@ -1239,17 +1239,29 @@ func (c *Config) getTemplateData() *templateData {
 // getTemplateDataMao returns the template data as a map.
 func (c *Config) getTemplateDataMap() map[string]any {
 	templateData := c.getTemplateData()
-	// FIXME round-tripping via JSON is a horrible hack
-	data, err := json.Marshal(templateData)
-	if err != nil {
-		panic(err)
-	}
-	var templateDataMap map[string]any
-	if err := json.Unmarshal(data, &templateDataMap); err != nil {
-		panic(err)
-	}
+
 	return map[string]any{
-		"chezmoi": templateDataMap,
+		"chezmoi": map[string]any{
+			"arch":           templateData.Arch,
+			"args":           templateData.Args,
+			"cacheDir":       templateData.CacheDir.String(),
+			"configFile":     templateData.ConfigFile.String(),
+			"executable":     templateData.Executable.String(),
+			"fqdnHostname":   templateData.FQDNHostname,
+			"gid":            templateData.GID,
+			"group":          templateData.Group,
+			"homeDir":        templateData.HomeDir.String(),
+			"hostname":       templateData.Hostname,
+			"kernel":         templateData.Kernel,
+			"os":             templateData.OS,
+			"osRelease":      templateData.OSRelease,
+			"sourceDir":      templateData.SourceDir.String(),
+			"uid":            templateData.UID,
+			"username":       templateData.Username,
+			"version":        templateData.Version,
+			"windowsVersion": templateData.WindowsVersion,
+			"workingTree":    templateData.WorkingTree.String(),
+		},
 	}
 }
 
