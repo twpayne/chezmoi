@@ -301,9 +301,10 @@ func newConfig(options ...configOption) (*Config, error) {
 			filter:      chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
 		},
 		init: initCmdConfig{
-			data:         true,
-			filter:       chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
-			guessRepoURL: true,
+			data:              true,
+			filter:            chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
+			guessRepoURL:      true,
+			recurseSubmodules: true,
 		},
 		managed: managedCmdConfig{
 			filter: chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),

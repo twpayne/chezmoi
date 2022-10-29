@@ -99,6 +99,10 @@ Remove the source and config directories after applying.
 
 Attempt to remove the chezmoi binary after applying.
 
+## `--recurse-submodules` *bool*
+
+Recursively clone submodules. This defaults to `true`.
+
 ## `--ssh`
 
 Guess an SSH repo URL instead of an HTTPS repo.

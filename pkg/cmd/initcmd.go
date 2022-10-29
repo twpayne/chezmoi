@@ -19,21 +19,22 @@ import (
 )
 
 type initCmdConfig struct {
-	apply           bool
-	branch          string
-	configPath      chezmoi.AbsPath
-	data            bool
-	depth           int
-	filter          *chezmoi.EntryTypeFilter
-	guessRepoURL    bool
-	oneShot         bool
-	forcePromptOnce bool
-	promptBool      map[string]string
-	promptInt       map[string]int
-	promptString    map[string]string
-	purge           bool
-	purgeBinary     bool
-	ssh             bool
+	apply             bool
+	branch            string
+	configPath        chezmoi.AbsPath
+	data              bool
+	depth             int
+	filter            *chezmoi.EntryTypeFilter
+	guessRepoURL      bool
+	oneShot           bool
+	forcePromptOnce   bool
+	promptBool        map[string]string
+	promptInt         map[string]int
+	promptString      map[string]string
+	purge             bool
+	purgeBinary       bool
+	recurseSubmodules bool
+	ssh               bool
 }
 
 var dotfilesRepoGuesses = []struct {
@@ -129,7 +130,8 @@ func (c *Config) newInitCmd() *cobra.Command {
 	flags.StringToStringVar(&c.init.promptString, "promptString", c.init.promptString, "Populate promptString")
 	flags.BoolVarP(&c.init.purge, "purge", "p", c.init.purge, "Purge config and source directories after running")
 	flags.BoolVarP(&c.init.purgeBinary, "purge-binary", "P", c.init.purgeBinary, "Purge chezmoi binary after running")
-	flags.BoolVar(&c.init.ssh, "ssh", false, "Use ssh instead of https when guessing dotfile repo URL")
+	flags.BoolVar(&c.init.recurseSubmodules, "recurse-submodules", c.init.recurseSubmodules, "Checkout submodules recursively") //nolint:lll
+	flags.BoolVar(&c.init.ssh, "ssh", c.init.ssh, "Use ssh instead of https when guessing dotfile repo URL")
 
 	return initCmd
 }
@@ -179,7 +181,11 @@ func (c *Config) runInitCmd(cmd *cobra.Command, args []string) error {
 			} else {
 				args := []string{
 					"clone",
-					"--recurse-submodules",
+				}
+				if c.init.recurseSubmodules {
+					args = append(args,
+						"--recurse-submodules",
+					)
 				}
 				if c.init.branch != "" {
 					args = append(args,
