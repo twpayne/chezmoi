@@ -126,6 +126,7 @@ type ConfigFile struct {
 	Git        gitCmdConfig        `mapstructure:"git"`
 	Merge      mergeCmdConfig      `mapstructure:"merge"`
 	Status     statusCmdConfig     `mapstructure:"status"`
+	Update     updateCmdConfig     `mapstructure:"update"`
 	Verify     verifyCmdConfig     `mapstructure:"verify"`
 }
 
@@ -167,7 +168,6 @@ type Config struct {
 	remove          removeCmdConfig
 	secret          secretCmdConfig
 	state           stateCmdConfig
-	update          updateCmdConfig
 	upgrade         upgradeCmdConfig
 
 	// Version information.
@@ -314,11 +314,6 @@ func newConfig(options ...configOption) (*Config, error) {
 		},
 		reAdd: reAddCmdConfig{
 			filter: chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
-		},
-		update: updateCmdConfig{
-			apply:     true,
-			filter:    chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
-			recursive: true,
 		},
 		upgrade: upgradeCmdConfig{
 			owner: gitHubOwner,
@@ -2408,6 +2403,12 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 			Exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
 			include:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 			recursive: true,
+		},
+		Update: updateCmdConfig{
+			RecurseSubmodules: true,
+			apply:             true,
+			filter:            chezmoi.NewEntryTypeFilter(chezmoi.EntryTypesAll, chezmoi.EntryTypesNone),
+			recursive:         true,
 		},
 		Verify: verifyCmdConfig{
 			Exclude:   chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),

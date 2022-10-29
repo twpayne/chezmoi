@@ -6,6 +6,10 @@ Pull changes from the source repo and apply any changes.
 
 Only update entries of type *types*.
 
+## `--recurse-submodules` *bool*
+
+Update submodules recursively. This defaults to `true`.
+
 !!! example
 
     ```console

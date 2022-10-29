@@ -266,6 +266,11 @@ sections:
     command:
       default: "`vault`"
       description: "Vault CLI command"
+  update:
+    recurseSubmodules:
+      type: "bool"
+      default: "`true`"
+      description: "Update submodules recursively"
   verify:
     exclude:
       type: "[]string"
