@@ -37,7 +37,7 @@ func (c *Config) newDiffCmd() *cobra.Command {
 	flags := diffCmd.Flags()
 	flags.VarP(c.Diff.Exclude, "exclude", "x", "Exclude entry types")
 	flags.VarP(c.Diff.include, "include", "i", "Include entry types")
-	flags.BoolVar(&c.Diff.init, "init", c.update.init, "Recreate config file from template")
+	flags.BoolVar(&c.Diff.init, "init", c.Diff.init, "Recreate config file from template")
 	flags.BoolVarP(&c.Diff.recursive, "recursive", "r", c.Diff.recursive, "Recurse into subdirectories")
 	flags.BoolVar(&c.Diff.Reverse, "reverse", c.Diff.Reverse, "Reverse the direction of the diff")
 	flags.StringVar(&c.Diff.Pager, "pager", c.Diff.Pager, "Set pager")
