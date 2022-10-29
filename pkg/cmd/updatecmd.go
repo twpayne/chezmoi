@@ -10,10 +10,11 @@ import (
 )
 
 type updateCmdConfig struct {
-	apply     bool
-	filter    *chezmoi.EntryTypeFilter
-	init      bool
-	recursive bool
+	RecurseSubmodules bool
+	apply             bool
+	filter            *chezmoi.EntryTypeFilter
+	init              bool
+	recursive         bool
 }
 
 func (c *Config) newUpdateCmd() *cobra.Command {
@@ -34,11 +35,12 @@ func (c *Config) newUpdateCmd() *cobra.Command {
 	}
 
 	flags := updateCmd.Flags()
-	flags.BoolVarP(&c.update.apply, "apply", "a", c.update.apply, "Apply after pulling")
-	flags.VarP(c.update.filter.Exclude, "exclude", "x", "Exclude entry types")
-	flags.VarP(c.update.filter.Include, "include", "i", "Include entry types")
-	flags.BoolVar(&c.update.init, "init", c.update.init, "Recreate config file from template")
-	flags.BoolVarP(&c.update.recursive, "recursive", "r", c.update.recursive, "Recurse into subdirectories")
+	flags.BoolVarP(&c.Update.apply, "apply", "a", c.Update.apply, "Apply after pulling")
+	flags.VarP(c.Update.filter.Exclude, "exclude", "x", "Exclude entry types")
+	flags.VarP(c.Update.filter.Include, "include", "i", "Include entry types")
+	flags.BoolVar(&c.Update.init, "init", c.Update.init, "Recreate config file from template")
+	flags.BoolVar(&c.Update.RecurseSubmodules, "recurse-submodules", c.Update.RecurseSubmodules, "Recursively update submodules") //nolint:lll
+	flags.BoolVarP(&c.Update.recursive, "recursive", "r", c.Update.recursive, "Recurse into subdirectories")
 
 	registerExcludeIncludeFlagCompletionFuncs(updateCmd)
 
@@ -69,18 +71,22 @@ func (c *Config) runUpdateCmd(cmd *cobra.Command, args []string) error {
 			"pull",
 			"--autostash",
 			"--rebase",
-			"--recurse-submodules",
+		}
+		if c.Update.RecurseSubmodules {
+			args = append(args,
+				"--recurse-submodules",
+			)
 		}
 		if err := c.run(c.WorkingTreeAbsPath, c.Git.Command, args); err != nil {
 			return err
 		}
 	}
 
-	if c.update.apply {
+	if c.Update.apply {
 		if err := c.applyArgs(cmd.Context(), c.destSystem, c.DestDirAbsPath, args, applyArgsOptions{
-			filter:       c.update.filter,
-			init:         c.update.init,
-			recursive:    c.update.recursive,
+			filter:       c.Update.filter,
+			init:         c.Update.init,
+			recursive:    c.Update.recursive,
 			umask:        c.Umask,
 			preApplyFunc: c.defaultPreApplyFunc,
 		}); err != nil {
