@@ -121,7 +121,7 @@ format: ensure-gofumpt
 format-yaml:
 	find . -name \*.yaml -o -name \*.yml | xargs ./assets/scripts/format-yaml.py
 
-.PHONY: create-syso ensure-goversioninfo
+.PHONY: create-syso
 create-syso: ensure-goversioninfo
 	${GO} run ./internal/cmds/execute-template -output ./versioninfo.json ./assets/templates/versioninfo.json.tmpl
 	./bin/goversioninfo -platform-specific

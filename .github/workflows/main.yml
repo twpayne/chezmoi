@@ -201,9 +201,9 @@ jobs:
       run: |
         sudo apt-get --quiet update
         sudo apt-get --no-install-suggests --no-install-recommends --quiet --yes install musl-tools snapcraft
-        go install github.com/josephspurrier/goversioninfo/cmd/goversioninfo@v${{ env.GOVERSIONINFO_VERSION }}
-        go run ./internal/cmds/execute-template -output ./versioninfo.json ./assets/templates/versioninfo.json.tmpl
-        goversioninfo -platform-specific
+    - name: create-syso
+      run: |
+        make create-syso
     - name: build-release
       if: github.event_name == 'push' || needs.changes.outputs.code == 'true'
       uses: goreleaser/goreleaser-action@b508e2e3ef3b19d4e4146d4f8fb3ba9db644a757
@@ -400,9 +400,6 @@ jobs:
         sudo apt-get --no-install-suggests --no-install-recommends --quiet --yes install musl-tools snapcraft
         sudo snap install --classic snapcraft
         sudo apt-get --quiet remove snapcraft
-        go install github.com/josephspurrier/goversioninfo/cmd/goversioninfo@v${{ env.GOVERSIONINFO_VERSION }}
-        go run ./internal/cmds/execute-template -output ./versioninfo.json ./assets/templates/versioninfo.json.tmpl
-        goversioninfo -platform-specific
     - name: check-snapcraft-credentials
       run: snapcraft whoami
       env:
@@ -415,6 +412,9 @@ jobs:
         cache: true
         go-version: ${{ env.GO_VERSION }}
     - uses: sigstore/cosign-installer@9becc617647dfa20ae7b1151972e9b3a2c338a2b
+    - name: create-syso
+      run: |
+        make create-syso
     - uses: goreleaser/goreleaser-action@b508e2e3ef3b19d4e4146d4f8fb3ba9db644a757
       with:
         version: latest
