@@ -12,6 +12,7 @@ import (
 )
 
 func TestManagedCmd(t *testing.T) {
+	templateContents := `{{ fail "Template should not be executed" }}`
 	for _, tc := range []struct {
 		name           string
 		root           any
@@ -30,7 +31,7 @@ func TestManagedCmd(t *testing.T) {
 		{
 			name: "template",
 			root: map[string]any{
-				"/home/user/.local/share/chezmoi/dot_template.tmpl": "{{ fail \"Template should not be executed\" }}\n",
+				"/home/user/.local/share/chezmoi/dot_template.tmpl": templateContents,
 			},
 			expectedOutput: chezmoitest.JoinLines(
 				".template",
@@ -39,7 +40,7 @@ func TestManagedCmd(t *testing.T) {
 		{
 			name: "create_template",
 			root: map[string]any{
-				"/home/user/.local/share/chezmoi/create_dot_file.tmpl": "{{ fail \"Template should not be executed\" }}\n",
+				"/home/user/.local/share/chezmoi/create_dot_file.tmpl": templateContents,
 			},
 			expectedOutput: chezmoitest.JoinLines(
 				".file",
@@ -48,7 +49,7 @@ func TestManagedCmd(t *testing.T) {
 		{
 			name: "modify_template",
 			root: map[string]any{
-				"/home/user/.local/share/chezmoi/modify_dot_file.tmpl": "{{ fail \"Template should not be executed\" }}\n",
+				"/home/user/.local/share/chezmoi/modify_dot_file.tmpl": templateContents,
 			},
 			expectedOutput: chezmoitest.JoinLines(
 				".file",
@@ -57,7 +58,7 @@ func TestManagedCmd(t *testing.T) {
 		{
 			name: "script_template",
 			root: map[string]any{
-				"/home/user/.local/share/chezmoi/run_script.tmpl": "{{ fail \"Template should not be executed\" }}\n",
+				"/home/user/.local/share/chezmoi/run_script.tmpl": templateContents,
 			},
 			args: []string{
 				"--include", "always,scripts",
@@ -69,7 +70,7 @@ func TestManagedCmd(t *testing.T) {
 		{
 			name: "symlink_template",
 			root: map[string]any{
-				"/home/user/.local/share/chezmoi/symlink_dot_symlink.tmpl": "{{ fail \"Template should not be executed\" }}\n",
+				"/home/user/.local/share/chezmoi/symlink_dot_symlink.tmpl": templateContents,
 			},
 			expectedOutput: chezmoitest.JoinLines(
 				".symlink",

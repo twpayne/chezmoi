@@ -4,33 +4,45 @@ mksourcedir
 exec chezmoi managed
 cmp stdout golden/managed
 
-# test chezmoi managed --include=all
-exec chezmoi managed --include=all
-cmp stdout golden/managed-all
-
-# test chezmoi managed --include=dirs
-exec chezmoi managed --include=dirs
-cmp stdout golden/managed-dirs
-
-# test chezmoi managed --include=files
-exec chezmoi managed --include=files
-cmp stdout golden/managed-files
-
-# test chezmoi managed --include=symlinks
-exec chezmoi managed --include=symlinks
-cmp stdout golden/managed-symlinks
-
-# test chezmoi managed --include=templates
-exec chezmoi managed --include=templates
-cmp stdout golden/managed-templates
+# test chezmoi managed --exclude-encrypted
+exec chezmoi managed --exclude=encrypted
+cmp stdout golden/managed-exclude-encrypted
 
 # test chezmoi managed --exclude=files
 exec chezmoi managed --exclude=files
-cmp stdout golden/managed-except-files
+cmp stdout golden/managed-exclude-files
 
 # test chezmoi managed --exclude=files,templates
 exec chezmoi managed --exclude=files,templates
-cmp stdout golden/managed-except-files-and-templates
+cmp stdout golden/managed-exclude-files-and-templates
+
+# test chezmoi managed --include=all
+exec chezmoi managed --include=all
+cmp stdout golden/managed-include-all
+
+# test chezmoi managed --include=dirs
+exec chezmoi managed --include=dirs
+cmp stdout golden/managed-include-dirs
+
+# test chezmoi managed --include=encrypted
+exec chezmoi managed --include=encrypted
+cmp stdout golden/managed-include-encrypted
+
+# test chezmoi managed --include=files
+exec chezmoi managed --include=files
+cmp stdout golden/managed-include-files
+
+# test chezmoi managed --include=files --exclude=templates
+exec chezmoi managed --include=files --exclude=templates
+cmp stdout golden/managed-include-files-exclude-templates
+
+# test chezmoi managed --include=symlinks
+exec chezmoi managed --include=symlinks
+cmp stdout golden/managed-include-symlinks
+
+# test chezmoi managed --include=templates
+exec chezmoi managed --include=templates
+cmp stdout golden/managed-include-templates
 
 # test chezmoi managed with arguments
 exec chezmoi managed $HOME${/}.dir $HOME${/}.create
@@ -61,6 +73,7 @@ cmp stdout golden/managed2
 .dir/subdir
 .dir/subdir/file
 .empty
+.encrypted
 .executable
 .file
 .private
@@ -68,7 +81,7 @@ cmp stdout golden/managed2
 .remove
 .symlink
 .template
--- golden/managed-all --
+-- golden/managed-exclude-encrypted --
 .create
 .dir
 .dir/file
@@ -82,47 +95,77 @@ cmp stdout golden/managed2
 .remove
 .symlink
 .template
--- golden/managed-dirs --
-.dir
-.dir/subdir
--- golden/managed-except-files --
+-- golden/managed-exclude-files --
 .dir
 .dir/subdir
 .symlink
--- golden/managed-except-files-and-templates --
+-- golden/managed-exclude-files-and-templates --
 .dir
 .dir/subdir
 .symlink
--- golden/managed-except-templates --
+-- golden/managed-exclude-templates --
 .create
 .dir
 .dir/file
 .dir/subdir
 .dir/subdir/file
 .empty
+.encrypted
 .executable
 .file
 .private
 .readonly
 .remove
 .symlink
--- golden/managed-files --
-.create
-.dir/file
-.dir/subdir/file
-.empty
-.executable
-.file
-.private
-.readonly
-.remove
-.template
 -- golden/managed-in-managed --
 .dir/subdir
 .dir/subdir/file
--- golden/managed-symlinks --
+-- golden/managed-include-all --
+.create
+.dir
+.dir/file
+.dir/subdir
+.dir/subdir/file
+.empty
+.encrypted
+.executable
+.file
+.private
+.readonly
+.remove
 .symlink
--- golden/managed-templates --
+.template
+-- golden/managed-include-dirs --
+.dir
+.dir/subdir
+-- golden/managed-include-encrypted --
+.encrypted
+-- golden/managed-include-files --
+.create
+.dir/file
+.dir/subdir/file
+.empty
+.encrypted
+.executable
+.file
+.private
+.readonly
+.remove
+.template
+-- golden/managed-include-files-exclude-templates --
+.create
+.dir/file
+.dir/subdir/file
+.empty
+.encrypted
+.executable
+.file
+.private
+.readonly
+.remove
+-- golden/managed-include-symlinks --
+.symlink
+-- golden/managed-include-templates --
 .template
 -- golden/managed-with-absent-args --
 .dir
@@ -147,13 +190,14 @@ cmp stdout golden/managed2
 script
 -- home/user/.local/share/chezmoi/.chezmoiremove --
 .remove
+-- home/user/.local/share/chezmoi/encrypted_dot_encrypted --
 -- home2/user/.local/share/chezmoi/create_dot_create.tmpl --
-{{ fail "Template should not be executed }}
+{{ fail "Template should not be executed" }}
 -- home2/user/.local/share/chezmoi/dot_template.tmpl --
-{{ fail "Template should not be executed }}
+{{ fail "Template should not be executed" }}
 -- home2/user/.local/share/chezmoi/modify_dot_file.tmpl --
-{{ fail "Template should not be executed }}
+{{ fail "Template should not be executed" }}
 -- home2/user/.local/share/chezmoi/run_script.tmpl --
-{{ fail "Template should not be executed }}
+{{ fail "Template should not be executed" }}
 -- home2/user/.local/share/chezmoi/symlink_dot_symlink.tmpl --
-{{ fail "Template should not be executed }}
+{{ fail "Template should not be executed" }}

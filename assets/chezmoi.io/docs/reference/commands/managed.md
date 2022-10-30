@@ -4,10 +4,6 @@ List all managed entries in the destination directory under all *path*s in
 alphabetical order. When no *path*s are supplied, list all managed entries in
 the destination directory in alphabetical order.
 
-## `-i`, `--include` *types*
-
-Only include entries of type *types*.
-
 !!! example
 
     ```console
@@ -17,4 +13,5 @@ Only include entries of type *types*.
     $ chezmoi managed -i dirs
     $ chezmoi managed -i dirs,files
     $ chezmoi managed -i files ~/.config
+    $ chezmoi managed --exclude=encrypted
     ```
