@@ -133,7 +133,7 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
-    - uses: actions/setup-go@268d8c0ca0432bb2cf416faae41297df9d262d7f
+    - uses: actions/setup-go@c4a742cab115ed795e34d4513e2cf7d472deb55f
       with:
         cache: true
         go-version: ${{ matrix.go-version }}
@@ -160,7 +160,7 @@ jobs:
     runs-on: macos-11
     steps:
     - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
-    - uses: actions/setup-go@268d8c0ca0432bb2cf416faae41297df9d262d7f
+    - uses: actions/setup-go@c4a742cab115ed795e34d4513e2cf7d472deb55f
       with:
         cache: true
         go-version: ${{ env.GO_VERSION }}
@@ -192,7 +192,7 @@ jobs:
     - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
       with:
         fetch-depth: 0
-    - uses: actions/setup-go@268d8c0ca0432bb2cf416faae41297df9d262d7f
+    - uses: actions/setup-go@c4a742cab115ed795e34d4513e2cf7d472deb55f
       with:
         cache: true
         go-version: ${{ env.GO_VERSION }}
@@ -247,7 +247,7 @@ jobs:
     - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
       with:
         fetch-depth: 0
-    - uses: actions/setup-go@268d8c0ca0432bb2cf416faae41297df9d262d7f
+    - uses: actions/setup-go@c4a742cab115ed795e34d4513e2cf7d472deb55f
       with:
         cache: true
         go-version: ${{ env.GO_VERSION }}
@@ -301,7 +301,7 @@ jobs:
     runs-on: windows-2019
     steps:
     - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
-    - uses: actions/setup-go@268d8c0ca0432bb2cf416faae41297df9d262d7f
+    - uses: actions/setup-go@c4a742cab115ed795e34d4513e2cf7d472deb55f
       with:
         cache: true
         go-version: ${{ env.GO_VERSION }}
@@ -341,7 +341,7 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
-    - uses: actions/setup-go@268d8c0ca0432bb2cf416faae41297df9d262d7f
+    - uses: actions/setup-go@c4a742cab115ed795e34d4513e2cf7d472deb55f
       with:
         cache: true
         go-version: ${{ env.GO_VERSION }}
@@ -368,7 +368,7 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
-    - uses: actions/setup-go@268d8c0ca0432bb2cf416faae41297df9d262d7f
+    - uses: actions/setup-go@c4a742cab115ed795e34d4513e2cf7d472deb55f
       with:
         cache: true
         go-version: ${{ env.GO_VERSION }}
@@ -410,7 +410,7 @@ jobs:
     - uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8
       with:
         fetch-depth: 0
-    - uses: actions/setup-go@268d8c0ca0432bb2cf416faae41297df9d262d7f
+    - uses: actions/setup-go@c4a742cab115ed795e34d4513e2cf7d472deb55f
       with:
         cache: true
         go-version: ${{ env.GO_VERSION }}
