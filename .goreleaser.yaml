@@ -14,12 +14,12 @@ builds:
   goarch:
   - amd64
   ldflags:
-  - '-s'
-  - '-w'
-  - '-X main.version={{ .Version }}'
-  - '-X main.commit={{ .Commit }}'
-  - '-X main.date={{ .Date }}'
-  - '-X main.builtBy=goreleaser'
+  - -s
+  - -w
+  - -X main.version={{ .Version }}
+  - -X main.commit={{ .Commit }}
+  - -X main.date={{ .Date }}
+  - -X main.builtBy=goreleaser
 - id: chezmoi-cgo-musl
   env:
   - CC=/usr/bin/musl-gcc
@@ -29,14 +29,14 @@ builds:
   goarch:
   - amd64
   ldflags:
-  - '-s'
-  - '-w'
-  - '-X main.version={{ .Version }}'
-  - '-X main.commit={{ .Commit }}'
-  - '-X main.date={{ .Date }}'
-  - '-X main.builtBy=goreleaser'
-  - '-linkmode external'
-  - '--extldflags "-static"'
+  - -s
+  - -w
+  - -X main.version={{ .Version }}
+  - -X main.commit={{ .Commit }}
+  - -X main.date={{ .Date }}
+  - -X main.builtBy=goreleaser
+  - -linkmode external
+  - --extldflags "-static"
 - id: chezmoi-nocgo
   env:
   - CGO_ENABLED=0
@@ -49,7 +49,7 @@ builds:
   - solaris
   - windows
   goarch:
-  - "386"
+  - '386'
   - amd64
   - arm
   - arm64
@@ -61,17 +61,17 @@ builds:
   - riscv64
   - s390x
   goarm:
-  - ""
+  - ''
   ldflags:
-  - '-s'
-  - '-w'
-  - '-X main.version={{ .Version }}'
-  - '-X main.commit={{ .Commit }}'
-  - '-X main.date={{ .Date }}'
-  - '-X main.builtBy=goreleaser'
+  - -s
+  - -w
+  - -X main.version={{ .Version }}
+  - -X main.commit={{ .Commit }}
+  - -X main.date={{ .Date }}
+  - -X main.builtBy=goreleaser
   ignore:
   - goos: darwin
-    goarch: "386"
+    goarch: '386'
   - goos: linux
     goarch: amd64
 
@@ -95,7 +95,7 @@ archives:
   - LICENSE
   - README.md
   - completions/*
-  name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}-glibc_{{ .Arch }}"
+  name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}-glibc_{{ .Arch }}'
 - id: musl
   builds:
   - chezmoi-cgo-musl
@@ -103,7 +103,7 @@ archives:
   - LICENSE
   - README.md
   - completions/*
-  name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}-musl_{{ .Arch }}"
+  name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}-musl_{{ .Arch }}'
 
 changelog:
   use: github-native
@@ -125,10 +125,10 @@ nfpms:
 - builds:
   - chezmoi-cgo-glibc
   - chezmoi-nocgo
-  vendor: "Tom Payne <twpayne@gmail.com>"
-  homepage: "https://chezmoi.io/"
-  maintainer: "Tom Payne <twpayne@gmail.com>"
-  description: "Manage your dotfiles across multiple diverse machines, securely."
+  vendor: Tom Payne <twpayne@gmail.com>
+  homepage: https://chezmoi.io/
+  maintainer: Tom Payne <twpayne@gmail.com>
+  description: Manage your dotfiles across multiple diverse machines, securely.
   license: MIT
   formats:
   - deb
@@ -138,7 +138,7 @@ nfpms:
   bindir: /usr/bin
   overrides:
     deb:
-      file_name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+      file_name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
       replacements:
         386: i386
         arm: armel
@@ -150,7 +150,7 @@ nfpms:
       - src: completions/chezmoi.zsh
         dst: /usr/share/zsh/vendor-completions/_chezmoi
     rpm:
-      file_name_template: "{{ .ProjectName }}-{{ .Version }}-{{ .Arch }}"
+      file_name_template: '{{ .ProjectName }}-{{ .Version }}-{{ .Arch }}'
       replacements:
         amd64: x86_64
         386: i686
@@ -167,10 +167,10 @@ nfpms:
   builds:
   - chezmoi-cgo-musl
   - chezmoi-nocgo
-  vendor: "Tom Payne <twpayne@gmail.com>"
-  homepage: "https://chezmoi.io/"
-  maintainer: "Tom Payne <twpayne@gmail.com>"
-  description: "Manage your dotfiles across multiple diverse machines, securely."
+  vendor: Tom Payne <twpayne@gmail.com>
+  homepage: https://chezmoi.io/
+  maintainer: Tom Payne <twpayne@gmail.com>
+  description: Manage your dotfiles across multiple diverse machines, securely.
   license: MIT
   formats:
   - apk
@@ -199,8 +199,8 @@ scoop:
   commit_author:
     name: Tom Payne
     email: twpayne@gmail.com
-  homepage: "https://chezmoi.io"
-  description: "Manage your dotfiles across multiple diverse machines, securely."
+  homepage: https://chezmoi.io
+  description: Manage your dotfiles across multiple diverse machines, securely.
   license: MIT
 
 signs:
@@ -208,17 +208,17 @@ signs:
   stdin: '{{ .Env.COSIGN_PWD }}'
   args:
   - sign-blob
-  - '--key=assets/cosign/cosign.key'
-  - '--output-signature=${signature}'
-  - '${artifact}'
+  - --key=assets/cosign/cosign.key
+  - --output-signature=${signature}
+  - ${artifact}
   artifacts: checksum
 
 snapcrafts:
 - builds:
   - chezmoi-cgo-glibc
   - chezmoi-nocgo
-  summary: "Manage your dotfiles across multiple diverse machines, securely."
-  description: "Manage your dotfiles across multiple diverse machines, securely."
+  summary: Manage your dotfiles across multiple diverse machines, securely.
+  description: Manage your dotfiles across multiple diverse machines, securely.
   publish: true
   grade: stable
   confinement: classic

@@ -1,281 +1,281 @@
 sections:
-  "":
+  '':
     color:
-      default: "`auto`"
-      description: "Colorize output"
+      default: '`auto`'
+      description: Colorize output
     data:
-      type: "any"
-      description: "Template data"
+      type: any
+      description: Template data
     destDir:
-      default: "`~`"
-      description: "Destination directory"
+      default: '`~`'
+      description: Destination directory
     encryption:
-      description: "Encryption type, either `age` or `gpg`"
+      description: Encryption type, either `age` or `gpg`
     format:
-      default: "`json`"
-      description: "Format for data output, either `json` or `yaml`"
+      default: '`json`'
+      description: Format for data output, either `json` or `yaml`
     mode:
-      default: "`file`"
-      description: "Mode in target dir, either `file` or `symlink`"
+      default: '`file`'
+      description: Mode in target dir, either `file` or `symlink`
     pager:
-      default: "`$PAGER`"
-      description: "Default pager CLI command"
+      default: '`$PAGER`'
+      description: Default pager CLI command
     progress:
-      type: "bool"
-      description: "Display progress bars"
+      type: bool
+      description: Display progress bars
     scriptEnv:
-      type: "object"
-      description: "Extra environment variables for scripts"
+      type: object
+      description: Extra environment variables for scripts
     scriptTempDir:
-      description: "Temporary directory for scripts"
+      description: Temporary directory for scripts
     sourceDir:
-      default: "`~/.local/share/chezmoi`"
-      description: "Source directory"
+      default: '`~/.local/share/chezmoi`'
+      description: Source directory
     umask:
-      type: "int"
-      default: "*from system*"
-      description: "Umask"
+      type: int
+      default: '*from system*'
+      description: Umask
     useBuiltinAge:
-      default: "`auto`"
-      description: "Use builtin age if `age` command is not found in `$PATH`"
+      default: '`auto`'
+      description: Use builtin age if `age` command is not found in `$PATH`
     useBuiltinGit:
-      default: "`auto`"
-      description: "Use builtin git if `git` command is not found in `$PATH`"
+      default: '`auto`'
+      description: Use builtin git if `git` command is not found in `$PATH`
     verbose:
-      type: "bool"
-      description: "Make output more verbose"
+      type: bool
+      description: Make output more verbose
     workingTree:
-      default: "*source directory*"
-      description: "git working tree directory"
+      default: '*source directory*'
+      description: git working tree directory
   add:
     templateSymlinks:
-      type: "bool"
-      description: "Template symlinks to source and home dirs"
+      type: bool
+      description: Template symlinks to source and home dirs
   age:
     args:
-      type: "[]string"
-      description: "Extra args to age CLI command"
+      type: '[]string'
+      description: Extra args to age CLI command
     command:
-      default: "`age`"
-      description: "age CLI command"
+      default: '`age`'
+      description: age CLI command
     identity:
-      description: "age identity file"
+      description: age identity file
     identities:
-      type: "[]string"
-      description: "age identity files"
+      type: '[]string'
+      description: age identity files
     passphrase:
-      type: "bool"
-      description: "Use age passphrase instead of identity"
+      type: bool
+      description: Use age passphrase instead of identity
     recipient:
-      description: "age recipient"
+      description: age recipient
     recipients:
-      type: "[]string"
-      description: "age recipients"
+      type: '[]string'
+      description: age recipients
     recipientFile:
-      description: "age recipient file"
+      description: age recipient file
     recipientFiles:
-      type: "[]string"
-      description: "age recipient files"
+      type: '[]string'
+      description: age recipient files
     suffix:
-      default: "`.age`"
-      description: "Suffix appended to age-encrypted files"
+      default: '`.age`'
+      description: Suffix appended to age-encrypted files
     symmetric:
-      type: "bool"
-      description: "Use age symmetric encryption"
+      type: bool
+      description: Use age symmetric encryption
   awsSecretsManager:
     profile:
-      description: "AWS shared profile name"
+      description: AWS shared profile name
     region:
-      description: "AWS region"
+      description: AWS region
   bitwarden:
     command:
-      default: "`bw`"
-      description: "Bitwarden CLI command"
+      default: '`bw`'
+      description: Bitwarden CLI command
   cd:
     args:
-      type: "[]string"
-      description: "Extra args to shell in `cd` command"
+      type: '[]string'
+      description: Extra args to shell in `cd` command
     command:
-      description: "Shell to run in `cd` command"
+      description: Shell to run in `cd` command
   completion:
     custom:
-      type: "bool"
-      description: "Enable custom shell completions"
+      type: bool
+      description: Enable custom shell completions
   diff:
     args:
-      type: "[]string"
-      default: "*see `diff` below*"
-      description: "Extra args to external diff command"
+      type: '[]string'
+      default: '*see `diff` below*'
+      description: Extra args to external diff command
     command:
-      description: "External diff command"
+      description: External diff command
     exclude:
-      type: "[]string"
-      description: "Entry types to exclude from diffs"
+      type: '[]string'
+      description: Entry types to exclude from diffs
     pager:
-      description: "Diff-specific pager"
+      description: Diff-specific pager
     reverse:
-      type: "bool"
-      description: "Reverse order of arguments to diff"
+      type: bool
+      description: Reverse order of arguments to diff
   edit:
     apply:
-      type: "bool"
-      description: "Apply changes on exit"
+      type: bool
+      description: Apply changes on exit
     args:
-      type: "[]string"
-      description: "Extra args to edit command"
+      type: '[]string'
+      description: Extra args to edit command
     command:
-      default: "`$EDITOR` / `$VISUAL`"
-      description: "Edit command"
+      default: '`$EDITOR` / `$VISUAL`'
+      description: Edit command
     hardlink:
-      type: "bool"
-      default: "`true`"
-      description: "Invoke editor with a hardlink to the source file"
+      type: bool
+      default: '`true`'
+      description: Invoke editor with a hardlink to the source file
     minDuration:
-      type: "duration"
-      default: "`1s`"
-      description: "Minimum duration for edit command"
+      type: duration
+      default: '`1s`'
+      description: Minimum duration for edit command
     watch:
-      type: "bool"
-      description: "Automatically apply changes when files are saved"
+      type: bool
+      description: Automatically apply changes when files are saved
   git:
     autoAdd:
-      type: "bool"
-      description: "Add changes to the source state after any change"
+      type: bool
+      description: Add changes to the source state after any change
     autoCommit:
-      type: "bool"
-      description: "Commit changes to the source state after any change"
+      type: bool
+      description: Commit changes to the source state after any change
     autoPush:
-      type: "bool"
-      description: "Push changes to the source state after any change"
+      type: bool
+      description: Push changes to the source state after any change
     command:
-      default: "`git`"
-      description: "git CLI command"
+      default: '`git`'
+      description: git CLI command
   gopass:
     command:
-      default: "`gopass`"
-      description: "gopass CLI command"
+      default: '`gopass`'
+      description: gopass CLI command
   gpg:
     args:
-      type: "[]string"
-      description: "Extra args to GPG CLI command"
+      type: '[]string'
+      description: Extra args to GPG CLI command
     command:
-      default: "`gpg`"
-      description: "GPG CLI command"
+      default: '`gpg`'
+      description: GPG CLI command
     recipient:
-      description: "GPG recipient"
+      description: GPG recipient
     recipients:
-      type: "[]string"
-      description: "GPG recipients"
+      type: '[]string'
+      description: GPG recipients
     suffix:
-      default: "`.asc`"
-      description: "Suffix appended to GPG-encrypted files"
+      default: '`.asc`'
+      description: Suffix appended to GPG-encrypted files
     symmetric:
-      type: "bool"
-      description: "Use symmetric GPG encryption"
+      type: bool
+      description: Use symmetric GPG encryption
   interpreters:
-    "*extension*.`args`":
-      type: "[]string"
-      description: "See section on \"Scripts on Windows\""
-    "*extension*.`command`":
-      default: "*special*"
-      description: "See section on \"Scripts on Windows\""
+    '*extension*.`args`':
+      type: '[]string'
+      description: See section on "Scripts on Windows"
+    '*extension*.`command`':
+      default: '*special*'
+      description: See section on "Scripts on Windows"
   keepassxc:
     args:
-      type: "[]string"
-      description: "Extra args to KeePassXC CLI command"
+      type: '[]string'
+      description: Extra args to KeePassXC CLI command
     command:
-      default: "`keepassxc-cli`"
-      description: "KeePassXC CLI command"
+      default: '`keepassxc-cli`'
+      description: KeePassXC CLI command
     database:
-      description: "KeePassXC database"
+      description: KeePassXC database
   keeper:
     args:
-      type: "[]string"
-      description: "Extra args to Keeper CLI command"
+      type: '[]string'
+      description: Extra args to Keeper CLI command
     command:
-      default: "`keeper`"
-      description: "Keeper CLI command"
+      default: '`keeper`'
+      description: Keeper CLI command
   lastpass:
     command:
-      default: "`lpass`"
-      description: "LastPass CLI command"
+      default: '`lpass`'
+      description: LastPass CLI command
   merge:
     args:
-      type: "[]string"
-      default: "*see `merge` below*"
-      description: "Extra args to three-way merge CLI command"
+      type: '[]string'
+      default: '*see `merge` below*'
+      description: Extra args to three-way merge CLI command
     command:
-      description: "Three-way merge CLI command"
+      description: Three-way merge CLI command
   onepassword:
     cache:
-      type: "bool"
-      default: "`true`"
-      description: "Enable optional caching provided by `op`"
+      type: bool
+      default: '`true`'
+      description: Enable optional caching provided by `op`
     command:
-      default: "`op`"
-      description: "1Password CLI command"
+      default: '`op`'
+      description: 1Password CLI command
     prompt:
-      type: "bool"
-      default: "`true`"
-      description: "Prompt for sign-in when no valid session is available"
+      type: bool
+      default: '`true`'
+      description: Prompt for sign-in when no valid session is available
   pass:
     command:
-      default: "`pass`"
-      description: "Pass CLI command"
+      default: '`pass`'
+      description: Pass CLI command
   passhole:
     args:
-      type: "[]string"
-      description: "Extra args to Passhole CLI command"
+      type: '[]string'
+      description: Extra args to Passhole CLI command
     command:
-      default: "`ph`"
-      description: "Passhole CLI command"
+      default: '`ph`'
+      description: Passhole CLI command
     prompt:
-      type: "bool"
-      default: "`true`"
-      description: "Prompt for password"
+      type: bool
+      default: '`true`'
+      description: Prompt for password
   pinentry:
     args:
-      type: "[]string"
-      description: "Extra args to pinentry CLI command"
+      type: '[]string'
+      description: Extra args to pinentry CLI command
     command:
-      description: "pinentry CLI command"
+      description: pinentry CLI command
     options:
-      type: "[]string"
-      default: "*see `pinentry` below*"
-      description: "Extra options for pinentry"
+      type: '[]string'
+      default: '*see `pinentry` below*'
+      description: Extra options for pinentry
   secret:
     args:
-      type: "[]string"
-      description: "Extra args to secret CLI command"
+      type: '[]string'
+      description: Extra args to secret CLI command
     command:
-      description: "Generic secret CLI command"
+      description: Generic secret CLI command
   status:
     exclude:
-      type: "[]string"
-      description: "Entry types to exclude from status"
+      type: '[]string'
+      description: Entry types to exclude from status
   template:
     options:
-      type: "[]string"
-      default: "`[\"missingkey=error\"]`"
-      description: "Template options"
+      type: '[]string'
+      default: '`["missingkey=error"]`'
+      description: Template options
   textconv:
-    "":
-      type: "[]object"
-      description: "See section on \"textconv\""
+    '':
+      type: '[]object'
+      description: See section on "textconv"
   vault:
     command:
-      default: "`vault`"
-      description: "Vault CLI command"
+      default: '`vault`'
+      description: Vault CLI command
   update:
     recurseSubmodules:
-      type: "bool"
-      default: "`true`"
-      description: "Update submodules recursively"
+      type: bool
+      default: '`true`'
+      description: Update submodules recursively
   verify:
     exclude:
-      type: "[]string"
-      description: "Entry types to exclude from verify"
+      type: '[]string'
+      description: Entry types to exclude from verify
   warnings:
-    "":
-      type: "object"
-      description: "See section on \"Warnings\""
+    '':
+      type: object
+      description: See section on "Warnings"
