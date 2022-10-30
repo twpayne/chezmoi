@@ -117,6 +117,10 @@ format: ensure-gofumpt
 	find . -name \*.go | xargs ./bin/gofumpt -extra -w
 	find . -name \*.txtar | xargs ${GO} run ./internal/cmds/lint-txtar -w
 
+.PHONY: format-yaml
+format-yaml:
+	find . -name \*.yaml -o -name \*.yml | xargs ./assets/scripts/format-yaml.py
+
 .PHONY: create-syso ensure-goversioninfo
 create-syso: ensure-goversioninfo
 	${GO} run ./internal/cmds/execute-template -output ./versioninfo.json ./assets/templates/versioninfo.json.tmpl
