@@ -106,7 +106,7 @@ linters-settings:
     - prefix(github.com/twpayne/chezmoi)
   gofumpt:
     extra-rules: true
-    lang-version: "1.18"
+    lang-version: '1.18'
     module-path: github.com/twpayne/chezmoi
   goimports:
     local-prefixes: github.com/twpayne/chezmoi
@@ -137,11 +137,11 @@ linters-settings:
 
 issues:
   include:
-    - EXC0011 # include issues about comments from `stylecheck`
+  - EXC0011   # include issues about comments from `stylecheck`
   exclude-rules:
   - linters:
     - goerr113
-    text: "do not define dynamic errors, use wrapped static errors instead"
+    text: do not define dynamic errors, use wrapped static errors instead
   - linters:
     - forbidigo
     - gosec
@@ -150,7 +150,7 @@ issues:
   - linters:
     - gosec
     - lll
-    path: "_test\\.go$"
+    path: _test\.go$
   - linters:
     - lll
     path: ^pkg/shell/shellcgo\.go$
