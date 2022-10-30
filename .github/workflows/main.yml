@@ -420,6 +420,7 @@ jobs:
         env:
           COSIGN_PWD: ${{ secrets.COSIGN_PWD }}
           GITHUB_TOKEN: ${{ secrets.GORELEASER_GITHUB_TOKEN }}
+          SCOOP_GITHUB_TOKEN: ${{ secrets.SCOOP_GITHUB_TOKEN }}
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
       # The following is needed because chezmoi upgrade and
       # assets/scripts/install.sh have inconsistently looked for
