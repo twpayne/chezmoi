@@ -74,7 +74,7 @@ $ git commit -m "Initial commit"
 and then push your repo:
 
 ```console
-$ git remote add origin https://github.com/username/dotfiles.git
+$ git remote add origin https://github.com/$GITHUB_USERNAME/dotfiles.git
 $ git branch -M main
 $ git push -u origin main
 ```
@@ -119,7 +119,7 @@ sequenceDiagram
 On a second machine, initialize chezmoi with your dotfiles repo:
 
 ```console
-$ chezmoi init https://github.com/username/dotfiles.git
+$ chezmoi init https://github.com/$GITHUB_USERNAME/dotfiles.git
 ```
 
 This will check out the repo and any submodules and optionally create a chezmoi
@@ -157,13 +157,6 @@ On any machine, you can pull and apply the latest changes from your repo with:
 $ chezmoi update -v
 ```
 
-Alternatively, you can install your dotfiles on new machine with a single
-command:
-
-```console
-$ chezmoi init --apply https://github.com/username/dotfiles.git
-```
-
 These commands are summarized in the this sequence diagram:
 
 ```mermaid
@@ -185,7 +178,14 @@ sequenceDiagram
 You can install your dotfiles on new machine with a single command:
 
 ```console
-$ chezmoi init --apply https://github.com/username/dotfiles.git
+$ chezmoi init --apply https://github.com/$GITHUB_USERNAME/dotfiles.git
+```
+
+If you use GitHub and your dotfiles repo is called `dotfiles` then this can be
+shortened to:
+
+```console
+$ chezmoi init --apply $GITHUB_USERNAME
 ```
 
 This command is summarized in the this sequence diagram:

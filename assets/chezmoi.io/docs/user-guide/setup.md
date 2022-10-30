@@ -28,7 +28,7 @@ example:
 
 ```console
 $ chezmoi cd
-$ git remote add origin https://github.com/username/dotfiles.git
+$ git remote add origin https://github.com/$GITHUB_USERNAME/dotfiles.git
 $ git push -u origin main
 $ exit
 ```
@@ -36,7 +36,7 @@ $ exit
 On another machine you can checkout this repo:
 
 ```console
-$ chezmoi init https://github.com/username/dotfiles.git
+$ chezmoi init https://github.com/$GITHUB_USERNAME/dotfiles.git
 ```
 
 You can then see what would be changed:
@@ -54,7 +54,7 @@ $ chezmoi apply
 The above commands can be combined into a single init, checkout, and apply:
 
 ```console
-$ chezmoi init --apply --verbose https://github.com/username/dotfiles.git
+$ chezmoi init --apply --verbose https://github.com/$GITHUB_USERNAME/dotfiles.git
 ```
 
 These commands are summarized this sequence diagram:
