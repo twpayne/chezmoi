@@ -31,7 +31,7 @@ Types can be explicitly excluded with the `--exclude` flag.
 
 !!! example
 
-    `--include=all,noencrypted` specifies all entries except encrypted files.
+    `--include=files` specifies all files.
 
 ## `--init`
 

@@ -95,14 +95,14 @@ func NewEntryTypeSet(bits EntryTypeBits) *EntryTypeSet {
 	}
 }
 
-// ContainsEntryTypeBits returns if s includes b.
-func (s *EntryTypeSet) ContainsEntryTypeBits(b EntryTypeBits) bool {
-	return s.bits&b != 0
-}
-
 // Bits returns s's bits.
 func (s *EntryTypeSet) Bits() EntryTypeBits {
 	return s.bits
+}
+
+// ContainsEntryTypeBits returns if s includes b.
+func (s *EntryTypeSet) ContainsEntryTypeBits(b EntryTypeBits) bool {
+	return s.bits&b != 0
 }
 
 // ContainsFileInfo returns true if fileInfo is a member.
@@ -124,24 +124,30 @@ func (s *EntryTypeSet) ContainsSourceStateEntry(sourceStateEntry SourceStateEntr
 	switch sourceStateEntry := sourceStateEntry.(type) {
 	case *SourceStateCommand:
 		switch {
-		case s.bits&EntryTypeDirs != 0:
+		case s.bits&EntryTypeExternals != 0 && sourceStateEntry.origin != nil:
 			return true
-		case s.bits&EntryTypeExternals != 0 && !sourceStateEntry.origin.Path().Empty():
+		case s.bits&EntryTypeDirs != 0:
 			return true
 		default:
 			return false
 		}
 	case *SourceStateDir:
 		switch {
-		case s.bits&EntryTypeDirs != 0:
+		case s.bits&EntryTypeExternals != 0 && sourceStateEntry.origin != nil:
 			return true
-		case s.bits&EntryTypeExternals != 0 && !sourceStateEntry.origin.Path().Empty():
+		case s.bits&EntryTypeDirs != 0:
 			return true
 		default:
 			return false
 		}
 	case *SourceStateFile:
 		switch sourceAttr := sourceStateEntry.Attr; {
+		case s.bits&EntryTypeExternals != 0 && sourceStateEntry.origin != nil:
+			return true
+		case s.bits&EntryTypeEncrypted != 0 && sourceAttr.Encrypted:
+			return true
+		case s.bits&EntryTypeTemplates != 0 && sourceAttr.Template:
+			return true
 		case s.bits&EntryTypeFiles != 0 && sourceAttr.Type == SourceFileTypeCreate:
 			return true
 		case s.bits&EntryTypeFiles != 0 && sourceAttr.Type == SourceFileTypeFile:
@@ -156,20 +162,14 @@ func (s *EntryTypeSet) ContainsSourceStateEntry(sourceStateEntry SourceStateEntr
 			return true
 		case s.bits&EntryTypeAlways != 0 && sourceAttr.Condition == ScriptConditionAlways:
 			return true
-		case s.bits&EntryTypeEncrypted != 0 && sourceAttr.Encrypted:
-			return true
-		case s.bits&EntryTypeExternals != 0 && !sourceStateEntry.origin.Path().Empty():
-			return true
-		case s.bits&EntryTypeTemplates != 0 && sourceAttr.Template:
-			return true
 		default:
 			return false
 		}
 	case *SourceStateRemove:
 		switch {
-		case s.bits&EntryTypeRemove != 0:
+		case s.bits&EntryTypeExternals != 0 && sourceStateEntry.origin != nil:
 			return true
-		case s.bits&EntryTypeExternals != 0 && !sourceStateEntry.origin.Path().Empty():
+		case s.bits&EntryTypeRemove != 0:
 			return true
 		default:
 			return false
@@ -185,33 +185,31 @@ func (s *EntryTypeSet) ContainsTargetStateEntry(targetStateEntry TargetStateEntr
 	switch targetStateEntry.(type) {
 	case *TargetStateDir:
 		switch {
-		case s.bits&EntryTypeDirs != 0:
-			return true
-		case s.bits&EntryTypeEncrypted != 0 && sourceAttr.Encrypted:
-			return true
 		case s.bits&EntryTypeExternals != 0 && sourceAttr.External:
+			return true
+		case s.bits&EntryTypeDirs != 0:
 			return true
 		default:
 			return false
 		}
 	case *TargetStateFile:
 		switch {
-		case s.bits&EntryTypeFiles != 0:
-			return true
 		case s.bits&EntryTypeEncrypted != 0 && sourceAttr.Encrypted:
 			return true
 		case s.bits&EntryTypeExternals != 0 && sourceAttr.External:
 			return true
 		case s.bits&EntryTypeTemplates != 0 && sourceAttr.Template:
 			return true
+		case s.bits&EntryTypeFiles != 0:
+			return true
 		default:
 			return false
 		}
 	case *TargetStateModifyDirWithCmd:
 		switch {
-		case s.bits&EntryTypeDirs != 0:
-			return true
 		case s.bits&EntryTypeExternals != 0 && sourceAttr.External:
+			return true
+		case s.bits&EntryTypeDirs != 0:
 			return true
 		default:
 			return false
@@ -220,26 +218,26 @@ func (s *EntryTypeSet) ContainsTargetStateEntry(targetStateEntry TargetStateEntr
 		return s.bits&EntryTypeRemove != 0
 	case *TargetStateScript:
 		switch {
-		case s.bits&EntryTypeScripts != 0:
-			return true
 		case s.bits&EntryTypeEncrypted != 0 && sourceAttr.Encrypted:
 			return true
 		case s.bits&EntryTypeTemplates != 0 && sourceAttr.Template:
 			return true
 		case s.bits&EntryTypeAlways != 0 && sourceAttr.Condition == ScriptConditionAlways:
 			return true
+		case s.bits&EntryTypeScripts != 0:
+			return true
 		default:
 			return false
 		}
 	case *TargetStateSymlink:
 		switch {
-		case s.bits&EntryTypeSymlinks != 0:
-			return true
 		case s.bits&EntryTypeEncrypted != 0 && sourceAttr.Encrypted:
 			return true
 		case s.bits&EntryTypeExternals != 0 && sourceAttr.External:
 			return true
 		case s.bits&EntryTypeTemplates != 0 && sourceAttr.Template:
+			return true
+		case s.bits&EntryTypeSymlinks != 0:
 			return true
 		default:
 			return false
