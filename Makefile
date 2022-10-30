@@ -117,10 +117,10 @@ format: ensure-gofumpt
 	find . -name \*.go | xargs ./bin/gofumpt -extra -w
 	find . -name \*.txtar | xargs ${GO} run ./internal/cmds/lint-txtar -w
 
-.PHONY: create-syso
+.PHONY: create-syso ensure-goversioninfo
 create-syso: ensure-goversioninfo
 	${GO} run ./internal/cmds/execute-template -output ./versioninfo.json ./assets/templates/versioninfo.json.tmpl
-	goversioninfo -platform-specific
+	./bin/goversioninfo -platform-specific
 
 .PHONY: ensure-tools
 ensure-tools: ensure-gofumpt ensure-golangci-lint ensure-goversioninfo
