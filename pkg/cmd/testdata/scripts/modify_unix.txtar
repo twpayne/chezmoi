@@ -56,6 +56,12 @@ chhome home4/user
 exec chezmoi cat $HOME${/}.modify
 cmp stdout golden/.modified
 
+chhome home5/user
+
+# test that modify scripts can be modify-templates
+exec chezmoi cat $HOME${/}.modify
+cmp stdout golden/.modified
+
 -- golden/.edited-and-modified --
 beginning
 modified-middle
@@ -107,6 +113,13 @@ end
 
 {{ "sed 's/middle/modified-middle/g'" }}
 -- home4/user/.modify --
+beginning
+middle
+end
+-- home5/user/.local/share/chezmoi/modify_dot_modify --
+{{- /* chezmoi:modify-template */ -}}
+{{- .chezmoi.stdin | replaceAllRegex "middle" "modified-middle" -}}
+-- home5/user/.modify --
 beginning
 middle
 end

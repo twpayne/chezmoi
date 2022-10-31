@@ -47,6 +47,7 @@ const (
 )
 
 var (
+	modifyTemplateRx                = regexp.MustCompile(`(?m)^.*chezmoi:modify-template.*$(?:\r?\n)?`)
 	templateDirectiveRx             = regexp.MustCompile(`(?m)^.*?chezmoi:template:(.*)$(?:\r?\n)?`)
 	templateDirectiveKeyValuePairRx = regexp.MustCompile(`\s*(\S+)=("(?:[^"]|\\")*"|\S+)`)
 )
@@ -1254,12 +1255,9 @@ func (s *SourceState) addTemplatesDir(ctx context.Context, templatesDirAbsPath A
 			templateRelPath := templateAbsPath.MustTrimDirPrefix(templatesDirAbsPath)
 			name := templateRelPath.String()
 
-			tmpl, err := ParseTemplate(
-				name,
-				contents,
-				s.templateFuncs,
-				TemplateOptions{Options: append([]string(nil), s.templateOptions...)},
-			)
+			tmpl, err := ParseTemplate(name, contents, s.templateFuncs, TemplateOptions{
+				Options: append([]string(nil), s.templateOptions...),
+			})
 			if err != nil {
 				return err
 			}
@@ -1534,6 +1532,39 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 			// If the modifier is empty then return the current contents unchanged.
 			if isEmpty(modifierContents) {
 				contents = currentContents
+				return
+			}
+
+			// If the modifier contains chezmoi:modify-template then execute it
+			// as a template.
+			if matches := modifyTemplateRx.FindAllSubmatchIndex(modifierContents, -1); matches != nil {
+				sourceFile := sourceRelPath.String()
+				templateContents := removeMatches(modifierContents, matches)
+				var tmpl *template.Template
+				tmpl, err = ParseTemplate(sourceFile, templateContents, s.templateFuncs, TemplateOptions{
+					Options: append([]string(nil), s.templateOptions...),
+				})
+				if err != nil {
+					return
+				}
+
+				// Temporarily set .chezmoi.stdin to the current contents and
+				// .chezmoi.sourceFile to the name of the template.
+				templateData := s.TemplateData()
+				if chezmoiTemplateData, ok := templateData["chezmoi"].(map[string]any); ok {
+					chezmoiTemplateData["stdin"] = string(currentContents)
+					chezmoiTemplateData["sourceFile"] = sourceFile
+					defer func() {
+						delete(chezmoiTemplateData, "stdin")
+						delete(chezmoiTemplateData, "sourceFile")
+					}()
+				}
+
+				var builder strings.Builder
+				if err = tmpl.Execute(&builder, templateData); err != nil {
+					return
+				}
+				contents = []byte(builder.String())
 				return
 			}
 
@@ -2215,15 +2246,7 @@ func (o *TemplateOptions) parseDirectives(data []byte) []byte {
 		}
 	}
 
-	// Remove lines containing directives.
-	slices := make([][]byte, 0, len(directiveMatches)+1)
-	slices = append(slices, data[:directiveMatches[0][0]])
-	for i, directiveMatch := range directiveMatches[1:] {
-		slices = append(slices, data[directiveMatches[i][1]:directiveMatch[0]])
-	}
-	slices = append(slices, data[directiveMatches[len(directiveMatches)-1][1]:])
-
-	return bytes.Join(slices, nil)
+	return removeMatches(data, directiveMatches)
 }
 
 // allEquivalentDirs returns if sourceStateEntries are all equivalent
@@ -2243,4 +2266,15 @@ func allEquivalentDirs(sourceStateEntries []SourceStateEntry) bool {
 		}
 	}
 	return true
+}
+
+// removeMatches returns data with matchesIndexes removed.
+func removeMatches(data []byte, matchesIndexes [][]int) []byte {
+	slices := make([][]byte, 0, len(matchesIndexes)+1)
+	slices = append(slices, data[:matchesIndexes[0][0]])
+	for i, matchIndexes := range matchesIndexes[1:] {
+		slices = append(slices, data[matchesIndexes[i][1]:matchIndexes[0]])
+	}
+	slices = append(slices, data[matchesIndexes[len(matchesIndexes)-1][1]:])
+	return bytes.Join(slices, nil)
 }

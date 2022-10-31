@@ -71,6 +71,21 @@ example using `sed`.
     will be empty and it is the script's responsibility to write a complete
     file to the standard output.
 
+`modify_` scripts that contain the string `chezmoi:modify-template` are
+executed as templates with the current contents of the file passed as
+`.chezmoi.stdin` and the result of the template execution used as the new
+contents of the file.
+
+!!! example
+
+    To replace the string `old` with `new` in a file while leaving the rest of
+    the file unchanged, use the modify script:
+
+    ```
+    {{- /* chezmoi:modify-template */ -}}
+    {{- .chezmoi.stdin | replaceAllRegex "old" "new" }}
+    ```
+
 Secondly, if only a small part of the file changes then consider using a
 template to re-generate the full contents of the file from the current state.
 For example, Kubernetes configurations include a current context that can be
