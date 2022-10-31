@@ -13,5 +13,6 @@
    | replaceAllRegex "(https://github\\.com/twpayne/chezmoi/pull/(\\d+))" "[#$2]($1)"
    | replaceAllRegex "(?m)^([0-9a-f]{7,})" "* $1"
    | replaceAllRegex "(?m)^\\* ([0-9a-f]{7,})" "* [`$1`](https://github.com/twpayne/chezmoi/commit/$1)"
+   | replaceAllRegex "\\r\\n" "\\n"
 }}
 {{- end }}
