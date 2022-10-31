@@ -8,6 +8,11 @@ exec chezmoi execute-template '{{ "line1\nline2" | comment "# " }}'
 rmfinalnewline golden/comment
 cmp stdout golden/comment
 
+# test dictSet template function
+exec chezmoi execute-template '{{ dict | dictSet "key1" "key2" "value" | toJson }}'
+rmfinalnewline golden/dictSet
+cmp stdout golden/dictSet
+
 # test eqFold template function
 exec chezmoi execute-template '{{ eqFold "foo" "Foo" "FOO" }}'
 stdout '^true$'
@@ -152,6 +157,8 @@ echo '</plist>'
 -- golden/comment --
 # line1
 # line2
+-- golden/dictSet --
+{"key1":{"key2":"value"}}
 -- golden/expected --
 255
 -- golden/glob --

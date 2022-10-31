@@ -54,6 +54,129 @@ func TestCommentTemplateFunc(t *testing.T) {
 	}
 }
 
+func TestDictSetTemplateFunc(t *testing.T) {
+	for _, tc := range []struct {
+		name        string
+		args        []any
+		expected    any
+		expectedErr string
+	}{
+		{
+			name: "simple",
+			args: []any{
+				"key",
+				"value",
+				make(map[string]any),
+			},
+			expected: map[string]any{
+				"key": "value",
+			},
+		},
+		{
+			name: "create_nested_map",
+			args: []any{
+				"key1",
+				"key2",
+				"value",
+				make(map[string]any),
+			},
+			expected: map[string]any{
+				"key1": map[string]any{
+					"key2": "value",
+				},
+			},
+		},
+		{
+			name: "existing_nested_map",
+			args: []any{
+				"key1",
+				"key2",
+				"value2",
+				map[string]any{
+					"key1": map[string]any{
+						"key2": "value",
+						"key3": "value3",
+					},
+				},
+			},
+			expected: map[string]any{
+				"key1": map[string]any{
+					"key2": "value2",
+					"key3": "value3",
+				},
+			},
+		},
+		{
+			name: "replace_nested_value",
+			args: []any{
+				"key1",
+				"key2",
+				"value",
+				map[string]any{
+					"key1": "value",
+				},
+			},
+			expected: map[string]any{
+				"key1": map[string]any{
+					"key2": "value",
+				},
+			},
+		},
+		{
+			name: "non_dict",
+			args: []any{
+				"key",
+				"value",
+				0,
+			},
+			expectedErr: "last argument: want a dict, got a int",
+		},
+		{
+			name: "non_string_key",
+			args: []any{
+				0,
+				"value",
+				make(map[string]any),
+			},
+			expectedErr: "argument 0: want a string, got a int",
+		},
+		{
+			name: "non_string_nested_key",
+			args: []any{
+				"key",
+				0,
+				"key",
+				"value",
+				make(map[string]any),
+			},
+			expectedErr: "argument 1: want a string, got a int",
+		},
+		{
+			name: "non_string_nested_nested_key",
+			args: []any{
+				"key",
+				"key",
+				0,
+				"value",
+				make(map[string]any),
+			},
+			expectedErr: "argument 2: want a string, got a int",
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			var c Config
+			if tc.expectedErr == "" {
+				actual := c.dictSetTemplateFunc(tc.args[0], tc.args[1], tc.args[2], tc.args[3:]...)
+				assert.Equal(t, tc.expected, actual)
+			} else {
+				assert.PanicsWithValue(t, tc.expectedErr, func() {
+					c.dictSetTemplateFunc(tc.args[0], tc.args[1], tc.args[2], tc.args[3:]...)
+				})
+			}
+		})
+	}
+}
+
 func TestFromIniTemplateFunc(t *testing.T) {
 	for i, tc := range []struct {
 		text     string

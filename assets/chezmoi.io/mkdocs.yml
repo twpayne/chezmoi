@@ -173,6 +173,7 @@ nav:
       - reference/templates/functions/index.md
       - comment: reference/templates/functions/comment.md
       - decrypt: reference/templates/functions/decrypt.md
+      - dictSet: reference/templates/functions/dictSet.md
       - encrypt: reference/templates/functions/encrypt.md
       - eqFold: reference/templates/functions/eqFold.md
       - fromIni: reference/templates/functions/fromIni.md

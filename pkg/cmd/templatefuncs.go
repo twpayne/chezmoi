@@ -65,6 +65,41 @@ func (c *Config) commentTemplateFunc(prefix, s string) string {
 	return builder.String()
 }
 
+func (c *Config) dictSetTemplateFunc(arg0, arg1, arg2 any, args ...any) any {
+	args = append([]any{arg0, arg1, arg2}, args...)
+	dict := args[len(args)-1]
+	dictMap, ok := dict.(map[string]any)
+	if !ok {
+		panic(fmt.Sprintf("last argument: want a dict, got a %T", dict))
+	}
+	for i, key := range args[:len(args)-3] {
+		keyStr, ok := key.(string)
+		if !ok {
+			panic(fmt.Sprintf("argument %d: want a string, got a %T", i, key))
+		}
+		if value, ok := dictMap[keyStr]; ok {
+			if subDictMap, ok := value.(map[string]any); ok {
+				dictMap = subDictMap
+			} else {
+				subDictMap := make(map[string]any)
+				dictMap[keyStr] = subDictMap
+				dictMap = subDictMap
+			}
+		} else {
+			subDictMap := make(map[string]any)
+			dictMap[keyStr] = subDictMap
+			dictMap = subDictMap
+		}
+	}
+	key := args[len(args)-3]
+	keyStr, ok := key.(string)
+	if !ok {
+		panic(fmt.Sprintf("argument %d: want a string, got a %T", len(args)-3, key))
+	}
+	dictMap[keyStr] = args[len(args)-2]
+	return args[len(args)-1]
+}
+
 func (c *Config) eqFoldTemplateFunc(first, second string, more ...string) bool {
 	if strings.EqualFold(first, second) {
 		return true

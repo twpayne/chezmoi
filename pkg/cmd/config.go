@@ -342,6 +342,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"bitwardenFields":          c.bitwardenFieldsTemplateFunc,
 		"comment":                  c.commentTemplateFunc,
 		"decrypt":                  c.decryptTemplateFunc,
+		"dictSet":                  c.dictSetTemplateFunc,
 		"encrypt":                  c.encryptTemplateFunc,
 		"eqFold":                   c.eqFoldTemplateFunc,
 		"fromIni":                  c.fromIniTemplateFunc,
