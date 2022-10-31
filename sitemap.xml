@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
+         <loc>https://chezmoi.io/</loc>
+         <lastmod>2022-10-31</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://chezmoi.io/comparison-table/</loc>
+         <lastmod>2022-10-31</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://chezmoi.io/install/</loc>
          <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
@@ -81,6 +91,11 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://chezmoi.io/links/articles-podcasts-and-videos/</loc>
+         <lastmod>2022-10-31</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://chezmoi.io/links/dotfile-repos-using-chezmoi/</loc>
          <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
@@ -102,6 +117,11 @@
     </url>
     <url>
          <loc>https://chezmoi.io/reference/concepts/</loc>
+         <lastmod>2022-10-31</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://chezmoi.io/reference/release-history/</loc>
          <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
@@ -372,6 +392,11 @@
     </url>
     <url>
          <loc>https://chezmoi.io/reference/configuration-file/umask/</loc>
+         <lastmod>2022-10-31</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://chezmoi.io/reference/configuration-file/variables/</loc>
          <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
