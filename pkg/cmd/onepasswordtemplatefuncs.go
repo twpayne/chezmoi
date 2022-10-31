@@ -367,7 +367,7 @@ func (c *Config) onepasswordOutput(args *onepasswordArgs, withSessionToken withS
 
 func (c *Config) onepasswordReadTemplateFunc(url string, args ...string) string {
 	onepasswordArgs := &onepasswordArgs{
-		args: []string{"read", url},
+		args: []string{"read", "--no-newline", url},
 	}
 
 	switch len(args) {
