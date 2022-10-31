@@ -456,7 +456,7 @@ jobs:
         cp assets/scripts/install.ps1 assets/get.chezmoi.io/ps1
         cp LICENSE assets/get.chezmoi.io/LICENSE
     - name: push-get.chezmoi.io
-      uses: cpina/github-action-push-to-another-repository@940a2857e598a6392bd336330b07416c1ae8ea1f
+      uses: cpina/github-action-push-to-another-repository@9e487f29582587eeb4837c0552c886bb0644b6b9
       env:
         SSH_DEPLOY_KEY: ${{ secrets.GET_CHEZMOI_IO_SSH_DEPLOY_KEY }}
       with:
