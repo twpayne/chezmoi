@@ -195,7 +195,7 @@ scoop:
   bucket:
     owner: twpayne
     name: scoop-bucket
-    token: ${{ .Env.SCOOP_GITHUB_TOKEN }}
+    token: '{{ .Env.SCOOP_GITHUB_TOKEN }}'
   commit_author:
     name: Tom Payne
     email: twpayne@gmail.com
