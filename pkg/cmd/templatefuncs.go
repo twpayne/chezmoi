@@ -28,9 +28,14 @@ type ioregData struct {
 	value map[string]any
 }
 
-// needsQuoteRx matches any string that contains non-printable characters,
-// double quotes, or a backslash.
-var needsQuoteRx = regexp.MustCompile(`[^\x21\x23-\x5b\x5d-\x7e]`)
+var (
+	// lineEndingRx matches line endings.
+	lineEndingRx = regexp.MustCompile(`(?m)(?:\r\n|\r|\n)`)
+
+	// needsQuoteRx matches any string that contains non-printable characters,
+	// double quotes, or a backslash.
+	needsQuoteRx = regexp.MustCompile(`[^\x21\x23-\x5b\x5d-\x7e]`)
+)
 
 func (c *Config) commentTemplateFunc(prefix, s string) string {
 	type stateType int
@@ -221,6 +226,10 @@ func (c *Config) mozillaInstallHashTemplateFunc(path string) string {
 		panic(err)
 	}
 	return mozillaInstallHash
+}
+
+func (c *Config) nativeLineEndings(s string) string {
+	return lineEndingRx.ReplaceAllString(s, nativeLineEnding)
 }
 
 func (c *Config) outputTemplateFunc(name string, args ...string) string {

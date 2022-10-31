@@ -12,7 +12,11 @@ import (
 
 const defaultEditor = "vi"
 
-var defaultInterpreters = make(map[string]*chezmoi.Interpreter)
+var (
+	defaultInterpreters = make(map[string]*chezmoi.Interpreter)
+
+	nativeLineEnding = "\n"
+)
 
 func fileInfoUID(info fs.FileInfo) int {
 	return int(info.Sys().(*syscall.Stat_t).Uid) //nolint:forcetypeassert

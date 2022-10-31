@@ -185,6 +185,7 @@ nav:
       - joinPath: reference/templates/functions/joinPath.md
       - lookPath: reference/templates/functions/lookPath.md
       - mozillaInstallHash: reference/templates/functions/mozillaInstallHash.md
+      - nativeLineEndings: reference/templates/functions/nativeLineEndings.md
       - output: reference/templates/functions/output.md
       - quoteList: reference/templates/functions/quoteList.md
       - replaceAllRegex: reference/templates/functions/replaceAllRegex.md

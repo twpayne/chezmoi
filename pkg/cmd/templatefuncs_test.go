@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"errors"
+	"runtime"
 	"strconv"
 	"testing"
 
@@ -221,6 +222,40 @@ func TestToIniTemplateFunc(t *testing.T) {
 			assert.Equal(t, tc.expected, actual)
 		})
 	}
+}
+
+func TestNativeLineEndingsTemplateFunc(t *testing.T) {
+	var c Config
+	actual := c.nativeLineEndings("" +
+		"\n" +
+		"unix\n" +
+		"\n" +
+		"windows\r\n" +
+		"\r\n" +
+		"macos\r" +
+		"\r",
+	)
+	var expected string
+	if runtime.GOOS == "windows" {
+		expected = "" +
+			"\r\n" +
+			"unix\r\n" +
+			"\r\n" +
+			"windows\r\n" +
+			"\r\n" +
+			"macos\r\n" +
+			"\r\n"
+	} else {
+		expected = "" +
+			"\n" +
+			"unix\n" +
+			"\n" +
+			"windows\n" +
+			"\n" +
+			"macos\n" +
+			"\n"
+	}
+	assert.Equal(t, expected, actual)
 }
 
 func TestNeedsQuote(t *testing.T) {

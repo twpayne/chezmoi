@@ -368,6 +368,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"lastpassRaw":              c.lastpassRawTemplateFunc,
 		"lookPath":                 c.lookPathTemplateFunc,
 		"mozillaInstallHash":       c.mozillaInstallHashTemplateFunc,
+		"nativeLineEndings":        c.nativeLineEndings,
 		"onepassword":              c.onepasswordTemplateFunc,
 		"onepasswordDetailsFields": c.onepasswordDetailsFieldsTemplateFunc,
 		"onepasswordDocument":      c.onepasswordDocumentTemplateFunc,
