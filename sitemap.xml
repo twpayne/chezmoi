@@ -1,1038 +1,1023 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://chezmoi.io/</loc>
-         <lastmod>2022-10-13</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
          <loc>https://chezmoi.io/comparison-table/</loc>
-         <lastmod>2022-10-13</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://chezmoi.io/install/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/license/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/migrating-from-another-dotfile-manager/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/quick-start/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/what-does-chezmoi-do/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/why-use-chezmoi/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/developer/architecture/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/developer/building-on-top-of-chezmoi/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/developer/contributing-changes/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/developer/developing-locally/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/developer/install-script/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/developer/packaging/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/developer/releases/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/developer/security/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/developer/using-make/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/developer/website/</loc>
-         <lastmod>2022-10-13</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://chezmoi.io/links/articles-podcasts-and-videos/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/links/dotfile-repos-using-chezmoi/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/links/related-software/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/application-order/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/concepts/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/source-state-attributes/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/target-types/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/command-line-flags/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/command-line-flags/common/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/command-line-flags/developer/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/command-line-flags/global/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/add/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/apply/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/archive/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/cat/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/cd/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/chattr/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/completion/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/data/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/decrypt/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/diff/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/doctor/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/dump/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/edit-config/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/edit/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/encrypt/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/execute-template/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/forget/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/generate/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/git/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/help/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/ignored/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/import/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/init/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/license/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/list/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/manage/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/managed/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/merge-all/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/merge/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/purge/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/re-add/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/remove/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/rm/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/secret/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/source-path/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/state/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/status/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/target-path/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/unmanage/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/unmanaged/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/update/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/upgrade/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/commands/verify/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/configuration-file/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/configuration-file/editor/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/configuration-file/pinentry/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/configuration-file/textconv/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/configuration-file/umask/</loc>
-         <lastmod>2022-10-13</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://chezmoi.io/reference/configuration-file/variables/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/configuration-file/warnings/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/special-files-and-directories/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/special-files-and-directories/chezmoi-format-tmpl/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/special-files-and-directories/chezmoidata-format/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/special-files-and-directories/chezmoiexternal-format/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/special-files-and-directories/chezmoiignore/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/special-files-and-directories/chezmoiremove/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/special-files-and-directories/chezmoiroot/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/special-files-and-directories/chezmoiscripts/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/special-files-and-directories/chezmoitemplates/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/special-files-and-directories/chezmoiversion/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://chezmoi.io/reference/templates/directives/</loc>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/variables/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/1password-functions/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/1password-functions/onepassword/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/1password-functions/onepasswordDetailsFields/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/1password-functions/onepasswordDocument/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/1password-functions/onepasswordItemFields/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/1password-functions/onepasswordRead/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/aws-secrets-manager-functions/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/aws-secrets-manager-functions/awsSecretsManager/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/aws-secrets-manager-functions/awsSecretsManagerRaw/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/bitwarden-functions/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/bitwarden-functions/bitwarden/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/bitwarden-functions/bitwardenAttachment/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/bitwarden-functions/bitwardenFields/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/functions/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/functions/comment/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/functions/decrypt/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/functions/encrypt/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/functions/eqFold/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/functions/fromIni/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/functions/fromToml/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/functions/fromYaml/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/functions/glob/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/functions/include/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/functions/includeTemplate/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/functions/ioreg/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/functions/joinPath/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/functions/lookPath/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/functions/mozillaInstallHash/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/functions/output/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/functions/quoteList/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/functions/replaceAllRegex/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/functions/stat/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/functions/toIni/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/functions/toToml/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/functions/toYaml/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/github-functions/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/github-functions/gitHubKeys/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/github-functions/gitHubLatestRelease/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/github-functions/gitHubLatestTag/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/gopass-functions/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/gopass-functions/gopass/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/gopass-functions/gopassRaw/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/init-functions/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/init-functions/exit/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/init-functions/promptBool/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/init-functions/promptBoolOnce/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/init-functions/promptInt/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/init-functions/promptIntOnce/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/init-functions/promptString/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/init-functions/promptStringOnce/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/init-functions/stdinIsATTY/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/init-functions/writeToStdout/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/keepassxc-functions/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/keepassxc-functions/keepassxc/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/keepassxc-functions/keepassxcAttachment/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/keepassxc-functions/keepassxcAttribute/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/keeper-functions/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/keeper-functions/keeper/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/keeper-functions/keeperDataFields/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/keeper-functions/keeperFindPassword/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/keyring-functions/keyring/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/lastpass-functions/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/lastpass-functions/lastpass/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/lastpass-functions/lastpassRaw/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/pass-functions/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/pass-functions/pass/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/pass-functions/passFields/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/pass-functions/passRaw/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/passhole-functions/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/passhole-functions/passhole/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/secret-functions/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/secret-functions/secret/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/secret-functions/secretJSON/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/reference/templates/vault-functions/vault/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/command-overview/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/daily-operations/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/include-files-from-elsewhere/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/manage-different-types-of-file/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/manage-machine-to-machine-differences/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/setup/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/templating/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/use-scripts-to-perform-actions/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/advanced/customize-your-source-directory/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/advanced/migrate-away-from-chezmoi/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/advanced/use-chezmoi-with-watchman/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/encryption/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/encryption/age/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/encryption/gpg/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/frequently-asked-questions/design/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/frequently-asked-questions/encryption/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/frequently-asked-questions/general/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/frequently-asked-questions/troubleshooting/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/frequently-asked-questions/usage/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/machines/containers-and-vms/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/machines/general/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/machines/linux/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/machines/macos/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/machines/windows/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/password-managers/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/password-managers/1password/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/password-managers/aws-secrets-manager/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/password-managers/bitwarden/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/password-managers/custom/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/password-managers/gopass/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/password-managers/keepassxc/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/password-managers/keeper/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/password-managers/keychain-and-windows-credentials-manager/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/password-managers/lastpass/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/password-managers/pass/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/password-managers/passhole/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/password-managers/vault/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/tools/diff/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/tools/editor/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/tools/http-or-socks5-proxy/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://chezmoi.io/user-guide/tools/merge/</loc>
-         <lastmod>2022-10-13</lastmod>
+         <lastmod>2022-10-31</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>
