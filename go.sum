@@ -59,8 +59,8 @@ github.com/aymanbagabas/go-osc52 v1.2.1 h1:q2sWUyDcozPLcLabEMd+a+7Ea2DitxZVN9hTx
 github.com/aymanbagabas/go-osc52 v1.2.1/go.mod h1:zT8H+Rk4VSabYN90pWyugflM3ZhpTZNC7cASDfUCdT4=
 github.com/aymerick/douceur v0.2.0 h1:Mv+mAeH1Q+n9Fr+oyamOlAkUNPWPlA8PPGR0QAaYuPk=
 github.com/aymerick/douceur v0.2.0/go.mod h1:wlT5vV2O3h55X9m7iVYN0TBM0NH/MmbLnd30/FjWUq4=
-github.com/bmatcuk/doublestar/v4 v4.2.0 h1:Qu+u9wR3Vd89LnlLMHvnZ5coJMWKQamqdz9/p5GNthA=
-github.com/bmatcuk/doublestar/v4 v4.2.0/go.mod h1:xBQ8jztBU6kakFMg+8WGxn0c6z1fTSPVIjEY1Wr7jzc=
+github.com/bmatcuk/doublestar/v4 v4.3.1 h1:JmbSJX7X1c6ImkExYeRTcviuGnp3QFUK468GPrMlW9w=
+github.com/bmatcuk/doublestar/v4 v4.3.1/go.mod h1:xBQ8jztBU6kakFMg+8WGxn0c6z1fTSPVIjEY1Wr7jzc=
 github.com/bradenhilton/cityhash v1.0.0 h1:1QauDCwfxwIGwO2jBTJdEBqXgfCusAgQOSgdl4RsTMI=
 github.com/bradenhilton/cityhash v1.0.0/go.mod h1:Wmb8yW1egA9ulrsRX4mxfYx5zq4nBWOCZ+j63oK6uz8=
 github.com/bradenhilton/mozillainstallhash v1.0.0 h1:QL9byVGb4FrVOI7MubnME3uPNj5R78tqYQPlxuBmXMw=

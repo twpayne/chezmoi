@@ -30,5 +30,5 @@ func (s lstatFS) Stat(name string) (fs.FileInfo, error) {
 func Glob(fileSystem vfs.FS, prefix string) ([]string, error) {
 	return doublestar.Glob(lstatFS{
 		wrapped: fileSystem,
-	}, prefix)
+	}, prefix, doublestar.WithFailOnIOErrors())
 }
