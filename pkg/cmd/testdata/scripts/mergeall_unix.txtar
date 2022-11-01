@@ -9,6 +9,13 @@ edit $HOME/.file
 exec chezmoi merge-all
 stdout ^${HOME@R}/\.file\s+${CHEZMOISOURCEDIR@R}/dot_file\.tmpl\s+${WORK@R}/.*/\.file$
 
+chhome home2/user
+
+# test that chezmoi merge-all only merges files
+exec chezmoi merge-all
+! stdout .
+! stderr .
+
 -- home/user/.config/chezmoi/chezmoi.toml --
 [merge]
     command = "echo"
@@ -16,3 +23,7 @@ stdout ^${HOME@R}/\.file\s+${CHEZMOISOURCEDIR@R}/dot_file\.tmpl\s+${WORK@R}/.*/\
 # contents of .file
 -- home/user/.local/share/chezmoi/dot_file.tmpl --
 {{ "# contents of .file" }}
+-- home2/user/.local/share/chezmoi/run_script.sh --
+#!/bin/sh
+
+echo script
