@@ -188,6 +188,7 @@ nav:
       - output: reference/templates/functions/output.md
       - quoteList: reference/templates/functions/quoteList.md
       - replaceAllRegex: reference/templates/functions/replaceAllRegex.md
+      - setValueAtPath: reference/templates/functions/setValueAtPath.md
       - stat: reference/templates/functions/stat.md
       - toIni: reference/templates/functions/toIni.md
       - toToml: reference/templates/functions/toToml.md

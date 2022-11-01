@@ -54,6 +54,173 @@ func TestCommentTemplateFunc(t *testing.T) {
 	}
 }
 
+func TestSetValueAtPathTemplateFunc(t *testing.T) {
+	for _, tc := range []struct {
+		name        string
+		path        any
+		value       any
+		dict        any
+		expected    any
+		expectedErr string
+	}{
+		{
+			name:  "simple",
+			path:  "key",
+			value: "value",
+			dict:  make(map[string]any),
+			expected: map[string]any{
+				"key": "value",
+			},
+		},
+		{
+			name:  "create_map",
+			path:  "key",
+			value: "value",
+			expected: map[string]any{
+				"key": "value",
+			},
+		},
+		{
+			name:  "modify_map",
+			path:  "key2",
+			value: "value2",
+			dict: map[string]any{
+				"key1": "value1",
+			},
+			expected: map[string]any{
+				"key1": "value1",
+				"key2": "value2",
+			},
+		},
+		{
+			name:  "create_nested_map",
+			path:  "key1.key2",
+			value: "value",
+			expected: map[string]any{
+				"key1": map[string]any{
+					"key2": "value",
+				},
+			},
+		},
+		{
+			name:  "modify_nested_map",
+			path:  "key1.key2",
+			value: "value",
+			dict: map[string]any{
+				"key1": map[string]any{
+					"key2": "value2",
+					"key3": "value3",
+				},
+				"key2": "value2",
+			},
+			expected: map[string]any{
+				"key1": map[string]any{
+					"key2": "value",
+					"key3": "value3",
+				},
+				"key2": "value2",
+			},
+		},
+		{
+			name:  "replace_map",
+			path:  "key1",
+			value: "value1",
+			dict: map[string]any{
+				"key1": map[string]any{
+					"key2": "value2",
+				},
+			},
+			expected: map[string]any{
+				"key1": "value1",
+			},
+		},
+		{
+			name:  "replace_nested_map",
+			path:  "key1.key2",
+			value: "value2",
+			dict: map[string]any{
+				"key1": map[string]any{
+					"key2": map[string]any{
+						"key3": "value3",
+					},
+				},
+			},
+			expected: map[string]any{
+				"key1": map[string]any{
+					"key2": "value2",
+				},
+			},
+		},
+		{
+			name:  "replace_nested_value",
+			path:  "key1.key2.key3",
+			value: "value3",
+			dict: map[string]any{
+				"key1": map[string]any{
+					"key2": "value2",
+				},
+			},
+			expected: map[string]any{
+				"key1": map[string]any{
+					"key2": map[string]any{
+						"key3": "value3",
+					},
+				},
+			},
+		},
+		{
+			name: "string_list_path",
+			path: []string{
+				"key1",
+				"key2",
+			},
+			value: "value2",
+			expected: map[string]any{
+				"key1": map[string]any{
+					"key2": "value2",
+				},
+			},
+		},
+		{
+			name: "any_list_path",
+			path: []any{
+				"key1",
+				"key2",
+			},
+			value: "value2",
+			expected: map[string]any{
+				"key1": map[string]any{
+					"key2": "value2",
+				},
+			},
+		},
+		{
+			name:        "invalid_path",
+			path:        0,
+			expectedErr: "0: invalid path type int",
+		},
+		{
+			name: "invalid_path_element",
+			path: []any{
+				0,
+			},
+			expectedErr: "0: invalid path element type int",
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			var c Config
+			if tc.expectedErr == "" {
+				actual := c.setValueAtPathTemplateFunc(tc.path, tc.value, tc.dict)
+				assert.Equal(t, tc.expected, actual)
+			} else {
+				assert.PanicsWithValue(t, tc.expectedErr, func() {
+					c.setValueAtPathTemplateFunc(tc.path, tc.value, tc.dict)
+				})
+			}
+		})
+	}
+}
+
 func TestFromIniTemplateFunc(t *testing.T) {
 	for i, tc := range []struct {
 		text     string

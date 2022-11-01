@@ -86,6 +86,14 @@ contents of the file.
     {{- .chezmoi.stdin | replaceAllRegex "old" "new" }}
     ```
 
+    To set individual values in JSON, TOML, and YAML files you can use the
+    `setValueAtPath` template function, for example:
+
+    ```
+    {{- /* chezmoi:modify-template */ -}}
+    {{ fromJson .chezmoi.stdin | setValueAtPath "key.nestedKey" "value" | toPrettyJson }}
+    ```
+
 Secondly, if only a small part of the file changes then consider using a
 template to re-generate the full contents of the file from the current state.
 For example, Kubernetes configurations include a current context that can be

@@ -280,6 +280,52 @@ func (c *Config) replaceAllRegexTemplateFunc(expr, repl, s string) string {
 	return regexp.MustCompile(expr).ReplaceAllString(s, repl)
 }
 
+func (c *Config) setValueAtPathTemplateFunc(path, value, dict any) any {
+	var keys []string
+	switch path := path.(type) {
+	case string:
+		keys = strings.Split(path, ".")
+	case []any:
+		keys = make([]string, 0, len(path))
+		for _, element := range path {
+			elementStr, ok := element.(string)
+			if !ok {
+				panic(fmt.Sprintf("%v: invalid path element type %T", element, element))
+			}
+			keys = append(keys, elementStr)
+		}
+	case []string:
+		keys = path
+	default:
+		panic(fmt.Sprintf("%v: invalid path type %T", path, path))
+	}
+
+	result, ok := dict.(map[string]any)
+	if !ok {
+		result = make(map[string]any)
+	}
+
+	currentMap := result
+	for _, key := range keys[:len(keys)-1] {
+		if value, ok := currentMap[key]; ok {
+			if nestedMap, ok := value.(map[string]any); ok {
+				currentMap = nestedMap
+			} else {
+				nestedMap := make(map[string]any)
+				currentMap[key] = nestedMap
+				currentMap = nestedMap
+			}
+		} else {
+			nestedMap := make(map[string]any)
+			currentMap[key] = nestedMap
+			currentMap = nestedMap
+		}
+	}
+	currentMap[keys[len(keys)-1]] = value
+
+	return result
+}
+
 func (c *Config) statTemplateFunc(name string) any {
 	switch fileInfo, err := c.fileSystem.Stat(name); {
 	case err == nil:

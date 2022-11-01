@@ -65,6 +65,11 @@ stdout 2656FF1E876E9973
 exec chezmoi execute-template '{{ "foo bar baz" | replaceAllRegex "ba" "BA" }}'
 stdout 'foo BAr BAz'
 
+# test setValueAtPath template function
+exec chezmoi execute-template '{{ dict | setValueAtPath "key1.key2" "value2" | toJson }}'
+rmfinalnewline golden/setValueAtPath
+cmp stdout golden/setValueAtPath
+
 # test toIni template function
 exec chezmoi execute-template '{{ dict "key" "value" "section" (dict "subkey" "subvalue") | toIni }}'
 cmp stdout golden/toIni
@@ -161,6 +166,8 @@ file2.txt
 # contents of .include
 -- golden/include-relpath --
 # contents of .local/share/chezmoi/.include
+-- golden/setValueAtPath --
+{"key1":{"key2":"value2"}}
 -- golden/toIni --
 key = value
 

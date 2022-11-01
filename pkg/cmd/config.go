@@ -382,6 +382,7 @@ func newConfig(options ...configOption) (*Config, error) {
 		"replaceAllRegex":          c.replaceAllRegexTemplateFunc,
 		"secret":                   c.secretTemplateFunc,
 		"secretJSON":               c.secretJSONTemplateFunc,
+		"setValueAtPath":           c.setValueAtPathTemplateFunc,
 		"stat":                     c.statTemplateFunc,
 		"toIni":                    c.toIniTemplateFunc,
 		"toToml":                   c.toTomlTemplateFunc,
