@@ -8,7 +8,7 @@ require (
 	github.com/aws/aws-sdk-go-v2 v1.17.1
 	github.com/aws/aws-sdk-go-v2/config v1.17.10
 	github.com/aws/aws-sdk-go-v2/service/secretsmanager v1.16.4
-	github.com/bmatcuk/doublestar/v4 v4.2.0
+	github.com/bmatcuk/doublestar/v4 v4.3.0
 	github.com/bradenhilton/mozillainstallhash v1.0.0
 	github.com/charmbracelet/bubbles v0.14.0
 	github.com/charmbracelet/bubbletea v0.22.1
