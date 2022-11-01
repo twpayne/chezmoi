@@ -165,11 +165,11 @@ func (c *Config) includeTemplateTemplateFunc(filename string, args ...any) strin
 		panic(err)
 	}
 
-	var builder strings.Builder
-	if err := tmpl.Execute(&builder, data); err != nil {
+	result, err := tmpl.Execute(data)
+	if err != nil {
 		panic(err)
 	}
-	return builder.String()
+	return string(result)
 }
 
 func (c *Config) ioregTemplateFunc() map[string]any {

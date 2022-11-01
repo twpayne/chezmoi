@@ -688,22 +688,18 @@ func (c *Config) createConfigFile(filename chezmoi.RelPath, data []byte) ([]byte
 	}
 	chezmoi.RecursiveMerge(funcMap, initTemplateFuncs)
 
-	t, err := chezmoi.ParseTemplate(filename.String(), data, funcMap, chezmoi.TemplateOptions{
+	tmpl, err := chezmoi.ParseTemplate(filename.String(), data, funcMap, chezmoi.TemplateOptions{
 		Options: append([]string(nil), c.Template.Options...),
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	builder := strings.Builder{}
 	templateData := c.getTemplateDataMap()
 	if c.init.data {
 		chezmoi.RecursiveMerge(templateData, c.Data)
 	}
-	if err = t.Execute(&builder, templateData); err != nil {
-		return nil, err
-	}
-	return []byte(builder.String()), nil
+	return tmpl.Execute(templateData)
 }
 
 // defaultConfigFile returns the default config file according to the XDG Base
@@ -1294,11 +1290,11 @@ func (c *Config) gitAutoCommit(status *git.Status) error {
 	if err != nil {
 		return err
 	}
-	commitMessage := strings.Builder{}
-	if err := commitMessageTmpl.Execute(&commitMessage, status); err != nil {
+	commitMessage, err := commitMessageTmpl.Execute(status)
+	if err != nil {
 		return err
 	}
-	return c.run(c.WorkingTreeAbsPath, c.Git.Command, []string{"commit", "--message", commitMessage.String()})
+	return c.run(c.WorkingTreeAbsPath, c.Git.Command, []string{"commit", "--message", string(commitMessage)})
 }
 
 // gitAutoPush pushes all changes to the remote if status is not empty.

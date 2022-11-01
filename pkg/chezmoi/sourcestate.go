@@ -52,12 +52,6 @@ var (
 	templateDirectiveKeyValuePairRx = regexp.MustCompile(`\s*(\S+)=("(?:[^"]|\\")*"|\S+)`)
 )
 
-type TemplateOptions struct {
-	LeftDelimiter  string
-	RightDelimiter string
-	Options        []string
-}
-
 // An External is an external source.
 type External struct {
 	Type       ExternalType `json:"type" toml:"type" yaml:"type"`
@@ -110,7 +104,7 @@ type SourceState struct {
 	templateData            map[string]any
 	templateFuncs           template.FuncMap
 	templateOptions         []string
-	templates               map[string]*template.Template
+	templates               map[string]*Template
 	externals               map[RelPath]*External
 	ignoredRelPaths         map[RelPath]struct{}
 }
@@ -255,7 +249,7 @@ func NewSourceState(options ...SourceStateOption) *SourceState {
 		priorityTemplateData: make(map[string]any),
 		userTemplateData:     make(map[string]any),
 		templateOptions:      DefaultTemplateOptions,
-		templates:            make(map[string]*template.Template),
+		templates:            make(map[string]*Template),
 		externals:            make(map[RelPath]*External),
 		ignoredRelPaths:      make(map[RelPath]struct{}),
 	}
@@ -671,8 +665,8 @@ func (s *SourceState) ExecuteTemplateData(options ExecuteTemplateDataOptions) ([
 		return nil, err
 	}
 
-	for name, t := range s.templates {
-		tmpl, err = tmpl.AddParseTree(name, t.Tree)
+	for _, t := range s.templates {
+		tmpl, err = tmpl.AddParseTree(t)
 		if err != nil {
 			return nil, err
 		}
@@ -685,11 +679,7 @@ func (s *SourceState) ExecuteTemplateData(options ExecuteTemplateDataOptions) ([
 		defer delete(chezmoiTemplateData, "sourceFile")
 	}
 
-	builder := strings.Builder{}
-	if err = tmpl.ExecuteTemplate(&builder, options.Name, templateData); err != nil {
-		return nil, err
-	}
-	return []byte(builder.String()), nil
+	return tmpl.Execute(templateData)
 }
 
 // ForEach calls f for each source state entry.
@@ -1540,7 +1530,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 			if matches := modifyTemplateRx.FindAllSubmatchIndex(modifierContents, -1); matches != nil {
 				sourceFile := sourceRelPath.String()
 				templateContents := removeMatches(modifierContents, matches)
-				var tmpl *template.Template
+				var tmpl *Template
 				tmpl, err = ParseTemplate(sourceFile, templateContents, s.templateFuncs, TemplateOptions{
 					Options: append([]string(nil), s.templateOptions...),
 				})
@@ -1560,11 +1550,7 @@ func (s *SourceState) newModifyTargetStateEntryFunc(
 					}()
 				}
 
-				var builder strings.Builder
-				if err = tmpl.Execute(&builder, templateData); err != nil {
-					return
-				}
-				contents = []byte(builder.String())
+				contents, err = tmpl.Execute(templateData)
 				return
 			}
 
@@ -2207,48 +2193,6 @@ func (e *External) OriginString() string {
 	return e.URL + " defined in " + e.sourceAbsPath.String()
 }
 
-// ParseTemplate parses a template named name from data with the given funcs and
-// templateOptions.
-func ParseTemplate(
-	name string, data []byte, funcs template.FuncMap, templateOptions TemplateOptions,
-) (*template.Template, error) {
-	contents := templateOptions.parseDirectives(data)
-	return template.New(name).
-		Option(templateOptions.Options...).
-		Delims(templateOptions.LeftDelimiter, templateOptions.RightDelimiter).
-		Funcs(funcs).
-		Parse(string(contents))
-}
-
-// parseDirectives updates o by parsing all template directives in data and
-// returns data with the lines containing directives removed. The lines are
-// removed so that any delimiters do not break template parsing.
-func (o *TemplateOptions) parseDirectives(data []byte) []byte {
-	directiveMatches := templateDirectiveRx.FindAllSubmatchIndex(data, -1)
-	if directiveMatches == nil {
-		return data
-	}
-
-	// Parse options from directives.
-	for _, directiveMatch := range directiveMatches {
-		keyValuePairMatches := templateDirectiveKeyValuePairRx.FindAllSubmatch(data[directiveMatch[2]:directiveMatch[3]], -1)
-		for _, keyValuePairMatch := range keyValuePairMatches {
-			key := string(keyValuePairMatch[1])
-			value := maybeUnquote(string(keyValuePairMatch[2]))
-			switch key {
-			case "left-delimiter":
-				o.LeftDelimiter = value
-			case "right-delimiter":
-				o.RightDelimiter = value
-			case "missing-key":
-				o.Options = append(o.Options, "missingkey="+value)
-			}
-		}
-	}
-
-	return removeMatches(data, directiveMatches)
-}
-
 // allEquivalentDirs returns if sourceStateEntries are all equivalent
 // directories.
 func allEquivalentDirs(sourceStateEntries []SourceStateEntry) bool {
@@ -2266,15 +2210,4 @@ func allEquivalentDirs(sourceStateEntries []SourceStateEntry) bool {
 		}
 	}
 	return true
-}
-
-// removeMatches returns data with matchesIndexes removed.
-func removeMatches(data []byte, matchesIndexes [][]int) []byte {
-	slices := make([][]byte, 0, len(matchesIndexes)+1)
-	slices = append(slices, data[:matchesIndexes[0][0]])
-	for i, matchIndexes := range matchesIndexes[1:] {
-		slices = append(slices, data[matchesIndexes[i][1]:matchIndexes[0]])
-	}
-	slices = append(slices, data[matchesIndexes[len(matchesIndexes)-1][1]:])
-	return bytes.Join(slices, nil)
 }

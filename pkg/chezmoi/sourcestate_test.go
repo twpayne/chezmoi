@@ -1285,8 +1285,18 @@ func TestSourceStateRead(t *testing.T) {
 			},
 			expectedSourceState: NewSourceState(
 				withTemplates(
-					map[string]*template.Template{
-						"template": template.Must(template.New("template").Option("missingkey=error").Parse("# contents of .chezmoitemplates/template\n")),
+					map[string]*Template{
+						"template": {
+							name: "template",
+							template: template.Must(
+								template.New("template").
+									Option("missingkey=error").
+									Parse("# contents of .chezmoitemplates/template\n"),
+							),
+							options: TemplateOptions{
+								Options: []string{"missingkey=error"},
+							},
+						},
 					},
 				),
 			),
@@ -1762,7 +1772,7 @@ func TestTemplateOptionsParseDirectives(t *testing.T) {
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			var actual TemplateOptions
-			actualData := actual.parseDirectives([]byte(tc.dataStr))
+			actualData := actual.parseAndRemoveDirectives([]byte(tc.dataStr))
 			assert.Equal(t, tc.expected, actual)
 			assert.Equal(t, tc.expectedDataStr, string(actualData))
 		})
@@ -1837,7 +1847,7 @@ func withUserTemplateData(templateData map[string]any) SourceStateOption {
 	}
 }
 
-func withTemplates(templates map[string]*template.Template) SourceStateOption {
+func withTemplates(templates map[string]*Template) SourceStateOption {
 	return func(s *SourceState) {
 		s.templates = templates
 	}
