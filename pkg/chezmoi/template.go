@@ -16,6 +16,7 @@ type Template struct {
 // TemplateOptions are template options that can be set with directives.
 type TemplateOptions struct {
 	LeftDelimiter  string
+	LineEnding     string
 	RightDelimiter string
 	Options        []string
 }
@@ -52,7 +53,7 @@ func (t *Template) Execute(data any) ([]byte, error) {
 	if err := t.template.ExecuteTemplate(&builder, t.name, data); err != nil {
 		return nil, err
 	}
-	return []byte(builder.String()), nil
+	return []byte(replaceLineEndings(builder.String(), t.options.LineEnding)), nil
 }
 
 // parseAndRemoveDirectives updates o by parsing all template directives in data
@@ -73,6 +74,17 @@ func (o *TemplateOptions) parseAndRemoveDirectives(data []byte) []byte {
 			switch key {
 			case "left-delimiter":
 				o.LeftDelimiter = value
+			case "line-ending":
+				switch string(keyValuePairMatch[2]) {
+				case "crlf":
+					o.LineEnding = "\r\n"
+				case "lf":
+					o.LineEnding = "\n"
+				case "native":
+					o.LineEnding = nativeLineEnding
+				default:
+					o.LineEnding = value
+				}
 			case "right-delimiter":
 				o.RightDelimiter = value
 			case "missing-key":
@@ -93,4 +105,13 @@ func removeMatches(data []byte, matchesIndexes [][]int) []byte {
 	}
 	slices = append(slices, data[matchesIndexes[len(matchesIndexes)-1][1]:])
 	return bytes.Join(slices, nil)
+}
+
+// replaceLineEndings replaces all line endings in s with lineEnding. If
+// lineEnding is empty it returns s unchanged.
+func replaceLineEndings(s, lineEnding string) string {
+	if lineEnding == "" {
+		return s
+	}
+	return lineEndingRx.ReplaceAllString(s, lineEnding)
 }

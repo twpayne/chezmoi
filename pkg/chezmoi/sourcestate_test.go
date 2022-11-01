@@ -832,6 +832,40 @@ func TestSourceStateApplyAll(t *testing.T) {
 	}
 }
 
+func TestSourceStateExecuteTemplateData(t *testing.T) {
+	for _, tc := range []struct {
+		name        string
+		dataStr     string
+		expectedStr string
+	}{
+		{
+			name: "line_ending_lf",
+			dataStr: "" +
+				"unix\n" +
+				"\n" +
+				"windows\r\n" +
+				"\r\n" +
+				"# chezmoi:template:line-ending=lf\n",
+			expectedStr: chezmoitest.JoinLines(
+				"unix",
+				"",
+				"windows",
+				"",
+			),
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			s := NewSourceState()
+			actual, err := s.ExecuteTemplateData(ExecuteTemplateDataOptions{
+				Name: tc.name,
+				Data: []byte(tc.dataStr),
+			})
+			assert.NoError(t, err)
+			assert.Equal(t, tc.expectedStr, string(actual))
+		})
+	}
+}
+
 func TestSourceStateRead(t *testing.T) {
 	for _, tc := range []struct {
 		name                string
@@ -1767,6 +1801,20 @@ func TestTemplateOptionsParseDirectives(t *testing.T) {
 			dataStr: "chezmoi:template:missing-key=zero",
 			expected: TemplateOptions{
 				Options: []string{"missingkey=zero"},
+			},
+		},
+		{
+			name:    "line_ending_crlf",
+			dataStr: "chezmoi:template:line-ending=crlf",
+			expected: TemplateOptions{
+				LineEnding: "\r\n",
+			},
+		},
+		{
+			name:    "line_ending_quoted",
+			dataStr: `chezmoi:template:line-ending="\n"`,
+			expected: TemplateOptions{
+				LineEnding: "\n",
 			},
 		},
 	} {

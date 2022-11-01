@@ -47,6 +47,7 @@ const (
 )
 
 var (
+	lineEndingRx                    = regexp.MustCompile(`(?m)(?:\r\n|\r|\n)`)
 	modifyTemplateRx                = regexp.MustCompile(`(?m)^.*chezmoi:modify-template.*$(?:\r?\n)?`)
 	templateDirectiveRx             = regexp.MustCompile(`(?m)^.*?chezmoi:template:(.*)$(?:\r?\n)?`)
 	templateDirectiveKeyValuePairRx = regexp.MustCompile(`\s*(\S+)=("(?:[^"]|\\")*"|\S+)`)
