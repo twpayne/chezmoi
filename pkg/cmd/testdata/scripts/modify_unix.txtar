@@ -62,6 +62,12 @@ chhome home5/user
 exec chezmoi cat $HOME${/}.modify
 cmp stdout golden/.modified
 
+chhome home6/user
+
+# test that modify scripts can use modify-templates to modify JSON fields
+exec chezmoi apply --force
+cmp $HOME/.modify.json golden/.modified.json
+
 -- golden/.edited-and-modified --
 beginning
 modified-middle
@@ -71,6 +77,8 @@ end
 beginning
 modified-middle
 end
+-- golden/.modified.json --
+{"key1":{"key2":"value","key3":"value3"}}
 -- golden/.modify --
 beginning
 middle
@@ -123,3 +131,8 @@ end
 beginning
 middle
 end
+-- home6/user/.local/share/chezmoi/modify_dot_modify.json --
+{{- /* chezmoi:modify-template */ -}}
+{{ fromJson .chezmoi.stdin | setValueAtPath "key1.key2" "value" | toJson }}
+-- home6/user/.modify.json --
+{"key1":{"key2":"value2","key3":"value3"}}
