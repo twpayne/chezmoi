@@ -36,6 +36,7 @@ func TestDumpSystem(t *testing.T) {
 		system := NewRealSystem(fileSystem)
 		s := NewSourceState(
 			WithBaseSystem(system),
+			WithDestDir(NewAbsPath("/home/user")),
 			WithSourceDir(NewAbsPath("/home/user/.local/share/chezmoi")),
 			WithSystem(system),
 			WithVersion(semver.Version{

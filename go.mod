@@ -125,4 +125,6 @@ require (
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 )
 
+exclude github.com/bmatcuk/doublestar/v4 v4.3.0 // https://github.com/bmatcuk/doublestar/issues/73
+
 exclude github.com/sergi/go-diff v1.2.0 // https://github.com/sergi/go-diff/issues/123
