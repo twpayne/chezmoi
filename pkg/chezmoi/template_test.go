@@ -35,6 +35,35 @@ func TestTemplateParseAndExecute(t *testing.T) {
 				"0",
 			),
 		},
+		{
+			name: "line_ending_crlf",
+			dataStr: "" +
+				"unix\n" +
+				"\n" +
+				"windows\r\n" +
+				"\r\n" +
+				"# chezmoi:template:line-ending=crlf\n",
+			expectedStr: "" +
+				"unix\r\n" +
+				"\r\n" +
+				"windows\r\n" +
+				"\r\n",
+		},
+		{
+			name: "line_ending_lf",
+			dataStr: "" +
+				"unix\n" +
+				"\n" +
+				"windows\r\n" +
+				"\r\n" +
+				"# chezmoi:template:line-ending=lf\n",
+			expectedStr: chezmoitest.JoinLines(
+				"unix",
+				"",
+				"windows",
+				"",
+			),
+		},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
 			tmpl, err := ParseTemplate(tc.name, []byte(tc.dataStr), nil, TemplateOptions{})

@@ -9,6 +9,8 @@ import (
 	"golang.org/x/sys/unix"
 )
 
+const nativeLineEnding = "\n"
+
 func init() {
 	Umask = fs.FileMode(unix.Umask(0))
 	unix.Umask(int(Umask))

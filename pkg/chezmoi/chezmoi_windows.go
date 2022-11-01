@@ -4,6 +4,8 @@ import (
 	"io/fs"
 )
 
+const nativeLineEnding = "\r\n"
+
 // isExecutable returns false on Windows.
 func isExecutable(fileInfo fs.FileInfo) bool {
 	return false
