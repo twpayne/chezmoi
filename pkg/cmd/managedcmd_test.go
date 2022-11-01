@@ -56,6 +56,20 @@ func TestManagedCmd(t *testing.T) {
 			),
 		},
 		{
+			name: "remove",
+			root: map[string]any{
+				"/home/user": map[string]any{
+					".local/share/chezmoi/.chezmoiremove": chezmoitest.JoinLines(
+						".remove",
+					),
+					".remove": "",
+				},
+			},
+			expectedOutput: chezmoitest.JoinLines(
+				".remove",
+			),
+		},
+		{
 			name: "script_template",
 			root: map[string]any{
 				"/home/user/.local/share/chezmoi/run_script.tmpl": templateContents,
