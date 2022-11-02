@@ -37,6 +37,23 @@ inherited by templates called from the file.
     # [[ "true" ]]
     ```
 
+## Line endings
+
+Many of the template functions available in chezmoi primarily use UNIX-syle
+line endings (`lf`/`\n`), which may result in unexpected output when running
+`chezmoi diff` on a `modify_` template. These line endings can be overridden
+with a template directive:
+
+    chezmoi:template:line-endings=$VALUE
+
+`$VALUE` can be an arbitrary string or one of:
+
+| Value    | Effect                                                                |
+| -------- | --------------------------------------------------------------------- |
+| `crlf`   | Use Windows line endings (`\r\n`).                                    |
+| `lf`     | Use UNIX-style line endings (`\n`).                                   |
+| `native` | Use platform-native line endings (`crlf` on Windows, `lf` elsewhere). |
+
 ## Missing keys
 
 By default, chezmoi will return an error if a template indexes a map with a key
