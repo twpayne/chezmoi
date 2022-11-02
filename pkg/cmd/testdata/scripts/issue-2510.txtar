@@ -10,8 +10,9 @@ cmp stdout golden/diff2
 
 -- golden/diff --
 diff --git a/script-one.sh b/script-one.sh
-index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..a5498fa48acd6f616d60604b94352958c5e967fc 100755
---- a/script-one.sh
+new file mode 100755
+index 0000000000000000000000000000000000000000..a5498fa48acd6f616d60604b94352958c5e967fc
+--- /dev/null
 +++ b/script-one.sh
 @@ -0,0 +1,3 @@
 +#!/bin/sh
@@ -19,8 +20,9 @@ index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..a5498fa48acd6f616d60604b94352958
 +echo "script one"
 -- golden/diff2 --
 diff --git a/.chezmoiscripts/script-one.sh b/.chezmoiscripts/script-one.sh
-index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..a5498fa48acd6f616d60604b94352958c5e967fc 100755
---- a/.chezmoiscripts/script-one.sh
+new file mode 100755
+index 0000000000000000000000000000000000000000..a5498fa48acd6f616d60604b94352958c5e967fc
+--- /dev/null
 +++ b/.chezmoiscripts/script-one.sh
 @@ -0,0 +1,3 @@
 +#!/bin/sh

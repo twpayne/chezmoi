@@ -41,8 +41,9 @@ cmp stdout golden/archive
 script.sh
 -- golden/diff.diff --
 diff --git a/script.sh b/script.sh
-index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..f9103e018df1bbc178e66b46d8f133f49c85225d 100755
---- a/script.sh
+new file mode 100755
+index 0000000000000000000000000000000000000000..f9103e018df1bbc178e66b46d8f133f49c85225d
+--- /dev/null
 +++ b/script.sh
 @@ -0,0 +1,3 @@
 +#!/bin/sh
