@@ -26,8 +26,9 @@ cmp stdout golden/diff-exclude-always.diff
     exclude = ["scripts"]
 -- golden/diff-exclude-always.diff --
 diff --git a/script-once.sh b/script-once.sh
-index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..d7dff6100cefc930f4161600c12b6f7ea37b7d3a 100755
---- a/script-once.sh
+new file mode 100755
+index 0000000000000000000000000000000000000000..d7dff6100cefc930f4161600c12b6f7ea37b7d3a
+--- /dev/null
 +++ b/script-once.sh
 @@ -0,0 +1,3 @@
 +#!/bin/sh
@@ -58,8 +59,9 @@ index 0000000000000000000000000000000000000000..8a52cb9ce9551221716a53786ad74104
 @@ -0,0 +1 @@
 +# contents of .file
 diff --git a/script.sh b/script.sh
-index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..3747a7ba08ee591c41b7c518e430d2802137eac4 100755
---- a/script.sh
+new file mode 100755
+index 0000000000000000000000000000000000000000..3747a7ba08ee591c41b7c518e430d2802137eac4
+--- /dev/null
 +++ b/script.sh
 @@ -0,0 +1,3 @@
 +#!/bin/sh
@@ -74,8 +76,9 @@ index 0000000000000000000000000000000000000000..8a52cb9ce9551221716a53786ad74104
 @@ -0,0 +1 @@
 +# contents of .file
 diff --git a/script.sh b/script.sh
-index e69de29bb2d1d6434b8b29ae775ad8c2e48c5391..3747a7ba08ee591c41b7c518e430d2802137eac4 100755
---- a/script.sh
+new file mode 100755
+index 0000000000000000000000000000000000000000..3747a7ba08ee591c41b7c518e430d2802137eac4
+--- /dev/null
 +++ b/script.sh
 @@ -0,0 +1,3 @@
 +#!/bin/sh

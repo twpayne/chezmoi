@@ -200,12 +200,12 @@ func (s *GitDiffSystem) RunCmd(cmd *exec.Cmd) error {
 // RunScript implements System.RunScript.
 func (s *GitDiffSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
 	if s.filter.IncludeEntryTypeBits(EntryTypeScripts) {
-		mode := fs.FileMode(filemode.Executable)
+		fromMode, toMode := fs.FileMode(0), fs.FileMode(filemode.Executable)
 		fromData, toData := []byte(nil), data
 		if s.reverse {
 			fromData, toData = toData, fromData
 		}
-		diffPatch, err := DiffPatch(scriptname, fromData, mode, toData, mode)
+		diffPatch, err := DiffPatch(scriptname, fromData, fromMode, toData, toMode)
 		if err != nil {
 			return err
 		}
