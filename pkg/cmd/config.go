@@ -1445,16 +1445,18 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 func (c *Config) newDiffSystem(s chezmoi.System, w io.Writer, dirAbsPath chezmoi.AbsPath) chezmoi.System {
 	if c.Diff.useBuiltinDiff || c.Diff.Command == "" {
 		options := &chezmoi.GitDiffSystemOptions{
-			Color:        c.Color.Value(c.colorAutoFunc),
-			Filter:       chezmoi.NewEntryTypeFilter(c.Diff.include.Bits(), c.Diff.Exclude.Bits()),
-			Reverse:      c.Diff.Reverse,
-			TextConvFunc: c.TextConv.convert,
+			Color:          c.Color.Value(c.colorAutoFunc),
+			Filter:         chezmoi.NewEntryTypeFilter(c.Diff.include.Bits(), c.Diff.Exclude.Bits()),
+			Reverse:        c.Diff.Reverse,
+			ScriptContents: c.Diff.ScriptContents,
+			TextConvFunc:   c.TextConv.convert,
 		}
 		return chezmoi.NewGitDiffSystem(s, w, dirAbsPath, options)
 	}
 	options := &chezmoi.ExternalDiffSystemOptions{
-		Filter:  chezmoi.NewEntryTypeFilter(c.Diff.include.Bits(), c.Diff.Exclude.Bits()),
-		Reverse: c.Diff.Reverse,
+		Filter:         chezmoi.NewEntryTypeFilter(c.Diff.include.Bits(), c.Diff.Exclude.Bits()),
+		Reverse:        c.Diff.Reverse,
+		ScriptContents: c.Diff.ScriptContents,
 	}
 	return chezmoi.NewExternalDiffSystem(s, c.Diff.Command, c.Diff.Args, c.DestDirAbsPath, options)
 }
@@ -2381,8 +2383,9 @@ func newConfigFile(bds *xdg.BaseDirectorySpecification) ConfigFile {
 			recursive: true,
 		},
 		Diff: diffCmdConfig{
-			Exclude: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
-			include: chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
+			Exclude:        chezmoi.NewEntryTypeSet(chezmoi.EntryTypesNone),
+			ScriptContents: true,
+			include:        chezmoi.NewEntryTypeSet(chezmoi.EntryTypesAll),
 		},
 		Edit: editCmdConfig{
 			Hardlink:    true,

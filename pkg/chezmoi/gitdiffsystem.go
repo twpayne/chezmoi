@@ -24,16 +24,18 @@ type GitDiffSystem struct {
 	dirAbsPath     AbsPath
 	filter         *EntryTypeFilter
 	reverse        bool
+	scriptContents bool
 	textConvFunc   TextConvFunc
 	unifiedEncoder *diff.UnifiedEncoder
 }
 
 // GitDiffSystemOptions are options for NewGitDiffSystem.
 type GitDiffSystemOptions struct {
-	Color        bool
-	Filter       *EntryTypeFilter
-	Reverse      bool
-	TextConvFunc TextConvFunc
+	Color          bool
+	Filter         *EntryTypeFilter
+	Reverse        bool
+	ScriptContents bool
+	TextConvFunc   TextConvFunc
 }
 
 // NewGitDiffSystem returns a new GitDiffSystem. Output is written to w, the
@@ -49,6 +51,7 @@ func NewGitDiffSystem(system System, w io.Writer, dirAbsPath AbsPath, options *G
 		dirAbsPath:     dirAbsPath,
 		filter:         options.Filter,
 		reverse:        options.Reverse,
+		scriptContents: options.ScriptContents,
 		textConvFunc:   options.TextConvFunc,
 		unifiedEncoder: unifiedEncoder,
 	}
@@ -200,10 +203,14 @@ func (s *GitDiffSystem) RunCmd(cmd *exec.Cmd) error {
 // RunScript implements System.RunScript.
 func (s *GitDiffSystem) RunScript(scriptname RelPath, dir AbsPath, data []byte, interpreter *Interpreter) error {
 	if s.filter.IncludeEntryTypeBits(EntryTypeScripts) {
-		fromMode, toMode := fs.FileMode(0), fs.FileMode(filemode.Executable)
 		fromData, toData := []byte(nil), data
+		fromMode, toMode := fs.FileMode(0), fs.FileMode(filemode.Executable)
+		if !s.scriptContents {
+			toData = nil
+		}
 		if s.reverse {
 			fromData, toData = toData, fromData
+			fromMode, toMode = toMode, fromMode
 		}
 		diffPatch, err := DiffPatch(scriptname, fromData, fromMode, toData, toMode)
 		if err != nil {
