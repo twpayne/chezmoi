@@ -26,12 +26,14 @@ type ExternalDiffSystem struct {
 	tempDirAbsPath AbsPath
 	filter         *EntryTypeFilter
 	reverse        bool
+	scriptContents bool
 }
 
 // ExternalDiffSystemOptions are options for NewExternalDiffSystem.
 type ExternalDiffSystemOptions struct {
-	Filter  *EntryTypeFilter
-	Reverse bool
+	Filter         *EntryTypeFilter
+	Reverse        bool
+	ScriptContents bool
 }
 
 // NewExternalDiffSystem creates a new ExternalDiffSystem.
@@ -45,6 +47,7 @@ func NewExternalDiffSystem(
 		destDirAbsPath: destDirAbsPath,
 		filter:         options.Filter,
 		reverse:        options.Reverse,
+		scriptContents: options.ScriptContents,
 	}
 }
 
@@ -170,7 +173,11 @@ func (s *ExternalDiffSystem) RunScript(scriptname RelPath, dir AbsPath, data []b
 		if err := os.MkdirAll(targetAbsPath.Dir().String(), 0o700); err != nil {
 			return err
 		}
-		if err := os.WriteFile(targetAbsPath.String(), data, 0o700); err != nil { //nolint:gosec
+		toData := data
+		if !s.scriptContents {
+			toData = nil
+		}
+		if err := os.WriteFile(targetAbsPath.String(), toData, 0o700); err != nil { //nolint:gosec
 			return err
 		}
 		if err := s.runDiffCommand(devNullAbsPath, targetAbsPath); err != nil {

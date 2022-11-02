@@ -4,9 +4,13 @@
 exec chezmoi status
 cmp stdout golden/status
 
-# test the chezmoi diff prints the script
+# test that chezmoi diff prints the script
 exec chezmoi diff
 cmp stdout golden/diff.diff
+
+# test that chezmoi diff --script-contents=false prints the script name but not its contents
+exec chezmoi diff --script-contents=false
+cmp stdout golden/diff-no-script-contents.diff
 
 # test that chezmoi apply runs the script
 exec chezmoi apply --force
@@ -39,6 +43,12 @@ cmp stdout golden/archive
 
 -- golden/archive --
 script.sh
+-- golden/diff-no-script-contents.diff --
+diff --git a/script.sh b/script.sh
+new file mode 100755
+index 0000000000000000000000000000000000000000..e69de29bb2d1d6434b8b29ae775ad8c2e48c5391
+--- /dev/null
++++ b/script.sh
 -- golden/diff.diff --
 diff --git a/script.sh b/script.sh
 new file mode 100755

@@ -116,6 +116,10 @@ sections:
     reverse:
       type: bool
       description: Reverse order of arguments to diff
+    scriptContents:
+      type: bool
+      default: '`true`'
+      description: Show script contents
   edit:
     apply:
       type: bool
