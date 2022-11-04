@@ -1395,6 +1395,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newApplyCmd(),
 		c.newArchiveCmd(),
 		c.newCatCmd(),
+		c.newCatConfigCmd(),
 		c.newCDCmd(),
 		c.newChattrCmd(),
 		c.newCompletionCmd(),
