@@ -126,6 +126,7 @@ nav:
     - apply: reference/commands/apply.md
     - archive: reference/commands/archive.md
     - cat: reference/commands/cat.md
+    - cat-config: reference/commands/cat-config.md
     - cd: reference/commands/cd.md
     - chattr: reference/commands/chattr.md
     - completion: reference/commands/completion.md

@@ -1,0 +1,8 @@
+# test that chezmoi cat-config prints the configuration file without parsing it
+exec chezmoi cat-config
+cmp stdout golden/cat-config
+
+-- golden/cat-config --
+# contents of .config/chezmoi/chezmoi.json
+-- home/user/.config/chezmoi/chezmoi.json --
+# contents of .config/chezmoi/chezmoi.json
