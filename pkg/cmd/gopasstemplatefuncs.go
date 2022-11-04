@@ -21,7 +21,7 @@ var (
 )
 
 type gopassConfig struct {
-	Command   string
+	Command   string `json:"command" mapstructure:"command" yaml:"command"`
 	versionOK bool
 	cache     map[string]string
 	rawCache  map[string][]byte

@@ -31,8 +31,8 @@ type onepasswordAccount struct {
 }
 
 type onepasswordConfig struct {
-	Command       string
-	Prompt        bool
+	Command       string `json:"command" mapstructure:"command" yaml:"command"`
+	Prompt        bool   `json:"prompt" mapstructure:"prompt" yaml:"prompt"`
 	version       *semver.Version
 	versionErr    error
 	environFunc   func() []string

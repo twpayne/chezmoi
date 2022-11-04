@@ -11,8 +11,8 @@ import (
 )
 
 type keeperConfig struct {
-	Command     string
-	Args        []string
+	Command     string   `json:"command" mapstructure:"command" yaml:"command"`
+	Args        []string `json:"args" mapstructure:"args" yaml:"args"`
 	outputCache map[string][]byte
 }
 

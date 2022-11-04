@@ -24,6 +24,26 @@ var autoBoolFlagCompletionFunc = chezmoi.FlagCompletionFunc([]string{
 	"auto", "AUTO", "Auto",
 })
 
+// MarshalJSON implements encoding/json.Marshaler.MarshalJSON.
+func (b autoBool) MarshalJSON() ([]byte, error) {
+	switch {
+	case b.auto:
+		return []byte(`"auto"`), nil
+	case b.value:
+		return []byte(`true`), nil
+	default:
+		return []byte(`false`), nil
+	}
+}
+
+// MarshalYAML implements gopkg.in/yaml.v3.Marshaler.
+func (b autoBool) MarshalYAML() (any, error) {
+	if b.auto {
+		return "auto", nil
+	}
+	return b.value, nil
+}
+
 // Set implements github.com/spf13/pflag.Value.Set.
 func (b *autoBool) Set(s string) error {
 	if strings.ToLower(s) == "auto" {

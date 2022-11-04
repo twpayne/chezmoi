@@ -1,0 +1,7 @@
+# test that chezmoi dump-config dumps the configuration in the given format
+exec chezmoi dump-config --format=yaml
+stdout 'key: value'
+
+-- home/user/.config/chezmoi/chezmoi.toml --
+[data]
+    key = "value"

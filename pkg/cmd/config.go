@@ -66,68 +66,68 @@ type purgeOptions struct {
 }
 
 type templateConfig struct {
-	Options []string `mapstructure:"options"`
+	Options []string `json:"options" mapstructure:"options" yaml:"options"`
 }
 
 type warningsConfig struct {
-	ConfigFileTemplateHasChanged bool `mapstructure:"configFileTemplateHasChanged"`
+	ConfigFileTemplateHasChanged bool `json:"configFileTemplateHasChanged" mapstructure:"configFileTemplateHasChanged" yaml:"configFileTemplateHasChanged"` //nolint:lll
 }
 
 // ConfigFile contains all data settable in the config file.
 type ConfigFile struct {
 	// Global configuration.
-	CacheDirAbsPath    chezmoi.AbsPath                 `mapstructure:"cacheDir"`
-	Color              autoBool                        `mapstructure:"color"`
-	Data               map[string]any                  `mapstructure:"data"`
-	Format             writeDataFormat                 `mapstructure:"format"`
-	DestDirAbsPath     chezmoi.AbsPath                 `mapstructure:"destDir"`
-	Interpreters       map[string]*chezmoi.Interpreter `mapstructure:"interpreters"`
-	Mode               chezmoi.Mode                    `mapstructure:"mode"`
-	Pager              string                          `mapstructure:"pager"`
-	PINEntry           pinEntryConfig                  `mapstructure:"pinentry"`
-	Progress           bool                            `mapstructure:"progress"`
-	Safe               bool                            `mapstructure:"safe"`
-	ScriptEnv          map[string]string               `mapstructure:"scriptEnv"`
-	ScriptTempDir      chezmoi.AbsPath                 `mapstructure:"scriptTempDir"`
-	SourceDirAbsPath   chezmoi.AbsPath                 `mapstructure:"sourceDir"`
-	Template           templateConfig                  `mapstructure:"template"`
-	TextConv           textConv                        `mapstructure:"textConv"`
-	Umask              fs.FileMode                     `mapstructure:"umask"`
-	UseBuiltinAge      autoBool                        `mapstructure:"useBuiltinAge"`
-	UseBuiltinGit      autoBool                        `mapstructure:"useBuiltinGit"`
-	Verbose            bool                            `mapstructure:"verbose"`
-	Warnings           warningsConfig                  `mapstructure:"warnings"`
-	WorkingTreeAbsPath chezmoi.AbsPath                 `mapstructure:"workingTree"`
+	CacheDirAbsPath    chezmoi.AbsPath                 `json:"cacheDir" mapstructure:"cacheDir" yaml:"cacheDir"`
+	Color              autoBool                        `json:"color" mapstructure:"color" yaml:"color"`
+	Data               map[string]any                  `json:"data" mapstructure:"data" yaml:"data"`
+	Format             writeDataFormat                 `json:"format" mapstructure:"format" yaml:"format"`
+	DestDirAbsPath     chezmoi.AbsPath                 `json:"destDir" mapstructure:"destDir" yaml:"destDir"`
+	Interpreters       map[string]*chezmoi.Interpreter `json:"interpreters" mapstructure:"interpreters" yaml:"interpreters"` //nolint:lll
+	Mode               chezmoi.Mode                    `json:"mode" mapstructure:"mode" yaml:"mode"`
+	Pager              string                          `json:"pager" mapstructure:"pager" yaml:"pager"`
+	PINEntry           pinEntryConfig                  `json:"pinentry" mapstructure:"pinentry" yaml:"pinentry"`
+	Progress           bool                            `json:"progress" mapstructure:"progress" yaml:"progress"`
+	Safe               bool                            `json:"safe" mapstructure:"safe" yaml:"safe"`
+	ScriptEnv          map[string]string               `json:"scriptEnv" mapstructure:"scriptEnv" yaml:"scriptEnv"`
+	ScriptTempDir      chezmoi.AbsPath                 `json:"scriptTempDir" mapstructure:"scriptTempDir" yaml:"scriptTempDir"` //nolint:lll
+	SourceDirAbsPath   chezmoi.AbsPath                 `json:"sourceDir" mapstructure:"sourceDir" yaml:"sourceDir"`
+	Template           templateConfig                  `json:"template" mapstructure:"template" yaml:"template"`
+	TextConv           textConv                        `json:"textConv" mapstructure:"textConv" yaml:"textConv"`
+	Umask              fs.FileMode                     `json:"umask" mapstructure:"umask" yaml:"umask"`
+	UseBuiltinAge      autoBool                        `json:"useBuiltinAge" mapstructure:"useBuiltinAge" yaml:"useBuiltinAge"` //nolint:lll
+	UseBuiltinGit      autoBool                        `json:"useBuiltinGit" mapstructure:"useBuiltinGit" yaml:"useBuiltinGit"` //nolint:lll
+	Verbose            bool                            `json:"verbose" mapstructure:"verbose" yaml:"verbose"`
+	Warnings           warningsConfig                  `json:"warnings" mapstructure:"warnings" yaml:"warnings"`
+	WorkingTreeAbsPath chezmoi.AbsPath                 `json:"workingTree" mapstructure:"workingTree" yaml:"workingTree"`
 
 	// Password manager configurations.
-	AWSSecretsManager awsSecretsManagerConfig `mapstructure:"awsSecretsManager"`
-	Bitwarden         bitwardenConfig         `mapstructure:"bitwarden"`
-	Gopass            gopassConfig            `mapstructure:"gopass"`
-	Keepassxc         keepassxcConfig         `mapstructure:"keepassxc"`
-	Keeper            keeperConfig            `mapstructure:"keeper"`
-	Lastpass          lastpassConfig          `mapstructure:"lastpass"`
-	Onepassword       onepasswordConfig       `mapstructure:"onepassword"`
-	Pass              passConfig              `mapstructure:"pass"`
-	Passhole          passholeConfig          `mapstructure:"passhole"`
-	Secret            secretConfig            `mapstructure:"secret"`
-	Vault             vaultConfig             `mapstructure:"vault"`
+	AWSSecretsManager awsSecretsManagerConfig `json:"awsSecretsManager" mapstructure:"awsSecretsManager" yaml:"awsSecretsManager"` //nolint:lll
+	Bitwarden         bitwardenConfig         `json:"bitwarden" mapstructure:"bitwarden" yaml:"bitwarden"`
+	Gopass            gopassConfig            `json:"gopass" mapstructure:"gopass" yaml:"gopass"`
+	Keepassxc         keepassxcConfig         `json:"keepassxc" mapstructure:"keepassxc" yaml:"keepassxc"`
+	Keeper            keeperConfig            `json:"keeper" mapstructure:"keeper" yaml:"keeper"`
+	Lastpass          lastpassConfig          `json:"lastpass" mapstructure:"lastpass" yaml:"lastpass"`
+	Onepassword       onepasswordConfig       `json:"onepassword" mapstructure:"onepassword" yaml:"onepassword"`
+	Pass              passConfig              `json:"pass" mapstructure:"pass" yaml:"pass"`
+	Passhole          passholeConfig          `json:"passhole" mapstructure:"passhole" yaml:"passhole"`
+	Secret            secretConfig            `json:"secret" mapstructure:"secret" yaml:"secret"`
+	Vault             vaultConfig             `json:"vault" mapstructure:"vault" yaml:"vault"`
 
 	// Encryption configurations.
-	Encryption string                `json:"encryption" mapstructure:"encryption"`
-	Age        chezmoi.AgeEncryption `json:"age" mapstructure:"age"`
-	GPG        chezmoi.GPGEncryption `json:"gpg" mapstructure:"gpg"`
+	Encryption string                `json:"encryption" mapstructure:"encryption" yaml:"encryption"`
+	Age        chezmoi.AgeEncryption `json:"age" mapstructure:"age" yaml:"age"`
+	GPG        chezmoi.GPGEncryption `json:"gpg" mapstructure:"gpg" yaml:"gpg"`
 
 	// Command configurations.
-	Add        addCmdConfig        `mapstructure:"add"`
-	CD         cdCmdConfig         `mapstructure:"cd"`
-	Completion completionCmdConfig `mapstructure:"completion"`
-	Diff       diffCmdConfig       `mapstructure:"diff"`
-	Edit       editCmdConfig       `mapstructure:"edit"`
-	Git        gitCmdConfig        `mapstructure:"git"`
-	Merge      mergeCmdConfig      `mapstructure:"merge"`
-	Status     statusCmdConfig     `mapstructure:"status"`
-	Update     updateCmdConfig     `mapstructure:"update"`
-	Verify     verifyCmdConfig     `mapstructure:"verify"`
+	Add        addCmdConfig        `json:"add" mapstructure:"add" yaml:"add"`
+	CD         cdCmdConfig         `json:"cd" mapstructure:"cd" yaml:"cd"`
+	Completion completionCmdConfig `json:"completion" mapstructure:"completion" yaml:"completion"`
+	Diff       diffCmdConfig       `json:"diff" mapstructure:"diff" yaml:"diff"`
+	Edit       editCmdConfig       `json:"edit" mapstructure:"edit" yaml:"edit"`
+	Git        gitCmdConfig        `json:"git" mapstructure:"git" yaml:"git"`
+	Merge      mergeCmdConfig      `json:"merge" mapstructure:"merge" yaml:"merge"`
+	Status     statusCmdConfig     `json:"status" mapstructure:"status" yaml:"status"`
+	Update     updateCmdConfig     `json:"update" mapstructure:"update" yaml:"update"`
+	Verify     verifyCmdConfig     `json:"verify" mapstructure:"verify" yaml:"verify"`
 }
 
 // A Config represents a configuration.
@@ -1404,6 +1404,7 @@ func (c *Config) newRootCmd() (*cobra.Command, error) {
 		c.newDiffCmd(),
 		c.newDoctorCmd(),
 		c.newDumpCmd(),
+		c.newDumpConfigCmd(),
 		c.newEditCmd(),
 		c.newEditConfigCmd(),
 		c.newEncryptCommand(),

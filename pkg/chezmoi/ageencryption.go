@@ -20,19 +20,19 @@ import (
 // An AgeEncryption uses age for encryption and decryption. See
 // https://age-encryption.org.
 type AgeEncryption struct {
-	UseBuiltin      bool
-	BaseSystem      System
-	Command         string
-	Args            []string
-	Identity        AbsPath
-	Identities      []AbsPath
-	Passphrase      bool
-	Recipient       string
-	Recipients      []string
-	RecipientsFile  AbsPath
-	RecipientsFiles []AbsPath
-	Suffix          string
-	Symmetric       bool
+	UseBuiltin      bool      `json:"useBuiltin" mapstructure:"useBuiltin" yaml:"useBuiltin"`
+	BaseSystem      System    `json:"-" mapstructure:"-" yaml:"-"`
+	Command         string    `json:"command" mapstructure:"command" yaml:"command"`
+	Args            []string  `json:"args" mapstructure:"args" yaml:"args"`
+	Identity        AbsPath   `json:"identity" mapstructure:"identity" yaml:"identity"`
+	Identities      []AbsPath `json:"identities" mapstructure:"identities" yaml:"identities"`
+	Passphrase      bool      `json:"passphrase" mapstructure:"passphrase" yaml:"passphrase"`
+	Recipient       string    `json:"recipient" mapstructure:"recipient" yaml:"recipient"`
+	Recipients      []string  `json:"recipients" mapstructure:"recipients" yaml:"recipients"`
+	RecipientsFile  AbsPath   `json:"recipientsFile" mapstructure:"recipientsFile" yaml:"recipientsFile"`
+	RecipientsFiles []AbsPath `json:"recipientsFiles" mapstructure:"recipientsFiles" yaml:"recipientsFiles"`
+	Suffix          string    `json:"suffix" mapstructure:"suffix" yaml:"suffix"`
+	Symmetric       bool      `json:"symmetric" mapstructure:"symmetric" yaml:"symmetric"`
 }
 
 // Decrypt implements Encryption.Decrypt.

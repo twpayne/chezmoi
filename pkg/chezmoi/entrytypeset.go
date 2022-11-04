@@ -247,6 +247,38 @@ func (s *EntryTypeSet) ContainsTargetStateEntry(targetStateEntry TargetStateEntr
 	}
 }
 
+// MarshalJSON implements encoding/json.Marshaler.MarshalJSON.
+func (s *EntryTypeSet) MarshalJSON() ([]byte, error) {
+	switch s.bits {
+	case EntryTypesAll:
+		return []byte(`["all"]`), nil
+	case EntryTypesNone:
+		return []byte("[]"), nil
+	default:
+		var elements []string
+		for _, key := range entryTypeStrings {
+			if bit := entryTypeBits[key]; s.bits&bit == bit {
+				elements = append(elements, `"`+key+`"`)
+			}
+		}
+		return []byte("[" + strings.Join(elements, ",") + "]"), nil
+	}
+}
+
+// MarshalYAML implements gopkg.in/yaml.v3.Marshaler.
+func (s *EntryTypeSet) MarshalYAML() (any, error) {
+	if s.bits == EntryTypesAll {
+		return []string{"all"}, nil
+	}
+	var result []string
+	for _, key := range entryTypeStrings {
+		if bit := entryTypeBits[key]; s.bits&bit == bit {
+			result = append(result, key)
+		}
+	}
+	return result, nil
+}
+
 // Set implements github.com/spf13/pflag.Value.Set.
 func (s *EntryTypeSet) Set(str string) error {
 	if str == "none" {

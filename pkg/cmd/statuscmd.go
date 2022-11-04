@@ -10,7 +10,7 @@ import (
 )
 
 type statusCmdConfig struct {
-	Exclude   *chezmoi.EntryTypeSet `mapstructure:"exclude"`
+	Exclude   *chezmoi.EntryTypeSet `json:"exclude" mapstructure:"exclude" yaml:"exclude"`
 	include   *chezmoi.EntryTypeSet
 	init      bool
 	recursive bool

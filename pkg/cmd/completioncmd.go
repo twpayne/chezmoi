@@ -8,7 +8,7 @@ import (
 )
 
 type completionCmdConfig struct {
-	Custom bool `mapstructure:"custom"`
+	Custom bool `json:"custom" mapstructure:"custom" yaml:"custom"`
 }
 
 func (c *Config) newCompletionCmd() *cobra.Command {

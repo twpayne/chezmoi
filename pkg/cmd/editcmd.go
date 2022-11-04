@@ -12,12 +12,12 @@ import (
 )
 
 type editCmdConfig struct {
-	Command     string        `mapstructure:"command"`
-	Args        []string      `mapstructure:"args"`
-	Hardlink    bool          `mapstructure:"hardlink"`
-	MinDuration time.Duration `mapstructure:"minDuration"`
-	Watch       bool          `mapstructure:"watch"`
-	Apply       bool          `mapstructure:"apply"`
+	Command     string        `json:"command" mapstructure:"command" yaml:"command"`
+	Args        []string      `json:"args" mapstructure:"args" yaml:"args"`
+	Hardlink    bool          `json:"hardlink" mapstructure:"hardlink" yaml:"hardlink"`
+	MinDuration time.Duration `json:"minDuration" mapstructure:"minDuration" yaml:"minDuration"`
+	Watch       bool          `json:"watch" mapstructure:"watch" yaml:"watch"`
+	Apply       bool          `json:"apply" mapstructure:"apply" yaml:"apply"`
 	filter      *chezmoi.EntryTypeFilter
 	init        bool
 }
