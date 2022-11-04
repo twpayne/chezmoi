@@ -13,9 +13,10 @@ func (c *Config) newEditConfigCmd() *cobra.Command {
 		Args:    cobra.NoArgs,
 		RunE:    c.runEditConfigCmd,
 		Annotations: map[string]string{
-			modifiesConfigFile:      "true",
-			requiresConfigDirectory: "true",
-			runsCommands:            "true",
+			doesNotRequireValidConfig: "true",
+			modifiesConfigFile:        "true",
+			requiresConfigDirectory:   "true",
+			runsCommands:              "true",
 		},
 	}
 
