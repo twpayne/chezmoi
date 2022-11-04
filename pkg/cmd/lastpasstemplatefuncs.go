@@ -27,7 +27,7 @@ var (
 )
 
 type lastpassConfig struct {
-	Command   string
+	Command   string `json:"command" mapstructure:"command" yaml:"command"`
 	versionOK bool
 	cache     map[string][]map[string]any
 }

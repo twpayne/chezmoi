@@ -135,6 +135,7 @@ nav:
     - diff: reference/commands/diff.md
     - doctor: reference/commands/doctor.md
     - dump: reference/commands/dump.md
+    - dump-config: reference/commands/dump-config.md
     - edit: reference/commands/edit.md
     - edit-config: reference/commands/edit-config.md
     - encrypt: reference/commands/encrypt.md

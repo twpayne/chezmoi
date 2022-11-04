@@ -14,8 +14,8 @@ import (
 )
 
 type mergeCmdConfig struct {
-	Command string   `mapstructure:"command"`
-	Args    []string `mapstructure:"args"`
+	Command string   `json:"command" mapstructure:"command" yaml:"command"`
+	Args    []string `json:"args" mapstructure:"args" yaml:"args"`
 }
 
 func (c *Config) newMergeCmd() *cobra.Command {

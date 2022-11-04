@@ -5,10 +5,10 @@ import (
 )
 
 type gitCmdConfig struct {
-	Command    string `mapstructure:"command"`
-	AutoAdd    bool   `mapstructure:"autoadd"`
-	AutoCommit bool   `mapstructure:"autocommit"`
-	AutoPush   bool   `mapstructure:"autopush"`
+	Command    string `json:"command" mapstructure:"command" yaml:"command"`
+	AutoAdd    bool   `json:"autoadd" mapstructure:"autoadd" yaml:"autoadd"`
+	AutoCommit bool   `json:"autocommit" mapstructure:"autocommit" yaml:"autocommit"`
+	AutoPush   bool   `json:"autopush" mapstructure:"autopush" yaml:"autopush"`
 }
 
 func (c *Config) newGitCmd() *cobra.Command {

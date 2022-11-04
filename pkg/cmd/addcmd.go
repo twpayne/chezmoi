@@ -9,7 +9,7 @@ import (
 )
 
 type addCmdConfig struct {
-	TemplateSymlinks bool `mapstructure:"templateSymlinks"`
+	TemplateSymlinks bool `json:"templateSymlinks" mapstructure:"templateSymlinks" yaml:"templateSymlinks"`
 	autoTemplate     bool
 	create           bool
 	encrypt          bool

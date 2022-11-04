@@ -10,7 +10,7 @@ import (
 )
 
 type bitwardenConfig struct {
-	Command     string
+	Command     string `json:"command" mapstructure:"command" yaml:"command"`
 	outputCache map[string][]byte
 }
 

@@ -10,7 +10,7 @@ import (
 )
 
 type updateCmdConfig struct {
-	RecurseSubmodules bool
+	RecurseSubmodules bool `json:"recurseSubmodules" mapstructure:"recurseSubmodules" yaml:"recurseSubmodules"`
 	apply             bool
 	filter            *chezmoi.EntryTypeFilter
 	init              bool

@@ -9,7 +9,7 @@ import (
 )
 
 type vaultConfig struct {
-	Command string
+	Command string `json:"command" mapstructure:"command" yaml:"command"`
 	cache   map[string]any
 }
 

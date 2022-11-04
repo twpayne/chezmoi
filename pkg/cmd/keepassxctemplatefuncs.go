@@ -21,9 +21,9 @@ type keepassxcAttributeCacheKey struct {
 }
 
 type keepassxcConfig struct {
-	Command         string
-	Database        chezmoi.AbsPath
-	Args            []string
+	Command         string          `json:"command" mapstructure:"command" yaml:"command"`
+	Database        chezmoi.AbsPath `json:"database" mapstructure:"database" yaml:"database"`
+	Args            []string        `json:"args" mapstructure:"args" yaml:"args"`
 	version         *semver.Version
 	cache           map[string]map[string]string
 	attachmentCache map[string]map[string]string

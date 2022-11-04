@@ -9,12 +9,12 @@ import (
 )
 
 type diffCmdConfig struct {
-	Command        string                `mapstructure:"command"`
-	Args           []string              `mapstructure:"args"`
-	Exclude        *chezmoi.EntryTypeSet `mapstructure:"exclude"`
-	Pager          string                `mapstructure:"pager"`
-	Reverse        bool                  `mapstructure:"reverse"`
-	ScriptContents bool                  `mapstructure:"scriptContents"`
+	Command        string                `json:"command" mapstructure:"command" yaml:"command"`
+	Args           []string              `json:"args" mapstructure:"args" yaml:"args"`
+	Exclude        *chezmoi.EntryTypeSet `json:"exclude" mapstructure:"exclude" yaml:"exclude"`
+	Pager          string                `json:"pager" mapstructure:"pager" yaml:"pager"`
+	Reverse        bool                  `json:"reverse" mapstructure:"reverse" yaml:"reverse"`
+	ScriptContents bool                  `json:"scriptContents" mapstructure:"scriptContents" yaml:"scriptContents"`
 	include        *chezmoi.EntryTypeSet
 	init           bool
 	recursive      bool

@@ -11,9 +11,8 @@ import (
 )
 
 type awsSecretsManagerConfig struct {
-	Region  string
-	Profile string
-
+	Region    string `json:"region" mapstructure:"region" yaml:"region"`
+	Profile   string `json:"profile" mapstructure:"profile" yaml:"profile"`
 	svc       *secretsmanager.Client
 	cache     map[string]string
 	jsonCache map[string]map[string]any

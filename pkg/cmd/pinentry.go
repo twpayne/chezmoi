@@ -6,9 +6,9 @@ import (
 )
 
 type pinEntryConfig struct {
-	Command string   `mapstructure:"command"`
-	Args    []string `mapstructure:"args"`
-	Options []string `mapstructure:"options"`
+	Command string   `json:"command" mapstructure:"command" yaml:"command"`
+	Args    []string `json:"args" mapstructure:"args" yaml:"args"`
+	Options []string `json:"options" mapstructure:"options" yaml:"options"`
 }
 
 var pinEntryDefaultOptions = []string{
