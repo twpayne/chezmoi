@@ -12,8 +12,8 @@ following patterns:
 | `user`             | `https://github.com/user/dotfiles.git` | `git@github.com:user/dotfiles.git` |
 | `user/repo`        | `https://github.com/user/repo.git`     | `git@github.com:user/repo.git`     |
 | `site/user/repo`   | `https://site/user/repo.git`           | `git@site:user/repo.git`           |
-| `~sr.ht/user`      | `https://git.sr.ht/~user/dotfiles`     | `git@git.sr.ht:~user/dotfiles.git` |
-| `~sr.ht/user/repo` | `https://git.sr.ht/~user/repo`         | `git@git.sr.ht:~/user/repo.git`    |
+| `sr.ht/~user`      | `https://git.sr.ht/~user/dotfiles`     | `git@git.sr.ht:~user/dotfiles.git` |
+| `sr.ht/~user/repo` | `https://git.sr.ht/~user/repo`         | `git@git.sr.ht:~user/repo.git`    |
 
 To disable git repo URL guessing pass the `--guess-repo-url=false` option.
 
