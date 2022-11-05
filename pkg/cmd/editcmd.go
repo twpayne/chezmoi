@@ -30,13 +30,13 @@ func (c *Config) newEditCmd() *cobra.Command {
 		Example:           example("edit"),
 		ValidArgsFunction: c.targetValidArgs,
 		RunE:              c.runEditCmd,
-		Annotations: map[string]string{
-			modifiesDestinationDirectory: "true",
-			modifiesSourceDirectory:      "true",
-			persistentStateMode:          persistentStateModeReadWrite,
-			requiresSourceDirectory:      "true",
-			runsCommands:                 "true",
-		},
+		Annotations: newAnnotations(
+			modifiesDestinationDirectory,
+			modifiesSourceDirectory,
+			persistentStateModeReadWrite,
+			requiresSourceDirectory,
+			runsCommands,
+		),
 	}
 
 	flags := editCmd.Flags()

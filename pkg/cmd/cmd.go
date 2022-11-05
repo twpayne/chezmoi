@@ -26,28 +26,6 @@ const (
 	gitHubRepo  = "chezmoi"
 )
 
-// Command annotations.
-const (
-	createSourceDirectoryIfNeeded = "chezmoi_create_source_directory_if_needed"
-	doesNotRequireValidConfig     = "chezmoi_does_not_require_valid_config"
-	modifiesConfigFile            = "chezmoi_modifies_config_file"
-	modifiesDestinationDirectory  = "chezmoi_modifies_destination_directory"
-	modifiesSourceDirectory       = "chezmoi_modifies_source_directory"
-	persistentStateMode           = "chezmoi_persistent_state_mode"
-	requiresConfigDirectory       = "chezmoi_requires_config_directory"
-	requiresSourceDirectory       = "chezmoi_requires_source_directory"
-	requiresWorkingTree           = "chezmoi_requires_working_tree"
-	runsCommands                  = "chezmoi_runs_commands"
-)
-
-// Persistent state modes.
-const (
-	persistentStateModeEmpty         = "empty"
-	persistentStateModeReadOnly      = "read-only"
-	persistentStateModeReadMockWrite = "read-mock-write"
-	persistentStateModeReadWrite     = "read-write"
-)
-
 var (
 	noArgs = []string(nil)
 
@@ -135,19 +113,6 @@ func Main(versionInfo VersionInfo, args []string) int {
 		return 1
 	}
 	return 0
-}
-
-// boolAnnotation returns whether cmd is annotated with key.
-func boolAnnotation(cmd *cobra.Command, key string) bool {
-	value, ok := cmd.Annotations[key]
-	if !ok {
-		return false
-	}
-	boolValue, err := strconv.ParseBool(value)
-	if err != nil {
-		panic(err)
-	}
-	return boolValue
 }
 
 // example returns command's example.

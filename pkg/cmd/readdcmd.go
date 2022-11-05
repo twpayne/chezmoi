@@ -23,11 +23,11 @@ func (c *Config) newReAddCmd() *cobra.Command {
 		ValidArgsFunction: c.targetValidArgs,
 		Args:              cobra.NoArgs,
 		RunE:              c.makeRunEWithSourceState(c.runReAddCmd),
-		Annotations: map[string]string{
-			modifiesSourceDirectory: "true",
-			persistentStateMode:     persistentStateModeReadWrite,
-			requiresSourceDirectory: "true",
-		},
+		Annotations: newAnnotations(
+			modifiesSourceDirectory,
+			persistentStateModeReadWrite,
+			requiresSourceDirectory,
+		),
 	}
 
 	flags := reAddCmd.Flags()

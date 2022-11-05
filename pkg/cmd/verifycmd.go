@@ -21,10 +21,10 @@ func (c *Config) newVerifyCmd() *cobra.Command {
 		Example:           example("verify"),
 		ValidArgsFunction: c.targetValidArgs,
 		RunE:              c.runVerifyCmd,
-		Annotations: map[string]string{
-			persistentStateMode:     persistentStateModeReadMockWrite,
-			requiresSourceDirectory: "true",
-		},
+		Annotations: newAnnotations(
+			persistentStateModeReadMockWrite,
+			requiresSourceDirectory,
+		),
 	}
 
 	flags := verifyCmd.Flags()

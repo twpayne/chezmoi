@@ -20,9 +20,9 @@ func (c *Config) newCompletionCmd() *cobra.Command {
 		Long:      mustLongHelp("completion"),
 		Example:   example("completion"),
 		RunE:      c.runCompletionCmd,
-		Annotations: map[string]string{
-			doesNotRequireValidConfig: "true",
-		},
+		Annotations: newAnnotations(
+			doesNotRequireValidConfig,
+		),
 	}
 
 	return completionCmd

@@ -18,10 +18,10 @@ func (c *Config) newMergeAllCmd() *cobra.Command {
 		Long:    mustLongHelp("merge-all"),
 		Example: example("merge-all"),
 		RunE:    c.runMergeAllCmd,
-		Annotations: map[string]string{
-			modifiesSourceDirectory: "true",
-			requiresSourceDirectory: "true",
-		},
+		Annotations: newAnnotations(
+			modifiesSourceDirectory,
+			requiresSourceDirectory,
+		),
 	}
 
 	flags := mergeAllCmd.Flags()

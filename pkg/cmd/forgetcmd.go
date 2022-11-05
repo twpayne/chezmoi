@@ -18,10 +18,10 @@ func (c *Config) newForgetCmd() *cobra.Command {
 		ValidArgsFunction: c.targetValidArgs,
 		Args:              cobra.MinimumNArgs(1),
 		RunE:              c.makeRunEWithSourceState(c.runForgetCmd),
-		Annotations: map[string]string{
-			modifiesSourceDirectory: "true",
-			persistentStateMode:     persistentStateModeReadWrite,
-		},
+		Annotations: newAnnotations(
+			modifiesSourceDirectory,
+			persistentStateModeReadWrite,
+		),
 	}
 
 	return forgetCmd

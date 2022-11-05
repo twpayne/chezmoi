@@ -27,10 +27,10 @@ func (c *Config) newMergeCmd() *cobra.Command {
 		Example:           example("merge"),
 		ValidArgsFunction: c.targetValidArgs,
 		RunE:              c.makeRunEWithSourceState(c.runMergeCmd),
-		Annotations: map[string]string{
-			modifiesSourceDirectory: "true",
-			requiresSourceDirectory: "true",
-		},
+		Annotations: newAnnotations(
+			modifiesSourceDirectory,
+			requiresSourceDirectory,
+		),
 	}
 
 	return mergeCmd

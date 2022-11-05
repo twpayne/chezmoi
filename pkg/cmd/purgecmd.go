@@ -24,10 +24,10 @@ func (c *Config) newPurgeCmd() *cobra.Command {
 		Example: example("purge"),
 		Args:    cobra.NoArgs,
 		RunE:    c.runPurgeCmd,
-		Annotations: map[string]string{
-			modifiesDestinationDirectory: "true",
-			modifiesSourceDirectory:      "true",
-		},
+		Annotations: newAnnotations(
+			modifiesDestinationDirectory,
+			modifiesSourceDirectory,
+		),
 	}
 
 	flags := purgeCmd.Flags()

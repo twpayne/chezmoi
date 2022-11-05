@@ -20,11 +20,11 @@ func (c *Config) newApplyCmd() *cobra.Command {
 		Example:           example("apply"),
 		ValidArgsFunction: c.targetValidArgs,
 		RunE:              c.runApplyCmd,
-		Annotations: map[string]string{
-			modifiesDestinationDirectory: "true",
-			persistentStateMode:          persistentStateModeReadWrite,
-			requiresSourceDirectory:      "true",
-		},
+		Annotations: newAnnotations(
+			modifiesDestinationDirectory,
+			persistentStateModeReadWrite,
+			requiresSourceDirectory,
+		),
 	}
 
 	flags := applyCmd.Flags()

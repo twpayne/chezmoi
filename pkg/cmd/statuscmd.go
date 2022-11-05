@@ -24,11 +24,11 @@ func (c *Config) newStatusCmd() *cobra.Command {
 		Example:           example("status"),
 		ValidArgsFunction: c.targetValidArgs,
 		RunE:              c.runStatusCmd,
-		Annotations: map[string]string{
-			modifiesDestinationDirectory: "true",
-			persistentStateMode:          persistentStateModeReadMockWrite,
-			requiresSourceDirectory:      "true",
-		},
+		Annotations: newAnnotations(
+			modifiesDestinationDirectory,
+			persistentStateModeReadMockWrite,
+			requiresSourceDirectory,
+		),
 	}
 
 	flags := statusCmd.Flags()

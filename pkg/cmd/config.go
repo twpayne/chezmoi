@@ -1513,11 +1513,13 @@ func (c *Config) newSourceState(
 
 // persistentPostRunRootE performs post-run actions for the root command.
 func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error {
+	annotations := getAnnotations(cmd)
+
 	if err := c.persistentState.Close(); err != nil {
 		return err
 	}
 
-	if boolAnnotation(cmd, modifiesConfigFile) {
+	if annotations.hasTag(modifiesConfigFile) {
 		configFileContents, err := c.baseSystem.ReadFile(c.configFileAbsPath)
 		switch {
 		case errors.Is(err, fs.ErrNotExist):
@@ -1540,7 +1542,7 @@ func (c *Config) persistentPostRunRootE(cmd *cobra.Command, args []string) error
 		}
 	}
 
-	if boolAnnotation(cmd, modifiesSourceDirectory) {
+	if annotations.hasTag(modifiesSourceDirectory) {
 		var status *git.Status
 		if c.Git.AutoAdd || c.Git.AutoCommit || c.Git.AutoPush {
 			var err error
@@ -1599,6 +1601,8 @@ func (c *Config) pageOutputString(output, cmdPager string) error {
 
 // persistentPreRunRootE performs pre-run actions for the root command.
 func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error {
+	annotations := getAnnotations(cmd)
+
 	// Enable CPU profiling if configured.
 	if !c.cpuProfile.Empty() {
 		f, err := os.Create(c.cpuProfile.String())
@@ -1633,7 +1637,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	})
 
 	// Read the config file.
-	if boolAnnotation(cmd, doesNotRequireValidConfig) {
+	if annotations.hasTag(doesNotRequireValidConfig) {
 		if c.configFileAbsPathErr == nil {
 			_ = c.readConfig()
 		}
@@ -1685,10 +1689,10 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	}
 
 	// Set up the persistent state.
-	switch {
-	case cmd.Annotations[persistentStateMode] == persistentStateModeEmpty:
+	switch persistentStateMode := annotations.persistentStateMode(); {
+	case persistentStateMode == persistentStateModeEmpty:
 		c.persistentState = chezmoi.NewMockPersistentState()
-	case cmd.Annotations[persistentStateMode] == persistentStateModeReadOnly:
+	case persistentStateMode == persistentStateModeReadOnly:
 		persistentStateFileAbsPath, err := c.persistentStateFile()
 		if err != nil {
 			return err
@@ -1699,9 +1703,9 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 		if err != nil {
 			return err
 		}
-	case cmd.Annotations[persistentStateMode] == persistentStateModeReadMockWrite:
+	case persistentStateMode == persistentStateModeReadMockWrite:
 		fallthrough
-	case cmd.Annotations[persistentStateMode] == persistentStateModeReadWrite && c.dryRun:
+	case persistentStateMode == persistentStateModeReadWrite && c.dryRun:
 		persistentStateFileAbsPath, err := c.persistentStateFile()
 		if err != nil {
 			return err
@@ -1720,7 +1724,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 			return err
 		}
 		c.persistentState = dryRunPersistentState
-	case cmd.Annotations[persistentStateMode] == persistentStateModeReadWrite:
+	case persistentStateMode == persistentStateModeReadWrite:
 		persistentStateFileAbsPath, err := c.persistentStateFile()
 		if err != nil {
 			return err
@@ -1742,10 +1746,10 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	// Set up the source and destination systems.
 	c.sourceSystem = c.baseSystem
 	c.destSystem = c.baseSystem
-	if !boolAnnotation(cmd, modifiesDestinationDirectory) {
+	if !annotations.hasTag(modifiesDestinationDirectory) {
 		c.destSystem = chezmoi.NewReadOnlySystem(c.destSystem)
 	}
-	if !boolAnnotation(cmd, modifiesSourceDirectory) {
+	if !annotations.hasTag(modifiesSourceDirectory) {
 		c.sourceSystem = chezmoi.NewReadOnlySystem(c.sourceSystem)
 	}
 	if c.dryRun {
@@ -1762,21 +1766,21 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	}
 
 	// Create the config directory if needed.
-	if boolAnnotation(cmd, requiresConfigDirectory) {
+	if annotations.hasTag(requiresConfigDirectory) {
 		if err := chezmoi.MkdirAll(c.baseSystem, c.configFileAbsPath.Dir(), fs.ModePerm); err != nil {
 			return err
 		}
 	}
 
 	// Create the source directory if needed.
-	if boolAnnotation(cmd, createSourceDirectoryIfNeeded) {
+	if annotations.hasTag(createSourceDirectoryIfNeeded) {
 		if err := chezmoi.MkdirAll(c.baseSystem, c.SourceDirAbsPath, fs.ModePerm); err != nil {
 			return err
 		}
 	}
 
 	// Verify that the source directory exists and is a directory, if needed.
-	if boolAnnotation(cmd, requiresSourceDirectory) {
+	if annotations.hasTag(requiresSourceDirectory) {
 		switch fileInfo, err := c.baseSystem.Stat(c.SourceDirAbsPath); {
 		case err == nil && fileInfo.IsDir():
 			// Do nothing.
@@ -1788,7 +1792,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	}
 
 	// Create the runtime directory if needed.
-	if boolAnnotation(cmd, runsCommands) {
+	if annotations.hasTag(runsCommands) {
 		if runtime.GOOS == "linux" && c.bds.RuntimeDir != "" {
 			// Snap sets the $XDG_RUNTIME_DIR environment variable to
 			// /run/user/$uid/snap.$snap_name, but does not create this
@@ -1822,7 +1826,7 @@ func (c *Config) persistentPreRunRootE(cmd *cobra.Command, args []string) error 
 	}
 
 	// Create the working tree directory if needed.
-	if boolAnnotation(cmd, requiresWorkingTree) {
+	if annotations.hasTag(requiresWorkingTree) {
 		if _, err := c.SourceDirAbsPath.TrimDirPrefix(c.WorkingTreeAbsPath); err != nil {
 			return err
 		}

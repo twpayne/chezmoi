@@ -19,12 +19,12 @@ func (c *Config) newCDCmd() *cobra.Command {
 		Example: example("cd"),
 		RunE:    c.runCDCmd,
 		Args:    cobra.NoArgs,
-		Annotations: map[string]string{
-			createSourceDirectoryIfNeeded: "true",
-			doesNotRequireValidConfig:     "true",
-			requiresWorkingTree:           "true",
-			runsCommands:                  "true",
-		},
+		Annotations: newAnnotations(
+			createSourceDirectoryIfNeeded,
+			doesNotRequireValidConfig,
+			requiresWorkingTree,
+			runsCommands,
+		),
 	}
 
 	return cdCmd

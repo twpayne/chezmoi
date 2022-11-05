@@ -10,10 +10,10 @@ func (c *Config) newCatConfigCmd() *cobra.Command {
 		Example: example("cat-config"),
 		Args:    cobra.NoArgs,
 		RunE:    c.runCatConfigCmd,
-		Annotations: map[string]string{
-			doesNotRequireValidConfig: "true",
-			requiresConfigDirectory:   "true",
-		},
+		Annotations: newAnnotations(
+			doesNotRequireValidConfig,
+			requiresConfigDirectory,
+		),
 	}
 
 	return catConfigCmd

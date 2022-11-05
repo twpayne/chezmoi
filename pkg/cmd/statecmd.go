@@ -55,9 +55,9 @@ func (c *Config) newStateCmd() *cobra.Command {
 		Short: "Print the raw data in the persistent state",
 		Args:  cobra.NoArgs,
 		RunE:  c.runStateDataCmd,
-		Annotations: map[string]string{
-			persistentStateMode: persistentStateModeReadOnly,
-		},
+		Annotations: newAnnotations(
+			persistentStateModeReadOnly,
+		),
 	}
 	stateDataPersistentFlags := stateDataCmd.PersistentFlags()
 	stateDataPersistentFlags.VarP(&c.Format, "format", "f", "Output format")
@@ -71,9 +71,9 @@ func (c *Config) newStateCmd() *cobra.Command {
 		Short: "Delete a value from the persistent state",
 		Args:  cobra.NoArgs,
 		RunE:  c.runStateDeleteCmd,
-		Annotations: map[string]string{
-			persistentStateMode: persistentStateModeReadWrite,
-		},
+		Annotations: newAnnotations(
+			persistentStateModeReadWrite,
+		),
 	}
 	stateDeletePersistentFlags := stateDeleteCmd.PersistentFlags()
 	stateDeletePersistentFlags.StringVar(&c.state.delete.bucket, "bucket", c.state.delete.bucket, "Bucket")
@@ -85,9 +85,9 @@ func (c *Config) newStateCmd() *cobra.Command {
 		Short: "Delete a bucket from the persistent state",
 		Args:  cobra.NoArgs,
 		RunE:  c.runStateDeleteBucketCmd,
-		Annotations: map[string]string{
-			persistentStateMode: persistentStateModeReadWrite,
-		},
+		Annotations: newAnnotations(
+			persistentStateModeReadWrite,
+		),
 	}
 	stateDeleteBucketPersistentFlags := stateDeleteBucketCmd.PersistentFlags()
 	stateDeleteBucketPersistentFlags.StringVar(&c.state.deleteBucket.bucket, "bucket", c.state.deleteBucket.bucket, "Bucket") //nolint:lll
@@ -98,9 +98,9 @@ func (c *Config) newStateCmd() *cobra.Command {
 		Short: "Generate a dump of the persistent state",
 		Args:  cobra.NoArgs,
 		RunE:  c.runStateDumpCmd,
-		Annotations: map[string]string{
-			persistentStateMode: persistentStateModeReadOnly,
-		},
+		Annotations: newAnnotations(
+			persistentStateModeReadOnly,
+		),
 	}
 	stateDumpPersistentFlags := stateDumpCmd.PersistentFlags()
 	stateDumpPersistentFlags.VarP(&c.Format, "format", "f", "Output format")
@@ -114,9 +114,9 @@ func (c *Config) newStateCmd() *cobra.Command {
 		Short: "Get a value from the persistent state",
 		Args:  cobra.NoArgs,
 		RunE:  c.runStateGetCmd,
-		Annotations: map[string]string{
-			persistentStateMode: persistentStateModeReadOnly,
-		},
+		Annotations: newAnnotations(
+			persistentStateModeReadOnly,
+		),
 	}
 	stateGetPersistentFlags := stateGetCmd.PersistentFlags()
 	stateGetPersistentFlags.StringVar(&c.state.get.bucket, "bucket", c.state.get.bucket, "Bucket")
@@ -128,9 +128,9 @@ func (c *Config) newStateCmd() *cobra.Command {
 		Short: "Get a bucket from the persistent state",
 		Args:  cobra.NoArgs,
 		RunE:  c.runStateGetBucketCmd,
-		Annotations: map[string]string{
-			persistentStateMode: persistentStateModeReadOnly,
-		},
+		Annotations: newAnnotations(
+			persistentStateModeReadOnly,
+		),
 	}
 	stateGetBucketPersistentFlags := stateGetBucketCmd.PersistentFlags()
 	stateGetBucketPersistentFlags.StringVar(&c.state.getBucket.bucket, "bucket", c.state.getBucket.bucket, "bucket")
@@ -145,9 +145,9 @@ func (c *Config) newStateCmd() *cobra.Command {
 		Short: "Reset the persistent state",
 		Args:  cobra.NoArgs,
 		RunE:  c.runStateResetCmd,
-		Annotations: map[string]string{
-			modifiesDestinationDirectory: "true",
-		},
+		Annotations: newAnnotations(
+			modifiesDestinationDirectory,
+		),
 	}
 	stateCmd.AddCommand(stateResetCmd)
 
@@ -156,9 +156,9 @@ func (c *Config) newStateCmd() *cobra.Command {
 		Short: "Set a value from the persistent state",
 		Args:  cobra.NoArgs,
 		RunE:  c.runStateSetCmd,
-		Annotations: map[string]string{
-			persistentStateMode: persistentStateModeReadWrite,
-		},
+		Annotations: newAnnotations(
+			persistentStateModeReadWrite,
+		),
 	}
 	stateSetPersistentFlags := stateSetCmd.PersistentFlags()
 	stateSetPersistentFlags.StringVar(&c.state.set.bucket, "bucket", c.state.set.bucket, "Bucket")

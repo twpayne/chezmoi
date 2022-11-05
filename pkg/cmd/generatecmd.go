@@ -18,9 +18,9 @@ func (c *Config) newGenerateCmd() *cobra.Command {
 		Args:      cobra.ExactArgs(1),
 		ValidArgs: []string{"install.sh"},
 		RunE:      c.runGenerateCmd,
-		Annotations: map[string]string{
-			doesNotRequireValidConfig: "true",
-		},
+		Annotations: newAnnotations(
+			doesNotRequireValidConfig,
+		),
 	}
 
 	return generateCmd

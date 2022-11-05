@@ -75,10 +75,10 @@ func (c *Config) newChattrCmd() *cobra.Command {
 		Args:              cobra.MinimumNArgs(2),
 		ValidArgsFunction: c.chattrCmdValidArgs,
 		RunE:              c.makeRunEWithSourceState(c.runChattrCmd),
-		Annotations: map[string]string{
-			modifiesSourceDirectory: "true",
-			requiresSourceDirectory: "true",
-		},
+		Annotations: newAnnotations(
+			modifiesSourceDirectory,
+			requiresSourceDirectory,
+		),
 	}
 
 	return chattrCmd
