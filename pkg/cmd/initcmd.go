@@ -105,13 +105,13 @@ func (c *Config) newInitCmd() *cobra.Command {
 		Long:    mustLongHelp("init"),
 		Example: example("init"),
 		RunE:    c.runInitCmd,
-		Annotations: map[string]string{
-			createSourceDirectoryIfNeeded: "true",
-			modifiesDestinationDirectory:  "true",
-			persistentStateMode:           persistentStateModeReadWrite,
-			requiresWorkingTree:           "true",
-			runsCommands:                  "true",
-		},
+		Annotations: newAnnotations(
+			createSourceDirectoryIfNeeded,
+			modifiesDestinationDirectory,
+			persistentStateModeReadWrite,
+			requiresWorkingTree,
+			runsCommands,
+		),
 	}
 
 	flags := initCmd.Flags()

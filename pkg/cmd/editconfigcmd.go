@@ -12,12 +12,12 @@ func (c *Config) newEditConfigCmd() *cobra.Command {
 		Example: example("edit-config"),
 		Args:    cobra.NoArgs,
 		RunE:    c.runEditConfigCmd,
-		Annotations: map[string]string{
-			doesNotRequireValidConfig: "true",
-			modifiesConfigFile:        "true",
-			requiresConfigDirectory:   "true",
-			runsCommands:              "true",
-		},
+		Annotations: newAnnotations(
+			doesNotRequireValidConfig,
+			modifiesConfigFile,
+			requiresConfigDirectory,
+			runsCommands,
+		),
 	}
 
 	return editConfigCmd

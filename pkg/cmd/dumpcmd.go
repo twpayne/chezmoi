@@ -20,10 +20,10 @@ func (c *Config) newDumpCmd() *cobra.Command {
 		Example:           example("dump"),
 		ValidArgsFunction: c.targetValidArgs,
 		RunE:              c.runDumpCmd,
-		Annotations: map[string]string{
-			persistentStateMode:     persistentStateModeReadMockWrite,
-			requiresSourceDirectory: "true",
-		},
+		Annotations: newAnnotations(
+			persistentStateModeReadMockWrite,
+			requiresSourceDirectory,
+		),
 	}
 
 	flags := dumpCmd.Flags()

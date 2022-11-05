@@ -151,10 +151,10 @@ func (c *Config) newDoctorCmd() *cobra.Command {
 		Example: example("doctor"),
 		Long:    mustLongHelp("doctor"),
 		RunE:    c.runDoctorCmd,
-		Annotations: map[string]string{
-			doesNotRequireValidConfig: "true",
-			runsCommands:              "true",
-		},
+		Annotations: newAnnotations(
+			doesNotRequireValidConfig,
+			runsCommands,
+		),
 	}
 
 	return doctorCmd

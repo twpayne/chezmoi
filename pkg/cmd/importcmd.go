@@ -24,11 +24,11 @@ func (c *Config) newImportCmd() *cobra.Command {
 		Example: example("import"),
 		Args:    cobra.MaximumNArgs(1),
 		RunE:    c.makeRunEWithSourceState(c.runImportCmd),
-		Annotations: map[string]string{
-			createSourceDirectoryIfNeeded: "true",
-			modifiesSourceDirectory:       "true",
-			persistentStateMode:           persistentStateModeReadWrite,
-		},
+		Annotations: newAnnotations(
+			createSourceDirectoryIfNeeded,
+			modifiesSourceDirectory,
+			persistentStateModeReadWrite,
+		),
 	}
 
 	flags := importCmd.Flags()

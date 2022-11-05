@@ -93,9 +93,9 @@ func (c *Config) newUpgradeCmd() *cobra.Command {
 		Example: example("upgrade"),
 		Args:    cobra.NoArgs,
 		RunE:    c.runUpgradeCmd,
-		Annotations: map[string]string{
-			runsCommands: "true",
-		},
+		Annotations: newAnnotations(
+			runsCommands,
+		),
 	}
 
 	flags := upgradeCmd.Flags()

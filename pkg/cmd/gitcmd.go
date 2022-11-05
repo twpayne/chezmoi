@@ -18,11 +18,11 @@ func (c *Config) newGitCmd() *cobra.Command {
 		Long:    mustLongHelp("git"),
 		Example: example("git"),
 		RunE:    c.runGitCmd,
-		Annotations: map[string]string{
-			createSourceDirectoryIfNeeded: "true",
-			requiresWorkingTree:           "true",
-			runsCommands:                  "true",
-		},
+		Annotations: newAnnotations(
+			createSourceDirectoryIfNeeded,
+			requiresWorkingTree,
+			runsCommands,
+		),
 	}
 
 	return gitCmd

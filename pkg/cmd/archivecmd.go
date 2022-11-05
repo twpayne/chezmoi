@@ -29,10 +29,10 @@ func (c *Config) newArchiveCmd() *cobra.Command {
 		Example:           example("archive"),
 		ValidArgsFunction: c.targetValidArgs,
 		RunE:              c.runArchiveCmd,
-		Annotations: map[string]string{
-			persistentStateMode:     persistentStateModeEmpty,
-			requiresSourceDirectory: "true",
-		},
+		Annotations: newAnnotations(
+			persistentStateModeEmpty,
+			requiresSourceDirectory,
+		),
 	}
 
 	flags := archiveCmd.Flags()

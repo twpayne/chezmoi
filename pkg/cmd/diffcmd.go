@@ -29,10 +29,10 @@ func (c *Config) newDiffCmd() *cobra.Command {
 		Example:           example("diff"),
 		ValidArgsFunction: c.targetValidArgs,
 		RunE:              c.runDiffCmd,
-		Annotations: map[string]string{
-			persistentStateMode:     persistentStateModeReadMockWrite,
-			requiresSourceDirectory: "true",
-		},
+		Annotations: newAnnotations(
+			persistentStateModeReadMockWrite,
+			requiresSourceDirectory,
+		),
 	}
 
 	flags := diffCmd.Flags()

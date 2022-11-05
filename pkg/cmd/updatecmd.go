@@ -25,13 +25,13 @@ func (c *Config) newUpdateCmd() *cobra.Command {
 		Example: example("update"),
 		Args:    cobra.NoArgs,
 		RunE:    c.runUpdateCmd,
-		Annotations: map[string]string{
-			modifiesDestinationDirectory: "true",
-			persistentStateMode:          persistentStateModeReadWrite,
-			requiresSourceDirectory:      "true",
-			requiresWorkingTree:          "true",
-			runsCommands:                 "true",
-		},
+		Annotations: newAnnotations(
+			modifiesDestinationDirectory,
+			persistentStateModeReadWrite,
+			requiresSourceDirectory,
+			requiresWorkingTree,
+			runsCommands,
+		),
 	}
 
 	flags := updateCmd.Flags()

@@ -24,11 +24,11 @@ func (c *Config) newRemoveCmd() *cobra.Command {
 		ValidArgsFunction: c.targetValidArgs,
 		Args:              cobra.MinimumNArgs(1),
 		RunE:              c.makeRunEWithSourceState(c.runRemoveCmd),
-		Annotations: map[string]string{
-			modifiesDestinationDirectory: "true",
-			modifiesSourceDirectory:      "true",
-			persistentStateMode:          persistentStateModeReadWrite,
-		},
+		Annotations: newAnnotations(
+			modifiesDestinationDirectory,
+			modifiesSourceDirectory,
+			persistentStateModeReadWrite,
+		),
 	}
 
 	flags := removeCmd.Flags()
