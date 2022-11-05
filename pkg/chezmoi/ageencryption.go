@@ -21,7 +21,6 @@ import (
 // https://age-encryption.org.
 type AgeEncryption struct {
 	UseBuiltin      bool      `json:"useBuiltin" mapstructure:"useBuiltin" yaml:"useBuiltin"`
-	BaseSystem      System    `json:"-" mapstructure:"-" yaml:"-"`
 	Command         string    `json:"command" mapstructure:"command" yaml:"command"`
 	Args            []string  `json:"args" mapstructure:"args" yaml:"args"`
 	Identity        AbsPath   `json:"identity" mapstructure:"identity" yaml:"identity"`
@@ -54,7 +53,7 @@ func (e *AgeEncryption) DecryptToFile(plaintextAbsPath AbsPath, ciphertext []byt
 		if err != nil {
 			return err
 		}
-		return e.BaseSystem.WriteFile(plaintextAbsPath, plaintext, 0o644)
+		return os.WriteFile(plaintextAbsPath.String(), plaintext, 0o644) //nolint:gosec
 	}
 
 	args := append(append(e.decryptArgs(), "--output", plaintextAbsPath.String()), e.Args...)
@@ -79,7 +78,7 @@ func (e *AgeEncryption) Encrypt(plaintext []byte) ([]byte, error) {
 // EncryptFile implements Encryption.EncryptFile.
 func (e *AgeEncryption) EncryptFile(plaintextAbsPath AbsPath) ([]byte, error) {
 	if e.UseBuiltin {
-		plaintext, err := e.BaseSystem.ReadFile(plaintextAbsPath)
+		plaintext, err := os.ReadFile(plaintextAbsPath.String())
 		if err != nil {
 			return nil, err
 		}

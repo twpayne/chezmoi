@@ -7,7 +7,6 @@ import (
 
 	"filippo.io/age"
 	"github.com/stretchr/testify/require"
-	"github.com/twpayne/go-vfs/v4"
 
 	"github.com/twpayne/chezmoi/v2/pkg/chezmoitest"
 )
@@ -80,7 +79,6 @@ func TestBuiltinAgeEncryption(t *testing.T) {
 
 	testEncryption(t, &AgeEncryption{
 		UseBuiltin: true,
-		BaseSystem: NewRealSystem(vfs.OSFS),
 		Identity:   identityAbsPath,
 		Recipient:  recipientStringer.String(),
 	})
@@ -92,7 +90,6 @@ func TestBuiltinAgeMultipleIdentitiesAndMultipleRecipients(t *testing.T) {
 
 	testEncryption(t, &AgeEncryption{
 		UseBuiltin: true,
-		BaseSystem: NewRealSystem(vfs.OSFS),
 		Identities: []AbsPath{
 			identityAbsPath1,
 			identityAbsPath2,
@@ -105,21 +102,18 @@ func TestBuiltinAgeMultipleIdentitiesAndMultipleRecipients(t *testing.T) {
 }
 
 func TestBuiltinAgeRecipientsFile(t *testing.T) {
-	baseSystem := NewRealSystem(vfs.OSFS)
 	recipient, identityAbsPath := builtinAgeGenerateKey(t)
 	recipientsFile := filepath.Join(t.TempDir(), "chezmoi-builtin-age-recipients.txt")
 	require.NoError(t, os.WriteFile(recipientsFile, []byte(recipient.String()), 0o666))
 
 	testEncryption(t, &AgeEncryption{
 		UseBuiltin:     true,
-		BaseSystem:     baseSystem,
 		Identity:       identityAbsPath,
 		RecipientsFile: NewAbsPath(recipientsFile),
 	})
 
 	testEncryption(t, &AgeEncryption{
 		UseBuiltin: true,
-		BaseSystem: baseSystem,
 		Identity:   identityAbsPath,
 		RecipientsFiles: []AbsPath{
 			NewAbsPath(recipientsFile),
