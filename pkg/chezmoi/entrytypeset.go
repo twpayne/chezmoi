@@ -121,10 +121,11 @@ func (s *EntryTypeSet) ContainsFileInfo(fileInfo fs.FileInfo) bool {
 
 // ContainsSourceStateEntry returns true if sourceStateEntry is a member.
 func (s *EntryTypeSet) ContainsSourceStateEntry(sourceStateEntry SourceStateEntry) bool {
+	_, isExternal := sourceStateEntry.Origin().(*External)
 	switch sourceStateEntry := sourceStateEntry.(type) {
 	case *SourceStateCommand:
 		switch {
-		case s.bits&EntryTypeExternals != 0 && sourceStateEntry.origin != nil:
+		case s.bits&EntryTypeExternals != 0 && isExternal:
 			return true
 		case s.bits&EntryTypeDirs != 0:
 			return true
@@ -133,7 +134,7 @@ func (s *EntryTypeSet) ContainsSourceStateEntry(sourceStateEntry SourceStateEntr
 		}
 	case *SourceStateDir:
 		switch {
-		case s.bits&EntryTypeExternals != 0 && sourceStateEntry.origin != nil:
+		case s.bits&EntryTypeExternals != 0 && isExternal:
 			return true
 		case s.bits&EntryTypeDirs != 0:
 			return true
@@ -142,7 +143,7 @@ func (s *EntryTypeSet) ContainsSourceStateEntry(sourceStateEntry SourceStateEntr
 		}
 	case *SourceStateFile:
 		switch sourceAttr := sourceStateEntry.Attr; {
-		case s.bits&EntryTypeExternals != 0 && sourceStateEntry.origin != nil:
+		case s.bits&EntryTypeExternals != 0 && isExternal:
 			return true
 		case s.bits&EntryTypeEncrypted != 0 && sourceAttr.Encrypted:
 			return true
@@ -167,7 +168,7 @@ func (s *EntryTypeSet) ContainsSourceStateEntry(sourceStateEntry SourceStateEntr
 		}
 	case *SourceStateRemove:
 		switch {
-		case s.bits&EntryTypeExternals != 0 && sourceStateEntry.origin != nil:
+		case s.bits&EntryTypeExternals != 0 && isExternal:
 			return true
 		case s.bits&EntryTypeRemove != 0:
 			return true
