@@ -213,7 +213,7 @@ func TestSetValueAtPathTemplateFunc(t *testing.T) {
 				actual := c.setValueAtPathTemplateFunc(tc.path, tc.value, tc.dict)
 				assert.Equal(t, tc.expected, actual)
 			} else {
-				assert.PanicsWithValue(t, tc.expectedErr, func() {
+				assert.PanicsWithError(t, tc.expectedErr, func() {
 					c.setValueAtPathTemplateFunc(tc.path, tc.value, tc.dict)
 				})
 			}
@@ -252,6 +252,130 @@ func TestFromIniTemplateFunc(t *testing.T) {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
 			c := &Config{}
 			assert.Equal(t, tc.expected, c.fromIniTemplateFunc(tc.text))
+		})
+	}
+}
+
+func TestKeysFromPath(t *testing.T) {
+	for _, tc := range []struct {
+		name            string
+		path            any
+		expectedLastKey string
+		expectedKeys    []string
+		expectedErr     error
+	}{
+		{
+			name:            "string_key",
+			path:            "key",
+			expectedKeys:    []string{},
+			expectedLastKey: "key",
+		},
+		{
+			name:            "string_period_separated_keys",
+			path:            "key1.key2",
+			expectedKeys:    []string{"key1"},
+			expectedLastKey: "key2",
+		},
+		{
+			name:            "string_period_separated_nested_keys",
+			path:            "key1.key2.key3",
+			expectedKeys:    []string{"key1", "key2"},
+			expectedLastKey: "key3",
+		},
+		{
+			name:        "string_empty",
+			path:        "",
+			expectedErr: errEmptyPath,
+		},
+		{
+			name: "string_period_separated_empty_key",
+			path: "key1..key3",
+			expectedErr: emptyPathElementError{
+				index: 1,
+			},
+		},
+		{
+			name:            "string_slice_one_key",
+			path:            []string{"key1"},
+			expectedKeys:    []string{},
+			expectedLastKey: "key1",
+		},
+		{
+			name:            "string_slice_two_keys",
+			path:            []string{"key1", "key2"},
+			expectedKeys:    []string{"key1"},
+			expectedLastKey: "key2",
+		},
+		{
+			name:            "string_slice_multiple_keys",
+			path:            []string{"key1", "key2", "key3"},
+			expectedKeys:    []string{"key1", "key2"},
+			expectedLastKey: "key3",
+		},
+		{
+			name:        "string_slice_empty",
+			path:        []string{},
+			expectedErr: errEmptyPath,
+		},
+		{
+			name: "string_slice_empty_key",
+			path: []string{""},
+			expectedErr: emptyPathElementError{
+				index: 0,
+			},
+		},
+		{
+			name: "string_slice_empty_key_second",
+			path: []string{"key", ""},
+			expectedErr: emptyPathElementError{
+				index: 1,
+			},
+		},
+		{
+			name:        "any_slice_nil",
+			expectedErr: errEmptyPath,
+		},
+		{
+			name:        "any_slice_empty",
+			path:        []any{},
+			expectedErr: errEmptyPath,
+		},
+		{
+			name:            "any_slice_one_key",
+			path:            []any{"key"},
+			expectedKeys:    []string{},
+			expectedLastKey: "key",
+		},
+		{
+			name:            "any_slice_two_keys",
+			path:            []any{"key1", "key2"},
+			expectedKeys:    []string{"key1"},
+			expectedLastKey: "key2",
+		},
+		{
+			name: "any_slice_invalid_key",
+			path: []any{0},
+			expectedErr: invalidPathElementTypeError{
+				element: 0,
+			},
+		},
+		{
+			name: "any_slice_empty_key",
+			path: []any{""},
+			expectedErr: emptyPathElementError{
+				index: 0,
+			},
+		},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			actualKeys, actualLastKey, err := keysFromPath(tc.path)
+			if tc.expectedErr != nil {
+				assert.Error(t, tc.expectedErr, err)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, tc.expectedKeys, actualKeys)
+				assert.Equal(t, tc.expectedLastKey, actualLastKey)
+			}
 		})
 	}
 }
