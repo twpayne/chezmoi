@@ -28,6 +28,36 @@ type ioregData struct {
 	value map[string]any
 }
 
+// An emptyPathElementError is returned when a path element is empty.
+type emptyPathElementError struct {
+	index int
+}
+
+func (e emptyPathElementError) Error() string {
+	return fmt.Sprintf("empty path element at index %d", e.index)
+}
+
+// An invalidPathElementTypeError is returned when an element in a path has an invalid type.
+type invalidPathElementTypeError struct {
+	element any
+}
+
+func (e invalidPathElementTypeError) Error() string {
+	return fmt.Sprintf("%v: invalid path element type %T", e.element, e.element)
+}
+
+// An invalidPathTypeError is returned when a path has an invalid type.
+type invalidPathTypeError struct {
+	path any
+}
+
+func (e invalidPathTypeError) Error() string {
+	return fmt.Sprintf("%v: invalid path type %T", e.path, e.path)
+}
+
+// errEmptyPath is returned when a path is empty.
+var errEmptyPath = errors.New("empty path")
+
 // needsQuoteRx matches any string that contains non-printable characters,
 // double quotes, or a backslash.
 var needsQuoteRx = regexp.MustCompile(`[^\x21\x23-\x5b\x5d-\x7e]`)
@@ -281,23 +311,9 @@ func (c *Config) replaceAllRegexTemplateFunc(expr, repl, s string) string {
 }
 
 func (c *Config) setValueAtPathTemplateFunc(path, value, dict any) any {
-	var keys []string
-	switch path := path.(type) {
-	case string:
-		keys = strings.Split(path, ".")
-	case []any:
-		keys = make([]string, 0, len(path))
-		for _, element := range path {
-			elementStr, ok := element.(string)
-			if !ok {
-				panic(fmt.Sprintf("%v: invalid path element type %T", element, element))
-			}
-			keys = append(keys, elementStr)
-		}
-	case []string:
-		keys = path
-	default:
-		panic(fmt.Sprintf("%v: invalid path type %T", path, path))
+	keys, lastKey, err := keysFromPath(path)
+	if err != nil {
+		panic(err)
 	}
 
 	result, ok := dict.(map[string]any)
@@ -306,7 +322,7 @@ func (c *Config) setValueAtPathTemplateFunc(path, value, dict any) any {
 	}
 
 	currentMap := result
-	for _, key := range keys[:len(keys)-1] {
+	for _, key := range keys {
 		if value, ok := currentMap[key]; ok {
 			if nestedMap, ok := value.(map[string]any); ok {
 				currentMap = nestedMap
@@ -321,7 +337,7 @@ func (c *Config) setValueAtPathTemplateFunc(path, value, dict any) any {
 			currentMap = nestedMap
 		}
 	}
-	currentMap[keys[len(keys)-1]] = value
+	currentMap[lastKey] = value
 
 	return result
 }
@@ -385,6 +401,62 @@ func iniSectionToMap(section *ini.Section) map[string]any {
 		m[k.Name()] = k.Value()
 	}
 	return m
+}
+
+func keysFromPath(path any) ([]string, string, error) {
+	switch path := path.(type) {
+	case string:
+		if path == "" {
+			return nil, "", errEmptyPath
+		}
+		keys := strings.Split(path, ".")
+		for i, key := range keys {
+			if key == "" {
+				return nil, "", emptyPathElementError{
+					index: i,
+				}
+			}
+		}
+		return keys[:len(keys)-1], keys[len(keys)-1], nil
+	case []any:
+		if len(path) == 0 {
+			return nil, "", errEmptyPath
+		}
+		keys := make([]string, 0, len(path))
+		for i, pathElement := range path {
+			switch pathElementStr, ok := pathElement.(string); {
+			case !ok:
+				return nil, "", invalidPathElementTypeError{
+					element: pathElement,
+				}
+			case pathElementStr == "":
+				return nil, "", emptyPathElementError{
+					index: i,
+				}
+			default:
+				keys = append(keys, pathElementStr)
+			}
+		}
+		return keys[:len(keys)-1], keys[len(keys)-1], nil
+	case []string:
+		if len(path) == 0 {
+			return nil, "", errEmptyPath
+		}
+		for i, key := range path {
+			if key == "" {
+				return nil, "", emptyPathElementError{
+					index: i,
+				}
+			}
+		}
+		return path[:len(path)-1], path[len(path)-1], nil
+	case nil:
+		return nil, "", errEmptyPath
+	default:
+		return nil, "", invalidPathTypeError{
+			path: path,
+		}
+	}
 }
 
 func writeIniMap(w io.Writer, data map[string]any, sectionPrefix string) error {
